@@ -78,7 +78,7 @@ export function listen<T extends P>(bus: B, module: t.IModule<T>) {
 
   const allFieldsMatch = (patterns: D) => {
     const keys = Object.keys(patterns);
-    const data = module.root.props?.data;
+    const data = module.state.props?.data;
     if (!data) {
       return keys.length === 0;
     }

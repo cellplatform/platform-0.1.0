@@ -19,7 +19,7 @@ describe('Dev (DSL)', () => {
 
     it('kind: "harness.root"', () => {
       const dev = create(bus);
-      expect(dev.module.root.props?.data?.kind).to.eql('harness.root');
+      expect(dev.module.state.props?.data?.kind).to.eql('harness.root');
     });
 
     it('create: with label', () => {
@@ -48,7 +48,7 @@ describe('Dev (DSL)', () => {
     it('id', () => {
       const dev = create(bus);
       const component = dev.component('Foo');
-      const children = dev.module.root.children || [];
+      const children = dev.module.state.children || [];
       expect(component.id).to.eql(children[0].id);
       expect(component.props.id).to.eql(component.id);
     });
@@ -56,7 +56,7 @@ describe('Dev (DSL)', () => {
     it('kind: "harness.component"', () => {
       const dev = create(bus);
       dev.component('Foo');
-      const children = dev.module.root.children || [];
+      const children = dev.module.state.children || [];
       expect(children[0].props?.data?.kind).to.eql('harness.component');
     });
 
@@ -305,7 +305,7 @@ describe('Dev (DSL)', () => {
     it('id', () => {
       const dev = create(bus);
       const folder = dev.folder('Foo');
-      const children = dev.module.root.children || [];
+      const children = dev.module.state.children || [];
       expect(folder.id).to.eql(children[0].id);
       expect(folder.props.id).to.eql(folder.id);
       expect(folder.props.folder.name).to.eql('Foo');
@@ -314,7 +314,7 @@ describe('Dev (DSL)', () => {
     it('kind: "harness.component"', () => {
       const dev = create(bus);
       dev.folder('Foo');
-      const children = dev.module.root.children || [];
+      const children = dev.module.state.children || [];
       expect(children[0].props?.data?.kind).to.eql('harness.folder');
     });
 
@@ -370,7 +370,7 @@ describe('Dev (DSL)', () => {
           dir.name('bear').name(' cat ');
           expect(dir.props.folder.name).to.eql('cat');
 
-          const children = dev.module.root.children || [];
+          const children = dev.module.state.children || [];
           expect(children[0].props?.treeview?.label).to.eql('cat');
         });
       });

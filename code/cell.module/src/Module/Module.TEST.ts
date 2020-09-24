@@ -29,13 +29,13 @@ describe('Module', () => {
   describe('create', () => {
     it('create', () => {
       const module = create();
-      const root = module.root;
+      const state = module.state;
 
-      expect(Module.Identity.hasNamespace(root.id)).to.eql(true);
-      expect(Module.Identity.key(root.id)).to.eql('module');
+      expect(Module.Identity.hasNamespace(state.id)).to.eql(true);
+      expect(Module.Identity.key(state.id)).to.eql('module');
 
-      expect(root.props?.kind).to.eql('Module');
-      expect(root.props?.data).to.eql(undefined);
+      expect(state.props?.kind).to.eql('Module');
+      expect(state.props?.data).to.eql(undefined);
     });
 
     it('generates default id ("module")', () => {
@@ -129,7 +129,7 @@ describe('Module', () => {
       const parent = create({ root: 'parent' });
       const child = create({ root: 'child' });
 
-      expect(parent.root.children).to.eql(undefined);
+      expect(parent.state.children).to.eql(undefined);
       expect(parent.find((e) => e.id === child.id)).to.eql(undefined);
 
       const res = fire.register(child, parent.id);
@@ -139,7 +139,7 @@ describe('Module', () => {
       expect(res.module.id).to.eql(child.id);
 
       expect(parent.find((e) => e.id === child.id)).to.equal(child);
-      expect((parent.root.children || [])[0]).to.eql(child.root);
+      expect((parent.state.children || [])[0]).to.eql(child.state);
     });
 
     it('inserts child within sub-node of parent', () => {

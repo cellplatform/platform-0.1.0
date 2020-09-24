@@ -39,10 +39,12 @@ export function DevBuilder2(bus: B) {
   console.log('-------------------------------------------');
   console.log('module', module);
 
+  // module.change
+  // module.state
+
   // module.
   // module.ch
 
   Builder.chain<IDevModel, IDev>({ model: module, handlers });
-
   return { id: module.id };
 }

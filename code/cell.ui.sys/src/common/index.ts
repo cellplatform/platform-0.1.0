@@ -34,7 +34,7 @@ export { rx, time, defaultValue, id, dispose };
 import { ui } from '@platform/cell.ui';
 export { ui };
 
-import { Module, Builder } from '@platform/cell.module';
+import { Module, Builder } from '@platform/cell.module.view';
 export { Module, Builder };
 
 import { AppManifest, AppModel, AppWindowModel } from '@platform/cell.schema.sys';

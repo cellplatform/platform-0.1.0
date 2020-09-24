@@ -52,7 +52,7 @@ export type ITreeStateReadonly<T extends N, A extends E> = {
   readonly namespace: string;
   readonly parent?: string; // ID of parent within tree.
   readonly store: t.IStateObjectReadable<T>;
-  readonly root: T;
+  readonly state: T;
   readonly children: readonly ITreeState<T, A>[];
   readonly query: t.ITreeQuery<T>;
   readonly event: ITreeStateEvents<T, A>;
@@ -64,7 +64,9 @@ export type ITreeStateReadonly<T extends N, A extends E> = {
 /**
  * Add
  */
-export type TreeStateAdd = <T extends N = N>(args: TreeStateAddArgs<T>) => ITreeState<T>;
+export type TreeStateAdd = <T extends N = N>(
+  args: TreeStateAddArgs<T> | ITreeState<T>,
+) => ITreeState<T>;
 export type TreeStateAddArgs<T extends N = N> = {
   parent?: string;
   root: T | string | ITreeState<T>;

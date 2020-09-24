@@ -31,8 +31,8 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
    * (as opposed to content from within a "dev" module using the harness).
    */
   const renderHarness = (region: t.HarnessRegion, view: t.HarnessView, data?: O) => {
-    const root = harness.root.props?.data;
-    const target = root?.kind === 'harness.root' ? root.shell : undefined;
+    const state = harness.state.props?.data;
+    const target = state?.kind === 'harness.root' ? state.shell : undefined;
     if (target) {
       fire.render({
         module: harness.id,

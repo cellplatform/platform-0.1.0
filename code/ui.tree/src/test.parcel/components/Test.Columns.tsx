@@ -104,16 +104,16 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Properties]
    */
 
-  public get rootNav() {
+  public get nav() {
     return this.tree.state.props?.treeview?.nav || {};
   }
 
   public get current() {
-    return this.rootNav.current;
+    return this.nav.current;
   }
 
   public get selected() {
-    return this.rootNav.selected;
+    return this.nav.selected;
   }
 
   public get total() {
