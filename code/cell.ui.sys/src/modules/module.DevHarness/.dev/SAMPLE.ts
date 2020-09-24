@@ -23,6 +23,6 @@ export async function sampleInit(bus: t.EventBus) {
 
   fire({ type: 'Harness/add', payload: { module: sample.id } });
 
-  const node = Shell.builder({ bus, module: one });
-  console.log('node', node);
+  // const node = Shell.builder({ bus, module: one });
+  // console.log('node', node);
 }
