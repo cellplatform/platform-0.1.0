@@ -119,10 +119,6 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     return this as t.ITreeStateReadonly<T, A>;
   }
 
-  public get store() {
-    return this._store;
-  }
-
   public get state() {
     return this._store.state;
   }

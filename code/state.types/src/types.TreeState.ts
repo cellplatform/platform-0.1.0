@@ -51,7 +51,6 @@ export type ITreeStateReadonly<T extends N, A extends E> = {
   readonly key: string;
   readonly namespace: string;
   readonly parent?: string; // ID of parent within tree.
-  readonly store: t.IStateObjectReadable<T>;
   readonly state: T;
   readonly children: readonly ITreeState<T, A>[];
   readonly query: t.ITreeQuery<T>;

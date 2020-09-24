@@ -24,7 +24,7 @@ export type ViewModule = {
   register: t.Module['register'];
   Identity: t.Module['Identity'];
   Query: t.Module['Query'];
-  isModuleEvent: t.Module['isModuleEvent'];
+  is: t.Module['is'];
   filter: t.Module['filter'];
 
   create<T extends P>(args?: ViewModuleArgs<T>): t.IModule<T>;
