@@ -4,6 +4,7 @@ import { t } from '../common';
 import { OneModule } from './module.One';
 import { ThreeModule } from './module.Three';
 import { TwoModule } from './module.Two';
+import { DevBuilder2 } from '../language/DevBuilder2';
 
 /**
  * Simulate module insertion into DevHarness.
@@ -25,4 +26,7 @@ export async function sampleInit(bus: t.EventBus) {
 
   // const node = Shell.builder({ bus, module: one });
   // console.log('node', node);
+
+  const f = DevBuilder2(bus);
+  fire({ type: 'Harness/add', payload: { module: f.id } });
 }

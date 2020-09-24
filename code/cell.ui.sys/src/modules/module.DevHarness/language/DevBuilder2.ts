@@ -1,4 +1,4 @@
-import { t, Module, DEFAULT, R } from '../common';
+import { t, Module, Builder, DEFAULT, R } from '../common';
 import { DevBuilderComponent } from './DevBuilder.Component';
 import { DevBuilderFolder } from './DevBuilder.Folder';
 
@@ -8,6 +8,12 @@ export type IDevModel = {
 
 export type IDev = {
   name(value: string): IDev;
+};
+
+const handlers: t.BuilderHandlers<IDevModel, IDev> = {
+  name(args) {
+    //
+  },
 };
 
 type B = t.EventBus;
@@ -24,7 +30,7 @@ export function DevBuilder2(bus: B) {
     root: {
       id: '',
       props: {
-        treeview: { label: DEFAULT.UNTITLED },
+        treeview: { label: 'foo' || DEFAULT.UNTITLED },
         data: { kind: 'harness.root', shell: '' },
       },
     },
@@ -32,4 +38,11 @@ export function DevBuilder2(bus: B) {
 
   console.log('-------------------------------------------');
   console.log('module', module);
+
+  // module.
+  // module.ch
+
+  Builder.chain<IDevModel, IDev>({ model: module, handlers });
+
+  return { id: module.id };
 }
