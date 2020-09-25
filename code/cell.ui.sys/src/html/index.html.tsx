@@ -7,7 +7,7 @@ import { t } from '../common';
 import { context } from '../context';
 import { render } from './render';
 
-import * as HARNESS from '../modules/module.DevHarness/.dev/SAMPLE';
+import { SAMPLE } from './SAMPLE';
 
 (async () => {
   const win = (window as unknown) as t.ITopWindow;
@@ -24,6 +24,6 @@ import * as HARNESS from '../modules/module.DevHarness/.dev/SAMPLE';
    * - temp / remove
    */
   if (entry === 'entry:harness') {
-    HARNESS.sampleInit(ctx.bus.type());
+    SAMPLE(ctx.bus.type());
   }
 })();

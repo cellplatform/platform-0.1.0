@@ -1,6 +1,5 @@
 import { SampleModule } from '../../../components.dev/module.Sample';
-import { Shell } from '../../module.Shell';
-import { time, t, Module, id } from '../common';
+import { t } from '../common';
 import { OneModule } from './module.One';
 import { ThreeModule } from './module.Three';
 import { TwoModule } from './module.Two';
@@ -8,7 +7,7 @@ import { TwoModule } from './module.Two';
 /**
  * Simulate module insertion into DevHarness.
  */
-export async function sampleInit(bus: t.EventBus) {
+export async function SAMPLE(bus: t.EventBus) {
   const fire = bus.type<t.HarnessEvent>().fire;
 
   const sample = SampleModule.init(bus);
@@ -22,20 +21,4 @@ export async function sampleInit(bus: t.EventBus) {
   fire({ type: 'Harness/add', payload: { module: three.id } });
 
   fire({ type: 'Harness/add', payload: { module: sample.id } });
-
-  /**
-   * TEMP
-   */
-  const shell = Shell.builder(bus);
-
-  shell.name('MyName');
-  shell.name('MyName');
-  shell.name('MyName');
-  shell.name('MyName');
-  shell.name('MyName');
-  shell.name('MyName');
-
-  time.delay(800, () => {
-    shell.name('hello');
-  });
 }
