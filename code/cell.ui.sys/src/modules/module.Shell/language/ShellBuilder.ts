@@ -22,6 +22,10 @@ export function builder(bus: t.EventBus, options: { shell?: t.IModule } = {}) {
   const change = module.change;
   const getState = () => module.state;
   const builder = Builder.chain<N, t.IShellBuilder>({ getState, change, handlers });
+
+  console.log('shell (module):', module.id);
+
+  // Finish up.
   return builder;
 }
 
