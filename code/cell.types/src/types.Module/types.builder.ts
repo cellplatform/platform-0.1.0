@@ -110,7 +110,7 @@ export type BuilderListByName<T, N = string> = (name: N, index?: BuilderIndexPar
  */
 export type BuilderMapDef = {
   kind: 'map';
-  path: string; // JsonPath to location in model.
+  path?: string; // JsonPath to location in model.
   handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
   default?: (args: { path: string }) => O;
 };
@@ -125,7 +125,6 @@ export type Builder = {
 
 export type BuilderChain<A extends O> = A;
 export type BuilderChainFactory = <M extends O, A extends O>(args: {
-  // model: BuilderModel<M>;
   getState: () => M;
   change: BuilderModelChange<M>;
   handlers: BuilderHandlers<M, A>;

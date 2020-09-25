@@ -11,11 +11,11 @@ type K = t.BuilderMethodKind;
  * A generic (strongly typed) object builder in the form of a chained ("fluent") API.
  */
 export function chain<M extends O, A extends O>(args: {
-  // model: t.BuilderModel<M>;
   getState: () => M;
   change: t.BuilderModelChange<M>;
-
   handlers: t.BuilderHandlers<M, A>;
+
+  // Options.
   path?: string;
   index?: number;
   parent?: B;
@@ -25,7 +25,6 @@ export function chain<M extends O, A extends O>(args: {
   const { handlers, getState, change, parent, kind = 'ROOT' } = args;
   const index = args.index === undefined || args.index < 0 ? -1 : args.index;
   const cache = args.cache || MemoryCache.create();
-
   const builder = {};
 
   const formatPath = (path: string) => {
@@ -145,25 +144,32 @@ export function chain<M extends O, A extends O>(args: {
           if (typeof field !== 'string' || !field.trim()) {
             throw new Error(`The map "key" not given.`);
           }
-          const model = { state: getState(), change };
-          const map = jpath.query(model.state, def.path)[0];
-          if (!map) {
-            throw new Error(`An object (map) does not exist at the path '${def.path}'.`);
-          }
 
-          if (!map[field]) {
-            model.change((draft) => {
-              jpath.apply(draft, def.path, (value) => {
-                value[field] = typeof def.default === 'function' ? def.default({ path }) : {};
-                return value;
+          const path = (def.path || '').trim();
+
+          if (path) {
+            // Ensure {map} object if a target path was provided.
+            const model = { state: getState(), change };
+            const map = jpath.query(model.state, path)[0];
+            if (!map) {
+              throw new Error(`An object (map) does not exist at the path '${path}'.`);
+            }
+
+            if (!map[field]) {
+              model.change((draft) => {
+                jpath.apply(draft, path, (value) => {
+                  value[field] =
+                    typeof def.default === 'function' ? def.default({ path: fieldPath }) : {};
+                  return value;
+                });
               });
-            });
+            }
           }
 
           const cacheKey = `${def.kind}/${key}.${field}]`;
-          const path = `${def.path}.${field}`;
+          const fieldPath = `${path}.${field}`;
 
-          return getOrCreateBuilder(def.kind, cacheKey, path, def.handlers); // <== RECURSION 🌳
+          return getOrCreateBuilder(def.kind, cacheKey, fieldPath, def.handlers); // <== RECURSION 🌳
         };
       }
     });

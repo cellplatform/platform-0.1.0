@@ -24,6 +24,7 @@ type IFoo = {
   listByIndex: t.BuilderListByIndex<IItem>;
   listByName: t.BuilderListByName<IItem>;
   map: t.BuilderMap<IItem, 'foo' | 'bar'>;
+  memoryMap: t.BuilderMap<IFoo>;
 };
 
 type IBar = {
@@ -78,6 +79,11 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
     path: '$.foo.map',
     handlers: () => itemHandlers,
     default: (args) => ({ name: 'hello', child: { count: 0 }, children: [] }),
+  },
+  memoryMap: {
+    kind: 'map',
+    path: '',
+    handlers: () => fooHandlers,
   },
 };
 
@@ -172,7 +178,7 @@ const itemChildHandlers: t.BuilderHandlers<IModel, IItemChild> = {
   parent: (args) => args.parent,
 };
 
-const testModel = () => {
+const create = () => {
   const model = StateObject.create<IModel>({ name: '', foo: { list: [], map: {} } });
   const change = model.change;
   const getState = () => model.state;
@@ -180,15 +186,15 @@ const testModel = () => {
   return { model, builder };
 };
 
-describe('Builder', () => {
+describe.only('Builder', () => {
   describe('root', () => {
     it('returns builder', () => {
-      const { builder } = testModel();
+      const { builder } = create();
       expect(builder.name('foo')).to.equal(builder);
     });
 
     it('changes property on model', () => {
-      const { model, builder } = testModel();
+      const { model, builder } = create();
       expect(model.state.name).to.eql('');
 
       builder.name('foo').name('bar');
@@ -198,7 +204,7 @@ describe('Builder', () => {
 
   describe('kind: object', () => {
     it('updates model', () => {
-      const { builder, model } = testModel();
+      const { builder, model } = create();
       const bar = builder.bar;
       expect(typeof bar).to.eql('object');
 
@@ -210,7 +216,7 @@ describe('Builder', () => {
     });
 
     it('chains into child then [ends] stepping up to parent', () => {
-      const { builder, model } = testModel();
+      const { builder, model } = create();
       builder.bar
         // Step into child "bar"
         .count(123)
@@ -223,7 +229,7 @@ describe('Builder', () => {
     });
 
     it('chains deeply into multi-child levels', () => {
-      const { builder, model } = testModel();
+      const { builder, model } = create();
 
       builder.bar
         // Step down into Level-1
@@ -243,7 +249,7 @@ describe('Builder', () => {
 
   describe('kind: list:byIndex', () => {
     it('creates with no index (insert at end)', () => {
-      const { builder } = testModel();
+      const { builder } = create();
 
       const res1 = builder.listByIndex();
       const res2 = builder.listByIndex(0).name('foo');
@@ -254,7 +260,7 @@ describe('Builder', () => {
     });
 
     it('writes to model', () => {
-      const { builder, model } = testModel();
+      const { builder, model } = create();
 
       builder.listByIndex().name('foo').parent().listByIndex().name('bar');
       builder.listByIndex(5).name('baz');
@@ -266,7 +272,7 @@ describe('Builder', () => {
     });
 
     it('indexed grandchild (via field)', () => {
-      const { builder, model } = testModel();
+      const { builder, model } = create();
       const child = builder.listByIndex(1).name('foo');
       child.name('foo');
 
@@ -280,7 +286,7 @@ describe('Builder', () => {
     });
 
     it('indexed grandchild (via method)', () => {
-      const { builder, model } = testModel();
+      const { builder, model } = create();
       const child = builder.listByIndex(1).name('foo');
       child.name('foo');
 
@@ -294,7 +300,7 @@ describe('Builder', () => {
 
   describe('kind: list:byName', () => {
     it('assigns "name" and adds item to end of list (default)', () => {
-      const { builder, model } = testModel();
+      const { builder, model } = create();
       const getList = () => model.state.foo.list;
 
       const child = builder.listByName('one');
@@ -308,7 +314,7 @@ describe('Builder', () => {
     });
 
     it('retrieves existing named item', () => {
-      const { builder, model } = testModel();
+      const { builder, model } = create();
       const getList = () => model.state.foo.list;
 
       builder.listByName('one');
@@ -323,7 +329,7 @@ describe('Builder', () => {
     });
 
     it('specify index: "START"', () => {
-      const { builder, model } = testModel();
+      const { builder, model } = create();
       const getList = () => model.state.foo.list;
 
       builder.listByName('one');
@@ -342,7 +348,7 @@ describe('Builder', () => {
     });
 
     it('specify index: number', () => {
-      const { builder, model } = testModel();
+      const { builder, model } = create();
       const getList = () => model.state.foo.list;
 
       builder.listByName('one');
@@ -352,7 +358,7 @@ describe('Builder', () => {
     });
 
     it('specify index: function', () => {
-      const { builder, model } = testModel();
+      const { builder, model } = create();
       const getList = () => model.state.foo.list;
 
       builder.listByName('one');
@@ -374,13 +380,13 @@ describe('Builder', () => {
     });
 
     it('throw: "name" not given', () => {
-      const { builder } = testModel();
+      const { builder } = create();
       const fn = () => builder.listByName(undefined as any);
       expect(fn).to.throw(/not given/);
     });
 
     it('throw: "name" empty string', () => {
-      const { builder } = testModel();
+      const { builder } = create();
       const fn = () => builder.listByName('   ');
       expect(fn).to.throw(/not given/);
     });
@@ -388,7 +394,7 @@ describe('Builder', () => {
 
   describe('kind: map', () => {
     it('assigns new child at "key" (generated default {object})', () => {
-      const { builder, model } = testModel();
+      const { builder, model } = create();
       const getMap = () => model.state.foo.map;
 
       const DEFAULT = { name: 'hello', child: { count: 0 }, children: [] };
@@ -401,20 +407,31 @@ describe('Builder', () => {
     });
 
     it('reuses existing child at "key"', () => {
-      const { builder } = testModel();
+      const { builder } = create();
       const child1 = builder.map('foo');
       const child2 = builder.map('foo');
       expect(child1).to.equal(child2);
     });
 
+    it.only('memory map (does not write to underlying model)', () => {
+      const { builder, model } = create();
+      // const getMap = () => model.state.foo.map;
+
+      const child = builder.memoryMap('foo');
+
+      /**
+       * TODO 🐷
+       */
+    });
+
     it('throw: "key" not given', () => {
-      const { builder } = testModel();
+      const { builder } = create();
       const fn = () => builder.map(undefined as any);
       expect(fn).to.throw(/not given/);
     });
 
     it('throw: "key" empty string', () => {
-      const { builder } = testModel();
+      const { builder } = create();
       const fn = () => builder.map('   ' as any);
       expect(fn).to.throw(/not given/);
     });
