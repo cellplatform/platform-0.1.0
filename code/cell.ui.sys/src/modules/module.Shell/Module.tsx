@@ -1,11 +1,11 @@
 /* eslint-disable react/display-name */
 import * as React from 'react';
 
-import { Module, t, id } from './common';
+import { Module, t, id, constants } from './common';
 import { Layout } from './components/Body';
 import { Window } from './components/Window';
 import { strategy } from './strategy';
-import { ShellBuilder } from './language';
+import { builder } from './language';
 
 type P = t.ShellProps;
 
@@ -17,11 +17,12 @@ export const Shell: t.Shell = {
    * Shell module initialization.
    */
   module(bus, options: t.ShellOptions = {}) {
-    const shell = Module.create<P>({ bus, root: `${id.shortid()}.shell` });
+    const kind = constants.KIND;
+    const shell = Module.create<P>({ bus, kind, root: `${id.shortid()}.shell` });
     strategy({ ...options, shell, bus });
     return shell;
   },
 
   // TEMP 🐷
-  builder: ShellBuilder.builder,
+  builder,
 };

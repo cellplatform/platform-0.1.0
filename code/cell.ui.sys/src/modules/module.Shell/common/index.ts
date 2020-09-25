@@ -1,4 +1,5 @@
 export * from '../../../common';
 
 import * as t from './types';
-export { t };
+import * as constants from './constants';
+export { t, constants };
