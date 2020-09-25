@@ -29,6 +29,11 @@ export async function sampleInit(bus: t.EventBus) {
   const shell = Shell.builder(bus);
 
   shell.name('MyName');
+  shell.name('MyName');
+  shell.name('MyName');
+  shell.name('MyName');
+  shell.name('MyName');
+  shell.name('MyName');
 
   time.delay(800, () => {
     shell.name('hello');

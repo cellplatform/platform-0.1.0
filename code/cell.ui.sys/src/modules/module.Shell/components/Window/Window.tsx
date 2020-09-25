@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { Subject, merge } from 'rxjs';
-import { takeUntil, debounceTime } from 'rxjs/operators';
+import { merge, Subject } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, events, t, ui, Module } from '../../common';
-import { WindowTitlebar, IWindowTitlebarProps } from '../primitives';
+import { css, CssValue, events as globalEvents, Module, t, ui } from '../../common';
 import { Shell } from '../../Module';
-
 import { Layout } from '../Body';
+import { IWindowTitlebarProps, WindowTitlebar } from '../primitives';
 
 type P = t.ShellProps;
 
@@ -28,15 +27,17 @@ export class Window extends React.PureComponent<IWindowProps> {
    * [Lifecycle]
    */
   public componentDidMount() {
-    const bus = this.context.bus;
+    const ctx = this.context;
+    // const bus = this.context.bus;
+    const bus = ctx.bus.type<t.ShellEvent>();
 
     // Construct module.
-    this.module = this.props.module || Shell.module(bus, { acceptNakedRegistrations: true });
+    this.module = this.props.module || Shell.module(ctx.bus, { acceptNakedRegistrations: true });
 
     // Bubble window resize.
-    events.resize$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
+    globalEvents.resize$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
       bus.fire({
-        type: 'UI:DOM/window/resize',
+        type: 'Shell/window/resize',
         payload: {
           width: window.innerWidth,
           height: window.innerHeight,
@@ -45,17 +46,17 @@ export class Window extends React.PureComponent<IWindowProps> {
     });
 
     const match: t.ModuleFilterEvent = (e) => e.module === this.module.id;
-    const shellEvents = Module.events<P>(
-      Module.filter(bus.event$, match),
+    const events = Module.events<P>(
+      Module.filter(ctx.bus.event$, match),
       merge(this.unmounted$, this.module.dispose$),
     );
 
     // Redraw on [Shell] module changed.
-    shellEvents.changed$.pipe(debounceTime(10)).subscribe((e) => this.forceUpdate());
+    events.changed$.pipe(debounceTime(10)).subscribe(() => this.forceUpdate());
 
     // Alert listener.
     if (this.props.onLoaded) {
-      this.props.onLoaded(bus);
+      this.props.onLoaded(ctx.bus);
     }
 
     // NB: Redraw causes the newly created [module] to be rendered.
