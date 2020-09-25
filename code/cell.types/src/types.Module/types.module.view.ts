@@ -33,7 +33,7 @@ export type ViewModule = {
 
   events<T extends P>(
     subject: t.Observable<t.Event>,
-    until$?: t.Observable<any>,
+    until$?: t.Observable<any> | t.Observable<any>[],
   ): t.IViewModuleEvents<T>;
 };
 

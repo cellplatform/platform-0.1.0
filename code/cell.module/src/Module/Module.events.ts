@@ -13,11 +13,13 @@ const identity = TreeState.identity;
 
 export function create<T extends P = t.IModulePropsAny>(
   event$: Observable<t.Event>,
-  until$?: Observable<any>,
+  until$?: Observable<any> | Observable<any>[],
 ): t.IModuleEvents<T> {
   const dispose$ = new Subject<void>();
   if (until$) {
-    until$.subscribe(() => dispose$.next());
+    (Array.isArray(until$) ? until$ : [until$]).forEach(($) => {
+      $.subscribe(() => dispose$.next());
+    });
   }
 
   const raw$ = event$.pipe(takeUntil(dispose$));

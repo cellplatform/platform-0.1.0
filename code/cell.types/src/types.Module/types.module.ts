@@ -27,7 +27,10 @@ export type Module = {
 
   fire<T extends P>(bus: B): IModuleFire<T>;
 
-  events<T extends P>(subject: t.Observable<t.Event>, until$?: t.Observable<any>): IModuleEvents<T>;
+  events<T extends P>(
+    subject: t.Observable<t.Event>,
+    until$?: t.Observable<any> | t.Observable<any>[],
+  ): IModuleEvents<T>;
 
   filter<T extends E = E>(
     event$: t.Observable<t.Event>,

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { merge, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
 import { css, CssValue, events as globalEvents, Module, t, ui } from '../../common';
@@ -42,10 +42,10 @@ export class Window extends React.PureComponent<IWindowProps> {
     });
 
     const match: t.ModuleFilterEvent = (e) => e.module === this.module.id;
-    const events = Module.events<P>(
-      Module.filter(ctx.bus.event$, match),
-      merge(this.unmounted$, this.module.dispose$),
-    );
+    const events = Module.events<P>(Module.filter(ctx.bus.event$, match), [
+      this.unmounted$,
+      this.module.dispose$,
+    ]);
 
     // Redraw on [Shell] module changed.
     events.changed$.pipe(debounceTime(10)).subscribe(() => this.forceUpdate());

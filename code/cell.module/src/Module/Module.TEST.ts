@@ -147,6 +147,25 @@ describe('Module', () => {
       fire.request('foo');
       expect(count).to.eql(0);
     });
+
+    it('[until$] array of observables', () => {
+      const stop1 = new Subject();
+      const stop2 = new Subject();
+      const events = Module.events(bus.event$, [stop1, stop2]);
+
+      let count = 0;
+      events.$.subscribe((e) => count++);
+
+      fire.request('foo'); // NB: Ensure events are firing within test.
+      fire.request('foo');
+      expect(count).to.eql(2);
+
+      count = 0;
+      stop2.next();
+
+      fire.request('foo');
+      expect(count).to.eql(0);
+    });
   });
 
   describe('event: "Module/register"', () => {
