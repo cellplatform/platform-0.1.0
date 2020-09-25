@@ -28,7 +28,6 @@ export class Window extends React.PureComponent<IWindowProps> {
    */
   public componentDidMount() {
     const ctx = this.context;
-    // const bus = this.context.bus;
     const bus = ctx.bus.type<t.ShellEvent>();
 
     // Construct module.
@@ -38,10 +37,7 @@ export class Window extends React.PureComponent<IWindowProps> {
     globalEvents.resize$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
       bus.fire({
         type: 'Shell/window/resize',
-        payload: {
-          width: window.innerWidth,
-          height: window.innerHeight,
-        },
+        payload: { width: window.innerWidth, height: window.innerHeight },
       });
     });
 
