@@ -9,13 +9,18 @@ type K = t.BuilderMethodKind;
 
 /**
  * A generic (strongly typed) object builder in the form of a chained ("fluent") API.
+ * Types:
+ *    <M> Model
+ *    <A> API
+ *    <C> Context (optional)
  */
-export function chain<M extends O, A extends O>(args: {
+export function chain<M extends O, A extends O, C extends O = O>(args: {
+  handlers: t.BuilderHandlers<M, A, C>;
   state: () => M;
   change: t.BuilderModelChange<M>;
-  handlers: t.BuilderHandlers<M, A>;
+  context?: () => C;
 
-  // Options.
+  // [Internal]
   path?: string;
   index?: number;
   parent?: B;
@@ -35,7 +40,7 @@ export function chain<M extends O, A extends O>(args: {
     }
   };
 
-  const getModel = () => ({ state: args.state(), change });
+  const getModel = (): t.BuilderModel<M> => ({ state: args.state(), change });
 
   const getOrCreateBuilder = (
     kind: t.BuilderChild['kind'],
@@ -66,21 +71,21 @@ export function chain<M extends O, A extends O>(args: {
   // Assign chained method modifiers.
   Object.keys(handlers)
     .filter((key) => typeof handlers[key] === 'function')
-    .map((key) => ({ key, handler: handlers[key] as t.BuilderHandler<M> }))
+    .map((key) => ({ key, handler: handlers[key] as t.BuilderHandler<M, C> }))
     .forEach(({ key, handler }) => {
       builder[key] = (...params: any[]) => {
-        const res = handler({
+        const handlerArgs: t.BuilderHandlerArgs<M, C> = {
           kind,
-          path: `${args.path || '$'}`,
           key,
           index,
           params,
           parent,
-          isList: is.list(kind),
-          isMap: is.list(kind),
-          state: args.state(),
-          change,
-        });
+          context: (typeof args.context === 'function' ? args.context() || {} : {}) as C,
+          path: args.path === undefined ? '$' : `${args.path || '$'}`,
+          model: getModel(),
+          is: { list: is.list(kind), map: is.map(kind) },
+        };
+        const res = handler(handlerArgs);
         return res || builder;
       };
     });

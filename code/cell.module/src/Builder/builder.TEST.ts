@@ -3,6 +3,8 @@ import { Builder } from '.';
 import { StateObject } from '@platform/state';
 import * as jpath from 'jsonpath';
 
+type O = Record<string, unknown>;
+
 /**
  * Data model types (State).
  */
@@ -63,7 +65,7 @@ type IItemChild = {
  */
 const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
   name(args) {
-    args.change((draft) => (draft.name = args.params[0]));
+    args.model.change((draft) => (draft.name = args.params[0]));
   },
   bar: {
     kind: 'object',
@@ -105,7 +107,7 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
 
 const barHandlers: t.BuilderHandlers<IModel, IBar> = {
   count(args) {
-    args.change((draft) => {
+    args.model.change((draft) => {
       type T = NonNullable<IModel['childObject']>;
 
       if (!jpath.query(draft, args.path)[0]) {
@@ -131,7 +133,7 @@ const barHandlers: t.BuilderHandlers<IModel, IBar> = {
 const bazHandlers: t.BuilderHandlers<IModel, IBaz> = {
   increment(args) {
     type T = NonNullable<IModel['childObject']>;
-    args.change((draft) => {
+    args.model.change((draft) => {
       jpath.apply(draft, args.path, (value: T) => {
         value.count++;
         return value;
@@ -143,9 +145,9 @@ const bazHandlers: t.BuilderHandlers<IModel, IBaz> = {
 
 const itemHandlers: t.BuilderHandlers<IModel, IItem> = {
   name(args) {
-    args.change((draft) => {
+    args.model.change((draft) => {
       jpath.apply(draft, args.path, (value) => {
-        const path = args.isList ? `${args.path}[${args.index}]` : args.path;
+        const path = args.is.list ? `${args.path}[${args.index}]` : args.path;
 
         jpath.apply(draft, path, (value: IModelItem) => {
           value.name = args.params[0];
@@ -174,17 +176,17 @@ const itemHandlers: t.BuilderHandlers<IModel, IItem> = {
 
 const itemChildHandlers: t.BuilderHandlers<IModel, IItemChild> = {
   length(args) {
-    args.change((draft) => {
+    args.model.change((draft) => {
       const { index } = args;
 
-      if (args.isList) {
+      if (args.is.list) {
         const list = jpath.query(draft, args.path)[0];
         if (!list[index]) {
           list[index] = { count: 0 };
         }
       }
 
-      const path = args.isList ? `${args.path}[${index}]` : args.path;
+      const path = args.is.list ? `${args.path}[${index}]` : args.path;
       jpath.apply(draft, path, (value: IModelItemChild) => {
         value.count = args.params[0];
         return value;
@@ -204,8 +206,8 @@ const create = () => {
   return { model, builder };
 };
 
-describe.only('Builder', () => {
-  describe('root', () => {
+describe('Builder', () => {
+  describe('base', () => {
     it('returns builder', () => {
       const { builder } = create();
       expect(builder.name('foo')).to.equal(builder);
@@ -220,7 +222,51 @@ describe.only('Builder', () => {
     });
   });
 
-  describe('kind: object', () => {
+  describe('handler: args/context', () => {
+    type IModel = { name?: string };
+    type IFoo = { name(value: string): IFoo };
+    type IContext = { foo: number };
+
+    it('passes args (no context)', () => {
+      let args: t.BuilderHandlerArgs<IModel> | undefined;
+      const model = StateObject.create<IModel>({});
+      const builder = Builder.chain<IModel, IFoo>({
+        state: () => model.state,
+        change: model.change,
+        handlers: {
+          name: (e) => (args = e),
+        },
+      });
+      builder.name('foo');
+
+      expect(args?.kind).to.eql('ROOT');
+      expect(args?.is.list).to.eql(false);
+      expect(args?.is.map).to.eql(false);
+      expect(args?.model.state).to.eql(model.state);
+      expect(typeof args?.model.change).to.eql('function');
+      expect(args?.path).to.eql('$');
+      expect(args?.index).to.eql(-1);
+      expect(args?.key).to.eql('name');
+      expect(args?.context).to.eql({}); // NB: no "context" factory provided, empty object returned.
+    });
+
+    it('args (with context)', () => {
+      let args: t.BuilderHandlerArgs<IModel, IContext> | undefined;
+      const model = StateObject.create<IModel>({});
+      const builder = Builder.chain<IModel, IFoo, IContext>({
+        state: () => model.state,
+        change: model.change,
+        context: () => ({ foo: 123 }),
+        handlers: {
+          name: (e) => (args = e),
+        },
+      });
+      builder.name('foo');
+      expect(args?.context.foo).to.eql(123);
+    });
+  });
+
+  describe('kind: "object"', () => {
     it('updates model', () => {
       const { builder, model } = create();
       const bar = builder.bar;
@@ -265,7 +311,7 @@ describe.only('Builder', () => {
     });
   });
 
-  describe('kind: list:byIndex', () => {
+  describe('kind: "list:byIndex"', () => {
     it('creates with no index (insert at end)', () => {
       const { builder } = create();
 
@@ -324,7 +370,7 @@ describe.only('Builder', () => {
     });
   });
 
-  describe('kind: list:byName', () => {
+  describe('kind: "list:byName"', () => {
     it('assigns "name" and adds item to end of list (default)', () => {
       const { builder, model } = create();
       const getList = () => model.state.foo.list;
@@ -418,7 +464,7 @@ describe.only('Builder', () => {
     });
   });
 
-  describe('kind: map', () => {
+  describe('kind: "map"', () => {
     it('assigns new child at "key" (generated default {object})', () => {
       const { builder, model } = create();
       const getMap = () => model.state.foo.map;

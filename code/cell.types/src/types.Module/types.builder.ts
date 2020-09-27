@@ -2,11 +2,23 @@ type O = Record<string, unknown>;
 type BuilderMethodsAny = BuilderHandlers<any, any>;
 
 export type BuilderNamedItem = { name: string };
-
 export type BuilderIndexParam = number | BuilderIndexEdge | BuilderIndexCalc;
 export type BuilderIndexEdge = 'START' | 'END';
 export type BuilderIndexCalc = (args: BuilderIndexCalcArgs) => number;
 export type BuilderIndexCalcArgs = { total: number; list: any[] };
+
+/**
+ * Builder
+ */
+export type Builder = { chain: BuilderChainFactory };
+
+export type BuilderChain<A extends O> = A;
+export type BuilderChainFactory = <M extends O, A extends O, C extends O = O>(args: {
+  handlers: BuilderHandlers<M, A, C>;
+  change: BuilderModelChange<M>;
+  state: () => M;
+  context?: () => C;
+}) => BuilderChain<A>;
 
 /**
  * Model/State
@@ -14,30 +26,29 @@ export type BuilderIndexCalcArgs = { total: number; list: any[] };
  *    This is a slimmed down version of an [IStateObjectWritable] type.
  */
 export type BuilderModel<M extends O> = {
-  state: M;
   change: BuilderModelChange<M>;
+  state: M;
 };
 export type BuilderModelChange<M extends O> = (fn: (draft: M) => void) => void;
 
 /**
  * API Handlers
  */
-export type BuilderHandlers<M extends O, A extends O> = {
-  [K in keyof A]: BuilderHandler<M> | BuilderChild;
+export type BuilderHandlers<M extends O, A extends O, C extends O = O> = {
+  [K in keyof A]: BuilderHandler<M, C> | BuilderChild;
 };
 
-export type BuilderHandler<M extends O> = (args: BuilderHandlerArgs<M>) => any;
-export type BuilderHandlerArgs<M extends O> = {
+export type BuilderHandler<M extends O, C extends O = O> = (args: BuilderHandlerArgs<M, C>) => any;
+export type BuilderHandlerArgs<M extends O, C extends O = O> = {
   kind: BuilderMethodKind;
-  state: M;
-  change: BuilderModelChange<M>;
-  path: string;
   key: string;
+  path: string;
   index: number; // NB: -1 if not relevant (ie. not related to an array-list).
   params: any[];
   parent?: BuilderChain<any>;
-  isList: boolean;
-  isMap: boolean;
+  is: { list: boolean; map: boolean };
+  model: BuilderModel<M>;
+  context: C;
 };
 export type BuilderMethodKind = 'ROOT' | BuilderChild['kind'];
 
@@ -115,17 +126,3 @@ export type BuilderMapDef = {
   default?: (args: { path: string }) => O;
 };
 export type BuilderMap<T, K = string, A extends O = O> = (key: K, args?: A) => T;
-
-/**
- * Builder
- */
-export type Builder = {
-  chain: BuilderChainFactory;
-};
-
-export type BuilderChain<A extends O> = A;
-export type BuilderChainFactory = <M extends O, A extends O>(args: {
-  state: () => M;
-  change: BuilderModelChange<M>;
-  handlers: BuilderHandlers<M, A>;
-}) => BuilderChain<A>;
