@@ -5,7 +5,7 @@ import { Module, t, id, constants } from './common';
 import { Layout } from './components/Body';
 import { Window } from './components/Window';
 import { strategy } from './strategy';
-import { builder } from './language';
+import { builder } from './builder';
 
 type P = t.ShellProps;
 

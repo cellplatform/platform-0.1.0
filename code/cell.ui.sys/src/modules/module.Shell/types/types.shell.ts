@@ -4,7 +4,6 @@ import { ILayoutProps } from '../components/Body';
 
 export type ShellView = 'Default' | 'Null' | '404';
 export type ShellRegion = 'Tree' | 'Main' | 'Sidebar';
-export type ShellData = { name: string };
 export type ShellProps = t.IViewModuleProps<ShellData, ShellView, ShellRegion>;
 export type ShellModule = t.IModule<ShellProps>;
 
@@ -23,3 +22,8 @@ export type ShellOptions = {
  * [Callbacks]
  */
 export type ShellLoadedCallbackHandler = (bus: t.EventBus) => void;
+
+/**
+ * Data (Model)
+ */
+export type ShellData = { name: string };

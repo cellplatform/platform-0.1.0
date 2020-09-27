@@ -24,8 +24,16 @@ type IFoo = {
   listByIndex: t.BuilderListByIndex<IItem>;
   listByName: t.BuilderListByName<IItem>;
   map: t.BuilderMap<IItem, 'foo' | 'bar'>;
-  memoryMap: t.BuilderMap<IFoo>;
+
+  memoryMap: t.BuilderMap<IMemory>;
+  memoryListByIndex: t.BuilderListByIndex<IMemory>;
+  memoryListByName: t.BuilderListByIndex<IMemory>;
 };
+
+type IMemory = {
+  name(value: string): IMemory;
+};
+type IMemoryArgs = {};
 
 type IBar = {
   count(value: number): IBar;
@@ -80,9 +88,17 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
     handlers: () => itemHandlers,
     default: (args) => ({ name: 'hello', child: { count: 0 }, children: [] }),
   },
+
   memoryMap: {
     kind: 'map',
-    path: '',
+    handlers: () => fooHandlers,
+  },
+  memoryListByIndex: {
+    kind: 'list:byIndex',
+    handlers: () => fooHandlers,
+  },
+  memoryListByName: {
+    kind: 'list:byName',
     handlers: () => fooHandlers,
   },
 };
@@ -180,9 +196,11 @@ const itemChildHandlers: t.BuilderHandlers<IModel, IItemChild> = {
 
 const create = () => {
   const model = StateObject.create<IModel>({ name: '', foo: { list: [], map: {} } });
-  const change = model.change;
-  const getState = () => model.state;
-  const builder = Builder.chain<IModel, IFoo>({ getState, change, handlers: fooHandlers });
+  const builder = Builder.chain<IModel, IFoo>({
+    state: () => model.state,
+    change: model.change,
+    handlers: fooHandlers,
+  });
   return { model, builder };
 };
 
@@ -295,6 +313,14 @@ describe.only('Builder', () => {
 
       const state = model.state;
       expect((state.foo.list[1].children || [])[0].count).to.eql(101);
+    });
+
+    it.skip('memory list (no model)', () => {
+      const { builder, model } = create();
+
+      const child = builder.memoryListByIndex();
+
+      console.log('child', child);
     });
   });
 
@@ -413,11 +439,11 @@ describe.only('Builder', () => {
       expect(child1).to.equal(child2);
     });
 
-    it.only('memory map (does not write to underlying model)', () => {
-      const { builder, model } = create();
+    it.skip('memory map (no model)', () => {
+      const root = create();
       // const getMap = () => model.state.foo.map;
 
-      const child = builder.memoryMap('foo');
+      const child = root.builder.memoryMap('foo');
 
       /**
        * TODO 🐷

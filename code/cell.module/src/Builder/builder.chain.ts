@@ -11,7 +11,7 @@ type K = t.BuilderMethodKind;
  * A generic (strongly typed) object builder in the form of a chained ("fluent") API.
  */
 export function chain<M extends O, A extends O>(args: {
-  getState: () => M;
+  state: () => M;
   change: t.BuilderModelChange<M>;
   handlers: t.BuilderHandlers<M, A>;
 
@@ -22,14 +22,20 @@ export function chain<M extends O, A extends O>(args: {
   cache?: IMemoryCache;
   kind?: t.BuilderMethodKind;
 }): t.BuilderChain<A> {
-  const { handlers, getState, change, parent, kind = 'ROOT' } = args;
+  const { handlers, change, parent, kind = 'ROOT' } = args;
   const index = args.index === undefined || args.index < 0 ? -1 : args.index;
   const cache = args.cache || MemoryCache.create();
   const builder = {};
 
-  const formatPath = (path: string) => {
-    return !is.pathRoot(path) && index !== -1 ? `${args.path}[${index}].${path}` : path;
+  const formatPath = (path?: string) => {
+    if (path === undefined) {
+      return '';
+    } else {
+      return !is.pathRoot(path) && index !== -1 ? `${args.path}[${index}].${path}` : path;
+    }
   };
+
+  const getModel = () => ({ state: args.state(), change });
 
   const getOrCreateBuilder = (
     kind: t.BuilderChild['kind'],
@@ -44,7 +50,7 @@ export function chain<M extends O, A extends O>(args: {
         cacheKey,
         chain<any, any>({
           kind,
-          getState,
+          state: args.state,
           change,
           path: formatPath(path),
           parent: builder,
@@ -72,7 +78,7 @@ export function chain<M extends O, A extends O>(args: {
           parent,
           isList: is.list(kind),
           isMap: is.list(kind),
-          state: getState(),
+          state: args.state(),
           change,
         });
         return res || builder;
@@ -104,8 +110,8 @@ export function chain<M extends O, A extends O>(args: {
        */
       if (def.kind === 'list:byIndex') {
         builder[key] = (input?: t.BuilderIndexParam) => {
-          const model = { state: getState(), change };
           const path = formatPath(def.path);
+          const model = getModel();
           const list = findListOrThrow(model, path);
           const index = deriveIndexFromList(list, input);
           ensureListDefault(model, def, path, index);
@@ -122,7 +128,7 @@ export function chain<M extends O, A extends O>(args: {
           if (typeof name !== 'string' || !name.trim()) {
             throw new Error(`Name of list item not given.`);
           }
-          const model = { state: getState(), change };
+          const model = getModel();
           const path = formatPath(def.path);
           const list = findListOrThrow(model, path);
           index = findListIndexByName(list, name, index);
@@ -149,7 +155,7 @@ export function chain<M extends O, A extends O>(args: {
 
           if (path) {
             // Ensure {map} object if a target path was provided.
-            const model = { state: getState(), change };
+            const model = getModel();
             const map = jpath.query(model.state, path)[0];
             if (!map) {
               throw new Error(`An object (map) does not exist at the path '${path}'.`);

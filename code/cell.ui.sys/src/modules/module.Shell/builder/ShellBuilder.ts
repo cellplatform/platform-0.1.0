@@ -20,8 +20,11 @@ export function builder(bus: t.EventBus, options: { shell?: t.IModule } = {}) {
 
   // Construct the builder API.
   const change = module.change;
-  const getState = () => module.state;
-  const builder = Builder.chain<N, t.IShellBuilder>({ getState, change, handlers });
+  const builder = Builder.chain<N, t.IShellBuilder>({
+    getState: () => module.state,
+    change,
+    handlers: rootHandlers,
+  });
 
   console.log('shell (module):', module.id);
 
@@ -32,7 +35,7 @@ export function builder(bus: t.EventBus, options: { shell?: t.IModule } = {}) {
 /**
  * API method handlers.
  */
-const handlers: t.BuilderHandlers<N, t.IShellBuilder> = {
+const rootHandlers: t.BuilderHandlers<N, t.IShellBuilder> = {
   name(args) {
     args.change((draft) => {
       const props = draft.props || (draft.props = {});
@@ -40,4 +43,13 @@ const handlers: t.BuilderHandlers<N, t.IShellBuilder> = {
       data.name = (args.params[0] || '').trim();
     });
   },
+
+  module: {
+    kind: 'list:byName',
+    path: '$.modules',
+    handlers: () => moduleHandlers,
+    default: () => ({}),
+  },
 };
+
+const moduleHandlers: t.BuilderHandlers<N, t.IShellBuilderModule> = {};

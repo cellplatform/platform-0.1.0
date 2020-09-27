@@ -73,7 +73,7 @@ export type BuilderListDef = BuilderListByIndexDef | BuilderListByNameDef;
  */
 export type BuilderListByIndexDef = {
   kind: 'list:byIndex';
-  path: string; // JsonPath to location in model.
+  path?: string; // JsonPath to location in model.
   handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
   default?: (args: { path: string }) => O;
 };
@@ -98,7 +98,7 @@ export type BuilderListByIndex<T> = (index?: BuilderIndexParam) => T;
  */
 export type BuilderListByNameDef = {
   kind: 'list:byName';
-  path: string; // JsonPath to location in model.
+  path?: string; // JsonPath to location in model.
   handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
   default?: (args: { path: string }) => O;
 };
@@ -114,7 +114,7 @@ export type BuilderMapDef = {
   handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
   default?: (args: { path: string }) => O;
 };
-export type BuilderMap<T, K = string> = (key: K) => T;
+export type BuilderMap<T, K = string, A extends O = O> = (key: K, args?: A) => T;
 
 /**
  * Builder
@@ -125,7 +125,7 @@ export type Builder = {
 
 export type BuilderChain<A extends O> = A;
 export type BuilderChainFactory = <M extends O, A extends O>(args: {
-  getState: () => M;
+  state: () => M;
   change: BuilderModelChange<M>;
   handlers: BuilderHandlers<M, A>;
 }) => BuilderChain<A>;
