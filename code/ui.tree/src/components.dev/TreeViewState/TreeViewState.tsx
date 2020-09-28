@@ -190,7 +190,7 @@ export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITre
         <div {...styles.left}>
           {this.renderTextInputButton({
             placeholder: 'label',
-            value: this.store.root.props?.treeview?.label,
+            value: this.store.state.props?.treeview?.label,
             onChange: this.onLabelChange,
           })}
         </div>

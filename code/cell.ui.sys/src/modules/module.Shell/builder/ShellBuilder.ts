@@ -1,0 +1,53 @@
+import { t, Module, constants, Builder } from '../common';
+import { IShellBuilderModule } from '../types';
+
+type N = t.ITreeNode<t.ShellProps>;
+
+/**
+ * An API builder for the [Shell] module.
+ */
+export function builder(bus: t.EventBus, options: { shell?: t.IModule } = {}) {
+  // Retrieve the [ShellModule].
+  let module = options.shell as t.IModule;
+  if (!module) {
+    const fire = Module.fire(bus);
+    const res = fire.find({ kind: constants.KIND });
+    module = res[0];
+  }
+  if (!module) {
+    const err = `Cannot create builder. A module of kind '${constants.KIND}' could not be found.`;
+    throw new Error(err);
+  }
+
+  // Construct the builder API.
+  const builder = Builder.chain<N, t.IShellBuilder>({
+    model: module,
+    handlers: rootHandlers,
+  });
+
+  console.log('shell (module):', module.id);
+
+  // Finish up.
+  return builder;
+}
+
+/**
+ * API method handlers.
+ */
+const rootHandlers: t.BuilderHandlers<N, t.IShellBuilder> = {
+  name(args) {
+    args.model.change((draft) => {
+      const props = draft.props || (draft.props = {});
+      const data = props.data || (props.data = { name: '' });
+      data.name = (args.params[0] || '').trim();
+    });
+  },
+
+  module: {
+    kind: 'list:byIndex',
+    path: '$.modules',
+    builder: (args) => args.create<N, IShellBuilderModule>(moduleHandlers),
+  },
+};
+
+const moduleHandlers: t.BuilderHandlers<N, t.IShellBuilderModule> = {};

@@ -1,4 +1,4 @@
-import * as t from './types';
-import { chain } from './builder.chain';
+import { t } from '../common';
+import { chain } from './chain';
 
 export const Builder: t.Builder = { chain };

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { merge, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { color, css, CssValue, defaultValue, Module, t, ui } from '../../common';
@@ -38,10 +38,10 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
     const fire = Module.fire<P>(bus);
 
     const match: t.ModuleFilterEvent = (e) => true;
-    const events = Module.events<P>(
-      Module.filter(bus.event$, match),
-      merge(harness.dispose$, this.unmounted$),
-    );
+    const events = Module.events<P>(Module.filter(bus.event$, match), [
+      harness.dispose$,
+      this.unmounted$,
+    ]);
 
     // If the hosted component is not returning an element, render the harness "404".
     events.changed$

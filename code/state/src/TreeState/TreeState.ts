@@ -84,7 +84,7 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
       this._store.dispose();
       this.fire({
         type: 'TreeState/disposed',
-        payload: { final: this.root },
+        payload: { final: this.state },
       });
       this._dispose$.next();
       this._dispose$.complete();
@@ -119,16 +119,12 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     return this as t.ITreeStateReadonly<T, A>;
   }
 
-  public get store() {
-    return this._store;
-  }
-
-  public get root() {
+  public get state() {
     return this._store.state;
   }
 
   public get id() {
-    return this.root.id;
+    return this.state.id;
   }
 
   public get children() {
@@ -136,7 +132,7 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
   }
 
   public get query(): t.ITreeQuery<T> {
-    const root = this.root;
+    const root = this.state;
     const namespace = this.namespace;
     return TreeQuery.create<T>({ root, namespace });
   }
@@ -169,7 +165,9 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     return res;
   }
 
-  public add = <C extends N = N>(args: { parent?: string; root: C | string | t.ITreeState<C> }) => {
+  public add = <C extends N = N>(
+    args: { parent?: string; root: C | string | t.ITreeState<C> } | t.ITreeState<C>,
+  ) => {
     // Wrangle: Check if the arguments are in fact a [TreeState] instance.
     if (TreeState.isInstance(args)) {
       args = { parent: this.id, root: args as t.ITreeState<C> };
@@ -177,9 +175,9 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
 
     // Create the child instance.
     const self = this as t.ITreeState<any>;
-    const child = this.getOrCreateInstance<any>(args);
+    const child = this.getOrCreateInstance<any>(args as t.TreeStateAddArgs<C>);
     if (this.childExists(child)) {
-      const err = `Cannot add child '${child.id}' as it already exists within the parent '${this.root.id}'.`;
+      const err = `Cannot add child '${child.id}' as it already exists within the parent '${this.state.id}'.`;
       throw new Error(err);
     }
 
@@ -193,7 +191,7 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
         const err = `Cannot add child-state because the parent sub-node '${args.parent}' within '${draft.id}' does not exist.`;
         throw new Error(err);
       }
-      TreeState.children<any>(root).push(child.root);
+      TreeState.children<any>(root).push(child.state);
     });
 
     // Update state-tree when child changes.
@@ -213,12 +211,12 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
   public remove = (input: string | t.ITreeState) => {
     const child = this.child(input);
     if (!child) {
-      const err = `Cannot remove child-state as it does not exist in the parent '${this.root.id}'.`;
+      const err = `Cannot remove child-state as it does not exist in the parent '${this.state.id}'.`;
       throw new Error(err);
     }
 
     // Remove from local state.
-    this._children = this._children.filter((item) => item.root.id !== child.root.id);
+    this._children = this._children.filter((item) => item.state.id !== child.state.id);
 
     // Finish up.
     const self = this as t.ITreeState<any>;
@@ -309,7 +307,7 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
       ? ((args.source as any).parent as string | undefined)
       : (args.source as t.ITreeState).parent;
 
-    const initial = isObservable ? undefined : (args.source as t.ITreeState).root;
+    const initial = isObservable ? undefined : (args.source as t.ITreeState).state;
 
     return sync.syncFrom({ target: this, parent, initial, source$, until$ });
   };
@@ -338,8 +336,8 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
   }
 
   private child(id: string | t.ITreeState<any>) {
-    id = typeof id === 'string' ? id : id.root.id;
-    return this.children.find((item) => item.root.id === id);
+    id = typeof id === 'string' ? id : id.state.id;
+    return this.children.find((item) => item.id === id);
   }
 
   private childExists(input: string | t.ITreeState<any>) {

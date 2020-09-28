@@ -9,11 +9,7 @@ import { Harness } from '../modules/module.DevHarness';
 export function render(entry: string) {
   if (entry === 'entry:harness') {
     return (
-      <Shell.Window
-        theme={'WHITE'}
-        title={'dev.harness'}
-        onLoaded={(bus) => Harness.module(bus, { register: true })}
-      />
+      <Shell.Window theme={'WHITE'} onLoaded={(bus) => Harness.module(bus, { register: true })} />
     );
   }
 

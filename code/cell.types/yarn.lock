@@ -97,10 +97,10 @@
     rxjs "6.5.5"
     tslib "2.0.0"
 
-"@platform/state.types@0.0.5", "@platform/state.types@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@platform/state.types/-/state.types-0.0.5.tgz#89ef7c152a9cb33574aa396b91b98f4d042eb1d4"
-  integrity sha512-gi6AAUynUooQNoMaGi6KCO3Npe4MkZSfmEh0m9hL5z3d/XIthLYrptTK9+Uj0jbcyczXH6OSSMRHPUJ97RzT1A==
+"@platform/state.types@0.0.6", "@platform/state.types@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@platform/state.types/-/state.types-0.0.6.tgz#b7d6287dc8afa4f4180fbf0fa4b4a2bb8dcd5dc9"
+  integrity sha512-/p5scO7nUePSE8TvUAbaUil5pMqH9n2X7/DttViUQX9EV5HVE0vPBD0dvIE/awM/9H3y+1XurCSefjFYf+Lz0A==
   dependencies:
     "@platform/libs" "0.2.2"
     "@platform/types" "0.5.5"
@@ -151,13 +151,13 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.5.5.tgz#732daaed06732ee10399ea3186e6aec0113fa93c"
   integrity sha512-CCNk2mkg3FindDhYRNyvLpxjoaLO9Fi8vGs61Oe1X5+ksgrh/wLR6jcmRRvBoMYP/gJHKKLkfh1y1WM/y4viBw==
 
-"@platform/ui.tree.types@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree.types/-/ui.tree.types-0.0.6.tgz#c71842614583d544e83fb8dc4e587e183a0d37e6"
-  integrity sha512-4+1b+sZRdkYKmj3Bp+wfPkyB2X1jJ/NTq+1iG17AFezmEV0oNs+aFboVA41cXpHVNbFE3TN345RP58OTzlvUlw==
+"@platform/ui.tree.types@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree.types/-/ui.tree.types-0.0.8.tgz#96585b1dfa8ff7e3acc8a40968b7cd06e218c40e"
+  integrity sha512-urmye85FXEEYHQRl35I646pqSAj74OOWcUpui87uwbD8QW5CgFgWXZKku9LU+jJtXB6Xjq2nd9Azw6msOfx+EQ==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/state.types" "^0.0.5"
+    "@platform/state.types" "^0.0.6"
     "@platform/types" "0.5.5"
 
 "@platform/util.diff@0.0.36":

@@ -42,7 +42,7 @@ export function create<T extends N, A extends E>(tree: t.ITreeState<T, A>): t.IT
       if (match) {
         // NB: Construct the query without a namespace filter
         //     so all namespaces can be evaluated.
-        const query = TreeQuery.create({ root: tree.root });
+        const query = TreeQuery.create({ root: tree.state });
         query.walkUp(match.id, (e) => {
           parts.unshift(e.id);
           if (e.id === tree.id) {

@@ -1,22 +1,18 @@
 import * as t from '../common/types';
 
-/**
- * Builder for a single node within the <Shell>
- */
-export type ShellBuilderNode = {
-  id: string;
-};
-
-export type ShellBuilderBase<R> = ShellBuilderRenderer<R> & {};
+type N = t.ITreeNode<t.ShellProps>;
 
 /**
- * Render
+ * Root builder API for a [Shell].
  */
-
-export type ShellBuilderRenderer<R> = {
-  render(fn: ShellRender): R;
+export type IShellBuilder = {
+  name(value: string): IShellBuilder;
+  module: t.BuilderListByName<IShellBuilderModule>;
 };
 
-export type ShellRenderContext = {};
-export type ShellRenderResponse = JSX.Element | null;
-export type ShellRender = (ctx: ShellRenderContext) => ShellRenderResponse | void;
+/**
+ * Builder API for a module added to a [Shell].
+ */
+export type IShellBuilderModule = {
+  //
+};

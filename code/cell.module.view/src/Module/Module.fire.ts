@@ -74,7 +74,7 @@ export function selection<T extends P>(bus: B, args: t.ModuleFireSelectionArgs) 
   const { selected } = args;
 
   type N = t.IModuleNode<any>;
-  const root = is.stateObject(args.root) ? (args.root as t.IModule).root : (args.root as N);
+  const root = is.stateObject(args.root) ? (args.root as t.IModule).state : (args.root as N);
   const query = TreeQuery.create<N>({ root });
   const node = selected ? query.findById(selected) : undefined;
 

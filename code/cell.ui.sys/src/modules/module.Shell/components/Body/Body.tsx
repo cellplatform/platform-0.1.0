@@ -27,7 +27,7 @@ export class Layout extends React.PureComponent<ILayoutProps> {
   public componentDidMount() {
     // Construct module
     const bus = this.context.bus;
-    this.module = this.props.module || Shell.module(bus);
+    this.module = this.props.module || Shell.module(bus, { acceptNakedRegistrations: true });
 
     // NB: Redraw causes the newly created [module] to be rendered.
     this.forceUpdate();

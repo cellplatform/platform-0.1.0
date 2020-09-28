@@ -97,7 +97,7 @@ export class ModuleViewTree extends React.PureComponent<
    * [Properties]
    */
   private get root() {
-    return this.props.module?.root as t.ITreeviewNode;
+    return this.props.module?.state as t.ITreeviewNode;
   }
 
   private get nav() {
@@ -140,7 +140,7 @@ export class ModuleViewTree extends React.PureComponent<
       tabIndex: 0,
       ...this.props.treeviewProps,
       style: this.props.style,
-      root: root,
+      root,
       current: this.nav.current,
       event$: this.treeview$,
       focusOnLoad: this.props.focusOnLoad,

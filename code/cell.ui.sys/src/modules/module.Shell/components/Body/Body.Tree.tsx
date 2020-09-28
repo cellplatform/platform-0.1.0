@@ -142,5 +142,5 @@ export class LayoutTree extends React.PureComponent<ILayoutTreeProps, ILayoutTre
  */
 
 function isModuleEmpty(module: t.IModule) {
-  return (module.root.children || []).length === 0;
+  return (module.state.children || []).length === 0;
 }

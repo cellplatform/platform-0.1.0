@@ -1,6 +1,7 @@
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { rx, t, toNodeId, wildcard } from '../common';
+import { trimKindPrefix } from './Module.flags';
 
 type B = t.EventBus<t.ModuleEvent>;
 type P = t.IModuleProps;
@@ -37,13 +38,14 @@ export function request<T extends P = P>(
  * Find a module based on pattern matching.
  */
 export function find<T extends P = P>(bus: B, args: t.IModuleFindArgs = {}): t.IModule<T>[] {
-  const { key, namespace, data } = args;
+  const { key, namespace, data, kind } = args;
   const res: t.IModule<T>[] = [];
 
   const payload: t.IModuleFind = {
     module: (args.module || '').trim() || WILDCARD,
     key,
     namespace,
+    kind,
     data,
     respond(module) {
       res.push(module as t.IModule<T>);
@@ -78,7 +80,7 @@ export function listen<T extends P>(bus: B, module: t.IModule<T>) {
 
   const allFieldsMatch = (patterns: D) => {
     const keys = Object.keys(patterns);
-    const data = module.root.props?.data;
+    const data = module.state.props?.data;
     if (!data) {
       return keys.length === 0;
     }
@@ -92,6 +94,14 @@ export function listen<T extends P>(bus: B, module: t.IModule<T>) {
 
     if (typeof e.namespace === 'string' && !wildcard.isMatch(module.namespace, e.namespace)) {
       return false;
+    }
+
+    if (typeof e.kind === 'string') {
+      const kind = trimKindPrefix(module.state.props?.kind);
+      const pattern = trimKindPrefix(e.kind);
+      if (!wildcard.isMatch(kind, pattern)) {
+        return false;
+      }
     }
 
     if (typeof e.data === 'object' && !allFieldsMatch(e.data)) {

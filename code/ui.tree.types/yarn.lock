@@ -66,10 +66,10 @@
     rxjs "6.5.5"
     tslib "2.0.0"
 
-"@platform/state.types@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@platform/state.types/-/state.types-0.0.5.tgz#89ef7c152a9cb33574aa396b91b98f4d042eb1d4"
-  integrity sha512-gi6AAUynUooQNoMaGi6KCO3Npe4MkZSfmEh0m9hL5z3d/XIthLYrptTK9+Uj0jbcyczXH6OSSMRHPUJ97RzT1A==
+"@platform/state.types@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@platform/state.types/-/state.types-0.0.6.tgz#b7d6287dc8afa4f4180fbf0fa4b4a2bb8dcd5dc9"
+  integrity sha512-/p5scO7nUePSE8TvUAbaUil5pMqH9n2X7/DttViUQX9EV5HVE0vPBD0dvIE/awM/9H3y+1XurCSefjFYf+Lz0A==
   dependencies:
     "@platform/libs" "0.2.2"
     "@platform/types" "0.5.5"

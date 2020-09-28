@@ -15,7 +15,7 @@ const bus = rx.bus(event$);
 const fire = Module.fire(bus);
 
 const create = <P extends MyProps = MyProps>(
-  args: { root?: string | t.ITreeNode<P>; data?: MyData } = {},
+  args: { root?: string | t.ITreeNode<P>; data?: MyData; kind?: string } = {},
 ) => {
   return Module.create<P>({ ...args, bus });
 };
@@ -29,16 +29,16 @@ describe('Module', () => {
   describe('create', () => {
     it('create', () => {
       const module = create();
-      const root = module.root;
+      const state = module.state;
 
-      expect(Module.Identity.hasNamespace(root.id)).to.eql(true);
-      expect(Module.Identity.key(root.id)).to.eql('module');
+      expect(Module.Identity.hasNamespace(state.id)).to.eql(true);
+      expect(Module.Identity.key(state.id)).to.eql('module');
 
-      expect(root.props?.kind).to.eql('Module');
-      expect(root.props?.data).to.eql(undefined);
+      expect(state.props?.kind).to.eql('Module'); // NB: Default "kind"
+      expect(state.props?.data).to.eql(undefined);
     });
 
-    it('generates default id ("module")', () => {
+    it('generates default id-key when given root id is <empty string> ("module")', () => {
       const test = (module: t.IModule) => {
         const { key } = Module.Identity.parse(module.id);
         expect(key).to.eql('module');
@@ -51,9 +51,81 @@ describe('Module', () => {
       test(create({ root: { id: '  ' } }));
     });
 
+    it('custom module "kind"', () => {
+      const test = (kind: any, expected: string) => {
+        const module = create({ kind });
+        expect(module.state.props?.kind).to.eql(expected);
+      };
+
+      test('', 'Module');
+      test('  ', 'Module');
+      test('foo', 'Module:foo');
+      test(' foo ', 'Module:foo');
+      test(123, 'Module');
+      test(undefined, 'Module');
+      test(null, 'Module');
+    });
+
     it('throw: id contains "/" character', () => {
       const fn = () => create({ root: 'foo/bar' });
       expect(fn).to.throw(/cannot contain the "\/"/);
+    });
+  });
+
+  describe('Module (flags)', () => {
+    it('is.moduleEvent', () => {
+      const test = (input: any, expected: boolean) => {
+        expect(Module.is.moduleEvent(input)).to.eql(expected);
+      };
+
+      test({ type: 'Module/foo', payload: {} }, true);
+
+      test({ type: 'Module', payload: {} }, false);
+      test({ type: 'Bar/foo', payload: {} }, false);
+      test(undefined, false);
+      test(null, false);
+    });
+
+    it('is.module (kind)', () => {
+      const test = (input: any, expected: boolean) => {
+        expect(Module.is.module(input)).to.eql(expected);
+      };
+
+      test(undefined, false);
+      test(null, false);
+      test(123, false);
+
+      test({ props: { kind: 'Module' } }, true);
+      test({ props: { kind: 'Module:' } }, true);
+      test({ props: { kind: 'Module:Foo' } }, true);
+      test({ props: { kind: '  Module:Foo  ' } }, true);
+
+      test({ props: { kind: 'Foo' } }, false);
+      test({ props: { kind: '' } }, false);
+      test({ props: { kind: 123 } }, false);
+      test({ props: {} }, false);
+      test({ props: 123 }, false);
+
+      const module = create({});
+      test(module.state, true);
+    });
+
+    it('kind(..)', () => {
+      const test = (input: any, expected: string) => {
+        expect(Module.kind(input)).to.eql(expected);
+      };
+
+      test(undefined, '');
+      test(null, '');
+      test(123, '');
+
+      test({ props: { kind: 'Module' } }, '');
+      test({ props: { kind: 'Module:' } }, '');
+      test({ props: { kind: '  Module: ' } }, '');
+      test({ props: { kind: ' Foo ' } }, '');
+
+      test({ props: { kind: 'Module:Foo' } }, 'Foo');
+      test({ props: { kind: '  Module:Foo  ' } }, 'Foo');
     });
   });
 
@@ -71,6 +143,25 @@ describe('Module', () => {
 
       count = 0;
       until$.next();
+
+      fire.request('foo');
+      expect(count).to.eql(0);
+    });
+
+    it('[until$] array of observables', () => {
+      const stop1 = new Subject();
+      const stop2 = new Subject();
+      const events = Module.events(bus.event$, [stop1, stop2]);
+
+      let count = 0;
+      events.$.subscribe((e) => count++);
+
+      fire.request('foo'); // NB: Ensure events are firing within test.
+      fire.request('foo');
+      expect(count).to.eql(2);
+
+      count = 0;
+      stop2.next();
 
       fire.request('foo');
       expect(count).to.eql(0);
@@ -129,7 +220,7 @@ describe('Module', () => {
       const parent = create({ root: 'parent' });
       const child = create({ root: 'child' });
 
-      expect(parent.root.children).to.eql(undefined);
+      expect(parent.state.children).to.eql(undefined);
       expect(parent.find((e) => e.id === child.id)).to.eql(undefined);
 
       const res = fire.register(child, parent.id);
@@ -139,7 +230,7 @@ describe('Module', () => {
       expect(res.module.id).to.eql(child.id);
 
       expect(parent.find((e) => e.id === child.id)).to.equal(child);
-      expect((parent.root.children || [])[0]).to.eql(child.root);
+      expect((parent.state.children || [])[0]).to.eql(child.state);
     });
 
     it('inserts child within sub-node of parent', () => {
@@ -244,10 +335,10 @@ describe('Module', () => {
 
   describe('event: "Module/find"', () => {
     const init = () => {
-      const parent = create({ root: 'parent', data: { kind: 'FOO', count: 456 } });
-      const child1 = create({ root: 'child-1' });
+      const parent = create({ root: 'parent', kind: 'Shell', data: { kind: 'FOO', count: 456 } });
+      const child1 = create({ root: 'child-1', kind: 'Dev' });
       const child2 = create({ root: 'child-2', data: { count: 123 } });
-      const child3 = create({ root: 'child-3', data: { count: 123, kind: 'FOO' } });
+      const child3 = create({ root: 'child-3', kind: 'Dev', data: { count: 123, kind: 'FOO' } });
       fire.register(child1, parent);
       fire.register(child2, parent);
       fire.register(child3, child2);
@@ -341,6 +432,27 @@ describe('Module', () => {
       expect(res5[0]).to.eql(child3);
 
       expect(res6.length).to.eql(0);
+    });
+
+    it('match on "kind"', () => {
+      const { parent, child1, child3 } = init();
+
+      // No match.
+      expect(fire.find({ kind: 'BOO' }).length).to.eql(0);
+
+      expect(fire.find({ kind: 'Shell' }).length).to.eql(1);
+      expect(fire.find({ kind: '  Shell  ' }).length).to.eql(1);
+      expect(fire.find({ kind: '  Module:Shell  ' }).length).to.eql(1);
+
+      expect(fire.find({ kind: 'Dev' }).length).to.eql(2);
+      expect(fire.find({ kind: ' Module:Dev ' }).length).to.eql(2);
+
+      const res1 = fire.find({ kind: 'Shell' });
+      const res2 = fire.find({ kind: 'Dev' });
+
+      expect(res1[0]).to.equal(parent);
+      expect(res2[0]).to.equal(child1);
+      expect(res2[1]).to.equal(child3);
     });
   });
 

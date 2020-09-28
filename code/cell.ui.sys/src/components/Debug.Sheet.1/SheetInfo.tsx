@@ -82,7 +82,7 @@ export class SheetInfo extends React.PureComponent<ISheetInfoProps> {
     };
     return (
       <div {...styles.base}>
-        <Treeview root={this.tree.root} background={'NONE'} />
+        <Treeview root={this.tree.state} background={'NONE'} />
       </div>
     );
   }

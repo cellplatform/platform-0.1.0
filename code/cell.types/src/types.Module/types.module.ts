@@ -9,6 +9,7 @@ type AnyProps = t.IModulePropsAny;
 export type ModuleArgs<T extends P> = {
   bus: B; // Global event-bus.
   root?: t.IModuleNode<T> | string;
+  kind?: string; // NB: Suffixed onto "Module" (eg "Module:foo")
   data?: T['data'];
   dispose$?: t.Observable<any>;
 };
@@ -18,8 +19,6 @@ export type ModuleArgs<T extends P> = {
  * an [IModule] data instance.
  */
 export type Module = {
-  kind: 'ModuleMethods';
-
   create<T extends P>(args?: ModuleArgs<T>): IModule<T>;
   register(bus: B, module: t.IModule, parent?: t.NodeIdentifier): t.ModuleRegistration;
 
@@ -28,14 +27,21 @@ export type Module = {
 
   fire<T extends P>(bus: B): IModuleFire<T>;
 
-  events<T extends P>(subject: t.Observable<t.Event>, until$?: t.Observable<any>): IModuleEvents<T>;
-
-  isModuleEvent(event: t.Event): boolean;
+  events<T extends P>(
+    subject: t.Observable<t.Event>,
+    until$?: t.Observable<any> | t.Observable<any>[],
+  ): IModuleEvents<T>;
 
   filter<T extends E = E>(
     event$: t.Observable<t.Event>,
     filter?: t.ModuleFilterEvent<T>,
   ): t.Observable<T>;
+
+  kind(node?: t.INode): string | undefined; // "Module:<suffix>" | empty string if no suffix or not a module node.
+  is: {
+    moduleEvent(event?: t.Event): boolean;
+    module(node?: t.INode): boolean;
+  };
 };
 
 /**
@@ -61,7 +67,7 @@ export type IModuleNode<T extends P> = t.ITreeNode<T>;
  * The way a module is expressed as props within a tree-node.
  */
 export type IModuleProps<D extends O = O> = {
-  kind?: 'Module';
+  kind?: 'Module' | string;
   data?: D;
 };
 export type IModulePropsAny = t.IModuleProps<any>;
@@ -179,7 +185,8 @@ export type IModuleFind = IModuleFindArgs & {
 };
 export type IModuleFindArgs = {
   module?: string | '*'; // Wildcard ("*" or empty) includes all modules, otherwise matches will be filtered as children of the given module-id.
-  key?: string;
-  namespace?: string;
+  key?: string; // NB: Supports wildcards (eg "foo*")
+  namespace?: string; // NB: Supports wildcards (eg "foo*")
+  kind?: string; // NB: Supports wildcards (eg "foo*")
   data?: Record<string, string | number | boolean>;
 };

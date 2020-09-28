@@ -6,7 +6,7 @@ type E = t.HarnessEvent;
 type P = t.HarnessProps;
 
 /**
- * Add modules that register themselves to be inserted into the DevHarness.
+ * Add modules that register themselves to be inserted into the [DevHarness].
  */
 export function addModuleStrategy(args: { harness: t.HarnessModule; bus: t.EventBus<E> }) {
   const { harness, bus } = args;
