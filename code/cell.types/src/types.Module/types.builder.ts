@@ -69,7 +69,7 @@ export type BuilderChild =
 export type BuilderObjectDef = {
   kind: 'object';
   path: string;
-  builder: BuilderObjectFactory<any, any>;
+  builder: BuilderMapFactory<any, any>;
   default?: () => O;
 };
 
@@ -88,7 +88,8 @@ export type BuilderListByIndexDef = {
   kind: 'list:byIndex';
   path?: string; // JsonPath to location in model.
   handlers: BuilderGetHandlers<any, any, any>;
-  default?: (args: { path: string }) => O;
+  default?: () => O;
+  builder?: BuilderIndexFactory<any, any, any>;
 };
 export type BuilderListByIndex<T> = (index?: BuilderIndexParam) => T;
 
@@ -113,7 +114,7 @@ export type BuilderListByNameDef = {
   kind: 'list:byName';
   path?: string; // JsonPath to location in model.
   handlers: BuilderGetHandlers<any, any, any>;
-  default?: (args: { path: string }) => O;
+  default?: () => O;
 };
 export type BuilderListByName<T, N = string> = (name: N, index?: BuilderIndexParam) => T;
 
@@ -124,7 +125,7 @@ export type BuilderListByName<T, N = string> = (name: N, index?: BuilderIndexPar
 export type BuilderMapDef = {
   kind: 'map';
   path?: string; // JsonPath to location in model.
-  builder: BuilderObjectFactory<any, any>;
+  builder: BuilderMapFactory<any, any, any>;
   default?: () => O;
 };
 export type BuilderMap<T, K = string, A extends O = O> = (key: K, args?: A) => T;
@@ -141,11 +142,22 @@ export type BuilderChainFactory = <M extends O, A extends O, C extends O = O>(ar
   path?: string;
 }) => BuilderChain<A>;
 
-export type BuilderObjectFactory<M extends O, A extends O, C extends O = O> = (
-  args: BuilderObjectFactoryArgs<M, C>,
+export type BuilderMapFactory<M extends O, A extends O, C extends O = O> = (
+  args: BuilderMapFactoryArgs<M, C>,
 ) => BuilderChain<A>;
-export type BuilderObjectFactoryArgs<M extends O, C extends O> = {
+export type BuilderMapFactoryArgs<M extends O, C extends O> = {
   key: string;
+  path: string;
+  model: BuilderModel<M>;
+  parent: BuilderChain<any>;
+  context: C;
+};
+
+export type BuilderIndexFactory<M extends O, A extends O, C extends O = O> = (
+  args: BuilderIndexFactoryArgs<M, C>,
+) => BuilderChain<A>;
+export type BuilderIndexFactoryArgs<M extends O, C extends O> = {
+  index: number;
   path: string;
   model: BuilderModel<M>;
   parent: BuilderChain<any>;

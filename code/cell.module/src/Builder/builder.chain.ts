@@ -5,7 +5,6 @@ import * as jpath from 'jsonpath';
 type O = Record<string, unknown>;
 type B = t.BuilderChain<any>;
 type K = t.BuilderMethodKind;
-type F = t.BuilderObjectFactory<any, any, any>;
 
 /**
  * A generic (strongly typed) object builder in the form of a chained ("fluent") API.
@@ -34,7 +33,7 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
   const getContext = () => (typeof args.context === 'function' ? args.context() || {} : {}) as C;
   const getModel = () => args.model();
 
-  const formatPath = (path?: string) => {
+  const formatIndexPath = (path?: string) => {
     if (path === undefined) {
       return '';
     } else {
@@ -42,7 +41,11 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
     }
   };
 
-  const fromMapFactory = (factory: F, key: string, path: string) => {
+  const fromMapFactory = (
+    factory: t.BuilderMapFactory<any, any, any>,
+    key: string,
+    path: string,
+  ) => {
     return factory({
       key,
       model: getModel(),
@@ -62,7 +65,7 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
     cacheKey = `${cacheKey}:${modelPath}`;
     if (!cache.exists(cacheKey)) {
       const context = getContext();
-      const path = formatPath(modelPath);
+      const path = formatIndexPath(modelPath);
       const index = options.index === undefined ? -1 : options.index;
       const handlers = getHandlers({ context, path, index });
       const model = args.model;
@@ -131,7 +134,7 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
        */
       if (def.kind === 'list:byIndex') {
         builder[key] = (input?: t.BuilderIndexParam) => {
-          const path = formatPath(def.path);
+          const path = formatIndexPath(def.path);
           const model = getModel();
           const list = findListOrThrow(model, path);
           const index = deriveIndexFromList(list, input);
@@ -150,7 +153,7 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
             throw new Error(`Name of list item not given.`);
           }
           const model = getModel();
-          const path = formatPath(def.path);
+          const path = formatIndexPath(def.path);
           const list = findListOrThrow(model, path);
           index = findListIndexByName(list, name, index);
           ensureListDefault(model, def, path, index);
@@ -271,7 +274,7 @@ const ensureListDefault = (
   if (!jpath.query(model.state, `${path}[${index}]`)[0]) {
     model.change((draft: any) => {
       jpath.apply(draft, path, (value) => {
-        value[index] = typeof def.default === 'function' ? def.default({ path }) : {};
+        value[index] = typeof def.default === 'function' ? def.default() : {};
         return value;
       });
     });
