@@ -8,27 +8,25 @@ type N = t.ITreeNode<t.ShellProps>;
  */
 export function builder(bus: t.EventBus, options: { shell?: t.IModule } = {}) {
   // Retrieve the [ShellModule].
-  let module = options.shell as t.IModule;
-  if (!module) {
+  let shell = options.shell as t.IModule;
+  if (!shell) {
     const fire = Module.fire(bus);
     const res = fire.find({ kind: constants.KIND });
-    module = res[0];
+    shell = res[0];
   }
-  if (!module) {
+  if (!shell) {
     const err = `Cannot create builder. A module of kind '${constants.KIND}' could not be found.`;
     throw new Error(err);
   }
 
   // Construct the builder API.
-  const builder = Builder.chain<N, t.IShellBuilder>({
-    model: module,
+  const api = Builder.chain<N, t.IShellBuilder>({
+    model: shell,
     handlers: rootHandlers,
   });
 
-  console.log('shell (module):', module.id);
-
   // Finish up.
-  return builder;
+  return api;
 }
 
 /**

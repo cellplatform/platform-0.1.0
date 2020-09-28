@@ -11,7 +11,7 @@ export async function SAMPLE(bus: t.EventBus) {
   /**
    * TEMP
    */
-  const shell = Shell.builder(bus);
+  const shell = Shell.builder(bus).api;
 
   // shell.module()
 
@@ -26,7 +26,5 @@ export async function SAMPLE(bus: t.EventBus) {
     shell.name('hello');
   });
 
-
   // shell.module()
-
 }

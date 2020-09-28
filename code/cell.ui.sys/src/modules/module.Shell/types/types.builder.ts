@@ -7,7 +7,7 @@ type N = t.ITreeNode<t.ShellProps>;
  */
 export type IShellBuilder = {
   name(value: string): IShellBuilder;
-  module: t.BuilderListByName<IShellBuilderModule>;
+  module: t.BuilderListByIndex<IShellBuilderModule>;
 };
 
 /**
