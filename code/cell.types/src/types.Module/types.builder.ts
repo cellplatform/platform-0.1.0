@@ -86,7 +86,7 @@ export type BuilderListDef = BuilderListByIndexDef | BuilderListByNameDef;
  */
 export type BuilderListByIndexDef = {
   kind: 'list:byIndex';
-  path?: string; // JsonPath to location in model.
+  path?: string; // [JsonPath] to location in model.
   handlers: BuilderGetHandlers<any, any, any>;
   default?: () => O;
   builder?: BuilderIndexFactory<any, any, any>;
@@ -112,7 +112,7 @@ export type BuilderListByIndex<T> = (index?: BuilderIndexParam) => T;
  */
 export type BuilderListByNameDef = {
   kind: 'list:byName';
-  path?: string; // JsonPath to location in model.
+  path?: string; // [JsonPath] to location in model.
   handlers: BuilderGetHandlers<any, any, any>;
   default?: () => O;
 };
@@ -124,7 +124,7 @@ export type BuilderListByName<T, N = string> = (name: N, index?: BuilderIndexPar
  */
 export type BuilderMapDef = {
   kind: 'map';
-  path?: string; // JsonPath to location in model.
+  path?: string; // [JsonPath] to location in model.
   builder: BuilderMapFactory<any, any, any>;
   default?: () => O;
 };

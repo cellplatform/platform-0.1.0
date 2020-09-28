@@ -317,7 +317,7 @@ describe.only('Builder', () => {
     });
   });
 
-  describe('kind: "list:byIndex"', () => {
+  describe.only('kind: "list:byIndex"', () => {
     it('creates with no index (insert at end)', () => {
       const { builder } = create();
 

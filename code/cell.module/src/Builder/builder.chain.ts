@@ -78,6 +78,15 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
     return cache.get<B>(cacheKey);
   };
 
+  const getOrCreate = (cacheKey: string, create: () => B) => {
+    if (cache.exists(cacheKey)) {
+      return cache.get(cacheKey);
+    }
+    const builder = create();
+    cache.put(cacheKey, builder);
+    return builder;
+  };
+
   // Assign chained method modifiers.
   Object.keys(handlers)
     .filter((key) => typeof handlers[key] === 'function')
@@ -117,14 +126,11 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
           configurable: false,
           get() {
             const cacheKey = `${def.kind}:${path}:${key}`;
-            if (cache.exists(cacheKey)) {
-              return cache.get(cacheKey);
-            } else {
+            return getOrCreate(cacheKey, () => {
               ensureObjectAt(getModel(), path, def.default);
               const builder = fromMapFactory(def.builder, key, path);
-              cache.put(cacheKey, builder);
               return builder;
-            }
+            });
           },
         });
       }
@@ -176,23 +182,19 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
           }
           const path = (def.path || '').trim();
           const cacheKey = `${def.kind}:${path}:${key}.${field}]`;
-          if (cache.exists(cacheKey)) {
-            return cache.get(cacheKey);
-          } else {
-            const model = getModel();
-            const { parent } = parentPath(path);
-            const fieldPath = path ? `${path}.${field}` : '';
 
+          return getOrCreate(cacheKey, () => {
+            const model = getModel();
+            const fieldPath = path ? `${path}.${field}` : '';
             if (fieldPath) {
-              ensureObjectAt(model, parent);
+              ensureObjectAt(model, parentPath(path).parent);
               ensureObjectAt(model, path);
               ensureObjectAt(model, fieldPath, def.default);
             }
-
             const builder = fromMapFactory(def.builder, field, fieldPath);
             cache.put(cacheKey, builder);
             return builder;
-          }
+          });
         };
       }
     });
