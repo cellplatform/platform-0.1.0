@@ -184,7 +184,7 @@ const create = () => {
   return { model, builder };
 };
 
-describe.only('Builder', () => {
+describe('Builder', () => {
   describe('base', () => {
     it('returns builder', () => {
       const { builder } = create();
