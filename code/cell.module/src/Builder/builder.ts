@@ -1,4 +1,4 @@
 import { t } from '../common';
-import { chain } from './builder.chain';
+import { chain } from './chain';
 
 export const Builder: t.Builder = { chain };

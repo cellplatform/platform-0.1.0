@@ -42,6 +42,8 @@ export type BuilderHandlerArgs<M extends O> = {
   model: BuilderModel<M>;
 };
 export type BuilderMethodKind = 'ROOT' | BuilderChild['kind'];
+export type BuilderMethodKindList = BuilderListByIndexDef['kind'] | BuilderListByNameDef['kind'];
+export type BuilderMethodKindObject = BuilderObjectDef['kind'] | BuilderMapDef['kind'];
 
 export type BuilderGetHandlers<M extends O, A extends O> = (
   args: BuilderGetHandlersArgs,
@@ -56,9 +58,9 @@ export type BuilderGetHandlersArgs = {
  */
 export type BuilderChild =
   | BuilderObjectDef
+  | BuilderMapDef
   | BuilderListByIndexDef
-  | BuilderListByNameDef
-  | BuilderMapDef;
+  | BuilderListByNameDef;
 
 /**
  * Child: OBJECT
@@ -128,7 +130,7 @@ export type BuilderMapDef = {
 export type BuilderMap<T, K = string, A extends O = O> = (key: K, args?: A) => T;
 
 /**
- * FACTORY: Chain Builder
+ * FACTORY: Chain builder
  */
 export type BuilderChainFactory = <M extends O, A extends O>(
   args: BuilderChainFactoryArgs<M, A>,
@@ -139,36 +141,23 @@ export type BuilderChainFactoryArgs<M extends O, A extends O> = {
 };
 
 /**
- * FACTORY: Child builder on {object}.
+ * FACTORY: Child builders
  */
 export type BuilderMapFactory<M extends O, A extends O> = (
   args: BuilderMapFactoryArgs<M>,
 ) => BuilderChain<A>;
-export type BuilderMapFactoryArgs<M extends O> = {
-  key: string;
-  path: string;
-  model: BuilderModel<M>;
-  create<M extends O, A extends O>(args: {
-    handlers: BuilderHandlers<M, A>;
-    model?: BuilderModel<M>;
-    path?: string;
-  }): BuilderChain<A>;
-};
+export type BuilderMapFactoryArgs<M extends O> = BuilderChildFactoryArgs<M> & { key: string };
 
-/**
- * FACTORY: Child builder within [array].
- */
 export type BuilderListFactory<M extends O, A extends O> = (
   args: BuilderListFactoryArgs<M>,
 ) => BuilderChain<A>;
-export type BuilderListFactoryArgs<M extends O> = {
-  index: number;
+export type BuilderListFactoryArgs<M extends O> = BuilderChildFactoryArgs<M> & { index: number };
+
+export type BuilderChildFactoryArgs<M extends O> = {
   path: string;
   model: BuilderModel<M>;
-  parent: BuilderChain<any>;
-  create<M extends O, A extends O>(args: {
-    handlers: BuilderHandlers<M, A>;
-    model?: BuilderModel<M>;
-    path?: string;
-  }): BuilderChain<A>;
+  create<M extends O, A extends O>(
+    handlers: BuilderHandlers<M, A>,
+    model?: BuilderModel<M>,
+  ): BuilderChain<A>;
 };

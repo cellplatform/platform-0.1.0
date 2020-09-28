@@ -11,7 +11,6 @@ type K = t.BuilderMethodKind;
  * Types:
  *    <M> Model
  *    <A> API
- *    <C> Context (optional)
  */
 export function chain<M extends O, A extends O>(args: {
   handlers: t.BuilderHandlers<M, A>;
@@ -38,91 +37,39 @@ export function chain<M extends O, A extends O>(args: {
     }
   };
 
-  const fromMapFactory = (
-    factory: t.BuilderMapFactory<any, any>,
-    kind: t.BuilderMethodKind,
-    key: string,
-    path: string,
-  ) => {
-    const parent = builder;
-    return factory({
-      key,
-      model,
-      path,
-      create<M extends O, A extends O>(args: {
-        model: t.BuilderModel<M>;
-        handlers: t.BuilderHandlers<M, A>;
-        path?: string;
-      }) {
-        return chain<M, A>({
-          kind,
-          model: args.model || model,
-          handlers: args.handlers,
-          path: args.path || path,
-          parent,
-        });
-      },
-    });
-  };
-
-  const fromIndexFactory = (
-    factory: t.BuilderListFactory<any, any>,
-    kind: t.BuilderMethodKind,
-    index: number,
-    path: string,
-  ) => {
-    const parent = builder;
-    return factory({
-      index,
-      model,
-      parent,
-      path,
-      create<M extends O, A extends O>(args: {
-        model: t.BuilderModel<M>;
-        handlers: t.BuilderHandlers<M, A>;
-        path?: string;
-      }) {
-        return chain<M, A>({
-          kind,
-          model: args.model || model,
-          handlers: args.handlers,
-          path: args.path || path,
-          parent,
-          index,
-        });
-      },
-    });
-  };
-
-  const getOrCreateBuilder__TEMP = (
-    kind: t.BuilderChild['kind'],
-    cacheKey: string,
-    modelPath: string,
-    getHandlers: t.BuilderGetHandlers<any, any>,
-    options: { index?: number } = {},
-  ): B => {
-    cacheKey = `${cacheKey}:${modelPath}`;
-    if (!cache.exists(cacheKey)) {
-      const path = formatPath(modelPath);
-      const index = options.index === undefined ? -1 : options.index;
-      const handlers = getHandlers({ path, index });
-      const model = args.model;
-      const parent = builder;
-      cache.put(
-        cacheKey,
-        chain<any, any>({ kind, model, path, parent, handlers, index: options.index, cache }), // <== RECURSION 🌳
-      );
-    }
-    return cache.get<B>(cacheKey);
-  };
+  // const fromMapFactory = (
+  //   factory: t.BuilderMapFactory<any, any>,
+  //   kind: t.BuilderMethodKind,
+  //   key: string,
+  //   path: string,
+  // ) => {
+  //   return factory({
+  //     key,
+  //     model,
+  //     path,
+  //     create<M extends O, A extends O>(args: {
+  //       handlers: t.BuilderHandlers<M, A>;
+  //       model?: t.BuilderModel<M>;
+  //     }) {
+  //       return chain<M, A>({
+  //         kind,
+  //         parent: builder,
+  //         model: (args.model || model) as t.BuilderModel<M>,
+  //         handlers: args.handlers,
+  //         path,
+  //       });
+  //     },
+  //   });
+  // };
 
   const getOrCreate = (cacheKey: string, create: () => B) => {
     if (cache.exists(cacheKey)) {
       return cache.get(cacheKey);
+    } else {
+      const builder = create();
+      cache.put(cacheKey, builder);
+      return builder;
     }
-    const builder = create();
-    cache.put(cacheKey, builder);
-    return builder;
   };
 
   // Assign chained method modifiers.
@@ -163,10 +110,10 @@ export function chain<M extends O, A extends O>(args: {
           get() {
             const path = formatPath(def.path);
             const cacheKey = `${def.kind}:${path}:${key}`;
+            const parent = builder;
             return getOrCreate(cacheKey, () => {
               ensureObjectAt(model, path, def.default);
-              const builder = fromMapFactory(def.builder, 'object', key, path); // <== RECURSION 🌳
-              return builder;
+              return fromFactory({ model, parent }).map('object', def.builder, key, path); // <== RECURSION 🌳
             });
           },
         });
@@ -179,13 +126,14 @@ export function chain<M extends O, A extends O>(args: {
         builder[key] = (input?: t.BuilderIndexParam) => {
           const path = formatPath(def.path);
           const list = findListOrThrow(model, path);
-          const index = deriveIndexFromList(list, input);
+          const index = deriveListIndex(list, input);
           const cacheKey = `${def.kind}:${key}[${index}]`;
 
-          ensureListDefault(model, def, path, index);
+          ensureDefaultAtIndex(model, path, index, def.default);
 
           return getOrCreate(cacheKey, () => {
-            return fromIndexFactory(def.builder, 'list:byIndex', index, path); // <== RECURSION 🌳
+            const parent = builder;
+            return fromFactory({ model, parent }).list('list:byIndex', def.builder, index, path); // <== RECURSION 🌳
           });
         };
       }
@@ -204,10 +152,11 @@ export function chain<M extends O, A extends O>(args: {
           const index = findListIndexByName(list, name, i);
           const cacheKey = `${def.kind}:${path}:${key}[${index}]`;
 
-          ensureListDefault(model, def, path, index);
+          ensureDefaultAtIndex(model, path, index, def.default);
 
           const builder = getOrCreate(cacheKey, () => {
-            return fromIndexFactory(def.builder, 'list:byName', index, path); // <== RECURSION 🌳
+            const parent = builder;
+            return fromFactory({ model, parent }).list('list:byName', def.builder, index, path); // <== RECURSION 🌳
           });
 
           if (typeof builder.name !== 'function') {
@@ -228,6 +177,7 @@ export function chain<M extends O, A extends O>(args: {
           }
           const path = formatPath(def.path);
           const cacheKey = `${def.kind}:${path}:${key}.${field}]`;
+          const parent = builder;
 
           return getOrCreate(cacheKey, () => {
             const fieldPath = path ? `${path}.${field}` : '';
@@ -236,9 +186,7 @@ export function chain<M extends O, A extends O>(args: {
               ensureObjectAt(model, path);
               ensureObjectAt(model, fieldPath, def.default);
             }
-            const builder = fromMapFactory(def.builder, 'map', field, fieldPath);
-            cache.put(cacheKey, builder);
-            return builder;
+            return fromFactory({ model, parent }).map('map', def.builder, field, fieldPath); // <== RECURSION 🌳
           });
         };
       }
@@ -287,12 +235,11 @@ const ensureObjectAt = (
         }
       });
     }
-
     return get();
   }
 };
 
-const deriveIndexFromList = (list: any[], index?: t.BuilderIndexParam) => {
+const deriveListIndex = (list: any[], index?: t.BuilderIndexParam) => {
   index = index === undefined ? 'END' : index;
   if (index === 'END') {
     return list.length;
@@ -313,19 +260,19 @@ const deriveIndexFromList = (list: any[], index?: t.BuilderIndexParam) => {
 const findListIndexByName = (list: any[], name: string, index?: t.BuilderIndexParam) => {
   type N = t.BuilderNamedItem;
   const existing = list.findIndex((item: N) => is.object(item) && item?.name === name);
-  return existing > -1 ? existing : deriveIndexFromList(list, index);
+  return existing > -1 ? existing : deriveListIndex(list, index);
 };
 
-const ensureListDefault = (
+const ensureDefaultAtIndex = (
   model: t.BuilderModel<any>,
-  def: t.BuilderListDef,
   path: string,
   index: number,
+  defaultValue?: () => O,
 ) => {
   if (!jpath.query(model.state, `${path}[${index}]`)[0]) {
     model.change((draft: any) => {
       jpath.apply(draft, path, (value) => {
-        value[index] = typeof def.default === 'function' ? def.default() : {};
+        value[index] = typeof defaultValue === 'function' ? defaultValue() : {};
         return value;
       });
     });
@@ -341,4 +288,55 @@ const findListOrThrow = (model: t.BuilderModel<any>, path: string) => {
     throw new Error(`The value at path '${path}' is a [${typeof list}] rather than an [Array]`);
   }
   return list;
+};
+
+const fromFactory = (args: { model: t.BuilderModel<any>; parent: t.BuilderChain<any> }) => {
+  const { parent } = args;
+  return {
+    /**
+     * Create [list] builder from factory.
+     */
+    list(
+      kind: t.BuilderMethodKindList,
+      factory: t.BuilderListFactory<any, any>,
+      index: number,
+      path: string,
+    ) {
+      return factory({
+        index,
+        path,
+        model: args.model,
+        create<M extends O, A extends O>(
+          handlers: t.BuilderHandlers<M, A>,
+          model?: t.BuilderModel<M>,
+        ) {
+          model = model || args.model;
+          return chain<M, A>({ kind, parent, model, handlers, path, index });
+        },
+      });
+    },
+
+    /**
+     * Create {object} builder from factory.
+     */
+    map(
+      kind: t.BuilderMethodKindObject,
+      factory: t.BuilderMapFactory<any, any>,
+      key: string,
+      path: string,
+    ) {
+      return factory({
+        key,
+        path,
+        model: args.model,
+        create<M extends O, A extends O>(
+          handlers: t.BuilderHandlers<M, A>,
+          model?: t.BuilderModel<M>,
+        ) {
+          model = model || args.model;
+          return chain<M, A>({ kind, parent, model, handlers, path });
+        },
+      });
+    },
+  };
 };
