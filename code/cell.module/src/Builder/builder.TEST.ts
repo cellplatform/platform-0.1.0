@@ -206,7 +206,7 @@ const create = () => {
   return { model, builder };
 };
 
-describe('Builder', () => {
+describe.only('Builder', () => {
   describe('base', () => {
     it('returns builder', () => {
       const { builder } = create();
@@ -360,14 +360,6 @@ describe('Builder', () => {
       const state = model.state;
       expect((state.foo.list[1].children || [])[0].count).to.eql(101);
     });
-
-    it.skip('memory list (no model)', () => {
-      const { builder, model } = create();
-
-      const child = builder.memoryListByIndex();
-
-      console.log('child', child);
-    });
   });
 
   describe('kind: "list:byName"', () => {
@@ -485,17 +477,6 @@ describe('Builder', () => {
       expect(child1).to.equal(child2);
     });
 
-    it.skip('memory map (no model)', () => {
-      const root = create();
-      // const getMap = () => model.state.foo.map;
-
-      const child = root.builder.memoryMap('foo');
-
-      /**
-       * TODO 🐷
-       */
-    });
-
     it('throw: "key" not given', () => {
       const { builder } = create();
       const fn = () => builder.map(undefined as any);
@@ -506,6 +487,32 @@ describe('Builder', () => {
       const { builder } = create();
       const fn = () => builder.map('   ' as any);
       expect(fn).to.throw(/not given/);
+    });
+  });
+
+  describe.only('child builders (not stored on model)', () => {
+    type IModelOne = { type: 'One'; name?: string };
+    type IModelTwo = { type: 'Two'; name?: string };
+    type IOne = { name(value: string): IOne };
+    type IContext = { foo: number };
+
+    it.only('kind: "map"', () => {
+      const root = create();
+      // const getMap = () => model.state.foo.map;
+
+      const child = root.builder.memoryMap('foo');
+
+      /**
+       * TODO 🐷
+       */
+    });
+
+    it.skip('memory list', () => {
+      const { builder, model } = create();
+
+      const child = builder.memoryListByIndex();
+
+      console.log('child', child);
     });
   });
 });
