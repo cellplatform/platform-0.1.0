@@ -11,7 +11,7 @@ type O = Record<string, unknown>;
 type IModel = {
   name: string;
   childObject?: IModelChild;
-  foo: { list?: IModelItem[]; map?: Record<string, IModelItem> };
+  foo: { list: IModelItem[]; map?: Record<string, IModelItem> };
 };
 type IModelChild = { count: number };
 type IModelItem = { name: string; child: IModelItemChild; children: IModelItemChild[] };
@@ -62,27 +62,16 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
     kind: 'object',
     path: '$.childObject',
     builder: (args) => {
-      return Builder.chain<IModel, IBar>({
-        handlers: barHandlers,
-        model: args.model,
-        parent: args.parent,
-        path: args.path,
-      });
+      return args.create({ handlers: barHandlers });
     },
     default: () => ({ count: 0 }),
   },
   listByIndex: {
     kind: 'list:byIndex',
     path: '$.foo.list',
-    handlers: () => itemHandlers,
     default: () => ({ name: 'hello', child: { count: 0 }, children: [] }),
     builder: (args) => {
-      return Builder.chain<IModel, IItem>({
-        handlers: itemHandlers,
-        model: args.model,
-        parent: args.parent,
-        path: args.path,
-      });
+      return args.create<IModel, IItem>({ handlers: itemHandlers });
     },
   },
   listByName: {
@@ -96,12 +85,7 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
     path: '$.foo.map',
     default: () => ({ name: 'hello', child: { count: 0 }, children: [] }),
     builder: (args) => {
-      return Builder.chain<IModel, IItem>({
-        handlers: itemHandlers,
-        model: args.model,
-        parent: args.parent,
-        path: args.path,
-      });
+      return args.create<IModel, IItem>({ handlers: itemHandlers });
     },
   },
 };
@@ -126,11 +110,9 @@ const barHandlers: t.BuilderHandlers<IModel, IBar> = {
     kind: 'object',
     path: '$.childObject',
     builder: (args) => {
-      return Builder.chain<IModel, IBaz>({
+      return args.create<IModel, IBaz>({
         handlers: bazHandlers,
         model: args.model,
-        parent: args.parent,
-        path: args.path,
       });
     },
   },
@@ -171,19 +153,14 @@ const itemHandlers: t.BuilderHandlers<IModel, IItem> = {
     kind: 'object',
     path: 'child', // NB: relative starting point (does not start from "$" root).
     builder: (args) => {
-      return Builder.chain<IModel, IItemChild>({
-        handlers: itemChildHandlers,
-        model: args.model,
-        parent: args.parent,
-        path: args.path,
-      });
+      return args.create<IModel, IItemChild>({ handlers: itemChildHandlers });
     },
   },
 
   childByIndex: {
     kind: 'list:byIndex',
     path: 'children',
-    handlers: () => itemChildHandlers,
+    builder: (args) => args.create<IModel, IItemChild>({ handlers: itemChildHandlers }),
   },
 
   parent: (args) => args.parent,
@@ -212,7 +189,7 @@ const itemChildHandlers: t.BuilderHandlers<IModel, IItemChild> = {
 };
 
 const create = () => {
-  const model = StateObject.create<IModel>({ name: '', foo: {} });
+  const model = StateObject.create<IModel>({ name: '', foo: { list: [] } });
   const builder = Builder.chain<IModel, IFoo>({
     model: model,
     handlers: fooHandlers,
@@ -236,7 +213,7 @@ describe.only('Builder', () => {
     });
   });
 
-  describe('handler: args/context', () => {
+  describe('handler: args', () => {
     type IModel = { name?: string };
     type IFoo = { name(value: string): IFoo };
 
@@ -309,11 +286,11 @@ describe.only('Builder', () => {
     });
   });
 
-  describe.skip('kind: "list:byIndex"', () => {
+  describe('kind: "list:byIndex"', () => {
     it('creates with no index (insert at end)', () => {
       const { builder } = create();
-
       const res1 = builder.listByIndex();
+
       const res2 = builder.listByIndex(0).name('foo');
       expect(res1).to.equal(res2);
 
@@ -360,7 +337,7 @@ describe.only('Builder', () => {
     });
   });
 
-  describe.skip('kind: "list:byName"', () => {
+  describe('kind: "list:byName"', () => {
     it('assigns "name" and adds item to end of list (default)', () => {
       const { builder, model } = create();
       const getList = () => model.state.foo.list || [];
@@ -494,26 +471,25 @@ describe.only('Builder', () => {
     it('kind: "map"', () => {
       type IModelOne = { kind: 'One' };
       type IModelTwo = { kind: 'Two'; name?: string };
-      type IOne = { child: t.BuilderMap<ITwo, 'foo' | 'bar'> };
-      type ITwo = { name(value: string): ITwo };
+      type IOne = {
+        child: t.BuilderMap<ITwo, 'foo' | 'bar'>;
+      };
+      type ITwo = { name(value: string): ITwo; parent: () => IOne };
 
       const modelOne = StateObject.create<IModelOne>({ kind: 'One' });
       const modelTwoFoo = StateObject.create<IModelTwo>({ kind: 'Two' });
       const modelTwoBar = StateObject.create<IModelTwo>({ kind: 'Two' });
 
       let fooBuilderCount = 0;
-      let fooParent: any;
 
       const handlersOne: t.BuilderHandlers<IModelOne, IOne> = {
         child: {
           kind: 'map',
           builder(args) {
             fooBuilderCount++;
-            fooParent = args.parent;
-            return Builder.chain<IModelTwo, ITwo>({
+            return args.create<IModelTwo, ITwo>({
               model: args.key === 'foo' ? modelTwoFoo : modelTwoBar,
               handlers: handlersTwo,
-              parent: args.parent,
             });
           },
         },
@@ -523,6 +499,7 @@ describe.only('Builder', () => {
         name(args) {
           args.model.change((draft) => (draft.name = args.params[0]));
         },
+        parent: (args) => args.parent,
       };
 
       const builder = Builder.chain<IModelOne, IOne>({
@@ -532,7 +509,7 @@ describe.only('Builder', () => {
 
       const foo1 = builder.child('foo');
       const foo2 = builder.child('foo');
-      expect(fooParent).to.equal(builder);
+      expect(foo2.parent()).to.equal(builder);
 
       expect(fooBuilderCount).to.eql(1); // NB: Only constructed once.
       expect(foo1).to.equal(foo2);

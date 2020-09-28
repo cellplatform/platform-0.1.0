@@ -31,20 +31,70 @@ export function chain<M extends O, A extends O>(args: {
 
   const getModel = () => args.model;
 
-  const formatIndexPath = (path?: string) => {
+  const formatPath = (path?: string) => {
     if (path === undefined) {
       return '';
     } else {
+      path = path.trim();
       return !is.pathRoot(path) && index !== -1 ? `${args.path}[${index}].${path}` : path;
     }
   };
 
-  const fromMapFactory = (factory: t.BuilderMapFactory<any, any>, key: string, path: string) => {
+  const fromMapFactory = (
+    factory: t.BuilderMapFactory<any, any>,
+    kind: t.BuilderMethodKind,
+    key: string,
+    path: string,
+  ) => {
+    const model = getModel();
+    const parent = builder;
     return factory({
       key,
-      model: getModel(),
-      parent: builder,
+      model,
       path,
+      create<M extends O, A extends O>(args: {
+        model: t.BuilderModel<M>;
+        handlers: t.BuilderHandlers<M, A>;
+        path?: string;
+      }) {
+        return chain<M, A>({
+          kind,
+          model: args.model || model,
+          handlers: args.handlers,
+          path: args.path || path,
+          parent,
+        });
+      },
+    });
+  };
+
+  const fromIndexFactory = (
+    factory: t.BuilderIndexFactory<any, any>,
+    kind: t.BuilderMethodKind,
+    index: number,
+    path: string,
+  ) => {
+    const model = getModel();
+    const parent = builder;
+    return factory({
+      index,
+      model,
+      parent,
+      path,
+      create<M extends O, A extends O>(args: {
+        model: t.BuilderModel<M>;
+        handlers: t.BuilderHandlers<M, A>;
+        path?: string;
+      }) {
+        return chain<M, A>({
+          kind,
+          model: args.model || model,
+          handlers: args.handlers,
+          path: args.path || path,
+          parent,
+          index,
+        });
+      },
     });
   };
 
@@ -57,7 +107,7 @@ export function chain<M extends O, A extends O>(args: {
   ): B => {
     cacheKey = `${cacheKey}:${modelPath}`;
     if (!cache.exists(cacheKey)) {
-      const path = formatIndexPath(modelPath);
+      const path = formatPath(modelPath);
       const index = options.index === undefined ? -1 : options.index;
       const handlers = getHandlers({ path, index });
       const model = args.model;
@@ -111,72 +161,38 @@ export function chain<M extends O, A extends O>(args: {
        * Simple child object.
        */
       if (def.kind === 'object') {
-        const path = (def.path || '').trim();
         Object.defineProperty(builder, key, {
           enumerable: true,
           configurable: false,
           get() {
+            const path = formatPath(def.path);
             const cacheKey = `${def.kind}:${path}:${key}`;
             return getOrCreate(cacheKey, () => {
               ensureObjectAt(getModel(), path, def.default);
-              const builder = fromMapFactory(def.builder, key, path);
+              const builder = fromMapFactory(def.builder, 'object', key, path);
               return builder;
             });
           },
         });
       }
 
-      const fromIndexFactory = (
-        factory: t.BuilderIndexFactory<any, any>,
-        index: number,
-        path: string,
-      ) => {
-        return factory({
-          index,
-          model: getModel(),
-          parent: builder,
-          path,
-        });
-      };
-
       /**
        * Array list (accessed by index).
        */
       if (def.kind === 'list:byIndex') {
         builder[key] = (input?: t.BuilderIndexParam) => {
-          const path = formatIndexPath(def.path);
+          const path = formatPath(def.path);
           const model = getModel();
 
-          ensureObjectAt(model, path, () => []);
           const list = findListOrThrow(model, path);
           const index = deriveIndexFromList(list, input);
           const cacheKey = `${def.kind}:${key}[${index}]`;
 
-          console.group('🌳 ');
-
-          console.log('path', path);
-          console.log('index', index);
-          console.log('model.state', model.state);
-
           ensureListDefault(model, def, path, index);
 
-          console.groupEnd();
-
-          getOrCreate(cacheKey + 1, () => {
-            // const b = fromIndexFactory(def.builder, index, path);
-            // console.log('b', b);
-            // return b;
+          return getOrCreate(cacheKey, () => {
+            return fromIndexFactory(def.builder, 'list:byIndex', index, path);
           });
-
-          // console.log('path', path);
-          // console.log('def.builder', def.builder);
-          // if (def.builder) {
-          //   console.log('path', path);
-
-          // }
-          // console.groupEnd();
-
-          return getOrCreateBuilder__TEMP(def.kind, cacheKey, path, def.handlers, { index }); // <== RECURSION 🌳
         };
       }
 
@@ -189,7 +205,7 @@ export function chain<M extends O, A extends O>(args: {
             throw new Error(`Name of list item not given.`);
           }
           const model = getModel();
-          const path = formatIndexPath(def.path);
+          const path = formatPath(def.path);
           const list = findListOrThrow(model, path);
           index = findListIndexByName(list, name, index);
           ensureListDefault(model, def, path, index);
@@ -212,7 +228,7 @@ export function chain<M extends O, A extends O>(args: {
           if (typeof field !== 'string' || !field.trim()) {
             throw new Error(`The map "key" not given.`);
           }
-          const path = (def.path || '').trim();
+          const path = formatPath(def.path);
           const cacheKey = `${def.kind}:${path}:${key}.${field}]`;
 
           return getOrCreate(cacheKey, () => {
@@ -223,7 +239,7 @@ export function chain<M extends O, A extends O>(args: {
               ensureObjectAt(model, path);
               ensureObjectAt(model, fieldPath, def.default);
             }
-            const builder = fromMapFactory(def.builder, field, fieldPath);
+            const builder = fromMapFactory(def.builder, 'map', field, fieldPath);
             cache.put(cacheKey, builder);
             return builder;
           });

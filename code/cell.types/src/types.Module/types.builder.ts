@@ -85,9 +85,8 @@ export type BuilderListDef = BuilderListByIndexDef | BuilderListByNameDef;
 export type BuilderListByIndexDef = {
   kind: 'list:byIndex';
   path?: string; // [JsonPath] to location in model.
-  handlers: BuilderGetHandlers<any, any>;
+  builder: BuilderIndexFactory<any, any>;
   default?: () => O;
-  builder?: BuilderIndexFactory<any, any>;
 };
 export type BuilderListByIndex<T> = (index?: BuilderIndexParam) => T;
 
@@ -132,12 +131,13 @@ export type BuilderMap<T, K = string, A extends O = O> = (key: K, args?: A) => T
  * Factories
  */
 
-export type BuilderChainFactory = <M extends O, A extends O>(args: {
-  handlers: BuilderHandlers<M, A>;
+export type BuilderChainFactory = <M extends O, A extends O>(
+  args: BuilderChainFactoryArgs<M, A>,
+) => BuilderChain<A>;
+export type BuilderChainFactoryArgs<M extends O, A extends O> = {
   model: BuilderModel<M>;
-  parent?: BuilderChain<any>;
-  path?: string;
-}) => BuilderChain<A>;
+  handlers: BuilderHandlers<M, A>;
+};
 
 export type BuilderMapFactory<M extends O, A extends O> = (
   args: BuilderMapFactoryArgs<M>,
@@ -146,7 +146,11 @@ export type BuilderMapFactoryArgs<M extends O> = {
   key: string;
   path: string;
   model: BuilderModel<M>;
-  parent: BuilderChain<any>;
+  create<M extends O, A extends O>(args: {
+    handlers: BuilderHandlers<M, A>;
+    model?: BuilderModel<M>;
+    path?: string;
+  }): BuilderChain<A>;
 };
 
 export type BuilderIndexFactory<M extends O, A extends O> = (
@@ -157,4 +161,9 @@ export type BuilderIndexFactoryArgs<M extends O> = {
   path: string;
   model: BuilderModel<M>;
   parent: BuilderChain<any>;
+  create<M extends O, A extends O>(args: {
+    handlers: BuilderHandlers<M, A>;
+    model?: BuilderModel<M>;
+    path?: string;
+  }): BuilderChain<A>;
 };
