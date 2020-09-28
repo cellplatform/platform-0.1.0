@@ -64,7 +64,7 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
     builder: (args) => {
       return Builder.chain<IModel, IBar>({
         handlers: barHandlers,
-        model: () => args.model,
+        model: args.model,
         parent: args.parent,
         path: args.path,
       });
@@ -79,7 +79,7 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
     builder: (args) => {
       return Builder.chain<IModel, IItem>({
         handlers: itemHandlers,
-        model: () => args.model,
+        model: args.model,
         parent: args.parent,
         path: args.path,
       });
@@ -98,7 +98,7 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
     builder: (args) => {
       return Builder.chain<IModel, IItem>({
         handlers: itemHandlers,
-        model: () => args.model,
+        model: args.model,
         parent: args.parent,
         path: args.path,
       });
@@ -128,7 +128,7 @@ const barHandlers: t.BuilderHandlers<IModel, IBar> = {
     builder: (args) => {
       return Builder.chain<IModel, IBaz>({
         handlers: bazHandlers,
-        model: () => args.model,
+        model: args.model,
         parent: args.parent,
         path: args.path,
       });
@@ -173,7 +173,7 @@ const itemHandlers: t.BuilderHandlers<IModel, IItem> = {
     builder: (args) => {
       return Builder.chain<IModel, IItemChild>({
         handlers: itemChildHandlers,
-        model: () => args.model,
+        model: args.model,
         parent: args.parent,
         path: args.path,
       });
@@ -214,7 +214,7 @@ const itemChildHandlers: t.BuilderHandlers<IModel, IItemChild> = {
 const create = () => {
   const model = StateObject.create<IModel>({ name: '', foo: {} });
   const builder = Builder.chain<IModel, IFoo>({
-    model: () => model,
+    model: model,
     handlers: fooHandlers,
   });
   return { model, builder };
@@ -239,13 +239,12 @@ describe.only('Builder', () => {
   describe('handler: args/context', () => {
     type IModel = { name?: string };
     type IFoo = { name(value: string): IFoo };
-    type IContext = { foo: number };
 
     it('passes args (no context)', () => {
       let args: t.BuilderHandlerArgs<IModel> | undefined;
       const model = StateObject.create<IModel>({});
       const builder = Builder.chain<IModel, IFoo>({
-        model: () => model,
+        model,
         handlers: {
           name: (e) => (args = e),
         },
@@ -260,21 +259,6 @@ describe.only('Builder', () => {
       expect(args?.path).to.eql('$');
       expect(args?.index).to.eql(-1);
       expect(args?.key).to.eql('name');
-      expect(args?.context).to.eql({}); // NB: no "context" factory provided, empty object returned.
-    });
-
-    it('args (with context)', () => {
-      let args: t.BuilderHandlerArgs<IModel, IContext> | undefined;
-      const model = StateObject.create<IModel>({});
-      const builder = Builder.chain<IModel, IFoo, IContext>({
-        model: () => model,
-        context: () => ({ foo: 123 }),
-        handlers: {
-          name: (e) => (args = e),
-        },
-      });
-      builder.name('foo');
-      expect(args?.context.foo).to.eql(123);
     });
   });
 
@@ -527,7 +511,7 @@ describe.only('Builder', () => {
             fooBuilderCount++;
             fooParent = args.parent;
             return Builder.chain<IModelTwo, ITwo>({
-              model: () => (args.key === 'foo' ? modelTwoFoo : modelTwoBar),
+              model: args.key === 'foo' ? modelTwoFoo : modelTwoBar,
               handlers: handlersTwo,
               parent: args.parent,
             });
@@ -542,7 +526,7 @@ describe.only('Builder', () => {
       };
 
       const builder = Builder.chain<IModelOne, IOne>({
-        model: () => modelOne,
+        model: modelOne,
         handlers: handlersOne,
       });
 

@@ -13,10 +13,9 @@ type K = t.BuilderMethodKind;
  *    <A> API
  *    <C> Context (optional)
  */
-export function chain<M extends O, A extends O, C extends O = O>(args: {
-  handlers: t.BuilderHandlers<M, A, C>;
-  model: () => t.BuilderModel<M>;
-  context?: () => C;
+export function chain<M extends O, A extends O>(args: {
+  handlers: t.BuilderHandlers<M, A>;
+  model: t.BuilderModel<M>;
   parent?: B;
 
   // [Internal]
@@ -30,8 +29,7 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
   const cache = args.cache || MemoryCache.create();
   const builder = {};
 
-  const getContext = () => (typeof args.context === 'function' ? args.context() || {} : {}) as C;
-  const getModel = () => args.model();
+  const getModel = () => args.model;
 
   const formatIndexPath = (path?: string) => {
     if (path === undefined) {
@@ -41,16 +39,11 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
     }
   };
 
-  const fromMapFactory = (
-    factory: t.BuilderMapFactory<any, any, any>,
-    key: string,
-    path: string,
-  ) => {
+  const fromMapFactory = (factory: t.BuilderMapFactory<any, any>, key: string, path: string) => {
     return factory({
       key,
       model: getModel(),
       parent: builder,
-      context: getContext(),
       path,
     });
   };
@@ -64,10 +57,9 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
   ): B => {
     cacheKey = `${cacheKey}:${modelPath}`;
     if (!cache.exists(cacheKey)) {
-      const context = getContext();
       const path = formatIndexPath(modelPath);
       const index = options.index === undefined ? -1 : options.index;
-      const handlers = getHandlers({ context, path, index });
+      const handlers = getHandlers({ path, index });
       const model = args.model;
       const parent = builder;
       cache.put(
@@ -90,16 +82,15 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
   // Assign chained method modifiers.
   Object.keys(handlers)
     .filter((key) => typeof handlers[key] === 'function')
-    .map((key) => ({ key, handler: handlers[key] as t.BuilderHandler<M, C> }))
+    .map((key) => ({ key, handler: handlers[key] as t.BuilderHandler<M> }))
     .forEach(({ key, handler }) => {
       builder[key] = (...params: any[]) => {
-        const handlerArgs: t.BuilderHandlerArgs<M, C> = {
+        const handlerArgs: t.BuilderHandlerArgs<M> = {
           kind,
           key,
           index,
           params,
           parent,
-          context: getContext(),
           path: args.path === undefined ? '$' : `${args.path || '$'}`,
           model: getModel(),
           is: { list: is.list(kind), map: is.map(kind) },
@@ -136,7 +127,7 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
       }
 
       const fromIndexFactory = (
-        factory: t.BuilderIndexFactory<any, any, any>,
+        factory: t.BuilderIndexFactory<any, any>,
         index: number,
         path: string,
       ) => {
@@ -144,7 +135,6 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
           index,
           model: getModel(),
           parent: builder,
-          context: getContext(),
           path,
         });
       };
@@ -172,11 +162,11 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
 
           console.groupEnd();
 
-          // return getOrCreate(cacheKey, () => {
-          //   const b = fromIndexFactory(def.builder, index, path);
-          //   console.log('b', b);
-          //   return b;
-          // });
+          getOrCreate(cacheKey + 1, () => {
+            // const b = fromIndexFactory(def.builder, index, path);
+            // console.log('b', b);
+            // return b;
+          });
 
           // console.log('path', path);
           // console.log('def.builder', def.builder);

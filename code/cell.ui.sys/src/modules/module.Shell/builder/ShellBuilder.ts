@@ -20,7 +20,7 @@ export function builder(bus: t.EventBus, options: { shell?: t.IModule } = {}) {
 
   // Construct the builder API.
   const builder = Builder.chain<N, t.IShellBuilder>({
-    model: () => ({ state: module.state, change: module.change }),
+    model: module,
     handlers: rootHandlers,
   });
 
