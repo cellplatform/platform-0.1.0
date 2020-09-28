@@ -13,6 +13,8 @@ export async function SAMPLE(bus: t.EventBus) {
    */
   const shell = Shell.builder(bus);
 
+  // shell.module()
+
   shell.name('MyName');
   shell.name('MyName');
   shell.name('MyName');
@@ -23,4 +25,8 @@ export async function SAMPLE(bus: t.EventBus) {
   time.delay(800, () => {
     shell.name('hello');
   });
+
+
+  // shell.module()
+
 }

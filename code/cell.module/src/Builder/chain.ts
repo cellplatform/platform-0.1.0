@@ -37,31 +37,6 @@ export function chain<M extends O, A extends O>(args: {
     }
   };
 
-  // const fromMapFactory = (
-  //   factory: t.BuilderMapFactory<any, any>,
-  //   kind: t.BuilderMethodKind,
-  //   key: string,
-  //   path: string,
-  // ) => {
-  //   return factory({
-  //     key,
-  //     model,
-  //     path,
-  //     create<M extends O, A extends O>(args: {
-  //       handlers: t.BuilderHandlers<M, A>;
-  //       model?: t.BuilderModel<M>;
-  //     }) {
-  //       return chain<M, A>({
-  //         kind,
-  //         parent: builder,
-  //         model: (args.model || model) as t.BuilderModel<M>,
-  //         handlers: args.handlers,
-  //         path,
-  //       });
-  //     },
-  //   });
-  // };
-
   const getOrCreate = (cacheKey: string, create: () => B) => {
     if (cache.exists(cacheKey)) {
       return cache.get(cacheKey);
@@ -127,7 +102,7 @@ export function chain<M extends O, A extends O>(args: {
           const path = formatPath(def.path);
           const list = findListOrThrow(model, path);
           const index = deriveListIndex(list, input);
-          const cacheKey = `${def.kind}:${key}[${index}]`;
+          const cacheKey = `${def.kind}:${path}:${key}[${index}]`;
 
           ensureDefaultAtIndex(model, path, index, def.default);
 

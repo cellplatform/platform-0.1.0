@@ -3,8 +3,6 @@ import { Builder } from '.';
 import { StateObject } from '@platform/state';
 import * as jpath from 'jsonpath';
 
-type O = Record<string, unknown>;
-
 /**
  * Data model types (State).
  */
@@ -61,9 +59,7 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
   bar: {
     kind: 'object',
     path: '$.childObject',
-    builder: (args) => {
-      return args.create(barHandlers);
-    },
+    builder: (args) => args.create(barHandlers),
     default: () => ({ count: 0 }),
   },
   listByIndex: {
@@ -82,9 +78,7 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
     kind: 'map',
     path: '$.foo.map',
     default: () => ({ name: 'hello', child: { count: 0 }, children: [] }),
-    builder: (args) => {
-      return args.create<IModel, IItem>(itemHandlers);
-    },
+    builder: (args) => args.create<IModel, IItem>(itemHandlers),
   },
 };
 
@@ -425,6 +419,18 @@ describe.only('Builder', () => {
   });
 
   describe('kind: "map"', () => {
+    it('throw: "key" not given', () => {
+      const { builder } = create();
+      const fn = () => builder.map(undefined as any);
+      expect(fn).to.throw(/not given/);
+    });
+
+    it('throw: "key" empty string', () => {
+      const { builder } = create();
+      const fn = () => builder.map('   ' as any);
+      expect(fn).to.throw(/not given/);
+    });
+
     it('assigns new child at "key" (generated default {object})', () => {
       const { builder, model } = create();
       const getMap = () => model.state.foo.map;
@@ -447,31 +453,15 @@ describe.only('Builder', () => {
       expect(child1).to.equal(child2);
     });
 
-    it('throw: "key" not given', () => {
-      const { builder } = create();
-      const fn = () => builder.map(undefined as any);
-      expect(fn).to.throw(/not given/);
-    });
-
-    it('throw: "key" empty string', () => {
-      const { builder } = create();
-      const fn = () => builder.map('   ' as any);
-      expect(fn).to.throw(/not given/);
-    });
-  });
-
-  describe('child builders (not stored on model)', () => {
-    it('kind: "map"', () => {
+    it('no path (memory map)', () => {
       type IModelOne = { kind: 'One' };
       type IModelTwo = { kind: 'Two'; name?: string };
-      type IOne = {
-        child: t.BuilderMap<ITwo, 'foo' | 'bar'>;
-      };
+      type IOne = { child: t.BuilderMap<ITwo, 'foo' | 'bar'> };
       type ITwo = { name(value: string): ITwo; parent: () => IOne };
 
       const modelOne = StateObject.create<IModelOne>({ kind: 'One' });
-      const modelTwoFoo = StateObject.create<IModelTwo>({ kind: 'Two' });
-      const modelTwoBar = StateObject.create<IModelTwo>({ kind: 'Two' });
+      const modelTwoA = StateObject.create<IModelTwo>({ kind: 'Two' });
+      const modelTwoB = StateObject.create<IModelTwo>({ kind: 'Two' });
 
       let fooBuilderCount = 0;
 
@@ -480,16 +470,14 @@ describe.only('Builder', () => {
           kind: 'map',
           builder(args) {
             fooBuilderCount++;
-            const model = args.key === 'foo' ? modelTwoFoo : modelTwoBar;
+            const model = args.key === 'foo' ? modelTwoA : modelTwoB;
             return args.create<IModelTwo, ITwo>(handlersTwo, model);
           },
         },
       };
 
       const handlersTwo: t.BuilderHandlers<IModelTwo, ITwo> = {
-        name(args) {
-          args.model.change((draft) => (draft.name = args.params[0]));
-        },
+        name: (args) => args.model.change((draft) => (draft.name = args.params[0])),
         parent: (args) => args.parent,
       };
 
@@ -506,14 +494,10 @@ describe.only('Builder', () => {
       expect(foo1).to.equal(foo2);
 
       foo1.name('hello');
-      expect(modelTwoFoo.state.name).to.eql('hello');
+      expect(modelTwoA.state.name).to.eql('hello');
 
       builder.child('bar').name('Susan');
-      expect(modelTwoBar.state.name).to.eql('Susan');
-    });
-
-    it.skip('memory list', () => {
-      //
+      expect(modelTwoB.state.name).to.eql('Susan');
     });
   });
 });

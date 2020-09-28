@@ -1,8 +1,8 @@
 type O = Record<string, unknown>;
 
 export type BuilderNamedItem = { name: string };
-export type BuilderIndexParam = number | BuilderIndexEdge | BuilderIndexCalc;
-export type BuilderIndexEdge = 'START' | 'END';
+export type BuilderIndexParam = BuilderIndexEdge | number | BuilderIndexCalc;
+export type BuilderIndexEdge = 'END' | 'START';
 export type BuilderIndexCalc = (args: BuilderIndexCalcArgs) => number;
 export type BuilderIndexCalcArgs = { total: number; list: any[] };
 
@@ -86,7 +86,7 @@ export type BuilderListDef = BuilderListByIndexDef | BuilderListByNameDef;
  */
 export type BuilderListByIndexDef = {
   kind: 'list:byIndex';
-  path?: string; // [JsonPath] to location in model.
+  path: string; // [JsonPath] to location in model.
   builder: BuilderListFactory<any, any>;
   default?: () => O;
 };
@@ -111,7 +111,7 @@ export type BuilderListByIndex<T> = (index?: BuilderIndexParam) => T;
  */
 export type BuilderListByNameDef = {
   kind: 'list:byName';
-  path?: string; // [JsonPath] to location in model.
+  path: string; // [JsonPath] to location in model.
   builder: BuilderListFactory<any, any>;
   default?: () => O;
 };

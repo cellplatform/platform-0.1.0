@@ -1,4 +1,5 @@
 import { t, Module, constants, Builder } from '../common';
+import { IShellBuilderModule } from '../types';
 
 type N = t.ITreeNode<t.ShellProps>;
 
@@ -43,10 +44,9 @@ const rootHandlers: t.BuilderHandlers<N, t.IShellBuilder> = {
   },
 
   module: {
-    kind: 'list:byName',
+    kind: 'list:byIndex',
     path: '$.modules',
-    handlers: () => moduleHandlers,
-    default: () => ({}),
+    builder: (args) => args.create<N, IShellBuilderModule>(moduleHandlers),
   },
 };
 
