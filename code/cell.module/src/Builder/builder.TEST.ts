@@ -70,15 +70,13 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
     kind: 'list:byIndex',
     path: '$.foo.list',
     default: () => ({ name: 'hello', child: { count: 0 }, children: [] }),
-    builder: (args) => {
-      return args.create<IModel, IItem>({ handlers: itemHandlers });
-    },
+    builder: (args) => args.create<IModel, IItem>({ handlers: itemHandlers }),
   },
   listByName: {
     kind: 'list:byName',
     path: '$.foo.list',
-    handlers: () => itemHandlers,
     default: () => ({ name: 'hello', child: { count: 0 }, children: [] }),
+    builder: (args) => args.create<IModel, IItem>({ handlers: itemHandlers }),
   },
   map: {
     kind: 'map',
