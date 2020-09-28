@@ -1,5 +1,4 @@
 type O = Record<string, unknown>;
-type BuilderMethodsAny = BuilderHandlers<any, any>;
 
 export type BuilderNamedItem = { name: string };
 export type BuilderIndexParam = number | BuilderIndexEdge | BuilderIndexCalc;
@@ -15,9 +14,10 @@ export type Builder = { chain: BuilderChainFactory };
 export type BuilderChain<A extends O> = A;
 export type BuilderChainFactory = <M extends O, A extends O, C extends O = O>(args: {
   handlers: BuilderHandlers<M, A, C>;
-  change: BuilderModelChange<M>;
-  state: () => M;
+  model: () => BuilderModel<M>;
   context?: () => C;
+  parent?: BuilderChain<any>;
+  path?: string;
 }) => BuilderChain<A>;
 
 /**
@@ -52,6 +52,15 @@ export type BuilderHandlerArgs<M extends O, C extends O = O> = {
 };
 export type BuilderMethodKind = 'ROOT' | BuilderChild['kind'];
 
+export type BuilderGetHandlers<M extends O, A extends O, C extends O = O> = (
+  args: BuilderGetHandlersArgs<C>,
+) => BuilderHandlers<M, A, C>;
+export type BuilderGetHandlersArgs<C extends O = O> = {
+  context: C;
+  path: string;
+  index: number;
+};
+
 /**
  * Children
  */
@@ -68,7 +77,7 @@ export type BuilderChild =
 export type BuilderObjectDef = {
   kind: 'object';
   path: string;
-  handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
+  handlers: BuilderGetHandlers<any, any, any>;
 };
 
 export type BuilderListDef = BuilderListByIndexDef | BuilderListByNameDef;
@@ -85,7 +94,7 @@ export type BuilderListDef = BuilderListByIndexDef | BuilderListByNameDef;
 export type BuilderListByIndexDef = {
   kind: 'list:byIndex';
   path?: string; // JsonPath to location in model.
-  handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
+  handlers: BuilderGetHandlers<any, any, any>;
   default?: (args: { path: string }) => O;
 };
 export type BuilderListByIndex<T> = (index?: BuilderIndexParam) => T;
@@ -110,7 +119,7 @@ export type BuilderListByIndex<T> = (index?: BuilderIndexParam) => T;
 export type BuilderListByNameDef = {
   kind: 'list:byName';
   path?: string; // JsonPath to location in model.
-  handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
+  handlers: BuilderGetHandlers<any, any, any>;
   default?: (args: { path: string }) => O;
 };
 export type BuilderListByName<T, N = string> = (name: N, index?: BuilderIndexParam) => T;
@@ -122,7 +131,19 @@ export type BuilderListByName<T, N = string> = (name: N, index?: BuilderIndexPar
 export type BuilderMapDef = {
   kind: 'map';
   path?: string; // JsonPath to location in model.
-  handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
+  builder: BuilderMapFactory<any, any>;
   default?: (args: { path: string }) => O;
 };
 export type BuilderMap<T, K = string, A extends O = O> = (key: K, args?: A) => T;
+
+export type BuilderMapFactory<M extends O, A extends O, C extends O = O> = (
+  args: BuilderMapFactoryArgs<M, C>,
+) => BuilderChain<A>;
+export type BuilderMapFactoryArgs<M extends O, C extends O> = {
+  key: string;
+  path: string;
+  model: BuilderModel<M>;
+  parent: BuilderChain<any>;
+  context: C;
+  ensurePath: () => void;
+};

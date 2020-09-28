@@ -26,16 +26,7 @@ type IFoo = {
   listByIndex: t.BuilderListByIndex<IItem>;
   listByName: t.BuilderListByName<IItem>;
   map: t.BuilderMap<IItem, 'foo' | 'bar'>;
-
-  memoryMap: t.BuilderMap<IMemory>;
-  memoryListByIndex: t.BuilderListByIndex<IMemory>;
-  memoryListByName: t.BuilderListByIndex<IMemory>;
 };
-
-type IMemory = {
-  name(value: string): IMemory;
-};
-type IMemoryArgs = {};
 
 type IBar = {
   count(value: number): IBar;
@@ -87,21 +78,17 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
   map: {
     kind: 'map',
     path: '$.foo.map',
-    handlers: () => itemHandlers,
+    // handlers: () => itemHandlers,
     default: (args) => ({ name: 'hello', child: { count: 0 }, children: [] }),
-  },
-
-  memoryMap: {
-    kind: 'map',
-    handlers: () => fooHandlers,
-  },
-  memoryListByIndex: {
-    kind: 'list:byIndex',
-    handlers: () => fooHandlers,
-  },
-  memoryListByName: {
-    kind: 'list:byName',
-    handlers: () => fooHandlers,
+    builder: (args) => {
+      args.ensurePath();
+      return Builder.chain<IModel, IItem>({
+        handlers: itemHandlers,
+        model: () => args.model,
+        parent: args.parent,
+        path: args.path,
+      });
+    },
   },
 };
 
@@ -199,8 +186,7 @@ const itemChildHandlers: t.BuilderHandlers<IModel, IItemChild> = {
 const create = () => {
   const model = StateObject.create<IModel>({ name: '', foo: { list: [], map: {} } });
   const builder = Builder.chain<IModel, IFoo>({
-    state: () => model.state,
-    change: model.change,
+    model: () => ({ state: model.state, change: model.change }),
     handlers: fooHandlers,
   });
   return { model, builder };
@@ -231,8 +217,7 @@ describe.only('Builder', () => {
       let args: t.BuilderHandlerArgs<IModel> | undefined;
       const model = StateObject.create<IModel>({});
       const builder = Builder.chain<IModel, IFoo>({
-        state: () => model.state,
-        change: model.change,
+        model: () => model,
         handlers: {
           name: (e) => (args = e),
         },
@@ -254,8 +239,7 @@ describe.only('Builder', () => {
       let args: t.BuilderHandlerArgs<IModel, IContext> | undefined;
       const model = StateObject.create<IModel>({});
       const builder = Builder.chain<IModel, IFoo, IContext>({
-        state: () => model.state,
-        change: model.change,
+        model: () => model,
         context: () => ({ foo: 123 }),
         handlers: {
           name: (e) => (args = e),
@@ -456,7 +440,7 @@ describe.only('Builder', () => {
     });
   });
 
-  describe('kind: "map"', () => {
+  describe.only('kind: "map"', () => {
     it('assigns new child at "key" (generated default {object})', () => {
       const { builder, model } = create();
       const getMap = () => model.state.foo.map;
@@ -491,28 +475,57 @@ describe.only('Builder', () => {
   });
 
   describe.only('child builders (not stored on model)', () => {
-    type IModelOne = { type: 'One'; name?: string };
-    type IModelTwo = { type: 'Two'; name?: string };
-    type IOne = { name(value: string): IOne };
-    type IContext = { foo: number };
+    it('kind: "map"', () => {
+      type IModelOne = { kind: 'One' };
+      type IModelTwo = { kind: 'Two'; name?: string };
+      type IOne = { child: t.BuilderMap<ITwo, string> };
+      type ITwo = { name(value: string): ITwo };
 
-    it.only('kind: "map"', () => {
-      const root = create();
-      // const getMap = () => model.state.foo.map;
+      const modelOne = StateObject.create<IModelOne>({ kind: 'One' });
+      const modelTwo = StateObject.create<IModelTwo>({ kind: 'Two' });
 
-      const child = root.builder.memoryMap('foo');
+      let fooBuilderCount = 0;
+      let fooParent: any;
 
-      /**
-       * TODO 🐷
-       */
+      const handlersOne: t.BuilderHandlers<IModelOne, IOne> = {
+        child: {
+          kind: 'map',
+          builder(args) {
+            fooBuilderCount++;
+            fooParent = args.parent;
+            return Builder.chain<IModelTwo, ITwo>({
+              model: () => modelTwo,
+              handlers: handlersTwo,
+              parent: args.parent,
+            });
+          },
+        },
+      };
+
+      const handlersTwo: t.BuilderHandlers<IModelTwo, ITwo> = {
+        name(args) {
+          args.model.change((draft) => (draft.name = args.params[0]));
+        },
+      };
+
+      const builder = Builder.chain<IModelOne, IOne>({
+        model: () => modelOne,
+        handlers: handlersOne,
+      });
+
+      const foo1 = builder.child('foo');
+      const foo2 = builder.child('foo');
+      expect(fooParent).to.equal(builder);
+
+      expect(fooBuilderCount).to.eql(1); // NB: Only constructed once.
+      expect(foo1).to.equal(foo2);
+
+      foo1.name('hello');
+      expect(modelTwo.state.name).to.eql('hello');
     });
 
     it.skip('memory list', () => {
-      const { builder, model } = create();
-
-      const child = builder.memoryListByIndex();
-
-      console.log('child', child);
+      //
     });
   });
 });

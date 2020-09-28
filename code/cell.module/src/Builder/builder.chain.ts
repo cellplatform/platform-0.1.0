@@ -16,21 +16,23 @@ type K = t.BuilderMethodKind;
  */
 export function chain<M extends O, A extends O, C extends O = O>(args: {
   handlers: t.BuilderHandlers<M, A, C>;
-  state: () => M;
-  change: t.BuilderModelChange<M>;
+  model: () => t.BuilderModel<M>;
   context?: () => C;
+  parent?: B;
 
   // [Internal]
   path?: string;
   index?: number;
-  parent?: B;
   cache?: IMemoryCache;
   kind?: t.BuilderMethodKind;
 }): t.BuilderChain<A> {
-  const { handlers, change, parent, kind = 'ROOT' } = args;
+  const { handlers, parent, kind = 'ROOT' } = args;
   const index = args.index === undefined || args.index < 0 ? -1 : args.index;
   const cache = args.cache || MemoryCache.create();
   const builder = {};
+
+  const getContext = () => (typeof args.context === 'function' ? args.context() || {} : {}) as C;
+  const getModel = () => args.model();
 
   const formatPath = (path?: string) => {
     if (path === undefined) {
@@ -40,29 +42,24 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
     }
   };
 
-  const getModel = (): t.BuilderModel<M> => ({ state: args.state(), change });
-
   const getOrCreateBuilder = (
     kind: t.BuilderChild['kind'],
     cacheKey: string,
-    path: string,
-    handlers: H | (() => H),
+    modelPath: string,
+    getHandlers: t.BuilderGetHandlers<any, any>,
     options: { index?: number } = {},
   ): B => {
-    cacheKey = `${cacheKey}:${path}`;
+    cacheKey = `${cacheKey}:${modelPath}`;
     if (!cache.exists(cacheKey)) {
+      const context = getContext();
+      const path = formatPath(modelPath);
+      const index = options.index === undefined ? -1 : options.index;
+      const handlers = getHandlers({ context, path, index });
+      const model = args.model;
+      const parent = builder;
       cache.put(
         cacheKey,
-        chain<any, any>({
-          kind,
-          state: args.state,
-          change,
-          path: formatPath(path),
-          parent: builder,
-          handlers: toHandlers(handlers),
-          index: options.index,
-          cache,
-        }),
+        chain<any, any>({ kind, model, path, parent, handlers, index: options.index, cache }), // <== RECURSION 🌳
       );
     }
     return cache.get<B>(cacheKey);
@@ -80,7 +77,7 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
           index,
           params,
           parent,
-          context: (typeof args.context === 'function' ? args.context() || {} : {}) as C,
+          context: getContext(),
           path: args.path === undefined ? '$' : `${args.path || '$'}`,
           model: getModel(),
           is: { list: is.list(kind), map: is.map(kind) },
@@ -97,6 +94,8 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
     .filter((key) => typeof handlers[key] === 'object')
     .map((key) => ({ key, def: handlers[key] as t.BuilderChild }))
     .forEach(({ key, def }) => {
+      const parent = builder;
+
       /**
        * Simple child object.
        */
@@ -155,32 +154,42 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
           if (typeof field !== 'string' || !field.trim()) {
             throw new Error(`The map "key" not given.`);
           }
-
-          const path = (def.path || '').trim();
-
-          if (path) {
-            // Ensure {map} object if a target path was provided.
-            const model = getModel();
-            const map = jpath.query(model.state, path)[0];
-            if (!map) {
-              throw new Error(`An object (map) does not exist at the path '${path}'.`);
-            }
-
-            if (!map[field]) {
-              model.change((draft) => {
-                jpath.apply(draft, path, (value) => {
-                  value[field] =
-                    typeof def.default === 'function' ? def.default({ path: fieldPath }) : {};
-                  return value;
-                });
-              });
-            }
+          const cacheKey = `${def.kind}/${key}.${field}]`;
+          if (cache.exists(cacheKey)) {
+            return cache.get(cacheKey);
           }
 
-          const cacheKey = `${def.kind}/${key}.${field}]`;
-          const fieldPath = `${path}.${field}`;
+          const objectPath = (def.path || '').trim();
+          const fieldPath = `${objectPath}.${field}`;
+          const model = getModel();
 
-          return getOrCreateBuilder(def.kind, cacheKey, fieldPath, def.handlers); // <== RECURSION 🌳
+          const context = getContext();
+          const builder = def.builder({
+            key: field,
+            path: `${objectPath}.${field}`,
+            model,
+            parent,
+            context,
+            ensurePath() {
+              if (objectPath) {
+                const map = jpath.query(model.state, objectPath)[0];
+                if (!map) {
+                  throw new Error(`An object (map) does not exist at the path '${objectPath}'.`);
+                }
+                if (!map[field]) {
+                  model.change((draft) => {
+                    jpath.apply(draft, objectPath, (value) => {
+                      value[field] =
+                        typeof def.default === 'function' ? def.default({ path: fieldPath }) : {};
+                      return value;
+                    });
+                  });
+                }
+              }
+            },
+          });
+          cache.put(cacheKey, builder);
+          return builder;
         };
       }
     });
@@ -192,8 +201,6 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
 /**
  * [Helpers]
  */
-
-const toHandlers = (input: H | (() => H)) => (typeof input === 'function' ? input() : input);
 
 const is = {
   list: (kind: K) => kind.startsWith('list:'),
