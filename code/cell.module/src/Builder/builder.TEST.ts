@@ -11,7 +11,7 @@ type O = Record<string, unknown>;
 type IModel = {
   name: string;
   childObject?: IModelChild;
-  foo: { list: IModelItem[]; map: Record<string, IModelItem> };
+  foo: { list: IModelItem[]; map?: Record<string, IModelItem> };
 };
 type IModelChild = { count: number };
 type IModelItem = { name: string; child: IModelItemChild; children: IModelItemChild[] };
@@ -61,7 +61,15 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
   bar: {
     kind: 'object',
     path: '$.childObject',
-    handlers: () => barHandlers,
+    builder: (args) => {
+      return Builder.chain<IModel, IBar>({
+        handlers: barHandlers,
+        model: () => args.model,
+        parent: args.parent,
+        path: args.path,
+      });
+    },
+    default: () => ({ count: 0 }),
   },
   listByIndex: {
     kind: 'list:byIndex',
@@ -78,10 +86,8 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
   map: {
     kind: 'map',
     path: '$.foo.map',
-    // handlers: () => itemHandlers,
-    default: (args) => ({ name: 'hello', child: { count: 0 }, children: [] }),
+    default: () => ({ name: 'hello', child: { count: 0 }, children: [] }),
     builder: (args) => {
-      args.ensurePath();
       return Builder.chain<IModel, IItem>({
         handlers: itemHandlers,
         model: () => args.model,
@@ -111,7 +117,14 @@ const barHandlers: t.BuilderHandlers<IModel, IBar> = {
   baz: {
     kind: 'object',
     path: '$.childObject',
-    handlers: () => bazHandlers,
+    builder: (args) => {
+      return Builder.chain<IModel, IBaz>({
+        handlers: bazHandlers,
+        model: () => args.model,
+        parent: args.parent,
+        path: args.path,
+      });
+    },
   },
 
   end: (args) => args.parent,
@@ -149,7 +162,14 @@ const itemHandlers: t.BuilderHandlers<IModel, IItem> = {
   childField: {
     kind: 'object',
     path: 'child', // NB: relative starting point (does not start from "$" root).
-    handlers: () => itemChildHandlers,
+    builder: (args) => {
+      return Builder.chain<IModel, IItemChild>({
+        handlers: itemChildHandlers,
+        model: () => args.model,
+        parent: args.parent,
+        path: args.path,
+      });
+    },
   },
 
   childByIndex: {
@@ -184,9 +204,9 @@ const itemChildHandlers: t.BuilderHandlers<IModel, IItemChild> = {
 };
 
 const create = () => {
-  const model = StateObject.create<IModel>({ name: '', foo: { list: [], map: {} } });
+  const model = StateObject.create<IModel>({ name: '', foo: { list: [] } });
   const builder = Builder.chain<IModel, IFoo>({
-    model: () => ({ state: model.state, change: model.change }),
+    model: () => model,
     handlers: fooHandlers,
   });
   return { model, builder };
@@ -256,6 +276,8 @@ describe.only('Builder', () => {
       const bar = builder.bar;
       expect(typeof bar).to.eql('object');
 
+      expect(model.state.childObject).to.eql({ count: 0 });
+
       bar.count(123);
       expect(model.state.childObject?.count).to.eql(123);
 
@@ -290,8 +312,8 @@ describe.only('Builder', () => {
         .end() //    Step back up to Level-0
         .name('hello');
 
-      expect(model.state.childObject?.count).to.eql(125);
       expect(model.state.name).to.eql('hello');
+      expect(model.state.childObject?.count).to.eql(125);
     });
   });
 
@@ -440,18 +462,20 @@ describe.only('Builder', () => {
     });
   });
 
-  describe.only('kind: "map"', () => {
+  describe('kind: "map"', () => {
     it('assigns new child at "key" (generated default {object})', () => {
       const { builder, model } = create();
       const getMap = () => model.state.foo.map;
 
-      const DEFAULT = { name: 'hello', child: { count: 0 }, children: [] };
+      expect(getMap()).to.eql(undefined);
 
+      const DEFAULT = { name: 'hello', child: { count: 0 }, children: [] };
       const child = builder.map('foo');
-      expect(getMap().foo).to.eql(DEFAULT);
+
+      expect(getMap()?.foo).to.eql(DEFAULT);
 
       child.name('bar').name('zoo');
-      expect(getMap().foo.name).to.eql('zoo');
+      expect(getMap()?.foo.name).to.eql('zoo');
     });
 
     it('reuses existing child at "key"', () => {
@@ -474,15 +498,16 @@ describe.only('Builder', () => {
     });
   });
 
-  describe.only('child builders (not stored on model)', () => {
+  describe('child builders (not stored on model)', () => {
     it('kind: "map"', () => {
       type IModelOne = { kind: 'One' };
       type IModelTwo = { kind: 'Two'; name?: string };
-      type IOne = { child: t.BuilderMap<ITwo, string> };
+      type IOne = { child: t.BuilderMap<ITwo, 'foo' | 'bar'> };
       type ITwo = { name(value: string): ITwo };
 
       const modelOne = StateObject.create<IModelOne>({ kind: 'One' });
-      const modelTwo = StateObject.create<IModelTwo>({ kind: 'Two' });
+      const modelTwoFoo = StateObject.create<IModelTwo>({ kind: 'Two' });
+      const modelTwoBar = StateObject.create<IModelTwo>({ kind: 'Two' });
 
       let fooBuilderCount = 0;
       let fooParent: any;
@@ -494,7 +519,7 @@ describe.only('Builder', () => {
             fooBuilderCount++;
             fooParent = args.parent;
             return Builder.chain<IModelTwo, ITwo>({
-              model: () => modelTwo,
+              model: () => (args.key === 'foo' ? modelTwoFoo : modelTwoBar),
               handlers: handlersTwo,
               parent: args.parent,
             });
@@ -521,7 +546,10 @@ describe.only('Builder', () => {
       expect(foo1).to.equal(foo2);
 
       foo1.name('hello');
-      expect(modelTwo.state.name).to.eql('hello');
+      expect(modelTwoFoo.state.name).to.eql('hello');
+
+      builder.child('bar').name('Susan');
+      expect(modelTwoBar.state.name).to.eql('Susan');
     });
 
     it.skip('memory list', () => {

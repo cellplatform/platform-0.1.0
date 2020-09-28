@@ -10,15 +10,7 @@ export type BuilderIndexCalcArgs = { total: number; list: any[] };
  * Builder
  */
 export type Builder = { chain: BuilderChainFactory };
-
 export type BuilderChain<A extends O> = A;
-export type BuilderChainFactory = <M extends O, A extends O, C extends O = O>(args: {
-  handlers: BuilderHandlers<M, A, C>;
-  model: () => BuilderModel<M>;
-  context?: () => C;
-  parent?: BuilderChain<any>;
-  path?: string;
-}) => BuilderChain<A>;
 
 /**
  * Model/State
@@ -77,7 +69,8 @@ export type BuilderChild =
 export type BuilderObjectDef = {
   kind: 'object';
   path: string;
-  handlers: BuilderGetHandlers<any, any, any>;
+  builder: BuilderObjectFactory<any, any>;
+  default?: () => O;
 };
 
 export type BuilderListDef = BuilderListByIndexDef | BuilderListByNameDef;
@@ -131,19 +124,30 @@ export type BuilderListByName<T, N = string> = (name: N, index?: BuilderIndexPar
 export type BuilderMapDef = {
   kind: 'map';
   path?: string; // JsonPath to location in model.
-  builder: BuilderMapFactory<any, any>;
-  default?: (args: { path: string }) => O;
+  builder: BuilderObjectFactory<any, any>;
+  default?: () => O;
 };
 export type BuilderMap<T, K = string, A extends O = O> = (key: K, args?: A) => T;
 
-export type BuilderMapFactory<M extends O, A extends O, C extends O = O> = (
-  args: BuilderMapFactoryArgs<M, C>,
+/**
+ * Factories
+ */
+
+export type BuilderChainFactory = <M extends O, A extends O, C extends O = O>(args: {
+  handlers: BuilderHandlers<M, A, C>;
+  model: () => BuilderModel<M>;
+  context?: () => C;
+  parent?: BuilderChain<any>;
+  path?: string;
+}) => BuilderChain<A>;
+
+export type BuilderObjectFactory<M extends O, A extends O, C extends O = O> = (
+  args: BuilderObjectFactoryArgs<M, C>,
 ) => BuilderChain<A>;
-export type BuilderMapFactoryArgs<M extends O, C extends O> = {
+export type BuilderObjectFactoryArgs<M extends O, C extends O> = {
   key: string;
   path: string;
   model: BuilderModel<M>;
   parent: BuilderChain<any>;
   context: C;
-  ensurePath: () => void;
 };
