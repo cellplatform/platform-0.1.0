@@ -11,7 +11,7 @@ type O = Record<string, unknown>;
 type IModel = {
   name: string;
   childObject?: IModelChild;
-  foo: { list: IModelItem[]; map?: Record<string, IModelItem> };
+  foo: { list?: IModelItem[]; map?: Record<string, IModelItem> };
 };
 type IModelChild = { count: number };
 type IModelItem = { name: string; child: IModelItemChild; children: IModelItemChild[] };
@@ -76,6 +76,14 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
     path: '$.foo.list',
     handlers: () => itemHandlers,
     default: () => ({ name: 'hello', child: { count: 0 }, children: [] }),
+    builder: (args) => {
+      return Builder.chain<IModel, IItem>({
+        handlers: itemHandlers,
+        model: () => args.model,
+        parent: args.parent,
+        path: args.path,
+      });
+    },
   },
   listByName: {
     kind: 'list:byName',
@@ -204,7 +212,7 @@ const itemChildHandlers: t.BuilderHandlers<IModel, IItemChild> = {
 };
 
 const create = () => {
-  const model = StateObject.create<IModel>({ name: '', foo: { list: [] } });
+  const model = StateObject.create<IModel>({ name: '', foo: {} });
   const builder = Builder.chain<IModel, IFoo>({
     model: () => model,
     handlers: fooHandlers,
@@ -317,7 +325,7 @@ describe.only('Builder', () => {
     });
   });
 
-  describe.only('kind: "list:byIndex"', () => {
+  describe.skip('kind: "list:byIndex"', () => {
     it('creates with no index (insert at end)', () => {
       const { builder } = create();
 
@@ -335,7 +343,7 @@ describe.only('Builder', () => {
       builder.listByIndex().name('foo').parent().listByIndex().name('bar');
       builder.listByIndex(5).name('baz');
 
-      const list = model.state.foo.list;
+      const list = model.state.foo.list || [];
       expect(list[0].name).to.eql('foo');
       expect(list[1].name).to.eql('bar');
       expect(list[5].name).to.eql('baz');
@@ -349,10 +357,10 @@ describe.only('Builder', () => {
       const grandchild = child.childField;
       grandchild.length(101).parent().parent().name('root');
 
-      const state = model.state;
-      expect(state.name).to.eql('root');
-      expect(state.foo.list[1].name).to.eql('foo');
-      expect(state.foo.list[1].child?.count).to.eql(101);
+      const list = model.state.foo.list || [];
+      expect(model.state.name).to.eql('root');
+      expect(list[1].name).to.eql('foo');
+      expect(list[1].child?.count).to.eql(101);
     });
 
     it('indexed grandchild (via method)', () => {
@@ -363,15 +371,15 @@ describe.only('Builder', () => {
       const grandchild = child.childByIndex(0);
       grandchild.length(99).length(101);
 
-      const state = model.state;
-      expect((state.foo.list[1].children || [])[0].count).to.eql(101);
+      const list = model.state.foo.list || [];
+      expect((list[1].children || [])[0].count).to.eql(101);
     });
   });
 
-  describe('kind: "list:byName"', () => {
+  describe.skip('kind: "list:byName"', () => {
     it('assigns "name" and adds item to end of list (default)', () => {
       const { builder, model } = create();
-      const getList = () => model.state.foo.list;
+      const getList = () => model.state.foo.list || [];
 
       const child = builder.listByName('one');
       expect(getList()[0].name).to.eql('one');
@@ -385,7 +393,7 @@ describe.only('Builder', () => {
 
     it('retrieves existing named item', () => {
       const { builder, model } = create();
-      const getList = () => model.state.foo.list;
+      const getList = () => model.state.foo.list || [];
 
       builder.listByName('one');
       builder.listByName('two');
@@ -400,7 +408,7 @@ describe.only('Builder', () => {
 
     it('specify index: "START"', () => {
       const { builder, model } = create();
-      const getList = () => model.state.foo.list;
+      const getList = () => model.state.foo.list || [];
 
       builder.listByName('one');
       builder.listByName('two');
@@ -419,7 +427,7 @@ describe.only('Builder', () => {
 
     it('specify index: number', () => {
       const { builder, model } = create();
-      const getList = () => model.state.foo.list;
+      const getList = () => model.state.foo.list || [];
 
       builder.listByName('one');
       builder.listByName('two', 5);
@@ -429,7 +437,7 @@ describe.only('Builder', () => {
 
     it('specify index: function', () => {
       const { builder, model } = create();
-      const getList = () => model.state.foo.list;
+      const getList = () => model.state.foo.list || [];
 
       builder.listByName('one');
       builder.listByName('two');

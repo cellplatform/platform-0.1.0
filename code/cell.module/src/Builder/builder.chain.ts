@@ -55,7 +55,7 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
     });
   };
 
-  const getOrCreateBuilder = (
+  const getOrCreateBuilder__TEMP = (
     kind: t.BuilderChild['kind'],
     cacheKey: string,
     modelPath: string,
@@ -135,6 +135,20 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
         });
       }
 
+      const fromIndexFactory = (
+        factory: t.BuilderIndexFactory<any, any, any>,
+        index: number,
+        path: string,
+      ) => {
+        return factory({
+          index,
+          model: getModel(),
+          parent: builder,
+          context: getContext(),
+          path,
+        });
+      };
+
       /**
        * Array list (accessed by index).
        */
@@ -142,11 +156,37 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
         builder[key] = (input?: t.BuilderIndexParam) => {
           const path = formatIndexPath(def.path);
           const model = getModel();
+
+          ensureObjectAt(model, path, () => []);
           const list = findListOrThrow(model, path);
           const index = deriveIndexFromList(list, input);
-          ensureListDefault(model, def, path, index);
           const cacheKey = `${def.kind}:${key}[${index}]`;
-          return getOrCreateBuilder(def.kind, cacheKey, path, def.handlers, { index }); // <== RECURSION 🌳
+
+          console.group('🌳 ');
+
+          console.log('path', path);
+          console.log('index', index);
+          console.log('model.state', model.state);
+
+          ensureListDefault(model, def, path, index);
+
+          console.groupEnd();
+
+          // return getOrCreate(cacheKey, () => {
+          //   const b = fromIndexFactory(def.builder, index, path);
+          //   console.log('b', b);
+          //   return b;
+          // });
+
+          // console.log('path', path);
+          // console.log('def.builder', def.builder);
+          // if (def.builder) {
+          //   console.log('path', path);
+
+          // }
+          // console.groupEnd();
+
+          return getOrCreateBuilder__TEMP(def.kind, cacheKey, path, def.handlers, { index }); // <== RECURSION 🌳
         };
       }
 
@@ -164,7 +204,9 @@ export function chain<M extends O, A extends O, C extends O = O>(args: {
           index = findListIndexByName(list, name, index);
           ensureListDefault(model, def, path, index);
           const cacheKey = `${def.kind}:${key}[${index}]`;
-          const builder = getOrCreateBuilder(def.kind, cacheKey, path, def.handlers, { index }); // <== RECURSION 🌳
+          const builder = getOrCreateBuilder__TEMP(def.kind, cacheKey, path, def.handlers, {
+            index,
+          }); // <== RECURSION 🌳
           if (typeof builder.name !== 'function') {
             throw new Error(`The builder API does not have a "name" method.`);
           }
@@ -221,10 +263,14 @@ const parentPath = (path: string) => {
   return { path, parent, field };
 };
 
-const ensureObjectAt = (model: t.BuilderModel<any>, path: string, defaultObject?: () => O) => {
+const ensureObjectAt = (
+  model: t.BuilderModel<any>,
+  path: string,
+  defaultObject?: () => O | O[],
+) => {
   if (path) {
-    const getObject = () => jpath.query(model.state, path)[0];
-    if (!getObject()) {
+    const get = () => jpath.query(model.state, path)[0];
+    if (!get()) {
       const { parent, field } = parentPath(path);
       model.change((draft) => {
         const obj = typeof defaultObject === 'function' ? defaultObject() : {};
@@ -239,7 +285,7 @@ const ensureObjectAt = (model: t.BuilderModel<any>, path: string, defaultObject?
       });
     }
 
-    return getObject();
+    return get();
   }
 };
 
