@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.module",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Module system - isolated event-driven state and logic.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
