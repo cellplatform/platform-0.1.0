@@ -29,14 +29,14 @@ export const create = {
 const bus = rx.bus<E>();
 const data = (shell: t.ShellModule) => shell.state.props?.data as t.ShellData;
 
-describe.only('Shell (Module)', () => {
+describe('Shell (Module)', () => {
   it('create', () => {
     const module = Shell.module(bus);
-    expect(module.id).to.match(/.{20,}\:.{7}\.shell$/);
+    expect(module.id).to.match(/.{20,}\:.{7,10}\.shell$/);
     expect(data(module).name).to.eql('');
   });
 
-  describe.only('event: "Shell/add"', () => {
+  describe('event: "Shell/add"', () => {
     it('does not store registration (different shell)', () => {
       const { bus, data } = create.shell();
       const test = create.test(bus).module;
@@ -49,7 +49,6 @@ describe.only('Shell (Module)', () => {
       const { shell, bus, data } = create.shell();
       const t1 = create.test(bus).module;
       const t2 = create.test(bus).module;
-
       const registrations = () => data().registrations || [];
 
       expect(data().registrations).to.eql(undefined);
@@ -70,8 +69,6 @@ describe.only('Shell (Module)', () => {
     it('removes registration (single)', () => {
       const { shell, bus, data } = create.shell();
       const test = create.test(bus).module;
-      // const test2 = create.test(bus).module;
-
       const registrations = () => data().registrations || [];
 
       bus.fire({ type: 'Shell/add', payload: { shell: shell.id, module: test.id } });

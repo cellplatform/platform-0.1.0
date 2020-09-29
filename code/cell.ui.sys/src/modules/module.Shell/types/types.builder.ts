@@ -6,11 +6,13 @@ import * as t from '../common/types';
 export type IShellBuilder = {
   name(value: string): IShellBuilder;
   add(module: t.IModule, within?: t.NodeIdentifier): IShellBuilder;
+  module(id: t.NodeIdentifier): IShellBuilderModule;
 };
 
 /**
  * Builder API for a module added to a [Shell].
  */
-// export type IShellBuilderModules = {
-//   add(module: t.IModule, within: t.NodeIdentifier): IShellBuilderModules;
-// };
+export type IShellBuilderModule = {
+  // add(module: t.IModule, within: t.NodeIdentifier): IShellBuilderModules;
+  shell(): IShellBuilder;
+};

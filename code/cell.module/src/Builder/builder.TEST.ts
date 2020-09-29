@@ -204,10 +204,6 @@ describe('Builder', () => {
     type IFoo = { name(value: string): IFoo; bar: IBar };
     type IBar = { count(value: number): IBar };
 
-    // const handlers: t.BuilderHandlers<IModel, IFoo> = {
-    //   name: (e) => (args = e)
-    // }
-
     it('args', () => {
       let args: t.BuilderHandlerArgs<IModel> | undefined;
       const model = StateObject.create<IModel>({});

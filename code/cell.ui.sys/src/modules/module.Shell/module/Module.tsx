@@ -14,13 +14,17 @@ export const Shell: t.Shell = {
   Body: (props) => <Layout {...props} />,
 
   /**
+   * API builder (DSL).
+   */
+  builder,
+
+  /**
    * Shell module initialization.
    */
   module(bus, options: t.ShellOptions = {}) {
-    const kind = constants.KIND;
     const shell = Module.create<P>({
       bus,
-      kind,
+      kind: constants.KIND,
       root: {
         id: `${id.shortid()}.shell`,
         props: { data: constants.DEFAULT.DATA },
@@ -29,9 +33,4 @@ export const Shell: t.Shell = {
     strategy({ ...options, shell, bus });
     return shell;
   },
-
-  /**
-   * API builder (DSL).
-   */
-  builder,
 };

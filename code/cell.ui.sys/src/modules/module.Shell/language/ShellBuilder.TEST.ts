@@ -6,7 +6,7 @@ import { create } from '../module/Module.TEST';
 
 const data = (shell: t.ShellModule) => shell.state.props?.data as t.ShellData;
 
-describe('ShellBuilder (DSL)', () => {
+describe.only('ShellBuilder (DSL)', () => {
   describe('create', () => {
     it('throw: module not provided', () => {
       const fn = () => builder(rx.bus());
@@ -78,6 +78,23 @@ describe('ShellBuilder (DSL)', () => {
       expect(fired[1].shell).to.eql(shell.id);
       expect(fired[1].module).to.eql(test2.id);
       expect(fired[1].parent).to.eql(test1.id);
+    });
+  });
+
+  describe.only('module(...)', () => {
+    it('throw: module not added', () => {
+      const { api } = create.shell();
+      const fn = () => api.module('404');
+      expect(fn).to.throw(/has not been added to the shell/);
+    });
+
+    it('retrieve by node/id', () => {
+      const { api, bus } = create.shell();
+      const test = create.test(bus).module;
+
+      api.add(test);
+      expect(api.module(test).shell()).to.equal(api);
+      expect(api.module(test.id).shell()).to.equal(api);
     });
   });
 });
