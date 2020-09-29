@@ -12,4 +12,8 @@ export const model = {
     const props = model.props(shell);
     return props.data || (props.data = DEFAULT.DATA);
   },
+  treeview(shell: S) {
+    const props = model.props(shell);
+    return props.treeview || (props.treeview = {});
+  },
 };

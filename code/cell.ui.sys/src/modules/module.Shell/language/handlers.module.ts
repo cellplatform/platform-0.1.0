@@ -1,15 +1,21 @@
-import { t, Module, Builder } from '../common';
+import { Builder, t } from '../common';
+import { treeHandlers } from './handlers.tree';
 
-type E = t.ShellEvent;
 type M = t.ITreeNode<t.ShellProps>;
+type B = t.IShellBuilderModule;
+type T = t.ITreeviewNodeBuilder<B>;
 
 /**
- * Root DSL handlers for working with a registered module within the [Shell].
+ * DSL handlers for working with a registered module within the [Shell].
  */
-export const moduleHandlers = (bus: t.EventBus<E>, shell: t.IModule, module: t.IModule) => {
-  const handlers: t.BuilderHandlers<M, t.IShellBuilderModule> = {
-    shell(args) {
-      return args.builder.parent;
+export const moduleHandlers = (module: t.IModule) => {
+  const handlers: t.BuilderHandlers<M, B> = {
+    parent: (args) => args.builder.parent,
+    tree(args) {
+      const parent = args.builder.self;
+      const model = module;
+      const handlers = treeHandlers<B>(module);
+      return Builder.create<M, T>({ model, handlers, parent });
     },
   };
   return handlers;

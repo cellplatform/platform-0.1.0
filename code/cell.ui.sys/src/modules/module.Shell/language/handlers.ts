@@ -1,4 +1,4 @@
-import { t, Module, Builder } from '../common';
+import { t, Module, Builder, model } from '../common';
 import { moduleHandlers } from './handlers.module';
 
 type E = t.ShellEvent;
@@ -13,7 +13,7 @@ export const handlers = (bus: t.EventBus<E>, shell: t.IModule) => {
 
   const moduleBuilder = (module: t.IModule, parent: t.BuilderChain<M>) => {
     const model = shell;
-    const handlers = moduleHandlers(bus, shell, module);
+    const handlers = moduleHandlers(module);
     return Builder.create<M, t.IShellBuilderModule>({ model, handlers, parent });
   };
 
@@ -23,9 +23,7 @@ export const handlers = (bus: t.EventBus<E>, shell: t.IModule) => {
      */
     name(args) {
       args.model.change((draft) => {
-        const props = draft.props || (draft.props = {});
-        const data = props.data || (props.data = { name: '' });
-        data.name = (args.params[0] || '').trim();
+        model.data(draft).name = (args.params[0] || '').trim();
       });
     },
 

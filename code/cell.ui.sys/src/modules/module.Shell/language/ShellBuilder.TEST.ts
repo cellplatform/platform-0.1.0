@@ -2,11 +2,11 @@ import { builder } from '.';
 import { Shell } from '..';
 import { expect, rx } from '../../../test';
 import { Module, t } from '../common';
-import { create } from '../module/Module.TEST';
+import { create, TestModule } from '../module/Module.TEST';
 
-const data = (shell: t.ShellModule) => shell.state.props?.data as t.ShellData;
+const data = (module: t.ShellModule) => module.state.props?.data as t.ShellData;
 
-describe.only('ShellBuilder (DSL)', () => {
+describe('ShellBuilder (DSL)', () => {
   describe('create', () => {
     it('throw: module not provided', () => {
       const fn = () => builder(rx.bus());
@@ -38,7 +38,7 @@ describe.only('ShellBuilder (DSL)', () => {
   describe('root', () => {
     it('name', () => {
       const { api, data } = create.shell();
-      api.name('foo').name('bar');
+      api.name('foo').name('  bar  ');
       expect(data().name).to.eql('bar');
     });
   });
@@ -52,7 +52,7 @@ describe.only('ShellBuilder (DSL)', () => {
       rx.payload<t.IShellAddEvent>(bus.event$, 'Shell/add').subscribe((e) => fired.push(e));
 
       const res = api.add(test);
-      expect(typeof res.shell === 'function').to.eql(true);
+      expect(typeof res.parent === 'function').to.eql(true);
 
       expect(fired.length).to.eql(1);
       expect(fired[0].shell).to.eql(shell.id);
@@ -83,20 +83,45 @@ describe.only('ShellBuilder (DSL)', () => {
     });
   });
 
-  describe('module(...)', () => {
+  describe('module', () => {
     it('throw: module not added', () => {
       const { api } = create.shell();
       const fn = () => api.module('404');
       expect(fn).to.throw(/has not been added to the shell/);
     });
 
-    it('retrieve by node/id', () => {
+    it('retrieve by {node}', () => {
       const { api, bus } = create.shell();
       const test = create.test(bus).module;
-
       api.add(test);
-      expect(api.module(test).shell()).to.equal(api);
-      expect(api.module(test.id).shell()).to.equal(api);
+      expect(api.module(test).parent()).to.equal(api);
+    });
+
+    it('retrieve by "id"', () => {
+      const { api, bus } = create.shell();
+      const test = create.test(bus).module;
+      api.add(test);
+      expect(api.module(test.id).parent()).to.equal(api);
+    });
+  });
+
+  describe('tree (node)', () => {
+    const tree = (module: TestModule) => module.state.props?.treeview || {};
+
+    it('parent', () => {
+      const { api, bus } = create.shell();
+      const test = create.test(bus).module;
+      const module = api.add(test);
+      const tree = module.tree();
+      expect(tree.parent()).to.equal(module);
+      expect(tree.parent().parent()).to.equal(api);
+    });
+
+    it('label', () => {
+      const { api, bus } = create.shell();
+      const test = create.test(bus).module;
+      api.add(test).tree().label('foo').label('  bar  ');
+      expect(tree(test).label).to.eql('bar');
     });
   });
 });

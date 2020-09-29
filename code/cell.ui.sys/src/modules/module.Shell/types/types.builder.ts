@@ -13,5 +13,15 @@ export type IShellBuilder = {
  * Builder API for a module added to a [Shell].
  */
 export type IShellBuilderModule = {
-  shell(): IShellBuilder;
+  tree(): ITreeviewNodeBuilder<IShellBuilderModule>;
+  parent(): IShellBuilder;
+};
+
+/**
+ * Builder API for a treeview node.
+ */
+
+export type ITreeviewNodeBuilder<P> = {
+  parent(): P;
+  label(value: string): ITreeviewNodeBuilder<P>;
 };
