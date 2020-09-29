@@ -19,7 +19,8 @@ export function registrationStrategy(args: { shell: t.ShellModule; bus: t.EventB
     .subscribe((e) => {
       const child = fire.request(e.module);
       if (child) {
-        Module.register(bus, child, shell);
+        const parent = e.parent || shell.id;
+        Module.register(bus, child, parent);
       }
     });
 }
@@ -31,7 +32,7 @@ export function nakedRegistrationStrategy(args: { shell: t.ShellModule; bus: t.E
   const { shell, bus } = args;
 
   /**
-   * Handle naked registration.
+   * Handle naked registration (no parent id).
    */
   rx.payload<t.IModuleRegisterEvent>(bus.event$, 'Module/register')
     .pipe(filter((e) => !e.parent))

@@ -1,31 +1,10 @@
-import { expect, rx } from '../../../test';
-import { t, Module, id } from '../common';
 import { builder } from '.';
 import { Shell } from '..';
+import { expect, rx } from '../../../test';
+import { Module, t } from '../common';
+import { create } from '../Module.TEST';
 
-type TestView = 'Default' | '404';
-type TestRegion = 'Main';
-type TestData = { count: number };
-type TestProps = t.IViewModuleProps<TestData, TestView, TestRegion>;
-type TestModule = t.IModule<TestProps>;
-
-const create = {
-  shell(bus?: t.EventBus) {
-    bus = bus || rx.bus();
-    const fire = Module.fire(bus);
-    const module = Shell.module(bus);
-    Module.register(bus, module);
-    const api = builder(bus);
-    return { bus, api, module, fire, data: () => data(module) };
-  },
-  test(bus?: t.EventBus) {
-    bus = bus || rx.bus();
-    const module = Module.create<TestProps>({ bus, kind: 'TEST', root: `${id.shortid()}.test` });
-    return { bus, module };
-  },
-};
-
-const data = (shell: t.ShellModule): t.ShellData => shell.state.props?.data;
+const data = (shell: t.ShellModule) => shell.state.props?.data as t.ShellData;
 
 describe.only('ShellBuilder (DSL)', () => {
   describe('create', () => {
@@ -64,33 +43,41 @@ describe.only('ShellBuilder (DSL)', () => {
     });
   });
 
-  describe('module', () => {
-    describe('module.add', () => {
-      it.only('registers new module within the shell', () => {
-        const { api, bus, fire } = create.shell();
-        const test = create.test(bus).module;
-        // const fire = Module.fire(bus);
+  describe('registration', () => {
+    it('add (no parent)', () => {
+      const { api, bus, shell } = create.shell();
+      const test = create.test(bus).module;
 
-        const f = fire.find({ module: test.id });
-        console.log('f', f.length, f[0].id);
+      const fired: t.IShellAdd[] = [];
+      rx.payload<t.IShellAddEvent>(bus.event$, 'Shell/add').subscribe((e) => fired.push(e));
 
-        // Module.r
-        // fire.
+      api.add(test);
 
-        // expect(fire.find({ module: test.id })).to.eql([]);
-        api.modules.add(test);
+      expect(fired.length).to.eql(1);
+      expect(fired[0].shell).to.eql(shell.id);
+      expect(fired[0].module).to.eql(test.id);
+      expect(fired[0].parent).to.eql('');
+    });
 
-        console.log('-------------------------------------------');
+    it('add (within parent)', () => {
+      const { api, bus, shell } = create.shell();
+      const test1 = create.test(bus).module;
+      const test2 = create.test(bus).module;
 
-        const res = fire.find({ module: test.id });
+      const fired: t.IShellAdd[] = [];
+      rx.payload<t.IShellAddEvent>(bus.event$, 'Shell/add').subscribe((e) => fired.push(e));
 
-        // res.forEach((r) => {
-        //   console.log('r.id', r.id, r.parent, r.path);
-        //   // r.parent;
-        // });
+      api.add(test1).add(test2, test1);
 
-        // console.log('res', res);
-      });
+      expect(fired.length).to.eql(2);
+
+      expect(fired[0].shell).to.eql(shell.id);
+      expect(fired[0].module).to.eql(test1.id);
+      expect(fired[0].parent).to.eql('');
+
+      expect(fired[1].shell).to.eql(shell.id);
+      expect(fired[1].module).to.eql(test2.id);
+      expect(fired[1].parent).to.eql(test1.id);
     });
   });
 });

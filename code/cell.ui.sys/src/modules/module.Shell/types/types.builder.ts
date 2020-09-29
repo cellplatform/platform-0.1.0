@@ -5,12 +5,12 @@ import * as t from '../common/types';
  */
 export type IShellBuilder = {
   name(value: string): IShellBuilder;
-  modules: IShellBuilderModules;
+  add(module: t.IModule, within?: t.NodeIdentifier): IShellBuilder;
 };
 
 /**
  * Builder API for a module added to a [Shell].
  */
-export type IShellBuilderModules = {
-  add(module: t.IModule): IShellBuilderModules;
-};
+// export type IShellBuilderModules = {
+//   add(module: t.IModule, within: t.NodeIdentifier): IShellBuilderModules;
+// };

@@ -10,8 +10,8 @@ export type ShellModule = t.IModule<ShellProps>;
 export type Shell = {
   Body: (props?: ILayoutProps) => JSX.Element;
   Window: (props?: IWindowProps) => JSX.Element;
-  module(bus: t.EventBus, options?: ShellOptions): ShellModule;
-  builder(bus: t.EventBus, options?: { shell?: t.IModule }): t.IShellBuilder;
+  module(bus: t.EventBus<any>, options?: ShellOptions): ShellModule;
+  builder(bus: t.EventBus<any>, options?: { shell?: t.IModule }): t.IShellBuilder;
 };
 
 export type ShellOptions = {
@@ -26,5 +26,5 @@ export type ShellLoadedCallbackHandler = (bus: t.EventBus) => void;
 /**
  * Data (Model)
  */
-export type ShellData = { name: string; modules?: ShellDataModules };
-export type ShellDataModules = { registrations: string[] };
+export type ShellData = { name: string; registrations?: ShellDataModuleRegistration[] };
+export type ShellDataModuleRegistration = { module: string; parent: string };

@@ -39,8 +39,18 @@ export async function SAMPLE(bus: t.EventBus) {
     shell.name('hello');
   });
 
-  const test = create.test(bus);
-  // console.log('test.modules', test.modules);
-  console.log('shell.modules', shell.modules);
-  shell.modules.add(test);
+  const test1 = create.test(bus);
+  const test2 = create.test(bus);
+
+  // console.log("shell.id", shell.id)
+  console.log('test1.id', test1.id);
+  console.log('test2.id', test2.id);
+
+  console.log('-------------------------------------------');
+
+  shell.add(test1).add(test2, test1);
+
+  // time.delay(1200, () => {
+  //   test.dispose();
+  // });
 }

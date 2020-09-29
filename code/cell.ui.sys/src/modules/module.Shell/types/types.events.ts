@@ -31,4 +31,4 @@ export type IShellAddEvent = {
   type: 'Shell/add';
   payload: IShellAdd;
 };
-export type IShellAdd = { shell: string; module: string };
+export type IShellAdd = { shell: string; module: string; parent?: string };
