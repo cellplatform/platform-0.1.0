@@ -205,7 +205,7 @@ describe('Builder', () => {
     type IBar = { count(value: number): IBar };
 
     it('args', () => {
-      let args: t.BuilderHandlerArgs<IModel> | undefined;
+      let args: t.BuilderHandlerArgs<IModel, IFoo> | undefined;
       const model = StateObject.create<IModel>({});
       const builder = Builder.create<IModel, IFoo>({
         model,
@@ -235,7 +235,7 @@ describe('Builder', () => {
     });
 
     it('args.builder.parent', () => {
-      let args: t.BuilderHandlerArgs<IModel> | undefined;
+      let args: t.BuilderHandlerArgs<IModel, IBar> | undefined;
       const model = StateObject.create<IModel>({});
       const builder = Builder.create<IModel, IFoo>({
         model,

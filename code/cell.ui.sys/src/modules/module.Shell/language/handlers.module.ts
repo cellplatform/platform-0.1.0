@@ -17,6 +17,7 @@ export const moduleHandlers = (module: t.IModule) => {
       const handlers = treeHandlers<B>(module);
       return Builder.create<M, T>({ model, handlers, parent });
     },
+    label: (args) => args.builder.self.tree().label(args.params[0]),
   };
   return handlers;
 };

@@ -13,8 +13,9 @@ export type IShellBuilder = {
  * Builder API for a module added to a [Shell].
  */
 export type IShellBuilderModule = {
-  tree(): ITreeviewNodeBuilder<IShellBuilderModule>;
   parent(): IShellBuilder;
+  tree(): ITreeviewNodeBuilder<IShellBuilderModule>;
+  label(value: string): IShellBuilderModule;
 };
 
 /**

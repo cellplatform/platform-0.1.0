@@ -49,15 +49,15 @@ export function create<M extends O, A extends O>(args: {
   // Assign chained method modifiers.
   Object.keys(handlers)
     .filter((key) => typeof handlers[key] === 'function')
-    .map((key) => ({ key, handler: handlers[key] as t.BuilderHandler<M> }))
+    .map((key) => ({ key, handler: handlers[key] as t.BuilderHandler<M, A> }))
     .forEach(({ key, handler }) => {
       builder[key] = (...params: any[]) => {
-        const handlerArgs: t.BuilderHandlerArgs<M> = {
+        const handlerArgs: t.BuilderHandlerArgs<M, A> = {
           kind,
           key,
           index,
           params,
-          builder: { parent, self: builder as t.BuilderChain<M> },
+          builder: { parent, self: builder as t.BuilderChain<A> },
           path: args.path === undefined ? '$' : `${args.path || '$'}`,
           model,
           is: { list: is.list(kind), map: is.map(kind) },

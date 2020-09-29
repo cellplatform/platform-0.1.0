@@ -5,6 +5,7 @@ import { Module, t } from '../common';
 import { create, TestModule } from '../module/Module.TEST';
 
 const data = (module: t.ShellModule) => module.state.props?.data as t.ShellData;
+const tree = (module: TestModule) => module.state.props?.treeview || {};
 
 describe('ShellBuilder (DSL)', () => {
   describe('create', () => {
@@ -93,6 +94,7 @@ describe('ShellBuilder (DSL)', () => {
     it('retrieve by {node}', () => {
       const { api, bus } = create.shell();
       const test = create.test(bus).module;
+
       api.add(test);
       expect(api.module(test).parent()).to.equal(api);
     });
@@ -100,14 +102,21 @@ describe('ShellBuilder (DSL)', () => {
     it('retrieve by "id"', () => {
       const { api, bus } = create.shell();
       const test = create.test(bus).module;
+
       api.add(test);
       expect(api.module(test.id).parent()).to.equal(api);
+    });
+
+    it('label (tree)', () => {
+      const { api, bus } = create.shell();
+      const test = create.test(bus).module;
+
+      api.add(test).label(' foo ');
+      expect(tree(test).label).to.eql('foo');
     });
   });
 
   describe('tree (node)', () => {
-    const tree = (module: TestModule) => module.state.props?.treeview || {};
-
     it('parent', () => {
       const { api, bus } = create.shell();
       const test = create.test(bus).module;

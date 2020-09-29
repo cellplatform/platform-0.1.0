@@ -3,7 +3,9 @@ import { moduleHandlers } from './handlers.module';
 
 type E = t.ShellEvent;
 type P = t.ShellProps;
-type M = t.ITreeNode<P>;
+type N = t.ITreeNode<P>;
+type M = t.IShellBuilderModule;
+type B = t.IShellBuilder;
 
 /**
  * Root DSL handlers for working with [Shell].
@@ -11,13 +13,13 @@ type M = t.ITreeNode<P>;
 export const handlers = (bus: t.EventBus<E>, shell: t.IModule) => {
   const fire = Module.fire<P>(bus);
 
-  const moduleBuilder = (module: t.IModule, parent: t.BuilderChain<M>) => {
+  const moduleBuilder = (module: t.IModule, parent: t.BuilderChain<B>) => {
     const model = shell;
     const handlers = moduleHandlers(module);
-    return Builder.create<M, t.IShellBuilderModule>({ model, handlers, parent });
+    return Builder.create<N, M>({ model, handlers, parent });
   };
 
-  const handlers: t.BuilderHandlers<M, t.IShellBuilder> = {
+  const handlers: t.BuilderHandlers<N, t.IShellBuilder> = {
     /**
      * Rename the shell.
      */

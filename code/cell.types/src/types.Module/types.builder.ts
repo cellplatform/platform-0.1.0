@@ -27,17 +27,17 @@ export type BuilderModelChange<M extends O> = (fn: (draft: M) => void) => void;
  * API Handlers
  */
 export type BuilderHandlers<M extends O, A extends O> = {
-  [K in keyof A]: BuilderHandler<M> | BuilderChild;
+  [K in keyof A]: BuilderHandler<M, A> | BuilderChild;
 };
 
-export type BuilderHandler<M extends O> = (args: BuilderHandlerArgs<M>) => any;
-export type BuilderHandlerArgs<M extends O> = {
+export type BuilderHandler<M extends O, A extends O> = (args: BuilderHandlerArgs<M, A>) => any;
+export type BuilderHandlerArgs<M extends O, A extends O> = {
   kind: BuilderMethodKind;
   key: string;
   path: string;
   index: number; // NB: -1 if not relevant (ie. not related to an array-list).
   params: any[];
-  builder: { self: BuilderChain<M>; parent?: BuilderChain<any> };
+  builder: { self: BuilderChain<A>; parent?: BuilderChain<any> };
   is: { list: boolean; map: boolean };
   model: BuilderModel<M>;
 };
