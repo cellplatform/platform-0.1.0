@@ -15,13 +15,5 @@ export type IShellBuilder = {
 export type IShellBuilderModule = {
   parent(): IShellBuilder;
   label(value: string): IShellBuilderModule;
-  tree: ITreeviewNodeBuilder<IShellBuilderModule>;
-};
-
-/**
- * Builder API for a treeview node.
- */
-export type ITreeviewNodeBuilder<P> = {
-  parent(): P;
-  label(value: string): ITreeviewNodeBuilder<P>;
+  tree: t.ITreeviewNodeBuilder<IShellBuilderModule>;
 };

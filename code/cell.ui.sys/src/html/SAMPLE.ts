@@ -29,11 +29,6 @@ export async function SAMPLE(bus: t.EventBus) {
   // shell.module()
 
   shell.name('MyName');
-  shell.name('MyName');
-  shell.name('MyName');
-  shell.name('MyName');
-  shell.name('MyName');
-  shell.name('MyName');
 
   time.delay(800, () => {
     shell.name('hello');
@@ -45,7 +40,6 @@ export async function SAMPLE(bus: t.EventBus) {
   // console.log("shell.id", shell.id)
   console.log('test1.id', test1.id);
   console.log('test2.id', test2.id);
-
   console.log('-------------------------------------------');
 
   shell.add(test1).label('foo');
