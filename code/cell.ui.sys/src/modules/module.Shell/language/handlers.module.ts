@@ -11,13 +11,17 @@ type T = t.ITreeviewNodeBuilder<B>;
 export const moduleHandlers = (module: t.IModule) => {
   const handlers: t.BuilderHandlers<M, B> = {
     parent: (args) => args.builder.parent,
-    tree(args) {
-      const parent = args.builder.self;
-      const model = module;
-      const handlers = treeHandlers<B>(module);
-      return Builder.create<M, T>({ model, handlers, parent });
+    label: (args) => args.builder.self.tree.label(args.params[0]),
+
+    tree: {
+      kind: 'object',
+      builder(args) {
+        const parent = args.builder.parent;
+        const model = module;
+        const handlers = treeHandlers<B>(model);
+        return Builder.create<M, T>({ model, handlers, parent });
+      },
     },
-    label: (args) => args.builder.self.tree().label(args.params[0]),
   };
   return handlers;
 };

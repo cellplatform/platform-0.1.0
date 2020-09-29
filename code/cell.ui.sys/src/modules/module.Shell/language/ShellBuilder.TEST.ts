@@ -121,7 +121,7 @@ describe('ShellBuilder (DSL)', () => {
       const { api, bus } = create.shell();
       const test = create.test(bus).module;
       const module = api.add(test);
-      const tree = module.tree();
+      const tree = module.tree;
       expect(tree.parent()).to.equal(module);
       expect(tree.parent().parent()).to.equal(api);
     });
@@ -129,7 +129,7 @@ describe('ShellBuilder (DSL)', () => {
     it('label', () => {
       const { api, bus } = create.shell();
       const test = create.test(bus).module;
-      api.add(test).tree().label('foo').label('  bar  ');
+      api.add(test).tree.label('foo').label('  bar  ');
       expect(tree(test).label).to.eql('bar');
     });
   });

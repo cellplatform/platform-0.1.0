@@ -145,18 +145,23 @@ export type BuilderChainFactoryArgs<M extends O, A extends O> = {
  * FACTORY: Child builders
  */
 export type BuilderMapFactory<M extends O, A extends O> = (
-  args: BuilderMapFactoryArgs<M>,
+  args: BuilderMapFactoryArgs<M, A>,
 ) => BuilderChain<A>;
-export type BuilderMapFactoryArgs<M extends O> = BuilderChildFactoryArgs<M> & { key: string };
+export type BuilderMapFactoryArgs<M extends O, A extends O> = BuilderChildFactoryArgs<M, A> & {
+  key: string;
+};
 
 export type BuilderListFactory<M extends O, A extends O> = (
-  args: BuilderListFactoryArgs<M>,
+  args: BuilderListFactoryArgs<M, A>,
 ) => BuilderChain<A>;
-export type BuilderListFactoryArgs<M extends O> = BuilderChildFactoryArgs<M> & { index: number };
+export type BuilderListFactoryArgs<M extends O, A extends O> = BuilderChildFactoryArgs<M, A> & {
+  index: number;
+};
 
-export type BuilderChildFactoryArgs<M extends O> = {
+export type BuilderChildFactoryArgs<M extends O, A extends O> = {
   path: string;
   model: BuilderModel<M>;
+  builder: { parent: BuilderChain<any> };
   create<M extends O, A extends O>(
     handlers: BuilderHandlers<M, A>,
     model?: BuilderModel<M>,

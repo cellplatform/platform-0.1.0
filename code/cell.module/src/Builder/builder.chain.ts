@@ -280,6 +280,7 @@ const fromFactory = (args: { model: t.BuilderModel<any>; parent: t.BuilderChain<
         index,
         path,
         model: args.model,
+        builder: { parent },
         create<M extends O, A extends O>(
           handlers: t.BuilderHandlers<M, A>,
           model?: t.BuilderModel<M>,
@@ -303,6 +304,7 @@ const fromFactory = (args: { model: t.BuilderModel<any>; parent: t.BuilderChain<
         key,
         path,
         model: args.model,
+        builder: { parent },
         create<M extends O, A extends O>(
           handlers: t.BuilderHandlers<M, A>,
           model?: t.BuilderModel<M>,

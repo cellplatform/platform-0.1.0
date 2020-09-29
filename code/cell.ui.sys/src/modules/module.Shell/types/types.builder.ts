@@ -14,14 +14,13 @@ export type IShellBuilder = {
  */
 export type IShellBuilderModule = {
   parent(): IShellBuilder;
-  tree(): ITreeviewNodeBuilder<IShellBuilderModule>;
   label(value: string): IShellBuilderModule;
+  tree: ITreeviewNodeBuilder<IShellBuilderModule>;
 };
 
 /**
  * Builder API for a treeview node.
  */
-
 export type ITreeviewNodeBuilder<P> = {
   parent(): P;
   label(value: string): ITreeviewNodeBuilder<P>;

@@ -49,7 +49,7 @@ export async function SAMPLE(bus: t.EventBus) {
   console.log('-------------------------------------------');
 
   shell.add(test1).label('foo');
-  shell.add(test2, test1).tree().label('bar');
+  shell.add(test2, test1).tree.label('bar');
 
   // time.delay(1200, () => {
   //   test.dispose();
