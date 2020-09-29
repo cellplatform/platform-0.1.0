@@ -9,7 +9,7 @@ export type BuilderIndexCalcArgs = { total: number; list: any[] };
 /**
  * Builder
  */
-export type Builder = { chain: BuilderChainFactory };
+export type Builder = { create: BuilderChainFactory };
 export type BuilderChain<A extends O> = A;
 
 /**
@@ -37,7 +37,7 @@ export type BuilderHandlerArgs<M extends O> = {
   path: string;
   index: number; // NB: -1 if not relevant (ie. not related to an array-list).
   params: any[];
-  parent?: BuilderChain<any>;
+  builder: { self: BuilderChain<M>; parent?: BuilderChain<any> };
   is: { list: boolean; map: boolean };
   model: BuilderModel<M>;
 };
@@ -138,6 +138,7 @@ export type BuilderChainFactory = <M extends O, A extends O>(
 export type BuilderChainFactoryArgs<M extends O, A extends O> = {
   model: BuilderModel<M>;
   handlers: BuilderHandlers<M, A>;
+  parent?: BuilderChain<any>;
 };
 
 /**

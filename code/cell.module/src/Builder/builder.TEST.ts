@@ -103,7 +103,7 @@ const barHandlers: t.BuilderHandlers<IModel, IBar> = {
     builder: (args) => args.create<IModel, IBaz>(bazHandlers, args.model),
   },
 
-  end: (args) => args.parent,
+  end: (args) => args.builder.parent,
 };
 
 const bazHandlers: t.BuilderHandlers<IModel, IBaz> = {
@@ -116,7 +116,7 @@ const bazHandlers: t.BuilderHandlers<IModel, IBaz> = {
       });
     });
   },
-  parent: (args) => args.parent,
+  parent: (args) => args.builder.parent,
 };
 
 const itemHandlers: t.BuilderHandlers<IModel, IItem> = {
@@ -149,7 +149,7 @@ const itemHandlers: t.BuilderHandlers<IModel, IItem> = {
     builder: (args) => args.create<IModel, IItemChild>(itemChildHandlers),
   },
 
-  parent: (args) => args.parent,
+  parent: (args) => args.builder.parent,
 };
 
 const itemChildHandlers: t.BuilderHandlers<IModel, IItemChild> = {
@@ -171,12 +171,12 @@ const itemChildHandlers: t.BuilderHandlers<IModel, IItemChild> = {
       });
     });
   },
-  parent: (args) => args.parent,
+  parent: (args) => args.builder.parent,
 };
 
 const create = () => {
   const model = StateObject.create<IModel>({ name: '', foo: { list: [] } });
-  const builder = Builder.chain<IModel, IFoo>({
+  const builder = Builder.create<IModel, IFoo>({
     model: model,
     handlers: fooHandlers,
   });
@@ -199,19 +199,30 @@ describe('Builder', () => {
     });
   });
 
-  describe('handler: args', () => {
-    type IModel = { name?: string };
-    type IFoo = { name(value: string): IFoo };
+  describe('handlers', () => {
+    type IModel = { name?: string; bar?: { count: number } };
+    type IFoo = { name(value: string): IFoo; bar: IBar };
+    type IBar = { count(value: number): IBar };
 
-    it('passes args (no context)', () => {
+    // const handlers: t.BuilderHandlers<IModel, IFoo> = {
+    //   name: (e) => (args = e)
+    // }
+
+    it('args', () => {
       let args: t.BuilderHandlerArgs<IModel> | undefined;
       const model = StateObject.create<IModel>({});
-      const builder = Builder.chain<IModel, IFoo>({
+      const builder = Builder.create<IModel, IFoo>({
         model,
         handlers: {
           name: (e) => (args = e),
+          bar: {
+            kind: 'object',
+            path: '$.bar',
+            builder: (args) => args.create<IModel, IBar>({ count: (args) => undefined }),
+          },
         },
       });
+
       builder.name('foo');
 
       expect(args?.kind).to.eql('ROOT');
@@ -222,6 +233,30 @@ describe('Builder', () => {
       expect(args?.path).to.eql('$');
       expect(args?.index).to.eql(-1);
       expect(args?.key).to.eql('name');
+
+      expect(args?.builder.self).to.equal(builder);
+      expect(args?.builder.parent).to.equal(undefined);
+    });
+
+    it('args.builder.parent', () => {
+      let args: t.BuilderHandlerArgs<IModel> | undefined;
+      const model = StateObject.create<IModel>({});
+      const builder = Builder.create<IModel, IFoo>({
+        model,
+        handlers: {
+          name: (e) => undefined,
+          bar: {
+            kind: 'object',
+            path: '$.bar',
+            builder: (e) => e.create<IModel, IBar>({ count: (e) => (args = e) }),
+          },
+        },
+      });
+
+      builder.bar.count(123);
+
+      expect(args?.builder.self).to.equal(builder.bar);
+      expect(args?.builder.parent).to.equal(builder);
     });
   });
 
@@ -477,10 +512,10 @@ describe('Builder', () => {
 
       const handlersTwo: t.BuilderHandlers<IModelTwo, ITwo> = {
         name: (args) => args.model.change((draft) => (draft.name = args.params[0])),
-        parent: (args) => args.parent,
+        parent: (args) => args.builder.parent,
       };
 
-      const builder = Builder.chain<IModelOne, IOne>({
+      const builder = Builder.create<IModelOne, IOne>({
         model: modelOne,
         handlers: handlersOne,
       });

@@ -11,12 +11,12 @@ type K = t.BuilderMethodKind;
  *    <M> Model
  *    <A> API
  */
-export function chain<M extends O, A extends O>(args: {
+export function create<M extends O, A extends O>(args: {
   handlers: t.BuilderHandlers<M, A>;
   model: t.BuilderModel<M>;
+  parent?: B;
 
   // [Internal]
-  parent?: B;
   path?: string;
   index?: number;
   cache?: IMemoryCache;
@@ -57,7 +57,7 @@ export function chain<M extends O, A extends O>(args: {
           key,
           index,
           params,
-          parent,
+          builder: { parent, self: builder as t.BuilderChain<M> },
           path: args.path === undefined ? '$' : `${args.path || '$'}`,
           model,
           is: { list: is.list(kind), map: is.map(kind) },
@@ -285,7 +285,7 @@ const fromFactory = (args: { model: t.BuilderModel<any>; parent: t.BuilderChain<
           model?: t.BuilderModel<M>,
         ) {
           model = model || args.model;
-          return chain<M, A>({ kind, parent, model, handlers, path, index });
+          return create<M, A>({ kind, parent, model, handlers, path, index });
         },
       });
     },
@@ -308,7 +308,7 @@ const fromFactory = (args: { model: t.BuilderModel<any>; parent: t.BuilderChain<
           model?: t.BuilderModel<M>,
         ) {
           model = model || args.model;
-          return chain<M, A>({ kind, parent, model, handlers, path });
+          return create<M, A>({ kind, parent, model, handlers, path });
         },
       });
     },
