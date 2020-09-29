@@ -63,7 +63,7 @@ export function create<M extends O, A extends O>(args: {
           is: { list: is.list(kind), map: is.map(kind) },
         };
         const res = handler(handlerArgs);
-        return res || builder;
+        return res === undefined ? builder : res;
       };
     });
 

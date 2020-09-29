@@ -68,7 +68,7 @@ export type BuilderChild =
  */
 export type BuilderObjectDef = {
   kind: 'object';
-  path: string;
+  path?: string;
   builder: BuilderMapFactory<any, any>;
   default?: () => O;
 };

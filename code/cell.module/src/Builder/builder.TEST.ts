@@ -1,6 +1,7 @@
 import { expect, t, jpath } from '../test';
 import { Builder } from '.';
 import { StateObject } from '@platform/state';
+import { value } from '@platform/util.value';
 
 /**
  * Data model types (State).
@@ -19,21 +20,27 @@ type IModelItemChild = { count: number };
  */
 type IFoo = {
   name(value: string): IFoo;
-  bar: IBar;
+  objectOne: IObjectOne;
+  objectTwo: IObjectTwo;
   listByIndex: t.BuilderListByIndex<IItem>;
   listByName: t.BuilderListByName<IItem>;
   map: t.BuilderMap<IItem, 'foo' | 'bar'>;
 };
 
-type IBar = {
-  count(value: number): IBar;
+type IObjectOne = {
+  count(value: number): IObjectOne;
   baz: IBaz;
-  end: () => IFoo;
+  end(): IFoo;
+};
+type IObjectTwo = {
+  parent(): IFoo;
+  echo<T>(value: T): T;
+  args(): t.BuilderHandlerArgs<any, any>;
 };
 
 type IBaz = {
   increment: () => IBaz;
-  parent: () => IBar; // NB: "end" is not a convention, maybe we want to use "parent" instead.
+  parent: () => IObjectOne; // NB: "end" is not a convention, maybe we want to use "parent" instead.
 };
 
 type IItem = {
@@ -55,11 +62,15 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
   name(args) {
     args.model.change((draft) => (draft.name = args.params[0]));
   },
-  bar: {
+  objectOne: {
     kind: 'object',
     path: '$.childObject',
-    builder: (args) => args.create(barHandlers),
+    builder: (args) => args.create(objectOneHandlers),
     default: () => ({ count: 0 }),
+  },
+  objectTwo: {
+    kind: 'object',
+    builder: (args) => args.create(objectTwoHandlers),
   },
   listByIndex: {
     kind: 'list:byIndex',
@@ -81,7 +92,7 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
   },
 };
 
-const barHandlers: t.BuilderHandlers<IModel, IBar> = {
+const objectOneHandlers: t.BuilderHandlers<IModel, IObjectOne> = {
   count(args) {
     args.model.change((draft) => {
       type T = NonNullable<IModel['childObject']>;
@@ -104,6 +115,12 @@ const barHandlers: t.BuilderHandlers<IModel, IBar> = {
   },
 
   end: (args) => args.builder.parent,
+};
+
+const objectTwoHandlers: t.BuilderHandlers<IModel, IObjectTwo> = {
+  parent: (args) => args.builder.parent,
+  echo: (args) => args.params[0],
+  args: (args) => args,
 };
 
 const bazHandlers: t.BuilderHandlers<IModel, IBaz> = {
@@ -256,24 +273,29 @@ describe('Builder', () => {
     });
   });
 
-  describe('kind: "object"', () => {
+  describe('kind: "object" (with path)', () => {
+    it('create and step up to parent', () => {
+      const { builder } = create();
+      expect(builder.objectOne.end()).to.equal(builder);
+    });
+
     it('updates model', () => {
       const { builder, model } = create();
-      const bar = builder.bar;
-      expect(typeof bar).to.eql('object');
+      const one = builder.objectOne;
+      expect(typeof one).to.eql('object');
 
       expect(model.state.childObject).to.eql({ count: 0 });
 
-      bar.count(123);
+      one.count(123);
       expect(model.state.childObject?.count).to.eql(123);
 
-      builder.bar.count(456).count(789);
+      builder.objectOne.count(456).count(789);
       expect(model.state.childObject?.count).to.eql(789);
     });
 
     it('chains into child then [ends] stepping up to parent', () => {
       const { builder, model } = create();
-      builder.bar
+      builder.objectOne
         // Step into child "bar"
         .count(123)
         .count(888)
@@ -284,10 +306,10 @@ describe('Builder', () => {
       expect(model.state.name).to.eql('hello');
     });
 
-    it('chains deeply into multi-child levels', () => {
+    it('chains deeply into multi-level child', () => {
       const { builder, model } = create();
 
-      builder.bar
+      builder.objectOne
         // Step down into Level-1
         .count(123)
 
@@ -300,6 +322,45 @@ describe('Builder', () => {
 
       expect(model.state.name).to.eql('hello');
       expect(model.state.childObject?.count).to.eql(125);
+    });
+  });
+
+  describe('kind: "object" (no path, functionality only)', () => {
+    it('creates', () => {
+      const { builder } = create();
+      expect(builder.objectTwo.parent()).to.equal(builder);
+    });
+
+    it('args', () => {
+      const { builder } = create();
+      const res = builder.objectTwo.args();
+
+      expect(res.kind).to.eql('object');
+      expect(res.key).to.eql('args');
+      expect(res.path).to.eql('$'); // NB: Path not specified on handler decaration.
+      expect(res.builder.parent).to.equal(builder);
+    });
+
+    it('returns value', () => {
+      const { builder } = create();
+      const two = builder.objectTwo;
+
+      expect(two.echo(0)).to.eql(0);
+      expect(two.echo(123)).to.eql(123);
+      expect(two.echo({})).to.eql({});
+      expect(two.echo({ foo: 'hello' })).to.eql({ foo: 'hello' });
+      expect(two.echo(null)).to.eql(null);
+      expect(two.echo('foo')).to.eql('foo');
+      expect(two.echo(true)).to.eql(true);
+      expect(two.echo(false)).to.eql(false);
+      expect(two.echo([])).to.eql([]);
+      expect(two.echo([true, false, 123, 'foo', {}])).to.eql([true, false, 123, 'foo', {}]);
+    });
+
+    it('returns builder (handler returns undefined)', () => {
+      const { builder } = create();
+      const two = builder.objectTwo;
+      expect(two.echo(undefined)).to.equal(two);
     });
   });
 
