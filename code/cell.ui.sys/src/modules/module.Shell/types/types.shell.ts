@@ -26,4 +26,5 @@ export type ShellLoadedCallbackHandler = (bus: t.EventBus) => void;
 /**
  * Data (Model)
  */
-export type ShellData = { name: string };
+export type ShellData = { name: string; modules?: ShellDataModules };
+export type ShellDataModules = { registrations: string[] };

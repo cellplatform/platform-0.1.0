@@ -1,6 +1,6 @@
 import { t, defaultValue } from '../common';
 import { focusStrategy } from './strategy.focus';
-import { nakedRegistrationStrategy } from './strategy.register';
+import { nakedRegistrationStrategy, registrationStrategy } from './strategy.register';
 
 type E = t.ShellEvent;
 
@@ -16,6 +16,8 @@ export function strategy(args: {
   const bus = args.bus.type<E>();
 
   focusStrategy({ shell, bus });
+
+  registrationStrategy({ shell, bus });
 
   if (defaultValue(args.acceptNakedRegistrations, true)) {
     nakedRegistrationStrategy({ shell, bus });
