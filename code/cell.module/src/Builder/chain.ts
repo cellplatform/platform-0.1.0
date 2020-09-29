@@ -1,6 +1,5 @@
 import { MemoryCache, IMemoryCache } from '@platform/cache';
-import { t } from '../common';
-import * as jpath from 'jsonpath';
+import { t, jpath } from '../common';
 
 type O = Record<string, unknown>;
 type B = t.BuilderChain<any>;

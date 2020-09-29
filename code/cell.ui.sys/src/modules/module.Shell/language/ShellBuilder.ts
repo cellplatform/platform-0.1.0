@@ -1,5 +1,5 @@
 import { t, Module, constants, Builder } from '../common';
-import { root } from './handlers.root';
+import { handlers } from './handlers';
 
 type E = t.ShellEvent;
 type M = t.ITreeNode<t.ShellProps>;
@@ -22,7 +22,7 @@ export function builder(bus: t.EventBus, options: { shell?: t.IModule } = {}) {
   // Construct the builder API.
   const api = Builder.chain<M, t.IShellBuilder>({
     model: shell,
-    handlers: root(bus.type<E>(), shell),
+    handlers: handlers(bus.type<E>(), shell),
   });
 
   // Finish up.

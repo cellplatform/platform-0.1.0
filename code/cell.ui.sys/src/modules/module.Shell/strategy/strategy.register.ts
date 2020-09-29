@@ -1,5 +1,5 @@
 import { filter } from 'rxjs/operators';
-import { Module, rx, t } from '../common';
+import { Module, rx, t, model } from '../common';
 
 type E = t.ShellEvent;
 type P = t.ShellProps;
@@ -10,6 +10,41 @@ type P = t.ShellProps;
 export function registrationStrategy(args: { shell: t.ShellModule; bus: t.EventBus<E> }) {
   const { shell, bus } = args;
   const fire = Module.fire<P>(bus);
+
+  const events = Module.events(bus.event$);
+  const query = () => Module.Query.create(shell.state);
+  const findById = (id: t.NodeIdentifier) => query().findById(id);
+  const contains = (id: t.NodeIdentifier) => Boolean(findById(id));
+
+  /**
+   * Store registrations on shell model.
+   */
+  events.registered$
+    .pipe(filter((e) => e.parent === shell.id || contains(e.module)))
+    .subscribe((e) => {
+      shell.change((draft) => {
+        const data = model.data(draft);
+        const list = (data.registrations = data.registrations || []);
+        if (!list.find((item) => item.module === e.module)) {
+          list.push({ module: e.module, parent: e.parent || shell.id });
+        }
+      });
+    });
+
+  /**
+   * Remove registrations from shell model.
+   */
+  events.childDisposed$.pipe(filter((e) => contains(e.module))).subscribe((e) => {
+    shell.change((draft) => {
+      const data = model.data(draft);
+      if (data.registrations) {
+        const list = (data.registrations = data.registrations || []);
+        if (list.find((item) => item.module === e.child)) {
+          data.registrations = list.filter((item) => item.module !== e.child);
+        }
+      }
+    });
+  });
 
   /**
    * Add module to the shell.

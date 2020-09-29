@@ -2,11 +2,11 @@ import { builder } from '.';
 import { Shell } from '..';
 import { expect, rx } from '../../../test';
 import { Module, t } from '../common';
-import { create } from '../Module.TEST';
+import { create } from '../module/Module.TEST';
 
 const data = (shell: t.ShellModule) => shell.state.props?.data as t.ShellData;
 
-describe.only('ShellBuilder (DSL)', () => {
+describe('ShellBuilder (DSL)', () => {
   describe('create', () => {
     it('throw: module not provided', () => {
       const fn = () => builder(rx.bus());

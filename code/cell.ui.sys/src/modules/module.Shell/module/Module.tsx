@@ -1,11 +1,11 @@
 /* eslint-disable react/display-name */
 import * as React from 'react';
 
-import { constants, id, Module, t } from './common';
-import { Layout } from './components/Body';
-import { Window } from './components/Window';
-import { builder } from './language';
-import { strategy } from './strategy';
+import { constants, id, Module, t } from '../common';
+import { Layout } from '../components/Body';
+import { Window } from '../components/Window';
+import { builder } from '../language';
+import { strategy } from '../strategy';
 
 type P = t.ShellProps;
 
@@ -23,7 +23,7 @@ export const Shell: t.Shell = {
       kind,
       root: {
         id: `${id.shortid()}.shell`,
-        props: { data: { name: '' } },
+        props: { data: constants.DEFAULT.DATA },
       },
     });
     strategy({ ...options, shell, bus });

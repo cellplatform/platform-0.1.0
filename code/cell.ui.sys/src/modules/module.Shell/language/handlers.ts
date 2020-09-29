@@ -6,7 +6,7 @@ type M = t.ITreeNode<t.ShellProps>;
 /**
  * Root DSL handlers for working with [Shell].
  */
-export const root = (
+export const handlers = (
   bus: t.EventBus<E>,
   shell: t.IModule,
 ): t.BuilderHandlers<M, t.IShellBuilder> => {

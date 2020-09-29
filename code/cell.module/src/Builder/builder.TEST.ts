@@ -1,7 +1,6 @@
-import { expect, t } from '../test';
+import { expect, t, jpath } from '../test';
 import { Builder } from '.';
 import { StateObject } from '@platform/state';
-import * as jpath from 'jsonpath';
 
 /**
  * Data model types (State).
