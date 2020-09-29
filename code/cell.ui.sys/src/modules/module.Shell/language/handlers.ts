@@ -11,6 +11,12 @@ type M = t.ITreeNode<P>;
 export const handlers = (bus: t.EventBus<E>, shell: t.IModule) => {
   const fire = Module.fire<P>(bus);
 
+  const moduleBuilder = (module: t.IModule, parent: t.BuilderChain<M>) => {
+    const model = shell;
+    const handlers = moduleHandlers(bus, shell, module);
+    return Builder.create<M, t.IShellBuilderModule>({ model, handlers, parent });
+  };
+
   const handlers: t.BuilderHandlers<M, t.IShellBuilder> = {
     /**
      * Rename the shell.
@@ -38,6 +44,8 @@ export const handlers = (bus: t.EventBus<E>, shell: t.IModule) => {
         type: 'Shell/add',
         payload: { shell: shell.id, module: module.id, parent },
       });
+
+      return moduleBuilder(module, args.builder.self);
     },
 
     /**
@@ -50,10 +58,7 @@ export const handlers = (bus: t.EventBus<E>, shell: t.IModule) => {
         const err = `A module with the id '${id}' has not been added to the shell.`;
         throw new Error(err);
       }
-      const model = shell;
-      const parent = args.builder.self;
-      const handlers = moduleHandlers(bus, shell, module);
-      return Builder.create<M, t.IShellBuilderModule>({ model, handlers, parent });
+      return moduleBuilder(module, args.builder.self);
     },
   };
 

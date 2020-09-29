@@ -48,7 +48,8 @@ export async function SAMPLE(bus: t.EventBus) {
 
   console.log('-------------------------------------------');
 
-  shell.add(test1).add(test2, test1);
+  shell.add(test1);
+  shell.add(test2, test1);
 
   // time.delay(1200, () => {
   //   test.dispose();

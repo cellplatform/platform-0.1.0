@@ -51,7 +51,8 @@ describe.only('ShellBuilder (DSL)', () => {
       const fired: t.IShellAdd[] = [];
       rx.payload<t.IShellAddEvent>(bus.event$, 'Shell/add').subscribe((e) => fired.push(e));
 
-      api.add(test);
+      const res = api.add(test);
+      expect(typeof res.shell === 'function').to.eql(true);
 
       expect(fired.length).to.eql(1);
       expect(fired[0].shell).to.eql(shell.id);
@@ -67,7 +68,8 @@ describe.only('ShellBuilder (DSL)', () => {
       const fired: t.IShellAdd[] = [];
       rx.payload<t.IShellAddEvent>(bus.event$, 'Shell/add').subscribe((e) => fired.push(e));
 
-      api.add(test1).add(test2, test1);
+      api.add(test1);
+      api.add(test2, test1);
 
       expect(fired.length).to.eql(2);
 
@@ -81,7 +83,7 @@ describe.only('ShellBuilder (DSL)', () => {
     });
   });
 
-  describe.only('module(...)', () => {
+  describe('module(...)', () => {
     it('throw: module not added', () => {
       const { api } = create.shell();
       const fn = () => api.module('404');
