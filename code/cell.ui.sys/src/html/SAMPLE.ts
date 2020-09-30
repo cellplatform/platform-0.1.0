@@ -37,6 +37,8 @@ export async function SAMPLE(bus: t.EventBus) {
   shell.add(test1).label('foo');
   shell.add(test2, test1).tree.label('bar');
 
+  // shell.module(test1).tree.isVisible(true);
+
   // time.delay(1200, () => {
   //   test.dispose();
   // });
