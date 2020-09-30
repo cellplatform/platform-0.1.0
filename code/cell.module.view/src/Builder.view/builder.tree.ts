@@ -46,9 +46,56 @@ export const treeHandlers = <P extends O>() => {
       args.model.change((draft) => (treeview(draft).description = value));
     },
 
+    isEnabled(args) {
+      const value = format.boolean(args.params[0]);
+      args.model.change((draft) => (treeview(draft).isEnabled = value));
+    },
+
+    isVisible(args) {
+      const value = format.boolean(args.params[0]);
+      args.model.change((draft) => (treeview(draft).isVisible = value));
+    },
+
+    isBold(args) {
+      const value = format.boolean(args.params[0]);
+      args.model.change((draft) => (treeview(draft).isBold = value));
+    },
+
+    isSpinning(args) {
+      const value = format.boolean(args.params[0]);
+      args.model.change((draft) => (treeview(draft).isSpinning = value));
+    },
+
     opacity(args) {
       const value = format.number(args.params[0], { default: 1, min: 0, max: 1 });
       args.model.change((draft) => (treeview(draft).opacity = value));
+    },
+
+    padding(args) {
+      let input = args.params[0];
+      if (Array.isArray(input)) {
+        if (input.length === 2) {
+          // Convert [vertical,horizontal] to [top, right, bottom left].
+          input = [input[0], input[1], input[0], input[1]];
+        }
+        if (input.length > 4) {
+          input = input.slice(0, 4);
+        }
+      }
+      const value = !Array.isArray(input)
+        ? format.number(input, { min: 0 })
+        : input.map((input) => format.number(input, { min: 0 }));
+      args.model.change((draft) => (treeview(draft).padding = value));
+    },
+
+    marginTop(args) {
+      const value = format.number(args.params[0], { min: 0 });
+      args.model.change((draft) => (treeview(draft).marginTop = value));
+    },
+
+    marginBottom(args) {
+      const value = format.number(args.params[0], { min: 0 });
+      args.model.change((draft) => (treeview(draft).marginBottom = value));
     },
   };
 
@@ -61,17 +108,23 @@ export const treeHandlers = <P extends O>() => {
 
 const format = {
   number(input: any, options: { min?: number; max?: number; default?: number } = {}) {
-    let number = typeof input === 'number' ? input : defaultValue(options.default, 0);
-    number = options.min === undefined ? number : Math.max(options.min, number);
-    number = options.max === undefined ? number : Math.min(options.max, number);
-    return number;
+    let value = typeof input === 'number' ? input : defaultValue(options.default, undefined);
+    if (typeof value === 'number') {
+      value = options.min === undefined ? value : Math.max(options.min, value);
+      value = options.max === undefined ? value : Math.min(options.max, value);
+    }
+    return value;
   },
 
   string(input: any, options: { default?: string; trim?: boolean } = {}) {
-    let text = typeof input === 'string' ? input : defaultValue(options.default, undefined);
-    text = options.trim ? text.trim() : text;
+    let value = typeof input === 'string' ? input : defaultValue(options.default, undefined);
+    value = options.trim ? value.trim() : value;
+    return value;
+  },
 
-    return text;
+  boolean(input: any, options: { default?: boolean } = {}) {
+    let value = typeof input === 'boolean' ? input : defaultValue(options.default, undefined);
+    return value;
   },
 };
 

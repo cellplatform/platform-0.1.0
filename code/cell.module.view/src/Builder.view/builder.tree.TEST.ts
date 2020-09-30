@@ -88,4 +88,86 @@ describe.only('Builder.tree.node', () => {
     test(null, 1);
     test({}, 1);
   });
+
+  it('padding', () => {
+    const { builder, module } = createTest();
+    const test = (value: any, expected: any) => {
+      builder.padding(value);
+      expect(state(module).padding).to.eql(expected);
+    };
+    test(10, 10);
+    test(undefined, undefined);
+    test([1, 2, 3, 4], [1, 2, 3, 4]);
+    test([1, 2, 3, 4, 5], [1, 2, 3, 4]);
+    test([10, 5], [10, 5, 10, 5]); // NB: [vertical | horizontal] to [top, right, bottom left]
+    test({}, undefined);
+  });
+
+  it('marginTop', () => {
+    const { builder, module } = createTest();
+    const test = (value: any, expected: any) => {
+      builder.marginTop(value);
+      expect(state(module).marginTop).to.eql(expected);
+    };
+    test(10, 10);
+    test(undefined, undefined);
+    test(-99, 0);
+    test({}, undefined);
+  });
+
+  it('marginBottom', () => {
+    const { builder, module } = createTest();
+    const test = (value: any, expected: any) => {
+      builder.marginBottom(value);
+      expect(state(module).marginBottom).to.eql(expected);
+    };
+    test(10, 10);
+    test(undefined, undefined);
+    test(-99, 0);
+    test({}, undefined);
+  });
+
+  it('isEnabled', () => {
+    const { builder, module } = createTest();
+    const test = (value: any, expected: boolean | undefined) => {
+      builder.isEnabled(value);
+      expect(state(module).isEnabled).to.eql(expected);
+    };
+    test(true, true);
+    test(false, false);
+    test({}, undefined);
+  });
+
+  it('isVisible', () => {
+    const { builder, module } = createTest();
+    const test = (value: any, expected: boolean | undefined) => {
+      builder.isVisible(value);
+      expect(state(module).isVisible).to.eql(expected);
+    };
+    test(true, true);
+    test(false, false);
+    test({}, undefined);
+  });
+
+  it('isBold', () => {
+    const { builder, module } = createTest();
+    const test = (value: any, expected: boolean | undefined) => {
+      builder.isBold(value);
+      expect(state(module).isBold).to.eql(expected);
+    };
+    test(true, true);
+    test(false, false);
+    test({}, undefined);
+  });
+
+  it('isSpinning', () => {
+    const { builder, module } = createTest();
+    const test = (value: any, expected: boolean | undefined) => {
+      builder.isSpinning(value);
+      expect(state(module).isSpinning).to.eql(expected);
+    };
+    test(true, true);
+    test(false, false);
+    test({}, undefined);
+  });
 });
