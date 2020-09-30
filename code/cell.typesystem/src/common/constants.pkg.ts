@@ -1,4 +1,4 @@
 export const PKG = {
   name: '@platform/cell.typesystem',
-  version: '0.0.110',
+  version: '0.0.111',
 };

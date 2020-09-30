@@ -1,7 +1,7 @@
-import { expect, t, jpath } from '../test';
-import { Builder } from '.';
 import { StateObject } from '@platform/state';
-import { value } from '@platform/util.value';
+
+import { Builder } from '.';
+import { expect, jpath, t } from '../test';
 
 /**
  * Data model types (State).
