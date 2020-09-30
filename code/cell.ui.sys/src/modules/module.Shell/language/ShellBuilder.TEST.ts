@@ -132,5 +132,10 @@ describe('ShellBuilder (DSL)', () => {
       api.add(test).tree.label('foo').label('  bar  ');
       expect(tree(test).label).to.eql('bar');
     });
+
+    /**
+     * NOTE: The rest of the Treeview Node builder API is not tested here
+     *       See module: [cell.module.view] for implementation (and tests).
+     */
   });
 });

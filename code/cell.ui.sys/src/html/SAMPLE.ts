@@ -1,5 +1,4 @@
-import { t, time, Module, id } from '../common';
-import * as HARNESS from '../modules/module.DevHarness/.dev/SAMPLE';
+import { id, Module, t, time } from '../common';
 import { Shell } from '../modules/module.Shell';
 
 type TestView = 'Default' | '404';
@@ -19,20 +18,13 @@ const create = {
  * Test configruation.
  */
 export async function SAMPLE(bus: t.EventBus) {
-  HARNESS.SAMPLE(bus);
-
   /**
    * TEMP
    */
   const shell = Shell.builder(bus);
 
-  // shell.module()
-
-  shell.name('MyName');
-
-  time.delay(800, () => {
-    shell.name('hello');
-  });
+  shell.name('Hello');
+  time.delay(800, () => shell.name('Hello World!'));
 
   const test1 = create.test(bus);
   const test2 = create.test(bus);

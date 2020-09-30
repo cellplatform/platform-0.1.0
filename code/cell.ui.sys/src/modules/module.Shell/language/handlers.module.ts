@@ -1,9 +1,7 @@
 import { Builder, t } from '../common';
-import { treeHandlers } from './handlers.tree';
 
 type M = t.ITreeNode<t.ShellProps>;
 type B = t.IShellBuilderModule;
-type T = t.ITreeviewNodeBuilder<B>;
 
 /**
  * DSL handlers for working with a registered module within the [Shell].
@@ -15,12 +13,7 @@ export const moduleHandlers = (module: t.IModule) => {
 
     tree: {
       kind: 'object',
-      builder(args) {
-        const parent = args.builder.parent;
-        const model = module;
-        const handlers = treeHandlers<B>(model);
-        return Builder.create<M, T>({ model, handlers, parent });
-      },
+      builder: (args) => Builder.tree.node(module, args.builder.parent),
     },
   };
   return handlers;

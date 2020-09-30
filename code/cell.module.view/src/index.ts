@@ -1,4 +1,4 @@
-import { Builder } from '@platform/cell.module';
+import { Builder } from './Builder.view';
 export { Builder };
 
 import { Module } from './Module.view';

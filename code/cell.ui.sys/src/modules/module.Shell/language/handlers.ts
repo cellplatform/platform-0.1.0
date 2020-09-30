@@ -34,7 +34,6 @@ export const handlers = (bus: t.EventBus<E>, shell: t.IModule) => {
      */
     add(args) {
       const module = args.params[0] as t.IModule;
-      const parent = Module.Identity.toNodeId(args.params[1]);
 
       if (typeof module !== 'object') {
         throw new Error(`A module was not given.`);
@@ -42,7 +41,11 @@ export const handlers = (bus: t.EventBus<E>, shell: t.IModule) => {
 
       bus.fire({
         type: 'Shell/add',
-        payload: { shell: shell.id, module: module.id, parent },
+        payload: {
+          shell: shell.id,
+          module: module.id,
+          parent: Module.Identity.toNodeId(args.params[1]),
+        },
       });
 
       return moduleBuilder(module, args.builder.self);

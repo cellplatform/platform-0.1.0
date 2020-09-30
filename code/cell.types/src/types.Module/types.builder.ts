@@ -7,7 +7,7 @@ export type BuilderIndexCalc = (args: BuilderIndexCalcArgs) => number;
 export type BuilderIndexCalcArgs = { total: number; list: any[] };
 
 /**
- * Builder
+ * Static builder methods.
  */
 export type Builder = { create: BuilderChainFactory };
 export type BuilderChain<A extends O> = A;

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, events as globalEvents, Module, t, ui } from '../../common';
+import { css, CssValue, events as globalEvents, Module, t, ui, defaultValue } from '../../common';
 import { Shell } from '../../Module';
 import { Layout } from '../Body';
 import { IWindowTitlebarProps, WindowTitlebar } from '../primitives';
@@ -13,6 +13,7 @@ export type IWindowProps = {
   module?: t.ShellModule;
   theme?: IWindowTitlebarProps['theme'];
   style?: CssValue;
+  acceptNakedRegistrations?: boolean; // NB: Ignored if [module] property supplied.
   onLoaded?: t.ShellLoadedCallbackHandler;
 };
 
@@ -31,7 +32,8 @@ export class Window extends React.PureComponent<IWindowProps> {
     const bus = ctx.bus.type<t.ShellEvent>();
 
     // Construct module.
-    this.module = this.props.module || Shell.module(ctx.bus, { acceptNakedRegistrations: true });
+    const acceptNakedRegistrations = defaultValue(this.props.acceptNakedRegistrations, true);
+    this.module = this.props.module || Shell.module(ctx.bus, { acceptNakedRegistrations });
 
     // Bubble window resize.
     globalEvents.resize$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
