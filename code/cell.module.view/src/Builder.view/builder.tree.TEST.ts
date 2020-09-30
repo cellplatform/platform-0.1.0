@@ -11,7 +11,7 @@ const createTest = () => {
 const state = (module: TestModule) => module.state.props?.treeview || {};
 
 describe.only('Builder.tree.node', () => {
-  it('parent', () => {
+  it(':parent', () => {
     const { parent, builder } = createTest();
     expect(builder.parent()).to.equal(parent);
   });
@@ -182,11 +182,96 @@ describe.only('Builder.tree.node', () => {
     test({}, undefined);
   });
 
-  describe('chevron', () => {
-    it('parent', () => {
+  describe('header', () => {
+    it(':parent', () => {
       const { builder } = createTest();
-      const res = builder.chevron.parent();
-      expect(res).to.equal(builder);
+      expect(builder.header.parent()).to.equal(builder);
+    });
+
+    it('isVisible', () => {
+      const { builder, module } = createTest();
+      const test = (value: any, expected: any) => {
+        builder.header.isVisible(value);
+        expect(state(module).header?.isVisible).to.eql(expected);
+      };
+      test(true, true);
+      test(false, false);
+      test(undefined, undefined);
+      test({}, undefined);
+    });
+
+    it('parentButton', () => {
+      const { builder, module } = createTest();
+      const test = (value: any, expected: any) => {
+        builder.header.parentButton(value);
+        expect(state(module).header?.showParentButton).to.eql(expected);
+      };
+      test(true, true);
+      test(false, false);
+      test(undefined, undefined);
+      test({}, undefined);
+    });
+
+    it('marginBottom', () => {
+      const { builder, module } = createTest();
+      const test = (value: any, expected: any) => {
+        builder.header.marginBottom(value);
+        expect(state(module).header?.marginBottom).to.eql(expected);
+      };
+      test(10, 10);
+      test(undefined, undefined);
+      test(-99, 0);
+      test({}, undefined);
+    });
+
+    it('height', () => {
+      const { builder, module } = createTest();
+      const test = (value: any, expected: any) => {
+        builder.header.height(value);
+        expect(state(module).header?.height).to.eql(expected);
+      };
+      test(10, 10);
+      test(undefined, undefined);
+      test(-99, 0);
+      test({}, undefined);
+    });
+  });
+
+  describe('inline', () => {
+    it(':parent', () => {
+      const { builder } = createTest();
+      expect(builder.inline.parent()).to.equal(builder);
+    });
+
+    it('isVisible', () => {
+      const { builder, module } = createTest();
+      const test = (value: any, expected: any) => {
+        builder.inline.isVisible(value);
+        expect(state(module).inline?.isVisible).to.eql(expected);
+      };
+      test(true, true);
+      test(false, false);
+      test(undefined, undefined);
+      test({}, undefined);
+    });
+
+    it('isOpen', () => {
+      const { builder, module } = createTest();
+      const test = (value: any, expected: any) => {
+        builder.inline.isOpen(value);
+        expect(state(module).inline?.isOpen).to.eql(expected);
+      };
+      test(true, true);
+      test(false, false);
+      test(undefined, undefined);
+      test({}, undefined);
+    });
+  });
+
+  describe('chevron', () => {
+    it(':parent', () => {
+      const { builder } = createTest();
+      expect(builder.chevron.parent()).to.equal(builder);
     });
 
     it('isVisible', () => {

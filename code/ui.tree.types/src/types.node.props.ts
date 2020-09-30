@@ -29,8 +29,8 @@ export type ITreeviewNodeProps = {
   colors?: ITreeviewNodeColors;
   focusColors?: ITreeviewNodeColors;
 
-  inline?: ITreeviewNodeInline;
   header?: ITreeviewNodeHeader;
+  inline?: ITreeviewNodeInline;
   chevron?: ITreeviewNodeChevron;
 };
 

@@ -22,6 +22,9 @@ export const tree: t.ViewBuilderTree = {
  * Builder handlers for manipulating a treeview node.
  */
 export const treeHandlers = <P extends O>() => {
+  /**
+   * Treeview Node.
+   */
   const node: t.BuilderHandlers<M, t.ViewBuilderTreeNode<P>> = {
     parent: (args) => args.builder.parent,
 
@@ -98,19 +101,68 @@ export const treeHandlers = <P extends O>() => {
       args.model.change((draft) => (treeview(draft).marginBottom = value));
     },
 
+    header: {
+      kind: 'object',
+      builder: (args) => args.create<M, t.ViewBuilderTreeNodeHeader<P>>(header),
+    },
+
+    inline: {
+      kind: 'object',
+      builder: (args) => args.create<M, t.ViewBuilderTreeNodeInline<P>>(inline),
+    },
+
     chevron: {
       kind: 'object',
       builder: (args) => args.create<M, t.ViewBuilderTreeNodeChevon<P>>(chevron),
     },
   };
 
+  /**
+   * Header.
+   */
+  const header: t.BuilderHandlers<M, t.ViewBuilderTreeNodeHeader<P>> = {
+    parent: (args) => args.builder.parent,
+    isVisible(args) {
+      const value = format.boolean(args.params[0]);
+      args.model.change((draft) => (model(draft).header.isVisible = value));
+    },
+    parentButton(args) {
+      const value = format.boolean(args.params[0]);
+      args.model.change((draft) => (model(draft).header.showParentButton = value));
+    },
+    marginBottom(args) {
+      const value = format.number(args.params[0], { min: 0 });
+      args.model.change((draft) => (model(draft).header.marginBottom = value));
+    },
+    height(args) {
+      const value = format.number(args.params[0], { min: 0 });
+      args.model.change((draft) => (model(draft).header.height = value));
+    },
+  };
+
+  /**
+   * Inline.
+   */
+  const inline: t.BuilderHandlers<M, t.ViewBuilderTreeNodeInline<P>> = {
+    parent: (args) => args.builder.parent,
+    isVisible(args) {
+      const value = format.boolean(args.params[0]);
+      args.model.change((draft) => (model(draft).inline.isVisible = value));
+    },
+    isOpen(args) {
+      const value = format.boolean(args.params[0]);
+      args.model.change((draft) => (model(draft).inline.isOpen = value));
+    },
+  };
+
+  /**
+   * Chevron.
+   */
   const chevron: t.BuilderHandlers<M, t.ViewBuilderTreeNodeChevon<P>> = {
     parent: (args) => args.builder.parent,
-
     isVisible(args) {
-      args.model.change((draft) => {
-        model(draft).chevron.isVisible = format.boolean(args.params[0]);
-      });
+      const value = format.boolean(args.params[0]);
+      args.model.change((draft) => (model(draft).chevron.isVisible = value));
     },
   };
 
@@ -156,6 +208,14 @@ function model(state: M) {
     get treeview() {
       const props = res.props;
       return props.treeview || (props.treeview = {});
+    },
+    get header() {
+      const treeview = res.treeview;
+      return treeview.header || (treeview.header = {});
+    },
+    get inline() {
+      const treeview = res.treeview;
+      return treeview.inline || (treeview.inline = {});
     },
     get chevron() {
       const treeview = res.treeview;
