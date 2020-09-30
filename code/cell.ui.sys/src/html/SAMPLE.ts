@@ -37,7 +37,7 @@ export async function SAMPLE(bus: t.EventBus) {
   shell.add(test1).label('foo');
   shell.add(test2, test1).tree.label('bar');
 
-  // shell.module(test1).tree.isVisible(true);
+  shell.module(test1).tree.isSpinning(true).description('Lorem ipsum dolar sit amet...');
 
   // time.delay(1200, () => {
   //   test.dispose();
