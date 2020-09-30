@@ -18,7 +18,7 @@ describe.only('Builder.tree.node', () => {
 
   it('label', () => {
     const { builder, module } = createTest();
-    const test = (value: any, expected: string) => {
+    const test = (value: any, expected: any) => {
       builder.label(value);
       expect(state(module).label).to.eql(expected);
     };
@@ -26,23 +26,30 @@ describe.only('Builder.tree.node', () => {
     test('one', 'one');
     test(' foo ', 'foo');
 
-    test(undefined, '');
-    test(null, '');
-    test({}, '');
+    test('  ', undefined);
+    test('', undefined);
+    test(undefined, undefined);
+    test(null, undefined);
+    test({}, undefined);
   });
 
   it('icon', () => {
     const { builder, module } = createTest();
-    builder.icon('Face');
-    expect(state(module).icon).to.eql('Face');
+    const test = (value: any, expected: any) => {
+      builder.icon(value);
+      expect(state(module).icon).to.eql(expected);
+    };
 
-    builder.icon(null);
-    expect(state(module).icon).to.eql(null);
+    test('Face', 'Face');
+    test(null, null);
+    test('', undefined);
+    test(' ', undefined);
+    test(undefined, undefined);
   });
 
   it('title', () => {
     const { builder, module } = createTest();
-    const test = (value: any, expected: string) => {
+    const test = (value: any, expected: any) => {
       builder.title(value);
       expect(state(module).title).to.eql(expected);
     };
@@ -50,14 +57,16 @@ describe.only('Builder.tree.node', () => {
     test('one', 'one');
     test(' foo ', 'foo');
 
-    test(undefined, '');
-    test(null, '');
-    test({}, '');
+    test('  ', undefined);
+    test('', undefined);
+    test(undefined, undefined);
+    test(null, undefined);
+    test({}, undefined);
   });
 
   it('description', () => {
     const { builder, module } = createTest();
-    const test = (value: any, expected: string) => {
+    const test = (value: any, expected: any) => {
       builder.description(value);
       expect(state(module).description).to.eql(expected);
     };
@@ -65,9 +74,11 @@ describe.only('Builder.tree.node', () => {
     test('one', 'one');
     test(' foo ', 'foo');
 
-    test(undefined, '');
-    test(null, '');
-    test({}, '');
+    test('  ', undefined);
+    test('', undefined);
+    test(undefined, undefined);
+    test(null, undefined);
+    test({}, undefined);
   });
 
   it('opacity', () => {
@@ -140,7 +151,7 @@ describe.only('Builder.tree.node', () => {
 
   it('isVisible', () => {
     const { builder, module } = createTest();
-    const test = (value: any, expected: boolean | undefined) => {
+    const test = (value: any, expected: any) => {
       builder.isVisible(value);
       expect(state(module).isVisible).to.eql(expected);
     };
@@ -151,7 +162,7 @@ describe.only('Builder.tree.node', () => {
 
   it('isBold', () => {
     const { builder, module } = createTest();
-    const test = (value: any, expected: boolean | undefined) => {
+    const test = (value: any, expected: any) => {
       builder.isBold(value);
       expect(state(module).isBold).to.eql(expected);
     };
@@ -162,12 +173,32 @@ describe.only('Builder.tree.node', () => {
 
   it('isSpinning', () => {
     const { builder, module } = createTest();
-    const test = (value: any, expected: boolean | undefined) => {
+    const test = (value: any, expected: any) => {
       builder.isSpinning(value);
       expect(state(module).isSpinning).to.eql(expected);
     };
     test(true, true);
     test(false, false);
     test({}, undefined);
+  });
+
+  describe('chevron', () => {
+    it('parent', () => {
+      const { builder } = createTest();
+      const res = builder.chevron.parent();
+      expect(res).to.equal(builder);
+    });
+
+    it('isVisible', () => {
+      const { builder, module } = createTest();
+      const test = (value: any, expected: any) => {
+        builder.chevron.isVisible(value);
+        expect(state(module).chevron?.isVisible).to.eql(expected);
+      };
+      test(true, true);
+      test(false, false);
+      test(undefined, undefined);
+      test({}, undefined);
+    });
   });
 });

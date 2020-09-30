@@ -21,10 +21,12 @@ export type ViewBuilderTreeNodeFactory = <P extends O>(
  */
 export type ViewBuilderTreeNode<P extends O> = {
   parent(): P;
-  label(value: string): ViewBuilderTreeNode<P>;
-  icon(value: t.TreeNodeIcon): ViewBuilderTreeNode<P>;
-  title(value: string): ViewBuilderTreeNode<P>;
-  description(value: string): ViewBuilderTreeNode<P>;
+
+  label(value: string | undefined): ViewBuilderTreeNode<P>;
+  title(value: string | undefined): ViewBuilderTreeNode<P>;
+  description(value: string | undefined): ViewBuilderTreeNode<P>;
+
+  icon(value: t.TreeNodeIcon | undefined): ViewBuilderTreeNode<P>;
 
   isEnabled(value: boolean): ViewBuilderTreeNode<P>;
   isVisible(value: boolean): ViewBuilderTreeNode<P>;
@@ -35,6 +37,13 @@ export type ViewBuilderTreeNode<P extends O> = {
   padding(value: number | PaddingValue | undefined): ViewBuilderTreeNode<P>;
   marginTop(value: number | undefined): ViewBuilderTreeNode<P>;
   marginBottom(value: number | undefined): ViewBuilderTreeNode<P>;
+
+  chevron: ViewBuilderTreeNodeChevon<P>;
 };
 
-type PaddingValue = number | [number, number] | [number, number, number, number]; // NB: [vertical | horizontal] or [top, right, bottom left]
+type PaddingValue = number | [number, number] | [number, number, number, number]; // NB: [vertical | horizontal] or [top, right, bottom left].
+
+export type ViewBuilderTreeNodeChevon<P extends O> = {
+  parent(): ViewBuilderTreeNode<P>;
+  isVisible(value: boolean | undefined): ViewBuilderTreeNodeChevon<P>;
+};

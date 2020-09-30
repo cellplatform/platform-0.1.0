@@ -31,10 +31,7 @@ export type ITreeviewNodeProps = {
 
   inline?: ITreeviewNodeInline;
   header?: ITreeviewNodeHeader;
-
-  chevron?: {
-    isVisible?: boolean; // Undefined means automatic, shown if child-nodes exist.
-  };
+  chevron?: ITreeviewNodeChevron;
 };
 
 export type ITreeviewNodeHeader = {
@@ -48,6 +45,10 @@ export type ITreeviewNodeInline = {
   // The existence of the 'inline' object indicates the
   // node's children are to be shown inline.
   isOpen?: boolean;
+  isVisible?: boolean; // Undefined means automatic, shown if child-nodes exist.
+};
+
+export type ITreeviewNodeChevron = {
   isVisible?: boolean; // Undefined means automatic, shown if child-nodes exist.
 };
 

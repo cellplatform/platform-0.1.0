@@ -22,27 +22,27 @@ export const tree: t.ViewBuilderTree = {
  * Builder handlers for manipulating a treeview node.
  */
 export const treeHandlers = <P extends O>() => {
-  type A = t.ViewBuilderTreeNode<P>;
-
-  const handlers: t.BuilderHandlers<M, A> = {
+  const node: t.BuilderHandlers<M, t.ViewBuilderTreeNode<P>> = {
     parent: (args) => args.builder.parent,
 
     label(args) {
-      const value = format.string(args.params[0], { default: '', trim: true });
+      const value = format.string(args.params[0], { trim: true });
       args.model.change((draft) => (treeview(draft).label = value));
     },
 
     icon(args) {
-      args.model.change((draft) => (treeview(draft).icon = args.params[0]));
+      const input = args.params[0];
+      const value = typeof input === 'string' ? format.string(input, { trim: true }) : input;
+      args.model.change((draft) => (treeview(draft).icon = value));
     },
 
     title(args) {
-      const value = format.string(args.params[0], { default: '', trim: true });
+      const value = format.string(args.params[0], { trim: true });
       args.model.change((draft) => (treeview(draft).title = value));
     },
 
     description(args) {
-      const value = format.string(args.params[0], { default: '', trim: true });
+      const value = format.string(args.params[0], { trim: true });
       args.model.change((draft) => (treeview(draft).description = value));
     },
 
@@ -97,9 +97,24 @@ export const treeHandlers = <P extends O>() => {
       const value = format.number(args.params[0], { min: 0 });
       args.model.change((draft) => (treeview(draft).marginBottom = value));
     },
+
+    chevron: {
+      kind: 'object',
+      builder: (args) => args.create<M, t.ViewBuilderTreeNodeChevon<P>>(chevron),
+    },
   };
 
-  return handlers;
+  const chevron: t.BuilderHandlers<M, t.ViewBuilderTreeNodeChevon<P>> = {
+    parent: (args) => args.builder.parent,
+
+    isVisible(args) {
+      args.model.change((draft) => {
+        model(draft).chevron.isVisible = format.boolean(args.params[0]);
+      });
+    },
+  };
+
+  return node;
 };
 
 /**
@@ -107,6 +122,13 @@ export const treeHandlers = <P extends O>() => {
  */
 
 const format = {
+  string(input: any, options: { default?: string; trim?: boolean } = {}) {
+    let value = typeof input === 'string' ? input : options.default;
+    value = options.trim && typeof value === 'string' ? value.trim() : value;
+    value = !value ? options.default : value;
+    return value;
+  },
+
   number(input: any, options: { min?: number; max?: number; default?: number } = {}) {
     let value = typeof input === 'number' ? input : defaultValue(options.default, undefined);
     if (typeof value === 'number') {
@@ -116,14 +138,8 @@ const format = {
     return value;
   },
 
-  string(input: any, options: { default?: string; trim?: boolean } = {}) {
-    let value = typeof input === 'string' ? input : defaultValue(options.default, undefined);
-    value = options.trim ? value.trim() : value;
-    return value;
-  },
-
   boolean(input: any, options: { default?: boolean } = {}) {
-    let value = typeof input === 'boolean' ? input : defaultValue(options.default, undefined);
+    const value = typeof input === 'boolean' ? input : defaultValue(options.default, undefined);
     return value;
   },
 };
@@ -140,6 +156,10 @@ function model(state: M) {
     get treeview() {
       const props = res.props;
       return props.treeview || (props.treeview = {});
+    },
+    get chevron() {
+      const treeview = res.treeview;
+      return treeview.chevron || (treeview.chevron = {});
     },
   };
   return res;
