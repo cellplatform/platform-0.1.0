@@ -22,4 +22,8 @@ export type ViewBuilderTreeNodeFactory = <P extends O>(
 export type ViewBuilderTreeNode<P extends O> = {
   parent(): P;
   label(value: string): ViewBuilderTreeNode<P>;
+  icon(value: t.TreeNodeIcon): ViewBuilderTreeNode<P>;
+  title(value: string): ViewBuilderTreeNode<P>;
+  description(value: string): ViewBuilderTreeNode<P>;
+  opacity(value: number): ViewBuilderTreeNode<P>;
 };
