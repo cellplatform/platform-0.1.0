@@ -26,18 +26,33 @@ export async function SAMPLE(bus: t.EventBus) {
   shell.name('Hello');
   time.delay(800, () => shell.name('Hello World!'));
 
-  const test1 = create.test(bus);
-  const test2 = create.test(bus);
+  const module1 = create.test(bus);
+  const module2 = create.test(bus);
 
   // console.log("shell.id", shell.id)
-  console.log('test1.id', test1.id);
-  console.log('test2.id', test2.id);
+  console.log('test1.id', module1.id);
+  console.log('test2.id', module2.id);
   console.log('-------------------------------------------');
 
-  shell.add(test1).label('foo');
-  shell.add(test2, test1).tree.label('bar');
+  shell.add(module1).label('foo');
+  shell.add(module2, module1).tree.label('bar');
 
-  shell.module(test1).tree.isSpinning(true).description('Lorem ipsum dolar sit amet...');
+  shell
+    // Module "One"
+    .module(module1)
+    .tree//.isSpinning(true)
+    .label('foo')
+    .description('Lorem ipsum dolar sit amet...')
+    // .inline.isOpen(true)
+    // .isVisible(true)
+    .parent()
+    .parent();
+  // .parent()
+
+  // Module "Two"
+  // shell.module(module2).tree.label('bar');
+
+  // shell.module(module1).tree.isSpinning(true).description('Lorem ipsum dolar sit amet...');
 
   // time.delay(1200, () => {
   //   test.dispose();
