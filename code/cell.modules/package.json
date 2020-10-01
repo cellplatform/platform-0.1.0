@@ -1,0 +1,16 @@
+{
+  "name": "@platform/cell.modules",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "concurrently 'wsrun --parallel start'"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "wsrun": "^5.2.2"
+  },
+  "workspaces__": [
+    "modules/*"
+  ],
+  "private": true,
+  "license": "MIT"
+}
