@@ -14,15 +14,10 @@ export type ITreeviewNodeProps = {
   title?: string; // For <Header> if different from `label`.
   description?: string;
   opacity?: number;
-  padding?: number | number[]; // [top, right, bottom left].
+  padding?: number | [number, number, number, number]; // [top, right, bottom left].
   marginTop?: number;
   marginBottom?: number;
 
-  chevron?: {
-    isVisible?: boolean; // Undefined means automatic, shown if child-nodes exist.
-  };
-  inline?: ITreeviewNodeInline;
-  header?: ITreeviewNodeHeader;
   badge?: string | number;
   isEnabled?: boolean;
   isVisible?: boolean;
@@ -33,6 +28,10 @@ export type ITreeviewNodeProps = {
 
   colors?: ITreeviewNodeColors;
   focusColors?: ITreeviewNodeColors;
+
+  header?: ITreeviewNodeHeader;
+  inline?: ITreeviewNodeInline;
+  chevron?: ITreeviewNodeChevron;
 };
 
 export type ITreeviewNodeHeader = {
@@ -46,6 +45,10 @@ export type ITreeviewNodeInline = {
   // The existence of the 'inline' object indicates the
   // node's children are to be shown inline.
   isOpen?: boolean;
+  isVisible?: boolean; // Undefined means automatic, shown if child-nodes exist.
+};
+
+export type ITreeviewNodeChevron = {
   isVisible?: boolean; // Undefined means automatic, shown if child-nodes exist.
 };
 

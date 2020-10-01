@@ -3,7 +3,7 @@ import { t } from '../common';
 /**
  * [Events]
  */
-export type ShellEvent = IShellFocusEvent | IShellWindowResizeEvent;
+export type ShellEvent = IShellFocusEvent | IShellWindowResizeEvent | IShellAddEvent;
 
 /**
  * Fired when focus focus is to be assigned to a region within the [Shell].
@@ -22,3 +22,13 @@ export type IShellWindowResizeEvent = {
   payload: IShellWindowResize;
 };
 export type IShellWindowResize = { width: number; height: number };
+
+/**
+ * Fires when a module is to be registered within the shell.
+ */
+
+export type IShellAddEvent = {
+  type: 'Shell/add';
+  payload: IShellAdd;
+};
+export type IShellAdd = { shell: string; module: string; parent?: string };

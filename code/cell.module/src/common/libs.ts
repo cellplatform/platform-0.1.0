@@ -6,3 +6,6 @@ export { toNodeId };
 
 import { wildcard } from '@platform/util.string/lib/wildcard';
 export { wildcard };
+
+import * as jpath from 'jsonpath';
+export { jpath };

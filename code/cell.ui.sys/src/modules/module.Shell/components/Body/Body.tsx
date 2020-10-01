@@ -2,7 +2,7 @@ import { COLORS } from '@platform/cell.ui/lib/common/constants';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 
-import { color, css, CssValue, t, ui } from '../../common';
+import { color, css, CssValue, t, ui, defaultValue } from '../../common';
 import { Shell } from '../../Module';
 import { Sidebar } from './Body.Sidebar';
 import { LayoutTree } from './Body.Tree';
@@ -11,6 +11,7 @@ import { BodyMain } from './Body.Main';
 export type ILayoutProps = {
   module?: t.ShellModule;
   style?: CssValue;
+  acceptNakedRegistrations?: boolean; // NB: Ignored if [module] property supplied.
   onLoaded?: t.ShellLoadedCallbackHandler;
 };
 
@@ -25,9 +26,11 @@ export class Layout extends React.PureComponent<ILayoutProps> {
    * [Lifecycle]
    */
   public componentDidMount() {
-    // Construct module
     const bus = this.context.bus;
-    this.module = this.props.module || Shell.module(bus, { acceptNakedRegistrations: true });
+
+    // Construct module
+    const acceptNakedRegistrations = defaultValue(this.props.acceptNakedRegistrations, true);
+    this.module = this.props.module || Shell.module(bus, { acceptNakedRegistrations });
 
     // NB: Redraw causes the newly created [module] to be rendered.
     this.forceUpdate();

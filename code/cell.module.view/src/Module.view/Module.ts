@@ -10,7 +10,6 @@ import { fire } from './Module.fire';
 export const Module: t.ViewModule = {
   ...ModuleBase,
 
-  kind: 'ViewModule',
   create,
   events,
   fire,
