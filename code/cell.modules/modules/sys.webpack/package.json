@@ -1,6 +1,6 @@
 {
   "name": "sys.webpack",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Webpack compiler for modules.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,8 +12,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.module": "^0.0.21",
-    "@platform/cell.types": "0.4.157",
+    "@platform/cell.module": "^0.0.22",
+    "@platform/cell.types": "0.4.158",
     "@platform/libs": "0.2.2"
   },
   "devDependencies": {

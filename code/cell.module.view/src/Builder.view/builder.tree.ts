@@ -90,7 +90,7 @@ export const treeHandlers = <P extends O>() => {
       const value = !Array.isArray(input)
         ? format.number(input, { min: 0 })
         : input.map((input) => format.number(input, { min: 0 }));
-      args.model.change((draft) => (treeview(draft).padding = value));
+      args.model.change((draft) => (treeview(draft).padding = value as number));
     },
 
     marginTop(args) {
