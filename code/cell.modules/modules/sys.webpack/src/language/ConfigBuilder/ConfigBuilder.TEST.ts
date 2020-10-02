@@ -1,6 +1,6 @@
-import { expect, rx, t, constants } from '../test';
-import { WebpackBuilders } from '.';
-import { Webpack } from '..';
+import { expect, rx, t, constants } from '../../test';
+import { WebpackBuilders } from '..';
+import { Webpack } from '../..';
 
 const props = (m: t.WebpackModule) => m.state.props as t.WebpackProps;
 const data = (m: t.WebpackModule) => props(m).data as t.WebpackData;
@@ -13,7 +13,7 @@ const create = () => {
   return { bus, module, config };
 };
 
-describe('WebpackConfigBuilder', () => {
+describe('Webpack: ConfigBuilder', () => {
   it('create config (by "name")', () => {
     const { module, config } = create();
 
@@ -25,10 +25,15 @@ describe('WebpackConfigBuilder', () => {
     expect(configAt(module, 0).name).to.eql('dev'); // NB: Name auto assigned.
   });
 
-  describe('config', () => {
+  describe.only('config', () => {
     it('config: name', () => {
       const { module, config } = create();
       const foo = config.name('dev');
+
+      foo.name('hello');
+
+      console.log('-------------------------------------------');
+      console.log('configAt(module, 0)', configAt(module, 0));
 
       foo.name('boo').name('  zoo  ');
       expect(configAt(module, 0).name).to.eql('zoo'); // NB: trimmed.
