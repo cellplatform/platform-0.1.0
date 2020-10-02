@@ -6,7 +6,7 @@ import { t } from '../common';
 export type ShellEvent = IShellFocusEvent | IShellWindowResizeEvent | IShellAddEvent;
 
 /**
- * Fired when focus focus is to be assigned to a region within the [Shell].
+ * Fired when focus is to be assigned to a region within the [Shell].
  */
 export type IShellFocusEvent = {
   type: 'Shell/focus';
