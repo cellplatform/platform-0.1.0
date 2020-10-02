@@ -1,3 +1,4 @@
+import { t } from '../common';
 type O = Record<string, unknown>;
 
 export type BuilderNamedItem = { name: string };
@@ -9,7 +10,7 @@ export type BuilderIndexCalcArgs = { total: number; list: any[] };
 /**
  * Static builder methods.
  */
-export type Builder = { create: BuilderChainFactory };
+export type Builder = { create: BuilderChainFactory; format: t.BuilderFormat };
 export type BuilderChain<A extends O> = A;
 
 /**
@@ -156,6 +157,7 @@ export type BuilderListFactory<M extends O, A extends O> = (
 ) => BuilderChain<A>;
 export type BuilderListFactoryArgs<M extends O, A extends O> = BuilderChildFactoryArgs<M, A> & {
   index: number;
+  name: string;
 };
 
 export type BuilderChildFactoryArgs<M extends O, A extends O> = {
