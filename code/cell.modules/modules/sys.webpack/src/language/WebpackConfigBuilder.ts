@@ -2,18 +2,21 @@ import { t, Builder, jpath, StateObject } from '../common';
 
 const format = Builder.format;
 
-type M = t.ITreeNode<t.WebpackProps>;
-
 /**
  * Factor for creating a [Webpack] configuration builder.
  */
 export const factory: t.WebpackConfigsBuilderFactory = (bus, model) => {
+  type M = t.ITreeNode<t.WebpackProps>;
   const handlers: t.BuilderHandlers<M, t.WebpackConfigsBuilder> = {
     name: {
       kind: 'list:byName',
       path: '$.props.data.configs',
       default: () => ({}),
       builder(args) {
+        console.log('path', args.path, args.index);
+
+        // StateObject.merge()
+
         const handlers = configHandlers(bus);
         return args.create<M, t.WebpackConfigBuilder>(handlers); //.name(args.name);
       },

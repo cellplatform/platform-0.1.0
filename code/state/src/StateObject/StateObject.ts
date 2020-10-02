@@ -6,7 +6,7 @@ import { share } from 'rxjs/operators';
 import { is, t } from '../common';
 import { Patch } from '../Patch';
 import * as events from './StateObject.events';
-import * as merge from './StateObject.merge';
+import * as combine from './StateObject.combine';
 
 if (typeof setAutoFreeze === 'function') {
   setAutoFreeze(false);
@@ -55,10 +55,10 @@ export class StateObject<T extends O, E extends t.Event<any>>
   }
 
   /**
-   * Merge multiple state-objects together to produce a single
-   * synchronized state.
+   * Combine multiple state-objects together on a single {parent} object
+   * to produce a single synchronized object.
    */
-  public static merge = merge.create(StateObject.create);
+  public static combine = combine.create(StateObject.create);
 
   /**
    * Convert a draft (proxied instance) object into a simple object.
