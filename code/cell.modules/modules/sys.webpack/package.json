@@ -1,0 +1,30 @@
+{
+  "name": "sys.webpack",
+  "version": "0.0.0",
+  "description": "Webpack compiler for modules.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node .",
+    "test": "ts test",
+    "lint": "ts lint",
+    "build": "ts build --no-esm",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/cell.module": "^0.0.21",
+    "@platform/cell.types": "0.4.157",
+    "@platform/libs": "0.2.2"
+  },
+  "devDependencies": {
+    "@platform/test": "0.1.15",
+    "@platform/ts": "4.0.0"
+  },
+  "files": [
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}"
+  ],
+  "license": "MIT",
+  "private": true
+}
