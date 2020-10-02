@@ -47,6 +47,7 @@ type IItem = {
   name(value: string): IItem;
   childField: IItemChild;
   childByIndex: t.BuilderListByIndex<IItemChild>;
+  args(): t.BuilderHandlerArgs<IModel, IItem>;
   parent(): IFoo;
 };
 
@@ -137,6 +138,8 @@ const bazHandlers: t.BuilderHandlers<IModel, IBaz> = {
 };
 
 const itemHandlers: t.BuilderHandlers<IModel, IItem> = {
+  args: (args) => args,
+
   name(args) {
     args.model.change((draft) => {
       jpath.apply(draft, args.path, (value) => {
@@ -365,6 +368,15 @@ describe('Builder', () => {
   });
 
   describe('kind: "list:byIndex"', () => {
+    it('args', () => {
+      const { builder, model } = create();
+      const args = builder.listByIndex().args();
+      expect(args.model).to.equal(model);
+      expect(builder.listByIndex().args().index).to.eql(1);
+      expect(builder.listByIndex(0).args().index).to.eql(0);
+      expect(builder.listByIndex(10).args().index).to.eql(10);
+    });
+
     it('creates with no index (insert at end)', () => {
       const { builder } = create();
       const res1 = builder.listByIndex();
@@ -416,6 +428,14 @@ describe('Builder', () => {
   });
 
   describe('kind: "list:byName"', () => {
+    it('args', () => {
+      const { builder, model } = create();
+      const args = builder.listByName('foo').args();
+      expect(args.model).to.equal(model);
+      expect(builder.listByName('foo').args().index).to.eql(0);
+      expect(builder.listByName('bar').args().index).to.eql(1);
+    });
+
     it('assigns "name" and adds item to end of list (default)', () => {
       const { builder, model } = create();
       const getList = () => model.state.foo.list || [];
@@ -443,6 +463,8 @@ describe('Builder', () => {
       const state = getList();
       expect(state[0].name).to.eql('foo');
       expect(state[1].name).to.eql('bar');
+
+      expect(builder.listByName('one')).to.equal(builder.listByName('one')); // NB: same instance.
     });
 
     it('specify index: "START"', () => {
@@ -589,6 +611,41 @@ describe('Builder', () => {
 
       builder.child('bar').name('Susan');
       expect(modelTwoB.state.name).to.eql('Susan');
+    });
+  });
+
+  describe('Builder.format', () => {
+    const format = Builder.format;
+    it('string', () => {
+      const string = format.string;
+
+      expect(string('foo')).to.eql('foo');
+      expect(string(' foo ')).to.eql(' foo ');
+      expect(string(' foo ', { trim: true })).to.eql('foo');
+      expect(string(undefined, { trim: true })).to.eql(undefined);
+      expect(string(undefined, { default: '' })).to.eql('');
+      expect(string({})).to.eql(undefined);
+      expect(string({}, { default: 'foo' })).to.eql('foo');
+    });
+
+    it('boolean', () => {
+      const boolean = format.boolean;
+
+      expect(boolean('foo')).to.eql(undefined);
+      expect(boolean(true)).to.eql(true);
+      expect(boolean(false)).to.eql(false);
+      expect(boolean(undefined, { default: true })).to.eql(true);
+    });
+
+    it('number', () => {
+      const number = format.number;
+
+      expect(number(undefined)).to.eql(undefined);
+      expect(number(undefined, { default: 123 })).to.eql(123);
+      expect(number(456, { default: 123 })).to.eql(456);
+      expect(number({}, { default: 123 })).to.eql(123);
+      expect(number(-10, { min: 0, max: 1 })).to.eql(0);
+      expect(number(99, { min: 0, max: 1 })).to.eql(1);
     });
   });
 });

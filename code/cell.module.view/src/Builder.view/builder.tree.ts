@@ -1,5 +1,7 @@
-import { t, defaultValue } from '../common';
+import { t } from '../common';
 import { Builder } from '@platform/cell.module';
+
+const format = Builder.format;
 
 type O = Record<string, unknown>;
 type M = t.ITreeviewNode;
@@ -172,29 +174,6 @@ export const treeHandlers = <P extends O>() => {
 /**
  * [Helpers]
  */
-
-const format = {
-  string(input: any, options: { default?: string; trim?: boolean } = {}) {
-    let value = typeof input === 'string' ? input : options.default;
-    value = options.trim && typeof value === 'string' ? value.trim() : value;
-    value = !value ? options.default : value;
-    return value;
-  },
-
-  number(input: any, options: { min?: number; max?: number; default?: number } = {}) {
-    let value = typeof input === 'number' ? input : defaultValue(options.default, undefined);
-    if (typeof value === 'number') {
-      value = options.min === undefined ? value : Math.max(options.min, value);
-      value = options.max === undefined ? value : Math.min(options.max, value);
-    }
-    return value;
-  },
-
-  boolean(input: any, options: { default?: boolean } = {}) {
-    const value = typeof input === 'boolean' ? input : defaultValue(options.default, undefined);
-    return value;
-  },
-};
 
 function treeview(state: M) {
   return model(state).treeview;

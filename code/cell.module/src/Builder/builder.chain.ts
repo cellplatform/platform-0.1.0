@@ -107,7 +107,8 @@ export function create<M extends O, A extends O>(args: {
 
           return getOrCreate(cacheKey, () => {
             const parent = builder;
-            return fromFactory({ model, parent }).list('list:byIndex', def.builder, index, path); // <== RECURSION 🌳
+            const factory = fromFactory({ model, parent });
+            return factory.list('list:byIndex', def.builder, index, path, ''); // <== RECURSION 🌳
           });
         };
       }
@@ -130,7 +131,8 @@ export function create<M extends O, A extends O>(args: {
 
           const builder = getOrCreate(cacheKey, () => {
             const parent = builder;
-            return fromFactory({ model, parent }).list('list:byName', def.builder, index, path); // <== RECURSION 🌳
+            const factory = fromFactory({ model, parent });
+            return factory.list('list:byName', def.builder, index, path, name); // <== RECURSION 🌳
           });
 
           if (typeof builder.name !== 'function') {
@@ -275,9 +277,11 @@ const fromFactory = (args: { model: t.BuilderModel<any>; parent: t.BuilderChain<
       factory: t.BuilderListFactory<any, any>,
       index: number,
       path: string,
+      name: string,
     ) {
       return factory({
         index,
+        name,
         path,
         model: args.model,
         builder: { parent },
