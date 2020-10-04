@@ -5,10 +5,7 @@ type B = t.EventBus<any>;
 /**
  * Factor for creating a [Webpack] configuration builder.
  */
-export type WebpackConfigsBuilderFactory = (
-  bus: B,
-  webpack: t.IModule,
-) => t.WebpackConfigsBuilder;
+export type WebpackConfigsBuilderFactory = (bus: B, webpack: t.IModule) => t.WebpackConfigsBuilder;
 
 /**
  * Root builder of a Webpack configuration.

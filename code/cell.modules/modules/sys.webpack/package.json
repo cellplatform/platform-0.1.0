@@ -5,11 +5,16 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "node .",
+    "bundle": "webpack --mode production",
+    "bundle:dev": "webpack --mode development",
+    "start": "webpack-dev-server --open=false --mode development",
+    "start:live": "webpack-dev-server --open=false --mode development --liveReload",
     "test": "ts test",
     "lint": "ts lint",
     "build": "ts build --no-esm",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "tmp": "ts-node -T src/nodejs/tmp",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "@platform/cell.module": "^0.0.22",
@@ -17,8 +22,22 @@
     "@platform/libs": "0.2.2"
   },
   "devDependencies": {
-    "@platform/test": "0.1.15",
-    "@platform/ts": "4.0.0"
+    "@babel/core": "7.9.6",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/preset-env": "^7.10.3",
+    "@babel/preset-react": "7.9.4",
+    "@babel/preset-typescript": "^7.10.4",
+    "@platform/test": "0.1.14",
+    "@platform/ts": "3.9.5",
+    "@types/react": "^16.9.46",
+    "@types/react-dom": "^16.9.8",
+    "babel-loader": "8.1.0",
+    "css-loader": "^3.5.3",
+    "html-webpack-plugin": "^4.5.0",
+    "style-loader": "1.2.1",
+    "webpack": "5.0.0-rc.3",
+    "webpack-cli": "3.3.12",
+    "webpack-dev-server": "3.11.0"
   },
   "files": [
     "lib",

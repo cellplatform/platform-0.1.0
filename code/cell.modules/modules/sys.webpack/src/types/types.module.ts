@@ -2,11 +2,7 @@ import { t } from './common';
 
 export type WebpackView = 'Default' | 'Null' | '404';
 export type WebpackRegion = 'Main';
-export type WebpackProps = t.IViewModuleProps<
-  t.WebpackData,
-  WebpackView,
-  WebpackRegion
->;
+export type WebpackProps = t.IViewModuleProps<t.WebpackData, WebpackView, WebpackRegion>;
 export type WebpackModule = t.IModule<WebpackProps>;
 
 /**

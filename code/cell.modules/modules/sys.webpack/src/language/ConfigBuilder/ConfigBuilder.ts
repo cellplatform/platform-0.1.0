@@ -19,6 +19,7 @@ export const factory: t.WebpackConfigsBuilderFactory = (bus, model) => {
          * TODO 🐷
          *    - Put this "child syncer" somewhere sensible.
          *    - Handle [dispose$] on child model (add [dispose] concept to builder, pass through args)
+         *    - Update [tsc] to handle Yarn workspaces.
          *
          */
 
