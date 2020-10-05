@@ -1,5 +1,4 @@
 import { expect, rx, t, constants } from '../../test';
-import { WebpackBuilders } from '..';
 import { Webpack } from '../..';
 
 const props = (m: t.WebpackModule) => m.state.props as t.WebpackProps;
@@ -9,27 +8,34 @@ const configAt = (m: t.WebpackModule, index: number) => data(m).configs[index];
 const create = () => {
   const bus = rx.bus();
   const module = Webpack.module(bus);
-  const config = WebpackBuilders.config(bus, module);
-  return { bus, module, config };
+  const builder = Webpack.builder.config(bus, module);
+  return { bus, module, builder };
 };
 
-describe('Webpack: ConfigBuilder', () => {
-  it('create config (by "name")', () => {
-    const { module, config } = create();
+describe.only('Webpack: ConfigBuilder', () => {
+  describe('create', () => {
+    it('by "name"', () => {
+      const { module, builder } = create();
+      const dev = builder.name('dev');
+      expect(builder.name('dev')).to.equal(dev); // NB: Same instance.
+      expect(configAt(module, 0).name).to.eql('dev'); // NB: Name auto assigned.
+    });
 
-    expect(data(module)).to.eql(constants.DEFAULT.DATA);
-    expect(configAt(module, 0)?.name).to.eql(undefined);
+    it('default values', () => {
+      const { module, builder } = create();
+      expect(data(module)).to.eql(constants.DEFAULT.DATA);
+      builder.name('foo');
 
-    const foo = config.name('dev');
-    expect(config.name('dev')).to.equal(foo); // NB: Same instance.
-    expect(configAt(module, 0).name).to.eql('dev'); // NB: Name auto assigned.
+      const config = configAt(module, 0);
+      expect(config).to.eql({ ...constants.DEFAULT.CONFIG, name: 'foo' });
+    });
   });
 
-  describe.only('config', () => {
-    it('config: name', () => {
-      const { module, config } = create();
+  describe('config', () => {
+    it('name', () => {
+      const { module, builder } = create();
 
-      const foo = config.name('dev');
+      const foo = builder.name('dev');
       expect(configAt(module, 0).name).to.eql('dev');
 
       foo.name('hello');
@@ -41,6 +47,35 @@ describe('Webpack: ConfigBuilder', () => {
       const zoo = foo.name('zoo');
       expect(zoo).to.not.eql(undefined);
       expect(zoo).to.eql(foo.name('zoo'));
+    });
+
+    it('mode', () => {
+      const { module, builder } = create();
+
+      const test = (input: any, expected: t.WebpackMode) => {
+        builder.name('foo').mode(input);
+        expect(configAt(module, 0).mode).to.eql(expected);
+      };
+
+      test(undefined, 'production');
+      test('', 'production');
+      test('  ', 'production');
+      test({}, 'production');
+      test(123, 'production');
+
+      test('production', 'production');
+      test(' production  ', 'production');
+      test('prod', 'production');
+      test(' prod ', 'production');
+
+      test('development', 'development');
+      test(' dev ', 'development');
+    });
+
+    it('mode: throw', () => {
+      const { builder } = create();
+      const fn = () => builder.name('foo').mode('foo' as any);
+      expect(fn).to.throw(/Invalid mode/);
     });
   });
 });

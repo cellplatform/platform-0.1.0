@@ -9,7 +9,6 @@ const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPl
  * Home
  */
 export const config = {
-
   mode: 'production',
 
   output: {

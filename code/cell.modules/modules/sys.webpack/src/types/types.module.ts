@@ -12,3 +12,8 @@ export type Webpack = {
   module(bus: t.EventBus<any>): WebpackModule;
   builder: t.WebpackBuilders;
 };
+
+/**
+ * Webpack module data.
+ */
+export type WebpackData = { configs: t.WebpackConfigData[] };

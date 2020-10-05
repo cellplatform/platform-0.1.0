@@ -1,10 +1,10 @@
 import { takeUntil } from 'rxjs/operators';
 
-import { Builder, jpath, StateObject, t } from '../../common';
+import { Builder, jpath, StateObject, t, constants } from '../../common';
 import { configHandlers } from './handlers.config';
 
 type M = t.ITreeNode<t.WebpackProps>;
-type C = t.WebpackDataConfig;
+type C = t.WebpackConfigData;
 
 /**
  * Factory for creating a [Webpack] configuration builder.
@@ -14,7 +14,7 @@ export const factory: t.WebpackConfigsBuilderFactory = (bus, model) => {
     name: {
       kind: 'list:byName',
       path: '$.props.data.configs',
-      default: () => ({ name: '' }),
+      default: () => constants.DEFAULT.CONFIG,
       builder(args) {
         const parent = args.model;
         const initial = jpath.query(parent.state, `${args.path}[${args.index}]`)[0];

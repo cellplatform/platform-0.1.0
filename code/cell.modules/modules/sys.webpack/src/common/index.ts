@@ -6,3 +6,5 @@ export * from './libs';
 
 import * as jpath from 'jsonpath';
 export { jpath };
+
+export const DEFAULT = constants.DEFAULT;
