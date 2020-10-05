@@ -28,12 +28,12 @@ describe('Webpack: ConfigBuilder', () => {
   describe.only('config', () => {
     it('config: name', () => {
       const { module, config } = create();
+
       const foo = config.name('dev');
+      expect(configAt(module, 0).name).to.eql('dev');
 
       foo.name('hello');
-
-      console.log('-------------------------------------------');
-      console.log('configAt(module, 0)', configAt(module, 0));
+      expect(configAt(module, 0).name).to.eql('hello');
 
       foo.name('boo').name('  zoo  ');
       expect(configAt(module, 0).name).to.eql('zoo'); // NB: trimmed.
