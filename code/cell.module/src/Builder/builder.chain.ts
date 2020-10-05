@@ -1,5 +1,6 @@
 import { IMemoryCache, MemoryCache } from '@platform/cache';
 import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { dispose, jpath, t } from '../common';
 
@@ -23,6 +24,7 @@ export function create<M extends O, A extends O>(args: {
   index?: number;
   cache?: IMemoryCache;
   kind?: t.BuilderMethodKind;
+  dispose$?: Observable<void>;
 }): t.BuilderChain<A> {
   const { handlers, parent, kind = 'ROOT', model } = args;
   const index = args.index === undefined || args.index < 0 ? -1 : args.index;
@@ -30,6 +32,10 @@ export function create<M extends O, A extends O>(args: {
 
   const builder = dispose.create();
   const dispose$ = builder.dispose$;
+
+  if (args.dispose$) {
+    args.dispose$.pipe(take(1)).subscribe(() => builder.dispose());
+  }
 
   const formatPath = (path?: string) => {
     if (path === undefined) {
@@ -277,6 +283,7 @@ const fromFactory = (args: {
   dispose$: Observable<void>;
 }) => {
   const { parent, dispose$ } = args;
+
   return {
     /**
      * Create [list] builder from factory.
@@ -299,7 +306,7 @@ const fromFactory = (args: {
           model?: t.BuilderModel<M>,
         ) {
           model = model || args.model;
-          return create<M, A>({ kind, parent, model, handlers, path, index });
+          return create<M, A>({ kind, parent, model, handlers, path, index, dispose$ });
         },
       });
     },
@@ -323,7 +330,7 @@ const fromFactory = (args: {
           model?: t.BuilderModel<M>,
         ) {
           model = model || args.model;
-          return create<M, A>({ kind, parent, model, handlers, path });
+          return create<M, A>({ kind, parent, model, handlers, path, dispose$ });
         },
       });
     },

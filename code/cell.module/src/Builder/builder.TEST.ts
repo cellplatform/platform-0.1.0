@@ -219,12 +219,15 @@ describe('Builder', () => {
     });
   });
 
-  describe('disposable', () => {
-    it('is IDisposable', () => {
+  describe('IDisposable', () => {
+    it('method: dispose()', () => {
       const { builder } = create();
       expect(typeof builder.dispose === 'function').to.eql(true);
+    });
+
+    it('observable: dispose$', () => {
+      const { builder } = create();
       expect(typeof builder.dispose$.subscribe === 'function').to.eql(true);
-      expect(builder.isDisposed).to.eql(false);
 
       let count = 0;
       builder.dispose$.subscribe(() => count++);
@@ -234,41 +237,24 @@ describe('Builder', () => {
       expect(count).to.eql(1);
     });
 
-    describe('child builders (args: dispose$)', () => {
-      it('map', () => {
-        type M = { count: number };
-        type C = { child: t.BuilderMap<C> };
-
-        let args: t.BuilderMapFactoryArgs<any, any> | undefined;
-        const handlers: t.BuilderHandlers<M, C> = {
-          child: {
-            kind: 'map',
-            builder: (e) => (args = e),
-          },
-        };
-
-        const model = StateObject.create<M>({ count: 0 });
-        const builder = Builder.create<M, C>({ model, handlers });
-
-        builder.child('foo');
-        expect(typeof args?.builder.dispose$.subscribe === 'function').to.eql(true);
-
-        let count = 0;
-        args?.builder.dispose$.subscribe(() => count++);
-        builder.dispose();
-        expect(count).to.eql(1);
-      });
-
+    describe('child builder factory (inherits dispose$)', () => {
       it('list', () => {
         type M = { children: [] };
         type C = { child: t.BuilderListByIndex<C> };
 
+        const count = { root: 0, child: 0 };
         let args: t.BuilderListFactoryArgs<any, any> | undefined;
+
         const handlers: t.BuilderHandlers<M, C> = {
           child: {
             kind: 'list:byIndex',
             path: '$.children',
-            builder: (e) => (args = e),
+            builder: (e) => {
+              args = e;
+              const child = e.create<M, C>(handlers);
+              child.dispose$.subscribe(() => count.child++);
+              return child;
+            },
           },
         };
 
@@ -278,10 +264,41 @@ describe('Builder', () => {
         builder.child(0);
         expect(typeof args?.builder.dispose$.subscribe === 'function').to.eql(true);
 
-        let count = 0;
-        args?.builder.dispose$.subscribe(() => count++);
+        args?.builder.dispose$.subscribe(() => count.root++);
         builder.dispose();
-        expect(count).to.eql(1);
+        expect(count.root).to.eql(1);
+        expect(count.child).to.eql(1);
+      });
+
+      it('map', () => {
+        type M = { count: number };
+        type C = { child: t.BuilderMap<C> };
+
+        const count = { root: 0, child: 0 };
+        let args: t.BuilderMapFactoryArgs<any, any> | undefined;
+
+        const handlers: t.BuilderHandlers<M, C> = {
+          child: {
+            kind: 'map',
+            builder: (e) => {
+              args = e;
+              const child = e.create<M, C>(handlers);
+              child.dispose$.subscribe(() => count.child++);
+              return child;
+            },
+          },
+        };
+
+        const model = StateObject.create<M>({ count: 0 });
+        const builder = Builder.create<M, C>({ model, handlers });
+
+        builder.child('foo');
+        expect(typeof args?.builder.dispose$.subscribe === 'function').to.eql(true);
+
+        args?.builder.dispose$.subscribe(() => count.root++);
+        builder.dispose();
+        expect(count.root).to.eql(1);
+        expect(count.child).to.eql(1);
       });
     });
   });
