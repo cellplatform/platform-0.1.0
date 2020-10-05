@@ -1,3 +1,5 @@
+import { takeUntil } from 'rxjs/operators';
+
 import { Builder, jpath, StateObject, t } from '../../common';
 import { configHandlers } from './handlers.config';
 
@@ -14,21 +16,12 @@ export const factory: t.WebpackConfigsBuilderFactory = (bus, model) => {
       path: '$.props.data.configs',
       default: () => ({ name: '' }),
       builder(args) {
-        /**
-         *
-         * TODO 🐷
-         *    - Put this "child syncer" somewhere sensible.
-         *    - Handle [dispose$] on child model (add [dispose] concept to builder, pass through args)
-         *    - Update [tsc] to handle Yarn workspaces.
-         *
-         */
+        const parent = args.model;
+        const initial = jpath.query(parent.state, `${args.path}[${args.index}]`)[0];
+        const child = StateObject.create<C>(initial);
 
-        const path = `${args.path}[${args.index}]`;
-        const initial = jpath.query(args.model.state, path)[0];
-        const model = StateObject.create<C>(initial);
-
-        model.event.changed$.pipe().subscribe((e) => {
-          args.model.change((draft) => {
+        child.event.changed$.pipe(takeUntil(args.builder.dispose$)).subscribe((e) => {
+          parent.change((draft) => {
             jpath.apply(draft, args.path, (list: any[]) => {
               list[args.index] = e.to;
               return list;
@@ -37,7 +30,7 @@ export const factory: t.WebpackConfigsBuilderFactory = (bus, model) => {
         });
 
         const handlers = configHandlers(bus);
-        return args.create<C, t.WebpackConfigBuilder>(handlers, model);
+        return args.create<C, t.WebpackConfigBuilder>(handlers, child);
       },
     },
   };
