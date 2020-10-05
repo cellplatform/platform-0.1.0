@@ -1,4 +1,5 @@
 import { t } from '../common';
+import { Observable } from '../common/types';
 type O = Record<string, unknown>;
 
 export type BuilderNamedItem = { name: string };
@@ -11,7 +12,7 @@ export type BuilderIndexCalcArgs = { total: number; list: any[] };
  * Static builder methods.
  */
 export type Builder = { create: BuilderChainFactory; format: t.BuilderFormat };
-export type BuilderChain<A extends O> = A;
+export type BuilderChain<A extends O> = A & t.IDisposable;
 
 /**
  * Model/State
@@ -38,7 +39,7 @@ export type BuilderHandlerArgs<M extends O, A extends O> = {
   path: string;
   index: number; // NB: -1 if not relevant (ie. not related to an array-list).
   params: any[];
-  builder: { self: BuilderChain<A>; parent?: BuilderChain<any> };
+  builder: { self: BuilderChain<A>; parent?: BuilderChain<any>; dispose$: Observable<void> };
   is: { list: boolean; map: boolean };
   model: BuilderModel<M>;
 };
@@ -163,7 +164,7 @@ export type BuilderListFactoryArgs<M extends O, A extends O> = BuilderChildFacto
 export type BuilderChildFactoryArgs<M extends O, A extends O> = {
   path: string;
   model: BuilderModel<M>;
-  builder: { parent: BuilderChain<any> };
+  builder: { parent: BuilderChain<any>; dispose$: Observable<void> };
   create<M extends O, A extends O>(
     handlers: BuilderHandlers<M, A>,
     model?: BuilderModel<M>,

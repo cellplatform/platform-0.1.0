@@ -219,6 +219,73 @@ describe('Builder', () => {
     });
   });
 
+  describe('disposable', () => {
+    it('is IDisposable', () => {
+      const { builder } = create();
+      expect(typeof builder.dispose === 'function').to.eql(true);
+      expect(typeof builder.dispose$.subscribe === 'function').to.eql(true);
+      expect(builder.isDisposed).to.eql(false);
+
+      let count = 0;
+      builder.dispose$.subscribe(() => count++);
+      builder.dispose();
+      builder.dispose();
+      expect(builder.isDisposed).to.eql(true);
+      expect(count).to.eql(1);
+    });
+
+    describe('child builders (args: dispose$)', () => {
+      it('map', () => {
+        type M = { count: number };
+        type C = { child: t.BuilderMap<C> };
+
+        let args: t.BuilderMapFactoryArgs<any, any> | undefined;
+        const handlers: t.BuilderHandlers<M, C> = {
+          child: {
+            kind: 'map',
+            builder: (e) => (args = e),
+          },
+        };
+
+        const model = StateObject.create<M>({ count: 0 });
+        const builder = Builder.create<M, C>({ model, handlers });
+
+        builder.child('foo');
+        expect(typeof args?.builder.dispose$.subscribe === 'function').to.eql(true);
+
+        let count = 0;
+        args?.builder.dispose$.subscribe(() => count++);
+        builder.dispose();
+        expect(count).to.eql(1);
+      });
+
+      it('list', () => {
+        type M = { children: [] };
+        type C = { child: t.BuilderListByIndex<C> };
+
+        let args: t.BuilderListFactoryArgs<any, any> | undefined;
+        const handlers: t.BuilderHandlers<M, C> = {
+          child: {
+            kind: 'list:byIndex',
+            path: '$.children',
+            builder: (e) => (args = e),
+          },
+        };
+
+        const model = StateObject.create<M>({ children: [] });
+        const builder = Builder.create<M, C>({ model, handlers });
+
+        builder.child(0);
+        expect(typeof args?.builder.dispose$.subscribe === 'function').to.eql(true);
+
+        let count = 0;
+        args?.builder.dispose$.subscribe(() => count++);
+        builder.dispose();
+        expect(count).to.eql(1);
+      });
+    });
+  });
+
   describe('handlers', () => {
     type IModel = { name?: string; bar?: { count: number } };
     type IFoo = { name(value: string): IFoo; bar: IBar };
@@ -336,12 +403,13 @@ describe('Builder', () => {
 
     it('args', () => {
       const { builder } = create();
-      const res = builder.objectTwo.args();
+      const args = builder.objectTwo.args();
 
-      expect(res.kind).to.eql('object');
-      expect(res.key).to.eql('args');
-      expect(res.path).to.eql('$'); // NB: Path not specified on handler decaration.
-      expect(res.builder.parent).to.equal(builder);
+      expect(args.kind).to.eql('object');
+      expect(args.key).to.eql('args');
+      expect(args.path).to.eql('$'); // NB: Path not specified on handler decaration.
+      expect(args.builder.parent).to.equal(builder);
+      expect(typeof args?.builder.dispose$.subscribe === 'function').to.eql(true);
     });
 
     it('returns value', () => {
@@ -375,6 +443,7 @@ describe('Builder', () => {
       expect(builder.listByIndex().args().index).to.eql(1);
       expect(builder.listByIndex(0).args().index).to.eql(0);
       expect(builder.listByIndex(10).args().index).to.eql(10);
+      expect(typeof args?.builder.dispose$.subscribe === 'function').to.eql(true);
     });
 
     it('creates with no index (insert at end)', () => {
@@ -434,6 +503,7 @@ describe('Builder', () => {
       expect(args.model).to.equal(model);
       expect(builder.listByName('foo').args().index).to.eql(0);
       expect(builder.listByName('bar').args().index).to.eql(1);
+      expect(typeof args?.builder.dispose$.subscribe === 'function').to.eql(true);
     });
 
     it('assigns "name" and adds item to end of list (default)', () => {

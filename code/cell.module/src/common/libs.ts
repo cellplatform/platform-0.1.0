@@ -1,5 +1,5 @@
-import { rx, defaultValue } from '@platform/util.value';
-export { rx, defaultValue };
+import { rx, defaultValue, dispose } from '@platform/util.value';
+export { rx, defaultValue, dispose };
 
 import { toNodeId } from '@platform/state/lib/common';
 export { toNodeId };

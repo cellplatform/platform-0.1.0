@@ -1,5 +1,7 @@
-import { MemoryCache, IMemoryCache } from '@platform/cache';
-import { t, jpath } from '../common';
+import { IMemoryCache, MemoryCache } from '@platform/cache';
+import { Observable } from 'rxjs';
+
+import { dispose, jpath, t } from '../common';
 
 type O = Record<string, unknown>;
 type B = t.BuilderChain<any>;
@@ -25,7 +27,9 @@ export function create<M extends O, A extends O>(args: {
   const { handlers, parent, kind = 'ROOT', model } = args;
   const index = args.index === undefined || args.index < 0 ? -1 : args.index;
   const cache = args.cache || MemoryCache.create();
-  const builder = {};
+
+  const builder = dispose.create();
+  const dispose$ = builder.dispose$;
 
   const formatPath = (path?: string) => {
     if (path === undefined) {
@@ -57,7 +61,7 @@ export function create<M extends O, A extends O>(args: {
           key,
           index,
           params,
-          builder: { parent, self: builder as t.BuilderChain<A> },
+          builder: { parent, self: builder as t.BuilderChain<A>, dispose$ },
           path: args.path === undefined ? '$' : `${args.path || '$'}`,
           model,
           is: { list: is.list(kind), map: is.map(kind) },
@@ -87,7 +91,7 @@ export function create<M extends O, A extends O>(args: {
             const parent = builder;
             return getOrCreate(cacheKey, () => {
               ensureObjectAt(model, path, def.default);
-              return fromFactory({ model, parent }).map('object', def.builder, key, path); // <== RECURSION 🌳
+              return fromFactory({ model, parent, dispose$ }).map('object', def.builder, key, path); // <== RECURSION 🌳
             });
           },
         });
@@ -107,7 +111,7 @@ export function create<M extends O, A extends O>(args: {
 
           return getOrCreate(cacheKey, () => {
             const parent = builder;
-            const factory = fromFactory({ model, parent });
+            const factory = fromFactory({ model, parent, dispose$ });
             return factory.list('list:byIndex', def.builder, index, path, ''); // <== RECURSION 🌳
           });
         };
@@ -131,7 +135,7 @@ export function create<M extends O, A extends O>(args: {
 
           const builder = getOrCreate(cacheKey, () => {
             const parent = builder;
-            const factory = fromFactory({ model, parent });
+            const factory = fromFactory({ model, parent, dispose$ });
             return factory.list('list:byName', def.builder, index, path, name); // <== RECURSION 🌳
           });
 
@@ -162,7 +166,8 @@ export function create<M extends O, A extends O>(args: {
               ensureObjectAt(model, path);
               ensureObjectAt(model, fieldPath, def.default);
             }
-            return fromFactory({ model, parent }).map('map', def.builder, field, fieldPath); // <== RECURSION 🌳
+            const factory = fromFactory({ model, parent, dispose$ });
+            return factory.map('map', def.builder, field, fieldPath); // <== RECURSION 🌳
           });
         };
       }
@@ -266,8 +271,12 @@ const findListOrThrow = (model: t.BuilderModel<any>, path: string) => {
   return list;
 };
 
-const fromFactory = (args: { model: t.BuilderModel<any>; parent: t.BuilderChain<any> }) => {
-  const { parent } = args;
+const fromFactory = (args: {
+  model: t.BuilderModel<any>;
+  parent: t.BuilderChain<any>;
+  dispose$: Observable<void>;
+}) => {
+  const { parent, dispose$ } = args;
   return {
     /**
      * Create [list] builder from factory.
@@ -284,7 +293,7 @@ const fromFactory = (args: { model: t.BuilderModel<any>; parent: t.BuilderChain<
         name,
         path,
         model: args.model,
-        builder: { parent },
+        builder: { parent, dispose$ },
         create<M extends O, A extends O>(
           handlers: t.BuilderHandlers<M, A>,
           model?: t.BuilderModel<M>,
@@ -308,7 +317,7 @@ const fromFactory = (args: { model: t.BuilderModel<any>; parent: t.BuilderChain<
         key,
         path,
         model: args.model,
-        builder: { parent },
+        builder: { parent, dispose$ },
         create<M extends O, A extends O>(
           handlers: t.BuilderHandlers<M, A>,
           model?: t.BuilderModel<M>,
