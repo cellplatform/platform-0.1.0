@@ -1,5 +1,4 @@
-
-import  {webpack} from 'webpack';
+import { webpack } from 'webpack';
 import { config } from './tmp.config';
 
 // webpack.
@@ -7,14 +6,12 @@ import { config } from './tmp.config';
 
 // webpack.version
 
-
-
-const res = webpack(config)
+const res = webpack(config as any);
 
 // console.log("res", res)
-console.log("-------------------------------------------")
+console.log('-------------------------------------------');
 
 res.run((err, stats) => {
-  console.log("err", err)
+  console.log('err', err);
   // console.log("stats", stats)
-})
+});

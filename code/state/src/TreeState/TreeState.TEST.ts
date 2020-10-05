@@ -1266,13 +1266,17 @@ describe('TreeState', () => {
       const res1 = state1.syncFrom({ source: state2 });
       const res2 = state1.syncFrom({ source: state3 });
 
+      const disposed = { res1: false, res2: false };
+      res1.dispose$.subscribe(() => (disposed.res1 = true));
+      res2.dispose$.subscribe(() => (disposed.res2 = true));
+
       const getChildren = () => state1.query.findById('foo:child-1')?.children || [];
 
-      expect(res1.isDisposed).to.eql(false);
-      expect(res2.isDisposed).to.eql(false);
+      expect(disposed.res1).to.eql(false);
+      expect(disposed.res2).to.eql(false);
       res1.dispose();
-      expect(res1.isDisposed).to.eql(true);
-      expect(res2.isDisposed).to.eql(false);
+      expect(disposed.res1).to.eql(true);
+      expect(disposed.res2).to.eql(false);
 
       state2.change((draft, ctx) => {
         ctx.props(draft, (props) => (props.label = 'change-1'));
@@ -1287,7 +1291,7 @@ describe('TreeState', () => {
       expect(children[1].props?.label).to.eql('change-2'); // NB: syncer not yet disposed.
 
       res2.dispose();
-      expect(res2.isDisposed).to.eql(true);
+      expect(disposed.res2).to.eql(true);
 
       state3.change((draft, ctx) => {
         ctx.props(draft, (props) => (props.label = 'change-3'));

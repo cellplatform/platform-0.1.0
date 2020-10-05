@@ -59,44 +59,14 @@ export function syncFrom(args: {
 
   if (args.initial) {
     change(args.initial);
-    // target.change((draft, ctx) => {
-    //   const initial = args.initial;
-    //   if (initial) {
-    //     const node = ctx.findById(parent);
-    //     if (node) {
-    //       ctx.children(node, (children) => {
-    //         const index = children.findIndex((child) => child.id === initial.id);
-    //         if (index === -1) {
-    //           children.push(initial);
-    //         } else {
-    //           children[index] = initial;
-    //         }
-    //       });
-    //     }
-    //   }
-    // });
   }
 
   source$.subscribe((e) => {
     change(e.to);
-    // target.change((draft, ctx) => {
-    //   const node = ctx.findById(parent);
-    //   if (node) {
-    //     console.log('e', e);
-
-    //     // node.props = e.to.props;
-    //     // node.children = e.to.children;
-    //   }
-    // });
-
-    // console.log('e', e);
   });
 
   const syncer: t.TreeStateSyncer = {
     parent,
-    get isDisposed() {
-      return dispose$.isStopped;
-    },
     dispose$,
     dispose,
   };
