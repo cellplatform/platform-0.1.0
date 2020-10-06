@@ -156,7 +156,7 @@ describe.only('Webpack: ConfigBuilder', () => {
     });
   });
 
-  describe.only('config.output', () => {
+  describe('config.output', () => {
     it(':parent', () => {
       const { builder } = create();
       expect(builder.name('foo').output.parent().parent()).to.equal(builder);
@@ -197,6 +197,31 @@ describe.only('Webpack: ConfigBuilder', () => {
 
       foo.output.publicPath('  ');
       expect(configAt(module, 'foo').output?.publicPath).to.eql(undefined);
+    });
+  });
+
+  describe('config.resolve', () => {
+    it(':parent', () => {
+      const { builder } = create();
+      expect(builder.name('foo').resolve.parent().parent()).to.equal(builder);
+    });
+
+    it('extensions', () => {
+      const { builder, module } = create();
+      const foo = builder.name('foo');
+      expect(configAt(module, 'foo').resolve).to.eql(undefined);
+
+      const test = (value: any, expected: string[] | undefined) => {
+        foo.resolve.extensions(value);
+        expect(configAt(module, 'foo').resolve?.extensions).to.eql(expected);
+      };
+
+      test([], undefined);
+      test(['.tsx', '.ts', '.jsx', '.js', '.json'], ['.tsx', '.ts', '.jsx', '.js', '.json']);
+      test(['', undefined, '  '], undefined);
+      test(['.tsx', undefined, '  '], ['.tsx']);
+      test(undefined, undefined);
+      test([' tsx ', 'ts  ', ' json'], ['.tsx', '.ts', '.json']);
     });
   });
 });

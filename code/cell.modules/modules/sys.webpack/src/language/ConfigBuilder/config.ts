@@ -1,5 +1,6 @@
 import { Builder, DEFAULT, t } from '../../common';
-import { configOutputHandlers } from './config.output';
+import { outputHandlers } from './config.output';
+import { resolveHandlers } from './config.resolve';
 
 const MODES: t.WebpackMode[] = ['development', 'production'];
 const format = Builder.format;
@@ -11,7 +12,7 @@ type C = t.WebpackConfigData;
 /**
  * A single configuration
  */
-export function configHandlers(bus: t.EventBus) {
+export function configHandlers() {
   const handlers: t.BuilderHandlers<C, t.WebpackConfigBuilder> = {
     parent: (args) => args.builder.parent,
     toObject: (args) => args.model.state,
@@ -71,7 +72,13 @@ export function configHandlers(bus: t.EventBus) {
     output: {
       kind: 'object',
       path: '$.output',
-      builder: (args) => args.create<C, t.WebpackConfigBuilderOutput>(configOutputHandlers()),
+      builder: (args) => args.create<C, t.WebpackConfigBuilderOutput>(outputHandlers()),
+    },
+
+    resolve: {
+      kind: 'object',
+      path: '$.resolve',
+      builder: (args) => args.create<C, t.WebpackConfigBuilderResolve>(resolveHandlers()),
     },
   };
   return handlers;

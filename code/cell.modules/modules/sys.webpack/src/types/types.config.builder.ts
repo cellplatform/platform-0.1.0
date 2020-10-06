@@ -17,7 +17,8 @@ export type WebpackConfigBuilder = {
   devtool(value: false | t.WebpackDevtool): C;
   context(value: string | undefined): C;
 
-  output: WebpackConfigBuilderOutput;
+  output: t.WebpackConfigBuilderOutput;
+  resolve: t.WebpackConfigBuilderResolve;
 };
 
 /**
@@ -28,4 +29,14 @@ export type WebpackConfigBuilderOutput = {
   filename(value: string | undefined): O;
   path(value: string | undefined): O;
   publicPath(value: string | undefined): O;
+};
+
+/**
+ * https://webpack.js.org/concepts/output/
+ */
+export type WebpackConfigBuilderResolve = {
+  parent(): C;
+  extensions(value: string[] | undefined): O;
+  // path(value: string | undefined): O;
+  // publicPath(value: string | undefined): O;
 };

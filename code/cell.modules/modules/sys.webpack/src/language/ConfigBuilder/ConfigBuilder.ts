@@ -25,15 +25,12 @@ export const factory: t.WebpackConfigsBuilderFactory = (bus, model) => {
         const initial = jpath.query(parent.state, args.path)[0] as C;
         const child = StateObject.create<C>(initial);
 
-        // args.
-        // const r = create({parent: args.model, initial })
-
+        // NB: Changes on the child builder model are propogated up into the parent.
         child.event.changed$.pipe(takeUntil(args.builder.dispose$)).subscribe((e) => {
-          // NB: Changes on the child builder model are propogated up into the parent.
           parent.change((draft) => jpath.apply(draft, args.path, () => e.to));
         });
 
-        const handlers = configHandlers(bus);
+        const handlers = configHandlers();
         return args.create<C, t.WebpackConfigBuilder>(handlers, child).name(args.key);
       },
     },

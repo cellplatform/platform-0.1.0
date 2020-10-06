@@ -1,16 +1,15 @@
-import { StateObject, Builder, DEFAULT, t } from '../../common';
+import { Builder, t } from '../../common';
 
 const format = Builder.format;
 const formatPath = (input: any) => format.string(input, { trim: true });
 
-type M = t.ITreeNode<t.WebpackProps>;
-type C = t.WebpackConfigData;
+type M = t.WebpackConfigData;
 
 /**
- * A single configuration
+ * https://webpack.js.org/concepts/output/
  */
-export function configOutputHandlers() {
-  const handlers: t.BuilderHandlers<C, t.WebpackConfigBuilderOutput> = {
+export function outputHandlers() {
+  const handlers: t.BuilderHandlers<M, t.WebpackConfigBuilderOutput> = {
     parent: (args) => args.builder.parent,
 
     filename(args) {
@@ -38,14 +37,10 @@ export function configOutputHandlers() {
  * Helpers
  */
 
-const model = (model: t.WebpackConfigData) => {
+const model = (model: M) => {
   return {
     get output() {
       return model.output || (model.output = {});
     },
   };
 };
-
-// //  const ensure = {
-
-// //  }

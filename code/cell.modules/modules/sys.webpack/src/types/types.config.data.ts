@@ -14,6 +14,7 @@ export type WebpackConfigData = {
   devTool?: false | t.WebpackDevtool;
   context?: string;
   output?: t.WebpackConfigDataOutput;
+  resolve?: t.WebpackConfigDataResolve;
 };
 
 /**
@@ -28,7 +29,9 @@ export type WebpackConfigDataOutput = {
 /**
  * https://webpack.js.org/configuration/resolve/
  */
-export type WebpackConfigDataResolve = {};
+export type WebpackConfigDataResolve = {
+  extensions?: string[];
+};
 
 /**
  * https://webpack.js.org/configuration/dev-server/
