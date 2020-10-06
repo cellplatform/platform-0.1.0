@@ -222,7 +222,6 @@ describe.only('Webpack: ConfigBuilder', () => {
       test(['.tsx', undefined, '  '], ['.tsx']);
       test(undefined, undefined);
       test([' tsx ', 'ts  ', ' json'], ['.tsx', '.ts', '.json']);
-      test({}, undefined);
     });
   });
 
@@ -244,7 +243,8 @@ describe.only('Webpack: ConfigBuilder', () => {
 
       test(1234, 1234);
       test(undefined, undefined);
-      test({}, undefined);
     });
   });
+
+  describe('js', () => {});
 });
