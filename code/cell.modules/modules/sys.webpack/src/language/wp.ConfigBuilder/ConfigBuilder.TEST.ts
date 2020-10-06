@@ -245,6 +245,4 @@ describe.only('Webpack: ConfigBuilder', () => {
       test(undefined, undefined);
     });
   });
-
-  describe('js', () => {});
 });

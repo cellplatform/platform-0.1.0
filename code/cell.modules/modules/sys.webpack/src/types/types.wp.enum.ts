@@ -1,10 +1,10 @@
 /**
- * https://webpack.js.org/configuration/mode/
+ * https://webpack.js.org/configuration/mode
  */
 export type WebpackMode = 'production' | 'development';
 
 /**
- * https://webpack.js.org/configuration/devtool/
+ * https://webpack.js.org/configuration/devtool
  */
 export type WebpackDevtool =
   | 'eval'
