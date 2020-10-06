@@ -1,4 +1,5 @@
 import { expect, rx, t, constants } from '../../test';
+import * as ConfigBuilder from '.';
 import { Webpack } from '../..';
 
 const props = (m: t.WebpackModule) => m.state.props as t.WebpackProps;
@@ -8,7 +9,7 @@ const configAt = (m: t.WebpackModule, key: string) => data(m).config[key];
 const create = () => {
   const bus = rx.bus();
   const module = Webpack.module(bus);
-  const builder = Webpack.builder.config(bus, module);
+  const builder = ConfigBuilder.factory(bus, module);
   return { bus, module, builder };
 };
 

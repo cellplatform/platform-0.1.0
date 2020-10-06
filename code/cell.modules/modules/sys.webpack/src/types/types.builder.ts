@@ -6,7 +6,7 @@ type B = t.EventBus<any>;
  * Index of builders
  */
 export type WebpackBuilders = {
-  config: t.WebpackConfigsBuilderFactory;
+  // config: t.WebpackConfigsBuilderFactory;
 };
 
 /**
