@@ -4,7 +4,7 @@ import { Webpack } from '../..';
 
 const props = (m: t.WebpackModule) => m.state.props as t.WebpackProps;
 const data = (m: t.WebpackModule) => props(m).data as t.WebpackData;
-const configAt = (m: t.WebpackModule, key: string) => data(m).config[key];
+const configAt = (m: t.WebpackModule, key: string) => data(m).configs[key];
 
 const create = () => {
   const bus = rx.bus();

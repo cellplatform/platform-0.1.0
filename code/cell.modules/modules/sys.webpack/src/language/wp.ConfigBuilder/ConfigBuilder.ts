@@ -13,12 +13,12 @@ export const factory: t.WebpackConfigsBuilderFactory = (bus, model) => {
   const handlers: t.BuilderHandlers<M, t.WebpackConfigsBuilder> = {
     toObject: (args) => {
       const data = args.model.state.props?.data || DEFAULT.DATA;
-      return data.config;
+      return data.configs;
     },
 
     name: {
       kind: 'map',
-      path: '$.props.data.config',
+      path: '$.props.data.configs',
       default: () => DEFAULT.CONFIG,
       builder(args) {
         const parent = args.model;

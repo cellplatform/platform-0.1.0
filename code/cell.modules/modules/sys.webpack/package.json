@@ -13,7 +13,7 @@
     "lint": "ts lint",
     "build": "ts build --no-esm",
     "prepare": "ts prepare",
-    "tmp": "ts-node -T src/nodejs/tmp",
+    "tmp": "ts-node -T src/tmp.nodejs/tmp",
     "clean": "rm -rf dist"
   },
   "dependencies": {
