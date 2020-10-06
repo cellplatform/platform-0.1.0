@@ -1,10 +1,11 @@
 import { Builder, DEFAULT, t } from '../../common';
+import { configOutputHandlers } from './config.output';
 
 const MODES: t.WebpackMode[] = ['development', 'production'];
 const format = Builder.format;
 const formatName = (input: any) => format.string(input, { trim: true }) || '';
 
-type M = t.ITreeNode<t.WebpackProps>;
+// type M = t.ITreeNode<t.WebpackProps>;
 type C = t.WebpackConfigData;
 
 /**
@@ -12,22 +13,30 @@ type C = t.WebpackConfigData;
  */
 export function configHandlers(bus: t.EventBus) {
   const handlers: t.BuilderHandlers<C, t.WebpackConfigBuilder> = {
+    parent: (args) => args.builder.parent,
     toObject: (args) => args.model.state,
 
     clone(args) {
-      const name = formatName(args.params[0]);
+      const value = formatName(args.params[0]);
       const parent = args.builder.parent as t.BuilderChain<t.WebpackConfigsBuilder>;
-      if (parent.toObject()[name]) {
-        throw new Error(`Cannot clone. The config name '${name}' is already in use.`);
+      if (parent.toObject()[value]) {
+        throw new Error(`Cannot clone. The config name '${value}' is already in use.`);
       } else {
-        return parent.name(name, { initial: args.model.state });
+        return parent.name(value, { initial: args.model.state });
       }
     },
 
     name(args) {
       args.model.change((draft) => {
-        const name = formatName(args.params[0]);
-        draft.name = name;
+        const value = formatName(args.params[0]);
+        draft.name = value;
+      });
+    },
+
+    context(args) {
+      args.model.change((draft) => {
+        const value = format.string(args.params[0], { trim: true });
+        draft.context = value;
       });
     },
 
@@ -57,6 +66,12 @@ export function configHandlers(bus: t.EventBus) {
         value = typeof value === 'string' ? format.string(value, { trim: true }) : value;
         draft.devTool = value;
       });
+    },
+
+    output: {
+      kind: 'object',
+      path: '$.output',
+      builder: (args) => args.create<C, t.WebpackConfigBuilderOutput>(configOutputHandlers()),
     },
   };
   return handlers;

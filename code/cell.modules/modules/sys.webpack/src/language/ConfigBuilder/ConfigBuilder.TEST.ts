@@ -78,7 +78,12 @@ describe.only('Webpack: ConfigBuilder', () => {
     });
   });
 
-  describe('config (props)', () => {
+  describe('config', () => {
+    it(':parent', () => {
+      const { builder, module } = create();
+      expect(builder.name('foo').parent()).to.equal(builder);
+    });
+
     it('name', () => {
       const { module, builder } = create();
       const foo = builder.name('dev');
@@ -93,6 +98,18 @@ describe.only('Webpack: ConfigBuilder', () => {
       const zoo = foo.name('zoo');
       expect(zoo).to.not.eql(undefined);
       expect(zoo).to.eql(foo.name('zoo'));
+    });
+
+    it('context', () => {
+      const { module, builder } = create();
+      const foo = builder.name('foo');
+      expect(configAt(module, 'foo').context).to.eql(undefined);
+
+      foo.context('/path');
+      expect(configAt(module, 'foo').context).to.eql('/path');
+
+      foo.context('');
+      expect(configAt(module, 'foo').context).to.eql(undefined);
     });
 
     it('mode', () => {
@@ -136,8 +153,50 @@ describe.only('Webpack: ConfigBuilder', () => {
       test(false, undefined);
 
       test(' eval-source-map ', 'eval-source-map');
+    });
+  });
 
-      // builder.
+  describe.only('config.output', () => {
+    it(':parent', () => {
+      const { builder } = create();
+      expect(builder.name('foo').output.parent().parent()).to.equal(builder);
+    });
+
+    it('filename', () => {
+      const { builder, module } = create();
+      const foo = builder.name('foo');
+      expect(configAt(module, 'foo').output).to.eql(undefined);
+
+      foo.output.filename('bundle.js');
+      expect(configAt(module, 'foo').output?.filename).to.eql('bundle.js');
+
+      foo.output.filename('  ');
+      expect(configAt(module, 'foo').output?.filename).to.eql(undefined);
+    });
+
+    it('path', () => {
+      const { builder, module } = create();
+      const foo = builder.name('foo');
+      expect(configAt(module, 'foo').output).to.eql(undefined);
+
+      foo.output.path('/path');
+      expect(configAt(module, 'foo').output?.path).to.eql('/path');
+
+      foo.output.path('  ');
+      expect(configAt(module, 'foo').output?.path).to.eql(undefined);
+    });
+
+    it('publicPath', () => {
+      const { builder, module } = create();
+      const foo = builder.name('foo');
+      expect(configAt(module, 'foo').output).to.eql(undefined);
+
+      const cdn = 'https://cdn.example.com/assets/[hash]/';
+      foo.output.publicPath(cdn);
+      expect(configAt(module, 'foo').output?.publicPath).to.eql(cdn);
+
+      foo.output.publicPath('  ');
+      expect(configAt(module, 'foo').output?.publicPath).to.eql(undefined);
     });
   });
 });
