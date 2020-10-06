@@ -27,13 +27,15 @@ export const create = {
 };
 
 const bus = rx.bus<E>();
-const data = (shell: t.ShellModule) => shell.state.props?.data as t.ShellData;
+const props = (shell: t.ShellModule) => shell.state.props as t.ShellProps;
+const data = (shell: t.ShellModule) => props(shell).data as t.ShellData;
 
 describe('Shell (Module)', () => {
   it('create', () => {
     const module = Shell.module(bus);
     expect(module.id).to.match(/.{20,}\:.{7,10}\.shell$/);
     expect(data(module).name).to.eql('');
+    expect(props(module).kind).to.eql('Module:Shell');
   });
 
   describe('event: "Shell/add"', () => {

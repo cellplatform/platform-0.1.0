@@ -2,10 +2,10 @@ import * as t from './common';
 
 type O = Record<string, unknown>;
 type Event = t.Event<O>;
-type MergeObject = { [key: string]: O };
+type CombineObject = { [key: string]: O };
 
 /**
- * Static entry point.
+ * Static entry point and helpers.
  */
 export type StateObject = {
   create<T extends O, A extends Event = Event>(initial: T): IStateObjectWritable<T, A>;
@@ -14,7 +14,7 @@ export type StateObject = {
     obj: IStateObjectWritable<T, A> | IStateObjectReadable<T, A>,
   ): IStateObjectReadable<T, A>;
 
-  merge<T extends MergeObject, A extends Event = Event>(
+  combine<T extends CombineObject, A extends Event = Event>(
     initial: T | Record<keyof T, t.IStateObject<T[keyof T]>>,
     dispose$?: t.Observable<any>,
   ): StateMerger<T, A>;
@@ -75,7 +75,7 @@ export type StateObjectChanger<T extends O> = (draft: T) => void;
 /**
  * Merge
  */
-export type StateMerger<T extends MergeObject, A extends Event = Event> = {
+export type StateMerger<T extends CombineObject, A extends Event = Event> = {
   readonly store: t.IStateObjectReadable<T, A>;
   readonly state: T;
   readonly changed$: t.Observable<t.IStateObjectChanged>;

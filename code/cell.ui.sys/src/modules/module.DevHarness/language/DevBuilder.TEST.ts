@@ -32,16 +32,6 @@ describe('Dev (DSL)', () => {
       dev.label('Foo').label('Bar');
       expect(dev.props.treeview?.label).to.eql('Bar');
     });
-
-    it('dispose', () => {
-      const dev = create(bus);
-      expect(dev.isDisposed).to.eql(false);
-      expect(dev.module.isDisposed).to.eql(false);
-
-      dev.dispose();
-      expect(dev.isDisposed).to.eql(true);
-      expect(dev.module.isDisposed).to.eql(true);
-    });
   });
 
   describe('DevBuilder.Component', () => {

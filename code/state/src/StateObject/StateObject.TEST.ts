@@ -470,50 +470,50 @@ describe('StateObject', () => {
     });
   });
 
-  describe('merge', () => {
+  describe('combine', () => {
     type T = { foo: IFoo; bar: IBar };
 
     it('create: from initial {object} values', () => {
       const initial = { foo: { count: 0 }, bar: {} };
-      const merged = StateObject.merge<T>(initial);
-      expect(merged.store.state).to.eql(merged.state);
-      expect(merged.state).to.eql(initial);
+      const combined = StateObject.combine<T>(initial);
+      expect(combined.store.state).to.eql(combined.state);
+      expect(combined.state).to.eql(initial);
     });
 
     it('create: from initial {state-object} values', () => {
       const foo = StateObject.create<IFoo>({ count: 123 });
       const bar = StateObject.create<IBar>({ isEnabled: true });
-      const merged = StateObject.merge<T>({ foo, bar });
-      expect(merged.state.foo).to.eql({ count: 123 });
-      expect(merged.state.bar).to.eql({ isEnabled: true });
+      const combined = StateObject.combine<T>({ foo, bar });
+      expect(combined.state.foo).to.eql({ count: 123 });
+      expect(combined.state.bar).to.eql({ isEnabled: true });
 
       foo.change((draft) => draft.count++);
-      expect(merged.state.foo.count).to.eql(124);
+      expect(combined.state.foo.count).to.eql(124);
     });
 
     it('exposes [changed$] events', () => {
-      const merged = StateObject.merge<T>({ foo: { count: 0 }, bar: {} });
-      expect(merged.changed$).to.equal(merged.store.event.changed$);
+      const combined = StateObject.combine<T>({ foo: { count: 0 }, bar: {} });
+      expect(combined.changed$).to.equal(combined.store.event.changed$);
     });
 
     it('add: sync values', () => {
       const initial = { foo: { count: 0 }, bar: {} };
       const bar = StateObject.create<IBar>({ isEnabled: true });
 
-      const merged = StateObject.merge<T>(initial);
-      expect(merged.state.bar.isEnabled).to.eql(undefined);
+      const combined = StateObject.combine<T>(initial);
+      expect(combined.state.bar.isEnabled).to.eql(undefined);
 
-      merged.add('bar', bar);
-      expect(merged.store.state).to.eql(merged.state);
-      expect(merged.state.bar.isEnabled).to.eql(true);
+      combined.add('bar', bar);
+      expect(combined.store.state).to.eql(combined.state);
+      expect(combined.state.bar.isEnabled).to.eql(true);
     });
 
     it('change: sync values', () => {
       const initial = { foo: { count: 0 }, bar: {} };
       const foo = StateObject.create<IFoo>({ count: 1 });
       const bar = StateObject.create<IBar>({});
-      const merged = StateObject.merge<T>(initial).add('bar', bar).add('foo', foo);
-      expect(merged.state).to.eql({ foo: { count: 1 }, bar: {} });
+      const combined = StateObject.combine<T>(initial).add('bar', bar).add('foo', foo);
+      expect(combined.state).to.eql({ foo: { count: 1 }, bar: {} });
 
       foo.change((draft) => {
         draft.count = 123;
@@ -521,35 +521,35 @@ describe('StateObject', () => {
       });
       bar.change({ isEnabled: true });
 
-      expect(merged.state.foo).to.eql({ count: 123, message: 'hello' });
-      expect(merged.state.bar).to.eql({ isEnabled: true });
+      expect(combined.state.foo).to.eql({ count: 123, message: 'hello' });
+      expect(combined.state.bar).to.eql({ isEnabled: true });
     });
 
     it('dispose$ (param)', () => {
       const dispose$ = new Subject();
-      const merged = StateObject.merge<T>({ foo: { count: 0 }, bar: {} }, dispose$);
-      expect(merged.store.isDisposed).to.eql(false);
+      const combined = StateObject.combine<T>({ foo: { count: 0 }, bar: {} }, dispose$);
+      expect(combined.store.isDisposed).to.eql(false);
 
       dispose$.next();
-      expect(merged.store.isDisposed).to.eql(true);
+      expect(combined.store.isDisposed).to.eql(true);
     });
 
     it('stop syncing on [store.dispose]', () => {
       const initial = { foo: { count: 0 }, bar: {} };
       const foo = StateObject.create<IFoo>({ count: 1 });
       const bar = StateObject.create<IBar>({});
-      const merged = StateObject.merge<T>(initial).add('bar', bar).add('foo', foo);
+      const combined = StateObject.combine<T>(initial).add('bar', bar).add('foo', foo);
 
       foo.change((draft) => draft.count++);
       bar.change((draft) => (draft.isEnabled = !Boolean(draft.isEnabled)));
 
-      expect(merged.state.foo.count).to.eql(2);
-      expect(merged.state.bar.isEnabled).to.eql(true);
+      expect(combined.state.foo.count).to.eql(2);
+      expect(combined.state.bar.isEnabled).to.eql(true);
 
-      merged.dispose();
+      combined.dispose();
 
       foo.change((draft) => draft.count++);
-      expect(merged.state.foo.count).to.eql(2); // NB: no change.
+      expect(combined.state.foo.count).to.eql(2); // NB: no change.
     });
   });
 });

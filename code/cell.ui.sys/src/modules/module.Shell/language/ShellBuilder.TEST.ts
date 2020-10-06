@@ -9,7 +9,7 @@ const tree = (module: TestModule) => module.state.props?.treeview || {};
 
 describe('ShellBuilder (DSL)', () => {
   describe('create', () => {
-    it('throw: module not provided', () => {
+    it('throw: module not found', () => {
       const fn = () => builder(rx.bus());
       expect(fn).to.throw(/A module of kind 'Shell' could not be found/);
     });
