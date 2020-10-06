@@ -162,6 +162,7 @@ export type BuilderListFactoryArgs<M extends O, A extends O> = BuilderChildFacto
 };
 
 export type BuilderChildFactoryArgs<M extends O, A extends O> = {
+  params: any[];
   path: string;
   model: BuilderModel<M>;
   builder: { parent: BuilderChain<any>; dispose$: Observable<void> };

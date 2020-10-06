@@ -18,5 +18,6 @@ export type WebpackConfigsBuilderFactory = (bus: B, webpack: t.IModule) => t.Web
  * Root builder of a set of Webpack configurations.
  */
 export type WebpackConfigsBuilder = {
-  name: t.BuilderListByName<t.WebpackConfigBuilder>;
+  toObject(): t.WebpackConfigs;
+  name: t.BuilderMap<t.WebpackConfigBuilder, string, { initial?: t.WebpackConfigData }>;
 };

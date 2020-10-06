@@ -203,7 +203,7 @@ const create = () => {
   return { model, builder };
 };
 
-describe('Builder', () => {
+describe.only('Builder', () => {
   describe('base', () => {
     it('returns builder', () => {
       const { builder } = create();
@@ -325,6 +325,7 @@ describe('Builder', () => {
 
       builder.name('foo');
 
+      expect(args?.params).to.eql(['foo']);
       expect(args?.kind).to.eql('ROOT');
       expect(args?.is.list).to.eql(false);
       expect(args?.is.map).to.eql(false);

@@ -1,7 +1,7 @@
 import { takeUntil } from 'rxjs/operators';
 
-import { Builder, jpath, StateObject, t, constants } from '../../common';
-import { configHandlers } from './handlers.config';
+import { Builder, jpath, StateObject, t, DEFAULT } from '../../common';
+import { configHandlers } from './config';
 
 type M = t.ITreeNode<t.WebpackProps>;
 type C = t.WebpackConfigData;
@@ -11,26 +11,30 @@ type C = t.WebpackConfigData;
  */
 export const factory: t.WebpackConfigsBuilderFactory = (bus, model) => {
   const handlers: t.BuilderHandlers<M, t.WebpackConfigsBuilder> = {
+    toObject: (args) => {
+      const data = args.model.state.props?.data || DEFAULT.DATA;
+      return data.config;
+    },
+
     name: {
-      kind: 'list:byName',
-      path: '$.props.data.configs',
-      default: () => constants.DEFAULT.CONFIG,
+      kind: 'map',
+      path: '$.props.data.config',
+      default: () => DEFAULT.CONFIG,
       builder(args) {
         const parent = args.model;
-        const initial = jpath.query(parent.state, `${args.path}[${args.index}]`)[0];
+        const initial = jpath.query(parent.state, args.path)[0] as C;
         const child = StateObject.create<C>(initial);
 
+        // args.
+        // const r = create({parent: args.model, initial })
+
         child.event.changed$.pipe(takeUntil(args.builder.dispose$)).subscribe((e) => {
-          parent.change((draft) => {
-            jpath.apply(draft, args.path, (list: any[]) => {
-              list[args.index] = e.to;
-              return list;
-            });
-          });
+          // NB: Changes on the child builder model are propogated up into the parent.
+          parent.change((draft) => jpath.apply(draft, args.path, () => e.to));
         });
 
         const handlers = configHandlers(bus);
-        return args.create<C, t.WebpackConfigBuilder>(handlers, child);
+        return args.create<C, t.WebpackConfigBuilder>(handlers, child).name(args.key);
       },
     },
   };

@@ -97,7 +97,8 @@ export function create<M extends O, A extends O>(args: {
             const parent = builder;
             return getOrCreate(cacheKey, () => {
               ensureObjectAt(model, path, def.default);
-              return fromFactory({ model, parent, dispose$ }).map('object', def.builder, key, path); // <== RECURSION 🌳
+              const factory = fromFactory({ model, parent, dispose$, params: [] });
+              return factory.map('object', def.builder, key, path); // <== RECURSION 🌳
             });
           },
         });
@@ -107,7 +108,8 @@ export function create<M extends O, A extends O>(args: {
        * Array list (accessed by index).
        */
       if (def.kind === 'list:byIndex') {
-        builder[key] = (input?: t.BuilderIndexParam) => {
+        builder[key] = (...params: any[]) => {
+          const input: t.BuilderIndexParam | undefined = params[0];
           const path = formatPath(def.path);
           const list = findListOrThrow(model, path);
           const index = deriveListIndex(list, input);
@@ -117,7 +119,7 @@ export function create<M extends O, A extends O>(args: {
 
           return getOrCreate(cacheKey, () => {
             const parent = builder;
-            const factory = fromFactory({ model, parent, dispose$ });
+            const factory = fromFactory({ model, parent, dispose$, params });
             return factory.list('list:byIndex', def.builder, index, path, ''); // <== RECURSION 🌳
           });
         };
@@ -127,11 +129,13 @@ export function create<M extends O, A extends O>(args: {
        * Array list (accessed by "name").
        */
       if (def.kind === 'list:byName') {
-        builder[key] = (name: string, i?: t.BuilderIndexParam) => {
+        builder[key] = (...params: any[]) => {
+          const name = params[0];
           if (typeof name !== 'string' || !name.trim()) {
             throw new Error(`Name of list item not given.`);
           }
 
+          const i = params[1] as t.BuilderIndexParam | undefined;
           const path = formatPath(def.path);
           const list = findListOrThrow(model, path);
           const index = findListIndexByName(list, name, i);
@@ -141,7 +145,7 @@ export function create<M extends O, A extends O>(args: {
 
           const builder = getOrCreate(cacheKey, () => {
             const parent = builder;
-            const factory = fromFactory({ model, parent, dispose$ });
+            const factory = fromFactory({ model, parent, dispose$, params });
             return factory.list('list:byName', def.builder, index, path, name); // <== RECURSION 🌳
           });
 
@@ -157,7 +161,8 @@ export function create<M extends O, A extends O>(args: {
        * Object map (accessed by "key").
        */
       if (def.kind === 'map') {
-        builder[key] = (field: string) => {
+        builder[key] = (...params: any[]) => {
+          const field = params[0];
           if (typeof field !== 'string' || !field.trim()) {
             throw new Error(`The map "key" not given.`);
           }
@@ -172,7 +177,7 @@ export function create<M extends O, A extends O>(args: {
               ensureObjectAt(model, path);
               ensureObjectAt(model, fieldPath, def.default);
             }
-            const factory = fromFactory({ model, parent, dispose$ });
+            const factory = fromFactory({ model, parent, dispose$, params });
             return factory.map('map', def.builder, field, fieldPath); // <== RECURSION 🌳
           });
         };
@@ -281,8 +286,9 @@ const fromFactory = (args: {
   model: t.BuilderModel<any>;
   parent: t.BuilderChain<any>;
   dispose$: Observable<void>;
+  params: any[];
 }) => {
-  const { parent, dispose$ } = args;
+  const { parent, dispose$, params } = args;
 
   return {
     /**
@@ -301,6 +307,7 @@ const fromFactory = (args: {
         path,
         model: args.model,
         builder: { parent, dispose$ },
+        params,
         create<M extends O, A extends O>(
           handlers: t.BuilderHandlers<M, A>,
           model?: t.BuilderModel<M>,
@@ -325,6 +332,7 @@ const fromFactory = (args: {
         path,
         model: args.model,
         builder: { parent, dispose$ },
+        params,
         create<M extends O, A extends O>(
           handlers: t.BuilderHandlers<M, A>,
           model?: t.BuilderModel<M>,
