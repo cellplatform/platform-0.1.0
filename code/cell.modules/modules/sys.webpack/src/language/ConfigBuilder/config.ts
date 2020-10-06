@@ -1,6 +1,7 @@
 import { Builder, DEFAULT, t } from '../../common';
 import { outputHandlers } from './config.output';
 import { resolveHandlers } from './config.resolve';
+import { devServerHandlers } from './config.devServer';
 
 const MODES: t.WebpackMode[] = ['development', 'production'];
 const format = Builder.format;
@@ -60,7 +61,7 @@ export function configHandlers() {
       });
     },
 
-    devtool(args) {
+    devTool(args) {
       args.model.change((draft) => {
         let value = args.params[0];
         value = value === false ? undefined : value;
@@ -79,6 +80,12 @@ export function configHandlers() {
       kind: 'object',
       path: '$.resolve',
       builder: (args) => args.create<C, t.WebpackConfigBuilderResolve>(resolveHandlers()),
+    },
+
+    devServer: {
+      kind: 'object',
+      path: '$.devServer',
+      builder: (args) => args.create<C, t.WebpackConfigBuilderDevServer>(devServerHandlers()),
     },
   };
   return handlers;

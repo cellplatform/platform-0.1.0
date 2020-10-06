@@ -14,11 +14,12 @@ export type WebpackConfigBuilder = {
   // Props.
   name(value: string): C;
   mode(value: t.WebpackMode | 'prod' | 'dev'): C;
-  devtool(value: false | t.WebpackDevtool): C;
+  devTool(value: false | t.WebpackDevtool): C;
   context(value: string | undefined): C;
 
   output: t.WebpackConfigBuilderOutput;
   resolve: t.WebpackConfigBuilderResolve;
+  devServer: t.WebpackConfigBuilderDevServer;
 };
 
 /**
@@ -37,6 +38,12 @@ export type WebpackConfigBuilderOutput = {
 export type WebpackConfigBuilderResolve = {
   parent(): C;
   extensions(value: string[] | undefined): O;
-  // path(value: string | undefined): O;
-  // publicPath(value: string | undefined): O;
+};
+
+/**
+ * https://webpack.js.org/configuration/dev-server/
+ */
+export type WebpackConfigBuilderDevServer = {
+  parent(): C;
+  port(value: number | undefined): O;
 };

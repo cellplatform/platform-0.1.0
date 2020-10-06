@@ -11,10 +11,11 @@ export type WebpackConfigs = Record<string, t.WebpackConfigData>;
 export type WebpackConfigData = {
   name: string;
   mode: t.WebpackMode;
-  devTool?: false | t.WebpackDevtool;
   context?: string;
   output?: t.WebpackConfigDataOutput;
   resolve?: t.WebpackConfigDataResolve;
+  devServer?: t.WebpackConfigDataDevServer;
+  devTool?: false | t.WebpackDevtool;
 };
 
 /**
@@ -36,6 +37,6 @@ export type WebpackConfigDataResolve = {
 /**
  * https://webpack.js.org/configuration/dev-server/
  */
-export type WebpackConfigDataDevServer = {};
-
-// export type WebpackConfigData = {}
+export type WebpackConfigDataDevServer = {
+  port?: number;
+};

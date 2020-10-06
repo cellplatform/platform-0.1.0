@@ -47,7 +47,7 @@ describe.only('Webpack: ConfigBuilder', () => {
       const config = builder
         .name('foo')
         .mode('development')
-        .devtool('eval-cheap-module-source-map');
+        .devTool('eval-cheap-module-source-map');
 
       expect(config.toObject()).to.eql(configAt(module, 'foo'));
       expect(config.toObject()).to.equal(config.toObject());
@@ -143,7 +143,7 @@ describe.only('Webpack: ConfigBuilder', () => {
     it('devtool', () => {
       const { module, builder } = create();
       const test = (input: any, expected: t.WebpackConfigData['devTool']) => {
-        builder.name('foo').devtool(input);
+        builder.name('foo').devTool(input);
         expect(configAt(module, 'foo').devTool).to.eql(expected);
       };
 
@@ -222,6 +222,29 @@ describe.only('Webpack: ConfigBuilder', () => {
       test(['.tsx', undefined, '  '], ['.tsx']);
       test(undefined, undefined);
       test([' tsx ', 'ts  ', ' json'], ['.tsx', '.ts', '.json']);
+      test({}, undefined);
+    });
+  });
+
+  describe('config.devServer', () => {
+    it(':parent', () => {
+      const { builder } = create();
+      expect(builder.name('foo').resolve.parent().parent()).to.equal(builder);
+    });
+
+    it('port', () => {
+      const { builder, module } = create();
+      const foo = builder.name('foo');
+      expect(configAt(module, 'foo').resolve).to.eql(undefined);
+
+      const test = (value: any, expected: number | undefined) => {
+        foo.devServer.port(value);
+        expect(configAt(module, 'foo').devServer?.port).to.eql(expected);
+      };
+
+      test(1234, 1234);
+      test(undefined, undefined);
+      test({}, undefined);
     });
   });
 });
