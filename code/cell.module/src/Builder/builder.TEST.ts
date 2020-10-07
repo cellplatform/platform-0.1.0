@@ -1,7 +1,5 @@
-import { StateObject } from '@platform/state';
-
 import { Builder } from '.';
-import { expect, jpath, t } from '../test';
+import { expect, jpath, t, StateObject } from '../test';
 
 /**
  * Data model types (State).
@@ -25,6 +23,8 @@ type IFoo = {
   listByIndex: t.BuilderListByIndex<IItem>;
   listByName: t.BuilderListByName<IItem>;
   map: t.BuilderMap<IItem, 'foo' | 'bar'>;
+  clone(): IFoo;
+  toObject(): IModel;
 };
 
 type IObjectOne = {
@@ -60,6 +60,9 @@ type IItemChild = {
  * Handlers
  */
 const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
+  toObject: (args) => args.model.state,
+  clone: (args) => args.clone(),
+
   name(args) {
     args.model.change((draft) => (draft.name = args.params[0]));
   },
@@ -203,7 +206,7 @@ const create = () => {
   return { model, builder };
 };
 
-describe.only('Builder', () => {
+describe('Builder', () => {
   describe('base', () => {
     it('returns builder', () => {
       const { builder } = create();
@@ -216,6 +219,19 @@ describe.only('Builder', () => {
 
       builder.name('foo').name('bar');
       expect(model.state.name).to.eql('bar');
+    });
+
+    it('clone', () => {
+      const { builder } = create();
+      const clone = builder.clone();
+      expect(clone.toObject()).to.eql(builder.toObject());
+
+      builder.name('one');
+      clone.name('two');
+
+      expect(clone.toObject()).to.not.eql(builder.toObject());
+      expect(builder.toObject().name).to.eql('one');
+      expect(clone.toObject().name).to.eql('two');
     });
   });
 

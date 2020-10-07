@@ -9,3 +9,6 @@ export { wildcard };
 
 import * as jpath from 'jsonpath';
 export { jpath };
+
+import { StateObject } from '@platform/state';
+export { StateObject };
