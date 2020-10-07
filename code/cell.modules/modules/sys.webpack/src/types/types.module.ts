@@ -16,4 +16,4 @@ export type Webpack = {
 /**
  * Webpack module data.
  */
-export type WebpackData = { configs: t._WebpackConfigs };
+export type WebpackData = {};

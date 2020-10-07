@@ -1,6 +1,5 @@
 import { Module, t, id, constants } from '../common';
-import { WebpackBuilders } from '../language';
-import { DEFAULT } from '../language/wp.ConfigBuilder/DEFAULT'; // TEMP 🐷
+import { Builders } from '../language';
 
 type P = t.WebpackProps;
 
@@ -8,7 +7,7 @@ export const Webpack: t.Webpack = {
   /**
    * API builders (DSL).
    */
-  builder: WebpackBuilders,
+  builder: Builders,
 
   /**
    * Module initialization.
@@ -19,7 +18,7 @@ export const Webpack: t.Webpack = {
       kind: constants.KIND,
       root: {
         id: `${id.shortid()}.webpack`,
-        props: { data: DEFAULT.DATA },
+        props: { data: {} },
       },
     });
     return webpack;

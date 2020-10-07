@@ -1,30 +1,30 @@
-import { expect, t, rx, DEFAULT, StateObject } from '../../test';
-import { ConfigBuilder } from '.';
+import { expect, t, rx, DEFAULT, StateObject } from '../test';
+import { Builders } from '.';
 
 const create = () => {
   const bus = rx.bus();
-  const model = ConfigBuilder.model();
-  const builder = ConfigBuilder.create(bus, model);
+  const model = Builders.config.model();
+  const builder = Builders.config.create(bus, model);
   return { bus, model, builder };
 };
 
 describe('ConfigBuilder', () => {
   describe('create', () => {
     it('model', () => {
-      const model = ConfigBuilder.model();
+      const model = Builders.config.model();
       expect(model.state).to.eql(DEFAULT.CONFIG);
     });
 
     it('builder', () => {
       const bus = rx.bus();
-      const builder = ConfigBuilder.create(bus);
+      const builder = Builders.config.create(bus);
       expect(builder.toObject()).to.eql(DEFAULT.CONFIG);
     });
 
     it('builder (with model)', () => {
       const bus = rx.bus();
       const model = StateObject.create<t.WebpackModel>({ ...DEFAULT.CONFIG, mode: 'development' });
-      const builder = ConfigBuilder.create(bus, model);
+      const builder = Builders.config.create(bus, model);
       expect(builder.toObject().mode).to.eql('development');
     });
 

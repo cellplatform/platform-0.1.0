@@ -1,4 +1,4 @@
-import { t, Builder, StateObject, DEFAULT } from '../../common';
+import { t, Builder, StateObject, DEFAULT } from '../common';
 
 const format = Builder.format;
 const MODES: t.WebpackMode[] = ['development', 'production'];

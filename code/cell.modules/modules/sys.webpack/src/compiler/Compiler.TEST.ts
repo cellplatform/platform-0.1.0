@@ -1,12 +1,12 @@
 import { expect, rx } from '../test';
 import { Compiler } from '.';
-import { WebpackBuilders } from '../language';
+import { Builders } from '../language';
 import { toWebpackConfig } from './toWebpackConfig';
 
 const create = () => {
   const bus = rx.bus();
-  const model = WebpackBuilders.config.model();
-  const builder = WebpackBuilders.config.create(bus, model);
+  const model = Builders.config.model();
+  const builder = Builders.config.create(bus, model);
   return { bus, model, builder };
 };
 
@@ -18,6 +18,8 @@ describe.only('Compiler', function () {
       const { builder } = create();
 
       // builder.
+
+      builder.mode('development');
 
       const res = await Compiler.bundle(builder);
 

@@ -1,5 +1,5 @@
 import { Webpack } from '.';
-import { expect, rx, t, constants } from '../test';
+import { expect, rx, t } from '../test';
 
 type E = t.WebpackEvent;
 
