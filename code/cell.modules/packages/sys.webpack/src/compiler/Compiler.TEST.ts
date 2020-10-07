@@ -1,6 +1,6 @@
 import { ConfigBuilder } from '../language';
 import { expect } from '../test';
-import { toWebpackConfig } from './toWebpackConfig';
+import { toWebpackConfig } from './wp';
 
 const create = () => {
   const model = ConfigBuilder.model();

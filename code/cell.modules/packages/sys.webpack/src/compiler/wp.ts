@@ -1,5 +1,7 @@
 import { t } from '../common';
 import * as HtmlWebPackPlugin from 'html-webpack-plugin';
+import * as ESLintPlugin from 'eslint-webpack-plugin';
+import { rules } from './wp.rules';
 
 type M = t.WebpackModel | t.ConfigBuilderChain;
 
@@ -11,16 +13,23 @@ export function toWebpackConfig(input: M): t.WebpackConfig {
   const { mode, port } = model;
   const prod = mode === 'production';
   const publicPath = `http://localhost:${port}/`;
-
-  const html = new HtmlWebPackPlugin({ title: 'Untitled' });
+  const plugins: NonNullable<t.WebpackConfig['plugins']> = [];
 
   /**
    * TODO 🐷
-   *  - Linter
+   *  - Check tree-shaking (??)
+   *
    *  - Entry
    *  - Title
+   *
+   * - fork-ts-checker-webpack-plugin
+   *      https://webpack.js.org/guides/build-performance/#typescript-loader
+   *      https://github.com/TypeStrong/fork-ts-checker-webpack-plugin
    */
 
+  /**
+   * Base configuration.
+   */
   const config: t.WebpackConfig = {
     mode,
     output: { publicPath },
@@ -31,30 +40,25 @@ export function toWebpackConfig(input: M): t.WebpackConfig {
     resolve: { extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'] },
     devtool: prod ? undefined : 'eval-cheap-module-source-map',
     devServer: prod ? undefined : { port, hot: true },
-
-    module: {
-      rules: [
-        {
-          test: /\.css$/i,
-          use: ['style-loader', 'css-loader'],
-        },
-        {
-          test: /\.(ts|tsx|js|jsx)$/,
-          exclude: /node_modules/,
-          use: {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-typescript', '@babel/preset-react', '@babel/preset-env'],
-              plugins: ['@babel/plugin-proposal-class-properties'],
-            },
-          },
-        },
-      ],
-    },
-
-    plugins: [html],
+    module: { rules },
+    plugins,
   };
 
+  /**
+   * Plugin: HTML
+   */
+  plugins.push(new HtmlWebPackPlugin({ title: 'Untitled' }));
+
+  /**
+   * Plugin: Linter
+   */
+  if (model.lint !== false && (model.lint === true || prod)) {
+    // @ts-ignore
+    plugins.push(new ESLintPlugin({ files: ['src'], extensions: ['ts', 'tsx'] }));
+  }
+
+  // Finish up.
+  config.plugins = plugins.filter((plugin) => Boolean(plugin));
   return config;
 }
 

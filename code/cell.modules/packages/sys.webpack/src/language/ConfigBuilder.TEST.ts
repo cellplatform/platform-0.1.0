@@ -67,5 +67,20 @@ describe('ConfigBuilder', () => {
       test(1234, 1234);
       test(undefined, DEFAULT_PORT);
     });
+
+    it('lint', () => {
+      const { builder, model } = create();
+      expect(builder.toObject().lint).to.eql(undefined);
+
+      const test = (value: any, expected: boolean | undefined) => {
+        builder.lint(value);
+        expect(model.state.lint).to.eql(expected);
+      };
+
+      test(true, true);
+      test(false, false);
+      test(undefined, undefined);
+      test({}, undefined);
+    });
   });
 });

@@ -1,7 +1,7 @@
 import { Webpack } from '..';
 
 (async () => {
-  const config = Webpack.config.create();
+  const config = Webpack.config.create().mode('dev');
 
   // config.
 

@@ -4,7 +4,7 @@ import { log } from '@platform/log/lib/server';
 import * as dev from 'webpack-dev-server';
 
 import { t } from '../common';
-import { toWebpackConfig, toModel } from './webpack';
+import { toWebpackConfig, toModel } from './wp';
 
 type M = t.WebpackModel | t.ConfigBuilderChain;
 

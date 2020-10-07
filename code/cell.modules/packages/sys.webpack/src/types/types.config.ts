@@ -17,6 +17,7 @@ export type WebpackBuilder = {
   toObject(): t.WebpackModel;
   mode(value: t.WebpackMode | 'prod' | 'dev'): B;
   port(value: number | undefined): B;
+  lint(value: boolean | undefined): B;
 };
 
 /**
@@ -25,4 +26,5 @@ export type WebpackBuilder = {
 export type WebpackModel = {
   mode: t.WebpackMode;
   port: number;
+  lint?: boolean;
 };

@@ -45,4 +45,10 @@ const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
       draft.port = format.number(args.params[0], { default: DEFAULT.CONFIG.port }) as number;
     });
   },
+
+  lint(args) {
+    args.model.change((draft) => {
+      draft.lint = format.boolean(args.params[0]);
+    });
+  },
 };
