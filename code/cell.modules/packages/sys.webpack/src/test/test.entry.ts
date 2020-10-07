@@ -1,6 +1,6 @@
 import '@platform/polyfill';
 
-console.log('entry', ': hello');
+console.log('entry', ': hello.');
 console.log('');
 
 (async () => {
