@@ -1,35 +1,14 @@
-import { expect, rx } from '../test';
-import { Compiler } from '.';
-import { Builders } from '../language';
+import { ConfigBuilder } from '../language';
+import { expect } from '../test';
 import { toWebpackConfig } from './toWebpackConfig';
 
 const create = () => {
-  const bus = rx.bus();
-  const model = Builders.config.model();
-  const builder = Builders.config.create(bus, model);
-  return { bus, model, builder };
+  const model = ConfigBuilder.model();
+  const builder = ConfigBuilder.create(model);
+  return { model, builder };
 };
 
 describe.only('Compiler', function () {
-  this.timeout(90000);
-
-  describe('bundle', () => {
-    it('bundle', async () => {
-      const { builder } = create();
-
-      // builder.
-
-      builder.mode('development');
-
-      const res = await Compiler.bundle(builder);
-
-      console.log('-------------------------------------------');
-      console.log('res', res);
-
-      // const res = WebPack.bundle(builder);
-    });
-  });
-
   describe('toWebpackConfig', () => {
     it('default values', () => {
       const { builder } = create();

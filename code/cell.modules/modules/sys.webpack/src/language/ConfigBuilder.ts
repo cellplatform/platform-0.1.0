@@ -9,7 +9,7 @@ const MODES: t.WebpackMode[] = ['development', 'production'];
 export const ConfigBuilder: t.ConfigBuilder = {
   model: () => StateObject.create<t.WebpackModel>(DEFAULT.CONFIG),
 
-  create(bus, model) {
+  create(model) {
     model = model || ConfigBuilder.model();
     return Builder.create<t.WebpackModel, t.WebpackBuilder>({ model, handlers });
   },

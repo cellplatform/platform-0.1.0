@@ -1,13 +1,14 @@
 import { Module, t, id, constants } from '../common';
-import { Builders } from '../language';
+import { ConfigBuilder } from '../language';
+import { Compiler } from '../compiler';
 
 type P = t.WebpackProps;
 
 export const Webpack: t.Webpack = {
-  /**
-   * API builders (DSL).
-   */
-  builder: Builders,
+  config: ConfigBuilder,
+  bundle: Compiler.bundle,
+  watch: Compiler.watch,
+  dev: Compiler.dev,
 
   /**
    * Module initialization.

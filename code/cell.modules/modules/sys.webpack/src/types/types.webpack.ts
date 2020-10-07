@@ -6,6 +6,7 @@ import { t } from '../common';
  */
 export type WebpackConfig = {
   mode?: t.WebpackMode;
+  entry?: string | Record<string, string>;
   output?: WebpackConfigOutput;
   resolve?: WebpackConfigResolve;
   devtool?: WebpackDevtool;
@@ -36,7 +37,14 @@ export type WebpackConfigRule = {
   test?: RegExp;
   mimetype?: string;
   exclude?: RegExp;
-  use?: string | string[];
+  use?: WebpackConfigRuleUse | WebpackConfigRuleUse[];
+};
+
+export type WebpackConfigRuleUse = string | WebpackConfigLoader;
+
+export type WebpackConfigLoader = {
+  loader: string;
+  options?: Record<string, any>;
 };
 
 /**

@@ -1,8 +1,10 @@
 import { t } from './common';
 
+type B = t.BuilderChain<WebpackBuilder>;
+
 export type ConfigBuilder = {
   model(): ConfigBuilderModel;
-  create(bus: t.EventBus, model?: ConfigBuilderModel): ConfigBuilderChain;
+  create(model?: ConfigBuilderModel): ConfigBuilderChain;
 };
 
 export type ConfigBuilderChain = t.BuilderChain<WebpackBuilder>;
@@ -13,8 +15,8 @@ export type ConfigBuilderModel = t.BuilderModel<t.WebpackModel>;
  */
 export type WebpackBuilder = {
   toObject(): t.WebpackModel;
-  mode(value: t.WebpackMode | 'prod' | 'dev'): t.WebpackBuilder;
-  port(value: number | undefined): t.WebpackBuilder;
+  mode(value: t.WebpackMode | 'prod' | 'dev'): B;
+  port(value: number | undefined): B;
 };
 
 /**

@@ -10,10 +10,13 @@ export type WebpackModule = t.IModule<WebpackProps>;
  */
 export type Webpack = {
   module(bus: t.EventBus<any>): WebpackModule;
-  builder: t.WebpackBuilders;
+  config: t.ConfigBuilder;
+  bundle: t.WebpackBundle;
+  watch: t.WebpackWatch;
+  dev: t.WebpackDev;
 };
 
 /**
  * Webpack module data.
  */
-export type WebpackData = {};
+export type WebpackData = { foo?: number };

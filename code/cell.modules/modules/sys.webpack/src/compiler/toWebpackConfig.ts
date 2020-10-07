@@ -4,7 +4,7 @@ import * as HtmlWebPackPlugin from 'html-webpack-plugin';
 /**
  * Converts a configuration state into a live webpack object.
  */
-export function toWebpackConfig(model: t.WebpackModel) {
+export function toWebpackConfig(model: t.WebpackModel): t.WebpackConfig {
   const { mode, port } = model;
   const prod = mode === 'production';
   const publicPath = `http://localhost:${port}/`;
@@ -13,12 +13,15 @@ export function toWebpackConfig(model: t.WebpackModel) {
     mode,
     output: { publicPath },
 
+    // TEMP 🐷
+    entry: { main: './src/test/test.entry.ts' },
+
     resolve: {
       extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
     },
 
     devtool: prod ? undefined : 'eval-cheap-module-source-map',
-    devServer: { port },
+    devServer: prod ? undefined : { port, hot: true },
 
     module: {
       rules: [
@@ -29,12 +32,18 @@ export function toWebpackConfig(model: t.WebpackModel) {
         {
           test: /\.(ts|tsx|js|jsx)$/,
           exclude: /node_modules/,
-          use: 'babel-loader',
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-typescript', '@babel/preset-react', '@babel/preset-env'],
+              plugins: ['@babel/plugin-proposal-class-properties'],
+            },
+          },
         },
       ],
     },
 
-    plugins: [new HtmlWebPackPlugin()],
+    plugins: [new HtmlWebPackPlugin({ title: 'Untitled' })],
   };
 
   return config;
