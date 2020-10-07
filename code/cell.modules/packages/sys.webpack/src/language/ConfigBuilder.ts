@@ -7,10 +7,16 @@ const MODES: t.WebpackMode[] = ['development', 'production'];
  * Configuration builder factory.
  */
 export const ConfigBuilder: t.ConfigBuilder = {
-  model: () => StateObject.create<t.WebpackModel>(DEFAULT.CONFIG),
+  model(name: string) {
+    name = format.string(name, { trim: true }) || '';
+    if (!name) {
+      throw new Error(`Configuration must be named`);
+    }
+    return StateObject.create<t.WebpackModel>({ ...DEFAULT.CONFIG, name });
+  },
 
-  create(model) {
-    model = model || ConfigBuilder.model();
+  create(input) {
+    const model = typeof input === 'object' ? input : ConfigBuilder.model(input);
     return Builder.create<t.WebpackModel, t.WebpackBuilder>({ model, handlers });
   },
 };
@@ -20,6 +26,22 @@ export const ConfigBuilder: t.ConfigBuilder = {
  */
 const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
   toObject: (args) => args.model.state,
+
+  name(args) {
+    args.model.change((draft) => {
+      const value = format.string(args.params[0], { trim: true }) || '';
+      if (!value) {
+        throw new Error(`Configuration must be named`);
+      }
+      draft.name = value;
+    });
+  },
+
+  title(args) {
+    args.model.change((draft) => {
+      draft.title = format.string(args.params[0], { trim: true });
+    });
+  },
 
   mode(args) {
     args.model.change((draft) => {

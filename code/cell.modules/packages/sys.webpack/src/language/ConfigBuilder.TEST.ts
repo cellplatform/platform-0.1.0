@@ -2,7 +2,7 @@ import { expect, t, DEFAULT, StateObject } from '../test';
 import { ConfigBuilder } from '.';
 
 const create = () => {
-  const model = ConfigBuilder.model();
+  const model = ConfigBuilder.model('foo');
   const builder = ConfigBuilder.create(model);
   return { model, builder };
 };
@@ -10,28 +10,83 @@ const create = () => {
 describe('ConfigBuilder', () => {
   describe('create', () => {
     it('model', () => {
-      const model = ConfigBuilder.model();
-      expect(model.state).to.eql(DEFAULT.CONFIG);
+      const model = ConfigBuilder.model('  foo  ');
+      expect(model.state).to.eql({ ...DEFAULT.CONFIG, name: 'foo' });
     });
 
-    it('builder', () => {
-      const builder = ConfigBuilder.create();
-      expect(builder.toObject()).to.eql(DEFAULT.CONFIG);
+    it('builder (with "name")', () => {
+      const builder = ConfigBuilder.create('  foo  ');
+      expect(builder.toObject()).to.eql({ ...DEFAULT.CONFIG, name: 'foo' });
     });
 
     it('builder (with model)', () => {
-      const model = StateObject.create<t.WebpackModel>({ ...DEFAULT.CONFIG, mode: 'development' });
+      const model = StateObject.create<t.WebpackModel>({
+        ...DEFAULT.CONFIG,
+        name: 'foo',
+        mode: 'development',
+      });
       const builder = ConfigBuilder.create(model);
-      expect(builder.toObject().mode).to.eql('development');
+
+      const obj = builder.toObject();
+      expect(obj.name).to.eql('foo');
+      expect(obj.mode).to.eql('development');
     });
 
-    it('toModel', () => {
-      const { model, builder } = create();
-      expect(builder.mode('dev').toObject()).to.eql(model.state);
+    it('throw: unnamed', () => {
+      const test = (name: any) => {
+        const fn = () => ConfigBuilder.create(name);
+        expect(fn).to.throw(/must be named/);
+      };
+      test('');
+      test('  ');
+      test(undefined);
     });
   });
 
   describe('props', () => {
+    it('name', () => {
+      const { model, builder } = create();
+      expect(model.state.name).to.eql('foo');
+
+      const test = (input: any, expected: any) => {
+        builder.name(input);
+        expect(model.state.name).to.eql(expected);
+      };
+
+      test('hello', 'hello');
+      test(' hello ', 'hello');
+    });
+
+    it('name: throw (empty)', () => {
+      const test = (input: any) => {
+        const { builder } = create();
+        const fn = () => builder.name(input);
+        expect(fn).to.throw(/must be named/);
+      };
+
+      test('');
+      test('  ');
+      test(null);
+      test({});
+    });
+
+    it('title', () => {
+      const { model, builder } = create();
+      expect(model.state.title).to.eql(undefined);
+
+      const test = (input: any, expected: any) => {
+        builder.title(input);
+        expect(model.state.title).to.eql(expected);
+      };
+
+      test('foo', 'foo');
+      test(' foo ', 'foo');
+      test('', undefined);
+      test('  ', undefined);
+      test(null, undefined);
+      test({}, undefined);
+    });
+
     it('mode', () => {
       const { model, builder } = create();
       const test = (input: any, expected: t.WebpackMode) => {

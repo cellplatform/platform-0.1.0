@@ -18,7 +18,6 @@ export function toWebpackConfig(input: M): t.WebpackConfig {
    *  - Check tree-shaking (??)
    *
    *  - Entry
-   *  - Title
    *
    */
 

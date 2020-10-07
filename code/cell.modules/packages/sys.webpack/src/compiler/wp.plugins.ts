@@ -15,7 +15,9 @@ export const Plugins = {
    * Plugin: HTML
    */
   html(args: IArgs) {
-    return new HtmlWebPackPlugin({ title: 'Untitled' });
+    const { model } = args;
+    const title = model.title || model.name || 'Untitled';
+    return new HtmlWebPackPlugin({ title });
   },
 
   /**

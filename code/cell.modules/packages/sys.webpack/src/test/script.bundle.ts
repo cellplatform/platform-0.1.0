@@ -2,7 +2,7 @@ import { Webpack } from '..';
 import { log } from '@platform/log/lib/server';
 
 (async () => {
-  const config = Webpack.config.create().mode('prod');
+  const config = Webpack.config.create('home').mode('prod');
 
   log.info();
   log.info.gray('bundling');

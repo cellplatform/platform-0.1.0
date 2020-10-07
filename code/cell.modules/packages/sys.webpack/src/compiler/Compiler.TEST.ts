@@ -3,7 +3,7 @@ import { expect } from '../test';
 import { toWebpackConfig } from './wp';
 
 const create = () => {
-  const model = ConfigBuilder.model();
+  const model = ConfigBuilder.model('foo');
   const builder = ConfigBuilder.create(model);
   return { model, builder };
 };
