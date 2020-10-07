@@ -3,25 +3,25 @@ import { t } from './common';
 /**
  * Map of configuration settings.
  */
-export type WebpackConfigs = Record<string, t.WebpackConfigData>;
+export type _WebpackConfigs = Record<string, t._WebpackConfigData>;
 
 /**
  * Single webpack configuration.
  */
-export type WebpackConfigData = {
+export type _WebpackConfigData = {
   name: string;
   mode: t.WebpackMode;
   context?: string;
-  output?: t.WebpackConfigDataOutput;
-  resolve?: t.WebpackConfigDataResolve;
-  devServer?: t.WebpackConfigDataDevServer;
+  output?: t._WebpackConfigDataOutput;
+  resolve?: t._WebpackConfigDataResolve;
+  devServer?: t._WebpackConfigDataDevServer;
   devTool?: false | t.WebpackDevtool;
 };
 
 /**
  * https://webpack.js.org/concepts/output/
  */
-export type WebpackConfigDataOutput = {
+export type _WebpackConfigDataOutput = {
   filename?: string;
   path?: string;
   publicPath?: string;
@@ -30,13 +30,13 @@ export type WebpackConfigDataOutput = {
 /**
  * https://webpack.js.org/configuration/resolve/
  */
-export type WebpackConfigDataResolve = {
+export type _WebpackConfigDataResolve = {
   extensions?: string[];
 };
 
 /**
  * https://webpack.js.org/configuration/dev-server/
  */
-export type WebpackConfigDataDevServer = {
+export type _WebpackConfigDataDevServer = {
   port?: number;
 };

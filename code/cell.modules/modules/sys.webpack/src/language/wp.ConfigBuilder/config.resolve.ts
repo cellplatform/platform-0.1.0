@@ -2,13 +2,13 @@ import { Builder, t } from '../../common';
 
 const format = Builder.format;
 
-type M = t.WebpackConfigData;
+type M = t._WebpackConfigData;
 
 /**
  * https://webpack.js.org/configuration/resolve/
  */
 export function resolveHandlers() {
-  const handlers: t.BuilderHandlers<M, t.WebpackConfigBuilderResolve> = {
+  const handlers: t.BuilderHandlers<M, t._WebpackConfigBuilderResolve> = {
     parent: (args) => args.builder.parent,
 
     extensions(args) {

@@ -1,20 +1,21 @@
-import { Builder, DEFAULT, t } from '../../common';
+import { Builder, t } from '../../common';
 import { outputHandlers } from './config.output';
 import { resolveHandlers } from './config.resolve';
 import { devServerHandlers } from './config.devServer';
+import { DEFAULT } from './DEFAULT';
 
 const MODES: t.WebpackMode[] = ['development', 'production'];
 const format = Builder.format;
 const formatName = (input: any) => format.string(input, { trim: true }) || '';
 
 // type M = t.ITreeNode<t.WebpackProps>;
-type C = t.WebpackConfigData;
+type C = t._WebpackConfigData;
 
 /**
  * A single configuration
  */
 export function configHandlers() {
-  const handlers: t.BuilderHandlers<C, t.WebpackConfigBuilder> = {
+  const handlers: t.BuilderHandlers<C, t._WebpackConfigBuilder> = {
     parent: (args) => args.builder.parent,
     toObject: (args) => args.model.state,
 
@@ -73,19 +74,19 @@ export function configHandlers() {
     output: {
       kind: 'object',
       path: '$.output',
-      builder: (args) => args.create<C, t.WebpackConfigBuilderOutput>(outputHandlers()),
+      builder: (args) => args.create<C, t._WebpackConfigBuilderOutput>(outputHandlers()),
     },
 
     resolve: {
       kind: 'object',
       path: '$.resolve',
-      builder: (args) => args.create<C, t.WebpackConfigBuilderResolve>(resolveHandlers()),
+      builder: (args) => args.create<C, t._WebpackConfigBuilderResolve>(resolveHandlers()),
     },
 
     devServer: {
       kind: 'object',
       path: '$.devServer',
-      builder: (args) => args.create<C, t.WebpackConfigBuilderDevServer>(devServerHandlers()),
+      builder: (args) => args.create<C, t._WebpackConfigBuilderDevServer>(devServerHandlers()),
     },
   };
   return handlers;

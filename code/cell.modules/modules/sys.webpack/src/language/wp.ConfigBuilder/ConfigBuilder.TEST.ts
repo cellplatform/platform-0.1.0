@@ -1,6 +1,7 @@
-import { expect, rx, t, constants } from '../../test';
+import { expect, rx, t } from '../../test';
 import * as ConfigBuilder from '.';
 import { Webpack } from '../..';
+import { DEFAULT } from './DEFAULT';
 
 const props = (m: t.WebpackModule) => m.state.props as t.WebpackProps;
 const data = (m: t.WebpackModule) => props(m).data as t.WebpackData;
@@ -13,7 +14,7 @@ const create = () => {
   return { bus, module, builder };
 };
 
-describe.only('Webpack: ConfigBuilder', () => {
+describe('Webpack: ConfigBuilder', () => {
   describe('create', () => {
     it('by "name"', () => {
       const { module, builder } = create();
@@ -33,11 +34,11 @@ describe.only('Webpack: ConfigBuilder', () => {
 
     it('default values', () => {
       const { module, builder } = create();
-      expect(data(module)).to.eql(constants.DEFAULT.DATA);
+      expect(data(module)).to.eql(DEFAULT.DATA);
       builder.name('foo');
 
       const config = configAt(module, 'foo');
-      expect(config).to.eql({ ...constants.DEFAULT.CONFIG, name: 'foo' });
+      expect(config).to.eql({ ...DEFAULT.CONFIG, name: 'foo' });
     });
 
     it('toObject', () => {
@@ -143,7 +144,7 @@ describe.only('Webpack: ConfigBuilder', () => {
 
     it('devtool', () => {
       const { module, builder } = create();
-      const test = (input: any, expected: t.WebpackConfigData['devTool']) => {
+      const test = (input: any, expected: t._WebpackConfigData['devTool']) => {
         builder.name('foo').devTool(input);
         expect(configAt(module, 'foo').devTool).to.eql(expected);
       };

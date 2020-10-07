@@ -2,13 +2,13 @@ import { Builder, t } from '../../common';
 
 const format = Builder.format;
 
-type M = t.WebpackConfigData;
+type M = t._WebpackConfigData;
 
 /**
  * https://webpack.js.org/configuration/dev-server/
  */
 export function devServerHandlers() {
-  const handlers: t.BuilderHandlers<M, t.WebpackConfigBuilderDevServer> = {
+  const handlers: t.BuilderHandlers<M, t._WebpackConfigBuilderDevServer> = {
     parent: (args) => args.builder.parent,
 
     port(args) {

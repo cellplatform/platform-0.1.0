@@ -3,13 +3,13 @@ import { Builder, t } from '../../common';
 const format = Builder.format;
 const formatPath = (input: any) => format.string(input, { trim: true });
 
-type M = t.WebpackConfigData;
+type M = t._WebpackConfigData;
 
 /**
  * https://webpack.js.org/concepts/output/
  */
 export function outputHandlers() {
-  const handlers: t.BuilderHandlers<M, t.WebpackConfigBuilderOutput> = {
+  const handlers: t.BuilderHandlers<M, t._WebpackConfigBuilderOutput> = {
     parent: (args) => args.builder.parent,
 
     filename(args) {

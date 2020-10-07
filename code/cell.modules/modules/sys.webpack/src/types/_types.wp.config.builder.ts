@@ -1,15 +1,15 @@
 import { t } from './common';
 
-type C = WebpackConfigBuilder;
-type O = WebpackConfigBuilderOutput;
+type C = _WebpackConfigBuilder;
+type O = _WebpackConfigBuilderOutput;
 
 /**
  * API: A single complete Webpack configuration.
  */
-export type WebpackConfigBuilder = {
+export type _WebpackConfigBuilder = {
   parent(): t.WebpackConfigsBuilder;
-  toObject(): t.WebpackConfigData;
-  clone(name: string): t.BuilderChain<t.WebpackConfigBuilder>;
+  toObject(): t._WebpackConfigData;
+  clone(name: string): t.BuilderChain<t._WebpackConfigBuilder>;
 
   // Props.
   name(value: string): C;
@@ -17,15 +17,15 @@ export type WebpackConfigBuilder = {
   devTool(value: false | t.WebpackDevtool): C;
   context(value: string | undefined): C;
 
-  output: t.WebpackConfigBuilderOutput;
-  resolve: t.WebpackConfigBuilderResolve;
-  devServer: t.WebpackConfigBuilderDevServer;
+  output: t._WebpackConfigBuilderOutput;
+  resolve: t._WebpackConfigBuilderResolve;
+  devServer: t._WebpackConfigBuilderDevServer;
 };
 
 /**
  * https://webpack.js.org/concepts/output/
  */
-export type WebpackConfigBuilderOutput = {
+export type _WebpackConfigBuilderOutput = {
   parent(): C;
   filename(value: string | undefined): O;
   path(value: string | undefined): O;
@@ -35,7 +35,7 @@ export type WebpackConfigBuilderOutput = {
 /**
  * https://webpack.js.org/concepts/output/
  */
-export type WebpackConfigBuilderResolve = {
+export type _WebpackConfigBuilderResolve = {
   parent(): C;
   extensions(value: string[] | undefined): O;
 };
@@ -43,7 +43,7 @@ export type WebpackConfigBuilderResolve = {
 /**
  * https://webpack.js.org/configuration/dev-server/
  */
-export type WebpackConfigBuilderDevServer = {
+export type _WebpackConfigBuilderDevServer = {
   parent(): C;
   port(value: number | undefined): O;
 };
