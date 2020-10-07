@@ -4,7 +4,7 @@ import { log } from '@platform/log/lib/server';
 import * as dev from 'webpack-dev-server';
 
 import { t } from '../common';
-import { toWebpackConfig, toModel } from './toWebpackConfig';
+import { toWebpackConfig, toModel } from './webpack';
 
 type M = t.WebpackModel | t.ConfigBuilderChain;
 
@@ -12,6 +12,9 @@ type M = t.WebpackModel | t.ConfigBuilderChain;
  * Webpack bundler.
  */
 export const Compiler: t.WebpackCompiler = {
+  /**
+   * Build bundle.
+   */
   bundle(input) {
     return new Promise<t.WebpackBundleResponse>((resolve, reject) => {
       const { compiler, model, config } = toCompiler(input);
@@ -27,6 +30,9 @@ export const Compiler: t.WebpackCompiler = {
     });
   },
 
+  /**
+   * Bundle and watch for file changes.
+   */
   async watch(input) {
     const { compiler, model } = toCompiler(input);
 
@@ -61,6 +67,9 @@ export const Compiler: t.WebpackCompiler = {
     });
   },
 
+  /**
+   * Run dev server.
+   */
   async dev(input) {
     const { compiler, model } = toCompiler(input, { mode: 'development' });
     const port = model.port;
