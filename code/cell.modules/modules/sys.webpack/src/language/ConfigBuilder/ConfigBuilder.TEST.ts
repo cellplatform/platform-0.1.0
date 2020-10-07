@@ -53,6 +53,23 @@ describe.only('ConfigBuilder', () => {
       test('development', 'development');
       test(' dev ', 'development');
     });
+
+    it('port', () => {
+      const { builder, model } = create();
+      const DEFAULT_PORT = DEFAULT.CONFIG.port;
+      expect(builder.toObject().port).to.eql(DEFAULT_PORT);
+
+      // const foo = builder.name('foo');
+      // expect(configAt(module, 'foo').resolve).to.eql(undefined);
+
+      const test = (value: any, expected: number | undefined) => {
+        builder.port(value);
+        expect(model.state.port).to.eql(expected);
+      };
+
+      test(1234, 1234);
+      test(undefined, DEFAULT_PORT);
+    });
   });
 
   describe('output', () => {

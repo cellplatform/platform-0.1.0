@@ -7,13 +7,13 @@ export type ConfigBuilder = {
 
 export type ConfigBuilderModel = t.BuilderModel<t.WebpackModel>;
 
-
 /**
  * API
  */
 export type WebpackBuilder = {
   toObject(): t.WebpackModel;
   mode(value: t.WebpackMode | 'prod' | 'dev'): t.WebpackBuilder;
+  port(value: number | undefined): t.WebpackBuilder;
 };
 
 /**
@@ -21,4 +21,5 @@ export type WebpackBuilder = {
  */
 export type WebpackModel = {
   mode: t.WebpackMode;
+  port: number;
 };

@@ -3,8 +3,6 @@ import { t, Builder, StateObject, DEFAULT } from '../../common';
 const format = Builder.format;
 const MODES: t.WebpackMode[] = ['development', 'production'];
 
-// const DEFAULT
-
 /**
  * Configuration builder factory.
  */
@@ -39,6 +37,12 @@ const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
       }
 
       draft.mode = value;
+    });
+  },
+
+  port(args) {
+    args.model.change((draft) => {
+      draft.port = format.number(args.params[0], { default: DEFAULT.CONFIG.port }) as number;
     });
   },
 };
