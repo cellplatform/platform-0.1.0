@@ -8,20 +8,23 @@ const create = () => {
   return { model, builder };
 };
 
-describe.only('Compiler', function () {
+describe('Compiler', function () {
   describe('toWebpackConfig', () => {
-    it('default values', () => {
+    it('"production"', () => {
       const { builder } = create();
-      const res = toWebpackConfig(builder.toObject());
+      const config = builder;
+      const res = toWebpackConfig(config);
 
       expect(res.mode).to.eql('production');
       expect(res.output?.publicPath).to.eql('http://localhost:3000/');
-      expect(res.devServer?.port).to.eql(3000);
+      expect(res.devServer).to.eql(undefined);
+      expect(res.devtool).to.eql(undefined);
     });
 
-    it('custom values', () => {
+    it('"development" (and other custom values)', () => {
       const { builder } = create();
-      const res = toWebpackConfig(builder.port(1234).mode('dev').toObject());
+      const config = builder.port(1234).mode('dev');
+      const res = toWebpackConfig(config);
 
       expect(res.mode).to.eql('development');
       expect(res.output?.publicPath).to.eql('http://localhost:1234/');

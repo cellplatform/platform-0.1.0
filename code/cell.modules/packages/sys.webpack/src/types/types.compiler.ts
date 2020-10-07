@@ -16,8 +16,9 @@ export type WebpackBundleResponse = {
   ok: boolean;
   elapsed: number;
   stats: Stats;
-  toString(): string;
   model: t.WebpackModel;
+  config: t.WebpackConfig;
+  toString(): string;
 };
 
 export type WebpackDev = (input: M) => Promise<void>;
