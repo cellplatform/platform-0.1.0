@@ -2,9 +2,10 @@ import { t } from './common';
 
 export type ConfigBuilder = {
   model(): ConfigBuilderModel;
-  create(bus: t.EventBus, model?: ConfigBuilderModel): t.BuilderChain<WebpackBuilder>;
+  create(bus: t.EventBus, model?: ConfigBuilderModel): ConfigBuilderChain;
 };
 
+export type ConfigBuilderChain = t.BuilderChain<WebpackBuilder>;
 export type ConfigBuilderModel = t.BuilderModel<t.WebpackModel>;
 
 /**

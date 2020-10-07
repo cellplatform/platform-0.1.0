@@ -4,6 +4,22 @@ type C = _WebpackConfigBuilder;
 type O = _WebpackConfigBuilderOutput;
 
 /**
+ * Factor for creating a [Webpack] configuration builder.
+ */
+export type WebpackConfigsBuilderFactory = (
+  bus: t.EventBus,
+  webpack: t.IModule,
+) => t.WebpackConfigsBuilder;
+
+/**
+ * Root builder of a set of Webpack configurations.
+ */
+export type WebpackConfigsBuilder = {
+  toObject(): t._WebpackConfigs;
+  name: t.BuilderMap<t._WebpackConfigBuilder, string, { initial?: t._WebpackConfigData }>;
+};
+
+/**
  * API: A single complete Webpack configuration.
  */
 export type _WebpackConfigBuilder = {
