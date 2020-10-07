@@ -1,3 +1,3 @@
 // Entry point.
-
-// kk; // eslint-disable-line
+console.log('hello world'); // eslint-disable-line
+console.log();

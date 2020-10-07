@@ -21,7 +21,8 @@
     "example": "node lib/example/bin",
     "e": "yarn example $@",
     "example-pub": "node bin publish --outDir tmp/dist",
-    "clean": "sh sh/clean.sh"
+    "clean": "sh sh/clean.sh",
+    "example-copy": "cp -R lib example/node_modules/@platform/ts"
   },
   "dependencies": {
     "@platform/exec": "0.2.62",
