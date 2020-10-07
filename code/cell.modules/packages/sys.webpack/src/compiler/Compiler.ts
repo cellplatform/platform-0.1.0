@@ -83,7 +83,7 @@ export const Compiler: t.WebpackCompiler = {
         const url = `http://localhost`;
         log.info();
         log.info(`👋 ${log.cyan(url)}:${log.magenta(port)}`);
-        log.info.gray(`   ${model.mode}`);
+        log.info.gray(`   ${model.mode}: ${model.name}`);
         log.info();
         log.info.gray('━'.repeat(60));
         return write;

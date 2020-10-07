@@ -15,6 +15,7 @@ export type ConfigBuilderModel = t.BuilderModel<t.WebpackModel>;
  */
 export type WebpackBuilder = {
   toObject(): t.WebpackModel;
+  clone(): B;
 
   name(value: string): B;
   title(value: string | undefined): B;

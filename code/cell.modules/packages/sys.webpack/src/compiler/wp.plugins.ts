@@ -2,6 +2,10 @@ import { t } from '../common';
 import * as HtmlWebPackPlugin from 'html-webpack-plugin';
 import * as ESLintPlugin from 'eslint-webpack-plugin';
 
+/* eslint-disable */
+const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
+/* eslint-enable */
+
 type P = NonNullable<t.WebpackConfig['plugins']>;
 type IArgs = { model: t.WebpackModel; prod: boolean };
 
@@ -34,6 +38,15 @@ export const Plugins = {
    * Plugin: Module Federation
    */
   federation(args: IArgs) {
-    return;
+    const { model } = args;
+    return new ModuleFederationPlugin({
+      name: model.name,
+      filename: 'remoteEntry.js',
+      remotes: {},
+      exposes: {
+        './Foo': './src/test/test.entry',
+      },
+      shared: {},
+    });
   },
 };

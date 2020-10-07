@@ -26,6 +26,7 @@ export const ConfigBuilder: t.ConfigBuilder = {
  */
 const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
   toObject: (args) => args.model.state,
+  clone: (args) => args.clone(),
 
   name(args) {
     args.model.change((draft) => {

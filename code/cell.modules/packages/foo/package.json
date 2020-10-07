@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "dependencies": {
+  "scripts": {
+    "dev": "ts-node -T scripts/dev"
+  },
+  "devDependencies": {
     "sys.webpack": "0.0.1"
   }
 }

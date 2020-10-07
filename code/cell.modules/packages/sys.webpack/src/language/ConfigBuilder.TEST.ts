@@ -41,6 +41,22 @@ describe('ConfigBuilder', () => {
       test('  ');
       test(undefined);
     });
+
+    it.only('clone', () => {
+      const { builder } = create();
+
+      // const b1 = create();
+
+      const clone = builder.clone();
+
+      expect(clone.toObject()).to.eql(builder.toObject());
+
+      builder.title('A');
+      clone.title('B');
+
+      expect(builder.toObject().title).to.eql('A');
+      expect(clone.toObject().title).to.eql('B');
+    });
   });
 
   describe('props', () => {

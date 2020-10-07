@@ -990,7 +990,7 @@
     excel-formula-tokenizer "2.3.1"
     toposort "2.0.2"
 
-"@platform/cell.module@0.0.22":
+"@platform/cell.module@^0.0.22":
   version "0.0.22"
   resolved "https://registry.yarnpkg.com/@platform/cell.module/-/cell.module-0.0.22.tgz#7e0ffd481899e2a12c1b0b6551ceceefd1c4be82"
   integrity sha512-JU9Z3x21o/urKmQS+FudQDELl9qXcmLyqdIoErf+e4L4SwqK7J/KFsOMVD/isNAIivugTcCdR2E2kii0FAviZw==

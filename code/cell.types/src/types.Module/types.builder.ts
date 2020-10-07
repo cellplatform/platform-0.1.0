@@ -42,6 +42,7 @@ export type BuilderHandlerArgs<M extends O, A extends O> = {
   builder: { self: BuilderChain<A>; parent?: BuilderChain<any>; dispose$: Observable<void> };
   is: { list: boolean; map: boolean };
   model: BuilderModel<M>;
+  clone(): t.BuilderChain<A>;
 };
 export type BuilderMethodKind = 'ROOT' | BuilderChild['kind'];
 export type BuilderMethodKindList = BuilderListByIndexDef['kind'] | BuilderListByNameDef['kind'];
