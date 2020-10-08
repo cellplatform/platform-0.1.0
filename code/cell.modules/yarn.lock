@@ -962,14 +962,14 @@
   dependencies:
     "@platform/libs" "0.2.2"
 
-"@platform/cell.client@0.2.154":
-  version "0.2.154"
-  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.2.154.tgz#a6f57533937b51a170d0a32ec2dfc62a5c8df9a2"
-  integrity sha512-48hlq/RJX1+czWBfhyG2HeVLLyqd52Q/Xu0ZluOc1jc7pxhS32jyN7/0oV07BhPqWZe1OUvPQZeubo1METwYHA==
+"@platform/cell.client@0.2.155":
+  version "0.2.155"
+  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.2.155.tgz#1239081bbb768ea6c6ed48f18cc258784f325abf"
+  integrity sha512-UZGLaUQgxQ8TKbnrBQBrUiw7TtOBaqIHcngL0ZoIzSkMzYhemBKmpsnqKYQSuNH9ooPRyhQaJgzVHMUTIG/6XA==
   dependencies:
-    "@platform/cell.schema" "0.4.172"
-    "@platform/cell.types" "0.4.158"
-    "@platform/cell.typesystem" "0.0.112"
+    "@platform/cell.schema" "0.4.173"
+    "@platform/cell.types" "0.4.159"
+    "@platform/cell.typesystem" "0.0.113"
     "@platform/http" "0.12.28"
     "@platform/http.types" "0.2.18"
     "@platform/libs" "0.2.2"
@@ -977,42 +977,41 @@
     "@platform/types" "0.5.5"
     form-data "3.0.0"
 
-"@platform/cell.coord@0.8.179":
-  version "0.8.179"
-  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.8.179.tgz#faabec9bc3b0d0858fb0341005ab445f0abb3116"
-  integrity sha512-so2RG6IGxWX1mhmiAMd6bNtPmqnVzEpxmATVpc1VAvdIaxo++WgaA/g94NLL3OkfhF/ZMqTLeZuUsdMfhJLPVA==
+"@platform/cell.coord@0.8.180":
+  version "0.8.180"
+  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.8.180.tgz#8bb79ad2426abb078de5a4996c6792ea34628bc8"
+  integrity sha512-81q7QWjZ7tLkuWulegH2UFj8cepV/AmVYqF+GnFIFmOG+sCryAxXbYuCydlg08UUsjykWyAJVGpJiRwPwdN+dw==
   dependencies:
     "@platform/cache" "0.2.35"
-    "@platform/cell.types" "0.4.158"
+    "@platform/cell.types" "0.4.159"
     "@platform/types" "0.5.5"
     "@platform/util.value" "0.7.32"
     excel-formula-ast "1.1.1"
     excel-formula-tokenizer "2.3.1"
     toposort "2.0.2"
 
-"@platform/cell.module@^0.0.22":
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/@platform/cell.module/-/cell.module-0.0.22.tgz#7e0ffd481899e2a12c1b0b6551ceceefd1c4be82"
-  integrity sha512-JU9Z3x21o/urKmQS+FudQDELl9qXcmLyqdIoErf+e4L4SwqK7J/KFsOMVD/isNAIivugTcCdR2E2kii0FAviZw==
+"@platform/cell.module@0.0.24":
+  version "0.0.24"
+  resolved "https://registry.yarnpkg.com/@platform/cell.module/-/cell.module-0.0.24.tgz#493a783991a9e9fa64892da34cb6abb3d8efc9ee"
+  integrity sha512-57GAQTlKwwKmhGCw/IIapbYN6lPa9J7ZOIvRfLTEG5Xzg2KMiamPjdoogKuDVOWf6qGdbX5I7kXyhfTSgA8vtA==
   dependencies:
-    "@platform/cell.client" "0.2.154"
-    "@platform/cell.types" "0.4.158"
-    "@platform/cell.typesystem" "0.0.112"
+    "@platform/cell.client" "0.2.155"
+    "@platform/cell.types" "0.4.159"
+    "@platform/cell.typesystem" "0.0.113"
     "@platform/libs" "0.2.2"
     "@platform/state" "0.7.10"
-    "@platform/state.types" "^0.0.6"
-    "@platform/util.value" "^0.7.32"
-    "@types/jsonpath" "^0.2.0"
-    jsonpath "1.0.2"
+    "@platform/state.types" "0.0.6"
+    "@platform/util.value" "0.7.32"
+    jsonpath "^1.0.2"
 
-"@platform/cell.schema@0.4.172":
-  version "0.4.172"
-  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.172.tgz#ef29ab85e8e2b2d8b276d64d4c96fdd702e56964"
-  integrity sha512-xeu+wp6CZChOnYfCB2uWBgX8Ql6oGc+Ej0DSAs2RaByDFREB3aodEZwsAWwSXt70IpJrGslVmoKtlVAiu4wQ9Q==
+"@platform/cell.schema@0.4.173":
+  version "0.4.173"
+  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.173.tgz#763b3ebe6477241963f4584b4069b3038bfce8c4"
+  integrity sha512-RGBOyFyHr4zl+6HJC5SOazVnptzHKV3DOBT3CohuPh7Y96Mlfz97y0adI1LW4pt/dNXzrnT3a2pHKEZLeK5mhw==
   dependencies:
     "@platform/cache" "0.2.35"
-    "@platform/cell.coord" "0.8.179"
-    "@platform/cell.types" "0.4.158"
+    "@platform/cell.coord" "0.8.180"
+    "@platform/cell.types" "0.4.159"
     "@platform/fs.types" "0.0.15"
     "@platform/fsdb.types" "0.6.34"
     "@platform/libs" "0.2.2"
@@ -1021,10 +1020,10 @@
     "@platform/util.string" "0.5.12"
     "@platform/util.value" "0.7.32"
 
-"@platform/cell.types@0.4.158":
-  version "0.4.158"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.158.tgz#7715a533b547f487ac7d061c0709e8d76486ee37"
-  integrity sha512-spPwQqxm7wl6uicAuE1xQC63EDDVHUKwxvuzb7c1dM0Sdcxsj+Y1Em2RAZ6eHdOvt0JFdY1gF0WTGVMHEzb5KQ==
+"@platform/cell.types@0.4.159":
+  version "0.4.159"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.159.tgz#cba4ac95167ec460d0e9376a041df2e62b6d3be3"
+  integrity sha512-Zqnpzllk4zJDP1Ags8Jq/8DAeIGROSrJiEDaz0NR5/0SPxQiTNfocmuMZaigRVMCStqWPWDcaeEwGOOWSU5cuA==
   dependencies:
     "@platform/cache" "0.2.35"
     "@platform/fs.s3.types" "0.2.17"
@@ -1037,15 +1036,15 @@
     "@platform/ui.tree.types" "^0.0.8"
     "@platform/util.diff" "0.0.36"
 
-"@platform/cell.typesystem@0.0.112":
-  version "0.0.112"
-  resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.112.tgz#8b0130654252801d93ff9834feed40028396f1a6"
-  integrity sha512-paoodRUoiyc1TUqPow9qY/RtG0kBK/63+dzhUJKb+nBnlCF4EBh3KWf6nSyrFgSwzP28089ROEsN9ERyd74WTw==
+"@platform/cell.typesystem@0.0.113":
+  version "0.0.113"
+  resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.113.tgz#e6494d4d2de7661df59aac9c728dc20853630a13"
+  integrity sha512-JwsTfmFleJq7463bN8DE+HBTS0TqUtvUbTx6Lf8tG+dCbISGzIG5nj3jnrnujzDjPzWRRvIhK079gqrGmGlj/w==
   dependencies:
     "@platform/cache" "0.2.35"
-    "@platform/cell.coord" "0.8.179"
-    "@platform/cell.schema" "0.4.172"
-    "@platform/cell.types" "0.4.158"
+    "@platform/cell.coord" "0.8.180"
+    "@platform/cell.schema" "0.4.173"
+    "@platform/cell.types" "0.4.159"
     "@platform/libs" "0.2.2"
     "@platform/types" "0.5.5"
     "@platform/util.value" "0.7.32"
@@ -1101,7 +1100,7 @@
     rxjs "6.5.5"
     tslib "2.0.0"
 
-"@platform/log@^0.1.29":
+"@platform/log@0.1.29":
   version "0.1.29"
   resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.1.29.tgz#f89d42164bebe16d471ec8c1cf5824e575558bc9"
   integrity sha512-kPgd4kmbtKGCT0dRsdFxyd2AcdbAbJ4dPiNbq9CGas7TBLh0uO9HT/klMNrNdcZxq4peQSzJ+l+9OzJ0nmnNTg==
@@ -1110,7 +1109,7 @@
     chalk "4.1.0"
     cli-table "0.3.1"
 
-"@platform/polyfill@^0.0.1":
+"@platform/polyfill@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@platform/polyfill/-/polyfill-0.0.1.tgz#10b50a6d975f3fc55870dbc478e5840fbf41b7f5"
   integrity sha512-xCwG9F/tptWBtCsbN2yM8SJS5LdUa7lfA1BdLsjT/W+A7GqEaRtnsIun8XSDcXaY4XIyYpeTwSNqJooCh9GaSQ==
@@ -1225,7 +1224,7 @@
     fuzzy "0.1.3"
     underscore.string "3.3.5"
 
-"@platform/util.value@0.7.32", "@platform/util.value@^0.7.32":
+"@platform/util.value@0.7.32":
   version "0.7.32"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.32.tgz#ecbfbd73ce8b5966c59c9f677dee293c8233c913"
   integrity sha512-1jiq7WC98o3kQ4xRw649Z0fR8fnKh+mPFVVDW2/H9/f5lx1BTP8oU4JcjHaKyL2EP1O0cOTfm8kdINtOGbMATg==
@@ -1368,7 +1367,7 @@
     "@types/istanbul-lib-coverage" "*"
     "@types/istanbul-lib-report" "*"
 
-"@types/json-schema@*", "@types/json-schema@^7.0.3", "@types/json-schema@^7.0.5":
+"@types/json-schema@*", "@types/json-schema@^7.0.3", "@types/json-schema@^7.0.5", "@types/json-schema@^7.0.6":
   version "7.0.6"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.6.tgz#f4c7ec43e81b319a9815115031709f26987891f0"
   integrity sha512-3c+yGKvVP5Y9TYBEibGNR+kLtijnj7mYrXRg+WpFb2X9xm04g/DXYkfg4hmzJQosc9snFNUPkbYIhu+KAm6jJw==
@@ -1785,7 +1784,7 @@ ajv-keywords@^3.1.0, ajv-keywords@^3.5.2:
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.5.2.tgz#31f29da5ab6e00d1c2d329acf7b5929614d5014d"
   integrity sha512-5p6WTN0DdTGVQk6VjcEju19IgaHudalcfabD7yhDGeA6bcQnmL+CpveLJq/3hvfwd1aof6L386Ougkx6RfyMIQ==
 
-ajv@^6.1.0, ajv@^6.10.0, ajv@^6.10.2, ajv@^6.12.4:
+ajv@^6.1.0, ajv@^6.10.0, ajv@^6.10.2, ajv@^6.12.4, ajv@^6.12.5:
   version "6.12.5"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.5.tgz#19b0e8bae8f476e5ba666300387775fb1a00a4da"
   integrity sha512-lRF8RORchjpKG50/WFf8xmg7sgCLFiYNNnqdKflk63whMQcWR5ngGjiSXkL9bjxy6B2npOK2HSMN49jEBMSkag==
@@ -4340,7 +4339,7 @@ jest-changed-files@^24.9.0:
     execa "^1.0.0"
     throat "^4.0.0"
 
-jest-worker@^26.3.0:
+jest-worker@^26.5.0:
   version "26.5.0"
   resolved "https://registry.yarnpkg.com/jest-worker/-/jest-worker-26.5.0.tgz#87deee86dbbc5f98d9919e0dadf2c40e3152fa30"
   integrity sha512-kTw66Dn4ZX7WpjZ7T/SUDgRhapFRKWmisVAF0Rv4Fu8SLFD7eLbqpLvbxVqYhSgaWa7I+bW7pHnbyfNsH6stug==
@@ -4425,7 +4424,7 @@ jsonfile@^6.0.1:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
-jsonpath@1.0.2:
+jsonpath@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/jsonpath/-/jsonpath-1.0.2.tgz#e6aae681d03e9a77b4651d5d96eac5fc63b1fd13"
   integrity sha512-rmzlgFZiQPc6q4HDyK8s9Qb4oxBnI5sF61y/Co5PV0lc3q2bIuRsNdueVbhoSHdKM4fxeimphOAtfz47yjCfeA==
@@ -5887,6 +5886,15 @@ schema-utils@^2.6.5, schema-utils@^2.7.0, schema-utils@^2.7.1:
     ajv "^6.12.4"
     ajv-keywords "^3.5.2"
 
+schema-utils@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-3.0.0.tgz#67502f6aa2b66a2d4032b4279a2944978a0913ef"
+  integrity sha512-6D82/xSzO094ajanoOSbe4YvXWMfn2A//8Y1+MUqFAJul5Bs+yn36xbK9OtNDcRVSBJ9jjeoXftM6CfztsjOAA==
+  dependencies:
+    "@types/json-schema" "^7.0.6"
+    ajv "^6.12.5"
+    ajv-keywords "^3.5.2"
+
 select-hose@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"
@@ -6422,18 +6430,18 @@ tar@^6.0.2:
     yallist "^4.0.0"
 
 terser-webpack-plugin@^4.1.0:
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-4.2.2.tgz#d86200c700053bba637913fe4310ba1bdeb5568e"
-  integrity sha512-3qAQpykRTD5DReLu5/cwpsg7EZFzP3Q0Hp2XUWJUw2mpq2jfgOKTZr8IZKKnNieRVVo1UauROTdhbQJZveGKtQ==
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-4.2.3.tgz#28daef4a83bd17c1db0297070adc07fc8cfc6a9a"
+  integrity sha512-jTgXh40RnvOrLQNgIkwEKnQ8rmHjHK4u+6UBEi+W+FPmvb+uo+chJXntKe7/3lW5mNysgSWD60KyesnhW8D6MQ==
   dependencies:
     cacache "^15.0.5"
     find-cache-dir "^3.3.1"
-    jest-worker "^26.3.0"
+    jest-worker "^26.5.0"
     p-limit "^3.0.2"
-    schema-utils "^2.7.1"
+    schema-utils "^3.0.0"
     serialize-javascript "^5.0.1"
     source-map "^0.6.1"
-    terser "^5.3.2"
+    terser "^5.3.4"
     webpack-sources "^1.4.3"
 
 terser@^4.6.3:
@@ -6445,7 +6453,7 @@ terser@^4.6.3:
     source-map "~0.6.1"
     source-map-support "~0.5.12"
 
-terser@^5.3.2:
+terser@^5.3.4:
   version "5.3.4"
   resolved "https://registry.yarnpkg.com/terser/-/terser-5.3.4.tgz#e510e05f86e0bd87f01835c3238839193f77a60c"
   integrity sha512-dxuB8KQo8Gt6OVOeLg/rxfcxdNZI/V1G6ze1czFUzPeCFWZRtvZMgSzlZZ5OYBZ4HoG607F6pFPNLekJyV+yVw==

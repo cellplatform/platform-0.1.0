@@ -20,11 +20,11 @@
     "dev": "ts-node -T src/test/script.dev"
   },
   "dependencies": {
-    "@platform/cell.module": "^0.0.22",
-    "@platform/cell.types": "0.4.158",
+    "@platform/cell.module": "0.0.24",
+    "@platform/cell.types": "0.4.159",
     "@platform/libs": "0.2.2",
-    "@platform/log": "^0.1.29",
-    "@platform/polyfill": "^0.0.1"
+    "@platform/log": "0.1.29",
+    "@platform/polyfill": "0.0.1"
   },
   "devDependencies": {
     "@babel/core": "7.11.6",
@@ -34,6 +34,7 @@
     "@babel/preset-typescript": "7.10.4",
     "@platform/test": "0.1.15",
     "@types/express": "^4.17.8",
+    "@types/jsonpath": "^0.2.0",
     "@types/react": "16.9.51",
     "@types/react-dom": "16.9.8",
     "@types/webpack-dev-server": "^3.11.0",

@@ -93,7 +93,26 @@ export const Compiler: t.WebpackCompiler = {
     compiler.hooks.afterCompile.tap('DevServer', (compilation) => write.clear().header());
 
     const host = 'localhost';
-    const options = { hot: true, host };
+    const options = {
+      hot: true,
+      host,
+      stats: {
+        colors: true,
+        hash: false,
+        version: true,
+        timings: true,
+        assets: false,
+        chunks: false,
+        modules: false,
+        reasons: false,
+        children: false,
+        source: false,
+        errors: true,
+        errorDetails: false,
+        warnings: false,
+        publicPath: false,
+      },
+    };
     new dev(compiler, options).listen(port, host, () => write.clear().header());
   },
 };
