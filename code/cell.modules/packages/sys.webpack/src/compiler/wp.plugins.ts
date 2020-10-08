@@ -42,11 +42,9 @@ export const Plugins = {
     return new ModuleFederationPlugin({
       name: model.name,
       filename: 'remoteEntry.js',
-      remotes: {},
-      exposes: {
-        './Foo': './src/test/entry',
-      },
-      shared: {},
+      remotes: model.remotes || {},
+      exposes: model.exposes || {},
+      shared: {}, // TEMP 🐷
     });
   },
 };

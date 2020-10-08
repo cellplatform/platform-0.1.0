@@ -12,4 +12,11 @@ console.log('');
   if (typeof window === 'object') {
     document.body.innerHTML = `<h1>Hello World!</h1>`;
   }
+
+  // @ts-ignore
+  const f = import('foo/Header');
+
+  f.then((e) => {
+    console.log('e', e.foo());
+  });
 })();

@@ -151,20 +151,20 @@ describe('ConfigBuilder', () => {
     });
   });
 
-  describe.only('entry', () => {
+  describe('entry', () => {
     it('throw: no key', () => {
       const { builder } = create();
       const fn = () => builder.entry('  ', 'foo');
       expect(fn).to.throw(/Entry field 'key' required/);
     });
 
-    it('add entry', () => {
+    it('add', () => {
       const { builder, model } = create();
       builder.entry(' main ', ' src/foo.tsx ');
       expect(model.state.entry?.main).to.eql('src/foo.tsx');
     });
 
-    it('remove entry', () => {
+    it('remove', () => {
       const { builder, model } = create();
 
       builder.entry(' main ', ' src/main.tsx ');
@@ -176,6 +176,66 @@ describe('ConfigBuilder', () => {
 
       builder.entry('foo', null);
       expect(model.state.entry).to.eql(undefined);
+    });
+  });
+
+  describe('exposes', () => {
+    it('throw: no key', () => {
+      const { builder } = create();
+      const fn = () => builder.expose('  ', 'foo');
+      expect(fn).to.throw(/Entry field 'key' required/);
+    });
+
+    it('add', () => {
+      const { builder, model } = create();
+      builder.expose(' Header ', ' src/Header.tsx ');
+      expect(model.state.exposes?.Header).to.eql('src/Header.tsx');
+    });
+
+    it('remove', () => {
+      const { builder, model } = create();
+
+      builder.expose(' main ', ' src/main.tsx ');
+      builder.expose('foo', 'src/foo.tsx');
+      expect(model.state.exposes).to.eql({ main: 'src/main.tsx', foo: 'src/foo.tsx' });
+
+      builder.expose('main', '');
+      expect(model.state.exposes).to.eql({ foo: 'src/foo.tsx' });
+
+      builder.expose('foo', null);
+      expect(model.state.exposes).to.eql(undefined);
+    });
+  });
+
+  describe('remotes', () => {
+    it('throw: no key', () => {
+      const { builder } = create();
+      const fn = () => builder.remote('  ', 'foo');
+      expect(fn).to.throw(/Entry field 'key' required/);
+    });
+
+    it('add', () => {
+      const { builder, model } = create();
+      const path = 'nav@http://localhost:3001/remoteEntry.js';
+      builder.remote(' my-nav ', ` ${path} `);
+      expect((model.state.remotes || {})['my-nav']).to.eql(path);
+    });
+
+    it('remove', () => {
+      const { builder, model } = create();
+
+      builder.remote(' main ', ' main@localhost:3001/remote.js ');
+      builder.remote('foo', 'foo@localhost:3001/remote.js');
+      expect(model.state.remotes).to.eql({
+        main: 'main@localhost:3001/remote.js',
+        foo: 'foo@localhost:3001/remote.js',
+      });
+
+      builder.remote('main', '');
+      expect(model.state.remotes).to.eql({ foo: 'foo@localhost:3001/remote.js' });
+
+      builder.remote('foo', null);
+      expect(model.state.remotes).to.eql(undefined);
     });
   });
 });

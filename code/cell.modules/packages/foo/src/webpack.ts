@@ -1,3 +1,13 @@
 import { Webpack } from 'sys.webpack';
 
-export const configuration = Webpack.config.create('foo').port(3001).title('My Foo');
+export const configuration = () => {
+  const config = Webpack.config
+    .create('foo')
+    .port(3001)
+    .title('My Foo')
+    .entry('main', './src/index')
+    .expose('./Header', './src/Header')
+    .clone();
+
+  return config;
+};

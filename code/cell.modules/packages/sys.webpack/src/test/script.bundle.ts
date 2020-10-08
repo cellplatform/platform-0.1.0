@@ -1,5 +1,5 @@
 import { log } from '@platform/log/lib/server';
-import { configuration, Webpack } from './config';
+import { configuration, Webpack } from './webpack';
 
 (async () => {
   const config = configuration().mode('prod');

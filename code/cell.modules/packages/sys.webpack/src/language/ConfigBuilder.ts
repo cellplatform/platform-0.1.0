@@ -1,4 +1,6 @@
-import { t, Builder, StateObject, DEFAULT, value } from '../common';
+import { t, Builder, StateObject, DEFAULT, value as valueUtil } from '../common';
+
+type O = Record<string, unknown>;
 
 const format = Builder.format;
 const MODES: t.WebpackMode[] = ['development', 'production'];
@@ -76,33 +78,43 @@ const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
   },
 
   entry(args) {
-    args.model.change((draft) => {
-      const key = format.string(args.params[0], { trim: true }) || '';
-      const path = format.string(args.params[1], { trim: true }) || '';
+    const param = (index: number) => format.string(args.params[index], { trim: true }) || '';
+    writePathMap(args.model, 'entry', param(0), param(1));
+  },
 
-      if (!key) {
-        throw new Error(`Entry field 'key' required`);
-      }
+  expose(args) {
+    const param = (index: number) => format.string(args.params[index], { trim: true }) || '';
+    writePathMap(args.model, 'exposes', param(0), param(1));
+  },
 
-      const entry = draft.entry || (draft.entry = {});
-      entry[key] = path;
-
-      // if (entry) {
-      // } else {
-      //   delete entry[key];
-      // }
-
-      // draft.lint = format.boolean(args.params[0]);
-
-      const obj = value.deleteEmpty(entry);
-
-      if (Object.keys(obj).length > 0) {
-        draft.entry = obj;
-      } else {
-        delete draft.entry;
-      }
-
-      // draft.entry =
-    });
+  remote(args) {
+    const param = (index: number) => format.string(args.params[index], { trim: true }) || '';
+    writePathMap(args.model, 'remotes', param(0), param(1));
   },
 };
+
+/**
+ * [Helpers]
+ */
+
+function writePathMap<M extends O>(
+  model: t.BuilderModel<M>,
+  objectField: keyof M,
+  key: string,
+  value: string,
+) {
+  if (!key) {
+    throw new Error(`Entry field 'key' required`);
+  }
+
+  model.change((draft) => {
+    const entry = draft[objectField] || ((draft as any)[objectField] = {});
+    entry[key] = value;
+    const obj = valueUtil.deleteEmpty(entry as any);
+    if (Object.keys(obj).length > 0) {
+      draft[objectField] = obj;
+    } else {
+      delete draft[objectField];
+    }
+  });
+}

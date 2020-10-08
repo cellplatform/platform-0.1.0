@@ -22,7 +22,9 @@ export type WebpackBuilder = {
   mode(value: t.WebpackMode | 'prod' | 'dev'): B;
   port(value: number | undefined): B;
   lint(value: boolean | undefined): B;
-  entry(key: string, value: string | null): B;
+  entry(key: string, path: string | null): B;
+  expose(key: string, path: string | null): B;
+  remote(key: string, path: string | null): B;
 };
 
 /**
@@ -35,4 +37,6 @@ export type WebpackModel = {
   port: number;
   lint?: boolean;
   entry?: Record<string, string>;
+  exposes?: Record<string, string>;
+  remotes?: Record<string, string>;
 };
