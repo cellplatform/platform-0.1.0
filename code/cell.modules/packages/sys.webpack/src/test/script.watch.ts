@@ -1,6 +1,4 @@
-import { Webpack } from '..';
+import { configuration, Webpack } from './config';
 
-(async () => {
-  const config = Webpack.config.create('home').mode('dev');
-  await Webpack.watch(config);
-})();
+const config = configuration().mode('dev');
+Webpack.watch(config);

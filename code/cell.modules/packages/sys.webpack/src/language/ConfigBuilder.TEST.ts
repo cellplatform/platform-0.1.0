@@ -42,7 +42,7 @@ describe('ConfigBuilder', () => {
       test(undefined);
     });
 
-    it.only('clone', () => {
+    it('clone', () => {
       const { builder } = create();
       const clone = builder.clone();
       expect(clone.toObject()).to.eql(builder.toObject());
@@ -148,6 +148,34 @@ describe('ConfigBuilder', () => {
       test(false, false);
       test(undefined, undefined);
       test({}, undefined);
+    });
+  });
+
+  describe.only('entry', () => {
+    it('throw: no key', () => {
+      const { builder } = create();
+      const fn = () => builder.entry('  ', 'foo');
+      expect(fn).to.throw(/Entry field 'key' required/);
+    });
+
+    it('add entry', () => {
+      const { builder, model } = create();
+      builder.entry(' main ', ' src/foo.tsx ');
+      expect(model.state.entry?.main).to.eql('src/foo.tsx');
+    });
+
+    it('remove entry', () => {
+      const { builder, model } = create();
+
+      builder.entry(' main ', ' src/main.tsx ');
+      builder.entry('foo', 'src/foo.tsx');
+      expect(model.state.entry).to.eql({ main: 'src/main.tsx', foo: 'src/foo.tsx' });
+
+      builder.entry('main', '');
+      expect(model.state.entry).to.eql({ foo: 'src/foo.tsx' });
+
+      builder.entry('foo', null);
+      expect(model.state.entry).to.eql(undefined);
     });
   });
 });

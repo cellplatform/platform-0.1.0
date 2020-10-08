@@ -44,7 +44,7 @@ export const Plugins = {
       filename: 'remoteEntry.js',
       remotes: {},
       exposes: {
-        './Foo': './src/test/test.entry',
+        './Foo': './src/test/entry',
       },
       shared: {},
     });

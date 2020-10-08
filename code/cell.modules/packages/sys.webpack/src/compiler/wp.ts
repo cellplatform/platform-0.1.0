@@ -1,6 +1,8 @@
 import { t } from '../common';
 import { Rules } from './wp.rules';
 import { Plugins } from './wp.plugins';
+import { stats } from './wp.stats';
+export { stats };
 
 type M = t.WebpackModel | t.ConfigBuilderChain;
 
@@ -17,9 +19,6 @@ export function toWebpackConfig(input: M): t.WebpackConfig {
    * TODO 🐷
    *  - Check tree-shaking (??)
    *
-   *  - Entry
-   *  - Clone
-   *
    */
 
   /**
@@ -28,10 +27,7 @@ export function toWebpackConfig(input: M): t.WebpackConfig {
   const config: t.WebpackConfig = {
     mode,
     output: { publicPath },
-
-    // TEMP 🐷
-    entry: { main: './src/test/test.entry.ts', foo: './src/test/test.entry.ts' },
-
+    entry: model.entry,
     resolve: { extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'] },
     devtool: prod ? undefined : 'eval-cheap-module-source-map',
     devServer: prod ? undefined : { port, hot: true },

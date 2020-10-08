@@ -24,7 +24,8 @@
     "@platform/cell.types": "0.4.159",
     "@platform/libs": "0.2.2",
     "@platform/log": "0.1.29",
-    "@platform/polyfill": "0.0.1"
+    "@platform/polyfill": "0.0.1",
+    "filesize": "^6.1.0"
   },
   "devDependencies": {
     "@babel/core": "7.11.6",

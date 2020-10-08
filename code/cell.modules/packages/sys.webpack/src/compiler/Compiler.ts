@@ -1,10 +1,9 @@
-import { webpack, Stats } from 'webpack';
 import { log } from '@platform/log/lib/server';
-
+import { Compilation as ICompliation, Stats as IStats, webpack } from 'webpack';
 import * as dev from 'webpack-dev-server';
 
 import { t } from '../common';
-import { toWebpackConfig, toModel } from './wp';
+import * as wp from './wp';
 
 type M = t.WebpackModel | t.ConfigBuilderChain;
 
@@ -46,7 +45,6 @@ export const Compiler: t.WebpackCompiler = {
         return write;
       },
       hr() {
-        log.info();
         log.info.gray('━'.repeat(60));
         return write;
       },
@@ -55,15 +53,14 @@ export const Compiler: t.WebpackCompiler = {
         log.info(model);
         return write;
       },
-      stats(stats?: Stats) {
-        log.info(stats?.toString({ colors: true }));
-        log.info();
+      stats(input?: IStats) {
+        wp.stats(input).log();
         return write;
       },
     };
 
     compiler.watch({}, (err, stats) => {
-      write.clear().newline().watching().hr().stats(stats);
+      write.clear().newline().watching().newline().hr().stats(stats);
     });
   },
 
@@ -79,39 +76,36 @@ export const Compiler: t.WebpackCompiler = {
         log.clear();
         return write;
       },
+      newline() {
+        log.info();
+        return write;
+      },
+      hr() {
+        log.info.gray('━'.repeat(60));
+        return write;
+      },
       header() {
         const url = `http://localhost`;
         log.info();
         log.info(`👋 ${log.cyan(url)}:${log.magenta(port)}`);
         log.info.gray(`   ${model.mode}: ${model.name}`);
-        log.info();
-        log.info.gray('━'.repeat(60));
+        return write;
+      },
+      stats(input?: IStats | ICompliation) {
+        wp.stats(input).log();
         return write;
       },
     };
 
-    compiler.hooks.afterCompile.tap('DevServer', (compilation) => write.clear().header());
+    compiler.hooks.afterCompile.tap('DevServer', (compilation) => {
+      write.clear().header().newline().hr();
+    });
 
     const host = 'localhost';
     const options = {
       hot: true,
       host,
-      stats: {
-        colors: true,
-        hash: false,
-        version: true,
-        timings: true,
-        assets: false,
-        chunks: false,
-        modules: false,
-        reasons: false,
-        children: false,
-        source: false,
-        errors: true,
-        errorDetails: false,
-        warnings: false,
-        publicPath: false,
-      },
+      stats: { chunks: false, modules: false, colors: true },
     };
     new dev(compiler, options).listen(port, host, () => write.clear().header());
   },
@@ -123,26 +117,25 @@ export const Compiler: t.WebpackCompiler = {
 
 const toCompiler = (input: M, options: { mode?: t.WebpackMode } = {}) => {
   const { mode } = options;
-  const model = mode ? { ...toModel(input), mode } : toModel(input);
-  const config = toWebpackConfig(model);
+  const model = mode ? { ...wp.toModel(input), mode } : wp.toModel(input);
+  const config = wp.toWebpackConfig(model);
   const compiler = webpack(config);
   return { model, config, compiler };
 };
 
 const toBundledResponse = (args: {
   model: t.WebpackModel;
-  stats: Stats;
+  stats: IStats;
   config: t.WebpackConfig;
 }): t.WebpackBundleResponse => {
-  const { stats, model, config } = args;
-  const elapsed = stats.endTime - stats.startTime;
-  const ok = !stats.hasErrors();
+  const { model, config } = args;
+  const stats = wp.stats(args.stats);
   return {
-    ok,
-    elapsed,
+    ok: stats.ok,
+    elapsed: stats.elapsed,
     stats,
     model,
     config,
-    toString: () => stats.toString({ colors: true }),
+    toString: () => args.stats.toString({ colors: true }),
   };
 };

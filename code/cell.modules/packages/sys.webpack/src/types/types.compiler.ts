@@ -1,5 +1,4 @@
 import { t } from './common';
-import { Stats } from 'webpack';
 
 type M = t.WebpackModel | t.ConfigBuilderChain;
 
@@ -15,7 +14,7 @@ export type WebpackBundle = (input: M) => Promise<WebpackBundleResponse>;
 export type WebpackBundleResponse = {
   ok: boolean;
   elapsed: number;
-  stats: Stats;
+  stats: t.WebpackStats;
   model: t.WebpackModel;
   config: t.WebpackConfig;
   toString(): string;

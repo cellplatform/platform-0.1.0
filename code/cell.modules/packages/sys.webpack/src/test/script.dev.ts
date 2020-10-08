@@ -1,6 +1,4 @@
-import { Webpack } from '..';
+import { configuration, Webpack } from './config';
 
-(async () => {
-  const config = Webpack.config.create('home').title('My Title');
-  await Webpack.dev(config);
-})();
+const config = configuration().title('My Title');
+Webpack.dev(config);

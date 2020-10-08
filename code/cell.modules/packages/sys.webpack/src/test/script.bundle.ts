@@ -1,8 +1,8 @@
-import { Webpack } from '..';
 import { log } from '@platform/log/lib/server';
+import { configuration, Webpack } from './config';
 
 (async () => {
-  const config = Webpack.config.create('home').mode('prod');
+  const config = configuration().mode('prod');
 
   log.info();
   log.info.gray('bundling');
@@ -13,6 +13,5 @@ import { log } from '@platform/log/lib/server';
 
   const res = await Webpack.bundle(config);
 
-  log.info(res.toString());
-  log.info();
+  res.stats.log();
 })();
