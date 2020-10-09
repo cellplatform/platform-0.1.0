@@ -1,6 +1,5 @@
 import { ConfigBuilder } from '.';
-import { DEFAULT, expect, StateObject, t, ModuleFederationPlugin } from '../test';
-import { escapeKeyPaths } from './util';
+import { DEFAULT, expect, StateObject, t, ModuleFederationPlugin, escapeKeyPaths } from '../test';
 
 const pkg = require('../../package.json') as t.INpmPackageJson; // eslint-disable-line
 

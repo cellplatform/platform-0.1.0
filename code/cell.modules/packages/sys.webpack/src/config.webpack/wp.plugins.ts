@@ -1,8 +1,6 @@
-import { t, ModuleFederationPlugin } from '../common';
+import { t, ModuleFederationPlugin, unescapeKeyPaths } from '../common';
 import * as HtmlWebPackPlugin from 'html-webpack-plugin';
 import * as ESLintPlugin from 'eslint-webpack-plugin';
-
-import { unescapeKeyPaths } from '../config';
 
 type P = NonNullable<t.WebpackConfig['plugins']>;
 type IArgs = { model: t.WebpackModel; prod: boolean };

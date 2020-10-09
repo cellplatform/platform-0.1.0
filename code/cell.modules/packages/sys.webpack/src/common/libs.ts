@@ -7,6 +7,9 @@ export { Module, Builder };
 import { StateObject } from '@platform/state';
 export { StateObject };
 
+import * as jpath from 'jsonpath';
+export { jpath };
+
 import { sortBy, prop } from 'ramda';
 export const R = { sortBy, prop };
 
