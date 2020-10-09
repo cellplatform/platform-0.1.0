@@ -160,23 +160,33 @@ describe('ConfigBuilder', () => {
       expect(fn).to.throw(/Entry field 'key' required/);
     });
 
-    it('add', () => {
+    it('add: key, path', () => {
       const { builder, model } = create();
-      builder.entry(' main ', ' src/foo.tsx ');
+      builder.entry(' main ', ' src/index.tsx ');
+      builder.entry('foo', 'src/foo.tsx');
+      builder.entry('bar', '  ');
+      expect(model.state.entry?.main).to.eql('src/index.tsx'); // NB: trims paths.
+      expect(model.state.entry?.foo).to.eql('src/foo.tsx');
+      expect(model.state.entry?.bar).to.eql(undefined);
+    });
+
+    it('add: path only (default "main" key)', () => {
+      const { builder, model } = create();
+      builder.entry(' src/foo.tsx ');
       expect(model.state.entry?.main).to.eql('src/foo.tsx');
     });
 
     it('remove', () => {
       const { builder, model } = create();
 
-      builder.entry(' main ', ' src/main.tsx ');
+      builder.entry('main', 'src/main.tsx');
       builder.entry('foo', 'src/foo.tsx');
       expect(model.state.entry).to.eql({ main: 'src/main.tsx', foo: 'src/foo.tsx' });
 
-      builder.entry('main', '');
+      builder.entry('main', '  '); // NB: trims paths to empty: remove inferred from empty string.
       expect(model.state.entry).to.eql({ foo: 'src/foo.tsx' });
 
-      builder.entry('foo', null);
+      builder.entry('foo', null); // NB: null indicates explicit removal
       expect(model.state.entry).to.eql(undefined);
     });
   });

@@ -23,7 +23,8 @@ export type WebpackBuilder = {
   mode(value: t.WebpackMode | 'prod' | 'dev'): B;
   port(value: number | undefined): B;
   lint(value: boolean | undefined): B;
-  entry(key: string, path: string | null): B;
+  entry(path: string): B;
+  entry(key: string, path?: string | null): B;
   expose(key: string, path: string | null): B;
   remote(key: string, path: string | null): B;
   shared(fn: WebpackBuilderSharedFunc): B;

@@ -84,7 +84,8 @@ const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
 
   entry(args) {
     const param = (index: number) => format.string(args.params[index], { trim: true }) || '';
-    writePathMap(args.model, 'entry', param(0), param(1));
+    const value = args.params[1] === undefined ? undefined : param(1);
+    writePathMap(args.model, 'entry', param(0), value);
   },
 
   expose(args) {
@@ -119,8 +120,13 @@ function writePathMap<M extends O>(
   model: t.BuilderModel<M>,
   objectField: keyof M,
   key: string,
-  value: string,
+  value: string | undefined,
 ) {
+  if (value === undefined) {
+    value = key;
+    key = 'main'; // NB: path only passed, set default key "main".
+  }
+
   if (!key) {
     throw new Error(`Entry field 'key' required`);
   }
