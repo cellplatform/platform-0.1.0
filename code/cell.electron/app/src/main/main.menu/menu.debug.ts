@@ -11,7 +11,7 @@ export function debugMenu(args: { paths: t.IAppPaths; port: number }): M {
   const { paths } = args;
   const item: M = {
     label: 'Debug',
-    submenu: [serverMenu(args), dataMenu(args), devToolsMenu(args)],
+    submenu: [serverMenu(args), devToolsMenu(args), dataMenu(args)],
   };
 
   return item;
