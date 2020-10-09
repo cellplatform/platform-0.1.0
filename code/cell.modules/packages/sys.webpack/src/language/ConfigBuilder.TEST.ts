@@ -299,7 +299,7 @@ describe('ConfigBuilder', () => {
       });
     });
 
-    it('overrites as singleton', () => {
+    it('overwrites as singleton', () => {
       const { builder, model } = create();
       const deps = pkg.dependencies || {};
 
