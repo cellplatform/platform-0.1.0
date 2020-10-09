@@ -126,7 +126,7 @@ function writePathMap<M extends O>(
 
   model.change((draft) => {
     const entry = draft[objectField] || ((draft as any)[objectField] = {});
-    entry[key] = value;
+    entry[escapeKeyPath(key)] = value;
     const obj = valueUtil.deleteEmpty(entry as any);
     if (Object.keys(obj).length > 0) {
       draft[objectField] = obj;
@@ -145,8 +145,6 @@ function writeShared(args: {
   const pkg = loadPackageJson(cwd);
   const deps = pkg?.dependencies || {};
 
-  const escape = (name: string) => (name.includes('/') ? escapeKeyPath(name) : name);
-
   const ctx: t.WebpackBuilderShared = {
     cwd,
     deps,
@@ -158,7 +156,7 @@ function writeShared(args: {
           names
             .filter((name) => deps[name])
             .forEach((name) => {
-              shared[escape(name)] = deps[name];
+              shared[escapeKeyPath(name)] = deps[name];
             });
         } else if (typeof input === 'object') {
           draft.shared = { ...shared, ...escapeKeyPaths(input) };
@@ -173,7 +171,7 @@ function writeShared(args: {
         names
           .filter((name) => deps[name])
           .forEach((name) => {
-            shared[escape(name)] = { singleton: true, requiredVersion: deps[name] };
+            shared[escapeKeyPath(name)] = { singleton: true, requiredVersion: deps[name] };
           });
       });
       return ctx;

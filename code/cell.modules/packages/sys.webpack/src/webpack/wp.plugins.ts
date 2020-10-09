@@ -40,8 +40,8 @@ export const Plugins = {
     return new ModuleFederationPlugin({
       name: model.name,
       filename: 'remoteEntry.js',
-      remotes: model.remotes || {},
-      exposes: model.exposes || {},
+      remotes: unescapeKeyPaths(model.remotes || {}),
+      exposes: unescapeKeyPaths(model.exposes || {}),
       shared: unescapeKeyPaths(model.shared || {}),
     });
   },

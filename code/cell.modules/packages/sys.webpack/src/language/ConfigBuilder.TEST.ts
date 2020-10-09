@@ -195,6 +195,12 @@ describe('ConfigBuilder', () => {
       expect(model.state.exposes?.Header).to.eql('src/Header.tsx');
     });
 
+    it('escapes key', () => {
+      const { builder, model } = create();
+      builder.expose('foo/bar', 'src/Header.tsx');
+      expect(Object.keys(model.state.exposes || {})).to.include('foo\\bar');
+    });
+
     it('remove', () => {
       const { builder, model } = create();
 
@@ -222,6 +228,12 @@ describe('ConfigBuilder', () => {
       const path = 'nav@http://localhost:3001/remoteEntry.js';
       builder.remote(' my-nav ', ` ${path} `);
       expect((model.state.remotes || {})['my-nav']).to.eql(path);
+    });
+
+    it('escapes key', () => {
+      const { builder, model } = create();
+      builder.remote('foo/bar', 'nav@http://localhost:3001/remoteEntry.js');
+      expect(Object.keys(model.state.remotes || {})).to.include('foo\\bar');
     });
 
     it('remove', () => {
@@ -334,15 +346,23 @@ describe('ConfigBuilder', () => {
       expect(res.devServer?.port).to.eql(1234);
     });
 
-    it('shared: un-escapes keys', () => {
-      const { builder } = create();
-      const config = builder.shared((args) => args.add('@platform/libs'));
-      const res = config.toWebpack();
+    describe('ModuleFederationPlugin', () => {
+      it('un-escapes keys in: exposes/remotes/shared', () => {
+        const { builder } = create();
+        const config = builder
+          .shared((args) => args.add('@platform/libs'))
+          .remote('foo/bar', 'path')
+          .expose('foo/bar', 'path');
+        const res = config.toWebpack();
 
-      const mf = (res.plugins || []).find((item) => item instanceof ModuleFederationPlugin);
-      const shared = mf?._options?.shared || {};
+        const mf = (res.plugins || []).find((item) => item instanceof ModuleFederationPlugin);
+        expect(mf).to.not.eql(undefined);
 
-      expect(Object.keys(shared)).to.include('@platform/libs');
+        const options = mf?._options || {};
+        expect(Object.keys(options.remotes || {})).to.include('foo/bar');
+        expect(Object.keys(options.exposes || {})).to.include('foo/bar');
+        expect(Object.keys(options.shared || {})).to.include('@platform/libs');
+      });
     });
   });
 });
