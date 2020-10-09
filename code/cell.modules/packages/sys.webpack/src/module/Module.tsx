@@ -1,5 +1,5 @@
 import { Module, t, id, constants } from '../common';
-import { ConfigBuilder } from '../language';
+import { ConfigBuilder } from '../config';
 import { Compiler } from '../compiler';
 
 type P = t.WebpackProps;

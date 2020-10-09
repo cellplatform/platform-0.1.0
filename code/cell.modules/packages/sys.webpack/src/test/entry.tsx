@@ -33,6 +33,5 @@ const App = () => {
   return <h1 style={{ fontFamily: 'sans-serif' }}>Hello World!</h1>;
 };
 
-const el = document.createElement('div');
-document.body.appendChild(el);
-ReactDOM.render(<App />, el);
+const within = document.body.appendChild(document.createElement('div'));
+ReactDOM.render(<App />, within);

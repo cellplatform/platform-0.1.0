@@ -8,6 +8,7 @@ export const configuration = () => {
     .title('My Foo')
     .entry('main', './src/index')
     .expose('./Header', './src/Header')
+    .shared((args) => args.deps)
     .clone();
 
   return config;

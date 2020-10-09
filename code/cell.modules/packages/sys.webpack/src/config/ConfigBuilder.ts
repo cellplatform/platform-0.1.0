@@ -1,7 +1,7 @@
 import { t, Builder, StateObject, DEFAULT, value as valueUtil } from '../common';
 import { fs } from '@platform/fs';
 import { escapeKeyPath, escapeKeyPaths } from './util';
-import { wp } from '../webpack';
+import { wp } from '../config.webpack';
 
 type O = Record<string, unknown>;
 

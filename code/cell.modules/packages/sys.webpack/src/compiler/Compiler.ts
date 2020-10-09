@@ -3,7 +3,7 @@ import { Compilation as ICompliation, Stats as IStats, webpack } from 'webpack';
 import * as dev from 'webpack-dev-server';
 
 import { t } from '../common';
-import { wp } from '../webpack';
+import { wp } from '../config.webpack';
 
 type M = t.WebpackModel | t.ConfigBuilderChain;
 

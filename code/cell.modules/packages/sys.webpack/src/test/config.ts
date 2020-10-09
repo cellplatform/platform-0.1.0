@@ -7,5 +7,6 @@ export function configuration() {
     .port(1234)
     .entry('main', './src/test/entry')
     .remote('foo', 'foo@http://localhost:3001/remoteEntry.js')
+    .shared((args) => args.deps)
     .clone();
 }

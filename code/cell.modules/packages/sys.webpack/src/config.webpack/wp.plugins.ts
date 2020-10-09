@@ -2,7 +2,7 @@ import { t, ModuleFederationPlugin } from '../common';
 import * as HtmlWebPackPlugin from 'html-webpack-plugin';
 import * as ESLintPlugin from 'eslint-webpack-plugin';
 
-import { unescapeKeyPaths } from '../language';
+import { unescapeKeyPaths } from '../config';
 
 type P = NonNullable<t.WebpackConfig['plugins']>;
 type IArgs = { model: t.WebpackModel; prod: boolean };
@@ -37,12 +37,13 @@ export const Plugins = {
    */
   federation(args: IArgs) {
     const { model } = args;
+    const unescape = (obj?: Record<string, unknown>) => unescapeKeyPaths(obj || {});
     return new ModuleFederationPlugin({
       name: model.name,
       filename: 'remoteEntry.js',
-      remotes: unescapeKeyPaths(model.remotes || {}),
-      exposes: unescapeKeyPaths(model.exposes || {}),
-      shared: unescapeKeyPaths(model.shared || {}),
+      remotes: unescape(model.remotes),
+      exposes: unescape(model.exposes),
+      shared: unescape(model.shared),
     });
   },
 };

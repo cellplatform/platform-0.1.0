@@ -5,8 +5,10 @@ export type WebpackStats = {
   ok: boolean;
   elapsed: number;
   log(): void;
+  output: { path: string; publicPath: string };
   assets: {
     list: WebpackAsset[];
+    bytes: number;
     sortBySize(): WebpackAsset[];
     sortByName(): WebpackAsset[];
     log(): void;

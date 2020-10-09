@@ -10,17 +10,19 @@ export const stats = (input?: IStats | ICompliation): t.WebpackStats => {
   const stats: ICompliation | undefined =
     typeof (input as any).compilation === 'object' ? (input as any).compilation : input;
 
-  const ok = (stats?.errors || []).length === 0;
-  const elapsed = stats ? stats.endTime - stats.startTime : -1;
-
   const res: t.WebpackStats = {
-    ok,
-    elapsed,
+    ok: (stats?.errors || []).length === 0,
+    elapsed: stats ? stats.endTime - stats.startTime : -1,
 
     log() {
       res.assets.log();
       log.info();
       res.errors.log();
+    },
+
+    output: {
+      path: stats?.outputOptions?.path || '',
+      publicPath: stats?.outputOptions?.publicPath?.toString() || '',
     },
 
     get assets() {
@@ -32,23 +34,33 @@ export const stats = (input?: IStats | ICompliation): t.WebpackStats => {
         }
       });
 
-      return {
+      const assets = {
         list,
+        bytes: list.reduce((acc, next) => acc + next.bytes, 0),
         sortBySize: () => R.sortBy(R.prop('bytes'), list),
         sortByName: () => R.sortBy(R.prop('filename'), list),
         log(options: { indent?: number } = {}) {
           if (list.length === 0) {
             return;
           }
+          const elapsed = time.duration(res.elapsed).toString();
           const table = log.table({ border: false });
           const indent = options.indent ? ' '.repeat(options.indent) : '';
           list.forEach((item) => {
             table.add([`${indent}${item.filename}`, '  ', log.green(item.size)]);
           });
+          table.add(['', '', log.cyan(filesize(assets.bytes))]);
+
+          log.info.green('output');
           table.log();
-          log.info.gray(time.duration(elapsed).toString());
+          log.info.gray(elapsed);
+          log.info.gray(res.output.path);
+          if (res.output.publicPath) {
+            log.info.gray(res.output.publicPath);
+          }
         },
       };
+      return assets;
     },
 
     get errors() {
