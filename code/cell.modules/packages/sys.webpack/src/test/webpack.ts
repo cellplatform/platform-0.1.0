@@ -4,7 +4,8 @@ export { Webpack };
 export function configuration() {
   return Webpack.config
     .create('home')
-    .entry('main', './src/test/entry.ts')
+    .port(1234)
+    .entry('main', './src/test/entry')
     .remote('foo', 'foo@http://localhost:3001/remoteEntry.js')
     .clone();
 }

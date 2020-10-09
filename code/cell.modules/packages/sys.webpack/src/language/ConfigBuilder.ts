@@ -1,4 +1,7 @@
 import { t, Builder, StateObject, DEFAULT, value as valueUtil } from '../common';
+import { fs } from '@platform/fs';
+import { escapeKeyPath, escapeKeyPaths } from './util';
+import { wp } from '../webpack';
 
 type O = Record<string, unknown>;
 
@@ -27,8 +30,9 @@ export const ConfigBuilder: t.ConfigBuilder = {
  * Root handlers.
  */
 const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
-  toObject: (args) => args.model.state,
   clone: (args) => args.clone(),
+  toObject: (args) => args.model.state,
+  toWebpack: (args) => wp.toWebpackConfig(args.model.state),
 
   name(args) {
     args.model.change((draft) => {
@@ -91,11 +95,24 @@ const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
     const param = (index: number) => format.string(args.params[index], { trim: true }) || '';
     writePathMap(args.model, 'remotes', param(0), param(1));
   },
+
+  shared(args) {
+    const handler = args.params[0] as t.WebpackBuilderSharedFunc;
+    if (typeof handler !== 'function') {
+      throw new Error(`A function setter parameter required`);
+    }
+    writeShared({ model: args.model, handler });
+  },
 };
 
 /**
  * [Helpers]
  */
+function loadPackageJson(cwd: string) {
+  const path = fs.join(cwd, 'package.json');
+  const exists = fs.existsSync(path);
+  return exists ? (fs.readJsonSync(path) as t.INpmPackageJson) : undefined;
+}
 
 function writePathMap<M extends O>(
   model: t.BuilderModel<M>,
@@ -117,4 +134,51 @@ function writePathMap<M extends O>(
       delete draft[objectField];
     }
   });
+}
+
+function writeShared(args: {
+  model: t.BuilderModel<t.WebpackModel>;
+  handler: t.WebpackBuilderSharedFunc;
+}) {
+  const { model, handler } = args;
+  const cwd = process.cwd();
+  const pkg = loadPackageJson(cwd);
+  const deps = pkg?.dependencies || {};
+
+  const escape = (name: string) => (name.includes('/') ? escapeKeyPath(name) : name);
+
+  const ctx: t.WebpackBuilderShared = {
+    cwd,
+    deps,
+    add(input: Record<string, string> | string | string[]) {
+      model.change((draft) => {
+        const shared = draft.shared || (draft.shared = {});
+        if (Array.isArray(input) || typeof input === 'string') {
+          const names = Array.isArray(input) ? input : [input];
+          names
+            .filter((name) => deps[name])
+            .forEach((name) => {
+              shared[escape(name)] = deps[name];
+            });
+        } else if (typeof input === 'object') {
+          draft.shared = { ...shared, ...escapeKeyPaths(input) };
+        }
+      });
+      return ctx;
+    },
+    singleton(input: string) {
+      model.change((draft) => {
+        const shared = draft.shared || (draft.shared = {});
+        const names = Array.isArray(input) ? input : [input];
+        names
+          .filter((name) => deps[name])
+          .forEach((name) => {
+            shared[escape(name)] = { singleton: true, requiredVersion: deps[name] };
+          });
+      });
+      return ctx;
+    },
+  };
+
+  handler(ctx);
 }

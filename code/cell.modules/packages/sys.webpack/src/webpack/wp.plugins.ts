@@ -1,10 +1,8 @@
-import { t } from '../common';
+import { t, ModuleFederationPlugin } from '../common';
 import * as HtmlWebPackPlugin from 'html-webpack-plugin';
 import * as ESLintPlugin from 'eslint-webpack-plugin';
 
-/* eslint-disable */
-const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
-/* eslint-enable */
+import { unescapeKeyPaths } from '../language';
 
 type P = NonNullable<t.WebpackConfig['plugins']>;
 type IArgs = { model: t.WebpackModel; prod: boolean };
@@ -44,7 +42,7 @@ export const Plugins = {
       filename: 'remoteEntry.js',
       remotes: model.remotes || {},
       exposes: model.exposes || {},
-      shared: {}, // TEMP 🐷
+      shared: unescapeKeyPaths(model.shared || {}),
     });
   },
 };

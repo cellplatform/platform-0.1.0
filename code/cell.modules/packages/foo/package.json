@@ -1,12 +1,16 @@
 {
   "name": "foo",
   "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "dev": "ts-node -T scripts/dev"
+    "dev": "ts-node -T scripts/dev",
+    "build": "tsc $@",
+    "bundle": "ts-node -T scripts/bundle"
   },
+  "dependencies": {},
   "devDependencies": {
     "sys.webpack": "0.0.1"
-  }
+  },
+  "license": "MIT"
 }

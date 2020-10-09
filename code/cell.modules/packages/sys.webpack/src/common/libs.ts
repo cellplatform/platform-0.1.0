@@ -9,3 +9,8 @@ export { StateObject };
 
 import { sortBy, prop } from 'ramda';
 export const R = { sortBy, prop };
+
+/* eslint-disable */
+const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
+export { ModuleFederationPlugin };
+/* eslint-enable */

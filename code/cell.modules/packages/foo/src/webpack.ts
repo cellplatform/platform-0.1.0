@@ -1,4 +1,5 @@
 import { Webpack } from 'sys.webpack';
+export { Webpack };
 
 export const configuration = () => {
   const config = Webpack.config

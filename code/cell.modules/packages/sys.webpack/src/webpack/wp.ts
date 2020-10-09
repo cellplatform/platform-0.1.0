@@ -1,6 +1,7 @@
 import { t } from '../common';
 import { Rules } from './wp.rules';
 import { Plugins } from './wp.plugins';
+
 import { stats } from './wp.stats';
 export { stats };
 

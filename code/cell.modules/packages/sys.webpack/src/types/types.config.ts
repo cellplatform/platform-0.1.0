@@ -15,6 +15,7 @@ export type ConfigBuilderModel = t.BuilderModel<t.WebpackModel>;
  */
 export type WebpackBuilder = {
   toObject(): t.WebpackModel;
+  toWebpack(): t.WebpackConfig;
   clone(): B;
 
   name(value: string): B;
@@ -25,6 +26,16 @@ export type WebpackBuilder = {
   entry(key: string, path: string | null): B;
   expose(key: string, path: string | null): B;
   remote(key: string, path: string | null): B;
+  shared(fn: WebpackBuilderSharedFunc): B;
+};
+
+export type WebpackBuilderSharedFunc = (fn: WebpackBuilderShared) => any;
+export type WebpackBuilderShared = {
+  cwd: string;
+  deps: Record<string, string>;
+  add(deps: Record<string, string>): WebpackBuilderShared;
+  add(name: string | string[]): WebpackBuilderShared;
+  singleton(name: string | string[]): WebpackBuilderShared;
 };
 
 /**
@@ -39,4 +50,7 @@ export type WebpackModel = {
   entry?: Record<string, string>;
   exposes?: Record<string, string>;
   remotes?: Record<string, string>;
+  shared?: Record<string, string | WebpackShared>;
 };
+
+export type WebpackShared = { singleton: boolean; requiredVersion: string };

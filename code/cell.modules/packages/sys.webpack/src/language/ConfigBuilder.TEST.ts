@@ -1,5 +1,8 @@
-import { expect, t, DEFAULT, StateObject } from '../test';
 import { ConfigBuilder } from '.';
+import { DEFAULT, expect, StateObject, t, ModuleFederationPlugin } from '../test';
+import { escapeKeyPaths } from './util';
+
+const pkg = require('../../package.json') as t.INpmPackageJson; // eslint-disable-line
 
 const create = () => {
   const model = ConfigBuilder.model('foo');
@@ -236,6 +239,110 @@ describe('ConfigBuilder', () => {
 
       builder.remote('foo', null);
       expect(model.state.remotes).to.eql(undefined);
+    });
+  });
+
+  describe('shared', () => {
+    it('throw: no function', () => {
+      const { builder } = create();
+      const fn = () => builder.shared(undefined as any);
+      expect(fn).to.throw(/function setter parameter required/);
+    });
+
+    it('loads {dependencies} from package.json', () => {
+      const { builder } = create();
+      let args: t.WebpackBuilderShared | undefined;
+      builder.shared((e) => (args = e));
+      expect(args?.cwd).to.eql(process.cwd());
+      expect(args?.deps).to.eql(pkg.dependencies);
+    });
+
+    it('adds {dependencies} object (cumulative)', () => {
+      const { builder, model } = create();
+
+      const escaped = escapeKeyPaths(pkg.dependencies || {});
+
+      builder.shared((args) => args.add(args.deps));
+      expect(model.state.shared).to.eql(escaped);
+
+      builder.shared((args) => args.add({ foo: '1.2.3' }).add({ bar: '0.0.0' }));
+      expect(model.state.shared).to.eql({ ...escaped, foo: '1.2.3', bar: '0.0.0' });
+    });
+
+    it('adds dependency by name(s)', () => {
+      const { builder, model } = create();
+      const deps = pkg.dependencies || {};
+
+      builder.shared((args) => args.add('foobar')); // NB: Does not exist in [package.json] dependencies.
+      expect(model.state.shared).to.eql({});
+
+      builder.shared((args) => args.add('@platform/libs'));
+      expect(model.state.shared).to.eql({ '@platform\\libs': deps['@platform/libs'] }); // NB: key escaped.
+
+      builder.shared((args) => args.add(['@platform/polyfill', 'filesize']));
+      expect(model.state.shared).to.eql({
+        '@platform\\libs': deps['@platform/libs'],
+        '@platform\\polyfill': deps['@platform/polyfill'],
+        filesize: deps['filesize'],
+      });
+    });
+
+    it('overrites as singleton', () => {
+      const { builder, model } = create();
+      const deps = pkg.dependencies || {};
+
+      builder.shared((args) => args.add(args.deps).singleton('@platform/libs'));
+
+      expect((model.state.shared || {})['@platform\\libs']).to.eql({
+        singleton: true,
+        requiredVersion: deps['@platform/libs'],
+      });
+
+      builder.shared((args) => args.singleton(['@platform/cell.types', 'filesize']));
+
+      expect((model.state.shared || {})['@platform\\cell.types']).to.eql({
+        singleton: true,
+        requiredVersion: deps['@platform/cell.types'],
+      });
+
+      expect((model.state.shared || {})['filesize']).to.eql({
+        singleton: true,
+        requiredVersion: deps['filesize'],
+      });
+    });
+  });
+
+  describe('toWebpack', () => {
+    it('"production"', () => {
+      const { builder } = create();
+      const config = builder;
+      const res = config.toWebpack();
+
+      expect(res.mode).to.eql('production');
+      expect(res.output?.publicPath).to.eql('http://localhost:3000/');
+      expect(res.devServer).to.eql(undefined);
+      expect(res.devtool).to.eql(undefined);
+    });
+
+    it('"development" (and other custom values)', () => {
+      const { builder } = create();
+      const config = builder.port(1234).mode('dev');
+      const res = config.toWebpack();
+
+      expect(res.mode).to.eql('development');
+      expect(res.output?.publicPath).to.eql('http://localhost:1234/');
+      expect(res.devServer?.port).to.eql(1234);
+    });
+
+    it('shared: un-escapes keys', () => {
+      const { builder } = create();
+      const config = builder.shared((args) => args.add('@platform/libs'));
+      const res = config.toWebpack();
+
+      const mf = (res.plugins || []).find((item) => item instanceof ModuleFederationPlugin);
+      const shared = mf?._options?.shared || {};
+
+      expect(Object.keys(shared)).to.include('@platform/libs');
     });
   });
 });
