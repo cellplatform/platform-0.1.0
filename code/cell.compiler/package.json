@@ -1,5 +1,5 @@
 {
-  "name": "@platform/cell.compile",
+  "name": "@platform/cell.compiler",
   "version": "0.0.18",
   "description": "Code compilation tools for CellOS.",
   "main": "lib/index",
