@@ -71,13 +71,6 @@ export async function test(
     }
 
     return done(res);
-    // if (watch) {
-    // } else {
-    //   // Run behind spinner.
-    //   const res = await exec.cmd.runList(cmd, { silent, dir: fs.resolve(dir) });
-    //   res.errors.log({ log });
-    //   return done(res);
-    // }
   } catch (error) {
     return result.fail(error);
   }

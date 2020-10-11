@@ -19,7 +19,7 @@ export function dataMenu(args: { paths: t.IAppPaths; port: number }): M {
         click: () => data.snapshot(paths, { openDir: true }),
       },
       {
-        label: 'Snapshot and Reset',
+        label: 'Snapshot and Delete Data',
         click: () => data.reset(paths, { openDir: true, reopen: true, quit: true }),
       },
     ],

@@ -1,10 +1,10 @@
 export const PKG = {
   name: '@platform/cell.client',
-  version: '0.2.154',
+  version: '0.2.155',
   dependencies: {
-    '@platform/cell.schema': '0.4.172',
-    '@platform/cell.types': '0.4.158',
-    '@platform/cell.typesystem': '0.0.112',
+    '@platform/cell.schema': '0.4.173',
+    '@platform/cell.types': '0.4.159',
+    '@platform/cell.typesystem': '0.0.113',
     '@platform/http': '0.12.28',
     '@platform/http.types': '0.2.18',
     '@platform/libs': '0.2.2',

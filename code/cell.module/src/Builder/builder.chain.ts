@@ -2,7 +2,7 @@ import { IMemoryCache, MemoryCache } from '@platform/cache';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { dispose, jpath, t } from '../common';
+import { dispose, jpath, t, StateObject } from '../common';
 
 type O = Record<string, unknown>;
 type B = t.BuilderChain<any>;
@@ -71,6 +71,10 @@ export function create<M extends O, A extends O>(args: {
           path: args.path === undefined ? '$' : `${args.path || '$'}`,
           model,
           is: { list: is.list(kind), map: is.map(kind) },
+          clone() {
+            const model = StateObject.create<M>(args.model.state);
+            return create({ model, handlers });
+          },
         };
         const res = handler(handlerArgs);
         return res === undefined ? builder : res;

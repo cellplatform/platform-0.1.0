@@ -3,7 +3,7 @@ import { exec, fs } from '../common';
 
 (async () => {
   const argv = process.argv;
-  const cwd = 'example/pkg-1';
+  const cwd = fs.resolve('example/pkg-1');
   const outDir = fs.resolve('tmp/dist');
   const options = `--dir=${cwd} --outDir=${outDir} ${argv.slice(3).join(' ')}`;
 

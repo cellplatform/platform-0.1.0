@@ -43,6 +43,7 @@ export async function buildAs(formats: BuildFormat[], args: IBuildArgs = {}): Pr
       title: `build ${title}`,
       task: async () => {
         const res = await build({ ...args, as: format, silent: true });
+
         if (res.errorLog && !errorLog) {
           errorLog = res.errorLog;
         }
@@ -88,7 +89,7 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
   let cmd = `cd ${fs.resolve(cwd)}\n`;
 
   cmd += `node ${fs.join(tsc)}`;
-  cmd += ` --outDir ${watch ? outDir : tmpDir}`;
+  cmd += ` --outDir ${fs.resolve(watch ? outDir : tmpDir)}`;
   cmd = watch ? `${cmd} --watch` : cmd;
   cmd = tsconfig ? `${cmd} --project ${tsconfig}` : cmd;
 

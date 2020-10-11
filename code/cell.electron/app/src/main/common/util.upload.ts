@@ -27,8 +27,8 @@ export async function getFiles(args: { sourceDir: string; targetDir?: string }) 
  */
 export async function upload(args: {
   host: string;
-  targetCell: string | t.ICellUri;
   sourceDir: string;
+  targetCell: string | t.ICellUri;
   targetDir?: string;
   files?: File[];
   silent?: boolean;
