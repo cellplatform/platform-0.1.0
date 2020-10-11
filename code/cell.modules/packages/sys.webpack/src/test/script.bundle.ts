@@ -1,4 +1,4 @@
-import { log } from '@platform/log/lib/server';
+import { log } from '../common';
 import { configuration, Webpack } from './config';
 
 (async () => {
@@ -15,6 +15,4 @@ import { configuration, Webpack } from './config';
 
   log.info();
   res.stats.log();
-
-  // res.stats.
 })();

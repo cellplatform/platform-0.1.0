@@ -11,9 +11,10 @@ export type WebpackModule = t.IModule<WebpackProps>;
 export type Webpack = {
   module(bus: t.EventBus<any>): WebpackModule;
   config: t.ConfigBuilder;
-  bundle: t.WebpackBundle;
-  watch: t.WebpackWatch;
   dev: t.WebpackDev;
+  watch: t.WebpackWatch;
+  bundle: t.WebpackBundle;
+  upload: t.WebpackUpload;
 };
 
 /**

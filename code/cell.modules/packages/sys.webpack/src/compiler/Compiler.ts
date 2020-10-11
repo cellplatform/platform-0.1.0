@@ -1,9 +1,9 @@
-import { log } from '@platform/log/lib/server';
 import { Compilation as ICompliation, Stats as IStats, webpack } from 'webpack';
 import * as dev from 'webpack-dev-server';
 
-import { t } from '../common';
+import { t, log } from '../common';
 import { wp } from '../config.webpack';
+import { upload } from './Compiler.upload';
 
 type M = t.WebpackModel | t.ConfigBuilderChain;
 
@@ -11,6 +11,8 @@ type M = t.WebpackModel | t.ConfigBuilderChain;
  * Webpack bundler.
  */
 export const Compiler: t.WebpackCompiler = {
+  upload,
+
   /**
    * Build bundle.
    */
@@ -34,6 +36,7 @@ export const Compiler: t.WebpackCompiler = {
    */
   async watch(input) {
     const { compiler, model } = toCompiler(input);
+    let count = 0;
 
     const write = {
       clear() {
@@ -49,7 +52,7 @@ export const Compiler: t.WebpackCompiler = {
         return write;
       },
       watching() {
-        log.info.gray('Watching');
+        log.info.gray(`Watching (${count})`);
         log.info(model);
         return write;
       },
@@ -60,6 +63,7 @@ export const Compiler: t.WebpackCompiler = {
     };
 
     compiler.watch({}, (err, stats) => {
+      count++;
       write.clear().newline().watching().newline().hr().stats(stats);
     });
   },

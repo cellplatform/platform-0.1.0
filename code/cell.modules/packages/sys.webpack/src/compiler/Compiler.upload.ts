@@ -1,7 +1,7 @@
-import { app } from 'electron';
-import { fs, HttpClient, log, t, time } from '../common';
+import { fs, HttpClient, log, t, time, Schema } from '../common';
 
 type File = t.IHttpClientCellFileUpload;
+const filesize = fs.size.toString;
 
 /**
  * Retrieve the set of files to upload.
@@ -25,20 +25,22 @@ export async function getFiles(args: { sourceDir: string; targetDir?: string }) 
 /**
  * Upload files to the given target.
  */
-export async function upload(args: {
-  host: string;
-  sourceDir: string;
-  targetCell: string | t.ICellUri;
-  targetDir?: string;
-  files?: File[];
-  silent?: boolean;
-}) {
+export const upload: t.WebpackUpload = async (args) => {
   const timer = time.timer();
   const { host, sourceDir, targetDir, targetCell } = args;
-  const files = args.files ? args.files : await getFiles({ sourceDir, targetDir });
+  const files = await getFiles({ sourceDir, targetDir });
+  const bytes = files.reduce((acc, next) => acc + next.data.byteLength, 0);
+
+  const urls = () => {
+    const cell = Schema.urls(args.host).cell(args.targetCell);
+    return {
+      cell: cell.info.toString(),
+      files: cell.files.list.toString(),
+    };
+  };
 
   const done = (ok: boolean) => {
-    return { ok, files };
+    return { ok, bytes, files, urls: urls() };
   };
 
   try {
@@ -47,7 +49,6 @@ export async function upload(args: {
 
     if (!res.ok) {
       log.info.yellow(`Failed to upload files.`);
-      log.info.gray(' • packaged:', app.isPackaged);
       log.info.gray(' • dir:     ', sourceDir);
       log.info.gray(' • host:    ', host);
       log.info.gray(' • errors:');
@@ -63,7 +64,7 @@ export async function upload(args: {
 
     if (!args.silent) {
       const elapsed = timer.elapsed.toString();
-      logUpload({ sourceDir, targetCell, host, files, elapsed });
+      logUpload({ sourceDir, targetCell, host, files, elapsed, bytes });
     }
 
     return done(true);
@@ -74,7 +75,7 @@ export async function upload(args: {
     }
     return done(false);
   }
-}
+};
 
 /**
  * Helpers
@@ -86,10 +87,10 @@ function logUpload(args: {
   host: string;
   files: File[];
   elapsed: string;
+  bytes: number;
 }) {
   const { host, files, sourceDir, targetCell, elapsed } = args;
-  const bytes = files.reduce((acc, next) => acc + next.data.byteLength, 0);
-  const size = fs.size.toString(bytes);
+  const size = filesize(args.bytes);
 
   const table = log.table({ border: false });
   table.add(['  • host', host]);
@@ -98,16 +99,17 @@ function logUpload(args: {
 
   const addFile = (file: File) => {
     const { filename, data } = file;
-    const name = filename.endsWith('.map') ? log.gray(filename) : log.green(filename);
-    const size = fs.size.toString(data.byteLength);
-    table.add(['', name, size]);
+    const name = filename.endsWith('.map') ? log.gray(filename) : log.white(filename);
+    const size = filesize(data.byteLength);
+    table.add(['', name, log.green(size)]);
   };
+
   files.filter((file) => file.filename.endsWith('.map')).forEach((file) => addFile(file));
   files.filter((file) => !file.filename.endsWith('.map')).forEach((file) => addFile(file));
+  table.add(['', '', log.cyan(size)]);
 
   log.info(`
-
-${log.blue(`uploaded`)}    ${log.gray(`(${size} in ${elapsed})`)}
+${log.blue(`Uploaded`)}    ${log.gray(`(in ${elapsed})`)}
 ${log.gray(` from:      ${sourceDir}`)}
 ${log.gray(` to:`)}
 ${log.gray(table)}

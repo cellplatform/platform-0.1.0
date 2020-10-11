@@ -1,8 +1,7 @@
-import { log } from '@platform/log/lib/server';
-import * as filesize from 'filesize';
-import { Stats as IStats, Compilation as ICompliation } from 'webpack';
+import { Compilation as ICompliation, Stats as IStats } from 'webpack';
 
-import { R, time, t } from '../common';
+import { log, R, t, time, fs } from '../common';
+const filesize = fs.size.toString;
 
 export const stats = (input?: IStats | ICompliation): t.WebpackStats => {
   type Asset = { filename: string; bytes: number; size: string };

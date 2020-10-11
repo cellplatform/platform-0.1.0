@@ -6,9 +6,10 @@ type P = t.WebpackProps;
 
 export const Webpack: t.Webpack = {
   config: ConfigBuilder,
-  bundle: Compiler.bundle,
-  watch: Compiler.watch,
   dev: Compiler.dev,
+  watch: Compiler.watch,
+  bundle: Compiler.bundle,
+  upload: Compiler.upload,
 
   /**
    * Module initialization.

@@ -12,7 +12,8 @@
     "clean": "rm -rf dist",
     "serve": "cd dist && serve --listen 1234",
     "bundle": "yarn clean && ts-node -T src/test/script.bundle",
-    "watch": "ts-node -T src/test/script.watch"
+    "watch": "ts-node -T src/test/script.watch",
+    "upload": "ts-node -T src/test/script.upload"
   },
   "dependencies": {
     "@platform/cell.module": "0.0.24",
@@ -20,7 +21,6 @@
     "@platform/libs": "0.2.2",
     "@platform/log": "0.1.29",
     "@platform/polyfill": "0.0.1",
-    "filesize": "^6.1.0",
     "sys.refs.ui": "1.0.0"
   },
   "devDependencies": {

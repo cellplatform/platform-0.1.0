@@ -1,11 +1,17 @@
-import { fs } from '@platform/fs';
-
-import { Builder, DEFAULT, escapeKeyPath, escapeKeyPaths, StateObject, t, value } from '../common';
+import {
+  Builder,
+  DEFAULT,
+  escapeKeyPath,
+  escapeKeyPaths,
+  fs,
+  StateObject,
+  t,
+  value as valueUtil,
+} from '../common';
 import { wp } from '../config.webpack';
 
 type O = Record<string, unknown>;
 
-const { deleteEmpty } = value;
 const format = Builder.format;
 const MODES: t.WebpackMode[] = ['development', 'production'];
 
@@ -134,7 +140,7 @@ function writePathMap<M extends O>(
   model.change((draft) => {
     const entry = draft[objectField] || ((draft as any)[objectField] = {});
     entry[escapeKeyPath(key)] = value;
-    const obj = deleteEmpty(entry as any);
+    const obj = valueUtil.deleteEmpty(entry as any);
     if (Object.keys(obj).length > 0) {
       draft[objectField] = obj;
     } else {

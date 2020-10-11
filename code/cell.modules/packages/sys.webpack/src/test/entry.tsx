@@ -3,20 +3,13 @@ import '@platform/polyfill';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-console.log('entry', ': hello');
-console.log('');
-console.log('React', React);
-console.log('-------------------------------------------');
+console.log('entry', 'hello world.');
 
 (async () => {
-  class Foo {
-    public static count = 123;
-  }
-  new Foo();
-
-  if (typeof window === 'object') {
-    // document.body.innerHTML = `<h1>Hello World!</h1>`;
-  }
+  // class Foo {
+  //   public static count = 123;
+  // }
+  // new Foo();
 
   // @ts-ignore
   const f = import('foo/Header');
