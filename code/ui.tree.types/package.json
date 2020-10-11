@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@platform/libs": "0.2.2",
-    "@platform/state.types": "^0.0.6",
+    "@platform/state.types": "0.0.6",
     "@platform/types": "0.5.5"
   },
   "devDependencies": {

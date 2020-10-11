@@ -22,15 +22,15 @@
     "@platform/log": "0.1.29",
     "@platform/types": "0.5.5",
     "@platform/util.value": "0.7.32",
-    "@types/semver": "7.3.1",
-    "inquirer": "7.3.2",
+    "@types/semver": "7.3.4",
+    "inquirer": "7.3.3",
     "semver": "7.3.2"
   },
   "devDependencies": {
     "@platform/test": "0.1.15",
     "@platform/ts": "4.0.0",
     "@types/dotenv": "8.2.0",
-    "@types/inquirer": "6.5.0",
+    "@types/inquirer": "7.3.1",
     "dotenv": "8.2.0"
   },
   "files": [

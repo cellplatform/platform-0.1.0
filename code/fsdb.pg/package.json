@@ -22,13 +22,13 @@
     "@platform/fsdb.types": "0.6.34",
     "@platform/libs": "0.2.2",
     "@platform/util.value": "0.7.32",
-    "pg": "8.3.0"
+    "pg": "8.4.1"
   },
   "devDependencies": {
     "@platform/fsdb.file": "^1.3.79",
     "@platform/test": "0.1.15",
     "@platform/ts": "4.0.0",
-    "@types/pg": "7.14.4"
+    "@types/pg": "7.14.5"
   },
   "files": [
     "lib",

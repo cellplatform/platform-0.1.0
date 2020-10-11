@@ -40,7 +40,7 @@
     "@platform/npm": "0.3.10",
     "@platform/test": "0.1.15",
     "@platform/ts": "4.0.0",
-    "@types/cheerio": "0.22.21",
+    "@types/cheerio": "0.22.22",
     "@types/mime-types": "2.1.0",
     "form-data": "3.0.0"
   },

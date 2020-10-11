@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@platform/libs": "0.2.2",
-    "@platform/ui.tree": "0.8.6"
+    "@platform/ui.tree": "0.8.8"
   },
   "devDependencies": {
     "@platform/test": "0.1.15",

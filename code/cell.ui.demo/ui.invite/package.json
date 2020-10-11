@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@platform/cell.client": "^0.1.28",
-    "@platform/cell.types": "^0.4.26",
+    "@platform/cell.types": "^0.4.159",
     "@platform/http": "^0.11.1",
     "@platform/libs": "^0.2.0",
     "@platform/log": "^0.1.7",
@@ -30,9 +30,9 @@
     "@platform/util.string": "^0.4.0"
   },
   "devDependencies": {
-    "@platform/test": "^0.1.2",
-    "@platform/ts": "^3.7.12",
-    "parcel-bundler": "^1.12.4"
+    "@platform/test": "0.1.15",
+    "@platform/ts": "4.0.0",
+    "parcel-bundler": "1.12.4"
   },
   "private": true
 }

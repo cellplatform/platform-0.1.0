@@ -24,7 +24,7 @@
   "devDependencies": {
     "@platform/test": "0.1.15",
     "@platform/ts": "4.0.0",
-    "@types/semver": "7.3.1"
+    "@types/semver": "7.3.4"
   },
   "files": [
     "lib",

@@ -33,7 +33,7 @@
     "@platform/ts": "4.0.0",
     "@platform/ui.button": "0.3.80",
     "@platform/ui.dev": "0.0.19",
-    "react-icons": "3.10.0"
+    "react-icons": "3.11.0"
   },
   "files": [
     "lib",

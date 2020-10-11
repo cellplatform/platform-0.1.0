@@ -21,7 +21,7 @@
     "@platform/types": "0.5.5",
     "@platform/util.mimetype": "0.1.15",
     "@platform/util.value": "0.7.32",
-    "isomorphic-fetch": "2.2.1"
+    "isomorphic-fetch": "3.0.0"
   },
   "devDependencies": {
     "@platform/test": "0.1.15",

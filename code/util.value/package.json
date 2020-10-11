@@ -16,7 +16,7 @@
     "@platform/types": "0.5.5",
     "@platform/util.is": "0.0.129",
     "cuid": "2.1.8",
-    "dayjs": "1.8.34"
+    "dayjs": "1.9.1"
   },
   "devDependencies": {
     "@platform/test": "0.1.15",

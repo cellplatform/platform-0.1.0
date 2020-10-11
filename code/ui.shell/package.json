@@ -19,7 +19,7 @@
     "@platform/ui.icon": "0.0.164",
     "@platform/ui.loader": "0.2.78",
     "@platform/ui.shell.types": "0.1.110",
-    "@platform/ui.tree": "0.8.6",
+    "@platform/ui.tree": "0.8.8",
     "@platform/util.value": "0.7.32"
   },
   "devDependencies": {

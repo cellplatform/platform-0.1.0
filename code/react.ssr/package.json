@@ -29,10 +29,10 @@
     "@platform/micro": "0.14.48",
     "@platform/npm": "0.3.10",
     "@platform/react": "0.4.45",
-    "bowser": "2.10.0",
+    "bowser": "2.11.0",
     "cheerio": "1.0.0-rc.3",
     "listr": "0.14.3",
-    "path-to-regexp": "6.1.0",
+    "path-to-regexp": "6.2.0",
     "semver": "7.3.2"
   },
   "devDependencies": {
@@ -40,8 +40,8 @@
     "@platform/test": "0.1.15",
     "@platform/ts": "4.0.0",
     "@types/bowser": "1.1.1",
-    "@types/cheerio": "0.22.21",
-    "@types/semver": "7.3.1"
+    "@types/cheerio": "0.22.22",
+    "@types/semver": "7.3.4"
   },
   "files": [
     "lib",

@@ -20,7 +20,7 @@
     "@platform/conversation.types": "0.0.73",
     "@platform/graphql": "0.2.79",
     "@platform/react": "0.3.49",
-    "@platform/state": "0.4.41",
+    "@platform/state": "0.7.10",
     "@platform/state.react": "0.4.45",
     "@platform/ui.button": "0.3.29",
     "@platform/ui.editor": "0.2.27",
@@ -37,7 +37,7 @@
     "@platform/graphql.server": "0.1.84",
     "@uiharness/dev": "0.9.10",
     "@uiharness/ui": "0.6.21",
-    "electron": "7.1.8"
+    "electron": "10.1.3"
   },
   "files": [
     "lib"

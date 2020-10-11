@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@platform/react": "0.4.45",
-    "@platform/state": "0.7.9",
+    "@platform/state": "0.7.10",
     "@platform/state.react": "0.4.115",
     "@platform/ui.button": "0.3.80",
     "@platform/ui.icon": "0.0.164",

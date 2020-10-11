@@ -25,7 +25,7 @@
     "@platform/ts": "4.0.0",
     "@platform/ui.dev": "0.0.19",
     "@platform/ui.icon": "0.0.164",
-    "react-icons": "3.10.0"
+    "react-icons": "3.11.0"
   },
   "files": [
     "lib",
