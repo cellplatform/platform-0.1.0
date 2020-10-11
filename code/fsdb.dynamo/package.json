@@ -1,6 +1,6 @@
 {
   "name": "@platform/fsdb.dynamo",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "Standard IDb abstraction over AWS DynamoDB.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -17,8 +17,8 @@
     "@platform/libs": "0.2.2"
   },
   "devDependencies": {
-    "@platform/test": "0.1.15",
-    "@platform/ts": "4.0.0"
+    "@platform/test": "0.1.16",
+    "@platform/ts": "4.0.1"
   },
   "files": [
     "lib",

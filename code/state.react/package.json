@@ -1,6 +1,6 @@
 {
   "name": "@platform/state.react",
-  "version": "0.4.115",
+  "version": "0.4.118",
   "description": "React bindings for @platform/state.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,11 +13,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.4.45",
-    "@platform/state": "0.7.10"
+    "@platform/react": "0.4.48",
+    "@platform/state": "0.7.13"
   },
   "devDependencies": {
-    "@platform/ts": "4.0.0"
+    "@platform/ts": "4.0.1"
   },
   "files": [
     "lib",
