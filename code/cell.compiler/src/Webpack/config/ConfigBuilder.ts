@@ -8,7 +8,7 @@ import {
   t,
   value as valueUtil,
 } from '../common';
-import { wp } from '../config.webpack';
+import { wp } from '../config.wp';
 
 type O = Record<string, unknown>;
 

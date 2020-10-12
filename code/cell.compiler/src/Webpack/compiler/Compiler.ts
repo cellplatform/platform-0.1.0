@@ -2,7 +2,7 @@ import { Compilation as ICompliation, Stats as IStats, webpack } from 'webpack';
 import * as dev from 'webpack-dev-server';
 
 import { t, log } from '../common';
-import { wp } from '../config.webpack';
+import { wp } from '../config.wp';
 import { upload } from './Compiler.upload';
 
 type M = t.WebpackModel | t.ConfigBuilderChain;
