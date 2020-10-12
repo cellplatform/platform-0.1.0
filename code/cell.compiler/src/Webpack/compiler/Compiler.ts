@@ -1,10 +1,10 @@
-import { Compilation as ICompliation, Stats as IStats, webpack } from 'webpack';
+import { Stats as IStats, webpack } from 'webpack';
 import * as dev from 'webpack-dev-server';
-import { logger } from './logger';
 
-import { t, log } from '../common';
+import { log, t } from '../common';
 import { wp } from '../config.wp';
 import { upload } from './Compiler.upload';
+import { logger } from './logger';
 
 type M = t.WebpackModel | t.ConfigBuilderChain;
 
@@ -50,7 +50,11 @@ export const Compiler: t.WebpackCompiler = {
    * Run dev server.
    */
   async dev(input) {
-    const { compiler, model } = toCompiler(input, { mode: 'development' });
+    const model = wp.toModel(input);
+    model.mode = 'development'; // NB: Alwasy run dev-server in "development" mode.
+    model.target = undefined; //   BUG: HMR fails with an explicitly specified target. https://github.com/webpack/webpack-dev-server/issues/2758
+
+    const { compiler } = toCompiler(model);
     const port = model.port;
     let count = 0;
 
@@ -62,15 +66,8 @@ export const Compiler: t.WebpackCompiler = {
     });
 
     const host = 'localhost';
-    const options = {
-      hot: true,
-      host,
-      stats: false,
-    };
-    new dev(compiler, options).listen(port, host, () => {
-      logger.clear();
-      log.info.gray(`👋 starting...`);
-    });
+    const options = { host, hot: true, stats: false };
+    new dev(compiler, options).listen(port, host, () => logger.clear());
   },
 };
 
@@ -78,9 +75,8 @@ export const Compiler: t.WebpackCompiler = {
  * [Helpers]
  */
 
-const toCompiler = (input: M, options: { mode?: t.WpMode } = {}) => {
-  const { mode } = options;
-  const model = mode ? { ...wp.toModel(input), mode } : wp.toModel(input);
+const toCompiler = (input: M) => {
+  const model = wp.toModel(input);
   const config = wp.toWebpackConfig(model);
   const compiler = webpack(config as any);
   return { model, config, compiler };
