@@ -54,32 +54,6 @@ export const Compiler: t.WebpackCompiler = {
     const port = model.port;
     let count = 0;
 
-    const write = {
-      clear() {
-        log.clear();
-        return write;
-      },
-      newline() {
-        log.info();
-        return write;
-      },
-      hr() {
-        log.info.gray('━'.repeat(60));
-        return write;
-      },
-      header() {
-        const url = `http://localhost`;
-        log.info();
-        log.info(`👋 ${log.cyan(url)}:${log.magenta(port)}`);
-        log.info.gray(`   ${model.mode}: ${model.name}`);
-        return write;
-      },
-      stats(input?: IStats | ICompliation) {
-        wp.stats(input).log();
-        return write;
-      },
-    };
-
     compiler.hooks.afterCompile.tap('DevServer', (compilation) => {
       count++;
       logger.clear().newline();
@@ -93,7 +67,10 @@ export const Compiler: t.WebpackCompiler = {
       host,
       stats: false,
     };
-    new dev(compiler, options).listen(port, host, () => write.clear().header());
+    new dev(compiler, options).listen(port, host, () => {
+      logger.clear();
+      log.info.gray(`👋 starting...`);
+    });
   },
 };
 
