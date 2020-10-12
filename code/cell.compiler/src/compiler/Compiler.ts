@@ -119,7 +119,7 @@ export const Compiler: t.WebpackCompiler = {
  * [Helpers]
  */
 
-const toCompiler = (input: M, options: { mode?: t.WebpackMode } = {}) => {
+const toCompiler = (input: M, options: { mode?: t.WpMode } = {}) => {
   const { mode } = options;
   const model = mode ? { ...wp.toModel(input), mode } : wp.toModel(input);
   const config = wp.toWebpackConfig(model);
@@ -130,7 +130,7 @@ const toCompiler = (input: M, options: { mode?: t.WebpackMode } = {}) => {
 const toBundledResponse = (args: {
   model: t.WebpackModel;
   stats: IStats;
-  config: t.WebpackConfig;
+  config: t.WpConfig;
 }): t.WebpackBundleResponse => {
   const { model, config } = args;
   const stats = wp.stats(args.stats);

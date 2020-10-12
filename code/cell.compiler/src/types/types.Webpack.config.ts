@@ -15,12 +15,12 @@ export type ConfigBuilderModel = t.BuilderModel<t.WebpackModel>;
  */
 export type WebpackBuilder = {
   toObject(): t.WebpackModel;
-  toWebpack(): t.WebpackConfig;
+  toWebpack(): t.WpConfig;
   clone(): B;
 
   name(value: string): B;
   title(value: string | undefined): B;
-  mode(value: t.WebpackMode | 'prod' | 'dev'): B;
+  mode(value: t.WpMode | 'prod' | 'dev'): B;
   port(value: number | undefined): B;
   lint(value: boolean | undefined): B;
   entry(path: string): B;
@@ -45,7 +45,7 @@ export type WebpackBuilderShared = {
 export type WebpackModel = {
   name: string;
   title?: string;
-  mode: t.WebpackMode;
+  mode: t.WpMode;
   port: number;
   lint?: boolean;
   entry?: Record<string, string>;

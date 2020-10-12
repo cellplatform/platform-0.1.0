@@ -10,7 +10,7 @@ type M = t.WebpackModel | t.ConfigBuilderChain;
 /**
  * Converts a configuration state into a live webpack object.
  */
-export function toWebpackConfig(input: M): t.WebpackConfig {
+export function toWebpackConfig(input: M): t.WpConfig {
   const model = toModel(input);
   const { mode, port } = model;
   const prod = mode === 'production';
@@ -25,7 +25,7 @@ export function toWebpackConfig(input: M): t.WebpackConfig {
   /**
    * Base configuration.
    */
-  const config: t.WebpackConfig = {
+  const config: t.WpConfig = {
     mode,
     output: { publicPath },
     entry: model.entry,

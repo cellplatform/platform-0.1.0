@@ -1,7 +1,7 @@
 import { t } from '../common';
 
 export const Rules = {
-  default(): t.WebpackConfigRule[] {
+  default(): t.WpConfigRule[] {
     return [
       {
         test: /\.css$/i,

@@ -22,7 +22,7 @@ export type WebpackBundleResponse = {
   elapsed: number;
   stats: t.WebpackStats;
   model: t.WebpackModel;
-  config: t.WebpackConfig;
+  config: t.WpConfig;
   toString(): string;
 };
 

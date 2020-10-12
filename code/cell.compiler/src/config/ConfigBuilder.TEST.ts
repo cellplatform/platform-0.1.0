@@ -103,7 +103,7 @@ describe('ConfigBuilder', () => {
 
     it('mode', () => {
       const { model, builder } = create();
-      const test = (input: any, expected: t.WebpackMode) => {
+      const test = (input: any, expected: t.WpMode) => {
         builder.mode(input);
         expect(model.state.mode).to.eql(expected);
       };
@@ -300,11 +300,11 @@ describe('ConfigBuilder', () => {
       builder.shared((args) => args.add('@platform/libs'));
       expect(model.state.shared).to.eql({ '@platform\\libs': deps['@platform/libs'] }); // NB: key escaped.
 
-      builder.shared((args) => args.add(['@platform/polyfill', 'filesize']));
+      builder.shared((args) => args.add(['@platform/log', 'ts-loader']));
       expect(model.state.shared).to.eql({
         '@platform\\libs': deps['@platform/libs'],
-        '@platform\\polyfill': deps['@platform/polyfill'],
-        filesize: deps['filesize'],
+        '@platform\\log': deps['@platform/log'],
+        'ts-loader': deps['ts-loader'],
       });
     });
 
@@ -319,16 +319,16 @@ describe('ConfigBuilder', () => {
         requiredVersion: deps['@platform/libs'],
       });
 
-      builder.shared((args) => args.singleton(['@platform/cell.types', 'filesize']));
+      builder.shared((args) => args.singleton(['@platform/cell.types', 'ts-loader']));
 
       expect((model.state.shared || {})['@platform\\cell.types']).to.eql({
         singleton: true,
         requiredVersion: deps['@platform/cell.types'],
       });
 
-      expect((model.state.shared || {})['filesize']).to.eql({
+      expect((model.state.shared || {})['ts-loader']).to.eql({
         singleton: true,
-        requiredVersion: deps['filesize'],
+        requiredVersion: deps['ts-loader'],
       });
     });
   });

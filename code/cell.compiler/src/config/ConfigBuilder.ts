@@ -13,7 +13,7 @@ import { wp } from '../config.webpack';
 type O = Record<string, unknown>;
 
 const format = Builder.format;
-const MODES: t.WebpackMode[] = ['development', 'production'];
+const MODES: t.WpMode[] = ['development', 'production'];
 
 /**
  * Configuration builder factory.
@@ -63,7 +63,7 @@ const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
       let value = format.string(args.params[0], {
         trim: true,
         default: defaultMode,
-      }) as t.WebpackMode;
+      }) as t.WpMode;
 
       value = (value as string) === 'prod' ? 'production' : value;
       value = (value as string) === 'dev' ? 'development' : value;
