@@ -1,8 +1,8 @@
 import { rx, id, defaultValue, value, time } from '@platform/util.value';
 export { rx, id, defaultValue, value, time };
 
-import { Module, Builder } from '@platform/cell.module';
-export { Module, Builder };
+import { Builder } from '@platform/cell.module';
+export { Builder };
 
 import { StateObject } from '@platform/state';
 export { StateObject };
