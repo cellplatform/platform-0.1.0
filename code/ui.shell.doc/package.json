@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.shell.doc",
-  "version": "0.0.131",
+  "version": "0.0.132",
   "description": "Document components that operate within ui.shell.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,12 +13,12 @@
   },
   "dependencies": {
     "@platform/libs": "0.2.2",
-    "@platform/react": "0.4.48",
-    "@platform/ui.shell.types": "0.1.113"
+    "@platform/react": "0.4.49",
+    "@platform/ui.shell.types": "0.1.114"
   },
   "devDependencies": {
     "@platform/test": "0.1.16",
-    "@platform/ts": "4.0.1"
+    "@platform/ts": "4.0.2"
   },
   "files": [
     "lib",

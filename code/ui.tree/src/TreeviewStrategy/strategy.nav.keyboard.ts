@@ -4,8 +4,6 @@ import { filter, map } from 'rxjs/operators';
 import { t } from '../common';
 import * as util from './util';
 
-type N = t.ITreeviewNode;
-
 /**
  * Strategy for navigating the tree via the keyboard.
  */

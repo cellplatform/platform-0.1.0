@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from 'electron';
-import * as S from 'electron-window-state';
+import * as S from 'electron-window-state'; // eslint-disable-line
 import { Subject } from 'rxjs';
-import { debounceTime, filter, share, takeUntil, map } from 'rxjs/operators';
+import { debounceTime, filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { defaultValue, t, TAG } from './common';
 import { Screen } from './Screen';

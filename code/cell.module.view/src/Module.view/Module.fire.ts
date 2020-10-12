@@ -12,7 +12,7 @@ type P = t.IViewModuleProps;
  */
 export function fire<T extends P>(bus: B): t.IViewModuleFire<T> {
   return {
-    ...Module.fire<T>(bus),
+    ...Module.fire(bus),
     render: (args: t.ModuleFireRenderArgs<T>) => render(bus, args),
     selection: (args: t.ModuleFireSelectionArgs) => selection(bus, args),
   };

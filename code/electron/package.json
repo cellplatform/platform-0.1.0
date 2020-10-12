@@ -1,7 +1,7 @@
 {
   "name": "@platform/electron",
   "description": "Common utilities for working with electron.",
-  "version": "0.7.96",
+  "version": "0.7.97",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
@@ -18,11 +18,11 @@
     "rebuild": "yarn platform.electron rebuild"
   },
   "dependencies": {
-    "@platform/fs": "0.5.21",
+    "@platform/fs": "0.5.24",
     "@platform/libs": "0.2.2",
-    "@platform/log": "0.1.30",
-    "@platform/react": "0.4.48",
-    "@platform/types": "0.5.7",
+    "@platform/log": "0.1.31",
+    "@platform/react": "0.4.49",
+    "@platform/types": "0.5.8",
     "@types/app-root-path": "1.2.4",
     "app-root-path": "3.0.0",
     "electron-log": "4.2.4",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.1.16",
-    "@platform/ts": "4.0.1",
+    "@platform/ts": "4.0.2",
     "@types/minimist": "1.2.0",
     "electron": "10.1.3"
   },

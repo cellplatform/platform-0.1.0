@@ -15,6 +15,11 @@ const DEFAULT = {
   DISABLED_OPACITY: 0.2,
 };
 
+export const toInitialWidth = (props: ITextInputProps) => {
+  const { width, minWidth, autoSize } = props;
+  return autoSize ? minWidth : width;
+};
+
 export type ITextInputProps = t.ITextInputFocusAction &
   t.ITextInputEvents &
   IInputValue &
@@ -389,11 +394,6 @@ export const toMinWidth = (props: ITextInputProps): number => {
   }
 
   return -1;
-};
-
-export const toInitialWidth = (props: ITextInputProps) => {
-  const { width, minWidth, autoSize } = props;
-  return autoSize ? minWidth : width;
 };
 
 export const placeholderStyle = (props: ITextInputProps) => {

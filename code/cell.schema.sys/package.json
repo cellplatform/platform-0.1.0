@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.schema.sys",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "description": "Type schema for application bundles.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,16 +14,16 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.client": "0.2.160",
-    "@platform/cell.schema": "0.5.0",
-    "@platform/cell.types": "0.5.0",
-    "@platform/cell.typesystem": "0.0.118",
+    "@platform/cell.client": "0.2.161",
+    "@platform/cell.schema": "0.5.1",
+    "@platform/cell.types": "0.5.1",
+    "@platform/cell.typesystem": "0.0.119",
     "@platform/libs": "0.2.2",
     "semver": "7.3.2"
   },
   "devDependencies": {
     "@platform/test": "0.1.16",
-    "@platform/ts": "4.0.1",
+    "@platform/ts": "4.0.2",
     "@types/semver": "7.3.4"
   },
   "files": [

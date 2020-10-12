@@ -19,7 +19,7 @@ export function init(args: {
   /**
    * Retrieves a DB proxy at the given directory.
    */
-  const factory: DbFactory = conn => {
+  const factory: DbFactory = (conn) => {
     if (!CACHE[conn]) {
       const db = (CACHE[conn] = DbRenderer.create({ ipc, conn: conn }));
       db.dispose$.pipe(take(1)).subscribe(() => delete CACHE[conn]);

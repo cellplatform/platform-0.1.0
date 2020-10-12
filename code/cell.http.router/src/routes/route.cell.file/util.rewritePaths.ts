@@ -39,7 +39,7 @@ export async function rewriteHtmlPaths(args: {
   }
   const dir = trimRelativePathPrefix(htmlLink.dir);
 
-  const updateLink = (args: { attr: string; value: string; el: Cheerio }) => {
+  const updateLink = (args: { attr: string; value: string; el: cheerio.Cheerio }) => {
     if (util.isHttp(args.value)) {
       return; // NB: Only relative paths need to be updated.
     }
@@ -71,13 +71,13 @@ export async function rewriteHtmlPaths(args: {
  * [Helpers]
  */
 
-function find($: CheerioStatic, selector: string) {
-  const res: Cheerio[] = [];
+function find($: cheerio.Root, selector: string) {
+  const res: cheerio.Cheerio[] = [];
   $(selector).each((i, el) => res.push($(el)));
   return res.filter((e) => e.length > 0);
 }
 
-function findAttr($: CheerioStatic, attr: string) {
+function findAttr($: cheerio.Root, attr: string) {
   return find($, `*[${attr}]`).map((el) => {
     const value = el.attr(attr) || '';
     return { el, attr, value };

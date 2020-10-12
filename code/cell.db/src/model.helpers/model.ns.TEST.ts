@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { t, expect, getTestDb, value } from '../test';
 import { models } from '..';
 import {

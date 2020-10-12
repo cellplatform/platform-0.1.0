@@ -8,7 +8,6 @@ import { fire } from './Module.fire';
 
 type B = t.EventBus<any>;
 type P = t.IViewModuleProps;
-type N = t.IModuleNode<P>;
 
 export function create<T extends P>(args: t.ViewModuleArgs<T>): t.IModule<T> {
   const { bus } = args;

@@ -9,7 +9,7 @@ export type ISplitPanelProps = {
   actions: t.IStoreEvent[];
   actionsTotal?: number;
   maxActions?: number;
-  data: object;
+  data: Record<string, unknown>;
   name?: string;
   expandPaths?: string | string[];
   style?: CssValue;

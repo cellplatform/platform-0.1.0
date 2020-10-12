@@ -67,11 +67,13 @@ describe('http', () => {
       const client = http.create({ headers: { foo: 'one', bar: 'abc' } });
       client.before$.subscribe((e) => e.respond({ status: 200 })); // Fake.
 
-      const res = await client.get('http://localhost/foo', { headers: { foo: 'two', new: '🌳' } });
+      const res = await client.get('http://localhost/foo', {
+        headers: { foo: 'two', new: 'hello' },
+      });
       const headers = res.headers;
       expect(headers.foo).to.eql('two');
       expect(headers.bar).to.eql('abc');
-      expect(headers.new).to.eql('🌳');
+      expect(headers.new).to.eql('hello');
     });
   });
 

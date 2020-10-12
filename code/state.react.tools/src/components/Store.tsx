@@ -31,10 +31,10 @@ export class Store extends React.PureComponent<IStoreProps, IStoreState> {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const store$ = this.store.changed$.pipe(takeUntil(this.unmounted$));
 
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
     store$.subscribe(() => this.forceUpdate());
 
-    store$.subscribe(e => {
+    store$.subscribe((e) => {
       const total = (this.state.total || 0) + 1;
       let events = [...(this.state.events || []), e.event];
       const max = this.maxActions;

@@ -8,14 +8,14 @@
  * Manage:
  *  - https://account.mapbox.com/access-tokens
  */
-
 import '../../styles';
-const mapboxgl = require('mapbox-gl/dist/mapbox-gl.js'); // eslint-disable-line
 
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+
 import { css, CssValue, t } from '../../common';
+
+const mapboxgl = require('mapbox-gl/dist/mapbox-gl.js'); // eslint-disable-line
 
 const DEFAULT = {
   MAP_STYLE: 'mapbox://styles/mapbox/streets-v11',
@@ -28,11 +28,8 @@ export type IMapProps = {
   zoom?: number;
   style?: CssValue;
 };
-export type IMapState = {};
 
-export class Map extends React.PureComponent<IMapProps, IMapState> {
-  public state: IMapState = {};
-  private state$ = new Subject<Partial<IMapState>>();
+export class Map extends React.PureComponent<IMapProps> {
   private unmounted$ = new Subject();
 
   private map: mapboxgl.Map;
@@ -42,11 +39,6 @@ export class Map extends React.PureComponent<IMapProps, IMapState> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
-    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
-  }
-
   public componentDidMount() {
     const { mapStyle = DEFAULT.MAP_STYLE, accessToken, center, zoom = 0 } = this.props;
     mapboxgl.accessToken = accessToken;

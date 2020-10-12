@@ -20,7 +20,7 @@
     "listr": "0.14.3"
   },
   "devDependencies": {
-    "@platform/fs": "0.5.21",
+    "@platform/fs": "0.5.24",
     "@platform/test": "0.1.16",
     "@platform/ts.libs": "4.0.1",
     "@types/ansi-regex": "5.0.0"

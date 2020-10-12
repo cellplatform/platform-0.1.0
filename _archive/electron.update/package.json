@@ -26,8 +26,6 @@
   },
   "devDependencies": {
     "@types/minimist": "1.2.0",
-    "@uiharness/dev": "0.5.15",
-    "@uiharness/ui": "0.5.16",
     "minimist": "1.2.0",
     "electron": "10.1.3"
   },

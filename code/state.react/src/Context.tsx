@@ -48,7 +48,7 @@ export function createProvider<P = Record<string, unknown>>(
   ctx?: P,
 ): React.FunctionComponent {
   const context: t.IStateContext = {
-    getStore: () => store as t.IStoreContext<any, any>,
+    getStore: () => store as any,
     ...(ctx || {}), // Optional props to extend the context with.
   };
   return (props: { children?: React.ReactNode } = {}) => (

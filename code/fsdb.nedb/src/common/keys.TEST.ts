@@ -20,7 +20,7 @@ describe('keys', () => {
   });
 
   it('encodeObjectKeys => decodeObjectKeys', () => {
-    const test = (input: object, output: object) => {
+    const test = (input: any, output: any) => {
       const res = {
         encoded: keys.encodeObjectKeys(input),
         decoded: keys.decodeObjectKeys(keys.encodeObjectKeys(input)),

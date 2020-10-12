@@ -35,7 +35,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
 
       // Monitor events.
       db.dispose$.pipe(take(1)).subscribe(() => delete CACHE[path]);
-      db.events$.subscribe(event => events$.next({ conn, event }));
+      db.events$.subscribe((event) => events$.next({ conn, event }));
       log.info.gray(`${log.green(kind)}: ${path}`);
     }
     return CACHE[path];
@@ -44,7 +44,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   /**
    * Broadcast all DB events to renderers.
    */
-  events$.subscribe(payload => {
+  events$.subscribe((payload) => {
     // console.log('payload', payload);
     ipc.send('DB/fired', payload);
   });
@@ -52,7 +52,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   /**
    * GET
    */
-  ipc.handle<t.IDbIpcGetEvent, t.IDbIpcGetResponse>('DB/get', async e => {
+  ipc.handle<t.IDbIpcGetEvent, t.IDbIpcGetResponse>('DB/get', async (e) => {
     try {
       const db = factory(e.payload.conn);
       const values = await db.getMany(e.payload.keys);
@@ -63,7 +63,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     }
   });
 
-  ipc.handle<t.IDbIpcFindEvent, t.IDbIpcFindResponse>('DB/find', async e => {
+  ipc.handle<t.IDbIpcFindEvent, t.IDbIpcFindResponse>('DB/find', async (e) => {
     try {
       const db = factory(e.payload.conn);
       const result = await db.find(e.payload.query);
@@ -77,7 +77,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   /**
    * PUT
    */
-  ipc.handle<t.IDbIpcPutEvent, t.IDbIpcPutResponse>('DB/put', async e => {
+  ipc.handle<t.IDbIpcPutEvent, t.IDbIpcPutResponse>('DB/put', async (e) => {
     try {
       const db = factory(e.payload.conn);
       const values = await db.putMany(e.payload.items);
@@ -91,7 +91,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   /**
    * DELETE
    */
-  ipc.handle<t.IDbIpcDeleteEvent, t.IDbIpcDeleteResponse>('DB/delete', async e => {
+  ipc.handle<t.IDbIpcDeleteEvent, t.IDbIpcDeleteResponse>('DB/delete', async (e) => {
     try {
       const db = factory(e.payload.conn);
       const values = await db.deleteMany(e.payload.keys);
@@ -105,7 +105,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   /**
    * Open folder.
    */
-  ipc.on<t.IDbIpcOpenFolderEvent>('DB/open/folder').subscribe(async e => {
+  ipc.on<t.IDbIpcOpenFolderEvent>('DB/open/folder').subscribe(async (e) => {
     let dir = fs.resolve(parseDbPath(e.payload.conn).path);
     dir = (await fs.is.dir(dir)) ? dir : fs.dirname(dir);
     shell.openPath(dir);

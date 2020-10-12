@@ -17,7 +17,7 @@ export function clean<T>(input: T | undefined, options: { deep?: boolean } = {})
   };
 
   if (deep && input && typeof input === 'object') {
-    value.object.walk(input, obj => {
+    value.object.walk(input, (obj) => {
       clean(obj);
     });
   }

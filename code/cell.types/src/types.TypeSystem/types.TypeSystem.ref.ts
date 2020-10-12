@@ -5,7 +5,10 @@ import { t } from '../common';
  * Generic (see [TypedSheet] for more):
  *    <T> = TypeIndex = { [TypeName]:Type }
  */
-export type ITypedSheetRef<T, K extends keyof T> = {
+export type ITypedSheetRef<
+  T,
+  K extends keyof T // eslint-disable-line
+> = {
   typename: string;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
 };

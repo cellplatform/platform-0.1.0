@@ -15,7 +15,7 @@ export type ISettingsClient<T extends SettingsJson = any> = {
   keys: () => Promise<(keyof T)[]>;
   get: <K extends keyof T>(key: K, defaultValue?: T[K]) => Promise<T[K]>;
   put: <K extends keyof T>(key: K, value: T[K]) => Promise<T[K]>;
-  delete: <K extends keyof T>(...keys: (keyof T)[]) => Promise<void>;
+  delete: <K extends keyof T>(...keys: (keyof T)[]) => Promise<void>; // eslint-disable-line
   clear: () => Promise<void>;
   openInEditor: () => ISettingsClient<T>;
   openFolder: () => ISettingsClient<T>;
@@ -100,7 +100,9 @@ export type ISettingsSetValuesEvent = {
   type: '@platform/SETTINGS/set';
   payload: { values: ISettingsKeyValue[]; action: SettingsSetAction };
 };
-export type ISettingsSetValuesResponse<T extends SettingsJson = any> = {
+export type ISettingsSetValuesResponse<
+  T extends SettingsJson = any // eslint-disable-line
+> = {
   ok: boolean;
   error?: string;
 };

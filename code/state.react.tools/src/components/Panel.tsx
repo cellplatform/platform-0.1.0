@@ -7,7 +7,7 @@ import { State } from './State'; // eslint-disable-line
 export type IPanelProps = {
   total: number;
   actions: t.IStoreEvent[];
-  data: object;
+  data: Record<string, unknown>;
   maxActions?: number;
   name?: string;
   expandPaths?: string | string[];

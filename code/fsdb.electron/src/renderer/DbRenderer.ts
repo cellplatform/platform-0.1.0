@@ -31,9 +31,9 @@ export class DbRenderer implements t.IDb {
       .on<t.IDbIpcDbFiredEvent>('DB/fired')
       .pipe(
         takeUntil(this.dispose$),
-        filter(e => e.payload.conn === conn),
+        filter((e) => e.payload.conn === conn),
       )
-      .subscribe(e => this._events$.next(e.payload.event));
+      .subscribe((e) => this._events$.next(e.payload.event));
   }
 
   public dispose() {

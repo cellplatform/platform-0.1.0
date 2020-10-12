@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars, react/display-name */
 
 import * as React from 'react';
 import { Subject } from 'rxjs';
@@ -57,24 +57,24 @@ class ImageView extends React.PureComponent<IImageViewProps, IImageViewState> {
       } else {
         // Load is in progress - bubble events.
         const events$ = loading.events$.pipe(takeUntil(this.unmounted$));
-        events$.subscribe(e => this.fire(e));
+        events$.subscribe((e) => this.fire(e));
       }
     }
   }
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
 
     // Bubble events.
     if (this.props.events$) {
-      events$.subscribe(e => (this.props.events$ as Subject<t.ImageEvent>).next(e));
+      events$.subscribe((e) => (this.props.events$ as Subject<t.ImageEvent>).next(e));
     }
 
     events$
       // Hide the background loader when fully loaded.
-      .pipe(filter(e => !e.payload.isLoading))
-      .subscribe(e => {
+      .pipe(filter((e) => !e.payload.isLoading))
+      .subscribe((e) => {
         this.loaded();
         if (this.props.onLoaded) {
           this.props.onLoaded(e.payload);

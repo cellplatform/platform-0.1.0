@@ -8,7 +8,7 @@ type P = t.IModuleProps;
 /**
  * Fire recipes through the event-bus.
  */
-export function fire<T extends P>(bus: B): t.IModuleFire<T> {
+export function fire(bus: B): t.IModuleFire {
   return {
     register: (module: t.IModule, parent?: t.NodeIdentifier) => register(bus, module, parent),
     request: <T extends P>(id: string | t.NodeIdentifier) => request<T>(bus, id),
