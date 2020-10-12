@@ -63,11 +63,9 @@ describe('zip', () => {
     const events: IZipProgress[] = [];
     await zip.save('./tmp/foo.zip', { onProgress: (e) => events.push(e) });
 
-    expect(events.length).to.eql(8);
-
-    expect(events[0].isComplete).to.eql(false);
+    expect(events[0].isComplete).to.eql(true);
     expect(events[0].processed).to.eql(1);
-    expect(events[0].percent).to.be.lessThan(0.25);
+    expect(events[0].percent).to.eql(1);
 
     expect(events[7].isComplete).to.eql(true);
     expect(events[7].processed).to.eql(8);

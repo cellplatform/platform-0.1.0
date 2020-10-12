@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { Column } from '..';
 import { expect, getTestDb, t } from '../../test';
 

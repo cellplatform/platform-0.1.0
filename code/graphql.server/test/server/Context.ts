@@ -30,9 +30,12 @@ export class Context {
   /**
    * Determine if the user is authorized via the given policies.
    */
-  public async authorize(args: { policy: auth.IAuthPolicies; variables?: object }) {
+  public async authorize(args: {
+    policy: auth.IAuthPolicies;
+    variables?: Record<string, unknown>;
+  }) {
     const { policy, variables } = args;
     const user = await this.getUser();
-    return auth.authorize({ policy, user, variables, getError: msg => new ForbiddenError(msg) });
+    return auth.authorize({ policy, user, variables, getError: (msg) => new ForbiddenError(msg) });
   }
 }

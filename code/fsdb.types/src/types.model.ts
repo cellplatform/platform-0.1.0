@@ -56,8 +56,8 @@ export type IModelMethods<
 export type IModelSaveResponse<
   P extends Record<string, unknown>,
   D extends P,
-  L extends IModelLinksSchema,
-  C extends IModelChildrenSchema = any
+  L extends IModelLinksSchema, // eslint-disable-line
+  C extends IModelChildrenSchema = any // eslint-disable-line
 > = {
   saved: boolean;
   isChanged: boolean;

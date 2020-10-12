@@ -158,12 +158,12 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
   }
 
   public ensureIndex(options: t.IIndexOptions) {
-    return new Promise<{}>((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.store.ensureIndex(options, (err: Error | null) => {
         if (err) {
           reject(err);
         } else {
-          resolve({});
+          resolve();
         }
       });
     });

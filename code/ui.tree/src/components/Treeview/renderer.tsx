@@ -1,8 +1,6 @@
 import { t } from '../../common';
 import { produce } from 'immer';
 
-type N = t.ITreeviewNode;
-
 /**
  * Executes factory methods for rendering assets within the tree.
  *

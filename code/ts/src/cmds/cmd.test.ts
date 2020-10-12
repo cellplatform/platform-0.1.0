@@ -14,18 +14,6 @@ export async function test(
     return result.fail(`A module root with [package.json] could not be found.`);
   }
 
-  const modules = fs.join(dir, 'node_modules');
-  const mocha = fs.join(modules, 'mocha/bin/mocha');
-
-  if (!(await fs.pathExists(mocha))) {
-    log.info();
-    log.info('No test runner installed.');
-    log.info('Run:');
-    log.info(`     yarn add -D @platform/test`);
-    log.info();
-    return result.success();
-  }
-
   let flags = '';
   flags += `--require ts-node/register \\`;
   if (watch) {
@@ -47,7 +35,7 @@ export async function test(
     export TS_NODE_FAST=true
     export TS_NODE_COMPILER_OPTIONS='{ \"module\": \"commonjs\" }'
     
-    ${mocha} \\
+    mocha \\
       ${flags}
       '${pattern}' \\
   `;

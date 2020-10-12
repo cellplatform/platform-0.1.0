@@ -162,7 +162,10 @@ export type BuilderListFactoryArgs<M extends O, A extends O> = BuilderChildFacto
   name: string;
 };
 
-export type BuilderChildFactoryArgs<M extends O, A extends O> = {
+export type BuilderChildFactoryArgs<
+  M extends O,
+  A extends O // eslint-disable-line
+> = {
   params: any[];
   path: string;
   model: BuilderModel<M>;

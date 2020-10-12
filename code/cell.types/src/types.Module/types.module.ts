@@ -25,7 +25,7 @@ export type Module = {
   Identity: t.TreeIdentity;
   Query: t.TreeQuery;
 
-  fire<T extends P>(bus: B): IModuleFire<T>;
+  fire(bus: B): IModuleFire;
 
   events<T extends P>(
     subject: t.Observable<t.Event>,
@@ -90,7 +90,7 @@ export type ModuleFilterEventArgs<T extends E = E> = ModuleFilterArgs & {
 /**
  * Event Bus (fire).
  */
-export type IModuleFire<T extends P> = {
+export type IModuleFire = {
   register(module: t.IModule<any>, parent?: t.NodeIdentifier): t.ModuleRegistration;
   request<T extends P>(id: string | t.NodeIdentifier): t.IModule<T> | undefined;
   find<T extends P>(args?: t.IModuleFindArgs): t.IModule<T>[];

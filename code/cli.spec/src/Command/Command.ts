@@ -6,7 +6,10 @@ import { invoker } from './invoke';
 import * as tree from './tree';
 import { CommandParam, ICommandParamArgs } from '../CommandParam';
 
-type ICommandArgs<P extends t.ICommandProps = any, A extends t.CommandArgsOptions = any> = {
+type ICommandArgs<
+  P extends t.ICommandProps = any, // eslint-disable-line
+  A extends t.CommandArgsOptions = any // eslint-disable-line
+> = {
   name: string;
   description: string;
   handler: t.CommandHandler;

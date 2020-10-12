@@ -1,21 +1,20 @@
 {
   "name": "@platform/fs",
-  "version": "0.5.20",
+  "version": "0.5.24",
   "description": "POSIX style file-system tools.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "test": "sh node_modules/@platform/test/test.sh $@",
-    "tdd": "yarn test --watch",
-    "lint": "sh node_modules/@platform/ts.libs/lint.sh $@",
-    "build": "sh node_modules/@platform/ts.libs/build.sh $@",
+    "test": "sh ../../node_modules/@platform/test/test.sh $@",
+    "lint": "sh ../../node_modules/@platform/ts.libs/lint.sh $@",
+    "build": "sh ../../node_modules/@platform/ts.libs/build.sh $@",
     "prepare": "yarn build && yarn lint && yarn test"
   },
   "dependencies": {
-    "@platform/fs.types": "0.0.15",
-    "@types/fs-extra": "9.0.1",
+    "@platform/fs.types": "0.0.16",
+    "@types/fs-extra": "9.0.2",
     "@types/js-yaml": "3.12.5",
-    "archiver": "4.0.2",
+    "archiver": "5.0.2",
     "dotenv": "8.2.0",
     "extract-zip": "2.0.1",
     "filesize": "6.1.0",
@@ -25,9 +24,9 @@
     "minimatch": "3.0.4"
   },
   "devDependencies": {
-    "@platform/test": "0.1.15",
-    "@platform/ts.libs": "4.0.0",
-    "@types/archiver": "3.1.0",
+    "@platform/test": "0.1.16",
+    "@platform/ts.libs": "4.0.1",
+    "@types/archiver": "3.1.1",
     "@types/dotenv": "8.2.0",
     "@types/extract-zip": "1.6.2",
     "@types/filesize": "5.0.0",

@@ -1,14 +1,13 @@
 {
   "name": "@platform/exec",
-  "version": "0.2.62",
+  "version": "0.2.63",
   "description": "Tools for executing commands in child_process.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "test": "sh node_modules/@platform/test/test.sh $@",
-    "tdd": "yarn test --watch",
-    "lint": "sh node_modules/@platform/ts.libs/lint.sh $@",
-    "build": "sh node_modules/@platform/ts.libs/build.sh $@",
+    "test": "sh ../../node_modules/@platform/test/test.sh $@",
+    "lint": "sh ../../node_modules/@platform/ts.libs/lint.sh $@",
+    "build": "sh ../../node_modules/@platform/ts.libs/build.sh $@",
     "prepare": "yarn build && yarn lint && yarn test",
     "example": "node lib/example/examples",
     "tmp": "node lib/example/tmp"
@@ -21,9 +20,9 @@
     "listr": "0.14.3"
   },
   "devDependencies": {
-    "@platform/fs": "0.5.20",
-    "@platform/test": "0.1.15",
-    "@platform/ts.libs": "4.0.0",
+    "@platform/fs": "0.5.24",
+    "@platform/test": "0.1.16",
+    "@platform/ts.libs": "4.0.1",
     "@types/ansi-regex": "5.0.0"
   },
   "files": [

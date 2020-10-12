@@ -90,7 +90,7 @@ describe('rx', () => {
     });
   });
 
-  describe.only('bus', () => {
+  describe('bus', () => {
     type MyEvent = IFooEvent | IBarEvent;
     type IFooEvent = { type: 'Event/foo'; payload: { count?: number } };
     type IBarEvent = { type: 'Event/bar'; payload: { count?: number } };

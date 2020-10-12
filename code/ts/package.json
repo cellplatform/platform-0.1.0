@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts",
-  "version": "4.0.0",
+  "version": "4.0.2",
   "description": "TypesScript build, prepare and publish toolchain.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -21,17 +21,16 @@
     "example": "node lib/example/bin",
     "e": "yarn example $@",
     "example-pub": "node bin publish --outDir tmp/dist",
-    "clean": "sh sh/clean.sh",
-    "example-copy": "cp -R lib example/node_modules/@platform/ts"
+    "clean": "sh sh/clean.sh"
   },
   "dependencies": {
-    "@platform/exec": "0.2.62",
-    "@platform/fs": "0.5.20",
+    "@platform/exec": "0.2.63",
+    "@platform/fs": "0.5.24",
     "@platform/libs": "0.2.2",
-    "@platform/ts.libs": "4.0.0"
+    "@platform/ts.libs": "4.0.1"
   },
   "devDependencies": {
-    "@platform/test": "0.1.15"
+    "@platform/test": "0.1.16"
   },
   "files": [
     "lib",

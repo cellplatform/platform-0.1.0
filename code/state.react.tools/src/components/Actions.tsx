@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 import { css, CssValue, t, value } from '../common';
 import { Action } from './Action'; // eslint-disable-line
@@ -11,26 +9,8 @@ export type IActionsProps = {
   direction?: 'ASC' | 'DESC';
   style?: CssValue;
 };
-export type IActionsState = {};
 
-export class Actions extends React.PureComponent<IActionsProps, IActionsState> {
-  public state: IActionsState = {};
-  private state$ = new Subject<Partial<IActionsState>>();
-  private unmounted$ = new Subject();
-
-  /**
-   * [Lifecycle]
-   */
-  public componentDidMount() {
-    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
-  }
-
+export class Actions extends React.PureComponent<IActionsProps> {
   /**
    * [Render]
    */

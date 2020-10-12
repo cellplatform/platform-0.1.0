@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "core-js": "3.6.5",
-    "regenerator-runtime": "0.13.5"
+    "regenerator-runtime": "0.13.7"
   },
   "files": [
     "polyfill.js"

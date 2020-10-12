@@ -65,7 +65,7 @@ export type ModuleFilterViewArgs<V extends S = S, R extends S = S> = t.ModuleFil
 /**
  * Event Bus (fire).
  */
-export type IViewModuleFire<T extends P> = t.IModuleFire<T> & {
+export type IViewModuleFire<T extends P> = t.IModuleFire & {
   render: ModuleFireRender<T>;
   selection: ModuleFireSelection;
 };

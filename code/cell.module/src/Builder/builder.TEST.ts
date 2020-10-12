@@ -249,7 +249,6 @@ describe('Builder', () => {
       builder.dispose$.subscribe(() => count++);
       builder.dispose();
       builder.dispose();
-      expect(builder.isDisposed).to.eql(true);
       expect(count).to.eql(1);
     });
 

@@ -52,7 +52,7 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
   }
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
 
     if (this.props.events$) {

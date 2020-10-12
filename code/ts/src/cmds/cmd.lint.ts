@@ -2,7 +2,7 @@ import { exec, fs, getLog, IResult, paths, result } from '../common';
 
 const CONFIG = `
 module.exports = {
-  extends: './node_modules/@platform/ts.libs/lint',
+  extends: '../../node_modules/@platform/ts.libs/lint',
   rules: {},
 };    
 `.substring(1);
@@ -16,7 +16,7 @@ export async function lint(args: { dir?: string; silent?: boolean } = {}): Promi
 
   // Rename obsolete configuration file.
   const tslint = 'tslint.json';
-  if (await fs.exists(fs.join(cwd, tslint))) {
+  if (await fs.pathExists(fs.join(cwd, tslint))) {
     fs.rename(fs.join(cwd, tslint), fs.join(cwd, '.tslint.json.OLD'));
   }
 
@@ -29,11 +29,6 @@ export async function lint(args: { dir?: string; silent?: boolean } = {}): Promi
   }
 
   const log = getLog(silent);
-  const modules = fs.join(dir, 'node_modules');
-  const path = {
-    prettier: fs.join(modules, 'prettier/bin-prettier'),
-    lint: fs.join(modules, 'eslint/bin/eslint'),
-  };
 
   try {
     log.info();
@@ -41,11 +36,11 @@ export async function lint(args: { dir?: string; silent?: boolean } = {}): Promi
       [
         {
           title: 'prettier',
-          cmd: `node ${path.prettier} --write 'src/**/*.ts{,x}'`,
+          cmd: `prettier --write 'src/**/*.ts{,x}'`,
         },
         {
           title: 'lint',
-          cmd: `node ${path.lint} 'src/**/*.ts{,x}' --fix`,
+          cmd: `eslint 'src/**/*.ts{,x}' --fix`,
         },
       ],
       {

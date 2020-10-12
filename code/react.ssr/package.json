@@ -1,6 +1,6 @@
 {
   "name": "@platform/react.ssr",
-  "version": "1.1.162",
+  "version": "1.1.166",
   "description": "A lightweight SSR (server-side-rendering) system for react apps bundled with ParcelJS and hosted on S3.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -19,29 +19,29 @@
     "deploy": "cd src.sample/server && yarn deploy"
   },
   "dependencies": {
-    "@platform/cli": "0.5.47",
-    "@platform/exec": "0.2.62",
-    "@platform/fs": "0.5.20",
-    "@platform/fs.s3": "0.7.23",
-    "@platform/http": "0.12.28",
+    "@platform/cli": "0.5.51",
+    "@platform/exec": "0.2.63",
+    "@platform/fs": "0.5.24",
+    "@platform/fs.s3": "0.7.27",
+    "@platform/http": "0.12.32",
     "@platform/libs": "0.2.2",
-    "@platform/log": "0.1.29",
-    "@platform/micro": "0.14.48",
-    "@platform/npm": "0.3.10",
-    "@platform/react": "0.4.45",
-    "bowser": "2.10.0",
+    "@platform/log": "0.1.31",
+    "@platform/micro": "0.14.52",
+    "@platform/npm": "0.3.14",
+    "@platform/react": "0.4.49",
+    "bowser": "2.11.0",
     "cheerio": "1.0.0-rc.3",
     "listr": "0.14.3",
-    "path-to-regexp": "6.1.0",
+    "path-to-regexp": "6.2.0",
     "semver": "7.3.2"
   },
   "devDependencies": {
     "@platform/polyfill": "0.0.1",
-    "@platform/test": "0.1.15",
-    "@platform/ts": "4.0.0",
+    "@platform/test": "0.1.16",
+    "@platform/ts": "4.0.2",
     "@types/bowser": "1.1.1",
-    "@types/cheerio": "0.22.21",
-    "@types/semver": "7.3.1"
+    "@types/cheerio": "0.22.22",
+    "@types/semver": "7.3.4"
   },
   "files": [
     "lib",

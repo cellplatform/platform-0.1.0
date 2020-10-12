@@ -2,9 +2,16 @@
   "name": "platform",
   "version": "0.0.0",
   "scripts": {
-    "test": "sh sh/test.sh"
+    "nuke": "sh script.sh/nuke.sh"
   },
+  "devDependencies": {
+    "@platform/ts": "^4.0.1",
+    "ts-node": "^9.0.0"
+  },
+  "workspaces": [
+    "code/*",
+    "code/cell.modules/packgages/*"
+  ],
   "license": "MIT",
-  "files": [],
   "private": true
 }

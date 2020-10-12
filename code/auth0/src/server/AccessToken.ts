@@ -23,7 +23,7 @@ const toCacheKey = (args: IAccessTokenArgs) => {
   return str.hashCode(text);
 };
 
-const CACHE: { [key: string]: { token: AccessToken; expire$: Subject<{}> } } = {};
+const CACHE: { [key: string]: { token: AccessToken; expire$: Subject<void> } } = {};
 
 /**
  * Manages an access token.
@@ -50,7 +50,7 @@ export class AccessToken implements t.IAccessToken {
       const maxAge = 5 * MIN;
       const timeout = SEC * 30;
 
-      const expire$ = new Subject<{}>();
+      const expire$ = new Subject<void>();
       CACHE[key] = { token: result, expire$ };
 
       const removeFromCache = () => {
@@ -178,7 +178,7 @@ export class AccessToken implements t.IAccessToken {
       return this._.profile;
     }
 
-    const url = this.aud.find(url => url.endsWith('/userinfo'));
+    const url = this.aud.find((url) => url.endsWith('/userinfo'));
     if (!url) {
       throw new Error(`Cannot get user-info. The token did not contain a /userinfo URL.`);
     }

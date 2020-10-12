@@ -6,7 +6,7 @@ import { ObjectView } from './primitives'; // eslint-disable-line
 export type IStateProps = {
   name?: string;
   expandPaths?: string | string[];
-  data?: object;
+  data?: Record<string, unknown>;
   style?: CssValue;
 };
 

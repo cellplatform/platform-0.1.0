@@ -159,7 +159,7 @@ export class Route {
   }
 }
 
-function sizeAttr(bytes: number, el: Cheerio) {
+function sizeAttr(bytes: number, el: cheerio.Cheerio) {
   if (el.length > 0) {
     el.attr('data-size', fs.size.toString(bytes, { round: 0 }));
   }

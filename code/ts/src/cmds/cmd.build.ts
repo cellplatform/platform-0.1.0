@@ -85,10 +85,10 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
 
   // Prepare the command.
   const tmpDir = toTmpDir(as);
-  const tsc = 'node_modules/typescript/bin/tsc';
+  const tsc = 'tsc';
   let cmd = `cd ${fs.resolve(cwd)}\n`;
 
-  cmd += `node ${fs.join(tsc)}`;
+  cmd += tsc;
   cmd += ` --outDir ${fs.resolve(watch ? outDir : tmpDir)}`;
   cmd = watch ? `${cmd} --watch` : cmd;
   cmd = tsconfig ? `${cmd} --project ${tsconfig}` : cmd;

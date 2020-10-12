@@ -6,10 +6,9 @@
     "test": "echo no-op"
   },
   "dependencies": {
-    "@types/ramda": "0.27.11",
-    "ramda": "0.27.0",
-    "rxjs": "6.6.0",
-    "tslib": "2.0.0"
+    "@types/ramda": "0.27.23",
+    "ramda": "0.27.1",
+    "rxjs": "6.6.3"
   },
   "files": [],
   "license": "MIT"

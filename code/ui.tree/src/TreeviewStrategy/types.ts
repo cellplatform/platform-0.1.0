@@ -1,7 +1,6 @@
 import { t } from '../common';
 
 type M = ITreeviewStrategyMutation;
-type D = t.IDisposable;
 type E = t.TreeviewEvent;
 type F = t.FireEvent<E>;
 

@@ -18,6 +18,26 @@ type IActivityFlags<F> = {
   remove(part: F): void;
 };
 
+const flags = <F>(): IActivityFlags<F> => {
+  let flags: F[] = [];
+  return {
+    currently(...input: F[]) {
+      return input.length === 0 && input.length > 0
+        ? true
+        : input.some((flag) => flags.includes(flag));
+    },
+    add(flag: F) {
+      flags = [...flags, flag];
+    },
+    remove(flag: F) {
+      const index = flags.indexOf(flag);
+      if (index > -1) {
+        flags = [...flags.slice(0, index), ...flags.slice(index + 1)];
+      }
+    },
+  };
+};
+
 /**
  * Manages syncing a DB and Grid.
  */
@@ -516,27 +536,3 @@ export class Sync implements t.IDisposable {
     return util.cell.value.isEmptyCellValue(value) || this.isDefaultValue({ kind, value });
   };
 }
-
-/**
- * [Helpers]
- */
-
-const flags = <F>(): IActivityFlags<F> => {
-  let flags: F[] = [];
-  return {
-    currently(...input: F[]) {
-      return input.length === 0 && input.length > 0
-        ? true
-        : input.some((flag) => flags.includes(flag));
-    },
-    add(flag: F) {
-      flags = [...flags, flag];
-    },
-    remove(flag: F) {
-      const index = flags.indexOf(flag);
-      if (index > -1) {
-        flags = [...flags.slice(0, index), ...flags.slice(index + 1)];
-      }
-    },
-  };
-};
