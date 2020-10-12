@@ -1,13 +1,16 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 import { t, ModuleFederationPlugin, unescapeKeyPaths } from '../common';
 import * as HtmlWebPackPlugin from 'html-webpack-plugin';
-import * as ESLintPlugin from 'eslint-webpack-plugin';
+
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 type P = NonNullable<t.WpConfig['plugins']>;
 type IArgs = { model: t.WebpackModel; prod: boolean };
 
 export const Plugins = {
   init(args: IArgs): P {
-    const plugins = [Plugins.html(args), Plugins.linter(args), Plugins.federation(args)];
+    const plugins = [Plugins.html(args), Plugins.federation(args), Plugins.typeChecker(args)];
     return plugins.filter((plugin) => Boolean(plugin));
   },
 
@@ -21,17 +24,8 @@ export const Plugins = {
   },
 
   /**
-   * Plugin: Linter
-   */
-  linter(args: IArgs) {
-    return args.model.lint !== false && (args.model.lint === true || args.prod)
-      ? // @ts-ignore
-        new ESLintPlugin({ files: ['src'], extensions: ['ts', 'tsx'] })
-      : undefined;
-  },
-
-  /**
    * Plugin: Module Federation
+   *         https://webpack.js.org/concepts/module-federation/
    */
   federation(args: IArgs) {
     const { model } = args;
@@ -42,6 +36,32 @@ export const Plugins = {
       remotes: unescape(model.remotes),
       exposes: unescape(model.exposes),
       shared: unescape(model.shared),
+    });
+  },
+
+  /**
+   * Plugin: ForkTsCheckerWebpackPlugin
+   *         https://github.com/TypeStrong/fork-ts-checker-webpack-plugin
+   */
+  typeChecker(args: IArgs) {
+    return new ForkTsCheckerWebpackPlugin({
+      eslint: { files: 'src/**/*.ts{,x}' },
+      typescript: {
+        /**
+         * https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#typescript-options
+         */
+        mode: 'write-references',
+      },
+      formatter: {
+        /**
+         * https://babeljs.io/docs/en/babel-code-frame#options
+         */
+        type: 'codeframe',
+        options: {
+          linesAbove: 2,
+          linesBelow: 3,
+        },
+      },
     });
   },
 };

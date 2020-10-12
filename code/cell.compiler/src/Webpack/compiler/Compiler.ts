@@ -1,5 +1,6 @@
 import { Compilation as ICompliation, Stats as IStats, webpack } from 'webpack';
 import * as dev from 'webpack-dev-server';
+import { logger } from './logger';
 
 import { t, log } from '../common';
 import { wp } from '../config.wp';
@@ -37,34 +38,11 @@ export const Compiler: t.WebpackCompiler = {
   async watch(input) {
     const { compiler, model } = toCompiler(input);
     let count = 0;
-
-    const write = {
-      clear() {
-        log.clear();
-        return write;
-      },
-      newline() {
-        log.info();
-        return write;
-      },
-      hr() {
-        log.info.gray('━'.repeat(60));
-        return write;
-      },
-      watching() {
-        log.info.gray(`Watching (${count})`);
-        log.info(model);
-        return write;
-      },
-      stats(input?: IStats) {
-        wp.stats(input).log();
-        return write;
-      },
-    };
-
     compiler.watch({}, (err, stats) => {
       count++;
-      write.clear().newline().watching().newline().hr().stats(stats);
+      logger.clear().newline();
+      log.info.gray(`Watching (${count})`);
+      logger.model(model, 2).newline().hr().stats(stats);
     });
   },
 
@@ -74,6 +52,7 @@ export const Compiler: t.WebpackCompiler = {
   async dev(input) {
     const { compiler, model } = toCompiler(input, { mode: 'development' });
     const port = model.port;
+    let count = 0;
 
     const write = {
       clear() {
@@ -102,14 +81,17 @@ export const Compiler: t.WebpackCompiler = {
     };
 
     compiler.hooks.afterCompile.tap('DevServer', (compilation) => {
-      write.clear().header().newline().hr();
+      count++;
+      logger.clear().newline();
+      log.info.gray(`DevServer (${count})`);
+      logger.model(model, 2).newline().hr().stats(compilation);
     });
 
     const host = 'localhost';
     const options = {
       hot: true,
       host,
-      stats: { chunks: false, modules: false, colors: true },
+      stats: false,
     };
     new dev(compiler, options).listen(port, host, () => write.clear().header());
   },

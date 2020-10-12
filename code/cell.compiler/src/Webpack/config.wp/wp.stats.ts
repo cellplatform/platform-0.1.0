@@ -14,7 +14,7 @@ export const stats = (input?: IStats | ICompliation): t.WebpackStats => {
     elapsed: stats ? stats.endTime - stats.startTime : -1,
 
     log() {
-      res.assets.log();
+      res.assets.log({ indent: 2 });
       log.info();
       res.errors.log();
     },
@@ -46,17 +46,14 @@ export const stats = (input?: IStats | ICompliation): t.WebpackStats => {
           const table = log.table({ border: false });
           const indent = options.indent ? ' '.repeat(options.indent) : '';
           list.forEach((item) => {
-            table.add([`${indent}${item.filename}`, '  ', log.green(item.size)]);
+            table.add([`${indent}${item.filename}`, '    ', log.green(item.size)]);
           });
           table.add(['', '', log.cyan(filesize(assets.bytes))]);
 
-          log.info.green('output');
+          log.info.gray('output');
           table.log();
-          log.info.gray(elapsed);
           log.info.gray(res.output.path);
-          if (res.output.publicPath) {
-            log.info.gray(res.output.publicPath);
-          }
+          log.info.gray(`in ${log.yellow(elapsed)}`);
         },
       };
       return assets;

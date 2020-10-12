@@ -9,6 +9,7 @@ import {
   value as valueUtil,
 } from '../common';
 import { wp } from '../config.wp';
+import { parse as parseUrl } from 'url';
 
 type O = Record<string, unknown>;
 
@@ -73,6 +74,26 @@ const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
       }
 
       draft.mode = value;
+    });
+  },
+
+  host(args) {
+    args.model.change((draft) => {
+      const defaultHost = DEFAULT.CONFIG.host;
+      let value = format.string(args.params[0], { default: defaultHost, trim: true });
+
+      if (value !== undefined) {
+        const url = parseUrl(value);
+        if (!url.protocol) {
+          const host = (url.hostname || url.pathname || '').replace(/\/*$/, '');
+          const protocol = host === 'localhost' ? 'http:' : 'https:';
+          value = `${protocol}//${host}`;
+        } else {
+          value = `${url.protocol}//${url.hostname}`;
+        }
+      }
+
+      draft.host = value || defaultHost;
     });
   },
 

@@ -11,7 +11,7 @@ export type WebpackStats = {
     bytes: number;
     sortBySize(): WebpackAsset[];
     sortByName(): WebpackAsset[];
-    log(): void;
+    log(options?: { indent?: number }): void;
   };
   errors: {
     list: WebpackError[];

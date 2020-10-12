@@ -144,6 +144,27 @@ describe('ConfigBuilder', () => {
       test(undefined, DEFAULT_PORT);
     });
 
+    it('host', () => {
+      const { builder, model } = create();
+      const DEFAULT_HOST = DEFAULT.CONFIG.host;
+      expect(builder.toObject().host).to.eql(DEFAULT_HOST);
+
+      const test = (value: any, expected: string | undefined) => {
+        builder.host(value);
+        expect(model.state.host).to.eql(expected);
+      };
+
+      test('https://a.foo.com', 'https://a.foo.com');
+      test('https://foo.com/', 'https://foo.com');
+      test('foo.com', 'https://foo.com');
+      test('foo.com', 'https://foo.com');
+      test('localhost', 'http://localhost');
+      test('localhost///', 'http://localhost');
+      test('http://localhost', 'http://localhost');
+      test(undefined, DEFAULT_HOST);
+      test('   ', DEFAULT_HOST);
+    });
+
     it('lint', () => {
       const { builder, model } = create();
       expect(builder.toObject().lint).to.eql(undefined);
@@ -360,6 +381,23 @@ describe('ConfigBuilder', () => {
       expect(res.mode).to.eql('development');
       expect(res.output?.publicPath).to.eql('http://localhost:1234/');
       expect(res.devServer?.port).to.eql(1234);
+    });
+
+    it('host (localhost)', () => {
+      const { builder } = create();
+      const config = builder.host('   ').port(1234);
+      const res = config.toWebpack();
+      expect(res.output?.publicPath).to.eql('http://localhost:1234/');
+    });
+
+    it('host (domain)', () => {
+      const { builder } = create();
+
+      const config1 = builder.host('foo.com').port(80).toWebpack();
+      const config2 = builder.host('foo.com').port(1234).toWebpack();
+
+      expect(config1.output?.publicPath).to.eql('https://foo.com/');
+      expect(config2.output?.publicPath).to.eql('https://foo.com:1234/');
     });
 
     describe('ModuleFederationPlugin', () => {

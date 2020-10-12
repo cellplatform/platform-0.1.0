@@ -4,6 +4,7 @@
   "compilerOptions": {
     "importHelpers": true,
     "outDir": "lib",
-    "noUnusedLocals": false
+    "noUnusedLocals": false,
+    "sourceMap": true
   }
 }

@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t, DEFAULT } from '../common';
 import { Rules } from './wp.rules';
 import { Plugins } from './wp.plugins';
 
@@ -14,13 +14,7 @@ export function toWebpackConfig(input: M): t.WpConfig {
   const model = toModel(input);
   const { mode, port } = model;
   const prod = mode === 'production';
-  const publicPath = `http://localhost:${port}/`;
-
-  /**
-   * TODO 🐷
-   *  - Check tree-shaking (??)
-   *
-   */
+  const publicPath = toPublicPath(model);
 
   /**
    * Base configuration.
@@ -29,7 +23,7 @@ export function toWebpackConfig(input: M): t.WpConfig {
     mode,
     output: { publicPath },
     entry: model.entry,
-    resolve: { extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'] },
+    resolve: { extensions: ['.tsx', '.ts', '.js'] },
     devtool: prod ? undefined : 'eval-cheap-module-source-map',
     devServer: prod ? undefined : { port, hot: true },
     module: { rules: Rules.default() },
@@ -48,3 +42,10 @@ export const toModel = (input: M) => {
     ? (input as any).toObject()
     : input) as t.WebpackModel;
 };
+
+export function toPublicPath(model: t.WebpackModel) {
+  const { host = DEFAULT.CONFIG.host, port = DEFAULT.CONFIG.port } = model;
+  let url = host;
+  url = port !== 80 ? `${url}:${port}` : url;
+  return `${url}/`;
+}

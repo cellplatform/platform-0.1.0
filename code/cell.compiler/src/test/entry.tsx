@@ -17,9 +17,13 @@ console.log('entry', 'hello world.');
   const f = import('foo/Header');
 
   f.then((e) => {
-    console.log('e', e.foo());
+    // console.log('e', e.foo());
   });
 })();
+
+// type F = { count: number };
+// const f: F = {};
+// const foo = 123;
 
 /**
  * Insert some UI
