@@ -11,7 +11,7 @@
     "@platform/test": "0.1.16",
     "@platform/ts": "4.0.2"
   },
-  "workspaces": [
+  "workspaces___": [
     "packages/*"
   ],
   "license": "MIT",

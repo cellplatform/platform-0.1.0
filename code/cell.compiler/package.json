@@ -1,29 +1,53 @@
 {
   "name": "@platform/cell.compiler",
   "version": "0.0.22",
-  "description": "Code compilation tools for CellOS.",
+  "description": "Code compilation and bundling.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
+    "start": "yarn dev",
+    "dev": "ts-node -T src/test/script/dev",
     "test": "ts test",
-    "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "clean": "rm -rf dist",
+    "serve": "cd dist && serve --listen 1234",
+    "bundle": "yarn clean && ts-node -T src/test/script/bundle",
+    "watch": "ts-node -T src/test/script/watch",
+    "upload": "ts-node -T src/test/script/upload"
   },
   "dependencies": {
+    "@platform/cell.module": "0.0.30",
     "@platform/cell.types": "0.5.1",
-    "@platform/libs": "0.2.2"
+    "@platform/libs": "0.2.2",
+    "@platform/log": "0.1.31",
+    "@babel/core": "7.11.6",
+    "@babel/plugin-proposal-class-properties": "7.10.4",
+    "@babel/preset-env": "7.11.5",
+    "@babel/preset-react": "7.10.4",
+    "@babel/preset-typescript": "7.10.4",
+    "@types/jsonpath": "0.2.0",
+    "@types/webpack-dev-server": "3.11.0",
+    "babel-loader": "8.1.0",
+    "css-loader": "4.3.0",
+    "eslint-webpack-plugin": "2.1.0",
+    "html-webpack-plugin": "4.5.0",
+    "style-loader": "2.0.0",
+    "ts-loader": "8.0.4",
+    "webpack": "5.0.0",
+    "webpack-dev-server": "3.11.0"
   },
   "devDependencies": {
     "@platform/test": "0.1.16",
-    "@platform/ts": "4.0.2"
+    "@platform/ts": "4.0.2",
+    "@types/react": "16.9.51",
+    "@types/react-dom": "16.9.8"
   },
   "files": [
     "lib",
     "!lib/test",
-    "!*.TEST.{js, mjs, d.ts}",
-    "!*.INTEGRATION.{js, mjs, d.ts}"
+    "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"
 }
