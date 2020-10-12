@@ -13,7 +13,7 @@
     "prepare": "ts prepare",
     "clean": "rm -rf dist",
     "serve": "cd dist && serve --listen 1234",
-    "bundle": "yarn clean && ts-node -T src/test/script/bundle",
+    "bundle": "ts-node -T src/test/script/bundle",
     "watch": "ts-node -T src/test/script/watch",
     "upload": "ts-node -T src/test/script/upload"
   },

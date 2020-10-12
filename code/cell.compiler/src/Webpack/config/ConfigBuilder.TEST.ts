@@ -165,6 +165,26 @@ describe('ConfigBuilder', () => {
       test('   ', DEFAULT_HOST);
     });
 
+    it('target', () => {
+      const { model, builder } = create();
+      expect(model.state.target).to.eql(['web']);
+
+      const test = (input: any, expected: any) => {
+        builder.target(input);
+        expect(model.state.target).to.eql(expected);
+      };
+
+      test(false, false);
+      test(undefined, undefined);
+      test('  web  ', ['web']);
+      test(['web  '], ['web']);
+      test(['web', '  node'], ['web', 'node']);
+      test(['webworker', false], ['webworker']);
+      test('  ', undefined);
+      test(null, undefined);
+      test({}, undefined);
+    });
+
     it('lint', () => {
       const { builder, model } = create();
       expect(builder.toObject().lint).to.eql(undefined);
@@ -398,6 +418,17 @@ describe('ConfigBuilder', () => {
 
       expect(config1.output?.publicPath).to.eql('https://foo.com/');
       expect(config2.output?.publicPath).to.eql('https://foo.com:1234/');
+    });
+
+    it('target', () => {
+      const { builder } = create();
+      expect(builder.toWebpack().target).to.eql(['web']);
+
+      builder.target('web');
+      expect(builder.toWebpack().target).to.eql(['web']);
+
+      builder.target(['web', 'node12.18']);
+      expect(builder.toWebpack().target).to.eql(['web', 'node12.18']);
     });
 
     describe('ModuleFederationPlugin', () => {

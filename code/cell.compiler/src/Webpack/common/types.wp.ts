@@ -4,6 +4,7 @@
  */
 export type WpConfig = {
   mode?: WpMode;
+  target?: WpTarget;
   entry?: string | Record<string, string>;
   output?: WpConfigOutput;
   resolve?: WpConfigResolve;
@@ -11,7 +12,23 @@ export type WpConfig = {
   devServer?: WpConfigDevServer;
   module?: WpConfigModule;
   plugins?: any[];
+  cache?: false | WpCache;
 };
+
+/**
+ * https://webpack.js.org/configuration/other-options/#cache
+ */
+export type WpCache = {
+  type: 'filesystem' | 'memory';
+  cacheDirectory?: string;
+  cacheLocation?: string;
+  buildDependencies?: Record<string, [string]>;
+};
+
+/**
+ * https://webpack.js.org/configuration/target
+ */
+export type WpTarget = string | string[] | false;
 
 /**
  * https://webpack.js.org/configuration/output

@@ -44,18 +44,22 @@ export const Plugins = {
    *         https://github.com/TypeStrong/fork-ts-checker-webpack-plugin
    */
   typeChecker(args: IArgs) {
+    const { model } = args;
     return new ForkTsCheckerWebpackPlugin({
-      eslint: { files: 'src/**/*.ts{,x}' },
-      typescript: {
-        /**
-         * https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#typescript-options
-         */
-        mode: 'write-references',
-      },
+      /**
+       * https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#eslint
+       */
+      eslint: model.lint === false ? undefined : { files: 'src/**/*.ts{,x}' },
+
+      /**
+       * https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#typescript-options
+       */
+      typescript: { mode: 'write-references' },
+
+      /**
+       * https://babeljs.io/docs/en/babel-code-frame#options
+       */
       formatter: {
-        /**
-         * https://babeljs.io/docs/en/babel-code-frame#options
-         */
         type: 'codeframe',
         options: {
           linesAbove: 2,

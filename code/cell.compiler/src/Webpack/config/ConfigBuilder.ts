@@ -77,6 +77,20 @@ const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
     });
   },
 
+  target(args) {
+    args.model.change((draft) => {
+      const input = args.params[0];
+      if (input === false || input === undefined) {
+        draft.target = input;
+      } else {
+        const list = (Array.isArray(input) ? input : [input])
+          .map((item) => format.string(item, { trim: true }))
+          .filter((item) => Boolean(item)) as string[];
+        draft.target = list.length === 0 ? undefined : list;
+      }
+    });
+  },
+
   host(args) {
     args.model.change((draft) => {
       const defaultHost = DEFAULT.CONFIG.host;

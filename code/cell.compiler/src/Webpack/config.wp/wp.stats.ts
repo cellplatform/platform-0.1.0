@@ -70,7 +70,7 @@ export const stats = (input?: IStats | ICompliation): t.WebpackStats => {
         list,
         log() {
           list.forEach((err, i) => {
-            log.info.gray(`${log.yellow('ERROR')} (${i + 1} of ${list.length})`);
+            log.info.gray(`${log.red('ERROR')} (${log.white(i + 1)} of ${list.length})`);
             log.info(err.message);
             log.info();
           });

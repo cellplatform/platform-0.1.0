@@ -2,7 +2,7 @@ import { log } from '../common';
 import { configuration, Webpack } from '../config';
 
 (async () => {
-  const config = configuration().mode('prod');
+  const config = configuration().mode('prod').target('node').lint(false);
 
   log.info();
   log.info.gray('bundling');

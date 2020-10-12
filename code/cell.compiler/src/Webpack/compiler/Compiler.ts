@@ -105,7 +105,7 @@ const toCompiler = (input: M, options: { mode?: t.WpMode } = {}) => {
   const { mode } = options;
   const model = mode ? { ...wp.toModel(input), mode } : wp.toModel(input);
   const config = wp.toWebpackConfig(model);
-  const compiler = webpack(config);
+  const compiler = webpack(config as any);
   return { model, config, compiler };
 };
 

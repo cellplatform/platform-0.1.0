@@ -23,11 +23,13 @@ export function toWebpackConfig(input: M): t.WpConfig {
     mode,
     output: { publicPath },
     entry: model.entry,
+    target: model.target,
     resolve: { extensions: ['.tsx', '.ts', '.js'] },
     devtool: prod ? undefined : 'eval-cheap-module-source-map',
     devServer: prod ? undefined : { port, hot: true },
     module: { rules: Rules.default() },
     plugins: Plugins.init({ model, prod }),
+    cache: { type: 'filesystem' },
   };
 
   // Finish up.

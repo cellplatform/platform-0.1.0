@@ -5,5 +5,6 @@ const CONFIG: t.WebpackModel = {
   mode: 'production',
   port: 3000,
   host: 'http://localhost',
+  target: ['web'],
 };
 export const DEFAULT = { CONFIG };
