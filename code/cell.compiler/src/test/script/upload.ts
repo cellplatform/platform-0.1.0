@@ -1,4 +1,4 @@
-import { fs, t, Uri } from '../../common';
+import { fs, t, Uri } from '../common';
 import { configuration, Webpack } from '../config';
 
 (async () => {

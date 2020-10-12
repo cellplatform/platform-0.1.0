@@ -1,4 +1,4 @@
-import { log } from '../../common';
+import { log } from '../common';
 import { configuration, Webpack } from '../config';
 
 (async () => {

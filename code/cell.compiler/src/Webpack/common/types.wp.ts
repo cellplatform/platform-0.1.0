@@ -1,11 +1,9 @@
-import { t } from '../common';
-
 /**
  * A [WebPack] configuration object.
  * https://webpack.js.org/configuration
  */
 export type WpConfig = {
-  mode?: t.WpMode;
+  mode?: WpMode;
   entry?: string | Record<string, string>;
   output?: WpConfigOutput;
   resolve?: WpConfigResolve;

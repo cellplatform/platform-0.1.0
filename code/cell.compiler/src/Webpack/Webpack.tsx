@@ -1,6 +1,6 @@
-import { t } from '../common';
-import { Compiler } from '../compiler';
-import { ConfigBuilder } from '../config';
+import { t } from './common';
+import { Compiler } from './compiler';
+import { ConfigBuilder } from './config';
 
 export const Webpack: t.Webpack = {
   config: ConfigBuilder,
