@@ -1,8 +1,3 @@
-#
-# package.json (scripts)
-# 
-#     "test": "sh ./node_modules/@platform/test/sh/test.sh",
-# 
 export NODE_ENV=test
 export TS_NODE_TRANSPILE_ONLY=true
 export TS_NODE_FAST=true

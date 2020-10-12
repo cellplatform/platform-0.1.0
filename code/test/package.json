@@ -5,10 +5,10 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "test": "sh script.sh/test.sh $@",
+    "test": "sh test.sh $@",
     "tdd": "yarn test --watch",
     "lint": "sh script.sh/lint.sh $@",
-    "build": "sh node_modules/@platform/ts.libs/build.sh $@",
+    "build": "sh script.sh/build.sh $@",
     "prepare": "yarn build && yarn lint && yarn test"
   },
   "dependencies": {

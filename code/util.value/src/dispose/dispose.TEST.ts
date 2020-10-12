@@ -6,13 +6,8 @@ import { dispose } from '.';
 describe('IDisposable', () => {
   it('create', () => {
     const obj = dispose.create();
-    expect(obj.isDisposed).to.eql(false);
-  });
-
-  it('dispose()', () => {
-    const obj = dispose.create();
-    obj.dispose();
-    expect(obj.isDisposed).to.eql(true);
+    expect(typeof obj.dispose).to.eql('function');
+    expect(typeof obj.dispose$.subscribe).to.eql('function');
   });
 
   it('event: dispose$', () => {
@@ -29,7 +24,6 @@ describe('IDisposable', () => {
 
   it('until', () => {
     const obj1 = dispose.create();
-    expect(obj1.isDisposed).to.eql(false);
 
     const $ = new Subject();
     const obj2 = dispose.until(obj1, $);
@@ -37,14 +31,11 @@ describe('IDisposable', () => {
     let count = 0;
     obj1.dispose$.subscribe(() => count++);
 
-    expect(obj1.isDisposed).to.eql(false);
-    expect(obj2.isDisposed).to.eql(false);
     expect(obj1).to.equal(obj2);
 
     $.next();
     $.next();
     $.next();
     expect(count).to.eql(1);
-    expect(obj1.isDisposed).to.eql(true);
   });
 });

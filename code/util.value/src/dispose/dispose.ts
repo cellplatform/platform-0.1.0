@@ -11,9 +11,6 @@ export const dispose = {
     const dispose$ = new Subject<void>();
     const disposable = {
       dispose$: dispose$.pipe(share()),
-      get isDisposed() {
-        return dispose$.isStopped;
-      },
       dispose: () => {
         dispose$.next();
         dispose$.complete();
