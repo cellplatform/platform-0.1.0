@@ -1,4 +1,4 @@
-import * as t from './types';
+import * as t from '../../common/types';
 
 const CONFIG: t.WebpackModel = {
   name: '',
@@ -7,4 +7,5 @@ const CONFIG: t.WebpackModel = {
   host: 'http://localhost',
   target: ['web'],
 };
+
 export const DEFAULT = { CONFIG };

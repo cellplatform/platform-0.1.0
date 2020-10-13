@@ -1,21 +1,25 @@
 {
   "name": "@platform/cell.compiler",
-  "version": "0.0.22",
+  "version": "0.1.0",
   "description": "Code compilation and bundling.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
+  "bin": {
+    "cell.compiler": "lib/bin/index.js"
+  },
   "scripts": {
     "start": "yarn dev",
     "dev": "ts-node -T src/test/script/dev",
     "test": "ts test",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build --no-esm",
     "prepare": "ts prepare",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist && rm -rf node_modules/.cache",
     "serve": "cd dist && serve --listen 1234",
     "bundle": "ts-node -T src/test/script/bundle",
     "watch": "ts-node -T src/test/script/watch",
-    "upload": "ts-node -T src/test/script/upload"
+    "upload": "ts-node -T src/test/script/upload",
+    "info": "ts-node -T src/test/script/info"
   },
   "dependencies": {
     "@babel/core": "7.11.6",
@@ -33,6 +37,7 @@
     "css-loader": "4.3.0",
     "fork-ts-checker-webpack-plugin": "5.2.0",
     "html-webpack-plugin": "4.5.0",
+    "minimist": "^1.2.5",
     "style-loader": "2.0.0",
     "ts-loader": "8.0.4",
     "webpack": "5.0.0",
@@ -41,6 +46,7 @@
   "devDependencies": {
     "@platform/test": "0.1.16",
     "@platform/ts": "4.0.2",
+    "@types/minimist": "^1.2.0",
     "@types/react": "16.9.51",
     "@types/react-dom": "16.9.8"
   },

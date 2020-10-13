@@ -17,7 +17,6 @@
     "nuke": "cd app && nuke"
   },
   "devDependencies": {
-    "@platform/cell.compile.web": "0.0.147",
     "@platform/cli.prompt": "0.3.26",
     "@platform/ts": "4.0.2"
   },

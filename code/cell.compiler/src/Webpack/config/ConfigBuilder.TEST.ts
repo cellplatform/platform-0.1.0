@@ -1,12 +1,5 @@
 import { ConfigBuilder } from '.';
-import {
-  DEFAULT,
-  expect,
-  StateObject,
-  t,
-  ModuleFederationPlugin,
-  escapeKeyPaths,
-} from '../../test';
+import { DEFAULT, escapeKeyPaths, expect, StateObject, t, fs } from '../../test';
 
 const pkg = require('../../../package.json') as t.INpmPackageJson; // eslint-disable-line
 
@@ -23,12 +16,12 @@ describe('ConfigBuilder', () => {
       expect(model.state).to.eql({ ...DEFAULT.CONFIG, name: 'foo' });
     });
 
-    it('builder (with "name")', () => {
+    it('builder (from "name")', () => {
       const builder = ConfigBuilder.create('  foo  ');
       expect(builder.toObject()).to.eql({ ...DEFAULT.CONFIG, name: 'foo' });
     });
 
-    it('builder (with model)', () => {
+    it('builder (from {model} StateObject)', () => {
       const model = StateObject.create<t.WebpackModel>({
         ...DEFAULT.CONFIG,
         name: 'foo',
@@ -41,6 +34,23 @@ describe('ConfigBuilder', () => {
       expect(obj.mode).to.eql('development');
     });
 
+    it('builder (from {model} object)', () => {
+      const model = StateObject.create<t.WebpackModel>({
+        ...DEFAULT.CONFIG,
+        name: 'foo',
+        mode: 'development',
+      });
+
+      const builder = ConfigBuilder.create(model.state);
+
+      const obj = builder.toObject();
+      expect(obj.mode).to.eql('development');
+      expect(obj.name).to.eql('foo');
+
+      builder.name('hello');
+      expect(builder.toObject().name).to.eql('hello');
+    });
+
     it('throw: unnamed', () => {
       const test = (name: any) => {
         const fn = () => ConfigBuilder.create(name);
@@ -50,7 +60,9 @@ describe('ConfigBuilder', () => {
       test('  ');
       test(undefined);
     });
+  });
 
+  describe('methods', () => {
     it('clone', () => {
       const { builder } = create();
       const clone = builder.clone();
@@ -61,6 +73,16 @@ describe('ConfigBuilder', () => {
 
       expect(builder.toObject().title).to.eql('A');
       expect(clone.toObject().title).to.eql('B');
+    });
+
+    it('toWebpack', () => {
+      const { builder } = create();
+      const config = builder.port(1234).mode('dev');
+      const res = config.toWebpack();
+
+      expect(res.mode).to.eql('development');
+      expect(res.output?.publicPath).to.eql('http://localhost:1234/');
+      expect(res.devServer?.port).to.eql(1234);
     });
   });
 
@@ -159,10 +181,24 @@ describe('ConfigBuilder', () => {
       test('foo.com', 'https://foo.com');
       test('foo.com', 'https://foo.com');
       test('localhost', 'http://localhost');
+      test('https://localhost', 'https://localhost'); // NB: Does not change protocol, but this would typically be an invalid "localhost"
+
+      test('localhost:5000', 'http://localhost');
+      test('http://localhost:5000', 'http://localhost');
+
       test('localhost///', 'http://localhost');
       test('http://localhost', 'http://localhost');
       test(undefined, DEFAULT_HOST);
       test('   ', DEFAULT_HOST);
+    });
+
+    it('host: assigns port', () => {
+      const { builder } = create();
+      expect(builder.toObject().port).to.eql(DEFAULT.CONFIG.port);
+
+      builder.host('localhost:5000');
+      expect(builder.toObject().host).to.eql('http://localhost'); // NB: trims from host, and assigns as explicit port.
+      expect(builder.toObject().port).to.eql(5000);
     });
 
     it('target', () => {
@@ -180,6 +216,23 @@ describe('ConfigBuilder', () => {
       test(['web  '], ['web']);
       test(['web', '  node'], ['web', 'node']);
       test(['webworker', false], ['webworker']);
+      test('  ', undefined);
+      test(null, undefined);
+      test({}, undefined);
+    });
+
+    it('dir', () => {
+      const { model, builder } = create();
+      expect(model.state.dir).to.eql(undefined);
+
+      const test = (input: any, expected: any) => {
+        builder.dir(input);
+        expect(model.state.dir).to.eql(expected);
+      };
+
+      test('foo', fs.resolve('foo'));
+      test(' foo ', fs.resolve('foo'));
+      test('', undefined);
       test('  ', undefined);
       test(null, undefined);
       test({}, undefined);
@@ -323,7 +376,7 @@ describe('ConfigBuilder', () => {
       let args: t.WebpackBuilderShared | undefined;
       builder.shared((e) => (args = e));
       expect(args?.cwd).to.eql(process.cwd());
-      expect(args?.deps).to.eql(pkg.dependencies);
+      expect(args?.dependencies).to.eql(pkg.dependencies);
     });
 
     it('adds {dependencies} object (cumulative)', () => {
@@ -331,7 +384,7 @@ describe('ConfigBuilder', () => {
 
       const escaped = escapeKeyPaths(pkg.dependencies || {});
 
-      builder.shared((args) => args.add(args.deps));
+      builder.shared((args) => args.add(args.dependencies));
       expect(model.state.shared).to.eql(escaped);
 
       builder.shared((args) => args.add({ foo: '1.2.3' }).add({ bar: '0.0.0' }));
@@ -360,7 +413,7 @@ describe('ConfigBuilder', () => {
       const { builder, model } = create();
       const deps = pkg.dependencies || {};
 
-      builder.shared((args) => args.add(args.deps).singleton('@platform/libs'));
+      builder.shared((args) => args.add(args.dependencies).singleton('@platform/libs'));
 
       expect((model.state.shared || {})['@platform\\libs']).to.eql({
         singleton: true,
@@ -377,76 +430,6 @@ describe('ConfigBuilder', () => {
       expect((model.state.shared || {})['ts-loader']).to.eql({
         singleton: true,
         requiredVersion: deps['ts-loader'],
-      });
-    });
-  });
-
-  describe('toWebpack', () => {
-    it('"production"', () => {
-      const { builder } = create();
-      const config = builder;
-      const res = config.toWebpack();
-
-      expect(res.mode).to.eql('production');
-      expect(res.output?.publicPath).to.eql('http://localhost:3000/');
-      expect(res.devServer).to.eql(undefined);
-      expect(res.devtool).to.eql(undefined);
-    });
-
-    it('"development" (and other custom values)', () => {
-      const { builder } = create();
-      const config = builder.port(1234).mode('dev');
-      const res = config.toWebpack();
-
-      expect(res.mode).to.eql('development');
-      expect(res.output?.publicPath).to.eql('http://localhost:1234/');
-      expect(res.devServer?.port).to.eql(1234);
-    });
-
-    it('host (localhost)', () => {
-      const { builder } = create();
-      const config = builder.host('   ').port(1234);
-      const res = config.toWebpack();
-      expect(res.output?.publicPath).to.eql('http://localhost:1234/');
-    });
-
-    it('host (domain)', () => {
-      const { builder } = create();
-
-      const config1 = builder.host('foo.com').port(80).toWebpack();
-      const config2 = builder.host('foo.com').port(1234).toWebpack();
-
-      expect(config1.output?.publicPath).to.eql('https://foo.com/');
-      expect(config2.output?.publicPath).to.eql('https://foo.com:1234/');
-    });
-
-    it('target', () => {
-      const { builder } = create();
-      expect(builder.toWebpack().target).to.eql(['web']);
-
-      builder.target('web');
-      expect(builder.toWebpack().target).to.eql(['web']);
-
-      builder.target(['web', 'node12.18']);
-      expect(builder.toWebpack().target).to.eql(['web', 'node12.18']);
-    });
-
-    describe('ModuleFederationPlugin', () => {
-      it('un-escapes keys in: exposes/remotes/shared', () => {
-        const { builder } = create();
-        const config = builder
-          .shared((args) => args.add('@platform/libs'))
-          .remote('foo/bar', 'path')
-          .expose('foo/bar', 'path');
-        const res = config.toWebpack();
-
-        const mf = (res.plugins || []).find((item) => item instanceof ModuleFederationPlugin);
-        expect(mf).to.not.eql(undefined);
-
-        const options = mf?._options || {};
-        expect(Object.keys(options.remotes || {})).to.include('foo/bar');
-        expect(Object.keys(options.exposes || {})).to.include('foo/bar');
-        expect(Object.keys(options.shared || {})).to.include('@platform/libs');
       });
     });
   });

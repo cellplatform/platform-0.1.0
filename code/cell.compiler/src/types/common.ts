@@ -1,2 +1,2 @@
-import * as t from '../Webpack/common/types';
+import * as t from '../common/types';
 export { t };

@@ -3,6 +3,7 @@
  * https://webpack.js.org/configuration
  */
 export type WpConfig = {
+  name?: string;
   mode?: WpMode;
   target?: WpTarget;
   entry?: string | Record<string, string>;

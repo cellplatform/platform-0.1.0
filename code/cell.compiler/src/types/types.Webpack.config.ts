@@ -4,7 +4,7 @@ type B = t.BuilderChain<WebpackBuilder>;
 
 export type ConfigBuilder = {
   model(name: string): ConfigBuilderModel;
-  create(input: string | ConfigBuilderModel): ConfigBuilderChain;
+  create(input: string | ConfigBuilderModel | t.WebpackModel): ConfigBuilderChain;
 };
 
 export type ConfigBuilderChain = t.BuilderChain<WebpackBuilder>;
@@ -24,6 +24,7 @@ export type WebpackBuilder = {
   port(value: number | undefined): B;
   host(value: string | undefined): B;
   target(value: t.WpTarget | undefined): B;
+  dir(value: string | undefined): B;
   lint(value: boolean | undefined): B;
   entry(path: string): B;
   entry(key: string, path?: string | null): B;
@@ -35,8 +36,8 @@ export type WebpackBuilder = {
 export type WebpackBuilderSharedFunc = (fn: WebpackBuilderShared) => any;
 export type WebpackBuilderShared = {
   cwd: string;
-  deps: Record<string, string>;
-  add(deps: Record<string, string>): WebpackBuilderShared;
+  dependencies: Record<string, string>;
+  add(dependencies: Record<string, string>): WebpackBuilderShared;
   add(name: string | string[]): WebpackBuilderShared;
   singleton(name: string | string[]): WebpackBuilderShared;
 };
@@ -51,6 +52,7 @@ export type WebpackModel = {
   port: number;
   host?: string;
   target?: t.WpTarget;
+  dir?: string;
   lint?: boolean;
   entry?: Record<string, string>;
   exposes?: Record<string, string>;

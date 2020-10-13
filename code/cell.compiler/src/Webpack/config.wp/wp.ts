@@ -1,4 +1,4 @@
-import { t, DEFAULT } from '../common';
+import { t, DEFAULT, fs, toModel } from '../common';
 import { Rules } from './wp.rules';
 import { Plugins } from './wp.plugins';
 
@@ -12,16 +12,21 @@ type M = t.WebpackModel | t.ConfigBuilderChain;
  */
 export function toWebpackConfig(input: M): t.WpConfig {
   const model = toModel(input);
-  const { mode, port } = model;
+  const { mode, port, name } = model;
   const prod = mode === 'production';
+  const dir = model.dir ? fs.resolve(model.dir) : undefined;
+
+  // TEMP 🐷
   const publicPath = toPublicPath(model);
+  // const publicPath = 'http://localhost:5000/cell:ckg2nl70400001wethqd5e0ry:A1/file/';
 
   /**
    * Base configuration.
    */
   const config: t.WpConfig = {
+    name,
     mode,
-    output: { publicPath },
+    output: { publicPath, path: dir },
     entry: model.entry,
     target: model.target,
     resolve: { extensions: ['.tsx', '.ts', '.js'] },
@@ -37,14 +42,8 @@ export function toWebpackConfig(input: M): t.WpConfig {
 }
 
 /**
- * Wrangle objects types into a [model].
+ * Derive the public path (URL).
  */
-export const toModel = (input: M) => {
-  return (typeof (input as any).toObject === 'function'
-    ? (input as any).toObject()
-    : input) as t.WebpackModel;
-};
-
 export function toPublicPath(model: t.WebpackModel) {
   const { host = DEFAULT.CONFIG.host, port = DEFAULT.CONFIG.port } = model;
   let url = host;

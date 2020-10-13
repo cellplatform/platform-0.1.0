@@ -2,14 +2,15 @@ import {
   Builder,
   DEFAULT,
   escapeKeyPath,
+  log,
   escapeKeyPaths,
   fs,
   StateObject,
   t,
   value as valueUtil,
+  parseHostUrl,
 } from '../common';
 import { wp } from '../config.wp';
-import { parse as parseUrl } from 'url';
 
 type O = Record<string, unknown>;
 
@@ -29,7 +30,12 @@ export const ConfigBuilder: t.ConfigBuilder = {
   },
 
   create(input) {
-    const model = typeof input === 'object' ? input : ConfigBuilder.model(input);
+    const model = (typeof input === 'object'
+      ? StateObject.isStateObject(input)
+        ? input
+        : StateObject.create<t.WebpackModel>(input as any)
+      : ConfigBuilder.model(input)) as t.ConfigBuilderModel;
+
     return Builder.create<t.WebpackModel, t.WebpackBuilder>({ model, handlers });
   },
 };
@@ -91,23 +97,26 @@ const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
     });
   },
 
+  dir(args) {
+    args.model.change((draft) => {
+      const input = format.string(args.params[0], { trim: true });
+      draft.dir = input ? fs.resolve(input) : undefined;
+    });
+  },
+
   host(args) {
     args.model.change((draft) => {
       const defaultHost = DEFAULT.CONFIG.host;
-      let value = format.string(args.params[0], { default: defaultHost, trim: true });
-
-      if (value !== undefined) {
-        const url = parseUrl(value);
-        if (!url.protocol) {
-          const host = (url.hostname || url.pathname || '').replace(/\/*$/, '');
-          const protocol = host === 'localhost' ? 'http:' : 'https:';
-          value = `${protocol}//${host}`;
-        } else {
-          value = `${url.protocol}//${url.hostname}`;
+      const value = format.string(args.params[0], { default: defaultHost, trim: true });
+      if (!value) {
+        draft.host = defaultHost;
+      } else {
+        const url = parseHostUrl(value);
+        draft.host = url.toString({ port: false });
+        if (url.port) {
+          draft.port = url.port;
         }
       }
-
-      draft.host = value || defaultHost;
     });
   },
 
@@ -191,20 +200,31 @@ function writeShared(args: {
   const { model, handler } = args;
   const cwd = process.cwd();
   const pkg = loadPackageJson(cwd);
-  const deps = pkg?.dependencies || {};
+  const dependencies = pkg?.dependencies || {};
+
+  const dependencyExists = (name: string) => {
+    const exists = Boolean(dependencies[name]);
+    if (!exists && process.env.NODE_ENV !== 'test') {
+      log.warn(
+        `Cannot add shared module '${log.white(name)}' as it does not exist in dependencies.`,
+      );
+    }
+
+    return exists;
+  };
 
   const ctx: t.WebpackBuilderShared = {
     cwd,
-    deps,
+    dependencies,
     add(input: Record<string, string> | string | string[]) {
       model.change((draft) => {
         const shared = draft.shared || (draft.shared = {});
         if (Array.isArray(input) || typeof input === 'string') {
           const names = Array.isArray(input) ? input : [input];
           names
-            .filter((name) => deps[name])
+            .filter((name) => dependencyExists(name))
             .forEach((name) => {
-              shared[escapeKeyPath(name)] = deps[name];
+              shared[escapeKeyPath(name)] = dependencies[name];
             });
         } else if (typeof input === 'object') {
           draft.shared = { ...shared, ...escapeKeyPaths(input) };
@@ -217,9 +237,12 @@ function writeShared(args: {
         const shared = draft.shared || (draft.shared = {});
         const names = Array.isArray(input) ? input : [input];
         names
-          .filter((name) => deps[name])
+          .filter((name) => dependencyExists(name))
           .forEach((name) => {
-            shared[escapeKeyPath(name)] = { singleton: true, requiredVersion: deps[name] };
+            shared[escapeKeyPath(name)] = {
+              singleton: true,
+              requiredVersion: dependencies[name],
+            };
           });
       });
       return ctx;

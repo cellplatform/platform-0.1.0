@@ -1,4 +1,4 @@
-import { configuration, Webpack } from '../config';
+import { configure, Webpack } from '../compiler.config';
 
-const config = configuration().title('My Title');
+const config = configure().title('My Title');
 Webpack.dev(config);

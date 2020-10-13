@@ -1,6 +1,7 @@
 import { Compilation as ICompliation, Stats as IStats } from 'webpack';
 
-import { log, R, t, time, fs } from '../common';
+import { log, R, t, time, fs, path } from '../common';
+
 const filesize = fs.size.toString;
 
 export const stats = (input?: IStats | ICompliation): t.WebpackStats => {
@@ -46,14 +47,16 @@ export const stats = (input?: IStats | ICompliation): t.WebpackStats => {
           const table = log.table({ border: false });
           const indent = options.indent ? ' '.repeat(options.indent) : '';
           list.forEach((item) => {
-            table.add([`${indent}${item.filename}`, '    ', log.green(item.size)]);
+            const filename = log.gray(`${indent}• ${log.white(item.filename)}`);
+            table.add([filename, '    ', log.green(item.size)]);
           });
           table.add(['', '', log.cyan(filesize(assets.bytes))]);
 
-          log.info.gray('output');
+          log.info();
+          log.info.gray('Files');
+          log.info.gray(`  ${path.trimBaseDir(res.output.path)}`);
           table.log();
-          log.info.gray(res.output.path);
-          log.info.gray(`in ${log.yellow(elapsed)}`);
+          log.info.gray(`Bundled (in ${log.yellow(elapsed)})`);
         },
       };
       return assets;

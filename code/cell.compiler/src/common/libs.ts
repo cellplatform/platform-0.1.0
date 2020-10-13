@@ -1,8 +1,8 @@
 import { rx, id, defaultValue, value, time } from '@platform/util.value';
 export { rx, id, defaultValue, value, time };
 
-import { Module, Builder } from '@platform/cell.module';
-export { Module, Builder };
+import { Builder } from '@platform/cell.module';
+export { Builder };
 
 import { StateObject } from '@platform/state';
 export { StateObject };
@@ -29,3 +29,6 @@ export { Schema, Uri };
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 export { ModuleFederationPlugin };
 /* eslint-enable */
+
+import * as minimist from 'minimist';
+export { minimist };

@@ -8,4 +8,5 @@ export const Webpack: t.Webpack = {
   watch: Compiler.watch,
   bundle: Compiler.bundle,
   upload: Compiler.upload,
+  cell: Compiler.cell,
 };
