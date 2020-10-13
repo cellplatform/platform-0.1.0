@@ -1,4 +1,4 @@
-import { minimist, t, log, fs } from '../common';
+import { minimist, t, log, fs, ModuleFederationPlugin } from '../common';
 import { Webpack } from '../Webpack';
 import * as util from './util';
 
@@ -49,13 +49,25 @@ export async function info(argv: P) {
   util.logger.clear();
   const params = util.params(argv);
   const config = await params.loadConfig();
+  const webpack = config.toWebpack();
+  const plugins = webpack.plugins || [];
+  const mf = plugins.find((plugin) => plugin instanceof ModuleFederationPlugin);
 
   log.info.cyan('Configuration (Model)');
   log.info(config.toObject());
 
   log.info();
   log.info.cyan('Webpack');
-  log.info(config.toWebpack());
+  log.info({
+    ...webpack,
+    plugins: plugins.map((plugin) => plugin?.constructor?.name),
+  });
+
+  log.info();
+  log.info.cyan('Module Federation');
+  log.info(mf?._options);
+
+  log.info();
 }
 
 /**
