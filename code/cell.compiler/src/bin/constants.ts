@@ -28,4 +28,10 @@ export const COMMANDS: t.Commands = {
       '--port -p': `Port to listen on.`,
     },
   },
+  info: {
+    description: 'Output info about the build',
+    params: {
+      '--config': PARAMS.config,
+    },
+  },
 };

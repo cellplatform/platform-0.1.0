@@ -1,4 +1,4 @@
-import { minimist, t } from '../common';
+import { minimist, t, log } from '../common';
 import { Webpack } from '../Webpack';
 import * as util from './util';
 
@@ -43,6 +43,17 @@ export async function dev(argv: P) {
 }
 
 /**
- * TODO 🐷
- * - webpack (output) - "info"?
+ * Output info about the build.
  */
+export async function info(argv: P) {
+  util.logger.clear();
+  const params = util.params(argv);
+  const config = await params.loadConfig();
+
+  log.info.cyan('Configuration (Model)');
+  log.info(config.toObject());
+
+  log.info();
+  log.info.cyan('Webpack');
+  log.info(config.toWebpack());
+}
