@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import { t, ModuleFederationPlugin, unescapeKeyPaths } from '../common';
+import { t, ModuleFederationPlugin, unescapeKeyPaths, fs } from '../common';
 import * as HtmlWebPackPlugin from 'html-webpack-plugin';
 
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
@@ -45,11 +45,14 @@ export const Plugins = {
    */
   typeChecker(args: IArgs) {
     const { model } = args;
+    const lintFileExists = fs.pathExistsSync(fs.resolve('./.eslintrc.js'));
+    const lintEnabled = lintFileExists && model.lint !== false;
+
     return new ForkTsCheckerWebpackPlugin({
       /**
        * https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#eslint
        */
-      eslint: model.lint === false ? undefined : { files: 'src/**/*.ts{,x}' },
+      eslint: lintEnabled ? { files: 'src/**/*.ts{,x}' } : undefined,
 
       /**
        * https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#typescript-options

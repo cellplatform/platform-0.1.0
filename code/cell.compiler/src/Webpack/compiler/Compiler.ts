@@ -17,15 +17,27 @@ export const Compiler: t.WebpackCompiler = {
   /**
    * Build bundle.
    */
-  bundle(input) {
+  bundle(input, options = {}) {
     return new Promise<t.WebpackBundleResponse>((resolve, reject) => {
       const { compiler, model, config } = toCompiler(input);
+
+      if (!options.silent) {
+        log.info();
+        log.info.gray(`Bundling`);
+        logger.model(model, 2).newline().hr();
+      }
+
       compiler.run((err, stats) => {
         if (err) {
           return reject(err);
         }
         if (stats) {
           const res = toBundledResponse({ model, stats, config });
+
+          if (!options.silent) {
+            logger.newline().stats(stats);
+          }
+
           resolve(res);
         }
       });
@@ -51,7 +63,7 @@ export const Compiler: t.WebpackCompiler = {
    */
   async dev(input) {
     const model = wp.toModel(input);
-    model.mode = 'development'; // NB: Alwasy run dev-server in "development" mode.
+    model.mode = 'development'; // NB: Always run dev-server in "development" mode.
     model.target = undefined; //   BUG: HMR fails with an explicitly specified target. https://github.com/webpack/webpack-dev-server/issues/2758
 
     const { compiler } = toCompiler(model);

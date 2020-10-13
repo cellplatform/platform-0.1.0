@@ -14,12 +14,14 @@ console.log('entry', 'hello world.');
   new Foo();
 
   // @ts-ignore
-  // const f = import('foo/Header');
+  const f = import('foo/Header');
 
-  // f.then((e) => {
-  //   // console.log('e', e.foo());
-  // });
+  f.then((e) => {
+    console.log('e', e.foo());
+  });
 })();
+
+console.log('hi rowan...');
 
 // type F = { count: number };
 // const f: F = {};
@@ -29,7 +31,8 @@ console.log('entry', 'hello world.');
  * Insert some UI
  */
 const App = () => {
-  return <h1 style={{ fontFamily: 'sans-serif' }}>Hello World!</h1>;
+  const style = { fontFamily: 'sans-serif', WebkitAppRegion: 'drag' };
+  return <h1 style={style}>Hello World!</h1>;
 };
 
 const within = document.body.appendChild(document.createElement('div'));

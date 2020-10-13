@@ -16,7 +16,10 @@ export type WebpackCompiler = {
 /**
  * Compiles the project.
  */
-export type WebpackBundle = (input: M) => Promise<WebpackBundleResponse>;
+export type WebpackBundle = (
+  input: M,
+  options?: { silent?: boolean },
+) => Promise<WebpackBundleResponse>;
 export type WebpackBundleResponse = {
   ok: boolean;
   elapsed: number;

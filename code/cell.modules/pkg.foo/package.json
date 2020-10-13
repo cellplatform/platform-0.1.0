@@ -1,0 +1,17 @@
+{
+  "name": "foo",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc $@",
+    "dev": "cell.compiler dev $@",
+    "bundle": "cell.compiler bundle $@",
+    "watch": "cell.compiler watch $@",
+    "tmp": "cell.compiler $@"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@platform/cell.compiler": "^0.0.22"
+  },
+  "license": "MIT",
+  "private": true
+}

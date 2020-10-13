@@ -29,3 +29,6 @@ export { Schema, Uri };
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 export { ModuleFederationPlugin };
 /* eslint-enable */
+
+import * as minimist from 'minimist';
+export { minimist };
