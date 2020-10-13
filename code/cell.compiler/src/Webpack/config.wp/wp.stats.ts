@@ -1,6 +1,7 @@
 import { Compilation as ICompliation, Stats as IStats } from 'webpack';
 
-import { log, R, t, time, fs } from '../common';
+import { log, R, t, time, fs, path } from '../common';
+
 const filesize = fs.size.toString;
 
 export const stats = (input?: IStats | ICompliation): t.WebpackStats => {
@@ -50,10 +51,11 @@ export const stats = (input?: IStats | ICompliation): t.WebpackStats => {
           });
           table.add(['', '', log.cyan(filesize(assets.bytes))]);
 
-          log.info.gray('output');
+          log.info();
+          log.info.gray('Files');
           table.log();
-          log.info.gray(res.output.path);
-          log.info.gray(`in ${log.yellow(elapsed)}`);
+          log.info.gray(`Bundled (in ${log.yellow(elapsed)})`);
+          log.info.gray(`  ${path.trimBase(res.output.path)}`);
         },
       };
       return assets;

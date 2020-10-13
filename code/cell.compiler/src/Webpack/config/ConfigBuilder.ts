@@ -7,9 +7,9 @@ import {
   StateObject,
   t,
   value as valueUtil,
+  parseHostUrl,
 } from '../common';
 import { wp } from '../config.wp';
-import { parse as parseUrl } from 'url';
 
 type O = Record<string, unknown>;
 
@@ -29,7 +29,12 @@ export const ConfigBuilder: t.ConfigBuilder = {
   },
 
   create(input) {
-    const model = typeof input === 'object' ? input : ConfigBuilder.model(input);
+    const model = (typeof input === 'object'
+      ? StateObject.isStateObject(input)
+        ? input
+        : StateObject.create<t.WebpackModel>(input as any)
+      : ConfigBuilder.model(input)) as t.ConfigBuilderModel;
+
     return Builder.create<t.WebpackModel, t.WebpackBuilder>({ model, handlers });
   },
 };
@@ -101,20 +106,16 @@ const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
   host(args) {
     args.model.change((draft) => {
       const defaultHost = DEFAULT.CONFIG.host;
-      let value = format.string(args.params[0], { default: defaultHost, trim: true });
-
-      if (value !== undefined) {
-        const url = parseUrl(value);
-        if (!url.protocol) {
-          const host = (url.hostname || url.pathname || '').replace(/\/*$/, '');
-          const protocol = host === 'localhost' ? 'http:' : 'https:';
-          value = `${protocol}//${host}`;
-        } else {
-          value = `${url.protocol}//${url.hostname}`;
+      const value = format.string(args.params[0], { default: defaultHost, trim: true });
+      if (!value) {
+        draft.host = defaultHost;
+      } else {
+        const url = parseHostUrl(value);
+        draft.host = url.toString({ port: false });
+        if (url.port) {
+          draft.port = url.port;
         }
       }
-
-      draft.host = value || defaultHost;
     });
   },
 

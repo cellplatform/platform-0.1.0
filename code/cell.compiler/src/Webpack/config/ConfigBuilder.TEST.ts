@@ -16,12 +16,12 @@ describe('ConfigBuilder', () => {
       expect(model.state).to.eql({ ...DEFAULT.CONFIG, name: 'foo' });
     });
 
-    it('builder (with "name")', () => {
+    it('builder (from "name")', () => {
       const builder = ConfigBuilder.create('  foo  ');
       expect(builder.toObject()).to.eql({ ...DEFAULT.CONFIG, name: 'foo' });
     });
 
-    it('builder (with model)', () => {
+    it('builder (from {model} StateObject)', () => {
       const model = StateObject.create<t.WebpackModel>({
         ...DEFAULT.CONFIG,
         name: 'foo',
@@ -32,6 +32,23 @@ describe('ConfigBuilder', () => {
       const obj = builder.toObject();
       expect(obj.name).to.eql('foo');
       expect(obj.mode).to.eql('development');
+    });
+
+    it('builder (from {model} object)', () => {
+      const model = StateObject.create<t.WebpackModel>({
+        ...DEFAULT.CONFIG,
+        name: 'foo',
+        mode: 'development',
+      });
+
+      const builder = ConfigBuilder.create(model.state);
+
+      const obj = builder.toObject();
+      expect(obj.mode).to.eql('development');
+      expect(obj.name).to.eql('foo');
+
+      builder.name('hello');
+      expect(builder.toObject().name).to.eql('hello');
     });
 
     it('throw: unnamed', () => {
@@ -164,10 +181,24 @@ describe('ConfigBuilder', () => {
       test('foo.com', 'https://foo.com');
       test('foo.com', 'https://foo.com');
       test('localhost', 'http://localhost');
+      test('https://localhost', 'https://localhost'); // NB: Does not change protocol, but this would typically be an invalid "localhost"
+
+      test('localhost:5000', 'http://localhost');
+      test('http://localhost:5000', 'http://localhost');
+
       test('localhost///', 'http://localhost');
       test('http://localhost', 'http://localhost');
       test(undefined, DEFAULT_HOST);
       test('   ', DEFAULT_HOST);
+    });
+
+    it('host: assigns port', () => {
+      const { builder } = create();
+      expect(builder.toObject().port).to.eql(DEFAULT.CONFIG.port);
+
+      builder.host('localhost:5000');
+      expect(builder.toObject().host).to.eql('http://localhost'); // NB: trims from host, and assigns as explicit port.
+      expect(builder.toObject().port).to.eql(5000);
     });
 
     it('target', () => {

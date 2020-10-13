@@ -9,6 +9,7 @@ export type Webpack = {
   watch: t.WebpackWatch;
   bundle: t.WebpackBundle;
   upload: t.WebpackUpload;
+  cell: t.WebpackCell;
 };
 
 /**

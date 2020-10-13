@@ -1,6 +1,6 @@
 import { Stats as IStats } from 'webpack';
 
-import { log, t } from '../common';
+import { log, t, logger } from '../common';
 import { wp } from '../config.wp';
 import * as util from './util';
 
@@ -14,7 +14,7 @@ export const bundle: t.WebpackBundle = (input, options = {}) => {
     if (!options.silent) {
       log.info();
       log.info.gray(`Bundling`);
-      util.logger.model(model, 2).newline().hr();
+      logger.model(model, 2).newline().hr();
     }
 
     compiler.run((err, stats) => {
@@ -25,7 +25,7 @@ export const bundle: t.WebpackBundle = (input, options = {}) => {
         const res = toBundledResponse({ model, stats, config });
 
         if (!options.silent) {
-          util.logger.newline().stats(stats);
+          logger.newline().stats(stats);
         }
 
         resolve(res);

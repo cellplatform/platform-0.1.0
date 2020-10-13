@@ -1,5 +1,6 @@
 import { t } from './common';
 
+type B = t.ConfigBuilderChain;
 type M = t.WebpackModel | t.ConfigBuilderChain;
 type File = t.IHttpClientCellFileUpload;
 
@@ -11,6 +12,7 @@ export type WebpackCompiler = {
   watch: WebpackWatch;
   dev: WebpackDev;
   upload: WebpackUpload;
+  cell: WebpackCell;
 };
 
 /**
@@ -55,4 +57,20 @@ export type WebpackUploadResponse = {
   bytes: number;
   urls: { cell: string; files: string };
   files: File[];
+};
+
+/**
+ * Cell compilation target.
+ */
+export type WebpackCell = (host: string, uri: string | t.ICellUri) => WebpackCellCompiler;
+export type WebpackCellCompiler = {
+  host: string;
+  uri: t.ICellUri;
+  dir(config: B): string;
+  bundle(config: B, options?: { silent?: boolean }): Promise<WebpackBundleResponse>;
+  upload(
+    config: B,
+    options?: { silent?: boolean; force?: boolean; cleanAfter?: boolean },
+  ): Promise<WebpackUploadResponse>;
+  clean(config?: B): Promise<void>;
 };

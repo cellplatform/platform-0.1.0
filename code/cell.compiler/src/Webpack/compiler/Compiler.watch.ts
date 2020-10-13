@@ -1,4 +1,4 @@
-import { log, t } from '../common';
+import { log, t, logger } from '../common';
 import * as util from './util';
 
 /**
@@ -9,8 +9,8 @@ export const watch: t.WebpackWatch = async (input) => {
   let count = 0;
   compiler.watch({}, (err, stats) => {
     count++;
-    util.logger.clear().newline();
+    logger.clear().newline();
     log.info.gray(`Watching (${count})`);
-    util.logger.model(model, 2).newline().hr().stats(stats);
+    logger.model(model, 2).newline().hr().stats(stats);
   });
 };

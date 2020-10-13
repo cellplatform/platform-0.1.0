@@ -4,7 +4,7 @@ type B = t.BuilderChain<WebpackBuilder>;
 
 export type ConfigBuilder = {
   model(name: string): ConfigBuilderModel;
-  create(input: string | ConfigBuilderModel): ConfigBuilderChain;
+  create(input: string | ConfigBuilderModel | t.WebpackModel): ConfigBuilderChain;
 };
 
 export type ConfigBuilderChain = t.BuilderChain<WebpackBuilder>;

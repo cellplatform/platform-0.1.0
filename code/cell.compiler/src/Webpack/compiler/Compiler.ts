@@ -1,4 +1,5 @@
 import { t } from '../common';
+import { cell } from './Commpiler.cell';
 import { bundle } from './Compiler.bundle';
 import { dev } from './Compiler.dev';
 import { upload } from './Compiler.upload';
@@ -12,4 +13,5 @@ export const Compiler: t.WebpackCompiler = {
   bundle,
   watch,
   dev,
+  cell,
 };

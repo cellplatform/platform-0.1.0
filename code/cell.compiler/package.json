@@ -14,11 +14,12 @@
     "lint": "ts lint",
     "build": "ts build",
     "prepare": "ts prepare",
-    "clean": "rm -rf dist && rm -rf node_modules/.cache/webpack",
+    "clean": "rm -rf dist && rm -rf node_modules/.cache",
     "serve": "cd dist && serve --listen 1234",
     "bundle": "ts-node -T src/test/script/bundle",
     "watch": "ts-node -T src/test/script/watch",
     "upload": "ts-node -T src/test/script/upload",
+    "cell": "ts-node -T src/test/script/cell",
     "bin": "lib/bin cell.compiler $@"
   },
   "dependencies": {

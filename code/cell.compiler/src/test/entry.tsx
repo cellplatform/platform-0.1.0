@@ -14,11 +14,10 @@ console.log('entry', 'hello world.');
   new Foo();
 
   // @ts-ignore
-  const f = import('foo/Header');
-
-  f.then((e) => {
-    console.log('e', e.foo());
-  });
+  // const f = import('foo/Header');
+  // f.then((e) => {
+  //   console.log('e', e.foo());
+  // });
 })();
 
 console.log('hi rowan...');

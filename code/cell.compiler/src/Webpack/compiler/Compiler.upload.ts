@@ -1,4 +1,5 @@
-import { fs, HttpClient, log, t, time, Schema } from '../common';
+import { fs, HttpClient, log, t, time, Schema, path, logger } from '../common';
+import * as util from './util';
 
 type File = t.IHttpClientCellFileUpload;
 const filesize = fs.size.toString;
@@ -31,7 +32,7 @@ export const upload: t.WebpackUpload = async (args) => {
   const files = await getFiles({ sourceDir, targetDir });
   const bytes = files.reduce((acc, next) => acc + next.data.byteLength, 0);
 
-  const urls = () => {
+  const links = () => {
     const cell = Schema.urls(args.host).cell(args.targetCell);
     return {
       cell: cell.info.toString(),
@@ -40,7 +41,7 @@ export const upload: t.WebpackUpload = async (args) => {
   };
 
   const done = (ok: boolean) => {
-    return { ok, bytes, files, urls: urls() };
+    return { ok, bytes, files, urls: links() };
   };
 
   try {
@@ -65,6 +66,9 @@ export const upload: t.WebpackUpload = async (args) => {
     if (!args.silent) {
       const elapsed = timer.elapsed.toString();
       logUpload({ sourceDir, targetCell, host, files, elapsed, bytes });
+      logger.hr().newline();
+      logUrls(links());
+      logger.newline();
     }
 
     return done(true);
@@ -109,9 +113,21 @@ function logUpload(args: {
   table.add(['', '', log.cyan(size)]);
 
   log.info(`
-${log.blue(`Uploaded`)}    ${log.gray(`(in ${elapsed})`)}
-${log.gray(` from:      ${sourceDir}`)}
-${log.gray(` to:`)}
+${log.gray(`Uploaded`)}    ${log.gray(`(in ${log.yellow(elapsed)})`)}
+${log.gray(`  from:     ${path.trimBase(sourceDir)}`)}
+${log.gray(`  to:`)}
 ${log.gray(table)}
 `);
+}
+
+function logUrls(links: Record<string, string>) {
+  log.info.gray('Urls');
+  const table = log.table({ border: false });
+
+  Object.keys(links).forEach((key) => {
+    const url = links[key];
+    table.add([`  ${key}  `, log.green(url)]);
+  });
+
+  table.log();
 }

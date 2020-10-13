@@ -1,4 +1,4 @@
-import { t, DEFAULT, fs } from '../common';
+import { t, DEFAULT, fs, toModel } from '../common';
 import { Rules } from './wp.rules';
 import { Plugins } from './wp.plugins';
 
@@ -39,15 +39,6 @@ export function toWebpackConfig(input: M): t.WpConfig {
 }
 
 /**
- * Wrangle objects types into a [model].
- */
-export const toModel = (input: M) => {
-  return (typeof (input as any).toObject === 'function'
-    ? (input as any).toObject()
-    : input) as t.WebpackModel;
-};
-
-/**
  * Derive the public path (URL).
  */
 export function toPublicPath(model: t.WebpackModel) {
@@ -55,4 +46,16 @@ export function toPublicPath(model: t.WebpackModel) {
   let url = host;
   url = port !== 80 ? `${url}:${port}` : url;
   return `${url}/`;
+}
+
+/**
+ * Derive targets as an array
+ */
+export function toTargetArray(model: t.WebpackModel, ...defaultTargets: string[]): string[] {
+  const value = model.target;
+  if (!value) {
+    return defaultTargets;
+  } else {
+    return Array.isArray(value) ? value : [value];
+  }
 }
