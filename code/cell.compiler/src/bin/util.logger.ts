@@ -40,7 +40,6 @@ export const logger = {
     const plugins = webpack.plugins || [];
     const mf = plugins.find((plugin) => plugin instanceof ModuleFederationPlugin);
 
-
     log.info.cyan('Configuration (Model)');
     log.info(config.toObject());
 

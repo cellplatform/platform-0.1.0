@@ -11,7 +11,10 @@
     "serve": "cd dist && serve -l 3001",
     "tmp": "cell.compiler $@"
   },
-  "dependencies": {},
+  "dependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
   "devDependencies": {
     "@platform/cell.compiler": "^0.0.22"
   },

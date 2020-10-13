@@ -1,5 +1,4 @@
 import { fs, HttpClient, log, t, time, Schema, path, logger } from '../common';
-import * as util from './util';
 
 type File = t.IHttpClientCellFileUpload;
 const filesize = fs.size.toString;

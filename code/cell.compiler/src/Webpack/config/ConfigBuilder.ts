@@ -2,6 +2,7 @@ import {
   Builder,
   DEFAULT,
   escapeKeyPath,
+  log,
   escapeKeyPaths,
   fs,
   StateObject,
@@ -199,20 +200,31 @@ function writeShared(args: {
   const { model, handler } = args;
   const cwd = process.cwd();
   const pkg = loadPackageJson(cwd);
-  const deps = pkg?.dependencies || {};
+  const dependencies = pkg?.dependencies || {};
+
+  const dependencyExists = (name: string) => {
+    const exists = Boolean(dependencies[name]);
+    if (!exists && process.env.NODE_ENV !== 'test') {
+      log.warn(
+        `Cannot add shared module '${log.white(name)}' as it does not exist in dependencies.`,
+      );
+    }
+
+    return exists;
+  };
 
   const ctx: t.WebpackBuilderShared = {
     cwd,
-    deps,
+    dependencies,
     add(input: Record<string, string> | string | string[]) {
       model.change((draft) => {
         const shared = draft.shared || (draft.shared = {});
         if (Array.isArray(input) || typeof input === 'string') {
           const names = Array.isArray(input) ? input : [input];
           names
-            .filter((name) => deps[name])
+            .filter((name) => dependencyExists(name))
             .forEach((name) => {
-              shared[escapeKeyPath(name)] = deps[name];
+              shared[escapeKeyPath(name)] = dependencies[name];
             });
         } else if (typeof input === 'object') {
           draft.shared = { ...shared, ...escapeKeyPaths(input) };
@@ -225,9 +237,12 @@ function writeShared(args: {
         const shared = draft.shared || (draft.shared = {});
         const names = Array.isArray(input) ? input : [input];
         names
-          .filter((name) => deps[name])
+          .filter((name) => dependencyExists(name))
           .forEach((name) => {
-            shared[escapeKeyPath(name)] = { singleton: true, requiredVersion: deps[name] };
+            shared[escapeKeyPath(name)] = {
+              singleton: true,
+              requiredVersion: dependencies[name],
+            };
           });
       });
       return ctx;

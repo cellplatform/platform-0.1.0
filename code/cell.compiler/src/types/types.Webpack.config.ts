@@ -36,8 +36,8 @@ export type WebpackBuilder = {
 export type WebpackBuilderSharedFunc = (fn: WebpackBuilderShared) => any;
 export type WebpackBuilderShared = {
   cwd: string;
-  deps: Record<string, string>;
-  add(deps: Record<string, string>): WebpackBuilderShared;
+  dependencies: Record<string, string>;
+  add(dependencies: Record<string, string>): WebpackBuilderShared;
   add(name: string | string[]): WebpackBuilderShared;
   singleton(name: string | string[]): WebpackBuilderShared;
 };

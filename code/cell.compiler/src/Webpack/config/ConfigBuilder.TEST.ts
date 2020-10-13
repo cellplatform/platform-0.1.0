@@ -376,7 +376,7 @@ describe('ConfigBuilder', () => {
       let args: t.WebpackBuilderShared | undefined;
       builder.shared((e) => (args = e));
       expect(args?.cwd).to.eql(process.cwd());
-      expect(args?.deps).to.eql(pkg.dependencies);
+      expect(args?.dependencies).to.eql(pkg.dependencies);
     });
 
     it('adds {dependencies} object (cumulative)', () => {
@@ -384,7 +384,7 @@ describe('ConfigBuilder', () => {
 
       const escaped = escapeKeyPaths(pkg.dependencies || {});
 
-      builder.shared((args) => args.add(args.deps));
+      builder.shared((args) => args.add(args.dependencies));
       expect(model.state.shared).to.eql(escaped);
 
       builder.shared((args) => args.add({ foo: '1.2.3' }).add({ bar: '0.0.0' }));
@@ -413,7 +413,7 @@ describe('ConfigBuilder', () => {
       const { builder, model } = create();
       const deps = pkg.dependencies || {};
 
-      builder.shared((args) => args.add(args.deps).singleton('@platform/libs'));
+      builder.shared((args) => args.add(args.dependencies).singleton('@platform/libs'));
 
       expect((model.state.shared || {})['@platform\\libs']).to.eql({
         singleton: true,

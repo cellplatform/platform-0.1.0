@@ -46,7 +46,7 @@ describe('Compiler', () => {
       test(' foo.com  ', 'https://foo.com');
     });
 
-    it.only('dir (from model)', () => {
+    it('dir (from model)', () => {
       const { builder } = create();
 
       const test = (expected: string) => {

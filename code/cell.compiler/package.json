@@ -12,7 +12,7 @@
     "dev": "ts-node -T src/test/script/dev",
     "test": "ts test",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build --no-esm",
     "prepare": "ts prepare",
     "clean": "rm -rf dist && rm -rf node_modules/.cache",
     "serve": "cd dist && serve --listen 1234",
