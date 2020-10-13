@@ -1,5 +1,5 @@
 import { Webpack } from '..';
-import { expect, ModuleFederationPlugin } from '../../test';
+import { fs, expect, ModuleFederationPlugin } from '../../test';
 import { wp } from '.';
 
 const create = () => {
@@ -64,6 +64,17 @@ describe('wp.toWebpackConfig', () => {
 
     builder.target(['web', 'node12.18']);
     expect(wp.toWebpackConfig(builder).target).to.eql(['web', 'node12.18']);
+  });
+
+  it('output dir', () => {
+    const { builder } = create();
+    expect(wp.toWebpackConfig(builder).output?.path).to.eql(undefined);
+
+    builder.dir('foo');
+    expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('foo'));
+
+    builder.dir('  ');
+    expect(wp.toWebpackConfig(builder).output?.path).to.eql(undefined);
   });
 
   describe('ModuleFederationPlugin', () => {

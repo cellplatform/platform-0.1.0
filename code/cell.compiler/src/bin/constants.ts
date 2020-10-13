@@ -7,7 +7,7 @@ const PARAMS = {
 
 export const COMMANDS: t.Commands = {
   bundle: {
-    description: 'Compile the build into a file bundle',
+    description: 'Compile the project into a bundle',
     params: {
       '--config': PARAMS.config,
       '--mode, -m': PARAMS.mode,

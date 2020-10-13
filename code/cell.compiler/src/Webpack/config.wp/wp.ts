@@ -1,4 +1,4 @@
-import { t, DEFAULT } from '../common';
+import { t, DEFAULT, fs } from '../common';
 import { Rules } from './wp.rules';
 import { Plugins } from './wp.plugins';
 
@@ -15,6 +15,7 @@ export function toWebpackConfig(input: M): t.WpConfig {
   const { mode, port, name } = model;
   const prod = mode === 'production';
   const publicPath = toPublicPath(model);
+  const dir = model.dir ? fs.resolve(model.dir) : undefined;
 
   /**
    * Base configuration.
@@ -22,7 +23,7 @@ export function toWebpackConfig(input: M): t.WpConfig {
   const config: t.WpConfig = {
     name,
     mode,
-    output: { publicPath },
+    output: { publicPath, path: dir },
     entry: model.entry,
     target: model.target,
     resolve: { extensions: ['.tsx', '.ts', '.js'] },
@@ -46,6 +47,9 @@ export const toModel = (input: M) => {
     : input) as t.WebpackModel;
 };
 
+/**
+ * Derive the public path (URL).
+ */
 export function toPublicPath(model: t.WebpackModel) {
   const { host = DEFAULT.CONFIG.host, port = DEFAULT.CONFIG.port } = model;
   let url = host;

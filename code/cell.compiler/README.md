@@ -12,4 +12,21 @@ Code compilation and bundling.
     yarn add @platform/cell.compiler
 
 <p>&nbsp;</p>
+
+## Command Line
+
+To use the compiler from commands within `package.json` include the following scripts:
+
+```json
+"scripts": {
+  "build": "tsc $@",
+  "dev": "cell.compiler dev $@",
+  "bundle": "cell.compiler bundle $@",
+  "watch": "cell.compiler watch $@",
+  "serve": "cd dist && serve -l 3001",
+  "info": "cell.compiler info $@"
+},
+```
+
+<p>&nbsp;</p>
 <p>&nbsp;</p>

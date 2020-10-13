@@ -1,5 +1,5 @@
 import { ConfigBuilder } from '.';
-import { DEFAULT, escapeKeyPaths, expect, StateObject, t } from '../../test';
+import { DEFAULT, escapeKeyPaths, expect, StateObject, t, fs } from '../../test';
 
 const pkg = require('../../../package.json') as t.INpmPackageJson; // eslint-disable-line
 
@@ -185,6 +185,23 @@ describe('ConfigBuilder', () => {
       test(['web  '], ['web']);
       test(['web', '  node'], ['web', 'node']);
       test(['webworker', false], ['webworker']);
+      test('  ', undefined);
+      test(null, undefined);
+      test({}, undefined);
+    });
+
+    it('dir', () => {
+      const { model, builder } = create();
+      expect(model.state.dir).to.eql(undefined);
+
+      const test = (input: any, expected: any) => {
+        builder.dir(input);
+        expect(model.state.dir).to.eql(expected);
+      };
+
+      test('foo', fs.resolve('foo'));
+      test(' foo ', fs.resolve('foo'));
+      test('', undefined);
       test('  ', undefined);
       test(null, undefined);
       test({}, undefined);

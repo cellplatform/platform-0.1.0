@@ -6,6 +6,7 @@
     "dev": "cell.compiler dev $@",
     "bundle": "cell.compiler bundle $@",
     "watch": "cell.compiler watch $@",
+    "serve": "cd dist && serve -l 3001",
     "tmp": "cell.compiler $@"
   },
   "dependencies": {},

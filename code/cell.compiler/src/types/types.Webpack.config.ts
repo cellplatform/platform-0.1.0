@@ -24,6 +24,7 @@ export type WebpackBuilder = {
   port(value: number | undefined): B;
   host(value: string | undefined): B;
   target(value: t.WpTarget | undefined): B;
+  dir(value: string | undefined): B;
   lint(value: boolean | undefined): B;
   entry(path: string): B;
   entry(key: string, path?: string | null): B;
@@ -51,6 +52,7 @@ export type WebpackModel = {
   port: number;
   host?: string;
   target?: t.WpTarget;
+  dir?: string;
   lint?: boolean;
   entry?: Record<string, string>;
   exposes?: Record<string, string>;

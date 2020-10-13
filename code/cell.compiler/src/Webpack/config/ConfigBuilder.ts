@@ -91,6 +91,13 @@ const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
     });
   },
 
+  dir(args) {
+    args.model.change((draft) => {
+      const input = format.string(args.params[0], { trim: true });
+      draft.dir = input ? fs.resolve(input) : undefined;
+    });
+  },
+
   host(args) {
     args.model.change((draft) => {
       const defaultHost = DEFAULT.CONFIG.host;
