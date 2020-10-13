@@ -34,4 +34,8 @@ export const COMMANDS: t.Commands = {
       '--config': PARAMS.config,
     },
   },
+  clean: {
+    description: 'Remove transient build artifacts',
+    params: {},
+  },
 };

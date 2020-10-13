@@ -1,4 +1,4 @@
-import { minimist, t, log } from '../common';
+import { minimist, t, log, fs } from '../common';
 import { Webpack } from '../Webpack';
 import * as util from './util';
 
@@ -56,4 +56,20 @@ export async function info(argv: P) {
   log.info();
   log.info.cyan('Webpack');
   log.info(config.toWebpack());
+}
+
+/**
+ * Remove transient build artifacts.
+ */
+export async function clean(argv: P) {
+  const paths = ['dist', 'node_modules/.cache'].map((path) => fs.resolve(path));
+
+  log.info();
+  log.info.gray('Clean');
+  paths.forEach((path) => {
+    log.info(`  ${path}`);
+  });
+  log.info();
+
+  await Promise.all(paths.map((path) => fs.remove(path)));
 }

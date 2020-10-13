@@ -23,8 +23,9 @@ To use the compiler from commands within `package.json` include the following sc
   "dev": "cell.compiler dev $@",
   "bundle": "cell.compiler bundle $@",
   "watch": "cell.compiler watch $@",
+  "info": "cell.compiler info $@",
+  "clean": "cell.compiler clean $@",
   "serve": "cd dist && serve -l 3001",
-  "info": "cell.compiler info $@"
 },
 ```
 

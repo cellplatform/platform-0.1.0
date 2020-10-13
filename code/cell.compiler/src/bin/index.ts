@@ -32,6 +32,10 @@ const param = argv._[0];
     return cmd.info(argv);
   }
 
+  if (param === 'clean') {
+    return cmd.clean(argv);
+  }
+
   logger.commands();
   return;
 })();
