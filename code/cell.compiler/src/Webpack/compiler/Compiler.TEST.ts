@@ -1,6 +1,5 @@
-import { expect, Schema, Uri } from '../../test';
-
 import { Webpack } from '..';
+import { expect, Uri } from '../../test';
 
 const host = 'localhost';
 

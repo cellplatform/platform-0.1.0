@@ -8,7 +8,7 @@ export const configure = () =>
     .title('My Foo')
     .entry('main', './src/index')
     .expose('./Header', './src/Header')
-    .shared((args) => args.add(args.deps).singleton(['react', 'react-dom']))
+    .shared((e) => e.add(e.deps).singleton(['react', 'react-dom']))
     .clone();
 
 export default configure;

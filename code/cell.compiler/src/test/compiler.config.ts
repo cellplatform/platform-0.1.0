@@ -7,9 +7,9 @@ export function configure() {
     .port(1234)
     .entry('./src/test/entry')
     .remote('foo', 'foo@http://localhost:3001/remoteEntry.js')
-    .shared((args) => {
-      // args.add(args.deps);
-      // args.singleton(['react', 'react-dom']);
+    .shared((e) => {
+      // e.add(e.dependencies);
+      // e.singleton(['react', 'react-dom']);
     })
     .clone();
 }
