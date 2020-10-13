@@ -14,8 +14,11 @@ export function toWebpackConfig(input: M): t.WpConfig {
   const model = toModel(input);
   const { mode, port, name } = model;
   const prod = mode === 'production';
-  const publicPath = toPublicPath(model);
   const dir = model.dir ? fs.resolve(model.dir) : undefined;
+
+  // TEMP 🐷
+  const publicPath = toPublicPath(model);
+  // const publicPath = 'http://localhost:5000/cell:ckg2nl70400001wethqd5e0ry:A1/file/';
 
   /**
    * Base configuration.
@@ -46,16 +49,4 @@ export function toPublicPath(model: t.WebpackModel) {
   let url = host;
   url = port !== 80 ? `${url}:${port}` : url;
   return `${url}/`;
-}
-
-/**
- * Derive targets as an array
- */
-export function toTargetArray(model: t.WebpackModel, ...defaultTargets: string[]): string[] {
-  const value = model.target;
-  if (!value) {
-    return defaultTargets;
-  } else {
-    return Array.isArray(value) ? value : [value];
-  }
 }

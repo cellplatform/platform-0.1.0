@@ -51,7 +51,7 @@ export const logger = {
     });
 
     log.info();
-    log.info.cyan('Module Federation');
+    log.info.cyan('Webpack: Module Federation');
     log.info(mf?._options);
 
     log.info();
