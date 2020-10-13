@@ -1,8 +1,9 @@
-import { minimist, t, log, fs, ModuleFederationPlugin } from '../common';
+import { fs, log, minimist, t } from '../common';
 import { Webpack } from '../Webpack';
 import * as util from './util';
 
 type P = minimist.ParsedArgs;
+const logger = util.logger;
 
 /**
  * Bundle the project.
@@ -21,7 +22,7 @@ export async function bundle(argv: P) {
  * Bundle and start file watcher.
  */
 export async function watch(argv: P) {
-  util.logger.clear();
+  logger.clear();
   const params = util.params(argv);
   const config = await params.loadConfig();
   config.mode((params.mode as t.WebpackModel['mode']) || 'development');
@@ -32,7 +33,7 @@ export async function watch(argv: P) {
  * Start development server (HMR)
  */
 export async function dev(argv: P) {
-  util.logger.clear();
+  logger.clear();
   const params = util.params(argv);
   const config = await params.loadConfig();
   config.mode('development');
@@ -46,28 +47,19 @@ export async function dev(argv: P) {
  * Output info about the build.
  */
 export async function info(argv: P) {
-  util.logger.clear();
   const params = util.params(argv);
   const config = await params.loadConfig();
-  const webpack = config.toWebpack();
-  const plugins = webpack.plugins || [];
-  const mf = plugins.find((plugin) => plugin instanceof ModuleFederationPlugin);
 
-  log.info.cyan('Configuration (Model)');
-  log.info(config.toObject());
+  if (params.mode) {
+    config.mode(params.mode as t.WebpackModel['mode']);
+  }
 
-  log.info();
-  log.info.cyan('Webpack');
-  log.info({
-    ...webpack,
-    plugins: plugins.map((plugin) => plugin?.constructor?.name),
-  });
+  if (params.port) {
+    config.port(params.port);
+  }
 
-  log.info();
-  log.info.cyan('Module Federation');
-  log.info(mf?._options);
-
-  log.info();
+  logger.clear();
+  logger.info(config);
 }
 
 /**

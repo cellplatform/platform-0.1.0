@@ -1,5 +1,4 @@
-import { fs, t, parseHostUrl, Uri, logger, defaultValue } from '../common';
-import { wp } from '../config.wp';
+import { fs, t, parseHostUrl, Uri, logger, defaultValue, toTargetArray } from '../common';
 import { bundle } from './Compiler.bundle';
 import { upload } from './Compiler.upload';
 
@@ -24,7 +23,7 @@ export const cell: t.WebpackCell = (hostInput, cellInput) => {
     uri,
     dir(config) {
       const model = config.toObject();
-      const target = wp.toTargetArray(model, 'web').join(',');
+      const target = toTargetArray(model.target, 'web').join(',');
       return fs.join(baseDir, target, `${model.name}-${model.mode}`);
     },
 

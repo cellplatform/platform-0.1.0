@@ -114,7 +114,7 @@ function logUpload(args: {
 
   log.info(`
 ${log.gray(`Uploaded`)}    ${log.gray(`(in ${log.yellow(elapsed)})`)}
-${log.gray(`  from:     ${path.trimBase(sourceDir)}`)}
+${log.gray(`  from:     ${path.trimBaseDir(sourceDir)}`)}
 ${log.gray(`  to:`)}
 ${log.gray(table)}
 `);

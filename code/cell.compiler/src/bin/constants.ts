@@ -32,6 +32,8 @@ export const COMMANDS: t.Commands = {
     description: 'Output info about the build',
     params: {
       '--config': PARAMS.config,
+      '--mode, -m': PARAMS.mode,
+      '--port -p': `Port the bundle is federated on.`,
     },
   },
   clean: {

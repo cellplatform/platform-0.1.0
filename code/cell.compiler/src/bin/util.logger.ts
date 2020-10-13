@@ -1,5 +1,8 @@
-import { log } from '../common';
+import { log, ModuleFederationPlugin, t } from '../common';
 import { COMMANDS } from './constants';
+import { loadConfig } from './util.loadConfig';
+
+type B = t.BuilderChain<t.WebpackBuilder>;
 
 export const logger = {
   clear() {
@@ -28,6 +31,31 @@ export const logger = {
     table.log();
     log.info();
 
+    return logger;
+  },
+
+  async info(input?: string | B) {
+    const config = typeof input === 'object' ? input : await loadConfig(input);
+    const webpack = config.toWebpack();
+    const plugins = webpack.plugins || [];
+    const mf = plugins.find((plugin) => plugin instanceof ModuleFederationPlugin);
+
+
+    log.info.cyan('Configuration (Model)');
+    log.info(config.toObject());
+
+    log.info();
+    log.info.cyan('Webpack');
+    log.info({
+      ...webpack,
+      plugins: plugins.map((plugin) => plugin?.constructor?.name),
+    });
+
+    log.info();
+    log.info.cyan('Module Federation');
+    log.info(mf?._options);
+
+    log.info();
     return logger;
   },
 };

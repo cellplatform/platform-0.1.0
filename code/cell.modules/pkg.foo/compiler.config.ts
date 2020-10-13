@@ -1,7 +1,7 @@
 import { Webpack } from '@platform/cell.compiler';
 export { Webpack };
 
-export const config = () =>
+export const configure = () =>
   Webpack.config
     .create('foo')
     .port(3001)
@@ -11,4 +11,4 @@ export const config = () =>
     .shared((args) => args.deps)
     .clone();
 
-export default config;
+export default configure;

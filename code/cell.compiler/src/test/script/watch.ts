@@ -1,4 +1,4 @@
-import { configuration, Webpack } from '../config';
+import { configure, Webpack } from '../compiler.config';
 
-const config = configuration().mode('dev');
+const config = configure().mode('dev');
 Webpack.watch(config);

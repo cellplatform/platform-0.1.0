@@ -2,7 +2,7 @@ import { log } from '@platform/log/lib/server';
 import * as compiler from '../../compiler.config';
 
 (async () => {
-  const config = compiler.config().mode('prod');
+  const config = compiler.configure().mode('prod');
 
   log.info();
   log.info.gray('bundling');

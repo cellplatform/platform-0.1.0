@@ -74,6 +74,25 @@ export function parseHostUrl(input: string) {
 export const path = {
   base: fs.resolve('.'),
   trimBase(value: string) {
+    value = (value || '').trim();
     return value.startsWith(path.base) ? value.substring(path.base.length + 1) : value;
   },
+  trimBaseDir(value: string) {
+    value = path.trimBase(value);
+    return `${value.replace(/\/*$/, '')}/`;
+  },
 };
+
+/**
+ * Derive targets as an array
+ */
+export function toTargetArray(
+  value: t.WebpackModel['target'],
+  ...defaultTargets: string[]
+): string[] {
+  if (!value) {
+    return defaultTargets;
+  } else {
+    return Array.isArray(value) ? value : [value];
+  }
+}

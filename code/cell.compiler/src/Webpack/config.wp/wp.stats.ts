@@ -47,15 +47,16 @@ export const stats = (input?: IStats | ICompliation): t.WebpackStats => {
           const table = log.table({ border: false });
           const indent = options.indent ? ' '.repeat(options.indent) : '';
           list.forEach((item) => {
-            table.add([`${indent}${item.filename}`, '    ', log.green(item.size)]);
+            const filename = log.gray(`${indent}• ${log.white(item.filename)}`);
+            table.add([filename, '    ', log.green(item.size)]);
           });
           table.add(['', '', log.cyan(filesize(assets.bytes))]);
 
           log.info();
           log.info.gray('Files');
+          log.info.gray(`  ${path.trimBaseDir(res.output.path)}`);
           table.log();
           log.info.gray(`Bundled (in ${log.yellow(elapsed)})`);
-          log.info.gray(`  ${path.trimBase(res.output.path)}`);
         },
       };
       return assets;
