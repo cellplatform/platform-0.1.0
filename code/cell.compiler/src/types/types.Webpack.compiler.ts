@@ -67,10 +67,13 @@ export type WebpackCellCompiler = {
   host: string;
   uri: t.ICellUri;
   dir(config: B): string;
-  bundle(config: B, options?: { silent?: boolean }): Promise<WebpackBundleResponse>;
+  bundle(
+    config: B,
+    options?: { targetDir?: string; silent?: boolean },
+  ): Promise<WebpackBundleResponse>;
   upload(
     config: B,
-    options?: { silent?: boolean; force?: boolean; cleanAfter?: boolean },
+    options?: { targetDir?: string; silent?: boolean; force?: boolean; cleanAfter?: boolean },
   ): Promise<WebpackUploadResponse>;
   clean(config?: B): Promise<void>;
 };

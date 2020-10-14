@@ -180,6 +180,10 @@ export class Urls implements t.IUrls {
        * Individual file.
        */
       file: {
+        toString() {
+          return `/cell:${ns}:${key}/file/`;
+        },
+
         /**
          * Example: /cell:foo:A1/file/kitten.png
          */

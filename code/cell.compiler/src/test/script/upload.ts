@@ -5,5 +5,5 @@ const cell = Webpack.cell('localhost:5000', `cell:${ns}:A1`);
 
 (async () => {
   const config = configure().target('web').lint(false);
-  await cell.upload(config, { force: true, cleanAfter: false });
+  await cell.upload(config, { force: true, cleanAfter: false, targetDir: 'web' });
 })();

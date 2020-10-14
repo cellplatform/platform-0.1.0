@@ -216,6 +216,11 @@ describe('Urls', () => {
       expect(res3.toString()).to.eql(URL);
     });
 
+    it('file.toString()', () => {
+      const file = url.cell(URI).file;
+      expect(file.toString()).to.eql('/cell:foo:A1/file/');
+    });
+
     it('file.byName', () => {
       const res1 = url.cell(URI).file.byName('  kitten.png   ');
       const res2 = url.cell(Uri.cell('cell:foo:A1')).file.byName('kitten.png');
