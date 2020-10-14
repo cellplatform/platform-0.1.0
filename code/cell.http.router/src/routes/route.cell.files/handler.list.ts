@@ -1,4 +1,4 @@
-import { models, Schema, t, util, defaultValue } from '../common';
+import { models, Schema, t, util, defaultValue, minimatch } from '../common';
 
 export async function listCellFiles(args: {
   db: t.IDb;
@@ -8,9 +8,10 @@ export async function listCellFiles(args: {
   expires?: string; // File link expires.
   includeFiles?: boolean;
   includeUrls?: boolean;
+  filter?: string; // Grep style filter pattern.
 }) {
   try {
-    const { db, host, expires } = args;
+    const { db, host, expires, filter } = args;
     const includeFiles = defaultValue(args.includeFiles, true);
     const includeUrls = defaultValue(args.includeUrls, true);
 
@@ -21,7 +22,7 @@ export async function listCellFiles(args: {
     // Retrieve data models.
     const ns = await models.Ns.create({ db, uri: nsUri.toString() }).ready;
     const cell = await models.Cell.create({ db, uri: cellUri.toString() }).ready;
-    const cellLinks = cell.props.links || {};
+    const cellLinks = filterFiles({ links: { ...(cell.props.links || {}) }, filter });
 
     const getUrls = () => {
       const urlBuilder = util.urls(host).cell(cellUri.toString());
@@ -63,6 +64,7 @@ export async function getCellFiles(args: { ns: t.IDbModelNs; cellLinks: t.IUriMa
   };
 
   const map = { ...(await models.ns.getChildFiles({ model: ns })) };
+
   Object.keys(map).forEach((fileid) => {
     if (!linkExists(fileid, cellLinks)) {
       delete map[fileid]; // NB: Trim off files that are not referenced by this cell.
@@ -89,4 +91,26 @@ export function toFileList(args: { ns: string | t.IDbModelNs; map: t.IMap<t.IFil
     }
     return acc;
   }, [] as t.IUriData<t.IFileData>[]);
+}
+
+function filterFiles(args: { links: t.IUriMap; filter?: string }) {
+  let pattern = typeof args.filter === 'string' ? (args.filter || '').trim() : '';
+  if (!pattern) {
+    return args.links;
+  }
+
+  const FileLinks = Schema.file.links;
+  const links = { ...args.links };
+  pattern = pattern.replace(/^\/*/, '');
+
+  Object.keys(links)
+    .filter((key) => FileLinks.is.fileKey(key))
+    .forEach((key) => {
+      const path = FileLinks.parseKey(key).path;
+      if (!minimatch(path, pattern)) {
+        delete links[key];
+      }
+    });
+
+  return links;
 }

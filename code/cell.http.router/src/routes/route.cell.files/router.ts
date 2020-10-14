@@ -23,11 +23,11 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       const params = req.params as t.IUrlParamsCellFiles;
       const paramData = getParams({ params });
       const { status, error, cellUri } = paramData;
-      const { expires, files: includeFiles, urls: includeUrls } = query;
+      const { expires, files: includeFiles, urls: includeUrls, filter } = query;
 
       return !paramData.ns || error
         ? { status, data: { error } }
-        : listCellFiles({ host, db, fs, cellUri, expires, includeFiles, includeUrls });
+        : listCellFiles({ host, db, fs, cellUri, expires, includeFiles, includeUrls, filter });
     } catch (err) {
       return util.toErrorPayload(err);
     }

@@ -73,7 +73,7 @@ export type IHttpClientCellFileByName = {
 export type IHttpClientCellFiles = {
   urls(): t.IHttpClientAsync<IHttpClientCellFileUrl[]>;
   map(): t.IHttpClientAsync<t.IFileMap>;
-  list(): t.IHttpClientAsync<IHttpClientFileData[]>;
+  list(options?: { filter?: string }): t.IHttpClientAsync<IHttpClientFileData[]>;
   upload(
     files: IHttpClientCellFileUpload | IHttpClientCellFileUpload[],
     options?: { changes?: boolean },

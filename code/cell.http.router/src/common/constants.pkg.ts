@@ -15,8 +15,9 @@ export const PKG = {
     '@platform/http.router': '0.0.41',
     '@platform/libs': '0.2.2',
     '@platform/log': '0.1.31',
-    '@platform/util.value': '^0.8.1',
+    '@platform/util.value': '0.8.1',
     cheerio: '1.0.0-rc.3',
     'mime-types': '2.1.27',
+    minimatch: '3.0.4',
   },
 };
