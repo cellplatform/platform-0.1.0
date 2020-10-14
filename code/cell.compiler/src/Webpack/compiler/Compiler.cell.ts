@@ -22,7 +22,7 @@ export const cell: t.WebpackCell = (hostInput, cellInput) => {
   };
 
   const cell: t.WebpackCellCompiler = {
-    host,
+    host: `${parsedHost.protocol}//${parsedHost.host}`,
     uri,
     dir(config) {
       const model = Model(config);

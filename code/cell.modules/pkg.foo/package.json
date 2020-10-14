@@ -1,6 +1,6 @@
 {
   "name": "foo",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "scripts": {
     "build": "tsc $@",
     "dev": "cell.compiler dev $@",
@@ -16,7 +16,7 @@
     "react-dom": "^16.13.1"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.1.1"
+    "@platform/cell.compiler": "^0.1.3"
   },
   "license": "MIT",
   "private": true

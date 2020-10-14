@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { parse as parseUrl } from 'url';
 
-import { createMock, expect, fs, Http, readFile, Schema, t } from '../../test';
+import { createMock, expect, fs, Http, readFile, Schema, t, http } from '../../test';
 
 describe('cell/files: upload', function () {
   this.timeout(50000);
