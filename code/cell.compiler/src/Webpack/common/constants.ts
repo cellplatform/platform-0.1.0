@@ -1,9 +1,9 @@
-import * as t from '../../common/types';
-
 const PORT = 3000;
 const HOST = 'http://localhost';
-const CONFIG: t.WebpackModel = {
+const CONFIG = {
   name: '',
+  dir: 'dist',
+  entry: {},
   mode: 'production',
   url: `${HOST}:${PORT}/`,
   target: ['web'],

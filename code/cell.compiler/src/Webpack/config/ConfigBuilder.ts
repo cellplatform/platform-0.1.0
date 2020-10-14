@@ -26,7 +26,8 @@ export const ConfigBuilder: t.ConfigBuilder = {
     if (!name) {
       throw new Error(`Configuration must be named`);
     }
-    return StateObject.create<t.WebpackModel>({ ...DEFAULT.CONFIG, name });
+    const initial = { ...DEFAULT.CONFIG, name } as t.WebpackModel;
+    return StateObject.create<t.WebpackModel>(initial);
   },
 
   create(input) {

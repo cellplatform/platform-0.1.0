@@ -26,7 +26,6 @@ export function Model(input: M) {
 
   const res = {
     toObject: () => model,
-    target: (...defaultTargets: string[]) => toTargetArray(model.target, ...defaultTargets),
 
     get prod() {
       return res.mode() === 'production';
@@ -38,6 +37,12 @@ export function Model(input: M) {
     mode(defaultValue?: t.WpMode) {
       return model.mode || defaultValue || DEFAULTS.mode;
     },
+
+    target(...defaultTargets: string[]) {
+      defaultTargets = defaultTargets.length === 0 ? DEFAULTS.target : defaultTargets;
+      return toTargetArray(model.target, ...defaultTargets);
+    },
+
     url(defaultValue?: string): string {
       return (model.url || defaultValue || DEFAULTS.url) as string;
     },

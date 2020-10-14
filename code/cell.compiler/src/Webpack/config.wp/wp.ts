@@ -19,6 +19,9 @@ export function toWebpackConfig(input: M): t.WpConfig {
   const publicPath = model.url();
   const prod = model.prod;
 
+  const entry = model.entry();
+  const target = model.target();
+
   /**
    * Base configuration.
    */
@@ -26,8 +29,8 @@ export function toWebpackConfig(input: M): t.WpConfig {
     name,
     mode,
     output: { publicPath, path },
-    entry: model.entry(),
-    target: model.target(),
+    entry,
+    target,
     resolve: { extensions: ['.tsx', '.ts', '.js'] },
     devtool: prod ? undefined : 'eval-cheap-module-source-map',
     devServer: prod ? undefined : { port, hot: true },
