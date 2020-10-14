@@ -185,6 +185,17 @@ describe('Urls', () => {
       expect(res2.toString()).to.eql(URL);
     });
 
+    it('files.list (sub-dir)', () => {
+      const URL = 'http://localhost/cell:foo:A1/files';
+
+      const list = url.cell(URI).files.list;
+      expect(list.toString()).to.eql(URL);
+
+      const res = list.query({ dir: 'foo/bar' });
+      expect(res.query({ dir: 'foo/bar' }).toString()).to.eql(URL + '?dir=foo/bar');
+      expect(res.query({ dir: '/foo/bar' }).toString()).to.eql(URL + '?dir=/foo/bar');
+    });
+
     it('files.delete', () => {
       const res1 = url.cell(URI).files.delete;
       const res2 = url.cell(Uri.cell('cell:foo:A1')).files.delete;
