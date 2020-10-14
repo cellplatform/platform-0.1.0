@@ -4,7 +4,7 @@ import { t, toModel, logger } from '../common';
 
 export { logger };
 
-type M = t.WebpackModel | t.ConfigBuilderChain;
+type M = t.CompilerWebpackModel | t.CompilerConfig;
 
 export const toCompiler = (input: M) => {
   const model = toModel(input);

@@ -25,7 +25,7 @@ export async function getFiles(args: { sourceDir: string; targetDir?: string }) 
 /**
  * Upload files to the given target.
  */
-export const upload: t.WebpackUpload = async (args) => {
+export const upload: t.CompilerRunUpload = async (args) => {
   const timer = time.timer();
   const { host, sourceDir, targetDir, targetCell } = args;
   const files = await getFiles({ sourceDir, targetDir });

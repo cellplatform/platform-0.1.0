@@ -5,7 +5,7 @@ import { stats } from './wp.stats';
 
 export { stats };
 
-type M = t.WebpackModel | t.ConfigBuilderChain;
+type M = t.CompilerWebpackModel | t.CompilerConfig;
 
 /**
  * Converts a configuration state into a live webpack object.

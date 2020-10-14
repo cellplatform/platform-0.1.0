@@ -1,10 +1,10 @@
-import { Webpack } from '..';
+import { Compiler } from '..';
 import { fs, expect, ModuleFederationPlugin } from '../../test';
 import { wp } from '.';
 
 const create = () => {
-  const model = Webpack.config.model('foo');
-  const builder = Webpack.config.create(model);
+  const model = Compiler.config.model('foo');
+  const builder = Compiler.config.create(model);
   return { model, builder };
 };
 

@@ -6,7 +6,7 @@ import * as util from './util';
 /**
  * Run dev server.
  */
-export const dev: t.WebpackDev = async (input) => {
+export const dev: t.CompilerRunDev = async (input) => {
   const obj = toModel(input);
   obj.mode = 'development'; // NB: Always run dev-server in "development" mode.
   obj.target = undefined; //   BUG: HMR fails with an explicitly specified target. https://github.com/webpack/webpack-dev-server/issues/2758

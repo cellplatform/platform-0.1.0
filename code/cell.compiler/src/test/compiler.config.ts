@@ -1,8 +1,8 @@
-import { Webpack } from '..';
-export { Webpack };
+import { Compiler } from '..';
+export { Compiler as Webpack };
 
 export function configure() {
-  return Webpack.config
+  return Compiler.config
     .create('home')
     .url(1234)
     .entry('./src/test/entry')

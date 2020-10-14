@@ -4,7 +4,7 @@ import { DEFAULT } from './constants';
 
 export * from './util.logger';
 
-type M = t.WebpackModel | t.ConfigBuilderChain;
+type M = t.CompilerWebpackModel | t.CompilerConfig;
 
 export function isModel(input: M) {
   return typeof (input as any).toObject === 'function';
@@ -14,7 +14,7 @@ export function isModel(input: M) {
  * Wrangle object types into a [model].
  */
 export const toModel = (input: M) => {
-  return (isModel(input) ? (input as any).toObject() : input) as t.WebpackModel;
+  return (isModel(input) ? (input as any).toObject() : input) as t.CompilerWebpackModel;
 };
 
 /**
@@ -54,7 +54,7 @@ export function Model(input: M) {
       const dir = model.dir || defaultValue || DEFAULTS.dir;
       return dir ? fs.resolve(dir) : undefined;
     },
-    entry(defaultValue?: t.WebpackModel['entry']) {
+    entry(defaultValue?: t.CompilerWebpackModel['entry']) {
       return model.entry || defaultValue || DEFAULTS.entry;
     },
   };
@@ -66,7 +66,7 @@ export function Model(input: M) {
  * Derive targets as an array
  */
 export function toTargetArray(
-  value: t.WebpackModel['target'],
+  value: t.CompilerWebpackModel['target'],
   ...defaultTargets: string[]
 ): string[] {
   if (!value) {

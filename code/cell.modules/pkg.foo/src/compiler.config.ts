@@ -1,8 +1,8 @@
-import { Webpack } from '@platform/cell.compiler';
-export { Webpack };
+import { Compiler } from '@platform/cell.compiler';
+export { Compiler };
 
 export const configure = () =>
-  Webpack.config
+  Compiler.config
     .create('foo')
     .url(3001)
     .title('My Foo')

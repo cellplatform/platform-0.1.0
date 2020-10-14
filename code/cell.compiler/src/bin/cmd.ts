@@ -1,5 +1,5 @@
 import { fs, log, minimist } from '../common';
-import { Webpack } from '../Webpack';
+import { Compiler } from '../Webpack';
 import * as util from './util';
 
 type P = minimist.ParsedArgs;
@@ -21,7 +21,7 @@ export async function bundle(argv: P) {
     config.url(params.url);
   }
 
-  await Webpack.bundle(config);
+  await Compiler.bundle(config);
 }
 
 /**
@@ -36,7 +36,7 @@ export async function watch(argv: P) {
     config.mode(params.mode);
   }
 
-  await Webpack.watch(config);
+  await Compiler.watch(config);
 }
 
 /**
@@ -53,7 +53,7 @@ export async function dev(argv: P) {
     config.url(params.url);
   }
 
-  await Webpack.dev(config);
+  await Compiler.dev(config);
 }
 
 /**

@@ -22,7 +22,7 @@ describe('ConfigBuilder', () => {
     });
 
     it('builder (from {model} StateObject)', () => {
-      const model = StateObject.create<t.WebpackModel>({
+      const model = StateObject.create<t.CompilerWebpackModel>({
         ...DEFAULT.CONFIG,
         name: 'foo',
         mode: 'development',
@@ -35,7 +35,7 @@ describe('ConfigBuilder', () => {
     });
 
     it('builder (from {model} object)', () => {
-      const model = StateObject.create<t.WebpackModel>({
+      const model = StateObject.create<t.CompilerWebpackModel>({
         ...DEFAULT.CONFIG,
         name: 'foo',
         mode: 'development',
@@ -356,7 +356,7 @@ describe('ConfigBuilder', () => {
 
     it('loads {dependencies} from package.json', () => {
       const { builder } = create();
-      let args: t.WebpackBuilderShared | undefined;
+      let args: t.CompilerConfigShared | undefined;
       builder.shared((e) => (args = e));
       expect(args?.cwd).to.eql(process.cwd());
       expect(args?.dependencies).to.eql(pkg.dependencies);

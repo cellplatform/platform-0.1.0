@@ -1,13 +1,13 @@
 import { fs, t, Uri, logger, defaultValue, Model, parseUrl, Schema } from '../common';
-import { bundle } from './Compiler.bundle';
-import { upload } from './Compiler.upload';
+import { bundle } from './task.bundle';
+import { upload } from './task.upload';
 
-type B = t.ConfigBuilderChain;
+type B = t.CompilerConfig;
 
 /**
  * Cell compilation target.
  */
-export const cell: t.WebpackCell = (hostInput, cellInput) => {
+export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
   const uri = typeof cellInput === 'object' ? cellInput : Uri.cell(cellInput);
   const urn = uri.toString().replace(/\:/g, '-');
   const baseDir = fs.join(fs.resolve('./node_modules/.cache/cell'), urn);
@@ -21,7 +21,7 @@ export const cell: t.WebpackCell = (hostInput, cellInput) => {
     return targetDir ? `${url}${targetDir}` : url;
   };
 
-  const cell: t.WebpackCellCompiler = {
+  const cell: t.CompilerCell = {
     host: `${parsedHost.protocol}//${parsedHost.host}`,
     uri,
     dir(config) {
