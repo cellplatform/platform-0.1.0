@@ -1,27 +1,3 @@
-import { minimist, t } from '../common';
-import { loadConfig } from './util.loadConfig';
-
 export * from './util.logger';
 export * from './util.loadConfig';
-
-type P = minimist.ParsedArgs;
-
-export function params(argv: P) {
-  const params = {
-    get mode(): t.WpMode | undefined {
-      return argv.mode || argv.m;
-    },
-    get url(): string | number | undefined {
-      return argv.url || argv.u;
-    },
-    get config(): string | undefined {
-      return argv.config || argv.c;
-    },
-
-    loadConfig() {
-      return loadConfig(params.config);
-    },
-  };
-
-  return params;
-}
+export * from './util.params';

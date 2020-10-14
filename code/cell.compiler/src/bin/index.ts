@@ -24,6 +24,10 @@ const param = argv._[0];
     return cmd.watch(argv);
   }
 
+  if (param === 'upload') {
+    return cmd.upload(argv);
+  }
+
   if (param === 'dev') {
     return cmd.dev(argv);
   }

@@ -1,5 +1,5 @@
 import { Compiler } from '..';
-export { Compiler as Webpack };
+export { Compiler };
 
 export function configure() {
   return Compiler.config

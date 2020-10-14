@@ -1,8 +1,8 @@
 import { t } from '../common';
 
 const PARAMS = {
-  config: `Path to configuration file (default: 'compiler.config')`,
-  mode: `Override build mode.`,
+  config: `(optional) Path to configuration file (default: 'compiler.config')`,
+  mode: `(optional) Override build mode`,
 };
 
 export const COMMANDS: t.Commands = {
@@ -10,30 +10,39 @@ export const COMMANDS: t.Commands = {
     description: 'Compile the project into a bundle',
     params: {
       '--config': PARAMS.config,
-      '--mode, -m': PARAMS.mode,
-      '--url -u': `URL the bundle is federated on.`,
+      '--mode -m': PARAMS.mode,
+      '--url': `(optional) URL the bundle is federated on`,
     },
   },
   watch: {
-    description: 'Build and watch for file changes',
+    description: 'Bundle and watch for file changes',
     params: {
       '--config': PARAMS.config,
-      '--mode, -m': PARAMS.mode,
+      '--mode -m': PARAMS.mode,
     },
   },
   dev: {
     description: 'Start development server (HMR)',
     params: {
       '--config': PARAMS.config,
-      '--url -u': `URL the bundle is federated on.`,
+      '--url': `(optional) URL the bundle is federated on`,
+    },
+  },
+  upload: {
+    description: 'Bundle and upload to a cell',
+    params: {
+      '--host -h': `The target host domain`,
+      '--uri': `The target cell URI (eg 'cell:<ns>:A1')`,
+      '--config': PARAMS.config,
+      '--dir': `(optional) The target directory within the cell`,
     },
   },
   info: {
-    description: 'Output info about the build',
+    description: 'Information about a build configuration',
     params: {
       '--config': PARAMS.config,
-      '--mode, -m': PARAMS.mode,
-      '--url -u': `URL the bundle is federated on.`,
+      '--mode -m': PARAMS.mode,
+      '--url': `(optional) URL the bundle is federated on`,
     },
   },
   clean: {

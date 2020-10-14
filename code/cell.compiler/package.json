@@ -15,12 +15,14 @@
     "prepare": "ts prepare",
     "serve": "cd dist && serve --listen 1234",
     "cmd": "node lib/bin $@",
-    "dev": "yarn cmd dev --config lib/test/config/dev",
-    "bundle": "yarn cmd bundle --config lib/test/config/prod",
-    "watch": "yarn cmd watch --config lib/test/config/dev",
-    "upload": "yarn cmd upload --config lib/test/config/prod",
+    "dev": "yarn cmd dev --config lib/test/config/dev $@",
+    "bundle": "yarn cmd bundle --config lib/test/config/prod $@",
+    "watch": "yarn cmd watch --config lib/test/config/dev $@",
+    "upload": "yarn cmd upload --config lib/test/config/prod $@",
+    "upload-sample": "yarn cmd upload --config lib/test/config/prod --host=localhost:5000 --uri=cell:ckg2nl70400001wethqd5e0ry:A1 --dir=foobar $@",
     "info": "yarn cmd info --config lib/test/config/prod",
-    "clean": "yarn cmd clean"
+    "clean": "yarn cmd clean",
+    "tmp": "ts-node -T src/test/script.tmp"
   },
   "dependencies": {
     "@babel/core": "7.11.6",

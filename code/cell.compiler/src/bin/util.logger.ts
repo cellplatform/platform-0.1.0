@@ -57,4 +57,14 @@ export const logger = {
     log.info();
     return logger;
   },
+
+  errorAndExit(code: number, ...message: (string | undefined)[]) {
+    log.info();
+    message.forEach((msg, i) => {
+      msg = i === 0 ? `${log.red('FAILED')}\n${msg}` : msg;
+      log.info.yellow(msg || '');
+    });
+    log.info();
+    process.exit(code);
+  },
 };

@@ -1,4 +1,5 @@
 import { fs, log, t } from '../common';
+import { logger } from './util';
 
 type B = t.CompilerConfig;
 
@@ -15,7 +16,7 @@ export async function loadConfig(file?: string): Promise<B> {
 
   // Ensure configuration file exists
   if (!path) {
-    errorAndExit(1, `A path to the configuration file could not be derived.`);
+    logger.errorAndExit(1, `A path to the configuration file could not be derived.`);
   }
   if (await fs.is.dir(path)) {
     path = fs.join(path, DEFAULT.FILENAME);
@@ -35,14 +36,17 @@ export async function loadConfig(file?: string): Promise<B> {
     const config = (res && typeof res.then === 'function' ? await res : res) as B;
     if (!config) {
       const err = `The default export did not return a configuration builder.\n${log.white(path)}`;
-      errorAndExit(1, err);
+      logger.errorAndExit(1, err);
     }
     return config;
   }
 
   // Exported {object}.
   if (typeof imported !== 'object' && typeof imported.clone !== 'function') {
-    errorAndExit(1, `The default export was not a configuration builder.\n${log.white(path)}`);
+    logger.errorAndExit(
+      1,
+      `The default export was not a configuration builder.\n${log.white(path)}`,
+    );
   }
 
   return imported.clone() as B;
@@ -52,18 +56,8 @@ export async function loadConfig(file?: string): Promise<B> {
  * [Helpers]
  */
 
-const errorAndExit = (code: number, ...message: string[]) => {
-  log.info();
-  message.forEach((msg, i) => {
-    msg = i === 0 ? `${log.red('FAILED')}\n${msg}` : msg;
-    log.info.yellow(msg);
-  });
-  log.info();
-  process.exit(code);
-};
-
 const ensureExists = async (path: string) => {
   if (!(await fs.pathExists(path))) {
-    errorAndExit(1, `The configuration file path does not exist ${log.white(path)}`);
+    logger.errorAndExit(1, `The configuration file path does not exist ${log.white(path)}`);
   }
 };
