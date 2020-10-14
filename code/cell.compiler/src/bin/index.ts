@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { minimist } from '../common';
-import * as cmd from './commands';
+import * as cmd from './cmd';
 import { logger } from './util';
 
 /**

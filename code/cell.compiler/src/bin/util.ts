@@ -1,4 +1,4 @@
-import { minimist } from '../common';
+import { minimist, t } from '../common';
 import { loadConfig } from './util.loadConfig';
 
 export * from './util.logger';
@@ -8,7 +8,7 @@ type P = minimist.ParsedArgs;
 
 export function params(argv: P) {
   const params = {
-    get mode(): string | undefined {
+    get mode(): t.WpMode | undefined {
       return argv.mode || argv.m;
     },
     get url(): string | number | undefined {

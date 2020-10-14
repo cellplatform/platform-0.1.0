@@ -1,8 +1,9 @@
-import { fs, log, minimist, t } from '../common';
+import { fs, log, minimist } from '../common';
 import { Webpack } from '../Webpack';
 import * as util from './util';
 
 type P = minimist.ParsedArgs;
+
 const logger = util.logger;
 
 /**
@@ -11,10 +12,15 @@ const logger = util.logger;
 export async function bundle(argv: P) {
   const params = util.params(argv);
   const config = await params.loadConfig();
-  config.mode((params.mode as t.WebpackModel['mode']) || 'production');
+
+  if (params.mode) {
+    config.mode(params.mode);
+  }
+
   if (params.url) {
     config.url(params.url);
   }
+
   await Webpack.bundle(config);
 }
 
@@ -25,7 +31,11 @@ export async function watch(argv: P) {
   logger.clear();
   const params = util.params(argv);
   const config = await params.loadConfig();
-  config.mode((params.mode as t.WebpackModel['mode']) || 'development');
+
+  if (params.mode) {
+    config.mode(params.mode);
+  }
+
   await Webpack.watch(config);
 }
 
@@ -36,10 +46,13 @@ export async function dev(argv: P) {
   logger.clear();
   const params = util.params(argv);
   const config = await params.loadConfig();
+
   config.mode('development');
+
   if (params.url) {
     config.url(params.url);
   }
+
   await Webpack.dev(config);
 }
 
@@ -51,7 +64,7 @@ export async function info(argv: P) {
   const config = await params.loadConfig();
 
   if (params.mode) {
-    config.mode(params.mode as t.WebpackModel['mode']);
+    config.mode(params.mode);
   }
 
   if (params.url) {

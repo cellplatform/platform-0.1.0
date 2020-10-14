@@ -9,17 +9,18 @@
   },
   "scripts": {
     "start": "yarn dev",
-    "dev": "ts-node -T src/test/script/dev",
     "test": "ts test",
     "lint": "ts lint",
     "build": "ts build --no-esm",
     "prepare": "ts prepare",
-    "clean": "rm -rf dist && rm -rf node_modules/.cache",
     "serve": "cd dist && serve --listen 1234",
-    "bundle": "ts-node -T src/test/script/bundle",
-    "watch": "ts-node -T src/test/script/watch",
-    "upload": "ts-node -T src/test/script/upload",
-    "info": "ts-node -T src/test/script/info"
+    "cmd": "node lib/bin $@",
+    "dev": "yarn cmd dev --config lib/test/config/dev",
+    "bundle": "yarn cmd bundle --config lib/test/config/prod",
+    "watch": "yarn cmd watch --config lib/test/config/dev",
+    "upload": "yarn cmd upload --config lib/test/config/prod",
+    "info": "yarn cmd info --config lib/test/config/prod",
+    "clean": "yarn cmd clean"
   },
   "dependencies": {
     "@babel/core": "7.11.6",
