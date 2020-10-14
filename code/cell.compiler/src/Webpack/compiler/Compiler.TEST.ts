@@ -47,7 +47,6 @@ describe('Compiler', () => {
 
     it('dir (from model)', () => {
       const { builder } = create();
-
       const test = (expected: string) => {
         const cell = Webpack.cell(host, 'cell:foo:A1');
         const dir = cell.dir(builder);
@@ -69,12 +68,6 @@ describe('Compiler', () => {
       test('/cell-foo-A1/web/home-development');
 
       builder.target('  ');
-      test('/cell-foo-A1/web/home-development');
-
-      builder.host('https://foo.com');
-      test('/cell-foo-A1/web/home-development'); // NB: Takes the hostname from the cell params, not the config.
-
-      builder.host(undefined);
       test('/cell-foo-A1/web/home-development');
     });
   });

@@ -1,25 +1,26 @@
 import * as DevServer from 'webpack-dev-server';
 
-import { log, t, toModel, logger } from '../common';
+import { log, t, toModel, logger, Model } from '../common';
 import * as util from './util';
 
 /**
  * Run dev server.
  */
 export const dev: t.WebpackDev = async (input) => {
-  const model = toModel(input);
-  model.mode = 'development'; // NB: Always run dev-server in "development" mode.
-  model.target = undefined; //   BUG: HMR fails with an explicitly specified target. https://github.com/webpack/webpack-dev-server/issues/2758
+  const obj = toModel(input);
+  obj.mode = 'development'; // NB: Always run dev-server in "development" mode.
+  obj.target = undefined; //   BUG: HMR fails with an explicitly specified target. https://github.com/webpack/webpack-dev-server/issues/2758
 
-  const { compiler } = util.toCompiler(model);
-  const port = model.port;
+  const { compiler } = util.toCompiler(obj);
+  const model = Model(obj);
+  const port = model.port();
   let count = 0;
 
   compiler.hooks.afterCompile.tap('DevServer', (compilation) => {
     count++;
     logger.clear().newline();
     log.info.gray(`DevServer (${count})`);
-    logger.model(model, 2).newline().hr().stats(compilation);
+    logger.model(obj, 2).newline().hr().stats(compilation);
   });
 
   const host = 'localhost';

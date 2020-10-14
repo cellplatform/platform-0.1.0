@@ -1,5 +1,5 @@
 import { t } from '../common';
-import { cell } from './Commpiler.cell';
+import { cell } from './Compiler.cell';
 import { bundle } from './Compiler.bundle';
 import { dev } from './Compiler.dev';
 import { upload } from './Compiler.upload';

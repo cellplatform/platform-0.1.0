@@ -11,8 +11,8 @@ export function params(argv: P) {
     get mode(): string | undefined {
       return argv.mode || argv.m;
     },
-    get port(): number | undefined {
-      return argv.port || argv.p;
+    get url(): string | number | undefined {
+      return argv.url || argv.u;
     },
     get config(): string | undefined {
       return argv.config || argv.c;

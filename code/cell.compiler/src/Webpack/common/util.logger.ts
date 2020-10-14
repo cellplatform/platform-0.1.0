@@ -1,8 +1,8 @@
-import { Compilation as ICompliation, Stats as IStats } from 'webpack';
-import { stats } from '../config.wp/wp.stats';
 import { parse as parseUrl } from 'url';
+import { Compilation as ICompliation, Stats as IStats } from 'webpack';
 
-import { toTargetArray, t, log, DEFAULT } from '../common';
+import { log, Model, t } from '../common';
+import { stats } from '../config.wp/wp.stats';
 
 /**
  * Value formatters
@@ -48,11 +48,9 @@ export const logger = {
     return logger;
   },
 
-  model(model: t.WebpackModel, indent?: number) {
+  model(input: t.WebpackModel, indent?: number) {
     const prefix = typeof indent === 'number' ? ' '.repeat(indent) : '';
-    const host = model.host || DEFAULT.CONFIG.host;
-    const port = model.port || DEFAULT.CONFIG.port;
-    const target = toTargetArray(model.target);
+    const model = Model(input);
 
     const table = log.table({ border: false });
     const add = (key: string, value: string) => {
@@ -60,10 +58,10 @@ export const logger = {
       table.add([left, value]);
     };
 
-    add('name', log.green(model.name));
-    add('mode', log.green(model.mode));
-    add('target', log.green(target.join()));
-    add('host', log.gray(`${log.cyan(host)}:${log.magenta(port)}`));
+    add('name', log.green(model.name()));
+    add('mode', log.green(model.mode()));
+    add('target', log.green(model.target().join()));
+    add('url', log.cyan(model.url()));
 
     table.log();
 

@@ -11,7 +11,7 @@ export const COMMANDS: t.Commands = {
     params: {
       '--config': PARAMS.config,
       '--mode, -m': PARAMS.mode,
-      '--port -p': `Port the bundle is federated on.`,
+      '--url -u': `URL the bundle is federated on.`,
     },
   },
   watch: {
@@ -25,7 +25,7 @@ export const COMMANDS: t.Commands = {
     description: 'Start development server (HMR)',
     params: {
       '--config': PARAMS.config,
-      '--port -p': `Port to listen on.`,
+      '--url -u': `URL the bundle is federated on.`,
     },
   },
   info: {
@@ -33,7 +33,7 @@ export const COMMANDS: t.Commands = {
     params: {
       '--config': PARAMS.config,
       '--mode, -m': PARAMS.mode,
-      '--port -p': `Port the bundle is federated on.`,
+      '--url -u': `URL the bundle is federated on.`,
     },
   },
   clean: {

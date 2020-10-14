@@ -1,9 +1,10 @@
-import { parse as parseUrl } from 'url';
-import { t, fs } from '../../common';
+import { parse } from 'url';
+
+import { fs } from '../../common';
+import { isModel } from './util.model';
 
 export * from './util.logger';
-
-type M = t.WebpackModel | t.ConfigBuilderChain;
+export * from './util.model';
 
 /**
  * Escape reserved characters from a path.
@@ -31,40 +32,36 @@ export const unescapeKeyPaths = (obj: Record<string, any>) => {
  * Flag tests.
  */
 export const is = {
-  model: (input: any) => typeof (input as any).toObject === 'function',
+  model: (input: any) => isModel(input),
 };
 
-/**
- * Wrangle object types into a [model].
- */
-export const toModel = (input: M) => {
-  return (is.model(input) ? (input as any).toObject() : input) as t.WebpackModel;
-};
-
-/**
- * Format a host URL.
- */
-export function parseHostUrl(input: string) {
+export function parseUrl(input: string) {
   input = (input || '').trim();
+
   const hasProtocol = input.startsWith('http:') || input.startsWith('https:');
   if (!hasProtocol) {
     input = input.startsWith('localhost') ? `http://${input}` : `https://${input}`;
   }
 
-  const parsed = parseUrl(input);
+  const parsed = parse(input);
   const protocol = parsed.protocol || '';
   const hostname = parsed.hostname || '';
-  const url = `${protocol}//${hostname}`;
+  const path = parsed.pathname ? parsed.pathname.replace(/^\/*/, '') : '';
   const port = parsed.port ? parseInt(parsed.port, 10) : undefined;
+
+  let url = `${protocol}//${hostname}`;
+  url = port && port !== 80 ? `${url}:${port}` : url;
+  url = path ? `${url}/${path}` : url;
+  url = `${url.replace(/\/*$/, '')}/`;
 
   return {
     url,
     port,
     protocol,
+    host: parsed.host || '',
     hostname,
-    toString(options: { port?: boolean } = {}) {
-      return options.port && parsed.port ? `${url}:${parsed.port}` : url;
-    },
+    path,
+    toString: () => url,
   };
 }
 
@@ -82,17 +79,3 @@ export const path = {
     return `${value.replace(/\/*$/, '')}/`;
   },
 };
-
-/**
- * Derive targets as an array
- */
-export function toTargetArray(
-  value: t.WebpackModel['target'],
-  ...defaultTargets: string[]
-): string[] {
-  if (!value) {
-    return defaultTargets;
-  } else {
-    return Array.isArray(value) ? value : [value];
-  }
-}

@@ -21,8 +21,7 @@ export type WebpackBuilder = {
   name(value: string): B;
   title(value: string | undefined): B;
   mode(value: t.WpMode | 'prod' | 'dev'): B;
-  port(value: number | undefined): B;
-  host(value: string | undefined): B;
+  url(value: string | number | undefined): B;
   target(value: t.WpTarget | undefined): B;
   dir(value: string | undefined): B;
   lint(value: boolean | undefined): B;
@@ -49,8 +48,7 @@ export type WebpackModel = {
   name: string;
   title?: string;
   mode: t.WpMode;
-  port: number;
-  host?: string;
+  url?: string;
   target?: t.WpTarget;
   dir?: string;
   lint?: boolean;

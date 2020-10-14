@@ -12,8 +12,8 @@ export async function bundle(argv: P) {
   const params = util.params(argv);
   const config = await params.loadConfig();
   config.mode((params.mode as t.WebpackModel['mode']) || 'production');
-  if (params.port) {
-    config.port(params.port);
+  if (params.url) {
+    config.url(params.url);
   }
   await Webpack.bundle(config);
 }
@@ -37,8 +37,8 @@ export async function dev(argv: P) {
   const params = util.params(argv);
   const config = await params.loadConfig();
   config.mode('development');
-  if (params.port) {
-    config.port(params.port);
+  if (params.url) {
+    config.url(params.url);
   }
   await Webpack.dev(config);
 }
@@ -54,8 +54,8 @@ export async function info(argv: P) {
     config.mode(params.mode as t.WebpackModel['mode']);
   }
 
-  if (params.port) {
-    config.port(params.port);
+  if (params.url) {
+    config.url(params.url);
   }
 
   logger.clear();

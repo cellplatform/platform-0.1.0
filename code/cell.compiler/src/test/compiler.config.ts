@@ -4,7 +4,7 @@ export { Webpack };
 export function configure() {
   return Webpack.config
     .create('home')
-    .port(1234)
+    .url(1234)
     .entry('./src/test/entry')
     .remote('foo', 'foo@http://localhost:3001/remoteEntry.js')
     .shared((e) => {

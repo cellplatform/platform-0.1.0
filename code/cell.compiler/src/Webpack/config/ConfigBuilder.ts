@@ -8,7 +8,7 @@ import {
   StateObject,
   t,
   value as valueUtil,
-  parseHostUrl,
+  parseUrl,
 } from '../common';
 import { wp } from '../config.wp';
 
@@ -35,7 +35,6 @@ export const ConfigBuilder: t.ConfigBuilder = {
         ? input
         : StateObject.create<t.WebpackModel>(input as any)
       : ConfigBuilder.model(input)) as t.ConfigBuilderModel;
-
     return Builder.create<t.WebpackModel, t.WebpackBuilder>({ model, handlers });
   },
 };
@@ -104,25 +103,19 @@ const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
     });
   },
 
-  host(args) {
+  url(args) {
     args.model.change((draft) => {
-      const defaultHost = DEFAULT.CONFIG.host;
-      const value = format.string(args.params[0], { default: defaultHost, trim: true });
+      const defaultUrl = DEFAULT.CONFIG.url;
+      const input = args.params[0];
+      const value =
+        typeof input === 'number'
+          ? `localhost:${input}`
+          : format.string(input, { default: defaultUrl, trim: true });
       if (!value) {
-        draft.host = defaultHost;
+        draft.url = defaultUrl;
       } else {
-        const url = parseHostUrl(value);
-        draft.host = url.toString({ port: false });
-        if (url.port) {
-          draft.port = url.port;
-        }
+        draft.url = parseUrl(value).toString();
       }
-    });
-  },
-
-  port(args) {
-    args.model.change((draft) => {
-      draft.port = format.number(args.params[0], { default: DEFAULT.CONFIG.port }) as number;
     });
   },
 

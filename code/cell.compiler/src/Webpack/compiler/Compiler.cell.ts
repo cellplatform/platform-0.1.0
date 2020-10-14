@@ -1,8 +1,7 @@
-import { fs, t, parseHostUrl, Uri, logger, defaultValue, toTargetArray } from '../common';
+import { fs, t, Uri, logger, defaultValue, Model, parseUrl } from '../common';
 import { bundle } from './Compiler.bundle';
 import { upload } from './Compiler.upload';
 
-type M = t.WebpackModel | t.ConfigBuilderChain;
 type B = t.ConfigBuilderChain;
 
 /**
@@ -12,8 +11,8 @@ export const cell: t.WebpackCell = (hostInput, cellInput) => {
   const uri = typeof cellInput === 'object' ? cellInput : Uri.cell(cellInput);
   const urn = uri.toString().replace(/\:/g, '-');
 
-  const parsedHost = parseHostUrl(hostInput);
-  const host = parsedHost.toString({ port: true });
+  const parsedHost = parseUrl(hostInput);
+  const host = parsedHost.host;
   const baseDir = fs.join(fs.resolve('./node_modules/.cache/cell'), urn);
 
   const exists = (config: B) => fs.pathExists(cell.dir(config));
@@ -22,9 +21,9 @@ export const cell: t.WebpackCell = (hostInput, cellInput) => {
     host,
     uri,
     dir(config) {
-      const model = config.toObject();
-      const target = toTargetArray(model.target, 'web').join(',');
-      return fs.join(baseDir, target, `${model.name}-${model.mode}`);
+      const model = Model(config);
+      const target = model.target('web').join();
+      return fs.join(baseDir, target, `${model.name()}-${model.mode()}`);
     },
 
     async bundle(config, options = {}) {
