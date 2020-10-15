@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.ui.spreadsheet",
-  "version": "0.0.101",
+  "version": "0.0.102",
   "description": "A spreadsheet like datagrid view.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,16 +16,16 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.client": "0.2.162",
-    "@platform/cell.schema": "0.5.2",
-    "@platform/cell.types": "0.5.3",
-    "@platform/cell.ui": "0.1.129",
+    "@platform/cell.client": "0.2.163",
+    "@platform/cell.schema": "0.5.3",
+    "@platform/cell.types": "0.5.4",
+    "@platform/cell.ui": "0.1.130",
     "@platform/libs": "0.2.2",
     "@platform/polyfill": "0.0.1",
     "@platform/react": "0.4.49",
     "@platform/state": "0.7.14",
     "@platform/types": "0.5.8",
-    "@platform/ui.datagrid": "0.7.306"
+    "@platform/ui.datagrid": "0.7.307"
   },
   "devDependencies": {
     "@platform/test": "0.1.16",

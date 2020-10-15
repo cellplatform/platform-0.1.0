@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.http.router",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Isolated router logic for the CellOS HTTP server.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,13 +16,13 @@
   },
   "dependencies": {
     "@platform/cache": "0.2.37",
-    "@platform/cell.client": "0.2.162",
-    "@platform/cell.db": "0.3.154",
-    "@platform/cell.func": "0.1.231",
-    "@platform/cell.schema": "0.5.2",
-    "@platform/cell.types": "0.5.3",
-    "@platform/cell.typesystem": "0.0.121",
-    "@platform/cell.value": "0.2.141",
+    "@platform/cell.client": "0.2.163",
+    "@platform/cell.db": "0.3.155",
+    "@platform/cell.func": "0.1.232",
+    "@platform/cell.schema": "0.5.3",
+    "@platform/cell.types": "0.5.4",
+    "@platform/cell.typesystem": "0.0.122",
+    "@platform/cell.value": "0.2.142",
     "@platform/fsdb.types": "0.6.37",
     "@platform/http": "0.12.32",
     "@platform/http.router": "0.0.41",
@@ -34,7 +34,7 @@
     "minimatch": "3.0.4"
   },
   "devDependencies": {
-    "@platform/cell.fs.local": "0.4.124",
+    "@platform/cell.fs.local": "0.4.125",
     "@platform/fs": "0.5.24",
     "@platform/fsdb.nedb": "1.3.137",
     "@platform/micro": "0.14.52",
