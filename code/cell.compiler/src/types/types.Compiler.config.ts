@@ -10,7 +10,7 @@ export type CompilerConfigFactory = {
 export type CompilerConfig = t.BuilderChain<CompilerConfigMethods>;
 
 /**
- * API
+ * Builder API
  */
 export type CompilerConfigMethods = {
   toObject(): t.CompilerWebpackModel;
@@ -24,8 +24,9 @@ export type CompilerConfigMethods = {
   target(value: t.WpTarget | undefined): B;
   dir(value: string | undefined): B;
   lint(value: boolean | undefined): B;
-  entry(path: string): B;
+  entry(path: string): B; // Default key: 'main'
   entry(key: string, path?: string | null): B;
+  entry(map: Record<string, string | null>): B;
   expose(key: string, path: string | null): B;
   remote(key: string, path: string | null): B;
   shared(fn: CompilerConfigSharedFunc): B;

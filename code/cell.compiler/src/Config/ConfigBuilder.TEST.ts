@@ -260,6 +260,14 @@ describe('Compiler (Config)', () => {
       expect(model.state.entry?.main).to.eql('src/foo.tsx');
     });
 
+    it('add: {map}', () => {
+      const { builder, model } = create();
+      builder.entry({ foo: ' src/foo.tsx ', bar: 'src/bar.ts' });
+
+      expect(model.state.entry?.foo).to.eql('src/foo.tsx');
+      expect(model.state.entry?.bar).to.eql('src/bar.ts');
+    });
+
     it('remove', () => {
       const { builder, model } = create();
 

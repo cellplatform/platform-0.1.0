@@ -127,9 +127,17 @@ const handlers: t.BuilderHandlers<t.CompilerWebpackModel, t.CompilerConfigMethod
   },
 
   entry(args) {
-    const param = (index: number) => format.string(args.params[index], { trim: true }) || '';
-    const value = args.params[1] === undefined ? undefined : param(1);
-    writePathMap(args.model, 'entry', param(0), value);
+    const writeEntry = (p1: any, p2: any) => {
+      const param = (value: any) => format.string(value, { trim: true }) || '';
+      const value = p2 === undefined ? undefined : param(p2);
+      writePathMap(args.model, 'entry', param(p1), value);
+    };
+    if (typeof args.params[0] === 'object') {
+      const map = args.params[0];
+      Object.keys(map).forEach((key) => writeEntry(key, map[key]));
+    } else {
+      writeEntry(args.params[0], args.params[1]);
+    }
   },
 
   expose(args) {
