@@ -4,8 +4,8 @@ import { logger } from './util';
 type B = t.CompilerConfig;
 
 const DEFAULT = {
-  FILENAME: 'compiler.js',
-  PATH: 'lib/config/compiler.js',
+  FILENAME: 'compiler.prod.js',
+  PATH: 'lib/config/compiler.prod.js',
 };
 
 export async function loadConfig(file?: string): Promise<B> {

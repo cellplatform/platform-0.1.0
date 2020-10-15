@@ -1,4 +1,4 @@
-import { Compiler } from '..';
+import { Compiler } from '../..';
 export { Compiler };
 
 export function configure() {
