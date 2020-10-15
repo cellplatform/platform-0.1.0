@@ -989,6 +989,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.11.0":
+  version "7.12.0"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.0.tgz#98bd7666186969c04be893d747cf4a6c6c8fa6b0"
+  integrity sha512-lS4QLXQ2Vbw2ubfQjeQcn+BZgZ5+ROHW9f+DWjEp5Y+NHYmkRGKqHSJ1tuhbUauKu2nhZNTBIvsIQ8dXfY5Gjw==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.10.4", "@babel/template@^7.4.4":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.10.4.tgz#3251996c4200ebc71d1a8fc405fba940f36ba278"
@@ -1691,6 +1698,14 @@
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-3.4.2.tgz#ce135e415d9ab6ff8edc52bda34c2e3d67c73f20"
   integrity sha512-k/Muzh1bO4qzmspf2F6xfbn7EQ95BV2l9Tq6kZeDV9rM9EoDeHXnotHQ6UACBqdfPS4MFRAg8ro+vuKOYOPVPQ==
+
+"@monaco-editor/react@^3.6.3":
+  version "3.6.3"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-3.6.3.tgz#62b9af6c437d4035c901c2ce27122d4c3147f10d"
+  integrity sha512-HjDIhoGuLKWeGxvyaQ9eyIBUXrnEdqGxm74u84qnmtfurLSkUACC0+GL0hD3V0PrL2ebkH16u6ZPjQweSIinWw==
+  dependencies:
+    "@babel/runtime" "^7.11.0"
+    state-local "^1.0.1"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -15069,6 +15084,11 @@ stable@^0.1.8:
   resolved "https://registry.yarnpkg.com/stable/-/stable-0.1.8.tgz#836eb3c8382fe2936feaf544631017ce7d47a3cf"
   integrity sha512-ji9qxRnOVfcuLDySj9qzhGSEFVobyt1kIOSkj1qZzYLzq7Tos/oUUWvotUPQLlrsidqsK6tBH89Bc9kL5zHA6w==
 
+state-local@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/state-local/-/state-local-1.0.1.tgz#0d3c0a2bb610d3b81699b30e98fafa00bcf4ac9c"
+  integrity sha512-CkiwT61ZhZd0/z183fcceu7+RSws/Sq5BT3RNQ2xK/Se9A/jn/4Z/eIe1bawoI9wNYC9wrcG2Drz+6GnjtKynA==
+
 state-toggle@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/state-toggle/-/state-toggle-1.0.3.tgz#e123b16a88e143139b09c6852221bc9815917dfe"
@@ -16663,10 +16683,10 @@ webpack-sources@^2.0.1:
     source-list-map "^2.0.1"
     source-map "^0.6.1"
 
-webpack@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.0.0.tgz#c028b2f0c1db2322de1f4a30cc36f6e373d5a26a"
-  integrity sha512-OK+Q9xGgda3idw/DgCf75XsVFxRLPu48qPwygqI3W9ls5sDdKif5Ay4SM/1UVob0w4juJy14Zv9nNv0WeyV0aA==
+webpack@5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.1.0.tgz#7ba2fc8f587ecf0a412477d2e977b3a8818db83c"
+  integrity sha512-ZJDq7dpVs479C6zCSF/CwOVsqqobjCusa+BgbXCEROZMS0RcBzQzDgc+hB2YXye8Y/JOvcFwJIqsVtTyHW7t8A==
   dependencies:
     "@types/eslint-scope" "^3.7.0"
     "@types/estree" "^0.0.45"

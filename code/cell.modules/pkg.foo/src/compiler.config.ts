@@ -7,7 +7,8 @@ export const configure = () =>
     .url(3001)
     .title('My Foo')
     .entry('main', './src/index')
-    .expose('./Header', './src/Header')
+    .expose('./Header', './src/components/Header')
+    .expose('./CodeEditor', './src/components/CodeEditor')
     .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
     .clone();
 
