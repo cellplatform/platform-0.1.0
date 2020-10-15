@@ -10,8 +10,9 @@ export type Compiler = {
 };
 
 export type BeforeCompile = (e: BeforeCompileArgs) => void;
-export type BeforeCompileModify = (draft: t.WpConfig) => void;
+export type BeforeCompileModify = (webpack: t.WpConfig) => void;
 export type BeforeCompileArgs = {
   model: t.CompilerWebpackModel;
   modify(handler: BeforeCompileModify): void;
+  toObject<T>(draft?: any): T | undefined;
 };

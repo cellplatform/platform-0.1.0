@@ -13,14 +13,14 @@ export const dev: t.CompilerRunDev = async (input) => {
 
   const { compiler } = wp.toCompiler(obj, {
     beforeCompile(e) {
-      e.modify((draft) => {
+      e.modify((webpack) => {
         /**
          * BUG:     HMR fails with an explicitly specified target.
          * ISSUE:   https://github.com/webpack/webpack-dev-server/issues/2758
          * NOTE:
          *          This can be removed later when the up-stream issue is fixed.
          */
-        draft.target = undefined;
+        webpack.target = undefined;
       });
     },
   });

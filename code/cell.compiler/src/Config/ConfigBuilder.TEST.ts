@@ -77,12 +77,17 @@ describe('Compiler (Config)', () => {
 
     it('toWebpack', () => {
       const { builder } = create();
-      const config = builder.url('localhost:1234').mode('dev');
-      const res = config.toWebpack();
+      const config = builder
+        .url('localhost:1234')
+        .mode('dev')
+        .beforeCompile((e) => e.modify((webpack) => (webpack.target = undefined)));
 
-      expect(res.mode).to.eql('development');
-      expect(res.output?.publicPath).to.eql('http://localhost:1234/');
-      expect(res.devServer?.port).to.eql(1234);
+      const webpack = config.toWebpack();
+
+      expect(webpack.mode).to.eql('development');
+      expect(webpack.output?.publicPath).to.eql('http://localhost:1234/');
+      expect(webpack.devServer?.port).to.eql(1234);
+      expect(webpack.target).to.eql(undefined);
     });
   });
 
@@ -440,13 +445,15 @@ describe('Compiler (Config)', () => {
   });
 
   describe('beforeCompile', () => {
-    it('registers handler', () => {
+    it('registers handler on model', () => {
       const { builder, model } = create();
       expect(model.state.beforeCompile).to.equal(undefined);
 
       const handler: t.BeforeCompile = (e) => null;
-      builder.beforeCompile(handler);
+      builder.beforeCompile(handler).beforeCompile(handler);
+
       expect(model.state.beforeCompile).to.include(handler);
+      expect(model.state.beforeCompile.length).to.eql(2);
     });
   });
 });
