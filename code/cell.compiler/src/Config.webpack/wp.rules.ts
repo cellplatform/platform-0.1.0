@@ -3,11 +3,17 @@ import { t } from '../common';
 export const Rules = {
   default(): t.WpConfigRule[] {
     return [
+      /**
+       * CSS (Stylesheets)
+       */
       {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
       },
 
+      /**
+       * Typescript
+       */
       {
         test: /\.(ts|tsx|js|jsx)$/,
         exclude: /node_modules/,

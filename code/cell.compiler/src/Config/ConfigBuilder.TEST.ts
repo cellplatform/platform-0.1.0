@@ -283,6 +283,20 @@ describe('Compiler (Config)', () => {
     });
   });
 
+  describe('rule', () => {
+    it('has not rules (default)', () => {
+      const { model } = create();
+      expect(model.state.rules).to.eql([]);
+    });
+
+    it('adds a rule', () => {
+      const { builder, model } = create();
+      const rule = { test: /\.ttf$/, use: ['file-loader'] };
+      builder.rule(rule);
+      expect(model.state.rules).to.include(rule);
+    });
+  });
+
   describe('exposes', () => {
     it('throw: no key', () => {
       const { builder } = create();

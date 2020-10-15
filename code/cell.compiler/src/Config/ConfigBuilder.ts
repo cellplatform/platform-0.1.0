@@ -140,6 +140,14 @@ const handlers: t.BuilderHandlers<t.CompilerWebpackModel, t.CompilerConfigMethod
     }
   },
 
+  rule(args) {
+    const rule = args.params[0];
+    args.model.change((draft) => {
+      const rules = draft.rules || (draft.rules = []);
+      rules.push(rule);
+    });
+  },
+
   expose(args) {
     const param = (index: number) => format.string(args.params[index], { trim: true }) || '';
     writePathMap(args.model, 'exposes', param(0), param(1));

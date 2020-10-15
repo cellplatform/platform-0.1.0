@@ -77,6 +77,15 @@ describe('Compiler (Webpack)', () => {
     expect(wp.toWebpackConfig(builder).output?.path).to.eql(undefined);
   });
 
+  it('rules', () => {
+    const rule = { test: /\.ttf$/, use: ['file-loader'] };
+    const { builder } = create();
+    expect(wp.toWebpackConfig(builder).module?.rules).to.not.include(rule);
+
+    builder.rule(rule);
+    expect(wp.toWebpackConfig(builder).module?.rules).to.include(rule);
+  });
+
   describe('ModuleFederationPlugin', () => {
     it('un-escapes keys in: exposes/remotes/shared', () => {
       const { builder } = create();

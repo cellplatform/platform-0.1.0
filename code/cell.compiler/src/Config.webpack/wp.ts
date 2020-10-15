@@ -12,6 +12,7 @@ type M = t.CompilerWebpackModel | t.CompilerConfig;
  */
 export function toWebpackConfig(input: M): t.WpConfig {
   const model = Model(input);
+
   const mode = model.mode();
   const port = model.port();
   const name = model.name();
@@ -21,6 +22,7 @@ export function toWebpackConfig(input: M): t.WpConfig {
 
   const entry = model.entry();
   const target = model.target();
+  const rules = [...Rules.default(), ...model.rules()];
 
   /**
    * Base configuration.
@@ -34,7 +36,7 @@ export function toWebpackConfig(input: M): t.WpConfig {
     resolve: { extensions: ['.tsx', '.ts', '.js'] },
     devtool: prod ? undefined : 'eval-cheap-module-source-map',
     devServer: prod ? undefined : { port, hot: true },
-    module: { rules: Rules.default() },
+    module: { rules },
     plugins: Plugins.init({ model: model.toObject(), prod }),
     cache: { type: 'filesystem' },
   };

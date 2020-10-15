@@ -33,6 +33,7 @@ export function Model(input: M) {
     name(defaultValue?: string) {
       return model.name || defaultValue || DEFAULTS.name;
     },
+
     mode(defaultValue?: t.WpMode) {
       return model.mode || defaultValue || DEFAULTS.mode;
     },
@@ -45,16 +46,23 @@ export function Model(input: M) {
     url(defaultValue?: string): string {
       return (model.url || defaultValue || DEFAULTS.url) as string;
     },
+
     port(defaultUrl?: string) {
       const url = parse(res.url(defaultUrl));
       return url.port ? parseInt(url.port, 10) : DEFAULT.PORT;
     },
+
     dir(defaultValue?: string) {
       const dir = model.dir || defaultValue || DEFAULTS.dir;
       return dir ? fs.resolve(dir) : undefined;
     },
+
     entry(defaultValue?: t.CompilerWebpackModel['entry']) {
       return model.entry || defaultValue || DEFAULTS.entry;
+    },
+
+    rules(defaultValue?: t.CompilerWebpackModel['rules']) {
+      return model.rules || defaultValue || DEFAULTS.rules;
     },
   };
 

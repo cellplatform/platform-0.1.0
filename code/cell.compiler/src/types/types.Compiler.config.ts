@@ -27,6 +27,7 @@ export type CompilerConfigMethods = {
   entry(path: string): B; // Default key: 'main'
   entry(key: string, path?: string | null): B;
   entry(map: Record<string, string | null>): B;
+  rule(value: t.WpConfigRule): B;
   expose(key: string, path: string | null): B;
   remote(key: string, path: string | null): B;
   shared(fn: CompilerConfigSharedFunc): B;

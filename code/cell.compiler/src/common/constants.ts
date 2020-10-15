@@ -4,10 +4,11 @@ const HOST = 'http://localhost';
 const CONFIG = {
   name: '',
   dir: undefined,
-  entry: {},
   mode: 'production',
   url: `${HOST}:${PORT}/`,
   target: ['web'],
+  entry: {},
+  rules: [],
 };
 
 export const DEFAULT = { PORT, HOST, CONFIG };
