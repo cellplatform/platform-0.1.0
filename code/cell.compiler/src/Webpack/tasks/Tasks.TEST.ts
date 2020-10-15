@@ -9,7 +9,7 @@ const create = () => {
   return { model, builder };
 };
 
-describe('Compiler', () => {
+describe('Compiler (Tasks)', () => {
   describe('cell', () => {
     it('create: from URI string', () => {
       const cell = Compiler.cell(host, ' cell:foo:A1  ');

@@ -9,7 +9,7 @@ const create = () => {
   return { model, builder };
 };
 
-describe('ConfigBuilder', () => {
+describe('Compiler (Config)', () => {
   describe('create', () => {
     it('model', () => {
       const model = ConfigBuilder.model('  foo  ');

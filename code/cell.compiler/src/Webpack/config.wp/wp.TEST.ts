@@ -8,7 +8,7 @@ const create = () => {
   return { model, builder };
 };
 
-describe('wp.toWebpackConfig', () => {
+describe('Compiler (Webpack)', () => {
   it('"production"', () => {
     const { builder } = create();
     const config = builder;
