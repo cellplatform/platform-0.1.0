@@ -8,7 +8,7 @@ const DEFAULT = {
   PATH: 'lib/config/compiler.prod.js',
 };
 
-export async function loadConfig(file?: string): Promise<B> {
+export async function loadConfig(file?: string, options: { silent?: boolean } = {}): Promise<B> {
   // Wrangle path.
   let path = (typeof file === 'string' ? file : DEFAULT.PATH).trim();
   path = path ? fs.resolve(path) : path;
@@ -25,7 +25,14 @@ export async function loadConfig(file?: string): Promise<B> {
   path = !path.endsWith('.js') ? `${path}.js` : path;
   await ensureExists(path);
 
-  log.info.gray(`configuration:\n${path}`);
+  // Log the configuration path being used.
+  if (!options.silent) {
+    const filename = fs.basename(path);
+    const ext = fs.extname(filename);
+    const file = filename.substring(0, filename.length - ext.length);
+    log.info.gray(`configuration:`);
+    log.info.gray(`${fs.dirname(path)}/${log.white(file)}${ext}`);
+  }
 
   // Retrieve the configuration.
   const imported = require(path).default; // eslint-disable-line
