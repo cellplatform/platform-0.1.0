@@ -18,4 +18,5 @@ export type CompilerWebpackModel = {
   exposes?: Record<string, string>;
   remotes?: Record<string, string>;
   shared?: Record<string, string | t.WebpackShared>;
+  beforeCompile?: t.BeforeCompile[];
 };

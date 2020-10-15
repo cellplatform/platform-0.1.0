@@ -165,6 +165,16 @@ const handlers: t.BuilderHandlers<t.CompilerWebpackModel, t.CompilerConfigMethod
     }
     writeShared({ model: args.model, handler });
   },
+
+  beforeCompile(args) {
+    const handler = args.params[0];
+    if (typeof handler === 'function') {
+      args.model.change((draft) => {
+        const list = draft.beforeCompile || (draft.beforeCompile = []);
+        list.push(handler);
+      });
+    }
+  },
 };
 
 /**

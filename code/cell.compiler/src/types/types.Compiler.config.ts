@@ -15,7 +15,9 @@ export type CompilerConfig = t.BuilderChain<CompilerConfigMethods>;
 export type CompilerConfigMethods = {
   toObject(): t.CompilerWebpackModel;
   toWebpack(): t.WpConfig;
+
   clone(): B;
+  beforeCompile(handler: t.BeforeCompile): B;
 
   name(value: string): B;
   title(value: string | undefined): B;

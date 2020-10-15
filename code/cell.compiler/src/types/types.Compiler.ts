@@ -8,3 +8,10 @@ export type Compiler = {
   upload: t.CompilerRunUpload;
   cell: t.CompilerCreateCell;
 };
+
+export type BeforeCompile = (e: BeforeCompileArgs) => void;
+export type BeforeCompileModify = (draft: t.WpConfig) => void;
+export type BeforeCompileArgs = {
+  model: t.CompilerWebpackModel;
+  modify(handler: BeforeCompileModify): void;
+};

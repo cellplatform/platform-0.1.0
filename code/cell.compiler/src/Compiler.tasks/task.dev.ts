@@ -1,7 +1,8 @@
 import * as DevServer from 'webpack-dev-server';
 
 import { log, Model, t, toModel } from '../common';
-import { logger, toCompiler } from './util';
+import { wp } from '../Config.webpack';
+import { logger } from './util';
 
 /**
  * Run dev server.
@@ -10,16 +11,17 @@ export const dev: t.CompilerRunDev = async (input) => {
   const obj = toModel(input);
   obj.mode = 'development'; // NB: Always run dev-server in "development" mode.
 
-  const { compiler } = toCompiler(obj, {
-    modifyConfig: (config) => {
-      /**
-       * BUG:     HMR fails with an explicitly specified target.
-       * ISSUE:   https://github.com/webpack/webpack-dev-server/issues/2758
-       * NOTE:
-       *          This can be removed later when the up-stream issue is fixed.
-       */
-
-      return { ...config, target: undefined };
+  const { compiler } = wp.toCompiler(obj, {
+    beforeCompile(e) {
+      e.modify((draft) => {
+        /**
+         * BUG:     HMR fails with an explicitly specified target.
+         * ISSUE:   https://github.com/webpack/webpack-dev-server/issues/2758
+         * NOTE:
+         *          This can be removed later when the up-stream issue is fixed.
+         */
+        draft.target = undefined;
+      });
     },
   });
 

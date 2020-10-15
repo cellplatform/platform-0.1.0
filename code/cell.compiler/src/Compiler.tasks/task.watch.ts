@@ -1,11 +1,11 @@
 import { log, t } from '../common';
-import { logger, toCompiler } from './util';
+import { logger, wp } from './util';
 
 /**
  * Bundle and watch for file changes.
  */
 export const watch: t.CompilerRunWatch = async (input) => {
-  const { compiler, model } = toCompiler(input);
+  const { compiler, model } = wp.toCompiler(input);
   let count = 0;
   compiler.watch({}, (err, stats) => {
     count++;

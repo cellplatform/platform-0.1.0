@@ -438,4 +438,15 @@ describe('Compiler (Config)', () => {
       });
     });
   });
+
+  describe('beforeCompile', () => {
+    it('registers handler', () => {
+      const { builder, model } = create();
+      expect(model.state.beforeCompile).to.equal(undefined);
+
+      const handler: t.BeforeCompile = (e) => null;
+      builder.beforeCompile(handler);
+      expect(model.state.beforeCompile).to.include(handler);
+    });
+  });
 });
