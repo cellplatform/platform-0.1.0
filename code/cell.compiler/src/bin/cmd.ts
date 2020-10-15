@@ -1,5 +1,5 @@
 import { fs, log, minimist, Uri, t } from '../common';
-import { Compiler } from '../Webpack';
+import { Compiler } from '../Compiler';
 import * as util from './util';
 
 type P = minimist.ParsedArgs;

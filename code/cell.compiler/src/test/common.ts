@@ -1,1 +1,1 @@
-export * from '../Webpack/common';
+export * from '../Compiler/common';
