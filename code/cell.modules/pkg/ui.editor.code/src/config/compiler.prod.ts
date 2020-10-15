@@ -14,8 +14,8 @@ export const configure = () =>
       'ts.worker': 'monaco-editor/esm/vs/language/typescript/ts.worker',
     })
 
-    // .expose('./Header', './src/components/Header')
     // .expose('./CodeEditor', './src/components/CodeEditor')
+
     // .shared((e) => e.singleton(['react', 'react-dom']))
     .clone();
 

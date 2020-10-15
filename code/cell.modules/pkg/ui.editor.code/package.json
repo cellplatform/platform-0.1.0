@@ -2,7 +2,8 @@
   "name": "ui.editor.code",
   "version": "0.0.0",
   "scripts": {
-    "build": "tsc $@",
+    "build": "ts build --no-esm $@",
+    "lint": "ts lint $@",
     "dev": "cell.compiler dev $@",
     "bundle": "cell.compiler bundle $@",
     "watch": "cell.compiler watch $@",

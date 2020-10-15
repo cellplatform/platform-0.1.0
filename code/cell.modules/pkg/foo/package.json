@@ -2,7 +2,7 @@
   "name": "foo",
   "version": "1.0.4",
   "scripts": {
-    "build": "tsc $@",
+    "build": "ts build --no-esm $@",
     "dev": "cell.compiler dev $@",
     "bundle": "cell.compiler bundle $@",
     "watch": "cell.compiler watch $@",
