@@ -2,7 +2,7 @@ import { t } from '../common';
 
 const PARAMS = {
   config: `(optional) Path to configuration file (default: 'compiler.config')`,
-  mode: `(optional) Override build mode`,
+  mode: `(optional) Override build mode ('prod' | 'dev')`,
 };
 
 export const COMMANDS: t.Commands = {

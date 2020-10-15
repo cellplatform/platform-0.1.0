@@ -22,7 +22,7 @@ export const logger = {
       table.add([`${key}  `, log.green(cmd.description)]);
       Object.keys(cmd.params).forEach((key) => {
         const param = cmd.params[key];
-        table.add([`  ${log.gray(key)}  `, `${log.gray(param)}`]);
+        table.add([`  ${log.gray(key)}  `, `  ${log.gray(param)}`]);
       });
       table.add(['']);
     });
