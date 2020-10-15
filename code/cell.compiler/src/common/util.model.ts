@@ -1,8 +1,7 @@
 import { parse } from 'url';
-import { t, fs } from '../../common';
+import { fs } from './libs';
+import * as t from './types';
 import { DEFAULT } from './constants';
-
-export * from './util.logger';
 
 type M = t.CompilerWebpackModel | t.CompilerConfig;
 

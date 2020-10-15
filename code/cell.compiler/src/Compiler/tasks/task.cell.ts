@@ -1,5 +1,6 @@
-import { fs, t, Uri, logger, defaultValue, Model, parseUrl, Schema } from '../common';
+import { defaultValue, fs, Model, parseUrl, Schema, t, Uri } from '../common';
 import { bundle } from './task.bundle';
+import { logger } from './util';
 import { upload } from './task.upload';
 
 type B = t.CompilerConfig;

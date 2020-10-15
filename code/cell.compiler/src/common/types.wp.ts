@@ -1,4 +1,9 @@
 /**
+ * Direct wrapper of Webpack
+ * [Not Publicly Exported]
+ */
+
+/**
  * A [WebPack] configuration object.
  * https://webpack.js.org/configuration
  */

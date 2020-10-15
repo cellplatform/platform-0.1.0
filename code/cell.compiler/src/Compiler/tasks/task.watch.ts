@@ -1,11 +1,11 @@
-import { log, t, logger } from '../common';
-import * as util from './util';
+import { log, t } from '../common';
+import { logger, toCompiler } from './util';
 
 /**
  * Bundle and watch for file changes.
  */
 export const watch: t.CompilerRunWatch = async (input) => {
-  const { compiler, model } = util.toCompiler(input);
+  const { compiler, model } = toCompiler(input);
   let count = 0;
   compiler.watch({}, (err, stats) => {
     count++;

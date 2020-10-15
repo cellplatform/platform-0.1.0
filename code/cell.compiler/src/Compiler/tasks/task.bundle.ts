@@ -1,15 +1,15 @@
 import { Stats as IStats } from 'webpack';
 
-import { log, t, logger } from '../common';
+import { log, t } from '../common';
 import { wp } from '../config.wp';
-import * as util from './util';
+import { logger, toCompiler } from './util';
 
 /**
  * Bundle the project.
  */
 export const bundle: t.CompilerRunBundle = (input, options = {}) => {
   return new Promise<t.WebpackBundleResponse>((resolve, reject) => {
-    const { compiler, model, config } = util.toCompiler(input);
+    const { compiler, model, config } = toCompiler(input);
 
     if (!options.silent) {
       log.info();

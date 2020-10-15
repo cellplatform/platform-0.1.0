@@ -1,8 +1,9 @@
-import { webpack, Configuration } from 'webpack';
-import { wp } from '../config.wp';
-import { t, toModel, logger } from '../common';
+import { Configuration, webpack } from 'webpack';
 
-export { logger };
+import { t, toModel } from '../common';
+import { wp } from '../config.wp';
+
+export * from './util.logger';
 
 type M = t.CompilerWebpackModel | t.CompilerConfig;
 

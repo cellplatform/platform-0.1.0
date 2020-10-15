@@ -1,7 +1,7 @@
 import * as DevServer from 'webpack-dev-server';
 
-import { log, t, toModel, logger, Model } from '../common';
-import * as util from './util';
+import { log, Model, t, toModel } from '../common';
+import { logger, toCompiler } from './util';
 
 /**
  * Run dev server.
@@ -10,7 +10,7 @@ export const dev: t.CompilerRunDev = async (input) => {
   const obj = toModel(input);
   obj.mode = 'development'; // NB: Always run dev-server in "development" mode.
 
-  const { compiler } = util.toCompiler(obj, {
+  const { compiler } = toCompiler(obj, {
     modifyConfig: (config) => {
       // BUG: HMR fails with an explicitly specified target.
       //      https://github.com/webpack/webpack-dev-server/issues/2758
