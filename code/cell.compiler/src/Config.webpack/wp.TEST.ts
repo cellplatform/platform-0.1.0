@@ -1,5 +1,5 @@
 import { Compiler } from '..';
-import { fs, expect, ModuleFederationPlugin } from '../../test';
+import { fs, expect, ModuleFederationPlugin } from '../test';
 import { wp } from '.';
 
 const create = () => {

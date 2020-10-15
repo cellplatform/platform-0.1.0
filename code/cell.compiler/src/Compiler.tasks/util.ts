@@ -1,7 +1,7 @@
 import { Configuration, webpack } from 'webpack';
 
 import { t, toModel } from '../common';
-import { wp } from '../config.wp';
+import { wp } from '../Config.webpack';
 
 export * from './util.logger';
 

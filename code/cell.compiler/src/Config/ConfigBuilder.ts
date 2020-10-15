@@ -10,7 +10,7 @@ import {
   value as valueUtil,
   parseUrl,
 } from '../common';
-import { wp } from '../config.wp';
+import { wp } from '../Config.webpack';
 
 type O = Record<string, unknown>;
 

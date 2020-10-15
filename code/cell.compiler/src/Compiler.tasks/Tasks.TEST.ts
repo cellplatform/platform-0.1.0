@@ -1,5 +1,5 @@
 import { Compiler } from '..';
-import { expect, Uri } from '../../test';
+import { expect, Uri } from '../test';
 
 const host = 'localhost';
 

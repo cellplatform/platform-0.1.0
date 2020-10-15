@@ -1,7 +1,7 @@
 import { Stats as IStats } from 'webpack';
 
 import { log, t } from '../common';
-import { wp } from '../config.wp';
+import { wp } from '../Config.webpack';
 import { logger, toCompiler } from './util';
 
 /**

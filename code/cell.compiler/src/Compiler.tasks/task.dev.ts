@@ -12,8 +12,13 @@ export const dev: t.CompilerRunDev = async (input) => {
 
   const { compiler } = toCompiler(obj, {
     modifyConfig: (config) => {
-      // BUG: HMR fails with an explicitly specified target.
-      //      https://github.com/webpack/webpack-dev-server/issues/2758
+      /**
+       * BUG:     HMR fails with an explicitly specified target.
+       * ISSUE:   https://github.com/webpack/webpack-dev-server/issues/2758
+       * NOTE:
+       *          This can be removed later when the up-stream issue is fixed.
+       */
+
       return { ...config, target: undefined };
     },
   });

@@ -2,7 +2,7 @@ import { parse as parseUrl } from 'url';
 import { Compilation as ICompliation, Stats as IStats } from 'webpack';
 
 import { log, Model, t } from '../common';
-import { stats } from '../config.wp/wp.stats';
+import { stats } from '../Config.webpack';
 
 /**
  * Value formatters
