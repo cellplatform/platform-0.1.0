@@ -1,4 +1,4 @@
-import { webpack } from 'webpack';
+import { webpack, Configuration } from 'webpack';
 import { wp } from '../config.wp';
 import { t, toModel, logger } from '../common';
 
@@ -6,9 +6,17 @@ export { logger };
 
 type M = t.CompilerWebpackModel | t.CompilerConfig;
 
-export const toCompiler = (input: M) => {
+export const toCompiler = (
+  input: M,
+  options: { modifyConfig?: (config: t.WpConfig) => t.WpConfig } = {},
+) => {
   const model = toModel(input);
-  const config = wp.toWebpackConfig(model);
-  const compiler = webpack(config as any);
+  let config = wp.toWebpackConfig(model);
+
+  if (options.modifyConfig) {
+    config = options.modifyConfig(config);
+  }
+
+  const compiler = webpack(config as Configuration);
   return { model, config, compiler };
 };

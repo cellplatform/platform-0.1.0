@@ -16,6 +16,38 @@ console.log('entry', 'hello world.');
   // @ts-ignore
   const f = import('foo/Header');
   f.then((e) => console.log('e', e.foo()));
+
+  // @ts-ignore
+  const ide = await import('foo/CodeEditor');
+
+  console.log('ide', ide);
+
+  const CodeEditor = ide.CodeEditor;
+  console.log('f1', CodeEditor);
+
+  const App = () => {
+    const style = { fontFamily: 'sans-serif', WebkitAppRegion: 'drag' };
+    return (
+      <div style={style}>
+        <h1>Hello World!..</h1>
+        <div
+          style={{
+            position: 'absolute',
+            top: 100,
+            left: 30,
+            width: 300,
+            height: 200,
+            backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+          }}
+        >
+          <CodeEditor />
+        </div>
+      </div>
+    );
+  };
+
+  const within = document.body.appendChild(document.createElement('div'));
+  ReactDOM.render(<App />, within);
 })();
 
 // type F = { count: number };
@@ -25,13 +57,6 @@ console.log('entry', 'hello world.');
 /**
  * Insert some UI
  */
-const App = () => {
-  const style = { fontFamily: 'sans-serif', WebkitAppRegion: 'drag' };
-  return <h1 style={style}>Hello World!</h1>;
-};
-
-const within = document.body.appendChild(document.createElement('div'));
-ReactDOM.render(<App />, within);
 
 const s = new Subject();
 s.subscribe((e) => console.log('e > ', e));

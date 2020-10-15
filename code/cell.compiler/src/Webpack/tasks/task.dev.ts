@@ -9,9 +9,15 @@ import * as util from './util';
 export const dev: t.CompilerRunDev = async (input) => {
   const obj = toModel(input);
   obj.mode = 'development'; // NB: Always run dev-server in "development" mode.
-  obj.target = undefined; //   BUG: HMR fails with an explicitly specified target. https://github.com/webpack/webpack-dev-server/issues/2758
 
-  const { compiler } = util.toCompiler(obj);
+  const { compiler } = util.toCompiler(obj, {
+    modifyConfig: (config) => {
+      // BUG: HMR fails with an explicitly specified target.
+      //      https://github.com/webpack/webpack-dev-server/issues/2758
+      return { ...config, target: undefined };
+    },
+  });
+
   const model = Model(obj);
   const port = model.port();
   let count = 0;
