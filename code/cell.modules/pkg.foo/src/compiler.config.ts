@@ -1,14 +1,15 @@
-import { Webpack } from '@platform/cell.compiler';
-export { Webpack };
+import { Compiler } from '@platform/cell.compiler';
+export { Compiler };
 
 export const configure = () =>
-  Webpack.config
+  Compiler.config
     .create('foo')
-    .port(3001)
+    .url(3001)
     .title('My Foo')
     .entry('main', './src/index')
-    .expose('./Header', './src/Header')
-    .shared((e) => e.add(e.deps).singleton(['react', 'react-dom']))
+    .expose('./Header', './src/components/Header')
+    .expose('./CodeEditor', './src/components/CodeEditor')
+    .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
     .clone();
 
 export default configure;

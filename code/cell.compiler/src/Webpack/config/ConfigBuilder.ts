@@ -8,7 +8,7 @@ import {
   StateObject,
   t,
   value as valueUtil,
-  parseHostUrl,
+  parseUrl,
 } from '../common';
 import { wp } from '../config.wp';
 
@@ -20,30 +20,30 @@ const MODES: t.WpMode[] = ['development', 'production'];
 /**
  * Configuration builder factory.
  */
-export const ConfigBuilder: t.ConfigBuilder = {
-  model(name: string) {
+export const ConfigBuilder: t.CompilerConfigFactory = {
+  model(name) {
     name = format.string(name, { trim: true }) || '';
     if (!name) {
       throw new Error(`Configuration must be named`);
     }
-    return StateObject.create<t.WebpackModel>({ ...DEFAULT.CONFIG, name });
+    const initial = { ...DEFAULT.CONFIG, name } as t.CompilerWebpackModel;
+    return StateObject.create<t.CompilerWebpackModel>(initial);
   },
 
   create(input) {
     const model = (typeof input === 'object'
       ? StateObject.isStateObject(input)
         ? input
-        : StateObject.create<t.WebpackModel>(input as any)
-      : ConfigBuilder.model(input)) as t.ConfigBuilderModel;
-
-    return Builder.create<t.WebpackModel, t.WebpackBuilder>({ model, handlers });
+        : StateObject.create<t.CompilerWebpackModel>(input as any)
+      : ConfigBuilder.model(input)) as t.CompilerModel;
+    return Builder.create<t.CompilerWebpackModel, t.CompilerConfigMethods>({ model, handlers });
   },
 };
 
 /**
  * Root handlers.
  */
-const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
+const handlers: t.BuilderHandlers<t.CompilerWebpackModel, t.CompilerConfigMethods> = {
   clone: (args) => args.clone(),
   toObject: (args) => args.model.state,
   toWebpack: (args) => wp.toWebpackConfig(args.model.state),
@@ -104,25 +104,19 @@ const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
     });
   },
 
-  host(args) {
+  url(args) {
     args.model.change((draft) => {
-      const defaultHost = DEFAULT.CONFIG.host;
-      const value = format.string(args.params[0], { default: defaultHost, trim: true });
+      const defaultUrl = DEFAULT.CONFIG.url;
+      const input = args.params[0];
+      const value =
+        typeof input === 'number'
+          ? `localhost:${input}`
+          : format.string(input, { default: defaultUrl, trim: true });
       if (!value) {
-        draft.host = defaultHost;
+        draft.url = defaultUrl;
       } else {
-        const url = parseHostUrl(value);
-        draft.host = url.toString({ port: false });
-        if (url.port) {
-          draft.port = url.port;
-        }
+        draft.url = parseUrl(value).toString();
       }
-    });
-  },
-
-  port(args) {
-    args.model.change((draft) => {
-      draft.port = format.number(args.params[0], { default: DEFAULT.CONFIG.port }) as number;
     });
   },
 
@@ -149,7 +143,7 @@ const handlers: t.BuilderHandlers<t.WebpackModel, t.WebpackBuilder> = {
   },
 
   shared(args) {
-    const handler = args.params[0] as t.WebpackBuilderSharedFunc;
+    const handler = args.params[0] as t.CompilerConfigSharedFunc;
     if (typeof handler !== 'function') {
       throw new Error(`A function setter parameter required`);
     }
@@ -194,8 +188,8 @@ function writePathMap<M extends O>(
 }
 
 function writeShared(args: {
-  model: t.BuilderModel<t.WebpackModel>;
-  handler: t.WebpackBuilderSharedFunc;
+  model: t.BuilderModel<t.CompilerWebpackModel>;
+  handler: t.CompilerConfigSharedFunc;
 }) {
   const { model, handler } = args;
   const cwd = process.cwd();
@@ -213,7 +207,7 @@ function writeShared(args: {
     return exists;
   };
 
-  const ctx: t.WebpackBuilderShared = {
+  const ctx: t.CompilerConfigShared = {
     cwd,
     dependencies,
     add(input: Record<string, string> | string | string[]) {

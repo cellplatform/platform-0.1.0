@@ -42,6 +42,7 @@ export type IUrlsCell = {
 };
 
 export type IUrlsCellFile = {
+  toString(): string;
   byFileUri(fileUri: string, fileExtension?: string): t.IUrl<t.IReqQueryCellFileDownloadByName>;
   byName(filename: string): t.IUrl<t.IReqQueryCellFileDownloadByName>;
 };

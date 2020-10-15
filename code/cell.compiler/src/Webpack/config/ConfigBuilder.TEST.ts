@@ -22,7 +22,7 @@ describe('ConfigBuilder', () => {
     });
 
     it('builder (from {model} StateObject)', () => {
-      const model = StateObject.create<t.WebpackModel>({
+      const model = StateObject.create<t.CompilerWebpackModel>({
         ...DEFAULT.CONFIG,
         name: 'foo',
         mode: 'development',
@@ -35,7 +35,7 @@ describe('ConfigBuilder', () => {
     });
 
     it('builder (from {model} object)', () => {
-      const model = StateObject.create<t.WebpackModel>({
+      const model = StateObject.create<t.CompilerWebpackModel>({
         ...DEFAULT.CONFIG,
         name: 'foo',
         mode: 'development',
@@ -77,7 +77,7 @@ describe('ConfigBuilder', () => {
 
     it('toWebpack', () => {
       const { builder } = create();
-      const config = builder.port(1234).mode('dev');
+      const config = builder.url('localhost:1234').mode('dev');
       const res = config.toWebpack();
 
       expect(res.mode).to.eql('development');
@@ -152,53 +152,36 @@ describe('ConfigBuilder', () => {
       test(' dev ', 'development');
     });
 
-    it('port', () => {
+    it('url', () => {
       const { builder, model } = create();
-      const DEFAULT_PORT = DEFAULT.CONFIG.port;
-      expect(builder.toObject().port).to.eql(DEFAULT_PORT);
-
-      const test = (value: any, expected: number | undefined) => {
-        builder.port(value);
-        expect(model.state.port).to.eql(expected);
-      };
-
-      test(1234, 1234);
-      test(undefined, DEFAULT_PORT);
-    });
-
-    it('host', () => {
-      const { builder, model } = create();
-      const DEFAULT_HOST = DEFAULT.CONFIG.host;
-      expect(builder.toObject().host).to.eql(DEFAULT_HOST);
+      const DEFAULT_URL = DEFAULT.CONFIG.url;
+      expect(builder.toObject().url).to.eql(DEFAULT_URL);
 
       const test = (value: any, expected: string | undefined) => {
-        builder.host(value);
-        expect(model.state.host).to.eql(expected);
+        builder.url(value);
+        expect(model.state.url).to.eql(expected);
       };
 
-      test('https://a.foo.com', 'https://a.foo.com');
-      test('https://foo.com/', 'https://foo.com');
-      test('foo.com', 'https://foo.com');
-      test('foo.com', 'https://foo.com');
-      test('localhost', 'http://localhost');
-      test('https://localhost', 'https://localhost'); // NB: Does not change protocol, but this would typically be an invalid "localhost"
+      test('foo.com', 'https://foo.com/');
+      test(undefined, DEFAULT_URL);
+      test('   ', DEFAULT_URL);
 
-      test('localhost:5000', 'http://localhost');
-      test('http://localhost:5000', 'http://localhost');
+      test(1234, 'http://localhost:1234/');
 
-      test('localhost///', 'http://localhost');
-      test('http://localhost', 'http://localhost');
-      test(undefined, DEFAULT_HOST);
-      test('   ', DEFAULT_HOST);
-    });
+      test('https://a.foo.com', 'https://a.foo.com/');
+      test('https://foo.com/', 'https://foo.com/');
+      test('foo.com', 'https://foo.com/');
+      test('foo.com', 'https://foo.com/');
+      test('localhost', 'http://localhost/');
+      test('http://localhost', 'http://localhost/');
+      test('https://localhost', 'https://localhost/'); // NB: Does not change protocol, but this would typically be an invalid "localhost"
+      test('http://localhost:5000', 'http://localhost:5000/');
+      test('localhost///', 'http://localhost/');
 
-    it('host: assigns port', () => {
-      const { builder } = create();
-      expect(builder.toObject().port).to.eql(DEFAULT.CONFIG.port);
-
-      builder.host('localhost:5000');
-      expect(builder.toObject().host).to.eql('http://localhost'); // NB: trims from host, and assigns as explicit port.
-      expect(builder.toObject().port).to.eql(5000);
+      test('foo.com/file?q=132', 'https://foo.com/file/');
+      test('foo.com///file/bar', 'https://foo.com/file/bar/');
+      test('foo.com:5000///file', 'https://foo.com:5000/file/');
+      test('foo.com:80/file', 'https://foo.com/file/');
     });
 
     it('target', () => {
@@ -373,7 +356,7 @@ describe('ConfigBuilder', () => {
 
     it('loads {dependencies} from package.json', () => {
       const { builder } = create();
-      let args: t.WebpackBuilderShared | undefined;
+      let args: t.CompilerConfigShared | undefined;
       builder.shared((e) => (args = e));
       expect(args?.cwd).to.eql(process.cwd());
       expect(args?.dependencies).to.eql(pkg.dependencies);

@@ -2,7 +2,7 @@ import { log, ModuleFederationPlugin, t } from '../common';
 import { COMMANDS } from './constants';
 import { loadConfig } from './util.loadConfig';
 
-type B = t.BuilderChain<t.WebpackBuilder>;
+type B = t.BuilderChain<t.CompilerConfigMethods>;
 
 export const logger = {
   clear() {
@@ -22,7 +22,7 @@ export const logger = {
       table.add([`${key}  `, log.green(cmd.description)]);
       Object.keys(cmd.params).forEach((key) => {
         const param = cmd.params[key];
-        table.add([`  ${log.gray(key)}  `, `${log.gray(param)}`]);
+        table.add([`  ${log.gray(key)}  `, `  ${log.gray(param)}`]);
       });
       table.add(['']);
     });
@@ -56,5 +56,15 @@ export const logger = {
 
     log.info();
     return logger;
+  },
+
+  errorAndExit(code: number, ...message: (string | undefined)[]) {
+    log.info();
+    message.forEach((msg, i) => {
+      msg = i === 0 ? `${log.red('FAILED')}\n${msg}` : msg;
+      log.info.yellow(msg || '');
+    });
+    log.info();
+    process.exit(code);
   },
 };

@@ -70,10 +70,12 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
     return util.toClientResponse<T>(status, body, { error });
   }
 
-  public async list() {
+  public async list(options: { filter?: string } = {}) {
+    const { filter } = options;
+
     type T = t.IHttpClientFileData[];
     const getError: GetError = () => `Failed to get file list for [${this.uri.toString()}]`;
-    const base = await this.base({ getError });
+    const base = await this.base({ getError, filter });
     if (!base.ok) {
       const { status } = base;
       const body = {} as any;
@@ -127,19 +129,21 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
    * Internal
    */
 
-  private async base(args: { getError?: GetError } = {}) {
+  private async base(args: { getError?: GetError; filter?: string } = {}) {
+    const { filter, getError } = args;
+
     type T = t.IResGetCellFiles;
     const http = this.args.http;
     const parent = this.args.parent;
-    const url = parent.url.files.list.toString();
+    const url = parent.url.files.list.query({ filter }).toString();
 
     const files = await http.get(url);
 
     if (!files.ok) {
       const status = files.status;
       const type = status === 404 ? ERROR.HTTP.NOT_FOUND : ERROR.HTTP.SERVER;
-      const message = args.getError
-        ? args.getError({ status })
+      const message = getError
+        ? getError({ status })
         : `Failed to get files data for '${this.uri.toString()}'.`;
       return util.toError<T>(status, type, message);
     }

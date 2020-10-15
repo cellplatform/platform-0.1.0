@@ -1,3 +1,4 @@
+export type WebpackShared = { singleton: boolean; requiredVersion: string };
 export type WebpackAsset = { filename: string; bytes: number; size: string };
 export type WebpackError = { message: string; details: string; file?: string };
 

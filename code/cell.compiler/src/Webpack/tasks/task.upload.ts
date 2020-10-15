@@ -25,7 +25,7 @@ export async function getFiles(args: { sourceDir: string; targetDir?: string }) 
 /**
  * Upload files to the given target.
  */
-export const upload: t.WebpackUpload = async (args) => {
+export const upload: t.CompilerRunUpload = async (args) => {
   const timer = time.timer();
   const { host, sourceDir, targetDir, targetCell } = args;
   const files = await getFiles({ sourceDir, targetDir });
@@ -33,9 +33,10 @@ export const upload: t.WebpackUpload = async (args) => {
 
   const links = () => {
     const cell = Schema.urls(args.host).cell(args.targetCell);
+    const filter = targetDir ? `${targetDir}/**` : undefined;
     return {
       cell: cell.info.toString(),
-      files: cell.files.list.toString(),
+      files: cell.files.list.query({ filter }).toString(),
     };
   };
 

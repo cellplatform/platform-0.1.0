@@ -4,7 +4,7 @@ import * as util from './util';
 /**
  * Bundle and watch for file changes.
  */
-export const watch: t.WebpackWatch = async (input) => {
+export const watch: t.CompilerRunWatch = async (input) => {
   const { compiler, model } = util.toCompiler(input);
   let count = 0;
   compiler.watch({}, (err, stats) => {

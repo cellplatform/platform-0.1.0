@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.ui.finder",
-  "version": "0.0.140",
+  "version": "0.0.142",
   "description": "Finder UI components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,9 +16,9 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.client": "0.2.161",
-    "@platform/cell.types": "0.5.1",
-    "@platform/cell.ui": "0.1.127",
+    "@platform/cell.client": "0.2.163",
+    "@platform/cell.types": "0.5.4",
+    "@platform/cell.ui": "0.1.130",
     "@platform/libs": "0.2.2",
     "@platform/react": "0.4.49",
     "@platform/state": "0.7.14",

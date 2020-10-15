@@ -1,10 +1,10 @@
-import { Webpack } from '..';
+import { Compiler } from '..';
 import { fs, expect, ModuleFederationPlugin } from '../../test';
 import { wp } from '.';
 
 const create = () => {
-  const model = Webpack.config.model('foo');
-  const builder = Webpack.config.create(model);
+  const model = Compiler.config.model('foo');
+  const builder = Compiler.config.create(model);
   return { model, builder };
 };
 
@@ -22,7 +22,7 @@ describe('wp.toWebpackConfig', () => {
 
   it('"development" (and other custom values)', () => {
     const { builder } = create();
-    const config = builder.port(1234).mode('dev');
+    const config = builder.url('localhost:1234').mode('dev');
     const res = wp.toWebpackConfig(config);
 
     expect(res.mode).to.eql('development');
@@ -30,18 +30,18 @@ describe('wp.toWebpackConfig', () => {
     expect(res.devServer?.port).to.eql(1234);
   });
 
-  it('host (localhost)', () => {
+  it('publicPath (localhost)', () => {
     const { builder } = create();
-    const config = builder.host('   ').port(1234);
+    const config = builder.url('localhost:1234');
     const res = wp.toWebpackConfig(config);
     expect(res.output?.publicPath).to.eql('http://localhost:1234/');
   });
 
-  it('host (domain)', () => {
+  it('publicPath (domain)', () => {
     const { builder } = create();
 
-    const config1 = wp.toWebpackConfig(builder.host('foo.com').port(80));
-    const config2 = wp.toWebpackConfig(builder.host('foo.com').port(1234));
+    const config1 = wp.toWebpackConfig(builder.url('foo.com:80'));
+    const config2 = wp.toWebpackConfig(builder.url('foo.com:1234'));
 
     expect(config1.output?.publicPath).to.eql('https://foo.com/');
     expect(config2.output?.publicPath).to.eql('https://foo.com:1234/');

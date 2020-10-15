@@ -185,6 +185,17 @@ describe('Urls', () => {
       expect(res2.toString()).to.eql(URL);
     });
 
+    it('files.list (filter)', () => {
+      const URL = 'http://localhost/cell:foo:A1/files';
+
+      const list = url.cell(URI).files.list;
+      expect(list.toString()).to.eql(URL);
+
+      const res = list.query({ filter: 'foo/bar' });
+      expect(res.query({ filter: 'foo/bar' }).toString()).to.eql(URL + '?filter=foo/bar');
+      expect(res.query({ filter: '/foo/bar' }).toString()).to.eql(URL + '?filter=/foo/bar');
+    });
+
     it('files.delete', () => {
       const res1 = url.cell(URI).files.delete;
       const res2 = url.cell(Uri.cell('cell:foo:A1')).files.delete;
@@ -214,6 +225,11 @@ describe('Urls', () => {
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(`${URL}?changes=true`);
       expect(res3.toString()).to.eql(URL);
+    });
+
+    it('file.toString()', () => {
+      const file = url.cell(URI).file;
+      expect(file.toString()).to.eql('/cell:foo:A1/file/');
     });
 
     it('file.byName', () => {

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { minimist } from '../common';
-import * as cmd from './commands';
+import * as cmd from './cmd';
 import { logger } from './util';
 
 /**
@@ -22,6 +22,10 @@ const param = argv._[0];
 
   if (param === 'watch') {
     return cmd.watch(argv);
+  }
+
+  if (param === 'upload') {
+    return cmd.upload(argv);
   }
 
   if (param === 'dev') {

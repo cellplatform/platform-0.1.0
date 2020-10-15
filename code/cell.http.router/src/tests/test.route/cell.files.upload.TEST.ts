@@ -1,7 +1,7 @@
 /* eslint-disable */
-
 import { parse as parseUrl } from 'url';
-import { createMock, expect, fs, http, readFile, Schema, t } from '../../test';
+
+import { createMock, expect, fs, Http, readFile, Schema, t, http } from '../../test';
 
 describe('cell/files: upload', function () {
   this.timeout(50000);
@@ -126,6 +126,51 @@ describe('cell/files: upload', function () {
     expect(list[0].dir).to.eql('foo/bar');
     expect(list[0].path).to.eql('foo/bar/kitten.jpg');
     expect(list[0].props.bytes).to.eql(kitten.length);
+
+    // Finish up.
+    await mock.dispose();
+  });
+
+  it('upload then filter files set', async () => {
+    const mock = await createMock();
+    const cellUri = 'cell:foo:A1';
+
+    const client = mock.client.cell(cellUri);
+    const img = await readFile('src/test/assets/bird.png');
+
+    await client.files.upload([
+      { filename: 'root.png', data: img },
+      { filename: 'foo/bar/img.png', data: img },
+      { filename: 'foo/img.png', data: img },
+      { filename: 'foo/baz/img.png', data: img },
+      { filename: 'foo/zoo/img.png', data: img },
+    ]);
+
+    const http = Http.create();
+    const urls = mock.urls.cell(cellUri).files;
+
+    const test = async (filter: string, expected?: string[]) => {
+      const url = urls.list.query({ filter }).toString();
+      const res = await http.get(url);
+      const json = res.json as t.IResGetCellFiles;
+      const files = json.urls?.files.map((item) => item.path);
+      expect(files).to.eql(expected);
+    };
+
+    const FOO = ['foo/bar/img.png', 'foo/img.png', 'foo/baz/img.png', 'foo/zoo/img.png'];
+    const ALL = ['root.png', ...FOO];
+
+    await test('/BOO', []);
+    await test('/*', ['root.png']);
+    await test('*', ['root.png']);
+
+    await test('', ALL);
+    await test('  ', ALL);
+    await test('**', ALL);
+    await test('**/*', ALL);
+
+    await test('foo/**', FOO);
+    await test('foo/b*/*', ['foo/bar/img.png', 'foo/baz/img.png']);
 
     // Finish up.
     await mock.dispose();

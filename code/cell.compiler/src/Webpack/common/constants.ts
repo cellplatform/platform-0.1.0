@@ -1,11 +1,13 @@
-import * as t from '../../common/types';
+const PORT = 3000;
+const HOST = 'http://localhost';
 
-const CONFIG: t.WebpackModel = {
+const CONFIG = {
   name: '',
+  dir: undefined,
+  entry: {},
   mode: 'production',
-  port: 3000,
-  host: 'http://localhost',
+  url: `${HOST}:${PORT}/`,
   target: ['web'],
 };
 
-export const DEFAULT = { CONFIG };
+export const DEFAULT = { PORT, HOST, CONFIG };

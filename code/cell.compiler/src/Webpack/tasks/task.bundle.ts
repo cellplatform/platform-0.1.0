@@ -7,7 +7,7 @@ import * as util from './util';
 /**
  * Bundle the project.
  */
-export const bundle: t.WebpackBundle = (input, options = {}) => {
+export const bundle: t.CompilerRunBundle = (input, options = {}) => {
   return new Promise<t.WebpackBundleResponse>((resolve, reject) => {
     const { compiler, model, config } = util.toCompiler(input);
 
@@ -39,7 +39,7 @@ export const bundle: t.WebpackBundle = (input, options = {}) => {
  */
 
 const toBundledResponse = (args: {
-  model: t.WebpackModel;
+  model: t.CompilerWebpackModel;
   stats: IStats;
   config: t.WpConfig;
 }): t.WebpackBundleResponse => {

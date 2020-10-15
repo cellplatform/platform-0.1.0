@@ -1,6 +1,6 @@
 {
   "name": "foo",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "scripts": {
     "build": "tsc $@",
     "dev": "cell.compiler dev $@",
@@ -12,11 +12,12 @@
     "tmp": "cell.compiler $@"
   },
   "dependencies": {
+    "@monaco-editor/react": "^3.6.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.0.22"
+    "@platform/cell.compiler": "^0.1.4"
   },
   "license": "MIT",
   "private": true
