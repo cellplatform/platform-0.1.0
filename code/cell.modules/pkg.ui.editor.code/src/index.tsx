@@ -1,9 +1,12 @@
+import './index.css';
+
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+// import { Editor } from './components/Editor';
 
-export const Dev = () => {
-  return <div>Dev: ui.editor.code</div>;
-};
-
-const root = document.body.appendChild(document.createElement('div'));
-ReactDOM.render(<Dev />, root);
+// ReactDOM.render(
+//   <React.StrictMode>
+//     <Editor />
+//   </React.StrictMode>,
+//   document.getElementById('root'),
+// );

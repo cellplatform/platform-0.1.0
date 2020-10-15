@@ -12,12 +12,13 @@
     "tmp": "cell.compiler $@"
   },
   "dependencies": {
-    "@monaco-editor/react": "^3.6.3",
+    "monaco-editor": "^0.21.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.1.4"
+    "@platform/cell.compiler": "^0.1.4",
+    "monaco-editor-webpack-plugin": "^2.0.0"
   },
   "license": "MIT",
   "private": true
