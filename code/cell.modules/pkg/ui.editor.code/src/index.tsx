@@ -2,11 +2,13 @@ import './index.css';
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-// import { Editor } from './components/Editor';
+import { Editor } from './components/Editor';
 
-// ReactDOM.render(
-//   <React.StrictMode>
-//     <Editor />
-//   </React.StrictMode>,
-//   document.getElementById('root'),
-// );
+const root = document.body.appendChild(document.createElement('div'));
+const el = (
+  <React.StrictMode>
+    <Editor />
+  </React.StrictMode>
+);
+
+ReactDOM.render(el, root);

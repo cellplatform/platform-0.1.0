@@ -38,6 +38,7 @@ export const logger = {
     const config = typeof input === 'object' ? input : await loadConfig(input);
     const webpack = config.toWebpack();
     const plugins = webpack.plugins || [];
+    const rules = webpack.module?.rules || [];
     const mf = plugins.find((plugin) => plugin instanceof ModuleFederationPlugin);
 
     log.info.cyan('Configuration (Model)');
@@ -48,6 +49,14 @@ export const logger = {
     log.info({
       ...webpack,
       plugins: plugins.map((plugin) => plugin?.constructor?.name),
+    });
+
+    log.info();
+    log.info.cyan('Webpack: Rules');
+    rules.forEach((rule) => {
+      log.info.yellow(`${rule.test?.source || '<no-test>'}`);
+      log.info(rule.use);
+      log.info();
     });
 
     log.info();

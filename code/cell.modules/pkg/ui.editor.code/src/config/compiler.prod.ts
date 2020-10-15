@@ -1,7 +1,7 @@
 import { Compiler } from '@platform/cell.compiler';
 
-export const configure = () =>
-  Compiler.config
+export const configure = () => {
+  const config = Compiler.config
     .create('ui.editor.code')
     .url(3002)
 
@@ -14,9 +14,13 @@ export const configure = () =>
       'ts.worker': 'monaco-editor/esm/vs/language/typescript/ts.worker',
     })
 
-    // .expose('./CodeEditor', './src/components/CodeEditor')
+    // .expose('./CodeEditor', './src/components/Editor')
 
     // .shared((e) => e.singleton(['react', 'react-dom']))
+
+    .rule({ test: /\.ttf$/, use: ['file-loader'] })
     .clone();
 
+  return config;
+};
 export default configure;

@@ -41,8 +41,8 @@ const Header = React.lazy(() => import('foo/Header'));
     );
   };
 
-  const within = document.body.appendChild(document.createElement('div'));
-  ReactDOM.render(<App />, within);
+  const root = document.body.appendChild(document.createElement('div'));
+  ReactDOM.render(<App />, root);
 })();
 
 // type F = { count: number };
