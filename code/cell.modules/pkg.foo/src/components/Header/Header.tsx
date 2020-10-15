@@ -17,5 +17,5 @@ console.log('FOO...', React);
 // console.log('Client', Client);
 
 export const Header = () => {
-  return <div>Header</div>;
+  return <div>Header (Foo)</div>;
 };

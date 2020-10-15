@@ -94,7 +94,7 @@ export async function dev(argv: P) {
 export async function info(argv: P) {
   const params = util.params(argv);
   const config = await params.loadConfig();
-  logger.clear();
+  log.info();
   logger.info(config);
 }
 

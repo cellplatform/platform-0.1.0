@@ -4,8 +4,8 @@ import { logger } from './util';
 type B = t.CompilerConfig;
 
 const DEFAULT = {
-  FILENAME: 'compiler.config.js',
-  PATH: 'lib/compiler.config.js',
+  FILENAME: 'compiler.js',
+  PATH: 'lib/config/compiler.js',
 };
 
 export async function loadConfig(file?: string): Promise<B> {
@@ -25,7 +25,7 @@ export async function loadConfig(file?: string): Promise<B> {
   path = !path.endsWith('.js') ? `${path}.js` : path;
   await ensureExists(path);
 
-  log.info.gray(`configuration: ${path}`);
+  log.info.gray(`configuration:\n${path}`);
 
   // Retrieve the configuration.
   const imported = require(path).default; // eslint-disable-line
