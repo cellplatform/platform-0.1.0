@@ -1,7 +1,6 @@
 import { Model, t, StateObject } from '../common';
 import { Plugins } from './wp.plugins';
 import { Rules } from './wp.rules';
-import produce from 'immer';
 
 type M = t.CompilerWebpackModel | t.CompilerConfig;
 
@@ -63,10 +62,9 @@ export function toWebpackConfig(
       model: obj,
       toObject: StateObject.toObject,
       modify(fn) {
-        config = produce(config, (webpack) => {
-          fn(webpack);
-          return undefined; // NB: Do not consider the return value as a change (immer).
-        });
+        const clone = StateObject.create<t.WpConfig>(config);
+        clone.change(fn);
+        config = clone.state;
       },
     };
     before.forEach((fn) => fn(e));
