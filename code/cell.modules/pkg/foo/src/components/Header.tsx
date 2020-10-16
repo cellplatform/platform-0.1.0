@@ -10,3 +10,5 @@ console.log('FOO...', React);
 export const Header = () => {
   return <div>Header (Foo)</div>;
 };
+
+export default Header;
