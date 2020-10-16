@@ -30,6 +30,10 @@ export function Model(input: M) {
       return res.mode() === 'production';
     },
 
+    get dev() {
+      return res.mode() === 'development';
+    },
+
     name(defaultValue?: string) {
       return model.name || defaultValue || DEFAULTS.name;
     },
@@ -63,6 +67,10 @@ export function Model(input: M) {
 
     rules(defaultValue?: t.CompilerWebpackModel['rules']) {
       return model.rules || defaultValue || DEFAULTS.rules;
+    },
+
+    plugins(defaultValue?: t.CompilerWebpackModel['plugins']) {
+      return model.plugins || defaultValue || DEFAULTS.plugins;
     },
   };
 

@@ -14,7 +14,8 @@ export type CompilerWebpackModel = {
   dir?: string;
   lint?: boolean;
   entry?: Record<string, string>;
-  rules?: t.WpConfigRule[];
+  rules?: t.WpRule[];
+  plugins?: t.WpPlugin[];
   exposes?: Record<string, string>;
   remotes?: Record<string, string>;
   shared?: Record<string, string | t.WebpackShared>;

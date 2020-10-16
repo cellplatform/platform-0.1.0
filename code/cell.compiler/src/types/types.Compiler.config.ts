@@ -29,7 +29,8 @@ export type CompilerConfigMethods = {
   entry(path: string): B; // Default key: 'main'
   entry(key: string, path?: string | null): B;
   entry(map: Record<string, string | null>): B;
-  rule(value: t.WpConfigRule): B;
+  rule(value: t.WpRule): B;
+  plugin(value: t.WpPlugin): B;
   expose(key: string, path: string | null): B;
   remote(key: string, path: string | null): B;
   shared(fn: CompilerConfigSharedFunc): B;
@@ -39,7 +40,9 @@ export type CompilerConfigSharedFunc = (fn: CompilerConfigShared) => any;
 export type CompilerConfigShared = {
   cwd: string;
   dependencies: Record<string, string>;
+  devDependencies: Record<string, string>;
   add(dependencies: Record<string, string>): CompilerConfigShared;
   add(name: string | string[]): CompilerConfigShared;
   singleton(name: string | string[]): CompilerConfigShared;
+  version(name: string): string;
 };

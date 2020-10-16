@@ -12,21 +12,26 @@ export function toWebpackConfig(
   input: M,
   options: { beforeCompile?: t.BeforeCompile } = {},
 ): t.WpConfig {
-  const model = Model(input);
+  const settings = Model(input);
+  const model = settings.toObject();
 
   /**
    * Values (with defaults).
    */
-  const mode = model.mode();
-  const port = model.port();
-  const name = model.name();
-  const path = model.dir();
-  const publicPath = model.url();
-  const prod = model.prod;
+  const mode = settings.mode();
+  const port = settings.port();
+  const name = settings.name();
+  const path = settings.dir();
+  const publicPath = settings.url();
 
-  const entry = model.entry();
-  const target = model.target();
-  const rules = [...Rules.default(), ...model.rules()];
+  const prod = settings.prod;
+  const dev = settings.dev;
+
+  const entry = settings.entry();
+  const target = settings.target();
+
+  const rules = [...Rules.init({ model, prod, dev }), ...settings.rules()].filter(Boolean);
+  const plugins = [...Plugins.init({ model, prod, dev }), ...settings.plugins()].filter(Boolean);
 
   /**
    * Base configuration.
@@ -41,14 +46,14 @@ export function toWebpackConfig(
     devtool: prod ? undefined : 'eval-cheap-module-source-map',
     devServer: prod ? undefined : { port, hot: true },
     module: { rules },
-    plugins: Plugins.init({ model: model.toObject(), prod }),
+    plugins,
     cache: { type: 'filesystem' },
   };
 
   /**
    * Run any modifier hooks.
    */
-  const obj = model.toObject();
+  const obj = settings.toObject();
   const before = [...(obj.beforeCompile || [])];
   if (options.beforeCompile) {
     before.unshift(options.beforeCompile);

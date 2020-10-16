@@ -1,5 +1,4 @@
 import '@platform/polyfill';
-
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
@@ -12,17 +11,15 @@ console.log('Home react:', React.version);
 // @ts-ignore
 const Header = React.lazy(() => import('foo/Header'));
 
-(async () => {
-  class Foo {
-    public static count = 123;
-  }
-  new Foo();
+// @ts-ignore
+const CodeEditor = React.lazy(() => import('code/CodeEditor'));
 
+(async () => {
   const App = () => {
     const style = { fontFamily: 'sans-serif', WebkitAppRegion: 'drag' };
     return (
       <div style={style}>
-        <h1>Hello World!..</h1>
+        <h1>Hello World!</h1>
         <div
           style={{
             position: 'absolute',
@@ -35,6 +32,7 @@ const Header = React.lazy(() => import('foo/Header'));
         >
           <React.Suspense fallback={<div />}>
             <Header />
+            <CodeEditor />
           </React.Suspense>
         </div>
       </div>

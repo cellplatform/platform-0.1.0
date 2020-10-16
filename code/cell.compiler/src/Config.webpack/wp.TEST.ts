@@ -85,6 +85,15 @@ describe('Compiler (Webpack)', () => {
     builder.rule(rule);
     expect(wp.toWebpackConfig(builder).module?.rules).to.include(rule);
   });
+ 
+  it('plugins', () => {
+    const plugin = { foo: 123 };
+    const { builder } = create();
+    expect(wp.toWebpackConfig(builder).plugins).to.not.include(plugin);
+
+    builder.plugin(plugin);
+    expect(wp.toWebpackConfig(builder).plugins).to.include(plugin);
+  });
 
   describe('ModuleFederationPlugin', () => {
     it('un-escapes keys in: exposes/remotes/shared', () => {

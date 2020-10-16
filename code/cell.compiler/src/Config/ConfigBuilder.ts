@@ -148,6 +148,14 @@ const handlers: t.BuilderHandlers<t.CompilerWebpackModel, t.CompilerConfigMethod
     });
   },
 
+  plugin(args) {
+    const plugin = args.params[0];
+    args.model.change((draft) => {
+      const plugins = draft.plugins || (draft.plugins = []);
+      plugins.push(plugin);
+    });
+  },
+
   expose(args) {
     const param = (index: number) => format.string(args.params[index], { trim: true }) || '';
     writePathMap(args.model, 'exposes', param(0), param(1));
@@ -221,9 +229,10 @@ function writeShared(args: {
   const cwd = process.cwd();
   const pkg = loadPackageJson(cwd);
   const dependencies = pkg?.dependencies || {};
+  const devDependencies = pkg?.devDependencies || {};
 
   const dependencyExists = (name: string) => {
-    const exists = Boolean(dependencies[name]);
+    const exists = Boolean(ctx.version(name));
     if (!exists && process.env.NODE_ENV !== 'test') {
       log.warn(
         `Cannot add shared module '${log.white(name)}' as it does not exist in dependencies.`,
@@ -236,6 +245,8 @@ function writeShared(args: {
   const ctx: t.CompilerConfigShared = {
     cwd,
     dependencies,
+    devDependencies,
+    version: (name) => dependencies[name] || devDependencies[name],
     add(input: Record<string, string> | string | string[]) {
       model.change((draft) => {
         const shared = draft.shared || (draft.shared = {});
@@ -244,7 +255,7 @@ function writeShared(args: {
           names
             .filter((name) => dependencyExists(name))
             .forEach((name) => {
-              shared[escapeKeyPath(name)] = dependencies[name];
+              shared[escapeKeyPath(name)] = ctx.version(name);
             });
         } else if (typeof input === 'object') {
           draft.shared = { ...shared, ...escapeKeyPaths(input) };
@@ -261,7 +272,7 @@ function writeShared(args: {
           .forEach((name) => {
             shared[escapeKeyPath(name)] = {
               singleton: true,
-              requiredVersion: dependencies[name],
+              requiredVersion: ctx.version(name),
             };
           });
       });

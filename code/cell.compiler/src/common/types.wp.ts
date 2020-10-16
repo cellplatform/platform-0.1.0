@@ -1,3 +1,5 @@
+import { Compiler } from 'webpack';
+
 /**
  * Direct wrapper of Webpack
  * [Not Publicly Exported]
@@ -12,13 +14,14 @@ export type WpConfig = {
   mode?: WpMode;
   target?: WpTarget;
   entry?: string | Record<string, string>;
-  output?: WpConfigOutput;
-  resolve?: WpConfigResolve;
+  output?: WpOutput;
+  resolve?: WpResolve;
   devtool?: WpDevtool;
-  devServer?: WpConfigDevServer;
-  module?: WpConfigModule;
-  plugins?: any[];
+  devServer?: WpDevServer;
+  module?: WpModule;
+  plugins?: WpPlugin[];
   cache?: false | WpCache;
+  optimization?: WpOptimization;
 };
 
 /**
@@ -39,31 +42,31 @@ export type WpTarget = string | string[] | false;
 /**
  * https://webpack.js.org/configuration/output
  */
-export type WpConfigOutput = { filename?: string; path?: string; publicPath?: string };
+export type WpOutput = { filename?: string; path?: string; publicPath?: string };
 
 /**
  * https://webpack.js.org/configuration/resolve
  */
-export type WpConfigResolve = { extensions?: string[] };
+export type WpResolve = { extensions?: string[] };
 
 /**
  * https://webpack.js.org/configuration/module/
  */
-export type WpConfigModule = { rules?: WpConfigRule[] };
+export type WpModule = { rules?: WpRule[] };
 
 /**
  * https://webpack.js.org/configuration/module/#rule
  */
-export type WpConfigRule = {
+export type WpRule = {
   test?: RegExp;
   mimetype?: string;
   exclude?: RegExp;
-  use?: WpConfigRuleUse | WpConfigRuleUse[];
+  use?: WpRuleUse | WpRuleUse[];
 };
 
-export type WpConfigRuleUse = string | WpConfigLoader;
+export type WpRuleUse = string | WpLoader;
 
-export type WpConfigLoader = {
+export type WpLoader = {
   loader: string;
   options?: Record<string, any>;
 };
@@ -71,7 +74,7 @@ export type WpConfigLoader = {
 /**
  * https://webpack.js.org/configuration/dev-server
  */
-export type WpConfigDevServer = {
+export type WpDevServer = {
   host?: string;
   port?: number;
   contentBase?: string;
@@ -82,6 +85,36 @@ export type WpConfigDevServer = {
   headers?: Record<string, string>;
   hot?: boolean;
 };
+
+/**
+ * https://webpack.js.org/configuration/optimization
+ */
+export type WpOptimization = {
+  minimize?: boolean;
+  minimizer?: (WpPlugin | WpPluginFactory)[];
+  emitOnErrors?: boolean;
+  nodeEnv?: false | string;
+  mangleWasmImports?: boolean;
+  removeAvailableModules?: boolean;
+  removeEmptyChunks?: boolean;
+  mergeDuplicateChunks?: boolean;
+  flagIncludedChunks?: boolean;
+  occurrenceOrder?: boolean;
+  providedExports?: boolean;
+  usedExports?: boolean | 'global';
+  concatenateModules?: boolean;
+  sideEffects?: boolean;
+  portableRecords?: boolean;
+  mangleExports?: boolean | 'deterministic' | 'size';
+  innerGraph?: boolean;
+  realContentHash?: boolean;
+};
+
+/**
+ * https://webpack.js.org/configuration/plugins
+ */
+export type WpPlugin = any;
+export type WpPluginFactory = (compiler: Compiler) => WpPlugin;
 
 /**
  * https://webpack.js.org/configuration/mode

@@ -9,6 +9,7 @@ const CONFIG = {
   target: ['web'],
   entry: {},
   rules: [],
+  plugins: [],
 };
 
 export const DEFAULT = { PORT, HOST, CONFIG };

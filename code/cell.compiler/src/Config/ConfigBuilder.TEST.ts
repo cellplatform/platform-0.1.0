@@ -289,7 +289,7 @@ describe('Compiler (Config)', () => {
   });
 
   describe('rule', () => {
-    it('has not rules (default)', () => {
+    it('has no rules (default)', () => {
       const { model } = create();
       expect(model.state.rules).to.eql([]);
     });
@@ -299,6 +299,20 @@ describe('Compiler (Config)', () => {
       const rule = { test: /\.ttf$/, use: ['file-loader'] };
       builder.rule(rule);
       expect(model.state.rules).to.include(rule);
+    });
+  });
+
+  describe('plugin', () => {
+    it('has no plugins (default)', () => {
+      const { model } = create();
+      expect(model.state.plugins).to.eql([]);
+    });
+
+    it('adds a plugin', () => {
+      const { builder, model } = create();
+      const plugin = { foo: 123 };
+      builder.plugin(plugin);
+      expect(model.state.plugins).to.include(plugin);
     });
   });
 
@@ -387,6 +401,7 @@ describe('Compiler (Config)', () => {
       builder.shared((e) => (args = e));
       expect(args?.cwd).to.eql(process.cwd());
       expect(args?.dependencies).to.eql(pkg.dependencies);
+      expect(args?.devDependencies).to.eql(pkg.devDependencies);
     });
 
     it('adds {dependencies} object (cumulative)', () => {
@@ -404,6 +419,7 @@ describe('Compiler (Config)', () => {
     it('adds dependency by name(s)', () => {
       const { builder, model } = create();
       const deps = pkg.dependencies || {};
+      const devDeps = pkg.devDependencies || {};
 
       builder.shared((args) => args.add('foobar')); // NB: Does not exist in [package.json] dependencies.
       expect(model.state.shared).to.eql({});
@@ -411,11 +427,12 @@ describe('Compiler (Config)', () => {
       builder.shared((args) => args.add('@platform/libs'));
       expect(model.state.shared).to.eql({ '@platform\\libs': deps['@platform/libs'] }); // NB: key escaped.
 
-      builder.shared((args) => args.add(['@platform/log', 'ts-loader']));
+      builder.shared((args) => args.add(['@platform/log', 'ts-loader', 'react']));
       expect(model.state.shared).to.eql({
         '@platform\\libs': deps['@platform/libs'],
         '@platform\\log': deps['@platform/log'],
         'ts-loader': deps['ts-loader'],
+        react: devDeps['react'],
       });
     });
 
@@ -453,7 +470,7 @@ describe('Compiler (Config)', () => {
       builder.beforeCompile(handler).beforeCompile(handler);
 
       expect(model.state.beforeCompile).to.include(handler);
-      expect(model.state.beforeCompile.length).to.eql(2);
+      expect((model.state.beforeCompile || []).length).to.eql(2);
     });
   });
 });

@@ -6,12 +6,12 @@ import * as HtmlWebPackPlugin from 'html-webpack-plugin';
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 type P = NonNullable<t.WpConfig['plugins']>;
-type IArgs = { model: t.CompilerWebpackModel; prod: boolean };
+type IArgs = { model: t.CompilerWebpackModel; prod: boolean; dev: boolean };
 
 export const Plugins = {
   init(args: IArgs): P {
     const plugins = [Plugins.html(args), Plugins.federation(args), Plugins.typeChecker(args)];
-    return plugins.filter((plugin) => Boolean(plugin));
+    return plugins.filter(Boolean);
   },
 
   /**

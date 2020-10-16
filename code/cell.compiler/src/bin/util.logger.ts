@@ -15,6 +15,11 @@ export const logger = {
     return logger;
   },
 
+  hr(length = 60) {
+    log.info.gray('━'.repeat(length));
+    return logger;
+  },
+
   commands() {
     const table = log.table({ border: false });
     Object.keys(COMMANDS).forEach((key) => {
@@ -41,17 +46,21 @@ export const logger = {
     const rules = webpack.module?.rules || [];
     const mf = plugins.find((plugin) => plugin instanceof ModuleFederationPlugin);
 
+    const div = () => logger.newline().hr().newline();
+
     log.info.cyan('Configuration (Model)');
     log.info(config.toObject());
 
-    log.info();
+    div();
+
     log.info.cyan('Webpack');
     log.info({
       ...webpack,
       plugins: plugins.map((plugin) => plugin?.constructor?.name),
     });
 
-    log.info();
+    div();
+
     log.info.cyan('Webpack: Rules');
     rules.forEach((rule) => {
       log.info.yellow(`${rule.test?.source || '<no-test>'}`);
@@ -59,7 +68,8 @@ export const logger = {
       log.info();
     });
 
-    log.info();
+    div();
+
     log.info.cyan('Webpack: Module Federation');
     log.info(mf?._options);
 
