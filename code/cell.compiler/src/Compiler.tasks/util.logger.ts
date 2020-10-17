@@ -48,7 +48,7 @@ export const logger = {
     return logger;
   },
 
-  model(input: t.CompilerWebpackModel, indent?: number) {
+  model(input: t.CompilerModel, indent?: number) {
     const prefix = typeof indent === 'number' ? ' '.repeat(indent) : '';
     const model = Model(input);
 

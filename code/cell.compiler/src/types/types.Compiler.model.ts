@@ -3,9 +3,8 @@ import { t } from './common';
 /**
  * Data model.
  */
-export type CompilerModel = t.BuilderModel<t.CompilerWebpackModel>;
-
-export type CompilerWebpackModel = {
+export type CompilerModelState = t.BuilderModel<t.CompilerModel>;
+export type CompilerModel = {
   name: string;
   title?: string;
   mode: t.WpMode;

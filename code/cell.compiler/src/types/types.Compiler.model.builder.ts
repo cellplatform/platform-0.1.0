@@ -1,19 +1,19 @@
 import { t } from './common';
 
-type B = t.BuilderChain<CompilerConfigMethods>;
+type B = t.BuilderChain<CompilerModelBuilderMethods>;
 
-export type CompilerConfigFactory = {
-  model(name: string): t.CompilerModel;
-  create(input: string | t.CompilerModel | t.CompilerWebpackModel): CompilerConfig;
+export type CompilerModelFactory = {
+  model(name: string): t.CompilerModelState;
+  builder(input: string | t.CompilerModelState | t.CompilerModel): t.CompilerModelBuilder;
 };
 
-export type CompilerConfig = t.BuilderChain<CompilerConfigMethods>;
-
 /**
- * Builder API
+ * Model Builder API
  */
-export type CompilerConfigMethods = {
-  toObject(): t.CompilerWebpackModel;
+export type CompilerModelBuilder = t.BuilderChain<CompilerModelBuilderMethods>;
+
+export type CompilerModelBuilderMethods = {
+  toObject(): t.CompilerModel;
   toWebpack(): t.WpConfig;
 
   clone(): B;

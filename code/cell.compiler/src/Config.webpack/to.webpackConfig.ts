@@ -2,7 +2,7 @@ import { Model, t, StateObject } from '../common';
 import { Plugins } from './wp.plugins';
 import { Rules } from './wp.rules';
 
-type M = t.CompilerWebpackModel | t.CompilerConfig;
+type M = t.CompilerModel | t.CompilerModelBuilder;
 
 /**
  * Converts a configuration state into a live Webpack object.

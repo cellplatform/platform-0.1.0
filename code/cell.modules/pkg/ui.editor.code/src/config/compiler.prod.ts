@@ -6,8 +6,7 @@ const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 export const configure = () => {
   const vs = (path: string) => `monaco-editor/esm/vs/${path}`;
 
-  const config = Compiler.config
-    .create('code')
+  const config = Compiler.config('code')
     .mode('dev')
     .url(3002)
     // .dir('dist/web')

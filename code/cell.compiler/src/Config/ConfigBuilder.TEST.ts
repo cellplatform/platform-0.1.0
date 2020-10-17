@@ -5,7 +5,7 @@ const pkg = require('../../package.json') as t.INpmPackageJson; // eslint-disabl
 
 const create = () => {
   const model = ConfigBuilder.model('foo');
-  const builder = ConfigBuilder.create(model);
+  const builder = ConfigBuilder.builder(model);
   return { model, builder };
 };
 
@@ -17,17 +17,17 @@ describe('Compiler (Config)', () => {
     });
 
     it('builder (from "name")', () => {
-      const builder = ConfigBuilder.create('  foo  ');
+      const builder = ConfigBuilder.builder('  foo  ');
       expect(builder.toObject()).to.eql({ ...DEFAULT.CONFIG, name: 'foo' });
     });
 
     it('builder (from {model} StateObject)', () => {
-      const model = StateObject.create<t.CompilerWebpackModel>({
+      const model = StateObject.create<t.CompilerModel>({
         ...DEFAULT.CONFIG,
         name: 'foo',
         mode: 'development',
       });
-      const builder = ConfigBuilder.create(model);
+      const builder = ConfigBuilder.builder(model);
 
       const obj = builder.toObject();
       expect(obj.name).to.eql('foo');
@@ -35,13 +35,13 @@ describe('Compiler (Config)', () => {
     });
 
     it('builder (from {model} object)', () => {
-      const model = StateObject.create<t.CompilerWebpackModel>({
+      const model = StateObject.create<t.CompilerModel>({
         ...DEFAULT.CONFIG,
         name: 'foo',
         mode: 'development',
       });
 
-      const builder = ConfigBuilder.create(model.state);
+      const builder = ConfigBuilder.builder(model.state);
 
       const obj = builder.toObject();
       expect(obj.mode).to.eql('development');
@@ -53,7 +53,7 @@ describe('Compiler (Config)', () => {
 
     it('throw: unnamed', () => {
       const test = (name: any) => {
-        const fn = () => ConfigBuilder.create(name);
+        const fn = () => ConfigBuilder.builder(name);
         expect(fn).to.throw(/must be named/);
       };
       test('');

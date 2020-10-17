@@ -3,7 +3,7 @@ import { bundle } from './task.bundle';
 import { logger } from './util';
 import { upload } from './task.upload';
 
-type B = t.CompilerConfig;
+type B = t.CompilerModelBuilder;
 
 /**
  * Cell compilation target.

@@ -38,7 +38,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
  */
 
 const toBundledResponse = (args: {
-  model: t.CompilerWebpackModel;
+  model: t.CompilerModel;
   stats: IStats;
   config: t.WpConfig;
 }): t.WebpackBundleResponse => {

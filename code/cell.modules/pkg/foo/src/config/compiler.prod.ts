@@ -2,8 +2,7 @@ import { Compiler } from '@platform/cell.compiler';
 export { Compiler };
 
 export const configure = () =>
-  Compiler.config
-    .create('foo')
+  Compiler.config('foo')
     .url(3001)
     .title('My Foo')
     .entry({ main: './src/test/entry' })

@@ -1,7 +1,7 @@
 import { fs, log, t } from '../common';
 import { logger } from './util';
 
-type B = t.CompilerConfig;
+type B = t.CompilerModelBuilder;
 
 const DEFAULT = {
   FILENAME: 'compiler.prod.js',

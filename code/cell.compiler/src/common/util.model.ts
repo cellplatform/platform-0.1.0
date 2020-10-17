@@ -3,7 +3,7 @@ import { fs } from './libs';
 import * as t from './types';
 import { DEFAULT } from './constants';
 
-type M = t.CompilerWebpackModel | t.CompilerConfig;
+type M = t.CompilerModel | t.CompilerModelBuilder;
 
 export function isModel(input: M) {
   return typeof (input as any).toObject === 'function';
@@ -13,7 +13,7 @@ export function isModel(input: M) {
  * Wrangle object types into a [model].
  */
 export const toModel = (input: M) => {
-  return (isModel(input) ? (input as any).toObject() : input) as t.CompilerWebpackModel;
+  return (isModel(input) ? (input as any).toObject() : input) as t.CompilerModel;
 };
 
 /**
@@ -61,15 +61,15 @@ export function Model(input: M) {
       return dir ? fs.resolve(dir) : undefined;
     },
 
-    entry(defaultValue?: t.CompilerWebpackModel['entry']) {
+    entry(defaultValue?: t.CompilerModel['entry']) {
       return model.entry || defaultValue || DEFAULTS.entry;
     },
 
-    rules(defaultValue?: t.CompilerWebpackModel['rules']) {
+    rules(defaultValue?: t.CompilerModel['rules']) {
       return model.rules || defaultValue || DEFAULTS.rules;
     },
 
-    plugins(defaultValue?: t.CompilerWebpackModel['plugins']) {
+    plugins(defaultValue?: t.CompilerModel['plugins']) {
       return model.plugins || defaultValue || DEFAULTS.plugins;
     },
   };
@@ -81,7 +81,7 @@ export function Model(input: M) {
  * Derive targets as an array
  */
 export function toTargetArray(
-  value: t.CompilerWebpackModel['target'],
+  value: t.CompilerModel['target'],
   ...defaultTargets: string[]
 ): string[] {
   if (!value) {

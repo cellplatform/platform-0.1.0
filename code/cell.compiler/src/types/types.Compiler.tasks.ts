@@ -1,7 +1,7 @@
 import { t } from './common';
 
-type B = t.CompilerConfig;
-type M = t.CompilerWebpackModel | t.CompilerConfig;
+type B = t.CompilerModelBuilder;
+type M = t.CompilerModel | t.CompilerModelBuilder;
 type File = t.IHttpClientCellFileUpload;
 
 /**
@@ -26,7 +26,7 @@ export type WebpackBundleResponse = {
   ok: boolean;
   elapsed: number;
   stats: t.WebpackStats;
-  model: t.CompilerWebpackModel;
+  model: t.CompilerModel;
   config: t.WpConfig;
   toString(): string;
 };

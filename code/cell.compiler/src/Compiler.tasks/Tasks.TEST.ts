@@ -1,11 +1,12 @@
 import { Compiler } from '..';
 import { expect, Uri } from '../test';
+import { ConfigBuilder } from '../Config';
 
 const host = 'localhost';
 
 const create = () => {
-  const model = Compiler.config.model('foo');
-  const builder = Compiler.config.create(model);
+  const model = ConfigBuilder.model('foo');
+  const builder = Compiler.config(model);
   return { model, builder };
 };
 

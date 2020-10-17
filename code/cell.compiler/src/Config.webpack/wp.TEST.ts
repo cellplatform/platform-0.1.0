@@ -1,10 +1,11 @@
 import { Compiler } from '..';
 import { fs, expect, ModuleFederationPlugin } from '../test';
+import { ConfigBuilder } from '../Config';
 import { wp } from '.';
 
 const create = () => {
-  const model = Compiler.config.model('foo');
-  const builder = Compiler.config.create(model);
+  const model = ConfigBuilder.model('foo');
+  const builder = Compiler.config(model);
   return { model, builder };
 };
 
@@ -85,7 +86,7 @@ describe('Compiler (Webpack)', () => {
     builder.rule(rule);
     expect(wp.toWebpackConfig(builder).module?.rules).to.include(rule);
   });
- 
+
   it('plugins', () => {
     const plugin = { foo: 123 };
     const { builder } = create();

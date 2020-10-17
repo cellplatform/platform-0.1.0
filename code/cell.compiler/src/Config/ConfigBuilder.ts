@@ -20,30 +20,30 @@ const MODES: t.WpMode[] = ['development', 'production'];
 /**
  * Configuration builder factory.
  */
-export const ConfigBuilder: t.CompilerConfigFactory = {
+export const ConfigBuilder: t.CompilerModelFactory = {
   model(name) {
     name = format.string(name, { trim: true }) || '';
     if (!name) {
       throw new Error(`Configuration must be named`);
     }
-    const initial = { ...DEFAULT.CONFIG, name } as t.CompilerWebpackModel;
-    return StateObject.create<t.CompilerWebpackModel>(initial);
+    const initial = { ...DEFAULT.CONFIG, name } as t.CompilerModel;
+    return StateObject.create<t.CompilerModel>(initial);
   },
 
-  create(input) {
+  builder(input) {
     const model = (typeof input === 'object'
       ? StateObject.isStateObject(input)
         ? input
-        : StateObject.create<t.CompilerWebpackModel>(input as any)
-      : ConfigBuilder.model(input)) as t.CompilerModel;
-    return Builder.create<t.CompilerWebpackModel, t.CompilerConfigMethods>({ model, handlers });
+        : StateObject.create<t.CompilerModel>(input as any)
+      : ConfigBuilder.model(input)) as t.CompilerModelState;
+    return Builder.create<t.CompilerModel, t.CompilerModelBuilderMethods>({ model, handlers });
   },
 };
 
 /**
  * Root handlers.
  */
-const handlers: t.BuilderHandlers<t.CompilerWebpackModel, t.CompilerConfigMethods> = {
+const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelBuilderMethods> = {
   clone: (args) => args.clone(),
   toObject: (args) => args.model.state,
   toWebpack: (args) => wp.toWebpackConfig(args.model.state),
@@ -222,7 +222,7 @@ function writePathMap<M extends O>(
 }
 
 function writeShared(args: {
-  model: t.BuilderModel<t.CompilerWebpackModel>;
+  model: t.BuilderModel<t.CompilerModel>;
   handler: t.CompilerConfigSharedFunc;
 }) {
   const { model, handler } = args;

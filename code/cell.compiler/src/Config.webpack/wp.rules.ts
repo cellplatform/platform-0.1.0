@@ -1,6 +1,6 @@
 import { t } from '../common';
 
-type IArgs = { model: t.CompilerWebpackModel; prod: boolean; dev: boolean };
+type IArgs = { model: t.CompilerModel; prod: boolean; dev: boolean };
 
 export const Rules = {
   /**

@@ -5,8 +5,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 export const configure = () => {
   const vs = (path: string) => `monaco-editor/esm/vs/${path}`;
 
-  const config = Compiler.config
-    .create('code')
+  const config = Compiler.config('code')
     .url(3002)
     .target('webworker')
 
