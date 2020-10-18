@@ -1,5 +1,5 @@
 import { Compiler } from '..';
-import { fs, expect, ModuleFederationPlugin } from '../test';
+import { fs, expect, ModuleFederationPlugin } from '../../test';
 import { ConfigBuilder } from '../Config';
 import { wp } from '.';
 

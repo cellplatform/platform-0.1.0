@@ -5,7 +5,7 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
-    "cell.compiler": "lib/bin/index.js"
+    "cell.compiler": "lib/node/bin/index.js"
   },
   "scripts": {
     "start": "yarn dev",

@@ -1,7 +1,5 @@
 import { ConfigBuilder } from '.';
-import { DEFAULT, escapeKeyPaths, expect, StateObject, t, fs } from '../test';
-
-const pkg = require('../../package.json') as t.INpmPackageJson; // eslint-disable-line
+import { DEFAULT, escapeKeyPaths, expect, StateObject, t, fs, pkg } from '../../test';
 
 const create = () => {
   const model = ConfigBuilder.model('foo');

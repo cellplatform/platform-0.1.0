@@ -1,5 +1,5 @@
 import { Compiler } from '.';
-import { expect } from '../test';
+import { expect } from '../../test';
 
 describe('Compiler', () => {
   it('static entry', () => {

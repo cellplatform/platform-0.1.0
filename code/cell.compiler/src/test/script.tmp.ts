@@ -1,3 +1,3 @@
-import { log } from '../common';
+import { log } from './common';
 
 log.info('tmp');
