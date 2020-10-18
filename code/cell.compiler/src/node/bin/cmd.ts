@@ -10,7 +10,7 @@ const logger = util.logger;
  * Bundle the project.
  */
 export async function bundle(argv: P) {
-  const config = await util.loadConfig(argv.params);
+  const config = await util.loadConfig(argv.config);
   const mode: t.WpMode | undefined = argv.mode || argv.m;
 
   if (mode) {
@@ -25,7 +25,7 @@ export async function bundle(argv: P) {
  */
 export async function watch(argv: P) {
   logger.clear();
-  const config = await util.loadConfig(argv.params);
+  const config = await util.loadConfig(argv.config);
   const mode: t.WpMode | undefined = argv.mode || argv.m;
 
   if (mode) {
@@ -39,7 +39,7 @@ export async function watch(argv: P) {
  * Bundle and upload to a cell.
  */
 export async function upload(argv: P) {
-  const config = await util.loadConfig(argv.params);
+  const config = await util.loadConfig(argv.config);
   const host = (((argv.host || argv.h) as string) || '').trim();
 
   if (!host) {
@@ -71,7 +71,7 @@ export async function upload(argv: P) {
  */
 export async function dev(argv: P) {
   logger.clear();
-  const config = await util.loadConfig(argv.params);
+  const config = await util.loadConfig(argv.config);
   config.mode('development');
   await Compiler.dev(config);
 }
@@ -80,7 +80,7 @@ export async function dev(argv: P) {
  * Output info about the build.
  */
 export async function info(argv: P) {
-  const config = await util.loadConfig(argv.params);
+  const config = await util.loadConfig(argv.config);
   log.info();
   logger.info(config);
 }
