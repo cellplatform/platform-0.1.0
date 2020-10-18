@@ -10,15 +10,11 @@ const logger = util.logger;
  * Bundle the project.
  */
 export async function bundle(argv: P) {
-  const params = util.params(argv);
-  const config = await params.loadConfig();
+  const config = await util.loadConfig(argv.params);
+  const mode: t.WpMode | undefined = argv.mode || argv.m;
 
-  if (params.mode) {
-    config.mode(params.mode);
-  }
-
-  if (params.url) {
-    config.url(params.url);
+  if (mode) {
+    config.mode(mode);
   }
 
   await Compiler.bundle(config);
@@ -29,11 +25,11 @@ export async function bundle(argv: P) {
  */
 export async function watch(argv: P) {
   logger.clear();
-  const params = util.params(argv);
-  const config = await params.loadConfig();
+  const config = await util.loadConfig(argv.params);
+  const mode: t.WpMode | undefined = argv.mode || argv.m;
 
-  if (params.mode) {
-    config.mode(params.mode);
+  if (mode) {
+    config.mode(mode);
   }
 
   await Compiler.watch(config);
@@ -43,16 +39,15 @@ export async function watch(argv: P) {
  * Bundle and upload to a cell.
  */
 export async function upload(argv: P) {
-  const params = util.params(argv);
-  const config = await params.loadConfig();
-  const host = (params.host || '').trim();
+  const config = await util.loadConfig(argv.params);
+  const host = (((argv.host || argv.h) as string) || '').trim();
 
   if (!host) {
     return logger.errorAndExit(1, `A ${log.cyan('--host')} argument was not provided.`);
   }
 
   // Wrangle the cell URI.
-  const uri = params.uri;
+  const uri: string | undefined = argv.uri;
   const cell = uri && typeof uri === 'string' ? Uri.parse<t.ICellUri>(uri) : undefined;
   if (!cell) {
     const err = `A ${log.cyan('--uri')} argument was not provided.`;
@@ -67,7 +62,7 @@ export async function upload(argv: P) {
     return logger.errorAndExit(1, err);
   }
 
-  const targetDir = params.dir;
+  const targetDir: string | undefined = argv.dir;
   return Compiler.cell(host, cell.toString()).upload(config, { targetDir });
 }
 
@@ -76,15 +71,8 @@ export async function upload(argv: P) {
  */
 export async function dev(argv: P) {
   logger.clear();
-  const params = util.params(argv);
-  const config = await params.loadConfig();
-
+  const config = await util.loadConfig(argv.params);
   config.mode('development');
-
-  if (params.url) {
-    config.url(params.url);
-  }
-
   await Compiler.dev(config);
 }
 
@@ -92,8 +80,7 @@ export async function dev(argv: P) {
  * Output info about the build.
  */
 export async function info(argv: P) {
-  const params = util.params(argv);
-  const config = await params.loadConfig();
+  const config = await util.loadConfig(argv.params);
   log.info();
   logger.info(config);
 }

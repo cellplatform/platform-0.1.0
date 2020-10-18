@@ -14,7 +14,7 @@
     "build": "ts build --no-esm",
     "prepare": "ts prepare",
     "serve": "cd dist && serve --listen 1234",
-    "cmd": "node lib/bin $@",
+    "cmd": "node lib/node/bin $@",
     "dev": "yarn cmd dev --config lib/test/config/compiler.dev $@",
     "bundle": "yarn cmd bundle --config lib/test/config/compiler.prod $@",
     "watch": "yarn cmd watch --config lib/test/config/compiler.dev $@",

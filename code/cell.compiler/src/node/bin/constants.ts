@@ -11,7 +11,6 @@ export const COMMANDS: t.Commands = {
     params: {
       '--config': PARAMS.config,
       '--mode -m': PARAMS.mode,
-      '--url': `(optional) URL the bundle is federated on`,
     },
   },
   watch: {
@@ -25,7 +24,6 @@ export const COMMANDS: t.Commands = {
     description: 'Start development server (HMR)',
     params: {
       '--config': PARAMS.config,
-      '--url': `(optional) URL the bundle is federated on`,
     },
   },
   upload: {
