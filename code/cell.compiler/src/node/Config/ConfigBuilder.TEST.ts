@@ -7,7 +7,7 @@ const create = () => {
   return { model, builder };
 };
 
-describe('Compiler (Config)', () => {
+describe.only('Compiler (Config)', () => {
   describe('create', () => {
     it('model', () => {
       const model = ConfigBuilder.model('  foo  ');
@@ -57,6 +57,19 @@ describe('Compiler (Config)', () => {
       test('');
       test('  ');
       test(undefined);
+    });
+  });
+
+  describe('hooks', () => {
+    it('beforeCompile', () => {
+      const { builder, model } = create();
+      expect(model.state.beforeCompile).to.equal(undefined);
+
+      const handler: t.BeforeCompile = (e) => null;
+      builder.beforeCompile(handler).beforeCompile(handler);
+
+      expect(model.state.beforeCompile).to.include(handler);
+      expect((model.state.beforeCompile || []).length).to.eql(2);
     });
   });
 
@@ -286,20 +299,6 @@ describe('Compiler (Config)', () => {
     });
   });
 
-  describe('rule', () => {
-    it('has no rules (default)', () => {
-      const { model } = create();
-      expect(model.state.rules).to.eql([]);
-    });
-
-    it('adds a rule', () => {
-      const { builder, model } = create();
-      const rule = { test: /\.ttf$/, use: ['file-loader'] };
-      builder.rule(rule);
-      expect(model.state.rules).to.include(rule);
-    });
-  });
-
   describe('plugin', () => {
     it('has no plugins (default)', () => {
       const { model } = create();
@@ -459,16 +458,34 @@ describe('Compiler (Config)', () => {
     });
   });
 
-  describe('beforeCompile', () => {
-    it('registers handler on model', () => {
+  describe.only('webpack', () => {
+    it(':parent', () => {
       const { builder, model } = create();
-      expect(model.state.beforeCompile).to.equal(undefined);
+      expect(model.state.webpack).to.eql(undefined);
+      expect(builder.webpack.parent()).to.equal(builder);
+      expect(model.state.webpack).to.eql(DEFAULT.WEBPACK);
+    });
 
-      const handler: t.BeforeCompile = (e) => null;
-      builder.beforeCompile(handler).beforeCompile(handler);
+    it('add rule', () => {
+      const { builder, model } = create();
+      const rule = { test: /\.ttf$/, use: ['file-loader'] };
 
-      expect(model.state.beforeCompile).to.include(handler);
-      expect((model.state.beforeCompile || []).length).to.eql(2);
+      builder.webpack.rule(rule);
+      expect(model.state.webpack?.rules).to.include(rule);
+
+      builder.webpack.rule(rule).rule(rule);
+      expect((model.state.webpack?.rules || []).length).to.eql(3);
+    });
+
+    it('adds plugin', () => {
+      const { builder, model } = create();
+      const plugin = { foo: 123 };
+
+      builder.webpack.plugin(plugin);
+      expect(model.state.webpack?.plugins).to.include(plugin);
+
+      builder.webpack.plugin(plugin).plugin(plugin);
+      expect((model.state.webpack?.plugins || []).length).to.eql(3);
     });
   });
 });

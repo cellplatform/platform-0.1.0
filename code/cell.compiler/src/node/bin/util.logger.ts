@@ -2,7 +2,7 @@ import { log, ModuleFederationPlugin, t } from '../common';
 import { COMMANDS } from './constants';
 import { loadConfig } from './util.loadConfig';
 
-type B = t.BuilderChain<t.CompilerModelBuilderMethods>;
+type B = t.BuilderChain<t.CompilerModelMethods>;
 
 export const logger = {
   clear() {

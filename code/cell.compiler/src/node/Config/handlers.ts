@@ -10,6 +10,7 @@ import {
   value as valueUtil,
 } from '../common';
 import { wp } from '../Config.webpack';
+import { webpackHandlers } from './handlers.webpack';
 
 type O = Record<string, unknown>;
 
@@ -19,7 +20,14 @@ const MODES: t.WpMode[] = ['development', 'production'];
 /**
  * Root handlers.
  */
-export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelBuilderMethods> = {
+export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods> = {
+  webpack: {
+    kind: 'object',
+    path: '$.webpack',
+    builder: (args) => args.create(webpackHandlers),
+    default: () => DEFAULT.WEBPACK,
+  },
+
   clone: (args) => args.clone(),
   toObject: (args) => args.model.state,
   toWebpack: (args) => wp.toWebpackConfig(args.model.state),
@@ -116,6 +124,7 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelBuilder
     }
   },
 
+  // TEMP 🐷
   rule(args) {
     const rule = args.params[0];
     args.model.change((draft) => {
@@ -124,6 +133,7 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelBuilder
     });
   },
 
+  // TEMP 🐷
   plugin(args) {
     const plugin = args.params[0];
     args.model.change((draft) => {

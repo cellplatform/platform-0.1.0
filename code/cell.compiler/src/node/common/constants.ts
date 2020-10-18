@@ -8,8 +8,9 @@ const CONFIG = {
   url: `${HOST}:${PORT}/`,
   target: ['web'],
   entry: {},
-  rules: [],
-  plugins: [],
+  rules: [], // TEMP 🐷
+  plugins: [], // TEMP 🐷
 };
 
-export const DEFAULT = { PORT, HOST, CONFIG };
+const WEBPACK = { rules: [], plugins: [] };
+export const DEFAULT = { PORT, HOST, CONFIG, WEBPACK };

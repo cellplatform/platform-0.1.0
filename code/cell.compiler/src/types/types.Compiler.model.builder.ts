@@ -1,6 +1,7 @@
 import { t } from './common';
 
-type B = t.BuilderChain<CompilerModelBuilderMethods>;
+type B = t.BuilderChain<CompilerModelMethods>;
+type W = t.BuilderChain<CompilerModelWebpackMethods>;
 
 export type CompilerModelFactory = {
   model(name: string): t.CompilerModelState;
@@ -10,9 +11,11 @@ export type CompilerModelFactory = {
 /**
  * Model Builder API
  */
-export type CompilerModelBuilder = t.BuilderChain<CompilerModelBuilderMethods>;
+export type CompilerModelBuilder = t.BuilderChain<CompilerModelMethods>;
 
-export type CompilerModelBuilderMethods = {
+export type CompilerModelMethods = {
+  webpack: CompilerModelWebpackMethods;
+
   toObject(): t.CompilerModel;
   toWebpack(): t.WpConfig;
 
@@ -29,11 +32,17 @@ export type CompilerModelBuilderMethods = {
   entry(path: string): B; // Default key: 'main'
   entry(key: string, path?: string | null): B;
   entry(map: Record<string, string | null>): B;
-  rule(value: t.WpRule): B;
-  plugin(value: t.WpPlugin): B;
+  rule(value: t.WpRule): B; // TEMP 🐷
+  plugin(value: t.WpPlugin): B; // TEMP 🐷
   expose(key: string, path: string | null): B;
   remote(key: string, path: string | null): B;
   shared(fn: CompilerConfigSharedFunc): B;
+};
+
+export type CompilerModelWebpackMethods = {
+  parent(): CompilerModelMethods;
+  rule(value: t.WpRule): W;
+  plugin(value: t.WpPlugin): W;
 };
 
 export type CompilerConfigSharedFunc = (fn: CompilerConfigShared) => any;

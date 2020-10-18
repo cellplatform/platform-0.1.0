@@ -1,10 +1,13 @@
 import { t } from './common';
 
 /**
- * Data model.
+ * Data Model
  */
 export type CompilerModelState = t.BuilderModel<t.CompilerModel>;
 export type CompilerModel = {
+  /**
+   * Values
+   */
   name: string;
   title?: string;
   mode: t.WpMode;
@@ -13,10 +16,22 @@ export type CompilerModel = {
   dir?: string;
   lint?: boolean;
   entry?: Record<string, string>;
-  rules?: t.WpRule[];
-  plugins?: t.WpPlugin[];
+  rules?: t.WpRule[]; // TEMP 🐷
+  plugins?: t.WpPlugin[]; // TEMP 🐷
   exposes?: Record<string, string>;
   remotes?: Record<string, string>;
   shared?: Record<string, string | t.WebpackShared>;
+
+  /**
+   * Hooks
+   */
   beforeCompile?: t.BeforeCompile[];
+
+  /**
+   * Children
+   */
+  webpack?: {
+    rules: t.WpRule[];
+    plugins: t.WpPlugin[];
+  };
 };
