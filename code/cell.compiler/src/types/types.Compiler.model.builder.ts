@@ -18,11 +18,11 @@ export type CompilerModelMethods = {
 
   toObject(): t.CompilerModel;
   toWebpack(): t.WpConfig;
+  name(): string;
 
   clone(): B;
   beforeCompile(handler: t.BeforeCompile): B;
 
-  name(value: string): B;
   title(value: string | undefined): B;
   mode(value: t.WpMode | 'prod' | 'dev'): B;
   url(value: string | number | undefined): B;

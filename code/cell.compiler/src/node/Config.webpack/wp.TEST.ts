@@ -3,8 +3,8 @@ import { fs, expect, ModuleFederationPlugin } from '../../test';
 import { ConfigBuilder } from '../Config';
 import { wp } from '.';
 
-const create = () => {
-  const model = ConfigBuilder.model('foo');
+const create = (name = 'foo') => {
+  const model = ConfigBuilder.model(name);
   const builder = Compiler.config(model);
   return { model, builder };
 };
@@ -49,11 +49,8 @@ describe('Compiler (Webpack)', () => {
   });
 
   it('name', () => {
-    const { builder } = create();
+    const { builder } = create('foo');
     expect(wp.toWebpackConfig(builder).name).to.eql('foo');
-
-    builder.name('home');
-    expect(wp.toWebpackConfig(builder).name).to.eql('home');
   });
 
   it('target', () => {

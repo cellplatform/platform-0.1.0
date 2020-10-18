@@ -31,16 +31,7 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
   clone: (args) => args.clone(),
   toObject: (args) => args.model.state,
   toWebpack: (args) => wp.toWebpackConfig(args.model.state),
-
-  name(args) {
-    args.model.change((draft) => {
-      const value = format.string(args.params[0], { trim: true }) || '';
-      if (!value) {
-        throw new Error(`Configuration must be named`);
-      }
-      draft.name = value;
-    });
-  },
+  name: (args) => args.model.state.name,
 
   title(args) {
     args.model.change((draft) => {

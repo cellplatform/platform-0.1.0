@@ -28,7 +28,7 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
     dir(config) {
       const model = Model(config);
       const target = model.target('web').join();
-      return fs.join(baseDir, target, `${model.name()}-${model.mode()}`);
+      return fs.join(baseDir, target, `${model.name()}.${model.mode()}`);
     },
 
     async bundle(config, options = {}) {

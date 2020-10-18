@@ -25,7 +25,7 @@ describe('Compiler (Config)', () => {
     });
   });
 
-  describe('create: .builder()', () => {
+  describe.only('create: .builder()', () => {
     it('from "name"', () => {
       const builder = ConfigBuilder.builder('  foo  ');
       expect(builder.toObject()).to.eql({ ...DEFAULT.CONFIG, name: 'foo' });
@@ -61,9 +61,6 @@ describe('Compiler (Config)', () => {
       const obj = builder.toObject();
       expect(obj.mode).to.eql('development');
       expect(obj.name).to.eql('foo');
-
-      builder.name('hello');
-      expect(builder.toObject().name).to.eql('hello');
     });
 
     it('from builder.toObject()', () => {
@@ -72,6 +69,8 @@ describe('Compiler (Config)', () => {
       expect(builder.toObject()).to.eql(base.toObject());
     });
   });
+
+  describe('create: variants (by name)', () => {});
 
   describe('hooks', () => {
     it('beforeCompile', () => {
@@ -86,7 +85,13 @@ describe('Compiler (Config)', () => {
     });
   });
 
-  describe('methods', () => {
+  describe('read', () => {
+    it('name', () => {
+      const { model, builder } = create();
+      expect(model.state.name).to.eql('foo');
+      expect(builder.name()).to.eql('foo');
+    });
+
     it('clone', () => {
       const { builder } = create();
       const clone = builder.clone();
@@ -115,33 +120,7 @@ describe('Compiler (Config)', () => {
     });
   });
 
-  describe('props', () => {
-    it('name', () => {
-      const { model, builder } = create();
-      expect(model.state.name).to.eql('foo');
-
-      const test = (input: any, expected: any) => {
-        builder.name(input);
-        expect(model.state.name).to.eql(expected);
-      };
-
-      test('hello', 'hello');
-      test(' hello ', 'hello');
-    });
-
-    it('name: throw (empty)', () => {
-      const test = (input: any) => {
-        const { builder } = create();
-        const fn = () => builder.name(input);
-        expect(fn).to.throw(/must be named/);
-      };
-
-      test('');
-      test('  ');
-      test(null);
-      test({});
-    });
-
+  describe.only('write', () => {
     it('title', () => {
       const { model, builder } = create();
       expect(model.state.title).to.eql(undefined);

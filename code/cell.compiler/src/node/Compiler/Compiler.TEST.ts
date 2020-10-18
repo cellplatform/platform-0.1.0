@@ -10,4 +10,9 @@ describe('Compiler', () => {
     expect(typeof Compiler.watch).to.eql('function');
     expect(typeof Compiler.cell).to.eql('function');
   });
+
+  it('create "base" configuration (default)', () => {
+    const config = Compiler.config();
+    expect(config.toObject().name).to.eql('base');
+  });
 });

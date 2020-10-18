@@ -54,22 +54,19 @@ describe('Compiler (Tasks)', () => {
         expect(dir.endsWith(expected)).to.eql(true);
       };
 
-      test('node_modules/.cache/cell/cell-foo-A1/web/foo-production');
+      test('node_modules/.cache/cell/cell-foo-A1/web/foo.production');
 
       builder.mode('dev');
-      test('/cell-foo-A1/web/foo-development');
-
-      builder.name('home');
-      test('/cell-foo-A1/web/home-development');
+      test('/cell-foo-A1/web/foo.development');
 
       builder.target(false);
-      test('/cell-foo-A1/web/home-development');
+      test('/cell-foo-A1/web/foo.development');
 
       builder.target(undefined);
-      test('/cell-foo-A1/web/home-development');
+      test('/cell-foo-A1/web/foo.development');
 
       builder.target('  ');
-      test('/cell-foo-A1/web/home-development');
+      test('/cell-foo-A1/web/foo.development');
     });
   });
 });

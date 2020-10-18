@@ -1,8 +1,8 @@
-import { Compiler } from '../..';
+import { Compiler } from '..';
 export { Compiler };
 
 export function configure() {
-  return Compiler.config()
+  const config = Compiler.config()
     .url(1234)
     .entry('./src/test/entry')
     .remote('foo', 'foo@http://localhost:3001/remoteEntry.js')
@@ -10,8 +10,12 @@ export function configure() {
     .shared((e) => {
       // e.add(e.dependencies);
       e.singleton(['react', 'react-dom', '@platform/polyfill']);
-    })
-    .clone();
+    });
+
+
+    // config.name()
+
+  return config.clone();
 }
 
 export default configure;
