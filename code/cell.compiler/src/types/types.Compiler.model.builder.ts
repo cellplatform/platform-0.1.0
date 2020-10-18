@@ -32,8 +32,6 @@ export type CompilerModelMethods = {
   entry(path: string): B; // Default key: 'main'
   entry(key: string, path?: string | null): B;
   entry(map: Record<string, string | null>): B;
-  rule(value: t.WpRule): B; // TEMP 🐷
-  plugin(value: t.WpPlugin): B; // TEMP 🐷
   expose(key: string, path: string | null): B;
   remote(key: string, path: string | null): B;
   shared(fn: CompilerConfigSharedFunc): B;

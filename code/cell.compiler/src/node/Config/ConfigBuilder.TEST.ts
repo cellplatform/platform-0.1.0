@@ -7,7 +7,7 @@ const create = () => {
   return { model, builder };
 };
 
-describe.only('Compiler (Config)', () => {
+describe('Compiler (Config)', () => {
   describe('create', () => {
     it('model', () => {
       const model = ConfigBuilder.model('  foo  ');
@@ -299,20 +299,6 @@ describe.only('Compiler (Config)', () => {
     });
   });
 
-  describe('plugin', () => {
-    it('has no plugins (default)', () => {
-      const { model } = create();
-      expect(model.state.plugins).to.eql([]);
-    });
-
-    it('adds a plugin', () => {
-      const { builder, model } = create();
-      const plugin = { foo: 123 };
-      builder.plugin(plugin);
-      expect(model.state.plugins).to.include(plugin);
-    });
-  });
-
   describe('exposes', () => {
     it('throw: no key', () => {
       const { builder } = create();
@@ -458,7 +444,7 @@ describe.only('Compiler (Config)', () => {
     });
   });
 
-  describe.only('webpack', () => {
+  describe('webpack', () => {
     it(':parent', () => {
       const { builder, model } = create();
       expect(model.state.webpack).to.eql(undefined);

@@ -124,24 +124,6 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     }
   },
 
-  // TEMP 🐷
-  rule(args) {
-    const rule = args.params[0];
-    args.model.change((draft) => {
-      const rules = draft.rules || (draft.rules = []);
-      rules.push(rule);
-    });
-  },
-
-  // TEMP 🐷
-  plugin(args) {
-    const plugin = args.params[0];
-    args.model.change((draft) => {
-      const plugins = draft.plugins || (draft.plugins = []);
-      plugins.push(plugin);
-    });
-  },
-
   expose(args) {
     const param = (index: number) => format.string(args.params[index], { trim: true }) || '';
     writePathMap(args.model, 'exposes', param(0), param(1));

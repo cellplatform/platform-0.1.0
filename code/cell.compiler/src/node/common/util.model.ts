@@ -20,7 +20,6 @@ export const toModel = (input: M) => {
  * Helpers for reading a model (with default values)
  */
 export function Model(input: M) {
-  const DEFAULTS = DEFAULT.CONFIG;
   const model = toModel(input);
 
   const res = {
@@ -35,20 +34,20 @@ export function Model(input: M) {
     },
 
     name(defaultValue?: string) {
-      return model.name || defaultValue || DEFAULTS.name;
+      return model.name || defaultValue || DEFAULT.CONFIG.name;
     },
 
     mode(defaultValue?: t.WpMode) {
-      return model.mode || defaultValue || DEFAULTS.mode;
+      return model.mode || defaultValue || DEFAULT.CONFIG.mode;
     },
 
     target(...defaultTargets: string[]) {
-      defaultTargets = defaultTargets.length === 0 ? DEFAULTS.target : defaultTargets;
+      defaultTargets = defaultTargets.length === 0 ? DEFAULT.CONFIG.target : defaultTargets;
       return toTargetArray(model.target, ...defaultTargets);
     },
 
     url(defaultValue?: string): string {
-      return (model.url || defaultValue || DEFAULTS.url) as string;
+      return (model.url || defaultValue || DEFAULT.CONFIG.url) as string;
     },
 
     port(defaultUrl?: string) {
@@ -57,20 +56,20 @@ export function Model(input: M) {
     },
 
     dir(defaultValue?: string) {
-      const dir = model.dir || defaultValue || DEFAULTS.dir;
+      const dir = model.dir || defaultValue || DEFAULT.CONFIG.dir;
       return dir ? fs.resolve(dir) : undefined;
     },
 
     entry(defaultValue?: t.CompilerModel['entry']) {
-      return model.entry || defaultValue || DEFAULTS.entry;
+      return model.entry || defaultValue || DEFAULT.CONFIG.entry;
     },
 
-    rules(defaultValue?: t.CompilerModel['rules']) {
-      return model.rules || defaultValue || DEFAULTS.rules;
+    rules(defaultValue?: t.CompilerModelWebpack['rules']) {
+      return model.webpack?.rules || defaultValue || DEFAULT.WEBPACK.rules;
     },
 
-    plugins(defaultValue?: t.CompilerModel['plugins']) {
-      return model.plugins || defaultValue || DEFAULTS.plugins;
+    plugins(defaultValue?: t.CompilerModelWebpack['plugins']) {
+      return model.webpack?.plugins || defaultValue || DEFAULT.WEBPACK.plugins;
     },
   };
 

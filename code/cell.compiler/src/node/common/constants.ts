@@ -8,8 +8,6 @@ const CONFIG = {
   url: `${HOST}:${PORT}/`,
   target: ['web'],
   entry: {},
-  rules: [], // TEMP 🐷
-  plugins: [], // TEMP 🐷
 };
 
 const WEBPACK = { rules: [], plugins: [] };

@@ -16,8 +16,6 @@ export type CompilerModel = {
   dir?: string;
   lint?: boolean;
   entry?: Record<string, string>;
-  rules?: t.WpRule[]; // TEMP 🐷
-  plugins?: t.WpPlugin[]; // TEMP 🐷
   exposes?: Record<string, string>;
   remotes?: Record<string, string>;
   shared?: Record<string, string | t.WebpackShared>;
@@ -30,8 +28,10 @@ export type CompilerModel = {
   /**
    * Children
    */
-  webpack?: {
-    rules: t.WpRule[];
-    plugins: t.WpPlugin[];
-  };
+  webpack?: t.CompilerModelWebpack;
+};
+
+export type CompilerModelWebpack = {
+  rules: t.WpRule[];
+  plugins: t.WpPlugin[];
 };
