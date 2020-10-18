@@ -8,18 +8,35 @@ const create = () => {
 };
 
 describe('Compiler (Config)', () => {
-  describe('create', () => {
+  describe('create: .model()', () => {
     it('model', () => {
       const model = ConfigBuilder.model('  foo  ');
       expect(model.state).to.eql({ ...DEFAULT.CONFIG, name: 'foo' });
     });
 
-    it('builder (from "name")', () => {
+    it('throw: unnamed', () => {
+      const test = (name: any) => {
+        const fn = () => ConfigBuilder.model(name);
+        expect(fn).to.throw(/must be named/);
+      };
+      test('');
+      test('  ');
+      test(undefined);
+    });
+  });
+
+  describe('create: .builder()', () => {
+    it('from "name"', () => {
       const builder = ConfigBuilder.builder('  foo  ');
       expect(builder.toObject()).to.eql({ ...DEFAULT.CONFIG, name: 'foo' });
     });
 
-    it('builder (from {model} StateObject)', () => {
+    it('from <nothing> (default: name = "base")', () => {
+      const builder = ConfigBuilder.builder();
+      expect(builder.toObject()).to.eql({ ...DEFAULT.CONFIG, name: 'base' });
+    });
+
+    it('from {model} StateObject', () => {
       const model = StateObject.create<t.CompilerModel>({
         ...DEFAULT.CONFIG,
         name: 'foo',
@@ -32,7 +49,7 @@ describe('Compiler (Config)', () => {
       expect(obj.mode).to.eql('development');
     });
 
-    it('builder (from {model} object)', () => {
+    it('from {model} object', () => {
       const model = StateObject.create<t.CompilerModel>({
         ...DEFAULT.CONFIG,
         name: 'foo',
@@ -49,14 +66,10 @@ describe('Compiler (Config)', () => {
       expect(builder.toObject().name).to.eql('hello');
     });
 
-    it('throw: unnamed', () => {
-      const test = (name: any) => {
-        const fn = () => ConfigBuilder.builder(name);
-        expect(fn).to.throw(/must be named/);
-      };
-      test('');
-      test('  ');
-      test(undefined);
+    it('from builder.toObject()', () => {
+      const base = ConfigBuilder.builder('base');
+      const builder = ConfigBuilder.builder(base.toObject());
+      expect(builder.toObject()).to.eql(base.toObject());
     });
   });
 
