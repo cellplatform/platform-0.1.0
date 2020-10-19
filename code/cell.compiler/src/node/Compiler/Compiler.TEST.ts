@@ -11,8 +11,8 @@ describe('Compiler', () => {
     expect(typeof Compiler.cell).to.eql('function');
   });
 
-  it('create "base" configuration (default)', () => {
-    const config = Compiler.config();
-    expect(config.toObject().name).to.eql('base');
+  it('create configuration', () => {
+    const config = Compiler.config('myName');
+    expect(config.toObject().name).to.eql('myName');
   });
 });

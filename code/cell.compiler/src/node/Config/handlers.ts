@@ -16,6 +16,7 @@ type O = Record<string, unknown>;
 
 const format = Builder.format;
 const MODES: t.WpMode[] = ['development', 'production'];
+const VARIANT_KEY = '__variantName';
 
 /**
  * Root handlers.
@@ -146,6 +147,7 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     const model = args.model;
     const name = format.string(args.params[0], { trim: true }) || '';
     const fn = args.params[1];
+
     if (!name) {
       throw new Error(`Variant name not provided.`);
     }
@@ -153,19 +155,15 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
       throw new Error(`Variant configuration handler not provided`);
     }
 
-    const find = (model: t.CompilerModel, name: string) => {
-      return (model.variants || []).find((item) => item.name() === name);
-    };
-
     const create = (model: t.CompilerModelState, name: string) => {
-      const variant = args.clone({ name });
+      const variant = args.clone();
+      (variant as any)[VARIANT_KEY] = name;
       model.change((draft) => (draft.variants || (draft.variants = [])).push(variant));
       return variant;
     };
 
     const getOrCreate = (model: t.CompilerModelState, name: string) => {
-      const variant = find(model.state, name);
-      return variant || create(model, name);
+      return findVariant(model.state, name) || create(model, name);
     };
 
     fn(getOrCreate(model, name));
@@ -173,24 +171,19 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
 
   find(args) {
     const name = format.string(args.params[0], { trim: true }) || '';
-
-    const list = args.model.state.variants || [];
-    const match = list.find((item) => item.name() === name);
-    if (match) {
-      return match;
-    }
-
-    if (name === DEFAULT.BASE) {
-      return args.builder.self;
-    }
-
-    return null; // Not found.
+    return findVariant(args.model.state, name) || null;
   },
 };
 
 /**
  * [Helpers]
  */
+
+const findVariant = (model: t.CompilerModel, name: string) => {
+  const list = model.variants || [];
+  return list.find((item) => (item as any)[VARIANT_KEY] === name);
+};
+
 function loadPackageJson(cwd: string) {
   const path = fs.join(cwd, 'package.json');
   const exists = fs.existsSync(path);

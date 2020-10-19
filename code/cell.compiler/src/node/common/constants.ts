@@ -11,4 +11,4 @@ const CONFIG = {
 };
 
 const WEBPACK = { rules: [], plugins: [] };
-export const DEFAULT = { PORT, HOST, CONFIG, WEBPACK, BASE: 'base' };
+export const DEFAULT = { PORT, HOST, CONFIG, WEBPACK };

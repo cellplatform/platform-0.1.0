@@ -32,11 +32,6 @@ describe('Compiler (Config)', () => {
       expect(builder.toObject()).to.eql({ ...DEFAULT.CONFIG, name: 'foo' });
     });
 
-    it('from <nothing> (default: name = "base")', () => {
-      const builder = ConfigBuilder.builder();
-      expect(builder.toObject()).to.eql({ ...DEFAULT.CONFIG, name: 'base' });
-    });
-
     it('from {model} StateObject', () => {
       const model = StateObject.create<t.CompilerModel>({
         ...DEFAULT.CONFIG,
@@ -73,32 +68,29 @@ describe('Compiler (Config)', () => {
 
   describe('variant', () => {
     it('create', () => {
-      const base = ConfigBuilder.builder();
+      const base = ConfigBuilder.builder('name');
       expect(base.toObject().variants).to.eql(undefined);
 
       let prod: t.CompilerModelBuilder | undefined;
       base.variant('prod', (config) => {
         prod = config;
-        config.title('title-1');
+        config.title('prod');
       });
 
       expect(base.toObject().title).to.eql(undefined);
-      expect(prod?.toObject().title).to.eql('title-1');
-
-      prod?.title('title-2');
-      expect(base.toObject().title).to.eql(undefined);
-      expect(prod?.toObject().title).to.eql('title-2');
+      expect(prod?.toObject().title).to.eql('prod');
 
       const variants = base.toObject().variants || [];
       expect(variants.length).to.eql(1);
-      expect(variants.map((b) => b.name())).to.eql(['prod']);
-      expect(variants.map((b) => b.toObject().title)).to.eql(['title-2']);
+      expect(variants.map((b) => b.name())).to.eql(['name']);
+      expect(variants.map((b) => b.toObject().title)).to.eql(['prod']);
     });
 
     it('modify existing variant', () => {
-      const base = ConfigBuilder.builder();
+      const base = ConfigBuilder.builder('name');
 
-      base.variant('prod', (config) => config.title('prod-1'));
+      base.variant('prod', (config) => config.title('prod-1a'));
+      base.variant('prod', (config) => config.title('prod-1b'));
       base.variant('  prod  ', (config) => config.title('prod-2'));
       base.variant('dev', (config) => config.title('dev-1'));
 
@@ -110,31 +102,29 @@ describe('Compiler (Config)', () => {
     });
 
     it('find', () => {
-      const base = ConfigBuilder.builder().title('root');
+      const base = ConfigBuilder.builder('base').title('root');
 
-      base.variant('prod', () => null);
-      base.variant('dev', () => null);
+      base.variant('prod', (config) => config.title('myProd'));
+      base.variant('dev', (config) => config.title('myDev'));
 
       expect(base.find('NO_EXIST')).to.eql(null);
 
-      expect(base.find('prod')?.name()).to.eql('prod');
-      expect(base.find('   prod   ')?.name()).to.eql('prod');
-      expect(base.find('dev')?.name()).to.eql('dev');
+      expect(base.find('prod')?.name()).to.eql('base');
+      expect(base.find('   prod   ')?.name()).to.eql('base');
+      expect(base.find('dev')?.name()).to.eql('base');
 
-      expect(base.find('base')?.toObject().title).to.eql('root'); // NB: The root base (as no child-variant matching "base" exists)
-
-      base.variant('base', (config) => config.title('child'));
-      expect(base.find('base')?.toObject().title).to.eql('child'); // NB: Child variant "base" returned.
+      expect(base.find('prod')?.toObject().title).to.eql('myProd');
+      expect(base.find('dev')?.toObject().title).to.eql('myDev');
     });
 
     it('throw: no name', () => {
-      const base = ConfigBuilder.builder();
+      const base = ConfigBuilder.builder('base');
       const fn = () => base.variant('  ', () => null);
       expect(fn).to.throw(/Variant name not provided/);
     });
 
     it('throw: no handler', () => {
-      const base = ConfigBuilder.builder();
+      const base = ConfigBuilder.builder('base');
       const fn = () => base.variant('prod', undefined as any);
       expect(fn).to.throw(/Variant configuration handler not provided/);
     });

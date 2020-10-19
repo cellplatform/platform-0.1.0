@@ -2,7 +2,7 @@ import { Compiler } from '..';
 export { Compiler };
 
 export default () => {
-  const base = Compiler.config()
+  const base = Compiler.config('sample')
     .url(1234)
     .entry('./src/test/entry')
     .remote('foo', 'foo@http://localhost:3001/remoteEntry.js')

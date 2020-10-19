@@ -2,7 +2,7 @@ import { Compiler } from '@platform/cell.compiler';
 export { Compiler };
 
 export default () =>
-  Compiler.config()
+  Compiler.config('foo')
     .title('MyFoo')
     .url(3001)
     .entry({ main: './src/test/entry' })
