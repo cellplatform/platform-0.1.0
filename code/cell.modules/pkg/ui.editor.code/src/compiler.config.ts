@@ -6,19 +6,17 @@ const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 export const configure = () => {
   const vs = (path: string) => `monaco-editor/esm/vs/${path}`;
 
-  const config = Compiler.config('code')
+  const config = Compiler.config('ui.editor.code')
     .mode('dev')
     .url(3002)
-    // .dir('dist/web')
 
     .entry('main', './src/test/entry')
-
     .entry({
-      // 'editor.worker': vs('editor/editor.worker.js'),
-      // 'json.worker': vs('language/json/json.worker'),
-      // 'css.worker': vs('language/css/css.worker'),
-      // 'html.worker': vs('language/html/html.worker'),
-      // 'ts.worker': vs('language/typescript/ts.worker'),
+      'editor.worker': vs('editor/editor.worker.js'),
+      'json.worker': vs('language/json/json.worker'),
+      'css.worker': vs('language/css/css.worker'),
+      'html.worker': vs('language/html/html.worker'),
+      'ts.worker': vs('language/typescript/ts.worker'),
     })
 
     .expose('./CodeEditor', './src/components/CodeEditor')

@@ -58,7 +58,15 @@ export const logger = {
       table.add([left, value]);
     };
 
-    add('name', log.green(model.name()));
+    const obj = model.toObject();
+    let name = '';
+    if (obj.title) {
+      name = log.gray(`${log.green(obj.title)}/${obj.name}`);
+    } else {
+      name = log.green(obj.name);
+    }
+
+    add('name', name);
     add('mode', log.green(model.mode()));
     add('target', log.green(model.target().join()));
     add('url', log.cyan(model.url()));

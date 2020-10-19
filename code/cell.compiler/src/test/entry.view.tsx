@@ -12,7 +12,7 @@ console.log('Home react:', React.version);
 const Header = React.lazy(() => import('foo/Header'));
 
 // @ts-ignore
-const CodeEditor = React.lazy(() => import('code/CodeEditor'));
+// const CodeEditor = React.lazy(() => import('code/CodeEditor'));
 
 (async () => {
   const App = () => {
@@ -32,7 +32,7 @@ const CodeEditor = React.lazy(() => import('code/CodeEditor'));
         >
           <React.Suspense fallback={<div />}>
             <Header />
-            <CodeEditor />
+            {/* <CodeEditor /> */}
           </React.Suspense>
         </div>
       </div>
