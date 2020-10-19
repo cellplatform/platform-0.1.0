@@ -29,6 +29,7 @@ export type CompilerModel = {
    * Children
    */
   webpack?: t.CompilerModelWebpack;
+  variants?: t.CompilerModelBuilder[];
 };
 
 export type CompilerModelWebpack = {

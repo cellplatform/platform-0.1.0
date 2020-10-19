@@ -25,7 +25,7 @@ describe('Compiler (Config)', () => {
     });
   });
 
-  describe.only('create: .builder()', () => {
+  describe('create: .builder()', () => {
     it('from "name"', () => {
       const builder = ConfigBuilder.builder('  foo  ');
       expect(builder.toObject()).to.eql({ ...DEFAULT.CONFIG, name: 'foo' });
@@ -70,7 +70,56 @@ describe('Compiler (Config)', () => {
     });
   });
 
-  describe('create: variants (by name)', () => {});
+  describe('variant', () => {
+    it('create', () => {
+      const base = ConfigBuilder.builder();
+      expect(base.toObject().variants).to.eql(undefined);
+
+      let prod: t.CompilerModelBuilder | undefined;
+      base.variant('prod', (config) => {
+        prod = config;
+        config.title('title-1');
+      });
+
+      expect(base.toObject().title).to.eql(undefined);
+      expect(prod?.toObject().title).to.eql('title-1');
+
+      prod?.title('title-2');
+      expect(base.toObject().title).to.eql(undefined);
+      expect(prod?.toObject().title).to.eql('title-2');
+
+      const variants = base.toObject().variants || [];
+      expect(variants.length).to.eql(1);
+      expect(variants.map((b) => b.name())).to.eql(['prod']);
+      expect(variants.map((b) => b.toObject().title)).to.eql(['title-2']);
+    });
+
+    it('retrieve existing variant', () => {
+      const base = ConfigBuilder.builder();
+
+      base.variant('prod', (config) => config.title('prod-1'));
+      base.variant('  prod  ', (config) => config.title('prod-2'));
+      base.variant('dev', (config) => config.title('dev-1'));
+
+      const variants = base.toObject().variants || [];
+      expect(variants.length).to.eql(2);
+
+      expect(variants[0].toObject().title).to.eql('prod-2');
+      expect(variants[1].toObject().title).to.eql('dev-1');
+    });
+
+    it('throw: no name', () => {
+      const base = ConfigBuilder.builder();
+      const fn = () => base.variant('  ', () => null);
+      expect(fn).to.throw(/Variant name not provided/);
+    });
+
+    it('throw: no handler', () => {
+      const base = ConfigBuilder.builder();
+      const fn = () => base.variant('prod', undefined as any);
+      expect(fn).to.throw(/Variant configuration handler not provided/);
+    });
+  });
 
   describe('hooks', () => {
     it('beforeCompile', () => {
@@ -100,8 +149,15 @@ describe('Compiler (Config)', () => {
       builder.title('A');
       clone.title('B');
 
+      // NB: variations to clone do not change source.
       expect(builder.toObject().title).to.eql('A');
       expect(clone.toObject().title).to.eql('B');
+    });
+
+    it('clone({ props })', () => {
+      const { builder } = create();
+      const clone = builder.clone({ name: 'thing' });
+      expect(clone.name()).to.eql('thing');
     });
 
     it('toWebpack', () => {
@@ -120,7 +176,7 @@ describe('Compiler (Config)', () => {
     });
   });
 
-  describe.only('write', () => {
+  describe('write', () => {
     it('title', () => {
       const { model, builder } = create();
       expect(model.state.title).to.eql(undefined);

@@ -16,11 +16,13 @@ export type CompilerModelBuilder = t.BuilderChain<CompilerModelMethods>;
 export type CompilerModelMethods = {
   webpack: CompilerModelWebpackMethods;
 
+  name(): string;
   toObject(): t.CompilerModel;
   toWebpack(): t.WpConfig;
-  name(): string;
 
-  clone(): B;
+  clone(initial?: Partial<t.CompilerModel>): B;
+  variant(name: string, configure: (config: B) => void): B;
+
   beforeCompile(handler: t.BeforeCompile): B;
 
   title(value: string | undefined): B;
@@ -38,7 +40,7 @@ export type CompilerModelMethods = {
 };
 
 export type CompilerModelWebpackMethods = {
-  parent(): CompilerModelMethods;
+  parent(): B;
   rule(value: t.WpRule): W;
   plugin(value: t.WpPlugin): W;
 };

@@ -28,15 +28,14 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     default: () => DEFAULT.WEBPACK,
   },
 
-  clone: (args) => args.clone(),
+  clone: (args) => args.clone(args.params[0]),
   toObject: (args) => args.model.state,
   toWebpack: (args) => wp.toWebpackConfig(args.model.state),
   name: (args) => args.model.state.name,
 
   title(args) {
-    args.model.change((draft) => {
-      draft.title = format.string(args.params[0], { trim: true });
-    });
+    const title = format.string(args.params[0], { trim: true });
+    args.model.change((draft) => (draft.title = title));
   },
 
   mode(args) {
@@ -141,6 +140,35 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
         list.push(handler);
       });
     }
+  },
+
+  variant(args) {
+    const model = args.model;
+    const name = format.string(args.params[0], { trim: true }) || '';
+    const fn = args.params[1];
+    if (!name) {
+      throw new Error(`Variant name not provided.`);
+    }
+    if (typeof fn !== 'function') {
+      throw new Error(`Variant configuration handler not provided`);
+    }
+
+    const find = (model: t.CompilerModel, name: string) => {
+      return (model.variants || []).find((item) => item.name() === name);
+    };
+
+    const create = (model: t.CompilerModelState, name: string) => {
+      const variant = args.clone({ name });
+      model.change((draft) => (draft.variants || (draft.variants = [])).push(variant));
+      return variant;
+    };
+
+    const getOrCreate = (model: t.CompilerModelState, name: string) => {
+      const variant = find(model.state, name);
+      return variant || create(model, name);
+    };
+
+    fn(getOrCreate(model, name));
   },
 };
 
