@@ -1,8 +1,9 @@
 import { t } from '../common';
 
 const PARAMS = {
-  config: `(optional) Path to configuration file (default: 'compiler.config')`,
-  mode: `(optional) Override build mode ('prod' | 'dev')`,
+  config: `(optional) Path to configuration file (default: "lib/compiler.config.js)`,
+  mode: `(optional) Override build mode ('prod' | 'dev')`, // TEMP 🐷
+  name: `(optional) Named configuration to use (default: 'base')`,
 };
 
 export const COMMANDS: t.Commands = {
@@ -10,7 +11,7 @@ export const COMMANDS: t.Commands = {
     description: 'Compile the project into a bundle',
     params: {
       '--config': PARAMS.config,
-      '--mode -m': PARAMS.mode,
+      '--name -n': PARAMS.name,
     },
   },
   watch: {

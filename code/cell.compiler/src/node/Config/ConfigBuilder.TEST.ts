@@ -458,11 +458,11 @@ describe('Compiler (Config)', () => {
       builder.shared((args) => args.add('@platform/libs'));
       expect(model.state.shared).to.eql({ '@platform\\libs': deps['@platform/libs'] }); // NB: key escaped.
 
-      builder.shared((args) => args.add(['@platform/log', 'ts-loader', 'react']));
+      builder.shared((args) => args.add(['@platform/log', 'babel-loader', 'react']));
       expect(model.state.shared).to.eql({
         '@platform\\libs': deps['@platform/libs'],
         '@platform\\log': deps['@platform/log'],
-        'ts-loader': deps['ts-loader'],
+        'babel-loader': deps['babel-loader'],
         react: devDeps['react'],
       });
     });
@@ -478,16 +478,16 @@ describe('Compiler (Config)', () => {
         requiredVersion: deps['@platform/libs'],
       });
 
-      builder.shared((args) => args.singleton(['@platform/cell.types', 'ts-loader']));
+      builder.shared((args) => args.singleton(['@platform/cell.types', 'babel-loader']));
 
       expect((model.state.shared || {})['@platform\\cell.types']).to.eql({
         singleton: true,
         requiredVersion: deps['@platform/cell.types'],
       });
 
-      expect((model.state.shared || {})['ts-loader']).to.eql({
+      expect((model.state.shared || {})['babel-loader']).to.eql({
         singleton: true,
-        requiredVersion: deps['ts-loader'],
+        requiredVersion: deps['babel-loader'],
       });
     });
   });

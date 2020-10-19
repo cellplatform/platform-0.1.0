@@ -8,9 +8,10 @@ import { logger, wp } from './util';
  */
 export const bundle: t.CompilerRunBundle = (input, options = {}) => {
   return new Promise<t.WebpackBundleResponse>((resolve, reject) => {
-    const { compiler, model, config } = wp.toCompiler(input);
+    const { name, silent } = options;
+    const { compiler, model, config } = wp.toCompiler(input, { name });
 
-    if (!options.silent) {
+    if (!silent) {
       log.info();
       log.info.gray(`Bundling`);
       logger.model(model, 2).newline().hr();
@@ -23,7 +24,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
       if (stats) {
         const res = toBundledResponse({ model, stats, config });
 
-        if (!options.silent) {
+        if (!silent) {
           logger.newline().stats(stats);
         }
 

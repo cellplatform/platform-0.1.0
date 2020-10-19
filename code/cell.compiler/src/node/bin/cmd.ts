@@ -11,13 +11,14 @@ const logger = util.logger;
  */
 export async function bundle(argv: P) {
   const config = await util.loadConfig(argv.config);
+  const name: string | undefined = argv.name || argv.n;
   const mode: t.WpMode | undefined = argv.mode || argv.m;
 
   if (mode) {
     config.mode(mode);
   }
 
-  await Compiler.bundle(config);
+  await Compiler.bundle(config, { name });
 }
 
 /**
