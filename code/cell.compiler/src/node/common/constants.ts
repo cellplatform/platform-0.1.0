@@ -3,7 +3,7 @@ const HOST = 'http://localhost';
 
 const CONFIG = {
   name: '',
-  dir: undefined,
+  dir: 'dist',
   mode: 'production',
   url: `${HOST}:${PORT}/`,
   target: ['web'],

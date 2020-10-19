@@ -20,14 +20,16 @@ export function toWebpackConfig(
   const mode = settings.mode();
   const port = settings.port();
   const name = settings.name();
-  const path = settings.dir();
-  const publicPath = settings.url();
 
   const prod = settings.prod;
   const dev = settings.dev;
 
   const entry = settings.entry();
   const target = settings.target();
+
+  const publicPath = settings.url();
+  const dir = settings.dir();
+  const path = `${dir}/${target.join(',')}`;
 
   const rules = [...Rules.init({ model, prod, dev }), ...settings.rules()].filter(Boolean);
   const plugins = [...Plugins.init({ model, prod, dev }), ...settings.plugins()].filter(Boolean);

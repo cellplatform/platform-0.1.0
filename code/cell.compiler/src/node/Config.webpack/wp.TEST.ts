@@ -66,13 +66,22 @@ describe('Compiler (Webpack)', () => {
 
   it('output dir', () => {
     const { builder } = create();
-    expect(wp.toWebpackConfig(builder).output?.path).to.eql(undefined);
+    expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('dist/web'));
 
     builder.dir('foo');
-    expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('foo'));
+    expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('foo/web'));
 
-    builder.dir('  ');
-    expect(wp.toWebpackConfig(builder).output?.path).to.eql(undefined);
+    builder.dir('  '); // NB: reset.
+    expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('dist/web'));
+
+    builder.target('node');
+    expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('dist/node'));
+
+    builder.target(['node', 'web']);
+    expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('dist/node,web'));
+
+    builder.dir('foo');
+    expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('foo/node,web'));
   });
 
   it('rules', () => {

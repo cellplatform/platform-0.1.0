@@ -71,7 +71,7 @@ describe('Compiler (Config)', () => {
     });
   });
 
-  describe.only('variant', () => {
+  describe('variant', () => {
     it('create', () => {
       const base = ConfigBuilder.builder();
       expect(base.toObject().variants).to.eql(undefined);
@@ -289,7 +289,7 @@ describe('Compiler (Config)', () => {
 
     it('dir', () => {
       const { model, builder } = create();
-      expect(model.state.dir).to.eql(undefined);
+      expect(model.state.dir).to.eql('dist');
 
       const test = (input: any, expected: any) => {
         builder.dir(input);
