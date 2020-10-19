@@ -1,0 +1,22 @@
+{
+  "name": "__NAME__",
+  "version": "1.0.4",
+  "scripts": {
+    "start": "yarn dev",
+    "build": "ts build --no-esm $@",
+    "dev": "cell.compiler dev $@",
+    "bundle": "cell.compiler bundle --name prod $@",
+    "watch": "cell.compiler watch $@",
+    "clean": "cell.compiler clean $@",
+    "info": "cell.compiler info $@",
+    "serve": "cd dist/web && serve -l 3001"
+  },
+  "dependencies": {
+    "preset.web": "^0.0.0"
+  },
+  "devDependencies": {
+    "@platform/cell.compiler": "^0.1.4"
+  },
+  "license": "MIT",
+  "private": true
+}

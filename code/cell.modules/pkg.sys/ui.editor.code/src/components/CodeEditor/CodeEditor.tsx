@@ -1,4 +1,4 @@
-import '../../global';
+import '../../MonacoEnvironment';
 
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
@@ -27,9 +27,9 @@ export class CodeEditor extends React.PureComponent<ICodeEditorProps, ICodeEdito
 
     const value = `
 function x() {
-  tconsole.log("Hello world!");
+  console.log("Hello world!");
 ;
-    `;
+`;
 
     monaco.editor.create(this.div, {
       value,

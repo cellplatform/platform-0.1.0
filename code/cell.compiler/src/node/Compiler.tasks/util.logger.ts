@@ -51,6 +51,7 @@ export const logger = {
   model(input: t.CompilerModel, indent?: number) {
     const prefix = typeof indent === 'number' ? ' '.repeat(indent) : '';
     const model = Model(input);
+    const obj = model.toObject();
 
     const table = log.table({ border: false });
     const add = (key: string, value: string) => {
@@ -58,7 +59,10 @@ export const logger = {
       table.add([left, value]);
     };
 
-    add('name', log.green(model.name()));
+    let name = log.green(model.name());
+    name = obj.title ? log.gray(`${name} '${obj.title}'`) : name;
+
+    add('name', name);
     add('mode', log.green(model.mode()));
     add('target', log.green(model.target().join()));
     add('url', log.cyan(model.url()));

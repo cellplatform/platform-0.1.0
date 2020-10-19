@@ -10,7 +10,7 @@
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cd dist/web && serve -l 3001",
+    "serve": "cd dist/web && serve -l 3002",
     "tmp": "cell.compiler $@"
   },
   "dependencies": {
@@ -19,8 +19,7 @@
     "react-dom": "^16.13.1"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.1.4",
-    "monaco-editor-webpack-plugin": "^2.0.0"
+    "@platform/cell.compiler": "^0.1.4"
   },
   "license": "MIT",
   "private": true

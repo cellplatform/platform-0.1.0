@@ -1,5 +1,9 @@
+console.log('MonacoEnvironment');
+
 (self as any).MonacoEnvironment = {
   getWorkerUrl: function (_moduleId: any, label: string) {
+    console.log('label', label);
+
     const toFilename = (label: string) => {
       if (label === 'json') {
         return 'json.worker.js';

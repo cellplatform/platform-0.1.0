@@ -10,7 +10,7 @@
   "workspaces": {
     "packages": [
       "code/*",
-      "code/cell.modules/pkg/*",
+      "code/cell.modules/pkg*/*",
       "code/cell.electron/app"
     ],
     "nohoist": [

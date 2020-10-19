@@ -7,7 +7,7 @@ export const configure = () => {
   const vs = (path: string) => `monaco-editor/esm/vs/${path}`;
 
   const config = Compiler.config('ui.editor.code')
-    .mode('dev')
+    // .mode('dev')
     .url(3002)
 
     .entry('main', './src/test/entry')
@@ -19,13 +19,13 @@ export const configure = () => {
       'ts.worker': vs('language/typescript/ts.worker'),
     })
 
-    .expose('./CodeEditor', './src/components/CodeEditor')
+    // .expose('./CodeEditor', './src/components/CodeEditor')
 
-    .shared((e) => e.singleton(['react', 'react-dom']))
+    // .shared((e) => e.singleton(['react', 'react-dom']))
 
     .webpack //
     .rule({ test: /\.ttf$/, use: ['file-loader'] })
-    .plugin(new MonacoWebpackPlugin({ languages: ['typescript', 'javascript', 'css'] }))
+    // .plugin(new MonacoWebpackPlugin({ languages: ['typescript', 'javascript', 'css'] }))
     .parent();
 
   config.beforeCompile((e) => {

@@ -1,57 +1,44 @@
-import { fs, log, t, constants } from '../common';
-import { logger } from './util';
+import { fs, log, t } from '../common';
+import { logger, ts } from './util';
 
 type B = t.CompilerModelBuilder;
 
 const DEFAULT = {
-  FILENAME: 'compiler.config.js',
-  PATH: 'lib/compiler.config.js',
+  FILENAME: 'compiler.config.ts',
+  PATH: 'src/compiler.config.ts',
 };
 
 export async function loadConfig(
   file?: string,
   options: { name?: string; silent?: boolean } = {},
 ): Promise<B> {
-  const done = (config: B) => {
-    const name = (options.name || '').trim();
-    if (name) {
-      if (!config.find(name)) {
-        const err = `A configuration named '${log.white(name)}' was not found.`;
-        logger.errorAndExit(1, err);
-      }
-      config = config.find(name) as B;
-    }
-
-    return config.clone();
-  };
-
-  // Wrangle path.
-  let path = (typeof file === 'string' ? file : DEFAULT.PATH).trim();
-  path = path ? fs.resolve(path) : path;
-  path = path.trim();
+  const done = (config: B) => filterOnVariant(config, options.name).clone();
 
   // Ensure configuration file exists.
-  if (!path) {
-    logger.errorAndExit(1, `A path to the configuration file could not be derived.`);
-  }
-  if (await fs.is.dir(path)) {
-    path = fs.join(path, DEFAULT.FILENAME);
-    await ensureExists(path);
-  }
-  path = !path.endsWith('.js') ? `${path}.js` : path;
-  await ensureExists(path);
+  const path = await toPaths(file);
 
   // Log the configuration path being used.
   if (!options.silent) {
-    const filename = fs.basename(path);
+    const filename = fs.basename(path.ts);
     const ext = fs.extname(filename);
     const file = filename.substring(0, filename.length - ext.length);
     log.info.gray(`configuration:`);
-    log.info.gray(`${fs.dirname(path)}/${log.white(file)}${ext}`);
+    log.info.gray(`${fs.dirname(path.ts)}/${log.white(file)}${ext}`);
+  }
+
+  // Compare with the last built configuration.
+  const buildhash = ts.buildhash(path.ts);
+  if (!(await fs.pathExists(path.js)) || (await buildhash.changed())) {
+    if (!options.silent) {
+      log.info('building typescript');
+    }
+
+    await ts.build();
   }
 
   // Retrieve the configuration.
-  const imported = require(path).default; // eslint-disable-line
+  const imported = require(path.js).default; // eslint-disable-line
+  await buildhash.save();
 
   // Run exported function.
   if (typeof imported === 'function') {
@@ -77,8 +64,31 @@ export async function loadConfig(
  * [Helpers]
  */
 
-const ensureExists = async (path: string) => {
-  if (!(await fs.pathExists(path))) {
-    logger.errorAndExit(1, `The configuration file path does not exist ${log.white(path)}`);
+const toPaths = async (input?: string) => {
+  let file = (typeof input === 'string' ? input : DEFAULT.PATH).trim();
+  file = file ? fs.resolve(file) : file;
+  file = (await fs.is.dir(file)) ? fs.join(file, DEFAULT.FILENAME) : file;
+  file = file.trim().replace(/\.js$/, '').replace(/\.ts$/, '');
+  if (!file) {
+    logger.errorAndExit(1, `A path to the configuration file could not be derived.`);
   }
+
+  file = file.substring(fs.resolve('.').length + 1);
+  const ts = fs.resolve(`${file}.ts`);
+  const js = fs.resolve(`lib/${file.substring(file.indexOf('/'))}.js`);
+
+  if (!(await fs.pathExists(ts))) {
+    logger.errorAndExit(1, `The configuration file path does not exist ${log.white(ts)}`);
+  }
+
+  return { file, ts, js };
+};
+
+const filterOnVariant = (config: B, name?: string): B => {
+  name = (name || '').trim();
+  if (name && !config.find(name)) {
+    const err = `A configuration named '${log.white(name)}' was not found.`;
+    logger.errorAndExit(1, err);
+  }
+  return name ? (config.find(name) as B) : config;
 };
