@@ -22,6 +22,7 @@ export type CompilerModelMethods = {
 
   clone(initial?: Partial<t.CompilerModel>): B;
   variant(name: string, configure: (config: B) => void): B;
+  find(name: string): B | null;
 
   beforeCompile(handler: t.BeforeCompile): B;
 

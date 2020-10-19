@@ -11,20 +11,21 @@ export const COMMANDS: t.Commands = {
     description: 'Compile the project into a bundle',
     params: {
       '--config': PARAMS.config,
-      '--name -n': PARAMS.name,
+      '--name': PARAMS.name,
     },
   },
   watch: {
     description: 'Bundle and watch for file changes',
     params: {
       '--config': PARAMS.config,
-      '--mode -m': PARAMS.mode,
+      '--name': PARAMS.name,
     },
   },
   dev: {
     description: 'Start development server (HMR)',
     params: {
       '--config': PARAMS.config,
+      '--name': PARAMS.name,
     },
   },
   upload: {
@@ -40,6 +41,7 @@ export const COMMANDS: t.Commands = {
     description: 'Information about a build configuration',
     params: {
       '--config': PARAMS.config,
+      '--name': PARAMS.name,
     },
   },
   clean: {

@@ -25,15 +25,10 @@ export const configure = () => {
 
     .shared((e) => e.singleton(['react', 'react-dom']))
 
+    .webpack //
     .rule({ test: /\.ttf$/, use: ['file-loader'] })
-
-    .plugin(
-      new MonacoWebpackPlugin({
-        languages: ['typescript', 'javascript', 'css'],
-      }),
-    )
-
-    .clone();
+    .plugin(new MonacoWebpackPlugin({ languages: ['typescript', 'javascript', 'css'] }))
+    .parent();
 
   config.beforeCompile((e) => {
     e.modify((webpack) => {
@@ -48,7 +43,7 @@ export const configure = () => {
     });
   });
 
-  return config;
+  return config.clone();
 };
 
 export default configure;

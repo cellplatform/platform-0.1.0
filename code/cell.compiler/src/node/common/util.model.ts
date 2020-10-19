@@ -12,22 +12,8 @@ export function isModel(input: M) {
 /**
  * Wrangle object types into a [model].
  */
-export const toModel = (input: M, options: { name?: string } = {}) => {
-  const name = (options.name || '').trim();
-  const model = (isModel(input) ? (input as any).toObject() : input) as t.CompilerModel;
-
-  if (name) {
-    const named = (model.variants || []).find((b) => b.name() === name);
-    if (named) {
-      return named.toObject();
-    }
-  }
-
-  if (name && name !== model.name) {
-    throw new Error(`The named configuration '${name}' could not be found.`);
-  }
-
-  return model;
+export const toModel = (input: M) => {
+  return (isModel(input) ? (input as any).toObject() : input) as t.CompilerModel;
 };
 
 /**

@@ -20,7 +20,7 @@ export type CompilerTasks = {
  */
 export type CompilerRunBundle = (
   input: M,
-  options?: { silent?: boolean; name?: string },
+  options?: { silent?: boolean },
 ) => Promise<WebpackBundleResponse>;
 export type WebpackBundleResponse = {
   ok: boolean;

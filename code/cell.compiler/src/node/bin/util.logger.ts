@@ -48,8 +48,12 @@ export const logger = {
 
     const div = () => logger.newline().hr().newline();
 
+    const model = config.toObject();
+    if (model.variants) {
+      model.variants = model.variants.map((b) => b.name()) as any;
+    }
     log.info.cyan('Configuration (Model)');
-    log.info(config.toObject());
+    log.info(model);
 
     div();
 

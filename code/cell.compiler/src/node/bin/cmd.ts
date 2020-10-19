@@ -5,20 +5,18 @@ import * as util from './util';
 type P = minimist.ParsedArgs;
 
 const logger = util.logger;
+const nameArg = (argv: P): string | undefined => {
+  const value = argv.name;
+  return Array.isArray(value) ? value[value.length - 1] : value;
+};
 
 /**
  * Bundle the project.
  */
 export async function bundle(argv: P) {
-  const config = await util.loadConfig(argv.config);
-  const name: string | undefined = argv.name || argv.n;
-  const mode: t.WpMode | undefined = argv.mode || argv.m;
-
-  if (mode) {
-    config.mode(mode);
-  }
-
-  await Compiler.bundle(config, { name });
+  const name = nameArg(argv);
+  const config = await util.loadConfig(argv.config, { name });
+  await Compiler.bundle(config);
 }
 
 /**
@@ -26,21 +24,38 @@ export async function bundle(argv: P) {
  */
 export async function watch(argv: P) {
   logger.clear();
-  const config = await util.loadConfig(argv.config);
-  const mode: t.WpMode | undefined = argv.mode || argv.m;
-
-  if (mode) {
-    config.mode(mode);
-  }
-
+  const name = nameArg(argv);
+  const config = await util.loadConfig(argv.config, { name });
   await Compiler.watch(config);
+}
+
+/**
+ * Start development server (HMR)
+ */
+export async function dev(argv: P) {
+  logger.clear();
+  const name = nameArg(argv);
+  const config = await util.loadConfig(argv.config, { name });
+  config.mode('development');
+  await Compiler.dev(config);
+}
+
+/**
+ * Output info about the build.
+ */
+export async function info(argv: P) {
+  const name = nameArg(argv);
+  const config = await util.loadConfig(argv.config, { name });
+  log.info();
+  logger.info(config);
 }
 
 /**
  * Bundle and upload to a cell.
  */
 export async function upload(argv: P) {
-  const config = await util.loadConfig(argv.config);
+  const name = nameArg(argv);
+  const config = await util.loadConfig(argv.config, { name });
   const host = (((argv.host || argv.h) as string) || '').trim();
 
   if (!host) {
@@ -65,25 +80,6 @@ export async function upload(argv: P) {
 
   const targetDir: string | undefined = argv.dir;
   return Compiler.cell(host, cell.toString()).upload(config, { targetDir });
-}
-
-/**
- * Start development server (HMR)
- */
-export async function dev(argv: P) {
-  logger.clear();
-  const config = await util.loadConfig(argv.config);
-  config.mode('development');
-  await Compiler.dev(config);
-}
-
-/**
- * Output info about the build.
- */
-export async function info(argv: P) {
-  const config = await util.loadConfig(argv.config);
-  log.info();
-  logger.info(config);
 }
 
 /**

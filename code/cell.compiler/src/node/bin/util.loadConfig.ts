@@ -1,4 +1,4 @@
-import { fs, log, t } from '../common';
+import { fs, log, t, constants } from '../common';
 import { logger } from './util';
 
 type B = t.CompilerModelBuilder;
@@ -8,13 +8,29 @@ const DEFAULT = {
   PATH: 'lib/compiler.config.js',
 };
 
-export async function loadConfig(file?: string, options: { silent?: boolean } = {}): Promise<B> {
+export async function loadConfig(
+  file?: string,
+  options: { name?: string; silent?: boolean } = {},
+): Promise<B> {
+  const done = (config: B) => {
+    const name = (options.name || '').trim();
+    if (name) {
+      if (!config.find(name)) {
+        const err = `A configuration named '${log.white(name)}' was not found.`;
+        logger.errorAndExit(1, err);
+      }
+      config = config.find(name) as B;
+    }
+
+    return config.clone();
+  };
+
   // Wrangle path.
   let path = (typeof file === 'string' ? file : DEFAULT.PATH).trim();
   path = path ? fs.resolve(path) : path;
   path = path.trim();
 
-  // Ensure configuration file exists
+  // Ensure configuration file exists.
   if (!path) {
     logger.errorAndExit(1, `A path to the configuration file could not be derived.`);
   }
@@ -45,18 +61,16 @@ export async function loadConfig(file?: string, options: { silent?: boolean } = 
       const err = `The default export did not return a configuration builder.\n${log.white(path)}`;
       logger.errorAndExit(1, err);
     }
-    return config;
+    return done(config);
   }
 
   // Exported {object}.
   if (typeof imported !== 'object' && typeof imported.clone !== 'function') {
-    logger.errorAndExit(
-      1,
-      `The default export was not a configuration builder.\n${log.white(path)}`,
-    );
+    const err = `The default export was not a configuration builder.\n${log.white(path)}`;
+    logger.errorAndExit(1, err);
   }
 
-  return imported.clone() as B;
+  return done(imported as B);
 }
 
 /**

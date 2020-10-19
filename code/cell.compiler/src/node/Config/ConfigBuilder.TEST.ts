@@ -1,3 +1,4 @@
+import { addDevServerEntrypoints } from 'webpack-dev-server';
 import { ConfigBuilder } from '.';
 import { DEFAULT, escapeKeyPaths, expect, StateObject, t, fs, pkg } from '../../test';
 
@@ -70,7 +71,7 @@ describe('Compiler (Config)', () => {
     });
   });
 
-  describe('variant', () => {
+  describe.only('variant', () => {
     it('create', () => {
       const base = ConfigBuilder.builder();
       expect(base.toObject().variants).to.eql(undefined);
@@ -94,7 +95,7 @@ describe('Compiler (Config)', () => {
       expect(variants.map((b) => b.toObject().title)).to.eql(['title-2']);
     });
 
-    it('retrieve existing variant', () => {
+    it('modify existing variant', () => {
       const base = ConfigBuilder.builder();
 
       base.variant('prod', (config) => config.title('prod-1'));
@@ -106,6 +107,24 @@ describe('Compiler (Config)', () => {
 
       expect(variants[0].toObject().title).to.eql('prod-2');
       expect(variants[1].toObject().title).to.eql('dev-1');
+    });
+
+    it('find', () => {
+      const base = ConfigBuilder.builder().title('root');
+
+      base.variant('prod', () => null);
+      base.variant('dev', () => null);
+
+      expect(base.find('NO_EXIST')).to.eql(null);
+
+      expect(base.find('prod')?.name()).to.eql('prod');
+      expect(base.find('   prod   ')?.name()).to.eql('prod');
+      expect(base.find('dev')?.name()).to.eql('dev');
+
+      expect(base.find('base')?.toObject().title).to.eql('root'); // NB: The root base (as no child-variant matching "base" exists)
+
+      base.variant('base', (config) => config.title('child'));
+      expect(base.find('base')?.toObject().title).to.eql('child'); // NB: Child variant "base" returned.
     });
 
     it('throw: no name', () => {

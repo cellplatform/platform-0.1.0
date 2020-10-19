@@ -8,8 +8,8 @@ import { logger, wp } from './util';
  */
 export const bundle: t.CompilerRunBundle = (input, options = {}) => {
   return new Promise<t.WebpackBundleResponse>((resolve, reject) => {
-    const { name, silent } = options;
-    const { compiler, model, config } = wp.toCompiler(input, { name });
+    const { silent } = options;
+    const { compiler, model, config } = wp.toCompiler(input);
 
     if (!silent) {
       log.info();

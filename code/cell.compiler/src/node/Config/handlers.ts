@@ -170,6 +170,22 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
 
     fn(getOrCreate(model, name));
   },
+
+  find(args) {
+    const name = format.string(args.params[0], { trim: true }) || '';
+
+    const list = args.model.state.variants || [];
+    const match = list.find((item) => item.name() === name);
+    if (match) {
+      return match;
+    }
+
+    if (name === DEFAULT.BASE) {
+      return args.builder.self;
+    }
+
+    return null; // Not found.
+  },
 };
 
 /**
