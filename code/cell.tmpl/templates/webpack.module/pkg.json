@@ -13,10 +13,10 @@
     "serve": "cd dist/web && serve -l __PORT__"
   },
   "dependencies": {
-    "preset.react": "^0.0.0"
+    "preset.react": "^latest"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.1.4"
+    "@platform/cell.compiler": "^latest"
   },
   "license": "MIT",
   "private": true

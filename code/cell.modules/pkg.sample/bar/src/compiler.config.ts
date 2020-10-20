@@ -4,8 +4,8 @@ export { Compiler };
 export default () =>
   Compiler.config('bar')
     .title('My Bar')
-    .url(3000)
+    .url(3002)
     .entry({ main: './src/test/entry' })
-    .shared(e => e.add(e.dependencies).singleton(['preset.react']))
-    .variant('prod', config => config.lint(false))
-    .variant('dev', config => null);
+    .shared((e) => e.add(e.dependencies).singleton(['preset.react', 'preset.css']))
+    .variant('prod', (config) => config.mode('prod'))
+    .variant('dev', (config) => config.mode('dev'));

@@ -4,7 +4,6 @@
   "description": "React refs and helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
-  "sideEffects": false,
   "scripts": {
     "start": "parcel src/test.parcel/index.html",
     "test": "ts test",

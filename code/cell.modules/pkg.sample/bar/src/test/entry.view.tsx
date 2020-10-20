@@ -5,7 +5,8 @@ import * as ReactDOM from 'react-dom';
 // import { takeUntil } from 'rxjs/operators';
 // import { css, CssValue, t } from '../../common';
 
-// import { css } from '@platform/css';
+import { css } from '@platform/css';
+console.log('css', css);
 
 // import * as R from 'ramda';
 // import * as tinycolor from 'tinycolor2';

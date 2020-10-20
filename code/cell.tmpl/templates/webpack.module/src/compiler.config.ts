@@ -6,6 +6,6 @@ export default () =>
     .title('MyTitle')
     .url(3000)
     .entry({ main: './src/test/entry' })
-    .shared((e) => e.add(e.dependencies).singleton(['preset.web']))
-    .variant('prod', (config) => null)
-    .variant('dev', (config) => null);
+    .shared((e) => e.add(e.dependencies).singleton(['preset.react']))
+    .variant('prod', (config) => config.mode('prod'))
+    .variant('dev', (config) => config.mode('dev'));
