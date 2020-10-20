@@ -1,7 +1,7 @@
 import '@platform/polyfill';
 
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { App } from './App';
 
 const root = document.body.appendChild(document.createElement('div'));

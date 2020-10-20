@@ -1,6 +1,6 @@
 {
   "name": "__NAME__",
-  "version": "1.0.4",
+  "version": "0.0.0",
   "sideEffects": false,
   "scripts": {
     "start": "yarn dev",
@@ -10,7 +10,7 @@
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cd dist/web && serve -l 3001"
+    "serve": "cd dist/web && serve -l 3000"
   },
   "dependencies": {
     "preset.web": "^0.0.0"

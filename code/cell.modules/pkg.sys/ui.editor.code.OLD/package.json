@@ -1,22 +1,22 @@
 {
-  "name": "ui.editor.code",
+  "name": "ui.editor.code.OLD",
   "version": "0.0.0",
-  "sideEffects": false,
   "scripts": {
-    "start": "yarn dev",
     "build": "ts build --no-esm $@",
+    "lint": "ts lint $@",
     "dev": "cell.compiler dev $@",
-    "bundle": "cell.compiler bundle --name prod $@",
-    "bundle:workers": "cell.compiler bundle --name workers $@",
+    "bundle": "cell.compiler bundle $@",
+    "bundle.worker": "cell.compiler bundle --config lib/config/compiler.webworker $@",
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cd dist/web && serve -l 3002",
-    "serve:workers": "cd dist/webworker && serve -l 3003"
+    "tmp": "cell.compiler $@"
   },
   "dependencies": {
     "monaco-editor": "^0.21.0",
-    "preset.web": "^0.0.0"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
     "@platform/cell.compiler": "^0.1.4"
