@@ -64,9 +64,9 @@ export function toWebpackConfig(
       model: obj,
       toObject: StateObject.toObject,
       modify(fn) {
-        const clone = StateObject.create<t.WpConfig>(config);
-        clone.change(fn);
-        config = clone.state;
+        const obj = StateObject.create<t.WpConfig>(config);
+        obj.change(fn);
+        config = obj.state;
       },
     };
     before.forEach((fn) => fn(e));
