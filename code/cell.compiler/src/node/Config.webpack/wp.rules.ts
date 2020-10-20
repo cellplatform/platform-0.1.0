@@ -71,7 +71,10 @@ export const Rules = {
         loader: 'babel-loader',
         options: {
           presets: [presetTypescript, presetReact, presetEnv],
-          plugins: ['@babel/plugin-proposal-class-properties'],
+          plugins: [
+            '@babel/plugin-proposal-class-properties',
+            '@babel/plugin-transform-modules-commonjs',
+          ],
         },
       },
     };
