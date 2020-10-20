@@ -32,5 +32,9 @@ module.exports = {
       'error',
       { vars: 'all', args: 'none', ignoreRestSiblings: true },
     ],
+
+    // https://reactjs.org/docs/hooks-rules.html#eslint-plugin
+    'react-hooks/rules-of-hooks': 'error', // Check rules of Hooks
+    'react-hooks/exhaustive-deps': 'warn', // Check effect dependencies
   },
 };
