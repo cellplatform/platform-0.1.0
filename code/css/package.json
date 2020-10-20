@@ -8,7 +8,7 @@
     "start": "parcel src/test.parcel/index.html",
     "test": "ts test",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build --no-esm",
     "prepare": "ts prepare",
     "clean": "rm -rf .cache dist",
     "ts.toObject": "ts-node -T script.ts/css-to-object"

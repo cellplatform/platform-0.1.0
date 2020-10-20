@@ -9,6 +9,7 @@ module.exports = {
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
     'prettier',
     'prettier/@typescript-eslint',
   ],
@@ -31,5 +32,9 @@ module.exports = {
       'error',
       { vars: 'all', args: 'none', ignoreRestSiblings: true },
     ],
+
+    // https://reactjs.org/docs/hooks-rules.html#eslint-plugin
+    'react-hooks/rules-of-hooks': 'error', // Check rules of Hooks
+    'react-hooks/exhaustive-deps': 'warn', // Check effect dependencies
   },
 };

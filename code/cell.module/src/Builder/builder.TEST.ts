@@ -23,7 +23,7 @@ type IFoo = {
   listByIndex: t.BuilderListByIndex<IItem>;
   listByName: t.BuilderListByName<IItem>;
   map: t.BuilderMap<IItem, 'foo' | 'bar'>;
-  clone(): IFoo;
+  clone(props?: Partial<IModel>): IFoo;
   toObject(): IModel;
 };
 
@@ -61,7 +61,7 @@ type IItemChild = {
  */
 const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
   toObject: (args) => args.model.state,
-  clone: (args) => args.clone(),
+  clone: (args) => args.clone(args.params[0]),
 
   name(args) {
     args.model.change((draft) => (draft.name = args.params[0]));
@@ -220,8 +220,10 @@ describe('Builder', () => {
       builder.name('foo').name('bar');
       expect(model.state.name).to.eql('bar');
     });
+  });
 
-    it('clone', () => {
+  describe('clone', () => {
+    it('clone()', () => {
       const { builder } = create();
       const clone = builder.clone();
       expect(clone.toObject()).to.eql(builder.toObject());
@@ -232,6 +234,17 @@ describe('Builder', () => {
       expect(clone.toObject()).to.not.eql(builder.toObject());
       expect(builder.toObject().name).to.eql('one');
       expect(clone.toObject().name).to.eql('two');
+    });
+
+    it('clone({ props }) - merged', () => {
+      const { builder } = create();
+      builder.name('one').objectOne.count(123);
+      expect(builder.toObject().childObject?.count).to.eql(123);
+      expect(builder.toObject().name).to.eql('one');
+
+      const clone = builder.clone({ name: 'hello' });
+      expect(clone.toObject().childObject?.count).to.eql(123);
+      expect(clone.toObject().name).to.eql('hello');
     });
   });
 

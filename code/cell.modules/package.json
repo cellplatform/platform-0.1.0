@@ -2,11 +2,7 @@
   "name": "@platform/cell.modules",
   "version": "1.0.2",
   "scripts": {
-    "nuke": "sh scripts/nuke.sh"
-  },
-  "devDependencies": {
-    "@platform/test": "0.1.16",
-    "@platform/ts": "4.0.2"
+    "nuke": "sh config/nuke.sh"
   },
   "license": "MIT",
   "private": true

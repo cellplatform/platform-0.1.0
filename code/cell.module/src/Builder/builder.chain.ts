@@ -71,8 +71,9 @@ export function create<M extends O, A extends O>(args: {
           path: args.path === undefined ? '$' : `${args.path || '$'}`,
           model,
           is: { list: is.list(kind), map: is.map(kind) },
-          clone() {
-            const model = StateObject.create<M>(args.model.state);
+          clone(props?: Partial<M>) {
+            const initial = { ...args.model.state, ...props };
+            const model = StateObject.create<M>(initial);
             return create({ model, handlers });
           },
         };

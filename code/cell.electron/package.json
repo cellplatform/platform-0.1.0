@@ -12,9 +12,9 @@
     "build": "cd app && yarn build",
     "clean": "sh script.sh/clean.sh",
     "reset": "sh script.sh/reset.sh",
+    "nuke": "sh script.sh/nuke.sh",
     "bundle": "sh script.sh/bundle.ui.sys.sh",
-    "open": "cd app/out/make && open .",
-    "nuke": "cd app && nuke"
+    "open": "cd app/out/make && open ."
   },
   "devDependencies": {
     "@platform/cli.prompt": "0.3.26",
