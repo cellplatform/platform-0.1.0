@@ -8,13 +8,18 @@
     "bundle": "cell.compiler bundle --name prod $@",
     "bundle:workers": "cell.compiler bundle --name workers $@",
     "watch": "cell.compiler watch $@",
-    "clean": "cell.compiler clean $@",
+    "clean": "sh script.sh/clean.sh $@",
     "info": "cell.compiler info $@",
-    "serve": "cd dist/web && serve -l 3003"
+    "serve": "cd dist/web && serve -l 3003",
+    "cp": "sh script.sh/copy.sh",
+    "vs": "cd lib.monaco && serve -l 3004 --cors"
   },
   "dependencies": {
+    "@monaco-editor/react": "^3.6.3",
+    "monaco-editor": "^0.21.2",
     "preset.react": "^0.0.0",
-    "@monaco-editor/react": "^3.6.3"
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0"
   },
   "devDependencies": {
     "@platform/cell.compiler": "^0.1.4"
