@@ -7,5 +7,5 @@ export default () =>
     .url(3001)
     .entry({ main: './src/test/entry' })
     .expose('./Header', './src/components/Header')
-    .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
+    .shared((e) => e.add(e.dependencies).singleton(['preset.react']))
     .variant('prod', (config) => config.mode('prod'));

@@ -6,6 +6,6 @@ export default () =>
     .title('My Bar')
     .url(3000)
     .entry({ main: './src/test/entry' })
-    .shared((e) => e.add(e.dependencies).singleton(['preset.web']))
-    .variant('prod', (config) => config.lint(false))
-    .variant('dev', (config) => null);
+    .shared(e => e.add(e.dependencies).singleton(['preset.react']))
+    .variant('prod', config => config.lint(false))
+    .variant('dev', config => null);

@@ -1,0 +1,9 @@
+{
+  "name": "preset.react",
+  "version": "0.0.0",
+  "dependencies": {
+    "@platform/react": "^0.4.49"
+  },
+  "license": "MIT",
+  "private": true
+}

@@ -1,9 +1,8 @@
 {
-  "name": "preset.web",
+  "name": "preset.css",
   "version": "0.0.0",
   "dependencies": {
-    "@platform/css": "^0.4.16",
-    "@platform/react": "^0.4.49"
+    "@platform/css": "^0.4.16"
   },
   "license": "MIT",
   "private": true
