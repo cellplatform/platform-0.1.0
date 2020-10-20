@@ -2,6 +2,7 @@
   "name": "@platform/libs",
   "version": "0.2.2",
   "description": "Common external toolbelt libs used accross modules.",
+  "sideEffects": false,
   "scripts": {
     "test": "echo no-op"
   },

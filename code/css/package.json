@@ -4,6 +4,7 @@
   "description": "Helpers for working with inline CSS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
+  "sideEffects": false,
   "scripts": {
     "start": "parcel src/test.parcel/index.html",
     "test": "ts test",
