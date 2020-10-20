@@ -229,10 +229,10 @@ function writeShared(args: {
 
   const dependencyExists = (name: string) => {
     const exists = Boolean(ctx.version(name));
-    if (!exists && process.env.NODE_ENV !== 'test') {
-      log.warn(
-        `Cannot add shared module '${log.white(name)}' as it does not exist in dependencies.`,
-      );
+
+    if (!exists) {
+      const err = `Cannot add shared module '${name}' as it does not exist in [package.json].`;
+      throw new Error(err);
     }
 
     return exists;

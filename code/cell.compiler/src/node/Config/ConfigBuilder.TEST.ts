@@ -429,12 +429,6 @@ describe('Compiler (Config)', () => {
   });
 
   describe('shared', () => {
-    it('throw: no function', () => {
-      const { builder } = create();
-      const fn = () => builder.shared(undefined as any);
-      expect(fn).to.throw(/function setter parameter required/);
-    });
-
     it('loads {dependencies} from package.json', () => {
       const { builder } = create();
       let args: t.CompilerConfigShared | undefined;
@@ -461,8 +455,7 @@ describe('Compiler (Config)', () => {
       const deps = pkg.dependencies || {};
       const devDeps = pkg.devDependencies || {};
 
-      builder.shared((args) => args.add('foobar')); // NB: Does not exist in [package.json] dependencies.
-      expect(model.state.shared).to.eql({});
+      expect(model.state.shared).to.eql(undefined);
 
       builder.shared((args) => args.add('@platform/libs'));
       expect(model.state.shared).to.eql({ '@platform\\libs': deps['@platform/libs'] }); // NB: key escaped.
@@ -498,6 +491,18 @@ describe('Compiler (Config)', () => {
         singleton: true,
         requiredVersion: deps['babel-loader'],
       });
+    });
+
+    it('throw: no function', () => {
+      const { builder } = create();
+      const fn = () => builder.shared(undefined as any);
+      expect(fn).to.throw(/function setter parameter required/);
+    });
+
+    it('throw: does not exist in package.json', () => {
+      const { builder } = create();
+      const fn = () => builder.shared((args) => args.add('DERP'));
+      expect(fn).to.throw(/does not exist/);
     });
   });
 
