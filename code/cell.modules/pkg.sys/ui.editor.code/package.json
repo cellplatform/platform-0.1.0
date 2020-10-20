@@ -10,12 +10,11 @@
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cd dist/web && serve -l 3002",
-    "serve:workers": "cd dist/webworker && serve -l 3003"
+    "serve": "cd dist/web && serve -l 3003"
   },
   "dependencies": {
-    "monaco-editor": "^0.21.0",
-    "preset.react": "^0.0.0"
+    "preset.react": "^0.0.0",
+    "@monaco-editor/react": "^3.6.3"
   },
   "devDependencies": {
     "@platform/cell.compiler": "^0.1.4"

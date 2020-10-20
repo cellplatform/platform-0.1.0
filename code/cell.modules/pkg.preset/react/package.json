@@ -2,7 +2,8 @@
   "name": "preset.react",
   "version": "0.0.0",
   "dependencies": {
-    "@platform/react": "^0.4.49"
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0"
   },
   "license": "MIT",
   "private": true

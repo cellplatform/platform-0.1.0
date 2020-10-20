@@ -1,38 +1,10 @@
-import React, { useRef, useEffect } from 'react';
-import * as monaco from 'monaco-editor';
+/**
+ * https://github.com/suren-atoyan/monaco-react
+ */
 
-// @ts-ignore
-self.MonacoEnvironment = {
-  getWorkerUrl: function (_moduleId: any, label: string) {
-    if (label === 'json') {
-      return './json.worker.bundle.js';
-    }
-    if (label === 'css') {
-      return './css.worker.bundle.js';
-    }
-    if (label === 'html') {
-      return './html.worker.bundle.js';
-    }
-    if (label === 'typescript' || label === 'javascript') {
-      return './ts.worker.bundle.js';
-    }
-    return './editor.worker.bundle.js';
-  },
-};
+import React from 'react';
+import MonacoEditor from '@monaco-editor/react';
 
 export const Editor: React.FC = () => {
-  const divEl = useRef<HTMLDivElement>(null);
-  let editor: monaco.editor.IStandaloneCodeEditor;
-  useEffect(() => {
-    if (divEl.current) {
-      editor = monaco.editor.create(divEl.current, {
-        value: ['function x() {', '\tconsole.log("Hello world!");', '}'].join('\n'),
-        language: 'typescript',
-      });
-    }
-    return () => {
-      editor.dispose();
-    };
-  }, []);
-  return <div className="Editor" ref={divEl}></div>;
+  return <MonacoEditor height={'90vh'} language={'typescript'} />;
 };

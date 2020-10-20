@@ -1,6 +1,10 @@
 import React from 'react';
-import { CodeEditor } from '../components/CodeEditor';
+import { Editor } from '../components/Editor';
 
-export const App = () => {
-  return <CodeEditor />;
+export const App: React.FC = () => {
+  return (
+    <React.StrictMode>
+      <Editor />
+    </React.StrictMode>
+  );
 };

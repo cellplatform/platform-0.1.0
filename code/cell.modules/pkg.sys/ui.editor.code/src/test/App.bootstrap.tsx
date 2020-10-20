@@ -1,9 +1,6 @@
-import '@platform/polyfill';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from './App';
 
-const root = document.createElement('div');
-document.body.appendChild(root);
+const root = document.body.appendChild(document.createElement('div'));
 ReactDOM.render(<App />, root);

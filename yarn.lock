@@ -980,7 +980,7 @@
     "@babel/helper-plugin-utils" "^7.10.4"
     "@babel/plugin-transform-typescript" "^7.12.1"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.2.0", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.11.0", "@babel/runtime@^7.11.2", "@babel/runtime@^7.2.0", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
   version "7.12.1"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.1.tgz#b4116a6b6711d010b2dad3b7b6e43bf1b9954740"
   integrity sha512-J5AIf3vPj3UwXaAzb5j1xM4WAQDX3EMgemF8rjCP3SoW09LfRKAXQKt6CoVYl230P6iWdRcBbnLDDdnqWxZSCA==
@@ -1048,6 +1048,17 @@
   version "6.0.0-beta.53"
   resolved "https://registry.yarnpkg.com/@electron-forge/async-ora/-/async-ora-6.0.0-beta.53.tgz#5f0d183adab5a564c5bdd4b919174d6054b041cf"
   integrity sha512-OcYJvKYgUL/eGGHsvawELgT528hrnUmyAisESx8ZE06i+jEa/c/wfC6fUAFuBGDr8n+yqgOLbF4xfzAvW9jgZQ==
+  dependencies:
+    colors "^1.4.0"
+    debug "^4.1.0"
+    log-symbols "^4.0.0"
+    ora "^5.0.0"
+    pretty-ms "^7.0.0"
+
+"@electron-forge/async-ora@6.0.0-beta.54":
+  version "6.0.0-beta.54"
+  resolved "https://registry.yarnpkg.com/@electron-forge/async-ora/-/async-ora-6.0.0-beta.54.tgz#2bb9bec05486106b5fd6c45b9f392f1b4b5841a3"
+  integrity sha512-OCoHds0BIXaB54HgKw6pjlHC1cnaTcfJfVVkPSJl1GLC3VShZ5bETJfsitwbiP2kbfKLUQFayW27sqbwnwQR2w==
   dependencies:
     colors "^1.4.0"
     debug "^4.1.0"
@@ -1186,6 +1197,15 @@
     fs-extra "^9.0.1"
     which "^2.0.2"
 
+"@electron-forge/maker-base@6.0.0-beta.54":
+  version "6.0.0-beta.54"
+  resolved "https://registry.yarnpkg.com/@electron-forge/maker-base/-/maker-base-6.0.0-beta.54.tgz#f5679d6c472d9c3ada4eb0b210ea28067f95f568"
+  integrity sha512-4y0y15ieb1EOR5mibtFM9tZzaShbAO0RZu6ARLCpD5BgKuJBzXRPfWvEmY6WeDNzoWTJ+mQdYikLAeOL2E9mew==
+  dependencies:
+    "@electron-forge/shared-types" "6.0.0-beta.54"
+    fs-extra "^9.0.1"
+    which "^2.0.2"
+
 "@electron-forge/maker-deb@6.0.0-beta.53":
   version "6.0.0-beta.53"
   resolved "https://registry.yarnpkg.com/@electron-forge/maker-deb/-/maker-deb-6.0.0-beta.53.tgz#264b75e4b1467c6aa8aa11ac4d23dbd27a10b017"
@@ -1197,12 +1217,12 @@
     electron-installer-debian "^3.0.0"
 
 "@electron-forge/maker-dmg@^6.0.0-beta.53":
-  version "6.0.0-beta.53"
-  resolved "https://registry.yarnpkg.com/@electron-forge/maker-dmg/-/maker-dmg-6.0.0-beta.53.tgz#8e3881e58b3b4393a698a24c60a3785c57165683"
-  integrity sha512-jG5KdSKAPuTITDn7tXQV6X12Olmijf4gW6twW2MuebJyO8zNgsNhPQMyAIcHye7t7P3nPqSyk7SCFJzgC+s4oA==
+  version "6.0.0-beta.54"
+  resolved "https://registry.yarnpkg.com/@electron-forge/maker-dmg/-/maker-dmg-6.0.0-beta.54.tgz#c3777b28c30c03b3dc18d1ca332d27f8c78c65b1"
+  integrity sha512-5FmzxBiBxTS7z9SthJKRWpOtMKeDrPqvdi3l56DhwAO6beV3g2Gx2bpx9Y8PZXCU+fLDmcTgUstzjxFF7LLggQ==
   dependencies:
-    "@electron-forge/maker-base" "6.0.0-beta.53"
-    "@electron-forge/shared-types" "6.0.0-beta.53"
+    "@electron-forge/maker-base" "6.0.0-beta.54"
+    "@electron-forge/shared-types" "6.0.0-beta.54"
     fs-extra "^9.0.1"
   optionalDependencies:
     electron-installer-dmg "^3.0.0"
@@ -1260,6 +1280,16 @@
     "@electron-forge/async-ora" "6.0.0-beta.53"
     electron-packager "^15.0.0"
     electron-rebuild "^2.0.0"
+    ora "^5.0.0"
+
+"@electron-forge/shared-types@6.0.0-beta.54":
+  version "6.0.0-beta.54"
+  resolved "https://registry.yarnpkg.com/@electron-forge/shared-types/-/shared-types-6.0.0-beta.54.tgz#61ceb5e0754314035dc934e86eb21b29f893ac19"
+  integrity sha512-6CzWKFR17rxxeIqm1w5ZyT9uTAHSVAjhqL8c+TmizF2703GyCEusUkjP2UXt/tZNY4MJlukZoJM66Bct6oZJ+w==
+  dependencies:
+    "@electron-forge/async-ora" "6.0.0-beta.54"
+    electron-packager "^15.0.0"
+    electron-rebuild "^2.0.3"
     ora "^5.0.0"
 
 "@electron-forge/template-base@6.0.0-beta.53":
@@ -1713,6 +1743,14 @@
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-3.4.2.tgz#ce135e415d9ab6ff8edc52bda34c2e3d67c73f20"
   integrity sha512-k/Muzh1bO4qzmspf2F6xfbn7EQ95BV2l9Tq6kZeDV9rM9EoDeHXnotHQ6UACBqdfPS4MFRAg8ro+vuKOYOPVPQ==
+
+"@monaco-editor/react@^3.6.3":
+  version "3.6.3"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-3.6.3.tgz#62b9af6c437d4035c901c2ce27122d4c3147f10d"
+  integrity sha512-HjDIhoGuLKWeGxvyaQ9eyIBUXrnEdqGxm74u84qnmtfurLSkUACC0+GL0hD3V0PrL2ebkH16u6ZPjQweSIinWw==
+  dependencies:
+    "@babel/runtime" "^7.11.0"
+    state-local "^1.0.1"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -7099,10 +7137,10 @@ electron-packager@^15.0.0:
     semver "^7.1.3"
     yargs-parser "^19.0.1"
 
-electron-rebuild@^2.0.0:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/electron-rebuild/-/electron-rebuild-2.3.1.tgz#145f4367bfaff9f5a4219be828acd381b92f3854"
-  integrity sha512-KuI2tspzEbjIpcBXXXc1dSz4/LllNGcwppPShrJUaJM3ZEmCIwutBZH7OnfKWOelYOoSHeHe81BR1pkDP4temg==
+electron-rebuild@^2.0.0, electron-rebuild@^2.0.3:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/electron-rebuild/-/electron-rebuild-2.3.2.tgz#42da553a1e4e844ae4d3c3b97e42be836b2924b3"
+  integrity sha512-VLd3iIn65PmYWmvL+nx0oKspbohkDUhCAz8I2EWbMJcOFzWKW1UXJZ+ZG53iEDJFldm9PahE4q2Bx3ns4bdzeQ==
   dependencies:
     "@malept/cross-spawn-promise" "^1.1.0"
     colors "^1.3.3"
@@ -15040,6 +15078,11 @@ stable@^0.1.8:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/stable/-/stable-0.1.8.tgz#836eb3c8382fe2936feaf544631017ce7d47a3cf"
   integrity sha512-ji9qxRnOVfcuLDySj9qzhGSEFVobyt1kIOSkj1qZzYLzq7Tos/oUUWvotUPQLlrsidqsK6tBH89Bc9kL5zHA6w==
+
+state-local@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/state-local/-/state-local-1.0.1.tgz#0d3c0a2bb610d3b81699b30e98fafa00bcf4ac9c"
+  integrity sha512-CkiwT61ZhZd0/z183fcceu7+RSws/Sq5BT3RNQ2xK/Se9A/jn/4Z/eIe1bawoI9wNYC9wrcG2Drz+6GnjtKynA==
 
 state-toggle@^1.0.0:
   version "1.0.3"
