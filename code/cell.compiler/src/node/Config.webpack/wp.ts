@@ -1,4 +1,4 @@
 export { stats } from './wp.stats';
 
-export * from './to.webpackConfig';
-export * from './to.compiler';
+export * from './toWebpackConfig';
+export * from './toCompiler';

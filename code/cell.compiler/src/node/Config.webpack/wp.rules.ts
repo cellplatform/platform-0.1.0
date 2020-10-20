@@ -31,29 +31,46 @@ export const Rules = {
    * Typescript (language).
    */
   typescript(args: IArgs) {
+    /**
+     * 🌳 https://babeljs.io/docs/en/babel-preset-react
+     */
+    const presetReact = '@babel/preset-react';
+
+    /**
+     * 🌳 https://babeljs.io/docs/en/babel-preset-typescript
+     */
+    const presetTypescript = [
+      '@babel/preset-typescript',
+      {
+        /**
+         * NB: This is required for proper typescript file watching.
+         *     See:
+         *       - https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#type-only-modules-watching
+         *       - https://github.com/TypeStrong/fork-ts-checker-webpack-plugin/blob/master/examples/babel-loader/.babelrc.js
+         *       - https://babeljs.io/docs/en/babel-preset-typescript#onlyremovetypeimports
+         */
+        onlyRemoveTypeImports: true,
+      },
+    ];
+
+    /**
+     * 🌳 https://babeljs.io/docs/en/babel-preset-env
+     */
+    const presetEnv = [
+      '@babel/preset-env',
+      {
+        useBuiltIns: 'usage', // https://babeljs.io/docs/en/babel-preset-env#usebuiltins
+        corejs: 3, // https://babeljs.io/docs/en/babel-preset-env#corejs
+      },
+    ];
+
     return {
       test: /\.(ts|tsx|js|jsx)$/,
       exclude: /node_modules/,
       use: {
         loader: 'babel-loader',
         options: {
-          presets: [
-            [
-              '@babel/preset-typescript',
-              {
-                /**
-                 * NB: This is important for proper typescript file watching
-                 *     See:
-                 *       - https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#type-only-modules-watching
-                 *       - https://github.com/TypeStrong/fork-ts-checker-webpack-plugin/blob/master/examples/babel-loader/.babelrc.js
-                 *       - https://babeljs.io/docs/en/babel-preset-typescript#onlyremovetypeimports
-                 */
-                onlyRemoveTypeImports: true,
-              },
-            ],
-            '@babel/preset-react',
-            '@babel/preset-env',
-          ],
+          presets: [presetTypescript, presetReact, presetEnv],
           plugins: ['@babel/plugin-proposal-class-properties'],
         },
       },

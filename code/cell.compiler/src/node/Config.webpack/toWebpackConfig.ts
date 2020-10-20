@@ -40,7 +40,7 @@ export function toWebpackConfig(
   let config: t.WpConfig = {
     name,
     mode,
-    output: { publicPath, path },
+    output: { publicPath: 'auto', path },
     entry,
     target,
     resolve: { extensions: ['.tsx', '.ts', '.js', '.json'] },
@@ -52,7 +52,8 @@ export function toWebpackConfig(
   };
 
   /**
-   * Run any modifier hooks.
+   * Run any modifier hooks that may have been attached
+   * within the calling configuration setup.
    */
   const obj = settings.toObject();
   const before = [...(obj.beforeCompile || [])];
