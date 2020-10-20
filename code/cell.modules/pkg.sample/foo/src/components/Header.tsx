@@ -7,7 +7,7 @@ export const foo = () => {
 
 console.log('FOO...', React);
 
-export const Header = () => {
+export const Header: React.FC = () => {
   return <div>Header (Foo)</div>;
 };
 
