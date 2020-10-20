@@ -10,10 +10,10 @@
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cd dist/web && serve -l 3000"
+    "serve": "cd dist/web && serve -l __PORT__"
   },
   "dependencies": {
-    "preset.web": "^0.0.0"
+    "preset.react": "^0.0.0"
   },
   "devDependencies": {
     "@platform/cell.compiler": "^0.1.4"

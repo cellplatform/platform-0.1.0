@@ -1,6 +1,9 @@
 {
   "name": "@platform/cell.modules",
   "version": "1.0.2",
+  "scripts": {
+    "nuke": "sh config/nuke.sh"
+  },
   "license": "MIT",
   "private": true
 }
