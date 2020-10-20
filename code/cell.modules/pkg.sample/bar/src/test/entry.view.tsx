@@ -1,5 +1,31 @@
-document.body.innerHTML = 'Hello World!';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 
-export default () => {
-  //
+// import { Subject } from 'rxjs';
+// import { takeUntil } from 'rxjs/operators';
+// import { css, CssValue, t } from '../../common';
+
+import { css } from '@platform/css';
+
+// import * as R from 'ramda';
+// import * as tinycolor from 'tinycolor2';
+// const jss = require('glamor-jss');
+
+export const App = () => {
+  // console.log('R', R);
+  // console.log('tinycolor', tinycolor);
+  // console.log('jss', jss);
+  console.log('css', css);
+
+  // const styles = {
+  //   base: css({
+  //     fontSize: 50,
+  //   }),
+  // };
+  // return <div {...styles.base}>Hello</div>;
+  return <div>Hello</div>;
 };
+
+const root = document.createElement('div');
+document.body.append(root);
+ReactDOM.render(<App />, root);

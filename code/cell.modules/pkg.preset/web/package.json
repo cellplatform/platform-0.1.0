@@ -2,8 +2,8 @@
   "name": "preset.web",
   "version": "0.0.0",
   "dependencies": {
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "@platform/css": "^0.4.16",
+    "@platform/react": "^0.4.49"
   },
   "license": "MIT",
   "private": true

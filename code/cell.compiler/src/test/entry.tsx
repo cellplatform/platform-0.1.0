@@ -1,1 +1,1 @@
-import('./entry.view');
+import('./components/App.bootstrap');
