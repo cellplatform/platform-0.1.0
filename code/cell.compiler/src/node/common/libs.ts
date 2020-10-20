@@ -30,5 +30,5 @@ const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPl
 export { ModuleFederationPlugin };
 /* eslint-enable */
 
-import * as minimist from 'minimist';
+import minimist from 'minimist';
 export { minimist };

@@ -1,4 +1,4 @@
-import * as DevServer from 'webpack-dev-server';
+import DevServer from 'webpack-dev-server';
 
 import { log, Model, t, toModel } from '../common';
 import { wp } from '../Config.webpack';

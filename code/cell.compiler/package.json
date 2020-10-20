@@ -21,15 +21,14 @@
     "upload": "yarn cmd upload --config src/test $@",
     "upload-sample": "yarn cmd upload --config src/test --name=prod --host=localhost:5000 --uri=cell:ckg2nl70400001wethqd5e0ry:A1 --dir=foobar $@",
     "info": "yarn cmd info --config src/test",
-    "clean": "yarn cmd clean",
-    "tmp": "ts-node -T src/test/script.tmp"
+    "clean": "yarn cmd clean"
   },
   "dependencies": {
-    "@babel/core": "7.11.6",
-    "@babel/plugin-proposal-class-properties": "7.10.4",
-    "@babel/preset-env": "7.11.5",
-    "@babel/preset-react": "7.10.4",
-    "@babel/preset-typescript": "7.10.4",
+    "@babel/core": "7.12.3",
+    "@babel/plugin-proposal-class-properties": "7.12.1",
+    "@babel/preset-env": "7.12.1",
+    "@babel/preset-react": "7.12.1",
+    "@babel/preset-typescript": "7.12.1",
     "@platform/cell.module": "0.0.33",
     "@platform/cell.types": "0.5.4",
     "@platform/libs": "0.2.2",
@@ -38,13 +37,13 @@
     "@types/jsonpath": "0.2.0",
     "@types/webpack-dev-server": "3.11.0",
     "babel-loader": "8.1.0",
-    "css-loader": "4.3.0",
+    "css-loader": "5.0.0",
     "file-loader": "6.1.1",
     "fork-ts-checker-webpack-plugin": "5.2.0",
     "html-webpack-plugin": "5.0.0-alpha.6",
     "minimist": "1.2.5",
     "style-loader": "2.0.0",
-    "webpack": "5.1.0",
+    "webpack": "5.1.3",
     "webpack-dev-server": "3.11.0"
   },
   "devDependencies": {

@@ -60,7 +60,7 @@ export const logger = {
     };
 
     let name = log.green(model.name());
-    name = obj.title ? log.gray(`${name} '${obj.title}'`) : name;
+    name = obj.title ? log.gray(`${name}/${obj.title}`) : name;
 
     add('name', name);
     add('mode', log.green(model.mode()));

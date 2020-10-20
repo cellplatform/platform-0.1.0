@@ -2,9 +2,8 @@
   "extends": "@platform/ts/tsconfig.json",
   "include": ["src"],
   "compilerOptions": {
-    "importHelpers": true,
     "outDir": "lib",
     "noUnusedLocals": false,
-    "sourceMap": true
+    "esModuleInterop": true
   }
 }

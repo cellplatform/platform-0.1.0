@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 import { t, ModuleFederationPlugin, unescapeKeyPaths, fs } from '../common';
-import * as HtmlWebPackPlugin from 'html-webpack-plugin';
+import HtmlWebPackPlugin from 'html-webpack-plugin';
 
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 

@@ -56,7 +56,7 @@ export const stats = (input?: IStats | ICompliation): t.WebpackStats => {
           log.info.gray('Files');
           log.info.gray(`  ${path.trimBaseDir(res.output.path)}`);
           table.log();
-          log.info.gray(`Bundled (in ${log.yellow(elapsed)})`);
+          log.info.gray(`Bundled in ${log.yellow(elapsed)}`);
         },
       };
       return assets;
