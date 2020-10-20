@@ -43,7 +43,7 @@ export function toWebpackConfig(
     output: { publicPath, path },
     entry,
     target,
-    resolve: { extensions: ['.tsx', '.ts', '.js'] },
+    resolve: { extensions: ['.tsx', '.ts', '.js', '.json'] },
     devtool: prod ? undefined : 'eval-cheap-module-source-map',
     devServer: prod ? undefined : { port, hot: true },
     module: { rules },
