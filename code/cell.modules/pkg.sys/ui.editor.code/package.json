@@ -15,8 +15,7 @@
   },
   "dependencies": {
     "monaco-editor": "^0.21.0",
-    "preset.react": "^0.0.0",
-    "preset.css": "^0.0.0"
+    "preset.react": "^0.0.0"
   },
   "devDependencies": {
     "@platform/cell.compiler": "^0.1.4"

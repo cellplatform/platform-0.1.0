@@ -1,11 +1,8 @@
 import { fromEvent as rxFromEvent, Observable, Subject } from 'rxjs';
 import { FromEventTarget } from 'rxjs/internal/observable/fromEvent';
 import { share } from 'rxjs/operators';
-// import { is } from '../common';
 
 import { is } from '@platform/util.is';
-
-// export { is };
 
 /**
  * Create observable from event.

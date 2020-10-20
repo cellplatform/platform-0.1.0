@@ -12,8 +12,7 @@
     "serve": "cd dist/web && serve -l 3001"
   },
   "dependencies": {
-    "preset.react": "^0.0.0",
-    "preset.css": "^0.0.0"
+    "preset.react": "^0.0.0"
   },
   "devDependencies": {
     "@platform/cell.compiler": "^0.1.4"

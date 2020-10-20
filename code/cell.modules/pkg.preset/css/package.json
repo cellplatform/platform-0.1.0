@@ -1,9 +1,0 @@
-{
-  "name": "preset.css",
-  "version": "0.0.0",
-  "dependencies": {
-    "@platform/css": "^0.4.16"
-  },
-  "license": "MIT",
-  "private": true
-}
