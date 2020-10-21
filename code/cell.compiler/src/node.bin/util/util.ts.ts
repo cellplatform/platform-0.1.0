@@ -1,6 +1,7 @@
-import { fs, log, t } from '../node/common';
-import { logger } from './util';
+import { fs, log, t } from '../common';
+import { logger } from './util.logger';
 import { exec } from '@platform/exec';
+import { toHash } from './util.hash';
 
 /**
  * Helpers for working with typescript transpiling.
@@ -17,9 +18,9 @@ export const ts = {
 
   buildhash(configfile: string) {
     const cachedir = fs.resolve('./node_modules/.cache/cell.compiler/lib.build');
-    const cachepath = fs.join(cachedir, ts.toHash(configfile).toString());
+    const cachepath = fs.join(cachedir, toHash(configfile).toString());
     const exists = fs.pathExists;
-    const readFileHash = async (path: string) => ts.toHash(await readFile(path));
+    const readFileHash = async (path: string) => toHash(await readFile(path));
     const readFile = async (path: string) =>
       (await exists(path)) ? (await fs.readFile(path)).toString() : '';
 
@@ -43,23 +44,5 @@ export const ts = {
     };
 
     return api;
-  },
-
-  toHash(text: string) {
-    // Based on: https://stackoverflow.com/a/8831937
-
-    // console.log('text', text);
-
-    if (text.length == 0) {
-      return '';
-    } else {
-      let hash = 0;
-      for (let i = 0; i < text.length; i++) {
-        const char = text.charCodeAt(i);
-        hash = (hash << 5) - hash + char;
-        hash = hash & hash; // Convert to 32-bit integer.
-      }
-      return hash.toString();
-    }
   },
 };

@@ -1,13 +1,9 @@
-import { fs, log, t } from '../node/common';
-import { logger, ts } from './util';
-import { DEFAULT } from './constants';
+import { fs, log, t } from '../common';
+import { DEFAULT } from '../constants';
+import { logger } from './util.logger';
+import { ts } from './util.ts';
 
 type B = t.CompilerModelBuilder;
-
-// const CONFIG = {
-//   FILENAME: 'compiler.config.ts',
-//   PATH: 'src/compiler.config.ts',
-// };
 
 export async function loadConfig(
   file?: string,
