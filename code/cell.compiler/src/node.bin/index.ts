@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { minimist } from '../common';
+import { minimist } from '../node/common';
 import * as cmd from './cmd';
 import { logger } from './util';
 

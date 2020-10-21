@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t } from './common';
 
 const PARAMS = {
   config: `(optional) Path to configuration file (default: "lib/compiler.config.js)`,

@@ -1,4 +1,4 @@
-import { fs, log, t } from '../common';
+import { fs, log, t } from '../node/common';
 import { logger } from './util';
 import { exec } from '@platform/exec';
 

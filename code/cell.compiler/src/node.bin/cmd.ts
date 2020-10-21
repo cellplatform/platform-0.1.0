@@ -1,5 +1,5 @@
-import { fs, log, minimist, Uri, t } from '../common';
-import { Compiler } from '../Compiler';
+import { fs, log, minimist, Uri, t } from './common';
+import { Compiler } from '../node/Compiler';
 import * as util from './util';
 
 type P = minimist.ParsedArgs;

@@ -24,7 +24,7 @@
     "@platform/test": "0.1.16",
     "@platform/ts": "4.0.2",
     "@types/dotenv": "8.2.0",
-    "@types/mongodb": "3.5.27",
+    "@types/mongodb": "3.5.30",
     "dotenv": "8.2.0"
   },
   "files": [

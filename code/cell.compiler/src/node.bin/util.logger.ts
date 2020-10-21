@@ -1,4 +1,4 @@
-import { log, ModuleFederationPlugin, t } from '../common';
+import { log, ModuleFederationPlugin, t } from '../node/common';
 import { COMMANDS } from './constants';
 import { loadConfig } from './util.loadConfig';
 

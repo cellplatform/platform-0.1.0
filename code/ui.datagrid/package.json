@@ -15,7 +15,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@babel/polyfill": "7.11.5",
+    "@babel/polyfill": "7.12.1",
     "@platform/cache": "0.2.37",
     "@platform/cell.coord": "0.8.187",
     "@platform/cell.func": "0.1.232",

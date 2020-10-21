@@ -16,7 +16,7 @@ describe('Compiler (Webpack)', () => {
     const res = wp.toWebpackConfig(config);
 
     expect(res.mode).to.eql('production');
-    expect(res.output?.publicPath).to.eql('http://localhost:3000/');
+    expect(res.output?.publicPath).to.eql('auto');
     expect(res.devServer).to.eql(undefined);
     expect(res.devtool).to.eql(undefined);
   });
@@ -27,7 +27,7 @@ describe('Compiler (Webpack)', () => {
     const res = wp.toWebpackConfig(config);
 
     expect(res.mode).to.eql('development');
-    expect(res.output?.publicPath).to.eql('http://localhost:1234/');
+    expect(res.output?.publicPath).to.eql('auto');
     expect(res.devServer?.port).to.eql(1234);
   });
 
@@ -35,7 +35,7 @@ describe('Compiler (Webpack)', () => {
     const { builder } = create();
     const config = builder.url('localhost:1234');
     const res = wp.toWebpackConfig(config);
-    expect(res.output?.publicPath).to.eql('http://localhost:1234/');
+    expect(res.output?.publicPath).to.eql('auto');
   });
 
   it('publicPath (domain)', () => {
@@ -44,8 +44,8 @@ describe('Compiler (Webpack)', () => {
     const config1 = wp.toWebpackConfig(builder.url('foo.com:80'));
     const config2 = wp.toWebpackConfig(builder.url('foo.com:1234'));
 
-    expect(config1.output?.publicPath).to.eql('https://foo.com/');
-    expect(config2.output?.publicPath).to.eql('https://foo.com:1234/');
+    expect(config1.output?.publicPath).to.eql('auto');
+    expect(config2.output?.publicPath).to.eql('auto');
   });
 
   it('name', () => {

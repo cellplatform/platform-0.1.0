@@ -179,7 +179,7 @@ describe('Compiler (Config)', () => {
       const webpack = config.toWebpack();
 
       expect(webpack.mode).to.eql('development');
-      expect(webpack.output?.publicPath).to.eql('http://localhost:1234/');
+      expect(webpack.output?.publicPath).to.eql('auto');
       expect(webpack.devServer?.port).to.eql(1234);
       expect(webpack.target).to.eql(undefined);
     });
@@ -460,12 +460,12 @@ describe('Compiler (Config)', () => {
       builder.shared((args) => args.add('@platform/libs'));
       expect(model.state.shared).to.eql({ '@platform\\libs': deps['@platform/libs'] }); // NB: key escaped.
 
-      builder.shared((args) => args.add(['@platform/log', 'babel-loader', 'react']));
+      builder.shared((args) => args.add(['@platform/log', 'babel-loader', '@platform/react']));
       expect(model.state.shared).to.eql({
         '@platform\\libs': deps['@platform/libs'],
         '@platform\\log': deps['@platform/log'],
         'babel-loader': deps['babel-loader'],
-        react: devDeps['react'],
+        '@platform\\react': devDeps['@platform/react'],
       });
     });
 

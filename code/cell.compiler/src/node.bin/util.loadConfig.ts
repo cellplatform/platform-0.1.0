@@ -1,4 +1,4 @@
-import { fs, log, t } from '../common';
+import { fs, log, t } from '../node/common';
 import { logger, ts } from './util';
 
 type B = t.CompilerModelBuilder;

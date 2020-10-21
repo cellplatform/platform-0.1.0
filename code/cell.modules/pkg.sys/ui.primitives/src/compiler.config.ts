@@ -1,16 +1,8 @@
 import { Compiler } from '@platform/cell.compiler';
 
-/**
- * TODO 🐷
- * - spinner
- * - object
- * - image
- * - icon
- */
-
 export default () =>
-  Compiler.config('SysUiCore')
-    .title('sys.ui.core')
+  Compiler.config('primitives')
+    .title('sys.ui.primitives')
     .url(3005)
     .entry({ main: './src/test/entry' })
     .shared((e) => e.add(e.dependencies).singleton(['preset.react']))
@@ -22,6 +14,7 @@ export default () =>
     .expose('./Text', './src/components.ref/text/Text')
     .expose('./TextInput', './src/components.ref/text/TextInput')
     .expose('./Tree', './src/components.ref/tree/Tree')
+    .expose('./Spinner', './src/components.ref/spinner/Spinner')
 
     .variant('prod', (config) => config.mode('prod'))
     .variant('dev', (config) => config.mode('dev'));
