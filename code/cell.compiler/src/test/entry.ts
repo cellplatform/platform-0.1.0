@@ -1,1 +1,1 @@
-import('./components/App.bootstrap');
+import('./components/App.entry');

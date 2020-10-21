@@ -1,1 +1,1 @@
-import('./App.bootstrap');
+import('./App.entry');
