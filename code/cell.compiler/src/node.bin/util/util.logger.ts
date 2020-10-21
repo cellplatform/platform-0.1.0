@@ -1,10 +1,14 @@
 import { log, ModuleFederationPlugin, t } from '../common';
 import { COMMANDS } from '../constants';
 import { loadConfig } from './util.loadConfig';
+import { logger as modelLogger } from '../../node/Compiler.tasks/util.logger';
 
 type B = t.BuilderChain<t.CompilerModelMethods>;
 
 export const logger = {
+  model: modelLogger.model,
+  stats: modelLogger.stats,
+
   clear() {
     log.clear();
     return logger;
@@ -77,7 +81,11 @@ export const logger = {
     log.info.cyan('Webpack: Module Federation');
     log.info(mf?._options);
 
-    log.info();
+    div();
+
+    logger.model(model);
+
+    div();
     return logger;
   },
 
