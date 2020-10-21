@@ -1,6 +1,6 @@
 import { addDevServerEntrypoints } from 'webpack-dev-server';
 import { ConfigBuilder } from '.';
-import { DEFAULT, escapeKeyPaths, expect, StateObject, t, fs, pkg } from '../../test';
+import { DEFAULT, encoding, expect, StateObject, t, fs, pkg } from '../../test';
 
 const create = () => {
   const model = ConfigBuilder.model('foo');
@@ -207,6 +207,45 @@ describe('Compiler (Config)', () => {
       test('  ', undefined);
       test(null, undefined);
       test({}, undefined);
+    });
+
+    it.only('scope', () => {
+      const { model, builder } = create();
+      expect(model.state.scope).to.eql(undefined);
+
+      const test = (input: any, expected: any) => {
+        builder.scope(input);
+        expect(model.state.scope).to.eql(expected);
+      };
+
+      test('foo', 'foo');
+      test(' foo ', 'foo');
+      test('foo1', 'foo1');
+      test('foo_bar', 'foo_bar');
+      test('  _foo  ', '_foo');
+    });
+
+    it.only('scope: throw (invalid scope-name)', () => {
+      const { model, builder } = create();
+      expect(model.state.scope).to.eql(undefined);
+
+      const test = (input: any) => {
+        const fn = () => builder.scope(input);
+        expect(fn).to.throw(/Invalid scope/);
+      };
+
+      test('');
+      test('.foobar');
+      test('foo-bar');
+      test('foo/bar');
+      test('foo?');
+      test('1Foo');
+      test(' 1Foo');
+
+      test('');
+      test('  ');
+      test(null);
+      test({});
     });
 
     it('mode', () => {
@@ -447,7 +486,7 @@ describe('Compiler (Config)', () => {
     it('adds {dependencies} object (cumulative)', () => {
       const { builder, model } = create();
 
-      const escaped = escapeKeyPaths(pkg.dependencies || {});
+      const escaped = encoding.escapeKeyPaths(pkg.dependencies || {});
 
       builder.shared((args) => args.add(args.dependencies));
       expect(model.state.shared).to.eql(escaped);

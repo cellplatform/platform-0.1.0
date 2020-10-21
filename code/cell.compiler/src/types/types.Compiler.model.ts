@@ -8,7 +8,8 @@ export type CompilerModel = {
   /**
    * Values
    */
-  name: string;
+  name: string; // Configuration name (eg: "base", "prod", "dev")
+  scope?: string; // Module federation scope: https://webpack.js.org/concepts/module-federation/#dynamic-remote-containers
   title?: string;
   mode: t.WpMode;
   url?: string;

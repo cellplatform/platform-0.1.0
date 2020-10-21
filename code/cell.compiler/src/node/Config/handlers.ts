@@ -1,22 +1,12 @@
-import {
-  Builder,
-  DEFAULT,
-  escapeKeyPath,
-  escapeKeyPaths,
-  fs,
-  log,
-  parseUrl,
-  t,
-  value as valueUtil,
-} from '../common';
+import { Builder, DEFAULT, encoding, fs, parseUrl, t, value as valueUtil } from '../common';
 import { wp } from '../Config.webpack';
 import { webpackHandlers } from './handlers.webpack';
+import { validate } from './validate';
 
 type O = Record<string, unknown>;
 
 const format = Builder.format;
 const MODES: t.WpMode[] = ['development', 'production'];
-// const VARIANT_KEY = '__variantName';
 
 /**
  * Root handlers.
@@ -34,9 +24,18 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
   toWebpack: (args) => wp.toWebpackConfig(args.model.state),
   name: (args) => args.model.state.name,
 
+  scope(args) {
+    const value = format.string(args.params[0], { trim: true });
+    const error = validate.scopename(value).error;
+    if (error) {
+      throw new Error(`Invalid scope. ${error}`);
+    }
+    args.model.change((draft) => (draft.scope = value));
+  },
+
   title(args) {
-    const title = format.string(args.params[0], { trim: true });
-    args.model.change((draft) => (draft.title = title));
+    const value = format.string(args.params[0], { trim: true });
+    args.model.change((draft) => (draft.title = value));
   },
 
   mode(args) {
@@ -206,7 +205,7 @@ function writePathMap<M extends O>(
 
   model.change((draft) => {
     const entry = draft[objectField] || ((draft as any)[objectField] = {});
-    entry[escapeKeyPath(key)] = value;
+    entry[encoding.escapePath(key)] = value;
     const obj = valueUtil.deleteEmpty(entry as any);
     if (Object.keys(obj).length > 0) {
       draft[objectField] = obj;
@@ -250,10 +249,10 @@ function writeShared(args: {
           names
             .filter((name) => dependencyExists(name))
             .forEach((name) => {
-              shared[escapeKeyPath(name)] = ctx.version(name);
+              shared[encoding.escapePath(name)] = ctx.version(name);
             });
         } else if (typeof input === 'object') {
-          draft.shared = { ...shared, ...escapeKeyPaths(input) };
+          draft.shared = { ...shared, ...encoding.escapeKeyPaths(input) };
         }
       });
       return ctx;
@@ -265,7 +264,7 @@ function writeShared(args: {
         names
           .filter((name) => dependencyExists(name))
           .forEach((name) => {
-            shared[escapeKeyPath(name)] = {
+            shared[encoding.escapePath(name)] = {
               singleton: true,
               requiredVersion: ctx.version(name),
             };

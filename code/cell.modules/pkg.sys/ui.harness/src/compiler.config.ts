@@ -2,6 +2,7 @@ import { Compiler } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
+    .scope('Harness')
     .title('sys.ui.harness')
     .url(3003)
     .entry({ main: './src/test/entry' })

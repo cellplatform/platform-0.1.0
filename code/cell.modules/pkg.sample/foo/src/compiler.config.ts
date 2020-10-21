@@ -2,7 +2,8 @@ import { Compiler } from '@platform/cell.compiler';
 export { Compiler };
 
 export default () =>
-  Compiler.config('foo')
+  Compiler.config()
+    .scope('SampleFoo')
     .title('MyFoo')
     .url(3001)
     .entry({ main: './src/test/entry' })

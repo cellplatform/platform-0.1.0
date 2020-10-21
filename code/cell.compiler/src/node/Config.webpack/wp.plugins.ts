@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import { t, ModuleFederationPlugin, unescapeKeyPaths, fs } from '../common';
+import { t, ModuleFederationPlugin, encoding, fs } from '../common';
 import HtmlWebPackPlugin from 'html-webpack-plugin';
 
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
@@ -19,7 +19,7 @@ export const Plugins = {
    */
   html(args: IArgs) {
     const { model } = args;
-    const title = model.title || model.name || 'Untitled';
+    const title = model.title || model.scope || 'Untitled';
     return new HtmlWebPackPlugin({ title });
   },
 
@@ -29,9 +29,9 @@ export const Plugins = {
    */
   federation(args: IArgs) {
     const { model } = args;
-    const unescape = (obj?: Record<string, unknown>) => unescapeKeyPaths(obj || {});
+    const unescape = (obj?: Record<string, unknown>) => encoding.unescapeKeyPaths(obj || {});
     return new ModuleFederationPlugin({
-      name: model.name,
+      name: model.scope,
       filename: 'remoteEntry.js',
       remotes: unescape(model.remotes),
       exposes: unescape(model.exposes),

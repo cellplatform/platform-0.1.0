@@ -5,6 +5,7 @@ import { ISystem, System } from './System';
  * Test Application
  * See:
  *    https://github.com/module-federation/module-federation-examples/tree/master/dynamic-system-host
+ *    https://webpack.js.org/concepts/module-federation/#dynamic-remote-containers
  */
 export const App = () => {
   const [system, setSystem] = React.useState<ISystem>();

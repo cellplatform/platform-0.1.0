@@ -1,5 +1,5 @@
 import { Compiler } from '..';
-import { fs, expect, ModuleFederationPlugin } from '../../test';
+import { fs, expect, ModuleFederationPlugin, t } from '../../test';
 import { ConfigBuilder } from '../Config';
 import { wp } from '.';
 
@@ -31,26 +31,29 @@ describe('Compiler (Webpack)', () => {
     expect(res.devServer?.port).to.eql(1234);
   });
 
-  it('publicPath (localhost)', () => {
+  it('publicPath: "auto"', () => {
     const { builder } = create();
     const config = builder.url('localhost:1234');
     const res = wp.toWebpackConfig(config);
     expect(res.output?.publicPath).to.eql('auto');
   });
 
-  it('publicPath (domain)', () => {
-    const { builder } = create();
-
-    const config1 = wp.toWebpackConfig(builder.url('foo.com:80'));
-    const config2 = wp.toWebpackConfig(builder.url('foo.com:1234'));
-
-    expect(config1.output?.publicPath).to.eql('auto');
-    expect(config2.output?.publicPath).to.eql('auto');
+  it('name', () => {
+    const { builder } = create('foobar');
+    expect(wp.toWebpackConfig(builder).name).to.eql('foobar');
   });
 
-  it('name', () => {
-    const { builder } = create('foo');
-    expect(wp.toWebpackConfig(builder).name).to.eql('foo');
+  it('scope', () => {
+    const { builder } = create();
+
+    const toOptions = (builder: t.CompilerModelBuilder) => {
+      const config = wp.toWebpackConfig(builder);
+      const mf = (config.plugins || []).find((plugin) => plugin instanceof ModuleFederationPlugin);
+      return mf._options;
+    };
+    expect(toOptions(builder).name).to.eql(undefined); // NB: invalid.
+    builder.scope('  foobar ');
+    expect(toOptions(builder).name).to.eql('foobar');
   });
 
   it('target', () => {
