@@ -16,7 +16,7 @@ type O = Record<string, unknown>;
 
 const format = Builder.format;
 const MODES: t.WpMode[] = ['development', 'production'];
-const VARIANT_KEY = '__variantName';
+// const VARIANT_KEY = '__variantName';
 
 /**
  * Root handlers.
@@ -156,8 +156,7 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     }
 
     const create = (model: t.CompilerModelState, name: string) => {
-      const variant = args.clone();
-      (variant as any)[VARIANT_KEY] = name;
+      const variant = args.clone({ name });
       model.change((draft) => (draft.variants || (draft.variants = [])).push(variant));
       return variant;
     };
@@ -181,7 +180,7 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
 
 const findVariant = (model: t.CompilerModel, name: string) => {
   const list = model.variants || [];
-  return list.find((item) => (item as any)[VARIANT_KEY] === name);
+  return list.find((item) => item.name() === name);
 };
 
 function loadPackageJson(cwd: string) {

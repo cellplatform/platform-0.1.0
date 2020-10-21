@@ -1,7 +1,7 @@
 import { Compiler } from '@platform/cell.compiler';
 
 export default () =>
-  Compiler.config('SysUiHarness')
+  Compiler.config()
     .title('sys.ui.harness')
     .url(3003)
     .entry({ main: './src/test/entry' })

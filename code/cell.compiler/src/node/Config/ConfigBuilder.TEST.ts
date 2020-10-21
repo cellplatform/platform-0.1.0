@@ -27,6 +27,11 @@ describe('Compiler (Config)', () => {
   });
 
   describe('create: .builder()', () => {
+    it('from no params', () => {
+      const builder = ConfigBuilder.builder();
+      expect(builder.toObject()).to.eql({ ...DEFAULT.CONFIG, name: DEFAULT.BASE });
+    });
+
     it('from "name"', () => {
       const builder = ConfigBuilder.builder('  foo  ');
       expect(builder.toObject()).to.eql({ ...DEFAULT.CONFIG, name: 'foo' });
@@ -74,16 +79,17 @@ describe('Compiler (Config)', () => {
       let prod: t.CompilerModelBuilder | undefined;
       base.variant('prod', (config) => {
         prod = config;
-        config.title('prod');
+        config.title('My Prod');
       });
 
       expect(base.toObject().title).to.eql(undefined);
-      expect(prod?.toObject().title).to.eql('prod');
+      expect(prod?.toObject().title).to.eql('My Prod');
+      expect(prod?.toObject().name).to.eql('prod');
 
       const variants = base.toObject().variants || [];
       expect(variants.length).to.eql(1);
-      expect(variants.map((b) => b.name())).to.eql(['name']);
-      expect(variants.map((b) => b.toObject().title)).to.eql(['prod']);
+      expect(variants.map((b) => b.name())).to.eql(['prod']);
+      expect(variants.map((b) => b.toObject().title)).to.eql(['My Prod']);
     });
 
     it('modify existing variant', () => {
@@ -109,9 +115,9 @@ describe('Compiler (Config)', () => {
 
       expect(base.find('NO_EXIST')).to.eql(null);
 
-      expect(base.find('prod')?.name()).to.eql('base');
-      expect(base.find('   prod   ')?.name()).to.eql('base');
-      expect(base.find('dev')?.name()).to.eql('base');
+      expect(base.find('prod')?.name()).to.eql('prod');
+      expect(base.find('   prod   ')?.name()).to.eql('prod');
+      expect(base.find('dev')?.name()).to.eql('dev');
 
       expect(base.find('prod')?.toObject().title).to.eql('myProd');
       expect(base.find('dev')?.toObject().title).to.eql('myDev');

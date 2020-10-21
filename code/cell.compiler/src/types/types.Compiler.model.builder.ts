@@ -5,7 +5,7 @@ type W = t.BuilderChain<CompilerModelWebpackMethods>;
 
 export type CompilerModelFactory = {
   model(name: string): t.CompilerModelState;
-  builder(input: string | t.CompilerModelState | t.CompilerModel): t.CompilerModelBuilder;
+  builder(input?: string | t.CompilerModelState | t.CompilerModel): t.CompilerModelBuilder;
 };
 
 /**
