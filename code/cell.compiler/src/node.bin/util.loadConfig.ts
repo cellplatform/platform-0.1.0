@@ -1,12 +1,13 @@
 import { fs, log, t } from '../node/common';
 import { logger, ts } from './util';
+import { DEFAULT } from './constants';
 
 type B = t.CompilerModelBuilder;
 
-const DEFAULT = {
-  FILENAME: 'compiler.config.ts',
-  PATH: 'src/compiler.config.ts',
-};
+// const CONFIG = {
+//   FILENAME: 'compiler.config.ts',
+//   PATH: 'src/compiler.config.ts',
+// };
 
 export async function loadConfig(
   file?: string,
@@ -65,9 +66,12 @@ export async function loadConfig(
  */
 
 const toPaths = async (input?: string) => {
-  let file = (typeof input === 'string' ? input : DEFAULT.PATH).trim();
+  const PATH = DEFAULT.CONFIG.PATH;
+  const FILENAME = fs.basename(PATH);
+
+  let file = (typeof input === 'string' ? input : PATH).trim();
   file = file ? fs.resolve(file) : file;
-  file = (await fs.is.dir(file)) ? fs.join(file, DEFAULT.FILENAME) : file;
+  file = (await fs.is.dir(file)) ? fs.join(file, FILENAME) : file;
   file = file.trim().replace(/\.js$/, '').replace(/\.ts$/, '');
   if (!file) {
     logger.errorAndExit(1, `A path to the configuration file could not be derived.`);

@@ -1,9 +1,14 @@
 import { t } from './common';
 
+export const DEFAULT = {
+  CONFIG: {
+    PATH: 'src/compiler.config.ts',
+  },
+};
+
 const PARAMS = {
-  config: `(optional) Path to configuration file (default: "lib/compiler.config.js)`,
-  mode: `(optional) Override build mode ('prod' | 'dev')`, // TEMP 🐷
-  name: `(optional) Named configuration to use (default: 'base')`,
+  config: `(optional) Path to configuration file (default: "${DEFAULT.CONFIG.PATH}")`,
+  name: `(optional) Named configuration to use`,
 };
 
 export const COMMANDS: t.Commands = {
@@ -32,8 +37,9 @@ export const COMMANDS: t.Commands = {
     description: 'Bundle and upload to a cell',
     params: {
       '--host -h': `The target host domain`,
-      '--uri': `The target cell URI (eg 'cell:<ns>:A1')`,
+      '--uri': `The target cell URI (eg "cell:<ns>:A1")`,
       '--config': PARAMS.config,
+      '--name': PARAMS.name,
       '--dir': `(optional) The target directory within the cell`,
     },
   },
@@ -45,7 +51,7 @@ export const COMMANDS: t.Commands = {
     },
   },
   clean: {
-    description: 'Remove transient build artifacts',
+    description: 'Delete transient build artifacts',
     params: {},
   },
 };
