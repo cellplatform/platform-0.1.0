@@ -4,12 +4,12 @@ import * as React from 'react';
 import { RenderStyleOnce } from './Style';
 import { SpinnerConfig } from './types';
 
-type ISpinnerProps = {
+export type ISpinnerProps = {
   color?: string | number;
   size?: 12 | 18 | 22 | 32;
   style?: CssValue;
 };
-type ISpinnerState = {
+export type ISpinnerState = {
   started?: number;
 };
 
