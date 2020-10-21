@@ -180,6 +180,7 @@ describe('Compiler (Config)', () => {
       const config = builder
         .url('localhost:1234')
         .mode('dev')
+        .scope('foo.bar')
         .beforeCompile((e) => e.modify((webpack) => (webpack.target = undefined)));
 
       const webpack = config.toWebpack();
@@ -209,7 +210,7 @@ describe('Compiler (Config)', () => {
       test({}, undefined);
     });
 
-    it.only('scope', () => {
+    it('scope', () => {
       const { model, builder } = create();
       expect(model.state.scope).to.eql(undefined);
 
@@ -222,10 +223,12 @@ describe('Compiler (Config)', () => {
       test(' foo ', 'foo');
       test('foo1', 'foo1');
       test('foo_bar', 'foo_bar');
+      test('foo.bar', 'foo.bar');
+      test('.foo', '.foo');
       test('  _foo  ', '_foo');
     });
 
-    it.only('scope: throw (invalid scope-name)', () => {
+    it('scope: throw (invalid scope-name)', () => {
       const { model, builder } = create();
       expect(model.state.scope).to.eql(undefined);
 
@@ -235,7 +238,6 @@ describe('Compiler (Config)', () => {
       };
 
       test('');
-      test('.foobar');
       test('foo-bar');
       test('foo/bar');
       test('foo?');
@@ -486,7 +488,7 @@ describe('Compiler (Config)', () => {
     it('adds {dependencies} object (cumulative)', () => {
       const { builder, model } = create();
 
-      const escaped = encoding.escapeKeyPaths(pkg.dependencies || {});
+      const escaped = encoding.transformKeys(pkg.dependencies || {}, encoding.escapePath);
 
       builder.shared((args) => args.add(args.dependencies));
       expect(model.state.shared).to.eql(escaped);

@@ -252,7 +252,7 @@ function writeShared(args: {
               shared[encoding.escapePath(name)] = ctx.version(name);
             });
         } else if (typeof input === 'object') {
-          draft.shared = { ...shared, ...encoding.escapeKeyPaths(input) };
+          draft.shared = { ...shared, ...encoding.transformKeys(input, encoding.escapePath) };
         }
       });
       return ctx;

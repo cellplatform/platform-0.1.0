@@ -1,11 +1,11 @@
 import { Compiler } from '..';
-import { fs, expect, ModuleFederationPlugin, t } from '../../test';
+import { fs, expect, ModuleFederationPlugin, t, encoding } from '../../test';
 import { ConfigBuilder } from '../Config';
 import { wp } from '.';
 
 const create = (name = 'foo') => {
   const model = ConfigBuilder.model(name);
-  const builder = Compiler.config(model);
+  const builder = Compiler.config(model).scope('sys.foo');
   return { model, builder };
 };
 
@@ -46,14 +46,25 @@ describe('Compiler (Webpack)', () => {
   it('scope', () => {
     const { builder } = create();
 
-    const toOptions = (builder: t.CompilerModelBuilder) => {
+    const options = (builder: t.CompilerModelBuilder) => {
       const config = wp.toWebpackConfig(builder);
       const mf = (config.plugins || []).find((plugin) => plugin instanceof ModuleFederationPlugin);
       return mf._options;
     };
-    expect(toOptions(builder).name).to.eql(undefined); // NB: invalid.
+
     builder.scope('  foobar ');
-    expect(toOptions(builder).name).to.eql('foobar');
+    expect(options(builder).name).to.eql('foobar');
+
+    builder.scope('foo.bar');
+    expect(options(builder).name).to.eql(encoding.escapeScope('foo.bar'));
+  });
+
+  it('scope: throw (scope not set)', () => {
+    const builder = Compiler.config();
+    expect(builder.toObject().scope).to.eql(undefined);
+
+    const fn = () => wp.toWebpackConfig(builder);
+    expect(fn).to.throw(/requires a \"scope\"/);
   });
 
   it('target', () => {

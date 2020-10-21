@@ -29,9 +29,16 @@ export const Plugins = {
    */
   federation(args: IArgs) {
     const { model } = args;
-    const unescape = (obj?: Record<string, unknown>) => encoding.unescapeKeyPaths(obj || {});
+    const unescape = (obj?: Record<string, unknown>) =>
+      encoding.transformKeys(obj || {}, encoding.unescapePath);
+
+    const name = encoding.escapeScope(model.scope || '');
+    if (!name) {
+      throw new Error(`Module federation requires a "scope" value.`);
+    }
+
     return new ModuleFederationPlugin({
-      name: model.scope,
+      name,
       filename: 'remoteEntry.js',
       remotes: unescape(model.remotes),
       exposes: unescape(model.exposes),

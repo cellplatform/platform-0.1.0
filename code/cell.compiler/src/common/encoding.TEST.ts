@@ -3,7 +3,7 @@ import { encoding } from './encoding';
 
 type O = Record<string, any>;
 
-describe.only('encoding', () => {
+describe('encoding', () => {
   it('escapePath | unescapePath', () => {
     const test = (input: string, expected: string) => {
       const escaped = encoding.escapePath(input);
@@ -15,14 +15,36 @@ describe.only('encoding', () => {
     test('foo/bar', 'foo\\bar');
   });
 
-  it('escapeKeyPaths | unescapeKeyPaths', () => {
-    const test = (input: O, expected: O) => {
-      const escaped = encoding.escapeKeyPaths(input);
+  it('transformKeys', () => {
+    const test = (input: O, fn: (input: string) => string, expected: O) => {
+      const escaped = encoding.transformKeys(input, fn);
       expect(escaped).to.eql(expected);
-      expect(encoding.unescapeKeyPaths(escaped)).to.eql(input);
     };
-    test({}, {});
-    test({ foo: 123 }, { foo: 123 });
-    test({ 'foo/bar': 123 }, { 'foo\\bar': 123 });
+
+    test({}, encoding.escapePath, {});
+    test({ foo: 123 }, encoding.escapePath, { foo: 123 });
+    test({ 'foo/bar': 123 }, encoding.escapePath, { 'foo\\bar': 123 });
+  });
+
+  it('transformValues', () => {
+    const test = (input: O, fn: (input: string) => string, expected: O) => {
+      const escaped = encoding.transformValues(input, fn);
+      expect(escaped).to.eql(expected);
+    };
+
+    test({}, encoding.escapePath, {});
+    test({ foo: 'foo/bar' }, encoding.escapePath, { foo: 'foo\\bar' });
+  });
+
+  it('escapeScope | unescapeScope', () => {
+    const test = (input: string, expected: string) => {
+      const escaped = encoding.escapeScope(input);
+      expect(escaped).to.eql(expected);
+      expect(encoding.unescapeScope(escaped)).to.eql(input);
+    };
+    test('', '');
+    test('foo', 'foo');
+    test('foo.bar', 'foo__bar');
+    test('.foo', '__foo');
   });
 });
