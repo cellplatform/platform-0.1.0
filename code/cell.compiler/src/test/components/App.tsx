@@ -1,6 +1,8 @@
 import React from 'react';
 import { ISystem, System } from './System';
 
+type Css = React.CSSProperties;
+
 /**
  * Test Application
  * See:
@@ -44,7 +46,7 @@ export const App = () => {
       <button onClick={setter(3001, 'sample.foo', './Header')}>sample.foo</button>
       <button onClick={setter(3003, 'sys.ui.editor.code', './Dev')}>code</button>
       <hr style={styles.hr} />
-      <div style={styles.body}>
+      <div style={styles.body as Css}>
         <System system={system} />
       </div>
     </div>
