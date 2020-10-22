@@ -17,14 +17,36 @@ export const App = () => {
     };
   };
 
+  const styles = {
+    base: {
+      paddingLeft: 50,
+      paddingRight: 50,
+    },
+    hr: {
+      border: 'none',
+      borderBottom: `solid 3px ${'rgba(0, 0, 0, 0.1)'}`,
+      marginTop: 20,
+      marginBottom: 20,
+    },
+    body: {
+      position: 'absolute',
+      top: 150,
+      right: 50,
+      bottom: 50,
+      left: 50,
+    },
+  };
+
   return (
-    <div>
+    <div style={styles.base}>
       <h1>App</h1>
-      <button onClick={setter(3001, 'foo', './Header')}>foo</button>
+      {/* <button onClick={setter(3001, 'foo', './Header')}>foo</button> */}
       <button onClick={setter(3001, 'sample.foo', './Header')}>sample.foo</button>
       <button onClick={setter(3003, 'sys.ui.editor.code', './Dev')}>code</button>
-      <hr />
-      <System system={system} />
+      <hr style={styles.hr} />
+      <div style={styles.body}>
+        <System system={system} />
+      </div>
     </div>
   );
 };
