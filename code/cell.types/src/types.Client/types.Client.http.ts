@@ -14,7 +14,16 @@ export type IHttpClientResponse<T> = {
 };
 
 /**
- * ROOT (CLIENT)
+ * Static interface
+ */
+export type HttpClient = {
+  create(input?: string | number | t.IHttpClientOptions): t.IHttpClient;
+  isClient(input?: any): boolean;
+  isReachable(host: string): Promise<boolean>;
+};
+
+/**
+ * Client (Root)
  */
 export type IHttpClient = {
   readonly origin: string;
@@ -30,7 +39,7 @@ export type IHttpClient = {
 export type IHttpClientOptions = { host?: string | number; http?: t.IHttp };
 
 /**
- * NAMESPSACE
+ * Namespace
  */
 export type IHttpClientNs = {
   readonly uri: t.INsUri;
@@ -41,7 +50,7 @@ export type IHttpClientNs = {
 };
 
 /**
- * CELL
+ * Cell
  */
 export type IHttpClientCell = {
   readonly uri: t.ICellUri;
@@ -121,7 +130,7 @@ export type IHttpClientCellLinkFile = {
 };
 
 /**
- * FILE
+ * File
  */
 export type IHttpClientFile = {
   readonly uri: t.IFileUri;

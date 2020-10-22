@@ -29,7 +29,7 @@ export async function upload(argv: t.Argv) {
   }
 
   // Ensure host is accessible.
-  if (!(await isHostReachable(host))) {
+  if (!(await HttpClient.isReachable(host))) {
     const err = `The host ${log.white(host)} is not reachable.`;
     return logger.errorAndExit(1, err);
   }
@@ -53,7 +53,7 @@ export async function upload(argv: t.Argv) {
 
   if (sample) {
     const file = sample.configfile.substring(fs.resolve('.').length + 1);
-    log.info.gray(`NB: Sample configuration used (${log.white('--sample')})`);
+    log.info.gray(`NB: Sample upload configuration used (${log.white('--sample')})`);
     log.info.gray(`    ${file}`);
   }
 
@@ -63,19 +63,6 @@ export async function upload(argv: t.Argv) {
 /**
  * [Helpers]
  */
-
-async function isHostReachable(host: string) {
-  try {
-    await HttpClient.create(host).info();
-    return true;
-  } catch (error) {
-    if (error.code === 'ECONNREFUSED') {
-      return false;
-    } else {
-      throw error;
-    }
-  }
-}
 
 async function toSampleArgs(args: { host?: string; uri?: string; targetDir?: string }) {
   const host = args.host ? args.host : 'localhost:5000';
