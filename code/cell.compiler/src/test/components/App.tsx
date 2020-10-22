@@ -19,6 +19,15 @@ export const App = () => {
     };
   };
 
+  const setFoo = () => {
+    const url =
+      'http://localhost:5000/cell:ckgleziqz000beyetfe9d4zpl:A1/file/sample/web/remoteEntry.js';
+
+    const scope = 'sys.ui.editor.code';
+    const module = './Dev';
+    setSystem({ url, scope, module });
+  };
+
   const styles = {
     base: {
       paddingLeft: 50,
@@ -44,6 +53,7 @@ export const App = () => {
       <h1>App</h1>
       <button onClick={setter(3001, 'sample.foo', './Header')}>sample.foo</button>
       <button onClick={setter(3003, 'sys.ui.editor.code', './Dev')}>code</button>
+      <button onClick={setFoo}>code (cell)</button>
       <hr style={styles.hr} />
       <div style={styles.body as Css}>
         <System system={system} />

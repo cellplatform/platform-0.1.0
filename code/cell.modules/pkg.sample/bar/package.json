@@ -7,6 +7,7 @@
     "dev": "cell.compiler dev --no-exports $@",
     "bundle": "cell.compiler bundle --name prod $@",
     "watch": "cell.compiler watch $@",
+    "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cd dist/web && serve -l 3001"

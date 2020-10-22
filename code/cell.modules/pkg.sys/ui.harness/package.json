@@ -9,6 +9,7 @@
     "bundle": "cell.compiler bundle --name=prod $@",
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
+    "upload": "cell.compiler upload $@",
     "info": "cell.compiler info $@",
     "serve": "cd dist/web && serve -l 3003"
   },

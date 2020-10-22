@@ -55,7 +55,7 @@ export type CompilerRunUploadArgs = {
 export type CompilerUploadResponse = {
   ok: boolean;
   bytes: number;
-  urls: { cell: string; files: string };
+  urls: { cell: string; files: string; entry: string; remoteEntry: string };
   files: File[];
 };
 

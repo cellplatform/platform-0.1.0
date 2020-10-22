@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import { t, ModuleFederationPlugin, encoding, fs } from '../common';
+import { t, ModuleFederationPlugin, encoding, fs, DEFAULT } from '../common';
 import HtmlWebPackPlugin from 'html-webpack-plugin';
 
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
@@ -39,7 +39,7 @@ export const Plugins = {
 
     return new ModuleFederationPlugin({
       name,
-      filename: 'remoteEntry.js',
+      filename: DEFAULT.FILE.JS.REMOTE_ENTRY,
       remotes: unescape(model.remotes),
       exposes: unescape(model.exposes),
       shared: unescape(model.shared),
