@@ -4,6 +4,7 @@ import { Cropmarks } from './Host.Cropmarks';
 
 export type IHostProps = {
   layout?: t.IHostLayout;
+  background?: number | string;
   style?: CssValue;
 };
 
@@ -54,18 +55,21 @@ export const Host: React.FC<IHostProps> = (props = {}) => {
     if (!props.children) {
       return null;
     }
+
     const styles = {
-      outer: css({
+      children: css({
+        position: 'relative',
         width: layout.width,
         height: layout.height,
         WebkitAppRegion: 'none',
+        boxSizing: 'border-box',
         flex: 1,
       }),
     };
     return (
       <>
         {cropmarks.render()}
-        <div {...styles.outer}>{props.children}</div>
+        <div {...styles.children}>{props.children}</div>
       </>
     );
   };
@@ -74,14 +78,15 @@ export const Host: React.FC<IHostProps> = (props = {}) => {
     base: css({
       flex: 1,
       position: 'relative',
-      padding: 30,
       boxSizing: 'border-box',
+      padding: 30,
+      backgroundColor: color.format(props.background),
     }),
     body: css({
       Absolute: 0,
       Flex: abs ? undefined : 'center-center',
     }),
-    outer: css({
+    content: css({
       position: abs ? 'absolute' : 'relative',
       Absolute: abs ? [abs.top, abs.right, abs.bottom, abs.left] : undefined,
       border: `solid 1px ${borderColor()}`,
@@ -93,7 +98,7 @@ export const Host: React.FC<IHostProps> = (props = {}) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
-        <div {...styles.outer}>{renderContent()}</div>
+        <div {...styles.content}>{renderContent()}</div>
       </div>
     </div>
   );

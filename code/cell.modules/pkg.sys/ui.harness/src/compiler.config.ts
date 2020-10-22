@@ -2,7 +2,7 @@ import { Compiler } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
-    .port(3003)
+    .port(3002)
     .scope('sys.ui.harness')
     .entry('./src/test/entry')
 

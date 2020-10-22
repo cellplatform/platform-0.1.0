@@ -1,4 +1,4 @@
-import { Model, t, StateObject } from '../common';
+import { Model, t, StateObject, toModel } from '../common';
 import { Plugins } from './wp.plugins';
 import { Rules } from './wp.rules';
 
@@ -11,59 +11,67 @@ export function toWebpackConfig(
   input: M,
   options: { beforeCompile?: t.BeforeCompile } = {},
 ): t.WpConfig {
-  const settings = Model(input);
-  const model = settings.toObject();
+  const toConfig = (input: t.CompilerModel): t.WpConfig => {
+    const settings = Model(input);
+    const model = settings.toObject();
 
-  /**
-   * Values (with defaults).
-   */
-  const mode = settings.mode();
-  const port = settings.port();
-  const name = settings.name();
+    /**
+     * Values (with defaults).
+     */
+    const mode = settings.mode();
+    const port = settings.port();
+    const name = settings.name();
 
-  const prod = settings.prod;
-  const dev = settings.dev;
+    const prod = settings.prod;
+    const dev = settings.dev;
 
-  const entry = settings.entry();
-  const target = settings.target();
+    const entry = settings.entry();
+    const target = settings.target();
 
-  const dir = settings.dir();
-  const path = `${dir}/${target.join(',')}`;
+    const dir = settings.dir();
+    const path = `${dir}/${target.join(',')}`;
 
-  const rules = [...Rules.init({ model, prod, dev }), ...settings.rules()].filter(Boolean);
-  const plugins = [...Plugins.init({ model, prod, dev }), ...settings.plugins()].filter(Boolean);
+    const rules = [...Rules.init({ model, prod, dev }), ...settings.rules()].filter(Boolean);
+    const plugins = [...Plugins.init({ model, prod, dev }), ...settings.plugins()].filter(Boolean);
 
-  /**
-   * Base configuration.
-   */
-  let config: t.WpConfig = {
-    name,
-    mode,
-    output: { publicPath: 'auto', path },
-    entry,
-    target,
-    resolve: { extensions: ['.tsx', '.ts', '.js', '.json'] },
-    devtool: prod ? undefined : 'eval-cheap-module-source-map',
-    devServer: prod ? undefined : { port, hot: true },
-    module: { rules },
-    plugins,
-    cache: { type: 'filesystem' },
+    return {
+      name,
+      mode,
+      output: { publicPath: 'auto', path },
+      entry,
+      target,
+      resolve: { extensions: ['.tsx', '.ts', '.js', '.json'] },
+      devtool: prod ? undefined : 'eval-cheap-module-source-map',
+      devServer: prod ? undefined : { port, hot: true },
+      module: { rules },
+      plugins,
+      cache: { type: 'filesystem' },
+    };
   };
+
+  let model = toModel(input);
+  let config = toConfig(model);
 
   /**
    * Run any modifier hooks that may have been attached
    * within the calling configuration setup.
    */
-  const obj = settings.toObject();
-  const before = [...(obj.beforeCompile || [])];
+  // const obj = settings.toObject();
+  const before = [...(model.beforeCompile || [])];
   if (options.beforeCompile) {
     before.unshift(options.beforeCompile);
   }
   if (before.length > 0) {
     const e: t.BeforeCompileArgs = {
-      model: obj,
+      model,
       toObject: StateObject.toObject,
-      modify(fn) {
+      modifyModel(fn) {
+        const obj = StateObject.create<t.CompilerModel>(model);
+        obj.change(fn);
+        model = obj.state;
+        config = toConfig(obj.state);
+      },
+      modifyWebpack(fn) {
         const obj = StateObject.create<t.WpConfig>(config);
         obj.change(fn);
         config = obj.state;

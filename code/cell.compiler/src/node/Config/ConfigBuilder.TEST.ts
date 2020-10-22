@@ -180,7 +180,7 @@ describe('Compiler (Config)', () => {
         .port(1234)
         .mode('dev')
         .scope('foo.bar')
-        .beforeCompile((e) => e.modify((webpack) => (webpack.target = undefined)));
+        .beforeCompile((e) => e.modifyWebpack((webpack) => (webpack.target = undefined)));
 
       const webpack = config.toWebpack();
 

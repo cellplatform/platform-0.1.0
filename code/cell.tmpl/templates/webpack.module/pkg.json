@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "sideEffects": false,
   "scripts": {
-    "start": "yarn dev",
     "build": "ts build --no-esm $@",
-    "dev": "cell.compiler dev --name dev $@",
-    "bundle": "cell.compiler bundle --name prod $@",
+    "start": "cell.compiler dev --name=dev $@",
+    "dev": "cell.compiler dev --name=dev $@",
+    "bundle": "cell.compiler bundle --name=prod $@",
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",

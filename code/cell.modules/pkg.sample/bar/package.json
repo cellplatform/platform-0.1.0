@@ -2,9 +2,9 @@
   "name": "bar",
   "version": "1.0.4",
   "scripts": {
-    "start": "yarn dev",
     "build": "ts build --no-esm $@",
-    "dev": "cell.compiler dev $@",
+    "start": "cell.compiler dev --name=prod $@",
+    "dev": "cell.compiler dev --name=dev $@",
     "bundle": "cell.compiler bundle --name prod $@",
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
