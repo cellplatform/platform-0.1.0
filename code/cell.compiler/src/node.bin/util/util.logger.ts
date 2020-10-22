@@ -43,52 +43,6 @@ export const logger = {
     return logger;
   },
 
-  async info(input?: string | B) {
-    const config = typeof input === 'object' ? input : await loadConfig(input);
-    const webpack = config.toWebpack();
-    const plugins = webpack.plugins || [];
-    const rules = webpack.module?.rules || [];
-    const mf = plugins.find((plugin) => plugin instanceof ModuleFederationPlugin);
-
-    const div = () => logger.newline().hr().newline();
-
-    const model = config.toObject();
-    if (model.variants) {
-      model.variants = model.variants.map((b) => b.name()) as any;
-    }
-    log.info.cyan('Configuration (Model)');
-    log.info(model);
-
-    div();
-
-    log.info.cyan('Webpack');
-    log.info({
-      ...webpack,
-      plugins: plugins.map((plugin) => plugin?.constructor?.name),
-    });
-
-    div();
-
-    log.info.cyan('Webpack: Rules');
-    rules.forEach((rule) => {
-      log.info.yellow(`${rule.test?.source || '<no-test>'}`);
-      log.info(rule.use);
-      log.info();
-    });
-
-    div();
-
-    log.info.cyan('Webpack: Module Federation');
-    log.info(mf?._options);
-
-    div();
-
-    logger.model(model);
-
-    div();
-    return logger;
-  },
-
   errorAndExit(code: number, ...message: (string | undefined)[]) {
     log.info();
     message.forEach((msg, i) => {
