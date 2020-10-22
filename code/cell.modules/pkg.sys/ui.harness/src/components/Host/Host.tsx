@@ -1,5 +1,6 @@
+import { IHostLayout } from '@platform/cell.modules/pkg.sys/ui.harness/src/types';
 import * as React from 'react';
-import { color, t, css, CssValue, defaultValue } from '../../common';
+import { formatColor, t, css, CssValue, defaultValue } from '../../common';
 import { Cropmarks } from './Host.Cropmarks';
 
 export type IHostProps = {
@@ -18,60 +19,7 @@ export const Host: React.FC<IHostProps> = (props = {}) => {
   const borderColor = () => {
     const border = defaultValue(layout.border, true);
     const value = border === true ? 0.3 : border === false ? 0 : border;
-    return color.format(value);
-  };
-
-  const cropmarks = {
-    get value() {
-      return defaultValue(layout.cropmarks, true);
-    },
-
-    get color() {
-      const value = cropmarks.value;
-      const res = value === true ? 1 : value === false ? 0 : value;
-      return color.format(res);
-    },
-
-    render() {
-      if (!defaultValue(layout.cropmarks, true)) {
-        return null;
-      }
-
-      const size = 20;
-      const margin = 6;
-      const offset = size + margin;
-
-      // Ensure the space surrounding an "absolute positioning" is
-      // not less than offset space of the cropmarks.
-      if (abs && Object.keys(abs).some((key) => abs[key] < offset)) {
-        return null;
-      }
-
-      return <Cropmarks color={cropmarks.color} margin={margin} size={size} />;
-    },
-  };
-
-  const renderContent = () => {
-    if (!props.children) {
-      return null;
-    }
-
-    const styles = {
-      children: css({
-        position: 'relative',
-        width: layout.width,
-        height: layout.height,
-        WebkitAppRegion: 'none',
-        boxSizing: 'border-box',
-        flex: 1,
-      }),
-    };
-    return (
-      <>
-        {cropmarks.render()}
-        <div {...styles.children}>{props.children}</div>
-      </>
-    );
+    return formatColor(value);
   };
 
   const styles = {
@@ -80,7 +28,7 @@ export const Host: React.FC<IHostProps> = (props = {}) => {
       position: 'relative',
       boxSizing: 'border-box',
       padding: 30,
-      backgroundColor: color.format(props.background),
+      backgroundColor: formatColor(props.background),
     }),
     body: css({
       Absolute: 0,
@@ -90,7 +38,7 @@ export const Host: React.FC<IHostProps> = (props = {}) => {
       position: abs ? 'absolute' : 'relative',
       Absolute: abs ? [abs.top, abs.right, abs.bottom, abs.left] : undefined,
       border: `solid 1px ${borderColor()}`,
-      backgroundColor: color.format(layout.background),
+      backgroundColor: formatColor(layout.background),
       display: 'flex',
     }),
   };
@@ -98,10 +46,60 @@ export const Host: React.FC<IHostProps> = (props = {}) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
-        <div {...styles.content}>{renderContent()}</div>
+        <div {...styles.content}>
+          <HostContent {...layout}>{props.children}</HostContent>
+        </div>
       </div>
     </div>
   );
+};
+
+/**
+ * The Host content.
+ */
+export const HostContent: React.FC<IHostLayout> = (props = {}) => {
+  if (!props.children) {
+    return null;
+  }
+
+  const styles = {
+    children: css({
+      position: 'relative',
+      width: props.width,
+      height: props.height,
+      WebkitAppRegion: 'none',
+      boxSizing: 'border-box',
+      flex: 1,
+    }),
+  };
+  return (
+    <>
+      <HostCropmarks {...props} />
+      <div {...styles.children}>{props.children}</div>
+    </>
+  );
+};
+
+const HostCropmarks: React.FC<IHostLayout> = (props = {}) => {
+  const cropmarks = defaultValue(props.cropmarks, true);
+  if (!cropmarks) {
+    return null;
+  }
+
+  const abs = props.position?.absolute;
+  const color = formatColor(cropmarks === true ? 1 : cropmarks);
+
+  const size = 20;
+  const margin = 6;
+  const offset = size + margin;
+
+  // Ensure the space surrounding an "absolute positioning" is
+  // not less than offset space of the cropmarks.
+  if (abs && Object.keys(abs).some((key) => abs[key] < offset)) {
+    return null;
+  }
+
+  return <Cropmarks color={color} margin={margin} size={size} />;
 };
 
 export default Host;
