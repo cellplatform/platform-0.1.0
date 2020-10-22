@@ -22,7 +22,19 @@ export const App: React.FC = () => {
       <Host
         style={styles.host}
         background={-0.04}
-        layout={{ width: 550, border: -0.1, cropmarks: -0.2, background: 1 }}
+        layout={{
+          width: 550,
+          border: -0.1,
+          cropmarks: -0.2,
+          background: 1,
+          // label: {
+          //   topLeft: 'top-left',
+          //   topRight: 'top-right',
+          //   bottomLeft: 'bottom-left',
+          //   bottomRight: 'bottom-right',
+          // },
+          label: 'foobar',
+        }}
       >
         <div {...styles.content}>{LOREM}</div>
       </Host>

@@ -1,12 +1,5 @@
 import * as t from './types';
-// import * as util from './util';
-// import * as constants from './constants';
+import * as constants from './constants';
 
-export { t };
-
-// import { onStateChanged, stripHttp } from './util';
-// export { onStateChanged, stripHttp };
-
-// export const COLORS = constants.COLORS;
-
+export { t, constants };
 export * from './libs';
