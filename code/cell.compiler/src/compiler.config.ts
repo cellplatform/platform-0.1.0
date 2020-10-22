@@ -6,7 +6,7 @@ export default () =>
     .scope('sample.compiler')
     .title('Compiler Sample')
     .port(1234)
-    .entry('./src/test/entry')
+    .entry('./src/test/entry.web')
     .shared((e) => {
       e.singleton(['react', 'react-dom']);
     })

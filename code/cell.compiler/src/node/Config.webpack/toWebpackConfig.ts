@@ -56,7 +56,6 @@ export function toWebpackConfig(
    * Run any modifier hooks that may have been attached
    * within the calling configuration setup.
    */
-  // const obj = settings.toObject();
   const before = [...(model.beforeCompile || [])];
   if (options.beforeCompile) {
     before.unshift(options.beforeCompile);

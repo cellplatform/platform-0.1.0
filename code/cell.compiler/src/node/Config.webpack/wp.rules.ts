@@ -88,6 +88,9 @@ export const Rules = {
    * NOTE:
    *        See SVGO for optimizing source <SVG> data before webpacking.
    *        https://github.com/svg/svgo
+   *
+   *        React loader example (blog)
+   *        https://www.pluralsight.com/guides/how-to-load-svg-with-react-and-webpack
    */
   svg(args: IArgs) {
     return {
@@ -96,7 +99,10 @@ export const Rules = {
         {
           loader: 'url-loader',
           options: {
-            generator: (content: any) => svgToMiniDataURI(content.toString()),
+            generator(content: any) {
+              content = typeof content !== 'string' ? content.toString() : content;
+              svgToMiniDataURI(content);
+            },
           },
         },
       ],

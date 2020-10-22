@@ -42,7 +42,6 @@ export const App = () => {
   return (
     <div style={styles.base}>
       <h1>App</h1>
-      {/* <button onClick={setter(3001, 'foo', './Header')}>foo</button> */}
       <button onClick={setter(3001, 'sample.foo', './Header')}>sample.foo</button>
       <button onClick={setter(3003, 'sys.ui.editor.code', './Dev')}>code</button>
       <hr style={styles.hr} />

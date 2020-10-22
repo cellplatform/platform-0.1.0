@@ -15,13 +15,13 @@
     "serve": "cd dist/web && serve --listen 1234 --cors",
     "cmd": "node lib/node.bin $@",
     "bundle": "yarn cmd bundle  $@",
-    "watch": "yarn cmd watch  --name dev $@",
-    "start": "yarn cmd dev  $@",
-    "dev": "yarn cmd dev  --no-exports $@",
+    "watch": "yarn cmd watch --name dev $@",
+    "start": "yarn cmd dev $@",
+    "dev": "yarn cmd dev --no-exports $@",
     "upload": "yarn cmd upload  $@",
-    "upload-sample": "yarn cmd upload  --name=prod --host=localhost:5000 --uri=cell:ckg2nl70400001wethqd5e0ry:A1 --dir=foobar $@",
+    "upload-sample": "yarn cmd upload --name=prod --host=localhost:5000 --uri=cell:ckg2nl70400001wethqd5e0ry:A1 --dir=foobar $@",
     "info": "yarn cmd info $@",
-    "clean": "yarn cmd clean"
+    "clean": "yarn cmd clean $@"
   },
   "dependencies": {
     "@babel/core": "7.12.3",
