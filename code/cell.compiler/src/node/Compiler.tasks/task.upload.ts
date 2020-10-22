@@ -41,7 +41,6 @@ export const upload: t.CompilerRunUpload = async (args) => {
       const file = findFile(filename);
       return file ? cell.file.byName(file.filename).toString() : '';
     };
-
     return {
       cell: cell.info.toString(),
       files: cell.files.list.query({ filter }).toString(),
@@ -135,7 +134,7 @@ function logUrls(links: Record<string, string>) {
   const table = log.table({ border: false });
   Object.keys(links).forEach((key) => {
     const url = logger.format.url(links[key]);
-    table.add([`  ${key}  `, url]);
+    table.add([`  ${key} `, url]);
   });
   table.log();
 }
