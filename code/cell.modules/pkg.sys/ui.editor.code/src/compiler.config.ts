@@ -1,15 +1,13 @@
 import { Compiler } from '@platform/cell.compiler';
-export { Compiler };
 
 // const TerserPlugin = require('terser-webpack-plugin');
 // const vs = (path: string) => `monaco-editor/esm/vs/${path}`;
 
 export default () =>
-  Compiler.config('ide')
-    .title('Code Editor')
-    .url(3003)
-
-    .entry('main', './src/test/entry')
+  Compiler.config()
+    .port(3003)
+    .scope('sys.ui.editor.code')
+    .entry('./src/test/entry')
 
     // .shared((e) => e.add(e.dependencies).singleton(['preset.web']))
 

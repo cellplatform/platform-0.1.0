@@ -6,7 +6,7 @@
     "test": "echo no-op"
   },
   "dependencies": {
-    "@types/ramda": "0.27.23",
+    "@types/ramda": "0.27.29",
     "ramda": "0.27.1",
     "rxjs": "6.6.3"
   },

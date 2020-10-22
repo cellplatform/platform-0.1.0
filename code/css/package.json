@@ -28,7 +28,7 @@
     "@platform/test": "0.1.16",
     "@platform/ts": "4.0.2",
     "parcel-bundler": "1.12.4",
-    "react": "16.13.1"
+    "react": "17.0.0"
   },
   "files": [
     "lib",

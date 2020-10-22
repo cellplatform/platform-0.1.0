@@ -54,7 +54,7 @@ describe('Compiler (Tasks)', () => {
         expect(dir.endsWith(expected)).to.eql(true);
       };
 
-      test('node_modules/.cache/cell/cell-foo-A1/web/foo.production');
+      test('node_modules/.cache/cell.compiler/cell-foo-A1/web/foo.production');
 
       builder.mode('dev');
       test('/cell-foo-A1/web/foo.development');

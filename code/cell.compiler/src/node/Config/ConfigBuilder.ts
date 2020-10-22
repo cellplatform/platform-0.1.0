@@ -27,7 +27,7 @@ export const ConfigBuilder: t.CompilerModelFactory = {
       ? StateObject.isStateObject(input)
         ? input
         : StateObject.create<t.CompilerModel>(input as any)
-      : ConfigBuilder.model(input)) as t.CompilerModelState;
+      : ConfigBuilder.model(input || DEFAULT.BASE)) as t.CompilerModelState;
     return Builder.create<t.CompilerModel, t.CompilerModelMethods>({ model, handlers });
   },
 };

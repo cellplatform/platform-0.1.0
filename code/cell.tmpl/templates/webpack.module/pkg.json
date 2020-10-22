@@ -5,7 +5,7 @@
   "scripts": {
     "start": "yarn dev",
     "build": "ts build --no-esm $@",
-    "dev": "cell.compiler dev $@",
+    "dev": "cell.compiler dev --name dev $@",
     "bundle": "cell.compiler bundle --name prod $@",
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",

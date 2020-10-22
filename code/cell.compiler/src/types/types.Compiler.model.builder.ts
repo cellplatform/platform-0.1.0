@@ -5,7 +5,7 @@ type W = t.BuilderChain<CompilerModelWebpackMethods>;
 
 export type CompilerModelFactory = {
   model(name: string): t.CompilerModelState;
-  builder(input: string | t.CompilerModelState | t.CompilerModel): t.CompilerModelBuilder;
+  builder(input?: string | t.CompilerModelState | t.CompilerModel): t.CompilerModelBuilder;
 };
 
 /**
@@ -27,8 +27,9 @@ export type CompilerModelMethods = {
   beforeCompile(handler: t.BeforeCompile): B;
 
   title(value: string | undefined): B;
+  scope(value: string): B;
   mode(value: t.WpMode | 'prod' | 'dev'): B;
-  url(value: string | number | undefined): B;
+  port(value: number | undefined): B;
   target(value: t.WpTarget | undefined): B;
   dir(value: string | undefined): B;
   lint(value: boolean | undefined): B;

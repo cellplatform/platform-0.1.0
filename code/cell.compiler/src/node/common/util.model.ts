@@ -2,6 +2,7 @@ import { parse } from 'url';
 import { fs } from './libs';
 import * as t from './types';
 import { DEFAULT } from './constants';
+import { defaultValue } from '@platform/util.value/lib/value/value';
 
 type M = t.CompilerModel | t.CompilerModelBuilder;
 
@@ -46,13 +47,8 @@ export function Model(input: M) {
       return toTargetArray(model.target, ...defaultTargets);
     },
 
-    url(defaultValue?: string): string {
-      return (model.url || defaultValue || DEFAULT.CONFIG.url) as string;
-    },
-
-    port(defaultUrl?: string) {
-      const url = parse(res.url(defaultUrl));
-      return url.port ? parseInt(url.port, 10) : DEFAULT.PORT;
+    port(defaultPort?: number) {
+      return defaultValue(model.port, defaultValue(defaultPort, DEFAULT.CONFIG.port));
     },
 
     dir(defaultValue?: string) {

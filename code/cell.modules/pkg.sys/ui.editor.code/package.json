@@ -22,7 +22,8 @@
     "react-dom": "^17.0.0"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.1.4"
+    "@platform/cell.compiler": "^0.1.4",
+    "sys.ui.harness": "^0.0.0"
   },
   "license": "MIT",
   "private": true

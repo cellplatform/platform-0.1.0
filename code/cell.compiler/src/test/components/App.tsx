@@ -5,22 +5,24 @@ import { ISystem, System } from './System';
  * Test Application
  * See:
  *    https://github.com/module-federation/module-federation-examples/tree/master/dynamic-system-host
+ *    https://webpack.js.org/concepts/module-federation/#dynamic-remote-containers
  */
 export const App = () => {
   const [system, setSystem] = React.useState<ISystem>();
 
-  function setFoo() {
-    setSystem({
-      url: 'http://localhost:3001/remoteEntry.js',
-      scope: 'foo',
-      module: './Header',
-    });
-  }
+  const setter = (port: number, scope: string, module: string) => {
+    return () => {
+      const url = `http://localhost:${port}/remoteEntry.js`;
+      setSystem({ url, scope, module });
+    };
+  };
 
   return (
     <div>
       <h1>App</h1>
-      <button onClick={setFoo}>Load Foo</button>
+      <button onClick={setter(3001, 'foo', './Header')}>foo</button>
+      <button onClick={setter(3001, 'sample.foo', './Header')}>sample.foo</button>
+      <button onClick={setter(3005, 'SysUiCore', './button/Button')}>Load Core</button>
       <hr />
       <System system={system} />
     </div>

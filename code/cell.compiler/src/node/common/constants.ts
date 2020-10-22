@@ -1,14 +1,18 @@
-const PORT = 3000;
-const HOST = 'http://localhost';
+import { fs } from './libs';
 
 const CONFIG = {
   name: '',
   dir: 'dist',
   mode: 'production',
-  url: `${HOST}:${PORT}/`,
+  port: 3000,
   target: ['web'],
   entry: {},
 };
 
+export const PATH = {
+  cachedir: fs.resolve('./node_modules/.cache/cell.compiler'),
+};
+
+const BASE = 'base';
 const WEBPACK = { rules: [], plugins: [] };
-export const DEFAULT = { PORT, HOST, CONFIG, WEBPACK };
+export const DEFAULT = { CONFIG, WEBPACK, BASE };

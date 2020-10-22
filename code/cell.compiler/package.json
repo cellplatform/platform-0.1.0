@@ -5,7 +5,7 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
-    "cell.compiler": "lib/node/bin/index.js"
+    "cell.compiler": "lib/node.bin/index.js"
   },
   "scripts": {
     "start": "yarn dev",
@@ -13,8 +13,8 @@
     "lint": "ts lint",
     "build": "ts build --no-esm",
     "prepare": "ts prepare",
-    "serve": "cd dist && serve --listen 1234",
-    "cmd": "node lib/node/bin $@",
+    "serve": "cd dist/web && serve --listen 1234 --cors",
+    "cmd": "node lib/node.bin $@",
     "bundle": "yarn cmd bundle --config src/test $@",
     "watch": "yarn cmd watch --config src/test --name dev $@",
     "dev": "yarn cmd dev --config src/test --name dev $@",
@@ -51,10 +51,7 @@
     "@platform/test": "0.1.16",
     "@platform/ts": "4.0.2",
     "@types/minimist": "1.2.0",
-    "@types/react": "16.9.51",
-    "@types/react-dom": "16.9.8",
-    "react": "16.14.0",
-    "react-dom": "16.14.0"
+    "@platform/react": "0.4.49"
   },
   "files": [
     "lib",

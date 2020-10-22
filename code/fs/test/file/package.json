@@ -10,7 +10,7 @@
     "mocha": "latest"
   },
   "peerDependencies": {
-    "react": "1.2.3"
+    "react": "17.0.0"
   },
   "license": "MIT"
 }

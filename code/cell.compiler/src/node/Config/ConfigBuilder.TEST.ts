@@ -1,6 +1,5 @@
-import { addDevServerEntrypoints } from 'webpack-dev-server';
 import { ConfigBuilder } from '.';
-import { DEFAULT, escapeKeyPaths, expect, StateObject, t, fs, pkg } from '../../test';
+import { DEFAULT, encoding, expect, StateObject, t, fs, pkg } from '../../test';
 
 const create = () => {
   const model = ConfigBuilder.model('foo');
@@ -27,6 +26,11 @@ describe('Compiler (Config)', () => {
   });
 
   describe('create: .builder()', () => {
+    it('from no params', () => {
+      const builder = ConfigBuilder.builder();
+      expect(builder.toObject()).to.eql({ ...DEFAULT.CONFIG, name: DEFAULT.BASE });
+    });
+
     it('from "name"', () => {
       const builder = ConfigBuilder.builder('  foo  ');
       expect(builder.toObject()).to.eql({ ...DEFAULT.CONFIG, name: 'foo' });
@@ -74,16 +78,17 @@ describe('Compiler (Config)', () => {
       let prod: t.CompilerModelBuilder | undefined;
       base.variant('prod', (config) => {
         prod = config;
-        config.title('prod');
+        config.title('My Prod');
       });
 
       expect(base.toObject().title).to.eql(undefined);
-      expect(prod?.toObject().title).to.eql('prod');
+      expect(prod?.toObject().title).to.eql('My Prod');
+      expect(prod?.toObject().name).to.eql('prod');
 
       const variants = base.toObject().variants || [];
       expect(variants.length).to.eql(1);
-      expect(variants.map((b) => b.name())).to.eql(['name']);
-      expect(variants.map((b) => b.toObject().title)).to.eql(['prod']);
+      expect(variants.map((b) => b.name())).to.eql(['prod']);
+      expect(variants.map((b) => b.toObject().title)).to.eql(['My Prod']);
     });
 
     it('modify existing variant', () => {
@@ -109,9 +114,9 @@ describe('Compiler (Config)', () => {
 
       expect(base.find('NO_EXIST')).to.eql(null);
 
-      expect(base.find('prod')?.name()).to.eql('base');
-      expect(base.find('   prod   ')?.name()).to.eql('base');
-      expect(base.find('dev')?.name()).to.eql('base');
+      expect(base.find('prod')?.name()).to.eql('prod');
+      expect(base.find('   prod   ')?.name()).to.eql('prod');
+      expect(base.find('dev')?.name()).to.eql('dev');
 
       expect(base.find('prod')?.toObject().title).to.eql('myProd');
       expect(base.find('dev')?.toObject().title).to.eql('myDev');
@@ -172,14 +177,15 @@ describe('Compiler (Config)', () => {
     it('toWebpack', () => {
       const { builder } = create();
       const config = builder
-        .url('localhost:1234')
+        .port(1234)
         .mode('dev')
+        .scope('foo.bar')
         .beforeCompile((e) => e.modify((webpack) => (webpack.target = undefined)));
 
       const webpack = config.toWebpack();
 
       expect(webpack.mode).to.eql('development');
-      expect(webpack.output?.publicPath).to.eql('http://localhost:1234/');
+      expect(webpack.output?.publicPath).to.eql('auto');
       expect(webpack.devServer?.port).to.eql(1234);
       expect(webpack.target).to.eql(undefined);
     });
@@ -201,6 +207,46 @@ describe('Compiler (Config)', () => {
       test('  ', undefined);
       test(null, undefined);
       test({}, undefined);
+    });
+
+    it('scope', () => {
+      const { model, builder } = create();
+      expect(model.state.scope).to.eql(undefined);
+
+      const test = (input: any, expected: any) => {
+        builder.scope(input);
+        expect(model.state.scope).to.eql(expected);
+      };
+
+      test('foo', 'foo');
+      test(' foo ', 'foo');
+      test('foo1', 'foo1');
+      test('foo_bar', 'foo_bar');
+      test('foo.bar', 'foo.bar');
+      test('.foo', '.foo');
+      test('  _foo  ', '_foo');
+    });
+
+    it('scope: throw (invalid scope-name)', () => {
+      const { model, builder } = create();
+      expect(model.state.scope).to.eql(undefined);
+
+      const test = (input: any) => {
+        const fn = () => builder.scope(input);
+        expect(fn).to.throw(/Invalid scope/);
+      };
+
+      test('');
+      test('foo-bar');
+      test('foo/bar');
+      test('foo?');
+      test('1Foo');
+      test(' 1Foo');
+
+      test('');
+      test('  ');
+      test(null);
+      test({});
     });
 
     it('mode', () => {
@@ -225,36 +271,18 @@ describe('Compiler (Config)', () => {
       test(' dev ', 'development');
     });
 
-    it('url', () => {
+    it('port', () => {
       const { builder, model } = create();
-      const DEFAULT_URL = DEFAULT.CONFIG.url;
-      expect(builder.toObject().url).to.eql(DEFAULT_URL);
+      const PORT = DEFAULT.CONFIG.port;
+      expect(builder.toObject().port).to.eql(PORT);
 
-      const test = (value: any, expected: string | undefined) => {
-        builder.url(value);
-        expect(model.state.url).to.eql(expected);
+      const test = (value: any, expected: any) => {
+        builder.port(value);
+        expect(model.state.port).to.eql(expected);
       };
 
-      test('foo.com', 'https://foo.com/');
-      test(undefined, DEFAULT_URL);
-      test('   ', DEFAULT_URL);
-
-      test(1234, 'http://localhost:1234/');
-
-      test('https://a.foo.com', 'https://a.foo.com/');
-      test('https://foo.com/', 'https://foo.com/');
-      test('foo.com', 'https://foo.com/');
-      test('foo.com', 'https://foo.com/');
-      test('localhost', 'http://localhost/');
-      test('http://localhost', 'http://localhost/');
-      test('https://localhost', 'https://localhost/'); // NB: Does not change protocol, but this would typically be an invalid "localhost"
-      test('http://localhost:5000', 'http://localhost:5000/');
-      test('localhost///', 'http://localhost/');
-
-      test('foo.com/file?q=132', 'https://foo.com/file/');
-      test('foo.com///file/bar', 'https://foo.com/file/bar/');
-      test('foo.com:5000///file', 'https://foo.com:5000/file/');
-      test('foo.com:80/file', 'https://foo.com/file/');
+      test(1234, 1234);
+      test(undefined, PORT);
     });
 
     it('target', () => {
@@ -441,7 +469,7 @@ describe('Compiler (Config)', () => {
     it('adds {dependencies} object (cumulative)', () => {
       const { builder, model } = create();
 
-      const escaped = escapeKeyPaths(pkg.dependencies || {});
+      const escaped = encoding.transformKeys(pkg.dependencies || {}, encoding.escapePath);
 
       builder.shared((args) => args.add(args.dependencies));
       expect(model.state.shared).to.eql(escaped);
@@ -460,12 +488,12 @@ describe('Compiler (Config)', () => {
       builder.shared((args) => args.add('@platform/libs'));
       expect(model.state.shared).to.eql({ '@platform\\libs': deps['@platform/libs'] }); // NB: key escaped.
 
-      builder.shared((args) => args.add(['@platform/log', 'babel-loader', 'react']));
+      builder.shared((args) => args.add(['@platform/log', 'babel-loader', '@platform/react']));
       expect(model.state.shared).to.eql({
         '@platform\\libs': deps['@platform/libs'],
         '@platform\\log': deps['@platform/log'],
         'babel-loader': deps['babel-loader'],
-        react: devDeps['react'],
+        '@platform\\react': devDeps['@platform/react'],
       });
     });
 

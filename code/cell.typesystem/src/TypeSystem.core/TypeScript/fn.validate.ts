@@ -63,5 +63,5 @@ export function propname(input: string | undefined) {
     return done('Property-name starts with a number.');
   }
 
-  return done(); // is-valid.
+  return done(); // Is valid.
 }

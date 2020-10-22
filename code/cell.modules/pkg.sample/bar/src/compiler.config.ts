@@ -1,10 +1,10 @@
 import { Compiler } from '@platform/cell.compiler';
-export { Compiler };
 
 export default () =>
   Compiler.config('bar')
-    .title('My Bar')
-    .url(3002)
+    .scope('sample.bar')
+    .port(3002)
+    .scope('My Bar Title')
     .entry({ main: './src/test/entry' })
     .shared((e) => e.add(e.dependencies).singleton(['preset.react']))
     .variant('prod', (config) => config.mode('prod'))

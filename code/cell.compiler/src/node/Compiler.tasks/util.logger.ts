@@ -48,24 +48,39 @@ export const logger = {
     return logger;
   },
 
-  model(input: t.CompilerModel, indent?: number) {
+  model(input: t.CompilerModel, options: { indent?: number; url?: string | boolean } = {}) {
+    const { indent } = options;
+    const { cyan, gray } = log;
     const prefix = typeof indent === 'number' ? ' '.repeat(indent) : '';
     const model = Model(input);
     const obj = model.toObject();
+    const port = model.port();
+
+    const green = (value?: any) => (value === undefined ? undefined : log.green(value));
 
     const table = log.table({ border: false });
-    const add = (key: string, value: string) => {
-      const left = log.gray(`${prefix}${log.white(key)}: `);
-      table.add([left, value]);
+    const add = (key: string, value: string | undefined) => {
+      if (value) {
+        const left = log.gray(`${prefix}${log.white(key)}: `);
+        table.add([left, value]);
+      }
     };
 
-    let name = log.green(model.name());
-    name = obj.title ? log.gray(`${name}/${obj.title}`) : name;
+    let name = green(model.name());
+    name = obj.title ? gray(`${name}/${obj.title}`) : name;
 
     add('name', name);
-    add('mode', log.green(model.mode()));
-    add('target', log.green(model.target().join()));
-    add('url', log.cyan(model.url()));
+    add('scope', green(obj.scope));
+    add('mode', green(model.mode()));
+    add('target', green(model.target().join()));
+
+    if (options.url) {
+      let url = typeof options.url === 'string' ? options.url : 'http://localhost';
+      url = port === 80 ? url : `${url}:${port}`;
+      add('url', cyan(url));
+    } else {
+      add('port', cyan(port));
+    }
 
     table.log();
 

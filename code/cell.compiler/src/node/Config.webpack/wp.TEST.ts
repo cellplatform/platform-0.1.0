@@ -1,11 +1,11 @@
 import { Compiler } from '..';
-import { fs, expect, ModuleFederationPlugin } from '../../test';
+import { fs, expect, ModuleFederationPlugin, t, encoding } from '../../test';
 import { ConfigBuilder } from '../Config';
 import { wp } from '.';
 
 const create = (name = 'foo') => {
   const model = ConfigBuilder.model(name);
-  const builder = Compiler.config(model);
+  const builder = Compiler.config(model).scope('sys.foo');
   return { model, builder };
 };
 
@@ -16,41 +16,54 @@ describe('Compiler (Webpack)', () => {
     const res = wp.toWebpackConfig(config);
 
     expect(res.mode).to.eql('production');
-    expect(res.output?.publicPath).to.eql('http://localhost:3000/');
+    expect(res.output?.publicPath).to.eql('auto');
     expect(res.devServer).to.eql(undefined);
     expect(res.devtool).to.eql(undefined);
   });
 
   it('"development" (and other custom values)', () => {
     const { builder } = create();
-    const config = builder.url('localhost:1234').mode('dev');
+    const config = builder.port(1234).mode('dev');
     const res = wp.toWebpackConfig(config);
 
     expect(res.mode).to.eql('development');
-    expect(res.output?.publicPath).to.eql('http://localhost:1234/');
+    expect(res.output?.publicPath).to.eql('auto');
     expect(res.devServer?.port).to.eql(1234);
   });
 
-  it('publicPath (localhost)', () => {
+  it('publicPath: "auto"', () => {
     const { builder } = create();
-    const config = builder.url('localhost:1234');
-    const res = wp.toWebpackConfig(config);
-    expect(res.output?.publicPath).to.eql('http://localhost:1234/');
-  });
-
-  it('publicPath (domain)', () => {
-    const { builder } = create();
-
-    const config1 = wp.toWebpackConfig(builder.url('foo.com:80'));
-    const config2 = wp.toWebpackConfig(builder.url('foo.com:1234'));
-
-    expect(config1.output?.publicPath).to.eql('https://foo.com/');
-    expect(config2.output?.publicPath).to.eql('https://foo.com:1234/');
+    const res = wp.toWebpackConfig(builder);
+    expect(res.output?.publicPath).to.eql('auto');
   });
 
   it('name', () => {
-    const { builder } = create('foo');
-    expect(wp.toWebpackConfig(builder).name).to.eql('foo');
+    const { builder } = create('foobar');
+    expect(wp.toWebpackConfig(builder).name).to.eql('foobar');
+  });
+
+  it('scope', () => {
+    const { builder } = create();
+
+    const options = (builder: t.CompilerModelBuilder) => {
+      const config = wp.toWebpackConfig(builder);
+      const mf = (config.plugins || []).find((plugin) => plugin instanceof ModuleFederationPlugin);
+      return mf._options;
+    };
+
+    builder.scope('  foobar ');
+    expect(options(builder).name).to.eql('foobar');
+
+    builder.scope('foo.bar');
+    expect(options(builder).name).to.eql(encoding.escapeScope('foo.bar'));
+  });
+
+  it('scope: throw (scope not set)', () => {
+    const builder = Compiler.config();
+    expect(builder.toObject().scope).to.eql(undefined);
+
+    const fn = () => wp.toWebpackConfig(builder);
+    expect(fn).to.throw(/requires a \"scope\"/);
   });
 
   it('target', () => {

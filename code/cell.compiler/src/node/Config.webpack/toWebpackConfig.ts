@@ -27,7 +27,6 @@ export function toWebpackConfig(
   const entry = settings.entry();
   const target = settings.target();
 
-  const publicPath = settings.url();
   const dir = settings.dir();
   const path = `${dir}/${target.join(',')}`;
 
