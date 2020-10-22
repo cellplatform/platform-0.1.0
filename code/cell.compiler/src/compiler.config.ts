@@ -1,4 +1,4 @@
-import { Compiler } from '..';
+import { Compiler } from '.';
 export { Compiler };
 
 export default () =>
@@ -7,10 +7,12 @@ export default () =>
     .title('Compiler Sample')
     .port(1234)
     .entry('./src/test/entry')
-    .remote('foo', 'foo@http://localhost:3001/remoteEntry.js')
-    .remote('code', 'code@http://localhost:3002/remoteEntry.js')
     .shared((e) => {
       e.singleton(['react', 'react-dom']);
     })
     .variant('prod', (config) => config.mode('prod'))
-    .variant('dev', (config) => config.mode('dev'));
+    .variant('dev', (config) => config.mode('dev'))
+
+    .variant('node', (config) => {
+      config.target('node').entry('./src/test/entry.node');
+    });
