@@ -69,7 +69,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
       logUpload({ sourceDir, targetCell, host, files, elapsed, bytes });
       logger.hr().newline();
       logUrls(links());
-      logger.newline();
+      logger.newline().hr().newline();
     }
 
     return done(true);
@@ -122,7 +122,7 @@ ${log.gray(table)}
 }
 
 function logUrls(links: Record<string, string>) {
-  log.info.gray('Urls');
+  log.info.gray('Links');
   const table = log.table({ border: false });
 
   Object.keys(links).forEach((key) => {

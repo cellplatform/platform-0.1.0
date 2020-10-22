@@ -1,4 +1,4 @@
-import { defaultValue, fs, Model, parseUrl, Schema, t, Uri, PATH } from '../common';
+import { defaultValue, fs, Model, parseUrl, t, Uri, PATH } from '../common';
 import { bundle } from './task.bundle';
 import { logger } from './util';
 import { upload } from './task.upload';
@@ -17,10 +17,6 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
   const host = parsedHost.host;
 
   const exists = (config: B) => fs.pathExists(cell.dir(config));
-  const toUrl = (targetDir?: string) => {
-    const url = `${host}${Schema.urls(host).cell(uri).file.toString()}`;
-    return targetDir ? `${url}${targetDir}` : url;
-  };
 
   const cell: t.CompilerCell = {
     host: `${parsedHost.protocol}//${parsedHost.host}`,
@@ -28,13 +24,13 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
     dir(config) {
       const model = Model(config);
       const target = model.target('web').join();
-      return fs.join(baseDir, target, `${model.name()}.${model.mode()}`);
+      return fs.join(baseDir, target, `${model.name()}`);
     },
 
     async bundle(config, options = {}) {
-      const { silent, targetDir } = options;
-      const upload = config.clone().dir(cell.dir(config)); //.url(toUrl(targetDir));
-      return await bundle(upload, { silent });
+      const { silent } = options;
+      const uploadConfig = config.clone().dir(cell.dir(config));
+      return await bundle(uploadConfig, { silent });
     },
 
     async upload(config, options = {}) {

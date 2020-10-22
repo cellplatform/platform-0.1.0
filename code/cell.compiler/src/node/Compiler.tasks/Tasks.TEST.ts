@@ -54,19 +54,22 @@ describe('Compiler (Tasks)', () => {
         expect(dir.endsWith(expected)).to.eql(true);
       };
 
-      test('node_modules/.cache/cell.compiler/cell-foo-A1/web/foo.production');
+      test('node_modules/.cache/cell.compiler/cell-foo-A1/web/foo');
 
       builder.mode('dev');
-      test('/cell-foo-A1/web/foo.development');
+      test('/cell-foo-A1/web/foo');
 
       builder.target(false);
-      test('/cell-foo-A1/web/foo.development');
+      test('/cell-foo-A1/web/foo');
 
       builder.target(undefined);
-      test('/cell-foo-A1/web/foo.development');
+      test('/cell-foo-A1/web/foo');
+
+      builder.target('node');
+      test('/cell-foo-A1/node/foo');
 
       builder.target('  ');
-      test('/cell-foo-A1/web/foo.development');
+      test('/cell-foo-A1/web/foo');
     });
   });
 });
