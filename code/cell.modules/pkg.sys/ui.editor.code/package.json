@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "build": "ts build --no-esm $@",
-    "start": "cell.compiler dev --name=prod $@",
-    "dev": "cell.compiler dev --name=dev $@",
+    "start": "cell.compiler dev $@",
+    "dev": "cell.compiler dev --no-exports $@",
     "bundle": "cell.compiler bundle --name prod $@",
     "watch": "cell.compiler watch $@",
     "clean": "sh script.sh/clean.sh $@",
@@ -15,12 +15,13 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^3.6.3",
-    "monaco-editor": "^0.21.2",
-    "preset.react": "^0.0.0"
+    "monaco-editor": "^0.21.2"
   },
   "devDependencies": {
     "@platform/cell.compiler": "^0.1.4",
-    "sys.ui.harness": "^0.0.0"
+    "sys.ui.harness": "^0.0.0",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0"
   },
   "license": "MIT",
   "private": true

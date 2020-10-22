@@ -4,19 +4,27 @@ import { css } from '@platform/css';
 
 import { Host } from 'sys.ui.harness/src/components/Host';
 
-console.log('React.version', React.version);
-
 export const App: React.FC = () => {
   const styles = {
-    base: css({
-      Absolute: 0,
-    }),
+    host: css({ Absolute: 0 }),
   };
   return (
     <React.StrictMode>
-      <Editor />
-      {/* <Host style={styles.base} layout={{ width: 400, height: 400 }}>
-      </Host> */}
+      <Host
+        style={styles.host}
+        background={-0.04}
+        layout={{
+          label: { topRight: 'sys.ui.editor.code' },
+          position: { absolute: [150, 80] },
+          border: -0.1,
+          cropmarks: -0.2,
+          background: 1,
+        }}
+      >
+        <Editor />
+      </Host>
     </React.StrictMode>
   );
 };
+
+export default App;

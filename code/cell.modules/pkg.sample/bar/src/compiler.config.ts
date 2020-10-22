@@ -6,6 +6,6 @@ export default () =>
     .port(3002)
     .scope('My Bar Title')
     .entry({ main: './src/test/entry' })
-    .shared((e) => e.add(e.dependencies).singleton(['preset.react']))
+    .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
     .variant('prod', (config) => config.mode('prod'))
     .variant('dev', (config) => config.mode('dev'));

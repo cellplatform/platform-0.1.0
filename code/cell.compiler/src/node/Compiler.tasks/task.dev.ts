@@ -1,22 +1,22 @@
 import DevServer from 'webpack-dev-server';
 
-import { log, Model, t, toModel } from '../common';
+import { log, Model, t, toModel, defaultValue } from '../common';
 import { wp } from '../Config.webpack';
 import { logger } from './util';
 
 /**
  * Run dev server.
  */
-export const dev: t.CompilerRunDev = async (input) => {
+export const dev: t.CompilerRunDev = async (input, options = {}) => {
   const obj = toModel(input);
   const model = Model(obj);
   const port = model.port();
-  const isDev = model.mode() === 'development';
+  const noExports = options.exports === false;
 
   const { compiler } = wp.toCompiler(obj, {
     beforeCompile(e) {
       e.modifyModel((model) => {
-        if (isDev) {
+        if (noExports) {
           delete model.exposes; // NB: See bug notes below 🐛
         }
       });
@@ -41,19 +41,19 @@ export const dev: t.CompilerRunDev = async (input) => {
     log.info.gray(`DevServer (${count})`);
     logger.model(obj, { indent: 2, url: true }).newline();
 
-    if (isDev) {
+    if (noExports) {
       /**
        * 🐛
        * BUG:     This is because HMR breaks when reloading if any exports exist.
        * NOTE:    This can be removed later when the up-stream issue is fixed.
        */
-      log.info.gray(`NB: module federation "exposes" disabled while in development mode (HMR)`);
+      log.info.gray(`NB: module federation exports disabled`);
     }
 
     logger.hr().stats(compilation);
   });
 
   const host = 'localhost';
-  const options = { host, hot: true, stats: false };
-  new DevServer(compiler, options).listen(port, host, () => logger.clear());
+  const args = { host, hot: true, stats: false };
+  new DevServer(compiler, args).listen(port, host, () => logger.clear());
 };

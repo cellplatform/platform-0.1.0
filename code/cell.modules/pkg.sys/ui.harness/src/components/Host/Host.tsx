@@ -14,7 +14,7 @@ export type IHostProps = {
  */
 export const Host: React.FC<IHostProps> = (props = {}) => {
   const { layout = {} } = props;
-  const abs = layout.position?.absolute;
+  const abs = toAbsolute(layout.position?.absolute);
 
   const borderColor = () => {
     const border = defaultValue(layout.border, true);
@@ -55,3 +55,25 @@ export const Host: React.FC<IHostProps> = (props = {}) => {
 };
 
 export default Host;
+
+/**
+ * Helpers
+ */
+
+const toAbsolute = (
+  input: t.IHostLayoutPosition['absolute'],
+): t.IHostLayoutAbsolute | undefined => {
+  if (!input) {
+    return undefined;
+  }
+
+  if (Array.isArray(input)) {
+    return { top: input[0], right: input[1], bottom: input[0], left: input[1] };
+  }
+
+  if (typeof input !== 'object') {
+    return { top: input, right: input, bottom: input, left: input };
+  }
+
+  return input as t.IHostLayoutAbsolute;
+};

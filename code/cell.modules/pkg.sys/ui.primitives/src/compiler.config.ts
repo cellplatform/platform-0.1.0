@@ -5,7 +5,7 @@ export default () =>
     .port(3005)
     .title('sys.ui.primitives')
     .entry('./src/test/entry')
-    .shared((e) => e.add(e.dependencies).singleton(['preset.react']))
+    .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
 
     .expose('./Button', './src/components.ref/button/Button')
     .expose('./Switch', './src/components.ref/button/Switch')

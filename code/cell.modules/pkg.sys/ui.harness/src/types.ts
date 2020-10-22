@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+type StringOrNumber = string | number;
+
 /**
  * The layout configuration of a component being hosted.
  */
@@ -14,7 +16,7 @@ export type IHostLayout = {
 };
 
 export type IHostLayoutPosition = {
-  absolute?: IHostLayoutAbsolute;
+  absolute?: StringOrNumber | [StringOrNumber, StringOrNumber] | IHostLayoutAbsolute;
 };
 
 export type IHostLayoutAbsolute = {

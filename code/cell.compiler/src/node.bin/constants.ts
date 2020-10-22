@@ -7,7 +7,7 @@ export const DEFAULT = {
 };
 
 const PARAMS = {
-  config: `(optional) Path to configuration file (default: "${DEFAULT.CONFIG.PATH}")`,
+  config: `(optional) Configuration file (default: "${DEFAULT.CONFIG.PATH}")`,
   name: `(optional) Named configuration to use`,
 };
 
@@ -31,6 +31,7 @@ export const COMMANDS: t.Commands = {
     params: {
       '--config': PARAMS.config,
       '--name': PARAMS.name,
+      '--no-exports': `(optional) Suppress module federation exports`,
     },
   },
   upload: {

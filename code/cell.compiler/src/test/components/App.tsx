@@ -22,7 +22,7 @@ export const App = () => {
       <h1>App</h1>
       <button onClick={setter(3001, 'foo', './Header')}>foo</button>
       <button onClick={setter(3001, 'sample.foo', './Header')}>sample.foo</button>
-      <button onClick={setter(3005, 'SysUiCore', './button/Button')}>Load Core</button>
+      <button onClick={setter(3003, 'sys.ui.editor.code', './Dev')}>code</button>
       <hr />
       <System system={system} />
     </div>

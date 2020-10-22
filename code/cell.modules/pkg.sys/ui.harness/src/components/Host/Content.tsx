@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { css, defaultValue, formatColor, t } from '../../common';
 import { Cropmarks } from './Cropmarks';
-import { Label } from './Label';
+import { Labels } from './Labels';
 
 export type IContentProps = t.IHostLayout;
 
@@ -28,7 +28,7 @@ export const Content: React.FC<IContentProps> = (props = {}) => {
   return (
     <>
       <ContentCropmarks {...props} />
-      <Label label={props.label} />
+      <Labels label={props.label} />
       <div {...styles.children}>{props.children}</div>
     </>
   );

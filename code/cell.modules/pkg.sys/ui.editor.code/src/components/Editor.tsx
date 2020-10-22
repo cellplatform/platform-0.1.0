@@ -15,5 +15,7 @@ monaco.config({
 });
 
 export const Editor: React.FC = () => {
-  return <MonacoEditor height={'90vh'} language={'typescript'} />;
+  return <MonacoEditor language={'typescript'} />;
 };
+
+export default Editor;

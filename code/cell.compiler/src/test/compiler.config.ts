@@ -10,7 +10,7 @@ export default () =>
     .remote('foo', 'foo@http://localhost:3001/remoteEntry.js')
     .remote('code', 'code@http://localhost:3002/remoteEntry.js')
     .shared((e) => {
-      e.singleton(['@platform/react']);
+      e.singleton(['react', 'react-dom']);
     })
     .variant('prod', (config) => config.mode('prod'))
     .variant('dev', (config) => config.mode('dev'));
