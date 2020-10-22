@@ -54,6 +54,7 @@ export const logger = {
     const prefix = typeof indent === 'number' ? ' '.repeat(indent) : '';
     const model = Model(input);
     const obj = model.toObject();
+    const port = model.port();
 
     const green = (value?: any) => (value === undefined ? undefined : log.green(value));
 
@@ -74,10 +75,11 @@ export const logger = {
     add('target', green(model.target().join()));
 
     if (options.url) {
-      const port = model.port();
       let url = typeof options.url === 'string' ? options.url : 'http://localhost';
       url = port === 80 ? url : `${url}:${port}`;
       add('url', cyan(url));
+    } else {
+      add('port', cyan(port));
     }
 
     table.log();
