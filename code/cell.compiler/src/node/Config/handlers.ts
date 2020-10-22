@@ -78,19 +78,9 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     });
   },
 
-  url(args) {
+  port(args) {
     args.model.change((draft) => {
-      const defaultUrl = DEFAULT.CONFIG.url;
-      const input = args.params[0];
-      const value =
-        typeof input === 'number'
-          ? `localhost:${input}`
-          : format.string(input, { default: defaultUrl, trim: true });
-      if (!value) {
-        draft.url = defaultUrl;
-      } else {
-        draft.url = parseUrl(value).toString();
-      }
+      draft.port = format.number(args.params[0], { default: DEFAULT.CONFIG.port });
     });
   },
 

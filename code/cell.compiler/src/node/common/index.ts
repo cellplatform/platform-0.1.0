@@ -7,3 +7,4 @@ export * from './util';
 export * from '../../common';
 
 export const DEFAULT = constants.DEFAULT;
+export const PATH = constants.PATH;

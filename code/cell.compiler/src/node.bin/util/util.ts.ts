@@ -1,4 +1,4 @@
-import { fs, log, t } from '../common';
+import { fs, log, PATH } from '../common';
 import { logger } from './util.logger';
 import { exec } from '@platform/exec';
 import { toHash } from './util.hash';
@@ -17,7 +17,7 @@ export const ts = {
   },
 
   buildhash(configfile: string) {
-    const cachedir = fs.resolve('./node_modules/.cache/cell.compiler/lib.build');
+    const cachedir = fs.join(PATH.cachedir, 'lib.build');
     const cachepath = fs.join(cachedir, toHash(configfile).toString());
     const exists = fs.pathExists;
     const readFileHash = async (path: string) => toHash(await readFile(path));

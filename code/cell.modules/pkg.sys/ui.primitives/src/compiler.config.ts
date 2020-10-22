@@ -2,9 +2,9 @@ import { Compiler } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config('primitives')
+    .port(3005)
     .title('sys.ui.primitives')
-    .url(3005)
-    .entry({ main: './src/test/entry' })
+    .entry('./src/test/entry')
     .shared((e) => e.add(e.dependencies).singleton(['preset.react']))
 
     .expose('./Button', './src/components.ref/button/Button')

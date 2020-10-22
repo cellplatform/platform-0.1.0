@@ -13,7 +13,7 @@
     "lint": "ts lint",
     "build": "ts build --no-esm",
     "prepare": "ts prepare",
-    "serve": "cd dist && serve --listen 1234",
+    "serve": "cd dist/web && serve --listen 1234 --cors",
     "cmd": "node lib/node.bin $@",
     "bundle": "yarn cmd bundle --config src/test $@",
     "watch": "yarn cmd watch --config src/test --name dev $@",

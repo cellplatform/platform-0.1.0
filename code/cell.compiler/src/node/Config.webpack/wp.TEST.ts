@@ -23,7 +23,7 @@ describe('Compiler (Webpack)', () => {
 
   it('"development" (and other custom values)', () => {
     const { builder } = create();
-    const config = builder.url('localhost:1234').mode('dev');
+    const config = builder.port(1234).mode('dev');
     const res = wp.toWebpackConfig(config);
 
     expect(res.mode).to.eql('development');
@@ -33,8 +33,7 @@ describe('Compiler (Webpack)', () => {
 
   it('publicPath: "auto"', () => {
     const { builder } = create();
-    const config = builder.url('localhost:1234');
-    const res = wp.toWebpackConfig(config);
+    const res = wp.toWebpackConfig(builder);
     expect(res.output?.publicPath).to.eql('auto');
   });
 

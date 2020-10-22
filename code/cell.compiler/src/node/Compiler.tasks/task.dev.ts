@@ -33,7 +33,7 @@ export const dev: t.CompilerRunDev = async (input) => {
     count++;
     logger.clear().newline();
     log.info.gray(`DevServer (${count})`);
-    logger.model(obj, 2).newline().hr().stats(compilation);
+    logger.model(obj, { indent: 2, url: true }).newline().hr().stats(compilation);
   });
 
   const host = 'localhost';

@@ -12,18 +12,16 @@ export const App = () => {
 
   const setter = (port: number, scope: string, module: string) => {
     return () => {
-      setSystem({
-        url: `http://localhost:${port}/remoteEntry.js`,
-        scope,
-        module,
-      });
+      const url = `http://localhost:${port}/remoteEntry.js`;
+      setSystem({ url, scope, module });
     };
   };
 
   return (
     <div>
       <h1>App</h1>
-      <button onClick={setter(3001, 'foo', './Header')}>Load Foo</button>
+      <button onClick={setter(3001, 'foo', './Header')}>foo</button>
+      <button onClick={setter(3001, 'sample.foo', './Header')}>sample.foo</button>
       <button onClick={setter(3005, 'SysUiCore', './button/Button')}>Load Core</button>
       <hr />
       <System system={system} />

@@ -1,4 +1,4 @@
-import { defaultValue, fs, Model, parseUrl, Schema, t, Uri } from '../common';
+import { defaultValue, fs, Model, parseUrl, Schema, t, Uri, PATH } from '../common';
 import { bundle } from './task.bundle';
 import { logger } from './util';
 import { upload } from './task.upload';
@@ -11,7 +11,7 @@ type B = t.CompilerModelBuilder;
 export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
   const uri = typeof cellInput === 'object' ? cellInput : Uri.cell(cellInput);
   const urn = uri.toString().replace(/\:/g, '-');
-  const baseDir = fs.join(fs.resolve('./node_modules/.cache/cell'), urn);
+  const baseDir = fs.join(PATH.cachedir, urn);
 
   const parsedHost = parseUrl(hostInput);
   const host = parsedHost.host;
@@ -33,7 +33,7 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
 
     async bundle(config, options = {}) {
       const { silent, targetDir } = options;
-      const upload = config.clone().dir(cell.dir(config)).url(toUrl(targetDir));
+      const upload = config.clone().dir(cell.dir(config)); //.url(toUrl(targetDir));
       return await bundle(upload, { silent });
     },
 

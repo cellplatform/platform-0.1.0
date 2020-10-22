@@ -29,7 +29,7 @@ export type CompilerModelMethods = {
   title(value: string | undefined): B;
   scope(value: string): B;
   mode(value: t.WpMode | 'prod' | 'dev'): B;
-  url(value: string | number | undefined): B;
+  port(value: number | undefined): B;
   target(value: t.WpTarget | undefined): B;
   dir(value: string | undefined): B;
   lint(value: boolean | undefined): B;

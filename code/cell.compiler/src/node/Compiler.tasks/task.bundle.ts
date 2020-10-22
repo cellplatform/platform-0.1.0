@@ -14,7 +14,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
     if (!silent) {
       log.info();
       log.info.gray(`Bundling`);
-      logger.model(model, 2).newline().hr();
+      logger.model(model, { indent: 2, url: true }).newline().hr();
     }
 
     compiler.run((err, stats) => {

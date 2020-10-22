@@ -48,11 +48,14 @@ export const logger = {
     return logger;
   },
 
-  model(input: t.CompilerModel, indent?: number) {
-    const { green, cyan } = log;
+  model(input: t.CompilerModel, options: { indent?: number; url?: string | boolean } = {}) {
+    const { indent } = options;
+    const { cyan, gray } = log;
     const prefix = typeof indent === 'number' ? ' '.repeat(indent) : '';
     const model = Model(input);
     const obj = model.toObject();
+
+    const green = (value?: any) => (value === undefined ? undefined : log.green(value));
 
     const table = log.table({ border: false });
     const add = (key: string, value: string | undefined) => {
@@ -62,11 +65,20 @@ export const logger = {
       }
     };
 
-    add('name', green(model.name()));
-    add('title', green(obj.title));
+    let name = green(model.name());
+    name = obj.title ? gray(`${name}/${obj.title}`) : name;
+
+    add('name', name);
+    add('scope', green(obj.scope));
     add('mode', green(model.mode()));
     add('target', green(model.target().join()));
-    add('url', cyan(model.url()));
+
+    if (options.url) {
+      const port = model.port();
+      let url = typeof options.url === 'string' ? options.url : 'http://localhost';
+      url = port === 80 ? url : `${url}:${port}`;
+      add('url', cyan(url));
+    }
 
     table.log();
 

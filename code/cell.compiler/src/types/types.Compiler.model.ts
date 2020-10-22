@@ -12,7 +12,7 @@ export type CompilerModel = {
   scope?: string; // Module federation scope: https://webpack.js.org/concepts/module-federation/#dynamic-remote-containers
   title?: string;
   mode: t.WpMode;
-  url?: string;
+  port?: number;
   target?: t.WpTarget;
   dir?: string;
   lint?: boolean;

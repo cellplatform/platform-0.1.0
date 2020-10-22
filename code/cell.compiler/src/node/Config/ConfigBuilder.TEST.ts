@@ -1,4 +1,3 @@
-import { addDevServerEntrypoints } from 'webpack-dev-server';
 import { ConfigBuilder } from '.';
 import { DEFAULT, encoding, expect, StateObject, t, fs, pkg } from '../../test';
 
@@ -178,7 +177,7 @@ describe('Compiler (Config)', () => {
     it('toWebpack', () => {
       const { builder } = create();
       const config = builder
-        .url('localhost:1234')
+        .port(1234)
         .mode('dev')
         .scope('foo.bar')
         .beforeCompile((e) => e.modify((webpack) => (webpack.target = undefined)));
@@ -272,36 +271,18 @@ describe('Compiler (Config)', () => {
       test(' dev ', 'development');
     });
 
-    it('url', () => {
+    it('port', () => {
       const { builder, model } = create();
-      const DEFAULT_URL = DEFAULT.CONFIG.url;
-      expect(builder.toObject().url).to.eql(DEFAULT_URL);
+      const PORT = DEFAULT.CONFIG.port;
+      expect(builder.toObject().port).to.eql(PORT);
 
-      const test = (value: any, expected: string | undefined) => {
-        builder.url(value);
-        expect(model.state.url).to.eql(expected);
+      const test = (value: any, expected: any) => {
+        builder.port(value);
+        expect(model.state.port).to.eql(expected);
       };
 
-      test('foo.com', 'https://foo.com/');
-      test(undefined, DEFAULT_URL);
-      test('   ', DEFAULT_URL);
-
-      test(1234, 'http://localhost:1234/');
-
-      test('https://a.foo.com', 'https://a.foo.com/');
-      test('https://foo.com/', 'https://foo.com/');
-      test('foo.com', 'https://foo.com/');
-      test('foo.com', 'https://foo.com/');
-      test('localhost', 'http://localhost/');
-      test('http://localhost', 'http://localhost/');
-      test('https://localhost', 'https://localhost/'); // NB: Does not change protocol, but this would typically be an invalid "localhost"
-      test('http://localhost:5000', 'http://localhost:5000/');
-      test('localhost///', 'http://localhost/');
-
-      test('foo.com/file?q=132', 'https://foo.com/file/');
-      test('foo.com///file/bar', 'https://foo.com/file/bar/');
-      test('foo.com:5000///file', 'https://foo.com:5000/file/');
-      test('foo.com:80/file', 'https://foo.com/file/');
+      test(1234, 1234);
+      test(undefined, PORT);
     });
 
     it('target', () => {
