@@ -47,7 +47,7 @@ export const dev: t.CompilerRunDev = async (input) => {
        * BUG:     This is because HMR breaks when reloading if any exports exist.
        * NOTE:    This can be removed later when the up-stream issue is fixed.
        */
-      log.info.gray(`NB: module federation "exposes" disabled while in development mode`);
+      log.info.gray(`NB: module federation "exposes" disabled while in development mode (HMR)`);
     }
 
     logger.hr().stats(compilation);

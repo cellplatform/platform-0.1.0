@@ -1,6 +1,6 @@
-import { IHostLayout } from '@platform/cell.modules/pkg.sys/ui.harness/src/types';
 import * as React from 'react';
-import { formatColor, t, css, CssValue, defaultValue } from '../../common';
+
+import { css, CssValue, defaultValue, formatColor, t } from '../../common';
 import { Cropmarks } from './Host.Cropmarks';
 
 export type IHostProps = {
@@ -57,7 +57,7 @@ export const Host: React.FC<IHostProps> = (props = {}) => {
 /**
  * The Host content.
  */
-export const HostContent: React.FC<IHostLayout> = (props = {}) => {
+export const HostContent: React.FC<t.IHostLayout> = (props = {}) => {
   if (!props.children) {
     return null;
   }
@@ -80,7 +80,7 @@ export const HostContent: React.FC<IHostLayout> = (props = {}) => {
   );
 };
 
-const HostCropmarks: React.FC<IHostLayout> = (props = {}) => {
+const HostCropmarks: React.FC<t.IHostLayout> = (props = {}) => {
   const cropmarks = defaultValue(props.cropmarks, true);
   if (!cropmarks) {
     return null;
