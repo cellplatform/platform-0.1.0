@@ -1,8 +1,8 @@
 import DevServer from 'webpack-dev-server';
 
-import { log, Model, t, toModel, defaultValue } from '../common';
+import { log, Model, t, toModel } from '../common';
 import { wp } from '../Config.webpack';
-import { logger } from './util';
+import { logger, afterCompile } from './util';
 
 /**
  * Run dev server.
@@ -13,7 +13,7 @@ export const dev: t.CompilerRunDev = async (input, options = {}) => {
   const port = model.port();
   const noExports = options.exports === false;
 
-  const { compiler } = wp.toCompiler(obj, {
+  const { compiler, config } = wp.toCompiler(obj, {
     beforeCompile(e) {
       e.modifyModel((model) => {
         if (noExports) {
@@ -35,7 +35,10 @@ export const dev: t.CompilerRunDev = async (input, options = {}) => {
   });
 
   let count = 0;
+
   compiler.hooks.afterCompile.tap('DevServer', (compilation) => {
+    afterCompile({ model: obj, webpack: config, compilation });
+
     count++;
     logger.clear().newline();
     log.info.gray(`DevServer (${count})`);

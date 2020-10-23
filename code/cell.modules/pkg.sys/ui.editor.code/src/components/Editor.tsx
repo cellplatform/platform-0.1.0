@@ -9,8 +9,8 @@ import MonacoEditor, { monaco } from '@monaco-editor/react';
 
 monaco.config({
   paths: {
-    vs: 'http://localhost:3004/vs',
-    // vs: '/vs',
+    // vs: 'http://localhost:3004/vs',
+    vs: 'vs',
   },
 });
 

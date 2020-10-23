@@ -1,5 +1,4 @@
 import { parse as parseUrl } from 'url';
-import { Compilation as ICompliation, Stats as IStats } from 'webpack';
 
 import { log, Model, t } from '../common';
 import { stats } from '../Config.webpack';
@@ -43,7 +42,7 @@ export const logger = {
     return logger;
   },
 
-  stats(input?: IStats | ICompliation) {
+  stats(input?: t.WpStats | t.WpCompilation) {
     stats(input).log();
     return logger;
   },

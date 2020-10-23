@@ -1,4 +1,5 @@
 import { Compiler } from '@platform/cell.compiler';
+import { copy } from './node/fs.copy';
 
 export default () =>
   Compiler.config()
@@ -11,4 +12,6 @@ export default () =>
     .expose('./Editor', './src/components/Editor')
 
     .variant('prod', (config) => config.mode('prod'))
-    .variant('dev', (config) => config.mode('dev'));
+    .variant('dev', (config) => config.mode('dev'))
+
+    .afterCompile((e) => copy.vs(['dist/web/vs', 'lib.monaco/vs', `${e.dir}/vs`]));

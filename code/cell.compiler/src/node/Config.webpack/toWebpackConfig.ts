@@ -1,6 +1,7 @@
-import { Model, t, StateObject, toModel } from '../common';
+import { Model, t, toModel } from '../common';
 import { Plugins } from './wp.plugins';
 import { Rules } from './wp.rules';
+import { beforeCompile } from './hooks';
 
 type M = t.CompilerModel | t.CompilerModelBuilder;
 
@@ -34,6 +35,11 @@ export function toWebpackConfig(
     const rules = [...Rules.init({ model, prod, dev }), ...settings.rules()].filter(Boolean);
     const plugins = [...Plugins.init({ model, prod, dev }), ...settings.plugins()].filter(Boolean);
 
+    const devServer = {
+      port,
+      hot: true,
+    };
+
     return {
       name,
       mode,
@@ -42,43 +48,23 @@ export function toWebpackConfig(
       target,
       resolve: { extensions: ['.tsx', '.ts', '.js', '.json'] },
       devtool: prod ? undefined : 'eval-cheap-module-source-map',
-      devServer: prod ? undefined : { port, hot: true },
+      devServer: prod ? undefined : devServer,
       module: { rules },
       plugins,
       cache: { type: 'filesystem' },
     };
   };
 
-  let model = toModel(input);
-  let config = toConfig(model);
-
   /**
    * Run any modifier hooks that may have been attached
    * within the calling configuration setup.
    */
-  const before = [...(model.beforeCompile || [])];
-  if (options.beforeCompile) {
-    before.unshift(options.beforeCompile);
-  }
-  if (before.length > 0) {
-    const e: t.BeforeCompileArgs = {
-      model,
-      toObject: StateObject.toObject,
-      modifyModel(fn) {
-        const obj = StateObject.create<t.CompilerModel>(model);
-        obj.change(fn);
-        model = obj.state;
-        config = toConfig(obj.state);
-      },
-      modifyWebpack(fn) {
-        const obj = StateObject.create<t.WpConfig>(config);
-        obj.change(fn);
-        config = obj.state;
-      },
-    };
-    before.forEach((fn) => fn(e));
-  }
+  const { webpack } = beforeCompile({
+    toConfig,
+    model: toModel(input),
+    handlers: options.beforeCompile ? [options.beforeCompile] : undefined,
+  });
 
   // Finish up.
-  return config;
+  return webpack;
 }

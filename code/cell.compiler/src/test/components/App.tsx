@@ -2,7 +2,7 @@ import React from 'react';
 import { ISystem, System } from './System';
 
 type Css = React.CSSProperties;
-
+console.log('-------------------------------------------');
 /**
  * Test Application
  * See:

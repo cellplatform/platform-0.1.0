@@ -1,6 +1,7 @@
 import { fs } from './libs';
 
 const CONFIG = {
+  parent: () => undefined,
   name: '',
   dir: 'dist',
   mode: 'production',

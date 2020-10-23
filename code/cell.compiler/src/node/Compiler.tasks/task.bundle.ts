@@ -1,7 +1,7 @@
 import { Stats as IStats } from 'webpack';
 
 import { log, t } from '../common';
-import { logger, wp } from './util';
+import { logger, wp, afterCompile } from './util';
 
 /**
  * Bundle the project.
@@ -23,6 +23,8 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
       }
       if (stats) {
         const res = toBundledResponse({ model, stats, config });
+        const compilation = stats.compilation;
+        afterCompile({ model, compilation, webpack: config });
 
         if (!silent) {
           logger.newline().stats(stats);
