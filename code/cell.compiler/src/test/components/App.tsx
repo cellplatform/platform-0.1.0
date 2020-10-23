@@ -21,7 +21,7 @@ export const App = () => {
 
   const setFoo = () => {
     const url =
-      'http://localhost:5000/cell:ckgleziqz000beyetfe9d4zpl:A1/file/sample/web/remoteEntry.js';
+      'http://localhost:5000/cell:ckglm3anc000c8iet9e7nfgoo:A1/file/sample/web/remoteEntry.js';
 
     const scope = 'sys.ui.editor.code';
     const module = './Dev';

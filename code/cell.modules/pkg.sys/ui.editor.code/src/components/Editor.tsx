@@ -9,12 +9,14 @@ import MonacoEditor, { monaco } from '@monaco-editor/react';
 
 monaco.config({
   paths: {
-    // vs: 'http://localhost:3004/vs',
-    vs: 'vs',
+    vs: 'http://localhost:5000/cell:ckglm3anc000c8iet9e7nfgoo:A1/file/sample/web/vs',
+    // vs: 'vs',
   },
 });
 
 export const Editor: React.FC = () => {
+  console.log('window.location', window.location);
+
   return <MonacoEditor language={'typescript'} />;
 };
 
