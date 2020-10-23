@@ -1,8 +1,10 @@
 import { Compiler } from '@platform/cell.compiler';
 
+const pkg = require('../package.json') as { version: string; compiler: { port: number } }; // eslint-disable-line
+
 export default () =>
   Compiler.config()
-    .port(3002)
+    .port(pkg.compiler.port)
     .scope('sys.ui.harness')
     .entry('./src/test/entry')
 

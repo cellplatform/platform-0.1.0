@@ -1,6 +1,9 @@
 {
   "name": "bar",
   "version": "1.0.4",
+  "compiler": {
+    "port": 3002
+  },
   "scripts": {
     "build": "ts build --no-esm $@",
     "start": "cell.compiler dev $@",
@@ -10,7 +13,7 @@
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cd dist/web && serve -l 3001"
+    "serve": "yarn cmd serve $@"
   },
   "dependencies": {},
   "devDependencies": {

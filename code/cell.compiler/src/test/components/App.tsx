@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ISystem, System } from './System';
 
 type Css = React.CSSProperties;
-console.log('-------------------------------------------');
+
+export type IAppState = { url?: string };
+
 /**
  * Test Application
  * See:
@@ -10,12 +12,14 @@ console.log('-------------------------------------------');
  *    https://webpack.js.org/concepts/module-federation/#dynamic-remote-containers
  */
 export const App = () => {
-  const [system, setSystem] = React.useState<ISystem>();
+  const [system, setSystem] = useState<ISystem>();
+  const [state, setState] = useState<IAppState>();
 
   const setter = (port: number, scope: string, module: string) => {
     return () => {
       const url = `http://localhost:${port}/remoteEntry.js`;
       setSystem({ url, scope, module });
+      setState({ url });
     };
   };
 
@@ -26,6 +30,7 @@ export const App = () => {
     const scope = 'sys.ui.editor.code';
     const module = './Dev';
     setSystem({ url, scope, module });
+    setState({ url });
   };
 
   const styles = {
@@ -39,9 +44,12 @@ export const App = () => {
       marginTop: 20,
       marginBottom: 20,
     },
+    buttons: {
+      marginBottom: 12,
+    },
     body: {
       position: 'absolute',
-      top: 150,
+      top: 180,
       right: 50,
       bottom: 50,
       left: 50,
@@ -51,9 +59,13 @@ export const App = () => {
   return (
     <div style={styles.base}>
       <h1>App</h1>
-      <button onClick={setter(3001, 'sample.foo', './Header')}>sample.foo</button>
-      <button onClick={setter(3003, 'sys.ui.editor.code', './Dev')}>code</button>
-      <button onClick={setFoo}>code (cell)</button>
+
+      <div style={styles.buttons}>
+        <button onClick={setter(3001, 'sample.foo', './Header')}>sample.foo</button>
+        <button onClick={setter(3003, 'sys.ui.editor.code', './Dev')}>code</button>
+        <button onClick={setFoo}>code (from cell)</button>
+      </div>
+      <div>{state?.url || '-'}</div>
       <hr style={styles.hr} />
       <div style={styles.body as Css}>
         <System system={system} />

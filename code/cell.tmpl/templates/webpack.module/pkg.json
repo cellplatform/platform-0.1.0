@@ -14,7 +14,7 @@
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cd dist/web && serve -l __PORT__"
+    "serve": "cell.compiler serve $@"
   },
   "dependencies": {},
   "devDependencies": {

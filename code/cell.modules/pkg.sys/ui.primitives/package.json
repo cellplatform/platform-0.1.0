@@ -2,6 +2,9 @@
   "name": "sys.ui.primitives",
   "version": "0.0.0",
   "sideEffects": false,
+  "compiler": {
+    "port": 3005
+  },
   "scripts": {
     "build": "ts build --no-esm $@",
     "start": "cell.compiler dev $@",
@@ -11,7 +14,7 @@
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cd dist/web && serve -l 3005"
+    "serve": "cell.compiler serve $@"
   },
   "dependencies": {
     "@platform/ui.button": "^0.3.84",
