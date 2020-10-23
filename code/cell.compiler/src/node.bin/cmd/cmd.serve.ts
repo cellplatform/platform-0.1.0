@@ -11,6 +11,8 @@ export async function serve(argv: t.Argv) {
 
   const config = await util.loadConfig(argv.config, { name });
   const model = Model(config.toObject());
+  const obj = model.toObject();
+
   const port = model.port();
   const dir = model.dir() || '';
   const target = model.target('web')[0];
@@ -18,8 +20,6 @@ export async function serve(argv: t.Argv) {
   const cwd = fs.join(dir, target);
   const cmd = `serve --listen ${port} --cors`;
 
-  logger.newline();
-  logger.model(config.toObject());
-  logger.newline().hr();
+  logger.newline().model(obj, { url: true }).newline().exports(obj).newline().hr();
   exec.command(cmd).run({ cwd });
 }
