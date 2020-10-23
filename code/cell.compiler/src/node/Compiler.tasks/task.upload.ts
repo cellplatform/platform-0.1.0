@@ -133,8 +133,11 @@ function logUrls(links: Record<string, string>) {
   log.info.gray('Links');
   const table = log.table({ border: false });
   Object.keys(links).forEach((key) => {
-    const url = logger.format.url(links[key]);
-    table.add([`  ${key} `, url]);
+    const link = links[key];
+    if (link) {
+      const url = logger.format.url(link);
+      table.add([`  ${key} `, url]);
+    }
   });
   table.log();
 }

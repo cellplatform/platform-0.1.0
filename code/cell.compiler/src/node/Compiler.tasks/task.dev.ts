@@ -51,6 +51,8 @@ export const dev: t.CompilerRunDev = async (input, options = {}) => {
        * NOTE:    This can be removed later when the up-stream issue is fixed.
        */
       log.info.gray(`NB: module federation exports disabled (${log.white('--no-exports')})`);
+    } else {
+      logger.exports(obj).newline();
     }
 
     logger.hr().stats(compilation);

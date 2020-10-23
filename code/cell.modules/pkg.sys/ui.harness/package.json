@@ -2,6 +2,9 @@
   "name": "sys.ui.harness",
   "version": "0.0.0",
   "sideEffects": false,
+  "compiler": {
+    "port": 3003
+  },
   "scripts": {
     "build": "ts build --no-esm $@",
     "start": "cell.compiler dev $@",
@@ -11,7 +14,7 @@
     "clean": "cell.compiler clean $@",
     "upload": "cell.compiler upload $@",
     "info": "cell.compiler info $@",
-    "serve": "cd dist/web && serve -l 3003"
+    "serve": "cell.compiler serve $@"
   },
   "dependencies": {
     "preset.env": "^0.0.0",

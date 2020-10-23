@@ -50,6 +50,13 @@ export const COMMANDS: t.Commands = {
       '--name': PARAMS.name,
     },
   },
+  serve: {
+    description: 'Simple HTTP static server (CORS)',
+    params: {
+      '--config': PARAMS.config,
+      '--name': PARAMS.name,
+    },
+  },
   clean: {
     description: 'Delete transient build artifacts',
     params: {},

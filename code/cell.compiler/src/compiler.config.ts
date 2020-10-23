@@ -1,11 +1,12 @@
 import { Compiler } from '.';
-export { Compiler };
+
+const pkg = require('../package.json') as { version: string; compiler: { port: number } }; // eslint-disable-line
 
 export default () =>
   Compiler.config()
     .scope('sample.compiler')
     .title('Compiler Sample')
-    .port(1234)
+    .port(pkg.compiler.port)
     .entry('./src/test/entry.web')
     .shared((e) => {
       e.singleton(['react', 'react-dom']);
@@ -15,10 +16,10 @@ export default () =>
       config
         .mode('prod')
         .beforeCompile((e) => {
-          console.log('🐷 BEFORE compile ("prod"):', e.model.mode);
+          console.log(`🐷 BEFORE compile (name: "prod", mode: "${e.model.mode}"):`);
         })
         .afterCompile((e) => {
-          console.log('🐷 AFTER compile ("prod"):', e.model.mode);
+          console.log(`🐷 AFTER compile (name: "prod", mode: "${e.model.mode}"):`);
         }),
     )
 
@@ -26,10 +27,10 @@ export default () =>
       config
         .mode('dev')
         .beforeCompile((e) => {
-          console.log('🐷 BEFORE compile ("dev"):', e.model.mode);
+          console.log(`🐷 BEFORE compile (name: "dev", mode: "${e.model.mode}"):`);
         })
         .afterCompile((e) => {
-          console.log('🐷 AFTER compile ("dev"):', e.model.mode);
+          console.log(`🐷 AFTER compile (name: "dev", mode: "${e.model.mode}"):`);
         }),
     )
 
@@ -39,8 +40,8 @@ export default () =>
 
     // Root level hooks.
     .beforeCompile((e) => {
-      console.log('🐷 BEFORE compile ("root"):', e.model.mode);
+      console.log(`🐷 BEFORE compile (name: "root", mode: "${e.model.mode}"):`);
     })
     .afterCompile((e) => {
-      console.log('🐷 AFTER compile ("root"):', e.model.mode);
+      console.log(`🐷 AFTER compile (name: "root", mode: "${e.model.mode}"):`);
     });

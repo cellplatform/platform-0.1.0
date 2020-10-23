@@ -1,11 +1,13 @@
 import { Compiler } from '@platform/cell.compiler';
 
+const pkg = require('../package.json') as { version: string; compiler: { port: number } };
+
 export default () =>
   Compiler.config()
-    .port(3000)
+    .port(pkg.compiler.port)
     .scope('foo.bar')
     .title('My Title')
-    .entry('./src/test/entry')
+    .entry('./src/test/entry.web')
     .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
     .variant('prod', (config) => config.mode('prod'))
     .variant('dev', (config) => config.mode('dev'));

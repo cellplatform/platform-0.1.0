@@ -12,7 +12,7 @@ export const copy = {
 
     if (!options.silent) {
       log.info();
-      log.info.gray('Copy Webworkers');
+      log.info.gray('Copy web-workers');
       log.info.gray(` • from: ${from}`);
       to.forEach((path) => {
         const to = path.substring(base.length + 1);

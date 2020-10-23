@@ -1,6 +1,6 @@
 import { parse as parseUrl } from 'url';
 
-import { log, Model, t } from '../common';
+import { log, Model, t, encoding } from '../common';
 import { stats } from '../Config.webpack';
 
 /**
@@ -82,7 +82,33 @@ export const logger = {
     }
 
     table.log();
+    return logger;
+  },
 
+  exports(model: t.CompilerModel) {
+    if (model.exposes) {
+      const exposes = encoding.transformKeys(model.exposes, encoding.unescapePath);
+      const table = log.table({ border: false });
+      Object.keys(exposes).forEach((path) => {
+        const bullet = log.gray(' •');
+        const entry = log.white(path);
+        table.add([bullet, entry]);
+      });
+      log.info.gray('Exposes');
+      table.log();
+    }
+    return logger;
+  },
+
+  variants(model: t.CompilerModel) {
+    const variants = model.variants || [];
+    if (variants.length > 0) {
+      log.info();
+      log.info.gray('Build variants');
+      model.variants?.forEach((name) => {
+        log.info.gray(` • ${log.white(name)}`);
+      });
+    }
     return logger;
   },
 };

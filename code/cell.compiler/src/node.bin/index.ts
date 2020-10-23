@@ -32,6 +32,10 @@ const param = argv._[0];
     return cmd.dev(argv);
   }
 
+  if (param === 'serve') {
+    return cmd.serve(argv);
+  }
+
   if (param === 'info') {
     return cmd.info(argv);
   }

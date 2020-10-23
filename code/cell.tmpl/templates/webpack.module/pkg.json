@@ -2,6 +2,9 @@
   "name": "__NAME__",
   "version": "0.0.0",
   "sideEffects": false,
+  "compiler": {
+    "port": 3000
+  },
   "scripts": {
     "build": "ts build --no-esm $@",
     "start": "cell.compiler dev $@",
@@ -11,7 +14,7 @@
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cd dist/web && serve -l __PORT__"
+    "serve": "cell.compiler serve $@"
   },
   "dependencies": {},
   "devDependencies": {

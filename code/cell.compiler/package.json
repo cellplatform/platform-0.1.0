@@ -7,18 +7,21 @@
   "bin": {
     "cell.compiler": "lib/node.bin/index.js"
   },
+  "compiler": {
+    "port": 1234
+  },
   "scripts": {
     "test": "ts test",
     "lint": "ts lint",
     "build": "ts build --no-esm",
     "prepare": "ts prepare",
-    "serve": "cd dist/web && serve --listen 1234 --cors",
     "cmd": "node lib/node.bin $@",
     "bundle": "yarn cmd bundle --name=prod  $@",
     "watch": "yarn cmd watch --name=dev $@",
     "start": "yarn cmd dev $@",
     "dev": "yarn cmd dev --no-exports $@",
     "upload": "yarn cmd upload $@",
+    "serve": "yarn cmd serve $@",
     "info": "yarn cmd info $@",
     "clean": "yarn cmd clean $@"
   },
@@ -44,6 +47,7 @@
     "html-webpack-plugin": "5.0.0-alpha.6",
     "mini-svg-data-uri": "^1.2.3",
     "minimist": "1.2.5",
+    "serve": "11.3.2",
     "style-loader": "2.0.0",
     "webpack": "5.1.3",
     "webpack-dev-server": "3.11.0"
