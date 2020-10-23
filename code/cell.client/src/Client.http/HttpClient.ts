@@ -42,6 +42,22 @@ export class HttpClient implements t.IHttpClient {
   }
 
   /**
+   * Determine if the given host is a live CellOS HTTP endpoint.
+   */
+  public static async isReachable(host: string) {
+    try {
+      await HttpClient.create(host).info();
+      return true;
+    } catch (error) {
+      if (error.code === 'ECONNREFUSED') {
+        return false;
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  /**
    * [Lifecycle]
    */
   private constructor(args: t.IHttpClientOptions) {

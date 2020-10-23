@@ -5,6 +5,8 @@ import { t } from './common';
  */
 export type CompilerModelState = t.BuilderModel<t.CompilerModel>;
 export type CompilerModel = {
+  parent(): CompilerModel | undefined;
+
   /**
    * Values
    */
@@ -25,6 +27,7 @@ export type CompilerModel = {
    * Hooks
    */
   beforeCompile?: t.BeforeCompile[];
+  afterCompile?: t.AfterCompile[];
 
   /**
    * Children

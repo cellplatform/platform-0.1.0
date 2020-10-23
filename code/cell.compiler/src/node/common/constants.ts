@@ -1,6 +1,7 @@
 import { fs } from './libs';
 
 const CONFIG = {
+  parent: () => undefined,
   name: '',
   dir: 'dist',
   mode: 'production',
@@ -13,6 +14,11 @@ export const PATH = {
   cachedir: fs.resolve('./node_modules/.cache/cell.compiler'),
 };
 
+export const FILE = {
+  JS: { REMOTE_ENTRY: 'remoteEntry.js' },
+  HTML: { ENTRY: 'index.html' },
+};
+
 const BASE = 'base';
 const WEBPACK = { rules: [], plugins: [] };
-export const DEFAULT = { CONFIG, WEBPACK, BASE };
+export const DEFAULT = { CONFIG, WEBPACK, BASE, FILE };

@@ -126,8 +126,16 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     const handler = args.params[0];
     if (typeof handler === 'function') {
       args.model.change((draft) => {
-        const list = draft.beforeCompile || (draft.beforeCompile = []);
-        list.push(handler);
+        (draft.beforeCompile || (draft.beforeCompile = [])).push(handler);
+      });
+    }
+  },
+
+  afterCompile(args) {
+    const handler = args.params[0];
+    if (typeof handler === 'function') {
+      args.model.change((draft) => {
+        (draft.afterCompile || (draft.afterCompile = [])).push(handler);
       });
     }
   },
@@ -145,7 +153,7 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     }
 
     const create = (model: t.CompilerModelState, name: string) => {
-      const variant = args.clone({ name });
+      const variant = args.clone({ name, parent: () => model.state });
       model.change((draft) => (draft.variants || (draft.variants = [])).push(variant));
       return variant;
     };

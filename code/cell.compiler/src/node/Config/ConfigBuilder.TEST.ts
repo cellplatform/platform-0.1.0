@@ -91,6 +91,15 @@ describe('Compiler (Config)', () => {
       expect(variants.map((b) => b.toObject().title)).to.eql(['My Prod']);
     });
 
+    it('parent', () => {
+      const base = ConfigBuilder.builder('name');
+      expect(base.toObject().parent()).to.eql(undefined);
+
+      let prod: t.CompilerModelBuilder | undefined;
+      base.variant('prod', (config) => (prod = config));
+      expect(prod?.toObject().parent()).to.eql(base.toObject());
+    });
+
     it('modify existing variant', () => {
       const base = ConfigBuilder.builder('name');
 
@@ -146,6 +155,17 @@ describe('Compiler (Config)', () => {
       expect(model.state.beforeCompile).to.include(handler);
       expect((model.state.beforeCompile || []).length).to.eql(2);
     });
+
+    it('afterCompile', () => {
+      const { builder, model } = create();
+      expect(model.state.afterCompile).to.equal(undefined);
+
+      const handler: t.AfterCompile = (e) => null;
+      builder.afterCompile(handler).afterCompile(handler);
+
+      expect(model.state.afterCompile).to.include(handler);
+      expect((model.state.afterCompile || []).length).to.eql(2);
+    });
   });
 
   describe('read', () => {
@@ -180,7 +200,7 @@ describe('Compiler (Config)', () => {
         .port(1234)
         .mode('dev')
         .scope('foo.bar')
-        .beforeCompile((e) => e.modify((webpack) => (webpack.target = undefined)));
+        .beforeCompile((e) => e.modifyWebpack((webpack) => (webpack.target = undefined)));
 
       const webpack = config.toWebpack();
 

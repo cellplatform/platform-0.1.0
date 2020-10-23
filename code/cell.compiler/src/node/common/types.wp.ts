@@ -1,4 +1,7 @@
-import { Compiler } from 'webpack';
+import { Compiler, Compilation, Stats } from 'webpack';
+
+export type WpCompilation = Compilation;
+export type WpStats = Stats;
 
 /**
  * Direct wrapper of Webpack

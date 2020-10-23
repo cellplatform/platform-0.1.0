@@ -1,4 +1,4 @@
-import { fs, HttpClient, log, path, Schema, t, time } from '../common';
+import { DEFAULT, fs, HttpClient, log, path, Schema, t, time } from '../common';
 import { logger } from './util';
 
 type File = t.IHttpClientCellFileUpload;
@@ -32,12 +32,20 @@ export const upload: t.CompilerRunUpload = async (args) => {
   const files = await getFiles({ sourceDir, targetDir });
   const bytes = files.reduce((acc, next) => acc + next.data.byteLength, 0);
 
+  const findFile = (name: string) => files.find((file) => fs.basename(file.filename) === name);
+
   const links = () => {
     const cell = Schema.urls(args.host).cell(args.targetCell);
     const filter = targetDir ? `${targetDir}/**` : undefined;
+    const byFilename = (filename: string) => {
+      const file = findFile(filename);
+      return file ? cell.file.byName(file.filename).toString() : '';
+    };
     return {
       cell: cell.info.toString(),
       files: cell.files.list.query({ filter }).toString(),
+      entry: byFilename(DEFAULT.FILE.HTML.ENTRY),
+      remoteEntry: byFilename(DEFAULT.FILE.JS.REMOTE_ENTRY),
     };
   };
 
@@ -69,7 +77,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
       logUpload({ sourceDir, targetCell, host, files, elapsed, bytes });
       logger.hr().newline();
       logUrls(links());
-      logger.newline();
+      logger.newline().hr().newline();
     }
 
     return done(true);
@@ -122,13 +130,11 @@ ${log.gray(table)}
 }
 
 function logUrls(links: Record<string, string>) {
-  log.info.gray('Urls');
+  log.info.gray('Links');
   const table = log.table({ border: false });
-
   Object.keys(links).forEach((key) => {
     const url = logger.format.url(links[key]);
-    table.add([`  ${key}  `, url]);
+    table.add([`  ${key} `, url]);
   });
-
   table.log();
 }

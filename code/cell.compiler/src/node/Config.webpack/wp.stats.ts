@@ -1,13 +1,11 @@
-import { Compilation as ICompliation, Stats as IStats } from 'webpack';
-
 import { log, R, t, time, fs, path } from '../common';
 
 const filesize = fs.size.toString;
 
-export const stats = (input?: IStats | ICompliation): t.WebpackStats => {
+export const stats = (input?: t.WpStats | t.WpCompilation): t.WebpackStats => {
   type Asset = { filename: string; bytes: number; size: string };
 
-  const stats: ICompliation | undefined =
+  const stats: t.WpCompilation | undefined =
     typeof (input as any).compilation === 'object' ? (input as any).compilation : input;
 
   const res: t.WebpackStats = {

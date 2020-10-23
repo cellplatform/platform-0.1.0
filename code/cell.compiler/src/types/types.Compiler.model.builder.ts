@@ -25,6 +25,7 @@ export type CompilerModelMethods = {
   find(name: string): B | null;
 
   beforeCompile(handler: t.BeforeCompile): B;
+  afterCompile(handler: t.AfterCompile): B;
 
   title(value: string | undefined): B;
   scope(value: string): B;

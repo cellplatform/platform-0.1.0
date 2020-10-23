@@ -11,7 +11,8 @@ export const ts = {
     const cwd = fs.resolve('.');
     const res = await exec.command(`yarn build`).run({ cwd, silent: true });
     if (!res.ok) {
-      const err = `Failed to transpile typescript into ${log.white('/lib/')}`;
+      const hint = log.gray(`Run ${log.white('yarn build')} to diagnose build errors`);
+      const err = `Failed to transpile typescript into ${log.white('/lib/')}\n${hint}`;
       logger.errorAndExit(res.code, err);
     }
   },

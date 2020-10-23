@@ -3,24 +3,24 @@
   "version": "0.0.0",
   "sideEffects": false,
   "scripts": {
-    "start": "yarn dev",
     "build": "ts build --no-esm $@",
-    "dev": "cell.compiler dev $@",
-    "bundle": "cell.compiler bundle --name prod $@",
+    "start": "cell.compiler dev $@",
+    "dev": "cell.compiler dev --no-exports $@",
+    "bundle": "cell.compiler bundle --name=prod $@",
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
+    "upload": "cell.compiler upload $@",
     "info": "cell.compiler info $@",
     "serve": "cd dist/web && serve -l 3003"
   },
   "dependencies": {
-    "preset.react": "^0.0.0",
     "preset.env": "^0.0.0",
-    "sys.ui.primitives": "^0.0.0",
-    "react": "^17.0.0",
-    "react-dom": "^17.0.0"
+    "sys.ui.primitives": "^0.0.0"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.1.4"
+    "@platform/cell.compiler": "^0.1.4",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0"
   },
   "license": "MIT",
   "private": true

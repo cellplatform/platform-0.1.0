@@ -25,10 +25,10 @@ export { Client, HttpClient };
 import { Schema, Uri } from '@platform/cell.schema';
 export { Schema, Uri };
 
+import minimist from 'minimist';
+export { minimist };
+
 /* eslint-disable */
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 export { ModuleFederationPlugin };
 /* eslint-enable */
-
-import minimist from 'minimist';
-export { minimist };

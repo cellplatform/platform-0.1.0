@@ -1,8 +1,12 @@
+import '@platform/css/reset.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from './App';
 
-import '@platform/css/reset.css';
-
-const root = document.body.appendChild(document.createElement('div'));
-ReactDOM.render(<App />, root);
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.body.appendChild(document.createElement('div')),
+);

@@ -1,13 +1,11 @@
 import { t } from './common';
 
 export const DEFAULT = {
-  CONFIG: {
-    PATH: 'src/compiler.config.ts',
-  },
+  CONFIG: { PATH: 'src/compiler.config.ts' },
 };
 
 const PARAMS = {
-  config: `(optional) Path to configuration file (default: "${DEFAULT.CONFIG.PATH}")`,
+  config: `(optional) Configuration file (default: "${DEFAULT.CONFIG.PATH}")`,
   name: `(optional) Named configuration to use`,
 };
 
@@ -31,16 +29,18 @@ export const COMMANDS: t.Commands = {
     params: {
       '--config': PARAMS.config,
       '--name': PARAMS.name,
+      '--no-exports': `(optional) Suppress module federation exports`,
     },
   },
   upload: {
     description: 'Bundle and upload to a cell',
     params: {
-      '--host -h': `The target host domain`,
+      '--host': `The target host domain`,
       '--uri': `The target cell URI (eg "cell:<ns>:A1")`,
       '--config': PARAMS.config,
       '--name': PARAMS.name,
       '--dir': `(optional) The target directory within the cell`,
+      '--sample': `(optional) Send to generated sample cell for testing`,
     },
   },
   info: {

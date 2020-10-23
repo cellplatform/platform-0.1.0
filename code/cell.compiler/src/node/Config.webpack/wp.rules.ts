@@ -1,4 +1,5 @@
 import { t } from '../common';
+import svgToMiniDataURI from 'mini-svg-data-uri';
 
 type IArgs = { model: t.CompilerModel; prod: boolean; dev: boolean };
 
@@ -14,7 +15,7 @@ export const Rules = {
    * Default preset.
    */
   default(args: IArgs): t.WpRule[] {
-    return [Rules.css(args), Rules.typescript(args)];
+    return [Rules.css(args), Rules.typescript(args), Rules.svg(args)];
   },
 
   /**
@@ -77,6 +78,34 @@ export const Rules = {
           ],
         },
       },
+    };
+  },
+
+  /**
+   * Plugin: <SVG> image support
+   *         https://webpack.js.org/loaders/url-loader/#svg
+   *
+   * NOTE:
+   *        See SVGO for optimizing source <SVG> data before webpacking.
+   *        https://github.com/svg/svgo
+   *
+   *        React loader example (blog)
+   *        https://www.pluralsight.com/guides/how-to-load-svg-with-react-and-webpack
+   */
+  svg(args: IArgs) {
+    return {
+      test: /\.svg$/i,
+      use: [
+        {
+          loader: 'url-loader',
+          options: {
+            generator(content: any) {
+              content = typeof content !== 'string' ? content.toString() : content;
+              svgToMiniDataURI(content);
+            },
+          },
+        },
+      ],
     };
   },
 };
