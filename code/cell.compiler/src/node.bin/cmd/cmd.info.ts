@@ -49,15 +49,7 @@ export async function info(argv: t.Argv) {
 
   div();
 
-  logger.model(model);
-
-  if ((model.variants || []).length > 0) {
-    log.info();
-    log.info.gray('Build variants:');
-    model.variants?.forEach((name) => {
-      log.info.gray(` • ${log.white(name)}`);
-    });
-  }
+  logger.model(model).newline().variants(model).newline().exports(model).newline();
 
   div();
 }

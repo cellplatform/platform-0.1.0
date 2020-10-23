@@ -99,4 +99,16 @@ export const logger = {
     }
     return logger;
   },
+
+  variants(model: t.CompilerModel) {
+    const variants = model.variants || [];
+    if (variants.length > 0) {
+      log.info();
+      log.info.gray('Build variants');
+      model.variants?.forEach((name) => {
+        log.info.gray(` • ${log.white(name)}`);
+      });
+    }
+    return logger;
+  },
 };
