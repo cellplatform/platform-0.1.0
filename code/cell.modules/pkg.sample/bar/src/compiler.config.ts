@@ -4,9 +4,8 @@ const pkg = require('../package.json') as { version: string; compiler: { port: n
 
 export default () =>
   Compiler.config('bar')
-    .scope('sample.bar')
+    .namespace('sample.bar')
     .port(pkg.compiler.port)
-    .scope('My Bar Title')
     .entry({ main: './src/test/entry' })
     .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
     .variant('prod', (config) => config.mode('prod'))

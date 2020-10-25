@@ -28,7 +28,7 @@ export type CompilerModelMethods = {
   afterCompile(handler: t.AfterCompile): B;
 
   title(value: string | undefined): B;
-  scope(value: string): B;
+  namespace(value: string): B;
   mode(value: t.WpMode | 'prod' | 'dev'): B;
   port(value: number | undefined): B;
   target(value: t.WpTarget | undefined): B;

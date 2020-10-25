@@ -24,13 +24,13 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
   toWebpack: (args) => wp.toWebpackConfig(args.model.state),
   name: (args) => args.model.state.name,
 
-  scope(args) {
+  namespace(args) {
     const value = format.string(args.params[0], { trim: true });
-    const error = validate.scopename(value).error;
+    const error = validate.namespace(value).error;
     if (error) {
-      throw new Error(`Invalid scope. ${error}`);
+      throw new Error(`Invalid namespace ("scope"). ${error}`);
     }
-    args.model.change((draft) => (draft.scope = value));
+    args.model.change((draft) => (draft.namespace = value));
   },
 
   title(args) {

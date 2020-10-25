@@ -38,9 +38,9 @@ describe('encoding', () => {
 
   it('escapeScope | unescapeScope', () => {
     const test = (input: string, expected: string) => {
-      const escaped = encoding.escapeScope(input);
+      const escaped = encoding.escapeNamespace(input);
       expect(escaped).to.eql(expected);
-      expect(encoding.unescapeScope(escaped)).to.eql(input);
+      expect(encoding.unescapeNamespace(escaped)).to.eql(input);
     };
     test('', '');
     test('foo', 'foo');

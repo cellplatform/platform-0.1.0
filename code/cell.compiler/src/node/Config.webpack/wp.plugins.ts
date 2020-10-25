@@ -19,7 +19,7 @@ export const Plugins = {
    */
   html(args: IArgs) {
     const { model } = args;
-    const title = model.title || model.scope || 'Untitled';
+    const title = model.title || model.namespace || 'Untitled';
     return new HtmlWebPackPlugin({ title });
   },
 
@@ -32,9 +32,9 @@ export const Plugins = {
     const unescape = (obj?: Record<string, unknown>) =>
       encoding.transformKeys(obj || {}, encoding.unescapePath);
 
-    const name = encoding.escapeScope(model.scope || '');
+    const name = encoding.escapeNamespace(model.namespace || '');
     if (!name) {
-      throw new Error(`Module federation requires a "scope" value.`);
+      throw new Error(`Module federation requires a "scope" (namespace) value.`);
     }
 
     return new ModuleFederationPlugin({

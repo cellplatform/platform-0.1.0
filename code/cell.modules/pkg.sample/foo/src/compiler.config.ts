@@ -2,7 +2,7 @@ import { Compiler } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
-    .scope('sample.foo')
+    .namespace('sample.foo')
     .port(3001)
     .entry({ main: './src/test/entry' })
     .expose('./Header', './src/components/Header')

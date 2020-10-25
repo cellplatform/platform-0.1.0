@@ -69,7 +69,7 @@ export const logger = {
     name = obj.title ? gray(`${name}/${obj.title}`) : name;
 
     add('name', name);
-    add('scope', green(obj.scope));
+    add('namespace', green(obj.namespace));
     add('mode', green(model.mode()));
     add('target', green(model.target().join()));
 

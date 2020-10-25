@@ -12,7 +12,7 @@ import { encoding } from '../../common/encoding';
  *    https://github.com/module-federation/module-federation-examples/tree/master/dynamic-system-host
  */
 export function loadComponent(scope: string, module: string) {
-  scope = encoding.escapeScope(scope);
+  scope = encoding.escapeNamespace(scope);
 
   return async () => {
     // Initializes the share scope.

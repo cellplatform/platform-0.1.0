@@ -6,7 +6,7 @@ const pkg = require('../package.json') as { version: string; compiler: { port: n
 export default () =>
   Compiler.config()
     .port(pkg.compiler.port)
-    .scope('sys.ui.editor.code')
+    .namespace('sys.ui.editor.code')
     .entry('./src/test/entry')
     .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
 

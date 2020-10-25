@@ -4,7 +4,7 @@ const pkg = require('../package.json') as { version: string; compiler: { port: n
 
 export default () =>
   Compiler.config()
-    .scope('sample.compiler')
+    .namespace('sample.compiler')
     .title('Compiler Sample')
     .port(pkg.compiler.port)
     .entry('./src/test/entry.web')

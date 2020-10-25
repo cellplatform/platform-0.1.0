@@ -1,7 +1,7 @@
 import { value } from '../common';
 
 export const validate = {
-  scopename(input: string | undefined) {
+  namespace(input: string | undefined) {
     const text = (input || '').trim();
 
     const done = (err?: string) => {
@@ -12,15 +12,15 @@ export const validate = {
     };
 
     if (!text) {
-      return done('Scope name is empty.');
+      return done('Namespace ("scope") is empty.');
     }
 
     if (text.match(/[^a-zA-Z0-9_\.]/)) {
-      return done('Scope name contains invalid character.');
+      return done('Namespace ("scope") contains invalid character.');
     }
 
     if (!text.match(/^[a-zA-Z_\.]/)) {
-      return done('Scope name starts with an invalid character.');
+      return done('Namespace ("scope") starts with an invalid character.');
     }
 
     return done(); // Is valid.

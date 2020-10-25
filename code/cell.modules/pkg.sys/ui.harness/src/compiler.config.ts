@@ -5,7 +5,7 @@ const pkg = require('../package.json') as { version: string; compiler: { port: n
 export default () =>
   Compiler.config()
     .port(pkg.compiler.port)
-    .scope('sys.ui.harness')
+    .namespace('sys.ui.harness')
     .entry('./src/test/entry')
 
     .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))

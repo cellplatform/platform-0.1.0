@@ -199,7 +199,7 @@ describe('Compiler (Config)', () => {
       const config = builder
         .port(1234)
         .mode('dev')
-        .scope('foo.bar')
+        .namespace('foo.bar')
         .beforeCompile((e) => e.modifyWebpack((webpack) => (webpack.target = undefined)));
 
       const webpack = config.toWebpack();
@@ -231,11 +231,11 @@ describe('Compiler (Config)', () => {
 
     it('scope', () => {
       const { model, builder } = create();
-      expect(model.state.scope).to.eql(undefined);
+      expect(model.state.namespace).to.eql(undefined);
 
       const test = (input: any, expected: any) => {
-        builder.scope(input);
-        expect(model.state.scope).to.eql(expected);
+        builder.namespace(input);
+        expect(model.state.namespace).to.eql(expected);
       };
 
       test('foo', 'foo');
@@ -249,11 +249,11 @@ describe('Compiler (Config)', () => {
 
     it('scope: throw (invalid scope-name)', () => {
       const { model, builder } = create();
-      expect(model.state.scope).to.eql(undefined);
+      expect(model.state.namespace).to.eql(undefined);
 
       const test = (input: any) => {
-        const fn = () => builder.scope(input);
-        expect(fn).to.throw(/Invalid scope/);
+        const fn = () => builder.namespace(input);
+        expect(fn).to.throw(/Invalid namespace/);
       };
 
       test('');

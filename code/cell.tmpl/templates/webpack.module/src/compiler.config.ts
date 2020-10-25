@@ -5,7 +5,7 @@ const pkg = require('../package.json') as { version: string; compiler: { port: n
 export default () =>
   Compiler.config()
     .port(pkg.compiler.port)
-    .scope('foo.bar')
+    .namespace('foo.bar')
     .title('My Title')
     .entry('./src/test/entry.web')
     .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
