@@ -1,4 +1,4 @@
-import { Model, t, toModel } from '../common';
+import { Model, t, toModel, fs } from '../common';
 import { Plugins } from './wp.plugins';
 import { Rules } from './wp.rules';
 import { beforeCompile } from './hooks';
@@ -35,10 +35,7 @@ export function toWebpackConfig(
     const rules = [...Rules.init({ model, prod, dev }), ...settings.rules()].filter(Boolean);
     const plugins = [...Plugins.init({ model, prod, dev }), ...settings.plugins()].filter(Boolean);
 
-    const devServer = {
-      port,
-      hot: true,
-    };
+    const devServer: t.WpDevServer = { port, hot: true };
 
     return {
       name,

@@ -80,7 +80,8 @@ export type WpLoader = {
 export type WpDevServer = {
   host?: string;
   port?: number;
-  contentBase?: string;
+  contentBase?: string | string[];
+  contentBasePublicPath?: string | string[];
   compress?: boolean;
   allowedHosts?: string[];
   clientLogLevel?: WpLogLevel;
