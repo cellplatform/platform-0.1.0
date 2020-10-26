@@ -17,6 +17,7 @@ export type CompilerModel = {
   port?: number;
   target?: t.WpTarget;
   dir?: string;
+  static?: CompilerModelStatic | CompilerModelStatic[];
   lint?: boolean;
   entry?: Record<string, string>;
   exposes?: Record<string, string>;
@@ -40,3 +41,5 @@ export type CompilerModelWebpack = {
   rules: t.WpRule[];
   plugins: t.WpPlugin[];
 };
+
+export type CompilerModelStatic = { dir?: string };

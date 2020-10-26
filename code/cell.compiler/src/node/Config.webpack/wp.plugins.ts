@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import { t, ModuleFederationPlugin, encoding, fs, DEFAULT } from '../common';
+import { t, ModuleFederationPlugin, encoding, fs, DEFAULT, Model } from '../common';
 import HtmlWebPackPlugin from 'html-webpack-plugin';
 
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
@@ -18,9 +18,14 @@ export const Plugins = {
    * Plugin: HTML
    */
   html(args: IArgs) {
-    const { model } = args;
-    const title = model.title || model.namespace || 'Untitled';
-    return new HtmlWebPackPlugin({ title });
+    const model = Model(args.model);
+    if (model.isNode) {
+      return undefined;
+    } else {
+      const obj = model.toObject();
+      const title = obj.title || obj.namespace || 'Untitled';
+      return new HtmlWebPackPlugin({ title });
+    }
   },
 
   /**

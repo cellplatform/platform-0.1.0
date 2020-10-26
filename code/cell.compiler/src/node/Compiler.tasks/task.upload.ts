@@ -1,4 +1,4 @@
-import { DEFAULT, fs, HttpClient, log, path, Schema, t, time } from '../common';
+import { DEFAULT, fs, HttpClient, log, path, Schema, t, time, Model } from '../common';
 import { logger } from './util';
 
 type File = t.IHttpClientCellFileUpload;
@@ -29,6 +29,7 @@ export async function getFiles(args: { sourceDir: string; targetDir?: string }) 
 export const upload: t.CompilerRunUpload = async (args) => {
   const timer = time.timer();
   const { host, sourceDir, targetDir, targetCell } = args;
+  const model = Model(args.config);
   const files = await getFiles({ sourceDir, targetDir });
   const bytes = files.reduce((acc, next) => acc + next.data.byteLength, 0);
 
@@ -41,16 +42,26 @@ export const upload: t.CompilerRunUpload = async (args) => {
       const file = findFile(filename);
       return file ? cell.file.byName(file.filename).toString() : '';
     };
+
+    const target = model.target();
+    const ENTRY = DEFAULT.FILE.JS.ENTRY;
+    const entryFilename = target[0] === 'node' ? ENTRY.NODE : ENTRY.WEB;
+
     return {
       cell: cell.info.toString(),
       files: cell.files.list.query({ filter }).toString(),
-      entry: byFilename(DEFAULT.FILE.HTML.ENTRY),
+      entry: byFilename(entryFilename),
       remoteEntry: byFilename(DEFAULT.FILE.JS.REMOTE_ENTRY),
     };
   };
 
   const done = (ok: boolean) => {
-    return { ok, bytes, files, urls: links() };
+    return {
+      ok,
+      bytes,
+      files,
+      urls: links(),
+    };
   };
 
   try {

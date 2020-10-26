@@ -33,7 +33,7 @@ export const App = () => {
     setState({ url });
   };
 
-  const styles = {
+  const styles: Record<string, Css> = {
     base: {
       paddingLeft: 50,
       paddingRight: 50,
@@ -54,11 +54,18 @@ export const App = () => {
       bottom: 50,
       left: 50,
     },
+    seal: {
+      position: 'absolute',
+      top: 10,
+      right: 10,
+      width: 125,
+    },
   };
 
   return (
     <div style={styles.base}>
       <h1>App</h1>
+      <img src={'/static/images/wax.png'} style={styles.seal} />
 
       <div style={styles.buttons}>
         <button onClick={setter(3001, 'sample.foo', './Header')}>sample.foo</button>
@@ -67,7 +74,7 @@ export const App = () => {
       </div>
       <div>{state?.url || '-'}</div>
       <hr style={styles.hr} />
-      <div style={styles.body as Css}>
+      <div style={styles.body}>
         <System system={system} />
       </div>
     </div>

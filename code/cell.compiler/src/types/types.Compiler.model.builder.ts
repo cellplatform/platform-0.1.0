@@ -33,6 +33,7 @@ export type CompilerModelMethods = {
   port(value: number | undefined): B;
   target(value: t.WpTarget | undefined): B;
   dir(value: string | undefined): B;
+  static(value: string | string[] | null): B;
   lint(value: boolean | undefined): B;
   entry(path: string): B; // Default key: 'main'
   entry(key: string, path?: string | null): B;

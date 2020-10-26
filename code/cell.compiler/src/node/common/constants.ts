@@ -15,8 +15,13 @@ export const PATH = {
 };
 
 export const FILE = {
-  JS: { REMOTE_ENTRY: 'remoteEntry.js' },
-  HTML: { ENTRY: 'index.html' },
+  JS: {
+    REMOTE_ENTRY: 'remoteEntry.js',
+    ENTRY: {
+      WEB: 'index.html',
+      NODE: 'main.js',
+    },
+  },
 };
 
 const BASE = 'base';

@@ -28,6 +28,7 @@ export type WebpackBundleResponse = {
   stats: t.WebpackStats;
   model: t.CompilerModel;
   config: t.WpConfig;
+  dir: string;
   toString(): string;
 };
 
@@ -51,6 +52,7 @@ export type CompilerRunUploadArgs = {
   targetCell: string | t.ICellUri;
   targetDir?: string;
   silent?: boolean;
+  config: t.CompilerModel;
 };
 export type CompilerUploadResponse = {
   ok: boolean;

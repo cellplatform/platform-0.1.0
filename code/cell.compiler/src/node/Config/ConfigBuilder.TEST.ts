@@ -342,6 +342,25 @@ describe('Compiler (Config)', () => {
       test({}, undefined);
     });
 
+    it('static', () => {
+      const { model, builder } = create();
+      expect(model.state.static).to.eql(undefined);
+
+      const test = (input: any, expected: any) => {
+        builder.static(input);
+        expect(model.state.static).to.eql(expected);
+      };
+
+      test('foo', [{ dir: fs.resolve('foo') }]);
+      test(['foo', 'bar'], [{ dir: fs.resolve('foo') }, { dir: fs.resolve('bar') }]);
+      test(['foo', 'foo', 'foo'], [{ dir: fs.resolve('foo') }]); // NB: Unique.
+
+      test('', undefined);
+      test('  ', undefined);
+      test(null, undefined);
+      test({}, undefined);
+    });
+
     it('lint', () => {
       const { builder, model } = create();
       expect(builder.toObject().lint).to.eql(undefined);

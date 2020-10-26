@@ -34,6 +34,10 @@ export function Model(input: M) {
       return res.mode() === 'development';
     },
 
+    get isNode() {
+      return res.target()[0] === 'node';
+    },
+
     name(defaultValue?: string) {
       return model.name || defaultValue || DEFAULT.CONFIG.name;
     },
@@ -54,6 +58,11 @@ export function Model(input: M) {
     dir(defaultValue?: string) {
       const dir = model.dir || defaultValue || DEFAULT.CONFIG.dir;
       return dir ? fs.resolve(dir) : undefined;
+    },
+
+    static() {
+      const value = model.static || [];
+      return Array.isArray(value) ? value : [value];
     },
 
     entry(defaultValue?: t.CompilerModel['entry']) {

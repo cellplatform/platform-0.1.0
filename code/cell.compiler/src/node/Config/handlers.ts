@@ -1,4 +1,4 @@
-import { Builder, DEFAULT, encoding, fs, parseUrl, t, value as valueUtil } from '../common';
+import { Builder, DEFAULT, encoding, fs, R, t, value as valueUtil } from '../common';
 import { wp } from '../Config.webpack';
 import { webpackHandlers } from './handlers.webpack';
 import { validate } from './validate';
@@ -75,6 +75,25 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     args.model.change((draft) => {
       const input = format.string(args.params[0], { trim: true });
       draft.dir = input ? fs.resolve(input) : undefined;
+    });
+  },
+
+  static(args) {
+    args.model.change((draft) => {
+      const input = args.params[0];
+      if (input === null) {
+        draft.static = undefined;
+      } else {
+        const value = Array.isArray(input) ? input : [input];
+        draft.static = value
+          .filter((dir) => typeof dir === 'string')
+          .map((dir) => dir.trim())
+          .filter(Boolean)
+          .map((dir) => fs.resolve(dir))
+          .map((dir) => ({ dir }));
+        draft.static = (draft.static || []).length === 0 ? undefined : draft.static;
+        draft.static = draft.static ? R.uniq(draft.static) : draft.static;
+      }
     });
   },
 

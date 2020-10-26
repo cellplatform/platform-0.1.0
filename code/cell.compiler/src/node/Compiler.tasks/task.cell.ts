@@ -46,7 +46,14 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
 
       const sourceDir = cell.dir(config);
       const targetCell = uri.toString();
-      const res = await upload({ host, sourceDir, targetCell, targetDir, silent });
+      const res = await upload({
+        host,
+        config: config.toObject(),
+        sourceDir,
+        targetCell,
+        targetDir,
+        silent,
+      });
 
       if (defaultValue(options.cleanAfter, true)) {
         await cell.clean(config);

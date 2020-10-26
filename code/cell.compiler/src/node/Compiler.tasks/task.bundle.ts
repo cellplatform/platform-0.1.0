@@ -1,6 +1,6 @@
 import { Stats as IStats } from 'webpack';
 
-import { log, t } from '../common';
+import { log, t, Model, fs } from '../common';
 import { logger, wp, afterCompile } from './util';
 
 /**
@@ -17,13 +17,30 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
       logger.model(model, { indent: 2, url: true }).newline().hr();
     }
 
-    compiler.run((err, stats) => {
+    const copyStatic = async (model: t.CompilerModel, targetDir: string) => {
+      const staticDirs = Model(model)
+        .static()
+        .map(({ dir }) => dir as string)
+        .filter(Boolean);
+
+      await Promise.all(
+        staticDirs.map(async (from) => {
+          const to = fs.join(targetDir, fs.basename(from));
+          await fs.copy(from, to);
+        }),
+      );
+
+      return staticDirs;
+    };
+
+    compiler.run(async (err, stats) => {
       if (err) {
         return reject(err);
       }
       if (stats) {
         const res = toBundledResponse({ model, stats, config });
         const compilation = stats.compilation;
+        await copyStatic(model, res.dir);
         afterCompile({ model, compilation, webpack: config });
 
         if (!silent) {
@@ -50,6 +67,7 @@ const toBundledResponse = (args: {
   return {
     ok: stats.ok,
     elapsed: stats.elapsed,
+    dir: stats.output.path,
     stats,
     model,
     config,
