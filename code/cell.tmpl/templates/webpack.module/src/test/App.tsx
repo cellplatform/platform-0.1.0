@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { css, CssValue } from '../common';
 
 export type AppProps = { style?: CssValue };
