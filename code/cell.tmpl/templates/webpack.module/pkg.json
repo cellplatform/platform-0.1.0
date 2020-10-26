@@ -9,7 +9,7 @@
     "build": "ts build --no-esm $@",
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",
-    "bundle": "cell.compiler bundle --name=prod $@",
+    "bundle": "cell.compiler bundle $@",
     "watch": "cell.compiler watch $@",
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
