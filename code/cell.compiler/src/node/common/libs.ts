@@ -1,3 +1,6 @@
+import { sortBy, prop, uniq, pipe } from 'ramda';
+export const R = { sortBy, prop, uniq, pipe };
+
 import { rx, id, defaultValue, value, time } from '@platform/util.value';
 export { rx, id, defaultValue, value, time };
 
@@ -7,8 +10,6 @@ export { StateObject } from '@platform/state';
 import * as jpath from 'jsonpath';
 export { jpath };
 
-import { sortBy, prop, uniq } from 'ramda';
-export const R = { sortBy, prop, uniq };
 
 export { fs } from '@platform/fs';
 

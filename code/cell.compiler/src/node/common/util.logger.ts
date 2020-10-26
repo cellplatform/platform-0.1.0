@@ -2,24 +2,11 @@ import { parse as parseUrl } from 'url';
 
 import { log, Model, t, encoding } from '../common';
 import { stats } from '../Config.webpack';
+import { format } from './util.format';
 
 /**
  * Value formatters
  */
-export const format = {
-  url(value: string) {
-    value = (value || '').trim();
-    const parsed = parseUrl(value);
-    const domain = log.gray(`${parsed.protocol}//${parsed.host}`);
-    const path = (parsed.pathname || '')
-      .replace(/cell\:/g, log.cyan('cell:'))
-      .replace(/\//g, log.gray('/'))
-      .replace(/\:/g, log.gray(':'));
-    const suffix = parsed.search ? log.gray(parsed.search) : '';
-    const url = `${domain}${path}${suffix}`;
-    return log.white(url);
-  },
-};
 
 /**
  * Log helpers for webpack.

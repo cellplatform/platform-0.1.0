@@ -117,13 +117,14 @@ function logUpload(args: {
 
   const table = log.table({ border: false });
   table.add(['  • host', host]);
-  table.add(['  • cell', targetCell.toString()]);
+  table.add(['  • cell', logger.format.uri(targetCell.toString())]);
   table.add(['  • files: ']);
 
   const addFile = (file: File) => {
     const { filename, data } = file;
-    const name = filename.endsWith('.map') ? log.gray(filename) : log.white(filename);
-    const size = filesize(data.byteLength);
+    const name = logger.format.filepath(filename);
+    const bytes = data.byteLength;
+    const size = filesize(bytes);
     table.add(['', name, log.green(size)]);
   };
 
