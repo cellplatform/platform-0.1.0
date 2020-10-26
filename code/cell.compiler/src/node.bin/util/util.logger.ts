@@ -1,13 +1,13 @@
-import { log, ModuleFederationPlugin, t } from '../common';
+import { log, logger as commonLogger, t } from '../common';
 import { COMMANDS } from '../constants';
-import { loadConfig } from './util.loadConfig';
-import { logger as modelLogger } from '../../node/Compiler.tasks/util.logger';
 
 type B = t.BuilderChain<t.CompilerModelMethods>;
 
+const { model, stats } = commonLogger;
+
 export const logger = {
-  model: modelLogger.model,
-  stats: modelLogger.stats,
+  model,
+  stats,
 
   clear() {
     log.clear();

@@ -85,8 +85,9 @@ export const logger = {
     return logger;
   },
 
-  exports(model: t.CompilerModel) {
+  exports(model: t.CompilerModel, options: { title?: string } = {}) {
     if (model.exposes) {
+      const { title = 'Exports' } = options;
       const exposes = encoding.transformKeys(model.exposes, encoding.unescapePath);
       const table = log.table({ border: false });
       Object.keys(exposes).forEach((path) => {
@@ -94,17 +95,18 @@ export const logger = {
         const entry = log.white(path);
         table.add([bullet, entry]);
       });
-      log.info.gray('Exposes');
+      log.info.gray(title);
       table.log();
     }
     return logger;
   },
 
-  variants(model: t.CompilerModel) {
+  variants(model: t.CompilerModel, options: { title?: string } = {}) {
     const variants = model.variants || [];
     if (variants.length > 0) {
+      const { title = 'Build variants' } = options;
       log.info();
-      log.info.gray('Build variants');
+      log.info.gray(title);
       model.variants?.forEach((name) => {
         log.info.gray(` • ${log.white(name)}`);
       });

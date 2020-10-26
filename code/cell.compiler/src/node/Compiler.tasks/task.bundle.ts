@@ -1,7 +1,7 @@
 import { Stats as IStats } from 'webpack';
 
-import { log, t, Model, fs } from '../common';
-import { logger, wp, afterCompile } from './util';
+import { log, t, Model, fs, logger } from '../common';
+import { wp, afterCompile } from './util';
 
 /**
  * Bundle the project.

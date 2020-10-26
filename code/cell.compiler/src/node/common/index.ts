@@ -2,9 +2,9 @@ import * as constants from './constants';
 import * as t from './types';
 
 export { t, constants };
+export * from '../../common';
 export * from './libs';
 export * from './util';
-export * from '../../common';
 
 export const DEFAULT = constants.DEFAULT;
 export const PATH = constants.PATH;
