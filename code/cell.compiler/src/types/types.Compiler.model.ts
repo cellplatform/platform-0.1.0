@@ -15,7 +15,7 @@ export type CompilerModel = {
   title?: string;
   mode: t.WpMode;
   port?: number;
-  target?: t.WpTarget;
+  target?: string;
   dir?: string;
   static?: CompilerModelStatic | CompilerModelStatic[];
   lint?: boolean;

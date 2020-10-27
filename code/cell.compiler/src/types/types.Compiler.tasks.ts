@@ -47,16 +47,14 @@ export type CompilerRunDev = (input: M, options?: { exports?: boolean }) => Prom
  */
 export type CompilerRunUpload = (args: CompilerRunUploadArgs) => Promise<CompilerUploadResponse>;
 export type CompilerRunUploadArgs = {
+  config: t.CompilerModel;
   host: string;
-  sourceDir: string;
   targetCell: string | t.ICellUri;
   targetDir?: string;
   silent?: boolean;
-  config: t.CompilerModel;
 };
 export type CompilerUploadResponse = {
   ok: boolean;
-  bytes: number;
   urls: { cell: string; files: string; entry: string; remoteEntry: string };
   files: File[];
 };
@@ -68,10 +66,8 @@ export type CompilerCreateCell = (host: string, uri: string | t.ICellUri) => Com
 export type CompilerCell = {
   host: string;
   uri: t.ICellUri;
-  dir(config: B): string;
   bundle: CompilerCellRunBundle;
   upload: CompilerCellRunUpload;
-  clean(config?: B): Promise<void>;
 };
 
 export type CompilerCellRunBundle = (
@@ -87,6 +83,5 @@ export type CompilerCellRunUpload = (
 export type CompilerCellRunUploadOptions = {
   targetDir?: string;
   silent?: boolean;
-  force?: boolean;
-  cleanAfter?: boolean;
+  bundle?: boolean;
 };

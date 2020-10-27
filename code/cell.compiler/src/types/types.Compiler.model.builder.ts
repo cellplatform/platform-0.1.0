@@ -31,7 +31,7 @@ export type CompilerModelMethods = {
   namespace(value: string): B;
   mode(value: t.WpMode | 'prod' | 'dev'): B;
   port(value: number | undefined): B;
-  target(value: t.WpTarget | undefined): B;
+  target(value: string | undefined): B;
   dir(value: string | undefined): B;
   static(value: string | string[] | null): B;
   lint(value: boolean | undefined): B;

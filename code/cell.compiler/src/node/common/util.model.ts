@@ -35,7 +35,17 @@ export function Model(input: M) {
     },
 
     get isNode() {
-      return res.target()[0] === 'node';
+      return res.target() === 'node';
+    },
+
+    get entryFile() {
+      const target = res.target();
+      const ENTRY = DEFAULT.FILE.JS.ENTRY;
+      return target === 'node' ? ENTRY.NODE : ENTRY.WEB;
+    },
+
+    get bundleDir() {
+      return `${res.dir()}/${res.target()}`
     },
 
     name(defaultValue?: string) {
@@ -46,9 +56,8 @@ export function Model(input: M) {
       return model.mode || defaultValue || DEFAULT.CONFIG.mode;
     },
 
-    target(...defaultTargets: string[]) {
-      defaultTargets = defaultTargets.length === 0 ? DEFAULT.CONFIG.target : defaultTargets;
-      return toTargetArray(model.target, ...defaultTargets);
+    target(defaultTarget?: string) {
+      return model.target || defaultTarget || DEFAULT.CONFIG.target;
     },
 
     port(defaultPort?: number) {
@@ -57,7 +66,7 @@ export function Model(input: M) {
 
     dir(defaultValue?: string) {
       const dir = model.dir || defaultValue || DEFAULT.CONFIG.dir;
-      return dir ? fs.resolve(dir) : undefined;
+      return fs.resolve(dir);
     },
 
     static() {
@@ -79,18 +88,4 @@ export function Model(input: M) {
   };
 
   return res;
-}
-
-/**
- * Derive targets as an array
- */
-export function toTargetArray(
-  value: t.CompilerModel['target'],
-  ...defaultTargets: string[]
-): string[] {
-  if (!value) {
-    return defaultTargets;
-  } else {
-    return Array.isArray(value) ? value : [value];
-  }
 }

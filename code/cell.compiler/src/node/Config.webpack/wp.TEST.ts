@@ -68,13 +68,13 @@ describe('Compiler (Webpack)', () => {
 
   it('target', () => {
     const { builder } = create();
-    expect(wp.toWebpackConfig(builder).target).to.eql(['web']);
+    expect(wp.toWebpackConfig(builder).target).to.eql('web');
 
     builder.target('web');
-    expect(wp.toWebpackConfig(builder).target).to.eql(['web']);
+    expect(wp.toWebpackConfig(builder).target).to.eql('web');
 
-    builder.target(['web', 'node12.18']);
-    expect(wp.toWebpackConfig(builder).target).to.eql(['web', 'node12.18']);
+    builder.target('node12.18');
+    expect(wp.toWebpackConfig(builder).target).to.eql('node12.18');
   });
 
   it('output dir', () => {
@@ -90,11 +90,8 @@ describe('Compiler (Webpack)', () => {
     builder.target('node');
     expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('dist/node'));
 
-    builder.target(['node', 'web']);
-    expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('dist/node,web'));
-
     builder.dir('foo');
-    expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('foo/node,web'));
+    expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('foo/node'));
   });
 
   it('rules', () => {

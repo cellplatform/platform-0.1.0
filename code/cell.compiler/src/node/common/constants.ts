@@ -6,7 +6,7 @@ const CONFIG = {
   dir: 'dist',
   mode: 'production',
   port: 3000,
-  target: ['web'],
+  target: 'web',
   entry: {},
 };
 
@@ -15,6 +15,7 @@ export const PATH = {
 };
 
 export const FILE = {
+  JSON: { INDEX: 'index.json' },
   JS: {
     REMOTE_ENTRY: 'remoteEntry.js',
     ENTRY: {

@@ -307,19 +307,17 @@ describe('Compiler (Config)', () => {
 
     it('target', () => {
       const { model, builder } = create();
-      expect(model.state.target).to.eql(['web']);
+      expect(model.state.target).to.eql('web');
 
       const test = (input: any, expected: any) => {
         builder.target(input);
         expect(model.state.target).to.eql(expected);
       };
 
-      test(false, false);
+      test(false, undefined);
       test(undefined, undefined);
-      test('  web  ', ['web']);
-      test(['web  '], ['web']);
-      test(['web', '  node'], ['web', 'node']);
-      test(['webworker', false], ['webworker']);
+      test('  web  ', 'web');
+      test('  node', 'node');
       test('  ', undefined);
       test(null, undefined);
       test({}, undefined);
