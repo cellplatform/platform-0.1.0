@@ -27,14 +27,14 @@ export type CompilerModelMethods = {
   beforeCompile(handler: t.BeforeCompile): B;
   afterCompile(handler: t.AfterCompile): B;
 
-  title(value: string | undefined): B;
+  title(value: string | null): B;
   namespace(value: string): B;
   mode(value: t.WpMode | 'prod' | 'dev'): B;
-  port(value: number | undefined): B;
-  target(value: string | undefined): B;
-  dir(value: string | undefined): B;
+  port(value: number | null): B;
+  target(value: string | null): B;
+  dir(value: string | null): B;
   static(value: string | string[] | null): B;
-  lint(value: boolean | undefined): B;
+  lint(value: boolean | null): B;
   entry(path: string): B; // Default key: 'main'
   entry(key: string, path?: string | null): B;
   entry(map: Record<string, string | null>): B;
