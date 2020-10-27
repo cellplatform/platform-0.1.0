@@ -10,7 +10,6 @@ export { StateObject } from '@platform/state';
 import * as jpath from 'jsonpath';
 export { jpath };
 
-
 export { fs } from '@platform/fs';
 
 import { log } from '@platform/log/lib/server';
