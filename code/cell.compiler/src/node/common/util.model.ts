@@ -26,11 +26,11 @@ export function Model(input: M) {
   const res = {
     toObject: () => model,
 
-    get prod() {
+    get isProd() {
       return res.mode() === 'production';
     },
 
-    get dev() {
+    get isDev() {
       return res.mode() === 'development';
     },
 
@@ -45,7 +45,7 @@ export function Model(input: M) {
     },
 
     get bundleDir() {
-      return `${res.dir()}/${res.target()}`
+      return `${res.dir()}/${res.target()}`;
     },
 
     name(defaultValue?: string) {

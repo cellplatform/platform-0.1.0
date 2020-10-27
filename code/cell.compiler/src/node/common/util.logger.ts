@@ -1,5 +1,3 @@
-import { parse as parseUrl } from 'url';
-
 import { log, Model, t, encoding } from '../common';
 import { stats } from '../Config.webpack';
 import { format } from './util.format';
@@ -64,8 +62,6 @@ export const logger = {
       let url = typeof options.url === 'string' ? options.url : 'http://localhost';
       url = port === 80 ? url : `${url}:${port}`;
       add('url', cyan(url));
-    } else {
-      add('port', cyan(port));
     }
 
     table.log();
@@ -98,6 +94,15 @@ export const logger = {
         log.info.gray(` • ${log.white(name)}`);
       });
     }
+    return logger;
+  },
+
+  errors(list: { message: string }[]) {
+    list.forEach((err, i) => {
+      log.info.gray(`${log.red('ERROR')} ${log.yellow(i + 1)} of ${list.length}`);
+      log.info(err.message);
+      log.info();
+    });
     return logger;
   },
 };

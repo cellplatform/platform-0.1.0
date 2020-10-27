@@ -23,17 +23,21 @@ export function toWebpackConfig(
     const port = model.port();
     const name = model.name();
 
-    const prod = model.prod;
-    const dev = model.dev;
+    const prod = model.isProd;
+    const dev = model.isDev;
 
     const entry = model.entry();
     const target = model.target();
     const path = model.bundleDir;
 
-    const rules = [...Rules.init({ model: data, prod, dev }), ...model.rules()].filter(Boolean);
-    const plugins = [...Plugins.init({ model: data, prod, dev }), ...model.plugins()].filter(
-      Boolean,
-    );
+    const rules = [
+      ...Rules.init({ model: data, isProd: prod, isDev: dev }),
+      ...model.rules(),
+    ].filter(Boolean);
+    const plugins = [
+      ...Plugins.init({ model: data, isProd: prod, isDev: dev }),
+      ...model.plugins(),
+    ].filter(Boolean);
 
     const devServer: t.WpDevServer = { port, hot: true };
 

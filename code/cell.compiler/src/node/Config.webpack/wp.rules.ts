@@ -1,7 +1,7 @@
 import { t } from '../common';
 import svgToMiniDataURI from 'mini-svg-data-uri';
 
-type IArgs = { model: t.CompilerModel; prod: boolean; dev: boolean };
+type IArgs = { model: t.CompilerModel; isProd: boolean; isDev: boolean };
 
 export const Rules = {
   /**

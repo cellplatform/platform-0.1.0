@@ -58,7 +58,7 @@ export class HttpClientCellFile implements t.IHttpClientCellFile {
        */
       async download(
         options: { expires?: string } = {},
-      ): Promise<t.IHttpClientResponse<ReadableStream | string>> {
+      ): Promise<t.IHttpClientResponse<ReadableStream | t.Json | string>> {
         type T = ReadableStream | string;
         const { expires } = options;
         const linkRes = await self.getCellLinkByFilename(path);
@@ -81,7 +81,7 @@ export class HttpClientCellFile implements t.IHttpClientCellFile {
         const res = await http.get(url);
         if (res.ok) {
           const mime = (res.headers['content-type'] || '').toString().trim();
-          const bodyType: t.HttpClientBodyType = mime.startsWith('text/') ? 'TEXT' : 'BINARY';
+          const bodyType = toBodyType(mime);
           return util.fromHttpResponse(res).toClientResponse<T>({ bodyType });
         } else {
           const message = `Failed while downloading file "${parent.uri.toString()}".`;
@@ -129,4 +129,18 @@ export class HttpClientCellFile implements t.IHttpClientCellFile {
 
     return { link };
   }
+}
+
+/**
+ * [Helpers]
+ */
+
+function toBodyType(mime: string): t.HttpClientBodyType {
+  if (mime === 'application/json') {
+    return 'JSON';
+  }
+  if (mime.startsWith('text/')) {
+    return 'TEXT';
+  }
+  return 'BINARY';
 }
