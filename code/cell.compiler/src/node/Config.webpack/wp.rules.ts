@@ -8,13 +8,6 @@ export const Rules = {
    * Initialize rules.
    */
   init(args: IArgs) {
-    return Rules.default(args);
-  },
-
-  /**
-   * Default preset.
-   */
-  default(args: IArgs): t.WpRule[] {
     return [Rules.css(args), Rules.typescript(args), Rules.svg(args)];
   },
 
