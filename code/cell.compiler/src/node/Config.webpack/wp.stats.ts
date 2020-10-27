@@ -1,4 +1,4 @@
-import { log, R, t, time, fs, path, logger } from '../common';
+import { log, R, t, time, fs, path, logger, DEFAULT } from '../common';
 
 const filesize = fs.size.toString;
 
@@ -41,6 +41,7 @@ export const stats = (input?: t.WpStats | t.WpCompilation): t.WebpackStats => {
           if (list.length === 0) {
             return;
           }
+          const bundleDir = path.trimBaseDir(res.output.path);
           const elapsed = time.duration(res.elapsed).toString();
           const table = log.table({ border: false });
           const indent = options.indent ? ' '.repeat(options.indent) : '';
@@ -52,9 +53,10 @@ export const stats = (input?: t.WpStats | t.WpCompilation): t.WebpackStats => {
 
           log.info();
           log.info.gray('Files');
-          log.info.gray(`  ${path.trimBaseDir(res.output.path)}`);
+          log.info.gray(`  ${bundleDir}`);
           table.log();
           log.info.gray(`Bundled in ${log.yellow(elapsed)}`);
+          log.info.gray(`Manifest: ${fs.join(bundleDir, DEFAULT.FILE.JSON.INDEX)}`);
         },
       };
       return assets;

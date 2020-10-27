@@ -1,4 +1,5 @@
 import { DEFAULT, fs, HttpClient, log, logger, Model, path, Schema, t, time } from '../common';
+import { BundleManifest } from '../Compiler';
 
 type FileUri = t.IUriData<t.IFileData>;
 type File = t.IHttpClientCellFileUpload;
@@ -42,20 +43,22 @@ export const upload: t.CompilerRunUpload = async (args) => {
   const bundleDir = model.bundleDir;
   const files = await getFiles({ bundleDir, targetDir });
 
-  const links = (files: t.IHttpClientCellFileUpload[]) => {
+  const toUrls = (files: t.IHttpClientCellFileUpload[]) => {
     const findFile = (name: string) => files.find((file) => fs.basename(file.filename) === name);
-    const cell = Schema.urls(args.host).cell(args.targetCell);
-    const filter = targetDir ? `${targetDir}/**` : undefined;
     const byFilename = (filename: string) => {
       const file = findFile(filename);
       return file ? cell.file.byName(file.filename).toString() : '';
     };
 
+    const cell = Schema.urls(args.host).cell(args.targetCell);
+    const filter = targetDir ? `${targetDir}/**` : undefined;
+
     return {
       cell: cell.info.toString(),
       files: cell.files.list.query({ filter }).toString(),
       entry: byFilename(model.entryFile),
-      remoteEntry: byFilename(DEFAULT.FILE.JS.REMOTE_ENTRY),
+      remote: byFilename(DEFAULT.FILE.JS.REMOTE_ENTRY),
+      manifest: byFilename(DEFAULT.FILE.JSON.INDEX),
     };
   };
 
@@ -63,7 +66,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
     return {
       ok,
       files,
-      urls: links(files),
+      urls: toUrls(files),
     };
   };
 
@@ -99,7 +102,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
       const elapsed = timer.elapsed.toString();
       await logUpload({ baseDir, bundleDir, targetCell, host, elapsed });
       logger.hr().newline();
-      logUrls(links(files));
+      logUrls(toUrls(files));
       logger.newline().hr().newline();
     }
 
@@ -181,9 +184,11 @@ const logUploadFailure = (args: { host: string; bundleDir: string; errors: t.IFi
 };
 
 async function updateManifest(args: { bundleDir: string; uploadedFiles: FileUri[] }) {
-  const { uploadedFiles } = args;
-  const manifestFile = fs.join(args.bundleDir, INDEX_JSON);
-  const manifest = (await fs.readJson(manifestFile)) as t.BundleManifest;
+  const { uploadedFiles, bundleDir } = args;
+  const { manifest, path } = await BundleManifest.readFile({ bundleDir });
+  if (!manifest) {
+    throw new Error(`A bundle manifest does not exist at: ${path}`);
+  }
 
   const toHash = (file: FileUri) => file.data.props.integrity?.filehash;
   const findFile = (hash: string) => uploadedFiles.find((file) => toHash(file) === hash);
@@ -200,6 +205,6 @@ async function updateManifest(args: { bundleDir: string; uploadedFiles: FileUri[
       }
     });
 
-  await fs.writeFile(manifestFile, JSON.stringify(manifest, null, '  '));
+  await BundleManifest.writeFile({ manifest, bundleDir });
   return manifest;
 }

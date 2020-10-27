@@ -1,15 +1,19 @@
-import { Stats as IStats } from 'webpack';
+import { Stats } from 'webpack';
 
-import { log, t, Model, fs, logger, Schema, DEFAULT, value } from '../common';
-import { wp, afterCompile } from './util';
+import { fs, log, logger, Model, t } from '../common';
+import { BundleManifest } from '../Compiler';
+import { afterCompile, wp } from './util';
 
 /**
  * Bundle the project.
  */
 export const bundle: t.CompilerRunBundle = (input, options = {}) => {
-  return new Promise<t.WebpackBundleResponse>((resolve, reject) => {
+  return new Promise<t.WebpackBundleResponse>(async (resolve, reject) => {
     const { silent } = options;
     const { compiler, model, config } = wp.toCompiler(input);
+
+    const bundleDir = Model(model).bundleDir;
+    await fs.remove(bundleDir);
 
     if (!silent) {
       log.info();
@@ -23,16 +27,17 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
       }
       if (stats) {
         const res = toBundledResponse({ model, stats, config });
-        const dir = res.dir;
         const compilation = stats.compilation;
 
-        await copyStatic({ model, dir });
-        await saveBundleManifest({ model, dir });
+        await copyStatic({ model, bundleDir });
+        await BundleManifest.createAndSave({ model, bundleDir });
         afterCompile({ model, compilation, webpack: config });
 
         if (!silent) {
           logger.newline().stats(stats);
         }
+
+        console.log('bundleDir', bundleDir);
 
         resolve(res);
       } else {
@@ -48,7 +53,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
 
 function toBundledResponse(args: {
   model: t.CompilerModel;
-  stats: IStats;
+  stats: Stats;
   config: t.WpConfig;
 }): t.WebpackBundleResponse {
   const { model, config } = args;
@@ -64,7 +69,7 @@ function toBundledResponse(args: {
   };
 }
 
-async function copyStatic(args: { model: t.CompilerModel; dir: string }) {
+async function copyStatic(args: { model: t.CompilerModel; bundleDir: string }) {
   const model = Model(args.model);
   const staticDirs = model
     .static()
@@ -73,54 +78,10 @@ async function copyStatic(args: { model: t.CompilerModel; dir: string }) {
 
   await Promise.all(
     staticDirs.map(async (from) => {
-      const to = fs.join(args.dir, fs.basename(from));
+      const to = fs.join(args.bundleDir, fs.basename(from));
       await fs.copy(from, to);
     }),
   );
 
   return staticDirs;
-}
-
-async function createBundleManifest(args: {
-  model: t.CompilerModel;
-  dir: string;
-}): Promise<t.BundleManifest> {
-  const REMOTE = DEFAULT.FILE.JS.REMOTE_ENTRY;
-  const model = Model(args.model);
-  const paths = await fs.glob.find(`${args.dir}/**`, { includeDirs: false });
-
-  const files: t.BundleManifestFile[] = await Promise.all(
-    paths.map(async (path) => {
-      const file = await fs.readFile(path);
-      const bytes = file.byteLength;
-      const filehash = Schema.hash.sha256(file);
-      path = path.substring(args.dir.length + 1);
-      return { path, bytes, filehash };
-    }),
-  );
-
-  const bytes = files.reduce((acc, next) => acc + next.bytes, 0);
-  const hash = Schema.hash.sha256(files.map((file) => file.filehash));
-
-  return value.deleteUndefined({
-    hash,
-    mode: model.mode(),
-    target: model.target(),
-    entry: model.entryFile,
-    remoteEntry: paths.some((path) => path.endsWith(REMOTE)) ? REMOTE : undefined,
-    bytes,
-    files,
-  });
-}
-
-async function saveBundleManifest(args: {
-  model: t.CompilerModel;
-  dir: string;
-  filename?: string;
-}): Promise<t.BundleManifest> {
-  const { model, dir, filename = DEFAULT.FILE.JSON.INDEX } = args;
-  const manifest = await createBundleManifest({ model, dir });
-  const json = JSON.stringify(manifest, null, '  ');
-  await fs.writeFile(fs.join(dir, filename), json);
-  return manifest;
 }
