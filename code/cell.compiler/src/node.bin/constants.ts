@@ -40,8 +40,8 @@ export const COMMANDS: t.Commands = {
       '--config': PARAMS.config,
       '--name': PARAMS.name,
       '--dir': `(optional) The target directory within the cell`,
-      '--bundle': `(optional) Force bundle if already compiled`,
       '--sample': `(optional) Send to generated sample cell for testing`,
+      '--no-bundle': `(optional) Do not bundle before uploading`,
     },
   },
   info: {

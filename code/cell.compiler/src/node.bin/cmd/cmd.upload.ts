@@ -1,5 +1,5 @@
 import { Compiler } from '../../node/Compiler';
-import { log, t, Uri, HttpClient, fs, PATH, Model } from '../common';
+import { log, t, Uri, HttpClient, fs, PATH, Model, defaultValue } from '../common';
 import * as util from '../util';
 
 const logger = util.logger;
@@ -18,7 +18,8 @@ export async function upload(argv: t.Argv) {
   let host = ((argv.host as string) || '').trim();
   let uri: string | undefined = argv.uri;
   let targetDir: string | undefined = argv.dir;
-  const bundle = argv.bundle;
+  const bundle = defaultValue(argv.bundle, true);
+
 
   // If a "sample upload" was request, wrangle arguments.
   const sample = Boolean(argv.sample)

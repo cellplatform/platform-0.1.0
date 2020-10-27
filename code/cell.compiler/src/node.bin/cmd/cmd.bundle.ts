@@ -6,7 +6,7 @@ import * as util from '../util';
  * Bundle the project.
  */
 export async function bundle(argv: t.Argv) {
-  const name = util.nameArg(argv);
+  const name = util.nameArg(argv, 'prod');
   const config = await util.loadConfig(argv.config, { name });
   await Compiler.bundle(config);
 }
