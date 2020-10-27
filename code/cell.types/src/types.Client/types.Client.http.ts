@@ -76,7 +76,7 @@ export type IHttpClientCellFileByName = {
   info(): t.IHttpClientAsync<t.IResGetFile>;
   download(options?: {
     expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
-  }): t.IHttpClientAsync<ReadableStream | string>;
+  }): t.IHttpClientAsync<ReadableStream| t.Json | string>;
 };
 
 export type IHttpClientCellFiles = {
