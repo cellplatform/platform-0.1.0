@@ -41,7 +41,6 @@ export const COMMANDS: t.Commands = {
       '--name': PARAMS.name,
       '--dir': `(optional) The target directory within the cell`,
       '--sample': `(optional) Send to generated sample cell for testing`,
-      '--no-bundle': `(optional) Do not bundle before uploading`,
     },
   },
   info: {

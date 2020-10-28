@@ -12,11 +12,15 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
   const uri = typeof cellInput === 'object' ? cellInput : Uri.cell(cellInput);
   const parsedHost = parseUrl(hostInput);
   const host = parsedHost.host;
-  const client = HttpClient.create(host).cell(uri.toString());
+  // const client = HttpClient.create(host).cell(uri.toString());
 
-  const runBundle = async (args: { config: B; manifestUri: string; silent?: boolean }) => {
-    const { manifestUri, silent } = args;
-    const config = args.config.clone().env({ manifestUri });
+  const runBundle = async (args: {
+    config: B;
+    env: { host: string; cell: string; dir?: string };
+    silent?: boolean;
+  }) => {
+    const { env, silent } = args;
+    const config = args.config.clone().env({ bundle: env });
     return await bundle(config, { silent });
   };
 
@@ -27,21 +31,21 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
     async upload(config, options = {}) {
       const { silent, targetDir } = options;
       const model = Model(config);
-      const bundleDir = model.bundleDir;
+      // const bundleDir = model.bundleDir;
       const targetCell = uri.toString();
 
       /**
        * [1] Ensure manifest file URI exists.
        *     NOTE: This is passed into the bundler as an environment variable.
        */
-      const manifestUri = await getManifestUri({ client, bundleDir, targetDir });
+      // TEMP 🐷
+      // const manifestUri = await getManifestUri({ client, bundleDir, targetDir });
 
       /**
        * [2] Bundle.
        */
-      if (options.bundle || !(await fs.pathExists(bundleDir))) {
-        await runBundle({ config, manifestUri, silent });
-      }
+      const env = { host, cell: targetCell, dir: targetDir };
+      await runBundle({ config, env, silent });
 
       if (!silent) {
         logger.hr();
@@ -69,6 +73,7 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
  * [Helpers]
  */
 
+// TEMP 🐷
 const getManifestUri = async (args: {
   client: t.IHttpClientCell;
   bundleDir: string;

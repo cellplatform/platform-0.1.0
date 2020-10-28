@@ -81,5 +81,4 @@ export type CompilerCellRunUpload = (
 export type CompilerCellRunUploadOptions = {
   targetDir?: string;
   silent?: boolean;
-  bundle?: boolean;
 };

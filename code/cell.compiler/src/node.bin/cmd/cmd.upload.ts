@@ -18,7 +18,6 @@ export async function upload(argv: t.Argv) {
   let host = ((argv.host as string) || '').trim();
   let uri: string | undefined = argv.uri;
   let targetDir: string | undefined = argv.dir;
-  const bundle = defaultValue(argv.bundle, true);
 
   // If a "sample upload" was request, wrangle arguments.
   const sample = Boolean(argv.sample)
@@ -55,7 +54,7 @@ export async function upload(argv: t.Argv) {
     return logger.errorAndExit(1, err);
   }
 
-  const res = await Compiler.cell(host, cell.toString()).upload(config, { targetDir, bundle });
+  const res = await Compiler.cell(host, cell.toString()).upload(config, { targetDir });
 
   if (sample) {
     const file = sample.filepath.substring(fs.resolve('.').length + 1);
