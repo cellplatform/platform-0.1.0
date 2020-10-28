@@ -9,7 +9,6 @@ export default () =>
     .port(pkg.compiler.port)
 
     .entry('main', './src/test/entry.web')
-    .entry('worker', './src/test/web/worker.ts')
 
     .static('./static')
 

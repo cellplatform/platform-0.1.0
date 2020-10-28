@@ -1,3 +1,5 @@
+export * from './global';
+
 export * from './types.Compiler.model.builder';
 export * from './types.Compiler.model';
 export * from './types.Compiler.tasks';

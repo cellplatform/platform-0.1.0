@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
+
+import { WebRuntime } from '../../../runtime.web';
 import { ISystem, System } from './System';
 
 type Css = React.CSSProperties;
 
 export type IAppState = { url?: string };
+
+const bundle = WebRuntime.bundle(__CELL_ENV__);
+
+console.log('-------------------------------------------');
+console.log('bundle', bundle);
+console.log("bundle.path('/static/images/wax.png')", bundle.path('/static/images/wax.png'));
 
 /**
  * Test Application
@@ -24,8 +32,7 @@ export const App = () => {
   };
 
   const setFoo = () => {
-    const url =
-      'http://localhost:5000/cell:ckglm3anc000c8iet9e7nfgoo:A1/file/sample/web/remoteEntry.js';
+    const url = 'https://dev.db.team/cell:ckgse6r8l000ccwethl0ubdrh:A1/file/sample/remoteEntry.js';
 
     const scope = 'sys.ui.editor.code';
     const module = './Dev';
@@ -65,11 +72,11 @@ export const App = () => {
   return (
     <div style={styles.base}>
       <h1>App</h1>
-      <img src={'/static/images/wax.png'} style={styles.seal} />
+      <img src={bundle.path('/static/images/wax.png')} style={styles.seal} />
 
       <div style={styles.buttons}>
-        <button onClick={setter(3001, 'sample.foo', './Header')}>sample.foo</button>
-        <button onClick={setter(3003, 'sys.ui.editor.code', './Dev')}>code</button>
+        {/* <button onClick={setter(3001, 'sample.foo', './Header')}>sample.foo</button>
+        <button onClick={setter(3003, 'sys.ui.editor.code', './Dev')}>code</button> */}
         <button onClick={setFoo}>code (from cell)</button>
       </div>
       <div>{state?.url || '-'}</div>

@@ -24,9 +24,9 @@ To use the compiler from commands within `package.json` include the following sc
   "bundle": "cell.compiler bundle $@",
   "watch": "cell.compiler watch $@",
   "info": "cell.compiler info $@",
-  "upload": "cell.compiler upload --host=domain.com --uri=cell:<ns>:A1 --dir=foobar",
+  "upload": "cell.compiler upload $@",
   "clean": "cell.compiler clean $@",
-  "serve": "cd dist && serve -l 3001",
+  "serve": "cell.compiler serve $@",
 },
 ```
 

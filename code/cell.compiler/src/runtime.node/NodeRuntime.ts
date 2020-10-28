@@ -6,7 +6,7 @@ import { BundleManifest } from '../node/Compiler';
 const MANIFEST = DEFAULT.FILE.JSON.INDEX;
 
 /**
- * Runtime host for executing bundles on [node-js].
+ * Runtime environment for executing bundles on [node-js].
  */
 export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) => {
   const { uri, host } = args;
