@@ -2,12 +2,13 @@ import qrcode from 'qrcode';
 import { fs } from '@platform/fs';
 
 (async () => {
-  const url = 'http://localhost:3000';
+  const url = 'https://news.ycombinator.com/';
   const code = await qrcode.toString(url);
 
   console.log(url);
   console.log(code);
 
+  console.log('-------------------------------------------');
   const tmp = fs.resolve('./tmp');
   await fs.ensureDir(tmp);
 
@@ -16,4 +17,13 @@ import { fs } from '@platform/fs';
   console.log('path', path);
 
   await fs.writeFile(path, path);
+  console.log();
+
+  try {
+    // @ts-ignore
+    console.log('__CELL_ENV__', __CELL_ENV__);
+  } catch (error) {
+    // return {};
+    console.log('error', error);
+  }
 })();

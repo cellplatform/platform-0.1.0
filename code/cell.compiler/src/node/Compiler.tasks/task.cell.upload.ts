@@ -5,12 +5,19 @@ type FileUri = t.IUriData<t.IFileData>;
 type File = t.IHttpClientCellFileUpload;
 const filesize = fs.size.toString;
 
-const INDEX_JSON = DEFAULT.FILE.JSON.INDEX;
+/**
+ * A filter for narrowing in on the manifest file (index.json)
+ */
+export const manifestFileFilter = (bundleDir: string) => {
+  return (path: string) => {
+    return path.substring(bundleDir.length + 1) === BundleManifest.filename;
+  };
+};
 
 /**
  * Retrieve the set of files to upload.
  */
-async function getFiles(args: {
+export async function getFiles(args: {
   bundleDir: string;
   targetDir?: string;
   filter?: (path: string) => boolean;
@@ -33,6 +40,15 @@ async function getFiles(args: {
 }
 
 /**
+ * Retrieves the manifest file.
+ */
+export async function getManifestFile(args: { bundleDir: string; targetDir?: string }) {
+  const { bundleDir, targetDir } = args;
+  const filter = manifestFileFilter(bundleDir);
+  return (await getFiles({ bundleDir, targetDir, filter }))[0];
+}
+
+/**
  * Upload files to the given target.
  */
 export const upload: t.CompilerRunUpload = async (args) => {
@@ -45,7 +61,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
 
   const toUrls = (files: t.IHttpClientCellFileUpload[]) => {
     const findFile = (name: string) => files.find((file) => fs.basename(file.filename) === name);
-    const byFilename = (filename: string) => {
+    const urlByFilename = (filename: string) => {
       const file = findFile(filename);
       return file ? cell.file.byName(file.filename).toString() : '';
     };
@@ -56,9 +72,9 @@ export const upload: t.CompilerRunUpload = async (args) => {
     return {
       cell: cell.info.toString(),
       files: cell.files.list.query({ filter }).toString(),
-      entry: byFilename(model.entryFile),
-      remote: byFilename(DEFAULT.FILE.JS.REMOTE_ENTRY),
-      manifest: byFilename(DEFAULT.FILE.JSON.INDEX),
+      entry: urlByFilename(model.entryFile),
+      remote: urlByFilename(DEFAULT.FILE.JS.REMOTE_ENTRY),
+      manifest: urlByFilename(DEFAULT.FILE.JSON.INDEX),
     };
   };
 
@@ -87,11 +103,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
      */
     await updateManifest({ bundleDir, uploadedFiles: fileUpload.body.files });
     const manifestUpload = await client.files.upload(
-      await getFiles({
-        bundleDir,
-        targetDir,
-        filter: (path) => path.substring(bundleDir.length + 1) === INDEX_JSON,
-      }),
+      await getManifestFile({ bundleDir, targetDir }),
     );
     if (!manifestUpload.ok) {
       logUploadFailure({ host, bundleDir, errors: manifestUpload.body.errors });
@@ -149,7 +161,7 @@ async function logUpload(args: {
 
   log.info(`
 ${log.gray(`Uploaded`)}    ${log.gray(`(in ${log.yellow(elapsed)})`)}
-${log.gray(`  from:     ${path.trimBaseDir(bundleDir)}`)}
+${log.gray(`  from:     ${path.trimBase(bundleDir)}`)}
 ${log.gray(`  to:`)}
 ${log.gray(table)}
 `);
@@ -194,7 +206,7 @@ async function updateManifest(args: { bundleDir: string; uploadedFiles: FileUri[
   const findFile = (hash: string) => uploadedFiles.find((file) => toHash(file) === hash);
 
   manifest.files
-    .filter((item) => fs.basename(item.path) !== INDEX_JSON)
+    .filter((item) => item.path !== BundleManifest.filename)
     .forEach((item) => {
       const file = findFile(item.filehash);
       if (!file) {

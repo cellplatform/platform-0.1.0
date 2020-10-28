@@ -1,4 +1,4 @@
-import { encoding } from '../../common/encoding';
+import { encoding } from '../../../common/encoding';
 
 /**
  *  Webpack Docs:

@@ -7,11 +7,15 @@ export default () =>
     .namespace('sample.compiler')
     .title('Compiler Sample')
     .port(pkg.compiler.port)
-    .entry('./src/test/entry.web')
+
+    .entry('main', './src/test/entry.web')
+    .entry('worker', './src/test/web/worker.ts')
+
     .static('./static')
-    .shared((e) => {
-      e.singleton(['react', 'react-dom']);
-    })
+
+    .env({ foo: 1234 })
+
+    .shared((e) => e.singleton(['react', 'react-dom']))
 
     .variant('prod', (config) =>
       config

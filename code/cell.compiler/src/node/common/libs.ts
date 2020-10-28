@@ -12,8 +12,7 @@ export { jpath };
 
 export { fs } from '@platform/fs';
 
-import { log } from '@platform/log/lib/server';
-export { log };
+export { log } from '@platform/log/lib/server';
 
 export { Client, HttpClient } from '@platform/cell.client';
 

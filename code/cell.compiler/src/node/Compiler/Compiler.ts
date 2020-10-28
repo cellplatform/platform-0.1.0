@@ -7,6 +7,5 @@ export const Compiler: t.Compiler = {
   dev: Tasks.dev,
   watch: Tasks.watch,
   bundle: Tasks.bundle,
-  upload: Tasks.upload,
   cell: Tasks.cell,
 };

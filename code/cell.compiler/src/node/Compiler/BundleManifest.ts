@@ -1,9 +1,22 @@
-import { DEFAULT, fs, Model, Schema, t, value } from '../common';
+import { DEFAULT, fs, Model, Schema, t, value, path } from '../common';
 
-const REMOTE = DEFAULT.FILE.JS.REMOTE_ENTRY;
+const REMOTE_ENTRY = DEFAULT.FILE.JS.REMOTE_ENTRY;
 const MANIFEST = DEFAULT.FILE.JSON.INDEX;
 
 export const BundleManifest = {
+  /**
+   * The filename of the bundle.
+   */
+  filename: MANIFEST,
+
+  /**
+   * URL to the manifest
+   */
+  url(host: string, uri: string, dir?: string) {
+    const urls = Schema.urls(host).cell(uri);
+    return urls.file.byName(path.dir(dir).append(MANIFEST));
+  },
+
   /**
    * Generates a bundle manifest.
    */
@@ -29,7 +42,7 @@ export const BundleManifest = {
       mode: model.mode(),
       target: model.target(),
       entry: model.entryFile,
-      remoteEntry: paths.some((path) => path.endsWith(REMOTE)) ? REMOTE : undefined,
+      remoteEntry: paths.some((path) => path.endsWith(REMOTE_ENTRY)) ? REMOTE_ENTRY : undefined,
       bytes,
       files,
     };

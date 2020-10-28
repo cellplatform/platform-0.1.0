@@ -25,6 +25,10 @@ export const FILE = {
   },
 };
 
-const BASE = 'base';
 const WEBPACK = { rules: [], plugins: [] };
-export const DEFAULT = { CONFIG, WEBPACK, BASE, FILE };
+export const DEFAULT = {
+  CONFIG,
+  WEBPACK,
+  BASE: 'base', // Base confirmation name.
+  FILE,
+};

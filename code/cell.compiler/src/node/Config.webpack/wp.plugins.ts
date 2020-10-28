@@ -1,17 +1,22 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import { t, ModuleFederationPlugin, encoding, fs, DEFAULT, Model } from '../common';
+import { t, ModuleFederationPlugin, encoding, fs, DEFAULT, Model, constants } from '../common';
 import HtmlWebPackPlugin from 'html-webpack-plugin';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+import { DefinePlugin } from 'webpack';
 
 type P = NonNullable<t.WpConfig['plugins']>;
 type IArgs = { model: t.CompilerModel; isProd: boolean; isDev: boolean };
 
 export const Plugins = {
   init(args: IArgs): P {
-    const plugins = [Plugins.federation(args), Plugins.typeChecker(args), Plugins.html(args)];
-    return plugins.filter(Boolean);
+    return [
+      Plugins.federation(args),
+      Plugins.typeChecker(args),
+      Plugins.html(args),
+      Plugins.envVariables(args),
+    ].filter(Boolean);
   },
 
   /**
@@ -82,5 +87,14 @@ export const Plugins = {
         },
       },
     });
+  },
+
+  /**
+   * Plugin: DefinePlugin
+   *         https://webpack.js.org/plugins/define-plugin/
+   */
+  envVariables(args: IArgs) {
+    const env = Model(args.model).env;
+    return new DefinePlugin({ __CELL_ENV__: JSON.stringify(env) });
   },
 };

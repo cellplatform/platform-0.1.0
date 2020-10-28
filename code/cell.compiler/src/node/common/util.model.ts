@@ -48,6 +48,10 @@ export function Model(input: M) {
       return `${res.dir()}/${res.target()}`;
     },
 
+    get env() {
+      return model.env || {};
+    },
+
     name(defaultValue?: string) {
       return model.name || defaultValue || DEFAULT.CONFIG.name;
     },

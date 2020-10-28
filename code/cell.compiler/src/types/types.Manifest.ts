@@ -5,7 +5,7 @@ import { t } from './common';
  */
 export type BundleManifest = {
   hash: string;
-  mode: t.WpMode;
+  mode: string;
   target: string;
   entry: string;
   remoteEntry?: string;

@@ -6,7 +6,6 @@ describe('Compiler', () => {
     expect(typeof Compiler.bundle).to.eql('function');
     expect(typeof Compiler.config).to.eql('function');
     expect(typeof Compiler.dev).to.eql('function');
-    expect(typeof Compiler.upload).to.eql('function');
     expect(typeof Compiler.watch).to.eql('function');
     expect(typeof Compiler.cell).to.eql('function');
   });

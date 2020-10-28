@@ -20,7 +20,6 @@ export async function upload(argv: t.Argv) {
   let targetDir: string | undefined = argv.dir;
   const bundle = defaultValue(argv.bundle, true);
 
-
   // If a "sample upload" was request, wrangle arguments.
   const sample = Boolean(argv.sample)
     ? await toSampleArgs({ target, host, uri, targetDir })

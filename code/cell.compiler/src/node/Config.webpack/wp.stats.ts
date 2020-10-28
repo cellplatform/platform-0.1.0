@@ -1,4 +1,4 @@
-import { log, R, t, time, fs, path, logger, DEFAULT } from '../common';
+import { log, R, fs, t, time, path, logger, DEFAULT } from '../common';
 
 const filesize = fs.size.toString;
 
@@ -41,7 +41,7 @@ export const stats = (input?: t.WpStats | t.WpCompilation): t.WebpackStats => {
           if (list.length === 0) {
             return;
           }
-          const bundleDir = path.trimBaseDir(res.output.path);
+          const bundleDir = path.trimBase(res.output.path);
           const elapsed = time.duration(res.elapsed).toString();
           const table = log.table({ border: false });
           const indent = options.indent ? ' '.repeat(options.indent) : '';

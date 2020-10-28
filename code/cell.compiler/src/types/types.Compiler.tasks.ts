@@ -11,7 +11,6 @@ export type CompilerTasks = {
   bundle: CompilerRunBundle;
   watch: CompilerRunWatch;
   dev: CompilerRunDev;
-  upload: CompilerRunUpload;
   cell: CompilerCreateCell;
 };
 
@@ -55,7 +54,7 @@ export type CompilerRunUploadArgs = {
 };
 export type CompilerUploadResponse = {
   ok: boolean;
-  urls: { cell: string; files: string; entry: string; remoteEntry: string };
+  urls: { cell: string; files: string; entry: string; remote: string; manifest: string };
   files: File[];
 };
 
@@ -66,7 +65,6 @@ export type CompilerCreateCell = (host: string, uri: string | t.ICellUri) => Com
 export type CompilerCell = {
   host: string;
   uri: t.ICellUri;
-  bundle: CompilerCellRunBundle;
   upload: CompilerCellRunUpload;
 };
 

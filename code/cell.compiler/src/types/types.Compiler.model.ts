@@ -23,6 +23,7 @@ export type CompilerModel = {
   exposes?: Record<string, string>;
   remotes?: Record<string, string>;
   shared?: Record<string, string | t.WebpackShared>;
+  env?: Record<string, t.Json>;
 
   /**
    * Hooks

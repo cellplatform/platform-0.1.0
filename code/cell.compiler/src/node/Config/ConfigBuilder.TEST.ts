@@ -373,6 +373,20 @@ describe('Compiler (Config)', () => {
       test(undefined, undefined);
       test({}, undefined);
     });
+
+    it('env', () => {
+      const { builder, model } = create();
+      expect(model.state.env).to.eql(undefined);
+
+      builder.env({ foo: '123' }).env({ bar: [456] });
+      expect(model.state.env).to.eql({ foo: '123', bar: [456] });
+
+      builder.env(null);
+      expect(model.state.env).to.eql(undefined);
+
+      builder.env({ foo: 123 }).env({ foo: 456 });
+      expect(model.state.env).to.eql({ foo: 456 });
+    });
   });
 
   describe('entry', () => {

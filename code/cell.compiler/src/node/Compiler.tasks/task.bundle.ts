@@ -37,8 +37,6 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
           logger.newline().stats(stats);
         }
 
-        console.log('bundleDir', bundleDir);
-
         resolve(res);
       } else {
         reject(new Error(`The compilation did not produce a stats object.`));

@@ -101,6 +101,18 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     });
   },
 
+  env(args) {
+    args.model.change((draft) => {
+      const input = args.params[0];
+      if (input === null) {
+        draft.env = undefined;
+      } else {
+        // draft.env = draft.env || (draft.env = {});
+        draft.env = { ...draft.env, ...input };
+      }
+    });
+  },
+
   entry(args) {
     const writeEntry = (p1: any, p2: any) => {
       const param = (value: any) => format.string(value, { trim: true }) || '';

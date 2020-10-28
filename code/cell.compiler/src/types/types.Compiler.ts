@@ -6,7 +6,6 @@ export type Compiler = {
   dev: t.CompilerRunDev;
   watch: t.CompilerRunWatch;
   bundle: t.CompilerRunBundle;
-  upload: t.CompilerRunUpload;
   cell: t.CompilerCreateCell;
 };
 

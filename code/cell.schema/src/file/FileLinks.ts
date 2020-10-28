@@ -8,10 +8,10 @@ const fs = Links.create(prefix);
 /**
  * Helpers for operating on [file] links.
  */
-export class FileLinks {
-  public static prefix = prefix;
+export const FileLinks = {
+  prefix: prefix,
 
-  public static is = {
+  is: {
     fileKey(input?: string) {
       return fs.isKey(input);
     },
@@ -27,21 +27,21 @@ export class FileLinks {
       const query = (value.split('?')[1] || '').toLowerCase();
       return query.includes('status=uploading');
     },
-  };
+  },
 
-  public static total(links: t.IUriMap = {}) {
+  total(links: t.IUriMap = {}) {
     return fs.total(links);
-  }
+  },
 
-  public static toKey(filename: string) {
+  toKey(filename: string) {
     return fs.toKey(filename);
-  }
+  },
 
-  public static parseKey(linkKey: string) {
+  parseKey(linkKey: string) {
     return fs.parseKey(linkKey);
-  }
+  },
 
-  public static parseValue(linkValue: string) {
+  parseValue(linkValue: string) {
     if (!FileLinks.is.fileValue(linkValue)) {
       throw new Error(`Cannot parse '${linkValue}' as it is not a file URI.`);
     }
@@ -56,31 +56,31 @@ export class FileLinks {
       return `${res.uri.toString()}${query}`;
     };
     return { ...res, toString };
-  }
+  },
 
-  public static parse(linkKey: string, linkValue: string): t.IFileLink {
+  parse(linkKey: string, linkValue: string): t.IFileLink {
     const key = FileLinks.parseKey(linkKey);
     const value = FileLinks.parseValue(linkValue);
     const toString = value.toString;
     return { ...key, ...value, toString };
-  }
+  },
 
   /**
    * Converts a links URI map into a list of parsed file refs.
    */
-  public static toList(links: t.IUriMap = {}) {
+  toList(links: t.IUriMap = {}) {
     return fs.toList(links).map(({ key, value }) => FileLinks.parse(key, value));
-  }
+  },
 
   /**
    * Lookup a file on the given links.
    */
-  public static find(links: t.IUriMap = {}) {
+  find(links: t.IUriMap = {}) {
     return {
       byName(path?: string) {
         const match = fs.find(links).byName(path);
         return match ? FileLinks.parse(match.key, match.value) : undefined;
       },
     };
-  }
-}
+  },
+};

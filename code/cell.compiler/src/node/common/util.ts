@@ -1,10 +1,10 @@
 import { parse } from 'url';
 
-import { fs } from './libs';
 import { isModel } from './util.model';
 
 export * from './util.model';
 export * from './util.logger';
+export * from './util.path';
 
 /**
  * Flag tests.
@@ -42,18 +42,3 @@ export function parseUrl(input: string) {
     toString: () => url,
   };
 }
-
-/**
- * Helpers for working with paths
- */
-export const path = {
-  base: fs.resolve('.'),
-  trimBase(value: string) {
-    value = (value || '').trim();
-    return value.startsWith(path.base) ? value.substring(path.base.length + 1) : value;
-  },
-  trimBaseDir(value: string) {
-    value = path.trimBase(value);
-    return `${value.replace(/\/*$/, '')}/`;
-  },
-};
