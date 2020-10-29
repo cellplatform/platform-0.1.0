@@ -15,6 +15,6 @@ export const watch: t.CompilerRunWatch = async (input) => {
     count++;
     logger.clear().newline();
     log.info.gray(`Watching (${count})`);
-    logger.model(model, { indent: 2, url: true }).newline().hr().stats(stats);
+    logger.model(model, { indent: 2, url: false }).newline().hr().stats(stats);
   });
 };

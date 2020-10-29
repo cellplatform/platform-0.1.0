@@ -10,7 +10,7 @@ type File = t.IHttpClientCellFileUpload;
 export type CompilerTasks = {
   bundle: CompilerRunBundle;
   watch: CompilerRunWatch;
-  dev: CompilerRunDev;
+  devserver: CompilerRunDevserver;
   cell: CompilerCreateCell;
 };
 
@@ -39,7 +39,7 @@ export type CompilerRunWatch = (input: M) => Promise<void>;
 /**
  * Starts the development-server with HMR (hot-module-reloading).
  */
-export type CompilerRunDev = (input: M, options?: { exports?: boolean }) => Promise<void>;
+export type CompilerRunDevserver = (input: M, options?: { exports?: boolean }) => Promise<void>;
 
 /**
  * Uploads a bundled distribution to a target cell.

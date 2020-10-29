@@ -5,13 +5,13 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { css, CssValue, events as globalEvents, Module, t, ui, defaultValue } from '../../common';
 import { Shell } from '../../Module';
 import { Body } from '../Body';
-import { IWindowTitlebarProps, WindowTitlebar } from '../primitives';
+import { WindowTitlebar } from '../primitives';
 
 type P = t.ShellProps;
 
 export type IWindowProps = {
   module?: t.ShellModule;
-  theme?: t.IWindowTitlebarProps['theme'];
+  theme?: t.ShellTheme;
   style?: CssValue;
   acceptNakedRegistrations?: boolean; // NB: Ignored if [module] property supplied.
   onLoaded?: t.ShellLoadedCallbackHandler;

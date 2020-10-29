@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { css } from './common';
 
-export type DiagramProps = { url: string };
+export type DiagramProps = { imageUrl: string };
 
 export const Diagram: React.FC<DiagramProps> = (props: DiagramProps) => {
-  const { url } = props;
+  const { imageUrl } = props;
 
   const styles = {
     base: css({ Absolute: 0 }),
-    inner: css({
+    image: css({
       Absolute: 0,
-      backgroundImage: `url(${url})`,
+      backgroundImage: `url(${imageUrl})`,
       backgroundSize: 'contain',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
@@ -20,7 +20,7 @@ export const Diagram: React.FC<DiagramProps> = (props: DiagramProps) => {
 
   return (
     <div {...styles.base}>
-      <div {...styles.inner}></div>
+      <div {...styles.image}></div>
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { Compilation } from 'webpack';
 
 export type Compiler = {
   config: t.CompilerModelFactory['builder'];
-  dev: t.CompilerRunDev;
+  dev: t.CompilerRunDevserver;
   watch: t.CompilerRunWatch;
   bundle: t.CompilerRunBundle;
   cell: t.CompilerCreateCell;

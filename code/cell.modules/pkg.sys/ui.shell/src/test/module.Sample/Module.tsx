@@ -53,7 +53,7 @@ function renderer(events: t.IViewModuleEvents<P>) {
   render('Default').subscribe((e) => {
     console.log('render/default', e);
     const url = e.data?.url || '';
-    const el = <Diagram url={url} />;
+    const el = <Diagram imageUrl={url} />;
     e.render(el);
   });
 
