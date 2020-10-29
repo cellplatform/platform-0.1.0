@@ -3,16 +3,16 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, CssValue, t, ui } from '../../common';
 
-export type ISidebarProps = {
+export type IBodySidebarProps = {
   bus: t.EventBus;
   module: t.ShellModule;
   style?: CssValue;
 };
-export type ISidebarState = t.Object;
+export type BodySidebarState = t.Object;
 
-export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
-  public state: ISidebarState = {};
-  private state$ = new Subject<Partial<ISidebarState>>();
+export class BodySidebar extends React.PureComponent<IBodySidebarProps, BodySidebarState> {
+  public state: BodySidebarState = {};
+  private state$ = new Subject<Partial<BodySidebarState>>();
   private unmounted$ = new Subject();
 
   /**

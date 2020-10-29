@@ -1,8 +1,8 @@
 import React from 'react';
-import { css, CssValue, bundle, log, t } from '../common';
-import { Shell, Window } from '..';
-import { TmplModule } from './module.Tmpl';
 
+import { Shell, ShellWindow } from '..';
+import { bundle, CssValue, log, t } from '../common';
+import { TmplModule } from './module.Tmpl';
 import * as tt from './module.Tmpl/types';
 
 type T = t.ITreeNode<tt.TmplProps>;
@@ -42,7 +42,7 @@ export const App: React.FC<AppProps> = (props: AppProps = {}) => {
     });
   };
 
-  return <Window theme={'WHITE'} onLoaded={onLoaded} acceptNakedRegistrations={true} />;
+  return <ShellWindow theme={'WHITE'} onLoaded={onLoaded} acceptNakedRegistrations={true} />;
 };
 
 export default App;

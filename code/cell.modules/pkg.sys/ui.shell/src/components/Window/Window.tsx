@@ -4,7 +4,7 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 
 import { css, CssValue, events as globalEvents, Module, t, ui, defaultValue } from '../../common';
 import { Shell } from '../../Module';
-import { Layout } from '../Body';
+import { Body } from '../Body';
 import { IWindowTitlebarProps, WindowTitlebar } from '../primitives';
 
 type P = t.ShellProps;
@@ -94,7 +94,7 @@ export class Window extends React.PureComponent<IWindowProps> {
       <div {...css(styles.base, this.props.style)}>
         <WindowTitlebar style={styles.titlebar} address={this.data.name} theme={this.props.theme} />
         <div {...styles.body}>
-          <Layout module={this.module} />
+          <Body module={this.module} />
         </div>
       </div>
     );

@@ -4,18 +4,18 @@ import { Subject } from 'rxjs';
 
 import { color, css, CssValue, t, ui, defaultValue } from '../../common';
 import { Shell } from '../../Module';
-import { Sidebar } from './Body.Sidebar';
-import { LayoutTree } from './Body.Tree';
+import { BodySidebar } from './Body.Sidebar';
+import { BodyTree } from './Body.Tree';
 import { BodyMain } from './Body.Main';
 
-export type ILayoutProps = {
+export type IBodyProps = {
   module?: t.ShellModule;
   style?: CssValue;
   acceptNakedRegistrations?: boolean; // NB: Ignored if [module] property supplied.
   onLoaded?: t.ShellLoadedCallbackHandler;
 };
 
-export class Layout extends React.PureComponent<ILayoutProps> {
+export class Body extends React.PureComponent<IBodyProps> {
   private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
@@ -82,13 +82,13 @@ export class Layout extends React.PureComponent<ILayoutProps> {
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...css(styles.edge, styles.left)}>
-          <LayoutTree bus={bus} module={module} focusOnLoad={true} />
+          <BodyTree bus={bus} module={module} focusOnLoad={true} />
         </div>
         <div {...styles.main}>
           <BodyMain bus={bus} module={module} style={styles.main} />
         </div>
         <div {...css(styles.edge, styles.right)}>
-          <Sidebar bus={bus} module={module} />
+          <BodySidebar bus={bus} module={module} />
         </div>
       </div>
     );

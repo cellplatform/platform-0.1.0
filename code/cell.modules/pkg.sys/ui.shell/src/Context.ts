@@ -12,11 +12,7 @@ export const Context = {
     const event$ = env.event$ as Subject<E>;
     const bus = rx.bus<E>(event$);
     const client = Client.env(env);
-
-    // Create the context.
     const ctx: t.IEnvContext = { env, bus, client };
-
-    // Finish up.
     const Provider = ui.createProvider({ ctx });
     return { ctx, Provider };
   },

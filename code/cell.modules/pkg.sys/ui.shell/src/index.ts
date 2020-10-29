@@ -1,3 +1,3 @@
 export * from './Module';
-export { Window } from './components/Window';
-export { Layout as Body } from './components/Body';
+export { Window as ShellWindow } from './components/Window';
+export { Body as ShellBody } from './components/Body';

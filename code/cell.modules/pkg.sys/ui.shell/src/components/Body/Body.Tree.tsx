@@ -8,17 +8,17 @@ import { ModuleViewTree } from '@platform/cell.module.view';
 
 type E = t.ShellEvent;
 
-export type ILayoutTreeProps = {
+export type IBodyTreeProps = {
   bus: t.EventBus;
   module: t.ShellModule;
   focusOnLoad?: boolean;
   style?: CssValue;
 };
-export type ILayoutTreeState = { isEmpty?: boolean };
+export type IBodyTreeState = { isEmpty?: boolean };
 
-export class LayoutTree extends React.PureComponent<ILayoutTreeProps, ILayoutTreeState> {
-  public state: ILayoutTreeState = {};
-  private state$ = new Subject<Partial<ILayoutTreeState>>();
+export class BodyTree extends React.PureComponent<IBodyTreeProps, IBodyTreeState> {
+  public state: IBodyTreeState = {};
+  private state$ = new Subject<Partial<IBodyTreeState>>();
   private unmounted$ = new Subject();
   private treeview$ = new Subject<t.TreeviewEvent>();
 
