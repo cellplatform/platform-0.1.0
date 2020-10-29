@@ -1,4 +1,4 @@
-import { expect, rx } from '../../test';
+import { expect, rx } from '../test';
 import { t, Module, id } from '../common';
 import { Shell } from '.';
 

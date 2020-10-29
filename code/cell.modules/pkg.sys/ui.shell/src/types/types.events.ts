@@ -26,7 +26,6 @@ export type IShellWindowResize = { width: number; height: number };
 /**
  * Fires when a module is to be registered within the shell.
  */
-
 export type IShellAddEvent = {
   type: 'Shell/add';
   payload: IShellAdd;

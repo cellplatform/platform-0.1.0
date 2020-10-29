@@ -1,7 +1,6 @@
 import * as t from './types';
+import * as constants from './constants';
 
-export { t };
+export { t, constants };
 export * from './libs';
-
-import { WebRuntime } from './libs';
-export const bundle = WebRuntime.bundle;
+export { model } from './model';

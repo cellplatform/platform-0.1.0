@@ -11,7 +11,7 @@ type P = t.ShellProps;
 
 export type IWindowProps = {
   module?: t.ShellModule;
-  theme?: IWindowTitlebarProps['theme'];
+  theme?: t.IWindowTitlebarProps['theme'];
   style?: CssValue;
   acceptNakedRegistrations?: boolean; // NB: Ignored if [module] property supplied.
   onLoaded?: t.ShellLoadedCallbackHandler;

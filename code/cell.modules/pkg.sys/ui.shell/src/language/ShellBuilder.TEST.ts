@@ -1,6 +1,6 @@
 import { builder } from '.';
 import { Shell } from '..';
-import { expect, rx } from '../../test';
+import { expect, rx } from '../test';
 import { Module, t } from '../common';
 import { create, TestModule } from '../module/Module.TEST';
 

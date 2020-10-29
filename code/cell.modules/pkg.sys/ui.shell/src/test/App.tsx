@@ -1,6 +1,6 @@
 import React from 'react';
-import { css, CssValue, bundle, log, t, Module } from '../common';
-import { Shell } from '../Shell';
+import { css, CssValue, bundle, log, t } from '../common';
+import { Shell, Window } from '..';
 import { TmplModule } from './module.Tmpl';
 
 import * as tt from './module.Tmpl/types';
@@ -18,21 +18,31 @@ export const App: React.FC<AppProps> = (props: AppProps = {}) => {
     const shell = Shell.builder(bus);
     const m1 = TmplModule.module(bus);
     const m2 = TmplModule.module(bus);
-    const m3 = TmplModule.module(bus);
+    // const m3 = TmplModule.module(bus);
 
     moduleUrl(m1, 'https://tdb.sfo2.digitaloceanspaces.com/tmp/thought-vectors.06.png');
     moduleUrl(m2, 'https://tdb.sfo2.digitaloceanspaces.com/tmp/leaf.png');
-    moduleUrl(m3, 'https://tdb.sfo2.digitaloceanspaces.com/tmp/homo-economicus.png');
+    // moduleUrl(m3, 'https://tdb.sfo2.digitaloceanspaces.com/tmp/homo-economicus.png');
 
     shell.name('hello world!');
-
-    //
-    shell.add(m1).label('foo');
+    shell.add(m1).label('consulting');
     shell.add(m2).label('leaf');
-    shell.add(m3).label('economicus');
+
+    const urls = [
+      'https://tdb.sfo2.digitaloceanspaces.com/tmp/consulting/homo-economicus.png',
+      'https://tdb.sfo2.digitaloceanspaces.com/tmp/consulting/innovation-infrastructure.png',
+      'https://tdb.sfo2.digitaloceanspaces.com/tmp/consulting/simplicity-far-side.png',
+      'https://tdb.sfo2.digitaloceanspaces.com/tmp/consulting/what-happens.png',
+    ];
+
+    urls.forEach((url, i) => {
+      const m = TmplModule.module(bus);
+      shell.add(m, m1).label(`Diagram ${i + 1}`);
+      moduleUrl(m, url);
+    });
   };
 
-  return <Shell.Window theme={'WHITE'} onLoaded={onLoaded} acceptNakedRegistrations={true} />;
+  return <Window theme={'WHITE'} onLoaded={onLoaded} acceptNakedRegistrations={true} />;
 };
 
 export default App;

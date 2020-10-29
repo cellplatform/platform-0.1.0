@@ -17,10 +17,7 @@
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@"
   },
-  "dependencies": {
-    "preset.env": "^0.0.0",
-    "sys.ui.primitives": "^0.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@platform/cell.compiler": "0.1.4",
     "react": "^17.0.0",
