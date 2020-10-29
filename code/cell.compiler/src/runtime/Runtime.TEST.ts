@@ -39,7 +39,7 @@ describe('Runtime', () => {
         expect(bundle.host).to.eql('http://localhost:3000');
         expect(bundle.cell).to.eql('cell:dev:A1');
         expect(bundle.dir).to.eql('');
-        expect(bundle.isDev).to.eql(true);
+        expect(bundle.dev).to.eql(true);
       });
 
       it('from __CELL_ENV__', () => {
@@ -47,7 +47,7 @@ describe('Runtime', () => {
         expect(bundle.host).to.eql('https://foo.com');
         expect(bundle.cell).to.eql('cell:foo:A1');
         expect(bundle.dir).to.eql('foobar');
-        expect(bundle.isDev).to.eql(false);
+        expect(bundle.dev).to.eql(false);
       });
 
       it('formats dir', () => {
