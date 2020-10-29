@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Module, t } from './common';
-import { Diagram } from './components/Diagram';
+import { Diagram } from './Diagram';
 
 type P = t.TmplProps;
 

@@ -2,7 +2,7 @@ import { builder } from '.';
 import { Shell } from '..';
 import { expect, rx } from '../test';
 import { Module, t } from '../common';
-import { create, TestModule } from '../module/Module.TEST';
+import { create, TestModule } from '../module/Shell.TEST';
 
 const data = (module: t.ShellModule) => module.state.props?.data as t.ShellData;
 const tree = (module: TestModule) => module.state.props?.treeview || {};

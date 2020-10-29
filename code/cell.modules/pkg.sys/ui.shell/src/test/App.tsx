@@ -2,8 +2,8 @@ import React from 'react';
 
 import { Shell, ShellWindow } from '..';
 import { bundle, CssValue, log, t } from '../common';
-import { TmplModule } from './module.Tmpl';
-import * as tt from './module.Tmpl/types';
+import { TmplModule } from './module.Sample';
+import * as tt from './module.Sample/types';
 
 type T = t.ITreeNode<tt.TmplProps>;
 
