@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { loadComponent } from './loadComponent';
+import { WebRuntime } from '../../../runtime.web';
 
 export type ISystem = {
   url: string;
@@ -28,7 +29,8 @@ export function System(props: ISystemProps = {}) {
     return <h2>Failed to load dynamic script: {url}</h2>;
   }
 
-  const Component = React.lazy(loadComponent(system.scope, system.module));
+  const loader = WebRuntime.remoteLoader(system.scope, system.module);
+  const Component = React.lazy(loader);
 
   return (
     <React.Suspense fallback={'Loading System'}>

@@ -1,4 +1,5 @@
 export type GlobalCellEnv = {
+  module: { name: string; version: string };
   bundle?: GlobalCellEnvBundle;
 };
 

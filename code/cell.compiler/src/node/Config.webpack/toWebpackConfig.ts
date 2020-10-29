@@ -1,4 +1,4 @@
-import { Model, t, toModel, fs } from './common';
+import { Model, t, toModel } from '../common';
 import { Plugins } from './wp.plugins';
 import { Rules } from './wp.rules';
 import { beforeCompile } from './hooks';

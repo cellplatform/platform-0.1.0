@@ -60,11 +60,10 @@ export async function tmpl(args: { dir: string; install?: boolean }) {
 
   // Finish up.
   log.info();
-  log.info.cyan(`  cd ${fs.basename(variables.dir)}`);
+  log.info(`  cd ${fs.basename(variables.dir)}`);
   if (!install) {
-    log.info.cyan(`  yarn install`);
+    log.info(`  yarn ${log.green('install')}`);
   }
-  log.info.cyan(`  yarn ${log.green('start')}`);
   log.info();
   log.info.gray(variables.dir);
 }

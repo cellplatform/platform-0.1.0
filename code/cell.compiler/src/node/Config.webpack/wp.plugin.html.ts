@@ -1,11 +1,13 @@
 import HtmlWebPackPlugin from 'html-webpack-plugin';
-import { IArgs, Model } from './common';
+
+import { Model } from '../common';
+import * as t from './types';
 
 /**
  * Plugin: HTML
  *         https://webpack.js.org/plugins/html-webpack-plugin
  */
-export function init(args: IArgs) {
+export function init(args: t.IArgs) {
   const model = Model(args.model);
   if (model.isNode) {
     return undefined;

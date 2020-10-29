@@ -1,6 +1,6 @@
 import { Configuration, webpack } from 'webpack';
 
-import { t, toModel } from './common';
+import { t, toModel } from '../common';
 import { wp } from '../Config.webpack';
 
 type M = t.CompilerModel | t.CompilerModelBuilder;

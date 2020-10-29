@@ -72,14 +72,10 @@ export const logger = {
     if (model.exposes) {
       const { title = 'Exports' } = options;
       const exposes = encoding.transformKeys(model.exposes, encoding.unescapePath);
-      const table = log.table({ border: false });
-      Object.keys(exposes).forEach((path) => {
-        const bullet = log.gray(' •');
-        const entry = log.white(path);
-        table.add([bullet, entry]);
-      });
       log.info.gray(title);
-      table.log();
+      Object.keys(exposes).forEach((path) => {
+        log.info(`  ${format.filepath(path)}`);
+      });
     }
     return logger;
   },

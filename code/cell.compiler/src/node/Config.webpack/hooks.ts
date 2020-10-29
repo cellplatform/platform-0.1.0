@@ -1,4 +1,4 @@
-import { t, StateObject, fs } from './common';
+import { t, StateObject, fs } from '../common';
 
 /**
  * Run [beforeCompile] handlers.

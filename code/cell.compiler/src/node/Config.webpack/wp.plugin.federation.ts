@@ -1,10 +1,11 @@
-import { DEFAULT, encoding, IArgs, ModuleFederationPlugin } from './common';
+import { DEFAULT, encoding, ModuleFederationPlugin } from '../common';
+import * as t from './types';
 
 /**
  * Plugin: Module Federation
  *         https://webpack.js.org/concepts/module-federation/
  */
-export function init(args: IArgs) {
+export function init(args: t.IArgs) {
   const { model } = args;
   const unescape = (obj?: Record<string, unknown>) =>
     encoding.transformKeys(obj || {}, encoding.unescapePath);

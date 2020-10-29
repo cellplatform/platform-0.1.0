@@ -1,11 +1,12 @@
-import { Compiler } from '@platform/cell.compiler';
+import { Compiler, Package } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
-    .namespace('sample.foo')
-    .port(3001)
-    .entry({ main: './src/test/entry' })
-    .expose('./Header', './src/components/Header')
+    .port(Package.compiler.port)
+    .namespace('foo')
+    .entry('./src/test/entry.web')
+    .static('./static')
     .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
-    .variant('dev', (config) => config.mode('dev'))
-    .variant('prod', (config) => config.mode('prod'));
+    .expose('./Dev', './src/test/App')
+    .variant('prod', (config) => config.mode('prod'))
+    .variant('dev', (config) => config.mode('dev'));

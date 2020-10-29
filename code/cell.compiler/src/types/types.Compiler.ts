@@ -9,6 +9,8 @@ export type Compiler = {
   cell: t.CompilerCreateCell;
 };
 
+export type CompilerPackageJson = t.INpmPackageJson & { compiler: { port: number } };
+
 export type BeforeCompile = (e: BeforeCompileArgs) => void;
 export type BeforeCompileModify<T> = (data: T) => void;
 export type BeforeCompileArgs = {

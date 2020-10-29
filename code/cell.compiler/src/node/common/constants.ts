@@ -1,4 +1,5 @@
 import { fs } from './libs';
+import * as t from './types';
 
 const CONFIG = {
   parent: () => undefined,
@@ -10,8 +11,14 @@ const CONFIG = {
   entry: {},
 };
 
+export const PKG = fs.readJsonSync(fs.resolve('./package.json')) as t.CompilerPackageJson;
+if (!PKG.compiler) {
+  PKG.compiler = { port: CONFIG.port };
+}
+
 export const PATH = {
   cachedir: fs.resolve('./node_modules/.cache/cell.compiler'),
+  tmp: fs.resolve('./tmp'),
 };
 
 export const FILE = {
@@ -25,10 +32,9 @@ export const FILE = {
   },
 };
 
-const WEBPACK = { rules: [], plugins: [] };
 export const DEFAULT = {
   CONFIG,
-  WEBPACK,
-  BASE: 'base', // Base confirmation name.
+  WEBPACK: { rules: [], plugins: [] },
+  BASE: 'base', // Base configuration name.
   FILE,
 };

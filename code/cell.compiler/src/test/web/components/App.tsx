@@ -7,10 +7,10 @@ type Css = React.CSSProperties;
 
 export type IAppState = { url?: string };
 
-const bundle = WebRuntime.bundle(__CELL_ENV__);
+const bundle = WebRuntime.bundle;
 
-console.log('-------------------------------------------');
-console.log('bundle', bundle);
+console.log('module', WebRuntime.module);
+console.log('bundle', WebRuntime.bundle);
 console.log("bundle.path('/static/images/wax.png')", bundle.path('/static/images/wax.png'));
 
 /**
@@ -32,8 +32,16 @@ export const App = () => {
   };
 
   const setFoo = () => {
-    const url = 'https://dev.db.team/cell:ckgse6r8l000ccwethl0ubdrh:A1/file/sample/remoteEntry.js';
+    const url =
+      'http://localhost:5000/cell:ckgu68hjj000ciwet59do0wb4:A1/file/sample/remoteEntry.js';
+    const scope = 'foo';
+    const module = './Dev';
+    setSystem({ url, scope, module });
+    setState({ url });
+  };
 
+  const setCodeEditor = () => {
+    const url = 'https://dev.db.team/cell:ckgse6r8l000ccwethl0ubdrh:A1/file/sample/remoteEntry.js';
     const scope = 'sys.ui.editor.code';
     const module = './Dev';
     setSystem({ url, scope, module });
@@ -75,9 +83,10 @@ export const App = () => {
       <img src={bundle.path('/static/images/wax.png')} style={styles.seal} />
 
       <div style={styles.buttons}>
-        {/* <button onClick={setter(3001, 'sample.foo', './Header')}>sample.foo</button>
-        <button onClick={setter(3003, 'sys.ui.editor.code', './Dev')}>code</button> */}
-        <button onClick={setFoo}>code (from cell)</button>
+        <button onClick={setter(3000, 'foo', './Dev')}>foo</button>
+        {/* <button onClick={setter(3003, 'sys.ui.editor.code', './Dev')}>code</button> */}
+        <button onClick={setFoo}>foo(2)</button>
+        <button onClick={setCodeEditor}>code (from cell)</button>
       </div>
       <div>{state?.url || '-'}</div>
       <hr style={styles.hr} />
