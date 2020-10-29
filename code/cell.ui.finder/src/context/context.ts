@@ -10,7 +10,7 @@ export function create(args: { env: t.IEnv }) {
   const { env } = args;
   const event$ = env.event$ as Subject<t.AppEvent>;
   const store = createStore({ event$ });
-  const bus =rx.bus<t.AppEvent>(event$)
+  const bus = rx.bus<t.AppEvent>(event$);
 
   // Create the context.
   const ctx: t.IAppContext = {
