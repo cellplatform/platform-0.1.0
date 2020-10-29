@@ -28,16 +28,17 @@ export const Runtime = {
     const port = urls.port;
     const host = `${urls.protocol}://${urls.host}${port === 80 ? '' : `:${port}`}`;
 
+    const path = (path: string) =>
+      isDev
+        ? `${host}/${trimSlash(path)}`
+        : urls.cell(cell).file.byName(prepend(dir, path)).toString();
+
     return {
       isDev,
       host,
       cell,
       dir,
-      path(path: string) {
-        return isDev
-          ? `${host}/${trimSlash(path)}`
-          : urls.cell(cell).file.byName(prepend(dir, path)).toString();
-      },
+      path,
     };
   },
 

@@ -1,7 +1,7 @@
 /**
  * https://github.com/suren-atoyan/monaco-react
  */
-import MonacoEditor, { monaco } from '@monaco-editor/react';
+import MonacoEditorCore, { monaco } from '@monaco-editor/react';
 import React from 'react';
 
 import { bundle } from '../common';
@@ -18,7 +18,7 @@ console.groupEnd();
 monaco.config({ paths: { vs } });
 
 export const Editor: React.FC = () => {
-  return <MonacoEditor language={'typescript'} />;
+  return <MonacoEditorCore language={'typescript'} />;
 };
 
 export default Editor;
