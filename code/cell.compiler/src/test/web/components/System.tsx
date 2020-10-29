@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { loadComponent } from './loadComponent';
 import { WebRuntime } from '../../../runtime.web';
 
 export type ISystem = {

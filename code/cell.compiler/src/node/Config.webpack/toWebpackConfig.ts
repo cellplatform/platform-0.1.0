@@ -34,12 +34,16 @@ export function toWebpackConfig(
       ...Rules.init({ model: data, isProd: prod, isDev: dev }),
       ...model.rules(),
     ].filter(Boolean);
+
     const plugins = [
       ...Plugins.init({ model: data, isProd: prod, isDev: dev }),
       ...model.plugins(),
     ].filter(Boolean);
 
-    const devServer: t.WpDevServer = { port, hot: true };
+    const devServer: t.WpDevServer = {
+      port,
+      hot: true,
+    };
 
     return {
       name,

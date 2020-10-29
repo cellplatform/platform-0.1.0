@@ -1,1 +1,4 @@
-export type TEMP_TYPE = 'foo'; // TEMP 🐷
+export * from '../types';
+
+export type Object = Record<string, unknown>;
+export type IDisposable = { dispose(): void };

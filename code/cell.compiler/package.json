@@ -8,7 +8,7 @@
     "cell.compiler": "lib/node.bin/index.js"
   },
   "compiler": {
-    "port": 1234
+    "port": 5050
   },
   "scripts": {
     "test": "ts test",

@@ -2,6 +2,10 @@ import { GlobalCellEnv } from '../types/global';
 import { Uri, Urls } from '@platform/cell.schema';
 import { encoding } from '../common/encoding';
 
+const toEnv = (input?: GlobalCellEnv) => {
+  return !input && typeof __CELL_ENV__ !== 'undefined' ? __CELL_ENV__ : input;
+};
+
 export const Runtime = {
   /**
    * Wrapper around the __CELL_ENV__ constants inserted into modules
@@ -12,12 +16,12 @@ export const Runtime = {
    *    -  wp.plugin.env => [DefinePlugin]
    */
   bundle(input?: GlobalCellEnv) {
-    input = input || __CELL_ENV__;
+    input = toEnv(input);
     const location = typeof window === 'object' ? window.location : undefined;
     const bundle = input?.bundle;
-    const isDev = !Boolean(bundle) || (bundle?.cell || '').startsWith('cell:dev:');
+    const dev = !Boolean(bundle) || (bundle?.cell || '').startsWith('cell:dev:');
 
-    if (isDev) {
+    if (dev) {
       Uri.ALLOW.NS = [...Uri.ALLOW.NS, 'dev'];
     }
 
@@ -29,24 +33,18 @@ export const Runtime = {
     const host = `${urls.protocol}://${urls.host}${port === 80 ? '' : `:${port}`}`;
 
     const path = (path: string) =>
-      isDev
+      dev
         ? `${host}/${trimSlash(path)}`
         : urls.cell(cell).file.byName(prepend(dir, path)).toString();
 
-    return {
-      isDev,
-      host,
-      cell,
-      dir,
-      path,
-    };
+    return { dev, host, cell, dir, path };
   },
 
   /**
    * Extract module information from __CELL_ENV__.
    */
   module(input?: GlobalCellEnv) {
-    input = input || __CELL_ENV__;
+    input = toEnv(input);
     const module: GlobalCellEnv['module'] = input?.module || { name: '', version: '' };
     return module;
   },
