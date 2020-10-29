@@ -93,10 +93,10 @@ export const App = () => {
 
       <div style={styles.buttons}>
         <button onClick={setter(3000, 'foo', './Dev')}>foo</button>
-        {/* <button onClick={setter(3003, 'sys.ui.editor.code', './Dev')}>code</button> */}
         <button onClick={setFoo}>foo(2)</button>
         <button onClick={setAi}>ai</button>
-        <button onClick={setCodeEditor}>code (from cell)</button>
+        <button onClick={setter(3003, 'sys.ui.editor.code', './Dev')}>code (local)</button>
+        <button onClick={setCodeEditor}>code (remote)</button>
       </div>
       <div>{state?.url || '-'}</div>
       <hr style={styles.hr} />
