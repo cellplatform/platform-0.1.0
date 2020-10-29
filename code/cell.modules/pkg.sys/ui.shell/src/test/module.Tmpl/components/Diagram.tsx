@@ -16,6 +16,7 @@ export const Diagram: React.FC<DiagramProps> = (props: DiagramProps) => {
       backgroundSize: 'contain',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
+      MarginX: 10,
     }),
   };
 
