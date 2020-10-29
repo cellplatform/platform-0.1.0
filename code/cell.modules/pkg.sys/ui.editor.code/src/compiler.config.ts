@@ -7,7 +7,7 @@ export default () =>
     .namespace('sys.ui.editor.code')
     .entry('./src/test/entry')
     .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
-    .static('./vs')
+    .static('./static')
 
     .expose('./Dev', './src/test/App')
     .expose('./Editor', './src/components/Editor')
@@ -15,4 +15,7 @@ export default () =>
     .variant('prod', (config) => config.mode('prod'))
     .variant('dev', (config) => config.mode('dev'))
 
-    .afterCompile((e) => copy.vs(['vs']));
+    .beforeCompile((e) => {
+      copy.defs();
+      copy.vs();
+    });

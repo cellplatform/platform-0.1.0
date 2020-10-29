@@ -8,7 +8,7 @@ import { bundle } from '../common';
 
 // import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-const vs = bundle.path('/vs');
+const vs = bundle.path('/static/vs');
 
 console.group('🌳 editor');
 console.log('bundle', bundle);

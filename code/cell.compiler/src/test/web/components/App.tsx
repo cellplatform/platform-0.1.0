@@ -40,6 +40,15 @@ export const App = () => {
     setState({ url });
   };
 
+  const setAi = () => {
+    const url =
+      'http://localhost:5000/cell:ckgu7ryv8000cg0etbjfwet91:A1/file/sample/remoteEntry.js';
+    const scope = 'ai';
+    const module = './Dev';
+    setSystem({ url, scope, module });
+    setState({ url });
+  };
+
   const setCodeEditor = () => {
     const url = 'https://dev.db.team/cell:ckgse6r8l000ccwethl0ubdrh:A1/file/sample/remoteEntry.js';
     const scope = 'sys.ui.editor.code';
@@ -86,6 +95,7 @@ export const App = () => {
         <button onClick={setter(3000, 'foo', './Dev')}>foo</button>
         {/* <button onClick={setter(3003, 'sys.ui.editor.code', './Dev')}>code</button> */}
         <button onClick={setFoo}>foo(2)</button>
+        <button onClick={setAi}>ai</button>
         <button onClick={setCodeEditor}>code (from cell)</button>
       </div>
       <div>{state?.url || '-'}</div>
