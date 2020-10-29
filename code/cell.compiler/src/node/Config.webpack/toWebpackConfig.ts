@@ -13,32 +13,33 @@ export function toWebpackConfig(
   options: { beforeCompile?: t.BeforeCompile } = {},
 ): t.WpConfig {
   const toConfig = (input: t.CompilerModel): t.WpConfig => {
-    const settings = Model(input);
-    const model = settings.toObject();
+    const model = Model(input);
+    const data = model.toObject();
 
     /**
      * Values (with defaults).
      */
-    const mode = settings.mode();
-    const port = settings.port();
-    const name = settings.name();
+    const mode = model.mode();
+    const port = model.port();
+    const name = model.name();
 
-    const prod = settings.prod;
-    const dev = settings.dev;
+    const prod = model.isProd;
+    const dev = model.isDev;
 
-    const entry = settings.entry();
-    const target = settings.target();
+    const entry = model.entry();
+    const target = model.target();
+    const path = model.bundleDir;
 
-    const dir = settings.dir();
-    const path = `${dir}/${target.join(',')}`;
+    const rules = [
+      ...Rules.init({ model: data, isProd: prod, isDev: dev }),
+      ...model.rules(),
+    ].filter(Boolean);
+    const plugins = [
+      ...Plugins.init({ model: data, isProd: prod, isDev: dev }),
+      ...model.plugins(),
+    ].filter(Boolean);
 
-    const rules = [...Rules.init({ model, prod, dev }), ...settings.rules()].filter(Boolean);
-    const plugins = [...Plugins.init({ model, prod, dev }), ...settings.plugins()].filter(Boolean);
-
-    const devServer = {
-      port,
-      hot: true,
-    };
+    const devServer: t.WpDevServer = { port, hot: true };
 
     return {
       name,

@@ -1,6 +1,5 @@
-import { log, t } from '../common';
-import { logger, wp } from './util';
-import { afterCompile } from './util';
+import { log, logger, t } from '../common';
+import { afterCompile, wp } from './util';
 
 /**
  * Bundle and watch for file changes.

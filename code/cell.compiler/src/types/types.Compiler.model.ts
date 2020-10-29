@@ -11,17 +11,19 @@ export type CompilerModel = {
    * Values
    */
   name: string; // Configuration name (eg: "base", "prod", "dev")
-  scope?: string; // Module federation scope: https://webpack.js.org/concepts/module-federation/#dynamic-remote-containers
+  namespace?: string; // Module federation "scope": https://webpack.js.org/concepts/module-federation/#dynamic-remote-containers
   title?: string;
   mode: t.WpMode;
   port?: number;
-  target?: t.WpTarget;
+  target?: string;
   dir?: string;
+  static?: CompilerModelStatic | CompilerModelStatic[];
   lint?: boolean;
   entry?: Record<string, string>;
   exposes?: Record<string, string>;
   remotes?: Record<string, string>;
   shared?: Record<string, string | t.WebpackShared>;
+  env?: Record<string, t.Json>;
 
   /**
    * Hooks
@@ -40,3 +42,5 @@ export type CompilerModelWebpack = {
   rules: t.WpRule[];
   plugins: t.WpPlugin[];
 };
+
+export type CompilerModelStatic = { dir?: string };

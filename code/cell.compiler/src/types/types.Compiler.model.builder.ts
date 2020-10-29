@@ -27,19 +27,21 @@ export type CompilerModelMethods = {
   beforeCompile(handler: t.BeforeCompile): B;
   afterCompile(handler: t.AfterCompile): B;
 
-  title(value: string | undefined): B;
-  scope(value: string): B;
+  title(value: string | null): B;
+  namespace(value: string): B;
   mode(value: t.WpMode | 'prod' | 'dev'): B;
-  port(value: number | undefined): B;
-  target(value: t.WpTarget | undefined): B;
-  dir(value: string | undefined): B;
-  lint(value: boolean | undefined): B;
+  port(value: number | null): B;
+  target(value: string | null): B;
+  dir(value: string | null): B;
+  static(value: string | string[] | null): B;
+  lint(value: boolean | null): B;
   entry(path: string): B; // Default key: 'main'
   entry(key: string, path?: string | null): B;
   entry(map: Record<string, string | null>): B;
   expose(key: string, path: string | null): B;
   remote(key: string, path: string | null): B;
   shared(fn: CompilerConfigSharedFunc): B;
+  env(value: Record<string, t.Json> | null): B;
 };
 
 export type CompilerModelWebpackMethods = {

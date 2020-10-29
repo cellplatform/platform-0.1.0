@@ -45,31 +45,5 @@ describe('Compiler (Tasks)', () => {
       test('localhost:5000', 'http://localhost:5000');
       test(' foo.com  ', 'https://foo.com');
     });
-
-    it('dir (from model)', () => {
-      const { builder } = create();
-      const test = (expected: string) => {
-        const cell = Compiler.cell(host, 'cell:foo:A1');
-        const dir = cell.dir(builder);
-        expect(dir.endsWith(expected)).to.eql(true);
-      };
-
-      test('node_modules/.cache/cell.compiler/cell-foo-A1/web/foo');
-
-      builder.mode('dev');
-      test('/cell-foo-A1/web/foo');
-
-      builder.target(false);
-      test('/cell-foo-A1/web/foo');
-
-      builder.target(undefined);
-      test('/cell-foo-A1/web/foo');
-
-      builder.target('node');
-      test('/cell-foo-A1/node/foo');
-
-      builder.target('  ');
-      test('/cell-foo-A1/web/foo');
-    });
   });
 });

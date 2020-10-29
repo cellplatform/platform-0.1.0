@@ -15,7 +15,7 @@ export async function serve(argv: t.Argv) {
 
   const port = model.port();
   const dir = model.dir() || '';
-  const target = model.target('web')[0];
+  const target = model.target('web');
 
   const cwd = fs.join(dir, target);
   const cmd = `serve --listen ${port} --cors`;

@@ -1,4 +1,4 @@
-import { Builder, DEFAULT, encoding, fs, parseUrl, t, value as valueUtil } from '../common';
+import { Builder, DEFAULT, encoding, fs, R, t, value as valueUtil } from '../common';
 import { wp } from '../Config.webpack';
 import { webpackHandlers } from './handlers.webpack';
 import { validate } from './validate';
@@ -24,13 +24,13 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
   toWebpack: (args) => wp.toWebpackConfig(args.model.state),
   name: (args) => args.model.state.name,
 
-  scope(args) {
+  namespace(args) {
     const value = format.string(args.params[0], { trim: true });
-    const error = validate.scopename(value).error;
+    const error = validate.namespace(value).error;
     if (error) {
-      throw new Error(`Invalid scope. ${error}`);
+      throw new Error(`Invalid namespace ("scope"). ${error}`);
     }
-    args.model.change((draft) => (draft.scope = value));
+    args.model.change((draft) => (draft.namespace = value));
   },
 
   title(args) {
@@ -59,15 +59,7 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
 
   target(args) {
     args.model.change((draft) => {
-      const input = args.params[0];
-      if (input === false || input === undefined) {
-        draft.target = input;
-      } else {
-        const list = (Array.isArray(input) ? input : [input])
-          .map((item) => format.string(item, { trim: true }))
-          .filter((item) => Boolean(item)) as string[];
-        draft.target = list.length === 0 ? undefined : list;
-      }
+      draft.target = format.string(args.params[0], { trim: true });
     });
   },
 
@@ -75,6 +67,25 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     args.model.change((draft) => {
       const input = format.string(args.params[0], { trim: true });
       draft.dir = input ? fs.resolve(input) : undefined;
+    });
+  },
+
+  static(args) {
+    args.model.change((draft) => {
+      const input = args.params[0];
+      if (input === null) {
+        draft.static = undefined;
+      } else {
+        const value = Array.isArray(input) ? input : [input];
+        draft.static = value
+          .filter((dir) => typeof dir === 'string')
+          .map((dir) => dir.trim())
+          .filter(Boolean)
+          .map((dir) => fs.resolve(dir))
+          .map((dir) => ({ dir }));
+        draft.static = (draft.static || []).length === 0 ? undefined : draft.static;
+        draft.static = draft.static ? R.uniq(draft.static) : draft.static;
+      }
     });
   },
 
@@ -87,6 +98,18 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
   lint(args) {
     args.model.change((draft) => {
       draft.lint = format.boolean(args.params[0]);
+    });
+  },
+
+  env(args) {
+    args.model.change((draft) => {
+      const input = args.params[0];
+      if (input === null) {
+        draft.env = undefined;
+      } else {
+        // draft.env = draft.env || (draft.env = {});
+        draft.env = { ...draft.env, ...input };
+      }
     });
   },
 

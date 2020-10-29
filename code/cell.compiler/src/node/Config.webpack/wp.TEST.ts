@@ -5,7 +5,7 @@ import { wp } from '.';
 
 const create = (name = 'foo') => {
   const model = ConfigBuilder.model(name);
-  const builder = Compiler.config(model).scope('sys.foo');
+  const builder = Compiler.config(model).namespace('sys.foo');
   return { model, builder };
 };
 
@@ -42,7 +42,7 @@ describe('Compiler (Webpack)', () => {
     expect(wp.toWebpackConfig(builder).name).to.eql('foobar');
   });
 
-  it('scope', () => {
+  it('namespace', () => {
     const { builder } = create();
 
     const options = (builder: t.CompilerModelBuilder) => {
@@ -51,30 +51,30 @@ describe('Compiler (Webpack)', () => {
       return mf._options;
     };
 
-    builder.scope('  foobar ');
+    builder.namespace('  foobar ');
     expect(options(builder).name).to.eql('foobar');
 
-    builder.scope('foo.bar');
-    expect(options(builder).name).to.eql(encoding.escapeScope('foo.bar'));
+    builder.namespace('foo.bar');
+    expect(options(builder).name).to.eql(encoding.escapeNamespace('foo.bar'));
   });
 
-  it('scope: throw (scope not set)', () => {
+  it('namespace: throw (namespace not set)', () => {
     const builder = Compiler.config();
-    expect(builder.toObject().scope).to.eql(undefined);
+    expect(builder.toObject().namespace).to.eql(undefined);
 
     const fn = () => wp.toWebpackConfig(builder);
-    expect(fn).to.throw(/requires a \"scope\"/);
+    expect(fn).to.throw(/requires a \"scope\" \(namespace\)/);
   });
 
   it('target', () => {
     const { builder } = create();
-    expect(wp.toWebpackConfig(builder).target).to.eql(['web']);
+    expect(wp.toWebpackConfig(builder).target).to.eql('web');
 
     builder.target('web');
-    expect(wp.toWebpackConfig(builder).target).to.eql(['web']);
+    expect(wp.toWebpackConfig(builder).target).to.eql('web');
 
-    builder.target(['web', 'node12.18']);
-    expect(wp.toWebpackConfig(builder).target).to.eql(['web', 'node12.18']);
+    builder.target('node12.18');
+    expect(wp.toWebpackConfig(builder).target).to.eql('node12.18');
   });
 
   it('output dir', () => {
@@ -90,11 +90,8 @@ describe('Compiler (Webpack)', () => {
     builder.target('node');
     expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('dist/node'));
 
-    builder.target(['node', 'web']);
-    expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('dist/node,web'));
-
     builder.dir('foo');
-    expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('foo/node,web'));
+    expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('foo/node'));
   });
 
   it('rules', () => {

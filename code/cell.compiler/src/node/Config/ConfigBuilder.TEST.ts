@@ -199,7 +199,7 @@ describe('Compiler (Config)', () => {
       const config = builder
         .port(1234)
         .mode('dev')
-        .scope('foo.bar')
+        .namespace('foo.bar')
         .beforeCompile((e) => e.modifyWebpack((webpack) => (webpack.target = undefined)));
 
       const webpack = config.toWebpack();
@@ -231,11 +231,11 @@ describe('Compiler (Config)', () => {
 
     it('scope', () => {
       const { model, builder } = create();
-      expect(model.state.scope).to.eql(undefined);
+      expect(model.state.namespace).to.eql(undefined);
 
       const test = (input: any, expected: any) => {
-        builder.scope(input);
-        expect(model.state.scope).to.eql(expected);
+        builder.namespace(input);
+        expect(model.state.namespace).to.eql(expected);
       };
 
       test('foo', 'foo');
@@ -249,11 +249,11 @@ describe('Compiler (Config)', () => {
 
     it('scope: throw (invalid scope-name)', () => {
       const { model, builder } = create();
-      expect(model.state.scope).to.eql(undefined);
+      expect(model.state.namespace).to.eql(undefined);
 
       const test = (input: any) => {
-        const fn = () => builder.scope(input);
-        expect(fn).to.throw(/Invalid scope/);
+        const fn = () => builder.namespace(input);
+        expect(fn).to.throw(/Invalid namespace/);
       };
 
       test('');
@@ -307,19 +307,17 @@ describe('Compiler (Config)', () => {
 
     it('target', () => {
       const { model, builder } = create();
-      expect(model.state.target).to.eql(['web']);
+      expect(model.state.target).to.eql('web');
 
       const test = (input: any, expected: any) => {
         builder.target(input);
         expect(model.state.target).to.eql(expected);
       };
 
-      test(false, false);
+      test(false, undefined);
       test(undefined, undefined);
-      test('  web  ', ['web']);
-      test(['web  '], ['web']);
-      test(['web', '  node'], ['web', 'node']);
-      test(['webworker', false], ['webworker']);
+      test('  web  ', 'web');
+      test('  node', 'node');
       test('  ', undefined);
       test(null, undefined);
       test({}, undefined);
@@ -342,6 +340,25 @@ describe('Compiler (Config)', () => {
       test({}, undefined);
     });
 
+    it('static', () => {
+      const { model, builder } = create();
+      expect(model.state.static).to.eql(undefined);
+
+      const test = (input: any, expected: any) => {
+        builder.static(input);
+        expect(model.state.static).to.eql(expected);
+      };
+
+      test('foo', [{ dir: fs.resolve('foo') }]);
+      test(['foo', 'bar'], [{ dir: fs.resolve('foo') }, { dir: fs.resolve('bar') }]);
+      test(['foo', 'foo', 'foo'], [{ dir: fs.resolve('foo') }]); // NB: Unique.
+
+      test('', undefined);
+      test('  ', undefined);
+      test(null, undefined);
+      test({}, undefined);
+    });
+
     it('lint', () => {
       const { builder, model } = create();
       expect(builder.toObject().lint).to.eql(undefined);
@@ -355,6 +372,20 @@ describe('Compiler (Config)', () => {
       test(false, false);
       test(undefined, undefined);
       test({}, undefined);
+    });
+
+    it('env', () => {
+      const { builder, model } = create();
+      expect(model.state.env).to.eql(undefined);
+
+      builder.env({ foo: '123' }).env({ bar: [456] });
+      expect(model.state.env).to.eql({ foo: '123', bar: [456] });
+
+      builder.env(null);
+      expect(model.state.env).to.eql(undefined);
+
+      builder.env({ foo: 123 }).env({ foo: 456 });
+      expect(model.state.env).to.eql({ foo: 456 });
     });
   });
 

@@ -1,8 +1,0 @@
-{
-  "extends": "@platform/ts/tsconfig.json",
-  "include": ["src"],
-  "compilerOptions": {
-    "outDir": "lib",
-    "noUnusedLocals": false
-  }
-}

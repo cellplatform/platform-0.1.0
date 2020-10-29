@@ -14,7 +14,7 @@ export const Labels: React.FC<ILabelsProps> = (props: ILabelsProps = {}) => {
     return null;
   }
 
-  const { fontSize = 12, color = -0.5 } = props;
+  const { fontSize = 11, color = -0.5 } = props;
   const offset = { x: 8, y: -22 };
 
   const isMap = isLabelMap(props.label);

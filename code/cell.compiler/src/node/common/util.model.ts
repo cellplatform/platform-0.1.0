@@ -26,12 +26,30 @@ export function Model(input: M) {
   const res = {
     toObject: () => model,
 
-    get prod() {
+    get isProd() {
       return res.mode() === 'production';
     },
 
-    get dev() {
+    get isDev() {
       return res.mode() === 'development';
+    },
+
+    get isNode() {
+      return res.target() === 'node';
+    },
+
+    get entryFile() {
+      const target = res.target();
+      const ENTRY = DEFAULT.FILE.JS.ENTRY;
+      return target === 'node' ? ENTRY.NODE : ENTRY.WEB;
+    },
+
+    get bundleDir() {
+      return `${res.dir()}/${res.target()}`;
+    },
+
+    get env() {
+      return model.env || {};
     },
 
     name(defaultValue?: string) {
@@ -42,9 +60,8 @@ export function Model(input: M) {
       return model.mode || defaultValue || DEFAULT.CONFIG.mode;
     },
 
-    target(...defaultTargets: string[]) {
-      defaultTargets = defaultTargets.length === 0 ? DEFAULT.CONFIG.target : defaultTargets;
-      return toTargetArray(model.target, ...defaultTargets);
+    target(defaultTarget?: string) {
+      return model.target || defaultTarget || DEFAULT.CONFIG.target;
     },
 
     port(defaultPort?: number) {
@@ -53,7 +70,12 @@ export function Model(input: M) {
 
     dir(defaultValue?: string) {
       const dir = model.dir || defaultValue || DEFAULT.CONFIG.dir;
-      return dir ? fs.resolve(dir) : undefined;
+      return fs.resolve(dir);
+    },
+
+    static() {
+      const value = model.static || [];
+      return Array.isArray(value) ? value : [value];
     },
 
     entry(defaultValue?: t.CompilerModel['entry']) {
@@ -70,18 +92,4 @@ export function Model(input: M) {
   };
 
   return res;
-}
-
-/**
- * Derive targets as an array
- */
-export function toTargetArray(
-  value: t.CompilerModel['target'],
-  ...defaultTargets: string[]
-): string[] {
-  if (!value) {
-    return defaultTargets;
-  } else {
-    return Array.isArray(value) ? value : [value];
-  }
 }

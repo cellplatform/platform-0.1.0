@@ -1,20 +1,13 @@
 import { t } from '../common';
 import svgToMiniDataURI from 'mini-svg-data-uri';
 
-type IArgs = { model: t.CompilerModel; prod: boolean; dev: boolean };
+type IArgs = { model: t.CompilerModel; isProd: boolean; isDev: boolean };
 
 export const Rules = {
   /**
    * Initialize rules.
    */
   init(args: IArgs) {
-    return Rules.default(args);
-  },
-
-  /**
-   * Default preset.
-   */
-  default(args: IArgs): t.WpRule[] {
     return [Rules.css(args), Rules.typescript(args), Rules.svg(args)];
   },
 

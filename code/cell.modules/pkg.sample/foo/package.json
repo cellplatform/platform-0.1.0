@@ -1,24 +1,24 @@
 {
   "name": "foo",
-  "version": "1.0.4",
+  "version": "0.0.0",
+  "sideEffects": false,
   "compiler": {
-    "port": 3001
+    "port": 3000
   },
   "scripts": {
     "build": "ts build --no-esm $@",
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",
-    "bundle": "cell.compiler bundle --name prod $@",
+    "bundle": "cell.compiler bundle $@",
     "watch": "cell.compiler watch $@",
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "yarn cmd serve $@",
-    "tmp": "cell.compiler $@"
+    "serve": "cell.compiler serve $@"
   },
   "dependencies": {},
   "devDependencies": {
-    "@platform/cell.compiler": "^0.1.4",
+    "@platform/cell.compiler": "0.1.4",
     "react": "^17.0.0",
     "react-dom": "^17.0.0"
   },

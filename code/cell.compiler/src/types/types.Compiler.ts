@@ -6,9 +6,10 @@ export type Compiler = {
   dev: t.CompilerRunDev;
   watch: t.CompilerRunWatch;
   bundle: t.CompilerRunBundle;
-  upload: t.CompilerRunUpload;
   cell: t.CompilerCreateCell;
 };
+
+export type CompilerPackageJson = t.INpmPackageJson & { compiler: { port: number } };
 
 export type BeforeCompile = (e: BeforeCompileArgs) => void;
 export type BeforeCompileModify<T> = (data: T) => void;

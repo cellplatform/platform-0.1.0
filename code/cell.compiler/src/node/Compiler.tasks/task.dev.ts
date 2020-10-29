@@ -1,8 +1,8 @@
 import DevServer from 'webpack-dev-server';
 
-import { log, Model, t, toModel } from '../common';
+import { log, Model, t, toModel, logger } from '../common';
 import { wp } from '../Config.webpack';
-import { logger, afterCompile } from './util';
+import { afterCompile } from './util';
 
 /**
  * Run dev server.

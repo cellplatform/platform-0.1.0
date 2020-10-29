@@ -1,7 +1,6 @@
-import { defaultValue, fs, Model, parseUrl, t, Uri, PATH } from '../common';
+import { logger, parseUrl, t, Uri } from '../common';
 import { bundle } from './task.bundle';
-import { logger } from './util';
-import { upload } from './task.upload';
+import { upload } from './task.cell.upload';
 
 type B = t.CompilerModelBuilder;
 
@@ -10,54 +9,49 @@ type B = t.CompilerModelBuilder;
  */
 export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
   const uri = typeof cellInput === 'object' ? cellInput : Uri.cell(cellInput);
-  const urn = uri.toString().replace(/\:/g, '-');
-  const baseDir = fs.join(PATH.cachedir, urn);
-
   const parsedHost = parseUrl(hostInput);
   const host = parsedHost.host;
 
-  const exists = (config: B) => fs.pathExists(cell.dir(config));
+  const runBundle = async (args: {
+    config: B;
+    env: { host: string; cell: string; dir?: string };
+    silent?: boolean;
+  }) => {
+    const { env, silent } = args;
+    const config = args.config.clone().env({ bundle: env });
+    return await bundle(config, { silent });
+  };
 
   const cell: t.CompilerCell = {
     host: `${parsedHost.protocol}//${parsedHost.host}`,
     uri,
-    dir(config) {
-      const model = Model(config);
-      const target = model.target('web').join();
-      return fs.join(baseDir, target, `${model.name()}`);
-    },
-
-    async bundle(config, options = {}) {
-      const { silent } = options;
-      const uploadConfig = config.clone().dir(cell.dir(config));
-      return await bundle(uploadConfig, { silent });
-    },
 
     async upload(config, options = {}) {
-      const { silent, force, targetDir } = options;
+      const { silent, targetDir } = options;
+      const targetCell = uri.toString();
 
-      if (force || !(await exists(config))) {
-        await cell.bundle(config, { silent, targetDir });
-      }
+      /**
+       * [1] Bundle the code.
+       */
+      const env = { host, cell: targetCell, dir: targetDir };
+      await runBundle({ config, env, silent });
 
       if (!silent) {
         logger.hr();
       }
 
-      const sourceDir = cell.dir(config);
-      const targetCell = uri.toString();
-      const res = await upload({ host, sourceDir, targetCell, targetDir, silent });
-
-      if (defaultValue(options.cleanAfter, true)) {
-        await cell.clean(config);
-      }
+      /**
+       * [2] Upload to remote server.
+       */
+      const res = await upload({
+        host,
+        config: config.toObject(),
+        targetCell,
+        targetDir,
+        silent,
+      });
 
       return res;
-    },
-
-    async clean(config) {
-      const path = config ? cell.dir(config) : baseDir;
-      await fs.remove(path);
     },
   };
 

@@ -13,14 +13,14 @@ export const encoding = {
   unescapePath: (value: string) => value.replace(/\\/g, '/'),
 
   /**
-   * Escape a scope name.
+   * Escape a "scope" namespace.
    */
-  escapeScope: (value: string) => value.replace(/\./g, '__'),
+  escapeNamespace: (value: string) => value.replace(/\./g, '__'),
 
   /**
-   * Removing escaping from scope name.
+   * Removing escaping from "scope" namespace.
    */
-  unescapeScope: (value: string) => value.replace(/__/g, '.'),
+  unescapeNamespace: (value: string) => value.replace(/__/g, '.'),
 
   /**
    * Apply encoding function to an object.

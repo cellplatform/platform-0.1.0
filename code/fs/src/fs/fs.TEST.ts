@@ -34,7 +34,7 @@ describe('size', () => {
 
     it('toString', async () => {
       const res = await fs.size.dir('./test/file');
-      expect(res.toString()).to.eql('826 B');
+      expect(res.toString()).to.eql('827 B');
     });
 
     it('nothing when path does not exist', async () => {
