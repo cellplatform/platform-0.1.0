@@ -1,11 +1,9 @@
-import { Compiler } from '@platform/cell.compiler';
+import { Compiler, Package } from '@platform/cell.compiler';
 import { copy } from './node/fs.copy';
-
-const pkg = require('../package.json') as { version: string; compiler: { port: number } }; // eslint-disable-line
 
 export default () =>
   Compiler.config()
-    .port(pkg.compiler.port)
+    .port(Package.compiler.port)
     .namespace('sys.ui.editor.code')
     .entry('./src/test/entry')
     .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))

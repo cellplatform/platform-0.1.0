@@ -1,10 +1,8 @@
-import { Compiler } from '@platform/cell.compiler';
-
-const pkg = require('../package.json') as { version: string; compiler: { port: number } }; // eslint-disable-line
+import { Compiler, Package } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config('primitives')
-    .port(pkg.compiler.port)
+    .port(Package.compiler.port)
     .title('sys.ui.primitives')
     .entry('./src/test/entry')
     .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
