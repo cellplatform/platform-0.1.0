@@ -8,13 +8,12 @@
     "build": "ts build --no-esm $@",
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",
-    "bundle": "cell.compiler bundle --name=prod $@",
+    "bundle": "cell.compiler bundle $@",
     "watch": "cell.compiler watch $@",
     "upload": "cell.compiler upload $@",
-    "clean": "sh script.sh/clean.sh $@",
+    "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@",
-    "vs": "yarn cp && cd lib.monaco && serve -l 3004 --cors"
+    "serve": "cell.compiler serve $@"
   },
   "dependencies": {
     "@monaco-editor/react": "^3.6.3",
