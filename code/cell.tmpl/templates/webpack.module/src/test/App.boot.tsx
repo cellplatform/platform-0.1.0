@@ -4,9 +4,5 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from './App';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.body.appendChild(document.createElement('div')),
-);
+const root = document.body.appendChild(document.createElement('div'));
+ReactDOM.render(<App />, root);

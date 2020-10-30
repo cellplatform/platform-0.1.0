@@ -9,9 +9,22 @@ type T = t.ITreeNode<tt.TmplProps>;
 
 log.info('bundle', bundle);
 
+import { Context } from '../Context';
+
+const env = Context.env({ host: bundle.host });
+const { Provider } = Context.create({ env });
+
 export type AppProps = { style?: CssValue };
 
 export const App: React.FC<AppProps> = (props: AppProps = {}) => {
+  return (
+    <Provider>
+      <AppInner />
+    </Provider>
+  );
+};
+
+export const AppInner: React.FC<AppProps> = (props: AppProps = {}) => {
   const onLoaded = (bus: t.EventBus) => {
     console.log('Loaded:', `<Shell.Window>`);
 
