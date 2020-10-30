@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 
 import { WebRuntime } from '../../../runtime.web';
-import { ISystem, System } from './System';
+import { System } from './System';
 
 type Css = React.CSSProperties;
 
 export type IAppState = { url?: string };
+
+export type ISystem = {
+  url: string;
+  namespace: string;
+  module: string;
+};
 
 const bundle = WebRuntime.bundle;
 
@@ -23,10 +29,10 @@ export const App = () => {
   const [system, setSystem] = useState<ISystem>();
   const [state, setState] = useState<IAppState>();
 
-  const setter = (port: number, scope: string, module: string) => {
+  const setter = (port: number, namespace: string, module: string) => {
     return () => {
       const url = `http://localhost:${port}/remoteEntry.js`;
-      setSystem({ url, scope, module });
+      setSystem({ url, namespace, module });
       setState({ url });
     };
   };
@@ -34,26 +40,26 @@ export const App = () => {
   const setFoo = () => {
     const url =
       'http://localhost:5000/cell:ckgu68hjj000ciwet59do0wb4:A1/file/sample/remoteEntry.js';
-    const scope = 'foo';
+    const namespace = 'foo';
     const module = './Dev';
-    setSystem({ url, scope, module });
+    setSystem({ url, namespace, module });
     setState({ url });
   };
 
   const setAi = () => {
     const url =
       'http://localhost:5000/cell:ckgu7ryv8000cg0etbjfwet91:A1/file/sample/remoteEntry.js';
-    const scope = 'ai';
+    const namespace = 'ai';
     const module = './Dev';
-    setSystem({ url, scope, module });
+    setSystem({ url, namespace, module });
     setState({ url });
   };
 
   const setCodeEditor = () => {
     const url = 'https://dev.db.team/cell:ckgse6r8l000ccwethl0ubdrh:A1/file/sample/remoteEntry.js';
-    const scope = 'sys.ui.editor.code';
+    const namespace = 'sys.ui.editor.code';
     const module = './Dev';
-    setSystem({ url, scope, module });
+    setSystem({ url, namespace, module });
     setState({ url });
   };
 
@@ -86,6 +92,10 @@ export const App = () => {
     },
   };
 
+  const elSystem = system && (
+    <System url={system.url} namespace={system.namespace} module={system.module} />
+  );
+
   return (
     <div style={styles.base}>
       <h1>App</h1>
@@ -94,15 +104,14 @@ export const App = () => {
       <div style={styles.buttons}>
         <button onClick={setter(3000, 'foo', './Dev')}>foo</button>
         <button onClick={setFoo}>foo(2)</button>
+        <button onClick={setter(1234, 'sys.ui.shell', './Dev')}>shell</button>
         <button onClick={setAi}>ai</button>
         <button onClick={setter(3003, 'sys.ui.editor.code', './Dev')}>code (local)</button>
         <button onClick={setCodeEditor}>code (remote)</button>
       </div>
       <div>{state?.url || '-'}</div>
       <hr style={styles.hr} />
-      <div style={styles.body}>
-        <System system={system} />
-      </div>
+      <div style={styles.body}>{elSystem}</div>
     </div>
   );
 };

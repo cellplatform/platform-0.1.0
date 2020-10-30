@@ -1,12 +1,15 @@
 import { GlobalCellEnv } from '../types/global';
 import { Uri, Urls } from '@platform/cell.schema';
 import { encoding } from '../common/encoding';
+import { remote } from './Runtime.remote';
 
 const toEnv = (input?: GlobalCellEnv) => {
   return !input && typeof __CELL_ENV__ !== 'undefined' ? __CELL_ENV__ : input;
 };
 
 export const Runtime = {
+  remote,
+
   /**
    * Wrapper around the __CELL_ENV__ constants inserted into modules
    * by the [cell.compiler] packager, providing variables and helper
@@ -47,37 +50,6 @@ export const Runtime = {
     input = toEnv(input);
     const module: GlobalCellEnv['module'] = input?.module || { name: '', version: '' };
     return module;
-  },
-
-  /**
-   * Dynamnically load a remote ("federated") module.
-   *
-   *    Webpack Docs:
-   *    https://webpack.js.org/concepts/module-federation/#dynamic-remote-containers
-   *
-   *  Examples:
-   *    Dynamic Remotes
-   *    https://github.com/module-federation/module-federation-examples/tree/master/advanced-api/dynamic-remotes
-   *
-   *    Dynamic System Host
-   *    https://github.com/module-federation/module-federation-examples/tree/master/dynamic-system-host
-   */
-  remoteLoader(namespace: string, module: string) {
-    const scope = encoding.escapeNamespace(namespace);
-    return async () => {
-      // Initializes the share scope.
-      // This fills it with known provided modules from this build and all remotes.
-      // @ts-ignore
-      await __webpack_init_sharing__('default');
-      const container = window[scope]; // or get the container somewhere else
-
-      // Initialize the container, it may provide shared modules.
-      // @ts-ignore
-      await container.init(__webpack_share_scopes__.default);
-      const factory = await window[scope].get(module);
-      const Module = factory();
-      return Module;
-    };
   },
 };
 
