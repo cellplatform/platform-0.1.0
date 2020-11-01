@@ -2,8 +2,8 @@
 
 import { createMock, expect, fs, http, readFile, t, util } from '../../test';
 
-const bodyToText = async (body?: ReadableStream | string) => {
-  if (!body) {
+const bodyToText = async (body?: ReadableStream | string | t.Json) => {
+  if (!body || fs.is.stream(body)) {
     return '';
   }
   if (typeof body === 'string') {
