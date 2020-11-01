@@ -1,5 +1,6 @@
 export * from './types';
 
+export * from './types.Cell';
 export * from './types.Client';
 export * from './types.Electron';
 export * from './types.Env';
