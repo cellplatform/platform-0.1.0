@@ -1,5 +1,5 @@
 export type IFs = {
-  is: IFsIs;
+  is: IFsFlags;
 
   // Filesystem.
   exists(path: string): Promise<boolean>;
@@ -20,7 +20,7 @@ export type IFsEnsureOptions = { mode?: number };
 export type IFsWriteFileOptions = { encoding?: string; flag?: string; mode?: number };
 export type IFsReadFileOptions = { flag?: string } | { encoding: string; flag?: string };
 
-export type IFsIs = {
+export type IFsFlags = {
   dir(path: string): Promise<boolean>;
   file(path: string): Promise<boolean>;
 };
