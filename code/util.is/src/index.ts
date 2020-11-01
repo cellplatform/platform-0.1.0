@@ -1,4 +1,4 @@
-export type IFlags = {
+export type IsFlags = {
   nodeEnv: 'development' | 'production' | 'browser' | string;
   browser: boolean;
   dev: boolean;
@@ -6,38 +6,42 @@ export type IFlags = {
   test: boolean;
 };
 
-export type IIs = IFlags & {
-  toObject: () => IFlags;
+export type IsMethods = {
+  toObject(): IsFlags;
+  observable(input?: any): boolean;
+  stream(input?: any): boolean;
 };
+
+export type Is = IsFlags & IsMethods;
 
 /**
  * Environment flags.
  */
-class Is implements IIs {
-  public get nodeEnv() {
+export const Is: Is = {
+  get nodeEnv() {
     return this.browser ? 'browser' : process.env.NODE_ENV || 'development';
-  }
+  },
 
-  public get browser() {
+  get browser() {
     return typeof window !== 'undefined';
-  }
+  },
 
-  public get dev() {
+  get dev() {
     const env = this.nodeEnv;
     return this.browser
       ? window && window.location.hostname === 'localhost'
       : env !== 'production' && env !== 'prod';
-  }
+  },
 
-  public get prod() {
+  get prod() {
     return !this.dev;
-  }
+  },
 
-  public get test() {
+  get test() {
     return this.nodeEnv === 'test';
-  }
+  },
 
-  public toObject(): IFlags {
+  toObject(): IsFlags {
     return {
       nodeEnv: this.nodeEnv,
       browser: this.browser,
@@ -45,10 +49,21 @@ class Is implements IIs {
       prod: this.prod,
       test: this.test,
     };
-  }
-}
+  },
 
-/**
- * Singleton
- */
-export const is = new Is() as IIs;
+  /**
+   * Determine if the given input is an Observable.
+   */
+  observable(input?: any) {
+    return typeof input?.subscribe === 'function';
+  },
+
+  /**
+   * Determine if the given input is a node stream
+   */
+  stream(input?: any) {
+    return typeof input?.on === 'function';
+  },
+};
+
+export const is = Is;
