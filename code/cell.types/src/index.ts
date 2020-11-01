@@ -9,4 +9,4 @@ export * from './types.Http';
 export * from './types.Schema';
 export * from './types.TypeSystem';
 export * from './types.Ui';
-export * from './types.fs';
+export * from './types.Fs';
