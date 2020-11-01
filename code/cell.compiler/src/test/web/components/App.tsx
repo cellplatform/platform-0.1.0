@@ -102,6 +102,7 @@ export const App = () => {
       <img src={bundle.path('/static/images/wax.png')} style={styles.seal} />
 
       <div style={styles.buttons}>
+        <button onClick={setter(3030, 'tmp.trailtribe', './Dev')}>TrailTribe</button>
         <button onClick={setter(3000, 'foo', './Dev')}>foo</button>
         <button onClick={setFoo}>foo(2)</button>
         <button onClick={setter(1234, 'sys.ui.shell', './Dev')}>shell</button>
