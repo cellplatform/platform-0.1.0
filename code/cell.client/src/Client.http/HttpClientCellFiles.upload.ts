@@ -1,6 +1,9 @@
 import { defaultValue, t, util, ERROR, FormData, Schema } from '../common';
 
-export async function upload(args: {
+/**
+ * Upload file(s) to an endpoint.
+ */
+export async function uploadFiles(args: {
   input: t.IHttpClientCellFileUpload | t.IHttpClientCellFileUpload[];
   http: t.IHttp;
   urls: t.IUrls;

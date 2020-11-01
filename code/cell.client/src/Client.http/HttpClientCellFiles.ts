@@ -1,11 +1,12 @@
 import { ERROR, Schema, t, util } from '../common';
-import { upload } from './HttpClientCellFiles.upload';
+import { uploadFiles } from './HttpClientCellFiles.upload';
+import { deleteFiles } from './HttpClientCellFiles.delete';
 
 type IClientCellFilesArgs = { parent: t.IHttpClientCell; urls: t.IUrls; http: t.IHttp };
 type GetError = (args: { status: number }) => string;
 
 /**
- * HTTP client for operating on a [Cell]'s files.
+ * HTTP client for operating on a set of [Cell] files.
  */
 export class HttpClientCellFiles implements t.IHttpClientCellFiles {
   public static create(args: IClientCellFilesArgs): t.IHttpClientCellFiles {
@@ -110,7 +111,7 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
     const { changes } = options;
     const { http, urls } = this.args;
     const cellUri = this.uri.toString();
-    return upload({ input, http, urls, cellUri, changes }) as any;
+    return uploadFiles({ input, http, urls, cellUri, changes }) as any;
   }
 
   public async delete(filename: string | string[]) {
@@ -151,22 +152,4 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
     const body = files.json as t.IResGetCellFiles;
     return util.toClientResponse<T>(200, body);
   }
-}
-
-/**
- * Helpers
- */
-
-export async function deleteFiles(args: {
-  urls: t.IUrlsCell;
-  action: t.IReqDeleteCellFilesBody['action'];
-  filename: string | string[];
-  http: t.IHttp;
-}) {
-  const { urls, action, filename, http } = args;
-  const filenames = Array.isArray(filename) ? filename : [filename];
-  const body: t.IReqDeleteCellFilesBody = { filenames, action };
-  const url = urls.files.delete;
-  const res = await http.delete(url.toString(), body);
-  return util.fromHttpResponse(res).toClientResponse<t.IResDeleteCellFilesData>();
 }

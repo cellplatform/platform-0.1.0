@@ -3,16 +3,17 @@
 import { createMock, expect, fs, http, readFile, t, util } from '../../test';
 
 const bodyToText = async (body?: ReadableStream | string | t.Json) => {
-  if (!body || fs.is.stream(body)) {
-    return '';
-  }
   if (typeof body === 'string') {
     return body;
-  } else {
+  }
+
+  if (fs.is.stream(body)) {
     const path = fs.resolve(`tmp/test/index.html`);
     await fs.stream.save(path, body);
     return (await fs.readFile(path)).toString();
   }
+
+  return '';
 };
 
 describe('cell/files: download', function () {
