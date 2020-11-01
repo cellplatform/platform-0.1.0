@@ -17,7 +17,7 @@ export type Is = IsFlags & IsMethods;
 /**
  * Environment flags.
  */
-export const Is: Is = {
+export const is: Is = {
   get nodeEnv() {
     return this.browser ? 'browser' : process.env.NODE_ENV || 'development';
   },
@@ -65,5 +65,3 @@ export const Is: Is = {
     return typeof input?.on === 'function';
   },
 };
-
-export const is = Is;
