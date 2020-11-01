@@ -7,7 +7,7 @@ import { afterCompile } from './util';
 /**
  * Run dev server.
  */
-export const dev: t.CompilerRunDev = async (input, options = {}) => {
+export const devserver: t.CompilerRunDevserver = async (input, options = {}) => {
   const obj = toModel(input);
   const model = Model(obj);
   const port = model.port();

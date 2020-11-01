@@ -26,4 +26,11 @@ import { fs } from '@platform/fs';
     // return {};
     console.log('error', error);
   }
+
+  console.log();
+  await __webpack_init_sharing__('default');
+  console.log('__webpack_init_sharing__', __webpack_init_sharing__);
+  console.log('__webpack_share_scopes__', __webpack_share_scopes__);
+
+  console.log();
 })();

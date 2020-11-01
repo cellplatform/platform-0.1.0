@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Module, t } from './common';
-import { Diagram } from './Diagram';
+import { Diagram } from './Components';
 
 type P = t.TmplProps;
 
@@ -53,7 +53,7 @@ function renderer(events: t.IViewModuleEvents<P>) {
   render('Default').subscribe((e) => {
     console.log('render/default', e);
     const url = e.data?.url || '';
-    const el = <Diagram url={url} />;
+    const el = <Diagram imageUrl={url} />;
     e.render(el);
   });
 

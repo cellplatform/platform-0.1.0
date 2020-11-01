@@ -4,6 +4,7 @@ import { DEFAULT, fs, HttpClient, log, PATH, t, logger, path } from '../node/com
 import { BundleManifest } from '../node/Compiler';
 
 const MANIFEST = DEFAULT.FILE.JSON.INDEX;
+const CACHE_DIR = fs.join(PATH.cachedir, 'runtime.node');
 
 /**
  * Runtime environment for executing bundles on [node-js].
@@ -11,7 +12,7 @@ const MANIFEST = DEFAULT.FILE.JSON.INDEX;
 export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) => {
   const { uri, host } = args;
   const dir = path.dir(args.dir);
-  const cachedir = fs.join(PATH.cachedir, 'runtime.node', uri.replace(/\:/g, '-'));
+  const cachedir = fs.join(CACHE_DIR, uri.replace(/\:/g, '-'));
   const client = HttpClient.create(host).cell(args.uri);
 
   const runtime = {

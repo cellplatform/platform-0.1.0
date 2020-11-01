@@ -10,6 +10,7 @@ import { BodyMain } from './Body.Main';
 
 export type IBodyProps = {
   module?: t.ShellModule;
+  theme?: t.ShellTheme;
   style?: CssValue;
   acceptNakedRegistrations?: boolean; // NB: Ignored if [module] property supplied.
   onLoaded?: t.ShellLoadedCallbackHandler;
@@ -55,6 +56,7 @@ export class Body extends React.PureComponent<IBodyProps> {
       return null;
     }
     const bus = this.context.bus;
+    const border = `solid 1px ${color.format(-0.1)}`;
     const styles = {
       base: css({
         Absolute: 0,
@@ -69,8 +71,8 @@ export class Body extends React.PureComponent<IBodyProps> {
         WebkitAppRegion: 'drag',
         overflow: 'hidden',
       }),
-      left: css({ width: 250 }),
-      right: css({ width: 250 }),
+      left: css({ width: 250, borderRight: border }),
+      right: css({ width: 250, borderLeft: border }),
       main: css({
         flex: 1,
         display: 'flex',

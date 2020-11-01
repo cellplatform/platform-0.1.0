@@ -7,4 +7,6 @@ export * from '@platform/ui.tree/lib/types';
 
 export type Object = Record<string, unknown>;
 
-export { IWindowTitlebarProps } from '@platform/cell.ui/lib/components/WindowTitlebar';
+import { IWindowTitlebarProps } from '@platform/cell.ui/lib/components/WindowTitlebar';
+export { IWindowTitlebarProps };
+export type ShellTheme = IWindowTitlebarProps['theme'];
