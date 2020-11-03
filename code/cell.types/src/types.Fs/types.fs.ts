@@ -1,9 +1,10 @@
-import * as s3 from '@platform/fs.s3.types';
 import { IFsError } from '../types.Error';
+import { t } from '../common';
 
 export type FsType = FsTypeLocal | FsTypeS3;
 export type FsTypeLocal = 'LOCAL';
 export type FsTypeS3 = 'S3';
+export type FsS3Permission = 'private' | 'public-read';
 
 /**
  * API
@@ -14,29 +15,42 @@ export type IFsLocal = IFsMembers<
   IFsInfoLocal,
   IFsReadLocal,
   IFsWriteLocal,
+  IFsWriteOptionsLocal,
   IFsDeleteLocal
 >;
-export type IFsS3 = IFsMembers<FsTypeS3, IFsInfoS3, IFsReadS3, IFsWriteS3, IFsDeleteS3> & {
+export type IFsS3 = IFsMembers<
+  FsTypeS3,
+  IFsInfoS3,
+  IFsReadS3,
+  IFsWriteS3,
+  IFsWriteOptionsS3,
+  IFsDeleteS3
+> & {
   bucket: string;
 };
+
+export type IFsWriteOptions = IFsWriteOptionsLocal | IFsWriteOptionsS3;
+export type IFsWriteOptionsLocal = { filename?: string };
+export type IFsWriteOptionsS3 = { filename?: string; acl?: FsS3Permission };
 
 /**
  * File-system Members
  */
 type IFsMembers<
-  T extends FsType,
-  I extends IFsMeta,
-  R extends IFsRead,
-  W extends IFsWrite,
-  D extends IFsDelete
+  Type extends FsType,
+  Info extends IFsMeta,
+  Read extends IFsRead,
+  Write extends IFsWrite,
+  WriteOptions extends IFsWriteOptions,
+  Delete extends IFsDelete
 > = {
-  type: T;
+  type: Type;
   root: string; // Root directory of the file-system.
   resolve(uri: string, options?: IFsResolveArgs): IFsLocation;
-  info(uri: string): Promise<I>;
-  read(uri: string): Promise<R>;
-  write(uri: string, data: Uint8Array, options?: { filename?: string }): Promise<W>;
-  delete(uri: string | string[]): Promise<D>;
+  info(uri: string): Promise<Info>;
+  read(uri: string): Promise<Read>;
+  write(uri: string, data: Uint8Array, options?: WriteOptions): Promise<Write>;
+  delete(uri: string | string[]): Promise<Delete>;
 };
 
 /**
@@ -54,9 +68,9 @@ export type IFsResolveArgs =
   | IFsResolveSignedPostArgs;
 
 export type IFsResolveDefaultArgs = { type: 'DEFAULT' };
-export type IFsResolveSignedGetArgs = s3.S3SignedUrlGetObjectOptions & { type: 'SIGNED/get' };
-export type IFsResolveSignedPutArgs = s3.S3SignedUrlPutObjectOptions & { type: 'SIGNED/put' };
-export type IFsResolveSignedPostArgs = s3.S3SignedPostOptions & { type: 'SIGNED/post' };
+export type IFsResolveSignedGetArgs = t.S3SignedUrlGetObjectOptions & { type: 'SIGNED/get' };
+export type IFsResolveSignedPutArgs = t.S3SignedUrlPutObjectOptions & { type: 'SIGNED/put' };
+export type IFsResolveSignedPostArgs = t.S3SignedPostOptions & { type: 'SIGNED/post' };
 
 /**
  * File (meta/info)
@@ -69,7 +83,7 @@ type IFsMetaCommon = {
 };
 export type IFsMeta = IFsMetaLocal | IFsMetaS3;
 export type IFsMetaLocal = IFsMetaCommon;
-export type IFsMetaS3 = IFsMetaCommon & { 's3:etag'?: string };
+export type IFsMetaS3 = IFsMetaCommon & { 's3:etag'?: string; 's3:permission'?: t.FsS3Permission };
 
 /**
  * File (info + data)
@@ -123,6 +137,14 @@ export type IFsDeleteLocal = IFsDeleteCommon;
  * S3 (Extensions)
  */
 export type IFsInfoS3 = IFsInfoCommon & IFsMetaS3;
-export type IFsReadS3 = IFsReadCommon & { file?: IFsFileData<IFsMetaS3>; 's3:etag'?: string };
-export type IFsWriteS3 = IFsWriteCommon & { file: IFsFileData<IFsMetaS3>; 's3:etag'?: string };
+export type IFsReadS3 = IFsReadCommon & {
+  file?: IFsFileData<IFsMetaS3>;
+  's3:etag'?: string;
+  's3:acl'?: t.FsS3Permission;
+};
+export type IFsWriteS3 = IFsWriteCommon & {
+  file: IFsFileData<IFsMetaS3>;
+  's3:etag'?: string;
+  's3:acl'?: t.FsS3Permission;
+};
 export type IFsDeleteS3 = IFsDeleteCommon;

@@ -150,13 +150,20 @@ export function init(args: IS3Init): t.IFsS3 {
     async write(
       uri: string,
       data: Buffer,
-      options: { filename?: string } = {},
+      options: { filename?: string; acl?: t.FsS3Permission } = {},
     ): Promise<t.IFsWriteS3> {
       if (!data) {
         throw new Error(`Cannot write, no data provided.`);
       }
 
-      const { filename } = options;
+      /**
+       * 🌳 NB: All files are stored within a [PRIVATE] security context BY DEFAULT.
+       *        User's gain access to the file download via temporary access
+       *        which is provided via "pre-signed" S3 url generated on
+       *        each request.
+       */
+
+      const { filename, acl = 'private' } = options;
       const contentType = filename ? Schema.mime.toType(filename) : undefined;
       const contentDisposition = filename ? `inline; filename="${filename}"` : undefined;
 
@@ -177,11 +184,6 @@ export function init(args: IS3Init): t.IFsS3 {
       };
 
       try {
-        // 🌳 NB: All files are stored within a [PRIVATE] security context.
-        //        User's gain access to the file download via temporary access
-        //        which is provided via "pre-signed" S3 url generated on
-        //        each request.
-        const acl: t.S3Permissions = 'private';
         const res = await cloud.bucket.put({
           contentType,
           contentDisposition,
@@ -201,9 +203,9 @@ export function init(args: IS3Init): t.IFsS3 {
             message: `Failed to write [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { ok, status, file, uri, error, 's3:etag': etag };
+          return { ok, status, file, uri, error, 's3:etag': etag, 's3:acl': acl };
         } else {
-          return { ok, status, file, uri, 's3:etag': etag };
+          return { ok, status, file, uri, 's3:etag': etag, 's3:acl': acl };
         }
       } catch (err) {
         const error: t.IFsError = {

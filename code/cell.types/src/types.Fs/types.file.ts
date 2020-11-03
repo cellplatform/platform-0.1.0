@@ -11,6 +11,7 @@ export type IFileProps = {
   bytes?: number;
   integrity?: IFileIntegrity;
   's3:etag'?: string;
+  's3:acl'?: t.FsS3Permission;
 };
 
 /**
