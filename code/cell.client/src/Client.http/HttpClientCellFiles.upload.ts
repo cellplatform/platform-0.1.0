@@ -25,10 +25,10 @@ export async function uploadFiles(args: {
     }
   };
 
-  const cellUrls = urls.cell(cellUri);
+  const fileUrls = urls.cell(cellUri).files;
   const url = {
-    start: cellUrls.files.upload.query({ changes: sendChanges, permission }).toString(),
-    complete: cellUrls.files.uploaded.query({ changes: sendChanges }).toString(),
+    start: fileUrls.upload.query({ changes: sendChanges, 's3:permission': permission }).toString(),
+    complete: fileUrls.uploaded.query({ changes: sendChanges }).toString(),
   };
 
   /**
