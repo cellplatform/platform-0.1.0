@@ -20,7 +20,7 @@ export type IReqQueryCellFilesList = {
 };
 export type IReqQueryCellFilesUpload = {
   changes?: boolean; // NB: return list of changes (default: true).
-  permission?: t.FsS3Permission;
+  's3:permission'?: t.FsS3Permission;
 };
 export type IReqQueryCellFilesUploaded = {
   changes?: boolean; // NB: return list of changes (default: true).

@@ -30,9 +30,11 @@ export function init(args: IS3Init): t.IFsS3 {
 
   const getReadParams = (uri: string, bucket: t.S3Bucket) => {
     uri = (uri || '').trim();
-    const path = res.resolve(uri).path;
+    const resolved = res.resolve(uri);
+    const location = resolved.path;
+    const host = bucket.url('').object;
+    const path = resolved.path.substring(host.length - 1);
     const key = path.replace(/^\//, '');
-    const location = bucket.url(path).object;
     return { uri, key, path, location };
   };
 
