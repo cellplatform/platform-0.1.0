@@ -5,7 +5,6 @@ const INTEGRITY: t.IFileIntegrity = {
   status: 'VALID',
   filehash: 'sha256-abc',
   uploadedAt: 123456789,
-  's3:etag': 'abcd-12345',
 };
 
 describe('model.File', () => {

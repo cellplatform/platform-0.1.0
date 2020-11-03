@@ -63,7 +63,7 @@ describe('HttpClient', () => {
     });
   });
 
-  describe('cell', () => {
+  describe('http.cell', () => {
     it('exists', async () => {
       const mock = await createMock();
       const ns = mock.client.ns('ns:foo');

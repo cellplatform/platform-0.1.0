@@ -10,6 +10,8 @@ export type IFileProps = {
   location?: string;
   bytes?: number;
   integrity?: IFileIntegrity;
+  's3:etag'?: string;
+  's3:permission'?: t.FsS3Permission;
 };
 
 /**
@@ -27,7 +29,6 @@ export type IFileIntegrity = {
   status: FileIntegrityStatus;
   uploadedAt?: number;
   filehash?: string;
-  's3:etag'?: string;
 };
 
 /**

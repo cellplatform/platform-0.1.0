@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.coord",
-  "version": "0.8.187",
+  "version": "0.8.189",
   "description": "Helpers for working with cell cooridnates (eg 'A1')",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -8,12 +8,12 @@
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build --no-esm",
     "prepare": "ts prepare"
   },
   "dependencies": {
     "@platform/cache": "0.2.37",
-    "@platform/cell.types": "0.5.4",
+    "@platform/cell.types": "0.5.6",
     "@platform/types": "0.5.8",
     "@platform/util.value": "0.8.1",
     "excel-formula-ast": "1.1.1",

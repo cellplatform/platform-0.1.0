@@ -78,8 +78,11 @@ export function init(args: IS3Init): t.IFsS3 {
         };
       }
 
-      // DEFAULT.
-      return { path: key, props: {} };
+      // DEFAULT (direct object on S3).
+      return {
+        path: cloud.s3.url(res.bucket, key).object,
+        props: {},
+      };
     },
 
     /**
@@ -97,6 +100,7 @@ export function init(args: IS3Init): t.IFsS3 {
           hash: '', // NB: Unknown from raw S3 data (without downloading).
           bytes: res.bytes,
           's3:etag': res.etag,
+          's3:permission': res.permission,
         };
       } catch (err) {
         return { uri, exists: false, path, location, hash: '', bytes: -1 };
@@ -111,15 +115,22 @@ export function init(args: IS3Init): t.IFsS3 {
 
       try {
         const res = await cloud.bucket.get({ key });
-        const { status, etag = '' } = res;
+        const { status, etag = '', permission } = res;
         const ok = util.isOK(status);
+
+        const done = (args: { error?: t.IFsError; file?: t.IFsFileData }): t.IFsReadS3 => {
+          const { error, file } = args;
+          const ok = util.isOK(status);
+          return { ok, status, uri, file, error, 's3:etag': etag, 's3:permission': permission };
+        };
+
         if (!ok || !res.data) {
           const error: t.IFsError = {
             type: 'FS/read/cloud',
             message: `Failed to read [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { ok, status, uri, error, 's3:etag': etag };
+          return done({ error });
         } else {
           const file: t.IFsFileData = {
             path,
@@ -132,7 +143,7 @@ export function init(args: IS3Init): t.IFsS3 {
               return Uint8Array.from(file.data).length;
             },
           };
-          return { ok, status, file, uri, 's3:etag': etag };
+          return done({ file });
         }
       } catch (err) {
         const error: t.IFsError = {
@@ -150,13 +161,20 @@ export function init(args: IS3Init): t.IFsS3 {
     async write(
       uri: string,
       data: Buffer,
-      options: { filename?: string } = {},
+      options: { filename?: string; acl?: t.FsS3Permission } = {},
     ): Promise<t.IFsWriteS3> {
       if (!data) {
         throw new Error(`Cannot write, no data provided.`);
       }
 
-      const { filename } = options;
+      /**
+       * 🌳 NB: All files are stored within a [PRIVATE] security context BY DEFAULT.
+       *        User's gain access to the file download via temporary access
+       *        which is provided via "pre-signed" S3 url generated on
+       *        each request.
+       */
+
+      const { filename, acl = 'private' } = options;
       const contentType = filename ? Schema.mime.toType(filename) : undefined;
       const contentDisposition = filename ? `inline; filename="${filename}"` : undefined;
 
@@ -177,11 +195,6 @@ export function init(args: IS3Init): t.IFsS3 {
       };
 
       try {
-        // 🌳 NB: All files are stored within a [PRIVATE] security context.
-        //        User's gain access to the file download via temporary access
-        //        which is provided via "pre-signed" S3 url generated on
-        //        each request.
-        const acl: t.S3Permissions = 'private';
         const res = await cloud.bucket.put({
           contentType,
           contentDisposition,
@@ -201,9 +214,9 @@ export function init(args: IS3Init): t.IFsS3 {
             message: `Failed to write [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { ok, status, file, uri, error, 's3:etag': etag };
+          return { ok, status, file, uri, error, 's3:etag': etag, 's3:permission': acl };
         } else {
-          return { ok, status, file, uri, 's3:etag': etag };
+          return { ok, status, file, uri, 's3:etag': etag, 's3:permission': acl };
         }
       } catch (err) {
         const error: t.IFsError = {

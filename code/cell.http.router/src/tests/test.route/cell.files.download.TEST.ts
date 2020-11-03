@@ -2,17 +2,18 @@
 
 import { createMock, expect, fs, http, readFile, t, util } from '../../test';
 
-const bodyToText = async (body?: ReadableStream | string) => {
-  if (!body) {
-    return '';
-  }
+const bodyToString = async (body?: ReadableStream | string | t.Json) => {
   if (typeof body === 'string') {
     return body;
-  } else {
+  }
+
+  if (fs.is.stream(body)) {
     const path = fs.resolve(`tmp/test/index.html`);
     await fs.stream.save(path, body);
     return (await fs.readFile(path)).toString();
   }
+
+  return '';
 };
 
 describe('cell/files: download', function () {
@@ -39,8 +40,8 @@ describe('cell/files: download', function () {
       expect(res1.status).to.eql(200);
       expect(res2.status).to.eql(200);
 
-      expect(await bodyToText(res1.body)).to.eql(data.toString());
-      expect(await bodyToText(res2.body)).to.eql(data.toString());
+      expect(await bodyToString(res1.body)).to.eql(data.toString());
+      expect(await bodyToString(res2.body)).to.eql(data.toString());
 
       expect(res1.headers['content-type']).to.eql('application/octet-stream'); // NB: no file-extension.
       expect(res2.headers['content-type']).to.eql('application/javascript'); //   NB: file-extension ".js"
@@ -69,7 +70,7 @@ describe('cell/files: download', function () {
         const mime = util.toMimetype(filename) || 'application/octet-stream';
         expect(contentType).to.eql(mime);
 
-        const content = contentType.startsWith('text/') ? res.text : await bodyToText(res.body);
+        const content = contentType.startsWith('text/') ? res.text : await bodyToString(res.body);
         if (matchContent) {
           expect(content).to.include(matchContent);
         } else {
@@ -116,7 +117,7 @@ describe('cell/files: download', function () {
       mock.client.response$.subscribe((e) => (headers = e.response.headers));
 
       const res = await client.file.name(filename).download();
-      const html = await bodyToText(res.body);
+      const html = await bodyToString(res.body);
 
       expect(res.ok).to.eql(true);
       expect(headers && headers['content-type']).to.eql('application/octet-stream');
@@ -140,7 +141,7 @@ describe('cell/files: download', function () {
       mock.client.response$.subscribe((e) => (headers = e.response.headers));
 
       const res = await client.file.name('  ///foo/bar/m.root.html  ').download(); // NB: path prefix slahses "/" are trimmed.
-      const html = await bodyToText(res.body);
+      const html = await bodyToString(res.body);
 
       expect(res.ok).to.eql(true);
       expect(html).to.contain('<title>My Title</title>');
@@ -164,7 +165,7 @@ describe('cell/files: download', function () {
       mock.client.response$.subscribe((e) => (headers = e.response.headers));
 
       const res = await client.file.name(filename).download();
-      const html = await bodyToText(res.body);
+      const html = await bodyToString(res.body);
 
       expect(res.ok).to.eql(true);
       expect(headers && headers['content-type']).to.eql('text/html');
@@ -211,7 +212,7 @@ describe('cell/files: download', function () {
         let headers: undefined | t.IHttpHeaders;
         mock.client.response$.subscribe((e) => (headers = e.response.headers));
         const res = await client.file.name('/index.html').download();
-        const html = await bodyToText(res.body);
+        const html = await bodyToString(res.body);
         await mock.dispose();
 
         expect(headers && headers['content-type']).to.eql('text/html');
@@ -232,7 +233,7 @@ describe('cell/files: download', function () {
         ]);
 
         const res = await client.file.name('/foo/bar/index.html').download();
-        const html = await bodyToText(res.body);
+        const html = await bodyToString(res.body);
         await mock.dispose();
 
         expectUrlsRewritten(html);

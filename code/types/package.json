@@ -5,14 +5,14 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "test": "ts test",
-    "lint": "ts lint",
-    "build": "ts build",
-    "prepare": "ts prepare"
+    "test": "echo sh ../../node_modules/@platform/test/test.sh $@",
+    "lint": "sh ../../node_modules/@platform/ts.libs/lint.sh $@",
+    "build": "sh ../../node_modules/@platform/ts.libs/build.sh $@",
+    "prepare": "yarn build && yarn lint && yarn test"
   },
   "devDependencies": {
     "@platform/test": "0.1.16",
-    "@platform/ts": "4.0.2"
+    "@platform/ts.libs": "4.0.1"
   },
   "files": [
     "lib",

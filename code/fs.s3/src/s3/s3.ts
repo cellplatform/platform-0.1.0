@@ -63,7 +63,7 @@ export function init(args: t.S3Config): t.S3 {
       bucket: string;
       key: string;
       data: Buffer;
-      acl?: t.S3Permissions;
+      acl?: t.S3Permission;
       contentType?: string;
       contentDisposition?: string;
     }) {
@@ -73,7 +73,7 @@ export function init(args: t.S3Config): t.S3 {
     post(args: {
       bucket: string;
       key: string;
-      acl?: t.S3Permissions;
+      acl?: t.S3Permission;
       contentType?: string;
       contentDisposition?: string;
       size?: t.S3ByteSizeRange;
@@ -107,7 +107,7 @@ export function init(args: t.S3Config): t.S3 {
         put(args: {
           key: string;
           data: Buffer;
-          acl?: t.S3Permissions;
+          acl?: t.S3Permission;
           contentType?: string;
           contentDisposition?: string;
         }) {
@@ -115,7 +115,7 @@ export function init(args: t.S3Config): t.S3 {
         },
         post(args: {
           key: string;
-          acl?: t.S3Permissions;
+          acl?: t.S3Permission;
           contentType?: string;
           contentDisposition?: string;
           size?: t.S3ByteSizeRange;

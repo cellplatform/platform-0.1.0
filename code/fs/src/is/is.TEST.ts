@@ -1,5 +1,7 @@
 import { expect } from '@platform/test';
 import { is } from '.';
+import { createReadStream } from 'fs';
+import { resolve } from 'path';
 
 describe('is', () => {
   it('is a directory', async () => {
@@ -48,5 +50,20 @@ describe('is', () => {
     expect(is.typeSync('src/index.ts')).to.eql(true);
     expect(is.typeSync('src/index.ts', 'FILE')).to.eql(true);
     expect(is.typeSync('src/index.ts', 'DIR')).to.eql(false);
+  });
+
+  it('is stream', () => {
+    const test = (input: any, expected: boolean) => {
+      expect(is.stream(input)).to.eql(expected);
+    };
+
+    test(undefined, false);
+    test(null, false);
+    test('hello', false);
+    test(1223, false);
+    test({}, false);
+
+    const stream = createReadStream(resolve('./package.json'));
+    test(stream, true);
   });
 });

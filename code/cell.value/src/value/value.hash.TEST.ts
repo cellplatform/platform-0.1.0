@@ -5,7 +5,6 @@ const INTEGRITY: t.IFileIntegrity = {
   status: 'VALID',
   filehash: 'sha256-abc',
   uploadedAt: 123456789,
-  's3:etag': 'abcd-12345',
 };
 
 type R = t.IRowProps & { grid?: { height?: number } };
@@ -272,10 +271,10 @@ describe('hash', () => {
       const integrity = INTEGRITY;
 
       test({ props: {} }, 'ca6edf2f56');
-      test({ props: { integrity } }, '628532e6a7');
-      test({ props: { mimetype: 'image/png', integrity } }, '38d6e3ca08');
+      test({ props: { integrity } }, '1c841ae288');
+      test({ props: { mimetype: 'image/png', integrity } }, 'f75f44317c');
       test({ props: {}, error }, '1fd68d1131');
-      test({ props: { integrity }, error }, '94153af4ab');
+      test({ props: { integrity }, error }, '50a2a73999');
     });
   });
 });

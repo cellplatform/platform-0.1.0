@@ -11,8 +11,9 @@ export async function uploadFileStart(args: {
   filehash?: string;
   sendChanges?: boolean;
   expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
+  permission?: t.FsS3Permission;
 }): Promise<t.IPayload<t.IResPostFileUploadStart> | t.IErrorPayload> {
-  const { db, fileUri, fs, host, mimetype } = args;
+  const { db, fileUri, fs, host, mimetype, permission = 'private' } = args;
   const sendChanges = defaultValue(args.sendChanges, true);
   let changes: t.IDbModelChange[] = [];
 
@@ -37,7 +38,12 @@ export async function uploadFileStart(args: {
     const expires = args.expires || '1h';
     const seconds = util.toSeconds(expires) || 3600;
     const contentType = mimetype;
-    const presignedPost = fs.resolve(fileUri, { type: 'SIGNED/post', contentType, expires });
+    const presignedPost = fs.resolve(fileUri, {
+      type: 'SIGNED/post',
+      contentType,
+      expires,
+      acl: permission,
+    });
     const expiresAt = time.day().add(seconds, 's').toDate().getTime();
 
     const upload: t.IFilePresignedUploadUrl = {

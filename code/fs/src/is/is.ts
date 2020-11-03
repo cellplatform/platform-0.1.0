@@ -1,6 +1,13 @@
 import { fs } from '../common';
 
 /**
+ * Determine if the given input is a node stream
+ */
+export function stream(input?: any) {
+  return typeof input?.on === 'function';
+}
+
+/**
  * Determines if the given path is a directory.
  */
 export async function dir(path: string) {

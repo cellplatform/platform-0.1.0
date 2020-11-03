@@ -43,11 +43,12 @@ describe('S3', () => {
       test('  ///platform///  ', 'platform', '/');
     });
 
-    it('resolve (uri => path)', () => {
+    it('resolve (DEFAULT)', () => {
       const fs = init();
       const test = (uri: string, expected: string) => {
         const res = fs.resolve(uri);
-        expect(res.path).to.eql(`/tmp/test/${expected}`);
+        const path = `https://platform.sfo2.digitaloceanspaces.com/tmp/test/${expected}`;
+        expect(res.path).to.eql(path);
         expect(res.props).to.eql({});
       };
       test('file:foo:123', 'ns.foo/123');

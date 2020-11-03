@@ -68,6 +68,9 @@ export type IHttpClientCellLinks = {
   toObject(): t.ICellData['links'];
 };
 
+/**
+ * Cell File
+ */
 export type IHttpClientCellFile = {
   name(path: string): IHttpClientCellFileByName;
 };
@@ -76,7 +79,7 @@ export type IHttpClientCellFileByName = {
   info(): t.IHttpClientAsync<t.IResGetFile>;
   download(options?: {
     expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
-  }): t.IHttpClientAsync<ReadableStream| t.Json | string>;
+  }): t.IHttpClientAsync<ReadableStream | t.Json | string>;
 };
 
 export type IHttpClientCellFiles = {
@@ -85,12 +88,12 @@ export type IHttpClientCellFiles = {
   list(options?: { filter?: string }): t.IHttpClientAsync<IHttpClientFileData[]>;
   upload(
     files: IHttpClientCellFileUpload | IHttpClientCellFileUpload[],
-    options?: { changes?: boolean },
+    options?: { changes?: boolean; permission?: t.FsS3Permission },
   ): t.IHttpClientAsync<IHttpClientCellFileUploadResponse>;
   delete(filename: string | string[]): t.IHttpClientAsync<t.IResDeleteCellFilesData>;
   unlink(filename: string | string[]): t.IHttpClientAsync<t.IResDeleteCellFilesData>;
 };
-export type IHttpClientCellFileUpload = { filename: string; data: ArrayBuffer; mimetype?: string };
+
 export type IHttpClientCellFileUrl = {
   uri: string;
   url: string;
@@ -99,6 +102,7 @@ export type IHttpClientCellFileUrl = {
   dir: string;
 };
 
+export type IHttpClientCellFileUpload = { filename: string; data: ArrayBuffer; mimetype?: string };
 export type IHttpClientCellFileUploadResponse = {
   uri: string;
   cell: t.ICellData;
