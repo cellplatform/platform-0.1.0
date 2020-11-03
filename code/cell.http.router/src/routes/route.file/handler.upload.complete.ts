@@ -42,6 +42,15 @@ export async function uploadFileComplete(args: {
       uploadedAt: status === 'UPLOADING' ? -1 : now,
     };
 
+    let error: t.IFileError | undefined;
+    if (!ok) {
+      error = {
+        type: 'FILE/upload',
+        message: `File status after attempting to upload: ${status}`,
+        filename: fileUri,
+      };
+    }
+
     // Store S3 specific details.
     if (fs.type === 'S3') {
       const s3 = fsFileInfo as t.IFsInfoS3;
@@ -67,10 +76,11 @@ export async function uploadFileComplete(args: {
 
     // Finish up.
     const fileInfoAfter = await fileInfo({ fileUri, db, host });
+    const fileInfoAfterData = fileInfoAfter.data as t.IResGetFile;
     const res: t.IPayload<t.IResPostFileUploadComplete> = {
-      status: fileInfoAfter.status,
+      status: error ? 500 : fileInfoAfter.status,
       data: {
-        ...(fileInfoAfter.data as t.IResGetFile),
+        ...{ ...fileInfoAfterData, data: { ...fileInfoAfterData.data, error } },
         changes: sendChanges ? changes : undefined,
       },
     };
