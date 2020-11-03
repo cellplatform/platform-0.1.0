@@ -8,14 +8,19 @@ export type S3Config = {
 };
 
 export type S3Permission = 'private' | 'public-read';
+
+/**
+ * https://aws.amazon.com/s3/storage-classes
+ */
 export type S3StorageClass =
   | 'STANDARD'
   | 'REDUCED_REDUNDANCY'
-  | 'GLACIER'
   | 'STANDARD_IA'
   | 'ONEZONE_IA'
   | 'INTELLIGENT_TIERING'
-  | 'DEEP_ARCHIVE';
+  | 'GLACIER'
+  | 'DEEP_ARCHIVE'
+  | 'OUTPOSTS';
 
 export type S3 = {
   endpoint: string;
