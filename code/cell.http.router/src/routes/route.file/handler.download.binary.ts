@@ -29,7 +29,11 @@ export const downloadBinaryFile = async (args: {
 
     // Redirect if the location is an S3 link.
     if (fs.type === 'S3') {
-      const data = fs.resolve(fileUri, { type: 'SIGNED/get', expires }).path;
+      const permission = file.data.props['s3:permission'] || 'private';
+      const data =
+        permission === 'private'
+          ? fs.resolve(fileUri, { type: 'SIGNED/get', expires }).path
+          : fs.resolve(fileUri, { type: 'DEFAULT' }).path;
       return { status: 307, data };
     }
 

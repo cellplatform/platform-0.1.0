@@ -78,8 +78,11 @@ export function init(args: IS3Init): t.IFsS3 {
         };
       }
 
-      // DEFAULT.
-      return { path: key, props: {} };
+      // DEFAULT (direct object on S3).
+      return {
+        path: cloud.s3.url(res.bucket, key).object,
+        props: {},
+      };
     },
 
     /**
