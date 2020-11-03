@@ -1,1 +1,1 @@
-export * from '@platform/cell.types/lib/types/types.fs';
+export * from '@platform/cell.types/lib/types.Fs';

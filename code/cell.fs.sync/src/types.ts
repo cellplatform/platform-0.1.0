@@ -1,6 +1,6 @@
 import * as t from './common/types';
 
-export * from '@platform/cell.types/lib/types/types.fs.sync';
+export * from '@platform/cell.types/lib/types.Fs/types.fs.sync';
 
 /**
  * Config

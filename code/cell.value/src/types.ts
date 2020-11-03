@@ -1,1 +1,1 @@
-export * from '@platform/cell.types/lib/types/types.value';
+export * from '@platform/cell.types/lib/types.Cell/types.value';
