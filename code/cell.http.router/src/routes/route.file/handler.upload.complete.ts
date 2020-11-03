@@ -47,11 +47,12 @@ export async function uploadFileComplete(args: {
       const s3 = fsFileInfo as t.IFsInfoS3;
       if (s3['s3:etag']) {
         after['s3:etag'] = s3['s3:etag'];
+        after['s3:permission'] = s3['s3:permission'];
       }
     }
 
     // Clear any invalid errors if the model is OK.
-    if (ok && model.props.error && model.props.error.type.startsWith('INVALID')) {
+    if (ok && model.props.error?.type.startsWith('INVALID')) {
       model.props.error = undefined;
     }
 
