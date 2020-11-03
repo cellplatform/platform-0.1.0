@@ -7,7 +7,7 @@ export type S3Config = {
   endpoint: string;
 };
 
-export type S3Permissions = 'private' | 'public-read' | 'public-read-write';
+export type S3Permission = 'private' | 'public-read';
 export type S3StorageClass =
   | 'STANDARD'
   | 'REDUCED_REDUNDANCY'
@@ -78,6 +78,7 @@ export type S3GetResponse = {
   key: string;
   modifiedAt: number;
   etag: string;
+  permission: S3Permission;
   error?: Error;
   contentType: string;
   bytes: number;
@@ -92,7 +93,7 @@ export type S3PutArgs = S3BucketPutArgs & { bucket: string };
 export type S3BucketPutArgs = {
   key: string;
   data: Uint8Array;
-  acl?: S3Permissions;
+  acl?: S3Permission;
   contentType?: string;
   contentDisposition?: string;
 };
@@ -116,7 +117,7 @@ export type S3ByteSizeRange = { min: number; max: number };
 export type S3SignedPostArgs = S3SignedPostBucketArgs & { bucket: string };
 export type S3SignedPostBucketArgs = S3SignedPostOptions & { key: string };
 export type S3SignedPostOptions = {
-  acl?: S3Permissions;
+  acl?: S3Permission;
   contentType?: string;
   contentDisposition?: string;
   size?: S3ByteSizeRange;

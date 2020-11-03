@@ -43,7 +43,7 @@ async function testUpload() {
   await bucket.put({
     data: file,
     key: 'tmp/bar.json',
-    acl: 'public-read',
+    acl: 'private',
   });
 
   console.log('-------------------------------------------');
@@ -85,7 +85,17 @@ async function testDelete() {
   console.log('DELETE', res);
 }
 
+async function testInfo() {
+  const foo = await bucket.get({ key: 'tmp/foo.json' });
+  const bar = await bucket.get({ key: 'tmp/bar.json' });
+
+  console.log('-------------------------------------------');
+  console.log('FOO', foo);
+  console.log('BAR', bar);
+}
+
 (async () => {
   await testUpload();
+  await testInfo();
   await testDelete();
 })();
