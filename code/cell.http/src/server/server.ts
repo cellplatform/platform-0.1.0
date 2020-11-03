@@ -45,7 +45,7 @@ export function create(args: {
       module: `${log.white(PKG.name)}@${PKG.version}`,
       schema: log.green(deps['@platform/cell.schema']),
       router: deps['@platform/cell.http.router'],
-      fs: `[${fs.type === 'LOCAL' ? 'local' : fs.type}]${root}`,
+      fs: `[${log.white(fs.type === 'LOCAL' ? 'local' : fs.type)}]${root}`,
     },
   });
 
