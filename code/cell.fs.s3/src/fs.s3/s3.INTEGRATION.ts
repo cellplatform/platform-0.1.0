@@ -19,7 +19,7 @@ describe('S3 (INTEGRATION)', function () {
     expect(res.status).to.eql(200);
     expect(res.uri).to.eql(uri);
     expect(typeof res['s3:etag']).to.eql('string');
-    expect(res['s3:acl']).to.eql('private'); // NB: Private by default.
+    expect(res['s3:permission']).to.eql('private'); // NB: Private by default.
 
     const location = 'https://platform.sfo2.digitaloceanspaces.com/tmp/test.cell.fs/ns.foo/bird';
     expect(file.location).to.eql(location);
@@ -28,6 +28,11 @@ describe('S3 (INTEGRATION)', function () {
     log.info('WRITE', res);
     log.info('-------------------------------------------');
     log.info(location);
+
+    const read = await fs.read(uri);
+    const info = await fs.info(uri);
+    expect(read['s3:permission']).to.eql('private');
+    expect(info['s3:permission']).to.eql('private');
   });
 
   it('write (public)', async () => {
@@ -38,13 +43,18 @@ describe('S3 (INTEGRATION)', function () {
     const filename = 'public/bird.png';
     const png = await util.image('bird.png');
     const res = await fs.write(uri, png, { filename, acl: 'public-read' }); // NB: URI padded with spaces (corrected internally).
+    expect(res['s3:permission']).to.eql('public-read');
 
-    expect(res['s3:acl']).to.eql('public-read');
     const location = 'https://platform.sfo2.digitaloceanspaces.com/tmp/test.cell.fs/ns.foo/public';
 
     log.info('WRITE', res);
     log.info('-------------------------------------------');
     log.info(location);
+
+    const read = await fs.read(uri);
+    const info = await fs.info(uri);
+    expect(read['s3:permission']).to.eql('public-read');
+    expect(info['s3:permission']).to.eql('public-read');
   });
 
   it('info', async () => {

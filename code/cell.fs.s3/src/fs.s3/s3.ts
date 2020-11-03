@@ -97,6 +97,7 @@ export function init(args: IS3Init): t.IFsS3 {
           hash: '', // NB: Unknown from raw S3 data (without downloading).
           bytes: res.bytes,
           's3:etag': res.etag,
+          's3:permission': res.permission,
         };
       } catch (err) {
         return { uri, exists: false, path, location, hash: '', bytes: -1 };
@@ -111,15 +112,22 @@ export function init(args: IS3Init): t.IFsS3 {
 
       try {
         const res = await cloud.bucket.get({ key });
-        const { status, etag = '' } = res;
+        const { status, etag = '', permission } = res;
         const ok = util.isOK(status);
+
+        const done = (args: { error?: t.IFsError; file?: t.IFsFileData }): t.IFsReadS3 => {
+          const { error, file } = args;
+          const ok = util.isOK(status);
+          return { ok, status, uri, file, error, 's3:etag': etag, 's3:permission': permission };
+        };
+
         if (!ok || !res.data) {
           const error: t.IFsError = {
             type: 'FS/read/cloud',
             message: `Failed to read [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { ok, status, uri, error, 's3:etag': etag };
+          return done({ error });
         } else {
           const file: t.IFsFileData = {
             path,
@@ -132,7 +140,7 @@ export function init(args: IS3Init): t.IFsS3 {
               return Uint8Array.from(file.data).length;
             },
           };
-          return { ok, status, file, uri, 's3:etag': etag };
+          return done({ file });
         }
       } catch (err) {
         const error: t.IFsError = {
@@ -203,9 +211,9 @@ export function init(args: IS3Init): t.IFsS3 {
             message: `Failed to write [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { ok, status, file, uri, error, 's3:etag': etag, 's3:acl': acl };
+          return { ok, status, file, uri, error, 's3:etag': etag, 's3:permission': acl };
         } else {
-          return { ok, status, file, uri, 's3:etag': etag, 's3:acl': acl };
+          return { ok, status, file, uri, 's3:etag': etag, 's3:permission': acl };
         }
       } catch (err) {
         const error: t.IFsError = {
