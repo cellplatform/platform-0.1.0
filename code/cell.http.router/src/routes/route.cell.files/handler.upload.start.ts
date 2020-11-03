@@ -9,8 +9,9 @@ export async function uploadCellFilesStart(args: {
   body: t.IReqPostCellFilesUploadStartBody;
   host: string;
   changes?: boolean;
+  permission?: t.FsS3Permission;
 }) {
-  const { db, fs, body, host } = args;
+  const { db, fs, body, host, permission } = args;
   const expires = body.expires;
   const cellUri = Schema.uri.cell(args.cellUri);
   const cellKey = cellUri.key;
@@ -47,6 +48,7 @@ export async function uploadCellFilesStart(args: {
       filehash,
       expires,
       sendChanges: true,
+      permission,
     });
     const json = res.data as t.IResPostFileUploadStart;
     const status = res.status;

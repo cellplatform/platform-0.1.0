@@ -9,8 +9,9 @@ export async function uploadFiles(args: {
   urls: t.IUrls;
   cellUri: string;
   changes?: boolean;
+  permission?: t.FsS3Permission;
 }) {
-  const { http, urls, cellUri } = args;
+  const { http, urls, cellUri, permission } = args;
   const sendChanges = defaultValue(args.changes, false);
 
   let input = Array.isArray(args.input) ? args.input : [args.input];
@@ -26,13 +27,14 @@ export async function uploadFiles(args: {
 
   const cellUrls = urls.cell(cellUri);
   const url = {
-    start: cellUrls.files.upload.query({ changes: sendChanges }).toString(),
+    start: cellUrls.files.upload.query({ changes: sendChanges, permission }).toString(),
     complete: cellUrls.files.uploaded.query({ changes: sendChanges }).toString(),
   };
 
-  //
-  // [1]. Initial POST to the service.
-  //      This sets up the models, and retrieves the pre-signed S3 urls to upload to.
+  /**
+   * [1]. Initial POST to the service.
+   *      This sets up the models, and retrieves the pre-signed S3 urls to upload to.
+   */
   const uploadStartBody: t.IReqPostCellFilesUploadStartBody = {
     expires: undefined, // Expires.
     files: input.map(({ filename, data, mimetype }) => {
@@ -49,9 +51,9 @@ export async function uploadFiles(args: {
   const uploadStart = res1.json as t.IResPostCellFilesUploadStart;
   addChanges(uploadStart.data.changes);
 
-  //
-  // [2]. Upload files to S3 (or the local file-system).
-  //
+  /**
+   * [2]. Upload files to S3 (or the local file-system).
+   */
   const uploadUrls = uploadStart.urls.uploads;
   const fileUploadWait = uploadUrls
     .map((upload) => {
@@ -107,11 +109,11 @@ export async function uploadFiles(args: {
     return error;
   });
 
-  //
-  // [3]. POST "complete" for each file-upload causing
-  //      the underlying model(s) to be updated with file
-  //      meta-data retrieved from the file-system.
-  //
+  /**
+   * [3]. POST "complete" for each file-upload causing
+   *      the underlying model(s) to be updated with file
+   *      meta-data retrieved from the file-system.
+   */
   const res3 = await Promise.all(
     fileUploadSuccesses.map(async (item) => {
       const url = urls.file(item.uri).uploaded.query({ changes: sendChanges }).toString();
@@ -134,9 +136,9 @@ export async function uploadFiles(args: {
     return error;
   });
 
-  //
-  // [4]. POST "complete" for the upload to the owner cell.
-  //
+  /**
+   * [4]. POST "complete" for the upload to the owner cell.
+   */
   const cellUploadCompleteBody: t.IReqPostCellFilesUploadCompleteBody = {};
   const res4 = await http.post(url.complete, cellUploadCompleteBody);
   const cellUploadComplete = res4.json as t.IResPostCellFilesUploadComplete;

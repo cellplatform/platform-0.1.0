@@ -55,12 +55,12 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       const params = req.params as t.IUrlParamsCellFiles;
       const paramData = getParams({ params });
       const { status, error, cellUri } = paramData;
-      const changes = query.changes;
+      const { changes, permission } = query;
       const body = ((await req.body.json()) || {}) as t.IReqPostCellFilesUploadStartBody;
 
       return !paramData.ns || error
         ? { status, data: { error } }
-        : uploadCellFilesStart({ db, fs, cellUri, body, host, changes });
+        : uploadCellFilesStart({ db, fs, cellUri, body, host, changes, permission });
     } catch (err) {
       return util.toErrorPayload(err);
     }

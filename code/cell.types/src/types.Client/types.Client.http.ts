@@ -88,7 +88,7 @@ export type IHttpClientCellFiles = {
   list(options?: { filter?: string }): t.IHttpClientAsync<IHttpClientFileData[]>;
   upload(
     files: IHttpClientCellFileUpload | IHttpClientCellFileUpload[],
-    options?: { changes?: boolean },
+    options?: { changes?: boolean; permission?: t.FsS3Permission },
   ): t.IHttpClientAsync<IHttpClientCellFileUploadResponse>;
   delete(filename: string | string[]): t.IHttpClientAsync<t.IResDeleteCellFilesData>;
   unlink(filename: string | string[]): t.IHttpClientAsync<t.IResDeleteCellFilesData>;

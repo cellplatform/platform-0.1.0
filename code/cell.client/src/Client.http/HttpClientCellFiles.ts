@@ -106,12 +106,12 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
 
   public async upload(
     input: t.IHttpClientCellFileUpload | t.IHttpClientCellFileUpload[],
-    options: { changes?: boolean } = {},
+    options: { changes?: boolean; permission?: t.FsS3Permission } = {},
   ) {
-    const { changes } = options;
+    const { changes, permission } = options;
     const { http, urls } = this.args;
     const cellUri = this.uri.toString();
-    return uploadFiles({ input, http, urls, cellUri, changes }) as any;
+    return uploadFiles({ input, http, urls, cellUri, changes, permission }) as any;
   }
 
   public async delete(filename: string | string[]) {
