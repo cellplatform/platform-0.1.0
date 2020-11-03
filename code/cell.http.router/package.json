@@ -10,7 +10,7 @@
     "test": "ts test",
     "test:integration": "ts test --suffix INTEGRATION",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build --no-esm",
     "clean": "cd test.browser && yarn clean",
     "prepare": "ts-node -T scripts.ts/prepare && ts prepare && rm -rf tmp"
   },
