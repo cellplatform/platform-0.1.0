@@ -8,7 +8,7 @@
     "start": "cd test.browser && yarn start",
     "watch": "yarn start",
     "test": "ts test",
-    "tdd": "ts test --watch",
+    "test:integration": "ts test --suffix INTEGRATION",
     "lint": "ts lint",
     "build": "ts build",
     "clean": "cd test.browser && yarn clean",
