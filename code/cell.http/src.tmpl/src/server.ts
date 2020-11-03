@@ -34,8 +34,8 @@ const getRemoteFs = () =>
 const app = server.create({
   name: 'sample',
   db,
-  // fs: getRemoteFs(), // TEMP 🐷 - revert to local FS.
-  fs: getLocalFs(),
+  fs: getRemoteFs(), // TEMP 🐷 - revert to local FS.
+  // fs: getLocalFs(),
   // log: ['ROUTES'],
 });
 
