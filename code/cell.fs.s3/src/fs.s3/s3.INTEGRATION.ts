@@ -34,15 +34,13 @@ describe('S3 (INTEGRATION)', function () {
     await util.reset();
     const fs = initS3();
 
-    const uri = 'file:foo:publicbird';
-    const filename = 'bird-public.png';
+    const uri = 'file:foo:public';
+    const filename = 'public/bird.png';
     const png = await util.image('bird.png');
     const res = await fs.write(uri, png, { filename, acl: 'public-read' }); // NB: URI padded with spaces (corrected internally).
 
     expect(res['s3:acl']).to.eql('public-read');
-
-    const location =
-      'https://platform.sfo2.digitaloceanspaces.com/tmp/test.cell.fs/ns.foo/publicbird';
+    const location = 'https://platform.sfo2.digitaloceanspaces.com/tmp/test.cell.fs/ns.foo/public';
 
     log.info('WRITE', res);
     log.info('-------------------------------------------');
