@@ -94,8 +94,19 @@ async function testInfo() {
   console.log('BAR', bar);
 }
 
+async function testCopy() {
+  const res = await bucket.copy({
+    source: 'tmp/foo.json',
+    target: 'tmp/copy.json',
+    acl: 'public-read',
+  });
+  console.log('-------------------------------------------');
+  console.log('COPY', res);
+}
+
 (async () => {
   await testUpload();
-  await testInfo();
-  await testDelete();
+  // await testInfo();
+  await testCopy();
+  // await testDelete();
 })();
