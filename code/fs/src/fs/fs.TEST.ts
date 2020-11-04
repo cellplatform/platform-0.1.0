@@ -2,11 +2,17 @@ import { expect } from 'chai';
 import { fs } from '.';
 import { t } from '../common';
 
-describe('size', () => {
-  it('match', () => {
-    const match = fs.match('**/*.js');
-    expect(match.path('foo.js')).to.eql(true);
-    expect(match.base('foo.txt')).to.eql(false);
+describe('fs', () => {
+  describe('interface', () => {
+    it('match', () => {
+      const match = fs.match('**/*.js');
+      expect(match.path('foo.js')).to.eql(true);
+      expect(match.base('foo.txt')).to.eql(false);
+    });
+
+    it('env', () => {
+      expect(typeof fs.env.load).to.eql('function');
+    });
   });
 
   describe('file', () => {
@@ -73,14 +79,19 @@ describe('size', () => {
       expect(await f.exists(dir)).to.eql(true);
     });
 
-    it('writeFile/readFile', async () => {
+    it('read/write/copy', async () => {
       const text = 'Hello World';
       const path = f.resolve('tmp/file.txt');
 
       await f.ensureDir(f.resolve('tmp'));
       await f.writeFile(path, text);
-      const res = await f.readFile(path);
-      expect(res.toString()).to.eql(text);
+
+      const read = await f.readFile(path);
+      expect(read.toString()).to.eql(text);
+
+      const copyPath = fs.resolve('tmp/copy.txt');
+      await f.copyFile(path, copyPath);
+      expect((await f.readFile(copyPath)).toString()).to.eql(text);
     });
 
     it('is (file/dir)', async () => {

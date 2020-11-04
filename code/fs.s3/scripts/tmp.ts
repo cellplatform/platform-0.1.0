@@ -10,18 +10,30 @@ import { log, fs } from './common';
 const tmp = fs.resolve('./tmp');
 fs.ensureDirSync(tmp);
 
-const ACCESS = {
-  KEY: process.env.SPACES_KEY,
-  SECRET: process.env.SPACES_SECRET,
+const ENV = process.env;
+
+const digitalocean = () => {
+  const s3 = fs.s3({
+    endpoint: ENV.SPACES_ENDPOINT,
+    accessKey: ENV.SPACES_KEY,
+    secret: ENV.SPACES_SECRET,
+  });
+  const bucket = s3.bucket('platform');
+  return { s3, bucket };
 };
 
-const s3 = fs.s3({
-  endpoint: 'sfo2.digitaloceanspaces.com',
-  accessKey: ACCESS.KEY,
-  secret: ACCESS.SECRET,
-});
+const wasabi = () => {
+  const s3 = fs.s3({
+    endpoint: ENV.WASABI_ENDPOINT,
+    accessKey: ENV.WASABI_KEY,
+    secret: ENV.WASABI_SECRET,
+  });
+  const bucket = s3.bucket('cell');
+  return { s3, bucket };
+};
 
-const bucket = s3.bucket('platform');
+// const { bucket } = digitalocean();
+const { bucket } = wasabi();
 
 log.info();
 
@@ -29,7 +41,7 @@ async function testUpload() {
   const fileName = 'foo.json';
   const filePath = fs.join(tmp, fileName);
 
-  await fs.writeJson(filePath, { foo: 123 });
+  await fs.writeJson(filePath, { foo: 1234 });
   const file = await fs.readFile(filePath);
 
   console.log('\n\nuploading');
@@ -106,7 +118,7 @@ async function testCopy() {
 
 (async () => {
   await testUpload();
-  // await testInfo();
+  await testInfo();
   await testCopy();
-  // await testDelete();
+  await testDelete();
 })();

@@ -87,7 +87,7 @@ export const fs = {
   is,
 
   /**
-   * Load .env files into process.env.
+   * Load [.env] files into [process.env].
    */
   env,
 

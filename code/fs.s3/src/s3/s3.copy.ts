@@ -1,4 +1,4 @@
-import { AWS, t, util } from '../common';
+import { AWS, t, util, formatETag } from '../common';
 
 /**
  * Make a copy of an S3 object.
@@ -23,7 +23,7 @@ export async function copy(args: t.S3CopyArgs & { s3: AWS.S3 }): Promise<t.S3Cop
         ContentDisposition: args.contentDisposition,
       })
       .promise();
-    const etag = res.CopyObjectResult?.ETag;
+    const etag = formatETag(res.CopyObjectResult?.ETag);
     return done(200, { etag });
   } catch (err) {
     const status = err.statusCode || 500;
