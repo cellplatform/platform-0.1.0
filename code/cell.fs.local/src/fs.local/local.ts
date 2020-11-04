@@ -1,4 +1,4 @@
-import { path, t, Schema } from '../common';
+import { path, t, Schema, util } from '../common';
 
 export * from '../types';
 const toLocation = (path: string) => `file://${path}`;
@@ -173,15 +173,14 @@ export function init(args: { root: string; fs: t.IFs }): t.IFsLocal {
       const format = (input: string) => {
         const uri = (input || '').trim();
         const path = res.resolve(uri).path;
-        const location = toLocation(path);
-        return { uri, path, location };
+        return { uri, path };
       };
 
       const source = format(sourceUri);
       const target = format(targetUri);
 
       const done = (status: number, error?: t.IFsError) => {
-        const ok = status.toString().startsWith('2');
+        const ok = util.isOK(status);
         return { ok, status, source: source.uri, target: target.uri, error };
       };
 
