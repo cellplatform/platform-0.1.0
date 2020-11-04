@@ -16,7 +16,6 @@ import { sort } from '../sort';
 
 const { join, resolve, dirname, basename, extname } = path;
 const exists: t.IFs['exists'] = (path) => fsExtra.pathExists(path);
-const writeFile: t.IFs['writeFile'] = fsExtra.writeFile;
 
 /**
  * Extended [file-system] object.
@@ -29,9 +28,18 @@ export const fs = {
 
   /**
    * IFs (interface)
+   * NOTE:
+   *    The rest of the [IFs] methods are copied in from [fs-extra].
    */
   exists,
-  writeFile,
+
+  // [IFs] path helpers
+  path,
+  join,
+  resolve,
+  dirname,
+  basename,
+  extname,
 
   /**
    * Helpers for determining the size of file-system items.
@@ -88,14 +96,4 @@ export const fs = {
    */
   zip,
   unzip,
-
-  /**
-   * Helpers for working with paths.
-   */
-  path,
-  join,
-  resolve,
-  dirname,
-  basename,
-  extname,
 };

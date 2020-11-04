@@ -186,7 +186,7 @@ export function init(args: { root: string; fs: t.IFs }): t.IFsLocal {
 
       try {
         await fs.ensureDir(fs.dirname(target.path));
-        await fs.writeFile(target.path, await fs.readFile(source.path));
+        await fs.copyFile(source.path, target.path);
         return done(200);
       } catch (err) {
         const message = `Failed to copy from [${source.uri}] to [${target.uri}]. ${err.message}`;
