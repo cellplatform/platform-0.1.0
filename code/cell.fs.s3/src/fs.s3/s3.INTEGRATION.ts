@@ -4,11 +4,10 @@ const initS3 = () => util.initS3({ path: 'platform/tmp/test.cell.fs' });
 
 describe('S3 (INTEGRATION)', function () {
   this.timeout(99999);
+  beforeEach(async () => await util.reset());
 
   it('write', async () => {
-    await util.reset();
     const fs = initS3();
-
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
     const png = await util.image(filename);
@@ -36,9 +35,7 @@ describe('S3 (INTEGRATION)', function () {
   });
 
   it('write (public)', async () => {
-    await util.reset();
     const fs = initS3();
-
     const uri = 'file:foo:public';
     const filename = 'public/bird.png';
     const png = await util.image('bird.png');
@@ -58,9 +55,7 @@ describe('S3 (INTEGRATION)', function () {
   });
 
   it('info', async () => {
-    await util.reset();
     const fs = initS3();
-
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
     const png = await util.image(filename);
@@ -82,9 +77,7 @@ describe('S3 (INTEGRATION)', function () {
   });
 
   it('read', async () => {
-    await util.reset();
     const fs = initS3();
-
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
     const png = await util.image(filename);
@@ -106,8 +99,15 @@ describe('S3 (INTEGRATION)', function () {
     log.info('READ', res);
   });
 
+  it('read (404)', async () => {
+    const fs = initS3();
+    const uri = 'file:foo:noexist';
+    const res = await fs.read(uri);
+    expect(res.status).to.eql(404);
+    expect(res.error?.type).to.eql('FS/read');
+  });
+
   it('delete (one)', async () => {
-    await util.reset();
     const fs = initS3();
 
     const uri = 'file:foo:bird';
@@ -135,9 +135,7 @@ describe('S3 (INTEGRATION)', function () {
   });
 
   it('delete (many)', async () => {
-    await util.reset();
     const fs = initS3();
-
     const uri1 = 'file:foo:bird';
     const uri2 = 'file:foo:kitten';
 
@@ -165,4 +163,7 @@ describe('S3 (INTEGRATION)', function () {
     expect((await fs.read(uri1)).status).to.eql(404);
     expect((await fs.read(uri2)).status).to.eql(404);
   });
+
+  it.only('copy', async () => {});
+
 });

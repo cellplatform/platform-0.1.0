@@ -76,7 +76,7 @@ export function init(args: { root: string; fs: t.IFs }): t.IFsLocal {
       // Ensure the file exists.
       if (!(await fs.exists(path))) {
         const error: t.IFsError = {
-          type: 'FS/read/404',
+          type: 'FS/read',
           message: `A file with the URI [${uri}] does not exist.`,
           path,
         };

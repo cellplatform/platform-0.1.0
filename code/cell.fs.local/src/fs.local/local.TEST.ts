@@ -226,7 +226,7 @@ describe('fs.local', () => {
       expect(res.ok).to.eql(false);
       expect(res.status).to.eql(404);
       expect(res.file).to.eql(undefined);
-      expect(error.type).to.eql('FS/read/404');
+      expect(error.type).to.eql('FS/read');
       expect(error.path).to.eql(fs.resolve(uri).path);
       expect(error.message).to.contain(`[file:foo:noexist] does not exist`);
     });

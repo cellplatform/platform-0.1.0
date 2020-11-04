@@ -3,16 +3,7 @@ import { t } from '../common';
 /**
  * FileSystem errors
  */
-export type FsError =
-  | 'FS/read'
-  | 'FS/read/404'
-  | 'FS/read/cloud'
-  | 'FS/write'
-  | 'FS/write/cloud'
-  | 'FS/delete'
-  | 'FS/delete/cloud'
-  | 'FS/copy'
-  | 'FS/copy/cloud';
+export type FsError = 'FS/read' | 'FS/write' | 'FS/delete' | 'FS/copy';
 export type IFsError<E extends FsError = FsError> = t.IError<E> & { path: string };
 
 /**
