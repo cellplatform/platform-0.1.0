@@ -4,6 +4,7 @@ import { t } from '../common';
 export type FsType = FsTypeLocal | FsTypeS3;
 export type FsTypeLocal = 'LOCAL';
 export type FsTypeS3 = 'S3';
+
 export type FsS3Permission = 'private' | 'public-read';
 
 /**
@@ -16,7 +17,8 @@ export type IFsLocal = IFsMembers<
   IFsReadLocal,
   IFsWriteLocal,
   IFsWriteOptionsLocal,
-  IFsDeleteLocal
+  IFsDeleteLocal,
+  IFsCopyLocal
 >;
 export type IFsS3 = IFsMembers<
   FsTypeS3,
@@ -24,7 +26,8 @@ export type IFsS3 = IFsMembers<
   IFsReadS3,
   IFsWriteS3,
   IFsWriteOptionsS3,
-  IFsDeleteS3
+  IFsDeleteS3,
+  IFsCopyS3
 > & {
   bucket: string;
 };
@@ -42,7 +45,8 @@ type IFsMembers<
   Read extends IFsRead,
   Write extends IFsWrite,
   WriteOptions extends IFsWriteOptions,
-  Delete extends IFsDelete
+  Delete extends IFsDelete,
+  Copy extends IFsCopy
 > = {
   type: Type;
   root: string; // Root directory of the file-system.
@@ -51,6 +55,7 @@ type IFsMembers<
   read(uri: string): Promise<Read>;
   write(uri: string, data: Uint8Array, options?: WriteOptions): Promise<Write>;
   delete(uri: string | string[]): Promise<Delete>;
+  copy(sourceUri: string, targetUri: string): Promise<Copy>;
 };
 
 /**
@@ -120,10 +125,19 @@ type IFsDeleteCommon = {
   error?: IFsError;
 };
 
+type IFsCopyCommon = {
+  ok: boolean;
+  status: number;
+  error?: IFsError;
+  source: string;
+  target: string;
+};
+
 export type IFsInfo = IFsInfoLocal | IFsInfoS3;
 export type IFsRead = IFsReadLocal | IFsReadS3;
 export type IFsWrite = IFsWriteLocal | IFsWriteS3;
 export type IFsDelete = IFsDeleteLocal | IFsDeleteS3;
+export type IFsCopy = IFsCopyLocal | IFsCopyS3;
 
 /**
  * Local file-system (Extensions)
@@ -132,6 +146,7 @@ export type IFsInfoLocal = IFsInfoCommon & IFsMetaLocal;
 export type IFsReadLocal = IFsReadCommon & { file?: IFsFileData<IFsMetaLocal> };
 export type IFsWriteLocal = IFsWriteCommon & { file: IFsFileData<IFsMetaLocal> };
 export type IFsDeleteLocal = IFsDeleteCommon;
+export type IFsCopyLocal = IFsCopyCommon;
 
 /**
  * S3 (Extensions)
@@ -148,3 +163,4 @@ export type IFsWriteS3 = IFsWriteCommon & {
   's3:permission'?: t.FsS3Permission;
 };
 export type IFsDeleteS3 = IFsDeleteCommon;
+export type IFsCopyS3 = IFsCopyCommon;

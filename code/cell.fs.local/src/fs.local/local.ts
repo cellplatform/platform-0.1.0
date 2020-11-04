@@ -165,6 +165,40 @@ export function init(args: { root: string; fs: t.IFs }): t.IFsLocal {
         return { ok: false, status: 500, uris, locations, error };
       }
     },
+
+    /**
+     * Copy a file.
+     */
+    async copy(sourceUri: string, targetUri: string): Promise<t.IFsCopyLocal> {
+      const format = (input: string) => {
+        const uri = (input || '').trim();
+        const path = res.resolve(uri).path;
+        const location = toLocation(path);
+        return { uri, path, location };
+      };
+
+      const source = format(sourceUri);
+      const target = format(targetUri);
+
+      const done = (status: number, error?: t.IFsError) => {
+        const ok = status.toString().startsWith('2');
+        return { ok, status, source: source.uri, target: target.uri, error };
+      };
+
+      try {
+        await fs.ensureDir(fs.dirname(target.path));
+        await fs.writeFile(target.path, await fs.readFile(source.path));
+        return done(200);
+      } catch (err) {
+        const message = `Failed to copy from [${source.uri}] to [${target.uri}]. ${err.message}`;
+        const error: t.IFsError = {
+          type: 'FS/copy',
+          message,
+          path: target.path,
+        };
+        return done(500, error);
+      }
+    },
   };
 
   return res;

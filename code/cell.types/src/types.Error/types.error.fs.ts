@@ -10,7 +10,9 @@ export type FsError =
   | 'FS/write'
   | 'FS/write/cloud'
   | 'FS/delete'
-  | 'FS/delete/cloud';
+  | 'FS/delete/cloud'
+  | 'FS/copy'
+  | 'FS/copy/cloud';
 export type IFsError<E extends FsError = FsError> = t.IError<E> & { path: string };
 
 /**
