@@ -5,6 +5,7 @@ import { deleteCellFiles } from './handler.delete';
 import { listCellFiles } from './handler.list';
 import { uploadCellFilesComplete } from './handler.upload.complete';
 import { uploadCellFilesStart } from './handler.upload.start';
+import { copyCellFiles } from './handler.copy';
 import { getParams } from './params';
 
 /**
@@ -107,6 +108,26 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       return !paramData.ns || error
         ? { status, data: { error } }
         : deleteCellFiles({ db, fs, cellUri, body, host });
+    } catch (err) {
+      return util.toErrorPayload(err);
+    }
+  });
+
+  /**
+   * POST copy file(s) between cells.
+   */
+  router.post(routes.CELL.FILES.COPY, async (req) => {
+    try {
+      const host = req.host;
+      const query = req.query as t.IReqQueryCellFilesCopy;
+      const params = req.params as t.IUrlParamsCellFiles;
+      const paramData = getParams({ params });
+      const body = (await req.body.json()) as t.IReqPostCellFilesCopyBody;
+      const { status, error, cellUri: cellUri } = paramData;
+
+      return !paramData.ns || error
+        ? { status, data: { error } }
+        : copyCellFiles({ db, fs, cellUri, body, host });
     } catch (err) {
       return util.toErrorPayload(err);
     }

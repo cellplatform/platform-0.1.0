@@ -160,6 +160,14 @@ export class Urls implements t.IUrls {
         },
 
         /**
+         * Example: /cell:foo:A1/files/copy
+         */
+        get copy() {
+          type Q = t.IResPostCellFilesCopy;
+          return toPath<Q>(`/cell:${ns}:${key}/files/copy`);
+        },
+
+        /**
          * Example: /cell:foo:A1/files/upload
          */
         get upload() {

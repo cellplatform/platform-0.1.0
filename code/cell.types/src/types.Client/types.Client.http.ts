@@ -1,5 +1,7 @@
 import { t } from '../common';
 
+type Duration = string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
+
 /**
  * Response.
  */
@@ -77,9 +79,7 @@ export type IHttpClientCellFile = {
 
 export type IHttpClientCellFileByName = {
   info(): t.IHttpClientAsync<t.IResGetFile>;
-  download(options?: {
-    expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
-  }): t.IHttpClientAsync<ReadableStream | t.Json | string>;
+  download(options?: { expires?: Duration }): t.IHttpClientAsync<ReadableStream | t.Json | string>;
 };
 
 export type IHttpClientCellFiles = {
@@ -88,10 +88,18 @@ export type IHttpClientCellFiles = {
   list(options?: { filter?: string }): t.IHttpClientAsync<IHttpClientFileData[]>;
   upload(
     files: IHttpClientCellFileUpload | IHttpClientCellFileUpload[],
-    options?: { changes?: boolean; permission?: t.FsS3Permission },
+    options?: IHttpClientCellFilesUploadOptions,
   ): t.IHttpClientAsync<IHttpClientCellFileUploadResponse>;
   delete(filename: string | string[]): t.IHttpClientAsync<t.IResDeleteCellFilesData>;
   unlink(filename: string | string[]): t.IHttpClientAsync<t.IResDeleteCellFilesData>;
+  copy(
+    files: t.IHttpClientCellFileCopy | t.IHttpClientCellFileCopy[],
+  ): t.IHttpClientAsync<t.IResPostCellFilesCopyData>;
+};
+
+export type IHttpClientCellFilesUploadOptions = {
+  changes?: boolean;
+  permission?: t.FsS3Permission;
 };
 
 export type IHttpClientCellFileUrl = {
@@ -109,6 +117,17 @@ export type IHttpClientCellFileUploadResponse = {
   files: t.IUriData<t.IFileData>[];
   errors: t.IFileUploadError[];
   changes?: t.IDbModelChange[];
+};
+
+export type IHttpClientCellFileCopy = {
+  filename: string;
+  target: IHttpClientCellFileCopyTarget;
+};
+
+export type IHttpClientCellFileCopyTarget = {
+  uri: string; //       Cell URI
+  host?: string; //     NB: Same as source if ommitted.
+  filename?: string; // NB: Same as source if ommitted.
 };
 
 /**
