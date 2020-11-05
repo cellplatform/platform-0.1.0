@@ -3,12 +3,14 @@ import { expect, util, fs, log } from '../test';
 const tmp = fs.resolve('./tmp');
 fs.ensureDirSync(tmp);
 
-const { s3, BUCKET, PROVIDER, ENDPOINT, PATH } = util.init('WASABI');
+// const PROVIDER = 'WASABI'
+const PROVIDER = 'SPACES';
+const { s3, BUCKET, ENDPOINT, PATH } = util.init(PROVIDER);
 const bucket = s3.bucket(BUCKET);
 
 const table = log.table({ border: false });
 log.info();
-table.add(['PROVIDER', log.green(PROVIDER)]);
+table.add(['PROVIDER ', log.green(PROVIDER)]);
 table.add(['ENDPOINT', log.green(ENDPOINT)]);
 table.add(['BUCKET', log.green(BUCKET)]);
 table.add(['PATH', log.green(PATH)]);
@@ -87,5 +89,46 @@ describe('S3 (Integration)', function () {
     expect(res.status).to.eql(200);
     expect(res.keys).to.eql(keys);
     expect(res.bucket).to.eql(BUCKET);
+  });
+
+  /**
+   *
+   * Support ticket on Digital Ocean
+   *    [Ticket #4089384] s3.copyObject: 503 SlowDown
+   *
+   */
+
+  // it.only('bucket.put (throttle)', async () => {
+  //   const { data } = await testFile();
+
+  //   const length = 5;
+  //   const items = Array.from({ length }).map((v, i) => i + 1);
+
+  //   const put = () => bucket.put({ data, key: 'tmp/throttle.json' });
+
+  //   for (const i of items) {
+  //     const res = await Promise.all([put(), put(), put(), put(), put()]);
+  //     const status = res.map((res) => res.status);
+  //     console.log('res.error', status);
+  //   }
+
+  //   console.log('-------------------------------------------');
+  //   console.log('timestamp', new Date().getTime());
+  // });
+
+  it('bucket.copy', async () => {
+    const { data } = await testFile();
+    const source = 'tmp/source.json';
+    const target = 'tmp/target.json';
+    await bucket.put({ data, key: 'tmp/source.json' });
+
+    const res = await bucket.copy({ source, target });
+
+    // console.log('res', res);
+
+    expect(res.ok).to.eql(true);
+    expect(res.status).to.eql(200);
+    expect(res.source).to.eql({ bucket: BUCKET, key: source });
+    expect(res.target).to.eql({ bucket: BUCKET, key: target });
   });
 });

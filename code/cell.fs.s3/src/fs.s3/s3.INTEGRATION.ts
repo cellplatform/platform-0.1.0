@@ -1,10 +1,12 @@
 import { t, expect, util, log } from '../test';
 
-const { fs, BASE_URL, PATH, BUCKET, PROVIDER, ENDPOINT } = util.init('WASABI');
+// const PROVIDER = 'WASABI'
+const PROVIDER = 'SPACES';
+const { fs, BASE_URL, PATH, BUCKET, ENDPOINT } = util.init(PROVIDER);
 
 const table = log.table({ border: false });
 log.info();
-table.add(['PROVIDER', log.green(PROVIDER)]);
+table.add(['PROVIDER ', log.green(PROVIDER)]);
 table.add(['ENDPOINT', log.green(ENDPOINT)]);
 table.add(['BUCKET', log.green(BUCKET)]);
 table.add(['PATH', log.green(PATH)]);
