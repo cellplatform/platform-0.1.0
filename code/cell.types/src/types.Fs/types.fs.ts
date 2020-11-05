@@ -1,6 +1,8 @@
 import { IFsError } from '../types.Error';
 import { t } from '../common';
 
+type EmptyObject = Record<string, undefined>; // 🐷 NB: Used as a placeholder object.
+
 export type FsType = FsTypeLocal | FsTypeS3;
 export type FsTypeLocal = 'LOCAL';
 export type FsTypeS3 = 'S3';
@@ -18,7 +20,8 @@ export type IFsLocal = IFsMembers<
   IFsWriteLocal,
   IFsWriteOptionsLocal,
   IFsDeleteLocal,
-  IFsCopyLocal
+  IFsCopyLocal,
+  IFsCopyOptionsLocal
 >;
 export type IFsS3 = IFsMembers<
   FsTypeS3,
@@ -27,14 +30,19 @@ export type IFsS3 = IFsMembers<
   IFsWriteS3,
   IFsWriteOptionsS3,
   IFsDeleteS3,
-  IFsCopyS3
+  IFsCopyS3,
+  IFsCopyOptionsS3
 > & {
   bucket: string;
 };
 
 export type IFsWriteOptions = IFsWriteOptionsLocal | IFsWriteOptionsS3;
 export type IFsWriteOptionsLocal = { filename?: string };
-export type IFsWriteOptionsS3 = { filename?: string; acl?: FsS3Permission };
+export type IFsWriteOptionsS3 = { filename?: string; permission?: FsS3Permission };
+
+export type IFsCopyOptions = IFsCopyOptionsLocal | IFsCopyOptionsS3;
+export type IFsCopyOptionsLocal = EmptyObject; // 🐷 No option parameters.
+export type IFsCopyOptionsS3 = { permission?: FsS3Permission };
 
 /**
  * File-system Members
@@ -46,7 +54,8 @@ type IFsMembers<
   Write extends IFsWrite,
   WriteOptions extends IFsWriteOptions,
   Delete extends IFsDelete,
-  Copy extends IFsCopy
+  Copy extends IFsCopy,
+  CopyOptions extends IFsCopyOptions
 > = {
   type: Type;
   root: string; // Root directory of the file-system.
@@ -55,7 +64,7 @@ type IFsMembers<
   read(uri: string): Promise<Read>;
   write(uri: string, data: Uint8Array, options?: WriteOptions): Promise<Write>;
   delete(uri: string | string[]): Promise<Delete>;
-  copy(sourceUri: string, targetUri: string): Promise<Copy>;
+  copy(sourceUri: string, targetUri: string, options?: CopyOptions): Promise<Copy>;
 };
 
 /**
