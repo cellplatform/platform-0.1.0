@@ -167,7 +167,7 @@ export function init(args: IS3Init): t.IFsS3 {
     async write(
       uri: string,
       data: Buffer,
-      options: { filename?: string; acl?: t.FsS3Permission } = {},
+      options: { filename?: string; permission?: t.FsS3Permission } = {},
     ): Promise<t.IFsWriteS3> {
       if (!data) {
         throw new Error(`Cannot write, no data provided.`);
@@ -180,7 +180,7 @@ export function init(args: IS3Init): t.IFsS3 {
        *        each request.
        */
 
-      const { filename, acl = 'private' } = options;
+      const { filename, permission = 'private' } = options;
       const contentType = filename ? Schema.mime.toType(filename) : undefined;
       const contentDisposition = filename ? `inline; filename="${filename}"` : undefined;
 
@@ -206,7 +206,7 @@ export function init(args: IS3Init): t.IFsS3 {
           contentDisposition,
           data: file.data,
           key,
-          acl,
+          acl: permission,
         });
 
         const { status, etag = '' } = res;
@@ -220,9 +220,9 @@ export function init(args: IS3Init): t.IFsS3 {
             message: `Failed to write [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { ok, status, file, uri, error, 's3:etag': etag, 's3:permission': acl };
+          return { ok, status, file, uri, error, 's3:etag': etag, 's3:permission': permission };
         } else {
-          return { ok, status, file, uri, 's3:etag': etag, 's3:permission': acl };
+          return { ok, status, file, uri, 's3:etag': etag, 's3:permission': permission };
         }
       } catch (err) {
         const error: t.IFsError = {
@@ -269,8 +269,84 @@ export function init(args: IS3Init): t.IFsS3 {
     /**
      * Copy an object on S3
      */
-    async copy(sourceUri: string, targetUri: string): Promise<t.IFsCopyS3> {
-      return null as any; // TEMP 🐷
+    async copy(
+      sourceUri: string,
+      targetUri: string,
+      options: t.IFsCopyOptionsS3 = {},
+    ): Promise<t.IFsCopyS3> {
+      console.log('sourceUri', sourceUri);
+      console.log('targetUri', targetUri);
+
+      const format = (input: string) => {
+        const uri = (input || '').trim();
+        const path = res.resolve(uri).path;
+        const bucket = 'cell'; // TEMP 🐷
+        const key = trimHost(path).replace(/^\//, '');
+        const object = { bucket, key };
+        return { uri, bucket, path, key, object };
+      };
+
+      const { permission } = options;
+      const source = format(sourceUri);
+      const target = format(targetUri);
+
+      const done = (status: number, error?: t.IFsError) => {
+        const ok = util.isOK(status);
+        return { ok, status, source: source.uri, target: target.uri, error };
+      };
+
+      try {
+        // fs.en
+        // console.log('fs', fs.type);
+        // await fs.ensureDir(fs.dirname(target.path));
+        // await fs.writeFile(target.path, await fs.readFile(source.path));
+        // cloud.bucket.copy({})
+
+        console.log('args', args);
+
+        console.log('source', source);
+
+        console.log('res.bucket', res.bucket);
+        console.log('res.root', res.root);
+
+        // const s = { bucket: source.bucket, key: source.key };
+        // const t = { bucket: target.bucket, key: target.key };
+
+        const copyResponse = await cloud.s3.copy({
+          source: source.object,
+          target: target.object,
+          acl: permission,
+        });
+        console.log('-------------------------------------------');
+        console.log('res', copyResponse);
+
+        /**
+         * TODO 🐷
+         *
+         * - SAME HOST: key => key
+         * -            bucketA:key => bucketB:key
+         * - DIFFERENT HOST
+         * - LOCAL => CLOUD
+         * - CLOUD => LOCAL
+         *
+         */
+
+        // cloud.bucket.
+        // s3.
+        // s3.g
+        // cloud.s3.
+        // TODO 🐷
+
+        return done(200);
+      } catch (err) {
+        const message = `Failed to copy from [${source.uri}] to [${target.uri}]. ${err.message}`;
+        const error: t.IFsError = {
+          type: 'FS/copy',
+          message,
+          path: target.path,
+        };
+        return done(500, error);
+      }
     },
   };
 

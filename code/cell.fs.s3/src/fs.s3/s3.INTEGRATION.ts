@@ -160,7 +160,7 @@ describe('S3 (Integration)', function () {
     expect((await fs.read(uri2)).status).to.eql(404);
   });
 
-  it.skip('copy', async () => {
+  it.only('copy', async () => {
     const png = await util.image('bird.png');
     const sourceUri = 'file:foo:bird1';
     const targetUri = 'file:bar:bird2';
