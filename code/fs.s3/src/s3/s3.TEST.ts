@@ -2,7 +2,7 @@ import { expect, fs, t } from '../test';
 import { parse as parseUrl } from 'url';
 
 const s3 = fs.s3({
-  endpoint: 'sfo2.digitaloceanspaces.com',
+  endpoint: 'sfo.domain.com',
   accessKey: 'MY_KEY',
   secret: 'MY_SECRET',
 });
@@ -25,16 +25,16 @@ describe('s3', () => {
         expect(res.object).to.eql(expected);
       };
 
-      test('foo', undefined, 'https://foo.sfo2.digitaloceanspaces.com/');
-      test('foo', '', 'https://foo.sfo2.digitaloceanspaces.com/');
-      test('foo', '  ', 'https://foo.sfo2.digitaloceanspaces.com/');
-      test('..foo...', '', 'https://foo.sfo2.digitaloceanspaces.com/');
+      test('foo', undefined, 'https://foo.sfo.domain.com/');
+      test('foo', '', 'https://foo.sfo.domain.com/');
+      test('foo', '  ', 'https://foo.sfo.domain.com/');
+      test('..foo...', '', 'https://foo.sfo.domain.com/');
 
-      test('foo', 'tmp/file.png', 'https://foo.sfo2.digitaloceanspaces.com/tmp/file.png');
-      test('foo', '  tmp/file.png  ', 'https://foo.sfo2.digitaloceanspaces.com/tmp/file.png');
-      test('foo', '/tmp/file.png', 'https://foo.sfo2.digitaloceanspaces.com/tmp/file.png');
-      test('foo', '///tmp/file.png', 'https://foo.sfo2.digitaloceanspaces.com/tmp/file.png');
-      test('foo', '  ///tmp/file.png  ', 'https://foo.sfo2.digitaloceanspaces.com/tmp/file.png');
+      test('foo', 'tmp/file.png', 'https://foo.sfo.domain.com/tmp/file.png');
+      test('foo', '  tmp/file.png  ', 'https://foo.sfo.domain.com/tmp/file.png');
+      test('foo', '/tmp/file.png', 'https://foo.sfo.domain.com/tmp/file.png');
+      test('foo', '///tmp/file.png', 'https://foo.sfo.domain.com/tmp/file.png');
+      test('foo', '  ///tmp/file.png  ', 'https://foo.sfo.domain.com/tmp/file.png');
     });
 
     it('url.signedGet', () => {
@@ -44,7 +44,7 @@ describe('s3', () => {
       const url1 = parseUrl(res1, true);
       const url2 = parseUrl(res2, true);
 
-      expect(url1.host).to.eql('foo.sfo2.digitaloceanspaces.com');
+      expect(url1.host).to.eql('foo.sfo.domain.com');
       expect(url1.pathname).to.eql('/tmp/file.png');
       expect(url1.query.Signature).to.match(/=$/);
       expect(url1.query.Expires).to.not.eql(url2.query.Expires);
@@ -57,7 +57,7 @@ describe('s3', () => {
       const url1 = parseUrl(res1, true);
       const url2 = parseUrl(res2, true);
 
-      expect(url1.host).to.eql('foo.sfo2.digitaloceanspaces.com');
+      expect(url1.host).to.eql('foo.sfo.domain.com');
       expect(url1.pathname).to.eql('/tmp/file.png');
       expect(url1.query.Signature).to.match(/=$/);
       expect(url1.query.Expires).to.not.eql(url2.query.Expires);
@@ -73,7 +73,7 @@ describe('s3', () => {
 
     it('url.signedPost', () => {
       const res = s3.url('foo', '///tmp/file.png').signedPost();
-      expect(res.url).to.eql('https://sfo2.digitaloceanspaces.com/foo');
+      expect(res.url).to.eql('https://sfo.domain.com/foo');
       expect(res.props['content-type']).to.eql('image/png');
       expect(res.props.key).to.eql('tmp/file.png');
       expect(res.props.bucket).to.eql('foo');
@@ -104,16 +104,16 @@ describe('s3', () => {
         expect(res.object).to.eql(expected);
       };
 
-      test(undefined, 'https://foo.sfo2.digitaloceanspaces.com/');
-      test('', 'https://foo.sfo2.digitaloceanspaces.com/');
-      test('  ', 'https://foo.sfo2.digitaloceanspaces.com/');
-      test('', 'https://foo.sfo2.digitaloceanspaces.com/');
+      test(undefined, 'https://foo.sfo.domain.com/');
+      test('', 'https://foo.sfo.domain.com/');
+      test('  ', 'https://foo.sfo.domain.com/');
+      test('', 'https://foo.sfo.domain.com/');
 
-      test('tmp/file.png', 'https://foo.sfo2.digitaloceanspaces.com/tmp/file.png');
-      test('  tmp/file.png  ', 'https://foo.sfo2.digitaloceanspaces.com/tmp/file.png');
-      test('/tmp/file.png', 'https://foo.sfo2.digitaloceanspaces.com/tmp/file.png');
-      test('///tmp/file.png', 'https://foo.sfo2.digitaloceanspaces.com/tmp/file.png');
-      test('  ///tmp/file.png  ', 'https://foo.sfo2.digitaloceanspaces.com/tmp/file.png');
+      test('tmp/file.png', 'https://foo.sfo.domain.com/tmp/file.png');
+      test('  tmp/file.png  ', 'https://foo.sfo.domain.com/tmp/file.png');
+      test('/tmp/file.png', 'https://foo.sfo.domain.com/tmp/file.png');
+      test('///tmp/file.png', 'https://foo.sfo.domain.com/tmp/file.png');
+      test('  ///tmp/file.png  ', 'https://foo.sfo.domain.com/tmp/file.png');
     });
 
     describe('bucket.url (pre-signed)', () => {

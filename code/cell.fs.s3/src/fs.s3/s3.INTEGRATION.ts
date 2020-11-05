@@ -1,8 +1,16 @@
 import { t, expect, util, log } from '../test';
 
-const { fs, BASE_URL, PATH } = util.init('WASABI');
+const { fs, BASE_URL, PATH, BUCKET, PROVIDER, ENDPOINT } = util.init('WASABI');
 
-describe('S3 (INTEGRATION)', function () {
+const table = log.table({ border: false });
+log.info();
+table.add(['PROVIDER', log.green(PROVIDER)]);
+table.add(['ENDPOINT', log.green(ENDPOINT)]);
+table.add(['BUCKET', log.green(BUCKET)]);
+table.add(['PATH', log.green(PATH)]);
+log.info(table.toString());
+
+describe('S3 (Integration)', function () {
   this.timeout(99999);
   beforeEach(async () => await util.reset());
 
@@ -23,9 +31,9 @@ describe('S3 (INTEGRATION)', function () {
     expect(file.location).to.eql(location);
     expect(file.path).to.eql(`/${PATH}/ns.foo/bird`);
 
-    log.info('WRITE', res);
-    log.info('-------------------------------------------');
-    log.info(location);
+    // log.info('WRITE', res);
+    // log.info('-------------------------------------------');
+    // log.info(location);
 
     const read = await fs.read(uri);
     const info = await fs.info(uri);
@@ -42,9 +50,9 @@ describe('S3 (INTEGRATION)', function () {
 
     const location = `${BASE_URL}}/ns.foo/public`;
 
-    log.info('WRITE', res);
-    log.info('-------------------------------------------');
-    log.info(location);
+    // log.info('WRITE', res);
+    // log.info('-------------------------------------------');
+    // log.info(location);
 
     const read = await fs.read(uri);
     const info = await fs.info(uri);
@@ -68,7 +76,7 @@ describe('S3 (INTEGRATION)', function () {
     expect(res.path).to.eql(`/${PATH}/ns.foo/bird`);
     expect(res['s3:etag']?.length).to.greaterThan(0);
 
-    log.info('INFO', res);
+    // log.info('INFO', res);
   });
 
   it('read', async () => {
@@ -89,7 +97,7 @@ describe('S3 (INTEGRATION)', function () {
     expect(file.bytes).to.greaterThan(-1);
     expect(file.hash).to.match(/^sha256-/);
 
-    log.info('READ', res);
+    // log.info('READ', res);
   });
 
   it('read (error: 404)', async () => {

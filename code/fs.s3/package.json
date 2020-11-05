@@ -9,7 +9,7 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build --no-esm",
-    "build-test": "ts build",
+    "test:integration": "ts test --suffix INTEGRATION",
     "prepare": "ts prepare",
     "tmp": "ts-node -T scripts/tmp"
   },
