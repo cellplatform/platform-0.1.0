@@ -58,7 +58,7 @@ type IFsMembers<
   CopyOptions extends IFsCopyOptions
 > = {
   type: Type;
-  root: string; // Root directory of the file-system.
+  dir: string; // Root directory of the file-system.
   resolve(uri: string, options?: IFsResolveArgs): IFsLocation;
   info(uri: string): Promise<Info>;
   read(uri: string): Promise<Read>;

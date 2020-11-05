@@ -3,9 +3,9 @@ import { Schema } from './libs';
 /**
  * Convert the given string to an absolute path.
  */
-export function resolve(args: { root: string; uri: string }) {
-  const { uri = '' } = args;
-  const root = (args.root || '').trim();
+export function resolve(args: { uri: string; dir: string }) {
+  const uri = (args.uri || '').trim();
+  const dir = (args.dir || '').trim();
   const file = Schema.uri.parse(uri);
   if (!file.ok || file.error) {
     const err = file.error;
@@ -16,14 +16,12 @@ export function resolve(args: { root: string; uri: string }) {
     const msg = `Invalid URI. Not of type "file:" ("${uri}").`;
     throw new Error(msg);
   }
-  if (!root) {
-    const msg = `Invalid root path ("${uri}").`;
+  if (!dir) {
+    const msg = `Invalid root directory path ("${uri}").`;
     throw new Error(msg);
   }
 
-  return join(root, `ns.${file.parts.ns}`, file.parts.file);
-
-  // return fs.join(root, `ns.${file.parts.ns}`, file.parts.file);
+  return join(dir, `ns.${file.parts.ns}`, file.parts.file);
 }
 
 /**

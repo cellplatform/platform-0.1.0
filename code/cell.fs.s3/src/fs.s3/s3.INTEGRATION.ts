@@ -1,7 +1,7 @@
 import { t, expect, util, log } from '../test';
 
-// const PROVIDER = 'WASABI'
-const PROVIDER = 'SPACES';
+const PROVIDER = 'WASABI';
+// const PROVIDER = 'SPACES';
 const { fs, BASE_URL, PATH, BUCKET, ENDPOINT } = util.init(PROVIDER);
 
 const table = log.table({ border: false });
@@ -160,25 +160,57 @@ describe('S3 (Integration)', function () {
     expect((await fs.read(uri2)).status).to.eql(404);
   });
 
-  it.only('copy', async () => {
+  it('copy', async () => {
     const png = await util.image('bird.png');
     const sourceUri = 'file:foo:bird1';
     const targetUri = 'file:bar:bird2';
 
-    // expect((await fs.read(targetUri)).status).to.eql(404);
+    await fs.delete(targetUri);
+
+    let targetInfo = await fs.info(targetUri);
+    expect(targetInfo.exists).to.eql(false);
 
     await fs.write(sourceUri, png);
+    const res1 = await fs.copy(sourceUri, targetUri);
+
+    expect(res1.ok).to.eql(true);
+    expect(res1.status).to.eql(200);
+    expect(res1.source).to.eql('file:foo:bird1');
+    expect(res1.target).to.eql('file:bar:bird2');
+    expect(res1.error).to.eql(undefined);
+
+    targetInfo = await fs.info(targetUri);
+    expect(targetInfo.exists).to.eql(true);
+    expect(targetInfo['s3:permission']).to.eql('private');
+
+    const targetFile = await fs.read(targetUri);
+    expect(targetFile.status).to.eql(200);
+    expect(targetFile.file?.data.toString()).to.eql(png.toString());
+
+    const res2 = await fs.copy(sourceUri, targetUri, { permission: 'public-read' });
+    targetInfo = await fs.info(targetUri);
+    expect(res2.status).to.eql(200);
+    expect(targetInfo['s3:permission']).to.eql('public-read');
+
+    /**
+     * TODO 🐷
+     *
+     * - SAME HOST: key => key
+     * -            bucketA:key => bucketB:key
+     * - DIFFERENT HOST
+     * - LOCAL => CLOUD
+     * - CLOUD => LOCAL
+     *
+     */
+  });
+
+  it('copy (error)', async () => {
+    // 404
+    const sourceUri = 'file:foo:noexist';
+    const targetUri = 'file:bar:bird2';
     const res = await fs.copy(sourceUri, targetUri);
-
-    console.log('-------------------------------------------');
-    console.log('res', res);
-
-    // expect(res.ok).to.eql(true);
-    // expect(res.status).to.eql(200);
-    // expect(res.source).to.eql('file:foo:bird1');
-    // expect(res.target).to.eql('file:bar:bird2');
-    // expect(res.error).to.eql(undefined);
-
-    // expect((await fs.read(targetUri)).status).to.eql(200);
+    expect(res.status).to.eql(404);
+    expect(res.error?.type).to.eql('FS/copy');
+    expect(res.error?.message).to.include('does not exist');
   });
 });

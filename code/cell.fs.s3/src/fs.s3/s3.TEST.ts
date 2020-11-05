@@ -23,10 +23,10 @@ describe('S3', () => {
     });
 
     it('paths', () => {
-      const test = (root: string, expectedBucket: string, expectedRoot: string) => {
+      const test = (root: string, expectedBucket: string, expectedDir: string) => {
         const { fs } = util.init(PROVIDER, root);
         expect(fs.bucket).to.eql(expectedBucket, `bucket: ${expectedBucket}`);
-        expect(fs.root).to.eql(expectedRoot, `root: ${expectedRoot}`);
+        expect(fs.dir).to.eql(expectedDir, `dir (root): ${expectedDir}`);
       };
 
       test('platform/tmp/test', 'platform', '/tmp/test');
