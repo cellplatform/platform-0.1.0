@@ -4,7 +4,7 @@ import { path } from '.';
 describe('path', () => {
   it('throw on invalid URI', () => {
     const test = (uri: any) => {
-      const fn = () => path.resolve({ uri, root: '/tmp' });
+      const fn = () => path.resolve({ uri, dir: '/tmp' });
       expect(fn).to.throw(/Invalid URI/);
     };
 
@@ -18,7 +18,7 @@ describe('path', () => {
 
   it('throw if not root path provided', () => {
     const test = (root: any) => {
-      const fn = () => path.resolve({ uri: 'file:foo:123', root });
+      const fn = () => path.resolve({ uri: 'file:foo:123', dir: root });
       expect(fn).to.throw(/Invalid root path/);
     };
     test(undefined);
@@ -27,9 +27,9 @@ describe('path', () => {
   });
 
   it('resolve URI as path', () => {
-    const test = (uri: string, root: string, expected: string) => {
-      const res = path.resolve({ uri, root });
-      expect(res).to.eql(`${root}/${expected}`);
+    const test = (uri: string, dir: string, expected: string) => {
+      const res = path.resolve({ uri, dir });
+      expect(res).to.eql(`${dir}/${expected}`);
     };
     test('file:foo:123', '/tmp', 'ns.foo/123');
     test('file:foo:123', 'tmp', 'ns.foo/123');

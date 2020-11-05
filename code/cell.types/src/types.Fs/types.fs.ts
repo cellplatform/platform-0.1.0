@@ -1,9 +1,12 @@
 import { IFsError } from '../types.Error';
 import { t } from '../common';
 
+type EmptyObject = Record<string, undefined>; // 🐷 NB: Used as a placeholder object.
+
 export type FsType = FsTypeLocal | FsTypeS3;
 export type FsTypeLocal = 'LOCAL';
 export type FsTypeS3 = 'S3';
+
 export type FsS3Permission = 'private' | 'public-read';
 
 /**
@@ -16,7 +19,9 @@ export type IFsLocal = IFsMembers<
   IFsReadLocal,
   IFsWriteLocal,
   IFsWriteOptionsLocal,
-  IFsDeleteLocal
+  IFsDeleteLocal,
+  IFsCopyLocal,
+  IFsCopyOptionsLocal
 >;
 export type IFsS3 = IFsMembers<
   FsTypeS3,
@@ -24,14 +29,20 @@ export type IFsS3 = IFsMembers<
   IFsReadS3,
   IFsWriteS3,
   IFsWriteOptionsS3,
-  IFsDeleteS3
+  IFsDeleteS3,
+  IFsCopyS3,
+  IFsCopyOptionsS3
 > & {
   bucket: string;
 };
 
 export type IFsWriteOptions = IFsWriteOptionsLocal | IFsWriteOptionsS3;
 export type IFsWriteOptionsLocal = { filename?: string };
-export type IFsWriteOptionsS3 = { filename?: string; acl?: FsS3Permission };
+export type IFsWriteOptionsS3 = { filename?: string; permission?: FsS3Permission };
+
+export type IFsCopyOptions = IFsCopyOptionsLocal | IFsCopyOptionsS3;
+export type IFsCopyOptionsLocal = EmptyObject; // 🐷 No option parameters.
+export type IFsCopyOptionsS3 = { permission?: FsS3Permission };
 
 /**
  * File-system Members
@@ -42,15 +53,18 @@ type IFsMembers<
   Read extends IFsRead,
   Write extends IFsWrite,
   WriteOptions extends IFsWriteOptions,
-  Delete extends IFsDelete
+  Delete extends IFsDelete,
+  Copy extends IFsCopy,
+  CopyOptions extends IFsCopyOptions
 > = {
   type: Type;
-  root: string; // Root directory of the file-system.
+  dir: string; // Root directory of the file-system.
   resolve(uri: string, options?: IFsResolveArgs): IFsLocation;
   info(uri: string): Promise<Info>;
   read(uri: string): Promise<Read>;
   write(uri: string, data: Uint8Array, options?: WriteOptions): Promise<Write>;
   delete(uri: string | string[]): Promise<Delete>;
+  copy(sourceUri: string, targetUri: string, options?: CopyOptions): Promise<Copy>;
 };
 
 /**
@@ -120,10 +134,19 @@ type IFsDeleteCommon = {
   error?: IFsError;
 };
 
+type IFsCopyCommon = {
+  ok: boolean;
+  status: number;
+  error?: IFsError;
+  source: string;
+  target: string;
+};
+
 export type IFsInfo = IFsInfoLocal | IFsInfoS3;
 export type IFsRead = IFsReadLocal | IFsReadS3;
 export type IFsWrite = IFsWriteLocal | IFsWriteS3;
 export type IFsDelete = IFsDeleteLocal | IFsDeleteS3;
+export type IFsCopy = IFsCopyLocal | IFsCopyS3;
 
 /**
  * Local file-system (Extensions)
@@ -132,6 +155,7 @@ export type IFsInfoLocal = IFsInfoCommon & IFsMetaLocal;
 export type IFsReadLocal = IFsReadCommon & { file?: IFsFileData<IFsMetaLocal> };
 export type IFsWriteLocal = IFsWriteCommon & { file: IFsFileData<IFsMetaLocal> };
 export type IFsDeleteLocal = IFsDeleteCommon;
+export type IFsCopyLocal = IFsCopyCommon;
 
 /**
  * S3 (Extensions)
@@ -148,3 +172,4 @@ export type IFsWriteS3 = IFsWriteCommon & {
   's3:permission'?: t.FsS3Permission;
 };
 export type IFsDeleteS3 = IFsDeleteCommon;
+export type IFsCopyS3 = IFsCopyCommon;

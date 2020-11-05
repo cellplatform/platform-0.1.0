@@ -8,14 +8,19 @@ export type S3Config = {
 };
 
 export type S3Permission = 'private' | 'public-read';
+
+/**
+ * https://aws.amazon.com/s3/storage-classes
+ */
 export type S3StorageClass =
   | 'STANDARD'
   | 'REDUCED_REDUNDANCY'
-  | 'GLACIER'
   | 'STANDARD_IA'
   | 'ONEZONE_IA'
   | 'INTELLIGENT_TIERING'
-  | 'DEEP_ARCHIVE';
+  | 'GLACIER'
+  | 'DEEP_ARCHIVE'
+  | 'OUTPOSTS';
 
 export type S3 = {
   endpoint: string;
@@ -24,6 +29,7 @@ export type S3 = {
   get(args: { bucket: string; key: string; metaOnly?: boolean }): Promise<S3GetResponse>;
   put(args: S3PutArgs): Promise<S3PutResponse>;
   post(args: S3SignedPostArgs): S3SignedPost;
+  copy(args: S3CopyArgs): Promise<S3CopyResponse>;
   deleteOne(args: { bucket: string; key: string }): Promise<S3DeleteOneResponse>;
   deleteMany(args: { bucket: string; keys: string[] }): Promise<S3DeleteManyResponse>;
   bucket(name: string): S3Bucket;
@@ -43,6 +49,7 @@ export type S3Bucket = {
   get(args: { key: string; metaOnly?: boolean }): Promise<S3GetResponse>;
   put(args: S3BucketPutArgs): Promise<S3PutResponse>;
   post(args: S3SignedPostBucketArgs): S3SignedPost;
+  copy(args: S3BucketCopyArgs): Promise<S3CopyResponse>;
   deleteOne(args: { key: string }): Promise<S3DeleteOneResponse>;
   deleteMany(args: { keys: string[] }): Promise<S3DeleteManyResponse>;
 };
@@ -90,9 +97,11 @@ export type S3GetResponse = {
  * Put
  */
 export type S3PutArgs = S3BucketPutArgs & { bucket: string };
-export type S3BucketPutArgs = {
+export type S3BucketPutArgs = S3BucketPutArgsOptional & {
   key: string;
   data: Uint8Array;
+};
+export type S3BucketPutArgsOptional = {
   acl?: S3Permission;
   contentType?: string;
   contentDisposition?: string;
@@ -160,6 +169,28 @@ export type S3DeleteManyResponse = {
   status: number;
   keys: string[];
   bucket: string;
+  error?: Error;
+};
+
+/**
+ * Copy
+ */
+export type S3CopyArgs = S3BucketPutArgsOptional & {
+  source: { bucket: string; key: string };
+  target: { bucket: string; key: string };
+};
+
+export type S3BucketCopyArgs = S3BucketPutArgsOptional & {
+  source: string; // Key within bucket.
+  target: string | { bucket: string; key: string };
+};
+
+export type S3CopyResponse = {
+  ok: boolean;
+  status: number;
+  source: { bucket: string; key: string };
+  target: { bucket: string; key: string };
+  etag?: string;
   error?: Error;
 };
 

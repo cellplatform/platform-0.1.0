@@ -2,6 +2,8 @@ import { t, expect, util, PATH, init } from '../test';
 import { local } from '.';
 
 describe('fs.local', () => {
+  beforeEach(async () => await util.reset());
+
   it('local.init({ root, fs })', () => {
     const root = util.fs.resolve('tmp');
     const fs = local.init({ root, fs: util.fs });
@@ -58,7 +60,6 @@ describe('fs.local', () => {
   });
 
   it('info', async () => {
-    await util.reset();
     const fs = init();
 
     const png = await util.image('bird.png');
@@ -74,7 +75,6 @@ describe('fs.local', () => {
   });
 
   it('info (404)', async () => {
-    await util.reset();
     const fs = init();
     const uri = 'file:foo:boo';
     const res = await fs.info(uri);
@@ -88,7 +88,6 @@ describe('fs.local', () => {
 
   describe('read/write', () => {
     it('read', async () => {
-      await util.reset();
       const fs = init();
 
       const png = await util.image('bird.png');
@@ -110,7 +109,6 @@ describe('fs.local', () => {
     });
 
     it('write', async () => {
-      await util.reset();
       const fs = init();
 
       const png = await util.image('bird.png');
@@ -129,7 +127,6 @@ describe('fs.local', () => {
     });
 
     it('delete (one)', async () => {
-      await util.reset();
       const fs = init();
 
       const png = await util.image('bird.png');
@@ -150,7 +147,6 @@ describe('fs.local', () => {
     });
 
     it('delete (many)', async () => {
-      await util.reset();
       const fs = init();
 
       const png = await util.image('bird.png');
@@ -181,9 +177,45 @@ describe('fs.local', () => {
     });
   });
 
+  describe('copy', () => {
+    it('copy file', async () => {
+      const fs = init();
+      const png = await util.image('bird.png');
+      const sourceUri = 'file:foo:bird1';
+      const targetUri = 'file:bar:bird2';
+
+      expect((await fs.read(targetUri)).status).to.eql(404);
+
+      await fs.write(sourceUri, png);
+      const res = await fs.copy(sourceUri, targetUri);
+
+      expect(res.ok).to.eql(true);
+      expect(res.status).to.eql(200);
+      expect(res.source).to.eql('file:foo:bird1');
+      expect(res.target).to.eql('file:bar:bird2');
+      expect(res.error).to.eql(undefined);
+
+      expect((await fs.read(targetUri)).status).to.eql(200);
+    });
+
+    it('error: source file does not exist', async () => {
+      const fs = init();
+      const sourceUri = 'file:foo:bird1';
+      const targetUri = 'file:bar:bird2';
+
+      const res = await fs.copy(sourceUri, targetUri);
+
+      expect(res.ok).to.eql(false);
+      expect(res.status).to.eql(500);
+      expect(res.error?.type).to.eql('FS/copy');
+      expect(res.error?.message).to.include(
+        'Failed to copy from [file:foo:bird1] to [file:bar:bird2]',
+      );
+    });
+  });
+
   describe('errors', () => {
     it('404 while reading file', async () => {
-      await util.reset();
       const fs = init();
       const uri = 'file:foo:noexist';
 
@@ -194,7 +226,7 @@ describe('fs.local', () => {
       expect(res.ok).to.eql(false);
       expect(res.status).to.eql(404);
       expect(res.file).to.eql(undefined);
-      expect(error.type).to.eql('FS/read/404');
+      expect(error.type).to.eql('FS/read');
       expect(error.path).to.eql(fs.resolve(uri).path);
       expect(error.message).to.contain(`[file:foo:noexist] does not exist`);
     });

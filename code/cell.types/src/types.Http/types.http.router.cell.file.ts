@@ -26,6 +26,7 @@ export type IReqQueryCellFilesUploaded = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
 export type IReqQueryCellFilesDelete = O; // 🐷 Placeholder type.
+export type IReqQueryCellFilesCopy = O; // 🐷 Placeholder type.
 
 export type IReqQueryCellFileInfo = t.IReqQueryFileInfo;
 export type IReqQueryCellFileDownloadByName = t.IReqQueryCellFileInfo & {
@@ -103,5 +104,25 @@ export type IResDeleteCellFilesData = {
   uri: string;
   deleted: string[];
   unlinked: string[];
-  errors: { error: 'DELETING' | 'UNLINKING' | 'NOT_LINKED'; filename: string }[];
+  errors: IResDeleteCellFilesError[];
+};
+export type IResDeleteCellFilesError = {
+  filename: string;
+  error: 'DELETING' | 'UNLINKING' | 'NOT_LINKED';
+};
+
+/**
+ * POST: Copy Files
+ */
+export type IReqPostCellFilesCopyBody = {
+  files: t.IHttpClientCellFileCopy[];
+};
+export type IResPostCellFilesCopy = t.IUriResponse<IResPostCellFilesCopyData>;
+export type IResPostCellFilesCopyData = {
+  errors: IResPostCellFilesCopyError[];
+};
+
+export type IResPostCellFilesCopyError = {
+  file: t.IHttpClientCellFileCopy;
+  error: 'TARGET_URI_INVALID' | 'SOURCE_FILENAME_EMPTY' | 'SOURCE_FILE_404';
 };

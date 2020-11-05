@@ -1,3 +1,6 @@
+/**
+ * A set of POSIX file-system primitives.
+ */
 export type IFs = {
   is: IFsFlags;
 
@@ -6,6 +9,7 @@ export type IFs = {
   ensureDir(path: string, options?: IFsEnsureOptions | number): Promise<void>;
   writeFile(path: string, data: any, options?: IFsWriteFileOptions | string): Promise<void>;
   readFile(path: string, options?: IFsReadFileOptions): Promise<Uint8Array>;
+  copyFile(source: string, target: string, flags?: number): Promise<void>;
   remove(path: string): Promise<void>;
 
   // Path.

@@ -10,26 +10,31 @@ import { log, fs } from './common';
 const tmp = fs.resolve('./tmp');
 fs.ensureDirSync(tmp);
 
-const ACCESS = {
-  KEY: process.env.SPACES_KEY,
-  SECRET: process.env.SPACES_SECRET,
+function loadEnv(provider: string) {
+  const env = (suffix: string) => fs.env.value(`${provider}_${suffix}`);
+  const endpoint = env('ENDPOINT');
+  const accessKey = env('KEY');
+  const secret = env('SECRET');
+  const bucket = env('BUCKET');
+  return { provider, endpoint, bucket, accessKey, secret };
+}
+
+const init = (provider: string) => {
+  const { bucket, endpoint, accessKey, secret } = loadEnv(provider);
+  const s3 = fs.s3({ endpoint, accessKey, secret });
+  return { provider, s3, bucket: s3.bucket(bucket) };
 };
 
-const s3 = fs.s3({
-  endpoint: 'sfo2.digitaloceanspaces.com',
-  accessKey: ACCESS.KEY,
-  secret: ACCESS.SECRET,
-});
+// const { provider, bucket } = init('SPACES');
+const { provider, bucket } = init('WASABI');
 
-const bucket = s3.bucket('platform');
-
-log.info();
+log.info.cyan(provider);
 
 async function testUpload() {
   const fileName = 'foo.json';
   const filePath = fs.join(tmp, fileName);
 
-  await fs.writeJson(filePath, { foo: 123 });
+  await fs.writeJson(filePath, { foo: 1234 });
   const file = await fs.readFile(filePath);
 
   console.log('\n\nuploading');
@@ -70,6 +75,22 @@ async function testUpload() {
   await fs.writeFile(fs.join(tmp, 'saved.zip'), res2.data);
 }
 
+async function testPut() {
+  const fileName = 'foo.json';
+  const filePath = fs.join(tmp, fileName);
+
+  await fs.writeJson(filePath, { foo: 1234 });
+  const file = await fs.readFile(filePath);
+
+  const res = await bucket.put({
+    data: file,
+    key: 'tmp/foo.json',
+    acl: 'public-read',
+  });
+
+  console.log('PUT', res.status);
+}
+
 async function testDelete() {
   // const fileName = 'foo.json';
 
@@ -78,7 +99,7 @@ async function testDelete() {
   // });
 
   const res = await bucket.deleteMany({
-    keys: ['tmp/foo.json', 'tmp/bar.json'],
+    keys: ['tmp/foo.json', 'tmp/bar.json', 'tmp/copy.json'],
   });
 
   console.log('-------------------------------------------');
@@ -94,8 +115,23 @@ async function testInfo() {
   console.log('BAR', bar);
 }
 
+async function testCopy() {
+  const res = await bucket.copy({
+    source: 'tmp/foo.json',
+    target: 'tmp/copy.json',
+    acl: 'public-read',
+  });
+  console.log('-------------------------------------------');
+  console.log('COPY', res);
+}
+
 (async () => {
   await testUpload();
   await testInfo();
+  await testPut();
+  await testCopy();
   await testDelete();
+
+  log.info();
+  log.info.cyan(provider);
 })();

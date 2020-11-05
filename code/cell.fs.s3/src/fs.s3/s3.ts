@@ -8,6 +8,7 @@ export type IS3Init = t.S3Config & { root: string };
  * eg:
  *  - AWS "S3"
  *  - DigitalOcean "Spaces"
+ *  - Wasabi
  */
 export function init(args: IS3Init): t.IFsS3 {
   const cloud = (() => {
@@ -28,17 +29,21 @@ export function init(args: IS3Init): t.IFsS3 {
     return { path, s3, bucket };
   })();
 
-  const getReadParams = (uri: string, bucket: t.S3Bucket) => {
+  const trimHost = (input: string) => {
+    const host = cloud.bucket.url('').object;
+    return input.startsWith(host) ? input.substring(host.length - 1) : input;
+  };
+
+  const getReadParams = (uri: string) => {
     uri = (uri || '').trim();
-    const resolved = res.resolve(uri);
+    const resolved = api.resolve(uri);
     const location = resolved.path;
-    const host = bucket.url('').object;
-    const path = resolved.path.substring(host.length - 1);
+    const path = trimHost(resolved.path);
     const key = path.replace(/^\//, '');
     return { uri, key, path, location };
   };
 
-  const res: t.IFsS3 = {
+  const api: t.IFsS3 = {
     type: 'S3',
 
     /**
@@ -49,31 +54,31 @@ export function init(args: IS3Init): t.IFsS3 {
     /**
      * Root directory of the file system.
      */
-    root: cloud.path.dir,
+    dir: cloud.path.dir,
 
     /**
      * Convert the given string to an absolute path.
      */
     resolve(uri: string, options?: t.IFsResolveArgs) {
       const type = (options ? options.type : 'DEFAULT') as t.IFsResolveArgs['type'];
-      const key = path.resolve({ uri, root: res.root });
+      const key = path.resolve({ uri, dir: api.dir });
 
       if (type === 'SIGNED/get') {
         return {
-          path: cloud.s3.url(res.bucket, key).signedGet(options as t.S3SignedUrlGetObjectOptions),
+          path: cloud.s3.url(api.bucket, key).signedGet(options as t.S3SignedUrlGetObjectOptions),
           props: {},
         };
       }
 
       if (type === 'SIGNED/put') {
         return {
-          path: cloud.s3.url(res.bucket, key).signedPut(options as t.S3SignedUrlPutObjectOptions),
+          path: cloud.s3.url(api.bucket, key).signedPut(options as t.S3SignedUrlPutObjectOptions),
           props: {},
         };
       }
 
       if (type === 'SIGNED/post') {
-        const post = cloud.s3.url(res.bucket, key).signedPost(options as t.S3SignedPostOptions);
+        const post = cloud.s3.url(api.bucket, key).signedPost(options as t.S3SignedPostOptions);
         return {
           path: post.url,
           props: post.props,
@@ -82,7 +87,7 @@ export function init(args: IS3Init): t.IFsS3 {
 
       // DEFAULT (direct object on S3).
       return {
-        path: cloud.s3.url(res.bucket, key).object,
+        path: cloud.s3.url(api.bucket, key).object,
         props: {},
       };
     },
@@ -91,7 +96,7 @@ export function init(args: IS3Init): t.IFsS3 {
      * Retrieve meta-data of a file on S3.
      */
     async info(uri: string): Promise<t.IFsInfoS3> {
-      const { key, path, location } = getReadParams(uri, cloud.bucket);
+      const { key, path, location } = getReadParams(uri);
       try {
         const res = await cloud.bucket.get({ key, metaOnly: true });
         return {
@@ -110,10 +115,10 @@ export function init(args: IS3Init): t.IFsS3 {
     },
 
     /**
-     * Read from S3
+     * Read from S3.
      */
     async read(uri: string): Promise<t.IFsReadS3> {
-      const { key, path, location } = getReadParams(uri, cloud.bucket);
+      const { key, path, location } = getReadParams(uri);
 
       try {
         const res = await cloud.bucket.get({ key });
@@ -128,7 +133,7 @@ export function init(args: IS3Init): t.IFsS3 {
 
         if (!ok || !res.data) {
           const error: t.IFsError = {
-            type: 'FS/read/cloud',
+            type: 'FS/read',
             message: `Failed to read [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
@@ -163,7 +168,7 @@ export function init(args: IS3Init): t.IFsS3 {
     async write(
       uri: string,
       data: Buffer,
-      options: { filename?: string; acl?: t.FsS3Permission } = {},
+      options: { filename?: string; permission?: t.FsS3Permission } = {},
     ): Promise<t.IFsWriteS3> {
       if (!data) {
         throw new Error(`Cannot write, no data provided.`);
@@ -176,12 +181,12 @@ export function init(args: IS3Init): t.IFsS3 {
        *        each request.
        */
 
-      const { filename, acl = 'private' } = options;
+      const { filename, permission = 'private' } = options;
       const contentType = filename ? Schema.mime.toType(filename) : undefined;
       const contentDisposition = filename ? `inline; filename="${filename}"` : undefined;
 
       uri = (uri || '').trim();
-      const path = res.resolve(uri).path;
+      const path = trimHost(api.resolve(uri).path);
       const key = path.replace(/^\//, '');
       let hash = '';
       const file: t.IFsFileData = {
@@ -202,7 +207,7 @@ export function init(args: IS3Init): t.IFsS3 {
           contentDisposition,
           data: file.data,
           key,
-          acl,
+          acl: permission,
         });
 
         const { status, etag = '' } = res;
@@ -212,13 +217,13 @@ export function init(args: IS3Init): t.IFsS3 {
 
         if (!ok) {
           const error: t.IFsError = {
-            type: 'FS/write/cloud',
+            type: 'FS/write',
             message: `Failed to write [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { ok, status, file, uri, error, 's3:etag': etag, 's3:permission': acl };
+          return { ok, status, file, uri, error, 's3:etag': etag, 's3:permission': permission };
         } else {
-          return { ok, status, file, uri, 's3:etag': etag, 's3:permission': acl };
+          return { ok, status, file, uri, 's3:etag': etag, 's3:permission': permission };
         }
       } catch (err) {
         const error: t.IFsError = {
@@ -235,9 +240,8 @@ export function init(args: IS3Init): t.IFsS3 {
      */
     async delete(uri: string | string[]): Promise<t.IFsDeleteS3> {
       const uris = (Array.isArray(uri) ? uri : [uri]).map((uri) => (uri || '').trim());
-      const paths = uris.map((uri) => res.resolve(uri).path);
-      const keys = paths.map((path) => path.replace(/^\//, ''));
-      const locations = paths.map((path) => cloud.bucket.url(path).object);
+      const locations = uris.map((uri) => api.resolve(uri).path);
+      const keys = locations.map((path) => trimHost(path).replace(/^\//, ''));
 
       try {
         const res = await cloud.bucket.deleteMany({ keys });
@@ -245,9 +249,9 @@ export function init(args: IS3Init): t.IFsS3 {
         const ok = util.isOK(status);
         if (!res.ok || res.error) {
           const error: t.IFsError = {
-            type: 'FS/delete/cloud',
+            type: 'FS/delete',
             message: `Failed to delete [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
-            path: paths.join(','),
+            path: locations.join(','),
           };
           return { ok, status, uris, locations, error };
         } else {
@@ -257,12 +261,70 @@ export function init(args: IS3Init): t.IFsS3 {
         const error: t.IFsError = {
           type: 'FS/delete',
           message: `Failed to delete [${uri}]. ${err.message}`,
-          path: paths.join(','),
+          path: locations.join(','),
         };
         return { ok: false, status: 500, uris, locations, error };
       }
     },
+
+    /**
+     * Copy an object on S3.
+     */
+    async copy(
+      sourceUri: string,
+      targetUri: string,
+      options: t.IFsCopyOptionsS3 = {},
+    ): Promise<t.IFsCopyS3> {
+      const format = (input: string) => {
+        const uri = (input || '').trim();
+        const path = api.resolve(uri).path;
+        const key = trimHost(path).replace(/^\//, '');
+        const object = { bucket: api.bucket, key };
+        return { uri, path, key, object };
+      };
+
+      const { permission } = options;
+      const source = format(sourceUri);
+      const target = format(targetUri);
+      const ERROR = `Failed to copy from [${source.uri}] to [${target.uri}].`;
+
+      const toError = (message: string): t.IFsError => ({
+        type: 'FS/copy',
+        message,
+        path: target.path,
+      });
+
+      const done = (status: number, error?: string) => {
+        status = status.toString().startsWith('2') && error ? 500 : status;
+        return {
+          ok: util.isOK(status),
+          status,
+          source: source.uri,
+          target: target.uri,
+          error: error ? toError(error) : undefined,
+        };
+      };
+
+      const sourceInfo = await api.info(source.uri);
+      if (!sourceInfo.exists) {
+        const error = `Failed to copy [${source.uri}] as it does not exist.`;
+        return done(404, error);
+      }
+
+      try {
+        const res = await cloud.s3.copy({
+          source: source.object,
+          target: target.object,
+          acl: permission,
+        });
+        const error = res.error ? `${ERROR} ${res.error.message}` : undefined;
+        return done(res.status, error);
+      } catch (err) {
+        const error = `${ERROR} ${err.message}`;
+        return done(500, error);
+      }
+    },
   };
 
-  return res;
+  return api;
 }

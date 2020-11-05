@@ -1,4 +1,4 @@
-import { path, t, Schema } from '../common';
+import { path, t, Schema, util } from '../common';
 
 export * from '../types';
 const toLocation = (path: string) => `file://${path}`;
@@ -76,7 +76,7 @@ export function init(args: { root: string; fs: t.IFs }): t.IFsLocal {
       // Ensure the file exists.
       if (!(await fs.exists(path))) {
         const error: t.IFsError = {
-          type: 'FS/read/404',
+          type: 'FS/read',
           message: `A file with the URI [${uri}] does not exist.`,
           path,
         };
@@ -163,6 +163,39 @@ export function init(args: { root: string; fs: t.IFs }): t.IFsLocal {
           path: paths.join(','),
         };
         return { ok: false, status: 500, uris, locations, error };
+      }
+    },
+
+    /**
+     * Copy a file.
+     */
+    async copy(sourceUri: string, targetUri: string): Promise<t.IFsCopyLocal> {
+      const format = (input: string) => {
+        const uri = (input || '').trim();
+        const path = res.resolve(uri).path;
+        return { uri, path };
+      };
+
+      const source = format(sourceUri);
+      const target = format(targetUri);
+
+      const done = (status: number, error?: t.IFsError) => {
+        const ok = util.isOK(status);
+        return { ok, status, source: source.uri, target: target.uri, error };
+      };
+
+      try {
+        await fs.ensureDir(fs.dirname(target.path));
+        await fs.copyFile(source.path, target.path);
+        return done(200);
+      } catch (err) {
+        const message = `Failed to copy from [${source.uri}] to [${target.uri}]. ${err.message}`;
+        const error: t.IFsError = {
+          type: 'FS/copy',
+          message,
+          path: target.path,
+        };
+        return done(500, error);
       }
     },
   };

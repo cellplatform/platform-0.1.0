@@ -1,6 +1,7 @@
 import { ERROR, Schema, t, util } from '../common';
 import { uploadFiles } from './HttpClientCellFiles.upload';
 import { deleteFiles } from './HttpClientCellFiles.delete';
+import { copyFiles } from './HttpClientCellFiles.copy';
 
 type IClientCellFilesArgs = { parent: t.IHttpClientCell; urls: t.IUrls; http: t.IHttp };
 type GetError = (args: { status: number }) => string;
@@ -115,15 +116,21 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
   }
 
   public async delete(filename: string | string[]) {
-    const urls = this.args.parent.url;
     const http = this.args.http;
+    const urls = this.args.parent.url;
     return deleteFiles({ http, urls, filename, action: 'DELETE' });
   }
 
   public async unlink(filename: string | string[]) {
-    const urls = this.args.parent.url;
     const http = this.args.http;
+    const urls = this.args.parent.url;
     return deleteFiles({ http, urls, filename, action: 'UNLINK' });
+  }
+
+  public async copy(files: t.IHttpClientCellFileCopy | t.IHttpClientCellFileCopy[]) {
+    const http = this.args.http;
+    const urls = this.args.parent.url;
+    return copyFiles({ http, urls, files });
   }
 
   /**
