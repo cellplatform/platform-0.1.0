@@ -1,19 +1,12 @@
 import { t, expect, util, log } from '../test';
 
-const PATH = util.PATH;
-const ENV = util.ENV;
-const ENDPOINT = ENV.endpoint;
-const BUCKET = ENV.bucket;
-const BASE_URL = `https://${BUCKET}.${ENDPOINT}/${PATH.KEY}`;
-
-const s3 = () => util.s3({ path: `${BUCKET}/${PATH.KEY}` });
+const { fs, BASE_URL, PATH } = util.init('WASABI');
 
 describe('S3 (INTEGRATION)', function () {
   this.timeout(99999);
   beforeEach(async () => await util.reset());
 
   it('write', async () => {
-    const fs = s3();
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
     const png = await util.image(filename);
@@ -28,7 +21,7 @@ describe('S3 (INTEGRATION)', function () {
 
     const location = `${BASE_URL}/ns.foo/bird`;
     expect(file.location).to.eql(location);
-    expect(file.path).to.eql(`/${PATH.KEY}/ns.foo/bird`);
+    expect(file.path).to.eql(`/${PATH}/ns.foo/bird`);
 
     log.info('WRITE', res);
     log.info('-------------------------------------------');
@@ -41,7 +34,6 @@ describe('S3 (INTEGRATION)', function () {
   });
 
   it('write (public)', async () => {
-    const fs = s3();
     const uri = 'file:foo:public';
     const filename = 'public/bird.png';
     const png = await util.image('bird.png');
@@ -61,7 +53,6 @@ describe('S3 (INTEGRATION)', function () {
   });
 
   it('info', async () => {
-    const fs = s3();
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
     const png = await util.image(filename);
@@ -74,14 +65,13 @@ describe('S3 (INTEGRATION)', function () {
     expect(res.bytes).to.greaterThan(0);
 
     expect(res.location).to.eql(`${BASE_URL}/ns.foo/bird`);
-    expect(res.path).to.eql(`/${PATH.KEY}/ns.foo/bird`);
+    expect(res.path).to.eql(`/${PATH}/ns.foo/bird`);
     expect(res['s3:etag']?.length).to.greaterThan(0);
 
     log.info('INFO', res);
   });
 
   it('read', async () => {
-    const fs = s3();
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
     const png = await util.image(filename);
@@ -95,7 +85,7 @@ describe('S3 (INTEGRATION)', function () {
     expect(res.uri).to.eql(uri);
 
     expect(file.location).to.eql(`${BASE_URL}/ns.foo/bird`);
-    expect(file.path).to.eql(`/${PATH.KEY}/ns.foo/bird`);
+    expect(file.path).to.eql(`/${PATH}/ns.foo/bird`);
     expect(file.bytes).to.greaterThan(-1);
     expect(file.hash).to.match(/^sha256-/);
 
@@ -103,7 +93,6 @@ describe('S3 (INTEGRATION)', function () {
   });
 
   it('read (error: 404)', async () => {
-    const fs = s3();
     const uri = 'file:foo:noexist';
     const res = await fs.read(uri);
     expect(res.status).to.eql(404);
@@ -111,8 +100,6 @@ describe('S3 (INTEGRATION)', function () {
   });
 
   it('delete (one)', async () => {
-    const fs = s3();
-
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
     const png = await util.image(filename);
@@ -137,7 +124,6 @@ describe('S3 (INTEGRATION)', function () {
   });
 
   it('delete (many)', async () => {
-    const fs = s3();
     const uri1 = 'file:foo:bird';
     const uri2 = 'file:foo:kitten';
 
@@ -165,8 +151,6 @@ describe('S3 (INTEGRATION)', function () {
   });
 
   it.skip('copy', async () => {
-    const fs = s3();
-
     const png = await util.image('bird.png');
     const sourceUri = 'file:foo:bird1';
     const targetUri = 'file:bar:bird2';

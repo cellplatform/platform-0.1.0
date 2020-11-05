@@ -1,22 +1,18 @@
 import { parse as parseUrl } from 'url';
-
 import { expect, util } from '../test';
 
-const PATH = util.PATH;
-const ENV = util.ENV;
-const ENDPOINT = ENV.endpoint;
-const BUCKET = ENV.bucket;
+const PROVIDER = 'SPACES';
 
 describe('S3', () => {
-  it('type', () => {
-    const fs = util.s3();
+  it('type: "S3"', () => {
+    const { fs } = util.init(PROVIDER);
     expect(fs.type).to.eql('S3');
   });
 
   describe('paths', () => {
     it('throws if no bucket in path', () => {
       const test = (path: string) => {
-        const fn = () => util.s3({ path });
+        const fn = () => util.init(PROVIDER, path);
         expect(fn).to.throw(/does not contain a bucket/);
       };
       test(' ');
@@ -27,8 +23,8 @@ describe('S3', () => {
     });
 
     it('paths', () => {
-      const test = (path: string, expectedBucket: string, expectedRoot: string) => {
-        const fs = util.s3({ path });
+      const test = (root: string, expectedBucket: string, expectedRoot: string) => {
+        const { fs } = util.init(PROVIDER, root);
         expect(fs.bucket).to.eql(expectedBucket, `bucket: ${expectedBucket}`);
         expect(fs.root).to.eql(expectedRoot, `root: ${expectedRoot}`);
       };
@@ -50,10 +46,10 @@ describe('S3', () => {
     });
 
     it('resolve (DEFAULT)', () => {
-      const fs = util.s3();
+      const { fs, BASE_URL } = util.init(PROVIDER);
       const test = (uri: string, expected: string) => {
         const res = fs.resolve(uri);
-        const path = `https://${BUCKET}.${ENDPOINT}/${PATH.KEY}/${expected}`;
+        const path = `${BASE_URL}/${expected}`;
         expect(res.path).to.eql(path);
         expect(res.props).to.eql({});
       };
@@ -62,7 +58,7 @@ describe('S3', () => {
     });
 
     it('resolve (SIGNED/get)', () => {
-      const fs = util.s3();
+      const { fs, BUCKET, ENDPOINT } = util.init(PROVIDER);
       const res = fs.resolve('file:foo:123', { type: 'SIGNED/get', expires: '5m' });
       const url = parseUrl(res.path, true);
       expect(res.props).to.eql({});
@@ -72,7 +68,7 @@ describe('S3', () => {
     });
 
     it('resolve (SIGNED/put)', () => {
-      const fs = util.s3();
+      const { fs, BUCKET, ENDPOINT } = util.init(PROVIDER);
       const res = fs.resolve('file:foo:123', { type: 'SIGNED/put', expires: '5m' });
       const url = parseUrl(res.path, true);
       expect(res.props).to.eql({});
@@ -82,7 +78,7 @@ describe('S3', () => {
     });
 
     it('resolve (SIGNED/post)', () => {
-      const fs = util.s3();
+      const { fs, BUCKET, ENDPOINT } = util.init(PROVIDER);
       const res = fs.resolve('file:foo:123', { type: 'SIGNED/post', expires: '5m' });
       expect(res.path).to.eql(`https://${ENDPOINT}/${BUCKET}`);
       expect(res.props.bucket).to.eql(BUCKET);

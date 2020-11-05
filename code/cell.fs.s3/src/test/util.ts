@@ -15,32 +15,30 @@ function loadEnv(provider: string) {
   return { provider, endpoint, bucket, accessKey, secret };
 }
 
-function factory(prefix: string, defaultPath: string) {
-  return (args: { path?: string } = {}) => {
-    const { endpoint, accessKey, secret } = loadEnv(prefix);
-    return s3.init({
-      root: args.path || defaultPath,
-      endpoint,
-      accessKey,
-      secret,
-    });
+export function init(PROVIDER: string, root?: string) {
+  const { endpoint, accessKey, secret, bucket } = loadEnv(PROVIDER);
+  const PATH = 'tmp/test';
+  const ROOT = root || `${bucket}/${PATH}`;
+  return {
+    PROVIDER,
+    ENDPOINT: endpoint,
+    BUCKET: bucket,
+    ROOT,
+    PATH,
+    BASE_URL: `https://${bucket}.${endpoint}/${PATH}`,
+    fs: s3.init({ root: ROOT, endpoint, accessKey, secret }),
   };
 }
 
 export const PATH = {
   TMP: fs.resolve('tmp'),
   LOCAL: fs.resolve('tmp/local'),
-  KEY: 'tmp/test',
 };
-
-// const ENV = loadEnv('WASABI');
-const ENV = loadEnv('SPACES');
 
 export const util = {
   PATH,
-  ENV,
   fs,
-  s3: factory(ENV.provider, `${ENV.bucket}/${PATH.KEY}`),
+  init,
   writeFile,
   async image(path: string) {
     return fs.readFile(fs.join(fs.resolve(`src/test/images`), path));
