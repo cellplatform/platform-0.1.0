@@ -1,13 +1,19 @@
 import { t, expect, util, log } from '../test';
 
-const initS3 = () => util.initS3({ path: 'platform/tmp/test.cell.fs' });
+const PATH = util.PATH;
+const ENV = util.ENV;
+const ENDPOINT = ENV.endpoint;
+const BUCKET = ENV.bucket;
+const BASE_URL = `https://${BUCKET}.${ENDPOINT}/${PATH.KEY}`;
+
+const s3 = () => util.s3({ path: `${BUCKET}/${PATH.KEY}` });
 
 describe('S3 (INTEGRATION)', function () {
   this.timeout(99999);
   beforeEach(async () => await util.reset());
 
   it('write', async () => {
-    const fs = initS3();
+    const fs = s3();
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
     const png = await util.image(filename);
@@ -20,9 +26,9 @@ describe('S3 (INTEGRATION)', function () {
     expect(typeof res['s3:etag']).to.eql('string');
     expect(res['s3:permission']).to.eql('private'); // NB: Private by default.
 
-    const location = 'https://platform.sfo2.digitaloceanspaces.com/tmp/test.cell.fs/ns.foo/bird';
+    const location = `${BASE_URL}/ns.foo/bird`;
     expect(file.location).to.eql(location);
-    expect(file.path).to.eql('/tmp/test.cell.fs/ns.foo/bird');
+    expect(file.path).to.eql(`/${PATH.KEY}/ns.foo/bird`);
 
     log.info('WRITE', res);
     log.info('-------------------------------------------');
@@ -35,14 +41,14 @@ describe('S3 (INTEGRATION)', function () {
   });
 
   it('write (public)', async () => {
-    const fs = initS3();
+    const fs = s3();
     const uri = 'file:foo:public';
     const filename = 'public/bird.png';
     const png = await util.image('bird.png');
-    const res = await fs.write(uri, png, { filename, acl: 'public-read' }); // NB: URI padded with spaces (corrected internally).
+    const res = await fs.write(uri, png, { filename, permission: 'public-read' }); // NB: URI padded with spaces (corrected internally).
     expect(res['s3:permission']).to.eql('public-read');
 
-    const location = 'https://platform.sfo2.digitaloceanspaces.com/tmp/test.cell.fs/ns.foo/public';
+    const location = `${BASE_URL}}/ns.foo/public`;
 
     log.info('WRITE', res);
     log.info('-------------------------------------------');
@@ -55,7 +61,7 @@ describe('S3 (INTEGRATION)', function () {
   });
 
   it('info', async () => {
-    const fs = initS3();
+    const fs = s3();
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
     const png = await util.image(filename);
@@ -67,17 +73,15 @@ describe('S3 (INTEGRATION)', function () {
     expect(res.exists).to.eql(true);
     expect(res.bytes).to.greaterThan(0);
 
-    const location = 'https://platform.sfo2.digitaloceanspaces.com/tmp/test.cell.fs/ns.foo/bird';
-    expect(res.location).to.eql(location);
-    expect(res.path).to.eql('/tmp/test.cell.fs/ns.foo/bird');
-
+    expect(res.location).to.eql(`${BASE_URL}/ns.foo/bird`);
+    expect(res.path).to.eql(`/${PATH.KEY}/ns.foo/bird`);
     expect(res['s3:etag']?.length).to.greaterThan(0);
 
     log.info('INFO', res);
   });
 
   it('read', async () => {
-    const fs = initS3();
+    const fs = s3();
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
     const png = await util.image(filename);
@@ -90,17 +94,16 @@ describe('S3 (INTEGRATION)', function () {
     expect(res.status).to.eql(200);
     expect(res.uri).to.eql(uri);
 
-    const location = 'https://platform.sfo2.digitaloceanspaces.com/tmp/test.cell.fs/ns.foo/bird';
-    expect(file.location).to.eql(location);
-    expect(file.path).to.eql('/tmp/test.cell.fs/ns.foo/bird');
+    expect(file.location).to.eql(`${BASE_URL}/ns.foo/bird`);
+    expect(file.path).to.eql(`/${PATH.KEY}/ns.foo/bird`);
     expect(file.bytes).to.greaterThan(-1);
     expect(file.hash).to.match(/^sha256-/);
 
     log.info('READ', res);
   });
 
-  it('read (404)', async () => {
-    const fs = initS3();
+  it('read (error: 404)', async () => {
+    const fs = s3();
     const uri = 'file:foo:noexist';
     const res = await fs.read(uri);
     expect(res.status).to.eql(404);
@@ -108,7 +111,7 @@ describe('S3 (INTEGRATION)', function () {
   });
 
   it('delete (one)', async () => {
-    const fs = initS3();
+    const fs = s3();
 
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
@@ -125,9 +128,8 @@ describe('S3 (INTEGRATION)', function () {
     expect(res3.status).to.eql(200);
     expect(res3.error).to.eql(undefined);
 
-    const location = 'https://platform.sfo2.digitaloceanspaces.com/tmp/test.cell.fs/ns.foo/bird';
     expect(res3.locations.length).to.eql(1);
-    expect(res3.locations[0]).to.eql(location);
+    expect(res3.locations[0]).to.eql(`${BASE_URL}/ns.foo/bird`);
 
     const res4 = await fs.read(uri);
     expect(res4.ok).to.eql(false);
@@ -135,7 +137,7 @@ describe('S3 (INTEGRATION)', function () {
   });
 
   it('delete (many)', async () => {
-    const fs = initS3();
+    const fs = s3();
     const uri1 = 'file:foo:bird';
     const uri2 = 'file:foo:kitten';
 
@@ -155,15 +157,34 @@ describe('S3 (INTEGRATION)', function () {
     expect(res.error).to.eql(undefined);
     expect(res.locations.length).to.eql(2);
 
-    const location1 = 'https://platform.sfo2.digitaloceanspaces.com/tmp/test.cell.fs/ns.foo/bird';
-    const location2 = 'https://platform.sfo2.digitaloceanspaces.com/tmp/test.cell.fs/ns.foo/kitten';
-    expect(res.locations[0]).to.eql(location1);
-    expect(res.locations[1]).to.eql(location2);
+    expect(res.locations[0]).to.eql(`${BASE_URL}/ns.foo/bird`);
+    expect(res.locations[1]).to.eql(`${BASE_URL}/ns.foo/kitten`);
 
     expect((await fs.read(uri1)).status).to.eql(404);
     expect((await fs.read(uri2)).status).to.eql(404);
   });
 
-  it.only('copy', async () => {});
+  it.skip('copy', async () => {
+    const fs = s3();
 
+    const png = await util.image('bird.png');
+    const sourceUri = 'file:foo:bird1';
+    const targetUri = 'file:bar:bird2';
+
+    // expect((await fs.read(targetUri)).status).to.eql(404);
+
+    await fs.write(sourceUri, png);
+    const res = await fs.copy(sourceUri, targetUri);
+
+    console.log('-------------------------------------------');
+    console.log('res', res);
+
+    // expect(res.ok).to.eql(true);
+    // expect(res.status).to.eql(200);
+    // expect(res.source).to.eql('file:foo:bird1');
+    // expect(res.target).to.eql('file:bar:bird2');
+    // expect(res.error).to.eql(undefined);
+
+    // expect((await fs.read(targetUri)).status).to.eql(200);
+  });
 });

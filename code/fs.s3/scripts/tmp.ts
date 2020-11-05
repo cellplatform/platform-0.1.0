@@ -5,37 +5,30 @@
  *
  */
 
-import { log, fs, time } from './common';
+import { log, fs } from './common';
 
 const tmp = fs.resolve('./tmp');
 fs.ensureDirSync(tmp);
 
-const ENV = process.env;
+function loadEnv(provider: string) {
+  const env = (suffix: string) => fs.env.value(`${provider}_${suffix}`);
+  const endpoint = env('ENDPOINT');
+  const accessKey = env('KEY');
+  const secret = env('SECRET');
+  const bucket = env('BUCKET');
+  return { provider, endpoint, bucket, accessKey, secret };
+}
 
-const digitalocean = () => {
-  const s3 = fs.s3({
-    endpoint: ENV.SPACES_ENDPOINT,
-    accessKey: ENV.SPACES_KEY,
-    secret: ENV.SPACES_SECRET,
-  });
-  const bucket = s3.bucket('platform');
-  return { s3, bucket };
+const init = (provider: string) => {
+  const { bucket, endpoint, accessKey, secret } = loadEnv(provider);
+  const s3 = fs.s3({ endpoint, accessKey, secret });
+  return { provider, s3, bucket: s3.bucket(bucket) };
 };
 
-const wasabi = () => {
-  const s3 = fs.s3({
-    endpoint: ENV.WASABI_ENDPOINT,
-    accessKey: ENV.WASABI_KEY,
-    secret: ENV.WASABI_SECRET,
-  });
-  const bucket = s3.bucket('cell');
-  return { s3, bucket };
-};
+// const { provider, bucket } = init('SPACES');
+const { provider, bucket } = init('WASABI');
 
-const { bucket } = digitalocean();
-// const { bucket } = wasabi();
-
-log.info();
+log.info.cyan(provider);
 
 async function testUpload() {
   const fileName = 'foo.json';
@@ -138,4 +131,7 @@ async function testCopy() {
   await testPut();
   await testCopy();
   await testDelete();
+
+  log.info();
+  log.info.cyan(provider);
 })();
