@@ -20,7 +20,7 @@ export function create(args: {
   const { db, name, fs } = args;
   const logger = args.logger || log;
   const base = filesystem.resolve('.');
-  const root = fs.root.startsWith(base) ? fs.root.substring(base.length) : fs.root;
+  const dir = fs.dir.startsWith(base) ? fs.dir.substring(base.length) : fs.dir;
   const deployedAt =
     typeof args.deployedAt === 'string' ? value.toNumber(args.deployedAt) : args.deployedAt;
 
@@ -45,7 +45,7 @@ export function create(args: {
       module: `${log.white(PKG.name)}@${PKG.version}`,
       schema: log.green(deps['@platform/cell.schema']),
       router: deps['@platform/cell.http.router'],
-      fs: `[${log.white(fs.type === 'LOCAL' ? 'local' : fs.type)}]${root}`,
+      fs: `[${log.white(fs.type === 'LOCAL' ? 'local' : fs.type)}]${dir}`,
     },
   });
 

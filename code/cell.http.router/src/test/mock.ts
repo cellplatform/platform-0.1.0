@@ -50,7 +50,7 @@ export const createMock = async (args: { port?: number } = {}): Promise<IMock> =
   const port = args.port || (await portUtil.unused());
 
   const db = NeDb.create({ filename });
-  const fs = local.init({ root: PATH.FS, fs: util.fs });
+  const fs = local.init({ dir: PATH.FS, fs: util.fs });
 
   const body = micro.body;
   const router = CellRouter.create({ name: 'Test', db, fs, body });

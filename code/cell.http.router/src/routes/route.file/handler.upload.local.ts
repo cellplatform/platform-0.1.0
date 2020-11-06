@@ -29,8 +29,8 @@ export async function uploadLocalFile(args: {
     }
 
     // Prepare the path.
-    path = path.replace(new RegExp(`^${fs.root}/`), '');
-    path = `${fs.root}/${path}`;
+    path = path.replace(new RegExp(`^${fs.dir}/`), '');
+    path = `${fs.dir}/${path}`;
 
     // Save the file.
     await util.fs.ensureDir(util.fs.dirname(path));

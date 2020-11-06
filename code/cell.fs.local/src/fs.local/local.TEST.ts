@@ -4,10 +4,10 @@ import { local } from '.';
 describe('fs.local', () => {
   beforeEach(async () => await util.reset());
 
-  it('local.init({ root, fs })', () => {
+  it('local.init({ dir, fs })', () => {
     const root = util.fs.resolve('tmp');
-    const fs = local.init({ root, fs: util.fs });
-    expect(fs.root).to.eql(root);
+    const fs = local.init({ dir: root, fs: util.fs });
+    expect(fs.dir).to.eql(root);
   });
 
   it('type', () => {
@@ -18,7 +18,7 @@ describe('fs.local', () => {
   describe('paths', () => {
     it('exposes root (dir)', () => {
       const fs = init();
-      expect(fs.root).to.eql(PATH.LOCAL);
+      expect(fs.dir).to.eql(PATH.LOCAL);
     });
 
     it('resolve (uri => path)', () => {

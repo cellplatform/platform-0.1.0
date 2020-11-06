@@ -17,9 +17,9 @@ describe('path', () => {
   });
 
   it('throw if not root path provided', () => {
-    const test = (root: any) => {
-      const fn = () => path.resolve({ uri: 'file:foo:123', dir: root });
-      expect(fn).to.throw(/Invalid root path/);
+    const test = (dir: any) => {
+      const fn = () => path.resolve({ uri: 'file:foo:123', dir });
+      expect(fn).to.throw(/Invalid root directory path/);
     };
     test(undefined);
     test('');

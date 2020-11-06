@@ -7,6 +7,7 @@ export function resolve(args: { uri: string; dir: string }) {
   const uri = (args.uri || '').trim();
   const dir = (args.dir || '').trim();
   const file = Schema.uri.parse(uri);
+
   if (!file.ok || file.error) {
     const err = file.error;
     const msg = `Invalid URI. ${err ? err.message : ''}`.trim();

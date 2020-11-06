@@ -20,7 +20,7 @@ export const writeFile = async (path: string, data: Buffer) => {
   await fs.writeFile(path, data);
 };
 
-export const init = () => local.init({ root: PATH.LOCAL, fs });
+export const init = () => local.init({ dir: PATH.LOCAL, fs });
 
 export const util = {
   initLocal: init,

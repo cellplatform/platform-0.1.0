@@ -1,9 +1,9 @@
 import { models, t, util } from '../common';
 
 export async function fileInfo(args: {
+  host: string;
   db: t.IDb;
   fileUri: string;
-  host: string;
 }): Promise<t.IPayload<t.IResGetFile> | t.IErrorPayload> {
   const { db, fileUri: uri, host } = args;
   try {
