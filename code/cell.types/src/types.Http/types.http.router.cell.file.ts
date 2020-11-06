@@ -26,7 +26,10 @@ export type IReqQueryCellFilesUploaded = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
 export type IReqQueryCellFilesDelete = O; // 🐷 Placeholder type.
-export type IReqQueryCellFilesCopy = O; // 🐷 Placeholder type.
+export type IReqQueryCellFilesCopy = {
+  changes?: boolean; // NB: return list of changes (default: true).
+  's3:permission'?: t.FsS3Permission;
+};
 
 export type IReqQueryCellFileInfo = t.IReqQueryFileInfo;
 export type IReqQueryCellFileDownloadByName = t.IReqQueryCellFileInfo & {
