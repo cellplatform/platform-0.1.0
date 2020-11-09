@@ -1,5 +1,5 @@
 import { log, Model, t, encoding } from '../common';
-import { stats } from '../Config.webpack';
+import { stats } from '../config.webpack';
 import { format } from './util.format';
 
 /**

@@ -13,7 +13,7 @@
   "dependencies": {
     "@platform/fs.types": "0.0.16",
     "@platform/types": "0.5.8",
-    "@types/fs-extra": "9.0.2",
+    "@types/fs-extra": "9.0.3",
     "@types/js-yaml": "3.12.5",
     "archiver": "5.0.2",
     "dotenv": "8.2.0",

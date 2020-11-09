@@ -17,7 +17,7 @@
   "dependencies": {
     "@platform/css": "0.4.16",
     "@platform/util.is": "0.0.131",
-    "react": "^17.0.0",
+    "react": "^17.0.1",
     "react-dom": "^17.0.0"
   },
   "devDependencies": {

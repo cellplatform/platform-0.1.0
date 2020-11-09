@@ -1,6 +1,6 @@
 import { Compiler } from '..';
 import { expect, Uri } from '../../test';
-import { ConfigBuilder } from '../Config';
+import { ConfigBuilder } from '../config';
 
 const host = 'localhost';
 

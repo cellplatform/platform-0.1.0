@@ -25,7 +25,7 @@
     "@platform/util.string": "0.3.6",
     "@platform/util.value": "0.4.10",
     "@uiharness/electron": "0.6.1",
-    "core-js": "3.2.1",
+    "core-js": "3.7.0",
     "hjson": "3.1.2",
     "sodium-native": "2.4.6",
     "sodium-universal": "2.0.0"
@@ -33,7 +33,7 @@
   "devDependencies": {
     "@platform/ts": "3.5.0",
     "@types/hjson": "2.4.1",
-    "electron": "10.1.3"
+    "electron": "10.1.5"
   },
   "resolutions": {
     "sodium-native": "2.4.2"
