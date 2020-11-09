@@ -1,52 +1,54 @@
 import * as semver from 'semver';
 import { IMicroRequest } from '@platform/micro';
-import { createMock, expect, Http, HttpClient, t, testFiles } from '../../test';
+import { time, createMock, expect, Http, HttpClient, t, testFiles, Uri } from '../../test';
 
 describe('HttpClient', () => {
-  it('sends headers (client/schema version)', async () => {
-    const mock = await createMock();
-    const client = mock.client;
+  describe('headers', () => {
+    it('sends headers (client/schema version)', async () => {
+      const mock = await createMock();
+      const client = mock.client;
 
-    const requests: IMicroRequest[] = [];
-    mock.service.request$.subscribe((e) => requests.push(e));
-    await client.cell('cell:foo:A1').info();
-    await mock.dispose();
+      const requests: IMicroRequest[] = [];
+      mock.service.request$.subscribe((e) => requests.push(e));
+      await client.cell('cell:foo:A1').info();
+      await mock.dispose();
 
-    expect(requests.length).to.eql(1);
-    const headers = requests[0].req.headers || {};
+      expect(requests.length).to.eql(1);
+      const headers = requests[0].req.headers || {};
 
-    const isValidVersion = (version: string) => semver.valid(version) !== null;
+      const isValidVersion = (version: string) => semver.valid(version) !== null;
 
-    const header = (headers.client || '') as string;
-    expect(header).to.include('CellOS');
-    expect(header).to.include('client@');
-    expect(header).to.include('schema@');
+      const header = (headers.client || '') as string;
+      expect(header).to.include('CellOS');
+      expect(header).to.include('client@');
+      expect(header).to.include('schema@');
 
-    const parts = header.split(';');
-    parts
-      .filter((item) => item.includes('@'))
-      .forEach((item) => {
-        const version = item.split('@')[1];
-        expect(isValidVersion(version)).to.eql(true);
-      });
-  });
+      const parts = header.split(';');
+      parts
+        .filter((item) => item.includes('@'))
+        .forEach((item) => {
+          const version = item.split('@')[1];
+          expect(isValidVersion(version)).to.eql(true);
+        });
+    });
 
-  it('uses custom HTTP client (merging headers)', async () => {
-    const mock = await createMock();
-    const http = Http.create({ headers: { foo: 'hello' } });
-    const client = HttpClient.create({ http, host: mock.port });
+    it('uses custom HTTP client (merging headers)', async () => {
+      const mock = await createMock();
+      const http = Http.create({ headers: { foo: 'hello' } });
+      const client = HttpClient.create({ http, host: mock.port });
 
-    const headers: t.IHttpHeaders[] = [];
-    mock.service.request$.subscribe((e) => headers.push(e.req.headers as t.IHttpHeaders));
+      const headers: t.IHttpHeaders[] = [];
+      mock.service.request$.subscribe((e) => headers.push(e.req.headers as t.IHttpHeaders));
 
-    const res = await client.info();
-    await mock.dispose();
+      const res = await client.info();
+      await mock.dispose();
 
-    expect(res.ok).to.eql(true);
+      expect(res.ok).to.eql(true);
 
-    // NB: Headers from passed in client, along with default headers, are passed to server.
-    expect(headers[0].foo).to.eql('hello');
-    expect(headers[0].client).to.includes('CellOS;');
+      // NB: Headers from passed in client, along with default headers, are passed to server.
+      expect(headers[0].foo).to.eql('hello');
+      expect(headers[0].client).to.includes('CellOS;');
+    });
   });
 
   describe('http.ns', () => {
@@ -73,6 +75,47 @@ describe('HttpClient', () => {
 
       await ns.write({ cells: { A1: { value: 123 } } });
       expect(await cell.exists()).to.eql(true);
+
+      await mock.dispose();
+    });
+
+    it('copy (sample)', async () => {
+      const mock = await createMock();
+      const ns = mock.client.ns('ns:foo');
+
+      const A1 = { value: 123, props: { foo: 'hello' } };
+      await ns.write({ cells: { A1 } });
+
+      /**
+       * NOTE:
+       *    This shows a simple copy between a source and a target.
+       *
+       *    We may want to enshrine this as a native "copy" operation
+       *    on the client.
+       *
+       *    It should ALSO handle copying over linked files (if the host differs).
+       */
+      const copy = async (http: t.IHttpClient, sourceUri: string, targetUri: string) => {
+        const source = http.cell(sourceUri);
+        const target = http.cell(targetUri);
+        const info = await source.info();
+        const ns = http.ns(target.uri.ns);
+        await ns.write({ cells: { [target.uri.key]: info.body.data } });
+      };
+
+      const from = 'cell:foo:A1';
+      const to = 'cell:foo:Z9';
+      await copy(mock.client, from, to);
+
+      await time.wait(10);
+
+      const sourceInfo = await mock.client.cell(from).info();
+      const targetInfo = await mock.client.cell(to).info();
+
+      expect(targetInfo.body.data.value).to.eql(A1.value);
+      expect(targetInfo.body.data.props).to.eql(A1.props);
+      expect(targetInfo.body.data.hash).to.not.eql(sourceInfo.body.data.hash);
+      expect(targetInfo.body.modifiedAt).to.not.eql(sourceInfo.body.modifiedAt);
 
       await mock.dispose();
     });
