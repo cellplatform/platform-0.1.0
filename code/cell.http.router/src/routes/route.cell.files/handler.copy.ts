@@ -76,48 +76,54 @@ export async function copyCellFiles(args: {
   await Promise.all(
     body.files.map(async (file) => {
       const addError = (message: string) => errors.push({ file, message });
+      try {
+        // Ensure a filename was provided.
+        const filename = (file.filename || '').trim();
 
-      // Ensure a filename was provided.
-      const filename = (file.filename || '').trim();
-
-      // Ensure the target URI is valid.
-      const targetUri = parseCellUri(file.target);
-      if (targetUri.error) {
-        addError(`The target cell [${file.target.uri}] to copy to is invalid. ${targetUri.error}`);
-      }
-
-      // Ensure the source file exists.
-      if (!filename) {
-        addError(`A filename was not provided.`);
-      } else {
-        const info = await sourceClient.file.name(filename).info();
-        if (info.status === 404 || !info.body.exists) {
-          addError(`The filename/path '${file}' does not exist on the source cell [${cellUri}]`);
-        }
-      }
-
-      // Retrieve source file URI.
-      if (filename) {
-        const source = await toAddress(args.host, cellUri, filename);
-        if (source.error) {
-          addError(`Failed to get file uri for '${filename}' in [${cellUri}]`);
+        // Ensure the target URI is valid.
+        const targetUri = parseCellUri(file.target);
+        if (targetUri.error) {
+          const uri = file.target.uri;
+          addError(`The URI [${uri}] of the target cell to copy to is invalid. ${targetUri.error}`);
         }
 
-        const targetFilename = file.target.filename || filename;
-        const targetHost = (file.target.host || '').trim() || args.host;
-        const target = await toAddress(targetHost, targetUri.uri, targetFilename);
-        if (target.error) {
-          addError(`Failed to get file uri for '${targetFilename}' in [${targetUri.uri}]`);
+        // Ensure the source file exists.
+        if (!filename) {
+          addError(`A filename was not provided.`);
+        } else {
+          const info = await sourceClient.file.name(filename).info();
+          if (info.status === 404 || !info.body.exists) {
+            addError(
+              `The filename/path '${filename}' does not exist on the source cell [${cellUri}]`,
+            );
+          }
         }
 
-        // Add to processing list.
-        if (errors.length === 0 && source.address && target.address) {
-          items.push({
-            file,
-            source: source.address,
-            target: target.address,
-          });
+        // Retrieve source file URI.
+        if (filename && errors.length === 0) {
+          const source = await toAddress(args.host, cellUri, filename);
+          if (source.error) {
+            addError(`Failed to get file uri for '${filename}' in [${cellUri}]`);
+          }
+
+          const targetFilename = file.target.filename || filename;
+          const targetHost = (file.target.host || '').trim() || args.host;
+          const target = await toAddress(targetHost, targetUri.uri, targetFilename);
+          if (target.error) {
+            addError(`Failed to get file uri for '${targetFilename}' in [${targetUri.uri}]`);
+          }
+
+          // Add to processing list.
+          if (errors.length === 0 && source.address && target.address) {
+            items.push({
+              file,
+              source: source.address,
+              target: target.address,
+            });
+          }
         }
+      } catch (error) {
+        addError(`Failed while preparing to copy '${file.filename}'. ${error.message}`);
       }
     }),
   );
