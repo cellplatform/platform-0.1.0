@@ -42,6 +42,10 @@ export default () =>
       config.target('node').entry('./src/test/entry.node');
     })
 
+    .variant('webworker', (config) => {
+      config.target('webworker').entry('./src/test/entry.web.worker');
+    })
+
     // Root level hooks.
     .beforeCompile((e) => {
       console.log(`🐷 SAMPLE BEFORE compile (name: "root", mode: "${e.model.mode}"):`);
