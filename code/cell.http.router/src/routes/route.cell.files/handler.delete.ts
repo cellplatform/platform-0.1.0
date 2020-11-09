@@ -1,6 +1,8 @@
 import { models, Schema, t, util } from '../common';
 import { deleteFile } from '../route.file';
 
+type ErrorType = t.IResDeleteCellFilesError['error'];
+
 export async function deleteCellFiles(args: {
   db: t.IDb;
   fs: t.IFileSystem;
@@ -23,8 +25,8 @@ export async function deleteCellFiles(args: {
     errors: [],
   };
 
-  const error = (error: 'DELETING' | 'UNLINKING' | 'NOT_LINKED', filename: string) => {
-    data.errors = [...data.errors, { error, filename }];
+  const addError = (error: ErrorType, filename: string, message: string) => {
+    data.errors = [...data.errors, { error, filename, message }];
   };
 
   const done = () => {
@@ -56,14 +58,20 @@ export async function deleteCellFiles(args: {
   });
 
   // Report any requested filenames that are not linked to the cell.
-  items.filter(({ uri }) => !Boolean(uri)).forEach(({ filename }) => error('NOT_LINKED', filename));
+  items
+    .filter(({ uri }) => !Boolean(uri))
+    .forEach(({ filename }) => {
+      const message = `The file '${filename}' is not linked to [${cellUri}]`;
+      addError('NOT_LINKED', filename, message);
+    });
 
   const deleteOne = async (filename: string, fileUri: string) => {
     const res = await deleteFile({ db, fs, fileUri, host });
     if (util.isOK(res.status)) {
       data.deleted = [...data.deleted, filename];
     } else {
-      error('DELETING', filename);
+      const message = `Failed while deleting file '${filename}' on [${cellUri}]`;
+      addError('DELETING', filename, message);
     }
   };
 
@@ -87,7 +95,10 @@ export async function deleteCellFiles(args: {
     } catch (error) {
       items
         .filter(({ uri }) => Boolean(uri))
-        .forEach(({ filename }) => error('UNLINKING', filename));
+        .forEach(({ filename }) => {
+          const message = `Failed while unlinking file '${filename}' on [${cellUri}]`;
+          addError('UNLINKING', filename, message);
+        });
     }
   };
 

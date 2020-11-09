@@ -1,7 +1,7 @@
 import { t, fs, path, Schema, util } from '../common';
 
 export * from '../types';
-export type IS3Init = t.S3Config & { root: string };
+export type IS3Init = t.S3Config & { dir: string };
 
 /**
  * Initializes an "S3" compatible file-system API.
@@ -14,15 +14,14 @@ export function init(args: IS3Init): t.IFsS3 {
   const cloud = (() => {
     const { endpoint, accessKey, secret } = args;
     const s3 = fs.s3({ endpoint, accessKey, secret });
-
-    const root = util.trimSlashes(args.root);
-    const index = root.indexOf('/');
+    const dir = util.trimSlashes(args.dir);
+    const index = dir.indexOf('/');
     const path = {
-      bucket: index === -1 ? root : util.trimSlashes(root.substring(0, index)),
-      dir: index === -1 ? '/' : `/${util.trimSlashes(root.substring(index))}`,
+      bucket: index === -1 ? dir : util.trimSlashes(dir.substring(0, index)),
+      dir: index === -1 ? '/' : `/${util.trimSlashes(dir.substring(index))}`,
     };
     if (!path.bucket) {
-      throw new Error(`The given 'root' path does not contain a bucket ("${args.root}").`);
+      throw new Error(`The given 'root' path does not contain a bucket ("${args.dir}").`);
     }
 
     const bucket = s3.bucket(path.bucket);

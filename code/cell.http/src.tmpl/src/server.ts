@@ -18,15 +18,27 @@ const db = NeDb.create({ filename });
 /**
  * File system.
  */
-const getLocalFs = () => local.init({ root: `${TMP}/fs`, fs: util.fs });
+// const getFsLocal = () => local.init({ dir: `${TMP}/fs`, fs: util.fs });
 
-const getRemoteFs = () =>
-  s3.init({
-    root: 'platform/tmp/test.http',
-    endpoint: 'sfo2.digitaloceanspaces.com',
-    accessKey: SECRETS.S3.KEY,
-    secret: SECRETS.S3.SECRET,
-  });
+const fs = {
+  local: () => local.init({ dir: `${TMP}/fs`, fs: util.fs }),
+
+  spaces: () =>
+    s3.init({
+      dir: 'platform/tmp/test.http',
+      endpoint: 'sfo2.digitaloceanspaces.com',
+      accessKey: SECRETS.S3.KEY,
+      secret: SECRETS.S3.SECRET,
+    }),
+
+  wasabi: () =>
+    s3.init({
+      dir: 'cell/tmp/test.http',
+      endpoint: 's3.us-west-1.wasabisys.com',
+      accessKey: SECRETS.S3.KEY,
+      secret: SECRETS.S3.SECRET,
+    }),
+};
 
 /**
  * Initialize and start the HTTP application server.
@@ -34,8 +46,8 @@ const getRemoteFs = () =>
 const app = server.create({
   name: 'sample',
   db,
-  fs: getRemoteFs(), // TEMP 🐷 - revert to local FS.
-  // fs: getLocalFs(),
+  fs: fs.spaces(), // TEMP 🐷 - revert to local FS.
+  // fs: fs.local(),
   // log: ['ROUTES'],
 });
 

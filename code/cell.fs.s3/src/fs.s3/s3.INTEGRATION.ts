@@ -50,11 +50,9 @@ describe('S3 (Integration)', function () {
     const res = await fs.write(uri, png, { filename, permission: 'public-read' }); // NB: URI padded with spaces (corrected internally).
     expect(res['s3:permission']).to.eql('public-read');
 
-    const location = `${BASE_URL}}/ns.foo/public`;
-
     // log.info('WRITE', res);
     // log.info('-------------------------------------------');
-    // log.info(location);
+    // log.info(`${BASE_URL}}/ns.foo/public`);
 
     const read = await fs.read(uri);
     const info = await fs.info(uri);
@@ -191,17 +189,6 @@ describe('S3 (Integration)', function () {
     targetInfo = await fs.info(targetUri);
     expect(res2.status).to.eql(200);
     expect(targetInfo['s3:permission']).to.eql('public-read');
-
-    /**
-     * TODO 🐷
-     *
-     * - SAME HOST: key => key
-     * -            bucketA:key => bucketB:key
-     * - DIFFERENT HOST
-     * - LOCAL => CLOUD
-     * - CLOUD => LOCAL
-     *
-     */
   });
 
   it('copy (error)', async () => {

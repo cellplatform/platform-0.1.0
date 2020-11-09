@@ -112,6 +112,7 @@ export type IResDeleteCellFilesData = {
 export type IResDeleteCellFilesError = {
   filename: string;
   error: 'DELETING' | 'UNLINKING' | 'NOT_LINKED';
+  message: string;
 };
 
 /**
@@ -122,10 +123,23 @@ export type IReqPostCellFilesCopyBody = {
 };
 export type IResPostCellFilesCopy = t.IUriResponse<IResPostCellFilesCopyData>;
 export type IResPostCellFilesCopyData = {
+  files: IResPostCellFileCopyItem[];
   errors: IResPostCellFilesCopyError[];
+  changes?: t.IDbModelChange[];
 };
-
 export type IResPostCellFilesCopyError = {
   file: t.IHttpClientCellFileCopy;
-  error: 'TARGET_URI_INVALID' | 'SOURCE_FILENAME_EMPTY' | 'SOURCE_FILE_404';
+  message: string;
+};
+
+export type IResPostCellFileCopyItem = {
+  target: IResPostCellFileCopyAddress;
+  source: IResPostCellFileCopyAddress;
+};
+export type IResPostCellFileCopyAddress = {
+  host: string;
+  cell: string; // cell:uri
+  file: string; // file:uri
+  filename: string;
+  status: 'EXISTING' | 'NEW';
 };

@@ -126,7 +126,7 @@ export type IHttpClientCellFileUploadResponse = {
 };
 
 export type IHttpClientCellFileCopy = {
-  filename: string;
+  filename: string; // Source file on cell.
   target: IHttpClientCellFileCopyTarget;
 };
 
