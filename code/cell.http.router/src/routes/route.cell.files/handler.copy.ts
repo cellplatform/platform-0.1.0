@@ -165,7 +165,7 @@ export async function copyCellFiles(args: {
     }
   };
 
-  const processItem = async (item: Item) => {
+  const process = async (item: Item) => {
     const addError = (message: string) => errors.push({ file: item.file, message });
 
     try {
@@ -222,7 +222,7 @@ export async function copyCellFiles(args: {
   };
 
   for (const item of items) {
-    await processItem(item);
+    await process(item);
   }
 
   return done();

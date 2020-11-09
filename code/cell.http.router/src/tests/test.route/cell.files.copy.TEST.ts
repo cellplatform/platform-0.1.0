@@ -11,7 +11,7 @@ const testFiles = async () => {
   return { file1, file2, file3 };
 };
 
-describe.only('cell/files: copy', () => {
+describe('cell/files: copy', () => {
   describe('copy', () => {
     it('copy single file', async () => {
       const mock = await createMock();
@@ -22,14 +22,47 @@ describe.only('cell/files: copy', () => {
       const filename = 'foo.png';
       await source.files.upload([{ filename, data: file1 }]);
 
-      const res = await source.files.copy({ filename: 'foo.png', target: { uri: Z9 } });
+      const res = await source.files.copy({ filename, target: { uri: Z9 } });
       expect(res.status).to.eql(200);
 
       await fs.stream.save(tmp, (await target.file.name(filename).download()).body);
       expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
 
-      expect(res.body.files[0].source.status).to.eql('EXISTING');
-      expect(res.body.files[0].target.status).to.eql('NEW');
+      expect(res.body.files.length).to.eql(1);
+      expect(res.body.errors).to.eql([]);
+      expect(res.body.changes).to.eql([]);
+
+      const file = res.body.files[0];
+
+      expect(file.source.host).to.eql(mock.host);
+      expect(file.source.filename).to.eql(filename);
+      expect(file.source.cell).to.eql(A1);
+      expect(file.source.status).to.eql('EXISTING');
+      expect(file.source.file).to.match(/^file\:foo\:/);
+      expect(file.target.status).to.eql('NEW');
+
+      mock.dispose();
+    });
+
+    it('copy to different filename', async () => {
+      const mock = await createMock();
+      const source = mock.client.cell(A1);
+      const target = mock.client.cell(Z9);
+
+      const filename1 = 'foo.png';
+      const filename2 = '0.1.2/foo.png';
+
+      const { file1 } = await testFiles();
+      await source.files.upload([{ filename: filename1, data: file1 }]);
+
+      const res = await source.files.copy({
+        filename: filename1,
+        target: { uri: Z9, filename: filename2 },
+      });
+      expect(res.status).to.eql(200);
+
+      await fs.stream.save(tmp, (await target.file.name(filename2).download()).body);
+      expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
 
       mock.dispose();
     });
@@ -178,7 +211,7 @@ describe.only('cell/files: copy', () => {
   });
 
   describe('errors', () => {
-    it('error: TARGET_CELL_URI', async () => {
+    it('error: invalid target cell URI', async () => {
       const mock = await createMock();
       const A1 = 'cell:foo:A1';
       const client = mock.client.cell(A1);
