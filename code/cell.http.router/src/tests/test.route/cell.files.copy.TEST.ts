@@ -105,24 +105,6 @@ describe.only('cell/files: copy', () => {
       mock.dispose();
     });
 
-    it('returns changes', async () => {
-      const mock = await createMock();
-      const source = mock.client.cell(A1);
-
-      const { file1 } = await testFiles();
-      const filename = 'foo.png';
-      await source.files.upload([{ filename, data: file1 }]);
-
-      const res = await source.files.copy(
-        { filename: 'foo.png', target: { uri: Z9 } },
-        { changes: true },
-      );
-
-      mock.dispose();
-      expect(res.status).to.eql(200);
-      expect(res.body.changes?.length).to.greaterThan(2);
-    });
-
     it('copy within single cell', async () => {
       const mock = await createMock();
       const source = mock.client.cell(A1);
@@ -174,6 +156,24 @@ describe.only('cell/files: copy', () => {
 
       mock1.dispose();
       mock2.dispose();
+    });
+
+    it('returns changes', async () => {
+      const mock = await createMock();
+      const source = mock.client.cell(A1);
+
+      const { file1 } = await testFiles();
+      const filename = 'foo.png';
+      await source.files.upload([{ filename, data: file1 }]);
+
+      const res = await source.files.copy(
+        { filename: 'foo.png', target: { uri: Z9 } },
+        { changes: true },
+      );
+
+      mock.dispose();
+      expect(res.status).to.eql(200);
+      expect(res.body.changes?.length).to.greaterThan(2);
     });
   });
 
