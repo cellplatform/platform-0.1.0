@@ -1,15 +1,8 @@
-import { createMock, expect, fs, readFile } from '../../test';
+import { createMock, expect, fs, testFiles } from '../../test';
 
 const tmp = fs.resolve(`./tmp/download`);
 const A1 = 'cell:foo:A1';
 const Z9 = 'cell:foo:Z9';
-
-const testFiles = async () => {
-  const file1 = await readFile('src/test/assets/func.wasm');
-  const file2 = await readFile('src/test/assets/kitten.jpg');
-  const file3 = await readFile('src/test/assets/foo.json');
-  return { file1, file2, file3 };
-};
 
 describe('cell/files: copy', () => {
   describe('copy', () => {

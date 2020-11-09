@@ -1,6 +1,6 @@
 import * as semver from 'semver';
 import { IMicroRequest } from '@platform/micro';
-import { createMock, expect, Http, HttpClient, t } from '../../test';
+import { createMock, expect, Http, HttpClient, t, testFiles } from '../../test';
 
 describe('HttpClient', () => {
   it('sends headers (client/schema version)', async () => {
@@ -50,7 +50,7 @@ describe('HttpClient', () => {
   });
 
   describe('http.ns', () => {
-    it('exists()', async () => {
+    it('exists', async () => {
       const mock = await createMock();
       const ns = mock.client.ns('ns:foo');
 
@@ -73,6 +73,41 @@ describe('HttpClient', () => {
 
       await ns.write({ cells: { A1: { value: 123 } } });
       expect(await cell.exists()).to.eql(true);
+
+      await mock.dispose();
+    });
+  });
+
+  describe('http.cell.file', () => {
+    it('exists', async () => {
+      const mock = await createMock();
+      const cell = mock.client.cell('cell:foo:A1');
+
+      const filename = 'foo.png';
+      const file = cell.file.name(filename);
+      expect(await file.exists()).to.eql(false);
+
+      const { file1: data } = await testFiles();
+      await cell.files.upload({ filename, data });
+      expect(await file.exists()).to.eql(true);
+
+      await mock.dispose();
+    });
+
+    it('info', async () => {
+      const mock = await createMock();
+      const cell = mock.client.cell('cell:foo:A1');
+
+      const filename = 'foo.png';
+      const file = cell.file.name(filename);
+
+      const { file1 } = await testFiles();
+      await cell.files.upload([{ filename, data: file1 }]);
+
+      const info = await file.info();
+      expect(info.ok).to.eql(true);
+      expect(info.status).to.eql(200);
+      expect(info.body.data.props.mimetype).to.eql('image/png');
 
       await mock.dispose();
     });
