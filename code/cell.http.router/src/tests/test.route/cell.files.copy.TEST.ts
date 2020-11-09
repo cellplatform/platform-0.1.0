@@ -60,7 +60,7 @@ describe('cell/files: copy', () => {
       mock.dispose();
     });
 
-    it.only('copy multiple files (array)', async () => {
+    it('copy multiple files (array)', async () => {
       const mock = await createMock();
       const source = mock.client.cell(A1);
       const target = mock.client.cell(Z9);

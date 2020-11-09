@@ -12,7 +12,7 @@ const testFile = async (filename: string, fileData: t.Json) => {
   return { filename, upload, data };
 };
 
-describe('Client (Integration)', function () {
+describe('HttpClient (Integration)', function () {
   this.timeout(99999);
 
   describe('upload', () => {
