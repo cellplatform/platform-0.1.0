@@ -148,7 +148,7 @@ describe('Client (Integration)', function () {
       expect(await fs.readJson(tmp)).to.eql({ foo: 'hello' });
     });
 
-    it('copy: to different host', async () => {
+    it('copy: between hosts', async () => {
       const source = client.cell(CELL.SOURCE);
       const target = HttpClient.create(HOST2).cell(CELL.SOURCE);
 
@@ -169,6 +169,39 @@ describe('Client (Integration)', function () {
 
       await fs.stream.save(tmp, (await target.file.name(filename).download()).body);
       expect(await fs.readJson(tmp)).to.eql({ foo: 123 });
+    });
+
+    it('copy: multiple files', async () => {
+      const source = client.cell(CELL.SOURCE);
+      const target = client.cell(CELL.TARGET);
+
+      const tmp = fs.resolve(`./tmp/download`);
+      const filename1 = `copy/file-${slug()}.json`;
+      const filename2 = `copy/file-${slug()}.json`;
+
+      const file1 = await testFile(filename1, { foo: 1 });
+      const file2 = await testFile(filename2, { foo: 2 });
+      await source.files.upload([file1.upload, file2.upload]);
+
+      expect((await target.file.name(filename1).info()).status).to.eql(404);
+      expect((await target.file.name(filename2).info()).status).to.eql(404);
+
+      await source.files.copy([
+        {
+          filename: filename1,
+          target: { uri: CELL.TARGET },
+        },
+        {
+          filename: filename2,
+          target: { uri: CELL.TARGET },
+        },
+      ]);
+
+      await fs.stream.save(tmp, (await target.file.name(filename1).download()).body);
+      expect(await fs.readJson(tmp)).to.eql({ foo: 1 });
+
+      expect((await target.file.name(filename1).info()).status).to.eql(200);
+      expect((await target.file.name(filename2).info()).status).to.eql(200);
     });
   });
 });

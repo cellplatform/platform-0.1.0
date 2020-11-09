@@ -76,6 +76,7 @@ export async function copyCellFiles(args: {
   await Promise.all(
     body.files.map(async (file) => {
       const addError = (message: string) => errors.push({ file, message });
+
       try {
         // Ensure a filename was provided.
         const filename = (file.filename || '').trim();
@@ -129,37 +130,45 @@ export async function copyCellFiles(args: {
   );
 
   const uploadToTargetHost = async (item: Item) => {
-    const { source, target } = item;
+    const addError = (message: string) => errors.push({ file: item.file, message });
 
-    const path = util.fs.join(constants.PATH.TMP, 'file', `tmp.${Schema.cuid()}`);
-    const download = await sourceClient.file.name(source.filename).download();
-    await util.fs.stream.save(path, download.body);
+    try {
+      const { source, target } = item;
+      const path = util.fs.join(constants.PATH.TMP, 'file', `tmp.${Schema.cuid()}`);
+      const download = await sourceClient.file.name(source.filename).download();
 
-    const data = await util.fs.readFile(path);
-    const file: t.IHttpClientCellFileUpload = { filename: target.filename, data };
+      await util.fs.stream.save(path, download.body);
 
-    const client = HttpClient.create(target.host).cell(target.cell);
-    const res = await client.files.upload(file, { changes: sendChanges, permission });
-    const { ok } = res;
+      const data = await util.fs.readFile(path);
+      const file: t.IHttpClientCellFileUpload = { filename: target.filename, data };
 
-    if (!ok) {
-      const err = res.error?.message || '';
-      errors.push({
-        file: item.file,
-        message: `Failed while uploading file '${target.filename}' to host '${target.host}'. ${err}`.trim(),
-      });
+      const client = HttpClient.create(target.host).cell(target.cell);
+      const res = await client.files.upload(file, { changes: sendChanges, permission });
+      const { ok } = res;
+
+      if (!ok) {
+        const err = res.error?.message || '';
+        addError(
+          `Failed while uploading file '${target.filename}' to host '${target.host}'. ${err}`.trim(),
+        );
+      }
+
+      if (ok) {
+        changes.push(...(res.body.changes || []));
+      }
+
+      await util.fs.remove(path);
+      return { ok };
+    } catch (error) {
+      addError(`Failed while uploading '${item.file.filename}'. ${error.message}`);
+      return { ok: false };
     }
-
-    if (ok) {
-      changes.push(...(res.body.changes || []));
-    }
-
-    await util.fs.remove(path);
-    return { ok };
   };
 
-  await Promise.all(
-    items.map(async (item) => {
+  const processItem = async (item: Item) => {
+    const addError = (message: string) => errors.push({ file: item.file, message });
+
+    try {
       if (item.source.host !== item.target.host) {
         // COPY using upload to remote host
         await uploadToTargetHost(item);
@@ -199,17 +208,22 @@ export async function copyCellFiles(args: {
             });
 
             if (!util.isOK(res.status)) {
-              errors.push({
-                file: item.file,
-                message: `Failed while completing upload of file '${item.target.file}' to host '${item.target.host}'`,
-              });
+              addError(
+                `Failed while completing upload of file '${item.target.file}' to host '${item.target.host}'`,
+              );
             }
             changes.push(...(res.data.data.changes || []));
           }
         }
       }
-    }),
-  );
+    } catch (error) {
+      addError(`Failed while copying '${item.file.filename}'. ${error.message}`);
+    }
+  };
+
+  for (const item of items) {
+    await processItem(item);
+  }
 
   return done();
 }
