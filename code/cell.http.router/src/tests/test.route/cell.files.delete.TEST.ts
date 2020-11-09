@@ -129,7 +129,9 @@ describe('cell/files: delete, unlink', () => {
     const errors = res.body.errors;
 
     expect(errors.length).to.eql(1);
-    expect(errors[0]).to.eql({ error: 'NOT_LINKED', filename: 'kitten.jpg' });
+    expect(errors[0].error).to.eql('NOT_LINKED');
+    expect(errors[0].filename).to.eql('kitten.jpg');
+    expect(errors[0].message).to.include(`file 'kitten.jpg' is not linked to [cell:foo:A1]`);
 
     // Finish up.
     await mock.dispose();

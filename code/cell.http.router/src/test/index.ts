@@ -2,7 +2,9 @@ import * as FormData from 'form-data';
 export { FormData };
 
 import { mock, createMock, IMock } from './mock';
-import { Schema } from '../common';
+import { Schema, id } from '../common';
+
+export const slug = id.shortid;
 
 export { mock, createMock, IMock };
 export * from '../common';

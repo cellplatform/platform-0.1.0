@@ -2,6 +2,7 @@
 
 import { models, routes, Schema, t, util } from '../common';
 import { getCoord } from './handler.getCoord';
+import { cellInfo, rowInfo, columnInfo } from './handler.info';
 import { getParams } from './params';
 
 /**
@@ -30,18 +31,14 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    */
   router.get(routes.CELL.INFO, async (req) => {
     try {
+      const host = req.host;
       const query = req.query as t.IUrlParamsCoord;
       const { status, uri, error } = getParams({
         req,
         prefix: 'cell',
         getUri: (id, key) => Schema.uri.create.cell(id, key),
       });
-      const getModel: t.GetModel = () => models.Cell.create({ db, uri }).ready;
-      const getUrls: t.GetUrls = () => util.urls(req.host).cell(uri).urls;
-
-      return error
-        ? { status, data: { error } }
-        : getCoord<t.IResGetCell>({ uri, getModel, getUrls });
+      return error ? { status, data: { error } } : cellInfo({ host, db, uri });
     } catch (err) {
       return util.toErrorPayload(err);
     }
@@ -52,18 +49,14 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    */
   router.get(routes.ROW.INFO, async (req) => {
     try {
+      const host = req.host;
       const query = req.query as t.IUrlParamsCoord;
       const { status, uri, error } = getParams({
         req,
         prefix: 'row',
         getUri: (id, key) => Schema.uri.create.row(id, key),
       });
-      const getModel: t.GetModel = () => models.Row.create({ db, uri }).ready;
-      const getUrls: t.GetUrls = () => util.urls(req.host).rowUrls(uri);
-
-      return error
-        ? { status, data: { error } }
-        : getCoord<t.IResGetRow>({ uri, getModel, getUrls });
+      return error ? { status, data: { error } } : rowInfo({ host, db, uri });
     } catch (err) {
       return util.toErrorPayload(err);
     }
@@ -74,18 +67,14 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    */
   router.get(routes.COLUMN.INFO, async (req) => {
     try {
+      const host = req.host;
       const query = req.query as t.IUrlParamsCoord;
       const { status, uri, error } = getParams({
         req,
         prefix: 'col',
         getUri: (id, key) => Schema.uri.create.column(id, key),
       });
-      const getModel: t.GetModel = () => models.Column.create({ db, uri }).ready;
-      const getUrls: t.GetUrls = () => util.urls(req.host).columnUrls(uri);
-
-      return error
-        ? { status, data: { error } }
-        : getCoord<t.IResGetRow>({ uri, getModel, getUrls });
+      return error ? { status, data: { error } } : columnInfo({ host, db, uri });
     } catch (err) {
       return util.toErrorPayload(err);
     }

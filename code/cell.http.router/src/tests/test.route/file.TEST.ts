@@ -21,6 +21,7 @@ export const testPostFile = async (args: {
     const res: t.IHttpClientCellFileUpload = { filename, data };
     return res;
   });
+
   const files = await Promise.all(wait);
   const res = await client.files.upload(files);
 

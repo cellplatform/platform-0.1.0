@@ -123,11 +123,13 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       const params = req.params as t.IUrlParamsCellFiles;
       const paramData = getParams({ params });
       const body = (await req.body.json()) as t.IReqPostCellFilesCopyBody;
+      const changes = query.changes;
+      const permission = query['s3:permission'];
       const { status, error, cellUri: cellUri } = paramData;
 
       return !paramData.ns || error
         ? { status, data: { error } }
-        : copyCellFiles({ db, fs, cellUri, body, host });
+        : copyCellFiles({ db, fs, cellUri, body, host, changes, permission });
     } catch (err) {
       return util.toErrorPayload(err);
     }

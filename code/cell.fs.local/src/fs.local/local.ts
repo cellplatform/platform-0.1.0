@@ -6,9 +6,9 @@ const toLocation = (path: string) => `file://${path}`;
 /**
  * Initializes a "local" file-system API.
  */
-export function init(args: { root: string; fs: t.IFs }): t.IFsLocal {
+export function init(args: { dir: string; fs: t.IFs }): t.IFsLocal {
   const fs = args.fs;
-  const root = fs.resolve(args.root);
+  const dir = fs.resolve(args.dir);
 
   const res: t.IFsLocal = {
     type: 'LOCAL',
@@ -16,7 +16,7 @@ export function init(args: { root: string; fs: t.IFs }): t.IFsLocal {
     /**
      * Root directory of the file system.
      */
-    root,
+    dir,
 
     /**
      * Convert the given string to an absolute path.
@@ -27,7 +27,7 @@ export function init(args: { root: string; fs: t.IFs }): t.IFsLocal {
       if (type === 'SIGNED/post') {
         // NB: A local simulated end-point of an AWS/S3 "presignedPost" URL.
         const args = options as t.S3SignedPostOptions;
-        const key = path.resolve({ uri, root });
+        const key = path.resolve({ uri, dir });
         const mime = args.contentType || Schema.mime.toType(key, 'application/octet-stream');
         return {
           path: Schema.Urls.routes.LOCAL.FS,
@@ -39,7 +39,7 @@ export function init(args: { root: string; fs: t.IFs }): t.IFsLocal {
         throw new Error(`Local file-system resolve only supports DEFAULT operation.`);
       }
       return {
-        path: path.resolve({ uri, root }),
+        path: path.resolve({ uri, dir }),
         props: {},
       };
     },

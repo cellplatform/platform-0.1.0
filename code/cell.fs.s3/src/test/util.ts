@@ -26,7 +26,7 @@ export function init(PROVIDER: string, root?: string) {
     ROOT,
     PATH,
     BASE_URL: `https://${bucket}.${endpoint}/${PATH}`,
-    fs: s3.init({ root: ROOT, endpoint, accessKey, secret }),
+    fs: s3.init({ dir: ROOT, endpoint, accessKey, secret }),
   };
 }
 

@@ -13,6 +13,7 @@ export type IMock = {
   router: t.IRouter;
   service: IMicroService;
   filename: string;
+  hostname: string;
   host: string;
   port: number;
   origin: string;
@@ -50,7 +51,7 @@ export const createMock = async (args: { port?: number } = {}): Promise<IMock> =
   const port = args.port || (await portUtil.unused());
 
   const db = NeDb.create({ filename });
-  const fs = local.init({ root: PATH.FS, fs: util.fs });
+  const fs = local.init({ dir: PATH.FS, fs: util.fs });
 
   const body = micro.body;
   const router = CellRouter.create({ name: 'Test', db, fs, body });
@@ -58,7 +59,7 @@ export const createMock = async (args: { port?: number } = {}): Promise<IMock> =
   const service = await app.start({ port, silent: true });
 
   const urls = Schema.urls(`localhost:${port}`);
-  const host = urls.host;
+  const hostname = urls.host;
   const client = HttpClient.create(urls.origin);
   const origin = client.origin;
 
@@ -70,7 +71,8 @@ export const createMock = async (args: { port?: number } = {}): Promise<IMock> =
     router,
     service,
     filename,
-    host,
+    hostname,
+    host: `${hostname}:${port}`,
     origin,
     url: (path: string) => `http://localhost:${port}/${path.replace(/^\/*/, '')}`,
     urls,

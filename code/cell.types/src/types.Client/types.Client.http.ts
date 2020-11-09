@@ -94,10 +94,16 @@ export type IHttpClientCellFiles = {
   unlink(filename: string | string[]): t.IHttpClientAsync<t.IResDeleteCellFilesData>;
   copy(
     files: t.IHttpClientCellFileCopy | t.IHttpClientCellFileCopy[],
+    options?: IHttpClientCellFilesCopyOptions,
   ): t.IHttpClientAsync<t.IResPostCellFilesCopyData>;
 };
 
 export type IHttpClientCellFilesUploadOptions = {
+  changes?: boolean;
+  permission?: t.FsS3Permission;
+};
+
+export type IHttpClientCellFilesCopyOptions = {
   changes?: boolean;
   permission?: t.FsS3Permission;
 };
@@ -120,7 +126,7 @@ export type IHttpClientCellFileUploadResponse = {
 };
 
 export type IHttpClientCellFileCopy = {
-  filename: string;
+  filename: string; // Source file on cell.
   target: IHttpClientCellFileCopyTarget;
 };
 

@@ -8,7 +8,7 @@ import { IS_CLOUD, SECRETS } from './constants';
  * File system.
  */
 const fs = s3.init({
-  root: '__S3_ROOT__',
+  dir: '__S3_ROOT__',
   endpoint: '__S3_ENDPOINT__',
   accessKey: SECRETS.S3.KEY,
   secret: SECRETS.S3.SECRET,

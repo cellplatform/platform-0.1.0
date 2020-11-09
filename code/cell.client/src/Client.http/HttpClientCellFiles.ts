@@ -127,10 +127,14 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
     return deleteFiles({ http, urls, filename, action: 'UNLINK' });
   }
 
-  public async copy(files: t.IHttpClientCellFileCopy | t.IHttpClientCellFileCopy[]) {
+  public async copy(
+    files: t.IHttpClientCellFileCopy | t.IHttpClientCellFileCopy[],
+    options: t.IHttpClientCellFilesCopyOptions = {},
+  ) {
+    const { changes, permission } = options;
     const http = this.args.http;
     const urls = this.args.parent.url;
-    return copyFiles({ http, urls, files });
+    return copyFiles({ http, urls, files, changes, permission });
   }
 
   /**

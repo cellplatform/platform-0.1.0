@@ -69,6 +69,7 @@ export async function uploadFiles(args: {
         // Prepare upload multi-part form.
         const props = upload.props;
         const contentType = props['content-type'];
+
         const form = new FormData();
         Object.keys(props)
           .map((key) => ({ key, value: props[key] }))
@@ -77,7 +78,8 @@ export async function uploadFiles(args: {
 
         // Send form to S3.
         const headers = form.getHeaders();
-        return http.post(url, form, { headers });
+        const res = await http.post(url, form, { headers });
+        return res;
       };
 
       const uploadToLocal = async () => {

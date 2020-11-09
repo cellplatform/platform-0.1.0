@@ -52,7 +52,7 @@ export type IUrlsCellFiles = {
   upload: t.IUrl<t.IReqQueryCellFilesUpload>;
   uploaded: t.IUrl<t.IReqQueryCellFilesUploaded>;
   delete: t.IUrl<t.IReqQueryCellFilesDelete>;
-  copy: t.IUrl<t.IResPostCellFilesCopy>;
+  copy: t.IUrl<t.IReqQueryCellFilesCopy>;
 };
 
 export type IUrlsRow = {
