@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.typesystem",
-  "version": "0.0.124",
+  "version": "0.0.125",
   "description": "The 'strongly typed sheets' system of the CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,9 +13,9 @@
   },
   "dependencies": {
     "@platform/cache": "0.2.37",
-    "@platform/cell.coord": "0.8.189",
-    "@platform/cell.schema": "0.5.5",
-    "@platform/cell.types": "0.5.6",
+    "@platform/cell.coord": "0.8.190",
+    "@platform/cell.schema": "0.5.6",
+    "@platform/cell.types": "0.5.7",
     "@platform/libs": "0.2.2",
     "@platform/types": "0.5.8",
     "@platform/util.value": "0.8.1"
