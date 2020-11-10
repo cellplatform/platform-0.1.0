@@ -1,10 +1,11 @@
-import { AWS, t, util } from '../common';
+import { AWS, t } from '../common';
+import { copy } from './s3.copy';
 import { deleteMany, deleteOne } from './s3.delete';
 import { get } from './s3.get';
 import { list } from './s3.list';
 import { post } from './s3.post';
 import { put } from './s3.put';
-import { copy } from './s3.copy';
+import { url } from './s3.url';
 
 export * from './s3.get';
 export * from './s3.put';
@@ -23,34 +24,7 @@ export function init(args: t.S3Config): t.S3 {
     endpoint,
 
     url(bucket: string, path?: string) {
-      const object = util.toObjectUrl({ s3, bucket, path });
-      return {
-        object,
-        signedGet(options: t.S3SignedUrlGetObjectOptions = {}) {
-          return util.toPresignedUrl({
-            s3,
-            bucket,
-            path,
-            options: { ...options, operation: 'getObject' },
-          });
-        },
-        signedPut(options: t.S3SignedUrlPutObjectOptions = {}) {
-          return util.toPresignedUrl({
-            s3,
-            bucket,
-            path,
-            options: { ...options, operation: 'putObject' },
-          });
-        },
-        signedPost(options: t.S3SignedPostArgs) {
-          return util.toPresignedPost({
-            s3,
-            ...options,
-            bucket,
-            key: path || (options || {}).key,
-          });
-        },
-      };
+      return url(s3, bucket, path);
     },
 
     list(args: { bucket: string; prefix?: string; max?: number }) {

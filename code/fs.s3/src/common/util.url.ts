@@ -1,6 +1,6 @@
 import { parse as parseUrl } from 'url';
 
-import { AWS, toMimetype, value, id } from './libs';
+import { AWS, toMimetype, value } from './libs';
 import * as t from './types';
 import { formatBucket, formatKeyPath } from './util.format';
 import { toSeconds } from './util.time';
