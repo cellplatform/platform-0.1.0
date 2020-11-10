@@ -76,26 +76,16 @@ export const Rules = {
 
   /**
    * <SVG> image support.
-   *        https://webpack.js.org/loaders/url-loader/#svg
-   *
-   * NOTE:
-   *        See SVGO for optimizing source <SVG> data before webpacking.
-   *        https://github.com/svg/svgo
-   *
-   *        React loader example (blog)
-   *        https://www.pluralsight.com/guides/how-to-load-svg-with-react-and-webpack
+   *       https://react-svgr.com
    */
   svg(args: IArgs) {
     return {
-      test: /\.svg$/i,
+      test: /\.svg$/,
       use: [
         {
-          loader: 'url-loader',
+          loader: '@svgr/webpack',
           options: {
-            generator(content: any) {
-              content = typeof content !== 'string' ? content.toString() : content;
-              svgToMiniDataURI(content);
-            },
+            dimensions: false, // NB: Removes width/height from SVG itself so it can be set via React property.
           },
         },
       ],
