@@ -19,7 +19,7 @@
     "react-sortable-hoc": "1.11.0"
   },
   "devDependencies": {
-    "@platform/test": "0.1.16",
+    "@platform/test": "0.1.17",
     "@platform/ts": "4.0.6",
     "@platform/ui.dev": "0.0.27",
     "@platform/ui.icon": "0.0.172",

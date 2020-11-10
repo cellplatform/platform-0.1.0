@@ -28,7 +28,7 @@
     "@platform/polyfill": "0.0.1",
     "@platform/fs": "0.6.0",
     "@platform/graphql.server": "0.1.139",
-    "@platform/test": "0.1.16",
+    "@platform/test": "0.1.17",
     "@types/nedb": "1.8.11"
   },
   "files": [

@@ -23,7 +23,7 @@
     "inquirer": "7.3.3"
   },
   "devDependencies": {
-    "@platform/test": "0.1.16",
+    "@platform/test": "0.1.17",
     "@platform/ts": "4.0.6",
     "@types/inquirer": "7.3.1"
   },

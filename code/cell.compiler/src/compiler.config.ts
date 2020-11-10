@@ -42,8 +42,8 @@ export default () =>
       config.target('node').entry('./src/test/entry.node');
     })
 
-    .variant('webworker', (config) => {
-      config.target('webworker').entry('./src/test/entry.web.worker');
+    .variant('worker', (config) => {
+      config.target('webworker').entry('./src/test/entry.web.worker').mode('dev').port(5051);
     })
 
     // Root level hooks.
