@@ -21,7 +21,7 @@ export function init(args: IInitArgs = {}) {
   const app = server.create({
     name: 'local',
     db: NeDb.create({ filename: paths.db }),
-    fs: local.init({ root: paths.fs, fs }),
+    fs: local.init({ dir: paths.fs, fs }),
     logger,
   });
 

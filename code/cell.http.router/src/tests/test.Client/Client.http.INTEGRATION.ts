@@ -22,6 +22,7 @@ describe('HttpClient (Integration)', function () {
     it('permission: "private" (default)', async () => {
       const { filename, upload } = await testFile('foo/private.json', { foo: 123 });
       const res = await cell.files.upload(upload);
+
       expect(res.status).to.eql(200);
 
       const info = await cell.info();
