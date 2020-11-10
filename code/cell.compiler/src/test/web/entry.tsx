@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { App } from './components/App';
-import Worker from 'worker-loader!./workers/main';
+import Worker from 'worker-loader?inline=no-fallback!./web.worker';
 
 /**
  * React
@@ -19,13 +19,9 @@ console.log('React.version:', React.version);
 const worker = new Worker();
 
 worker.onmessage = function (e: MessageEvent<any>) {
-  console.log('worker.onmessage', e.data);
+  console.log('🌼 event (from worker thread)', e.data);
 };
 
-worker.addEventListener('message', function (e: MessageEvent<any>) {
-  console.log('worker event', e.data);
-});
-
 setTimeout(() => {
-  worker.postMessage({ msg: 'From App.entry.tsx' });
+  worker.postMessage({ msg: 'Hello from [App.entry.tsx]' });
 }, 500);

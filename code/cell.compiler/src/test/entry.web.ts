@@ -1,1 +1,1 @@
-import('./web/App.entry');
+import('./web/entry');
