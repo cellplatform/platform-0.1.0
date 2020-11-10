@@ -12,7 +12,7 @@ export function init(args: t.IArgs) {
 
   const name = encoding.escapeNamespace(model.namespace || '');
   if (!name) {
-    throw new Error(`Module federation requires a "scope" (namespace) value.`);
+    throw new Error(`Federation requires a "namespace" (scope) value.`);
   }
 
   return new ModuleFederationPlugin({

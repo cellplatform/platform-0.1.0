@@ -31,7 +31,7 @@ export class HttpClientCellFile implements t.IHttpClientCellFile {
     const http = this.args.http;
     const self = this;
     const parent = this.args.parent;
-    return {
+    const file: t.IHttpClientCellFileByName = {
       /**
        * Meta-data about the file.
        */
@@ -51,6 +51,14 @@ export class HttpClientCellFile implements t.IHttpClientCellFile {
         // Call the service.
         const res = await http.get(url.toString());
         return util.fromHttpResponse(res).toClientResponse<t.IResGetFile>();
+      },
+
+      /**
+       * Determine if the file exists or not.
+       */
+      async exists() {
+        const info = await file.info();
+        return info.ok && info.body.exists;
       },
 
       /**
@@ -95,6 +103,8 @@ export class HttpClientCellFile implements t.IHttpClientCellFile {
         }
       },
     };
+
+    return file;
   }
 
   /**

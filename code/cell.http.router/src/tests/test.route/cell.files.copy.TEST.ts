@@ -1,15 +1,8 @@
-import { createMock, expect, fs, readFile } from '../../test';
+import { createMock, expect, fs, testFiles } from '../../test';
 
 const tmp = fs.resolve(`./tmp/download`);
 const A1 = 'cell:foo:A1';
 const Z9 = 'cell:foo:Z9';
-
-const testFiles = async () => {
-  const file1 = await readFile('src/test/assets/func.wasm');
-  const file2 = await readFile('src/test/assets/kitten.jpg');
-  const file3 = await readFile('src/test/assets/foo.json');
-  return { file1, file2, file3 };
-};
 
 describe('cell/files: copy', () => {
   describe('copy', () => {
@@ -80,8 +73,8 @@ describe('cell/files: copy', () => {
         { filename: filename2, data: file2 },
       ]);
 
-      expect((await target.file.name(filename1).info()).status).to.eql(404);
-      expect((await target.file.name(filename2).info()).status).to.eql(404);
+      expect(await target.file.name(filename1).exists()).to.eql(false);
+      expect(await target.file.name(filename2).exists()).to.eql(false);
 
       const res = await source.files.copy([
         { filename: filename1, target: { uri: Z9 } },
@@ -90,6 +83,9 @@ describe('cell/files: copy', () => {
       expect(res.status).to.eql(200);
       expect(res.body.changes).to.eql([]); // NB: Flag to return changes not set.
       expect(res.body.files.length).to.eql(2);
+
+      expect(await target.file.name(filename1).exists()).to.eql(true);
+      expect(await target.file.name(filename2).exists()).to.eql(true);
 
       await fs.stream.save(tmp, (await target.file.name(filename1).download()).body);
       expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
@@ -147,7 +143,7 @@ describe('cell/files: copy', () => {
       const filename2 = 'bar.png';
       await source.files.upload([{ filename: filename1, data: file1 }]);
 
-      expect((await source.file.name(filename2).info()).status).to.eql(404);
+      expect(await source.file.name(filename2).exists()).to.eql(false);
 
       const res = await source.files.copy({
         filename: filename1,
@@ -157,7 +153,7 @@ describe('cell/files: copy', () => {
       expect(res.body.files[0].source.status).to.eql('EXISTING');
       expect(res.body.files[0].target.status).to.eql('NEW');
 
-      expect((await source.file.name(filename2).info()).status).to.eql(200);
+      expect(await source.file.name(filename2).exists()).to.eql(true);
 
       await fs.stream.save(tmp, (await source.file.name(filename1).download()).body);
       expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
@@ -178,14 +174,14 @@ describe('cell/files: copy', () => {
       const filename = 'foo.png';
       await source.files.upload([{ filename: filename, data: file1 }]);
 
-      expect((await target.file.name(filename).info()).status).to.eql(404);
+      expect(await target.file.name(filename).exists()).to.eql(false);
 
       await source.files.copy({
         filename: filename,
         target: { uri: A1, host: mock2.host },
       });
 
-      expect((await target.file.name(filename).info()).status).to.eql(200);
+      expect(await target.file.name(filename).exists()).to.eql(true);
 
       mock1.dispose();
       mock2.dispose();

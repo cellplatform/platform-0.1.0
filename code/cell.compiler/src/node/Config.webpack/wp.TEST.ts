@@ -63,7 +63,7 @@ describe('Compiler (Webpack)', () => {
     expect(builder.toObject().namespace).to.eql(undefined);
 
     const fn = () => wp.toWebpackConfig(builder);
-    expect(fn).to.throw(/requires a \"scope\" \(namespace\)/);
+    expect(fn).to.throw(/requires a \"namespace\" \(scope\)/);
   });
 
   it('target', () => {

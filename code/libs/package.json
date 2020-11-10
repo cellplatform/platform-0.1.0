@@ -1,12 +1,12 @@
 {
   "name": "@platform/libs",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Common external toolbelt libs used accross modules.",
   "scripts": {
     "test": "echo no-op"
   },
   "dependencies": {
-    "@types/ramda": "0.27.29",
+    "@types/ramda": "0.27.32",
     "ramda": "0.27.1",
     "rxjs": "6.6.3"
   },

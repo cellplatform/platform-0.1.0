@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.electron",
-  "version": "0.0.148",
+  "version": "0.0.152",
   "description": "Electron shell for CellOS.",
   "scripts": {
     "ui": "cd app.ui && yarn start",
@@ -17,8 +17,8 @@
     "open": "cd app/out/make && open ."
   },
   "devDependencies": {
-    "@platform/cli.prompt": "0.3.26",
-    "@platform/ts": "4.0.2"
+    "@platform/cli.prompt": "0.3.30",
+    "@platform/ts": "4.0.6"
   },
   "files": [
     "lib",

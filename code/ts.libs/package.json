@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts.libs",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Common TypesScript and linter configuration.",
   "scripts": {
     "test": "echo no-op",
@@ -9,21 +9,21 @@
     "prepare": "yarn build && yarn lint"
   },
   "dependencies": {
-    "@types/node": "14.14.0",
-    "@typescript-eslint/eslint-plugin": "4.5.0",
-    "@typescript-eslint/eslint-plugin-tslint": "4.5.0",
-    "@typescript-eslint/parser": "4.5.0",
-    "eslint": "7.11.0",
-    "eslint-config-prettier": "6.13.0",
+    "@types/node": "14.14.7",
+    "@typescript-eslint/eslint-plugin": "4.7.0",
+    "@typescript-eslint/eslint-plugin-tslint": "4.7.0",
+    "@typescript-eslint/parser": "4.7.0",
+    "eslint": "7.13.0",
+    "eslint-config-prettier": "6.15.0",
     "eslint-plugin-import": "2.22.1",
-    "eslint-plugin-jsdoc": "30.7.3",
+    "eslint-plugin-jsdoc": "30.7.7",
     "eslint-plugin-prefer-arrow": "1.2.2",
     "eslint-plugin-react": "7.21.5",
     "eslint-plugin-react-hooks": "4.2.0",
     "prettier": "2.1.2",
     "ts-node": "9.0.0",
     "tslib": "2.0.3",
-    "typescript": "4.0.3"
+    "typescript": "4.0.5"
   },
   "files": [
     "lint.js",

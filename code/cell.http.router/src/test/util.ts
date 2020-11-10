@@ -1,13 +1,8 @@
-import { value, t, http, fs } from '../common';
+import { value, t, http } from '../common';
 import { createMock, IMock } from './mock';
-export * from './util.port';
 
-/**
- * Reads a resolved file-path.
- */
-export function readFile(path: string) {
-  return fs.readFile(fs.resolve(path));
-}
+export * from './util.port';
+export * from './util.fs';
 
 /**
  * Walks an object tree stripping hash values.
