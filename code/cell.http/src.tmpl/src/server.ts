@@ -46,7 +46,8 @@ const fs = {
 const app = server.create({
   name: 'sample',
   db,
-  fs: fs.spaces(), // TEMP 🐷 - revert to local FS.
+  // fs: fs.spaces(), // TEMP 🐷 - revert to local FS.
+  fs: fs.wasabi(), // TEMP 🐷 - revert to local FS.
   // fs: fs.local(),
   // log: ['ROUTES'],
 });

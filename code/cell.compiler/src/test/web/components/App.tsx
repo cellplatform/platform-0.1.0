@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { WebRuntime } from '../../../runtime.web';
+import Award from './svg/award.svg';
 import { System } from './System';
 
 type Css = React.CSSProperties;
@@ -21,9 +22,11 @@ console.log("bundle.path('/static/images/wax.png')", bundle.path('/static/images
 
 /**
  * Test Application
+ *
  * See:
  *    https://github.com/module-federation/module-federation-examples/tree/master/dynamic-system-host
  *    https://webpack.js.org/concepts/module-federation/#dynamic-remote-containers
+ *
  */
 export const App = () => {
   const [system, setSystem] = useState<ISystem>();
@@ -90,6 +93,11 @@ export const App = () => {
       right: 10,
       width: 125,
     },
+    award: {
+      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+      transform: 'rotate(10deg)',
+      marginBottom: 10,
+    },
   };
 
   const elSystem = system && (
@@ -99,6 +107,7 @@ export const App = () => {
   return (
     <div style={styles.base}>
       <h1>App</h1>
+      <Award width={60} style={styles.award} />
       <img src={bundle.path('/static/images/wax.png')} style={styles.seal} />
 
       <div style={styles.buttons}>

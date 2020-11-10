@@ -17,7 +17,7 @@
     "@platform/libs": "0.2.0"
   },
   "devDependencies": {
-    "@platform/test": "0.1.16",
+    "@platform/test": "0.1.17",
     "@platform/ts": "4.0.2"
   },
   "files": [

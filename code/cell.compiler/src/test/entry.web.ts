@@ -1,1 +1,1 @@
-import('./web/components/App.entry');
+import('./web/entry');

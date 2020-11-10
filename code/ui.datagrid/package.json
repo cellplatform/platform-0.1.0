@@ -33,7 +33,7 @@
   "devDependencies": {
     "@platform/cell.func.sys": "0.2.194",
     "@platform/polyfill": "0.0.1",
-    "@platform/test": "0.1.16",
+    "@platform/test": "0.1.17",
     "@platform/test.dom": "0.0.95",
     "@platform/ts": "4.0.6",
     "@platform/ui.datagrid.cell": "0.2.148",

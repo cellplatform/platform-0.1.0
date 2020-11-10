@@ -47,7 +47,7 @@
     "@electron-forge/maker-squirrel": "6.0.0-beta.54",
     "@electron-forge/maker-zip": "6.0.0-beta.54",
     "@platform/exec": "0.2.67",
-    "@platform/test": "0.1.16",
+    "@platform/test": "0.1.17",
     "@platform/ts": "4.0.6",
     "browserify": "17.0.0",
     "electron": "10.1.5"

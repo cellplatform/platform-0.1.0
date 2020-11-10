@@ -26,7 +26,7 @@
     "form-data": "3.0.0"
   },
   "devDependencies": {
-    "@platform/test": "0.1.16",
+    "@platform/test": "0.1.17",
     "@platform/ts": "4.0.6",
     "@types/dotenv": "8.2.0",
     "dotenv": "8.2.0"

@@ -18,7 +18,7 @@
     "underscore.string": "3.3.5"
   },
   "devDependencies": {
-    "@platform/test": "0.1.16",
+    "@platform/test": "0.1.17",
     "@platform/ts": "4.0.6",
     "@types/escape-string-regexp": "2.0.1"
   },

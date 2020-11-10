@@ -1,4 +1,4 @@
-export * from './global';
+export * from './declare.global';
 
 export * from './types.Compiler.model.builder';
 export * from './types.Compiler.model';

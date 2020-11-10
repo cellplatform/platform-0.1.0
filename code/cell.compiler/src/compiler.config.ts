@@ -1,12 +1,10 @@
-import { Compiler } from '.';
-
-const pkg = require('../package.json') as { version: string; compiler: { port: number } }; // eslint-disable-line
+import { Compiler, Package } from '.';
 
 export default () =>
   Compiler.config()
+    .port(Package.compiler.port)
     .namespace('sample.compiler')
     .title('Compiler Sample')
-    .port(pkg.compiler.port)
 
     .entry('main', './src/test/entry.web')
 
@@ -40,10 +38,6 @@ export default () =>
 
     .variant('node', (config) => {
       config.target('node').entry('./src/test/entry.node');
-    })
-
-    .variant('webworker', (config) => {
-      config.target('webworker').entry('./src/test/entry.web.worker');
     })
 
     // Root level hooks.
