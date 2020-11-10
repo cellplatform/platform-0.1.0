@@ -6,8 +6,9 @@ export { FormData };
 const tmp = fs.resolve('./tmp');
 fs.ensureDirSync(tmp);
 
-// const PROVIDER = 'WASABI';
-const PROVIDER = 'SPACES';
+const PROVIDER = 'WASABI';
+// const PROVIDER = 'SPACES';
+
 const { s3, BUCKET, ENDPOINT, PATH } = util.init(PROVIDER);
 const bucket = s3.bucket(BUCKET);
 
@@ -31,7 +32,7 @@ const testFile = async () => {
 describe('S3 (Integration)', function () {
   this.timeout(99999);
 
-  it.only('upload (signed POST url)', async () => {
+  it('upload (signed POST url)', async () => {
     const { data } = await testFile();
     const key = `${PATH}/post.json`;
 
@@ -40,7 +41,7 @@ describe('S3 (Integration)', function () {
     await bucket.deleteOne({ key });
     expect(await exists()).to.eql(false);
 
-    const post = s3.url(BUCKET, key).signedPost();
+    const post = s3.url(BUCKET, key).signedPost({ expires: '5m' });
 
     const contentType = post.props['content-type'];
     const form = new FormData();
@@ -51,6 +52,9 @@ describe('S3 (Integration)', function () {
 
     const headers = form.getHeaders();
     const res = await http.post(post.url, form, { headers });
+
+    // console.log('res.status:', res.status);
+    // console.log('res.statusText:', res.statusText);
 
     expect(res.ok).to.eql(true);
     expect(await exists()).to.eql(true);
