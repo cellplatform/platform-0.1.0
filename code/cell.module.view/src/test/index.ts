@@ -12,8 +12,8 @@ export type TestProps = t.IViewModuleProps<TestData, TestView, TestRegion>;
 export type TestModule = t.IModule<TestProps>;
 
 export const create = {
-  bus: () => rx.bus(),
-  testModule(input?: t.EventBus<any>) {
+  bus: () => rx.bus() as t.EventBus,
+  testModule(input?: t.EventBus) {
     const bus = input || rx.bus();
     const root = `${id.shortid()}.test`;
     const module = Module.create<TestProps>({ bus, kind: 'TEST', root });

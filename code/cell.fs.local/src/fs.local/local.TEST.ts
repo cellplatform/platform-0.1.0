@@ -133,12 +133,12 @@ describe('fs.local', () => {
       const uri = 'file:foo:bird';
       const path = fs.resolve(uri).path;
 
-      expect(await util.fs.pathExists(path)).to.eql(false);
+      expect(await util.pathExists(path)).to.eql(false);
       await fs.write(uri, png);
-      expect(await util.fs.pathExists(path)).to.eql(true);
+      expect(await util.pathExists(path)).to.eql(true);
 
       const res = await fs.delete(uri);
-      expect(await util.fs.pathExists(path)).to.eql(false);
+      expect(await util.pathExists(path)).to.eql(false);
 
       expect(res.ok).to.eql(true);
       expect(res.status).to.eql(200);
@@ -156,18 +156,18 @@ describe('fs.local', () => {
       const path1 = fs.resolve(uri1).path;
       const path2 = fs.resolve(uri2).path;
 
-      expect(await util.fs.pathExists(path1)).to.eql(false);
-      expect(await util.fs.pathExists(path2)).to.eql(false);
+      expect(await util.pathExists(path1)).to.eql(false);
+      expect(await util.pathExists(path2)).to.eql(false);
 
       await fs.write(uri1, png);
       await fs.write(uri2, jpg);
-      expect(await util.fs.pathExists(path1)).to.eql(true);
-      expect(await util.fs.pathExists(path2)).to.eql(true);
+      expect(await util.pathExists(path1)).to.eql(true);
+      expect(await util.pathExists(path2)).to.eql(true);
 
       const res = await fs.delete([uri1, uri2]);
 
-      expect(await util.fs.pathExists(path1)).to.eql(false);
-      expect(await util.fs.pathExists(path2)).to.eql(false);
+      expect(await util.pathExists(path1)).to.eql(false);
+      expect(await util.pathExists(path2)).to.eql(false);
 
       expect(res.ok).to.eql(true);
       expect(res.status).to.eql(200);

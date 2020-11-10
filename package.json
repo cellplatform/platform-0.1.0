@@ -4,9 +4,7 @@
   "scripts": {
     "nuke": "sh script.sh/nuke.sh"
   },
-  "devDependencies": {
-    "@platform/ts": "^4.0.1"
-  },
+  "devDependencies": {},
   "workspaces": {
     "packages": [
       "code/*",

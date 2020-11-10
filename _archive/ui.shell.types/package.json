@@ -1,23 +1,23 @@
 {
-  "name": "@platform/state.react",
-  "version": "0.4.119",
-  "description": "React bindings for @platform/state.",
+  "name": "@platform/ui.shell.types",
+  "version": "0.1.118",
+  "description": "Shared types used by ui.shell components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
-    "build": "ts build $@",
-    "build-test": "ts build $@",
+    "build": "ts build",
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.4.49",
-    "@platform/state": "0.7.14"
+    "@platform/libs": "0.2.3",
+    "@platform/ui.tree": "0.8.16"
   },
   "devDependencies": {
-    "@platform/ts": "4.0.2"
+    "@platform/test": "0.1.16",
+    "@platform/ts": "4.0.6"
   },
   "files": [
     "lib",

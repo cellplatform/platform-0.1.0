@@ -1,6 +1,7 @@
-import * as semver from 'semver';
 import { IMicroRequest } from '@platform/micro';
-import { time, createMock, expect, Http, HttpClient, t, testFiles, Uri } from '../../test';
+import * as semver from 'semver';
+
+import { createMock, expect, Http, HttpClient, t, testFiles, time } from '../../test';
 
 describe('HttpClient', () => {
   describe('headers', () => {
