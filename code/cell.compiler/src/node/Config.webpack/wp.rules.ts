@@ -75,8 +75,8 @@ export const Rules = {
   },
 
   /**
-   * Plugin: <SVG> image support
-   *         https://webpack.js.org/loaders/url-loader/#svg
+   * <SVG> image support.
+   *        https://webpack.js.org/loaders/url-loader/#svg
    *
    * NOTE:
    *        See SVGO for optimizing source <SVG> data before webpacking.

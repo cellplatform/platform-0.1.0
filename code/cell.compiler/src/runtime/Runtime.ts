@@ -1,4 +1,4 @@
-import { GlobalCellEnv } from '../types/global';
+import { GlobalCellEnv } from '../types/declare.global';
 import { Uri, Urls } from '@platform/cell.schema';
 import { encoding } from '../common/encoding';
 import { remote } from './Runtime.remote';
