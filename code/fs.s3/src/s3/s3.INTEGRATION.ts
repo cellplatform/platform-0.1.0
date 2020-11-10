@@ -1,10 +1,14 @@
-import { expect, util, fs, log } from '../test';
+import { expect, util, fs, log, http } from '../test';
+
+import * as FormData from 'form-data';
+export { FormData };
 
 const tmp = fs.resolve('./tmp');
 fs.ensureDirSync(tmp);
 
 const PROVIDER = 'WASABI';
 // const PROVIDER = 'SPACES';
+
 const { s3, BUCKET, ENDPOINT, PATH } = util.init(PROVIDER);
 const bucket = s3.bucket(BUCKET);
 
@@ -28,7 +32,35 @@ const testFile = async () => {
 describe('S3 (Integration)', function () {
   this.timeout(99999);
 
-  it('bucket.put (upload)', async () => {
+  it('upload (signed POST url)', async () => {
+    const { data } = await testFile();
+    const key = `${PATH}/post.json`;
+
+    const exists = async () => (await bucket.get({ key })).status !== 404;
+
+    await bucket.deleteOne({ key });
+    expect(await exists()).to.eql(false);
+
+    const post = s3.url(BUCKET, key).signedPost({ expires: '5m' });
+
+    const contentType = post.props['content-type'];
+    const form = new FormData();
+    Object.keys(post.props)
+      .map((key) => ({ key, value: post.props[key] }))
+      .forEach(({ key, value }) => form.append(key, value));
+    form.append('file', data, { contentType });
+
+    const headers = form.getHeaders();
+    const res = await http.post(post.url, form, { headers });
+
+    // console.log('res.status:', res.status);
+    // console.log('res.statusText:', res.statusText);
+
+    expect(res.ok).to.eql(true);
+    expect(await exists()).to.eql(true);
+  });
+
+  it('bucket.put', async () => {
     const { data, json, filename } = await testFile();
 
     const res1 = await bucket.put({
@@ -90,32 +122,6 @@ describe('S3 (Integration)', function () {
     expect(res.keys).to.eql(keys);
     expect(res.bucket).to.eql(BUCKET);
   });
-
-  /**
-   *
-   * Support ticket on Digital Ocean
-   *    [Ticket #4089384] s3.copyObject: 503 SlowDown
-   *
-   */
-
-  // it.skip('bucket.put (throttle)', async () => {
-  //   const { data } = await testFile();
-
-  //   const length = 5;
-  //   const items = Array.from({ length }).map((v, i) => i + 1);
-
-  //   const put = () => bucket.put({ data, key: 'tmp/throttle.json' });
-
-  //   for (const i of items) {
-  //     // const res = await Promise.all([put(), put(), put(), put(), put()]);
-  //     const res = await Promise.all(Array.from({ length: 5 }).map(() => put()));
-  //     const status = res.map((res) => res.status);
-  //     console.log('res.error', status);
-  //   }
-
-  //   console.log('-------------------------------------------');
-  //   console.log('timestamp', new Date().getTime());
-  // });
 
   it('bucket.copy', async () => {
     const { data } = await testFile();
