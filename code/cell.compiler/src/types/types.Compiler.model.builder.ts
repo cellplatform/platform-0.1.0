@@ -42,6 +42,7 @@ export type CompilerModelMethods = {
   remote(key: string, path: string | null): B;
   shared(fn: CompilerConfigSharedFunc): B;
   env(value: Record<string, t.Json> | null): B;
+  redirect(grant: t.CompilerModelRedirect | boolean | undefined, grep?: string): B;
 };
 
 export type CompilerModelWebpackMethods = {

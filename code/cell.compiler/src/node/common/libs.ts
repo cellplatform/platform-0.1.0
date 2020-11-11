@@ -1,5 +1,5 @@
-import { sortBy, prop, uniq, pipe } from 'ramda';
-export const R = { sortBy, prop, uniq, pipe };
+import { sortBy, sortWith, ascend, descend, prop, uniq, uniqBy, pipe, groupBy } from 'ramda';
+export const R = { sortBy, sortWith, ascend, descend, prop, uniq, uniqBy, pipe, groupBy };
 
 import { rx, id, defaultValue, value, time } from '@platform/util.value';
 export { rx, id, defaultValue, value, time };

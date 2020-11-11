@@ -107,8 +107,62 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
       if (input === null) {
         draft.env = undefined;
       } else {
-        // draft.env = draft.env || (draft.env = {});
         draft.env = { ...draft.env, ...input };
+      }
+    });
+  },
+
+  redirect(args) {
+    args.model.change((draft) => {
+      type A = t.CompilerModelRedirect;
+      type G = t.CompilerModelRedirectGrant;
+
+      const input = {
+        grant: args.params[0] as A | boolean | undefined,
+        grep: args.params[1],
+      };
+
+      if (
+        input.grant !== undefined &&
+        !(typeof input.grant === 'string' || typeof input.grant === 'boolean')
+      ) {
+        throw new Error(`Invalid grant value '${input.grant}'.`);
+      }
+
+      // Derive the given grant.
+      let grant: A | undefined = undefined;
+      if (typeof input.grant === 'string') {
+        grant = input.grant;
+        const GRANTS: A[] = ['ALLOW', 'DENY'];
+        if (!GRANTS.includes(grant)) {
+          throw new Error(`Invalid grant '${grant}' must be ALLOW or DENY.`);
+        }
+      }
+      if (typeof input.grant === 'boolean') {
+        grant = input.grant ? 'ALLOW' : 'DENY';
+      }
+
+      const grep = format.string(input.grep, { default: undefined, trim: true });
+
+      const groupBy = R.groupBy<G>((b) => b.grep || '');
+      const sortAndOrder = (input: G[]): G[] => {
+        const grouped = groupBy(input);
+        const list = Object.keys(grouped).reduce((acc, key) => {
+          const list = grouped[key];
+          const value = list[list.length - 1];
+          acc.push(value);
+          return acc;
+        }, [] as G[]);
+        return R.sortWith([R.ascend(R.prop('grant'))])(list as any);
+      };
+
+      // Update model.
+      if (grant === undefined && grep === undefined) {
+        draft.redirect = undefined;
+      } else {
+        const redirect = draft.redirect || (draft.redirect = []);
+        redirect.push({ grant, grep });
+        draft.redirect = sortAndOrder(redirect);
       }
     });
   },
