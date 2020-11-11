@@ -37,9 +37,10 @@ export async function uploadFiles(args: {
    */
   const uploadStartBody: t.IReqPostCellFilesUploadStartBody = {
     expires: undefined, // Expires.
-    files: input.map(({ filename, data, mimetype }) => {
+    files: input.map(({ filename, data, mimetype, allowRedirect }) => {
       const filehash = Schema.hash.sha256(data);
-      return { filename, filehash, mimetype };
+      const file: t.IReqPostCellUploadFile = { filename, filehash, mimetype, allowRedirect };
+      return file;
     }),
   };
   const res1 = await http.post(url.start, uploadStartBody);
