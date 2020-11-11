@@ -1,6 +1,6 @@
-import { GlobalCellEnv } from '../types/declare.global';
 import { Uri, Urls } from '@platform/cell.schema';
-import { encoding } from '../common/encoding';
+
+import { GlobalCellEnv } from '../types/types.Global';
 import { remote } from './Runtime.remote';
 
 const toEnv = (input?: GlobalCellEnv) => {
