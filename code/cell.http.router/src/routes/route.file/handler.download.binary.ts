@@ -1,4 +1,4 @@
-import { ERROR, t, util } from '../common';
+import { ERROR, t, util, defaultValue } from '../common';
 import { downloadFilePreflight } from './handler.download.preflight';
 
 export const downloadBinaryFile = async (args: {
@@ -28,7 +28,8 @@ export const downloadBinaryFile = async (args: {
     }
 
     // Redirect if the location is an S3 link.
-    if (fs.type === 'S3') {
+    const allowRedirect = defaultValue(file.data.props.allowRedirect, true);
+    if (fs.type === 'S3' && allowRedirect) {
       const permission = file.data.props['s3:permission'] || 'private';
       const data =
         permission === 'private'
@@ -38,7 +39,7 @@ export const downloadBinaryFile = async (args: {
     }
 
     // Serve the file if LOCAL file-system.
-    if (fs.type === 'LOCAL' && util.isFile(location)) {
+    if ((!allowRedirect || fs.type === 'LOCAL') && util.isFile(location)) {
       const local = await fs.read(fileUri);
       const data = local.file ? local.file.data : undefined;
       if (!data) {
