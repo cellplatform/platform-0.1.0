@@ -8,14 +8,8 @@ export type AppProps = { style?: CssValue };
 
 export const App: React.FC<AppProps> = (props: AppProps = {}) => {
   const styles = {
-    base: css({
-      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-      PaddingX: 30,
-    }),
-    images: css({
-      Absolute: [-8, 0, null, null],
-      Flex: 'horizontal-center-center',
-    }),
+    base: css({ PaddingX: 30 }),
+    images: css({ Absolute: [-8, 0, null, null], Flex: 'horizontal-center-center' }),
     wax: css({ width: 120 }),
     award: { opacity: 0.7, transform: 'rotate(-10deg)', marginRight: -15 },
     ul: css({ fontSize: 14, fontFamily: 'monospace' }),
