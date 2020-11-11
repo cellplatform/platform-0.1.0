@@ -175,7 +175,11 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     };
     if (typeof args.params[0] === 'object') {
       const map = args.params[0];
-      Object.keys(map).forEach((key) => writeEntry(key, map[key]));
+      const keys = Object.keys(map);
+      args.model.change((draft) => (draft.entry = undefined)); // {} == reset.
+      if (keys.length === 0) {
+      }
+      keys.forEach((key) => writeEntry(key, map[key]));
     } else {
       writeEntry(args.params[0], args.params[1]);
     }

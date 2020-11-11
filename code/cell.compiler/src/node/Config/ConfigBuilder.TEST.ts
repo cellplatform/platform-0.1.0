@@ -420,17 +420,41 @@ describe('Compiler (Config)', () => {
       expect(model.state.entry?.bar).to.eql('src/bar.ts');
     });
 
-    it('remove', () => {
+    it('replace: {map}', () => {
+      const { builder, model } = create();
+      builder.entry({ one: '1.ts ', two: '2.ts' });
+      expect(model.state.entry).to.eql({ one: '1.ts', two: '2.ts' });
+
+      builder.entry({ three: '    3.ts    ', four: '4.ts' });
+      expect(model.state.entry).to.eql({ three: '3.ts', four: '4.ts' });
+    });
+
+    it('remove: via null/undefined', () => {
       const { builder, model } = create();
 
-      builder.entry('main', 'src/main.tsx');
-      builder.entry('foo', 'src/foo.tsx');
+      builder.entry('main', 'src/main.tsx').entry('foo', 'src/foo.tsx');
+      expect(model.state.entry).to.eql({ main: 'src/main.tsx', foo: 'src/foo.tsx' });
+
+      builder.entry('foo', null).entry('main', null); // NB: null indicates explicit removal
+      expect(model.state.entry).to.eql(undefined);
+    });
+
+    it('remove: via empty string', () => {
+      const { builder, model } = create();
+
+      builder.entry('main', 'src/main.tsx').entry('foo', 'src/foo.tsx');
       expect(model.state.entry).to.eql({ main: 'src/main.tsx', foo: 'src/foo.tsx' });
 
       builder.entry('main', '  '); // NB: trims paths to empty: remove inferred from empty string.
       expect(model.state.entry).to.eql({ foo: 'src/foo.tsx' });
+    });
 
-      builder.entry('foo', null); // NB: null indicates explicit removal
+    it('clear: empty object ({})', () => {
+      const { builder, model } = create();
+      builder.entry({ one: '1.ts ', two: '2.ts' });
+      expect(model.state.entry).to.eql({ one: '1.ts', two: '2.ts' });
+
+      builder.entry({});
       expect(model.state.entry).to.eql(undefined);
     });
   });
@@ -616,7 +640,7 @@ describe('Compiler (Config)', () => {
     });
   });
 
-  describe.only('redirect', () => {
+  describe('redirect', () => {
     it('resets (with [undefined])', () => {
       const { builder, model } = create();
       expect(builder.toObject().redirect).to.eql(undefined);
