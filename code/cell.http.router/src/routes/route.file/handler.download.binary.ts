@@ -29,6 +29,7 @@ export const downloadBinaryFile = async (args: {
 
     // Redirect if the location is an S3 link.
     const allowRedirect = defaultValue(file.data.props.allowRedirect, true);
+
     if (fs.type === 'S3' && allowRedirect) {
       const permission = file.data.props['s3:permission'] || 'private';
       const data =
@@ -39,7 +40,7 @@ export const downloadBinaryFile = async (args: {
     }
 
     // Serve the file if LOCAL file-system.
-    if ((!allowRedirect || fs.type === 'LOCAL') && util.isFile(location)) {
+    if (!allowRedirect || (fs.type === 'LOCAL' && util.isFile(location))) {
       const local = await fs.read(fileUri);
       const data = local.file ? local.file.data : undefined;
       if (!data) {

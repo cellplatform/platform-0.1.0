@@ -31,7 +31,15 @@ export async function getFiles(args: {
       .map(async (path) => {
         const filename = fs.join(targetDir, path.substring(bundleDir.length + 1));
         const data = await fs.readFile(path);
-        const file: File = { filename, data };
+
+        /**
+         * TODO 🐷
+         * - add compiler config option for "prevent redirect"
+         */
+        const allowRedirect = path.endsWith('.worker.js') ? false : undefined;
+        console.log('path', allowRedirect, path);
+
+        const file: File = { filename, data, allowRedirect };
         return file;
       }),
   );
