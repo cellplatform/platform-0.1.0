@@ -1,5 +1,5 @@
 import { ConfigBuilder } from '.';
-import { DEFAULT, encoding, expect, StateObject, t, fs, pkg, R } from '../../test';
+import { DEFAULT, encoding, expect, fs, pkg, StateObject, t } from '../../test';
 
 const create = () => {
   const model = ConfigBuilder.model('foo');
@@ -643,29 +643,29 @@ describe('Compiler (Config)', () => {
   describe('redirect', () => {
     it('resets (with [undefined])', () => {
       const { builder, model } = create();
-      expect(builder.toObject().redirect).to.eql(undefined);
+      expect(builder.toObject().redirects).to.eql(undefined);
 
       builder.redirect('ALLOW', '  worker.js  ');
-      expect(model.state.redirect).to.eql([{ grant: 'ALLOW', grep: 'worker.js' }]);
+      expect(model.state.redirects).to.eql([{ action: 'ALLOW', grep: 'worker.js' }]);
 
       builder.redirect(undefined); // NB: Clear.
-      expect(builder.toObject().redirect).to.eql(undefined);
+      expect(builder.toObject().redirects).to.eql(undefined);
     });
 
     it('cumulatively adds', () => {
       const { builder, model } = create();
-      expect(builder.toObject().redirect).to.eql(undefined);
+      expect(builder.toObject().redirects).to.eql(undefined);
 
       builder.redirect('DENY', 'foo.js').redirect('ALLOW', 'hello.js');
-      expect(model.state.redirect).to.eql([
-        { grant: 'ALLOW', grep: 'hello.js' }, // NB: Allow before DENY.
-        { grant: 'DENY', grep: 'foo.js' },
+      expect(model.state.redirects).to.eql([
+        { action: 'ALLOW', grep: 'hello.js' }, // NB: Allow before DENY.
+        { action: 'DENY', grep: 'foo.js' },
       ]);
     });
 
     it('ordering/sorting: ALLOW before DENY', () => {
       const { builder, model } = create();
-      expect(builder.toObject().redirect).to.eql(undefined);
+      expect(builder.toObject().redirects).to.eql(undefined);
 
       builder
         .redirect(undefined)
@@ -676,10 +676,10 @@ describe('Compiler (Config)', () => {
         .redirect('ALLOW', ' foo.js ') // NB: The later entry overrides the earlier value.
         .redirect('DENY', ''); // NB: The later entry overrides the earlier value.
 
-      expect(model.state.redirect).to.eql([
-        { grant: 'ALLOW', grep: 'hello.js' }, //  NB: Allow before DENY.
-        { grant: 'ALLOW', grep: 'foo.js' }, //    NB: "foo.js" entires collapsed
-        { grant: 'DENY', grep: undefined }, //    NB: multiple [undefined/empty] entries collapsed.
+      expect(model.state.redirects).to.eql([
+        { action: 'ALLOW', grep: 'hello.js' }, //  NB: Allow before DENY.
+        { action: 'ALLOW', grep: 'foo.js' }, //    NB: "foo.js" entires collapsed
+        { action: 'DENY', grep: undefined }, //    NB: multiple [undefined/empty] entries collapsed.
       ]);
     });
 
@@ -691,22 +691,22 @@ describe('Compiler (Config)', () => {
       ) => {
         const { builder, model } = create();
         builder.redirect(grant, grep);
-        expect(model.state.redirect).to.eql(expected);
+        expect(model.state.redirects).to.eql(expected);
       };
 
-      test('ALLOW', 'worker.js', [{ grant: 'ALLOW', grep: 'worker.js' }]);
-      test('ALLOW', ' worker.js ', [{ grant: 'ALLOW', grep: 'worker.js' }]);
-      test('DENY', 'worker.js', [{ grant: 'DENY', grep: 'worker.js' }]);
-      test(true, 'worker.js', [{ grant: 'ALLOW', grep: 'worker.js' }]);
-      test(false, 'worker.js', [{ grant: 'DENY', grep: 'worker.js' }]);
-      test(undefined, 'worker.js', [{ grant: undefined, grep: 'worker.js' }]);
-      test('DENY', 'foo/**', [{ grant: 'DENY', grep: 'foo/**' }]);
+      test('ALLOW', 'worker.js', [{ action: 'ALLOW', grep: 'worker.js' }]);
+      test('ALLOW', ' worker.js ', [{ action: 'ALLOW', grep: 'worker.js' }]);
+      test('DENY', 'worker.js', [{ action: 'DENY', grep: 'worker.js' }]);
+      test(true, 'worker.js', [{ action: 'ALLOW', grep: 'worker.js' }]);
+      test(false, 'worker.js', [{ action: 'DENY', grep: 'worker.js' }]);
+      test(undefined, 'worker.js', [{ action: undefined, grep: 'worker.js' }]);
+      test('DENY', 'foo/**', [{ action: 'DENY', grep: 'foo/**' }]);
     });
 
     it('throw: invalid grant', () => {
       const { builder, model } = create();
-      expect(() => builder.redirect('FOO' as any)).to.throw(/Invalid grant \'FOO\'/);
-      expect(() => builder.redirect(123 as any)).to.throw(/Invalid grant value \'123\'/);
+      expect(() => builder.redirect('FOO' as any)).to.throw(/Invalid grant action \'FOO\'/);
+      expect(() => builder.redirect(123 as any)).to.throw(/Invalid grant action \'123\'/);
     });
   });
 });

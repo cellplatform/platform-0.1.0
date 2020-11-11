@@ -24,7 +24,7 @@ export type CompilerModel = {
   remotes?: Record<string, string>;
   shared?: Record<string, string | t.WebpackShared>;
   env?: Record<string, t.Json>;
-  redirect?: t.CompilerModelRedirectGrant[];
+  redirects?: t.CompilerModelRedirectGrant[];
 
   /**
    * Hooks
@@ -46,5 +46,5 @@ export type CompilerModelWebpack = {
 
 export type CompilerModelStatic = { dir?: string };
 
-export type CompilerModelRedirect = 'ALLOW' | 'DENY';
-export type CompilerModelRedirectGrant = { grant?: CompilerModelRedirect; grep?: string };
+export type CompilerModelRedirectAction = 'ALLOW' | 'DENY';
+export type CompilerModelRedirectGrant = { action?: CompilerModelRedirectAction; grep?: string };
