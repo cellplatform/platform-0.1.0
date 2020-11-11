@@ -15,6 +15,8 @@ export default () =>
 
     .shared((e) => e.singleton(['react', 'react-dom']))
 
+    .redirect(false, '**/*.worker.js')
+
     .variant('prod', (config) =>
       config
         .mode('prod')

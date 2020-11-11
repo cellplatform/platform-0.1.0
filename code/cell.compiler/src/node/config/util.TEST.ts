@@ -1,5 +1,5 @@
 import { ConfigBuilder } from '.';
-import { DEFAULT, encoding, expect, fs, pkg, StateObject, t } from '../../test';
+import { expect, t } from '../../test';
 import { Redirects } from './util';
 
 const create = () => {

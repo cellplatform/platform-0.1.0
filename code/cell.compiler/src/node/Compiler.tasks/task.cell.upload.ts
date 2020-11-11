@@ -1,5 +1,6 @@
 import { DEFAULT, fs, HttpClient, log, logger, Model, path, Schema, t, time } from '../common';
 import { BundleManifest } from '../Compiler';
+import { Redirects } from '../config/util.redirect';
 
 type FileUri = t.IUriData<t.IFileData>;
 type File = t.IHttpClientCellFileUpload;
@@ -21,9 +22,11 @@ export async function getFiles(args: {
   bundleDir: string;
   targetDir?: string;
   filter?: (path: string) => boolean;
+  redirects?: t.CompilerModelRedirectGrant[];
 }) {
   const { bundleDir, targetDir = '' } = args;
   const paths = await fs.glob.find(fs.resolve(`${bundleDir}/**`));
+  const redirects = Redirects(args.redirects);
 
   const files = await Promise.all(
     paths
@@ -31,14 +34,7 @@ export async function getFiles(args: {
       .map(async (path) => {
         const filename = fs.join(targetDir, path.substring(bundleDir.length + 1));
         const data = await fs.readFile(path);
-
-        /**
-         * TODO 🐷
-         * - add compiler config option for "prevent redirect"
-         */
-        const allowRedirect = path.endsWith('.worker.js') ? false : undefined;
-        console.log('path', allowRedirect, path);
-
+        const allowRedirect = redirects.path(path).isAllowed;
         const file: File = { filename, data, allowRedirect };
         return file;
       }),
@@ -50,7 +46,11 @@ export async function getFiles(args: {
 /**
  * Retrieves the manifest file.
  */
-export async function getManifestFile(args: { bundleDir: string; targetDir?: string }) {
+export async function getManifestFile(args: {
+  bundleDir: string;
+  targetDir?: string;
+  redirects?: t.CompilerModelRedirectGrant[];
+}) {
   const { bundleDir, targetDir } = args;
   const filter = manifestFileFilter(bundleDir);
   return (await getFiles({ bundleDir, targetDir, filter }))[0];
@@ -62,10 +62,11 @@ export async function getManifestFile(args: { bundleDir: string; targetDir?: str
 export const upload: t.CompilerRunUpload = async (args) => {
   const timer = time.timer();
   const baseDir = fs.resolve('.');
-  const { host, targetDir, targetCell } = args;
+  const { host, targetDir, targetCell, config } = args;
   const model = Model(args.config);
   const bundleDir = model.bundleDir;
-  const files = await getFiles({ bundleDir, targetDir });
+  const redirects = config.redirects;
+  const files = await getFiles({ bundleDir, targetDir, redirects });
 
   const toUrls = (files: t.IHttpClientCellFileUpload[]) => {
     const findFile = (name: string) => files.find((file) => fs.basename(file.filename) === name);
