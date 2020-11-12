@@ -1,1 +1,1 @@
-import('./App.entry');
+import('./entry.init');

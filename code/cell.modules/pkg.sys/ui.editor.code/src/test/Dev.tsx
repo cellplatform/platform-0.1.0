@@ -4,7 +4,7 @@ import { css } from '@platform/css';
 
 import { Host } from 'sys.ui.harness/src/components/Host';
 
-export const App: React.FC = () => {
+export const Dev: React.FC = () => {
   const styles = {
     host: css({ Absolute: 0 }),
   };
@@ -27,4 +27,4 @@ export const App: React.FC = () => {
   );
 };
 
-export default App;
+export default Dev;
