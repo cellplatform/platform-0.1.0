@@ -34,7 +34,6 @@ export async function getFiles(args: {
         const data = await fs.readFile(path);
         const filename = fs.join(targetDir, path.substring(bundleDir.length + 1));
         const allowRedirect = toRedirect({ path, redirects, bundleDir }).isAllowed;
-
         const file: File = { filename, data, allowRedirect };
         return file;
       }),

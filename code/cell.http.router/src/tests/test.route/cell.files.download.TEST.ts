@@ -80,7 +80,8 @@ describe('cell/files: download', function () {
 
       await test('file.js', 'file.js');
       await test('file.js', '//file.js');
-      await test('file.js', 'm.foo.png');
+      await test('bird.png', 'm.foo.png');
+      await test('bird.png', 'file@2x.png');
       await test('file.js', 'm.foo.bar.z.pdf');
       await test('file.js', 'm.foo.bar');
       await test('file.js', 'm.foo.bar/foo/z/p.file.js');
