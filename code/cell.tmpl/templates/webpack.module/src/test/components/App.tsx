@@ -21,7 +21,7 @@ export const App: React.FC<AppProps> = (props: AppProps = {}) => {
       <h1>Hello World!</h1>
       <div {...styles.images}>
         <Award width={60} style={styles.award} />
-        <img src={bundle.path('/static/images/wax.png')} {...styles.wax} />
+        <img src={bundle.path('/static/images/wax@2x.png')} {...styles.wax} />
       </div>
       <ul {...styles.ul}>
         {Object.keys(bundle)
