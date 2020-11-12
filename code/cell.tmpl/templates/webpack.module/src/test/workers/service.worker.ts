@@ -1,9 +1,10 @@
 const ctx: ServiceWorker = self as any;
 
-ctx.addEventListener('install', function (e) {
-  console.log('service-worker/installed:', e);
+ctx.addEventListener('install', (e) => {
+  console.log('🚀 service-worker installed:', e);
 });
 
-self.addEventListener('fetch', async function (e) {
-  console.log('service-worker/fetch:', e);
+ctx.addEventListener('fetch', async (e) => {
+  console.log('fetch:', e);
+  // ctx.se
 });

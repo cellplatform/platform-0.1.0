@@ -4,9 +4,9 @@ import Award from '../../../static/images/award.svg';
 
 log.info('bundle', bundle);
 
-export type AppProps = { style?: CssValue };
+export type DevProps = { style?: CssValue };
 
-export const App: React.FC<AppProps> = (props: AppProps = {}) => {
+export const Dev: React.FC<DevProps> = (props: DevProps = {}) => {
   const styles = {
     base: css({ PaddingX: 30 }),
     images: css({ Absolute: [-8, 0, null, null], Flex: 'horizontal-center-center' }),
@@ -39,4 +39,4 @@ export const App: React.FC<AppProps> = (props: AppProps = {}) => {
   );
 };
 
-export default App;
+export default Dev;
