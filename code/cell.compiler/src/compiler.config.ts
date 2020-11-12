@@ -7,7 +7,7 @@ export default () =>
     .title('Compiler Sample')
 
     .entry('main', './src/test/entry.web')
-    .entry('service.worker', './src/test/web/service.worker')
+    .entry('service.worker', './src/test/web/workers/service.worker')
 
     .static('./static')
 

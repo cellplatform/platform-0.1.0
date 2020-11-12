@@ -1,1 +1,1 @@
-import('./App.boot');
+import('./entry.web.boot');

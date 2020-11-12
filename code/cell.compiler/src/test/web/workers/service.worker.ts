@@ -1,8 +1,8 @@
-console.log('service worker!!');
-console.log('self', self);
+const ctx: ServiceWorker = self as any;
 
-self.addEventListener('install', function (event: any) {
-  console.log('install event:', event);
+ctx.addEventListener('install', function (e) {
+  console.log('service worker installed:', e);
+
   // event.waitUntil(
   //   caches.open(cacheName).then(function(cache) {
   //     return cache.addAll(
@@ -18,8 +18,8 @@ self.addEventListener('install', function (event: any) {
   // );
 });
 
-self.addEventListener('fetch', async function (event) {
-  console.log('fetch event:', event);
+self.addEventListener('fetch', async function (e) {
+  console.log('fetch event:', e);
 
   // event.respondWith(
   //   caches.open('mysite-dynamic').then(function(cache) {
