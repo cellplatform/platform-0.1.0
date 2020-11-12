@@ -33,7 +33,7 @@ export async function getFiles(args: {
       .map(async (path) => {
         const data = await fs.readFile(path);
         const filename = fs.join(targetDir, path.substring(bundleDir.length + 1));
-        const allowRedirect = toRedirect({ path, redirects, bundleDir }).isAllowed;
+        const allowRedirect = toRedirect({ path, redirects, bundleDir }).flag;
         const file: File = { filename, data, allowRedirect };
         return file;
       }),
@@ -233,7 +233,7 @@ async function updateManifest(args: {
         throw new Error(err);
       } else {
         const redirect = toRedirect({ path: item.path, redirects });
-        item.allowRedirect = redirect.isAllowed;
+        item.allowRedirect = redirect.flag;
         item.uri = file.uri;
       }
     });
