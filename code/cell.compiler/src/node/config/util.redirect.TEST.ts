@@ -96,6 +96,31 @@ describe('config/util: redirect', () => {
       test({}, undefined);
     });
 
+    it('grep: file suffix', () => {
+      const { builder } = create();
+      builder.redirect('DENY', '*.worker.js');
+      const redirects = Redirects(builder.toObject().redirects);
+      const redirect = redirects.path('service.worker.js');
+      expect(redirect.isAllowed).to.eql(false);
+      expect(redirect.grant?.action).to.eql('DENY');
+    });
+
+    it('grep: folder/**', () => {
+      const { builder } = create();
+      builder.redirect('DENY', 'static/**');
+      const redirects = Redirects(builder.toObject().redirects);
+
+      const test = (input: string, isAllowed: boolean) => {
+        const path = redirects.path(input);
+        expect(path.isAllowed).to.eql(isAllowed);
+      };
+
+      test('static/vs/language/css/cssMode.js', false);
+      test('static/foo', false);
+      test('static/', false);
+      test('static', true); // No match.
+    });
+
     it('grep: override on subpath', () => {
       const { builder } = create();
       builder.redirect('ALLOW', 'src/**').redirect('DENY', 'src/test/**');

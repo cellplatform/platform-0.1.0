@@ -1,3 +1,4 @@
+import { config } from 'webpack';
 import { ConfigBuilder } from '.';
 import { DEFAULT, encoding, expect, fs, pkg, StateObject, t } from '../../test';
 

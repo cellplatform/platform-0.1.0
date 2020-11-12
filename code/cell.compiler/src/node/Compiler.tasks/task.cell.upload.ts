@@ -24,17 +24,17 @@ export async function getFiles(args: {
   filter?: (path: string) => boolean;
   redirects?: t.CompilerModelRedirectGrant[];
 }) {
-  const { bundleDir, targetDir = '' } = args;
+  const { bundleDir, targetDir = '', redirects } = args;
   const paths = await fs.glob.find(fs.resolve(`${bundleDir}/**`));
-  const redirects = Redirects(args.redirects);
 
   const files = await Promise.all(
     paths
       .filter((path) => (args.filter ? args.filter(path) : true))
       .map(async (path) => {
-        const filename = fs.join(targetDir, path.substring(bundleDir.length + 1));
         const data = await fs.readFile(path);
-        const allowRedirect = redirects.path(path).isAllowed;
+        const filename = fs.join(targetDir, path.substring(bundleDir.length + 1));
+        const allowRedirect = toRedirect({ path, redirects, bundleDir }).isAllowed;
+
         const file: File = { filename, data, allowRedirect };
         return file;
       }),
@@ -46,11 +46,7 @@ export async function getFiles(args: {
 /**
  * Retrieves the manifest file.
  */
-export async function getManifestFile(args: {
-  bundleDir: string;
-  targetDir?: string;
-  redirects?: t.CompilerModelRedirectGrant[];
-}) {
+export async function getManifestFile(args: { bundleDir: string; targetDir?: string }) {
   const { bundleDir, targetDir } = args;
   const filter = manifestFileFilter(bundleDir);
   return (await getFiles({ bundleDir, targetDir, filter }))[0];
@@ -110,7 +106,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
     /**
      * [2]. Update the manifest with the file-hashes and re-upload it.
      */
-    await updateManifest({ bundleDir, uploadedFiles: fileUpload.body.files });
+    await updateManifest({ bundleDir, uploadedFiles: fileUpload.body.files, redirects });
     const manifestUpload = await client.files.upload(
       await getManifestFile({ bundleDir, targetDir }),
     );
@@ -204,13 +200,28 @@ const logUploadFailure = (args: { host: string; bundleDir: string; errors: t.IFi
   });
 };
 
-async function updateManifest(args: { bundleDir: string; uploadedFiles: FileUri[] }) {
-  const { uploadedFiles, bundleDir } = args;
+function toRedirect(args: {
+  redirects?: t.CompilerModelRedirectGrant[];
+  bundleDir?: string;
+  path: string;
+}) {
+  const path = args.bundleDir ? args.path.substring(args.bundleDir.length + 1) : args.path;
+  const redirects = Redirects(args.redirects);
+  return redirects.path(path);
+}
+
+async function updateManifest(args: {
+  bundleDir: string;
+  uploadedFiles: FileUri[];
+  redirects?: t.CompilerModelRedirectGrant[];
+}) {
+  const { uploadedFiles, bundleDir, redirects } = args;
   const { manifest, path } = await BundleManifest.readFile({ bundleDir });
   if (!manifest) {
     throw new Error(`A bundle manifest does not exist at: ${path}`);
   }
 
+  // const redirects = Redirects(args.redirects);
   const toHash = (file: FileUri) => file.data.props.integrity?.filehash;
   const findFile = (hash: string) => uploadedFiles.find((file) => toHash(file) === hash);
 
@@ -222,6 +233,8 @@ async function updateManifest(args: { bundleDir: string; uploadedFiles: FileUri[
         const err = `UPLOAD FAILED: An uploaded file URI could not be found for file '${item.path}'.`;
         throw new Error(err);
       } else {
+        const redirect = toRedirect({ path: item.path, redirects });
+        item.allowRedirect = redirect.isAllowed;
         item.uri = file.uri;
       }
     });

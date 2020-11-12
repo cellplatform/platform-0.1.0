@@ -8,7 +8,12 @@ import { bundle } from '../common';
 
 // import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-const vs = bundle.path('/static/vs');
+const toDir = (pathname: string) => {
+  const parts = pathname.trim().split('/');
+  return parts.slice(0, parts.length - 1).join('/');
+};
+
+const vs = bundle.path(`${toDir(location.pathname)}/static/vs`);
 
 console.group('🌳 editor');
 console.log('bundle', bundle);

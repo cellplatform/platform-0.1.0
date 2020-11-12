@@ -134,7 +134,7 @@ export async function uploadFiles(args: {
   const fileCompleteFails = res3.filter((res) => !res.ok);
   const fileCompleteFailErrors = fileCompleteFails.map((res) => {
     const filename = res.filename || 'UNKNOWN';
-    const message = `Failed while completing upload of file '${filename}'`;
+    const message = `Failed while completing upload of file '${filename}' (${res.status})`;
     const error: t.IFileUploadError = { type: 'FILE/upload', filename, message };
     return error;
   });
