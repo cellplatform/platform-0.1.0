@@ -32,6 +32,7 @@ export async function uploadCellFilesStart(args: {
     const { ns, file, links = {} } = args;
     const { filename, filehash } = file;
     const mimetype = file.mimetype || util.toMimetype(filename) || 'application/octet-stream';
+    const allowRedirect = file.allowRedirect;
 
     const key = Schema.file.links.toKey(filename);
     const fileUri = links[key]
@@ -43,6 +44,7 @@ export async function uploadCellFilesStart(args: {
       db,
       fs,
       mimetype,
+      allowRedirect,
       fileUri,
       filename,
       filehash,

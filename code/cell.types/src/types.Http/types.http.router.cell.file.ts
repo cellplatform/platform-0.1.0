@@ -68,6 +68,7 @@ export type IReqPostCellUploadFile = {
   filename: string;
   filehash?: string;
   mimetype?: string;
+  allowRedirect?: boolean;
 };
 
 export type IResPostCellFilesUploadStart = t.IUriResponse<

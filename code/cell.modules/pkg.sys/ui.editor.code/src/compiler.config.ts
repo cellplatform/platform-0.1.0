@@ -8,6 +8,7 @@ export default () =>
     .entry('./src/test/entry')
     .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
     .static('./static')
+    .redirect(false, 'static/**')
 
     .expose('./Dev', './src/test/App')
     .expose('./Editor', './src/components/Editor')

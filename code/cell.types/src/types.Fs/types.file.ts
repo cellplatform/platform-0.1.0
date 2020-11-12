@@ -10,6 +10,7 @@ export type IFileProps = {
   location?: string;
   bytes?: number;
   integrity?: IFileIntegrity;
+  allowRedirect?: boolean; // Default true.  If false any attempt to (307) redirect upon serving the file will be supressed.
   's3:etag'?: string;
   's3:permission'?: t.FsS3Permission;
 };

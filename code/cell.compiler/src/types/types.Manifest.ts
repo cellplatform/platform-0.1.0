@@ -18,4 +18,5 @@ export type BundleManifestFile = {
   bytes: number;
   filehash: string;
   uri?: string;
+  allowRedirect?: boolean;
 };

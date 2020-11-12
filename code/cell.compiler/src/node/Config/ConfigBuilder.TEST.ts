@@ -1,5 +1,6 @@
+import { config } from 'webpack';
 import { ConfigBuilder } from '.';
-import { DEFAULT, encoding, expect, StateObject, t, fs, pkg } from '../../test';
+import { DEFAULT, encoding, expect, fs, pkg, StateObject, t } from '../../test';
 
 const create = () => {
   const model = ConfigBuilder.model('foo');
@@ -420,17 +421,41 @@ describe('Compiler (Config)', () => {
       expect(model.state.entry?.bar).to.eql('src/bar.ts');
     });
 
-    it('remove', () => {
+    it('replace: {map}', () => {
+      const { builder, model } = create();
+      builder.entry({ one: '1.ts ', two: '2.ts' });
+      expect(model.state.entry).to.eql({ one: '1.ts', two: '2.ts' });
+
+      builder.entry({ three: '    3.ts    ', four: '4.ts' });
+      expect(model.state.entry).to.eql({ three: '3.ts', four: '4.ts' });
+    });
+
+    it('remove: via null/undefined', () => {
       const { builder, model } = create();
 
-      builder.entry('main', 'src/main.tsx');
-      builder.entry('foo', 'src/foo.tsx');
+      builder.entry('main', 'src/main.tsx').entry('foo', 'src/foo.tsx');
+      expect(model.state.entry).to.eql({ main: 'src/main.tsx', foo: 'src/foo.tsx' });
+
+      builder.entry('foo', null).entry('main', null); // NB: null indicates explicit removal
+      expect(model.state.entry).to.eql(undefined);
+    });
+
+    it('remove: via empty string', () => {
+      const { builder, model } = create();
+
+      builder.entry('main', 'src/main.tsx').entry('foo', 'src/foo.tsx');
       expect(model.state.entry).to.eql({ main: 'src/main.tsx', foo: 'src/foo.tsx' });
 
       builder.entry('main', '  '); // NB: trims paths to empty: remove inferred from empty string.
       expect(model.state.entry).to.eql({ foo: 'src/foo.tsx' });
+    });
 
-      builder.entry('foo', null); // NB: null indicates explicit removal
+    it('clear: empty object ({})', () => {
+      const { builder, model } = create();
+      builder.entry({ one: '1.ts ', two: '2.ts' });
+      expect(model.state.entry).to.eql({ one: '1.ts', two: '2.ts' });
+
+      builder.entry({});
       expect(model.state.entry).to.eql(undefined);
     });
   });
@@ -613,6 +638,76 @@ describe('Compiler (Config)', () => {
 
       builder.webpack.plugin(plugin).plugin(plugin);
       expect((model.state.webpack?.plugins || []).length).to.eql(3);
+    });
+  });
+
+  describe('redirect', () => {
+    it('resets (with [undefined])', () => {
+      const { builder, model } = create();
+      expect(builder.toObject().redirects).to.eql(undefined);
+
+      builder.redirect('ALLOW', '  worker.js  ');
+      expect(model.state.redirects).to.eql([{ action: 'ALLOW', grep: 'worker.js' }]);
+
+      builder.redirect(undefined); // NB: Clear.
+      expect(builder.toObject().redirects).to.eql(undefined);
+    });
+
+    it('cumulatively adds', () => {
+      const { builder, model } = create();
+      expect(builder.toObject().redirects).to.eql(undefined);
+
+      builder.redirect('DENY', 'foo.js').redirect('ALLOW', 'hello.js');
+      expect(model.state.redirects).to.eql([
+        { action: 'ALLOW', grep: 'hello.js' }, // NB: Allow before DENY.
+        { action: 'DENY', grep: 'foo.js' },
+      ]);
+    });
+
+    it('ordering/sorting: ALLOW before DENY', () => {
+      const { builder, model } = create();
+      expect(builder.toObject().redirects).to.eql(undefined);
+
+      builder
+        .redirect(undefined)
+        .redirect('ALLOW', '   ')
+        .redirect('DENY', 'foo.js')
+        .redirect('ALLOW', 'hello.js')
+        .redirect('ALLOW', undefined)
+        .redirect('ALLOW', ' foo.js ') // NB: The later entry overrides the earlier value.
+        .redirect('DENY', ''); // NB: The later entry overrides the earlier value.
+
+      expect(model.state.redirects).to.eql([
+        { action: 'ALLOW', grep: 'hello.js' }, //  NB: Allow before DENY.
+        { action: 'ALLOW', grep: 'foo.js' }, //    NB: "foo.js" entires collapsed
+        { action: 'DENY', grep: undefined }, //    NB: multiple [undefined/empty] entries collapsed.
+      ]);
+    });
+
+    it('input permutations', () => {
+      const test = (
+        grant: any,
+        grep: string | undefined,
+        expected: t.CompilerModelRedirectGrant[] | undefined,
+      ) => {
+        const { builder, model } = create();
+        builder.redirect(grant, grep);
+        expect(model.state.redirects).to.eql(expected);
+      };
+
+      test('ALLOW', 'worker.js', [{ action: 'ALLOW', grep: 'worker.js' }]);
+      test('ALLOW', ' worker.js ', [{ action: 'ALLOW', grep: 'worker.js' }]);
+      test('DENY', 'worker.js', [{ action: 'DENY', grep: 'worker.js' }]);
+      test(true, 'worker.js', [{ action: 'ALLOW', grep: 'worker.js' }]);
+      test(false, 'worker.js', [{ action: 'DENY', grep: 'worker.js' }]);
+      test(undefined, 'worker.js', [{ action: undefined, grep: 'worker.js' }]);
+      test('DENY', 'foo/**', [{ action: 'DENY', grep: 'foo/**' }]);
+    });
+
+    it('throw: invalid grant', () => {
+      const { builder, model } = create();
+      expect(() => builder.redirect('FOO' as any)).to.throw(/Invalid grant action \'FOO\'/);
+      expect(() => builder.redirect(123 as any)).to.throw(/Invalid grant action \'123\'/);
     });
   });
 });

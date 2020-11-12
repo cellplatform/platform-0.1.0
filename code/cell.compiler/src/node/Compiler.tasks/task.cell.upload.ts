@@ -1,5 +1,6 @@
 import { DEFAULT, fs, HttpClient, log, logger, Model, path, Schema, t, time } from '../common';
 import { BundleManifest } from '../Compiler';
+import { Redirects } from '../config/util.redirect';
 
 type FileUri = t.IUriData<t.IFileData>;
 type File = t.IHttpClientCellFileUpload;
@@ -21,17 +22,19 @@ export async function getFiles(args: {
   bundleDir: string;
   targetDir?: string;
   filter?: (path: string) => boolean;
+  redirects?: t.CompilerModelRedirectGrant[];
 }) {
-  const { bundleDir, targetDir = '' } = args;
+  const { bundleDir, targetDir = '', redirects } = args;
   const paths = await fs.glob.find(fs.resolve(`${bundleDir}/**`));
 
   const files = await Promise.all(
     paths
       .filter((path) => (args.filter ? args.filter(path) : true))
       .map(async (path) => {
-        const filename = fs.join(targetDir, path.substring(bundleDir.length + 1));
         const data = await fs.readFile(path);
-        const file: File = { filename, data };
+        const filename = fs.join(targetDir, path.substring(bundleDir.length + 1));
+        const allowRedirect = toRedirect({ path, redirects, bundleDir }).isAllowed;
+        const file: File = { filename, data, allowRedirect };
         return file;
       }),
   );
@@ -54,10 +57,11 @@ export async function getManifestFile(args: { bundleDir: string; targetDir?: str
 export const upload: t.CompilerRunUpload = async (args) => {
   const timer = time.timer();
   const baseDir = fs.resolve('.');
-  const { host, targetDir, targetCell } = args;
+  const { host, targetDir, targetCell, config } = args;
   const model = Model(args.config);
   const bundleDir = model.bundleDir;
-  const files = await getFiles({ bundleDir, targetDir });
+  const redirects = config.redirects;
+  const files = await getFiles({ bundleDir, targetDir, redirects });
 
   const toUrls = (files: t.IHttpClientCellFileUpload[]) => {
     const findFile = (name: string) => files.find((file) => fs.basename(file.filename) === name);
@@ -101,7 +105,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
     /**
      * [2]. Update the manifest with the file-hashes and re-upload it.
      */
-    await updateManifest({ bundleDir, uploadedFiles: fileUpload.body.files });
+    await updateManifest({ bundleDir, uploadedFiles: fileUpload.body.files, redirects });
     const manifestUpload = await client.files.upload(
       await getManifestFile({ bundleDir, targetDir }),
     );
@@ -195,13 +199,28 @@ const logUploadFailure = (args: { host: string; bundleDir: string; errors: t.IFi
   });
 };
 
-async function updateManifest(args: { bundleDir: string; uploadedFiles: FileUri[] }) {
-  const { uploadedFiles, bundleDir } = args;
+function toRedirect(args: {
+  redirects?: t.CompilerModelRedirectGrant[];
+  bundleDir?: string;
+  path: string;
+}) {
+  const path = args.bundleDir ? args.path.substring(args.bundleDir.length + 1) : args.path;
+  const redirects = Redirects(args.redirects);
+  return redirects.path(path);
+}
+
+async function updateManifest(args: {
+  bundleDir: string;
+  uploadedFiles: FileUri[];
+  redirects?: t.CompilerModelRedirectGrant[];
+}) {
+  const { uploadedFiles, bundleDir, redirects } = args;
   const { manifest, path } = await BundleManifest.readFile({ bundleDir });
   if (!manifest) {
     throw new Error(`A bundle manifest does not exist at: ${path}`);
   }
 
+  // const redirects = Redirects(args.redirects);
   const toHash = (file: FileUri) => file.data.props.integrity?.filehash;
   const findFile = (hash: string) => uploadedFiles.find((file) => toHash(file) === hash);
 
@@ -213,6 +232,8 @@ async function updateManifest(args: { bundleDir: string; uploadedFiles: FileUri[
         const err = `UPLOAD FAILED: An uploaded file URI could not be found for file '${item.path}'.`;
         throw new Error(err);
       } else {
+        const redirect = toRedirect({ path: item.path, redirects });
+        item.allowRedirect = redirect.isAllowed;
         item.uri = file.uri;
       }
     });

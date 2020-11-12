@@ -7,12 +7,15 @@ export default () =>
     .title('Compiler Sample')
 
     .entry('main', './src/test/entry.web')
+    .entry('service.worker', './src/test/web/workers/service.worker')
 
     .static('./static')
 
     .env({ foo: 1234 })
 
     .shared((e) => e.singleton(['react', 'react-dom']))
+
+    .redirect(false, '*.worker.js')
 
     .variant('prod', (config) =>
       config

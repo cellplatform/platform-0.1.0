@@ -117,7 +117,12 @@ export type IHttpClientCellFileUrl = {
   dir: string;
 };
 
-export type IHttpClientCellFileUpload = { filename: string; data: ArrayBuffer; mimetype?: string };
+export type IHttpClientCellFileUpload = {
+  filename: string;
+  data: ArrayBuffer;
+  mimetype?: string;
+  allowRedirect?: boolean;
+};
 export type IHttpClientCellFileUploadResponse = {
   uri: string;
   cell: t.ICellData;

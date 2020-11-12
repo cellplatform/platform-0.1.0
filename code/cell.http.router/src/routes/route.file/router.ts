@@ -39,7 +39,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   });
 
   /**
-   * POST (file upload complete)
+   * POST (file upload complete).
    */
   router.post(routes.FILE.UPLOADED, async (req) => {
     const host = req.host;
@@ -54,7 +54,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   });
 
   /**
-   * POST (local file upload)
+   * POST (local file upload).
    */
   router.post(routes.LOCAL.FS, async (req) => {
     const query = req.query as t.IReqQueryLocalFs;

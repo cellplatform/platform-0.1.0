@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { WebRuntime } from '../../../runtime.web';
-import Award from './svg/award.svg';
+import Award from './assets/award.svg';
 import { System } from './System';
 
 type Css = React.CSSProperties;

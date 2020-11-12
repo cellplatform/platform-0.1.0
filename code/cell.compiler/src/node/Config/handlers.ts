@@ -1,7 +1,7 @@
 import { Builder, DEFAULT, encoding, fs, R, t, value as valueUtil } from '../common';
 import { wp } from '../Config.webpack';
 import { webpackHandlers } from './handlers.webpack';
-import { validate } from './validate';
+import { Redirects, validate } from './util';
 
 type O = Record<string, unknown>;
 
@@ -107,8 +107,50 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
       if (input === null) {
         draft.env = undefined;
       } else {
-        // draft.env = draft.env || (draft.env = {});
         draft.env = { ...draft.env, ...input };
+      }
+    });
+  },
+
+  redirect(args) {
+    args.model.change((draft) => {
+      type A = t.CompilerModelRedirectAction;
+      type G = t.CompilerModelRedirectGrant;
+
+      const input = {
+        action: args.params[0] as A | boolean | undefined,
+        grep: args.params[1],
+      };
+
+      if (
+        input.action !== undefined &&
+        !(typeof input.action === 'string' || typeof input.action === 'boolean')
+      ) {
+        throw new Error(`Invalid grant action '${input.action}'.`);
+      }
+
+      // Derive the given grant.
+      let action: A | undefined = undefined;
+      if (typeof input.action === 'string') {
+        action = input.action;
+        const GRANTS: A[] = ['ALLOW', 'DENY'];
+        if (!GRANTS.includes(action)) {
+          throw new Error(`Invalid grant action '${action}' must be ALLOW or DENY.`);
+        }
+      }
+      if (typeof input.action === 'boolean') {
+        action = input.action ? 'ALLOW' : 'DENY';
+      }
+
+      const grep = format.string(input.grep, { default: undefined, trim: true });
+
+      // Update model.
+      if (action === undefined && grep === undefined) {
+        draft.redirects = undefined;
+      } else {
+        const redirects = draft.redirects || (draft.redirects = []);
+        redirects.push({ action, grep });
+        draft.redirects = Redirects(redirects).sortAndOrder();
       }
     });
   },
@@ -121,7 +163,11 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     };
     if (typeof args.params[0] === 'object') {
       const map = args.params[0];
-      Object.keys(map).forEach((key) => writeEntry(key, map[key]));
+      const keys = Object.keys(map);
+      args.model.change((draft) => (draft.entry = undefined)); // {} == reset.
+      if (keys.length === 0) {
+      }
+      keys.forEach((key) => writeEntry(key, map[key]));
     } else {
       writeEntry(args.params[0], args.params[1]);
     }

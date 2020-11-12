@@ -4,7 +4,9 @@ import { delay, filter, take } from 'rxjs/operators';
 import { Client, createMock, ERROR, expect, fs, t, time, TYPE_DEFS } from '../../test';
 import * as g from '../.d.ts/all';
 
-describe('Client.TypeSystem', () => {
+describe('Client.TypeSystem', function () {
+  this.timeout(99999);
+
   it('from host (origin)', async () => {
     const client = Client.typesystem('localhost:1234');
     expect(client.http.origin).to.eql('http://localhost:1234');

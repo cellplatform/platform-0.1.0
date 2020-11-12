@@ -24,7 +24,6 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       const paramData = getFilenameParams({ params });
       const { status, filename, error, cellUri } = paramData;
       const { hash: matchHash, expires } = query;
-
       return !paramData.ns || error
         ? { status, data: { error } }
         : downloadFileByName({ db, fs, cellUri, filename, host, matchHash, expires });

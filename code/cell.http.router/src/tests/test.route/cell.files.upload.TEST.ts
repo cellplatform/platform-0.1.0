@@ -86,6 +86,33 @@ describe('cell/files: upload', function () {
     await mock.dispose();
   });
 
+  it('upload: allowRedirect=false', async () => {
+    const mock = await createMock();
+    const cellUri = 'cell:foo:A1';
+    const client = mock.client.cell(cellUri);
+
+    const data = await readFile('src/test/assets/kitten.jpg');
+    const uploaded = await client.files.upload([
+      { filename: 'foo/1.jpg', data, allowRedirect: false },
+      { filename: 'foo/2.jpg', data, allowRedirect: true },
+      { filename: 'foo/3.jpg', data },
+    ]);
+
+    const file1 = uploaded.body.files[0];
+    const file2 = uploaded.body.files[1];
+    const file3 = uploaded.body.files[2];
+
+    expect(file1.data.props.allowRedirect).to.eql(false);
+    expect(file2.data.props.allowRedirect).to.eql(true);
+    expect(file3.data.props.allowRedirect).to.eql(undefined);
+
+    const info = await client.file.name('foo/1.jpg').info();
+    expect(info.body.data.props.allowRedirect).to.eql(false);
+
+    // Finish up.
+    await mock.dispose();
+  });
+
   it('upload: file within folder-path', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo:A1';

@@ -12,8 +12,9 @@ export async function uploadFileStart(args: {
   sendChanges?: boolean;
   expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
   permission?: t.FsS3Permission;
+  allowRedirect?: boolean;
 }): Promise<t.IPayload<t.IResPostFileUploadStart> | t.IErrorPayload> {
-  const { db, fileUri, fs, host, mimetype, permission = 'private' } = args;
+  const { db, fileUri, fs, host, mimetype, allowRedirect, permission = 'private' } = args;
   const sendChanges = defaultValue(args.sendChanges, true);
   let changes: t.IDbModelChange[] = [];
 
@@ -60,7 +61,7 @@ export async function uploadFileStart(args: {
       status: 'UPLOADING',
       filehash: filehash || undefined,
     };
-    models.setProps(model, { mimetype, integrity });
+    models.setProps(model, { mimetype, integrity, allowRedirect });
 
     // Save the model.
     if (model.isChanged) {
