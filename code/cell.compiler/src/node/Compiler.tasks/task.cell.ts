@@ -1,4 +1,4 @@
-import { logger, parseUrl, t, Uri } from '../common';
+import { logger, parseUrl, t, Uri, defaultValue } from '../common';
 import { bundle } from './task.bundle';
 import { upload } from './task.cell.upload';
 
@@ -34,7 +34,9 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
        * [1] Bundle the code.
        */
       const env = { host, cell: targetCell, dir: targetDir };
-      await runBundle({ config, env, silent });
+      if (defaultValue(options.bundle, true)) {
+        await runBundle({ config, env, silent });
+      }
 
       if (!silent) {
         logger.hr();

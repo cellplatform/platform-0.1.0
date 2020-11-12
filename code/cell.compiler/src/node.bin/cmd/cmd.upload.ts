@@ -11,6 +11,7 @@ type ISampleFile = { [mode: string]: { uri: string } };
  */
 export async function upload(argv: t.Argv) {
   const name = util.nameArg(argv) || 'prod';
+  const bundle = argv.bundle; // NB: undefined by default (false if --no-bundle)
   const config = await util.loadConfig(argv.config, { name });
   const model = Model(config);
   const target = model.target();
@@ -54,7 +55,7 @@ export async function upload(argv: t.Argv) {
     return logger.errorAndExit(1, err);
   }
 
-  const res = await Compiler.cell(host, cell.toString()).upload(config, { targetDir });
+  const res = await Compiler.cell(host, cell.toString()).upload(config, { targetDir, bundle });
 
   if (sample) {
     const file = sample.filepath.substring(fs.resolve('.').length + 1);

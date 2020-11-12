@@ -44,7 +44,7 @@ export function Redirects(list: G[] = []) {
     path(path: string): Path {
       path = typeof path !== 'string' ? '' : path.trim();
       const grant = list
-        .reverse() // NB: Catch DENY
+        .reverse() // NB: Catch DENY.
         .filter((item) => typeof item.grep === 'string')
         .find((item) => fs.match(item.grep as string).path(path));
 
