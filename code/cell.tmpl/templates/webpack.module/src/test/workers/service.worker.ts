@@ -5,6 +5,5 @@ ctx.addEventListener('install', (e) => {
 });
 
 ctx.addEventListener('fetch', async (e) => {
-  console.log('fetch:', e);
-  // ctx.se
+  // console.log('fetch:', e);
 });

@@ -4,8 +4,6 @@ const ctx: Worker = self as any;
 ctx.postMessage({ msg: 'Hello from [web.worker.ts]' });
 
 // Respond to message from parent thread.
-ctx.addEventListener('message', (e) => {
-  console.log('🌳 event (from parent thread)', e.data);
-});
+ctx.addEventListener('message', (e) => console.log('🌳 event (from parent thread)', e.data));
 
 export default ctx;
