@@ -1,5 +1,5 @@
 import { Compiler } from '../../node/Compiler';
-import { t } from '../common';
+import { t, port } from '../common';
 import * as util from '../util';
 
 const logger = util.logger;
@@ -12,5 +12,5 @@ export async function dev(argv: t.Argv) {
   const { exports } = argv;
   const name = util.nameArg(argv) || 'dev';
   const config = await util.loadConfig(argv.config, { name });
-  await Compiler.dev(config, { exports });
+  await Compiler.devserver(config, { exports });
 }
