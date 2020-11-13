@@ -36,7 +36,7 @@ export async function upload(argv: t.Argv) {
 
   // Ensure host is accessible.
   if (!(await HttpClient.isReachable(host))) {
-    const err = `The host ${log.white(host)} is not reachable.`;
+    const err = `The target ${log.white(host)} is not reachable.`;
     return logger.errorAndExit(1, err);
   }
 
