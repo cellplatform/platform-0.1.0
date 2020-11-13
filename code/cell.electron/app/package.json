@@ -16,9 +16,8 @@
     "prepare": "ts prepare",
     "bundle.preload": "sh script.sh/bundle.preload.sh",
     "prepackage": "yarn build && yarn bundle.preload",
-    "package": "yarn prepackage && electron-forge package",
-    "make": "npm version patch && yarn prepackage && electron-forge make",
-    "tmp": "electron-forge package"
+    "package": "export NOTARIZE=false && yarn prepackage && electron-forge package",
+    "make": "npm version patch && yarn prepackage && electron-forge make"
   },
   "dependencies": {
     "@platform/cell.client": "0.2.171",
@@ -42,10 +41,11 @@
   "devDependencies": {
     "@electron-forge/cli": "6.0.0-beta.54",
     "@electron-forge/maker-deb": "6.0.0-beta.54",
-    "@electron-forge/maker-dmg": "^6.0.0-beta.54",
+    "@electron-forge/maker-dmg": "6.0.0-beta.54",
     "@electron-forge/maker-rpm": "6.0.0-beta.54",
     "@electron-forge/maker-squirrel": "6.0.0-beta.54",
     "@electron-forge/maker-zip": "6.0.0-beta.54",
+    "@platform/cell.compiler": "0.2.0",
     "@platform/exec": "0.2.67",
     "@platform/test": "0.1.17",
     "@platform/ts": "4.0.6",

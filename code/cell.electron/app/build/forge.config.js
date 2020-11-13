@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 const { resolve } = require('path');
+const { fs } = require('@platform/fs');
 const dotenv = require('dotenv');
 dotenv.config({ path: resolve(process.cwd(), '../.env') });
 
@@ -103,6 +104,10 @@ const config = {
     return;
   }
 
+  if (process.env.NOTARIZE === 'false') {
+    return;
+  }
+
   // console.warn('\n\n🐷 Skipping notarization (TEMPORARY)\n');
   // return;
 
@@ -138,6 +143,7 @@ function ignore(path) {
     '/lib/build',
     '/assets/icons/icon.src.iconsproj',
   ];
+
   if (startsWith.some((match) => path.startsWith(match))) {
     return true; // Ignore.
   }
