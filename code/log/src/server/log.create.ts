@@ -3,6 +3,7 @@ import { map } from 'rxjs/operators';
 import { t, chalk, ColorFormatter, create as createLog } from './common';
 import { format } from './log.format';
 import { table } from './log.table';
+import stripAnsi from 'strip-ansi';
 
 /**
  * Creates a server log.
@@ -13,6 +14,7 @@ export function create(): t.IServerLog {
   const log: t.IServerLog = {
     ...createLog({ color }),
     table: (options?: t.ILogTableOptions) => table(log, options),
+    stripAnsi: (text) => stripAnsi(text),
   };
 
   // Run the log events through a formatter that converts

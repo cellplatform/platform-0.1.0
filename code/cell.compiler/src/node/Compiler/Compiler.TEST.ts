@@ -5,7 +5,7 @@ describe('Compiler', () => {
   it('static entry', () => {
     expect(typeof Compiler.bundle).to.eql('function');
     expect(typeof Compiler.config).to.eql('function');
-    expect(typeof Compiler.dev).to.eql('function');
+    expect(typeof Compiler.devserver).to.eql('function');
     expect(typeof Compiler.watch).to.eql('function');
     expect(typeof Compiler.cell).to.eql('function');
   });

@@ -149,7 +149,7 @@ export async function copyCellFiles(args: {
       if (!ok) {
         const err = res.error?.message || '';
         addError(
-          `Failed while uploading file '${target.filename}' to host '${target.host}'. ${err}`.trim(),
+          `Failed while uploading file '${target.filename}' to host '${target.host}' (${res.status}). ${err}`.trim(),
         );
       }
 

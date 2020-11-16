@@ -1,8 +1,10 @@
 import DevServer from 'webpack-dev-server';
 
-import { log, Model, t, toModel, logger } from '../common';
+import { log, Model, t, toModel, logger, port } from '../common';
 import { wp } from '../Config.webpack';
 import { afterCompile } from './util';
+
+const portInUse = async (value: number) => port.isUsed(value, 'localhost');
 
 /**
  * Run dev server.
@@ -13,11 +15,18 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
   const port = model.port();
   const noExports = options.exports === false;
 
+  if (await portInUse(port)) {
+    log.error('ERROR');
+    log.info.yellow(`The port ${log.white(port)} is already in use.`);
+    log.info();
+    return;
+  }
+
   const { compiler, config } = wp.toCompiler(obj, {
     beforeCompile(e) {
       e.modifyModel((model) => {
         if (noExports) {
-          delete model.exposes; // NB: See bug notes below 🐛
+          delete model.exposes; // NB: See bug notes below 🐛.
         }
       });
 

@@ -1,8 +1,18 @@
 import { t, expect, util, log } from '../test';
 
-const PROVIDER = 'WASABI';
-// const PROVIDER = 'SPACES';
-const { fs, BASE_URL, PATH, BUCKET, ENDPOINT } = util.init(PROVIDER);
+const formatUrl: t.FsS3FormatUrl = (url, ctx) => {
+  if (!url.includes('digitaloceanspaces.com')) {
+    return url;
+  } else {
+    return ctx.type === 'SIGNED/get' || ctx.type === 'DEFAULT'
+      ? url.replace(/digitaloceanspaces\.com/, 'cdn.digitaloceanspaces.com')
+      : url;
+  }
+};
+
+// const PROVIDER = 'WASABI';
+const PROVIDER = 'SPACES';
+const { fs, URL, PATH, BUCKET, ENDPOINT } = util.init(PROVIDER, '', formatUrl);
 
 const table = log.table({ border: false });
 log.info();
@@ -29,7 +39,7 @@ describe('S3 (Integration)', function () {
     expect(typeof res['s3:etag']).to.eql('string');
     expect(res['s3:permission']).to.eql('private'); // NB: Private by default.
 
-    const location = `${BASE_URL}/ns.foo/bird`;
+    const location = `${URL}/ns.foo/bird`;
     expect(file.location).to.eql(location);
     expect(file.path).to.eql(`/${PATH}/ns.foo/bird`);
 
@@ -72,7 +82,7 @@ describe('S3 (Integration)', function () {
     expect(res.exists).to.eql(true);
     expect(res.bytes).to.greaterThan(0);
 
-    expect(res.location).to.eql(`${BASE_URL}/ns.foo/bird`);
+    expect(res.location).to.eql(fs.resolve(uri).path);
     expect(res.path).to.eql(`/${PATH}/ns.foo/bird`);
     expect(res['s3:etag']?.length).to.greaterThan(0);
 
@@ -92,10 +102,14 @@ describe('S3 (Integration)', function () {
     expect(res.status).to.eql(200);
     expect(res.uri).to.eql(uri);
 
-    expect(file.location).to.eql(`${BASE_URL}/ns.foo/bird`);
     expect(file.path).to.eql(`/${PATH}/ns.foo/bird`);
     expect(file.bytes).to.greaterThan(-1);
     expect(file.hash).to.match(/^sha256-/);
+
+    expect(file.location.endsWith('/ns.foo/bird')).to.eql(true);
+    if ((PROVIDER as string) === 'SPACES') {
+      expect(file.location).to.include('.cdn.');
+    }
 
     // log.info('READ', res);
   });
@@ -124,7 +138,7 @@ describe('S3 (Integration)', function () {
     expect(res3.error).to.eql(undefined);
 
     expect(res3.locations.length).to.eql(1);
-    expect(res3.locations[0]).to.eql(`${BASE_URL}/ns.foo/bird`);
+    expect(res3.locations[0]).to.match(/\/ns.foo\/bird$/);
 
     const res4 = await fs.read(uri);
     expect(res4.ok).to.eql(false);
@@ -151,8 +165,8 @@ describe('S3 (Integration)', function () {
     expect(res.error).to.eql(undefined);
     expect(res.locations.length).to.eql(2);
 
-    expect(res.locations[0]).to.eql(`${BASE_URL}/ns.foo/bird`);
-    expect(res.locations[1]).to.eql(`${BASE_URL}/ns.foo/kitten`);
+    expect(res.locations[0]).to.match(/\/ns.foo\/bird$/);
+    expect(res.locations[1]).to.match(/\/ns.foo\/kitten$/);
 
     expect((await fs.read(uri1)).status).to.eql(404);
     expect((await fs.read(uri2)).status).to.eql(404);
@@ -171,8 +185,8 @@ describe('S3 (Integration)', function () {
     await fs.write(sourceUri, png);
     const res1 = await fs.copy(sourceUri, targetUri);
 
-    expect(res1.ok).to.eql(true);
     expect(res1.status).to.eql(200);
+    expect(res1.ok).to.eql(true);
     expect(res1.source).to.eql('file:foo:bird1');
     expect(res1.target).to.eql('file:bar:bird2');
     expect(res1.error).to.eql(undefined);

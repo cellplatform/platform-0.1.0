@@ -1,8 +1,7 @@
 import { sortBy, sortWith, ascend, descend, prop, uniq, uniqBy, pipe, groupBy } from 'ramda';
 export const R = { sortBy, sortWith, ascend, descend, prop, uniq, uniqBy, pipe, groupBy };
 
-import { rx, id, defaultValue, value, time } from '@platform/util.value';
-export { rx, id, defaultValue, value, time };
+export { rx, id, defaultValue, value, time } from '@platform/util.value';
 
 export { Builder } from '@platform/cell.module';
 export { StateObject } from '@platform/state';
@@ -27,3 +26,4 @@ export { ModuleFederationPlugin };
 /* eslint-enable */
 
 export { exec } from '@platform/exec';
+export { port } from '@platform/http/lib/node';

@@ -41,6 +41,12 @@ export async function upload(args: {
     return { ok, files };
   };
 
+  if (!(await HttpClient.isReachable(host))) {
+    log.info.yellow(`Ensure the target server is online. ${log.gray(host)}`);
+    log.info();
+    return done(false);
+  }
+
   try {
     const client = HttpClient.create(host);
     const res = await client.cell(targetCell).files.upload(files);
@@ -68,10 +74,7 @@ export async function upload(args: {
 
     return done(true);
   } catch (err) {
-    if (err.message.includes('ECONNREFUSED')) {
-      log.info.yellow(`Ensure the local CellOS server is online. ${log.gray(host)}`);
-      log.info();
-    }
+    log.info.yellow(`Failed while uploading. ${err.message}`);
     return done(false);
   }
 }

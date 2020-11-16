@@ -9,7 +9,7 @@ function clientHeader() {
   const VERSION = constants.VERSION;
   const client = `client@${VERSION['@platform/cell.client']}`;
   const schema = `schema@${VERSION['@platform/cell.schema']}`;
-  return `CellOS; ${client}; ${schema}`;
+  return `${client}; ${schema}`;
 }
 
 /**

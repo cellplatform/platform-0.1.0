@@ -1,13 +1,15 @@
-import { t, defaultValue, R, fs } from '../common';
+import { fs, R, t } from '../common';
 
-type A = t.CompilerModelRedirectAction;
 type G = t.CompilerModelRedirectGrant;
 
 type Path = {
   path: string;
   grant: G | undefined;
   isAllowed: boolean;
+  flag?: boolean;
 };
+
+const DEFAULT_ALLOW = true;
 
 /**
  * Helpers for calculating redirection rules.
@@ -39,21 +41,23 @@ export function Redirects(list: G[] = []) {
     /**
      * Resolve whether a path will allow redirects.
      */
-    path(path: string, options: { defaultAllow?: boolean } = {}): Path {
+    path(path: string): Path {
       path = typeof path !== 'string' ? '' : path.trim();
-      const defaultAllow = defaultValue(options.defaultAllow, true);
       const grant = list
-        .reverse() // NB: Catch DENY
+        .reverse() // NB: Catch DENY.
         .filter((item) => typeof item.grep === 'string')
         .find((item) => fs.match(item.grep as string).path(path));
 
       const isAllowed =
-        !grant || grant.action === undefined ? defaultAllow : grant.action === 'ALLOW';
+        !grant || grant.action === undefined ? DEFAULT_ALLOW : grant.action === 'ALLOW';
+
+      const flag = isAllowed === DEFAULT_ALLOW ? undefined : isAllowed;
 
       return {
         path,
         grant,
         isAllowed,
+        flag,
       };
     },
   };

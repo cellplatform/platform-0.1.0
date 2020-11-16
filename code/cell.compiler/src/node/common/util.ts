@@ -1,5 +1,4 @@
 import { parse } from 'url';
-
 import { isModel } from './util.model';
 
 export * from './util.model';

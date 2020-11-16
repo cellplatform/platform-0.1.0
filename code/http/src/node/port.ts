@@ -1,5 +1,5 @@
 import * as net from 'net';
-import { value } from './libs';
+import { value } from '@platform/util.value';
 
 export const port = {
   /**
@@ -8,12 +8,30 @@ export const port = {
   async unused(preferred?: number): Promise<number> {
     const number = preferred === undefined ? port.random() : preferred;
 
-    // If the port is already in use, call this method again.
+    // If the port is already in use call this method again.
     if (await port.isUsed(number)) {
       return port.unused(); // <== RECURSION 🌳
     }
 
     return number;
+  },
+
+  /**
+   * Determines if the given port is currently in use.
+   */
+  async isUsed(port: number, host?: string) {
+    return new Promise<boolean>(async (resolve) => {
+      const server = net.createServer((socket) => {
+        socket.write('echo\r\n');
+        socket.pipe(socket);
+      });
+      server.listen(port, host);
+      server.on('error', (err) => resolve(true));
+      server.on('listening', () => {
+        server.close();
+        resolve(false);
+      });
+    });
   },
 
   /**
@@ -25,23 +43,5 @@ export const port = {
     const MIN = 49152;
     const MAX = 65535;
     return value.random(MIN, MAX);
-  },
-
-  /**
-   * Determines if the given port is currently in use.
-   */
-  async isUsed(port: number) {
-    return new Promise<boolean>(async (resolve, reject) => {
-      const server = net.createServer((socket) => {
-        socket.write('echo\r\n');
-        socket.pipe(socket);
-      });
-      server.listen(port);
-      server.on('error', (e) => resolve(true));
-      server.on('listening', () => {
-        server.close();
-        resolve(false);
-      });
-    });
   },
 };

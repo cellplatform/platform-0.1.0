@@ -1,17 +1,18 @@
 {
   "name": "instance",
-  "version": "0.0.164",
+  "version": "0.0.168",
   "scripts": {
     "now": "vercel dev --listen 8080",
     "start": "ts-node -T src/server",
     "watch": "nodemon --watch ../src --watch ../../cell.db/src --watch ../../cell.http.router/src -e ts,tsx --delay 2"
   },
   "dependencies": {
-    "@platform/cell.fs.local": "^0.4.133",
-    "@platform/cell.fs.s3": "^0.4.136",
-    "@platform/cell.http": "^0.7.179",
-    "@platform/cell.http.router": "^0.8.16",
-    "@platform/cell.schema": "^0.5.11",
+    "@platform/cell.fs.local": "^0.4.134",
+    "@platform/cell.fs.s3": "^0.4.137",
+    "@platform/cell.http": "^0.7.183",
+    "@platform/cell.types": "0.5.13",
+    "@platform/cell.http.router": "^0.8.19",
+    "@platform/cell.schema": "^0.5.12",
     "@platform/fsdb.mongo": "0.0.147",
     "@platform/fsdb.nedb": "1.3.141"
   },

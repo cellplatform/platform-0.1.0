@@ -121,4 +121,9 @@ describe('logging to console (NB: Tests hidden because this mucks with the conso
     log.info('hello', {});
     fnLog(items);
   });
+
+  it('strip ansi', () => {
+    const green = `Hello ${log.green('green')}`;
+    expect(log.stripAnsi(green)).to.eql(`Hello green`);
+  });
 });

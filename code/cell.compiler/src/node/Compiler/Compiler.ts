@@ -4,7 +4,7 @@ import { ConfigBuilder } from '../config';
 
 export const Compiler: t.Compiler = {
   config: ConfigBuilder.builder,
-  dev: Tasks.devserver,
+  devserver: Tasks.devserver,
   watch: Tasks.watch,
   bundle: Tasks.bundle,
   cell: Tasks.cell,

@@ -1,3 +1,6 @@
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+
 import { DEFAULT, fs, HttpClient, log, logger, Model, path, Schema, t, time } from '../common';
 import { BundleManifest } from '../Compiler';
 import { Redirects } from '../config/util.redirect';
@@ -33,7 +36,7 @@ export async function getFiles(args: {
       .map(async (path) => {
         const data = await fs.readFile(path);
         const filename = fs.join(targetDir, path.substring(bundleDir.length + 1));
-        const allowRedirect = toRedirect({ path, redirects, bundleDir }).isAllowed;
+        const allowRedirect = toRedirect({ path, redirects, bundleDir }).flag;
         const file: File = { filename, data, allowRedirect };
         return file;
       }),
@@ -63,6 +66,15 @@ export const upload: t.CompilerRunUpload = async (args) => {
   const redirects = config.redirects;
   const files = await getFiles({ bundleDir, targetDir, redirects });
 
+  const done$ = new Subject();
+  writeLogFile(log, done$);
+
+  const done = (ok: boolean) => {
+    const res: t.CompilerUploadResponse = { ok, files, urls: toUrls(files) };
+    done$.next();
+    return res;
+  };
+
   const toUrls = (files: t.IHttpClientCellFileUpload[]) => {
     const findFile = (name: string) => files.find((file) => fs.basename(file.filename) === name);
     const urlByFilename = (filename: string) => {
@@ -82,19 +94,11 @@ export const upload: t.CompilerRunUpload = async (args) => {
     };
   };
 
-  const done = (ok: boolean) => {
-    return {
-      ok,
-      files,
-      urls: toUrls(files),
-    };
-  };
-
   try {
     const client = HttpClient.create(host).cell(targetCell);
 
     /**
-     * [1]. Perform initial upload of files (retrieving the generated file URIs).
+     * [1] Perform initial upload of files (retrieving the generated file URIs).
      */
     const fileUpload = await client.files.upload(files);
     if (!fileUpload.ok) {
@@ -103,7 +107,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
     }
 
     /**
-     * [2]. Update the manifest with the file-hashes and re-upload it.
+     * [2] Update the manifest with the file-hashes and re-upload it.
      */
     await updateManifest({ bundleDir, uploadedFiles: fileUpload.body.files, redirects });
     const manifestUpload = await client.files.upload(
@@ -125,7 +129,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
     return done(true);
   } catch (err) {
     const message = err.message.includes('ECONNREFUSED')
-      ? `Ensure the local CellOS server is online. ${log.gray(host)}`
+      ? `Ensure the local server is online. ${log.gray(host)}`
       : err.message;
     log.info.yellow(message);
     log.info();
@@ -220,7 +224,6 @@ async function updateManifest(args: {
     throw new Error(`A bundle manifest does not exist at: ${path}`);
   }
 
-  // const redirects = Redirects(args.redirects);
   const toHash = (file: FileUri) => file.data.props.integrity?.filehash;
   const findFile = (hash: string) => uploadedFiles.find((file) => toHash(file) === hash);
 
@@ -233,11 +236,25 @@ async function updateManifest(args: {
         throw new Error(err);
       } else {
         const redirect = toRedirect({ path: item.path, redirects });
-        item.allowRedirect = redirect.isAllowed;
+        item.allowRedirect = redirect.flag;
         item.uri = file.uri;
       }
     });
 
   await BundleManifest.writeFile({ manifest, bundleDir });
   return manifest;
+}
+
+function writeLogFile(log: t.IServerLog, until$: Observable<any>) {
+  const path = fs.resolve('./tmp/logs/upload.log');
+  fs.ensureDirSync(fs.dirname(path));
+  log.events$
+    .pipe(
+      takeUntil(until$),
+      map((e) => log.stripAnsi(e.payload.output)),
+    )
+    .subscribe((text) => {
+      text = text.replace(/\n$/, '');
+      fs.appendFileSync(path, `${text}\n`);
+    });
 }

@@ -1,7 +1,8 @@
 import { t, fs, path, Schema, util } from '../common';
+import { parse as parseUrl } from 'url';
 
 export * from '../types';
-export type IS3Init = t.S3Config & { dir: string };
+export type IS3Init = t.S3Config & { dir: string; formatUrl?: t.FsS3FormatUrl };
 
 /**
  * Initializes an "S3" compatible file-system API.
@@ -28,10 +29,7 @@ export function init(args: IS3Init): t.IFsS3 {
     return { path, s3, bucket };
   })();
 
-  const trimHost = (input: string) => {
-    const host = cloud.bucket.url('').object;
-    return input.startsWith(host) ? input.substring(host.length - 1) : input;
-  };
+  const trimHost = (input: string) => parseUrl(input, false).path || '';
 
   const getReadParams = (uri: string) => {
     uri = (uri || '').trim();
@@ -56,22 +54,29 @@ export function init(args: IS3Init): t.IFsS3 {
     dir: cloud.path.dir,
 
     /**
-     * Convert the given string to an absolute path.
+     * Convert the given string to a URL endpoint.
      */
     resolve(uri: string, options?: t.IFsResolveArgs) {
       const type = (options ? options.type : 'DEFAULT') as t.IFsResolveArgs['type'];
       const key = path.resolve({ uri, dir: api.dir });
+      const format = (url: string) => (args.formatUrl ? args.formatUrl(url, { type }) : url);
 
       if (type === 'SIGNED/get') {
+        const url = cloud.s3
+          .url(api.bucket, key)
+          .signedGet(options as t.S3SignedUrlGetObjectOptions);
         return {
-          path: cloud.s3.url(api.bucket, key).signedGet(options as t.S3SignedUrlGetObjectOptions),
+          path: format(url),
           props: {},
         };
       }
 
       if (type === 'SIGNED/put') {
+        const url = cloud.s3
+          .url(api.bucket, key)
+          .signedPut(options as t.S3SignedUrlPutObjectOptions);
         return {
-          path: cloud.s3.url(api.bucket, key).signedPut(options as t.S3SignedUrlPutObjectOptions),
+          path: format(url),
           props: {},
         };
       }
@@ -79,14 +84,15 @@ export function init(args: IS3Init): t.IFsS3 {
       if (type === 'SIGNED/post') {
         const post = cloud.s3.url(api.bucket, key).signedPost(options as t.S3SignedPostOptions);
         return {
-          path: post.url,
+          path: format(post.url),
           props: post.props,
         };
       }
 
       // DEFAULT (direct object on S3).
+      // NB: This will only work if the object's permission are [public-read].
       return {
-        path: cloud.s3.url(api.bucket, key).object,
+        path: format(cloud.s3.url(api.bucket, key).object),
         props: {},
       };
     },

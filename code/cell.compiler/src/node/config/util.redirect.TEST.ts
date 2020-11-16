@@ -27,17 +27,10 @@ describe('config/util: redirect', () => {
       test({}, '');
     });
 
-    it('path not matched: empty list => isAllowed:true', () => {
+    it('path not matched: empty list => isAllowed:true (default)', () => {
       const redirects = Redirects([]);
       const path = redirects.path('foo.js');
       expect(path.isAllowed).to.eql(true); // NB: default (undefined) => ALLOW
-      expect(path.grant).to.eql(undefined);
-    });
-
-    it('path not matched: empty list => isAllowed:true (defaultAllow: false)', () => {
-      const redirects = Redirects([]);
-      const path = redirects.path('foo.js', { defaultAllow: false });
-      expect(path.isAllowed).to.eql(false);
       expect(path.grant).to.eql(undefined);
     });
 
@@ -73,6 +66,15 @@ describe('config/util: redirect', () => {
 
       test(true, true, 'ALLOW');
       test(false, false, 'DENY');
+    });
+
+    it('flag', () => {
+      const { builder } = create();
+      builder.redirect('DENY', 'foo.js').redirect('ALLOW', 'bar.js');
+      const redirects = Redirects(builder.toObject().redirects);
+
+      expect(redirects.path('foo.js').flag).to.eql(false);
+      expect(redirects.path('bar.js').flag).to.eql(undefined); // NB: undefined === "redirect" (default)
     });
 
     it('grep: pattern match', () => {

@@ -6,6 +6,7 @@ import { ILog } from '../types';
  */
 export type IServerLog = ILog & {
   table(options?: ILogTableOptions): ILogTable;
+  stripAnsi(text: string): string;
 };
 
 /**

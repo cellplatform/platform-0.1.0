@@ -1,7 +1,7 @@
 const ctx: ServiceWorker = self as any;
 
 ctx.addEventListener('install', function (e) {
-  console.log('service worker installed:', e);
+  console.log('🚀 service-worker installed:', e);
 
   // event.waitUntil(
   //   caches.open(cacheName).then(function(cache) {
@@ -19,8 +19,7 @@ ctx.addEventListener('install', function (e) {
 });
 
 self.addEventListener('fetch', async function (e) {
-  console.log('fetch event:', e);
-
+  // console.log('fetch event:', e);
   // event.respondWith(
   //   caches.open('mysite-dynamic').then(function(cache) {
   //     return cache.match(event.request).then(function (response) {
