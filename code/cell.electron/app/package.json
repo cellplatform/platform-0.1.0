@@ -7,6 +7,11 @@
   "config": {
     "forge": "build/forge.config.js"
   },
+  "workspaces__PACKAGE__": {
+    "packages": [
+      "*"
+    ]
+  },
   "scripts": {
     "start": "yarn bundle.preload && electron-forge start",
     "dev": "export NODE_ENV=development && yarn start",
