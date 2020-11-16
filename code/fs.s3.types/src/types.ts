@@ -8,6 +8,7 @@ export type S3Config = {
 };
 
 export type S3Endpoint = { origin: string; edge?: string };
+export type S3EndpointKind = 'origin' | 'edge';
 export type S3Permission = 'private' | 'public-read';
 
 /**

@@ -2,7 +2,7 @@ import { fs } from '..';
 
 function loadEnv(provider: string) {
   const env = (suffix: string) => fs.env.value(`${provider}_${suffix}`);
-  const endpoint = env('ENDPOINT');
+  const endpoint = { origin: env('ORIGIN'), edge: env('EDGE') };
   const accessKey = env('KEY');
   const secret = env('SECRET');
   const bucket = env('BUCKET');
