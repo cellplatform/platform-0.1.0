@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.client",
-  "version": "0.2.172",
+  "version": "0.3.0",
   "description": "A strongly typed HTTP client for operating with a CellOS service end-point.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

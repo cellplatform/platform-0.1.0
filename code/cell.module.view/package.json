@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.module.view",
-  "version": "0.0.41",
+  "version": "0.0.42",
   "description": "User interface extensions of the Module system.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,7 +14,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.module": "0.0.42",
+    "@platform/cell.module": "0.0.43",
     "@platform/cell.types": "0.5.13",
     "@platform/libs": "0.2.3",
     "@platform/react": "0.4.53",

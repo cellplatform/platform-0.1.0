@@ -20,7 +20,6 @@ describe('HttpClient', () => {
       const isValidVersion = (version: string) => semver.valid(version) !== null;
 
       const header = (headers.client || '') as string;
-      expect(header).to.include('CellOS');
       expect(header).to.include('client@');
       expect(header).to.include('schema@');
 
@@ -48,7 +47,7 @@ describe('HttpClient', () => {
 
       // NB: Headers from passed in client, along with default headers, are passed to server.
       expect(headers[0].foo).to.eql('hello');
-      expect(headers[0].client).to.includes('CellOS;');
+      expect(headers[0].client).to.includes('schema@');
     });
   });
 
