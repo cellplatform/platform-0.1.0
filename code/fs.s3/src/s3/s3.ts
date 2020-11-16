@@ -31,8 +31,9 @@ export function init(args: t.S3Config): t.S3 {
   const res: t.S3 = {
     endpoint,
 
-    url(bucket, path) {
-      return url({ getS3, endpoint, bucket, path });
+    url(bucket, path, options = {}) {
+      const { endpoint } = options;
+      return url({ getS3, bucket, path, endpoint });
     },
 
     list(args) {
@@ -75,8 +76,8 @@ export function init(args: t.S3Config): t.S3 {
       return {
         bucket,
         endpoint,
-        url(path: string) {
-          return res.url(bucket, path);
+        url(path: string, options) {
+          return res.url(bucket, path, options);
         },
         list(args) {
           return res.list({ ...args, bucket });

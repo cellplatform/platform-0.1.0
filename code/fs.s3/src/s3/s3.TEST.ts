@@ -95,6 +95,27 @@ describe('s3', () => {
       expect(url1.query.Expires).to.not.eql(url2.query.Expires);
     });
 
+    it('url: edge', () => {
+      const endpoint = { origin: 'domain.com', edge: 'cdn.domain.com' };
+      const s3 = fs.s3({ endpoint, accessKey, secret });
+      const url1 = s3.url('foo', 'tmp/file.png');
+      const url2 = s3.url('foo', 'tmp/file.png', { endpoint: 'origin' });
+
+      // GET (edge network applicable).
+      expect(url1.object).to.eql('https://foo.cdn.domain.com/tmp/file.png');
+      expect(url2.object).to.eql('https://foo.domain.com/tmp/file.png');
+
+      expect(url1.signedGet()).to.include('https://foo.cdn.domain.com/tmp/file.png?');
+      expect(url2.signedGet()).to.include('https://foo.domain.com/tmp/file.png?');
+
+      // Not edge addressable.
+      expect(url1.signedPost().url).to.eql('https://domain.com/foo');
+      expect(url2.signedPost().url).to.eql('https://domain.com/foo');
+
+      expect(url1.signedPut()).to.include('https://foo.domain.com/tmp/file.png?');
+      expect(url2.signedPut()).to.include('https://foo.domain.com/tmp/file.png?');
+    });
+
     it('url.signedPut', () => {
       const s3 = fs.s3({ endpoint: 'sfo.domain.com', accessKey, secret });
 
@@ -129,20 +150,6 @@ describe('s3', () => {
       expect(res.props.key).to.eql('tmp/file.png');
       expect(res.props.bucket).to.eql('foo');
       expect(typeof res.props.Policy).to.eql('string');
-    });
-
-    it('url: edge', () => {
-      const endpoint = { origin: 'domain.com', edge: 'cdn.domain.com' };
-      const s3 = fs.s3({ endpoint, accessKey, secret });
-      const url = s3.url('foo', 'tmp/file.png');
-
-      // GET (edge network applicable).
-      expect(url.object).to.eql('https://foo.cdn.domain.com/tmp/file.png');
-      expect(url.signedGet()).to.include('https://foo.cdn.domain.com/tmp/file.png?');
-
-      // Not edge addressable.
-      expect(url.signedPost().url).to.eql('https://domain.com/foo');
-      expect(url.signedPut()).to.include('https://foo.domain.com/tmp/file.png?');
     });
   });
 

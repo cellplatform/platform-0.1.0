@@ -2,17 +2,17 @@ import { t, util } from '../common';
 
 export function url(args: {
   getS3: t.GetAwsS3;
-  endpoint: t.S3Endpoint;
   bucket: string;
   path?: string;
+  endpoint?: t.S3EndpointKind;
 }) {
-  const { getS3, bucket, path } = args;
-  const object = util.toObjectUrl({ s3: getS3('edge'), bucket, path });
+  const { getS3, bucket, path, endpoint } = args;
+  const object = util.toObjectUrl({ s3: getS3(endpoint || 'edge'), bucket, path });
   return {
     object,
 
     signedGet(options: t.S3SignedUrlGetObjectOptions = {}) {
-      const s3 = getS3('edge');
+      const s3 = getS3(endpoint || 'edge');
       return util.toPresignedUrl({
         s3,
         bucket,
