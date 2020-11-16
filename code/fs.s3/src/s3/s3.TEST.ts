@@ -1,17 +1,11 @@
 import { expect, fs, t } from '../test';
 import { parse as parseUrl } from 'url';
 
-const s3 = fs.s3({
-  endpoint: 'sfo.domain.com',
-  accessKey: 'MY_KEY',
-  secret: 'MY_SECRET',
-});
+const accessKey = 'MY_KEY';
+const secret = 'MY_SECRET';
 
 describe('s3', () => {
-  describe.only('s3.endpoint', () => {
-    const accessKey = 'MY_KEY';
-    const secret = 'MY_SECRET';
-
+  describe('s3.endpoint', () => {
     it('origin only (string)', () => {
       const res = fs.s3({ endpoint: '  foo.com  ', accessKey, secret });
       expect(res.endpoint.origin).to.eql('foo.com');
@@ -55,6 +49,8 @@ describe('s3', () => {
 
   describe('s3.url', () => {
     it('throw if bucket not provided', () => {
+      const s3 = fs.s3({ endpoint: 'sfo.domain.com', accessKey, secret });
+
       const test = (bucket?: any) => {
         const fn = () => s3.url(bucket, '/foo/bar');
         expect(fn).to.throw(/No bucket/);
@@ -65,6 +61,8 @@ describe('s3', () => {
     });
 
     it('url.object', () => {
+      const s3 = fs.s3({ endpoint: 'sfo.domain.com', accessKey, secret });
+
       const test = (bucket: string, path: string, expected?: string) => {
         const res = s3.url(bucket, path);
         expect(res.object).to.eql(expected);
@@ -83,6 +81,8 @@ describe('s3', () => {
     });
 
     it('url.signedGet', () => {
+      const s3 = fs.s3({ endpoint: 'sfo.domain.com', accessKey, secret });
+
       const res1 = s3.url('foo', '//tmp/file.png').signedGet();
       const res2 = s3.url('foo', 'tmp/file.png').signedGet({ expires: '5s' });
 
@@ -96,6 +96,8 @@ describe('s3', () => {
     });
 
     it('url.signedPut', () => {
+      const s3 = fs.s3({ endpoint: 'sfo.domain.com', accessKey, secret });
+
       const res1 = s3.url('foo', '//tmp/file.png').signedPut();
       const res2 = s3.url('foo', 'file.png').signedPut({ expires: '5s' });
 
@@ -109,6 +111,8 @@ describe('s3', () => {
     });
 
     it('[signedGet] differs from [signedPut]', () => {
+      const s3 = fs.s3({ endpoint: 'sfo.domain.com', accessKey, secret });
+
       const get1 = s3.url('foo', 'file.png').signedGet();
       const get2 = s3.url('foo', 'file.png').signedGet();
       const put = s3.url('foo', 'file.png').signedPut();
@@ -117,6 +121,8 @@ describe('s3', () => {
     });
 
     it('url.signedPost', () => {
+      const s3 = fs.s3({ endpoint: 'sfo.domain.com', accessKey, secret });
+
       const res = s3.url('foo', '///tmp/file.png').signedPost();
       expect(res.url).to.eql('https://sfo.domain.com/foo');
       expect(res.props['content-type']).to.eql('image/png');
@@ -124,9 +130,25 @@ describe('s3', () => {
       expect(res.props.bucket).to.eql('foo');
       expect(typeof res.props.Policy).to.eql('string');
     });
+
+    it('url: edge', () => {
+      const endpoint = { origin: 'domain.com', edge: 'cdn.domain.com' };
+      const s3 = fs.s3({ endpoint, accessKey, secret });
+      const url = s3.url('foo', 'tmp/file.png');
+
+      // GET (edge network applicable).
+      expect(url.object).to.eql('https://foo.cdn.domain.com/tmp/file.png');
+      expect(url.signedGet()).to.include('https://foo.cdn.domain.com/tmp/file.png?');
+
+      // Not edge addressable.
+      expect(url.signedPost().url).to.eql('https://domain.com/foo');
+      expect(url.signedPut()).to.include('https://foo.domain.com/tmp/file.png?');
+    });
   });
 
   describe('bucket', () => {
+    const s3 = fs.s3({ endpoint: 'sfo.domain.com', accessKey, secret });
+
     it('bucket.url', () => {
       const bucket = s3.bucket('foo');
       const test = (path: string, expected?: string) => {
@@ -144,6 +166,21 @@ describe('s3', () => {
       test('/tmp/file.png', 'https://foo.sfo.domain.com/tmp/file.png');
       test('///tmp/file.png', 'https://foo.sfo.domain.com/tmp/file.png');
       test('  ///tmp/file.png  ', 'https://foo.sfo.domain.com/tmp/file.png');
+    });
+
+    it('bucket.url: edge', () => {
+      const endpoint = { origin: 'domain.com', edge: 'cdn.domain.com' };
+      const s3 = fs.s3({ endpoint, accessKey, secret });
+      const bucket = s3.bucket('foo');
+      const url = bucket.url('tmp/file.png');
+
+      // GET (edge network applicable).
+      expect(url.object).to.eql('https://foo.cdn.domain.com/tmp/file.png');
+      expect(url.signedGet()).to.include('https://foo.cdn.domain.com/tmp/file.png?');
+
+      // Not edge addressable.
+      expect(url.signedPost().url).to.eql('https://domain.com/foo');
+      expect(url.signedPut()).to.include('https://foo.domain.com/tmp/file.png?');
     });
 
     describe('bucket.url (pre-signed)', () => {

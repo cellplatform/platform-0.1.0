@@ -15,6 +15,19 @@ export * from './s3.copy';
 export function init(args: t.S3Config): t.S3 {
   const endpoint = toEndpoint(args.endpoint);
 
+  const toEndpointUrl = (type: 'origin' | 'edge') => {
+    const url = endpoint[type];
+    return url || endpoint.origin;
+  };
+
+  const getS3: t.GetAwsS3 = (endpoint) => {
+    return new AWS.S3({
+      endpoint: new AWS.Endpoint(toEndpointUrl(endpoint)),
+      accessKeyId: args.accessKey,
+      secretAccessKey: args.secret,
+    });
+  };
+
   const s3 = new AWS.S3({
     endpoint: new AWS.Endpoint(endpoint.origin) as any,
     accessKeyId: args.accessKey,
@@ -25,34 +38,55 @@ export function init(args: t.S3Config): t.S3 {
     endpoint,
 
     url(bucket: string, path: string) {
-      return url(s3, bucket, path);
+      return url({ getS3, endpoint, bucket, path });
     },
 
     list(args: { bucket: string; prefix?: string; max?: number }) {
+      /**
+       * TODO 🐷 getS3
+       */
       return list({ ...args, s3 });
     },
 
     get(args: { bucket: string; key: string; metaOnly?: boolean }) {
+      /**
+       * TODO 🐷 getS3
+       */
       return get({ ...args, s3 });
     },
 
     put(args: t.S3PutArgs) {
+      /**
+       * TODO 🐷 getS3
+       */
       return put({ ...args, s3 });
     },
 
     post(args: t.S3SignedPostArgs) {
+      /**
+       * TODO 🐷 getS3
+       */
       return post({ ...args, s3 });
     },
 
     deleteOne(args: { bucket: string; key: string }) {
+      /**
+       * TODO 🐷 getS3
+       */
       return deleteOne({ ...args, s3 });
     },
 
     deleteMany(args: { bucket: string; keys: string[] }) {
+      /**
+       * TODO 🐷 getS3
+       */
       return deleteMany({ ...args, s3 });
     },
 
     copy(args: t.S3CopyArgs) {
+      /**
+       * TODO 🐷 getS3
+       */
       return copy({ ...args, s3 });
     },
 
