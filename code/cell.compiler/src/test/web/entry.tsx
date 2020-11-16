@@ -9,6 +9,5 @@ import './workers/init';
 /**
  * React
  */
-const root = document.body.appendChild(document.createElement('div'));
-ReactDOM.render(<App />, root);
+ReactDOM.render(<App />, document.getElementById('root'));
 console.log('React.version:', React.version);

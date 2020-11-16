@@ -5,5 +5,4 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Dev } from './components/Dev';
 
-const root = document.body.appendChild(document.createElement('div'));
-ReactDOM.render(<Dev />, root);
+ReactDOM.render(<Dev />, document.getElementById('root'));
