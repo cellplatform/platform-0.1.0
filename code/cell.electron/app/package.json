@@ -7,7 +7,7 @@
   "config": {
     "forge": "build/forge.config.js"
   },
-  "workspaces__PACKAGE__": {
+  "workspaces__": {
     "packages": [
       "*"
     ]
