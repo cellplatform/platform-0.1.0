@@ -13,9 +13,10 @@ export * from './s3.post';
 export * from './s3.copy';
 
 export function init(args: t.S3Config): t.S3 {
-  const endpoint = (args.endpoint || '').trim();
+  const endpoint = toEndpoint(args.endpoint);
+
   const s3 = new AWS.S3({
-    endpoint: new AWS.Endpoint(endpoint) as any,
+    endpoint: new AWS.Endpoint(endpoint.origin) as any,
     accessKeyId: args.accessKey,
     secretAccessKey: args.secret,
   });
@@ -23,7 +24,7 @@ export function init(args: t.S3Config): t.S3 {
   const res: t.S3 = {
     endpoint,
 
-    url(bucket: string, path?: string) {
+    url(bucket: string, path: string) {
       return url(s3, bucket, path);
     },
 
@@ -60,7 +61,7 @@ export function init(args: t.S3Config): t.S3 {
       return {
         bucket,
         endpoint,
-        url(path?: string) {
+        url(path: string) {
           return res.url(bucket, path);
         },
         list(args: { prefix?: string; max?: number }) {
@@ -93,3 +94,13 @@ export function init(args: t.S3Config): t.S3 {
 
   return res;
 }
+
+/**
+ * [Helpers]
+ */
+
+const toEndpoint = (input: string | t.S3Endpoint): t.S3Endpoint => {
+  const origin = (typeof input === 'string' ? input : input.origin || '').trim();
+  const edge = typeof input !== 'object' ? undefined : (input.edge || '').trim();
+  return { origin, edge: edge || undefined };
+};

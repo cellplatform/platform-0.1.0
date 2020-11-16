@@ -8,6 +8,51 @@ const s3 = fs.s3({
 });
 
 describe('s3', () => {
+  describe.only('s3.endpoint', () => {
+    const accessKey = 'MY_KEY';
+    const secret = 'MY_SECRET';
+
+    it('origin only (string)', () => {
+      const res = fs.s3({ endpoint: '  foo.com  ', accessKey, secret });
+      expect(res.endpoint.origin).to.eql('foo.com');
+      expect(res.endpoint.edge).to.eql(undefined);
+    });
+
+    it('origin ({ object })', () => {
+      const res1 = fs.s3({ endpoint: { origin: '  foo.com  ' }, accessKey, secret });
+      expect(res1.endpoint.origin).to.eql('foo.com');
+      expect(res1.endpoint.edge).to.eql(undefined);
+
+      const res2 = fs.s3({ endpoint: { origin: '  foo.com  ', edge: '  ' }, accessKey, secret });
+      expect(res2.endpoint.origin).to.eql('foo.com');
+      expect(res2.endpoint.edge).to.eql(undefined);
+    });
+
+    it('origin AND edge', () => {
+      const res = fs.s3({
+        endpoint: { origin: '  foo.com  ', edge: '   cdn.foo.com   ' },
+        accessKey,
+        secret,
+      });
+
+      expect(res.endpoint.origin).to.eql('foo.com');
+      expect(res.endpoint.edge).to.eql('cdn.foo.com');
+    });
+
+    it('bucket endpoint', () => {
+      const s3 = fs.s3({
+        endpoint: { origin: '  foo.com  ', edge: '   cdn.foo.com   ' },
+        accessKey,
+        secret,
+      });
+
+      const bucket = s3.bucket('myBucket');
+      expect(s3.endpoint).to.eql(bucket.endpoint);
+      expect(bucket.endpoint.origin).to.eql('foo.com');
+      expect(bucket.endpoint.edge).to.eql('cdn.foo.com');
+    });
+  });
+
   describe('s3.url', () => {
     it('throw if bucket not provided', () => {
       const test = (bucket?: any) => {
@@ -20,12 +65,12 @@ describe('s3', () => {
     });
 
     it('url.object', () => {
-      const test = (bucket: string, path?: string, expected?: string) => {
+      const test = (bucket: string, path: string, expected?: string) => {
         const res = s3.url(bucket, path);
         expect(res.object).to.eql(expected);
       };
 
-      test('foo', undefined, 'https://foo.sfo.domain.com/');
+      test('foo', undefined as any, 'https://foo.sfo.domain.com/');
       test('foo', '', 'https://foo.sfo.domain.com/');
       test('foo', '  ', 'https://foo.sfo.domain.com/');
       test('..foo...', '', 'https://foo.sfo.domain.com/');
@@ -84,12 +129,12 @@ describe('s3', () => {
   describe('bucket', () => {
     it('bucket.url', () => {
       const bucket = s3.bucket('foo');
-      const test = (path?: string, expected?: string) => {
+      const test = (path: string, expected?: string) => {
         const res = bucket.url(path);
         expect(res.object).to.eql(expected);
       };
 
-      test(undefined, 'https://foo.sfo.domain.com/');
+      test(undefined as any, 'https://foo.sfo.domain.com/');
       test('', 'https://foo.sfo.domain.com/');
       test('  ', 'https://foo.sfo.domain.com/');
       test('', 'https://foo.sfo.domain.com/');
@@ -176,14 +221,14 @@ describe('s3', () => {
       });
 
       it('throws when empty key-path', () => {
-        const test = (path?: string) => {
+        const test = (path: string) => {
           const bucket = s3.bucket('my-bucket');
           const err = /Object key path must be specified/;
           expect(() => bucket.url(path).signedGet()).to.throw(err);
           expect(() => bucket.url(path).signedPut()).to.throw(err);
           expect(() => bucket.url(path).signedPost()).to.throw(err);
         };
-        test();
+        test(undefined as any);
         test('');
         test('  ');
       });

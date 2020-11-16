@@ -4,9 +4,10 @@ import { IHttpHeaders } from '@platform/http.types';
 export type S3Config = {
   accessKey: string;
   secret: string;
-  endpoint: string;
+  endpoint: string | S3Endpoint;
 };
 
+export type S3Endpoint = { origin: string; edge?: string };
 export type S3Permission = 'private' | 'public-read';
 
 /**
@@ -23,8 +24,8 @@ export type S3StorageClass =
   | 'OUTPOSTS';
 
 export type S3 = {
-  endpoint: string;
-  url(bucket: string, path?: string): S3Url;
+  endpoint: S3Endpoint;
+  url(bucket: string, path: string): S3Url;
   list(args: { bucket: string; prefix?: string; max?: number }): S3List;
   get(args: { bucket: string; key: string; metaOnly?: boolean }): Promise<S3GetResponse>;
   put(args: S3PutArgs): Promise<S3PutResponse>;
@@ -43,8 +44,8 @@ export type S3Url = {
 };
 
 export type S3Bucket = {
-  endpoint: string;
-  url(path?: string): S3Url;
+  endpoint: S3Endpoint;
+  url(path: string): S3Url;
   list(args: { prefix?: string; max?: number }): S3List;
   get(args: { key: string; metaOnly?: boolean }): Promise<S3GetResponse>;
   put(args: S3BucketPutArgs): Promise<S3PutResponse>;
