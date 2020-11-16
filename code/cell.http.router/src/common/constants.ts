@@ -18,9 +18,9 @@ const DEPS = PKG.dependencies;
 const toVersion = (input: string) => (input || '').split('@')[2];
 export function getSystem() {
   const versions = getVersions();
-  const server = toVersion(versions.server);
+  const router = toVersion(versions.router);
   const schema = toVersion(versions.schema);
-  const system = `server@${server}; schema@${schema}`;
+  const system = `router@${router}; schema@${schema}`;
   return {
     system,
     ...versions,
@@ -37,7 +37,7 @@ export function getVersions() {
   const version = {
     schema: depVersion('@platform/cell.schema'),
     types: depVersion('@platform/cell.types'),
-    server: depVersion('@platform/cell.http.router', PKG.version),
+    router: depVersion('@platform/cell.http.router', PKG.version),
     toVersion,
   };
 

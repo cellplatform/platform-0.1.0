@@ -20,7 +20,8 @@ export function getSystem() {
   const versions = getVersions();
   const server = toVersion(versions.server);
   const schema = toVersion(versions.schema);
-  const system = `CellOS; cell.http@${server}; cell.schema@${schema}`;
+  const router = toVersion(versions.router);
+  const system = `server@${server}; router@${router} schema@${schema}`;
   return {
     system,
     ...versions,
@@ -37,6 +38,7 @@ export function getVersions() {
     schema: depVersion('@platform/cell.schema'),
     types: depVersion('@platform/cell.types'),
     server: depVersion('@platform/cell.http', PKG.version),
+    router: depVersion('@platform/cell.http.router'),
     toVersion,
   };
 
