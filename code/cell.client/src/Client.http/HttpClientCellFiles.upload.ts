@@ -79,8 +79,7 @@ export async function uploadFiles(args: {
 
         // Send form to S3.
         const headers = form.getHeaders();
-        const res = await http.post(url, form, { headers });
-        return res;
+        return http.post(url, form, { headers });
       };
 
       const uploadToLocal = async () => {
@@ -106,8 +105,8 @@ export async function uploadFiles(args: {
   const fileUploadSuccesses = res2.filter((item) => item.ok);
   const fileUploadFails = res2.filter((item) => !item.ok);
   const fileUploadErrors = fileUploadFails.map((item) => {
-    const { filename } = item;
-    const message = `Failed while uploading file '${filename}'`;
+    const { filename, status } = item;
+    const message = `Client failed while uploading file '${filename}' (${status})`;
     const error: t.IFileUploadError = { type: 'FILE/upload', filename, message };
     return error;
   });
