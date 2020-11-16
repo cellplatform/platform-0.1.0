@@ -1,5 +1,6 @@
 import { parse as parseUrl } from 'url';
-import { expect, util } from '../test';
+import { expect, util, t } from '../test';
+import { s3 } from '.';
 
 const PROVIDER = 'SPACES';
 
@@ -46,10 +47,10 @@ describe('S3', () => {
     });
 
     it('resolve (DEFAULT)', () => {
-      const { fs, BASE_URL } = util.init(PROVIDER);
+      const { fs, URL } = util.init(PROVIDER);
       const test = (uri: string, expected: string) => {
         const res = fs.resolve(uri);
-        const path = `${BASE_URL}/${expected}`;
+        const path = `${URL}/${expected}`;
         expect(res.path).to.eql(path);
         expect(res.props).to.eql({});
       };
@@ -85,6 +86,27 @@ describe('S3', () => {
       expect(res.props.key).to.eql('tmp/test/ns.foo/123');
       expect(typeof res.props.Policy).to.eql('string');
       expect(typeof res.props['X-Amz-Signature']).to.eql('string');
+    });
+
+    it('resolve - formatUrl (eg. adjust for CDN)', () => {
+      const endpoint = 'sfo.domain.com';
+      const cdn = 'sfo.cdn.domain.com';
+
+      const formatUrl: t.FsS3FormatUrl = (url, ctx) => {
+        return ctx.type === 'SIGNED/get' || ctx.type === 'DEFAULT'
+          ? url.replace(/sfo\.domain\.com/, cdn)
+          : url;
+      };
+
+      const fs = s3.init({ dir: 'root', endpoint, accessKey: 'key', secret: 'secret', formatUrl });
+      const uri = 'file:foo:123';
+
+      expect(fs.resolve(uri).path).to.include(cdn);
+      expect(fs.resolve(uri, { type: 'SIGNED/get' }).path).to.include(cdn);
+
+      // NB: Not adjusted.
+      expect(fs.resolve(uri, { type: 'SIGNED/post' }).path).to.include(endpoint);
+      expect(fs.resolve(uri, { type: 'SIGNED/put' }).path).to.include(endpoint);
     });
   });
 });

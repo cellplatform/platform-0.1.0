@@ -9,6 +9,9 @@ export type FsTypeS3 = 'S3';
 
 export type FsS3Permission = 'private' | 'public-read';
 
+export type FsS3FormatUrl = (url: string, ctx: FsS3FormatUrlContext) => string;
+export type FsS3FormatUrlContext = { type: t.IFsResolveArgs['type'] };
+
 /**
  * API
  */
