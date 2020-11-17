@@ -3,7 +3,7 @@ import * as t from './common/types';
 /**
  * Server
  */
-export type ILogProps = { [key: string]: string | number | boolean };
+export type ILogProps = { [key: string]: string | number | boolean | undefined };
 
 export type ServerStart = (options?: {
   port?: number;

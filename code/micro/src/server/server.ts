@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, share } from 'rxjs/operators';
 
 import { body } from '../body';
-import { log, Router, t, time } from '../common';
+import { log, Router, t, time, value } from '../common';
 import { requestHandler } from './server.requestHandler';
 
 export * from '../types';
@@ -96,7 +96,10 @@ export function create(
         if (!options.silent) {
           const elapsed = log.gray(`[${timer.elapsed.toString()}]`);
           const url = log.cyan(`http://localhost:${log.magenta(port)} ${elapsed}`);
-          const props = { ...(options.log || args.log || {}), prod: IS_PROD };
+          const props = value.deleteUndefined({
+            ...(options.log || args.log || {}),
+            prod: IS_PROD,
+          });
           const keys = Object.keys(props);
           const max = keys.reduce((acc, next) => (next.length > acc ? next.length : acc), 0) + 2;
 
