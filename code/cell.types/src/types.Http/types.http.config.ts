@@ -20,7 +20,7 @@ export type IHttpConfigDeployment = {
   name: string;
   collection: string;
   fs: {
-    endpoint: string;
+    endpoint: { origin: string; edge?: string };
     root: string;
   };
   now: {

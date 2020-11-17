@@ -1,5 +1,5 @@
 import { s3 } from '..';
-import { fs, t } from '../common';
+import { fs } from '../common';
 
 export const writeFile = async (path: string, data: Buffer) => {
   await fs.ensureDir(fs.dirname(path));

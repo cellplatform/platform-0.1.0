@@ -4,7 +4,7 @@ export const DEFAULT: t.IHttpConfigDeployment = {
   name: 'Untitled',
   collection: 'cell.data',
   fs: {
-    endpoint: '',
+    endpoint: { origin: '' },
     root: '',
   },
   now: {
@@ -96,12 +96,12 @@ function validate(config: t.IHttpConfigFile) {
   }
 
   const fs = data.fs || {};
-  ['endpoint', 'root'].forEach((field) => {
-    const value = trim(fs[field]);
-    if (isEmpty(value)) {
-      error(`Missing [fs.${field}] value.`);
-    }
-  });
+  if (isEmpty(trim(fs.endpoint.origin))) {
+    error(`Missing [fs.endpoint.origin] value.`);
+  }
+  if (isEmpty(trim(fs.root))) {
+    error(`Missing [fs.root] value.`);
+  }
 
   const now = data.now || {};
   ['deployment', 'domain'].forEach((field) => {

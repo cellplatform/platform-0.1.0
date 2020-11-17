@@ -36,7 +36,10 @@ describe('settings.config', () => {
       title: 'My Title',
       fs: {
         ...Config.DEFAULT.fs,
-        endpoint: 'sfo2.digitaloceanspaces.com',
+        endpoint: {
+          origin: 'sfo2.digitaloceanspaces.com',
+          edge: 'sfo2.cdn.digitaloceanspaces.com',
+        },
         root: 'platform/tmp/test',
       },
       now: {
@@ -90,7 +93,7 @@ describe('settings.config', () => {
       test((c) => (c.data.now.domain = '  '), 'Missing [now.domain] value');
       test((c) => (c.data.secret.mongo = '  '), 'Missing [secret.mongo] value');
       test((c) => (c.data.secret.s3 = { key: '', secret: '' }), 'Missing [secret.s3] value');
-      test((c) => (c.data.fs.endpoint = ' '), 'Missing [fs.endpoint] value');
+      test((c) => (c.data.fs.endpoint.origin = ' '), 'Missing [fs.endpoint.origin] value');
       test((c) => (c.data.fs.root = ' '), 'Missing [fs.root] value');
     });
   });

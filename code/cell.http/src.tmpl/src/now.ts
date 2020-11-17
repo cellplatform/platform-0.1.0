@@ -9,7 +9,7 @@ import { IS_CLOUD, SECRETS } from './constants';
  */
 const fs = s3.init({
   dir: '__S3_ROOT__',
-  endpoint: '__S3_ENDPOINT__',
+  endpoint: { origin: '__S3_ORIGIN__', edge: '__S3_EDGE__' },
   accessKey: SECRETS.S3.KEY,
   secret: SECRETS.S3.SECRET,
 });

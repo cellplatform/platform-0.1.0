@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid.db",
-  "version": "0.4.344",
+  "version": "0.4.345",
   "description": "Abstract synchronization mapper between [ui.datagrid] and a [fsdb].",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,13 +15,13 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.coord": "0.8.194",
-    "@platform/cell.types": "0.5.11",
-    "@platform/cell.value": "0.2.149",
+    "@platform/cell.coord": "0.8.197",
+    "@platform/cell.types": "0.5.14",
+    "@platform/cell.value": "0.2.152",
     "@platform/fsdb.types": "0.6.41",
     "@platform/libs": "0.2.3",
-    "@platform/ui.datagrid.types": "0.7.189",
-    "@platform/ui.datagrid.util": "0.2.179"
+    "@platform/ui.datagrid.types": "0.7.190",
+    "@platform/ui.datagrid.util": "0.2.180"
   },
   "devDependencies": {
     "@platform/polyfill": "0.0.1",
@@ -29,8 +29,8 @@
     "@platform/fsdb.nedb": "1.3.141",
     "@platform/test": "0.1.17",
     "@platform/ts": "4.0.6",
-    "@platform/ui.datagrid": "0.7.314",
-    "@platform/ui.datagrid.cell": "0.2.148",
+    "@platform/ui.datagrid": "0.7.315",
+    "@platform/ui.datagrid.cell": "0.2.149",
     "electron": "10.1.5"
   },
   "files": [
