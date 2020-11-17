@@ -60,7 +60,9 @@ describe('HttpClient (Integration)', function () {
 
       const file1 = await source.file.name(filename1).info();
       expect(file1.ok).to.eql(true);
-      expect(file1.body.data.props['s3:permission']).to.eql('private');
+      if (file1.body.data.props['s3:permission']) {
+        expect(file1.body.data.props['s3:permission']).to.eql('private');
+      }
 
       const res = await source.files.copy(
         {
@@ -80,7 +82,9 @@ describe('HttpClient (Integration)', function () {
 
       const file2 = await target.file.name(filename2).info();
       expect(file2.status).to.eql(200);
-      expect(file2.body.data.props['s3:permission']).to.eql('public-read');
+      if (file2.body.data.props['s3:permission']) {
+        expect(file2.body.data.props['s3:permission']).to.eql('public-read');
+      }
     });
 
     it('copy: different cell overwrite existing file', async () => {

@@ -15,7 +15,7 @@ function loadEnv(provider: string) {
   return { provider, endpoint, bucket, accessKey, secret };
 }
 
-export function init(PROVIDER: string, root?: string, formatUrl?: t.FsS3FormatUrl) {
+export function init(PROVIDER: string, root?: string) {
   const { endpoint, accessKey, secret, bucket } = loadEnv(PROVIDER);
   const PATH = 'tmp/test';
   const ROOT = root || `${bucket}/${PATH}`;
@@ -25,7 +25,7 @@ export function init(PROVIDER: string, root?: string, formatUrl?: t.FsS3FormatUr
     BUCKET: bucket,
     ROOT,
     PATH,
-    fs: s3.init({ dir: ROOT, endpoint, accessKey, secret, formatUrl }),
+    fs: s3.init({ dir: ROOT, endpoint, accessKey, secret }),
   };
 }
 

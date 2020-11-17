@@ -9,9 +9,6 @@ export type FsTypeS3 = 'S3';
 
 export type FsS3Permission = 'private' | 'public-read';
 
-export type FsS3FormatUrl = (url: string, ctx: FsS3FormatUrlContext) => string;
-export type FsS3FormatUrlContext = { type: t.IFsResolveOptionsS3['type'] };
-
 /**
  * API
  */
@@ -84,7 +81,7 @@ export type IFsLocation = {
 
 export type IFsResolveOptions = IFsResolveOptionsLocal | IFsResolveOptionsS3;
 
-export type IFsResolveOptionsLocal = { type: 'local' };
+export type IFsResolveOptionsLocal = IFsResolveOptionsS3; // NB: the local file-system simulates the S3 post.
 
 export type IFsResolveOptionsS3 =
   | IFsResolveDefaultOptionsS3

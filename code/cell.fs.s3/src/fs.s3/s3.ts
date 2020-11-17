@@ -2,7 +2,7 @@ import { t, fs, path, Schema, util } from '../common';
 import { parse as parseUrl } from 'url';
 
 export * from '../types';
-export type IS3Init = t.S3Config & { dir: string; formatUrl?: t.FsS3FormatUrl };
+export type IS3Init = t.S3Config & { dir: string };
 
 /**
  * Initializes an "S3" compatible file-system API.
@@ -64,14 +64,13 @@ export function init(args: IS3Init): t.IFsS3 {
           ? options.endpoint
           : undefined;
       const key = path.resolve({ uri, dir: api.dir });
-      const format = (url: string) => (args.formatUrl ? args.formatUrl(url, { type }) : url);
 
       if (type === 'SIGNED/get') {
         const url = cloud.s3
           .url(api.bucket, key, { endpoint })
           .signedGet(options as t.S3SignedUrlGetObjectOptions);
         return {
-          path: format(url),
+          path: url,
           props: {},
         };
       }
@@ -81,7 +80,7 @@ export function init(args: IS3Init): t.IFsS3 {
           .url(api.bucket, key)
           .signedPut(options as t.S3SignedUrlPutObjectOptions);
         return {
-          path: format(url),
+          path: url,
           props: {},
         };
       }
@@ -89,7 +88,7 @@ export function init(args: IS3Init): t.IFsS3 {
       if (type === 'SIGNED/post') {
         const post = cloud.s3.url(api.bucket, key).signedPost(options as t.S3SignedPostOptions);
         return {
-          path: format(post.url),
+          path: post.url,
           props: post.props,
         };
       }
@@ -97,7 +96,7 @@ export function init(args: IS3Init): t.IFsS3 {
       // DEFAULT (direct object on S3).
       // NB: This will only work if the object's permission are [public-read].
       return {
-        path: format(cloud.s3.url(api.bucket, key, { endpoint }).object),
+        path: cloud.s3.url(api.bucket, key, { endpoint }).object,
         props: {},
       };
     },

@@ -1,18 +1,8 @@
 import { t, expect, util, log } from '../test';
 
-const formatUrl: t.FsS3FormatUrl = (url, ctx) => {
-  if (!url.includes('digitaloceanspaces.com')) {
-    return url;
-  } else {
-    return ctx.type === 'SIGNED/get' || ctx.type === 'DEFAULT'
-      ? url.replace(/digitaloceanspaces\.com/, 'cdn.digitaloceanspaces.com')
-      : url;
-  }
-};
-
 // const PROVIDER = 'WASABI';
 const PROVIDER = 'SPACES';
-const { fs, PATH, BUCKET, ENDPOINT } = util.init(PROVIDER, '', formatUrl);
+const { fs, PATH, BUCKET, ENDPOINT } = util.init(PROVIDER, '');
 
 const table = log.table({ border: false });
 log.info();
@@ -41,9 +31,7 @@ describe('S3 (Integration)', function () {
     expect(res.uri).to.eql(uri);
     expect(typeof res['s3:etag']).to.eql('string');
     expect(res['s3:permission']).to.eql('private'); // NB: Private by default.
-
-    const location = `${URL}/ns.foo/bird`;
-    expect(file.location).to.eql(location);
+    expect(file.location).to.eql(`https://${BUCKET}.${ENDPOINT.origin}/${PATH}/ns.foo/bird`);
     expect(file.path).to.eql(`/${PATH}/ns.foo/bird`);
 
     // log.info('WRITE', res);

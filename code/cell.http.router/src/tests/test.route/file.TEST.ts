@@ -75,10 +75,7 @@ describe('file:', () => {
 
     it('binay image file (.png)', async () => {
       const source = 'src/test/assets/bird.png';
-      const { mock, fileUri } = await testPostFile({
-        source,
-        dispose: false,
-      });
+      const { mock, fileUri } = await testPostFile({ source, dispose: false });
 
       const urls = mock.urls.file(fileUri);
       const resDownload = await http.get(urls.download.toString());

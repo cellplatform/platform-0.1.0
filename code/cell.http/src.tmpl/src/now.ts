@@ -1,7 +1,7 @@
 import { s3 } from '@platform/cell.fs.s3';
 import { MongoDb } from '@platform/fsdb.mongo';
 
-import { server, t, time, formatUrl } from './common';
+import { server, t, time } from './common';
 import { IS_CLOUD, SECRETS } from './constants';
 
 /**
@@ -12,7 +12,6 @@ const fs = s3.init({
   endpoint: '__S3_ENDPOINT__',
   accessKey: SECRETS.S3.KEY,
   secret: SECRETS.S3.SECRET,
-  formatUrl,
 });
 
 /**

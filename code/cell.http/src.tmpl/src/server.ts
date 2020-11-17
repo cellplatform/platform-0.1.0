@@ -2,7 +2,7 @@ import { local } from '@platform/cell.fs.local';
 import { s3 } from '@platform/cell.fs.s3';
 import { NeDb } from '@platform/fsdb.nedb';
 
-import { server, util, formatUrl } from './common';
+import { server, util } from './common';
 
 util.env.load();
 const TMP = util.resolve('tmp');
@@ -23,10 +23,12 @@ const filesystem = {
   spaces: () =>
     s3.init({
       dir: 'platform/tmp/test.http',
-      endpoint: 'sfo2.digitaloceanspaces.com',
+      endpoint: {
+        origin: 'sfo2.digitaloceanspaces.com',
+        edge: 'sfo2.cdn.digitaloceanspaces.com',
+      },
       accessKey: util.env.value('SPACES_KEY'),
       secret: util.env.value('SPACES_SECRET'),
-      formatUrl,
     }),
 
   wasabi: () =>
@@ -44,9 +46,9 @@ const filesystem = {
 const app = server.create({
   name: 'sample',
   db,
-  // fs: filesystem.spaces(),
+  fs: filesystem.spaces(),
   // fs: filesystem.wasabi(),
-  fs: filesystem.local(),
+  // fs: filesystem.local(),
   // log: ['ROUTES'],
 });
 
