@@ -50,7 +50,7 @@ describe('fs.local', () => {
 
     it('resolve - throws if non-DEFAULT operation specified', () => {
       const fs = init();
-      const test = (options: t.IFsResolveArgs) => {
+      const test = (options: t.IFsResolveOptionsLocal) => {
         const fn = () => fs.resolve('file:foo:123', options);
         expect(fn).to.throw();
       };

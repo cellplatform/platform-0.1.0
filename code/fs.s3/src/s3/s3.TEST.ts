@@ -1,15 +1,56 @@
 import { expect, fs, t } from '../test';
 import { parse as parseUrl } from 'url';
 
-const s3 = fs.s3({
-  endpoint: 'sfo.domain.com',
-  accessKey: 'MY_KEY',
-  secret: 'MY_SECRET',
-});
+const accessKey = 'MY_KEY';
+const secret = 'MY_SECRET';
 
 describe('s3', () => {
+  describe('s3.endpoint', () => {
+    it('origin only (string)', () => {
+      const res = fs.s3({ endpoint: '  foo.com  ', accessKey, secret });
+      expect(res.endpoint.origin).to.eql('foo.com');
+      expect(res.endpoint.edge).to.eql(undefined);
+    });
+
+    it('origin ({ object })', () => {
+      const res1 = fs.s3({ endpoint: { origin: '  foo.com  ' }, accessKey, secret });
+      expect(res1.endpoint.origin).to.eql('foo.com');
+      expect(res1.endpoint.edge).to.eql(undefined);
+
+      const res2 = fs.s3({ endpoint: { origin: '  foo.com  ', edge: '  ' }, accessKey, secret });
+      expect(res2.endpoint.origin).to.eql('foo.com');
+      expect(res2.endpoint.edge).to.eql(undefined);
+    });
+
+    it('origin AND edge', () => {
+      const res = fs.s3({
+        endpoint: { origin: '  foo.com  ', edge: '   cdn.foo.com   ' },
+        accessKey,
+        secret,
+      });
+
+      expect(res.endpoint.origin).to.eql('foo.com');
+      expect(res.endpoint.edge).to.eql('cdn.foo.com');
+    });
+
+    it('bucket endpoint', () => {
+      const s3 = fs.s3({
+        endpoint: { origin: '  foo.com  ', edge: '   cdn.foo.com   ' },
+        accessKey,
+        secret,
+      });
+
+      const bucket = s3.bucket('myBucket');
+      expect(s3.endpoint).to.eql(bucket.endpoint);
+      expect(bucket.endpoint.origin).to.eql('foo.com');
+      expect(bucket.endpoint.edge).to.eql('cdn.foo.com');
+    });
+  });
+
   describe('s3.url', () => {
     it('throw if bucket not provided', () => {
+      const s3 = fs.s3({ endpoint: 'sfo.domain.com', accessKey, secret });
+
       const test = (bucket?: any) => {
         const fn = () => s3.url(bucket, '/foo/bar');
         expect(fn).to.throw(/No bucket/);
@@ -20,12 +61,14 @@ describe('s3', () => {
     });
 
     it('url.object', () => {
-      const test = (bucket: string, path?: string, expected?: string) => {
+      const s3 = fs.s3({ endpoint: 'sfo.domain.com', accessKey, secret });
+
+      const test = (bucket: string, path: string, expected?: string) => {
         const res = s3.url(bucket, path);
         expect(res.object).to.eql(expected);
       };
 
-      test('foo', undefined, 'https://foo.sfo.domain.com/');
+      test('foo', undefined as any, 'https://foo.sfo.domain.com/');
       test('foo', '', 'https://foo.sfo.domain.com/');
       test('foo', '  ', 'https://foo.sfo.domain.com/');
       test('..foo...', '', 'https://foo.sfo.domain.com/');
@@ -38,6 +81,8 @@ describe('s3', () => {
     });
 
     it('url.signedGet', () => {
+      const s3 = fs.s3({ endpoint: 'sfo.domain.com', accessKey, secret });
+
       const res1 = s3.url('foo', '//tmp/file.png').signedGet();
       const res2 = s3.url('foo', 'tmp/file.png').signedGet({ expires: '5s' });
 
@@ -50,7 +95,30 @@ describe('s3', () => {
       expect(url1.query.Expires).to.not.eql(url2.query.Expires);
     });
 
+    it('url: edge', () => {
+      const endpoint = { origin: 'domain.com', edge: 'cdn.domain.com' };
+      const s3 = fs.s3({ endpoint, accessKey, secret });
+      const url1 = s3.url('foo', 'tmp/file.png');
+      const url2 = s3.url('foo', 'tmp/file.png', { endpoint: 'origin' });
+
+      // GET (edge network applicable).
+      expect(url1.object).to.eql('https://foo.cdn.domain.com/tmp/file.png');
+      expect(url2.object).to.eql('https://foo.domain.com/tmp/file.png');
+
+      expect(url1.signedGet()).to.include('https://foo.cdn.domain.com/tmp/file.png?');
+      expect(url2.signedGet()).to.include('https://foo.domain.com/tmp/file.png?');
+
+      // Not edge addressable.
+      expect(url1.signedPost().url).to.eql('https://domain.com/foo');
+      expect(url2.signedPost().url).to.eql('https://domain.com/foo');
+
+      expect(url1.signedPut()).to.include('https://foo.domain.com/tmp/file.png?');
+      expect(url2.signedPut()).to.include('https://foo.domain.com/tmp/file.png?');
+    });
+
     it('url.signedPut', () => {
+      const s3 = fs.s3({ endpoint: 'sfo.domain.com', accessKey, secret });
+
       const res1 = s3.url('foo', '//tmp/file.png').signedPut();
       const res2 = s3.url('foo', 'file.png').signedPut({ expires: '5s' });
 
@@ -64,6 +132,8 @@ describe('s3', () => {
     });
 
     it('[signedGet] differs from [signedPut]', () => {
+      const s3 = fs.s3({ endpoint: 'sfo.domain.com', accessKey, secret });
+
       const get1 = s3.url('foo', 'file.png').signedGet();
       const get2 = s3.url('foo', 'file.png').signedGet();
       const put = s3.url('foo', 'file.png').signedPut();
@@ -72,6 +142,8 @@ describe('s3', () => {
     });
 
     it('url.signedPost', () => {
+      const s3 = fs.s3({ endpoint: 'sfo.domain.com', accessKey, secret });
+
       const res = s3.url('foo', '///tmp/file.png').signedPost();
       expect(res.url).to.eql('https://sfo.domain.com/foo');
       expect(res.props['content-type']).to.eql('image/png');
@@ -82,14 +154,16 @@ describe('s3', () => {
   });
 
   describe('bucket', () => {
+    const s3 = fs.s3({ endpoint: 'sfo.domain.com', accessKey, secret });
+
     it('bucket.url', () => {
       const bucket = s3.bucket('foo');
-      const test = (path?: string, expected?: string) => {
+      const test = (path: string, expected?: string) => {
         const res = bucket.url(path);
         expect(res.object).to.eql(expected);
       };
 
-      test(undefined, 'https://foo.sfo.domain.com/');
+      test(undefined as any, 'https://foo.sfo.domain.com/');
       test('', 'https://foo.sfo.domain.com/');
       test('  ', 'https://foo.sfo.domain.com/');
       test('', 'https://foo.sfo.domain.com/');
@@ -99,6 +173,21 @@ describe('s3', () => {
       test('/tmp/file.png', 'https://foo.sfo.domain.com/tmp/file.png');
       test('///tmp/file.png', 'https://foo.sfo.domain.com/tmp/file.png');
       test('  ///tmp/file.png  ', 'https://foo.sfo.domain.com/tmp/file.png');
+    });
+
+    it('bucket.url: edge', () => {
+      const endpoint = { origin: 'domain.com', edge: 'cdn.domain.com' };
+      const s3 = fs.s3({ endpoint, accessKey, secret });
+      const bucket = s3.bucket('foo');
+      const url = bucket.url('tmp/file.png');
+
+      // GET (edge network applicable).
+      expect(url.object).to.eql('https://foo.cdn.domain.com/tmp/file.png');
+      expect(url.signedGet()).to.include('https://foo.cdn.domain.com/tmp/file.png?');
+
+      // Not edge addressable.
+      expect(url.signedPost().url).to.eql('https://domain.com/foo');
+      expect(url.signedPut()).to.include('https://foo.domain.com/tmp/file.png?');
     });
 
     describe('bucket.url (pre-signed)', () => {
@@ -176,14 +265,14 @@ describe('s3', () => {
       });
 
       it('throws when empty key-path', () => {
-        const test = (path?: string) => {
+        const test = (path: string) => {
           const bucket = s3.bucket('my-bucket');
           const err = /Object key path must be specified/;
           expect(() => bucket.url(path).signedGet()).to.throw(err);
           expect(() => bucket.url(path).signedPut()).to.throw(err);
           expect(() => bucket.url(path).signedPost()).to.throw(err);
         };
-        test();
+        test(undefined as any);
         test('');
         test('  ');
       });

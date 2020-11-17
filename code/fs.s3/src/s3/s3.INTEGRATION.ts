@@ -6,8 +6,8 @@ export { FormData };
 const tmp = fs.resolve('./tmp');
 fs.ensureDirSync(tmp);
 
-const PROVIDER = 'WASABI';
-// const PROVIDER = 'SPACES';
+// const PROVIDER = 'WASABI';
+const PROVIDER = 'SPACES';
 
 const { s3, BUCKET, ENDPOINT, PATH } = util.init(PROVIDER);
 const bucket = s3.bucket(BUCKET);
@@ -15,7 +15,10 @@ const bucket = s3.bucket(BUCKET);
 const table = log.table({ border: false });
 log.info();
 table.add(['PROVIDER ', log.green(PROVIDER)]);
-table.add(['ENDPOINT', log.green(ENDPOINT)]);
+table.add(['ENDPOINT', log.green(`${ENDPOINT.origin}`), '(origin)']);
+if (ENDPOINT.edge) {
+  table.add(['', log.green(`${ENDPOINT.edge}`), '(edge)']);
+}
 table.add(['BUCKET', log.green(BUCKET)]);
 table.add(['PATH', log.green(PATH)]);
 log.info(table.toString());
@@ -58,6 +61,19 @@ describe('S3 (Integration)', function () {
 
     expect(res.ok).to.eql(true);
     expect(await exists()).to.eql(true);
+  });
+
+  it('bucket.list', async () => {
+    const { data } = await testFile();
+    const key = 'tmp/list/info.json';
+    await bucket.put({ data, key });
+
+    const list = bucket.list({ prefix: 'tmp' });
+    const objects = await list.objects;
+    const dirs = await list.dirs;
+
+    expect(objects.items.length).to.greaterThan(0);
+    expect(dirs.items.length).to.greaterThan(0);
   });
 
   it('bucket.put', async () => {

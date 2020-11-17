@@ -12,6 +12,8 @@ export {
   S3SignedUrlGetObjectOptions,
   S3SignedUrlPutObjectOptions,
   S3SignedPostOptions,
+  S3Endpoint,
+  S3EndpointKind,
 } from '@platform/fs.s3.types';
 
 export * from '..';

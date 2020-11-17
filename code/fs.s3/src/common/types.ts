@@ -1,6 +1,6 @@
-import { Json } from '@platform/types';
-
-export { Json };
-export * from '../types';
+export { Json } from '@platform/types/lib/json';
 export * from '@platform/types';
 export * from '@platform/http/lib/types';
+export * from '../types';
+
+export type GetAwsS3 = (endpoint: 'origin' | 'edge') => AWS.S3;

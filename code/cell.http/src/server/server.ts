@@ -46,6 +46,7 @@ export function create(args: {
       schema: log.green(deps['@platform/cell.schema']),
       router: deps['@platform/cell.http.router'],
       fs: `[${log.white(fs.type === 'LOCAL' ? 'local' : fs.type)}]${dir}`,
+      s3: fs.type !== 'S3' ? undefined : fs.endpoint.origin,
     },
   });
 

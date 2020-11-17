@@ -1,7 +1,9 @@
 title: My Title
 
 fs:
-  endpoint: sfo2.digitaloceanspaces.com
+  endpoint:
+    origin: sfo2.digitaloceanspaces.com
+    edge: sfo2.cdn.digitaloceanspaces.com
   root: platform/tmp/test
 
 now:

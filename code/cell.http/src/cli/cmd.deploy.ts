@@ -5,7 +5,7 @@ import { cli, defaultValue, fs, log, PKG, t, time } from './common';
 
 const FILES = [
   'package.json',
-  'now.json',
+  'vercel.json',
   'yarn.lock',
   'src/common.ts',
   'src/constants.ts',
@@ -178,11 +178,11 @@ async function copyAndPrepare(args: {
   // Copy deployment folder.
   const tmpl = await copy({ sourceDir, targetDir });
 
-  // Update: [now.json]
+  // Update: [vercel.json]
   await (async () => {
     const { now, secret } = config;
 
-    const file = tmpl.files.find((path) => path.to.endsWith('now.json'));
+    const file = tmpl.files.find((path) => path.to.endsWith('vercel.json'));
     if (file) {
       const json = await fs.file.loadAndParse<t.IHttpConfigNowFile>(file.to);
 
@@ -230,7 +230,8 @@ async function copyAndPrepare(args: {
       text = text.replace(/__DB__/, now.subdomain || 'prod');
       text = text.replace(/__COLLECTION__/, config.collection);
       text = text.replace(/__DEPLOYED_AT__/, time.now.timestamp.toString());
-      text = text.replace(/__S3_ENDPOINT__/, config.fs.endpoint);
+      text = text.replace(/__S3_ORIGIN__/, config.fs.endpoint.origin);
+      text = text.replace(/__S3_EDGE__/, config.fs.endpoint.edge || '');
       text = text.replace(/__S3_ROOT__/, config.fs.root);
 
       await fs.writeFile(file.to, text);

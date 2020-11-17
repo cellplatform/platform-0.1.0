@@ -1,5 +1,5 @@
 import { s3 } from '..';
-import { fs, t } from '../common';
+import { fs } from '../common';
 
 export const writeFile = async (path: string, data: Buffer) => {
   await fs.ensureDir(fs.dirname(path));
@@ -8,14 +8,14 @@ export const writeFile = async (path: string, data: Buffer) => {
 
 function loadEnv(provider: string) {
   const env = (suffix: string) => fs.env.value(`${provider}_${suffix}`);
-  const endpoint = env('ENDPOINT');
+  const endpoint = { origin: env('ORIGIN'), edge: env('EDGE') };
   const accessKey = env('KEY');
   const secret = env('SECRET');
   const bucket = env('BUCKET');
   return { provider, endpoint, bucket, accessKey, secret };
 }
 
-export function init(PROVIDER: string, root?: string, formatUrl?: t.FsS3FormatUrl) {
+export function init(PROVIDER: string, root?: string) {
   const { endpoint, accessKey, secret, bucket } = loadEnv(PROVIDER);
   const PATH = 'tmp/test';
   const ROOT = root || `${bucket}/${PATH}`;
@@ -25,8 +25,7 @@ export function init(PROVIDER: string, root?: string, formatUrl?: t.FsS3FormatUr
     BUCKET: bucket,
     ROOT,
     PATH,
-    URL: `https://${bucket}.${endpoint}/${PATH}`,
-    fs: s3.init({ dir: ROOT, endpoint, accessKey, secret, formatUrl }),
+    fs: s3.init({ dir: ROOT, endpoint, accessKey, secret }),
   };
 }
 
