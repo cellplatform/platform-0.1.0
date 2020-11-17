@@ -42,6 +42,7 @@ export function init(args: IS3Init): t.IFsS3 {
 
   const api: t.IFsS3 = {
     type: 'S3',
+    endpoint: cloud.s3.endpoint,
 
     /**
      * S3 bucket name.
@@ -56,14 +57,18 @@ export function init(args: IS3Init): t.IFsS3 {
     /**
      * Convert the given string to a URL endpoint.
      */
-    resolve(uri: string, options?: t.IFsResolveArgs) {
-      const type = (options ? options.type : 'DEFAULT') as t.IFsResolveArgs['type'];
+    resolve(uri: string, options?: t.IFsResolveOptionsS3) {
+      const type = (options ? options.type : 'DEFAULT') as t.IFsResolveOptionsS3['type'];
+      const endpoint =
+        options?.type === 'DEFAULT' || options?.type === 'SIGNED/get'
+          ? options.endpoint
+          : undefined;
       const key = path.resolve({ uri, dir: api.dir });
       const format = (url: string) => (args.formatUrl ? args.formatUrl(url, { type }) : url);
 
       if (type === 'SIGNED/get') {
         const url = cloud.s3
-          .url(api.bucket, key)
+          .url(api.bucket, key, { endpoint })
           .signedGet(options as t.S3SignedUrlGetObjectOptions);
         return {
           path: format(url),
@@ -92,7 +97,7 @@ export function init(args: IS3Init): t.IFsS3 {
       // DEFAULT (direct object on S3).
       // NB: This will only work if the object's permission are [public-read].
       return {
-        path: format(cloud.s3.url(api.bucket, key).object),
+        path: format(cloud.s3.url(api.bucket, key, { endpoint }).object),
         props: {},
       };
     },

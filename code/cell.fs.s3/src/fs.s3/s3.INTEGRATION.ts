@@ -12,12 +12,15 @@ const formatUrl: t.FsS3FormatUrl = (url, ctx) => {
 
 // const PROVIDER = 'WASABI';
 const PROVIDER = 'SPACES';
-const { fs, URL, PATH, BUCKET, ENDPOINT } = util.init(PROVIDER, '', formatUrl);
+const { fs, PATH, BUCKET, ENDPOINT } = util.init(PROVIDER, '', formatUrl);
 
 const table = log.table({ border: false });
 log.info();
 table.add(['PROVIDER ', log.green(PROVIDER)]);
-table.add(['ENDPOINT', log.green(ENDPOINT)]);
+table.add(['ENDPOINT', log.green(`${ENDPOINT.origin}`), '(origin)']);
+if (ENDPOINT.edge) {
+  table.add(['', log.green(`${ENDPOINT.edge}`), '(edge)']);
+}
 table.add(['BUCKET', log.green(BUCKET)]);
 table.add(['PATH', log.green(PATH)]);
 log.info(table.toString());

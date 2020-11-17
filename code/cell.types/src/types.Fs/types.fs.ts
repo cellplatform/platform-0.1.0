@@ -10,7 +10,7 @@ export type FsTypeS3 = 'S3';
 export type FsS3Permission = 'private' | 'public-read';
 
 export type FsS3FormatUrl = (url: string, ctx: FsS3FormatUrlContext) => string;
-export type FsS3FormatUrlContext = { type: t.IFsResolveArgs['type'] };
+export type FsS3FormatUrlContext = { type: t.IFsResolveOptionsS3['type'] };
 
 /**
  * API
@@ -24,7 +24,8 @@ export type IFsLocal = IFsMembers<
   IFsWriteOptionsLocal,
   IFsDeleteLocal,
   IFsCopyLocal,
-  IFsCopyOptionsLocal
+  IFsCopyOptionsLocal,
+  IFsResolveOptionsLocal
 >;
 export type IFsS3 = IFsMembers<
   FsTypeS3,
@@ -34,9 +35,11 @@ export type IFsS3 = IFsMembers<
   IFsWriteOptionsS3,
   IFsDeleteS3,
   IFsCopyS3,
-  IFsCopyOptionsS3
+  IFsCopyOptionsS3,
+  IFsResolveOptionsS3
 > & {
   bucket: string;
+  endpoint: t.S3Endpoint;
 };
 
 export type IFsWriteOptions = IFsWriteOptionsLocal | IFsWriteOptionsS3;
@@ -58,11 +61,12 @@ type IFsMembers<
   WriteOptions extends IFsWriteOptions,
   Delete extends IFsDelete,
   Copy extends IFsCopy,
-  CopyOptions extends IFsCopyOptions
+  CopyOptions extends IFsCopyOptions,
+  ResolveOptions extends IFsResolveOptions
 > = {
   type: Type;
   dir: string; // Root directory of the file-system.
-  resolve(uri: string, options?: IFsResolveArgs): IFsLocation;
+  resolve(uri: string, options?: ResolveOptions): IFsLocation;
   info(uri: string): Promise<Info>;
   read(uri: string): Promise<Read>;
   write(uri: string, data: Uint8Array, options?: WriteOptions): Promise<Write>;
@@ -78,16 +82,23 @@ export type IFsLocation = {
   props: { [key: string]: string };
 };
 
-export type IFsResolveArgs =
-  | IFsResolveDefaultArgs
-  | IFsResolveSignedGetArgs
-  | IFsResolveSignedPutArgs
-  | IFsResolveSignedPostArgs;
+export type IFsResolveOptions = IFsResolveOptionsLocal | IFsResolveOptionsS3;
 
-export type IFsResolveDefaultArgs = { type: 'DEFAULT' };
-export type IFsResolveSignedGetArgs = t.S3SignedUrlGetObjectOptions & { type: 'SIGNED/get' };
-export type IFsResolveSignedPutArgs = t.S3SignedUrlPutObjectOptions & { type: 'SIGNED/put' };
-export type IFsResolveSignedPostArgs = t.S3SignedPostOptions & { type: 'SIGNED/post' };
+export type IFsResolveOptionsLocal = { type: 'local' };
+
+export type IFsResolveOptionsS3 =
+  | IFsResolveDefaultOptionsS3
+  | IFsResolveSignedGetOptionsS3
+  | IFsResolveSignedPutOptionsS3
+  | IFsResolveSignedPostOptionsS3;
+
+export type IFsResolveDefaultOptionsS3 = { type: 'DEFAULT'; endpoint?: t.S3EndpointKind };
+export type IFsResolveSignedGetOptionsS3 = t.S3SignedUrlGetObjectOptions & {
+  type: 'SIGNED/get';
+  endpoint?: t.S3EndpointKind;
+};
+export type IFsResolveSignedPutOptionsS3 = t.S3SignedUrlPutObjectOptions & { type: 'SIGNED/put' };
+export type IFsResolveSignedPostOptionsS3 = t.S3SignedPostOptions & { type: 'SIGNED/post' };
 
 /**
  * File (meta/info)
