@@ -1,9 +1,9 @@
 import { Uri, Urls } from '@platform/cell.schema';
+import { RuntimeEnv } from '../types';
 
-import { GlobalCellEnv } from '../types/types.Global';
 import { remote } from './Runtime.remote';
 
-const toEnv = (input?: GlobalCellEnv) => {
+const toEnv = (input?: RuntimeEnv) => {
   return !input && typeof __CELL_ENV__ !== 'undefined' ? __CELL_ENV__ : input;
 };
 
@@ -18,7 +18,7 @@ export const Runtime = {
    * See compiler plugins:
    *    -  wp.plugin.env => [DefinePlugin]
    */
-  bundle(input?: GlobalCellEnv) {
+  bundle(input?: RuntimeEnv) {
     input = toEnv(input);
     const location = typeof window === 'object' ? window.location : undefined;
     const bundle = input?.bundle;
@@ -46,9 +46,9 @@ export const Runtime = {
   /**
    * Extract module information from __CELL_ENV__.
    */
-  module(input?: GlobalCellEnv) {
+  module(input?: RuntimeEnv) {
     input = toEnv(input);
-    const module: GlobalCellEnv['module'] = input?.module || { name: '', version: '' };
+    const module: RuntimeEnv['module'] = input?.module || { name: '', version: '' };
     return module;
   },
 };

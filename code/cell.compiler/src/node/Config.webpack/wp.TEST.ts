@@ -1,5 +1,5 @@
 import { Compiler } from '..';
-import { fs, expect, ModuleFederationPlugin, t, encoding } from '../../test';
+import { fs, expect, ModuleFederationPlugin, t, Encoding } from '../../test';
 import { ConfigBuilder } from '../Config';
 import { wp } from '.';
 
@@ -55,7 +55,7 @@ describe('Compiler (Webpack)', () => {
     expect(options(builder).name).to.eql('foobar');
 
     builder.namespace('foo.bar');
-    expect(options(builder).name).to.eql(encoding.escapeNamespace('foo.bar'));
+    expect(options(builder).name).to.eql(Encoding.escapeNamespace('foo.bar'));
   });
 
   it('namespace: throw (namespace not set)', () => {

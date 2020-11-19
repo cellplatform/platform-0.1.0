@@ -1,9 +1,9 @@
-export type GlobalCellEnv = {
+export type RuntimeEnv = {
   module: { name: string; version: string };
-  bundle?: GlobalCellEnvBundle;
+  bundle?: RuntimeEnvBundle;
 };
 
-export type GlobalCellEnvBundle = {
+export type RuntimeEnvBundle = {
   host: string;
   cell: string;
   dir?: string;

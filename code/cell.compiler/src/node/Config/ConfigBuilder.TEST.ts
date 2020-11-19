@@ -1,6 +1,6 @@
 import { config } from 'webpack';
 import { ConfigBuilder } from '.';
-import { DEFAULT, encoding, expect, fs, pkg, StateObject, t } from '../../test';
+import { DEFAULT, Encoding, expect, fs, pkg, StateObject, t } from '../../test';
 
 const create = () => {
   const model = ConfigBuilder.model('foo');
@@ -545,7 +545,7 @@ describe('Compiler (Config)', () => {
     it('adds {dependencies} object (cumulative)', () => {
       const { builder, model } = create();
 
-      const escaped = encoding.transformKeys(pkg.dependencies || {}, encoding.escapePath);
+      const escaped = Encoding.transformKeys(pkg.dependencies || {}, Encoding.escapePath);
 
       builder.shared((args) => args.add(args.dependencies));
       expect(model.state.shared).to.eql(escaped);

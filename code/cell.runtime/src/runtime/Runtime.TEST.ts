@@ -1,7 +1,7 @@
 import { Runtime } from '.';
 import { expect, t } from '../test';
 
-const __CELL_ENV__: t.GlobalCellEnv = {
+const __CELL_ENV__: t.RuntimeEnv = {
   module: { name: 'my-module', version: '1.2.3' },
   bundle: {
     host: 'foo.com',
@@ -10,10 +10,10 @@ const __CELL_ENV__: t.GlobalCellEnv = {
   },
 };
 
-const modify = (bundle: Partial<t.GlobalCellEnvBundle>): t.GlobalCellEnv => {
+const modify = (bundle: Partial<t.RuntimeEnvBundle>): t.RuntimeEnv => {
   return {
     ...__CELL_ENV__,
-    bundle: { ...__CELL_ENV__.bundle, ...bundle } as t.GlobalCellEnvBundle,
+    bundle: { ...__CELL_ENV__.bundle, ...bundle } as t.RuntimeEnvBundle,
   };
 };
 

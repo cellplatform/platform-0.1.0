@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { WebRuntime } from '../../../runtime.web';
+import { WebRuntime } from '@platform/cell.runtime/lib/runtime.web';
 
 /**
  * See:

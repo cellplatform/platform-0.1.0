@@ -15,7 +15,7 @@ export { log } from '@platform/log/lib/server';
 
 export { Client, HttpClient } from '@platform/cell.client';
 
-export { Schema, Uri } from '@platform/cell.schema';
+export { Schema, Uri, Encoding } from '@platform/cell.schema';
 
 import minimist from 'minimist';
 export { minimist };
@@ -27,3 +27,4 @@ export { ModuleFederationPlugin };
 
 export { exec } from '@platform/exec';
 export { port } from '@platform/http/lib/node';
+export { path, format } from '@platform/cell.runtime/lib/runtime.node/common';

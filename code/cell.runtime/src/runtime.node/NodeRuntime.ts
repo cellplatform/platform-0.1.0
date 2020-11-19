@@ -1,13 +1,11 @@
 import { exec } from '@platform/exec';
 
-import { Schema, DEFAULT, fs, HttpClient, log, PATH, t, logger, path } from '../node/common';
-import { BundleManifest } from '../node/Compiler';
-
-const MANIFEST = DEFAULT.FILE.JSON.INDEX;
+import { fs, HttpClient, log, logger, Schema, t, path } from './common';
 
 const IS_CLOUD = Boolean(process.env.VERCEL_URL);
 const TMP = IS_CLOUD ? '/tmp' : fs.resolve('tmp');
 const CACHE_DIR = fs.join(TMP, 'runtime.node');
+const MANIFEST_FILENAME = 'index.json';
 
 /**
  * Runtime environment for executing bundles on [node-js].
@@ -21,7 +19,8 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
     get url() {
       const urls = Schema.urls(host).cell(uri);
       return {
-        files: urls.files.list.query({ filter: `${dir.path}/**` }).toString(),
+        files: urls.files.list.query({ filter: `${dir.path}/**` }),
+        manifest: urls.file.byName(path.dir(dir.path).append(MANIFEST_FILENAME)),
       };
     },
 
@@ -50,7 +49,7 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
       await fs.remove(bundleDir);
 
       if (!silent) {
-        const url = BundleManifest.url(host, uri, dir.path);
+        const url = runtime.url.manifest;
         const from = logger.format.url(url.toString());
         const to = path.trimBase(bundleDir);
         const table = log.table({ border: false });
@@ -100,7 +99,7 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
         await runtime.pull({ silent });
       }
 
-      const manifestPath = fs.join(dir.prepend(cachedir), MANIFEST);
+      const manifestPath = fs.join(dir.prepend(cachedir), MANIFEST_FILENAME);
       if (!(await fs.pathExists(manifestPath))) {
         throw new Error(`A bundle manifest does not exist [${host}/${uri}].`);
       }
@@ -115,7 +114,7 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
 
         add('runtime', 'node');
         add('target', `${manifest.target}, ${manifest.mode}`);
-        add('source ', logger.format.url(runtime.url.files));
+        add('source ', logger.format.url(runtime.url.files.toString()));
         add('entry', manifest.entry);
         add('size', `${log.yellow(size)} (${manifest.files.length} files)`);
 

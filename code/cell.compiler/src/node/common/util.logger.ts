@@ -1,10 +1,6 @@
-import { log, Model, t, encoding } from '../common';
+import { log, Model, t, Encoding } from '../common';
 import { stats } from '../config.webpack';
 import { format } from './util.format';
-
-/**
- * Value formatters
- */
 
 /**
  * Log helpers for webpack.
@@ -71,7 +67,7 @@ export const logger = {
   exports(model: t.CompilerModel, options: { title?: string } = {}) {
     if (model.exposes) {
       const { title = 'Exports' } = options;
-      const exposes = encoding.transformKeys(model.exposes, encoding.unescapePath);
+      const exposes = Encoding.transformKeys(model.exposes, Encoding.unescapePath);
       log.info.gray(title);
       Object.keys(exposes).forEach((path) => {
         log.info(`  ${format.filepath(path)}`);

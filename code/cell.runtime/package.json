@@ -1,0 +1,28 @@
+{
+  "name": "@platform/cell.runtime",
+  "version": "0.0.0",
+  "scripts": {
+    "test": "ts test",
+    "lint": "ts lint",
+    "build": "ts build --no-esm",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/cell.client": "^0.3.5",
+    "@platform/cell.schema": "^0.5.15",
+    "@platform/cell.types": "^0.5.16",
+    "@platform/exec": "^0.2.67",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
+  "devDependencies": {
+    "@platform/test": "0.1.17",
+    "@platform/ts": "4.0.6"
+  },
+  "files": [
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}"
+  ],
+  "license": "MIT"
+}

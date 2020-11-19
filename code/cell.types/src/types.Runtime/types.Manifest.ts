@@ -1,5 +1,3 @@
-import { t } from './common';
-
 /**
  * Details about a bundled package.
  */

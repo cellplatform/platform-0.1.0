@@ -5,6 +5,7 @@ import { FileSchema } from '../File';
 import { RefSchema } from '../Ref';
 import { Uri } from '../Uri';
 import { Urls } from '../Url';
+import { Encoding } from '../Encoding';
 
 /**
  * Schema of DB paths.
@@ -23,6 +24,7 @@ export class Schema {
   public static slug = slug;
   public static hash = hash;
   public static coord = coord;
+  public static encoding = Encoding;
 
   public static Urls = Urls;
   public static urls = (host: string | number) => Urls.create(host);

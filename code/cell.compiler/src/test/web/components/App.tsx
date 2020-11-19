@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { WebRuntime } from '../../../runtime.web';
+import { WebRuntime } from '@platform/cell.runtime/lib/runtime.web';
 import Award from './assets/award.svg';
 import { System } from './System';
 

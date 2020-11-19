@@ -1,4 +1,4 @@
-import { Builder, DEFAULT, encoding, fs, R, t, value as valueUtil } from '../common';
+import { Builder, DEFAULT, Encoding, fs, R, t, value as valueUtil } from '../common';
 import { wp } from '../Config.webpack';
 import { webpackHandlers } from './handlers.webpack';
 import { Redirects, validate } from './util';
@@ -272,7 +272,7 @@ function writePathMap<M extends O>(
 
   model.change((draft) => {
     const entry = draft[objectField] || ((draft as any)[objectField] = {});
-    entry[encoding.escapePath(key)] = value;
+    entry[Encoding.escapePath(key)] = value;
     const obj = valueUtil.deleteEmpty(entry as any);
     if (Object.keys(obj).length > 0) {
       draft[objectField] = obj;
@@ -316,10 +316,10 @@ function writeShared(args: {
           names
             .filter((name) => dependencyExists(name))
             .forEach((name) => {
-              shared[encoding.escapePath(name)] = ctx.version(name);
+              shared[Encoding.escapePath(name)] = ctx.version(name);
             });
         } else if (typeof input === 'object') {
-          draft.shared = { ...shared, ...encoding.transformKeys(input, encoding.escapePath) };
+          draft.shared = { ...shared, ...Encoding.transformKeys(input, Encoding.escapePath) };
         }
       });
       return ctx;
@@ -331,7 +331,7 @@ function writeShared(args: {
         names
           .filter((name) => dependencyExists(name))
           .forEach((name) => {
-            shared[encoding.escapePath(name)] = {
+            shared[Encoding.escapePath(name)] = {
               singleton: true,
               requiredVersion: ctx.version(name),
             };

@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { Observable, Subject } from 'rxjs';
 import { filter, takeUntil, map } from 'rxjs/operators';
 
-import { encoding } from '../common/encoding';
+import { encoding } from './common';
 import { log } from '@platform/log/lib/client';
-import * as t from './types';
+import * as t from '../types';
 
 /**
  * Tools for dynamically loading remote ("federated") module.

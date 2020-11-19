@@ -4,5 +4,6 @@ export * from './Uri';
 export * from './Url';
 export * from './Links';
 export * from './Ref';
+export * from './Encoding';
 
 export { ERROR, Mime, squash } from './common';
