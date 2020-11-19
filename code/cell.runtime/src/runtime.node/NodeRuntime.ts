@@ -1,6 +1,5 @@
 import { exec } from '@platform/exec';
-
-import { fs, HttpClient, log, logger, Schema, t, path } from './common';
+import { fs, HttpClient, log, logger, Schema, t, time } from './common';
 
 const IS_CLOUD = Boolean(process.env.VERCEL_URL);
 const TMP = IS_CLOUD ? '/tmp' : fs.resolve('tmp');
@@ -66,10 +65,23 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
         log.info();
       }
 
+      const errors: Error[] = [];
       let count = 0;
-      const list = await client.files.list({ filter: dir.append('**') });
+
+      const pullList = async () => {
+        try {
+          const list = await client.files.list({ filter: dir.append('**') });
+          return list.body;
+        } catch (error) {
+          errors.push(error);
+          return [];
+        }
+      };
+
+      const list = await pullList();
+
       await Promise.all(
-        list.body.map(async (file) => {
+        list.map(async (file) => {
           const res = await client.file.name(file.path).download();
           if (typeof res.body === 'object') {
             count++;
@@ -80,10 +92,15 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
       );
 
       if (!silent) {
-        const size = (await fs.size.dir(bundleDir)).toString({ round: 0 });
-        log.info.gray(`${log.green(count)} files pulled (${log.yellow(size)})`);
+        const bytes = (await fs.size.dir(bundleDir)).toString({ round: 0 });
+        const size = count > 0 ? `(${log.yellow(bytes)})` : '';
+        log.info.gray(`${log.green(count)} files pulled ${size}`);
+        logger.errors(errors);
         logger.hr().newline();
       }
+
+      const ok = errors.length === 0;
+      return { ok, errors };
     },
 
     /**
@@ -96,7 +113,10 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
       const isPullRequired = !exists || options.pull;
 
       if (isPullRequired) {
-        await runtime.pull({ silent });
+        const { ok, errors } = await runtime.pull({ silent });
+        if (!ok) {
+          return { ok, errors };
+        }
       }
 
       const manifestPath = fs.join(dir.prepend(cachedir), MANIFEST_FILENAME);
@@ -125,18 +145,22 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
 
       const cmd = `node ${manifest.entry}`;
       const cwd = dir.prepend(cachedir);
+
+      const timer = time.timer();
       const res = await exec.command(cmd).run({ cwd, silent });
+
+      const elapsed = timer.elapsed;
+      const ok = res.code === 0;
+      const errors = res.errors.map((message) => new Error(message));
 
       if (!silent) {
         const code = res.code === 0 ? log.green(0) : log.red(res.code);
         log.info();
-        log.info.gray(`status code: ${code}`);
-
-        if (res.errors) {
-          const errors = res.errors.map((message) => ({ message }));
-          logger.errors(errors);
-        }
+        log.info.gray(`status code: ${code} (${elapsed.toString()})`);
+        logger.errors(errors);
       }
+
+      return { ok, errors };
     },
   };
 

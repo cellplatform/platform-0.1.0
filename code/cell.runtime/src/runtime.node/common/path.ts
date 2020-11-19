@@ -8,7 +8,8 @@ export const path = {
 
   trimBase(value: string) {
     value = (value || '').trim();
-    return cleanDir(value.startsWith(path.base) ? value.substring(path.base.length + 1) : value);
+    value = value.startsWith(path.base) ? value.substring(path.base.length + 1) : value;
+    return cleanDir(value);
   },
 
   dir(input?: string) {

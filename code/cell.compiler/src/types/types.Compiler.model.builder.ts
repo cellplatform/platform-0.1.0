@@ -21,7 +21,8 @@ export type CompilerModelMethods = {
   find(name: string): B | null;
 
   variant(name: string, configure: (config: B) => void): B;
-  webpack(configure: (config: CompilerModelWebpackMethods) => void): B;
+  webpack(configure: (config: CompilerModelMethodsWebpack) => void): B;
+  html(configure: (config: t.CompilerModelMethodsHtml) => void): B;
 
   beforeCompile(handler: t.BeforeCompile): B;
   afterCompile(handler: t.AfterCompile): B;
@@ -44,9 +45,9 @@ export type CompilerModelMethods = {
   redirect(grant: t.CompilerModelRedirectAction | boolean | undefined, grep?: string): B;
 };
 
-export type CompilerModelWebpackMethods = {
-  rule(value: t.WpRule): CompilerModelWebpackMethods;
-  plugin(value: t.WpPlugin): CompilerModelWebpackMethods;
+export type CompilerModelMethodsWebpack = {
+  rule(value: t.WpRule): CompilerModelMethodsWebpack;
+  plugin(value: t.WpPlugin): CompilerModelMethodsWebpack;
 };
 
 export type CompilerConfigSharedFunc = (fn: CompilerConfigShared) => any;
@@ -58,4 +59,10 @@ export type CompilerConfigShared = {
   add(name: string | string[]): CompilerConfigShared;
   singleton(name: string | string[]): CompilerConfigShared;
   version(name: string): string;
+};
+
+export type CompilerModelMethodsHtml = {
+  inject(value: boolean | undefined): CompilerModelMethodsHtml;
+  head(el: JSX.Element | undefined): CompilerModelMethodsHtml;
+  body(el: JSX.Element | undefined): CompilerModelMethodsHtml;
 };
