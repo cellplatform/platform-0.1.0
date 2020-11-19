@@ -3,6 +3,7 @@ import { Builder, DEFAULT, Encoding, fs, R, t, value as valueUtil } from '../com
 import { wp } from '../Config.webpack';
 import { webpackMethods } from './handlers.webpack';
 import { Redirects, validate } from './util';
+import { htmlMethods } from './handlers.html';
 
 type O = Record<string, unknown>;
 
@@ -232,8 +233,18 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     const fn = args.params[0];
     if (typeof fn !== 'function') {
       throw new Error(`Webpack builder function not provided`);
+    } else {
+      fn(webpackMethods(args.model));
     }
-    fn(webpackMethods(args.model));
+  },
+
+  html(args) {
+    const fn = args.params[0];
+    if (typeof fn !== 'function') {
+      throw new Error(`Html builder function not provided`);
+    } else {
+      fn(htmlMethods(args.model));
+    }
   },
 
   find(args) {

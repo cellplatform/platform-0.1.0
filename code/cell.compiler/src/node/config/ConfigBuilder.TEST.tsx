@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 import { ConfigBuilder } from '.';
 import { DEFAULT, Encoding, expect, fs, pkg, StateObject, t } from '../../test';
 
@@ -630,6 +632,56 @@ describe('Compiler (Config)', () => {
 
       builder.webpack((config) => config.plugin(plugin).plugin(plugin));
       expect((model.state.webpack?.plugins || []).length).to.eql(3);
+    });
+  });
+
+  describe.only('html', () => {
+    it('inject', () => {
+      const { builder, model } = create();
+      expect(model.state.html).to.eql(undefined);
+
+      builder.html((config) => config.inject(true));
+      expect(model.state.html?.inject).to.eql(true);
+
+      builder.html((config) => config.inject(false));
+      expect(model.state.html?.inject).to.eql(false);
+
+      builder.html((config) => config.inject(false).inject(true).inject(undefined));
+      expect(model.state.html?.inject).to.eql(undefined);
+    });
+
+    it('head', () => {
+      const { builder, model } = create();
+      expect(model.state.html).to.eql(undefined);
+
+      builder.html((config) =>
+        config.head(
+          <head>
+            <title>Foobar</title>
+          </head>,
+        ),
+      );
+      expect(React.isValidElement(model.state.html?.head)).to.eql(true);
+
+      builder.html((config) => config.head(undefined));
+      expect(model.state.html?.head).to.eql(undefined);
+    });
+
+    it('body', () => {
+      const { builder, model } = create();
+      expect(model.state.html).to.eql(undefined);
+
+      builder.html((config) =>
+        config.body(
+          <body>
+            <div id={'foo'}>Loading...</div>
+          </body>,
+        ),
+      );
+      expect(React.isValidElement(model.state.html?.body)).to.eql(true);
+
+      builder.html((config) => config.body(undefined));
+      expect(model.state.html?.body).to.eql(undefined);
     });
   });
 

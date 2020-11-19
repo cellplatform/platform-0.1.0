@@ -4,7 +4,7 @@ import { R, DEFAULT, t } from '../common';
  * Handlers for direct "Webpack" (library) concepts.
  */
 export const webpackMethods = (model: t.BuilderModel<t.CompilerModel>) => {
-  const res: t.CompilerModelWebpackMethods = {
+  const res: t.CompilerModelMethodsWebpack = {
     rule(value) {
       model.change((draft) => Model(draft).webpack.rules.push(value));
       return res;

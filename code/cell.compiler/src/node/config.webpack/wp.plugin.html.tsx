@@ -2,7 +2,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
-import { Model } from '../common';
+import { Model, defaultValue } from '../common';
 import * as t from './types';
 
 /**
@@ -30,7 +30,7 @@ export function init(args: t.IArgs) {
 
     return new HtmlWebpackPlugin({
       title: obj.title || obj.namespace || 'Untitled',
-      inject: html?.inject,
+      inject: defaultValue(html?.inject, true),
       templateContent: renderer(args),
     });
   }
@@ -41,10 +41,11 @@ export function init(args: t.IArgs) {
  * https://github.com/jantimon/html-webpack-plugin#writing-your-own-templates
  */
 export function renderer(args: t.IArgs) {
+  const model = Model(args.model).toObject();
   return (args: { [option: string]: any }) => {
     const plugin = args.htmlWebpackPlugin as HtmlPlugin;
     const title = plugin.options.title;
-    const el = <Page title={title} />;
+    const el = <Page title={title} head={model.html?.head} body={model.html?.body} />;
     const html = ReactDOMServer.renderToStaticMarkup(el);
     return `<!DOCTYPE html>\n${html}`;
   };
@@ -53,19 +54,28 @@ export function renderer(args: t.IArgs) {
 /**
  * Render static <html> page.
  */
-export type PageProps = { title?: string };
+export type PageProps = { title?: string; head?: JSX.Element; body?: JSX.Element };
 export const Page: React.FC<PageProps> = (props) => {
   const { title = 'Untitled' } = props;
+
+  const head = props.head || (
+    <head>
+      <meta charSet={'UTF-8'} />
+      <meta name={'viewport'} content={'width=device-width, initial-scale=1.0'} />
+      <title>{title}</title>
+    </head>
+  );
+
+  const body = props.body || (
+    <body>
+      <div id={'root'}></div>
+    </body>
+  );
+
   return (
     <html lang={'en'}>
-      <head>
-        <meta charSet={'UTF-8'} />
-        <meta name={'viewport'} content={'width=device-width, initial-scale=1.0'} />
-        <title>{title}</title>
-      </head>
-      <body>
-        <div id={'root'}></div>
-      </body>
+      {head}
+      {body}
     </html>
   );
 };
