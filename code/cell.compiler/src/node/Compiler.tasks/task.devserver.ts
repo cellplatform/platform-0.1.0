@@ -22,7 +22,7 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
     return;
   }
 
-  const { compiler, config } = wp.toCompiler(obj, {
+  const { compiler, webpack } = wp.toCompiler(obj, {
     beforeCompile(e) {
       e.modifyModel((model) => {
         if (noExports) {
@@ -46,7 +46,7 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
   let count = 0;
 
   compiler.hooks.afterCompile.tap('DevServer', (compilation) => {
-    afterCompile({ model: obj, webpack: config, compilation });
+    afterCompile({ model: obj, webpack, compilation });
 
     count++;
     logger.clear().newline();

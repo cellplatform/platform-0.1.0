@@ -19,19 +19,21 @@ export default () =>
 
     .redirect(false, '*.worker.js')
 
+    // .remote('')
+
     .html((config) => {
-      config
-        // .head(
-        //   <head>
-        //     <title>FOOOOO</title>
-        //   </head>,
-        // )
-        .body(
-          <body>
-            <h1>Loading</h1>
-            <div id={'root'}></div>
-          </body>,
-        );
+      // config;
+      // .head(
+      //   <head>
+      //     <title>FOOOOO</title>
+      //   </head>,
+      // )
+      // .body(
+      //   <body>
+      //     <h1>Loading</h1>
+      //     <div id={'root'}></div>
+      //   </body>,
+      // );
     })
 
     .variant('prod', (config) =>
