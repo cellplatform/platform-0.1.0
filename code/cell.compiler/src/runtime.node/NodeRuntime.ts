@@ -1,10 +1,13 @@
 import { exec } from '@platform/exec';
 
-import { DEFAULT, fs, HttpClient, log, PATH, t, logger, path } from '../node/common';
+import { Schema, DEFAULT, fs, HttpClient, log, PATH, t, logger, path } from '../node/common';
 import { BundleManifest } from '../node/Compiler';
 
 const MANIFEST = DEFAULT.FILE.JSON.INDEX;
-const CACHE_DIR = fs.join(PATH.cachedir, 'runtime.node');
+
+const IS_CLOUD = Boolean(process.env.VERCEL_URL);
+const TMP = IS_CLOUD ? '/tmp' : fs.resolve('tmp');
+const CACHE_DIR = fs.join(TMP, 'runtime.node');
 
 /**
  * Runtime environment for executing bundles on [node-js].
@@ -16,6 +19,13 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
   const client = HttpClient.create(host).cell(args.uri);
 
   const runtime = {
+    get url() {
+      const urls = Schema.urls(host).cell(uri);
+      return {
+        files: urls.files.list.query({ filter: `${dir.path}/**` }).toString(),
+      };
+    },
+
     /**
      * Determine if the bundle files exist locally.
      */
@@ -38,8 +48,9 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
         const to = path.trimBase(bundleDir);
         const table = log.table({ border: false });
 
-        const add = (key: string, value: string) =>
+        const add = (key: string, value: string) => {
           table.add([log.gray(` • ${log.white(key)}`), log.gray(value)]);
+        };
         add('from', from);
         add('to', to);
 
@@ -49,11 +60,13 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
         log.info();
       }
 
+      let count = 0;
       const list = await client.files.list({ filter: dir.append('**') });
       await Promise.all(
         list.body.map(async (file) => {
           const res = await client.file.name(file.path).download();
           if (typeof res.body === 'object') {
+            count++;
             const path = fs.join(cachedir, file.path);
             await fs.stream.save(path, res.body as any);
           }
@@ -61,8 +74,8 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
       );
 
       if (!silent) {
-        const size = (await fs.size.dir(bundleDir)).toString();
-        log.info.gray(`${log.green(list.body.length)} files pulled (${log.yellow(size)})`);
+        const size = (await fs.size.dir(bundleDir)).toString({ round: 0 });
+        log.info.gray(`${log.green(count)} files pulled (${log.yellow(size)})`);
         logger.hr().newline();
       }
     },
@@ -70,11 +83,13 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
     /**
      * Pull and run.
      */
-    async run(options: { pull?: boolean; silent?: boolean } = {}) {
+    async run(options: { pull?: true; silent?: boolean } = {}) {
       const { silent } = options;
 
       const exists = await runtime.existsLocally();
-      if (!exists || options.pull) {
+      const isPullRequired = !exists || options.pull;
+
+      if (isPullRequired) {
         await runtime.pull({ silent });
       }
 
@@ -82,8 +97,25 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
       if (!(await fs.pathExists(manifestPath))) {
         throw new Error(`A bundle manifest does not exist [${host}/${uri}].`);
       }
-
       const manifest = (await fs.readJson(manifestPath)) as t.BundleManifest;
+
+      if (!silent) {
+        const size = fs.size.toString(manifest.bytes, { round: 0 });
+
+        const table = log.table({ border: false });
+        const add = (key: string, value: string) => {
+          table.add([log.green(key), log.gray(value)]);
+        };
+
+        add('source ', logger.format.url(runtime.url.files));
+        add('entry', manifest.entry);
+        add('target', `${manifest.target}, ${manifest.mode}`);
+        add('size', `${log.yellow(size)} (${manifest.files.length} files)`);
+
+        log.info();
+        table.log();
+        logger.hr().newline();
+      }
 
       const cmd = `node ${manifest.entry}`;
       const cwd = dir.prepend(cachedir);
