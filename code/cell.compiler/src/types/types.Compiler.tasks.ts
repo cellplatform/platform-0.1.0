@@ -26,7 +26,7 @@ export type WebpackBundleResponse = {
   elapsed: number;
   stats: t.WebpackStats;
   model: t.CompilerModel;
-  config: t.WpConfig;
+  webpack: t.WpConfig;
   dir: string;
   toString(): string;
 };
