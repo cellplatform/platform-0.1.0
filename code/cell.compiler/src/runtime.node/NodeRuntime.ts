@@ -15,8 +15,7 @@ const CACHE_DIR = fs.join(TMP, 'runtime.node');
 export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) => {
   const { uri, host } = args;
   const dir = path.dir(args.dir);
-  const cachedir = fs.join(CACHE_DIR, uri.replace(/\:/g, '-'));
-  const client = HttpClient.create(host).cell(args.uri);
+  const client = HttpClient.create(host).cell(uri);
 
   const runtime = {
     get url() {
@@ -26,11 +25,19 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
       };
     },
 
+    get cachedir() {
+      const hostname = host
+        .replace(/^http:\/\//, '')
+        .replace(/^https:\/\//, '')
+        .replace(/\:/g, '-');
+      return fs.join(CACHE_DIR, hostname, uri.replace(/\:/g, '-'));
+    },
+
     /**
      * Determine if the bundle files exist locally.
      */
     async existsLocally() {
-      return fs.pathExists(dir.prepend(cachedir));
+      return fs.pathExists(dir.prepend(runtime.cachedir));
     },
 
     /**
@@ -38,7 +45,7 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
      */
     async pull(options: { silent?: boolean } = {}) {
       const { silent } = options;
-
+      const cachedir = runtime.cachedir;
       const bundleDir = dir.prepend(cachedir);
       await fs.remove(bundleDir);
 
@@ -55,7 +62,7 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
         add('to', to);
 
         log.info();
-        log.info.gray(`Pulling bundle`);
+        log.info.gray(`pulling bundle`);
         table.log();
         log.info();
       }
@@ -85,7 +92,7 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
      */
     async run(options: { pull?: true; silent?: boolean } = {}) {
       const { silent } = options;
-
+      const cachedir = runtime.cachedir;
       const exists = await runtime.existsLocally();
       const isPullRequired = !exists || options.pull;
 
@@ -101,18 +108,17 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
 
       if (!silent) {
         const size = fs.size.toString(manifest.bytes, { round: 0 });
-
         const table = log.table({ border: false });
         const add = (key: string, value: string) => {
           table.add([log.green(key), log.gray(value)]);
         };
 
+        add('runtime', 'node');
+        add('target', `${manifest.target}, ${manifest.mode}`);
         add('source ', logger.format.url(runtime.url.files));
         add('entry', manifest.entry);
-        add('target', `${manifest.target}, ${manifest.mode}`);
         add('size', `${log.yellow(size)} (${manifest.files.length} files)`);
 
-        log.info();
         table.log();
         logger.hr().newline();
       }
