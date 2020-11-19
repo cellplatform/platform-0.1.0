@@ -1,17 +1,12 @@
-import { exec } from '@platform/exec';
-import { fs, HttpClient, log, logger, Schema, t, time } from './common';
-
-const IS_CLOUD = Boolean(process.env.VERCEL_URL);
-const TMP = IS_CLOUD ? '/tmp' : fs.resolve('tmp');
-const CACHE_DIR = fs.join(TMP, 'runtime.node');
-const MANIFEST_FILENAME = 'index.json';
+import { fs, HttpClient, log, logger, PATH, Path, Schema, t } from './common';
+import { invoke } from './invoke';
 
 /**
  * Runtime environment for executing bundles on [node-js].
  */
 export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) => {
   const { uri, host } = args;
-  const dir = path.dir(args.dir);
+  const dir = Path.dir(args.dir);
   const client = HttpClient.create(host).cell(uri);
 
   const runtime = {
@@ -19,7 +14,7 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
       const urls = Schema.urls(host).cell(uri);
       return {
         files: urls.files.list.query({ filter: `${dir.path}/**` }),
-        manifest: urls.file.byName(path.dir(dir.path).append(MANIFEST_FILENAME)),
+        manifest: urls.file.byName(Path.dir(dir.path).append(PATH.MANIFEST_FILENAME)),
       };
     },
 
@@ -28,7 +23,7 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
         .replace(/^http:\/\//, '')
         .replace(/^https:\/\//, '')
         .replace(/\:/g, '-');
-      return fs.join(CACHE_DIR, hostname, uri.replace(/\:/g, '-'));
+      return fs.join(PATH.CACHE_DIR, hostname, uri.replace(/\:/g, '-'));
     },
 
     /**
@@ -50,7 +45,7 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
       if (!silent) {
         const url = runtime.url.manifest;
         const from = logger.format.url(url.toString());
-        const to = path.trimBase(bundleDir);
+        const to = Path.trimBase(bundleDir);
         const table = log.table({ border: false });
 
         const add = (key: string, value: string) => {
@@ -104,7 +99,7 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
     },
 
     /**
-     * Pull and run.
+     * Pull and execute.
      */
     async run(options: { pull?: true; silent?: boolean } = {}) {
       const { silent } = options;
@@ -119,7 +114,7 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
         }
       }
 
-      const manifestPath = fs.join(dir.prepend(cachedir), MANIFEST_FILENAME);
+      const manifestPath = fs.join(dir.prepend(cachedir), PATH.MANIFEST_FILENAME);
       if (!(await fs.pathExists(manifestPath))) {
         throw new Error(`A bundle manifest does not exist [${host}/${uri}].`);
       }
@@ -143,23 +138,7 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
         logger.hr().newline();
       }
 
-      const cmd = `node ${manifest.entry}`;
-      const cwd = dir.prepend(cachedir);
-
-      const timer = time.timer();
-      const res = await exec.command(cmd).run({ cwd, silent });
-
-      const elapsed = timer.elapsed;
-      const ok = res.code === 0;
-      const errors = res.errors.map((message) => new Error(message));
-
-      if (!silent) {
-        const code = res.code === 0 ? log.green(0) : log.red(res.code);
-        log.info();
-        log.info.gray(`status code: ${code} (${elapsed.toString()})`);
-        logger.errors(errors);
-      }
-
+      const { ok, errors } = await invoke({ dir: dir.prepend(cachedir), silent });
       return { ok, errors };
     },
   };

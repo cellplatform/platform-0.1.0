@@ -1,7 +1,7 @@
 import { Uri, Urls } from '@platform/cell.schema';
 import { RuntimeEnv } from '../types';
 
-import { remote } from './Runtime.remote';
+import { remote } from './remote';
 
 const toEnv = (input?: RuntimeEnv) => {
   return !input && typeof __CELL_ENV__ !== 'undefined' ? __CELL_ENV__ : input;
