@@ -41,7 +41,7 @@ export const logger = {
     const table = log.table({ border: false });
     const add = (key: string, value: string | undefined) => {
       if (value) {
-        const left = log.gray(`${prefix}${log.white(key)}: `);
+        const left = log.gray(`${prefix}${log.white(key)} `);
         table.add([left, value]);
       }
     };
