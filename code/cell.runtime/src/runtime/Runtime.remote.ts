@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Observable, Subject } from 'rxjs';
 import { filter, takeUntil, map } from 'rxjs/operators';
 
-import { encoding } from './common';
+import { Encoding } from './common';
 import { log } from '@platform/log/lib/client';
 import * as t from '../types';
 
@@ -34,7 +34,7 @@ export function remote(args: {
     // Initializes the share scope.
     // This fills it with known provided modules from this build and all remotes.
     await __webpack_init_sharing__('default');
-    const scope = encoding.escapeNamespace(namespace);
+    const scope = Encoding.escapeNamespace(namespace);
     const container = window[scope]; // or get the container somewhere else
 
     // Initialize the container, it may provide shared modules.

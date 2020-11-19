@@ -1,1 +1,1 @@
-export { encoding } from '@platform/cell.schema/lib/common/encoding';
+export { Encoding } from '@platform/cell.schema/lib/Encoding';
