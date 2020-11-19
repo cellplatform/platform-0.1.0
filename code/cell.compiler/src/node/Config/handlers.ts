@@ -1,6 +1,7 @@
+import { web } from 'webpack';
 import { Builder, DEFAULT, Encoding, fs, R, t, value as valueUtil } from '../common';
 import { wp } from '../Config.webpack';
-import { webpackHandlers } from './handlers.webpack';
+import { webpackMethods } from './handlers.webpack';
 import { Redirects, validate } from './util';
 
 type O = Record<string, unknown>;
@@ -12,13 +13,6 @@ const MODES: t.WpMode[] = ['development', 'production'];
  * Root handlers.
  */
 export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods> = {
-  webpack: {
-    kind: 'object',
-    path: '$.webpack',
-    builder: (args) => args.create(webpackHandlers),
-    default: () => DEFAULT.WEBPACK,
-  },
-
   clone: (args) => args.clone(args.params[0]),
   toObject: (args) => args.model.state,
   toWebpack: (args) => wp.toWebpackConfig(args.model.state),
@@ -218,7 +212,7 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
       throw new Error(`Variant name not provided.`);
     }
     if (typeof fn !== 'function') {
-      throw new Error(`Variant configuration handler not provided`);
+      throw new Error(`Variant configuration builder not provided`);
     }
 
     const create = (model: t.CompilerModelState, name: string) => {
@@ -232,6 +226,14 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     };
 
     fn(getOrCreate(model, name));
+  },
+
+  webpack(args) {
+    const fn = args.params[0];
+    if (typeof fn !== 'function') {
+      throw new Error(`Webpack builder function not provided`);
+    }
+    fn(webpackMethods(args.model));
   },
 
   find(args) {

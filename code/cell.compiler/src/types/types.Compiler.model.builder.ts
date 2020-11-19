@@ -1,7 +1,6 @@
 import { t } from './common';
 
 type B = t.BuilderChain<CompilerModelMethods>;
-type W = t.BuilderChain<CompilerModelWebpackMethods>;
 
 export type CompilerModelFactory = {
   model(name: string): t.CompilerModelState;
@@ -14,15 +13,15 @@ export type CompilerModelFactory = {
 export type CompilerModelBuilder = t.BuilderChain<CompilerModelMethods>;
 
 export type CompilerModelMethods = {
-  webpack: CompilerModelWebpackMethods;
-
   name(): string;
   toObject(): t.CompilerModel;
   toWebpack(): t.WpConfig;
 
   clone(initial?: Partial<t.CompilerModel>): B;
-  variant(name: string, configure: (config: B) => void): B;
   find(name: string): B | null;
+
+  variant(name: string, configure: (config: B) => void): B;
+  webpack(configure: (config: CompilerModelWebpackMethods) => void): B;
 
   beforeCompile(handler: t.BeforeCompile): B;
   afterCompile(handler: t.AfterCompile): B;
@@ -46,9 +45,8 @@ export type CompilerModelMethods = {
 };
 
 export type CompilerModelWebpackMethods = {
-  parent(): B;
-  rule(value: t.WpRule): W;
-  plugin(value: t.WpPlugin): W;
+  rule(value: t.WpRule): CompilerModelWebpackMethods;
+  plugin(value: t.WpPlugin): CompilerModelWebpackMethods;
 };
 
 export type CompilerConfigSharedFunc = (fn: CompilerConfigShared) => any;

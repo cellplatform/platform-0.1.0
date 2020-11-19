@@ -112,12 +112,13 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
           table.add([log.green(key), log.gray(value)]);
         };
 
-        add('runtime', 'node');
-        add('target', `${manifest.target}, ${manifest.mode}`);
+        add('runtime  ', 'node');
+        add('target', `${manifest.target} (${manifest.mode})`);
         add('source ', logger.format.url(runtime.url.files.toString()));
         add('entry', manifest.entry);
         add('size', `${log.yellow(size)} (${manifest.files.length} files)`);
 
+        log.info();
         table.log();
         logger.hr().newline();
       }

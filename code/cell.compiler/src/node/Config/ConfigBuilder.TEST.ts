@@ -1,4 +1,3 @@
-import { config } from 'webpack';
 import { ConfigBuilder } from '.';
 import { DEFAULT, Encoding, expect, fs, pkg, StateObject, t } from '../../test';
 
@@ -141,7 +140,7 @@ describe('Compiler (Config)', () => {
     it('throw: no handler', () => {
       const base = ConfigBuilder.builder('base');
       const fn = () => base.variant('prod', undefined as any);
-      expect(fn).to.throw(/Variant configuration handler not provided/);
+      expect(fn).to.throw(/Variant configuration builder not provided/);
     });
   });
 
@@ -611,21 +610,14 @@ describe('Compiler (Config)', () => {
   });
 
   describe('webpack', () => {
-    it(':parent', () => {
-      const { builder, model } = create();
-      expect(model.state.webpack).to.eql(undefined);
-      expect(builder.webpack.parent()).to.equal(builder);
-      expect(model.state.webpack).to.eql(DEFAULT.WEBPACK);
-    });
-
     it('add rule', () => {
       const { builder, model } = create();
       const rule = { test: /\.ttf$/, use: ['file-loader'] };
 
-      builder.webpack.rule(rule);
+      builder.webpack((config) => config.rule(rule));
       expect(model.state.webpack?.rules).to.include(rule);
 
-      builder.webpack.rule(rule).rule(rule);
+      builder.webpack((config) => config.rule(rule).rule(rule));
       expect((model.state.webpack?.rules || []).length).to.eql(3);
     });
 
@@ -633,10 +625,10 @@ describe('Compiler (Config)', () => {
       const { builder, model } = create();
       const plugin = { foo: 123 };
 
-      builder.webpack.plugin(plugin);
+      builder.webpack((config) => config.plugin(plugin));
       expect(model.state.webpack?.plugins).to.include(plugin);
 
-      builder.webpack.plugin(plugin).plugin(plugin);
+      builder.webpack((config) => config.plugin(plugin).plugin(plugin));
       expect((model.state.webpack?.plugins || []).length).to.eql(3);
     });
   });

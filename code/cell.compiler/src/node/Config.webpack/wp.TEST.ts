@@ -99,7 +99,7 @@ describe('Compiler (Webpack)', () => {
     const { builder } = create();
     expect(wp.toWebpackConfig(builder).module?.rules).to.not.include(rule);
 
-    builder.webpack.rule(rule);
+    builder.webpack((config) => config.rule(rule));
     expect(wp.toWebpackConfig(builder).module?.rules).to.include(rule);
   });
 
@@ -108,7 +108,7 @@ describe('Compiler (Webpack)', () => {
     const { builder } = create();
     expect(wp.toWebpackConfig(builder).plugins).to.not.include(plugin);
 
-    builder.webpack.plugin(plugin);
+    builder.webpack((config) => config.plugin(plugin));
     expect(wp.toWebpackConfig(builder).plugins).to.include(plugin);
   });
 

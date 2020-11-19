@@ -26,8 +26,11 @@ export function init(args: t.IArgs) {
     return undefined;
   } else {
     const obj = model.toObject();
+    const html = obj.html;
+
     return new HtmlWebpackPlugin({
       title: obj.title || obj.namespace || 'Untitled',
+      inject: html?.inject,
       templateContent: renderer(args),
     });
   }
