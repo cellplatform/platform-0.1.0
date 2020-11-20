@@ -8,3 +8,5 @@ export const WebRuntime = {
   bundle: Runtime.bundle(), // NB: __CELL_ENV__ used within this method.
   remote: Runtime.remote,
 };
+
+export default WebRuntime;

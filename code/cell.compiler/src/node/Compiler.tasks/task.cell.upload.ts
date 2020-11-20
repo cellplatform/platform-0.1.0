@@ -1,7 +1,7 @@
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 
-import { DEFAULT, fs, HttpClient, log, logger, Model, path, Schema, t, time } from '../common';
+import { DEFAULT, fs, HttpClient, log, logger, Model, Path, Schema, t, time } from '../common';
 import { BundleManifest } from '../Compiler';
 import { Redirects } from '../config/util.redirect';
 
@@ -169,7 +169,7 @@ async function logUpload(args: {
 
   log.info(`
 ${log.gray(`Uploaded`)}    ${log.gray(`(in ${log.yellow(elapsed)})`)}
-${log.gray(`  from:     ${path.trimBase(bundleDir)}`)}
+${log.gray(`  from:     ${Path.trimBase(bundleDir)}`)}
 ${log.gray(`  to:`)}
 ${log.gray(table)}
 `);

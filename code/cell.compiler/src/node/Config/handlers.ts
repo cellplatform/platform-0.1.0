@@ -1,7 +1,9 @@
-import { Builder, DEFAULT, encoding, fs, R, t, value as valueUtil } from '../common';
+import { web } from 'webpack';
+import { Builder, DEFAULT, Encoding, fs, R, t, value as valueUtil } from '../common';
 import { wp } from '../Config.webpack';
-import { webpackHandlers } from './handlers.webpack';
+import { webpackMethods } from './handlers.webpack';
 import { Redirects, validate } from './util';
+import { htmlMethods } from './handlers.html';
 
 type O = Record<string, unknown>;
 
@@ -12,13 +14,6 @@ const MODES: t.WpMode[] = ['development', 'production'];
  * Root handlers.
  */
 export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods> = {
-  webpack: {
-    kind: 'object',
-    path: '$.webpack',
-    builder: (args) => args.create(webpackHandlers),
-    default: () => DEFAULT.WEBPACK,
-  },
-
   clone: (args) => args.clone(args.params[0]),
   toObject: (args) => args.model.state,
   toWebpack: (args) => wp.toWebpackConfig(args.model.state),
@@ -218,7 +213,7 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
       throw new Error(`Variant name not provided.`);
     }
     if (typeof fn !== 'function') {
-      throw new Error(`Variant configuration handler not provided`);
+      throw new Error(`Variant configuration builder not provided`);
     }
 
     const create = (model: t.CompilerModelState, name: string) => {
@@ -232,6 +227,24 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     };
 
     fn(getOrCreate(model, name));
+  },
+
+  webpack(args) {
+    const fn = args.params[0];
+    if (typeof fn !== 'function') {
+      throw new Error(`Webpack builder function not provided`);
+    } else {
+      fn(webpackMethods(args.model));
+    }
+  },
+
+  html(args) {
+    const fn = args.params[0];
+    if (typeof fn !== 'function') {
+      throw new Error(`Html builder function not provided`);
+    } else {
+      fn(htmlMethods(args.model));
+    }
   },
 
   find(args) {
@@ -272,7 +285,7 @@ function writePathMap<M extends O>(
 
   model.change((draft) => {
     const entry = draft[objectField] || ((draft as any)[objectField] = {});
-    entry[encoding.escapePath(key)] = value;
+    entry[Encoding.escapePath(key)] = value;
     const obj = valueUtil.deleteEmpty(entry as any);
     if (Object.keys(obj).length > 0) {
       draft[objectField] = obj;
@@ -316,10 +329,10 @@ function writeShared(args: {
           names
             .filter((name) => dependencyExists(name))
             .forEach((name) => {
-              shared[encoding.escapePath(name)] = ctx.version(name);
+              shared[Encoding.escapePath(name)] = ctx.version(name);
             });
         } else if (typeof input === 'object') {
-          draft.shared = { ...shared, ...encoding.transformKeys(input, encoding.escapePath) };
+          draft.shared = { ...shared, ...Encoding.transformKeys(input, Encoding.escapePath) };
         }
       });
       return ctx;
@@ -331,7 +344,7 @@ function writeShared(args: {
         names
           .filter((name) => dependencyExists(name))
           .forEach((name) => {
-            shared[encoding.escapePath(name)] = {
+            shared[Encoding.escapePath(name)] = {
               singleton: true,
               requiredVersion: ctx.version(name),
             };

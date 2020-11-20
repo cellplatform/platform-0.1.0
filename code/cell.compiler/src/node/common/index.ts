@@ -2,7 +2,6 @@ import * as constants from './constants';
 import * as t from './types';
 
 export { t, constants };
-export * from '../../common';
 export * from './libs';
 export * from './util';
 

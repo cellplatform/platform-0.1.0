@@ -13,5 +13,9 @@ export const toCompiler = (input: M, options: { beforeCompile?: t.BeforeCompile 
   const model = toModel(input);
   const config = wp.toWebpackConfig(model, { beforeCompile });
   const compiler = webpack(config as Configuration);
-  return { model, config, compiler };
+  return {
+    model,
+    compiler,
+    webpack: config,
+  };
 };

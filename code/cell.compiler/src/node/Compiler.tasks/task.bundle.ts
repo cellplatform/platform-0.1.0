@@ -10,7 +10,7 @@ import { afterCompile, wp } from './util';
 export const bundle: t.CompilerRunBundle = (input, options = {}) => {
   return new Promise<t.WebpackBundleResponse>(async (resolve, reject) => {
     const { silent } = options;
-    const { compiler, model, config } = wp.toCompiler(input);
+    const { compiler, model, webpack } = wp.toCompiler(input);
 
     const bundleDir = Model(model).bundleDir;
     await fs.remove(bundleDir);
@@ -26,12 +26,12 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
         return reject(err);
       }
       if (stats) {
-        const res = toBundledResponse({ model, stats, config });
+        const res = toBundledResponse({ model, stats, webpack });
         const compilation = stats.compilation;
 
-        await copyStatic({ model, bundleDir });
-        await BundleManifest.createAndSave({ model, bundleDir });
-        afterCompile({ model, compilation, webpack: config });
+        if (compilation) {
+          await onCompiled({ model, bundleDir, compilation, webpack });
+        }
 
         if (!silent) {
           logger.newline().stats(stats);
@@ -45,6 +45,18 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
   });
 };
 
+export async function onCompiled(args: {
+  model: t.CompilerModel;
+  bundleDir: string;
+  compilation: t.WpCompilation;
+  webpack: t.WpConfig;
+}) {
+  const { model, bundleDir, compilation, webpack } = args;
+  await copyStatic({ model, bundleDir });
+  await BundleManifest.createAndSave({ model, bundleDir });
+  afterCompile({ model, compilation, webpack });
+}
+
 /**
  * [Helpers]
  */
@@ -52,9 +64,9 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
 function toBundledResponse(args: {
   model: t.CompilerModel;
   stats: Stats;
-  config: t.WpConfig;
+  webpack: t.WpConfig;
 }): t.WebpackBundleResponse {
-  const { model, config } = args;
+  const { model, webpack } = args;
   const stats = wp.stats(args.stats);
   return {
     ok: stats.ok,
@@ -62,7 +74,7 @@ function toBundledResponse(args: {
     dir: stats.output.path,
     stats,
     model,
-    config,
+    webpack,
     toString: () => args.stats.toString({ colors: true }),
   };
 }

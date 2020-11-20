@@ -1,7 +1,7 @@
 /**
  * Utilities for escaping/unescaping strings.
  */
-export const encoding = {
+export const Encoding = {
   /**
    * Escape reserved characters from a path.
    */

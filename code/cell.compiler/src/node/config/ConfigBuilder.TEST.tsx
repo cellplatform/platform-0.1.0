@@ -1,6 +1,7 @@
-import { config } from 'webpack';
+import * as React from 'react';
+
 import { ConfigBuilder } from '.';
-import { DEFAULT, encoding, expect, fs, pkg, StateObject, t } from '../../test';
+import { DEFAULT, Encoding, expect, fs, pkg, StateObject, t } from '../../test';
 
 const create = () => {
   const model = ConfigBuilder.model('foo');
@@ -141,7 +142,7 @@ describe('Compiler (Config)', () => {
     it('throw: no handler', () => {
       const base = ConfigBuilder.builder('base');
       const fn = () => base.variant('prod', undefined as any);
-      expect(fn).to.throw(/Variant configuration handler not provided/);
+      expect(fn).to.throw(/Variant configuration builder not provided/);
     });
   });
 
@@ -545,7 +546,7 @@ describe('Compiler (Config)', () => {
     it('adds {dependencies} object (cumulative)', () => {
       const { builder, model } = create();
 
-      const escaped = encoding.transformKeys(pkg.dependencies || {}, encoding.escapePath);
+      const escaped = Encoding.transformKeys(pkg.dependencies || {}, Encoding.escapePath);
 
       builder.shared((args) => args.add(args.dependencies));
       expect(model.state.shared).to.eql(escaped);
@@ -611,21 +612,14 @@ describe('Compiler (Config)', () => {
   });
 
   describe('webpack', () => {
-    it(':parent', () => {
-      const { builder, model } = create();
-      expect(model.state.webpack).to.eql(undefined);
-      expect(builder.webpack.parent()).to.equal(builder);
-      expect(model.state.webpack).to.eql(DEFAULT.WEBPACK);
-    });
-
     it('add rule', () => {
       const { builder, model } = create();
       const rule = { test: /\.ttf$/, use: ['file-loader'] };
 
-      builder.webpack.rule(rule);
+      builder.webpack((config) => config.rule(rule));
       expect(model.state.webpack?.rules).to.include(rule);
 
-      builder.webpack.rule(rule).rule(rule);
+      builder.webpack((config) => config.rule(rule).rule(rule));
       expect((model.state.webpack?.rules || []).length).to.eql(3);
     });
 
@@ -633,11 +627,61 @@ describe('Compiler (Config)', () => {
       const { builder, model } = create();
       const plugin = { foo: 123 };
 
-      builder.webpack.plugin(plugin);
+      builder.webpack((config) => config.plugin(plugin));
       expect(model.state.webpack?.plugins).to.include(plugin);
 
-      builder.webpack.plugin(plugin).plugin(plugin);
+      builder.webpack((config) => config.plugin(plugin).plugin(plugin));
       expect((model.state.webpack?.plugins || []).length).to.eql(3);
+    });
+  });
+
+  describe('html', () => {
+    it('inject', () => {
+      const { builder, model } = create();
+      expect(model.state.html).to.eql(undefined);
+
+      builder.html((config) => config.inject(true));
+      expect(model.state.html?.inject).to.eql(true);
+
+      builder.html((config) => config.inject(false));
+      expect(model.state.html?.inject).to.eql(false);
+
+      builder.html((config) => config.inject(false).inject(true).inject(undefined));
+      expect(model.state.html?.inject).to.eql(undefined);
+    });
+
+    it('head', () => {
+      const { builder, model } = create();
+      expect(model.state.html).to.eql(undefined);
+
+      builder.html((config) =>
+        config.head(
+          <head>
+            <title>Foobar</title>
+          </head>,
+        ),
+      );
+      expect(React.isValidElement(model.state.html?.head)).to.eql(true);
+
+      builder.html((config) => config.head(undefined));
+      expect(model.state.html?.head).to.eql(undefined);
+    });
+
+    it('body', () => {
+      const { builder, model } = create();
+      expect(model.state.html).to.eql(undefined);
+
+      builder.html((config) =>
+        config.body(
+          <body>
+            <div id={'foo'}>Loading...</div>
+          </body>,
+        ),
+      );
+      expect(React.isValidElement(model.state.html?.body)).to.eql(true);
+
+      builder.html((config) => config.body(undefined));
+      expect(model.state.html?.body).to.eql(undefined);
     });
   });
 

@@ -74,9 +74,10 @@ const toPaths = async (input?: string) => {
   }
 
   file = file.substring(fs.resolve('.').length + 1);
-  const ts = fs.resolve(`${file}.ts`);
   const js = fs.resolve(`lib/${file.substring(file.indexOf('/'))}.js`);
 
+  let ts = fs.resolve(`${file}.ts`);
+  ts = (await fs.pathExists(ts)) ? ts : fs.resolve(`${file}.tsx`);
   if (!(await fs.pathExists(ts))) {
     logger.errorAndExit(1, `The configuration file path does not exist ${log.white(ts)}`);
   }

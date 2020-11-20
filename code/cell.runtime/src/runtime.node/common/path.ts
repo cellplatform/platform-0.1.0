@@ -3,12 +3,13 @@ import { fs } from './libs';
 /**
  * Helpers for working with paths
  */
-export const path = {
+export const Path = {
   base: fs.resolve('.'),
 
   trimBase(value: string) {
     value = (value || '').trim();
-    return cleanDir(value.startsWith(path.base) ? value.substring(path.base.length + 1) : value);
+    value = value.startsWith(Path.base) ? value.substring(Path.base.length + 1) : value;
+    return cleanDir(value);
   },
 
   dir(input?: string) {

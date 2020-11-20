@@ -1,4 +1,4 @@
-import { DEFAULT, fs, Model, Schema, t, value, path } from '../common';
+import { DEFAULT, fs, Model, Schema, t, value, Path } from '../common';
 
 const REMOTE_ENTRY = DEFAULT.FILE.JS.REMOTE_ENTRY;
 const MANIFEST = DEFAULT.FILE.JSON.INDEX;
@@ -14,7 +14,7 @@ export const BundleManifest = {
    */
   url(host: string, uri: string, dir?: string) {
     const urls = Schema.urls(host).cell(uri);
-    return urls.file.byName(path.dir(dir).append(MANIFEST));
+    return urls.file.byName(Path.dir(dir).append(MANIFEST));
   },
 
   /**

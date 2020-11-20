@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { Observable, Subject } from 'rxjs';
 import { filter, takeUntil, map } from 'rxjs/operators';
 
-import { encoding } from '../common/encoding';
+import { Encoding } from './common';
 import { log } from '@platform/log/lib/client';
-import * as t from './types';
+import * as t from '../types';
 
 /**
  * Tools for dynamically loading remote ("federated") module.
@@ -34,12 +34,13 @@ export function remote(args: {
     // Initializes the share scope.
     // This fills it with known provided modules from this build and all remotes.
     await __webpack_init_sharing__('default');
-    const scope = encoding.escapeNamespace(namespace);
-    const container = window[scope]; // or get the container somewhere else
+    const scope = Encoding.escapeNamespace(namespace);
+    // console.log('self', self);
+    const container = self[scope]; // or get the container somewhere else
 
     // Initialize the container, it may provide shared modules.
     await container.init(__webpack_share_scopes__.default);
-    const factory = await window[scope].get(entry);
+    const factory = await self[scope].get(entry);
     const Module = factory();
     return Module;
   };

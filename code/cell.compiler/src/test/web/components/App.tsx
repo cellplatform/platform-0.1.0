@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { WebRuntime } from '../../../runtime.web';
+import { WebRuntime } from '@platform/cell.runtime/lib/runtime.web';
 import Award from './assets/award.svg';
 import { System } from './System';
 
@@ -11,7 +11,7 @@ export type IAppState = { url?: string };
 export type ISystem = {
   url: string;
   namespace: string;
-  module: string;
+  entry: string;
 };
 
 const bundle = WebRuntime.bundle;
@@ -32,10 +32,10 @@ export const App = () => {
   const [system, setSystem] = useState<ISystem>();
   const [state, setState] = useState<IAppState>();
 
-  const setter = (port: number, namespace: string, module: string) => {
+  const setter = (port: number, namespace: string, entry: string) => {
     return () => {
       const url = `http://localhost:${port}/remoteEntry.js`;
-      setSystem({ url, namespace, module });
+      setSystem({ url, namespace, entry });
       setState({ url });
     };
   };
@@ -44,8 +44,8 @@ export const App = () => {
     const url =
       'http://localhost:5000/cell:ckgu68hjj000ciwet59do0wb4:A1/file/sample/remoteEntry.js';
     const namespace = 'foo';
-    const module = './Dev';
-    setSystem({ url, namespace, module });
+    const entry = './Dev';
+    setSystem({ url, namespace, entry });
     setState({ url });
   };
 
@@ -53,16 +53,16 @@ export const App = () => {
     const url =
       'http://localhost:5000/cell:ckgu7ryv8000cg0etbjfwet91:A1/file/sample/remoteEntry.js';
     const namespace = 'ai';
-    const module = './Dev';
-    setSystem({ url, namespace, module });
+    const entry = './Dev';
+    setSystem({ url, namespace, entry });
     setState({ url });
   };
 
   const setCodeEditor = () => {
     const url = 'https://dev.db.team/cell:ckgse6r8l000ccwethl0ubdrh:A1/file/sample/remoteEntry.js';
     const namespace = 'sys.ui.editor.code';
-    const module = './Dev';
-    setSystem({ url, namespace, module });
+    const entry = './Dev';
+    setSystem({ url, namespace, entry });
     setState({ url });
   };
 
@@ -101,7 +101,7 @@ export const App = () => {
   };
 
   const elSystem = system && (
-    <System url={system.url} namespace={system.namespace} module={system.module} />
+    <System url={system.url} namespace={system.namespace} entry={system.entry} />
   );
 
   return (

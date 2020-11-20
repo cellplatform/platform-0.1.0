@@ -1,5 +1,8 @@
+import * as React from 'react';
+
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { Compiler } from '..';
-import { fs, expect, ModuleFederationPlugin, t, encoding } from '../../test';
+import { fs, expect, ModuleFederationPlugin, t, Encoding } from '../../test';
 import { ConfigBuilder } from '../Config';
 import { wp } from '.';
 
@@ -55,7 +58,7 @@ describe('Compiler (Webpack)', () => {
     expect(options(builder).name).to.eql('foobar');
 
     builder.namespace('foo.bar');
-    expect(options(builder).name).to.eql(encoding.escapeNamespace('foo.bar'));
+    expect(options(builder).name).to.eql(Encoding.escapeNamespace('foo.bar'));
   });
 
   it('namespace: throw (namespace not set)', () => {
@@ -94,22 +97,42 @@ describe('Compiler (Webpack)', () => {
     expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('foo/node'));
   });
 
-  it('rules', () => {
+  it('webpack.rules', () => {
     const rule = { test: /\.ttf$/, use: ['file-loader'] };
     const { builder } = create();
     expect(wp.toWebpackConfig(builder).module?.rules).to.not.include(rule);
 
-    builder.webpack.rule(rule);
+    builder.webpack((config) => config.rule(rule));
     expect(wp.toWebpackConfig(builder).module?.rules).to.include(rule);
   });
 
-  it('plugins', () => {
+  it('webpack.plugins', () => {
     const plugin = { foo: 123 };
     const { builder } = create();
     expect(wp.toWebpackConfig(builder).plugins).to.not.include(plugin);
 
-    builder.webpack.plugin(plugin);
+    builder.webpack((config) => config.plugin(plugin));
     expect(wp.toWebpackConfig(builder).plugins).to.include(plugin);
+  });
+
+  describe('HtmlWebpackPlugin', () => {
+    const getHtmlPlugin = (builder: t.CompilerModelBuilder) => {
+      const plugins = wp.toWebpackConfig(builder).plugins || [];
+      const plugin = plugins.find((plugin) => plugin instanceof HtmlWebpackPlugin);
+      return plugin?.userOptions;
+    };
+
+    it('html.inject', () => {
+      const { builder } = create();
+      const plugin = () => getHtmlPlugin(builder);
+      expect(plugin().inject).to.eql(true);
+
+      builder.html((config) => config.inject(false));
+      expect(plugin().inject).to.eql(false);
+
+      builder.html((config) => config.inject(true).inject(undefined));
+      expect(plugin().inject).to.eql(true);
+    });
   });
 
   describe('ModuleFederationPlugin', () => {

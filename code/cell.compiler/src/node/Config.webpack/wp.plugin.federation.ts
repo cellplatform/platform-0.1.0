@@ -1,4 +1,4 @@
-import { DEFAULT, encoding, ModuleFederationPlugin } from '../common';
+import { DEFAULT, Encoding, ModuleFederationPlugin } from '../common';
 import * as t from './types';
 
 /**
@@ -8,9 +8,9 @@ import * as t from './types';
 export function init(args: t.IArgs) {
   const { model } = args;
   const unescape = (obj?: Record<string, unknown>) =>
-    encoding.transformKeys(obj || {}, encoding.unescapePath);
+    Encoding.transformKeys(obj || {}, Encoding.unescapePath);
 
-  const name = encoding.escapeNamespace(model.namespace || '');
+  const name = Encoding.escapeNamespace(model.namespace || '');
   if (!name) {
     throw new Error(`Federation requires a "namespace" (scope) value.`);
   }

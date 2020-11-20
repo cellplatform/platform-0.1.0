@@ -1,5 +1,5 @@
-import { sortBy, sortWith, ascend, descend, prop, uniq, uniqBy, pipe, groupBy } from 'ramda';
-export const R = { sortBy, sortWith, ascend, descend, prop, uniq, uniqBy, pipe, groupBy };
+import { sortBy, sortWith, ascend, descend, prop, uniq, uniqBy, pipe, groupBy, clone } from 'ramda';
+export const R = { sortBy, sortWith, ascend, descend, prop, uniq, uniqBy, pipe, groupBy, clone };
 
 export { rx, id, defaultValue, value, time } from '@platform/util.value';
 
@@ -15,7 +15,7 @@ export { log } from '@platform/log/lib/server';
 
 export { Client, HttpClient } from '@platform/cell.client';
 
-export { Schema, Uri } from '@platform/cell.schema';
+export { Schema, Uri, Encoding } from '@platform/cell.schema';
 
 import minimist from 'minimist';
 export { minimist };
@@ -27,3 +27,4 @@ export { ModuleFederationPlugin };
 
 export { exec } from '@platform/exec';
 export { port } from '@platform/http/lib/node';
+export { Path, format } from '@platform/cell.runtime/lib/runtime.node/common';

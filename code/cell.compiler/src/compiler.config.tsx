@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 import { Compiler, Package } from '.';
 
 export default () =>
@@ -16,6 +18,23 @@ export default () =>
     .shared((e) => e.singleton(['react', 'react-dom']))
 
     .redirect(false, '*.worker.js')
+
+    // .remote('')
+
+    .html((config) => {
+      // config;
+      // .head(
+      //   <head>
+      //     <title>FOOOOO</title>
+      //   </head>,
+      // )
+      // .body(
+      //   <body>
+      //     <h1>Loading</h1>
+      //     <div id={'root'}></div>
+      //   </body>,
+      // );
+    })
 
     .variant('prod', (config) =>
       config

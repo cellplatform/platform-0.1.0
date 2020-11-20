@@ -1,31 +1,31 @@
-import { DEFAULT, t } from '../common';
+import { R, DEFAULT, t } from '../common';
 
 /**
- * Handlers for direct Webpack concepts.
+ * Handlers for direct "Webpack" (library) concepts.
  */
-export const webpackHandlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelWebpackMethods> = {
-  parent: (args) => args.builder.parent,
-
-  rule(args) {
-    const rule = args.params[0];
-    args.model.change((draft) => model(draft).webpack.rules.push(rule));
-  },
-
-  plugin(args) {
-    const plugin = args.params[0];
-    args.model.change((draft) => model(draft).webpack.plugins.push(plugin));
-  },
+export const webpackMethods = (model: t.BuilderModel<t.CompilerModel>) => {
+  const res: t.CompilerModelMethodsWebpack = {
+    rule(value) {
+      model.change((draft) => Model(draft).webpack.rules.push(value));
+      return res;
+    },
+    plugin(value) {
+      model.change((draft) => Model(draft).webpack.plugins.push(value));
+      return res;
+    },
+  };
+  return res;
 };
 
 /**
  * [Helpers]
  */
 
-const model = (model: t.CompilerModel) => {
+const Model = (model: t.CompilerModel) => {
   return {
     toObject: () => model,
     get webpack() {
-      return model.webpack || (model.webpack = DEFAULT.WEBPACK);
+      return model.webpack || (model.webpack = R.clone(DEFAULT.WEBPACK));
     },
   };
 };

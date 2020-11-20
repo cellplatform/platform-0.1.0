@@ -37,6 +37,7 @@ export type CompilerModel = {
    */
   webpack?: t.CompilerModelWebpack;
   variants?: t.CompilerModelBuilder[];
+  html?: t.CompilerModelHtml;
 };
 
 export type CompilerModelWebpack = {
@@ -44,7 +45,13 @@ export type CompilerModelWebpack = {
   plugins: t.WpPlugin[];
 };
 
-export type CompilerModelStatic = { dir?: string };
+export type CompilerModelStatic = { dir?: string }; // Static assets.
 
 export type CompilerModelRedirectAction = 'ALLOW' | 'DENY';
 export type CompilerModelRedirectGrant = { action?: CompilerModelRedirectAction; grep?: string };
+
+export type CompilerModelHtml = {
+  inject?: boolean;
+  head?: JSX.Element;
+  body?: JSX.Element;
+};
