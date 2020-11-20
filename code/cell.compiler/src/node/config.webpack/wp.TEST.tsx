@@ -115,7 +115,7 @@ describe('Compiler (Webpack)', () => {
     expect(wp.toWebpackConfig(builder).plugins).to.include(plugin);
   });
 
-  describe.only('HtmlWebpackPlugin', () => {
+  describe('HtmlWebpackPlugin', () => {
     const getHtmlPlugin = (builder: t.CompilerModelBuilder) => {
       const plugins = wp.toWebpackConfig(builder).plugins || [];
       const plugin = plugins.find((plugin) => plugin instanceof HtmlWebpackPlugin);
@@ -125,16 +125,13 @@ describe('Compiler (Webpack)', () => {
     it('html.inject', () => {
       const { builder } = create();
       const plugin = () => getHtmlPlugin(builder);
-      expect(plugin().inject).to.eql(undefined);
+      expect(plugin().inject).to.eql(true);
 
       builder.html((config) => config.inject(false));
       expect(plugin().inject).to.eql(false);
 
-      builder.html((config) => config.inject(true));
-      expect(plugin().inject).to.eql(true);
-
       builder.html((config) => config.inject(true).inject(undefined));
-      expect(plugin().inject).to.eql(undefined);
+      expect(plugin().inject).to.eql(true);
     });
   });
 

@@ -635,7 +635,7 @@ describe('Compiler (Config)', () => {
     });
   });
 
-  describe.only('html', () => {
+  describe('html', () => {
     it('inject', () => {
       const { builder, model } = create();
       expect(model.state.html).to.eql(undefined);
