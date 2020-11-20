@@ -12,7 +12,7 @@
     "start": "cd src.tmpl && yarn start $@",
     "dev": "export NODE_ENV=development && yarn start",
     "watch": "cd src.tmpl && yarn watch $@",
-    "now": "cd src.tmpl && yarn now $@",
+    "now": "cd src.tmpl && yarn vercel $@",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",

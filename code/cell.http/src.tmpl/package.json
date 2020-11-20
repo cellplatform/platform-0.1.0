@@ -2,7 +2,8 @@
   "name": "instance",
   "version": "0.0.176",
   "scripts": {
-    "now": "vercel dev --listen 8080",
+    "now": "yarn vercel",
+    "vercel": "vercel dev --listen 8080",
     "start": "ts-node -T src/server",
     "watch": "nodemon --watch ../src --watch ../../cell.db/src --watch ../../cell.http.router/src -e ts,tsx --delay 2"
   },
