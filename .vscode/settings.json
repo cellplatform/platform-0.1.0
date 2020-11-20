@@ -1,5 +1,6 @@
 {
   "search.exclude": {
     "**/_archive": true
-  }
+  },
+  "deno.enable": true
 }
