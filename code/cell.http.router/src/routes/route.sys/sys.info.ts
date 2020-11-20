@@ -15,14 +15,14 @@ export function init(args: { router: t.IRouter; name?: string; deployedAt?: numb
 
     const name = args.name || 'Untitled';
     const deployedAt = args.deployedAt;
-    const system = constants.getSystem().system;
+    const system = constants.getSystem();
     const host = req.headers.host || '-';
 
     const data: t.IResGetSysInfo = {
       name,
       host,
-      system,
       region,
+      version: system.version,
       deployedAt,
     };
     data.hash = Schema.hash.sha256(data);

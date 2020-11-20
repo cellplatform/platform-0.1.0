@@ -20,13 +20,16 @@ export function getSystem() {
   const versions = getVersions();
   const router = toVersion(versions.router);
   const schema = toVersion(versions.schema);
-  const system = `router@${router}; schema@${schema}`;
+  const version = `router@${router}; schema@${schema}`;
   return {
-    system,
-    ...versions,
+    version,
+    versions,
   };
 }
 
+/**
+ * Read module versions.
+ */
 export function getVersions() {
   const depVersion = (key: string, version?: string) => {
     version = version || DEPS[key] || '-';

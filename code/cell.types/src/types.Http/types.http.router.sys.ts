@@ -7,8 +7,8 @@ export type IReqQuerySysInfo = O; // 🐷 Placeholder type.
 export type IResGetSysInfo = {
   name: string;
   host: string;
-  system: string;
   region: string;
+  version: string;
   deployedAt?: number;
   hash?: string;
 };
