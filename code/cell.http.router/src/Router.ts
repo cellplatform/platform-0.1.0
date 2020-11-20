@@ -1,11 +1,11 @@
-import { t, Router } from './common';
+import { t, Router as BaseRouter } from './common';
 import * as routes from './routes';
 
-export class CellRouter {
+export const Router = {
   /**
-   * Initialize router.
+   * Initialize a new router.
    */
-  public static create(args: {
+  create(args: {
     db: t.IDb;
     fs: t.IFileSystem;
     body: t.BodyParser;
@@ -13,8 +13,8 @@ export class CellRouter {
     deployedAt?: number;
   }) {
     const { db, fs, body, name, deployedAt } = args;
-    const router = Router.create({ body });
+    const router = BaseRouter.create({ body });
     routes.init({ db, fs, name, deployedAt, router });
     return router;
-  }
-}
+  },
+};

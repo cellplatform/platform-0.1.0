@@ -3,7 +3,7 @@ import { local } from '@platform/cell.fs.local';
 import { IMicro, IMicroService, micro } from '@platform/micro';
 
 import { util, t, Schema, HttpClient } from '../common';
-import { CellRouter } from '..';
+import { Router } from '..';
 import { port as portUtil } from './util.port';
 
 export type IMock = {
@@ -54,7 +54,7 @@ export const createMock = async (args: { port?: number } = {}): Promise<IMock> =
   const fs = local.init({ dir: PATH.FS, fs: util.fs });
 
   const body = micro.body;
-  const router = CellRouter.create({ name: 'Test', db, fs, body });
+  const router = Router.create({ name: 'Test', db, fs, body });
   const app = micro.create({ router });
   const service = await app.start({ port, silent: true });
 

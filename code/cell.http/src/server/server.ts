@@ -1,4 +1,4 @@
-import { constants, log, micro, t, value, CellRouter, fs as filesystem } from '../common';
+import { constants, log, micro, t, value, Router, fs as filesystem } from '../common';
 import { prepareResponse } from './global';
 
 export { Config } from './config';
@@ -33,7 +33,7 @@ export function create(args: {
 
   // Routes.
   const body = micro.body;
-  const router = CellRouter.create({ name, db, fs, body, deployedAt });
+  const router = Router.create({ name, db, fs, body, deployedAt });
 
   // Setup the micro-service.
   const deps = PKG.dependencies || {};
