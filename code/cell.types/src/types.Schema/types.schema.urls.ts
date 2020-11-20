@@ -39,6 +39,7 @@ export type IUrlsCell = {
   info: t.IUrl<t.IReqQueryCellInfo>;
   files: IUrlsCellFiles;
   file: IUrlsCellFile;
+  func: t.IUrl<t.IReqQueryCellFunc>;
 };
 
 export type IUrlsCellFile = {

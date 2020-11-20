@@ -223,6 +223,14 @@ export class Urls implements t.IUrls {
           return toPath<Q>(`/cell:${ns}:${key}/${file}`);
         },
       },
+
+      /**
+       * Func (execution runtime).
+       */
+      get func() {
+        type Q = t.IReqQueryCellFunc;
+        return toPath<Q>(`/cell:${ns}:${key}/func`);
+      },
     };
 
     return api;

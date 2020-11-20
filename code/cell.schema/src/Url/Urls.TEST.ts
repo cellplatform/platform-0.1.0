@@ -275,6 +275,15 @@ describe('Urls', () => {
       expect(() => url.cell(URI).file.byFileUri('')).to.throw();
       expect(() => url.cell(URI).file.byFileUri('  ')).to.throw();
     });
+
+    it('func', () => {
+      const res1 = url.cell(URI).func;
+      const res2 = url.cell(Uri.cell('cell:foo:A1')).func;
+
+      const URL = 'http://localhost/cell:foo:A1/func';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(URL);
+    });
   });
 
   describe('row', () => {
