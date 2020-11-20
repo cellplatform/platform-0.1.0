@@ -17,6 +17,7 @@ export type IUrls = {
   readonly origin: string;
   readonly sys: IUrlsSys;
   readonly local: IUrlsLocal;
+  readonly func: IUrlsFunc;
   ns(input: string | t.INsUri): IUrlsNs;
   cell(input: string | t.ICellUri): IUrlsCell;
   row(input: string | t.IRowUri): IUrlsRow;
@@ -25,8 +26,12 @@ export type IUrls = {
 };
 
 export type IUrlsSys = {
-  info: t.IUrl;
-  uid: t.IUrl;
+  info: t.IUrl<t.IReqQuerySysInfo>;
+  uid: t.IUrl<t.IReqQuerySysUid>;
+};
+
+export type IUrlsFunc = {
+  base: t.IUrl<t.IReqQueryFunc>;
 };
 
 export type IUrlsNs = {
@@ -39,7 +44,6 @@ export type IUrlsCell = {
   info: t.IUrl<t.IReqQueryCellInfo>;
   files: IUrlsCellFiles;
   file: IUrlsCellFile;
-  func: t.IUrl<t.IReqQueryCellFunc>;
 };
 
 export type IUrlsCellFile = {

@@ -49,7 +49,6 @@ export const ROUTES = {
       UPLOADED: `/cell${KEY.NS}\\:${KEY.CELL}/files/uploaded`,
       COPY: `/cell${KEY.NS}\\:${KEY.CELL}/files/copy`,
     },
-    FUNC: `/cell${KEY.NS}\\:${KEY.CELL}/func(/?)`,
   },
   ROW: {
     INFO: `/cell${KEY.NS}\\:${KEY.ROW}(/?)`,
@@ -57,4 +56,5 @@ export const ROUTES = {
   COLUMN: {
     INFO: `/cell${KEY.NS}\\:${KEY.COLUMN}(/?)`,
   },
+  FUNC: `/func(/?)`,
 };

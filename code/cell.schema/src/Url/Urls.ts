@@ -4,6 +4,8 @@ import { Url } from './Url';
 import * as util from './util';
 import { ROUTES } from '../Url.routes';
 
+type O = Record<string, unknown>;
+
 /**
  * Standardised construction of URLs for the HTTP service.
  */
@@ -52,23 +54,38 @@ export class Urls implements t.IUrls {
    */
 
   public get sys() {
-    const toPath = this.toUrl;
+    const toUrl = this.toUrl;
     return {
       get info() {
-        return toPath('.sys');
+        type Q = t.IReqQuerySysInfo;
+        return toUrl<Q>('.sys');
       },
       get uid() {
-        return toPath('.uid');
+        type Q = t.IReqQuerySysUid;
+        return toUrl<Q>('.uid');
       },
     };
   }
 
   public get local() {
-    const toPath = this.toUrl;
+    const toUrl = this.toUrl;
     return {
       get fs() {
         type Q = t.IReqQueryLocalFs;
-        return toPath<Q>(`/local/fs`);
+        return toUrl<Q>(`/local/fs`);
+      },
+    };
+  }
+
+  /**
+   * Func (execution runtime).
+   */
+  public get func() {
+    const toUrl = this.toUrl;
+    return {
+      get base() {
+        type Q = t.IReqQueryFunc;
+        return toUrl<Q>(`/func`);
       },
     };
   }
@@ -81,7 +98,7 @@ export class Urls implements t.IUrls {
    * Builders for NAMESPACE urls.
    */
   public ns(input: string | t.INsUri) {
-    const toPath = this.toUrl;
+    const toUrl = this.toUrl;
     let id = (typeof input === 'string' ? input : input.id) || '';
 
     if (!id.includes(':')) {
@@ -111,7 +128,7 @@ export class Urls implements t.IUrls {
        * Example: /ns:foo
        */
       get info() {
-        return toPath<t.IReqQueryNsInfo>(`/ns:${id}`);
+        return toUrl<t.IReqQueryNsInfo>(`/ns:${id}`);
       },
     };
   }
@@ -120,7 +137,7 @@ export class Urls implements t.IUrls {
    * Builders for CELL urls.
    */
   public cell(input: string | t.ICellUri) {
-    const toPath = this.toUrl;
+    const toUrl = this.toUrl;
     const uri = Uri.cell(input);
     const { ns, key, type } = uri;
     if (type !== 'CELL') {
@@ -136,7 +153,7 @@ export class Urls implements t.IUrls {
        */
       get info() {
         type Q = t.IReqQueryCellInfo;
-        return toPath<Q>(`/cell:${ns}:${key}`);
+        return toUrl<Q>(`/cell:${ns}:${key}`);
       },
 
       /**
@@ -148,7 +165,7 @@ export class Urls implements t.IUrls {
          */
         get list() {
           type Q = t.IReqQueryCellFilesList;
-          return toPath<Q>(`/cell:${ns}:${key}/files`);
+          return toUrl<Q>(`/cell:${ns}:${key}/files`);
         },
 
         /**
@@ -156,7 +173,7 @@ export class Urls implements t.IUrls {
          */
         get delete() {
           type Q = t.IReqQueryCellFilesDelete;
-          return toPath<Q>(`/cell:${ns}:${key}/files`);
+          return toUrl<Q>(`/cell:${ns}:${key}/files`);
         },
 
         /**
@@ -164,7 +181,7 @@ export class Urls implements t.IUrls {
          */
         get copy() {
           type Q = t.IReqQueryCellFilesCopy;
-          return toPath<Q>(`/cell:${ns}:${key}/files/copy`);
+          return toUrl<Q>(`/cell:${ns}:${key}/files/copy`);
         },
 
         /**
@@ -172,7 +189,7 @@ export class Urls implements t.IUrls {
          */
         get upload() {
           type Q = t.IReqQueryCellFilesUpload;
-          return toPath<Q>(`/cell:${ns}:${key}/files/upload`);
+          return toUrl<Q>(`/cell:${ns}:${key}/files/upload`);
         },
 
         /**
@@ -180,7 +197,7 @@ export class Urls implements t.IUrls {
          */
         get uploaded() {
           type Q = t.IReqQueryCellFilesUploaded;
-          return toPath<Q>(`/cell:${ns}:${key}/files/uploaded`);
+          return toUrl<Q>(`/cell:${ns}:${key}/files/uploaded`);
         },
       },
 
@@ -201,7 +218,7 @@ export class Urls implements t.IUrls {
           if (!filename) {
             throw new Error(`Filename not provided.`);
           }
-          return toPath<Q>(`/cell:${ns}:${key}/file/${filename}`);
+          return toUrl<Q>(`/cell:${ns}:${key}/file/${filename}`);
         },
 
         /**
@@ -220,16 +237,8 @@ export class Urls implements t.IUrls {
             throw new Error(`File uri/name could not be derived..`);
           }
           const file = `file:${filename}`;
-          return toPath<Q>(`/cell:${ns}:${key}/${file}`);
+          return toUrl<Q>(`/cell:${ns}:${key}/${file}`);
         },
-      },
-
-      /**
-       * Func (execution runtime).
-       */
-      get func() {
-        type Q = t.IReqQueryCellFunc;
-        return toPath<Q>(`/cell:${ns}:${key}/func`);
       },
     };
 
@@ -240,7 +249,7 @@ export class Urls implements t.IUrls {
    * Builders for ROW urls.
    */
   public row(input: string | t.IRowUri) {
-    const toPath = this.toUrl;
+    const toUrl = this.toUrl;
     const uri = Uri.row(input);
     const { ns, key, type } = uri;
     if (type !== 'ROW') {
@@ -256,7 +265,7 @@ export class Urls implements t.IUrls {
        */
       get info() {
         type Q = t.IReqQueryRowInfo;
-        return toPath<Q>(`/cell:${ns}:${key}`);
+        return toUrl<Q>(`/cell:${ns}:${key}`);
       },
     };
   }
@@ -265,7 +274,7 @@ export class Urls implements t.IUrls {
    * Builders for COLUMN urls.
    */
   public column(input: string | t.IColumnUri) {
-    const toPath = this.toUrl;
+    const toUrl = this.toUrl;
     const uri = Uri.column(input);
 
     const { ns, key, type } = uri;
@@ -282,13 +291,13 @@ export class Urls implements t.IUrls {
        */
       get info() {
         type Q = t.IReqQueryColumnInfo;
-        return toPath<Q>(`/cell:${ns}:${key}`);
+        return toUrl<Q>(`/cell:${ns}:${key}`);
       },
     };
   }
 
   public file(input: string | t.IFileUri) {
-    const toPath = this.toUrl;
+    const toUrl = this.toUrl;
     const uri = Uri.file(input);
 
     if (uri.type !== 'FILE') {
@@ -302,22 +311,22 @@ export class Urls implements t.IUrls {
 
       get info() {
         type Q = t.IReqQueryFileInfo;
-        return toPath<Q>(`/file:${id}/info`);
+        return toUrl<Q>(`/file:${id}/info`);
       },
 
       get download() {
         type Q = t.IReqQueryFileDownload;
-        return toPath<Q>(`/file:${id}`);
+        return toUrl<Q>(`/file:${id}`);
       },
 
       get delete() {
         type Q = t.IReqQueryFileDelete;
-        return toPath<Q>(`/file:${id}`);
+        return toUrl<Q>(`/file:${id}`);
       },
 
       get uploaded() {
         type Q = t.IReqQueryFileUploadComplete;
-        return toPath<Q>(`/file:${id}/uploaded`);
+        return toUrl<Q>(`/file:${id}/uploaded`);
       },
     };
   }
@@ -326,11 +335,9 @@ export class Urls implements t.IUrls {
    * [INTERNAL]
    */
 
-  private toUrl = <Q extends Record<string, unknown>>(
-    path: string,
-    options: { query?: Q } = {},
-  ): t.IUrl<Q> => {
+  private toUrl = <Q extends O>(path: string, options: { query?: Q } = {}): t.IUrl<Q> => {
     const { query } = options;
-    return new Url<Q>({ origin: this.origin, path, query });
+    const origin = this.origin;
+    return new Url<Q>({ origin, path, query });
   };
 }

@@ -73,6 +73,7 @@ describe('Urls', () => {
     it('uid', () => {
       const res = url.sys.uid;
       expect(res.toString()).to.eql('http://localhost/.uid');
+      expect(res.query({ total: 2 }).toString()).to.eql('http://localhost/.uid?total=2');
     });
   });
 
@@ -275,15 +276,6 @@ describe('Urls', () => {
       expect(() => url.cell(URI).file.byFileUri('')).to.throw();
       expect(() => url.cell(URI).file.byFileUri('  ')).to.throw();
     });
-
-    it('func', () => {
-      const res1 = url.cell(URI).func;
-      const res2 = url.cell(Uri.cell('cell:foo:A1')).func;
-
-      const URL = 'http://localhost/cell:foo:A1/func';
-      expect(res1.toString()).to.eql(URL);
-      expect(res2.toString()).to.eql(URL);
-    });
   });
 
   describe('row', () => {
@@ -394,6 +386,13 @@ describe('Urls', () => {
       const URL = 'http://localhost/file:foo:123/uploaded';
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(URL);
+    });
+  });
+
+  describe('func', () => {
+    const url = Urls.create();
+    it('base (/func)', () => {
+      expect(url.func.base.toString()).to.eql('http://localhost/func');
     });
   });
 });
