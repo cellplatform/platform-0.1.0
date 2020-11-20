@@ -10,13 +10,13 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/src/now.ts"
+      "dest": "/src/vercel.ts"
     }
   ],
   "builds": [
     {
       "src": "**/*.{ts,tsx}",
-      "use": "@now/node",
+      "use": "@vercel/node",
       "config": {
         "includeFiles": ["*.json", "static/favicon.ico"]
       }
