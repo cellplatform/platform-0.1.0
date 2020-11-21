@@ -22,8 +22,12 @@ describe.only('func', () => {
     console.log('res.status', res.status);
     console.log('json', json);
 
+    expect(123).to.equal(123);
+
     await mock.dispose();
   });
 
-  it.skip('error: func/runtime not provided (500)', async () => {});
+  it.skip('error: func/runtime not provided (500)', async () => {
+    //
+  });
 });
