@@ -39,6 +39,10 @@ export const FileCache = {
           await fs.remove(path);
         }
       },
+
+      async clear() {
+        await fs.remove(dir);
+      },
     };
 
     return cache;

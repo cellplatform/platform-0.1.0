@@ -46,6 +46,19 @@ describe('FileCache', () => {
 
     await cache.delete(padded);
     expect(await cache.exists(path)).to.eql(false);
+    expect(await fs.pathExists(dir)).to.eql(true); // NB: Containing folder still exists.
+  });
+
+  it('clear', async () => {
+    const { data, path } = await getSample();
+    const cache = FileCache.create({ fs, dir });
+    expect(await fs.pathExists(dir)).to.eql(false);
+
+    await cache.put(path, data);
+    expect(await fs.pathExists(dir)).to.eql(true);
+
+    await cache.clear();
+    expect(await fs.pathExists(dir)).to.eql(false);
   });
 
   it('cache.file(path)', async () => {

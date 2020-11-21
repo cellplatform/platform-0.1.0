@@ -31,6 +31,7 @@ export type IFileCache = {
   get(path: string): Promise<Uint8Array | undefined>;
   put(path: string, data: string | Uint8Array): Promise<void>;
   delete(path: string): Promise<void>;
+  clear(): Promise<void>;
 };
 
 export type ICachedFile = {
