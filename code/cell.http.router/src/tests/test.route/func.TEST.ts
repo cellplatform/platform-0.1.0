@@ -24,4 +24,6 @@ describe.only('func', () => {
 
     await mock.dispose();
   });
+
+  it.skip('error: func/runtime not provided (500)', async () => {});
 });
