@@ -19,8 +19,6 @@ export default () =>
 
     .redirect(false, '*.worker.js')
 
-    // .remote('')
-
     .html((config) => {
       // config;
       // .head(

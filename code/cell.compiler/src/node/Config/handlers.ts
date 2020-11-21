@@ -1,4 +1,3 @@
-import { web } from 'webpack';
 import { Builder, DEFAULT, Encoding, fs, R, t, value as valueUtil } from '../common';
 import { wp } from '../Config.webpack';
 import { webpackMethods } from './handlers.webpack';
