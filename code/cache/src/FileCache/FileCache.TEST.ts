@@ -11,7 +11,6 @@ describe.only('FileCache', () => {
   it('create', async () => {
     const cache = FileCache.create({ fs, dir: `   ${dir}   ` });
     expect(cache.dir).to.eql(dir);
-    expect(cache.ttl).to.eql(undefined);
   });
 
   it('put => get => exists', async () => {

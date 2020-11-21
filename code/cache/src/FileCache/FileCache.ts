@@ -5,13 +5,12 @@ import { IFs } from '@platform/fs.types';
  * A cache for storing files locally.
  */
 export const FileCache = {
-  create(args: { fs: IFs; dir: string; ttl?: number }) {
-    const { fs, ttl } = args;
+  create(args: { fs: IFs; dir: string }) {
+    const { fs } = args;
     const dir = cleanPath(args.dir);
     const toCachePath = (path: string) => fs.join(dir, cleanPath(path).replace(/^\/*/, ''));
 
     const cache: t.IFileCache = {
-      ttl,
       dir,
 
       async exists(path) {

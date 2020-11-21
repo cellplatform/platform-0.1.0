@@ -25,7 +25,6 @@ export type IMemoryCache<K extends string = string> = {
  * File Cache.
  */
 export type IFileCache = {
-  readonly ttl: number | undefined;
   readonly dir: string;
   exists(path: string): Promise<boolean>;
   get(path: string): Promise<Uint8Array | undefined>;
