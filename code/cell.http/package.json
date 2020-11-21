@@ -49,8 +49,8 @@
     "src.deployment",
     "!src.deployment/node_modules",
     "!src.deployment/tmp",
-    "!.env",
-    "!.vercel"
+    "!src.deployment/.env",
+    "!src.deployment/.vercel"
   ],
   "license": "MIT"
 }
