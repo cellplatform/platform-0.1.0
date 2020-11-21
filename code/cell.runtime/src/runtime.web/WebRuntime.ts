@@ -5,7 +5,7 @@ import { Runtime } from '../runtime';
  */
 export const WebRuntime = {
   module: Runtime.module(), // NB: __CELL_ENV__ used within this method.
-  bundle: Runtime.bundle(), // NB: __CELL_ENV__ used within this method.
+  bundle: Runtime.origin(), // NB: __CELL_ENV__ used within this method.
   remote: Runtime.remote,
 };
 

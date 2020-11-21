@@ -1,19 +1,19 @@
 import { Runtime } from '.';
 import { expect, t } from '../test';
 
-const __CELL_ENV__: t.RuntimeEnv = {
+const __CELL_ENV__: t.RuntimeBundle = {
   module: { name: 'my-module', version: '1.2.3' },
-  bundle: {
+  origin: {
     host: 'foo.com',
     cell: 'cell:foo:A1',
     dir: 'foobar',
   },
 };
 
-const modify = (bundle: Partial<t.RuntimeEnvBundle>): t.RuntimeEnv => {
+const modify = (origin: Partial<t.RuntimeBundleOrigin>): t.RuntimeBundle => {
   return {
     ...__CELL_ENV__,
-    bundle: { ...__CELL_ENV__.bundle, ...bundle } as t.RuntimeEnvBundle,
+    origin: { ...__CELL_ENV__.origin, ...origin } as t.RuntimeBundleOrigin,
   };
 };
 
@@ -32,10 +32,10 @@ describe('Runtime', () => {
     });
   });
 
-  describe('Bundle', () => {
+  describe('Origin', () => {
     describe('create', () => {
       it('from <nothing>', () => {
-        const bundle = Runtime.bundle();
+        const bundle = Runtime.origin();
         expect(bundle.host).to.eql('http://localhost:3000');
         expect(bundle.cell).to.eql('cell:dev:A1');
         expect(bundle.dir).to.eql('');
@@ -43,7 +43,7 @@ describe('Runtime', () => {
       });
 
       it('from __CELL_ENV__', () => {
-        const bundle = Runtime.bundle(__CELL_ENV__);
+        const bundle = Runtime.origin(__CELL_ENV__);
         expect(bundle.host).to.eql('https://foo.com');
         expect(bundle.cell).to.eql('cell:foo:A1');
         expect(bundle.dir).to.eql('foobar');
@@ -52,7 +52,7 @@ describe('Runtime', () => {
 
       it('formats dir', () => {
         const test = (dir: string, expected: string) => {
-          const bundle = Runtime.bundle(modify({ dir }));
+          const bundle = Runtime.origin(modify({ dir }));
           expect(bundle.dir).to.eql(expected);
         };
         test('', '');
@@ -66,8 +66,8 @@ describe('Runtime', () => {
     });
 
     describe('path', () => {
-      it(' local', () => {
-        const bundle = Runtime.bundle();
+      it('local', () => {
+        const bundle = Runtime.origin();
         const test = (input: any, expected: string) => {
           const res = bundle.path(input);
           expect(res).to.eql(expected);
@@ -78,7 +78,7 @@ describe('Runtime', () => {
       });
 
       it('remote (with dir)', () => {
-        const bundle = Runtime.bundle(__CELL_ENV__);
+        const bundle = Runtime.origin(__CELL_ENV__);
         const test = (input: any, expected: string) => {
           const res = bundle.path(input);
           expect(res).to.eql(expected);
@@ -91,7 +91,7 @@ describe('Runtime', () => {
       });
 
       it('remote (no dir)', () => {
-        const bundle = Runtime.bundle(modify({ dir: '   ' }));
+        const bundle = Runtime.origin(modify({ dir: '   ' }));
         const test = (input: any, expected: string) => {
           const res = bundle.path(input);
           expect(res).to.eql(expected);

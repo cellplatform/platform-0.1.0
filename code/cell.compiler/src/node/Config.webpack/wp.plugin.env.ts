@@ -10,7 +10,7 @@ import * as t from './types';
 export function init(args: t.IArgs) {
   const model = Model(args.model);
   const PKG = constants.PKG;
-  const env: t.RuntimeEnv = {
+  const env: t.RuntimeBundle = {
     ...model.env,
     module: { name: PKG.name || '', version: PKG.version || '' },
   };

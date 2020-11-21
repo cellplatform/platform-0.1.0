@@ -1,5 +1,5 @@
 /**
- * Details about a bundled package.
+ * Details about a compiled bundle of code.
  */
 export type BundleManifest = {
   hash: string;

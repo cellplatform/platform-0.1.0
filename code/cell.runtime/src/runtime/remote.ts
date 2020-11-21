@@ -22,15 +22,15 @@ import * as t from '../types';
  *
  */
 export function remote(args: {
-  url: string;
+  url: string; // Remote manifest URL (eg ".../remoteEntry.js")
   namespace: string;
   entry: string;
   dispose$?: Observable<any>;
   silent?: boolean;
-}): t.RuntimeRemote {
+}): t.RuntimeRemoteWeb {
   const { url, namespace, entry, silent } = args;
 
-  const loadModule: t.RuntimeRemote['module'] = async () => {
+  const loadModule: t.RuntimeRemoteWeb['module'] = async () => {
     // Initializes the share scope.
     // This fills it with known provided modules from this build and all remotes.
     await __webpack_init_sharing__('default');
@@ -45,7 +45,7 @@ export function remote(args: {
     return Module;
   };
 
-  const loadScript: t.RuntimeRemote['script'] = () => {
+  const loadScript: t.RuntimeRemoteWeb['script'] = () => {
     const stop$ = new Subject<any>();
     const _event$ = new Subject<t.IRuntimeScriptEvent>();
     const event$ = _event$.pipe(takeUntil(stop$));
