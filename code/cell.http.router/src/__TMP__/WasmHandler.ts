@@ -1,4 +1,4 @@
-import { t, fs } from './common';
+import { t, fs } from '../common';
 
 /**
  * TODO 🐷
@@ -13,7 +13,7 @@ import { t, fs } from './common';
 let count = 0;
 
 export const handleWasmTmp: t.RouteHandler = async (req) => {
-  const source = await fs.readFile(fs.resolve('../src/test/assets/func.wasm'));
+  const source = await fs.readFile(fs.resolve('../../cell.http.router/src/__TMP__/func.wasm'));
   const typedArray = new Uint8Array(source);
 
   const env = {
