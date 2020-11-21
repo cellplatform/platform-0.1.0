@@ -1,3 +1,6 @@
+/**
+ * In-Memory Cache.
+ */
 export type MemoryCacheFilter = (key: string) => boolean;
 export type MemoryCacheGetValue<V> = () => V;
 
@@ -16,4 +19,15 @@ export type IMemoryCache<K extends string = string> = {
   delete(key: K): IMemoryCache<K>;
   clear(args?: { filter?: MemoryCacheFilter }): IMemoryCache<K>;
   clone(): IMemoryCache<K>;
+};
+
+/**
+ * File Cache.
+ */
+export type IFileCache = {
+  readonly ttl: number | undefined;
+  readonly dir: string;
+  exists(path: string): Promise<boolean>;
+  get(path: string): Promise<Uint8Array | undefined>;
+  put(path: string, data: string | Uint8Array): Promise<void>;
 };
