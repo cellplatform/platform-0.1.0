@@ -1,9 +1,9 @@
 import { t } from '../common';
 
 export type RuntimeRemote = {
-  url: string; // Remote manifest URL (eg ".../remoteEntry.js").
-  namespace: string; // The encoded FederatedModule "scope".
-  entry: string; // Module name (public "export" via compiler).
+  url: string; //         Remote manifest URL (eg ".../remoteEntry.js").
+  namespace: string; //   The encoded FederatedModule "scope".
+  entry: string; //       Module name (public "export" via compiler).
 };
 
 /**
