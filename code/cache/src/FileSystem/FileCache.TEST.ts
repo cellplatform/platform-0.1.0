@@ -5,11 +5,11 @@ import { FileCache } from '.';
 const tmp = fs.resolve('./tmp');
 const dir = fs.join(tmp, 'FileCache');
 
-describe.only('FileCache', () => {
+describe('FileCache', () => {
   beforeEach(() => fs.remove(tmp));
 
   it('create', async () => {
-    const cache = FileCache.create({ fs, dir: `   ${dir}   ` });
+    const cache = FileCache.create({ fs, dir: `   ${dir}//   ` });
     expect(cache.dir).to.eql(dir);
   });
 
@@ -18,16 +18,16 @@ describe.only('FileCache', () => {
 
     expect(await fs.pathExists(dir)).to.eql(false);
 
-    const file = await fs.readFile(fs.resolve('tsconfig.json'));
+    const data = await fs.readFile(fs.resolve('tsconfig.json'));
     const path = 'foo/bar/tsconfig.json';
     const pathPadded = `  //${path}  `;
     expect(await cache.exists(path)).to.eql(false);
 
-    await cache.put(pathPadded, file);
+    await cache.put(pathPadded, data);
     expect(await cache.exists(pathPadded)).to.eql(true);
     expect(await fs.pathExists(fs.join(dir, path))).to.eql(true);
 
     const res = await cache.get(pathPadded);
-    expect(res?.toString()).to.eql(file.toString());
+    expect(res?.toString()).to.eql(data.toString());
   });
 });

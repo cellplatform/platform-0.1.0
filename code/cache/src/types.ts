@@ -1,5 +1,5 @@
 /**
- * In-Memory Cache.
+ * In-Memory Cache
  */
 export type MemoryCacheFilter = (key: string) => boolean;
 export type MemoryCacheGetValue<V> = () => V;
@@ -22,11 +22,19 @@ export type IMemoryCache<K extends string = string> = {
 };
 
 /**
- * File Cache.
+ * File System Cache
  */
 export type IFileCache = {
   readonly dir: string;
   exists(path: string): Promise<boolean>;
   get(path: string): Promise<Uint8Array | undefined>;
   put(path: string, data: string | Uint8Array): Promise<void>;
+};
+
+export type ICachedFile = {
+  readonly dir: string;
+  readonly path: string;
+  exists(): Promise<boolean>;
+  get(): Promise<Uint8Array | undefined>;
+  put(data: string | Uint8Array): Promise<void>;
 };
