@@ -1,6 +1,7 @@
 import { local } from '@platform/cell.fs.local';
 import { s3 } from '@platform/cell.fs.s3';
 import { NeDb } from '@platform/fsdb.nedb';
+import { NodeRuntime } from '@platform/cell.runtime/lib/node';
 
 import { server, util } from './common';
 
@@ -16,7 +17,6 @@ const db = NeDb.create({ filename });
 /**
  * File system.
  */
-
 const filesystem = {
   local: () => local.init({ dir: `${TMP}/fs`, fs: util.fs }),
 
@@ -41,6 +41,12 @@ const filesystem = {
 };
 
 /**
+ * Function Runtime
+ */
+
+const func = NodeRuntime.init();
+
+/**
  * Initialize and start the HTTP application server.
  */
 const app = server.create({
@@ -49,6 +55,7 @@ const app = server.create({
   fs: filesystem.spaces(),
   // fs: filesystem.wasabi(),
   // fs: filesystem.local(),
+  func,
 });
 
 app.start({ port: 8080 });

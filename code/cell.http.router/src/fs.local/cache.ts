@@ -1,6 +1,9 @@
 import { fs, constants } from '../common';
 
-export function fileCache(args: { hash: string }) {
+/**
+ * Local file-system cache.
+ */
+export function localFileCache(args: { hash: string }) {
   const { hash } = args;
   let path = '';
   const cache = {

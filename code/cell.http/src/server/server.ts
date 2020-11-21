@@ -12,12 +12,13 @@ const { PKG } = constants;
 export function create(args: {
   db: t.IDb;
   fs: t.IFileSystem;
+  func?: t.RuntimeEnv;
   name?: string;
   deployedAt?: number | string;
   logger?: t.ILog;
   prod?: boolean;
 }) {
-  const { db, name, fs } = args;
+  const { db, name, fs, func } = args;
   const logger = args.logger || log;
   const base = filesystem.resolve('.');
   const dir = fs.dir.startsWith(base) ? fs.dir.substring(base.length) : fs.dir;
@@ -33,7 +34,7 @@ export function create(args: {
 
   // Routes.
   const body = micro.body;
-  const router = Router.create({ name, db, fs, body, deployedAt });
+  const router = Router.create({ name, db, fs, func, body, deployedAt });
 
   // Setup the micro-service.
   const deps = PKG.dependencies || {};
@@ -42,11 +43,12 @@ export function create(args: {
     logger,
     router,
     log: {
-      module: `${log.white(PKG.name)}@${PKG.version}`,
+      server: `${log.white(PKG.name)}@${PKG.version}`,
       schema: log.green(deps['@platform/cell.schema']),
       router: deps['@platform/cell.http.router'],
+      func: func ? `${func.name} (runtime)` : undefined,
       fs: `[${log.white(fs.type === 'LOCAL' ? 'local' : fs.type)}]${dir}`,
-      s3: fs.type !== 'S3' ? undefined : fs.endpoint.origin,
+      'fs:s3': fs.type == 'S3' ? fs.endpoint.origin : undefined,
     },
   });
 
