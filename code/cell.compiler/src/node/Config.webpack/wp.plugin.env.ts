@@ -17,6 +17,7 @@ export function init(args: t.IArgs) {
   if (args.isDev && !env.origin) {
     env.origin = { host: `localhost:${model.port()}`, cell: 'cell:dev:A1' };
   }
-
-  return new DefinePlugin({ __CELL_ENV__: JSON.stringify(env) });
+  return new DefinePlugin({
+    __CELL__: JSON.stringify(env),
+  });
 }

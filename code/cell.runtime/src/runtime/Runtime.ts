@@ -4,14 +4,14 @@ import { RuntimeBundle } from '../types';
 import { remote } from './remote';
 
 const toEnv = (input?: RuntimeBundle) => {
-  return !input && typeof __CELL_ENV__ !== 'undefined' ? __CELL_ENV__ : input;
+  return !input && typeof __CELL__ !== 'undefined' ? __CELL__ : input;
 };
 
 export const Runtime = {
   remote,
 
   /**
-   * Wrapper around the __CELL_ENV__ constants inserted into modules
+   * Wrapper around the __CELL__ constants inserted into modules
    * by the [cell.compiler] packager, providing variables and helper
    * methods for using the variables.
    *
@@ -44,7 +44,7 @@ export const Runtime = {
   },
 
   /**
-   * Extract module information from __CELL_ENV__.
+   * Extract module information from __CELL__.
    */
   module(input?: RuntimeBundle) {
     input = toEnv(input);

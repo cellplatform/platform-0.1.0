@@ -1,7 +1,7 @@
 import { Runtime } from '.';
 import { expect, t } from '../test';
 
-const __CELL_ENV__: t.RuntimeBundle = {
+const __CELL__: t.RuntimeBundle = {
   module: { name: 'my-module', version: '1.2.3' },
   origin: {
     host: 'foo.com',
@@ -12,8 +12,8 @@ const __CELL_ENV__: t.RuntimeBundle = {
 
 const modify = (origin: Partial<t.RuntimeBundleOrigin>): t.RuntimeBundle => {
   return {
-    ...__CELL_ENV__,
-    origin: { ...__CELL_ENV__.origin, ...origin } as t.RuntimeBundleOrigin,
+    ...__CELL__,
+    origin: { ...__CELL__.origin, ...origin } as t.RuntimeBundleOrigin,
   };
 };
 
@@ -25,8 +25,8 @@ describe('Runtime', () => {
       expect(module.version).to.eql('');
     });
 
-    it('from __CELL_ENV__', () => {
-      const module = Runtime.module(__CELL_ENV__);
+    it('from __CELL__', () => {
+      const module = Runtime.module(__CELL__);
       expect(module.name).to.eql('my-module');
       expect(module.version).to.eql('1.2.3');
     });
@@ -42,8 +42,8 @@ describe('Runtime', () => {
         expect(bundle.dev).to.eql(true);
       });
 
-      it('from __CELL_ENV__', () => {
-        const bundle = Runtime.origin(__CELL_ENV__);
+      it('from __CELL__', () => {
+        const bundle = Runtime.origin(__CELL__);
         expect(bundle.host).to.eql('https://foo.com');
         expect(bundle.cell).to.eql('cell:foo:A1');
         expect(bundle.dir).to.eql('foobar');
@@ -78,7 +78,7 @@ describe('Runtime', () => {
       });
 
       it('remote (with dir)', () => {
-        const bundle = Runtime.origin(__CELL_ENV__);
+        const bundle = Runtime.origin(__CELL__);
         const test = (input: any, expected: string) => {
           const res = bundle.path(input);
           expect(res).to.eql(expected);

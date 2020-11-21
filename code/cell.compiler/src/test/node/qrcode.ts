@@ -12,7 +12,7 @@ import { Encoding } from '@platform/cell.runtime/lib/runtime/common';
   console.log(code);
 
   try {
-    console.log('__CELL_ENV__', __CELL_ENV__);
+    console.log('__CELL__', __CELL__);
   } catch (error) {
     console.log('error', error);
   }
