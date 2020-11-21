@@ -5,6 +5,13 @@ import { CachedFile, FileCache } from '.';
 const tmp = fs.resolve('./tmp');
 const dir = fs.join(tmp, 'FileCache');
 
+const getSample = async () => {
+  const data = await fs.readFile(fs.resolve('tsconfig.json'));
+  const path = 'foo/bar/tsconfig.json';
+  const padded = `  //${path}  `;
+  return { data, path, padded };
+};
+
 describe('CachedFile', () => {
   beforeEach(() => fs.remove(tmp));
 
@@ -16,13 +23,11 @@ describe('CachedFile', () => {
   });
 
   it('put => get => exists', async () => {
+    const { data, path, padded } = await getSample();
     const cache = FileCache.create({ fs, dir });
+    const file = CachedFile.create({ cache, path: padded });
 
-    const data = await fs.readFile(fs.resolve('tsconfig.json'));
-    const path = 'foo/bar/tsconfig.json';
-    const pathPadded = `  //${path}  `;
-
-    const file = CachedFile.create({ cache, path: pathPadded });
+    expect(file.path).to.eql(path);
     expect(await file.exists()).to.eql(false);
 
     await file.put(data);
@@ -31,5 +36,19 @@ describe('CachedFile', () => {
 
     const res = await file.get();
     expect(res?.toString()).to.eql(data.toString());
+  });
+
+  it('delete', async () => {
+    const { data, path } = await getSample();
+    const cache = FileCache.create({ fs, dir });
+    const file = CachedFile.create({ cache, path });
+
+    expect(await file.exists()).to.eql(false);
+    await file.put(data);
+    expect(await file.exists()).to.eql(true);
+
+    await file.delete();
+    expect(await cache.exists(path)).to.eql(false);
+    expect(await file.exists()).to.eql(false);
   });
 });

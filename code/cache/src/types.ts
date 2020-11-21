@@ -26,10 +26,11 @@ export type IMemoryCache<K extends string = string> = {
  */
 export type IFileCache = {
   readonly dir: string;
+  file(path: string): ICachedFile;
   exists(path: string): Promise<boolean>;
   get(path: string): Promise<Uint8Array | undefined>;
   put(path: string, data: string | Uint8Array): Promise<void>;
-  file(path: string): ICachedFile;
+  delete(path: string): Promise<void>;
 };
 
 export type ICachedFile = {
@@ -38,4 +39,5 @@ export type ICachedFile = {
   exists(): Promise<boolean>;
   get(): Promise<Uint8Array | undefined>;
   put(data: string | Uint8Array): Promise<void>;
+  delete(): Promise<void>;
 };

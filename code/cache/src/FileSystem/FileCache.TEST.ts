@@ -5,6 +5,13 @@ import { FileCache } from '.';
 const tmp = fs.resolve('./tmp');
 const dir = fs.join(tmp, 'FileCache');
 
+const getSample = async () => {
+  const data = await fs.readFile(fs.resolve('tsconfig.json'));
+  const path = 'foo/bar/tsconfig.json';
+  const padded = `  //${path}  `;
+  return { data, path, padded };
+};
+
 describe('FileCache', () => {
   beforeEach(() => fs.remove(tmp));
 
@@ -14,29 +21,40 @@ describe('FileCache', () => {
   });
 
   it('put => get => exists', async () => {
+    const { data, path, padded } = await getSample();
+
     const cache = FileCache.create({ fs, dir });
     expect(await fs.pathExists(dir)).to.eql(false);
 
-    const data = await fs.readFile(fs.resolve('tsconfig.json'));
-    const path = 'foo/bar/tsconfig.json';
-    const pathPadded = `  //${path}  `;
     expect(await cache.exists(path)).to.eql(false);
 
-    await cache.put(pathPadded, data);
-    expect(await cache.exists(pathPadded)).to.eql(true);
+    await cache.put(padded, data);
+    expect(await cache.exists(padded)).to.eql(true);
     expect(await fs.pathExists(fs.join(dir, path))).to.eql(true);
 
-    const res = await cache.get(pathPadded);
+    const res = await cache.get(padded);
     expect(res?.toString()).to.eql(data.toString());
   });
 
-  it('cache.file(path)', async () => {
-    const data = await fs.readFile(fs.resolve('tsconfig.json'));
-    const path = 'foo/bar/tsconfig.json';
-    const pathPadded = `  //${path}  `;
-
+  it('delete', async () => {
+    const { data, path, padded } = await getSample();
     const cache = FileCache.create({ fs, dir });
-    const file = cache.file(pathPadded);
+
+    expect(await cache.exists(path)).to.eql(false);
+    await cache.put(padded, data);
+    expect(await cache.exists(padded)).to.eql(true);
+
+    await cache.delete(padded);
+    expect(await cache.exists(path)).to.eql(false);
+  });
+
+  it('cache.file(path)', async () => {
+    const { data, path, padded } = await getSample();
+    const cache = FileCache.create({ fs, dir });
+    const file = cache.file(padded);
+
+    expect(file.path).to.eql(path);
+    expect(file.dir).to.eql(dir);
 
     expect(await file.exists()).to.eql(false);
     await file.put(data);

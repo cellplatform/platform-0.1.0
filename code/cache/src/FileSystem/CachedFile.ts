@@ -24,6 +24,10 @@ export const CachedFile = {
       async put(data) {
         await cache.put(path, data);
       },
+
+      async delete() {
+        await cache.delete(path);
+      },
     };
 
     return file;

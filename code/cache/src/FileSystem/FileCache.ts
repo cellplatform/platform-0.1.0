@@ -14,6 +14,10 @@ export const FileCache = {
     const cache: t.IFileCache = {
       dir,
 
+      file(path) {
+        return CachedFile.create({ cache, path });
+      },
+
       async exists(path) {
         return fs.exists(toCachePath(dir, path));
       },
@@ -29,8 +33,11 @@ export const FileCache = {
         await fs.writeFile(path, data);
       },
 
-      file(path) {
-        return CachedFile.create({ cache, path });
+      async delete(path) {
+        path = toCachePath(dir, path);
+        if (await fs.exists(path)) {
+          await fs.remove(path);
+        }
       },
     };
 
