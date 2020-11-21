@@ -17,6 +17,7 @@ export function init(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   router: t.IRouter;
+  runtime?: t.RuntimeEnv;
   name?: string;
   deployedAt?: number;
 }) {

@@ -1,6 +1,11 @@
 import { t, util } from '../common';
 
-export async function execFunc(args: { host: string; db: t.IDb; body: t.IReqPostFuncBody }) {
+export async function execFunc(args: {
+  host: string;
+  db: t.IDb;
+  runtime: t.RuntimeEnv;
+  body: t.IReqPostFuncBody;
+}) {
   try {
     const { body } = args;
     console.log('HANDLER: execFunc', body); // TEMP 🐷

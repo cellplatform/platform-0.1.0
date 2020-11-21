@@ -8,14 +8,14 @@ export const Router = {
   create(args: {
     db: t.IDb;
     fs: t.IFileSystem;
-    func?: t.RuntimeEnv;
+    runtime?: t.RuntimeEnv;
     body: t.BodyParser;
     name?: string;
     deployedAt?: number;
   }) {
-    const { db, fs, body, name, deployedAt } = args;
+    const { db, fs, runtime, body, name, deployedAt } = args;
     const router = BaseRouter.create({ body });
-    routes.init({ db, fs, name, deployedAt, router });
+    routes.init({ db, fs, name, deployedAt, router, runtime });
     return router;
   },
 };

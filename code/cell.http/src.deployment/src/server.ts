@@ -41,10 +41,9 @@ const filesystem = {
 };
 
 /**
- * Function Runtime
+ * Function Runtime.
  */
-
-const func = NodeRuntime.init();
+const runtime = NodeRuntime.init();
 
 /**
  * Initialize and start the HTTP application server.
@@ -55,7 +54,7 @@ const app = server.create({
   // fs: filesystem.spaces(),
   // fs: filesystem.wasabi(),
   fs: filesystem.local(),
-  func,
+  runtime,
 });
 
 app.start({ port: 8080 });
