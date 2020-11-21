@@ -33,7 +33,7 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
       /**
        * [1] Bundle the code.
        */
-      const origin: t.RuntimeBundleOrigin = { host, cell: targetCell, dir: targetDir };
+      const origin: t.RuntimeBundleOrigin = { host, uri: targetCell, dir: targetDir };
       if (defaultValue(options.bundle, true)) {
         await runBundle({ config, origin, silent });
       }

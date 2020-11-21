@@ -13,7 +13,7 @@ export default () =>
 
     .static('./static')
 
-    .env({ foo: 1234 })
+    .env({ foo: 12345 })
 
     .shared((e) => e.singleton(['react', 'react-dom']))
 

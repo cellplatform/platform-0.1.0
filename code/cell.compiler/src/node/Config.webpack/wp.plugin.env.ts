@@ -15,7 +15,7 @@ export function init(args: t.IArgs) {
     module: { name: PKG.name || '', version: PKG.version || '' },
   };
   if (args.isDev && !env.origin) {
-    env.origin = { host: `localhost:${model.port()}`, cell: 'cell:dev:A1' };
+    env.origin = { host: `localhost:${model.port()}`, uri: 'cell:dev:A1' };
   }
   return new DefinePlugin({
     __CELL__: JSON.stringify(env),

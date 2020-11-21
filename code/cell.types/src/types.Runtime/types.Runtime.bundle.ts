@@ -7,6 +7,6 @@ export type RuntimeBundle = {
 
 export type RuntimeBundleOrigin = {
   host: string;
-  cell: string;
+  uri: string;
   dir?: string;
 };
