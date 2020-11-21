@@ -1,18 +1,15 @@
-import { createMock, expect, Http, t } from '../../test';
 import { NodeRuntime } from '@platform/cell.runtime/lib/node';
+import { createMock, expect, Http, t } from '../../test';
 
 const funcMock = async () => {
   const runtime = NodeRuntime.init();
-
   const mock = await createMock({ runtime });
-  const url = mock.urls.func.base.toString();
   const http = Http.create();
-
+  const url = mock.urls.func.base.toString();
   return { url, mock, http, runtime };
 };
 
 describe.only('func', () => {
-  // const url = mock.urls.func.base.toString()
   describe('over http', () => {
     it('does not exist (404)', async () => {
       const { mock, http, url } = await funcMock();
