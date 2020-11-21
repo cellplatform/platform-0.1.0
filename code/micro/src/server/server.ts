@@ -104,20 +104,16 @@ export function create(
           const max = keys.reduce((acc, next) => (next.length > acc ? next.length : acc), 0) + 2;
 
           logger.info();
-          logger.info.gray(`👋  Running on ${url}`);
+          logger.info.gray(`👋 Running on ${url}`);
           logger.info();
           keys.forEach((key) => {
-            const prefix = `${key}:${' '.repeat(10)}`.substring(0, max);
+            const prefix = `${key}${' '.repeat(10)}`.substring(0, max);
             logger.info.gray(`   • ${prefix} ${props[key].toString()}`);
           });
           logger.info();
         }
 
-        fire({
-          type: 'HTTP/started',
-          payload: { elapsed, port },
-        });
-
+        fire({ type: 'HTTP/started', payload: { elapsed, port } });
         resolve(service);
       });
     });

@@ -49,7 +49,6 @@ const app = server.create({
   fs: filesystem.spaces(),
   // fs: filesystem.wasabi(),
   // fs: filesystem.local(),
-  // log: ['ROUTES'],
 });
 
 app.start({ port: 8080 });
