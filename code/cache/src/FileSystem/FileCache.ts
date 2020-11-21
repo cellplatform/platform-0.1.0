@@ -1,6 +1,7 @@
 import * as t from '../types';
 import { IFs } from '@platform/fs.types';
 import { toCachePath, cleanDir } from './path';
+import { CachedFile } from './CachedFile';
 
 /**
  * A cache for storing files locally.
@@ -26,6 +27,10 @@ export const FileCache = {
         path = toCachePath(dir, path);
         await fs.ensureDir(fs.dirname(path));
         await fs.writeFile(path, data);
+      },
+
+      file(path) {
+        return CachedFile.create({ cache, path });
       },
     };
 

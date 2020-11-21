@@ -29,6 +29,7 @@ export type IFileCache = {
   exists(path: string): Promise<boolean>;
   get(path: string): Promise<Uint8Array | undefined>;
   put(path: string, data: string | Uint8Array): Promise<void>;
+  file(path: string): ICachedFile;
 };
 
 export type ICachedFile = {
