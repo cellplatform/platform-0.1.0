@@ -261,7 +261,7 @@ async function copy(args: { sourceDir: string; targetDir: string }) {
 }
 
 async function getTmplDir() {
-  const name = 'src.tmpl';
+  const name = 'src.deployment';
 
   const get = async (dir: string) => {
     dir = fs.resolve(dir);
