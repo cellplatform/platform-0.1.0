@@ -1,13 +1,10 @@
-/**
- * EVENTS
- */
-export type RuntimeEvent = IRuntimeScriptEvent;
+export type RuntimeEvent = IRuntimeWebScriptEvent;
 
-export type IRuntimeScriptEvent = {
-  type: 'Runtime/script';
-  payload: IRuntimeScript;
+export type IRuntimeWebScriptEvent = {
+  type: 'Runtime/web/script';
+  payload: IRuntimeWebScript;
 };
-export type IRuntimeScript = {
+export type IRuntimeWebScript = {
   url: string;
   namespace: string;
   ready: boolean;

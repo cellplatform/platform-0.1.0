@@ -1,15 +1,9 @@
 import { t } from '../common';
 
 export type RuntimeRemote = {
-  url: string; // Remote manifest URL (eg ".../remoteEntry.js")
+  url: string;
   namespace: string;
-  entry: string; // Module name (public "export" via compiler)
-};
-
-/**
- * Web
- */
-export type RuntimeRemoteWeb = t.RuntimeRemote & {
+  entry: string;
   script(): RuntimeRemoteScript;
   module<T = any>(): Promise<T>;
   useScript: RuntimeUseScript;

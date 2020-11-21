@@ -47,7 +47,7 @@ export function remote(args: {
 
   const loadScript: t.RuntimeRemoteWeb['script'] = () => {
     const stop$ = new Subject<any>();
-    const _event$ = new Subject<t.IRuntimeScriptEvent>();
+    const _event$ = new Subject<t.IRuntimeWebScriptEvent>();
     const event$ = _event$.pipe(takeUntil(stop$));
 
     if (args.dispose$) {
@@ -57,8 +57,8 @@ export function remote(args: {
     event$
       .pipe(
         filter(() => !silent),
-        filter((e) => e.type === 'Runtime/script'),
-        map((e) => e.payload as t.IRuntimeScript),
+        filter((e) => e.type === 'Runtime/web/script'),
+        map((e) => e.payload as t.IRuntimeWebScript),
       )
       .subscribe((e) => {
         if (e.ready) {
@@ -72,7 +72,7 @@ export function remote(args: {
     const next = (args: { ready: boolean; failed: boolean }) => {
       const { ready, failed } = args;
       const payload = { url, namespace, ready, failed };
-      _event$.next({ type: 'Runtime/script', payload });
+      _event$.next({ type: 'Runtime/web/script', payload });
     };
 
     const script = document.createElement('script');
