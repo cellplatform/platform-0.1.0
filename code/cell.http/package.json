@@ -9,10 +9,10 @@
   },
   "scripts": {
     "cell": "node lib/cli/bin $@",
-    "start": "cd src.tmpl && yarn start $@",
+    "start": "cd src.deployment && yarn start $@",
     "dev": "export NODE_ENV=development && yarn start",
-    "watch": "cd src.tmpl && yarn watch $@",
-    "now": "cd src.tmpl && yarn vercel $@",
+    "watch": "cd src.deployment && yarn watch $@",
+    "now": "cd src.deployment && yarn vercel $@",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
@@ -46,9 +46,11 @@
     "static",
     "!lib/test",
     "!*.TEST.{js, mjs, d.ts}",
-    "src.tmpl",
-    "!src.tmpl/node_modules",
-    "!src.tmpl/tmp"
+    "src.deployment",
+    "!src.deployment/node_modules",
+    "!src.deployment/tmp",
+    "!.env",
+    "!.vercel"
   ],
   "license": "MIT"
 }
