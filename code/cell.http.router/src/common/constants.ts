@@ -3,9 +3,11 @@ import { fs } from './libs';
 export { ERROR } from '@platform/cell.schema';
 
 export const IS_CLOUD = Boolean(process.env.NOW_REGION);
+const TMP = IS_CLOUD ? '/tmp' : fs.resolve('tmp');
 export const PATH = {
   MODULE: fs.join(__dirname, '../../..'),
-  TMP: IS_CLOUD ? '/tmp' : fs.resolve('tmp'),
+  TMP,
+  CACHE_DIR: fs.join(TMP, '.cache'),
 };
 
 /**

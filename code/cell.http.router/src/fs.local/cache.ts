@@ -3,14 +3,15 @@ import { fs, constants } from '../common';
 /**
  * Local file-system cache.
  */
-export function localFileCache(args: { hash: string }) {
+export function fileCache(args: { hash: string }) {
   const { hash } = args;
+
   let path = '';
   const cache = {
     hash,
     get path() {
       if (!path) {
-        const dir = fs.join(constants.PATH.TMP, '.cache');
+        const dir = constants.PATH.CACHE_DIR;
         path = fs.join(dir, hash);
       }
       return path;
