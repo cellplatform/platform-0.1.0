@@ -103,7 +103,7 @@ describe('cell/files: download', function () {
       await mock.dispose();
     });
 
-    it.only('cache downloaded [text/html] file (local filesystem)', async () => {
+    it('cache downloaded [text/html] file (local filesystem)', async () => {
       const CACHE_DIR = constants.PATH.CACHE_DIR;
       await fs.remove(CACHE_DIR);
 
