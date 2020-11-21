@@ -52,9 +52,9 @@ const func = NodeRuntime.init();
 const app = server.create({
   name: 'sample',
   db,
-  fs: filesystem.spaces(),
+  // fs: filesystem.spaces(),
   // fs: filesystem.wasabi(),
-  // fs: filesystem.local(),
+  fs: filesystem.local(),
   func,
 });
 
