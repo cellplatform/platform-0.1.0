@@ -1,7 +1,7 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.7.192",
-  "description": "HTTP server for CellOS.",
+  "version": "0.7.203",
+  "description": "HTTP server for the Cell operating system.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
@@ -44,13 +44,8 @@
   "files": [
     "lib",
     "static",
-    "!lib/test",
-    "!*.TEST.{js, mjs, d.ts}",
-    "src.deployment",
-    "!src.deployment/node_modules",
-    "!src.deployment/tmp",
-    "!src.deployment/.env",
-    "!src.deployment/.vercel"
+    "!lib/test/",
+    "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"
 }

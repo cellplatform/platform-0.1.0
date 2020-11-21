@@ -15,8 +15,8 @@ export const PKG = {
     '@platform/libs': '0.2.3',
     '@platform/log': '0.1.35',
     '@platform/util.value': '0.8.5',
-    'cheerio': '1.0.0-rc.3',
+    cheerio: '1.0.0-rc.3',
     'mime-types': '2.1.27',
-    'minimatch': '3.0.4',
+    minimatch: '3.0.4',
   },
 };
