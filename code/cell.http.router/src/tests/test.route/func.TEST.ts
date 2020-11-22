@@ -188,6 +188,8 @@ describe.only('func', function () {
       });
     });
 
-    it.skip('run', async () => {});
+    it.skip('run', async () => {
+      //
+    });
   });
 });
