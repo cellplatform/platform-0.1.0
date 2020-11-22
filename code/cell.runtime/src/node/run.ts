@@ -1,5 +1,5 @@
 import { Bundle } from './Bundle';
-import { fs, HttpClient, log, logger, Path, t } from './common';
+import { fs, HttpClient, log, logger, Path, t, PATH } from './common';
 import { pullMethod } from './pull';
 
 /**
@@ -18,18 +18,52 @@ export function runMethod(args: { cachedir: string }) {
     const exists = await bundle.exists();
     const isPullRequired = !exists || options.pull;
 
-    console.log('isPullRequired', isPullRequired);
+    const errors: Error[] = [];
 
+    const done = () => {
+      const ok = errors.length === 0;
+      return { ok, errors };
+    };
+
+    // Ensure the bundle has been pulled locally.
     if (isPullRequired) {
       const { ok, errors } = await pull(input, { silent });
-      if (!ok) {
-        return { ok, errors };
+      errors.push(...errors);
+      if (!ok || errors.length > 0) {
+        return done();
       }
     }
 
+    const loadManifest = async () => {
+      const path = fs.join(bundle.cache.dir, PATH.MANIFEST_FILENAME);
+      const exists = await fs.pathExists(path);
+      if (!exists) {
+        const error = new Error(`A bundle manifest file does not exist ${bundle.toString()}.`);
+        errors.push(error);
+        return undefined;
+      } else {
+        try {
+          const manifest = (await fs.readJson(path)) as t.BundleManifest;
+          return manifest;
+        } catch (error) {
+          const msg = error.message;
+          const err = `Failed while reading bundle manifest for ${bundle.toString()}. ${msg}`;
+          errors.push(new Error(err));
+          return undefined;
+        }
+      }
+    };
+
+    const manifest = await loadManifest();
+    if (!manifest) {
+      return done();
+    }
+
+    console.log('manifest', manifest);
+
     //
 
-    return { ok: true, errors: [] };
+    return done();
   };
   return fn;
 }

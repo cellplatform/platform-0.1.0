@@ -1,4 +1,3 @@
-import { flatten } from '@platform/util.value/lib/value/value';
 import { FileCache, fs, PATH, Path, t, Urls } from './common';
 
 type B = t.RuntimeBundleOrigin;
@@ -11,15 +10,7 @@ export function Bundle(bundle: B, cachedir: string) {
   bundle = { ...bundle };
   const { host, uri } = bundle;
   const dir = Path.dir(bundle.dir);
-
-  const hostdir = bundle.host
-    .replace(/^http:\/\//, '')
-    .replace(/^https:\/\//, '')
-    .replace(/\:/g, '-');
-  const cache = FileCache.create({
-    fs,
-    dir: fs.join(cachedir, hostdir, bundle.uri.replace(/\:/g, '-'), flattenDir(dir.path)),
-  });
+  const cache = FileCache.create({ fs, dir: toCacheDir(cachedir, host, uri, dir.path) });
 
   return {
     toObject: () => bundle,
@@ -39,6 +30,12 @@ export function Bundle(bundle: B, cachedir: string) {
     exists() {
       return cache.exists(PATH.MANIFEST_FILENAME);
     },
+
+    toString() {
+      let text = `${host}|${uri}`;
+      text = dir.path ? `${text}|dir:${dir.path}` : text;
+      return `[${text}]`;
+    },
   };
 }
 
@@ -50,4 +47,12 @@ const flattenDir = (dir?: string) => {
   dir = (dir || '').trim().replace(/\/*$/, '');
   dir = dir ? `dir.${dir.replace(/\//g, '-')}` : 'default';
   return dir;
+};
+
+const stripHttp = (text: string) => text.replace(/^http:\/\//, '').replace(/^https:\/\//, '');
+
+const toCacheDir = (base: string, host: string, uri: string, dir?: string) => {
+  host = stripHttp(host).replace(/\:/g, '-');
+  uri = uri.replace(/\:/g, '-');
+  return fs.join(base, host, uri, flattenDir(dir));
 };

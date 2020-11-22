@@ -27,8 +27,15 @@ const bundleToFiles = async (sourceDir: string, targetDir?: string) => {
   return files;
 };
 
-const uploadBundle = async (client: t.IHttpClientCell, bundle: B) => {
-  const files = await bundleToFiles('dist/node', bundle.dir);
+const uploadBundle = async (
+  client: t.IHttpClientCell,
+  bundle: B,
+  options: { filter?: (file: t.IHttpClientCellFileUpload) => boolean } = {},
+) => {
+  const { filter } = options;
+  let files = await bundleToFiles('dist/node', bundle.dir);
+  files = filter ? files.filter((file) => filter(file)) : files;
+
   const upload = await client.files.upload(files);
   expect(upload.ok).to.eql(true);
   return { files, upload, bundle };
@@ -93,7 +100,7 @@ describe.only('func', function () {
     });
   });
 
-  describe.only('RuntimeEnvNode', () => {
+  describe('RuntimeEnvNode', () => {
     const prepare = async (dir?: string) => {
       const { mock, runtime } = await funcMock();
       const uri = 'cell:foo:A1';
@@ -199,7 +206,7 @@ describe.only('func', function () {
       });
     });
 
-    describe.skip('run', () => {
+    describe.only('run', () => {
       it('run', async () => {
         const { mock, runtime, bundle, client } = await prepare('foo');
 
@@ -214,6 +221,34 @@ describe.only('func', function () {
         console.log('res', res);
 
         await mock.dispose();
+      });
+
+      it('error: no manifest in bundle', async () => {
+        const test = async (dir?: string) => {
+          const { mock, runtime, bundle, client } = await prepare(dir);
+
+          const noManifest = (file: t.IHttpClientCellFileUpload) =>
+            !file.filename.endsWith('index.json'); // NB: Cause error by filtering out the manifest file.
+
+          await uploadBundle(client, bundle, { filter: noManifest });
+
+          const res = await runtime.run(bundle);
+          const error = res.errors[0];
+          await mock.dispose();
+
+          expect(res.ok).to.eql(false);
+          expect(res.errors.length).to.eql(1);
+          expect(error.message).to.include('A bundle manifest file does not exist');
+          if (dir) {
+            expect(error.message).to.include(`|cell:foo:A1|dir:${dir}]`);
+          } else {
+            expect(error.message).to.include(`|cell:foo:A1]`);
+          }
+        };
+
+        await test('foo');
+        await test('foo/bar');
+        await test();
       });
     });
   });
