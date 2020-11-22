@@ -19,7 +19,8 @@ export const FileCache = {
       },
 
       async exists(path) {
-        return fs.exists(toCachePath(dir, path));
+        path = toCachePath(dir, path);
+        return fs.exists(path);
       },
 
       async get(path) {
