@@ -13,6 +13,7 @@ const funcMock = async () => {
 };
 
 const bundleToFiles = async (sourceDir: string, targetDir?: string) => {
+  targetDir = (targetDir || '').trim();
   const base = fs.resolve('.');
   const paths = await fs.glob.find(fs.join(base, sourceDir, '**'));
   const files = await Promise.all(
@@ -116,6 +117,7 @@ describe.only('func', function () {
       };
 
       it('with sub-directory', async () => {
+        await test('foo/bar/');
         await test('sample///'); // NB: Path will be cleaned.
       });
 
@@ -136,7 +138,8 @@ describe.only('func', function () {
           await runtime.pull(bundle, { silent: true });
           expect(await runtime.exists(bundle)).to.eql(true);
 
-          await runtime.remove(bundle);
+          expect((await runtime.remove(bundle)).count).to.eql(1);
+          expect((await runtime.remove(bundle)).count).to.eql(0); // NB: Nothing removed (already removed on last line)
           expect(await runtime.exists(bundle)).to.eql(false);
 
           await mock.dispose();
@@ -157,7 +160,7 @@ describe.only('func', function () {
     describe('clear', () => {
       it('nothing to clear', async () => {
         const { mock, runtime } = await prepare();
-        await runtime.clear();
+        expect((await runtime.clear()).count).to.eql(0);
         await mock.dispose();
       });
 
@@ -167,29 +170,51 @@ describe.only('func', function () {
 
         const bundle1: B = { host, uri, dir: 'foo' };
         const bundle2: B = { host, uri, dir: 'bar' };
+        const bundle3: B = { host, uri };
 
         await uploadBundle(client, bundle1);
         await uploadBundle(client, bundle2);
+        await uploadBundle(client, bundle3);
+
         expect(await runtime.exists(bundle1)).to.eql(false);
         expect(await runtime.exists(bundle2)).to.eql(false);
+        expect(await runtime.exists(bundle3)).to.eql(false);
 
         await runtime.pull(bundle1, { silent: true });
         await runtime.pull(bundle2, { silent: true });
+        await runtime.pull(bundle3, { silent: true });
 
         expect(await runtime.exists(bundle1)).to.eql(true);
         expect(await runtime.exists(bundle2)).to.eql(true);
+        expect(await runtime.exists(bundle3)).to.eql(true);
 
-        await runtime.clear();
+        expect((await runtime.clear()).count).to.eql(3);
+        expect((await runtime.clear()).count).to.eql(0);
 
         expect(await runtime.exists(bundle1)).to.eql(false);
         expect(await runtime.exists(bundle2)).to.eql(false);
+        expect(await runtime.exists(bundle3)).to.eql(false);
 
         await mock.dispose();
       });
     });
 
-    it.skip('run', async () => {
-      //
+    describe.skip('run', () => {
+      it('run', async () => {
+        const { mock, runtime, bundle, client } = await prepare('foo');
+
+        await uploadBundle(client, bundle);
+        expect(await runtime.exists(bundle)).to.eql(false);
+        // await runtime.pull(bundle, { silent: true });
+        // expect(await runtime.exists(bundle)).to.eql(true);
+
+        const res = await runtime.run(bundle);
+
+        console.log('-------------------------------------------');
+        console.log('res', res);
+
+        await mock.dispose();
+      });
     });
   });
 });

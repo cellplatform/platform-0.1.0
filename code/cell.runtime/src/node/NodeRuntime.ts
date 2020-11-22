@@ -19,8 +19,7 @@ export const NodeRuntime = {
        * Determine if the given bundle has been pulled.
        */
       async exists(input) {
-        const bundle = Bundle(input, cachedir);
-        return bundle.cache.exists(PATH.MANIFEST_FILENAME);
+        return Bundle(input, cachedir).exists();
       },
 
       /**
@@ -29,16 +28,23 @@ export const NodeRuntime = {
       async remove(input) {
         const bundle = Bundle(input, cachedir);
         const dir = bundle.cache.dir;
+        let count = 0;
         if (await fs.pathExists(dir)) {
+          count++;
           await fs.remove(dir);
         }
+        return { count };
       },
 
       /**
        * Remove all bundles.
        */
       async clear() {
+        const pattern = fs.join(cachedir, '*/*/*');
+        const pulled = await fs.glob.find(pattern, { includeDirs: true });
+        const count = pulled.length;
         await fs.remove(cachedir);
+        return { count };
       },
     };
 

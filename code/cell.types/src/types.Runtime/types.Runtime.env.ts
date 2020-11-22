@@ -12,11 +12,25 @@ export type RuntimeEnv = RuntimeEnvNode | RuntimeEnvWeb;
  */
 export type RuntimeMethods = {
   exists(bundle: B): Promise<boolean>;
-  pull(bundle: B, options?: { silent?: boolean }): Promise<{ ok: boolean; errors: Error[] }>;
-  run(bundle: B, options?: { params?: t.JsonMap; silent?: boolean }): Promise<void>;
+  pull(bundle: B, options?: { silent?: boolean }): Promise<RuntimePullResponse>;
+  run(
+    bundle: B,
+    options?: { params?: t.JsonMap; pull?: boolean; silent?: boolean },
+  ): Promise<RuntimeRunResponse>;
 
-  remove(bundle: B): Promise<void>;
-  clear(): Promise<void>;
+  remove(bundle: B): Promise<{ count: number }>;
+  clear(): Promise<{ count: number }>;
+};
+
+export type RuntimePullResponse = {
+  ok: boolean;
+  errors: Error[];
+  dir: string;
+};
+
+export type RuntimeRunResponse = {
+  ok: boolean;
+  errors: Error[];
 };
 
 /**

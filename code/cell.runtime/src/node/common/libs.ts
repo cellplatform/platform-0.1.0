@@ -8,3 +8,4 @@ export { fs } from '@platform/fs';
 export { FileCache } from '@platform/cache';
 export { Urls } from '@platform/cell.schema';
 export { log } from '@platform/log/lib/server';
+export { id } from '@platform/util.value';
