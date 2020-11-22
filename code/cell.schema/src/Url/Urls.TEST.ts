@@ -1,4 +1,4 @@
-import { expect } from '../test';
+import { expect, t } from '../test';
 import { Urls } from '.';
 import { Uri } from '../Uri';
 
@@ -391,8 +391,31 @@ describe('Urls', () => {
 
   describe('func', () => {
     const url = Urls.create();
+
     it('base (/func)', () => {
       expect(url.func.base.toString()).to.eql('http://localhost/func');
+    });
+
+    it('manifest (file)', () => {
+      const test = (dir: string | undefined, expected: string) => {
+        const bundle: t.RuntimeBundleOrigin = {
+          host: 'localhost',
+          uri: 'cell:foo:A1',
+          dir,
+        };
+        const res = url.func.manifest(bundle);
+        expect(res.toString()).to.eql(expected);
+      };
+
+      test(undefined, 'http://localhost/cell:foo:A1/file/index.js');
+      test('v1.2.3', 'http://localhost/cell:foo:A1/file/v1.2.3/index.js');
+      test('  //foo/v1.2.3//  ', 'http://localhost/cell:foo:A1/file/foo/v1.2.3/index.js');
+    });
+
+    it('manifest (file): throw if host mismatch', () => {
+      const bundle: t.RuntimeBundleOrigin = { host: 'domain.com', uri: 'cell:foo:A1' };
+      const fn = () => url.func.manifest(bundle);
+      expect(fn).to.throw(/Host mismatch/);
     });
   });
 });

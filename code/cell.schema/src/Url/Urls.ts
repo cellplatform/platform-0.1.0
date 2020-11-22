@@ -1,4 +1,4 @@
-import { R, t, value } from '../common';
+import { R, t, value, constants } from '../common';
 import { Uri } from '../Uri';
 import { Url } from './Url';
 import * as util from './util';
@@ -81,11 +81,29 @@ export class Urls implements t.IUrls {
    * Func (execution runtime).
    */
   public get func() {
+    const self = this; // eslint-disable-line
     const toUrl = this.toUrl;
     return {
+      /**
+       * Example: /func
+       */
       get base() {
         type Q = t.IReqQueryFunc;
         return toUrl<Q>(`/func`);
+      },
+
+      /**
+       * Example: <see file download URL>
+       */
+      manifest(bundle: t.RuntimeBundleOrigin) {
+        if (bundle.host !== self.host) {
+          throw new Error(`Host mismatch ('${bundle.host}' should be '${self.host}')`);
+        } else {
+          const FILENAME = constants.BUNDLE.MANIFEST.FILENAME;
+          const dir = (bundle.dir || '').trim().replace(/^\/*/, '').replace(/\/*$/, '');
+          const filename = dir ? `${dir}/${FILENAME}` : FILENAME;
+          return self.cell(bundle.uri).file.byName(filename);
+        }
       },
     };
   }
