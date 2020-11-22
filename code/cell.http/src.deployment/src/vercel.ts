@@ -3,6 +3,7 @@ import { MongoDb } from '@platform/fsdb.mongo';
 
 import { server, t, time } from './common';
 import { IS_CLOUD, SECRETS } from './constants';
+import { NodeRuntime } from '@platform/cell.runtime/lib/node';
 
 /**
  * File system.
@@ -24,11 +25,16 @@ const db: t.IDb = MongoDb.create({
 });
 
 /**
+ * Function Runtime.
+ */
+const runtime = NodeRuntime.init();
+
+/**
  * Initialise the HTTP server.
  */
 const name = IS_CLOUD ? '__NAME__' : 'local';
 const deployedAt = IS_CLOUD ? '__DEPLOYED_AT__' : time.now.timestamp;
-const app = server.create({ name, db, fs, deployedAt });
+const app = server.create({ name, db, fs, deployedAt, runtime });
 export default app.server;
 
 server.logger.start({ app });
