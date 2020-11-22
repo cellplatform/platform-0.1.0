@@ -13,8 +13,8 @@ export function pullMethod(args: { cachedir: string }) {
   const fn: t.RuntimeEnvNode['pull'] = async (input, options = {}) => {
     const { silent } = options;
     const bundle = Bundle(input, cachedir);
-
     const targetDir = bundle.cache.dir;
+    const tmpTarget = `${targetDir}.download.${id.shortid()}`;
 
     // console.log('bundle.dir.path', bundle.cache.dir);
 
@@ -51,7 +51,6 @@ export function pullMethod(args: { cachedir: string }) {
     };
 
     const list = await pullList();
-    const tmpTarget = `${targetDir}.download.${id.shortid()}`;
 
     let count = 0;
     await Promise.all(
@@ -64,7 +63,7 @@ export function pullMethod(args: { cachedir: string }) {
             const filename = bundle.dir.path
               ? file.path.substring(bundle.dir.path.length + 1)
               : file.path;
-            const path = fs.join(targetDir, filename);
+            const path = fs.join(tmpTarget, filename);
 
             if (typeof res.body === 'object') {
               await fs.stream.save(path, res.body as any);
@@ -89,6 +88,12 @@ export function pullMethod(args: { cachedir: string }) {
       }),
     );
 
+    const ok = errors.length === 0;
+    if (ok) {
+      await fs.remove(targetDir);
+      await fs.rename(tmpTarget, targetDir);
+    }
+
     if (!silent) {
       const bytes = (await fs.size.dir(targetDir)).toString({ round: 0 });
       const size = count > 0 ? `(${log.yellow(bytes)})` : '';
@@ -97,7 +102,6 @@ export function pullMethod(args: { cachedir: string }) {
       logger.hr().newline();
     }
 
-    const ok = errors.length === 0;
     return { ok, errors, dir: targetDir };
   };
 
