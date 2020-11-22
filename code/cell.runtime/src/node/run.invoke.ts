@@ -11,7 +11,11 @@ export async function invoke(args: {
 }) {
   const { silent, manifest, cwd, params } = args;
 
-  console.log('params', params);
+  /**
+   * TODO 🐷
+   * - Params
+   * - do within node.vm
+   */
 
   const cmd = `node ${manifest.entry}`;
 

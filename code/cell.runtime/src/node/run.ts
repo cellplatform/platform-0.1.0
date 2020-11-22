@@ -19,8 +19,6 @@ export function runMethod(args: { cachedir: string }) {
     const exists = await bundle.exists();
     const isPullRequired = !exists || options.pull;
 
-    
-
     const errors: Error[] = [];
 
     const done = () => {
