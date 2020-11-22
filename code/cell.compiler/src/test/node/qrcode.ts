@@ -1,15 +1,17 @@
 import qrcode from 'qrcode';
-import { fs } from '@platform/fs';
+// import { fs } from '@platform/fs';
 
-import { Runtime } from '@platform/cell.runtime/lib/runtime';
-import { Encoding } from '@platform/cell.runtime/lib/runtime/common';
+// import { Runtime } from '@platform/cell.runtime/lib/runtime';
+// import { Encoding } from '@platform/cell.runtime/lib/runtime/common';
 
 (async () => {
-  const URL = 'https://news.ycombinator.com/';
-  const code = await qrcode.toString(URL);
+  // const URL = 'https://news.ycombinator.com/';
+  // const code = await qrcode.toString(URL);
 
-  console.log(URL);
-  console.log(code);
+  // console.log(URL);
+  // console.log(code);
+
+  console.log('Test Code');
 
   try {
     console.log('__CELL__', __CELL__);
