@@ -4,8 +4,10 @@ import { fs, HttpClient, log, logger, Path, t } from './common';
 /**
  * Factory for the [pull] method.
  */
-
-export function puller(args: { cachedir: string }) {
+export function pullMethod(args: { cachedir: string }) {
+  /**
+   * Pull the given bundle.
+   */
   const fn: t.RuntimeEnvNode['pull'] = async (input, options = {}) => {
     const { silent } = options;
     const bundle = Bundle(input, args.cachedir);

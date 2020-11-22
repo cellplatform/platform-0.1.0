@@ -1,6 +1,7 @@
 import { Bundle } from './Bundle';
 import { fs, PATH, t } from './common';
-import { puller } from './NodeRuntime.pull';
+import { pullMethod } from './pull';
+import { runMethod } from './run';
 
 export const NodeRuntime = {
   /**
@@ -8,10 +9,11 @@ export const NodeRuntime = {
    */
   init(args: { cachedir?: string } = {}) {
     const cachedir = args.cachedir || PATH.CACHE_DIR;
-    const pull = puller({ cachedir });
 
     const runtime: t.RuntimeEnvNode = {
       name: 'node',
+      pull: pullMethod({ cachedir }),
+      run: runMethod({ cachedir }),
 
       /**
        * Determine if the given bundle has been pulled.
@@ -20,11 +22,6 @@ export const NodeRuntime = {
         const bundle = Bundle(input, cachedir);
         return bundle.cache.exists(PATH.MANIFEST_FILENAME);
       },
-
-      /**
-       * Pull the given bundle.
-       */
-      pull,
 
       /**
        * Delete the given bundle (if it exists).
@@ -38,20 +35,10 @@ export const NodeRuntime = {
       },
 
       /**
-       * Remove all bundles
+       * Remove all bundles.
        */
       async clear() {
         await fs.remove(cachedir);
-      },
-
-      /**
-       * Pull and run the given bundle.
-       */
-      async run(input, options = {}) {
-        const { silent } = options;
-        const bundle = Bundle(input, cachedir);
-        // TODO 🐷
-        // return false;
       },
     };
 
