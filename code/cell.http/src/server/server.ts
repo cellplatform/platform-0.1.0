@@ -46,7 +46,7 @@ export function create(args: {
       server: `${log.white(PKG.name)}@${PKG.version}`,
       schema: log.green(deps['@platform/cell.schema']),
       router: deps['@platform/cell.http.router'],
-      func: runtime ? `${runtime.name} (runtime)` : undefined,
+      runtime: runtime ? runtime.name : undefined,
       fs: `[${log.white(fs.type === 'LOCAL' ? 'local' : fs.type)}]${dir}`,
       'fs:s3': fs.type == 'S3' ? fs.endpoint.origin : undefined,
     },

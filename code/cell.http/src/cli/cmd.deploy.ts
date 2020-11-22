@@ -9,7 +9,7 @@ const FILES = [
   'yarn.lock',
   'src/common.ts',
   'src/constants.ts',
-  'src/vercel.ts',
+  'src/env.vercel.ts',
   'src/types.ts',
   'static/favicon.ico',
 ];
@@ -219,10 +219,10 @@ async function copyAndPrepare(args: {
     }
   })();
 
-  // Update: [vercel.ts]
+  // Update: [env.vercel.ts]
   await (async () => {
     const now = config.now;
-    const file = tmpl.files.find((path) => path.to.endsWith('vercel.ts'));
+    const file = tmpl.files.find((path) => path.to.endsWith('env.vercel.ts'));
     if (file) {
       let text = (await fs.readFile(file.to)).toString();
 
