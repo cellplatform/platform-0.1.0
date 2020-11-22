@@ -11,7 +11,7 @@
     "test:integration": "ts test --suffix INTEGRATION",
     "lint": "echo ts lint",
     "build": "ts build --no-esm",
-    "clean": "cd test.browser && yarn clean",
+    "clean": "ts-node -T scripts.ts/clean",
     "prepare": "ts-node -T scripts.ts/prepare && ts prepare && rm -rf tmp"
   },
   "dependencies": {

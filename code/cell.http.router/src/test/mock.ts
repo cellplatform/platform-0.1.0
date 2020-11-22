@@ -27,6 +27,7 @@ const TMP = util.fs.resolve('tmp');
 const PATH = {
   TMP,
   FS: util.fs.join(TMP, 'fs'),
+  MOCK: util.fs.join(TMP, 'mock'),
 };
 let count = 0;
 
@@ -35,7 +36,9 @@ let count = 0;
  */
 export const mock = {
   async reset() {
-    await util.fs.remove(TMP);
+    const fs = util.fs;
+    await fs.remove(PATH.MOCK);
+    await fs.remove(PATH.FS);
   },
   async create() {
     return createMock();
@@ -52,7 +55,7 @@ export const createMock = async (
 
   count++;
 
-  const filename = util.fs.join(TMP, `mock/test-${count}.db`);
+  const filename = util.fs.join(PATH.MOCK, `test-${count}.db`);
   const port = args.port || (await portUtil.unused());
 
   const db = NeDb.create({ filename });
