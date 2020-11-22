@@ -1,5 +1,5 @@
 import { NodeRuntime } from '@platform/cell.runtime/lib/node';
-import { readFile, createMock, expect, Http, t, fs } from '../../test';
+import { readFile, createMock, expect, Http, t, fs, Schema } from '../../test';
 import { compile } from '../compiler/compile';
 
 type B = t.RuntimeBundleOrigin;
@@ -213,7 +213,7 @@ describe.only('func', function () {
   });
 
   describe('over http', () => {
-    it.only('does not exist (404)', async () => {
+    it('does not exist (404)', async () => {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
 
@@ -238,6 +238,26 @@ describe.only('func', function () {
       await mock.dispose();
     });
 
+    it.only('TMP', async () => {
+      // const host = 'localhost:8080';
+      const host = 'dev.db.team';
+      const uri = 'cell:ckhcjb2qg000mn0et48rv2u91:A1';
+      const dir = 'sample';
+
+      const http = Http.create();
+      const urls = Schema.urls(host);
+      const url = urls.func.base.toString();
+
+      console.log('urls', urls);
+
+      const data: t.IReqPostFuncBody = { host, uri, dir };
+
+      const res = await http.post(url, data);
+
+      console.log('-------------------------------------------');
+      console.log('res', res.json);
+    });
+
     it('error: func/runtime not provided (500)', async () => {
       const mock = await createMock();
       const url = mock.urls.func.base.toString();
@@ -250,9 +270,7 @@ describe.only('func', function () {
 
       expect(json.status).to.eql(500);
       expect(json.type).to.eql('HTTP/server');
-      expect(json.message).to.include(
-        'A runtime environment for executing functions not available',
-      );
+      expect(json.message).to.include('Runtime environment for executing functions not available');
     });
   });
 });
