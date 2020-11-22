@@ -1,5 +1,7 @@
 import { t, util } from '../common';
 
+type B = t.RuntimeBundleOrigin;
+
 export async function execFunc(args: {
   host: string;
   db: t.IDb;
@@ -7,11 +9,21 @@ export async function execFunc(args: {
   body: t.IReqPostFuncBody;
 }) {
   try {
-    const { body } = args;
+    const { body, runtime } = args;
+
     console.log('HANDLER: execFunc', body); // TEMP 🐷
+    console.log('-------------------------------------------');
+    // console.log('runtime', runtime);
 
     const host = body.host || args.host;
     const uri = body.uri;
+    const dir = body.dir;
+
+    const bundle: B = { host, uri, dir };
+
+    console.log('bundle', bundle);
+
+    const res = await runtime.run(bundle);
 
     const data: t.IResPostFunc = { host, uri };
 

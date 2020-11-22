@@ -1,6 +1,7 @@
 import { Bundle } from './Bundle';
 import { fs, HttpClient, log, logger, Path, t, PATH } from './common';
 import { pullMethod } from './pull';
+import { invoke } from './run.invoke';
 
 /**
  * Factory for the [run] method.
@@ -17,6 +18,8 @@ export function runMethod(args: { cachedir: string }) {
     const bundle = Bundle(input, cachedir);
     const exists = await bundle.exists();
     const isPullRequired = !exists || options.pull;
+
+    
 
     const errors: Error[] = [];
 
@@ -59,9 +62,32 @@ export function runMethod(args: { cachedir: string }) {
       return done();
     }
 
-    console.log('manifest', manifest);
+    if (!silent) {
+      const size = fs.size.toString(manifest.bytes, { round: 0 });
+      const table = log.table({ border: false });
+      const add = (key: string, value: string) => {
+        table.add([log.green(key), log.gray(value)]);
+      };
+
+      add('runtime  ', 'node');
+      add('target', `${manifest.target} (${manifest.mode})`);
+      add('source ', logger.format.url(bundle.urls.files.toString()));
+      add('entry', manifest.entry);
+      add('size', `${log.yellow(size)} (${manifest.files.length} files)`);
+
+      log.info();
+      table.log();
+      logger.hr().newline();
+    }
 
     //
+    const cwd = bundle.cache.dir;
+    const res = await invoke({ manifest, cwd, silent });
+
+    /**
+     * TODO 🐷
+     * - use node.vm:
+     */
 
     return done();
   };

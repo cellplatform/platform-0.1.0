@@ -4,12 +4,21 @@ import { compile } from '../compiler/compile';
 
 type B = t.RuntimeBundleOrigin;
 
-const funcMock = async () => {
+const createFuncMock = async () => {
   const runtime = NodeRuntime.init();
   const mock = await createMock({ runtime });
   const http = Http.create();
   const url = mock.urls.func.base.toString();
   return { url, mock, http, runtime };
+};
+
+const prepare = async (options: { dir?: string; uri?: string } = {}) => {
+  const { dir, uri = 'cell:foo:A1' } = options;
+  const { mock, runtime, http, url } = await createFuncMock();
+  const { host } = mock;
+  const client = mock.client.cell(uri);
+  const bundle: B = { host, uri, dir };
+  return { mock, runtime, http, client, bundle, url, uri };
 };
 
 const bundleToFiles = async (sourceDir: string, targetDir?: string) => {
@@ -58,60 +67,10 @@ describe.only('func', function () {
     await fs.remove(fs.resolve('tmp/runtime.node'));
   });
 
-  describe('over http', () => {
-    const host = 'localhost:5000';
-    const uri = 'cell:foo:A1';
-
-    it.skip('does not exist (404)', async () => {
-      const { mock, http, url } = await funcMock();
-
-      // TODO 🐷 TEMP addresses
-      // const http = Http.create();
-
-      // mock.
-      const data: t.IReqPostFuncBody = { host, uri, dir: 'sample' };
-      const res = await http.post(url, data);
-      const json = res.json;
-
-      console.log('-------------------------------------------');
-      console.log('res.status', res.status);
-      console.log('json', json);
-
-      expect(123).to.equal(123);
-
-      await mock.dispose();
-    });
-
-    it('error: func/runtime not provided (500)', async () => {
-      const mock = await createMock();
-      const url = mock.urls.func.base.toString();
-      const http = Http.create();
-
-      const data: t.IReqPostFuncBody = { uri: 'cell:foo:A1' };
-      const res = await http.post(url, data);
-      const json = res.json as t.IHttpErrorServer;
-      await mock.dispose();
-
-      expect(json.status).to.eql(500);
-      expect(json.type).to.eql('HTTP/server');
-      expect(json.message).to.include(
-        'A runtime environment for executing functions not available',
-      );
-    });
-  });
-
   describe('RuntimeEnvNode', () => {
-    const prepare = async (dir?: string) => {
-      const { mock, runtime } = await funcMock();
-      const uri = 'cell:foo:A1';
-      const client = mock.client.cell(uri);
-      const bundle: B = { host: mock.host, uri, dir };
-      return { mock, runtime, client, bundle, uri };
-    };
-
     describe('exists:false => pull => exists:true', () => {
       const test = async (dir?: string) => {
-        const { mock, runtime, bundle, client } = await prepare(dir);
+        const { mock, runtime, bundle, client } = await prepare({ dir });
 
         expect(await runtime.exists(bundle)).to.eql(false);
         await uploadBundle(client, bundle);
@@ -138,7 +97,7 @@ describe.only('func', function () {
     describe('remove', () => {
       it('removes pulled bundle', async () => {
         const test = async (dir?: string) => {
-          const { mock, runtime, bundle, client } = await prepare(dir);
+          const { mock, runtime, bundle, client } = await prepare({ dir });
           expect(await runtime.exists(bundle)).to.eql(false);
 
           await uploadBundle(client, bundle);
@@ -206,16 +165,16 @@ describe.only('func', function () {
       });
     });
 
-    describe.only('run', () => {
+    describe('run', () => {
       it('run', async () => {
-        const { mock, runtime, bundle, client } = await prepare('foo');
+        const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
 
         await uploadBundle(client, bundle);
         expect(await runtime.exists(bundle)).to.eql(false);
         // await runtime.pull(bundle, { silent: true });
         // expect(await runtime.exists(bundle)).to.eql(true);
 
-        const res = await runtime.run(bundle);
+        const res = await runtime.run(bundle, { silent: false });
 
         console.log('-------------------------------------------');
         console.log('res', res);
@@ -225,7 +184,7 @@ describe.only('func', function () {
 
       it('error: no manifest in bundle', async () => {
         const test = async (dir?: string) => {
-          const { mock, runtime, bundle, client } = await prepare(dir);
+          const { mock, runtime, bundle, client } = await prepare({ dir });
 
           const noManifest = (file: t.IHttpClientCellFileUpload) =>
             !file.filename.endsWith('index.json'); // NB: Cause error by filtering out the manifest file.
@@ -250,6 +209,50 @@ describe.only('func', function () {
         await test('foo/bar');
         await test();
       });
+    });
+  });
+
+  describe('over http', () => {
+    it.only('does not exist (404)', async () => {
+      const dir = 'foo';
+      const { mock, bundle, client, http, url } = await prepare({ dir });
+
+      const { host, uri } = bundle;
+
+      // TODO 🐷 TEMP addresses
+      // const http = Http.create();
+
+      await uploadBundle(client, bundle);
+
+      // mock.
+      const data: t.IReqPostFuncBody = { host, uri, dir };
+      const res = await http.post(url, data);
+      const json = res.json;
+
+      console.log('-------------------------------------------');
+      console.log('res.status', res.status);
+      console.log('json', json);
+
+      expect(123).to.equal(123);
+
+      await mock.dispose();
+    });
+
+    it('error: func/runtime not provided (500)', async () => {
+      const mock = await createMock();
+      const url = mock.urls.func.base.toString();
+      const http = Http.create();
+
+      const data: t.IReqPostFuncBody = { uri: 'cell:foo:A1' };
+      const res = await http.post(url, data);
+      const json = res.json as t.IHttpErrorServer;
+      await mock.dispose();
+
+      expect(json.status).to.eql(500);
+      expect(json.type).to.eql('HTTP/server');
+      expect(json.message).to.include(
+        'A runtime environment for executing functions not available',
+      );
     });
   });
 });
