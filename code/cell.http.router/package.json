@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.http.router",
-  "version": "0.8.33",
+  "version": "0.8.34",
   "description": "Isolated router logic for the Cell operating system HTTP server.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,14 +15,14 @@
     "prepare": "ts-node -T scripts.ts/prepare && ts prepare && rm -rf tmp"
   },
   "dependencies": {
-    "@platform/cache": "0.2.41",
-    "@platform/cell.client": "0.3.9",
-    "@platform/cell.db": "0.3.171",
-    "@platform/cell.func": "0.1.248",
-    "@platform/cell.schema": "0.5.19",
-    "@platform/cell.types": "0.5.20",
-    "@platform/cell.typesystem": "0.0.138",
-    "@platform/cell.value": "0.2.158",
+    "@platform/cache": "0.3.0",
+    "@platform/cell.client": "0.3.10",
+    "@platform/cell.db": "0.3.172",
+    "@platform/cell.func": "0.1.249",
+    "@platform/cell.schema": "0.5.20",
+    "@platform/cell.types": "0.5.21",
+    "@platform/cell.typesystem": "0.0.139",
+    "@platform/cell.value": "0.2.159",
     "@platform/http": "0.14.0",
     "@platform/http.router": "0.0.45",
     "@platform/libs": "0.2.3",
@@ -33,8 +33,8 @@
     "minimatch": "3.0.4"
   },
   "devDependencies": {
-    "@platform/cell.fs.local": "0.4.141",
-    "@platform/fsdb.nedb": "1.3.141",
+    "@platform/cell.fs.local": "0.4.142",
+    "@platform/fsdb.nedb": "1.3.142",
     "@platform/micro": "0.15.0",
     "@platform/test": "0.1.17",
     "@platform/ts": "4.0.6",
