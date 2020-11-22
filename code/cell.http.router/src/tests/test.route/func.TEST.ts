@@ -1,5 +1,8 @@
 import { NodeRuntime } from '@platform/cell.runtime/lib/node';
-import { createMock, expect, Http, t } from '../../test';
+import { readFile, createMock, expect, Http, t, fs } from '../../test';
+import { compile } from '../compiler/compile';
+
+type B = t.RuntimeBundleOrigin;
 
 const funcMock = async () => {
   const runtime = NodeRuntime.init();
@@ -9,19 +12,56 @@ const funcMock = async () => {
   return { url, mock, http, runtime };
 };
 
-describe.only('func', () => {
+const bundleToFiles = async (sourceDir: string, targetDir?: string) => {
+  const base = fs.resolve('.');
+  const paths = await fs.glob.find(fs.join(base, sourceDir, '**'));
+  const files = await Promise.all(
+    paths.map(async (path) => {
+      const data = await readFile(path);
+      let filename = path.substring(fs.join(base, sourceDir).length + 1);
+      filename = targetDir ? fs.join(targetDir, filename) : filename;
+      return { filename, data } as t.IHttpClientCellFileUpload;
+    }),
+  );
+  return files;
+};
+
+const uploadBundle = async (client: t.IHttpClientCell, bundle: B) => {
+  const files = await bundleToFiles('dist/node', bundle.dir);
+  const upload = await client.files.upload(files);
+  expect(upload.ok).to.eql(true);
+  return { files, upload, bundle };
+};
+
+describe.only('func', function () {
+  this.timeout(99999);
+
+  before(async () => {
+    /**
+     * Ensure sample node distribution has been compiled.
+     */
+    const dist = fs.resolve('dist/node');
+    if (!(await fs.pathExists(fs.join(dist, 'main.js')))) {
+      await compile.node();
+    }
+  });
+
+  beforeEach(async () => {
+    await fs.remove(fs.resolve('tmp/runtime.node'));
+  });
+
   describe('over http', () => {
-    it('does not exist (404)', async () => {
+    const host = 'localhost:5000';
+    const uri = 'cell:foo:A1';
+
+    it.skip('does not exist (404)', async () => {
       const { mock, http, url } = await funcMock();
 
       // TODO 🐷 TEMP addresses
-      const host = 'localhost:5000';
-      const uri = 'cell:ckhon6cdk000o6hetdrtmd0dt:A1';
-      const dir = 'sample//'; // NB: Path will be cleaned.
       // const http = Http.create();
 
       // mock.
-      const data: t.IReqPostFuncBody = { uri, host, dir };
+      const data: t.IReqPostFuncBody = { host, uri, dir: 'sample' };
       const res = await http.post(url, data);
       const json = res.json;
 
@@ -52,17 +92,102 @@ describe.only('func', () => {
     });
   });
 
-  describe('RuntimeEnvNode', () => {
-    it.skip('exists', async () => {
-      //
+  describe.only('RuntimeEnvNode', () => {
+    const prepare = async (dir?: string) => {
+      const { mock, runtime } = await funcMock();
+      const uri = 'cell:foo:A1';
+      const client = mock.client.cell(uri);
+      const bundle: B = { host: mock.host, uri, dir };
+      return { mock, runtime, client, bundle, uri };
+    };
+
+    describe('exists:false => pull => exists:true', () => {
+      const test = async (dir?: string) => {
+        const { mock, runtime, bundle, client } = await prepare(dir);
+
+        expect(await runtime.exists(bundle)).to.eql(false);
+        await uploadBundle(client, bundle);
+        const res = await runtime.pull(bundle, { silent: true });
+        await mock.dispose();
+
+        expect(res.ok).to.eql(true);
+        expect(res.errors).to.eql([]);
+        expect(await runtime.exists(bundle)).to.eql(true);
+      };
+
+      it('with sub-directory', async () => {
+        await test('sample///'); // NB: Path will be cleaned.
+      });
+
+      it('without sub-directory', async () => {
+        await test();
+        await test('');
+        await test('  ');
+      });
     });
 
-    it.skip('pull', async () => {
-      //
+    describe('remove', () => {
+      it('removes pulled bundle', async () => {
+        const test = async (dir?: string) => {
+          const { mock, runtime, bundle, client } = await prepare(dir);
+          expect(await runtime.exists(bundle)).to.eql(false);
+
+          await uploadBundle(client, bundle);
+          await runtime.pull(bundle, { silent: true });
+          expect(await runtime.exists(bundle)).to.eql(true);
+
+          await runtime.remove(bundle);
+          expect(await runtime.exists(bundle)).to.eql(false);
+
+          await mock.dispose();
+        };
+
+        await test('foobar');
+        await test();
+      });
+
+      it('does nothing when non-existant bundle removed', async () => {
+        const { mock, runtime, bundle } = await prepare();
+        expect(await runtime.exists(bundle)).to.eql(false);
+        await runtime.remove(bundle);
+        await mock.dispose();
+      });
     });
 
-    it.skip('run', async () => {
-      //
+    describe('clear', () => {
+      it('nothing to clear', async () => {
+        const { mock, runtime } = await prepare();
+        await runtime.clear();
+        await mock.dispose();
+      });
+
+      it('removes all pulled bundles', async () => {
+        const { mock, runtime, client, uri } = await prepare();
+        const host = mock.host;
+
+        const bundle1: B = { host, uri, dir: 'foo' };
+        const bundle2: B = { host, uri, dir: 'bar' };
+
+        await uploadBundle(client, bundle1);
+        await uploadBundle(client, bundle2);
+        expect(await runtime.exists(bundle1)).to.eql(false);
+        expect(await runtime.exists(bundle2)).to.eql(false);
+
+        await runtime.pull(bundle1, { silent: true });
+        await runtime.pull(bundle2, { silent: true });
+
+        expect(await runtime.exists(bundle1)).to.eql(true);
+        expect(await runtime.exists(bundle2)).to.eql(true);
+
+        await runtime.clear();
+
+        expect(await runtime.exists(bundle1)).to.eql(false);
+        expect(await runtime.exists(bundle2)).to.eql(false);
+
+        await mock.dispose();
+      });
     });
+
+    it.skip('run', async () => {});
   });
 });

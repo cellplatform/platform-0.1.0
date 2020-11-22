@@ -22,14 +22,14 @@ export const Runtime = {
     input = toEnv(input);
     const location = typeof window === 'object' ? window.location : undefined;
     const origin = input?.origin;
-    const dev = !Boolean(origin) || (origin?.cell || '').startsWith('cell:dev:');
+    const dev = !Boolean(origin) || (origin?.uri || '').startsWith('cell:dev:');
 
     if (dev) {
       Uri.ALLOW.NS = [...Uri.ALLOW.NS, 'dev'];
     }
 
     const hostname = origin?.host || location?.host || 'localhost:3000';
-    const cell = origin?.cell || 'cell:dev:A1';
+    const cell = origin?.uri || 'cell:dev:A1';
     const dir = trimSlash(origin?.dir || '');
     const urls = Urls.create(hostname);
     const port = urls.port;

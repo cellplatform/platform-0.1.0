@@ -74,7 +74,6 @@ export const NodeRuntime = (args: { host: string; uri: string; dir?: string }) =
       };
 
       const list = await pullList();
-
       await Promise.all(
         list.map(async (file) => {
           const res = await client.file.name(file.path).download();

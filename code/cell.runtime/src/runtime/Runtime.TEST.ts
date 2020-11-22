@@ -5,7 +5,7 @@ const __CELL__: t.RuntimeBundle = {
   module: { name: 'my-module', version: '1.2.3' },
   origin: {
     host: 'foo.com',
-    cell: 'cell:foo:A1',
+    uri: 'cell:foo:A1',
     dir: 'foobar',
   },
 };
