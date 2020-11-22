@@ -95,7 +95,7 @@ export function create(
 
         if (!options.silent) {
           const elapsed = log.gray(`[${timer.elapsed.toString()}]`);
-          const url = log.cyan(`http://localhost:${log.magenta(port)} ${elapsed}`);
+          const url = log.cyan(`http://localhost:${log.white(port)} ${elapsed}`);
           const props = value.deleteUndefined({
             ...(options.log || args.log || {}),
             prod: IS_PROD,
