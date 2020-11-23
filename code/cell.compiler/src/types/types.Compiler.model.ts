@@ -24,6 +24,10 @@ export type CompilerModel = {
   remotes?: Record<string, string>;
   shared?: Record<string, string | t.WebpackShared>;
   env?: Record<string, t.Json>;
+
+  /**
+   * Files
+   */
   redirects?: t.CompilerModelRedirectGrant[];
 
   /**
@@ -45,11 +49,20 @@ export type CompilerModelWebpack = {
   plugins: t.WpPlugin[];
 };
 
+/**
+ * Static Assets
+ */
 export type CompilerModelStatic = { dir?: string }; // Static assets.
 
+/**
+ * File redirection rules.
+ */
 export type CompilerModelRedirectAction = 'ALLOW' | 'DENY';
 export type CompilerModelRedirectGrant = { action?: CompilerModelRedirectAction; grep?: string };
 
+/**
+ * HTML.
+ */
 export type CompilerModelHtml = {
   inject?: boolean;
   head?: JSX.Element;

@@ -3,6 +3,7 @@ import { wp } from '../Config.webpack';
 import { webpackMethods } from './handlers.webpack';
 import { Redirects, validate } from './util';
 import { htmlMethods } from './handlers.html';
+import { filesMethods } from './handlers.files';
 
 type O = Record<string, unknown>;
 
@@ -106,49 +107,6 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     });
   },
 
-  redirect(args) {
-    args.model.change((draft) => {
-      type A = t.CompilerModelRedirectAction;
-      type G = t.CompilerModelRedirectGrant;
-
-      const input = {
-        action: args.params[0] as A | boolean | undefined,
-        grep: args.params[1],
-      };
-
-      if (
-        input.action !== undefined &&
-        !(typeof input.action === 'string' || typeof input.action === 'boolean')
-      ) {
-        throw new Error(`Invalid grant action '${input.action}'.`);
-      }
-
-      // Derive the given grant.
-      let action: A | undefined = undefined;
-      if (typeof input.action === 'string') {
-        action = input.action;
-        const GRANTS: A[] = ['ALLOW', 'DENY'];
-        if (!GRANTS.includes(action)) {
-          throw new Error(`Invalid grant action '${action}' must be ALLOW or DENY.`);
-        }
-      }
-      if (typeof input.action === 'boolean') {
-        action = input.action ? 'ALLOW' : 'DENY';
-      }
-
-      const grep = format.string(input.grep, { default: undefined, trim: true });
-
-      // Update model.
-      if (action === undefined && grep === undefined) {
-        draft.redirects = undefined;
-      } else {
-        const redirects = draft.redirects || (draft.redirects = []);
-        redirects.push({ action, grep });
-        draft.redirects = Redirects(redirects).sortAndOrder();
-      }
-    });
-  },
-
   entry(args) {
     const writeEntry = (p1: any, p2: any) => {
       const param = (value: any) => format.string(value, { trim: true }) || '';
@@ -243,6 +201,15 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
       throw new Error(`Html builder function not provided`);
     } else {
       fn(htmlMethods(args.model));
+    }
+  },
+
+  files(args) {
+    const fn = args.params[0];
+    if (typeof fn !== 'function') {
+      throw new Error(`Files builder function not provided`);
+    } else {
+      fn(filesMethods(args.model));
     }
   },
 
