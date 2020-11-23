@@ -35,7 +35,6 @@ export function remote(args: {
     // This fills it with known provided modules from this build and all remotes.
     await __webpack_init_sharing__('default');
     const scope = Encoding.escapeNamespace(namespace);
-    // console.log('self', self);
     const container = self[scope]; // or get the container somewhere else
 
     // Initialize the container, it may provide shared modules.

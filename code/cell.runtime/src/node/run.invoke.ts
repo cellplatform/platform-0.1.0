@@ -1,4 +1,4 @@
-import { exec, fs, log, logger, PATH, Path, t, time } from './common';
+import { exec, log, logger, t, time } from './common';
 
 /**
  * Execute the bundle within the given directory.
@@ -13,12 +13,12 @@ export async function invoke(args: {
 
   /**
    * TODO 🐷
-   * - Params
+   * - insert params
    * - do within node.vm
+   * - return value
    */
 
   const cmd = `node ${manifest.entry}`;
-
   const timer = time.timer();
   const res = await exec.command(cmd).run({ cwd, silent });
 

@@ -17,9 +17,9 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build --no-esm",
-    "reset": "ts-node -T script.ts/reset",
     "deploy": "yarn cell deploy $@",
     "prepare": "ts-node -T script.ts/prepare && ts prepare && rm -rf tmp",
+    "reset": "ts-node -T script.ts/reset",
     "nuke": "rm -rf node_modules && rm -rf src.deployment/node_modules"
   },
   "dependencies": {

@@ -11,7 +11,6 @@ import { NodeRuntime } from '.';
  *    Which spins up a mock server to test against.
  *
  */
-
 describe('NodeRuntime', () => {
   it('init', () => {
     const runtime = NodeRuntime.init();

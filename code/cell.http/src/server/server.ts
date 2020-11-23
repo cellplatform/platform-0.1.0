@@ -43,8 +43,8 @@ export function create(args: {
     logger,
     router,
     log: {
-      server: `${log.white(PKG.name)}@${PKG.version}`,
-      schema: log.green(deps['@platform/cell.schema']),
+      server: `${PKG.name}@${PKG.version}`,
+      schema: deps['@platform/cell.schema'],
       router: deps['@platform/cell.http.router'],
       runtime: runtime ? runtime.name : undefined,
       fs: `[${log.white(fs.type === 'LOCAL' ? 'local' : fs.type)}]${dir}`,

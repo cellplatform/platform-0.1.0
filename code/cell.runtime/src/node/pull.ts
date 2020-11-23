@@ -13,10 +13,10 @@ export function pullMethod(args: { cachedir: string }) {
   const fn: t.RuntimeEnvNode['pull'] = async (input, options = {}) => {
     const { silent } = options;
     const bundle = Bundle(input, cachedir);
+    const host = bundle.host;
+    const origin = bundle.toString();
     const targetDir = bundle.cache.dir;
     const tmpTarget = `${targetDir}.download.${id.shortid()}`;
-
-    // console.log('bundle.dir.path', bundle.cache.dir);
 
     if (!silent) {
       const url = bundle.urls.manifest;
@@ -36,8 +36,14 @@ export function pullMethod(args: { cachedir: string }) {
       log.info();
     }
 
-    const client = HttpClient.create(bundle.host).cell(bundle.uri);
-    const errors: Error[] = [];
+    const client = HttpClient.create(host).cell(bundle.uri);
+    const errors: t.IRuntimeError[] = [];
+    const addError = (message: string) =>
+      errors.push({
+        type: 'RUNTIME/pull',
+        bundle: bundle.toObject(),
+        message,
+      });
 
     const pullList = async () => {
       try {
@@ -45,19 +51,23 @@ export function pullMethod(args: { cachedir: string }) {
         const list = await client.files.list({ filter });
         return list.body;
       } catch (error) {
-        errors.push(error);
+        addError(error.message);
         return [];
       }
     };
 
     const list = await pullList();
 
+    if (list.length === 0) {
+      const err = `The target bundle ${origin} contains no files to pull.`;
+      addError(err);
+    }
+
     let count = 0;
     await Promise.all(
       list.map(async (file) => {
         try {
           const res = await client.file.name(file.path).download();
-
           if (res.ok) {
             count++;
             const filename = bundle.dir.path
@@ -73,24 +83,27 @@ export function pullMethod(args: { cachedir: string }) {
             } else {
               const type = typeof res.body;
               const mime = file.props.mimetype || '<unknown>';
-              const err = `Type '${type}' for downloaded file '${file.path}' is not supported`;
-              throw new Error(`${err} (mime: ${mime}).`);
+              const err = `Type '${type}' for pulled file '${file.path}' is not supported`;
+              addError(`${err} (mime: ${mime}).`);
             }
           } else {
-            let err = `Failed while downloading '${file.path} (${res.status})' from '${bundle.host}'.`;
-            err = res.error ? `${err} ${res.error.message}` : err;
-            errors.push(new Error(err));
+            let err = `Failed while pulling '${file.path} (${res.status})' from '${origin}'.`;
+            err = res.error ? `${err} ${res.error?.message || ''}` : err;
+            addError(err);
           }
         } catch (error) {
-          const err = `Failed while downloading '${file.path}'. ${error.message}`;
-          errors.push(new Error(err));
+          const err = error.mesage;
+          const msg = `Failed while pulling '${file.path}' from '${origin}'. ${err}`;
+          addError(msg);
         }
       }),
     );
 
     const ok = errors.length === 0;
     if (ok) {
+      // Switch the target directory to the downloaded result set.
       await fs.remove(targetDir);
+      await fs.ensureDir(fs.dirname(targetDir));
       await fs.rename(tmpTarget, targetDir);
     }
 
@@ -102,7 +115,12 @@ export function pullMethod(args: { cachedir: string }) {
       logger.hr().newline();
     }
 
-    return { ok, errors, dir: targetDir };
+    return {
+      ok,
+      dir: targetDir,
+      manifest: bundle.urls.manifest.toString(),
+      errors,
+    };
   };
 
   return fn;

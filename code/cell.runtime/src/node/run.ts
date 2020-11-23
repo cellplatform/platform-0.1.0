@@ -1,5 +1,5 @@
 import { Bundle } from './Bundle';
-import { fs, HttpClient, log, logger, Path, t, PATH } from './common';
+import { fs, log, logger, PATH, t } from './common';
 import { pullMethod } from './pull';
 import { invoke } from './run.invoke';
 
@@ -19,28 +19,34 @@ export function runMethod(args: { cachedir: string }) {
     const exists = await bundle.exists();
     const isPullRequired = !exists || options.pull;
 
-    const errors: Error[] = [];
+    const errors: t.IRuntimeError[] = [];
+    const addError = (message: string) =>
+      errors.push({
+        type: 'RUNTIME/run',
+        bundle: bundle.toObject(),
+        message,
+      });
 
     const done = () => {
       const ok = errors.length === 0;
-      return { ok, errors };
+      return { ok, errors, manifest };
     };
 
     // Ensure the bundle has been pulled locally.
     if (isPullRequired) {
-      const { ok, errors } = await pull(input, { silent });
-      errors.push(...errors);
-      if (!ok || errors.length > 0) {
+      const res = await pull(input, { silent });
+      errors.push(...res.errors);
+      if (!res.ok || errors.length > 0) {
         return done();
       }
     }
 
     const loadManifest = async () => {
-      const path = fs.join(bundle.cache.dir, PATH.MANIFEST_FILENAME);
+      const path = fs.join(bundle.cache.dir, PATH.MANIFEST);
       const exists = await fs.pathExists(path);
       if (!exists) {
-        const error = new Error(`A bundle manifest file does not exist ${bundle.toString()}.`);
-        errors.push(error);
+        const err = `A bundle manifest file does not exist ${bundle.toString()}.`;
+        addError(err);
         return undefined;
       } else {
         try {
@@ -49,7 +55,7 @@ export function runMethod(args: { cachedir: string }) {
         } catch (error) {
           const msg = error.message;
           const err = `Failed while reading bundle manifest for ${bundle.toString()}. ${msg}`;
-          errors.push(new Error(err));
+          addError(err);
           return undefined;
         }
       }
@@ -69,7 +75,8 @@ export function runMethod(args: { cachedir: string }) {
 
       add('runtime  ', 'node');
       add('target', `${manifest.target} (${manifest.mode})`);
-      add('source ', logger.format.url(bundle.urls.files.toString()));
+      add('manifest ', logger.format.url(bundle.urls.manifest.toString()));
+      add('files ', logger.format.url(bundle.urls.files.toString()));
       add('entry', manifest.entry);
       add('size', `${log.yellow(size)} (${manifest.files.length} files)`);
 
@@ -84,7 +91,7 @@ export function runMethod(args: { cachedir: string }) {
 
     /**
      * TODO 🐷
-     * - use node.vm:
+     * - use node.vm (V8)
      */
 
     return done();

@@ -32,8 +32,7 @@ export const Runtime = {
     const cell = origin?.uri || 'cell:dev:A1';
     const dir = trimSlash(origin?.dir || '');
     const urls = Urls.create(hostname);
-    const port = urls.port;
-    const host = `${urls.protocol}://${urls.host}${port === 80 ? '' : `:${port}`}`;
+    const host = urls.host;
 
     const path = (path: string) =>
       dev

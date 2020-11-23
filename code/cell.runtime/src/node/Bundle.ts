@@ -1,4 +1,4 @@
-import { FileCache, fs, PATH, Path, t, Urls } from './common';
+import { FileCache, fs, PATH, Path, t, Schema } from './common';
 
 type B = t.RuntimeBundleOrigin;
 
@@ -10,7 +10,10 @@ export function Bundle(bundle: B, cachedir: string) {
   bundle = { ...bundle };
   const { host, uri } = bundle;
   const dir = Path.dir(bundle.dir);
-  const cache = FileCache.create({ fs, dir: toCacheDir(cachedir, host, uri, dir.path) });
+  const cache = FileCache.create({
+    dir: toCacheDir(cachedir, host, uri, dir.path),
+    fs,
+  });
 
   return {
     toObject: () => bundle,
@@ -20,15 +23,15 @@ export function Bundle(bundle: B, cachedir: string) {
     cache,
 
     get urls() {
-      const urls = Urls.create(bundle.host).cell(bundle.uri);
+      const urls = Schema.urls(bundle.host);
       return {
-        files: urls.files.list.query({ filter: `${dir.path}/**` }),
-        manifest: urls.file.byName(Path.dir(dir.path).append(PATH.MANIFEST_FILENAME)),
+        files: urls.cell(bundle.uri).files.list.query({ filter: `${dir.path}/**` }),
+        manifest: urls.func.manifest(bundle),
       };
     },
 
     exists() {
-      return cache.exists(PATH.MANIFEST_FILENAME);
+      return cache.exists(PATH.MANIFEST);
     },
 
     toString() {
