@@ -6,7 +6,7 @@ import { IS_CLOUD, SECRETS } from './constants';
 import { NodeRuntime } from '@platform/cell.runtime/lib/node';
 
 /**
- * File system.
+ * Cell: FileSystem
  */
 const fs = s3.init({
   dir: '__S3_ROOT__',
@@ -16,7 +16,7 @@ const fs = s3.init({
 });
 
 /**
- * Connection to a Mongo database.
+ * Cell: Database
  */
 const db: t.IDb = MongoDb.create({
   uri: SECRETS.DB,
@@ -25,16 +25,16 @@ const db: t.IDb = MongoDb.create({
 });
 
 /**
- * Function Runtime.
+ * Cell: Runtime (Functions)
  */
 const runtime = NodeRuntime.create();
 
 /**
- * Initialise the HTTP server.
+ * Cell: System Server.
  */
 const name = IS_CLOUD ? '__NAME__' : 'local';
 const deployedAt = IS_CLOUD ? '__DEPLOYED_AT__' : time.now.timestamp;
 const app = server.create({ name, db, fs, deployedAt, runtime });
-export default app.server;
-
 server.logger.start({ app });
+
+export default app.server;

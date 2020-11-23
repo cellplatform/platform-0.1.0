@@ -1,0 +1,8 @@
+{
+  "name": "cell.docker",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "docker-compose up $@"
+  },
+  "private": true
+}

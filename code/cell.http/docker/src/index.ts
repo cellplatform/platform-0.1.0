@@ -29,7 +29,7 @@ const runtime = NodeRuntime.create();
  * Initialize and start the HTTP application server.
  */
 const app = server.create({
-  name: 'sample',
+  name: 'cell.docker',
   db,
   fs: filesystem.local(),
   runtime,

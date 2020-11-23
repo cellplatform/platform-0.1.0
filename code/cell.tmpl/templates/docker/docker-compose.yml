@@ -1,0 +1,14 @@
+# 
+# https://docs.docker.com/compose/
+# 
+version: '3.8'
+services:
+  cell:
+    image: domains/cell
+    ports:
+      - '8080:8080'
+#     volumes:
+#       - .:/code
+#       - logvolume01:/var/log
+# volumes:
+#   logvolume01: {}

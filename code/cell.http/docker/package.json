@@ -6,7 +6,9 @@
     "start": "node lib/index",
     "build": "ts build --no-esm $@",
     "dbuild": "docker build -t domains/cell .",
-    "drun": "docker run -p 3000:8080 domains/cell"
+    "drun": "docker run --rm -p 8080:8080 domains/cell",
+    "dup": "docker-compose up",
+    "dup-build": "docker-compose up --build"
   },
   "dependencies": {
     "@platform/cell.fs.local": "^0.4.144",
