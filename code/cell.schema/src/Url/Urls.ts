@@ -22,18 +22,20 @@ export class Urls implements t.IUrls {
     let text = (input || '').trim();
     text = text || 'localhost';
 
-    const host = R.pipe(util.stripHttp, util.stripSlash, util.stripPort)(text);
-    const protocol = util.toProtocol(host);
+    const hostname = R.pipe(util.stripHttp, util.stripSlash, util.stripPort)(text);
+    const protocol = util.toProtocol(hostname);
     const port = util.toPort(text) || 80;
-    const origin = port === 80 ? `${protocol}://${host}` : `${protocol}://${host}:${port}`;
-    return { protocol, host, port, origin };
+    const host = port === 80 ? hostname : `${hostname}:${port}`;
+    const origin = `${protocol}://${host}`;
+    return { protocol, hostname, host, port, origin };
   }
 
   /**
    * [Lifecycle]
    */
   private constructor(input?: string | number) {
-    const { protocol, host, port, origin } = Urls.parse(input);
+    const { protocol, host, hostname, port, origin } = Urls.parse(input);
+    this.hostname = hostname;
     this.host = host;
     this.protocol = protocol;
     this.port = port;
@@ -46,6 +48,7 @@ export class Urls implements t.IUrls {
 
   public readonly protocol: t.HttpProtocol;
   public readonly host: string;
+  public readonly hostname: string;
   public readonly port: number;
   public readonly origin: string;
 
@@ -96,7 +99,7 @@ export class Urls implements t.IUrls {
        * Example: <see file download URL>
        */
       manifest(bundle: t.RuntimeBundleOrigin) {
-        if (bundle.host !== self.host) {
+        if (util.stripHttp(bundle.host) !== self.host) {
           throw new Error(`Host mismatch ('${bundle.host}' should be '${self.host}')`);
         } else {
           const FILENAME = constants.BUNDLE.MANIFEST.FILENAME;

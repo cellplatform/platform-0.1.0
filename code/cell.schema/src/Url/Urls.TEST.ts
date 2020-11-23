@@ -20,45 +20,50 @@ describe('Urls', () => {
       ) => {
         const res1 = Urls.parse(input);
         const res2 = Urls.create(input);
+        const hostname = host.replace(/\:\d*$/, '');
 
         expect(res1.protocol).to.eql(protocol);
+        expect(res1.hostname).to.eql(hostname);
         expect(res1.host).to.eql(host);
         expect(res1.port).to.eql(port);
         expect(res1.origin).to.eql(origin);
 
         expect(res1.protocol).to.eql(res2.protocol);
+        expect(res1.hostname).to.eql(res2.hostname);
         expect(res1.host).to.eql(res2.host);
         expect(res1.port).to.eql(res2.port);
         expect(res1.origin).to.eql(res2.origin);
       };
 
-      test('foo.com:1234', 'foo.com', 1234, 'https', 'https://foo.com:1234');
+      test('foo.com:1234', 'foo.com:1234', 1234, 'https', 'https://foo.com:1234');
+
       test('foo.com', 'foo.com', 80, 'https', 'https://foo.com');
       test('foo.com///', 'foo.com', 80, 'https', 'https://foo.com');
       test('http://foo.com', 'foo.com', 80, 'https', 'https://foo.com');
       test('https://foo.com/', 'foo.com', 80, 'https', 'https://foo.com');
-      test('foo.com:8080', 'foo.com', 8080, 'https', 'https://foo.com:8080');
-      test('//foo.com:8080//', 'foo.com', 8080, 'https', 'https://foo.com:8080');
+      test('foo.com:8080', 'foo.com:8080', 8080, 'https', 'https://foo.com:8080');
+      test('//foo.com:8080//', 'foo.com:8080', 8080, 'https', 'https://foo.com:8080');
       test('localhost.foo.com', 'localhost.foo.com', 80, 'https', 'https://localhost.foo.com');
 
       test(undefined, 'localhost', 80, 'http', 'http://localhost');
       test('', 'localhost', 80, 'http', 'http://localhost');
       test('  ', 'localhost', 80, 'http', 'http://localhost');
 
-      test('1234', 'localhost', 1234, 'http', 'http://localhost:1234');
-      test(1234, 'localhost', 1234, 'http', 'http://localhost:1234');
+      test('1234', 'localhost:1234', 1234, 'http', 'http://localhost:1234');
+      test(1234, 'localhost:1234', 1234, 'http', 'http://localhost:1234');
+
       test(80, 'localhost', 80, 'http', 'http://localhost');
       test('80', 'localhost', 80, 'http', 'http://localhost');
 
       test('localhost', 'localhost', 80, 'http', 'http://localhost');
-      test('localhost:1234', 'localhost', 1234, 'http', 'http://localhost:1234');
+      test('localhost:1234', 'localhost:1234', 1234, 'http', 'http://localhost:1234');
       test('localhost/', 'localhost', 80, 'http', 'http://localhost');
       test('//localhost///', 'localhost', 80, 'http', 'http://localhost');
       test('http://localhost', 'localhost', 80, 'http', 'http://localhost');
       test('https://localhost', 'localhost', 80, 'http', 'http://localhost');
       test('https://localhost//', 'localhost', 80, 'http', 'http://localhost');
-      test('https://localhost:1234', 'localhost', 1234, 'http', 'http://localhost:1234');
-      test('https://localhost:1234//', 'localhost', 1234, 'http', 'http://localhost:1234');
+      test('https://localhost:1234', 'localhost:1234', 1234, 'http', 'http://localhost:1234');
+      test('https://localhost:1234//', 'localhost:1234', 1234, 'http', 'http://localhost:1234');
     });
   });
 
@@ -390,32 +395,51 @@ describe('Urls', () => {
   });
 
   describe('func', () => {
-    const url = Urls.create();
-
     it('base (/func)', () => {
-      expect(url.func.base.toString()).to.eql('http://localhost/func');
+      const urls = Urls.create();
+      expect(urls.func.base.toString()).to.eql('http://localhost/func');
     });
 
-    it('manifest (file)', () => {
-      const test = (dir: string | undefined, expected: string) => {
-        const bundle: t.RuntimeBundleOrigin = {
-          host: 'localhost',
-          uri: 'cell:foo:A1',
-          dir,
+    describe('manifest (file)', () => {
+      it('dir variants', () => {
+        const test = (dir: string | undefined, expected: string) => {
+          const bundle: t.RuntimeBundleOrigin = {
+            host: 'localhost',
+            uri: 'cell:foo:A1',
+            dir,
+          };
+          const urls = Urls.create();
+          const res = urls.func.manifest(bundle);
+          expect(res.toString()).to.eql(expected);
         };
-        const res = url.func.manifest(bundle);
-        expect(res.toString()).to.eql(expected);
-      };
 
-      test(undefined, 'http://localhost/cell:foo:A1/file/index.js');
-      test('v1.2.3', 'http://localhost/cell:foo:A1/file/v1.2.3/index.js');
-      test('  //foo/v1.2.3//  ', 'http://localhost/cell:foo:A1/file/foo/v1.2.3/index.js');
-    });
+        test(undefined, 'http://localhost/cell:foo:A1/file/index.json');
+        test('v1.2.3', 'http://localhost/cell:foo:A1/file/v1.2.3/index.json');
+        test('  //foo/v1.2.3//  ', 'http://localhost/cell:foo:A1/file/foo/v1.2.3/index.json');
+      });
 
-    it('manifest (file): throw if host mismatch', () => {
-      const bundle: t.RuntimeBundleOrigin = { host: 'domain.com', uri: 'cell:foo:A1' };
-      const fn = () => url.func.manifest(bundle);
-      expect(fn).to.throw(/Host mismatch/);
+      it('strips HTTP on host mismatch check', () => {
+        const urls = Urls.create('domain.com');
+        const bundle: t.RuntimeBundleOrigin = {
+          host: 'https://domain.com',
+          uri: 'cell:foo:A1',
+        };
+        const res = urls.func.manifest(bundle);
+        expect(res.toString()).to.eql('https://domain.com/cell:foo:A1/file/index.json');
+      });
+
+      it('throw if host mismatch', () => {
+        const test = (host1: string, host2: string) => {
+          const urls = Urls.create(host1);
+          const bundle: t.RuntimeBundleOrigin = { host: host2, uri: 'cell:foo:A1' };
+          const fn = () => urls.func.manifest(bundle);
+          expect(fn).to.throw(/Host mismatch/);
+        };
+
+        test('localhost', 'localhost:1234');
+        test('domain.com', 'foo.com');
+        test('domain.com:8080', 'domain.com:1234');
+      });
     });
   });
 });
