@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.editor.code",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "compiler": {
     "port": 3003
   },
@@ -21,8 +21,8 @@
     "monaco-editor": "^0.21.2"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.2.15",
-    "sys.ui.harness": "^0.0.17",
+    "@platform/cell.compiler": "^0.2.16",
+    "sys.ui.harness": "^0.0.18",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

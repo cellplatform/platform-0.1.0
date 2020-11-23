@@ -1,6 +1,6 @@
 {
   "name": "deployment",
-  "version": "0.0.181",
+  "version": "0.0.192",
   "scripts": {
     "now": "yarn vercel",
     "vercel": "vercel dev --listen 8080",
@@ -10,9 +10,9 @@
   "dependencies": {
     "@platform/cell.fs.local": "^0.4.144",
     "@platform/cell.fs.s3": "^0.4.149",
-    "@platform/cell.http": "^0.7.214",
-    "@platform/cell.http.router": "^0.8.37",
-    "@platform/cell.runtime": "^0.0.8",
+    "@platform/cell.http": "^0.7.225",
+    "@platform/cell.http.router": "^0.8.48",
+    "@platform/cell.runtime": "^0.0.9",
     "@platform/cell.schema": "^0.5.22",
     "@platform/cell.types": "^0.5.23",
     "@platform/fsdb.mongo": "^0.0.148",
@@ -22,7 +22,7 @@
     "ts-node": "8.10.2"
   },
   "engines": {
-    "node": ">=10.x"
+    "node": ">=12.x"
   },
   "private": true
 }
