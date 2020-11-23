@@ -57,7 +57,7 @@ export default () =>
     )
 
     .variant('node', (config) => {
-      config.target('node').entry('./src/test/entry.node');
+      config.target('node').entry('./src/test/entry.node').static(null);
     })
 
     // Root level hooks.

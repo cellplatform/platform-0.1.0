@@ -11,7 +11,7 @@ import qrcode from 'qrcode';
   // console.log(URL);
   // console.log(code);
 
-  console.log('Test Code');
+  console.log('Test Code 🌼🌳🚀🐞');
 
   try {
     console.log('__CELL__', __CELL__);

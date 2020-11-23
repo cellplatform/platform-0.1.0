@@ -1,6 +1,8 @@
 import { fs } from './libs';
 import * as t from './types';
 
+import { BUNDLE } from '@platform/cell.schema/lib/common/constants';
+
 const CONFIG = {
   parent: () => undefined,
   name: '',
@@ -22,7 +24,7 @@ export const PATH = {
 };
 
 export const FILE = {
-  JSON: { INDEX: 'index.json' },
+  JSON: { MANIFEST: BUNDLE.MANIFEST.FILENAME },
   JS: {
     REMOTE_ENTRY: 'remoteEntry.js',
     ENTRY: {

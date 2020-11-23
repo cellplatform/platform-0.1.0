@@ -56,7 +56,7 @@ export const stats = (input?: t.WpStats | t.WpCompilation): t.WebpackStats => {
           log.info.gray(`  ${bundleDir}`);
           table.log();
           log.info.gray(`Bundled in ${log.yellow(elapsed)}`);
-          log.info.gray(`Manifest: ${fs.join(bundleDir, DEFAULT.FILE.JSON.INDEX)}`);
+          log.info.gray(`Manifest: ${fs.join(bundleDir, DEFAULT.FILE.JSON.MANIFEST)}`);
         },
       };
       return assets;

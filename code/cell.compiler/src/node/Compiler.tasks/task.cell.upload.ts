@@ -89,7 +89,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
       cell: cell.info.toString(),
       files: cell.files.list.query({ filter }).toString(),
       remote: urlByFilename(DEFAULT.FILE.JS.REMOTE_ENTRY),
-      manifest: urlByFilename(DEFAULT.FILE.JSON.INDEX),
+      manifest: urlByFilename(DEFAULT.FILE.JSON.MANIFEST),
       entry: urlByFilename(model.entryFile),
     };
   };

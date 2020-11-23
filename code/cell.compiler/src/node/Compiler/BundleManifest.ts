@@ -1,7 +1,7 @@
 import { DEFAULT, fs, Model, Schema, t, value, Path } from '../common';
 
 const REMOTE_ENTRY = DEFAULT.FILE.JS.REMOTE_ENTRY;
-const MANIFEST = DEFAULT.FILE.JSON.INDEX;
+const MANIFEST = DEFAULT.FILE.JSON.MANIFEST;
 
 export const BundleManifest = {
   /**
@@ -13,8 +13,7 @@ export const BundleManifest = {
    * URL to the manifest
    */
   url(host: string, uri: string, dir?: string) {
-    const urls = Schema.urls(host).cell(uri);
-    return urls.file.byName(Path.dir(dir).append(MANIFEST));
+    return Schema.urls(host).func.manifest({ host, uri, dir });
   },
 
   /**
