@@ -9,7 +9,7 @@
       "code/*",
       "code/cell.modules/pkg*/*",
       "code/cell.electron/app",
-      "code/cell.http/src/tmpl"
+      "code/cell.http/src.deployment"
     ],
     "nohoist": [
       "**/electron",
