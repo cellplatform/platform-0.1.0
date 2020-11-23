@@ -1,2 +1,2 @@
 export * from './util.validate';
-export * from './util.redirect';
+export * from './util.FileRedirects';
