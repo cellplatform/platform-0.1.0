@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.shell",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "sideEffects": false,
   "compiler": {
     "port": 1234
@@ -19,7 +19,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@platform/cell.compiler": "0.2.14",
+    "@platform/cell.compiler": "0.2.15",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

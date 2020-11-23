@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.compiler",
-  "version": "0.2.14",
+  "version": "0.2.15",
   "description": "Code compilation and bundling.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -35,7 +35,7 @@
     "@babel/preset-react": "7.12.5",
     "@babel/preset-typescript": "7.12.1",
     "@platform/cell.module": "0.0.55",
-    "@platform/cell.runtime": "0.0.7",
+    "@platform/cell.runtime": "0.0.8",
     "@platform/cell.types": "0.5.23",
     "@platform/css": "^0.4.20",
     "@platform/libs": "0.2.3",
