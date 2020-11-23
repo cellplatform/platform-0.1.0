@@ -20,6 +20,7 @@ export async function execFunc(args: {
     const uri = body.uri;
     const dir = body.dir;
     const bundle: B = { host, uri, dir };
+    const urls = Schema.urls(host);
 
     const res = await runtime.run(bundle, { silent: true });
     const { manifest, errors } = res;
@@ -28,10 +29,13 @@ export async function execFunc(args: {
     const data: t.IResPostFunc = {
       elapsed: timer.elapsed.msec,
       runtime: { name: runtime.name },
-      manifest: Schema.urls(host).func.manifest(bundle).toString(),
       size: {
         bytes: defaultValue(manifest?.bytes, -1),
         files: defaultValue(manifest?.files.length, -1),
+      },
+      urls: {
+        files: urls.func.files(bundle).toString(),
+        manifest: urls.func.manifest(bundle).toString(),
       },
       errors,
     };

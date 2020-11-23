@@ -25,8 +25,8 @@ type RuntimeMembers = {
 export type RuntimePullResponse = {
   ok: boolean;
   dir: string;
-  manifest: string; // Manifest URL.
   errors: t.IRuntimeError[];
+  manifest: string; // Manifest URL.
 };
 
 export type RuntimeRunResponse = {

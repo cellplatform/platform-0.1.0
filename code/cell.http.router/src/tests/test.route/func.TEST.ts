@@ -5,7 +5,7 @@ import { compile } from '../compiler/compile';
 type B = t.RuntimeBundleOrigin;
 
 const createFuncMock = async () => {
-  const runtime = NodeRuntime.init();
+  const runtime = NodeRuntime.create();
   const mock = await createMock({ runtime });
   const http = Http.create();
   const url = mock.urls.func.base.toString();
@@ -247,7 +247,8 @@ describe('func', function () {
 
       expect(json.elapsed).to.greaterThan(0);
       expect(json.runtime.name).to.eql('node');
-      expect(json.manifest).to.match(/^http:\/\/localhost\:.*index\.json$/);
+      expect(json.urls.manifest).to.match(/^http:\/\/localhost\:.*index\.json$/);
+      expect(json.urls.files).to.include(`filter=${dir}/**`);
       expect(json.size.bytes).to.greaterThan(1000);
       expect(json.size.files).to.greaterThan(1);
 
@@ -273,7 +274,7 @@ describe('func', function () {
       expect(error.bundle).to.eql(bundle);
     });
 
-    it.skip('TMP', async () => {
+    it.only('TMP', async () => {
       const local8080: B = {
         host: 'localhost:8080',
         uri: 'cell:ckhon6cdk000o6hetdrtmd0dt:A1',
@@ -293,7 +294,8 @@ describe('func', function () {
       };
 
       // const bundle = local5000;
-      const bundle = local8080;
+      // const bundle = local8080;
+      const bundle = cloud;
 
       const http = Http.create();
       const urls = Schema.urls(bundle.host);
@@ -310,10 +312,19 @@ describe('func', function () {
 
       const data: t.IReqPostFuncBody = { ...bundle };
       const res = await http.post(url, data);
+      const json = res.json as t.IResPostFunc;
 
       console.log('-------------------------------------------');
       console.log('res.status', res.status);
-      console.log('res', res.json);
+      console.log('res', json);
+      console.log('-------------------------------------------');
+
+      json.errors.forEach((error) => {
+        const urls = NodeRuntime.urls(error.bundle);
+        console.log('error', error);
+        console.log('urls', urls);
+        console.log('-------------------------------------------');
+      });
     });
 
     it('error: func/runtime not provided (500)', async () => {

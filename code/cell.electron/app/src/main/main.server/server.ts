@@ -23,7 +23,7 @@ export function init(args: IInitArgs = {}) {
     name: 'local',
     db: NeDb.create({ filename: paths.db }),
     fs: local.init({ dir: paths.fs, fs }),
-    runtime: NodeRuntime.init(),
+    runtime: NodeRuntime.create(),
     logger,
   });
 

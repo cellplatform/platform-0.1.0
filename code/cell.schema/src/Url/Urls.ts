@@ -86,6 +86,15 @@ export class Urls implements t.IUrls {
   public get func() {
     const self = this; // eslint-disable-line
     const toUrl = this.toUrl;
+
+    const throwOnHostMistmatch = (bundle: t.RuntimeBundleOrigin) => {
+      if (util.stripHttp(bundle.host) !== self.host) {
+        throw new Error(`Host mismatch ('${bundle.host}' should be '${self.host}')`);
+      }
+    };
+
+    const trimDir = (dir?: string) => (dir || '').trim().replace(/^\/*/, '').replace(/\/*$/, '');
+
     return {
       /**
        * Example: /func
@@ -99,14 +108,23 @@ export class Urls implements t.IUrls {
        * Example: <see file download URL>
        */
       manifest(bundle: t.RuntimeBundleOrigin) {
-        if (util.stripHttp(bundle.host) !== self.host) {
-          throw new Error(`Host mismatch ('${bundle.host}' should be '${self.host}')`);
-        } else {
-          const FILENAME = constants.BUNDLE.MANIFEST.FILENAME;
-          const dir = (bundle.dir || '').trim().replace(/^\/*/, '').replace(/\/*$/, '');
-          const filename = dir ? `${dir}/${FILENAME}` : FILENAME;
-          return self.cell(bundle.uri).file.byName(filename);
-        }
+        throwOnHostMistmatch(bundle);
+        const FILENAME = constants.BUNDLE.MANIFEST.FILENAME;
+        const dir = trimDir(bundle.dir);
+        const filename = dir ? `${dir}/${FILENAME}` : FILENAME;
+        return self.cell(bundle.uri).file.byName(filename);
+      },
+
+      /**
+       * Bundle files.
+       * Example: <see files list>
+       */
+      files(bundle: t.RuntimeBundleOrigin) {
+        throwOnHostMistmatch(bundle);
+        const dir = trimDir(bundle.dir);
+        let url = self.cell(bundle.uri).files.list;
+        url = dir ? url.query({ filter: `${dir}/**` }) : url;
+        return url;
       },
     };
   }

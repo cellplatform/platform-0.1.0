@@ -10,7 +10,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/src/vercel.ts"
+      "dest": "/src/env.vercel.ts"
     }
   ],
   "builds": [

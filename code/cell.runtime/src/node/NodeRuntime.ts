@@ -5,9 +5,16 @@ import { runMethod } from './run';
 
 export const NodeRuntime = {
   /**
+   * Generates URLs for the given bundle.
+   */
+  urls(bundle: t.RuntimeBundleOrigin) {
+    return Bundle.urls(bundle);
+  },
+
+  /**
    * Initialize an instance of the Node runtime.
    */
-  init(args: { cachedir?: string } = {}) {
+  create(args: { cachedir?: string } = {}) {
     const cachedir = args.cachedir || PATH.CACHE_DIR;
 
     const runtime: t.RuntimeEnvNode = {
@@ -19,14 +26,14 @@ export const NodeRuntime = {
        * Determine if the given bundle has been pulled.
        */
       async exists(input) {
-        return Bundle(input, cachedir).exists();
+        return Bundle.create(input, cachedir).exists();
       },
 
       /**
        * Delete the given bundle (if it exists).
        */
       async remove(input) {
-        const bundle = Bundle(input, cachedir);
+        const bundle = Bundle.create(input, cachedir);
         const dir = bundle.cache.dir;
         let count = 0;
         if (await fs.pathExists(dir)) {

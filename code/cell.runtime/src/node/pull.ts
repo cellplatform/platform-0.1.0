@@ -12,7 +12,7 @@ export function pullMethod(args: { cachedir: string }) {
    */
   const fn: t.RuntimeEnvNode['pull'] = async (input, options = {}) => {
     const { silent } = options;
-    const bundle = Bundle(input, cachedir);
+    const bundle = Bundle.create(input, cachedir);
     const host = bundle.host;
     const origin = bundle.toString();
     const targetDir = bundle.cache.dir;
@@ -92,7 +92,8 @@ export function pullMethod(args: { cachedir: string }) {
             addError(err);
           }
         } catch (error) {
-          const err = error.mesage;
+          console.log('DOWNLOAD ERROR', error);
+          const err = error.mesage || '<no-further-info>';
           const msg = `Failed while pulling '${file.path}' from '${origin}'. ${err}`;
           addError(msg);
         }

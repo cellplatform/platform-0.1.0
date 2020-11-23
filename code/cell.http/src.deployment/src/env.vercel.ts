@@ -27,7 +27,7 @@ const db: t.IDb = MongoDb.create({
 /**
  * Function Runtime.
  */
-const runtime = NodeRuntime.init();
+const runtime = NodeRuntime.create();
 
 /**
  * Initialise the HTTP server.

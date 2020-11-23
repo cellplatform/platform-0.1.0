@@ -1,1 +1,1 @@
-export * from './NodeRuntime';
+export { NodeRuntime } from './NodeRuntime';

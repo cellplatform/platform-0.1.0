@@ -43,7 +43,7 @@ const filesystem = {
 /**
  * Function Runtime.
  */
-const runtime = NodeRuntime.init();
+const runtime = NodeRuntime.create();
 
 /**
  * Initialize and start the HTTP application server.

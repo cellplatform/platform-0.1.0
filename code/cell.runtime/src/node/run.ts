@@ -15,7 +15,7 @@ export function runMethod(args: { cachedir: string }) {
    */
   const fn: t.RuntimeEnvNode['run'] = async (input, options = {}) => {
     const { silent } = options;
-    const bundle = Bundle(input, cachedir);
+    const bundle = Bundle.create(input, cachedir);
     const exists = await bundle.exists();
     const isPullRequired = !exists || options.pull;
 
@@ -75,8 +75,8 @@ export function runMethod(args: { cachedir: string }) {
 
       add('runtime  ', 'node');
       add('target', `${manifest.target} (${manifest.mode})`);
-      add('manifest ', logger.format.url(bundle.urls.manifest.toString()));
-      add('files ', logger.format.url(bundle.urls.files.toString()));
+      add('manifest ', logger.format.url(bundle.urls.manifest));
+      add('files ', logger.format.url(bundle.urls.files));
       add('entry', manifest.entry);
       add('size', `${log.yellow(size)} (${manifest.files.length} files)`);
 
