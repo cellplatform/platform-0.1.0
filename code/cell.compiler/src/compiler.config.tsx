@@ -17,6 +17,12 @@ export default () =>
 
     .shared((e) => e.singleton(['react', 'react-dom']))
 
+    /**
+     * .files
+     *    .redirect(grep)
+     *    .public(bool)
+     */
+
     .redirect(false, '*.worker.js')
 
     .html((config) => {

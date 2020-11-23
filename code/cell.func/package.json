@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.func",
-  "version": "0.1.250",
+  "version": "0.1.251",
   "description": "System for cell (eg. 'A1') function execution.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,9 +15,9 @@
   },
   "dependencies": {
     "@platform/cache": "0.3.0",
-    "@platform/cell.coord": "0.8.205",
-    "@platform/cell.types": "0.5.22",
-    "@platform/cell.value": "0.2.160",
+    "@platform/cell.coord": "0.8.206",
+    "@platform/cell.types": "0.5.23",
+    "@platform/cell.value": "0.2.161",
     "@platform/libs": "0.2.3",
     "@platform/util.value": "0.8.5"
   },
