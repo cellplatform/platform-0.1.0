@@ -68,7 +68,7 @@ describe('func', function () {
   });
 
   describe('RuntimeEnvNode', () => {
-    describe.only('pull', () => {
+    describe('pull', () => {
       const test = async (dir?: string) => {
         const { mock, runtime, bundle, client } = await prepare({ dir });
         expect(await runtime.exists(bundle)).to.eql(false);
@@ -111,7 +111,7 @@ describe('func', function () {
       });
     });
 
-    describe.only('remove', () => {
+    describe('remove', () => {
       it('removes pulled bundle', async () => {
         const test = async (dir?: string) => {
           const { mock, runtime, bundle, client } = await prepare({ dir });
@@ -140,7 +140,7 @@ describe('func', function () {
       });
     });
 
-    describe.only('clear', () => {
+    describe('clear', () => {
       it('nothing to clear', async () => {
         const { mock, runtime } = await prepare();
         expect((await runtime.clear()).count).to.eql(0);
@@ -182,7 +182,7 @@ describe('func', function () {
       });
     });
 
-    describe.only('run', () => {
+    describe('run', () => {
       it('run', async () => {
         const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
 
@@ -229,7 +229,7 @@ describe('func', function () {
     });
   });
 
-  describe.only('over http', () => {
+  describe('over http', () => {
     it('success', async () => {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
