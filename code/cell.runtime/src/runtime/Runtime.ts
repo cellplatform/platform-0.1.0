@@ -28,15 +28,14 @@ export const Runtime = {
       Uri.ALLOW.NS = [...Uri.ALLOW.NS, 'dev'];
     }
 
-    const hostname = origin?.host || location?.host || 'localhost:3000';
+    const host = origin?.host || location?.host || 'localhost:3000';
     const cell = origin?.uri || 'cell:dev:A1';
     const dir = trimSlash(origin?.dir || '');
-    const urls = Urls.create(hostname);
-    const host = urls.host;
+    const urls = Urls.create(host);
 
     const path = (path: string) =>
       dev
-        ? `${host}/${trimSlash(path)}`
+        ? `${urls.origin}/${trimSlash(path)}`
         : urls.cell(cell).file.byName(prepend(dir, path)).toString();
 
     return { dev, host, cell, dir, path };
