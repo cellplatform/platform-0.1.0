@@ -1,5 +1,5 @@
 import { R, DEFAULT, t, Builder } from '../common';
-import { Redirects, validate } from './util';
+import { FileRedirects, validate } from './util';
 
 /**
  * Handlers for configuring how generated files are treated.
@@ -52,7 +52,7 @@ export const filesMethods = (model: t.BuilderModel<t.CompilerModel>) => {
         } else {
           const model = Model(draft);
           model.redirects.push({ action, grep });
-          model.files.redirects = Redirects(model.redirects).sortAndOrder();
+          model.files.redirects = FileRedirects(model.redirects).sortAndOrder();
         }
       });
 
@@ -75,6 +75,10 @@ const Model = (model: t.CompilerModel) => {
     get redirects() {
       const files = res.files;
       return files.redirects || (files.redirects = []);
+    },
+    get access() {
+      const files = res.files;
+      return files.access || (files.access = []);
     },
   };
   return res;

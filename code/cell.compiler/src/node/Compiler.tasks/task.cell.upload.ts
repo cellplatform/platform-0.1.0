@@ -3,7 +3,7 @@ import { map, takeUntil } from 'rxjs/operators';
 
 import { DEFAULT, fs, HttpClient, log, logger, Model, Path, Schema, t, time } from '../common';
 import { BundleManifest } from '../Compiler';
-import { Redirects } from '../config/util.redirect';
+import { FileRedirects } from '../config/util.redirect';
 
 type FileUri = t.IUriData<t.IFileData>;
 type File = t.IHttpClientCellFileUpload;
@@ -25,7 +25,7 @@ export async function getFiles(args: {
   bundleDir: string;
   targetDir?: string;
   filter?: (path: string) => boolean;
-  redirects?: t.CompilerModelRedirectGrant[];
+  redirects?: t.CompilerModelRedirect[];
 }) {
   const { bundleDir, targetDir = '', redirects } = args;
   const paths = await fs.glob.find(fs.resolve(`${bundleDir}/**`));
@@ -204,19 +204,19 @@ const logUploadFailure = (args: { host: string; bundleDir: string; errors: t.IFi
 };
 
 function toRedirect(args: {
-  redirects?: t.CompilerModelRedirectGrant[];
+  redirects?: t.CompilerModelRedirect[];
   bundleDir?: string;
   path: string;
 }) {
   const path = args.bundleDir ? args.path.substring(args.bundleDir.length + 1) : args.path;
-  const redirects = Redirects(args.redirects);
+  const redirects = FileRedirects(args.redirects);
   return redirects.path(path);
 }
 
 async function updateManifest(args: {
   bundleDir: string;
   uploadedFiles: FileUri[];
-  redirects?: t.CompilerModelRedirectGrant[];
+  redirects?: t.CompilerModelRedirect[];
 }) {
   const { uploadedFiles, bundleDir, redirects } = args;
   const { manifest, path } = await BundleManifest.readFile({ bundleDir });

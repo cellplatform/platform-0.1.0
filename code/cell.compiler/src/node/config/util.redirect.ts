@@ -1,6 +1,6 @@
 import { fs, R, t } from '../common';
 
-type G = t.CompilerModelRedirectGrant;
+type G = t.CompilerModelRedirect;
 
 type Path = {
   path: string;
@@ -14,7 +14,7 @@ const DEFAULT_ALLOW = true;
 /**
  * Helpers for calculating redirection rules.
  */
-export function Redirects(list: G[] = []) {
+export function FileRedirects(list: G[] = []) {
   return {
     list,
 

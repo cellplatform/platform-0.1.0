@@ -57,14 +57,18 @@ export type CompilerModelStatic = { dir?: string }; // Static assets.
  * Output file.
  */
 export type CompilerModelFiles = {
-  redirects?: t.CompilerModelRedirectGrant[];
+  redirects?: t.CompilerModelRedirect[];
+  access?: t.CompilerModelFileAccess[];
 };
+
+export type CompilerModelFileAccessPermission = 'private' | 'public';
+export type CompilerModelFileAccess = { public: CompilerModelFileAccessPermission; grep?: string };
 
 /**
  * File redirection rules.
  */
 export type CompilerModelRedirectAction = 'ALLOW' | 'DENY';
-export type CompilerModelRedirectGrant = { action?: CompilerModelRedirectAction; grep?: string };
+export type CompilerModelRedirect = { action?: CompilerModelRedirectAction; grep?: string };
 
 /**
  * HTML.

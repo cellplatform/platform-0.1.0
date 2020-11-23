@@ -750,7 +750,7 @@ describe('Compiler (Config)', () => {
         const test = (
           grant: any,
           grep: string | undefined,
-          expected: t.CompilerModelRedirectGrant[] | undefined,
+          expected: t.CompilerModelRedirect[] | undefined,
         ) => {
           const { builder, model } = create();
           builder.files((files) => files.redirect(grant, grep));
