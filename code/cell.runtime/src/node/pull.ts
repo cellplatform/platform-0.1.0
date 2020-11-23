@@ -68,6 +68,7 @@ export function pullMethod(args: { cachedir: string }) {
       list.map(async (file) => {
         try {
           const res = await client.file.name(file.path).download();
+
           if (res.ok) {
             count++;
             const filename = bundle.dir.path
@@ -92,7 +93,8 @@ export function pullMethod(args: { cachedir: string }) {
             addError(err);
           }
         } catch (error) {
-          console.log('DOWNLOAD ERROR', error);
+          console.log('DOWNLOAD ERROR', error); // TEMP 🐷
+
           const err = error.mesage || '<no-further-info>';
           const msg = `Failed while pulling '${file.path}' from '${origin}'. ${err}`;
           addError(msg);

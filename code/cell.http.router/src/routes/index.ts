@@ -8,8 +8,8 @@ import * as ns from './route.ns';
 import { sys } from './route.sys';
 import { wildcard } from './route.wildcard';
 
-import { crypto } from '../__TMP__/crypto';
-import { handleWasmTmp } from '../__TMP__/WasmHandler'; // TEMP 🐷
+import { tmpWasmHandler } from '../__TMP__/tmpWasmHandler'; // TEMP 🐷
+import { tmpHandler } from '../__TMP__/tmpHandler'; // TEMP 🐷
 
 /**
  * Register routes.
@@ -34,12 +34,8 @@ export function init(args: {
   /**
    * TEMP 🐷
    */
-  args.router.get('/tmp/wasm', handleWasmTmp);
-  args.router.get('/tmp', async (req) => {
-    const length = 130;
-    const random = await crypto.random(length);
-    return { status: 200, data: { length, random } };
-  });
+  args.router.get('/tmp/wasm', tmpWasmHandler);
+  args.router.get('/tmp', tmpHandler);
 
   // No match (404).
   args.router.get(routes.WILDCARD, wildcard);
