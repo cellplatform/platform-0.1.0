@@ -3,6 +3,7 @@ import { server } from '@platform/cell.http/lib/server';
 import { NeDb } from '@platform/fsdb.nedb';
 import { app as electron } from 'electron';
 import { filter } from 'rxjs/operators';
+import { NodeRuntime } from '@platform/cell.runtime/lib/node/NodeRuntime';
 
 import { constants, fs, log, t, Urls, util } from '../common';
 
@@ -22,6 +23,7 @@ export function init(args: IInitArgs = {}) {
     name: 'local',
     db: NeDb.create({ filename: paths.db }),
     fs: local.init({ dir: paths.fs, fs }),
+    runtime: NodeRuntime.init(),
     logger,
   });
 
