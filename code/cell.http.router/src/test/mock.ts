@@ -67,7 +67,7 @@ export const createMock = async (
   const service = await app.start({ port, silent: true });
 
   const urls = Schema.urls(`localhost:${port}`);
-  const hostname = urls.host;
+  const hostname = urls.hostname;
   const client = HttpClient.create(urls.origin);
   const origin = client.origin;
 

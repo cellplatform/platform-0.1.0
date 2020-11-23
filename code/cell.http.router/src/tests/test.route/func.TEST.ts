@@ -50,7 +50,7 @@ const uploadBundle = async (
   return { files, upload, bundle };
 };
 
-describe.only('func', function () {
+describe('func', function () {
   this.timeout(99999);
 
   before(async () => {
@@ -68,17 +68,18 @@ describe.only('func', function () {
   });
 
   describe('RuntimeEnvNode', () => {
-    describe('exists:false => pull => exists:true', () => {
+    describe.only('pull', () => {
       const test = async (dir?: string) => {
         const { mock, runtime, bundle, client } = await prepare({ dir });
-
         expect(await runtime.exists(bundle)).to.eql(false);
+
         await uploadBundle(client, bundle);
         const res = await runtime.pull(bundle, { silent: true });
         await mock.dispose();
 
         expect(res.ok).to.eql(true);
         expect(res.errors).to.eql([]);
+        expect(res.manifest).to.eql(Schema.urls(mock.host).func.manifest(bundle).toString());
         expect(await runtime.exists(bundle)).to.eql(true);
       };
 
@@ -92,9 +93,25 @@ describe.only('func', function () {
         await test('');
         await test('  ');
       });
+
+      it('empty list', async () => {
+        const dir = 'foo';
+        const { mock, runtime, bundle } = await prepare({ dir });
+
+        const res = await runtime.pull(bundle, { silent: true });
+        const error = res.errors[0];
+        await mock.dispose();
+
+        expect(res.ok).to.eql(false);
+        expect(res.errors.length).to.eql(1);
+
+        expect(error.type).to.eql('RUNTIME/pull');
+        expect(error.message).to.include('contains no files to pull');
+        expect(error.bundle).to.eql(bundle);
+      });
     });
 
-    describe('remove', () => {
+    describe.only('remove', () => {
       it('removes pulled bundle', async () => {
         const test = async (dir?: string) => {
           const { mock, runtime, bundle, client } = await prepare({ dir });
@@ -123,7 +140,7 @@ describe.only('func', function () {
       });
     });
 
-    describe('clear', () => {
+    describe.only('clear', () => {
       it('nothing to clear', async () => {
         const { mock, runtime } = await prepare();
         expect((await runtime.clear()).count).to.eql(0);
@@ -165,16 +182,16 @@ describe.only('func', function () {
       });
     });
 
-    describe('run', () => {
+    describe.only('run', () => {
       it('run', async () => {
         const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
 
         await uploadBundle(client, bundle);
         expect(await runtime.exists(bundle)).to.eql(false);
         // await runtime.pull(bundle, { silent: true });
-        // expect(await runtime.exists(bundle)).to.eql(true);
 
-        const res = await runtime.run(bundle, { silent: false });
+        const res = await runtime.run(bundle, { silent: true });
+        expect(await runtime.exists(bundle)).to.eql(true);
 
         console.log('-------------------------------------------');
         console.log('res', res);
@@ -191,7 +208,7 @@ describe.only('func', function () {
 
           await uploadBundle(client, bundle, { filter: noManifest });
 
-          const res = await runtime.run(bundle);
+          const res = await runtime.run(bundle, { silent: true });
           const error = res.errors[0];
           await mock.dispose();
 
@@ -212,11 +229,10 @@ describe.only('func', function () {
     });
   });
 
-  describe('over http', () => {
-    it('does not exist (404)', async () => {
+  describe.only('over http', () => {
+    it('success', async () => {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
-
       const { host, uri } = bundle;
 
       // TODO 🐷 TEMP addresses
@@ -227,34 +243,76 @@ describe.only('func', function () {
       // mock.
       const data: t.IReqPostFuncBody = { host, uri, dir };
       const res = await http.post(url, data);
-      const json = res.json;
+      const json = res.json as t.IResPostFunc;
 
-      console.log('-------------------------------------------');
-      console.log('res.status', res.status);
-      console.log('json', json);
-
-      expect(123).to.equal(123);
+      expect(json.elapsed).to.greaterThan(0);
+      expect(json.runtime.name).to.eql('node');
+      expect(json.manifest).to.match(/^http:\/\/localhost\:.*index\.json$/);
+      expect(json.size.bytes).to.greaterThan(1000);
+      expect(json.size.files).to.greaterThan(1);
 
       await mock.dispose();
     });
 
-    it.only('TMP', async () => {
-      // const host = 'localhost:8080';
-      const host = 'dev.db.team';
-      const uri = 'cell:ckhcjb2qg000mn0et48rv2u91:A1';
-      const dir = 'sample';
+    it('error: bundle does not exist (pull error)', async () => {
+      const dir = 'foo';
+      const { mock, bundle, http, url } = await prepare({ dir });
+
+      const data: t.IReqPostFuncBody = { ...bundle };
+      const res = await http.post(url, data);
+      const json = res.json as t.IResPostFunc;
+      await mock.dispose();
+
+      expect(res.ok).to.eql(false);
+      expect(res.status).to.eql(500);
+      expect(json.errors.length).to.eql(1);
+
+      const error = json.errors[0];
+      expect(error.type).to.eql('RUNTIME/pull');
+      expect(error.message).to.include('contains no files to pull');
+      expect(error.bundle).to.eql(bundle);
+    });
+
+    it.skip('TMP', async () => {
+      const local8080: B = {
+        host: 'localhost:8080',
+        uri: 'cell:ckhon6cdk000o6hetdrtmd0dt:A1',
+        dir: 'sample',
+      };
+
+      const local5000: B = {
+        host: 'localhost:5000',
+        uri: 'cell:ckhon6cdk000o6hetdrtmd0dt:A1',
+        dir: 'sample',
+      };
+
+      const cloud: B = {
+        host: 'dev.db.team',
+        uri: 'cell:ckhon6cdk000o6hetdrtmd0dt:A1',
+        dir: 'sample',
+      };
+
+      // const bundle = local5000;
+      const bundle = local8080;
 
       const http = Http.create();
-      const urls = Schema.urls(host);
+      const urls = Schema.urls(bundle.host);
       const url = urls.func.base.toString();
 
-      console.log('urls', urls);
+      const filesUrl = urls
+        .cell(bundle.uri)
+        .files.list.query({ filter: `${bundle.dir}/**` })
+        .toString();
 
-      const data: t.IReqPostFuncBody = { host, uri, dir };
+      console.log('bundle', bundle);
+      console.log('filesUrl', filesUrl);
+      console.log('-------------------------------------------');
 
+      const data: t.IReqPostFuncBody = { ...bundle };
       const res = await http.post(url, data);
 
       console.log('-------------------------------------------');
+      console.log('res.status', res.status);
       console.log('res', res.json);
     });
 

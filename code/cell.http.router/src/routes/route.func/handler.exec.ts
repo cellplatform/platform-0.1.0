@@ -1,4 +1,4 @@
-import { t, util } from '../common';
+import { defaultValue, Schema, t, time, util } from '../common';
 
 type B = t.RuntimeBundleOrigin;
 
@@ -9,6 +9,7 @@ export async function execFunc(args: {
   body: t.IReqPostFuncBody;
 }) {
   try {
+    const timer = time.timer();
     const { body, runtime } = args;
 
     console.log('HANDLER: execFunc', body); // TEMP 🐷
@@ -18,24 +19,26 @@ export async function execFunc(args: {
     const host = body.host || args.host;
     const uri = body.uri;
     const dir = body.dir;
-
     const bundle: B = { host, uri, dir };
 
-    console.log('bundle:::', bundle);
+    const res = await runtime.run(bundle, { silent: true });
+    const { manifest, errors } = res;
 
-    try {
-      const res = await runtime.run(bundle);
-      console.log('res', res);
-    } catch (error) {
-      console.log('error', error);
-    }
-
-    const data: t.IResPostFunc = { host, uri };
+    const status = res.ok ? 200 : 500;
+    const data: t.IResPostFunc = {
+      elapsed: timer.elapsed.msec,
+      runtime: { name: runtime.name },
+      manifest: Schema.urls(host).func.manifest(bundle).toString(),
+      size: {
+        bytes: defaultValue(manifest?.bytes, -1),
+        files: defaultValue(manifest?.files.length, -1),
+      },
+      errors,
+    };
 
     // Finish up.
-    return { status: 200, data };
+    return { status, data };
   } catch (err) {
-    console.log('err', err);
     return util.toErrorPayload(err);
   }
 }

@@ -9,7 +9,7 @@
     "watch": "yarn start",
     "test": "ts test",
     "test:integration": "ts test --suffix INTEGRATION",
-    "lint": "echo ts lint",
+    "lint": "ts lint",
     "build": "ts build --no-esm",
     "clean": "ts-node -T scripts.ts/clean",
     "prepare": "ts-node -T scripts.ts/prepare && ts prepare && rm -rf tmp"
