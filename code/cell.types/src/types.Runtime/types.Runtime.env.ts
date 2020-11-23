@@ -10,7 +10,7 @@ export type RuntimeEnv = RuntimeEnvNode | RuntimeEnvWeb;
 /**
  * Common methods of an executable runtime.
  */
-export type RuntimeMethods = {
+type RuntimeMembers = {
   exists(bundle: B): Promise<boolean>;
   pull(bundle: B, options?: { silent?: boolean }): Promise<RuntimePullResponse>;
   run(
@@ -24,21 +24,23 @@ export type RuntimeMethods = {
 
 export type RuntimePullResponse = {
   ok: boolean;
-  errors: Error[];
   dir: string;
+  manifest: string; // Manifest URL.
+  errors: t.IRuntimeError[];
 };
 
 export type RuntimeRunResponse = {
   ok: boolean;
-  errors: Error[];
+  manifest?: t.BundleManifest;
+  errors: t.IRuntimeError[];
 };
 
 /**
  * Runtime: node-js.
  */
-export type RuntimeEnvNode = t.RuntimeMethods & { name: 'node' };
+export type RuntimeEnvNode = RuntimeMembers & { name: 'node' };
 
 /**
  * Runtime: web (browser).
  */
-export type RuntimeEnvWeb = t.RuntimeMethods & { name: 'web' };
+export type RuntimeEnvWeb = RuntimeMembers & { name: 'web' };

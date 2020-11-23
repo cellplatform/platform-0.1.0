@@ -13,6 +13,7 @@ export type IUrl<Q extends O = any> = {
 export type IUrls = {
   readonly protocol: t.HttpProtocol;
   readonly host: string;
+  readonly hostname: string;
   readonly port: number;
   readonly origin: string;
   readonly sys: IUrlsSys;
@@ -32,6 +33,7 @@ export type IUrlsSys = {
 
 export type IUrlsFunc = {
   base: t.IUrl<t.IReqQueryFunc>;
+  manifest(bundle: t.RuntimeBundleOrigin): t.IUrl<t.IReqQueryCellFileDownloadByName>;
 };
 
 export type IUrlsNs = {

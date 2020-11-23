@@ -15,6 +15,9 @@ export type IReqPostFuncBody = {
 };
 
 export type IResPostFunc = {
-  host: string;
-  uri: string;
+  elapsed: number;
+  runtime: { name: t.RuntimeEnv['name'] };
+  manifest: string; // Manifest url.
+  size: { bytes: number; files: number };
+  errors: t.IRuntimeError[];
 };
