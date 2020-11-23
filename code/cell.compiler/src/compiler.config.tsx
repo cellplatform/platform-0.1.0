@@ -22,9 +22,7 @@ export default () =>
      * .files
      *    .public(bool)
      */
-    .files((files) => {
-      files.redirect(false, '*.worker.js');
-    })
+    .files((files) => files.redirect(false, '*.worker.js'))
 
     .html((config) => {
       // config;

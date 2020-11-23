@@ -7,10 +7,11 @@ export default () =>
 
     .entry('./src/test/entry')
     .entry('service.worker', './src/test/workers/service.worker')
-    .redirect(false, '*.worker.js')
-    .static('./static')
 
-    .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
+    .static('./static')
+    .files((config) => config.redirect(false, '*.worker.js'))
+
+    .shared((config) => config.add(config.dependencies).singleton(['react', 'react-dom']))
     .expose('./Dev', './src/test/components/Dev')
 
     .variant('prod', (config) => config.mode('prod'))
