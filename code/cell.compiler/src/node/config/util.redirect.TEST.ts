@@ -37,7 +37,7 @@ describe('config/util: redirect', () => {
     it('ALLOW => true', () => {
       const { builder } = create();
       const redirects = Redirects(
-        builder.files((files) => files.redirect('ALLOW', '  foo.js')).toObject().redirects,
+        builder.files((files) => files.redirect('ALLOW', '  foo.js')).toObject().files?.redirects,
       );
       const path = redirects.path('foo.js  ');
       expect(path.isAllowed).to.eql(true);
@@ -47,7 +47,7 @@ describe('config/util: redirect', () => {
     it('DENY => false', () => {
       const { builder } = create();
       const redirects = Redirects(
-        builder.files((files) => files.redirect('DENY', '  foo.js')).toObject().redirects,
+        builder.files((files) => files.redirect('DENY', '  foo.js')).toObject().files?.redirects,
       );
       const path = redirects.path('foo.js  ');
       expect(path.isAllowed).to.eql(false);
@@ -62,7 +62,7 @@ describe('config/util: redirect', () => {
       ) => {
         const { builder } = create();
         builder.files((files) => files.redirect(action, 'foo.js'));
-        const redirects = Redirects(builder.toObject().redirects);
+        const redirects = Redirects(builder.toObject().files?.redirects);
         const path = redirects.path('foo.js');
         expect(path.isAllowed).to.eql(expectedIsAllowed);
         expect(path.grant?.action).to.eql(expectedAction);
@@ -75,7 +75,7 @@ describe('config/util: redirect', () => {
     it('flag', () => {
       const { builder } = create();
       builder.files((files) => files.redirect('DENY', 'foo.js').redirect('ALLOW', 'bar.js'));
-      const redirects = Redirects(builder.toObject().redirects);
+      const redirects = Redirects(builder.toObject().files?.redirects);
 
       expect(redirects.path('foo.js').flag).to.eql(false);
       expect(redirects.path('bar.js').flag).to.eql(undefined); // NB: undefined === "redirect" (default)
@@ -84,7 +84,7 @@ describe('config/util: redirect', () => {
     it('grep: pattern match', () => {
       const { builder } = create();
       builder.files((files) => files.redirect('ALLOW', 'src/*/bin/**'));
-      const redirects = Redirects(builder.toObject().redirects);
+      const redirects = Redirects(builder.toObject().files?.redirects);
 
       const test = (input: any, expectedAction: t.CompilerModelRedirectAction | undefined) => {
         const path = redirects.path(input);
@@ -105,7 +105,7 @@ describe('config/util: redirect', () => {
     it('grep: file suffix', () => {
       const { builder } = create();
       builder.files((files) => files.redirect('DENY', '*.worker.js'));
-      const redirects = Redirects(builder.toObject().redirects);
+      const redirects = Redirects(builder.toObject().files?.redirects);
       const redirect = redirects.path('service.worker.js');
       expect(redirect.isAllowed).to.eql(false);
       expect(redirect.grant?.action).to.eql('DENY');
@@ -114,7 +114,7 @@ describe('config/util: redirect', () => {
     it('grep: folder/**', () => {
       const { builder } = create();
       builder.files((files) => files.redirect('DENY', 'static/**'));
-      const redirects = Redirects(builder.toObject().redirects);
+      const redirects = Redirects(builder.toObject().files?.redirects);
 
       const test = (input: string, isAllowed: boolean) => {
         const path = redirects.path(input);
@@ -130,7 +130,7 @@ describe('config/util: redirect', () => {
     it('grep: override on subpath', () => {
       const { builder } = create();
       builder.files((files) => files.redirect('ALLOW', 'src/**').redirect('DENY', 'src/test/**'));
-      const redirects = Redirects(builder.toObject().redirects);
+      const redirects = Redirects(builder.toObject().files?.redirects);
 
       const test = (input: any, expectedAction: t.CompilerModelRedirectAction | undefined) => {
         const path = redirects.path(input);

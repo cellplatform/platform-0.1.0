@@ -48,11 +48,11 @@ export const filesMethods = (model: t.BuilderModel<t.CompilerModel>) => {
 
         // Update model.
         if (action === undefined && grep === undefined) {
-          draft.redirects = undefined;
+          Model(draft).files.redirects = undefined;
         } else {
-          const redirects = draft.redirects || (draft.redirects = []);
-          redirects.push({ action, grep });
-          draft.redirects = Redirects(redirects).sortAndOrder();
+          const model = Model(draft);
+          model.redirects.push({ action, grep });
+          model.files.redirects = Redirects(model.redirects).sortAndOrder();
         }
       });
 
@@ -66,11 +66,16 @@ export const filesMethods = (model: t.BuilderModel<t.CompilerModel>) => {
  * [Helpers]
  */
 
-// const Model = (model: t.CompilerModel) => {
-//   return {
-//     toObject: () => model,
-//     get html() {
-//       return model.html || (model.html = {});
-//     },
-//   };
-// };
+const Model = (model: t.CompilerModel) => {
+  const res = {
+    toObject: () => model,
+    get files() {
+      return model.files || (model.files = {});
+    },
+    get redirects() {
+      const files = res.files;
+      return files.redirects || (files.redirects = []);
+    },
+  };
+  return res;
+};

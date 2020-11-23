@@ -63,7 +63,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
   const { host, targetDir, targetCell, config } = args;
   const model = Model(args.config);
   const bundleDir = model.bundleDir;
-  const redirects = config.redirects;
+  const redirects = config.files?.redirects;
   const files = await getFiles({ bundleDir, targetDir, redirects });
 
   const done$ = new Subject();

@@ -26,11 +26,6 @@ export type CompilerModel = {
   env?: Record<string, t.Json>;
 
   /**
-   * Files
-   */
-  redirects?: t.CompilerModelRedirectGrant[];
-
-  /**
    * Hooks
    */
   beforeCompile?: t.BeforeCompile[];
@@ -42,17 +37,28 @@ export type CompilerModel = {
   webpack?: t.CompilerModelWebpack;
   variants?: t.CompilerModelBuilder[];
   html?: t.CompilerModelHtml;
+  files?: t.CompilerModelFiles;
 };
 
+/**
+ * Underlying webpack modifications.
+ */
 export type CompilerModelWebpack = {
   rules: t.WpRule[];
   plugins: t.WpPlugin[];
 };
 
 /**
- * Static Assets
+ * Static Assets.
  */
 export type CompilerModelStatic = { dir?: string }; // Static assets.
+
+/**
+ * Output file.
+ */
+export type CompilerModelFiles = {
+  redirects?: t.CompilerModelRedirectGrant[];
+};
 
 /**
  * File redirection rules.

@@ -691,7 +691,7 @@ describe('Compiler (Config)', () => {
     });
   });
 
-  describe.only('files', () => {
+  describe('files', () => {
     it('throw: handler not provided', () => {
       const { builder } = create();
       const fn = () => builder.files(null as any);
@@ -701,24 +701,24 @@ describe('Compiler (Config)', () => {
     describe('files.redirect', () => {
       it('resets (with [undefined])', () => {
         const { builder, model } = create();
-        expect(builder.toObject().redirects).to.eql(undefined);
+        expect(builder.toObject().files?.redirects).to.eql(undefined);
 
         builder.files((files) => files.redirect('ALLOW', '  worker.js  '));
-
-        expect(model.state.redirects).to.eql([{ action: 'ALLOW', grep: 'worker.js' }]);
+        expect(model.state.files?.redirects).to.eql([{ action: 'ALLOW', grep: 'worker.js' }]);
 
         builder.files((files) => files.redirect(undefined));
-        expect(builder.toObject().redirects).to.eql(undefined);
+        expect(builder.toObject().files?.redirects).to.eql(undefined);
       });
 
       it('cumulatively adds', () => {
         const { builder, model } = create();
-        expect(builder.toObject().redirects).to.eql(undefined);
+        expect(builder.toObject().files?.redirects).to.eql(undefined);
 
         builder.files((files) => {
           files.redirect('DENY', 'foo.js').redirect('ALLOW', 'hello.js');
         });
-        expect(model.state.redirects).to.eql([
+
+        expect(model.state.files?.redirects).to.eql([
           { action: 'ALLOW', grep: 'hello.js' }, // NB: Allow before DENY.
           { action: 'DENY', grep: 'foo.js' },
         ]);
@@ -726,7 +726,7 @@ describe('Compiler (Config)', () => {
 
       it('ordering/sorting: ALLOW before DENY', () => {
         const { builder, model } = create();
-        expect(builder.toObject().redirects).to.eql(undefined);
+        expect(builder.toObject().files?.redirects).to.eql(undefined);
 
         builder.files((files) => {
           files
@@ -739,7 +739,7 @@ describe('Compiler (Config)', () => {
             .redirect('DENY', ''); // NB: The later entry overrides the earlier value.
         });
 
-        expect(model.state.redirects).to.eql([
+        expect(model.state.files?.redirects).to.eql([
           { action: 'ALLOW', grep: 'hello.js' }, //  NB: Allow before DENY.
           { action: 'ALLOW', grep: 'foo.js' }, //    NB: "foo.js" entires collapsed
           { action: 'DENY', grep: undefined }, //    NB: multiple [undefined/empty] entries collapsed.
@@ -754,7 +754,7 @@ describe('Compiler (Config)', () => {
         ) => {
           const { builder, model } = create();
           builder.files((files) => files.redirect(grant, grep));
-          expect(model.state.redirects).to.eql(expected);
+          expect(model.state.files?.redirects).to.eql(expected);
         };
 
         test('ALLOW', 'worker.js', [{ action: 'ALLOW', grep: 'worker.js' }]);
