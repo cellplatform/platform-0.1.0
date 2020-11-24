@@ -23,15 +23,14 @@ export function FileAccess(input: A[] = []) {
     throw new Error(`Path negations ("!") not supported.`);
   }
 
-  const findByPermission = (items: A[], permission: P) =>
-    items.find((item) => item.permission === permission);
-
   const findMatch = (path: string) => {
-    const matches = list.all.filter((item) => (item.grep ? fs.match(item.grep).path(path) : false));
+    const matches = [...list.all]
+      .reverse()
+      .filter((item) => (item.grep ? fs.match(item.grep).path(path) : false));
     if (matches.length === 0) {
       return undefined;
     } else {
-      return findByPermission(matches, 'private') || findByPermission(matches, 'public');
+      return matches[0];
     }
   };
 

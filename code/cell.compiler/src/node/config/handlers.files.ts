@@ -58,6 +58,21 @@ export const filesMethods = (model: t.BuilderModel<t.CompilerModel>) => {
 
       return res;
     },
+
+    /**
+     * Assigns 'public' or 'private' permission to output files matching the
+     * given grep pattern.  This is useful for scenarios like S3
+     *
+     * Default: 'private'
+     *
+     */
+    access(permission, grep) {
+      model.change((draft) => {
+        const model = Model(draft);
+        model.access.push({ permission, grep });
+      });
+      return res;
+    },
   };
   return res;
 };

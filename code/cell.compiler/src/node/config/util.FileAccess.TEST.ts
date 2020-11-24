@@ -54,10 +54,11 @@ describe.only('FileAccess', () => {
       test('src/foo.png', true);
     });
 
-    it('override: private', () => {
+    it('last in wins', () => {
       const fileaccess = FileAccess([
         { permission: 'public', grep: 'src/**' },
         { permission: 'private', grep: 'src/**/*.js' },
+        { permission: 'public', grep: 'src/be*.js' },
       ]);
 
       const test = (path: string | undefined, isPublic: boolean) => {
@@ -69,6 +70,7 @@ describe.only('FileAccess', () => {
       test('src/foo.png', true);
       test('src/foo/file.js', false);
       test('src/foo/bar/file.js', false);
+      test('src/berry.js', true);
     });
 
     it('throw: negation not supported', () => {

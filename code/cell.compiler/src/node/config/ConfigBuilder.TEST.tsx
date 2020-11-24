@@ -777,5 +777,19 @@ describe('Compiler (Config)', () => {
         test(123, /Invalid grant action \'123\'/);
       });
     });
+
+    describe.only('files.access', () => {
+      it('undefined (empty)', () => {
+        const { model } = create();
+        expect(model.state.files?.access).to.eql(undefined);
+      });
+
+      it('public', () => {
+        const { builder, model } = create();
+        expect(model.state.files?.access).to.eql(undefined);
+        builder.files((config) => config.access('public', 'src/**/*.png'));
+        expect(model.state.files?.access).to.eql([{ permission: 'public', grep: 'src/**/*.png' }]);
+      });
+    });
   });
 });

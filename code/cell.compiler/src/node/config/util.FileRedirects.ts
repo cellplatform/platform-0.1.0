@@ -55,8 +55,8 @@ export function FileRedirects(input: G[] = []) {
     path(input: string): Path {
       const path = typeof input !== 'string' ? '' : input.trim();
 
-      const grant = list.all
-        .reverse() // NB: Catch DENY.
+      const grant = [...list.all]
+        .reverse() // Last in wins.
         .find((item) => (item.grep ? fs.match(item.grep).path(path) : false));
 
       const isAllowed =
