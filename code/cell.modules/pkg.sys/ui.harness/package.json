@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.harness",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "sideEffects": false,
   "compiler": {
     "port": 3003
@@ -18,10 +18,10 @@
   },
   "dependencies": {
     "preset.env": "^0.0.0",
-    "sys.ui.primitives": "^0.0.18"
+    "sys.ui.primitives": "^0.0.19"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.2.16",
+    "@platform/cell.compiler": "^0.2.17",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
