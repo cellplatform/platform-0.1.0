@@ -121,7 +121,8 @@ export type IHttpClientCellFileUpload = {
   filename: string;
   data: ArrayBuffer;
   mimetype?: string;
-  allowRedirect?: boolean;
+  allowRedirect?: boolean; // Default: true
+  's3:permission'?: t.FsS3Permission;
 };
 export type IHttpClientCellFileUploadResponse = {
   uri: string;

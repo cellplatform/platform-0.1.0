@@ -16,5 +16,6 @@ export type BundleManifestFile = {
   bytes: number;
   filehash: string;
   uri?: string;
-  allowRedirect?: boolean;
+  allowRedirect?: boolean; // Default: true
+  public?: boolean; // Default: false (when not TRUE requires signed link to access S3)
 };
