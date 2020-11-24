@@ -24,8 +24,7 @@
     "serve": "yarn cmd serve $@",
     "info": "yarn cmd info $@",
     "clean": "yarn cmd clean $@",
-    "node": "ts-node -T script/node $@",
-    "tmp": "ts-node -T script/tmp $@"
+    "node": "ts-node -T script.ts/node $@"
   },
   "dependencies": {
     "@babel/core": "7.12.3",

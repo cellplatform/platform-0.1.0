@@ -1,13 +1,12 @@
 import { DEFAULT, fs, Model, Schema, t, value, Path } from '../common';
 
 const REMOTE_ENTRY = DEFAULT.FILE.JS.REMOTE_ENTRY;
-const MANIFEST = DEFAULT.FILE.JSON.MANIFEST;
 
 export const BundleManifest = {
   /**
    * The filename of the bundle.
    */
-  filename: MANIFEST,
+  filename: DEFAULT.FILE.JSON.MANIFEST,
 
   /**
    * URL to the manifest
@@ -62,7 +61,7 @@ export const BundleManifest = {
    * Reads from file-system.
    */
   async readFile(args: { bundleDir: string; filename?: string }) {
-    const { bundleDir, filename = MANIFEST } = args;
+    const { bundleDir, filename = BundleManifest.filename } = args;
     const path = fs.join(bundleDir, filename);
     const exists = await fs.pathExists(path);
     const manifest = exists ? ((await fs.readJson(path)) as t.BundleManifest) : undefined;
@@ -73,9 +72,10 @@ export const BundleManifest = {
    * Writes a manifest to the file-system.
    */
   async writeFile(args: { manifest: t.BundleManifest; bundleDir: string; filename?: string }) {
-    const { manifest, bundleDir, filename = MANIFEST } = args;
+    const { manifest, bundleDir, filename = BundleManifest.filename } = args;
     const path = fs.join(bundleDir, filename);
     const json = JSON.stringify(manifest, null, '  ');
+    await fs.ensureDir(fs.dirname(path));
     await fs.writeFile(path, json);
     return { path, manifest };
   },
