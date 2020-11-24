@@ -2,13 +2,7 @@ import { ConfigBuilder } from '.';
 import { expect, t } from '../../test';
 import { FileAccess } from './util';
 
-const create = () => {
-  const model = ConfigBuilder.model('foo');
-  const builder = ConfigBuilder.builder(model);
-  return { model, builder };
-};
-
-describe.only('FileAccess', () => {
+describe('FileAccess', () => {
   it('empty list', () => {
     const redirects = FileAccess([]);
     expect(redirects.list).to.eql([]);

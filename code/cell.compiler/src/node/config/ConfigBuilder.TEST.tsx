@@ -778,7 +778,7 @@ describe('Compiler (Config)', () => {
       });
     });
 
-    describe.only('files.access', () => {
+    describe('files.access', () => {
       it('undefined (empty)', () => {
         const { model } = create();
         expect(model.state.files?.access).to.eql(undefined);

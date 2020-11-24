@@ -8,7 +8,7 @@ const create = () => {
   return { model, builder };
 };
 
-describe.only('config: FileRedirects', () => {
+describe('config: FileRedirects', () => {
   it('empty list', () => {
     const redirects = FileRedirects([]);
     expect(redirects.list).to.eql([]);
