@@ -5,7 +5,7 @@ const TMP = fs.resolve('./tmp/test/BundleManifest');
 const bundleDir = fs.resolve('dist/test/node');
 const config = TestCompile.node.config;
 
-describe.only('BundleManifest', function () {
+describe('BundleManifest', function () {
   this.timeout(99999);
 
   before(async () => {
@@ -65,7 +65,7 @@ describe.only('BundleManifest', function () {
     expect(read.manifest).to.eql(res.manifest);
   });
 
-  it('flag: allowRedirects', async () => {
+  it('write flag: allowRedirects', async () => {
     const model = config.toObject();
     const manifest = await BundleManifest.create({ model, bundleDir });
 
@@ -74,5 +74,16 @@ describe.only('BundleManifest', function () {
 
     expect(js?.allowRedirect).to.eql(false);
     expect(png?.allowRedirect).to.eql(undefined);
+  });
+
+  it('write flag: public', async () => {
+    const model = config.toObject();
+    const manifest = await BundleManifest.create({ model, bundleDir });
+
+    const images = manifest.files.filter((file) => file.path.endsWith('.png'));
+    const other = manifest.files.filter((file) => !file.path.endsWith('.png'));
+
+    expect(images.every((file) => file.public === true)).to.eql(true);
+    expect(other.every((file) => file.public === undefined)).to.eql(true);
   });
 });

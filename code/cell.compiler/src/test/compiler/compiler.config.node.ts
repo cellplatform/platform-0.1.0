@@ -7,4 +7,4 @@ export default () =>
     .dir('dist/test')
     .entry('./src/test/compiler/node/main')
     .static('./static')
-    .files((config) => config.redirect(false, '*.js'));
+    .files((config) => config.redirect(false, '**/*.js').access('public', '**/*.png'));

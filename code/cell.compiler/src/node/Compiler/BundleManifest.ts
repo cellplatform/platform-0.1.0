@@ -1,5 +1,5 @@
 import { DEFAULT, fs, Model, Schema, t, value } from '../common';
-import { FileRedirects } from '../config';
+import { FileRedirects, FileAccess } from '../config';
 
 const REMOTE_ENTRY = DEFAULT.FILE.JS.REMOTE_ENTRY;
 
@@ -88,8 +88,13 @@ export const BundleManifest = {
     const bytes = file.byteLength;
     const filehash = Schema.hash.sha256(file);
     const path = args.path.substring(bundleDir.length + 1);
-    const allowRedirect = toRedirect({ model, path }).flag;
-    return value.deleteUndefined({ path, bytes, filehash, allowRedirect });
+    return value.deleteUndefined({
+      path,
+      bytes,
+      filehash,
+      allowRedirect: toRedirect({ model, path }).flag,
+      public: toPublic({ model, path }),
+    });
   },
 };
 
@@ -100,4 +105,14 @@ export const BundleManifest = {
 function toRedirect(args: { model: t.CompilerModel; path: string }) {
   const redirects = FileRedirects(args.model.files?.redirects);
   return redirects.path(args.path);
+}
+
+function toAccess(args: { model: t.CompilerModel; path: string }) {
+  const access = FileAccess(args.model.files?.access);
+  return access.path(args.path);
+}
+
+function toPublic(args: { model: t.CompilerModel; path: string }) {
+  const access = toAccess(args);
+  return access.public ? true : undefined;
 }
