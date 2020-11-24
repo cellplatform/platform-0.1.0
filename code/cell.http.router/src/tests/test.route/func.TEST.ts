@@ -274,7 +274,7 @@ describe('func', function () {
       expect(error.bundle).to.eql(bundle);
     });
 
-    it.only('TMP', async () => {
+    it.skip('TMP', async () => {
       const local8080: B = {
         host: 'localhost:8080',
         uri: 'cell:ckhon6cdk000o6hetdrtmd0dt:A1',
@@ -287,6 +287,12 @@ describe('func', function () {
         dir: 'sample',
       };
 
+      const local3000: B = {
+        host: 'localhost:3000',
+        uri: 'cell:ckhon6cdk000o6hetdrtmd0dt:A1',
+        dir: 'sample',
+      };
+
       const cloud: B = {
         host: 'dev.db.team',
         uri: 'cell:ckhon6cdk000o6hetdrtmd0dt:A1',
@@ -295,7 +301,8 @@ describe('func', function () {
 
       // const bundle = local5000;
       // const bundle = local8080;
-      const bundle = cloud;
+      const bundle = local3000;
+      // const bundle = cloud;
 
       const http = Http.create();
       const urls = Schema.urls(bundle.host);

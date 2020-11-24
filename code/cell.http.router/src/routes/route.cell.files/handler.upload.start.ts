@@ -9,9 +9,8 @@ export async function uploadCellFilesStart(args: {
   body: t.IReqPostCellFilesUploadStartBody;
   host: string;
   changes?: boolean;
-  permission?: t.FsS3Permission;
 }) {
-  const { db, fs, body, host, permission } = args;
+  const { db, fs, body, host } = args;
   const expires = body.expires;
   const cellUri = Schema.uri.cell(args.cellUri);
   const cellKey = cellUri.key;
@@ -33,6 +32,7 @@ export async function uploadCellFilesStart(args: {
     const { filename, filehash } = file;
     const mimetype = file.mimetype || util.toMimetype(filename) || 'application/octet-stream';
     const allowRedirect = file.allowRedirect;
+    const permission = file['s3:permission'];
 
     const key = Schema.file.links.toKey(filename);
     const fileUri = links[key]
@@ -49,8 +49,8 @@ export async function uploadCellFilesStart(args: {
       filename,
       filehash,
       expires,
-      sendChanges: true,
       permission,
+      sendChanges: true,
     });
     const json = res.data as t.IResPostFileUploadStart;
     const status = res.status;

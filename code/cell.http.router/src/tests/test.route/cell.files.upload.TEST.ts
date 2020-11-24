@@ -1,6 +1,5 @@
 /* eslint-disable */
 import { parse as parseUrl } from 'url';
-
 import { createMock, expect, fs, Http, readFile, Schema, t, http } from '../../test';
 
 describe('cell/files: upload', function () {
@@ -108,6 +107,38 @@ describe('cell/files: upload', function () {
 
     const info = await client.file.name('foo/1.jpg').info();
     expect(info.body.data.props.allowRedirect).to.eql(false);
+
+    // Finish up.
+    await mock.dispose();
+  });
+
+  it('upload: s3:permission', async () => {
+    const mock = await createMock();
+    const cellUri = 'cell:foo:A1';
+    const client = mock.client.cell(cellUri);
+
+    const data = await readFile('src/test/assets/kitten.jpg');
+    const uploaded = await client.files.upload([
+      { filename: 'foo/1.jpg', data, 's3:permission': 'private' },
+      { filename: 'foo/2.jpg', data, 's3:permission': 'public-read' },
+      { filename: 'foo/3.jpg', data },
+    ]);
+
+    const file1 = uploaded.body.files[0];
+    const file2 = uploaded.body.files[1];
+    const file3 = uploaded.body.files[2];
+
+    expect(file1.data.props['s3:permission']).to.eql('private');
+    expect(file2.data.props['s3:permission']).to.eql('public-read');
+    expect(file3.data.props['s3:permission']).to.eql('private');
+
+    const expectPermission = async (path: string, permission: t.FsS3Permission) => {
+      const info = await client.file.name(path).info();
+      expect(info.body.data.props['s3:permission']).to.eql(permission);
+    };
+    await expectPermission('foo/1.jpg', 'private');
+    await expectPermission('foo/2.jpg', 'public-read');
+    await expectPermission('foo/3.jpg', 'private');
 
     // Finish up.
     await mock.dispose();
