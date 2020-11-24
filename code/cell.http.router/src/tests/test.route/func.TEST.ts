@@ -274,7 +274,7 @@ describe('func', function () {
       expect(error.bundle).to.eql(bundle);
     });
 
-    it.skip('TMP', async () => {
+    it.only('TMP', async () => {
       const local8080: B = {
         host: 'localhost:8080',
         uri: 'cell:ckhon6cdk000o6hetdrtmd0dt:A1',
@@ -301,8 +301,8 @@ describe('func', function () {
 
       // const bundle = local5000;
       // const bundle = local8080;
-      const bundle = local3000;
-      // const bundle = cloud;
+      // const bundle = local3000;
+      const bundle = cloud;
 
       const http = Http.create();
       const urls = Schema.urls(bundle.host);
@@ -313,8 +313,14 @@ describe('func', function () {
         .files.list.query({ filter: `${bundle.dir}/**` })
         .toString();
 
+      console.log('-------------------------------------------');
+      console.log('bundle\n', JSON.stringify(bundle));
+      console.log();
       console.log('bundle', bundle);
+      console.log('-------------------------------------------');
+
       console.log('filesUrl', filesUrl);
+      console.log('POST', url);
       console.log('-------------------------------------------');
 
       const data: t.IReqPostFuncBody = { ...bundle };

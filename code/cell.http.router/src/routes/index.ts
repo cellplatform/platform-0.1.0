@@ -35,8 +35,7 @@ export function init(args: {
    * TEMP 🐷
    */
   args.router.get('/tmp/wasm', tmpWasmHandler);
-  args.router.get('/tmp', tmpHandler);
 
   // No match (404).
-  args.router.get(routes.WILDCARD, wildcard);
+  args.router.wildcard(wildcard);
 }
