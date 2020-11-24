@@ -285,8 +285,6 @@ function deployTask(args: {
   title: string;
   targetDir: string;
   cmd: string;
-  // prod: boolean;
-  // force: boolean;
   done: (args: { info: string[]; errors: string[] }) => void;
   deploy?: boolean; // Debug.
 }) {
@@ -300,8 +298,6 @@ function deployTask(args: {
           return observer.complete();
         }
 
-        // const prod = args.prod ? '--prod' : '';
-        // const force = args.force ? '--force' : '';
         const cmd = cli.exec.command(args.cmd);
         const running = cmd.run({ cwd: targetDir, silent: true });
 
@@ -324,8 +320,6 @@ function deployTask(args: {
           }
           next(text);
         });
-
-        // running.er
 
         running.complete$.subscribe(async () => {
           args.done({ info, errors }); // NB: Send result info back to caller before completing.
