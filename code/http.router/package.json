@@ -7,11 +7,10 @@
   "scripts": {
     "start": "node .",
     "watch": "nodemon .",
-    "test": "ts test",
-    "tdd": "ts test --watch",
-    "lint": "ts lint",
-    "build": "ts build",
-    "prepare": "ts prepare"
+    "test": "ts test $@",
+    "lint": "ts lint $@",
+    "build": "ts build --no-esm $@",
+    "prepare": "ts prepare $@"
   },
   "dependencies": {
     "@platform/http.types": "0.2.25",

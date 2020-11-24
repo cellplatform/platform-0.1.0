@@ -1,6 +1,6 @@
 {
   "name": "cell.docker",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "main": "lib/index",
   "scripts": {
     "start": "node lib/index",
@@ -13,8 +13,8 @@
   "dependencies": {
     "@platform/cell.fs.local": "^0.4.145",
     "@platform/cell.fs.s3": "^0.4.150",
-    "@platform/cell.http": "^0.7.226",
-    "@platform/cell.http.router": "^0.8.49",
+    "@platform/cell.http": "^0.7.228",
+    "@platform/cell.http.router": "^0.8.51",
     "@platform/cell.runtime": "^0.0.10",
     "@platform/cell.schema": "^0.5.23",
     "@platform/cell.types": "^0.5.24",

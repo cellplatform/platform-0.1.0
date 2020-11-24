@@ -1,8 +1,8 @@
 export const PKG = {
   name: '@platform/cell.http',
-  version: '0.7.226',
+  version: '0.7.228',
   dependencies: {
-    '@platform/cell.http.router': '0.8.49',
+    '@platform/cell.http.router': '0.8.51',
     '@platform/cell.schema': '0.5.23',
     '@platform/cell.types': '0.5.24',
     '@platform/cell.typesystem': '0.0.142',
