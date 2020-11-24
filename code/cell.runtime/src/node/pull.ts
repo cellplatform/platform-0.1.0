@@ -75,7 +75,6 @@ export function pullMethod(args: { cachedir: string }) {
               ? file.path.substring(bundle.dir.path.length + 1)
               : file.path;
             const path = fs.join(tmpTarget, filename);
-
             if (typeof res.body === 'object') {
               await fs.stream.save(path, res.body as any);
             } else if (typeof res.body === 'string') {
@@ -84,8 +83,8 @@ export function pullMethod(args: { cachedir: string }) {
             } else {
               const type = typeof res.body;
               const mime = file.props.mimetype || '<unknown>';
-              const err = `Type '${type}' for pulled file '${file.path}' is not supported`;
-              addError(`${err} (mime: ${mime}).`);
+              const err = `The body type '${type}' for pulled file '${file.path}' is not supported`;
+              addError(`${err} (mime:${mime}, ${origin}).`);
             }
           } else {
             let err = `Failed while pulling '${file.path} (${res.status})' from '${origin}'.`;
@@ -93,10 +92,8 @@ export function pullMethod(args: { cachedir: string }) {
             addError(err);
           }
         } catch (error) {
-          console.log('DOWNLOAD ERROR', error); // TEMP 🐷
-
-          const err = error.mesage || '<no-further-info>';
-          const msg = `Failed while pulling '${file.path}' from '${origin}'. ${err}`;
+          const err = error.mesage || '<no-error-info>';
+          const msg = `General fail while pulling '${file.path}' from '${origin}'. ${err}`;
           addError(msg);
         }
       }),

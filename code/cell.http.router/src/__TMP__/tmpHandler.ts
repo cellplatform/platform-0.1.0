@@ -1,4 +1,4 @@
-import { t, fs, http } from '../common';
+import { t, fs, http, constants, HttpClient } from '../common';
 
 import { crypto } from './crypto';
 
@@ -9,14 +9,65 @@ export const tmpHandler: t.RouteHandler = async (req) => {
     const length = 30;
     const random = await crypto.random(length);
 
-    const url = 'https://dev.db.team/cell:ckhon6cdk000o6hetdrtmd0dt:A1/file/sample/index.json';
-    const res = await http.get(url);
+    // const url = 'https://dev.db.team/cell:ckhon6cdk000o6hetdrtmd0dt:A1/file/sample/index.json';
+    const url = 'https://dev.db.team/cell:ckhon6cdk000o6hetdrtmd0dt:A1/file:qm003xq.js';
+
+    const GET = await http.get(url);
+    const PATH = constants.PATH;
+
+    const pathExists = {
+      tmp: await fs.pathExists(PATH.TMP),
+      module: await fs.pathExists(PATH.MODULE),
+      cacheDir: await fs.pathExists(PATH.CACHE_DIR),
+    };
+
+    const filePath = fs.join(PATH.TMP, 'my-file');
+    await fs.writeFile(filePath, 'Hello 🌳 \n');
+
+    const file = (await fs.readFile(filePath)).toString();
+
+    const bundle: t.RuntimeBundleOrigin = {
+      host: 'dev.db.team',
+      uri: 'cell:ckhon6cdk000o6hetdrtmd0dt:A1',
+      dir: 'sample',
+    };
+
+    const client = HttpClient.create(bundle.host).cell(bundle.uri);
+    const clientFile = client.file.name('sample/index.json');
+
+    const res = await clientFile.download();
+
+    const downloadPath = fs.join(PATH.TMP, 'downloaded');
+    let fileload: any;
+    const error: any = undefined;
+    if (typeof res.body === 'object') {
+      // const path =
+      try {
+        await fs.stream.save(downloadPath, res.body as any);
+
+        fileload = (await fs.readFile(downloadPath)).toString();
+      } catch (error) {
+        error = JSON.stringify(error);
+      }
+    }
 
     return {
       status: 200,
       data: {
         random,
-        res,
+        file,
+        PATH,
+        pathExists,
+        // GET: { url, res: GET },
+        download: {
+          status: res.status,
+          bodyType: typeof res.body,
+          downloadPath,
+          fileload,
+
+          body: res.body,
+          error,
+        },
       },
     };
   } catch (error) {
