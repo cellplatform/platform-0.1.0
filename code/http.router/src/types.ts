@@ -11,12 +11,12 @@ export type IRouterArgs = {
 export type IRouter<C extends Record<string, unknown> = any> = {
   readonly routes: IRoute<C>[];
   readonly handler: RouteHandler<C>;
-  readonly wildcard: IRoute<C> | undefined;
   add(method: t.HttpMethod, path: RoutePath, handler: RouteHandler): IRouter<C>;
   get(path: RoutePath, handler: RouteHandler<C>): IRouter<C>;
   put(path: RoutePath, handler: RouteHandler<C>): IRouter<C>;
   post(path: RoutePath, handler: RouteHandler<C>): IRouter<C>;
   delete(path: RoutePath, handler: RouteHandler<C>): IRouter<C>;
+  wildcard(handler: RouteHandler<C>): IRouter<C>;
   find(req: { method?: string; url?: string }): IRoute<C> | undefined;
 };
 export type RoutePath = string | string[];

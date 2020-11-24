@@ -5,6 +5,9 @@ import { createBody } from './body';
 import { t } from '../common';
 import * as parse from '../parse';
 
+type P = t.RoutePath;
+type O = Record<string, unknown>;
+
 export class Router<C extends Record<string, unknown> = any> implements t.IRouter<C> {
   /**
    * [Static]
@@ -15,7 +18,7 @@ export class Router<C extends Record<string, unknown> = any> implements t.IRoute
   /**
    * [Lifecycle]
    */
-  public static create<C extends Record<string, unknown> = any>(args: t.IRouterArgs): t.IRouter<C> {
+  public static create<C extends O = any>(args: t.IRouterArgs): t.IRouter<C> {
     return new Router<C>(args);
   }
 
@@ -27,14 +30,9 @@ export class Router<C extends Record<string, unknown> = any> implements t.IRoute
    * [Fields]
    */
   private readonly args: t.IRouterArgs;
-  public routes: t.IRoute[] = [];
+  private _wildcard: t.IRoute<C> | undefined;
 
-  /**
-   * [Properties]
-   */
-  public get wildcard() {
-    return this.routes.find((route) => route.path === '*');
-  }
+  public routes: t.IRoute[] = [];
 
   /**
    * [Methods]
@@ -113,11 +111,14 @@ export class Router<C extends Record<string, unknown> = any> implements t.IRoute
 
   public add(method: t.HttpMethod, path: t.RoutePath, handler: t.RouteHandler<C>) {
     const paths = Array.isArray(path) ? path : [path];
-    paths.forEach((path) => this._add(method, path, handler));
+    paths.forEach((path) => {
+      const route = this.toRoute(method, path, handler);
+      this.routes = [...this.routes, route];
+    });
     return this;
   }
 
-  private _add(method: t.HttpMethod, path: string, handler: t.RouteHandler<C>) {
+  private toRoute(method: t.HttpMethod, path: string, handler: t.RouteHandler<C>) {
     const exists = this.routes.find((route) => route.method === method && route.path === path);
     if (exists) {
       throw new Error(`A ${method} route for path '${path}' already exists.`);
@@ -151,15 +152,18 @@ export class Router<C extends Record<string, unknown> = any> implements t.IRoute
         return tokens ? tokens : (tokens = pathToTokens(path));
       },
     };
-    this.routes = [...this.routes, route];
-    return this;
+
+    return route;
   }
 
-  public get = (path: t.RoutePath, handler: t.RouteHandler<C>) => this.add('GET', path, handler);
-  public put = (path: t.RoutePath, handler: t.RouteHandler<C>) => this.add('PUT', path, handler);
-  public post = (path: t.RoutePath, handler: t.RouteHandler<C>) => this.add('POST', path, handler);
-  public delete = (path: t.RoutePath, handler: t.RouteHandler<C>) =>
-    this.add('DELETE', path, handler);
+  public get = (path: P, handler: t.RouteHandler<C>) => this.add('GET', path, handler);
+  public put = (path: P, handler: t.RouteHandler<C>) => this.add('PUT', path, handler);
+  public post = (path: P, handler: t.RouteHandler<C>) => this.add('POST', path, handler);
+  public delete = (path: P, handler: t.RouteHandler<C>) => this.add('DELETE', path, handler);
+  public wildcard = (handler: t.RouteHandler<C>) => {
+    this._wildcard = this.toRoute('GET', '*', handler);
+    return this;
+  };
 
   /**
    * Find the route at the given url.
@@ -168,7 +172,7 @@ export class Router<C extends Record<string, unknown> = any> implements t.IRoute
     const route = this.routes.find((route) => {
       return req.method === route.method && route.regex.test(toPath(req.url));
     });
-    return route || this.wildcard;
+    return route || findWildcard(this.routes) || this._wildcard;
   }
 }
 
@@ -176,3 +180,4 @@ export class Router<C extends Record<string, unknown> = any> implements t.IRoute
  * [Helpers]
  */
 const toPath = (url?: string) => parseUrl(url || '', false).pathname || '';
+const findWildcard = (routes: t.IRoute[]) => routes.find((route) => route.path === '*');
