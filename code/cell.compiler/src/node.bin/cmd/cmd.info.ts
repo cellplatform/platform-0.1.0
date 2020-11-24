@@ -7,7 +7,7 @@ const logger = util.logger;
  * Output info about the build.
  */
 export async function info(argv: t.Argv) {
-  const name = util.nameArg(argv);
+  const name = util.nameArg(argv, 'web');
   const config = await util.loadConfig(argv.config, { name });
 
   const webpack = config.toWebpack();

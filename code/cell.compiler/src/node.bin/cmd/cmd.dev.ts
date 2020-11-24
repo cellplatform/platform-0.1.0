@@ -10,7 +10,8 @@ const logger = util.logger;
 export async function dev(argv: t.Argv) {
   logger.clear();
   const { exports } = argv;
-  const name = util.nameArg(argv) || 'dev';
-  const config = await util.loadConfig(argv.config, { name });
+  const name = util.nameArg(argv, 'web');
+  const mode = util.modeArg(argv, 'development');
+  const config = (await util.loadConfig(argv.config, { name })).mode(mode);
   await Compiler.devserver(config, { exports });
 }

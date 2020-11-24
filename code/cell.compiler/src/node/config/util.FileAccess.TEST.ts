@@ -67,6 +67,34 @@ describe('FileAccess', () => {
       test('src/berry.js', true);
     });
 
+    it('complex extension match (".ts{,x}")', () => {
+      const fileaccess = FileAccess([{ permission: 'public', grep: 'src/**/*.ts{,x}' }]);
+
+      const test = (path: string | undefined, isPublic: boolean) => {
+        const res = fileaccess.path(path);
+        expect(res.public).to.eql(isPublic);
+      };
+
+      test('foo.ts', false);
+      test('src/foo.ts', true);
+      test('src/foo.tsx', true);
+      test('src/foo.png', false);
+    });
+
+    it('complex extension match (images)', () => {
+      const fileaccess = FileAccess([{ permission: 'public', grep: '**/*.{png,jpg,svg}' }]);
+
+      const test = (path: string | undefined, isPublic: boolean) => {
+        const res = fileaccess.path(path);
+        expect(res.public).to.eql(isPublic);
+      };
+
+      test('foo.ts', false);
+      test('src/foo.png', true);
+      test('src/bar/foo.jpg', true);
+      test('baz.svg', true);
+    });
+
     it('throw: negation not supported', () => {
       const fn = () => FileAccess([{ permission: 'public', grep: '!src/*.png' }]);
       expect(fn).to.throw(/Path negations \("!"\) not supported/);
