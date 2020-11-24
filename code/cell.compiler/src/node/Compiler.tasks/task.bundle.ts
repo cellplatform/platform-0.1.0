@@ -9,39 +9,44 @@ import { afterCompile, wp } from './util';
  */
 export const bundle: t.CompilerRunBundle = (input, options = {}) => {
   return new Promise<t.WebpackBundleResponse>(async (resolve, reject) => {
-    const { silent } = options;
-    const { compiler, model, webpack } = wp.toCompiler(input);
+    try {
+      const { silent } = options;
+      const { compiler, model, webpack } = wp.toCompiler(input);
+      await ensureEntriesExist({ model });
 
-    const bundleDir = Model(model).bundleDir;
-    await fs.remove(bundleDir);
+      const bundleDir = Model(model).bundleDir;
+      await fs.remove(bundleDir);
 
-    if (!silent) {
-      log.info();
-      log.info.gray(`Bundling`);
-      logger.model(model, { indent: 2, url: false }).newline().hr();
+      if (!silent) {
+        log.info();
+        log.info.gray(`Bundling`);
+        logger.model(model, { indent: 2, url: false }).newline().hr();
+      }
+
+      compiler.run(async (err, stats) => {
+        if (err) {
+          return reject(err);
+        }
+        if (stats) {
+          const res = toBundledResponse({ model, stats, webpack });
+          const compilation = stats.compilation;
+
+          if (compilation) {
+            await onCompiled({ model, bundleDir, compilation, webpack });
+          }
+
+          if (!silent) {
+            logger.newline().stats(stats);
+          }
+
+          resolve(res);
+        } else {
+          reject(new Error(`The compilation did not produce a stats object.`));
+        }
+      });
+    } catch (error) {
+      reject(error);
     }
-
-    compiler.run(async (err, stats) => {
-      if (err) {
-        return reject(err);
-      }
-      if (stats) {
-        const res = toBundledResponse({ model, stats, webpack });
-        const compilation = stats.compilation;
-
-        if (compilation) {
-          await onCompiled({ model, bundleDir, compilation, webpack });
-        }
-
-        if (!silent) {
-          logger.newline().stats(stats);
-        }
-
-        resolve(res);
-      } else {
-        reject(new Error(`The compilation did not produce a stats object.`));
-      }
-    });
   });
 };
 
@@ -94,4 +99,18 @@ async function copyStatic(args: { model: t.CompilerModel; bundleDir: string }) {
   );
 
   return staticDirs;
+}
+
+async function ensureEntriesExist(args: { model: t.CompilerModel }) {
+  const model = Model(args.model);
+  const entry = model.entry();
+
+  for (const key of Object.keys(entry)) {
+    const path = fs.resolve(entry[key]);
+    const dir = fs.dirname(path);
+    if (!(await fs.pathExists(dir))) {
+      const err = `The entry path for '${key}' does not exist: ${path}`;
+      throw new Error(err);
+    }
+  }
 }
