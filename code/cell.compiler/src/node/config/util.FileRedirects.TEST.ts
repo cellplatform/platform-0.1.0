@@ -8,7 +8,7 @@ const create = () => {
   return { model, builder };
 };
 
-describe('config/util: redirect', () => {
+describe.only('config: FileRedirects', () => {
   it('empty list', () => {
     const redirects = FileRedirects([]);
     expect(redirects.list).to.eql([]);
@@ -28,7 +28,7 @@ describe('config/util: redirect', () => {
     });
 
     it('path not matched: empty list => isAllowed:true (default)', () => {
-      const redirects = FileRedirects([]);
+      const redirects = FileRedirects();
       const path = redirects.path('foo.js');
       expect(path.isAllowed).to.eql(true); // NB: default (undefined) => ALLOW
       expect(path.grant).to.eql(undefined);
@@ -140,6 +140,12 @@ describe('config/util: redirect', () => {
       test('src/foo.js', 'ALLOW');
       test('src/dir/foo.js', 'ALLOW');
       test('src/test/foo.js', 'DENY');
+    });
+
+    it('throw: negation not supported', () => {
+      const { builder } = create();
+      const fn = () => builder.files((files) => files.redirect('DENY', '!**/*.js'));
+      expect(fn).to.throw(/Path negations \("!"\) not supported/);
     });
   });
 });

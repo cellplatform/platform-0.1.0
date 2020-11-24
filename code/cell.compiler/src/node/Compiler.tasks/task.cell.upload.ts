@@ -3,7 +3,7 @@ import { map, takeUntil } from 'rxjs/operators';
 
 import { DEFAULT, fs, HttpClient, log, logger, Model, Path, Schema, t, time } from '../common';
 import { BundleManifest } from '../Compiler';
-import { FileRedirects } from '../config/util.redirect';
+import { FileRedirects } from '../config/util.FileRedirects';
 
 type FileUri = t.IUriData<t.IFileData>;
 type File = t.IHttpClientCellFileUpload;

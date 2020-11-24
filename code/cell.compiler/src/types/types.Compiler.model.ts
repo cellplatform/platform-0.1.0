@@ -62,7 +62,10 @@ export type CompilerModelFiles = {
 };
 
 export type CompilerModelFileAccessPermission = 'private' | 'public';
-export type CompilerModelFileAccess = { public: CompilerModelFileAccessPermission; grep?: string };
+export type CompilerModelFileAccess = {
+  permission: CompilerModelFileAccessPermission;
+  grep?: string;
+};
 
 /**
  * File redirection rules.
