@@ -235,8 +235,6 @@ async function updateManifest(args: {
         const err = `UPLOAD FAILED: An uploaded file URI could not be found for file '${item.path}'.`;
         throw new Error(err);
       } else {
-        const redirect = toRedirect({ path: item.path, redirects });
-        item.allowRedirect = redirect.flag;
         item.uri = file.uri;
       }
     });

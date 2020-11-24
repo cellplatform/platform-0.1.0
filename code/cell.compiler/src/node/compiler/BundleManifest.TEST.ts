@@ -64,4 +64,15 @@ describe.only('BundleManifest', function () {
     expect(read.path).to.eql(path);
     expect(read.manifest).to.eql(res.manifest);
   });
+
+  it('flag: allowRedirects', async () => {
+    const model = config.toObject();
+    const manifest = await BundleManifest.create({ model, bundleDir });
+
+    const js = manifest.files.find((file) => file.path.endsWith('main.js'));
+    const png = manifest.files.find((file) => file.path.endsWith('.png'));
+
+    expect(js?.allowRedirect).to.eql(false);
+    expect(png?.allowRedirect).to.eql(undefined);
+  });
 });

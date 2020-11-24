@@ -1,4 +1,5 @@
-import { DEFAULT, fs, Model, Schema, t, value, Path } from '../common';
+import { DEFAULT, fs, Model, Schema, t, value } from '../common';
+import { FileRedirects } from '../config';
 
 const REMOTE_ENTRY = DEFAULT.FILE.JS.REMOTE_ENTRY;
 
@@ -19,27 +20,21 @@ export const BundleManifest = {
    * Generates a bundle manifest.
    */
   async create(args: { model: t.CompilerModel; bundleDir: string }) {
-    const model = Model(args.model);
+    const { bundleDir, model } = args;
+    const data = Model(model);
     const paths = await fs.glob.find(`${args.bundleDir}/**`, { includeDirs: false });
 
-    const files: t.BundleManifestFile[] = await Promise.all(
-      paths.map(async (path) => {
-        const file = await fs.readFile(path);
-        const bytes = file.byteLength;
-        const filehash = Schema.hash.sha256(file);
-        path = path.substring(args.bundleDir.length + 1);
-        return { path, bytes, filehash };
-      }),
-    );
+    const toFile = (path: string) => BundleManifest.loadFile({ path, bundleDir, model });
+    const files: t.BundleManifestFile[] = await Promise.all(paths.map((path) => toFile(path)));
 
     const bytes = files.reduce((acc, next) => acc + next.bytes, 0);
     const hash = Schema.hash.sha256(files.map((file) => file.filehash));
 
     const manifest: t.BundleManifest = {
       hash,
-      mode: model.mode(),
-      target: model.target(),
-      entry: model.entryFile,
+      mode: data.mode(),
+      target: data.target(),
+      entry: data.entryFile,
       remoteEntry: paths.some((path) => path.endsWith(REMOTE_ENTRY)) ? REMOTE_ENTRY : undefined,
       bytes,
       files,
@@ -79,4 +74,30 @@ export const BundleManifest = {
     await fs.writeFile(path, json);
     return { path, manifest };
   },
+
+  /**
+   * Loads the file as the given path and derives [BundleManifestFile] metadata.
+   */
+  async loadFile(args: {
+    path: string;
+    bundleDir: string;
+    model: t.CompilerModel;
+  }): Promise<t.BundleManifestFile> {
+    const { model, bundleDir } = args;
+    const file = await fs.readFile(args.path);
+    const bytes = file.byteLength;
+    const filehash = Schema.hash.sha256(file);
+    const path = args.path.substring(bundleDir.length + 1);
+    const allowRedirect = toRedirect({ model, path }).flag;
+    return value.deleteUndefined({ path, bytes, filehash, allowRedirect });
+  },
 };
+
+/**
+ * Helpers
+ */
+
+function toRedirect(args: { model: t.CompilerModel; path: string }) {
+  const redirects = FileRedirects(args.model.files?.redirects);
+  return redirects.path(args.path);
+}
