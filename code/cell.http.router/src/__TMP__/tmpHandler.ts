@@ -1,4 +1,4 @@
-import { t, fs, http, constants, HttpClient } from '../common';
+import { t, fs, http, constants, HttpClient, log } from '../common';
 
 import { crypto } from './crypto';
 
@@ -32,6 +32,8 @@ export const tmpHandler: t.RouteHandler = async (req) => {
       dir: 'sample',
     };
 
+    log.info('bundle', bundle);
+
     const client = HttpClient.create(bundle.host).cell(bundle.uri);
     const clientFile = client.file.name('sample/index.json');
 
@@ -41,13 +43,13 @@ export const tmpHandler: t.RouteHandler = async (req) => {
     let fileload: any;
     const error: any = undefined;
     if (typeof res.body === 'object') {
-      // const path =
       try {
         await fs.stream.save(downloadPath, res.body as any);
-
         fileload = (await fs.readFile(downloadPath)).toString();
+        console.log('fileload', fileload);
       } catch (error) {
-        error = JSON.stringify(error);
+        log.error(error);
+        console.log('error', JSON.stringify(error));
       }
     }
 
@@ -71,6 +73,7 @@ export const tmpHandler: t.RouteHandler = async (req) => {
       },
     };
   } catch (error) {
+    log.error(error);
     return { status: 500, data: { error } };
   }
 };
