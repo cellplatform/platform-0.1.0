@@ -8,7 +8,7 @@ const createFuncMock = async () => {
   const runtime = NodeRuntime.create();
   const mock = await createMock({ runtime });
   const http = Http.create();
-  const url = mock.urls.func.base.toString();
+  const url = mock.urls.runtime.func.toString();
   return { url, mock, http, runtime };
 };
 
@@ -79,7 +79,7 @@ describe('func', function () {
 
         expect(res.ok).to.eql(true);
         expect(res.errors).to.eql([]);
-        expect(res.manifest).to.eql(Schema.urls(mock.host).func.manifest(bundle).toString());
+        expect(res.manifest).to.eql(Schema.urls(mock.host).runtime.manifest(bundle).toString());
         expect(await runtime.exists(bundle)).to.eql(true);
       };
 
@@ -276,7 +276,7 @@ describe('func', function () {
 
     it('error: func/runtime not provided (500)', async () => {
       const mock = await createMock();
-      const url = mock.urls.func.base.toString();
+      const url = mock.urls.runtime.func.toString();
       const http = Http.create();
 
       const data: t.IReqPostFuncBody = { uri: 'cell:foo:A1' };

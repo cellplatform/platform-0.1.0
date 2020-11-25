@@ -2,7 +2,7 @@ import { R, t, value, constants } from '../common';
 import { Uri } from '../Uri';
 import { Url } from './Url';
 import * as util from './util';
-import { ROUTES } from '../Url.routes';
+import { ROUTES } from '../ROUTES';
 
 type O = Record<string, unknown>;
 
@@ -81,9 +81,9 @@ export class Urls implements t.IUrls {
   }
 
   /**
-   * Func (execution runtime).
+   * Runtime (function execution).
    */
-  public get func() {
+  public get runtime() {
     const self = this; // eslint-disable-line
     const toUrl = this.toUrl;
 
@@ -99,9 +99,9 @@ export class Urls implements t.IUrls {
       /**
        * Example: /func
        */
-      get base() {
+      get func() {
         type Q = t.IReqQueryFunc;
-        return toUrl<Q>(`/func`);
+        return toUrl<Q>(`/run:func`);
       },
 
       /**

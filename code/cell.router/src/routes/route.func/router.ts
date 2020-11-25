@@ -12,7 +12,7 @@ export function init(args: { db: t.IDb; router: t.IRouter; runtime?: t.RuntimeEn
   /**
    * POST execute function
    */
-  router.post(routes.FUNC, async (req) => {
+  router.post(routes.RUNTIME.FUNC, async (req) => {
     try {
       if (!runtime) {
         throw new Error(`Runtime environment for executing functions not available.`);
