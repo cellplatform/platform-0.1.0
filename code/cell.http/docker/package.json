@@ -1,6 +1,6 @@
 {
   "name": "cell.docker",
-  "version": "0.0.6",
+  "version": "0.0.10",
   "main": "lib/index",
   "scripts": {
     "start": "node lib/index",
@@ -11,13 +11,13 @@
     "dup-build": "docker-compose up --build"
   },
   "dependencies": {
-    "@platform/cell.fs.local": "^0.4.145",
-    "@platform/cell.fs.s3": "^0.4.150",
-    "@platform/cell.http": "^0.7.231",
-    "@platform/cell.http.router": "^0.8.54",
-    "@platform/cell.runtime": "^0.0.10",
-    "@platform/cell.schema": "^0.5.23",
-    "@platform/cell.types": "^0.5.24",
+    "@platform/cell.fs.local": "^0.4.146",
+    "@platform/cell.fs.s3": "^0.4.151",
+    "@platform/cell.http": "^0.7.235",
+    "@platform/cell.http.router": "^0.8.58",
+    "@platform/cell.runtime": "^0.0.11",
+    "@platform/cell.schema": "^0.5.24",
+    "@platform/cell.types": "^0.5.25",
     "@platform/fsdb.mongo": "^0.0.148",
     "@platform/fsdb.nedb": "^1.3.142"
   },
