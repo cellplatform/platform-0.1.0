@@ -4,7 +4,6 @@ import { NeDb } from '@platform/fsdb.nedb';
 import { NodeRuntime } from '@platform/cell.runtime/lib/node';
 
 import { server, util } from './common';
-import { tmpHandler } from './__TMP__/tmpHandler';
 
 util.env.load();
 const TMP = util.resolve('tmp');
@@ -60,8 +59,3 @@ const app = server.create({
 
 app.start({ port: 8080 });
 server.logger.start({ app });
-
-/**
- * TODO 🐷 TEMP
- */
-app.router.get('/tmp', tmpHandler);

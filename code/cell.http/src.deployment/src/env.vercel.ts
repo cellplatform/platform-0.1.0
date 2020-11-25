@@ -5,8 +5,6 @@ import { server, t, time } from './common';
 import { IS_CLOUD, SECRETS } from './constants';
 import { NodeRuntime } from '@platform/cell.runtime/lib/node';
 
-import { tmpHandler } from './__TMP__/tmpHandler';
-
 /**
  * Cell: FileSystem
  */
@@ -41,8 +39,3 @@ const app = server.create({ name, db, fs, deployedAt, runtime });
 server.logger.start({ app });
 
 export default app.server;
-
-/**
- * TODO 🐷 TEMP
- */
-app.router.get('/tmp', tmpHandler);

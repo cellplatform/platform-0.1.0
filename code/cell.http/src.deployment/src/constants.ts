@@ -1,6 +1,6 @@
 import { util } from './common';
 
-export const NOW = process.env.NOW_REGION || 'dev1';
+export const NOW = process.env.VERCEL_REGION || 'dev1';
 export const IS_CLOUD = NOW !== 'dev1';
 
 if (!IS_CLOUD) {

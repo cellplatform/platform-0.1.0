@@ -10,8 +10,8 @@ export function init(args: { router: t.IRouter; name?: string; deployedAt?: numb
    * GET: /, /.sys
    */
   router.get(routes.SYS.INFO, async (req) => {
-    const NOW_REGION = fs.env.value('NOW_REGION');
-    const region = NOW_REGION ? `cloud:${NOW_REGION}` : 'local:device';
+    const VERCEL_REGION = fs.env.value('VERCEL_REGION');
+    const region = VERCEL_REGION ? `cloud:${VERCEL_REGION}` : 'local:device';
 
     const name = args.name || 'Untitled';
     const deployedAt = args.deployedAt;
