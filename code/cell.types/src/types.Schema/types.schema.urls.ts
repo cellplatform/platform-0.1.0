@@ -18,7 +18,7 @@ export type IUrls = {
   readonly origin: string;
   readonly sys: IUrlsSys;
   readonly local: IUrlsLocal;
-  readonly func: IUrlsFunc;
+  readonly runtime: IUrlsRuntime;
   ns(input: string | t.INsUri): IUrlsNs;
   cell(input: string | t.ICellUri): IUrlsCell;
   row(input: string | t.IRowUri): IUrlsRow;
@@ -31,8 +31,12 @@ export type IUrlsSys = {
   uid: t.IUrl<t.IReqQuerySysUid>;
 };
 
-export type IUrlsFunc = {
-  base: t.IUrl<t.IReqQueryFunc>;
+export type IUrlsRuntime = {
+  func: t.IUrl<t.IReqQueryFunc>;
+  bundle: IUrlsBundle;
+};
+
+export type IUrlsBundle = {
   manifest(bundle: t.RuntimeBundleOrigin): t.IUrl<t.IReqQueryCellFileDownloadByName>;
   files(bundle: t.RuntimeBundleOrigin): t.IUrl<t.IReqQueryCellFilesList>;
 };

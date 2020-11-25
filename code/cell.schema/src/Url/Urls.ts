@@ -2,7 +2,7 @@ import { R, t, value, constants } from '../common';
 import { Uri } from '../Uri';
 import { Url } from './Url';
 import * as util from './util';
-import { ROUTES } from '../Url.routes';
+import { ROUTES } from '../ROUTES';
 
 type O = Record<string, unknown>;
 
@@ -81,9 +81,9 @@ export class Urls implements t.IUrls {
   }
 
   /**
-   * Func (execution runtime).
+   * Runtime (function execution).
    */
-  public get func() {
+  public get runtime() {
     const self = this; // eslint-disable-line
     const toUrl = this.toUrl;
 
@@ -95,15 +95,7 @@ export class Urls implements t.IUrls {
 
     const trimDir = (dir?: string) => (dir || '').trim().replace(/^\/*/, '').replace(/\/*$/, '');
 
-    return {
-      /**
-       * Example: /func
-       */
-      get base() {
-        type Q = t.IReqQueryFunc;
-        return toUrl<Q>(`/func`);
-      },
-
+    const bundle: t.IUrlsBundle = {
       /**
        * Example: <see file download URL>
        */
@@ -125,6 +117,18 @@ export class Urls implements t.IUrls {
         let url = self.cell(bundle.uri).files.list;
         url = dir ? url.query({ filter: `${dir}/**` }) : url;
         return url;
+      },
+    };
+
+    return {
+      bundle,
+
+      /**
+       * Example: /func
+       */
+      get func() {
+        type Q = t.IReqQueryFunc;
+        return toUrl<Q>(`/run:func`);
       },
     };
   }

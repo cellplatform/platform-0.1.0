@@ -2,7 +2,7 @@ import { PKG } from './constants.pkg';
 
 export { ERROR } from '@platform/cell.schema';
 
-import { VERCEL, IS_CLOUD, PATH } from '@platform/cell.http.router/lib/common/constants';
+import { VERCEL, IS_CLOUD, PATH } from '@platform/cell.router/lib/common/constants';
 export { VERCEL, IS_CLOUD, PATH };
 
 /**
@@ -34,7 +34,7 @@ export function getVersions() {
     schema: depVersion('@platform/cell.schema'),
     types: depVersion('@platform/cell.types'),
     server: depVersion('@platform/cell.http', PKG.version),
-    router: depVersion('@platform/cell.http.router'),
+    router: depVersion('@platform/cell.router'),
     toVersion,
   };
 

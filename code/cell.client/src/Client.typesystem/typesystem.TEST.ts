@@ -7,7 +7,7 @@ import { expect, t, MemoryCache, TypeSystem } from '../test';
  *    Main integration tests using the [Client]
  *    can be found in module:
  *
- *        @platform/cell.http.router
+ *        @platform/cell.router
  *
  */
 

@@ -13,7 +13,8 @@ export const BundleManifest = {
    * URL to the manifest
    */
   url(host: string, uri: string, dir?: string) {
-    return Schema.urls(host).func.manifest({ host, uri, dir });
+    const urls = Schema.urls(host);
+    return urls.runtime.bundle.manifest({ host, uri, dir });
   },
 
   /**

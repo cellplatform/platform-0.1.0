@@ -6,7 +6,7 @@ import { NodeRuntime } from '.';
  *    For all server/data related tests that exercise pulling
  *    bundles from a server see:
  *
- *        [@platform/cell.http.router]/src/tests/test.route/func.TEST.ts
+ *        [@platform/cell.router]/src/tests/test.route/func.TEST.ts
  *
  *    Which spins up a mock server to test against.
  *

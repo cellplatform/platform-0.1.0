@@ -11,6 +11,9 @@ export const beforeFileSave: t.BeforeModelSave<t.IDbModelFileProps> = async (arg
     const uri = Schema.from.file(model.path).uri;
     const data: t.IFileData = { ...value.deleteUndefined(model.toObject()) };
     delete data.hash;
+    if (!data.error) {
+      delete data.error; // NB: Ensure [null] is not stored as error.
+    }
     model.props.hash = util.hash.file({ uri, data });
   }
 };

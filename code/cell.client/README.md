@@ -15,10 +15,10 @@ A strongly typed client-library for operating a [`cell.http`](../cell.http) serv
 
 ## Test
 
-Unit-tests that exercise this client-library can be found in within [`cell.http.router`](../cell.http.router).
+Unit-tests that exercise this client-library can be found in within [`cell.router`](../cell.router).
 
 ```bash
-cd ../cell.http.router
+cd ../cell.router
 yarn test
 ```
 

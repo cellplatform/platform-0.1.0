@@ -1,0 +1,28 @@
+{
+  "name": "__NAME__",
+  "version": "0.0.0",
+  "sideEffects": false,
+  "compiler": {
+    "port": 3000
+  },
+  "scripts": {
+    "build": "ts build --no-esm $@",
+    "start": "cell.compiler dev $@",
+    "dev": "cell.compiler dev --no-exports $@",
+    "bundle": "cell.compiler bundle $@",
+    "watch": "cell.compiler watch $@",
+    "upload": "cell.compiler upload $@",
+    "clean": "cell.compiler clean $@",
+    "info": "cell.compiler info $@",
+    "serve": "cell.compiler serve $@"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@platform/ts": "latest",
+    "@platform/cell.compiler": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "license": "MIT",
+  "private": true
+}

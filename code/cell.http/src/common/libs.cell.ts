@@ -10,5 +10,5 @@ export { value };
 import { coord } from '@platform/cell.coord';
 export { coord };
 
-import { Router } from '@platform/cell.http.router';
+import { Router } from '@platform/cell.router';
 export { Router };
