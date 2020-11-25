@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-import { t, log, constants } from '../../common';
+import { debounceTime, filter } from 'rxjs/operators';
+import { t, log, constants } from '../common';
 
 /**
  * Start listening to the given micro-service and log activity.
@@ -8,13 +8,13 @@ import { t, log, constants } from '../../common';
 export function start(args: { app: t.IMicro; debounce?: number }) {
   const { app, debounce = 500 } = args;
 
-  const versions = constants.getVersions();
-  const routerVersion = `router@${versions.toVersion(versions.router)}`;
-
   const hr$ = new Subject();
-  hr$.pipe(debounceTime(debounce)).subscribe((e) => {
-    log.info.gray(`${hr(50)} ${routerVersion}`);
-  });
+  hr$
+    .pipe(
+      filter(() => !constants.IS_CLOUD),
+      debounceTime(debounce),
+    )
+    .subscribe((e) => log.info.gray(hr(50)));
 
   app.request$.subscribe((e) => {
     log.info(logRequest(e));

@@ -2,7 +2,7 @@ const fs = require('@platform/fs').fs;
 
 const PATH = {
   local: fs.resolve('./node_modules/@platform/ts.libs/lint.js'),
-  workspace: '../../config/lint',
+  workspace: '../../config/lint.js',
 };
 
 module.exports = {

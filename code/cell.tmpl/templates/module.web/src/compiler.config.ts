@@ -7,7 +7,7 @@ export default () =>
       config
         .target('web')
         .port(Package.compiler.port)
-        .entry('./src/test/web.entry')
+        .entry('./src/test/entry')
         .entry('service.worker', './src/test/workers/service.worker')
         .static('./static')
         .expose('./Dev', './src/test/components/Dev')
