@@ -12,10 +12,13 @@ export type IReqPostFuncBody = {
   host?: string;
   dir?: string;
   params?: t.JsonMap;
+  pull?: boolean; // Flag to force pull the bundle (if it's already cached.)
+  silent?: boolean;
 };
 
 export type IResPostFunc = {
   elapsed: number;
+  cache: { existing: boolean; pulled: boolean };
   runtime: { name: t.RuntimeEnv['name'] };
   size: { bytes: number; files: number };
   errors: t.IRuntimeError[];

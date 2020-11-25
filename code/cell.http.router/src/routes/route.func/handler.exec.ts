@@ -11,23 +11,23 @@ export async function execFunc(args: {
   try {
     const timer = time.timer();
     const { body, runtime } = args;
-
-    console.log('HANDLER: execFunc', body); // TEMP 🐷
-    console.log('-------------------------------------------');
-    console.log('runtime', runtime);
+    const silent = defaultValue(body.silent, true);
 
     const host = body.host || args.host;
     const uri = body.uri;
     const dir = body.dir;
+    const pull = body.pull;
     const bundle: B = { host, uri, dir };
     const urls = Schema.urls(host);
 
-    const res = await runtime.run(bundle, { silent: true });
+    const existing = await runtime.exists(bundle);
+    const res = await runtime.run(bundle, { silent, pull });
     const { manifest, errors } = res;
 
     const status = res.ok ? 200 : 500;
     const data: t.IResPostFunc = {
       elapsed: timer.elapsed.msec,
+      cache: { existing, pulled: pull ? true : !existing },
       runtime: { name: runtime.name },
       size: {
         bytes: defaultValue(manifest?.bytes, -1),
