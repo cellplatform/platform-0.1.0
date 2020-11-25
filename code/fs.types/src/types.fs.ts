@@ -5,6 +5,7 @@ export type IFs = {
   is: IFsFlags;
 
   // Filesystem.
+  readdir(path: string): Promise<string[]>;
   exists(path: string): Promise<boolean>;
   ensureDir(path: string, options?: IFsEnsureOptions | number): Promise<void>;
   writeFile(path: string, data: any, options?: IFsWriteFileOptions | string): Promise<void>;

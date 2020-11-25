@@ -9,7 +9,7 @@ const FILES = [
   'yarn.lock',
   'src/common.ts',
   'src/constants.ts',
-  'src/now.ts',
+  'src/env.vercel.ts',
   'src/types.ts',
   'static/favicon.ico',
 ];
@@ -219,10 +219,10 @@ async function copyAndPrepare(args: {
     }
   })();
 
-  // Update: [now.ts]
+  // Update: [env.vercel.ts]
   await (async () => {
     const now = config.now;
-    const file = tmpl.files.find((path) => path.to.endsWith('now.ts'));
+    const file = tmpl.files.find((path) => path.to.endsWith('env.vercel.ts'));
     if (file) {
       let text = (await fs.readFile(file.to)).toString();
 
@@ -261,7 +261,7 @@ async function copy(args: { sourceDir: string; targetDir: string }) {
 }
 
 async function getTmplDir() {
-  const name = 'src.tmpl';
+  const name = 'src.deployment';
 
   const get = async (dir: string) => {
     dir = fs.resolve(dir);
@@ -285,8 +285,6 @@ function deployTask(args: {
   title: string;
   targetDir: string;
   cmd: string;
-  // prod: boolean;
-  // force: boolean;
   done: (args: { info: string[]; errors: string[] }) => void;
   deploy?: boolean; // Debug.
 }) {
@@ -300,8 +298,6 @@ function deployTask(args: {
           return observer.complete();
         }
 
-        // const prod = args.prod ? '--prod' : '';
-        // const force = args.force ? '--force' : '';
         const cmd = cli.exec.command(args.cmd);
         const running = cmd.run({ cwd: targetDir, silent: true });
 
@@ -324,8 +320,6 @@ function deployTask(args: {
           }
           next(text);
         });
-
-        // running.er
 
         running.complete$.subscribe(async () => {
           args.done({ info, errors }); // NB: Send result info back to caller before completing.

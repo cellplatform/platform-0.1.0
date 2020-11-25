@@ -21,8 +21,9 @@ export type CompilerModelMethods = {
   find(name: string): B | null;
 
   variant(name: string, configure: (config: B) => void): B;
-  webpack(configure: (config: CompilerModelMethodsWebpack) => void): B;
-  html(configure: (config: t.CompilerModelMethodsHtml) => void): B;
+  webpack(handler: (config: CompilerModelMethodsWebpack) => void): B;
+  html(handler: (config: t.CompilerModelMethodsHtml) => void): B;
+  files(handler: (config: t.CompilerModelMethodsFiles) => void): B;
 
   beforeCompile(handler: t.BeforeCompile): B;
   afterCompile(handler: t.AfterCompile): B;
@@ -42,7 +43,6 @@ export type CompilerModelMethods = {
   remote(key: string, path: string | null): B;
   shared(fn: CompilerConfigSharedFunc): B;
   env(value: Record<string, t.Json> | null): B;
-  redirect(grant: t.CompilerModelRedirectAction | boolean | undefined, grep?: string): B;
 };
 
 export type CompilerModelMethodsWebpack = {
@@ -61,8 +61,15 @@ export type CompilerConfigShared = {
   version(name: string): string;
 };
 
+type H = CompilerModelMethodsHtml;
 export type CompilerModelMethodsHtml = {
-  inject(value: boolean | undefined): CompilerModelMethodsHtml;
-  head(el: JSX.Element | undefined): CompilerModelMethodsHtml;
-  body(el: JSX.Element | undefined): CompilerModelMethodsHtml;
+  inject(value: boolean | undefined): H;
+  head(el: JSX.Element | undefined): H;
+  body(el: JSX.Element | undefined): H;
+};
+
+type F = CompilerModelMethodsFiles;
+export type CompilerModelMethodsFiles = {
+  redirect(grant: t.CompilerModelRedirectAction | boolean | undefined, grep?: string): F;
+  access(permission: t.CompilerModelFileAccessPermission, grep: string): F;
 };

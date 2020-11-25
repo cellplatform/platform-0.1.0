@@ -1,7 +1,7 @@
 {
   "name": "cellos",
   "version": "0.0.54",
-  "description": "The CellOS (Spreadsheet Based Operating System)",
+  "description": "The Cell operating system (CellOS)",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {

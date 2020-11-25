@@ -18,7 +18,7 @@ export async function run() {
   files.names.forEach((file) => {
     const name = trimYaml(file);
     const ext = fs.extname(file);
-    log.info.gray(`${dir}/${log.cyan(name)}${ext}`);
+    log.info.gray(`${dir}/${log.white(name)}${ext}`);
   });
   log.info();
 }

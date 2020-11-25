@@ -14,11 +14,11 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
 
   const runBundle = async (args: {
     config: B;
-    env: { host: string; cell: string; dir?: string };
+    origin: t.RuntimeBundleOrigin;
     silent?: boolean;
   }) => {
-    const { env, silent } = args;
-    const config = args.config.clone().env({ bundle: env });
+    const { origin, silent } = args;
+    const config = args.config.clone().env({ origin });
     return await bundle(config, { silent });
   };
 
@@ -33,9 +33,9 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
       /**
        * [1] Bundle the code.
        */
-      const env = { host, cell: targetCell, dir: targetDir };
+      const origin: t.RuntimeBundleOrigin = { host, uri: targetCell, dir: targetDir };
       if (defaultValue(options.bundle, true)) {
-        await runBundle({ config, env, silent });
+        await runBundle({ config, origin, silent });
       }
 
       if (!silent) {

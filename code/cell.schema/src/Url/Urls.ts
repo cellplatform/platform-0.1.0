@@ -1,8 +1,10 @@
-import { R, t, value } from '../common';
+import { R, t, value, constants } from '../common';
 import { Uri } from '../Uri';
 import { Url } from './Url';
 import * as util from './util';
 import { ROUTES } from '../Url.routes';
+
+type O = Record<string, unknown>;
 
 /**
  * Standardised construction of URLs for the HTTP service.
@@ -20,18 +22,20 @@ export class Urls implements t.IUrls {
     let text = (input || '').trim();
     text = text || 'localhost';
 
-    const host = R.pipe(util.stripHttp, util.stripSlash, util.stripPort)(text);
-    const protocol = util.toProtocol(host);
+    const hostname = R.pipe(util.stripHttp, util.stripSlash, util.stripPort)(text);
+    const protocol = util.toProtocol(hostname);
     const port = util.toPort(text) || 80;
-    const origin = port === 80 ? `${protocol}://${host}` : `${protocol}://${host}:${port}`;
-    return { protocol, host, port, origin };
+    const host = port === 80 ? hostname : `${hostname}:${port}`;
+    const origin = `${protocol}://${host}`;
+    return { protocol, hostname, host, port, origin };
   }
 
   /**
    * [Lifecycle]
    */
   private constructor(input?: string | number) {
-    const { protocol, host, port, origin } = Urls.parse(input);
+    const { protocol, host, hostname, port, origin } = Urls.parse(input);
+    this.hostname = hostname;
     this.host = host;
     this.protocol = protocol;
     this.port = port;
@@ -44,6 +48,7 @@ export class Urls implements t.IUrls {
 
   public readonly protocol: t.HttpProtocol;
   public readonly host: string;
+  public readonly hostname: string;
   public readonly port: number;
   public readonly origin: string;
 
@@ -52,23 +57,74 @@ export class Urls implements t.IUrls {
    */
 
   public get sys() {
-    const toPath = this.toUrl;
+    const toUrl = this.toUrl;
     return {
       get info() {
-        return toPath('.sys');
+        type Q = t.IReqQuerySysInfo;
+        return toUrl<Q>('.sys');
       },
       get uid() {
-        return toPath('.uid');
+        type Q = t.IReqQuerySysUid;
+        return toUrl<Q>('.uid');
       },
     };
   }
 
   public get local() {
-    const toPath = this.toUrl;
+    const toUrl = this.toUrl;
     return {
       get fs() {
         type Q = t.IReqQueryLocalFs;
-        return toPath<Q>(`/local/fs`);
+        return toUrl<Q>(`/local/fs`);
+      },
+    };
+  }
+
+  /**
+   * Func (execution runtime).
+   */
+  public get func() {
+    const self = this; // eslint-disable-line
+    const toUrl = this.toUrl;
+
+    const throwOnHostMistmatch = (bundle: t.RuntimeBundleOrigin) => {
+      if (util.stripHttp(bundle.host) !== self.host) {
+        throw new Error(`Host mismatch ('${bundle.host}' should be '${self.host}')`);
+      }
+    };
+
+    const trimDir = (dir?: string) => (dir || '').trim().replace(/^\/*/, '').replace(/\/*$/, '');
+
+    return {
+      /**
+       * Example: /func
+       */
+      get base() {
+        type Q = t.IReqQueryFunc;
+        return toUrl<Q>(`/func`);
+      },
+
+      /**
+       * Example: <see file download URL>
+       */
+      manifest(bundle: t.RuntimeBundleOrigin) {
+        throwOnHostMistmatch(bundle);
+        const FILENAME = constants.BUNDLE.MANIFEST.FILENAME;
+        const dir = trimDir(bundle.dir);
+        const filename = dir ? `${dir}/${FILENAME}` : FILENAME;
+        return self.cell(bundle.uri).file.byName(filename);
+      },
+
+      /**
+       * Bundle files.
+       * Example: <see files list>
+       */
+      files(bundle: t.RuntimeBundleOrigin) {
+        throwOnHostMistmatch(bundle);
+        const dir = trimDir(bundle.dir);
+        let url = self.cell(bundle.uri).files.list;
+        url = dir ? url.query({ filter: `${dir}/**` }) : url;
+        return url;
       },
     };
   }
@@ -81,7 +137,7 @@ export class Urls implements t.IUrls {
    * Builders for NAMESPACE urls.
    */
   public ns(input: string | t.INsUri) {
-    const toPath = this.toUrl;
+    const toUrl = this.toUrl;
     let id = (typeof input === 'string' ? input : input.id) || '';
 
     if (!id.includes(':')) {
@@ -111,7 +167,7 @@ export class Urls implements t.IUrls {
        * Example: /ns:foo
        */
       get info() {
-        return toPath<t.IReqQueryNsInfo>(`/ns:${id}`);
+        return toUrl<t.IReqQueryNsInfo>(`/ns:${id}`);
       },
     };
   }
@@ -120,7 +176,7 @@ export class Urls implements t.IUrls {
    * Builders for CELL urls.
    */
   public cell(input: string | t.ICellUri) {
-    const toPath = this.toUrl;
+    const toUrl = this.toUrl;
     const uri = Uri.cell(input);
     const { ns, key, type } = uri;
     if (type !== 'CELL') {
@@ -136,7 +192,7 @@ export class Urls implements t.IUrls {
        */
       get info() {
         type Q = t.IReqQueryCellInfo;
-        return toPath<Q>(`/cell:${ns}:${key}`);
+        return toUrl<Q>(`/cell:${ns}:${key}`);
       },
 
       /**
@@ -148,7 +204,7 @@ export class Urls implements t.IUrls {
          */
         get list() {
           type Q = t.IReqQueryCellFilesList;
-          return toPath<Q>(`/cell:${ns}:${key}/files`);
+          return toUrl<Q>(`/cell:${ns}:${key}/files`);
         },
 
         /**
@@ -156,7 +212,7 @@ export class Urls implements t.IUrls {
          */
         get delete() {
           type Q = t.IReqQueryCellFilesDelete;
-          return toPath<Q>(`/cell:${ns}:${key}/files`);
+          return toUrl<Q>(`/cell:${ns}:${key}/files`);
         },
 
         /**
@@ -164,7 +220,7 @@ export class Urls implements t.IUrls {
          */
         get copy() {
           type Q = t.IReqQueryCellFilesCopy;
-          return toPath<Q>(`/cell:${ns}:${key}/files/copy`);
+          return toUrl<Q>(`/cell:${ns}:${key}/files/copy`);
         },
 
         /**
@@ -172,7 +228,7 @@ export class Urls implements t.IUrls {
          */
         get upload() {
           type Q = t.IReqQueryCellFilesUpload;
-          return toPath<Q>(`/cell:${ns}:${key}/files/upload`);
+          return toUrl<Q>(`/cell:${ns}:${key}/files/upload`);
         },
 
         /**
@@ -180,7 +236,7 @@ export class Urls implements t.IUrls {
          */
         get uploaded() {
           type Q = t.IReqQueryCellFilesUploaded;
-          return toPath<Q>(`/cell:${ns}:${key}/files/uploaded`);
+          return toUrl<Q>(`/cell:${ns}:${key}/files/uploaded`);
         },
       },
 
@@ -201,7 +257,7 @@ export class Urls implements t.IUrls {
           if (!filename) {
             throw new Error(`Filename not provided.`);
           }
-          return toPath<Q>(`/cell:${ns}:${key}/file/${filename}`);
+          return toUrl<Q>(`/cell:${ns}:${key}/file/${filename}`);
         },
 
         /**
@@ -220,7 +276,7 @@ export class Urls implements t.IUrls {
             throw new Error(`File uri/name could not be derived..`);
           }
           const file = `file:${filename}`;
-          return toPath<Q>(`/cell:${ns}:${key}/${file}`);
+          return toUrl<Q>(`/cell:${ns}:${key}/${file}`);
         },
       },
     };
@@ -232,7 +288,7 @@ export class Urls implements t.IUrls {
    * Builders for ROW urls.
    */
   public row(input: string | t.IRowUri) {
-    const toPath = this.toUrl;
+    const toUrl = this.toUrl;
     const uri = Uri.row(input);
     const { ns, key, type } = uri;
     if (type !== 'ROW') {
@@ -248,7 +304,7 @@ export class Urls implements t.IUrls {
        */
       get info() {
         type Q = t.IReqQueryRowInfo;
-        return toPath<Q>(`/cell:${ns}:${key}`);
+        return toUrl<Q>(`/cell:${ns}:${key}`);
       },
     };
   }
@@ -257,7 +313,7 @@ export class Urls implements t.IUrls {
    * Builders for COLUMN urls.
    */
   public column(input: string | t.IColumnUri) {
-    const toPath = this.toUrl;
+    const toUrl = this.toUrl;
     const uri = Uri.column(input);
 
     const { ns, key, type } = uri;
@@ -274,13 +330,13 @@ export class Urls implements t.IUrls {
        */
       get info() {
         type Q = t.IReqQueryColumnInfo;
-        return toPath<Q>(`/cell:${ns}:${key}`);
+        return toUrl<Q>(`/cell:${ns}:${key}`);
       },
     };
   }
 
   public file(input: string | t.IFileUri) {
-    const toPath = this.toUrl;
+    const toUrl = this.toUrl;
     const uri = Uri.file(input);
 
     if (uri.type !== 'FILE') {
@@ -294,22 +350,22 @@ export class Urls implements t.IUrls {
 
       get info() {
         type Q = t.IReqQueryFileInfo;
-        return toPath<Q>(`/file:${id}/info`);
+        return toUrl<Q>(`/file:${id}/info`);
       },
 
       get download() {
         type Q = t.IReqQueryFileDownload;
-        return toPath<Q>(`/file:${id}`);
+        return toUrl<Q>(`/file:${id}`);
       },
 
       get delete() {
         type Q = t.IReqQueryFileDelete;
-        return toPath<Q>(`/file:${id}`);
+        return toUrl<Q>(`/file:${id}`);
       },
 
       get uploaded() {
         type Q = t.IReqQueryFileUploadComplete;
-        return toPath<Q>(`/file:${id}/uploaded`);
+        return toUrl<Q>(`/file:${id}/uploaded`);
       },
     };
   }
@@ -318,11 +374,9 @@ export class Urls implements t.IUrls {
    * [INTERNAL]
    */
 
-  private toUrl = <Q extends Record<string, unknown>>(
-    path: string,
-    options: { query?: Q } = {},
-  ): t.IUrl<Q> => {
+  private toUrl = <Q extends O>(path: string, options: { query?: Q } = {}): t.IUrl<Q> => {
     const { query } = options;
-    return new Url<Q>({ origin: this.origin, path, query });
+    const origin = this.origin;
+    return new Url<Q>({ origin, path, query });
   };
 }

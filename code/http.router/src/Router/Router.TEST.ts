@@ -19,11 +19,29 @@ describe('Router', () => {
   });
 
   describe('find', () => {
-    it('no match', () => {
-      const router = Router.create({ body: bodyParser });
-      router.get('/foo', handler);
-      const res = router.find({ method: 'GET', url: '/bar' });
-      expect(res).to.eql(undefined);
+    describe('no match', () => {
+      it('undefined', () => {
+        const router = Router.create({ body: bodyParser });
+        router.get('/foo', handler);
+        const res = router.find({ method: 'GET', url: '/bar' });
+        expect(res).to.eql(undefined);
+      });
+
+      it('wildcard: router.get("*")', () => {
+        const router = Router.create({ body: bodyParser });
+        router.get('*', handler);
+        const res = router.find({ method: 'GET', url: '/bar' });
+        expect(res?.path).to.eql('*');
+        expect(res?.handler).to.equal(handler);
+      });
+
+      it('wildcard: router.wildcard(...)', () => {
+        const router = Router.create({ body: bodyParser });
+        router.wildcard(handler);
+        const res = router.find({ method: 'GET', url: '/bar' });
+        expect(res?.path).to.eql('*');
+        expect(res?.handler).to.equal(handler);
+      });
     });
 
     it('GET /foo', () => {

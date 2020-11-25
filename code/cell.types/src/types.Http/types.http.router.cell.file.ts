@@ -20,7 +20,6 @@ export type IReqQueryCellFilesList = {
 };
 export type IReqQueryCellFilesUpload = {
   changes?: boolean; // NB: return list of changes (default: true).
-  's3:permission'?: t.FsS3Permission;
 };
 export type IReqQueryCellFilesUploaded = {
   changes?: boolean; // NB: return list of changes (default: true).
@@ -69,6 +68,7 @@ export type IReqPostCellUploadFile = {
   filehash?: string;
   mimetype?: string;
   allowRedirect?: boolean;
+  's3:permission'?: t.FsS3Permission;
 };
 
 export type IResPostCellFilesUploadStart = t.IUriResponse<

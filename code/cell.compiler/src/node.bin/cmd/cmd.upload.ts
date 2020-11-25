@@ -1,5 +1,5 @@
 import { Compiler } from '../../node/Compiler';
-import { log, t, Uri, HttpClient, fs, PATH, Model, defaultValue } from '../common';
+import { fs, HttpClient, log, Model, PATH, t, Uri } from '../common';
 import * as util from '../util';
 
 const logger = util.logger;
@@ -10,9 +10,10 @@ type ISampleFile = { [mode: string]: { uri: string } };
  * Bundle and upload to a cell.
  */
 export async function upload(argv: t.Argv) {
-  const name = util.nameArg(argv) || 'prod';
   const bundle = argv.bundle; // NB: undefined by default (false if --no-bundle)
-  const config = await util.loadConfig(argv.config, { name });
+  const name = util.nameArg(argv, 'web');
+  const mode = util.modeArg(argv, 'production');
+  const config = (await util.loadConfig(argv.config, { name })).mode(mode);
   const model = Model(config);
   const target = model.target();
 

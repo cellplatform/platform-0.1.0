@@ -7,9 +7,9 @@ const logger = util.logger;
  * Start a simple HTTP server to serve bundled assets.
  */
 export async function serve(argv: t.Argv) {
-  const name = util.nameArg(argv) || 'prod';
-
+  const name = util.nameArg(argv, 'web');
   const config = await util.loadConfig(argv.config, { name });
+
   const model = Model(config.toObject());
   const obj = model.toObject();
 

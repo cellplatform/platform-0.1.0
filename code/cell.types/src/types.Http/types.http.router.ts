@@ -19,19 +19,3 @@ export type IUriResponse<D, L = IUrlMap> = {
 };
 
 export type IUrlMap = { [key: string]: string };
-
-/**
- * Info (System)
- */
-export type IReqQuerySysUid = { total?: number };
-
-export type IResGetSysInfo = {
-  name: string;
-  host: string;
-  system: string;
-  region: string;
-  deployedAt?: number;
-  hash?: string;
-};
-
-export type IResGetSysUid = string[];

@@ -1,13 +1,9 @@
 import { PKG } from './constants.pkg';
-import { fs } from './libs';
 
 export { ERROR } from '@platform/cell.schema';
 
-export const IS_CLOUD = Boolean(process.env.VERCEL_URL);
-export const PATH = {
-  MODULE: fs.join(__dirname, '../../..'),
-  TMP: IS_CLOUD ? '/tmp' : fs.resolve('tmp'),
-};
+import { VERCEL, IS_CLOUD, PATH } from '@platform/cell.http.router/lib/common/constants';
+export { VERCEL, IS_CLOUD, PATH };
 
 /**
  * Versions (from PACKAGE.json)

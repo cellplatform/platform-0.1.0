@@ -10,19 +10,19 @@ export function init(args: { router: t.IRouter; name?: string; deployedAt?: numb
    * GET: /, /.sys
    */
   router.get(routes.SYS.INFO, async (req) => {
-    const NOW_REGION = fs.env.value('NOW_REGION');
-    const region = NOW_REGION ? `cloud:${NOW_REGION}` : 'local:device';
+    const VERCEL = constants.VERCEL;
+    const region = VERCEL.REGION ? `cloud:${VERCEL.REGION}` : 'local:device';
 
     const name = args.name || 'Untitled';
     const deployedAt = args.deployedAt;
-    const system = constants.getSystem().system;
+    const system = constants.getSystem();
     const host = req.headers.host || '-';
 
     const data: t.IResGetSysInfo = {
       name,
       host,
-      system,
       region,
+      version: system.version,
       deployedAt,
     };
     data.hash = Schema.hash.sha256(data);

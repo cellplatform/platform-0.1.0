@@ -1,11 +1,29 @@
 import { fs } from './libs';
+const env = fs.env.value;
 
 export { ERROR } from '@platform/cell.schema';
 
-export const IS_CLOUD = Boolean(process.env.NOW_REGION);
+/**
+ * NOTE:
+ *    When deploying to vercel (cloud) ensire "expose environment variables"
+ *    is enabled in the project settings.
+ *
+ *    https://vercel.com/docs/platform/environment-variables#system-environment-variables
+ *
+ */
+export const VERCEL = {
+  ENV: env('VERCEL_ENV'),
+  REGION: env('VERCEL_REGION'),
+  URL: env('VERCEL_URL'),
+};
+
+export const IS_CLOUD = Boolean(VERCEL.REGION);
+const TMP = IS_CLOUD ? '/tmp' : fs.resolve('tmp');
+
 export const PATH = {
+  TMP,
+  CACHE_DIR: fs.join(TMP, '.cache'),
   MODULE: fs.join(__dirname, '../../..'),
-  TMP: IS_CLOUD ? '/tmp' : fs.resolve('tmp'),
 };
 
 /**
@@ -20,13 +38,16 @@ export function getSystem() {
   const versions = getVersions();
   const router = toVersion(versions.router);
   const schema = toVersion(versions.schema);
-  const system = `router@${router}; schema@${schema}`;
+  const version = `router@${router}; schema@${schema}`;
   return {
-    system,
-    ...versions,
+    version,
+    versions,
   };
 }
 
+/**
+ * Read module versions.
+ */
 export function getVersions() {
   const depVersion = (key: string, version?: string) => {
     version = version || DEPS[key] || '-';

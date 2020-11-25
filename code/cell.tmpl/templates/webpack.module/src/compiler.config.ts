@@ -5,13 +5,22 @@ export default () =>
     .port(Package.compiler.port)
     .namespace('__NAME__')
 
-    .entry('./src/test/entry')
-    .entry('service.worker', './src/test/workers/service.worker')
-    .redirect(false, '*.worker.js')
     .static('./static')
 
-    .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
-    .expose('./Dev', './src/test/components/Dev')
+    .variant('web', (e) =>
+      e
+        .target('web')
+        .entry('./src/test/web.entry')
+        .entry('service.worker', './src/test/workers/service.worker')
+        .static('./static')
+        .expose('./Dev', './src/test/components/Dev')
+        .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
+        .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom'])),
+    )
 
-    .variant('prod', (config) => config.mode('prod'))
-    .variant('dev', (config) => config.mode('dev'));
+    .variant('node', (e) =>
+      e
+        .target('node')
+        .entry('./src/test/node.entry')
+        .shared((e) => e.add(e.dependencies)),
+    );

@@ -9,11 +9,15 @@ describe('match', () => {
     };
 
     test('*.js', 'foo.js', true);
-    test('*.js', 'boo/foo.js', false); // Path only
+    test('*.js', 'boo/foo.js', false); // Path only.
     test('**/*.js', 'foo.js', true);
     test('*/*.js', 'boo/foo.js', true);
     test('*/*.js', 'boom/boo/foo.js', false);
     test('**/*.js', 'boom/boo/foo.js', true);
+
+    // Negation ("!")
+    test('!src/*/*.js', 'src/bar/foo.js', false);
+    test('!src/*/*.js', 'src/bar/foo.png', true);
   });
 
   it('base', () => {

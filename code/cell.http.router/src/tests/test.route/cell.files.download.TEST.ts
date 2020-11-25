@@ -1,6 +1,7 @@
 /* eslint-disable */
 
-import { createMock, expect, fs, http, readFile, t, util } from '../../test';
+import { Uri } from '../../common';
+import { createMock, expect, fs, http, readFile, t, util, constants } from '../../test';
 
 const bodyToString = async (body?: ReadableStream | string | t.Json) => {
   if (typeof body === 'string') {
@@ -52,11 +53,12 @@ describe('cell/files: download', function () {
 
     it('download byName', async () => {
       const mock = await createMock();
-      const cellUri = 'cell:foo:A1';
-      const client = mock.client.cell(cellUri);
-      const urls = mock.urls.cell(cellUri);
 
       const test = async (source: string, filename: string, matchContent?: string) => {
+        const cellUri = Uri.create.cell(Uri.cuid(), 'A1');
+        const client = mock.client.cell(cellUri);
+        const urls = mock.urls.cell(cellUri);
+
         const path = fs.join('src/test/assets', source);
         const data = await readFile(path);
         await client.files.upload({ filename, data });
@@ -96,6 +98,34 @@ describe('cell/files: download', function () {
       await test('index.html', 'index.html', html);
       await test('index.html', 'foo/bar_zoo.v1/dist/index.html', html);
       await test('index.html', 'foo/bar-zoo.v2/dist/index.html', html);
+
+      // Finish up.
+      await mock.dispose();
+    });
+
+    it('cache downloaded [text/html] file (local filesystem)', async () => {
+      const CACHE_DIR = constants.PATH.CACHE_DIR;
+      await fs.remove(CACHE_DIR);
+
+      const mock = await createMock();
+
+      const cellUri = Uri.create.cell(Uri.cuid(), 'A1');
+      const client = mock.client.cell(cellUri);
+      const urls = mock.urls.cell(cellUri);
+
+      const filename = 'foobar/index.html';
+      const path = fs.join('src/test/assets', 'file.js');
+      const data = await readFile(path);
+      const upload = await client.files.upload({ filename, data });
+
+      const hash = upload.body.files[0].data.hash || '';
+      const cachedFile = fs.join(CACHE_DIR, hash);
+      expect(await fs.pathExists(cachedFile)).to.eql(false);
+
+      const url = urls.file.byName(filename).toString();
+      const res = await http.get(url);
+      expect(res.ok).to.eql(true);
+      expect(await fs.pathExists(cachedFile)).to.eql(true); // NB: File is now cached.
 
       // Finish up.
       await mock.dispose();

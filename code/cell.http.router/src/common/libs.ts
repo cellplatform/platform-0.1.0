@@ -10,7 +10,7 @@ export { fs } from '@platform/fs';
 export { http } from '@platform/http';
 export { value, id, defaultValue, time } from '@platform/util.value';
 export { Client, HttpClient } from '@platform/cell.client';
-export { MemoryCache } from '@platform/cache';
+export { MemoryCache, FileCache } from '@platform/cache';
 export { wildcard } from '@platform/util.string/lib/wildcard';
 
 export { TypeSystem, Uri } from './libs.cell';

@@ -3,7 +3,7 @@ import { local } from '@platform/cell.fs.local';
 import { IMicro, IMicroService, micro } from '@platform/micro';
 
 import { util, t, Schema, HttpClient } from '../common';
-import { CellRouter } from '..';
+import { Router } from '..';
 import { port as portUtil } from './util.port';
 
 export type IMock = {
@@ -27,6 +27,7 @@ const TMP = util.fs.resolve('tmp');
 const PATH = {
   TMP,
   FS: util.fs.join(TMP, 'fs'),
+  MOCK: util.fs.join(TMP, 'mock'),
 };
 let count = 0;
 
@@ -35,7 +36,9 @@ let count = 0;
  */
 export const mock = {
   async reset() {
-    await util.fs.remove(TMP);
+    const fs = util.fs;
+    await fs.remove(PATH.MOCK);
+    await fs.remove(PATH.FS);
   },
   async create() {
     return createMock();
@@ -45,21 +48,26 @@ export const mock = {
 /**
  * Create a mock server.
  */
-export const createMock = async (args: { port?: number } = {}): Promise<IMock> => {
+export const createMock = async (
+  args: { port?: number; runtime?: t.RuntimeEnv } = {},
+): Promise<IMock> => {
+  const { runtime } = args;
+
   count++;
-  const filename = util.fs.join(TMP, `mock/test-${count}.db`);
+
+  const filename = util.fs.join(PATH.MOCK, `test-${count}.db`);
   const port = args.port || (await portUtil.unused());
 
   const db = NeDb.create({ filename });
   const fs = local.init({ dir: PATH.FS, fs: util.fs });
 
   const body = micro.body;
-  const router = CellRouter.create({ name: 'Test', db, fs, body });
+  const router = Router.create({ name: 'Test', db, fs, body, runtime });
   const app = micro.create({ router });
   const service = await app.start({ port, silent: true });
 
   const urls = Schema.urls(`localhost:${port}`);
-  const hostname = urls.host;
+  const hostname = urls.hostname;
   const client = HttpClient.create(urls.origin);
   const origin = client.origin;
 

@@ -4,9 +4,6 @@ export const R = { uniq, mergeDeepRight, prop, sortBy, clone };
 import { micro } from '@platform/micro';
 export { micro };
 
-import { Router } from '@platform/http.router';
-export { Router };
-
 import { log } from '@platform/log/lib/server';
 export { log };
 

@@ -22,20 +22,19 @@ import * as t from '../types';
  *
  */
 export function remote(args: {
-  url: string;
+  url: string; // Remote manifest URL (eg ".../remoteEntry.js")
   namespace: string;
   entry: string;
   dispose$?: Observable<any>;
   silent?: boolean;
-}): t.RuntimeRemote {
+}): t.RuntimeRemoteWeb {
   const { url, namespace, entry, silent } = args;
 
-  const loadModule: t.RuntimeRemote['module'] = async () => {
+  const loadModule: t.RuntimeRemoteWeb['module'] = async () => {
     // Initializes the share scope.
     // This fills it with known provided modules from this build and all remotes.
     await __webpack_init_sharing__('default');
     const scope = Encoding.escapeNamespace(namespace);
-    // console.log('self', self);
     const container = self[scope]; // or get the container somewhere else
 
     // Initialize the container, it may provide shared modules.
@@ -45,9 +44,9 @@ export function remote(args: {
     return Module;
   };
 
-  const loadScript: t.RuntimeRemote['script'] = () => {
+  const loadScript: t.RuntimeRemoteWeb['script'] = () => {
     const stop$ = new Subject<any>();
-    const _event$ = new Subject<t.IRuntimeScriptEvent>();
+    const _event$ = new Subject<t.IRuntimeWebScriptEvent>();
     const event$ = _event$.pipe(takeUntil(stop$));
 
     if (args.dispose$) {
@@ -57,8 +56,8 @@ export function remote(args: {
     event$
       .pipe(
         filter(() => !silent),
-        filter((e) => e.type === 'Runtime/script'),
-        map((e) => e.payload as t.IRuntimeScript),
+        filter((e) => e.type === 'Runtime/web/script'),
+        map((e) => e.payload as t.IRuntimeWebScript),
       )
       .subscribe((e) => {
         if (e.ready) {
@@ -72,7 +71,7 @@ export function remote(args: {
     const next = (args: { ready: boolean; failed: boolean }) => {
       const { ready, failed } = args;
       const payload = { url, namespace, ready, failed };
-      _event$.next({ type: 'Runtime/script', payload });
+      _event$.next({ type: 'Runtime/web/script', payload });
     };
 
     const script = document.createElement('script');

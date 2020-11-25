@@ -63,7 +63,12 @@ export async function uploadFileStart(args: {
       status: 'UPLOADING',
       filehash: filehash || undefined,
     };
-    models.setProps(model, { mimetype, integrity, allowRedirect });
+    models.setProps(model, {
+      mimetype,
+      integrity,
+      allowRedirect,
+      's3:permission': permission,
+    });
 
     // Save the model.
     if (model.isChanged) {

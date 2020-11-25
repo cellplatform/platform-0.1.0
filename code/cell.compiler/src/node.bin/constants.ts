@@ -7,6 +7,7 @@ export const DEFAULT = {
 const PARAMS = {
   config: `(optional) Configuration file (default: "${DEFAULT.CONFIG.PATH}")`,
   name: `(optional) Named configuration to use`,
+  mode: `(optional) 'production' of 'development' (or use --prod --dev)`,
 };
 
 export const COMMANDS: t.Commands = {
@@ -15,6 +16,7 @@ export const COMMANDS: t.Commands = {
     params: {
       '--config': PARAMS.config,
       '--name': PARAMS.name,
+      '--mode': PARAMS.mode,
     },
   },
   watch: {
@@ -22,6 +24,7 @@ export const COMMANDS: t.Commands = {
     params: {
       '--config': PARAMS.config,
       '--name': PARAMS.name,
+      '--mode': PARAMS.mode,
     },
   },
   dev: {
@@ -29,6 +32,7 @@ export const COMMANDS: t.Commands = {
     params: {
       '--config': PARAMS.config,
       '--name': PARAMS.name,
+      '--mode': PARAMS.mode,
       '--no-exports': `(optional) Suppress module federation exports`,
     },
   },
@@ -42,6 +46,7 @@ export const COMMANDS: t.Commands = {
       '--dir': `(optional) The target directory within the cell`,
       '--sample': `(optional) Send to generated sample cell for testing`,
       '--no-bundle': `(optional) Skip bundling the project`,
+      '--mode': PARAMS.mode,
     },
   },
   info: {

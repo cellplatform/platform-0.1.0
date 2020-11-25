@@ -9,10 +9,10 @@ export default () =>
     .entry('./src/test/entry')
     .entry('service.worker', './src/workers/service.worker')
     .static('./static')
-    .redirect(false, 'static/**')
-    .redirect(false, '*.worker.js')
 
-    .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
+    .files((config) => config.redirect(false, 'static/**').redirect(false, '*.worker.js'))
+
+    .shared((config) => config.add(config.dependencies).singleton(['react', 'react-dom']))
 
     .expose('./Dev', './src/test/Dev')
     .expose('./Editor', './src/components/Editor')

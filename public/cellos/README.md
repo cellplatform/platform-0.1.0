@@ -1,2 +1,3 @@
-# cellos
-The CellOS (Spreadsheet Based Operating System)
+# CellOS
+
+The Cell operating system (CellOS).

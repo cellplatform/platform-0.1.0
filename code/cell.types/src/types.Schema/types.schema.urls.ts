@@ -13,10 +13,12 @@ export type IUrl<Q extends O = any> = {
 export type IUrls = {
   readonly protocol: t.HttpProtocol;
   readonly host: string;
+  readonly hostname: string;
   readonly port: number;
   readonly origin: string;
   readonly sys: IUrlsSys;
   readonly local: IUrlsLocal;
+  readonly func: IUrlsFunc;
   ns(input: string | t.INsUri): IUrlsNs;
   cell(input: string | t.ICellUri): IUrlsCell;
   row(input: string | t.IRowUri): IUrlsRow;
@@ -25,8 +27,14 @@ export type IUrls = {
 };
 
 export type IUrlsSys = {
-  info: t.IUrl;
-  uid: t.IUrl;
+  info: t.IUrl<t.IReqQuerySysInfo>;
+  uid: t.IUrl<t.IReqQuerySysUid>;
+};
+
+export type IUrlsFunc = {
+  base: t.IUrl<t.IReqQueryFunc>;
+  manifest(bundle: t.RuntimeBundleOrigin): t.IUrl<t.IReqQueryCellFileDownloadByName>;
+  files(bundle: t.RuntimeBundleOrigin): t.IUrl<t.IReqQueryCellFilesList>;
 };
 
 export type IUrlsNs = {

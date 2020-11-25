@@ -57,12 +57,11 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       const paramData = getParams({ params });
       const { status, error, cellUri } = paramData;
       const changes = query.changes;
-      const permission = query['s3:permission'];
       const body = ((await req.body.json()) || {}) as t.IReqPostCellFilesUploadStartBody;
 
       return !paramData.ns || error
         ? { status, data: { error } }
-        : uploadCellFilesStart({ db, fs, cellUri, body, host, changes, permission });
+        : uploadCellFilesStart({ db, fs, cellUri, body, host, changes });
     } catch (err) {
       return util.toErrorPayload(err);
     }

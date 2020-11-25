@@ -9,9 +9,8 @@ export async function uploadFiles(args: {
   urls: t.IUrls;
   cellUri: string;
   changes?: boolean;
-  permission?: t.FsS3Permission;
 }) {
-  const { http, urls, cellUri, permission } = args;
+  const { http, urls, cellUri } = args;
   const sendChanges = defaultValue(args.changes, false);
 
   let input = Array.isArray(args.input) ? args.input : [args.input];
@@ -27,7 +26,7 @@ export async function uploadFiles(args: {
 
   const fileUrls = urls.cell(cellUri).files;
   const url = {
-    start: fileUrls.upload.query({ changes: sendChanges, 's3:permission': permission }).toString(),
+    start: fileUrls.upload.query({ changes: sendChanges }).toString(),
     complete: fileUrls.uploaded.query({ changes: sendChanges }).toString(),
   };
 
@@ -37,9 +36,15 @@ export async function uploadFiles(args: {
    */
   const uploadStartBody: t.IReqPostCellFilesUploadStartBody = {
     expires: undefined, // Expires.
-    files: input.map(({ filename, data, mimetype, allowRedirect }) => {
-      const filehash = Schema.hash.sha256(data);
-      const file: t.IReqPostCellUploadFile = { filename, filehash, mimetype, allowRedirect };
+    files: input.map((item) => {
+      const filehash = Schema.hash.sha256(item.data);
+      const file: t.IReqPostCellUploadFile = {
+        filehash,
+        filename: item.filename,
+        mimetype: item.mimetype,
+        allowRedirect: item.allowRedirect,
+        's3:permission': item['s3:permission'],
+      };
       return file;
     }),
   };

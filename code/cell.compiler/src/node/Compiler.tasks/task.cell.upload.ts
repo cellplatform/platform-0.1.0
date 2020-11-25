@@ -1,9 +1,21 @@
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 
-import { DEFAULT, fs, HttpClient, log, logger, Model, Path, Schema, t, time } from '../common';
+import {
+  value,
+  DEFAULT,
+  fs,
+  HttpClient,
+  log,
+  logger,
+  Model,
+  Path,
+  Schema,
+  t,
+  time,
+} from '../common';
 import { BundleManifest } from '../Compiler';
-import { Redirects } from '../config/util.redirect';
+import { FileRedirects, FileAccess } from '../config';
 
 type FileUri = t.IUriData<t.IFileData>;
 type File = t.IHttpClientCellFileUpload;
@@ -25,19 +37,23 @@ export async function getFiles(args: {
   bundleDir: string;
   targetDir?: string;
   filter?: (path: string) => boolean;
-  redirects?: t.CompilerModelRedirectGrant[];
+  config?: t.CompilerModel;
 }) {
-  const { bundleDir, targetDir = '', redirects } = args;
+  const { bundleDir, targetDir = '', config } = args;
   const paths = await fs.glob.find(fs.resolve(`${bundleDir}/**`));
-
   const files = await Promise.all(
     paths
       .filter((path) => (args.filter ? args.filter(path) : true))
       .map(async (path) => {
         const data = await fs.readFile(path);
         const filename = fs.join(targetDir, path.substring(bundleDir.length + 1));
-        const allowRedirect = toRedirect({ path, redirects, bundleDir }).flag;
-        const file: File = { filename, data, allowRedirect };
+        const access = toAccess({ config, path, bundleDir });
+        const file = value.deleteUndefined<File>({
+          filename,
+          data,
+          allowRedirect: toRedirect({ config, path, bundleDir }).flag,
+          's3:permission': access.public ? 'public-read' : undefined,
+        });
         return file;
       }),
   );
@@ -63,8 +79,8 @@ export const upload: t.CompilerRunUpload = async (args) => {
   const { host, targetDir, targetCell, config } = args;
   const model = Model(args.config);
   const bundleDir = model.bundleDir;
-  const redirects = config.redirects;
-  const files = await getFiles({ bundleDir, targetDir, redirects });
+  const redirects = config.files?.redirects;
+  const files = await getFiles({ bundleDir, targetDir, config });
 
   const done$ = new Subject();
   writeLogFile(log, done$);
@@ -89,7 +105,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
       cell: cell.info.toString(),
       files: cell.files.list.query({ filter }).toString(),
       remote: urlByFilename(DEFAULT.FILE.JS.REMOTE_ENTRY),
-      manifest: urlByFilename(DEFAULT.FILE.JSON.INDEX),
+      manifest: urlByFilename(DEFAULT.FILE.JSON.MANIFEST),
       entry: urlByFilename(model.entryFile),
     };
   };
@@ -203,20 +219,26 @@ const logUploadFailure = (args: { host: string; bundleDir: string; errors: t.IFi
   });
 };
 
-function toRedirect(args: {
-  redirects?: t.CompilerModelRedirectGrant[];
-  bundleDir?: string;
-  path: string;
-}) {
-  const path = args.bundleDir ? args.path.substring(args.bundleDir.length + 1) : args.path;
-  const redirects = Redirects(args.redirects);
+function trimBundleDir(bundleDir: string | undefined, path: string) {
+  return bundleDir ? path.substring(bundleDir.length + 1) : path;
+}
+
+function toRedirect(args: { config?: t.CompilerModel; bundleDir?: string; path: string }) {
+  const path = trimBundleDir(args.bundleDir, args.path);
+  const redirects = FileRedirects(args.config?.files?.redirects);
   return redirects.path(path);
+}
+
+function toAccess(args: { config?: t.CompilerModel; bundleDir?: string; path: string }) {
+  const path = trimBundleDir(args.bundleDir, args.path);
+  const access = FileAccess(args.config?.files?.access);
+  return access.path(path);
 }
 
 async function updateManifest(args: {
   bundleDir: string;
   uploadedFiles: FileUri[];
-  redirects?: t.CompilerModelRedirectGrant[];
+  redirects?: t.CompilerModelRedirect[];
 }) {
   const { uploadedFiles, bundleDir, redirects } = args;
   const { manifest, path } = await BundleManifest.readFile({ bundleDir });
@@ -235,8 +257,6 @@ async function updateManifest(args: {
         const err = `UPLOAD FAILED: An uploaded file URI could not be found for file '${item.path}'.`;
         throw new Error(err);
       } else {
-        const redirect = toRedirect({ path: item.path, redirects });
-        item.allowRedirect = redirect.flag;
         item.uri = file.uri;
       }
     });

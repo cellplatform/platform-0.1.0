@@ -95,7 +95,7 @@ export function create(
 
         if (!options.silent) {
           const elapsed = log.gray(`[${timer.elapsed.toString()}]`);
-          const url = log.cyan(`http://localhost:${log.magenta(port)} ${elapsed}`);
+          const url = log.cyan(`http://localhost:${log.white(port)} ${elapsed}`);
           const props = value.deleteUndefined({
             ...(options.log || args.log || {}),
             prod: IS_PROD,
@@ -104,20 +104,16 @@ export function create(
           const max = keys.reduce((acc, next) => (next.length > acc ? next.length : acc), 0) + 2;
 
           logger.info();
-          logger.info.gray(`👋  Running on ${url}`);
+          logger.info.gray(`👋 Running on ${url}`);
           logger.info();
           keys.forEach((key) => {
-            const prefix = `${key}:${' '.repeat(10)}`.substring(0, max);
+            const prefix = `${key}${' '.repeat(10)}`.substring(0, max);
             logger.info.gray(`   • ${prefix} ${props[key].toString()}`);
           });
           logger.info();
         }
 
-        fire({
-          type: 'HTTP/started',
-          payload: { elapsed, port },
-        });
-
+        fire({ type: 'HTTP/started', payload: { elapsed, port } });
         resolve(service);
       });
     });

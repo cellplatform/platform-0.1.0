@@ -56,4 +56,5 @@ export const ROUTES = {
   COLUMN: {
     INFO: `/cell${KEY.NS}\\:${KEY.COLUMN}(/?)`,
   },
+  FUNC: `/func(/?)`,
 };

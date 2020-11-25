@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { t, log } from '../../common';
+import { t, log, constants } from '../../common';
 
 /**
  * Start listening to the given micro-service and log activity.
@@ -8,9 +8,12 @@ import { t, log } from '../../common';
 export function start(args: { app: t.IMicro; debounce?: number }) {
   const { app, debounce = 500 } = args;
 
+  const versions = constants.getVersions();
+  const routerVersion = `router@${versions.toVersion(versions.router)}`;
+
   const hr$ = new Subject();
   hr$.pipe(debounceTime(debounce)).subscribe((e) => {
-    log.info.gray('━'.repeat(50));
+    log.info.gray(`${hr(50)} ${routerVersion}`);
   });
 
   app.request$.subscribe((e) => {
@@ -18,6 +21,17 @@ export function start(args: { app: t.IMicro; debounce?: number }) {
     hr$.next();
   });
 }
+
+/**
+ * Generates a horizontal rule.
+ */
+export function hr(length = 50) {
+  return '━'.repeat(length);
+}
+
+/**
+ * [Helpers]
+ */
 
 const methodColor = (method: t.HttpMethod) => {
   const is = (methods: t.HttpMethod[]) => methods.includes(method);
