@@ -18,7 +18,7 @@ export type IReqPostFuncBody = {
 
 export type IResPostFunc = {
   elapsed: number;
-  cache: { existing: boolean; pulled: boolean };
+  cache: { exists: boolean; pulled: boolean };
   runtime: { name: t.RuntimeEnv['name'] };
   size: { bytes: number; files: number };
   errors: t.IRuntimeError[];

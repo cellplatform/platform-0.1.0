@@ -20,14 +20,14 @@ export async function execFunc(args: {
     const bundle: B = { host, uri, dir };
     const urls = Schema.urls(host);
 
-    const existing = await runtime.exists(bundle);
+    const exists = await runtime.exists(bundle);
     const res = await runtime.run(bundle, { silent, pull });
     const { manifest, errors } = res;
 
     const status = res.ok ? 200 : 500;
     const data: t.IResPostFunc = {
       elapsed: timer.elapsed.msec,
-      cache: { existing, pulled: pull ? true : !existing },
+      cache: { exists, pulled: pull ? true : !exists },
       runtime: { name: runtime.name },
       size: {
         bytes: defaultValue(manifest?.bytes, -1),
