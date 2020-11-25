@@ -1,5 +1,5 @@
 {
-  "name": "@platform/cell.electron",
+  "name": "@platform/cell.runtime.electron",
   "version": "0.0.152",
   "description": "Electron shell for CellOS.",
   "scripts": {

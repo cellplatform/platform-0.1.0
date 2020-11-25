@@ -8,7 +8,7 @@
     "packages": [
       "code/*",
       "code/cell.modules/pkg*/*",
-      "code/cell.electron/app",
+      "code/cell.runtime.electron/app",
       "code/cell.http/src.deployment",
       "code/cell.http/docker"
     ],

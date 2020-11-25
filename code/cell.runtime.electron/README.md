@@ -1,7 +1,7 @@
-![Module](https://img.shields.io/badge/%40platform-cell.electron-%23EA4E7E.svg)
+![Module](https://img.shields.io/badge/%40platform-cell.runtime.electron-%23EA4E7E.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![NPM](https://img.shields.io/npm/v/@platform/cell.electron.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/cell.electron)
-![banner](https://user-images.githubusercontent.com/185555/74685429-69334980-5233-11ea-9dfb-c51cbb577d69.png)
+[![NPM](https://img.shields.io/npm/v/@platform/cell.runtime.electron.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/cell.runtime.electron)
+![banner](https://user-images.githubusercontent.com/185555/100291428-9c84df00-2fe2-11eb-87fd-bceb40c5d066.png)
 
 Electron shell for the root Cell development environment.
 All product specific development environments can be "designed" and the "compiled" from here.
@@ -10,7 +10,7 @@ All product specific development environments can be "designed" and the "compile
 
 ## Setup
 
-    yarn add @platform/cell.electron
+    yarn add @platform/cell.runtime.electron
 
 <p>&nbsp;<p>
 
