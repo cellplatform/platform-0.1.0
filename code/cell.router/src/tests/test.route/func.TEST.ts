@@ -77,9 +77,11 @@ describe('func', function () {
         const res = await runtime.pull(bundle, { silent: true });
         await mock.dispose();
 
+        const urls = Schema.urls(mock.host);
+
         expect(res.ok).to.eql(true);
         expect(res.errors).to.eql([]);
-        expect(res.manifest).to.eql(Schema.urls(mock.host).runtime.manifest(bundle).toString());
+        expect(res.manifest).to.eql(urls.runtime.bundle.manifest(bundle).toString());
         expect(await runtime.exists(bundle)).to.eql(true);
       };
 

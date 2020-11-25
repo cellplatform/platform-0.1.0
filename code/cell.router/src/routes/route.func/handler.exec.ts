@@ -34,8 +34,8 @@ export async function execFunc(args: {
         files: defaultValue(manifest?.files.length, -1),
       },
       urls: {
-        files: urls.runtime.files(bundle).toString(),
-        manifest: urls.runtime.manifest(bundle).toString(),
+        files: urls.runtime.bundle.files(bundle).toString(),
+        manifest: urls.runtime.bundle.manifest(bundle).toString(),
       },
       errors,
     };

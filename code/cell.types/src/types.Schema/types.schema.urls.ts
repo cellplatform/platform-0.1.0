@@ -33,6 +33,10 @@ export type IUrlsSys = {
 
 export type IUrlsRuntime = {
   func: t.IUrl<t.IReqQueryFunc>;
+  bundle: IUrlsBundle;
+};
+
+export type IUrlsBundle = {
   manifest(bundle: t.RuntimeBundleOrigin): t.IUrl<t.IReqQueryCellFileDownloadByName>;
   files(bundle: t.RuntimeBundleOrigin): t.IUrl<t.IReqQueryCellFilesList>;
 };
