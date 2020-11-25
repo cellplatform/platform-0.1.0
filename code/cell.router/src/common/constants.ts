@@ -58,7 +58,7 @@ export function getVersions() {
   const version = {
     schema: depVersion('@platform/cell.schema'),
     types: depVersion('@platform/cell.types'),
-    router: depVersion('@platform/cell.http.router', PKG.version),
+    router: depVersion('@platform/cell.router', PKG.version),
     toVersion,
   };
 

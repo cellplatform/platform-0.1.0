@@ -2,11 +2,11 @@
  * Generated types defined in namespace:
  * 
  *    |                
- *    |➔  ns:foo
+ *    |➔  ns:foo.color
  *    |
  *
  * By:
- *    @platform/cell.typesystem@0.0.143
+ *    @platform/cell.typesystem@0.0.144
  * 
  * Notes: 
  * 
@@ -29,22 +29,11 @@
  *
  */
 export declare type TypeIndex = {
-  MyRow: MyRow;
   MyColor: MyColor;
-  MyOther: MyOther;
-};
-
-export declare type MyRow = {
-  title: string;
-  isEnabled: boolean;
-  color: MyColor;
 };
 
 export declare type MyColor = {
   label: string;
   color: 'red' | 'green' | 'blue';
-};
-
-export declare type MyOther = {
-  label: string;
+  description?: string;
 };

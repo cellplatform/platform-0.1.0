@@ -7,7 +7,7 @@ import { Http } from '@platform/http';
  *    Main integration tests using the [HttpClient]
  *    can be found in module:
  *
- *        @platform/cell.http.router
+ *        @platform/cell.router
  *
  */
 

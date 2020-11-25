@@ -13,7 +13,7 @@ import { t, fs } from '../common';
 let count = 0;
 
 export const tmpWasmHandler: t.RouteHandler = async (req) => {
-  const source = await fs.readFile(fs.resolve('../../cell.http.router/src/__TMP__/func.wasm'));
+  const source = await fs.readFile(fs.resolve('../../cell.router/src/__TMP__/func.wasm'));
   const typedArray = new Uint8Array(source);
 
   const env = {

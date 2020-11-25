@@ -1,6 +1,6 @@
-![Module](https://img.shields.io/badge/%40platform-cell.http.router-%23EA4E7E.svg)
+![Module](https://img.shields.io/badge/%40platform-cell.router-%23EA4E7E.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![NPM](https://img.shields.io/npm/v/@platform/cell.http.router.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/cell.http.router)
+[![NPM](https://img.shields.io/npm/v/@platform/cell.router.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/cell.router)
 ![banner](https://user-images.githubusercontent.com/185555/76151555-23bfb900-611b-11ea-9497-2773c93f61e3.png)
 
 Isolated router logic for the CellOS [HTTP server](../cell.http).
@@ -18,7 +18,7 @@ simulating incoming HTTP requests.
 
 ## Setup
 
-    yarn add @platform/cell.http.router
+    yarn add @platform/cell.router
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>
