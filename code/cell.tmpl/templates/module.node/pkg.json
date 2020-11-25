@@ -1,0 +1,22 @@
+{
+  "name": "__NAME__",
+  "version": "0.0.0",
+  "sideEffects": false,
+  "scripts": {
+    "start": "ts-node -T src/main/index",
+    "dev": "yarn start",
+    "build": "ts build --no-esm $@",
+    "bundle": "cell.compiler bundle node $@",
+    "watch": "cell.compiler watch node $@",
+    "upload": "cell.compiler upload node $@",
+    "info": "cell.compiler info node $@",
+    "clean": "cell.compiler clean $@"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@platform/ts": "latest",
+    "@platform/cell.compiler": "latest"
+  },
+  "license": "MIT",
+  "private": true
+}

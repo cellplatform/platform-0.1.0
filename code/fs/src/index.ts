@@ -1,1 +1,4 @@
-export * from './fs';
+import { fs } from './fs';
+
+export { fs };
+export default fs;

@@ -12,7 +12,7 @@ const NPM_TOKEN = process.env.NPM_TOKEN_TEST;
  * and ensure there is a `.npmrc` file within the project
  * containing:
  *
- *    //registry.npmjs.org/:_authToken=${NPM_TOKEN}
+ *    `//registry.npmjs.org/:_authToken=${NPM_TOKEN}`
  *
  */
 describe('util.npm (integration)', function () {
