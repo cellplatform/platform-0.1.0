@@ -17,9 +17,10 @@ export async function upload(argv: t.Argv) {
   const model = Model(config);
   const target = model.target();
 
-  let host = ((argv.host as string) || '').trim();
   let uri: string | undefined = argv.uri;
   let targetDir: string | undefined = argv.dir;
+  let host = typeof argv.host === 'number' ? `localhost:${argv.host}` : (argv.host as string) || '';
+  host = host.trim();
 
   // If a "sample upload" was request, wrangle arguments.
   const sample = Boolean(argv.sample)
