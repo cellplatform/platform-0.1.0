@@ -3,7 +3,7 @@ import * as cell from './route.cell';
 import * as cellFile from './route.cell.file';
 import * as cellFiles from './route.cell.files';
 import * as file from './route.file';
-import * as func from './route.func';
+import * as func from './route.runtime.func';
 import * as ns from './route.ns';
 import { sys } from './route.sys';
 import { wildcard } from './route.wildcard';
