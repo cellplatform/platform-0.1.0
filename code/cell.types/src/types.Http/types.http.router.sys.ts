@@ -8,7 +8,7 @@ export type IResGetSysInfo = {
   name: string;
   host: string;
   region: string;
-  version: string;
+  system: string;
   deployedAt?: number;
   hash?: string;
 };

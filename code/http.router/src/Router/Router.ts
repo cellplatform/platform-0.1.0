@@ -31,7 +31,6 @@ export class Router<C extends Record<string, unknown> = any> implements t.IRoute
    */
   private readonly args: t.IRouterArgs;
   private _wildcard: t.IRoute<C> | undefined;
-
   public routes: t.IRoute[] = [];
 
   /**

@@ -34,6 +34,7 @@ export { PKG };
 const DEPS = PKG.dependencies;
 
 const toVersion = (input: string) => (input || '').split('@')[2];
+
 export function getSystem() {
   const versions = getVersions();
   const router = toVersion(versions.router);
