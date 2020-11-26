@@ -3,13 +3,15 @@ import { t } from '../common';
 type O = Record<string, unknown>;
 
 /**
- * POST: Cell/func
+ * POST: Execute Function(s).
  */
 export type IReqQueryFunc = O; // 🐷 Placeholder type.
 
-export type IReqPostFuncBody = {
-  uri: string; // cell uri
-  host?: string;
+export type IReqPostFuncBody = t.IReqPostFuncBundle | t.IReqPostFuncBundle[];
+
+export type IReqPostFuncBundle = {
+  uri: string; // Cell URI
+  host?: string; // NB: the running system's host is used if not specified.
   dir?: string;
   params?: t.JsonMap;
   pull?: boolean; // Flag to force pull the bundle (if it's already cached.)
@@ -18,7 +20,7 @@ export type IReqPostFuncBody = {
 
 export type IResPostFunc = {
   elapsed: number;
-  results: IResPostFuncBundle[];
+  results: t.IResPostFuncBundle[];
 };
 
 export type IResPostFuncBundle = {

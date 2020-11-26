@@ -9,18 +9,21 @@ export async function exec(args: {
   body: t.IReqPostFuncBody;
 }) {
   try {
-    const { host, db, body, runtime } = args;
-    const bundleRes = await execBundle({ host, db, body, runtime });
+    const { host, db, runtime } = args;
+    const bundles = Array.isArray(args.body) ? args.body : [args.body];
+    const results: t.IResPostFuncBundle[] = [];
 
-    const results = [bundleRes];
+    for (const body of bundles) {
+      const res = await execBundle({ host, db, body, runtime });
+      results.push(res);
+    }
+
     const elapsed = results.reduce((acc, next) => acc + next.elapsed, 0);
-
     const data: t.IResPostFunc = {
       elapsed,
       results,
     };
 
-    // Finish up.
     const status = data.results.every((res) => res.ok) ? 200 : 500;
     return { status, data };
   } catch (err) {
@@ -35,7 +38,7 @@ async function execBundle(args: {
   host: string;
   db: t.IDb;
   runtime: t.RuntimeEnv;
-  body: t.IReqPostFuncBody;
+  body: t.IReqPostFuncBundle;
 }) {
   const startedAt = new Date();
   const { body, runtime } = args;
