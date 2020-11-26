@@ -50,7 +50,7 @@ const uploadBundle = async (
   return { files, upload, bundle };
 };
 
-describe('func', function () {
+describe.only('func', function () {
   this.timeout(99999);
 
   before(async () => {
@@ -196,7 +196,7 @@ describe('func', function () {
         expect(await runtime.exists(bundle)).to.eql(true);
 
         console.log('-------------------------------------------');
-        console.log('res', res);
+        console.log('test/run :: res', res);
 
         await mock.dispose();
       });
@@ -248,11 +248,11 @@ describe('func', function () {
       const json = res.json as t.IResPostFunc;
 
       expect(json.elapsed).to.greaterThan(0);
-      expect(json.runtime.name).to.eql('node');
-      expect(json.urls.manifest).to.match(/^http:\/\/localhost\:.*index\.json$/);
-      expect(json.urls.files).to.include(`filter=${dir}/**`);
-      expect(json.size.bytes).to.greaterThan(1000);
-      expect(json.size.files).to.greaterThan(1);
+      expect(json.results[0].runtime.name).to.eql('node');
+      expect(json.results[0].urls.manifest).to.match(/^http:\/\/localhost\:.*index\.json$/);
+      expect(json.results[0].urls.files).to.include(`filter=${dir}/**`);
+      expect(json.results[0].size.bytes).to.greaterThan(1000);
+      expect(json.results[0].size.files).to.greaterThan(1);
 
       await mock.dispose();
     });
@@ -268,9 +268,9 @@ describe('func', function () {
 
       expect(res.ok).to.eql(false);
       expect(res.status).to.eql(500);
-      expect(json.errors.length).to.eql(1);
+      expect(json.results[0].errors.length).to.eql(1);
 
-      const error = json.errors[0];
+      const error = json.results[0].errors[0];
       expect(error.type).to.eql('RUNTIME/pull');
       expect(error.message).to.include('contains no files to pull');
       expect(error.bundle).to.eql(bundle);

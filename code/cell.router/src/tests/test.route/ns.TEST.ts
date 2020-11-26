@@ -583,8 +583,6 @@ describe('ns:', function () {
       const A1 = (res.data.cells || {}).A1 || {};
 
       console.log('-------------------------------------------');
-      // console.log('res1', res.json);
-      console.log('-------------------------------------------');
       console.log('A1', A1);
     });
   });

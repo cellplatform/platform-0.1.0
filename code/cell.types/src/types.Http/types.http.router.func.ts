@@ -18,9 +18,16 @@ export type IReqPostFuncBody = {
 
 export type IResPostFunc = {
   elapsed: number;
+  results: IResPostFuncBundle[];
+};
+
+export type IResPostFuncBundle = {
+  ok: boolean;
+  elapsed: number;
+  bundle: t.RuntimeBundleOrigin;
   cache: { exists: boolean; pulled: boolean };
   runtime: { name: t.RuntimeEnv['name'] };
   size: { bytes: number; files: number };
-  errors: t.IRuntimeError[];
   urls: { files: string; manifest: string };
+  errors: t.IRuntimeError[];
 };
