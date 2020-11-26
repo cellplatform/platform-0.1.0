@@ -7,6 +7,12 @@ type O = Record<string, unknown>;
  */
 export type IReqQueryFunc = O; // 🐷 Placeholder type.
 
+/**
+ * TODO 🐷 - Func Query String
+ * - pull: boolean    - global "pull" param if undefined on Body.
+ * - silent: boolean  - global "silent" param if undefined on Body.
+ */
+
 export type IReqPostFuncBody = t.IReqPostFuncBundle | t.IReqPostFuncBundle[];
 
 export type IReqPostFuncBundle = {

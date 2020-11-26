@@ -50,7 +50,7 @@ const uploadBundle = async (
   return { files, upload, bundle };
 };
 
-describe.only('func', function () {
+describe('func', function () {
   this.timeout(99999);
 
   before(async () => {
@@ -196,7 +196,9 @@ describe.only('func', function () {
         expect(await runtime.exists(bundle)).to.eql(true);
 
         console.log('-------------------------------------------');
-        console.log('test/run :: res', res);
+        console.log('test/run :: res', res.ok);
+        console.log('TODO', 'return data');
+        console.log('TODO', 'params');
 
         await mock.dispose();
       });
@@ -232,29 +234,65 @@ describe.only('func', function () {
   });
 
   describe('over http', () => {
-    it('success', async () => {
-      const dir = 'foo';
-      const { mock, bundle, client, http, url } = await prepare({ dir });
-      const { host, uri } = bundle;
+    describe('POST success', () => {
+      const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncBundle) => {
+        expect(res.ok).to.eql(true);
 
-      // TODO 🐷 TEMP addresses
-      // const http = Http.create();
+        expect(res.runtime.name).to.eql('node');
+        expect(res.urls.manifest).to.match(/^http:\/\/localhost\:.*index\.json$/);
+        if (dir) {
+          expect(res.urls.files).to.include(`filter=${dir}/**`);
+        } else {
+          expect(res.urls.files).to.not.eql(`filter=`);
+        }
+        expect(res.size.bytes).to.greaterThan(1000);
+        expect(res.size.files).to.greaterThan(1);
+        expect(res.errors).to.eql([]);
+      };
 
-      await uploadBundle(client, bundle);
+      it('body: single function', async () => {
+        const dir = 'foo';
+        const { mock, bundle, client, http, url } = await prepare({ dir });
+        const { host, uri } = bundle;
+        await uploadBundle(client, bundle);
 
-      // mock.
-      const data: t.IReqPostFuncBody = { host, uri, dir };
-      const res = await http.post(url, data);
-      const json = res.json as t.IResPostFunc;
+        const body: t.IReqPostFuncBody = { host, uri, dir };
+        const res = await http.post(url, body);
+        const json = res.json as t.IResPostFunc;
+        await mock.dispose();
 
-      expect(json.elapsed).to.greaterThan(0);
-      expect(json.results[0].runtime.name).to.eql('node');
-      expect(json.results[0].urls.manifest).to.match(/^http:\/\/localhost\:.*index\.json$/);
-      expect(json.results[0].urls.files).to.include(`filter=${dir}/**`);
-      expect(json.results[0].size.bytes).to.greaterThan(1000);
-      expect(json.results[0].size.files).to.greaterThan(1);
+        expect(json.elapsed).to.greaterThan(0);
+        expect(json.results.length).to.eql(1);
+        expect(json.results[0].bundle).to.eql(bundle);
+        expectFuncResponse(dir, json.results[0]);
 
-      await mock.dispose();
+        expect(json.results[0].cache.exists).to.eql(false);
+        expect(json.results[0].cache.pulled).to.eql(true);
+      });
+
+      it('body: multiple functions in single payload', async () => {
+        const dir = undefined;
+        const { mock, bundle, client, http, url } = await prepare({ dir });
+        await uploadBundle(client, bundle);
+
+        const body: t.IReqPostFuncBody = [bundle, bundle];
+        const res = await http.post(url, body);
+        const json = res.json as t.IResPostFunc;
+        await mock.dispose();
+
+        expect(json.elapsed).to.greaterThan(0);
+        expect(json.results.length).to.eql(2);
+        expectFuncResponse(dir, json.results[0]);
+        expectFuncResponse(dir, json.results[1]);
+
+        // Not cached (initial pull).
+        expect(json.results[0].cache.exists).to.eql(false);
+        expect(json.results[0].cache.pulled).to.eql(true);
+
+        // Already cached.
+        expect(json.results[1].cache.exists).to.eql(true);
+        expect(json.results[1].cache.pulled).to.eql(false);
+      });
     });
 
     it('error: bundle does not exist (pull error)', async () => {
