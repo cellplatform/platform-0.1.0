@@ -1,10 +1,10 @@
-# 
+#
 # https://docs.docker.com/compose/
-# 
+#
 version: '3.8'
 services:
   cell:
-    image: domains/cell
+    build: .
     ports:
       - '8080:8080'
     volumes:

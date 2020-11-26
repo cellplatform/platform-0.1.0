@@ -6,7 +6,7 @@ import { NodeRuntime } from '@platform/cell.runtime/lib/node';
 import { server, util } from './common';
 
 util.env.load();
-const TMP = util.resolve('tmp');
+const TMP = util.resolve('./tmp/env.node');
 
 /**
  * Database.
@@ -49,7 +49,7 @@ const runtime = NodeRuntime.create();
  * Initialize and start the HTTP application server.
  */
 const app = server.create({
-  name: 'sample',
+  name: 'cell.node',
   db,
   // fs: filesystem.spaces(),
   // fs: filesystem.wasabi(),
