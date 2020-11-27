@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.editor.code",
-  "version": "0.0.22",
+  "version": "0.0.26",
   "compiler": {
     "port": 3003
   },
@@ -17,12 +17,12 @@
     "copy": "ts-node -T src/node/fs.copy/run"
   },
   "dependencies": {
-    "@monaco-editor/react": "^3.6.3",
+    "@monaco-editor/react": "^3.7.0",
     "monaco-editor": "^0.21.2"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.2.20",
-    "sys.ui.harness": "^0.0.22",
+    "@platform/cell.compiler": "^0.2.24",
+    "sys.ui.harness": "^0.0.26",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

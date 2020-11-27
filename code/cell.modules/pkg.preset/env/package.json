@@ -1,10 +1,10 @@
 {
   "name": "preset.env",
-  "version": "0.0.0",
+  "version": "0.0.4",
   "dependencies": {
     "@platform/libs": "^0.2.2",
-    "@platform/types": "^0.5.8",
-    "@platform/util.value": "^0.8.1"
+    "@platform/types": "^0.5.11",
+    "@platform/util.value": "^0.8.9"
   },
   "license": "MIT",
   "private": true

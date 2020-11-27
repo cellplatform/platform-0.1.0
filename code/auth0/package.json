@@ -1,6 +1,6 @@
 {
   "name": "@platform/auth0",
-  "version": "0.2.159",
+  "version": "0.2.163",
   "description": "Interfaces for working with Auth0.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,9 +16,9 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/http": "0.14.0",
-    "@platform/util.is": "0.0.135",
-    "@platform/util.string": "0.5.18",
+    "@platform/http": "0.14.4",
+    "@platform/util.is": "0.0.139",
+    "@platform/util.string": "0.5.22",
     "@types/jsonwebtoken": "8.5.0",
     "auth0-js": "9.14.0",
     "jsonwebtoken": "8.5.1",
@@ -26,11 +26,12 @@
   },
   "devDependencies": {
     "@platform/polyfill": "0.0.1",
-    "@platform/react": "0.4.53",
+    "@platform/react": "0.4.57",
     "@types/auth0-js": "9.14.2",
     "apollo-server": "2.19.0",
-    "electron": "10.1.5",
-    "graphql": "15.4.0"
+    "electron": "11.0.3",
+    "graphql": "15.4.0",
+    "@platform/ts": "4.1.0"
   },
   "files": [
     "lib",
