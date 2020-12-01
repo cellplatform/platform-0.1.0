@@ -1,7 +1,7 @@
 {
-  "name": "@platform/cell.http",
-  "version": "0.7.242",
-  "description": "HTTP server for the Cell operating system.",
+  "name": "@platform/cell.service",
+  "version": "0.8.0",
+  "description": "HTTP micro-service for the operating system.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
