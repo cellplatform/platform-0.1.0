@@ -7,18 +7,18 @@ import { server, util } from './common';
 util.env.load();
 const datadir = util.resolve('./.data');
 
+const env = process.env;
+
 /**
  * Database.
  */
-const filename = `${datadir}/sample.db`;
+const filename = `${datadir}/${env.DB_FILENAME || 'sample.db'}`;
 const db = NeDb.create({ filename });
 
 /**
  * File system.
  */
-const filesystem = {
-  local: () => local.init({ dir: `${datadir}/fs`, fs: util.fs }),
-};
+const fs = local.init({ dir: `${datadir}/${env.FS_FILENAME || 'sample.fs'}`, fs: util.fs });
 
 /**
  * Function Runtime.
@@ -29,21 +29,22 @@ const runtime = NodeRuntime.create();
  * Initialize and start the HTTP application server.
  */
 const app = server.create({
-  name: 'cell.docker',
+  name: env.SERVER_NAME || 'sample',
   db,
-  fs: filesystem.local(),
+  fs,
   runtime,
 });
 
-app.start({ port: 8080 });
+app.start({ port: 5000 });
 server.logger.start({ app });
 
 app.router.get('/tmp', async (req) => {
   const fs = util.fs;
 
-  const res = {
+  const data = {
     datadir,
+    process: process.env,
   };
 
-  return { data: res };
+  return { data };
 });

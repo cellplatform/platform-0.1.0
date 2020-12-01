@@ -3,9 +3,14 @@
 #
 version: '3.8'
 services:
-  cell:
+  web:
     build: .
     ports:
-      - '8080:8080'
+      - '5000:5000'
     volumes:
-      - ./.data:/usr/cell/.data
+      - ./data:/usr/cell/.data
+    environment:
+      NODE_ENV: production
+      SERVER_NAME: cell.docker
+      DB_FILENAME: cell.db
+      FS_FILENAME: cell.fs

@@ -2,7 +2,8 @@
   "name": "cell.docker",
   "version": "0.0.0",
   "scripts": {
-    "start": "docker-compose up $@"
+    "up": "docker-compose up $@",
+    "down": "docker-compose up $@"
   },
   "private": true
 }

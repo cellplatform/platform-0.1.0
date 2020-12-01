@@ -5,7 +5,8 @@ version: '3.8'
 services:
   cell:
     image: domains/cell
+    restart: unless-stopped
     ports:
       - '8080:8080'
     volumes:
-      - ./.data:/usr/cell/.data
+      - ./data:/usr/cell/.data
