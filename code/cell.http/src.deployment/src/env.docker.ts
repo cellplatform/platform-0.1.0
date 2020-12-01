@@ -37,14 +37,3 @@ const app = server.create({
 
 app.start({ port: 5000 });
 server.logger.start({ app });
-
-app.router.get('/tmp', async (req) => {
-  const fs = util.fs;
-
-  const data = {
-    datadir,
-    process: process.env,
-  };
-
-  return { data };
-});

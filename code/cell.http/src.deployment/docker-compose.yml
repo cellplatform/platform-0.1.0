@@ -1,15 +1,19 @@
 #
-# https://docs.docker.com/compose/
+# https://docs.docker.com/compose
+# https://hub.docker.com/repository/docker/domains/cell
+#
+# Mappings: <external> => <internal>
 #
 version: '3.8'
 services:
   web:
     build: .
     ports:
-      - '5000:5000'
+      - '8080:5000'
     volumes:
       - ./data:/usr/cell/.data
     environment:
+      PORT: '8080:5000'
       NODE_ENV: production
       SERVER_NAME: cell.docker
       DB_FILENAME: cell.db
