@@ -31,12 +31,12 @@ export function create(
   const _events$ = new Subject<t.MicroEvent>();
   const events$ = _events$.pipe(share());
   const request$ = _events$.pipe(
-    filter((e) => e.type === 'HTTP/request'),
+    filter((e) => e.type === 'SERVICE/request'),
     map((e) => e.payload as t.IMicroRequest),
     share(),
   );
   const response$ = _events$.pipe(
-    filter((e) => e.type === 'HTTP/response'),
+    filter((e) => e.type === 'SERVICE/response'),
     map((e) => e.payload as t.IMicroResponse),
     share(),
   );
@@ -63,7 +63,7 @@ export function create(
               service.isRunning = false;
               api.service = undefined;
               fire({
-                type: 'HTTP/stopped',
+                type: 'SERVICE/stopped',
                 payload: {
                   port,
                   elapsed: timer.elapsed,
@@ -113,7 +113,7 @@ export function create(
           logger.info();
         }
 
-        fire({ type: 'HTTP/started', payload: { elapsed, port } });
+        fire({ type: 'SERVICE/started', payload: { elapsed, port } });
         resolve(service);
       });
     });
