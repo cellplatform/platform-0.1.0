@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, share } from 'rxjs/operators';
 
 import { body } from '../body';
-import { log, Router, t, time, value } from '../common';
+import { log, Router, t, time, value, parsePort } from '../common';
 import { requestHandler } from './server.requestHandler';
 
 export * from '../types';
@@ -52,7 +52,8 @@ export function create(
    */
   const start: t.ServerStart = (options = {}) => {
     const promise = new Promise<t.IMicroService>((resolve, reject) => {
-      const port = options.port || args.port || 3000;
+      const PORT = parsePort(options.port || args.port || 3000);
+      const port = PORT.internal;
 
       const stop: t.IMicroService['stop'] = () => {
         return new Promise(async (resolve, reject) => {
@@ -85,7 +86,7 @@ export function create(
         events$,
         request$,
         response$,
-        port,
+        port: PORT.internal,
         stop,
       };
       api.service = service;
@@ -95,7 +96,8 @@ export function create(
 
         if (!options.silent) {
           const elapsed = log.gray(`[${timer.elapsed.toString()}]`);
-          const url = log.cyan(`http://localhost:${log.white(port)} ${elapsed}`);
+          const portMap = PORT.internal === PORT.external ? '' : log.gray(` ⬅︎ ${PORT.internal}`);
+          const url = log.cyan(`http://localhost:${log.white(PORT.external)}${portMap} ${elapsed}`);
           const props = value.deleteUndefined({
             ...(options.log || args.log || {}),
             prod: IS_PROD,

@@ -6,7 +6,7 @@ import * as t from './common/types';
 export type ILogProps = { [key: string]: string | number | boolean | undefined };
 
 export type ServerStart = (options?: {
-  port?: number;
+  port?: number | string; // NB: string allows for Docker style mappings <external> => <internal>. Where <internal> is used.
   log?: ILogProps;
   silent?: boolean;
 }) => Promise<IMicroService>;

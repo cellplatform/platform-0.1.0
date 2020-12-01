@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
+import { expectError } from '@platform/test';
 import { micro } from '..';
 import { expect, FormData, fs, http, mockServer, randomPort, t, time } from '../test';
 
@@ -29,7 +30,7 @@ describe('micro (server)', () => {
     await mock.dispose();
 
     expect(res.status).to.eql(200);
-    expect(await res.json).to.eql({ msg: 'hello' });
+    expect(res.json).to.eql({ msg: 'hello' });
   });
 
   it('404 (default)', async () => {
@@ -72,6 +73,41 @@ describe('micro (server)', () => {
     await app.stop();
     expect(app.service).to.eql(undefined);
     expect(service.isRunning).to.eql(false);
+  });
+
+  it('starts with port/string mapping (<external> => <internal>)', async () => {
+    const test = async (port: string, expected: number) => {
+      const app = micro.create();
+      const res = await app.start({ port, silent: true });
+
+      expect(app.service?.port).to.eql(expected);
+      expect(res.port).to.eql(expected);
+
+      await app.stop();
+    };
+
+    await test('8080:1234', 1234);
+    await test('1234:1234', 1234);
+    await test('  8080:1234  ', 1234);
+    await test('  :1234  ', 1234);
+    await test('  1234  ', 1234);
+    await test('  1234  :  8080  ', 8080);
+  });
+
+  it('throw: invalid port string', async () => {
+    const test = async (port: string) => {
+      expectError(async () => {
+        const app = micro.create();
+        await app.start({ port, silent: true });
+        await app.stop();
+      }, 'Invalid port string');
+    };
+
+    test('');
+    test('  ');
+    test(' foo ');
+    test(' 1234:foo ');
+    test(' 1234:8080:3000 ');
   });
 
   it('context (default)', async () => {
@@ -312,7 +348,7 @@ describe('micro (server)', () => {
   });
 
   describe('events$', () => {
-    it('HTTP/started | MICRO/stopped', async () => {
+    it('SERVICE/started | MICRO/stopped', async () => {
       const port = randomPort();
       const app = micro.create({ port });
 
@@ -329,7 +365,7 @@ describe('micro (server)', () => {
       expect(events.length).to.eql(1);
 
       const e1 = events[0] as t.IMicroStartedEvent;
-      expect(e1.type).to.eql('HTTP/started');
+      expect(e1.type).to.eql('SERVICE/started');
       expect(e1.payload.elapsed.msec).to.greaterThan(0);
       expect(e1.payload.port).to.eql(port);
 
@@ -338,13 +374,13 @@ describe('micro (server)', () => {
       expect(events.length).to.eql(2);
 
       const e2 = events[1] as t.IMicroStoppedEvent;
-      expect(e2.type).to.eql('HTTP/stopped');
+      expect(e2.type).to.eql('SERVICE/stopped');
       expect(e2.payload.port).to.eql(port);
       expect(e2.payload.error).to.eql(undefined);
       expect(e2.payload.elapsed.msec).to.greaterThan(20);
     });
 
-    it('HTTP/request | HTTP/response', async () => {
+    it('SERVICE/request | SERVICE/response', async () => {
       const mock = await mockServer();
       const events: t.MicroEvent[] = [];
       mock.app.events$.subscribe((e) => events.push(e));
@@ -359,7 +395,7 @@ describe('micro (server)', () => {
       expect(events.length).to.eql(2); // [request] AND [response] events.
 
       const e1 = events[0] as t.IMicroRequestEvent;
-      expect(e1.type).to.eql('HTTP/request');
+      expect(e1.type).to.eql('SERVICE/request');
       expect(e1.payload.isModified).to.eql(false);
       expect(e1.payload.url).to.eql('/foo');
       expect(e1.payload.method).to.eql('GET');
@@ -367,7 +403,7 @@ describe('micro (server)', () => {
       expect(e1.payload.error).to.eql(undefined);
 
       const e2 = events[1] as t.IMicroResponseEvent;
-      expect(e2.type).to.eql('HTTP/response');
+      expect(e2.type).to.eql('SERVICE/response');
       expect(e2.payload.isModified).to.eql(false);
       expect(e2.payload.url).to.eql('/foo');
       expect(e2.payload.method).to.eql('GET');
@@ -380,7 +416,7 @@ describe('micro (server)', () => {
       await mock.dispose();
     });
 
-    describe('HTTP/request: modify', () => {
+    describe('SERVICE/request: modify', () => {
       it('sync', async () => {
         const mock = await mockServer();
         const events: t.MicroEvent[] = [];
@@ -440,7 +476,7 @@ describe('micro (server)', () => {
       });
     });
 
-    describe('HTTP/response: modify', () => {
+    describe('SERVICE/response: modify', () => {
       it('sync', async () => {
         const mock = await mockServer();
 

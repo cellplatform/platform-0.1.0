@@ -4,10 +4,13 @@ import { NodeRuntime } from '@platform/cell.runtime/lib/node';
 
 import { server, util } from './common';
 
-util.env.load();
+const env = process.env;
 const datadir = util.resolve('./.data');
 
-const env = process.env;
+// NB: Docker passes these "termination signals" to the container upon closing.
+const exitOnSignal = (signal: string) => process.on(signal, () => process.exit(1));
+exitOnSignal('SIGINT');
+exitOnSignal('SIGTERM');
 
 /**
  * Database.
