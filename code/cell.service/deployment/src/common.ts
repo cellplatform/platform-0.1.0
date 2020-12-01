@@ -3,7 +3,7 @@ import { fs } from '@platform/fs';
 import { log } from '@platform/log/lib/server';
 
 export { t, fs, log };
-export { server } from '@platform/cell.http/lib/server';
+export { server } from '@platform/cell.service/lib/server';
 export { time } from '@platform/util.value';
 
 export const env = fs.env;

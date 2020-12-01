@@ -204,7 +204,7 @@ async function copyAndPrepare(args: {
     if (file) {
       const pkg = await fs.file.loadAndParse<t.INpmPackageJson>(file.to);
       if (pkg.dependencies) {
-        pkg.version = pkg.dependencies['@platform/cell.http'];
+        pkg.version = pkg.dependencies['@platform/cell.service'];
       }
       if (args.target === 'now') {
         delete pkg.scripts;
@@ -273,7 +273,7 @@ async function getTmplDir() {
     return local;
   }
 
-  const nodeModules = await get(`node_modules/@platform/cell.http/${name}`);
+  const nodeModules = await get(`node_modules/@platform/cell.service/${name}`);
   if (nodeModules) {
     return nodeModules;
   }

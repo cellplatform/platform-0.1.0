@@ -38,5 +38,5 @@ const app = server.create({
   runtime,
 });
 
-app.start({ port: 5000 });
+app.start({ port: env.PORT || 5000 });
 server.logger.start({ app });
