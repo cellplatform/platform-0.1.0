@@ -9,10 +9,10 @@
   },
   "scripts": {
     "cell": "node lib/cli/bin $@",
-    "start": "cd src.deployment && yarn start $@",
+    "start": "cd deployment && yarn start $@",
     "dev": "export NODE_ENV=development && yarn start",
-    "watch": "cd src.deployment && yarn watch $@",
-    "now": "cd src.deployment && yarn vercel $@",
+    "watch": "cd deployment && yarn watch $@",
+    "now": "cd deployment && yarn vercel $@",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
@@ -20,7 +20,7 @@
     "deploy": "yarn cell deploy $@",
     "prepare": "ts-node -T script.ts/prepare && ts prepare && rm -rf tmp",
     "reset": "ts-node -T script.ts/reset",
-    "nuke": "rm -rf node_modules && rm -rf src.deployment/node_modules"
+    "nuke": "rm -rf node_modules && rm -rf deployment/node_modules"
   },
   "dependencies": {
     "@platform/cell.router": "0.8.65",

@@ -4,5 +4,5 @@ import { fs } from '@platform/fs';
   const remove = (path: string) => fs.remove(fs.resolve(path));
 
   await remove('tmp');
-  await remove('src.deployment/tmp');
+  await remove('deployment/tmp');
 })();
