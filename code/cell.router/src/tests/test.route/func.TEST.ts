@@ -233,7 +233,7 @@ describe('func', function () {
     });
   });
 
-  describe.only('over http', () => {
+  describe('over http', () => {
     describe('POST success', () => {
       const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncRunResult) => {
         expect(res.ok).to.eql(true);
@@ -294,7 +294,7 @@ describe('func', function () {
         expect(json.results[1].cache.pulled).to.eql(false);
       });
 
-      it.only('query-string: pull', async () => {
+      it('query-string: pull', async () => {
         const dir = 'foo';
         const { mock, bundle, client, http } = await prepare({ dir });
         const { host, uri } = bundle;
@@ -326,7 +326,7 @@ describe('func', function () {
         expect(res4.results[0].cache.pulled).to.eql(true); // Overridden in body.
       });
 
-      it.only('query-string: silent', async () => {
+      it('query-string: silent', async () => {
         const dir = 'foo';
         const { mock, bundle, client, http } = await prepare({ dir });
         const { host, uri } = bundle;
