@@ -18,7 +18,7 @@ export const TestCompile = {
     get config() {
       return Compiler.config()
         .namespace('test.node')
-        .dir(outdir)
+        .outdir(outdir)
         .entry('./src/tests/test.Compilation/sample.node/main')
         .target('node');
     },

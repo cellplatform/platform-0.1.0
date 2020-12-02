@@ -14,7 +14,7 @@ export async function serve(argv: t.Argv) {
   const obj = model.toObject();
 
   const port = model.port();
-  const dir = model.dir() || '';
+  const dir = model.outdir() || '';
   const target = model.target('web');
 
   const cwd = fs.join(dir, target);
