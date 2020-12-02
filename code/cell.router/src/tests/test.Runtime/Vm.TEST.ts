@@ -7,16 +7,20 @@ const DIR = {
   TMP_RUNTIME: 'tmp/runtime.node',
 };
 
+const compileTestBundle = (force?: boolean) => TestCompile.node.bundle(force);
+
 describe.only('Vm', function () {
   this.timeout(99999);
 
   /**
    * Ensure the sample [node] code as been bundled.
    */
-  before(async () => TestCompile.node.bundle());
+  before(async () => compileTestBundle());
   beforeEach(async () => await fs.remove(fs.resolve(DIR.TMP_RUNTIME)));
 
-  it('Foo', async () => {
+  it('TMP', async () => {
+    await compileTestBundle(true);
+
     const dir = fs.resolve(DIR.NODE);
     const path = fs.join(dir, 'main.js');
 
