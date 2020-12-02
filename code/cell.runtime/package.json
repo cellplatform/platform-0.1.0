@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.runtime",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "scripts": {
     "test": "ts test",
     "lint": "ts lint",
@@ -8,9 +8,9 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.client": "0.3.20",
-    "@platform/cell.schema": "0.5.30",
-    "@platform/cell.types": "0.5.31",
+    "@platform/cell.client": "0.3.21",
+    "@platform/cell.schema": "0.5.31",
+    "@platform/cell.types": "0.5.32",
     "@platform/exec": "0.2.70",
     "@platform/fs": "0.6.3",
     "react": "17.0.1",
