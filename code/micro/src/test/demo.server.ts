@@ -14,7 +14,7 @@ const app = micro.create({
 });
 
 app.router
-  .get('/foo', async (req) => {
+  .get(['/', '/foo'], async (req) => {
     log.info('GET', req.url);
     return {
       status: 200,
@@ -56,7 +56,8 @@ app.router.post('/file', async (req) => {
 });
 
 (async () => {
-  const service = await app.start({ port: 8080 });
+  // const service = await app.start({ port: '8080:1234' });
+  const service = await app.start({ port: 1234 });
 
   log.info.yellow(`
     started in:     ${timer.elapsed.toString()} (total elapsed)

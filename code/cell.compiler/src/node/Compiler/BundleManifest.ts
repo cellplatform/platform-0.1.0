@@ -14,7 +14,7 @@ export const BundleManifest = {
    */
   url(host: string, uri: string, dir?: string) {
     const urls = Schema.urls(host);
-    return urls.runtime.bundle.manifest({ host, uri, dir });
+    return urls.fn.bundle.manifest({ host, uri, dir });
   },
 
   /**

@@ -9,8 +9,7 @@
       "code/*",
       "code/cell.modules/pkg*/*",
       "code/cell.runtime.electron/app",
-      "code/cell.http/src.deployment",
-      "code/cell.http/docker"
+      "code/cell.service/deployment"
     ],
     "nohoist": [
       "**/electron",

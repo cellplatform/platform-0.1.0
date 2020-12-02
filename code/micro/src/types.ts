@@ -6,7 +6,7 @@ import * as t from './common/types';
 export type ILogProps = { [key: string]: string | number | boolean | undefined };
 
 export type ServerStart = (options?: {
-  port?: number;
+  port?: number | string; // NB: string allows for Docker style mappings <external> => <internal>. Where <internal> is used.
   log?: ILogProps;
   silent?: boolean;
 }) => Promise<IMicroService>;
@@ -43,19 +43,19 @@ export type MicroEvent =
   | IMicroResponseEvent;
 
 export type IMicroStartedEvent = {
-  type: 'HTTP/started';
+  type: 'SERVICE/started';
   payload: IMicroStarted;
 };
 export type IMicroStarted = { elapsed: t.IDuration; port: number };
 
 export type IMicroStoppedEvent = {
-  type: 'HTTP/stopped';
+  type: 'SERVICE/stopped';
   payload: IMicroStopped;
 };
 export type IMicroStopped = { elapsed: t.IDuration; port: number; error?: string };
 
 export type IMicroRequestEvent = {
-  type: 'HTTP/request';
+  type: 'SERVICE/request';
   payload: IMicroRequest;
 };
 export type IMicroRequest = {
@@ -69,7 +69,7 @@ export type IMicroRequest = {
 export type IMicroRequestModify<C extends Record<string, unknown> = any> = { context?: C };
 
 export type IMicroResponseEvent = {
-  type: 'HTTP/response';
+  type: 'SERVICE/response';
   payload: IMicroResponse;
 };
 export type IMicroResponse<C extends Record<string, unknown> = any> = {

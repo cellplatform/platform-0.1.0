@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.coord",
-  "version": "0.8.209",
+  "version": "0.8.217",
   "description": "Helpers for working with cell cooridnates (eg 'A1')",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,17 +12,17 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cache": "0.3.0",
-    "@platform/cell.types": "0.5.26",
-    "@platform/types": "0.5.8",
-    "@platform/util.value": "0.8.5",
+    "@platform/cache": "0.3.4",
+    "@platform/cell.types": "0.5.34",
+    "@platform/types": "0.5.11",
+    "@platform/util.value": "0.8.9",
     "excel-formula-ast": "1.1.1",
     "excel-formula-tokenizer": "2.3.1",
     "toposort": "2.0.2"
   },
   "devDependencies": {
-    "@platform/test": "0.1.17",
-    "@platform/ts": "4.0.6"
+    "@platform/test": "0.2.0",
+    "@platform/ts": "4.1.0"
   },
   "files": [
     "lib",

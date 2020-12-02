@@ -1,14 +1,21 @@
+#
+# https://docs.docker.com/compose
+# https://hub.docker.com/repository/docker/domains/cell
 # 
-# https://docs.docker.com/compose/
-# 
+# Mappings: <external> => <internal>
+#
 version: '3.8'
 services:
-  cell:
+  web:
     image: domains/cell
+    restart: unless-stopped
     ports:
-      - '8080:8080'
-#     volumes:
-#       - .:/code
-#       - logvolume01:/var/log
-# volumes:
-#   logvolume01: {}
+      - '8080:5000'
+    volumes:
+      - ./data:/usr/cell/.data
+    environment:
+      NODE_ENV: production
+      PORT: '8080:5000'
+      SERVER_NAME: cell.docker
+      DB_FILENAME: cell.db
+      FS_FILENAME: cell.fs

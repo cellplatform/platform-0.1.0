@@ -22,7 +22,7 @@ export function init(args: { router: t.IRouter; name?: string; deployedAt?: numb
       name,
       host,
       region,
-      version: system.version,
+      system: system.version,
       deployedAt,
     };
     data.hash = Schema.hash.sha256(data);

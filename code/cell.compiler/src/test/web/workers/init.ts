@@ -4,7 +4,7 @@ import Worker from 'worker-loader?inline=no-fallback!./web.worker';
  * Web-worker.
  */
 const worker = new Worker();
-worker.onmessage = (e: MessageEvent<any>) => console.log('🌼 event (from worker thread)', e.data);
+worker.onmessage = (e: MessageEvent) => console.log('🌼 event (from worker thread)', e.data);
 
 setTimeout(() => {
   worker.postMessage({ msg: 'Hello from [App.entry.tsx]' });

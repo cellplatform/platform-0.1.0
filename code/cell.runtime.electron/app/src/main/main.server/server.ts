@@ -1,5 +1,5 @@
 import { local } from '@platform/cell.fs.local';
-import { server } from '@platform/cell.http/lib/server';
+import { server } from '@platform/cell.service/lib/server';
 import { NeDb } from '@platform/fsdb.nedb';
 import { app as electron } from 'electron';
 import { filter } from 'rxjs/operators';

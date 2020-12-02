@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.tabstrip",
-  "version": "0.1.100",
+  "version": "0.1.104",
   "description": "Visual tabstrip.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,16 +15,16 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.4.53",
+    "@platform/react": "0.4.57",
     "react-sortable-hoc": "1.11.0"
   },
   "devDependencies": {
-    "@platform/test": "0.1.17",
-    "@platform/ts": "4.0.6",
-    "@platform/ui.dev": "0.0.27",
-    "@platform/ui.icon": "0.0.172",
+    "@platform/test": "0.2.0",
+    "@platform/ts": "4.1.0",
+    "@platform/ui.dev": "0.0.31",
+    "@platform/ui.icon": "0.0.176",
     "@types/react-sortable-hoc": "0.7.1",
-    "react-icons": "3.11.0"
+    "react-icons": "4.1.0"
   },
   "files": [
     "lib",

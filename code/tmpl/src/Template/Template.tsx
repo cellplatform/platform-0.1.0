@@ -30,9 +30,9 @@ export type ITemplateArgs = {
   processors?: TemplateMiddleware[];
 };
 
-export type Handler<V extends ITemplateVariables = Record<string, unknown>> = TemplateMiddleware<
-  V
-> & {
+export type Handler<
+  V extends ITemplateVariables = Record<string, unknown>
+> = TemplateMiddleware<V> & {
   pathFilters?: TemplatePathFilter[];
 };
 

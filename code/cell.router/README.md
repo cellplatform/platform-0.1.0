@@ -3,7 +3,7 @@
 [![NPM](https://img.shields.io/npm/v/@platform/cell.router.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/cell.router)
 ![banner](https://user-images.githubusercontent.com/185555/76151555-23bfb900-611b-11ea-9497-2773c93f61e3.png)
 
-Isolated router logic for the CellOS [HTTP server](../cell.http).
+Isolated router logic for the Cell/OS [HTTP service](../cell.service).
 
 ---
 

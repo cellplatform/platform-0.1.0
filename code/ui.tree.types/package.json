@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.tree.types",
-  "version": "0.0.15",
+  "version": "0.0.19",
   "description": "Abstract type definitions for ui.tree library.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,12 +15,12 @@
   },
   "dependencies": {
     "@platform/libs": "0.2.3",
-    "@platform/state.types": "0.0.13",
-    "@platform/types": "0.5.8"
+    "@platform/state.types": "0.0.17",
+    "@platform/types": "0.5.11"
   },
   "devDependencies": {
-    "@platform/test": "0.1.17",
-    "@platform/ts": "4.0.6"
+    "@platform/test": "0.2.0",
+    "@platform/ts": "4.1.0"
   },
   "files": [
     "lib",

@@ -57,7 +57,7 @@ export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): 
         }
       },
     };
-    fire({ type: 'HTTP/request', payload: before });
+    fire({ type: 'SERVICE/request', payload: before });
 
     // Wait for the request modification [Promise] to complete
     // if an event listener modified the payload asynchronously.
@@ -96,7 +96,7 @@ export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): 
         }
       },
     };
-    fire({ type: 'HTTP/response', payload: after });
+    fire({ type: 'SERVICE/response', payload: after });
 
     // Wait for the response modification [Promise] to complete
     // if an event listener modified the payload asynchronously.
