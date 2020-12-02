@@ -1,4 +1,4 @@
-import { fs, log, parseUrl, R } from './libs';
+import { fs, log, parseUrl } from './libs';
 
 const trim = (value?: string | null) => (value || '').trim();
 const slashes = (value: string) => value.replace(/\//g, log.gray('/'));
@@ -14,7 +14,7 @@ export const format = {
     value = trim(value);
     const parsed = parseUrl(value);
     const domain = log.gray(`${parsed.protocol}//${parsed.host}`);
-    const path = R.pipe(trim, format.uri, slashes)(parsed.pathname || '');
+    const path = trim(format.uri(slashes(parsed.pathname || '')));
     const suffix = parsed.search ? log.gray(parsed.search) : '';
     const url = `${domain}${path}${suffix}`;
     return log.white(url);

@@ -13,8 +13,8 @@ services:
     volumes:
       - ./data:/usr/cell/.data
     environment:
-      PORT: '8080:5000'
       NODE_ENV: production
+      PORT: '8080:5000'
       SERVER_NAME: cell.docker
       DB_FILENAME: cell.db
       FS_FILENAME: cell.fs
