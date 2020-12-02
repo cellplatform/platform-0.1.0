@@ -10,34 +10,33 @@ const outdir = 'dist/test';
  */
 export const TestCompile = {
   /**
+   * Compile the given bundle configuration if it does
+   * not already exist.
+   */
+  async bundle(args: { config: CompilerModelBuilder; outdir?: string; force?: boolean }) {
+    const dist = fs.resolve(args.outdir || outdir);
+    if (args.force || !(await fs.pathExists(dist))) {
+      await Compiler.bundle(args.config);
+    }
+  },
+
+  /**
    * Sample [node-js] compilation.
    */
   node: {
-    dir: `${outdir}/node`,
+    outdir: `${outdir}/node`,
 
     get config() {
       return Compiler.config()
-        .namespace('test.node')
+        .namespace('sample.node')
         .outdir(outdir)
         .entry('./src/tests/test.Compilation/sample.node/main')
         .target('node');
     },
 
     async bundle(force?: boolean) {
-      const outdir = TestCompile.node.dir;
-      const config = TestCompile.node.config;
-      await bundle({ config, outdir, force });
+      const { config, outdir } = TestCompile.node;
+      await TestCompile.bundle({ config, outdir, force });
     },
   },
 };
-
-/**
- * Helpers
- */
-
-async function bundle(args: { force?: boolean; config: CompilerModelBuilder; outdir: string }) {
-  const dist = fs.resolve(args.outdir);
-  if (args.force || !(await fs.pathExists(dist))) {
-    await Compiler.bundle(args.config);
-  }
-}

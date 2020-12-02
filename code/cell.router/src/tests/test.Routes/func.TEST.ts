@@ -6,7 +6,7 @@ import { TestCompile } from '../test.Compilation';
 type B = t.RuntimeBundleOrigin;
 
 const DIR = {
-  NODE: TestCompile.node.dir,
+  NODE: TestCompile.node.outdir,
 };
 
 const createFuncMock = async () => {
