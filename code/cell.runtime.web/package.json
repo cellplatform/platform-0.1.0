@@ -1,6 +1,7 @@
 {
-  "name": "@platform/cell.runtime",
-  "version": "0.0.19",
+  "name": "@platform/cell.runtime.web",
+  "version": "0.1.1",
+  "main": "lib/index",
   "scripts": {
     "test": "ts test",
     "lint": "ts lint",

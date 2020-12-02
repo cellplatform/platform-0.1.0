@@ -3,7 +3,7 @@ import { MongoDb } from '@platform/fsdb.mongo';
 
 import { server, t, time } from './common';
 import { IS_CLOUD, SECRETS } from './constants';
-import { NodeRuntime } from '@platform/cell.runtime/lib/node';
+import { NodeRuntime } from '@platform/cell.runtime.node';
 
 /**
  * Cell: FileSystem

@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.service",
-  "version": "0.8.3",
+  "version": "0.8.6",
   "description": "HTTP micro-service for the operating system.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -23,7 +23,7 @@
     "nuke": "rm -rf node_modules && rm -rf deployment/node_modules"
   },
   "dependencies": {
-    "@platform/cell.router": "0.8.67",
+    "@platform/cell.router": "0.8.70",
     "@platform/cell.schema": "0.5.32",
     "@platform/cell.types": "0.5.33",
     "@platform/cell.typesystem": "0.0.151",

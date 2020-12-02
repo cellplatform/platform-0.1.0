@@ -1,6 +1,6 @@
 import { local } from '@platform/cell.fs.local';
 import { NeDb } from '@platform/fsdb.nedb';
-import { NodeRuntime } from '@platform/cell.runtime/lib/node';
+import { NodeRuntime } from '@platform/cell.runtime.node';
 
 import { server, util } from './common';
 
