@@ -1,7 +1,7 @@
 ![Module](https://img.shields.io/badge/%40platform-cell.runtime.electron-%23EA4E7E.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![NPM](https://img.shields.io/npm/v/@platform/cell.runtime.electron.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/cell.runtime.electron)
-![banner](https://user-images.githubusercontent.com/185555/100291428-9c84df00-2fe2-11eb-87fd-bceb40c5d066.png)
+![banner](https://user-images.githubusercontent.com/185555/100818903-ee7ca780-34af-11eb-9956-3444a579c3aa.png)
 
 Electron shell for the root Cell development environment.
 All product specific development environments can be "designed" and the "compiled" from here.
