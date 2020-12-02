@@ -233,7 +233,7 @@ describe('func', function () {
     });
   });
 
-  describe('over http', () => {
+  describe.only('over http', () => {
     describe('POST success', () => {
       const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncRunResult) => {
         expect(res.ok).to.eql(true);
@@ -292,6 +292,67 @@ describe('func', function () {
         // Already cached.
         expect(json.results[1].cache.exists).to.eql(true);
         expect(json.results[1].cache.pulled).to.eql(false);
+      });
+
+      it.only('query-string: pull', async () => {
+        const dir = 'foo';
+        const { mock, bundle, client, http } = await prepare({ dir });
+        const { host, uri } = bundle;
+        await uploadBundle(client, bundle);
+
+        const url = {
+          default: mock.urls.fn.run.toString(),
+          pull: mock.urls.fn.run.query({ pull: true }).toString(),
+          pullFalse: mock.urls.fn.run.query({ pull: false }).toString(),
+        };
+
+        const body: t.IReqPostFuncRunBody = { host, uri, dir };
+
+        const post = async (url: string, body: t.IReqPostFuncRunBody) => {
+          const res = await http.post(url, body);
+          return res.json as t.IResPostFuncRun;
+        };
+
+        const res1 = await post(url.default, body);
+        const res2 = await post(url.pull, body);
+        const res3 = await post(url.default, body);
+        const res4 = await post(url.pullFalse, { ...body, pull: true });
+
+        await mock.dispose();
+
+        expect(res1.results[0].cache.pulled).to.eql(true);
+        expect(res2.results[0].cache.pulled).to.eql(true); // NB: Another "Pull" requested in query-string.
+        expect(res3.results[0].cache.pulled).to.eql(false); // Default (cached).
+        expect(res4.results[0].cache.pulled).to.eql(true); // Overridden in body.
+      });
+
+      it.only('query-string: silent', async () => {
+        const dir = 'foo';
+        const { mock, bundle, client, http } = await prepare({ dir });
+        const { host, uri } = bundle;
+        await uploadBundle(client, bundle);
+
+        const url = {
+          default: mock.urls.fn.run.toString(),
+          silentFalse: mock.urls.fn.run.query({ silent: false }).toString(),
+        };
+
+        const body: t.IReqPostFuncRunBody = { host, uri, dir };
+
+        const post = async (url: string, body: t.IReqPostFuncRunBody) => {
+          const res = await http.post(url, body);
+          return res.json as t.IResPostFuncRun;
+        };
+
+        const res1 = await post(url.default, body);
+        const res2 = await post(url.silentFalse, body);
+        const res3 = await post(url.silentFalse, { ...body, silent: true });
+
+        await mock.dispose();
+
+        expect(res1.results[0].runtime.silent).to.eql(true); // Default
+        expect(res2.results[0].runtime.silent).to.eql(false); // via URL.
+        expect(res3.results[0].runtime.silent).to.eql(true); // Query-string overridden in body.
       });
     });
 

@@ -2,19 +2,24 @@ import { defaultValue, Schema, t, util } from '../common';
 
 type B = t.RuntimeBundleOrigin;
 
+/**
+ * Executes a function in the given runtime.
+ */
 export async function exec(args: {
   host: string;
   db: t.IDb;
   runtime: t.RuntimeEnv;
   body: t.IReqPostFuncRunBody;
+  defaultPull?: boolean;
+  defaultSilent?: boolean;
 }) {
   try {
-    const { host, db, runtime } = args;
+    const { host, db, runtime, defaultPull, defaultSilent } = args;
     const bundles = Array.isArray(args.body) ? args.body : [args.body];
     const results: t.IResPostFuncRunResult[] = [];
 
     for (const body of bundles) {
-      const res = await execBundle({ host, db, body, runtime });
+      const res = await execBundle({ host, db, body, runtime, defaultPull, defaultSilent });
       results.push(res);
     }
 
@@ -32,22 +37,24 @@ export async function exec(args: {
 }
 
 /**
- * Executes a single bundle.
+ * Executes a single function bundle.
  */
 async function execBundle(args: {
   host: string;
   db: t.IDb;
   runtime: t.RuntimeEnv;
   body: t.IReqPostFuncRun;
+  defaultPull?: boolean;
+  defaultSilent?: boolean;
 }) {
   const startedAt = new Date();
   const { body, runtime } = args;
-  const silent = defaultValue(body.silent, true);
+  const silent = defaultValue(body.silent, defaultValue(args.defaultSilent, true));
 
   const host = body.host || args.host;
   const uri = body.uri;
   const dir = body.dir;
-  const pull = body.pull;
+  const pull = defaultValue(body.pull, args.defaultPull || false);
   const bundle: B = { host, uri, dir };
   const urls = Schema.urls(bundle.host);
 
@@ -60,7 +67,7 @@ async function execBundle(args: {
     elapsed: new Date().getTime() - startedAt.getTime(),
     bundle,
     cache: { exists, pulled: pull ? true : !exists },
-    runtime: { name: runtime.name },
+    runtime: { name: runtime.name, silent },
     size: {
       bytes: defaultValue(manifest?.bytes, -1),
       files: defaultValue(manifest?.files.length, -1),

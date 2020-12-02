@@ -1,17 +1,12 @@
 import { t } from '../common';
 
-type O = Record<string, unknown>;
-
 /**
  * POST: Execute Function(s).
  */
-export type IReqQueryFuncRun = O; // 🐷 Placeholder type.
-
-/**
- * TODO 🐷 - Func Query String
- * - pull: boolean    - global "pull" param if undefined on Body.
- * - silent: boolean  - global "silent" param if undefined on Body.
- */
+export type IReqQueryFuncRun = {
+  pull?: boolean; //     Sets "pull" flag when not specified within body payload.
+  silent?: boolean; //   Sets "silent" flag when not specified within body payload.
+};
 
 export type IReqPostFuncRunBody = t.IReqPostFuncRun | t.IReqPostFuncRun[];
 
@@ -34,7 +29,7 @@ export type IResPostFuncRunResult = {
   elapsed: number;
   bundle: t.RuntimeBundleOrigin;
   cache: { exists: boolean; pulled: boolean };
-  runtime: { name: t.RuntimeEnv['name'] };
+  runtime: { name: t.RuntimeEnv['name']; silent: boolean };
   size: { bytes: number; files: number };
   urls: { files: string; manifest: string };
   errors: t.IRuntimeError[];

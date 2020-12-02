@@ -22,7 +22,10 @@ export function init(args: { db: t.IDb; router: t.IRouter; runtime?: t.RuntimeEn
       const query = req.query as t.IReqQueryFuncRun;
       const body = ((await req.body.json()) || {}) as t.IReqPostFuncRunBody;
 
-      return exec({ host, db, runtime, body });
+      const defaultPull = query.pull;
+      const defaultSilent = query.silent;
+
+      return exec({ host, db, runtime, body, defaultPull, defaultSilent });
     } catch (err) {
       return util.toErrorPayload(err);
     }
