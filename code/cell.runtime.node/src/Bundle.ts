@@ -14,8 +14,8 @@ export const Bundle = {
   urls(bundle: t.RuntimeBundleOrigin) {
     const urls = Schema.urls(bundle.host);
     return {
-      files: urls.runtime.bundle.files(bundle).toString(),
-      manifest: urls.runtime.bundle.manifest(bundle).toString(),
+      files: urls.fn.bundle.files(bundle).toString(),
+      manifest: urls.fn.bundle.manifest(bundle).toString(),
     };
   },
 

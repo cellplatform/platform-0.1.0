@@ -5,7 +5,7 @@ type O = Record<string, unknown>;
 /**
  * POST: Execute Function(s).
  */
-export type IReqQueryFunc = O; // 🐷 Placeholder type.
+export type IReqQueryFuncRun = O; // 🐷 Placeholder type.
 
 /**
  * TODO 🐷 - Func Query String
@@ -13,9 +13,9 @@ export type IReqQueryFunc = O; // 🐷 Placeholder type.
  * - silent: boolean  - global "silent" param if undefined on Body.
  */
 
-export type IReqPostFuncBody = t.IReqPostFuncBundle | t.IReqPostFuncBundle[];
+export type IReqPostFuncRunBody = t.IReqPostFuncRun | t.IReqPostFuncRun[];
 
-export type IReqPostFuncBundle = {
+export type IReqPostFuncRun = {
   uri: string; // Cell URI
   host?: string; // NB: the running system's host is used if not specified.
   dir?: string;
@@ -24,12 +24,12 @@ export type IReqPostFuncBundle = {
   silent?: boolean;
 };
 
-export type IResPostFunc = {
+export type IResPostFuncRun = {
   elapsed: number;
-  results: t.IResPostFuncBundle[];
+  results: t.IResPostFuncRunResult[];
 };
 
-export type IResPostFuncBundle = {
+export type IResPostFuncRunResult = {
   ok: boolean;
   elapsed: number;
   bundle: t.RuntimeBundleOrigin;

@@ -8,7 +8,7 @@ const createFuncMock = async () => {
   const runtime = NodeRuntime.create();
   const mock = await createMock({ runtime });
   const http = Http.create();
-  const url = mock.urls.runtime.func.toString();
+  const url = mock.urls.fn.run.toString();
   return { url, mock, http, runtime };
 };
 
@@ -81,7 +81,7 @@ describe('func', function () {
 
         expect(res.ok).to.eql(true);
         expect(res.errors).to.eql([]);
-        expect(res.manifest).to.eql(urls.runtime.bundle.manifest(bundle).toString());
+        expect(res.manifest).to.eql(urls.fn.bundle.manifest(bundle).toString());
         expect(await runtime.exists(bundle)).to.eql(true);
       };
 
@@ -235,7 +235,7 @@ describe('func', function () {
 
   describe('over http', () => {
     describe('POST success', () => {
-      const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncBundle) => {
+      const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncRunResult) => {
         expect(res.ok).to.eql(true);
 
         expect(res.runtime.name).to.eql('node');
@@ -256,9 +256,9 @@ describe('func', function () {
         const { host, uri } = bundle;
         await uploadBundle(client, bundle);
 
-        const body: t.IReqPostFuncBody = { host, uri, dir };
+        const body: t.IReqPostFuncRunBody = { host, uri, dir };
         const res = await http.post(url, body);
-        const json = res.json as t.IResPostFunc;
+        const json = res.json as t.IResPostFuncRun;
         await mock.dispose();
 
         expect(json.elapsed).to.greaterThan(0);
@@ -275,9 +275,9 @@ describe('func', function () {
         const { mock, bundle, client, http, url } = await prepare({ dir });
         await uploadBundle(client, bundle);
 
-        const body: t.IReqPostFuncBody = [bundle, bundle];
+        const body: t.IReqPostFuncRunBody = [bundle, bundle];
         const res = await http.post(url, body);
-        const json = res.json as t.IResPostFunc;
+        const json = res.json as t.IResPostFuncRun;
         await mock.dispose();
 
         expect(json.elapsed).to.greaterThan(0);
@@ -299,9 +299,9 @@ describe('func', function () {
       const dir = 'foo';
       const { mock, bundle, http, url } = await prepare({ dir });
 
-      const data: t.IReqPostFuncBody = { ...bundle };
+      const data: t.IReqPostFuncRunBody = { ...bundle };
       const res = await http.post(url, data);
-      const json = res.json as t.IResPostFunc;
+      const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
 
       expect(res.ok).to.eql(false);
@@ -316,10 +316,10 @@ describe('func', function () {
 
     it('error: func/runtime not provided (500)', async () => {
       const mock = await createMock();
-      const url = mock.urls.runtime.func.toString();
+      const url = mock.urls.fn.run.toString();
       const http = Http.create();
 
-      const data: t.IReqPostFuncBody = { uri: 'cell:foo:A1' };
+      const data: t.IReqPostFuncRunBody = { uri: 'cell:foo:A1' };
       const res = await http.post(url, data);
       const json = res.json as t.IHttpErrorServer;
       await mock.dispose();

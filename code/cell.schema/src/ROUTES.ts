@@ -56,7 +56,7 @@ export const ROUTES = {
   COLUMN: {
     INFO: `/cell${KEY.NS}\\:${KEY.COLUMN}(/?)`,
   },
-  RUNTIME: {
-    FUNC: `/run\\:func(/?)`,
+  FUNC: {
+    RUN: `/fn\\:run(/?)`,
   },
 };

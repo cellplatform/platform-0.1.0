@@ -6,12 +6,12 @@ export async function exec(args: {
   host: string;
   db: t.IDb;
   runtime: t.RuntimeEnv;
-  body: t.IReqPostFuncBody;
+  body: t.IReqPostFuncRunBody;
 }) {
   try {
     const { host, db, runtime } = args;
     const bundles = Array.isArray(args.body) ? args.body : [args.body];
-    const results: t.IResPostFuncBundle[] = [];
+    const results: t.IResPostFuncRunResult[] = [];
 
     for (const body of bundles) {
       const res = await execBundle({ host, db, body, runtime });
@@ -19,7 +19,7 @@ export async function exec(args: {
     }
 
     const elapsed = results.reduce((acc, next) => acc + next.elapsed, 0);
-    const data: t.IResPostFunc = {
+    const data: t.IResPostFuncRun = {
       elapsed,
       results,
     };
@@ -38,7 +38,7 @@ async function execBundle(args: {
   host: string;
   db: t.IDb;
   runtime: t.RuntimeEnv;
-  body: t.IReqPostFuncBundle;
+  body: t.IReqPostFuncRun;
 }) {
   const startedAt = new Date();
   const { body, runtime } = args;
@@ -55,7 +55,7 @@ async function execBundle(args: {
   const res = await runtime.run(bundle, { silent, pull });
   const { manifest, errors } = res;
 
-  const data: t.IResPostFuncBundle = {
+  const data: t.IResPostFuncRunResult = {
     ok: res.ok,
     elapsed: new Date().getTime() - startedAt.getTime(),
     bundle,
@@ -66,8 +66,8 @@ async function execBundle(args: {
       files: defaultValue(manifest?.files.length, -1),
     },
     urls: {
-      files: urls.runtime.bundle.files(bundle).toString(),
-      manifest: urls.runtime.bundle.manifest(bundle).toString(),
+      files: urls.fn.bundle.files(bundle).toString(),
+      manifest: urls.fn.bundle.manifest(bundle).toString(),
     },
     errors,
   };

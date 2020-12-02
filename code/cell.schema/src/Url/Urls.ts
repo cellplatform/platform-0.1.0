@@ -83,7 +83,7 @@ export class Urls implements t.IUrls {
   /**
    * Runtime (function execution).
    */
-  public get runtime() {
+  public get fn() {
     const self = this; // eslint-disable-line
     const toUrl = this.toUrl;
 
@@ -126,9 +126,9 @@ export class Urls implements t.IUrls {
       /**
        * Example: /func
        */
-      get func() {
-        type Q = t.IReqQueryFunc;
-        return toUrl<Q>(`/run:func`);
+      get run() {
+        type Q = t.IReqQueryFuncRun;
+        return toUrl<Q>(`/fn:run`);
       },
     };
   }
