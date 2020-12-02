@@ -1,7 +1,57 @@
-import { expect } from '../test';
+import { fs, expect, TestCompile, time } from '../../test';
 
-describe('Vm', () => {
-  //
+import vm from 'vm';
+
+const DIR = {
+  NODE: TestCompile.node.outdir,
+  TMP_RUNTIME: 'tmp/runtime.node',
+};
+
+describe.only('Vm', function () {
+  this.timeout(99999);
+
+  /**
+   * Ensure the sample [node] code as been bundled.
+   */
+  before(async () => TestCompile.node.bundle());
+  beforeEach(async () => await fs.remove(fs.resolve(DIR.TMP_RUNTIME)));
+
+  it('Foo', async () => {
+    const dir = fs.resolve(DIR.NODE);
+    const path = fs.join(dir, 'main.js');
+
+    let response: any;
+
+    const context = {
+      require: (path: string) => {
+        path = fs.join(dir, path);
+        console.log('path', path);
+        return require(path);
+      },
+      console,
+      self: {
+        res(value: any) {
+          console.log('value', value);
+          response = value;
+        },
+      },
+    };
+
+    const code = (await fs.readFile(path)).toString();
+
+    // const script = new vm.Script('count += 1; name = "kitty";');
+    const script = new vm.Script(code);
+
+    vm.createContext(context);
+    const res = script.runInContext(context);
+
+    await time.wait(1500);
+
+    console.log('-------------------------------------------');
+    console.log('res', res);
+    console.log('resposne', response);
+    // console.log('typeof response.foo', typeof response.foo);
+  });
 });
 
 // import { expect, t, fs, Schema, time } from '../test';

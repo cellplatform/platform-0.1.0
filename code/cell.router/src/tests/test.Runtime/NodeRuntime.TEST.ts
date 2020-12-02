@@ -5,6 +5,7 @@ type B = t.RuntimeBundleOrigin;
 
 const DIR = {
   NODE: TestCompile.node.outdir,
+  TMP_RUNTIME: 'tmp/runtime.node',
 };
 
 const createFuncMock = async () => {
@@ -52,17 +53,14 @@ const uploadBundle = async (
   return { files, upload, bundle };
 };
 
-describe.only('NodeRuntime', function () {
+describe('NodeRuntime', function () {
   this.timeout(99999);
 
   /**
-   * Ensure the sample node code as been bundled.
+   * Ensure the sample [node] code as been bundled.
    */
   before(async () => TestCompile.node.bundle());
-
-  beforeEach(async () => {
-    await fs.remove(fs.resolve('tmp/runtime.node'));
-  });
+  beforeEach(async () => await fs.remove(fs.resolve(DIR.TMP_RUNTIME)));
 
   describe('pull', () => {
     const test = async (dir?: string) => {
