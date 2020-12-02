@@ -6,7 +6,6 @@ export const PKG = {
     '@platform/cell.client': '0.3.22',
     '@platform/cell.db': '0.3.184',
     '@platform/cell.func': '0.1.261',
-    '@platform/cell.runtime': '0.0.19',
     '@platform/cell.schema': '0.5.32',
     '@platform/cell.types': '0.5.33',
     '@platform/cell.typesystem': '0.0.151',

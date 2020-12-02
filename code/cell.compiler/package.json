@@ -34,7 +34,7 @@
     "@babel/preset-react": "7.12.7",
     "@babel/preset-typescript": "7.12.7",
     "@platform/cell.module": "0.0.65",
-    "@platform/cell.runtime": "0.0.19",
+    "@platform/cell.runtime.node": "0.0.0",
     "@platform/cell.types": "0.5.33",
     "@platform/css": "^0.4.24",
     "@platform/libs": "0.2.3",

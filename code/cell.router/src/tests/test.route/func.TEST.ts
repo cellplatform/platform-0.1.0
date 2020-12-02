@@ -1,4 +1,4 @@
-import { NodeRuntime } from '@platform/cell.runtime/lib/node';
+import { NodeRuntime } from '@platform/cell.runtime.node';
 import { readFile, createMock, expect, Http, t, fs, Schema } from '../../test';
 import { compile } from '../compiler/compile';
 
