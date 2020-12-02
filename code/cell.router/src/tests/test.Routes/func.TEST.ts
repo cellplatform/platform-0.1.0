@@ -1,16 +1,13 @@
 import { NodeRuntime } from '@platform/cell.runtime.node';
 
 import { createMock, expect, fs, Http, readFile, Schema, t } from '../../test';
-import { compile } from '../compiler/compile';
+import { TestCompile } from '../test.Compilation';
 
 type B = t.RuntimeBundleOrigin;
 
-async function compileNode(force?: boolean) {
-  const dist = fs.resolve('dist/node');
-  if (force || !(await fs.pathExists(fs.join(dist, 'main.js')))) {
-    await compile.node();
-  }
-}
+const DIR = {
+  NODE: TestCompile.node.dir,
+};
 
 const createFuncMock = async () => {
   const runtime = NodeRuntime.create();
@@ -50,7 +47,7 @@ const uploadBundle = async (
   options: { filter?: (file: t.IHttpClientCellFileUpload) => boolean } = {},
 ) => {
   const { filter } = options;
-  let files = await bundleToFiles('dist/node', bundle.dir);
+  let files = await bundleToFiles(DIR.NODE, bundle.dir);
   files = filter ? files.filter((file) => filter(file)) : files;
   const upload = await client.files.upload(files);
   expect(upload.ok).to.eql(true);
@@ -60,18 +57,16 @@ const uploadBundle = async (
 describe('func', function () {
   this.timeout(99999);
 
-  before(async () => {
-    /**
-     * Ensure sample node distribution has been compiled.
-     */
-    await compileNode();
-  });
+  /**
+   * Ensure the sample node code as been bundled.
+   */
+  before(async () => TestCompile.node.bundle());
 
   beforeEach(async () => {
     await fs.remove(fs.resolve('tmp/runtime.node'));
   });
 
-  describe('NodeRuntime', () => {
+  describe.only('NodeRuntime', () => {
     describe('pull', () => {
       const test = async (dir?: string) => {
         const { mock, runtime, bundle, client } = await prepare({ dir });
@@ -237,7 +232,7 @@ describe('func', function () {
     });
   });
 
-  describe('NodeRuntime (over http)', () => {
+  describe('NodeRuntime (over HTTP)', () => {
     describe('POST success', () => {
       const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncRunResult) => {
         expect(res.ok).to.eql(true);
