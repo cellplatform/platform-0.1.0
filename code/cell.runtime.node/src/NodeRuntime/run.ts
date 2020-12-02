@@ -1,5 +1,5 @@
-import { Bundle } from './Bundle';
-import { fs, log, logger, PATH, t } from './common';
+import { Bundle } from '../Bundle';
+import { fs, log, logger, PATH, t } from '../common';
 import { pullMethod } from './pull';
 import { invoke } from './run.invoke';
 

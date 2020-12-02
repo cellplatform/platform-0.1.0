@@ -1,8 +1,16 @@
 import { NodeRuntime } from '@platform/cell.runtime.node';
-import { readFile, createMock, expect, Http, t, fs, Schema } from '../../test';
+
+import { createMock, expect, fs, Http, readFile, Schema, t } from '../../test';
 import { compile } from '../compiler/compile';
 
 type B = t.RuntimeBundleOrigin;
+
+async function compileNode(force?: boolean) {
+  const dist = fs.resolve('dist/node');
+  if (force || !(await fs.pathExists(fs.join(dist, 'main.js')))) {
+    await compile.node();
+  }
+}
 
 const createFuncMock = async () => {
   const runtime = NodeRuntime.create();
@@ -44,7 +52,6 @@ const uploadBundle = async (
   const { filter } = options;
   let files = await bundleToFiles('dist/node', bundle.dir);
   files = filter ? files.filter((file) => filter(file)) : files;
-
   const upload = await client.files.upload(files);
   expect(upload.ok).to.eql(true);
   return { files, upload, bundle };
@@ -57,17 +64,14 @@ describe('func', function () {
     /**
      * Ensure sample node distribution has been compiled.
      */
-    const dist = fs.resolve('dist/node');
-    if (!(await fs.pathExists(fs.join(dist, 'main.js')))) {
-      await compile.node();
-    }
+    await compileNode();
   });
 
   beforeEach(async () => {
     await fs.remove(fs.resolve('tmp/runtime.node'));
   });
 
-  describe('RuntimeEnvNode', () => {
+  describe('NodeRuntime', () => {
     describe('pull', () => {
       const test = async (dir?: string) => {
         const { mock, runtime, bundle, client } = await prepare({ dir });
@@ -233,7 +237,7 @@ describe('func', function () {
     });
   });
 
-  describe('over http', () => {
+  describe('NodeRuntime (over http)', () => {
     describe('POST success', () => {
       const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncRunResult) => {
         expect(res.ok).to.eql(true);

@@ -1,12 +1,11 @@
-import { FileCache, fs, PATH, Path, t, Schema } from './common';
+import { FileCache, fs, PATH, Path, t, Schema } from '../common';
 
 type B = t.RuntimeBundleOrigin;
 
 /**
- * Wrapper around a raw origin {bundle} object that
+ * Wrapper around a raw origin {bundle} data object that
  * processes the contents into formatted values.
  */
-
 export const Bundle = {
   /**
    * Generates URLs for the given bundle.

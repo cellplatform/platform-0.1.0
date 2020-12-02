@@ -1,5 +1,5 @@
-import { Bundle } from './Bundle';
-import { fs, PATH, t } from './common';
+import { Bundle } from '../Bundle';
+import { fs, PATH, t } from '../common';
 import { pullMethod } from './pull';
 import { runMethod } from './run';
 

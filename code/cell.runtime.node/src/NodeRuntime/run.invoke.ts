@@ -1,4 +1,4 @@
-import { exec, log, logger, t, time } from './common';
+import { exec, log, logger, t, time } from '../common';
 
 /**
  * Execute the bundle within the given directory.

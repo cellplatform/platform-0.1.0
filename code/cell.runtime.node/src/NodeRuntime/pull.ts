@@ -1,5 +1,5 @@
-import { Bundle } from './Bundle';
-import { fs, HttpClient, log, logger, Path, t, id } from './common';
+import { Bundle } from '../Bundle';
+import { fs, HttpClient, log, logger, Path, t, id } from '../common';
 
 /**
  * Factory for the [pull] method.
