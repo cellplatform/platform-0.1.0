@@ -1,4 +1,4 @@
-import { t, expect } from '../test';
+import { t, expect } from './test';
 import { NodeRuntime } from '.';
 
 /**
@@ -12,6 +12,10 @@ import { NodeRuntime } from '.';
  *
  */
 describe('NodeRuntime', () => {
+  it('NOTE: See tests in [cell.router]', () => {
+    //
+  });
+
   it('create (init)', () => {
     const runtime = NodeRuntime.create();
     expect(runtime.name).to.eql('node');

@@ -6,7 +6,6 @@ import { cli, defaultValue, fs, log, PKG, t, time } from './common';
 const FILES = [
   'package.json',
   'vercel.json',
-  'yarn.lock',
   'src/common.ts',
   'src/constants.ts',
   'src/env.vercel.ts',

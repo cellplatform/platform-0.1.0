@@ -1,15 +1,14 @@
 FROM node:12-alpine3.10
 
-# Create app directory
+# Create app directory.
 WORKDIR /usr/cell
 
-# Install app dependencies
+# Install dependencies.
 COPY ./package.json ./
-COPY yarn.lock ./
 
 RUN yarn install --production
 
-# Bundle app source
+# Bundle source.
 COPY ./lib ./lib
 
 EXPOSE 8080
