@@ -1,6 +1,5 @@
 import { Compiler } from '@platform/cell.compiler';
 import { CompilerModelBuilder } from '@platform/cell.compiler/lib/types';
-
 import { fs } from '../../common';
 
 const outdir = 'dist/test';
@@ -30,7 +29,7 @@ export const TestCompile = {
       return Compiler.config()
         .namespace('sample.node')
         .outdir(outdir)
-        .entry('./src/tests/test.Compilation/sample.node/main')
+        .entry('./src/test/TestCompile/sample.node/main')
         .target('node');
     },
 

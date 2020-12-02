@@ -1,3 +1,9 @@
+import { expect } from '../test';
+
+describe('Vm', () => {
+  //
+});
+
 // import { expect, t, fs, Schema, time } from '../test';
 // import { compile } from '../compiler/compile';
 
