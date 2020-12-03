@@ -5,8 +5,10 @@ import { fs } from '../../common';
 /**
  * Helpers for compiling test bundles.
  */
-export const TestCompile = {
-  node: sample(
+export const CompileSamples = {
+  make,
+
+  node: make(
     '/node.sample',
     Compiler.config('node')
       .namespace('sample')
@@ -16,7 +18,7 @@ export const TestCompile = {
   /**
    * Sample [node-js] compilation for VM2 (lib tests).
    */
-  vm2: sample(
+  vm2: make(
     '/node.vm2',
     Compiler.config('vm2')
       .namespace('sample')
@@ -36,7 +38,7 @@ async function bundle(args: { config: CompilerModelBuilder; force?: boolean }) {
   }
 }
 
-function sample(dir: string, config: CompilerModelBuilder) {
+function make(dir: string, config: CompilerModelBuilder) {
   const outdir = `dist/test/${dir.replace(/^\/*/, '')}`;
   config = config.outdir(outdir);
   return {

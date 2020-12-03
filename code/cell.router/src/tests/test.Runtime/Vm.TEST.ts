@@ -3,15 +3,16 @@
  */
 
 import { NodeVM, VMScript } from 'vm2';
-import { fs, expect, TestCompile } from '../../test';
-import { Global } from '../../test/TestCompile/sample.vm2/types';
+import { fs, expect } from '../../test';
+import { Global } from '../CompileSamples/sample.vm2/types';
+import { CompileSamples } from '../CompileSamples';
 
 describe('vm2 (lib)', function () {
   this.timeout(99999);
   before(async () => compileTestBundle());
 
-  const filename = fs.join(fs.resolve(TestCompile.vm2.outdir), 'main.js');
-  const compileTestBundle = (force?: boolean) => TestCompile.vm2.bundle(force);
+  const filename = fs.join(fs.resolve(CompileSamples.vm2.outdir), 'main.js');
+  const compileTestBundle = (force?: boolean) => CompileSamples.vm2.bundle(force);
   const readCode = async () => (await fs.readFile(filename)).toString();
 
   const testVm = (foo: Global['foo']) => {

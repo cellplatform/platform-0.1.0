@@ -1,10 +1,11 @@
 import { NodeRuntime } from '@platform/cell.runtime.node';
-import { createMock, expect, fs, Http, readFile, Schema, t, TestCompile } from '../../test';
+import { createMock, expect, fs, Http, readFile, Schema, t } from '../../test';
+import { CompileSamples } from '../CompileSamples';
 
 type B = t.RuntimeBundleOrigin;
 
 const DIR = {
-  NODE: TestCompile.node.outdir,
+  NODE: CompileSamples.node.outdir,
   TMP_RUNTIME: 'tmp/runtime.node',
 };
 
@@ -59,7 +60,7 @@ describe('NodeRuntime', function () {
   /**
    * Ensure the sample [node] code as been bundled.
    */
-  before(async () => TestCompile.node.bundle());
+  before(async () => CompileSamples.node.bundle());
   beforeEach(async () => await fs.remove(fs.resolve(DIR.TMP_RUNTIME)));
 
   describe('pull', () => {

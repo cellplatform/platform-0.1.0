@@ -1,5 +1,6 @@
 import { NodeRuntime } from '@platform/cell.runtime.node';
-import { createMock, expect, fs, Http, readFile, t, TestCompile } from '../../test';
+import { createMock, expect, fs, Http, readFile, t } from '../../test';
+import { CompileSamples } from '../CompileSamples';
 
 type B = t.RuntimeBundleOrigin;
 
@@ -41,7 +42,7 @@ const uploadBundle = async (
   options: { filter?: (file: t.IHttpClientCellFileUpload) => boolean } = {},
 ) => {
   const { filter } = options;
-  let files = await bundleToFiles(TestCompile.node.outdir, bundle.dir);
+  let files = await bundleToFiles(CompileSamples.node.outdir, bundle.dir);
   files = filter ? files.filter((file) => filter(file)) : files;
   const upload = await client.files.upload(files);
   expect(upload.ok).to.eql(true);
@@ -54,7 +55,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
   /**
    * Ensure the sample node code as been bundled.
    */
-  before(() => TestCompile.node.bundle());
+  before(() => CompileSamples.node.bundle());
   beforeEach(() => fs.remove(fs.resolve('tmp/runtime.node')));
 
   describe('POST success', () => {
