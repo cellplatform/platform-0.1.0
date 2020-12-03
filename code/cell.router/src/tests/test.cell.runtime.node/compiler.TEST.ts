@@ -1,17 +1,30 @@
 import { expect } from '../../test';
 import { CompileSamples, Compiler } from '../CompileSamples';
 
-const samples = {
-  pkg1: CompileSamples.make(
-    '/node.pkg-1',
-    Compiler.config('pkg-1')
+const make = (name: string) => {
+  return CompileSamples.make(
+    `node.dedupe/${name}`,
+    Compiler.config(name)
       .namespace('sample')
-      .entry('./src/tests/test.cell.runtime.node/sample.dedupe/pkg-1/main')
-      .target('node'),
-  ),
+      .target('node')
+      .shared((e) => e.add('@platform/log'))
+      .entry(`./src/tests/test.cell.runtime.node/sample.dedupe/${name}/entry`),
+  );
 };
 
-describe.skip('cell.runtime.node: Compiler', () => {
+const samples = {
+  pkg1: make('pkg-1'),
+  pkg2: make('pkg-2'),
+};
+
+describe('cell.runtime.node: Compiler', function () {
+  this.timeout(99999);
+
+  before(async () => {
+    const force = false;
+    await Promise.all([samples.pkg1.bundle(force), samples.pkg2.bundle(force)]);
+  });
+
   it('TMP', async () => {
     //
   });
