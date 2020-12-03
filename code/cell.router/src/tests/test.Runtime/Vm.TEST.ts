@@ -10,8 +10,9 @@ describe('vm2 (lib)', function () {
   this.timeout(99999);
   before(async () => compileTestBundle());
 
-  const filename = fs.join(fs.resolve(TestCompile.vm2.outdir), 'node', 'main.js');
+  const filename = fs.join(fs.resolve(TestCompile.vm2.outdir), 'main.js');
   const compileTestBundle = (force?: boolean) => TestCompile.vm2.bundle(force);
+  const readCode = async () => (await fs.readFile(filename)).toString();
 
   const testVm = (foo: Global['foo']) => {
     const results: any[] = [];
@@ -36,7 +37,7 @@ describe('vm2 (lib)', function () {
   it('NodeVM', async () => {
     // await compileTestBundle(true);
 
-    const code = (await fs.readFile(filename)).toString();
+    const code = await readCode();
     const { vm, results } = testVm({ count: 123 });
 
     const res = vm.run(code, filename);
@@ -56,7 +57,7 @@ describe('vm2 (lib)', function () {
   it('VMScript ', async () => {
     // await compileTestBundle(true);
 
-    const code = (await fs.readFile(filename)).toString();
+    const code = await readCode();
     const { vm, results } = testVm({ count: 456 });
 
     const script = new VMScript(code, { filename });

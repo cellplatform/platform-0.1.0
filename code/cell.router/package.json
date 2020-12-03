@@ -12,8 +12,7 @@
     "lint": "ts lint",
     "build": "ts build --no-esm",
     "clean": "ts-node -T scripts.ts/clean",
-    "prepare": "ts-node -T scripts.ts/prepare && ts prepare && rm -rf tmp",
-    "tmp": "rm -rf tmp"
+    "prepare": "ts-node -T scripts.ts/prepare && ts prepare && rm -rf tmp"
   },
   "dependencies": {
     "@platform/cache": "0.3.4",

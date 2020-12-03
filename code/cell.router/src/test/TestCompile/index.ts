@@ -2,60 +2,46 @@ import { Compiler } from '@platform/cell.compiler';
 import { CompilerModelBuilder } from '@platform/cell.compiler/lib/types';
 import { fs } from '../../common';
 
-const outdir = 'dist/test';
-
 /**
  * Helpers for compiling test bundles.
  */
 export const TestCompile = {
-  /**
-   * Compile the given bundle configuration if it does
-   * not already exist.
-   */
-  async bundle(args: { config: CompilerModelBuilder; outdir?: string; force?: boolean }) {
-    const dist = fs.resolve(args.outdir || outdir);
-    if (args.force || !(await fs.pathExists(dist))) {
-      await Compiler.bundle(args.config);
-    }
-  },
-
-  /**
-   * Sample [node-js] compilation.
-   */
-  node: {
-    outdir: `${outdir}/sample`,
-
-    get config() {
-      return Compiler.config('node')
-        .namespace('sample')
-        .outdir(TestCompile.node.outdir)
-        .entry('./src/test/TestCompile/sample.node/main')
-        .target('node');
-    },
-
-    async bundle(force?: boolean) {
-      const { config, outdir } = TestCompile.node;
-      await TestCompile.bundle({ config, outdir, force });
-    },
-  },
-
+  node: sample(
+    '/node.sample',
+    Compiler.config('node')
+      .namespace('sample')
+      .entry('./src/test/TestCompile/sample.node/main')
+      .target('node'),
+  ),
   /**
    * Sample [node-js] compilation for VM2 (lib tests).
    */
-  vm2: {
-    outdir: `${outdir}/vm2`,
-
-    get config() {
-      return Compiler.config('vm2')
-        .namespace('sample')
-        .outdir(TestCompile.vm2.outdir)
-        .entry('./src/test/TestCompile/sample.vm2/main')
-        .target('node');
-    },
-
-    async bundle(force?: boolean) {
-      const { config, outdir } = TestCompile.vm2;
-      await TestCompile.bundle({ config, outdir, force });
-    },
-  },
+  vm2: sample(
+    '/node.vm2',
+    Compiler.config('vm2')
+      .namespace('sample')
+      .entry('./src/test/TestCompile/sample.vm2/main')
+      .target('node'),
+  ),
 };
+
+/**
+ * Helpers
+ */
+
+async function bundle(args: { config: CompilerModelBuilder; force?: boolean }) {
+  const outdir = fs.resolve(args.config.toObject().outdir || '');
+  if (args.force || !(await fs.pathExists(outdir))) {
+    await Compiler.bundle(args.config);
+  }
+}
+
+function sample(dir: string, config: CompilerModelBuilder) {
+  const outdir = `dist/test/${dir.replace(/^\/*/, '')}`;
+  config = config.outdir(outdir);
+  return {
+    config,
+    outdir: `${outdir}/${config.toObject().target || ''}`,
+    bundle: (force?: boolean) => bundle({ config, force }),
+  };
+}

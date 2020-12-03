@@ -3,10 +3,6 @@ import { createMock, expect, fs, Http, readFile, t, TestCompile } from '../../te
 
 type B = t.RuntimeBundleOrigin;
 
-const DIR = {
-  NODE: fs.join(TestCompile.node.outdir, 'node'),
-};
-
 const createFuncMock = async () => {
   const runtime = NodeRuntime.create();
   const mock = await createMock({ runtime });
@@ -45,7 +41,7 @@ const uploadBundle = async (
   options: { filter?: (file: t.IHttpClientCellFileUpload) => boolean } = {},
 ) => {
   const { filter } = options;
-  let files = await bundleToFiles(DIR.NODE, bundle.dir);
+  let files = await bundleToFiles(TestCompile.node.outdir, bundle.dir);
   files = filter ? files.filter((file) => filter(file)) : files;
   const upload = await client.files.upload(files);
   expect(upload.ok).to.eql(true);
