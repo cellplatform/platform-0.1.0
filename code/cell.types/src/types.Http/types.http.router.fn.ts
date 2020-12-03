@@ -29,7 +29,7 @@ export type IResPostFuncRunResult = {
   elapsed: number;
   bundle: t.RuntimeBundleOrigin;
   cache: { exists: boolean; pulled: boolean };
-  runtime: { name: t.RuntimeEnv['name']; silent: boolean };
+  runtime: { name: t.RuntimeEnv['name']; version: string; silent: boolean };
   size: { bytes: number; files: number };
   urls: { files: string; manifest: string };
   errors: t.IRuntimeError[];

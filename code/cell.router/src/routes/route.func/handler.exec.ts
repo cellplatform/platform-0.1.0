@@ -67,7 +67,7 @@ async function execBundle(args: {
     elapsed: new Date().getTime() - startedAt.getTime(),
     bundle,
     cache: { exists, pulled: pull ? true : !exists },
-    runtime: { name: runtime.name, silent },
+    runtime: { name: runtime.name, version: runtime.version, silent },
     size: {
       bytes: defaultValue(manifest?.bytes, -1),
       files: defaultValue(manifest?.files.length, -1),

@@ -65,7 +65,10 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
     const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncRunResult) => {
       expect(res.ok).to.eql(true);
 
+      const version = (process.version || '').replace(/^v/, '');
+      expect(res.runtime.version).to.include(`node@${version}`);
       expect(res.runtime.name).to.eql('node');
+
       expect(res.urls.manifest).to.match(/^http:\/\/localhost\:.*index\.json$/);
       if (dir) {
         expect(res.urls.files).to.include(`filter=${dir}/**`);

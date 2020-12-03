@@ -11,6 +11,7 @@ export type RuntimeEnv = RuntimeEnvNode | RuntimeEnvWeb;
  * Common methods of an executable runtime.
  */
 type RuntimeMembers = {
+  version: string;
   exists(bundle: B): Promise<boolean>;
   pull(bundle: B, options?: { silent?: boolean }): Promise<RuntimePullResponse>;
   run(

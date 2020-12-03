@@ -16,6 +16,8 @@ export async function invoke(args: {
    * - insert params
    * - do within node.vm
    * - return value
+   * - type
+   * - node version on return
    */
 
   const cmd = `node ${manifest.entry}`;

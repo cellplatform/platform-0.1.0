@@ -21,6 +21,12 @@ describe('NodeRuntime', () => {
     expect(runtime.name).to.eql('node');
   });
 
+  it('node version', () => {
+    const runtime = NodeRuntime.create();
+    const version = (process.version || '').replace(/^v/, '');
+    expect(runtime.version).to.include(`node@${version}`);
+  });
+
   it('urls', () => {
     const bundle: t.RuntimeBundleOrigin = { host: 'domain.com', uri: 'cell:foo:A1', dir: 'v1' };
     const urls = NodeRuntime.urls(bundle);
