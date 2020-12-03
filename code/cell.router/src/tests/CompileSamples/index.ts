@@ -15,7 +15,7 @@ export const CompileSamples = {
     '/node.sample',
     Compiler.config('node')
       .namespace('sample')
-      .entry('./src/test/TestCompile/sample.node/main')
+      .entry('./src/tests/CompileSamples/sample.node/main')
       .target('node'),
   ),
 };

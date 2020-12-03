@@ -11,11 +11,11 @@ const sample = CompileSamples.make(
   '/node.vm2',
   Compiler.config('vm2')
     .namespace('sample')
-    .entry('./src/test/TestCompile/sample.vm2/main')
+    .entry('./src/tests/test.cell.runtime.node/sample.vm2/main')
     .target('node'),
 );
 
-describe('vm2 (lib)', function () {
+describe('cell.runtime.node: vm2 (lib)', function () {
   this.timeout(99999);
   before(async () => compileTestBundle());
 

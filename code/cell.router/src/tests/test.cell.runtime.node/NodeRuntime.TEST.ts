@@ -54,7 +54,7 @@ const uploadBundle = async (
   return { files, upload, bundle };
 };
 
-describe('NodeRuntime', function () {
+describe('cell.runtime.node: NodeRuntime', function () {
   this.timeout(99999);
 
   /**
