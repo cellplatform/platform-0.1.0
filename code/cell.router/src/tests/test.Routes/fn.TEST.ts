@@ -1,10 +1,10 @@
 import { NodeRuntime } from '@platform/cell.runtime.node';
-import { createMock, expect, fs, Http, readFile, Schema, t, TestCompile } from '../../test';
+import { createMock, expect, fs, Http, readFile, t, TestCompile } from '../../test';
 
 type B = t.RuntimeBundleOrigin;
 
 const DIR = {
-  NODE: TestCompile.node.outdir,
+  NODE: fs.join(TestCompile.node.outdir, 'node'),
 };
 
 const createFuncMock = async () => {

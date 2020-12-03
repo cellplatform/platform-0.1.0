@@ -23,18 +23,38 @@ export const TestCompile = {
    * Sample [node-js] compilation.
    */
   node: {
-    outdir: `${outdir}/node`,
+    outdir: `${outdir}/sample`,
 
     get config() {
-      return Compiler.config()
-        .namespace('sample.node')
-        .outdir(outdir)
+      return Compiler.config('node')
+        .namespace('sample')
+        .outdir(TestCompile.node.outdir)
         .entry('./src/test/TestCompile/sample.node/main')
         .target('node');
     },
 
     async bundle(force?: boolean) {
       const { config, outdir } = TestCompile.node;
+      await TestCompile.bundle({ config, outdir, force });
+    },
+  },
+
+  /**
+   * Sample [node-js] compilation for VM2 (lib tests).
+   */
+  vm2: {
+    outdir: `${outdir}/vm2`,
+
+    get config() {
+      return Compiler.config('vm2')
+        .namespace('sample')
+        .outdir(TestCompile.vm2.outdir)
+        .entry('./src/test/TestCompile/sample.vm2/main')
+        .target('node');
+    },
+
+    async bundle(force?: boolean) {
+      const { config, outdir } = TestCompile.vm2;
       await TestCompile.bundle({ config, outdir, force });
     },
   },

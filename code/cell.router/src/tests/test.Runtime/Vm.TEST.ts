@@ -1,146 +1,76 @@
-import { fs, expect, TestCompile, time } from '../../test';
+/**
+ * https://github.com/patriksimek/vm2
+ */
 
-import vm from 'vm';
+import { NodeVM, VMScript } from 'vm2';
+import { fs, expect, TestCompile } from '../../test';
+import { Global } from '../../test/TestCompile/sample.vm2/types';
 
-const DIR = {
-  NODE: TestCompile.node.outdir,
-  TMP_RUNTIME: 'tmp/runtime.node',
-};
-
-const compileTestBundle = (force?: boolean) => TestCompile.node.bundle(force);
-
-describe.only('Vm', function () {
+describe('vm2 (lib)', function () {
   this.timeout(99999);
-
-  /**
-   * Ensure the sample [node] code as been bundled.
-   */
   before(async () => compileTestBundle());
-  beforeEach(async () => await fs.remove(fs.resolve(DIR.TMP_RUNTIME)));
 
-  it('TMP', async () => {
-    await compileTestBundle(true);
+  const filename = fs.join(fs.resolve(TestCompile.vm2.outdir), 'node', 'main.js');
+  const compileTestBundle = (force?: boolean) => TestCompile.vm2.bundle(force);
 
-    const dir = fs.resolve(DIR.NODE);
-    const path = fs.join(dir, 'main.js');
-
-    let response: any;
-
-    const context = {
-      require: (path: string) => {
-        path = fs.join(dir, path);
-        console.log('path', path);
-        return require(path);
-      },
-      console,
-      self: {
-        res(value: any) {
-          console.log('value', value);
-          response = value;
-        },
-      },
+  const testVm = (foo: Global['foo']) => {
+    const results: any[] = [];
+    const sandbox: Global = {
+      foo,
+      res: (value: any) => results.push(value),
     };
 
-    const code = (await fs.readFile(path)).toString();
+    const vm = new NodeVM({
+      console: 'off',
+      sandbox,
+      require: {
+        external: true,
+        builtin: ['os', 'tty', 'util'],
+        root: './',
+      },
+    });
 
-    // const script = new vm.Script('count += 1; name = "kitty";');
-    const script = new vm.Script(code);
+    return { vm, results, sandbox };
+  };
 
-    vm.createContext(context);
-    const res = script.runInContext(context);
+  it('NodeVM', async () => {
+    // await compileTestBundle(true);
 
-    await time.wait(1500);
+    const code = (await fs.readFile(filename)).toString();
+    const { vm, results } = testVm({ count: 123 });
 
-    console.log('-------------------------------------------');
-    console.log('res', res);
-    console.log('resposne', response);
-    // console.log('typeof response.foo', typeof response.foo);
+    const res = vm.run(code, filename);
+    expect(res).to.eql({});
+
+    expect(results.length).to.eql(2);
+    expect(results[0].msg).to.eql('app');
+    expect(results[1].msg).to.eql('main');
+
+    expect(results[0].env).to.eql({}); // NB: No environment variables leak into the context.
+    expect(results[1].env).to.eql({});
+
+    expect(results[0].foo).to.eql({ count: 123 });
+    expect(results[1].foo).to.eql({ count: 123 });
+  });
+
+  it('VMScript ', async () => {
+    // await compileTestBundle(true);
+
+    const code = (await fs.readFile(filename)).toString();
+    const { vm, results } = testVm({ count: 456 });
+
+    const script = new VMScript(code, { filename });
+    const res = vm.run(script as any);
+    expect(res).to.eql({});
+
+    expect(results.length).to.eql(2);
+    expect(results[0].msg).to.eql('app');
+    expect(results[1].msg).to.eql('main');
+
+    expect(results[0].env).to.eql({}); // NB: No environment variables leak into the context.
+    expect(results[1].env).to.eql({});
+
+    expect(results[0].foo).to.eql({ count: 456 });
+    expect(results[1].foo).to.eql({ count: 456 });
   });
 });
-
-// import { expect, t, fs, Schema, time } from '../test';
-// import { compile } from '../compiler/compile';
-
-// import { VM, NodeVM } from 'vm2';
-// import vm from 'vm';
-
-// describe.only('vm2', function () {
-//   this.timeout(99999);
-
-//   it('VM', async () => {
-//     //
-//     const vm = new VM();
-//     const res = vm.run('console.log(1234);1234;');
-//     console.log('res', res);
-//   });
-
-//   it('NodeVM', async () => {
-//     // await compileNode(true);
-
-//     const dir = fs.resolve('dist/node');
-//     const path = fs.join(dir, 'main.js');
-
-//     const vm = new NodeVM({
-//       console: 'inherit',
-//       require: {
-//         external: true,
-//         root: './',
-//         builtin: ['fs', 'path'],
-//         resolve: (moduleName: string, parentDirname: string) => {
-//           console.log('moduleName', moduleName);
-//           console.log('parentDirname', parentDirname);
-
-//           return moduleName;
-//         },
-//       },
-//     });
-
-//     const code = (await fs.readFile(path)).toString();
-//     console.log('code', code.substring(0, 30));
-//     console.log('-------------------------------------------');
-
-//     const res = vm.run(code, path);
-
-//     console.log('-------------------------------------------');
-//     console.log('res', res);
-//   });
-
-//   it.only('VM', async () => {
-//     // await compileNode(true);
-
-//     const dir = fs.resolve('dist/node');
-//     const path = fs.join(dir, 'main.js');
-
-//     let response: any;
-
-//     const context = {
-//       require: (path: string) => {
-//         path = fs.join(dir, path);
-//         console.log('path', path);
-//         return require(path);
-//       },
-//       console,
-//       self: {
-//         res(value: any) {
-//           console.log('value', value);
-//           response = value;
-//         },
-//       },
-//     };
-
-//     const code = (await fs.readFile(path)).toString();
-
-//     // const script = new vm.Script('count += 1; name = "kitty";');
-//     const script = new vm.Script(code);
-
-//     vm.createContext(context);
-//     const res = script.runInContext(context);
-
-//     await time.wait(1500);
-
-//     console.log('-------------------------------------------');
-//     console.log('res', res);
-//     console.log('resposne', response);
-//     console.log('typeof response.foo', typeof response.foo);
-//   });
-// });

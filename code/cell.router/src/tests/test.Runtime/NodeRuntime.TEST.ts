@@ -4,7 +4,7 @@ import { createMock, expect, fs, Http, readFile, Schema, t, TestCompile } from '
 type B = t.RuntimeBundleOrigin;
 
 const DIR = {
-  NODE: TestCompile.node.outdir,
+  NODE: fs.join(TestCompile.node.outdir, 'node'),
   TMP_RUNTIME: 'tmp/runtime.node',
 };
 
