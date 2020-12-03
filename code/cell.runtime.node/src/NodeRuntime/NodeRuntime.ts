@@ -19,7 +19,7 @@ export const NodeRuntime = {
 
     const runtime: t.RuntimeEnvNode = {
       name: 'node',
-      version: `node@${(process.version || '').replace(/^v/, '')}`,
+      version: (process.version || '').replace(/^v/, ''),
       pull: pullMethod({ cachedir }),
       run: runMethod({ cachedir }),
 

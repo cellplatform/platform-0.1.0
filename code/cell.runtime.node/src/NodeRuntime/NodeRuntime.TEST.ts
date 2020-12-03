@@ -24,7 +24,7 @@ describe('NodeRuntime', () => {
   it('node version', () => {
     const runtime = NodeRuntime.create();
     const version = (process.version || '').replace(/^v/, '');
-    expect(runtime.version).to.include(`node@${version}`);
+    expect(runtime.version).to.eql(version);
   });
 
   it('urls', () => {

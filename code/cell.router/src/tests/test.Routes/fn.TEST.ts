@@ -66,7 +66,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       expect(res.ok).to.eql(true);
 
       const version = (process.version || '').replace(/^v/, '');
-      expect(res.runtime.version).to.include(`node@${version}`);
+      expect(res.runtime.version).to.eql(`${version}`);
       expect(res.runtime.name).to.eql('node');
 
       expect(res.urls.manifest).to.match(/^http:\/\/localhost\:.*index\.json$/);
