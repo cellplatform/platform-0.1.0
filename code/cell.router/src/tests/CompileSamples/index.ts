@@ -2,10 +2,13 @@ import { Compiler } from '@platform/cell.compiler';
 import { CompilerModelBuilder } from '@platform/cell.compiler/lib/types';
 import { fs } from '../../common';
 
+export { Compiler };
+
 /**
  * Helpers for compiling test bundles.
  */
 export const CompileSamples = {
+  Compiler,
   make,
 
   node: make(
@@ -13,16 +16,6 @@ export const CompileSamples = {
     Compiler.config('node')
       .namespace('sample')
       .entry('./src/test/TestCompile/sample.node/main')
-      .target('node'),
-  ),
-  /**
-   * Sample [node-js] compilation for VM2 (lib tests).
-   */
-  vm2: make(
-    '/node.vm2',
-    Compiler.config('vm2')
-      .namespace('sample')
-      .entry('./src/test/TestCompile/sample.vm2/main')
       .target('node'),
   ),
 };
