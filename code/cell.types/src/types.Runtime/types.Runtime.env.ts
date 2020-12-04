@@ -16,7 +16,7 @@ type RuntimeMembers = {
   pull(bundle: B, options?: { silent?: boolean }): Promise<RuntimePullResponse>;
   run(
     bundle: B,
-    options?: { params?: t.JsonMap; pull?: boolean; silent?: boolean; timeout?: number },
+    options?: { params?: t.Json; pull?: boolean; silent?: boolean; timeout?: number },
   ): Promise<RuntimeRunResponse>;
 
   remove(bundle: B): Promise<{ count: number }>;

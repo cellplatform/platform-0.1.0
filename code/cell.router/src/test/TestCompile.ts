@@ -1,23 +1,16 @@
 import { Compiler } from '@platform/cell.compiler';
 import { CompilerModelBuilder } from '@platform/cell.compiler/lib/types';
-import { fs } from '../../common';
+import { fs } from '../common';
 
 export { Compiler };
 
 /**
  * Helpers for compiling test bundles.
  */
-export const CompileSamples = {
+export const TestCompile = {
   Compiler,
+  bundle,
   make,
-
-  node: make(
-    '/node.sample',
-    Compiler.config('node')
-      .namespace('sample')
-      .entry('./src/tests/CompileSamples/sample.node/main')
-      .target('node'),
-  ),
 };
 
 /**

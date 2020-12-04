@@ -3,12 +3,11 @@
  */
 
 import { NodeVM, VMScript } from 'vm2';
-import { fs, expect, time } from '../../test';
+import { fs, expect, TestCompile, Compiler } from '../../test';
 import { Global } from './sample.vm2/types';
-import { CompileSamples, Compiler } from '../CompileSamples';
 
 const make = (name: string) => {
-  return CompileSamples.make(
+  return TestCompile.make(
     `node.vm2/${name}`,
     Compiler.config(name)
       .namespace('sample')

@@ -1,8 +1,7 @@
-import { expect } from '../../test';
-import { CompileSamples, Compiler } from '../CompileSamples';
+import { expect, TestCompile, Compiler } from '../../test';
 
 const make = (name: string) => {
-  return CompileSamples.make(
+  return TestCompile.make(
     `node.dedupe/${name}`,
     Compiler.config(name)
       .namespace('sample')

@@ -1,12 +1,21 @@
 import { NodeRuntime } from '@platform/cell.runtime.node';
-import { createMock, expect, fs, Http, readFile, Schema, t, time } from '../../test';
-import { CompileSamples, Compiler } from '../CompileSamples';
 
+import {
+  Compiler,
+  createMock,
+  expect,
+  fs,
+  Http,
+  readFile,
+  Schema,
+  t,
+  TestCompile,
+} from '../../test';
 import { EntryParams, Result } from './sample.NodeRuntime/types';
 
 type B = t.RuntimeBundleOrigin;
 
-const sample = CompileSamples.make(
+export const sample = TestCompile.make(
   'NodeRuntime',
   Compiler.config('NodeRuntime')
     .namespace('sample')
@@ -290,7 +299,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const error = res.errors[0];
       expect(error.type).to.eql('RUNTIME/run');
       expect(error.bundle).to.eql(bundle);
-      expect(error.message).to.include('Execution timed out (10ms)');
+      expect(error.message).to.include('Execution timed out (max 10ms)');
     });
 
     it('done is only called once', async () => {

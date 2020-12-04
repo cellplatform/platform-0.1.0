@@ -1,6 +1,7 @@
 import { NodeRuntime } from '@platform/cell.runtime.node';
 import { createMock, expect, fs, Http, readFile, t } from '../../test';
-import { CompileSamples } from '../CompileSamples';
+import { sample } from '../test.cell.runtime.node/NodeRuntime.TEST';
+import { EntryParams, Result } from '../test.cell.runtime.node/sample.NodeRuntime/types';
 
 type B = t.RuntimeBundleOrigin;
 
@@ -8,7 +9,7 @@ const createFuncMock = async () => {
   const runtime = NodeRuntime.create();
   const mock = await createMock({ runtime });
   const http = Http.create();
-  const url = mock.urls.fn.run.toString();
+  const url = mock.urls.fn.run;
   return { url, mock, http, runtime };
 };
 
@@ -42,7 +43,7 @@ const uploadBundle = async (
   options: { filter?: (file: t.IHttpClientCellFileUpload) => boolean } = {},
 ) => {
   const { filter } = options;
-  let files = await bundleToFiles(CompileSamples.node.outdir, bundle.dir);
+  let files = await bundleToFiles(sample.outdir, bundle.dir);
   files = filter ? files.filter((file) => filter(file)) : files;
   const upload = await client.files.upload(files);
   expect(upload.ok).to.eql(true);
@@ -55,7 +56,10 @@ describe.only('/fn:run (NodeRuntime over HTTP)', function () {
   /**
    * Ensure the sample node code as been bundled.
    */
-  before(() => CompileSamples.node.bundle());
+  before(async () => {
+    // await CompileSamples.node.bundle();
+    await sample.bundle();
+  });
   beforeEach(() => fs.remove(fs.resolve('tmp/runtime.node')));
 
   describe('POST success', () => {
@@ -77,18 +81,18 @@ describe.only('/fn:run (NodeRuntime over HTTP)', function () {
       expect(res.errors).to.eql([]);
     };
 
-    it.only('body: single function', async () => {
+    it('body: single function - no result', async () => {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
       await uploadBundle(client, bundle);
 
       const body: t.IReqPostFuncRunBody = { host, uri, dir };
-      const res = await http.post(url, body);
+      const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
 
-      expect(json.elapsed).to.greaterThan(0);
+      expect(json.elapsed).to.greaterThan(10);
       expect(json.results.length).to.eql(1);
       expect(json.results[0].bundle).to.eql(bundle);
       expectFuncResponse(dir, json.results[0]);
@@ -97,13 +101,32 @@ describe.only('/fn:run (NodeRuntime over HTTP)', function () {
       expect(json.results[0].cache.pulled).to.eql(true);
     });
 
+    it('body: single function - result (pass params)', async () => {
+      const dir = 'foo';
+      const { mock, bundle, client, http, url } = await prepare({ dir });
+      const { host, uri } = bundle;
+      await uploadBundle(client, bundle);
+
+      const params: EntryParams = { value: { foo: 123 } };
+      const body: t.IReqPostFuncRunBody = { host, uri, dir, params };
+      const res = await http.post(url.toString(), body);
+      const json = res.json as t.IResPostFuncRun;
+      await mock.dispose();
+
+      expectFuncResponse(dir, json.results[0]);
+
+      const result = json.results[0].result as Result;
+      expect(result.echo).to.eql({ foo: 123 });
+      expect(result.process).to.eql({});
+    });
+
     it('body: multiple functions in single payload', async () => {
       const dir = undefined;
       const { mock, bundle, client, http, url } = await prepare({ dir });
       await uploadBundle(client, bundle);
 
       const body: t.IReqPostFuncRunBody = [bundle, bundle];
-      const res = await http.post(url, body);
+      const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
 
@@ -119,6 +142,51 @@ describe.only('/fn:run (NodeRuntime over HTTP)', function () {
       // Already cached.
       expect(json.results[1].cache.exists).to.eql(true);
       expect(json.results[1].cache.pulled).to.eql(false);
+
+      // Second time faster (pulled and compiled).
+      expect(json.results[0].elapsed).to.greaterThan(json.results[1].elapsed);
+    });
+
+    it('timeout: on body payload', async () => {
+      const dir = 'foo';
+      const { mock, bundle, client, http, url } = await prepare({ dir });
+      const { host, uri } = bundle;
+      await uploadBundle(client, bundle);
+
+      const params: EntryParams = { delay: 20 };
+      const body: t.IReqPostFuncRunBody = { host, uri, dir, params, timeout: 10 };
+      const res = await http.post(url.toString(), body);
+      const json = res.json as t.IResPostFuncRun;
+      await mock.dispose();
+
+      const result = json.results[0];
+      expect(result.errors.length).to.eql(1);
+
+      const error = result.errors[0];
+      expect(error.type).to.eql('RUNTIME/run');
+      expect(error.bundle).to.eql(bundle);
+      expect(error.message).to.include('Execution timed out (max 10ms)');
+    });
+
+    it('timeout: on query-string', async () => {
+      const dir = 'foo';
+      const { mock, bundle, client, http, url } = await prepare({ dir });
+      const { host, uri } = bundle;
+      await uploadBundle(client, bundle);
+
+      const params: EntryParams = { delay: 20 };
+      const body: t.IReqPostFuncRunBody = { host, uri, dir, params };
+      const res = await http.post(url.query({ timeout: 10 }).toString(), body);
+      const json = res.json as t.IResPostFuncRun;
+      await mock.dispose();
+
+      const result = json.results[0];
+      expect(result.errors.length).to.eql(1);
+
+      const error = result.errors[0];
+      expect(error.type).to.eql('RUNTIME/run');
+      expect(error.bundle).to.eql(bundle);
+      expect(error.message).to.include('Execution timed out (max 10ms)');
     });
 
     it('query-string: pull', async () => {
@@ -189,7 +257,7 @@ describe.only('/fn:run (NodeRuntime over HTTP)', function () {
       const { mock, bundle, http, url } = await prepare({ dir });
 
       const data: t.IReqPostFuncRunBody = { ...bundle };
-      const res = await http.post(url, data);
+      const res = await http.post(url.toString(), data);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
 

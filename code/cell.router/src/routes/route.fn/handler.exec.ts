@@ -12,14 +12,23 @@ export async function exec(args: {
   body: t.IReqPostFuncRunBody;
   defaultPull?: boolean;
   defaultSilent?: boolean;
+  defaultTimeout?: number;
 }) {
   try {
-    const { host, db, runtime, defaultPull, defaultSilent } = args;
+    const { host, db, runtime, defaultPull, defaultSilent, defaultTimeout } = args;
     const bundles = Array.isArray(args.body) ? args.body : [args.body];
     const results: t.IResPostFuncRunResult[] = [];
 
     for (const body of bundles) {
-      const res = await execBundle({ host, db, body, runtime, defaultPull, defaultSilent });
+      const res = await execBundle({
+        host,
+        db,
+        body,
+        runtime,
+        defaultPull,
+        defaultSilent,
+        defaultTimeout,
+      });
       results.push(res);
     }
 
@@ -46,25 +55,26 @@ async function execBundle(args: {
   body: t.IReqPostFuncRun;
   defaultPull?: boolean;
   defaultSilent?: boolean;
+  defaultTimeout?: number;
 }) {
-  const startedAt = new Date();
   const { body, runtime } = args;
   const silent = defaultValue(body.silent, defaultValue(args.defaultSilent, true));
 
+  const { uri, dir, params } = body;
   const host = body.host || args.host;
-  const uri = body.uri;
-  const dir = body.dir;
   const pull = defaultValue(body.pull, args.defaultPull || false);
+  const timeout = defaultValue(body.timeout, args.defaultTimeout);
   const bundle: B = { host, uri, dir };
   const urls = Schema.urls(bundle.host);
 
   const exists = await runtime.exists(bundle);
-  const res = await runtime.run(bundle, { silent, pull });
+  const res = await runtime.run(bundle, { silent, pull, params, timeout });
   const { manifest, errors } = res;
 
   const data: t.IResPostFuncRunResult = {
     ok: res.ok,
-    elapsed: new Date().getTime() - startedAt.getTime(),
+    result: res.result,
+    elapsed: res.elapsed,
     bundle,
     cache: { exists, pulled: pull ? true : !exists },
     runtime: { name: runtime.name, version: runtime.version, silent },

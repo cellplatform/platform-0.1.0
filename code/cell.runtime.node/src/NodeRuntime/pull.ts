@@ -107,7 +107,7 @@ export function pullMethod(args: { cachedir: string }) {
     );
 
     const manifest = bundle.dir.append(PATH.MANIFEST);
-    if (!list.some(({ path }) => path === manifest)) {
+    if (list.length > 0 && !list.some(({ path }) => path === manifest)) {
       addError(`The bundle does not contain a manifest (expected '${manifest}')`);
     }
 

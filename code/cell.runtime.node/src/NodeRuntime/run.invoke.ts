@@ -15,7 +15,7 @@ type R = {
 export function invoke(args: {
   dir: string;
   manifest: t.BundleManifest;
-  params?: t.JsonMap;
+  params?: t.Json;
   silent?: boolean;
   timeout?: number;
 }) {
@@ -38,7 +38,7 @@ export function invoke(args: {
     const timer = time.timer();
     const timeout = defaultValue(args.timeout, 3000);
     const timeoutDelay = time.delay(timeout, () => {
-      errors.push(new Error(`Execution timed out (${timeout}ms)`));
+      errors.push(new Error(`Execution timed out (max ${timeout}ms)`));
       done();
     });
 
