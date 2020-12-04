@@ -50,7 +50,7 @@ const uploadBundle = async (
   return { files, upload, bundle };
 };
 
-describe.only('/fn:run (NodeRuntime over HTTP)', function () {
+describe('/fn:run (NodeRuntime over HTTP)', function () {
   this.timeout(99999);
 
   /**

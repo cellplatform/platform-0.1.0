@@ -8,4 +8,4 @@ export type EntryParams = {
   TMP: 123;
 };
 
-export type SumParams = {};
+// export type SumParams = {};

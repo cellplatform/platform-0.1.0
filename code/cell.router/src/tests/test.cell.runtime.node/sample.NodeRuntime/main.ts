@@ -14,7 +14,7 @@ const params = env.entry.params as t.EntryParams;
 import { echo } from './app';
 
 if (typeof params.repeatDone === 'number') {
-  Array.from({ length: params.repeatDone }).forEach((v, i) => env.done(i + 1));
+  Array.from({ length: params.repeatDone }).forEach((v, i) => env.done({ count: i + 1 }));
 } else {
   if (params.delay) {
     console.log('params', params);

@@ -12,11 +12,11 @@ export type NodeGlobalEnv = {
   /**
    * Entry context passed into a function when it is invoked.
    */
-  entry: { params: t.Json };
+  entry: { params: t.JsonMap };
 
   /**
    * Signals that a function has completed,
    * optionally returning a value.
    */
-  done<T extends t.Json>(result?: T): void;
+  done<T extends t.JsonMap>(result?: T): void;
 };

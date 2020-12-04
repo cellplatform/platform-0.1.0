@@ -81,7 +81,7 @@ const uploadBundle = async (
   return { files, upload, bundle };
 };
 
-describe.only('cell.runtime.node: NodeRuntime', function () {
+describe('cell.runtime.node: NodeRuntime', function () {
   this.timeout(99999);
 
   /**
@@ -90,8 +90,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
   before(async () => {
     const force = false;
     await samples.node.bundle(force);
-
-    await samples.math.bundle(true);
+    await samples.math.bundle(force);
   });
   beforeEach(async () => await fs.remove(fs.resolve('tmp/runtime.node')));
 
@@ -319,7 +318,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const res = await runtime.run(bundle, { silent: true, params });
       await mock.dispose();
 
-      expect(res.result).to.eql(1);
+      expect(res.result).to.eql({ count: 1 });
     });
 
     it('error: thrown within bundled code', async () => {

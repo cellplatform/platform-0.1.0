@@ -32,7 +32,7 @@ export function runMethod(args: { cachedir: string }) {
         }),
       );
 
-    const done = (result?: t.Json) => {
+    const done = (result?: t.JsonMap) => {
       const ok = errors.length === 0;
       return { ok, result, errors, manifest, elapsed };
     };

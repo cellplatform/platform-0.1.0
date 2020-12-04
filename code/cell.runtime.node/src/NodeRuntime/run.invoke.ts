@@ -4,7 +4,7 @@ import { Script } from '../vm';
 
 type R = {
   ok: boolean;
-  result?: t.Json;
+  result?: t.JsonMap;
   errors: Error[];
   elapsed: number;
 };
@@ -15,7 +15,7 @@ type R = {
 export function invoke(args: {
   dir: string;
   manifest: t.BundleManifest;
-  params?: t.Json;
+  params?: t.JsonMap;
   silent?: boolean;
   timeout?: number;
 }) {
@@ -43,7 +43,7 @@ export function invoke(args: {
       done();
     });
 
-    const done = (result?: t.Json) => {
+    const done = (result?: t.JsonMap) => {
       timeoutDelay.cancel();
       if (isStopped) {
         return; // NB: The [done] response can only be returned once.

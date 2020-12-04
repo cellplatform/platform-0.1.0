@@ -15,10 +15,10 @@ export type IReqPostFuncRun = {
   uri: string; // Cell URI
   host?: string; // NB: the running system's host is used if not specified.
   dir?: string;
-  params?: t.Json;
+  params?: t.JsonMap;
   pull?: boolean; // Flag to force pull the bundle (if it's already cached.)
   silent?: boolean;
-  timeout?: number; // msecs.
+  timeout?: number; // Msecs.
 };
 
 export type IResPostFuncRun = {
@@ -28,7 +28,7 @@ export type IResPostFuncRun = {
 
 export type IResPostFuncRunResult = {
   ok: boolean;
-  result?: t.Json;
+  result?: t.JsonMap;
   elapsed: number;
   bundle: t.RuntimeBundleOrigin;
   cache: { exists: boolean; pulled: boolean };
