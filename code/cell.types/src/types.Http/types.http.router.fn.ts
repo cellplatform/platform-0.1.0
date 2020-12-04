@@ -40,6 +40,7 @@ export type IResPostFuncRunResult = {
 
 /**
  * TODO 🐷 (for chaining)
- * - in
- * - out
+ *  Think about SmallTalk ("language of messages")
+ *    - in
+ *    - out
  */
