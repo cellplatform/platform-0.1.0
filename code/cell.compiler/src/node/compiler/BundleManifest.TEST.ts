@@ -1,21 +1,16 @@
 import { BundleManifest } from '.';
-import { expect, fs, TestCompile } from '../../test';
+import { expect, fs, SampleBundles } from '../../test';
 
-const TMP = fs.resolve('./tmp/test/BundleManifest');
-const bundleDir = fs.resolve('dist/test/node');
-const config = TestCompile.node.config;
-
-describe('BundleManifest', function () {
+describe.only('BundleManifest', function () {
   this.timeout(99999);
 
+  const TMP = fs.resolve('./tmp/test/BundleManifest');
+  const config = SampleBundles.nodeSimple.config;
+  const bundleDir = SampleBundles.nodeSimple.outdir;
+
   before(async () => {
-    /**
-     * Ensure sample node distribution has been compiled.
-     */
-    const dist = fs.resolve(bundleDir);
-    if (!(await fs.pathExists(fs.join(dist, 'main.js')))) {
-      await TestCompile.node.bundle();
-    }
+    const force = true;
+    await SampleBundles.nodeSimple.bundle(force);
   });
 
   beforeEach(() => fs.remove(TMP));

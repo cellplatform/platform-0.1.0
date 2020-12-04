@@ -1,7 +1,7 @@
 import DevServer from 'webpack-dev-server';
 
 import { log, Model, t, toModel, logger, port } from '../common';
-import { wp } from '../Config.webpack';
+import { wp } from '../config.webpack';
 import { afterCompile } from './util';
 
 const portInUse = async (value: number) => port.isUsed(value, 'localhost');

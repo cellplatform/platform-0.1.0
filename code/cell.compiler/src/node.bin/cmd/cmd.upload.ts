@@ -1,4 +1,4 @@
-import { Compiler } from '../../node/Compiler';
+import { Compiler } from '../../node/compiler';
 import { fs, HttpClient, log, Model, PATH, t, Uri } from '../common';
 import * as util from '../util';
 

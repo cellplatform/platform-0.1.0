@@ -1,9 +1,7 @@
-import * as React from 'react';
-
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { Compiler } from '..';
 import { fs, expect, ModuleFederationPlugin, t, Encoding } from '../../test';
-import { ConfigBuilder } from '../Config';
+import { ConfigBuilder } from '../config';
 import { wp } from '.';
 
 const create = (name = 'foo') => {
