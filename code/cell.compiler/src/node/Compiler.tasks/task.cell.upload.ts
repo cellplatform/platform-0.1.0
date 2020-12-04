@@ -14,7 +14,7 @@ import {
   t,
   time,
 } from '../common';
-import { BundleManifest } from '../compiler';
+import { BundleManifest } from '../bundle';
 import { FileRedirects, FileAccess } from '../config';
 
 type FileUri = t.IUriData<t.IFileData>;

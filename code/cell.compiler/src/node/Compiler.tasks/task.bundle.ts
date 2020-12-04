@@ -1,7 +1,7 @@
 import { Stats } from 'webpack';
 
 import { fs, log, logger, Model, t } from '../common';
-import { BundleManifest } from '../compiler';
+import { BundleManifest } from '../bundle';
 import { afterCompile, wp } from './util';
 
 /**
