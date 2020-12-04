@@ -6,7 +6,7 @@ type B = t.RuntimeBundleOrigin;
  * Wrapper around a raw origin {bundle} data object that
  * processes the contents into formatted values.
  */
-export const Bundle = {
+export const BundleWrapper = {
   /**
    * Generates URLs for the given bundle.
    */
@@ -38,10 +38,10 @@ export const Bundle = {
       cache,
 
       get urls() {
-        return Bundle.urls(bundle);
+        return BundleWrapper.urls(bundle);
       },
 
-      exists() {
+      isCached() {
         return cache.exists(PATH.MANIFEST);
       },
 

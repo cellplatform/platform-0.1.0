@@ -49,7 +49,7 @@ const uploadBundle = async (
   return { files, upload, bundle };
 };
 
-describe('/fn:run (NodeRuntime over HTTP)', function () {
+describe.only('/fn:run (NodeRuntime over HTTP)', function () {
   this.timeout(99999);
 
   /**
@@ -77,7 +77,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       expect(res.errors).to.eql([]);
     };
 
-    it('body: single function', async () => {
+    it.only('body: single function', async () => {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;

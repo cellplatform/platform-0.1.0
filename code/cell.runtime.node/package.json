@@ -12,7 +12,6 @@
     "@platform/cell.client": "0.3.23",
     "@platform/cell.schema": "0.5.33",
     "@platform/cell.types": "0.5.34",
-    "@platform/exec": "0.2.70",
     "@platform/fs": "0.6.3",
     "vm2": "3.9.2"
   },

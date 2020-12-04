@@ -1,5 +1,5 @@
-import { Bundle } from '../Bundle';
-import { fs, log, logger, PATH, t } from '../common';
+import { BundleWrapper } from '../BundleWrapper';
+import { fs, log, logger, PATH, t, deleteUndefined } from '../common';
 import { pullMethod } from './pull';
 import { invoke } from './run.invoke';
 
@@ -14,22 +14,27 @@ export function runMethod(args: { cachedir: string }) {
    * Pull and run the given bundle.
    */
   const fn: t.RuntimeEnvNode['run'] = async (input, options = {}) => {
-    const { silent } = options;
-    const bundle = Bundle.create(input, cachedir);
-    const exists = await bundle.exists();
+    const { silent, params, timeout } = options;
+    const bundle = BundleWrapper.create(input, cachedir);
+    const exists = await bundle.isCached();
     const isPullRequired = !exists || options.pull;
 
-    const errors: t.IRuntimeError[] = [];
-    const addError = (message: string) =>
-      errors.push({
-        type: 'RUNTIME/run',
-        bundle: bundle.toObject(),
-        message,
-      });
+    let elapsed = -1;
 
-    const done = () => {
+    const errors: t.IRuntimeError[] = [];
+    const addError = (message: string, stack?: string) =>
+      errors.push(
+        deleteUndefined({
+          type: 'RUNTIME/run',
+          bundle: bundle.toObject(),
+          message,
+          stack,
+        }),
+      );
+
+    const done = (result?: t.Json) => {
       const ok = errors.length === 0;
-      return { ok, errors, manifest };
+      return { ok, result, errors, manifest, elapsed };
     };
 
     // Ensure the bundle has been pulled locally.
@@ -85,16 +90,14 @@ export function runMethod(args: { cachedir: string }) {
       logger.hr().newline();
     }
 
-    //
-    const cwd = bundle.cache.dir;
-    const res = await invoke({ manifest, cwd, silent });
+    // Execute the code.
+    const dir = bundle.cache.dir;
+    const res = await invoke({ manifest, dir, silent, params, timeout });
+    elapsed = res.elapsed;
+    res.errors.forEach((err) => addError(err.message, err.stack));
 
-    /**
-     * TODO 🐷
-     * - use node.vm (V8)
-     */
-
-    return done();
+    // Finish up.
+    return done(res.result);
   };
   return fn;
 }

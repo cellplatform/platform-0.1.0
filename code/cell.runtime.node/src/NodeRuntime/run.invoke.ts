@@ -1,39 +1,92 @@
-import { exec, log, logger, t, time } from '../common';
+import { log, logger, t, time, fs, defaultValue } from '../common';
+import { NodeVM } from 'vm2';
+import { Script } from '../vm';
+
+type R = {
+  ok: boolean;
+  result?: t.Json;
+  errors: Error[];
+  elapsed: number;
+};
 
 /**
  * Execute the bundle within the given directory.
  */
-export async function invoke(args: {
-  cwd: string;
+export function invoke(args: {
+  dir: string;
   manifest: t.BundleManifest;
   params?: t.JsonMap;
   silent?: boolean;
+  timeout?: number;
 }) {
-  const { silent, manifest, cwd, params } = args;
+  return new Promise<R>(async (resolve, reject) => {
+    const { silent, manifest, dir } = args;
 
-  /**
-   * TODO 🐷
-   * - insert params
-   * - do within node.vm
-   * - return value
-   * - type
-   * - node version on return
-   */
+    /**
+     * TODO 🐷
+     * - return value: type
+     * - piping (chain of functions)
+     * - allow imports (look at policy??)
+     * - builtin
+     * - env.import() =>> from another cell.
+     */
 
-  const cmd = `node ${manifest.entry}`;
-  const timer = time.timer();
-  const res = await exec.command(cmd).run({ cwd, silent });
+    let ok = true;
+    let isStopped = false;
+    const errors: Error[] = [];
 
-  const elapsed = timer.elapsed;
-  const ok = res.code === 0;
-  const errors = res.errors.map((message) => new Error(message));
+    const timer = time.timer();
+    const timeout = defaultValue(args.timeout, 3000);
+    const timeoutDelay = time.delay(timeout, () => {
+      errors.push(new Error(`Execution timed out (${timeout}ms)`));
+      done();
+    });
 
-  if (!args.silent) {
-    const code = res.code === 0 ? log.green(0) : log.red(res.code);
-    log.info();
-    log.info.gray(`status code: ${code} (${elapsed.toString()})`);
-    logger.errors(errors);
-  }
+    const done = (result?: t.Json) => {
+      timeoutDelay.cancel();
+      if (isStopped) {
+        return; // NB: The [done] response can only be returned once.
+      }
+      isStopped = true;
 
-  return { ok, manifest, errors };
+      const elapsed = timer.elapsed;
+      ok = !ok ? false : errors.length === 0;
+      if (!args.silent) {
+        const status = ok ? log.green('ok') : log.red('fail');
+        log.info();
+        log.info.gray(`status: ${status} (${elapsed.toString()})`);
+        logger.errors(errors);
+      }
+
+      resolve({ ok, result, errors, elapsed: elapsed.msec });
+    };
+
+    const env: t.NodeGlobalEnv = {
+      entry: { params: args.params || {} },
+      done,
+    };
+
+    const sandbox: t.NodeGlobal = { env };
+
+    try {
+      const vm = new NodeVM({
+        console: silent ? 'off' : 'inherit',
+        sandbox,
+        require: {
+          external: true,
+          // builtin: ['os', 'tty', 'util'],
+          builtin: ['*'], // TEMP 🐷 - TODO allow only by policy
+          root: './',
+        },
+      });
+
+      const filename = fs.join(dir, manifest.entry);
+      const code = await Script.get(filename);
+      vm.run(code.script);
+    } catch (error) {
+      ok = false;
+      errors.push(error);
+      done();
+    }
+  });
 }

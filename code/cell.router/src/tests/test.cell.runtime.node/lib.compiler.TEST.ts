@@ -25,7 +25,7 @@ describe('cell.runtime.node: Compiler', function () {
     await Promise.all([samples.pkg1.bundle(force), samples.pkg2.bundle(force)]);
   });
 
-  it('TMP', async () => {
+  it.skip('deduped (filehash on similar code)', async () => {
     //
   });
 });

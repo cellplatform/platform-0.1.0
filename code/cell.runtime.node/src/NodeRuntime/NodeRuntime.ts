@@ -1,4 +1,4 @@
-import { Bundle } from '../Bundle';
+import { BundleWrapper } from '../BundleWrapper';
 import { fs, PATH, t } from '../common';
 import { pullMethod } from './pull';
 import { runMethod } from './run';
@@ -8,7 +8,7 @@ export const NodeRuntime = {
    * Generates URLs for the given bundle.
    */
   urls(bundle: t.RuntimeBundleOrigin) {
-    return Bundle.urls(bundle);
+    return BundleWrapper.urls(bundle);
   },
 
   /**
@@ -27,14 +27,14 @@ export const NodeRuntime = {
        * Determine if the given bundle has been pulled.
        */
       async exists(input) {
-        return Bundle.create(input, cachedir).exists();
+        return BundleWrapper.create(input, cachedir).isCached();
       },
 
       /**
        * Delete the given bundle (if it exists).
        */
       async remove(input) {
-        const bundle = Bundle.create(input, cachedir);
+        const bundle = BundleWrapper.create(input, cachedir);
         const dir = bundle.cache.dir;
         let count = 0;
         if (await fs.pathExists(dir)) {
