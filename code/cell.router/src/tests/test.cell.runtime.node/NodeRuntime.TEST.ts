@@ -29,7 +29,8 @@ export const samples = {
     Compiler.config('math')
       .namespace('sample')
       .target('node')
-      .entry('./src/tests/test.cell.runtime.node/sample.math/main'),
+      .entry('./src/tests/test.cell.runtime.node/sample.math/main')
+      .entry('sum', './src/tests/test.cell.runtime.node/sample.math/math.sum'),
   ),
 };
 
@@ -80,7 +81,7 @@ const uploadBundle = async (
   return { files, upload, bundle };
 };
 
-describe('cell.runtime.node: NodeRuntime', function () {
+describe.only('cell.runtime.node: NodeRuntime', function () {
   this.timeout(99999);
 
   /**
@@ -89,6 +90,8 @@ describe('cell.runtime.node: NodeRuntime', function () {
   before(async () => {
     const force = false;
     await samples.node.bundle(force);
+
+    await samples.math.bundle(true);
   });
   beforeEach(async () => await fs.remove(fs.resolve('tmp/runtime.node')));
 

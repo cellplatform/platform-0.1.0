@@ -37,3 +37,9 @@ export type IResPostFuncRunResult = {
   urls: { files: string; manifest: string };
   errors: t.IRuntimeError[];
 };
+
+/**
+ * TODO 🐷 (for chaining)
+ * - in
+ * - out
+ */
