@@ -25,10 +25,11 @@ export function invoke(args: {
     /**
      * TODO 🐷
      * - return value: type
-     * - piping (chain of functions)
-     * - allow imports (look at policy??)
-     * - builtin
+     * - piping (chain of functions) - i
+     * - builtin: policy security
      * - env.import() =>> from another cell.
+     * - bundle: multiple entries
+     * - 
      */
 
     let ok = true;

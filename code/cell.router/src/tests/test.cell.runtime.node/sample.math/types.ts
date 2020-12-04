@@ -5,13 +5,9 @@ import '../d.global';
  * These are various flags used to setup different test scenarios.
  */
 export type EntryParams = {
-  throwError?: string;
-  value?: any;
-  repeatDone?: number;
-  delay?: number;
+  TMP: 123;
 };
 
-export type Result = {
-  echo?: any;
-  process: Record<string, any>;
-};
+export type SumParams = {
+  
+}

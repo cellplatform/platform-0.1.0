@@ -15,13 +15,23 @@ import { EntryParams, Result } from './sample.NodeRuntime/types';
 
 type B = t.RuntimeBundleOrigin;
 
-export const sample = TestCompile.make(
-  'NodeRuntime',
-  Compiler.config('NodeRuntime')
-    .namespace('sample')
-    .target('node')
-    .entry('./src/tests/test.cell.runtime.node/sample.NodeRuntime/main'),
-);
+export const samples = {
+  node: TestCompile.make(
+    'NodeRuntime',
+    Compiler.config('NodeRuntime')
+      .namespace('sample')
+      .target('node')
+      .entry('./src/tests/test.cell.runtime.node/sample.NodeRuntime/main'),
+  ),
+
+  math: TestCompile.make(
+    'math',
+    Compiler.config('math')
+      .namespace('sample')
+      .target('node')
+      .entry('./src/tests/test.cell.runtime.node/sample.math/main'),
+  ),
+};
 
 const noManifest = (file: t.IHttpClientCellFileUpload) => !file.filename.endsWith('index.json'); // NB: Cause error by filtering out the manifest file.
 
@@ -63,7 +73,7 @@ const uploadBundle = async (
   options: { filter?: (file: t.IHttpClientCellFileUpload) => boolean } = {},
 ) => {
   const { filter } = options;
-  let files = await bundleToFiles(sample.outdir, bundle.dir);
+  let files = await bundleToFiles(samples.node.outdir, bundle.dir);
   files = filter ? files.filter((file) => filter(file)) : files;
   const upload = await client.files.upload(files);
   expect(upload.ok).to.eql(true);
@@ -77,12 +87,8 @@ describe('cell.runtime.node: NodeRuntime', function () {
    * Ensure the sample [node] code as been bundled.
    */
   before(async () => {
-    let force = false;
-    force = false;
-
-    // force = true;
-
-    await sample.bundle(force);
+    const force = false;
+    await samples.node.bundle(force);
   });
   beforeEach(async () => await fs.remove(fs.resolve('tmp/runtime.node')));
 

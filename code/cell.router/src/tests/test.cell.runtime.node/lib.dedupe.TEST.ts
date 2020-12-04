@@ -16,7 +16,7 @@ const samples = {
   pkg2: make('pkg-2'),
 };
 
-describe('cell.runtime.node: Compiler', function () {
+describe('cell.runtime.node: dedupe', function () {
   this.timeout(99999);
 
   before(async () => {
