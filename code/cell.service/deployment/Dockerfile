@@ -11,5 +11,5 @@ RUN yarn install --production
 # Bundle source.
 COPY ./lib ./lib
 
-EXPOSE 8080
+EXPOSE 5000
 CMD [ "node", "lib/env.docker.js" ]

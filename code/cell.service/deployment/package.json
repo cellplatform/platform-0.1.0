@@ -6,9 +6,8 @@
     "vercel": "vercel dev --listen 8080",
     "start": "ts-node -T src/env.node",
     "build": "ts build --no-esm $@",
-    "dbuild": "yarn build && docker build -t domains/cell .",
-    "dpush": "docker push domains/cell",
-    "drun": "docker run --rm -p 8080:8080 domains/cell",
+    "dbuild": "sh sh/docker.build.sh",
+    "drun": "docker run --rm -p 8080:5000 domains/cell",
     "dup": "docker-compose up",
     "dupb": "docker-compose up --build"
   },
