@@ -1,16 +1,16 @@
 import { BundleManifest } from '.';
 import { expect, fs, SampleBundles } from '../../test';
 
-describe.only('BundleManifest', function () {
+describe('BundleManifest', function () {
   this.timeout(99999);
 
   const TMP = fs.resolve('./tmp/test/BundleManifest');
-  const config = SampleBundles.nodeSimple.config;
-  const bundleDir = SampleBundles.nodeSimple.outdir;
+  const config = SampleBundles.simpleNode.config;
+  const bundleDir = SampleBundles.simpleNode.outdir;
 
   before(async () => {
-    const force = true;
-    await SampleBundles.nodeSimple.bundle(force);
+    const force = false;
+    await SampleBundles.simpleNode.bundle(force);
   });
 
   beforeEach(() => fs.remove(TMP));
@@ -26,10 +26,10 @@ describe.only('BundleManifest', function () {
     expect(manifest.bytes).to.greaterThan(1000);
     expect(manifest.files.length).to.greaterThan(2);
 
-    const file = manifest.files[0];
-    expect(file.path).to.eql('index.json');
-    expect(file.bytes).to.greaterThan(10);
-    expect(file.filehash).to.match(/^sha256-/);
+    const file = manifest.files.find((item) => item.path === 'index.json');
+    expect(file?.path).to.eql('index.json');
+    expect(file?.bytes).to.greaterThan(10);
+    expect(file?.filehash).to.match(/^sha256-/);
   });
 
   it('writeFile => readFile', async () => {

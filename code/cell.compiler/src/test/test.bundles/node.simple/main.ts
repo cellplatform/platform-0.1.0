@@ -1,5 +1,5 @@
-// import { hello } from './foo';
-import './foo';
+import { hello } from './hello';
+import { log, logVersion } from './foo';
 
-import { log } from '@platform/log/lib/server';
-log.info.green('hello', 1234);
+log.info.green(hello());
+logVersion();
