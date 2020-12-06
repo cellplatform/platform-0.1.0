@@ -3,8 +3,10 @@
  */
 
 import { NodeVM, VMScript } from 'vm2';
-import { fs, expect, TestCompile, Compiler } from '../../test';
+import { fs, expect, TestCompile, Compiler, time } from '../../test';
 import { Global } from './sample.vm2/types';
+
+const ENTRY = './src/tests/test.cell.runtime.node/sample.vm2';
 
 const make = (name: string) => {
   return TestCompile.make(
@@ -13,22 +15,30 @@ const make = (name: string) => {
       .namespace('sample')
       .target('node')
       .shared((e) => e.add('@platform/log'))
-      .entry(`./src/tests/test.cell.runtime.node/sample.vm2/${name}/main`),
+      .entry(`${ENTRY}/${name}/main`),
   );
 };
 
 const samples = {
-  sync: make('sync'),
-  dynamic: make('dynamic'),
+  single: make('single-file'),
+  dynamic: make('dynamic-import'),
 };
 
-describe('cell.runtime.node: vm2 (lib)', function () {
+/**
+ * Make the dynamic import configuration a little more complex.
+ */
+samples.dynamic.config
+  .entry('dev', `${ENTRY}/dynamic-import/dev`)
+  .expose('./app', `${ENTRY}/dynamic-import/app`)
+  .expose('./main', `${ENTRY}/dynamic-import/main`);
+
+describe.only('cell.runtime.node: vm2 (lib) - secure runtime checks', function () {
   this.timeout(99999);
 
   before(async () => {
     const force = false;
     await Promise.all([
-      samples.sync.bundle(force),
+      samples.single.bundle(force),
       samples.dynamic.bundle(force),
       //
     ]);
@@ -45,22 +55,20 @@ describe('cell.runtime.node: vm2 (lib)', function () {
       console: 'off',
       sandbox,
       require: {
-        external: true,
-        builtin: ['os', 'tty', 'util'],
         root: './',
+        context: 'sandbox',
+        builtin: ['os', 'tty', 'util'],
+        external: true,
       },
-      nesting: false,
     });
 
     return { vm, results, sandbox };
   };
 
-  describe('sync', () => {
-    const filename = fs.join(fs.resolve(samples.sync.outdir), 'main.js');
+  describe('single-file', () => {
+    const filename = fs.join(fs.resolve(samples.single.outdir), 'main.js');
 
     it('NodeVM', async () => {
-      // await compileTestBundle(true);
-
       const { vm, results } = testVm({ count: 123 });
       const code = fs.readFileSync(filename).toString();
 
@@ -68,8 +76,8 @@ describe('cell.runtime.node: vm2 (lib)', function () {
       expect(res).to.eql({});
 
       expect(results.length).to.eql(2);
-      expect(results[0].msg).to.eql('sync/app');
-      expect(results[1].msg).to.eql('sync/main');
+      expect(results[0].msg).to.eql('single-file/app');
+      expect(results[1].msg).to.eql('single-file/main');
 
       expect(results[0].env).to.eql({}); // NB: No environment variables leak into the context.
       expect(results[1].env).to.eql({});
@@ -79,8 +87,6 @@ describe('cell.runtime.node: vm2 (lib)', function () {
     });
 
     it('VMScript ', async () => {
-      // await compileTestBundle(true);
-
       const { vm, results } = testVm({ count: 456 });
       const code = fs.readFileSync(filename).toString();
 
@@ -89,8 +95,8 @@ describe('cell.runtime.node: vm2 (lib)', function () {
       expect(res).to.eql({});
 
       expect(results.length).to.eql(2);
-      expect(results[0].msg).to.eql('sync/app');
-      expect(results[1].msg).to.eql('sync/main');
+      expect(results[0].msg).to.eql('single-file/app');
+      expect(results[1].msg).to.eql('single-file/main');
 
       expect(results[0].env).to.eql({}); // NB: No environment variables leak into the context.
       expect(results[1].env).to.eql({});
@@ -100,23 +106,48 @@ describe('cell.runtime.node: vm2 (lib)', function () {
     });
   });
 
-  describe('dynamic', () => {
-    const filename = fs.join(fs.resolve(samples.dynamic.outdir), 'main.js');
-
-    /**
-     * POSSIBLE SECURITY LEAK:
-     * https://github.com/patriksimek/vm2/issues/329
-     */
-
-    it.skip('NodeVM', async () => {
+  describe('dynamic-import', () => {
+    it('NodeVM', async () => {
       const { vm, results } = testVm({ count: 123 });
+      const filename = fs.join(fs.resolve(samples.dynamic.outdir), 'main.js');
       const code = fs.readFileSync(filename).toString();
 
       const res = vm.run(code, filename);
       expect(res).to.eql({});
 
-      console.log('-------------------------------------------');
-      console.log('results', results);
+      expect(results.length).to.eql(1);
+      expect(results[0].msg).to.eql('dynamic-import/main');
+
+      await time.wait(20); // NB: Wait for dynamic import to complete.
+
+      expect(results.length).to.eql(2);
+      expect(results[1].msg).to.eql('dynamic-import/app');
+
+      expect(results[0].env).to.eql({}); // NB: No environment variables leak into the context.
+      expect(results[1].env).to.eql({});
+
+      expect(results[0].foo).to.eql({ count: 123 });
+      expect(results[1].foo).to.eql({ count: 123 });
+    });
+
+    it('run secondary entry (as VMScript)', async () => {
+      const { vm, results } = testVm({ count: 888 });
+      const filename = fs.join(fs.resolve(samples.dynamic.outdir), 'dev.js');
+      const code = fs.readFileSync(filename).toString();
+
+      const script = new VMScript(code, { filename }).compile(); // Optional (compiles on first call).
+      const res = vm.run(script as any);
+      expect(res).to.eql({});
+
+      expect(results.length).to.eql(2);
+      expect(results[0].msg).to.eql('dynamic-import/app');
+      expect(results[1].msg).to.eql('hello');
+
+      expect(results[0].env).to.eql({});
+      expect(results[1].env).to.eql({});
+
+      expect(results[0].foo).to.eql({ count: 888 });
+      expect(results[1].foo).to.eql({ count: 888 });
     });
   });
 });
