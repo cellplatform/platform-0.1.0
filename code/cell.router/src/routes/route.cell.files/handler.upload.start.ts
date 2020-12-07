@@ -19,7 +19,7 @@ export async function uploadCellFilesStart(args: {
 
   const fileDefs = body.files || [];
   if (fileDefs.length === 0) {
-    const err = new Error(`No file details posted in the body for [${args.cellUri}]`);
+    const err = new Error(`No files posted in the upload body for [${args.cellUri}]`);
     return util.toErrorPayload(err, { status: 400 });
   }
 
@@ -54,6 +54,7 @@ export async function uploadCellFilesStart(args: {
     });
     const json = res.data as t.IResPostFileUploadStart;
     const status = res.status;
+
     return { status, res, key, uri: fileUri, filename, json };
   };
 

@@ -16,6 +16,12 @@ export async function uploadFiles(args: {
   let input = Array.isArray(args.input) ? args.input : [args.input];
   input = input.filter((file) => file.data.byteLength > 0); // NB: 0-byte files will cause upload error.
 
+  if (input.length === 0) {
+    const type = ERROR.HTTP.CLIENT;
+    const message = `No files given to upload [${cellUri}]`;
+    return util.toError(400, type, message);
+  }
+
   let changes: t.IDbModelChange[] | undefined;
   const addChanges = (input?: t.IDbModelChange[]) => {
     if (sendChanges && input && input.length > 0) {
@@ -51,7 +57,10 @@ export async function uploadFiles(args: {
   const res1 = await http.post(url.start, uploadStartBody);
   if (!res1.ok) {
     const type = ERROR.HTTP.SERVER;
-    const message = `Failed during initial file-upload step to '${cellUri}'.`;
+    let message = `Failed during initial file-upload step to [${cellUri}]`;
+    if (typeof res1.json === 'object' && typeof (res1.json as any).message === 'string') {
+      message = `${message}. ${(res1.json as any).message}`;
+    }
     return util.toError(res1.status, type, message);
   }
   const uploadStart = res1.json as t.IResPostCellFilesUploadStart;

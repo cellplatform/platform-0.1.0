@@ -6,6 +6,7 @@ import { t } from '../common';
 export type HttpError = IHttpError['type'];
 export type IHttpError =
   | IHttpErrorServer
+  | IHttpErrorClient
   | IHttpErrorConfig
   | IHttpErrorNotFound
   | IHttpErrorNotLinked
@@ -16,6 +17,7 @@ export type IHttpError =
 
 type HttpErrorProps = { status: number };
 export type IHttpErrorServer = t.IError<'HTTP/server'> & HttpErrorProps;
+export type IHttpErrorClient = t.IError<'HTTP/client'> & HttpErrorProps;
 export type IHttpErrorConfig = t.IError<'HTTP/config'> & HttpErrorProps;
 export type IHttpErrorNotFound = t.IError<'HTTP/notFound'> & HttpErrorProps;
 export type IHttpErrorNotLinked = t.IError<'HTTP/notLinked'> & HttpErrorProps;

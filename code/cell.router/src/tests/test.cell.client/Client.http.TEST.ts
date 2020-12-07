@@ -154,5 +154,21 @@ describe('HttpClient', () => {
 
       await mock.dispose();
     });
+
+    it('upload error: no files provided', async () => {
+      const mock = await createMock();
+      const cell = mock.client.cell('cell:foo:A1');
+
+      const res = await cell.files.upload([]);
+      await mock.dispose();
+
+      console.log('res', res);
+
+      expect(res.ok).to.eql(false);
+      expect(res.status).to.eql(400);
+
+      expect(res.error?.type).to.eql('HTTP/client');
+      expect(res.error?.message).to.include('No files given to upload');
+    });
   });
 });

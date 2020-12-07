@@ -117,6 +117,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
      * [1] Perform initial upload of files (retrieving the generated file URIs).
      */
     const fileUpload = await client.files.upload(files);
+
     if (!fileUpload.ok) {
       logUploadFailure({ host, bundleDir, errors: fileUpload.body.errors });
       return done(false);
