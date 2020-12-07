@@ -1,8 +1,8 @@
-import { R, t, value, constants } from '../common';
+import { constants, t } from '../common';
+import { ROUTES } from '../ROUTES';
 import { Uri } from '../Uri';
 import { Url } from './Url';
 import * as util from './util';
-import { ROUTES } from '../ROUTES';
 
 type O = Record<string, unknown>;
 
@@ -10,36 +10,25 @@ type O = Record<string, unknown>;
  * Standardised construction of URLs for the HTTP service.
  */
 export class Urls implements t.IUrls {
-  public static readonly uri = Uri;
   public static readonly routes = ROUTES;
+  public static readonly Uri = Uri;
+  public static readonly Url = Url;
+  public static readonly parse = Url.parse;
 
   public static create(input?: string | number): t.IUrls {
     return new Urls(input);
-  }
-
-  public static parse(input?: string | number) {
-    input = value.isNumeric(input) ? `localhost:${input}` : input?.toString();
-    let text = (input || '').trim();
-    text = text || 'localhost';
-
-    const hostname = R.pipe(util.stripHttp, util.stripSlash, util.stripPort)(text);
-    const protocol = util.toProtocol(hostname);
-    const port = util.toPort(text) || 80;
-    const host = port === 80 ? hostname : `${hostname}:${port}`;
-    const origin = `${protocol}://${host}`;
-    return { protocol, hostname, host, port, origin };
   }
 
   /**
    * [Lifecycle]
    */
   private constructor(input?: string | number) {
-    const { protocol, host, hostname, port, origin } = Urls.parse(input);
-    this.hostname = hostname;
-    this.host = host;
-    this.protocol = protocol;
-    this.port = port;
-    this.origin = origin;
+    const { origin } = Url.parse(input);
+    this.hostname = origin.hostname;
+    this.host = origin.host;
+    this.protocol = origin.protocol;
+    this.port = origin.port;
+    this.origin = origin.toString();
   }
 
   /**

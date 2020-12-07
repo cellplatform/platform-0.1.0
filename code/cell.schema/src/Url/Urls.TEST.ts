@@ -5,12 +5,12 @@ import { Uri } from '../Uri';
 describe('Urls', () => {
   describe('static', () => {
     it('Url.uri', () => {
-      expect(Urls.uri).to.equal(Uri);
+      expect(Urls.Uri).to.equal(Uri);
     });
   });
 
   describe('fields', () => {
-    it('parses default fields (protocol, host, port => origin)', () => {
+    it.only('parse (protocol, host, port => origin)', () => {
       const test = (
         input: string | number | undefined,
         host: string,
@@ -22,17 +22,17 @@ describe('Urls', () => {
         const res2 = Urls.create(input);
         const hostname = host.replace(/\:\d*$/, '');
 
-        expect(res1.protocol).to.eql(protocol);
-        expect(res1.hostname).to.eql(hostname);
-        expect(res1.host).to.eql(host);
-        expect(res1.port).to.eql(port);
-        expect(res1.origin).to.eql(origin);
+        expect(res1.origin.protocol).to.eql(protocol);
+        expect(res1.origin.hostname).to.eql(hostname);
+        expect(res1.origin.host).to.eql(host);
+        expect(res1.origin.port).to.eql(port);
+        expect(res1.origin.toString()).to.eql(origin);
 
-        expect(res1.protocol).to.eql(res2.protocol);
-        expect(res1.hostname).to.eql(res2.hostname);
-        expect(res1.host).to.eql(res2.host);
-        expect(res1.port).to.eql(res2.port);
-        expect(res1.origin).to.eql(res2.origin);
+        expect(res1.origin.protocol).to.eql(res2.protocol);
+        expect(res1.origin.hostname).to.eql(res2.hostname);
+        expect(res1.origin.host).to.eql(res2.host);
+        expect(res1.origin.port).to.eql(res2.port);
+        expect(res1.origin.toString()).to.eql(res2.origin);
       };
 
       test('foo.com:1234', 'foo.com:1234', 1234, 'https', 'https://foo.com:1234');
