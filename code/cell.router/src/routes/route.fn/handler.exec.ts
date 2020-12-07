@@ -68,7 +68,8 @@ async function execBundle(args: {
   const { body, runtime } = args;
   const silent = defaultValue(body.silent, defaultValue(args.defaultSilent, true));
 
-  const { uri, dir, params, entry, hash } = body;
+  const { uri, dir, entry, hash } = body;
+  //  const parms = body.in ||{}
   const host = body.host || args.host;
   const pull = defaultValue(body.pull, args.defaultPull || false);
   const timeout = defaultValue(body.timeout, args.defaultTimeout);
@@ -76,7 +77,7 @@ async function execBundle(args: {
   const urls = Schema.urls(bundle.host);
 
   const exists = await runtime.exists(bundle);
-  const res = await runtime.run(bundle, { silent, pull, params, timeout, entry, hash });
+  const res = await runtime.run(bundle, { silent, pull, in: body.in, timeout, entry, hash });
   const { ok, manifest, errors } = res;
 
   const data: t.IResPostFuncRunResult = {

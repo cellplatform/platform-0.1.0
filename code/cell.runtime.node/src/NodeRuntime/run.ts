@@ -13,9 +13,9 @@ export function runMethod(args: { cachedir: string }) {
   /**
    * Pull and run the given bundle.
    */
-  const fn: t.RuntimeEnvNode['run'] = async (input, options = {}) => {
-    const { silent, params, timeout, hash } = options;
-    const bundle = BundleWrapper.create(input, cachedir);
+  const fn: t.RuntimeEnvNode['run'] = async (bundleInput, options = {}) => {
+    const { silent, timeout, hash } = options;
+    const bundle = BundleWrapper.create(bundleInput, cachedir);
     const exists = await bundle.isCached();
     const isPullRequired = !exists || options.pull;
     let elapsed = { prep: -1, run: -1 };
@@ -38,7 +38,7 @@ export function runMethod(args: { cachedir: string }) {
 
     // Ensure the bundle has been pulled locally.
     if (isPullRequired) {
-      const res = await pull(input, { silent });
+      const res = await pull(bundleInput, { silent });
       errors.push(...res.errors);
       if (!res.ok || errors.length > 0) {
         return done();
@@ -93,7 +93,7 @@ export function runMethod(args: { cachedir: string }) {
 
     // Execute the code.
     const dir = bundle.cache.dir;
-    const res = await invoke({ manifest, dir, silent, params, timeout, entry, hash });
+    const res = await invoke({ manifest, dir, silent, in: options.in, timeout, entry, hash });
     elapsed = res.elapsed;
     res.errors.forEach((err) => addError(err.message, err.stack));
 

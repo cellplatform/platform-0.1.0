@@ -264,7 +264,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       await uploadBundle(client, bundle);
 
       const params: EntryParams = { value: { foo: 123 } };
-      const res = await runtime.run(bundle, { silent: true, params });
+      const res = await runtime.run(bundle, { silent: true, in: { params } });
       await mock.dispose();
 
       expect(res.ok).to.eql(true);
@@ -281,8 +281,8 @@ describe('cell.runtime.node: NodeRuntime', function () {
       await uploadBundle(client, bundle);
 
       const params: EntryParams = {};
-      const res1 = await runtime.run(bundle, { silent: true, params });
-      const res2 = await runtime.run(bundle, { silent: true, params });
+      const res1 = await runtime.run(bundle, { silent: true, in: { params } });
+      const res2 = await runtime.run(bundle, { silent: true, in: { params } });
       await mock.dispose();
 
       expect(res1.elapsed.prep).to.greaterThan(res2.elapsed.prep); // NB: Compiled script is re-used (faster second time).
@@ -293,11 +293,17 @@ describe('cell.runtime.node: NodeRuntime', function () {
       await uploadBundle(client, bundle);
 
       const params: EntryParams = { value: { foo: 123 } };
-      const res1 = await runtime.run(bundle, { silent: true, params: { ...params, id: 1 } });
-      const res2 = await runtime.run(bundle, { silent: true, params: { ...params, id: 2 } });
+      const res1 = await runtime.run(bundle, {
+        silent: true,
+        in: { params: { ...params, id: 1 } },
+      });
+      const res2 = await runtime.run(bundle, {
+        silent: true,
+        in: { params: { ...params, id: 2 } },
+      });
       const res3 = await runtime.run(bundle, {
         silent: true,
-        params: { ...params, delay: 60, id: 3 },
+        in: { params: { ...params, delay: 60, id: 3 } },
       });
       await mock.dispose();
 
@@ -316,7 +322,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       await uploadBundle(client, bundle);
 
       const params: EntryParams = { value: { foo: 123 }, delay: 20 };
-      const res = await runtime.run(bundle, { silent: true, params, timeout: 10 });
+      const res = await runtime.run(bundle, { silent: true, in: { params }, timeout: 10 });
       await mock.dispose();
 
       expect(res.ok).to.eql(false);
@@ -334,7 +340,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       await uploadBundle(client, bundle);
 
       const params: EntryParams = { repeatDone: 5 };
-      const res = await runtime.run(bundle, { silent: true, params });
+      const res = await runtime.run(bundle, { silent: true, in: { params } });
       await mock.dispose();
 
       expect(res.result).to.eql({ count: 1 });
@@ -345,7 +351,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       await uploadBundle(client, bundle);
 
       const params: EntryParams = { throwError: 'echo error' };
-      const res = await runtime.run(bundle, { silent: true, params });
+      const res = await runtime.run(bundle, { silent: true, in: { params } });
       await mock.dispose();
 
       expect(res.ok).to.eql(false);
@@ -365,7 +371,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const params: EntryParams = {};
       const entry = '  ///dev.js  '; // NB: space padding is removed and "/" trimmed.
 
-      const res = await runtime.run(bundle, { silent: true, params, entry });
+      const res = await runtime.run(bundle, { silent: true, in: { params }, entry });
       await mock.dispose();
 
       expect(res.entry).to.eql('dev.js');

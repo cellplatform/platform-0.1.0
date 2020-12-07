@@ -16,7 +16,7 @@ export function invoke(args: {
   dir: string;
   manifest: t.BundleManifest;
   entry?: string;
-  params?: t.JsonMap;
+  in?: t.RuntimeIn;
   silent?: boolean;
   timeout?: number;
   hash?: string;
@@ -24,6 +24,7 @@ export function invoke(args: {
   return new Promise<R>(async (resolve) => {
     const { silent, manifest, dir } = args;
     const entry = (args.entry || manifest.entry || '').trim();
+    const incoming = args.in || {};
 
     /**
      * TODO 🐷
@@ -79,7 +80,7 @@ export function invoke(args: {
     }
 
     const env: t.NodeGlobalEnv = {
-      entry: { params: args.params || {} },
+      entry: { params: incoming.params || {} },
       done,
     };
 
