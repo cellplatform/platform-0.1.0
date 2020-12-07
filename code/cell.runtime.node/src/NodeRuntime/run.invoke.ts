@@ -19,8 +19,9 @@ export function invoke(args: {
   params?: t.JsonMap;
   silent?: boolean;
   timeout?: number;
+  hash?: string;
 }) {
-  return new Promise<R>(async (resolve, reject) => {
+  return new Promise<R>(async (resolve) => {
     const { silent, manifest, dir } = args;
     const entry = (args.entry || manifest.entry || '').trim();
 
@@ -37,14 +38,20 @@ export function invoke(args: {
     let ok = true;
     let isStopped = false;
     const errors: Error[] = [];
+    const addError = (msg: string) => errors.push(new Error(msg));
 
     const elapsed = { prep: -1, run: -1 };
     const timer = time.timer();
     const timeout = defaultValue(args.timeout, 3000);
     const timeoutDelay = time.delay(timeout, () => {
-      errors.push(new Error(`Execution timed out (max ${timeout}ms)`));
+      addError(`Execution timed out (max ${timeout}ms)`);
       done();
     });
+
+    const prepComplete = () => {
+      elapsed.prep = timer.elapsed.msec;
+      timer.reset(); // NB: Restart timer to get a read on the "running" execution time.
+    };
 
     const done = (result?: t.JsonMap) => {
       timeoutDelay.cancel();
@@ -65,6 +72,12 @@ export function invoke(args: {
       resolve({ ok, result, errors, elapsed });
     };
 
+    if (args.hash && args.hash !== manifest.hash) {
+      addError(`Bundle manifest does not match requested hash '${args.hash}'.`);
+      prepComplete();
+      return done();
+    }
+
     const env: t.NodeGlobalEnv = {
       entry: { params: args.params || {} },
       done,
@@ -84,11 +97,8 @@ export function invoke(args: {
         },
       });
 
-      const filename = fs.join(dir, entry);
-      const code = await Script.get(filename);
-      elapsed.prep = timer.elapsed.msec;
-
-      timer.reset(); // NB: Restart timer to get a read on the "running" execution time.
+      const code = await Script.get(fs.join(dir, entry));
+      prepComplete();
       vm.run(code.script);
     } catch (error) {
       ok = false;

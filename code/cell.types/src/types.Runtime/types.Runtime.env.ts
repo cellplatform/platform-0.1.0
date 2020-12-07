@@ -22,6 +22,7 @@ type RuntimeMembers = {
       silent?: boolean;
       timeout?: number;
       entry?: string; // Entry path within bundle (if not specified default manfest entry is used).
+      hash?: string; // The hash of the bundle to match before executing.
     },
   ): Promise<RuntimeRunResponse>;
 

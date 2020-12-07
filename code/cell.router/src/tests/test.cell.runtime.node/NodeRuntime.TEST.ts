@@ -83,7 +83,17 @@ const uploadBundle = async (
   files = filter ? files.filter((file) => filter(file)) : files;
   const upload = await client.files.upload(files);
   expect(upload.ok).to.eql(true);
-  return { files, upload, bundle };
+  return {
+    files,
+    upload,
+    bundle,
+    get manifest() {
+      const json = JSON.parse(
+        files.find((f) => f.filename.endsWith('index.json'))?.data.toString() || '',
+      );
+      return json as t.BundleManifest;
+    },
+  };
 };
 
 describe.only('cell.runtime.node: NodeRuntime', function () {
@@ -364,12 +374,33 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       expect(result?.echo).to.eql('hello dev');
     });
 
-    it.skip('hash: valid', async () => {
-      //
+    it('hash: valid', async () => {
+      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { manifest } = await uploadBundle(client, bundle);
+      const hash = manifest.hash;
+      expect(hash).to.not.eql(undefined);
+
+      const res = await runtime.run(bundle, { silent: true, hash });
+      await mock.dispose();
+
+      expect(res.ok).to.eql(true); // NB: Given hash matches.
+      expect(res.errors).to.eql([]);
     });
 
-    it.skip('hash: invalid (error)', async () => {
-      //
+    it('hash: invalid (error)', async () => {
+      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      await uploadBundle(client, bundle);
+      const hash = 'foobar-fail';
+
+      const res = await runtime.run(bundle, { silent: true, hash });
+      await mock.dispose();
+
+      expect(res.ok).to.eql(false); // NB: Given hash matches.
+      expect(res.errors.length).to.eql(1);
+
+      const error = res.errors[0];
+      expect(error.message).to.include('undle manifest does not match requested hash');
+      expect(error.message).to.include(hash);
     });
 
     it.skip('pipe: seqential execution list', async () => {

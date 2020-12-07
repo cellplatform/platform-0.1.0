@@ -66,7 +66,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
   });
   beforeEach(() => fs.remove(fs.resolve('tmp/runtime.node')));
 
-  describe('POST success', () => {
+  describe.only('POST success', () => {
     const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncRunResult) => {
       expect(res.ok).to.eql(true);
 
