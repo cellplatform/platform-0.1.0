@@ -24,9 +24,14 @@ export function toProtocol(input: string): t.HttpProtocol {
     return 'http';
   }
 
-  if (input.startsWith('192.168.')) {
+  if (isInternalIP(input)) {
     return 'http';
   }
 
   return 'https';
+}
+
+export function isInternalIP(input: string) {
+  input = (input || '').trim();
+  return input.startsWith('192.168.');
 }
