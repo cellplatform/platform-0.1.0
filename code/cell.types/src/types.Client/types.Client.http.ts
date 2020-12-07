@@ -128,7 +128,7 @@ export type IHttpClientCellFileUploadResponse = {
   uri: string;
   cell: t.ICellData;
   files: t.IUriData<t.IFileData>[];
-  errors: t.IFileUploadError[];
+  errors: t.IHttpErrorFile[];
   changes?: t.IDbModelChange[];
 };
 

@@ -16,8 +16,8 @@ export async function listCellFiles(args: {
     const includeUrls = defaultValue(args.includeUrls, true);
 
     // Prepare URIs.
-    const cellUri = Schema.uri.cell(args.cellUri);
-    const nsUri = Schema.uri.ns(Schema.uri.create.ns(cellUri.ns));
+    const cellUri = Schema.Uri.cell(args.cellUri);
+    const nsUri = Schema.Uri.ns(Schema.Uri.create.ns(cellUri.ns));
 
     // Retrieve data models.
     const ns = await models.Ns.create({ db, uri: nsUri.toString() }).ready;
@@ -59,7 +59,7 @@ export async function getCellFiles(args: { ns: t.IDbModelNs; cellLinks: t.IUriMa
   const { ns, cellLinks } = args;
 
   const linkExists = (fileid: string, cellLinks: t.IUriMap) => {
-    const fileUri = Schema.uri.create.file(ns.props.id, fileid);
+    const fileUri = Schema.Uri.create.file(ns.props.id, fileid);
     return Object.values(cellLinks).some((value) => value.startsWith(fileUri));
   };
 
@@ -86,7 +86,7 @@ export function toFileList(args: { ns: string | t.IDbModelNs; map: t.IMap<t.IFil
   return Object.keys(map).reduce((acc, fileid) => {
     const data = map[fileid];
     if (data) {
-      const uri = Schema.uri.create.file(ns, fileid);
+      const uri = Schema.Uri.create.file(ns, fileid);
       acc.push({ uri, data });
     }
     return acc;

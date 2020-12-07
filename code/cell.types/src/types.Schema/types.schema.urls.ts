@@ -1,15 +1,5 @@
 import { t } from '../common';
 
-type O = Record<string, unknown>;
-
-export type IUrl<Q extends O = any> = {
-  readonly origin: string;
-  readonly path: string;
-  readonly querystring: string;
-  query(input: Partial<Q>): IUrl<Q>;
-  toString(options?: { origin?: boolean }): string;
-};
-
 export type IUrls = {
   readonly protocol: t.HttpProtocol;
   readonly host: string;

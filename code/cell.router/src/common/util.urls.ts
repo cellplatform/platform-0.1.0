@@ -42,7 +42,7 @@ export function urls(host: string) {
             const builder = urls.cell(cellUri);
             const files = Object.keys(links || {})
               .map((key) => ({ key, value: (links || {})[key] }))
-              .filter(({ value }) => Schema.uri.is.file(value))
+              .filter(({ value }) => Schema.Uri.is.file(value))
               .reduce((acc, next) => {
                 const { key, value } = next;
                 const { path, ext } = Schema.file.links.parseKey(key);

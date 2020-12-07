@@ -9,7 +9,7 @@ export async function getTypes(args: {
 }) {
   try {
     const { host } = args;
-    const uri = Schema.uri.create.ns(args.id);
+    const uri = Schema.Uri.create.ns(args.id);
 
     // Read in the type-definitions.
     const fetch = TypeSystem.fetcher.fromClient(HttpClient.create(host));

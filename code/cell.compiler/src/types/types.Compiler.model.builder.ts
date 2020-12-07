@@ -33,7 +33,7 @@ export type CompilerModelMethods = {
   mode(value: t.WpMode | 'prod' | 'dev'): B;
   port(value: number | null): B;
   target(value: string | null): B;
-  dir(value: string | null): B;
+  outdir(value: string | null): B;
   static(value: string | string[] | null): B;
   lint(value: boolean | null): B;
   entry(path: string): B; // Default key: 'main'

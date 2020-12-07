@@ -12,14 +12,14 @@ export async function uploadCellFilesStart(args: {
 }) {
   const { db, fs, body, host } = args;
   const expires = body.expires;
-  const cellUri = Schema.uri.cell(args.cellUri);
+  const cellUri = Schema.Uri.cell(args.cellUri);
   const cellKey = cellUri.key;
   const ns = cellUri.ns;
   const sendChanges = defaultValue(args.changes, true);
 
   const fileDefs = body.files || [];
   if (fileDefs.length === 0) {
-    const err = new Error(`No file details posted in the body for [${args.cellUri}]`);
+    const err = new Error(`No files posted in the upload body for [${args.cellUri}]`);
     return util.toErrorPayload(err, { status: 400 });
   }
 
@@ -37,7 +37,7 @@ export async function uploadCellFilesStart(args: {
     const key = Schema.file.links.toKey(filename);
     const fileUri = links[key]
       ? links[key].split('?')[0]
-      : Schema.uri.create.file(ns, Schema.slug());
+      : Schema.Uri.create.file(ns, Schema.slug());
 
     const res = await uploadFileStart({
       host,
@@ -54,6 +54,7 @@ export async function uploadCellFilesStart(args: {
     });
     const json = res.data as t.IResPostFileUploadStart;
     const status = res.status;
+
     return { status, res, key, uri: fileUri, filename, json };
   };
 

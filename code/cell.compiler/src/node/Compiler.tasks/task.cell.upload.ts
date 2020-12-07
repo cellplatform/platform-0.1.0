@@ -14,7 +14,7 @@ import {
   t,
   time,
 } from '../common';
-import { BundleManifest } from '../Compiler';
+import { BundleManifest } from '../bundle';
 import { FileRedirects, FileAccess } from '../config';
 
 type FileUri = t.IUriData<t.IFileData>;
@@ -117,6 +117,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
      * [1] Perform initial upload of files (retrieving the generated file URIs).
      */
     const fileUpload = await client.files.upload(files);
+
     if (!fileUpload.ok) {
       logUploadFailure({ host, bundleDir, errors: fileUpload.body.errors });
       return done(false);
@@ -204,18 +205,17 @@ function logUrls(links: Record<string, string>) {
   table.log();
 }
 
-const logUploadFailure = (args: { host: string; bundleDir: string; errors: t.IFileError[] }) => {
+const logUploadFailure = (args: { host: string; bundleDir: string; errors: t.IHttpError[] }) => {
   const { host, bundleDir, errors } = args;
 
   log.info.yellow(`Failed to upload files.`);
-  log.info.gray(' • dir:     ', bundleDir);
-  log.info.gray(' • host:    ', host);
+  log.info.gray(' • dir:      ', bundleDir);
+  log.info.gray(' • host:     ', host);
   log.info.gray(' • errors:');
   errors.forEach((err) => {
+    log.info.gray(`   - type:    ${err.type}`);
+    log.info.gray(`     message: ${err.message}`);
     log.info();
-    log.info.gray(`  • filename: ${log.yellow(err.filename)}`);
-    log.info.gray(`    type:     ${err.type}`);
-    log.info.gray(`    message:  ${err.message}`);
   });
 };
 

@@ -11,8 +11,9 @@ export * from '../common';
 export * from './util';
 export * from './expect';
 export * from './TYPE_DEFS';
+export * from './TestCompile';
 
 export { Http } from '@platform/http';
 
 before(async () => mock.reset());
-Schema.uri.ALLOW.NS = ['foo*'];
+Schema.Uri.ALLOW.NS = ['foo*'];

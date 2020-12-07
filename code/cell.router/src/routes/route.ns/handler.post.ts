@@ -12,7 +12,7 @@ export async function postNs(args: {
   try {
     const { db, id, query, host } = args;
     let body = { ...args.body };
-    const uri = Schema.uri.create.ns(id);
+    const uri = Schema.Uri.create.ns(id);
     const ns = await models.Ns.create({ db, uri }).ready;
 
     const changes: t.IDbModelChange[] = [];

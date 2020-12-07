@@ -8,7 +8,7 @@ export async function getNs(args: {
   query: t.IReqQueryNsInfo;
 }): Promise<t.IPayload<t.IResGetNs> | t.IErrorPayload> {
   const { db, id, query, host } = args;
-  const uri = Schema.uri.create.ns(id);
+  const uri = Schema.Uri.create.ns(id);
   const model = await models.Ns.create({ db, uri }).ready;
 
   const exists = Boolean(model.exists);

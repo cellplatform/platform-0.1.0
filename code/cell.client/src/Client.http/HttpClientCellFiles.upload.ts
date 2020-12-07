@@ -1,5 +1,7 @@
 import { defaultValue, t, util, ERROR, FormData, Schema } from '../common';
 
+type R = t.IHttpClientCellFileUploadResponse;
+
 /**
  * Upload file(s) to an endpoint.
  */
@@ -15,6 +17,35 @@ export async function uploadFiles(args: {
 
   let input = Array.isArray(args.input) ? args.input : [args.input];
   input = input.filter((file) => file.data.byteLength > 0); // NB: 0-byte files will cause upload error.
+
+  const errors: R['errors'] = [];
+  const addError = (status: number, message: string) => {
+    const type = ERROR.HTTP.FILE;
+    errors.push({ status, type, message });
+  };
+
+  const done = (status: number, options: { cell?: R['cell']; files?: R['files'] } = {}) => {
+    const responseBody: R = {
+      uri: cellUri,
+      cell: options.cell || {},
+      files: options.files || [],
+      errors,
+      changes,
+    };
+
+    let error: t.IHttpError | undefined;
+    if (errors.length > 0) {
+      error = { type: ERROR.HTTP.FILE, status, message: 'Failed to upload.' };
+    }
+
+    return util.toClientResponse<R>(status, responseBody, { error });
+  };
+
+  if (input.length === 0) {
+    const message = `No files provided to client to upload [${cellUri}]`;
+    addError(400, message);
+    return done(400);
+  }
 
   let changes: t.IDbModelChange[] | undefined;
   const addChanges = (input?: t.IDbModelChange[]) => {
@@ -50,9 +81,12 @@ export async function uploadFiles(args: {
   };
   const res1 = await http.post(url.start, uploadStartBody);
   if (!res1.ok) {
-    const type = ERROR.HTTP.SERVER;
-    const message = `Failed during initial file-upload step to '${cellUri}'.`;
-    return util.toError(res1.status, type, message);
+    let message = `Failed during initial file-upload step to [${cellUri}]`;
+    if (typeof res1.json === 'object' && typeof (res1.json as any).message === 'string') {
+      message = `${message}. ${(res1.json as any).message}`;
+    }
+    addError(res1.status, message);
+    return done(res1.status);
   }
   const uploadStart = res1.json as t.IResPostCellFilesUploadStart;
   addChanges(uploadStart.data.changes);
@@ -97,7 +131,7 @@ export async function uploadFiles(args: {
       };
 
       // Upload data.
-      const isLocal = url.startsWith('http://localhost');
+      const isLocal = Schema.Url.isLocal(url);
       const res = await (isLocal ? uploadToLocal() : uploadToS3());
 
       // Finish up.
@@ -153,21 +187,14 @@ export async function uploadFiles(args: {
   addChanges(cellUploadComplete.data.changes);
 
   // Build an aggregate list of upload errors.
-  const errors: t.IFileUploadError[] = [
-    ...uploadStart.data.errors,
-    ...fileUploadErrors,
-    ...fileCompleteFailErrors,
-  ];
+  [...uploadStart.data.errors, ...fileUploadErrors, ...fileCompleteFailErrors].forEach((error) => {
+    const status = 500;
+    let message = error.message;
+    message = error.filename ? `${error.message}. Filename: ${error.filename}` : message;
+    addError(status, message);
+  });
 
   // Finish up.
-  type R = t.IHttpClientCellFileUploadResponse;
   const status = errors.length === 0 ? 200 : 500;
-  const responseBody: R = {
-    uri: cellUri,
-    cell: cellUploadComplete.data.cell,
-    files,
-    errors,
-    changes,
-  };
-  return util.toClientResponse<R>(status, responseBody);
+  return done(status, { cell: cellUploadComplete.data.cell, files });
 }

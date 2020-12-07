@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-
-import { models, routes, Schema, t, util } from '../common';
-import { getCoord } from './handler.getCoord';
-import { cellInfo, rowInfo, columnInfo } from './handler.info';
+import { routes, Schema, t, util } from '../common';
+import { cellInfo, columnInfo, rowInfo } from './handler.info';
 import { getParams } from './params';
 
 /**
@@ -36,7 +34,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
       const { status, uri, error } = getParams({
         req,
         prefix: 'cell',
-        getUri: (id, key) => Schema.uri.create.cell(id, key),
+        getUri: (id, key) => Schema.Uri.create.cell(id, key),
       });
       return error ? { status, data: { error } } : cellInfo({ host, db, uri });
     } catch (err) {
@@ -54,7 +52,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
       const { status, uri, error } = getParams({
         req,
         prefix: 'row',
-        getUri: (id, key) => Schema.uri.create.row(id, key),
+        getUri: (id, key) => Schema.Uri.create.row(id, key),
       });
       return error ? { status, data: { error } } : rowInfo({ host, db, uri });
     } catch (err) {
@@ -72,7 +70,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
       const { status, uri, error } = getParams({
         req,
         prefix: 'col',
-        getUri: (id, key) => Schema.uri.create.column(id, key),
+        getUri: (id, key) => Schema.Uri.create.column(id, key),
       });
       return error ? { status, data: { error } } : columnInfo({ host, db, uri });
     } catch (err) {

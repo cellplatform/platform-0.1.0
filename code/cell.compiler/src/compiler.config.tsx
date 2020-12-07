@@ -14,8 +14,8 @@ export default () =>
     .variant('web', (config) =>
       config
         .target('web')
-        .entry('main', './src/test/entry.web')
-        .entry('service.worker', './src/test/web/workers/service.worker')
+        .entry('main', './src/test/sample.web/entry')
+        .entry('service.worker', './src/test/sample.web/workers/service.worker')
         .static('./static')
         .shared((e) => e.singleton(['react', 'react-dom']))
 
@@ -46,7 +46,7 @@ export default () =>
       config
         // .mode('dev')
         .target('node')
-        .entry('./src/test/entry.node')
+        .entry('./src/test/sample.node/entry')
         .beforeCompile((e) => {
           console.log(`🐷 SAMPLE BEFORE compile (name: "node", mode: "${e.model.mode}"):`);
         })

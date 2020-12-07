@@ -4,6 +4,7 @@ import * as t from './types';
  * Http
  */
 const HTTP_SERVER: t.IHttpErrorServer['type'] = 'HTTP/server';
+const HTTP_CLIENT: t.IHttpErrorClient['type'] = 'HTTP/client';
 const HTTP_CONFIG: t.IHttpErrorConfig['type'] = 'HTTP/config';
 const HTTP_NOT_FOUND: t.IHttpErrorNotFound['type'] = 'HTTP/notFound';
 const HTTP_NOT_LINKED: t.IHttpErrorNotLinked['type'] = 'HTTP/notLinked';
@@ -14,6 +15,7 @@ const HTTP_TYPE: t.IHttpErrorType['type'] = 'HTTP/type';
 
 const HTTP = {
   SERVER: HTTP_SERVER,
+  CLIENT: HTTP_CLIENT,
   CONFIG: HTTP_CONFIG,
   NOT_FOUND: HTTP_NOT_FOUND,
   NOT_LINKED: HTTP_NOT_LINKED,

@@ -1,5 +1,4 @@
 import { fs } from '@platform/fs';
 
-(async () => {
-  await fs.remove(fs.resolve('tmp'));
-})();
+const paths = ['tmp', 'dist'];
+paths.map((path) => fs.resolve(path)).forEach((path) => fs.removeSync(path));

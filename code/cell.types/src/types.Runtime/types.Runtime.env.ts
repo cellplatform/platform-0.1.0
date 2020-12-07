@@ -11,11 +11,19 @@ export type RuntimeEnv = RuntimeEnvNode | RuntimeEnvWeb;
  * Common methods of an executable runtime.
  */
 type RuntimeMembers = {
+  version: string;
   exists(bundle: B): Promise<boolean>;
   pull(bundle: B, options?: { silent?: boolean }): Promise<RuntimePullResponse>;
   run(
     bundle: B,
-    options?: { params?: t.JsonMap; pull?: boolean; silent?: boolean },
+    options?: {
+      in?: Partial<t.RuntimeIn>;
+      pull?: boolean;
+      silent?: boolean;
+      timeout?: number;
+      entry?: string; // Entry path within bundle (if not specified default manfest entry is used).
+      hash?: string; // The hash of the bundle to match before executing.
+    },
   ): Promise<RuntimeRunResponse>;
 
   remove(bundle: B): Promise<{ count: number }>;
@@ -31,8 +39,16 @@ export type RuntimePullResponse = {
 
 export type RuntimeRunResponse = {
   ok: boolean;
+  entry: string;
   manifest?: t.BundleManifest;
+  out: t.RuntimeOut;
   errors: t.IRuntimeError[];
+  elapsed: { prep: number; run: number };
+};
+
+export type RuntimeElapsed = {
+  prep: number; // Preparation time (in msecs) - eg: pull/compile.
+  run: number; // Execution time (in msecs)
 };
 
 /**
@@ -44,3 +60,10 @@ export type RuntimeEnvNode = RuntimeMembers & { name: 'node' };
  * Runtime: web (browser).
  */
 export type RuntimeEnvWeb = RuntimeMembers & { name: 'web' };
+
+/**
+ * Value pipes.
+ */
+export type RuntimeIn = { value?: t.Json; params: t.JsonMap };
+export type RuntimeOut = { value?: t.Json; info: RuntimeOutInfo };
+export type RuntimeOutInfo = Record<string, unknown>; // TODO 🐷

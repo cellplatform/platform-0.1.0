@@ -45,7 +45,7 @@ export function Model(input: M) {
     },
 
     get bundleDir() {
-      return `${res.dir()}/${res.target()}`;
+      return `${res.outdir()}/${res.target()}`;
     },
 
     get env() {
@@ -68,8 +68,8 @@ export function Model(input: M) {
       return defaultValue(model.port, defaultValue(defaultPort, DEFAULT.CONFIG.port));
     },
 
-    dir(defaultValue?: string) {
-      const dir = model.dir || defaultValue || DEFAULT.CONFIG.dir;
+    outdir(defaultValue?: string) {
+      const dir = model.outdir || defaultValue || DEFAULT.CONFIG.outdir;
       return fs.resolve(dir);
     },
 

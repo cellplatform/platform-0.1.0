@@ -1,4 +1,4 @@
-import { Schema } from './libs';
+import { Uri } from './libs';
 
 /**
  * Convert the given string to an absolute path.
@@ -6,7 +6,7 @@ import { Schema } from './libs';
 export function resolve(args: { uri: string; dir: string }) {
   const uri = (args.uri || '').trim();
   const dir = (args.dir || '').trim();
-  const file = Schema.uri.parse(uri);
+  const file = Uri.parse(uri);
 
   if (!file.ok || file.error) {
     const err = file.error;

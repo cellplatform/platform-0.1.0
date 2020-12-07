@@ -19,8 +19,8 @@ export async function downloadFileByFileId(args: {
   const fileid = extIndex < 0 ? filename : filename.substring(0, extIndex);
 
   // Construct the [FileUri].
-  const ns = Schema.uri.cell(cellUri).ns;
-  const fileUri = Schema.uri.create.file(ns, fileid);
+  const ns = Schema.Uri.cell(cellUri).ns;
+  const fileUri = Schema.Uri.create.file(ns, fileid);
 
   // 404 if file URI not found.
   if (!fileUri) {

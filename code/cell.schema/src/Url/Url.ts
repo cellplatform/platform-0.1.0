@@ -1,35 +1,68 @@
-import { t, defaultValue, R } from '../common';
+import { t, defaultValue, R, value } from '../common';
+import * as util from './util';
 
 /**
  * Represents a URL path that can be converted to a proper URL via `toString()`.
  */
 export class Url<Q extends Record<string, unknown> = any> implements t.IUrl<Q> {
+  public static isLocal = util.isLocal;
+
+  /**
+   * Parses an input into it's constituent URL parts.
+   */
+  public static parse(input?: string | number) {
+    input = value.isNumeric(input) ? `localhost:${input}` : input?.toString();
+    let text = (input || '').trim();
+    text = text || 'localhost';
+
+    let hostname = R.pipe(util.stripHttp, util.stripSlashEnd, util.stripPort)(text).split('/')[0];
+    hostname = hostname || 'localhost';
+
+    const protocol = util.toProtocol(hostname);
+    const port = util.toPort(text) || 80;
+    const host = port === 80 ? hostname : `${hostname}:${port}`;
+
+    const origin: t.IUrlOrigin = {
+      protocol,
+      hostname,
+      host,
+      port,
+      toString: () => `${protocol}://${host}`,
+    };
+
+    let path = R.pipe(util.stripHttp, util.stripSlashStart)(text);
+    path = path.endsWith(':80') ? path.replace(/\:80$/, '') : path;
+    path = path.startsWith(origin.host) ? path.substring(origin.host.length) : path;
+    path = `/${path.replace(/^\/*/, '')}`;
+
+    return { origin, path };
+  }
+
   /**
    * [Lifecycle]
    */
   constructor(args: { origin: string; path?: string; query?: Partial<Q>; querystring?: string }) {
-    this.origin = (args.origin || '').trim().replace(/\/*$/, '');
+    this.origin = Url.parse(args.origin).origin;
     this.path = `/${(args.path || '').trim().replace(/^\/*/, '')}`;
-    this._.query = args.query || {};
-    this._.querystring = typeof args.querystring === 'string' ? args.querystring.trim() : '';
+    this._query = args.query || {};
+    this._querystring = typeof args.querystring === 'string' ? args.querystring.trim() : '';
   }
 
   /**
    * [Fields]
    */
-  public readonly origin: string;
+  private _query = {} as Partial<Q>;
+  private _querystring = '';
+
+  public readonly origin: t.IUrlOrigin;
   public readonly path: string;
-  private readonly _ = {
-    query: ({} as unknown) as Partial<Q>,
-    querystring: '',
-  };
 
   /**
    * [Properties]
    */
   public get querystring(): string {
-    const text = (this._.querystring || '').replace(/^\?*/, '');
-    const query = this._.query || {};
+    const text = (this._querystring || '').replace(/^\?*/, '');
+    const query = this._query || {};
     let res = '';
 
     const format = (value: any) => {
@@ -65,13 +98,13 @@ export class Url<Q extends Record<string, unknown> = any> implements t.IUrl<Q> {
    * [Methods]
    */
   public query(input: Partial<Q>) {
-    const querystring = this._.querystring || '';
-    let query = this._.query || {};
+    const querystring = this._querystring || '';
+    let query = this._query || {};
     if (typeof input === 'object') {
       query = { ...query, ...input };
     }
     return new Url({
-      origin: this.origin,
+      origin: this.origin.toString(),
       path: this.path,
       query,
       querystring,

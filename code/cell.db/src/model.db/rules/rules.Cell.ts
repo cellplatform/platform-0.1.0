@@ -1,4 +1,4 @@
-import { Schema, t, util, value } from '../../common';
+import { Schema, t, Uri, util, value } from '../../common';
 
 /**
  * Invoked before a [Cell] is persisted to the DB.
@@ -14,7 +14,7 @@ export const beforeCellSave: t.BeforeModelSave<t.IDbModelCellProps> = async (arg
 
     // Link new namespaces.
     links
-      .filter((link) => link.uri === undefined || Schema.uri.is.ns(link.uri))
+      .filter((link) => link.uri === undefined || Uri.is.ns(link.uri))
       .forEach((link) => {
         const path = Schema.ns(link.uri).path;
         model.links.namespaces.link([path]);

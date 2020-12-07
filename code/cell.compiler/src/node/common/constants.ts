@@ -6,7 +6,7 @@ import { BUNDLE } from '@platform/cell.schema/lib/common/constants';
 const CONFIG = {
   parent: () => undefined,
   name: '',
-  dir: 'dist',
+  outdir: 'dist',
   mode: 'production',
   port: 3000,
   target: 'web',

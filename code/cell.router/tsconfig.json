@@ -3,6 +3,7 @@
   "include": ["src"],
   "compilerOptions": {
     "outDir": "lib",
-    "noUnusedLocals": false
+    "noUnusedLocals": false,
+    "esModuleInterop": true
   }
 }

@@ -3,7 +3,7 @@ import { server } from '@platform/cell.service/lib/server';
 import { NeDb } from '@platform/fsdb.nedb';
 import { app as electron } from 'electron';
 import { filter } from 'rxjs/operators';
-import { NodeRuntime } from '@platform/cell.runtime/lib/node/NodeRuntime';
+import { NodeRuntime } from '@platform/cell.runtime.node';
 
 import { constants, fs, log, t, Urls, util } from '../common';
 

@@ -325,13 +325,13 @@ describe('Compiler (Config)', () => {
       test({}, undefined);
     });
 
-    it('dir', () => {
+    it('outdir', () => {
       const { model, builder } = create();
-      expect(model.state.dir).to.eql('dist');
+      expect(model.state.outdir).to.eql('dist');
 
       const test = (input: any, expected: any) => {
-        builder.dir(input);
-        expect(model.state.dir).to.eql(expected);
+        builder.outdir(input);
+        expect(model.state.outdir).to.eql(expected);
       };
 
       test('foo', fs.resolve('foo'));

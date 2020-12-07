@@ -1,7 +1,7 @@
 import { fs, Schema } from '../common';
 
 fs.env.load();
-Schema.uri.ALLOW.NS = ['foo*'];
+Schema.Uri.ALLOW.NS = ['foo*'];
 
 export * from '../common';
 export { expect, expectError } from '@platform/test';

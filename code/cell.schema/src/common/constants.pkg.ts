@@ -1,4 +1,4 @@
 export const PKG = {
   name: '@platform/cell.schema',
-  version: '0.5.33',
+  version: '0.5.39',
 };

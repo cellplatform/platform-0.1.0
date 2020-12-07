@@ -3,4 +3,4 @@ import '@platform/ui.datagrid/import.css';
 
 import { Schema } from '@platform/cell.schema';
 
-Schema.uri.ALLOW.NS = [...Schema.uri.ALLOW.NS, 'sys*', 'foo*'];
+Schema.Uri.ALLOW.NS = [...Schema.Uri.ALLOW.NS, 'sys*', 'foo*'];

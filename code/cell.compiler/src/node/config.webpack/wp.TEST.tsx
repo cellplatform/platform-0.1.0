@@ -1,9 +1,7 @@
-import * as React from 'react';
-
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { Compiler } from '..';
 import { fs, expect, ModuleFederationPlugin, t, Encoding } from '../../test';
-import { ConfigBuilder } from '../Config';
+import { ConfigBuilder } from '../config';
 import { wp } from '.';
 
 const create = (name = 'foo') => {
@@ -84,16 +82,16 @@ describe('Compiler (Webpack)', () => {
     const { builder } = create();
     expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('dist/web'));
 
-    builder.dir('foo');
+    builder.outdir('foo');
     expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('foo/web'));
 
-    builder.dir('  '); // NB: reset.
+    builder.outdir('  '); // NB: reset.
     expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('dist/web'));
 
     builder.target('node');
     expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('dist/node'));
 
-    builder.dir('foo');
+    builder.outdir('foo');
     expect(wp.toWebpackConfig(builder).output?.path).to.eql(fs.resolve('foo/node'));
   });
 

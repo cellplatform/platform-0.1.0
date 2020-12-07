@@ -20,5 +20,5 @@ export { cell };
 export const models = cell.models;
 export const Schema = cell.Schema;
 
-import * as minimatch from 'minimatch';
+import minimatch from 'minimatch';
 export { minimatch };

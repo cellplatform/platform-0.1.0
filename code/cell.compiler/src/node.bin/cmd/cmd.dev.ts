@@ -1,4 +1,4 @@
-import { Compiler } from '../../node/Compiler';
+import { Compiler } from '../../node/compiler';
 import { t, port } from '../common';
 import * as util from '../util';
 

@@ -1,5 +1,5 @@
 import { Builder, DEFAULT, Encoding, fs, R, t, value as valueUtil } from '../common';
-import { wp } from '../Config.webpack';
+import { wp } from '../config.webpack';
 import { webpackMethods } from './handlers.webpack';
 import { FileRedirects, validate } from './util';
 import { htmlMethods } from './handlers.html';
@@ -58,10 +58,10 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
     });
   },
 
-  dir(args) {
+  outdir(args) {
     args.model.change((draft) => {
       const input = format.string(args.params[0], { trim: true });
-      draft.dir = input ? fs.resolve(input) : undefined;
+      draft.outdir = input ? fs.resolve(input) : undefined;
     });
   },
 
