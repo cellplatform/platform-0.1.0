@@ -1,0 +1,19 @@
+{
+  "name": "@platform/cell.runtime",
+  "version": "0.0.0",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node lib/index",
+    "test": "ts test",
+    "lint": "ts lint",
+    "build": "ts build --no-esm $@",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@platform/ts": "4.1.0",
+    "@platform/test": "0.2.0"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "__NAME__",
+  "version": "0.0.0",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node lib/index",
+    "test": "ts test",
+    "lint": "ts lint",
+    "build": "ts build --no-esm $@",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@platform/ts": "latest",
+    "@platform/test": "latest"
+  },
+  "license": "MIT",
+  "private": true
+}
