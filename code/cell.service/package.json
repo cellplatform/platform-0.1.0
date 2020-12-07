@@ -20,7 +20,8 @@
     "deploy": "yarn cell deploy $@",
     "prepare": "ts-node -T script.ts/prepare && ts prepare && rm -rf tmp",
     "reset": "ts-node -T script.ts/reset",
-    "nuke": "rm -rf node_modules && rm -rf deployment/node_modules"
+    "nuke": "rm -rf node_modules && rm -rf deployment/node_modules",
+    "dbuild": "cd deployment && yarn dbuild"
   },
   "dependencies": {
     "@platform/cell.router": "0.8.75",

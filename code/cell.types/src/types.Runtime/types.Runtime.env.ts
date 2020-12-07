@@ -41,7 +41,7 @@ export type RuntimeRunResponse = {
   ok: boolean;
   entry: string;
   manifest?: t.BundleManifest;
-  result?: t.JsonMap;
+  out: t.RuntimeOut;
   errors: t.IRuntimeError[];
   elapsed: { prep: number; run: number };
 };
@@ -50,8 +50,6 @@ export type RuntimeElapsed = {
   prep: number; // Preparation time (in msecs) - eg: pull/compile.
   run: number; // Execution time (in msecs)
 };
-
-export type RuntimeIn = { value?: t.Json; params: t.JsonMap };
 
 /**
  * Runtime: node-js.
@@ -62,3 +60,10 @@ export type RuntimeEnvNode = RuntimeMembers & { name: 'node' };
  * Runtime: web (browser).
  */
 export type RuntimeEnvWeb = RuntimeMembers & { name: 'web' };
+
+/**
+ * Value pipes.
+ */
+export type RuntimeIn = { value?: t.Json; params: t.JsonMap };
+export type RuntimeOut = { value?: t.Json; info: RuntimeOutInfo };
+export type RuntimeOutInfo = Record<string, unknown>; // TODO 🐷

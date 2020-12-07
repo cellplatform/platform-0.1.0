@@ -130,7 +130,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       expect(json.ok).to.eql(true);
       expectFuncResponse(dir, json.results[0]);
 
-      const result = json.results[0].result as Result;
+      const result = json.results[0].out.value as Result;
       expect(result.echo).to.eql({ foo: 123 });
       expect(result.process).to.eql({});
     });

@@ -33,7 +33,7 @@ export type IResPostFuncRun = {
 export type IResPostFuncRunResult = {
   ok: boolean;
   tx: string; // Execution transaction ID.
-  result?: t.JsonMap;
+  out: t.RuntimeOut;
   elapsed: t.RuntimeElapsed;
   bundle: t.RuntimeBundleOrigin;
   entry: string;

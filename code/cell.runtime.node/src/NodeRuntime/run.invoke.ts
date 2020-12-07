@@ -4,7 +4,7 @@ import { Script } from '../vm';
 
 type R = {
   ok: boolean;
-  result?: t.JsonMap;
+  out: t.RuntimeOut;
   errors: Error[];
   elapsed: t.RuntimeElapsed;
 };
@@ -53,7 +53,7 @@ export function invoke(args: {
       timer.reset(); // NB: Restart timer to get a read on the "running" execution time.
     };
 
-    const done = (result?: t.JsonMap) => {
+    const done = (result?: t.Json) => {
       timeoutDelay.cancel();
       if (isStopped) {
         return; // NB: The [done] response can only be returned once.
@@ -69,7 +69,14 @@ export function invoke(args: {
         logger.errors(errors);
       }
 
-      resolve({ ok, result, errors, elapsed });
+      const info: t.RuntimeOutInfo = {};
+
+      resolve({
+        ok,
+        out: { value: result, info },
+        errors,
+        elapsed,
+      });
     };
 
     if (args.hash && args.hash !== manifest.hash) {

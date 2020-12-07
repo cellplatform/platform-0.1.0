@@ -31,9 +31,10 @@ export function runMethod(args: { cachedir: string }) {
         }),
       );
 
-    const done = (result?: t.JsonMap) => {
+    const done = (out?: t.RuntimeOut) => {
       const ok = errors.length === 0;
-      return { ok, entry, result, errors, manifest, elapsed };
+      out = out || { info: {} };
+      return { ok, entry, out, errors, manifest, elapsed };
     };
 
     // Ensure the bundle has been pulled locally.
@@ -98,7 +99,7 @@ export function runMethod(args: { cachedir: string }) {
     res.errors.forEach((err) => addError(err.message, err.stack));
 
     // Finish up.
-    return done(res.result);
+    return done(res.out);
   };
   return fn;
 }

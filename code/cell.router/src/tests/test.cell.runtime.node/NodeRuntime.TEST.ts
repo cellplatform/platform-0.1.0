@@ -271,7 +271,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       expect(res.entry).to.eql('main.js');
       expect(res.errors.length).to.eql(0);
 
-      const result = res.result as Result;
+      const result = res.out.value as Result;
       expect(result.echo).to.eql({ foo: 123 });
       expect(result.process).to.eql({}); // NB: Process env-variables not leaked.
     });
@@ -311,7 +311,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
       expect(res3.ok).to.eql(true);
       expect(res3.errors.length).to.eql(0);
-      expect((res3.result as Result).echo).to.eql({ foo: 123 });
+      expect((res3.out.value as Result).echo).to.eql({ foo: 123 });
 
       expect(res2.elapsed.run).to.lessThan(15);
       expect(res3.elapsed.run).to.greaterThan(60);
@@ -327,7 +327,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
       expect(res.ok).to.eql(false);
       expect(res.errors.length).to.eql(1);
-      expect(res.result).to.eql(undefined);
+      expect(res.out.value).to.eql(undefined);
 
       const error = res.errors[0];
       expect(error.type).to.eql('RUNTIME/run');
@@ -343,7 +343,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const res = await runtime.run(bundle, { silent: true, in: { params } });
       await mock.dispose();
 
-      expect(res.result).to.eql({ count: 1 });
+      expect(res.out.value).to.eql({ count: 1 });
     });
 
     it('error: thrown within bundled code', async () => {
@@ -376,7 +376,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
       expect(res.entry).to.eql('dev.js');
 
-      const result = res.result as Result;
+      const result = res.out.value as Result;
       expect(result?.echo).to.eql('hello dev');
     });
 

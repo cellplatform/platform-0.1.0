@@ -83,7 +83,7 @@ async function execBundle(args: {
   const data: t.IResPostFuncRunResult = {
     ok,
     tx: body.tx || id.cuid(),
-    result: res.result,
+    out: res.out,
     elapsed: res.elapsed,
     bundle,
     entry: res.entry,
