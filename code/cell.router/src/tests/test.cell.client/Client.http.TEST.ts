@@ -173,7 +173,7 @@ describe('HttpClient', () => {
 
       const error = res.body.errors[0];
       expect(error.type).to.eql('HTTP/file');
-      expect(error.message).to.include('No files given to upload');
+      expect(error.message).to.include('No files provided to client to upload');
       expect(error.status).to.eql(400);
     });
   });

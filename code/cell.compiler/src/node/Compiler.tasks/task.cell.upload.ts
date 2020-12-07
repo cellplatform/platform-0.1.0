@@ -205,18 +205,17 @@ function logUrls(links: Record<string, string>) {
   table.log();
 }
 
-const logUploadFailure = (args: { host: string; bundleDir: string; errors: t.IFileError[] }) => {
+const logUploadFailure = (args: { host: string; bundleDir: string; errors: t.IHttpError[] }) => {
   const { host, bundleDir, errors } = args;
 
   log.info.yellow(`Failed to upload files.`);
-  log.info.gray(' • dir:     ', bundleDir);
-  log.info.gray(' • host:    ', host);
+  log.info.gray(' • dir:      ', bundleDir);
+  log.info.gray(' • host:     ', host);
   log.info.gray(' • errors:');
   errors.forEach((err) => {
+    log.info.gray(`   - type:    ${err.type}`);
+    log.info.gray(`     message: ${err.message}`);
     log.info();
-    log.info.gray(`  • filename: ${log.yellow(err.filename)}`);
-    log.info.gray(`    type:     ${err.type}`);
-    log.info.gray(`    message:  ${err.message}`);
   });
 };
 

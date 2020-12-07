@@ -42,7 +42,7 @@ export async function uploadFiles(args: {
   };
 
   if (input.length === 0) {
-    const message = `No files given to upload [${cellUri}]`;
+    const message = `No files provided to client to upload [${cellUri}]`;
     addError(400, message);
     return done(400);
   }
