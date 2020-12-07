@@ -73,6 +73,12 @@ const bundleToFiles = async (sourceDir: string, targetDir?: string) => {
   return files;
 };
 
+const getManifest = (files: t.IHttpClientCellFileUpload[]) => {
+  const file = files.find((f) => f.filename.endsWith('index.json'));
+  const json = JSON.parse(file?.data.toString() || '');
+  return json as t.BundleManifest;
+};
+
 const uploadBundle = async (
   client: t.IHttpClientCell,
   bundle: B,
@@ -87,16 +93,10 @@ const uploadBundle = async (
     files,
     upload,
     bundle,
-    get manifest() {
-      const json = JSON.parse(
-        files.find((f) => f.filename.endsWith('index.json'))?.data.toString() || '',
-      );
-      return json as t.BundleManifest;
-    },
   };
 };
 
-describe.only('cell.runtime.node: NodeRuntime', function () {
+describe('cell.runtime.node: NodeRuntime', function () {
   this.timeout(99999);
 
   /**
@@ -247,7 +247,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
     });
   });
 
-  describe.only('run', () => {
+  describe('run', () => {
     it('auto pulls before run', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
@@ -358,12 +358,12 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       expect(error.stack).to.include('cell-foo-A1/dir.foo/main.js');
     });
 
-    it('custom entry', async () => {
+    it.only('custom entry path', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
       const params: EntryParams = {};
-      const entry = '  dev.js  '; // NB: space padding is removed.
+      const entry = '  ///dev.js  '; // NB: space padding is removed and "/" trimmed.
 
       const res = await runtime.run(bundle, { silent: true, params, entry });
       await mock.dispose();
@@ -376,7 +376,8 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
 
     it('hash: valid', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
-      const { manifest } = await uploadBundle(client, bundle);
+      const { files } = await uploadBundle(client, bundle);
+      const manifest = getManifest(files);
       const hash = manifest.hash;
       expect(hash).to.not.eql(undefined);
 

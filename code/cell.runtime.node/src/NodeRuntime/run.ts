@@ -70,7 +70,7 @@ export function runMethod(args: { cachedir: string }) {
       return done();
     }
 
-    const entry = (options.entry || manifest.entry || '').trim();
+    const entry = (options.entry || manifest.entry || '').trim().replace(/^\/*/, '');
 
     if (!silent) {
       const size = fs.size.toString(manifest.bytes, { round: 0 });

@@ -37,6 +37,12 @@ const bundleToFiles = async (sourceDir: string, targetDir?: string) => {
   return files;
 };
 
+const getManifest = (files: t.IHttpClientCellFileUpload[]) => {
+  const file = files.find((f) => f.filename.endsWith('index.json'));
+  const json = JSON.parse(file?.data.toString() || '');
+  return json as t.BundleManifest;
+};
+
 const uploadBundle = async (
   client: t.IHttpClientCell,
   bundle: B,
@@ -96,6 +102,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
 
+      expect(json.ok).to.eql(true);
       expect(json.elapsed.prep).to.greaterThan(0);
       expect(json.elapsed.run).to.greaterThan(10);
       expect(json.results.length).to.eql(1);
@@ -118,6 +125,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
 
+      expect(json.ok).to.eql(true);
       expectFuncResponse(dir, json.results[0]);
 
       const result = json.results[0].result as Result;
@@ -135,6 +143,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
 
+      expect(json.ok).to.eql(true);
       expect(json.elapsed.prep).to.greaterThan(0);
       expect(json.elapsed.run).to.greaterThan(0);
       expect(json.results.length).to.eql(2);
@@ -193,6 +202,8 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
 
+      expect(json.ok).to.eql(false);
+
       const result = json.results[0];
       expect(result.errors.length).to.eql(1);
 
@@ -200,6 +211,70 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       expect(error.type).to.eql('RUNTIME/run');
       expect(error.bundle).to.eql(bundle);
       expect(error.message).to.include('Execution timed out (max 10ms)');
+    });
+
+    it.skip('custom entry path', async () => {
+      const dir = 'foo';
+      const { mock, bundle, client, http, url } = await prepare({ dir });
+      const { host, uri } = bundle;
+      await uploadBundle(client, bundle);
+
+      // const hash = manifest.hash;
+      // expect(hash).to.not.eql(undefined);
+
+      const entry = '  //dev.js  '; // NB: whitespace is removed and "/" trimmed.
+
+      const body: t.IReqPostFuncRunBody = { host, uri, dir, entry };
+      const res = await http.post(url.toString(), body);
+      const json = res.json as t.IResPostFuncRun;
+      await mock.dispose();
+
+      console.log('-------------------------------------------');
+      console.log('json', json);
+    });
+
+    it('hash: valid', async () => {
+      const dir = 'foo';
+      const { mock, bundle, client, http, url } = await prepare({ dir });
+      const { host, uri } = bundle;
+      const { files } = await uploadBundle(client, bundle);
+      const manifest = getManifest(files);
+
+      const hash = manifest.hash;
+      expect(hash).to.not.eql(undefined);
+
+      const body: t.IReqPostFuncRunBody = { host, uri, dir, hash };
+      const res = await http.post(url.toString(), body);
+      const json = res.json as t.IResPostFuncRun;
+      await mock.dispose();
+
+      expect(res.ok).to.eql(true);
+      expect(json.ok).to.eql(true);
+    });
+
+    it('hash: invvalid', async () => {
+      const dir = 'foo';
+      const { mock, bundle, client, http, url } = await prepare({ dir });
+      const { host, uri } = bundle;
+      await uploadBundle(client, bundle);
+
+      const hash = 'sha256-fail';
+      const body: t.IReqPostFuncRunBody = { host, uri, dir, hash };
+      const res = await http.post(url.toString(), body);
+      const json = res.json as t.IResPostFuncRun;
+      await mock.dispose();
+
+      expect(res.ok).to.eql(false);
+      expect(json.ok).to.eql(false);
+
+      const result = json.results[0];
+      expect(result.errors.length).to.eql(1);
+
+      const error = result.errors[0];
+      expect(error.type).to.eql('RUNTIME/run');
+      expect(error.bundle).to.eql(bundle);
+      expect(error.message).to.include('Bundle manifest does not match requested hash');
+      expect(error.message).to.include(hash);
     });
 
     it('timeout: on query-string', async () => {

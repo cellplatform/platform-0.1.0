@@ -38,12 +38,15 @@ export async function exec(args: {
       },
       { prep: 0, run: 0 },
     );
+
+    const ok = results.every((res) => res.ok);
+    const status = results.every((res) => res.ok) ? 200 : 500;
     const data: t.IResPostFuncRun = {
+      ok,
       elapsed,
       results,
     };
 
-    const status = data.results.every((res) => res.ok) ? 200 : 500;
     return { status, data };
   } catch (err) {
     return util.toErrorPayload(err);
@@ -65,7 +68,7 @@ async function execBundle(args: {
   const { body, runtime } = args;
   const silent = defaultValue(body.silent, defaultValue(args.defaultSilent, true));
 
-  const { uri, dir, params, entry } = body;
+  const { uri, dir, params, entry, hash } = body;
   const host = body.host || args.host;
   const pull = defaultValue(body.pull, args.defaultPull || false);
   const timeout = defaultValue(body.timeout, args.defaultTimeout);
@@ -73,11 +76,11 @@ async function execBundle(args: {
   const urls = Schema.urls(bundle.host);
 
   const exists = await runtime.exists(bundle);
-  const res = await runtime.run(bundle, { silent, pull, params, timeout, entry });
-  const { manifest, errors } = res;
+  const res = await runtime.run(bundle, { silent, pull, params, timeout, entry, hash });
+  const { ok, manifest, errors } = res;
 
   const data: t.IResPostFuncRunResult = {
-    ok: res.ok,
+    ok,
     tx: body.tx || id.cuid(),
     result: res.result,
     elapsed: res.elapsed,
