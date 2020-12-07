@@ -18,6 +18,15 @@ export function stripSlash(input: string) {
 }
 
 export function toProtocol(input: string): t.HttpProtocol {
-  input = input || '';
-  return input.startsWith('localhost') && !input.includes('.') ? 'http' : 'https';
+  input = (input || '').trim();
+
+  if (input.startsWith('localhost') && !input.includes('.')) {
+    return 'http';
+  }
+
+  if (input.startsWith('192.168.')) {
+    return 'http';
+  }
+
+  return 'https';
 }
