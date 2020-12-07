@@ -35,7 +35,8 @@ export function toProtocol(input: string): t.HttpProtocol {
 }
 
 export function isInternalIP(input: string) {
-  return stripHttp(input).startsWith('192.168.');
+  const host = R.pipe(stripHttp, stripSlash)(input || '').split('/')[0] || '';
+  return host.startsWith('192.168.');
 }
 
 export function isLocal(input: string) {
@@ -43,7 +44,7 @@ export function isLocal(input: string) {
     return true;
   }
 
-  const host = stripHttp(input).split('/')[0] || '';
+  const host = stripSlash(stripHttp(input)).split('/')[0] || '';
   if (host === 'localhost' || host.startsWith('localhost:')) {
     return true;
   }

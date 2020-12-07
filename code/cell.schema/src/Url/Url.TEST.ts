@@ -82,6 +82,8 @@ describe.only('Url', () => {
       test('http://localhost', true);
       test('http://localhost/', true);
       test('https://localhost', true);
+      test('//localhost///', true);
+      test('localhost/foo/bar?q=123', true);
 
       test('http://192.168.1', true);
       test('192.168.1', true);

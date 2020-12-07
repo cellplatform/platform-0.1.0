@@ -4,7 +4,7 @@ import { cuid, slug, t, hash, coord, Mime } from '../common';
 import { FileSchema } from '../File';
 import { RefSchema } from '../Ref';
 import { Uri } from '../Uri';
-import { Urls } from '../Url';
+import { Urls, Url } from '../Url';
 import { Encoding } from '../Encoding';
 
 /**
@@ -27,6 +27,7 @@ export class Schema {
   public static encoding = Encoding;
 
   public static Urls = Urls;
+  public static Url = Url;
   public static urls = (host: string | number) => Urls.create(host);
   public static ns = (id: string) => new NsSchema({ id });
 

@@ -10,7 +10,7 @@ describe('Urls', () => {
   });
 
   describe('fields', () => {
-    it.only('parse (protocol, host, port => origin)', () => {
+    it('parse (protocol, host, port => origin)', () => {
       const test = (
         input: string | number | undefined,
         host: string,
