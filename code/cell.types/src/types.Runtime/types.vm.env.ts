@@ -14,7 +14,7 @@ export type NodeGlobalEnv = {
   /**
    * Entry context passed into a function when it is invoked.
    */
-  entry: { params: t.JsonMap };
+  in: t.RuntimeIn;
 
   // TODO 🐷
   // in: { value; options };

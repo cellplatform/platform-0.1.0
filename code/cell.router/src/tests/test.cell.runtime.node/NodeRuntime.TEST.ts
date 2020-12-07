@@ -364,7 +364,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       expect(error.stack).to.include('cell-foo-A1/dir.foo/main.js');
     });
 
-    it.only('custom entry path', async () => {
+    it('custom entry path', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 

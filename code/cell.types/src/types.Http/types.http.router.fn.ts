@@ -21,7 +21,7 @@ export type IReqPostFuncRun = {
   pull?: boolean; // Flag to force pull the bundle (if it's already cached.)
   silent?: boolean;
   timeout?: number; // Msecs.
-  in?: t.RuntimeIn;
+  in?: Partial<t.RuntimeIn>;
 };
 
 export type IResPostFuncRun = {
@@ -43,10 +43,3 @@ export type IResPostFuncRunResult = {
   urls: { files: string; manifest: string };
   errors: t.IRuntimeError[];
 };
-
-/**
- * TODO 🐷 (for chaining)
- *  Think about SmallTalk ("language of messages")
- *    - in
- *    - out
- */

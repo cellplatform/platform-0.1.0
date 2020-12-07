@@ -17,7 +17,7 @@ type RuntimeMembers = {
   run(
     bundle: B,
     options?: {
-      in?: t.RuntimeIn;
+      in?: Partial<t.RuntimeIn>;
       pull?: boolean;
       silent?: boolean;
       timeout?: number;
@@ -51,7 +51,7 @@ export type RuntimeElapsed = {
   run: number; // Execution time (in msecs)
 };
 
-export type RuntimeIn = { value?: t.Json; params?: t.JsonMap };
+export type RuntimeIn = { value?: t.Json; params: t.JsonMap };
 
 /**
  * Runtime: node-js.
