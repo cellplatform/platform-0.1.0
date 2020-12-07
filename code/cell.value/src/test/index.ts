@@ -5,5 +5,5 @@ export { fs } from '@platform/fs';
 export * from '../common';
 
 before(() => {
-  Schema.uri.ALLOW.NS = ['abcd', 'foo', 'bar', 'zoo', 'foobar'];
+  Schema.Uri.ALLOW.NS = ['abcd', 'foo', 'bar', 'zoo', 'foobar'];
 });

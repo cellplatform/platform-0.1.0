@@ -12,7 +12,7 @@ export async function uploadCellFilesStart(args: {
 }) {
   const { db, fs, body, host } = args;
   const expires = body.expires;
-  const cellUri = Schema.uri.cell(args.cellUri);
+  const cellUri = Schema.Uri.cell(args.cellUri);
   const cellKey = cellUri.key;
   const ns = cellUri.ns;
   const sendChanges = defaultValue(args.changes, true);
@@ -37,7 +37,7 @@ export async function uploadCellFilesStart(args: {
     const key = Schema.file.links.toKey(filename);
     const fileUri = links[key]
       ? links[key].split('?')[0]
-      : Schema.uri.create.file(ns, Schema.slug());
+      : Schema.Uri.create.file(ns, Schema.slug());
 
     const res = await uploadFileStart({
       host,

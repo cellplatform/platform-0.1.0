@@ -16,4 +16,4 @@ export * from './TestCompile';
 export { Http } from '@platform/http';
 
 before(async () => mock.reset());
-Schema.uri.ALLOW.NS = ['foo*'];
+Schema.Uri.ALLOW.NS = ['foo*'];

@@ -9,7 +9,7 @@
     "watch": "yarn start",
     "test": "ts test",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build --no-esm $@",
     "prepare": "ts prepare",
     "bundle": "yarn clean && parcel build src/index.html --experimental-scope-hoisting",
     "clean": "rm -rf dist && rm -rf .cache",

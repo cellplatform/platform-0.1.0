@@ -10,7 +10,7 @@ export async function uploadCellFilesComplete(args: {
   changes?: boolean;
 }) {
   const { db, host } = args;
-  const cellUri = Schema.uri.cell(args.cellUri);
+  const cellUri = Schema.Uri.cell(args.cellUri);
   const cellKey = cellUri.key;
   const sendChanges = defaultValue(args.changes, true);
 

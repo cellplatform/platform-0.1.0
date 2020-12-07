@@ -62,7 +62,7 @@ describe('file:', () => {
     it('does not exist (404)', async () => {
       const mock = await createMock();
 
-      const uri = Schema.uri.create.file(Schema.cuid(), Schema.slug());
+      const uri = Schema.Uri.create.file(Schema.cuid(), Schema.slug());
       const res = await mock.client.file(uri).info();
       await mock.dispose();
 

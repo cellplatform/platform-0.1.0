@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
-import { Model, Schema, t } from '../common';
+import { Model, Schema, t, Uri } from '../common';
 import * as rules from './rules';
 
-const Uri = Schema.uri;
 const query = Schema.query;
 
 /**

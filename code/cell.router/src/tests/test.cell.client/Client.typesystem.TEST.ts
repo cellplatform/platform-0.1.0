@@ -276,7 +276,7 @@ describe('Client.TypeSystem', function () {
         row.isEnabled = true;
 
         sheet.state.change.ns({ type: { implements: 'ns:foobar' } });
-        await time.delay(50);
+        await time.delay(80);
         await mock.dispose();
 
         expect(fired.length).to.eql(3);

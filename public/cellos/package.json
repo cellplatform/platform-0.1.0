@@ -11,9 +11,8 @@
     "start": "node .",
     "watch": "nodemon .",
     "test": "ts test",
-    "tdd": "ts test --watch",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build --no-esm $@",
     "prepare": "ts prepare"
   },
   "dependencies": {

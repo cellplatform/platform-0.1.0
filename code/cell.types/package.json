@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.types",
-  "version": "0.5.39",
+  "version": "0.5.40",
   "description": "Shared types for all cell (eg. 'A1') related modules.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -8,9 +8,8 @@
     "start": "node .",
     "watch": "nodemon .",
     "test": "ts test",
-    "tdd": "ts test --watch",
     "lint": "ts lint",
-    "build": "ts build --no-esm",
+    "build": "ts build --no-esm $@",
     "prepare": "ts prepare"
   },
   "dependencies": {

@@ -37,7 +37,7 @@ export function calc(args: { host: string; ns: t.IDbModelNs; cells?: t.IMap<t.IC
       });
 
       // Download the file.
-      if (func && Schema.uri.is.file(func.uri)) {
+      if (func && Schema.Uri.is.file(func.uri)) {
         console.log('func.uri', func.uri);
 
         const url = util.urls(host).file(func.uri).download;

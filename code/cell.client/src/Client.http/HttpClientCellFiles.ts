@@ -92,7 +92,7 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
     const body = Object.keys(map).reduce((acc, fileid) => {
       const value = map[fileid];
       if (value) {
-        const uri = Schema.uri.create.file(ns, fileid);
+        const uri = Schema.Uri.create.file(ns, fileid);
         const url = urls.find((item) => item.uri === uri);
         if (url) {
           const { path, filename, dir } = HttpClientCellFiles.parsePath(url.path);

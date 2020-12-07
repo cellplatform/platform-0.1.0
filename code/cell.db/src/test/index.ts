@@ -1,4 +1,4 @@
-import { Schema } from '@platform/cell.schema';
+import { Uri } from '@platform/cell.schema';
 
 import { fs } from '@platform/fs';
 import { NeDb } from '@platform/fsdb.nedb';
@@ -16,7 +16,7 @@ let count = 0;
 const dir = fs.resolve('tmp/test');
 
 before(() => {
-  Schema.uri.ALLOW.NS = ['abcd', 'foo', 'bar', 'zoo', 'foobar'];
+  Uri.ALLOW.NS = ['abcd', 'foo', 'bar', 'zoo', 'foobar'];
 });
 
 after(() => fs.remove(dir)); // Clean up after all tests.

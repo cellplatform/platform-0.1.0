@@ -76,7 +76,7 @@ export class ConfigFile implements t.IConfigFile {
    */
   public get target() {
     const host = this.data.host;
-    const uri = Schema.uri.parse<t.ICellUri>(this.data.target);
+    const uri = Schema.Uri.parse<t.ICellUri>(this.data.target);
 
     const toUrl = () => {
       try {

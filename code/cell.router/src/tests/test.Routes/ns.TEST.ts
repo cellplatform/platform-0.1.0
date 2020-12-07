@@ -89,7 +89,7 @@ describe('ns:', function () {
         expect(res.body.data.ns.props?.title).to.eql('hello');
       };
 
-      // NB: period only allowed by [Schema.uri.ALLOW.NS] - setup in local tests.
+      // NB: period only allowed by [Schema.Uri.ALLOW.NS] - setup in local tests.
       await test('foo');
       await test('foo.bar');
 
