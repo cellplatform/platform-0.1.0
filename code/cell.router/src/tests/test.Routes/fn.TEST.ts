@@ -75,6 +75,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
   describe.only('POST success', () => {
     const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncRunResult) => {
       expect(res.ok).to.eql(true);
+      expect(res.entry).to.eql('main.js');
 
       const version = (process.version || '').replace(/^v/, '');
       expect(res.runtime.version).to.eql(`${version}`);
@@ -103,6 +104,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       await mock.dispose();
 
       expect(json.ok).to.eql(true);
+
       expect(json.elapsed.prep).to.greaterThan(0);
       expect(json.elapsed.run).to.greaterThan(10);
       expect(json.results.length).to.eql(1);
@@ -213,14 +215,11 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       expect(error.message).to.include('Execution timed out (max 10ms)');
     });
 
-    it.skip('custom entry path', async () => {
+    it('custom entry path', async () => {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
       await uploadBundle(client, bundle);
-
-      // const hash = manifest.hash;
-      // expect(hash).to.not.eql(undefined);
 
       const entry = '  //dev.js  '; // NB: whitespace is removed and "/" trimmed.
 
@@ -229,8 +228,9 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
 
-      console.log('-------------------------------------------');
-      console.log('json', json);
+      expect(res.ok).to.eql(true);
+      expect(json.ok).to.eql(true);
+      expect(json.results[0].entry).to.eql('dev.js');
     });
 
     it('hash: valid', async () => {

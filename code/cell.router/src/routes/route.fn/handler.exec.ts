@@ -85,6 +85,7 @@ async function execBundle(args: {
     result: res.result,
     elapsed: res.elapsed,
     bundle,
+    entry: res.entry,
     cache: { exists, pulled: pull ? true : !exists },
     runtime: { name: runtime.name, version: runtime.version, silent },
     size: {

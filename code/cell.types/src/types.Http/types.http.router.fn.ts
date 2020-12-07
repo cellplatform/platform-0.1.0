@@ -36,6 +36,7 @@ export type IResPostFuncRunResult = {
   result?: t.JsonMap;
   elapsed: t.RuntimeElapsed;
   bundle: t.RuntimeBundleOrigin;
+  entry: string;
   cache: { exists: boolean; pulled: boolean };
   runtime: { name: t.RuntimeEnv['name']; version: string; silent: boolean };
   size: { bytes: number; files: number };
