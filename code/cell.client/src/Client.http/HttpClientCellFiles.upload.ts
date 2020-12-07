@@ -131,7 +131,7 @@ export async function uploadFiles(args: {
       };
 
       // Upload data.
-      const isLocal = url.startsWith('http://localhost');
+      const isLocal = util.isLocalAddress(url);
       const res = await (isLocal ? uploadToLocal() : uploadToS3());
 
       // Finish up.

@@ -4,9 +4,8 @@ FROM node:12-alpine3.10
 WORKDIR /usr/cell
 
 # Install dependencies.
-COPY ./package.json ./
-
-RUN yarn install --production
+COPY ./package*.json ./
+RUN npm install --production
 
 # Bundle source.
 COPY ./lib ./lib

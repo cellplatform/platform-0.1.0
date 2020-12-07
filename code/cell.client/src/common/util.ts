@@ -7,6 +7,10 @@ export function isOK(status: number | string = 200) {
   return status.toString().startsWith('2');
 }
 
+export function isLocalAddress(url: string) {
+  return url.startsWith('http://localhost') || url.startsWith('http://192.168.');
+}
+
 /**
  * Determine if the given input is an Observable.
  */
