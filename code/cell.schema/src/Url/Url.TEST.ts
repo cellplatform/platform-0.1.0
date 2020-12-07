@@ -10,7 +10,7 @@ type Q = {
   text?: string;
 };
 
-describe.only('Url', () => {
+describe('Url', () => {
   describe('static', () => {
     it('parse: origin', () => {
       const test = (
@@ -19,17 +19,15 @@ describe.only('Url', () => {
         port: number,
         protocol: 'http' | 'https',
         origin: string,
-        path?: string,
       ) => {
-        path = path || '/';
-        const res1 = Url.parse(input);
+        const res = Url.parse(input);
         const hostname = host.replace(/\:\d*$/, '');
 
-        expect(res1.origin.protocol).to.eql(protocol);
-        expect(res1.origin.hostname).to.eql(hostname);
-        expect(res1.origin.host).to.eql(host);
-        expect(res1.origin.port).to.eql(port);
-        expect(res1.origin.toString()).to.eql(origin);
+        expect(res.origin.protocol).to.eql(protocol);
+        expect(res.origin.hostname).to.eql(hostname);
+        expect(res.origin.host).to.eql(host);
+        expect(res.origin.port).to.eql(port);
+        expect(res.origin.toString()).to.eql(origin);
       };
 
       test('foo.com:1234', 'foo.com:1234', 1234, 'https', 'https://foo.com:1234');
@@ -39,7 +37,6 @@ describe.only('Url', () => {
       test('http://foo.com', 'foo.com', 80, 'https', 'https://foo.com');
       test('https://foo.com/', 'foo.com', 80, 'https', 'https://foo.com');
       test('foo.com:8080', 'foo.com:8080', 8080, 'https', 'https://foo.com:8080');
-      test('//foo.com:8080//', 'foo.com:8080', 8080, 'https', 'https://foo.com:8080');
       test('localhost.foo.com', 'localhost.foo.com', 80, 'https', 'https://localhost.foo.com');
 
       test(undefined, 'localhost', 80, 'http', 'http://localhost');
@@ -55,16 +52,45 @@ describe.only('Url', () => {
       test('localhost', 'localhost', 80, 'http', 'http://localhost');
       test('localhost:1234', 'localhost:1234', 1234, 'http', 'http://localhost:1234');
       test('localhost/', 'localhost', 80, 'http', 'http://localhost');
-      test('//localhost///', 'localhost', 80, 'http', 'http://localhost');
+      test('localhost/foo', 'localhost', 80, 'http', 'http://localhost');
+
+      test('/foo/', 'localhost', 80, 'http', 'http://localhost');
+      test('//foo/', 'localhost', 80, 'http', 'http://localhost');
+
       test('http://localhost', 'localhost', 80, 'http', 'http://localhost');
       test('https://localhost', 'localhost', 80, 'http', 'http://localhost');
       test('https://localhost//', 'localhost', 80, 'http', 'http://localhost');
       test('https://localhost:1234', 'localhost:1234', 1234, 'http', 'http://localhost:1234');
       test('https://localhost:1234//', 'localhost:1234', 1234, 'http', 'http://localhost:1234');
+      test('http://localhost/foo', 'localhost', 80, 'http', 'http://localhost');
     });
 
-    it.skip('parse: path', () => {
-      //
+    it('parse: path', () => {
+      const test = (input: string | number | undefined, path: string) => {
+        const res = Url.parse(input);
+        expect(res.path).to.eql(path);
+      };
+
+      test(80, '/');
+      test(1234, '/');
+      test('', '/');
+      test('/', '/');
+      test('  ///  ', '/');
+
+      test('localhost', '/');
+      test('http://localhost', '/');
+      test('  http://localhost/ ', '/');
+      test('http://192.168.1:1234//', '/');
+      test('https://domain.com//', '/');
+
+      test('  domain.com/foo/bar  ', '/foo/bar');
+      test('  domain.com/foo/bar//  ', '/foo/bar//');
+      test('https://domain.com/foo?q=123', '/foo?q=123');
+
+      test('foo/bar', '/bar');
+      test('/foo/bar', '/foo/bar');
+      test('///foo/bar', '/foo/bar');
+      test('///foo/bar/ ', '/foo/bar/');
     });
 
     it('isLocal', () => {

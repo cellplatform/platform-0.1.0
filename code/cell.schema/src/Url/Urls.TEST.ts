@@ -42,7 +42,6 @@ describe('Urls', () => {
       test('http://foo.com', 'foo.com', 80, 'https', 'https://foo.com');
       test('https://foo.com/', 'foo.com', 80, 'https', 'https://foo.com');
       test('foo.com:8080', 'foo.com:8080', 8080, 'https', 'https://foo.com:8080');
-      test('//foo.com:8080//', 'foo.com:8080', 8080, 'https', 'https://foo.com:8080');
       test('localhost.foo.com', 'localhost.foo.com', 80, 'https', 'https://localhost.foo.com');
 
       test(undefined, 'localhost', 80, 'http', 'http://localhost');
@@ -58,7 +57,6 @@ describe('Urls', () => {
       test('localhost', 'localhost', 80, 'http', 'http://localhost');
       test('localhost:1234', 'localhost:1234', 1234, 'http', 'http://localhost:1234');
       test('localhost/', 'localhost', 80, 'http', 'http://localhost');
-      test('//localhost///', 'localhost', 80, 'http', 'http://localhost');
       test('http://localhost', 'localhost', 80, 'http', 'http://localhost');
       test('https://localhost', 'localhost', 80, 'http', 'http://localhost');
       test('https://localhost//', 'localhost', 80, 'http', 'http://localhost');

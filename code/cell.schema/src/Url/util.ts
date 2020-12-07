@@ -20,6 +20,14 @@ export function stripSlash(input: string) {
   return (input || '').replace(/^\/*/, '').replace(/\/*$/, '');
 }
 
+export function stripSlashStart(input: string) {
+  return (input || '').replace(/^\/*/, '');
+}
+
+export function stripSlashEnd(input: string) {
+  return (input || '').replace(/\/*$/, '');
+}
+
 export function toProtocol(input: string): t.HttpProtocol {
   input = (input || '').trim();
 

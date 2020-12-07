@@ -15,7 +15,9 @@ export class Url<Q extends Record<string, unknown> = any> implements t.IUrl<Q> {
     let text = (input || '').trim();
     text = text || 'localhost';
 
-    const hostname = R.pipe(util.stripHttp, util.stripSlash, util.stripPort)(text);
+    let hostname = R.pipe(util.stripHttp, util.stripSlashEnd, util.stripPort)(text).split('/')[0];
+    hostname = hostname || 'localhost';
+
     const protocol = util.toProtocol(hostname);
     const port = util.toPort(text) || 80;
     const host = port === 80 ? hostname : `${hostname}:${port}`;
@@ -28,7 +30,12 @@ export class Url<Q extends Record<string, unknown> = any> implements t.IUrl<Q> {
       toString: () => `${protocol}://${host}`,
     };
 
-    return { origin };
+    let path = R.pipe(util.stripHttp, util.stripSlashStart)(text);
+    path = path.endsWith(':80') ? path.replace(/\:80$/, '') : path;
+    path = path.startsWith(origin.host) ? path.substring(origin.host.length) : path;
+    path = `/${path.replace(/^\/*/, '')}`;
+
+    return { origin, path };
   }
 
   /**
