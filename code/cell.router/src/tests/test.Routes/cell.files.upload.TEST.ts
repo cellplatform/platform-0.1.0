@@ -2,7 +2,7 @@
 import { parse as parseUrl } from 'url';
 import { createMock, expect, fs, Http, readFile, Schema, t, http } from '../../test';
 
-describe('cell/files: upload', function () {
+describe.only('cell/files: upload', function () {
   this.timeout(50000);
 
   it('upload/download: 1 file', async () => {
