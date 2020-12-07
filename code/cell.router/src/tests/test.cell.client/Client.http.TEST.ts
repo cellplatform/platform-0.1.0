@@ -162,13 +162,19 @@ describe('HttpClient', () => {
       const res = await cell.files.upload([]);
       await mock.dispose();
 
-      console.log('res', res);
-
       expect(res.ok).to.eql(false);
       expect(res.status).to.eql(400);
 
-      expect(res.error?.type).to.eql('HTTP/client');
-      expect(res.error?.message).to.include('No files given to upload');
+      expect(res.error?.type).to.eql('HTTP/file');
+      expect(res.error?.message).to.include('Failed to upload');
+      expect(res.error?.status).to.eql(400);
+
+      expect(res.body.errors.length).to.eql(1);
+
+      const error = res.body.errors[0];
+      expect(error.type).to.eql('HTTP/file');
+      expect(error.message).to.include('No files given to upload');
+      expect(error.status).to.eql(400);
     });
   });
 });
