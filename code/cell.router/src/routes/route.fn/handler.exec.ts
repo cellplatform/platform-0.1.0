@@ -1,4 +1,4 @@
-import { defaultValue, Schema, t, util } from '../common';
+import { defaultValue, Schema, t, util, id } from '../common';
 
 type B = t.RuntimeBundleOrigin;
 
@@ -78,6 +78,7 @@ async function execBundle(args: {
 
   const data: t.IResPostFuncRunResult = {
     ok: res.ok,
+    tx: body.tx || id.cuid(),
     result: res.result,
     elapsed: res.elapsed,
     bundle,

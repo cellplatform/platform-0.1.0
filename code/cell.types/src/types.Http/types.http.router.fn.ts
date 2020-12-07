@@ -15,6 +15,7 @@ export type IReqPostFuncRun = {
   uri: string; // Cell URI
   host?: string; // NB: the running system's host is used if not specified.
   dir?: string;
+  tx?: string; // Execution transaction ID (generated if not specified).
   params?: t.JsonMap;
   pull?: boolean; // Flag to force pull the bundle (if it's already cached.)
   silent?: boolean;
@@ -28,6 +29,7 @@ export type IResPostFuncRun = {
 
 export type IResPostFuncRunResult = {
   ok: boolean;
+  tx: string; // Execution transaction ID.
   result?: t.JsonMap;
   elapsed: t.RuntimeElapsed;
   bundle: t.RuntimeBundleOrigin;

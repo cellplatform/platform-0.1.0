@@ -10,7 +10,6 @@ import {
   Schema,
   t,
   TestCompile,
-  time,
 } from '../../test';
 import { EntryParams, Result } from './sample.NodeRuntime/types';
 
@@ -82,7 +81,7 @@ const uploadBundle = async (
   return { files, upload, bundle };
 };
 
-describe.only('cell.runtime.node: NodeRuntime', function () {
+describe('cell.runtime.node: NodeRuntime', function () {
   this.timeout(99999);
 
   /**
@@ -234,7 +233,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
   });
 
   describe('run', () => {
-    it('pulls for run', async () => {
+    it('auto pulls before run', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
