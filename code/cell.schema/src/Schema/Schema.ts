@@ -17,7 +17,6 @@ import { Encoding } from '../Encoding';
  */
 export class Schema {
   public static mime = Mime;
-  public static uri = Uri;
   public static file = FileSchema;
   public static ref = RefSchema;
   public static cuid = cuid;
@@ -26,8 +25,9 @@ export class Schema {
   public static coord = coord;
   public static encoding = Encoding;
 
-  public static Urls = Urls;
+  public static Uri = Uri;
   public static Url = Url;
+  public static Urls = Urls;
   public static urls = (host: string | number) => Urls.create(host);
   public static ns = (id: string) => new NsSchema({ id });
 
