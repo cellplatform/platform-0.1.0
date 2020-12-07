@@ -1,6 +1,6 @@
 {
   "name": "cell.system",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "scripts": {
     "now": "yarn vercel",
     "vercel": "vercel dev --listen 8080",
@@ -14,8 +14,8 @@
   "dependencies": {
     "@platform/cell.fs.local": "^0.4.160",
     "@platform/cell.fs.s3": "^0.4.165",
-    "@platform/cell.service": "^0.8.12",
-    "@platform/cell.router": "^0.8.76",
+    "@platform/cell.service": "^0.8.13",
+    "@platform/cell.router": "^0.8.77",
     "@platform/cell.runtime.node": "^0.0.7",
     "@platform/cell.schema": "^0.5.38",
     "@platform/cell.types": "^0.5.39",
