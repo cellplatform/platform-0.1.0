@@ -32,7 +32,12 @@ export async function exec(args: {
       results.push(res);
     }
 
-    const elapsed = results.reduce((acc, next) => acc + next.elapsed, 0);
+    const elapsed = results.reduce(
+      (acc, next) => {
+        return { prep: acc.prep + next.elapsed.prep, run: acc.run + next.elapsed.run };
+      },
+      { prep: 0, run: 0 },
+    );
     const data: t.IResPostFuncRun = {
       elapsed,
       results,

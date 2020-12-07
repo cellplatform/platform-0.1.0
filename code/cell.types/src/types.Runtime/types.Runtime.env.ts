@@ -35,7 +35,12 @@ export type RuntimeRunResponse = {
   manifest?: t.BundleManifest;
   result?: t.JsonMap;
   errors: t.IRuntimeError[];
-  elapsed: number; // milliseconds
+  elapsed: { prep: number; run: number };
+};
+
+export type RuntimeElapsed = {
+  prep: number; // Preparation time (in msecs) - eg: pull/compile.
+  run: number; // Execution time (in msecs)
 };
 
 /**

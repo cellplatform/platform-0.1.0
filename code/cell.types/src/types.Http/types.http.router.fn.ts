@@ -22,14 +22,14 @@ export type IReqPostFuncRun = {
 };
 
 export type IResPostFuncRun = {
-  elapsed: number;
+  elapsed: t.RuntimeElapsed;
   results: t.IResPostFuncRunResult[];
 };
 
 export type IResPostFuncRunResult = {
   ok: boolean;
   result?: t.JsonMap;
-  elapsed: number;
+  elapsed: t.RuntimeElapsed;
   bundle: t.RuntimeBundleOrigin;
   cache: { exists: boolean; pulled: boolean };
   runtime: { name: t.RuntimeEnv['name']; version: string; silent: boolean };

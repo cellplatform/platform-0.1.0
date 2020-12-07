@@ -10,6 +10,7 @@ import {
   Schema,
   t,
   TestCompile,
+  time,
 } from '../../test';
 import { EntryParams, Result } from './sample.NodeRuntime/types';
 
@@ -81,7 +82,7 @@ const uploadBundle = async (
   return { files, upload, bundle };
 };
 
-describe('cell.runtime.node: NodeRuntime', function () {
+describe.only('cell.runtime.node: NodeRuntime', function () {
   this.timeout(99999);
 
   /**
@@ -269,7 +270,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const res2 = await runtime.run(bundle, { silent: true, params });
       await mock.dispose();
 
-      expect(res1.elapsed).to.greaterThan(res2.elapsed); // NB: Compiled script is re-used (faster second time).
+      expect(res1.elapsed.prep).to.greaterThan(res2.elapsed.prep); // NB: Compiled script is re-used (faster second time).
     });
 
     it('delay', async () => {
@@ -277,19 +278,22 @@ describe('cell.runtime.node: NodeRuntime', function () {
       await uploadBundle(client, bundle);
 
       const params: EntryParams = { value: { foo: 123 } };
-      const res1 = await runtime.run(bundle, { silent: true, params });
-      const res2 = await runtime.run(bundle, { silent: true, params });
-      const res3 = await runtime.run(bundle, { silent: true, params: { ...params, delay: 30 } });
+      const res1 = await runtime.run(bundle, { silent: true, params: { ...params, id: 1 } });
+      const res2 = await runtime.run(bundle, { silent: true, params: { ...params, id: 2 } });
+      const res3 = await runtime.run(bundle, {
+        silent: true,
+        params: { ...params, delay: 60, id: 3 },
+      });
       await mock.dispose();
 
-      expect(res1.elapsed).to.greaterThan(res2.elapsed); // NB: Compiled script is re-used (faster second time).
+      expect(res1.elapsed.prep).to.greaterThan(res2.elapsed.prep); // NB: Compiled script is re-used (faster second time).
 
       expect(res3.ok).to.eql(true);
       expect(res3.errors.length).to.eql(0);
       expect((res3.result as Result).echo).to.eql({ foo: 123 });
 
-      expect(res2.elapsed).to.lessThan(30);
-      expect(res3.elapsed).to.greaterThan(30);
+      expect(res2.elapsed.run).to.lessThan(15);
+      expect(res3.elapsed.run).to.greaterThan(60);
     });
 
     it('error: timed out', async () => {
@@ -339,11 +343,11 @@ describe('cell.runtime.node: NodeRuntime', function () {
       expect(error.stack).to.include('cell-foo-A1/dir.foo/main.js');
     });
 
-    it.skip('pipe (execution list)', async () => {
+    it.skip('pipe: seqential execution list', async () => {
       //
     });
 
-    it.skip('pipe (execution list)', async () => {
+    it.skip('pipe: parallel execution', async () => {
       //
     });
 
@@ -358,7 +362,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
         await mock.dispose();
 
         expect(res.ok).to.eql(false);
-        expect(res.elapsed).to.eql(-1);
+        expect(res.elapsed).to.eql({ prep: -1, run: -1 });
         expect(res.errors.length).to.eql(1);
         expect(error.type).to.eql('RUNTIME/pull');
         expect(error.message).to.include('The bundle does not contain a manifest');

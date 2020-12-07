@@ -5,6 +5,7 @@ import '../d.global';
  * These are various flags used to setup different test scenarios.
  */
 export type EntryParams = {
+  id?: string | number;
   throwError?: string;
   value?: any;
   repeatDone?: number;

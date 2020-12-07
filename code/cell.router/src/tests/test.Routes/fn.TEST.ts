@@ -148,7 +148,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       expect(json.results[1].cache.pulled).to.eql(false);
 
       // Second time faster (pulled and compiled).
-      expect(json.results[0].elapsed).to.greaterThan(json.results[1].elapsed);
+      expect(json.results[0].elapsed.prep).to.greaterThan(json.results[1].elapsed.prep);
     });
 
     it('timeout: on body payload', async () => {

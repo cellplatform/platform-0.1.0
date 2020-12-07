@@ -32,7 +32,7 @@ samples.dynamic.config
   .expose('./app', `${ENTRY}/dynamic-import/app`)
   .expose('./main', `${ENTRY}/dynamic-import/main`);
 
-describe.only('cell.runtime.node: vm2 (lib) - secure runtime checks', function () {
+describe('cell.runtime.node: vm2 (lib) - secure runtime checks', function () {
   this.timeout(99999);
 
   before(async () => {

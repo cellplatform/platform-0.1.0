@@ -17,8 +17,11 @@ if (typeof params.repeatDone === 'number') {
   Array.from({ length: params.repeatDone }).forEach((v, i) => env.done({ count: i + 1 }));
 } else {
   if (params.delay) {
-    console.log('params', params);
-    setTimeout(() => env.done({ echo: echo(), process: process.env }), params.delay);
+    console.log('delay start', params.id, params.delay);
+    setTimeout(() => {
+      console.log(params.id, 'delay complete');
+      env.done({ echo: echo(), process: process.env });
+    }, params.delay);
   } else {
     env.done<t.Result>({ echo: echo(), process: process.env });
   }

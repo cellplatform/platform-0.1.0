@@ -19,7 +19,7 @@ export function runMethod(args: { cachedir: string }) {
     const exists = await bundle.isCached();
     const isPullRequired = !exists || options.pull;
 
-    let elapsed = -1;
+    let elapsed = { prep: -1, run: -1 };
 
     const errors: t.IRuntimeError[] = [];
     const addError = (message: string, stack?: string) =>
