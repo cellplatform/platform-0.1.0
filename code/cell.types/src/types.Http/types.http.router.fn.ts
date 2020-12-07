@@ -12,9 +12,10 @@ export type IReqQueryFuncRun = {
 export type IReqPostFuncRunBody = t.IReqPostFuncRun | t.IReqPostFuncRun[];
 
 export type IReqPostFuncRun = {
-  uri: string; // Cell URI
+  uri: string; // Cell URI containing bundle.
   host?: string; // NB: the running system's host is used if not specified.
-  dir?: string;
+  dir?: string; // Directory of the cell.
+  entry?: string; // Entry path within bundle (if not specified default manfest entry is used).
   tx?: string; // Execution transaction ID (generated if not specified).
   params?: t.JsonMap;
   pull?: boolean; // Flag to force pull the bundle (if it's already cached.)

@@ -15,13 +15,18 @@ import { EntryParams, Result } from './sample.NodeRuntime/types';
 
 type B = t.RuntimeBundleOrigin;
 
+const ENTRY = {
+  NODE: './src/tests/test.cell.runtime.node/sample.NodeRuntime',
+};
+
 export const samples = {
   node: TestCompile.make(
     'NodeRuntime',
     Compiler.config('NodeRuntime')
       .namespace('sample')
       .target('node')
-      .entry('./src/tests/test.cell.runtime.node/sample.NodeRuntime/main'),
+      .entry(`${ENTRY.NODE}/main`)
+      .entry('dev', `${ENTRY.NODE}/dev`),
   ),
 
   math: TestCompile.make(
@@ -81,7 +86,7 @@ const uploadBundle = async (
   return { files, upload, bundle };
 };
 
-describe('cell.runtime.node: NodeRuntime', function () {
+describe.only('cell.runtime.node: NodeRuntime', function () {
   this.timeout(99999);
 
   /**
@@ -232,7 +237,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
     });
   });
 
-  describe('run', () => {
+  describe.only('run', () => {
     it('auto pulls before run', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
@@ -244,7 +249,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       await mock.dispose();
     });
 
-    it('return value', async () => {
+    it('return value / default entry / no process leaks', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
@@ -253,6 +258,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       await mock.dispose();
 
       expect(res.ok).to.eql(true);
+      expect(res.entry).to.eql('main.js');
       expect(res.errors.length).to.eql(0);
 
       const result = res.result as Result;
@@ -340,6 +346,30 @@ describe('cell.runtime.node: NodeRuntime', function () {
       expect(error.bundle).to.eql(bundle);
       expect(error.message).to.eql('echo error');
       expect(error.stack).to.include('cell-foo-A1/dir.foo/main.js');
+    });
+
+    it('custom entry', async () => {
+      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      await uploadBundle(client, bundle);
+
+      const params: EntryParams = {};
+      const entry = '  dev.js  '; // NB: space padding is removed.
+
+      const res = await runtime.run(bundle, { silent: true, params, entry });
+      await mock.dispose();
+
+      expect(res.entry).to.eql('dev.js');
+
+      const result = res.result as Result;
+      expect(result?.echo).to.eql('hello dev');
+    });
+
+    it.skip('hash: valid', async () => {
+      //
+    });
+
+    it.skip('hash: invalid (error)', async () => {
+      //
     });
 
     it.skip('pipe: seqential execution list', async () => {

@@ -18,7 +18,6 @@ export function runMethod(args: { cachedir: string }) {
     const bundle = BundleWrapper.create(input, cachedir);
     const exists = await bundle.isCached();
     const isPullRequired = !exists || options.pull;
-
     let elapsed = { prep: -1, run: -1 };
 
     const errors: t.IRuntimeError[] = [];
@@ -34,7 +33,7 @@ export function runMethod(args: { cachedir: string }) {
 
     const done = (result?: t.JsonMap) => {
       const ok = errors.length === 0;
-      return { ok, result, errors, manifest, elapsed };
+      return { ok, entry, result, errors, manifest, elapsed };
     };
 
     // Ensure the bundle has been pulled locally.
@@ -71,6 +70,8 @@ export function runMethod(args: { cachedir: string }) {
       return done();
     }
 
+    const entry = (options.entry || manifest.entry || '').trim();
+
     if (!silent) {
       const size = fs.size.toString(manifest.bytes, { round: 0 });
       const table = log.table({ border: false });
@@ -82,7 +83,7 @@ export function runMethod(args: { cachedir: string }) {
       add('target', `${manifest.target} (${manifest.mode})`);
       add('manifest ', logger.format.url(bundle.urls.manifest));
       add('files ', logger.format.url(bundle.urls.files));
-      add('entry', manifest.entry);
+      add('entry', entry);
       add('size', `${log.yellow(size)} (${manifest.files.length} files)`);
 
       log.info();
@@ -92,7 +93,7 @@ export function runMethod(args: { cachedir: string }) {
 
     // Execute the code.
     const dir = bundle.cache.dir;
-    const res = await invoke({ manifest, dir, silent, params, timeout });
+    const res = await invoke({ manifest, dir, silent, params, timeout, entry });
     elapsed = res.elapsed;
     res.errors.forEach((err) => addError(err.message, err.stack));
 

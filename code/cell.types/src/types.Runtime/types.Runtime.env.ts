@@ -16,7 +16,13 @@ type RuntimeMembers = {
   pull(bundle: B, options?: { silent?: boolean }): Promise<RuntimePullResponse>;
   run(
     bundle: B,
-    options?: { params?: t.JsonMap; pull?: boolean; silent?: boolean; timeout?: number },
+    options?: {
+      params?: t.JsonMap;
+      pull?: boolean;
+      silent?: boolean;
+      timeout?: number;
+      entry?: string; // Entry path within bundle (if not specified default manfest entry is used).
+    },
   ): Promise<RuntimeRunResponse>;
 
   remove(bundle: B): Promise<{ count: number }>;
@@ -32,6 +38,7 @@ export type RuntimePullResponse = {
 
 export type RuntimeRunResponse = {
   ok: boolean;
+  entry: string;
   manifest?: t.BundleManifest;
   result?: t.JsonMap;
   errors: t.IRuntimeError[];

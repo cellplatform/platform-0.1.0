@@ -15,12 +15,14 @@ type R = {
 export function invoke(args: {
   dir: string;
   manifest: t.BundleManifest;
+  entry?: string;
   params?: t.JsonMap;
   silent?: boolean;
   timeout?: number;
 }) {
   return new Promise<R>(async (resolve, reject) => {
     const { silent, manifest, dir } = args;
+    const entry = (args.entry || manifest.entry || '').trim();
 
     /**
      * TODO 🐷
@@ -37,9 +39,7 @@ export function invoke(args: {
     const errors: Error[] = [];
 
     const elapsed = { prep: -1, run: -1 };
-
     const timer = time.timer();
-
     const timeout = defaultValue(args.timeout, 3000);
     const timeoutDelay = time.delay(timeout, () => {
       errors.push(new Error(`Execution timed out (max ${timeout}ms)`));
@@ -84,7 +84,7 @@ export function invoke(args: {
         },
       });
 
-      const filename = fs.join(dir, manifest.entry);
+      const filename = fs.join(dir, entry);
       const code = await Script.get(filename);
       elapsed.prep = timer.elapsed.msec;
 
