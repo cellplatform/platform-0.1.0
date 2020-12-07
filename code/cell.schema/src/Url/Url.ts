@@ -5,6 +5,8 @@ import * as util from './util';
  * Represents a URL path that can be converted to a proper URL via `toString()`.
  */
 export class Url<Q extends Record<string, unknown> = any> implements t.IUrl<Q> {
+  public static isLocal = util.isLocal;
+
   /**
    * Parses an input into it's constituent URL parts.
    */

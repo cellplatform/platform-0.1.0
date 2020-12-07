@@ -62,6 +62,30 @@ describe.only('Url', () => {
       test('https://localhost:1234', 'localhost:1234', 1234, 'http', 'http://localhost:1234');
       test('https://localhost:1234//', 'localhost:1234', 1234, 'http', 'http://localhost:1234');
     });
+
+    it.skip('parse: path', () => {
+      //
+    });
+
+    it('isLocal', () => {
+      const test = (input: string, expected: boolean) => {
+        expect(Url.isLocal(input)).to.eql(expected);
+      };
+
+      test(undefined as any, false);
+      test('localhostess', false);
+
+      test('localhost', true);
+      test('localhost:8080', true);
+      test('localhost:80', true);
+      test('  localhost  ', true);
+      test('http://localhost', true);
+      test('http://localhost/', true);
+      test('https://localhost', true);
+
+      test('http://192.168.1', true);
+      test('192.168.1', true);
+    });
   });
 
   describe('instance', () => {

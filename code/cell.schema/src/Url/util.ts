@@ -6,7 +6,10 @@ export function toPort(input: string): number | undefined {
 }
 
 export function stripHttp(input: string) {
-  return (input || '').replace(/^http\:\/\//, '').replace(/^https\:\/\//, '');
+  return (input || '')
+    .trim()
+    .replace(/^http\:\/\//, '')
+    .replace(/^https\:\/\//, '');
 }
 
 export function stripPort(input: string) {
@@ -32,6 +35,18 @@ export function toProtocol(input: string): t.HttpProtocol {
 }
 
 export function isInternalIP(input: string) {
-  input = (input || '').trim();
-  return input.startsWith('192.168.');
+  return stripHttp(input).startsWith('192.168.');
+}
+
+export function isLocal(input: string) {
+  if (isInternalIP(input)) {
+    return true;
+  }
+
+  const host = stripHttp(input).split('/')[0] || '';
+  if (host === 'localhost' || host.startsWith('localhost:')) {
+    return true;
+  }
+
+  return false;
 }
