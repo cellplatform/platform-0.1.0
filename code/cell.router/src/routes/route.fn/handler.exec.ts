@@ -16,47 +16,40 @@ export async function exec(args: {
 }) {
   try {
     const { host, db, runtime, defaultPull, defaultSilent, defaultTimeout } = args;
-    const results: t.IResPostFuncRunResult[] = [];
+
+    const results: t.IResPostFuncResult[] = [];
+    const run = async (body: t.IReqPostFunc, prev?: t.IResPostFuncResult) => {
+      const result = await execBundle({
+        host,
+        db,
+        body,
+        in: prev?.out, // NB: pipe previous result into the next function.
+        runtime,
+        defaultPull,
+        defaultSilent,
+        defaultTimeout,
+      });
+      results.push(result);
+      return result;
+    };
 
     if (Array.isArray(args.body)) {
       // Process seqential list in order.
-      let prev: t.IResPostFuncRunResult | undefined;
+      let prev: t.IResPostFuncResult | undefined;
       for (const body of args.body) {
-        const res = await execBundle({
-          host,
-          db,
-          body,
-          in: prev?.out,
-          runtime,
-          defaultPull,
-          defaultSilent,
-          defaultTimeout,
-        });
-        results.push(res);
-        prev = res;
+        prev = await run(body, prev);
       }
     } else {
       // Process in parallel.
       // TODO 🐷
+      // await Promise.all(Object.keys(args.body).map((key) => ))
     }
 
-    const elapsed = results.reduce(
-      (acc, next) => {
-        const prep = acc.prep + next.elapsed.prep;
-        const run = acc.run + next.elapsed.run;
-        return { prep, run };
-      },
-      { prep: 0, run: 0 },
-    );
-
     const ok = results.every((res) => res.ok);
-    const status = results.every((res) => res.ok) ? 200 : 500;
-    const data: t.IResPostFuncRun = {
-      ok,
-      elapsed,
-      results,
-    };
+    const elapsed = results.reduce((acc, next) => acc + (next.elapsed.prep + next.elapsed.run), 0);
+    const data: t.IResPostFunc = { ok, elapsed, results };
 
+    const status = results.every((res) => res.ok) ? 200 : 500;
     return { status, data };
   } catch (err) {
     return util.toErrorPayload(err);
@@ -98,7 +91,7 @@ async function execBundle(args: {
   const { ok, manifest, errors } = res;
   const tx = body.tx || id.cuid();
 
-  const data: t.IResPostFuncRunResult = {
+  const data: t.IResPostFuncResult = {
     ok,
     tx,
     out: res.out,

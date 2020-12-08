@@ -24,13 +24,13 @@ export type IReqPostFunc = {
   in?: Partial<t.RuntimeIn>;
 };
 
-export type IResPostFuncRun = {
+export type IResPostFunc = {
   ok: boolean;
-  elapsed: t.RuntimeElapsed;
-  results: t.IResPostFuncRunResult[];
+  elapsed: number; // total milliseconds.
+  results: t.IResPostFuncResult[];
 };
 
-export type IResPostFuncRunResult = {
+export type IResPostFuncResult = {
   ok: boolean;
   tx: string; // Execution transaction ID.
   out: t.RuntimeOut;

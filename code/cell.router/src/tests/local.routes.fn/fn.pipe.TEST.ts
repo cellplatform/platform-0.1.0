@@ -12,7 +12,7 @@ describe.only('/fn:run (pipes)', function () {
     await samples.pipe.bundle(force);
   });
 
-  describe('pipe: seqential execution - [list]', () => {
+  describe('[list] - seqential execution', () => {
     it('in => out => in => out', async () => {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
@@ -25,7 +25,7 @@ describe.only('/fn:run (pipes)', function () {
         { host, uri, dir },
       ];
       const res = await http.post(url.toString(), body);
-      const json = res.json as t.IResPostFuncRun;
+      const json = res.json as t.IResPostFunc;
       await mock.dispose();
       expect(json.ok).to.eql(true);
 
@@ -56,7 +56,7 @@ describe.only('/fn:run (pipes)', function () {
         { host, uri, dir, in: input3 },
       ];
       const res = await http.post(url.toString(), body);
-      const json = res.json as t.IResPostFuncRun;
+      const json = res.json as t.IResPostFunc;
       await mock.dispose();
       expect(json.ok).to.eql(true);
 
@@ -90,7 +90,7 @@ describe.only('/fn:run (pipes)', function () {
         { host, uri, dir },
       ];
       const res = await http.post(url.toString(), body);
-      const json = res.json as t.IResPostFuncRun;
+      const json = res.json as t.IResPostFunc;
       await mock.dispose();
       expect(json.ok).to.eql(true);
 
@@ -108,11 +108,14 @@ describe.only('/fn:run (pipes)', function () {
     });
 
     it.skip('error within pipe', async () => {
-      //
+      /**
+       * TODO 🐷
+       * onError: 'stop' (default) | 'continue'
+       */
     });
   });
 
-  describe.skip('pipe: parallel execution - {object}', async () => {
+  describe.only('{object} - parallel execution', async () => {
     it('runs multiple functions simultaneously', async () => {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
@@ -125,10 +128,12 @@ describe.only('/fn:run (pipes)', function () {
         3: { host, uri, dir },
       };
       const res = await http.post(url.toString(), body);
-      const json = res.json as t.IResPostFuncRun;
+      const json = res.json as t.IResPostFunc;
       await mock.dispose();
 
       console.log('-------------------------------------------');
+
+      console.log('json', json);
     });
   });
 });

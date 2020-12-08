@@ -19,8 +19,8 @@ describe('/fn:run', function () {
     await samples.node.bundle(force);
   });
 
-  describe.only('POST (NodeRuntime)', () => {
-    const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncRunResult) => {
+  describe('POST (NodeRuntime)', () => {
+    const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncResult) => {
       expect(res.ok).to.eql(true);
       expect(res.entry).to.eql('main.js');
 
@@ -40,13 +40,12 @@ describe('/fn:run', function () {
 
       const body: t.IReqPostFuncSet = [{ host, uri, dir }];
       const res = await http.post(url.toString(), body);
-      const json = res.json as t.IResPostFuncRun;
+      const json = res.json as t.IResPostFunc;
       await mock.dispose();
 
       expect(json.ok).to.eql(true);
 
-      expect(json.elapsed.prep).to.greaterThan(0);
-      expect(json.elapsed.run).to.greaterThan(10);
+      expect(json.elapsed).to.greaterThan(10);
       expect(json.results.length).to.eql(1);
       expect(json.results[0].bundle).to.eql(bundle);
       expectFuncResponse(dir, json.results[0]);
@@ -64,7 +63,7 @@ describe('/fn:run', function () {
       const value: ISampleNodeInValue = { value: { foo: 123 } };
       const body: t.IReqPostFuncSet = [{ host, uri, dir, in: { value } }];
       const res = await http.post(url.toString(), body);
-      const json = res.json as t.IResPostFuncRun;
+      const json = res.json as t.IResPostFunc;
       await mock.dispose();
 
       expect(json.ok).to.eql(true);
@@ -82,12 +81,11 @@ describe('/fn:run', function () {
 
       const body: t.IReqPostFuncSet = [bundle, bundle];
       const res = await http.post(url.toString(), body);
-      const json = res.json as t.IResPostFuncRun;
+      const json = res.json as t.IResPostFunc;
       await mock.dispose();
 
       expect(json.ok).to.eql(true);
-      expect(json.elapsed.prep).to.greaterThan(0);
-      expect(json.elapsed.run).to.greaterThan(0);
+      expect(json.elapsed).to.greaterThan(0);
       expect(json.results.length).to.eql(2);
       expectFuncResponse(dir, json.results[0]);
       expectFuncResponse(dir, json.results[1]);
@@ -111,7 +109,7 @@ describe('/fn:run', function () {
 
       const body: t.IReqPostFuncSet = [{ host, uri }];
       const res = await http.post(url.toString(), body);
-      const json = res.json as t.IResPostFuncRun;
+      const json = res.json as t.IResPostFunc;
       await mock.dispose();
 
       expect(body[0].tx).to.eql(undefined);
@@ -126,7 +124,7 @@ describe('/fn:run', function () {
       const tx = 'my-execution-id';
       const body: t.IReqPostFuncSet = [{ host, uri, tx }];
       const res = await http.post(url.toString(), body);
-      const json = res.json as t.IResPostFuncRun;
+      const json = res.json as t.IResPostFunc;
       await mock.dispose();
 
       expect(json.results[0].tx).to.eql(tx);
@@ -141,7 +139,7 @@ describe('/fn:run', function () {
       const value: ISampleNodeInValue = { delay: 20 };
       const body: t.IReqPostFuncSet = [{ host, uri, dir, in: { value }, timeout: 10 }];
       const res = await http.post(url.toString(), body);
-      const json = res.json as t.IResPostFuncRun;
+      const json = res.json as t.IResPostFunc;
       await mock.dispose();
 
       expect(json.ok).to.eql(false);
@@ -165,7 +163,7 @@ describe('/fn:run', function () {
 
       const body: t.IReqPostFuncSet = [{ host, uri, dir, entry }];
       const res = await http.post(url.toString(), body);
-      const json = res.json as t.IResPostFuncRun;
+      const json = res.json as t.IResPostFunc;
       await mock.dispose();
 
       expect(res.ok).to.eql(true);
@@ -185,7 +183,7 @@ describe('/fn:run', function () {
 
       const body: t.IReqPostFuncSet = [{ host, uri, dir, hash }];
       const res = await http.post(url.toString(), body);
-      const json = res.json as t.IResPostFuncRun;
+      const json = res.json as t.IResPostFunc;
       await mock.dispose();
 
       expect(res.ok).to.eql(true);
@@ -201,7 +199,7 @@ describe('/fn:run', function () {
       const hash = 'sha256-fail';
       const body: t.IReqPostFuncSet = [{ host, uri, dir, hash }];
       const res = await http.post(url.toString(), body);
-      const json = res.json as t.IResPostFuncRun;
+      const json = res.json as t.IResPostFunc;
       await mock.dispose();
 
       expect(res.ok).to.eql(false);
@@ -226,7 +224,7 @@ describe('/fn:run', function () {
       const value: ISampleNodeInValue = { delay: 20 };
       const body: t.IReqPostFuncSet = [{ host, uri, dir, in: { value } }];
       const res = await http.post(url.query({ timeout: 10 }).toString(), body);
-      const json = res.json as t.IResPostFuncRun;
+      const json = res.json as t.IResPostFunc;
       await mock.dispose();
 
       const result = json.results[0];
@@ -254,7 +252,7 @@ describe('/fn:run', function () {
 
       const post = async (url: string, body: t.IReqPostFuncSet) => {
         const res = await http.post(url, body);
-        return res.json as t.IResPostFuncRun;
+        return res.json as t.IResPostFunc;
       };
 
       const res1 = await post(url.default, body);
@@ -285,7 +283,7 @@ describe('/fn:run', function () {
 
       const post = async (url: string, body: t.IReqPostFuncSet) => {
         const res = await http.post(url, body);
-        return res.json as t.IResPostFuncRun;
+        return res.json as t.IResPostFunc;
       };
 
       const res1 = await post(url.default, body);
@@ -307,7 +305,7 @@ describe('/fn:run', function () {
 
       const data: t.IReqPostFuncSet = [{ ...bundle }];
       const res = await http.post(url.toString(), data);
-      const json = res.json as t.IResPostFuncRun;
+      const json = res.json as t.IResPostFunc;
       await mock.dispose();
 
       expect(res.ok).to.eql(false);
