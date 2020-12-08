@@ -139,5 +139,26 @@ describe('/fn:run (pipes)', function () {
       expect(results[1].count).to.eql(1);
       expect(results[2].count).to.eql(1);
     });
+
+    it('runs with errors', async () => {
+      const dir = 'foo';
+      const { mock, bundle, client, http, url } = await prepare({ dir });
+      const { host, uri } = bundle;
+      await uploadBundle(client, samples.pipe.outdir, bundle);
+
+      const value: ISamplePipeValue = { count: -1 };
+
+      const body: t.IReqPostFuncSet = {
+        1: { host, uri, dir },
+        2: { host, uri, dir, in: { value } },
+        3: { host, uri, dir },
+      };
+      const res = await http.post(url.toString(), body);
+      const json = res.json as t.IResPostFunc;
+      await mock.dispose();
+
+      expect(json.ok).to.eql(false);
+      expect(json.results.some((res) => !res.ok)).to.eql(true);
+    });
   });
 });

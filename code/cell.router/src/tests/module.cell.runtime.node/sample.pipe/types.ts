@@ -1,5 +1,4 @@
 import '../d.global';
-import { RuntimeIn } from '@platform/cell.types/lib/types.Runtime';
 
 /**
  * Params passed to compiled code.
