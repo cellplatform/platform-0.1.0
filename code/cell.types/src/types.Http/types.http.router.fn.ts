@@ -16,8 +16,8 @@ export type IReqPostFunc = {
   host?: string; // NB: the running system's host is used if not specified.
   dir?: string; // Directory of the cell.
   entry?: string; // Entry path within bundle (if not specified default manfest entry is used).
-  tx?: string; // Execution transaction ID (generated if not specified).
   hash?: string; // The hash of the bundle to match before executing.
+  tx?: string; // Execution transaction ID (generated if not specified).
   pull?: boolean; // Flag to force pull the bundle (if it's already cached.)
   silent?: boolean;
   timeout?: number; // Msecs.

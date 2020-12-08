@@ -9,4 +9,5 @@ export type RuntimeBundleOrigin = {
   host: string;
   uri: string;
   dir?: string;
+  hash?: string;
 };

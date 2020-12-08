@@ -20,7 +20,7 @@ describe('/fn:run', function () {
   });
 
   describe('POST (NodeRuntime)', () => {
-    const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncResult) => {
+    const expectFuncResponse = (res: t.IResPostFuncResult) => {
       expect(res.ok).to.eql(true);
       expect(res.entry).to.eql('main.js');
       expect(res.size.bytes).to.greaterThan(1000);
@@ -32,7 +32,8 @@ describe('/fn:run', function () {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, samples.node.outdir, bundle);
+      const { files } = await uploadBundle(client, samples.node.outdir, bundle);
+      const manifest = getManifest(files);
 
       const body: t.IReqPostFuncSet = [{ host, uri, dir }];
       const res = await http.post(url.toString(), body);
@@ -43,13 +44,17 @@ describe('/fn:run', function () {
 
       expect(json.elapsed).to.greaterThan(10);
       expect(json.results.length).to.eql(1);
-      expect(json.results[0].bundle).to.eql(bundle);
+
+      expect(json.results[0].bundle.uri).to.eql(bundle.uri);
+      expect(json.results[0].bundle.host).to.eql(bundle.host);
+      expect(json.results[0].bundle.dir).to.eql(bundle.dir);
+      expect(json.results[0].bundle.hash).to.eql(manifest.hash);
 
       const version = (process.version || '').replace(/^v/, '');
       expect(json.runtime.version).to.eql(`${version}`);
       expect(json.runtime.name).to.eql('node');
 
-      expectFuncResponse(dir, json.results[0]);
+      expectFuncResponse(json.results[0]);
 
       expect(json.results[0].cache.exists).to.eql(false);
       expect(json.results[0].cache.pulled).to.eql(true);
@@ -68,7 +73,7 @@ describe('/fn:run', function () {
       await mock.dispose();
 
       expect(json.ok).to.eql(true);
-      expectFuncResponse(dir, json.results[0]);
+      expectFuncResponse(json.results[0]);
 
       const result = json.results[0].out.value as ISampleNodeOutValue;
       expect(result.echo).to.eql({ foo: 123 });
@@ -88,8 +93,8 @@ describe('/fn:run', function () {
       expect(json.ok).to.eql(true);
       expect(json.elapsed).to.greaterThan(0);
       expect(json.results.length).to.eql(2);
-      expectFuncResponse(dir, json.results[0]);
-      expectFuncResponse(dir, json.results[1]);
+      expectFuncResponse(json.results[0]);
+      expectFuncResponse(json.results[1]);
 
       // Not cached (initial pull).
       expect(json.results[0].cache.exists).to.eql(false);
@@ -191,13 +196,14 @@ describe('/fn:run', function () {
       expect(json.ok).to.eql(true);
     });
 
-    it('hash: invvalid', async () => {
+    it('hash: invalid', async () => {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, samples.node.outdir, bundle);
+      const { files } = await uploadBundle(client, samples.node.outdir, bundle);
+      const manifest = getManifest(files);
 
-      const hash = 'sha256-fail';
+      const hash = 'sha256-no-exist';
       const body: t.IReqPostFuncSet = [{ host, uri, dir, hash }];
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFunc;
@@ -207,6 +213,7 @@ describe('/fn:run', function () {
       expect(json.ok).to.eql(false);
 
       const result = json.results[0];
+      expect(result.bundle.hash).to.eql(manifest.hash);
       expect(result.errors.length).to.eql(1);
 
       const error = result.errors[0];
