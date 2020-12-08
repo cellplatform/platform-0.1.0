@@ -19,7 +19,7 @@ describe('/fn:run', function () {
     await samples.node.bundle(force);
   });
 
-  describe('POST (NodeRuntime)', () => {
+  describe.only('POST (NodeRuntime)', () => {
     const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncRunResult) => {
       expect(res.ok).to.eql(true);
       expect(res.entry).to.eql('main.js');
@@ -38,7 +38,7 @@ describe('/fn:run', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, samples.node.outdir, bundle);
 
-      const body: t.IReqPostFuncRunBody = { host, uri, dir };
+      const body: t.IReqPostFuncSet = [{ host, uri, dir }];
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
@@ -62,7 +62,7 @@ describe('/fn:run', function () {
       await uploadBundle(client, samples.node.outdir, bundle);
 
       const value: ISampleNodeInValue = { value: { foo: 123 } };
-      const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value } };
+      const body: t.IReqPostFuncSet = [{ host, uri, dir, in: { value } }];
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
@@ -80,7 +80,7 @@ describe('/fn:run', function () {
       const { mock, bundle, client, http, url } = await prepare({ dir });
       await uploadBundle(client, samples.node.outdir, bundle);
 
-      const body: t.IReqPostFuncRunBody = [bundle, bundle];
+      const body: t.IReqPostFuncSet = [bundle, bundle];
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
@@ -109,12 +109,12 @@ describe('/fn:run', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, samples.node.outdir, bundle);
 
-      const body: t.IReqPostFuncRunBody = { host, uri };
+      const body: t.IReqPostFuncSet = [{ host, uri }];
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
 
-      expect(body.tx).to.eql(undefined);
+      expect(body[0].tx).to.eql(undefined);
       expect(json.results[0].tx.length).to.greaterThan(15);
     });
 
@@ -124,7 +124,7 @@ describe('/fn:run', function () {
       await uploadBundle(client, samples.node.outdir, bundle);
 
       const tx = 'my-execution-id';
-      const body: t.IReqPostFuncRunBody = { host, uri, tx };
+      const body: t.IReqPostFuncSet = [{ host, uri, tx }];
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
@@ -139,7 +139,7 @@ describe('/fn:run', function () {
       await uploadBundle(client, samples.node.outdir, bundle);
 
       const value: ISampleNodeInValue = { delay: 20 };
-      const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value }, timeout: 10 };
+      const body: t.IReqPostFuncSet = [{ host, uri, dir, in: { value }, timeout: 10 }];
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
@@ -163,7 +163,7 @@ describe('/fn:run', function () {
 
       const entry = '  //dev.js  '; // NB: whitespace is removed and "/" trimmed.
 
-      const body: t.IReqPostFuncRunBody = { host, uri, dir, entry };
+      const body: t.IReqPostFuncSet = [{ host, uri, dir, entry }];
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
@@ -183,7 +183,7 @@ describe('/fn:run', function () {
       const hash = manifest.hash;
       expect(hash).to.not.eql(undefined);
 
-      const body: t.IReqPostFuncRunBody = { host, uri, dir, hash };
+      const body: t.IReqPostFuncSet = [{ host, uri, dir, hash }];
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
@@ -199,7 +199,7 @@ describe('/fn:run', function () {
       await uploadBundle(client, samples.node.outdir, bundle);
 
       const hash = 'sha256-fail';
-      const body: t.IReqPostFuncRunBody = { host, uri, dir, hash };
+      const body: t.IReqPostFuncSet = [{ host, uri, dir, hash }];
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
@@ -224,7 +224,7 @@ describe('/fn:run', function () {
       await uploadBundle(client, samples.node.outdir, bundle);
 
       const value: ISampleNodeInValue = { delay: 20 };
-      const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value } };
+      const body: t.IReqPostFuncSet = [{ host, uri, dir, in: { value } }];
       const res = await http.post(url.query({ timeout: 10 }).toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
@@ -250,9 +250,9 @@ describe('/fn:run', function () {
         pullFalse: mock.urls.fn.run.query({ pull: false }).toString(),
       };
 
-      const body: t.IReqPostFuncRunBody = { host, uri, dir };
+      const body: t.IReqPostFuncSet = [{ host, uri, dir }];
 
-      const post = async (url: string, body: t.IReqPostFuncRunBody) => {
+      const post = async (url: string, body: t.IReqPostFuncSet) => {
         const res = await http.post(url, body);
         return res.json as t.IResPostFuncRun;
       };
@@ -260,7 +260,7 @@ describe('/fn:run', function () {
       const res1 = await post(url.default, body);
       const res2 = await post(url.pull, body);
       const res3 = await post(url.default, body);
-      const res4 = await post(url.pullFalse, { ...body, pull: true });
+      const res4 = await post(url.pullFalse, [{ ...body[0], pull: true }]);
 
       await mock.dispose();
 
@@ -281,16 +281,16 @@ describe('/fn:run', function () {
         silentFalse: mock.urls.fn.run.query({ silent: false }).toString(),
       };
 
-      const body: t.IReqPostFuncRunBody = { host, uri, dir };
+      const body: t.IReqPostFuncSet = [{ host, uri, dir }];
 
-      const post = async (url: string, body: t.IReqPostFuncRunBody) => {
+      const post = async (url: string, body: t.IReqPostFuncSet) => {
         const res = await http.post(url, body);
         return res.json as t.IResPostFuncRun;
       };
 
       const res1 = await post(url.default, body);
       const res2 = await post(url.silentFalse, body);
-      const res3 = await post(url.silentFalse, { ...body, silent: true });
+      const res3 = await post(url.silentFalse, [{ ...body[0], silent: true }]);
 
       await mock.dispose();
 
@@ -305,7 +305,7 @@ describe('/fn:run', function () {
       const dir = 'foo';
       const { mock, bundle, http, url } = await prepare({ dir });
 
-      const data: t.IReqPostFuncRunBody = { ...bundle };
+      const data: t.IReqPostFuncSet = [{ ...bundle }];
       const res = await http.post(url.toString(), data);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
@@ -325,7 +325,7 @@ describe('/fn:run', function () {
       const url = mock.urls.fn.run.toString();
       const http = Http.create();
 
-      const data: t.IReqPostFuncRunBody = { uri: 'cell:foo:A1' };
+      const data: t.IReqPostFuncSet = [{ uri: 'cell:foo:A1' }];
       const res = await http.post(url, data);
       const json = res.json as t.IHttpErrorServer;
       await mock.dispose();

@@ -9,30 +9,35 @@ export async function exec(args: {
   host: string;
   db: t.IDb;
   runtime: t.RuntimeEnv;
-  body: t.IReqPostFuncRunBody;
+  body: t.IReqPostFuncSet;
   defaultPull?: boolean;
   defaultSilent?: boolean;
   defaultTimeout?: number;
 }) {
   try {
     const { host, db, runtime, defaultPull, defaultSilent, defaultTimeout } = args;
-    const bundles = Array.isArray(args.body) ? args.body : [args.body];
     const results: t.IResPostFuncRunResult[] = [];
 
-    let prev: t.IResPostFuncRunResult | undefined;
-    for (const body of bundles) {
-      const res = await execBundle({
-        host,
-        db,
-        body,
-        in: prev?.out,
-        runtime,
-        defaultPull,
-        defaultSilent,
-        defaultTimeout,
-      });
-      results.push(res);
-      prev = res;
+    if (Array.isArray(args.body)) {
+      // Process seqential list in order.
+      let prev: t.IResPostFuncRunResult | undefined;
+      for (const body of args.body) {
+        const res = await execBundle({
+          host,
+          db,
+          body,
+          in: prev?.out,
+          runtime,
+          defaultPull,
+          defaultSilent,
+          defaultTimeout,
+        });
+        results.push(res);
+        prev = res;
+      }
+    } else {
+      // Process in parallel.
+      // TODO 🐷
     }
 
     const elapsed = results.reduce(
@@ -65,7 +70,7 @@ async function execBundle(args: {
   host: string;
   db: t.IDb;
   runtime: t.RuntimeEnv;
-  body: t.IReqPostFuncRun;
+  body: t.IReqPostFunc;
   in?: t.RuntimeIn; // NB: From previous [out] within pipeline.
   defaultPull?: boolean;
   defaultSilent?: boolean;

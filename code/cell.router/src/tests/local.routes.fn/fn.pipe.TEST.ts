@@ -1,7 +1,7 @@
 import { expect, t } from '../../test';
 import { prepare, samples, uploadBundle, ISamplePipeValue } from './util';
 
-describe('/fn:run (pipes)', function () {
+describe.only('/fn:run (pipes)', function () {
   this.timeout(99999);
 
   /**
@@ -12,10 +12,6 @@ describe('/fn:run (pipes)', function () {
     await samples.pipe.bundle(force);
   });
 
-  it.skip('pipe: parallel execution - {object}', async () => {
-    //
-  });
-
   describe('pipe: seqential execution - [list]', () => {
     it('in => out => in => out', async () => {
       const dir = 'foo';
@@ -23,7 +19,7 @@ describe('/fn:run (pipes)', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, samples.pipe.outdir, bundle);
 
-      const body: t.IReqPostFuncRunBody = [
+      const body: t.IReqPostFuncSet = [
         { host, uri, dir },
         { host, uri, dir },
         { host, uri, dir },
@@ -54,7 +50,7 @@ describe('/fn:run (pipes)', function () {
         info: { headers: { contentType: 'text/html' } },
       };
 
-      const body: t.IReqPostFuncRunBody = [
+      const body: t.IReqPostFuncSet = [
         { host, uri, dir, in: input1 },
         { host, uri, dir },
         { host, uri, dir, in: input3 },
@@ -87,7 +83,7 @@ describe('/fn:run (pipes)', function () {
         info: {},
       };
 
-      const body: t.IReqPostFuncRunBody = [
+      const body: t.IReqPostFuncSet = [
         { host, uri, dir },
         { host, uri, dir },
         { host, uri, dir, in: input },
@@ -109,6 +105,30 @@ describe('/fn:run (pipes)', function () {
       expect(results[1].msg).to.eql(undefined);
       expect(results[2].msg).to.eql('hello');
       expect(results[3].msg).to.eql('hello');
+    });
+
+    it.skip('error within pipe', async () => {
+      //
+    });
+  });
+
+  describe.skip('pipe: parallel execution - {object}', async () => {
+    it('runs multiple functions simultaneously', async () => {
+      const dir = 'foo';
+      const { mock, bundle, client, http, url } = await prepare({ dir });
+      const { host, uri } = bundle;
+      await uploadBundle(client, samples.pipe.outdir, bundle);
+
+      const body: t.IReqPostFuncSet = {
+        1: { host, uri, dir },
+        2: { host, uri, dir },
+        3: { host, uri, dir },
+      };
+      const res = await http.post(url.toString(), body);
+      const json = res.json as t.IResPostFuncRun;
+      await mock.dispose();
+
+      console.log('-------------------------------------------');
     });
   });
 });

@@ -9,9 +9,9 @@ export type IReqQueryFuncRun = {
   timeout?: number; //   Sets "timeout" (msecs) when not specified within body payload.
 };
 
-export type IReqPostFuncRunBody = t.IReqPostFuncRun | t.IReqPostFuncRun[];
+export type IReqPostFuncSet = t.IReqPostFunc[] | { [key: string]: t.IReqPostFunc };
 
-export type IReqPostFuncRun = {
+export type IReqPostFunc = {
   uri: string; // Cell URI containing bundle.
   host?: string; // NB: the running system's host is used if not specified.
   dir?: string; // Directory of the cell.
