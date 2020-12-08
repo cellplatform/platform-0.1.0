@@ -14,20 +14,18 @@ type RuntimeMembers = {
   version: string;
   exists(bundle: B): Promise<boolean>;
   pull(bundle: B, options?: { silent?: boolean }): Promise<RuntimePullResponse>;
-  run(
-    bundle: B,
-    options?: {
-      in?: Partial<t.RuntimeIn>;
-      pull?: boolean;
-      silent?: boolean;
-      timeout?: number;
-      entry?: string; // Entry path within bundle (if not specified default manfest entry is used).
-      hash?: string; // The hash of the bundle to match before executing.
-    },
-  ): Promise<RuntimeRunResponse>;
-
+  run(bundle: B, options?: RuntimeRunOptions): Promise<RuntimeRunResponse>;
   remove(bundle: B): Promise<{ count: number }>;
   clear(): Promise<{ count: number }>;
+};
+
+export type RuntimeRunOptions = {
+  in?: Partial<t.RuntimeIn>;
+  pull?: boolean;
+  silent?: boolean;
+  timeout?: number;
+  entry?: string; // Entry path within bundle (if not specified default manfest entry is used).
+  hash?: string; // The hash of the bundle to match before executing (throws if doesn't match manifest).
 };
 
 export type RuntimePullResponse = {
@@ -60,10 +58,3 @@ export type RuntimeEnvNode = RuntimeMembers & { name: 'node' };
  * Runtime: web (browser).
  */
 export type RuntimeEnvWeb = RuntimeMembers & { name: 'web' };
-
-/**
- * Value pipes.
- */
-export type RuntimeIn = { value?: t.Json; params: t.JsonMap };
-export type RuntimeOut = { value?: t.Json; info: RuntimeOutInfo };
-export type RuntimeOutInfo = Record<string, unknown>; // TODO 🐷

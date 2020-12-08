@@ -1,4 +1,4 @@
-import { defaultValue, Schema, t, util, id } from '../common';
+import { defaultValue, id, t, util } from '../common';
 
 type B = t.RuntimeBundleOrigin;
 
@@ -19,22 +19,27 @@ export async function exec(args: {
     const bundles = Array.isArray(args.body) ? args.body : [args.body];
     const results: t.IResPostFuncRunResult[] = [];
 
+    let prev: t.IResPostFuncRunResult | undefined;
     for (const body of bundles) {
       const res = await execBundle({
         host,
         db,
         body,
+        in: prev?.out,
         runtime,
         defaultPull,
         defaultSilent,
         defaultTimeout,
       });
       results.push(res);
+      prev = res;
     }
 
     const elapsed = results.reduce(
       (acc, next) => {
-        return { prep: acc.prep + next.elapsed.prep, run: acc.run + next.elapsed.run };
+        const prep = acc.prep + next.elapsed.prep;
+        const run = acc.run + next.elapsed.run;
+        return { prep, run };
       },
       { prep: 0, run: 0 },
     );
@@ -61,6 +66,7 @@ async function execBundle(args: {
   db: t.IDb;
   runtime: t.RuntimeEnv;
   body: t.IReqPostFuncRun;
+  in?: t.RuntimeIn; // NB: From previous [out] within pipeline.
   defaultPull?: boolean;
   defaultSilent?: boolean;
   defaultTimeout?: number;
@@ -69,20 +75,27 @@ async function execBundle(args: {
   const silent = defaultValue(body.silent, defaultValue(args.defaultSilent, true));
 
   const { uri, dir, entry, hash } = body;
-  //  const parms = body.in ||{}
   const host = body.host || args.host;
   const pull = defaultValue(body.pull, args.defaultPull || false);
   const timeout = defaultValue(body.timeout, args.defaultTimeout);
   const bundle: B = { host, uri, dir };
-  const urls = Schema.urls(bundle.host);
 
   const exists = await runtime.exists(bundle);
-  const res = await runtime.run(bundle, { silent, pull, in: body.in, timeout, entry, hash });
+  const options: t.RuntimeRunOptions = {
+    silent,
+    pull,
+    in: { ...args.in, ...body.in },
+    timeout,
+    entry,
+    hash,
+  };
+  const res = await runtime.run(bundle, options);
   const { ok, manifest, errors } = res;
+  const tx = body.tx || id.cuid();
 
   const data: t.IResPostFuncRunResult = {
     ok,
-    tx: body.tx || id.cuid(),
+    tx,
     out: res.out,
     elapsed: res.elapsed,
     bundle,
@@ -92,10 +105,6 @@ async function execBundle(args: {
     size: {
       bytes: defaultValue(manifest?.bytes, -1),
       files: defaultValue(manifest?.files.length, -1),
-    },
-    urls: {
-      files: urls.fn.bundle.files(bundle).toString(),
-      manifest: urls.fn.bundle.manifest(bundle).toString(),
     },
     errors,
   };

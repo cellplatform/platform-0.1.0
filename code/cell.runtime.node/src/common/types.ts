@@ -5,8 +5,8 @@ export {
   IRuntimeError,
   IHttpClientResponse,
   IHttpClientFileData,
-  NodeGlobal,
-  NodeGlobalEnv,
+  Global,
+  GlobalEnv,
 } from '@platform/cell.types';
 
 export { JsonMap, Json } from '@platform/types';

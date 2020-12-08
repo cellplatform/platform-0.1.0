@@ -40,6 +40,5 @@ export type IResPostFuncRunResult = {
   cache: { exists: boolean; pulled: boolean };
   runtime: { name: t.RuntimeEnv['name']; version: string; silent: boolean };
   size: { bytes: number; files: number };
-  urls: { files: string; manifest: string };
   errors: t.IRuntimeError[];
 };
