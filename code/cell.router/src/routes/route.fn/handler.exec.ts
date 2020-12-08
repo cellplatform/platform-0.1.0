@@ -81,10 +81,11 @@ async function execBundle(args: {
   const options: t.RuntimeRunOptions = { silent, pull, in: body.in, timeout, entry, hash };
   const res = await runtime.run(bundle, options);
   const { ok, manifest, errors } = res;
+  const tx = body.tx || id.cuid();
 
   const data: t.IResPostFuncRunResult = {
     ok,
-    tx: body.tx || id.cuid(),
+    tx,
     out: res.out,
     elapsed: res.elapsed,
     bundle,

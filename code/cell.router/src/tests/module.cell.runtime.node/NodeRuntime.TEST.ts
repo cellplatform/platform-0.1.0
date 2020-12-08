@@ -1,22 +1,12 @@
-import { NodeRuntime } from '@platform/cell.runtime.node';
-
-import {
-  Compiler,
-  createMock,
-  expect,
-  fs,
-  Http,
-  readFile,
-  Schema,
-  t,
-  TestCompile,
-} from '../../test';
-import { EntryValue, Result } from './sample.NodeRuntime/types';
+import { Compiler, expect, fs, Schema, t, TestCompile } from '../../test';
+import { EntryValueSample, ResultSample } from './sample.NodeRuntime/types';
+import { getManifest, noManifest, prepare, uploadBundle } from './util';
 
 type B = t.RuntimeBundleOrigin;
 
 const ENTRY = {
-  NODE: './src/tests/test.cell.runtime.node/sample.NodeRuntime',
+  NODE: './src/tests/module.cell.runtime.node/sample.NodeRuntime',
+  PIPE: './src/tests/module.cell.runtime.node/sample.pipe',
 };
 
 export const samples = {
@@ -29,74 +19,13 @@ export const samples = {
       .entry('dev', `${ENTRY.NODE}/dev`),
   ),
 
-  math: TestCompile.make(
-    'math',
-    Compiler.config('math')
-      .namespace('sample')
-      .target('node')
-      .entry('./src/tests/test.cell.runtime.node/sample.math/main')
-      .entry('sum', './src/tests/test.cell.runtime.node/sample.math/math.sum'),
+  pipe: TestCompile.make(
+    'pipe',
+    Compiler.config('pipe').namespace('sample').target('node').entry(`${ENTRY.PIPE}/main`),
   ),
 };
 
-const noManifest = (file: t.IHttpClientCellFileUpload) => !file.filename.endsWith('index.json'); // NB: Cause error by filtering out the manifest file.
-
-const createFuncMock = async () => {
-  const runtime = NodeRuntime.create();
-  const mock = await createMock({ runtime });
-  const http = Http.create();
-  const url = mock.urls.fn.run.toString();
-  return { url, mock, http, runtime };
-};
-
-const prepare = async (options: { dir?: string; uri?: string } = {}) => {
-  const { dir, uri = 'cell:foo:A1' } = options;
-  const { mock, runtime, http, url } = await createFuncMock();
-  const { host } = mock;
-  const client = mock.client.cell(uri);
-  const bundle: B = { host, uri, dir };
-  return { mock, runtime, http, client, bundle, url, uri };
-};
-
-const bundleToFiles = async (sourceDir: string, targetDir?: string) => {
-  targetDir = (targetDir || '').trim();
-  const base = fs.resolve('.');
-  const paths = await fs.glob.find(fs.join(base, sourceDir, '**'));
-  const files = await Promise.all(
-    paths.map(async (path) => {
-      const data = await readFile(path);
-      let filename = path.substring(fs.join(base, sourceDir).length + 1);
-      filename = targetDir ? fs.join(targetDir, filename) : filename;
-      return { filename, data } as t.IHttpClientCellFileUpload;
-    }),
-  );
-  return files;
-};
-
-const getManifest = (files: t.IHttpClientCellFileUpload[]) => {
-  const file = files.find((f) => f.filename.endsWith('index.json'));
-  const json = JSON.parse(file?.data.toString() || '');
-  return json as t.BundleManifest;
-};
-
-const uploadBundle = async (
-  client: t.IHttpClientCell,
-  bundle: B,
-  options: { filter?: (file: t.IHttpClientCellFileUpload) => boolean } = {},
-) => {
-  const { filter } = options;
-  let files = await bundleToFiles(samples.node.outdir, bundle.dir);
-  files = filter ? files.filter((file) => filter(file)) : files;
-  const upload = await client.files.upload(files);
-  expect(upload.ok).to.eql(true);
-  return {
-    files,
-    upload,
-    bundle,
-  };
-};
-
-describe.only('cell.runtime.node: NodeRuntime', function () {
+describe('cell.runtime.node: NodeRuntime', function () {
   this.timeout(99999);
 
   /**
@@ -105,7 +34,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
   before(async () => {
     const force = false;
     await samples.node.bundle(force);
-    await samples.math.bundle(force);
+    await samples.pipe.bundle(force);
   });
   beforeEach(async () => await fs.remove(fs.resolve('tmp/runtime.node')));
 
@@ -263,7 +192,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryValue = { value: { foo: 123 } };
+      const value: EntryValueSample = { value: { foo: 123 } };
       const res = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
 
@@ -274,7 +203,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryValue = { value: { foo: 123 } };
+      const value: EntryValueSample = { value: { foo: 123 } };
       const res = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
 
@@ -283,7 +212,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       expect(res.ok).to.eql(true);
       expect(res.errors.length).to.eql(0);
 
-      const result = res.out.value as Result;
+      const result = res.out.value as ResultSample;
       expect(result.echo).to.not.equal(value.value); // NB: Different instance from input.
       expect(result.echo).to.eql({ foo: 123 }); // NB: The mutated input was not returned.
       expect(result.process).to.eql({}); // NB: Process env-variables not leaked.
@@ -293,7 +222,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const test = async (value: EntryValue, expected?: t.RuntimePipeInfoHeaders) => {
+      const test = async (value: EntryValueSample, expected?: t.RuntimePipeInfoHeaders) => {
         const res = await runtime.run(bundle, { silent: true, in: { value } });
         expect(res.out.info.headers).to.eql(expected);
       };
@@ -312,7 +241,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryValue = {};
+      const value: EntryValueSample = {};
       const res1 = await runtime.run(bundle, { silent: true, in: { value } });
       const res2 = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
@@ -324,7 +253,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryValue = { value: { foo: 123 } };
+      const value: EntryValueSample = { value: { foo: 123 } };
       const res1 = await runtime.run(bundle, {
         silent: true,
         in: { value: { ...value, id: 1 } },
@@ -343,7 +272,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
 
       expect(res3.ok).to.eql(true);
       expect(res3.errors.length).to.eql(0);
-      expect((res3.out.value as Result).echo).to.eql({ foo: 123 });
+      expect((res3.out.value as ResultSample).echo).to.eql({ foo: 123 });
 
       expect(res2.elapsed.run).to.lessThan(15);
       expect(res3.elapsed.run).to.greaterThan(60);
@@ -353,7 +282,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryValue = { value: { foo: 123 }, delay: 20 };
+      const value: EntryValueSample = { value: { foo: 123 }, delay: 20 };
       const res = await runtime.run(bundle, { silent: true, in: { value }, timeout: 10 });
       await mock.dispose();
 
@@ -371,7 +300,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryValue = { repeatDone: 5 };
+      const value: EntryValueSample = { repeatDone: 5 };
       const res = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
 
@@ -382,7 +311,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryValue = { throwError: 'echo error' };
+      const value: EntryValueSample = { throwError: 'echo error' };
       const res = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
 
@@ -400,7 +329,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryValue = {};
+      const value: EntryValueSample = {};
       const entry = '  ///dev.js  '; // NB: space padding is removed and "/" trimmed.
 
       const res = await runtime.run(bundle, { silent: true, in: { value }, entry });
@@ -408,7 +337,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
 
       expect(res.entry).to.eql('dev.js');
 
-      const result = res.out.value as Result;
+      const result = res.out.value as ResultSample;
       expect(result?.echo).to.eql('hello dev');
     });
 
@@ -440,14 +369,6 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const error = res.errors[0];
       expect(error.message).to.include('undle manifest does not match requested hash');
       expect(error.message).to.include(hash);
-    });
-
-    it.skip('pipe: seqential execution ([list])', async () => {
-      //
-    });
-
-    it.skip('pipe: parallel execution ({object})', async () => {
-      //
     });
 
     it('error: no manifest in bundle (caught during pull)', async () => {

@@ -1,62 +1,7 @@
-import { NodeRuntime } from '@platform/cell.runtime.node';
-import { createMock, expect, fs, Http, readFile, t } from '../../test';
-import { samples } from '../test.cell.runtime.node/NodeRuntime.TEST';
-import { EntryValue, Result } from '../test.cell.runtime.node/sample.NodeRuntime/types';
+import { createMock, expect, fs, Http, t } from '../../test';
+import { getManifest, prepare, uploadBundle, samples, EntryValueSample, ResultSample } from './util';
 
-type B = t.RuntimeBundleOrigin;
-
-const createFuncMock = async () => {
-  const runtime = NodeRuntime.create();
-  const mock = await createMock({ runtime });
-  const http = Http.create();
-  const url = mock.urls.fn.run;
-  return { url, mock, http, runtime };
-};
-
-const prepare = async (options: { dir?: string; uri?: string } = {}) => {
-  const { dir, uri = 'cell:foo:A1' } = options;
-  const { mock, runtime, http, url } = await createFuncMock();
-  const { host } = mock;
-  const client = mock.client.cell(uri);
-  const bundle: B = { host, uri, dir };
-  return { mock, runtime, http, client, bundle, url, uri };
-};
-
-const bundleToFiles = async (sourceDir: string, targetDir?: string) => {
-  targetDir = (targetDir || '').trim();
-  const base = fs.resolve('.');
-  const paths = await fs.glob.find(fs.join(base, sourceDir, '**'));
-  const files = await Promise.all(
-    paths.map(async (path) => {
-      const data = await readFile(path);
-      let filename = path.substring(fs.join(base, sourceDir).length + 1);
-      filename = targetDir ? fs.join(targetDir, filename) : filename;
-      return { filename, data } as t.IHttpClientCellFileUpload;
-    }),
-  );
-  return files;
-};
-
-const getManifest = (files: t.IHttpClientCellFileUpload[]) => {
-  const file = files.find((f) => f.filename.endsWith('index.json'));
-  const json = JSON.parse(file?.data.toString() || '');
-  return json as t.BundleManifest;
-};
-
-const uploadBundle = async (
-  client: t.IHttpClientCell,
-  bundle: B,
-  options: { filter?: (file: t.IHttpClientCellFileUpload) => boolean } = {},
-) => {
-  const { filter } = options;
-  let files = await bundleToFiles(samples.node.outdir, bundle.dir);
-  files = filter ? files.filter((file) => filter(file)) : files;
-  const upload = await client.files.upload(files);
-  expect(upload.ok).to.eql(true);
-  return { files, upload, bundle };
-};
-
-describe('/fn:run (NodeRuntime over HTTP)', function () {
+describe.only('/fn:run', function () {
   this.timeout(99999);
 
   /**
@@ -66,13 +11,13 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
     const force = false;
     await Promise.all([
       await samples.node.bundle(force),
-      await samples.math.bundle(force),
+      await samples.pipe.bundle(force),
       //
     ]);
   });
   beforeEach(() => fs.remove(fs.resolve('tmp/runtime.node')));
 
-  describe('POST success', () => {
+  describe.only('POST (NodeRuntime)', () => {
     const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncRunResult) => {
       expect(res.ok).to.eql(true);
       expect(res.entry).to.eql('main.js');
@@ -121,7 +66,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, bundle);
 
-      const value: EntryValue = { value: { foo: 123 } };
+      const value: EntryValueSample = { value: { foo: 123 } };
       const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value } };
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
@@ -130,7 +75,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       expect(json.ok).to.eql(true);
       expectFuncResponse(dir, json.results[0]);
 
-      const result = json.results[0].out.value as Result;
+      const result = json.results[0].out.value as ResultSample;
       expect(result.echo).to.eql({ foo: 123 });
       expect(result.process).to.eql({});
     });
@@ -198,7 +143,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, bundle);
 
-      const value: EntryValue = { delay: 20 };
+      const value: EntryValueSample = { delay: 20 };
       const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value }, timeout: 10 };
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
@@ -283,7 +228,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, bundle);
 
-      const value: EntryValue = { delay: 20 };
+      const value: EntryValueSample = { delay: 20 };
       const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value } };
       const res = await http.post(url.query({ timeout: 10 }).toString(), body);
       const json = res.json as t.IResPostFuncRun;

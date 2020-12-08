@@ -6,7 +6,7 @@ import { NodeVM, VMScript } from 'vm2';
 import { fs, expect, TestCompile, Compiler, time } from '../../test';
 import { Global } from './sample.vm2/types';
 
-const ENTRY = './src/tests/test.cell.runtime.node/sample.vm2';
+const ENTRY = './src/tests/module.cell.runtime.node/sample.vm2';
 
 const make = (name: string) => {
   return TestCompile.make(

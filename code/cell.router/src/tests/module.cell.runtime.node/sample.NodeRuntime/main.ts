@@ -1,5 +1,5 @@
 import * as t from './types';
-const params = env.in.value as t.EntryValue;
+const params = env.in.value as t.EntryValueSample;
 
 /**
  * Syncronous import.
@@ -20,9 +20,9 @@ if (typeof params.repeatDone === 'number') {
     console.log('delay start', params.id, params.delay);
     setTimeout(() => {
       console.log(params.id, 'delay complete');
-      env.out.done<t.Result>({ echo: echo(), process: process.env });
+      env.out.done<t.ResultSample>({ echo: echo(), process: process.env });
     }, params.delay);
   } else {
-    env.out.done<t.Result>({ echo: echo(), process: process.env });
+    env.out.done<t.ResultSample>({ echo: echo(), process: process.env });
   }
 }
