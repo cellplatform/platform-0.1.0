@@ -34,7 +34,6 @@ describe('cell.runtime.node: NodeRuntime', function () {
   before(async () => {
     const force = false;
     await samples.node.bundle(force);
-    await samples.pipe.bundle(force);
   });
 
   describe('pull', () => {
@@ -228,10 +227,10 @@ describe('cell.runtime.node: NodeRuntime', function () {
       };
 
       await test({}, { contentType: 'application/json' });
-      await test({ contentType: 'text/html' }, { contentType: 'text/html' });
+      await test({ setContentType: 'text/html' }, { contentType: 'text/html' });
       await test(
-        { contentTypeDef: 'cell:foo:A1' },
-        { contentType: 'application/json', contentTypeDef: 'cell:foo:A1' },
+        { setContentDef: 'cell:foo:A1' },
+        { contentType: 'application/json', contentDef: 'cell:foo:A1' },
       );
 
       await mock.dispose();

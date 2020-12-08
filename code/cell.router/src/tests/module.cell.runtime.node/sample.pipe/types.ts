@@ -5,10 +5,7 @@ import { RuntimeIn } from '@platform/cell.types/lib/types.Runtime';
  * Params passed to compiled code.
  * These are various flags used to setup different test scenarios.
  */
-export type ISamplePipeInValue = {
+export type ISamplePipeValue = {
   count: number;
-};
-
-export type ISamplePipeOutValue = {
-  count: number;
+  msg?: string;
 };

@@ -10,8 +10,8 @@ export type ISampleNodeInValue = {
   value?: any;
   repeatDone?: number;
   delay?: number;
-  contentType?: string;
-  contentTypeDef?: string;
+  setContentType?: string;
+  setContentDef?: string;
 };
 
 export type ISampleNodeOutValue = {

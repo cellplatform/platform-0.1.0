@@ -53,10 +53,10 @@ export function invoke(args: {
       timer.reset(); // NB: Restart timer to get a read on the "running" execution time.
     };
 
-    const headers: t.RuntimeInfoHeaders = R.clone(DEFAULT.INFO.headers);
+    const headers: t.RuntimeInfoHeaders = { ...DEFAULT.INFO.headers, ...args.in?.info?.headers };
     const out: t.RuntimeOut = {
       value: undefined,
-      info: { headers },
+      info: { ...args.in?.info, headers },
     };
 
     const done = (value?: t.Json) => {
@@ -101,8 +101,8 @@ export function invoke(args: {
           headers.contentType = mime;
           return env.out;
         },
-        contentTypeDef(uri) {
-          headers.contentTypeDef = uri;
+        contentDef(uri) {
+          headers.contentDef = uri;
           return env.out;
         },
       },

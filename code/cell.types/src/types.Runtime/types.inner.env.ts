@@ -39,5 +39,5 @@ export type GlobalEnvOut = {
   /**
    * Set the type-definition of the return value.
    */
-  contentTypeDef(uri: string): GlobalEnvOut;
+  contentDef(uri: string): GlobalEnvOut;
 };

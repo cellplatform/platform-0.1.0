@@ -84,8 +84,7 @@ async function execBundle(args: {
   const options: t.RuntimeRunOptions = {
     silent,
     pull,
-    // in: body.in,
-    in: args.in || body.in, // TODO - merge
+    in: { ...args.in, ...body.in },
     timeout,
     entry,
     hash,

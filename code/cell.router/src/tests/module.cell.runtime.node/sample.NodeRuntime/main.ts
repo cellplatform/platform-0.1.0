@@ -6,11 +6,11 @@ const params = (env.in.value || {}) as t.ISampleNodeInValue;
 if (typeof params.repeatDone === 'number') {
   Array.from({ length: params.repeatDone }).forEach((v, i) => env.out.done({ count: i + 1 }));
 } else {
-  if (params.contentType) {
-    env.out.contentType(params.contentType);
+  if (params.setContentType) {
+    env.out.contentType(params.setContentType);
   }
-  if (params.contentTypeDef) {
-    env.out.contentTypeDef(params.contentTypeDef);
+  if (params.setContentDef) {
+    env.out.contentDef(params.setContentDef);
   }
 
   if (params.delay) {

@@ -24,5 +24,5 @@ export type RuntimeInfoOut = {
 
 export type RuntimeInfoHeaders = {
   contentType?: string; // Mimetype.
-  contentTypeDef?: string; // URL to type-def of {value}.
+  contentDef?: string; // URL to type-def of {value}.
 };
