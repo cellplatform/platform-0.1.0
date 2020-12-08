@@ -28,6 +28,7 @@ export type IResPostFunc = {
   ok: boolean;
   elapsed: number; // total milliseconds.
   results: t.IResPostFuncResult[];
+  runtime: { name: t.RuntimeEnv['name']; version: string };
 };
 
 export type IResPostFuncResult = {
@@ -38,7 +39,7 @@ export type IResPostFuncResult = {
   bundle: t.RuntimeBundleOrigin;
   entry: string;
   cache: { exists: boolean; pulled: boolean };
-  runtime: { name: t.RuntimeEnv['name']; version: string; silent: boolean };
   size: { bytes: number; files: number };
+  silent: boolean;
   errors: t.IRuntimeError[];
 };

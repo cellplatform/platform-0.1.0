@@ -23,10 +23,6 @@ describe('/fn:run', function () {
     const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncResult) => {
       expect(res.ok).to.eql(true);
       expect(res.entry).to.eql('main.js');
-
-      const version = (process.version || '').replace(/^v/, '');
-      expect(res.runtime.version).to.eql(`${version}`);
-      expect(res.runtime.name).to.eql('node');
       expect(res.size.bytes).to.greaterThan(1000);
       expect(res.size.files).to.greaterThan(1);
       expect(res.errors).to.eql([]);
@@ -48,6 +44,11 @@ describe('/fn:run', function () {
       expect(json.elapsed).to.greaterThan(10);
       expect(json.results.length).to.eql(1);
       expect(json.results[0].bundle).to.eql(bundle);
+
+      const version = (process.version || '').replace(/^v/, '');
+      expect(json.runtime.version).to.eql(`${version}`);
+      expect(json.runtime.name).to.eql('node');
+
       expectFuncResponse(dir, json.results[0]);
 
       expect(json.results[0].cache.exists).to.eql(false);
@@ -292,9 +293,9 @@ describe('/fn:run', function () {
 
       await mock.dispose();
 
-      expect(res1.results[0].runtime.silent).to.eql(true); // Default
-      expect(res2.results[0].runtime.silent).to.eql(false); // via URL.
-      expect(res3.results[0].runtime.silent).to.eql(true); // Query-string overridden in body.
+      expect(res1.results[0].silent).to.eql(true); // Default
+      expect(res2.results[0].silent).to.eql(false); // via URL.
+      expect(res3.results[0].silent).to.eql(true); // Query-string overridden in body.
     });
   });
 

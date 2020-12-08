@@ -1,7 +1,7 @@
 import { expect, t } from '../../test';
 import { prepare, samples, uploadBundle, ISamplePipeValue } from './util';
 
-describe.only('/fn:run (pipes)', function () {
+describe('/fn:run (pipes)', function () {
   this.timeout(99999);
 
   /**
@@ -115,7 +115,7 @@ describe.only('/fn:run (pipes)', function () {
     });
   });
 
-  describe.only('{object} - parallel execution', async () => {
+  describe('{object} - parallel execution', async () => {
     it('runs multiple functions simultaneously', async () => {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });

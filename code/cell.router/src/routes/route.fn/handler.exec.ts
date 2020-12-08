@@ -51,7 +51,12 @@ export async function exec(args: {
     const ok = results.every((res) => res.ok);
     const status = results.every((res) => res.ok) ? 200 : 500;
     const elapsed = results.reduce((acc, next) => acc + (next.elapsed.prep + next.elapsed.run), 0);
-    const data: t.IResPostFunc = { ok, elapsed, results };
+    const data: t.IResPostFunc = {
+      ok,
+      elapsed,
+      runtime: { name: runtime.name, version: runtime.version },
+      results,
+    };
 
     return { status, data };
   } catch (err) {
@@ -102,12 +107,12 @@ async function execBundle(args: {
     bundle,
     entry: res.entry,
     cache: { exists, pulled: pull ? true : !exists },
-    runtime: { name: runtime.name, version: runtime.version, silent },
     size: {
       bytes: defaultValue(manifest?.bytes, -1),
       files: defaultValue(manifest?.files.length, -1),
     },
     errors,
+    silent,
   };
 
   // Finish up.
