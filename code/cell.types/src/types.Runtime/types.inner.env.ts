@@ -26,17 +26,18 @@ export type GlobalEnv = {
 export type GlobalEnvOut = {
   /**
    * Signals that a function has completed,
-   * optionally returning a value.
+   * optionally returning a result value.
    */
   done<T extends t.JsonMap>(value?: T): void;
 
   /**
    * Set the content-type (mime-type) of the return value.
+   * Default: "application/json"
    */
   contentType(mime: string): GlobalEnvOut;
 
   /**
-   * Set the type-definition of the content-type.
+   * Set the type-definition of the return value.
    */
   contentTypeDef(uri: string): GlobalEnvOut;
 };

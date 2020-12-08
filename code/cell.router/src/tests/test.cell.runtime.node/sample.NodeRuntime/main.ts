@@ -1,5 +1,5 @@
 import * as t from './types';
-const params = env.in.value as t.EntryParams;
+const params = env.in.value as t.EntryValue;
 
 /**
  * Syncronous import.

@@ -1,6 +1,6 @@
 import * as t from './types';
 
-const params = env.in.value as t.EntryParams;
+const params = env.in.value as t.EntryValue;
 
 import { log } from '@platform/log/lib/server';
 log.info.green('app.ts', log.yellow(1234));

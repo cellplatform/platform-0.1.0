@@ -1,7 +1,7 @@
 import { NodeRuntime } from '@platform/cell.runtime.node';
 import { createMock, expect, fs, Http, readFile, t } from '../../test';
 import { samples } from '../test.cell.runtime.node/NodeRuntime.TEST';
-import { EntryParams, Result } from '../test.cell.runtime.node/sample.NodeRuntime/types';
+import { EntryValue, Result } from '../test.cell.runtime.node/sample.NodeRuntime/types';
 
 type B = t.RuntimeBundleOrigin;
 
@@ -121,7 +121,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, bundle);
 
-      const value: EntryParams = { value: { foo: 123 } };
+      const value: EntryValue = { value: { foo: 123 } };
       const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value } };
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
@@ -198,7 +198,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, bundle);
 
-      const value: EntryParams = { delay: 20 };
+      const value: EntryValue = { delay: 20 };
       const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value }, timeout: 10 };
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
@@ -283,7 +283,7 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, bundle);
 
-      const value: EntryParams = { delay: 20 };
+      const value: EntryValue = { delay: 20 };
       const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value } };
       const res = await http.post(url.query({ timeout: 10 }).toString(), body);
       const json = res.json as t.IResPostFuncRun;

@@ -11,7 +11,7 @@ import {
   t,
   TestCompile,
 } from '../../test';
-import { EntryParams, Result } from './sample.NodeRuntime/types';
+import { EntryValue, Result } from './sample.NodeRuntime/types';
 
 type B = t.RuntimeBundleOrigin;
 
@@ -263,7 +263,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryParams = { value: { foo: 123 } };
+      const value: EntryValue = { value: { foo: 123 } };
       const res = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
 
@@ -274,7 +274,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryParams = { value: { foo: 123 } };
+      const value: EntryValue = { value: { foo: 123 } };
       const res = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
 
@@ -293,7 +293,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const test = async (value: EntryParams, expected?: t.RuntimePipeInfoHeaders) => {
+      const test = async (value: EntryValue, expected?: t.RuntimePipeInfoHeaders) => {
         const res = await runtime.run(bundle, { silent: true, in: { value } });
         expect(res.out.info.headers).to.eql(expected);
       };
@@ -312,7 +312,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryParams = {};
+      const value: EntryValue = {};
       const res1 = await runtime.run(bundle, { silent: true, in: { value } });
       const res2 = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
@@ -324,7 +324,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryParams = { value: { foo: 123 } };
+      const value: EntryValue = { value: { foo: 123 } };
       const res1 = await runtime.run(bundle, {
         silent: true,
         in: { value: { ...value, id: 1 } },
@@ -353,7 +353,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryParams = { value: { foo: 123 }, delay: 20 };
+      const value: EntryValue = { value: { foo: 123 }, delay: 20 };
       const res = await runtime.run(bundle, { silent: true, in: { value }, timeout: 10 });
       await mock.dispose();
 
@@ -371,7 +371,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryParams = { repeatDone: 5 };
+      const value: EntryValue = { repeatDone: 5 };
       const res = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
 
@@ -382,7 +382,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryParams = { throwError: 'echo error' };
+      const value: EntryValue = { throwError: 'echo error' };
       const res = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
 
@@ -400,7 +400,7 @@ describe.only('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryParams = {};
+      const value: EntryValue = {};
       const entry = '  ///dev.js  '; // NB: space padding is removed and "/" trimmed.
 
       const res = await runtime.run(bundle, { silent: true, in: { value }, entry });
