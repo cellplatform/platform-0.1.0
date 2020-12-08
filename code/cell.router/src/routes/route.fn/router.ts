@@ -19,8 +19,8 @@ export function init(args: { db: t.IDb; router: t.IRouter; runtime?: t.RuntimeEn
       }
 
       const host = req.host;
-      const query = req.query as t.IReqQueryFuncRun;
-      const body = ((await req.body.json()) || {}) as t.IReqPostFuncSet;
+      const query = req.query as t.IReqQueryFunc;
+      const body = ((await req.body.json()) || {}) as t.IReqPostFuncBody;
 
       const defaultPull = query.pull;
       const defaultSilent = query.silent;

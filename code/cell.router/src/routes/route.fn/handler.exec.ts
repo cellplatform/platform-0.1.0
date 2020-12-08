@@ -9,7 +9,7 @@ export async function exec(args: {
   host: string;
   db: t.IDb;
   runtime: t.RuntimeEnv;
-  body: t.IReqPostFuncSet;
+  body: t.IReqPostFuncBody;
   defaultPull?: boolean;
   defaultSilent?: boolean;
   defaultTimeout?: number;
@@ -18,7 +18,7 @@ export async function exec(args: {
     const { host, db, runtime, defaultPull, defaultSilent, defaultTimeout } = args;
 
     const results: t.IResPostFuncResult[] = [];
-    const run = async (body: t.IReqPostFuncCall, previous?: t.IResPostFuncResult) => {
+    const run = async (body: t.IReqPostFunc, previous?: t.IResPostFuncResult) => {
       const result = await execBundle({
         host,
         db,
@@ -42,7 +42,7 @@ export async function exec(args: {
     } else {
       // Process in parallel.
       type B = t.RuntimeBundleOrigin;
-      const items = Object.keys(args.body).map((key) => args.body[key] as t.IReqPostFuncCall);
+      const items = Object.keys(args.body).map((key) => args.body[key] as t.IReqPostFunc);
       const bundles = R.uniq(items.map(({ uri, host, dir }) => ({ uri, host, dir } as B)));
       await Promise.all(bundles.map((bundle) => runtime.pull(bundle, { silent: true })));
       await Promise.all(items.map((body) => run(body)));
@@ -71,7 +71,7 @@ async function execBundle(args: {
   host: string;
   db: t.IDb;
   runtime: t.RuntimeEnv;
-  body: t.IReqPostFuncCall;
+  body: t.IReqPostFunc;
   in?: t.RuntimeIn; // NB: From previous [out] within pipeline.
   defaultPull?: boolean;
   defaultSilent?: boolean;

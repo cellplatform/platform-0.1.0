@@ -3,17 +3,17 @@ import { t } from '../common';
 /**
  * POST: Execute Function(s).
  */
-export type IReqQueryFuncRun = {
+export type IReqQueryFunc = {
   pull?: boolean; //     Sets "pull" flag when not specified within body payload.
   silent?: boolean; //   Sets "silent" flag when not specified within body payload.
   timeout?: number; //   Sets "timeout" (msecs) when not specified within body payload.
 };
 
-export type IReqPostFuncSet = IReqPostFuncSerial | IReqPostFuncParallel;
-export type IReqPostFuncSerial = t.IReqPostFuncCall[]; // Piped list of functions.
-export type IReqPostFuncParallel = { [key: string]: t.IReqPostFuncCall }; // Paralell execution (arbitrary key value).
+export type IReqPostFuncBody = IReqPostFuncSerial | IReqPostFuncParallel;
+export type IReqPostFuncSerial = t.IReqPostFunc[]; // Piped list of functions.
+export type IReqPostFuncParallel = { [key: string]: t.IReqPostFunc }; // Paralell execution (arbitrary key value).
 
-export type IReqPostFuncCall = {
+export type IReqPostFunc = {
   uri: string; // Cell URI containing bundle.
   host?: string; // NB: the running system's host is used if not specified.
   dir?: string; // Directory of the cell.

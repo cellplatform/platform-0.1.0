@@ -19,7 +19,7 @@ describe.only('/fn:run (pipes)', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, samples.pipe.outdir, bundle);
 
-      const body: t.IReqPostFuncSet = [
+      const body: t.IReqPostFuncBody = [
         { host, uri, dir },
         { host, uri, dir },
         { host, uri, dir },
@@ -50,7 +50,7 @@ describe.only('/fn:run (pipes)', function () {
         info: { headers: { contentType: 'text/html' } },
       };
 
-      const body: t.IReqPostFuncSet = [
+      const body: t.IReqPostFuncBody = [
         { host, uri, dir, in: input1 },
         { host, uri, dir },
         { host, uri, dir, in: input3 },
@@ -83,7 +83,7 @@ describe.only('/fn:run (pipes)', function () {
         info: {},
       };
 
-      const body: t.IReqPostFuncSet = [
+      const body: t.IReqPostFuncBody = [
         { host, uri, dir },
         { host, uri, dir },
         { host, uri, dir, in: input },
@@ -127,7 +127,7 @@ describe.only('/fn:run (pipes)', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, samples.pipe.outdir, bundle);
 
-      const body: t.IReqPostFuncSet = {
+      const body: t.IReqPostFuncBody = {
         1: { host, uri, dir },
         2: { host, uri, dir },
         3: { host, uri, dir },
@@ -153,7 +153,7 @@ describe.only('/fn:run (pipes)', function () {
 
       const value: ISamplePipeValue = { count: -1 };
 
-      const body: t.IReqPostFuncSet = {
+      const body: t.IReqPostFuncBody = {
         1: { host, uri, dir },
         2: { host, uri, dir, in: { value } },
         3: { host, uri, dir },
