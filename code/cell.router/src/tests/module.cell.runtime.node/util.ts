@@ -3,7 +3,8 @@ import { NodeRuntime } from '@platform/cell.runtime.node';
 import { createMock, expect, fs, Http, readFile, t } from '../../test';
 import { samples } from '../module.cell.runtime.node/NodeRuntime.TEST';
 
-export { SampleNodeIn, SampleNodeOut } from './sample.NodeRuntime/types';
+export * from './sample.NodeRuntime/types';
+export * from './sample.pipe/types';
 export { samples };
 
 type B = t.RuntimeBundleOrigin;

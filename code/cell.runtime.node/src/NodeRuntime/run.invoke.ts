@@ -1,4 +1,4 @@
-import { log, logger, t, time, fs, defaultValue, R } from '../common';
+import { log, logger, t, time, fs, defaultValue, R, DEFAULT } from '../common';
 import { NodeVM } from 'vm2';
 import { Script } from '../vm';
 
@@ -53,7 +53,7 @@ export function invoke(args: {
       timer.reset(); // NB: Restart timer to get a read on the "running" execution time.
     };
 
-    const headers: t.RuntimePipeInfoHeaders = { contentType: 'application/json' };
+    const headers: t.RuntimeInfoHeaders = R.clone(DEFAULT.INFO.headers);
     const out: t.RuntimeOut = {
       value: undefined,
       info: { headers },
@@ -91,8 +91,8 @@ export function invoke(args: {
 
     const env: t.GlobalEnv = {
       in: R.clone({
-        value: args.in?.value || {},
-        info: args.in?.info || { headers: { contentType: 'application/json' } },
+        value: args.in?.value,
+        info: args.in?.info || R.clone(DEFAULT.INFO),
       }),
 
       out: {

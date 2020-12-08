@@ -1,5 +1,5 @@
 import { BundleWrapper } from '../BundleWrapper';
-import { fs, log, logger, PATH, t, deleteUndefined } from '../common';
+import { fs, log, logger, PATH, t, deleteUndefined, DEFAULT, R } from '../common';
 import { pullMethod } from './pull';
 import { invoke } from './run.invoke';
 
@@ -33,7 +33,7 @@ export function runMethod(args: { cachedir: string }) {
 
     const done = (out?: t.RuntimeOut) => {
       const ok = errors.length === 0;
-      out = out || { info: {} };
+      out = out || { info: R.clone(DEFAULT.INFO) };
       return { ok, entry, out, errors, manifest, elapsed };
     };
 

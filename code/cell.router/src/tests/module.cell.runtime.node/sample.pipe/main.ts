@@ -1,4 +1,5 @@
 import * as t from './types';
-const params = env.in.value as t.EntryValue;
 
-console.log('pipe');
+const result = (env.in.value || { count: 0 }) as t.ISamplePipeInValue;
+result.count++;
+env.out.done<t.ISamplePipeOutValue>(result);

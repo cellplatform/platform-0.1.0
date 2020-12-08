@@ -7,3 +7,4 @@ export * from './path';
 export * from './logger';
 
 export const PATH = constants.PATH;
+export const DEFAULT = constants.DEFAULT;

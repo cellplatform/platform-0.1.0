@@ -19,17 +19,20 @@ export async function exec(args: {
     const bundles = Array.isArray(args.body) ? args.body : [args.body];
     const results: t.IResPostFuncRunResult[] = [];
 
+    let prev: t.IResPostFuncRunResult | undefined;
     for (const body of bundles) {
       const res = await execBundle({
         host,
         db,
         body,
+        in: prev?.out,
         runtime,
         defaultPull,
         defaultSilent,
         defaultTimeout,
       });
       results.push(res);
+      prev = res;
     }
 
     const elapsed = results.reduce(
@@ -63,6 +66,7 @@ async function execBundle(args: {
   db: t.IDb;
   runtime: t.RuntimeEnv;
   body: t.IReqPostFuncRun;
+  in?: t.RuntimeIn; // NB: From previous [out] within pipeline.
   defaultPull?: boolean;
   defaultSilent?: boolean;
   defaultTimeout?: number;
@@ -77,7 +81,15 @@ async function execBundle(args: {
   const bundle: B = { host, uri, dir };
 
   const exists = await runtime.exists(bundle);
-  const options: t.RuntimeRunOptions = { silent, pull, in: body.in, timeout, entry, hash };
+  const options: t.RuntimeRunOptions = {
+    silent,
+    pull,
+    // in: body.in,
+    in: args.in || body.in, // TODO - merge
+    timeout,
+    entry,
+    hash,
+  };
   const res = await runtime.run(bundle, options);
   const { ok, manifest, errors } = res;
   const tx = body.tx || id.cuid();

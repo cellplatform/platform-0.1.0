@@ -1,5 +1,5 @@
-import { t } from '../../test';
-import { prepare, samples, uploadBundle } from './util';
+import { expect, t } from '../../test';
+import { prepare, samples, uploadBundle, ISamplePipeInValue, ISamplePipeOutValue } from './util';
 
 describe('/fn:run (pipes)', function () {
   this.timeout(99999);
@@ -8,7 +8,7 @@ describe('/fn:run (pipes)', function () {
    * Ensure the sample node code as been bundled.
    */
   before(async () => {
-    const force = false;
+    const force = true;
     await samples.pipe.bundle(force);
   });
 
@@ -26,13 +26,18 @@ describe('/fn:run (pipes)', function () {
       const body: t.IReqPostFuncRunBody = [
         { host, uri, dir },
         { host, uri, dir },
+        { host, uri, dir },
       ];
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
 
-      console.log('-------------------------------------------');
-      console.log('json', json.results);
+      expect(json.ok).to.eql(true);
+
+      const results = json.results.map((res) => res.out.value as ISamplePipeOutValue);
+      expect(results[0].count).to.eql(1);
+      expect(results[1].count).to.eql(2);
+      expect(results[2].count).to.eql(3);
     });
 
     it.skip('merge input: in => out => merged(out|in) => out', async () => {

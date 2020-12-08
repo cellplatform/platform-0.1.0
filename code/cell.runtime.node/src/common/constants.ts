@@ -11,3 +11,7 @@ export const PATH = {
   CACHE_DIR,
   MANIFEST: BUNDLE.MANIFEST.FILENAME,
 };
+
+export const DEFAULT = {
+  INFO: { headers: { contentType: 'application/json' } },
+};

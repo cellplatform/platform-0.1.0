@@ -1,5 +1,12 @@
 import { createMock, expect, Http, t } from '../../test';
-import { SampleNodeIn, getManifest, prepare, SampleNodeOut, samples, uploadBundle } from './util';
+import {
+  ISampleNodeInValue,
+  getManifest,
+  prepare,
+  ISampleNodeOutValue,
+  samples,
+  uploadBundle,
+} from './util';
 
 describe('/fn:run', function () {
   this.timeout(99999);
@@ -9,11 +16,7 @@ describe('/fn:run', function () {
    */
   before(async () => {
     const force = false;
-    await Promise.all([
-      await samples.node.bundle(force),
-      await samples.pipe.bundle(force),
-      //
-    ]);
+    await samples.node.bundle(force);
   });
 
   describe('POST (NodeRuntime)', () => {
@@ -58,7 +61,7 @@ describe('/fn:run', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, samples.node.outdir, bundle);
 
-      const value: SampleNodeIn = { value: { foo: 123 } };
+      const value: ISampleNodeInValue = { value: { foo: 123 } };
       const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value } };
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
@@ -67,7 +70,7 @@ describe('/fn:run', function () {
       expect(json.ok).to.eql(true);
       expectFuncResponse(dir, json.results[0]);
 
-      const result = json.results[0].out.value as SampleNodeOut;
+      const result = json.results[0].out.value as ISampleNodeOutValue;
       expect(result.echo).to.eql({ foo: 123 });
       expect(result.process).to.eql({});
     });
@@ -135,7 +138,7 @@ describe('/fn:run', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, samples.node.outdir, bundle);
 
-      const value: SampleNodeIn = { delay: 20 };
+      const value: ISampleNodeInValue = { delay: 20 };
       const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value }, timeout: 10 };
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
@@ -220,7 +223,7 @@ describe('/fn:run', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, samples.node.outdir, bundle);
 
-      const value: SampleNodeIn = { delay: 20 };
+      const value: ISampleNodeInValue = { delay: 20 };
       const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value } };
       const res = await http.post(url.query({ timeout: 10 }).toString(), body);
       const json = res.json as t.IResPostFuncRun;

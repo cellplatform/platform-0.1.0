@@ -4,7 +4,7 @@ import '../d.global';
  * Params passed to compiled code.
  * These are various flags used to setup different test scenarios.
  */
-export type SampleNodeIn = {
+export type ISampleNodeInValue = {
   id?: string | number;
   throwError?: string;
   value?: any;
@@ -14,7 +14,7 @@ export type SampleNodeIn = {
   contentTypeDef?: string;
 };
 
-export type SampleNodeOut = {
+export type ISampleNodeOutValue = {
   echo?: any;
   process: Record<string, any>;
 };
