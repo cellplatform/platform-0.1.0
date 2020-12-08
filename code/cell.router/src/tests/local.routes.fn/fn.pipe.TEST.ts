@@ -5,7 +5,7 @@ describe('/fn:run (pipes)', function () {
   this.timeout(99999);
 
   /**
-   * Ensure the sample node code as been bundled.
+   * Ensure the sample code as been bundled.
    */
   before(async () => {
     const force = false;

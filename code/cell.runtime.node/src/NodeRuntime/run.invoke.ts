@@ -24,6 +24,7 @@ export function invoke(args: {
   return new Promise<R>(async (resolve) => {
     const { silent, manifest, dir } = args;
     const entry = (args.entry || manifest.entry || '').trim();
+    const filename = fs.join(dir, entry);
 
     /**
      * TODO 🐷
@@ -89,6 +90,12 @@ export function invoke(args: {
       return done();
     }
 
+    if (!(await fs.pathExists(filename))) {
+      addError(`Entry file does not exist '${entry}'`);
+      prepComplete();
+      return done();
+    }
+
     const env: t.GlobalEnv = {
       in: R.clone({
         value: args.in?.value,
@@ -122,7 +129,7 @@ export function invoke(args: {
         },
       });
 
-      const code = await Script.get(fs.join(dir, entry));
+      const code = await Script.get(filename);
       prepComplete();
       vm.run(code.script);
     } catch (error) {
