@@ -1,7 +1,7 @@
 import { t } from '../../test';
 import { prepare, samples, uploadBundle } from './util';
 
-describe('/fn:run (pipe)', function () {
+describe('/fn:run (pipes)', function () {
   this.timeout(99999);
 
   /**
@@ -21,7 +21,7 @@ describe('/fn:run (pipe)', function () {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.pipe.outdir, bundle);
 
       const body: t.IReqPostFuncRunBody = [
         { host, uri, dir },
@@ -32,7 +32,7 @@ describe('/fn:run (pipe)', function () {
       await mock.dispose();
 
       console.log('-------------------------------------------');
-      console.log('json', json);
+      console.log('json', json.results);
     });
 
     it.skip('merge input: in => out => merged(out|in) => out', async () => {

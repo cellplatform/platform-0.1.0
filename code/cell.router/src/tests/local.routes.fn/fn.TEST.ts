@@ -33,7 +33,7 @@ describe('/fn:run', function () {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const body: t.IReqPostFuncRunBody = { host, uri, dir };
       const res = await http.post(url.toString(), body);
@@ -56,7 +56,7 @@ describe('/fn:run', function () {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const value: SampleNodeIn = { value: { foo: 123 } };
       const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value } };
@@ -75,7 +75,7 @@ describe('/fn:run', function () {
     it('body: multiple functions in single payload', async () => {
       const dir = undefined;
       const { mock, bundle, client, http, url } = await prepare({ dir });
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const body: t.IReqPostFuncRunBody = [bundle, bundle];
       const res = await http.post(url.toString(), body);
@@ -104,7 +104,7 @@ describe('/fn:run', function () {
     it('tx: generated', async () => {
       const { mock, bundle, client, http, url } = await prepare({});
       const { host, uri } = bundle;
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const body: t.IReqPostFuncRunBody = { host, uri };
       const res = await http.post(url.toString(), body);
@@ -118,7 +118,7 @@ describe('/fn:run', function () {
     it('tx: specified', async () => {
       const { mock, bundle, client, http, url } = await prepare({});
       const { host, uri } = bundle;
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const tx = 'my-execution-id';
       const body: t.IReqPostFuncRunBody = { host, uri, tx };
@@ -133,7 +133,7 @@ describe('/fn:run', function () {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const value: SampleNodeIn = { delay: 20 };
       const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value }, timeout: 10 };
@@ -156,7 +156,7 @@ describe('/fn:run', function () {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const entry = '  //dev.js  '; // NB: whitespace is removed and "/" trimmed.
 
@@ -174,7 +174,7 @@ describe('/fn:run', function () {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      const { files } = await uploadBundle(client, bundle);
+      const { files } = await uploadBundle(client, samples.node.outdir, bundle);
       const manifest = getManifest(files);
 
       const hash = manifest.hash;
@@ -193,7 +193,7 @@ describe('/fn:run', function () {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const hash = 'sha256-fail';
       const body: t.IReqPostFuncRunBody = { host, uri, dir, hash };
@@ -218,7 +218,7 @@ describe('/fn:run', function () {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const value: SampleNodeIn = { delay: 20 };
       const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value } };
@@ -239,7 +239,7 @@ describe('/fn:run', function () {
       const dir = 'foo';
       const { mock, bundle, client, http } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const url = {
         default: mock.urls.fn.run.toString(),
@@ -271,7 +271,7 @@ describe('/fn:run', function () {
       const dir = 'foo';
       const { mock, bundle, client, http } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const url = {
         default: mock.urls.fn.run.toString(),

@@ -1,6 +1,6 @@
 import { Compiler, expect, fs, Schema, t, TestCompile } from '../../test';
 import { SampleNodeIn, SampleNodeOut } from './sample.NodeRuntime/types';
-import { getManifest, noManifest, prepare, uploadBundle } from './util';
+import { getManifest, noManifestFilter, prepare, uploadBundle } from './util';
 
 type B = t.RuntimeBundleOrigin;
 
@@ -42,7 +42,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir });
       expect(await runtime.exists(bundle)).to.eql(false);
 
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
       const res = await runtime.pull(bundle, { silent: true });
       await mock.dispose();
 
@@ -85,7 +85,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const test = async (dir?: string) => {
         const { mock, runtime, bundle, client } = await prepare({ dir });
 
-        await uploadBundle(client, bundle, { filter: noManifest });
+        await uploadBundle(client, samples.node.outdir, bundle, { filter: noManifestFilter });
 
         const res = await runtime.pull(bundle, { silent: true });
         const error = res.errors[0];
@@ -110,7 +110,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
         const { mock, runtime, bundle, client } = await prepare({ dir });
         expect(await runtime.exists(bundle)).to.eql(false);
 
-        await uploadBundle(client, bundle);
+        await uploadBundle(client, samples.node.outdir, bundle);
         await runtime.pull(bundle, { silent: true });
         expect(await runtime.exists(bundle)).to.eql(true);
 
@@ -149,9 +149,9 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const bundle2: B = { host, uri, dir: 'bar' };
       const bundle3: B = { host, uri };
 
-      await uploadBundle(client, bundle1);
-      await uploadBundle(client, bundle2);
-      await uploadBundle(client, bundle3);
+      await uploadBundle(client, samples.node.outdir, bundle1);
+      await uploadBundle(client, samples.node.outdir, bundle2);
+      await uploadBundle(client, samples.node.outdir, bundle3);
 
       expect(await runtime.exists(bundle1)).to.eql(false);
       expect(await runtime.exists(bundle2)).to.eql(false);
@@ -179,7 +179,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
   describe('run', () => {
     it('auto pulls before run', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       expect(await runtime.exists(bundle)).to.eql(false);
       await runtime.run(bundle, { silent: true });
@@ -190,7 +190,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
     it('uses default entry (from manifest)', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const value: SampleNodeIn = { value: { foo: 123 } };
       const res = await runtime.run(bundle, { silent: true, in: { value } });
@@ -201,7 +201,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
     it('out: value / no process leaks / immutable', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const value: SampleNodeIn = { value: { foo: 123 } };
       const res = await runtime.run(bundle, { silent: true, in: { value } });
@@ -220,7 +220,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
     it('out: headers (contentType, contentDef)', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const test = async (value: SampleNodeIn, expected?: t.RuntimePipeInfoHeaders) => {
         const res = await runtime.run(bundle, { silent: true, in: { value } });
@@ -239,7 +239,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
     it('immediate', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const value: SampleNodeIn = {};
       const res1 = await runtime.run(bundle, { silent: true, in: { value } });
@@ -251,7 +251,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
     it('delay', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const value: SampleNodeIn = { value: { foo: 123 } };
       const res1 = await runtime.run(bundle, {
@@ -280,7 +280,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
     it('error: timed out', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const value: SampleNodeIn = { value: { foo: 123 }, delay: 20 };
       const res = await runtime.run(bundle, { silent: true, in: { value }, timeout: 10 });
@@ -298,7 +298,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
     it('done is only called once', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const value: SampleNodeIn = { repeatDone: 5 };
       const res = await runtime.run(bundle, { silent: true, in: { value } });
@@ -309,7 +309,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
     it('error: thrown within bundled code (standard errors)', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const value: SampleNodeIn = { throwError: 'echo error' };
       const res = await runtime.run(bundle, { silent: true, in: { value } });
@@ -327,7 +327,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
     it('custom entry path', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
 
       const value: SampleNodeIn = {};
       const entry = '  ///dev.js  '; // NB: space padding is removed and "/" trimmed.
@@ -343,7 +343,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
     it('hash: valid', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
-      const { files } = await uploadBundle(client, bundle);
+      const { files } = await uploadBundle(client, samples.node.outdir, bundle);
       const manifest = getManifest(files);
       const hash = manifest.hash;
       expect(hash).to.not.eql(undefined);
@@ -357,7 +357,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
     it('hash: invalid (error)', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
-      await uploadBundle(client, bundle);
+      await uploadBundle(client, samples.node.outdir, bundle);
       const hash = 'foobar-fail';
 
       const res = await runtime.run(bundle, { silent: true, hash });
@@ -375,7 +375,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const test = async (dir?: string) => {
         const { mock, runtime, bundle, client } = await prepare({ dir });
 
-        await uploadBundle(client, bundle, { filter: noManifest });
+        await uploadBundle(client, samples.node.outdir, bundle, { filter: noManifestFilter });
 
         const res = await runtime.run(bundle, { silent: true });
         const error = res.errors[0];

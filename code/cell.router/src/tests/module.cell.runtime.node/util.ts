@@ -8,8 +8,9 @@ export { samples };
 
 type B = t.RuntimeBundleOrigin;
 
-export const noManifest = (file: t.IHttpClientCellFileUpload) =>
-  !file.filename.endsWith('index.json'); // NB: Cause error by filtering out the manifest file.
+export const noManifestFilter = (file: t.IHttpClientCellFileUpload) => {
+  return !file.filename.endsWith('index.json'); // NB: Cause error by filtering out the manifest file.
+};
 
 export const createFuncMock = async () => {
   const runtime = NodeRuntime.create();
@@ -51,11 +52,12 @@ export const getManifest = (files: t.IHttpClientCellFileUpload[]) => {
 
 export const uploadBundle = async (
   client: t.IHttpClientCell,
+  dist: string,
   bundle: B,
   options: { filter?: (file: t.IHttpClientCellFileUpload) => boolean } = {},
 ) => {
   const { filter } = options;
-  let files = await bundleToFiles(samples.node.outdir, bundle.dir);
+  let files = await bundleToFiles(dist, bundle.dir);
   files = filter ? files.filter((file) => filter(file)) : files;
   const upload = await client.files.upload(files);
   expect(upload.ok).to.eql(true);
