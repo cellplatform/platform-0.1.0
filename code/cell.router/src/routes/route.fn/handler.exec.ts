@@ -1,4 +1,4 @@
-import { defaultValue, id, t, util } from '../common';
+import { defaultValue, id, t, util, R } from '../common';
 
 type B = t.RuntimeBundleOrigin;
 
@@ -9,46 +9,64 @@ export async function exec(args: {
   host: string;
   db: t.IDb;
   runtime: t.RuntimeEnv;
-  body: t.IReqPostFuncRunBody;
+  body: t.IReqPostFuncBody;
   defaultPull?: boolean;
   defaultSilent?: boolean;
   defaultTimeout?: number;
+  defaultOnError?: t.OnFuncError;
 }) {
   try {
     const { host, db, runtime, defaultPull, defaultSilent, defaultTimeout } = args;
-    const bundles = Array.isArray(args.body) ? args.body : [args.body];
-    const results: t.IResPostFuncRunResult[] = [];
+    const execution: t.IResPostFunc['execution'] = Array.isArray(args.body) ? 'serial' : 'parallel';
 
-    let prev: t.IResPostFuncRunResult | undefined;
-    for (const body of bundles) {
-      const res = await execBundle({
+    const results: t.IResPostFuncResult[] = [];
+    const run = async (body: t.IReqPostFunc, previous?: t.IResPostFuncResult) => {
+      const result = await execBundle({
         host,
         db,
         body,
-        in: prev?.out,
+        in: previous?.out, // NB: pipe previous result into the next function.
         runtime,
         defaultPull,
         defaultSilent,
         defaultTimeout,
       });
-      results.push(res);
-      prev = res;
-    }
+      results.push(result);
+      return result;
+    };
 
-    const elapsed = results.reduce(
-      (acc, next) => {
-        const prep = acc.prep + next.elapsed.prep;
-        const run = acc.run + next.elapsed.run;
-        return { prep, run };
-      },
-      { prep: 0, run: 0 },
-    );
+    if (Array.isArray(args.body)) {
+      // Process in [serial] list order.
+      let previous: t.IResPostFuncResult | undefined;
+      for (const body of args.body) {
+        previous = await run(body, previous);
+
+        // If errors occured determine continuation behavior.
+        if (previous.errors.length > 0) {
+          const onError = defaultValue(body.onError, args.defaultOnError || 'stop');
+          if (onError === 'stop') {
+            break;
+          }
+        }
+      }
+    } else {
+      // Process in [parallel].
+      type B = t.RuntimeBundleOrigin;
+      const items = Object.keys(args.body).map((key) => args.body[key] as t.IReqPostFunc);
+      const bundles = R.uniq(items.map(({ uri, host, dir }) => ({ uri, host, dir } as B)));
+      await Promise.all(bundles.map((bundle) => runtime.pull(bundle, { silent: true })));
+      await Promise.all(items.map((body) => run(body)));
+    }
 
     const ok = results.every((res) => res.ok);
     const status = results.every((res) => res.ok) ? 200 : 500;
-    const data: t.IResPostFuncRun = {
+    const elapsed = results.reduce((acc, next) => acc + (next.elapsed.prep + next.elapsed.run), 0);
+
+    const data: t.IResPostFunc = {
       ok,
       elapsed,
+      execution,
+      runtime: { name: runtime.name, version: runtime.version },
       results,
     };
 
@@ -65,7 +83,7 @@ async function execBundle(args: {
   host: string;
   db: t.IDb;
   runtime: t.RuntimeEnv;
-  body: t.IReqPostFuncRun;
+  body: t.IReqPostFunc;
   in?: t.RuntimeIn; // NB: From previous [out] within pipeline.
   defaultPull?: boolean;
   defaultSilent?: boolean;
@@ -93,20 +111,20 @@ async function execBundle(args: {
   const { ok, manifest, errors } = res;
   const tx = body.tx || id.cuid();
 
-  const data: t.IResPostFuncRunResult = {
+  const data: t.IResPostFuncResult = {
     ok,
     tx,
     out: res.out,
     elapsed: res.elapsed,
-    bundle,
+    bundle: { ...bundle, hash: manifest?.hash },
     entry: res.entry,
     cache: { exists, pulled: pull ? true : !exists },
-    runtime: { name: runtime.name, version: runtime.version, silent },
     size: {
       bytes: defaultValue(manifest?.bytes, -1),
       files: defaultValue(manifest?.files.length, -1),
     },
     errors,
+    silent,
   };
 
   // Finish up.

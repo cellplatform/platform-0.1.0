@@ -2,7 +2,8 @@
   "name": "platform",
   "version": "0.0.0",
   "scripts": {
-    "nuke": "sh script.sh/nuke.sh"
+    "nuke": "sh script.sh/nuke.sh",
+    "dbuild": "cd code/cell.service && yarn dbuild"
   },
   "workspaces": {
     "packages": [

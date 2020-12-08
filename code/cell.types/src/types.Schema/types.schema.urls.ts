@@ -22,7 +22,7 @@ export type IUrlsSys = {
 };
 
 export type IUrlsFunc = {
-  run: t.IUrl<t.IReqQueryFuncRun>;
+  run: t.IUrl<t.IReqQueryFunc>;
   bundle: IUrlsBundle;
 };
 

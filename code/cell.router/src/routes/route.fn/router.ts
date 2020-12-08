@@ -19,14 +19,24 @@ export function init(args: { db: t.IDb; router: t.IRouter; runtime?: t.RuntimeEn
       }
 
       const host = req.host;
-      const query = req.query as t.IReqQueryFuncRun;
-      const body = ((await req.body.json()) || {}) as t.IReqPostFuncRunBody;
+      const query = req.query as t.IReqQueryFunc;
+      const body = ((await req.body.json()) || {}) as t.IReqPostFuncBody;
 
       const defaultPull = query.pull;
       const defaultSilent = query.silent;
       const defaultTimeout = query.timeout;
+      const defaultOnError = query.onError;
 
-      return exec({ host, db, runtime, body, defaultPull, defaultSilent, defaultTimeout });
+      return exec({
+        host,
+        db,
+        runtime,
+        body,
+        defaultPull,
+        defaultSilent,
+        defaultTimeout,
+        defaultOnError,
+      });
     } catch (err) {
       return util.toErrorPayload(err);
     }
