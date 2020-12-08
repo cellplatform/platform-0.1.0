@@ -1,7 +1,7 @@
 const ctx: ServiceWorker = self as any;
 
 // import * as t from '@platform/cell.types';
-import { BundleManifest } from '@platform/cell.compiler/lib/types';
+import { BundleManifest } from '@platform/cell.types/lib/types.Runtime';
 
 const URL =
   'http://localhost:8080/cell:ckgu71a83000dl0et1676dq4y:A1/file/sample/index.json?expires=10m';

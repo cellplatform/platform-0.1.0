@@ -116,7 +116,7 @@ export class Urls implements t.IUrls {
        * Example: /func
        */
       get run() {
-        type Q = t.IReqQueryFuncRun;
+        type Q = t.IReqQueryFunc;
         return toUrl<Q>(`/fn:run`);
       },
     };
