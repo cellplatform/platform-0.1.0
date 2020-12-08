@@ -8,7 +8,7 @@ import {
   uploadBundle,
 } from './util';
 
-describe.only('/fn:run', function () {
+describe('/fn:run', function () {
   this.timeout(99999);
 
   /**

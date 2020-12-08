@@ -25,8 +25,18 @@ export function init(args: { db: t.IDb; router: t.IRouter; runtime?: t.RuntimeEn
       const defaultPull = query.pull;
       const defaultSilent = query.silent;
       const defaultTimeout = query.timeout;
+      const defaultOnError = query.onError;
 
-      return exec({ host, db, runtime, body, defaultPull, defaultSilent, defaultTimeout });
+      return exec({
+        host,
+        db,
+        runtime,
+        body,
+        defaultPull,
+        defaultSilent,
+        defaultTimeout,
+        defaultOnError,
+      });
     } catch (err) {
       return util.toErrorPayload(err);
     }

@@ -13,9 +13,11 @@ export async function exec(args: {
   defaultPull?: boolean;
   defaultSilent?: boolean;
   defaultTimeout?: number;
+  defaultOnError?: t.OnFuncError;
 }) {
   try {
     const { host, db, runtime, defaultPull, defaultSilent, defaultTimeout } = args;
+    const execution: t.IResPostFunc['execution'] = Array.isArray(args.body) ? 'serial' : 'parallel';
 
     const results: t.IResPostFuncResult[] = [];
     const run = async (body: t.IReqPostFunc, previous?: t.IResPostFuncResult) => {
@@ -34,13 +36,21 @@ export async function exec(args: {
     };
 
     if (Array.isArray(args.body)) {
-      // Process seqential list in order.
+      // Process in [serial] list order.
       let previous: t.IResPostFuncResult | undefined;
       for (const body of args.body) {
         previous = await run(body, previous);
+
+        // If errors occured determine continuation behavior.
+        if (previous.errors.length > 0) {
+          const onError = defaultValue(body.onError, args.defaultOnError || 'stop');
+          if (onError === 'stop') {
+            break;
+          }
+        }
       }
     } else {
-      // Process in parallel.
+      // Process in [parallel].
       type B = t.RuntimeBundleOrigin;
       const items = Object.keys(args.body).map((key) => args.body[key] as t.IReqPostFunc);
       const bundles = R.uniq(items.map(({ uri, host, dir }) => ({ uri, host, dir } as B)));
@@ -51,9 +61,11 @@ export async function exec(args: {
     const ok = results.every((res) => res.ok);
     const status = results.every((res) => res.ok) ? 200 : 500;
     const elapsed = results.reduce((acc, next) => acc + (next.elapsed.prep + next.elapsed.run), 0);
+
     const data: t.IResPostFunc = {
       ok,
       elapsed,
+      execution,
       runtime: { name: runtime.name, version: runtime.version },
       results,
     };
