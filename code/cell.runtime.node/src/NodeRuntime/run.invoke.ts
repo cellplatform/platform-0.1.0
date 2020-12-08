@@ -1,4 +1,4 @@
-import { log, logger, t, time, fs, defaultValue } from '../common';
+import { log, logger, t, time, fs, defaultValue, R } from '../common';
 import { NodeVM } from 'vm2';
 import { Script } from '../vm';
 
@@ -53,7 +53,13 @@ export function invoke(args: {
       timer.reset(); // NB: Restart timer to get a read on the "running" execution time.
     };
 
-    const done = (result?: t.Json) => {
+    const headers: t.RuntimePipeInfoHeaders = { contentType: 'application/json' };
+    const out: t.RuntimeOut = {
+      value: undefined,
+      info: { headers },
+    };
+
+    const done = (value?: t.Json) => {
       timeoutDelay.cancel();
       if (isStopped) {
         return; // NB: The [done] response can only be returned once.
@@ -69,11 +75,9 @@ export function invoke(args: {
         logger.errors(errors);
       }
 
-      const info: t.RuntimeOutInfo = {};
-
       resolve({
         ok,
-        out: { value: result, info },
+        out: { ...out, value },
         errors,
         elapsed,
       });
@@ -85,14 +89,26 @@ export function invoke(args: {
       return done();
     }
 
-    const incoming = args.in || {};
+    const env: t.GlobalEnv = {
+      in: R.clone({
+        value: args.in?.value || {},
+        info: args.in?.info || { headers: { contentType: 'application/json' } },
+      }),
 
-    const env: t.NodeGlobalEnv = {
-      in: { ...incoming, params: incoming.params || {} },
-      done,
+      out: {
+        done,
+        contentType(mime) {
+          headers.contentType = mime;
+          return env.out;
+        },
+        contentTypeDef(uri) {
+          headers.contentTypeDef = uri;
+          return env.out;
+        },
+      },
     };
 
-    const sandbox: t.NodeGlobal = { env };
+    const sandbox: t.Global = { env };
 
     try {
       const vm = new NodeVM({

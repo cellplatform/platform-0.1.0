@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.runtime",
-  "version": "0.0.0",
+  "version": "0.10.0",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {

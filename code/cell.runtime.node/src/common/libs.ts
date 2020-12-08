@@ -1,7 +1,7 @@
 export { parse as parseUrl } from 'url';
 
-import { pipe } from 'ramda';
-export const R = { pipe };
+import { pipe, clone } from 'ramda';
+export const R = { pipe, clone };
 
 export { HttpClient } from '@platform/cell.client';
 export { fs } from '@platform/fs';

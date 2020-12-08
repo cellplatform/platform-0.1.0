@@ -10,6 +10,8 @@ export type EntryParams = {
   value?: any;
   repeatDone?: number;
   delay?: number;
+  contentType?: string;
+  contentTypeDef?: string;
 };
 
 export type Result = {

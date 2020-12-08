@@ -96,7 +96,7 @@ const uploadBundle = async (
   };
 };
 
-describe('cell.runtime.node: NodeRuntime', function () {
+describe.only('cell.runtime.node: NodeRuntime', function () {
   this.timeout(99999);
 
   /**
@@ -259,30 +259,62 @@ describe('cell.runtime.node: NodeRuntime', function () {
       await mock.dispose();
     });
 
-    it('return value / default entry / no process leaks', async () => {
+    it('uses default entry (from manifest)', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const params: EntryParams = { value: { foo: 123 } };
-      const res = await runtime.run(bundle, { silent: true, in: { params } });
+      const value: EntryParams = { value: { foo: 123 } };
+      const res = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
 
-      expect(res.ok).to.eql(true);
       expect(res.entry).to.eql('main.js');
+    });
+
+    it('out: value / no process leaks / immutable', async () => {
+      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      await uploadBundle(client, bundle);
+
+      const value: EntryParams = { value: { foo: 123 } };
+      const res = await runtime.run(bundle, { silent: true, in: { value } });
+      await mock.dispose();
+
+      value.value.foo = 456; // NB: Mutate the value (should not be transferred within the function)
+
+      expect(res.ok).to.eql(true);
       expect(res.errors.length).to.eql(0);
 
       const result = res.out.value as Result;
-      expect(result.echo).to.eql({ foo: 123 });
+      expect(result.echo).to.not.equal(value.value); // NB: Different instance from input.
+      expect(result.echo).to.eql({ foo: 123 }); // NB: The mutated input was not returned.
       expect(result.process).to.eql({}); // NB: Process env-variables not leaked.
+    });
+
+    it('out: headers (contentType, contentDef)', async () => {
+      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      await uploadBundle(client, bundle);
+
+      const test = async (value: EntryParams, expected?: t.RuntimePipeInfoHeaders) => {
+        const res = await runtime.run(bundle, { silent: true, in: { value } });
+        expect(res.out.info.headers).to.eql(expected);
+      };
+
+      await test({}, { contentType: 'application/json' });
+      await test({ contentType: 'text/html' }, { contentType: 'text/html' });
+      await test(
+        { contentTypeDef: 'cell:foo:A1' },
+        { contentType: 'application/json', contentTypeDef: 'cell:foo:A1' },
+      );
+
+      await mock.dispose();
     });
 
     it('immediate', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const params: EntryParams = {};
-      const res1 = await runtime.run(bundle, { silent: true, in: { params } });
-      const res2 = await runtime.run(bundle, { silent: true, in: { params } });
+      const value: EntryParams = {};
+      const res1 = await runtime.run(bundle, { silent: true, in: { value } });
+      const res2 = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
 
       expect(res1.elapsed.prep).to.greaterThan(res2.elapsed.prep); // NB: Compiled script is re-used (faster second time).
@@ -292,18 +324,18 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const params: EntryParams = { value: { foo: 123 } };
+      const value: EntryParams = { value: { foo: 123 } };
       const res1 = await runtime.run(bundle, {
         silent: true,
-        in: { params: { ...params, id: 1 } },
+        in: { value: { ...value, id: 1 } },
       });
       const res2 = await runtime.run(bundle, {
         silent: true,
-        in: { params: { ...params, id: 2 } },
+        in: { value: { ...value, id: 2 } },
       });
       const res3 = await runtime.run(bundle, {
         silent: true,
-        in: { params: { ...params, delay: 60, id: 3 } },
+        in: { value: { ...value, delay: 60, id: 3 } },
       });
       await mock.dispose();
 
@@ -321,8 +353,8 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const params: EntryParams = { value: { foo: 123 }, delay: 20 };
-      const res = await runtime.run(bundle, { silent: true, in: { params }, timeout: 10 });
+      const value: EntryParams = { value: { foo: 123 }, delay: 20 };
+      const res = await runtime.run(bundle, { silent: true, in: { value }, timeout: 10 });
       await mock.dispose();
 
       expect(res.ok).to.eql(false);
@@ -339,19 +371,19 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const params: EntryParams = { repeatDone: 5 };
-      const res = await runtime.run(bundle, { silent: true, in: { params } });
+      const value: EntryParams = { repeatDone: 5 };
+      const res = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
 
       expect(res.out.value).to.eql({ count: 1 });
     });
 
-    it('error: thrown within bundled code', async () => {
+    it('error: thrown within bundled code (standard errors)', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const params: EntryParams = { throwError: 'echo error' };
-      const res = await runtime.run(bundle, { silent: true, in: { params } });
+      const value: EntryParams = { throwError: 'echo error' };
+      const res = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
 
       expect(res.ok).to.eql(false);
@@ -368,10 +400,10 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const params: EntryParams = {};
+      const value: EntryParams = {};
       const entry = '  ///dev.js  '; // NB: space padding is removed and "/" trimmed.
 
-      const res = await runtime.run(bundle, { silent: true, in: { params }, entry });
+      const res = await runtime.run(bundle, { silent: true, in: { value }, entry });
       await mock.dispose();
 
       expect(res.entry).to.eql('dev.js');
@@ -410,11 +442,11 @@ describe('cell.runtime.node: NodeRuntime', function () {
       expect(error.message).to.include(hash);
     });
 
-    it.skip('pipe: seqential execution list', async () => {
+    it.skip('pipe: seqential execution ([list])', async () => {
       //
     });
 
-    it.skip('pipe: parallel execution', async () => {
+    it.skip('pipe: parallel execution ({object})', async () => {
       //
     });
 

@@ -121,8 +121,8 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, bundle);
 
-      const params: EntryParams = { value: { foo: 123 } };
-      const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { params } };
+      const value: EntryParams = { value: { foo: 123 } };
+      const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value } };
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
@@ -198,8 +198,8 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, bundle);
 
-      const params: EntryParams = { delay: 20 };
-      const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { params }, timeout: 10 };
+      const value: EntryParams = { delay: 20 };
+      const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value }, timeout: 10 };
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
@@ -283,8 +283,8 @@ describe('/fn:run (NodeRuntime over HTTP)', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, bundle);
 
-      const params: EntryParams = { delay: 20 };
-      const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { params } };
+      const value: EntryParams = { delay: 20 };
+      const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value } };
       const res = await http.post(url.query({ timeout: 10 }).toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
