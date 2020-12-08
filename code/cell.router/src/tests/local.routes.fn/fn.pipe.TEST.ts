@@ -1,21 +1,36 @@
-import { createMock, expect, fs, Http, t } from '../../test';
-import {
-  getManifest,
-  prepare,
-  uploadBundle,
-  samples,
-  EntryValueSample,
-  ResultSample,
-} from './util';
+import { t } from '../../test';
+import { prepare, samples, uploadBundle } from './util';
 
-describe.only('/fn:run (pipe)', function () {
+describe('/fn:run (pipe)', function () {
   this.timeout(99999);
 
-  it.skip('pipe: seqential execution ([list])', async () => {
+  /**
+   * Ensure the sample node code as been bundled.
+   */
+  before(async () => {
+    const force = false;
+    await samples.pipe.bundle(force);
+  });
+
+  it.skip('pipe: parallel execution - {object}', async () => {
     //
   });
 
-  it.skip('pipe: parallel execution ({object})', async () => {
-    //
+  describe('pipe: seqential execution - [list]', () => {
+    it.skip('in => out => in => out', async () => {
+      const dir = 'foo';
+      const { mock, bundle, client, http, url } = await prepare({ dir });
+      const { host, uri } = bundle;
+      await uploadBundle(client, bundle);
+
+      const body: t.IReqPostFuncRunBody = [{ host, uri, dir }];
+      const res = await http.post(url.toString(), body);
+      const json = res.json as t.IResPostFuncRun;
+      await mock.dispose();
+    });
+
+    it.skip('merge input: in => out => merged(out|in) => out', async () => {
+      //
+    });
   });
 });

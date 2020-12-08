@@ -1,7 +1,7 @@
-import { createMock, expect, fs, Http, t } from '../../test';
-import { getManifest, prepare, uploadBundle, samples, EntryValueSample, ResultSample } from './util';
+import { createMock, expect, Http, t } from '../../test';
+import { SampleNodeIn, getManifest, prepare, SampleNodeOut, samples, uploadBundle } from './util';
 
-describe.only('/fn:run', function () {
+describe('/fn:run', function () {
   this.timeout(99999);
 
   /**
@@ -15,9 +15,8 @@ describe.only('/fn:run', function () {
       //
     ]);
   });
-  beforeEach(() => fs.remove(fs.resolve('tmp/runtime.node')));
 
-  describe.only('POST (NodeRuntime)', () => {
+  describe('POST (NodeRuntime)', () => {
     const expectFuncResponse = (dir: string | undefined, res: t.IResPostFuncRunResult) => {
       expect(res.ok).to.eql(true);
       expect(res.entry).to.eql('main.js');
@@ -66,7 +65,7 @@ describe.only('/fn:run', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, bundle);
 
-      const value: EntryValueSample = { value: { foo: 123 } };
+      const value: SampleNodeIn = { value: { foo: 123 } };
       const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value } };
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
@@ -75,7 +74,7 @@ describe.only('/fn:run', function () {
       expect(json.ok).to.eql(true);
       expectFuncResponse(dir, json.results[0]);
 
-      const result = json.results[0].out.value as ResultSample;
+      const result = json.results[0].out.value as SampleNodeOut;
       expect(result.echo).to.eql({ foo: 123 });
       expect(result.process).to.eql({});
     });
@@ -143,7 +142,7 @@ describe.only('/fn:run', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, bundle);
 
-      const value: EntryValueSample = { delay: 20 };
+      const value: SampleNodeIn = { delay: 20 };
       const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value }, timeout: 10 };
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
@@ -228,7 +227,7 @@ describe.only('/fn:run', function () {
       const { host, uri } = bundle;
       await uploadBundle(client, bundle);
 
-      const value: EntryValueSample = { delay: 20 };
+      const value: SampleNodeIn = { delay: 20 };
       const body: t.IReqPostFuncRunBody = { host, uri, dir, in: { value } };
       const res = await http.post(url.query({ timeout: 10 }).toString(), body);
       const json = res.json as t.IResPostFuncRun;

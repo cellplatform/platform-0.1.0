@@ -1,5 +1,5 @@
 import { Compiler, expect, fs, Schema, t, TestCompile } from '../../test';
-import { EntryValueSample, ResultSample } from './sample.NodeRuntime/types';
+import { SampleNodeIn, SampleNodeOut } from './sample.NodeRuntime/types';
 import { getManifest, noManifest, prepare, uploadBundle } from './util';
 
 type B = t.RuntimeBundleOrigin;
@@ -36,7 +36,6 @@ describe('cell.runtime.node: NodeRuntime', function () {
     await samples.node.bundle(force);
     await samples.pipe.bundle(force);
   });
-  beforeEach(async () => await fs.remove(fs.resolve('tmp/runtime.node')));
 
   describe('pull', () => {
     const test = async (dir?: string) => {
@@ -136,6 +135,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
   describe('clear', () => {
     it('nothing to clear', async () => {
+      await fs.remove(fs.resolve('tmp/runtime.node'));
       const { mock, runtime } = await prepare();
       expect((await runtime.clear()).count).to.eql(0);
       await mock.dispose();
@@ -192,7 +192,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryValueSample = { value: { foo: 123 } };
+      const value: SampleNodeIn = { value: { foo: 123 } };
       const res = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
 
@@ -203,7 +203,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryValueSample = { value: { foo: 123 } };
+      const value: SampleNodeIn = { value: { foo: 123 } };
       const res = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
 
@@ -212,7 +212,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       expect(res.ok).to.eql(true);
       expect(res.errors.length).to.eql(0);
 
-      const result = res.out.value as ResultSample;
+      const result = res.out.value as SampleNodeOut;
       expect(result.echo).to.not.equal(value.value); // NB: Different instance from input.
       expect(result.echo).to.eql({ foo: 123 }); // NB: The mutated input was not returned.
       expect(result.process).to.eql({}); // NB: Process env-variables not leaked.
@@ -222,7 +222,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const test = async (value: EntryValueSample, expected?: t.RuntimePipeInfoHeaders) => {
+      const test = async (value: SampleNodeIn, expected?: t.RuntimePipeInfoHeaders) => {
         const res = await runtime.run(bundle, { silent: true, in: { value } });
         expect(res.out.info.headers).to.eql(expected);
       };
@@ -241,7 +241,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryValueSample = {};
+      const value: SampleNodeIn = {};
       const res1 = await runtime.run(bundle, { silent: true, in: { value } });
       const res2 = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
@@ -253,7 +253,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryValueSample = { value: { foo: 123 } };
+      const value: SampleNodeIn = { value: { foo: 123 } };
       const res1 = await runtime.run(bundle, {
         silent: true,
         in: { value: { ...value, id: 1 } },
@@ -272,7 +272,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
       expect(res3.ok).to.eql(true);
       expect(res3.errors.length).to.eql(0);
-      expect((res3.out.value as ResultSample).echo).to.eql({ foo: 123 });
+      expect((res3.out.value as SampleNodeOut).echo).to.eql({ foo: 123 });
 
       expect(res2.elapsed.run).to.lessThan(15);
       expect(res3.elapsed.run).to.greaterThan(60);
@@ -282,7 +282,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryValueSample = { value: { foo: 123 }, delay: 20 };
+      const value: SampleNodeIn = { value: { foo: 123 }, delay: 20 };
       const res = await runtime.run(bundle, { silent: true, in: { value }, timeout: 10 });
       await mock.dispose();
 
@@ -300,7 +300,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryValueSample = { repeatDone: 5 };
+      const value: SampleNodeIn = { repeatDone: 5 };
       const res = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
 
@@ -311,7 +311,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryValueSample = { throwError: 'echo error' };
+      const value: SampleNodeIn = { throwError: 'echo error' };
       const res = await runtime.run(bundle, { silent: true, in: { value } });
       await mock.dispose();
 
@@ -329,7 +329,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, bundle);
 
-      const value: EntryValueSample = {};
+      const value: SampleNodeIn = {};
       const entry = '  ///dev.js  '; // NB: space padding is removed and "/" trimmed.
 
       const res = await runtime.run(bundle, { silent: true, in: { value }, entry });
@@ -337,7 +337,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
       expect(res.entry).to.eql('dev.js');
 
-      const result = res.out.value as ResultSample;
+      const result = res.out.value as SampleNodeOut;
       expect(result?.echo).to.eql('hello dev');
     });
 
