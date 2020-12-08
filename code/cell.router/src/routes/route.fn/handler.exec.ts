@@ -1,4 +1,4 @@
-import { defaultValue, id, t, util } from '../common';
+import { defaultValue, id, t, util, R } from '../common';
 
 type B = t.RuntimeBundleOrigin;
 
@@ -18,12 +18,12 @@ export async function exec(args: {
     const { host, db, runtime, defaultPull, defaultSilent, defaultTimeout } = args;
 
     const results: t.IResPostFuncResult[] = [];
-    const run = async (body: t.IReqPostFunc, prev?: t.IResPostFuncResult) => {
+    const run = async (body: t.IReqPostFunc, previous?: t.IResPostFuncResult) => {
       const result = await execBundle({
         host,
         db,
         body,
-        in: prev?.out, // NB: pipe previous result into the next function.
+        in: previous?.out, // NB: pipe previous result into the next function.
         runtime,
         defaultPull,
         defaultSilent,
@@ -35,21 +35,24 @@ export async function exec(args: {
 
     if (Array.isArray(args.body)) {
       // Process seqential list in order.
-      let prev: t.IResPostFuncResult | undefined;
+      let previous: t.IResPostFuncResult | undefined;
       for (const body of args.body) {
-        prev = await run(body, prev);
+        previous = await run(body, previous);
       }
     } else {
       // Process in parallel.
-      // TODO 🐷
-      // await Promise.all(Object.keys(args.body).map((key) => ))
+      type B = t.RuntimeBundleOrigin;
+      const items = Object.keys(args.body).map((key) => args.body[key] as t.IReqPostFunc);
+      const bundles = R.uniq(items.map(({ uri, host, dir }) => ({ uri, host, dir } as B)));
+      await Promise.all(bundles.map((bundle) => runtime.pull(bundle, { silent: true })));
+      await Promise.all(items.map((body) => run(body)));
     }
 
     const ok = results.every((res) => res.ok);
+    const status = results.every((res) => res.ok) ? 200 : 500;
     const elapsed = results.reduce((acc, next) => acc + (next.elapsed.prep + next.elapsed.run), 0);
     const data: t.IResPostFunc = { ok, elapsed, results };
 
-    const status = results.every((res) => res.ok) ? 200 : 500;
     return { status, data };
   } catch (err) {
     return util.toErrorPayload(err);

@@ -131,9 +131,13 @@ describe.only('/fn:run (pipes)', function () {
       const json = res.json as t.IResPostFunc;
       await mock.dispose();
 
-      console.log('-------------------------------------------');
+      expect(res.ok).to.eql(true);
+      expect(json.ok).to.eql(true);
 
-      console.log('json', json);
+      const results = json.results.map((res) => res.out.value as ISamplePipeValue);
+      expect(results[0].count).to.eql(1);
+      expect(results[1].count).to.eql(1);
+      expect(results[2].count).to.eql(1);
     });
   });
 });
