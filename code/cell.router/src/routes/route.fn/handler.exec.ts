@@ -34,7 +34,9 @@ export async function exec(args: {
 
     const elapsed = results.reduce(
       (acc, next) => {
-        return { prep: acc.prep + next.elapsed.prep, run: acc.run + next.elapsed.run };
+        const prep = acc.prep + next.elapsed.prep;
+        const run = acc.run + next.elapsed.run;
+        return { prep, run };
       },
       { prep: 0, run: 0 },
     );
@@ -69,7 +71,6 @@ async function execBundle(args: {
   const silent = defaultValue(body.silent, defaultValue(args.defaultSilent, true));
 
   const { uri, dir, entry, hash } = body;
-  //  const parms = body.in ||{}
   const host = body.host || args.host;
   const pull = defaultValue(body.pull, args.defaultPull || false);
   const timeout = defaultValue(body.timeout, args.defaultTimeout);
@@ -77,7 +78,8 @@ async function execBundle(args: {
   const urls = Schema.urls(bundle.host);
 
   const exists = await runtime.exists(bundle);
-  const res = await runtime.run(bundle, { silent, pull, in: body.in, timeout, entry, hash });
+  const options: t.RuntimeRunOptions = { silent, pull, in: body.in, timeout, entry, hash };
+  const res = await runtime.run(bundle, options);
   const { ok, manifest, errors } = res;
 
   const data: t.IResPostFuncRunResult = {

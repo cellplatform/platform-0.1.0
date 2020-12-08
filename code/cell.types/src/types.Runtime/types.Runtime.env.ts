@@ -19,13 +19,13 @@ type RuntimeMembers = {
   clear(): Promise<{ count: number }>;
 };
 
-type RuntimeRunOptions = {
+export type RuntimeRunOptions = {
   in?: Partial<t.RuntimeIn>;
   pull?: boolean;
   silent?: boolean;
   timeout?: number;
   entry?: string; // Entry path within bundle (if not specified default manfest entry is used).
-  hash?: string; // The hash of the bundle to match before executing.
+  hash?: string; // The hash of the bundle to match before executing (throws if doesn't match manifest).
 };
 
 export type RuntimePullResponse = {
