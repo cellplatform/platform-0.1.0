@@ -24,13 +24,6 @@ describe('/fn:run', function () {
       const version = (process.version || '').replace(/^v/, '');
       expect(res.runtime.version).to.eql(`${version}`);
       expect(res.runtime.name).to.eql('node');
-
-      expect(res.urls.manifest).to.match(/^http:\/\/localhost\:.*index\.json$/);
-      if (dir) {
-        expect(res.urls.files).to.include(`filter=${dir}/**`);
-      } else {
-        expect(res.urls.files).to.not.eql(`filter=`);
-      }
       expect(res.size.bytes).to.greaterThan(1000);
       expect(res.size.files).to.greaterThan(1);
       expect(res.errors).to.eql([]);

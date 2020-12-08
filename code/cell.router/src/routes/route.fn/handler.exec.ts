@@ -1,4 +1,4 @@
-import { defaultValue, Schema, t, util, id } from '../common';
+import { defaultValue, id, t, util } from '../common';
 
 type B = t.RuntimeBundleOrigin;
 
@@ -75,7 +75,6 @@ async function execBundle(args: {
   const pull = defaultValue(body.pull, args.defaultPull || false);
   const timeout = defaultValue(body.timeout, args.defaultTimeout);
   const bundle: B = { host, uri, dir };
-  const urls = Schema.urls(bundle.host);
 
   const exists = await runtime.exists(bundle);
   const options: t.RuntimeRunOptions = { silent, pull, in: body.in, timeout, entry, hash };
@@ -95,10 +94,6 @@ async function execBundle(args: {
     size: {
       bytes: defaultValue(manifest?.bytes, -1),
       files: defaultValue(manifest?.files.length, -1),
-    },
-    urls: {
-      files: urls.fn.bundle.files(bundle).toString(),
-      manifest: urls.fn.bundle.manifest(bundle).toString(),
     },
     errors,
   };

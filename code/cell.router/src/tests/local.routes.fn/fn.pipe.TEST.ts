@@ -17,16 +17,22 @@ describe('/fn:run (pipe)', function () {
   });
 
   describe('pipe: seqential execution - [list]', () => {
-    it.skip('in => out => in => out', async () => {
+    it.only('in => out => in => out', async () => {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
       await uploadBundle(client, bundle);
 
-      const body: t.IReqPostFuncRunBody = [{ host, uri, dir }];
+      const body: t.IReqPostFuncRunBody = [
+        { host, uri, dir },
+        { host, uri, dir },
+      ];
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFuncRun;
       await mock.dispose();
+
+      console.log('-------------------------------------------');
+      console.log('json', json);
     });
 
     it.skip('merge input: in => out => merged(out|in) => out', async () => {
