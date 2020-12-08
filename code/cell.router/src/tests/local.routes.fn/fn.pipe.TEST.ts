@@ -1,7 +1,7 @@
 import { expect, t } from '../../test';
 import { prepare, samples, uploadBundle, ISamplePipeValue } from './util';
 
-describe('/fn:run (pipes)', function () {
+describe.only('/fn:run (pipes)', function () {
   this.timeout(99999);
 
   /**
@@ -107,11 +107,16 @@ describe('/fn:run (pipes)', function () {
       expect(results[3].msg).to.eql('hello');
     });
 
-    it.skip('error within pipe', async () => {
-      /**
-       * TODO 🐷
-       * onError: 'stop' (default) | 'continue'
-       */
+    it.skip('onError: "stop"', async () => {
+      //
+    });
+
+    it.skip('onError: "continue"', async () => {
+      //
+    });
+
+    it('onError (via query-string default)', async () => {
+      //
     });
   });
 

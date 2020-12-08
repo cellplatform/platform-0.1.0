@@ -9,9 +9,11 @@ export type IReqQueryFuncRun = {
   timeout?: number; //   Sets "timeout" (msecs) when not specified within body payload.
 };
 
-export type IReqPostFuncSet = t.IReqPostFunc[] | { [key: string]: t.IReqPostFunc };
+export type IReqPostFuncSet = IReqPostFuncSerial | IReqPostFuncParallel;
+export type IReqPostFuncSerial = t.IReqPostFuncCall[]; // Piped list of functions.
+export type IReqPostFuncParallel = { [key: string]: t.IReqPostFuncCall }; // Paralell execution (arbitrary key value).
 
-export type IReqPostFunc = {
+export type IReqPostFuncCall = {
   uri: string; // Cell URI containing bundle.
   host?: string; // NB: the running system's host is used if not specified.
   dir?: string; // Directory of the cell.
