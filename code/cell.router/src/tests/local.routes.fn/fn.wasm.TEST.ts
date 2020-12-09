@@ -32,6 +32,7 @@ describe('/fn:run (WASM)', function () {
       .map((res) => res.out.value as { count: number })
       .map((res) => res.count);
 
+    // NB: The sample script adds to a number (via a WASM module).
     expect(results[0]).to.eql(10);
     expect(results[1]).to.eql(133);
     expect(results[2]).to.eql(143);

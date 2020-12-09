@@ -121,6 +121,7 @@ export function invoke(args: {
       const vm = new NodeVM({
         console: silent ? 'off' : 'inherit',
         sandbox,
+        wasm: true,
         require: {
           external: true,
           // builtin: ['os', 'tty', 'util'],
