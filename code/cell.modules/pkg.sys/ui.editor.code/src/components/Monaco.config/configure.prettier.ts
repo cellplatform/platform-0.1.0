@@ -13,7 +13,7 @@ import { t } from '../../common';
 /**
  * Configure the "prettier" code formatter.
  */
-export async function registerPrettier(api: t.IMonaco) {
+export async function registerPrettier(api: t.IMonacoSingleton) {
   /**
    * NB: This fails in the browser when importing the 'typescript-parser`.
    */

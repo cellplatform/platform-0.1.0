@@ -11,7 +11,7 @@ export const DARK = {
 /**
  * Configure the editor theme.
  */
-export function theme(api: t.IMonaco) {
+export function theme(api: t.IMonacoSingleton) {
   const themeData = require('monaco-themes/themes/Monokai.json') as t.IMonacoStandaloneThemeData; // eslint-disable-line
   themeData.colors = {
     ...themeData.colors,
@@ -33,5 +33,5 @@ export function theme(api: t.IMonaco) {
     // 'scrollbarSlider.hoverBackground': '#2B313E',
   };
 
-  api.editor.defineTheme(MONACO.THEME, themeData);
+  api.monaco.editor.defineTheme(MONACO.THEME, themeData);
 }

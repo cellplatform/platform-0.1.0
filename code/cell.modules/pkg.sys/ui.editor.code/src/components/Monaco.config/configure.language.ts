@@ -14,8 +14,8 @@ import * as util from './util';
 /**
  * Configure language (typescript) settings of the IDE.
  */
-export async function language(api: t.IMonaco) {
-  const typescript = api.languages.typescript;
+export async function language(api: t.IMonacoSingleton) {
+  const typescript = api.monaco.languages.typescript;
   const typescriptDefaults = typescript.typescriptDefaults;
 
   /**
@@ -45,12 +45,12 @@ export async function language(api: t.IMonaco) {
   /* eslint-disable */
 
   // @ts-ignore
-  const es = await import('./libs-es.d.yml');
-  await addFromYaml(es.libs);
+  // const es = await import('./libs-es.d.yml');
+  // await addFromYaml(es.libs);
 
   // @ts-ignore
-  const cell = await import('./libs-cell.d.yml');
-  await addFromYaml(cell.libs);
+  // const cell = await import('./libs-cell.d.yml');
+  // await addFromYaml(cell.libs);
 
   /* eslint-enable */
 }

@@ -1,8 +1,7 @@
 import { monaco } from '@monaco-editor/react';
 
 import { t } from '../../common';
-import { registerPrettier } from '../Monaco.config/configure.prettier';
-import { theme } from '../Monaco.config/configure.theme';
+import { configure } from '../Monaco.config';
 import { MonacoSingleton } from './Monaco.singleton';
 
 let singleton: Promise<t.IMonacoSingleton>;
@@ -23,20 +22,17 @@ export const Monaco = {
     }
 
     singleton = new Promise<t.IMonacoSingleton>(async (resolve, reject) => {
-      console.log('monaco', monaco);
-
       try {
-        const api = (await monaco.init()) as t.IMonaco;
-        // m.
-        // configure.theme(m)
-        console.log('theme', theme);
+        // Initialize
+        const api = MonacoSingleton.create((await monaco.init()) as t.IMonaco);
 
         // Run configuration routines.
-        theme(api);
-        registerPrettier(api);
+        configure.theme(api);
+        configure.language(api);
+        configure.registerPrettier(api);
 
         // Finish up.
-        resolve(MonacoSingleton.create(api));
+        resolve(api);
       } catch (error) {
         reject(error);
       }
