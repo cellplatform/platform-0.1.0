@@ -1,6 +1,5 @@
 import { log, logger, t, time, fs, defaultValue, R, DEFAULT } from '../common';
-import { NodeVM } from 'vm2';
-import { Script } from '../vm';
+import { Script, Vm } from '../vm';
 
 type R = {
   ok: boolean;
@@ -28,11 +27,9 @@ export function invoke(args: {
 
     /**
      * TODO 🐷
-     * - return value: type
-     * - piping (chain of functions) - i
+     * - return value: def-type
      * - builtin: policy security
      * - env.import() =>> from another cell.
-     * - bundle: multiple entries
      * -
      */
 
@@ -118,16 +115,10 @@ export function invoke(args: {
     const sandbox: t.Global = { env };
 
     try {
-      const vm = new NodeVM({
-        console: silent ? 'off' : 'inherit',
+      const vm = Vm.node({
+        silent,
         sandbox,
-        wasm: true,
-        require: {
-          external: true,
-          // builtin: ['os', 'tty', 'util'],
-          builtin: ['*'], // TEMP 🐷 - TODO allow only by policy
-          root: './',
-        },
+        builtin: ['*'], // TEMP 🐷 - TODO allow only by policy
       });
 
       const code = await Script.get(filename);
