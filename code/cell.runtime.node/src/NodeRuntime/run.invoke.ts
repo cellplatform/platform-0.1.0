@@ -1,6 +1,5 @@
 import { log, logger, t, time, fs, defaultValue, R, DEFAULT } from '../common';
-import { NodeVM } from 'vm2';
-import { Script } from '../vm';
+import { Script, Vm } from '../vm';
 
 type R = {
   ok: boolean;
@@ -24,14 +23,13 @@ export function invoke(args: {
   return new Promise<R>(async (resolve) => {
     const { silent, manifest, dir } = args;
     const entry = (args.entry || manifest.entry || '').trim();
+    const filename = fs.join(dir, entry);
 
     /**
      * TODO 🐷
-     * - return value: type
-     * - piping (chain of functions) - i
+     * - return value: def-type
      * - builtin: policy security
      * - env.import() =>> from another cell.
-     * - bundle: multiple entries
      * -
      */
 
@@ -89,6 +87,12 @@ export function invoke(args: {
       return done();
     }
 
+    if (!(await fs.pathExists(filename))) {
+      addError(`Entry file does not exist '${entry}'`);
+      prepComplete();
+      return done();
+    }
+
     const env: t.GlobalEnv = {
       in: R.clone({
         value: args.in?.value,
@@ -111,18 +115,13 @@ export function invoke(args: {
     const sandbox: t.Global = { env };
 
     try {
-      const vm = new NodeVM({
-        console: silent ? 'off' : 'inherit',
+      const vm = Vm.node({
+        silent,
         sandbox,
-        require: {
-          external: true,
-          // builtin: ['os', 'tty', 'util'],
-          builtin: ['*'], // TEMP 🐷 - TODO allow only by policy
-          root: './',
-        },
+        builtin: ['*'], // TEMP 🐷 - TODO allow only by policy
       });
 
-      const code = await Script.get(fs.join(dir, entry));
+      const code = await Script.get(filename);
       prepComplete();
       vm.run(code.script);
     } catch (error) {

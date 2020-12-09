@@ -23,12 +23,12 @@ export type GlobalEnv = {
   out: GlobalEnvOut;
 };
 
-export type GlobalEnvOut = {
+export type GlobalEnvOut<J extends t.Json = t.Json> = {
   /**
    * Signals that a function has completed,
    * optionally returning a result value.
    */
-  done<T extends t.JsonMap>(value?: T): void;
+  done<T extends t.Json = J>(value?: T): void;
 
   /**
    * Set the content-type (mime-type) of the return value.

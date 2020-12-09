@@ -1,4 +1,4 @@
-import { defaultValue, id, t, util, R } from '../common';
+import { value, defaultValue, id, t, util, R } from '../common';
 
 type B = t.RuntimeBundleOrigin;
 
@@ -14,9 +14,10 @@ export async function exec(args: {
   defaultSilent?: boolean;
   defaultTimeout?: number;
   defaultOnError?: t.OnFuncError;
+  forceJson?: boolean;
 }) {
   try {
-    const { host, db, runtime, defaultPull, defaultSilent, defaultTimeout } = args;
+    const { host, db, runtime, defaultPull, defaultSilent, defaultTimeout, forceJson } = args;
     const execution: t.IResPostFunc['execution'] = Array.isArray(args.body) ? 'serial' : 'parallel';
 
     const results: t.IResPostFuncResult[] = [];
@@ -62,15 +63,28 @@ export async function exec(args: {
     const status = results.every((res) => res.ok) ? 200 : 500;
     const elapsed = results.reduce((acc, next) => acc + (next.elapsed.prep + next.elapsed.run), 0);
 
-    const data: t.IResPostFunc = {
-      ok,
-      elapsed,
-      execution,
-      runtime: { name: runtime.name, version: runtime.version },
-      results,
-    };
+    const last = results[results.length - 1]?.out;
+    const lastContentType = last?.info.headers.contentType;
 
-    return { status, data };
+    if (ok && last && lastContentType && lastContentType !== 'application/json' && !forceJson) {
+      return {
+        status,
+        data: last.value,
+        headers: value.deleteEmpty({
+          'content-type': lastContentType,
+          'content-def': last.info.headers.contentDef || '',
+        }),
+      };
+    } else {
+      const data: t.IResPostFunc = {
+        ok,
+        elapsed,
+        execution,
+        runtime: { name: runtime.name, version: runtime.version },
+        results,
+      };
+      return { status, data };
+    }
   } catch (err) {
     return util.toErrorPayload(err);
   }

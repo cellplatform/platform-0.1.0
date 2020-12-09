@@ -12,6 +12,7 @@ export type ISampleNodeInValue = {
   delay?: number;
   setContentType?: string;
   setContentDef?: string;
+  count?: number;
 };
 
 export type ISampleNodeOutValue = {

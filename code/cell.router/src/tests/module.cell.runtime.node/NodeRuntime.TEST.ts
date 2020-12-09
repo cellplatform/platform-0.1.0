@@ -16,7 +16,10 @@ export const samples = {
       .namespace('sample')
       .target('node')
       .entry(`${ENTRY.NODE}/main`)
-      .entry('dev', `${ENTRY.NODE}/dev`),
+      .entry('dev', `${ENTRY.NODE}/dev`)
+      .entry('web', `${ENTRY.NODE}/web`)
+      .entry('wasm', `${ENTRY.NODE}/wasm`)
+      .static(`${ENTRY.NODE}/static`),
   ),
 
   pipe: TestCompile.make(
@@ -26,7 +29,7 @@ export const samples = {
 };
 
 describe('cell.runtime.node: NodeRuntime', function () {
-  this.timeout(99999);
+  this.timeout(999999);
 
   /**
    * Ensure the sample [node] code as been bundled.
