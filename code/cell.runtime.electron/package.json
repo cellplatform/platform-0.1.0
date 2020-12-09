@@ -17,6 +17,7 @@
     "open": "cd app/out/make && open ."
   },
   "devDependencies": {
+    "@platform/cell.runtime": "0.10.0",
     "@platform/cli.prompt": "0.3.34",
     "@platform/ts": "4.1.0"
   },
