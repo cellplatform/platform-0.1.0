@@ -2,7 +2,7 @@ import { expect, t } from '../../test';
 import { prepare, samples, uploadBundle, ISamplePipeValue } from './util';
 
 describe('/fn:run (pipes)', function () {
-  this.timeout(99999);
+  this.timeout(999999);
 
   /**
    * Ensure the sample code as been bundled.
@@ -58,7 +58,7 @@ describe('/fn:run (pipes)', function () {
         { host, uri, dir },
         { host, uri, dir, in: input3 },
       ];
-      const res = await http.post(url.toString(), body);
+      const res = await http.post(url.query({ json: true }).toString(), body); // NB: {json:true} query flag forces response to JSON even though the headers would otherwise set it to a different mime-type.
       const json = res.json as t.IResPostFunc;
       await mock.dispose();
       expect(json.ok).to.eql(true);

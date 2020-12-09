@@ -33,7 +33,7 @@ samples.dynamic.config
   .expose('./main', `${ENTRY}/dynamic-import/main`);
 
 describe('cell.runtime.node: vm2 (lib) - secure runtime checks', function () {
-  this.timeout(99999);
+  this.timeout(999999);
 
   before(async () => {
     const force = false;

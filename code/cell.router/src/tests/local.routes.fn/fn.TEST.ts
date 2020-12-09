@@ -9,7 +9,7 @@ import {
 } from './util';
 
 describe('/fn:run', function () {
-  this.timeout(99999);
+  this.timeout(999999);
 
   /**
    * Ensure the sample node code as been bundled.

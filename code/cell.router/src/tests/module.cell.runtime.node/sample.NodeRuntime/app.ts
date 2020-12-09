@@ -1,5 +1,4 @@
 import * as t from './types';
-
 const params = (env.in.value || {}) as t.ISampleNodeInValue;
 
 import { log } from '@platform/log/lib/server';

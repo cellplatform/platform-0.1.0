@@ -26,8 +26,9 @@ export function init(args: { db: t.IDb; router: t.IRouter; runtime?: t.RuntimeEn
       const defaultSilent = query.silent;
       const defaultTimeout = query.timeout;
       const defaultOnError = query.onError;
+      const forceJson = query.json;
 
-      return exec({
+      const res = await exec({
         host,
         db,
         runtime,
@@ -36,7 +37,10 @@ export function init(args: { db: t.IDb; router: t.IRouter; runtime?: t.RuntimeEn
         defaultSilent,
         defaultTimeout,
         defaultOnError,
+        forceJson,
       });
+
+      return res;
     } catch (err) {
       return util.toErrorPayload(err);
     }

@@ -8,6 +8,7 @@ export type IReqQueryFunc = {
   silent?: boolean; //      Sets default "silent" flag when not specified within individual body payload.
   timeout?: number; //      Sets default "timeout" (msecs) when not specified within individual body payload.
   onError?: OnFuncError; // Sets default "onError" behavior when not specified within individual body payload.
+  json?: boolean; //        Force the response to "application/json" even if executing function sets different [contentType] response.
 };
 
 export type IReqPostFuncBody = IReqPostFuncSerial | IReqPostFuncParallel;

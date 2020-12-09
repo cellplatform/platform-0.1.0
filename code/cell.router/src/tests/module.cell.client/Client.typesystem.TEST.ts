@@ -5,7 +5,7 @@ import { Client, createMock, ERROR, expect, fs, t, time, TYPE_DEFS } from '../..
 import * as g from '../.d.ts/all';
 
 describe('Client.TypeSystem', function () {
-  this.timeout(99999);
+  this.timeout(999999);
 
   it('from host (origin)', async () => {
     const client = Client.typesystem('localhost:1234');

@@ -13,7 +13,7 @@ const testFile = async (filename: string, fileData: t.Json) => {
 };
 
 describe('HttpClient (Integration)', function () {
-  this.timeout(99999);
+  this.timeout(999999);
 
   describe('upload', () => {
     const client = HttpClient.create(HOST1);
