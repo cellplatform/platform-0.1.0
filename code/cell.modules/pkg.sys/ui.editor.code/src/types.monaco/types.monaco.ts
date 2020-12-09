@@ -15,8 +15,17 @@ export type IMonaco = {
  */
 export type IMonacoCancellationToken = {
   isCancellationRequested: boolean;
-  onCancellationRequested: IMonacoEvent<any>;
+  onCancellationRequested: MonacoOnCancellationRequested;
 };
+
+/**
+ * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.cancellationtoken.html#iscancellationrequested
+ */
+export type MonacoOnCancellationRequested = (
+  listener: (e: any) => any,
+  thisArgs?: any,
+  disposables?: t.IDisposable[],
+) => t.IDisposable;
 
 /**
  * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.ievent.html
@@ -24,6 +33,11 @@ export type IMonacoCancellationToken = {
 export type IMonacoEvent<T> = t.Object;
 
 /**
- * https://microsoft.github.io/monaco-editor/api/classes/monaco.range.html
+ * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.irange.html
  */
-export type IMonacoRange = t.Object;
+export type IMonacoRange = {
+  endColumn: number;
+  startColumn: number;
+  endLineNumber: number;
+  startLineNumber: number;
+};

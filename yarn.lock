@@ -1735,7 +1735,7 @@
     "@babel/runtime" "^7.11.0"
     state-local "^1.0.1"
 
-"@monaco-editor/react@^3.7.0":
+"@monaco-editor/react@^3.7.2":
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-3.7.2.tgz#66e4f2301981355f0794402118d947780c0c260b"
   integrity sha512-/MVCQKMOysDA437KgEinvFgYPDcIk1yUvZ7S+GrBCHP+6WTWFLejToc+YEX7zhBbJq4BdzX8bSIFaNvcFEzaDg==

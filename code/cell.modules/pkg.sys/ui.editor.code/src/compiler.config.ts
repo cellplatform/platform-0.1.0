@@ -8,15 +8,17 @@ export default () =>
       config
         .target('web')
         .port(Package.compiler.port)
+
         .entry({
           main: './src/test/entry',
           'service.worker': './src/workers/service.worker',
         })
         .static('./static')
         .files((config) => config.redirect(false, 'static/**').redirect(false, '*.worker.js'))
+
         .shared((config) => config.add(config.dependencies).singleton(['react', 'react-dom']))
         .expose('./Dev', './src/test/Dev')
-        .expose('./Editor', './src/components/Editor'),
+        .expose('./CodeEditor', './src/components/CodeEditor'),
     )
 
     .beforeCompile((e) => {

@@ -17,7 +17,7 @@
     "copy": "ts-node -T src/node/fs.copy/run"
   },
   "dependencies": {
-    "@monaco-editor/react": "^3.7.0",
+    "@monaco-editor/react": "^3.7.2",
     "monaco-editor": "^0.21.2"
   },
   "devDependencies": {
