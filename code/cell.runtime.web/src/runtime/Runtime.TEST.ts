@@ -1,7 +1,7 @@
 import { Runtime } from '.';
 import { expect, t } from '../test';
 
-const __CELL__: t.RuntimeBundle = {
+const __CELL__: t.RuntimeModule = {
   module: { name: 'my-module', version: '1.2.3' },
   origin: {
     host: 'foo.com',
@@ -10,7 +10,7 @@ const __CELL__: t.RuntimeBundle = {
   },
 };
 
-const modify = (origin: Partial<t.RuntimeBundleOrigin>): t.RuntimeBundle => {
+const modify = (origin: Partial<t.RuntimeBundleOrigin>): t.RuntimeModule => {
   return {
     ...__CELL__,
     origin: { ...__CELL__.origin, ...origin } as t.RuntimeBundleOrigin,

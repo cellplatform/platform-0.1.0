@@ -2,6 +2,7 @@
   "name": "@platform/cell.runtime.web",
   "version": "0.1.10",
   "main": "lib/index",
+  "types": "lib/index.d.ts",
   "scripts": {
     "test": "ts test",
     "lint": "ts lint",
@@ -9,11 +10,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.client": "0.3.31",
-    "@platform/cell.schema": "0.5.41",
-    "@platform/cell.types": "0.5.42",
-    "@platform/exec": "0.2.70",
-    "@platform/fs": "0.6.3",
+    "@platform/cell.runtime": "0.10.0",
     "react": "17.0.1",
     "react-dom": "17.0.1"
   },

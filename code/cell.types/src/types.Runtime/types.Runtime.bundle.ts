@@ -1,6 +1,6 @@
 import { t } from '../common';
 
-export type RuntimeBundle = {
+export type RuntimeModule = {
   module: { name: string; version: string };
   origin?: t.RuntimeBundleOrigin;
 };

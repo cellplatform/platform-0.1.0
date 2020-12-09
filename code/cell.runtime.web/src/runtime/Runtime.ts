@@ -1,9 +1,9 @@
 import { Uri, Urls } from '@platform/cell.schema';
-import { RuntimeBundle } from '../types';
+import { RuntimeModule } from '../types';
 
 import { remote } from './remote';
 
-const toEnv = (input?: RuntimeBundle) => {
+const toEnv = (input?: RuntimeModule) => {
   return !input && typeof __CELL__ !== 'undefined' ? __CELL__ : input;
 };
 
@@ -18,7 +18,7 @@ export const Runtime = {
    * See compiler plugins:
    *    -  wp.plugin.env => [DefinePlugin]
    */
-  origin(input?: RuntimeBundle) {
+  origin(input?: RuntimeModule) {
     input = toEnv(input);
     const location = typeof window === 'object' ? window.location : undefined;
     const origin = input?.origin;
@@ -44,9 +44,9 @@ export const Runtime = {
   /**
    * Extract module information from __CELL__.
    */
-  module(input?: RuntimeBundle) {
+  module(input?: RuntimeModule) {
     input = toEnv(input);
-    const module: RuntimeBundle['module'] = input?.module || { name: '', version: '' };
+    const module: RuntimeModule['module'] = input?.module || { name: '', version: '' };
     return module;
   },
 };
