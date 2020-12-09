@@ -21,7 +21,7 @@ export const Monaco = {
       return singleton;
     }
 
-    singleton = new Promise<t.IMonacoSingleton>(async (resolve, reject) => {
+    return (singleton = new Promise<t.IMonacoSingleton>(async (resolve, reject) => {
       try {
         // Initialize
         const api = MonacoSingleton.create((await monaco.init()) as t.IMonaco);
@@ -36,8 +36,6 @@ export const Monaco = {
       } catch (error) {
         reject(error);
       }
-    });
-
-    return singleton;
+    }));
   },
 };

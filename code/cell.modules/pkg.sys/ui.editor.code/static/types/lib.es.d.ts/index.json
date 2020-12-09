@@ -1,0 +1,50 @@
+{
+  "hash": "sha256-c2289afe0d897d3412f529f73acca742fcd8651b5307996746f0fd3a1342f8fa",
+  "files": [
+    {
+      "filename": "lib.es5.d.ts",
+      "filehash": "sha256-69f0c334b0ee4235f6219b22f42e4fa04b414535c782b4dda793ed1918cc835c",
+      "bytes": 211035
+    },
+    {
+      "filename": "lib.es2015.core.d.ts",
+      "filehash": "sha256-46ee15e9fefa913333b61eaf6b18885900b139867d89832a515059b62cf16a17",
+      "bytes": 20422
+    },
+    {
+      "filename": "lib.es2015.collection.d.ts",
+      "filehash": "sha256-43fb1d932e4966a39a41b464a12a81899d9ae5f2c829063f5571b6b87e6d2f9c",
+      "bytes": 2903
+    },
+    {
+      "filename": "lib.es2015.generator.d.ts",
+      "filehash": "sha256-cdccba9a388c2ee3fd6ad4018c640a471a6c060e96f1232062223063b0a5ac6a",
+      "bytes": 2614
+    },
+    {
+      "filename": "lib.es2015.promise.d.ts",
+      "filehash": "sha256-2bb4b3927299434052b37851a47bf5c39764f2ba88a888a107b32262e9292b7c",
+      "bytes": 7275
+    },
+    {
+      "filename": "lib.es2015.iterable.d.ts",
+      "filehash": "sha256-8b2a5df1ce95f78f6b74f1a555ccdb6baab0486b42d8345e0871dd82811f9b9a",
+      "bytes": 15610
+    },
+    {
+      "filename": "lib.es2015.proxy.d.ts",
+      "filehash": "sha256-7207e317a2cb07a177e7d963ab7b8c0e85dde7f9ddb50351f830239bf597569e",
+      "bytes": 1933
+    },
+    {
+      "filename": "lib.es2015.reflect.d.ts",
+      "filehash": "sha256-cb609802a8698aa28b9c56331d4b53f590ca3c1c3a255350304ae3d06017779d",
+      "bytes": 1922
+    },
+    {
+      "filename": "lib.es2015.symbol.d.ts",
+      "filehash": "sha256-3013574108c36fd3aaca79764002b3717da09725a36a6fc02eac386593110f93",
+      "bytes": 1678
+    }
+  ]
+}

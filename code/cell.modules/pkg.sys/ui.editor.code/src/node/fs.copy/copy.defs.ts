@@ -1,4 +1,4 @@
-import { fs, log, NODE_MODULES } from '../common';
+import { fs, log, NODE_MODULES, t, hash } from '../common';
 
 type FilterLine = (line: string) => boolean;
 
@@ -20,17 +20,15 @@ function copy(args: {
   filenames: string[];
   sourceDir: string;
   targetDir?: string;
-  targetYaml?: string;
   format?: (input: string) => string;
   filterLine?: FilterLine;
 }) {
-  const { sourceDir, targetDir, targetYaml, filenames, filterLine } = args;
+  const { sourceDir, targetDir, filenames, filterLine } = args;
+  const manifest: t.TypeFileManifest = { hash: '', files: [] };
 
   if (targetDir) {
     fs.ensureDirSync(targetDir);
   }
-
-  const libs: { [name: string]: string } = {};
 
   filenames.map((filename) => {
     const sourceFile = fs.join(sourceDir, filename);
@@ -44,20 +42,26 @@ function copy(args: {
 
     text = args.format ? args.format(text) : text;
 
-    libs[filename] = text;
-
     if (targetDir) {
+      // Copy the file.
       const path = fs.join(targetDir, filename);
       fs.writeFile(path, text);
       log.info.gray(` • ${trimBase(targetDir)}/${log.green(filename)}`);
+
+      // Add the file to the manifest.
+      // const buffer = fs.readFileSync(path);
+      manifest.files.push({
+        filename,
+        filehash: hash.sha256(file),
+        bytes: file.byteLength,
+      });
     }
   });
 
-  if (targetYaml) {
-    const file = targetYaml;
-    fs.file.stringifyAndSaveSync(file, { libs });
-    log.info();
-    log.info.gray(`Saved to ${log.white(trimBase(file))}`);
+  if (targetDir) {
+    manifest.hash = hash.sha256(manifest.files.map((file) => file.filehash));
+    const path = fs.join(targetDir, 'index.json');
+    fs.writeFileSync(path, JSON.stringify(manifest, null, '  '));
   }
 
   log.info();
@@ -79,13 +83,12 @@ function copyEcmaScript() {
     'lib.es2015.symbol.d.ts',
   ];
   const sourceDir = fs.join(NODE_MODULES, 'typescript/lib');
-  const targetDir = fs.resolve('lib.es.d.ts');
-  const targetYaml = fs.resolve('src/components/Monaco.config/libs-es.d.yml');
+  const targetDir = fs.resolve('static/types/lib.es.d.ts');
+
   copy({
     filenames,
     sourceDir,
     targetDir,
-    targetYaml,
     filterLine: (line) => {
       /**
        * NOTE:
@@ -109,15 +112,13 @@ function copyEcmaScript() {
  */
 function copyCellTypes() {
   const sourceDir = fs.join(NODE_MODULES, '@platform/cell.types/lib/types');
-  const targetDir = fs.resolve('lib.cell.d.ts');
-  const targetYaml = fs.resolve('src/components/Monaco.config/libs-cell.d.yml');
-
+  const targetDir = fs.resolve('static/types/lib.cell.d.ts');
   const filenames = fs.readdirSync(sourceDir).filter((name) => name.endsWith('.d.ts'));
+
   copy({
     filenames,
     sourceDir,
     targetDir,
-    targetYaml,
     format: (text) => {
       const lines = text.split('\n').map((line) => {
         // NB: All the import refs are to be ignored as the Monaco editor

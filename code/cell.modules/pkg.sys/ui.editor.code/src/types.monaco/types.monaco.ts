@@ -28,11 +28,6 @@ export type MonacoOnCancellationRequested = (
 ) => t.IDisposable;
 
 /**
- * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.ievent.html
- */
-export type IMonacoEvent<T> = t.Object;
-
-/**
  * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.irange.html
  */
 export type IMonacoRange = {
