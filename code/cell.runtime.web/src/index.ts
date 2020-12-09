@@ -1,1 +1,1 @@
-export { WebRuntime } from './runtime.web';
+export { WebRuntime } from './WebRuntime';
