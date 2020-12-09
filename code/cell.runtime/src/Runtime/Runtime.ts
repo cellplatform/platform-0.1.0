@@ -25,16 +25,16 @@ export const Runtime = {
     }
 
     const host = origin?.host || location?.host || 'localhost:3000';
-    const cell = origin?.uri || 'cell:dev:A1';
+    const uri = origin?.uri || 'cell:dev:A1';
     const dir = trimSlash(origin?.dir || '');
     const urls = Urls.create(host);
 
     const path = (path: string) =>
       dev
         ? `${urls.origin}/${trimSlash(path)}`
-        : urls.cell(cell).file.byName(prepend(dir, path)).toString();
+        : urls.cell(uri).file.byName(prepend(dir, path)).toString();
 
-    return { dev, host, cell, dir, path };
+    return { dev, host, uri, dir, path };
   },
 
   /**

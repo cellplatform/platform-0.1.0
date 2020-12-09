@@ -3,9 +3,7 @@ import { t } from '../common';
 /**
  * Global context for executing [node] code.
  */
-export type Global = {
-  env: GlobalEnv;
-};
+export type Global = { env: GlobalEnv };
 
 /**
  * The injected node environment context.

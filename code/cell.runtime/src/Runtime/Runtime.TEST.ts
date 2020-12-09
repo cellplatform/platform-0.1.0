@@ -37,7 +37,7 @@ describe('Runtime', () => {
       it('from <nothing>', () => {
         const bundle = Runtime.origin();
         expect(bundle.host).to.eql('localhost:3000');
-        expect(bundle.cell).to.eql('cell:dev:A1');
+        expect(bundle.uri).to.eql('cell:dev:A1');
         expect(bundle.dir).to.eql('');
         expect(bundle.dev).to.eql(true);
       });
@@ -45,7 +45,7 @@ describe('Runtime', () => {
       it('from __CELL__', () => {
         const bundle = Runtime.origin(__CELL__);
         expect(bundle.host).to.eql('foo.com');
-        expect(bundle.cell).to.eql('cell:foo:A1');
+        expect(bundle.uri).to.eql('cell:foo:A1');
         expect(bundle.dir).to.eql('foobar');
         expect(bundle.dev).to.eql(false);
       });
