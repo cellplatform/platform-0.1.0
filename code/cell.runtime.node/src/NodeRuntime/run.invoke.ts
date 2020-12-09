@@ -46,7 +46,7 @@ export function invoke(args: {
       done();
     });
 
-    const prepComplete = () => {
+    const preparationComplete = () => {
       elapsed.prep = timer.elapsed.msec;
       timer.reset(); // NB: Restart timer to get a read on the "running" execution time.
     };
@@ -83,13 +83,13 @@ export function invoke(args: {
 
     if (args.hash && args.hash !== manifest.hash) {
       addError(`Bundle manifest does not match requested hash '${args.hash}'.`);
-      prepComplete();
+      preparationComplete();
       return done();
     }
 
     if (!(await fs.pathExists(filename))) {
       addError(`Entry file does not exist '${entry}'`);
-      prepComplete();
+      preparationComplete();
       return done();
     }
 
@@ -115,14 +115,11 @@ export function invoke(args: {
     const sandbox: t.Global = { env };
 
     try {
-      const vm = Vm.node({
-        silent,
-        sandbox,
-        builtin: ['*'], // TEMP 🐷 - TODO allow only by policy
-      });
-
+      const builtin = ['*']; // TEMP 🐷 - TODO allow only by policy
+      const vm = Vm.node({ silent, sandbox, builtin });
       const code = await Script.get(filename);
-      prepComplete();
+      preparationComplete(); // Stop the "preparation" timer.
+
       vm.run(code.script);
     } catch (error) {
       ok = false;
