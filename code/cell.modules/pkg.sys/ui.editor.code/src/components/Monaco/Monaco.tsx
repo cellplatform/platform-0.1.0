@@ -27,9 +27,11 @@ export const Monaco = {
         const api = MonacoSingleton.create((await monaco.init()) as t.IMonaco);
 
         // Run configuration routines.
-        configure.theme(api);
-        configure.language(api);
-        configure.registerPrettier(api);
+        await Promise.all([
+          configure.theme(api),
+          configure.language(api),
+          configure.registerPrettier(api),
+        ]);
 
         // Finish up.
         resolve(api);

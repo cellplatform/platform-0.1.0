@@ -28,9 +28,7 @@ monaco.config({ paths: { vs } });
  */
 export const MonacoEditor: React.FC = () => {
   useEffect(() => {
-    console.log('use');
     // Ensure the (singleton) API is initialized and configured.
-
     Monaco.singleton();
 
     return () => {

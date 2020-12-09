@@ -30,11 +30,15 @@ function copy(args: {
     fs.ensureDirSync(targetDir);
   }
 
-  filenames.map((filename) => {
-    const sourceFile = fs.join(sourceDir, filename);
-    const file = fs.readFileSync(sourceFile);
+  filenames.map((item) => {
+    const filename = {
+      ts: item,
+      txt: item.replace(/\.ts$/, '.txt'), // NB: ".ts" files are served with wrong mime-type.  Change to plain text file ("text/plain")
+    };
+    const sourceFile = fs.join(sourceDir, filename.ts);
+    const data = fs.readFileSync(sourceFile);
 
-    let text = file.toString();
+    let text = data.toString();
     if (filterLine) {
       const lines = text.split('\n').filter((line) => filterLine(line));
       text = lines.join('\n');
@@ -43,17 +47,16 @@ function copy(args: {
     text = args.format ? args.format(text) : text;
 
     if (targetDir) {
-      // Copy the file.
-      const path = fs.join(targetDir, filename);
+      // Copy file.
+      const path = fs.join(targetDir, filename.txt);
       fs.writeFile(path, text);
-      log.info.gray(` • ${trimBase(targetDir)}/${log.green(filename)}`);
+      log.info.gray(` • ${trimBase(targetDir)}/${log.green(filename.ts)} (.txt)`);
 
       // Add the file to the manifest.
-      // const buffer = fs.readFileSync(path);
       manifest.files.push({
-        filename,
-        filehash: hash.sha256(file),
-        bytes: file.byteLength,
+        filename: filename.txt,
+        filehash: hash.sha256(data),
+        bytes: fs.readFileSync(path).byteLength,
       });
     }
   });
