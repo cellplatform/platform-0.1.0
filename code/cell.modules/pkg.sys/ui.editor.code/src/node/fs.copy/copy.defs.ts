@@ -19,16 +19,15 @@ export function copyDefs() {
 function copy(args: {
   filenames: string[];
   sourceDir: string;
-  targetDir?: string;
+  targetDir: string;
   format?: (input: string) => string;
   filterLine?: FilterLine;
 }) {
   const { sourceDir, targetDir, filenames, filterLine } = args;
   const manifest: t.TypeFileManifest = { hash: '', files: [] };
 
-  if (targetDir) {
-    fs.ensureDirSync(targetDir);
-  }
+  fs.removeSync(targetDir);
+  fs.ensureDirSync(targetDir);
 
   filenames.map((item) => {
     const filename = {
@@ -46,7 +45,7 @@ function copy(args: {
 
     text = args.format ? args.format(text) : text;
 
-    if (targetDir) {
+    if (text.length > 0) {
       // Copy file.
       const path = fs.join(targetDir, filename.txt);
       fs.writeFileSync(path, text);
@@ -61,13 +60,13 @@ function copy(args: {
     }
   });
 
-  if (targetDir) {
-    manifest.hash = hash.sha256(manifest.files.map((file) => file.filehash));
-    const path = fs.join(targetDir, 'index.json');
-    const json = JSON.stringify(manifest, null, '  ');
-    fs.writeFileSync(path, `${json}\n`);
-  }
+  // Save manifest file.
+  manifest.hash = hash.sha256(manifest.files.map((file) => file.filehash));
+  const path = fs.join(targetDir, 'index.json');
+  const json = JSON.stringify(manifest, null, '  ');
+  fs.writeFileSync(path, `${json}\n`);
 
+  // Finish up.
   log.info();
 }
 

@@ -29,10 +29,11 @@ export const Runtime = {
     const dir = trimSlash(origin?.dir || '');
     const urls = Urls.create(host);
 
-    const path = (path: string) =>
-      dev
+    const path = (path: string) => {
+      return dev
         ? `${urls.origin}/${trimSlash(path)}`
         : urls.cell(uri).file.byName(prepend(dir, path)).toString();
+    };
 
     return { dev, host, uri, dir, path };
   },
