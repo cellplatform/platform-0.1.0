@@ -13,6 +13,7 @@ import {
   Schema,
   t,
   time,
+  ora,
 } from '../common';
 import { BundleManifest } from '../bundle';
 import { FileRedirects, FileAccess } from '../config';
@@ -76,7 +77,7 @@ export async function getManifestFile(args: { bundleDir: string; targetDir?: str
 export const upload: t.CompilerRunUpload = async (args) => {
   const timer = time.timer();
   const baseDir = fs.resolve('.');
-  const { host, targetDir, targetCell, config } = args;
+  const { host, targetDir, targetCell, config, silent } = args;
   const model = Model(args.config);
   const bundleDir = model.bundleDir;
   const redirects = config.files?.redirects;
@@ -84,6 +85,17 @@ export const upload: t.CompilerRunUpload = async (args) => {
 
   const done$ = new Subject();
   writeLogFile(log, done$);
+
+  const spinner = ora();
+  if (!silent) {
+    spinner.text = log.gray('uploading...');
+    spinner.start();
+  }
+
+  const stopSpinner = () => {
+    spinner.text = '';
+    spinner.stop();
+  };
 
   const done = (ok: boolean) => {
     const res: t.CompilerUploadResponse = { ok, files, urls: toUrls(files) };
@@ -120,6 +132,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
 
     if (!fileUpload.ok) {
       logUploadFailure({ host, bundleDir, errors: fileUpload.body.errors });
+      stopSpinner();
       return done(false);
     }
 
@@ -132,10 +145,12 @@ export const upload: t.CompilerRunUpload = async (args) => {
     );
     if (!manifestUpload.ok) {
       logUploadFailure({ host, bundleDir, errors: manifestUpload.body.errors });
+      stopSpinner();
       return done(false);
     }
 
-    if (!args.silent) {
+    if (!silent) {
+      stopSpinner();
       const elapsed = timer.elapsed.toString();
       await logUpload({ baseDir, bundleDir, targetCell, host, elapsed });
       logger.hr().newline();
