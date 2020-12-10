@@ -49,7 +49,7 @@ function copy(args: {
     if (targetDir) {
       // Copy file.
       const path = fs.join(targetDir, filename.txt);
-      fs.writeFile(path, text);
+      fs.writeFileSync(path, text);
       log.info.gray(` • ${trimBase(targetDir)}/${log.green(filename.ts)} (.txt)`);
 
       // Add the file to the manifest.
@@ -64,7 +64,8 @@ function copy(args: {
   if (targetDir) {
     manifest.hash = hash.sha256(manifest.files.map((file) => file.filehash));
     const path = fs.join(targetDir, 'index.json');
-    fs.writeFileSync(path, JSON.stringify(manifest, null, '  '));
+    const json = JSON.stringify(manifest, null, '  ');
+    fs.writeFileSync(path, `${json}\n`);
   }
 
   log.info();
@@ -114,6 +115,17 @@ function copyEcmaScript() {
  * Copy the [cell.types] declarations.
  */
 function copyCellTypes() {
+  /**
+   * TODO 🐷
+   * NOTE: These are no longer the set of libs to copy.
+   * Should be just the selection of libs for the environment.
+   * See:
+   *
+   *    cell.types/types.Runtime/types.inner.env
+   *
+   *
+   */
+
   const sourceDir = fs.join(NODE_MODULES, '@platform/cell.types/lib/types');
   const targetDir = fs.resolve('static/types/lib.cell.d.ts');
   const filenames = fs.readdirSync(sourceDir).filter((name) => name.endsWith('.d.ts'));
