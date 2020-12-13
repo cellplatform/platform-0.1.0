@@ -8,7 +8,7 @@ export type ITypedSheetPendingChanges = { [ns: string]: t.ITypedSheetChanges };
 export type TypedSheetSaveEvent = ITypedSheetSavingEvent | ITypedSheetSavedEvent;
 
 export type ITypedSheetSavingEvent = {
-  type: 'SHEET/saving';
+  type: 'TypedSheet/saving';
   payload: ITypedSheetSaving;
 };
 export type ITypedSheetSaving = {
@@ -18,7 +18,7 @@ export type ITypedSheetSaving = {
 };
 
 export type ITypedSheetSavedEvent = {
-  type: 'SHEET/saved';
+  type: 'TypedSheet/saved';
   payload: ITypedSheetSaved;
 };
 export type ITypedSheetSaved = {

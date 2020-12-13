@@ -22,7 +22,7 @@ export class ChangeMonitor implements t.ITypedSheetChangeMonitor {
     // Auto-watch child REFs as they are created.
     this.event$
       .pipe(
-        filter((e) => e.type === 'SHEET/refs/loaded'),
+        filter((e) => e.type === 'TypedSheet/refs/loaded'),
         map((e) => e.payload as t.ITypedSheetRefsLoaded),
       )
       .subscribe(async (e) => {
@@ -47,7 +47,7 @@ export class ChangeMonitor implements t.ITypedSheetChangeMonitor {
       });
 
     this.changed$ = this.event$.pipe(
-      filter((e) => e.type === 'SHEET/changed'),
+      filter((e) => e.type === 'TypedSheet/changed'),
       map((e) => e.payload as t.ITypedSheetChanged),
       filter((e) => Boolean(this.item(e.sheet))),
       share(),

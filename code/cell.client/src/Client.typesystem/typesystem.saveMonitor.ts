@@ -72,13 +72,13 @@ export function saveMonitor(args: {
     event$,
 
     saving$: event$.pipe(
-      filter((e) => e.type === 'SHEET/saving'),
+      filter((e) => e.type === 'TypedSheet/saving'),
       map((e) => e.payload as t.ITypedSheetSaving),
       share(),
     ),
 
     saved$: event$.pipe(
-      filter((e) => e.type === 'SHEET/saved'),
+      filter((e) => e.type === 'TypedSheet/saved'),
       map((e) => e.payload as t.ITypedSheetSaved),
       share(),
     ),

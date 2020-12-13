@@ -133,7 +133,7 @@ describe('TypeCache', () => {
         expect((res1.cells || {}).B2?.value).to.eql('B2');
 
         event$.next({
-          type: 'SHEET/sync',
+          type: 'TypedSheet/sync',
           payload: {
             changes: {
               uri: 'ns:foo',

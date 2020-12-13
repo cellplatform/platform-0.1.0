@@ -82,7 +82,7 @@ export class TypedSheetData<T, K extends keyof T> implements t.ITypedSheetData<T
     this._range = TypedSheetData.formatRange(args.range);
 
     // Monitor for changes.
-    rx.payload<t.ITypedSheetSyncEvent>(args.ctx.event$, 'SHEET/sync')
+    rx.payload<t.ITypedSheetSyncEvent>(args.ctx.event$, 'TypedSheet/sync')
       .pipe(filter((e) => this.isThisSheet(e.changes.uri)))
       .subscribe((e) => {
         // Increase the "total rows" count if required.
@@ -181,7 +181,7 @@ export class TypedSheetData<T, K extends keyof T> implements t.ITypedSheetData<T
       // Fire BEFORE event.
       const sheet = this._sheet;
       this.fire({
-        type: 'SHEET/loading',
+        type: 'TypedSheet/loading',
         payload: { sheet, range: query },
       });
 
@@ -209,7 +209,7 @@ export class TypedSheetData<T, K extends keyof T> implements t.ITypedSheetData<T
 
       // Fire AFTER event.
       this.fire({
-        type: 'SHEET/loaded',
+        type: 'TypedSheet/loaded',
         payload: {
           sheet,
           range: this.range,

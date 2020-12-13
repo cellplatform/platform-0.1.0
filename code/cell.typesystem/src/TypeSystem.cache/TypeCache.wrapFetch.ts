@@ -29,7 +29,7 @@ export function wrapFetch(
 
   // Patch cache on sync events.
   if (event$) {
-    rx.payload<t.ITypedSheetSyncEvent>(event$, 'SHEET/sync').subscribe((e) => {
+    rx.payload<t.ITypedSheetSyncEvent>(event$, 'TypedSheet/sync').subscribe((e) => {
       const key = fetchKey('getCells', e.changes.uri);
       const entry = cache.get<C>(key);
       if (entry) {

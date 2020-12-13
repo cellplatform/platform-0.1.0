@@ -60,14 +60,14 @@ export class TypedSheetState implements t.ITypedSheetState {
     this.event$ = this._event$.pipe(takeUntil(this._dispose$), share());
 
     this.change$ = this.event$.pipe(
-      filter((e) => e.type === 'SHEET/change'),
+      filter((e) => e.type === 'TypedSheet/change'),
       map((e) => e.payload as t.ITypedSheetChange),
       filter((e) => this.isWithinNamespace(e.ns)),
       share(),
     );
 
     this.changed$ = this.event$.pipe(
-      filter((e) => e.type === 'SHEET/changed'),
+      filter((e) => e.type === 'TypedSheet/changed'),
       map((e) => e.payload as t.ITypedSheetChanged),
       filter((e) => this.isWithinNamespace(e.sheet.uri.toString())),
       share(),
@@ -87,20 +87,23 @@ export class TypedSheetState implements t.ITypedSheetState {
       .pipe(filter((e) => e.kind === 'NS'))
       .subscribe(({ to }) => this.fireNsChanged({ to }));
 
-    rx.payload<t.ITypedSheetSyncEvent>(this.event$, 'SHEET/sync')
+    rx.payload<t.ITypedSheetSyncEvent>(this.event$, 'TypedSheet/sync')
       .pipe(
         filter((e) => this.isThisSheet(e.changes.uri)),
         delay(0), // NB: Cause handler to run after all child rows (etc) have had a chance to react to this event.
       )
       .subscribe((e) => {
-        this.fire({ type: 'SHEET/synced', payload: { sheet: this._sheet, changes: e.changes } });
+        this.fire({
+          type: 'TypedSheet/synced',
+          payload: { sheet: this._sheet, changes: e.changes },
+        });
       });
 
-    rx.payload<t.ITypedSheetSyncedEvent>(this.event$, 'SHEET/synced')
+    rx.payload<t.ITypedSheetSyncedEvent>(this.event$, 'TypedSheet/synced')
       .pipe(filter((e) => e.sheet === this._sheet))
       .subscribe(() => this.fireUpdated('SYNC'));
 
-    rx.payload<t.ITypedSheetChangedEvent>(this.event$, 'SHEET/changed')
+    rx.payload<t.ITypedSheetChangedEvent>(this.event$, 'TypedSheet/changed')
       .pipe(filter((e) => e.sheet === this._sheet))
       .subscribe(() => this.fireUpdated('CHANGE'));
   }
@@ -200,7 +203,7 @@ export class TypedSheetState implements t.ITypedSheetState {
       const to = { uri };
       this._changes = { uri }; // NB: re-setting state happens after the `from` variable is copied.
       this.fire({
-        type: 'SHEET/changes/cleared',
+        type: 'TypedSheet/changes/cleared',
         payload: { sheet, from, to, action },
       });
     },
@@ -210,14 +213,14 @@ export class TypedSheetState implements t.ITypedSheetState {
     ns: <D extends N = N>(to: D) => {
       const ns = this.uri.toString();
       this.fire({
-        type: 'SHEET/change',
+        type: 'TypedSheet/change',
         payload: { kind: 'NS', ns, to },
       });
     },
     cell: <D extends C = C>(key: string, to: D) => {
       const ns = this.uri.id;
       this.fire({
-        type: 'SHEET/change',
+        type: 'TypedSheet/change',
         payload: { kind: 'CELL', ns, key, to },
       });
     },
@@ -284,7 +287,7 @@ export class TypedSheetState implements t.ITypedSheetState {
   private fireChanged(args: { change: t.ITypedSheetChangeDiff }) {
     const { change } = args;
     this.fire({
-      type: 'SHEET/changed',
+      type: 'TypedSheet/changed',
       payload: {
         sheet: this._sheet,
         change,
@@ -295,7 +298,7 @@ export class TypedSheetState implements t.ITypedSheetState {
 
   private fireUpdated(via: t.ITypedSheetUpdated['via']) {
     this.fire({
-      type: 'SHEET/updated',
+      type: 'TypedSheet/updated',
       payload: {
         via,
         sheet: this._sheet,

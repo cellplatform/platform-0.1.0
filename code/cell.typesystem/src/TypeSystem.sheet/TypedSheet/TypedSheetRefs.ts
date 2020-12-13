@@ -93,7 +93,7 @@ export class TypedSheetRefs<T, K extends keyof T> implements t.ITypedSheetRefs<T
     }
 
     this.fire({
-      type: 'SHEET/refs/loading',
+      type: 'TypedSheet/refs/loading',
       payload: { sheet: this.parent.sheet, refs: this },
     });
 
@@ -131,7 +131,7 @@ export class TypedSheetRefs<T, K extends keyof T> implements t.ITypedSheetRefs<T
       /* eslint-enable */
 
       this.fire({
-        type: 'SHEET/refs/loaded',
+        type: 'TypedSheet/refs/loaded',
         payload: { sheet: this.parent.sheet, refs: this },
       });
       resolve(this);
@@ -193,7 +193,7 @@ export class TypedSheetRefs<T, K extends keyof T> implements t.ITypedSheetRefs<T
 
       const isChanged = !R.equals(data, payload.to);
       if (isChanged) {
-        this.fire({ type: 'SHEET/change', payload });
+        this.fire({ type: 'TypedSheet/change', payload });
       }
     }
   }

@@ -34,7 +34,7 @@ export async function saveChanges(args: {
   };
 
   // Fire BEFORE event.
-  fire({ type: 'SHEET/saving', payload: { target, sheet, changes } });
+  fire({ type: 'TypedSheet/saving', payload: { target, sheet, changes } });
 
   // Invoke save request (over network).
   const res = await write({ http, changes });
@@ -47,8 +47,8 @@ export async function saveChanges(args: {
   }
 
   // Fire AFTER event(s).
-  fire({ type: 'SHEET/saved', payload: { ok, target, sheet, changes, error } });
-  fire({ type: 'SHEET/sync', payload: { changes } });
+  fire({ type: 'TypedSheet/saved', payload: { ok, target, sheet, changes, error } });
+  fire({ type: 'TypedSheet/sync', payload: { changes } });
 
   // Finish up.
   return { ok, changes, error };

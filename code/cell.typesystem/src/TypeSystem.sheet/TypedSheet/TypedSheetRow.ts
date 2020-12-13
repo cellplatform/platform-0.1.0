@@ -47,7 +47,7 @@ export class TypedSheetRow<T, K extends keyof T> implements t.ITypedSheetRow<T, 
 
     const event$ = this._ctx.event$;
     const cellChange$ = event$.pipe(
-      filter((e) => e.type === 'SHEET/change'),
+      filter((e) => e.type === 'TypedSheet/change'),
       map((e) => e.payload as t.ITypedSheetChangeCell),
       filter((e) => e.kind === 'CELL'),
       filter((e) => this.isThisSheet(e.ns)),
@@ -72,7 +72,7 @@ export class TypedSheetRow<T, K extends keyof T> implements t.ITypedSheetRow<T, 
       .subscribe((e) => this.setData(e.columnDef, e.to));
 
     // Change initiated via cache-sync.
-    rx.payload<t.ITypedSheetSyncEvent>(event$, 'SHEET/sync')
+    rx.payload<t.ITypedSheetSyncEvent>(event$, 'TypedSheet/sync')
       .pipe(
         filter((e) => this.isThisSheet(e.changes.uri)),
         filter((e) => Boolean(e.changes.cells)),
@@ -200,7 +200,7 @@ export class TypedSheetRow<T, K extends keyof T> implements t.ITypedSheetRow<T, 
       const index = this.index;
       const sheet = this._sheet;
 
-      this.fire({ type: 'SHEET/row/loading', payload: { sheet, index } });
+      this.fire({ type: 'TypedSheet/row/loading', payload: { sheet, index } });
 
       const query = `${this.uri.key}:${this.uri.key}`;
 
@@ -219,7 +219,7 @@ export class TypedSheetRow<T, K extends keyof T> implements t.ITypedSheetRow<T, 
       this._isLoaded = true; // NB: Always true after initial load.
 
       // Finish up.
-      this.fire({ type: 'SHEET/row/loaded', payload: { sheet, index } });
+      this.fire({ type: 'TypedSheet/row/loaded', payload: { sheet, index } });
       delete this._loading[cacheKey];
       resolve(self);
     });
@@ -393,7 +393,7 @@ export class TypedSheetRow<T, K extends keyof T> implements t.ITypedSheetRow<T, 
     const key = `${columnDef.column}${this.index + 1}`;
     const ns = Uri.create.ns(this.uri.ns);
     this._ctx.event$.next({
-      type: 'SHEET/change',
+      type: 'TypedSheet/change',
       payload: { kind: 'CELL', ns, key, to },
     });
   }
