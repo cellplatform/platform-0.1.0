@@ -14,6 +14,7 @@ import {
   t,
   time,
   ProgressSpinner,
+  rx,
 } from '../common';
 import { BundleManifest } from '../bundle';
 import { FileRedirects, FileAccess } from '../config';
@@ -122,7 +123,14 @@ export const upload: t.CompilerRunUpload = async (args) => {
     /**
      * [1] Perform initial upload of files (retrieving the generated file URIs).
      */
-    const fileUpload = await client.files.upload(files);
+    type E = t.IHttpClientUploadedEvent;
+    const fileUploading = client.files.upload(files);
+    rx.payload<E>(fileUploading.event$, 'HttpClient/uploaded').subscribe((e) => {
+      const { total, completed } = e;
+      spinner.update({ total, completed });
+    });
+
+    const fileUpload = await fileUploading;
 
     if (!fileUpload.ok) {
       spinner.stop();

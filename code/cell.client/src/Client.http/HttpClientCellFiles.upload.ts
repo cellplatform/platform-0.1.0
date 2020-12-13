@@ -1,20 +1,27 @@
-import { defaultValue, ERROR, FormData, Schema, t, util } from '../common';
+import { Subject } from 'rxjs';
+import { share } from 'rxjs/operators';
+
+import { defaultValue, ERROR, FormData, Schema, t, util, time, value } from '../common';
 
 type R = t.IHttpClientCellFileUploadResponse;
 
 /**
  * Upload file(s) to an endpoint.
  */
-export async function uploadFiles(args: {
+export function uploadFiles(args: {
   input: t.IHttpClientCellFileUpload | t.IHttpClientCellFileUpload[];
   http: t.IHttp;
   urls: t.IUrls;
   cellUri: string;
   changes?: boolean;
-}) {
+}): t.IHttpClientCellFilesUploadPromise {
+  const event$ = new Subject<t.IHttpClientUploadedEvent>();
+
   const promise = new Promise<t.IHttpClientResponse<R>>(async (resolve, reject) => {
     const { http, urls, cellUri } = args;
     const sendChanges = defaultValue(args.changes, false);
+
+    await time.wait(0); // NB: Pause to allow any [event$] listeners to subscribe.
 
     let input = Array.isArray(args.input) ? args.input : [args.input];
     input = input.filter((file) => file.data.byteLength > 0); // NB: 0-byte files will cause upload error.
@@ -22,7 +29,43 @@ export async function uploadFiles(args: {
     const errors: R['errors'] = [];
     const addError = (status: number, message: string) => {
       const type = ERROR.HTTP.FILE;
-      errors.push({ status, type, message });
+      const error: t.IHttpErrorFile = { status, type, message };
+      errors.push(error);
+      return error;
+    };
+
+    const event = {
+      tx: Schema.cuid(),
+      completed: 0,
+      fire(
+        args: {
+          file?: t.IHttpClientUploaded['file'];
+          error?: t.IHttpErrorFile;
+          done?: boolean;
+        } = {},
+      ) {
+        const { file, error } = args;
+
+        if (file && !error) {
+          event.completed++;
+        }
+
+        const total = input.length;
+        const completed = event.completed;
+        const done = completed >= total ? true : args.done || false;
+
+        event$.next({
+          type: 'HttpClient/uploaded',
+          payload: value.deleteUndefined({
+            uri: cellUri,
+            tx: event.tx,
+            file,
+            total,
+            completed,
+            done,
+          }),
+        });
+      },
     };
 
     const done = (status: number, options: { cell?: R['cell']; files?: R['files'] } = {}) => {
@@ -36,17 +79,17 @@ export async function uploadFiles(args: {
 
       let error: t.IHttpError | undefined;
       if (errors.length > 0) {
-        error = { type: ERROR.HTTP.FILE, status, message: 'Failed to upload.' };
+        error = { type: ERROR.HTTP.FILE, status, message: 'Failed to upload' };
       }
 
-      resolve(
-        util.toClientResponse<R>(status, responseBody, { error }),
-      );
+      event$.complete();
+      const result = util.toClientResponse<R>(status, responseBody, { error });
+      resolve(result);
     };
 
     if (input.length === 0) {
       const message = `No files provided to client to upload [${cellUri}]`;
-      addError(400, message);
+      event.fire({ error: addError(400, message), done: true });
       return done(400);
     }
 
@@ -63,6 +106,8 @@ export async function uploadFiles(args: {
       start: fileUrls.upload.query({ changes: sendChanges }).toString(),
       complete: fileUrls.uploaded.query({ changes: sendChanges }).toString(),
     };
+
+    event.fire(); // Initial event (before upload starts).
 
     /**
      * [1]. Initial POST to the service.
@@ -88,7 +133,7 @@ export async function uploadFiles(args: {
       if (typeof res1.json === 'object' && typeof (res1.json as any).message === 'string') {
         message = `${message}. ${(res1.json as any).message}`;
       }
-      addError(res1.status, message);
+      event.fire({ error: addError(res1.status, message), done: true });
       return done(res1.status);
     }
     const uploadStart = res1.json as t.IResPostCellFilesUploadStart;
@@ -137,21 +182,28 @@ export async function uploadFiles(args: {
         const isLocal = Schema.Url.isLocal(url);
         const res = await (isLocal ? uploadToLocal() : uploadToS3());
 
-        // Finish up.
+        // Prepare result.
         const { ok, status } = res;
         const { uri, filename, expiresAt } = upload;
-        return { ok, status, uri, filename, expiresAt };
+        let error: t.IFileUploadError | undefined;
+        if (!ok) {
+          const message = `Client failed while uploading file '${filename}' (${status})`;
+          error = { type: 'FILE/upload', filename, message };
+        }
+
+        // Finish up.
+        event.fire({
+          file: { filename, uri },
+          error: error ? { status, type: 'HTTP/file', message: error.message } : undefined,
+        });
+        return { ok, status, uri, filename, expiresAt, error };
       });
 
     const res2 = await Promise.all(fileUploadWait);
     const fileUploadSuccesses = res2.filter((item) => item.ok);
-    const fileUploadFails = res2.filter((item) => !item.ok);
-    const fileUploadErrors = fileUploadFails.map((item) => {
-      const { filename, status } = item;
-      const message = `Client failed while uploading file '${filename}' (${status})`;
-      const error: t.IFileUploadError = { type: 'FILE/upload', filename, message };
-      return error;
-    });
+    const fileUploadErrors = res2
+      .filter((item) => Boolean(item.error))
+      .map((item) => item.error as t.IFileUploadError);
 
     /**
      * [3]. POST "complete" for each file-upload causing
@@ -195,7 +247,7 @@ export async function uploadFiles(args: {
         const status = 500;
         let message = error.message;
         message = error.filename ? `${error.message}. Filename: ${error.filename}` : message;
-        addError(status, message);
+        event.fire({ error: addError(status, message), done: true });
       },
     );
 
@@ -204,5 +256,7 @@ export async function uploadFiles(args: {
     return done(status, { cell: cellUploadComplete.data.cell, files });
   });
 
-  return promise;
+  // Attach event stream to the returned promise.
+  (promise as any).event$ = event$.pipe(share());
+  return promise as t.IHttpClientCellFilesUploadPromise;
 }

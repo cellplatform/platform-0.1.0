@@ -1,16 +1,21 @@
 import { t } from '../common';
 
-export type HttpClientEvent = IHttpClientUploadEvent;
+export type HttpClientEvent = IHttpClientUploadedEvent;
 
 /**
  * Fires during an upload sequence.
  */
-export type IHttpClientUploadEvent = {
-  type: 'HttpClient/upload';
-  payload: IHttpClientUpload;
+export type IHttpClientUploadedEvent = {
+  type: 'HttpClient/uploaded';
+  payload: IHttpClientUploaded;
 };
 
-export type IHttpClientUpload = {
-  tx: string; // ID of the upload transaction.
-  files: t.IHttpClientCellFileUpload[];
+export type IHttpClientUploaded = {
+  tx: string; // Operation transaction id.
+  uri: string;
+  file?: { filename: string; uri: string };
+  error?: t.IFileUploadError;
+  total: number;
+  completed: number;
+  done: boolean;
 };

@@ -105,29 +105,29 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
     return util.toClientResponse<T>(200, body);
   }
 
-  public async upload(
+  public upload(
     input: t.IHttpClientCellFileUpload | t.IHttpClientCellFileUpload[],
     options: { changes?: boolean } = {},
   ) {
     const { changes } = options;
     const { http, urls } = this.args;
     const cellUri = this.uri.toString();
-    return uploadFiles({ input, http, urls, cellUri, changes }) as any;
+    return uploadFiles({ input, http, urls, cellUri, changes });
   }
 
-  public async delete(filename: string | string[]) {
+  public delete(filename: string | string[]) {
     const http = this.args.http;
     const urls = this.args.parent.url;
     return deleteFiles({ http, urls, filename, action: 'DELETE' });
   }
 
-  public async unlink(filename: string | string[]) {
+  public unlink(filename: string | string[]) {
     const http = this.args.http;
     const urls = this.args.parent.url;
     return deleteFiles({ http, urls, filename, action: 'UNLINK' });
   }
 
-  public async copy(
+  public copy(
     files: t.IHttpClientCellFileCopy | t.IHttpClientCellFileCopy[],
     options: t.IHttpClientCellFilesCopyOptions = {},
   ) {
