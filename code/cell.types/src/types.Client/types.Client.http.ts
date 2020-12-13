@@ -6,7 +6,7 @@ type Duration = string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
  * Response.
  */
 export type HttpClientBodyType = 'JSON' | 'TEXT' | 'BINARY';
-export type IHttpClientAsync<T> = Promise<IHttpClientResponse<T>>;
+export type IHttpClientAsync<T> = Promise<IHttpClientResponse<T>> & {  };
 export type IHttpClientResponse<T> = {
   ok: boolean;
   status: number;

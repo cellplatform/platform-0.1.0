@@ -5,6 +5,8 @@ type O = Record<string, unknown>;
 /**
  * [Events]
  */
+export type TypedSheetSaveEvent = ITypedSheetSavingEvent | ITypedSheetSavedEvent;
+
 export type TypedSheetEvent =
   | t.TypedSheetSaveEvent
   | ITypedSheetLoadingEvent
@@ -169,4 +171,32 @@ export type ITypedSheetUpdated = {
   via: 'SYNC' | 'CHANGE';
   sheet: t.ITypedSheet;
   changes: t.ITypedSheetChanges;
+};
+
+/**
+ * Fired when a sheet commences a save operation (from the client).
+ */
+export type ITypedSheetSavingEvent = {
+  type: 'TypedSheet/saving';
+  payload: ITypedSheetSaving;
+};
+export type ITypedSheetSaving = {
+  target: string;
+  sheet: t.ITypedSheet;
+  changes: t.ITypedSheetChanges;
+};
+
+/**
+ * Fired when a sheet completes a save operation.
+ */
+export type ITypedSheetSavedEvent = {
+  type: 'TypedSheet/saved';
+  payload: ITypedSheetSaved;
+};
+export type ITypedSheetSaved = {
+  ok: boolean;
+  target: string;
+  sheet: t.ITypedSheet;
+  changes: t.ITypedSheetChanges;
+  error?: t.IHttpError;
 };
