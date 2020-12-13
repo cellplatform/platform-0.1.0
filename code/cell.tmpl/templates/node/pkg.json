@@ -4,7 +4,6 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "node lib/index",
     "test": "ts test",
     "lint": "ts lint",
     "build": "ts build --no-esm $@",

@@ -42,5 +42,5 @@ export type IMonacoScriptTarget = {
   ES5: 1;
   ESNext: 99;
   JSON: 100;
-  Latest: 'ESNext';
+  Latest: 99;
 };

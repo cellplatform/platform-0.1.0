@@ -60,6 +60,6 @@ function ferryIpcEventsToLocalBus(args: {
     )
     .subscribe((e) => {
       const { changes } = e;
-      fire({ type: 'SHEET/sync', payload: { changes } });
+      fire({ type: 'TypedSheet/sync', payload: { changes } });
     });
 }

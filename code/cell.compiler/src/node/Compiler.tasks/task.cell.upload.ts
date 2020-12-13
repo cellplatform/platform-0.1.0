@@ -13,6 +13,8 @@ import {
   Schema,
   t,
   time,
+  ProgressSpinner,
+  rx,
 } from '../common';
 import { BundleManifest } from '../bundle';
 import { FileRedirects, FileAccess } from '../config';
@@ -76,7 +78,7 @@ export async function getManifestFile(args: { bundleDir: string; targetDir?: str
 export const upload: t.CompilerRunUpload = async (args) => {
   const timer = time.timer();
   const baseDir = fs.resolve('.');
-  const { host, targetDir, targetCell, config } = args;
+  const { host, targetDir, targetCell, config, silent } = args;
   const model = Model(args.config);
   const bundleDir = model.bundleDir;
   const redirects = config.files?.redirects;
@@ -84,6 +86,11 @@ export const upload: t.CompilerRunUpload = async (args) => {
 
   const done$ = new Subject();
   writeLogFile(log, done$);
+
+  const spinner = ProgressSpinner({ label: `uploading ${files.length} files` });
+  if (!silent) {
+    spinner.start();
+  }
 
   const done = (ok: boolean) => {
     const res: t.CompilerUploadResponse = { ok, files, urls: toUrls(files) };
@@ -116,9 +123,17 @@ export const upload: t.CompilerRunUpload = async (args) => {
     /**
      * [1] Perform initial upload of files (retrieving the generated file URIs).
      */
-    const fileUpload = await client.files.upload(files);
+    type E = t.IHttpClientUploadedEvent;
+    const fileUploading = client.files.upload(files);
+    rx.payload<E>(fileUploading.event$, 'HttpClient/uploaded').subscribe((e) => {
+      const { total, completed } = e;
+      spinner.update({ total, completed });
+    });
+
+    const fileUpload = await fileUploading;
 
     if (!fileUpload.ok) {
+      spinner.stop();
       logUploadFailure({ host, bundleDir, errors: fileUpload.body.errors });
       return done(false);
     }
@@ -131,11 +146,13 @@ export const upload: t.CompilerRunUpload = async (args) => {
       await getManifestFile({ bundleDir, targetDir }),
     );
     if (!manifestUpload.ok) {
+      spinner.stop();
       logUploadFailure({ host, bundleDir, errors: manifestUpload.body.errors });
       return done(false);
     }
 
-    if (!args.silent) {
+    if (!silent) {
+      spinner.stop();
       const elapsed = timer.elapsed.toString();
       await logUpload({ baseDir, bundleDir, targetCell, host, elapsed });
       logger.hr().newline();
@@ -145,6 +162,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
 
     return done(true);
   } catch (err) {
+    spinner.stop();
     const message = err.message.includes('ECONNREFUSED')
       ? `Ensure the local server is online. ${log.gray(host)}`
       : err.message;

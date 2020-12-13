@@ -8,5 +8,4 @@ import { Dev } from './Dev';
 /**
  * User interface.
  */
-const root = document.body.appendChild(document.createElement('div'));
-ReactDOM.render(<Dev />, root);
+ReactDOM.render(<Dev />, document.getElementById('root'));

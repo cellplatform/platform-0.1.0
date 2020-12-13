@@ -1,5 +1,7 @@
 import { t } from '../common';
 
+export type ITypedSheetPendingChanges = { [ns: string]: t.ITypedSheetChanges };
+
 type N = t.INsProps;
 type C = t.ICellData;
 

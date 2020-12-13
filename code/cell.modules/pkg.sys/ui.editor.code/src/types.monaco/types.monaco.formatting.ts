@@ -1,23 +1,37 @@
 import { t } from './common';
 
+type Result = { range: t.IMonacoRange; text: string; eol?: t.IMonacoEndOfLineSequence };
+
+export type IMonacoTextEdit = Result;
+
+/**
+ * https://microsoft.github.io/monaco-editor/api/modules/monaco.languages.html#registerdocumentformattingeditprovider
+ */
 export type MonacoRegisterDocumentFormattingEditProvider = (
   languageId: string,
-  provider: t.IMonacoDocumentFormattingEditProvider,
+  provider: t.MonacoDocumentFormattingEditProvider,
 ) => t.IDisposable;
-
-type Result = { range: t.IMonacoRange; text: string };
 
 /**
  * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.documentformattingeditprovider.html#providedocumentformattingedits
  */
-export type IMonacoDocumentFormattingEditProvider = {
+export type MonacoDocumentFormattingEditProvider = {
   displayName?: string;
   provideDocumentFormattingEdits(
     model: t.IMonacoTextModel,
     options: IMonacoFormattingOptions,
     token: t.IMonacoCancellationToken,
-  ): Promise<Result[]>;
+  ): Promise<IMonacoTextEdit[]>;
 };
+
+/**
+ * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.documentformattingeditprovider.html#providedocumentformattingedits
+ */
+export type MonacoProvideDocumentFormattingEdits = (
+  model: t.IMonacoTextModel,
+  options: IMonacoFormattingOptions,
+  token: t.IMonacoCancellationToken,
+) => Promise<IMonacoTextEdit[]>;
 
 /**
  * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.formattingoptions.html

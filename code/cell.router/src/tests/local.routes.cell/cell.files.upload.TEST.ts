@@ -1,11 +1,11 @@
 /* eslint-disable */
 import { parse as parseUrl } from 'url';
-import { createMock, expect, fs, Http, readFile, Schema, t, http } from '../../test';
+import { createMock, expect, fs, Http, readFile, Schema, t, http, is } from '../../test';
 
 describe('cell/files: upload', function () {
   this.timeout(50000);
 
-  it('upload/download: 1 file', async () => {
+  it('upload => download: 1 file', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
@@ -27,7 +27,7 @@ describe('cell/files: upload', function () {
     await mock.dispose();
   });
 
-  it('upload/download 2: files', async () => {
+  it('upload => download 2: files', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
@@ -439,6 +439,43 @@ describe('cell/files: upload', function () {
     const fileInfo = await cellClient.file.name('func.wasm').info();
     expect(fileInfo.status).to.eql(200);
     expect(fileInfo.body.data.props.bytes).to.eql(file1.length);
+
+    // Finish up.
+    await mock.dispose();
+  });
+
+  it('event: "HttpClient/upload"', async () => {
+    const mock = await createMock();
+    const cellUri = 'cell:foo:A1';
+    const client = mock.client.cell(cellUri);
+    const data = await readFile('src/test/assets/func.wasm');
+
+    const promise = client.files.upload([
+      { filename: 'file-1.wasm', data },
+      { filename: 'file-2.wasm', data },
+      { filename: 'file-3.wasm', data },
+    ]);
+    expect(is.observable(promise.event$)).to.eql(true);
+
+    const fired: t.IHttpClientUploaded[] = [];
+    promise.event$.subscribe((e) => fired.push(e.payload));
+
+    await promise;
+
+    expect(fired.length).to.eql(4);
+
+    // Initial starting event.
+    expect(fired[0].uri).to.eql('cell:foo:A1');
+    expect(fired[0].tx.length).to.greaterThan(10); // NB: cuid.
+    expect(fired[0].file).to.eql(undefined); // NB: Initial "starting" event - no file completed uploading yet.
+    expect(fired[0].error).to.eql(undefined);
+    expect(fired[0].total).to.eql(3);
+    expect(fired[0].completed).to.eql(0);
+    expect(fired[0].done).to.eql(false);
+
+    expect(fired.map((e) => e.completed)).to.eql([0, 1, 2, 3]);
+    expect(fired.map((e) => e.done)).to.eql([false, false, false, true]);
+    expect(fired.map((e) => Boolean(e.file))).to.eql([false, true, true, true]);
 
     // Finish up.
     await mock.dispose();

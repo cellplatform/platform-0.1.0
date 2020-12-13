@@ -90,7 +90,7 @@ export type IHttpClientCellFiles = {
   upload(
     files: IHttpClientCellFileUpload | IHttpClientCellFileUpload[],
     options?: IHttpClientCellFilesUploadOptions,
-  ): t.IHttpClientAsync<IHttpClientCellFileUploadResponse>;
+  ): IHttpClientCellFilesUploadPromise;
   delete(filename: string | string[]): t.IHttpClientAsync<t.IResDeleteCellFilesData>;
   unlink(filename: string | string[]): t.IHttpClientAsync<t.IResDeleteCellFilesData>;
   copy(
@@ -102,6 +102,10 @@ export type IHttpClientCellFiles = {
 export type IHttpClientCellFilesUploadOptions = {
   changes?: boolean;
   permission?: t.FsS3Permission;
+};
+
+export type IHttpClientCellFilesUploadPromise = t.IHttpClientAsync<IHttpClientCellFileUploadResponse> & {
+  event$: t.Observable<t.IHttpClientUploadedEvent>;
 };
 
 export type IHttpClientCellFilesCopyOptions = {

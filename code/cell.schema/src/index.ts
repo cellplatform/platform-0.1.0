@@ -6,4 +6,4 @@ export * from './Links';
 export * from './Ref';
 export * from './Encoding';
 
-export { ERROR, Mime, squash } from './common';
+export { ERROR, Mime, squash, hash } from './common';

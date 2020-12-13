@@ -1,5 +1,5 @@
 import React from 'react';
-import { Editor } from '../components/Editor';
+import { MonacoEditor } from '../components/Monaco';
 import { css } from '@platform/css';
 
 import { Host } from 'sys.ui.harness/src/components/Host';
@@ -21,7 +21,7 @@ export const Dev: React.FC = () => {
           background: 1,
         }}
       >
-        <Editor />
+        <MonacoEditor />
       </Host>
     </React.StrictMode>
   );

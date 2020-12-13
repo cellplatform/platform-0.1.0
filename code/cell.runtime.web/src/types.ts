@@ -1,1 +1,1 @@
-export * from '@platform/cell.types/lib/types.Runtime';
+import '@platform/cell.runtime/lib/types';

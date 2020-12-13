@@ -29,7 +29,7 @@ export async function init(args: { client: t.IClientTypesystem; event$: Subject<
 
     // Wait for save to complete.
     await rx
-      .payload<t.ITypedSheetSavedEvent>(event$, 'SHEET/saved')
+      .payload<t.ITypedSheetSavedEvent>(event$, 'TypedSheet/saved')
       .pipe(
         filter((e) => e.sheet.uri.toString() === config.ns.appData),
         take(1),

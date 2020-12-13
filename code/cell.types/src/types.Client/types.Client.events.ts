@@ -1,30 +1,21 @@
 import { t } from '../common';
 
-export type ITypedSheetPendingChanges = { [ns: string]: t.ITypedSheetChanges };
+export type HttpClientEvent = IHttpClientUploadedEvent;
 
 /**
- * Save monitor (events).
+ * Fires during an upload sequence.
  */
-export type TypedSheetSaveEvent = ITypedSheetSavingEvent | ITypedSheetSavedEvent;
-
-export type ITypedSheetSavingEvent = {
-  type: 'SHEET/saving';
-  payload: ITypedSheetSaving;
-};
-export type ITypedSheetSaving = {
-  target: string;
-  sheet: t.ITypedSheet;
-  changes: t.ITypedSheetChanges;
+export type IHttpClientUploadedEvent = {
+  type: 'HttpClient/uploaded';
+  payload: IHttpClientUploaded;
 };
 
-export type ITypedSheetSavedEvent = {
-  type: 'SHEET/saved';
-  payload: ITypedSheetSaved;
-};
-export type ITypedSheetSaved = {
-  ok: boolean;
-  target: string;
-  sheet: t.ITypedSheet;
-  changes: t.ITypedSheetChanges;
-  error?: t.IHttpError;
+export type IHttpClientUploaded = {
+  tx: string; // Operation transaction id.
+  uri: string;
+  file?: { filename: string; uri: string };
+  error?: t.IFileUploadError;
+  total: number;
+  completed: number;
+  done: boolean;
 };

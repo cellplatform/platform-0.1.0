@@ -10,14 +10,14 @@ import * as t from './types';
 export function init(args: t.IArgs) {
   const model = Model(args.model);
   const PKG = constants.PKG;
-  const env: t.RuntimeBundle = {
+  const json: t.RuntimeModule = {
     ...model.env,
     module: { name: PKG.name || '', version: PKG.version || '' },
   };
-  if (args.isDev && !env.origin) {
-    env.origin = { host: `localhost:${model.port()}`, uri: 'cell:dev:A1' };
+  if (args.isDev && !json.origin) {
+    json.origin = { host: `localhost:${model.port()}`, uri: 'cell:dev:A1' };
   }
   return new DefinePlugin({
-    __CELL__: JSON.stringify(env),
+    __CELL__: JSON.stringify(json),
   });
 }

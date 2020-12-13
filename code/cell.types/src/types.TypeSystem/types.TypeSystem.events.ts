@@ -5,6 +5,8 @@ type O = Record<string, unknown>;
 /**
  * [Events]
  */
+export type TypedSheetSaveEvent = ITypedSheetSavingEvent | ITypedSheetSavedEvent;
+
 export type TypedSheetEvent =
   | t.TypedSheetSaveEvent
   | ITypedSheetLoadingEvent
@@ -24,7 +26,7 @@ export type TypedSheetEvent =
  * Fires when a sheet cursor commences loading.
  */
 export type ITypedSheetLoadingEvent = {
-  type: 'SHEET/loading';
+  type: 'TypedSheet/loading';
   payload: ITypedSheetLoading;
 };
 export type ITypedSheetLoading = {
@@ -36,7 +38,7 @@ export type ITypedSheetLoading = {
  * Fires when a sheet cursor completed a load operation.
  */
 export type ITypedSheetLoadedEvent = {
-  type: 'SHEET/loaded';
+  type: 'TypedSheet/loaded';
   payload: ITypedSheetLoaded;
 };
 export type ITypedSheetLoaded = ITypedSheetLoading & {
@@ -47,7 +49,7 @@ export type ITypedSheetLoaded = ITypedSheetLoading & {
  * Fires when a sheet row commences loading.
  */
 export type ITypedSheetRowLoadingEvent = {
-  type: 'SHEET/row/loading';
+  type: 'TypedSheet/row/loading';
   payload: ITypedSheetRowLoading;
 };
 export type ITypedSheetRowLoading = {
@@ -59,7 +61,7 @@ export type ITypedSheetRowLoading = {
  * Fires when a sheet row completes loading.
  */
 export type ITypedSheetRowLoadedEvent = {
-  type: 'SHEET/row/loaded';
+  type: 'TypedSheet/row/loaded';
   payload: ITypedSheetRowLoaded;
 };
 export type ITypedSheetRowLoaded = ITypedSheetRowLoading;
@@ -68,7 +70,7 @@ export type ITypedSheetRowLoaded = ITypedSheetRowLoading;
  * Fires when a child Refs sheet starts loading
  */
 export type ITypedSheetRefsLoadingEvent = {
-  type: 'SHEET/refs/loading';
+  type: 'TypedSheet/refs/loading';
   payload: ITypedSheetRefsLoading;
 };
 export type ITypedSheetRefsLoading<T = O, K extends keyof T = any> = {
@@ -80,7 +82,7 @@ export type ITypedSheetRefsLoading<T = O, K extends keyof T = any> = {
  * Fires when a child Refs sheet loads.
  */
 export type ITypedSheetRefsLoadedEvent = {
-  type: 'SHEET/refs/loaded';
+  type: 'TypedSheet/refs/loaded';
   payload: ITypedSheetRefsLoaded;
 };
 export type ITypedSheetRefsLoaded<T = O> = ITypedSheetRefsLoading<T>;
@@ -89,7 +91,7 @@ export type ITypedSheetRefsLoaded<T = O> = ITypedSheetRefsLoading<T>;
  * Dispatches a change to a cell's data.
  */
 export type ITypedSheetChangeEvent = {
-  type: 'SHEET/change';
+  type: 'TypedSheet/change';
   payload: t.ITypedSheetChange;
 };
 
@@ -97,7 +99,7 @@ export type ITypedSheetChangeEvent = {
  * Fired after a change update has completed.
  */
 export type ITypedSheetChangedEvent = {
-  type: 'SHEET/changed';
+  type: 'TypedSheet/changed';
   payload: t.ITypedSheetChanged;
 };
 export type ITypedSheetChanged = {
@@ -110,7 +112,7 @@ export type ITypedSheetChanged = {
  * Fires when a set of changes are reverted.
  */
 export type ITypedSheetChangesClearedEvent = {
-  type: 'SHEET/changes/cleared';
+  type: 'TypedSheet/changes/cleared';
   payload: t.ITypedSheetChangesCleared;
 };
 export type ITypedSheetChangesCleared = {
@@ -126,7 +128,7 @@ export type ITypedSheetChangesCleared = {
  * data structures.
  */
 export type ITypedSheetSyncEvent = {
-  type: 'SHEET/sync';
+  type: 'TypedSheet/sync';
   payload: ITypedSheetSync;
 };
 export type ITypedSheetSync = {
@@ -144,7 +146,7 @@ export type ITypedSheetSync = {
  * structures have updated themselves).
  */
 export type ITypedSheetSyncedEvent = {
-  type: 'SHEET/synced';
+  type: 'TypedSheet/synced';
   payload: ITypedSheetSynced;
 };
 export type ITypedSheetSynced = {
@@ -155,18 +157,46 @@ export type ITypedSheetSynced = {
 /**
  * Fired when a sheet has been updated via either:
  *
- *  - SHEET/change (value edited, change state pending)
- *  - SHEET/sync   (value changed by another process)
+ *  - TypedSheet/change (value edited, change state pending)
+ *  - TypedSheet/sync   (value changed by another process)
  *
  * This event can be used as a single indicator of when anything
  * displaying the sheet should be aware of a change.
  */
 export type ITypedSheetUpdatedEvent = {
-  type: 'SHEET/updated';
+  type: 'TypedSheet/updated';
   payload: ITypedSheetUpdated;
 };
 export type ITypedSheetUpdated = {
   via: 'SYNC' | 'CHANGE';
   sheet: t.ITypedSheet;
   changes: t.ITypedSheetChanges;
+};
+
+/**
+ * Fired when a sheet commences a save operation (from the client).
+ */
+export type ITypedSheetSavingEvent = {
+  type: 'TypedSheet/saving';
+  payload: ITypedSheetSaving;
+};
+export type ITypedSheetSaving = {
+  target: string;
+  sheet: t.ITypedSheet;
+  changes: t.ITypedSheetChanges;
+};
+
+/**
+ * Fired when a sheet completes a save operation.
+ */
+export type ITypedSheetSavedEvent = {
+  type: 'TypedSheet/saved';
+  payload: ITypedSheetSaved;
+};
+export type ITypedSheetSaved = {
+  ok: boolean;
+  target: string;
+  sheet: t.ITypedSheet;
+  changes: t.ITypedSheetChanges;
+  error?: t.IHttpError;
 };

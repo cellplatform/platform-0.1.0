@@ -1,7 +1,7 @@
 import { t } from '../../common';
 
 /**
- * 🏷REFS (how to):
+ * 🏷 REFS (how to):
  *
  *    Details for handling different libs for different editor windows:
  *    https://blog.expo.io/building-a-code-editor-with-monaco-f84b3a06deaf

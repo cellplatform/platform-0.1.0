@@ -137,7 +137,7 @@ describe('TypedSheetChangeMonitor', () => {
       rowA.title = 'Hello';
       rowA.title = 'Hello';
       expect(fired.length).to.eql(1);
-      expect(fired[0].type).to.eql('SHEET/change');
+      expect(fired[0].type).to.eql('TypedSheet/change');
 
       rowA.title = 'Goodbye';
       expect(fired.length).to.eql(2);

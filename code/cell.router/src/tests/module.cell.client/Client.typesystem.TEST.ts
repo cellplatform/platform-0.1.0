@@ -280,9 +280,9 @@ describe('Client.TypeSystem', function () {
         await mock.dispose();
 
         expect(fired.length).to.eql(3);
-        expect(fired[0].type).to.eql('SHEET/saving');
-        expect(fired[1].type).to.eql('SHEET/saved');
-        expect(fired[2].type).to.eql('SHEET/sync');
+        expect(fired[0].type).to.eql('TypedSheet/saving');
+        expect(fired[1].type).to.eql('TypedSheet/saved');
+        expect(fired[2].type).to.eql('TypedSheet/sync');
 
         const saving = fired[0].payload as t.ITypedSheetSaving;
         const saved = fired[1].payload as t.ITypedSheetSaved;
@@ -331,7 +331,7 @@ describe('Client.TypeSystem', function () {
         await time.delay(50);
         await mock.dispose();
 
-        expect(fired[1].type).to.eql('SHEET/saved');
+        expect(fired[1].type).to.eql('TypedSheet/saved');
 
         const e = fired[1].payload as t.ITypedSheetSaved;
         const error = e.error;
