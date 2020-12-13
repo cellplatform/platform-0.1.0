@@ -1,6 +1,6 @@
 import { Stats } from 'webpack';
 
-import { fs, log, logger, Model, t, ora } from '../common';
+import { fs, log, logger, Model, t, ProgressSpinner } from '../common';
 import { BundleManifest } from '../bundle';
 import { afterCompile, wp } from './util';
 
@@ -17,17 +17,15 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
       const bundleDir = Model(model).bundleDir;
       await fs.remove(bundleDir);
 
-      const spinner = ora();
+      const spinner = ProgressSpinner({ label: 'bundling...' });
       if (!silent) {
         log.info();
         log.info.gray(`Bundle`);
         logger.model(model, { indent: 2, url: false }).newline().hr();
-        spinner.text = log.gray('bundling...');
         spinner.start();
       }
 
       compiler.run(async (err, stats) => {
-        spinner.text = '';
         spinner.stop();
 
         if (err) {

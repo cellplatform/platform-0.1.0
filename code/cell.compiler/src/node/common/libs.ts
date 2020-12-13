@@ -28,6 +28,3 @@ export { ModuleFederationPlugin };
 export { exec } from '@platform/exec';
 export { port } from '@platform/http/lib/node';
 export { Path, format } from '@platform/cell.runtime.node/lib/common';
-
-import ora from 'ora';
-export { ora };

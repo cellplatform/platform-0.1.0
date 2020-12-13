@@ -13,7 +13,7 @@ import {
   Schema,
   t,
   time,
-  ora,
+  ProgressSpinner,
 } from '../common';
 import { BundleManifest } from '../bundle';
 import { FileRedirects, FileAccess } from '../config';
@@ -86,16 +86,10 @@ export const upload: t.CompilerRunUpload = async (args) => {
   const done$ = new Subject();
   writeLogFile(log, done$);
 
-  const spinner = ora();
+  const spinner = ProgressSpinner({ label: `uploading ${files.length} files` });
   if (!silent) {
-    spinner.text = log.gray('uploading...');
     spinner.start();
   }
-
-  const stopSpinner = () => {
-    spinner.text = '';
-    spinner.stop();
-  };
 
   const done = (ok: boolean) => {
     const res: t.CompilerUploadResponse = { ok, files, urls: toUrls(files) };
@@ -131,8 +125,8 @@ export const upload: t.CompilerRunUpload = async (args) => {
     const fileUpload = await client.files.upload(files);
 
     if (!fileUpload.ok) {
+      spinner.stop();
       logUploadFailure({ host, bundleDir, errors: fileUpload.body.errors });
-      stopSpinner();
       return done(false);
     }
 
@@ -144,13 +138,13 @@ export const upload: t.CompilerRunUpload = async (args) => {
       await getManifestFile({ bundleDir, targetDir }),
     );
     if (!manifestUpload.ok) {
+      spinner.stop();
       logUploadFailure({ host, bundleDir, errors: manifestUpload.body.errors });
-      stopSpinner();
       return done(false);
     }
 
     if (!silent) {
-      stopSpinner();
+      spinner.stop();
       const elapsed = timer.elapsed.toString();
       await logUpload({ baseDir, bundleDir, targetCell, host, elapsed });
       logger.hr().newline();
@@ -160,6 +154,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
 
     return done(true);
   } catch (err) {
+    spinner.stop();
     const message = err.message.includes('ECONNREFUSED')
       ? `Ensure the local server is online. ${log.gray(host)}`
       : err.message;

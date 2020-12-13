@@ -4,6 +4,7 @@ import * as t from './types';
 export { t, constants };
 export * from './libs';
 export * from './util';
+export * from './ProgressSpinner';
 
 export const DEFAULT = constants.DEFAULT;
 export const PATH = constants.PATH;
