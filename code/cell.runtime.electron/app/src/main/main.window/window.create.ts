@@ -47,7 +47,7 @@ export async function createOne(args: { ctx: t.IContext; name: string; argv?: st
   // TEMP 🐷- move to method somewhere sensible
   //
   await rx
-    .payload<t.ITypedSheetSavedEvent>(event$, 'SHEET/saved')
+    .payload<t.ITypedSheetSavedEvent>(event$, 'TypedSheet/saved')
     .pipe(
       filter((e) => e.sheet.uri.id === window.uri.ns),
       take(1),

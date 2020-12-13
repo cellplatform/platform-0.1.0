@@ -4,7 +4,7 @@ import { filter, take } from 'rxjs/operators';
 import { rx, t, Uri } from '../common';
 
 /**
- * Fires the "SHEET/changed" event returning a promise that awaits
+ * Fires the "TypedSheet/changed" event returning a promise that awaits
  * the sheet to be reloaded with the updated changes.
  */
 export function fireSheetChanged(args: {
@@ -16,7 +16,7 @@ export function fireSheetChanged(args: {
 
   // Wait for the sync to complete (loop back from the server).
   const promise = rx
-    .payload<t.ITypedSheetLoadedEvent>(event$, 'SHEET/loaded')
+    .payload<t.ITypedSheetLoadedEvent>(event$, 'TypedSheet/loaded')
     .pipe(
       filter((e) => Uri.eq(e.sheet.uri, changes.uri)),
       take(1),

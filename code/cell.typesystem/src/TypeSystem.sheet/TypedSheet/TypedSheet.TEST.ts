@@ -1206,7 +1206,7 @@ describe('TypedSheet', () => {
           expect(changedLinks['ref:type']).to.eql(messages.sheet.uri.toString());
         });
 
-        it('fires event: SHEET/refs/(loading | loaded)', async () => {
+        it('fires event: TypedSheet/refs/(loading | loaded)', async () => {
           const { sheet } = await testMySheet();
 
           const fired: t.TypedSheetEvent[] = [];
@@ -1735,7 +1735,7 @@ describe('TypedSheet', () => {
       expect(cursor.total).to.eql(99);
     });
 
-    it('after event: SHEET/synced', async () => {
+    it('after event: TypedSheet/synced', async () => {
       const { sheet, event$ } = await testMySheet();
       const cursor = await sheet.data('MyRow').load();
       const row = cursor.row(0);
@@ -1769,7 +1769,7 @@ describe('TypedSheet', () => {
   });
 
   describe('TypedSheet/updated', () => {
-    it('fires on SHEET/changed', async () => {
+    it('fires on TypedSheet/changed', async () => {
       const { sheet, event$ } = await testMySheet();
 
       type U = t.ITypedSheetUpdatedEvent;
@@ -1796,7 +1796,7 @@ describe('TypedSheet', () => {
       expect(sheet.state.changes.cells?.A2?.to.value).to.eql('Change-2');
     });
 
-    it('fires on SHEET/synced', async () => {
+    it('fires on TypedSheet/synced', async () => {
       const { sheet, event$ } = await testMySheet();
 
       type U = t.ITypedSheetUpdatedEvent;

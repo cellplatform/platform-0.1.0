@@ -134,7 +134,7 @@ export class TypedSheetData<T, K extends keyof T> implements t.ITypedSheetData<T
     // NB: If total is "-1" then this signals that it should be
     //     recalculated.  Taking the maximum of total or the loaded
     //     row length ensures that any expansions to the data-set via
-    //     the "SHEET/sync" event over time.
+    //     the "TypedSheet/sync" event over time.
     return this._total < 0 ? this._total : Math.max(this._total, this._rows.length);
   }
 

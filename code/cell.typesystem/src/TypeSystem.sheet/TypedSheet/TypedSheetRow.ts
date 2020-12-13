@@ -329,7 +329,7 @@ export class TypedSheetRow<T, K extends keyof T> implements t.ITypedSheetRow<T, 
             //    NB: This means reads to the property are immedately available with the new value,
             //        or changes made elsewhere in the system are reflected in the current state of the row,
             //        while the global fetch state will be updated after an [async] tick with listeners
-            //        being alerted of the new value on the ["SHEET/changed"] event.
+            //        being alerted of the new value on the ["TypedSheet/changed"] event.
             self.fireChange(columnDef, data);
           }
         }
