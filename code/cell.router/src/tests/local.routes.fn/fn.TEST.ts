@@ -252,7 +252,7 @@ describe('/fn:run', function () {
         const { host, uri } = bundle;
         await uploadBundle(client, samples.node.outdir, bundle);
 
-        const value: ISampleNodeInValue = { delay: 20 };
+        const value: ISampleNodeInValue = { delay: 50 };
         const body: t.IReqPostFuncBody = [{ host, uri, dir, in: { value }, timeout: 10 }];
         const res = await http.post(url.toString(), body);
         const json = res.json as t.IResPostFunc;
@@ -265,6 +265,7 @@ describe('/fn:run', function () {
 
         const error = result.errors[0];
         expect(error.type).to.eql('RUNTIME/run');
+
         expect(error.bundle).to.eql(bundle);
         expect(error.message).to.include('Execution timed out (max 10ms)');
       });
@@ -275,7 +276,7 @@ describe('/fn:run', function () {
         const { host, uri } = bundle;
         await uploadBundle(client, samples.node.outdir, bundle);
 
-        const value: ISampleNodeInValue = { delay: 20 };
+        const value: ISampleNodeInValue = { delay: 50 };
         const body: t.IReqPostFuncBody = [{ host, uri, dir, in: { value } }];
         const res = await http.post(url.query({ timeout: 10 }).toString(), body);
         const json = res.json as t.IResPostFunc;

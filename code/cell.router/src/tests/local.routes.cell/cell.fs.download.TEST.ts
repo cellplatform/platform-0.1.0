@@ -17,7 +17,7 @@ const bodyToString = async (body?: ReadableStream | string | t.Json) => {
   return '';
 };
 
-describe('cell/files: download', function () {
+describe('cell.fs: download', function () {
   this.timeout(50000);
 
   describe('http (raw URLs)', () => {

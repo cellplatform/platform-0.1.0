@@ -119,7 +119,7 @@ describe('toType', () => {
 
 describe('isPromise', () => {
   const myThing = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       resolve();
     });
   };

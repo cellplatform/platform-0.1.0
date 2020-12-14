@@ -15,16 +15,13 @@ export function uploadFiles(args: {
   cellUri: string;
   changes?: boolean;
 }): t.IHttpClientCellFsUploadPromise {
-  const event$ = new Subject<t.IHttpClientUploadedEvent>();
+  const { http, urls, cellUri } = args;
+  const sendChanges = defaultValue(args.changes, false);
+  const input = value.asArray(args.input).filter((file) => file.data.byteLength > 0); // NB: 0-byte files will cause upload error.
+  const event = Event({ total: input.length, uri: cellUri });
 
   const promise = new Promise<t.IHttpClientResponse<R>>(async (resolve, reject) => {
-    const { http, urls, cellUri } = args;
-    const sendChanges = defaultValue(args.changes, false);
-
-    await time.wait(0); // NB: Pause to allow any [event$] listeners to subscribe.
-
-    let input = Array.isArray(args.input) ? args.input : [args.input];
-    input = input.filter((file) => file.data.byteLength > 0); // NB: 0-byte files will cause upload error.
+    await time.wait(0); // NB: Pause to allow any [event$] listeners to subscribe on the returned promise.
 
     const errors: R['errors'] = [];
     const addError = (status: number, message: string) => {
@@ -32,40 +29,6 @@ export function uploadFiles(args: {
       const error: t.IHttpErrorFile = { status, type, message };
       errors.push(error);
       return error;
-    };
-
-    const event = {
-      tx: Schema.cuid(),
-      completed: 0,
-      fire(
-        args: {
-          file?: t.IHttpClientUploaded['file'];
-          error?: t.IHttpErrorFile;
-          done?: boolean;
-        } = {},
-      ) {
-        const { file, error } = args;
-
-        if (file && !error) {
-          event.completed++;
-        }
-
-        const total = input.length;
-        const completed = event.completed;
-        const done = completed >= total ? true : args.done || false;
-
-        event$.next({
-          type: 'HttpClient/uploaded',
-          payload: value.deleteUndefined({
-            uri: cellUri,
-            tx: event.tx,
-            file,
-            total,
-            completed,
-            done,
-          }),
-        });
-      },
     };
 
     const done = (status: number, options: { cell?: R['cell']; files?: R['files'] } = {}) => {
@@ -82,7 +45,7 @@ export function uploadFiles(args: {
         error = { type: ERROR.HTTP.FILE, status, message: 'Failed to upload' };
       }
 
-      event$.complete();
+      event.dispose();
       const result = util.toClientResponse<R>(status, responseBody, { error });
       resolve(result);
     };
@@ -128,6 +91,7 @@ export function uploadFiles(args: {
       }),
     };
     const res1 = await http.post(url.start, uploadStartBody);
+
     if (!res1.ok) {
       let message = `Failed during initial file-upload step to [${cellUri}]`;
       if (typeof res1.json === 'object' && typeof (res1.json as any).message === 'string') {
@@ -232,31 +196,75 @@ export function uploadFiles(args: {
       return error;
     });
 
-    /**
-     * [4]. POST "complete" for the upload to the owner cell.
-     */
-    const cellUploadCompleteBody: t.IReqPostCellFsUploadCompleteBody = {};
-    const res4 = await http.post(url.complete, cellUploadCompleteBody);
-    const cellUploadComplete = res4.json as t.IResPostCellFsUploadComplete;
-    const files = cellUploadComplete.data.files;
-    addChanges(cellUploadComplete.data.changes);
+    try {
+      /**
+       * [4]. POST "complete" for the upload to the owner cell.
+       */
+      const cellUploadCompleteBody: t.IReqPostCellFsUploadCompleteBody = {};
+      const res4 = await http.post(url.complete, cellUploadCompleteBody);
+      const cellUploadComplete = res4.json as t.IResPostCellFsUploadComplete;
 
-    // Build an aggregate list of upload errors.
-    [...uploadStart.data.errors, ...fileUploadErrors, ...fileCompleteFailErrors].forEach(
-      (error) => {
-        const status = 500;
-        let message = error.message;
-        message = error.filename ? `${error.message}. Filename: ${error.filename}` : message;
-        event.fire({ error: addError(status, message), done: true });
-      },
-    );
+      const files = cellUploadComplete.data.files;
+      addChanges(cellUploadComplete.data.changes);
 
-    // Finish up.
-    const status = errors.length === 0 ? 200 : 500;
-    return done(status, { cell: cellUploadComplete.data.cell, files });
+      // Build an aggregate list of upload errors.
+      [...uploadStart.data.errors, ...fileUploadErrors, ...fileCompleteFailErrors].forEach(
+        (error) => {
+          const status = 500;
+          let message = error.message;
+          message = error.filename ? `${error.message}. Filename: ${error.filename}` : message;
+          event.fire({ error: addError(status, message), done: true });
+        },
+      );
+
+      // Finish up.
+      const status = errors.length === 0 ? 200 : 500;
+      return done(status, { cell: cellUploadComplete.data.cell, files });
+    } catch (error) {
+      const status = 500;
+      addError(status, error.message);
+      return done(status);
+    }
   });
 
   // Attach event stream to the returned promise.
-  (promise as any).event$ = event$.pipe(share());
+  (promise as any).event$ = event.$;
   return promise as t.IHttpClientCellFsUploadPromise;
+}
+
+/**
+ * Helpers
+ */
+
+function Event(args: { uri: string; total: number }) {
+  const { uri, total } = args;
+  const event$ = new Subject<t.IHttpClientUploadedEvent>();
+  let completed = 0;
+  const tx = Schema.cuid();
+
+  const next = (payload: t.IHttpClientUploaded) => {
+    payload = value.deleteUndefined(payload);
+    event$.next({ type: 'HttpClient/uploaded', payload });
+  };
+
+  const fire = (
+    args: {
+      file?: t.IHttpClientUploaded['file'];
+      error?: t.IHttpErrorFile;
+      done?: boolean;
+    } = {},
+  ) => {
+    const { file, error } = args;
+    if (file && !error) {
+      completed++;
+    }
+    const done = completed >= total ? true : args.done || false;
+    next({ uri, tx, file, total, completed, done });
+  };
+
+  return {
+    $: event$.pipe(share()),
+    dispose: () => event$.complete(),
+    fire,
+  };
 }

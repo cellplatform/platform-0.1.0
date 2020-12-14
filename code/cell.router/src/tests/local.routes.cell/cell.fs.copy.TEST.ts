@@ -4,7 +4,7 @@ const tmp = fs.resolve(`./tmp/download`);
 const A1 = 'cell:foo:A1';
 const Z9 = 'cell:foo:Z9';
 
-describe('cell/files: copy', () => {
+describe('cell.fs: copy', () => {
   describe('copy', () => {
     it('copy single file', async () => {
       const mock = await createMock();

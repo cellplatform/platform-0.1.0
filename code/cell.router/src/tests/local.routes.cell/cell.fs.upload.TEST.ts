@@ -2,7 +2,7 @@
 import { parse as parseUrl } from 'url';
 import { createMock, expect, fs, Http, readFile, Schema, t, http, is } from '../../test';
 
-describe('cell/files: upload', function () {
+describe('cell.fs: upload', function () {
   this.timeout(50000);
 
   it('upload => download: 1 file', async () => {
@@ -13,13 +13,16 @@ describe('cell/files: upload', function () {
     // Upload => download.
     const filename = 'bird.png';
     const data = await readFile('src/test/assets/bird.png');
-    await client.fs.upload([{ filename, data }]);
-    const res = await client.file.name(filename).download();
+    const upload = await client.fs.upload([{ filename, data }]);
+    expect(upload.ok).to.eql(true);
+
+    const download = await client.file.name(filename).download();
+    expect(download.ok).to.eql(true);
 
     // Save and compare.
     const path = fs.resolve('tmp/tmp-download');
-    if (typeof res.body === 'object') {
-      await fs.stream.save(path, res.body);
+    if (typeof download.body === 'object') {
+      await fs.stream.save(path, download.body);
     }
     expect((await fs.readFile(path)).toString()).to.eql(data.toString());
 

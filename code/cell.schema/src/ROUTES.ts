@@ -45,9 +45,9 @@ export const ROUTES = {
     },
     FS: {
       BASE: `/cell${KEY.NS}\\:${KEY.CELL}/fs(/?)`,
-      UPLOAD: `/cell${KEY.NS}\\:${KEY.CELL}/fs:upload`,
-      UPLOADED: `/cell${KEY.NS}\\:${KEY.CELL}/fs:uploaded`,
-      COPY: `/cell${KEY.NS}\\:${KEY.CELL}/fs:copy`,
+      UPLOAD: `/cell${KEY.NS}\\:${KEY.CELL}/fs\\:upload`,
+      UPLOADED: `/cell${KEY.NS}\\:${KEY.CELL}/fs\\:uploaded`,
+      COPY: `/cell${KEY.NS}\\:${KEY.CELL}/fs\\:copy`,
     },
   },
   ROW: {

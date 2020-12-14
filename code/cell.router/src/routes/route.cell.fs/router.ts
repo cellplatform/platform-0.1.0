@@ -15,7 +15,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   const { db, fs, router } = args;
 
   /**
-   * GET: cell:foo:A1/files
+   * GET: cell:foo:A1/fs
    */
   router.get(routes.CELL.FS.BASE, async (req) => {
     try {

@@ -1,6 +1,6 @@
 import { createMock, expect, expectFileInFs, readFile } from '../../test';
 
-describe('cell/files: delete, unlink', () => {
+describe('cell.fs: delete, unlink', () => {
   it('delete and/or unlink files from cell', async () => {
     const mock = await createMock();
     const A1 = 'cell:foo:A1';
