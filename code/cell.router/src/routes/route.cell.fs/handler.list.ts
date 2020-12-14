@@ -37,7 +37,7 @@ export async function listCellFiles(args: {
     const urls = includeUrls ? getUrls() : undefined;
     const files = includeFiles ? await getFiles() : undefined;
     const total = urls ? urls.files.length : Schema.file.links.total(cellLinks);
-    const data: t.IResGetCellFiles = {
+    const data: t.IResGetCellFs = {
       total,
       uri: cellUri.toString(),
       urls,

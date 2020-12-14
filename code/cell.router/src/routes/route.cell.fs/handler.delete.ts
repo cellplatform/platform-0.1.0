@@ -1,13 +1,13 @@
 import { models, Schema, t, util } from '../common';
 import { deleteFile } from '../route.file';
 
-type ErrorType = t.IResDeleteCellFilesError['error'];
+type ErrorType = t.IResDeleteCellFsError['error'];
 
 export async function deleteCellFiles(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   cellUri: string;
-  body: t.IReqDeleteCellFilesBody;
+  body: t.IReqDeleteCellFsBody;
   host: string;
 }) {
   const { host, db, fs, cellUri, body } = args;

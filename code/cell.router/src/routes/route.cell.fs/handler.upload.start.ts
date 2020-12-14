@@ -6,7 +6,7 @@ export async function uploadCellFilesStart(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   cellUri: string;
-  body: t.IReqPostCellFilesUploadStartBody;
+  body: t.IReqPostCellFsUploadStartBody;
   host: string;
   changes?: boolean;
 }) {
@@ -129,7 +129,7 @@ export async function uploadCellFilesStart(args: {
 
   // Prepare response.
   await cell.load({ force: true });
-  const res: t.IResPostCellFilesUploadStart = {
+  const res: t.IResPostCellFsUploadStart = {
     uri: cellUri.toString(),
     createdAt: cell.createdAt,
     modifiedAt: cell.modifiedAt,

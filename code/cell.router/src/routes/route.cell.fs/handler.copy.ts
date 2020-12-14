@@ -9,14 +9,14 @@ export async function copyCellFiles(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   cellUri: string;
-  body: t.IReqPostCellFilesCopyBody;
+  body: t.IReqPostCellFsCopyBody;
   host: string;
   changes?: boolean;
   permission?: t.FsS3Permission;
 }) {
   const { db, fs, cellUri, body, changes: sendChanges, permission } = args;
   const items: Item[] = [];
-  const errors: t.IResPostCellFilesCopyError[] = [];
+  const errors: t.IResPostCellFsCopyError[] = [];
   const changes: t.IDbModelChange[] = [];
   const sourceClient = HttpClient.create(args.host).cell(cellUri);
 
@@ -198,7 +198,7 @@ export async function copyCellFiles(args: {
           }
 
           if (!failed) {
-            const body: t.IReqPostCellFilesUploadCompleteBody = {};
+            const body: t.IReqPostCellFsUploadCompleteBody = {};
             const res = await uploadCellFilesComplete({
               db,
               host: item.target.host,

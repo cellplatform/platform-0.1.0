@@ -5,27 +5,27 @@ type O = Record<string, unknown>;
 /**
  * Parameters
  */
-export type IUrlParamsCellFiles = t.IUrlParamsCell;
+export type IUrlParamsCellFs = t.IUrlParamsCell;
 export type IUrlParamsCellFileByName = t.IUrlParamsCell & { filename: string };
 export type IUrlParamsCellFileByFileUri = t.IUrlParamsCell & { filename: string };
 
 /**
  * Query
  */
-export type IReqQueryCellFilesList = {
+export type IReqQueryCellFsList = {
   expires?: string; //  Links expire. Parsable duration, eg "1h", "5m" etc. Max: "1h".
   files?: boolean; //   Show files (default: true).
   urls?: boolean; //    Show URLs (default: true).
   filter?: string; //   Grep style filter pattern.
 };
-export type IReqQueryCellFilesUpload = {
+export type IReqQueryCellFsUpload = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
-export type IReqQueryCellFilesUploaded = {
+export type IReqQueryCellFsUploaded = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
-export type IReqQueryCellFilesDelete = O; // 🐷 Placeholder type.
-export type IReqQueryCellFilesCopy = {
+export type IReqQueryCellFsDelete = O; // 🐷 Placeholder type.
+export type IReqQueryCellFsCopy = {
   changes?: boolean; // NB: return list of changes (default: true).
   's3:permission'?: t.FsS3Permission;
 };
@@ -40,16 +40,16 @@ export type IReqQueryCellFileDownloadByFileUri = IReqQueryCellFileDownloadByName
 /**
  * GET: Cell Files
  */
-export type IResGetCellFiles = {
+export type IResGetCellFs = {
   total: number;
   uri: string;
   urls?: {
     cell: string;
-    files: IResGetCellFilesFileUrl[];
+    files: IResGetCellFsFileUrl[];
   };
   files?: t.IFileMap;
 };
-export type IResGetCellFilesFileUrl = {
+export type IResGetCellFsFileUrl = {
   uri: string;
   path: string;
   url: string;
@@ -59,7 +59,7 @@ export type IResGetCellFilesFileUrl = {
 /**
  * POST: Cell Files (Upload Start)
  */
-export type IReqPostCellFilesUploadStartBody = {
+export type IReqPostCellFsUploadStartBody = {
   files: IReqPostCellUploadFile[];
   expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
 };
@@ -71,26 +71,26 @@ export type IReqPostCellUploadFile = {
   's3:permission'?: t.FsS3Permission;
 };
 
-export type IResPostCellFilesUploadStart = t.IUriResponse<
-  IResPostCellFilesUploadStartData,
-  IResPostCellFilesUploadUrls
+export type IResPostCellFsUploadStart = t.IUriResponse<
+  IResPostCellFsUploadStartData,
+  IResPostCellFsUploadUrls
 >;
-export type IResPostCellFilesUploadStartData = {
+export type IResPostCellFsUploadStartData = {
   cell: t.ICellData;
   files: t.IUriData<t.IFileData>[];
   errors: t.IFileUploadError[];
   changes?: t.IDbModelChange[];
 };
-export type IResPostCellFilesUploadUrls = t.IResGetCellUrls & {
+export type IResPostCellFsUploadUrls = t.IResGetCellUrls & {
   uploads: t.IFilePresignedUploadUrl[];
 };
 
 /**
  * POST: Cell Files (Upload Complete)
  */
-export type IReqPostCellFilesUploadCompleteBody = O; // 🐷 Placeholder type.
-export type IResPostCellFilesUploadComplete = t.IUriResponse<IResPostCellFilesUploadCompleteData>;
-export type IResPostCellFilesUploadCompleteData = {
+export type IReqPostCellFsUploadCompleteBody = O; // 🐷 Placeholder type.
+export type IResPostCellFsUploadComplete = t.IUriResponse<IResPostCellFsUploadCompleteData>;
+export type IResPostCellFsUploadCompleteData = {
   cell: t.ICellData;
   files: t.IUriData<t.IFileData>[];
   changes?: t.IDbModelChange[];
@@ -99,18 +99,18 @@ export type IResPostCellFilesUploadCompleteData = {
 /**
  * DELETE: Cell Files
  */
-export type IReqDeleteCellFilesBody = {
+export type IReqDeleteCellFsBody = {
   filenames: string[];
   action: 'DELETE' | 'UNLINK';
 };
-export type IResDeleteCellFiles = t.IUriResponse<IResDeleteCellFsData>;
+export type IResDeleteCellFs = t.IUriResponse<IResDeleteCellFsData>;
 export type IResDeleteCellFsData = {
   uri: string;
   deleted: string[];
   unlinked: string[];
-  errors: IResDeleteCellFilesError[];
+  errors: IResDeleteCellFsError[];
 };
-export type IResDeleteCellFilesError = {
+export type IResDeleteCellFsError = {
   filename: string;
   error: 'DELETING' | 'UNLINKING' | 'NOT_LINKED';
   message: string;
@@ -119,16 +119,16 @@ export type IResDeleteCellFilesError = {
 /**
  * POST: Copy Files
  */
-export type IReqPostCellFilesCopyBody = {
+export type IReqPostCellFsCopyBody = {
   files: t.IHttpClientCellFileCopy[];
 };
-export type IResPostCellFilesCopy = t.IUriResponse<IResPostCellFsCopyData>;
+export type IResPostCellFsCopy = t.IUriResponse<IResPostCellFsCopyData>;
 export type IResPostCellFsCopyData = {
   files: IResPostCellFileCopyItem[];
-  errors: IResPostCellFilesCopyError[];
+  errors: IResPostCellFsCopyError[];
   changes?: t.IDbModelChange[];
 };
-export type IResPostCellFilesCopyError = {
+export type IResPostCellFsCopyError = {
   file: t.IHttpClientCellFileCopy;
   message: string;
 };

@@ -12,7 +12,7 @@ export async function copyFiles(args: {
 }) {
   const { urls, http, changes, permission } = args;
   const files = Array.isArray(args.files) ? args.files : [args.files];
-  const body: t.IReqPostCellFilesCopyBody = { files };
+  const body: t.IReqPostCellFsCopyBody = { files };
   const url = urls.files.copy.query({ changes, 's3:permission': permission });
   const res = await http.post(url.toString(), body);
   return util.fromHttpResponse(res).toClientResponse<t.IResPostCellFsCopyData>();

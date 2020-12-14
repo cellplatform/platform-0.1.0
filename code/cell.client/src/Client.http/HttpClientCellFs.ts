@@ -144,7 +144,7 @@ export class HttpClientCellFs implements t.IHttpClientCellFs {
   private async base(args: { getError?: GetError; filter?: string } = {}) {
     const { filter, getError } = args;
 
-    type T = t.IResGetCellFiles;
+    type T = t.IResGetCellFs;
     const http = this.args.http;
     const parent = this.args.parent;
     const url = parent.url.files.list.query({ filter }).toString();
@@ -160,7 +160,7 @@ export class HttpClientCellFs implements t.IHttpClientCellFs {
       return util.toError<T>(status, type, message);
     }
 
-    const body = files.json as t.IResGetCellFiles;
+    const body = files.json as t.IResGetCellFs;
     return util.toClientResponse<T>(200, body);
   }
 }

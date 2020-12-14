@@ -113,7 +113,7 @@ export function uploadFiles(args: {
      * [1]. Initial POST to the service.
      *      This sets up the models, and retrieves the pre-signed S3 urls to upload to.
      */
-    const uploadStartBody: t.IReqPostCellFilesUploadStartBody = {
+    const uploadStartBody: t.IReqPostCellFsUploadStartBody = {
       expires: undefined, // Expires.
       files: input.map((item) => {
         const filehash = Schema.hash.sha256(item.data);
@@ -136,7 +136,7 @@ export function uploadFiles(args: {
       event.fire({ error: addError(res1.status, message), done: true });
       return done(res1.status);
     }
-    const uploadStart = res1.json as t.IResPostCellFilesUploadStart;
+    const uploadStart = res1.json as t.IResPostCellFsUploadStart;
     addChanges(uploadStart.data.changes);
 
     /**
@@ -235,9 +235,9 @@ export function uploadFiles(args: {
     /**
      * [4]. POST "complete" for the upload to the owner cell.
      */
-    const cellUploadCompleteBody: t.IReqPostCellFilesUploadCompleteBody = {};
+    const cellUploadCompleteBody: t.IReqPostCellFsUploadCompleteBody = {};
     const res4 = await http.post(url.complete, cellUploadCompleteBody);
-    const cellUploadComplete = res4.json as t.IResPostCellFilesUploadComplete;
+    const cellUploadComplete = res4.json as t.IResPostCellFsUploadComplete;
     const files = cellUploadComplete.data.files;
     addChanges(cellUploadComplete.data.changes);
 

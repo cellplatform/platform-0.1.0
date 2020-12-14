@@ -210,7 +210,7 @@ describe('cell/files: upload', function () {
     const test = async (filter: string, expected?: string[]) => {
       const url = urls.list.query({ filter }).toString();
       const res = await http.get(url);
-      const json = res.json as t.IResGetCellFiles;
+      const json = res.json as t.IResGetCellFs;
       const files = json.urls?.files.map((item) => item.path);
       expect(files).to.eql(expected);
     };

@@ -28,7 +28,7 @@ export type IUrlsFunc = {
 
 export type IUrlsBundle = {
   manifest(bundle: t.RuntimeBundleOrigin): t.IUrl<t.IReqQueryCellFileDownloadByName>;
-  files(bundle: t.RuntimeBundleOrigin): t.IUrl<t.IReqQueryCellFilesList>;
+  files(bundle: t.RuntimeBundleOrigin): t.IUrl<t.IReqQueryCellFsList>;
 };
 
 export type IUrlsNs = {
@@ -50,11 +50,11 @@ export type IUrlsCellFile = {
 };
 
 export type IUrlsCellFiles = {
-  list: t.IUrl<t.IReqQueryCellFilesList>;
-  upload: t.IUrl<t.IReqQueryCellFilesUpload>;
-  uploaded: t.IUrl<t.IReqQueryCellFilesUploaded>;
-  delete: t.IUrl<t.IReqQueryCellFilesDelete>;
-  copy: t.IUrl<t.IReqQueryCellFilesCopy>;
+  list: t.IUrl<t.IReqQueryCellFsList>;
+  upload: t.IUrl<t.IReqQueryCellFsUpload>;
+  uploaded: t.IUrl<t.IReqQueryCellFsUploaded>;
+  delete: t.IUrl<t.IReqQueryCellFsDelete>;
+  copy: t.IUrl<t.IReqQueryCellFsCopy>;
 };
 
 export type IUrlsRow = {

@@ -38,7 +38,7 @@ export function urls(host: string) {
           urls(
             links: t.ICellData['links'],
             options: { expires?: string } = {},
-          ): t.IResGetCellFiles['urls'] {
+          ): t.IResGetCellFs['urls'] {
             const builder = urls.cell(cellUri);
             const files = Object.keys(links || {})
               .map((key) => ({ key, value: (links || {})[key] }))
@@ -64,7 +64,7 @@ export function urls(host: string) {
                   url: fileByUri.query({ hash, expires }).toString(),
                 });
                 return acc;
-              }, [] as t.IResGetCellFilesFileUrl[]);
+              }, [] as t.IResGetCellFsFileUrl[]);
 
             return {
               cell: builder.info.toString(),
