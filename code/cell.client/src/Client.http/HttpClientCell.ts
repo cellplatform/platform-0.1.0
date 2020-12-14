@@ -1,6 +1,6 @@
 import { t, util } from '../common';
 import { HttpClientCellFile } from './HttpClientCellFile';
-import { HttpClientCellFiles } from './HttpClientCellFiles';
+import { HttpClientCellFs } from './HttpClientCellFs';
 import { HttpClientCellLinks } from './HttpClientCellLinks';
 
 type IHttpClientCellArgs = { uri: t.ICellUri; urls: t.IUrls; http: t.IHttp };
@@ -28,7 +28,7 @@ export class HttpClientCell implements t.IHttpClientCell {
    */
   private readonly args: IHttpClientCellArgs;
   private _file: t.IHttpClientCellFile;
-  private _files: t.IHttpClientCellFiles;
+  private _files: t.IHttpClientCellFs;
 
   public readonly uri: t.ICellUri;
   public readonly url: t.IUrlsCell;
@@ -37,15 +37,13 @@ export class HttpClientCell implements t.IHttpClientCell {
    * [Properties]
    */
   public get file(): t.IHttpClientCellFile {
-    const urls = this.args.urls;
-    const http = this.args.http;
+    const { urls, http } = this.args;
     return this._file || (this._file = HttpClientCellFile.create({ parent: this, urls, http }));
   }
 
-  public get files(): t.IHttpClientCellFiles {
-    const urls = this.args.urls;
-    const http = this.args.http;
-    return this._files || (this._files = HttpClientCellFiles.create({ parent: this, urls, http }));
+  public get fs(): t.IHttpClientCellFs {
+    const { urls, http } = this.args;
+    return this._files || (this._files = HttpClientCellFs.create({ parent: this, urls, http }));
   }
 
   /**

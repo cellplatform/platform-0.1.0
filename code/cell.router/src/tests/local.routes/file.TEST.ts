@@ -23,7 +23,7 @@ export const testPostFile = async (args: {
   });
 
   const files = await Promise.all(wait);
-  const res = await client.files.upload(files);
+  const res = await client.fs.upload(files);
 
   // Finish up.
   if (args.dispose !== false) {

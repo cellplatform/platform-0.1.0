@@ -14,7 +14,7 @@ export function uploadFiles(args: {
   urls: t.IUrls;
   cellUri: string;
   changes?: boolean;
-}): t.IHttpClientCellFilesUploadPromise {
+}): t.IHttpClientCellFsUploadPromise {
   const event$ = new Subject<t.IHttpClientUploadedEvent>();
 
   const promise = new Promise<t.IHttpClientResponse<R>>(async (resolve, reject) => {
@@ -258,5 +258,5 @@ export function uploadFiles(args: {
 
   // Attach event stream to the returned promise.
   (promise as any).event$ = event$.pipe(share());
-  return promise as t.IHttpClientCellFilesUploadPromise;
+  return promise as t.IHttpClientCellFsUploadPromise;
 }

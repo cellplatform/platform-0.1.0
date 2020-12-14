@@ -23,7 +23,7 @@ export async function copyCellFiles(args: {
   const done = () => {
     const hasError = errors.length !== 0;
     const status = hasError ? 500 : 200;
-    const data: t.IResPostCellFilesCopyData = {
+    const data: t.IResPostCellFsCopyData = {
       files: items.map(({ source, target }) => ({ source, target })),
       errors,
       changes,
@@ -143,7 +143,7 @@ export async function copyCellFiles(args: {
       const file: t.IHttpClientCellFileUpload = { filename: target.filename, data };
 
       const client = HttpClient.create(target.host).cell(target.cell);
-      const res = await client.files.upload(file, { changes: sendChanges, permission });
+      const res = await client.fs.upload(file, { changes: sendChanges, permission });
       const { ok } = res;
 
       if (!ok) {

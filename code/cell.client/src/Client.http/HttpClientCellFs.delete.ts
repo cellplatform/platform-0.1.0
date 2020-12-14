@@ -14,5 +14,5 @@ export async function deleteFiles(args: {
   const body: t.IReqDeleteCellFilesBody = { filenames, action };
   const url = urls.files.delete;
   const res = await http.delete(url.toString(), body);
-  return util.fromHttpResponse(res).toClientResponse<t.IResDeleteCellFilesData>();
+  return util.fromHttpResponse(res).toClientResponse<t.IResDeleteCellFsData>();
 }

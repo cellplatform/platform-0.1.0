@@ -60,7 +60,7 @@ export const uploadBundle = async (
   const { filter } = options;
   let files = await bundleToFiles(dist, bundle.dir);
   files = filter ? files.filter((file) => filter(file)) : files;
-  const upload = await client.files.upload(files);
+  const upload = await client.fs.upload(files);
   expect(upload.ok).to.eql(true);
   return { files, upload, bundle };
 };

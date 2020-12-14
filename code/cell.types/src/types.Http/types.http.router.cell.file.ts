@@ -103,8 +103,8 @@ export type IReqDeleteCellFilesBody = {
   filenames: string[];
   action: 'DELETE' | 'UNLINK';
 };
-export type IResDeleteCellFiles = t.IUriResponse<IResDeleteCellFilesData>;
-export type IResDeleteCellFilesData = {
+export type IResDeleteCellFiles = t.IUriResponse<IResDeleteCellFsData>;
+export type IResDeleteCellFsData = {
   uri: string;
   deleted: string[];
   unlinked: string[];
@@ -122,8 +122,8 @@ export type IResDeleteCellFilesError = {
 export type IReqPostCellFilesCopyBody = {
   files: t.IHttpClientCellFileCopy[];
 };
-export type IResPostCellFilesCopy = t.IUriResponse<IResPostCellFilesCopyData>;
-export type IResPostCellFilesCopyData = {
+export type IResPostCellFilesCopy = t.IUriResponse<IResPostCellFsCopyData>;
+export type IResPostCellFsCopyData = {
   files: IResPostCellFileCopyItem[];
   errors: IResPostCellFilesCopyError[];
   changes?: t.IDbModelChange[];

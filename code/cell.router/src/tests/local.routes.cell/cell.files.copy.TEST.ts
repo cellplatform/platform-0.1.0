@@ -13,9 +13,9 @@ describe('cell/files: copy', () => {
 
       const { file1 } = await testFiles();
       const filename = 'foo.png';
-      await source.files.upload([{ filename, data: file1 }]);
+      await source.fs.upload([{ filename, data: file1 }]);
 
-      const res = await source.files.copy({ filename, target: { uri: Z9 } });
+      const res = await source.fs.copy({ filename, target: { uri: Z9 } });
       expect(res.status).to.eql(200);
 
       await fs.stream.save(tmp, (await target.file.name(filename).download()).body);
@@ -46,9 +46,9 @@ describe('cell/files: copy', () => {
       const filename2 = '0.1.2/foo.png';
 
       const { file1 } = await testFiles();
-      await source.files.upload([{ filename: filename1, data: file1 }]);
+      await source.fs.upload([{ filename: filename1, data: file1 }]);
 
-      const res = await source.files.copy({
+      const res = await source.fs.copy({
         filename: filename1,
         target: { uri: Z9, filename: filename2 },
       });
@@ -68,7 +68,7 @@ describe('cell/files: copy', () => {
       const { file1, file2 } = await testFiles();
       const filename1 = 'foo.png';
       const filename2 = 'bar.png';
-      await source.files.upload([
+      await source.fs.upload([
         { filename: filename1, data: file1 },
         { filename: filename2, data: file2 },
       ]);
@@ -76,7 +76,7 @@ describe('cell/files: copy', () => {
       expect(await target.file.name(filename1).exists()).to.eql(false);
       expect(await target.file.name(filename2).exists()).to.eql(false);
 
-      const res = await source.files.copy([
+      const res = await source.fs.copy([
         { filename: filename1, target: { uri: Z9 } },
         { filename: filename2, target: { uri: Z9 } },
       ]);
@@ -104,12 +104,12 @@ describe('cell/files: copy', () => {
       const { file1, file2 } = await testFiles();
       const filename1 = 'foo.png';
       const filename2 = 'bar.png';
-      await source.files.upload([
+      await source.fs.upload([
         { filename: filename1, data: file1 },
         { filename: filename2, data: file2 },
       ]);
 
-      const res1 = await source.files.copy({
+      const res1 = await source.fs.copy({
         filename: filename1,
         target: { uri: Z9 },
       });
@@ -120,7 +120,7 @@ describe('cell/files: copy', () => {
       await fs.stream.save(tmp, (await source.file.name(filename1).download()).body);
       expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
 
-      const res2 = await source.files.copy({
+      const res2 = await source.fs.copy({
         filename: filename2,
         target: { uri: Z9, filename: filename1 },
       });
@@ -141,11 +141,11 @@ describe('cell/files: copy', () => {
       const { file1 } = await testFiles();
       const filename1 = 'foo.png';
       const filename2 = 'bar.png';
-      await source.files.upload([{ filename: filename1, data: file1 }]);
+      await source.fs.upload([{ filename: filename1, data: file1 }]);
 
       expect(await source.file.name(filename2).exists()).to.eql(false);
 
-      const res = await source.files.copy({
+      const res = await source.fs.copy({
         filename: filename1,
         target: { uri: A1, filename: filename2 },
       });
@@ -172,11 +172,11 @@ describe('cell/files: copy', () => {
 
       const { file1 } = await testFiles();
       const filename = 'foo.png';
-      await source.files.upload([{ filename: filename, data: file1 }]);
+      await source.fs.upload([{ filename: filename, data: file1 }]);
 
       expect(await target.file.name(filename).exists()).to.eql(false);
 
-      await source.files.copy({
+      await source.fs.copy({
         filename: filename,
         target: { uri: A1, host: mock2.host },
       });
@@ -193,9 +193,9 @@ describe('cell/files: copy', () => {
 
       const { file1 } = await testFiles();
       const filename = 'foo.png';
-      await source.files.upload([{ filename, data: file1 }]);
+      await source.fs.upload([{ filename, data: file1 }]);
 
-      const res = await source.files.copy(
+      const res = await source.fs.copy(
         { filename: 'foo.png', target: { uri: Z9 } },
         { changes: true },
       );
@@ -213,10 +213,10 @@ describe('cell/files: copy', () => {
       const client = mock.client.cell(A1);
 
       const { file3 } = await testFiles();
-      await client.files.upload([{ filename: 'foo.png', data: file3 }]);
+      await client.fs.upload([{ filename: 'foo.png', data: file3 }]);
 
       const test = async (uri: string) => {
-        const res = await client.files.copy({ filename: 'foo.png', target: { uri } });
+        const res = await client.fs.copy({ filename: 'foo.png', target: { uri } });
         expect(res.status).to.eql(500);
         expect(res.body.errors[0].message).to.include('the target cell to copy to is invalid');
       };
@@ -233,7 +233,7 @@ describe('cell/files: copy', () => {
       const mock = await createMock();
       const A1 = 'cell:foo:A1';
       const client = mock.client.cell(A1);
-      const res = await client.files.copy({ filename: '404.png', target: { uri: 'cell:foo:Z9' } });
+      const res = await client.fs.copy({ filename: '404.png', target: { uri: 'cell:foo:Z9' } });
       mock.dispose();
 
       expect(res.status).to.eql(500);
@@ -249,9 +249,9 @@ describe('cell/files: copy', () => {
       const client = mock.client.cell(A1);
 
       const { file3 } = await testFiles();
-      await client.files.upload([{ filename: 'foo.png', data: file3 }]);
+      await client.fs.upload([{ filename: 'foo.png', data: file3 }]);
 
-      const res = await client.files.copy({ filename: '  ', target: { uri: 'cell:foo:Z9' } });
+      const res = await client.fs.copy({ filename: '  ', target: { uri: 'cell:foo:Z9' } });
       mock.dispose();
 
       expect(res.status).to.eql(500);

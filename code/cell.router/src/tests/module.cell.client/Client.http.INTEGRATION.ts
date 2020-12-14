@@ -21,7 +21,7 @@ describe('HttpClient (Integration)', function () {
 
     it('permission: "private" (default)', async () => {
       const { filename, upload } = await testFile('foo/private.json', { foo: 123 });
-      const res = await cell.files.upload(upload);
+      const res = await cell.fs.upload(upload);
       expect(res.status).to.eql(200);
 
       const info = await cell.info();
@@ -33,7 +33,7 @@ describe('HttpClient (Integration)', function () {
 
     it('permission: "public-read" (default)', async () => {
       const { filename, upload } = await testFile('foo/public.json', { foo: 123 });
-      const res = await cell.files.upload(upload, { permission: 'public-read' });
+      const res = await cell.fs.upload(upload, { permission: 'public-read' });
       expect(res.status).to.eql(200);
 
       const fileInfo = await cell.file.name(filename).info();
@@ -56,7 +56,7 @@ describe('HttpClient (Integration)', function () {
       const filename2 = `copy/file-${slug()}.json`;
 
       const { upload } = await testFile(filename1, { foo: 123 });
-      await source.files.upload(upload);
+      await source.fs.upload(upload);
 
       const file1 = await source.file.name(filename1).info();
       expect(file1.ok).to.eql(true);
@@ -64,7 +64,7 @@ describe('HttpClient (Integration)', function () {
         expect(file1.body.data.props['s3:permission']).to.eql('private');
       }
 
-      const res = await source.files.copy(
+      const res = await source.fs.copy(
         {
           filename: filename1,
           target: { uri: CELL.TARGET, filename: filename2 },
@@ -97,9 +97,9 @@ describe('HttpClient (Integration)', function () {
 
       const file1 = await testFile(filename1, { foo: 1 });
       const file2 = await testFile(filename2, { foo: 2 });
-      await source.files.upload([file1.upload, file2.upload]);
+      await source.fs.upload([file1.upload, file2.upload]);
 
-      const res1 = await source.files.copy({
+      const res1 = await source.fs.copy({
         filename: filename1,
         target: { uri: CELL.TARGET },
       });
@@ -110,7 +110,7 @@ describe('HttpClient (Integration)', function () {
       await fs.stream.save(tmp, (await target.file.name(filename1).download()).body);
       expect(await fs.readJson(tmp)).to.eql({ foo: 1 });
 
-      const res2 = await source.files.copy({
+      const res2 = await source.fs.copy({
         filename: filename2,
         target: { uri: CELL.TARGET, filename: filename1 },
       });
@@ -131,11 +131,11 @@ describe('HttpClient (Integration)', function () {
       const filename2 = `copy/file-${slug()}.json`;
 
       const file = await testFile(filename1, { foo: 'hello' });
-      await source.files.upload([file.upload]);
+      await source.fs.upload([file.upload]);
 
       expect((await source.file.name(filename2).info()).status).to.eql(404);
 
-      const res = await source.files.copy({
+      const res = await source.fs.copy({
         filename: filename1,
         target: { uri: CELL.SOURCE, filename: filename2 },
       });
@@ -160,11 +160,11 @@ describe('HttpClient (Integration)', function () {
       const filename = `copy/file-${slug()}.json`;
 
       const file = await testFile(filename, { foo: 123 });
-      await source.files.upload([file.upload]);
+      await source.fs.upload([file.upload]);
 
       expect((await target.file.name(filename).info()).status).to.eql(404);
 
-      await source.files.copy({
+      await source.fs.copy({
         filename: filename,
         target: { uri: CELL.SOURCE, host: HOST2 },
       });
@@ -185,12 +185,12 @@ describe('HttpClient (Integration)', function () {
 
       const file1 = await testFile(filename1, { foo: 1 });
       const file2 = await testFile(filename2, { foo: 2 });
-      await source.files.upload([file1.upload, file2.upload]);
+      await source.fs.upload([file1.upload, file2.upload]);
 
       expect((await target.file.name(filename1).info()).status).to.eql(404);
       expect((await target.file.name(filename2).info()).status).to.eql(404);
 
-      await source.files.copy([
+      await source.fs.copy([
         {
           filename: filename1,
           target: { uri: CELL.TARGET },

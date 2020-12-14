@@ -18,7 +18,7 @@ export async function deleteCellFiles(args: {
     .map((text) => (text || '').trim())
     .filter((text) => Boolean(text));
 
-  const data: t.IResDeleteCellFilesData = {
+  const data: t.IResDeleteCellFsData = {
     uri: cellUri,
     deleted: [],
     unlinked: [],

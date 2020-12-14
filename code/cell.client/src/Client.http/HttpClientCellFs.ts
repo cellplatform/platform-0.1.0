@@ -1,17 +1,17 @@
 import { ERROR, Schema, t, util } from '../common';
-import { uploadFiles } from './HttpClientCellFiles.upload';
-import { deleteFiles } from './HttpClientCellFiles.delete';
-import { copyFiles } from './HttpClientCellFiles.copy';
+import { uploadFiles } from './HttpClientCellFs.upload';
+import { deleteFiles } from './HttpClientCellFs.delete';
+import { copyFiles } from './HttpClientCellFs.copy';
 
-type IClientCellFilesArgs = { parent: t.IHttpClientCell; urls: t.IUrls; http: t.IHttp };
+type IClientCellFsArgs = { parent: t.IHttpClientCell; urls: t.IUrls; http: t.IHttp };
 type GetError = (args: { status: number }) => string;
 
 /**
  * HTTP client for operating on a set of [Cell] files.
  */
-export class HttpClientCellFiles implements t.IHttpClientCellFiles {
-  public static create(args: IClientCellFilesArgs): t.IHttpClientCellFiles {
-    return new HttpClientCellFiles(args);
+export class HttpClientCellFs implements t.IHttpClientCellFs {
+  public static create(args: IClientCellFsArgs): t.IHttpClientCellFs {
+    return new HttpClientCellFs(args);
   }
 
   private static parsePath(path: string) {
@@ -24,7 +24,7 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
   /**
    * [Lifecycle]
    */
-  private constructor(args: IClientCellFilesArgs) {
+  private constructor(args: IClientCellFsArgs) {
     this.args = args;
     this.uri = args.parent.uri;
   }
@@ -32,7 +32,7 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
   /**
    * [Fields]
    */
-  private readonly args: IClientCellFilesArgs;
+  private readonly args: IClientCellFsArgs;
   private readonly uri: t.ICellUri;
 
   /**
@@ -51,7 +51,7 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
 
     const toUrl = (args: { path: string; uri: string; url: string }): t.IHttpClientCellFileUrl => {
       const { path, uri, url } = args;
-      const { filename, dir } = HttpClientCellFiles.parsePath(path);
+      const { filename, dir } = HttpClientCellFs.parsePath(path);
       const res: t.IHttpClientCellFileUrl = { uri, filename, dir, path, url };
       return res;
     };
@@ -95,7 +95,7 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
         const uri = Schema.Uri.create.file(ns, fileid);
         const url = urls.find((item) => item.uri === uri);
         if (url) {
-          const { path, filename, dir } = HttpClientCellFiles.parsePath(url.path);
+          const { path, filename, dir } = HttpClientCellFs.parsePath(url.path);
           acc.push({ uri, path, filename, dir, ...value });
         }
       }
@@ -129,7 +129,7 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
 
   public copy(
     files: t.IHttpClientCellFileCopy | t.IHttpClientCellFileCopy[],
-    options: t.IHttpClientCellFilesCopyOptions = {},
+    options: t.IHttpClientCellFsCopyOptions = {},
   ) {
     const { changes, permission } = options;
     const http = this.args.http;
