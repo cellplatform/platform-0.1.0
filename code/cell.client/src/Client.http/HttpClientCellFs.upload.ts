@@ -1,7 +1,6 @@
-import { Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
-
-import { defaultValue, ERROR, FormData, Schema, t, util, time, value } from '../common';
+import { defaultValue, ERROR, Schema, t, time, util, value } from '../common';
+import { UploadEvent } from './HttpClientCellFs.upload.event';
+import { uploadToTarget } from './HttpClientCellFs.upload.files';
 
 type R = t.IHttpClientCellFileUploadResponse;
 
@@ -18,7 +17,7 @@ export function uploadFiles(args: {
   const { http, urls, cellUri } = args;
   const sendChanges = defaultValue(args.changes, false);
   const input = value.asArray(args.input).filter((file) => file.data.byteLength > 0); // NB: 0-byte files will cause upload error.
-  const event = Event({ total: input.length, uri: cellUri });
+  const event = UploadEvent({ total: input.length, uri: cellUri });
 
   const promise = new Promise<t.IHttpClientResponse<R>>(async (resolve, reject) => {
     await time.wait(0); // NB: Pause to allow any [event$] listeners to subscribe on the returned promise.
@@ -72,131 +71,81 @@ export function uploadFiles(args: {
 
     event.fire(); // Initial event (before upload starts).
 
-    /**
-     * [1]. Initial POST to the service.
-     *      This sets up the models, and retrieves the pre-signed S3 urls to upload to.
-     */
-    const uploadStartBody: t.IReqPostCellFsUploadStartBody = {
-      expires: undefined, // Expires.
-      files: input.map((item) => {
-        const filehash = Schema.hash.sha256(item.data);
-        const file: t.IReqPostCellUploadFile = {
-          filehash,
-          filename: item.filename,
-          mimetype: item.mimetype,
-          allowRedirect: item.allowRedirect,
-          's3:permission': item['s3:permission'],
-        };
-        return file;
-      }),
-    };
-    const res1 = await http.post(url.start, uploadStartBody);
+    try {
+      /**
+       * [1]. Initial POST to the service.
+       *      This sets up the models, and retrieves the pre-signed S3 urls to upload to.
+       */
+      const uploadStartBody: t.IReqPostCellFsUploadStartBody = {
+        expires: undefined, // Expires.
+        files: input.map((item) => {
+          const filehash = Schema.hash.sha256(item.data);
+          const file: t.IReqPostCellUploadFile = {
+            filehash,
+            filename: item.filename,
+            mimetype: item.mimetype,
+            allowRedirect: item.allowRedirect,
+            's3:permission': item['s3:permission'],
+          };
+          return file;
+        }),
+      };
+      const res1 = await http.post(url.start, uploadStartBody);
 
-    if (!res1.ok) {
-      let message = `Failed during initial file-upload step to [${cellUri}]`;
-      if (typeof res1.json === 'object' && typeof (res1.json as any).message === 'string') {
-        message = `${message}. ${(res1.json as any).message}`;
-      }
-      event.fire({ error: addError(res1.status, message), done: true });
-      return done(res1.status);
-    }
-    const uploadStart = res1.json as t.IResPostCellFsUploadStart;
-    addChanges(uploadStart.data.changes);
-
-    /**
-     * [2]. Upload files to S3 (or the local file-system).
-     */
-    const uploadUrls = uploadStart.urls.uploads;
-    const fileUploadWait = uploadUrls
-      .map((upload) => {
-        const file = input.find((item) => item.filename === upload.filename);
-        const data = file ? file.data : undefined;
-        return { data, upload };
-      })
-      .filter(({ data }) => Boolean(data))
-      .map(async ({ upload, data }) => {
-        const { url } = upload;
-
-        const uploadToS3 = async () => {
-          // Prepare upload multi-part form.
-          const props = upload.props;
-          const contentType = props['content-type'];
-
-          const form = new FormData();
-          Object.keys(props)
-            .map((key) => ({ key, value: props[key] }))
-            .forEach(({ key, value }) => form.append(key, value));
-          form.append('file', data, { contentType }); // NB: file-data must be added last for S3.
-
-          // Send form to S3.
-          const headers = form.getHeaders();
-          return http.post(url, form, { headers });
-        };
-
-        const uploadToLocal = async () => {
-          // HACK:  There is a problem sending the multi-part form to the local
-          //        service, however just posting the data as a buffer (rather than the form)
-          //        seems to work fine.
-          const path = upload.props.key;
-          const headers = { 'content-type': 'multipart/form-data', path };
-          return http.post(url, data, { headers });
-        };
-
-        // Upload data.
-        const isLocal = Schema.Url.isLocal(url);
-        const res = await (isLocal ? uploadToLocal() : uploadToS3());
-
-        // Prepare result.
-        const { ok, status } = res;
-        const { uri, filename, expiresAt } = upload;
-        let error: t.IFileUploadError | undefined;
-        if (!ok) {
-          const message = `Client failed while uploading file '${filename}' (${status})`;
-          error = { type: 'FILE/upload', filename, message };
+      if (!res1.ok) {
+        let message = `Failed during initial file-upload step to [${cellUri}]`;
+        if (typeof res1.json === 'object' && typeof (res1.json as any).message === 'string') {
+          message = `${message}. ${(res1.json as any).message}`;
         }
+        event.fire({ error: addError(res1.status, message), done: true });
+        return done(res1.status);
+      }
+      const uploadStart = res1.json as t.IResPostCellFsUploadStart;
+      addChanges(uploadStart.data.changes);
 
-        // Finish up.
-        event.fire({
-          file: { filename, uri },
-          error: error ? { status, type: 'HTTP/file', message: error.message } : undefined,
-        });
-        return { ok, status, uri, filename, expiresAt, error };
+      /**
+       * [2]. Upload files to S3 (or the local file-system).
+       */
+      const fileUploadWait = uploadToTarget({
+        http,
+        urls: uploadStart.urls.uploads,
+        files: input,
+        fire: event.fire,
       });
 
-    const res2 = await Promise.all(fileUploadWait);
-    const fileUploadSuccesses = res2.filter((item) => item.ok);
-    const fileUploadErrors = res2
-      .filter((item) => Boolean(item.error))
-      .map((item) => item.error as t.IFileUploadError);
+      const res2 = await Promise.all(fileUploadWait);
+      const fileUploadSuccesses = res2.filter((item) => item.ok);
+      const fileUploadErrors = res2
+        .filter((item) => Boolean(item.error))
+        .map((item) => item.error as t.IFileUploadError);
 
-    /**
-     * [3]. POST "complete" for each file-upload causing
-     *      the underlying model(s) to be updated with file
-     *      meta-data retrieved from the file-system.
-     */
-    const res3 = await Promise.all(
-      fileUploadSuccesses.map(async (item) => {
-        const url = urls.file(item.uri).uploaded.query({ changes: sendChanges }).toString();
-        const { filename } = item;
-        const body: t.IReqPostFileUploadCompleteBody = { filename };
-        const res = await http.post(url, body);
-        const { status, ok } = res;
-        const json = res.json as t.IResPostFileUploadComplete;
-        const file = json.data;
-        return { status, ok, json, file, filename };
-      }),
-    );
-    res3.forEach((res) => addChanges(res.json.changes));
+      /**
+       * [3]. POST "complete" for each file-upload causing
+       *      the underlying model(s) to be updated with file
+       *      meta-data retrieved from the file-system.
+       */
+      const res3 = await Promise.all(
+        fileUploadSuccesses.map(async (item) => {
+          const url = urls.file(item.uri).uploaded.query({ changes: sendChanges }).toString();
+          const { filename } = item;
+          const body: t.IReqPostFileUploadCompleteBody = { filename };
+          const res = await http.post(url, body);
+          const { status, ok } = res;
+          const json = res.json as t.IResPostFileUploadComplete;
+          const file = json.data;
+          return { status, ok, json, file, filename };
+        }),
+      );
+      res3.forEach((res) => addChanges(res.json.changes));
 
-    const fileCompleteFails = res3.filter((res) => !res.ok);
-    const fileCompleteFailErrors = fileCompleteFails.map((res) => {
-      const filename = res.filename || 'UNKNOWN';
-      const message = `Failed while completing upload of file '${filename}' (${res.status})`;
-      const error: t.IFileUploadError = { type: 'FILE/upload', filename, message };
-      return error;
-    });
+      const fileCompleteFails = res3.filter((res) => !res.ok);
+      const fileCompleteFailErrors = fileCompleteFails.map((res) => {
+        const filename = res.filename || 'UNKNOWN';
+        const message = `Failed while completing upload of file '${filename}' (${res.status})`;
+        const error: t.IFileUploadError = { type: 'FILE/upload', filename, message };
+        return error;
+      });
 
-    try {
       /**
        * [4]. POST "complete" for the upload to the owner cell.
        */
@@ -230,41 +179,4 @@ export function uploadFiles(args: {
   // Attach event stream to the returned promise.
   (promise as any).event$ = event.$;
   return promise as t.IHttpClientCellFsUploadPromise;
-}
-
-/**
- * Helpers
- */
-
-function Event(args: { uri: string; total: number }) {
-  const { uri, total } = args;
-  const event$ = new Subject<t.IHttpClientUploadedEvent>();
-  let completed = 0;
-  const tx = Schema.cuid();
-
-  const next = (payload: t.IHttpClientUploaded) => {
-    payload = value.deleteUndefined(payload);
-    event$.next({ type: 'HttpClient/uploaded', payload });
-  };
-
-  const fire = (
-    args: {
-      file?: t.IHttpClientUploaded['file'];
-      error?: t.IHttpErrorFile;
-      done?: boolean;
-    } = {},
-  ) => {
-    const { file, error } = args;
-    if (file && !error) {
-      completed++;
-    }
-    const done = completed >= total ? true : args.done || false;
-    next({ uri, tx, file, total, completed, done });
-  };
-
-  return {
-    $: event$.pipe(share()),
-    dispose: () => event$.complete(),
-    fire,
-  };
 }
