@@ -17,7 +17,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * GET: cell:foo:A1/files
    */
-  router.get(routes.CELL.FILES.BASE, async (req) => {
+  router.get(routes.CELL.FS.BASE, async (req) => {
     try {
       const host = req.host;
       const query = req.query as t.IReqQueryCellFilesList;
@@ -49,7 +49,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    *        3. POST to the "upload complete" endpoint for each uploaded file to capture its meta-data and verify its state.
    *        4. POST to the "upload complete" endpoint for the cell.
    */
-  router.post(routes.CELL.FILES.UPLOAD, async (req) => {
+  router.post(routes.CELL.FS.UPLOAD, async (req) => {
     try {
       const host = req.host;
       const query = req.query as t.IReqQueryCellFilesUpload;
@@ -74,7 +74,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    *      and running any validation which is necessary.
    *
    */
-  router.post(routes.CELL.FILES.UPLOADED, async (req) => {
+  router.post(routes.CELL.FS.UPLOADED, async (req) => {
     try {
       const host = req.host;
       const query = req.query as t.IReqQueryCellFilesUploaded;
@@ -95,7 +95,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * DELETE file(s) from a cell.
    */
-  router.delete(routes.CELL.FILES.BASE, async (req) => {
+  router.delete(routes.CELL.FS.BASE, async (req) => {
     try {
       const host = req.host;
       const query = req.query as t.IReqQueryCellFilesDelete;
@@ -115,7 +115,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * POST copy file(s) between cells.
    */
-  router.post(routes.CELL.FILES.COPY, async (req) => {
+  router.post(routes.CELL.FS.COPY, async (req) => {
     try {
       const host = req.host;
       const query = req.query as t.IReqQueryCellFilesCopy;

@@ -43,7 +43,7 @@ export const ROUTES = {
       BY_NAME: `/cell${KEY.NS}\\:${KEY.CELL}/file/${KEY.FILENAME}`,
       BY_FILE_URI: `/cell${KEY.NS}\\:${KEY.CELL}/file\\:${KEY.FILENAME}`,
     },
-    FILES: {
+    FS: {
       BASE: `/cell${KEY.NS}\\:${KEY.CELL}/files(/?)`,
       UPLOAD: `/cell${KEY.NS}\\:${KEY.CELL}/files/upload`,
       UPLOADED: `/cell${KEY.NS}\\:${KEY.CELL}/files/uploaded`,

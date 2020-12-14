@@ -1,5 +1,5 @@
 import { ERROR, t } from '../common';
-import { getParams as getParamsFiles, ParamAnd } from '../route.cell.files/params';
+import { getParams as getParamsFiles, ParamAnd } from '../route.cell.fs/params';
 
 const toString = (input?: any) => (input || '').toString().trim();
 const toMessage = (msg: string) => `Malformed URI, ${msg}`;
