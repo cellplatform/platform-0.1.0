@@ -9,21 +9,21 @@ export async function copyCellFiles(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   cellUri: string;
-  body: t.IReqPostCellFilesCopyBody;
+  body: t.IReqPostCellFsCopyBody;
   host: string;
   changes?: boolean;
   permission?: t.FsS3Permission;
 }) {
   const { db, fs, cellUri, body, changes: sendChanges, permission } = args;
   const items: Item[] = [];
-  const errors: t.IResPostCellFilesCopyError[] = [];
+  const errors: t.IResPostCellFsCopyError[] = [];
   const changes: t.IDbModelChange[] = [];
   const sourceClient = HttpClient.create(args.host).cell(cellUri);
 
   const done = () => {
     const hasError = errors.length !== 0;
     const status = hasError ? 500 : 200;
-    const data: t.IResPostCellFilesCopyData = {
+    const data: t.IResPostCellFsCopyData = {
       files: items.map(({ source, target }) => ({ source, target })),
       errors,
       changes,
@@ -143,7 +143,7 @@ export async function copyCellFiles(args: {
       const file: t.IHttpClientCellFileUpload = { filename: target.filename, data };
 
       const client = HttpClient.create(target.host).cell(target.cell);
-      const res = await client.files.upload(file, { changes: sendChanges, permission });
+      const res = await client.fs.upload(file, { changes: sendChanges, permission });
       const { ok } = res;
 
       if (!ok) {
@@ -198,7 +198,7 @@ export async function copyCellFiles(args: {
           }
 
           if (!failed) {
-            const body: t.IReqPostCellFilesUploadCompleteBody = {};
+            const body: t.IReqPostCellFsUploadCompleteBody = {};
             const res = await uploadCellFilesComplete({
               db,
               host: item.target.host,

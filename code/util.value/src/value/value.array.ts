@@ -24,3 +24,10 @@ export function flatten<T>(list: any): T[] {
   }, []);
   return result as T[];
 }
+
+/**
+ * Ensures a value is an array.
+ */
+export function asArray<T>(input: T | T[]): T[] {
+  return Array.isArray(input) ? input : [input];
+}

@@ -58,7 +58,7 @@ export type IHttpClientCell = {
   readonly uri: t.ICellUri;
   readonly url: t.IUrlsCell;
   readonly file: IHttpClientCellFile;
-  readonly files: IHttpClientCellFiles;
+  readonly fs: IHttpClientCellFs;
   exists(): Promise<boolean>;
   info(options?: t.IReqQueryCellInfo): t.IHttpClientAsync<t.IResGetCell>;
   links(): t.IHttpClientAsync<IHttpClientCellLinks>;
@@ -83,32 +83,32 @@ export type IHttpClientCellFileByName = {
   download(options?: { expires?: Duration }): t.IHttpClientAsync<ReadableStream | t.Json | string>;
 };
 
-export type IHttpClientCellFiles = {
+export type IHttpClientCellFs = {
   urls(): t.IHttpClientAsync<IHttpClientCellFileUrl[]>;
   map(): t.IHttpClientAsync<t.IFileMap>;
   list(options?: { filter?: string }): t.IHttpClientAsync<IHttpClientFileData[]>;
   upload(
     files: IHttpClientCellFileUpload | IHttpClientCellFileUpload[],
-    options?: IHttpClientCellFilesUploadOptions,
-  ): IHttpClientCellFilesUploadPromise;
-  delete(filename: string | string[]): t.IHttpClientAsync<t.IResDeleteCellFilesData>;
-  unlink(filename: string | string[]): t.IHttpClientAsync<t.IResDeleteCellFilesData>;
+    options?: IHttpClientCellFsUploadOptions,
+  ): IHttpClientCellFsUploadPromise;
+  delete(filename: string | string[]): t.IHttpClientAsync<t.IResDeleteCellFsData>;
+  unlink(filename: string | string[]): t.IHttpClientAsync<t.IResDeleteCellFsData>;
   copy(
     files: t.IHttpClientCellFileCopy | t.IHttpClientCellFileCopy[],
-    options?: IHttpClientCellFilesCopyOptions,
-  ): t.IHttpClientAsync<t.IResPostCellFilesCopyData>;
+    options?: IHttpClientCellFsCopyOptions,
+  ): t.IHttpClientAsync<t.IResPostCellFsCopyData>;
 };
 
-export type IHttpClientCellFilesUploadOptions = {
+export type IHttpClientCellFsUploadOptions = {
   changes?: boolean;
   permission?: t.FsS3Permission;
 };
 
-export type IHttpClientCellFilesUploadPromise = t.IHttpClientAsync<IHttpClientCellFileUploadResponse> & {
+export type IHttpClientCellFsUploadPromise = t.IHttpClientAsync<IHttpClientCellFileUploadResponse> & {
   event$: t.Observable<t.IHttpClientUploadedEvent>;
 };
 
-export type IHttpClientCellFilesCopyOptions = {
+export type IHttpClientCellFsCopyOptions = {
   changes?: boolean;
   permission?: t.FsS3Permission;
 };

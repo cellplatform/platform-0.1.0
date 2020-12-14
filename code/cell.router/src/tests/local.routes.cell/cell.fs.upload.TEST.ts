@@ -2,7 +2,7 @@
 import { parse as parseUrl } from 'url';
 import { createMock, expect, fs, Http, readFile, Schema, t, http, is } from '../../test';
 
-describe('cell/files: upload', function () {
+describe.only('cell.fs: upload', function () {
   this.timeout(50000);
 
   it('upload => download: 1 file', async () => {
@@ -13,13 +13,16 @@ describe('cell/files: upload', function () {
     // Upload => download.
     const filename = 'bird.png';
     const data = await readFile('src/test/assets/bird.png');
-    await client.files.upload([{ filename, data }]);
-    const res = await client.file.name(filename).download();
+    const upload = await client.fs.upload([{ filename, data }]);
+    expect(upload.ok).to.eql(true);
+
+    const download = await client.file.name(filename).download();
+    expect(download.ok).to.eql(true);
 
     // Save and compare.
     const path = fs.resolve('tmp/tmp-download');
-    if (typeof res.body === 'object') {
-      await fs.stream.save(path, res.body);
+    if (typeof download.body === 'object') {
+      await fs.stream.save(path, download.body);
     }
     expect((await fs.readFile(path)).toString()).to.eql(data.toString());
 
@@ -41,7 +44,7 @@ describe('cell/files: upload', function () {
     expect(res1.data).to.eql({});
 
     // Upload two files.
-    const res2 = await client.files.upload([
+    const res2 = await client.fs.upload([
       { filename: 'func.wasm', data: file1 },
       { filename: 'kitten.jpg', data: file2 },
     ]);
@@ -59,11 +62,11 @@ describe('cell/files: upload', function () {
     expect((await client.info()).body.data).to.eql(res2.body.cell);
 
     // Ensure the file location has been stored.
-    const files = (await client.files.list()).body;
+    const files = (await client.fs.list()).body;
     expect(files.length).to.eql(2);
     expect(files.every((f) => f.props.location?.startsWith('file:///'))).to.eql(true);
 
-    const urls = (await client.files.urls()).body;
+    const urls = (await client.fs.urls()).body;
 
     // Check the files exist.
     const downloadAndSave = async (filename: string, compareWith: Buffer) => {
@@ -91,7 +94,7 @@ describe('cell/files: upload', function () {
     const client = mock.client.cell(cellUri);
 
     const data = await readFile('src/test/assets/kitten.jpg');
-    const uploaded = await client.files.upload([
+    const uploaded = await client.fs.upload([
       { filename: 'foo/1.jpg', data, allowRedirect: false },
       { filename: 'foo/2.jpg', data, allowRedirect: true },
       { filename: 'foo/3.jpg', data },
@@ -118,7 +121,7 @@ describe('cell/files: upload', function () {
     const client = mock.client.cell(cellUri);
 
     const data = await readFile('src/test/assets/kitten.jpg');
-    const uploaded = await client.files.upload([
+    const uploaded = await client.fs.upload([
       { filename: 'foo/1.jpg', data, 's3:permission': 'private' },
       { filename: 'foo/2.jpg', data, 's3:permission': 'public-read' },
       { filename: 'foo/3.jpg', data },
@@ -151,7 +154,7 @@ describe('cell/files: upload', function () {
 
     const kitten = await readFile('src/test/assets/kitten.jpg');
     const filename = 'foo/bar/kitten.jpg';
-    const uploaded = await client.files.upload({ filename, data: kitten });
+    const uploaded = await client.fs.upload({ filename, data: kitten });
 
     // Ensure folder path is encoded within link-key on the cell.
     const cellLinks = uploaded.body.cell.links || {};
@@ -163,7 +166,7 @@ describe('cell/files: upload', function () {
 
     // Ensure the file (and all relevant path data)
     // is represented within the cells "files" list.
-    const urls = (await client.files.urls()).body;
+    const urls = (await client.fs.urls()).body;
 
     expect(urls.length).to.eql(1);
     expect(urls[0].uri).to.match(/^file:foo:/);
@@ -176,7 +179,7 @@ describe('cell/files: upload', function () {
     expect(urls[0].url).to.match(/hash=sha256-/);
 
     // Data returned on list.
-    const list = (await client.files.list()).body;
+    const list = (await client.fs.list()).body;
 
     expect(list.length).to.eql(1);
     expect(list[0].uri).to.match(/^file:foo:/);
@@ -196,7 +199,7 @@ describe('cell/files: upload', function () {
     const client = mock.client.cell(cellUri);
     const img = await readFile('src/test/assets/bird.png');
 
-    await client.files.upload([
+    await client.fs.upload([
       { filename: 'root.png', data: img },
       { filename: 'foo/bar/img.png', data: img },
       { filename: 'foo/img.png', data: img },
@@ -210,7 +213,7 @@ describe('cell/files: upload', function () {
     const test = async (filter: string, expected?: string[]) => {
       const url = urls.list.query({ filter }).toString();
       const res = await http.get(url);
-      const json = res.json as t.IResGetCellFiles;
+      const json = res.json as t.IResGetCellFs;
       const files = json.urls?.files.map((item) => item.path);
       expect(files).to.eql(expected);
     };
@@ -240,7 +243,7 @@ describe('cell/files: upload', function () {
     const client = mock.client.cell(cellUri);
 
     const data = await readFile('src/test/assets/kitten.jpg');
-    const uploaded = await client.files.upload([
+    const uploaded = await client.fs.upload([
       { filename: 'one', data },
       { filename: 'two', data, mimetype: 'image/jpeg' },
     ]);
@@ -265,14 +268,14 @@ describe('cell/files: upload', function () {
     const file3 = await readFile('src/test/assets/bird.png');
 
     // POST the file to the service.
-    await clientA1.files.upload([
+    await clientA1.fs.upload([
       { filename: 'func.wasm', data: file1 },
       { filename: 'kitten.jpg', data: file2 },
     ]);
-    await clientA2.files.upload({ filename: 'bird.png', data: file3 });
+    await clientA2.fs.upload({ filename: 'bird.png', data: file3 });
 
-    const res1 = (await clientA1.files.list()).body;
-    const res2 = (await clientA2.files.list()).body;
+    const res1 = (await clientA1.fs.list()).body;
+    const res2 = (await clientA2.fs.list()).body;
 
     expect(res1.length).to.eql(2);
     expect(res1[0].props.bytes).to.eql(file1.length);
@@ -302,7 +305,7 @@ describe('cell/files: upload', function () {
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
     const data = await readFile('src/test/assets/kitten.jpg');
-    const res = await client.files.upload([{ filename: 'kitten.jpg', data }]); // NB: {changes} option not specified.
+    const res = await client.fs.upload([{ filename: 'kitten.jpg', data }]); // NB: {changes} option not specified.
 
     expect(res.body.changes).to.eql(undefined);
 
@@ -316,7 +319,7 @@ describe('cell/files: upload', function () {
     const client = mock.client.cell(cellUri);
     const file1 = await readFile('src/test/assets/kitten.jpg');
     const file2 = await readFile('src/test/assets/bird.png');
-    const res = await client.files.upload(
+    const res = await client.fs.upload(
       [
         { filename: 'kitten.jpg', data: file1 },
         { filename: 'bird.png', data: file2 },
@@ -340,7 +343,7 @@ describe('cell/files: upload', function () {
 
     const file = await readFile('src/test/assets/func.wasm');
     const filehash = Schema.hash.sha256(file);
-    const res = await client.files.upload([{ filename: 'func.wasm', data: file }]);
+    const res = await client.fs.upload([{ filename: 'func.wasm', data: file }]);
 
     // Ensure before/after state of the uploaded file.
     await (async () => {
@@ -365,8 +368,8 @@ describe('cell/files: upload', function () {
     const client = mock.client.cell(cellUri);
     const data = await readFile('src/test/assets/func.wasm');
 
-    const uploadRes = await client.files.upload([{ filename: 'func.wasm', data }]);
-    const filesRes = await client.files.list();
+    const uploadRes = await client.fs.upload([{ filename: 'func.wasm', data }]);
+    const filesRes = await client.fs.list();
     const cellRes = await client.info();
 
     const links = uploadRes.body.cell.links || {};
@@ -399,7 +402,7 @@ describe('cell/files: upload', function () {
     const file2 = await readFile('src/test/assets/kitten.jpg');
 
     // POST the file to the service.
-    await cellClient.files.upload({ filename: 'func.wasm', data: file1 });
+    await cellClient.fs.upload({ filename: 'func.wasm', data: file1 });
 
     // Save and compare the downloaded stream.
     const path = fs.resolve('tmp/test/download/func.wasm');
@@ -413,7 +416,7 @@ describe('cell/files: upload', function () {
 
     // Upload the same image, hashes should not change.
     const before1 = (await links.files[0].file.info()).body;
-    await cellClient.files.upload({ filename: 'func.wasm', data: file1 });
+    await cellClient.fs.upload({ filename: 'func.wasm', data: file1 });
     const after1 = (await links.files[0].file.info()).body;
     expect(before1.data.hash).to.eql(after1.data.hash);
 
@@ -424,7 +427,7 @@ describe('cell/files: upload', function () {
     // Upload a different image, with the same name.
     // Hash should change.
     const before2 = (await links.files[0].file.info()).body;
-    await cellClient.files.upload({ filename: 'func.wasm', data: file2 });
+    await cellClient.fs.upload({ filename: 'func.wasm', data: file2 });
     const after2 = (await links.files[0].file.info()).body;
     expect(before2.data.hash).to.not.eql(after2.data.hash);
 
@@ -450,7 +453,7 @@ describe('cell/files: upload', function () {
     const client = mock.client.cell(cellUri);
     const data = await readFile('src/test/assets/func.wasm');
 
-    const promise = client.files.upload([
+    const promise = client.fs.upload([
       { filename: 'file-1.wasm', data },
       { filename: 'file-2.wasm', data },
       { filename: 'file-3.wasm', data },

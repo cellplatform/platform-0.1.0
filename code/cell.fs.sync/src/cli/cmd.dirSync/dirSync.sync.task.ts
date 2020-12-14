@@ -34,7 +34,7 @@ export function addTask(args: {
   logResults: t.FsSyncLogResults;
 }) {
   const { tasks, logResults } = args;
-  const clientFiles = args.client.cell(args.targetUri.toString()).files;
+  const clientFs = args.client.cell(args.targetUri.toString()).fs;
   const pushes = args.items.filter((item) => item.status !== 'DELETED');
   const deletions = args.items.filter((item) => item.status === 'DELETED');
   const title = taskTitle({ pushes, deletions });
@@ -47,7 +47,7 @@ export function addTask(args: {
     })) as t.IHttpClientCellFileUpload[];
 
     if (uploadFiles.length > 0) {
-      const res = await clientFiles.upload(uploadFiles);
+      const res = await clientFs.upload(uploadFiles);
       if (res.ok) {
         logResults({ uploaded: uploadFiles.map((item) => item.filename) });
       } else {
@@ -59,7 +59,7 @@ export function addTask(args: {
     // Deletions.
     const deleteFiles = deletions.map((item) => item.path);
     if (deleteFiles.length > 0) {
-      const res = await clientFiles.delete(deleteFiles);
+      const res = await clientFs.delete(deleteFiles);
       if (res.ok) {
         logResults({ deleted: deleteFiles });
       } else {

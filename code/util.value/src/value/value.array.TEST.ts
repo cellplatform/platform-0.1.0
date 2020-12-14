@@ -44,3 +44,21 @@ describe('flatten', () => {
     expect(value.flatten([1, [2, [3, [4, [5, 6]]]]])).to.eql([1, 2, 3, 4, 5, 6]);
   });
 });
+
+describe('asArray', () => {
+  it('already array', () => {
+    const input = [{ count: 1 }, { count: 2 }, { count: 3 }];
+    const res = value.asArray(input);
+    expect(res).to.equal(input);
+    expect(res[0].count).to.eql(1); // NB: Type inferred and returned.
+  });
+
+  it('convert to array', () => {
+    const input = { count: 1 };
+    const res = value.asArray(input);
+    expect(res.length).to.eql(1);
+    expect(res).to.not.equal(input); // NB: Converted into an array
+    expect(res[0]).to.equal(input);
+    expect(res[0].count).to.eql(1); // NB: Type inferred and returned.
+  });
+});

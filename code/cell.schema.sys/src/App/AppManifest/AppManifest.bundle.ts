@@ -64,7 +64,7 @@ export async function bundle(args: {
       }));
 
       const target = app.types.map.fs.uri;
-      const res = await client.http.cell(target).files.upload(files);
+      const res = await client.http.cell(target).fs.upload(files);
 
       if (res.error) {
         throw new Error(`Failed to upload files. ${res.error.message}`);

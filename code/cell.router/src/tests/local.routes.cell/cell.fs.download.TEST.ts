@@ -17,7 +17,7 @@ const bodyToString = async (body?: ReadableStream | string | t.Json) => {
   return '';
 };
 
-describe('cell/files: download', function () {
+describe('cell.fs: download', function () {
   this.timeout(50000);
 
   describe('http (raw URLs)', () => {
@@ -28,7 +28,7 @@ describe('cell/files: download', function () {
 
       // Upload HTML file.
       const data = await readFile('src/test/assets/file.js');
-      const uploaded = await client.files.upload({ filename: 'm.foo.js', data });
+      const uploaded = await client.fs.upload({ filename: 'm.foo.js', data });
       const fileUri = uploaded.body.files[0].uri;
 
       const urls = mock.urls.cell(cellUri).file;
@@ -61,7 +61,7 @@ describe('cell/files: download', function () {
 
         const path = fs.join('src/test/assets', source);
         const data = await readFile(path);
-        await client.files.upload({ filename, data });
+        await client.fs.upload({ filename, data });
 
         const url = urls.file.byName(filename).toString();
         const res = await http.get(url);
@@ -116,7 +116,7 @@ describe('cell/files: download', function () {
       const filename = 'foobar/index.html';
       const path = fs.join('src/test/assets', 'file.js');
       const data = await readFile(path);
-      const upload = await client.files.upload({ filename, data });
+      const upload = await client.fs.upload({ filename, data });
 
       const hash = upload.body.files[0].data.hash || '';
       const cachedFile = fs.join(CACHE_DIR, hash);
@@ -141,7 +141,7 @@ describe('cell/files: download', function () {
       // Upload HTML file.
       const filename = 'foo';
       const data = await readFile('src/test/assets/index.html');
-      await client.files.upload({ filename, data });
+      await client.fs.upload({ filename, data });
 
       // Download the file and check headers.
       let headers: undefined | t.IHttpHeaders;
@@ -165,7 +165,7 @@ describe('cell/files: download', function () {
 
       // Upload HTML file.
       const data = await readFile('src/test/assets/index.html');
-      await client.files.upload({ filename: 'foo/bar/m.root.html', data });
+      await client.fs.upload({ filename: 'foo/bar/m.root.html', data });
 
       // Download the file and check headers.
       let headers: undefined | t.IHttpHeaders;
@@ -189,7 +189,7 @@ describe('cell/files: download', function () {
       // Upload HTML file.
       const filename = 'index.html';
       const data = await readFile('src/test/assets/index.html');
-      await client.files.upload({ filename, data });
+      await client.fs.upload({ filename, data });
 
       // Download the file and check headers.
       let headers: undefined | t.IHttpHeaders;
@@ -233,7 +233,7 @@ describe('cell/files: download', function () {
 
         // Upload HTML file.
         const files = await readFiles();
-        await client.files.upload([
+        await client.fs.upload([
           { filename: 'index.html', data: files.html },
           { filename: 'assets/style.css', data: files.css },
           { filename: 'file.js', data: files.js },
@@ -257,7 +257,7 @@ describe('cell/files: download', function () {
 
         // Upload HTML file.
         const files = await readFiles();
-        await client.files.upload([
+        await client.fs.upload([
           { filename: '/foo/bar/index.html', data: files.html },
           { filename: 'foo/bar/assets/style.css', data: files.css }, // NB: alternative without root "/" (should not make a difference).
           { filename: '/foo/bar/file.js', data: files.js },

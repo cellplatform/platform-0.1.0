@@ -5,7 +5,7 @@ import { getCellFiles, toFileList } from './handler.list';
 export async function uploadCellFilesComplete(args: {
   db: t.IDb;
   cellUri: string;
-  body: t.IReqPostCellFilesUploadCompleteBody;
+  body: t.IReqPostCellFsUploadCompleteBody;
   host: string;
   changes?: boolean;
 }) {
@@ -72,7 +72,7 @@ export async function uploadCellFilesComplete(args: {
 
   // Prepare response.
   await cell.load({ force: true });
-  const res: t.IResPostCellFilesUploadComplete = {
+  const res: t.IResPostCellFsUploadComplete = {
     uri: cellUri.toString(),
     createdAt: cell.createdAt,
     modifiedAt: cell.modifiedAt,

@@ -54,7 +54,7 @@ export function delay<T = any>(msecs: number, callback?: () => T): t.TimeDelayPr
  */
 export const wait: t.TimeWait = (msecs) => {
   if (typeof msecs === 'object') {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       msecs.pipe(take(1)).subscribe(() => resolve());
     });
   } else {

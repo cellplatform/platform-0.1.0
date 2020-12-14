@@ -15,13 +15,13 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   const { db, fs, router } = args;
 
   /**
-   * GET: cell:foo:A1/files
+   * GET: cell:foo:A1/fs
    */
-  router.get(routes.CELL.FILES.BASE, async (req) => {
+  router.get(routes.CELL.FS.BASE, async (req) => {
     try {
       const host = req.host;
-      const query = req.query as t.IReqQueryCellFilesList;
-      const params = req.params as t.IUrlParamsCellFiles;
+      const query = req.query as t.IReqQueryCellFsList;
+      const params = req.params as t.IUrlParamsCellFs;
       const paramData = getParams({ params });
       const { status, error, cellUri } = paramData;
       const { expires, files: includeFiles, urls: includeUrls, filter } = query;
@@ -49,15 +49,15 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    *        3. POST to the "upload complete" endpoint for each uploaded file to capture its meta-data and verify its state.
    *        4. POST to the "upload complete" endpoint for the cell.
    */
-  router.post(routes.CELL.FILES.UPLOAD, async (req) => {
+  router.post(routes.CELL.FS.UPLOAD, async (req) => {
     try {
       const host = req.host;
-      const query = req.query as t.IReqQueryCellFilesUpload;
-      const params = req.params as t.IUrlParamsCellFiles;
+      const query = req.query as t.IReqQueryCellFsUpload;
+      const params = req.params as t.IUrlParamsCellFs;
       const paramData = getParams({ params });
       const { status, error, cellUri } = paramData;
       const changes = query.changes;
-      const body = ((await req.body.json()) || {}) as t.IReqPostCellFilesUploadStartBody;
+      const body = ((await req.body.json()) || {}) as t.IReqPostCellFsUploadStartBody;
 
       return !paramData.ns || error
         ? { status, data: { error } }
@@ -74,15 +74,15 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    *      and running any validation which is necessary.
    *
    */
-  router.post(routes.CELL.FILES.UPLOADED, async (req) => {
+  router.post(routes.CELL.FS.UPLOADED, async (req) => {
     try {
       const host = req.host;
-      const query = req.query as t.IReqQueryCellFilesUploaded;
-      const params = req.params as t.IUrlParamsCellFiles;
+      const query = req.query as t.IReqQueryCellFsUploaded;
+      const params = req.params as t.IUrlParamsCellFs;
       const paramData = getParams({ params });
       const { status, error, cellUri } = paramData;
       const changes = query.changes;
-      const body = ((await req.body.json()) || {}) as t.IReqPostCellFilesUploadCompleteBody;
+      const body = ((await req.body.json()) || {}) as t.IReqPostCellFsUploadCompleteBody;
 
       return !paramData.ns || error
         ? { status, data: { error } }
@@ -95,13 +95,13 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * DELETE file(s) from a cell.
    */
-  router.delete(routes.CELL.FILES.BASE, async (req) => {
+  router.delete(routes.CELL.FS.BASE, async (req) => {
     try {
       const host = req.host;
-      const query = req.query as t.IReqQueryCellFilesDelete;
-      const params = req.params as t.IUrlParamsCellFiles;
+      const query = req.query as t.IReqQueryCellFsDelete;
+      const params = req.params as t.IUrlParamsCellFs;
       const paramData = getParams({ params });
-      const body = (await req.body.json()) as t.IReqDeleteCellFilesBody;
+      const body = (await req.body.json()) as t.IReqDeleteCellFsBody;
       const { status, error, cellUri: cellUri } = paramData;
 
       return !paramData.ns || error
@@ -115,13 +115,13 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * POST copy file(s) between cells.
    */
-  router.post(routes.CELL.FILES.COPY, async (req) => {
+  router.post(routes.CELL.FS.COPY, async (req) => {
     try {
       const host = req.host;
-      const query = req.query as t.IReqQueryCellFilesCopy;
-      const params = req.params as t.IUrlParamsCellFiles;
+      const query = req.query as t.IReqQueryCellFsCopy;
+      const params = req.params as t.IUrlParamsCellFs;
       const paramData = getParams({ params });
-      const body = (await req.body.json()) as t.IReqPostCellFilesCopyBody;
+      const body = (await req.body.json()) as t.IReqPostCellFsCopyBody;
       const changes = query.changes;
       const permission = query['s3:permission'];
       const { status, error, cellUri: cellUri } = paramData;

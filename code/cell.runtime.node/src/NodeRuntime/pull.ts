@@ -51,7 +51,7 @@ export function pullMethod(args: { cachedir: string }) {
     const pullList = async () => {
       try {
         const filter = bundle.dir.append('**');
-        const list = await client.files.list({ filter });
+        const list = await client.fs.list({ filter });
         return list.body;
       } catch (error) {
         addError(error.message, error.stack);

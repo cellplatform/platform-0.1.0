@@ -1,11 +1,11 @@
 import { ERROR, Schema, t } from '../common';
 
 export type ParamOr =
-  | t.IUrlParamsCellFiles
+  | t.IUrlParamsCellFs
   | t.IUrlParamsCellFileByName
   | t.IUrlParamsCellFileByFileUri;
 
-export type ParamAnd = t.IUrlParamsCellFiles &
+export type ParamAnd = t.IUrlParamsCellFs &
   t.IUrlParamsCellFileByName &
   t.IUrlParamsCellFileByFileUri;
 

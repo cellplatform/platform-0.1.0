@@ -77,7 +77,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
     const urls = Schema.urls(http.origin);
 
     const cell = http.cell(this.props.uri);
-    const res = await cell.files.list();
+    const res = await cell.fs.list();
     if (res.ok) {
       const items = res.body.map((file) => {
         const url = urls.file(file.uri);
@@ -256,7 +256,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
       }),
     );
 
-    await cell.files.upload(payload);
+    await cell.fs.upload(payload);
     await this.loadFiles();
 
     const first = this.items.find((item) => item.filename === payload[0].filename);

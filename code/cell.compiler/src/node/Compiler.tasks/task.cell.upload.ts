@@ -124,7 +124,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
      * [1] Perform initial upload of files (retrieving the generated file URIs).
      */
     type E = t.IHttpClientUploadedEvent;
-    const fileUploading = client.files.upload(files);
+    const fileUploading = client.fs.upload(files);
     rx.payload<E>(fileUploading.event$, 'HttpClient/uploaded').subscribe((e) => {
       const { total, completed } = e;
       spinner.update({ total, completed });
@@ -142,9 +142,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
      * [2] Update the manifest with the file-hashes and re-upload it.
      */
     await updateManifest({ bundleDir, uploadedFiles: fileUpload.body.files, redirects });
-    const manifestUpload = await client.files.upload(
-      await getManifestFile({ bundleDir, targetDir }),
-    );
+    const manifestUpload = await client.fs.upload(await getManifestFile({ bundleDir, targetDir }));
     if (!manifestUpload.ok) {
       spinner.stop();
       logUploadFailure({ host, bundleDir, errors: manifestUpload.body.errors });

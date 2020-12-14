@@ -49,7 +49,7 @@ export async function buildPayload(args: {
   const title = log.gray(`read ${cell} from ${filesUrl.origin}`);
 
   tasks.task(title, async () => {
-    const res = await args.client.cell(cellUri).files.list();
+    const res = await args.client.cell(cellUri).fs.list();
     if (!res.ok) {
       throw new Error(res.error?.message);
     }
