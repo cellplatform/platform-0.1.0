@@ -180,104 +180,108 @@ describe('Urls', () => {
       expect(res2.toString()).to.eql(URL);
     });
 
-    it('files.list', () => {
-      const res1 = url.cell(URI).files.list;
-      const res2 = url.cell(Uri.cell('cell:foo:A1')).files.list;
+    describe('fs', () => {
+      it('fs.list', () => {
+        const res1 = url.cell(URI).files.list;
+        const res2 = url.cell(Uri.cell('cell:foo:A1')).files.list;
 
-      const URL = 'http://localhost/cell:foo:A1/files';
-      expect(res1.query({}).toString()).to.eql(URL);
-      expect(res2.toString()).to.eql(URL);
+        const URL = 'http://localhost/cell:foo:A1/fs';
+        expect(res1.query({}).toString()).to.eql(URL);
+        expect(res2.toString()).to.eql(URL);
+      });
+
+      it('fs.list (filter)', () => {
+        const URL = 'http://localhost/cell:foo:A1/fs';
+
+        const list = url.cell(URI).files.list;
+        expect(list.toString()).to.eql(URL);
+
+        const res = list.query({ filter: 'foo/bar' });
+        expect(res.query({ filter: 'foo/bar' }).toString()).to.eql(URL + '?filter=foo/bar');
+        expect(res.query({ filter: '/foo/bar' }).toString()).to.eql(URL + '?filter=/foo/bar');
+      });
+
+      it('fs.delete', () => {
+        const res1 = url.cell(URI).files.delete;
+        const res2 = url.cell(Uri.cell('cell:foo:A1')).files.delete;
+
+        const URL = 'http://localhost/cell:foo:A1/fs';
+        expect(res1.toString()).to.eql(URL);
+        expect(res2.toString()).to.eql(URL);
+      });
+
+      it('fs.copy', () => {
+        const res1 = url.cell(URI).files.copy;
+        const res2 = url.cell(Uri.cell('cell:foo:A1')).files.copy;
+
+        const URL = 'http://localhost/cell:foo:A1/fs:copy';
+        expect(res1.toString()).to.eql(URL);
+        expect(res2.toString()).to.eql(URL);
+      });
+
+      it('fs.upload (start)', () => {
+        const res1 = url.cell(URI).files.upload;
+        const res2 = res1.query({ changes: true });
+        const res3 = url.cell(Uri.cell('cell:foo:A1')).files.upload;
+
+        const URL = 'http://localhost/cell:foo:A1/fs:upload';
+        expect(res1.toString()).to.eql(URL);
+        expect(res2.toString()).to.eql(`${URL}?changes=true`);
+        expect(res3.toString()).to.eql(URL);
+      });
+
+      it('fs.uploaded (complete)', () => {
+        const res1 = url.cell(URI).files.uploaded;
+        const res2 = res1.query({ changes: true });
+        const res3 = url.cell(Uri.cell('cell:foo:A1')).files.uploaded;
+
+        const URL = 'http://localhost/cell:foo:A1/fs:uploaded';
+        expect(res1.toString()).to.eql(URL);
+        expect(res2.toString()).to.eql(`${URL}?changes=true`);
+        expect(res3.toString()).to.eql(URL);
+      });
     });
 
-    it('files.list (filter)', () => {
-      const URL = 'http://localhost/cell:foo:A1/files';
+    describe('file', () => {
+      it('file.toString()', () => {
+        const file = url.cell(URI).file;
+        expect(file.toString()).to.eql('/cell:foo:A1/file/');
+      });
 
-      const list = url.cell(URI).files.list;
-      expect(list.toString()).to.eql(URL);
+      it('file.byName', () => {
+        const res1 = url.cell(URI).file.byName('  kitten.png   ');
+        const res2 = url.cell(Uri.cell('cell:foo:A1')).file.byName('kitten.png');
 
-      const res = list.query({ filter: 'foo/bar' });
-      expect(res.query({ filter: 'foo/bar' }).toString()).to.eql(URL + '?filter=foo/bar');
-      expect(res.query({ filter: '/foo/bar' }).toString()).to.eql(URL + '?filter=/foo/bar');
-    });
+        const URL = 'http://localhost/cell:foo:A1/file/kitten.png';
+        expect(res1.toString()).to.eql(URL);
+        expect(res2.toString()).to.eql(URL);
+      });
 
-    it('files.delete', () => {
-      const res1 = url.cell(URI).files.delete;
-      const res2 = url.cell(Uri.cell('cell:foo:A1')).files.delete;
+      it('file.byName (throws)', () => {
+        const fn = () => url.cell(URI).file.byName('     ');
+        expect(fn).to.throw();
+      });
 
-      const URL = 'http://localhost/cell:foo:A1/files';
-      expect(res1.toString()).to.eql(URL);
-      expect(res2.toString()).to.eql(URL);
-    });
+      it('file.byFileUri', () => {
+        const test = (fileUri: string, fileExtension: string | undefined, expected: string) => {
+          const res = url.cell(URI).file.byFileUri(fileUri, fileExtension);
+          expect(res.toString()).to.eql(expected);
+        };
+        test('file:foo:123', 'png', 'http://localhost/cell:foo:A1/file:123.png');
+        test('file:foo:123', '.png', 'http://localhost/cell:foo:A1/file:123.png');
+        test('file:foo:123', ' ...png ', 'http://localhost/cell:foo:A1/file:123.png');
+        test('  file:foo:123  ', '  png  ', 'http://localhost/cell:foo:A1/file:123.png');
+        test('file:foo:123', '', 'http://localhost/cell:foo:A1/file:123');
+        test('file:foo:123', '  ', 'http://localhost/cell:foo:A1/file:123');
+        test('file:foo:123', undefined, 'http://localhost/cell:foo:A1/file:123');
+      });
 
-    it('files.copy', () => {
-      const res1 = url.cell(URI).files.copy;
-      const res2 = url.cell(Uri.cell('cell:foo:A1')).files.copy;
-
-      const URL = 'http://localhost/cell:foo:A1/files/copy';
-      expect(res1.toString()).to.eql(URL);
-      expect(res2.toString()).to.eql(URL);
-    });
-
-    it('files.upload (start)', () => {
-      const res1 = url.cell(URI).files.upload;
-      const res2 = res1.query({ changes: true });
-      const res3 = url.cell(Uri.cell('cell:foo:A1')).files.upload;
-
-      const URL = 'http://localhost/cell:foo:A1/files/upload';
-      expect(res1.toString()).to.eql(URL);
-      expect(res2.toString()).to.eql(`${URL}?changes=true`);
-      expect(res3.toString()).to.eql(URL);
-    });
-
-    it('files.uploaded (complete)', () => {
-      const res1 = url.cell(URI).files.uploaded;
-      const res2 = res1.query({ changes: true });
-      const res3 = url.cell(Uri.cell('cell:foo:A1')).files.uploaded;
-
-      const URL = 'http://localhost/cell:foo:A1/files/uploaded';
-      expect(res1.toString()).to.eql(URL);
-      expect(res2.toString()).to.eql(`${URL}?changes=true`);
-      expect(res3.toString()).to.eql(URL);
-    });
-
-    it('file.toString()', () => {
-      const file = url.cell(URI).file;
-      expect(file.toString()).to.eql('/cell:foo:A1/file/');
-    });
-
-    it('file.byName', () => {
-      const res1 = url.cell(URI).file.byName('  kitten.png   ');
-      const res2 = url.cell(Uri.cell('cell:foo:A1')).file.byName('kitten.png');
-
-      const URL = 'http://localhost/cell:foo:A1/file/kitten.png';
-      expect(res1.toString()).to.eql(URL);
-      expect(res2.toString()).to.eql(URL);
-    });
-
-    it('file.byName (throws)', () => {
-      const fn = () => url.cell(URI).file.byName('     ');
-      expect(fn).to.throw();
-    });
-
-    it('file.byFileUri', () => {
-      const test = (fileUri: string, fileExtension: string | undefined, expected: string) => {
-        const res = url.cell(URI).file.byFileUri(fileUri, fileExtension);
-        expect(res.toString()).to.eql(expected);
-      };
-      test('file:foo:123', 'png', 'http://localhost/cell:foo:A1/file:123.png');
-      test('file:foo:123', '.png', 'http://localhost/cell:foo:A1/file:123.png');
-      test('file:foo:123', ' ...png ', 'http://localhost/cell:foo:A1/file:123.png');
-      test('  file:foo:123  ', '  png  ', 'http://localhost/cell:foo:A1/file:123.png');
-      test('file:foo:123', '', 'http://localhost/cell:foo:A1/file:123');
-      test('file:foo:123', '  ', 'http://localhost/cell:foo:A1/file:123');
-      test('file:foo:123', undefined, 'http://localhost/cell:foo:A1/file:123');
-    });
-
-    it('file.byFileUri (throws)', () => {
-      expect(() => url.cell(URI).file.byFileUri('cell:foo:A1')).to.throw(); // Not a [file:] URI.
-      expect(() => url.cell(URI).file.byFileUri('foo:123')).to.throw();
-      expect(() => url.cell(URI).file.byFileUri('')).to.throw();
-      expect(() => url.cell(URI).file.byFileUri('  ')).to.throw();
+      it('file.byFileUri (throws)', () => {
+        expect(() => url.cell(URI).file.byFileUri('cell:foo:A1')).to.throw(); // Not a [file:] URI.
+        expect(() => url.cell(URI).file.byFileUri('foo:123')).to.throw();
+        expect(() => url.cell(URI).file.byFileUri('')).to.throw();
+        expect(() => url.cell(URI).file.byFileUri('  ')).to.throw();
+      });
     });
   });
 
@@ -443,9 +447,9 @@ describe('Urls', () => {
           expect(res.toString()).to.eql(expected);
         };
 
-        test(undefined, 'http://localhost/cell:foo:A1/files');
-        test('  v1.2.3  ', 'http://localhost/cell:foo:A1/files?filter=v1.2.3/**');
-        test('  //foo/v1.2.3//  ', 'http://localhost/cell:foo:A1/files?filter=foo/v1.2.3/**');
+        test(undefined, 'http://localhost/cell:foo:A1/fs');
+        test('  v1.2.3  ', 'http://localhost/cell:foo:A1/fs?filter=v1.2.3/**');
+        test('  //foo/v1.2.3//  ', 'http://localhost/cell:foo:A1/fs?filter=foo/v1.2.3/**');
       });
 
       it('strips HTTP on host mismatch check', () => {
@@ -453,7 +457,7 @@ describe('Urls', () => {
         const bundle: t.RuntimeBundleOrigin = { host: 'https://domain.com', uri: 'cell:foo:A1' };
         const res = urls.fn.bundle.files(bundle);
         expect(urls.host).to.eql('domain.com');
-        expect(res.toString()).to.eql('https://domain.com/cell:foo:A1/files');
+        expect(res.toString()).to.eql('https://domain.com/cell:foo:A1/fs');
       });
 
       it('throw if host mismatch', () => {

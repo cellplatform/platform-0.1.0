@@ -193,43 +193,43 @@ export class Urls implements t.IUrls {
        */
       files: {
         /**
-         * Example: /cell:foo:A1/files
+         * Example: /cell:foo:A1/fs
          */
         get list() {
           type Q = t.IReqQueryCellFsList;
-          return toUrl<Q>(`/cell:${ns}:${key}/files`);
+          return toUrl<Q>(`/cell:${ns}:${key}/fs`);
         },
 
         /**
-         * Example: /cell:foo:A1/files
+         * Example: /cell:foo:A1/fs
          */
         get delete() {
           type Q = t.IReqQueryCellFsDelete;
-          return toUrl<Q>(`/cell:${ns}:${key}/files`);
+          return toUrl<Q>(`/cell:${ns}:${key}/fs`);
         },
 
         /**
-         * Example: /cell:foo:A1/files/copy
+         * Example: /cell:foo:A1/fs:copy
          */
         get copy() {
           type Q = t.IReqQueryCellFsCopy;
-          return toUrl<Q>(`/cell:${ns}:${key}/files/copy`);
+          return toUrl<Q>(`/cell:${ns}:${key}/fs:copy`);
         },
 
         /**
-         * Example: /cell:foo:A1/files/upload
+         * Example: /cell:foo:A1/fs:upload
          */
         get upload() {
           type Q = t.IReqQueryCellFsUpload;
-          return toUrl<Q>(`/cell:${ns}:${key}/files/upload`);
+          return toUrl<Q>(`/cell:${ns}:${key}/fs:upload`);
         },
 
         /**
-         * Example: /cell:foo:A1/files/uploaded
+         * Example: /cell:foo:A1/fs:uploaded
          */
         get uploaded() {
           type Q = t.IReqQueryCellFsUploaded;
-          return toUrl<Q>(`/cell:${ns}:${key}/files/uploaded`);
+          return toUrl<Q>(`/cell:${ns}:${key}/fs:uploaded`);
         },
       },
 
