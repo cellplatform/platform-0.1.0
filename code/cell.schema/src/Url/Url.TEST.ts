@@ -80,12 +80,15 @@ describe('Url', () => {
       test('localhost', '/');
       test('http://localhost', '/');
       test('  http://localhost/ ', '/');
+      test('  http://localhost:8080/ ', '/');
+      test('  http://localhost:8080 ', '/');
       test('http://192.168.1:1234//', '/');
       test('https://domain.com//', '/');
 
       test('  domain.com/foo/bar  ', '/foo/bar');
       test('  domain.com/foo/bar//  ', '/foo/bar//');
       test('https://domain.com/foo?q=123', '/foo?q=123');
+      test('  http://localhost:8080/foo/bar? ', '/foo/bar?');
 
       test('foo/bar', '/bar');
       test('/foo/bar', '/foo/bar');

@@ -1,5 +1,6 @@
 import { ERROR, t, isHttp } from '../common';
 import { FileLinks } from './FileLinks';
+import { FilePath } from './FilePath';
 import { Uri } from '../Uri';
 
 /**
@@ -8,6 +9,7 @@ import { Uri } from '../Uri';
 export const FileSchema = {
   ERROR,
   Links: FileLinks,
+  Path: FilePath,
   type: 'FILE' as t.SchemaFileType,
 
   /**
