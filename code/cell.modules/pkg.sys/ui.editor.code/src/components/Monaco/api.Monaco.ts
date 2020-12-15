@@ -2,7 +2,7 @@ import { monaco } from '@monaco-editor/react';
 
 import { t } from '../../common';
 import { configure } from '../Monaco.config';
-import { MonacoSingleton } from './Monaco.singleton';
+import { MonacoSingleton } from './api.Monaco.singleton';
 
 let singleton: Promise<t.IMonacoSingleton>;
 
