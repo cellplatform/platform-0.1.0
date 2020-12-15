@@ -29,7 +29,6 @@ export const FilePath = {
     }
 
     if (!error && parts.length > 2) {
-      // Path
       parts = parts.slice(2);
       path = parts.join('/');
       dir = parts.slice(0, parts.length - 1).join('/');
