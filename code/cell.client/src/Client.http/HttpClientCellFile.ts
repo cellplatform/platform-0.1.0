@@ -130,7 +130,7 @@ export class HttpClientCellFile implements t.IHttpClientCellFile {
       return { error };
     }
 
-    const link = Schema.File.links.find(data.links).byName(path);
+    const link = Schema.File.Links.find(data.links).byName(path);
     if (!link) {
       const message = `A link within "${parent.uri.toString()}" to the filename '${path}' does not exist.`;
       const error = util.toError(404, ERROR.HTTP.NOT_LINKED, message);

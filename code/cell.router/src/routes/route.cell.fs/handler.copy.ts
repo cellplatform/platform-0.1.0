@@ -47,9 +47,9 @@ export async function copyCellFiles(args: {
       return { error: `Cell file information for [${cellUri}] could not be retrieved.` };
     }
     const links = res.data.data.links || {};
-    const key = Schema.File.links.toKey(filename);
+    const key = Schema.File.Links.toKey(filename);
     const value = links[key];
-    const parsed = value ? Schema.File.links.parseValue(links[key]) : undefined;
+    const parsed = value ? Schema.File.Links.parseValue(links[key]) : undefined;
     return { uri: parsed?.uri };
   };
 

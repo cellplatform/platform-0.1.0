@@ -160,9 +160,9 @@ describe('cell.fs: upload', function () {
     const cellLinks = uploaded.body.cell.links || {};
     const key = 'fs:foo::bar::kitten:jpg';
     expect(typeof cellLinks[key]).to.eql('string');
-    expect(Schema.File.links.toKey(filename)).to.eql(key);
+    expect(Schema.File.Links.toKey(filename)).to.eql(key);
 
-    const link = Schema.File.links.parse(key, cellLinks[key]);
+    const link = Schema.File.Links.parse(key, cellLinks[key]);
 
     // Ensure the file (and all relevant path data)
     // is represented within the cells "files" list.

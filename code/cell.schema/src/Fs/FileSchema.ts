@@ -7,29 +7,29 @@ type IFileSchemaArgs = { nsPath: string; fileid: string; uri: string };
 /**
  * Schema for a file.
  */
-export class FileSchema {
-  public static links = FileLinks;
-  public static ERROR = ERROR;
-
-  public readonly type: t.SchemaFileType = 'FILE';
-  public readonly fileid: string;
-  public readonly path: string;
-  public readonly uri: string;
+export const FileSchema = {
+  ERROR,
+  Links: FileLinks,
+  type: 'FILE' as t.SchemaFileType,
 
   /**
    * [Lifecycle]
    */
-  public static create = (args: IFileSchemaArgs) => new FileSchema(args);
-  private constructor(args: IFileSchemaArgs) {
-    this.fileid = args.fileid;
-    this.path = `${args.nsPath}/${this.type}/${this.fileid}`;
-    this.uri = args.uri;
-  }
+  //  create = (args: IFileSchemaArgs) => new FileSchema(args);
+  create(args: IFileSchemaArgs) {
+    const { fileid, uri } = args;
+
+    return {
+      fileid,
+      path: `${args.nsPath}/${FileSchema.type}/${fileid}`,
+      uri,
+    };
+  },
 
   /**
    * Generate file URI from a path.
    */
-  public static uri(args: { path: string }) {
+  uri(args: { path: string }) {
     const path = (args.path || '').trim();
     const parts = path.split('/');
 
@@ -43,13 +43,13 @@ export class FileSchema {
     const ns = parts[1];
     const file = parts[3];
     return Uri.create.file(ns, file);
-  }
+  },
 
   /**
    * Creates a fully-qualified file path (URI).
    */
-  public static toFileLocation(input = '') {
+  toFileLocation(input = '') {
     input = input.trim();
     return isHttp(input) ? input : `file://${input}`;
-  }
-}
+  },
+};

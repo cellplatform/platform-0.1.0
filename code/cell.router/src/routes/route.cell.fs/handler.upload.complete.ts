@@ -24,13 +24,13 @@ export async function uploadCellFilesComplete(args: {
   const cellLinks = { ...(cell.props.links || {}) };
   const filesBefore = (await getCellFiles({ ns, cellLinks })).list;
   const cellLinkFiles = Object.keys(cellLinks)
-    .filter((key) => Schema.File.links.is.fileKey(key))
+    .filter((key) => Schema.File.Links.is.fileKey(key))
     .map((key) => ({ key, value: cellLinks[key] }));
 
   cellLinkFiles
-    .filter(({ value }) => Schema.File.links.is.fileUploading(value))
+    .filter(({ value }) => Schema.File.Links.is.fileUploading(value))
     .map((item) => {
-      const link = Schema.File.links.parse(item.key, item.value);
+      const link = Schema.File.Links.parse(item.key, item.value);
       const found = filesBefore.find((item) => item.uri === link.uri.toString());
       const file = found?.data;
       return { ...item, link, file };
