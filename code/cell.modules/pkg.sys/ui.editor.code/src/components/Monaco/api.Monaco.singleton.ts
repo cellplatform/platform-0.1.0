@@ -80,7 +80,7 @@ const loadManifest = async (dir: string) => {
     const err = `Failed to load type-definition manifest '${url}'. ${res.status}: ${res.statusText}`;
     throw new Error(err);
   } else {
-    return res.json as t.TypeFileManifest;
+    return res.json as t.FsManifest;
   }
 };
 

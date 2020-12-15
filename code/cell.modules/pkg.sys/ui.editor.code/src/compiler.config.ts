@@ -9,10 +9,9 @@ export default () =>
         .target('web')
         .port(Package.compiler.port)
 
-        .entry({
-          main: './src/test/entry',
-          'service.worker': './src/workers/service.worker',
-        })
+        .entry('./src/test/entry')
+        .entry('service.worker', './src/workers/service.worker')
+
         .static('./static')
         .files((config) => config.redirect(false, 'static/**').redirect(false, '*.worker.js'))
 
