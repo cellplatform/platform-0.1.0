@@ -29,6 +29,7 @@ export const Host: React.FC<IHostProps> = (props = {}) => {
       boxSizing: 'border-box',
       padding: 30,
       backgroundColor: formatColor(props.background),
+      overflow: 'hidden',
     }),
     body: css({
       Absolute: 0,

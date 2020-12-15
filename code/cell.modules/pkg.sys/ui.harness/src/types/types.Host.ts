@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+type ReactNode = React.ReactNode;
 type StringOrNumber = string | number;
 
 /**
@@ -12,7 +13,7 @@ export type IHostLayout = {
   border?: boolean | number | string;
   cropmarks?: boolean | number;
   position?: IHostLayoutPosition;
-  label?: React.ReactNode | Partial<IHostLayoutLabel>;
+  label?: ReactNode | Partial<IHostLayoutLabel>;
 };
 
 export type IHostLayoutPosition = {
@@ -27,8 +28,8 @@ export type IHostLayoutAbsolute = {
 };
 
 export type IHostLayoutLabel = {
-  topLeft: React.ReactNode;
-  topRight: React.ReactNode;
-  bottomLeft: React.ReactNode;
-  bottomRight: React.ReactNode;
+  topLeft: ReactNode;
+  topRight: ReactNode;
+  bottomLeft: ReactNode;
+  bottomRight: ReactNode;
 };
