@@ -156,7 +156,7 @@ export class NsSchema {
 
   public file(fileid: string) {
     const uri = Uri.create.file(this.id, fileid);
-    return FileSchema.create({ nsPath: this.path, fileid, uri });
+    return FileSchema.toObject({ nsPath: this.path, fileid, uri });
   }
 
   public static uri(args: { path: string }) {

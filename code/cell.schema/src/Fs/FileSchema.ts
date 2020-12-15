@@ -2,8 +2,6 @@ import { ERROR, t, isHttp } from '../common';
 import { FileLinks } from './FileLinks';
 import { Uri } from '../Uri';
 
-type IFileSchemaArgs = { nsPath: string; fileid: string; uri: string };
-
 /**
  * Schema for a file.
  */
@@ -13,16 +11,13 @@ export const FileSchema = {
   type: 'FILE' as t.SchemaFileType,
 
   /**
-   * [Lifecycle]
+   * Object representation of a file.
    */
-  //  create = (args: IFileSchemaArgs) => new FileSchema(args);
-  create(args: IFileSchemaArgs) {
-    const { fileid, uri } = args;
-
+  toObject(args: { nsPath: string; fileid: string; uri: string }) {
     return {
-      fileid,
-      path: `${args.nsPath}/${FileSchema.type}/${fileid}`,
-      uri,
+      fileid: args.fileid,
+      uri: args.uri,
+      path: `${args.nsPath}/${FileSchema.type}/${args.fileid}`,
     };
   },
 
