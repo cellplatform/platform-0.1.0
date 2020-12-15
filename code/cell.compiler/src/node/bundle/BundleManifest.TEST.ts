@@ -23,7 +23,6 @@ describe('BundleManifest', function () {
     expect(manifest.mode).to.eql('production');
     expect(manifest.target).to.eql('node');
     expect(manifest.entry).to.eql('main.js');
-    expect(manifest.bytes).to.greaterThan(1000);
     expect(manifest.files.length).to.greaterThan(2);
 
     const file = manifest.files.find((item) => item.path === 'index.json');

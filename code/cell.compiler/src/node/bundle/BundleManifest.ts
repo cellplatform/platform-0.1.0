@@ -1,4 +1,4 @@
-import { DEFAULT, fs, Model, Schema, t, value } from '../common';
+import { DEFAULT, fs, Model, Schema, t, deleteUndefined } from '../common';
 import { FileRedirects, FileAccess } from '../config';
 
 const REMOTE_ENTRY = DEFAULT.FILE.JS.REMOTE_ENTRY;
@@ -28,7 +28,6 @@ export const BundleManifest = {
     const toFile = (path: string) => BundleManifest.loadFile({ path, bundleDir, model });
     const files: t.BundleManifestFile[] = await Promise.all(paths.map((path) => toFile(path)));
 
-    const bytes = files.reduce((acc, next) => acc + next.bytes, 0);
     const hash = Schema.hash.sha256(files.map((file) => file.filehash));
 
     const manifest: t.BundleManifest = {
@@ -37,11 +36,10 @@ export const BundleManifest = {
       target: data.target(),
       entry: data.entryFile,
       remoteEntry: paths.some((path) => path.endsWith(REMOTE_ENTRY)) ? REMOTE_ENTRY : undefined,
-      bytes,
       files,
     };
 
-    return value.deleteUndefined(manifest);
+    return deleteUndefined(manifest);
   },
 
   /**
@@ -89,7 +87,7 @@ export const BundleManifest = {
     const bytes = file.byteLength;
     const filehash = Schema.hash.sha256(file);
     const path = args.path.substring(bundleDir.length + 1);
-    return value.deleteUndefined({
+    return deleteUndefined({
       path,
       bytes,
       filehash,

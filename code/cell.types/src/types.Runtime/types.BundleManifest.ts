@@ -3,11 +3,10 @@
  */
 export type BundleManifest = {
   hash: string;
-  mode: string;
-  target: string;
+  mode: string; // production | development
+  target: string; // web | node
   entry: string;
   remoteEntry?: string;
-  bytes: number;
   files: BundleManifestFile[];
 };
 
