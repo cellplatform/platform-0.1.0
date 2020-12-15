@@ -36,7 +36,7 @@ export async function listCellFiles(args: {
     // Prepare response.
     const urls = includeUrls ? getUrls() : undefined;
     const files = includeFiles ? await getFiles() : undefined;
-    const total = urls ? urls.files.length : Schema.file.links.total(cellLinks);
+    const total = urls ? urls.files.length : Schema.File.links.total(cellLinks);
     const data: t.IResGetCellFs = {
       total,
       uri: cellUri.toString(),
@@ -99,7 +99,7 @@ function filterFiles(args: { links: t.IUriMap; filter?: string }) {
     return args.links;
   }
 
-  const FileLinks = Schema.file.links;
+  const FileLinks = Schema.File.links;
   const links = { ...args.links };
   pattern = pattern.replace(/^\/*/, '');
 

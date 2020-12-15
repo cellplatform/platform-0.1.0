@@ -16,7 +16,7 @@ export async function downloadFileByName(args: {
   const cell = await models.Cell.create({ db, uri: cellUri }).ready;
 
   // Lookup the requested file as a link.
-  const link = Schema.file.links.find(cell.props.links).byName(args.filename);
+  const link = Schema.File.links.find(cell.props.links).byName(args.filename);
   if (!link) {
     const err = `The file '${args.filename}' is not linked to the cell [${cellUri}].`;
     return util.toErrorPayload(err, { status: 404, type: ERROR.HTTP.NOT_LINKED });

@@ -4,8 +4,8 @@ import { Schema } from '../Schema';
 
 describe('FileSchema', () => {
   it('exposed from Schema (static)', () => {
-    expect(Schema.file).to.equal(FileSchema);
-    expect(Schema.file.links).to.equal(FileLinks);
+    expect(Schema.File).to.equal(FileSchema);
+    expect(Schema.File.links).to.equal(FileLinks);
   });
 
   it('uri', () => {

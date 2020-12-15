@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 import { cuid, slug, t, hash, coord, Mime } from '../common';
-import { FileSchema } from '../File';
+import { FileSchema } from '../Fs';
 import { RefSchema } from '../Ref';
 import { Uri } from '../Uri';
 import { Urls, Url } from '../Url';
@@ -16,9 +16,10 @@ import { Encoding } from '../Encoding';
  *
  */
 export class Schema {
-  public static mime = Mime;
-  public static file = FileSchema;
-  public static ref = RefSchema;
+  public static Mime = Mime;
+  public static File = FileSchema;
+  public static Ref = RefSchema;
+
   public static cuid = cuid;
   public static slug = slug;
   public static hash = hash;

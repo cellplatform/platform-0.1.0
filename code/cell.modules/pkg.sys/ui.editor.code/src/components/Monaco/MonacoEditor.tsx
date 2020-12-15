@@ -4,10 +4,16 @@
 import MonacoEditorCore, { monaco } from '@monaco-editor/react';
 import React, { useEffect } from 'react';
 
-import { bundle, constants, Uri } from '../../common';
+import { bundle, constants, Uri,  } from '../../common';
 import { Monaco } from './Monaco';
 
 const MONACO = constants.MONACO;
+
+import { Schema } from '@platform/cell.schema';
+
+// Schema.file.
+
+// http://localhost:5000/cell:ckgu71a83000dl0et1676dq4y:A1/fs/sample/index.html
 
 const toDir = (pathname: string) => {
   let parts = pathname.trim().split('/').filter(Boolean);
@@ -16,7 +22,7 @@ const toDir = (pathname: string) => {
 
   parts = parts.slice(0, parts.length - 1);
 
-  if (Uri.is.uri(parts[0]) && parts[1] === 'file') {
+  if (Uri.is.uri(parts[0]) && parts[1] === 'fs') {
     parts = parts.slice(2);
   } else if (Uri.is.uri(parts[0])) {
     parts = parts.slice(1);
