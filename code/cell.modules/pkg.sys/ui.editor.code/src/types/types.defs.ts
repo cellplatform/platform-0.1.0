@@ -4,7 +4,7 @@ export type TypeFileManifest = {
 };
 
 export type TypeFile = {
-  filename: string;
+  path: string;
   bytes: number;
   filehash: string;
 };

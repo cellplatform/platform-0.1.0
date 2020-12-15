@@ -53,7 +53,7 @@ function copy(args: {
 
       // Add the file to the manifest.
       manifest.files.push({
-        filename: filename.txt,
+        path: filename.txt,
         filehash: hash.sha256(data),
         bytes: fs.readFileSync(path).byteLength,
       });

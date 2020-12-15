@@ -42,7 +42,7 @@ export const MonacoSingleton = {
         const manifest = await loadManifest(dir);
         const files = await Promise.all(
           manifest.files
-            .map((file) => file.filename)
+            .map((file) => file.path)
             .map((filename) => loadDeclarationFile(dir, filename)),
         );
         return files.map((file) => api.lib.add(file.filename, file.content));

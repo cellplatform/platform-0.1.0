@@ -1,3 +1,3 @@
-export * from './types.fs';
-export * from './types.fs.sync';
-export * from './types.file';
+export * from './types.FileData';
+export * from './types.FileSystem';
+export * from './types.Manifest';
