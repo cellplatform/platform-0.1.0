@@ -42,10 +42,17 @@ console.groupEnd();
 
 monaco.config({ paths: { vs } });
 
+export type MonacoEditorProps = {
+  language?: string;
+  theme?: string;
+};
+
 /**
  * Vanilla [Monaco] editor
  */
-export const MonacoEditor: React.FC = () => {
+export const MonacoEditor: React.FC<MonacoEditorProps> = (props = {}) => {
+  const { language = MONACO.LANGUAGE.TS, theme = MONACO.THEME } = props;
+
   useEffect(() => {
     // Ensure the (singleton) API is initialized and configured.
     Monaco.singleton();
@@ -55,8 +62,7 @@ export const MonacoEditor: React.FC = () => {
     };
   });
 
-  console.log('1');
-  return <MonacoEditorCore language={MONACO.LANGUAGE.TS} theme={MONACO.THEME} options={{}} />;
+  return <MonacoEditorCore language={language} theme={theme} options={{}} />;
 };
 
 export default MonacoEditor;
