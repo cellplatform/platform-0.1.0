@@ -198,7 +198,7 @@ async function logUpload(args: {
   };
 
   files.forEach((file) => addFile(file.path, file.bytes));
-  table.add(['', '', log.cyan(size.toString())]);
+  table.add(['', '', log.cyan(size.toString()), log.gray(`(${files.length} files)`)]);
 
   log.info(`
 ${log.gray(`Uploaded`)}    ${log.gray(`(in ${log.yellow(elapsed)})`)}
