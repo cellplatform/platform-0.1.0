@@ -5,7 +5,7 @@ import { log, value } from './libs';
 /**
  * A CLI spinner that reports progress.
  */
-export function ProgressSpinner(args: { label?: string; total?: number }) {
+export function ProgressSpinner(args: { label?: string; total?: number; silent?: boolean }) {
   const instance = ora();
 
   const state = {
@@ -29,7 +29,9 @@ export function ProgressSpinner(args: { label?: string; total?: number }) {
   const spinner = {
     start() {
       updateText();
-      instance.start();
+      if (!args.silent) {
+        instance.start();
+      }
       return spinner;
     },
     stop() {

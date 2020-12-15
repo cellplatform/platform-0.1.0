@@ -1,4 +1,4 @@
-import { fs, log, t } from '../common';
+import { fs, log, t, ProgressSpinner } from '../common';
 import { DEFAULT } from '../constants';
 import { logger } from './util.logger';
 import { ts } from './util.ts';
@@ -9,7 +9,12 @@ export async function loadConfig(
   file?: string,
   options: { name?: string; silent?: boolean } = {},
 ): Promise<B> {
-  const done = (config: B) => filterOnVariant(config, options.name).clone();
+  const { silent } = options;
+  const spinner = ProgressSpinner({ label: 'building typescript...', silent });
+  const done = (config: B) => {
+    spinner.stop();
+    return filterOnVariant(config, options.name).clone();
+  };
 
   // Ensure configuration file exists.
   const path = await toPaths(file);
@@ -26,10 +31,7 @@ export async function loadConfig(
   // Compare with the last built configuration.
   const buildhash = ts.buildhash(path.ts);
   if (!(await fs.pathExists(path.js)) || (await buildhash.changed())) {
-    if (!options.silent) {
-      log.info('building typescript');
-    }
-
+    spinner.start();
     await ts.build();
   }
 

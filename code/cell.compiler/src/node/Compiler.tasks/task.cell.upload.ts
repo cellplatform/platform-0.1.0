@@ -87,7 +87,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
   const done$ = new Subject();
   writeLogFile(log, done$);
 
-  const spinner = ProgressSpinner({ label: `uploading ${files.length} files` });
+  const spinner = ProgressSpinner({ label: `uploading ${files.length} files`, silent });
   if (!silent) {
     spinner.start();
   }

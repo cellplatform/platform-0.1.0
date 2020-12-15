@@ -17,7 +17,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
       const bundleDir = Model(model).bundleDir;
       await fs.remove(bundleDir);
 
-      const spinner = ProgressSpinner({ label: 'bundling...' });
+      const spinner = ProgressSpinner({ label: 'bundling...', silent });
       if (!silent) {
         log.info();
         log.info.gray(`Bundle`);
