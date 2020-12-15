@@ -8,38 +8,40 @@ import { Urls, Url } from '../Url';
 import { Encoding } from '../Encoding';
 
 /**
- * Schema of DB paths.
+ * Schema mapping URI's to DB paths and other common operating-system
+ * naming conventions.
  *
  * Terminology:
  *    uri:    the address of the data within logical space.
  *    path:   the key of the data within the database.
  *
  */
-export class Schema {
-  public static Mime = Mime;
-  public static File = FileSchema;
-  public static Ref = RefSchema;
 
-  public static cuid = cuid;
-  public static slug = slug;
-  public static hash = hash;
-  public static coord = coord;
-  public static encoding = Encoding;
+export const Schema = {
+  Mime: Mime,
+  File: FileSchema,
+  Ref: RefSchema,
 
-  public static Uri = Uri;
-  public static Url = Url;
-  public static Urls = Urls;
-  public static urls = (host: string | number) => Urls.create(host);
-  public static ns = (id: string) => new NsSchema({ id });
+  cuid: cuid,
+  slug: slug,
+  hash: hash,
+  coord: coord,
+  encoding: Encoding,
 
-  public static query = {
+  Uri,
+  Url,
+  Urls,
+  urls: (host: string | number) => Urls.create(host),
+  ns: (id: string) => new NsSchema({ id }),
+
+  query: {
     cells: '/CELL/*',
     rows: '/ROW/*',
     columns: '/COL/*',
     files: '/FILE/*',
-  };
+  },
 
-  public static from = {
+  from: {
     ns(input: string | t.IDbModelNs) {
       return from<t.INsUri>({
         input,
@@ -87,8 +89,8 @@ export class Schema {
         },
       });
     },
-  };
-}
+  },
+};
 
 /**
  * Schema for `namespace`
