@@ -257,7 +257,7 @@ async function updateManifest(args: {
   redirects?: t.CompilerModelRedirect[];
 }) {
   const { uploadedFiles, bundleDir, redirects } = args;
-  const { manifest, path } = await BundleManifest.readFile({ bundleDir });
+  const { manifest, path } = await BundleManifest.read({ dir: bundleDir });
   if (!manifest) {
     throw new Error(`A bundle manifest does not exist at: ${path}`);
   }
@@ -277,7 +277,7 @@ async function updateManifest(args: {
       }
     });
 
-  await BundleManifest.writeFile({ manifest, bundleDir });
+  await BundleManifest.write({ manifest, dir: bundleDir });
   return manifest;
 }
 

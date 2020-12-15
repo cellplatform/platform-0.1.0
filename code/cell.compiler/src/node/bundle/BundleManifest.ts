@@ -26,7 +26,7 @@ export const BundleManifest = {
     const paths = await fs.glob.find(`${args.bundleDir}/**`, { includeDirs: false });
 
     const toFile = (path: string) => BundleManifest.loadFile({ path, bundleDir, model });
-    const files: t.BundleManifestFile[] = await Promise.all(paths.map((path) => toFile(path)));
+    const files: t.FsManifestFile[] = await Promise.all(paths.map((path) => toFile(path)));
 
     const hash = Schema.hash.sha256(files.map((file) => file.filehash));
 
@@ -48,15 +48,15 @@ export const BundleManifest = {
   async createAndSave(args: { model: t.CompilerModel; bundleDir: string; filename?: string }) {
     const { model, bundleDir, filename } = args;
     const manifest = await BundleManifest.create({ model, bundleDir });
-    return BundleManifest.writeFile({ manifest, bundleDir, filename });
+    return BundleManifest.write({ manifest, dir: bundleDir, filename });
   },
 
   /**
    * Reads from file-system.
    */
-  async readFile(args: { bundleDir: string; filename?: string }) {
-    const { bundleDir, filename = BundleManifest.filename } = args;
-    const path = fs.join(bundleDir, filename);
+  async read(args: { dir: string; filename?: string }) {
+    const { dir, filename = BundleManifest.filename } = args;
+    const path = fs.join(dir, filename);
     const exists = await fs.pathExists(path);
     const manifest = exists ? ((await fs.readJson(path)) as t.BundleManifest) : undefined;
     return { path, manifest };
@@ -65,9 +65,9 @@ export const BundleManifest = {
   /**
    * Writes a manifest to the file-system.
    */
-  async writeFile(args: { manifest: t.BundleManifest; bundleDir: string; filename?: string }) {
-    const { manifest, bundleDir, filename = BundleManifest.filename } = args;
-    const path = fs.join(bundleDir, filename);
+  async write(args: { manifest: t.BundleManifest; dir: string; filename?: string }) {
+    const { manifest, dir, filename = BundleManifest.filename } = args;
+    const path = fs.join(dir, filename);
     const json = JSON.stringify(manifest, null, '  ');
     await fs.ensureDir(fs.dirname(path));
     await fs.writeFile(path, json);
@@ -81,7 +81,7 @@ export const BundleManifest = {
     path: string;
     bundleDir: string;
     model: t.CompilerModel;
-  }): Promise<t.BundleManifestFile> {
+  }): Promise<t.FsManifestFile> {
     const { model, bundleDir } = args;
     const file = await fs.readFile(args.path);
     const bytes = file.byteLength;

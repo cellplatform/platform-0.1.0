@@ -1,6 +1,6 @@
 import { t } from './common';
 
-type B = t.BuilderChain<CompilerModelMethods>;
+type B = CompilerModelBuilder;
 
 export type CompilerModelFactory = {
   model(name: string): t.CompilerModelState;

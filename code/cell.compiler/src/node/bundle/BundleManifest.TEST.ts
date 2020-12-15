@@ -38,10 +38,10 @@ describe('BundleManifest', function () {
     const path = fs.join(TMP, BundleManifest.filename);
     expect(await fs.pathExists(path)).to.eql(false);
 
-    await BundleManifest.writeFile({ manifest, bundleDir: TMP });
+    await BundleManifest.write({ manifest, dir: TMP });
     expect(await fs.pathExists(path)).to.eql(true);
 
-    const read = await BundleManifest.readFile({ bundleDir: TMP });
+    const read = await BundleManifest.read({ dir: TMP });
     expect(read.path).to.eql(path);
     expect(read.manifest).to.eql(manifest);
   });
@@ -54,7 +54,7 @@ describe('BundleManifest', function () {
     const res = await BundleManifest.createAndSave({ model, bundleDir: TMP });
     expect(res.path).to.eql(path);
 
-    const read = await BundleManifest.readFile({ bundleDir: TMP });
+    const read = await BundleManifest.read({ dir: TMP });
     expect(read.path).to.eql(path);
     expect(read.manifest).to.eql(res.manifest);
   });
