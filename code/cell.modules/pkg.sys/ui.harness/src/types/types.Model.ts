@@ -1,17 +1,22 @@
 import { t } from './common';
 
-type O = Record<string, unknown>;
-
-export type ActionModelState<T> = t.BuilderModel<t.ActionModel<T>>;
-export type ActionModel<T = O> = {
+export type ActionModelState<Ctx> = t.BuilderModel<t.ActionModel<Ctx>>;
+export type ActionModel<Ctx> = {
   name: string;
-  items: ActionItem<T>[];
-  getContext?: ActionGetContext<T>;
+  items: ActionItem[];
+  getContext?: ActionGetContext<Ctx>;
 };
 
-export type ActionItem<T> = {
+/**
+ * Item types.
+ */
+export type ActionItem = ActionItemButton;
+
+export type ActionItemButton = {
+  type: 'button';
   label: string;
-  handler: ActionHandler<T>;
+  description?: string;
+  onClick: ActionHandler<any>;
 };
 
 export type ActionHandler<T> = (ctx: T) => void;

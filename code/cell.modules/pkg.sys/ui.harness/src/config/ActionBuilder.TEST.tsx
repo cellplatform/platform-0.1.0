@@ -3,6 +3,7 @@ import { ActionBuilder } from '.';
 import { ActionPanel } from '../components/ActionPanel';
 
 type Ctx = { count: number };
+type M = t.ActionModel<Ctx>;
 
 function create() {
   const model = ActionBuilder.model<Ctx>('foo');
@@ -35,7 +36,7 @@ describe('ActionBuilder', () => {
     });
 
     it('from {model} StateObject', () => {
-      const model = StateObject.create<t.ActionModel>({
+      const model = StateObject.create<M>({
         ...DEFAULT.ACTIONS,
         name: 'foo',
       });
@@ -46,7 +47,7 @@ describe('ActionBuilder', () => {
     });
 
     it('from {model} object', () => {
-      const model = StateObject.create<t.ActionModel>({
+      const model = StateObject.create<M>({
         ...DEFAULT.ACTIONS,
         name: 'foo',
       });
@@ -77,7 +78,7 @@ describe('ActionBuilder', () => {
     });
 
     it('from state-object', () => {
-      const input = StateObject.create<t.ActionModel>(DEFAULT.ACTIONS);
+      const input = StateObject.create<M>(DEFAULT.ACTIONS);
       const res = ActionBuilder.toModel(input);
       expect(res).to.eql(DEFAULT.ACTIONS);
       expect(StateObject.isStateObject(input)).to.eql(true);
@@ -114,36 +115,91 @@ describe('ActionBuilder', () => {
       expect(model.state.name).to.eql(DEFAULT.ACTIONS.name);
     });
 
-    it('context', () => {
-      const { model, builder } = create();
-      expect(model.state.getContext).to.eql(undefined);
+    describe('context', () => {
+      it('set', () => {
+        const { model, builder } = create();
+        expect(model.state.getContext).to.eql(undefined);
 
-      const getContext: t.ActionGetContext<Ctx> = () => ({ count: 123 });
-      builder.context(getContext);
-      expect(model.state.getContext).to.eql(getContext);
+        const getContext: t.ActionGetContext<Ctx> = () => ({ count: 123 });
+        builder.context(getContext);
+        expect(model.state.getContext).to.eql(getContext);
+      });
+
+      it('throw if function not provided', () => {
+        const { builder } = create();
+        const fn = () => builder.context('foo' as any);
+        expect(fn).to.throw(/Context factory function not provided/);
+      });
     });
 
-    it('context: throw if function not provided', () => {
-      const { builder } = create();
-      const fn = () => builder.context('foo' as any);
-      expect(fn).to.throw(/Context factory function not provided/);
+    describe('clone', () => {
+      it('same context', () => {
+        const { builder } = create();
+        const fn: t.ActionGetContext<Ctx> = () => ({ count: 123 });
+        const clone = builder.context(fn).clone();
+        expect(clone).to.not.equal(builder); // NB: Different instance.
+        expect(clone.toObject().getContext).to.eql(fn);
+      });
+
+      it('different context', () => {
+        const { builder } = create();
+        const fn1: t.ActionGetContext<Ctx> = () => ({ count: 123 });
+        const fn2: t.ActionGetContext<Ctx> = () => ({ count: 456 });
+        const clone = builder.context(fn1).clone(fn2);
+        expect(clone).to.not.equal(builder); // NB: Different instance.
+        expect(clone.toObject().getContext).to.eql(fn2);
+      });
     });
 
-    it('clone: same context', () => {
-      const { builder } = create();
-      const fn: t.ActionGetContext<Ctx> = () => ({ count: 123 });
-      const clone = builder.context(fn).clone();
-      expect(clone).to.not.equal(builder); // NB: Different instance.
-      expect(clone.toObject().getContext).to.eql(fn);
-    });
+    describe.only('button', () => {
+      it('label, handler', () => {
+        const { builder, model } = create();
+        expect(model.state.items).to.eql([]);
 
-    it('clone: different context', () => {
-      const { builder } = create();
-      const fn1: t.ActionGetContext<Ctx> = () => ({ count: 123 });
-      const fn2: t.ActionGetContext<Ctx> = () => ({ count: 456 });
-      const clone = builder.context(fn1).clone(fn2);
-      expect(clone).to.not.equal(builder); // NB: Different instance.
-      expect(clone.toObject().getContext).to.eql(fn2);
+        const fn1: t.ActionHandler<any> = () => null;
+        const fn2: t.ActionHandler<any> = () => null;
+        builder.button('  foo  ', fn1).button('bar', fn1).button('foo', fn2);
+
+        const items = model.state.items;
+        expect(items.length).to.eql(3);
+
+        expect(items[0].type).to.eql('button');
+        expect(items[0].label).to.eql('foo');
+        expect(items[0].onClick).to.eql(fn1);
+
+        expect(items[1].type).to.eql('button');
+        expect(items[1].label).to.eql('bar');
+        expect(items[1].onClick).to.eql(fn1);
+
+        expect(items[2].type).to.eql('button');
+        expect(items[2].label).to.eql('foo');
+        expect(items[2].onClick).to.eql(fn2);
+      });
+
+      it('config', () => {
+        const { builder, model } = create();
+        expect(model.state.items).to.eql([]);
+
+        const fn: t.ActionHandler<any> = () => null;
+        builder.button((config) => config.label('foo').onClick(fn));
+
+        const items = model.state.items;
+        expect(items.length).to.eql(1);
+        expect(items[0].type).to.eql('button');
+        expect(items[0].label).to.eql('foo');
+        expect(items[0].onClick).to.eql(fn);
+      });
+
+      it('config: description', () => {
+        const { builder, model } = create();
+        expect(model.state.items).to.eql([]);
+
+        builder.button((config) => config.label('foo').description('   My description   '));
+
+        const items = model.state.items;
+        expect(items.length).to.eql(1);
+        expect(items[0].description).to.eql('My description');
+      });
     });
   });
 });

@@ -73,4 +73,31 @@ const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethods<any>>
     }
     args.model.change((draft) => (draft.getContext = value));
   },
+
+  button(args) {
+    const item: t.ActionItemButton = { type: 'button', label: '', onClick: () => null };
+
+    const config: t.ActionButtonConfigArgs<any> = {
+      label(value) {
+        item.label = format.string(value, { trim: true }) || 'Untitled';
+        return config;
+      },
+      description(value) {
+        item.description = format.string(value, { trim: true });
+        return config;
+      },
+      onClick(handler) {
+        item.onClick = handler;
+        return config;
+      },
+    };
+
+    if (typeof args.params[0] === 'function') {
+      args.params[0](config);
+    } else {
+      config.label(args.params[0]).onClick(args.params[1]);
+    }
+
+    args.model.change((draft) => draft.items.push(item));
+  },
 };

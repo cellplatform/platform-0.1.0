@@ -1,7 +1,7 @@
 import * as t from './types';
 
 export const FONT = {
-  MONOSPACE: 'Menlo, monospace',
+  MONO: 'Menlo, monospace',
   SANS: 'sans-serif',
 };
 

@@ -1,7 +1,8 @@
-import React from 'react';
-import { css, CssValue, COLORS, t, constants, defaultValue } from '../../common';
-import { Icons } from '../Icons';
+import React, { useRef } from 'react';
+
+import { constants, css, CssValue, defaultValue, t } from '../../common';
 import { ActionBuilder } from '../../config';
+import { ActionItemClickEventHandler, ActionPanelItem } from './ActionPanelItem';
 import { ActionPanelTitle } from './ActionPanelTitle';
 
 export type ActionPanelProps = {
@@ -12,6 +13,8 @@ export type ActionPanelProps = {
 
 export const Component: React.FC<ActionPanelProps> = (props) => {
   const model = ActionBuilder.toModel(props.actions) || ActionBuilder.model().state;
+  const ctxRef = useRef();
+
   const styles = {
     base: css({
       Scroll: true,
@@ -19,16 +22,27 @@ export const Component: React.FC<ActionPanelProps> = (props) => {
       userSelect: 'none',
       fontFamily: constants.FONT.SANS,
     }),
-    body: css({
-      fontSize: 14,
-    }),
+    body: css({ fontSize: 14 }),
+    list: css({}),
   };
+
+  const onItemClick: ActionItemClickEventHandler = (e) => {
+    if (model.getContext) {
+      const prev = ctxRef.current;
+      ctxRef.current = model.getContext(prev);
+    }
+    e.model.onClick(ctxRef.current);
+  };
+
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
         {defaultValue(props.showTitle, true) && <ActionPanelTitle>{model.name}</ActionPanelTitle>}
-
-        <Icons.Variable color={COLORS.CLI.MAGENTA} size={20} />
+        <div {...styles.list}>
+          {model.items.map((item, i) => {
+            return <ActionPanelItem key={i} model={item} onClick={onItemClick} />;
+          })}
+        </div>
       </div>
     </div>
   );

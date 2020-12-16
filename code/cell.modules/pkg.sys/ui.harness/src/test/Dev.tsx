@@ -6,25 +6,28 @@ import { color, css, StateObject, t } from '../common';
 import { ActionPanel } from '../components/ActionPanel';
 import { Host } from '../components/Host';
 
+type Ctx = { model: t.IStateObjectWritable<M> };
 type M = { text?: string };
-type C = { model: t.IStateObject<M> };
 
 const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
 
 const model = StateObject.create<M>({ text: LOREM });
-const actions = ActionPanel.build<C>('My Actions').context((prev) => {
-  return prev || { model };
-});
+
+const actions = ActionPanel.build<Ctx>('My Actions')
+  .context((prev) => prev || { model })
+  .button('foo', (ctx) => {
+    ctx.model.change((draft) => (draft.text = draft.text === 'hello' ? LOREM : 'hello'));
+  })
+  .button((config) => config.label(LOREM))
+  .button((config) => config.description(LOREM));
 
 export const Dev: React.FC = () => {
   const [count, setCount] = useState<number>(0);
 
   useEffect(() => {
     const dispose$ = new Subject();
-    model.event.changed$.pipe(takeUntil(dispose$)).subscribe((e) => {
-      setCount(count + 1);
-    });
+    model.event.changed$.pipe(takeUntil(dispose$)).subscribe((e) => setCount(count + 1));
     return () => dispose$.next();
   });
 
@@ -43,7 +46,6 @@ export const Dev: React.FC = () => {
       backgroundColor: color.format(-0.03),
       display: 'flex',
     }),
-
     host: css({
       Absolute: 50,
       border: `solid 5px ${color.format(-0.1)}`,
