@@ -11,8 +11,7 @@ export const ActionBuilder: t.ActionModelFactory = {
    * Create a new data-model.
    */
   model<Ctx>(name?: any) {
-    name = format.string(name, { trim: true }) || DEFAULT.ACTIONS.name;
-    const initial = { ...DEFAULT.ACTIONS, name } as t.ActionModel<Ctx>;
+    const initial = { ...DEFAULT.ACTIONS } as t.ActionModel<Ctx>;
     return StateObject.create<any>(initial);
   },
 

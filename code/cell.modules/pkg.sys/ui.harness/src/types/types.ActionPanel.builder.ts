@@ -7,7 +7,7 @@ type A<Ctx> = ActionModelBuilder<Ctx>;
  */
 export type ActionModelFactory = {
   model<Ctx>(name?: string): t.ActionModelState<Ctx>;
-  builder<Ctx>(input?: string | t.ActionModelState<Ctx> | t.ActionModel<Ctx>): A<Ctx>;
+  builder<Ctx>(input?: t.ActionModelState<Ctx> | t.ActionModel<Ctx>): A<Ctx>;
   toModel<Ctx>(
     input?: A<Ctx> | t.ActionModelState<Ctx> | t.ActionModel<Ctx>,
   ): t.ActionModel<Ctx> | undefined;
@@ -24,8 +24,6 @@ export type ActionModelMethods<Ctx> = ActionModelInputMethods<Ctx> & {
   render(props?: t.ActionPanelProps): JSX.Element;
 
   context(ctx: t.ActionGetContext<Ctx>): A<Ctx>;
-  name(value: string | null): A<Ctx>; // TODO 🐷 - REMOVE (handled by groups)
-
   group(name: string, config?: ActionGroupConfig<Ctx>): A<Ctx>;
   group(config: ActionGroupConfig<Ctx>): A<Ctx>;
 };

@@ -21,5 +21,5 @@ export const COLORS = {
   },
 };
 
-const ACTIONS: t.ActionModel<any> = { name: '', items: [] };
+const ACTIONS: t.ActionModel<any> = { items: [] };
 export const DEFAULT = { ACTIONS };

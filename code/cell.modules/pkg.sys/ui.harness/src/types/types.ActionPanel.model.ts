@@ -2,7 +2,6 @@ import { t } from './common';
 
 export type ActionModelState<Ctx> = t.BuilderModel<t.ActionModel<Ctx>>;
 export type ActionModel<Ctx> = {
-  name: string;
   items: ActionItem[];
   getContext?: ActionGetContext<Ctx>;
 };

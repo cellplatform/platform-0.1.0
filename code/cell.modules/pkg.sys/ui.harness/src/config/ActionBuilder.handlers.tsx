@@ -33,11 +33,6 @@ export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethod
     return <ActionPanel {...(args.params[0] || {})} actions={args.model.state} />;
   },
 
-  name(args) {
-    const value = format.string(args.params[0], { trim: true });
-    args.model.change((draft) => (draft.name = value || DEFAULT.ACTIONS.name));
-  },
-
   /**
    * The factory for the context (provided to each action).
    */

@@ -14,19 +14,20 @@ const LOREM =
 
 const model = StateObject.create<M>({ text: LOREM });
 
-const actions = Actions<Ctx>('My Title')
+const change = (model: Ctx['model']) => {
+  model.change((draft) => (draft.text = draft.text === 'hello' ? LOREM : 'hello'));
+};
+
+const actions = Actions<Ctx>()
   .context((prev) => prev || { model })
-  .button('foo', (ctx) => {
-    ctx.model.change((draft) => (draft.text = draft.text === 'hello' ? LOREM : 'hello'));
-  })
+  .button('foo', (ctx) => change(ctx.model))
   .button((e) => e.label(LOREM))
   .button((e) => e.description(LOREM))
   .group('Group 1', (e) =>
     e
-      .button('change text', (ctx) =>
-        ctx.model.change((draft) => (draft.text = draft.text === 'hello' ? LOREM : 'hello')),
-      )
-      .button((config) => config.label('hello')),
+      .button('change text', (ctx) => change(ctx.model))
+      .button((config) => config.label('hello'))
+      .button('console.log', (ctx) => console.log('hello', ctx)),
   )
   .group((e) => e.name('Group 2'));
 
