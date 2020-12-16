@@ -40,7 +40,7 @@
     "@platform/micro": "0.16.0",
     "@platform/test": "0.2.0",
     "@platform/ts": "4.1.0",
-    "@types/cheerio": "0.22.22",
+    "@types/cheerio": "0.22.23",
     "@types/mime-types": "2.1.0",
     "@types/minimatch": "3.0.3",
     "form-data": "3.0.0"

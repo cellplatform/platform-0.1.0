@@ -17,11 +17,11 @@
   "dependencies": {
     "@babel/polyfill": "7.12.1",
     "@platform/cache": "0.3.4",
-    "@platform/cell.coord": "0.8.214",
-    "@platform/cell.func": "0.1.259",
-    "@platform/cell.schema": "0.5.30",
-    "@platform/cell.types": "0.5.31",
-    "@platform/cell.value": "0.2.169",
+    "@platform/cell.coord": "0.8.228",
+    "@platform/cell.func": "0.1.274",
+    "@platform/cell.schema": "0.5.45",
+    "@platform/cell.types": "0.5.45",
+    "@platform/cell.value": "0.2.184",
     "@platform/css": "0.4.24",
     "@platform/libs": "0.2.3",
     "@platform/react": "0.4.57",
@@ -31,7 +31,7 @@
     "handsontable": "6.2.2"
   },
   "devDependencies": {
-    "@platform/cell.func.sys": "0.2.214",
+    "@platform/cell.func.sys": "0.2.274",
     "@platform/polyfill": "0.0.1",
     "@platform/test": "0.2.0",
     "@platform/test.dom": "0.0.99",

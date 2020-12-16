@@ -17,7 +17,7 @@
   "dependencies": {
     "@platform/libs": "0.2.3",
     "chalk": "4.1.0",
-    "cli-table": "0.3.1",
+    "cli-table": "0.3.4",
     "strip-ansi": "6.0.0"
   },
   "devDependencies": {

@@ -21,7 +21,7 @@
     "react-icons": "4.1.0"
   },
   "devDependencies": {
-    "electron": "11.0.3",
+    "electron": "11.1.0",
     "@platform/ts": "4.1.0"
   },
   "files": [

@@ -21,8 +21,8 @@
   },
   "devDependencies": {
     "@platform/polyfill": "0.0.1",
-    "@types/react-select": "3.0.26",
-    "electron": "11.0.3",
+    "@types/react-select": "3.0.28",
+    "electron": "11.1.0",
     "@platform/ts": "4.1.0"
   },
   "files": [

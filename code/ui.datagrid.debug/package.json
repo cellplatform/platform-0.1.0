@@ -13,9 +13,9 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.coord": "0.8.214",
-    "@platform/cell.schema": "0.5.30",
-    "@platform/cell.types": "^0.5.31",
+    "@platform/cell.coord": "0.8.228",
+    "@platform/cell.schema": "0.5.45",
+    "@platform/cell.types": "^0.5.45",
     "@platform/libs": "0.2.3",
     "@platform/react": "0.4.57",
     "@platform/ui.button": "0.3.92",

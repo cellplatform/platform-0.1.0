@@ -15,9 +15,9 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.coord": "0.8.214",
-    "@platform/cell.types": "0.5.31",
-    "@platform/cell.value": "0.2.169",
+    "@platform/cell.coord": "0.8.228",
+    "@platform/cell.types": "0.5.45",
+    "@platform/cell.value": "0.2.184",
     "@platform/fsdb.types": "0.6.45",
     "@platform/libs": "0.2.3",
     "@platform/ui.datagrid.types": "0.7.196",
@@ -31,7 +31,7 @@
     "@platform/ts": "4.1.0",
     "@platform/ui.datagrid": "0.7.321",
     "@platform/ui.datagrid.cell": "0.2.155",
-    "electron": "11.0.3"
+    "electron": "11.1.0"
   },
   "files": [
     "lib",

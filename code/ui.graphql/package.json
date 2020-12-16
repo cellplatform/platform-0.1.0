@@ -23,7 +23,7 @@
     "@platform/util.value": "0.8.9",
     "@types/codemirror": "0.0.82",
     "@uiharness/electron": "0.7.5",
-    "graphiql": "1.0.6",
+    "graphiql": "1.2.0",
     "hjson": "3.2.2"
   },
   "devDependencies": {
@@ -31,7 +31,7 @@
     "@platform/test": "0.2.0",
     "@platform/ts": "4.1.0",
     "@types/hjson": "2.4.2",
-    "electron": "11.0.3"
+    "electron": "11.1.0"
   },
   "files": [
     "lib",

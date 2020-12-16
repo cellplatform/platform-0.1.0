@@ -33,7 +33,7 @@
     "@platform/test": "0.2.0",
     "@platform/ts": "4.1.0",
     "@platform/ui.dev": "0.0.31",
-    "@types/recharts": "^1.8.14",
+    "@types/recharts": "^1.8.18",
     "recharts": "1.8.5"
   },
   "files": [

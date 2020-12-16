@@ -12,11 +12,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.coord": "0.8.214",
-    "@platform/cell.func": "0.1.259",
-    "@platform/cell.schema": "^0.5.30",
+    "@platform/cell.coord": "0.8.228",
+    "@platform/cell.func": "0.1.274",
+    "@platform/cell.schema": "^0.5.45",
     "@platform/cell.types": "0.5.31",
-    "@platform/cell.value": "0.2.169",
+    "@platform/cell.value": "0.2.184",
     "@platform/libs": "0.2.3",
     "@platform/ui.datagrid.types": "0.7.196",
     "@platform/util.value": "0.8.9"

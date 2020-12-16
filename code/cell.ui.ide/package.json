@@ -17,7 +17,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@monaco-editor/react": "3.7.0",
+    "@monaco-editor/react": "3.7.3",
     "@platform/cell.client": "0.3.35",
     "@platform/cell.schema.sys": "0.0.84",
     "@platform/cell.types": "0.5.45",
