@@ -1,5 +1,5 @@
 export type FsManifest<F extends FsManifestFile = FsManifestFile> = {
-  hash: string;
+  hash: string; // NB: The hash of all file-hashes.
   files: F[];
 };
 

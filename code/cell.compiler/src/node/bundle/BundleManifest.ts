@@ -28,19 +28,22 @@ export const BundleManifest = {
     const toFile = (path: string) => BundleManifest.loadFile({ path, bundleDir, model });
     const files: t.FsManifestFile[] = await Promise.all(paths.map((path) => toFile(path)));
 
-    const hash = Schema.hash.sha256(files.map((file) => file.filehash));
+    type B = t.BundleManifest;
 
-    const manifest: t.BundleManifest = {
-      kind: 'CodeBundle',
-      hash,
+    const bundle: B['bundle'] = deleteUndefined({
       mode: data.mode(),
       target: data.target(),
       entry: data.entryFile,
       remoteEntry: paths.some((path) => path.endsWith(REMOTE_ENTRY)) ? REMOTE_ENTRY : undefined,
+    });
+
+    const manifest: B = {
+      hash: Schema.hash.sha256(files.map((file) => file.filehash)),
+      bundle,
       files,
     };
 
-    return deleteUndefined(manifest);
+    return manifest;
   },
 
   /**
