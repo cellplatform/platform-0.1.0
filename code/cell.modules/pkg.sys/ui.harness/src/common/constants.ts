@@ -1,4 +1,9 @@
-export const MONOSPACE = 'Menlo, monospace';
+import * as t from './types';
+
+export const FONT = {
+  MONOSPACE: 'Menlo, monospace',
+  SANS: 'sans-serif',
+};
 
 export const COLORS = {
   WHITE: '#fff',
@@ -16,6 +21,5 @@ export const COLORS = {
   },
 };
 
-export const DEFAULT = {
-  ACTIONS: { name: 'Actions' },
-};
+const ACTIONS: t.ActionModel<any> = { name: 'Actions', items: [] };
+export const DEFAULT = { ACTIONS };

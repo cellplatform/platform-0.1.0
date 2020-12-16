@@ -1,18 +1,23 @@
 import React from 'react';
-import { css, CssValue, COLORS } from '../../common';
+import { css, CssValue, COLORS, t, constants, defaultValue } from '../../common';
 import { Icons } from '../Icons';
+import { ActionBuilder } from '../../config';
+import { ActionPanelTitle } from './ActionPanelTitle';
 
-const LOREM =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
+export type ActionPanelProps = {
+  style?: CssValue;
+  actions?: t.ActionModelBuilder<any> | t.ActionModel<any> | t.ActionModelState<any>;
+  showTitle?: boolean;
+};
 
-export type ActionPanelProps = { style?: CssValue };
-
-export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
+export const Component: React.FC<ActionPanelProps> = (props) => {
+  const model = ActionBuilder.toModel(props.actions) || ActionBuilder.model().state;
   const styles = {
     base: css({
+      Scroll: true,
       position: 'relative',
       userSelect: 'none',
-      Scroll: true,
+      fontFamily: constants.FONT.SANS,
     }),
     body: css({
       fontSize: 14,
@@ -21,28 +26,18 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
-        <div>panel</div>
+        {defaultValue(props.showTitle, true) && <ActionPanelTitle>{model.name}</ActionPanelTitle>}
 
-        <Icons.Variable color={COLORS.CLI.MAGENTA} />
-
-        <div>
-          {LOREM}
-          {LOREM}
-          {LOREM}
-          {LOREM}
-          {LOREM}
-          {LOREM}
-          {LOREM}
-          {LOREM}
-          {LOREM}
-          {LOREM}
-          {LOREM}
-          {LOREM}
-          {LOREM}
-          {LOREM}
-          {LOREM}
-        </div>
+        <Icons.Variable color={COLORS.CLI.MAGENTA} size={20} />
       </div>
     </div>
   );
 };
+
+/**
+ * Attach additional properties to the component.
+ */
+type A = React.FC<ActionPanelProps> & { build: t.ActionModelFactory['builder'] };
+(Component as A).build = ActionBuilder.builder;
+export const ActionPanel = Component as A;
+export default ActionPanel;
