@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 
-import { constants, css, CssValue, defaultValue, t, toActionPanelModel } from '../../common';
+import { constants, css, defaultValue, t, toActionPanelModel } from '../../common';
 import { ActionItemClickEventHandler, ActionPanelItem } from './View.Item';
 import { ActionPanelTitle } from './View.Title';
 
@@ -28,7 +28,9 @@ export const View: React.FC<ViewProps> = (props) => {
       const prev = ctxRef.current;
       ctxRef.current = model.getContext(prev);
     }
-    e.model.onClick(ctxRef.current);
+    if (e.model.type === 'button') {
+      e.model.onClick(ctxRef.current);
+    }
   };
 
   const elTitle = defaultValue(props.showTitle, true) && model.name && (
