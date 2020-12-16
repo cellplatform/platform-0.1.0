@@ -31,10 +31,14 @@ export const View: React.FC<ViewProps> = (props) => {
     e.model.onClick(ctxRef.current);
   };
 
+  const elTitle = defaultValue(props.showTitle, true) && model.name && (
+    <ActionPanelTitle>{model.name}</ActionPanelTitle>
+  );
+
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
-        {defaultValue(props.showTitle, true) && <ActionPanelTitle>{model.name}</ActionPanelTitle>}
+        {elTitle}
         <div {...styles.list}>
           {model.items.map((item, i) => {
             return <ActionPanelItem key={i} model={item} onClick={onItemClick} />;

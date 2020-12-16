@@ -14,7 +14,7 @@ const LOREM =
 
 const model = StateObject.create<M>({ text: LOREM });
 
-const actions = Actions<Ctx>('My Actions')
+const actions = Actions<Ctx>()
   .context((prev) => prev || { model })
   .button('foo', (ctx) => {
     ctx.model.change((draft) => (draft.text = draft.text === 'hello' ? LOREM : 'hello'));
