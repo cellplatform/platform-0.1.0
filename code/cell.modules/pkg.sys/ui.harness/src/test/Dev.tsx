@@ -29,7 +29,8 @@ const actions = Actions<Ctx>()
       .button((config) => config.label('hello'))
       .button('console.log', (ctx) => console.log('hello', ctx)),
   )
-  .group((e) => e.name('Group 2'));
+  .group((e) => e.name('Group 2'))
+  .group('Group 3');
 
 export const Dev: React.FC = () => {
   const [count, setCount] = useState<number>(0);
