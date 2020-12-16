@@ -31,6 +31,7 @@ export const BundleManifest = {
     const hash = Schema.hash.sha256(files.map((file) => file.filehash));
 
     const manifest: t.BundleManifest = {
+      kind: 'CodeBundle',
       hash,
       mode: data.mode(),
       target: data.target(),

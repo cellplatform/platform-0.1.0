@@ -24,6 +24,7 @@ describe('BundleManifest', function () {
     expect(manifest.target).to.eql('node');
     expect(manifest.entry).to.eql('main.js');
     expect(manifest.files.length).to.greaterThan(2);
+    expect(manifest.kind).to.eql('CodeBundle');
 
     const file = manifest.files.find((item) => item.path === 'index.json');
     expect(file?.path).to.eql('index.json');
