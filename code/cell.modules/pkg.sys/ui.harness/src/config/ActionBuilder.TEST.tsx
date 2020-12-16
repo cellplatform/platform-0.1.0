@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 import { expect, DEFAULT, StateObject, t } from '../test';
 import { ActionBuilder } from '.';
 import { ActionPanel } from '../components/ActionPanel';
@@ -115,6 +117,21 @@ describe('ActionBuilder', () => {
       expect(model.state.name).to.eql(DEFAULT.ACTIONS.name);
     });
 
+    describe('render', () => {
+      it('produces JSX element', () => {
+        const { builder, model } = create();
+        const el = builder
+          .name('hello')
+          .button('foo', () => null)
+          .render();
+
+        expect(React.isValidElement(el)).to.eql(true);
+
+        expect(el.props.actions.name).to.eql('hello');
+        expect(el.props.actions.items).to.eql(model.state.items);
+      });
+    });
+
     describe('context', () => {
       it('set', () => {
         const { model, builder } = create();
@@ -151,7 +168,7 @@ describe('ActionBuilder', () => {
       });
     });
 
-    describe.only('button', () => {
+    describe('button', () => {
       it('label, handler', () => {
         const { builder, model } = create();
         expect(model.state.items).to.eql([]);

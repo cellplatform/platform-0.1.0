@@ -8,9 +8,11 @@ export const ActionPanelTitle: React.FC<ActionPanelTitleProps> = (props) => {
     base: css({
       fontSize: 12,
       boxSizing: 'border-box',
+      paddingTop: 6,
+      paddingBottom: 5,
+      PaddingX: 8,
       backgroundColor: color.format(-0.03),
-      padding: 5,
-      paddingLeft: 8,
+      borderBottom: `solid 1px ${color.format(-0.06)}`,
     }),
     label: css({
       color: COLORS.DARK,

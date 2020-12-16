@@ -19,19 +19,20 @@ export const ActionPanelItem: React.FC<ActionPanelItemProps> = (props) => {
   const styles = {
     base: css({
       position: 'relative',
-      borderBottom: `solid 1px ${color.format(-0.06)}`,
+      borderBottom: `dashed 1px ${color.format(-0.1)}`,
       boxSizing: 'border-box',
       color: COLORS.DARK,
     }),
     main: css({
       Flex: 'horizontal-stretch-stretch',
-      PaddingY: 3,
+      PaddingY: 4,
       paddingLeft: 6,
       paddingRight: 10,
       transform: isDown ? `translateY(1px)` : undefined,
+      cursor: 'pointer',
     }),
     icon: css({
-      opacity: 0.6,
+      opacity: isOver ? 1 : 0.4,
       width: 20,
     }),
     body: css({
@@ -39,11 +40,11 @@ export const ActionPanelItem: React.FC<ActionPanelItemProps> = (props) => {
       marginLeft: 6,
       marginTop: 5,
       overflow: 'hidden',
-      cursor: 'pointer',
     }),
     label: css({
       width: '100%',
       fontFamily: constants.FONT.MONO,
+      color: isOver ? COLORS.BLUE : COLORS.DARK,
       fontSize: 12,
       whiteSpace: 'nowrap',
       overflow: 'hidden',
@@ -72,19 +73,15 @@ export const ActionPanelItem: React.FC<ActionPanelItemProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.main}>
-        <Icons.Variable
-          color={isOver ? COLORS.CLI.MAGENTA : COLORS.DARK}
-          size={20}
-          style={styles.icon}
-        />
-        <div
-          {...styles.body}
-          onMouseEnter={() => over(true)}
-          onMouseLeave={() => over(false)}
-          onMouseDown={() => click(true)}
-          onMouseUp={() => click(false)}
-        >
+      <div
+        {...styles.main}
+        onMouseEnter={() => over(true)}
+        onMouseLeave={() => over(false)}
+        onMouseDown={() => click(true)}
+        onMouseUp={() => click(false)}
+      >
+        <Icons.Variable color={isOver ? COLORS.BLUE : COLORS.DARK} size={20} style={styles.icon} />
+        <div {...styles.body}>
           <div {...styles.label}>{model.label || 'Unnamed'}</div>
           {model.description && <div {...styles.description}>{model.description}</div>}
         </div>

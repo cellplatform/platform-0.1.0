@@ -21,6 +21,8 @@ export type ActionModelBuilder<Ctx> = t.BuilderChain<ActionModelMethods<Ctx>>;
 export type ActionModelMethods<Ctx> = {
   toObject(): t.ActionModel<Ctx>;
   clone(ctx?: t.ActionGetContext<Ctx>): A<Ctx>;
+  render(props?: t.ActionPanelProps): JSX.Element;
+
   context(ctx: t.ActionGetContext<Ctx>): A<Ctx>;
   name(value: string | null): A<Ctx>;
   button(label: string, handler: t.ActionHandler<Ctx>): A<Ctx>;

@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { color, css, StateObject, t } from '../common';
-import { ActionPanel } from '../components/ActionPanel';
+import { Actions } from '..';
 import { Host } from '../components/Host';
 
 type Ctx = { model: t.IStateObjectWritable<M> };
@@ -14,7 +14,7 @@ const LOREM =
 
 const model = StateObject.create<M>({ text: LOREM });
 
-const actions = ActionPanel.build<Ctx>('My Actions')
+const actions = Actions<Ctx>('My Actions')
   .context((prev) => prev || { model })
   .button('foo', (ctx) => {
     ctx.model.change((draft) => (draft.text = draft.text === 'hello' ? LOREM : 'hello'));
@@ -41,10 +41,11 @@ export const Dev: React.FC = () => {
       flex: 1,
     }),
     right: css({
+      display: 'flex',
       position: 'relative',
       width: 300,
       backgroundColor: color.format(-0.03),
-      display: 'flex',
+      borderLeft: `solid 1px ${color.format(-0.08)}`,
     }),
     host: css({
       Absolute: 50,
@@ -82,9 +83,7 @@ export const Dev: React.FC = () => {
             </div>
           </Host>
         </div>
-        <div {...styles.right}>
-          <ActionPanel style={{ flex: 1 }} actions={actions} />
-        </div>
+        <div {...styles.right}>{actions.render({ style: { flex: 1 } })}</div>
       </div>
     </React.StrictMode>
   );
