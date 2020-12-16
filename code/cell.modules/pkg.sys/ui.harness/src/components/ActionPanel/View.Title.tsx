@@ -1,9 +1,9 @@
 import React from 'react';
 import { color, css, CssValue, COLORS } from '../../common';
 
-export type ActionPanelTitleProps = { style?: CssValue };
+export type TitleProps = { style?: CssValue };
 
-export const ActionPanelTitle: React.FC<ActionPanelTitleProps> = (props) => {
+export const Title: React.FC<TitleProps> = (props) => {
   const styles = {
     base: css({
       fontSize: 12,

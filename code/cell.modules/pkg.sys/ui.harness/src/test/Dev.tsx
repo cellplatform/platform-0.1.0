@@ -14,13 +14,23 @@ const LOREM =
 
 const model = StateObject.create<M>({ text: LOREM });
 
-const actions = Actions<Ctx>('My Actions')
+const change = (model: Ctx['model']) => {
+  model.change((draft) => (draft.text = draft.text === 'hello' ? LOREM : 'hello'));
+};
+
+const actions = Actions<Ctx>()
   .context((prev) => prev || { model })
-  .button('foo', (ctx) => {
-    ctx.model.change((draft) => (draft.text = draft.text === 'hello' ? LOREM : 'hello'));
-  })
-  .button((config) => config.label(LOREM))
-  .button((config) => config.description(LOREM));
+  .button('foo', (ctx) => change(ctx.model))
+  .button((e) => e.label(LOREM))
+  .button((e) => e.description(LOREM))
+  .group('Group 1', (e) =>
+    e
+      .button('change text', (ctx) => change(ctx.model))
+      .button((config) => config.label('hello'))
+      .button('console.log', (ctx) => console.log('hello', ctx)),
+  )
+  .group((e) => e.name('Group 2'))
+  .group('Group 3');
 
 export const Dev: React.FC = () => {
   const [count, setCount] = useState<number>(0);

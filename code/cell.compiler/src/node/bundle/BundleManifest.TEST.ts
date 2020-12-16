@@ -20,11 +20,10 @@ describe('BundleManifest', function () {
     const manifest = await BundleManifest.create({ model, bundleDir });
 
     expect(manifest.hash).to.match(/^sha256-/);
-    expect(manifest.mode).to.eql('production');
-    expect(manifest.target).to.eql('node');
-    expect(manifest.entry).to.eql('main.js');
+    expect(manifest.bundle.mode).to.eql('production');
+    expect(manifest.bundle.target).to.eql('node');
+    expect(manifest.bundle.entry).to.eql('main.js');
     expect(manifest.files.length).to.greaterThan(2);
-    expect(manifest.kind).to.eql('CodeBundle');
 
     const file = manifest.files.find((item) => item.path === 'index.json');
     expect(file?.path).to.eql('index.json');
