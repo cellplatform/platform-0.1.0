@@ -14,6 +14,8 @@ export const ItemButton: React.FC<ItemButtonProps> = (props) => {
   const [isDown, setIsDown] = useState<boolean>(false);
 
   const { model } = props;
+  const isActive = Boolean(model.onClick);
+
   const styles = {
     base: css({
       position: 'relative',
@@ -27,7 +29,8 @@ export const ItemButton: React.FC<ItemButtonProps> = (props) => {
       paddingLeft: 6,
       paddingRight: 10,
       transform: isDown ? `translateY(1px)` : undefined,
-      cursor: 'pointer',
+      cursor: isActive ? 'pointer' : 'default',
+      opacity: isActive ? 1 : 0.4,
     }),
     icon: css({
       opacity: isOver ? 1 : 0.4,
@@ -43,6 +46,7 @@ export const ItemButton: React.FC<ItemButtonProps> = (props) => {
       width: '100%',
       fontFamily: constants.FONT.MONO,
       color: isOver ? COLORS.BLUE : COLORS.DARK,
+      opacity: isActive ? 1 : 0.6,
       fontSize: 12,
       whiteSpace: 'nowrap',
       overflow: 'hidden',
@@ -55,17 +59,22 @@ export const ItemButton: React.FC<ItemButtonProps> = (props) => {
     }),
   };
 
-  const over = (isOver: boolean) => {
-    setIsOver(isOver);
-    if (!isOver) {
-      setIsDown(false);
-    }
+  const overHandler = (isOver: boolean) => {
+    return () => {
+      if (isActive) {
+        setIsOver(isOver);
+        if (!isOver) {
+          setIsDown(false);
+        }
+      }
+    };
   };
+
+  // const over = (isOver: boolean) => {};
 
   const clickHandler = (isDown: boolean) => {
     return (e: React.MouseEvent) => {
-      console.log('e.button', e.button);
-      if (e.button === 0) {
+      if (isActive && e.button === 0) {
         setIsDown(isDown);
         if (isDown && props.onClick) {
           props.onClick({ model });
@@ -78,8 +87,8 @@ export const ItemButton: React.FC<ItemButtonProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       <div
         {...styles.main}
-        onMouseEnter={() => over(true)}
-        onMouseLeave={() => over(false)}
+        onMouseEnter={overHandler(true)}
+        onMouseLeave={overHandler(false)}
         onMouseDown={clickHandler(true)}
         onMouseUp={clickHandler(false)}
       >

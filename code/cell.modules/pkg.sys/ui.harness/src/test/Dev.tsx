@@ -19,13 +19,17 @@ const actions = Actions<Ctx>('My Title')
   .button('foo', (ctx) => {
     ctx.model.change((draft) => (draft.text = draft.text === 'hello' ? LOREM : 'hello'));
   })
-  .button((config) => config.label(LOREM))
-  .button((config) => config.description(LOREM))
-  .button((config) => config.description(LOREM))
-  .button((config) => config.description(LOREM))
-  .button((config) => config.description(LOREM))
-  .button((config) => config.description(LOREM))
-  .button((config) => config.description(LOREM));
+  .button((e) => e.label(LOREM))
+  .button((e) => e.description(LOREM))
+  .group((e) =>
+    e
+      .name('My Group 1')
+      .button('change text', (ctx) =>
+        ctx.model.change((draft) => (draft.text = draft.text === 'hello' ? LOREM : 'hello')),
+      )
+      .button((config) => config.label('hello')),
+  )
+  .group((e) => e.name('Group 2'));
 
 export const Dev: React.FC = () => {
   const [count, setCount] = useState<number>(0);

@@ -94,7 +94,7 @@ function GroupConfig(params: any[]) {
 
 function ButtonConfig(params: any[]) {
   const LABEL = 'Unnamed';
-  const item: t.ActionItemButton = { type: 'button', label: LABEL, onClick: () => null };
+  const item: t.ActionItemButton = { type: 'button', label: LABEL };
 
   const config: t.ActionButtonConfigArgs<any> = {
     label(value) {

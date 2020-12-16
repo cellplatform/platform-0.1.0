@@ -30,5 +30,5 @@ export type ActionItemButton = {
   type: 'button';
   label: string;
   description?: string;
-  onClick: ActionHandler<any>;
+  onClick?: ActionHandler<any>;
 };
