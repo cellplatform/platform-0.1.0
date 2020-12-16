@@ -1,6 +1,6 @@
 {
   "name": "@platform/http.types",
-  "version": "0.2.29",
+  "version": "0.2.32",
   "description": "Types for the @platform/http library.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,12 +12,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.2.3",
-    "@platform/types": "0.5.11"
+    "@platform/libs": "0.2.4",
+    "@platform/types": "0.5.13"
   },
   "devDependencies": {
-    "@platform/test": "0.2.0",
-    "@platform/ts": "4.1.0"
+    "@platform/test": "0.2.1",
+    "@platform/ts": "4.1.3"
   },
   "files": [
     "lib",

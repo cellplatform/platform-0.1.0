@@ -124,6 +124,7 @@ async function execBundle(args: {
   const res = await runtime.run(bundle, options);
   const { ok, manifest, errors } = res;
   const tx = body.tx || id.cuid();
+  const files = manifest?.files;
 
   const data: t.IResPostFuncResult = {
     ok,
@@ -134,8 +135,8 @@ async function execBundle(args: {
     entry: res.entry,
     cache: { exists, pulled: pull ? true : !exists },
     size: {
-      bytes: defaultValue(manifest?.bytes, -1),
-      files: defaultValue(manifest?.files.length, -1),
+      bytes: files ? files.reduce((acc, next) => acc + next.bytes, 0) : -1,
+      files: defaultValue(files?.length, -1),
     },
     errors,
     silent,

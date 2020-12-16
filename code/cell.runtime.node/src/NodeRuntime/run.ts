@@ -74,7 +74,8 @@ export function runMethod(args: { cachedir: string }) {
     const entry = (options.entry || manifest.entry || '').trim().replace(/^\/*/, '');
 
     if (!silent) {
-      const size = fs.size.toString(manifest.bytes, { round: 0 });
+      const bytes = manifest.files.reduce((acc, next) => acc + next.bytes, 0);
+      const size = fs.size.toString(bytes, { round: 0 });
       const table = log.table({ border: false });
       const add = (key: string, value: string) => {
         table.add([log.green(key), log.gray(value)]);

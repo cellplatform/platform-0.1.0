@@ -58,14 +58,14 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
    * [Methods]
    */
   public compact() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.store.once('compaction.done', () => resolve());
       this.store.persistence.compactDatafile();
     });
   }
 
   public loadFile() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (this.isFileLoaded || !this.filename) {
         return resolve();
       }
@@ -158,7 +158,7 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
   }
 
   public ensureIndex(options: t.IIndexOptions) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.store.ensureIndex(options, (err: Error | null) => {
         if (err) {
           reject(err);

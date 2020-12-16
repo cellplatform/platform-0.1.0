@@ -45,7 +45,7 @@ function animate(
   props: Record<string, unknown>,
   options: IMoveOptions,
 ) {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const type = dynamics[options.type];
     const args = {
       ...options,

@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@platform/cell.client": "^0.1.28",
-    "@platform/cell.types": "^0.5.7",
+    "@platform/cell.types": "^0.5.45",
     "@platform/http": "^0.11.1",
     "@platform/libs": "^0.2.0",
     "@platform/log": "^0.1.7",

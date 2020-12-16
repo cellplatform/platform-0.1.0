@@ -191,7 +191,7 @@ export function init(args: IS3Init): t.IFsS3 {
        */
 
       const { filename, permission = 'private' } = options;
-      const contentType = filename ? Schema.mime.toType(filename) : undefined;
+      const contentType = filename ? Schema.Mime.toType(filename) : undefined;
       const contentDisposition = filename ? `inline; filename="${filename}"` : undefined;
 
       uri = (uri || '').trim();

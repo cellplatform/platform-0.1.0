@@ -32,14 +32,14 @@ export class TypedSheetRefs<T, K extends keyof T> implements t.ITypedSheetRefs<T
   public static refLinkKey(args: { typeDef: t.IColumnTypeDef<t.ITypeRef> }) {
     const { typeDef } = args;
     const nameKey = TypedSheetRefs.refLinkName({ typeDef });
-    return Schema.ref.links.toKey(nameKey);
+    return Schema.Ref.links.toKey(nameKey);
   }
 
   public static refLink(args: { typeDef: t.IColumnTypeDef<t.ITypeRef>; links?: t.IUriMap }) {
     const { typeDef, links = {} } = args;
     const linkName = TypedSheetRefs.refLinkName({ typeDef });
     const linkKey = TypedSheetRefs.refLinkKey({ typeDef });
-    const link = Schema.ref.links.find(links).byName(linkName);
+    const link = Schema.Ref.links.find(links).byName(linkName);
     return { linkKey, linkName, link };
   }
 

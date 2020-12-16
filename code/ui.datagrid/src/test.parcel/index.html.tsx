@@ -6,7 +6,7 @@ import { reset } from '@platform/css';
 reset();
 
 import { Schema } from '@platform/cell.schema';
-Schema.uri.ALLOW.NS = ['foo*'];
+Schema.Uri.ALLOW.NS = ['foo*'];
 
 import { render } from '@platform/ui.dev';
 import { Test } from './components/Test';

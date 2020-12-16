@@ -243,7 +243,7 @@ describe('ancestor', () => {
  * [Helpers]
  */
 const delay = (msecs: number, callback: () => any) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     setTimeout(() => {
       try {
         if (callback) {

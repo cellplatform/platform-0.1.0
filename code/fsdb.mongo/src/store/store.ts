@@ -70,7 +70,7 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
    */
   private ensureConnected() {
     this.throwIfDisposed('ensureConnected');
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (this.isConnected) {
         return resolve();
       }

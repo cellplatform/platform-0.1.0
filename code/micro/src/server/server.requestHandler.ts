@@ -42,7 +42,7 @@ export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): 
               context = input.context;
             }
           } else {
-            modifying.request = new Promise(async (resolve) => {
+            modifying.request = new Promise<void>(async (resolve) => {
               try {
                 const res = await input();
                 if (res.context) {
@@ -83,7 +83,7 @@ export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): 
           if (typeof input !== 'function') {
             handled = input;
           } else {
-            modifying.response = new Promise(async (resolve) => {
+            modifying.response = new Promise<void>(async (resolve) => {
               try {
                 handled = await input();
                 after.elapsed = timer.elapsed;
