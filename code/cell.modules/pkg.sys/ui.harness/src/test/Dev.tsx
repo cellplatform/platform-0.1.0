@@ -21,9 +21,8 @@ const actions = Actions<Ctx>('My Title')
   })
   .button((e) => e.label(LOREM))
   .button((e) => e.description(LOREM))
-  .group((e) =>
+  .group('Group 1', (e) =>
     e
-      .name('My Group 1')
       .button('change text', (ctx) =>
         ctx.model.change((draft) => (draft.text = draft.text === 'hello' ? LOREM : 'hello')),
       )

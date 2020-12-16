@@ -26,11 +26,12 @@ export type ActionModelMethods<Ctx> = ActionModelInputMethods<Ctx> & {
   context(ctx: t.ActionGetContext<Ctx>): A<Ctx>;
   name(value: string | null): A<Ctx>; // TODO 🐷 - REMOVE (handled by groups)
 
+  group(name: string, config?: ActionGroupConfig<Ctx>): A<Ctx>;
   group(config: ActionGroupConfig<Ctx>): A<Ctx>;
 };
 
 export type ActionModelInputMethods<Ctx> = {
-  button(label: string, handler: t.ActionHandler<Ctx>): A<Ctx>;
+  button(label: string, handler?: t.ActionHandler<Ctx>): A<Ctx>;
   button(config: ActionButtonConfig<Ctx>): A<Ctx>;
 };
 /**
@@ -49,6 +50,4 @@ export type ActionButtonConfigArgs<Ctx> = {
 export type ActionGroupConfig<Ctx> = (args: ActionGroupConfigArgs<Ctx>) => void;
 export type ActionGroupConfigArgs<Ctx> = ActionModelInputMethods<Ctx> & {
   name(value: string): ActionGroupConfigArgs<Ctx>;
-  // description(value: string): ActionGroupConfigArgs<Ctx>;
-  // onClick(handler: t.ActionHandler<Ctx>): ActionGroupConfigArgs<Ctx>;
 };

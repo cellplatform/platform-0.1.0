@@ -171,12 +171,28 @@ describe('ActionBuilder', () => {
       });
     });
 
-    describe.only('group', () => {
-      it('name: "Unnamed"', () => {
+    describe('group', () => {
+      it('param: "name"', () => {
         const { builder, model } = create();
         expect(model.state.items).to.eql([]);
 
-        builder.group((config) => null).group((config) => null);
+        builder.group('Group 1').group('Group 2', (e) => e.name('renamed'));
+
+        const items = model.state.items;
+        expect(items.length).to.eql(2);
+
+        const group1 = items[0] as t.ActionItemGroup;
+        const group2 = items[1] as t.ActionItemGroup;
+
+        expect(group1.name).to.eql('Group 1');
+        expect(group2.name).to.eql('renamed');
+      });
+
+      it('config: "Unnamed"', () => {
+        const { builder, model } = create();
+        expect(model.state.items).to.eql([]);
+
+        builder.group((e) => null).group((e) => null);
 
         const items = model.state.items;
         expect(items.length).to.eql(2);
@@ -191,9 +207,9 @@ describe('ActionBuilder', () => {
         test(1);
       });
 
-      it('name', () => {
+      it('config.name', () => {
         const { builder, model } = create();
-        builder.group((config) => config.name('  Hello  '));
+        builder.group((e) => e.name('  Hello  '));
 
         const items = model.state.items;
         expect(items.length).to.eql(1);
@@ -209,8 +225,8 @@ describe('ActionBuilder', () => {
         const handler1 = () => null;
         const handler2 = () => null;
 
-        builder.group((config) =>
-          config
+        builder.group((e) =>
+          e
             .button('One', handler1)
             .button((config) => config.description('Hello').onClick(handler2)),
         );
@@ -240,7 +256,7 @@ describe('ActionBuilder', () => {
       });
     });
 
-    describe.only('button', () => {
+    describe('button', () => {
       it('label, handler', () => {
         const { builder, model } = create();
         expect(model.state.items).to.eql([]);
@@ -252,23 +268,34 @@ describe('ActionBuilder', () => {
         const items = model.state.items;
         expect(items.length).to.eql(3);
 
-        expect(items[0].type).to.eql('button');
-        if (items[0].type === 'button') {
-          expect(items[0].label).to.eql('foo');
-          expect(items[0].onClick).to.eql(fn1);
-        }
+        const button1 = items[0] as t.ActionItemButton;
+        const button2 = items[1] as t.ActionItemButton;
+        const button3 = items[2] as t.ActionItemButton;
 
-        expect(items[1].type).to.eql('button');
-        if (items[1].type === 'button') {
-          expect(items[1].label).to.eql('bar');
-          expect(items[1].onClick).to.eql(fn1);
-        }
+        expect(button1.type).to.eql('button');
+        expect(button1.label).to.eql('foo');
+        expect(button1.onClick).to.eql(fn1);
 
-        expect(items[2].type).to.eql('button');
-        if (items[2].type === 'button') {
-          expect(items[2].label).to.eql('foo');
-          expect(items[2].onClick).to.eql(fn2);
-        }
+        expect(button2.type).to.eql('button');
+        expect(button2.label).to.eql('bar');
+        expect(button2.onClick).to.eql(fn1);
+
+        expect(button3.type).to.eql('button');
+        expect(button3.label).to.eql('foo');
+        expect(button3.onClick).to.eql(fn2);
+      });
+
+      it('label (no handler)', () => {
+        const { builder, model } = create();
+
+        builder.button('foo');
+
+        const items = model.state.items;
+        expect(items.length).to.eql(1);
+
+        const button = items[0] as t.ActionItemButton;
+        expect(button.label).to.eql('foo');
+        expect(button.onClick).to.eql(undefined);
       });
 
       it('config', () => {

@@ -87,6 +87,13 @@ function GroupConfig(params: any[]) {
 
   if (typeof params[0] === 'function') {
     params[0](config);
+  } else {
+    if (typeof params[0] === 'string') {
+      config.name(params[0]);
+    }
+    if (typeof params[1] === 'function') {
+      params[1](config);
+    }
   }
 
   return { item, config };
