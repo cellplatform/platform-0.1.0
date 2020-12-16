@@ -33,6 +33,8 @@ export function create<M extends O, A extends O>(args: {
   const builder = dispose.create();
   const dispose$ = builder.dispose$;
 
+  (builder as any).__KIND__ = 'BUILDER'; // NB: See [Builder.isBuilder(...)] method.
+
   if (args.dispose$) {
     args.dispose$.pipe(take(1)).subscribe(() => builder.dispose());
   }

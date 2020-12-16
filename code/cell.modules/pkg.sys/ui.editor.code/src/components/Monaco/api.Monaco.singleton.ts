@@ -42,7 +42,7 @@ export const MonacoSingleton = {
         const manifest = await loadManifest(dir);
         const files = await Promise.all(
           manifest.files
-            .map((file) => file.filename)
+            .map((file) => file.path)
             .map((filename) => loadDeclarationFile(dir, filename)),
         );
         return files.map((file) => api.lib.add(file.filename, file.content));
@@ -80,7 +80,7 @@ const loadManifest = async (dir: string) => {
     const err = `Failed to load type-definition manifest '${url}'. ${res.status}: ${res.statusText}`;
     throw new Error(err);
   } else {
-    return res.json as t.TypeFileManifest;
+    return res.json as t.FsManifest;
   }
 };
 

@@ -49,7 +49,7 @@ export async function upload(args: {
 
   try {
     const client = HttpClient.create(host);
-    const res = await client.cell(targetCell).files.upload(files);
+    const res = await client.cell(targetCell).fs.upload(files);
 
     if (!res.ok) {
       log.info.yellow(`Failed to upload files.`);
@@ -59,8 +59,7 @@ export async function upload(args: {
       log.info.gray(' • errors:');
       res.body.errors.forEach((err) => {
         log.info();
-        log.info.gray(`  • filename: ${log.yellow(err.filename)}`);
-        log.info.gray(`    type:     ${err.type}`);
+        log.info.gray(`  • type:     ${err.type}`);
         log.info.gray(`    message:  ${err.message}`);
       });
 

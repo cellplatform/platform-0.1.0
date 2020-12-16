@@ -11,7 +11,11 @@ export type BuilderIndexCalcArgs = { total: number; list: any[] };
 /**
  * Static builder methods.
  */
-export type Builder = { create: BuilderChainFactory; format: t.BuilderFormat };
+export type Builder = {
+  create: BuilderChainFactory;
+  format: t.BuilderFormat;
+  isBuilder(input?: any): boolean;
+};
 export type BuilderChain<A extends O> = A & t.IDisposable;
 
 /**

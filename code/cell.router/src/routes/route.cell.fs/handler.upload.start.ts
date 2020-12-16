@@ -34,7 +34,7 @@ export async function uploadCellFilesStart(args: {
     const allowRedirect = file.allowRedirect;
     const permission = file['s3:permission'];
 
-    const key = Schema.file.links.toKey(filename);
+    const key = Schema.File.Links.toKey(filename);
     const fileUri = links[key]
       ? links[key].split('?')[0]
       : Schema.Uri.create.file(ns, Schema.slug());

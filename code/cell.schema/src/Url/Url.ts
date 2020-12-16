@@ -14,8 +14,14 @@ export class Url<Q extends Record<string, unknown> = any> implements t.IUrl<Q> {
     input = value.isNumeric(input) ? `localhost:${input}` : input?.toString();
     let text = (input || '').trim();
     text = text || 'localhost';
+    text = util.stripHttp(text);
 
-    let hostname = R.pipe(util.stripHttp, util.stripSlashEnd, util.stripPort)(text).split('/')[0];
+    const index = text.indexOf('/');
+    let path = index > -1 ? text.substring(index) : '';
+    path = `/${path.replace(/^\/*/, '')}`;
+    text = index > -1 ? text.substring(0, text.indexOf('/')) : text;
+
+    let hostname = R.pipe(util.stripSlashEnd, util.stripPort)(text).split('/')[0];
     hostname = hostname || 'localhost';
 
     const protocol = util.toProtocol(hostname);
@@ -29,11 +35,6 @@ export class Url<Q extends Record<string, unknown> = any> implements t.IUrl<Q> {
       port,
       toString: () => `${protocol}://${host}`,
     };
-
-    let path = R.pipe(util.stripHttp, util.stripSlashStart)(text);
-    path = path.endsWith(':80') ? path.replace(/\:80$/, '') : path;
-    path = path.startsWith(origin.host) ? path.substring(origin.host.length) : path;
-    path = `/${path.replace(/^\/*/, '')}`;
 
     return { origin, path };
   }

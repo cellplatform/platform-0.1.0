@@ -53,7 +53,7 @@
     "@platform/test": "0.2.0",
     "@platform/ts": "4.1.0",
     "browserify": "17.0.0",
-    "electron": "11.0.3",
+    "electron": "11.1.0",
     "electron-squirrel-startup": "1.0.0"
   },
   "files": [

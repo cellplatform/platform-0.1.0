@@ -24,7 +24,7 @@ function copy(args: {
   filterLine?: FilterLine;
 }) {
   const { sourceDir, targetDir, filenames, filterLine } = args;
-  const manifest: t.TypeFileManifest = { hash: '', files: [] };
+  const manifest: t.FsManifest = { hash: '', files: [] };
 
   fs.removeSync(targetDir);
   fs.ensureDirSync(targetDir);
@@ -53,7 +53,7 @@ function copy(args: {
 
       // Add the file to the manifest.
       manifest.files.push({
-        filename: filename.txt,
+        path: filename.txt,
         filehash: hash.sha256(data),
         bytes: fs.readFileSync(path).byteLength,
       });

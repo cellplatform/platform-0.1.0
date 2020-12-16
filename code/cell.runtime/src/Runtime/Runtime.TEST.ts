@@ -90,10 +90,10 @@ describe('Runtime', () => {
           expect(res).to.eql(expected);
         };
 
-        test('   ', 'https://foo.com/cell:foo:A1/file/foobar/');
-        test('  /// ', 'https://foo.com/cell:foo:A1/file/foobar/');
-        test('/static/foo.png', 'https://foo.com/cell:foo:A1/file/foobar/static/foo.png');
-        test('index.json', 'https://foo.com/cell:foo:A1/file/foobar/index.json');
+        test('   ', 'https://foo.com/cell:foo:A1/fs/foobar/');
+        test('  /// ', 'https://foo.com/cell:foo:A1/fs/foobar/');
+        test('/static/foo.png', 'https://foo.com/cell:foo:A1/fs/foobar/static/foo.png');
+        test('index.json', 'https://foo.com/cell:foo:A1/fs/foobar/index.json');
       });
 
       it('remote (no dir)', () => {
@@ -103,8 +103,8 @@ describe('Runtime', () => {
           expect(res).to.eql(expected);
         };
 
-        test('  ///index.json  ', 'https://foo.com/cell:foo:A1/file/index.json');
-        test('/static/foo.png', 'https://foo.com/cell:foo:A1/file/static/foo.png');
+        test('  ///index.json  ', 'https://foo.com/cell:foo:A1/fs/index.json');
+        test('/static/foo.png', 'https://foo.com/cell:foo:A1/fs/static/foo.png');
       });
 
       it('remote (ip address)', () => {
@@ -116,8 +116,8 @@ describe('Runtime', () => {
           expect(res).to.eql(expected);
         };
 
-        test('  ///index.json  ', `http://${host}/cell:foo:A1/file/foobar/index.json`);
-        test('/static/foo.png', `http://${host}/cell:foo:A1/file/foobar/static/foo.png`);
+        test('  ///index.json  ', `http://${host}/cell:foo:A1/fs/foobar/index.json`);
+        test('/static/foo.png', `http://${host}/cell:foo:A1/fs/foobar/static/foo.png`);
       });
     });
   });

@@ -87,7 +87,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
   const done$ = new Subject();
   writeLogFile(log, done$);
 
-  const spinner = ProgressSpinner({ label: `uploading ${files.length} files` });
+  const spinner = ProgressSpinner({ label: `uploading ${files.length} files`, silent });
   if (!silent) {
     spinner.start();
   }
@@ -198,7 +198,7 @@ async function logUpload(args: {
   };
 
   files.forEach((file) => addFile(file.path, file.bytes));
-  table.add(['', '', log.cyan(size.toString())]);
+  table.add(['', '', log.cyan(size.toString()), log.gray(`(${files.length} files)`)]);
 
   log.info(`
 ${log.gray(`Uploaded`)}    ${log.gray(`(in ${log.yellow(elapsed)})`)}
@@ -257,7 +257,7 @@ async function updateManifest(args: {
   redirects?: t.CompilerModelRedirect[];
 }) {
   const { uploadedFiles, bundleDir, redirects } = args;
-  const { manifest, path } = await BundleManifest.readFile({ bundleDir });
+  const { manifest, path } = await BundleManifest.read({ dir: bundleDir });
   if (!manifest) {
     throw new Error(`A bundle manifest does not exist at: ${path}`);
   }
@@ -277,7 +277,7 @@ async function updateManifest(args: {
       }
     });
 
-  await BundleManifest.writeFile({ manifest, bundleDir });
+  await BundleManifest.write({ manifest, dir: bundleDir });
   return manifest;
 }
 

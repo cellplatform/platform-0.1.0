@@ -2,22 +2,29 @@
   "name": "sys.ui.harness",
   "version": "0.0.43",
   "sideEffects": false,
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
   "compiler": {
-    "port": 3003
+    "port": 3002
   },
   "scripts": {
+    "test": "ts test",
     "build": "ts build --no-esm $@",
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",
-    "bundle": "cell.compiler bundle --name=prod $@",
+    "bundle": "cell.compiler bundle $@",
     "watch": "cell.compiler watch $@",
-    "clean": "cell.compiler clean $@",
     "upload": "cell.compiler upload $@",
+    "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@"
   },
   "dependencies": {
+    "@platform/cell.module": "^0.0.78",
+    "@platform/state": "^0.7.22",
+    "@platform/ui.icon": "^0.0.176",
     "preset.env": "^0.0.4",
+    "react-icons": "^4.1.0",
     "sys.ui.primitives": "^0.0.43"
   },
   "devDependencies": {

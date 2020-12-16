@@ -28,7 +28,7 @@ export const Labels: React.FC<ILabelsProps> = (props: ILabelsProps = {}) => {
 
   const styles = {
     text: {
-      fontFamily: constants.MONOSPACE,
+      fontFamily: constants.FONT.MONO,
       fontSize,
       color: formatColor(color),
     },

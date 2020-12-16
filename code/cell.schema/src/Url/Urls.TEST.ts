@@ -180,7 +180,7 @@ describe('Urls', () => {
       expect(res2.toString()).to.eql(URL);
     });
 
-    describe('fs', () => {
+    describe('fs (files)', () => {
       it('fs.list', () => {
         const res1 = url.cell(URI).files.list;
         const res2 = url.cell(Uri.cell('cell:foo:A1')).files.list;
@@ -242,17 +242,17 @@ describe('Urls', () => {
       });
     });
 
-    describe('file', () => {
+    describe('fs (file)', () => {
       it('file.toString()', () => {
         const file = url.cell(URI).file;
-        expect(file.toString()).to.eql('/cell:foo:A1/file/');
+        expect(file.toString()).to.eql('/cell:foo:A1/fs/');
       });
 
       it('file.byName', () => {
         const res1 = url.cell(URI).file.byName('  kitten.png   ');
         const res2 = url.cell(Uri.cell('cell:foo:A1')).file.byName('kitten.png');
 
-        const URL = 'http://localhost/cell:foo:A1/file/kitten.png';
+        const URL = 'http://localhost/cell:foo:A1/fs/kitten.png';
         expect(res1.toString()).to.eql(URL);
         expect(res2.toString()).to.eql(URL);
       });
@@ -411,9 +411,9 @@ describe('Urls', () => {
           expect(res.toString()).to.eql(expected);
         };
 
-        test(undefined, 'http://localhost/cell:foo:A1/file/index.json');
-        test('  v1.2.3  ', 'http://localhost/cell:foo:A1/file/v1.2.3/index.json');
-        test('  //foo/v1.2.3//  ', 'http://localhost/cell:foo:A1/file/foo/v1.2.3/index.json');
+        test(undefined, 'http://localhost/cell:foo:A1/fs/index.json');
+        test('  v1.2.3  ', 'http://localhost/cell:foo:A1/fs/v1.2.3/index.json');
+        test('  //foo/v1.2.3//  ', 'http://localhost/cell:foo:A1/fs/foo/v1.2.3/index.json');
       });
 
       it('strips HTTP on host mismatch check', () => {
@@ -421,7 +421,7 @@ describe('Urls', () => {
         const bundle: t.RuntimeBundleOrigin = { host: 'https://domain.com', uri: 'cell:foo:A1' };
         const res = urls.fn.bundle.manifest(bundle);
         expect(urls.host).to.eql('domain.com');
-        expect(res.toString()).to.eql('https://domain.com/cell:foo:A1/file/index.json');
+        expect(res.toString()).to.eql('https://domain.com/cell:foo:A1/fs/index.json');
       });
 
       it('throw if host mismatch', () => {

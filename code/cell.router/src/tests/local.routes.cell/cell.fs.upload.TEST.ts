@@ -2,7 +2,7 @@
 import { parse as parseUrl } from 'url';
 import { createMock, expect, fs, Http, readFile, Schema, t, http, is } from '../../test';
 
-describe.only('cell.fs: upload', function () {
+describe('cell.fs: upload', function () {
   this.timeout(50000);
 
   it('upload => download: 1 file', async () => {
@@ -160,9 +160,9 @@ describe.only('cell.fs: upload', function () {
     const cellLinks = uploaded.body.cell.links || {};
     const key = 'fs:foo::bar::kitten:jpg';
     expect(typeof cellLinks[key]).to.eql('string');
-    expect(Schema.file.links.toKey(filename)).to.eql(key);
+    expect(Schema.File.Links.toKey(filename)).to.eql(key);
 
-    const link = Schema.file.links.parse(key, cellLinks[key]);
+    const link = Schema.File.Links.parse(key, cellLinks[key]);
 
     // Ensure the file (and all relevant path data)
     // is represented within the cells "files" list.

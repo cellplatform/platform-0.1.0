@@ -7,7 +7,7 @@ export default () =>
     .port(Package.compiler.port)
     .namespace('sample.compiler')
     .title('Compiler Sample')
-    .env({ foo: 12345 })
+    .env({ foo: 1234 })
 
     .files((files) => files.redirect(false, '*.worker.js').access('public', '**/*.png'))
 

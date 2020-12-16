@@ -32,20 +32,24 @@ export async function createBrowserWindow(args: {
   //
   const browser = new BrowserWindow({
     show: false,
+
     x: window.props.x,
     y: window.props.y,
     width: defaultValue(window.props.width, app.props.width),
     height: defaultValue(window.props.height, app.props.height),
     minWidth: app.props.minWidth,
     minHeight: app.props.minHeight,
+
     title: window.props.title,
     titleBarStyle: 'hiddenInset',
     transparent: true,
     vibrancy: 'selection',
     acceptFirstMouse: true,
+
     webPreferences: {
       sandbox,
-      nodeIntegration: false,
+      nodeIntegration: false, // NB: Obsolete (see `contextIsolation`) but leaving around for safety.
+      contextIsolation: true, // https://www.electronjs.org/docs/tutorial/context-isolation
       enableRemoteModule: false,
       preload: constants.paths.bundle.preload,
       additionalArguments: argv,

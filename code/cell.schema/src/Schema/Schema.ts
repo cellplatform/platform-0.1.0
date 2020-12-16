@@ -1,44 +1,47 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 import { cuid, slug, t, hash, coord, Mime } from '../common';
-import { FileSchema } from '../File';
+import { FileSchema } from '../Fs';
 import { RefSchema } from '../Ref';
 import { Uri } from '../Uri';
 import { Urls, Url } from '../Url';
 import { Encoding } from '../Encoding';
 
 /**
- * Schema of DB paths.
+ * Schema mapping URI's to DB paths and other common operating-system
+ * naming conventions.
  *
  * Terminology:
  *    uri:    the address of the data within logical space.
  *    path:   the key of the data within the database.
  *
  */
-export class Schema {
-  public static mime = Mime;
-  public static file = FileSchema;
-  public static ref = RefSchema;
-  public static cuid = cuid;
-  public static slug = slug;
-  public static hash = hash;
-  public static coord = coord;
-  public static encoding = Encoding;
 
-  public static Uri = Uri;
-  public static Url = Url;
-  public static Urls = Urls;
-  public static urls = (host: string | number) => Urls.create(host);
-  public static ns = (id: string) => new NsSchema({ id });
+export const Schema = {
+  Mime: Mime,
+  File: FileSchema,
+  Ref: RefSchema,
 
-  public static query = {
+  cuid: cuid,
+  slug: slug,
+  hash: hash,
+  coord: coord,
+  encoding: Encoding,
+
+  Uri,
+  Url,
+  Urls,
+  urls: (host: string | number) => Urls.create(host),
+  ns: (id: string) => new NsSchema({ id }),
+
+  query: {
     cells: '/CELL/*',
     rows: '/ROW/*',
     columns: '/COL/*',
     files: '/FILE/*',
-  };
+  },
 
-  public static from = {
+  from: {
     ns(input: string | t.IDbModelNs) {
       return from<t.INsUri>({
         input,
@@ -86,8 +89,8 @@ export class Schema {
         },
       });
     },
-  };
-}
+  },
+};
 
 /**
  * Schema for `namespace`
@@ -153,7 +156,7 @@ export class NsSchema {
 
   public file(fileid: string) {
     const uri = Uri.create.file(this.id, fileid);
-    return FileSchema.create({ nsPath: this.path, fileid, uri });
+    return FileSchema.toObject({ nsPath: this.path, fileid, uri });
   }
 
   public static uri(args: { path: string }) {

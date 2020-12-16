@@ -8,6 +8,8 @@ import { uploadCellFilesStart } from './handler.upload.start';
 import { copyCellFiles } from './handler.copy';
 import { getParams } from './params';
 
+const { FILES, FILE } = routes.CELL.FS;
+
 /**
  * Routes for operating on a set of cell files.
  */
@@ -17,7 +19,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * GET: cell:foo:A1/fs
    */
-  router.get(routes.CELL.FS.BASE, async (req) => {
+  router.get(FILES.BASE, async (req) => {
     try {
       const host = req.host;
       const query = req.query as t.IReqQueryCellFsList;
@@ -49,7 +51,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    *        3. POST to the "upload complete" endpoint for each uploaded file to capture its meta-data and verify its state.
    *        4. POST to the "upload complete" endpoint for the cell.
    */
-  router.post(routes.CELL.FS.UPLOAD, async (req) => {
+  router.post(FILES.UPLOAD, async (req) => {
     try {
       const host = req.host;
       const query = req.query as t.IReqQueryCellFsUpload;
@@ -74,7 +76,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    *      and running any validation which is necessary.
    *
    */
-  router.post(routes.CELL.FS.UPLOADED, async (req) => {
+  router.post(FILES.UPLOADED, async (req) => {
     try {
       const host = req.host;
       const query = req.query as t.IReqQueryCellFsUploaded;
@@ -95,7 +97,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * DELETE file(s) from a cell.
    */
-  router.delete(routes.CELL.FS.BASE, async (req) => {
+  router.delete(FILES.BASE, async (req) => {
     try {
       const host = req.host;
       const query = req.query as t.IReqQueryCellFsDelete;
@@ -115,7 +117,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * POST copy file(s) between cells.
    */
-  router.post(routes.CELL.FS.COPY, async (req) => {
+  router.post(FILES.COPY, async (req) => {
     try {
       const host = req.host;
       const query = req.query as t.IReqQueryCellFsCopy;

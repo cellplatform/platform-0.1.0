@@ -69,5 +69,7 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
 
   const host = 'localhost';
   const args = { host, hot: true, stats: false };
-  new DevServer(compiler, args).listen(port, host, () => logger.clear());
+  new DevServer(compiler, args).listen(port, host, () => {
+    logger.clear();
+  });
 };

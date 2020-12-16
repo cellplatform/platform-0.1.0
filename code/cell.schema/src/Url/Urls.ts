@@ -238,11 +238,11 @@ export class Urls implements t.IUrls {
        */
       file: {
         toString() {
-          return `/cell:${ns}:${key}/file/`;
+          return `/cell:${ns}:${key}/fs/`;
         },
 
         /**
-         * Example: /cell:foo:A1/file/kitten.png
+         * Example: /cell:foo:A1/fs/kitten.png
          */
         byName(filename: string) {
           type Q = t.IReqQueryCellFileDownloadByName;
@@ -250,7 +250,7 @@ export class Urls implements t.IUrls {
           if (!filename) {
             throw new Error(`Filename not provided.`);
           }
-          return toUrl<Q>(`/cell:${ns}:${key}/file/${filename}`);
+          return toUrl<Q>(`/cell:${ns}:${key}/fs/${filename}`);
         },
 
         /**

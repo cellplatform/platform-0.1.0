@@ -28,7 +28,7 @@ export async function rewriteHtmlPaths(args: {
   const urls = Schema.urls(host);
   const cellUrls = urls.cell(args.cellUri);
   const cell: t.IDbModelCell = await models.Cell.create({ db, uri: cellUri }).ready;
-  const fileLinks = Schema.file.links.toList(cell.props.links);
+  const fileLinks = Schema.File.Links.toList(cell.props.links);
 
   // Lookup the link-reference to the HTML file.
   const fileid = args.filename.split('.')[0] || '';

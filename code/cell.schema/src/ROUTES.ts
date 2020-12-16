@@ -39,15 +39,17 @@ export const ROUTES = {
   CELL: {
     NS: `/cell${KEY.NS}(/?)`, // NB: Redirect to namespace.
     INFO: `/cell${KEY.NS}\\:${KEY.CELL}(/?)`,
-    FILE: {
-      BY_NAME: `/cell${KEY.NS}\\:${KEY.CELL}/file/${KEY.FILENAME}`,
-      BY_FILE_URI: `/cell${KEY.NS}\\:${KEY.CELL}/file\\:${KEY.FILENAME}`,
-    },
     FS: {
-      BASE: `/cell${KEY.NS}\\:${KEY.CELL}/fs(/?)`,
-      UPLOAD: `/cell${KEY.NS}\\:${KEY.CELL}/fs\\:upload`,
-      UPLOADED: `/cell${KEY.NS}\\:${KEY.CELL}/fs\\:uploaded`,
-      COPY: `/cell${KEY.NS}\\:${KEY.CELL}/fs\\:copy`,
+      FILE: {
+        BY_NAME: `/cell${KEY.NS}\\:${KEY.CELL}/fs/${KEY.FILENAME}`,
+        BY_FILE_URI: `/cell${KEY.NS}\\:${KEY.CELL}/file\\:${KEY.FILENAME}`,
+      },
+      FILES: {
+        BASE: `/cell${KEY.NS}\\:${KEY.CELL}/fs`, // NB: No forward-slash (see file-by-name).
+        UPLOAD: `/cell${KEY.NS}\\:${KEY.CELL}/fs\\:upload`,
+        UPLOADED: `/cell${KEY.NS}\\:${KEY.CELL}/fs\\:uploaded`,
+        COPY: `/cell${KEY.NS}\\:${KEY.CELL}/fs\\:copy`,
+      },
     },
   },
   ROW: {

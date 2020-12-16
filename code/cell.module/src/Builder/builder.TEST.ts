@@ -207,6 +207,22 @@ const create = () => {
 };
 
 describe('Builder', () => {
+  it('isBuilder', () => {
+    const test = (input: any, expected: boolean) => {
+      expect(Builder.isBuilder(input)).to.eql(expected);
+    };
+    test(undefined, false);
+    test('', false);
+    test(null, false);
+    test(123, false);
+    test([1, 2, 3], false);
+    test({ foo: 123 }, false);
+    test(StateObject.create({ foo: 123 }), false);
+
+    const { builder } = create();
+    test(builder, true);
+  });
+
   describe('base', () => {
     it('returns builder', () => {
       const { builder } = create();

@@ -1,7 +1,7 @@
 import { sortBy, sortWith, ascend, descend, prop, uniq, uniqBy, pipe, groupBy, clone } from 'ramda';
 export const R = { sortBy, sortWith, ascend, descend, prop, uniq, uniqBy, pipe, groupBy, clone };
 
-export { rx, id, defaultValue, value, time } from '@platform/util.value';
+export { rx, id, defaultValue, value, time, deleteUndefined } from '@platform/util.value';
 
 export { Builder } from '@platform/cell.module';
 export { StateObject } from '@platform/state';

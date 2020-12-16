@@ -45,8 +45,8 @@ export function urls(host: string) {
               .filter(({ value }) => Schema.Uri.is.file(value))
               .reduce((acc, next) => {
                 const { key, value } = next;
-                const { path, ext } = Schema.file.links.parseKey(key);
-                const link = Schema.file.links.parse(key, value);
+                const { path, ext } = Schema.File.Links.parseKey(key);
+                const link = Schema.File.Links.parse(key, value);
                 const uri = link.uri.toString();
                 const hash = link.query.hash;
 

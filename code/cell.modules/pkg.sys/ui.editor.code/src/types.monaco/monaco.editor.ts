@@ -1,5 +1,8 @@
 import { t } from './common';
 
+/**
+ * https://microsoft.github.io/monaco-editor/api/modules/monaco.editor.html
+ */
 export type IMonacoEditor = {
   defineTheme(themeName: string, themeData: IMonacoStandaloneThemeData): void;
 };

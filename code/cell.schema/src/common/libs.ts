@@ -7,20 +7,9 @@ export const deleteUndefined = value.deleteUndefined;
 export const cuid = id.cuid;
 export const slug = id.shortid;
 
-import { IFs } from '@platform/fs.types';
-export { IFs };
-
-import { Mime } from '@platform/util.mimetype';
-export { Mime };
-
-import { MemoryCache } from '@platform/cache/lib/MemoryCache';
-export { MemoryCache };
-
-import { wildcard } from '@platform/util.string/lib/wildcard';
-export { wildcard };
-
-import { queryString } from '@platform/util.string/lib/queryString';
-export { queryString };
-
-import { coord } from '@platform/cell.coord';
-export { coord };
+export { IFs } from '@platform/fs.types';
+export { Mime } from '@platform/util.mimetype';
+export { MemoryCache } from '@platform/cache/lib/MemoryCache';
+export { wildcard } from '@platform/util.string/lib/wildcard';
+export { queryString } from '@platform/util.string/lib/queryString';
+export { coord } from '@platform/cell.coord';
