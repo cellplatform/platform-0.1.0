@@ -303,7 +303,7 @@ function runProcessors(args: {
   file: ITemplateFile;
   events$: Subject<ITemplateEvent>;
 }) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise<void>(async (resolve, reject) => {
     const { processors, file, variables } = args;
     let isResolved = false;
 

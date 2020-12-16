@@ -5,7 +5,7 @@ export { fs } from '@platform/fs';
  * Better parameter order for setTimeout returning a promise.
  */
 export const delay = (msecs: number, callback: () => any) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     setTimeout(() => {
       try {
         if (callback) {

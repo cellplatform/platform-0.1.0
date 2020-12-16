@@ -56,7 +56,7 @@ export function create(
       const port = PORT.internal;
 
       const stop: t.IMicroService['stop'] = () => {
-        return new Promise(async (resolve, reject) => {
+        return new Promise<void>(async (resolve, reject) => {
           if (!service.isRunning) {
             return resolve(); // Already stopped.
           } else {

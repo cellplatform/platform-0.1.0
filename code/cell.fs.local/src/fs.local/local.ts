@@ -28,7 +28,7 @@ export function init(args: { dir: string; fs: t.IFs }): t.IFsLocal {
         // NB: A local simulated end-point of an AWS/S3 "presignedPost" URL.
         const args = options as t.S3SignedPostOptions;
         const key = path.resolve({ uri, dir });
-        const mime = args.contentType || Schema.mime.toType(key, 'application/octet-stream');
+        const mime = args.contentType || Schema.Mime.toType(key, 'application/octet-stream');
         return {
           path: Schema.Urls.routes.LOCAL.FS,
           props: { 'content-type': mime, key },

@@ -189,6 +189,6 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
    * Display string representation of the cell.
    */
   public toString() {
-    Schema.uri.create.cell(this.ns, this.key);
+    Schema.Uri.create.cell(this.ns, this.key);
   }
 }

@@ -114,7 +114,10 @@ describe('ActionBuilder', () => {
       expect(model.state.name).to.eql('zoo');
 
       builder.name(null);
-      expect(model.state.name).to.eql(DEFAULT.ACTIONS.name);
+      expect(model.state.name).to.eql('');
+
+      builder.name('  ');
+      expect(model.state.name).to.eql('');
     });
 
     describe('render', () => {

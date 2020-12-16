@@ -207,7 +207,7 @@ export class WebAuth {
 
   public renewTokens(options: { silent?: boolean } = {}) {
     this.throwIfDisposed('renewTokens');
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this._auth0.checkSession({}, async (err, auth) => {
         if (err) {
           this.logout(options);
@@ -268,7 +268,7 @@ export class WebAuth {
 
   private parseHash(options: { silent?: boolean } = {}) {
     this.throwIfDisposed('parseHash');
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this._auth0.parseHash(async (err, auth) => {
         if (err) {
           this.logout();

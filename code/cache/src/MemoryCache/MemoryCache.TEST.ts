@@ -214,7 +214,7 @@ describe('MemoryCache', () => {
  */
 
 async function wait(msecs: number) {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     setTimeout(() => resolve(), msecs);
   });
 }

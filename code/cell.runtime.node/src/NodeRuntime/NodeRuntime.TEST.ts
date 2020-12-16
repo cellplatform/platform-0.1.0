@@ -31,6 +31,6 @@ describe('NodeRuntime', () => {
     const bundle: t.RuntimeBundleOrigin = { host: 'domain.com', uri: 'cell:foo:A1', dir: 'v1' };
     const urls = NodeRuntime.urls(bundle);
     expect(urls.files).to.eql('https://domain.com/cell:foo:A1/fs?filter=v1/**');
-    expect(urls.manifest).to.eql('https://domain.com/cell:foo:A1/file/v1/index.json');
+    expect(urls.manifest).to.eql('https://domain.com/cell:foo:A1/fs/v1/index.json');
   });
 });

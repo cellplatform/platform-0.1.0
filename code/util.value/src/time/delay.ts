@@ -16,7 +16,7 @@ export function delay<T = any>(msecs: number, callback?: () => T): t.TimeDelayPr
   };
 
   // Start the timeout within a promise.
-  const promise: any = new Promise((resolve, reject) => {
+  const promise: any = new Promise<void>((resolve, reject) => {
     resolver = resolve;
     timeout = setTimeout(() => {
       try {
