@@ -1,21 +1,22 @@
 import React, { useRef } from 'react';
 
 import { constants, css, defaultValue, t, toActionPanelModel } from '../../common';
-import { ActionItemClickEventHandler, ActionPanelItem } from './View.Item';
-import { ActionPanelTitle } from './View.Title';
+import { Item } from './View.Item';
+import { Title } from './View.Title';
 
 export type ViewProps = t.ActionPanelProps & {
   actions?: t.ActionModelBuilder<any> | t.ActionModel<any> | t.ActionModelState<any>;
 };
 
 export const View: React.FC<ViewProps> = (props) => {
-  const model = toActionPanelModel(props.actions) || constants.DEFAULT.ACTIONS;
   const ctxRef = useRef();
+  const model = toActionPanelModel(props.actions) || constants.DEFAULT.ACTIONS;
+  const scrollable = defaultValue(props.scrollable, true);
 
   const styles = {
     base: css({
-      Scroll: true,
-      position: 'relative',
+      Scroll: scrollable,
+      overflowY: scrollable ? 'scroll' : 'hidden',
       userSelect: 'none',
       fontFamily: constants.FONT.SANS,
     }),
@@ -23,7 +24,7 @@ export const View: React.FC<ViewProps> = (props) => {
     list: css({}),
   };
 
-  const onItemClick: ActionItemClickEventHandler = (e) => {
+  const onItemClick: t.ActionItemClickEventHandler = (e) => {
     if (model.getContext) {
       const prev = ctxRef.current;
       ctxRef.current = model.getContext(prev);
@@ -33,17 +34,15 @@ export const View: React.FC<ViewProps> = (props) => {
     }
   };
 
-  const elTitle = defaultValue(props.showTitle, true) && model.name && (
-    <ActionPanelTitle>{model.name}</ActionPanelTitle>
-  );
+  const elTitle = model.name && <Title>{model.name}</Title>;
 
   return (
-    <div {...css(styles.base, props.style)}>
+    <div {...css(styles.base, props.style)} className={'foo'}>
       <div {...styles.body}>
         {elTitle}
         <div {...styles.list}>
           {model.items.map((item, i) => {
-            return <ActionPanelItem key={i} model={item} onClick={onItemClick} />;
+            return <Item key={i} model={item} onClick={onItemClick} />;
           })}
         </div>
       </div>

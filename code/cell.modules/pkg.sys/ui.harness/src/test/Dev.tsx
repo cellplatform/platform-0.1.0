@@ -14,12 +14,17 @@ const LOREM =
 
 const model = StateObject.create<M>({ text: LOREM });
 
-const actions = Actions<Ctx>()
+const actions = Actions<Ctx>('My Title')
   .context((prev) => prev || { model })
   .button('foo', (ctx) => {
     ctx.model.change((draft) => (draft.text = draft.text === 'hello' ? LOREM : 'hello'));
   })
   .button((config) => config.label(LOREM))
+  .button((config) => config.description(LOREM))
+  .button((config) => config.description(LOREM))
+  .button((config) => config.description(LOREM))
+  .button((config) => config.description(LOREM))
+  .button((config) => config.description(LOREM))
   .button((config) => config.description(LOREM));
 
 export const Dev: React.FC = () => {
