@@ -1,6 +1,6 @@
 const ctx: ServiceWorker = self as any;
 
-import { BundleManifest } from '@platform/cell.types/lib/types.Runtime';
+import { BundleManifest } from '@platform/cell.types/lib/types.Compiler';
 
 (async () => {
   return; // TEMP 🐷

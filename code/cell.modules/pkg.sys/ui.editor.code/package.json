@@ -2,7 +2,7 @@
   "name": "sys.ui.editor.code",
   "version": "0.0.46",
   "compiler": {
-    "port": 3003
+    "port": 3033
   },
   "scripts": {
     "build": "ts build --no-esm $@",
