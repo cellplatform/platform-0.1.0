@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Builder, t } from '../../common';
+import { Builder, t, defaultValue } from '../../common';
 import { View as ActionPanel } from '../../components/ActionPanel/View';
 
 const format = Builder.format;
@@ -51,6 +51,29 @@ export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethod
       throw new Error('Context factory function not provided');
     }
     args.model.change((draft) => (draft.getContext = value));
+  },
+
+  /**
+   * Merges in another Action model's items.
+   */
+  merge(args) {
+    const mergeBuilder = args.params[0] as t.ActionModelBuilder<any>;
+    const options = (args.params[1] || {}) as t.ActionAddOptions;
+    const insertAt = defaultValue(options.insertAt, 'end');
+
+    args.model.change((draft) => {
+      const obj = mergeBuilder.toObject();
+      if (insertAt === 'start') {
+        draft.items = [...obj.items, ...draft.items];
+      }
+      if (insertAt === 'end') {
+        draft.items = [...draft.items, ...obj.items];
+      }
+
+      if (!draft.getContext && obj.getContext) {
+        draft.getContext = obj.getContext;
+      }
+    });
   },
 
   /**

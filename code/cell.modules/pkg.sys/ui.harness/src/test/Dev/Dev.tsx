@@ -2,38 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, StateObject, t } from '../common';
-import { Actions } from '..';
-import { Host } from '../components/Host';
-
-type Ctx = { model: t.IStateObjectWritable<M> };
-type M = { text?: string };
-
-const LOREM =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
-
-const model = StateObject.create<M>({ text: LOREM });
-
-const change = (model: Ctx['model']) => {
-  model.change((draft) => (draft.text = draft.text === 'hello' ? LOREM : 'hello'));
-};
-
-const actions = Actions<Ctx>()
-  .context((prev) => prev || { model })
-  .button('foo', (ctx) => change(ctx.model))
-  .button((e) => e.label(LOREM))
-  .button((e) => e.description(LOREM))
-  .group('Group 1', (e) =>
-    e
-      .button('change text', (ctx) => change(ctx.model))
-      .button((config) => config.label('hello'))
-      .button('console.log', (ctx) => console.log('hello', ctx)),
-  )
-  .group((e) => e.name('Group 2'))
-  .group('Group 3');
+import { color, css } from '../../common';
+import { Host } from '../../components/Host';
+import { actions } from './Dev.actions';
 
 export const Dev: React.FC = () => {
   const [count, setCount] = useState<number>(0);
+  const model = actions.toContext().model;
+  const position = model.state.position;
 
   useEffect(() => {
     const dispose$ = new Subject();
@@ -79,6 +55,7 @@ export const Dev: React.FC = () => {
               border: -0.1,
               cropmarks: -0.2,
               background: 1,
+              position: position ? { absolute: position } : undefined,
               // label: {
               //   topLeft: 'top-left',
               //   topRight: 'top-right',

@@ -13,9 +13,14 @@ export type ActionModelMethods<Ctx> = ActionModelInputMethods<Ctx> & {
   clone(ctx?: t.ActionGetContext<Ctx>): B<Ctx>;
   render(props?: t.ActionPanelProps): JSX.Element;
 
+  merge(actions: ActionModelBuilder<any>, options?: ActionAddOptions): B<Ctx>;
   context(ctx: t.ActionGetContext<Ctx>): B<Ctx>;
   group(name: string, config?: ActionGroupConfig<Ctx>): B<Ctx>;
   group(config: ActionGroupConfig<Ctx>): B<Ctx>;
+};
+
+export type ActionAddOptions = {
+  insertAt?: 'end' | 'start';
 };
 
 export type ActionModelInputMethods<Ctx> = {

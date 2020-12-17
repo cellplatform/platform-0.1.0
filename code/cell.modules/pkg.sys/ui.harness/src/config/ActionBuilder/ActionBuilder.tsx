@@ -1,5 +1,5 @@
 import { Builder, DEFAULT, StateObject, t } from '../../common';
-import { handlers } from './ActionBuilder.handlers';
+import { handlers } from './handlers';
 
 /**
  * Action builder factory.
