@@ -8,15 +8,15 @@ type Ctx = { count: number };
 type M = t.ActionModel<Ctx>;
 
 function create() {
-  const model = ActionBuilder.model<Ctx>('foo');
+  const model = ActionBuilder.model<Ctx>();
   const builder = ActionBuilder.builder<Ctx>(model);
   return { model, builder };
 }
 
 describe('ActionBuilder', () => {
-  describe('create: .model()', () => {
+  describe('ActionBuilder.model()', () => {
     it('model', () => {
-      const model = ActionBuilder.model('  foo  ');
+      const model = ActionBuilder.model();
       expect(model.state).to.eql(DEFAULT.ACTIONS);
     });
 
@@ -26,7 +26,7 @@ describe('ActionBuilder', () => {
     });
   });
 
-  describe('create: .builder()', () => {
+  describe('ActionBuilder.builder()', () => {
     it('from no params', () => {
       const builder = ActionBuilder.builder();
       expect(builder.toObject()).to.eql(DEFAULT.ACTIONS);
@@ -58,266 +58,268 @@ describe('ActionBuilder', () => {
     });
   });
 
-  describe('toModel', () => {
-    it('from model (no change)', () => {
-      const input = { ...DEFAULT.ACTIONS };
-      expect(ActionBuilder.toModel(input)).to.equal(input);
-    });
+  describe('builder.render()', () => {
+    it('JSX element', () => {
+      const { builder, model } = create();
+      const el = builder
+        .context(() => ({ count: 123 }))
+        .button('foo', () => null)
+        .render();
 
-    it('from state-object', () => {
-      const input = StateObject.create<M>(DEFAULT.ACTIONS);
-      const res = ActionBuilder.toModel(input);
-      expect(res).to.eql(DEFAULT.ACTIONS);
-      expect(StateObject.isStateObject(input)).to.eql(true);
-      expect(StateObject.isStateObject(res)).to.eql(false);
-    });
+      expect(React.isValidElement(el)).to.eql(true);
+      expect(el.props.model.items).to.eql(model.state.items);
 
-    it('from builder', () => {
-      const { model, builder } = create();
-      const res = ActionBuilder.toModel(builder);
-      expect(res).to.eql(model.state);
-    });
-
-    it('not convertable', () => {
-      const test = (input?: any) => {
-        expect(ActionBuilder.toModel(input)).to.eql(undefined);
-      };
-      test();
-      test(null);
-      test('');
-      test(123);
-      test([1, 2, 3]);
+      const ctx = builder.toContext();
+      expect(ctx).to.eql({ count: 123 });
+      expect(el.props.getContext()).to.eql(ctx);
     });
   });
 
-  describe('methods', () => {
-    describe('render', () => {
-      it('produces JSX element', () => {
-        const { builder, model } = create();
-        const el = builder.button('foo', () => null).render();
+  describe('builder.context()', () => {
+    it('assign: .context(...)', () => {
+      const { model, builder } = create();
+      expect(model.state.getContext).to.eql(undefined);
 
-        expect(React.isValidElement(el)).to.eql(true);
+      const fn1: t.ActionGetContext<Ctx> = () => ({ count: 123 });
+      const fn2: t.ActionGetContext<Ctx> = () => ({ count: 456 });
 
-        expect(el.props.actions.items).to.eql(model.state.items);
-      });
+      builder.context(fn1);
+      expect(model.state.getContext).to.eql(fn1);
+
+      // Replace with another context function.
+      builder.context(fn2);
+      expect(model.state.getContext).to.eql(fn2);
     });
 
-    describe('context', () => {
-      it('set', () => {
-        const { model, builder } = create();
-        expect(model.state.getContext).to.eql(undefined);
+    it('throw if factory function not provided', () => {
+      const { builder } = create();
+      const fn = () => builder.context('foo' as any);
+      expect(fn).to.throw(/Context factory function not provided/);
+    });
+  });
 
-        const getContext: t.ActionGetContext<Ctx> = () => ({ count: 123 });
-        builder.context(getContext);
-        expect(model.state.getContext).to.eql(getContext);
-      });
-
-      it('throw if function not provided', () => {
-        const { builder } = create();
-        const fn = () => builder.context('foo' as any);
-        expect(fn).to.throw(/Context factory function not provided/);
-      });
+  describe('builder.ctx', () => {
+    it('no factory: null', () => {
+      const { builder } = create();
+      expect(builder.toContext()).to.eql(null);
     });
 
-    describe('clone', () => {
-      it('same context', () => {
-        const { builder } = create();
-        const fn: t.ActionGetContext<Ctx> = () => ({ count: 123 });
-        const clone = builder.context(fn).clone();
-        expect(clone).to.not.equal(builder); // NB: Different instance.
-        expect(clone.toObject().getContext).to.eql(fn);
+    it('read property and store on model (prev)', () => {
+      const { builder, model } = create();
+      let count = 0;
+      let prev: Ctx | null = null;
+      builder.context((input) => {
+        prev = input;
+        return { count };
       });
 
-      it('different context', () => {
-        const { builder } = create();
-        const fn1: t.ActionGetContext<Ctx> = () => ({ count: 123 });
-        const fn2: t.ActionGetContext<Ctx> = () => ({ count: 456 });
-        const clone = builder.context(fn1).clone(fn2);
-        expect(clone).to.not.equal(builder); // NB: Different instance.
-        expect(clone.toObject().getContext).to.eql(fn2);
-      });
+      expect(builder.toContext()).to.eql({ count: 0 });
+      expect(model.state.ctx).to.eql({ count: 0 });
+      expect(prev).to.eql(null);
+
+      count = 123;
+      expect(builder.toContext()).to.eql({ count: 123 });
+      expect(model.state.ctx).to.eql({ count: 123 });
+      expect(prev).to.eql({ count: 0 });
+    });
+  });
+
+  describe('builder.clone()', () => {
+    it('same context', () => {
+      const { builder } = create();
+      const fn: t.ActionGetContext<Ctx> = () => ({ count: 123 });
+      const clone = builder.context(fn).clone();
+      expect(clone).to.not.equal(builder); // NB: Different instance.
+      expect(clone.toObject().getContext).to.eql(fn);
     });
 
-    describe('group', () => {
-      it('param: "name"', () => {
-        const { builder, model } = create();
-        expect(model.state.items).to.eql([]);
+    it('different context', () => {
+      const { builder } = create();
+      const fn1: t.ActionGetContext<Ctx> = () => ({ count: 123 });
+      const fn2: t.ActionGetContext<Ctx> = () => ({ count: 456 });
+      const clone = builder.context(fn1).clone(fn2);
+      expect(clone).to.not.equal(builder); // NB: Different instance.
+      expect(clone.toObject().getContext).to.eql(fn2);
+    });
+  });
 
-        builder.group('Group 1').group('Group 2', (e) => e.name('renamed'));
+  describe('builder.group()', () => {
+    it('param: "name"', () => {
+      const { builder, model } = create();
+      expect(model.state.items).to.eql([]);
 
-        const items = model.state.items;
-        expect(items.length).to.eql(2);
+      builder.group('Group 1').group('Group 2', (e) => e.name('renamed'));
 
-        const group1 = items[0] as t.ActionItemGroup;
-        const group2 = items[1] as t.ActionItemGroup;
+      const items = model.state.items;
+      expect(items.length).to.eql(2);
 
-        expect(group1.name).to.eql('Group 1');
-        expect(group2.name).to.eql('renamed');
-      });
+      const group1 = items[0] as t.ActionItemGroup;
+      const group2 = items[1] as t.ActionItemGroup;
 
-      it('config: "Unnamed"', () => {
-        const { builder, model } = create();
-        expect(model.state.items).to.eql([]);
-
-        builder.group((e) => null).group((e) => null);
-
-        const items = model.state.items;
-        expect(items.length).to.eql(2);
-
-        const test = (i: number) => {
-          const group = items[i] as t.ActionItemGroup;
-          expect(items[i].type).to.eql('group');
-          expect(group.name).to.eql('Unnamed');
-          expect(group.items).to.eql([]);
-        };
-        test(0);
-        test(1);
-      });
-
-      it('config.name', () => {
-        const { builder, model } = create();
-        builder.group((e) => e.name('  Hello  '));
-
-        const items = model.state.items;
-        expect(items.length).to.eql(1);
-
-        const group = items[0] as t.ActionItemGroup;
-        expect(group.type).to.eql('group');
-        expect(group.name).to.eql('Hello');
-      });
-
-      it('group: buttons', () => {
-        const { builder, model } = create();
-
-        const handler1 = () => null;
-        const handler2 = () => null;
-
-        builder.group((e) =>
-          e
-            .button('One', handler1)
-            .button((config) => config.description('Hello').onClick(handler2)),
-        );
-
-        const items = model.state.items;
-        expect(items.length).to.eql(1);
-
-        const group = items[0] as t.ActionItemGroup;
-
-        expect(group.type).to.eql('group');
-        expect(group.items.length).to.eql(2);
-
-        const button1 = group.items[0] as t.ActionItemButton;
-        const button2 = group.items[1] as t.ActionItemButton;
-
-        expect(button1.type).to.eql('button');
-        expect(button2.type).to.eql('button');
-
-        expect(button1.label).to.eql('One');
-        expect(button2.label).to.eql('Unnamed');
-
-        expect(button1.description).to.eql(undefined);
-        expect(button2.description).to.eql('Hello');
-
-        expect(button1.onClick).to.eql(handler1);
-        expect(button2.onClick).to.eql(handler2);
-      });
+      expect(group1.name).to.eql('Group 1');
+      expect(group2.name).to.eql('renamed');
     });
 
-    describe('button', () => {
-      it('label, handler', () => {
-        const { builder, model } = create();
-        expect(model.state.items).to.eql([]);
+    it('config: "Unnamed"', () => {
+      const { builder, model } = create();
+      expect(model.state.items).to.eql([]);
 
-        const fn1: t.ActionHandler<any> = () => null;
-        const fn2: t.ActionHandler<any> = () => null;
-        builder.button('  foo  ', fn1).button('bar', fn1).button('foo', fn2);
+      builder.group((e) => null).group((e) => null);
 
-        const items = model.state.items;
-        expect(items.length).to.eql(3);
+      const items = model.state.items;
+      expect(items.length).to.eql(2);
 
-        const button1 = items[0] as t.ActionItemButton;
-        const button2 = items[1] as t.ActionItemButton;
-        const button3 = items[2] as t.ActionItemButton;
+      const test = (i: number) => {
+        const group = items[i] as t.ActionItemGroup;
+        expect(items[i].type).to.eql('group');
+        expect(group.name).to.eql('Unnamed');
+        expect(group.items).to.eql([]);
+      };
+      test(0);
+      test(1);
+    });
 
-        expect(button1.type).to.eql('button');
-        expect(button1.label).to.eql('foo');
-        expect(button1.onClick).to.eql(fn1);
+    it('config.name', () => {
+      const { builder, model } = create();
+      builder.group((e) => e.name('  Hello  '));
 
-        expect(button2.type).to.eql('button');
-        expect(button2.label).to.eql('bar');
-        expect(button2.onClick).to.eql(fn1);
+      const items = model.state.items;
+      expect(items.length).to.eql(1);
 
-        expect(button3.type).to.eql('button');
-        expect(button3.label).to.eql('foo');
-        expect(button3.onClick).to.eql(fn2);
-      });
+      const group = items[0] as t.ActionItemGroup;
+      expect(group.type).to.eql('group');
+      expect(group.name).to.eql('Hello');
+    });
 
-      it('label (no handler)', () => {
-        const { builder, model } = create();
+    it('group: buttons', () => {
+      const { builder, model } = create();
 
-        builder.button('foo');
+      const handler1 = () => null;
+      const handler2 = () => null;
 
-        const items = model.state.items;
-        expect(items.length).to.eql(1);
+      builder.group((e) =>
+        e.button('One', handler1).button((config) => config.description('Hello').onClick(handler2)),
+      );
 
-        const button = items[0] as t.ActionItemButton;
-        expect(button.label).to.eql('foo');
-        expect(button.onClick).to.eql(undefined);
-      });
+      const items = model.state.items;
+      expect(items.length).to.eql(1);
 
-      it('config', () => {
-        const { builder, model } = create();
-        expect(model.state.items).to.eql([]);
+      const group = items[0] as t.ActionItemGroup;
 
-        const fn: t.ActionHandler<any> = () => null;
-        builder.button((config) => config.label('foo').onClick(fn));
+      expect(group.type).to.eql('group');
+      expect(group.items.length).to.eql(2);
 
-        const items = model.state.items;
-        expect(items.length).to.eql(1);
-        expect(items[0].type).to.eql('button');
+      const button1 = group.items[0] as t.ActionItemButton;
+      const button2 = group.items[1] as t.ActionItemButton;
 
-        const button = items[0] as t.ActionItemButton;
-        expect(button.type).to.eql('button');
-        expect(button.onClick).to.eql(fn);
-      });
+      expect(button1.type).to.eql('button');
+      expect(button2.type).to.eql('button');
 
-      it('config: "Unnamed"', () => {
-        const { builder, model } = create();
-        expect(model.state.items).to.eql([]);
+      expect(button1.label).to.eql('One');
+      expect(button2.label).to.eql('Unnamed');
 
-        builder.button((config) => null);
+      expect(button1.description).to.eql(undefined);
+      expect(button2.description).to.eql('Hello');
 
-        const items = model.state.items;
-        const button = items[0] as t.ActionItemButton;
-        expect(button.type).to.eql('button');
-        expect(button.label).to.eql('Unnamed');
-      });
+      expect(button1.onClick).to.eql(handler1);
+      expect(button2.onClick).to.eql(handler2);
+    });
+  });
 
-      it('config: "Unnamed" (via empty value)', () => {
-        const { builder, model } = create();
-        expect(model.state.items).to.eql([]);
+  describe('builder.button()', () => {
+    it('label, handler', () => {
+      const { builder, model } = create();
+      expect(model.state.items).to.eql([]);
 
-        builder.button((config) => config.label('hello').label('  '));
+      const fn1: t.ActionHandler<any> = () => null;
+      const fn2: t.ActionHandler<any> = () => null;
+      builder.button('  foo  ', fn1).button('bar', fn1).button('foo', fn2);
 
-        const items = model.state.items;
-        const button = items[0] as t.ActionItemButton;
-        expect(button.type).to.eql('button');
-        expect(button.label).to.eql('Unnamed');
-      });
+      const items = model.state.items;
+      expect(items.length).to.eql(3);
 
-      it('config: description', () => {
-        const { builder, model } = create();
-        expect(model.state.items).to.eql([]);
+      const button1 = items[0] as t.ActionItemButton;
+      const button2 = items[1] as t.ActionItemButton;
+      const button3 = items[2] as t.ActionItemButton;
 
-        builder.button((config) => config.label('foo').description('   My description   '));
+      expect(button1.type).to.eql('button');
+      expect(button1.label).to.eql('foo');
+      expect(button1.onClick).to.eql(fn1);
 
-        const items = model.state.items;
-        expect(items.length).to.eql(1);
+      expect(button2.type).to.eql('button');
+      expect(button2.label).to.eql('bar');
+      expect(button2.onClick).to.eql(fn1);
 
-        const button = items[0] as t.ActionItemButton;
-        expect(button.type).to.eql('button');
-        expect(button.description).to.eql('My description');
-      });
+      expect(button3.type).to.eql('button');
+      expect(button3.label).to.eql('foo');
+      expect(button3.onClick).to.eql(fn2);
+    });
+
+    it('label (no handler)', () => {
+      const { builder, model } = create();
+
+      builder.button('foo');
+
+      const items = model.state.items;
+      expect(items.length).to.eql(1);
+
+      const button = items[0] as t.ActionItemButton;
+      expect(button.label).to.eql('foo');
+      expect(button.onClick).to.eql(undefined);
+    });
+
+    it('config', () => {
+      const { builder, model } = create();
+      expect(model.state.items).to.eql([]);
+
+      const fn: t.ActionHandler<any> = () => null;
+      builder.button((config) => config.label('foo').onClick(fn));
+
+      const items = model.state.items;
+      expect(items.length).to.eql(1);
+      expect(items[0].type).to.eql('button');
+
+      const button = items[0] as t.ActionItemButton;
+      expect(button.type).to.eql('button');
+      expect(button.onClick).to.eql(fn);
+    });
+
+    it('config: "Unnamed"', () => {
+      const { builder, model } = create();
+      expect(model.state.items).to.eql([]);
+
+      builder.button((config) => null);
+
+      const items = model.state.items;
+      const button = items[0] as t.ActionItemButton;
+      expect(button.type).to.eql('button');
+      expect(button.label).to.eql('Unnamed');
+    });
+
+    it('config: "Unnamed" (via empty value)', () => {
+      const { builder, model } = create();
+      expect(model.state.items).to.eql([]);
+
+      builder.button((config) => config.label('hello').label('  '));
+
+      const items = model.state.items;
+      const button = items[0] as t.ActionItemButton;
+      expect(button.type).to.eql('button');
+      expect(button.label).to.eql('Unnamed');
+    });
+
+    it('config: description', () => {
+      const { builder, model } = create();
+      expect(model.state.items).to.eql([]);
+
+      builder.button((config) => config.label('foo').description('   My description   '));
+
+      const items = model.state.items;
+      expect(items.length).to.eql(1);
+
+      const button = items[0] as t.ActionItemButton;
+      expect(button.type).to.eql('button');
+      expect(button.description).to.eql('My description');
     });
   });
 });

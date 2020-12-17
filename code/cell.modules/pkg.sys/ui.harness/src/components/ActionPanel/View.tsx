@@ -1,38 +1,35 @@
-import React, { useRef } from 'react';
+import React from 'react';
 
-import { constants, css, defaultValue, t, toActionPanelModel } from '../../common';
+import { constants, css, defaultValue, t } from '../../common';
 import { Group } from './View.Group';
 
 export type ViewProps = t.ActionPanelProps & {
-  actions?: t.ActionModelBuilder<any> | t.ActionModel<any> | t.ActionModelState<any>;
+  model: t.ActionModel<any>;
+  getContext?: () => any;
 };
 
 export const View: React.FC<ViewProps> = (props) => {
-  const ctxRef = useRef();
-  const model = toActionPanelModel(props.actions) || constants.DEFAULT.ACTIONS;
   const scrollable = defaultValue(props.scrollable, true);
+  const { model } = props;
 
   const styles = {
     base: css({
       Scroll: scrollable,
       overflowY: scrollable ? 'scroll' : 'hidden',
-      userSelect: 'none',
       fontFamily: constants.FONT.SANS,
+      userSelect: 'none',
     }),
   };
 
   const onItemClick: t.ActionItemClickEventHandler = (e) => {
-    if (model.getContext) {
-      const prev = ctxRef.current;
-      ctxRef.current = model.getContext(prev);
-    }
+    const ctx = props.getContext ? props.getContext() : undefined;
     if (e.model.type === 'button' && e.model.onClick) {
-      e.model.onClick(ctxRef.current);
+      e.model.onClick(ctx);
     }
   };
 
   return (
-    <div {...css(styles.base, props.style)} className={'foo'}>
+    <div {...css(styles.base, props.style)} className={'uih-ActionPanel'}>
       <Group items={model.items} onItemClick={onItemClick} />
     </div>
   );

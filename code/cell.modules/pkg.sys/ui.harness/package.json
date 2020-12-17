@@ -5,7 +5,7 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "compiler": {
-    "port": 3002
+    "port": 3032
   },
   "scripts": {
     "test": "ts test",

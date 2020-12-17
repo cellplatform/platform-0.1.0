@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Builder, DEFAULT, t } from '../common';
+import { Builder, t } from '../common';
 import { View as ActionPanel } from '../components/ActionPanel/View';
 
 const format = Builder.format;
@@ -14,6 +14,13 @@ export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethod
    * Convert builder to data model.
    */
   toObject: (args) => args.model.state,
+
+  /**
+   * Derives the current context ("ctx") for the builder.
+   */
+  toContext(args) {
+    return toContext(args.model);
+  },
 
   /**
    * Create a clone of the builder (optionally changing the context factory.)
@@ -30,7 +37,9 @@ export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethod
    * Render to an <ActionPanel>.
    */
   render(args) {
-    return <ActionPanel {...(args.params[0] || {})} actions={args.model.state} />;
+    const props = args.params[0] || {};
+    const getContext = () => args.builder.self.toContext();
+    return <ActionPanel {...props} model={args.model.state} getContext={getContext} />;
   },
 
   /**
@@ -120,4 +129,15 @@ function ButtonConfig(params: any[]) {
   }
 
   return { item, config };
+}
+
+function toContext<Ctx>(model: t.ActionModelState<Ctx>): Ctx | null {
+  const state = model.state;
+  if (state.getContext) {
+    const ctx = state.getContext(state.ctx || null);
+    model.change((draft) => (draft.ctx = ctx));
+    return ctx;
+  } else {
+    return null;
+  }
 }
