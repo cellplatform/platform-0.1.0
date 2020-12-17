@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { Builder, t } from '../common';
-import { View as ActionPanel } from '../components/ActionPanel/View';
+import { Builder, t } from '../../common';
+import { View as ActionPanel } from '../../components/ActionPanel/View';
 
 const format = Builder.format;
 

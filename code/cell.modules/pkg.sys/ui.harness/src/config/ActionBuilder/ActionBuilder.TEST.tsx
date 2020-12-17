@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { expect, DEFAULT, StateObject, t } from '../test';
+import { expect, DEFAULT, StateObject, t } from '../../test';
 import { ActionBuilder } from '.';
-import { ActionPanel } from '../components/ActionPanel';
+import { ActionPanel } from '../../components/ActionPanel';
 
 type Ctx = { count: number };
 type M = t.ActionModel<Ctx>;
