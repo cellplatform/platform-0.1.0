@@ -1,40 +1,68 @@
 import MonacoEditorCore, { EditorDidMount } from '@monaco-editor/react';
 import React, { useEffect, useRef } from 'react';
 
-import { constants, t } from '../../common';
-import { Monaco } from './api.Monaco';
+import { css, t, DEFAULT, CssValue, time } from '../../common';
+import { Monaco } from '../Monaco.api';
 
-const MONACO = constants.MONACO;
+export type MonacoEditorReadyEvent = { instance: E };
+export type MonacoEditorReadyEventHandler = (e: MonacoEditorReadyEvent) => void;
+
+type E = t.IMonacoStandaloneCodeEditor;
 
 export type MonacoEditorProps = {
   language?: string;
-  theme?: string;
+  theme?: t.CodeEditorTheme;
+  loading?: React.ReactNode;
+  style?: CssValue;
+  onReady?: MonacoEditorReadyEventHandler;
 };
 
 /**
  * Vanilla [Monaco] editor.
+ *
  * Refs:
  *    https://github.com/suren-atoyan/monaco-react
  *    https://microsoft.github.io/monaco-editor/api
+ *
  */
 export const MonacoEditor: React.FC<MonacoEditorProps> = (props = {}) => {
-  const { language = MONACO.LANGUAGE.TS, theme = MONACO.THEME } = props;
-  const editorRef = useRef<t.IMonacoStandaloneCodeEditor>();
+  const editorRef = useRef<E>();
+  const { language = DEFAULT.LANGUAGE.TS, theme = DEFAULT.THEME } = props;
 
-  const onMount: EditorDidMount = async (getEditorValue, editor) => {
-    editorRef.current = editor;
+  const onMount: EditorDidMount = async (getEditorValue, instance) => {
+    editorRef.current = instance;
+    time.delay(0, () => {
+      // NB: Wait for tick to ensure any DOM manipulation via API is applied.
+      if (props.onReady) {
+        props.onReady({ instance });
+      }
+    });
   };
 
   useEffect(() => {
-    // Ensure the (singleton) API is initialized and configured.
-    Monaco.singleton();
-
-    return () => {
-      // Cleanup.
-    };
+    Monaco.singleton(); // Ensure the (singleton) API is initialized and configured.
   });
 
-  return <MonacoEditorCore language={language} theme={theme} editorDidMount={onMount} />;
+  const styles = {
+    base: css({ Absolute: 0 }),
+  };
+
+  return (
+    <div {...css(styles.base, props.style)}>
+      <MonacoEditorCore
+        language={language}
+        theme={theme}
+        editorDidMount={onMount}
+        loading={props.loading}
+        options={{
+          minimap: { enabled: true },
+        }}
+      />
+    </div>
+  );
 };
 
+/**
+ * Default export.
+ */
 export default MonacoEditor;

@@ -72,7 +72,7 @@ export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethod
 
       if (!draft.getContext && obj.getContext) {
         draft.getContext = obj.getContext;
-      }
+      }   
     });
   },
 

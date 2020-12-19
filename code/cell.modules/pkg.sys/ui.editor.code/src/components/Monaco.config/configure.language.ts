@@ -13,7 +13,7 @@ import { t } from '../../common';
 /**
  * Configure language (typescript) settings of the IDE.
  */
-export async function language(api: t.IMonacoSingleton) {
+export async function registerLanguage(api: t.IMonacoSingleton) {
   const ts = api.monaco.languages.typescript;
 
   /**
@@ -25,11 +25,12 @@ export async function language(api: t.IMonacoSingleton) {
     noLib: true,
     allowNonTsExtensions: true,
     target: ts.ScriptTarget.ES2015, // NB: "ES6".
+    alwaysStrict: true,
   });
 
   await Promise.all([
-    api.lib.loadDefs('lib.es.d.ts'),
-    api.lib.loadDefs('lib.cell.d.ts'), // TODO 🐷 - this needs updating to: [Runtime/types.inner.env].
+    api.libs.loadDefs('lib.es.d.ts'),
+    // api.libs.loadDefs('lib.cell.d.ts'), // TODO 🐷 - this needs updating to: [Runtime/types.inner.env].
     //
   ]);
 }

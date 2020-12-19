@@ -5,6 +5,7 @@
     "port": 3033
   },
   "scripts": {
+    "test": "ts test $@",
     "build": "ts build --no-esm $@",
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",

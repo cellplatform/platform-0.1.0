@@ -19,7 +19,6 @@ export const ItemButton: React.FC<ItemButtonProps> = (props) => {
   const styles = {
     base: css({
       position: 'relative',
-      borderBottom: `dashed 1px ${color.format(-0.1)}`,
       boxSizing: 'border-box',
       color: COLORS.DARK,
     }),

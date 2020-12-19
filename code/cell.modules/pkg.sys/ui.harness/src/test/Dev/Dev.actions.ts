@@ -16,8 +16,12 @@ const change = (model: Ctx['model']) => {
   model.change((draft) => (draft.text = draft.text === 'hello' ? LOREM : 'hello'));
 };
 
+/**
+ * Actions
+ */
 export const actions = Actions<Ctx>()
   .context((prev) => prev || { model, change: model.change })
+  .group('foo')
   .button('foo', (ctx) => change(ctx.model))
   .button((e) => e.label(LOREM))
   .button((e) => e.description(LOREM))

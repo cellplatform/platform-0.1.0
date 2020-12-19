@@ -26,6 +26,7 @@ export type IMonacoCompilerOptions = {
   noLib: boolean;
   allowNonTsExtensions: boolean;
   target: IMonacoScriptTarget[keyof IMonacoScriptTarget];
+  alwaysStrict?: boolean;
 };
 
 /**
