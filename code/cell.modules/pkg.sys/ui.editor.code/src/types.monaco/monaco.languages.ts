@@ -14,8 +14,12 @@ export type IMonacoLanguageTypescript = {
   ScriptTarget: IMonacoScriptTarget;
 };
 
+/**
+ * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.typescript.languageservicedefaults.html
+ */
 export type IMonacoLanguageServiceDefaults = {
   setCompilerOptions(options: IMonacoCompilerOptions): void;
+  setDiagnosticsOptions(options: IMonacoDiagnosticOptions): void;
   addExtraLib(content: string, filePath?: string): t.IDisposable;
 };
 
@@ -27,6 +31,17 @@ export type IMonacoCompilerOptions = {
   allowNonTsExtensions: boolean;
   target: IMonacoScriptTarget[keyof IMonacoScriptTarget];
   alwaysStrict?: boolean;
+  isolatedModules?: boolean;
+};
+
+/**
+ * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.typescript.diagnosticsoptions.html
+ */
+export type IMonacoDiagnosticOptions = {
+  diagnosticCodesToIgnore?: number[];
+  noSemanticValidation?: boolean;
+  noSuggestionDiagnostics?: boolean;
+  noSyntaxValidation?: boolean;
 };
 
 /**

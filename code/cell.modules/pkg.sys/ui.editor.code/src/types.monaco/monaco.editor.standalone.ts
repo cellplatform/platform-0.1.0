@@ -1,6 +1,6 @@
 import { t } from './common';
 
-export type D = t.IDisposable;
+type D = t.IDisposable;
 
 /**
  * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html
@@ -10,6 +10,9 @@ export type IMonacoStandaloneCodeEditor = {
   getValue(options?: { lineEnding?: string; preserveBOM?: boolean }): string;
   setValue(newValue: string): void;
 
+  getModel(): t.IMonacoTextModel;
+  setModel(model: t.IMonacoTextModel | null): void;
+
   // Methods.
   focus(): void;
 
@@ -17,6 +20,10 @@ export type IMonacoStandaloneCodeEditor = {
   onDidChangeModelContent(listener: (e: IMonacoModelContentChangedEvent) => void): D;
   onDidChangeCursorPosition(listener: (e: IMonacoCursorPositionChangedEvent) => void): D;
   onDidChangeCursorSelection(listener: (e: IMonacoCursorSelectionChangedEvent) => void): void;
+  onDidBlurEditorText(listener: () => void): void;
+  onDidBlurEditorWidget(listener: () => void): void;
+  onDidFocusEditorText(listener: () => void): void;
+  onDidFocusEditorWidget(listener: () => void): void;
 };
 
 /**
@@ -30,6 +37,7 @@ export type IMonacoModelContentChangedEvent = {
   isUndoing: boolean;
   versionId: number;
 };
+
 export type IMonacoModelContentChange = {
   range: t.IMonacoRange;
   rangeLength: number;

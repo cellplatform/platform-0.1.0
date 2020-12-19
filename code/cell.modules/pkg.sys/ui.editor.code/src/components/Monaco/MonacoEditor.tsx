@@ -1,16 +1,16 @@
 import MonacoEditorCore, { EditorDidMount } from '@monaco-editor/react';
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 
-import { css, t, DEFAULT, CssValue, time } from '../../common';
+import { css, CssValue, DEFAULT, t } from '../../common';
 import { Monaco } from '../Monaco.api';
-
-export type MonacoEditorReadyEvent = { instance: E };
-export type MonacoEditorReadyEventHandler = (e: MonacoEditorReadyEvent) => void;
 
 type E = t.IMonacoStandaloneCodeEditor;
 
+export type MonacoEditorReadyEvent = { instance: E; singleton: t.IMonacoSingleton };
+export type MonacoEditorReadyEventHandler = (e: MonacoEditorReadyEvent) => void;
+
 export type MonacoEditorProps = {
-  language?: string;
+  language?: t.CodeEditorLanguage;
   theme?: t.CodeEditorTheme;
   loading?: React.ReactNode;
   style?: CssValue;
@@ -18,7 +18,7 @@ export type MonacoEditorProps = {
 };
 
 /**
- * Vanilla [Monaco] editor.
+ * Minimal wrapper around a vanilla [Monaco] editor.
  *
  * Refs:
  *    https://github.com/suren-atoyan/monaco-react
@@ -29,20 +29,14 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = (props = {}) => {
   const editorRef = useRef<E>();
   const { language = DEFAULT.LANGUAGE.TS, theme = DEFAULT.THEME } = props;
 
-  const onMount: EditorDidMount = async (getEditorValue, editor) => {
-    const instance = editor as any;
-    editorRef.current = instance;
-    time.delay(0, () => {
-      // NB: Wait for tick to ensure any DOM manipulation via API is applied.
-      if (props.onReady) {
-        props.onReady({ instance });
-      }
-    });
+  const onMount: EditorDidMount = async (getValue, ed) => {
+    const monaco = await Monaco.singleton();
+    const editor = ed as any;
+    editorRef.current = editor;
+    if (props.onReady) {
+      props.onReady({ instance: editor, singleton: monaco });
+    }
   };
-
-  useEffect(() => {
-    Monaco.singleton(); // Ensure the (singleton) API is initialized and configured.
-  });
 
   const styles = {
     base: css({ Absolute: 0 }),

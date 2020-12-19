@@ -3,7 +3,8 @@ import { t } from './common';
 export type MonacoEvent =
   | ICodeEditorMonacoContentChangedEvent
   | ICodeEditorMonacoCursorPositionChangedEvent
-  | ICodeEditorMonacoCursorSelectionChangedEvent;
+  | ICodeEditorMonacoCursorSelectionChangedEvent
+  | ICodeEditorMonacoFocusEvent;
 
 /**
  * Fired when the code editor content has changed.
@@ -36,4 +37,17 @@ export type ICodeEditorMonacoCursorSelectionChangedEvent = {
 };
 export type ICodeEditorMonacoCursorSelectionChanged = t.IMonacoCursorSelectionChangedEvent & {
   instance: string;
+};
+
+/**
+ * Fired when editor reieves of loses focus.
+ */
+export type ICodeEditorMonacoFocusEvent = {
+  type: 'Monaco/focus';
+  payload: ICodeEditorMonacoFocus;
+};
+export type ICodeEditorMonacoFocus = {
+  instance: string;
+  isFocused: boolean;
+  source: 'text' | 'widget';
 };

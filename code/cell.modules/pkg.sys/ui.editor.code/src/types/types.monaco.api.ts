@@ -27,7 +27,7 @@ export type IMonacoSingletonLibs = {
 export type IMonacoInstance = {
   id: string; // Editor instance ID.
   instance: IMonacoStandaloneCodeEditor;
-  event$: t.Observable<t.MonacoEvent>;
+  event$: t.Observable<t.CodeEditorEvent>;
   dispose$: t.Observable<void>;
   value: string;
   focus(): void;

@@ -15,17 +15,32 @@ import { t } from '../../common';
  */
 export async function registerLanguage(api: t.IMonacoSingleton) {
   const ts = api.monaco.languages.typescript;
+  const defaults = ts.typescriptDefaults;
 
   /**
-   * Compiler options:
+   * Compiler options
+   * See:
    *    - https://www.typescriptlang.org/docs/handbook/compiler-options.html
    *    - https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.typescript.languageservicedefaults.html#setcompileroptions
    */
-  ts.typescriptDefaults.setCompilerOptions({
+  defaults.setCompilerOptions({
     noLib: true,
     allowNonTsExtensions: true,
     target: ts.ScriptTarget.ES2015, // NB: "ES6".
     alwaysStrict: true,
+  });
+
+  /**
+   * Suppress certain diagnostic errors (red underline warnings).
+   * See:
+   *    - https://github.com/microsoft/monaco-typescript/pull/46
+   */
+  const CODES = {
+    // TOP_LEVEL_RETURN: 1108, // Useful when the code editor contains a root level script that is being wrapped within a function.
+    CANNOT_REDECLARE_BLOCK_SCOPED_VAR: 2451, // Occurs when two editors on the same page have variables that collide and no import/export statment exists that indicate that the file should be considered a "module".
+  };
+  defaults.setDiagnosticsOptions({
+    diagnosticCodesToIgnore: Object.values(CODES),
   });
 
   await Promise.all([

@@ -1,5 +1,6 @@
-import React, { useRef, useEffect } from 'react';
-import { css, CssValue, t } from '../../common';
+import React, { useEffect, useRef } from 'react';
+
+import { CssValue, t } from '../../common';
 import { Loading } from '../Loading';
 import { MonacoEditor, MonacoEditorReadyEvent } from '../Monaco';
 import { Monaco } from '../Monaco.api';
@@ -7,7 +8,9 @@ import { Monaco } from '../Monaco.api';
 export type CodeEditorProps = {
   id?: string;
   theme?: t.CodeEditorTheme;
+  language?: t.CodeEditorLanguage;
   focusOnLoad?: boolean;
+  filename?: string;
   style?: CssValue;
   event$?: t.Subject<t.CodeEditorEvent>;
 };
@@ -17,12 +20,18 @@ export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
   const editorRef = useRef<t.IMonacoInstance>();
 
   const onReady = (e: MonacoEditorReadyEvent) => {
-    const { instance } = e;
-    const editor = Monaco.editor({ instance, id: props.id, event$: props.event$ });
+    const editor = Monaco.editor({
+      singleton: e.singleton,
+      instance: e.instance,
+      id: props.id,
+      filename: props.filename,
+      event$: props.event$,
+    });
+
     editorRef.current = editor;
 
     // TEMP 🐷
-    editor.value = 'const a:number[] = [1,2,3]';
+    // editor.value = 'const a:number[] = [1,2,3]';
 
     if (props.focusOnLoad) {
       editor.focus();

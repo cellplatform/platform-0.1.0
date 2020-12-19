@@ -10,4 +10,4 @@ console.log('__CELL__', __CELL__);
 
 export const actions = Actions<Ctx>()
   .context((prev) => prev || { model })
-  .button('foo', () => null);
+  .group('sys.ui.editor.code', (e) => e.button('foo', () => null));
