@@ -32,23 +32,6 @@ export type IMonacoTokenThemeRule = {
  * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.itextmodel.html
  */
 export type IMonacoTextModel = {
-  getValue(eol?: IMonacoEndOfLinePreference, preserveBOM?: boolean): string;
+  getValue(eol?: t.IMonacoEndOfLinePreference, preserveBOM?: boolean): string;
   getFullModelRange(): t.IMonacoRange;
-};
-
-/**
- * https://microsoft.github.io/monaco-editor/api/enums/monaco.editor.endoflinepreference.html
- */
-export type IMonacoEndOfLinePreference = {
-  TextDefined: 0;
-  LF: 1;
-  CRLF: 2;
-};
-
-/**
- * https://microsoft.github.io/monaco-editor/api/enums/monaco.editor.endoflinesequence.html
- */
-export type IMonacoEndOfLineSequence = {
-  LF: 0;
-  CRLF: 1;
 };

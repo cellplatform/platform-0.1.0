@@ -27,12 +27,4 @@ export type MonacoOnCancellationRequested = (
   disposables?: t.IDisposable[],
 ) => t.IDisposable;
 
-/**
- * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.irange.html
- */
-export type IMonacoRange = {
-  endColumn: number;
-  startColumn: number;
-  endLineNumber: number;
-  startLineNumber: number;
-};
+

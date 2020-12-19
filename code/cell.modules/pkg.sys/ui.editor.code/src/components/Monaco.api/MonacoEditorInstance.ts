@@ -5,7 +5,7 @@ import { slug, t } from '../../common';
 
 export type MonacoEditorInstanceArgs = {
   instance: t.IMonacoStandaloneCodeEditor;
-  eid?: string;
+  id?: string;
   event$?: t.Subject<t.CodeEditorEvent>;
 };
 
@@ -18,15 +18,32 @@ export type MonacoEditorInstanceArgs = {
  */
 export const MonacoEditorInstance = (args: MonacoEditorInstanceArgs): t.IMonacoInstance => {
   const { instance } = args;
-  const id = args.eid || slug();
+  const id = args.id || slug();
 
   const dispose$ = new Subject<void>();
   const event$ = new Subject<t.MonacoEvent>();
   const fire = (e: t.MonacoEvent) => event$.next(e);
 
-  instance.onDidChangeModelContent((e) => {
-    fire({ type: 'Monaco/contentChanged', payload: { instance: id, ...e } });
-  });
+  const listeners = {
+    contentChanged: instance.onDidChangeModelContent((e) => {
+      fire({
+        type: 'Monaco/changed:content',
+        payload: { instance: id, ...e },
+      });
+    }),
+    cursorChanged: instance.onDidChangeCursorPosition((e) => {
+      fire({
+        type: 'Monaco/changed:cursorPosition',
+        payload: { instance: id, ...e },
+      });
+    }),
+    selectionChanged: instance.onDidChangeCursorSelection((e) => {
+      fire({
+        type: 'Monaco/changed:cursorSelection',
+        payload: { instance: id, ...e },
+      });
+    }),
+  };
 
   const api = {
     id,
@@ -55,6 +72,7 @@ export const MonacoEditorInstance = (args: MonacoEditorInstanceArgs): t.IMonacoI
      * Destroy all handlers.
      */
     dispose() {
+      Object.keys(listeners).forEach((key) => listeners[key].dispose());
       dispose$.next();
       dispose$.complete();
       event$.complete();

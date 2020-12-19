@@ -3,7 +3,11 @@ import { configure } from '../Monaco.config';
 
 type M = t.IMonacoSingletonLibs;
 
+// Types per file
 // https://stackoverflow.com/questions/43058191/how-to-use-addextralib-in-monaco-with-an-external-type-definition
+
+// Multi-cursor
+// https://github.com/Microsoft/monaco-editor/issues/366
 
 export function MonacoSingletonLibs(monaco: t.IMonaco): t.IMonacoSingletonLibs {
   let list: t.IMonacoAddedLib[] = [];

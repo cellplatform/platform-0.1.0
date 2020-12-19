@@ -41,7 +41,7 @@ export const Dev: React.FC = () => {
             <MonacoEditor />
           </DevHost>
           <DevHost title={'CodeEditor'}>
-            <CodeEditor focusOnLoad={true} event$={event$} />
+            <CodeEditor focusOnLoad={true} event$={event$} id={'two'} />
           </DevHost>
         </div>
         <div {...styles.right}>{actions.render({ style: { flex: 1 } })}</div>
@@ -50,9 +50,8 @@ export const Dev: React.FC = () => {
   );
 };
 
-type DevHostProps = { title?: string };
-
-const DevHost: React.FC<DevHostProps> = (props) => {
+export type DevHostProps = { title?: string };
+export const DevHost: React.FC<DevHostProps> = (props) => {
   const styles = {
     host: css({ flex: 1 }),
   };

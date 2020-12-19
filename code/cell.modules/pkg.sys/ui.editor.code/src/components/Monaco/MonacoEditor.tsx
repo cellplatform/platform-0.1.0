@@ -29,7 +29,8 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = (props = {}) => {
   const editorRef = useRef<E>();
   const { language = DEFAULT.LANGUAGE.TS, theme = DEFAULT.THEME } = props;
 
-  const onMount: EditorDidMount = async (getEditorValue, instance) => {
+  const onMount: EditorDidMount = async (getEditorValue, editor) => {
+    const instance = editor as any;
     editorRef.current = instance;
     time.delay(0, () => {
       // NB: Wait for tick to ensure any DOM manipulation via API is applied.

@@ -5,7 +5,7 @@ import { MonacoEditor, MonacoEditorReadyEvent } from '../Monaco';
 import { Monaco } from '../Monaco.api';
 
 export type CodeEditorProps = {
-  eid?: string;
+  id?: string;
   theme?: t.CodeEditorTheme;
   focusOnLoad?: boolean;
   style?: CssValue;
@@ -13,15 +13,14 @@ export type CodeEditorProps = {
 };
 
 export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
-  const { theme, eid, event$ } = props;
+  const { theme } = props;
   const editorRef = useRef<t.IMonacoInstance>();
-  const elLoading = <Loading theme={theme} />;
 
   const onReady = (e: MonacoEditorReadyEvent) => {
     console.log('e', e);
     // const editor = e.instance;
     const { instance } = e;
-    const editor = Monaco.editor({ eid, instance, event$ });
+    const editor = Monaco.editor({ instance, id: props.id, event$: props.event$ });
     editorRef.current = editor;
 
     const ed = editor as any;
@@ -41,5 +40,6 @@ export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
     };
   });
 
+  const elLoading = <Loading theme={theme} />;
   return <MonacoEditor style={props.style} theme={theme} loading={elLoading} onReady={onReady} />;
 };
