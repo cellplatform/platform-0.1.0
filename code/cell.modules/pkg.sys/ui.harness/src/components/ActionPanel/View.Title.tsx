@@ -8,8 +8,8 @@ export const Title: React.FC<TitleProps> = (props) => {
     base: css({
       fontSize: 12,
       boxSizing: 'border-box',
-      paddingTop: 6,
-      paddingBottom: 5,
+      paddingTop: 8,
+      paddingBottom: 7,
       PaddingX: 8,
       backgroundColor: color.format(-0.03),
       borderBottom: `solid 1px ${color.format(-0.06)}`,
