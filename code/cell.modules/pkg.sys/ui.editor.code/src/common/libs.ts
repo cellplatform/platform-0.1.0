@@ -5,6 +5,6 @@ export { log } from '@platform/log/lib/client';
 export { Uri, Schema } from '@platform/cell.schema';
 export { StateObject } from '@platform/state';
 
-import { time, id } from '@platform/util.value';
-export { time };
+import { id } from '@platform/util.value';
+export { time, rx } from '@platform/util.value';
 export const slug = id.shortid;

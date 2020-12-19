@@ -1,14 +1,14 @@
 import React from 'react';
-import { Subject } from 'rxjs';
 
-import { color, css, t } from '../../common';
+import { color, css, t, rx } from '../../common';
 import { CodeEditor } from '../../components/CodeEditor';
 import { actions } from './Dev.actions';
 import { DevHost } from './Dev.host';
 
-const event$ = new Subject<t.CodeEditorEvent>();
+const bus = rx.bus<t.CodeEditorEvent>();
+const events = CodeEditor.events(bus);
 
-event$.subscribe((e) => {
+events.$.subscribe((e) => {
   console.group('🌳');
   console.log('type', e.type);
   console.log('payload:', e.payload);
@@ -44,10 +44,10 @@ export const Dev: React.FC = () => {
       <div {...styles.base}>
         <div {...styles.left}>
           <DevHost title={'<CodeEditor>'} filename={filename.one}>
-            <CodeEditor focusOnLoad={true} event$={event$} id={'one'} filename={filename.one} />
+            <CodeEditor focusOnLoad={true} bus={bus} id={'one'} filename={filename.one} />
           </DevHost>
           <DevHost title={'<CodeEditor>'} filename={filename.two}>
-            <CodeEditor focusOnLoad={true} event$={event$} id={'two'} filename={filename.two} />
+            <CodeEditor focusOnLoad={true} bus={bus} id={'two'} filename={filename.two} />
           </DevHost>
         </div>
         <div {...styles.right}>{actions.render({ style: { flex: 1 } })}</div>

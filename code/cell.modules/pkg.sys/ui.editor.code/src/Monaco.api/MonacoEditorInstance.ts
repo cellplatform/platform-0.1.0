@@ -8,7 +8,7 @@ export type MonacoEditorInstanceArgs = {
   instance: t.IMonacoStandaloneCodeEditor;
   id?: string;
   filename?: string;
-  event$?: t.Subject<t.CodeEditorEvent>;
+  bus?: t.EventBus<t.CodeEditorEvent>;
 };
 
 // Types per file
@@ -111,8 +111,8 @@ export const MonacoEditorInstance = (args: MonacoEditorInstanceArgs): t.IMonacoI
   };
 
   // Bubble events.
-  if (args.event$) {
-    api.event$.subscribe((e) => args.event$?.next(e));
+  if (args.bus) {
+    api.event$.subscribe((e) => args.bus?.fire(e));
   }
 
   return api;

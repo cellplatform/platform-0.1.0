@@ -11,7 +11,7 @@ export type CodeEditorProps = {
   focusOnLoad?: boolean;
   filename?: string;
   style?: CssValue;
-  event$?: t.Subject<t.CodeEditorEvent>;
+  bus?: t.EventBus<t.CodeEditorEvent>;
 };
 
 export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
@@ -24,7 +24,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
       instance: e.instance,
       id: props.id,
       filename: props.filename,
-      event$: props.event$,
+      bus: props.bus,
     });
 
     editorRef.current = editor;
