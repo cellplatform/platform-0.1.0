@@ -1,4 +1,4 @@
-import { t, expect } from '../../test';
+import { t, expect } from '../test';
 
 import { Themes, Theme } from '.';
 

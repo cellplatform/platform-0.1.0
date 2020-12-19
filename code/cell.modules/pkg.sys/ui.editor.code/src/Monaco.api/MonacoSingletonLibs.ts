@@ -1,4 +1,4 @@
-import { t, http, bundle } from '../../common';
+import { t, http, bundle } from '../common';
 import { configure } from '../Monaco.config';
 
 type M = t.IMonacoSingletonLibs;

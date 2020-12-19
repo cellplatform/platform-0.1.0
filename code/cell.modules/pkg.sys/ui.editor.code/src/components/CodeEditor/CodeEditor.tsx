@@ -2,8 +2,7 @@ import React, { useEffect, useRef } from 'react';
 
 import { CssValue, t } from '../../common';
 import { Loading } from '../Loading';
-import { MonacoEditor, MonacoEditorReadyEvent } from '../Monaco';
-import { Monaco } from '../Monaco.api';
+import { Monaco, MonacoEditor, MonacoEditorReadyEvent } from '../Monaco';
 
 export type CodeEditorProps = {
   id?: string;

@@ -1,11 +1,13 @@
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
-import { slug, t } from '../../common';
+import { slug, t } from '../common';
 
 export type MonacoEditorInstanceArgs = {
+  singleton: t.IMonacoSingleton;
   instance: t.IMonacoStandaloneCodeEditor;
   id?: string;
+  filename?: string;
   event$?: t.Subject<t.CodeEditorEvent>;
 };
 
@@ -23,15 +25,34 @@ export type MonacoEditorInstanceArgs = {
  *
  */
 export const MonacoEditorInstance = (args: MonacoEditorInstanceArgs): t.IMonacoInstance => {
-  const { instance } = args;
+  const { instance, singleton } = args;
   const id = args.id || slug();
 
   const dispose$ = new Subject<void>();
   const event$ = new Subject<t.MonacoEvent>();
   const fire = (e: t.MonacoEvent) => event$.next(e);
 
+  // TEMP 🐷
+  const uri = singleton.monaco.Uri.parse(`file://${args.filename}`);
+
+  let code = `// ${args.filename}\nconst a:number[] = [1,2,3]\n`;
+  code += `const total = a.reduce((acc, next) =>acc + next, 0);\n`;
+
+  const model = singleton.monaco.editor.createModel(code, 'typescript', uri);
+  console.log('uri', uri);
+  console.log('m', model);
+  instance.setModel(model);
+  console.log('model.id', model.id);
+
+  const fireFocus = (isFocused: boolean, source: t.ICodeEditorMonacoFocusChange['source']) => {
+    fire({
+      type: 'Monaco/changed:focus',
+      payload: { instance: id, source, isFocused },
+    });
+  };
+
   const listeners = {
-    contentChanged: instance.onDidChangeModelContent((e) => {
+    contentChanged: model.onDidChangeContent((e) => {
       fire({
         type: 'Monaco/changed:content',
         payload: { instance: id, ...e },
@@ -49,6 +70,10 @@ export const MonacoEditorInstance = (args: MonacoEditorInstanceArgs): t.IMonacoI
         payload: { instance: id, ...e },
       });
     }),
+    focusEditorText: instance.onDidFocusEditorText(() => fireFocus(true, 'text')),
+    focusEditorWidget: instance.onDidFocusEditorWidget(() => fireFocus(true, 'widget')),
+    blurEditorText: instance.onDidBlurEditorText(() => fireFocus(false, 'text')),
+    blurEditorWidget: instance.onDidBlurEditorWidget(() => fireFocus(false, 'widget')),
   };
 
   const api = {

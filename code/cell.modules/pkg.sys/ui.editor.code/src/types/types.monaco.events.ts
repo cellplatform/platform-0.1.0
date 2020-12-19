@@ -1,10 +1,13 @@
 import { t } from './common';
 
+/**
+ * Synthesized events for the base Monaco editor abstraction.
+ */
 export type MonacoEvent =
   | ICodeEditorMonacoContentChangedEvent
   | ICodeEditorMonacoCursorPositionChangedEvent
   | ICodeEditorMonacoCursorSelectionChangedEvent
-  | ICodeEditorMonacoFocusEvent;
+  | ICodeEditorMonacoFocusChangeEvent;
 
 /**
  * Fired when the code editor content has changed.
@@ -42,11 +45,11 @@ export type ICodeEditorMonacoCursorSelectionChanged = t.IMonacoCursorSelectionCh
 /**
  * Fired when editor reieves of loses focus.
  */
-export type ICodeEditorMonacoFocusEvent = {
-  type: 'Monaco/focus';
-  payload: ICodeEditorMonacoFocus;
+export type ICodeEditorMonacoFocusChangeEvent = {
+  type: 'Monaco/changed:focus';
+  payload: ICodeEditorMonacoFocusChange;
 };
-export type ICodeEditorMonacoFocus = {
+export type ICodeEditorMonacoFocusChange = {
   instance: string;
   isFocused: boolean;
   source: 'text' | 'widget';
