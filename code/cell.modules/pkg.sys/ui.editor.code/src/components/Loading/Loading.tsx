@@ -10,7 +10,7 @@ export type LoadingProps = {
 
 export const Loading: React.FC<LoadingProps> = (props) => {
   const { theme = DEFAULT.THEME } = props;
-  const colors = Theme.byName(props.theme || DEFAULT.THEME).colors;
+  const colors = Theme.byName(props.theme || DEFAULT.THEME).data.colors;
 
   const styles = {
     base: css({

@@ -9,6 +9,12 @@ export type MonacoEditorInstanceArgs = {
   event$?: t.Subject<t.CodeEditorEvent>;
 };
 
+// Types per file
+//    https://stackoverflow.com/questions/43058191/how-to-use-addextralib-in-monaco-with-an-external-type-definition
+
+// Multi-cursor
+//    https://github.com/Microsoft/monaco-editor/issues/366
+
 /**
  * API helpers for manipulating an [IMonacoStandaloneCodeEditor] instance.
  *

@@ -17,16 +17,12 @@ export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
   const editorRef = useRef<t.IMonacoInstance>();
 
   const onReady = (e: MonacoEditorReadyEvent) => {
-    console.log('e', e);
-    // const editor = e.instance;
     const { instance } = e;
     const editor = Monaco.editor({ instance, id: props.id, event$: props.event$ });
     editorRef.current = editor;
 
-    const ed = editor as any;
-    console.log('ed.createModel', ed.createModel);
-
-    editor.value = 'const a:[] = [1,2,3]';
+    // TEMP 🐷
+    editor.value = 'const a:number[] = [1,2,3]';
 
     if (props.focusOnLoad) {
       editor.focus();

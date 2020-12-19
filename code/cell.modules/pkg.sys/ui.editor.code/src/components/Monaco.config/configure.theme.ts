@@ -1,25 +1,34 @@
 import { t, constants } from '../../common';
 
+type T = { name: t.CodeEditorTheme; data: t.IMonacoStandaloneThemeData };
+
 /**
  * Configure the editor themes.
  */
 export function defineThemes(api: t.IMonacoSingleton) {
-  api.monaco.editor.defineTheme(constants.THEMES.INK, Themes.ink());
+  const define = (theme: T) => {
+    api.monaco.editor.defineTheme(theme.name, theme.data);
+  };
+  define(Themes.ink());
+  define(Themes.light());
+  define(Themes.dark());
 }
 
 /**
  * Index of themes.
  */
 export const Themes = {
-  light() {
-    return require('monaco-themes/themes/Chrome DevTools.json') as t.IMonacoStandaloneThemeData; // eslint-disable-line
+  light(): T {
+    const data = require('monaco-themes/themes/Chrome DevTools.json') as t.IMonacoStandaloneThemeData; // eslint-disable-line
+    return { name: 'light', data };
   },
 
-  dark() {
-    return require('monaco-themes/themes/Monokai.json') as t.IMonacoStandaloneThemeData; // eslint-disable-line
+  dark(): T {
+    const data = require('monaco-themes/themes/Monokai.json') as t.IMonacoStandaloneThemeData; // eslint-disable-line
+    return { name: 'dark', data };
   },
 
-  ink() {
+  ink(): T {
     const INK = {
       BG: {
         BASE: '#202634',
@@ -28,9 +37,9 @@ export const Themes = {
       },
     };
 
-    const themeData = Themes.dark();
-    themeData.colors = {
-      ...themeData.colors,
+    const data = Themes.dark().data;
+    data.colors = {
+      ...data.colors,
 
       'editor.foreground': '#F8F8F2',
       'editor.background': INK.BG.BASE,
@@ -49,7 +58,7 @@ export const Themes = {
       'scrollbarSlider.hoverBackground': '#2B313E',
     };
 
-    return themeData;
+    return { name: 'ink', data };
   },
 };
 

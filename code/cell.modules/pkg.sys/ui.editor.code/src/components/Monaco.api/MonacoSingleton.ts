@@ -10,6 +10,8 @@ import { MonacoSingletonLibs } from './MonacoSingletonLibs';
  */
 export const MonacoSingleton = {
   create(monaco: t.IMonaco): t.IMonacoSingleton {
+    // console.log('monaco.Uri', monaco.Uri);
+
     const libs = MonacoSingletonLibs(monaco);
     return { monaco, libs };
   },

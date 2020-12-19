@@ -37,19 +37,22 @@ describe('Theme', () => {
   describe('Themes', () => {
     it('light', () => {
       const theme = Themes.light();
-      expect(theme.base).to.eql('vs');
+      expect(theme.name).to.eql('light');
+      expect(theme.data.base).to.eql('vs');
       expect(Theme.byName('light')).to.eql(theme);
     });
 
-    it('light', () => {
+    it('dark', () => {
       const theme = Themes.dark();
-      expect(theme.base).to.eql('vs-dark');
+      expect(theme.name).to.eql('dark');
+      expect(theme.data.base).to.eql('vs-dark');
       expect(Theme.byName('dark')).to.eql(theme);
     });
 
     it('ink', () => {
       const theme = Themes.ink();
-      expect(theme.base).to.eql('vs-dark');
+      expect(theme.name).to.eql('ink');
+      expect(theme.data.base).to.eql('vs-dark');
       expect(Theme.byName('ink')).to.eql(theme);
     });
   });

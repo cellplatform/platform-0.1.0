@@ -1,11 +1,7 @@
 import * as t from './types';
 
-export const THEMES = {
-  INK: 'ink' as t.CodeEditorTheme,
-};
-
 export const DEFAULT = {
-  THEME: THEMES.INK,
+  THEME: 'ink' as t.CodeEditorTheme,
   LANGUAGE: {
     TS: 'typescript',
   },
