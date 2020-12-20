@@ -2,6 +2,7 @@ import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
 import { slug, t } from '../common';
+import { Listeners } from './Monaco.EditorInstance.events';
 
 export type MonacoEditorInstanceArgs = {
   singleton: t.IMonacoSingleton;
@@ -30,51 +31,30 @@ export const MonacoEditorInstance = (args: MonacoEditorInstanceArgs): t.IMonacoI
 
   const dispose$ = new Subject<void>();
   const event$ = new Subject<t.MonacoEvent>();
-  const fire = (e: t.MonacoEvent) => event$.next(e);
+  const listeners = Listeners({ event$, editor: instance, instance: id });
 
   // TEMP 🐷
-  const uri = singleton.monaco.Uri.parse(`file://${args.filename}`);
+
+  const filename = args.filename ? args.filename?.replace(/^\/*/, '') : 'default.ts';
+  const uri = singleton.monaco.Uri.parse(`file:///${args.filename?.replace(/^\/*/, '')}`);
+  // console.log('uri.toString()', uri.toString());
 
   let code = `// ${args.filename}\nconst a:number[] = [1,2,3]\n`;
+  code += `import {add} from 'math';\nconst x = add(3, 5);\n`;
   code += `const total = a.reduce((acc, next) =>acc + next, 0);\n`;
 
+  // TEMP 🐷
+  if (filename === 'one.ts') {
+    // console.group('🌳 one.ts');
+
+    const def = 'export declare function add(a: number, b: number): number';
+    singleton.libs.add('node_modules/@types/math/index.d.ts', def);
+
+    // console.groupEnd();
+  }
+
   const model = singleton.monaco.editor.createModel(code, 'typescript', uri);
-  console.log('uri', uri);
-  console.log('m', model);
   instance.setModel(model);
-  console.log('model.id', model.id);
-
-  const fireFocus = (isFocused: boolean, source: t.ICodeEditorMonacoFocusChange['source']) => {
-    fire({
-      type: 'Monaco/changed:focus',
-      payload: { instance: id, source, isFocused },
-    });
-  };
-
-  const listeners = {
-    contentChanged: model.onDidChangeContent((e) => {
-      fire({
-        type: 'Monaco/changed:content',
-        payload: { instance: id, ...e },
-      });
-    }),
-    cursorChanged: instance.onDidChangeCursorPosition((e) => {
-      fire({
-        type: 'Monaco/changed:cursorPosition',
-        payload: { instance: id, ...e },
-      });
-    }),
-    selectionChanged: instance.onDidChangeCursorSelection((e) => {
-      fire({
-        type: 'Monaco/changed:cursorSelection',
-        payload: { instance: id, ...e },
-      });
-    }),
-    focusEditorText: instance.onDidFocusEditorText(() => fireFocus(true, 'text')),
-    focusEditorWidget: instance.onDidFocusEditorWidget(() => fireFocus(true, 'widget')),
-    blurEditorText: instance.onDidBlurEditorText(() => fireFocus(false, 'text')),
-    blurEditorWidget: instance.onDidBlurEditorWidget(() => fireFocus(false, 'widget')),
-  };
 
   const api = {
     id,
@@ -103,7 +83,7 @@ export const MonacoEditorInstance = (args: MonacoEditorInstanceArgs): t.IMonacoI
      * Destroy all handlers.
      */
     dispose() {
-      Object.keys(listeners).forEach((key) => listeners[key].dispose());
+      listeners.dispose();
       dispose$.next();
       dispose$.complete();
       event$.complete();

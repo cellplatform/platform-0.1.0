@@ -33,6 +33,7 @@ export function MonacoSingletonLibs(monaco: t.IMonaco): t.IMonacoSingletonLibs {
     const ts = monaco.languages.typescript.typescriptDefaults;
     const { dispose } = ts.addExtraLib(content, filename);
     const ref: t.IMonacoAddedLib = { filename, dispose };
+
     list = [...list, { filename, dispose }];
     return ref;
   };

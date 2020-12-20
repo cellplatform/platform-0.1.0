@@ -1,10 +1,10 @@
 import { t } from '../common';
-import { MonacoSingletonLibs } from './MonacoSingletonLibs';
+import { MonacoSingletonLibs } from './Monaco.SingletonLibs';
 
 /**
  * Singleton instance of an initialized Monaco Editor.
  * This is used to programatically manipulate the editor(s).
- * 
+ *
  * Refs:
  *    - https://microsoft.github.io/monaco-editor/api/index.html
  *
