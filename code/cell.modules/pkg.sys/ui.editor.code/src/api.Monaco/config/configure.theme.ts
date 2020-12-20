@@ -1,4 +1,4 @@
-import { t, constants } from '../common';
+import { t, constants } from '../../common';
 
 type T = { name: t.CodeEditorTheme; data: t.IMonacoStandaloneThemeData };
 

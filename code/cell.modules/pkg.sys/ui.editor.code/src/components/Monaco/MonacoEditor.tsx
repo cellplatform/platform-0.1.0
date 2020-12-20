@@ -2,7 +2,7 @@ import MonacoEditorCore, { EditorDidMount } from '@monaco-editor/react';
 import React, { useRef } from 'react';
 
 import { css, CssValue, DEFAULT, t } from '../../common';
-import { Monaco } from '../../Monaco.api';
+import { Monaco } from '../../api.Monaco';
 
 type E = t.IMonacoStandaloneCodeEditor;
 

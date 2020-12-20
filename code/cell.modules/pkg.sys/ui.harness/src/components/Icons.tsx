@@ -1,11 +1,11 @@
 import { Icon } from '@platform/ui.icon';
-
 import { VscSymbolVariable } from 'react-icons/vsc';
+
+const icon = Icon.renderer;
 
 /**
  * Icon collection.
  */
-const icon = Icon.renderer;
-export class Icons {
-  public static Variable = icon(VscSymbolVariable);
-}
+export const Icons = {
+  Variable: icon(VscSymbolVariable),
+};

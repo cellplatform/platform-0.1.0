@@ -20,5 +20,7 @@ export type IMonacoRange = {
  * https://microsoft.github.io/monaco-editor/api/classes/monaco.selection.html
  */
 export type IMonacoSelection = IMonacoRange & {
+  positionColumn: number;
+  positionLineNumber: number;
   toString(): string;
 };

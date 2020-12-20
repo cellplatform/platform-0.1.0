@@ -1,13 +1,12 @@
 import { t } from './common';
 
-export type CodeEditorEvent = t.MonacoEvent | CodeEditorComponentEvent;
-export type CodeEditorComponentEvent = ICodeEditorFocusChangeEvent | ICodeEditorCursorChangeEvent;
+export type CodeEditorEvent = ICodeEditorFocusChangeEvent | ICodeEditorSelectionChangeEvent;
 
 /**
  * Fired when editor recieves of loses focus.
  */
 export type ICodeEditorFocusChangeEvent = {
-  type: 'CodeEditor/changed:focus';
+  type: 'CodeEditor/focus';
   payload: ICodeEditorFocusChange;
 };
 export type ICodeEditorFocusChange = {
@@ -18,15 +17,12 @@ export type ICodeEditorFocusChange = {
 /**
  * Fired when editor cursor/selection changes.
  */
-export type ICodeEditorCursorChangeEvent = {
-  type: 'CodeEditor/changed:cursor';
-  payload: ICodeEditorCursorChange;
+export type ICodeEditorSelectionChangeEvent = {
+  type: 'CodeEditor/changed:selection';
+  payload: ICodeEditorSelectionChange;
 };
-export type ICodeEditorCursorChange = {
+export type ICodeEditorSelectionChange = {
   instance: string;
-  cursor: {
-    primary: t.CodeEditorPosition;
-    secondary: t.CodeEditorPosition[]; // NB: When multi-entry-select (CMD+D)
-  };
-  source: 'keyboard' | 'mouse';
+  selection: t.CodeEditorSelection;
+  via: 'keyboard' | 'mouse';
 };

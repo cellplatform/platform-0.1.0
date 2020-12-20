@@ -1,3 +1,6 @@
+import { equals } from 'ramda';
+export const R = { equals };
+
 export { css, CssValue, CssProps, color } from '@platform/css';
 export { WebRuntime } from '@platform/cell.runtime.web';
 export { http } from '@platform/http';

@@ -1,4 +1,4 @@
-import { IMonaco, IMonacoStandaloneCodeEditor } from '../types.monaco';
+import { IMonaco } from '../types.monaco';
 import { t } from './common';
 
 export type IMonacoAddedLib = t.IDisposable & { filename: string };

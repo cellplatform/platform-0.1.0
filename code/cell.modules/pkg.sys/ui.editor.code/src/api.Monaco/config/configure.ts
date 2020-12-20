@@ -1,4 +1,4 @@
-import { bundle } from '../common';
+import { bundle } from '../../common';
 import { monaco } from '@monaco-editor/react';
 
 export * from './configure.language';

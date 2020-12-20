@@ -1,9 +1,8 @@
 import { monaco as MonacoEditor } from '@monaco-editor/react';
 
-import { t } from '../common';
-import { configure } from '../Monaco.config';
+import { t, Translate, R } from '../common';
+import { configure } from './config';
 import { MonacoSingleton } from './Monaco.Singleton';
-import { CodeEditorInstance, CodeEditorInstanceArgs } from './CodeEditorInstance';
 
 let singleton: Promise<t.IMonacoSingleton>;
 
@@ -44,9 +43,26 @@ export const Monaco = {
   },
 
   /**
-   * Create an editor instance.
+   * Derive the current selection object.
    */
-  editor(args: CodeEditorInstanceArgs) {
-    return CodeEditorInstance(args);
+  selection(instance: t.IMonacoStandaloneCodeEditor): t.CodeEditorSelection {
+    const toRange = (input: t.IMonacoSelection): t.CodeEditorRange => {
+      return {
+        start: { line: input.startLineNumber, column: input.startColumn },
+        end: { line: input.endLineNumber, column: input.endColumn },
+      };
+    };
+
+    const primary = toRange(instance.getSelection());
+    const secondary = instance
+      .getSelections()
+      .map((s) => toRange(s))
+      .filter((r) => !R.equals(r, primary));
+
+    return {
+      position: Translate.position.toCodeEditor(instance.getPosition()),
+      primary,
+      secondary,
+    };
   },
 };

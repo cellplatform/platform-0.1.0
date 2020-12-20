@@ -4,7 +4,7 @@ import { color, css, t, rx } from '../../common';
 import { CodeEditor } from '../../components/CodeEditor';
 import { actions } from './Dev.actions';
 import { DevHost } from './Dev.host';
-import { crdt } from './Dev.crdt';
+import { crdt } from './Dev.CRDT';
 
 const bus = rx.bus<t.CodeEditorEvent>();
 const events = CodeEditor.events(bus);
@@ -16,7 +16,7 @@ events.$.subscribe((e) => {
   // console.groupEnd();
 });
 
-events.editor$.subscribe((e) => {
+events.$.subscribe((e) => {
   // console.log('e', e);
 });
 

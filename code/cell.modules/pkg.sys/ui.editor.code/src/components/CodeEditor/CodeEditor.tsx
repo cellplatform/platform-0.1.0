@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 
-import { CssValue, t } from '../../common';
+import { CssValue, t, rx } from '../../common';
 import { Loading } from '../Loading';
 import { Monaco, MonacoEditor, MonacoEditorReadyEvent } from '../Monaco';
+import { CodeEditorInstance } from '../../api.CodeEditor';
 
 export type CodeEditorProps = {
   id?: string;
@@ -11,20 +12,21 @@ export type CodeEditorProps = {
   focusOnLoad?: boolean;
   filename?: string;
   style?: CssValue;
-  bus?: t.CodeEditorEventBus;
+  bus?: t.EventBus<any>;
 };
 
 export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
   const { theme } = props;
   const editorRef = useRef<t.CodeEditorInstance>();
+  const bus = rx.bus<t.CodeEditorEvent>(props.bus);
 
   const onReady = (e: MonacoEditorReadyEvent) => {
-    const editor = Monaco.editor({
+    const editor = CodeEditorInstance.create({
       singleton: e.singleton,
       instance: e.instance,
       id: props.id,
       filename: props.filename,
-      bus: props.bus,
+      bus,
     });
 
     editorRef.current = editor;

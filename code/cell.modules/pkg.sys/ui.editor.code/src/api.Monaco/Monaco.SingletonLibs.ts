@@ -1,13 +1,6 @@
 import { t, http, bundle } from '../common';
-import { configure } from '../Monaco.config';
 
 type M = t.IMonacoSingletonLibs;
-
-// Types per file
-// https://stackoverflow.com/questions/43058191/how-to-use-addextralib-in-monaco-with-an-external-type-definition
-
-// Multi-cursor
-// https://github.com/Microsoft/monaco-editor/issues/366
 
 /**
  * Helpers for adding type-definition libraries to the editor (global singleton).
@@ -15,10 +8,8 @@ type M = t.IMonacoSingletonLibs;
  * Refs:
  *    - https://microsoft.github.io/monaco-editor/api/index.html
  *    - https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.typescript.languageservicedefaults.html#addextralib
- *    - https://stackoverflow.com/questions/43058191/how-to-use-addextralib-in-monaco-with-an-external-type-definition
  *
  */
-
 export function MonacoSingletonLibs(monaco: t.IMonaco): t.IMonacoSingletonLibs {
   let list: t.IMonacoAddedLib[] = [];
 

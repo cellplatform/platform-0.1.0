@@ -16,11 +16,11 @@ export type IMonacoStandaloneCodeEditor = {
   getPosition(): t.IMonacoPosition;
   setPosition(positon: t.IMonacoPosition): void;
 
-  getSelection(): t.IMonacoSelection[];
-  setSelection(value: readonly t.IMonacoSelection[]): t.IMonacoSelection[];
+  getSelection(): t.IMonacoSelection;
+  setSelection(value: t.IMonacoSelection): void;
 
   getSelections(): t.IMonacoSelection[];
-  setSelections(value: readonly t.IMonacoSelection[]): t.IMonacoSelection[];
+  setSelections(value: readonly t.IMonacoSelection[]): void;
 
   // Methods.
   focus(): void;

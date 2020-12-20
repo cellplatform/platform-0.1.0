@@ -1,14 +1,4 @@
-import { t } from '../common';
-
-/**
- * REFS (how to):
- *
- *    Details for handling different libs for different editor windows:
- *    https://blog.expo.io/building-a-code-editor-with-monaco-f84b3a06deaf
- *
- *    Adding snippets:
- *    https://stackoverflow.com/questions/48212023/how-to-insert-snippet-in-monaco-editor
- */
+import { t } from '../../common';
 
 /**
  * Configure language (typescript) settings of the IDE.
