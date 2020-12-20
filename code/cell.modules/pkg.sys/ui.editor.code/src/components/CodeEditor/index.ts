@@ -1,6 +1,6 @@
 import { t } from '../../common';
 import * as React from 'react';
-import { CodeEditorEvents } from '../../event';
+import { EditorEvents } from '../../event';
 
 import { CodeEditor as Component, CodeEditorProps } from './CodeEditor';
 
@@ -9,4 +9,4 @@ import { CodeEditor as Component, CodeEditorProps } from './CodeEditor';
  */
 type FC = React.FC<CodeEditorProps> & { events: t.CodeEditorEventsFactory };
 export const CodeEditor = Component as FC;
-CodeEditor.events = CodeEditorEvents;
+CodeEditor.events = EditorEvents;

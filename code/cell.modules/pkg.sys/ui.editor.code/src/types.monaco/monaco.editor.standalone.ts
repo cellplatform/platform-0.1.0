@@ -13,6 +13,15 @@ export type IMonacoStandaloneCodeEditor = {
   getModel(): t.IMonacoTextModel;
   setModel(model: t.IMonacoTextModel | null): void;
 
+  getPosition(): t.IMonacoPosition;
+  setPosition(positon: t.IMonacoPosition): void;
+
+  getSelection(): t.IMonacoSelection[];
+  setSelection(value: readonly t.IMonacoSelection[]): t.IMonacoSelection[];
+
+  getSelections(): t.IMonacoSelection[];
+  setSelections(value: readonly t.IMonacoSelection[]): t.IMonacoSelection[];
+
   // Methods.
   focus(): void;
 

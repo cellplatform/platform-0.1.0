@@ -1,11 +1,15 @@
 import { t } from './common';
 
-export type CodeEditorEventBus = t.EventBus<t.CodeEditorEvent>;
-export type CodeEditorEventsFactory = (bus: t.CodeEditorEventBus) => CodeEditorEvents;
+type E = t.CodeEditorEvent;
+
+export type CodeEditorEventBus = t.EventBus<E>;
+export type CodeEditorEventsFactory = (bus: t.EventBus<any> | t.Subject<any>) => CodeEditorEvents;
 
 /**
  * API wrapper for event observables.
  */
 export type CodeEditorEvents = {
-  $: t.Observable<t.CodeEditorEvent>;
+  $: t.Observable<E>;
+  editor$: t.Observable<t.CodeEditorComponentEvent>;
+  fire<T extends E>(e: T): CodeEditorEvents;
 };

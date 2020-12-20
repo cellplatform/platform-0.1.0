@@ -1,1 +1,1 @@
-export * from './CodeEditorEvents';
+export * from './EditorEvents';

@@ -8,3 +8,5 @@ export { StateObject } from '@platform/state';
 import { id } from '@platform/util.value';
 export { time, rx } from '@platform/util.value';
 export const slug = id.shortid;
+
+export { is } from '@platform/util.is';

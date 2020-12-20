@@ -16,7 +16,7 @@ export type CodeEditorProps = {
 
 export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
   const { theme } = props;
-  const editorRef = useRef<t.IMonacoInstance>();
+  const editorRef = useRef<t.CodeEditorInstance>();
 
   const onReady = (e: MonacoEditorReadyEvent) => {
     const editor = Monaco.editor({

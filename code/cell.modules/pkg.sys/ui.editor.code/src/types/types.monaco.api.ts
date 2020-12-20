@@ -20,16 +20,3 @@ export type IMonacoSingletonLibs = {
   loadDefs(urlOrFolder: string): Promise<IMonacoAddedLib[]>;
   clear(): void;
 };
-
-/**
- * Single instnce of a monaco Editor
- */
-export type IMonacoInstance = {
-  id: string; // Editor instance ID.
-  instance: IMonacoStandaloneCodeEditor;
-  event$: t.Observable<t.CodeEditorEvent>;
-  dispose$: t.Observable<void>;
-  value: string;
-  focus(): void;
-  dispose(): void;
-};

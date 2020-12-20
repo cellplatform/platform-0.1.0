@@ -16,6 +16,10 @@ events.$.subscribe((e) => {
   // console.groupEnd();
 });
 
+events.editor$.subscribe((e) => {
+  // console.log('e', e);
+});
+
 const filename = {
   one: 'one.ts',
   two: 'foo/two.tsx',

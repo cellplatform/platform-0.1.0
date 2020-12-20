@@ -3,7 +3,7 @@ import { monaco as MonacoEditor } from '@monaco-editor/react';
 import { t } from '../common';
 import { configure } from '../Monaco.config';
 import { MonacoSingleton } from './Monaco.Singleton';
-import { MonacoEditorInstance, MonacoEditorInstanceArgs } from './Monaco.EditorInstance';
+import { CodeEditorInstance, CodeEditorInstanceArgs } from './CodeEditorInstance';
 
 let singleton: Promise<t.IMonacoSingleton>;
 
@@ -46,7 +46,7 @@ export const Monaco = {
   /**
    * Create an editor instance.
    */
-  editor(args: MonacoEditorInstanceArgs) {
-    return MonacoEditorInstance(args);
+  editor(args: CodeEditorInstanceArgs) {
+    return CodeEditorInstance(args);
   },
 };

@@ -1,10 +1,11 @@
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
-import { slug, t } from '../common';
-import { Listeners } from './Monaco.EditorInstance.events';
+import { slug, t, Translate } from '../common';
+import { Listeners, Bubble } from './Monaco.EditorInstance.events';
+import { EditorEvents } from '../event';
 
-export type MonacoEditorInstanceArgs = {
+export type CodeEditorInstanceArgs = {
   singleton: t.IMonacoSingleton;
   instance: t.IMonacoStandaloneCodeEditor;
   id?: string;
@@ -25,13 +26,29 @@ export type MonacoEditorInstanceArgs = {
  *    https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html
  *
  */
-export const MonacoEditorInstance = (args: MonacoEditorInstanceArgs): t.IMonacoInstance => {
+export const CodeEditorInstance = (args: CodeEditorInstanceArgs): t.CodeEditorInstance => {
   const { instance, singleton } = args;
   const id = args.id || slug();
 
   const dispose$ = new Subject<void>();
   const event$ = new Subject<t.MonacoEvent>();
   const listeners = Listeners({ event$, editor: instance, instance: id });
+
+  Bubble(event$, event$ as t.Subject<t.CodeEditorEvent>);
+
+  const events = EditorEvents(event$);
+
+  events.editor$.subscribe((e) => {
+    console.group('🌳 ');
+
+    console.log('e', e);
+    console.log('api.position', api.position);
+
+    // const f = instance.getSelection()
+    console.log('instance.getSelection()', instance.getSelection());
+    console.log('instance.getSelections()', instance.getSelections());
+    console.groupEnd();
+  });
 
   // TEMP 🐷
 
@@ -77,6 +94,16 @@ export const MonacoEditorInstance = (args: MonacoEditorInstanceArgs): t.IMonacoI
     },
     set value(value: string) {
       instance.setValue(value);
+    },
+
+    /**
+     * Gets the cursor position.
+     */
+    get position() {
+      return Translate.position.toCodeEditor(instance.getPosition());
+    },
+    set(value: t.CodeEditorPosition) {
+      instance.setPosition(Translate.position.toMonaco(value));
     },
 
     /**
