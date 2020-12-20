@@ -1,7 +1,7 @@
 import * as t from '@platform/types';
 
 import { expect } from 'chai';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 
 import { rx } from '.';
 import { time } from '../time';
@@ -53,7 +53,7 @@ describe('rx', () => {
     });
   });
 
-  describe('event : payload', () => {
+  describe('event: payload', () => {
     type FooEvent = { type: 'TYPE/foo'; payload: Foo };
     type Foo = { count: number };
 
@@ -95,7 +95,7 @@ describe('rx', () => {
     type IFooEvent = { type: 'Event/foo'; payload: { count?: number } };
     type IBarEvent = { type: 'Event/bar'; payload: { count?: number } };
 
-    it('creates new observable (no param, no type)', () => {
+    it('create: new observable (no param, no type)', () => {
       const bus = rx.bus();
 
       const fired: t.Event[] = [];
@@ -107,7 +107,7 @@ describe('rx', () => {
       expect(fired[0].type).to.eql('ANY');
     });
 
-    it('uses given observable', () => {
+    it('create: use given subject', () => {
       const source$ = new Subject(); // NB: Does not care the typing of the input observable (flexible).
       const bus = rx.bus<MyEvent>(source$);
 
@@ -121,6 +121,12 @@ describe('rx', () => {
       expect(fired.length).to.eql(2);
       expect(fired[0].type).to.eql('ANY');
       expect(fired[1].type).to.eql('Event/foo');
+    });
+
+    it('create: use given bus', () => {
+      const bus1 = rx.bus();
+      const bus2 = rx.bus(bus1);
+      expect(bus2).to.equal(bus1);
     });
 
     it('changes event type', () => {
@@ -178,6 +184,29 @@ describe('rx', () => {
       bus1.fire({ type: 'Event/foo', payload: {} }); // NB: original event bus not effected.
       expect(fired.length).to.eql(2);
       expect(fired[1].type).to.eql('Event/foo');
+    });
+  });
+
+  describe('isBus', () => {
+    it('is bus', () => {
+      const test = (input: any) => {
+        expect(rx.isBus(input)).to.eql(true);
+      };
+      test({ event$: new Observable(), fire: () => null });
+      test(rx.bus());
+    });
+
+    it('is not a bus', () => {
+      const test = (input: any) => {
+        expect(rx.isBus(input)).to.eql(false);
+      };
+      test(undefined);
+      test(null);
+      test(123);
+      test({});
+      test([123, {}]);
+      test({ event$: new Observable() });
+      test({ fire: () => null });
     });
   });
 
