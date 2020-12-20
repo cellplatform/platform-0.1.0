@@ -8,7 +8,7 @@ export type MonacoEditorInstanceArgs = {
   instance: t.IMonacoStandaloneCodeEditor;
   id?: string;
   filename?: string;
-  bus?: t.EventBus<t.CodeEditorEvent>;
+  bus?: t.CodeEditorEventBus;
 };
 
 // Types per file

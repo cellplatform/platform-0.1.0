@@ -4,16 +4,24 @@ import { color, css, t, rx } from '../../common';
 import { CodeEditor } from '../../components/CodeEditor';
 import { actions } from './Dev.actions';
 import { DevHost } from './Dev.host';
+import { crdt } from './Dev.crdt';
 
 const bus = rx.bus<t.CodeEditorEvent>();
 const events = CodeEditor.events(bus);
 
 events.$.subscribe((e) => {
-  console.group('🌳');
-  console.log('type', e.type);
-  console.log('payload:', e.payload);
-  console.groupEnd();
+  // console.group('🌳');
+  // console.log('type', e.type);
+  // console.log('payload:', e.payload);
+  // console.groupEnd();
 });
+
+const filename = {
+  one: 'one.ts',
+  two: 'foo/two.tsx',
+};
+
+crdt({ bus });
 
 export const Dev: React.FC = () => {
   const styles = {
@@ -32,11 +40,6 @@ export const Dev: React.FC = () => {
       backgroundColor: color.format(-0.04),
       borderLeft: `solid 1px ${color.format(-0.08)}`,
     }),
-  };
-
-  const filename = {
-    one: 'one.ts',
-    two: 'foo/two.tsx',
   };
 
   return (

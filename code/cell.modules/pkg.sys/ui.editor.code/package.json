@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@platform/cell.compiler": "^0.2.44",
+    "automerge": "^0.14.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "sys.ui.harness": "^0.0.46"

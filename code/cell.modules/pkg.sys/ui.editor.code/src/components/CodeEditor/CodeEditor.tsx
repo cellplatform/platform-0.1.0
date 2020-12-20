@@ -11,7 +11,7 @@ export type CodeEditorProps = {
   focusOnLoad?: boolean;
   filename?: string;
   style?: CssValue;
-  bus?: t.EventBus<t.CodeEditorEvent>;
+  bus?: t.CodeEditorEventBus;
 };
 
 export const CodeEditor: React.FC<CodeEditorProps> = (props) => {

@@ -1,6 +1,7 @@
 import { t } from './common';
 
-export type CodeEditorEventsFactory = (bus: t.EventBus<t.CodeEditorEvent>) => CodeEditorEvents;
+export type CodeEditorEventBus = t.EventBus<t.CodeEditorEvent>;
+export type CodeEditorEventsFactory = (bus: t.CodeEditorEventBus) => CodeEditorEvents;
 
 /**
  * API wrapper for event observables.
