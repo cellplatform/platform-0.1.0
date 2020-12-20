@@ -4,7 +4,6 @@ import { monaco } from '@monaco-editor/react';
 export * from './configure.language';
 export * from './configure.prettier';
 export * from './configure.theme';
-export * from './util';
 
 /**
  * Set the CDN path to load worker JS assets from.

@@ -32,6 +32,7 @@ export type IMonacoCompilerOptions = {
   target: IMonacoScriptTarget[keyof IMonacoScriptTarget];
   alwaysStrict?: boolean;
   isolatedModules?: boolean;
+  typeRoots?: string[];
 };
 
 /**

@@ -10,6 +10,7 @@ export type IMonacoTextModel = {
   id: string;
   getValue(eol?: t.IMonacoEndOfLinePreference, preserveBOM?: boolean): string;
   getFullModelRange(): t.IMonacoRange;
+  getLinesContent(): string[];
 
   // Events.
   onDidChangeContent(listener: (e: t.IMonacoModelContentChangedEvent) => void): D;

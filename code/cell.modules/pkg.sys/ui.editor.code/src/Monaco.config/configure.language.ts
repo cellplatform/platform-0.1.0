@@ -28,6 +28,7 @@ export async function registerLanguage(api: t.IMonacoSingleton) {
     allowNonTsExtensions: true,
     target: ts.ScriptTarget.ES2015, // NB: "ES6".
     alwaysStrict: true,
+    typeRoots: ['node_modules/@types'],
   });
 
   /**

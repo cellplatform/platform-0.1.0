@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t, DEFAULT } from '../common';
 
 /**
  * 🏷 REFS (how to):
@@ -17,26 +17,25 @@ export async function registerPrettier(api: t.IMonacoSingleton) {
   /**
    * NB: This fails in the browser when importing the 'typescript-parser`.
    */
-  // monaco.languages.registerDocumentFormattingEditProvider(MONACO.LANGUAGE, {
-  //   async provideDocumentFormattingEdits(model, options, token) {
-  //     try {
-  //       const prettier = await import('prettier/standalone');
-  //       const typescript = await import('prettier/parser-typescript');
-  //       const text = prettier.format(model.getValue(), {
-  //         parser: 'typescript',
-  //         plugins: [typescript],
-  //         singleQuote: true,
-  //       });
-  //       return [
-  //         {
-  //           range: model.getFullModelRange(),
-  //           text,
-  //         },
-  //       ];
-  //     } catch (error) {
-  //       console.log('error.message', error.message);
-  //       throw error;
-  //     }
-  //   },
-  // });
+  api.monaco.languages.registerDocumentFormattingEditProvider(DEFAULT.LANGUAGE.TS, {
+    async provideDocumentFormattingEdits(model, options, token) {
+      try {
+        const prettier = await import('prettier/standalone');
+        const typescript = await import('prettier/parser-typescript');
+        const text = prettier.format(model.getValue(), {
+          parser: 'typescript',
+          plugins: [typescript],
+          singleQuote: true,
+        });
+        return [
+          {
+            range: model.getFullModelRange(),
+            text,
+          },
+        ];
+      } catch (error) {
+        throw error;
+      }
+    },
+  });
 }

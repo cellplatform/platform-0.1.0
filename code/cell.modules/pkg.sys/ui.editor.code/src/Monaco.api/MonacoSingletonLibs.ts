@@ -9,6 +9,16 @@ type M = t.IMonacoSingletonLibs;
 // Multi-cursor
 // https://github.com/Microsoft/monaco-editor/issues/366
 
+/**
+ * Helpers for adding type-definition libraries to the editor (global singleton).
+ *
+ * Refs:
+ *    - https://microsoft.github.io/monaco-editor/api/index.html
+ *    - https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.typescript.languageservicedefaults.html#addextralib
+ *    - https://stackoverflow.com/questions/43058191/how-to-use-addextralib-in-monaco-with-an-external-type-definition
+ *
+ */
+
 export function MonacoSingletonLibs(monaco: t.IMonaco): t.IMonacoSingletonLibs {
   let list: t.IMonacoAddedLib[] = [];
 
@@ -16,7 +26,10 @@ export function MonacoSingletonLibs(monaco: t.IMonaco): t.IMonacoSingletonLibs {
    * Adds a type-definition library to the editor.
    */
   const add: M['add'] = (filename: string, content: string) => {
-    filename = configure.formatFilename(filename);
+    filename = (filename || '').trim() || 'unnamed.ts';
+    filename = filename.replace(/^file\:/, '').replace(/^\/*/, '');
+    filename = `file:///${filename}`;
+
     const ts = monaco.languages.typescript.typescriptDefaults;
     const { dispose } = ts.addExtraLib(content, filename);
     const ref: t.IMonacoAddedLib = { filename, dispose };
@@ -64,8 +77,8 @@ export function MonacoSingletonLibs(monaco: t.IMonaco): t.IMonacoSingletonLibs {
  * Helpers
  */
 
-const loadManifest = async (dir: string) => {
-  const url = `${dir}/index.json`;
+const loadManifest = async (base: string) => {
+  const url = `${base}/index.json`;
   const res = await http.get(url);
   if (!res.ok) {
     const err = `Failed to load type-definition manifest '${url}'. ${res.status}: ${res.statusText}`;
@@ -89,3 +102,8 @@ const loadDeclarationFile = async (dir: string, filename: string) => {
     };
   }
 };
+
+function formatDeclarationContent(content: string) {
+  content = content.replace(/export declare /g, 'declare ');
+  return content;
+}

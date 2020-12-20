@@ -7,6 +7,7 @@ import * as Automerge from 'automerge';
  * https://github.com/automerge/automerge
  */
 export function crdt(args: { bus: t.CodeEditorEventBus }) {
+  return;
   console.log('automerge', Automerge);
 
   type D = { text: Automerge.Text };
