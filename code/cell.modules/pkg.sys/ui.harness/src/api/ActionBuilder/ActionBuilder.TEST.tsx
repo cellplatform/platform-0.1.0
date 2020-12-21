@@ -405,4 +405,62 @@ describe('ActionBuilder', () => {
       expect(item.height).to.eql(1);
     });
   });
+
+  describe('builder.title()', () => {
+    it('string: Untitled', () => {
+      const { builder, model } = create();
+      expect(model.state.items).to.eql([]);
+
+      builder.title('  ');
+
+      const items = model.state.items;
+      expect(items.length).to.eql(1);
+
+      const item = items[0] as t.ActionItemTitle;
+      expect(item.type).to.eql('title');
+      expect(item.text).to.eql('Untitled');
+    });
+
+    it('string: "My Title"', () => {
+      const { builder, model } = create();
+      expect(model.state.items).to.eql([]);
+
+      builder.title('  My Title  ');
+
+      const items = model.state.items;
+      expect(items.length).to.eql(1);
+
+      const item = items[0] as t.ActionItemTitle;
+      expect(item.type).to.eql('title');
+      expect(item.text).to.eql('My Title');
+    });
+
+    it('config', () => {
+      const { builder, model } = create();
+      expect(model.state.items).to.eql([]);
+
+      builder.title((config) => config.text('  Hello  '));
+
+      const items = model.state.items;
+      expect(items.length).to.eql(1);
+
+      const item = items[0] as t.ActionItemTitle;
+      expect(item.type).to.eql('title');
+      expect(item.text).to.eql('Hello');
+    });
+
+    it('string, config', () => {
+      const { builder, model } = create();
+      expect(model.state.items).to.eql([]);
+
+      builder.title('My Title', (config) => config.text('  Hello  '));
+
+      const items = model.state.items;
+      expect(items.length).to.eql(1);
+
+      const item = items[0] as t.ActionItemTitle;
+      expect(item.type).to.eql('title');
+      expect(item.text).to.eql('Hello');
+    });
+  });
 });

@@ -1,9 +1,10 @@
 import { format, t } from '../../common';
-import { ButtonConfig } from './handlers.Button';
-import { HrConfig } from './handlers.Hr';
+import { ButtonConfig } from './config.Button';
+import { HrConfig } from './config.Hr';
+import { TitleConfig } from './config.Title';
 
 /**
- * A Grpup configurator.
+ * A [Group] configurator.
  */
 export function GroupConfig(params: any[]) {
   const item: t.ActionItemGroup = { type: 'group', name: 'Unnamed', items: [] };
@@ -21,6 +22,11 @@ export function GroupConfig(params: any[]) {
 
     hr(...params: any[]) {
       item.items.push(HrConfig(params).item);
+      return config as any;
+    },
+
+    title(...params: any[]) {
+      item.items.push(TitleConfig(params).item);
       return config as any;
     },
   };

@@ -1,8 +1,9 @@
 import React from 'react';
 
 import { CssValue, t } from '../../common';
-import { ItemButton } from './View.Item.button';
-import { ItemHr } from './View.Item.hr';
+import { ButtonItem } from './View.Item.button';
+import { HrItem } from './View.Item.hr';
+import { TitleItem } from './View.Item.title';
 
 export type ItemProps = {
   model: t.ActionItem;
@@ -14,11 +15,15 @@ export const Item: React.FC<ItemProps> = (props) => {
   const { model } = props;
 
   if (model.type === 'button') {
-    return <ItemButton {...props} model={model} />;
+    return <ButtonItem {...props} model={model} />;
   }
 
   if (model.type === 'hr') {
-    return <ItemHr {...props} model={model} />;
+    return <HrItem {...props} model={model} />;
+  }
+
+  if (model.type === 'title') {
+    return <TitleItem {...props} model={model} />;
   }
 
   throw new Error(`Action type '${model.type}' not supported.`);

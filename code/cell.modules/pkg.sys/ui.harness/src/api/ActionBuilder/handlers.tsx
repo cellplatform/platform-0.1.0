@@ -2,9 +2,10 @@ import * as React from 'react';
 
 import { defaultValue, t } from '../../common';
 import { View as ActionPanel } from '../../components/ActionPanel/View';
-import { ButtonConfig } from './handlers.Button';
-import { GroupConfig } from './handlers.Group';
-import { HrConfig } from './handlers.Hr';
+import { ButtonConfig } from './config.Button';
+import { GroupConfig } from './config.Group';
+import { HrConfig } from './config.Hr';
+import { TitleConfig } from './config.Title';
 import { toContext } from './util';
 
 /**
@@ -97,6 +98,14 @@ export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethod
    */
   hr(args) {
     const { item } = HrConfig(args.params);
+    args.model.change((draft) => draft.items.push(item));
+  },
+
+  /**
+   * Title block.
+   */
+  title(args) {
+    const { item } = TitleConfig(args.params);
     args.model.change((draft) => draft.items.push(item));
   },
 };

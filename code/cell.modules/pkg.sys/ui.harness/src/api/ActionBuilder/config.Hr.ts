@@ -1,7 +1,7 @@
 import { format, t } from '../../common';
 
 /**
- * A Button configurator.
+ * A [Horizontal Rule] configurator.
  */
 export function HrConfig(params: any[]) {
   const item: t.ActionItemHr = { type: 'hr', height: 8 };

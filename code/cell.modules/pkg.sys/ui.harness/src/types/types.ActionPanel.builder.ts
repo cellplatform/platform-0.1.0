@@ -27,6 +27,8 @@ export type ActionModelInputMethods<Ctx> = {
   button(label: string, handler?: t.ActionHandler<Ctx>): B<Ctx>;
   button(config: ActionButtonConfig<Ctx>): B<Ctx>;
   hr(config?: ActionHrConfig<Ctx>): B<Ctx>;
+  title(text: string, config?: ActionTitleConfig<Ctx>): B<Ctx>;
+  title(config: ActionTitleConfig<Ctx>): B<Ctx>;
 };
 
 /**
@@ -53,6 +55,12 @@ export type ActionButtonConfigArgs<Ctx> = {
 export type ActionHrConfig<Ctx> = (args: ActionHrConfigArgs<Ctx>) => void;
 export type ActionHrConfigArgs<Ctx> = {
   height(value: number): ActionHrConfigArgs<Ctx>;
-  // description(value: string): ActionHrConfigArgs<Ctx>;
-  // onClick(handler: t.ActionHandler<Ctx>): ActionHrConfigArgs<Ctx>;
+};
+
+/**
+ * Title
+ */
+export type ActionTitleConfig<Ctx> = (args: ActionTitleConfigArgs<Ctx>) => void;
+export type ActionTitleConfigArgs<Ctx> = {
+  text(value: string): ActionTitleConfigArgs<Ctx>;
 };

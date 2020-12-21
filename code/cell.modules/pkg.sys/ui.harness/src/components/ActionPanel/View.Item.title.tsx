@@ -1,17 +1,20 @@
 import React from 'react';
-import { css, CssValue, t, color } from '../../common';
+import { css, CssValue, t, color, COLORS } from '../../common';
 
-export type ItemTitleProps = {
-  model: t.ActionItemHr;
+export type TitleItemProps = {
+  model: t.ActionItemTitle;
   style?: CssValue;
 };
 
-export const ItemTitle: React.FC<ItemTitleProps> = (props) => {
+export const TitleItem: React.FC<TitleItemProps> = (props) => {
   const styles = {
     base: css({
-      // boxSizing: 'border-box',
-      // PaddingY: 4,
-      // PaddingX: 8,
+      boxSizing: 'border-box',
+      color: COLORS.DARK,
+      PaddingY: 4,
+      PaddingX: 8,
+      fontSize: 14,
+      opacity: 0.8,
     }),
   };
 

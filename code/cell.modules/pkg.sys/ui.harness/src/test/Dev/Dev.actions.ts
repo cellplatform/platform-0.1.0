@@ -36,5 +36,10 @@ export const actions = Actions<Ctx>()
   .group('host', (e) =>
     e
       .button('center (clear)', (ctx) => ctx.change((draft) => (draft.position = undefined)))
-      .button('top left', (ctx) => ctx.change((draft) => (draft.position = { top: 50, left: 50 }))),
+      .button('top left', (ctx) => ctx.change((draft) => (draft.position = { top: 50, left: 50 })))
+      .hr()
+      .title('color')
+      .button('red', () => null)
+      .button('green', () => null)
+      .button('blue', () => null),
   );

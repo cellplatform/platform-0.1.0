@@ -1,12 +1,12 @@
 import React from 'react';
 import { css, CssValue, t, color } from '../../common';
 
-export type ItemHrProps = {
+export type HrItemProps = {
   model: t.ActionItemHr;
   style?: CssValue;
 };
 
-export const ItemHr: React.FC<ItemHrProps> = (props) => {
+export const HrItem: React.FC<HrItemProps> = (props) => {
   const { model } = props;
 
   const styles = {

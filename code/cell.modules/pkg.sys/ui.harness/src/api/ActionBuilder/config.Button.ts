@@ -1,7 +1,7 @@
 import { format, t } from '../../common';
 
 /**
- * A Button configurator.
+ * A [Button] configurator.
  */
 export function ButtonConfig(params: any[]) {
   const LABEL = 'Unnamed';
