@@ -1,4 +1,4 @@
-import { t, expect, DEFAULT } from '../test';
+import { t, expect, DEFAULT } from '../../test';
 import { CodeEditorModel } from '.';
 
 describe.skip('CodeEditorModel', () => {

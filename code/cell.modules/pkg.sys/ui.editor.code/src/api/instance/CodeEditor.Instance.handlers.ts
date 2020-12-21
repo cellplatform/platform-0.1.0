@@ -1,4 +1,4 @@
-import { rx, t, Is } from '../common';
+import { rx, t, Is } from '../../common';
 
 /**
  * Handles change requests issued via events.

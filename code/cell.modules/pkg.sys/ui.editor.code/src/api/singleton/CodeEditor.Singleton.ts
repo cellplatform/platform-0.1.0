@@ -1,5 +1,5 @@
-import { t } from '../common';
-import { MonacoSingletonLibs } from './Monaco.SingletonLibs';
+import { t } from '../../common';
+import { CodeEditorLibs } from './CodeEditor.Libs';
 
 /**
  * Singleton instance of an initialized Monaco Editor.
@@ -9,9 +9,9 @@ import { MonacoSingletonLibs } from './Monaco.SingletonLibs';
  *    - https://microsoft.github.io/monaco-editor/api/index.html
  *
  */
-export const MonacoSingleton = {
+export const CodeEditorSingleton = {
   create(monaco: t.IMonaco): t.ICodeEditorSingleton {
-    const libs = MonacoSingletonLibs(monaco);
+    const libs = CodeEditorLibs(monaco);
     return { monaco, libs };
   },
 };

@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, share, takeUntil } from 'rxjs/operators';
 
-import { rx, t } from '../common';
+import { rx, t } from '../../common';
 import { Fire } from './CodeEditor.Events.fire';
 
 type E = t.CodeEditorEvent;

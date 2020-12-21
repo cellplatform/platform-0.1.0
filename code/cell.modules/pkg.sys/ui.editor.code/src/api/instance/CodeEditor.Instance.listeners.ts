@@ -1,8 +1,8 @@
 import { Subject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 
-import { Monaco } from '../api.Monaco';
-import { R, t, Translate } from '../common';
+import { Monaco } from '../../api';
+import { R, t, Translate } from '../../common';
 
 export function Listeners(args: {
   id: string; // ID.

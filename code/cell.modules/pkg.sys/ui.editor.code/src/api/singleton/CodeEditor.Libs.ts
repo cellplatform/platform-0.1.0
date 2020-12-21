@@ -1,4 +1,4 @@
-import { t, http, bundle } from '../common';
+import { t, http, bundle } from '../../common';
 
 type M = t.ICodeEditorLibs;
 
@@ -10,7 +10,7 @@ type M = t.ICodeEditorLibs;
  *    - https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.typescript.languageservicedefaults.html#addextralib
  *
  */
-export function MonacoSingletonLibs(monaco: t.IMonaco): t.ICodeEditorLibs {
+export function CodeEditorLibs(monaco: t.IMonaco): t.ICodeEditorLibs {
   let list: t.ICodeEditorAddedLib[] = [];
 
   /**

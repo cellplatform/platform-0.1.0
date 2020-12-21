@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { CssValue, t, rx, time } from '../../common';
 import { Loading } from '../Loading';
 import { Monaco, MonacoEditor, MonacoEditorReadyEvent } from '../Monaco';
-import { CodeEditorInstance } from '../../api.CodeEditor';
+import { CodeEditorInstance } from '../../api';
 
 export type CodeEditorReadyEvent = { id: string; editor: t.CodeEditorInstance };
 export type CodeEditorReadyEventHandler = (e: CodeEditorReadyEvent) => void;

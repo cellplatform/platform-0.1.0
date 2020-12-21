@@ -1,4 +1,4 @@
-import { expect, is, rx, t } from '../test';
+import { expect, is, rx, t } from '../../test';
 import { CodeEditorEvents } from './CodeEditor.Events';
 
 type E = t.CodeEditorEvent;

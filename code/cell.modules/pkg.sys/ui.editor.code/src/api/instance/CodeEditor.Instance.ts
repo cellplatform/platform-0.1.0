@@ -1,7 +1,7 @@
-import { slug, t, rx, time, Translate } from '../common';
+import { slug, t, rx, time, Translate } from '../../common';
 import { Listeners } from './CodeEditor.Instance.listeners';
-import { CodeEditorEvents } from '../api.CodeEditor';
-import { Monaco } from '../api.Monaco';
+import { CodeEditorEvents } from '../../api';
+import { Monaco } from '../../api';
 import { ChangeHandlers } from './CodeEditor.Instance.handlers';
 import { select } from './CodeEditor.Instance.select';
 
