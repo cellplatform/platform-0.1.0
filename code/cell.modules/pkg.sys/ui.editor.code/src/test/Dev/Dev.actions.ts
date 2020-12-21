@@ -69,9 +69,17 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
           fire?.select(null, { focus: true });
         })
         .hr()
-        .button('text', () => {
-          const fire = getFire();
-          fire?.text('// hello');
+        .button('text: short', () => {
+          getFire()?.text('// hello');
+        })
+        .button('text: sample', () => {
+          let code = `// sample\nconst a:number[] = [1,2,3]\n`;
+          code += `import {add} from 'math';\nconst x = add(3, 5);\n`;
+          code += `const total = a.reduce((acc, next) =>acc + next, 0);\n`;
+          getFire()?.text(code);
+        })
+        .button('text: clear', () => {
+          getFire()?.text(null);
         }),
     );
 

@@ -66,5 +66,5 @@ export function ChangeHandlers(args: { editor: t.CodeEditorInstance; events: t.C
    */
   rx.payload<t.ICodeEditorChangeTextEvent>($, 'CodeEditor/change:text')
     .pipe()
-    .subscribe((e) => (editor.text = e.text));
+    .subscribe((e) => (editor.text = e.text || ''));
 }

@@ -68,7 +68,7 @@ export type ICodeEditorChangeTextEvent = {
 };
 export type ICodeEditorChangeText = {
   instance: string;
-  text: string;
+  text: string | null;
 };
 
 /**
