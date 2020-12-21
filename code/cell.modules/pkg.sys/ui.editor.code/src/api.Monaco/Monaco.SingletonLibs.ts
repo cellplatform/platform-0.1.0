@@ -1,6 +1,6 @@
 import { t, http, bundle } from '../common';
 
-type M = t.IMonacoSingletonLibs;
+type M = t.ICodeEditorLibs;
 
 /**
  * Helpers for adding type-definition libraries to the editor (global singleton).
@@ -10,8 +10,8 @@ type M = t.IMonacoSingletonLibs;
  *    - https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.typescript.languageservicedefaults.html#addextralib
  *
  */
-export function MonacoSingletonLibs(monaco: t.IMonaco): t.IMonacoSingletonLibs {
-  let list: t.IMonacoAddedLib[] = [];
+export function MonacoSingletonLibs(monaco: t.IMonaco): t.ICodeEditorLibs {
+  let list: t.ICodeEditorAddedLib[] = [];
 
   /**
    * Adds a type-definition library to the editor.
@@ -23,7 +23,7 @@ export function MonacoSingletonLibs(monaco: t.IMonaco): t.IMonacoSingletonLibs {
 
     const ts = monaco.languages.typescript.typescriptDefaults;
     const { dispose } = ts.addExtraLib(content, filename);
-    const ref: t.IMonacoAddedLib = { filename, dispose };
+    const ref: t.ICodeEditorAddedLib = { filename, dispose };
 
     list = [...list, { filename, dispose }];
     return ref;

@@ -18,7 +18,7 @@ export const CodeEditorInstance = {
    */
   create(args: {
     bus: t.CodeEditorEventBus;
-    singleton: t.IMonacoSingleton;
+    singleton: t.ICodeEditorSingleton;
     instance: t.IMonacoStandaloneCodeEditor;
     id?: string;
     filename?: string;

@@ -6,7 +6,7 @@ import { Monaco } from '../../api.Monaco';
 
 type E = t.IMonacoStandaloneCodeEditor;
 
-export type MonacoEditorReadyEvent = { instance: E; singleton: t.IMonacoSingleton };
+export type MonacoEditorReadyEvent = { instance: E; singleton: t.ICodeEditorSingleton };
 export type MonacoEditorReadyEventHandler = (e: MonacoEditorReadyEvent) => void;
 
 export type MonacoEditorProps = {

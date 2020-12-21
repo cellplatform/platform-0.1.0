@@ -3,7 +3,7 @@ import { t } from '../../common';
 /**
  * Configure language (typescript) settings of the IDE.
  */
-export async function registerLanguage(api: t.IMonacoSingleton) {
+export async function registerLanguage(api: t.ICodeEditorSingleton) {
   const ts = api.monaco.languages.typescript;
   const defaults = ts.typescriptDefaults;
 

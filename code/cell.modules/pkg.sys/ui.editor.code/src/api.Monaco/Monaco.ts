@@ -4,7 +4,7 @@ import { t, Translate, R } from '../common';
 import { configure } from './config';
 import { MonacoSingleton } from './Monaco.Singleton';
 
-let singleton: Promise<t.IMonacoSingleton>;
+let singleton: Promise<t.ICodeEditorSingleton>;
 
 /**
  * API wrapper for Monaco.
@@ -21,7 +21,7 @@ export const Monaco = {
       return singleton;
     }
 
-    return (singleton = new Promise<t.IMonacoSingleton>(async (resolve, reject) => {
+    return (singleton = new Promise<t.ICodeEditorSingleton>(async (resolve, reject) => {
       try {
         // Initialize.
         const monaco = (await MonacoEditor.init()) as t.IMonaco;

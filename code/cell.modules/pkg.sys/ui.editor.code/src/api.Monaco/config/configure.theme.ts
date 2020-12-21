@@ -5,7 +5,7 @@ type T = { name: t.CodeEditorTheme; data: t.IMonacoStandaloneThemeData };
 /**
  * Configure the editor themes.
  */
-export function defineThemes(api: t.IMonacoSingleton) {
+export function defineThemes(api: t.ICodeEditorSingleton) {
   const define = (theme: T) => {
     api.monaco.editor.defineTheme(theme.name, theme.data);
   };

@@ -10,7 +10,7 @@ import { MonacoSingletonLibs } from './Monaco.SingletonLibs';
  *
  */
 export const MonacoSingleton = {
-  create(monaco: t.IMonaco): t.IMonacoSingleton {
+  create(monaco: t.IMonaco): t.ICodeEditorSingleton {
     const libs = MonacoSingletonLibs(monaco);
     return { monaco, libs };
   },
