@@ -1,5 +1,5 @@
 import { expect, is, rx, t } from '../test';
-import { CodeEditorEvents } from './CodeEditorEvents';
+import { CodeEditorEvents } from './CodeEditor.Events';
 
 type E = t.CodeEditorEvent;
 const bus = rx.bus<E>();
@@ -12,8 +12,8 @@ describe('CodeEditorEvents', () => {
     let count = 0;
     events.$.subscribe(() => count++);
     bus.fire({
-      type: 'CodeEditor/focus',
-      payload: { instance: 'foo', isFocused: true },
+      type: 'CodeEditor/change:focus',
+      payload: { instance: 'foo' },
     });
 
     expect(count).to.eql(1);
@@ -37,8 +37,8 @@ describe('CodeEditorEvents', () => {
     notFired({ type: 'foo', payload: {} });
 
     bus.fire({
-      type: 'CodeEditor/focus',
-      payload: { instance: 'foo', isFocused: true },
+      type: 'CodeEditor/change:focus',
+      payload: { instance: 'foo' },
     });
     expect(count).to.eql(1);
   });
@@ -52,13 +52,13 @@ describe('CodeEditorEvents', () => {
     bus.event$.subscribe(() => busCount++);
     events.$.subscribe(() => eventCount++);
 
-    events.fire({
-      type: 'CodeEditor/focus',
-      payload: { instance: 'foo', isFocused: true },
+    events.fire.change({
+      type: 'CodeEditor/change:focus',
+      payload: { instance: 'foo' },
     });
-    events.fire({
-      type: 'CodeEditor/focus',
-      payload: { instance: 'bar', isFocused: true },
+    events.fire.change({
+      type: 'CodeEditor/change:focus',
+      payload: { instance: 'bar' },
     });
 
     expect(busCount).to.eql(2);
@@ -74,13 +74,13 @@ describe('CodeEditorEvents', () => {
     bus.event$.subscribe(() => busCount++);
     events.$.subscribe(() => eventCount++);
 
-    events.fire({
-      type: 'CodeEditor/focus',
-      payload: { instance: 'foo', isFocused: true },
+    events.fire.change({
+      type: 'CodeEditor/change:focus',
+      payload: { instance: 'foo' },
     });
-    events.fire({
-      type: 'CodeEditor/focus',
-      payload: { instance: 'bar', isFocused: true },
+    events.fire.change({
+      type: 'CodeEditor/change:focus',
+      payload: { instance: 'bar' },
     });
 
     expect(busCount).to.eql(2);

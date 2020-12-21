@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-import { CssValue, t, rx } from '../../common';
+import { CssValue, t, rx, time } from '../../common';
 import { Loading } from '../Loading';
 import { Monaco, MonacoEditor, MonacoEditorReadyEvent } from '../Monaco';
 import { CodeEditorInstance } from '../../api.CodeEditor';
@@ -38,12 +38,12 @@ export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
     // TEMP 🐷
     // editor.value = 'const a:number[] = [1,2,3]';
 
-    if (props.focusOnLoad) {
-      editor.focus();
-    }
-
     if (props.onReady) {
       props.onReady({ id: editor.id, editor });
+    }
+
+    if (props.focusOnLoad) {
+      editor.focus();
     }
   };
 

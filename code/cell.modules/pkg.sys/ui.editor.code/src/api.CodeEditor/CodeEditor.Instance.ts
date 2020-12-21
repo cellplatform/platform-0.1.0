@@ -1,5 +1,5 @@
-import { slug, t } from '../common';
-import { EventListeners } from './CodeEditorInstance.events';
+import { slug, t, rx, time } from '../common';
+import { EventListeners } from './CodeEditor.Instance.events';
 import { CodeEditorEvents } from '../api.CodeEditor';
 import { Monaco } from '../api.Monaco';
 
@@ -26,20 +26,9 @@ export const CodeEditorInstance = {
     const listeners = EventListeners({ bus, instance, id });
     const events = CodeEditorEvents.create(bus, { instance: id });
 
-    events.$.subscribe((e) => {
-      // console.log(e.type, e.payload);
-
-      return;
-      console.group('🌳 ');
-
-      console.log('e', e);
-      // console.log('api.position', api.position);
-
-      // const f = instance.getSelection()
-      console.log('instance.getSelection()', instance.getSelection());
-      console.log('instance.getSelections()', instance.getSelections());
-      console.groupEnd();
-    });
+    rx.payload<t.ICodeEditorChangeFocusEvent>(events.$, 'CodeEditor/change:focus')
+      .pipe()
+      .subscribe((e) => editor.focus());
 
     // TEMP 🐷
 
@@ -64,7 +53,7 @@ export const CodeEditorInstance = {
     const model = singleton.monaco.editor.createModel(code, 'typescript', uri);
     instance.setModel(model);
 
-    const api: t.CodeEditorInstance = {
+    const editor: t.CodeEditorInstance = {
       id,
       instance,
       events,
@@ -112,6 +101,6 @@ export const CodeEditorInstance = {
       },
     };
 
-    return api;
+    return editor;
   },
 };

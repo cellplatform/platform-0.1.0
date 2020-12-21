@@ -5,5 +5,5 @@ export * from './types';
 export * from './types.events';
 
 export * from './types.CodeEditor';
-export * from './types.CodeEditorEvents';
-export * from './types.CodeEditorModel';
+export * from './types.CodeEditor.Events';
+export * from './___types.CodeEditorModel';

@@ -1,24 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { color, css, t, rx } from '../../common';
-import { CodeEditor, CodeEditorReadyEventHandler } from '../../components/CodeEditor';
-import { actions } from './Dev.actions';
+import { CodeEditor } from '../../components/CodeEditor';
+import { editorActions } from './Dev.actions';
 import { DevHost } from './Dev.host';
 import { crdt } from './Dev.CRDT';
+import { DevProps } from './Dev.props';
 
 const bus = rx.bus<t.CodeEditorEvent>();
-const events = CodeEditor.events(bus);
+// const events = CodeEditor.events(bus);
 
-events.$.subscribe((e) => {
-  // console.group('🌳');
-  // console.log('type', e.type);
-  // console.log('payload:', e.payload);
-  // console.groupEnd();
-});
-
-events.$.subscribe((e) => {
-  // console.log('e', e);
-});
+const actions = editorActions(bus);
 
 const filename = {
   one: 'one.ts',
@@ -27,16 +19,17 @@ const filename = {
 
 crdt({ bus });
 
-const readyHandler = () => {
-  const handler: CodeEditorReadyEventHandler = (e) => {
-    console.log('ready', e.editor.id);
-    e.editor.text = '// foo';
-    // actions.
-  };
-  return handler;
-};
+// export type DevProps = {}
 
 export const Dev: React.FC = () => {
+  const [selection, setSelection] = useState<t.CodeEditorSelection>();
+
+  useEffect(() => {
+    actions.model.event.changed$.subscribe((e) => {
+      setSelection(e.to.selection);
+    });
+  }, []); // eslint-disable-line
+
   const styles = {
     base: css({
       Absolute: 0,
@@ -48,10 +41,10 @@ export const Dev: React.FC = () => {
       Flex: 'vertical-stretch-stretch',
     }),
     right: css({
-      display: 'flex',
       width: 300,
       backgroundColor: color.format(-0.04),
       borderLeft: `solid 1px ${color.format(-0.08)}`,
+      Flex: 'vertical-stretch-stretch',
     }),
   };
 
@@ -59,20 +52,23 @@ export const Dev: React.FC = () => {
     <React.StrictMode>
       <div {...styles.base}>
         <div {...styles.left}>
-          <DevHost title={'<CodeEditor>'} filename={filename.one}>
+          <DevHost title={'<CodeEditor>: one'} filename={filename.one}>
             <CodeEditor
               focusOnLoad={true}
               bus={bus}
               id={'one'}
               filename={filename.one}
-              onReady={readyHandler()}
+              onReady={actions.onReady}
             />
           </DevHost>
-          <DevHost title={'<CodeEditor>'} filename={filename.two}>
-            <CodeEditor bus={bus} id={'two'} filename={filename.two} />
+          <DevHost title={'<CodeEditor>: two'} filename={filename.two}>
+            <CodeEditor bus={bus} id={'two'} filename={filename.two} onReady={actions.onReady} />
           </DevHost>
         </div>
-        <div {...styles.right}>{actions.render({ style: { flex: 1 } })}</div>
+        <div {...styles.right}>
+          {actions.render({ style: { flex: 1 } })}
+          {<DevProps id={actions.model.state.editor?.id} selection={selection} />}
+        </div>
       </div>
     </React.StrictMode>
   );

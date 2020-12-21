@@ -1,3 +1,3 @@
-export * from './CodeEditorInstance';
-export * from './CodeEditorEvents';
-export * from './CodeEditorModel';
+export * from './CodeEditor.Instance';
+export * from './CodeEditor.Events';
+export * from './___CodeEditorModel';

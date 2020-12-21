@@ -19,7 +19,7 @@ export type CodeEditorInstance = {
 export type CodeEditorPosition = { column: number; line: number };
 export type CodeEditorRange = { start: t.CodeEditorPosition; end: t.CodeEditorPosition };
 export type CodeEditorSelection = {
-  position: t.CodeEditorPosition; // Cursor position.
+  cursor: t.CodeEditorPosition;
   primary: t.CodeEditorRange;
   secondary: t.CodeEditorRange[];
 };

@@ -11,14 +11,14 @@ export function EventListeners(args: {
 }) {
   const { instance, id, bus } = args;
 
-  const selection$ = new Subject<t.ICodeEditorSelectionChangeEvent>();
+  const selection$ = new Subject<t.ICodeEditorSelectionChangedEvent>();
   selection$
     .pipe(distinctUntilChanged((prev, next) => R.equals(prev, next)))
     .subscribe((e) => bus.fire(e));
 
   const fireFocus = (isFocused: boolean, source: 'text' | 'widget') => {
     if (source === 'text') {
-      bus.fire({ type: 'CodeEditor/focus', payload: { instance: id, isFocused } });
+      bus.fire({ type: 'CodeEditor/changed:focus', payload: { instance: id, isFocused } });
     }
   };
 
@@ -27,7 +27,7 @@ export function EventListeners(args: {
       type: 'CodeEditor/changed:selection',
       payload: {
         instance: id,
-        via: source as t.ICodeEditorSelectionChange['via'],
+        via: source as t.ICodeEditorSelectionChanged['via'],
         selection: Monaco.selection(instance),
       },
     });

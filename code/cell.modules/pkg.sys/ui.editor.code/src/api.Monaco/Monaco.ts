@@ -60,7 +60,7 @@ export const Monaco = {
       .filter((r) => !R.equals(r, primary));
 
     return {
-      position: Translate.position.toCodeEditor(instance.getPosition()),
+      cursor: Translate.position.toCodeEditor(instance.getPosition()),
       primary,
       secondary,
     };
