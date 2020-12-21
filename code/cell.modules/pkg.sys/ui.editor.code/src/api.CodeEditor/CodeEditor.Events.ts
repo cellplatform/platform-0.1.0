@@ -1,11 +1,12 @@
 import { Subject } from 'rxjs';
-import { filter, share, takeUntil, map } from 'rxjs/operators';
+import { filter, share, takeUntil } from 'rxjs/operators';
 
 import { rx, t } from '../common';
 
 type E = t.CodeEditorEvent;
 type F = t.ICodeEditorFocusChangedEvent;
 type S = t.ICodeEditorSelectionChangedEvent;
+type T = t.ICodeEditorTextChangedEvent;
 
 const create: t.CodeEditorEventsFactory = (input, options = {}) => {
   const bus = rx.bus<E>(input);
@@ -20,16 +21,23 @@ const create: t.CodeEditorEventsFactory = (input, options = {}) => {
 
   const focus$ = rx.payload<F>($, 'CodeEditor/changed:focus');
   const selection$ = rx.payload<S>($, 'CodeEditor/changed:selection');
+  const text$ = rx.payload<T>($, 'CodeEditor/changed:text');
 
   const fire = (instance: string): t.CodeEditorEventsFire => {
     return {
       instance,
       focus() {
-        bus.fire({ type: 'CodeEditor/change:focus', payload: { instance } });
+        bus.fire({
+          type: 'CodeEditor/change:focus',
+          payload: { instance },
+        });
       },
       select(selection, options = {}) {
         const { focus } = options;
-        bus.fire({ type: 'CodeEditor/change:selection', payload: { instance, selection, focus } });
+        bus.fire({
+          type: 'CodeEditor/change:selection',
+          payload: { instance, selection, focus },
+        });
       },
     };
   };
@@ -40,6 +48,7 @@ const create: t.CodeEditorEventsFactory = (input, options = {}) => {
     focus$: focus$.pipe(filter((e) => e.isFocused)),
     blur$: focus$.pipe(filter((e) => !e.isFocused)),
     selection$,
+    text$,
     fire,
     dispose() {
       dispose$.next();

@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 
 import { Monaco } from '../api.Monaco';
-import { R, t } from '../common';
+import { R, t, Translate } from '../common';
 
 export function Listeners(args: {
   id: string; // ID.
@@ -35,12 +35,19 @@ export function Listeners(args: {
 
   const listeners = {
     contentChanged: instance.onDidChangeModelContent((e) => {
-      console.log('content changed', e);
-      // fire({
-      //   type: 'Monaco/changed:content',
-      //   payload: { instance: id, ...e },
-      // });
+      const { isFlush, isRedoing, isUndoing } = e;
+      const changes: t.ICodeEditorTextChange[] = e.changes.map((item) => {
+        return {
+          text: item.text,
+          range: Translate.range.toEditor(item.range),
+        };
+      });
+      bus.fire({
+        type: 'CodeEditor/changed:text',
+        payload: { instance: id, changes, isFlush, isRedoing, isUndoing },
+      });
     }),
+
     cursorChanged: instance.onDidChangeCursorPosition((e) => fireSelection(e.source)),
     selectionChanged: instance.onDidChangeCursorSelection((e) => fireSelection(e.source)),
     focusEditorText: instance.onDidFocusEditorText(() => fireFocus(true, 'text')),

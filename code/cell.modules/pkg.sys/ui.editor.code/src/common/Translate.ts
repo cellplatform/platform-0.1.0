@@ -1,7 +1,7 @@
 import * as t from './types';
 
 /**
- * Helpers for translating data between Monaco and CodeEditor.
+ * Helpers for translating data between [Monaco] and [CodeEditor].
  */
 export const Translate = {
   position: {
@@ -22,8 +22,8 @@ export const Translate = {
   range: {
     toEditor(input: t.IMonacoRange): t.CodeEditorRange {
       return {
-        start: { line: clamp(input.startLineNumber), column: clamp(input.endLineNumber) },
-        end: { line: clamp(input.endLineNumber), column: clamp(input.endLineNumber) },
+        start: { line: clamp(input.startLineNumber), column: clamp(input.startColumn) },
+        end: { line: clamp(input.endLineNumber), column: clamp(input.endColumn) },
       };
     },
     toMonaco(input: t.CodeEditorRange) {

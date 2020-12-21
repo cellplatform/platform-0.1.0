@@ -8,7 +8,8 @@ export type CodeEditorChangeEvent = ICodeEditorChangeFocusEvent | ICodeEditorCha
 // Events that report changes to the state of the editor.
 export type CodeEditorChangedEvent =
   | ICodeEditorSelectionChangedEvent
-  | ICodeEditorFocusChangedEvent;
+  | ICodeEditorFocusChangedEvent
+  | ICodeEditorTextChangedEvent;
 
 /**
  * Fired when editor recieves of loses focus.
@@ -55,4 +56,23 @@ export type ICodeEditorSelectionChanged = {
   instance: string;
   selection: t.CodeEditorSelection;
   via: 'keyboard' | 'mouse';
+};
+
+/**
+ * Fires when the editor text changes.
+ */
+export type ICodeEditorTextChangedEvent = {
+  type: 'CodeEditor/changed:text';
+  payload: ICodeEditorTextChanged;
+};
+export type ICodeEditorTextChanged = {
+  instance: string;
+  changes: ICodeEditorTextChange[];
+  isFlush: boolean;
+  isRedoing: boolean;
+  isUndoing: boolean;
+};
+export type ICodeEditorTextChange = {
+  range: t.CodeEditorRange;
+  text: string;
 };

@@ -2,7 +2,7 @@ console.log('__CELL__', __CELL__);
 
 import { Actions } from 'sys.ui.harness';
 
-import { StateObject, t, time } from '../../common';
+import { StateObject, t } from '../../common';
 import { CodeEditor, CodeEditorReadyEventHandler } from '../../components/CodeEditor';
 
 type M = {
@@ -17,6 +17,12 @@ type Ctx = { model: t.IStateObjectWritable<M> };
 export const editorActions = (bus: t.CodeEditorEventBus) => {
   const events = CodeEditor.events(bus);
   const model = StateObject.create<M>({});
+
+  events.text$.subscribe((e) => {
+    console.log('-------------------------------------------');
+    console.log('text', e);
+    console.log('text', model.state.editor?.text);
+  });
 
   const getEditor = () => model.state.editor;
 
