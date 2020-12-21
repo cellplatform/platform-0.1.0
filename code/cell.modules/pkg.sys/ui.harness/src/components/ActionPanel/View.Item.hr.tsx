@@ -19,8 +19,6 @@ export const ItemHr: React.FC<ItemHrProps> = (props) => {
     }),
   };
 
-  console.log('props.model', props.model);
-
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.hr} />
