@@ -29,6 +29,7 @@ export const actions = Actions<Ctx>()
     e
       .button('change text', (ctx) => change(ctx.model))
       .button((config) => config.label('hello'))
+      .hr()
       .button('console.log', (ctx) => console.log('hello', ctx)),
   )
   // .group((e) => e.name('Group 2'))

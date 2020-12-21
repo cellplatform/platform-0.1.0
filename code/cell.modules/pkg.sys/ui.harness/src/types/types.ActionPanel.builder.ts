@@ -26,6 +26,7 @@ export type ActionAddOptions = {
 export type ActionModelInputMethods<Ctx> = {
   button(label: string, handler?: t.ActionHandler<Ctx>): B<Ctx>;
   button(config: ActionButtonConfig<Ctx>): B<Ctx>;
+  hr(): B<Ctx>;
 };
 
 /**

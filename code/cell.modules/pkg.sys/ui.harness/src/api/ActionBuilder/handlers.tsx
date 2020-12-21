@@ -72,7 +72,7 @@ export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethod
 
       if (!draft.getContext && obj.getContext) {
         draft.getContext = obj.getContext;
-      }   
+      }
     });
   },
 
@@ -89,6 +89,14 @@ export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethod
    */
   button(args) {
     const { item } = ButtonConfig(args.params);
+    args.model.change((draft) => draft.items.push(item));
+  },
+
+  /**
+   * Horizontal rule.
+   */
+  hr(args) {
+    const { item } = HrConfig(args.params);
     args.model.change((draft) => draft.items.push(item));
   },
 };
@@ -110,6 +118,11 @@ function GroupConfig(params: any[]) {
       item.items.push(ButtonConfig(params).item);
       return config as any;
     },
+
+    hr(...params: any[]) {
+      item.items.push(HrConfig(params).item);
+      return config as any;
+    },
   };
 
   if (typeof params[0] === 'function') {
@@ -125,6 +138,10 @@ function GroupConfig(params: any[]) {
 
   return { item, config };
 }
+
+/**
+ * [Helpers]
+ */
 
 function ButtonConfig(params: any[]) {
   const LABEL = 'Unnamed';
@@ -152,6 +169,11 @@ function ButtonConfig(params: any[]) {
   }
 
   return { item, config };
+}
+
+function HrConfig(params: any[]) {
+  const item: t.ActionItemHr = { type: 'hr' };
+  return { item };
 }
 
 function toContext<Ctx>(model: t.ActionModelState<Ctx>): Ctx | null {

@@ -227,6 +227,58 @@ describe('ActionBuilder', () => {
     });
   });
 
+  describe('builder.merge()', () => {
+    type G = t.ActionItemGroup;
+    const names = (builder: B) => builder.toObject().items.map((item) => (item as G).name);
+
+    const one = create();
+    const two = create();
+    one.builder.group('one-a').group('one-b');
+    two.builder.group('two-a').group('two-b');
+
+    it('adds items to end (default)', () => {
+      const builder1 = one.builder.clone();
+      const builder2 = two.builder.clone();
+      expect(names(builder1)).to.eql(['one-a', 'one-b']);
+
+      builder1.merge(builder2);
+      expect(names(builder1)).to.eql(['one-a', 'one-b', 'two-a', 'two-b']);
+    });
+
+    it('adds items to start', () => {
+      const builder1 = one.builder.clone();
+      const builder2 = two.builder.clone();
+      expect(names(builder1)).to.eql(['one-a', 'one-b']);
+
+      builder1.merge(builder2, { insertAt: 'start' });
+      expect(names(builder1)).to.eql(['two-a', 'two-b', 'one-a', 'one-b']);
+    });
+
+    it('sets context-factory if not already set', () => {
+      const builder1 = one.builder.clone();
+      const builder2 = two.builder.clone();
+
+      const fn: t.ActionGetContext<Ctx> = () => ({ count: 123 });
+      builder2.context(fn);
+
+      builder1.merge(builder2);
+      expect(builder1.toObject().getContext).to.eql(fn);
+    });
+
+    it('does not overwrite existing context factory', () => {
+      const builder1 = one.builder.clone();
+      const builder2 = two.builder.clone();
+
+      const fn1: t.ActionGetContext<Ctx> = () => ({ count: 123 });
+      const fn2: t.ActionGetContext<Ctx> = () => ({ count: 456 });
+      builder1.context(fn1);
+      builder2.context(fn2);
+
+      builder1.merge(builder2);
+      expect(builder1.toObject().getContext).to.eql(fn1);
+    });
+  });
+
   describe('builder.button()', () => {
     it('label, handler', () => {
       const { builder, model } = create();
@@ -324,55 +376,32 @@ describe('ActionBuilder', () => {
     });
   });
 
-  describe('builder.merge()', () => {
-    type G = t.ActionItemGroup;
-    const names = (builder: B) => builder.toObject().items.map((item) => (item as G).name);
+  describe('builder.hr()', () => {
+    it('base', () => {
+      const { builder, model } = create();
+      expect(model.state.items).to.eql([]);
 
-    const one = create();
-    const two = create();
-    one.builder.group('one-a').group('one-b');
-    two.builder.group('two-a').group('two-b');
+      builder.hr();
 
-    it('adds items to end (default)', () => {
-      const builder1 = one.builder.clone();
-      const builder2 = two.builder.clone();
-      expect(names(builder1)).to.eql(['one-a', 'one-b']);
-
-      builder1.merge(builder2);
-      expect(names(builder1)).to.eql(['one-a', 'one-b', 'two-a', 'two-b']);
+      const items = model.state.items;
+      expect(items.length).to.eql(1);
+      expect(items[0].type).to.eql('hr');
     });
 
-    it('adds items to start', () => {
-      const builder1 = one.builder.clone();
-      const builder2 = two.builder.clone();
-      expect(names(builder1)).to.eql(['one-a', 'one-b']);
+    it('group', () => {
+      const { builder, model } = create();
+      expect(model.state.items).to.eql([]);
 
-      builder1.merge(builder2, { insertAt: 'start' });
-      expect(names(builder1)).to.eql(['two-a', 'two-b', 'one-a', 'one-b']);
-    });
+      builder.group('foo', (config) => config.hr());
 
-    it('sets context-factory if not already set', () => {
-      const builder1 = one.builder.clone();
-      const builder2 = two.builder.clone();
+      const items = model.state.items;
+      expect(items.length).to.eql(1);
+      expect(items[0].type).to.eql('group');
 
-      const fn: t.ActionGetContext<Ctx> = () => ({ count: 123 });
-      builder2.context(fn);
+      const group = items[0] as t.ActionItemGroup;
 
-      builder1.merge(builder2);
-      expect(builder1.toObject().getContext).to.eql(fn);
-    });
-
-    it('does not overwrite existing context factory', () => {
-      const builder1 = one.builder.clone();
-      const builder2 = two.builder.clone();
-
-      const fn1: t.ActionGetContext<Ctx> = () => ({ count: 123 });
-      const fn2: t.ActionGetContext<Ctx> = () => ({ count: 456 });
-      builder1.context(fn1);
-      builder2.context(fn2);
-
-      builder1.merge(builder2);
-      expect(builder1.toObject().getContext).to.eql(fn1);
+      expect(group.items.length).to.eql(1);
+      expect(group.items[0].type).to.eql('hr');
     });
   });
 });

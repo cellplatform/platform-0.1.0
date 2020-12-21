@@ -68,6 +68,7 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
           const fire = getFire();
           fire?.select(null, { focus: true });
         })
+        .hr()
         .button('text', () => {
           const fire = getFire();
           fire?.text('// hello');
