@@ -26,7 +26,15 @@ export type ActionAddOptions = {
 export type ActionModelInputMethods<Ctx> = {
   button(label: string, handler?: t.ActionHandler<Ctx>): B<Ctx>;
   button(config: ActionButtonConfig<Ctx>): B<Ctx>;
-  hr(): B<Ctx>;
+  hr(config?: ActionHrConfig<Ctx>): B<Ctx>;
+};
+
+/**
+ * Group
+ */
+export type ActionGroupConfig<Ctx> = (args: ActionGroupConfigArgs<Ctx>) => void;
+export type ActionGroupConfigArgs<Ctx> = ActionModelInputMethods<Ctx> & {
+  name(value: string): ActionGroupConfigArgs<Ctx>;
 };
 
 /**
@@ -40,9 +48,11 @@ export type ActionButtonConfigArgs<Ctx> = {
 };
 
 /**
- * Group
+ * Hr (Horizontal Rule)
  */
-export type ActionGroupConfig<Ctx> = (args: ActionGroupConfigArgs<Ctx>) => void;
-export type ActionGroupConfigArgs<Ctx> = ActionModelInputMethods<Ctx> & {
-  name(value: string): ActionGroupConfigArgs<Ctx>;
+export type ActionHrConfig<Ctx> = (args: ActionHrConfigArgs<Ctx>) => void;
+export type ActionHrConfigArgs<Ctx> = {
+  height(value: number): ActionHrConfigArgs<Ctx>;
+  // description(value: string): ActionHrConfigArgs<Ctx>;
+  // onClick(handler: t.ActionHandler<Ctx>): ActionHrConfigArgs<Ctx>;
 };

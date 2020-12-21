@@ -7,6 +7,8 @@ export type ItemHrProps = {
 };
 
 export const ItemHr: React.FC<ItemHrProps> = (props) => {
+  const { model } = props;
+
   const styles = {
     base: css({
       boxSizing: 'border-box',
@@ -14,7 +16,7 @@ export const ItemHr: React.FC<ItemHrProps> = (props) => {
       PaddingX: 8,
     }),
     hr: css({
-      height: 8,
+      height: model.height,
       backgroundColor: color.format(-0.06),
     }),
   };

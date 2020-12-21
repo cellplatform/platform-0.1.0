@@ -35,4 +35,5 @@ export type ActionItemButton = {
 
 export type ActionItemHr = {
   type: 'hr';
+  height: number;
 };

@@ -377,7 +377,7 @@ describe('ActionBuilder', () => {
   });
 
   describe('builder.hr()', () => {
-    it('base', () => {
+    it('default configuration', () => {
       const { builder, model } = create();
       expect(model.state.items).to.eql([]);
 
@@ -385,23 +385,24 @@ describe('ActionBuilder', () => {
 
       const items = model.state.items;
       expect(items.length).to.eql(1);
-      expect(items[0].type).to.eql('hr');
+
+      const item = items[0] as t.ActionItemHr;
+      expect(item.type).to.eql('hr');
+      expect(item.height).to.eql(8);
     });
 
-    it('group', () => {
+    it('adjust configuration', () => {
       const { builder, model } = create();
       expect(model.state.items).to.eql([]);
 
-      builder.group('foo', (config) => config.hr());
+      builder.hr((config) => config.height(-10));
 
       const items = model.state.items;
       expect(items.length).to.eql(1);
-      expect(items[0].type).to.eql('group');
 
-      const group = items[0] as t.ActionItemGroup;
-
-      expect(group.items.length).to.eql(1);
-      expect(group.items[0].type).to.eql('hr');
+      const item = items[0] as t.ActionItemHr;
+      expect(item.type).to.eql('hr');
+      expect(item.height).to.eql(1);
     });
   });
 });
