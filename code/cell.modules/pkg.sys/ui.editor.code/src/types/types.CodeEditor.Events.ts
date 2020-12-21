@@ -32,7 +32,7 @@ export type CodeEditorEventsFire = {
   readonly instance: string;
   focus(): void;
   select(
-    selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[],
+    selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[] | null,
     options?: { focus?: boolean },
   ): void;
 };

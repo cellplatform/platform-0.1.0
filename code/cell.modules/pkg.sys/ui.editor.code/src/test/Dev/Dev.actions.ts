@@ -57,6 +57,10 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
             ],
             { focus: true },
           );
+        })
+        .button('select: clear', () => {
+          const fire = getFire();
+          fire?.select(null, { focus: true });
         }),
     );
 

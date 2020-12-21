@@ -32,7 +32,12 @@ export const DevProps: React.FC<DevPropsProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       <div {...styles.title}>editor: {props.id}</div>
       <div {...styles.body}>
-        <ObjectView data={props.selection} expandPaths={['$.cursor']} fontSize={11} />
+        <ObjectView
+          name={'selection'}
+          data={props.selection}
+          expandPaths={['$.cursor']}
+          fontSize={11}
+        />
       </div>
     </div>
   );

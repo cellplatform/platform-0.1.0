@@ -20,7 +20,9 @@ export function ChangeHandlers(args: { editor: t.CodeEditorInstance; events: t.C
   rx.payload<t.ICodeEditorChangeSelectionEvent>($, 'CodeEditor/change:selection')
     .pipe()
     .subscribe((e) => {
-      console.log('change selection', e);
+      if (e.selection === null) {
+        editor.select(null);
+      }
 
       if (Is.position(e.selection)) {
         // Simple cursor position provided.

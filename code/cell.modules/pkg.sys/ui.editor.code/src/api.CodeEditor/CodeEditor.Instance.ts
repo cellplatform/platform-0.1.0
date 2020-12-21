@@ -3,6 +3,7 @@ import { Listeners } from './CodeEditor.Instance.listeners';
 import { CodeEditorEvents } from '../api.CodeEditor';
 import { Monaco } from '../api.Monaco';
 import { ChangeHandlers } from './CodeEditor.Instance.handlers';
+import { select } from './CodeEditor.Instance.select';
 
 /**
  * API helpers for manipulating an [IMonacoStandaloneCodeEditor] instance.
@@ -82,27 +83,8 @@ export const CodeEditorInstance = {
       /**
        * Select
        */
-      select(input: t.CodeEditorSelection) {
-        const selections = [input.primary, ...input.secondary]
-          .filter(Boolean)
-          .map((s) => Translate.range.toMonaco(s).selection);
-
-        if (selections.length === 1) {
-          instance.setSelection(selections[0]);
-        }
-        if (selections.length > 1) {
-          const positionColumn = selections[0].positionColumn;
-          const positionLineNumber = selections[0].positionLineNumber;
-          instance.setSelections(
-            selections.map((item) => ({
-              ...item,
-              positionLineNumber,
-              positionColumn,
-              selectionStartColumn: item.startColumn,
-              selectionStartLineNumber: item.startLineNumber,
-            })),
-          );
-        }
+      select(input: t.CodeEditorSelection | null) {
+        select({ instance, input });
       },
 
       /**

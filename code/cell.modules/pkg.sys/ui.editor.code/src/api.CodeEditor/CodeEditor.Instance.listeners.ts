@@ -42,10 +42,7 @@ export function Listeners(args: {
       // });
     }),
     cursorChanged: instance.onDidChangeCursorPosition((e) => fireSelection(e.source)),
-    selectionChanged: instance.onDidChangeCursorSelection((e) => {
-      fireSelection(e.source);
-      console.log('e', e);
-    }),
+    selectionChanged: instance.onDidChangeCursorSelection((e) => fireSelection(e.source)),
     focusEditorText: instance.onDidFocusEditorText(() => fireFocus(true, 'text')),
     focusEditorWidget: instance.onDidFocusEditorWidget(() => fireFocus(true, 'widget')),
     blurEditorText: instance.onDidBlurEditorText(() => fireFocus(false, 'text')),

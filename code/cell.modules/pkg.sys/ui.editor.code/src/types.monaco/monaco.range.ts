@@ -22,5 +22,4 @@ export type IMonacoRange = {
 export type IMonacoSelection = IMonacoRange & {
   positionColumn: number;
   positionLineNumber: number;
-  toString(): string;
 };

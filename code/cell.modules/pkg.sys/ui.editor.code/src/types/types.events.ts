@@ -40,7 +40,7 @@ export type ICodeEditorChangeSelectionEvent = {
 };
 export type ICodeEditorChangeSelection = {
   instance: string;
-  selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[];
+  selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[] | null;
   focus?: boolean;
 };
 
