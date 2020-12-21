@@ -1,9 +1,11 @@
 import * as React from 'react';
 
-import { Builder, t, defaultValue } from '../../common';
+import { defaultValue, t } from '../../common';
 import { View as ActionPanel } from '../../components/ActionPanel/View';
-
-const format = Builder.format;
+import { ButtonConfig } from './handlers.Button';
+import { GroupConfig } from './handlers.Group';
+import { HrConfig } from './handlers.Hr';
+import { toContext } from './util';
 
 /**
  * Action handlers.
@@ -27,9 +29,7 @@ export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethod
    */
   clone(args) {
     const clone = args.clone();
-    if (typeof args.params[0] === 'function') {
-      clone.context(args.params[0]);
-    }
+    if (typeof args.params[0] === 'function') clone.context(args.params[0]);
     return clone;
   },
 
@@ -100,89 +100,3 @@ export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethod
     args.model.change((draft) => draft.items.push(item));
   },
 };
-
-/**
- * [Helpers]
- */
-
-function GroupConfig(params: any[]) {
-  const item: t.ActionItemGroup = { type: 'group', name: 'Unnamed', items: [] };
-
-  const config: t.ActionGroupConfigArgs<any> = {
-    name(value) {
-      item.name = format.string(value, { trim: true }) || 'Unnamed';
-      return config;
-    },
-
-    button(...params: any[]) {
-      item.items.push(ButtonConfig(params).item);
-      return config as any;
-    },
-
-    hr(...params: any[]) {
-      item.items.push(HrConfig(params).item);
-      return config as any;
-    },
-  };
-
-  if (typeof params[0] === 'function') {
-    params[0](config);
-  } else {
-    if (typeof params[0] === 'string') {
-      config.name(params[0]);
-    }
-    if (typeof params[1] === 'function') {
-      params[1](config);
-    }
-  }
-
-  return { item, config };
-}
-
-/**
- * [Helpers]
- */
-
-function ButtonConfig(params: any[]) {
-  const LABEL = 'Unnamed';
-  const item: t.ActionItemButton = { type: 'button', label: LABEL };
-
-  const config: t.ActionButtonConfigArgs<any> = {
-    label(value) {
-      item.label = format.string(value, { trim: true }) || LABEL;
-      return config;
-    },
-    description(value) {
-      item.description = format.string(value, { trim: true });
-      return config;
-    },
-    onClick(handler) {
-      item.onClick = handler;
-      return config;
-    },
-  };
-
-  if (typeof params[0] === 'function') {
-    params[0](config);
-  } else {
-    config.label(params[0]).onClick(params[1]);
-  }
-
-  return { item, config };
-}
-
-function HrConfig(params: any[]) {
-  const item: t.ActionItemHr = { type: 'hr' };
-  return { item };
-}
-
-function toContext<Ctx>(model: t.ActionModelState<Ctx>): Ctx | null {
-  const state = model.state;
-  if (state.getContext) {
-    const ctx = state.getContext(state.ctx || null);
-    model.change((draft) => (draft.ctx = ctx));
-    return ctx;
-  } else {
-    return null;
-  }
-}

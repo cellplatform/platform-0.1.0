@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { color, COLORS, constants, css, CssValue, t } from '../../common';
+import { COLORS, constants, css, CssValue, t } from '../../common';
 import { Icons } from '../Icons';
 
 export type ItemButtonProps = {
