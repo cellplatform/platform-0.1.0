@@ -8,6 +8,10 @@ import { t } from './common';
 export type IMonaco = {
   editor: t.IMonacoEditor;
   languages: t.IMonacoLanguages;
+  Uri: {
+    parse(value: string, strict?: boolean): IMonacoUri;
+    isUri(thing: any): boolean;
+  };
 };
 
 /**
@@ -15,24 +19,25 @@ export type IMonaco = {
  */
 export type IMonacoCancellationToken = {
   isCancellationRequested: boolean;
-  onCancellationRequested: MonacoOnCancellationRequested;
+  onCancellationRequested: IMonacoOnCancellationRequested;
 };
 
 /**
  * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.cancellationtoken.html#iscancellationrequested
  */
-export type MonacoOnCancellationRequested = (
+export type IMonacoOnCancellationRequested = (
   listener: (e: any) => any,
   thisArgs?: any,
   disposables?: t.IDisposable[],
 ) => t.IDisposable;
 
 /**
- * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.irange.html
+ * https://microsoft.github.io/monaco-editor/api/classes/monaco.uri.html#parse
  */
-export type IMonacoRange = {
-  endColumn: number;
-  startColumn: number;
-  endLineNumber: number;
-  startLineNumber: number;
+export type IMonacoUri = {
+  authority: string;
+  fragment: string;
+  path: string;
+  query: string;
+  scheme: string;
 };

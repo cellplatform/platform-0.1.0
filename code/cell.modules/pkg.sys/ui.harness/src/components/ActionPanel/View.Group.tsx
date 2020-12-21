@@ -28,7 +28,7 @@ export const Group: React.FC<GroupProps> = (props) => {
   });
 
   return (
-    <div {...css(styles.base, props.style)} className={'foo'}>
+    <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
         {props.name && <Title>{props.name}</Title>}
         <div {...styles.list}>{elItems}</div>

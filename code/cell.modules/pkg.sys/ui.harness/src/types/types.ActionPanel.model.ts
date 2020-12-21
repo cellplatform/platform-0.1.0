@@ -4,6 +4,7 @@ export type ActionModelState<Ctx> = t.BuilderModel<t.ActionModel<Ctx>>;
 export type ActionModel<Ctx> = {
   items: ActionItem[];
   getContext?: ActionGetContext<Ctx>;
+  ctx?: Ctx;
 };
 
 export type ActionHandler<T> = (ctx: T) => void;
@@ -11,13 +12,13 @@ export type ActionHandler<T> = (ctx: T) => void;
 /**
  * Context
  */
-export type ActionGetContext<T> = (prev?: T) => T;
+export type ActionGetContext<T> = (prev: T | null) => T;
 
 /**
  * Item types.
  */
 export type ActionItem = ActionItemGroup | ActionItemInput;
-export type ActionItemInput = ActionItemButton;
+export type ActionItemInput = ActionItemButton | ActionItemHr;
 
 export type ActionItemGroup = {
   type: 'group';
@@ -30,4 +31,8 @@ export type ActionItemButton = {
   label: string;
   description?: string;
   onClick?: ActionHandler<any>;
+};
+
+export type ActionItemHr = {
+  type: 'hr';
 };

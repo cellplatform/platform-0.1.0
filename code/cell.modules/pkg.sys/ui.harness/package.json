@@ -5,10 +5,10 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "compiler": {
-    "port": 3002
+    "port": 3032
   },
   "scripts": {
-    "test": "ts test",
+    "test": "ts test $@",
     "build": "ts build --no-esm $@",
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",
@@ -23,6 +23,7 @@
     "@platform/cell.module": "^0.0.81",
     "@platform/state": "^0.7.25",
     "@platform/ui.icon": "^0.0.179",
+    "@platform/ui.spinner": "^0.0.176",
     "preset.env": "^0.0.7",
     "react-icons": "^4.1.0",
     "sys.ui.primitives": "^0.0.46"
