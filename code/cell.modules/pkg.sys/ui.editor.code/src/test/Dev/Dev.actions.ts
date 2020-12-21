@@ -9,7 +9,7 @@ type M = {
   editor?: t.CodeEditorInstance;
   selection?: t.CodeEditorSelection;
 };
-type Ctx = { model: t.IStateObjectWritable<M> };
+type Ctx = { model: t.IStateObjectWritable<M>; fire?: t.CodeEditorEventsFire };
 
 /**
  * Actions for a single editor.
@@ -24,17 +24,8 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
     console.log('text', model.state.editor?.text);
   });
 
-  const getEditor = () => model.state.editor;
-
-  const getFire = () => {
-    const editor = getEditor();
-    return editor ? events.fire(editor.id) : undefined;
-  };
-
   const setSelection = () =>
     model.change((draft) => (draft.selection = model.state.editor?.selection));
-
-  const focus = (instance: string) => events.fire(instance).focus();
 
   events.selection$.subscribe((e) => setSelection());
 
@@ -46,28 +37,28 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
   };
 
   /**
-   * Focus
+   * Focus (between instances).
    */
   const focusActions = Actions<Ctx>()
-    .button('focus: one', () => focus('one'))
-    .button('focus: two', () => focus('two'));
+    .button('focus: one', () => events.fire('one').focus())
+    .button('focus: two', () => events.fire('two').focus());
 
   /**
    * Select
    */
   const selectActions = Actions<Ctx>()
     .title('select')
-    .button('position (0:5)', () => {
-      getFire()?.select({ line: 0, column: 5 }, { focus: true });
+    .button('position (0:5)', (ctx) => {
+      ctx.fire?.select({ line: 0, column: 5 }, { focus: true });
     })
-    .button('range', () => {
-      getFire()?.select(
+    .button('range', (ctx) => {
+      ctx.fire?.select(
         { start: { line: 1, column: 5 }, end: { line: 3, column: 10 } },
         { focus: true },
       );
     })
-    .button('ranges', () => {
-      getFire()?.select(
+    .button('ranges', (ctx) => {
+      ctx.fire?.select(
         [
           { start: { line: 1, column: 2 }, end: { line: 1, column: 4 } },
           { start: { line: 3, column: 2 }, end: { line: 4, column: 8 } },
@@ -76,39 +67,56 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
         { focus: true },
       );
     })
-    .button('clear', () => {
-      getFire()?.select(null, { focus: true });
+    .button('clear', (ctx) => {
+      ctx.fire?.select(null, { focus: true });
     });
 
   /**
    * Text
    */
-
   const textActions = Actions<Ctx>()
     .title('text')
-    .button('short', () => {
-      getFire()?.text('// hello');
+    .button('short', (ctx) => {
+      ctx.fire?.text('// hello');
     })
-    .button('sample', () => {
+    .button('sample', (ctx) => {
       let code = `// sample\nconst a:number[] = [1,2,3]\n`;
       code += `import {add} from 'math';\nconst x = add(3, 5);\n`;
       code += `const total = a.reduce((acc, next) =>acc + next, 0);\n`;
-      getFire()?.text(code);
+      ctx.fire?.text(code);
     })
+    .button('clear', (ctx) => {
+      ctx.fire?.text(null);
+    });
+
+  /**
+   * Type Libraries
+   */
+  const libsActions = Actions<Ctx>()
+    .title('Type Libraries')
     .button('clear', () => {
-      getFire()?.text(null);
+      // TODO 🐷
+      // getFire()?.text(null);
+      // fire(() => )
+      // current(({fire}) => fire.)
     });
 
   /**
    * Actions
    */
   const actions = Actions<Ctx>()
-    .context((prev) => prev || { model })
+    .context((prev) => {
+      const editor = model.state.editor;
+      const fire = editor ? editor.events.fire(editor.id) : undefined;
+      return { model, fire };
+    })
     .merge(focusActions)
     .hr()
     .merge(selectActions)
     .hr()
-    .merge(textActions);
+    .merge(textActions)
+    .hr()
+    .merge(libsActions);
 
   return {
     render: actions.render,
