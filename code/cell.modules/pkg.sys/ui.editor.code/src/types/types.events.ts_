@@ -1,6 +1,6 @@
 import { t } from './common';
 
-export type CodeEditorEvent = CodeEditorChangeEvent | CodeEditorChangedEvent;
+export type CodeEditorEvent = CodeEditorChangeEvent | CodeEditorChangedEvent | ICodeEditorTempEvent;
 
 export type CodeEditorChangeEvent =
   | ICodeEditorChangeFocusEvent
@@ -11,6 +11,14 @@ export type CodeEditorChangedEvent =
   | ICodeEditorSelectionChangedEvent
   | ICodeEditorFocusChangedEvent
   | ICodeEditorTextChangedEvent;
+
+export type ICodeEditorTempEvent = {
+  type: 'CodeEditor/tmp';
+  payload: ICodeEditorTemp;
+};
+export type ICodeEditorTemp = {
+  instance: string;
+};
 
 /**
  * Fired to assign focus to an editor.
