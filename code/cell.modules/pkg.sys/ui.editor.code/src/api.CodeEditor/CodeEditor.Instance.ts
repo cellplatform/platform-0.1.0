@@ -70,14 +70,23 @@ export const CodeEditorInstance = {
         return instance.getValue();
       },
       set text(value: string) {
-        instance.setValue(value);
+        // NB: Done via push-edit operation to preserve the undo stack.
+        model.pushEditOperations(
+          [],
+          [
+            {
+              range: model.getFullModelRange(),
+              text: value,
+            },
+          ],
+        );
       },
 
       /**
        * Get the current selection state.
        */
       get selection() {
-        return Monaco.selection(instance);
+        return Monaco.getSelection(instance);
       },
 
       /**

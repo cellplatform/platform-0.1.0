@@ -32,6 +32,7 @@ export type CodeEditorEvents = {
 export type CodeEditorEventsFire = {
   readonly instance: string;
   focus(): void;
+  text(text: string): void;
   select(
     selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[] | null,
     options?: { focus?: boolean },

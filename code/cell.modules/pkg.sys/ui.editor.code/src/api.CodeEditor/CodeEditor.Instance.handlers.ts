@@ -60,4 +60,11 @@ export function ChangeHandlers(args: { editor: t.CodeEditorInstance; events: t.C
         editor.focus();
       }
     });
+
+  /**
+   * Text
+   */
+  rx.payload<t.ICodeEditorChangeTextEvent>($, 'CodeEditor/change:text')
+    .pipe()
+    .subscribe((e) => (editor.text = e.text));
 }

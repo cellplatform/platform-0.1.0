@@ -45,7 +45,7 @@ export const Monaco = {
   /**
    * Derive the current selection object.
    */
-  selection(instance: t.IMonacoStandaloneCodeEditor): t.CodeEditorSelection {
+  getSelection(instance: t.IMonacoStandaloneCodeEditor): t.CodeEditorSelection {
     const toRange = (input: t.IMonacoSelection): t.CodeEditorRange => {
       return {
         start: { line: input.startLineNumber, column: input.startColumn },

@@ -2,17 +2,18 @@ import { t } from './common';
 
 export type CodeEditorEvent = CodeEditorChangeEvent | CodeEditorChangedEvent;
 
-// Events that change the state of the editor.
-export type CodeEditorChangeEvent = ICodeEditorChangeFocusEvent | ICodeEditorChangeSelectionEvent;
+export type CodeEditorChangeEvent =
+  | ICodeEditorChangeFocusEvent
+  | ICodeEditorChangeSelectionEvent
+  | ICodeEditorChangeTextEvent;
 
-// Events that report changes to the state of the editor.
 export type CodeEditorChangedEvent =
   | ICodeEditorSelectionChangedEvent
   | ICodeEditorFocusChangedEvent
   | ICodeEditorTextChangedEvent;
 
 /**
- * Fired when editor recieves of loses focus.
+ * Fired to assign focus to an editor.
  */
 export type ICodeEditorChangeFocusEvent = {
   type: 'CodeEditor/change:focus';
@@ -33,7 +34,7 @@ export type ICodeEditorFocusChanged = {
 };
 
 /**
- * Fires to cause a change to the editor selection.
+ * Fired to cause a change to the editor selection.
  */
 export type ICodeEditorChangeSelectionEvent = {
   type: 'CodeEditor/change:selection';
@@ -56,6 +57,18 @@ export type ICodeEditorSelectionChanged = {
   instance: string;
   selection: t.CodeEditorSelection;
   via: 'keyboard' | 'mouse';
+};
+
+/**
+ * Fired to change the text within an editor.
+ */
+export type ICodeEditorChangeTextEvent = {
+  type: 'CodeEditor/change:text';
+  payload: ICodeEditorChangeText;
+};
+export type ICodeEditorChangeText = {
+  instance: string;
+  text: string;
 };
 
 /**

@@ -2,6 +2,7 @@ import { Subject } from 'rxjs';
 import { filter, share, takeUntil } from 'rxjs/operators';
 
 import { rx, t } from '../common';
+import { Fire } from './CodeEditor.Events.fire';
 
 type E = t.CodeEditorEvent;
 type F = t.ICodeEditorFocusChangedEvent;
@@ -23,25 +24,6 @@ const create: t.CodeEditorEventsFactory = (input, options = {}) => {
   const selection$ = rx.payload<S>($, 'CodeEditor/changed:selection');
   const text$ = rx.payload<T>($, 'CodeEditor/changed:text');
 
-  const fire = (instance: string): t.CodeEditorEventsFire => {
-    return {
-      instance,
-      focus() {
-        bus.fire({
-          type: 'CodeEditor/change:focus',
-          payload: { instance },
-        });
-      },
-      select(selection, options = {}) {
-        const { focus } = options;
-        bus.fire({
-          type: 'CodeEditor/change:selection',
-          payload: { instance, selection, focus },
-        });
-      },
-    };
-  };
-
   const api: t.CodeEditorEvents = {
     $,
     dispose$: dispose$.asObservable(),
@@ -49,7 +31,9 @@ const create: t.CodeEditorEventsFactory = (input, options = {}) => {
     blur$: focus$.pipe(filter((e) => !e.isFocused)),
     selection$,
     text$,
-    fire,
+    fire(instance) {
+      return Fire(bus, instance);
+    },
     dispose() {
       dispose$.next();
       dispose$.complete();

@@ -28,7 +28,7 @@ export function Listeners(args: {
       payload: {
         instance: id,
         via: source as t.ICodeEditorSelectionChanged['via'],
-        selection: Monaco.selection(instance),
+        selection: Monaco.getSelection(instance),
       },
     });
   };
