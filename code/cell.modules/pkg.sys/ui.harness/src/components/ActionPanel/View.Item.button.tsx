@@ -24,7 +24,7 @@ export const ButtonItem: React.FC<ButtonItemProps> = (props) => {
     }),
     main: css({
       Flex: 'horizontal-stretch-stretch',
-      PaddingY: 4,
+      PaddingY: 2,
       paddingLeft: 8,
       paddingRight: 10,
       transform: isDown ? `translateY(1px)` : undefined,
@@ -68,8 +68,6 @@ export const ButtonItem: React.FC<ButtonItemProps> = (props) => {
       }
     };
   };
-
-  // const over = (isOver: boolean) => {};
 
   const clickHandler = (isDown: boolean) => {
     return (e: React.MouseEvent) => {

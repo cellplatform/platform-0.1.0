@@ -56,16 +56,17 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
    * Select
    */
   const selectActions = Actions<Ctx>()
-    .button('select: position (0:5)', () => {
+    .title('select')
+    .button('position (0:5)', () => {
       getFire()?.select({ line: 0, column: 5 }, { focus: true });
     })
-    .button('select: range', () => {
+    .button('range', () => {
       getFire()?.select(
         { start: { line: 1, column: 5 }, end: { line: 3, column: 10 } },
         { focus: true },
       );
     })
-    .button('select: ranges', () => {
+    .button('ranges', () => {
       getFire()?.select(
         [
           { start: { line: 1, column: 2 }, end: { line: 1, column: 4 } },
@@ -75,7 +76,7 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
         { focus: true },
       );
     })
-    .button('select: clear', () => {
+    .button('clear', () => {
       getFire()?.select(null, { focus: true });
     });
 
@@ -84,13 +85,17 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
    */
 
   const textActions = Actions<Ctx>()
-    .button('text: sample', () => {
+    .title('text')
+    .button('short', () => {
+      getFire()?.text('// hello');
+    })
+    .button('sample', () => {
       let code = `// sample\nconst a:number[] = [1,2,3]\n`;
       code += `import {add} from 'math';\nconst x = add(3, 5);\n`;
       code += `const total = a.reduce((acc, next) =>acc + next, 0);\n`;
       getFire()?.text(code);
     })
-    .button('text: clear', () => {
+    .button('clear', () => {
       getFire()?.text(null);
     });
 

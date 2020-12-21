@@ -12,8 +12,8 @@ export const HrItem: React.FC<HrItemProps> = (props) => {
   const styles = {
     base: css({
       boxSizing: 'border-box',
-      PaddingY: 4,
       PaddingX: 8,
+      PaddingY: 8,
     }),
     hr: css({
       height: model.height,
