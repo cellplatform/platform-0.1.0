@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { t } from '../../common';
-import { ActionBuilder } from '../../config';
+import { ActionBuilder } from '../../api';
 import { View, ViewProps } from './View';
 
 /**
