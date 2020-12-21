@@ -80,12 +80,16 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
       ctx.fire?.text('// hello');
     })
     .button('sample', (ctx) => {
-      let code = `// sample\nconst a:number[] = [1,2,3]\n`;
-      code += `import {add} from 'math';\nconst x = add(3, 5);\n`;
-      code += `const total = a.reduce((acc, next) =>acc + next, 0);\n`;
+      const code = `
+// sample
+const a:number[] = [1,2,3]
+import {add} from 'math';
+const x = add(3, 5);
+const total = a.reduce((acc, next) =>acc + next, 0);
+      `;
       ctx.fire?.text(code);
     })
-    .button('clear', (ctx) => {
+    .button('null (clear)', (ctx) => {
       ctx.fire?.text(null);
     });
 
