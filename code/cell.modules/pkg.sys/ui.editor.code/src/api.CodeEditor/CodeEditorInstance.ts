@@ -27,9 +27,9 @@ export const CodeEditorInstance = {
     const events = CodeEditorEvents.create(bus, { instance: id });
 
     events.$.subscribe((e) => {
-      console.log(e.type, e.payload);
+      // console.log(e.type, e.payload);
 
-      return; 
+      return;
       console.group('🌳 ');
 
       console.log('e', e);

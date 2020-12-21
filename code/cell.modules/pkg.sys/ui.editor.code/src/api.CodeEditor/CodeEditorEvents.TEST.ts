@@ -65,7 +65,7 @@ describe('CodeEditorEvents', () => {
     expect(eventCount).to.eql(2);
   });
 
-  it.only('fire: specific instance', () => {
+  it('fire: specific instance', () => {
     const bus = rx.bus();
     const events = CodeEditorEvents.create(bus, { instance: 'foo' });
 

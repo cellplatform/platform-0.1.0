@@ -6,3 +6,4 @@ export * from './types.events';
 
 export * from './types.CodeEditor';
 export * from './types.CodeEditorEvents';
+export * from './types.CodeEditorModel';

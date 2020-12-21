@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { color, css, t, rx } from '../../common';
-import { CodeEditor } from '../../components/CodeEditor';
+import { CodeEditor, CodeEditorReadyEventHandler } from '../../components/CodeEditor';
 import { actions } from './Dev.actions';
 import { DevHost } from './Dev.host';
 import { crdt } from './Dev.CRDT';
@@ -27,6 +27,15 @@ const filename = {
 
 crdt({ bus });
 
+const readyHandler = () => {
+  const handler: CodeEditorReadyEventHandler = (e) => {
+    console.log('ready', e.editor.id);
+    e.editor.text = '// foo';
+    // actions.
+  };
+  return handler;
+};
+
 export const Dev: React.FC = () => {
   const styles = {
     base: css({
@@ -51,10 +60,16 @@ export const Dev: React.FC = () => {
       <div {...styles.base}>
         <div {...styles.left}>
           <DevHost title={'<CodeEditor>'} filename={filename.one}>
-            <CodeEditor focusOnLoad={true} bus={bus} id={'one'} filename={filename.one} />
+            <CodeEditor
+              focusOnLoad={true}
+              bus={bus}
+              id={'one'}
+              filename={filename.one}
+              onReady={readyHandler()}
+            />
           </DevHost>
           <DevHost title={'<CodeEditor>'} filename={filename.two}>
-            <CodeEditor focusOnLoad={true} bus={bus} id={'two'} filename={filename.two} />
+            <CodeEditor bus={bus} id={'two'} filename={filename.two} />
           </DevHost>
         </div>
         <div {...styles.right}>{actions.render({ style: { flex: 1 } })}</div>

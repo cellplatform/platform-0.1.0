@@ -5,6 +5,9 @@ import { Loading } from '../Loading';
 import { Monaco, MonacoEditor, MonacoEditorReadyEvent } from '../Monaco';
 import { CodeEditorInstance } from '../../api.CodeEditor';
 
+export type CodeEditorReadyEvent = { id: string; editor: t.CodeEditorInstance };
+export type CodeEditorReadyEventHandler = (e: CodeEditorReadyEvent) => void;
+
 export type CodeEditorProps = {
   id?: string;
   theme?: t.CodeEditorTheme;
@@ -13,6 +16,7 @@ export type CodeEditorProps = {
   filename?: string;
   style?: CssValue;
   bus?: t.EventBus<any>;
+  onReady?: CodeEditorReadyEventHandler;
 };
 
 export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
@@ -36,6 +40,10 @@ export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
 
     if (props.focusOnLoad) {
       editor.focus();
+    }
+
+    if (props.onReady) {
+      props.onReady({ id: editor.id, editor });
     }
   };
 
