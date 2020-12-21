@@ -36,52 +36,7 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
 
   const focus = (instance: string) => events.fire(instance).focus();
 
-  const actions = Actions<Ctx>()
-    .context((prev) => prev || { model })
-    .button('focus: one', () => focus('one'))
-    .button('focus: two', () => focus('two'))
-    .group(`editor`, (e) =>
-      e
-        .button('select: position (0:5)', () => {
-          const fire = getFire();
-          fire?.select({ line: 0, column: 5 }, { focus: true });
-        })
-        .button('select: range', () => {
-          const fire = getFire();
-          fire?.select(
-            { start: { line: 1, column: 5 }, end: { line: 3, column: 10 } },
-            { focus: true },
-          );
-        })
-        .button('select: ranges', () => {
-          const fire = getFire();
-          fire?.select(
-            [
-              { start: { line: 1, column: 2 }, end: { line: 1, column: 4 } },
-              { start: { line: 3, column: 2 }, end: { line: 4, column: 8 } },
-              { start: { line: 5, column: 1 }, end: { line: 5, column: 2 } },
-            ],
-            { focus: true },
-          );
-        })
-        .button('select: clear', () => {
-          const fire = getFire();
-          fire?.select(null, { focus: true });
-        })
-        .hr()
-        .button('text: short', () => {
-          getFire()?.text('// hello');
-        })
-        .button('text: sample', () => {
-          let code = `// sample\nconst a:number[] = [1,2,3]\n`;
-          code += `import {add} from 'math';\nconst x = add(3, 5);\n`;
-          code += `const total = a.reduce((acc, next) =>acc + next, 0);\n`;
-          getFire()?.text(code);
-        })
-        .button('text: clear', () => {
-          getFire()?.text(null);
-        }),
-    );
+  events.selection$.subscribe((e) => setSelection());
 
   const onReady: CodeEditorReadyEventHandler = (e) => {
     e.editor.events.focus$.subscribe(() => {
@@ -90,7 +45,65 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
     });
   };
 
-  events.selection$.subscribe((e) => setSelection());
+  /**
+   * Focus
+   */
+  const focusActions = Actions<Ctx>()
+    .button('focus: one', () => focus('one'))
+    .button('focus: two', () => focus('two'));
+
+  /**
+   * Select
+   */
+  const selectActions = Actions<Ctx>()
+    .button('select: position (0:5)', () => {
+      getFire()?.select({ line: 0, column: 5 }, { focus: true });
+    })
+    .button('select: range', () => {
+      getFire()?.select(
+        { start: { line: 1, column: 5 }, end: { line: 3, column: 10 } },
+        { focus: true },
+      );
+    })
+    .button('select: ranges', () => {
+      getFire()?.select(
+        [
+          { start: { line: 1, column: 2 }, end: { line: 1, column: 4 } },
+          { start: { line: 3, column: 2 }, end: { line: 4, column: 8 } },
+          { start: { line: 5, column: 1 }, end: { line: 5, column: 2 } },
+        ],
+        { focus: true },
+      );
+    })
+    .button('select: clear', () => {
+      getFire()?.select(null, { focus: true });
+    });
+
+  /**
+   * Text
+   */
+
+  const textActions = Actions<Ctx>()
+    .button('text: sample', () => {
+      let code = `// sample\nconst a:number[] = [1,2,3]\n`;
+      code += `import {add} from 'math';\nconst x = add(3, 5);\n`;
+      code += `const total = a.reduce((acc, next) =>acc + next, 0);\n`;
+      getFire()?.text(code);
+    })
+    .button('text: clear', () => {
+      getFire()?.text(null);
+    });
+
+  /**
+   * Actions
+   */
+  const actions = Actions<Ctx>()
+    .context((prev) => prev || { model })
+    .merge(focusActions)
+    .hr()
+    .merge(selectActions)
+    .hr()
+    .merge(textActions);
 
   return {
     render: actions.render,
