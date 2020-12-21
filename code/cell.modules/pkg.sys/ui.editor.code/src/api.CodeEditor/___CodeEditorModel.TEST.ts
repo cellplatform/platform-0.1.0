@@ -1,7 +1,7 @@
 import { t, expect, DEFAULT } from '../test';
 import { CodeEditorModel } from '.';
 
-describe.only('CodeEditorModel', () => {
+describe.skip('CodeEditorModel', () => {
   it('create: default', () => {
     const model = CodeEditorModel.create();
     expect(model.state).to.eql(DEFAULT.MODEL);

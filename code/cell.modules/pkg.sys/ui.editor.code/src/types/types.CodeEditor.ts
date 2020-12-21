@@ -11,6 +11,7 @@ export type CodeEditorInstance = {
   text: string;
   focus(): void;
   dispose(): void;
+  select(selection: t.CodeEditorSelection): void;
 };
 
 /**

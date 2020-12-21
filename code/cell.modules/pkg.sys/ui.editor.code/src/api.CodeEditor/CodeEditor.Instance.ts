@@ -1,7 +1,8 @@
-import { slug, t, rx, time } from '../common';
-import { EventListeners } from './CodeEditor.Instance.events';
+import { slug, t, rx, time, Translate } from '../common';
+import { Listeners } from './CodeEditor.Instance.listeners';
 import { CodeEditorEvents } from '../api.CodeEditor';
 import { Monaco } from '../api.Monaco';
+import { ChangeHandlers } from './CodeEditor.Instance.handlers';
 
 /**
  * API helpers for manipulating an [IMonacoStandaloneCodeEditor] instance.
@@ -23,12 +24,8 @@ export const CodeEditorInstance = {
   }): t.CodeEditorInstance {
     const { instance, singleton, bus } = args;
     const id = args.id || `editor-${slug()}`;
-    const listeners = EventListeners({ bus, instance, id });
+    const listeners = Listeners({ bus, instance, id });
     const events = CodeEditorEvents.create(bus, { instance: id });
-
-    rx.payload<t.ICodeEditorChangeFocusEvent>(events.$, 'CodeEditor/change:focus')
-      .pipe()
-      .subscribe((e) => editor.focus());
 
     // TEMP 🐷
 
@@ -83,14 +80,30 @@ export const CodeEditorInstance = {
       },
 
       /**
-       * Gets the cursor position.
+       * Select
        */
-      // get position() {
-      //   return Translate.position.toCodeEditor(instance.getPosition());
-      // },
-      // set position(value: t.CodeEditorPosition) {
-      //   instance.setPosition(Translate.position.toMonaco(value));
-      // },
+      select(input: t.CodeEditorSelection) {
+        const selections = [input.primary, ...input.secondary]
+          .filter(Boolean)
+          .map((s) => Translate.range.toMonaco(s).selection);
+
+        if (selections.length === 1) {
+          instance.setSelection(selections[0]);
+        }
+        if (selections.length > 1) {
+          const positionColumn = selections[0].positionColumn;
+          const positionLineNumber = selections[0].positionLineNumber;
+          instance.setSelections(
+            selections.map((item) => ({
+              ...item,
+              positionLineNumber,
+              positionColumn,
+              selectionStartColumn: item.startColumn,
+              selectionStartLineNumber: item.startLineNumber,
+            })),
+          );
+        }
+      },
 
       /**
        * Clean up.
@@ -101,6 +114,7 @@ export const CodeEditorInstance = {
       },
     };
 
+    ChangeHandlers({ editor, events });
     return editor;
   },
 };

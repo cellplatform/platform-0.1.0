@@ -21,7 +21,7 @@ export type CodeEditorEvents = {
   readonly focus$: O<t.ICodeEditorFocusChanged>;
   readonly blur$: O<t.ICodeEditorFocusChanged>;
   readonly selection$: O<t.ICodeEditorSelectionChanged>;
-  readonly fire: CodeEditorEventsFire;
+  fire(instance: string): CodeEditorEventsFire;
   dispose(): void;
 };
 
@@ -29,6 +29,10 @@ export type CodeEditorEvents = {
  * API for firing events that change the editor state.
  */
 export type CodeEditorEventsFire = {
-  change(e: t.CodeEditorChangeEvent): void;
-  focus(instance: string): void;
+  readonly instance: string;
+  focus(): void;
+  select(
+    selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[],
+    options?: { focus?: boolean },
+  ): void;
 };

@@ -5,17 +5,46 @@ import * as t from './types';
  */
 export const Translate = {
   position: {
-    toCodeEditor(input: t.IMonacoPosition): t.CodeEditorPosition {
+    toEditor(input: t.IMonacoPosition): t.CodeEditorPosition {
       return {
-        line: input.lineNumber,
-        column: input.column,
+        line: clamp(input.lineNumber),
+        column: clamp(input.column),
       };
     },
     toMonaco(input: t.CodeEditorPosition): t.IMonacoPosition {
       return {
-        lineNumber: input.line,
-        column: input.column,
+        lineNumber: clamp(input.line),
+        column: clamp(input.column),
       };
     },
   },
+
+  range: {
+    toEditor(input: t.IMonacoRange): t.CodeEditorRange {
+      return {
+        start: { line: clamp(input.startLineNumber), column: clamp(input.endLineNumber) },
+        end: { line: clamp(input.endLineNumber), column: clamp(input.endLineNumber) },
+      };
+    },
+    toMonaco(input: t.CodeEditorRange) {
+      const range: t.IMonacoRange = {
+        startColumn: clamp(input.start.column),
+        endColumn: clamp(input.end.column),
+        startLineNumber: clamp(input.start.line),
+        endLineNumber: clamp(input.end.line),
+      };
+      const selection: t.IMonacoSelection = {
+        ...range,
+        positionColumn: clamp(range.endColumn),
+        positionLineNumber: clamp(range.endLineNumber),
+      };
+      return { range, selection };
+    },
+  },
 };
+
+/**
+ * [Helpers]
+ */
+
+const clamp = (value: number) => Math.max(1, value);

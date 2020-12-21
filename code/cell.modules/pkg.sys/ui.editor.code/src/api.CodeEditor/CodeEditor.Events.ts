@@ -21,9 +21,17 @@ const create: t.CodeEditorEventsFactory = (input, options = {}) => {
   const focus$ = rx.payload<F>($, 'CodeEditor/changed:focus');
   const selection$ = rx.payload<S>($, 'CodeEditor/changed:selection');
 
-  const fire: t.CodeEditorEventsFire = {
-    change: (e) => bus.fire(e),
-    focus: (instance) => fire.change({ type: 'CodeEditor/change:focus', payload: { instance } }),
+  const fire = (instance: string): t.CodeEditorEventsFire => {
+    return {
+      instance,
+      focus() {
+        bus.fire({ type: 'CodeEditor/change:focus', payload: { instance } });
+      },
+      select(selection, options = {}) {
+        const { focus } = options;
+        bus.fire({ type: 'CodeEditor/change:selection', payload: { instance, selection, focus } });
+      },
+    };
   };
 
   const api: t.CodeEditorEvents = {

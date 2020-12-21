@@ -4,6 +4,7 @@ import * as t from './types';
 export { t, constants };
 export * from './libs';
 export * from './Translate';
+export * from './Is';
 
 import { WebRuntime } from './libs';
 export const bundle = WebRuntime.bundle;

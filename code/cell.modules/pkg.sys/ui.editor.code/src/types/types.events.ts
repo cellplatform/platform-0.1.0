@@ -36,10 +36,12 @@ export type ICodeEditorFocusChanged = {
  */
 export type ICodeEditorChangeSelectionEvent = {
   type: 'CodeEditor/change:selection';
-  payload: ICodeEditorSelectionChanged;
+  payload: ICodeEditorChangeSelection;
 };
 export type ICodeEditorChangeSelection = {
   instance: string;
+  selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[];
+  focus?: boolean;
 };
 
 /**

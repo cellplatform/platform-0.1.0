@@ -18,29 +18,56 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
   const events = CodeEditor.events(bus);
   const model = StateObject.create<M>({});
 
-  const focus = (instance: string) => time.delay(0, () => events.fire.focus(instance));
+  const getEditor = () => model.state.editor;
+
+  const getFire = () => {
+    const editor = getEditor();
+    return editor ? events.fire(editor.id) : undefined;
+  };
+
+  const setSelection = () =>
+    model.change((draft) => (draft.selection = model.state.editor?.selection));
+
+  const focus = (instance: string) => events.fire(instance).focus();
 
   const actions = Actions<Ctx>()
     .context((prev) => prev || { model })
     .button('focus: one', () => focus('one'))
     .button('focus: two', () => focus('two'))
-    .group(`editor`, (e) => e.button('foo', () => null));
+    .group(`editor`, (e) =>
+      e
+        .button('select: position (0:5)', () => {
+          const fire = getFire();
+          fire?.select({ line: 0, column: 5 }, { focus: true });
+        })
+        .button('select: range', () => {
+          const fire = getFire();
+          fire?.select(
+            { start: { line: 1, column: 5 }, end: { line: 3, column: 10 } },
+            { focus: true },
+          );
+        })
+        .button('select: ranges', () => {
+          const fire = getFire();
+          fire?.select(
+            [
+              { start: { line: 1, column: 2 }, end: { line: 1, column: 4 } },
+              { start: { line: 3, column: 2 }, end: { line: 4, column: 8 } },
+              { start: { line: 5, column: 1 }, end: { line: 5, column: 2 } },
+            ],
+            { focus: true },
+          );
+        }),
+    );
 
   const onReady: CodeEditorReadyEventHandler = (e) => {
-    console.log('ready', e.id);
-    const editor = e.editor;
-    const events = editor.events;
-
-    events.focus$.subscribe(() => {
-      model.change((draft) => (draft.editor = editor));
+    e.editor.events.focus$.subscribe(() => {
+      model.change((draft) => (draft.editor = e.editor));
+      setSelection();
     });
-
-    // e.
   };
 
-  events.selection$.subscribe((e) => {
-    model.change((draft) => (draft.selection = model.state.editor?.selection));
-  });
+  events.selection$.subscribe((e) => setSelection());
 
   return {
     render: actions.render,

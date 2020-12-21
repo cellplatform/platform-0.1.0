@@ -52,14 +52,8 @@ describe('CodeEditorEvents', () => {
     bus.event$.subscribe(() => busCount++);
     events.$.subscribe(() => eventCount++);
 
-    events.fire.change({
-      type: 'CodeEditor/change:focus',
-      payload: { instance: 'foo' },
-    });
-    events.fire.change({
-      type: 'CodeEditor/change:focus',
-      payload: { instance: 'bar' },
-    });
+    events.fire('foo').focus();
+    events.fire('bar').focus();
 
     expect(busCount).to.eql(2);
     expect(eventCount).to.eql(2);
@@ -74,14 +68,8 @@ describe('CodeEditorEvents', () => {
     bus.event$.subscribe(() => busCount++);
     events.$.subscribe(() => eventCount++);
 
-    events.fire.change({
-      type: 'CodeEditor/change:focus',
-      payload: { instance: 'foo' },
-    });
-    events.fire.change({
-      type: 'CodeEditor/change:focus',
-      payload: { instance: 'bar' },
-    });
+    events.fire('foo').focus();
+    events.fire('bar').focus();
 
     expect(busCount).to.eql(2);
     expect(eventCount).to.eql(1);

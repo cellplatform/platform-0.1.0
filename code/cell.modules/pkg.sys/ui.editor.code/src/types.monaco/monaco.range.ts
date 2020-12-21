@@ -10,10 +10,10 @@ export type IMonacoPosition = {
  * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.irange.html
  */
 export type IMonacoRange = {
-  endColumn: number;
   startColumn: number;
-  endLineNumber: number;
+  endColumn: number;
   startLineNumber: number;
+  endLineNumber: number;
 };
 
 /**

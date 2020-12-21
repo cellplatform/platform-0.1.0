@@ -4,7 +4,7 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { Monaco } from '../api.Monaco';
 import { R, t } from '../common';
 
-export function EventListeners(args: {
+export function Listeners(args: {
   id: string; // ID.
   bus: t.CodeEditorEventBus;
   instance: t.IMonacoStandaloneCodeEditor;
@@ -42,7 +42,10 @@ export function EventListeners(args: {
       // });
     }),
     cursorChanged: instance.onDidChangeCursorPosition((e) => fireSelection(e.source)),
-    selectionChanged: instance.onDidChangeCursorSelection((e) => fireSelection(e.source)),
+    selectionChanged: instance.onDidChangeCursorSelection((e) => {
+      fireSelection(e.source);
+      console.log('e', e);
+    }),
     focusEditorText: instance.onDidFocusEditorText(() => fireFocus(true, 'text')),
     focusEditorWidget: instance.onDidFocusEditorWidget(() => fireFocus(true, 'widget')),
     blurEditorText: instance.onDidBlurEditorText(() => fireFocus(false, 'text')),
