@@ -12,4 +12,6 @@ export * from './types.Instance';
 export * from './types.Singleton';
 export * from './types.Singleton.Libs';
 
+export * from './types.Components';
+
 export * from './___types.CodeEditorModel';

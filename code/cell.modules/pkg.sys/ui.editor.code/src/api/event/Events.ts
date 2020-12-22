@@ -3,6 +3,7 @@ import { filter, share, takeUntil, map } from 'rxjs/operators';
 
 import { rx, t, Is } from '../../common';
 import { Fire } from './Events.fire';
+import { InstanceEvents } from './Instance.Events';
 
 const create: t.CodeEditorEventsFactory = (input) => {
   const bus = rx.bus<t.CodeEditorEvent>(input);
@@ -30,6 +31,11 @@ const create: t.CodeEditorEventsFactory = (input) => {
     singleton$,
     instance$,
     fire: Fire(bus),
+
+    instance(id) {
+      return InstanceEvents.create(bus, id);
+    },
+
     dispose() {
       dispose$.next();
       dispose$.complete();

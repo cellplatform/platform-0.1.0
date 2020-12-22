@@ -32,9 +32,7 @@ const create: t.CodeEditorInstanceEventsFactory = (input, instance) => {
     blur$: focus$.pipe(filter((e) => !e.isFocused)),
     selection$,
     text$,
-    fire(instance) {
-      return Fire(bus, instance);
-    },
+    fire: Fire(bus, instance),
     dispose() {
       dispose$.next();
       dispose$.complete();

@@ -14,6 +14,7 @@ export type CodeEditorEvents = {
   readonly instance$: O<t.CodeEditorInstanceEvent>;
   readonly fire: t.CodeEditorEventsFire;
   dispose(): void;
+  instance(id: string): t.CodeEditorInstanceEvents;
 };
 
 /**

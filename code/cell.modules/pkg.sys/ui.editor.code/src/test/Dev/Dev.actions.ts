@@ -2,8 +2,8 @@ console.log('__CELL__', __CELL__);
 
 import { Actions } from 'sys.ui.harness';
 
-import { StateObject, t } from '../../common';
-import { CodeEditor, CodeEditorReadyEventHandler } from '../../components/CodeEditor';
+import { StateObject, t, rx } from '../../common';
+import { CodeEditor } from '../../api';
 
 type M = {
   editor?: t.CodeEditorInstance;
@@ -15,22 +15,18 @@ type Ctx = { model: t.IStateObjectWritable<M>; fire?: t.CodeEditorInstanceEvents
  * Actions for a single editor.
  */
 export const editorActions = (bus: t.CodeEditorEventBus) => {
-  const events = CodeEditor.events(bus, 'my-editor'); // TEMP 🐷
+  const events = CodeEditor.events(bus); // TEMP 🐷
 
   const model = StateObject.create<M>({});
-
-  events.text$.subscribe((e) => {
-    console.log('-------------------------------------------');
-    console.log('text', e);
-    console.log('text', model.state.editor?.text);
-  });
 
   const setSelection = () =>
     model.change((draft) => (draft.selection = model.state.editor?.selection));
 
-  events.selection$.subscribe((e) => setSelection());
+  rx.payload<t.ICodeEditorSelectionChangedEvent>(events.instance$, 'CodeEditor/changed:selection')
+    .pipe()
+    .subscribe((e) => setSelection());
 
-  const onReady: CodeEditorReadyEventHandler = (e) => {
+  const onReady: t.CodeEditorReadyEventHandler = (e) => {
     e.editor.events.focus$.subscribe(() => {
       model.change((draft) => (draft.editor = e.editor));
       setSelection();
@@ -41,8 +37,8 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
    * Focus (between instances).
    */
   const focusActions = Actions<Ctx>()
-    .button('focus: one', () => events.fire('one').focus())
-    .button('focus: two', () => events.fire('two').focus());
+    .button('focus: one', () => events.instance('one').fire.focus())
+    .button('focus: two', () => events.instance('one').fire.focus());
 
   /**
    * Select
@@ -119,7 +115,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
   const actions = Actions<Ctx>()
     .context((prev) => {
       const editor = model.state.editor;
-      const fire = editor ? editor.events.fire(editor.id) : undefined;
+      const fire = editor ? editor.events.fire : undefined;
       return { model, fire };
     })
     .button('tmp', () => bus.fire({ type: 'CodeEditor/tmp', payload: { instance: 'one' } }))

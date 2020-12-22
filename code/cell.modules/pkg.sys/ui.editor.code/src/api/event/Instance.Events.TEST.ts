@@ -44,20 +44,4 @@ describe('Events: Instance', () => {
     });
     expect(count).to.eql(1);
   });
-
-  it('fire: specific instance', () => {
-    const bus = rx.bus();
-    const events = InstanceEvents.create(bus, id);
-
-    let busCount = 0;
-    let eventCount = 0;
-    bus.event$.subscribe(() => busCount++);
-    events.$.subscribe(() => eventCount++);
-
-    events.fire('foo').focus();
-    events.fire('bar').focus();
-
-    expect(busCount).to.eql(2);
-    expect(eventCount).to.eql(1);
-  });
 });

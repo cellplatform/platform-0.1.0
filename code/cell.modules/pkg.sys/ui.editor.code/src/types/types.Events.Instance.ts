@@ -18,7 +18,7 @@ export type CodeEditorInstanceEvents = {
   readonly blur$: O<t.ICodeEditorFocusChanged>;
   readonly selection$: O<t.ICodeEditorSelectionChanged>;
   readonly text$: O<t.ICodeEditorTextChanged>;
-  fire(instance: string): t.CodeEditorInstanceEventsFire;
+  readonly fire: t.CodeEditorInstanceEventsFire;
   dispose(): void;
 };
 

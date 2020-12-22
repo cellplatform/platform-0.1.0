@@ -5,9 +5,6 @@ import { Loading } from '../Loading';
 import { Monaco, MonacoEditor, MonacoEditorReadyEvent } from '../Monaco';
 import { CodeEditorInstance } from '../../api';
 
-export type CodeEditorReadyEvent = { id: string; editor: t.CodeEditorInstance };
-export type CodeEditorReadyEventHandler = (e: CodeEditorReadyEvent) => void;
-
 export type CodeEditorProps = {
   id?: string;
   theme?: t.CodeEditorTheme;
@@ -16,7 +13,7 @@ export type CodeEditorProps = {
   filename?: string;
   style?: CssValue;
   bus?: t.EventBus<any>;
-  onReady?: CodeEditorReadyEventHandler;
+  onReady?: t.CodeEditorReadyEventHandler;
 };
 
 export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
