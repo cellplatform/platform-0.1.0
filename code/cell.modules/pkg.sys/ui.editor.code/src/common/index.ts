@@ -5,6 +5,7 @@ export { t, constants };
 export * from './libs';
 export * from './Translate';
 export * from './Is';
+export * from './rx';
 
 import { WebRuntime } from './libs';
 export const bundle = WebRuntime.bundle;

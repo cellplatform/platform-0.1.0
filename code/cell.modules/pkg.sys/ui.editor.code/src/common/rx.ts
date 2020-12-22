@@ -1,0 +1,21 @@
+import { filter, take } from 'rxjs/operators';
+import { rx } from './libs';
+
+import * as t from './types';
+
+/**
+ * Helper for waiting for an event response.
+ */
+export const WaitForResponse = <E extends t.Event>($: t.Observable<any>, type: E['type']) => {
+  return {
+    response(tx: string) {
+      return rx
+        .event<E>($, type)
+        .pipe(
+          take(1),
+          filter((e) => e.payload.tx === tx),
+        )
+        .toPromise();
+    },
+  };
+};

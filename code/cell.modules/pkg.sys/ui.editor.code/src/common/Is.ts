@@ -27,6 +27,11 @@ export const Is = {
     );
   },
 
+  http(path: string) {
+    path = (path || '').trim();
+    return path.startsWith('http://') || path.startsWith('https://');
+  },
+
   editorEvent(e: t.Event) {
     return e.type.startsWith('CodeEditor/');
   },

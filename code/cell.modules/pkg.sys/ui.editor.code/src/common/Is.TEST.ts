@@ -59,7 +59,20 @@ describe('Is', () => {
     test({ cursor: pos, primary: range, secondary: [123] }, false);
   });
 
-  it('Is.codeEditorEvent', () => {
+  it('Is.http', () => {
+    const test = (input: string, expected: boolean) => {
+      expect(Is.http(input)).to.eql(expected);
+    };
+
+    test('', false);
+    test('foo', false);
+    test('  http  ', false);
+
+    test('  http://  ', true);
+    test('  https://domain.com  ', true);
+  });
+
+  it('Is.editorEvent', () => {
     const test = (input: t.Event<any>, expected: boolean) => {
       expect(Is.editorEvent(input)).to.eql(expected);
     };

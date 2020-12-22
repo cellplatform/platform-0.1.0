@@ -3,7 +3,7 @@ import { Is, rx, t } from '../../common';
 /**
  * Handles events issued to the editor.
  */
-export function InstanceChangeHandlers(bus: t.CodeEditorEventBus, editor: t.CodeEditorInstance) {
+export function InstanceEventHandlers(bus: t.CodeEditorEventBus, editor: t.CodeEditorInstance) {
   const { events } = editor;
   const instance = editor.id;
   const $ = events.$;

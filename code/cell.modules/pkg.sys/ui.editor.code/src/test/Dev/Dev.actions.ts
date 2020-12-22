@@ -2,7 +2,7 @@ console.log('__CELL__', __CELL__);
 
 import { Actions } from 'sys.ui.harness';
 
-import { StateObject, t, rx } from '../../common';
+import { StateObject, t, rx, bundle } from '../../common';
 import { CodeEditor } from '../../api';
 
 type M = {
@@ -95,19 +95,27 @@ const total = a.reduce((acc, next) =>acc + next, 0)
    */
   const cmdActions = Actions<Ctx>()
     .title('Command Actions')
-    .button('format document', (ctx) => ctx.fire?.action('editor.action.formatDocument'));
+    .button('format document', async (ctx) => {
+      const res = await ctx.fire?.action('editor.action.formatDocument');
+      console.log('res', res);
+    });
 
   /**
    * Type Libraries
    */
   const libsActions = Actions<Ctx>()
     .title('Type Libraries')
-    .button('clear', () => events.fire.libs.clear());
+    .button('clear', () => events.fire.libs.clear())
+    .button('load: lib.es.d.ts', async () => {
+      const url = bundle.path(`static/types/lib.es.d.ts`);
+      const res = await events.fire.libs.load(url);
+      console.log('res', res);
+    });
 
   /**
    * Main
    */
-  const actions = Actions<Ctx>()
+  const main = Actions<Ctx>()
     .context((prev) => {
       const editor = model.state.editor;
       const fire = editor ? editor.events.fire : undefined;
@@ -126,7 +134,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
     .merge(libsActions);
 
   return {
-    render: actions.render,
+    render: main.render,
     onReady,
     model,
   };
