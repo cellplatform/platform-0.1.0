@@ -1,12 +1,12 @@
 import { expect, is, rx, t } from '../../test';
-import { CodeEditorSingletonEvents } from './CodeEditor.Singleton.Events';
+import { Events } from './Events';
 
 type E = t.CodeEditorEvent;
 const bus = rx.bus<E>();
 
-describe('CodeEditorSingletonEvents', () => {
+describe('Events', () => {
   it('create', () => {
-    const events = CodeEditorSingletonEvents.create(bus);
+    const events = Events.create(bus);
     expect(is.observable(events.$)).to.eql(true);
 
     let count = 0;
@@ -21,7 +21,7 @@ describe('CodeEditorSingletonEvents', () => {
 
   it('only "CodeEditor/" events (filter generic bus)', () => {
     const bus = rx.bus();
-    const events = CodeEditorSingletonEvents.create(bus);
+    const events = Events.create(bus);
 
     let count = 0;
     events.$.subscribe(() => count++);
@@ -42,7 +42,7 @@ describe('CodeEditorSingletonEvents', () => {
 
   it('singleton$', () => {
     const bus = rx.bus();
-    const events = CodeEditorSingletonEvents.create(bus);
+    const events = Events.create(bus);
 
     let count = 0;
     events.singleton$.subscribe(() => count++);
@@ -55,7 +55,7 @@ describe('CodeEditorSingletonEvents', () => {
 
   it('instance$', () => {
     const bus = rx.bus();
-    const events = CodeEditorSingletonEvents.create(bus);
+    const events = Events.create(bus);
 
     let count = 0;
     events.instance$.subscribe(() => count++);

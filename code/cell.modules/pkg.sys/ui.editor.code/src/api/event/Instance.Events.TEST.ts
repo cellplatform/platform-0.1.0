@@ -1,13 +1,13 @@
 import { expect, is, rx, t } from '../../test';
-import { CodeEditorInstanceEvents } from './CodeEditor.Instance.Events';
+import { InstanceEvents } from './Instance.Events';
 
 type E = t.CodeEditorEvent;
 const bus = rx.bus<E>();
 const id = 'foo';
 
-describe('CodeEditorInstanceEvents', () => {
+describe('Events: Instance', () => {
   it('create', () => {
-    const events = CodeEditorInstanceEvents.create(bus, id);
+    const events = InstanceEvents.create(bus, id);
     expect(is.observable(events.$)).to.eql(true);
 
     let count = 0;
@@ -22,7 +22,7 @@ describe('CodeEditorInstanceEvents', () => {
 
   it('only "CodeEditor/" instance events (filter generic bus)', () => {
     const bus = rx.bus();
-    const events = CodeEditorInstanceEvents.create(bus, id);
+    const events = InstanceEvents.create(bus, id);
 
     let count = 0;
     events.$.subscribe(() => count++);
@@ -47,7 +47,7 @@ describe('CodeEditorInstanceEvents', () => {
 
   it('fire: specific instance', () => {
     const bus = rx.bus();
-    const events = CodeEditorInstanceEvents.create(bus, id);
+    const events = InstanceEvents.create(bus, id);
 
     let busCount = 0;
     let eventCount = 0;

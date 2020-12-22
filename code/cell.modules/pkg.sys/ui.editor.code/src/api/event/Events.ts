@@ -2,9 +2,9 @@ import { Subject } from 'rxjs';
 import { filter, share, takeUntil, map } from 'rxjs/operators';
 
 import { rx, t, Is } from '../../common';
-import { Fire } from './CodeEditor.Singleton.Events.fire';
+import { Fire } from './Events.fire';
 
-const create: t.CodeEditorSingletonEventsFactory = (input) => {
+const create: t.CodeEditorEventsFactory = (input) => {
   const bus = rx.bus<t.CodeEditorEvent>(input);
   const dispose$ = new Subject<void>();
 
@@ -24,7 +24,7 @@ const create: t.CodeEditorSingletonEventsFactory = (input) => {
     map((e) => e as t.CodeEditorInstanceEvent),
   );
 
-  const api: t.CodeEditorSingletonEvents = {
+  const api: t.CodeEditorEvents = {
     $,
     dispose$: dispose$.asObservable(),
     singleton$,
@@ -39,4 +39,4 @@ const create: t.CodeEditorSingletonEventsFactory = (input) => {
   return api;
 };
 
-export const CodeEditorSingletonEvents = { create };
+export const Events = { create };

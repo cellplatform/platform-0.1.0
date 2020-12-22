@@ -1,7 +1,7 @@
 import { Monaco } from '../../api';
 import { slug, t } from '../../common';
 import { CodeEditorAction } from './CodeEditor.Action';
-import { CodeEditorInstanceEvents } from './CodeEditor.Instance.Events';
+import { InstanceEvents } from '../event';
 import { InstanceChangeHandlers } from './CodeEditor.Instance.handlers';
 import { MonacoListeners } from './CodeEditor.Instance.monacoListeners';
 import { select } from './CodeEditor.Instance.select';
@@ -27,7 +27,7 @@ export const CodeEditorInstance = {
     const { instance, singleton, bus } = args;
     const id = args.id || `editor-${slug()}`;
     const listeners = MonacoListeners({ bus, instance, id });
-    const events = CodeEditorInstanceEvents.create(bus, id);
+    const events = InstanceEvents.create(bus, id);
 
     // TEMP 🐷
 

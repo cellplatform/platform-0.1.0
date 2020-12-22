@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { filter, share, takeUntil } from 'rxjs/operators';
 
 import { rx, t, Is } from '../../common';
-import { Fire } from './CodeEditor.Instance.Events.fire';
+import { Fire } from './Instance.Events.fire';
 
 type E = t.CodeEditorInstanceEvent;
 type F = t.ICodeEditorFocusChangedEvent;
@@ -44,4 +44,4 @@ const create: t.CodeEditorInstanceEventsFactory = (input, instance) => {
   return api;
 };
 
-export const CodeEditorInstanceEvents = { create };
+export const InstanceEvents = { create };
