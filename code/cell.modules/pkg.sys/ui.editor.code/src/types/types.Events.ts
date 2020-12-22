@@ -1,11 +1,17 @@
 import { t } from './common';
 
-export type CodeEditorEvent =
+export type CodeEditorEventBus = t.EventBus<t.CodeEditorEvent>;
+export type CodeEditorEvent = CodeEditorInstanceEvent | CodeEditorSingletonEvent;
+
+/**
+ * Instance events.
+ */
+
+export type CodeEditorInstanceEvent =
+  | ICodeEditorTmpEvent // TEMP 🐷
   | CodeEditorChangeEvent
   | CodeEditorChangedEvent
-  | ICodeEditorRunActionEvent
-  | ICodeEditorActionCompleteEvent
-  | ICodeEditorTmpEvent;
+  | CodeEditorActionEvent;
 
 export type CodeEditorChangeEvent =
   | ICodeEditorChangeFocusEvent
@@ -17,12 +23,20 @@ export type CodeEditorChangedEvent =
   | ICodeEditorFocusChangedEvent
   | ICodeEditorTextChangedEvent;
 
+export type CodeEditorActionEvent = ICodeEditorRunActionEvent | ICodeEditorActionCompleteEvent;
+
+/**
+ * Global (Singleton) Events.
+ */
+export type CodeEditorSingletonEvent = CodeEditorLibsEvent;
+export type CodeEditorLibsEvent = ICodeEditorLibsClearEvent;
+
+/**
+ * TODO 🐷 Temp
+ */
 export type ICodeEditorTmpEvent = {
   type: 'CodeEditor/tmp';
-  payload: ICodeEditorTmp;
-};
-export type ICodeEditorTmp = {
-  instance: string;
+  payload: { instance: string };
 };
 
 /**
@@ -125,4 +139,16 @@ export type ICodeEditorActionComplete = {
   action: t.MonacoAction;
   tx: string; // Execution id.
   error?: string;
+};
+
+/**
+ * Type Definition Libraries
+ */
+
+export type ICodeEditorLibsClearEvent = {
+  type: 'CodeEditor/libs:clear';
+  payload: ICodeEditorLibsClear;
+};
+export type ICodeEditorLibsClear = {
+  //
 };

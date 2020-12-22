@@ -1,35 +1,31 @@
 import { t } from './common';
 
-type E = t.CodeEditorEvent;
 type O<T> = t.Observable<T>;
 
-export type CodeEditorEventBus = t.EventBus<E>;
-export type CodeEditorEventsFactory = (
+export type CodeEditorInstanceEventsFactory = (
   bus: t.EventBus<any>,
-  options?: CodeEditorEventsFactoryOptions,
-) => CodeEditorEvents;
-export type CodeEditorEventsFactoryOptions = {
-  instance?: string;
-};
+  instance: string, // ID.
+) => t.CodeEditorInstanceEvents;
 
 /**
  * API wrapper for event observables.
  */
-export type CodeEditorEvents = {
-  readonly $: O<E>;
+export type CodeEditorInstanceEvents = {
+  readonly id: string;
   readonly dispose$: O<void>;
+  readonly $: O<t.CodeEditorInstanceEvent>;
   readonly focus$: O<t.ICodeEditorFocusChanged>;
   readonly blur$: O<t.ICodeEditorFocusChanged>;
   readonly selection$: O<t.ICodeEditorSelectionChanged>;
   readonly text$: O<t.ICodeEditorTextChanged>;
-  fire(instance: string): CodeEditorEventsFire;
+  fire(instance: string): t.CodeEditorInstanceEventsFire;
   dispose(): void;
 };
 
 /**
  * API for firing events that change the editor state.
  */
-export type CodeEditorEventsFire = {
+export type CodeEditorInstanceEventsFire = {
   readonly instance: string;
   focus(): void;
   text(text: string | null): void;

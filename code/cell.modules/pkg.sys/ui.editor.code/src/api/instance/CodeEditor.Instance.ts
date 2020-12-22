@@ -1,10 +1,10 @@
-import { slug, t, rx, time, Translate } from '../../common';
-import { Listeners } from './CodeEditor.Instance.listeners';
-import { CodeEditorEvents } from '../../api';
 import { Monaco } from '../../api';
-import { ChangeHandlers } from './CodeEditor.Instance.handlers';
-import { select } from './CodeEditor.Instance.select';
+import { slug, t } from '../../common';
 import { CodeEditorAction } from './CodeEditor.Action';
+import { CodeEditorInstanceEvents } from './CodeEditor.Instance.Events';
+import { InstanceChangeHandlers } from './CodeEditor.Instance.handlers';
+import { MonacoListeners } from './CodeEditor.Instance.monacoListeners';
+import { select } from './CodeEditor.Instance.select';
 
 /**
  * API helpers for manipulating an [IMonacoStandaloneCodeEditor] instance.
@@ -26,8 +26,8 @@ export const CodeEditorInstance = {
   }): t.CodeEditorInstance {
     const { instance, singleton, bus } = args;
     const id = args.id || `editor-${slug()}`;
-    const listeners = Listeners({ bus, instance, id });
-    const events = CodeEditorEvents.create(bus, { instance: id });
+    const listeners = MonacoListeners({ bus, instance, id });
+    const events = CodeEditorInstanceEvents.create(bus, id);
 
     // TEMP 🐷
 
@@ -59,6 +59,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
     const editor: t.CodeEditorInstance = {
       id,
       instance,
+      singleton,
       events,
 
       /**
@@ -117,7 +118,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
       },
     };
 
-    ChangeHandlers(bus, editor);
+    InstanceChangeHandlers(bus, editor);
     return editor;
   },
 };

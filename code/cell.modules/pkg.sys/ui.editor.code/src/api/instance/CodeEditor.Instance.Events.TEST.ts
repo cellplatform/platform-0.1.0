@@ -1,12 +1,13 @@
 import { expect, is, rx, t } from '../../test';
-import { CodeEditorEvents } from './CodeEditor.Events';
+import { CodeEditorInstanceEvents } from './CodeEditor.Instance.Events';
 
 type E = t.CodeEditorEvent;
 const bus = rx.bus<E>();
+const id = 'foo';
 
-describe('CodeEditorEvents', () => {
-  it('create: from bus', () => {
-    const events = CodeEditorEvents.create(bus);
+describe('CodeEditorInstanceEvents', () => {
+  it('create', () => {
+    const events = CodeEditorInstanceEvents.create(bus, id);
     expect(is.observable(events.$)).to.eql(true);
 
     let count = 0;
@@ -19,9 +20,9 @@ describe('CodeEditorEvents', () => {
     expect(count).to.eql(1);
   });
 
-  it('$: only CodeEditor events', () => {
+  it('only "CodeEditor/" instance events (filter generic bus)', () => {
     const bus = rx.bus();
-    const events = CodeEditorEvents.create(bus);
+    const events = CodeEditorInstanceEvents.create(bus, id);
 
     let count = 0;
     events.$.subscribe(() => count++);
@@ -35,6 +36,7 @@ describe('CodeEditorEvents', () => {
     notFired({});
     notFired({ type: 'foo' });
     notFired({ type: 'foo', payload: {} });
+    notFired({ type: 'CodeEditor/foo', payload: {} }); // NB: Global code-editor event.
 
     bus.fire({
       type: 'CodeEditor/change:focus',
@@ -43,25 +45,9 @@ describe('CodeEditorEvents', () => {
     expect(count).to.eql(1);
   });
 
-  it('fire: any instance', () => {
-    const bus = rx.bus();
-    const events = CodeEditorEvents.create(bus);
-
-    let busCount = 0;
-    let eventCount = 0;
-    bus.event$.subscribe(() => busCount++);
-    events.$.subscribe(() => eventCount++);
-
-    events.fire('foo').focus();
-    events.fire('bar').focus();
-
-    expect(busCount).to.eql(2);
-    expect(eventCount).to.eql(2);
-  });
-
   it('fire: specific instance', () => {
     const bus = rx.bus();
-    const events = CodeEditorEvents.create(bus, { instance: 'foo' });
+    const events = CodeEditorInstanceEvents.create(bus, id);
 
     let busCount = 0;
     let eventCount = 0;

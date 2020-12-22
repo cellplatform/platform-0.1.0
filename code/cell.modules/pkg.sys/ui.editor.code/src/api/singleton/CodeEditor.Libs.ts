@@ -14,6 +14,14 @@ export function CodeEditorLibs(monaco: t.IMonaco): t.ICodeEditorLibs {
   let list: t.ICodeEditorAddedLib[] = [];
 
   /**
+   * Removes all type-definition libraries from the editor.
+   */
+  const clear: M['clear'] = () => {
+    list.forEach((ref) => ref.dispose());
+    list = [];
+  };
+
+  /**
    * Adds a type-definition library to the editor.
    */
   const add: M['add'] = (filename: string, content: string) => {
@@ -37,22 +45,12 @@ export function CodeEditorLibs(monaco: t.IMonaco): t.ICodeEditorLibs {
    *    [TypeFileManifest] file named "/index.json".
    *
    */
-  const loadDefs: M['loadDefs'] = async (urlOrFolder) => {
-    const isUrl = urlOrFolder.startsWith('http');
-    const dir = isUrl ? urlOrFolder : bundle.path(`static/types/${urlOrFolder}`);
-    const manifest = await loadManifest(dir);
+  const fromNetwork: M['fromNetwork'] = async (url) => {
+    const manifest = await loadManifest(url);
     const files = await Promise.all(
-      manifest.files.map((file) => file.path).map((filename) => loadDeclarationFile(dir, filename)),
+      manifest.files.map((file) => file.path).map((filename) => loadDeclarationFile(url, filename)),
     );
     return files.map((file) => add(file.filename, file.content));
-  };
-
-  /**
-   * Removes all type-definition libraries from the editor.
-   */
-  const clear: M['clear'] = () => {
-    list.forEach((ref) => ref.dispose());
-    list = [];
   };
 
   return {
@@ -61,7 +59,7 @@ export function CodeEditorLibs(monaco: t.IMonaco): t.ICodeEditorLibs {
     },
     add,
     clear,
-    loadDefs,
+    fromNetwork,
   };
 }
 

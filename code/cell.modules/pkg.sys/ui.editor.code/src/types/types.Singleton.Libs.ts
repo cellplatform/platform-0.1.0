@@ -7,8 +7,7 @@ export type ICodeEditorAddedLib = t.IDisposable & { filename: string };
  */
 export type ICodeEditorLibs = {
   readonly list: ICodeEditorAddedLib[];
-
-  add(filename: string, content: string): ICodeEditorAddedLib;
-  loadDefs(urlOrFolder: string): Promise<ICodeEditorAddedLib[]>;
   clear(): void;
+  add(filename: string, content: string): ICodeEditorAddedLib;
+  fromNetwork(url: string): Promise<ICodeEditorAddedLib[]>;
 };

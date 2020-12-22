@@ -4,8 +4,8 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { Monaco } from '../../api';
 import { R, t, Translate } from '../../common';
 
-export function Listeners(args: {
-  id: string; // ID.
+export function MonacoListeners(args: {
+  id: string; // editor instance ID.
   bus: t.CodeEditorEventBus;
   instance: t.IMonacoStandaloneCodeEditor;
 }) {

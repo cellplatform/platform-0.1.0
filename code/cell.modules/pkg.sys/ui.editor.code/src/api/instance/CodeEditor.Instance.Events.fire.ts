@@ -3,12 +3,14 @@ import { t, slug } from '../../common';
 /**
  * API for firing change events.
  */
-export function Fire(bus: t.CodeEditorEventBus, instance: string): t.CodeEditorEventsFire {
+export function Fire(bus: t.EventBus<any>, instance: string): t.CodeEditorInstanceEventsFire {
+  const fire = (e: t.CodeEditorInstanceEvent) => bus.fire(e);
+
   return {
     instance,
 
     focus() {
-      bus.fire({
+      fire({
         type: 'CodeEditor/change:focus',
         payload: { instance },
       });
@@ -16,14 +18,14 @@ export function Fire(bus: t.CodeEditorEventBus, instance: string): t.CodeEditorE
 
     select(selection, options = {}) {
       const { focus } = options;
-      bus.fire({
+      fire({
         type: 'CodeEditor/change:selection',
         payload: { instance, selection, focus },
       });
     },
 
     text(text) {
-      bus.fire({
+      fire({
         type: 'CodeEditor/change:text',
         payload: { instance, text },
       });
@@ -31,7 +33,7 @@ export function Fire(bus: t.CodeEditorEventBus, instance: string): t.CodeEditorE
 
     action(action) {
       const tx = slug();
-      bus.fire({
+      fire({
         type: 'CodeEditor/action:run',
         payload: { instance, action, tx },
       });

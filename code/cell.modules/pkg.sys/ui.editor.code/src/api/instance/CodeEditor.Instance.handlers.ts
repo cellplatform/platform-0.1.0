@@ -1,9 +1,9 @@
 import { Is, rx, t } from '../../common';
 
 /**
- * Handles change requests issued via events.
+ * Handles events issued to the editor.
  */
-export function ChangeHandlers(bus: t.CodeEditorEventBus, editor: t.CodeEditorInstance) {
+export function InstanceChangeHandlers(bus: t.CodeEditorEventBus, editor: t.CodeEditorInstance) {
   const { events } = editor;
   const instance = editor.id;
   const $ = events.$;
@@ -12,6 +12,8 @@ export function ChangeHandlers(bus: t.CodeEditorEventBus, editor: t.CodeEditorIn
     .pipe()
     .subscribe(async (e) => {
       console.log('tmp');
+
+      editor.singleton.libs.clear();
     });
 
   /**

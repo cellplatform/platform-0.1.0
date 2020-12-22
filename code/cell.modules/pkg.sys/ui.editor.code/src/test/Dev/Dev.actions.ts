@@ -9,13 +9,14 @@ type M = {
   editor?: t.CodeEditorInstance;
   selection?: t.CodeEditorSelection;
 };
-type Ctx = { model: t.IStateObjectWritable<M>; fire?: t.CodeEditorEventsFire };
+type Ctx = { model: t.IStateObjectWritable<M>; fire?: t.CodeEditorInstanceEventsFire };
 
 /**
  * Actions for a single editor.
  */
 export const editorActions = (bus: t.CodeEditorEventBus) => {
-  const events = CodeEditor.events(bus);
+  const events = CodeEditor.events(bus, 'my-editor'); // TEMP 🐷
+
   const model = StateObject.create<M>({});
 
   events.text$.subscribe((e) => {
@@ -47,7 +48,7 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
    * Select
    */
   const selectActions = Actions<Ctx>()
-    .title('select')
+    .title('Select')
     .button('position (0:5)', (ctx) => {
       ctx.fire?.select({ line: 0, column: 5 }, { focus: true });
     })
@@ -75,7 +76,7 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
    * Text
    */
   const textActions = Actions<Ctx>()
-    .title('text')
+    .title('Text')
     .button('short', (ctx) => {
       ctx.fire?.text('// hello');
     })

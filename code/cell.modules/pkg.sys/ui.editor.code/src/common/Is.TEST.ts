@@ -58,4 +58,38 @@ describe('Is', () => {
     test({ cursor: pos, primary: 123, secondary: [] }, false);
     test({ cursor: pos, primary: range, secondary: [123] }, false);
   });
+
+  it('Is.codeEditorEvent', () => {
+    const test = (input: t.Event<any>, expected: boolean) => {
+      expect(Is.editorEvent(input)).to.eql(expected);
+    };
+    test({ type: 'CodeEditor/foo', payload: { instance: 'foo' } }, true);
+    test({ type: 'foo', payload: { instance: 'foo' } }, false);
+  });
+
+  it('Is.editorEvent', () => {
+    const test = (input: t.Event<any>, expected: boolean) => {
+      expect(Is.editorEvent(input)).to.eql(expected);
+    };
+    test({ type: 'CodeEditor/foo', payload: { instance: 'foo' } }, true);
+    test({ type: 'foo', payload: { instance: 'foo' } }, false);
+  });
+
+  it('Is.instanceEvent', () => {
+    const test = (input: t.Event<any>, expected: boolean) => {
+      expect(Is.instanceEvent(input)).to.eql(expected);
+    };
+    test({ type: 'CodeEditor/foo', payload: { instance: 'foo' } }, true);
+    test({ type: 'CodeEditor/foo', payload: {} }, false);
+    test({ type: 'foo', payload: { instance: 'foo' } }, false);
+  });
+
+  it('Is.singletonEvent', () => {
+    const test = (input: t.Event<any>, expected: boolean) => {
+      expect(Is.singletonEvent(input)).to.eql(expected);
+    };
+    test({ type: 'foo', payload: {} }, false);
+    test({ type: 'CodeEditor/foo', payload: { instance: 'foo' } }, false);
+    test({ type: 'CodeEditor/foo', payload: {} }, true);
+  });
 });

@@ -6,7 +6,8 @@ import { t } from './common';
 export type CodeEditorInstance = {
   readonly id: string; // Editor instance ID.
   readonly instance: t.IMonacoStandaloneCodeEditor;
-  readonly events: t.CodeEditorEvents;
+  readonly singleton: t.ICodeEditorSingleton;
+  readonly events: t.CodeEditorInstanceEvents;
   readonly selection: t.CodeEditorSelection;
   text: string;
   focus(): void;

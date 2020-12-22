@@ -1,3 +1,4 @@
 export * from './CodeEditor.Instance';
-export * from './CodeEditor.Events';
+export * from './CodeEditor.Instance.Events';
+
 export * from './___CodeEditorModel';

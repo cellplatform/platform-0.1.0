@@ -9,5 +9,6 @@ export * from './types.Instance.Events';
 
 export * from './types.Singleton';
 export * from './types.Singleton.Libs';
+export * from './types.Singleton.Events';
 
 export * from './___types.CodeEditorModel';
