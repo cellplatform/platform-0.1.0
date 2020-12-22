@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 
-import { color, COLORS, constants, css, CssValue, t } from '../../common';
+import { COLORS, constants, css, CssValue, t } from '../../common';
 import { Icons } from '../Icons';
 
-export type ItemButtonProps = {
+export type ButtonItemProps = {
   model: t.ActionItemButton;
   style?: CssValue;
   onClick?: t.ActionItemClickEventHandler;
 };
 
-export const ItemButton: React.FC<ItemButtonProps> = (props) => {
+export const ButtonItem: React.FC<ButtonItemProps> = (props) => {
   const [isOver, setIsOver] = useState<boolean>(false);
   const [isDown, setIsDown] = useState<boolean>(false);
 
@@ -24,8 +24,8 @@ export const ItemButton: React.FC<ItemButtonProps> = (props) => {
     }),
     main: css({
       Flex: 'horizontal-stretch-stretch',
-      PaddingY: 4,
-      paddingLeft: 6,
+      PaddingY: 2,
+      paddingLeft: 8,
       paddingRight: 10,
       transform: isDown ? `translateY(1px)` : undefined,
       cursor: isActive ? 'pointer' : 'default',
@@ -68,8 +68,6 @@ export const ItemButton: React.FC<ItemButtonProps> = (props) => {
       }
     };
   };
-
-  // const over = (isOver: boolean) => {};
 
   const clickHandler = (isDown: boolean) => {
     return (e: React.MouseEvent) => {

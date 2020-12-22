@@ -1,2 +1,2 @@
 export * from './MonacoEditor';
-export { Monaco } from '../../api.Monaco';
+export { Monaco } from '../../api';

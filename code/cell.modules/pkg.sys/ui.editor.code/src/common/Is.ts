@@ -26,4 +26,16 @@ export const Is = {
       value.secondary.every((range) => Is.range(range))
     );
   },
+
+  editorEvent(e: t.Event) {
+    return e.type.startsWith('CodeEditor/');
+  },
+
+  instanceEvent(e: t.Event) {
+    return Is.editorEvent(e) && typeof e.payload.instance === 'string';
+  },
+
+  singletonEvent(e: t.Event) {
+    return Is.editorEvent(e) && e.payload.instance === undefined;
+  },
 };

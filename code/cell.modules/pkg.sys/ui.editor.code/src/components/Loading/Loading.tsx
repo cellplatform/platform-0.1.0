@@ -1,6 +1,6 @@
 import React from 'react';
 import { t, css, CssValue, DEFAULT, COLORS } from '../../common';
-import { Theme } from '../../api.Monaco';
+import { Theme } from '../../api';
 import { Spinner } from '../primitives';
 
 export type LoadingProps = {

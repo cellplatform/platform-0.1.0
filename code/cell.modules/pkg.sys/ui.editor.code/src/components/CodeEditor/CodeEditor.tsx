@@ -3,10 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { CssValue, t, rx, time } from '../../common';
 import { Loading } from '../Loading';
 import { Monaco, MonacoEditor, MonacoEditorReadyEvent } from '../Monaco';
-import { CodeEditorInstance } from '../../api.CodeEditor';
-
-export type CodeEditorReadyEvent = { id: string; editor: t.CodeEditorInstance };
-export type CodeEditorReadyEventHandler = (e: CodeEditorReadyEvent) => void;
+import { CodeEditorInstance } from '../../api';
 
 export type CodeEditorProps = {
   id?: string;
@@ -16,7 +13,7 @@ export type CodeEditorProps = {
   filename?: string;
   style?: CssValue;
   bus?: t.EventBus<any>;
-  onReady?: CodeEditorReadyEventHandler;
+  onReady?: t.CodeEditorReadyEventHandler;
 };
 
 export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
@@ -55,5 +52,13 @@ export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
   });
 
   const elLoading = <Loading theme={theme} />;
-  return <MonacoEditor style={props.style} theme={theme} loading={elLoading} onReady={onReady} />;
+  return (
+    <MonacoEditor
+      style={props.style}
+      theme={theme}
+      loading={elLoading}
+      onReady={onReady}
+      bus={bus}
+    />
+  );
 };

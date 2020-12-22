@@ -1,5 +1,4 @@
 import { t } from './common';
-import { MonacoPushEditOperations } from './monaco.TextModel.editOperation';
 
 type D = t.IDisposable;
 
@@ -14,7 +13,7 @@ export type IMonacoTextModel = {
   getValue(eol?: t.IMonacoEndOfLinePreference, preserveBOM?: boolean): string;
   getFullModelRange(): t.IMonacoRange;
   getLinesContent(): string[];
-  pushEditOperations: MonacoPushEditOperations;
+  pushEditOperations: t.MonacoPushEditOperations;
 
   // Events.
   onDidChangeContent(listener: (e: t.IMonacoModelContentChangedEvent) => void): D;

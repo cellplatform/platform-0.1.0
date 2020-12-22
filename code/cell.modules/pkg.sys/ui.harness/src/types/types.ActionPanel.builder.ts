@@ -26,7 +26,17 @@ export type ActionAddOptions = {
 export type ActionModelInputMethods<Ctx> = {
   button(label: string, handler?: t.ActionHandler<Ctx>): B<Ctx>;
   button(config: ActionButtonConfig<Ctx>): B<Ctx>;
-  hr(): B<Ctx>;
+  hr(config?: ActionHrConfig<Ctx>): B<Ctx>;
+  title(text: string, config?: ActionTitleConfig<Ctx>): B<Ctx>;
+  title(config: ActionTitleConfig<Ctx>): B<Ctx>;
+};
+
+/**
+ * Group
+ */
+export type ActionGroupConfig<Ctx> = (args: ActionGroupConfigArgs<Ctx>) => void;
+export type ActionGroupConfigArgs<Ctx> = ActionModelInputMethods<Ctx> & {
+  name(value: string): ActionGroupConfigArgs<Ctx>;
 };
 
 /**
@@ -40,9 +50,17 @@ export type ActionButtonConfigArgs<Ctx> = {
 };
 
 /**
- * Group
+ * Hr (Horizontal Rule)
  */
-export type ActionGroupConfig<Ctx> = (args: ActionGroupConfigArgs<Ctx>) => void;
-export type ActionGroupConfigArgs<Ctx> = ActionModelInputMethods<Ctx> & {
-  name(value: string): ActionGroupConfigArgs<Ctx>;
+export type ActionHrConfig<Ctx> = (args: ActionHrConfigArgs<Ctx>) => void;
+export type ActionHrConfigArgs<Ctx> = {
+  height(value: number): ActionHrConfigArgs<Ctx>;
+};
+
+/**
+ * Title
+ */
+export type ActionTitleConfig<Ctx> = (args: ActionTitleConfigArgs<Ctx>) => void;
+export type ActionTitleConfigArgs<Ctx> = {
+  text(value: string): ActionTitleConfigArgs<Ctx>;
 };

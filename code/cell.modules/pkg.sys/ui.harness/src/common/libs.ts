@@ -7,4 +7,7 @@ export const R = { equals, clone };
 
 export { rx, time, defaultValue, id, dispose } from '@platform/util.value';
 export { StateObject } from '@platform/state';
-export { Builder } from '@platform/cell.module';
+
+import { Builder } from '@platform/cell.module';
+export { Builder };
+export const format = Builder.format;

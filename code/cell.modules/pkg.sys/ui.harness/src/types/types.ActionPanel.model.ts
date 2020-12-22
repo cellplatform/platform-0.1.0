@@ -18,7 +18,7 @@ export type ActionGetContext<T> = (prev: T | null) => T;
  * Item types.
  */
 export type ActionItem = ActionItemGroup | ActionItemInput;
-export type ActionItemInput = ActionItemButton | ActionItemHr;
+export type ActionItemInput = ActionItemButton | ActionItemHr | ActionItemTitle;
 
 export type ActionItemGroup = {
   type: 'group';
@@ -35,4 +35,10 @@ export type ActionItemButton = {
 
 export type ActionItemHr = {
   type: 'hr';
+  height: number;
+};
+
+export type ActionItemTitle = {
+  type: 'title';
+  text: string;
 };

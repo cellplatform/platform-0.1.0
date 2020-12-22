@@ -1,15 +1,17 @@
 import MonacoEditorCore, { EditorDidMount } from '@monaco-editor/react';
 import React, { useRef } from 'react';
 
+import { CodeEditor } from '../../api';
+
 import { css, CssValue, DEFAULT, t } from '../../common';
-import { Monaco } from '../../api.Monaco';
 
 type E = t.IMonacoStandaloneCodeEditor;
 
-export type MonacoEditorReadyEvent = { instance: E; singleton: t.IMonacoSingleton };
+export type MonacoEditorReadyEvent = { instance: E; singleton: t.ICodeEditorSingleton };
 export type MonacoEditorReadyEventHandler = (e: MonacoEditorReadyEvent) => void;
 
 export type MonacoEditorProps = {
+  bus: t.EventBus<any>;
   language?: t.CodeEditorLanguage;
   theme?: t.CodeEditorTheme;
   loading?: React.ReactNode;
@@ -25,12 +27,12 @@ export type MonacoEditorProps = {
  *    https://microsoft.github.io/monaco-editor/api
  *
  */
-export const MonacoEditor: React.FC<MonacoEditorProps> = (props = {}) => {
+export const MonacoEditor: React.FC<MonacoEditorProps> = (props) => {
   const editorRef = useRef<E>();
   const { language = DEFAULT.LANGUAGE.TS, theme = DEFAULT.THEME } = props;
 
   const onMount: EditorDidMount = async (getValue, ed) => {
-    const monaco = await Monaco.singleton();
+    const monaco = await CodeEditor.singleton(props.bus);
     const editor = ed as any;
     editorRef.current = editor;
     if (props.onReady) {
