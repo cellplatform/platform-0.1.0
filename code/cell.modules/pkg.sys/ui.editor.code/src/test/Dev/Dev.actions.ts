@@ -1,9 +1,10 @@
-console.log('__CELL__', __CELL__);
-
+import { debounceTime } from 'rxjs/operators';
 import { Actions } from 'sys.ui.harness';
 
-import { StateObject, t, rx, bundle } from '../../common';
 import { CodeEditor } from '../../api';
+import { bundle, HttpClient, rx, StateObject, t } from '../../common';
+
+console.log('__CELL__', __CELL__);
 
 type M = {
   editor?: t.CodeEditorInstance;
@@ -33,12 +34,52 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
     });
   };
 
+  const binary = new TextEncoder();
+  const client = HttpClient.create(5000);
+  const save = async (text: string) => {
+    const uri = 'cell:ckgu71a83000dl0et1676dq9y:A1';
+    const fs = client.cell(uri).fs;
+    const uploaded = await fs.upload({ filename: 'foo/myfile.txt', data: binary.encode(text) });
+    console.log('uploaded', uploaded);
+  };
+
+  events
+    .editor('one')
+    .text$.pipe(debounceTime(500))
+    .subscribe(() => {
+      const text = model.state.editor?.text;
+      if (text) save(text);
+    });
+
+  /**
+   * Focus (between instances).
+   */
+  const tmpActions = Actions<Ctx>()
+    .button('tmp', () => bus.fire({ type: 'CodeEditor/tmp', payload: { instance: 'one' } }))
+    .button('tmp.file', async (ctx) => {
+      const uri = 'cell:ckgu71a83000dl0et1676dq9y:A1';
+      const client = HttpClient.create(5000);
+      console.log('client', client);
+      const res = await client.info();
+
+      const fs = client.cell(uri).fs;
+      console.log('res', res);
+
+      const encoder = new TextEncoder();
+      const data = encoder.encode('hello\n');
+
+      // const data = new ArrayBuffer()
+      const uploaded = await fs.upload({ filename: 'foo/myfile.txt', data });
+
+      console.log('uploaded', uploaded);
+    });
+
   /**
    * Focus (between instances).
    */
   const focusActions = Actions<Ctx>()
-    .button('focus: one', () => events.instance('one').fire.focus())
-    .button('focus: two', () => events.instance('two').fire.focus());
+    .button('focus: one', () => events.editor('one').fire.focus())
+    .button('focus: two', () => events.editor('two').fire.focus());
 
   /**
    * Select
@@ -121,7 +162,8 @@ const total = a.reduce((acc, next) =>acc + next, 0)
       const fire = editor ? editor.events.fire : undefined;
       return { model, fire };
     })
-    .button('tmp', () => bus.fire({ type: 'CodeEditor/tmp', payload: { instance: 'one' } }))
+
+    .merge(tmpActions)
     .hr()
     .merge(focusActions)
     .hr()
