@@ -16,11 +16,6 @@ ctx.addEventListener('fetch', async (event: any) => {
 
   const cache = await caches.open('CodeEditor');
   let response = await cache.match(request);
-
-  if (response) {
-    console.log('from cache', request.url);
-  }
-
   if (response) return response; // Already cached.
 
   // Fetch and cache.

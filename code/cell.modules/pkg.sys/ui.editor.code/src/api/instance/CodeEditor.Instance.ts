@@ -4,6 +4,7 @@ import { CodeEditorEvents } from '../../api';
 import { Monaco } from '../../api';
 import { ChangeHandlers } from './CodeEditor.Instance.handlers';
 import { select } from './CodeEditor.Instance.select';
+import { CodeEditorAction } from './CodeEditor.Action';
 
 /**
  * API helpers for manipulating an [IMonacoStandaloneCodeEditor] instance.
@@ -34,9 +35,13 @@ export const CodeEditorInstance = {
     const uri = singleton.monaco.Uri.parse(`file:///${args.filename?.replace(/^\/*/, '')}`);
     // console.log('uri.toString()', uri.toString());
 
-    let code = `// ${args.filename}\nconst a:number[] = [1,2,3]\n`;
-    code += `import {add} from 'math';\nconst x = add(3, 5);\n`;
-    code += `const total = a.reduce((acc, next) =>acc + next, 0);\n`;
+    const code = `
+// ${args.filename}
+const a:number[] = [1,2,3]
+import {add} from 'math'
+const x = add(3, 5)
+const total = a.reduce((acc, next) =>acc + next, 0)
+          `;
 
     // TEMP 🐷
     if (filename === 'one.ts') {
@@ -90,14 +95,21 @@ export const CodeEditorInstance = {
       },
 
       /**
-       * Select
+       * Chance selection.
        */
       select(input: t.CodeEditorSelection | null) {
         select({ instance, input });
       },
 
       /**
-       * Clean up.
+       * Retrieve the specified code-editor action.
+       */
+      action(id) {
+        return CodeEditorAction(instance, id);
+      },
+
+      /**
+       * Editor destroyed.
        */
       dispose() {
         listeners.dispose();
@@ -105,7 +117,7 @@ export const CodeEditorInstance = {
       },
     };
 
-    ChangeHandlers({ editor, events });
+    ChangeHandlers(bus, editor);
     return editor;
   },
 };

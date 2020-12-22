@@ -83,15 +83,22 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
       const code = `
 // sample
 const a:number[] = [1,2,3]
-import {add} from 'math';
-const x = add(3, 5);
-const total = a.reduce((acc, next) =>acc + next, 0);
+import {add} from 'math'
+const x = add(3, 5)
+const total = a.reduce((acc, next) =>acc + next, 0)
       `;
       ctx.fire?.text(code);
     })
     .button('null (clear)', (ctx) => {
       ctx.fire?.text(null);
     });
+
+  /**
+   * Command actions.
+   */
+  const cmdActions = Actions<Ctx>()
+    .title('Command Actions')
+    .button('format document', (ctx) => ctx.fire?.action('editor.action.formatDocument'));
 
   /**
    * Type Libraries
@@ -106,7 +113,7 @@ const total = a.reduce((acc, next) =>acc + next, 0);
     });
 
   /**
-   * Actions
+   * Main
    */
   const actions = Actions<Ctx>()
     .context((prev) => {
@@ -114,11 +121,15 @@ const total = a.reduce((acc, next) =>acc + next, 0);
       const fire = editor ? editor.events.fire(editor.id) : undefined;
       return { model, fire };
     })
+    .button('tmp', () => bus.fire({ type: 'CodeEditor/tmp', payload: { instance: 'one' } }))
+    .hr()
     .merge(focusActions)
     .hr()
     .merge(selectActions)
     .hr()
     .merge(textActions)
+    .hr()
+    .merge(cmdActions)
     .hr()
     .merge(libsActions);
 

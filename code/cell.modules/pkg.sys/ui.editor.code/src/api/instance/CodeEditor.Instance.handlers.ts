@@ -1,11 +1,39 @@
-import { rx, t, Is } from '../../common';
+import { Is, rx, t } from '../../common';
 
 /**
  * Handles change requests issued via events.
  */
-export function ChangeHandlers(args: { editor: t.CodeEditorInstance; events: t.CodeEditorEvents }) {
-  const { editor, events } = args;
+export function ChangeHandlers(bus: t.CodeEditorEventBus, editor: t.CodeEditorInstance) {
+  const { events } = editor;
+  const instance = editor.id;
   const $ = events.$;
+
+  rx.payload<t.ICodeEditorTmpEvent>($, 'CodeEditor/tmp')
+    .pipe()
+    .subscribe(async (e) => {
+      console.log('tmp');
+    });
+
+  /**
+   * Run action.
+   */
+  rx.payload<t.ICodeEditorRunActionEvent>($, 'CodeEditor/action:run')
+    .pipe()
+    .subscribe(async (e) => {
+      const tx = e.tx || '';
+      const complete = (error?: string) =>
+        bus.fire({
+          type: 'CodeEditor/action:complete',
+          payload: { instance, action: e.action, error, tx },
+        });
+      try {
+        const action = editor.action(e.action);
+        await action.run();
+        complete();
+      } catch (error) {
+        complete(error);
+      }
+    });
 
   /**
    * Focus

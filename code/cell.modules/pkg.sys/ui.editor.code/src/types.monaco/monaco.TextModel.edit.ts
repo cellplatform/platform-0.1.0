@@ -1,12 +1,14 @@
 import { t } from './common';
 
+type R = t.IMonacoRange;
+
 /**
  * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.itextmodel.html#pusheditoperations
  */
 export type MonacoPushEditOperations = (
   beforeCursorState: t.IMonacoSelection[] | null,
   editOperations: IMonacoIdentifiedSingleEditOperation[],
-  cursorStateComputer?: IMonacoCursorStateComputer,
+  cursorStateComputer?: t.IMonacoCursorStateComputer,
 ) => t.IMonacoSelection[] | null;
 
 /**
@@ -19,16 +21,10 @@ export type IMonacoIdentifiedSingleEditOperation = {
 };
 
 /**
- * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.icursorstatecomputer.html
+ * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditoperationbuilder.html
  */
-export type IMonacoCursorStateComputer = (
-  inverseEditOperations: IMonacoValidEditOperation[],
-) => t.IMonacoSelection[] | null;
-
-/**
- * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ivalideditoperation.html
- */
-export type IMonacoValidEditOperation = {
-  range: t.IMonacoRange;
-  text: string;
+export type IMonacoEditOperationBuilder = {
+  addEditOperation(range: R, text: string | null, forceMoveMarkers?: boolean): void;
+  addTrackedEditOperation(range: R, text: string | null, forceMoveMarkers?: boolean): void;
+  trackSelection(selection: t.IMonacoSelection, trackPreviousOnEmpty?: boolean): string;
 };

@@ -15,7 +15,8 @@
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "copy": "ts-node -T src/node/fs.copy/run"
+    "copy": "ts-node -T src/node/fs.copy/run",
+    "tmp": "ts-node -T src/node/tmp"
   },
   "dependencies": {
     "@monaco-editor/react": "^3.7.3",

@@ -12,6 +12,7 @@ export type CodeEditorInstance = {
   focus(): void;
   dispose(): void;
   select(selection: t.CodeEditorSelection | null): void;
+  action(id: t.MonacoAction): t.CodeEditorAction;
 };
 
 /**

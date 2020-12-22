@@ -24,6 +24,9 @@ export type IMonacoStandaloneCodeEditor = {
 
   // Methods.
   focus(): void;
+  executeCommand(source: string | null | undefined, command: t.IMonacoCommand): void;
+  getAction(id: string): t.IMonacoEditorAction;
+  trigger(source: string | null | undefined, handlerId: string, payload: any): void;
 
   // Events.
   onDidChangeModelContent(listener: (e: IMonacoModelContentChangedEvent) => void): D;

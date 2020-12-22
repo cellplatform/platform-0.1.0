@@ -1,4 +1,4 @@
-import { t } from '../../common';
+import { t, slug } from '../../common';
 
 /**
  * API for firing change events.
@@ -27,6 +27,15 @@ export function Fire(bus: t.CodeEditorEventBus, instance: string): t.CodeEditorE
         type: 'CodeEditor/change:text',
         payload: { instance, text },
       });
+    },
+
+    action(action) {
+      const tx = slug();
+      bus.fire({
+        type: 'CodeEditor/action:run',
+        payload: { instance, action, tx },
+      });
+      return tx;
     },
   };
 }

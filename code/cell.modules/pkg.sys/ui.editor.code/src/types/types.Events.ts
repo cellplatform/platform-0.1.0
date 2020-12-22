@@ -1,6 +1,11 @@
 import { t } from './common';
 
-export type CodeEditorEvent = CodeEditorChangeEvent | CodeEditorChangedEvent | ICodeEditorTempEvent;
+export type CodeEditorEvent =
+  | CodeEditorChangeEvent
+  | CodeEditorChangedEvent
+  | ICodeEditorRunActionEvent
+  | ICodeEditorActionCompleteEvent
+  | ICodeEditorTmpEvent;
 
 export type CodeEditorChangeEvent =
   | ICodeEditorChangeFocusEvent
@@ -12,11 +17,11 @@ export type CodeEditorChangedEvent =
   | ICodeEditorFocusChangedEvent
   | ICodeEditorTextChangedEvent;
 
-export type ICodeEditorTempEvent = {
+export type ICodeEditorTmpEvent = {
   type: 'CodeEditor/tmp';
-  payload: ICodeEditorTemp;
+  payload: ICodeEditorTmp;
 };
-export type ICodeEditorTemp = {
+export type ICodeEditorTmp = {
   instance: string;
 };
 
@@ -96,4 +101,28 @@ export type ICodeEditorTextChanged = {
 export type ICodeEditorTextChange = {
   range: t.CodeEditorRange;
   text: string;
+};
+
+/**
+ * Fires to invoke the given action upon the editor.
+ */
+export type ICodeEditorRunActionEvent = {
+  type: 'CodeEditor/action:run';
+  payload: ICodeEditorRunAction;
+};
+export type ICodeEditorRunAction = {
+  instance: string;
+  action: t.MonacoAction;
+  tx?: string; // Execution id.
+};
+
+export type ICodeEditorActionCompleteEvent = {
+  type: 'CodeEditor/action:complete';
+  payload: ICodeEditorActionComplete;
+};
+export type ICodeEditorActionComplete = {
+  instance: string;
+  action: t.MonacoAction;
+  tx: string; // Execution id.
+  error?: string;
 };

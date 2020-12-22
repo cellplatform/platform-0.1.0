@@ -14,9 +14,6 @@ import { t, DEFAULT } from '../../common';
  * Configure the "prettier" code formatter.
  */
 export async function registerPrettier(api: t.ICodeEditorSingleton) {
-  /**
-   * NB: This fails in the browser when importing the 'typescript-parser`.
-   */
   api.monaco.languages.registerDocumentFormattingEditProvider(DEFAULT.LANGUAGE.TS, {
     async provideDocumentFormattingEdits(model, options, token) {
       try {

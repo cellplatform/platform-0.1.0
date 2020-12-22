@@ -33,6 +33,7 @@ export type CodeEditorEventsFire = {
   readonly instance: string;
   focus(): void;
   text(text: string | null): void;
+  action(action: t.MonacoAction): string; // Execution id ([tx] on event)
   select(
     selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[] | null,
     options?: { focus?: boolean },
