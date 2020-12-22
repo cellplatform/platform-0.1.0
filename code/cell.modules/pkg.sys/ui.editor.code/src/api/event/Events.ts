@@ -32,7 +32,7 @@ const create: t.CodeEditorEventsFactory = (input) => {
     instance$,
     fire: Fire(bus),
 
-    instance(id) {
+    editor(id) {
       return InstanceEvents.create(bus, id);
     },
 
