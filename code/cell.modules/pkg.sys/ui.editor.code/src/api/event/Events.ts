@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, share, takeUntil, map } from 'rxjs/operators';
 
-import { rx, t, Is } from '../../common';
+import { rx, t, Is, WaitForResponse } from '../../common';
 import { Fire } from './Events.fire';
 import { InstanceEvents } from './Instance.Events';
 
@@ -45,4 +45,4 @@ const create: t.CodeEditorEventsFactory = (input) => {
   return api;
 };
 
-export const Events = { create };
+export const Events = { create, WaitForEvent: WaitForResponse };

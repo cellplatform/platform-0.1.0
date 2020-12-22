@@ -1,10 +1,15 @@
-import { t, slug } from '../../common';
+import { t, slug, WaitForResponse } from '../../common';
 
 /**
  * API for firing change events.
  */
 export function Fire(bus: t.EventBus<any>, instance: string): t.CodeEditorInstanceEventsFire {
+  const $ = bus.event$;
   const fire = (e: t.CodeEditorInstanceEvent) => bus.fire(e);
+
+  const WaitFor = {
+    Action: WaitForResponse<t.ICodeEditorActionCompleteEvent>($, 'CodeEditor/action:complete'),
+  };
 
   return {
     instance,
@@ -31,13 +36,14 @@ export function Fire(bus: t.EventBus<any>, instance: string): t.CodeEditorInstan
       });
     },
 
-    action(action) {
+    async action(action) {
       const tx = slug();
+      const wait = WaitFor.Action.response(tx);
       fire({
         type: 'CodeEditor/action:run',
         payload: { instance, action, tx },
       });
-      return tx;
+      return (await wait).payload;
     },
   };
 }

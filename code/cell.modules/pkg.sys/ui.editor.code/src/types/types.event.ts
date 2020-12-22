@@ -29,7 +29,10 @@ export type CodeEditorActionEvent = ICodeEditorRunActionEvent | ICodeEditorActio
  * Global (Singleton) Events.
  */
 export type CodeEditorSingletonEvent = CodeEditorLibsEvent;
-export type CodeEditorLibsEvent = ICodeEditorLibsClearEvent;
+export type CodeEditorLibsEvent =
+  | ICodeEditorLibsClearEvent
+  | ICodeEditorLibsLoadEvent
+  | ICodeEditorLibsLoadedEvent;
 
 /**
  * TODO 🐷 Temp
@@ -135,20 +138,38 @@ export type ICodeEditorActionCompleteEvent = {
   payload: ICodeEditorActionComplete;
 };
 export type ICodeEditorActionComplete = {
+  tx: string; // Execution id.
   instance: string;
   action: t.MonacoAction;
-  tx: string; // Execution id.
   error?: string;
 };
 
 /**
  * Type Definition Libraries
  */
-
 export type ICodeEditorLibsClearEvent = {
   type: 'CodeEditor/libs:clear';
   payload: ICodeEditorLibsClear;
 };
 export type ICodeEditorLibsClear = {
-  //
+  // todo: exclude pattern (minimatch)
+};
+
+export type ICodeEditorLibsLoadEvent = {
+  type: 'CodeEditor/libs:load';
+  payload: ICodeEditorLibsLoad;
+};
+export type ICodeEditorLibsLoad = {
+  tx: string; // Execution id.
+  url: string;
+};
+
+export type ICodeEditorLibsLoadedEvent = {
+  type: 'CodeEditor/libs:loaded';
+  payload: ICodeEditorLibsLoaded;
+};
+export type ICodeEditorLibsLoaded = {
+  tx: string; // Execution id.
+  url: string;
+  files: string[];
 };

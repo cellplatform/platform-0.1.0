@@ -23,5 +23,6 @@ export type CodeEditorEvents = {
 export type CodeEditorEventsFire = {
   libs: {
     clear(): void;
+    load(url: string): Promise<t.ICodeEditorLibsLoaded>;
   };
 };
