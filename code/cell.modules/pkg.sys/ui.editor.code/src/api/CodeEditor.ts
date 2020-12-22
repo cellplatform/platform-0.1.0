@@ -16,7 +16,7 @@ export const CodeEditor = {
   /**
    * The singleton instance of monaco-editor logical controller (API).
    */
-  singleton() {
+  singleton(bus: t.EventBus<any>) {
     if (singleton) {
       return singleton;
     }
@@ -25,7 +25,7 @@ export const CodeEditor = {
       try {
         // Initialize.
         const monaco = (await MonacoEditor.init()) as t.IMonaco;
-        const api = CodeEditorSingleton.create(monaco);
+        const api = CodeEditorSingleton.create(bus, monaco);
 
         // Run configuration routines.
         await Promise.all([

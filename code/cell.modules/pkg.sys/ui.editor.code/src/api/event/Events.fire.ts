@@ -5,5 +5,11 @@ import { t } from '../../common';
  */
 export function Fire(bus: t.EventBus<any>): t.CodeEditorEventsFire {
   const fire = (e: t.CodeEditorSingletonEvent) => bus.fire(e);
-  return {};
+  return {
+    libs: {
+      clear() {
+        fire({ type: 'CodeEditor/libs:clear', payload: {} });
+      },
+    },
+  };
 }

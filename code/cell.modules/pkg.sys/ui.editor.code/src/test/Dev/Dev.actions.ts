@@ -38,7 +38,7 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
    */
   const focusActions = Actions<Ctx>()
     .button('focus: one', () => events.instance('one').fire.focus())
-    .button('focus: two', () => events.instance('one').fire.focus());
+    .button('focus: two', () => events.instance('two').fire.focus());
 
   /**
    * Select
@@ -91,7 +91,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
     });
 
   /**
-   * Command actions.
+   * Command Actions
    */
   const cmdActions = Actions<Ctx>()
     .title('Command Actions')
@@ -102,12 +102,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
    */
   const libsActions = Actions<Ctx>()
     .title('Type Libraries')
-    .button('clear', () => {
-      // TODO 🐷
-      // getFire()?.text(null);
-      // fire(() => )
-      // current(({fire}) => fire.)
-    });
+    .button('clear', () => events.fire.libs.clear());
 
   /**
    * Main

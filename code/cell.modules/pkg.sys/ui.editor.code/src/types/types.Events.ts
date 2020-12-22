@@ -21,5 +21,7 @@ export type CodeEditorEvents = {
  * API for firing global events.
  */
 export type CodeEditorEventsFire = {
-  //
+  libs: {
+    clear(): void;
+  };
 };
