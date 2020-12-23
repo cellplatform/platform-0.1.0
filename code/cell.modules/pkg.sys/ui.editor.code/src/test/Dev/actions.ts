@@ -2,10 +2,12 @@ import { debounceTime } from 'rxjs/operators';
 import { Actions } from 'sys.ui.harness';
 
 import { CodeEditor } from '../../api';
-import { bundle, HttpClient, rx, StateObject, t } from '../../common';
+import { bundle, HttpClient, rx, StateObject, t, constants } from '../../common';
 import { SaveTest } from './actions.save';
 
 console.log('__CELL__', __CELL__);
+
+const { PATH } = constants;
 
 type M = {
   editor?: t.CodeEditorInstance;
@@ -134,7 +136,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
     .title('Type Libraries')
     .button('clear', () => events.fire.libs.clear())
     .button('load: lib.es.d.ts', async () => {
-      const url = bundle.path(`static/types/lib.es.d.ts`);
+      const url = bundle.path(PATH.STATIC.TYPES.ES);
       const res = await events.fire.libs.load(url);
       console.log('res', res);
     });

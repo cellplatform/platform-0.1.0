@@ -21,3 +21,12 @@ export const COLORS = {
   DARK: '#293042', // Inky blue/black.
   BLUE: '#4B89FF',
 };
+
+export const PATH = {
+  STATIC: {
+    TYPES: {
+      CELL: 'static/types/lib.cell.d',
+      ES: 'static/types/lib.es.d',
+    },
+  },
+};
