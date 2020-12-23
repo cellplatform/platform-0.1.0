@@ -24,6 +24,7 @@ export const COLORS = {
 
 export const PATH = {
   STATIC: {
+    VS: 'static/vs',
     TYPES: {
       CELL: 'static/types/lib.cell.d',
       ES: 'static/types/lib.es.d',

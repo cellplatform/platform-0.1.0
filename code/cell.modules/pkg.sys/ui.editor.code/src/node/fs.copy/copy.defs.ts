@@ -1,5 +1,4 @@
-import { fs, log, NODE_MODULES, t, hash, constants } from '../common';
-const PATH = constants.PATH;
+import { fs, log, t, hash, PATH } from '../common';
 
 type FilterLine = (line: string) => boolean;
 
@@ -29,7 +28,7 @@ function copyEcmaScript() {
     'lib.es2015.reflect.d.ts',
     'lib.es2015.symbol.d.ts',
   ];
-  const sourceDir = fs.join(NODE_MODULES, 'typescript/lib');
+  const sourceDir = fs.join(PATH.NODE_MODULES, 'typescript/lib');
   const targetDir = fs.resolve(PATH.STATIC.TYPES.ES);
 
   copy({
@@ -69,7 +68,7 @@ function copyCellTypes() {
    *
    */
 
-  const sourceDir = fs.join(NODE_MODULES, '@platform/cell.types/lib/types');
+  const sourceDir = fs.join(PATH.NODE_MODULES, '@platform/cell.types/lib/types');
   const targetDir = fs.resolve(PATH.STATIC.TYPES.CELL);
   const filenames = fs.readdirSync(sourceDir).filter((name) => name.endsWith('.d.ts'));
 
