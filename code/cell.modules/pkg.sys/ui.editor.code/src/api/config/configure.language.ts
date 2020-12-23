@@ -1,4 +1,4 @@
-import { t, bundle } from '../../common';
+import { t, bundle, constants } from '../../common';
 
 /**
  * Configure language (typescript) settings of the IDE.
@@ -35,14 +35,9 @@ export async function registerLanguage(api: t.ICodeEditorSingleton) {
   });
 
   await Promise.all([
-    api.libs.fromNetwork(typeLibraryPath('lib.es.d.ts')),
+    api.libs.fromNetwork(bundle.path(constants.PATH.STATIC.TYPES.ES)),
     // api.libs.loadDefs('lib.cell.d.ts'), // TODO 🐷 - this needs updating to: [Runtime/types.inner.env].
     //
   ]);
 }
 
-/**
- * Helpers
- */
-
-const typeLibraryPath = (path: string) => bundle.path(`static/types/${path}`);

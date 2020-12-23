@@ -7,6 +7,7 @@ export { http } from '@platform/http';
 export { log } from '@platform/log/lib/client';
 export { Uri, Schema } from '@platform/cell.schema';
 export { StateObject } from '@platform/state';
+export { HttpClient } from '@platform/cell.client';
 
 import { id } from '@platform/util.value';
 export { time, rx } from '@platform/util.value';

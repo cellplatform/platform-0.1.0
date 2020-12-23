@@ -1,9 +1,13 @@
-console.log('__CELL__', __CELL__);
-
+import { debounceTime } from 'rxjs/operators';
 import { Actions } from 'sys.ui.harness';
 
-import { StateObject, t, rx, bundle } from '../../common';
 import { CodeEditor } from '../../api';
+import { bundle, HttpClient, rx, StateObject, t, constants } from '../../common';
+import { SaveTest } from './actions.save';
+
+console.log('__CELL__', __CELL__);
+
+const { PATH } = constants;
 
 type M = {
   editor?: t.CodeEditorInstance;
@@ -14,7 +18,7 @@ type Ctx = { model: t.IStateObjectWritable<M>; fire?: t.CodeEditorInstanceEvents
 /**
  * Actions for a single editor.
  */
-export const editorActions = (bus: t.CodeEditorEventBus) => {
+export const DevActions = (bus: t.CodeEditorEventBus) => {
   const events = CodeEditor.events(bus); // TEMP 🐷
 
   const model = StateObject.create<M>({});
@@ -27,6 +31,8 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
     .subscribe((e) => setSelection());
 
   const onReady: t.CodeEditorReadyEventHandler = (e) => {
+    SaveTest(e.editor);
+
     e.editor.events.focus$.subscribe(() => {
       model.change((draft) => (draft.editor = e.editor));
       setSelection();
@@ -36,9 +42,32 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
   /**
    * Focus (between instances).
    */
+  const tmpActions = Actions<Ctx>()
+    .button('tmp', () => bus.fire({ type: 'CodeEditor/tmp', payload: { instance: 'one' } }))
+    .button('tmp.file', async (ctx) => {
+      const uri = 'cell:ckgu71a83000dl0et1676dq9y:A1';
+      const client = HttpClient.create(5000);
+      console.log('client', client);
+      const res = await client.info();
+
+      const fs = client.cell(uri).fs;
+      console.log('res', res);
+
+      const encoder = new TextEncoder();
+      const data = encoder.encode('hello\n');
+
+      // const data = new ArrayBuffer()
+      const uploaded = await fs.upload({ filename: 'foo/myfile.txt', data });
+
+      console.log('uploaded', uploaded);
+    });
+
+  /**
+   * Focus (between instances).
+   */
   const focusActions = Actions<Ctx>()
-    .button('focus: one', () => events.instance('one').fire.focus())
-    .button('focus: two', () => events.instance('two').fire.focus());
+    .button('focus: one', () => events.editor('one').fire.focus())
+    .button('focus: two', () => events.editor('two').fire.focus());
 
   /**
    * Select
@@ -107,7 +136,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
     .title('Type Libraries')
     .button('clear', () => events.fire.libs.clear())
     .button('load: lib.es.d.ts', async () => {
-      const url = bundle.path(`static/types/lib.es.d.ts`);
+      const url = bundle.path(PATH.STATIC.TYPES.ES);
       const res = await events.fire.libs.load(url);
       console.log('res', res);
     });
@@ -121,7 +150,8 @@ const total = a.reduce((acc, next) =>acc + next, 0)
       const fire = editor ? editor.events.fire : undefined;
       return { model, fire };
     })
-    .button('tmp', () => bus.fire({ type: 'CodeEditor/tmp', payload: { instance: 'one' } }))
+
+    .merge(tmpActions)
     .hr()
     .merge(focusActions)
     .hr()
