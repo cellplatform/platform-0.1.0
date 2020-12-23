@@ -3,6 +3,7 @@ import { Actions } from 'sys.ui.harness';
 
 import { CodeEditor } from '../../api';
 import { bundle, HttpClient, rx, StateObject, t } from '../../common';
+import { SaveTest } from './actions.save';
 
 console.log('__CELL__', __CELL__);
 
@@ -15,7 +16,7 @@ type Ctx = { model: t.IStateObjectWritable<M>; fire?: t.CodeEditorInstanceEvents
 /**
  * Actions for a single editor.
  */
-export const editorActions = (bus: t.CodeEditorEventBus) => {
+export const DevActions = (bus: t.CodeEditorEventBus) => {
   const events = CodeEditor.events(bus); // TEMP 🐷
 
   const model = StateObject.create<M>({});
@@ -28,28 +29,13 @@ export const editorActions = (bus: t.CodeEditorEventBus) => {
     .subscribe((e) => setSelection());
 
   const onReady: t.CodeEditorReadyEventHandler = (e) => {
+    SaveTest(e.editor);
+
     e.editor.events.focus$.subscribe(() => {
       model.change((draft) => (draft.editor = e.editor));
       setSelection();
     });
   };
-
-  const binary = new TextEncoder();
-  const client = HttpClient.create(5000);
-  const save = async (text: string) => {
-    const uri = 'cell:ckgu71a83000dl0et1676dq9y:A1';
-    const fs = client.cell(uri).fs;
-    const uploaded = await fs.upload({ filename: 'foo/myfile.txt', data: binary.encode(text) });
-    console.log('uploaded', uploaded);
-  };
-
-  events
-    .editor('one')
-    .text$.pipe(debounceTime(500))
-    .subscribe(() => {
-      const text = model.state.editor?.text;
-      if (text) save(text);
-    });
 
   /**
    * Focus (between instances).

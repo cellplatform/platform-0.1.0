@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { color, css, t, rx } from '../../common';
 import { CodeEditor } from '../../components/CodeEditor';
-import { editorActions } from './Dev.actions';
+import { DevActions } from './actions';
 import { DevHost } from './Dev.host';
 import { crdt } from './Dev.CRDT';
 import { DevProps } from './Dev.props';
@@ -10,7 +10,7 @@ import { DevProps } from './Dev.props';
 const bus = rx.bus<t.CodeEditorEvent>();
 // const events = CodeEditor.events(bus);
 
-const actions = editorActions(bus);
+const actions = DevActions(bus);
 
 const filename = {
   one: 'one.ts',
