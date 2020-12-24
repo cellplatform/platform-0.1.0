@@ -41,7 +41,7 @@ export type CompilerModel = {
 };
 
 /**
- * Underlying webpack modifications.
+ * Underlying Webpack Modifications.
  */
 export type CompilerModelWebpack = {
   rules: t.WpRule[];
@@ -49,12 +49,7 @@ export type CompilerModelWebpack = {
 };
 
 /**
- * Static Assets.
- */
-export type CompilerModelStatic = { dir?: string }; // Static assets.
-
-/**
- * Output file.
+ * Output File.
  */
 export type CompilerModelFiles = {
   redirects?: t.CompilerModelRedirect[];
@@ -68,16 +63,30 @@ export type CompilerModelFileAccess = {
 };
 
 /**
- * File redirection rules.
+ * File Redirection Rules
  */
 export type CompilerModelRedirectAction = 'ALLOW' | 'DENY';
 export type CompilerModelRedirect = { action?: CompilerModelRedirectAction; grep?: string };
 
 /**
- * HTML.
+ * HTML
  */
 export type CompilerModelHtml = {
   inject?: boolean;
   head?: JSX.Element;
   body?: JSX.Element;
 };
+
+/**
+ * Type Declarations (typescript [.d.ts] files)
+ */
+
+export type CompilerModelTypeDeclarations = {
+  grep: string;
+  outdir: string;
+};
+
+/**
+ * Static Assets.
+ */
+export type CompilerModelStatic = { dir?: string }; // Static assets.
