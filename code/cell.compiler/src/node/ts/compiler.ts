@@ -1,29 +1,4 @@
-import { CompilerOptions } from 'typescript';
-import { defaultValue, exec, fs, id, ProgressSpinner } from '../common';
-
-export type TsCompiler = {
-  tsconfig: {
-    path: string;
-    json(): Promise<TsConfig>;
-  };
-
-  declarations(
-    outfile: string,
-    options?: { silent?: boolean; clean?: boolean },
-  ): Promise<TsCompilerDeclarationsResult>;
-};
-
-export type TsCompilerDeclarationsResult = {
-  tsconfig: { path: string; json: TsConfig };
-  outfile: string;
-  error?: string;
-};
-
-export type TsConfig = {
-  extends: string;
-  include: string[];
-  compilerOptions: CompilerOptions;
-};
+import { defaultValue, exec, fs, id, ProgressSpinner, t } from '../common';
 
 /**
  * Wrapper for running the `tsc` typescript compiler
@@ -36,17 +11,20 @@ export type TsConfig = {
 export function compiler(tsconfig?: string) {
   const path = fs.resolve(tsconfig || 'tsconfig.json');
 
-  const compiler: TsCompiler = {
+  const compiler: t.TsCompiler = {
     tsconfig: {
       path,
       async json() {
         if (!(await fs.pathExists(path))) throw new Error(`tsconfig file not found at: ${path}`);
-        return (await fs.readJson(path)) as TsConfig;
+        return (await fs.readJson(path)) as t.TsConfigFile;
       },
     },
 
-    async declarations(outfile: string, options = {}) {
-      outfile = fs.resolve(outfile);
+    /**
+     * Compile typescript [.d.ts] declarations.
+     */
+    async declarations(args) {
+      const outfile = fs.resolve(args.outfile);
 
       // Prepare [tsconfig].
       const tsconfig = await compiler.tsconfig.json();
@@ -54,24 +32,29 @@ export function compiler(tsconfig?: string) {
       tsconfig.compilerOptions.emitDeclarationOnly = true;
       tsconfig.compilerOptions.outFile = outfile;
       delete tsconfig.compilerOptions.outDir;
+      if (args.include) {
+        tsconfig.include = Array.isArray(args.include) ? args.include : [args.include];
+      }
 
       // Save [tsconfig] JSON.
       const project = fs.join(fs.dirname(compiler.tsconfig.path), `tsconfig.tmp.${id.shortid()}`);
       await fs.writeFile(project, JSON.stringify(tsconfig, null, '  '));
 
+      const spinner = ProgressSpinner({ label: 'building typescript declarations' });
+      if (!args.silent) spinner.start();
+
       // Run the command.
       let error: string | undefined;
-      const spinner = ProgressSpinner({ label: 'building typescript declarations' });
-      if (!options.silent) spinner.start();
       const cmd = exec.command(`tsc --project ${project}`);
-      const res = await cmd.run({ cwd: fs.dirname(path), silent: true });
-      spinner.stop();
+      const res = await cmd.run({ cwd: fs.dirname(path), silent: false });
       if (!res.ok) {
-        error = res.errors.map((err) => err).join('\n');
+        const emitted = res.errors.map((err) => err).join('\n');
+        error = `Failed to transpile declarations. ${emitted}`.trim();
       }
 
       // Finish up.
-      if (!defaultValue(options.clean)) await fs.remove(project);
+      spinner.stop();
+      if (!defaultValue(args.clean)) await fs.remove(project);
       return {
         tsconfig: { path: project, json: tsconfig },
         outfile,
