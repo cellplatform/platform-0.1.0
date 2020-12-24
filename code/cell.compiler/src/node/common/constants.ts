@@ -1,5 +1,6 @@
 import { fs } from './libs';
 import * as t from './types';
+const env = fs.env.value;
 
 import { BUNDLE } from '@platform/cell.schema/lib/common/constants';
 
@@ -18,9 +19,14 @@ if (!PKG.compiler) {
   PKG.compiler = { port: CONFIG.port };
 }
 
+export const IS_CLOUD = Boolean(env('VERCEL_REGION'));
+const TMP = IS_CLOUD ? '/tmp' : fs.resolve('tmp');
+
 export const PATH = {
-  cachedir: fs.resolve('./node_modules/.cache/cell.compiler'),
-  tmp: fs.resolve('./tmp'),
+  TMP,
+  CACHEDIR: IS_CLOUD
+    ? fs.join(TMP, '.cache/cell.compiler')
+    : fs.resolve('./node_modules/.cache/cell.compiler'),
 };
 
 export const FILE = {

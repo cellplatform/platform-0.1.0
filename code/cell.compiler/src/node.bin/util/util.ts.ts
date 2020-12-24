@@ -18,7 +18,7 @@ export const ts = {
   },
 
   buildhash(configfile: string) {
-    const cachedir = fs.join(PATH.cachedir, 'lib.build');
+    const cachedir = fs.join(PATH.CACHEDIR, 'lib.build');
     const cachepath = fs.join(cachedir, toHash(configfile).toString());
     const exists = fs.pathExists;
     const readFileHash = async (path: string) => toHash(await readFile(path));
