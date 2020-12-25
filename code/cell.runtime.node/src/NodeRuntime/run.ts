@@ -71,7 +71,7 @@ export function runMethod(args: { cachedir: string }) {
       return done();
     }
 
-    const entry = (options.entry || manifest.entry || '').trim().replace(/^\/*/, '');
+    const entry = (options.entry || manifest.bundle.entry || '').trim().replace(/^\/*/, '');
 
     if (!silent) {
       const bytes = manifest.files.reduce((acc, next) => acc + next.bytes, 0);
@@ -82,7 +82,7 @@ export function runMethod(args: { cachedir: string }) {
       };
 
       add('runtime  ', 'node');
-      add('target', `${manifest.target} (${manifest.mode})`);
+      add('target', `${manifest.bundle.target} (${manifest.bundle.mode})`);
       add('manifest ', logger.format.url(bundle.urls.manifest));
       add('files ', logger.format.url(bundle.urls.files));
       add('entry', entry);

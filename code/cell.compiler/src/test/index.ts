@@ -1,6 +1,6 @@
 import { Uri } from './common';
 
-export { expect } from '@platform/test';
+export { expect, expectError } from '@platform/test';
 export * from './common';
 export * from './test.bundles';
 

@@ -3,6 +3,7 @@ import { Stats } from 'webpack';
 import { fs, log, logger, Model, t, ProgressSpinner } from '../common';
 import { BundleManifest } from '../bundle';
 import { afterCompile, wp } from './util';
+import { Typescript } from '../ts';
 
 /**
  * Bundle the project.
@@ -35,6 +36,8 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
           const res = toBundledResponse({ model, stats, webpack });
           const compilation = stats.compilation;
 
+          await compileDeclarations({ model, bundleDir });
+
           if (compilation) {
             await onCompiled({ model, bundleDir, compilation, webpack });
           }
@@ -53,6 +56,17 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
     }
   });
 };
+
+async function compileDeclarations(args: { model: t.CompilerModel; bundleDir: string }) {
+  if (!args.model.declarations || args.model.declarations.length === 0) return;
+  const declarations = args.model.declarations.map((d) => ({
+    include: d.include,
+    outfile: fs.join(args.bundleDir, d.outfile),
+    silent: true,
+  }));
+  const ts = Typescript.compiler();
+  await Promise.all(declarations.map((params) => ts.declarations(params)));
+}
 
 export async function onCompiled(args: {
   model: t.CompilerModel;

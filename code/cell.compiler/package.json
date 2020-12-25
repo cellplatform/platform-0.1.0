@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.compiler",
-  "version": "0.2.44",
+  "version": "0.2.45",
   "description": "Code compilation and bundling.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -24,7 +24,8 @@
     "serve": "yarn cmd serve $@",
     "info": "yarn cmd info $@",
     "clean": "yarn cmd clean $@",
-    "node": "ts-node -T script.ts/node $@"
+    "node": "ts-node -T script.ts/tmp.node.runtime $@",
+    "tmp": "ts-node -T script.ts/tmp.ts"
   },
   "dependencies": {
     "@babel/core": "7.12.10",
@@ -33,9 +34,9 @@
     "@babel/preset-env": "7.12.11",
     "@babel/preset-react": "7.12.10",
     "@babel/preset-typescript": "7.12.7",
-    "@platform/cell.module": "0.0.81",
-    "@platform/cell.runtime.node": "0.0.17",
-    "@platform/cell.types": "0.5.48",
+    "@platform/cell.module": "0.0.82",
+    "@platform/cell.runtime.node": "0.0.18",
+    "@platform/cell.types": "0.5.49",
     "@platform/css": "0.4.27",
     "@platform/libs": "0.2.4",
     "@platform/log": "0.1.42",
@@ -60,7 +61,7 @@
     "worker-loader": "3.0.6"
   },
   "devDependencies": {
-    "@platform/cell.runtime.web": "0.1.17",
+    "@platform/cell.runtime.web": "0.1.18",
     "@platform/react": "0.4.60",
     "@platform/test": "0.2.1",
     "@platform/ts": "4.1.3",

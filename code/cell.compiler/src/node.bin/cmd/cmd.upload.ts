@@ -81,7 +81,7 @@ async function toSampleArgs(args: {
   const { target } = args;
   const host = args.host ? args.host : 'localhost:5000';
   const targetDir = args.targetDir ? args.targetDir : 'sample';
-  const tmp = fs.join(PATH.tmp, 'sample');
+  const tmp = fs.join(PATH.TMP, 'sample');
   const filepath = fs.join(tmp, 'upload.json');
 
   await fs.ensureDir(tmp);

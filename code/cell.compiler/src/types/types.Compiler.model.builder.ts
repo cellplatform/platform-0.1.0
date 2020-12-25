@@ -35,6 +35,7 @@ export type CompilerModelMethods = {
   target(value: string | null): B;
   outdir(value: string | null): B;
   static(value: string | string[] | null): B;
+  declarations(include: string | null, outfile?: string): B;
   lint(value: boolean | null): B;
   entry(path: string): B; // Default key: 'main'
   entry(key: string, path?: string | null): B;

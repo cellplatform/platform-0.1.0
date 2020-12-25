@@ -122,6 +122,7 @@ async function execBundle(args: {
     hash,
   };
   const res = await runtime.run(bundle, options);
+
   const { ok, manifest, errors } = res;
   const tx = body.tx || id.cuid();
   const files = manifest?.files;

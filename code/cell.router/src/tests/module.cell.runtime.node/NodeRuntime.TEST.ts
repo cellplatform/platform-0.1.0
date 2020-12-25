@@ -184,7 +184,9 @@ describe('cell.runtime.node: NodeRuntime', function () {
       await uploadBundle(client, samples.node.outdir, bundle);
 
       expect(await runtime.exists(bundle)).to.eql(false);
+
       await runtime.run(bundle, { silent: true });
+
       expect(await runtime.exists(bundle)).to.eql(true);
 
       await mock.dispose();
