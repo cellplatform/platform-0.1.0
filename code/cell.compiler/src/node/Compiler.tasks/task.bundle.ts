@@ -64,8 +64,18 @@ async function compileDeclarations(args: { model: t.CompilerModel; bundleDir: st
     outfile: fs.join(args.bundleDir, d.outfile),
     silent: true,
   }));
+
+  // Run the [tsc] compiler.
   const ts = Typescript.compiler();
   await Promise.all(declarations.map((params) => ts.declarations(params)));
+
+  // Rename ".d.ts" extension to ".d.txt" so files are served as "plain/text" mimetype.
+  await Promise.all([
+    declarations
+      .map((d) => d.outfile)
+      .filter((path) => path.endsWith('.d.ts'))
+      .forEach((path) => fs.rename(path, path.replace(/\.d\.ts$/, '.d.txt'))),
+  ]);
 }
 
 export async function onCompiled(args: {

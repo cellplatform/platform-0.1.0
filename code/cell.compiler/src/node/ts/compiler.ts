@@ -24,7 +24,8 @@ export function compiler(tsconfig?: string) {
      * Compile typescript [.d.ts] declarations.
      */
     async declarations(args) {
-      const outfile = fs.resolve(args.outfile);
+      let outfile = fs.resolve(args.outfile);
+      outfile = outfile.endsWith('.d.ts') ? outfile : `${outfile}.d.ts`;
 
       // Prepare [tsconfig].
       const tsconfig = await compiler.tsconfig.json();

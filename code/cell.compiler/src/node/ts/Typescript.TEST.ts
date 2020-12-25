@@ -11,21 +11,26 @@ describe('Typescript', function () {
     });
 
     describe('declarations', () => {
-      it('declarations', async () => {
+      it.only('declarations', async () => {
         const compiler = Typescript.compiler('tsconfig.json');
-        const res = await compiler.declarations({ outfile: 'tmp/types.d.ts' });
+        const res = await compiler.declarations({ outfile: 'tmp/types' });
+        expect(res.outfile.endsWith('.d.ts')).to.eql(true); // NB: implicitly assigned extension (".d.txt")
+
         const text = fs.readFileSync(res.outfile).toString();
         expect(text).to.include(`/// <reference types="react" />`);
         expect(res.error).to.eql(undefined);
       });
 
-      it('declarations: entry', async () => {
+      it('declarations: explicit "include" and ".d.ts" extension', async () => {
         const compiler = Typescript.compiler('tsconfig.json');
         const res = await compiler.declarations({
           outfile: 'tmp/types.d.ts',
           // include: 'src/test/sample.node/**/*',
           include: 'src/test/sample.node/entry.ts',
         });
+
+        expect(res.outfile.endsWith('.d.ts')).to.eql(true);
+
         const text = fs.readFileSync(res.outfile).toString();
         expect(text).to.include(`export type Foo = {`);
         expect(res.error).to.eql(undefined);
