@@ -350,13 +350,14 @@ describe('/fn:run', function () {
         const res2 = await post(url.silentFalse, body);
         const res3 = await post(url.silentFalse, [{ ...body[0], silent: true }]);
 
+        console.log = log;
         await mock.dispose();
 
         expect(res1.results[0].silent).to.eql(true); // Default
         expect(res2.results[0].silent).to.eql(false); // via URL.
         expect(res3.results[0].silent).to.eql(true); // Query-string overridden in body.
 
-        console.log = log;
+        return;
       });
     });
   });

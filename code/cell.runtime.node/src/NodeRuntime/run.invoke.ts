@@ -22,7 +22,7 @@ export function invoke(args: {
 }) {
   return new Promise<R>(async (resolve) => {
     const { silent, manifest, dir } = args;
-    const entry = (args.entry || manifest.entry || '').trim();
+    const entry = (args.entry || manifest.bundle.entry || '').trim();
     const filename = fs.join(dir, entry);
 
     /**

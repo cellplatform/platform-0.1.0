@@ -154,7 +154,7 @@ describe('Client.TypeSystem', function () {
         row.props.title = '2';
         row.props.title = '3';
 
-        await time.wait(20);
+        await time.wait(50);
 
         sheet.dispose(); // NB: Auto un-watches so "goodbye" is not the final change.
         row.props.title = 'goodbye';
