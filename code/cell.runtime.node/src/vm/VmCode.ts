@@ -9,15 +9,15 @@ export type CachedScript = {
 /**
  * Compiled scripts.
  */
-export const Script = {
+export const VmCode = {
   cache: MemoryCache.create(),
 
   /**
    * Loads (or gets from cache) a script.
    */
   async get(filename: string) {
-    if (Script.cache.exists(filename)) {
-      return Script.cache.get<CachedScript>(filename);
+    if (VmCode.cache.exists(filename)) {
+      return VmCode.cache.get<CachedScript>(filename);
     }
 
     const timer = time.timer();
@@ -29,7 +29,7 @@ export const Script = {
       script,
     };
 
-    Script.cache.put(filename, res);
+    VmCode.cache.put(filename, res);
     return res;
   },
 };

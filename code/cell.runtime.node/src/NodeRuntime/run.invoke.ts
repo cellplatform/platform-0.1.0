@@ -1,5 +1,5 @@
 import { log, logger, t, time, fs, defaultValue, R, DEFAULT } from '../common';
-import { Script, Vm } from '../vm';
+import { Vm } from '../vm';
 
 type R = {
   ok: boolean;
@@ -112,12 +112,12 @@ export function invoke(args: {
       },
     };
 
-    const sandbox: t.Global = { env };
+    const global: t.Global = { env };
 
     try {
       const builtin = ['*']; // TEMP 🐷 - TODO allow only by policy
-      const vm = Vm.node({ silent, sandbox, builtin });
-      const code = await Script.get(filename);
+      const vm = Vm.node({ silent, global, builtin });
+      const code = await Vm.code.get(filename);
       preparationComplete(); // Stop the "preparation" timer.
 
       vm.run(code.script);

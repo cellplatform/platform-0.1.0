@@ -1,5 +1,5 @@
 import { expect, fs } from '../test';
-import { Script } from '.';
+import { VmCode } from './VmCode';
 
 const tmp = fs.resolve('./tmp/test.vm');
 
@@ -12,15 +12,15 @@ const writeCode = async (filename: string, code: string) => {
 };
 
 describe('vm', () => {
-  describe('Script', () => {
+  describe('VmScript', () => {
     it('get: new (compile)', async () => {
       const code = 'console.log(123);';
       const { filename } = await writeCode('foo.js', code);
 
-      expect(Script.cache.exists(filename)).to.eql(false);
+      expect(VmCode.cache.exists(filename)).to.eql(false);
 
-      const res = await Script.get(filename);
-      expect(Script.cache.exists(filename)).to.eql(true);
+      const res = await VmCode.get(filename);
+      expect(VmCode.cache.exists(filename)).to.eql(true);
 
       expect(res.elased).to.greaterThan(1);
       expect(res.script.filename).to.eql(filename);
@@ -31,8 +31,8 @@ describe('vm', () => {
     it('get: cached', async () => {
       const code = 'console.log(123);';
       const { filename } = await writeCode('foo.js', code);
-      const res1 = await Script.get(filename);
-      const res2 = await Script.get(filename);
+      const res1 = await VmCode.get(filename);
+      const res2 = await VmCode.get(filename);
       expect(res1).to.equal(res2);
     });
   });

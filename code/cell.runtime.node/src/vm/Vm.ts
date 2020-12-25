@@ -1,25 +1,21 @@
-import { NodeVM } from 'vm2';
-
-type O = Record<string, unknown>;
+import { VmNode } from './VmNode';
+import { VmCode } from './VmCode';
 
 /**
  * Secure JS virtual-machine.
+ *
+ * Ref:
+ *    https://github.com/patriksimek/vm2
+ *
  */
 export const Vm = {
   /**
-   * Creates a new VM for running on Node.
+   * Create a new VM for running on Node.
    */
-  node(options: { silent?: boolean; builtin?: string[]; sandbox?: O } = {}) {
-    const { builtin = [], silent, sandbox = {} } = options;
-    return new NodeVM({
-      console: silent ? 'off' : 'inherit',
-      sandbox,
-      wasm: true,
-      require: {
-        root: './',
-        builtin,
-        external: true,
-      },
-    });
-  },
+  node: VmNode.create,
+
+  /**
+   * Manager for compiled code scripts.
+   */
+  code: VmCode,
 };
