@@ -1,7 +1,7 @@
 import { Builder, DEFAULT, Encoding, fs, R, t, value as valueUtil } from '../common';
 import { wp } from '../config.webpack';
 import { webpackMethods } from './handlers.webpack';
-import { FileRedirects, validate } from './util';
+import { validate } from './util';
 import { htmlMethods } from './handlers.html';
 import { filesMethods } from './handlers.files';
 
@@ -80,6 +80,27 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
           .map((dir) => ({ dir }));
         draft.static = (draft.static || []).length === 0 ? undefined : draft.static;
         draft.static = draft.static ? R.uniq(draft.static) : draft.static;
+      }
+    });
+  },
+
+  declarations(args) {
+    args.model.change((draft) => {
+      if (args.params[0] === null) {
+        draft.declarations = undefined;
+      } else {
+        draft.declarations = draft.declarations || [];
+        const include = format.string(args.params[0], { trim: true });
+        if (typeof include === 'string') {
+          let outfile = format.string(args.params[1], { trim: true }) || '';
+          outfile = outfile.replace(/^\/*/, '').replace(/^types\.d\//, '');
+          outfile = outfile || 'index.d.ts';
+          outfile = `types.d/${outfile}`;
+          draft.declarations.push({ include, outfile });
+        }
+        draft.declarations =
+          (draft.declarations || []).length === 0 ? undefined : draft.declarations;
+        draft.declarations = draft.declarations ? R.uniq(draft.declarations) : draft.declarations;
       }
     });
   },

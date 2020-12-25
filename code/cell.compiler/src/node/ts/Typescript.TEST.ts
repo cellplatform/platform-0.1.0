@@ -23,7 +23,8 @@ describe('Typescript', function () {
         const compiler = Typescript.compiler('tsconfig.json');
         const res = await compiler.declarations({
           outfile: 'tmp/types.d.ts',
-          include: 'src/test/sample.node/**/*',
+          // include: 'src/test/sample.node/**/*',
+          include: 'src/test/sample.node/entry.ts',
         });
         const text = fs.readFileSync(res.outfile).toString();
         expect(text).to.include(`export type Foo = {`);

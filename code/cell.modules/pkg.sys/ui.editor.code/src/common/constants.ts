@@ -26,8 +26,8 @@ export const PATH = {
   STATIC: {
     VS: 'static/vs',
     TYPES: {
-      CELL: 'static/types/lib.cell.d',
-      ES: 'static/types/lib.es.d',
+      CELL: 'static/types.d/lib.cell',
+      ES: 'static/types.d/lib.es',
     },
   },
 };

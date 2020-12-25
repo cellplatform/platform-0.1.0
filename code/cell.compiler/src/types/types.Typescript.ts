@@ -17,7 +17,7 @@ export type TsCompileDeclarations = (
 
 export type TsCompileDeclarationsArgs = {
   outfile: string;
-  include?: string | string[]; // Grep, eg: src/foo/**/*
+  include?: string | string[]; // File or grep pattern, eg: src/foo/**/*
   silent?: boolean;
   clean?: boolean;
 };

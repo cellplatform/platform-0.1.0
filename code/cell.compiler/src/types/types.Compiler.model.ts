@@ -18,6 +18,7 @@ export type CompilerModel = {
   target?: string;
   outdir?: string;
   static?: CompilerModelStatic | CompilerModelStatic[];
+  declarations?: CompilerModelDeclarations[];
   lint?: boolean;
   entry?: Record<string, string>;
   exposes?: Record<string, string>;
@@ -78,15 +79,14 @@ export type CompilerModelHtml = {
 };
 
 /**
- * Type Declarations (typescript [.d.ts] files)
- */
-
-export type CompilerModelTypeDeclarations = {
-  grep: string;
-  outdir: string;
-};
-
-/**
  * Static Assets.
  */
 export type CompilerModelStatic = { dir?: string }; // Static assets.
+
+/**
+ * Type Declarations (typescript [.d.ts] files)
+ */
+export type CompilerModelDeclarations = {
+  include: string | string[]; // TSConfig "include" path. File or grep pattern, eg: src/foo/**/*
+  outfile: string;
+};

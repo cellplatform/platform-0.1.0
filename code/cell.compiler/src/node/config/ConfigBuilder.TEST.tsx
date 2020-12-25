@@ -342,7 +342,7 @@ describe('Compiler (Config)', () => {
       test({}, undefined);
     });
 
-    it('static', () => {
+    it.only('static', () => {
       const { model, builder } = create();
       expect(model.state.static).to.eql(undefined);
 
@@ -359,6 +359,44 @@ describe('Compiler (Config)', () => {
       test('  ', undefined);
       test(null, undefined);
       test({}, undefined);
+    });
+
+    it.only('typeDeclarations', () => {
+      const { model, builder } = create();
+      expect(model.state.static).to.eql(undefined);
+
+      const test = (param1: any, param2: any, expected: any) => {
+        builder.declarations(param1, param2);
+        expect(model.state.declarations).to.eql(expected);
+      };
+
+      // const declaration: t.CompilerModelDeclarations = {
+      //   include: '**/*',
+      //   outfile: 'lib/foo.d.ts',
+      // };
+
+      const src = 'src/**/*';
+      const reset = () => builder.declarations(null);
+
+      test('src/**/*', undefined, [{ include: 'src/**/*', outfile: 'types.d/index.d.ts' }]);
+      test(null, undefined, undefined);
+
+      test(src, 'foo.d.ts', [{ include: src, outfile: 'types.d/foo.d.ts' }]);
+      reset();
+
+      test(src, '//dir/foo.d.ts', [{ include: src, outfile: 'types.d/dir/foo.d.ts' }]);
+      reset();
+
+      test(src, '  //  ', [{ include: src, outfile: 'types.d/index.d.ts' }]);
+      reset();
+
+      // Uniq.
+      builder.declarations(src);
+      builder.declarations(src);
+      builder.declarations(src);
+      expect(model.state.declarations).to.eql([
+        { include: 'src/**/*', outfile: 'types.d/index.d.ts' },
+      ]);
     });
 
     it('lint', () => {
