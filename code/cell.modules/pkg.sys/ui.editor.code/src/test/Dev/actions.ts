@@ -135,7 +135,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
   const libsActions = Actions<Ctx>()
     .title('Type Libraries')
     .button('clear', () => events.fire.libs.clear())
-    .button('load: lib.es.d.ts', async () => {
+    .button('load: lib.es', async () => {
       const url = bundle.path(PATH.STATIC.TYPES.ES);
       const res = await events.fire.libs.load(url);
       console.log('res', res);

@@ -6,7 +6,7 @@ export default () =>
     .variant('node', (config) =>
       config
         .target('node')
-        .entry('src/main/index')
-        .declarations('src/**/*')
+        .entry('./src/main/index')
+        .declarations('./src/**/*')
         .shared((e) => e.add(e.dependencies)),
     );
