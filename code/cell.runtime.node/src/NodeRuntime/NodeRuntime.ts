@@ -14,14 +14,15 @@ export const NodeRuntime = {
   /**
    * Initialize an instance of the Node runtime.
    */
-  create(args: { cachedir?: string } = {}) {
+  create(args: { cachedir?: string; stdlibs?: t.AllowedStdlib[] } = {}) {
+    const { stdlibs } = args;
     const cachedir = args.cachedir || PATH.CACHE_DIR;
 
     const runtime: t.RuntimeEnvNode = {
       name: 'node',
       version: (process.version || '').replace(/^v/, ''),
       pull: pullMethod({ cachedir }),
-      run: runMethod({ cachedir }),
+      run: runMethod({ cachedir, stdlibs }),
 
       /**
        * Determine if the given bundle has been pulled.

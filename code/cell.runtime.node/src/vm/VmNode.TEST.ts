@@ -1,6 +1,9 @@
 import { expect } from '../test';
 import { VmNode } from './VmNode';
 
+/**
+ * See [cell.router] for full set of tests.
+ */
 describe('VmNode', () => {
   it('create (default)', () => {
     const global = { foo: 1234 };

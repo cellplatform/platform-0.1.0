@@ -6,8 +6,8 @@ import { invoke } from './run.invoke';
 /**
  * Factory for the [run] method.
  */
-export function runMethod(args: { cachedir: string }) {
-  const { cachedir } = args;
+export function runMethod(args: { cachedir: string; stdlibs?: t.AllowedStdlib[] }) {
+  const { cachedir, stdlibs } = args;
   const pull = pullMethod({ cachedir });
 
   /**
@@ -95,7 +95,16 @@ export function runMethod(args: { cachedir: string }) {
 
     // Execute the code.
     const dir = bundle.cache.dir;
-    const res = await invoke({ manifest, dir, silent, in: options.in, timeout, entry, hash });
+    const res = await invoke({
+      manifest,
+      dir,
+      silent,
+      in: options.in,
+      timeout,
+      entry,
+      hash,
+      stdlibs,
+    });
     elapsed = res.elapsed;
     res.errors.forEach((err) => addError(err.message, err.stack));
 

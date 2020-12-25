@@ -3,14 +3,9 @@ import { VmCode } from './VmCode';
 
 const tmp = fs.resolve('./tmp/test.vm');
 
-const writeCode = async (filename: string, code: string) => {
-  filename = fs.join(tmp, filename);
-  await fs.ensureDir(fs.dirname(filename));
-  await fs.writeFile(filename, code);
-
-  return { filename, code };
-};
-
+/**
+ * See [cell.router] for full set of tests.
+ */
 describe('vm', () => {
   describe('VmScript', () => {
     it('get: new (compile)', async () => {
@@ -37,3 +32,13 @@ describe('vm', () => {
     });
   });
 });
+
+/**
+ * [Helpers]
+ */
+const writeCode = async (filename: string, code: string) => {
+  filename = fs.join(tmp, filename);
+  await fs.ensureDir(fs.dirname(filename));
+  await fs.writeFile(filename, code);
+  return { filename, code };
+};

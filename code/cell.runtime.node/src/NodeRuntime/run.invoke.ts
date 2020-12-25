@@ -19,9 +19,10 @@ export function invoke(args: {
   silent?: boolean;
   timeout?: number;
   hash?: string;
+  stdlibs?: t.AllowedStdlib[];
 }) {
   return new Promise<R>(async (resolve) => {
-    const { silent, manifest, dir } = args;
+    const { silent, manifest, dir, stdlibs } = args;
     const entry = (args.entry || manifest.bundle.entry || '').trim();
     const filename = fs.join(dir, entry);
 
@@ -115,8 +116,7 @@ export function invoke(args: {
     const global: t.Global = { env };
 
     try {
-      const builtin = ['*']; // TEMP 🐷 - TODO allow only by policy
-      const vm = Vm.node({ silent, global, builtin });
+      const vm = Vm.node({ silent, global, stdlibs });
       const code = await Vm.code(filename);
       preparationComplete(); // Stop the "preparation" timer.
 
