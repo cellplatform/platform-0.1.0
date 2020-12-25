@@ -95,6 +95,7 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
           let outfile = format.string(args.params[1], { trim: true }) || '';
           outfile = outfile.replace(/^\/*/, '').replace(/^types\.d\//, '');
           outfile = outfile || 'index.d.ts';
+          outfile = outfile.endsWith('.d.ts') ? outfile : `${outfile}.d.ts`;
           outfile = `types.d/${outfile}`;
           draft.declarations.push({ include, outfile });
         }
