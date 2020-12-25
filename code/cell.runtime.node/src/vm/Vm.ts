@@ -17,5 +17,5 @@ export const Vm = {
   /**
    * Manager for compiled code scripts.
    */
-  code: VmCode,
+  code: VmCode.get,
 };

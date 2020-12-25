@@ -117,7 +117,7 @@ export function invoke(args: {
     try {
       const builtin = ['*']; // TEMP 🐷 - TODO allow only by policy
       const vm = Vm.node({ silent, global, builtin });
-      const code = await Vm.code.get(filename);
+      const code = await Vm.code(filename);
       preparationComplete(); // Stop the "preparation" timer.
 
       vm.run(code.script);
