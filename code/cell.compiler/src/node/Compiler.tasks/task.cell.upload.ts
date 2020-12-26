@@ -16,7 +16,7 @@ import {
   ProgressSpinner,
   rx,
 } from '../common';
-import { BundleManifest } from '../bundle';
+import { BundleManifest } from '../manifest';
 import { FileRedirects, FileAccess } from '../config';
 
 type FileUri = t.IUriData<t.IFileData>;

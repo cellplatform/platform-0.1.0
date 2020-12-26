@@ -1,7 +1,7 @@
 import { Stats } from 'webpack';
 
 import { fs, log, logger, Model, t, ProgressSpinner } from '../common';
-import { BundleManifest } from '../bundle';
+import { BundleManifest } from '../manifest';
 import { afterCompile, wp } from './util';
 import { Typescript } from '../ts';
 
