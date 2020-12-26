@@ -11,7 +11,7 @@ describe('Typescript', function () {
     });
 
     describe('declarations', () => {
-      it.only('declarations', async () => {
+      it('declarations', async () => {
         const compiler = Typescript.compiler('tsconfig.json');
         const res = await compiler.declarations({ outfile: 'tmp/types' });
         expect(res.outfile.endsWith('.d.ts')).to.eql(true); // NB: implicitly assigned extension (".d.txt")

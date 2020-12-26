@@ -86,7 +86,7 @@ export async function onCompiled(args: {
 }) {
   const { model, bundleDir, compilation, webpack } = args;
   await copyStatic({ model, bundleDir });
-  await BundleManifest.createAndSave({ model, bundleDir });
+  await BundleManifest.createAndSave({ model, sourceDir: bundleDir });
   afterCompile({ model, compilation, webpack });
 }
 
