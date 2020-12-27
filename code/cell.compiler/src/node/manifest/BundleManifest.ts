@@ -23,7 +23,11 @@ export const BundleManifest = {
   /**
    * Generates a manifest.
    */
-  async create(args: { model: t.CompilerModel; sourceDir: string; filename?: string }): Promise<M> {
+  async create(args: {
+    model: t.CompilerModel;
+    sourceDir: string;
+    filename?: string; // Default: index.json
+  }): Promise<M> {
     const { sourceDir, model, filename = BundleManifest.filename } = args;
     const data = Model(model);
     const manifest = await FileManifest.create({ sourceDir, model, filename });
@@ -50,7 +54,11 @@ export const BundleManifest = {
   /**
    * Write the bundle manifest to the file-system.
    */
-  async createAndSave(args: { model: t.CompilerModel; sourceDir: string; filename?: string }) {
+  async createAndSave(args: {
+    model: t.CompilerModel;
+    sourceDir: string;
+    filename?: string; // Default: index.json
+  }) {
     const { model, sourceDir, filename } = args;
     return createAndSave<M>({
       create: () => BundleManifest.create({ sourceDir, model, filename }),

@@ -71,7 +71,7 @@ export const FileManifest = {
   async create<T extends M>(args: {
     sourceDir: string;
     model?: t.CompilerModel;
-    filename?: string;
+    filename?: string; // Default: index.json
   }) {
     const { model, filename = FileManifest.filename } = args;
     const sourceDir = (args.sourceDir || '').trim().replace(/\/*$/, '');
@@ -80,7 +80,7 @@ export const FileManifest = {
     let paths = await fs.glob.find(pattern, { includeDirs: false });
     paths = paths.filter((path) => !path.endsWith(`/${filename}`));
 
-    const toFile = (path: string) => FileManifest.loadFile({ path, sourceDir, model });
+    const toFile = (path: string) => FileManifest.loadFile({ path, baseDir: sourceDir, model });
     const files: t.ManifestFile[] = await Promise.all(paths.map((path) => toFile(path)));
 
     const manifest: M = {
@@ -103,15 +103,15 @@ export const FileManifest = {
    * Loads the file as the given path and derives file metadata.
    */
   async loadFile(args: {
+    baseDir: string;
     path: string;
-    sourceDir: string;
     model?: t.CompilerModel;
   }): Promise<t.ManifestFile> {
-    const { model, sourceDir } = args;
+    const { model, baseDir } = args;
     const file = await fs.readFile(args.path);
     const bytes = file.byteLength;
     const filehash = Schema.hash.sha256(file);
-    const path = args.path.substring(sourceDir.length + 1);
+    const path = args.path.substring(baseDir.length + 1);
     return deleteUndefined({
       path,
       bytes,

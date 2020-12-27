@@ -17,7 +17,7 @@ export const TypeManifest = {
    */
   async create(args: {
     sourceDir: string;
-    filename?: string;
+    filename?: string; // Default: index.json
     model?: t.CompilerModel;
     saveRefs?: boolean;
   }): Promise<M> {
@@ -33,7 +33,7 @@ export const TypeManifest = {
    */
   async createAndSave(args: {
     sourceDir: string;
-    filename?: string;
+    filename?: string; // Default: index.json
     model?: t.CompilerModel;
     copyRefs?: boolean;
   }) {
@@ -74,9 +74,8 @@ async function appendTypeInfo(sourceDir: string, input: t.ManifestFile) {
   const text = (await fs.readFile(fs.join(sourceDir, input.path))).toString();
   const lines = text.split('\n');
 
-  const exists = Boolean;
   const notRelative = (module: string) => !module.startsWith('.');
-  const include = (module: string) => exists(module) && notRelative(module);
+  const include = (module: string) => Boolean(module) && notRelative(module);
 
   const declaration: t.TypeManifestFileInfo = {
     imports: lines.map((line) => toImport(line)).filter(include),
