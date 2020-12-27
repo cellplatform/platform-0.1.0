@@ -2,6 +2,7 @@ import { fs, t, R, constants, slug } from '../common';
 import { FileManifest, createAndSave } from './Manifest';
 
 type M = t.TypeManifest;
+type Dirs = { base: string; dir: string; join(): string };
 
 /**
  * Helpers for creating and working with manifest of type declarations (".d.ts" files)
@@ -16,14 +17,18 @@ export const TypeManifest = {
    * Generates a manifest.
    */
   async create(args: {
-    sourceDir: string;
+    base: string;
+    dir: string;
     filename?: string; // Default: index.json
     model?: t.CompilerModel;
     saveRefs?: boolean;
   }): Promise<M> {
-    const { sourceDir, model, filename = TypeManifest.filename } = args;
-    const manifest = await FileManifest.create({ sourceDir, model, filename });
-    const files = await Promise.all(manifest.files.map((file) => appendTypeInfo(sourceDir, file)));
+    const { base, dir, model, filename = TypeManifest.filename } = args;
+    const dirs = formatDirs(args.base, args.dir);
+    const manifest = await FileManifest.create({ sourceDir: dirs.join(), model, filename });
+    const files = await Promise.all(
+      manifest.files.map((file) => appendTypeInfo(dirs.join(), file)),
+    );
     const { hash } = manifest;
     return { kind: 'types.d', hash, files };
   },
@@ -32,20 +37,22 @@ export const TypeManifest = {
    * Write the bundle manifest to the file-sy stem.
    */
   async createAndSave(args: {
-    sourceDir: string;
+    base: string;
+    dir: string;
     filename?: string; // Default: index.json
     model?: t.CompilerModel;
     copyRefs?: boolean;
   }) {
-    const { model, sourceDir, filename } = args;
+    const { model, base, dir, filename } = args;
+    const dirs = formatDirs(args.base, args.dir);
     const res = await createAndSave<M>({
-      create: () => TypeManifest.create({ sourceDir, model, filename }),
-      sourceDir,
+      create: () => TypeManifest.create({ base, dir, model, filename }),
+      sourceDir: dirs.join(),
       filename,
       model,
     });
 
-    if (args.copyRefs) await copyRefs(fs.dirname(sourceDir), res.manifest);
+    if (args.copyRefs) await copyRefs(base, res.manifest);
     return res;
   },
 
@@ -69,6 +76,14 @@ export const TypeManifest = {
 /**
  * Helpers
  */
+
+export function formatDirs(base: string, dir: string): Dirs {
+  base = fs.resolve((base || '').trim()).replace(/\/*$/, '');
+  dir = (dir || '').trim().replace(/\/*$/, '');
+  dir = dir.startsWith(base) ? (dir = dir.substring(base.length + 1)) : dir;
+  dir = dir.replace(/^\/*/, '');
+  return { base, dir, join: () => fs.join(base, dir) };
+}
 
 async function appendTypeInfo(sourceDir: string, input: t.ManifestFile) {
   const text = (await fs.readFile(fs.join(sourceDir, input.path))).toString();
@@ -100,7 +115,7 @@ function toModuleRef(line: string) {
   return match ? match[0].replace(/^from '/, '').replace(/';/, '') : '';
 }
 
-async function copyRefs(baseDir: string, manifest: t.TypeManifest) {
+async function copyRefs(base: string, manifest: t.TypeManifest) {
   // Prepare set of paths.
   let paths: { module: string; source: string }[] = [];
   manifest.files.forEach((file) => {
@@ -110,7 +125,7 @@ async function copyRefs(baseDir: string, manifest: t.TypeManifest) {
   paths = R.uniq(paths.filter(Boolean));
 
   for (const path of paths) {
-    path.source = await pathToModule(baseDir, path.module);
+    path.source = await pathToModule(base, path.module);
     if (!path.source) {
       throw new Error(`Cannot find source declarations for '${path.module}' to copy`);
     }
@@ -128,14 +143,13 @@ async function copyRefs(baseDir: string, manifest: t.TypeManifest) {
   let declarations = await fs.glob.find(`${tmp}/**/*.d.ts`);
   declarations = declarations.filter((path) => !path.endsWith('.TEST.d.ts'));
   for (const source of declarations) {
-    const target = fs.join(baseDir, source.substring(tmp.length));
+    const target = fs.join(base, source.substring(tmp.length));
     if (!(await fs.pathExists(target))) await fs.copy(source, target);
   }
 
   // Write manifest.
   for (const path of paths) {
-    const sourceDir = fs.join(baseDir, path.module);
-    await TypeManifest.createAndSave({ sourceDir });
+    await TypeManifest.createAndSave({ base: base, dir: path.module });
   }
 
   // Clean up.

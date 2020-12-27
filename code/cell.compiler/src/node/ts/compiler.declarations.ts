@@ -1,5 +1,5 @@
 import { defaultValue, exec, fs, id, ProgressSpinner, t } from '../common';
-import { TypeManifest } from '../manifest';
+import { TypeManifest, formatDirs } from '../manifest/TypeManifest';
 
 /**
  * Compile typescript [.d.ts] declarations.
@@ -8,13 +8,13 @@ export async function compileDeclarations(
   args: t.TsCompileDeclarationsArgs & { tsconfig: t.TsCompiler['tsconfig'] },
 ): Promise<t.TsCompileDeclarationsResult> {
   const { model } = args;
-  const dir = fs.resolve(args.dir);
+  const dirs = formatDirs(args.base, args.dir);
 
   // Prepare [tsconfig].
   const json = await args.tsconfig.json();
   json.compilerOptions = json.compilerOptions || {};
   json.compilerOptions.emitDeclarationOnly = true;
-  json.compilerOptions.outDir = dir;
+  json.compilerOptions.outDir = fs.join(args.base, args.dir);
   if (args.include) {
     json.include = Array.isArray(args.include) ? args.include : [args.include];
   }
@@ -40,15 +40,24 @@ export async function compileDeclarations(
   }
 
   // Save the type-declaration manifest, copying in all referenced type libs as well.
-  const { manifest } = await TypeManifest.createAndSave({ sourceDir: dir, model, copyRefs: true });
+  const { manifest } = await TypeManifest.createAndSave({
+    base: dirs.base,
+    dir: dirs.dir,
+    model,
+    copyRefs: true,
+  });
 
   spinner.stop();
   if (!defaultValue(args.clean)) await fs.remove(tsconfig.path);
 
   // Finish up.
   return {
-    tsconfig,
-    output: { dir, manifest },
+    tsconfig: tsconfig.json,
+    output: {
+      base: dirs.base,
+      dir: dirs.join(),
+      manifest,
+    },
     error,
   };
 }

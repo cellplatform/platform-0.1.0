@@ -1,4 +1,4 @@
-import { TypeManifest } from '.';
+import { TypeManifest, formatDirs } from './TypeManifest';
 import { expect, fs, SampleBundles, t } from '../../test';
 
 describe('TypeManifest', function () {
@@ -6,7 +6,8 @@ describe('TypeManifest', function () {
 
   const TMP = fs.resolve('./tmp/test/TypeManifest');
   const config = SampleBundles.simpleNode.config;
-  const sourceDir = fs.join(SampleBundles.simpleNode.outdir, 'types.d');
+  const base = fs.join(SampleBundles.simpleNode.outdir, 'types.d');
+  const dir = 'main';
 
   before(async () => {
     const force = false;
@@ -21,7 +22,7 @@ describe('TypeManifest', function () {
 
   it('create', async () => {
     const model = config.toObject();
-    const manifest = await TypeManifest.create({ sourceDir, model });
+    const manifest = await TypeManifest.create({ base, dir, model });
     expect(manifest.kind).to.eql('types.d');
 
     const files = manifest.files;
@@ -35,8 +36,8 @@ describe('TypeManifest', function () {
   });
 
   it('refs: imports', async () => {
-    const manifest = await TypeManifest.create({ sourceDir });
-    const foo = 'main/foo.d.ts';
+    const manifest = await TypeManifest.create({ base, dir });
+    const foo = 'foo.d.ts';
     const file = manifest.files.find((file) => file.path === foo);
 
     expect(file?.declaration.imports).to.eql(['@platform/log/lib/server']);
@@ -46,8 +47,8 @@ describe('TypeManifest', function () {
   });
 
   it('refs: exports', async () => {
-    const manifest = await TypeManifest.create({ sourceDir });
-    const foo = 'main/types.d.ts';
+    const manifest = await TypeManifest.create({ base, dir });
+    const foo = 'types.d.ts';
     const file = manifest.files.find((file) => file.path === foo);
 
     expect(file?.declaration.exports).to.eql([
@@ -61,7 +62,7 @@ describe('TypeManifest', function () {
 
   it('write => read', async () => {
     const model = config.toObject();
-    const manifest = await TypeManifest.create({ model, sourceDir });
+    const manifest = await TypeManifest.create({ model, base, dir });
     expect(manifest.files.length).to.greaterThan(0);
 
     const path = fs.join(TMP, TypeManifest.filename);
@@ -77,50 +78,87 @@ describe('TypeManifest', function () {
 
   it('write: copyRefs', async () => {
     const model = config.toObject();
-    const manifest = await TypeManifest.create({ model, sourceDir });
+    const manifest = await TypeManifest.create({ model, base, dir });
     expect(manifest.files.length).to.greaterThan(0);
 
-    const dir = fs.join(TMP, 'main');
-    const manifestPath = fs.join(dir, TypeManifest.filename);
-    expect(await fs.pathExists(manifestPath)).to.eql(false);
+    const PATHS = {
+      write: fs.join(TMP, dir),
+      manifest: fs.join(TMP, dir, TypeManifest.filename),
+      platform: fs.join(TMP, '@platform'),
+    };
 
-    await TypeManifest.write({ manifest, dir });
-    expect(await fs.pathExists(manifestPath)).to.eql(true);
+    expect(await fs.pathExists(PATHS.manifest)).to.eql(false);
+    await TypeManifest.write({ manifest, dir: PATHS.write });
+    expect(await fs.pathExists(PATHS.manifest)).to.eql(true);
 
-    expect(await fs.pathExists(fs.join(TMP, '@platform'))).to.eql(false);
-    await TypeManifest.write({ manifest, dir, copyRefs: true });
-    expect(await fs.pathExists(fs.join(TMP, '@platform'))).to.eql(true);
+    expect(await fs.pathExists(PATHS.platform)).to.eql(false);
+    await TypeManifest.write({ manifest, dir: PATHS.write, copyRefs: true });
+    expect(await fs.pathExists(PATHS.platform)).to.eql(true);
   });
 
   it('createAndSave', async () => {
     await fs.remove(TMP);
 
-    const dir = fs.join(TMP, 'createAndSave');
-    const manifestPath = fs.join(dir, 'types.d/main', TypeManifest.filename);
-    expect(await fs.pathExists(manifestPath)).to.eql(false);
+    const PATHS = {
+      base: fs.join(TMP, 'types.d'),
+      dir,
+      manifest: fs.join(TMP, 'types.d', dir, TypeManifest.filename),
+      platform: fs.join(TMP, 'types.d', '@platform'),
+    };
 
-    await fs.copy(fs.dirname(sourceDir), dir);
+    expect(await fs.pathExists(PATHS.manifest)).to.eql(false);
+
+    // Copy source files.
+    await fs.copy(fs.dirname(base), TMP);
 
     const model = config.toObject();
     const res = await TypeManifest.createAndSave({
       model,
-      sourceDir: fs.join(dir, 'types.d/main'),
+      base: PATHS.base,
+      dir: PATHS.dir,
     });
 
-    expect(await fs.pathExists(fs.join(dir, 'types.d/@platform'))).to.eql(false);
+    expect(await fs.pathExists(PATHS.platform)).to.eql(false);
+    expect(await fs.pathExists(PATHS.manifest)).to.eql(true);
 
     await TypeManifest.createAndSave({
       model,
-      sourceDir: fs.join(dir, 'types.d/main'),
+      base: PATHS.base,
+      dir: PATHS.dir,
       copyRefs: true,
     });
-    expect(await fs.pathExists(fs.join(dir, 'types.d/@platform'))).to.eql(true);
+    expect(await fs.pathExists(PATHS.platform)).to.eql(true);
 
-    expect(res.path).to.eql(manifestPath);
+    expect(res.path).to.eql(PATHS.manifest);
     expect(res.manifest.files.length).to.greaterThan(0);
 
-    const read = await TypeManifest.read({ dir: fs.join(dir, 'types.d/main') });
-    expect(read.path).to.eql(manifestPath);
+    const read = await TypeManifest.read({ dir: fs.join(PATHS.base, PATHS.dir) });
+    expect(read.path).to.eql(PATHS.manifest);
     expect(read.manifest).to.eql(res.manifest);
+  });
+
+  describe('formatDirs', () => {
+    it('resolve base', () => {
+      const res = formatDirs('  types.d  ', '  foo  ');
+      expect(res.base).to.eql(fs.resolve('./types.d'));
+      expect(res.dir).to.eql('foo');
+      expect(res.join()).to.eql(fs.resolve('./types.d/foo'));
+    });
+
+    it('clean "dir" param', () => {
+      const test = (dir: string) => {
+        const res = formatDirs('  types.d  ', dir);
+        expect(res.base).to.eql(fs.resolve('./types.d'));
+        expect(res.dir).to.eql('foo');
+        expect(res.join()).to.eql(fs.resolve('./types.d/foo'));
+      };
+      test('foo');
+      test('  foo  ');
+      test('//foo//');
+      test('  //foo//  ');
+      test(fs.resolve('types.d/foo'));
+      test(fs.resolve('types.d/foo///'));
+      test(`${fs.resolve('types.d/foo')}//`);
+    });
   });
 });

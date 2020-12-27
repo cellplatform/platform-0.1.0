@@ -23,6 +23,7 @@ export type TsCompileDeclarations = (
 ) => Promise<TsCompileDeclarationsResult>;
 
 export type TsCompileDeclarationsArgs = {
+  base: string;
   dir: string;
   include: string | string[]; // File or grep pattern, eg: src/foo/**/*
   silent?: boolean;
@@ -31,10 +32,11 @@ export type TsCompileDeclarationsArgs = {
 };
 
 export type TsCompileDeclarationsResult = {
-  tsconfig: { path: string; json: TsConfigFile };
+  tsconfig: TsConfigFile;
   output: {
-    manifest: t.TypeManifest;
+    base: string;
     dir: string;
+    manifest: t.TypeManifest;
   };
   error?: string;
 };

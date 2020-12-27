@@ -61,7 +61,8 @@ async function compileDeclarations(args: { model: t.CompilerModel; bundleDir: st
   if (!args.model.declarations || args.model.declarations.length === 0) return;
   const declarations = args.model.declarations.map((d) => ({
     include: d.include,
-    dir: fs.join(args.bundleDir, d.dir),
+    base: args.bundleDir,
+    dir: d.dir,
     silent: true,
   }));
 
