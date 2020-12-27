@@ -6,20 +6,20 @@ type M = t.FsManifest;
 /**
  * Create and write a new manifest to the file-system.
  */
-const createAndSave = async <T extends M>(args: {
+export const createAndSave = async <T extends M>(args: {
+  create: () => Promise<T>;
   sourceDir: string;
   filename?: string;
   model?: t.CompilerModel;
 }) => {
   const { model, sourceDir, filename } = args;
-  const manifest = await FileManifest.create<T>({ model, sourceDir });
+  const manifest = await args.create();
   return write<T>({ manifest, dir: sourceDir, filename });
 };
 
 /**
  * Reads from file-system.
  */
-
 const read = async <T extends M>(args: { dir: string; filename?: string }) => {
   const { dir, filename = FileManifest.filename } = args;
   const path = fs.join(dir, filename);
@@ -27,10 +27,10 @@ const read = async <T extends M>(args: { dir: string; filename?: string }) => {
   const manifest = exists ? ((await fs.readJson(path)) as T) : undefined;
   return { path, manifest };
 };
+
 /**
  * Writes a manifest to the file-system.
  */
-
 const write = async <T extends M>(args: { manifest: T; dir: string; filename?: string }) => {
   const { manifest, dir, filename = FileManifest.filename } = args;
   const path = fs.join(dir, filename);
@@ -44,9 +44,21 @@ const write = async <T extends M>(args: { manifest: T; dir: string; filename?: s
  * Helpers for creating and working with a [FileManifest].
  */
 export const FileManifest = {
-  createAndSave,
   read,
   write,
+
+  /**
+   * Write the bundle manifest to the file-system.
+   */
+  async createAndSave(args: { sourceDir: string; filename?: string; model?: t.CompilerModel }) {
+    const { sourceDir, filename, model } = args;
+    return createAndSave<M>({
+      create: () => FileManifest.create({ sourceDir, model, filename }),
+      sourceDir,
+      filename,
+      model,
+    });
+  },
 
   /**
    * The filename of the bundle.
@@ -56,11 +68,17 @@ export const FileManifest = {
   /**
    * Generates a manifest.
    */
-  async create<T extends M>(args: { sourceDir: string; model?: t.CompilerModel }) {
-    const { model } = args;
+  async create<T extends M>(args: {
+    sourceDir: string;
+    model?: t.CompilerModel;
+    filename?: string;
+  }) {
+    const { model, filename = FileManifest.filename } = args;
     const sourceDir = (args.sourceDir || '').trim().replace(/\/*$/, '');
     const pattern = `${args.sourceDir}/**`;
-    const paths = await fs.glob.find(pattern, { includeDirs: false });
+
+    let paths = await fs.glob.find(pattern, { includeDirs: false });
+    paths = paths.filter((path) => !path.endsWith(`/${filename}`));
 
     const toFile = (path: string) => FileManifest.loadFile({ path, sourceDir, model });
     const files: t.FsManifestFile[] = await Promise.all(paths.map((path) => toFile(path)));

@@ -1,8 +1,7 @@
 import { DEFAULT, deleteUndefined, Model, Schema, t } from '../common';
-import { FileAccess, FileRedirects } from '../config';
-import { FileManifest } from './FileManifest';
+import { FileManifest, createAndSave } from './FileManifest';
 
-type M = t.BundleManifest;
+type M = t.FsBundleManifest;
 
 /**
  * Helpers for creating and working with a [BundleManifest].
@@ -24,10 +23,10 @@ export const BundleManifest = {
   /**
    * Generates a manifest.
    */
-  async create(args: { model: t.CompilerModel; sourceDir: string }) {
-    const { sourceDir, model } = args;
+  async create(args: { model: t.CompilerModel; sourceDir: string; filename?: string }) {
+    const { sourceDir, model, filename = BundleManifest.filename } = args;
     const data = Model(model);
-    const manifest = await FileManifest.create({ sourceDir, model });
+    const manifest = await FileManifest.create({ sourceDir, model, filename });
 
     const REMOTE = DEFAULT.FILE.JS.REMOTE_ENTRY;
     const remoteEntry = manifest.files.some((file) => file.path.endsWith(REMOTE))
@@ -49,8 +48,12 @@ export const BundleManifest = {
    */
   async createAndSave(args: { model: t.CompilerModel; sourceDir: string; filename?: string }) {
     const { model, sourceDir, filename } = args;
-    const manifest = await BundleManifest.create({ model, sourceDir });
-    return BundleManifest.write({ manifest, dir: sourceDir, filename });
+    return createAndSave<M>({
+      create: () => BundleManifest.create({ sourceDir, model, filename }),
+      sourceDir,
+      filename,
+      model,
+    });
   },
 
   /**
@@ -63,26 +66,7 @@ export const BundleManifest = {
   /**
    * Writes a manifest to the file-system.
    */
-  async write(args: { manifest: t.BundleManifest; dir: string; filename?: string }) {
+  async write(args: { manifest: M; dir: string; filename?: string }) {
     return FileManifest.write<M>(args);
   },
 };
-
-/**
- * Helpers
- */
-
-function toRedirect(args: { model: t.CompilerModel; path: string }) {
-  const redirects = FileRedirects(args.model.files?.redirects);
-  return redirects.path(args.path);
-}
-
-function toAccess(args: { model: t.CompilerModel; path: string }) {
-  const access = FileAccess(args.model.files?.access);
-  return access.path(args.path);
-}
-
-function toPublic(args: { model: t.CompilerModel; path: string }) {
-  const access = toAccess(args);
-  return access.public ? true : undefined;
-}

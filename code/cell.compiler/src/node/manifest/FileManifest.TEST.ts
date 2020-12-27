@@ -31,17 +31,37 @@ describe('FileManifest', function () {
       const manifest = await FileManifest.create({ sourceDir });
       const files = manifest.files;
       expect(manifest.hash).to.eql(FileManifest.hash(files));
-
       expect(files.length).to.greaterThan(0);
-      expect(files.every((file) => file.filehash.startsWith('sha256-'))).to.eql(true);
-      expect(files.every((file) => file.bytes > 0)).to.eql(true);
-      expect(files.every((file) => file.path.length > 0)).to.eql(true);
-      expect(files.every((file) => file.public === undefined)).to.eql(true);
-      expect(files.every((file) => file.allowRedirect === undefined)).to.eql(true);
+
+      const expectEvery = (fn: (file: t.FsManifestFile) => boolean) => {
+        expect(files.every((file) => fn(file))).to.eql(true);
+      };
+
+      expectEvery((file) => file.filehash.startsWith('sha256-'));
+      expectEvery((file) => file.bytes > 0);
+      expectEvery((file) => file.path.length > 0);
+      expectEvery((file) => file.public === undefined);
+      expectEvery((file) => file.allowRedirect === undefined);
     };
 
     await test(sourceDir);
     await test(`${sourceDir}///`);
+  });
+
+  it('does not include manifest file within list', async () => {
+    const sourceDir = fs.join(TMP, 'src');
+    const write = async (name: string) => {
+      await fs.ensureDir(sourceDir);
+      await fs.writeFile(fs.join(sourceDir, name), 'hello');
+    };
+
+    await write(FileManifest.filename);
+    await write('one.txt');
+    await write('two.txt');
+
+    const manifest = await FileManifest.create({ sourceDir });
+    const files = manifest.files;
+    expect(files.filter((file) => file.path === FileManifest.filename).length).to.eql(0);
   });
 
   it('write flag: allowRedirects', async () => {

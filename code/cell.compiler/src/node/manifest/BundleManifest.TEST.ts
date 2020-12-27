@@ -1,5 +1,5 @@
-import { BundleManifest } from '.';
-import { expect, fs, SampleBundles } from '../../test';
+import { BundleManifest, FileManifest } from '.';
+import { expect, fs, SampleBundles, t } from '../../test';
 
 describe('BundleManifest', function () {
   this.timeout(99999);
@@ -22,6 +22,9 @@ describe('BundleManifest', function () {
   it('create', async () => {
     const model = config.toObject();
     const manifest = await BundleManifest.create({ model, sourceDir });
+    const files = manifest.files;
+    expect(files.length).to.greaterThan(0);
+    expect(manifest.hash).to.eql(FileManifest.hash(files));
 
     expect(manifest.hash).to.match(/^sha256-/);
     expect(manifest.bundle.mode).to.eql('production');
@@ -29,10 +32,19 @@ describe('BundleManifest', function () {
     expect(manifest.bundle.entry).to.eql('main.js');
     expect(manifest.files.length).to.greaterThan(2);
 
-    const file = manifest.files.find((item) => item.path === 'index.json');
-    expect(file?.path).to.eql('index.json');
-    expect(file?.bytes).to.greaterThan(10);
-    expect(file?.filehash).to.match(/^sha256-/);
+    const expectEvery = (fn: (file: t.FsManifestFile) => boolean) => {
+      expect(files.every((file) => fn(file))).to.eql(true);
+    };
+
+    const expectSome = (fn: (file: t.FsManifestFile) => boolean) => {
+      expect(files.some((file) => fn(file))).to.eql(true);
+    };
+
+    expectEvery((file) => file.filehash.startsWith('sha256-'));
+    expectEvery((file) => file.bytes > 0);
+    expectEvery((file) => file.path.length > 0);
+    expectSome((file) => file.public !== undefined);
+    expectSome((file) => file.allowRedirect !== undefined);
   });
 
   it('writeFile => readFile', async () => {

@@ -90,15 +90,19 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
         draft.declarations = undefined;
       } else {
         draft.declarations = draft.declarations || [];
+
         const include = format.string(args.params[0], { trim: true });
         if (typeof include === 'string') {
-          let outfile = format.string(args.params[1], { trim: true }) || '';
-          outfile = outfile.replace(/^\/*/, '').replace(/^types\.d\//, '');
-          outfile = outfile || 'index.d.ts';
-          outfile = outfile.endsWith('.d.ts') ? outfile : `${outfile}.d.ts`;
-          outfile = `types.d/${outfile}`;
-          draft.declarations.push({ include, outfile });
+          let dir = format.string(args.params[1], { trim: true }) || '';
+
+          dir = dir.replace(/^\/*/, '').replace(/\/*$/, '');
+          dir = dir.replace(/^types\.d/, '');
+          dir = dir.replace(/^\/*/, '').replace(/\/*$/, '');
+          dir = `types.d/${dir}`.replace(/\/*$/, '');
+
+          draft.declarations.push({ include, dir });
         }
+
         draft.declarations =
           (draft.declarations || []).length === 0 ? undefined : draft.declarations;
         draft.declarations = draft.declarations ? R.uniq(draft.declarations) : draft.declarations;

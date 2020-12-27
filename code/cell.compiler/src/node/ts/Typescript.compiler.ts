@@ -45,7 +45,7 @@ export function compiler(tsconfig?: string) {
       // Save [tsconfig] JSON.
       await fs.writeFile(tsconfig.path, JSON.stringify(json, null, '  '));
 
-      const spinner = ProgressSpinner({ label: 'building declarations' });
+      const spinner = ProgressSpinner({ label: 'building typescript declarations' });
       if (!args.silent) spinner.start();
 
       // Run the command.
@@ -57,16 +57,18 @@ export function compiler(tsconfig?: string) {
         error = `Failed to transpile declarations. ${emitted}`.trim();
       }
 
+      console.log('outdir', dir);
+
       const r = await TypeManifest.createAndSave({ sourceDir: dir, model });
       console.log('r', r);
-      console.log('r.manifest.files', r.manifest.files);
+      console.log('r', r.manifest.files);
 
       // Finish up.
       spinner.stop();
       if (!defaultValue(args.clean)) await fs.remove(tsconfig.path);
       return {
         tsconfig,
-        dir,
+        dir: dir,
         error,
       };
     },
