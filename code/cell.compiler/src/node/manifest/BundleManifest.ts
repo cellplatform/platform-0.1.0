@@ -40,7 +40,7 @@ export const BundleManifest = {
       remoteEntry,
     });
 
-    return { ...manifest, bundle } as M;
+    return { ...manifest, kind: 'CodeBundle', bundle } as M;
   },
 
   /**

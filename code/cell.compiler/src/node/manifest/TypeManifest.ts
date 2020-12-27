@@ -24,7 +24,7 @@ export const TypeManifest = {
     const { sourceDir, model, filename = TypeManifest.filename } = args;
     const manifest = await FileManifest.create({ sourceDir, model, filename });
     const files = await Promise.all(manifest.files.map((file) => appendTypeInfo(sourceDir, file)));
-    return { ...manifest, files } as M;
+    return { ...manifest, kind: 'TypeDeclarations', files } as M;
   },
 
   /**

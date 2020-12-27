@@ -4,6 +4,7 @@ import { t } from '../common';
  * Details about a compiled bundle of code.
  */
 export type FsBundleManifest = t.FsManifest<FsBundleManifestFile> & {
+  kind: 'CodeBundle';
   bundle: FsBundleManifestInfo;
 };
 

@@ -3,7 +3,9 @@ import { t } from '../common';
 /**
  * Manifest of ".d.ts" declaration files.
  */
-export type FsTypeManifest = t.FsManifest<FsTypeManifestFile>;
+export type FsTypeManifest = t.FsManifest<FsTypeManifestFile> & {
+  kind: 'TypeDeclarations';
+};
 
 export type FsTypeManifestFile = t.FsManifestFile & {
   declaration: t.FsTypeManifestFileInfo;

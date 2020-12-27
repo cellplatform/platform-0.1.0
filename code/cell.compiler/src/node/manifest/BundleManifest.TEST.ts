@@ -23,10 +23,12 @@ describe('BundleManifest', function () {
     const model = config.toObject();
     const manifest = await BundleManifest.create({ model, sourceDir });
     const files = manifest.files;
+
     expect(files.length).to.greaterThan(0);
     expect(manifest.hash).to.eql(FileManifest.hash(files));
-
+    expect(manifest.kind).to.eql('CodeBundle');
     expect(manifest.hash).to.match(/^sha256-/);
+
     expect(manifest.bundle.mode).to.eql('production');
     expect(manifest.bundle.target).to.eql('node');
     expect(manifest.bundle.entry).to.eql('main.js');

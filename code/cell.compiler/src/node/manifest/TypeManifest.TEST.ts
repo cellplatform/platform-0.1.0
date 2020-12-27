@@ -24,6 +24,8 @@ describe('TypeManifest', function () {
     const manifest = await TypeManifest.create({ sourceDir, model });
     const files = manifest.files;
 
+    expect(manifest.kind).to.eql('TypeDeclarations');
+
     const expectEvery = (fn: (file: t.FsTypeManifestFile) => boolean) => {
       expect(files.every((file) => fn(file))).to.eql(true);
     };
