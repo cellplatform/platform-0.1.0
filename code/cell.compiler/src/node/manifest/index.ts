@@ -1,3 +1,3 @@
+export * from './Manifest';
 export * from './BundleManifest';
-export * from './FileManifest';
 export * from './TypeManifest';

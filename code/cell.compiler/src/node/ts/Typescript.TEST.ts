@@ -1,7 +1,7 @@
 import { Typescript } from '.';
 import { expect, fs, expectError } from '../../test';
 
-describe.skip('Typescript', function () {
+describe.only('Typescript', function () {
   this.timeout(99999);
 
   describe('compiler', () => {
@@ -10,35 +10,25 @@ describe.skip('Typescript', function () {
       expectError(() => compiler.tsconfig.json(), 'tsconfig file not found');
     });
 
-    describe('declarations', () => {
-      // it('implicit "include" and ".d.ts" extension', async () => {
-      //   const compiler = Typescript.compiler('tsconfig.json');
-      //   const res = await compiler.declarations({ outfile: 'tmp/types' });
-      //   expect(res.outfile.endsWith('.d.ts')).to.eql(true); // NB: implicitly assigned extension (".d.txt")
-
-      //   const text = fs.readFileSync(res.outfile).toString();
-      //   expect(text).to.include(`/// <reference types="react" />`);
-      //   expect(res.error).to.eql(undefined);
-      // });
-
-      it('explicit "include" and ".d.ts" extension', async () => {
-        const compiler = Typescript.compiler('tsconfig.json');
-        const res = await compiler.declarations({
-          dir: 'tmp/types.d/foo',
-          include: 'src/test/test.bundles/node.simple/**/*',
-          // include: 'src/test/sample.node/entry.ts',
-          // clean: false,
-        });
-
-        console.log('-------------------------------------------');
-        console.log('res', res);
-
-        // expect(res.outfile.endsWith('.d.ts')).to.eql(true);
-
-        // const text = fs.readFileSync(res.outfile).toString();
-        // expect(text).to.include(`export type Foo = {`);
-        // expect(res.error).to.eql(undefined);
+    it.skip('compile declarations', async () => {
+      const compiler = Typescript.compiler('tsconfig.json');
+      const res = await compiler.declarations({
+        dir: 'tmp/types.d/foo',
+        include: 'src/test/test.bundles/node.simple/**/*',
       });
+
+      const expectExists = async (path: string) => {
+        const exists = await fs.pathExists(fs.resolve(path));
+        expect(exists).to.eql(true);
+      };
+
+      await expectExists('tmp/types.d/foo/index.json');
+      await expectExists('tmp/types.d/foo/main.d.ts');
+      await expectExists('tmp/types.d/@platform/cell.types/index.json');
+      await expectExists('tmp/types.d/@platform/log/lib/server/index.json');
+
+      console.log('res', res);
+      expect(res.output.manifest.kind).to.eql('types.d');
     });
   });
 });

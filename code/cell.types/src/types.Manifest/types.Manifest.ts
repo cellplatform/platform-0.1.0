@@ -1,9 +1,9 @@
-export type FsManifest<F extends FsManifestFile = FsManifestFile> = {
+export type Manifest<F extends ManifestFile = ManifestFile> = {
   hash: string; // NB: The hash of all file-hashes.
   files: F[];
 };
 
-export type FsManifestFile = {
+export type ManifestFile = {
   path: string;
   bytes: number;
   filehash: string;

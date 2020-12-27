@@ -1,3 +1,3 @@
-export * from './types.Fs.Manifest';
-export * from './types.Fs.TypeManifest';
-export * from './types.Fs.BundleManifest';
+export * from './types.Manifest';
+export * from './types.TypeManifest';
+export * from './types.BundleManifest';

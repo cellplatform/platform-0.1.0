@@ -20,8 +20,8 @@ describe('FileManifest', function () {
   });
 
   it('hash', () => {
-    const file1: t.FsManifestFile = { path: 'foo.txt', bytes: 1234, filehash: 'abc' };
-    const file2: t.FsManifestFile = { path: 'foo.txt', bytes: 1234, filehash: 'def' };
+    const file1: t.ManifestFile = { path: 'foo.txt', bytes: 1234, filehash: 'abc' };
+    const file2: t.ManifestFile = { path: 'foo.txt', bytes: 1234, filehash: 'def' };
     const hash = Schema.hash.sha256([file1.filehash, file2.filehash]);
     expect(FileManifest.hash([file1, file2, undefined] as any)).to.eql(hash);
   });
@@ -33,7 +33,7 @@ describe('FileManifest', function () {
       expect(manifest.hash).to.eql(FileManifest.hash(files));
       expect(files.length).to.greaterThan(0);
 
-      const expectEvery = (fn: (file: t.FsManifestFile) => boolean) => {
+      const expectEvery = (fn: (file: t.ManifestFile) => boolean) => {
         expect(files.every((file) => fn(file))).to.eql(true);
       };
 

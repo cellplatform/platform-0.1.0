@@ -1,7 +1,7 @@
 import { deleteUndefined, fs, Schema, t, DEFAULT } from '../common';
 import { FileAccess, FileRedirects } from '../config';
 
-type M = t.FsManifest;
+type M = t.Manifest;
 
 /**
  * Create and write a new manifest to the file-system.
@@ -81,7 +81,7 @@ export const FileManifest = {
     paths = paths.filter((path) => !path.endsWith(`/${filename}`));
 
     const toFile = (path: string) => FileManifest.loadFile({ path, sourceDir, model });
-    const files: t.FsManifestFile[] = await Promise.all(paths.map((path) => toFile(path)));
+    const files: t.ManifestFile[] = await Promise.all(paths.map((path) => toFile(path)));
 
     const manifest: M = {
       hash: FileManifest.hash(files),
@@ -94,7 +94,7 @@ export const FileManifest = {
   /**
    * Calculate the hash for a set of fies.
    */
-  hash(files: t.FsManifestFile[]) {
+  hash(files: t.ManifestFile[]) {
     const list = files.filter(Boolean).map((file) => file.filehash);
     return Schema.hash.sha256(list);
   },
@@ -106,7 +106,7 @@ export const FileManifest = {
     path: string;
     sourceDir: string;
     model?: t.CompilerModel;
-  }): Promise<t.FsManifestFile> {
+  }): Promise<t.ManifestFile> {
     const { model, sourceDir } = args;
     const file = await fs.readFile(args.path);
     const bytes = file.byteLength;

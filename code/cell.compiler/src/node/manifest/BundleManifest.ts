@@ -1,7 +1,7 @@
 import { DEFAULT, deleteUndefined, Model, Schema, t } from '../common';
-import { FileManifest, createAndSave } from './FileManifest';
+import { FileManifest, createAndSave } from './Manifest';
 
-type M = t.FsBundleManifest;
+type M = t.BundleManifest;
 
 /**
  * Helpers for creating and working with a [BundleManifest].
@@ -23,15 +23,14 @@ export const BundleManifest = {
   /**
    * Generates a manifest.
    */
-  async create(args: { model: t.CompilerModel; sourceDir: string; filename?: string }) {
+  async create(args: { model: t.CompilerModel; sourceDir: string; filename?: string }): Promise<M> {
     const { sourceDir, model, filename = BundleManifest.filename } = args;
     const data = Model(model);
     const manifest = await FileManifest.create({ sourceDir, model, filename });
+    const { hash, files } = manifest;
 
     const REMOTE = DEFAULT.FILE.JS.REMOTE_ENTRY;
-    const remoteEntry = manifest.files.some((file) => file.path.endsWith(REMOTE))
-      ? REMOTE
-      : undefined;
+    const remoteEntry = files.some((file) => file.path.endsWith(REMOTE)) ? REMOTE : undefined;
 
     const bundle: M['bundle'] = deleteUndefined({
       mode: data.mode(),
@@ -40,7 +39,12 @@ export const BundleManifest = {
       remoteEntry,
     });
 
-    return { ...manifest, kind: 'CodeBundle', bundle } as M;
+    return {
+      kind: 'bundle',
+      hash,
+      bundle,
+      files,
+    };
   },
 
   /**

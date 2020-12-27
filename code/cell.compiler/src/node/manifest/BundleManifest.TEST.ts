@@ -25,8 +25,8 @@ describe('BundleManifest', function () {
     const files = manifest.files;
 
     expect(files.length).to.greaterThan(0);
+    expect(manifest.kind).to.eql('bundle');
     expect(manifest.hash).to.eql(FileManifest.hash(files));
-    expect(manifest.kind).to.eql('CodeBundle');
     expect(manifest.hash).to.match(/^sha256-/);
 
     expect(manifest.bundle.mode).to.eql('production');
@@ -34,11 +34,11 @@ describe('BundleManifest', function () {
     expect(manifest.bundle.entry).to.eql('main.js');
     expect(manifest.files.length).to.greaterThan(2);
 
-    const expectEvery = (fn: (file: t.FsManifestFile) => boolean) => {
+    const expectEvery = (fn: (file: t.ManifestFile) => boolean) => {
       expect(files.every((file) => fn(file))).to.eql(true);
     };
 
-    const expectSome = (fn: (file: t.FsManifestFile) => boolean) => {
+    const expectSome = (fn: (file: t.ManifestFile) => boolean) => {
       expect(files.some((file) => fn(file))).to.eql(true);
     };
 

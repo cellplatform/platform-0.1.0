@@ -1,7 +1,7 @@
 import { fs, t, R, constants, slug } from '../common';
-import { FileManifest, createAndSave } from './FileManifest';
+import { FileManifest, createAndSave } from './Manifest';
 
-type M = t.FsTypeManifest;
+type M = t.TypeManifest;
 
 /**
  * Helpers for creating and working with manifest of type declarations (".d.ts" files)
@@ -20,15 +20,16 @@ export const TypeManifest = {
     filename?: string;
     model?: t.CompilerModel;
     saveRefs?: boolean;
-  }) {
+  }): Promise<M> {
     const { sourceDir, model, filename = TypeManifest.filename } = args;
     const manifest = await FileManifest.create({ sourceDir, model, filename });
     const files = await Promise.all(manifest.files.map((file) => appendTypeInfo(sourceDir, file)));
-    return { ...manifest, kind: 'TypeDeclarations', files } as M;
+    const { hash } = manifest;
+    return { kind: 'types.d', hash, files };
   },
 
   /**
-   * Write the bundle manifest to the file-system.
+   * Write the bundle manifest to the file-sy stem.
    */
   async createAndSave(args: {
     sourceDir: string;
@@ -43,7 +44,8 @@ export const TypeManifest = {
       filename,
       model,
     });
-    if (args.copyRefs) await copyRefs(sourceDir, res.manifest);
+
+    if (args.copyRefs) await copyRefs(fs.dirname(sourceDir), res.manifest);
     return res;
   },
 
@@ -68,7 +70,7 @@ export const TypeManifest = {
  * Helpers
  */
 
-async function appendTypeInfo(sourceDir: string, input: t.FsManifestFile) {
+async function appendTypeInfo(sourceDir: string, input: t.ManifestFile) {
   const text = (await fs.readFile(fs.join(sourceDir, input.path))).toString();
   const lines = text.split('\n');
 
@@ -76,12 +78,12 @@ async function appendTypeInfo(sourceDir: string, input: t.FsManifestFile) {
   const notRelative = (module: string) => !module.startsWith('.');
   const include = (module: string) => exists(module) && notRelative(module);
 
-  const declaration: t.FsTypeManifestFileInfo = {
+  const declaration: t.TypeManifestFileInfo = {
     imports: lines.map((line) => toImport(line)).filter(include),
     exports: lines.map((line) => toExport(line)).filter(include),
   };
 
-  return { ...input, declaration } as t.FsTypeManifestFile;
+  return { ...input, declaration } as t.TypeManifestFile;
 }
 
 function toImport(line: string) {
@@ -99,7 +101,7 @@ function toModuleRef(line: string) {
   return match ? match[0].replace(/^from '/, '').replace(/';/, '') : '';
 }
 
-async function copyRefs(baseDir: string, manifest: t.FsTypeManifest) {
+async function copyRefs(baseDir: string, manifest: t.TypeManifest) {
   // Prepare set of paths.
   let paths: { module: string; source: string }[] = [];
   manifest.files.forEach((file) => {
