@@ -104,7 +104,7 @@ function copy(args: {
   filterLine?: FilterLine;
 }) {
   const { sourceDir, targetDir, filenames, filterLine } = args;
-  const manifest: t.FsManifest = { hash: '', files: [] };
+  const manifest: t.Manifest = { hash: '', files: [] };
 
   fs.removeSync(targetDir);
   fs.ensureDirSync(targetDir);

@@ -1,4 +1,3 @@
-import { debounceTime } from 'rxjs/operators';
 import { Actions } from 'sys.ui.harness';
 
 import { CodeEditor } from '../../api';
@@ -124,8 +123,12 @@ const total = a.reduce((acc, next) =>acc + next, 0)
    */
   const cmdActions = Actions<Ctx>()
     .title('Command Actions')
-    .button('format document', async (ctx) => {
+    .button('format document (prettier)', async (ctx) => {
       const res = await ctx.fire?.action('editor.action.formatDocument');
+      console.log('res', res);
+    })
+    .button('format selection', async (ctx) => {
+      const res = await ctx.fire?.action('editor.action.formatSelection');
       console.log('res', res);
     });
 
@@ -137,6 +140,15 @@ const total = a.reduce((acc, next) =>acc + next, 0)
     .button('clear', () => events.fire.libs.clear())
     .button('load: lib.es', async () => {
       const url = bundle.path(PATH.STATIC.TYPES.ES);
+      const res = await events.fire.libs.load(url);
+      console.log('res', res);
+    })
+    .button('load: env', async () => {
+      const url = bundle.path('static/types.d/inner/env.d.txt');
+      // const url = bundle.path('dist/web/types.d/env.d.txt');
+
+      console.log('url', url);
+
       const res = await events.fire.libs.load(url);
       console.log('res', res);
     });

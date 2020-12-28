@@ -1,1 +1,3 @@
-export * from '@platform/cell.types/lib/types.Runtime/types.inner.env';
+import * as env from '@platform/cell.types/lib/types.Runtime';
+
+export type Global = env.Global;

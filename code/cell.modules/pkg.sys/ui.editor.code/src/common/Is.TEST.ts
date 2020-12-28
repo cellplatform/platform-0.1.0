@@ -105,4 +105,20 @@ describe('Is', () => {
     test({ type: 'CodeEditor/foo', payload: { instance: 'foo' } }, false);
     test({ type: 'CodeEditor/foo', payload: {} }, true);
   });
+
+  it('Is.declarationFileUrl', () => {
+    const test = (input: string, expected: boolean) => {
+      expect(Is.declarationFileUrl(input)).to.eql(expected);
+    };
+    test(undefined as any, false);
+    test('', false);
+    test('  ', false);
+    test('http://localhost/static/types.d/lib.es', false);
+
+    test('http://localhost/static/types.d/foo.d.txt', true);
+    test('http://localhost/static/types.d/foo.d.txt#foo', true);
+    test('http://localhost/static/types.d/foo.d.txt?foo', true);
+    test('   http://localhost/static/types.d/foo.d.txt?foo#bar  ', true);
+    test('types.d/foo.d.txt', true);
+  });
 });
