@@ -76,7 +76,7 @@ describe('TypeManifest', function () {
     expect(read.manifest).to.eql(manifest);
   });
 
-  it('write: copyRefs', async () => {
+  it.skip('write: copyRefs', async () => {
     const model = config.toObject();
     const manifest = await TypeManifest.create({ model, base, dir });
     expect(manifest.files.length).to.greaterThan(0);
@@ -96,7 +96,7 @@ describe('TypeManifest', function () {
     expect(await fs.pathExists(PATHS.platform)).to.eql(true);
   });
 
-  it('createAndSave', async () => {
+  it.skip('createAndSave', async () => {
     await fs.remove(TMP);
 
     const PATHS = {
