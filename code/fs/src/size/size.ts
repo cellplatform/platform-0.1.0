@@ -1,5 +1,5 @@
 import * as fsExtra from 'fs-extra';
-import { glob } from '../glob';
+import { Glob } from '../glob';
 import { resolve, join } from 'path';
 import * as filesize from 'filesize';
 
@@ -48,7 +48,7 @@ export const size = {
   async dir(path: string) {
     const getFiles = async () => {
       const pattern = resolve(join(path), '**');
-      const wait = (await glob.find(pattern)).map(async (path) => size.file(path));
+      const wait = (await Glob.find(pattern)).map(async (path) => size.file(path));
       return Promise.all(wait);
     };
     const exists = await fsExtra.pathExists(path);

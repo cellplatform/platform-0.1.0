@@ -3,7 +3,7 @@ import * as path from 'path';
 
 import { t } from '../common';
 import { File as file } from '../file';
-import { glob } from '../glob';
+import { Glob as glob } from '../glob';
 import { is } from '../is';
 import { merge } from '../merge';
 import { size } from '../size';
