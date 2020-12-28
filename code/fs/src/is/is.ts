@@ -50,3 +50,12 @@ export function typeSync(path: string, type?: 'FILE' | 'DIR') {
       return true; // Accept any.
   }
 }
+
+/**
+ * Determine if the given path is a symbolic link.
+ */
+export async function symlink(path: string) {
+  if (typeof path !== 'string') return false;
+  if (!(await fs.pathExists(path))) return false;
+  return (await fs.lstat(path)).isSymbolicLink();
+}

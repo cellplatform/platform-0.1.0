@@ -4,11 +4,11 @@ import { basename, resolve, join, dirname } from 'path';
 import * as fs from 'fs-extra';
 
 const TMP = resolve('./tmp/glob');
-
 const write = async (path: string) => {
   path = join(TMP, path);
   await fs.ensureDir(dirname(path));
   await fs.writeFile(path, 'foo');
+  return path;
 };
 const writeFiles = (...paths: string[]) => Promise.all(paths.map((path) => write(path)));
 const writeSampleFiles = () => writeFiles('foo.txt', 'foobar.txt', 'foo.html', 'bar.txt');

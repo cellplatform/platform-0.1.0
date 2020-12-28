@@ -1,9 +1,21 @@
-import { expect } from '@platform/test';
+import { expect } from 'chai';
+import * as fs from 'fs-extra';
+import { dirname, join, resolve } from 'path';
+
 import { is } from '.';
-import { createReadStream } from 'fs';
-import { resolve } from 'path';
+
+const TMP = resolve('./tmp/symlink');
+const write = async (path: string) => {
+  path = join(TMP, path);
+  await fs.ensureDir(dirname(path));
+  await fs.writeFile(path, 'foo');
+  return path;
+};
 
 describe('is', () => {
+  beforeEach(async () => await fs.remove(TMP));
+  after(async () => await fs.remove('./tmp'));
+
   it('is a directory', async () => {
     expect(await is.dir('src')).to.eql(true);
     expect(is.dirSync('src')).to.eql(true);
@@ -63,7 +75,26 @@ describe('is', () => {
     test(1223, false);
     test({}, false);
 
-    const stream = createReadStream(resolve('./package.json'));
+    const stream = fs.createReadStream(resolve('./package.json'));
     test(stream, true);
+  });
+
+  it('is symlink', async () => {
+    const test = async (input: any, expected: boolean) => {
+      expect(await is.symlink(input)).to.eql(expected);
+    };
+    await test(undefined, false);
+    await test(null, false);
+    await test('hello', false);
+    await test(1223, false);
+    await test({}, false);
+
+    const file = await write('foo.txt');
+    const link = join(TMP, 'link.txt');
+
+    await fs.symlink(file, link);
+    expect(await fs.pathExists(link)).to.eql(true);
+    await test(file, false);
+    await test(link, true);
   });
 });
