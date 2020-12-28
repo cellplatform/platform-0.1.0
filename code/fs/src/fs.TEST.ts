@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { fs } from '.';
-import { t } from '../common';
+import { t } from './common';
 
 describe('fs', () => {
   describe('interface', () => {
@@ -17,7 +17,7 @@ describe('fs', () => {
 
   describe('file', () => {
     it('calculates the size of single file', async () => {
-      const path = './src/fs/fs.TEST.ts';
+      const path = './src/fs.TEST.ts';
       const res = await fs.size.file(path);
       expect(res.bytes).to.greaterThan(30);
       expect(res.path).to.eql(path);

@@ -1,18 +1,18 @@
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 
-import { t } from '../common';
-import { File as file } from '../file';
-import { Glob as glob } from '../glob';
-import { is } from '../is';
-import { merge } from '../merge';
-import { size } from '../size';
-import { unzip, zip } from '../zip';
-import { ancestor } from '../ancestor';
-import { match } from '../match';
-import { env } from '../env';
-import { stream } from '../stream';
-import { sort } from '../sort';
+import { t } from './common';
+import { File as file } from './file';
+import { Glob as glob } from './glob';
+import { is } from './is';
+import { merge } from './merge';
+import { size } from './size';
+import { unzip, zip } from './zip';
+import { ancestor } from './ancestor';
+import { match } from './match';
+import { env } from './env';
+import { stream } from './stream';
+import { sort } from './sort';
 
 const { join, resolve, dirname, basename, extname } = path;
 const exists: t.IFs['exists'] = (path) => fsExtra.pathExists(path);
