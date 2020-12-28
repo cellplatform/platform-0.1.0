@@ -1,4 +1,4 @@
-import * as fsExtra from 'fs-extra';
+import * as fsextra from 'fs-extra';
 import * as path from 'path';
 
 import { t } from './common';
@@ -15,7 +15,7 @@ import { stream } from './stream';
 import { sort } from './sort';
 
 const { join, resolve, dirname, basename, extname } = path;
-const exists: t.IFs['exists'] = (path) => fsExtra.pathExists(path);
+const exists: t.IFs['exists'] = (path) => fsextra.pathExists(path);
 
 /**
  * Extended [file-system] object.
@@ -24,7 +24,7 @@ const exists: t.IFs['exists'] = (path) => fsExtra.pathExists(path);
  *    `IFs` interface found in [@platform/types].
  */
 export const fs = {
-  ...fsExtra,
+  ...fsextra,
 
   /**
    * IFs (interface)

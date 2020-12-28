@@ -1,8 +1,11 @@
 import { expect } from 'chai';
 import { Glob } from '.';
-import { basename, resolve } from 'path';
+import { basename, resolve, join } from 'path';
+import * as fs from 'fs-extra';
 
 describe('Glob', () => {
+  after(() => fs.remove('tmp'));
+
   describe('find', () => {
     it('finds several files', async () => {
       const pattern = `${__dirname}/Glob*.ts`;
@@ -82,6 +85,45 @@ describe('Glob', () => {
 
       // NB: "tmpl-1" AND "child-1" folders ignored.
       expectSet(res3, ['child-2/README.md', 'foo.json', 'my-file.md']);
+    });
+  });
+
+  describe.only('remove', () => {
+    const TMP = resolve('tmp/glob');
+
+    const write = async (path: string) => await fs.writeFile(join(TMP, path), 'foo');
+    const writeSampleFiles = async () => {
+      await fs.ensureDir(TMP);
+      await write('foo.txt');
+      await write('foobar.txt');
+      await write('foo.html');
+      await write('bar.txt');
+    };
+
+    it('removes matching items', async () => {
+      await writeSampleFiles();
+      expect((await Glob.find(`${TMP}/*`)).length).to.eql(4);
+
+      const res = await Glob.remove(`${TMP}/foo*.txt`);
+      expect(res.length).to.eql(2);
+      expect(res[0].endsWith('/foo.txt')).to.eql(true);
+      expect(res[1].endsWith('/foobar.txt')).to.eql(true);
+
+      const paths = await Glob.find(`${TMP}/*`);
+      expect(paths.length).to.eql(2);
+      expect(paths[0].endsWith('/bar.txt')).to.eql(true);
+      expect(paths[1].endsWith('/foo.html')).to.eql(true);
+    });
+
+    it('no matching items to remove', async () => {
+      await writeSampleFiles();
+      expect((await Glob.find(`${TMP}/*`)).length).to.eql(4);
+
+      const res = await Glob.remove(`${TMP}/foo*.json`);
+      expect(res).to.eql([]);
+
+      const paths = await Glob.find(`${TMP}/*`);
+      expect(paths.length).to.eql(4);
     });
   });
 });
