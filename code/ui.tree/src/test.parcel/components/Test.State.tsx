@@ -6,7 +6,7 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 
 import { Treeview } from '../..';
 import { t } from '../../common';
-import { TreeViewState } from '../../components.dev/TreeviewState';
+import { TreeviewState } from '../../components.dev/TreeviewState';
 import { TreeviewStrategy } from '../../TreeviewStrategy';
 
 type Node = t.ITreeviewNode;
@@ -212,7 +212,7 @@ export class Test extends React.PureComponent<ITestProps> {
         <div {...styles.body}>
           <div {...styles.scroll}>
             <div />
-            <TreeViewState
+            <TreeviewState
               store={this.tree}
               current={this.current}
               selected={this.selected}

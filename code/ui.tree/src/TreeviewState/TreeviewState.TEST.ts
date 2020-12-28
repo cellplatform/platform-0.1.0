@@ -1,11 +1,11 @@
 import { expect } from '../test';
-import { TreeViewState } from '.';
+import { TreeviewState } from '.';
 
-const S = TreeViewState;
+const S = TreeviewState;
 
-describe('TreeViewState', () => {
+describe('TreeviewState', () => {
   it('create and change', () => {
-    const state = TreeViewState.create({
+    const state = TreeviewState.create({
       root: { id: 'foo', props: { treeview: { label: 'Hello' } } },
     });
     state.change((draft) => S.props(draft, (props) => (props.label = 'boom')));

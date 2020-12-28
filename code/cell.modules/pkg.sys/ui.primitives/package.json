@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.primitives",
-  "version": "0.0.47",
+  "version": "0.0.49",
   "sideEffects": false,
   "compiler": {
     "port": 3005
@@ -17,17 +17,17 @@
     "serve": "cell.compiler serve $@"
   },
   "dependencies": {
-    "@platform/ui.button": "^0.3.95",
-    "@platform/ui.icon": "^0.0.179",
-    "@platform/ui.image": "^0.2.90",
-    "@platform/ui.object": "^0.0.233",
-    "@platform/ui.spinner": "^0.0.176",
-    "@platform/ui.text": "^0.3.91",
-    "@platform/ui.tree": "^0.8.23",
-    "preset.env": "^0.0.8"
+    "@platform/ui.button": "^0.3.97",
+    "@platform/ui.icon": "^0.0.181",
+    "@platform/ui.image": "^0.2.92",
+    "@platform/ui.object": "^0.0.235",
+    "@platform/ui.spinner": "^0.0.178",
+    "@platform/ui.text": "^0.3.93",
+    "@platform/ui.tree": "^0.8.25",
+    "preset.env": "^0.0.10"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.2.45",
+    "@platform/cell.compiler": "^0.2.47",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
