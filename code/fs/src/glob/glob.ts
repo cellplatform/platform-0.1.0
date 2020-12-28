@@ -8,6 +8,7 @@ export type GlobFindOptions = {
   statCache?: { [path: string]: false | { isDirectory(): boolean } | undefined };
   realpathCache?: { [path: string]: string };
   ignore?: string | string[];
+  filter?: (path: string) => boolean;
 };
 
 export const Glob = {
@@ -31,6 +32,7 @@ export const Glob = {
         if (err) {
           reject(err);
         } else {
+          if (typeof options.filter === 'function') paths = paths.filter(options.filter);
           resolve(paths);
         }
       });

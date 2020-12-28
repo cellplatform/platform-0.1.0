@@ -1,10 +1,26 @@
 import { expect } from 'chai';
 import { Glob } from '.';
-import { basename, resolve, join } from 'path';
+import { basename, resolve, join, dirname } from 'path';
 import * as fs from 'fs-extra';
 
-describe('Glob', () => {
-  after(() => fs.remove('tmp'));
+const TMP = resolve('./tmp/glob');
+
+const write = async (path: string) => {
+  path = join(TMP, path);
+  await fs.ensureDir(dirname(path));
+  await fs.writeFile(path, 'foo');
+};
+
+const writeSampleFiles = async () => {
+  await write('foo.txt');
+  await write('foobar.txt');
+  await write('foo.html');
+  await write('bar.txt');
+};
+
+describe.only('Glob', () => {
+  // beforeEach(async () => await fs.remove(TMP));
+  after(async () => await fs.remove('./tmp'));
 
   describe('find', () => {
     it('finds several files', async () => {
@@ -86,20 +102,27 @@ describe('Glob', () => {
       // NB: "tmpl-1" AND "child-1" folders ignored.
       expectSet(res3, ['child-2/README.md', 'foo.json', 'my-file.md']);
     });
+
+    it('filter (as option)', async () => {
+      await writeSampleFiles();
+
+      const res1 = await Glob.find(`${TMP}/*`, { filter: (path) => path.endsWith('.html') });
+      const res2 = await Glob.find(`${TMP}/*`, { filter: (path) => path.endsWith('.txt') });
+      const res3 = await Glob.find(`${TMP}/*.txt`, {
+        filter: (path) => basename(path).startsWith('foo'),
+      });
+
+      const files1 = res1.map((path) => basename(path));
+      const files2 = res2.map((path) => basename(path));
+      const files3 = res3.map((path) => basename(path));
+
+      expect(files1).to.eql(['foo.html']);
+      expect(files2).to.eql(['bar.txt', 'foo.txt', 'foobar.txt']);
+      expect(files3).to.eql(['foo.txt', 'foobar.txt']);
+    });
   });
 
-  describe.only('remove', () => {
-    const TMP = resolve('tmp/glob');
-
-    const write = async (path: string) => await fs.writeFile(join(TMP, path), 'foo');
-    const writeSampleFiles = async () => {
-      await fs.ensureDir(TMP);
-      await write('foo.txt');
-      await write('foobar.txt');
-      await write('foo.html');
-      await write('bar.txt');
-    };
-
+  describe('remove', () => {
     it('removes matching items', async () => {
       await writeSampleFiles();
       expect((await Glob.find(`${TMP}/*`)).length).to.eql(4);
