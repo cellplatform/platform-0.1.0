@@ -10,16 +10,11 @@ const write = async (path: string) => {
   await fs.ensureDir(dirname(path));
   await fs.writeFile(path, 'foo');
 };
+const writeFiles = (...paths: string[]) => Promise.all(paths.map((path) => write(path)));
+const writeSampleFiles = () => writeFiles('foo.txt', 'foobar.txt', 'foo.html', 'bar.txt');
 
-const writeSampleFiles = async () => {
-  await write('foo.txt');
-  await write('foobar.txt');
-  await write('foo.html');
-  await write('bar.txt');
-};
-
-describe.only('Glob', () => {
-  // beforeEach(async () => await fs.remove(TMP));
+describe('Glob', () => {
+  beforeEach(async () => await fs.remove(TMP));
   after(async () => await fs.remove('./tmp'));
 
   describe('find', () => {
@@ -103,14 +98,12 @@ describe.only('Glob', () => {
       expectSet(res3, ['child-2/README.md', 'foo.json', 'my-file.md']);
     });
 
-    it('filter (as option)', async () => {
+    it('filter: {option}', async () => {
       await writeSampleFiles();
 
       const res1 = await Glob.find(`${TMP}/*`, { filter: (path) => path.endsWith('.html') });
       const res2 = await Glob.find(`${TMP}/*`, { filter: (path) => path.endsWith('.txt') });
-      const res3 = await Glob.find(`${TMP}/*.txt`, {
-        filter: (path) => basename(path).startsWith('foo'),
-      });
+      const res3 = await Glob.find(`${TMP}/*.txt`, (path) => basename(path).startsWith('foo'));
 
       const files1 = res1.map((path) => basename(path));
       const files2 = res2.map((path) => basename(path));
@@ -136,6 +129,17 @@ describe.only('Glob', () => {
       expect(paths.length).to.eql(2);
       expect(paths[0].endsWith('/bar.txt')).to.eql(true);
       expect(paths[1].endsWith('/foo.html')).to.eql(true);
+    });
+
+    it('filter {option} prior to removing', async () => {
+      await writeSampleFiles();
+      expect((await Glob.find(`${TMP}/*`)).length).to.eql(4);
+
+      const res = await Glob.remove(`${TMP}/*.txt`, (path) => basename(path).startsWith('foo'));
+      expect(res.map((path) => basename(path))).to.eql(['foo.txt', 'foobar.txt']);
+
+      const remaining = (await Glob.find(`${TMP}/*`)).map((path) => basename(path));
+      expect(remaining).to.eql(['bar.txt', 'foo.html']);
     });
 
     it('no matching items to remove', async () => {
