@@ -1,4 +1,6 @@
-import { fs, log, t, hash, PATH } from '../common';
+import { TypeManifest } from '@platform/cell.compiler';
+
+import { fs, log, PATH, t } from '../common';
 
 type FilterLine = (line: string) => boolean;
 
@@ -6,17 +8,17 @@ type FilterLine = (line: string) => boolean;
  * Save the core ECMAScript and CellOS definition files
  * for insertion into the code editor.
  */
-export function copyDefs() {
+export async function copyDefs() {
   log.info.gray(`Type definitions\n`);
 
-  copyEcmaScript();
-  copyCellTypes();
+  await copyEcmaScript();
+  await copyCellTypes();
 }
 
 /**
  * Copies the base ES6 (ECMAScript) langauge declarations.
  */
-function copyEcmaScript() {
+async function copyEcmaScript() {
   const filenames = [
     'lib.es5.d.ts',
     'lib.es2015.core.d.ts',
@@ -31,7 +33,7 @@ function copyEcmaScript() {
   const sourceDir = fs.join(PATH.NODE_MODULES, 'typescript/lib');
   const targetDir = fs.resolve(PATH.STATIC.TYPES.ES);
 
-  copy({
+  await copy({
     filenames,
     sourceDir,
     targetDir,
@@ -56,7 +58,7 @@ function copyEcmaScript() {
 /**
  * Copy the [cell.types] declarations.
  */
-function copyCellTypes() {
+async function copyCellTypes() {
   /**
    * TODO 🐷
    * NOTE: These are no longer the set of libs to copy.
@@ -70,9 +72,9 @@ function copyCellTypes() {
 
   const sourceDir = fs.join(PATH.NODE_MODULES, '@platform/cell.types/lib/types');
   const targetDir = fs.resolve(PATH.STATIC.TYPES.CELL);
-  const filenames = fs.readdirSync(sourceDir).filter((name) => name.endsWith('.d.ts'));
+  const filenames = (await fs.readdir(sourceDir)).filter((name) => name.endsWith('.d.ts'));
 
-  copy({
+  await copy({
     filenames,
     sourceDir,
     targetDir,
@@ -96,7 +98,7 @@ function copyCellTypes() {
 /**
  * Copies a set of [.d.ts] files declarations.
  */
-function copy(args: {
+async function copy(args: {
   filenames: string[];
   sourceDir: string;
   targetDir: string;
@@ -104,47 +106,42 @@ function copy(args: {
   filterLine?: FilterLine;
 }) {
   const { sourceDir, targetDir, filenames, filterLine } = args;
-  const manifest: t.Manifest = { hash: '', files: [] };
 
-  fs.removeSync(targetDir);
-  fs.ensureDirSync(targetDir);
+  await fs.remove(targetDir);
+  await fs.ensureDir(targetDir);
 
-  filenames.map((item) => {
-    const filename = {
-      ts: item,
-      txt: item.replace(/\.ts$/, '.txt'), // NB: ".ts" files are served with wrong mime-type.  Change to plain text file ("text/plain")
-    };
-    const sourceFile = fs.join(sourceDir, filename.ts);
-    const data = fs.readFileSync(sourceFile);
+  await Promise.all(
+    filenames.map(async (item) => {
+      const filename = {
+        ts: item,
+        txt: item.replace(/\.ts$/, '.txt'), // NB: ".ts" files are served with wrong mime-type.  Change to plain text file ("text/plain")
+      };
+      const sourceFile = fs.join(sourceDir, filename.ts);
+      const data = await fs.readFile(sourceFile);
 
-    let text = data.toString();
-    if (filterLine) {
-      const lines = text.split('\n').filter((line) => filterLine(line));
-      text = lines.join('\n');
-    }
+      let text = data.toString();
+      if (filterLine) {
+        const lines = text.split('\n').filter((line) => filterLine(line));
+        text = lines.join('\n');
+      }
 
-    text = args.format ? args.format(text) : text;
+      text = args.format ? args.format(text) : text;
 
-    if (text.length > 0) {
-      // Copy file.
-      const path = fs.join(targetDir, filename.txt);
-      fs.writeFileSync(path, text);
-      log.info.gray(` • ${trimBase(targetDir)}/${log.green(filename.ts)} (.txt)`);
-
-      // Add the file to the manifest.
-      manifest.files.push({
-        path: filename.txt,
-        filehash: hash.sha256(data),
-        bytes: fs.readFileSync(path).byteLength,
-      });
-    }
-  });
+      if (text.length > 0) {
+        // Copy file.
+        const path = fs.join(targetDir, filename.txt);
+        fs.writeFileSync(path, text);
+        log.info.gray(` • ${trimBase(targetDir)}/${log.green(filename.ts)} (.txt)`);
+      }
+    }),
+  );
 
   // Save manifest file.
-  manifest.hash = hash.sha256(manifest.files.map((file) => file.filehash));
-  const path = fs.join(targetDir, 'index.json');
-  const json = JSON.stringify(manifest, null, '  ');
-  fs.writeFileSync(path, `${json}\n`);
+  await TypeManifest.createAndSave({
+    base: fs.dirname(targetDir),
+    dir: fs.basename(targetDir),
+    copyRefs: true,
+  });
 
   // Finish up.
   log.info();
