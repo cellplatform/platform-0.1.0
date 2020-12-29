@@ -1,5 +1,5 @@
-import { defaultValue, exec, fs, id, ProgressSpinner, t, Model } from '../common';
-import { TypeManifest, formatDirs } from '../manifest/TypeManifest';
+import { defaultValue, exec, fs, id, ProgressSpinner, t } from '../common';
+import { formatDirs, TypeManifest } from '../manifest/TypeManifest';
 
 /**
  * Compile typescript [.d.ts] declarations.

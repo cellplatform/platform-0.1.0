@@ -10,3 +10,5 @@ export type CreateAndSaveArgs = {
   copyRefs?: boolean;
   info?: t.TypelibManifestInfo;
 };
+
+export type Dirs = { base: string; dir: string; join(): string };

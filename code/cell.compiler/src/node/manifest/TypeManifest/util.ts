@@ -1,4 +1,5 @@
 import { fs, t } from '../../common';
+import { Dirs } from './types';
 
 /**
  * Loads typelib info from the given package.json file.
@@ -43,3 +44,11 @@ export const Package = {
     return undefined;
   },
 };
+
+export function formatDirs(base: string, dir: string): Dirs {
+  base = fs.resolve((base || '').trim()).replace(/\/*$/, '');
+  dir = (dir || '').trim().replace(/\/*$/, '');
+  dir = dir.startsWith(base) ? (dir = dir.substring(base.length + 1)) : dir;
+  dir = dir.replace(/^\/*/, '');
+  return { base, dir, join: () => fs.join(base, dir) };
+}

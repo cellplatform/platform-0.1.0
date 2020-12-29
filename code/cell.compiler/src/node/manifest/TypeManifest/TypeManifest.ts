@@ -3,10 +3,9 @@ import * as Manifest from '../Manifest';
 import { appendFileInfo } from './appendInfo';
 import { copyRefs } from './copyRefs';
 import { CreateAndSave } from './types';
-import { Info } from './util';
+import { formatDirs, Info } from './util';
 
 type M = t.TypelibManifest;
-type Dirs = { base: string; dir: string; join(): string };
 
 const createAndSave: CreateAndSave = async (args) => {
   const { model, base, dir, filename, info } = args;
@@ -93,15 +92,3 @@ export const TypeManifest = {
     return empty;
   },
 };
-
-/**
- * Helpers
- */
-
-export function formatDirs(base: string, dir: string): Dirs {
-  base = fs.resolve((base || '').trim()).replace(/\/*$/, '');
-  dir = (dir || '').trim().replace(/\/*$/, '');
-  dir = dir.startsWith(base) ? (dir = dir.substring(base.length + 1)) : dir;
-  dir = dir.replace(/^\/*/, '');
-  return { base, dir, join: () => fs.join(base, dir) };
-}
