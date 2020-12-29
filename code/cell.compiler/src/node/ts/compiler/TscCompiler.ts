@@ -34,7 +34,7 @@ export function create(tsconfigPath?: string) {
     },
 
     /**
-     * Wrapper for running the `tsc` typescript compiler
+     * General wrapper for running the `tsc` typescript compiler
      * with a programmatic API.
      *
      * NOTE:

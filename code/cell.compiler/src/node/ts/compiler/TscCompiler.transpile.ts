@@ -36,13 +36,14 @@ export async function transpile(
   if (!args.silent) spinner.start();
   let error: string | undefined;
   const cmd = exec.command(`tsc --project ${tsconfig.path}`);
-  const res = await cmd.run({ cwd: fs.dirname(args.tsconfig.path), silent: false });
+  const cwd = fs.dirname(args.tsconfig.path);
+  const res = await cmd.run({ cwd, silent: true });
   if (!res.ok) {
     const emitted = res.errors.map((err) => err).join('\n');
     error = `Failed to transpile typescript. ${emitted}`.trim();
   }
 
-  // Save the type-declaration manifest, copying in all referenced type libs as well.
+  // Save the type-declaration manifest.
   const info = await TypeManifest.info(model?.entry?.main);
   const { manifest } = await TypeManifest.createAndSave({
     base: fs.dirname(outdir),

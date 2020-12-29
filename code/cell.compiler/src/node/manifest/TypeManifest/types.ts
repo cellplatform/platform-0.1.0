@@ -11,4 +11,4 @@ export type CreateAndSaveArgs = {
   info?: t.TypelibManifestInfo;
 };
 
-export type Dirs = { base: string; dir: string; join(): string };
+export type Dirs = { base: string; dirname: string; join(): string };

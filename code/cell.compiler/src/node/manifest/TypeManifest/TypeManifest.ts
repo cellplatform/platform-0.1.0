@@ -1,6 +1,6 @@
 import { fs, t } from '../../common';
 import * as Manifest from '../Manifest';
-import { appendFileInfo } from './appendInfo';
+import { appendFileInfo } from './fileInfo';
 import { copyRefs } from './copyRefs';
 import { CreateAndSave } from './types';
 import { formatDirs, Info } from './util';

@@ -170,7 +170,7 @@ describe('TypeManifest', function () {
     it('resolve base', () => {
       const res = formatDirs('  types.d  ', '  foo  ');
       expect(res.base).to.eql(fs.resolve('./types.d'));
-      expect(res.dir).to.eql('foo');
+      expect(res.dirname).to.eql('foo');
       expect(res.join()).to.eql(fs.resolve('./types.d/foo'));
     });
 
@@ -178,7 +178,7 @@ describe('TypeManifest', function () {
       const test = (dir: string) => {
         const res = formatDirs('  types.d  ', dir);
         expect(res.base).to.eql(fs.resolve('./types.d'));
-        expect(res.dir).to.eql('foo');
+        expect(res.dirname).to.eql('foo');
         expect(res.join()).to.eql(fs.resolve('./types.d/foo'));
       };
       test('foo');

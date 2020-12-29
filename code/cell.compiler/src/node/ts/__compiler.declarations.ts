@@ -27,7 +27,7 @@ export async function compileDeclarations(
   await fs.writeFile(tsconfig.path, JSON.stringify(json, null, '  '));
 
   const spinner = ProgressSpinner({ label: 'building declarations' });
-  
+
   // Run the command.
   if (!args.silent) spinner.start();
   let error: string | undefined;
@@ -51,7 +51,7 @@ export async function compileDeclarations(
   const { manifest } = await TypeManifest.createAndSave({
     copyRefs: true,
     base: dirs.base,
-    dir: dirs.dir,
+    dir: dirs.dirname,
     model,
     info,
   });
