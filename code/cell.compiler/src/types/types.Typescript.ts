@@ -13,15 +13,15 @@ export type TsConfigFile = {
 export type TscCompiler = {
   tsconfig: t.TsCompilerConfig;
   transpile: t.TscTranspile;
-  declarations: TsCompileDeclarations__OLD;
+  declarations_OLD: TsCompileDeclarations__OLD;
+  declarations: t.TscDeclarations;
 };
 
 export type TsCompilerConfig = { path: string; json(): Promise<t.TsConfigFile> };
 
 /**
- * Transpile a project
+ * Generic [tsc] transpiler.
  */
-
 export type TscTranspile = (args: TscTranspileArgs) => Promise<TscTranspileResult>;
 
 export type TscTranspileArgs = {
@@ -42,6 +42,23 @@ export type TscTranspileResult = {
 /**
  * Tools for compiling ".d.ts" declarations
  */
+export type TscDeclarations = {
+  transpile: TscTranspileDeclarations;
+};
+
+export type TscTranspileDeclarations = (
+  args: TscTranspileDeclarationsArgs,
+) => Promise<TscTranspileDeclarationsResult>;
+
+export type TscTranspileDeclarationsArgs = {
+  outdir: string;
+  source?: string | string[]; // File or glob pattern, eg: src/foo/**/*
+  silent?: boolean;
+  model?: t.CompilerModel;
+};
+
+export type TscTranspileDeclarationsResult = TscTranspileResult;
+
 // export type TsDeclarationsCompiler = {
 //   transpile(
 //     args: TsDeclarationsCompilerTranspileArgs,

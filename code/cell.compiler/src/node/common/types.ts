@@ -1,3 +1,5 @@
+export { CompilerOptions } from 'typescript';
+
 export * from '../types';
 export * from './types.wp';
 

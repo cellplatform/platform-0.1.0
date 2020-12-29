@@ -9,6 +9,7 @@ import { TypeManifest } from '../../manifest';
  *    Uses [exec] child_process under the hood.
  *
  */
+
 export async function transpile(
   args: t.TscTranspileArgs & { tsconfig: t.TsCompilerConfig },
 ): Promise<t.TscTranspileResult> {

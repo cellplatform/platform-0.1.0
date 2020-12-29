@@ -17,7 +17,7 @@ describe('Typescript', function () {
       const compiler = Typescript.compiler('tsconfig.json');
       const include = 'src/test/test.bundles/node.simple/**/*';
 
-      const res = await compiler.declarations({
+      const res = await compiler.declarations_OLD({
         base: 'tmp/types.d',
         dir: 'main',
         include,

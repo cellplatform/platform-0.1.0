@@ -1,6 +1,7 @@
 import { fs, t } from '../../common';
 import { compileDeclarations } from '../__compiler.declarations';
 import { transpile } from './TscCompiler.transpile';
+import { declarations } from '../compiler.declarations';
 
 /**
  * Create the typescript compiler.
@@ -21,8 +22,15 @@ export function create(tsconfigPath?: string) {
     /**
      * Compile typescript [.d.ts] declarations.
      */
-    async declarations(args) {
+    async declarations_OLD(args) {
       return compileDeclarations({ ...args, tsconfig });
+    },
+
+    /**
+     * A compiler for producing ".d.ts" bundles.
+     */
+    get declarations() {
+      return declarations.create(tsconfig);
     },
 
     /**
