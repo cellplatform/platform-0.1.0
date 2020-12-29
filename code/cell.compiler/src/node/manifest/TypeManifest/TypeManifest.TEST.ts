@@ -54,7 +54,7 @@ describe('TypeManifest', function () {
     const info = await TypeManifest.info('package.json');
     expect(info.name).to.eql(pkg.name);
     expect(info.version).to.eql(pkg.version);
-    expect(info.entry).to.eql(pkg.types);
+    expect(info.entry).to.eql(pkg.types?.replace(/\.d\.ts$/, '.d.txt'));
   });
 
   it('refs: imports', async () => {

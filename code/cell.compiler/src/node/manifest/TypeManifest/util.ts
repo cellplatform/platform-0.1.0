@@ -25,7 +25,7 @@ export const Info = {
     const info = Info.empty;
     info.name = pkg.name || '';
     info.version = pkg.version || '';
-    info.entry = pkg.types || '';
+    info.entry = (pkg.types || '').replace(/\.d\.ts$/, '.d.txt');
     return info;
   },
 };

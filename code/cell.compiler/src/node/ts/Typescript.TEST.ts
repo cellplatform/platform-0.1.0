@@ -44,7 +44,7 @@ describe('Typescript', function () {
       expect(manifest.kind).to.eql('typelib');
       expect(manifest.typelib.name).to.eql('node.simple');
       expect(manifest.typelib.version).to.eql('0.0.1');
-      expect(manifest.typelib.entry).to.eql('./types.d.ts');
+      expect(manifest.typelib.entry).to.eql('./types.d.txt');
     });
   });
 });
