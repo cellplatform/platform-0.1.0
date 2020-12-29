@@ -8,30 +8,73 @@ export type TsConfigFile = {
 };
 
 /**
- * Typescript compilation.
+ * Typescript compiler.
  */
 export type TsCompiler = {
-  tsconfig: { path: string; json(): Promise<TsConfigFile> };
-  declarations: TsCompileDeclarations;
+  tsconfig: t.TsCompilerConfig;
+  declarations: TsCompileDeclarations__OLD;
+
+  transpile: t.TsCompilerTranspile;
 };
+
+export type TsCompilerConfig = { path: string; json(): Promise<t.TsConfigFile> };
+
+/**
+ * Transpile a project
+ */
+
+export type TsCompilerTranspile = (
+  args: TsCompilerTranspileArgs,
+) => Promise<TsCompilerTranspileResult>;
+
+export type TsCompilerTranspileArgs = {
+  dir: string;
+  include: string | string[]; // File or glob pattern, eg: src/foo/**/*
+  silent?: boolean;
+};
+
+export type TsCompilerTranspileResult = {
+  tsconfig: TsConfigFile;
+  out: { dir: string; manifest: t.TypelibManifest };
+  error?: string;
+};
+
+/**
+ * Tools for compiling ".d.ts" declarations
+ */
+// export type TsDeclarationsCompiler = {
+//   transpile(
+//     args: TsDeclarationsCompilerTranspileArgs,
+//   ): Promise<TsDeclarationsCompilerTranspileResult>;
+// };
+
+// export type TsDeclarationsCompilerTranspileArgs = {};
+
+// export type TsDeclarationsCompilerTranspileResult = {
+//   tsconfig: TsConfigFile;
+//   output: { dir: string; manifest: t.TypelibManifest };
+//   error?: string;
+// };
+
+// =================================================
 
 /**
  * Compile declaration files (".d.ts")
  */
-export type TsCompileDeclarations = (
-  args: TsCompileDeclarationsArgs,
-) => Promise<TsCompileDeclarationsResult>;
+export type TsCompileDeclarations__OLD = (
+  args: TsCompileDeclarationsArgs__OLD,
+) => Promise<TsCompileDeclarationsResult__OLD>;
 
-export type TsCompileDeclarationsArgs = {
+export type TsCompileDeclarationsArgs__OLD = {
   base: string;
   dir: string;
-  include: string | string[]; // File or grep pattern, eg: src/foo/**/*
+  include: string | string[]; // File or glob pattern, eg: src/foo/**/*
   silent?: boolean;
   clean?: boolean;
   model?: t.CompilerModel;
 };
 
-export type TsCompileDeclarationsResult = {
+export type TsCompileDeclarationsResult__OLD = {
   tsconfig: TsConfigFile;
   output: {
     base: string;

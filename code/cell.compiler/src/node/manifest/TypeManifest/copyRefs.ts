@@ -2,7 +2,7 @@ import { fs, PATH, R, t } from '../../common';
 import { CreateAndSave } from './types';
 import { Info } from './util';
 
-const CACHE_DIR = fs.join(PATH.CACHEDIR, 'type-manifest');
+const CACHE_DIR = fs.join(PATH.CACHEDIR, 'manifest.typelib');
 
 /**
  * Copies refs within the given manifest.

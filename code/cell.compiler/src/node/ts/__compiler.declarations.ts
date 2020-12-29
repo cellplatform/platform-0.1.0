@@ -5,8 +5,8 @@ import { formatDirs, TypeManifest } from '../manifest/TypeManifest';
  * Compile typescript [.d.ts] declarations.
  */
 export async function compileDeclarations(
-  args: t.TsCompileDeclarationsArgs & { tsconfig: t.TsCompiler['tsconfig'] },
-): Promise<t.TsCompileDeclarationsResult> {
+  args: t.TsCompileDeclarationsArgs__OLD & { tsconfig: t.TsCompilerConfig },
+): Promise<t.TsCompileDeclarationsResult__OLD> {
   const { model } = args;
   const dirs = formatDirs(args.base, args.dir);
 
@@ -63,11 +63,7 @@ export async function compileDeclarations(
   // Finish up.
   return {
     tsconfig: tsconfig.json,
-    output: {
-      base: dirs.base,
-      dir: dirs.join(),
-      manifest,
-    },
+    output: { base: dirs.base, dir: dirs.join(), manifest },
     error,
   };
 }

@@ -114,7 +114,7 @@ async function copy(args: {
     filenames.map(async (item) => {
       const filename = {
         ts: item,
-        txt: item.replace(/\.ts$/, '.txt'), // NB: ".ts" files are served with wrong mime-type.  Change to plain text file ("text/plain")
+        txt: item.replace(/\.d\.ts$/, '.d.txt'), // NB: ".ts" files are served with wrong mime-type.  Change to plain text file ("text/plain")
       };
       const sourceFile = fs.join(sourceDir, filename.ts);
       const data = await fs.readFile(sourceFile);
@@ -127,10 +127,10 @@ async function copy(args: {
 
       text = args.format ? args.format(text) : text;
 
+      // Copy file.
       if (text.length > 0) {
-        // Copy file.
         const path = fs.join(targetDir, filename.txt);
-        fs.writeFileSync(path, text);
+        await fs.writeFile(path, text);
         log.info.gray(` • ${trimBase(targetDir)}/${log.green(filename.ts)} (.txt)`);
       }
     }),
