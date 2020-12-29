@@ -52,6 +52,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
   });
 
   const elLoading = <Loading theme={theme} />;
+
   return (
     <MonacoEditor
       style={props.style}

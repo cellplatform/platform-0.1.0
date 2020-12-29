@@ -1,7 +1,5 @@
-import { Actions } from 'sys.ui.harness';
-
 import { CodeEditor } from '../../api';
-import { bundle, HttpClient, rx, StateObject, t, constants } from '../../common';
+import { bundle, HttpClient, rx, StateObject, t, constants, Actions } from './common';
 import { SaveTest } from './actions.save';
 
 console.log('__CELL__', __CELL__);
@@ -145,6 +143,15 @@ const total = a.reduce((acc, next) =>acc + next, 0)
     })
     .button('load: env', async () => {
       const url = bundle.path('static/types.d/inner/env.d.txt');
+      // const url = bundle.path('dist/web/types.d/env.d.txt');
+
+      console.log('url', url);
+
+      const res = await events.fire.libs.load(url);
+      console.log('res', res);
+    })
+    .button('load: rxjs', async () => {
+      const url = bundle.path('static/types.d/rxjs');
       // const url = bundle.path('dist/web/types.d/env.d.txt');
 
       console.log('url', url);

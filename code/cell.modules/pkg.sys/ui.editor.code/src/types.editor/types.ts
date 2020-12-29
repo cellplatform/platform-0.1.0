@@ -1,2 +1,2 @@
-export type CodeEditorTheme = 'light' | 'dark' | 'ink';
-export type CodeEditorLanguage = 'typesceript';
+export type CodeEditorTheme = 'light' | 'dark';
+export type CodeEditorLanguage = 'typescript';

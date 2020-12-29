@@ -9,7 +9,6 @@ describe('Theme', () => {
         expect(Theme.isDark(theme)).to.eql(expected);
       };
       test('dark', true);
-      test('ink', true);
       test('light', false);
     });
 
@@ -19,13 +18,12 @@ describe('Theme', () => {
       };
       test('light', true);
       test('dark', false);
-      test('ink', false);
     });
   });
 
   describe('byName', () => {
     it('get by name', () => {
-      expect(Theme.byName('ink')).to.eql(Themes.ink());
+      expect(Theme.byName('dark')).to.eql(Themes.dark());
     });
 
     it('throw: theme not supported', () => {
@@ -47,13 +45,6 @@ describe('Theme', () => {
       expect(theme.name).to.eql('dark');
       expect(theme.data.base).to.eql('vs-dark');
       expect(Theme.byName('dark')).to.eql(theme);
-    });
-
-    it('ink', () => {
-      const theme = Themes.ink();
-      expect(theme.name).to.eql('ink');
-      expect(theme.data.base).to.eql('vs-dark');
-      expect(Theme.byName('ink')).to.eql(theme);
     });
   });
 });

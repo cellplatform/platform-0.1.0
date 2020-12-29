@@ -1,4 +1,4 @@
-import { t, constants } from '../../common';
+import { t } from '../../common';
 
 type T = { name: t.CodeEditorTheme; data: t.IMonacoStandaloneThemeData };
 
@@ -9,7 +9,6 @@ export function defineThemes(api: t.ICodeEditorSingleton) {
   const define = (theme: T) => {
     api.monaco.editor.defineTheme(theme.name, theme.data);
   };
-  define(Themes.ink());
   define(Themes.light());
   define(Themes.dark());
 }
@@ -25,10 +24,7 @@ export const Themes = {
 
   dark(): T {
     const data = require('monaco-themes/themes/Monokai.json') as t.IMonacoStandaloneThemeData; // eslint-disable-line
-    return { name: 'dark', data };
-  },
 
-  ink(): T {
     const INK = {
       BG: {
         BASE: '#202634',
@@ -37,7 +33,6 @@ export const Themes = {
       },
     };
 
-    const data = Themes.dark().data;
     data.colors = {
       ...data.colors,
 
@@ -58,7 +53,7 @@ export const Themes = {
       'scrollbarSlider.hoverBackground': '#2B313E',
     };
 
-    return { name: 'ink', data };
+    return { name: 'dark', data };
   },
 };
 
@@ -74,7 +69,7 @@ export const Theme = {
   },
 
   isDark(name: t.CodeEditorTheme) {
-    const DARK: t.CodeEditorTheme[] = ['dark', 'ink'];
+    const DARK: t.CodeEditorTheme[] = ['dark'];
     return DARK.includes(name);
   },
 

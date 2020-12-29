@@ -11,7 +11,7 @@ const MODEL: t.CodeEditorModel = {
 };
 
 export const DEFAULT = {
-  THEME: 'ink' as t.CodeEditorTheme,
+  THEME: 'dark' as t.CodeEditorTheme,
   LANGUAGE: { TS: 'typescript' },
   MODEL,
 };
