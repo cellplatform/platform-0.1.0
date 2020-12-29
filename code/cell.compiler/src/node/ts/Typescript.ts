@@ -1,12 +1,12 @@
 import { fs } from '../common';
-import { TsCompiler } from './compiler';
+import { TscCompiler } from './compiler';
 
 /**
  * Main entry-point for programatically working
  * with the typescript compiler.
  */
 export const Typescript = {
-  compiler: TsCompiler.create,
+  compiler: TscCompiler.create,
 
   /**
    * Cleans up any transient build artifacts that may not have

@@ -1,2 +1,2 @@
-import * as TsCompiler from './TsCompiler';
-export { TsCompiler };
+import * as TscCompiler from './TscCompiler';
+export { TscCompiler };

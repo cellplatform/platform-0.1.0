@@ -10,9 +10,9 @@ export type TsConfigFile = {
 /**
  * Typescript compiler.
  */
-export type TsCompiler = {
+export type TscCompiler = {
   tsconfig: t.TsCompilerConfig;
-  transpile: t.TsCompilerTranspile;
+  transpile: t.TscTranspile;
   declarations: TsCompileDeclarations__OLD;
 };
 
@@ -22,11 +22,9 @@ export type TsCompilerConfig = { path: string; json(): Promise<t.TsConfigFile> }
  * Transpile a project
  */
 
-export type TsCompilerTranspile = (
-  args: TsCompilerTranspileArgs,
-) => Promise<TsCompilerTranspileResult>;
+export type TscTranspile = (args: TscTranspileArgs) => Promise<TscTranspileResult>;
 
-export type TsCompilerTranspileArgs = {
+export type TscTranspileArgs = {
   outdir: string;
   source?: string | string[]; // File or glob pattern, eg: src/foo/**/*
   silent?: boolean;
@@ -35,7 +33,7 @@ export type TsCompilerTranspileArgs = {
   model?: t.CompilerModel;
 };
 
-export type TsCompilerTranspileResult = {
+export type TscTranspileResult = {
   tsconfig: TsConfigFile;
   out: { dir: string; manifest: t.TypelibManifest };
   error?: string;

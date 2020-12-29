@@ -1,18 +1,18 @@
-import { TsCompiler } from '.';
+import { TscCompiler } from '.';
 import { expect, fs, expectError, SampleBundles } from '../../../test';
 
-describe('TsCompiler', function () {
+describe('TscCompiler', function () {
   this.timeout(99999);
 
   const config = SampleBundles.simpleNode.config;
 
-  const TMP = fs.resolve('tmp/test/TsCompiler');
+  const TMP = fs.resolve('tmp/test/TscCompiler');
 
   beforeEach(async () => await fs.remove(TMP));
 
   describe('tsconfig', () => {
     it('loads tsconfig', async () => {
-      const compiler = TsCompiler.create();
+      const compiler = TscCompiler.create();
       const tsconfig = compiler.tsconfig;
       const json1 = await tsconfig.json();
       const json2 = await tsconfig.json();
@@ -24,7 +24,7 @@ describe('TsCompiler', function () {
     });
 
     it('throw: file not found', async () => {
-      const compiler = TsCompiler.create('foo/bar/tsconfig.json');
+      const compiler = TscCompiler.create('foo/bar/tsconfig.json');
       expectError(() => compiler.tsconfig.json(), 'tsconfig file not found');
     });
   });
@@ -32,7 +32,7 @@ describe('TsCompiler', function () {
   describe.only('transpile', () => {
     it('transpile typescript', async () => {
       const model = config.toObject();
-      const compiler = TsCompiler.create();
+      const compiler = TscCompiler.create();
 
       const outdir = fs.join(TMP, 'foo');
       const source = 'src/test/test.bundles/node.simple/**/*';

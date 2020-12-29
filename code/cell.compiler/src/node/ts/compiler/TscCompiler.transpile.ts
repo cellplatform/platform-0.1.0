@@ -10,8 +10,8 @@ import { TypeManifest } from '../../manifest';
  *
  */
 export async function transpile(
-  args: t.TsCompilerTranspileArgs & { tsconfig: t.TsCompilerConfig },
-): Promise<t.TsCompilerTranspileResult> {
+  args: t.TscTranspileArgs & { tsconfig: t.TsCompilerConfig },
+): Promise<t.TscTranspileResult> {
   const { model } = args;
   const outdir = fs.resolve(args.outdir);
   const spinner = ProgressSpinner({ label: args.spinnerLabel || 'building typescript' });
