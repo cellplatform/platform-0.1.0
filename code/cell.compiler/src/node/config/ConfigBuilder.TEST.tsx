@@ -375,31 +375,39 @@ describe('Compiler (Config)', () => {
       const reset = () => builder.declarations(null);
       const src = 'src/**/*';
 
-      test(src, '  types.d/foo  ', [{ include: src, dir: 'types.d/foo' }]);
+      test(src, '  types.d/foo  ', [{ include: src, dir: 'foo' }]);
 
       reset();
       expect(model.state.declarations).to.eql(undefined);
 
-      test(src, 'types.d', [{ include: src, dir: 'types.d' }]);
+      test(src, '  foo  ', [{ include: src, dir: 'foo' }]);
       reset();
 
-      test(src, '  ', [{ include: src, dir: 'types.d' }]);
+      test(src, 'foo/bar/baz', [{ include: src, dir: 'foo/bar/baz' }]);
       reset();
 
-      test(src, '  foo  ', [{ include: src, dir: 'types.d/foo' }]);
-      reset();
-
-      test(src, 'foo/bar/baz', [{ include: src, dir: 'types.d/foo/bar/baz' }]);
-      reset();
-
-      test(src, '//dir/bar///', [{ include: src, dir: 'types.d/dir/bar' }]);
+      test(src, '//dir/bar///', [{ include: src, dir: 'dir/bar' }]);
       reset();
 
       // Unique.
       builder.declarations(src, 'types.d/foo');
       builder.declarations(src, 'foo');
       builder.declarations(src, 'types.d/foo');
-      expect(model.state.declarations).to.eql([{ include: src, dir: 'types.d/foo' }]);
+      expect(model.state.declarations).to.eql([{ include: src, dir: 'foo' }]);
+    });
+
+    it('declarations: throw on empty dir', () => {
+      const { builder } = create();
+      const test = (dir: string) => {
+        const fn = () => builder.declarations('src/**/*', dir);
+        expect(fn).to.throw(/Directory name for declarations must be specified/);
+      };
+
+      test('');
+      test('  ');
+      test('types.d');
+      test('  types.d  ');
+      test('  //types.d//  ');
     });
 
     it('lint', () => {

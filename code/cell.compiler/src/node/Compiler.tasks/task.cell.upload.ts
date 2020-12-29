@@ -84,7 +84,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
   const redirects = config.files?.redirects;
   const files = await getFiles({ bundleDir, targetDir, config });
 
-  const done$ = new Subject();
+  const done$ = new Subject<void>();
   writeLogFile(log, done$);
 
   const spinner = ProgressSpinner({ label: `uploading ${files.length} files`, silent });

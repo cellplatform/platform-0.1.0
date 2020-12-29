@@ -1,7 +1,8 @@
 import { fs, t } from '../common';
 import * as Manifest from './Manifest';
 import { appendFileInfo } from './TypeManifest.appendInfo';
-import { copyRefs, CreateAndSave } from './TypeManifest.copyRefs';
+import { copyRefs } from './TypeManifest.copyRefs';
+import { CreateAndSave } from './TypeManifest.types';
 
 type M = t.TypeManifest;
 type Dirs = { base: string; dir: string; join(): string };

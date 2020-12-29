@@ -1,14 +1,7 @@
-import { constants, fs, R, slug, t } from '../common';
+import { fs, R, t, PATH } from '../common';
+import { CreateAndSave } from './TypeManifest.types';
 
-export type CreateAndSave = (args: CreateAndSaveArgs) => Promise<CreateAndSaveResponse>;
-export type CreateAndSaveResponse = { path: string; manifest: t.TypeManifest };
-export type CreateAndSaveArgs = {
-  base: string;
-  dir: string;
-  filename?: string; // Default: index.json
-  model?: t.CompilerModel;
-  copyRefs?: boolean;
-};
+const CACHE_DIR = fs.join(PATH.CACHEDIR, 'type-manifest');
 
 /**
  * Copies refs within the given manifest.
@@ -17,55 +10,82 @@ export async function copyRefs(
   base: string,
   manifest: t.TypeManifest,
   createAndSave: CreateAndSave,
+  force?: boolean, // Force copy if already cached.
 ) {
-  // Prepare set of paths.
-  let paths: { module: string; source: string }[] = [];
+  type D = { module: string; source: string };
+
+  // Prepare the set of paths.
+  let dirs: D[] = [];
   manifest.files.forEach((file) => {
-    paths.push(...file.declaration.imports.map((module) => ({ module, source: '' })));
-    paths.push(...file.declaration.exports.map((module) => ({ module, source: '' })));
+    dirs.push(...file.declaration.imports.map((module) => ({ module, source: '' })));
+    dirs.push(...file.declaration.exports.map((module) => ({ module, source: '' })));
   });
-  paths = R.uniq(paths.filter(Boolean));
+  dirs = await Promise.all(
+    R.uniq(dirs.filter(Boolean)).map(async (path) => {
+      path.source = await pathToModule(base, path.module);
+      return path;
+    }),
+  );
 
-  // paths = paths.filter((p) => p.module !== 'rxjs');
+  // Ensure all modules have source files.
+  const emptySource = dirs.filter((path) => !Boolean(path.source));
+  if (emptySource.length > 0) {
+    const modules = emptySource.map((path) => `- ${path.module}`).join('\n');
+    const err = `Cannot find source declarations (".d.ts") for modules.\nBase folder: ${base}\nModules:\n${modules}`;
+    throw new Error(err);
+  }
 
-  for (const path of paths) {
-    path.source = await pathToModule(base, path.module);
-    if (!path.source) {
-      throw new Error(
-        `Cannot find source declarations for '${path.module}' to copy. Base: ${base}`,
-      );
+  const target = (dir: D, source: string, options: { cache?: boolean } = {}) => {
+    const root = options.cache ? CACHE_DIR : base;
+    return fs.join(root, dir.module, source.substring(dir.source.length + 1));
+  };
+
+  const isCached = async (dir: D) => await fs.pathExists(target(dir, '', { cache: true }));
+
+  const copyFromCache = async (dir: D) => {
+    const from = target(dir, '', { cache: true });
+    const to = target(dir, '', { cache: false });
+    if (!(await fs.pathExists(to))) await fs.copy(from, to);
+  };
+
+  const copyFiles = async (dir: D, options: { copyToCache?: boolean } = {}) => {
+    const paths = await fs.glob.find(`${dir.source}/**/*.d.ts`);
+    for (const source of paths) {
+      await fs.copy(source, target(dir, source));
+      if (options.copyToCache) await fs.copy(source, target(dir, source, { cache: true }));
     }
+  };
+
+  const copyDir = async (dir: D) => {
+    // Check whether the directory is a symbolic-link.
+    // NOTE:
+    //     YARN uses symbolic links for locally developed modules within a
+    //     a "workspace".  If the directory is NOT a symlink then the assumption
+    //     is that it can be safely cached and we need not re-calculate the list of
+    //     ".d.ts" files (which can be slow for large libraries).
+    //
+    const isLink = await fs.is.symlink(dir.source, { ancestor: true });
+    if (!force && !isLink && (await isCached(dir))) {
+      return await copyFromCache(dir);
+    }
+    await copyFiles(dir, { copyToCache: force || !isLink });
+  };
+
+  // Copy files.
+  for (const dir of dirs) {
+    await copyDir(dir);
   }
 
-  // Copy files to temporary location.
-  const tmp = fs.join(constants.PATH.TMP, `copyRefs.${slug()}`);
-  for (const path of paths) {
-    const target = fs.join(tmp, path.module);
-    await fs.ensureDir(fs.dirname(target));
-    await fs.copy(path.source, target, { dereference: true }); // NB: Handle sym-links, which will happen when Yarn workspaces are in use.
-  }
-
-  // Filter on declaration files and copy to final target.
-  let declarations = await fs.glob.find(`${tmp}/**/*.d.ts`);
-  declarations = declarations.filter((path) => !path.endsWith('.TEST.d.ts'));
-  for (const source of declarations) {
-    const target = fs.join(base, source.substring(tmp.length));
-    if (!(await fs.pathExists(target))) await fs.copy(source, target);
-  }
-
-  // Clean up temp folder.
-  await fs.remove(tmp);
-
-  // Write manifest.
-  for (const path of paths) {
-    await createAndSave({
-      base,
-      dir: path.module,
-      // copyRefs: true, // todo
-      copyRefs: false,
-    }); // <== 🌳 RECURSION
+  // Generate the manifest index.
+  for (const path of dirs) {
+    const dir = path.module;
+    await createAndSave({ base, dir, copyRefs: true }); // <== 🌳 RECURSION
   }
 }
+
+/**
+ * [Helpers]
+ */
 
 async function pathToModule(dir: string, module: string): Promise<string> {
   if (!dir || dir === '/') return '';

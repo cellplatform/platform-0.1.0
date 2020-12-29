@@ -98,7 +98,11 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
           dir = dir.replace(/^\/*/, '').replace(/\/*$/, '');
           dir = dir.replace(/^types\.d/, '');
           dir = dir.replace(/^\/*/, '').replace(/\/*$/, '');
-          dir = `types.d/${dir}`.replace(/\/*$/, '');
+          dir = `${dir}`.replace(/\/*$/, '').trim();
+
+          if (!dir) {
+            throw new Error(`Directory name for declarations must be specified`);
+          }
 
           draft.declarations.push({ include, dir });
         }

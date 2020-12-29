@@ -59,9 +59,10 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
 
 async function compileDeclarations(args: { model: t.CompilerModel; bundleDir: string }) {
   if (!args.model.declarations || args.model.declarations.length === 0) return;
+
   const declarations = args.model.declarations.map((d) => ({
     include: d.include,
-    base: args.bundleDir,
+    base: fs.join(args.bundleDir, 'types.d'),
     dir: d.dir,
     silent: true,
   }));
@@ -71,12 +72,15 @@ async function compileDeclarations(args: { model: t.CompilerModel; bundleDir: st
   await Promise.all(declarations.map((params) => ts.declarations(params)));
 
   // Rename ".d.ts" extension to ".d.txt" so files are served as "plain/text" mimetype.
-  await Promise.all([
-    declarations
-      .map((d) => d.dir)
-      .filter((path) => path.endsWith('.d.ts'))
-      .forEach((path) => fs.rename(path, path.replace(/\.d\.ts$/, '.d.txt'))),
-  ]);
+
+  // TODO 🐷
+
+  // await Promise.all([
+  //   declarations
+  //     .map((d) => d.dir)
+  //     .filter((path) => path.endsWith('.d.ts'))
+  //     .forEach((path) => fs.rename(path, path.replace(/\.d\.ts$/, '.d.txt'))),
+  // ]);
 }
 
 export async function onCompiled(args: {
