@@ -1,5 +1,5 @@
 import { exec, fs, ProgressSpinner, slug, t } from '../../common';
-import { TypeManifest } from '../../manifest';
+import { TscManifest } from './TscCompiler.manifest';
 
 /**
  * Wrapper for running the `tsc` typescript compiler
@@ -9,7 +9,7 @@ import { TypeManifest } from '../../manifest';
  *    Uses [exec] child_process under the hood.
  *
  */
-export function Transpiler(tsconfig: t.TsCompilerConfig): t.TscTranspile {
+export function TscTranspiler(tsconfig: t.TsCompilerConfig): t.TscTranspile {
   return async (args) => {
     const { model } = args;
     const outdir = fs.resolve(args.outdir);
@@ -39,17 +39,11 @@ export function Transpiler(tsconfig: t.TsCompilerConfig): t.TscTranspile {
     }
 
     // Save the type-declaration manifest.
-    const info = await TypeManifest.info(model?.entry?.main);
-    const { manifest } = await TypeManifest.createAndSave({
-      base: fs.dirname(outdir),
-      dir: fs.basename(outdir),
-      model,
-      info,
-    });
+    const { manifest } = await TscManifest.generate({ outdir, model });
 
     // Clean up.
-    spinner.stop();
     await fs.remove(path);
+    spinner.stop();
 
     // Finish up.
     return {
