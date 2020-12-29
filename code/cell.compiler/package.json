@@ -23,7 +23,7 @@
     "upload": "yarn cmd upload $@",
     "serve": "yarn cmd serve $@",
     "info": "yarn cmd info $@",
-    "clean": "yarn cmd clean $@",
+    "clean": "rm -rf tmp && yarn cmd clean $@",
     "node": "ts-node -T script.ts/tmp.node.runtime $@",
     "tmp": "ts-node -T script.ts/tmp.ts"
   },
