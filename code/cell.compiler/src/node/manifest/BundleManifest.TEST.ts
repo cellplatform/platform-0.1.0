@@ -1,4 +1,4 @@
-import { BundleManifest, FileManifest } from '.';
+import { BundleManifest, Manifest } from '.';
 import { expect, fs, SampleBundles, t } from '../../test';
 
 describe('BundleManifest', function () {
@@ -26,7 +26,7 @@ describe('BundleManifest', function () {
 
     expect(files.length).to.greaterThan(0);
     expect(manifest.kind).to.eql('bundle');
-    expect(manifest.hash).to.eql(FileManifest.hash(files));
+    expect(manifest.hash).to.eql(Manifest.hash(files));
     expect(manifest.hash).to.match(/^sha256-/);
 
     expect(manifest.bundle.mode).to.eql('production');

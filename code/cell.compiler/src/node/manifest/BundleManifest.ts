@@ -1,5 +1,5 @@
 import { DEFAULT, deleteUndefined, Model, Schema, t } from '../common';
-import { FileManifest, createAndSave } from './Manifest';
+import { Manifest, createAndSave } from './Manifest';
 
 type M = t.BundleManifest;
 
@@ -10,7 +10,7 @@ export const BundleManifest = {
   /**
    * The filename of the bundle.
    */
-  filename: FileManifest.filename,
+  filename: Manifest.filename,
 
   /**
    * URL to the manifest
@@ -30,7 +30,7 @@ export const BundleManifest = {
   }): Promise<M> {
     const { sourceDir, model, filename = BundleManifest.filename } = args;
     const data = Model(model);
-    const manifest = await FileManifest.create({ sourceDir, model, filename });
+    const manifest = await Manifest.create({ sourceDir, model, filename });
     const { hash, files } = manifest;
 
     const REMOTE = DEFAULT.FILE.JS.REMOTE_ENTRY;
@@ -72,13 +72,13 @@ export const BundleManifest = {
    * Reads from file-system.
    */
   async read(args: { dir: string; filename?: string }) {
-    return FileManifest.read<M>(args);
+    return Manifest.read<M>(args);
   },
 
   /**
    * Writes a manifest to the file-system.
    */
   async write(args: { manifest: M; dir: string; filename?: string }) {
-    return FileManifest.write<M>(args);
+    return Manifest.write<M>(args);
   },
 };

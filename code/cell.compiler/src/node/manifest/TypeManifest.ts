@@ -27,7 +27,7 @@ export const TypeManifest = {
   /**
    * The filename of the bundle.
    */
-  filename: Manifest.FileManifest.filename,
+  filename: Manifest.Manifest.filename,
 
   /**
    * Generates a manifest.
@@ -41,7 +41,7 @@ export const TypeManifest = {
   }): Promise<M> {
     const { base, dir, model, filename = TypeManifest.filename } = args;
     const dirs = formatDirs(args.base, args.dir);
-    const manifest = await Manifest.FileManifest.create({
+    const manifest = await Manifest.Manifest.create({
       sourceDir: dirs.join(),
       model,
       filename,
@@ -62,14 +62,14 @@ export const TypeManifest = {
    * Reads from file-system.
    */
   async read(args: { dir: string; filename?: string }) {
-    return Manifest.FileManifest.read<M>(args);
+    return Manifest.Manifest.read<M>(args);
   },
 
   /**
    * Writes a manifest to the file-system.
    */
   async write(args: { manifest: M; dir: string; filename?: string; copyRefs?: boolean }) {
-    const res = await Manifest.FileManifest.write<M>(args);
+    const res = await Manifest.Manifest.write<M>(args);
     if (args.copyRefs) await copyRefs(fs.dirname(args.dir), res.manifest, createAndSave);
     return res;
   },

@@ -21,7 +21,7 @@ export const createAndSave = async <T extends M>(args: {
  * Reads from file-system.
  */
 const read = async <T extends M>(args: { dir: string; filename?: string }) => {
-  const { dir, filename = FileManifest.filename } = args;
+  const { dir, filename = Manifest.filename } = args;
   const path = fs.join(dir, filename);
   const exists = await fs.pathExists(path);
   const manifest = exists ? ((await fs.readJson(path)) as T) : undefined;
@@ -32,7 +32,7 @@ const read = async <T extends M>(args: { dir: string; filename?: string }) => {
  * Writes a manifest to the file-system.
  */
 const write = async <T extends M>(args: { manifest: T; dir: string; filename?: string }) => {
-  const { manifest, dir, filename = FileManifest.filename } = args;
+  const { manifest, dir, filename = Manifest.filename } = args;
   const path = fs.join(dir, filename);
   const json = JSON.stringify(manifest, null, '  ');
   await fs.ensureDir(fs.dirname(path));
@@ -43,7 +43,7 @@ const write = async <T extends M>(args: { manifest: T; dir: string; filename?: s
 /**
  * Helpers for creating and working with a [FileManifest].
  */
-export const FileManifest = {
+export const Manifest = {
   read,
   write,
 
@@ -53,7 +53,7 @@ export const FileManifest = {
   async createAndSave(args: { sourceDir: string; filename?: string; model?: t.CompilerModel }) {
     const { sourceDir, filename, model } = args;
     return createAndSave<M>({
-      create: () => FileManifest.create({ sourceDir, model, filename }),
+      create: () => Manifest.create({ sourceDir, model, filename }),
       sourceDir,
       filename,
       model,
@@ -73,18 +73,18 @@ export const FileManifest = {
     model?: t.CompilerModel;
     filename?: string; // Default: index.json
   }) {
-    const { model, filename = FileManifest.filename } = args;
+    const { model, filename = Manifest.filename } = args;
     const sourceDir = (args.sourceDir || '').trim().replace(/\/*$/, '');
     const pattern = `${args.sourceDir}/**`;
 
     let paths = await fs.glob.find(pattern, { includeDirs: false });
     paths = paths.filter((path) => !path.endsWith(`/${filename}`));
 
-    const toFile = (path: string) => FileManifest.loadFile({ path, baseDir: sourceDir, model });
+    const toFile = (path: string) => Manifest.loadFile({ path, baseDir: sourceDir, model });
     const files: t.ManifestFile[] = await Promise.all(paths.map((path) => toFile(path)));
 
     const manifest: M = {
-      hash: FileManifest.hash(files),
+      hash: Manifest.hash(files),
       files,
     };
 

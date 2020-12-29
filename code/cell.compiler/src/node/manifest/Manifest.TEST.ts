@@ -1,5 +1,5 @@
 import { t, expect, fs, SampleBundles, Schema } from '../../test';
-import { FileManifest } from '.';
+import { Manifest } from '.';
 
 describe('FileManifest', function () {
   this.timeout(99999);
@@ -16,21 +16,21 @@ describe('FileManifest', function () {
   beforeEach(() => fs.remove(TMP));
 
   it('filename', () => {
-    expect(FileManifest.filename).to.eql('index.json');
+    expect(Manifest.filename).to.eql('index.json');
   });
 
   it('hash', () => {
     const file1: t.ManifestFile = { path: 'foo.txt', bytes: 1234, filehash: 'abc' };
     const file2: t.ManifestFile = { path: 'foo.txt', bytes: 1234, filehash: 'def' };
     const hash = Schema.hash.sha256([file1.filehash, file2.filehash]);
-    expect(FileManifest.hash([file1, file2, undefined] as any)).to.eql(hash);
+    expect(Manifest.hash([file1, file2, undefined] as any)).to.eql(hash);
   });
 
   it('create (default)', async () => {
     const test = async (sourceDir: string) => {
-      const manifest = await FileManifest.create({ sourceDir });
+      const manifest = await Manifest.create({ sourceDir });
       const files = manifest.files;
-      expect(manifest.hash).to.eql(FileManifest.hash(files));
+      expect(manifest.hash).to.eql(Manifest.hash(files));
       expect(files.length).to.greaterThan(0);
 
       const expectEvery = (fn: (file: t.ManifestFile) => boolean) => {
@@ -55,18 +55,18 @@ describe('FileManifest', function () {
       await fs.writeFile(fs.join(sourceDir, name), 'hello');
     };
 
-    await write(FileManifest.filename);
+    await write(Manifest.filename);
     await write('one.txt');
     await write('two.txt');
 
-    const manifest = await FileManifest.create({ sourceDir });
+    const manifest = await Manifest.create({ sourceDir });
     const files = manifest.files;
-    expect(files.filter((file) => file.path === FileManifest.filename).length).to.eql(0);
+    expect(files.filter((file) => file.path === Manifest.filename).length).to.eql(0);
   });
 
   it('write flag: allowRedirects', async () => {
     const model = config.toObject();
-    const manifest = await FileManifest.create({ model, sourceDir });
+    const manifest = await Manifest.create({ model, sourceDir });
 
     const js = manifest.files.find((file) => file.path.endsWith('main.js'));
     const png = manifest.files.find((file) => file.path.endsWith('.png'));
@@ -77,7 +77,7 @@ describe('FileManifest', function () {
 
   it('write flag: public', async () => {
     const model = config.toObject();
-    const manifest = await FileManifest.create({ model, sourceDir });
+    const manifest = await Manifest.create({ model, sourceDir });
 
     const images = manifest.files.filter((file) => file.path.endsWith('.png'));
     const other = manifest.files.filter((file) => !file.path.endsWith('.png'));
@@ -88,28 +88,28 @@ describe('FileManifest', function () {
 
   it('writeFile => readFile', async () => {
     const model = config.toObject();
-    const manifest = await FileManifest.create({ model, sourceDir });
+    const manifest = await Manifest.create({ model, sourceDir });
 
-    const path = fs.join(TMP, FileManifest.filename);
+    const path = fs.join(TMP, Manifest.filename);
     expect(await fs.pathExists(path)).to.eql(false);
 
-    await FileManifest.write({ manifest, dir: TMP });
+    await Manifest.write({ manifest, dir: TMP });
     expect(await fs.pathExists(path)).to.eql(true);
 
-    const read = await FileManifest.read({ dir: TMP });
+    const read = await Manifest.read({ dir: TMP });
     expect(read.path).to.eql(path);
     expect(read.manifest).to.eql(manifest);
   });
 
   it('createAndSave', async () => {
-    const path = fs.join(TMP, FileManifest.filename);
+    const path = fs.join(TMP, Manifest.filename);
     expect(await fs.pathExists(path)).to.eql(false);
 
     const model = config.toObject();
-    const res = await FileManifest.createAndSave({ model, sourceDir: TMP });
+    const res = await Manifest.createAndSave({ model, sourceDir: TMP });
     expect(res.path).to.eql(path);
 
-    const read = await FileManifest.read({ dir: TMP });
+    const read = await Manifest.read({ dir: TMP });
     expect(read.path).to.eql(path);
     expect(read.manifest).to.eql(res.manifest);
   });
