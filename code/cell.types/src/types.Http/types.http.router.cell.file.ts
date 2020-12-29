@@ -16,7 +16,7 @@ export type IReqQueryCellFsList = {
   expires?: string; //  Links expire. Parsable duration, eg "1h", "5m" etc. Max: "1h".
   files?: boolean; //   Show files (default: true).
   urls?: boolean; //    Show URLs (default: true).
-  filter?: string; //   Grep style filter pattern.
+  filter?: string; //   Glob filter pattern.
 };
 export type IReqQueryCellFsUpload = {
   changes?: boolean; // NB: return list of changes (default: true).
