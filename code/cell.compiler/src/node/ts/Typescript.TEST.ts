@@ -30,7 +30,7 @@ describe('Typescript', function () {
       };
 
       await expectExists('tmp/types.d/main/index.json');
-      await expectExists('tmp/types.d/main/main.d.ts');
+      await expectExists('tmp/types.d/main/main.d.txt');
       await expectExists('tmp/types.d/@platform/cell.types/index.json');
       await expectExists('tmp/types.d/@platform/log/lib/server/index.json');
 

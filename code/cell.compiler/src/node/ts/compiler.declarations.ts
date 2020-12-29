@@ -39,6 +39,14 @@ export async function compileDeclarations(
     error = `Failed to transpile declarations. ${emitted}`.trim();
   }
 
+  // Rename files from ".d.ts" => ".d.txt" (mimetype: "plain/text").
+  await Promise.all(
+    (await fs.glob.find(`${dirs.base}/**/*.d.ts`)).map(async (from) => {
+      const to = from.replace(/\.d\.ts$/, '.d.txt');
+      await fs.rename(from, to);
+    }),
+  );
+
   // Save the type-declaration manifest, copying in all referenced type libs as well.
   const info = await TypeManifest.info(model?.entry?.main);
   const { manifest } = await TypeManifest.createAndSave({

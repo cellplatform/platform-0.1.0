@@ -36,28 +36,29 @@ export async function copyRefs(
     throw new Error(err);
   }
 
-  const target = (dir: D, source: string, options: { cache?: boolean } = {}) => {
+  const targetPath = (dir: D, source: string, options: { cache?: boolean } = {}) => {
     const root = options.cache ? CACHE_DIR : base;
-    return fs.join(root, dir.module, source.substring(dir.source.length + 1));
+    const path = fs.join(root, dir.module, source.substring(dir.source.length + 1));
+    return path.replace(/\.d\.ts$/, '.d.txt');
   };
 
-  const isCached = async (dir: D) => await fs.pathExists(target(dir, '', { cache: true }));
+  const isCached = async (dir: D) => await fs.pathExists(targetPath(dir, '', { cache: true }));
 
   const copyFromCache = async (dir: D) => {
-    const from = target(dir, '', { cache: true });
-    const to = target(dir, '', { cache: false });
+    const from = targetPath(dir, '', { cache: true });
+    const to = targetPath(dir, '', { cache: false });
     if (!(await fs.pathExists(to))) await fs.copy(from, to);
   };
 
-  const copyFiles = async (dir: D, options: { copyToCache?: boolean } = {}) => {
+  const copyFiles = async (dir: D, options: { cache?: boolean } = {}) => {
+    const { cache } = options;
     const paths = await fs.glob.find(`${dir.source}/**/*.d.ts`);
     for (const source of paths) {
-      await fs.copy(source, target(dir, source));
-      if (options.copyToCache) await fs.copy(source, target(dir, source, { cache: true }));
+      await fs.copy(source, targetPath(dir, source, { cache }));
     }
   };
 
-  const copyDir = async (dir: D) => {
+  const isSymLink = async (dir: D) => {
     // Check whether the directory is a symbolic-link.
     // NOTE:
     //     YARN uses symbolic links for locally developed modules within a
@@ -65,11 +66,19 @@ export async function copyRefs(
     //     is that it can be safely cached and we need not re-calculate the list of
     //     ".d.ts" files (which can be slow for large libraries).
     //
-    const isLink = await fs.is.symlink(dir.source, { ancestor: true });
+    // const isLink = await isSymLink(dir);
+    return await fs.is.symlink(dir.source, { ancestor: true });
+  };
+
+  const copyDir = async (dir: D) => {
+    const isLink = await isSymLink(dir);
+
     if (!force && !isLink && (await isCached(dir))) {
       return await copyFromCache(dir);
     }
-    await copyFiles(dir, { copyToCache: force || !isLink });
+
+    await copyFiles(dir);
+    if (!isLink) await copyFiles(dir, { cache: true });
   };
 
   // Perform copy operation.

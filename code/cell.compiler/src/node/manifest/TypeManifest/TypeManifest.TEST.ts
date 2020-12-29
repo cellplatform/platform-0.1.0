@@ -59,7 +59,7 @@ describe('TypeManifest', function () {
 
   it('refs: imports', async () => {
     const manifest = await TypeManifest.create({ base, dir });
-    const foo = 'foo.d.ts';
+    const foo = 'foo.d.txt';
     const file = manifest.files.find((file) => file.path === foo);
     expect(file?.declaration.imports).to.eql(['@platform/log/lib/server']);
 
@@ -69,7 +69,7 @@ describe('TypeManifest', function () {
 
   it('refs: exports', async () => {
     const manifest = await TypeManifest.create({ base, dir });
-    const foo = 'types.d.ts';
+    const foo = 'types.d.txt';
     const file = manifest.files.find((file) => file.path === foo);
 
     expect(file?.declaration.exports).to.eql([
@@ -117,7 +117,7 @@ describe('TypeManifest', function () {
     await TypeManifest.write({ manifest, dir: PATHS.write, copyRefs: true });
     await expectFileExists(true, PATHS.platform);
 
-    const declarations = await fs.glob.find(`${PATHS.base}/**/*.d.ts`);
+    const declarations = await fs.glob.find(`${PATHS.base}/**/*.d.txt`);
     expect(declarations.length).to.greaterThan(300);
   });
 
@@ -163,7 +163,7 @@ describe('TypeManifest', function () {
     expect(read.path).to.eql(PATHS.manifest);
     expect(read.manifest).to.eql(res.manifest);
 
-    const declarations = await fs.glob.find(`${PATHS.base}/**/*.d.ts`);
+    const declarations = await fs.glob.find(`${PATHS.base}/**/*.d.txt`);
     expect(declarations.length).to.greaterThan(300);
   });
 
