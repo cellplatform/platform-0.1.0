@@ -11,12 +11,12 @@ export async function appendFileInfo(dir: string, input: t.ManifestFile) {
   const notRelative = (module: string) => !module.startsWith('.');
   const include = (module: string) => Boolean(module) && notRelative(module);
 
-  const declaration: t.TypeManifestFileInfo = {
+  const declaration: t.TypelibManifestFileInfo = {
     imports: lines.map((line) => toImport(line)).filter(include),
     exports: lines.map((line) => toExport(line)).filter(include),
   };
 
-  return { ...input, declaration } as t.TypeManifestFile;
+  return { ...input, declaration } as t.TypelibManifestFile;
 }
 
 function toImport(line: string) {

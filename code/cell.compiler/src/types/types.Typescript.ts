@@ -36,7 +36,7 @@ export type TsCompileDeclarationsResult = {
   output: {
     base: string;
     dir: string;
-    manifest: t.TypeManifest;
+    manifest: t.TypelibManifest;
   };
   error?: string;
 };

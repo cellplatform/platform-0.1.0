@@ -4,7 +4,7 @@ import { appendFileInfo } from './TypeManifest.appendInfo';
 import { copyRefs } from './TypeManifest.copyRefs';
 import { CreateAndSave } from './TypeManifest.types';
 
-type M = t.TypeManifest;
+type M = t.TypelibManifest;
 type Dirs = { base: string; dir: string; join(): string };
 
 const createAndSave: CreateAndSave = async (args) => {
@@ -47,7 +47,7 @@ export const TypeManifest = {
       filename,
     });
     return {
-      kind: 'types.d',
+      kind: 'typelib',
       hash: manifest.hash,
       files: await Promise.all(manifest.files.map((file) => appendFileInfo(dirs.join(), file))),
     };

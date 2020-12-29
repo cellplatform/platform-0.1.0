@@ -33,7 +33,7 @@ describe('Typescript', function () {
       expect(res.tsconfig.include).to.eql([include]);
       expect(res.tsconfig.compilerOptions.emitDeclarationOnly).to.eql(true);
 
-      expect(res.output.manifest.kind).to.eql('types.d');
+      expect(res.output.manifest.kind).to.eql('typelib');
       expect(res.output.base).to.eql(fs.resolve('tmp/types.d'));
       expect(res.output.dir).to.eql(fs.resolve('tmp/types.d/foo'));
     });

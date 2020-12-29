@@ -8,7 +8,7 @@ const CACHE_DIR = fs.join(PATH.CACHEDIR, 'type-manifest');
  */
 export async function copyRefs(
   base: string,
-  manifest: t.TypeManifest,
+  manifest: t.TypelibManifest,
   createAndSave: CreateAndSave,
   force?: boolean, // Force copy if already cached.
 ) {

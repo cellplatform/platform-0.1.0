@@ -29,10 +29,10 @@ describe('TypeManifest', function () {
   it('create', async () => {
     const model = config.toObject();
     const manifest = await TypeManifest.create({ base, dir, model });
-    expect(manifest.kind).to.eql('types.d');
+    expect(manifest.kind).to.eql('typelib');
 
     const files = manifest.files;
-    const expectEvery = (fn: (file: t.TypeManifestFile) => boolean) => {
+    const expectEvery = (fn: (file: t.TypelibManifestFile) => boolean) => {
       expect(files.every((file) => fn(file))).to.eql(true);
     };
     expectEvery((file) => file.filehash.startsWith('sha256-'));
