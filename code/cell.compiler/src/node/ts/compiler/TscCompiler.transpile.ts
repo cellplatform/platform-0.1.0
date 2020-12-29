@@ -1,5 +1,5 @@
 import { exec, fs, ProgressSpinner, slug, t } from '../../common';
-import { TscManifest } from './TscCompiler.manifest';
+import { generateManifest } from './TscCompiler.manifest';
 
 /**
  * Wrapper for running the `tsc` typescript compiler
@@ -25,12 +25,12 @@ export function TscTranspiler(tsconfig: t.TsCompilerConfig): t.TscTranspile {
 
     // Save the transient [tsconfig] file.
     const path = fs.join(fs.dirname(tsconfig.path), `tsconfig.tmp.${slug()}`);
-    await fs.writeFile(tsconfig.path, JSON.stringify(json, null, '  '));
+    await fs.writeFile(path, JSON.stringify(json, null, '  '));
 
     // Run the command.
     if (!args.silent) spinner.start();
     let error: string | undefined;
-    const cmd = exec.command(`tsc --project ${tsconfig.path}`);
+    const cmd = exec.command(`tsc --project ${path}`);
     const cwd = fs.dirname(path);
     const res = await cmd.run({ cwd, silent: true });
     if (!res.ok) {
@@ -39,7 +39,7 @@ export function TscTranspiler(tsconfig: t.TsCompilerConfig): t.TscTranspile {
     }
 
     // Save the type-declaration manifest.
-    const { manifest } = await TscManifest.generate({ outdir, model });
+    const { manifest } = await generateManifest({ outdir, model });
 
     // Clean up.
     await fs.remove(path);

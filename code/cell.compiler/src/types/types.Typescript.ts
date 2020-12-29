@@ -14,6 +14,8 @@ export type TscCompiler = {
   readonly tsconfig: t.TsCompilerConfig;
   readonly declarations: t.TscDeclarations;
   transpile: t.TscTranspile;
+  copy: t.TscCopyBundle;
+
   declarations_OLD: TsCompileDeclarations__OLD;
 };
 
@@ -40,6 +42,26 @@ export type TscTranspileResult = {
 };
 
 /**
+ * Copy transpiled bundle
+ */
+
+export type TscCopyBundle = (args: TscCopyBundleArgs) => Promise<TscCopyBundleResult>;
+
+export type TscCopyDir = { base: string; dirname: string };
+
+export type TscCopyBundleArgs = {
+  from: string; // Directory path.
+  to: string; // Directory path.
+  filter?: (path: string) => boolean;
+};
+
+export type TscCopyBundleResult = {
+  from: TscCopyDir;
+  to: TscCopyDir;
+  paths: string[];
+};
+
+/**
  * Tools for compiling ".d.ts" declarations
  */
 export type TscDeclarations = {
@@ -59,21 +81,10 @@ export type TscTranspileDeclarationsArgs = {
 
 export type TscTranspileDeclarationsResult = TscTranspileResult;
 
-// export type TsDeclarationsCompiler = {
-//   transpile(
-//     args: TsDeclarationsCompilerTranspileArgs,
-//   ): Promise<TsDeclarationsCompilerTranspileResult>;
-// };
-
-// export type TsDeclarationsCompilerTranspileArgs = {};
-
-// export type TsDeclarationsCompilerTranspileResult = {
-//   tsconfig: TsConfigFile;
-//   output: { dir: string; manifest: t.TypelibManifest };
-//   error?: string;
-// };
-
-// =================================================
+// ===================== 🐷  OLD   ============================
+// ===================== 🐷  OLD   ============================
+// ===================== 🐷  OLD   ============================
+// ===================== 🐷  OLD   ============================
 
 /**
  * Compile declaration files (".d.ts")

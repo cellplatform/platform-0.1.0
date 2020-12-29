@@ -2,6 +2,7 @@ import { fs, t } from '../../common';
 import { compileDeclarations } from '../__compiler.declarations';
 import { TscTranspiler } from './TscCompiler.transpile';
 import { TscDeclarations } from './TscDeclarations';
+import { copy } from './TscCompiler.copy';
 
 /**
  * Create the typescript compiler.
@@ -18,8 +19,9 @@ export function TscCompiler(tsconfigPath?: string) {
 
   const compiler: t.TscCompiler = {
     tsconfig,
-    transpile: TscTranspiler(tsconfig),
     declarations: TscDeclarations(tsconfig),
+    transpile: TscTranspiler(tsconfig),
+    copy,
 
     /**
      * Compile typescript [.d.ts] declarations.
