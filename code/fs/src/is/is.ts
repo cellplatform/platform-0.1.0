@@ -1,4 +1,6 @@
 import { fs } from '../common';
+import { ancestor } from '../ancestor';
+import { dirname } from 'path';
 
 /**
  * Determine if the given input is a node stream
@@ -54,8 +56,29 @@ export function typeSync(path: string, type?: 'FILE' | 'DIR') {
 /**
  * Determine if the given path is a symbolic link.
  */
-export async function symlink(path: string) {
+export async function symlink(path: string, options: { ancestor?: boolean } = {}) {
   if (typeof path !== 'string') return false;
   if (!(await fs.pathExists(path))) return false;
-  return (await fs.lstat(path)).isSymbolicLink();
+  if (await Symlink.isLink(path)) return true;
+  return options.ancestor ? await Symlink.isWithinLinkedDir(path) : false;
 }
+
+/**
+ * [Helpers]
+ */
+
+const Symlink = {
+  async isLink(path: string) {
+    return (await fs.lstat(path)).isSymbolicLink();
+  },
+  async isWithinLinkedDir(path: string) {
+    let result = false;
+    await ancestor(dirname(path)).walk(async (visitor) => {
+      if (await Symlink.isLink(visitor.dir)) {
+        result = true;
+        visitor.stop();
+      }
+    });
+    return result;
+  },
+};
