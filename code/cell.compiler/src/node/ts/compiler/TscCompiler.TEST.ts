@@ -11,7 +11,7 @@ describe('TscCompiler', function () {
 
   describe('tsconfig', () => {
     it('loads tsconfig', async () => {
-      const compiler = TscCompiler.create();
+      const compiler = TscCompiler();
       const tsconfig = compiler.tsconfig;
       const json1 = await tsconfig.json();
       const json2 = await tsconfig.json();
@@ -23,7 +23,7 @@ describe('TscCompiler', function () {
     });
 
     it('throw: file not found', async () => {
-      const compiler = TscCompiler.create('foo/bar/tsconfig.json');
+      const compiler = TscCompiler('foo/bar/tsconfig.json');
       expectError(() => compiler.tsconfig.json(), 'tsconfig file not found');
     });
   });
@@ -31,7 +31,7 @@ describe('TscCompiler', function () {
   describe('transpile', () => {
     it('transpile typescript', async () => {
       const model = config.toObject();
-      const compiler = TscCompiler.create();
+      const compiler = TscCompiler();
 
       const outdir = fs.join(TMP, 'foo');
       const source = 'src/test/test.bundles/node.simple/**/*';

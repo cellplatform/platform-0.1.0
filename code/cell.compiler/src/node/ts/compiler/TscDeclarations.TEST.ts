@@ -11,7 +11,7 @@ describe.only('TscDeclarations', function () {
 
   it('transpile declarations', async () => {
     const model = config.toObject();
-    const compiler = TscCompiler.create();
+    const compiler = TscCompiler();
 
     const outdir = fs.join(TMP, 'foo');
     const source = 'src/test/test.bundles/node.simple/**/*';

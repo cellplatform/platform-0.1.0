@@ -1,4 +1,4 @@
-import { fs, t } from '../../common';
+import { fs } from '../../common';
 import { Dirs } from './types';
 
 export { Info } from './util.Info';

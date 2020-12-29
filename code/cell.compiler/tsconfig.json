@@ -1,9 +1,12 @@
 {
   "extends": "@platform/ts/tsconfig.json",
-  "include": ["src"],
+  "include": [
+    "src/test/test.bundles/node.simple/**/*"
+  ],
   "compilerOptions": {
-    "outDir": "lib",
+    "outDir": "/Users/phil/code/@platform/code/cell.compiler/tmp/test/TscDeclarations/foo",
     "noUnusedLocals": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "emitDeclarationOnly": true
   }
 }

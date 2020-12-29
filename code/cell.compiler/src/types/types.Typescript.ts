@@ -11,10 +11,10 @@ export type TsConfigFile = {
  * Typescript compiler.
  */
 export type TscCompiler = {
-  tsconfig: t.TsCompilerConfig;
+  readonly tsconfig: t.TsCompilerConfig;
+  readonly declarations: t.TscDeclarations;
   transpile: t.TscTranspile;
   declarations_OLD: TsCompileDeclarations__OLD;
-  declarations: t.TscDeclarations;
 };
 
 export type TsCompilerConfig = { path: string; json(): Promise<t.TsConfigFile> };

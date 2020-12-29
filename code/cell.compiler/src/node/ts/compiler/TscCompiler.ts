@@ -1,12 +1,12 @@
 import { fs, t } from '../../common';
 import { compileDeclarations } from '../__compiler.declarations';
-import { transpile } from './TscCompiler.transpile';
-import { declarations } from '../compiler.declarations';
+import { Transpiler } from './TscCompiler.transpile';
+import { Declarations } from './TscDeclarations';
 
 /**
  * Create the typescript compiler.
  */
-export function create(tsconfigPath?: string) {
+export function TscCompiler(tsconfigPath?: string) {
   const tsconfig: t.TsCompilerConfig = {
     path: fs.resolve(tsconfigPath || 'tsconfig.json'),
     async json() {
@@ -18,31 +18,17 @@ export function create(tsconfigPath?: string) {
 
   const compiler: t.TscCompiler = {
     tsconfig,
+    transpile: Transpiler(tsconfig),
+    declarations: Declarations(tsconfig),
 
     /**
      * Compile typescript [.d.ts] declarations.
      */
     async declarations_OLD(args) {
+      /**
+       * TODO 🐷 REMOVE
+       */
       return compileDeclarations({ ...args, tsconfig });
-    },
-
-    /**
-     * A compiler for producing ".d.ts" bundles.
-     */
-    get declarations() {
-      return declarations.create(tsconfig);
-    },
-
-    /**
-     * General wrapper for running the `tsc` typescript compiler
-     * with a programmatic API.
-     *
-     * NOTE:
-     *    Uses [exec] child_process under the hood.
-     *
-     */
-    async transpile(args) {
-      return transpile({ ...args, tsconfig });
     },
   };
 

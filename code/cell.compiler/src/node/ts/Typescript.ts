@@ -6,7 +6,7 @@ import { TscCompiler } from './compiler';
  * with the typescript compiler.
  */
 export const Typescript = {
-  compiler: TscCompiler.create,
+  compiler: TscCompiler,
 
   /**
    * Cleans up any transient build artifacts that may not have
