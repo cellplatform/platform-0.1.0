@@ -9,7 +9,7 @@ export const expectFileExists = async (exists: boolean, ...parts: string[]) => {
 describe('TypeManifest', function () {
   this.timeout(99999);
 
-  const TMP = fs.resolve('./tmp/test/TypeManifest');
+  const TMP = fs.resolve('tmp/test/TypeManifest');
   const config = SampleBundles.simpleNode.config;
   const base = fs.join(SampleBundles.simpleNode.outdir, 'types.d');
   const dir = 'main';
@@ -17,7 +17,6 @@ describe('TypeManifest', function () {
   before(async () => {
     const force = false;
     await SampleBundles.simpleNode.bundle(force);
-    await fs.remove(TMP);
   });
 
   beforeEach(async () => await fs.remove(TMP));

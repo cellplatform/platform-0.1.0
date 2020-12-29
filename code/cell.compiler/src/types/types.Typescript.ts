@@ -12,9 +12,8 @@ export type TsConfigFile = {
  */
 export type TsCompiler = {
   tsconfig: t.TsCompilerConfig;
-  declarations: TsCompileDeclarations__OLD;
-
   transpile: t.TsCompilerTranspile;
+  declarations: TsCompileDeclarations__OLD;
 };
 
 export type TsCompilerConfig = { path: string; json(): Promise<t.TsConfigFile> };
@@ -28,9 +27,12 @@ export type TsCompilerTranspile = (
 ) => Promise<TsCompilerTranspileResult>;
 
 export type TsCompilerTranspileArgs = {
-  dir: string;
-  include: string | string[]; // File or glob pattern, eg: src/foo/**/*
+  outdir: string;
+  source?: string | string[]; // File or glob pattern, eg: src/foo/**/*
   silent?: boolean;
+  spinnerLabel?: string;
+  compilerOptions?: CompilerOptions;
+  model?: t.CompilerModel;
 };
 
 export type TsCompilerTranspileResult = {

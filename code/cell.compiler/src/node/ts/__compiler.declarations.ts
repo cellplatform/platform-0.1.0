@@ -19,18 +19,17 @@ export async function compileDeclarations(
     json.include = Array.isArray(args.include) ? args.include : [args.include];
   }
 
+  // Save the transient [tsconfig] file.
   const tsconfig = {
     path: fs.join(fs.dirname(args.tsconfig.path), `tsconfig.tmp.${id.shortid()}`),
     json,
   };
-
-  // Save [tsconfig] JSON.
   await fs.writeFile(tsconfig.path, JSON.stringify(json, null, '  '));
 
   const spinner = ProgressSpinner({ label: 'building declarations' });
-  if (!args.silent) spinner.start();
-
+  
   // Run the command.
+  if (!args.silent) spinner.start();
   let error: string | undefined;
   const cmd = exec.command(`tsc --project ${tsconfig.path}`);
   const res = await cmd.run({ cwd: fs.dirname(args.tsconfig.path), silent: false });
