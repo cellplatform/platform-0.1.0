@@ -6,6 +6,7 @@ export type INpmPackageJson = {
   description?: string;
   version?: string;
   main?: string;
+  types?: string;
   scripts?: INpmPackageFields;
   dependencies?: INpmPackageFields;
   devDependencies?: INpmPackageFields;

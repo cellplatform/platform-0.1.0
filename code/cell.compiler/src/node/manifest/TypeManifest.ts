@@ -3,15 +3,16 @@ import * as Manifest from './Manifest';
 import { appendFileInfo } from './TypeManifest.appendInfo';
 import { copyRefs } from './TypeManifest.copyRefs';
 import { CreateAndSave } from './TypeManifest.types';
+import { Info } from './TypeManifest.util';
 
 type M = t.TypelibManifest;
 type Dirs = { base: string; dir: string; join(): string };
 
 const createAndSave: CreateAndSave = async (args) => {
-  const { model, base, dir, filename } = args;
+  const { model, base, dir, filename, info } = args;
   const dirs = formatDirs(args.base, args.dir);
   const res = await Manifest.createAndSave<M>({
-    create: () => TypeManifest.create({ base, dir, model, filename }),
+    create: () => TypeManifest.create({ base, dir, model, filename, info }),
     sourceDir: dirs.join(),
     filename,
     model,
@@ -38,17 +39,23 @@ export const TypeManifest = {
     filename?: string; // Default: index.json
     model?: t.CompilerModel;
     saveRefs?: boolean;
+    info?: t.TypelibManifestInfo;
   }): Promise<M> {
     const { base, dir, model, filename = TypeManifest.filename } = args;
     const dirs = formatDirs(args.base, args.dir);
     const manifest = await Manifest.Manifest.create({
       sourceDir: dirs.join(),
-      model,
       filename,
+      model,
     });
+
+    let typelib: t.TypelibManifestInfo = { name: '', version: '', entry: '' };
+    if (typeof args.info === 'object') typelib = args.info;
+
     return {
-      kind: 'typelib',
       hash: manifest.hash,
+      kind: 'typelib',
+      typelib,
       files: await Promise.all(manifest.files.map((file) => appendFileInfo(dirs.join(), file))),
     };
   },
@@ -72,6 +79,18 @@ export const TypeManifest = {
     const res = await Manifest.Manifest.write<M>(args);
     if (args.copyRefs) await copyRefs(fs.dirname(args.dir), res.manifest, createAndSave);
     return res;
+  },
+
+  /**
+   * Loads [typelib] info from the [package.json] found via the given path.
+   */
+  async info(path?: string) {
+    const empty = Info.empty;
+    if (!path) return empty;
+    if (path.endsWith('.json')) return (await Info.loadFile(path)) || empty;
+    if (!(await fs.is.dir(path))) path = fs.dirname(path);
+    if (await fs.is.dir(path)) return (await Info.find(path)) || empty;
+    return empty;
   },
 };
 

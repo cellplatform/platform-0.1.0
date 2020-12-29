@@ -48,7 +48,6 @@ export default () =>
         .target('node')
         .entry('./src/test/entry.node/entry')
         .declarations('./src/test/entry.node/**/*', 'types.d/sample')
-        .declarations('./src/test/entry.node/**/*', 'types.d/foo/bar/sample')
         .beforeCompile((e) => {
           console.log(`🐷 SAMPLE BEFORE compile (name: "node", mode: "${e.model.mode}"):`);
         })

@@ -8,4 +8,5 @@ export type CreateAndSaveArgs = {
   filename?: string; // Default: "index.json"
   model?: t.CompilerModel;
   copyRefs?: boolean;
+  info?: t.TypelibManifestInfo;
 };

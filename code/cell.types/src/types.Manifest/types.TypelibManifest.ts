@@ -5,7 +5,7 @@ import { t } from '../common';
  */
 export type TypelibManifest = t.Manifest<TypelibManifestFile> & {
   kind: 'typelib';
-  // typelib: TypeManifestInfo;
+  typelib: t.TypelibManifestInfo;
 };
 
 export type TypelibManifestFile = t.ManifestFile & {
@@ -20,5 +20,5 @@ export type TypelibManifestFileInfo = {
 export type TypelibManifestInfo = {
   name: string;
   version: string;
-  entry: string;
+  entry: string; // NB: "types" field in [package.json].
 };

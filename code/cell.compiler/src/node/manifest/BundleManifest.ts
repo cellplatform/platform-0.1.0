@@ -44,8 +44,8 @@ export const BundleManifest = {
     });
 
     return {
-      kind: 'bundle',
       hash,
+      kind: 'bundle',
       bundle,
       files,
     };

@@ -1,4 +1,4 @@
-import { defaultValue, exec, fs, id, ProgressSpinner, t } from '../common';
+import { defaultValue, exec, fs, id, ProgressSpinner, t, Model } from '../common';
 import { TypeManifest, formatDirs } from '../manifest/TypeManifest';
 
 /**
@@ -40,11 +40,13 @@ export async function compileDeclarations(
   }
 
   // Save the type-declaration manifest, copying in all referenced type libs as well.
+  const info = await TypeManifest.info(model?.entry?.main);
   const { manifest } = await TypeManifest.createAndSave({
     base: dirs.base,
     dir: dirs.dir,
     model,
     copyRefs: true,
+    info,
   });
 
   spinner.stop();

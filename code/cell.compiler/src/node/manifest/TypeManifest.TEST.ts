@@ -26,10 +26,12 @@ describe('TypeManifest', function () {
     expect(TypeManifest.filename).to.eql('index.json');
   });
 
-  it('create', async () => {
+  it('create: no info (default)', async () => {
     const model = config.toObject();
     const manifest = await TypeManifest.create({ base, dir, model });
+
     expect(manifest.kind).to.eql('typelib');
+    expect(manifest.typelib).to.eql({ name: '', version: '', entry: '' });
 
     const files = manifest.files;
     const expectEvery = (fn: (file: t.TypelibManifestFile) => boolean) => {
@@ -41,11 +43,24 @@ describe('TypeManifest', function () {
     expectEvery((file) => typeof file.declaration === 'object');
   });
 
+  it('create: explicit {info}', async () => {
+    const info: t.TypelibManifestInfo = { name: 'foo', version: '1.2.3', entry: 'index.d.ts' };
+    const manifest = await TypeManifest.create({ base, dir, info });
+    expect(manifest.typelib).to.eql(info);
+  });
+
+  it('info: loaded from package.json', async () => {
+    const pkg = (await fs.readJson(fs.resolve('package.json'))) as t.INpmPackageJson;
+    const info = await TypeManifest.info('package.json');
+    expect(info.name).to.eql(pkg.name);
+    expect(info.version).to.eql(pkg.version);
+    expect(info.entry).to.eql(pkg.types);
+  });
+
   it('refs: imports', async () => {
     const manifest = await TypeManifest.create({ base, dir });
     const foo = 'foo.d.ts';
     const file = manifest.files.find((file) => file.path === foo);
-
     expect(file?.declaration.imports).to.eql(['@platform/log/lib/server']);
 
     const files = manifest.files.filter((file) => file.path !== foo);

@@ -1,7 +1,7 @@
 import { Stats } from 'webpack';
 
 import { fs, log, logger, Model, t, ProgressSpinner } from '../common';
-import { BundleManifest } from '../manifest';
+import { BundleManifest, TypeManifest } from '../manifest';
 import { afterCompile, wp } from './util';
 import { Typescript } from '../ts';
 
@@ -57,32 +57,6 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
   });
 };
 
-async function compileDeclarations(args: { model: t.CompilerModel; bundleDir: string }) {
-  if (!args.model.declarations || args.model.declarations.length === 0) return;
-
-  const declarations = args.model.declarations.map((d) => ({
-    include: d.include,
-    base: fs.join(args.bundleDir, 'types.d'),
-    dir: d.dir,
-    silent: true,
-  }));
-
-  // Run the [tsc] compiler.
-  const ts = Typescript.compiler();
-  await Promise.all(declarations.map((params) => ts.declarations(params)));
-
-  // Rename ".d.ts" extension to ".d.txt" so files are served as "plain/text" mimetype.
-
-  // TODO 🐷
-
-  // await Promise.all([
-  //   declarations
-  //     .map((d) => d.dir)
-  //     .filter((path) => path.endsWith('.d.ts'))
-  //     .forEach((path) => fs.rename(path, path.replace(/\.d\.ts$/, '.d.txt'))),
-  // ]);
-}
-
 export async function onCompiled(args: {
   model: t.CompilerModel;
   bundleDir: string;
@@ -98,6 +72,24 @@ export async function onCompiled(args: {
 /**
  * [Helpers]
  */
+
+async function compileDeclarations(args: { model: t.CompilerModel; bundleDir: string }) {
+  if (!args.model.declarations || args.model.declarations.length === 0) return;
+
+  const declarations = args.model.declarations.map((d) => {
+    return {
+      include: d.include,
+      base: fs.join(args.bundleDir, 'types.d'),
+      dir: d.dir,
+      silent: true,
+      model: args.model,
+    };
+  });
+
+  // Run the [tsc] compiler.
+  const ts = Typescript.compiler();
+  await Promise.all(declarations.map((params) => ts.declarations(params)));
+}
 
 function toBundledResponse(args: {
   model: t.CompilerModel;

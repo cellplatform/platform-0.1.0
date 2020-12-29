@@ -1,5 +1,6 @@
-import { fs, R, t, PATH } from '../common';
+import { fs, PATH, R, t } from '../common';
 import { CreateAndSave } from './TypeManifest.types';
+import { Info } from './TypeManifest.util';
 
 const CACHE_DIR = fs.join(PATH.CACHEDIR, 'type-manifest');
 
@@ -71,15 +72,15 @@ export async function copyRefs(
     await copyFiles(dir, { copyToCache: force || !isLink });
   };
 
-  // Copy files.
+  // Perform copy operation.
   for (const dir of dirs) {
     await copyDir(dir);
   }
 
   // Generate the manifest index.
-  for (const path of dirs) {
-    const dir = path.module;
-    await createAndSave({ base, dir, copyRefs: true }); // <== 🌳 RECURSION
+  for (const dir of dirs) {
+    const info = await Info.find(dir.source);
+    await createAndSave({ base, dir: dir.module, info, copyRefs: true }); // <== 🌳 RECURSION
   }
 }
 
