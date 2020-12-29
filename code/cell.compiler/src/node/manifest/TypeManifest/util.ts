@@ -1,4 +1,4 @@
-import { fs, t } from '../common';
+import { fs, t } from '../../common';
 
 /**
  * Loads typelib info from the given package.json file.

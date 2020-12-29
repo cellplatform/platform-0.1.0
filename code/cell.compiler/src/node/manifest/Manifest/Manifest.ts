@@ -1,5 +1,5 @@
-import { deleteUndefined, fs, Schema, t, DEFAULT } from '../common';
-import { FileAccess, FileRedirects } from '../config';
+import { deleteUndefined, fs, Schema, t, DEFAULT } from '../../common';
+import { FileAccess, FileRedirects } from '../../config';
 
 type M = t.Manifest;
 

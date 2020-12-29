@@ -1,5 +1,5 @@
 import { TypeManifest, formatDirs } from './TypeManifest';
-import { expect, fs, SampleBundles, t } from '../../test';
+import { expect, fs, SampleBundles, t } from '../../../test';
 
 export const expectFileExists = async (exists: boolean, ...parts: string[]) => {
   const path = fs.resolve(fs.join(...parts));

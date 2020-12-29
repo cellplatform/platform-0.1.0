@@ -1,4 +1,4 @@
-import { fs, t } from '../common';
+import { fs, t } from '../../common';
 
 /**
  * Appends type information to a file-manifest entry.

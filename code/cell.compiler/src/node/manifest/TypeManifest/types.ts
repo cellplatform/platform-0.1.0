@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t } from '../../common';
 
 export type CreateAndSave = (args: CreateAndSaveArgs) => Promise<CreateAndSaveResponse>;
 export type CreateAndSaveResponse = { path: string; manifest: t.TypelibManifest };

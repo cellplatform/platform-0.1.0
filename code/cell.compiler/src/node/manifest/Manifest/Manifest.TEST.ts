@@ -1,4 +1,4 @@
-import { t, expect, fs, SampleBundles, Schema } from '../../test';
+import { t, expect, fs, SampleBundles, Schema } from '../../../test';
 import { Manifest } from '.';
 
 describe('FileManifest', function () {

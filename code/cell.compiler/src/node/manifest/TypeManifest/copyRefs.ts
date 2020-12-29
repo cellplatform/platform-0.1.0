@@ -1,6 +1,6 @@
-import { fs, PATH, R, t } from '../common';
-import { CreateAndSave } from './TypeManifest.types';
-import { Info } from './TypeManifest.util';
+import { fs, PATH, R, t } from '../../common';
+import { CreateAndSave } from './types';
+import { Info } from './util';
 
 const CACHE_DIR = fs.join(PATH.CACHEDIR, 'type-manifest');
 

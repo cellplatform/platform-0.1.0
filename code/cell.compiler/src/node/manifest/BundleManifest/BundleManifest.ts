@@ -1,5 +1,5 @@
-import { DEFAULT, deleteUndefined, Model, Schema, t } from '../common';
-import { Manifest, createAndSave } from './Manifest';
+import { DEFAULT, deleteUndefined, Model, Schema, t } from '../../common';
+import { Manifest, createAndSave } from '../Manifest';
 
 type M = t.BundleManifest;
 

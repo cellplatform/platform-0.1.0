@@ -1,5 +1,5 @@
-import { BundleManifest, Manifest } from '.';
-import { expect, fs, SampleBundles, t } from '../../test';
+import { BundleManifest, Manifest } from '..';
+import { expect, fs, SampleBundles, t } from '../../../test';
 
 describe('BundleManifest', function () {
   this.timeout(99999);
