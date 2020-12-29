@@ -42,10 +42,10 @@ export async function compileDeclarations(
   // Save the type-declaration manifest, copying in all referenced type libs as well.
   const info = await TypeManifest.info(model?.entry?.main);
   const { manifest } = await TypeManifest.createAndSave({
+    copyRefs: true,
     base: dirs.base,
     dir: dirs.dir,
     model,
-    copyRefs: true,
     info,
   });
 
