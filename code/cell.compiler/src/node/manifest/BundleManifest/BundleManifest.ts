@@ -8,6 +8,11 @@ type M = t.BundleManifest;
  */
 export const BundleManifest = {
   /**
+   * Tools for working with hash checksums of a manifest.
+   */
+  hash: Manifest.hash,
+
+  /**
    * The filename of the bundle.
    */
   filename: Manifest.filename,

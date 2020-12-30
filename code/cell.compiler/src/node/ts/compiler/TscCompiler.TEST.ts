@@ -3,9 +3,9 @@ import { expect, fs, expectError, SampleBundles, t } from '../../../test';
 import { formatDirs } from './TscCompiler.copy';
 import { TypeManifest } from '../../manifest';
 
-const join = (dir: t.TscCopyDir) => fs.join(dir.base, dir.dirname);
+const join = (dir: t.TscDir) => fs.join(dir.base, dir.dirname);
 
-const find = async (dir: t.TscCopyDir, pattern: string) => {
+const find = async (dir: t.TscDir, pattern: string) => {
   const paths = await fs.glob.find(`${join(dir)}/${pattern}`);
   const relative = paths.map((path) => path.substring(join(dir).length + 1));
 
@@ -64,12 +64,12 @@ describe.only('TscCompiler', function () {
       expect(manifest.typelib.version).to.eql('0.0.1');
       expect(manifest.typelib.entry).to.eql('./types.d.txt');
 
-      const files = {
+      const Files = {
         d: await fs.glob.find(`${outdir}/**/*.d.ts`),
         js: await fs.glob.find(`${outdir}/**/*.js`),
       };
-      expect(files.d.length).to.greaterThan(3);
-      expect(files.js.length).to.greaterThan(3);
+      expect(Files.d.length).to.greaterThan(3);
+      expect(Files.js.length).to.greaterThan(3);
     });
 
     it('transpile declarations', async () => {
@@ -95,13 +95,13 @@ describe.only('TscCompiler', function () {
       expect(manifest.typelib.version).to.eql('0.0.1');
       expect(manifest.typelib.entry).to.eql('./types.d.txt');
 
-      const files = {
+      const Files = {
         d: await fs.glob.find(`${outdir}/**/*.d.ts`),
         js: await fs.glob.find(`${outdir}/**/*.js`),
       };
 
-      expect(files.d.length).to.greaterThan(3);
-      expect(files.js.length).to.eql(0);
+      expect(Files.d.length).to.greaterThan(3);
+      expect(Files.js.length).to.eql(0);
     });
   });
 
@@ -162,12 +162,20 @@ describe.only('TscCompiler', function () {
       expect(res.to.base).to.eql(fs.dirname(to));
       expect(res.to.dirname).to.eql('foo');
 
-      const files = {
+      const Files = {
         source: await find(res.from, '**/*'),
         target: await find(res.to, '**/*'),
+        manifest: (await TypeManifest.read({ dir: join(res.to) })).manifest,
       };
-      expect(files.source.relative).to.eql(files.target.relative);
-      expect(res.paths).to.eql(files.target.paths);
+
+      expect(Files.manifest).to.eql(res.manifest);
+      expect(Files.source.relative).to.eql(Files.target.relative);
+      expect(res.paths).to.eql(Files.target.paths);
+      expect(res.transformations).to.eql([]);
+
+      expect(res.manifest.files.map((file) => file.path)).to.eql(
+        Files.target.relative.filter((f) => !f.endsWith('index.json')), // NB: Written files match.
+      );
     });
 
     it('copies bundle - filtered', async () => {
@@ -178,23 +186,49 @@ describe.only('TscCompiler', function () {
         filter: (path) => path.endsWith('.js'), // NB: still includes manifest (.json) even through filtered out.
       });
 
-      const files = {
+      const Files = {
         source: await find(res.from, '**/*'),
         target: await find(res.to, '**/*'),
       };
 
-      const isJsOrJson = (file: string) => file.endsWith('.js') || file.endsWith('.json');
-      expect(files.target.relative.every(isJsOrJson)).to.eql(true);
+      const included = (...exts: string[]) => (p: string) => exts.some((ext) => p.endsWith(ext));
+      expect(Files.target.relative.every(included('.js', '.json'))).to.eql(true);
+      expect(res.transformations).to.eql([]);
     });
 
-    // it('transforms file-extension', async () => {
-    //   expect(await fs.pathExists(to)).to.eql(false);
-    //   const res = await compiler.copy({
-    //     from,
-    //     to,
-    //     filter: (path) => path.endsWith('.d.ts'),
-    //   });
-    // });
+    it('transforms file-extension', async () => {
+      expect(await fs.pathExists(to)).to.eql(false);
+      const res = await compiler.copy({
+        from,
+        to,
+        transformPath: (path) => path.replace(/\.d\.ts$/, '.d.txt'),
+      });
+
+      const Files = {
+        source: await find(res.from, '**/*'),
+        target: await find(res.to, '**/*'),
+      };
+      const manifest = (await TypeManifest.read({ dir: res.to.base })).manifest;
+      const manifestFiles = manifest?.files.map((file) => file.path) || [];
+
+      const included = (...exts: string[]) => (p: string) => exts.some((ext) => p.endsWith(ext));
+      expect(Files.target.relative.every(included('.js', '.json', '.d.txt'))).to.eql(true);
+      expect(Files.target.relative.some(included('.d.ts'))).to.eql(false);
+
+      expect(res.transformations.length).to.greaterThan(3);
+      res.transformations.forEach(({ from, to }) => {
+        expect(from.endsWith('.d.ts')).to.eql(true);
+        expect(to.endsWith('.d.txt')).to.eql(true);
+      });
+
+      // NB: The modifications should not have invalidated the manifest.
+      if (manifest) {
+        expect((await TypeManifest.hash.validate(to, manifest)).ok).to.eql(true);
+      }
+
+      expect(manifestFiles.every(included('.js', '.d.txt'))).to.eql(true);
+      expect(manifestFiles.every(included('.d.ts'))).to.eql(false);
+    });
   });
 
   describe('formatDirs', () => {

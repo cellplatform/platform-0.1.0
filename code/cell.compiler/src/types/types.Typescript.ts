@@ -44,21 +44,23 @@ export type TscTranspileResult = {
 /**
  * Copy transpiled bundle
  */
-
+export type TscDir = { base: string; dirname: string };
+export type TscPathTransform = { from: string; to: string };
 export type TscCopyBundle = (args: TscCopyBundleArgs) => Promise<TscCopyBundleResult>;
-
-export type TscCopyDir = { base: string; dirname: string };
 
 export type TscCopyBundleArgs = {
   from: string; // Directory path.
   to: string; // Directory path.
   filter?: (path: string) => boolean;
+  transformPath?: (path: string) => string | undefined;
 };
 
 export type TscCopyBundleResult = {
-  from: TscCopyDir;
-  to: TscCopyDir;
+  from: TscDir;
+  to: TscDir;
   paths: string[];
+  transformations: TscPathTransform[];
+  manifest: t.TypelibManifest;
 };
 
 /**

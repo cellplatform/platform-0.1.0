@@ -1,16 +1,16 @@
 import { fs, t } from '../../common';
-import * as Manifest from '../Manifest';
 import { appendFileInfo } from './fileInfo';
 import { copyRefs } from './copyRefs';
 import { CreateAndSave } from './types';
 import { formatDirs, Info } from './util';
+import { Manifest, createAndSave as ManifestCreateAndSave } from '../Manifest';
 
 type M = t.TypelibManifest;
 
 const createAndSave: CreateAndSave = async (args) => {
   const { model, base, dir, filename, info } = args;
   const dirs = formatDirs(args.base, args.dir);
-  const res = await Manifest.createAndSave<M>({
+  const res = await ManifestCreateAndSave<M>({
     create: () => TypeManifest.create({ base, dir, model, filename, info }),
     sourceDir: dirs.join(),
     filename,
@@ -25,9 +25,14 @@ const createAndSave: CreateAndSave = async (args) => {
  */
 export const TypeManifest = {
   /**
+   * Tools for working with hash checksums of a manifest.
+   */
+  hash: Manifest.hash,
+
+  /**
    * The filename of the bundle.
    */
-  filename: Manifest.Manifest.filename,
+  filename: Manifest.filename,
 
   /**
    * Generates a manifest.
@@ -42,7 +47,7 @@ export const TypeManifest = {
   }): Promise<M> {
     const { base, dir, model, filename = TypeManifest.filename } = args;
     const dirs = formatDirs(args.base, args.dir);
-    const manifest = await Manifest.Manifest.create({
+    const manifest = await Manifest.create({
       sourceDir: dirs.join(),
       filename,
       model,
@@ -68,14 +73,14 @@ export const TypeManifest = {
    * Reads from file-system.
    */
   async read(args: { dir: string; filename?: string }) {
-    return Manifest.Manifest.read<M>(args);
+    return Manifest.read<M>(args);
   },
 
   /**
    * Writes a manifest to the file-system.
    */
   async write(args: { manifest: M; dir: string; filename?: string; copyRefs?: boolean }) {
-    const res = await Manifest.Manifest.write<M>(args);
+    const res = await Manifest.write<M>(args);
     if (args.copyRefs) await copyRefs(fs.dirname(args.dir), res.manifest, createAndSave);
     return res;
   },

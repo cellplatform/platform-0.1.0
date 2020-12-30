@@ -107,7 +107,7 @@ describe('FileManifest', function () {
     expect(read.manifest).to.eql(res.manifest);
   });
 
-  describe.only('hash', () => {
+  describe('hash', () => {
     it('hash.files - [array]', () => {
       const file1: t.ManifestFile = { path: 'foo.txt', bytes: 1234, filehash: 'abc' };
       const file2: t.ManifestFile = { path: 'foo.txt', bytes: 1234, filehash: 'def' };

@@ -92,7 +92,7 @@ export const Manifest = {
   },
 
   /**
-   * Calculate the hash for a set of fies.
+   * Tools for working with hash checksums of a manifest.
    */
   hash: {
     files(input: t.ManifestFile[] | t.Manifest) {
