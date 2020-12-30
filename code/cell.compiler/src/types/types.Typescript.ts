@@ -97,7 +97,8 @@ export type TscCopyBundleResult = {
 export type TscCopyRefs = (args: TscCopyArgsRefs) => Promise<TscCopyRefsResult>;
 
 export type TscCopyArgsRefs = {
-  dir: string; // Directory of the bundle.
+  sourceDir: string; // Directory of the bundle.
+  targetDir?: string; // Directory to copy refs to. If ommited the parent of [sourceDir] is used.
 };
 
 export type TscCopyRefsResult = {

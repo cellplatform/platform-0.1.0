@@ -287,14 +287,14 @@ describe.only('TscCompiler', function () {
     });
 
     it('throw: "dir" not found', async () => {
-      const fn = () => compiler.copyRefs({ dir: 'not/found' });
+      const fn = () => compiler.copyRefs({ sourceDir: 'not/found' });
       await expectError(fn, 'Source folder to copy from not found');
     });
 
     it('throw: "dir" does not contain manifest', async () => {
       await fs.remove(fs.join(dir, TypeManifest.filename));
       const err = 'Source folder to copy-refs within does not contain an [index.json] manifest';
-      await expectError(() => compiler.copyRefs({ dir }), err);
+      await expectError(() => compiler.copyRefs({ sourceDir: dir }), err);
     });
 
     it('throw: "dir" does not contain valid manifest', async () => {
@@ -304,11 +304,11 @@ describe.only('TscCompiler', function () {
       await fs.writeJson(path, manifest);
 
       const err = 'Source folder to copy-refs within does not contain a valid "typelib" manifest';
-      await expectError(() => compiler.copyRefs({ dir }), err);
+      await expectError(() => compiler.copyRefs({ sourceDir: dir }), err);
     });
 
     it('copy refs', async () => {
-      const res = await compiler.copyRefs({ dir });
+      const res = await compiler.copyRefs({ sourceDir: dir });
 
       console.log('-------------------------------------------');
       console.log('res', res);
