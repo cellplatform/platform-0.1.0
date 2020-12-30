@@ -84,7 +84,7 @@ export const Manifest = {
     const files: t.ManifestFile[] = await Promise.all(paths.map((path) => toFile(path)));
 
     const manifest: M = {
-      hash: Manifest.hash(files),
+      hash: Manifest.hash.files(files),
       files,
     };
 
@@ -94,9 +94,82 @@ export const Manifest = {
   /**
    * Calculate the hash for a set of fies.
    */
-  hash(files: t.ManifestFile[]) {
-    const list = files.filter(Boolean).map((file) => file.filehash);
-    return Schema.hash.sha256(list);
+  hash: {
+    files(input: t.ManifestFile[] | t.Manifest) {
+      const files = Array.isArray(input) ? input : input.files;
+      const list = files.filter(Boolean).map((file) => file.filehash);
+      return Schema.hash.sha256(list);
+    },
+
+    /**
+     * Calculate the hash of a file.
+     */
+    async filehash(path: string) {
+      if (!(await fs.pathExists(path))) throw new Error(`File not found: ${path}`);
+      if (!(await fs.is.file(path))) throw new Error(`Not a file: ${path}`);
+      const file = await fs.readFile(path);
+      return Schema.hash.sha256(file);
+    },
+
+    /**
+     * Check a manifest against the current state of the file-system.
+     * Looks for:
+     *  - filehash mismatches.
+     *  - changes to the list of files.
+     */
+    async validate(dir: string, manifest: t.Manifest): Promise<t.ManifestValidation> {
+      dir = fs.resolve(dir);
+      const res: t.ManifestValidation = { ok: true, dir, errors: [] };
+
+      // Compare file listing.
+      let list = await fs.glob.find(`${dir}/**/*`);
+      list = list
+        .map((path) => path.substring(dir.length + 1))
+        .filter((path) => path !== Manifest.filename);
+
+      if (list.length !== manifest.files.length) {
+        const added = list.filter((path) => !manifest.files.find((f) => f.path === path));
+        const removed = manifest.files.filter((file) => !list.find((p) => p === file.path));
+        const addError = (path: string, message: string) => {
+          res.errors.push({
+            message,
+            path,
+            hash: { manifest: '-', filesystem: '-' },
+          });
+        };
+
+        removed.forEach((file) => {
+          const message = `A file within the manifest has been removed from the file-system`;
+          addError(file.path, message);
+        });
+
+        added.forEach((path) => {
+          const message = `A file not within the manifest has been added to the file-system`;
+          addError(path, message);
+        });
+      }
+
+      // Compare file-hashe checksums.
+      await Promise.all(
+        manifest.files.map(async (file) => {
+          const path = fs.join(dir, file.path);
+          if (await fs.pathExists(path)) {
+            const filesystem = await Manifest.hash.filehash(path);
+            if (filesystem !== file.filehash) {
+              res.errors.push({
+                message: `Filehash mismatch`,
+                path: path.substring(dir.length + 1),
+                hash: { manifest: file.filehash, filesystem },
+              });
+            }
+          }
+        }),
+      );
+
+      // Finish up.
+      res.ok = res.errors.length === 0;
+      return res;
+    },
   },
 
   /**
