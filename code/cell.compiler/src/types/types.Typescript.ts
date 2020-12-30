@@ -1,7 +1,11 @@
 import { t } from './common';
 import { CompilerOptions } from 'typescript';
 
-export type TsConfigFile = {
+export type TscDir = { base: string; dirname: string };
+export type TscPathTransform = { from: string; to: string };
+
+export type TscConfig = { path: string; json(): Promise<t.TscConfigFile> };
+export type TscConfigFile = {
   extends: string;
   include: string[];
   compilerOptions: CompilerOptions;
@@ -11,15 +15,14 @@ export type TsConfigFile = {
  * Typescript compiler.
  */
 export type TscCompiler = {
-  readonly tsconfig: t.TsCompilerConfig;
+  readonly tsconfig: t.TscConfig;
   readonly declarations: t.TscDeclarations;
   transpile: t.TscTranspile;
   copy: t.TscCopyBundle;
+  copyRefs: t.TscCopyBundleRefs;
 
   declarations_OLD: TsCompileDeclarations__OLD;
 };
-
-export type TsCompilerConfig = { path: string; json(): Promise<t.TsConfigFile> };
 
 /**
  * Generic [tsc] transpiler.
@@ -36,7 +39,7 @@ export type TscTranspileArgs = {
 };
 
 export type TscTranspileResult = {
-  tsconfig: TsConfigFile;
+  tsconfig: TscConfigFile;
   out: { dir: string; manifest: t.TypelibManifest };
   error?: string;
 };
@@ -44,8 +47,6 @@ export type TscTranspileResult = {
 /**
  * Copy transpiled bundle
  */
-export type TscDir = { base: string; dirname: string };
-export type TscPathTransform = { from: string; to: string };
 export type TscCopyBundle = (args: TscCopyBundleArgs) => Promise<TscCopyBundleResult>;
 
 export type TscCopyBundleArgs = {
@@ -61,6 +62,23 @@ export type TscCopyBundleResult = {
   paths: string[];
   transformations: TscPathTransform[];
   manifest: t.TypelibManifest;
+};
+
+/**
+ * Copy bundle refs (imports/exports).
+ */
+export type TscCopyBundleRefs = (args: TscCopyBundleArgsRefs) => Promise<TscCopyBundleRefsResult>;
+
+export type TscCopyBundleArgsRefs = {
+  dir: string; // Directory of the bundle.
+  // from: string; // Directory path.
+  // to: string; // Directory path.
+  // filter?: (path: string) => boolean;
+  // transformPath?: (path: string) => string | undefined;
+};
+
+export type TscCopyBundleRefsResult = {
+  dir: TscDir;
 };
 
 /**
@@ -105,7 +123,7 @@ export type TsCompileDeclarationsArgs__OLD = {
 };
 
 export type TsCompileDeclarationsResult__OLD = {
-  tsconfig: TsConfigFile;
+  tsconfig: TscConfigFile;
   output: {
     base: string;
     dir: string;

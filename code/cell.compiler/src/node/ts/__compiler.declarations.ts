@@ -5,7 +5,7 @@ import { formatDirs, TypeManifest } from '../manifest/TypeManifest';
  * Compile typescript [.d.ts] declarations.
  */
 export async function compileDeclarations(
-  args: t.TsCompileDeclarationsArgs__OLD & { tsconfig: t.TsCompilerConfig },
+  args: t.TsCompileDeclarationsArgs__OLD & { tsconfig: t.TscConfig },
 ): Promise<t.TsCompileDeclarationsResult__OLD> {
   const { model } = args;
   const dirs = formatDirs(args.base, args.dir);

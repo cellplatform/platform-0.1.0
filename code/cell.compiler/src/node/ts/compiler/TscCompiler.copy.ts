@@ -1,10 +1,6 @@
 import { fs, R, t } from '../../common';
-import { TypeManifest, Manifest } from '../../manifest';
-
-type D = t.TscDir & { join(): string };
-const toDir = (path: string) => formatDirs(fs.dirname(path), fs.basename(path));
-const toResponseDir = ({ base, dirname }: D) => ({ base, dirname });
-const toRelativePath = (dir: D, path: string) => path.substring(dir.join().length + 1);
+import { TypeManifest } from '../../manifest';
+import { toDir, toResponseDir, toRelativePath } from '../util';
 
 /**
  * Copy a compiled bundle.
@@ -19,7 +15,7 @@ export const copy: t.TscCopyBundle = async (args) => {
 
   const manifestPath = fs.join(from.join(), TypeManifest.filename);
   if (!(await fs.pathExists(manifestPath))) {
-    const err = `Source folder to copy from does not contain [index.json] manifest: ${manifestPath}`;
+    const err = `Source folder to copy from does not contain an [index.json] manifest: ${manifestPath}`;
     throw new Error(err);
   }
 
@@ -83,14 +79,3 @@ export const copy: t.TscCopyBundle = async (args) => {
     manifest,
   };
 };
-
-/**
- * Helper for working with clean directory paths.
- */
-export function formatDirs(base: string, dirname: string): D {
-  base = fs.resolve((base || '').trim()).replace(/\/*$/, '');
-  dirname = (dirname || '').trim().replace(/\/*$/, '');
-  dirname = dirname.startsWith(base) ? (dirname = dirname.substring(base.length + 1)) : dirname;
-  dirname = dirname.replace(/^\/*/, '');
-  return { base, dirname: dirname, join: () => fs.join(base, dirname) };
-}

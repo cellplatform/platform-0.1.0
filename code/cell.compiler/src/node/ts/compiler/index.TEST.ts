@@ -1,6 +1,5 @@
 import { TscCompiler } from '.';
 import { expect, fs, expectError, SampleBundles, t } from '../../../test';
-import { formatDirs } from './TscCompiler.copy';
 import { TypeManifest } from '../../manifest';
 
 const join = (dir: t.TscDir) => fs.join(dir.base, dir.dirname);
@@ -133,7 +132,7 @@ describe.only('TscCompiler', function () {
       await fs.copy(from, tmp);
       await fs.remove(fs.join(tmp, TypeManifest.filename));
 
-      const err = 'Source folder to copy from does not contain [index.json] manifest';
+      const err = 'Source folder to copy from does not contain an [index.json] manifest';
       await expectError(() => compiler.copy({ from: tmp, to }), err);
       await fs.remove(tmp);
     });
@@ -231,28 +230,53 @@ describe.only('TscCompiler', function () {
     });
   });
 
-  describe('formatDirs', () => {
-    it('resolve base', () => {
-      const res = formatDirs('  types.d  ', '  foo  ');
-      expect(res.base).to.eql(fs.resolve('./types.d'));
-      expect(res.dirname).to.eql('foo');
-      expect(res.join()).to.eql(fs.resolve('./types.d/foo'));
+  describe.only('copyRefs', () => {
+    const compiler = TscCompiler();
+    const original = fs.join(TMP, 'copyRefs.original');
+    const dir = fs.join(TMP, 'copyRefs.result/main');
+    const source = 'src/test/test.bundles/node.simple/**/*';
+
+    beforeEach(async () => {
+      if (!(await fs.pathExists(original))) {
+        await compiler.transpile({
+          source,
+          outdir: original,
+          model: config.toObject(),
+          silent: true,
+        });
+      }
+      await fs.remove(dir);
+      await fs.copy(original, dir);
     });
 
-    it('clean "dir" param', () => {
-      const test = (dir: string) => {
-        const res = formatDirs('  types.d  ', dir);
-        expect(res.base).to.eql(fs.resolve('./types.d'));
-        expect(res.dirname).to.eql('foo');
-        expect(res.join()).to.eql(fs.resolve('./types.d/foo'));
-      };
-      test('foo');
-      test('  foo  ');
-      test('//foo//');
-      test('  //foo//  ');
-      test(fs.resolve('types.d/foo'));
-      test(fs.resolve('types.d/foo///'));
-      test(`${fs.resolve('types.d/foo')}//`);
+    it('throw: "dir" not found', async () => {
+      const fn = () => compiler.copyRefs({ dir: 'not/found' });
+      await expectError(fn, 'Source folder to copy from not found');
+    });
+
+    it('throw: "dir" does not contain manifest', async () => {
+      await fs.remove(fs.join(dir, TypeManifest.filename));
+      const err = 'Source folder to copy-refs within does not contain an [index.json] manifest';
+      await expectError(() => compiler.copyRefs({ dir }), err);
+    });
+
+    it('throw: "dir" does not contain valid manifest', async () => {
+      const { path, manifest } = await TypeManifest.read({ dir });
+      delete (manifest as any).kind;
+      delete (manifest as any).typelib;
+      await fs.writeJson(path, manifest);
+
+      const err = 'Source folder to copy-refs within does not contain a valid "typelib" manifest';
+      await expectError(() => compiler.copyRefs({ dir }), err);
+    });
+
+    it('copy refs', async () => {
+      const res = await compiler.copyRefs({ dir });
+
+      console.log('-------------------------------------------');
+      console.log('res', res);
+
+      expect(join(res.dir)).to.eql(dir);
     });
   });
 });

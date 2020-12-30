@@ -9,7 +9,7 @@ import { generateManifest } from './TscCompiler.manifest';
  *    Uses [exec] child_process under the hood.
  *
  */
-export function TscTranspiler(tsconfig: t.TsCompilerConfig): t.TscTranspile {
+export function TscTranspiler(tsconfig: t.TscConfig): t.TscTranspile {
   return async (args) => {
     const { model } = args;
     const outdir = fs.resolve(args.outdir);
