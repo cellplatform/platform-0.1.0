@@ -24,4 +24,11 @@ export const TscManifest: t.TscManifest = {
     });
     return { path, manifest, info };
   },
+
+  /**
+   * Check a manifest against the current state of the file-system.
+   */
+  async validate(dir, manifest) {
+    return TypeManifest.hash.validate(dir, manifest);
+  },
 };

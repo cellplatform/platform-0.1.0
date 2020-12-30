@@ -149,6 +149,19 @@ describe.only('TscCompiler', function () {
       expect(info.version).to.eql('0.0.1');
       expect(info.entry).to.eql('./types.d.txt');
     });
+
+    it('validate: ok', async () => {
+      const manifest = (await TypeManifest.read({ dir })).manifest as t.TypelibManifest;
+      const res = await compiler.manifest.validate(dir, manifest);
+      expect(res.ok).to.eql(true);
+    });
+
+    it('validate: invalid', async () => {
+      const manifest = (await TypeManifest.read({ dir })).manifest as t.TypelibManifest;
+      await fs.writeFile(fs.join(dir, 'main.js'), '// my change');
+      const res = await compiler.manifest.validate(dir, manifest);
+      expect(res.ok).to.eql(false);
+    });
   });
 
   describe('copy', () => {

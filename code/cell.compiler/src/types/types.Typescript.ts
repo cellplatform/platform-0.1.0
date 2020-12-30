@@ -51,6 +51,7 @@ export type TscTranspileResult = {
 export type TscManifest = {
   exists(dir: string): Promise<boolean>;
   generate: TscManifestGenerate;
+  validate(dir: string, manifest: t.Manifest): Promise<t.ManifestValidation>;
 };
 
 export type TscManifestGenerate = (
