@@ -1,6 +1,6 @@
 import { fs, R, t } from '../../common';
 import { TypeManifest } from '../../manifest';
-import { toDir, toResponseDir, toRelativePath } from '../util';
+import { toDir, toResponseDir, toRelativePath } from './util';
 
 /**
  * Copies references within the given manifest (import/exports)

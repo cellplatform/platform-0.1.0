@@ -1,4 +1,4 @@
-import { fs, t } from '../common';
+import { fs, t } from '../../../common';
 
 export type Dir = t.TscDir & { join(): string };
 export const toDir = (path: string) => formatDirs(fs.dirname(path), fs.basename(path));

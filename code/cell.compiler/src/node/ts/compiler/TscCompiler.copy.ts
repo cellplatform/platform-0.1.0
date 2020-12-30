@@ -1,6 +1,6 @@
 import { fs, R, t } from '../../common';
 import { TypeManifest } from '../../manifest';
-import { toDir, toResponseDir, toRelativePath } from '../util';
+import { toDir, toResponseDir, toRelativePath } from './util';
 
 /**
  * Copy a compiled bundle.
