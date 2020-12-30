@@ -88,7 +88,12 @@ async function compileDeclarations(args: { model: t.CompilerModel; bundleDir: st
 
   // Run the [tsc] compiler.
   const ts = Typescript.compiler();
-  await Promise.all(declarations.map((params) => ts.declarations_OLD(params)));
+  // await Promise.all(declarations.map((params) => ts.declarations_OLD(params)));
+
+  /**
+   * TODO 🐷
+   * - use new version of declarations compiler
+   */
 }
 
 function toBundledResponse(args: {

@@ -230,7 +230,7 @@ describe.only('TscCompiler', function () {
     });
   });
 
-  describe.only('copyRefs', () => {
+  describe('copyRefs', () => {
     const compiler = TscCompiler();
     const original = fs.join(TMP, 'copyRefs.original');
     const dir = fs.join(TMP, 'copyRefs.result/main');

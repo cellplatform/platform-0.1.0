@@ -16,7 +16,13 @@ const createAndSave: CreateAndSave = async (args) => {
     filename,
     model,
   });
-  if (args.copyRefs) await copyRefs(base, res.manifest, createAndSave);
+
+  /**
+   * TODO 🐷
+   * - Move this to the TS compiler section.
+   */
+
+  // if (args.copyRefs) await copyRefs(base, res.manifest, createAndSave);
   return res;
 };
 
