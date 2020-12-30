@@ -17,10 +17,10 @@ export type TscConfigFile = {
 export type TscCompiler = {
   readonly tsconfig: t.TscConfig;
   readonly declarations: t.TscDeclarations;
-  readonly manifest: TscManifest;
-  transpile: t.TscTranspile;
-  copy: t.TscCopyBundle;
+  readonly manifest: t.TscManifest;
+  copyBundle: t.TscCopyBundle;
   copyRefs: t.TscCopyRefs;
+  transpile: t.TscTranspile;
 
   declarations_OLD: TsCompileDeclarations__OLD;
 };
@@ -64,7 +64,15 @@ export type TscManifestGenerateResult = {
 };
 
 /**
- * Copy transpiled bundle
+ * Copying
+ */
+export type TscCopy = {
+  bundle: t.TscCopyBundle;
+  refs: t.TscCopyRefs;
+};
+
+/**
+ * Copy Bunel
  */
 export type TscCopyBundle = (args: TscCopyBundleArgs) => Promise<TscCopyBundleResult>;
 

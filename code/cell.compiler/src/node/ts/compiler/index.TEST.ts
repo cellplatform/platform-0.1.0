@@ -165,7 +165,7 @@ describe.only('TscCompiler', function () {
     });
 
     it('throw: "from" (source folder) not found', async () => {
-      const fn = () => compiler.copy({ from: 'foobar', to });
+      const fn = () => compiler.copyBundle({ from: 'foobar', to });
       await expectError(fn, 'Source folder to copy from not found');
     });
 
@@ -175,7 +175,7 @@ describe.only('TscCompiler', function () {
       await fs.remove(fs.join(tmp, TypeManifest.filename));
 
       const err = 'Source folder to copy from does not contain an [index.json] manifest';
-      await expectError(() => compiler.copy({ from: tmp, to }), err);
+      await expectError(() => compiler.copyBundle({ from: tmp, to }), err);
       await fs.remove(tmp);
     });
 
@@ -189,13 +189,13 @@ describe.only('TscCompiler', function () {
       await fs.writeJson(path, manifest);
 
       const err = 'Source folder to copy from does not contain a valid "typelib" manifest';
-      await expectError(() => compiler.copy({ from: tmp, to }), err);
+      await expectError(() => compiler.copyBundle({ from: tmp, to }), err);
       await fs.remove(tmp);
     });
 
     it('copies bundle - no adjustments', async () => {
       expect(await fs.pathExists(to)).to.eql(false);
-      const res = await compiler.copy({ from, to });
+      const res = await compiler.copyBundle({ from, to });
 
       expect(res.from.base).to.eql(TMP);
       expect(res.from.dirname).to.eql('copy.from');
@@ -221,7 +221,7 @@ describe.only('TscCompiler', function () {
 
     it('copies bundle - filtered', async () => {
       expect(await fs.pathExists(to)).to.eql(false);
-      const res = await compiler.copy({
+      const res = await compiler.copyBundle({
         from,
         to,
         filter: (path) => path.endsWith('.js'), // NB: still includes manifest (.json) even through filtered out.
@@ -239,7 +239,7 @@ describe.only('TscCompiler', function () {
 
     it('transforms file-extension', async () => {
       expect(await fs.pathExists(to)).to.eql(false);
-      const res = await compiler.copy({
+      const res = await compiler.copyBundle({
         from,
         to,
         transformPath: (path) => path.replace(/\.d\.ts$/, '.d.txt'),

@@ -2,8 +2,7 @@ import { fs, t } from '../../common';
 import { compileDeclarations } from '../__compiler.declarations';
 import { TscTranspiler } from './TscCompiler.transpile';
 import { TscDeclarations } from './TscDeclarations';
-import { copy } from './TscCompiler.copy';
-import { copyRefs } from './TscCompiler.copyRefs';
+import { TscCopy } from './TscCopy';
 import { TscManifest } from './TscManifest';
 
 /**
@@ -24,8 +23,8 @@ export function TscCompiler(tsconfigPath?: string) {
     declarations: TscDeclarations(tsconfig),
     manifest: TscManifest,
     transpile: TscTranspiler(tsconfig),
-    copy,
-    copyRefs,
+    copyBundle: TscCopy.bundle,
+    copyRefs: TscCopy.refs,
 
     /**
      * Compile typescript [.d.ts] declarations.

@@ -6,9 +6,7 @@ import { toDir, toResponseDir, toRelativePath } from './util';
  * Copies references within the given manifest (import/exports)
  * into folder adjacent to the given manifest.
  */
-
-export const copyRefs: t.TscCopyRefs = async (args) => {
-  //
+export const refs: t.TscCopyRefs = async (args) => {
   const dir = toDir(args.dir);
 
   if (!(await fs.pathExists(dir.join()))) {
@@ -29,8 +27,5 @@ export const copyRefs: t.TscCopyRefs = async (args) => {
 
   return {
     dir: toResponseDir(dir),
-  }; // TEMP 🐷
+  };
 };
-
-// export async function copyRefs(args: t.TscCopyBundleArgsRefs) {
-// }
