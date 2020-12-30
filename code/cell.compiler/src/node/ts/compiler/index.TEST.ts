@@ -1,15 +1,17 @@
 import { TscCompiler } from '.';
 import { expect, fs, expectError, SampleBundles, t } from '../../../test';
 import { TypeManifest } from '../../manifest';
+import { TscManifest } from './TscManifest';
 
 const join = (dir: t.TscDir) => fs.join(dir.base, dir.dirname);
 
 const find = async (dir: t.TscDir, pattern: string) => {
   const paths = await fs.glob.find(`${join(dir)}/${pattern}`);
   const relative = paths.map((path) => path.substring(join(dir).length + 1));
-
   return { paths, relative };
 };
+
+const source = 'src/test/test.bundles/node.simple/**/*';
 
 describe.only('TscCompiler', function () {
   this.timeout(99999);
@@ -39,19 +41,13 @@ describe.only('TscCompiler', function () {
   });
 
   describe('transpile', () => {
-    const source = 'src/test/test.bundles/node.simple/**/*';
-
     it('transpile typescript (general)', async () => {
       const outdir = fs.join(TMP, 'foo');
       await fs.remove(outdir);
 
       const compiler = TscCompiler();
-      const res = await compiler.transpile({
-        source,
-        outdir,
-        model: config.toObject(),
-        silent: true,
-      });
+      const model = config.toObject();
+      const res = await compiler.transpile({ source, outdir, model, silent: true });
 
       expect(res.tsconfig.include).to.eql([source]);
       expect(res.error).to.eql(undefined);
@@ -76,12 +72,8 @@ describe.only('TscCompiler', function () {
       await fs.remove(outdir);
 
       const compiler = TscCompiler();
-      const res = await compiler.declarations.transpile({
-        source,
-        outdir,
-        silent: true,
-        model: config.toObject(),
-      });
+      const model = config.toObject();
+      const res = await compiler.declarations.transpile({ source, outdir, silent: true, model });
 
       expect(res.error).to.eql(undefined);
       expect(res.tsconfig.include).to.eql([source]);
@@ -104,20 +96,70 @@ describe.only('TscCompiler', function () {
     });
   });
 
+  describe('manifest', () => {
+    const compiler = TscCompiler();
+    const original = fs.join(TMP, 'TscManifest.original');
+    const dir = fs.join(TMP, 'TscManifest.result/main');
+
+    beforeEach(async () => {
+      if (!(await fs.pathExists(original))) {
+        const model = config.toObject();
+        await compiler.transpile({ source, outdir: original, model, silent: true });
+      }
+      await fs.remove(dir);
+      await fs.copy(original, dir);
+    });
+
+    it('exposes manifest api', () => {
+      expect(compiler.manifest).to.equal(TscManifest);
+    });
+
+    it('exists', async () => {
+      const test = async (dir: string, expected: boolean) => {
+        const exists = await compiler.manifest.exists(dir);
+        expect(exists).to.eql(expected);
+      };
+      await test('  ', false);
+      await test(dir, true);
+    });
+
+    it('generate: no info', async () => {
+      const path = fs.join(dir, TypeManifest.filename);
+      await fs.remove(path);
+
+      expect(await fs.pathExists(path)).to.eql(false);
+      const res = await compiler.manifest.generate({ dir });
+      expect(await fs.pathExists(path)).to.eql(true);
+
+      expect(res.path).to.eql(path);
+      expect(res.info).to.eql({ name: '', version: '', entry: '' });
+      expect(await fs.readJson(res.path)).to.eql(res.manifest);
+      expect(res.manifest.kind).to.eql('typelib');
+    });
+
+    it('generate: info (via compiler model)', async () => {
+      const path = fs.join(dir, TypeManifest.filename);
+      await fs.remove(path);
+
+      const model = config.toObject();
+      const res = await compiler.manifest.generate({ dir, model });
+
+      const info = res.manifest.typelib;
+      expect(info.name).to.eql('node.simple');
+      expect(info.version).to.eql('0.0.1');
+      expect(info.entry).to.eql('./types.d.txt');
+    });
+  });
+
   describe('copy', () => {
     const compiler = TscCompiler();
     const from = fs.join(TMP, 'copy.from');
     const to = fs.join(TMP, 'copy.to/foo');
-    const source = 'src/test/test.bundles/node.simple/**/*';
 
     beforeEach(async () => {
       if (!(await fs.pathExists(from))) {
-        await compiler.transpile({
-          source,
-          outdir: from,
-          model: config.toObject(),
-          silent: true,
-        });
+        const model = config.toObject();
+        await compiler.transpile({ source, outdir: from, model, silent: true });
       }
       await fs.remove(fs.dirname(to));
     });
@@ -232,18 +274,13 @@ describe.only('TscCompiler', function () {
 
   describe('copyRefs', () => {
     const compiler = TscCompiler();
-    const original = fs.join(TMP, 'copyRefs.original');
-    const dir = fs.join(TMP, 'copyRefs.result/main');
-    const source = 'src/test/test.bundles/node.simple/**/*';
+    const original = fs.join(TMP, 'TscCopyRefs.original');
+    const dir = fs.join(TMP, 'TscCopyRefs.result/main');
 
     beforeEach(async () => {
       if (!(await fs.pathExists(original))) {
-        await compiler.transpile({
-          source,
-          outdir: original,
-          model: config.toObject(),
-          silent: true,
-        });
+        const model = config.toObject();
+        await compiler.transpile({ source, outdir: original, model, silent: true });
       }
       await fs.remove(dir);
       await fs.copy(original, dir);

@@ -4,6 +4,7 @@ import { TscTranspiler } from './TscCompiler.transpile';
 import { TscDeclarations } from './TscDeclarations';
 import { copy } from './TscCompiler.copy';
 import { copyRefs } from './TscCompiler.copyRefs';
+import { TscManifest } from './TscManifest';
 
 /**
  * Create the typescript compiler.
@@ -21,6 +22,7 @@ export function TscCompiler(tsconfigPath?: string) {
   const compiler: t.TscCompiler = {
     tsconfig,
     declarations: TscDeclarations(tsconfig),
+    manifest: TscManifest,
     transpile: TscTranspiler(tsconfig),
     copy,
     copyRefs,

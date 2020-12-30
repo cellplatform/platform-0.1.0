@@ -7,7 +7,7 @@ import { toDir, toResponseDir, toRelativePath } from '../util';
  * into folder adjacent to the given manifest.
  */
 
-export const copyRefs: t.TscCopyBundleRefs = async (args) => {
+export const copyRefs: t.TscCopyRefs = async (args) => {
   //
   const dir = toDir(args.dir);
 

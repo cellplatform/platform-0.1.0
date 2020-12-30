@@ -17,9 +17,10 @@ export type TscConfigFile = {
 export type TscCompiler = {
   readonly tsconfig: t.TscConfig;
   readonly declarations: t.TscDeclarations;
+  readonly manifest: TscManifest;
   transpile: t.TscTranspile;
   copy: t.TscCopyBundle;
-  copyRefs: t.TscCopyBundleRefs;
+  copyRefs: t.TscCopyRefs;
 
   declarations_OLD: TsCompileDeclarations__OLD;
 };
@@ -45,6 +46,24 @@ export type TscTranspileResult = {
 };
 
 /**
+ * Manifest
+ */
+export type TscManifest = {
+  exists(dir: string): Promise<boolean>;
+  generate: TscManifestGenerate;
+};
+
+export type TscManifestGenerate = (
+  args: t.TscManifestGenerateArgs,
+) => Promise<t.TscManifestGenerateResult>;
+export type TscManifestGenerateArgs = { dir: string; model?: t.CompilerModel };
+export type TscManifestGenerateResult = {
+  path: string;
+  manifest: t.TypelibManifest;
+  info: t.TypelibManifestInfo;
+};
+
+/**
  * Copy transpiled bundle
  */
 export type TscCopyBundle = (args: TscCopyBundleArgs) => Promise<TscCopyBundleResult>;
@@ -67,17 +86,13 @@ export type TscCopyBundleResult = {
 /**
  * Copy bundle refs (imports/exports).
  */
-export type TscCopyBundleRefs = (args: TscCopyBundleArgsRefs) => Promise<TscCopyBundleRefsResult>;
+export type TscCopyRefs = (args: TscCopyArgsRefs) => Promise<TscCopyRefsResult>;
 
-export type TscCopyBundleArgsRefs = {
+export type TscCopyArgsRefs = {
   dir: string; // Directory of the bundle.
-  // from: string; // Directory path.
-  // to: string; // Directory path.
-  // filter?: (path: string) => boolean;
-  // transformPath?: (path: string) => string | undefined;
 };
 
-export type TscCopyBundleRefsResult = {
+export type TscCopyRefsResult = {
   dir: TscDir;
 };
 

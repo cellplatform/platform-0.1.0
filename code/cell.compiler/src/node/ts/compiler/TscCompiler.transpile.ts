@@ -1,5 +1,5 @@
 import { exec, fs, ProgressSpinner, slug, t } from '../../common';
-import { generateManifest } from './TscCompiler.manifest';
+import { TscManifest } from './TscManifest';
 
 /**
  * Wrapper for running the `tsc` typescript compiler
@@ -39,7 +39,7 @@ export function TscTranspiler(tsconfig: t.TscConfig): t.TscTranspile {
     }
 
     // Save the type-declaration manifest.
-    const { manifest } = await generateManifest({ outdir, model });
+    const { manifest } = await TscManifest.generate({ dir: outdir, model });
 
     // Clean up.
     await fs.remove(path);
