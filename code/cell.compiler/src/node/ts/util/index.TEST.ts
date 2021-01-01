@@ -1,5 +1,5 @@
-import { formatDirs } from './util';
-import { expect, fs } from '../../../../test';
+import { formatDirs } from '.';
+import { expect, fs } from '../../../test';
 
 describe('Typescript: util', () => {
   describe('formatDirs', () => {

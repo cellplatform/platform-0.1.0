@@ -28,7 +28,7 @@ export type TscCompiler = {
 /**
  * Generic [tsc] transpiler.
  */
-export type TscTranspile = (args: TscTranspileArgs) => Promise<TscTranspileResult>;
+export type TscTranspile = (args: t.TscTranspileArgs) => Promise<t.TscTranspileResult>;
 
 export type TscTranspileArgs = {
   outdir: string;
@@ -36,7 +36,6 @@ export type TscTranspileArgs = {
   silent?: boolean;
   spinnerLabel?: string;
   compilerOptions?: CompilerOptions;
-  model?: t.CompilerModel;
 };
 
 export type TscTranspileResult = {
@@ -57,7 +56,7 @@ export type TscManifest = {
 export type TscManifestGenerate = (
   args: t.TscManifestGenerateArgs,
 ) => Promise<t.TscManifestGenerateResult>;
-export type TscManifestGenerateArgs = { dir: string; model?: t.CompilerModel };
+export type TscManifestGenerateArgs = { dir: string };
 export type TscManifestGenerateResult = {
   path: string;
   manifest: t.TypelibManifest;
@@ -79,7 +78,7 @@ export type TscCopyBundle = (args: TscCopyBundleArgs) => Promise<TscCopyBundleRe
 
 export type TscCopyBundleArgs = {
   from: string; // Directory path.
-  to: string; // Directory path.
+  to: string; //   Directory path.
   filter?: (path: string) => boolean;
   transformPath?: (path: string) => string | undefined;
 };
@@ -100,10 +99,17 @@ export type TscCopyRefs = (args: TscCopyArgsRefs) => Promise<TscCopyRefsResult>;
 export type TscCopyArgsRefs = {
   sourceDir: string; // Directory of the bundle.
   targetDir?: string; // Directory to copy refs to. If ommited the parent of [sourceDir] is used.
+  force?: boolean; // Force copy if already cached.
 };
 
 export type TscCopyRefsResult = {
-  dir: TscDir;
+  source: string;
+  target: string;
+  copied: TscCopyRefsResultRef[];
+};
+export type TscCopyRefsResultRef = {
+  module: string;
+  paths: { from: string; to: string }[];
 };
 
 /**
@@ -121,7 +127,6 @@ export type TscTranspileDeclarationsArgs = {
   outdir: string;
   source?: string | string[]; // File or glob pattern, eg: src/foo/**/*
   silent?: boolean;
-  model?: t.CompilerModel;
 };
 
 export type TscTranspileDeclarationsResult = TscTranspileResult;

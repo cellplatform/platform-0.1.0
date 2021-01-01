@@ -130,90 +130,90 @@ describe('FileManifest', function () {
       expect(hash).to.match(/^sha256-/);
       expect(hash).to.eql(file?.filehash);
     });
+  });
 
-    describe('validate', () => {
-      const tmp = fs.resolve(TMP, 'validate');
+  describe('validate', () => {
+    const tmp = fs.resolve(TMP, 'validate');
 
-      const prepare = async () => {
-        await fs.remove(tmp);
-        await fs.ensureDir(tmp);
-        await fs.copy(fs.resolve(sourceDir), tmp);
-      };
+    const prepare = async () => {
+      await fs.remove(tmp);
+      await fs.ensureDir(tmp);
+      await fs.copy(fs.resolve(sourceDir), tmp);
+    };
 
-      it('ok', async () => {
-        const manifest = await Manifest.create({ sourceDir });
-        const res = await Manifest.hash.validate(sourceDir, manifest);
-        expect(res.ok).to.eql(true);
-        expect(res.dir).to.eql(fs.resolve(sourceDir));
-        expect(res.errors).to.eql([]);
-      });
+    it('ok', async () => {
+      const manifest = await Manifest.create({ sourceDir });
+      const res = await Manifest.validate(sourceDir, manifest);
+      expect(res.ok).to.eql(true);
+      expect(res.dir).to.eql(fs.resolve(sourceDir));
+      expect(res.errors).to.eql([]);
+    });
 
-      it('error: filehash changed', async () => {
-        await prepare();
-        const manifest = await Manifest.create({ sourceDir: tmp });
-        const filename = 'main.js';
-        const file = manifest.files.find((file) => file.path === filename);
-        const path = fs.resolve(fs.join(tmp, filename));
+    it('error: filehash changed', async () => {
+      await prepare();
+      const manifest = await Manifest.create({ sourceDir: tmp });
+      const filename = 'main.js';
+      const file = manifest.files.find((file) => file.path === filename);
+      const path = fs.resolve(fs.join(tmp, filename));
 
-        await fs.writeFile(path, '// foobar change.');
-        const res = await Manifest.hash.validate(tmp, manifest);
-        const hashAfterChange = await Manifest.hash.filehash(fs.join(tmp, filename));
+      await fs.writeFile(path, '// foobar change.');
+      const res = await Manifest.validate(tmp, manifest);
+      const hashAfterChange = await Manifest.hash.filehash(fs.join(tmp, filename));
 
-        expect(res.ok).to.eql(false);
-        expect(res.dir).to.eql(tmp);
-        expect(res.errors.length).to.eql(1);
+      expect(res.ok).to.eql(false);
+      expect(res.dir).to.eql(tmp);
+      expect(res.errors.length).to.eql(1);
 
-        const error = res.errors[0];
-        expect(error.path).to.eql(filename);
-        expect(error.hash.filesystem).to.eql(hashAfterChange);
-        expect(error.hash.manifest).to.eql(file?.filehash);
-        expect(error.message).to.include('Filehash mismatch');
-      });
+      const error = res.errors[0];
+      expect(error.path).to.eql(filename);
+      expect(error.hash.filesystem).to.eql(hashAfterChange);
+      expect(error.hash.manifest).to.eql(file?.filehash);
+      expect(error.message).to.include('Filehash mismatch');
+    });
 
-      it('error: filesystem - removed file', async () => {
-        await prepare();
-        const manifest = await Manifest.create({ sourceDir: tmp });
+    it('error: filesystem - removed file', async () => {
+      await prepare();
+      const manifest = await Manifest.create({ sourceDir: tmp });
 
-        const res1 = await Manifest.hash.validate(tmp, manifest);
-        expect(res1.ok).to.eql(true);
+      const res1 = await Manifest.validate(tmp, manifest);
+      expect(res1.ok).to.eql(true);
 
-        await fs.remove(fs.join(tmp, 'main.js'));
-        const res2 = await Manifest.hash.validate(tmp, manifest);
+      await fs.remove(fs.join(tmp, 'main.js'));
+      const res2 = await Manifest.validate(tmp, manifest);
 
-        expect(res2.ok).to.eql(false);
-        expect(res2.dir).to.eql(tmp);
-        expect(res2.errors.length).to.eql(1);
+      expect(res2.ok).to.eql(false);
+      expect(res2.dir).to.eql(tmp);
+      expect(res2.errors.length).to.eql(1);
 
-        const error = res2.errors[0];
-        expect(error.hash).to.eql({ manifest: '-', filesystem: '-' });
-        expect(error.path).to.eql('main.js');
-        expect(error.message).to.include(
-          `A file within the manifest has been removed from the file-system`,
-        );
-      });
+      const error = res2.errors[0];
+      expect(error.hash).to.eql({ manifest: '-', filesystem: '-' });
+      expect(error.path).to.eql('main.js');
+      expect(error.message).to.include(
+        `A file within the manifest has been removed from the file-system`,
+      );
+    });
 
-      it('error: filesystem - added file', async () => {
-        await prepare();
-        const manifest = await Manifest.create({ sourceDir: tmp });
+    it('error: filesystem - added file', async () => {
+      await prepare();
+      const manifest = await Manifest.create({ sourceDir: tmp });
 
-        const res1 = await Manifest.hash.validate(tmp, manifest);
-        expect(res1.ok).to.eql(true);
+      const res1 = await Manifest.validate(tmp, manifest);
+      expect(res1.ok).to.eql(true);
 
-        await fs.ensureDir(fs.join(tmp, 'foo'));
-        await fs.writeFile(fs.join(tmp, 'foo/bar.txt'), 'Hello');
-        const res2 = await Manifest.hash.validate(tmp, manifest);
+      await fs.ensureDir(fs.join(tmp, 'foo'));
+      await fs.writeFile(fs.join(tmp, 'foo/bar.txt'), 'Hello');
+      const res2 = await Manifest.validate(tmp, manifest);
 
-        expect(res2.ok).to.eql(false);
-        expect(res2.dir).to.eql(tmp);
-        expect(res2.errors.length).to.eql(1);
+      expect(res2.ok).to.eql(false);
+      expect(res2.dir).to.eql(tmp);
+      expect(res2.errors.length).to.eql(1);
 
-        const error = res2.errors[0];
-        expect(error.hash).to.eql({ manifest: '-', filesystem: '-' });
-        expect(error.path).to.eql('foo/bar.txt');
-        expect(error.message).to.include(
-          `A file not within the manifest has been added to the file-system`,
-        );
-      });
+      const error = res2.errors[0];
+      expect(error.hash).to.eql({ manifest: '-', filesystem: '-' });
+      expect(error.path).to.eql('foo/bar.txt');
+      expect(error.message).to.include(
+        `A file not within the manifest has been added to the file-system`,
+      );
     });
   });
 });

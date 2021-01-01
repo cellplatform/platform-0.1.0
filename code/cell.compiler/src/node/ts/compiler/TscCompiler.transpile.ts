@@ -1,5 +1,6 @@
-import { exec, fs, ProgressSpinner, slug, t } from '../../common';
+import { exec, fs, ProgressSpinner, slug, t, Package } from '../../common';
 import { TscManifest } from './TscManifest';
+import { TypeManifest } from '../../manifest';
 
 /**
  * Wrapper for running the `tsc` typescript compiler
@@ -11,7 +12,6 @@ import { TscManifest } from './TscManifest';
  */
 export function TscTranspiler(tsconfig: t.TscConfig): t.TscTranspile {
   return async (args) => {
-    const { model } = args;
     const outdir = fs.resolve(args.outdir);
     const spinner = ProgressSpinner({ label: args.spinnerLabel || 'building typescript' });
 
@@ -24,7 +24,8 @@ export function TscTranspiler(tsconfig: t.TscConfig): t.TscTranspile {
     }
 
     // Save the transient [tsconfig] file.
-    const path = fs.join(fs.dirname(tsconfig.path), `tsconfig.tmp.${slug()}`);
+    const dir = fs.dirname(tsconfig.path);
+    const path = fs.join(dir, `tsconfig.tmp.${slug()}`);
     await fs.writeFile(path, JSON.stringify(json, null, '  '));
 
     // Run the command.
@@ -38,8 +39,14 @@ export function TscTranspiler(tsconfig: t.TscConfig): t.TscTranspile {
       error = `Failed to transpile typescript. ${emitted}`.trim();
     }
 
+    // Copy [package.json].
+    const packagePath = await findPackagePath(json.include);
+    if (packagePath) {
+      await fs.copy(packagePath, fs.join(outdir, 'package.json'));
+    }
+
     // Save the type-declaration manifest.
-    const { manifest } = await TscManifest.generate({ dir: outdir, model });
+    const { manifest } = await TscManifest.generate({ dir: outdir });
 
     // Clean up.
     await fs.remove(path);
@@ -52,4 +59,17 @@ export function TscTranspiler(tsconfig: t.TscConfig): t.TscTranspile {
       error,
     };
   };
+}
+
+/**
+ * [Helpers]
+ */
+
+async function findPackagePath(include: string[]) {
+  const paths = (await Promise.all(include.map((pattern) => fs.glob.find(pattern)))).flat(1);
+  for (const path of paths) {
+    const res = await Package.findClosestPath(fs.dirname(path));
+    if (res) return res.path;
+  }
+  return '';
 }

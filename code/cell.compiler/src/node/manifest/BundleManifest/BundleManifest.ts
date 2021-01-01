@@ -7,10 +7,8 @@ type M = t.BundleManifest;
  * Helpers for creating and working with a [BundleManifest].
  */
 export const BundleManifest = {
-  /**
-   * Tools for working with hash checksums of a manifest.
-   */
   hash: Manifest.hash,
+  validate: Manifest.validate,
 
   /**
    * The filename of the bundle.

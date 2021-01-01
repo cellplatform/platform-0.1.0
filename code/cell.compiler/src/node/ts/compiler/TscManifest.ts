@@ -1,6 +1,8 @@
 import { fs, t } from '../../common';
 import { TypeManifest } from '../../manifest';
 
+export { TypeManifest };
+
 export const TscManifest: t.TscManifest = {
   /**
    * Determines if a manifest exists within the given directory.
@@ -14,12 +16,14 @@ export const TscManifest: t.TscManifest = {
    * Creates and save a type-declaration manifest for the given output directory.
    */
   async generate(args) {
-    const { dir, model } = args;
-    const info = await TypeManifest.info(model?.entry?.main);
+    const { dir } = args;
+
+    const packagePath = fs.join(dir, 'package.json');
+    const info = await TypeManifest.info(packagePath);
+
     const { manifest, path } = await TypeManifest.createAndSave({
       base: fs.dirname(dir),
       dir: fs.basename(dir),
-      model,
       info,
     });
     return { path, manifest, info };
@@ -29,6 +33,6 @@ export const TscManifest: t.TscManifest = {
    * Check a manifest against the current state of the file-system.
    */
   async validate(dir, manifest) {
-    return TypeManifest.hash.validate(dir, manifest);
+    return TypeManifest.validate(dir, manifest);
   },
 };

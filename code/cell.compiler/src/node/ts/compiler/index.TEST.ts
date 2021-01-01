@@ -46,8 +46,7 @@ describe.only('TscCompiler', function () {
       await fs.remove(outdir);
 
       const compiler = TscCompiler();
-      const model = config.toObject();
-      const res = await compiler.transpile({ source, outdir, model, silent: true });
+      const res = await compiler.transpile({ source, outdir, silent: true });
 
       expect(res.tsconfig.include).to.eql([source]);
       expect(res.error).to.eql(undefined);
@@ -59,12 +58,40 @@ describe.only('TscCompiler', function () {
       expect(manifest.typelib.version).to.eql('0.0.1');
       expect(manifest.typelib.entry).to.eql('./types.d.txt');
 
+      const manifestFiles = manifest.files.map((file) => file.path);
+      expect(manifestFiles).to.include('package.json');
+      expect(manifestFiles).to.not.include('index.json');
+
       const Files = {
         d: await fs.glob.find(`${outdir}/**/*.d.ts`),
         js: await fs.glob.find(`${outdir}/**/*.js`),
       };
       expect(Files.d.length).to.greaterThan(3);
       expect(Files.js.length).to.greaterThan(3);
+
+      [...Files.d, ...Files.js]
+        .map((path) => path.substring(outdir.length + 1))
+        .forEach((path) => expect(manifestFiles).to.include(path));
+    });
+
+    it('transpile (copies in [package.json] file)', async () => {
+      const outdir = fs.join(TMP, 'foo');
+      await fs.remove(outdir);
+
+      const compiler = TscCompiler();
+      const res = await compiler.transpile({ source, outdir, silent: true });
+      const manifest = res.out.manifest;
+
+      expect(manifest.files.map((f) => f.path)).to.include('package.json');
+
+      const pkg = (await fs.readJson(fs.join(outdir, 'package.json'))) as t.INpmPackageJson;
+      expect(pkg.name).to.eql('node.simple');
+      expect(pkg.version).to.eql('0.0.1');
+      expect(pkg.types).to.eql('./types.d.ts');
+
+      expect(manifest.typelib.name).to.eql(pkg.name);
+      expect(manifest.typelib.version).to.eql(pkg.version);
+      expect(manifest.typelib.entry).to.eql('./types.d.txt'); // NB: Transformed.
     });
 
     it('transpile declarations', async () => {
@@ -72,8 +99,7 @@ describe.only('TscCompiler', function () {
       await fs.remove(outdir);
 
       const compiler = TscCompiler();
-      const model = config.toObject();
-      const res = await compiler.declarations.transpile({ source, outdir, silent: true, model });
+      const res = await compiler.declarations.transpile({ source, outdir, silent: true });
 
       expect(res.error).to.eql(undefined);
       expect(res.tsconfig.include).to.eql([source]);
@@ -103,8 +129,7 @@ describe.only('TscCompiler', function () {
 
     beforeEach(async () => {
       if (!(await fs.pathExists(original))) {
-        const model = config.toObject();
-        await compiler.transpile({ source, outdir: original, model, silent: true });
+        await compiler.transpile({ source, outdir: original, silent: true });
       }
       await fs.remove(dir);
       await fs.copy(original, dir);
@@ -123,9 +148,10 @@ describe.only('TscCompiler', function () {
       await test(dir, true);
     });
 
-    it('generate: no info', async () => {
+    it('generate: no info (no [package.json] file in source folder)', async () => {
       const path = fs.join(dir, TypeManifest.filename);
       await fs.remove(path);
+      await fs.remove(fs.join(dir, 'package.json'));
 
       expect(await fs.pathExists(path)).to.eql(false);
       const res = await compiler.manifest.generate({ dir });
@@ -141,8 +167,7 @@ describe.only('TscCompiler', function () {
       const path = fs.join(dir, TypeManifest.filename);
       await fs.remove(path);
 
-      const model = config.toObject();
-      const res = await compiler.manifest.generate({ dir, model });
+      const res = await compiler.manifest.generate({ dir });
 
       const info = res.manifest.typelib;
       expect(info.name).to.eql('node.simple');
@@ -171,43 +196,45 @@ describe.only('TscCompiler', function () {
 
     beforeEach(async () => {
       if (!(await fs.pathExists(from))) {
-        const model = config.toObject();
-        await compiler.transpile({ source, outdir: from, model, silent: true });
+        await compiler.transpile({ source, outdir: from, silent: true });
       }
+
       await fs.remove(fs.dirname(to));
-    });
-
-    it('throw: "from" (source folder) not found', async () => {
-      const fn = () => compiler.copyBundle({ from: 'foobar', to });
-      await expectError(fn, 'Source folder to copy from not found');
-    });
-
-    it('throw: "from" (source folder) does not contain manifest', async () => {
-      const tmp = fs.join(TMP, 'copy.tmp');
-      await fs.copy(from, tmp);
-      await fs.remove(fs.join(tmp, TypeManifest.filename));
-
-      const err = 'Source folder to copy from does not contain an [index.json] manifest';
-      await expectError(() => compiler.copyBundle({ from: tmp, to }), err);
-      await fs.remove(tmp);
-    });
-
-    it('throw: "from" (source folder) does not contain valid manifest', async () => {
-      const tmp = fs.join(TMP, 'copy.tmp');
-      await fs.copy(from, tmp);
-      const { path, manifest } = await TypeManifest.read({ dir: tmp });
-
-      delete (manifest as any).kind;
-      delete (manifest as any).typelib;
-      await fs.writeJson(path, manifest);
-
-      const err = 'Source folder to copy from does not contain a valid "typelib" manifest';
-      await expectError(() => compiler.copyBundle({ from: tmp, to }), err);
-      await fs.remove(tmp);
-    });
-
-    it('copies bundle - no adjustments', async () => {
       expect(await fs.pathExists(to)).to.eql(false);
+    });
+
+    describe('errors', () => {
+      it('throw: "from" (source folder) not found', async () => {
+        const fn = () => compiler.copyBundle({ from: 'foobar', to });
+        await expectError(fn, 'Source folder to copy from not found');
+      });
+
+      it('throw: "from" (source folder) does not contain manifest', async () => {
+        const tmp = fs.join(TMP, 'copy.tmp');
+        await fs.copy(from, tmp);
+        await fs.remove(fs.join(tmp, TypeManifest.filename));
+
+        const err = 'Source folder to copy from does not contain an [index.json] manifest';
+        await expectError(() => compiler.copyBundle({ from: tmp, to }), err);
+        await fs.remove(tmp);
+      });
+
+      it('throw: "from" (source folder) does not contain valid manifest', async () => {
+        const tmp = fs.join(TMP, 'copy.tmp');
+        await fs.copy(from, tmp);
+        const { path, manifest } = await TypeManifest.read({ dir: tmp });
+
+        delete (manifest as any).kind;
+        delete (manifest as any).typelib;
+        await fs.writeJson(path, manifest);
+
+        const err = 'Source folder to copy from does not contain a valid "typelib" manifest';
+        await expectError(() => compiler.copyBundle({ from: tmp, to }), err);
+        await fs.remove(tmp);
+      });
+    });
+
+    it('copies bundle - vanilla (no adjustments)', async () => {
       const res = await compiler.copyBundle({ from, to });
 
       expect(res.from.base).to.eql(TMP);
@@ -232,8 +259,25 @@ describe.only('TscCompiler', function () {
       );
     });
 
+    it('copies [package.json] file', async () => {
+      const res = await compiler.copyBundle({ from, to });
+      const manifest = res.manifest;
+
+      expect(manifest.files.find((f) => f.path === 'package.json')?.path).to.eql('package.json');
+      expect(manifest.typelib.name).to.eql('node.simple');
+      expect(manifest.typelib.version).to.eql('0.0.1');
+      expect(manifest.typelib.entry).to.eql('./types.d.txt');
+
+      const path = res.paths.find((path) => path.endsWith('foo/package.json'));
+      expect(path).to.match(/foo\/package\.json$/);
+
+      const pkg = (await fs.readJson(path || '')) as t.INpmPackageJson;
+      expect(pkg.name).to.eql('node.simple');
+      expect(pkg.version).to.eql('0.0.1');
+      expect(pkg.types).to.eql('./types.d.ts');
+    });
+
     it('copies bundle - filtered', async () => {
-      expect(await fs.pathExists(to)).to.eql(false);
       const res = await compiler.copyBundle({
         from,
         to,
@@ -250,7 +294,7 @@ describe.only('TscCompiler', function () {
       expect(res.transformations).to.eql([]);
     });
 
-    it('transforms file-extension', async () => {
+    it('copies and transforms file-extensions ([transformPath] argument)', async () => {
       expect(await fs.pathExists(to)).to.eql(false);
       const res = await compiler.copyBundle({
         from,
@@ -277,10 +321,10 @@ describe.only('TscCompiler', function () {
 
       // NB: The modifications should not have invalidated the manifest.
       if (manifest) {
-        expect((await TypeManifest.hash.validate(to, manifest)).ok).to.eql(true);
+        expect((await TypeManifest.validate(to, manifest)).ok).to.eql(true);
       }
 
-      expect(manifestFiles.every(included('.js', '.d.txt'))).to.eql(true);
+      expect(manifestFiles.every(included('.js', '.d.txt', 'package.json'))).to.eql(true);
       expect(manifestFiles.every(included('.d.ts'))).to.eql(false);
     });
   });
@@ -290,43 +334,59 @@ describe.only('TscCompiler', function () {
     const original = fs.join(TMP, 'TscCopyRefs.original');
     const dir = fs.join(TMP, 'TscCopyRefs.result/main');
 
+    const expectPathExists = async (expected: boolean, path: string) => {
+      path = fs.join(fs.dirname(dir), path);
+      const exists = await fs.pathExists(path);
+      expect(exists).to.eql(expected, path);
+    };
+
     beforeEach(async () => {
       if (!(await fs.pathExists(original))) {
-        const model = config.toObject();
-        await compiler.transpile({ source, outdir: original, model, silent: true });
+        await compiler.transpile({ source, outdir: original, silent: true });
       }
-      await fs.remove(dir);
+      await fs.remove(fs.dirname(dir));
       await fs.copy(original, dir);
     });
 
-    it('throw: "dir" not found', async () => {
-      const fn = () => compiler.copyRefs({ sourceDir: 'not/found' });
-      await expectError(fn, 'Source folder to copy from not found');
+    describe('errors', () => {
+      it('throw: "dir" not found', async () => {
+        const fn = () => compiler.copyRefs({ sourceDir: 'not/found' });
+        await expectError(fn, 'Source folder to copy from not found');
+      });
+
+      it('throw: "dir" does not contain manifest', async () => {
+        await fs.remove(fs.join(dir, TypeManifest.filename));
+        const err = 'Source folder to copy-refs within does not contain an [index.json] manifest';
+        await expectError(() => compiler.copyRefs({ sourceDir: dir }), err);
+      });
+
+      it('throw: "dir" does not contain valid manifest', async () => {
+        const { path, manifest } = await TypeManifest.read({ dir });
+        delete (manifest as any).kind;
+        delete (manifest as any).typelib;
+        await fs.writeJson(path, manifest);
+
+        const err = 'Source folder to copy-refs within does not contain a valid "typelib" manifest';
+        await expectError(() => compiler.copyRefs({ sourceDir: dir }), err);
+      });
     });
 
-    it('throw: "dir" does not contain manifest', async () => {
-      await fs.remove(fs.join(dir, TypeManifest.filename));
-      const err = 'Source folder to copy-refs within does not contain an [index.json] manifest';
-      await expectError(() => compiler.copyRefs({ sourceDir: dir }), err);
-    });
+    it.only('copy refs', async () => {
+      await expectPathExists(false, '@platform');
+      // return;
 
-    it('throw: "dir" does not contain valid manifest', async () => {
-      const { path, manifest } = await TypeManifest.read({ dir });
-      delete (manifest as any).kind;
-      delete (manifest as any).typelib;
-      await fs.writeJson(path, manifest);
-
-      const err = 'Source folder to copy-refs within does not contain a valid "typelib" manifest';
-      await expectError(() => compiler.copyRefs({ sourceDir: dir }), err);
-    });
-
-    it('copy refs', async () => {
       const res = await compiler.copyRefs({ sourceDir: dir });
 
-      console.log('-------------------------------------------');
-      console.log('res', res);
+      // console.log('-------------------------------------------');
+      // console.log('res', res);
+      // console.log('-------------------------------------------');
+      // console.log('0', res.refs[0]);
+      // console.log('1', res.refs[1]);
 
-      expect(join(res.dir)).to.eql(dir);
+      expect(res.source).to.eql(dir);
+      expect(res.target).to.eql(fs.dirname(dir));
+
+      await expectPathExists(true, '@platform'); // NB: Reference copied!
     });
   });
 });

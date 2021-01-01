@@ -30,10 +30,8 @@ const createAndSave: CreateAndSave = async (args) => {
  * Helpers for creating and working with manifest of type declarations (".d.ts" files)
  */
 export const TypeManifest = {
-  /**
-   * Tools for working with hash checksums of a manifest.
-   */
   hash: Manifest.hash,
+  validate: Manifest.validate,
 
   /**
    * The filename of the bundle.
@@ -92,7 +90,7 @@ export const TypeManifest = {
   },
 
   /**
-   * Loads [typelib] info from the [package.json] found via the given path.
+   * Loads [typelib] info from the [package.json] found via the given path (directory of full path).
    */
   async info(path?: string) {
     const empty = Info.empty;

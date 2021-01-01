@@ -1,5 +1,4 @@
-import { fs, t } from '../../common';
-import { Package } from './util.Package';
+import { fs, t, Package } from '../../common';
 
 /**
  * Loads typelib info from the given package.json file.
@@ -11,12 +10,13 @@ export const Info = {
   },
 
   async find(dir: string) {
-    const pkg = await Package.find(dir);
+    const pkg = (await Package.findClosest(dir))?.json;
     return pkg ? Info.fromPackage(pkg) : undefined;
   },
 
   async loadFile(packageJson: string) {
     const path = fs.resolve(packageJson);
+    if (!(await fs.pathExists(path))) return undefined;
     const pkg = (await fs.readJson(path)) as t.INpmPackageJson;
     return Info.fromPackage(pkg);
   },
