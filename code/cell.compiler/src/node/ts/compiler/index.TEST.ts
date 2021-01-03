@@ -41,7 +41,7 @@ describe.only('TscCompiler', function () {
   });
 
   describe('transpile', () => {
-    it('transpile typescript (general)', async () => {
+    it('transpile to javascript', async () => {
       const outdir = fs.join(TMP, 'foo');
       await fs.remove(outdir);
 
@@ -74,7 +74,7 @@ describe.only('TscCompiler', function () {
         .forEach((path) => expect(manifestFiles).to.include(path));
     });
 
-    it('transpile (copies in [package.json] file)', async () => {
+    it('copy in [package.json] file', async () => {
       const outdir = fs.join(TMP, 'foo');
       await fs.remove(outdir);
 
@@ -93,8 +93,10 @@ describe.only('TscCompiler', function () {
       expect(manifest.typelib.version).to.eql(pkg.version);
       expect(manifest.typelib.entry).to.eql('./types.d.txt'); // NB: Transformed.
     });
+  });
 
-    it('transpile declarations', async () => {
+  describe('declarations (.d.ts)', () => {
+    it('transpile declaration files only', async () => {
       const outdir = fs.join(TMP, 'foo.d');
       await fs.remove(outdir);
 
@@ -133,10 +135,6 @@ describe.only('TscCompiler', function () {
       }
       await fs.remove(dir);
       await fs.copy(original, dir);
-    });
-
-    it('exposes manifest api', () => {
-      expect(compiler.manifest).to.equal(TscManifest);
     });
 
     it('exists', async () => {
@@ -371,7 +369,7 @@ describe.only('TscCompiler', function () {
       });
     });
 
-    it.only('copy refs', async () => {
+    it.skip('copy refs', async () => {
       await expectPathExists(false, '@platform');
       // return;
 
