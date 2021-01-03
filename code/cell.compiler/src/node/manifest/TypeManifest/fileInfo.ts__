@@ -4,7 +4,14 @@ import { fs, t } from '../../common';
  * Appends type information to a file-manifest entry.
  */
 export async function appendFileInfo(dir: string, input: t.ManifestFile) {
-  const path = fs.join(dir, input.path);
+  const declaration = await getFileInfo(fs.join(dir, input.path));
+  return { ...input, declaration } as t.TypelibManifestFile;
+}
+
+/**
+ * Derive the file-info for the given path
+ */
+export async function getFileInfo(path: string) {
   const text = (await fs.readFile(path)).toString();
   const lines = text.split('\n');
 
@@ -16,8 +23,12 @@ export async function appendFileInfo(dir: string, input: t.ManifestFile) {
     exports: lines.map((line) => toExport(line)).filter(include),
   };
 
-  return { ...input, declaration } as t.TypelibManifestFile;
+  return declaration;
 }
+
+/**
+ * [Helpers]
+ */
 
 function toImport(line: string) {
   const match = line.match(/^\s*import .* from '.*';$/g);
