@@ -338,12 +338,39 @@ describe.only('TscCompiler', function () {
       expect(exists).to.eql(expected, path);
     };
 
+    const expectRefCopied = async (path: string) => {
+      await expectPathExists(true, path);
+      await expectPathExists(true, fs.join(path, 'package.json'));
+      await expectPathExists(true, fs.join(path, 'index.json'));
+    };
+
     beforeEach(async () => {
       if (!(await fs.pathExists(original))) {
-        await compiler.transpile({ source, outdir: original, silent: true });
+        const outdir = original;
+        await compiler.transpile({ source, outdir, silent: true });
       }
       await fs.remove(fs.dirname(dir));
       await fs.copy(original, dir);
+    });
+
+    it.only('copy refs', async () => {
+      await expectPathExists(false, '@platform');
+      // return;
+
+      const sourceDir = dir;
+      const res = await compiler.copyRefs({ sourceDir });
+
+      console.log('-------------------------------------------');
+      console.log('res', res);
+      // console.log('-------------------------------------------');
+      // console.log('0', res.refs[0]);
+      // console.log('1', res.refs[1]);
+
+      expect(res.source).to.eql(dir);
+      expect(res.target).to.eql(fs.dirname(dir));
+
+      await expectRefCopied('@platform/cell.types');
+      await expectRefCopied('@platform/log');
     });
 
     describe('errors', () => {
@@ -367,24 +394,6 @@ describe.only('TscCompiler', function () {
         const err = 'Source folder to copy-refs within does not contain a valid "typelib" manifest';
         await expectError(() => compiler.copyRefs({ sourceDir: dir }), err);
       });
-    });
-
-    it.skip('copy refs', async () => {
-      await expectPathExists(false, '@platform');
-      // return;
-
-      const res = await compiler.copyRefs({ sourceDir: dir });
-
-      // console.log('-------------------------------------------');
-      // console.log('res', res);
-      // console.log('-------------------------------------------');
-      // console.log('0', res.refs[0]);
-      // console.log('1', res.refs[1]);
-
-      expect(res.source).to.eql(dir);
-      expect(res.target).to.eql(fs.dirname(dir));
-
-      await expectPathExists(true, '@platform'); // NB: Reference copied!
     });
   });
 });

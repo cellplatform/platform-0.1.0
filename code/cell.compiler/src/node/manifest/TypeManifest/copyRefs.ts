@@ -5,6 +5,11 @@ import { Info } from './util';
 const CACHE_DIR = fs.join(PATH.CACHEDIR, 'manifest.typelib');
 
 /**
+ * TODO 🐷  OLD - Delete
+ * OLD
+ */
+
+/**
  * Copies refs within the given manifest.
  */
 export async function copyRefs(
@@ -66,7 +71,6 @@ export async function copyRefs(
     //     is that it can be safely cached and we need not re-calculate the list of
     //     ".d.ts" files (which can be slow for large libraries).
     //
-    // const isLink = await isSymLink(dir);
     return await fs.is.symlink(dir.source, { ancestor: true });
   };
 
