@@ -32,7 +32,7 @@ export type TscTranspile = (args: t.TscTranspileArgs) => Promise<t.TscTranspileR
 
 export type TscTranspileArgs = {
   outdir: string;
-  source?: string | string[]; // File or glob pattern, eg: src/foo/**/*
+  source?: string | string[]; // File or glob pattern (eg: src/foo/**/*) used as "include" field in [tsconfig].
   silent?: boolean;
   spinnerLabel?: string;
   compilerOptions?: CompilerOptions;

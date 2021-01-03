@@ -52,7 +52,7 @@ export type ICodeEditorChangeFocusEvent = {
 export type ICodeEditorChangeFocus = { instance: string };
 
 /**
- * Fired when editor recieves of loses focus.
+ * Fired when editor recieves or loses focus.
  */
 export type ICodeEditorFocusChangedEvent = {
   type: 'CodeEditor/changed:focus';
