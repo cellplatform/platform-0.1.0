@@ -26,9 +26,9 @@ describe('BundleManifest', function () {
 
     expect(files.length).to.greaterThan(0);
     expect(manifest.kind).to.eql('bundle');
-    expect(manifest.hash).to.eql(Manifest.hash.files(files));
-    expect(manifest.hash).to.eql(Manifest.hash.files(manifest));
-    expect(manifest.hash).to.match(/^sha256-/);
+    expect(manifest.hash.files).to.eql(Manifest.hash.files(files));
+    expect(manifest.hash.files).to.eql(Manifest.hash.files(manifest));
+    expect(manifest.hash.files).to.match(/^sha256-/);
 
     expect(manifest.bundle.mode).to.eql('production');
     expect(manifest.bundle.target).to.eql('node');

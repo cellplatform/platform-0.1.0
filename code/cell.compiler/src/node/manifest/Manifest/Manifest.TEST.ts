@@ -1,7 +1,7 @@
 import { t, expect, fs, SampleBundles, Schema } from '../../../test';
 import { Manifest } from '.';
 
-describe('FileManifest', function () {
+describe('Manifest', function () {
   this.timeout(99999);
 
   const TMP = fs.resolve('./tmp/test/FileManifest');
@@ -23,7 +23,7 @@ describe('FileManifest', function () {
     const test = async (sourceDir: string) => {
       const manifest = await Manifest.create({ sourceDir });
       const files = manifest.files;
-      expect(manifest.hash).to.eql(Manifest.hash.files(files));
+      expect(manifest.hash.files).to.eql(Manifest.hash.files(files));
       expect(files.length).to.greaterThan(0);
 
       const expectEvery = (fn: (file: t.ManifestFile) => boolean) => {
@@ -122,7 +122,7 @@ describe('FileManifest', function () {
     it('hash.files - {manifest}', async () => {
       const manifest = await Manifest.create({ sourceDir });
       const hash = Schema.hash.sha256(manifest.files.map((file) => file.filehash));
-      expect(manifest.hash).to.eql(hash);
+      expect(manifest.hash.files).to.eql(hash);
       expect(Manifest.hash.files(manifest)).to.eql(hash);
     });
 
