@@ -78,7 +78,7 @@ export const Manifest = {
     const pattern = `${args.sourceDir}/**`;
 
     let paths = await fs.glob.find(pattern, { includeDirs: false });
-    paths = paths.filter((path) => !path.endsWith(`/${filename}`));
+    paths = paths.filter((path) => path.substring(sourceDir.length + 1) !== filename);
 
     const toFile = (path: string) => Manifest.loadFile({ path, baseDir: sourceDir, model });
     const files: t.ManifestFile[] = await Promise.all(paths.map((path) => toFile(path)));

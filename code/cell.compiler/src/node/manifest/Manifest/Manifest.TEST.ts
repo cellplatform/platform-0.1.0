@@ -44,16 +44,20 @@ describe('FileManifest', function () {
   it('does not include manifest file within list', async () => {
     const sourceDir = fs.join(TMP, 'src');
     const write = async (name: string) => {
-      await fs.ensureDir(sourceDir);
-      await fs.writeFile(fs.join(sourceDir, name), 'hello');
+      const path = fs.join(sourceDir, name);
+      await fs.ensureDir(fs.dirname(path));
+      await fs.writeFile(path, 'hello');
     };
 
     await write(Manifest.filename);
     await write('one.txt');
     await write('two.txt');
+    await write(fs.join('foo', Manifest.filename)); // NB: Descendent file with the manifest name "index.json" is not excluded.
 
     const manifest = await Manifest.create({ sourceDir });
     const files = manifest.files;
+
+    expect(files.length).to.eql(3);
     expect(files.filter((file) => file.path === Manifest.filename).length).to.eql(0);
   });
 
@@ -144,6 +148,7 @@ describe('FileManifest', function () {
     it('ok', async () => {
       const manifest = await Manifest.create({ sourceDir });
       const res = await Manifest.validate(sourceDir, manifest);
+
       expect(res.ok).to.eql(true);
       expect(res.dir).to.eql(fs.resolve(sourceDir));
       expect(res.errors).to.eql([]);

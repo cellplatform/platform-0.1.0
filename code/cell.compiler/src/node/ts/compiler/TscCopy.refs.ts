@@ -1,32 +1,27 @@
-import { fs, PATH, R, t, NodeModules, Package } from '../../common';
+import { defaultValue, fs, NodeModules, Package, R, t } from '../../common';
 import { toDir } from '../util';
 import { TscManifest, TypeManifest } from './TscManifest';
 
-type Args = t.TscCopyArgsRefs & { refs?: t.TscCopyRefsResultRef[] };
 type D = { ref: string; source: string };
 type M = t.TypelibManifest;
-
-const CACHE_DIR = fs.join(PATH.CACHEDIR, 'manifest.typelib');
 
 /**
  * Copies references within the given manifest (import/exports)
  * into folder adjacent to the given manifest.
  */
-export const refs: t.TscCopyRefs = async (args: Args): Promise<t.TscCopyRefsResult> => {
-  const isRecursion = Boolean(args.refs);
+export const copyRefs: t.TscCopyRefs = async (args): Promise<t.TscCopyRefsResult> => {
   const sourceDir = toDir(args.sourceDir);
   const targetDir = args.targetDir || sourceDir.base;
 
   const Ref = {
-    refs: args.refs || [],
+    refs: [] as t.TscCopyRefsResultRef[],
 
     async moduleName(dir: D) {
       const source = fs.join(dir.source, dir.ref);
-      const res = await Package.findClosest(source);
+      const res = await Package.findClosestPath(source);
       if (!res)
         throw new Error(`[package.json] directory for module could not be found for: ${source}`);
-      const div = 'node_modules/';
-      return res.dir.substring(res.dir.lastIndexOf(div) + div.length);
+      return res.name;
     },
 
     async find(dir: D) {
@@ -36,25 +31,22 @@ export const refs: t.TscCopyRefs = async (args: Args): Promise<t.TscCopyRefsResu
 
     async exists(dir: D) {
       const ref = await Ref.find(dir);
-      return !ref ? false : ref.paths.some((item) => item.to === fs.join(targetDir, dir.ref));
+      return !ref ? false : ref.to === fs.join(targetDir, dir.ref);
     },
 
-    async add(dir: D) {
+    async add(dir: D, total: number) {
       const ref = await Ref.find(dir);
-      const from = fs.join(dir.source, dir.ref);
-      const to = fs.join(targetDir, dir.ref);
-      if (ref) {
-        const exists = ref.paths.some((item) => item.to === to);
-        if (!exists) ref.paths.push({ from, to });
-        return ref;
-      } else {
+      if (!ref) {
         const ref: t.TscCopyRefsResultRef = {
+          total,
           module: await Ref.moduleName(dir),
-          paths: [{ from, to }],
+          from: fs.join(dir.source, dir.ref),
+          to: fs.join(targetDir, dir.ref),
         };
         Ref.refs.push(ref);
         return ref;
       }
+      return ref;
     },
   };
 
@@ -96,69 +88,44 @@ export const refs: t.TscCopyRefs = async (args: Args): Promise<t.TscCopyRefsResu
     throw new Error(err);
   }
 
-  const targetRoot = (options: { cache?: boolean }) => (options.cache ? CACHE_DIR : targetDir);
-  const targetFilepath = (dir: D, source: string, options: { cache?: boolean } = {}) => {
-    const root = targetRoot(options);
-    const path = fs.join(root, dir.ref, source.substring(dir.source.length + 1));
-    return path.replace(/\.d\.ts$/, '.d.txt');
-  };
+  const copyFiles = async (dir: D) => {
+    const from = await NodeModules.pathToModule(sourceDir.base, dir.ref, { root: true });
+    const to = fs.join(targetDir, Package.pathAfterNodeModules(from));
+    if (await fs.pathExists(to)) return 0;
 
-  const isCached = async (dir: D) => await fs.pathExists(targetFilepath(dir, '', { cache: true }));
+    const paths = (await fs.glob.find(`${from}/**/*`))
+      .map((path) => path.substring(from.length + 1))
+      .filter((path) => {
+        if (path.endsWith('.d.ts')) return true;
+        if (path === 'package.json') return true;
+        if (path === TypeManifest.filename) return true;
+        return false;
+      });
 
-  const copyFromCache = async (dir: D) => {
-    const from = targetFilepath(dir, '', { cache: true });
-    const to = targetFilepath(dir, '', { cache: false });
-    if (!(await fs.pathExists(to))) await fs.copy(from, to);
-  };
-
-  const copyPackageJson = async (dir: D, options: { cache?: boolean } = {}) => {
-    const pkg = await Package.findClosestPath(dir.source);
-    if (pkg) {
-      const module = await Ref.moduleName(dir);
-      const target = fs.join(targetRoot(options), module, 'package.json');
-      await fs.copy(pkg.path, target);
-    }
-  };
-
-  const copyFiles = async (dir: D, options: { cache?: boolean } = {}) => {
-    const { cache } = options;
-    const target = (path: string) => targetFilepath(dir, path, { cache });
-    const paths = await fs.glob.find(`${dir.source}/**/*.d.ts`);
-    await Promise.all(paths.map((source) => fs.copy(source, target(source))));
-    await copyPackageJson(dir, { cache });
+    await Promise.all(paths.map((path) => fs.copy(fs.join(from, path), fs.join(to, path))));
+    return paths.length;
   };
 
   const copyDir = async (dir: D) => {
     const exists = await Ref.exists(dir);
     if (exists) return; // NB: This is a repeat (already copied, no need to do it again).
-    await Ref.add(dir);
 
-    // Check whether the directory is a symbolic-link.
-    // NOTE:
-    //     YARN uses symbolic links for locally developed modules within a
-    //     a "workspace".  If the directory is NOT a symlink then it is assumed to be
-    //     a plain old referenced "external lib" and therefore can be be safely
-    //     cached and we need not re-calculate the list of ".d.ts" files
-    //     (which can be slow for large libraries).
-    //
-    //     If it is a symlink, then it is assumed to be a linked workspace module under
-    //     development and therefore we must copy it every time (no cache) to ensure
-    //     changes are accurately captured.
-    //
-    //     NB: (🌼 Future Optimization Strategy)
-    //         We may be able to use the [yarn.lock] file or some
-    //         other checksum within yarn's internals to determine whether
-    //         the module has changed since the last time we copied it.
-    //
-    const isLinkedDir = await isSymbolicLink(dir);
+    // Copy files.
+    const total = await copyFiles(dir);
+    if (total > 0) await Ref.add(dir, total);
 
-    if (!args.force && !isLinkedDir && (await isCached(dir))) {
-      // NB: is cacheable AND already exists within the cache.
-      return await copyFromCache(dir);
+    // Recurisvely copy references from within the newly copied directory.
+    if (total > 0 && defaultValue(args.recursive, true)) {
+      const refs: string[] = (await TypeManifest.file.readDir(dir.source)).files
+        .filter((file) => file.hasRefs)
+        .map((file) => file.declaration)
+        .reduce((acc, next) => [...acc, ...[...next.exports, ...next.imports]], [] as string[]);
+
+      for (const ref of refs) {
+        const source = await NodeModules.pathToModule(sourceDir.base, ref, { root: true });
+        await copyDir({ ref, source }); // <== 🌳 RECURSION
+      }
     }
-
-    await copyFiles(dir);
-    if (!isLinkedDir) await copyFiles(dir, { cache: true });
   };
 
   // Perform copy operation.
@@ -166,32 +133,13 @@ export const refs: t.TscCopyRefs = async (args: Args): Promise<t.TscCopyRefsResu
     await copyDir(dir);
   }
 
-  /**
-   * TODO 🐷 - recursion / manifest
-   * - recursion
-   *    - hand the "REFS" list to the recursion call
-   * - copy "package.json" from source
-   */
-
   // Generate the manifest index.
-  // if (false) {
-  if (!isRecursion) {
-    const modules = R.uniq(await Promise.all(dirs.map((dir) => Ref.moduleName(dir))));
-    for (const module of modules) {
-      const dir = fs.join(targetDir, module);
-      // const filename = TypeManifest.filename
-      // const exists = await fs.pathExists(fs.join(dir, TypeManifest.filename));
-
-      console.log('module', module);
-
-      // console.log();
-      // console.log('path', dir);
-      // console.log('dirExists', await fs.pathExists(dir));
-      // console.log('manifest exists', await fs.pathExists(fs.join(dir, TypeManifest.filename)));
-
+  await Promise.all(
+    Ref.refs.map(async (ref) => {
+      const dir = fs.join(targetDir, ref.module);
       await TscManifest.generate({ dir });
-    }
-  }
+    }),
+  );
 
   // Finish up.
   return {
@@ -205,4 +153,3 @@ export const refs: t.TscCopyRefs = async (args: Args): Promise<t.TscCopyRefsResu
  * [Helpers]
  */
 const readManifest = async (dir: string) => (await TypeManifest.read({ dir })).manifest as M;
-const isSymbolicLink = (dir: D) => fs.is.symlink(dir.source, { ancestor: true });

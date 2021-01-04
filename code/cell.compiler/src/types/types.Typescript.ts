@@ -21,8 +21,6 @@ export type TscCompiler = {
   copyBundle: t.TscCopyBundle;
   copyRefs: t.TscCopyRefs;
   transpile: t.TscTranspile;
-
-  declarations_OLD: TsCompileDeclarations__OLD;
 };
 
 /**
@@ -36,11 +34,15 @@ export type TscTranspileArgs = {
   silent?: boolean;
   spinnerLabel?: string;
   compilerOptions?: CompilerOptions;
+  transformPath?: TscTransformPath;
 };
+
+export type TscTransformPath = (path: string) => string | undefined;
 
 export type TscTranspileResult = {
   tsconfig: TscConfigFile;
   out: { dir: string; manifest: t.TypelibManifest };
+  transformations: TscPathTransform[];
   error?: string;
 };
 
@@ -80,7 +82,7 @@ export type TscCopyBundleArgs = {
   from: string; // Directory path.
   to: string; //   Directory path.
   filter?: (path: string) => boolean;
-  transformPath?: (path: string) => string | undefined;
+  transformPath?: TscTransformPath;
 };
 
 export type TscCopyBundleResult = {
@@ -94,12 +96,13 @@ export type TscCopyBundleResult = {
 /**
  * Copy bundle refs (imports/exports).
  */
-export type TscCopyRefs = (args: TscCopyArgsRefs) => Promise<TscCopyRefsResult>;
+export type TscCopyRefs = (args: TscCopyRefsArgs) => Promise<TscCopyRefsResult>;
 
-export type TscCopyArgsRefs = {
+export type TscCopyRefsArgs = {
   sourceDir: string; // Directory of the bundle.
   targetDir?: string; // Directory to copy refs to. If ommited the parent of [sourceDir] is used.
   force?: boolean; // Force copy if already cached.
+  recursive?: boolean; // Default: true.
 };
 
 export type TscCopyRefsResult = {
@@ -109,7 +112,9 @@ export type TscCopyRefsResult = {
 };
 export type TscCopyRefsResultRef = {
   module: string;
-  paths: { from: string; to: string }[];
+  from: string;
+  to: string;
+  total: number;
 };
 
 /**

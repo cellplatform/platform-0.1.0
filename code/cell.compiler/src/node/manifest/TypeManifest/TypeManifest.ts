@@ -1,6 +1,5 @@
 import { fs, t } from '../../common';
-import { appendFileInfo } from './fileInfo';
-import { copyRefs } from './copyRefs';
+import { FileInfo } from './FileInfo';
 import { CreateAndSave } from './types';
 import { formatDirs, Info } from './util';
 import { Manifest, createAndSave as ManifestCreateAndSave } from '../Manifest';
@@ -16,13 +15,6 @@ const createAndSave: CreateAndSave = async (args) => {
     filename,
     model,
   });
-
-  /**
-   * TODO 🐷
-   * - Move this to the TS compiler section.
-   */
-
-  // if (args.copyRefs) await copyRefs(base, res.manifest, createAndSave);
   return res;
 };
 
@@ -30,6 +22,7 @@ const createAndSave: CreateAndSave = async (args) => {
  * Helpers for creating and working with manifest of type declarations (".d.ts" files)
  */
 export const TypeManifest = {
+  file: FileInfo,
   hash: Manifest.hash,
   validate: Manifest.validate,
 
@@ -64,7 +57,9 @@ export const TypeManifest = {
       hash: manifest.hash,
       kind: 'typelib',
       typelib,
-      files: await Promise.all(manifest.files.map((file) => appendFileInfo(dirs.join(), file))),
+      files: await Promise.all(
+        manifest.files.map((file) => FileInfo.appendManifest(dirs.join(), file)),
+      ),
     };
   },
 
@@ -83,9 +78,8 @@ export const TypeManifest = {
   /**
    * Writes a manifest to the file-system.
    */
-  async write(args: { manifest: M; dir: string; filename?: string; copyRefs?: boolean }) {
+  async write(args: { manifest: M; dir: string; filename?: string }) {
     const res = await Manifest.write<M>(args);
-    if (args.copyRefs) await copyRefs(fs.dirname(args.dir), res.manifest, createAndSave);
     return res;
   },
 

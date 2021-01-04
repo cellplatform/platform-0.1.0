@@ -1,5 +1,4 @@
 import { fs, t } from '../../common';
-import { compileDeclarations } from '../__compiler.declarations';
 import { TscTranspiler } from './TscCompiler.transpile';
 import { TscDeclarations } from './TscDeclarations';
 import { TscCopy } from './TscCopy';
@@ -25,16 +24,6 @@ export function TscCompiler(tsconfigPath?: string) {
     transpile: TscTranspiler(tsconfig),
     copyBundle: TscCopy.bundle,
     copyRefs: TscCopy.refs,
-
-    /**
-     * Compile typescript [.d.ts] declarations.
-     */
-    async declarations_OLD(args) {
-      /**
-       * TODO 🐷 REMOVE
-       */
-      return compileDeclarations({ ...args, tsconfig });
-    },
   };
 
   return compiler;

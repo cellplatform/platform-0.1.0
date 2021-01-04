@@ -5,7 +5,7 @@ import { toDir, toRelativePath, toResponseDir } from '../util';
 /**
  * Copy a compiled bundle.
  */
-export const bundle: t.TscCopyBundle = async (args) => {
+export const copyBundle: t.TscCopyBundle = async (args) => {
   const from = toDir(args.from);
   const to = toDir(args.to);
 

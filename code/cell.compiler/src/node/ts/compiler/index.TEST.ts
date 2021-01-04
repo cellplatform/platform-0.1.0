@@ -13,7 +13,7 @@ const find = async (dir: t.TscDir, pattern: string) => {
 
 const source = 'src/test/test.bundles/node.simple/**/*';
 
-describe.only('TscCompiler', function () {
+describe('TscCompiler', function () {
   this.timeout(99999);
 
   const config = SampleBundles.simpleNode.config;
@@ -51,6 +51,7 @@ describe.only('TscCompiler', function () {
       expect(res.tsconfig.include).to.eql([source]);
       expect(res.error).to.eql(undefined);
       expect(res.out.dir).to.eql(outdir);
+      expect(res.transformations).to.eql([]);
 
       const manifest = res.out.manifest;
       expect(manifest.kind).to.eql('typelib');
@@ -63,15 +64,49 @@ describe.only('TscCompiler', function () {
       expect(manifestFiles).to.not.include('index.json');
 
       const Files = {
-        d: await fs.glob.find(`${outdir}/**/*.d.ts`),
+        dts: await fs.glob.find(`${outdir}/**/*.d.ts`),
         js: await fs.glob.find(`${outdir}/**/*.js`),
       };
-      expect(Files.d.length).to.greaterThan(3);
+      expect(Files.dts.length).to.greaterThan(3);
       expect(Files.js.length).to.greaterThan(3);
 
-      [...Files.d, ...Files.js]
+      [...Files.dts, ...Files.js]
         .map((path) => path.substring(outdir.length + 1))
         .forEach((path) => expect(manifestFiles).to.include(path));
+    });
+
+    it('transform paths while transforming', async () => {
+      const outdir = fs.join(TMP, 'foo');
+      await fs.remove(outdir);
+
+      const compiler = TscCompiler();
+      const res = await compiler.transpile({
+        source,
+        outdir,
+        silent: true,
+        transformPath: (path) => path.replace(/\.d\.ts$/, '.d.txt'),
+      });
+
+      const manifest = res.out.manifest;
+      const manifestFiles = manifest.files.map((file) => file.path);
+
+      const Files = {
+        dts: await fs.glob.find(`${outdir}/**/*.d.ts`),
+        dtxt: await fs.glob.find(`${outdir}/**/*.d.txt`),
+        js: await fs.glob.find(`${outdir}/**/*.js`),
+      };
+      expect(Files.dts.length).to.eql(0);
+      expect(Files.dtxt.length).to.greaterThan(3);
+      expect(Files.js.length).to.greaterThan(3);
+
+      const included = (...exts: string[]) => (p: string) => exts.some((ext) => p.endsWith(ext));
+      expect(manifestFiles.every(included('.js', '.d.txt', 'package.json'))).to.eql(true);
+      expect(manifestFiles.some(included('.d.ts'))).to.eql(false);
+
+      const from = res.transformations.map(({ from }) => from);
+      const to = res.transformations.map(({ to }) => to);
+      expect(from.every(included('.d.ts'))).to.eql(true);
+      expect(to.every(included('.d.txt'))).to.eql(true);
     });
 
     it('copy in [package.json] file', async () => {
@@ -109,18 +144,31 @@ describe.only('TscCompiler', function () {
       expect(res.out.dir).to.eql(outdir);
 
       const manifest = res.out.manifest;
+      const manifestFiles = manifest.files.map((file) => file.path);
+
       expect(manifest.kind).to.eql('typelib');
       expect(manifest.typelib.name).to.eql('node.simple');
       expect(manifest.typelib.version).to.eql('0.0.1');
       expect(manifest.typelib.entry).to.eql('./types.d.txt');
 
       const Files = {
-        d: await fs.glob.find(`${outdir}/**/*.d.ts`),
+        dts: await fs.glob.find(`${outdir}/**/*.d.ts`),
+        dtxt: await fs.glob.find(`${outdir}/**/*.d.txt`),
         js: await fs.glob.find(`${outdir}/**/*.js`),
       };
 
-      expect(Files.d.length).to.greaterThan(3);
+      expect(Files.dts.length).to.eql(0);
+      expect(Files.dtxt.length).to.greaterThan(3);
       expect(Files.js.length).to.eql(0);
+
+      const included = (...exts: string[]) => (p: string) => exts.some((ext) => p.endsWith(ext));
+      expect(manifestFiles.every(included('.d.txt', 'package.json'))).to.eql(true);
+      expect(manifestFiles.some(included('.d.ts'))).to.eql(false);
+
+      const from = res.transformations.map(({ from }) => from);
+      const to = res.transformations.map(({ to }) => to);
+      expect(from.every(included('.d.ts'))).to.eql(true);
+      expect(to.every(included('.d.txt'))).to.eql(true);
     });
   });
 
@@ -353,24 +401,38 @@ describe.only('TscCompiler', function () {
       await fs.copy(original, dir);
     });
 
-    it.only('copy refs', async () => {
+    it('copy refs - not recursive', async () => {
+      await expectPathExists(true, 'main');
       await expectPathExists(false, '@platform');
-      // return;
+      await expectPathExists(false, 'rxjs');
 
       const sourceDir = dir;
-      const res = await compiler.copyRefs({ sourceDir });
-
-      console.log('-------------------------------------------');
-      console.log('res', res);
-      // console.log('-------------------------------------------');
-      // console.log('0', res.refs[0]);
-      // console.log('1', res.refs[1]);
+      const res = await compiler.copyRefs({ sourceDir, recursive: false });
 
       expect(res.source).to.eql(dir);
       expect(res.target).to.eql(fs.dirname(dir));
 
       await expectRefCopied('@platform/cell.types');
       await expectRefCopied('@platform/log');
+      await expectPathExists(false, 'rxjs');
+    });
+
+    it('copy refs - recursive', async () => {
+      await expectPathExists(true, 'main');
+      await expectPathExists(false, '@platform');
+      await expectPathExists(false, 'rxjs');
+
+      const sourceDir = dir;
+      const res = await compiler.copyRefs({ sourceDir });
+
+      expect(res.source).to.eql(dir);
+      expect(res.target).to.eql(fs.dirname(dir));
+
+      await expectRefCopied('@platform/cell.types');
+      await expectRefCopied('@platform/cache');
+      await expectRefCopied('@platform/types');
+      await expectRefCopied('@platform/log');
+      await expectRefCopied('rxjs');
     });
 
     describe('errors', () => {

@@ -42,9 +42,13 @@ export function ProgressSpinner(args: { label?: string; total?: number; silent?:
     update(options: { total?: number; completed?: number; label?: string } = {}) {
       state.total = typeof options.total === 'number' ? options.total : state.total;
       state.completed = typeof options.completed === 'number' ? options.completed : state.completed;
+      state.label = typeof options.label === 'string' ? options.label.trim() : state.label;
       updateText();
       return spinner;
     },
+
+    label: (label: string) => spinner.update({ label }),
+    total: (total: number) => spinner.update({ total }),
   };
 
   return spinner;

@@ -60,6 +60,7 @@ describe('TypeManifest', function () {
     const manifest = await TypeManifest.create({ base, dir });
     const foo = 'foo.d.txt';
     const file = manifest.files.find((file) => file.path === foo);
+
     expect(file?.declaration.imports).to.eql(['@platform/log/lib/server']);
 
     const files = manifest.files.filter((file) => file.path !== foo);
@@ -96,30 +97,6 @@ describe('TypeManifest', function () {
     expect(read.manifest).to.eql(manifest);
   });
 
-  it('write: copyRefs', async () => {
-    const model = config.toObject();
-    const manifest = await TypeManifest.create({ model, base, dir });
-    expect(manifest.files.length).to.greaterThan(0);
-
-    const PATHS = {
-      base: fs.join(TMP, 'types.d'),
-      write: fs.join(TMP, 'types.d', dir),
-      manifest: fs.join(TMP, 'types.d', dir, TypeManifest.filename),
-      platform: fs.join(TMP, 'types.d/@platform'),
-    };
-
-    await expectFileExists(false, PATHS.manifest);
-    await TypeManifest.write({ manifest, dir: PATHS.write });
-    await expectFileExists(true, PATHS.manifest);
-
-    await expectFileExists(false, PATHS.platform);
-    await TypeManifest.write({ manifest, dir: PATHS.write, copyRefs: true });
-    await expectFileExists(true, PATHS.platform);
-
-    const declarations = await fs.glob.find(`${PATHS.base}/**/*.d.txt`);
-    expect(declarations.length).to.greaterThan(300);
-  });
-
   it('createAndSave', async () => {
     await fs.remove(TMP);
 
@@ -127,7 +104,6 @@ describe('TypeManifest', function () {
       dir,
       base: fs.join(TMP, 'types.d'),
       manifest: fs.join(TMP, 'types.d', dir, TypeManifest.filename),
-      platform: fs.join(TMP, 'types.d', '@platform'),
     };
 
     await expectFileExists(false, PATHS.manifest);
@@ -145,15 +121,6 @@ describe('TypeManifest', function () {
     });
 
     await expectFileExists(true, PATHS.manifest);
-    await expectFileExists(false, PATHS.platform);
-
-    await TypeManifest.createAndSave({
-      model,
-      base: PATHS.base,
-      dir: PATHS.dir,
-      copyRefs: true,
-    });
-    await expectFileExists(true, PATHS.platform);
 
     expect(res.path).to.eql(PATHS.manifest);
     expect(res.manifest.files.length).to.greaterThan(0);
@@ -163,7 +130,7 @@ describe('TypeManifest', function () {
     expect(read.manifest).to.eql(res.manifest);
 
     const declarations = await fs.glob.find(`${PATHS.base}/**/*.d.txt`);
-    expect(declarations.length).to.greaterThan(300);
+    expect(declarations.length).to.greaterThan(3);
   });
 
   describe('formatDirs', () => {

@@ -13,6 +13,7 @@ export function TscDeclarations(tsconfig: t.TscConfig) {
       return TscTranspiler(tsconfig)({
         ...args,
         compilerOptions: { emitDeclarationOnly: true },
+        transformPath: (path) => path.replace(/\.d\.ts$/, '.d.txt'),
       });
     },
   };

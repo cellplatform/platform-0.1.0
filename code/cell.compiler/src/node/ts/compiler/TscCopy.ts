@@ -1,8 +1,8 @@
 import { t } from '../../common';
-import { bundle } from './TscCopy.bundle';
-import { refs } from './TscCopy.refs';
+import { copyBundle } from './TscCopy.bundle';
+import { copyRefs } from './TscCopy.refs';
 
 export const TscCopy: t.TscCopy = {
-  bundle,
-  refs,
+  bundle: copyBundle,
+  refs: copyRefs,
 };

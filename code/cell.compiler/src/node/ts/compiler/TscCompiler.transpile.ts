@@ -45,6 +45,24 @@ export function TscTranspiler(tsconfig: t.TscConfig): t.TscTranspile {
       await fs.copy(packagePath, fs.join(outdir, 'package.json'));
     }
 
+    const transformations: t.TscPathTransform[] = [];
+    if (args.outdir) {
+      const transform = (from: string) => {
+        if (typeof args.transformPath !== 'function') return from;
+        const to = args.transformPath(from);
+        if (typeof to === 'string' && to !== from) {
+          transformations.push({ from, to });
+          return to;
+        } else {
+          return from;
+        }
+      };
+
+      const paths = await fs.glob.find(`${outdir}/**/*`);
+      await Promise.all(paths.map(transform));
+      await Promise.all(transformations.map(({ from, to }) => fs.rename(from, to)));
+    }
+
     // Save the type-declaration manifest.
     const { manifest } = await TscManifest.generate({ dir: outdir });
 
@@ -56,6 +74,7 @@ export function TscTranspiler(tsconfig: t.TscConfig): t.TscTranspile {
     return {
       tsconfig: json,
       out: { dir: outdir, manifest },
+      transformations,
       error,
     };
   };
