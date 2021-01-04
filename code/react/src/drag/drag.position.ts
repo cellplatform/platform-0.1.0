@@ -75,7 +75,7 @@ export class DragPositionEvent implements IDragPositionEvent {
  * Starts a drag operation (usually initiated from a mouse-down event.)
  */
 export const position = (options: { el: HTMLElement }) => {
-  const dispose$ = new Subject();
+  const dispose$ = new Subject<void>();
   const events$ = new Subject<DragPositionEvent>();
   const mouseUp$ = events.mouseUp$.pipe(takeUntil(dispose$));
   const el = options.el;

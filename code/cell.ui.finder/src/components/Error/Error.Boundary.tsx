@@ -18,7 +18,7 @@ export type IErrorBoundaryState = {};
 export class ErrorBoundary extends React.Component<IErrorBoundaryProps, IErrorBoundaryState> {
   public state: IErrorBoundaryState = {};
   private state$ = new Subject<Partial<IErrorBoundaryState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

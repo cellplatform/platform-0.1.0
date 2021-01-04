@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.service",
-  "version": "0.8.27",
+  "version": "0.8.28",
   "description": "HTTP micro-service for the operating system.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -23,10 +23,10 @@
     "dbuild": "cd deployment && yarn dbuild"
   },
   "dependencies": {
-    "@platform/cell.router": "0.8.91",
-    "@platform/cell.schema": "0.5.51",
-    "@platform/cell.types": "0.5.51",
-    "@platform/cell.typesystem": "0.0.170",
+    "@platform/cell.router": "0.8.92",
+    "@platform/cell.schema": "0.5.52",
+    "@platform/cell.types": "0.5.52",
+    "@platform/cell.typesystem": "0.0.171",
     "@platform/cli": "0.5.64",
     "@platform/exec": "0.2.75",
     "@platform/fs": "0.6.6",

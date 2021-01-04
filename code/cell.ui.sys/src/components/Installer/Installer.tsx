@@ -11,7 +11,7 @@ export type IInstallerState = t.Object;
 export class Installer extends React.PureComponent<IInstallerProps, IInstallerState> {
   public state: IInstallerState = {};
   private state$ = new Subject<Partial<IInstallerState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

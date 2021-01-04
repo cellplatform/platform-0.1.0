@@ -15,7 +15,7 @@ export type IMessageState = {
 export class Message extends React.PureComponent<IMessageProps, IMessageState> {
   public state: IMessageState = {};
   private state$ = new Subject<Partial<IMessageState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

@@ -10,7 +10,7 @@ export type INotFoundState = t.Object;
 export class NotFound extends React.PureComponent<INotFoundProps, INotFoundState> {
   public state: INotFoundState = {};
   private state$ = new Subject<Partial<INotFoundState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

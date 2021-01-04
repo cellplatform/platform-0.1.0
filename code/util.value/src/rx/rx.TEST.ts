@@ -108,7 +108,7 @@ describe('rx', () => {
     });
 
     it('create: use given subject', () => {
-      const source$ = new Subject(); // NB: Does not care the typing of the input observable (flexible).
+      const source$ = new Subject<any>(); // NB: Does not care the typing of the input observable (flexible).
       const bus = rx.bus<MyEvent>(source$);
 
       const fired: MyEvent[] = [];
@@ -143,14 +143,14 @@ describe('rx', () => {
     });
 
     it('filters out non-standard [event] objects from the stream', () => {
-      const source$ = new Subject();
+      const source$ = new Subject<any>();
       const bus = rx.bus<MyEvent>(source$);
 
       const fired: MyEvent[] = [];
       bus.event$.subscribe((e) => fired.push(e));
 
       // NB: All data-types that do not conform to the shape of a [Event].
-      source$.next();
+      source$.next(undefined);
       source$.next(null);
       source$.next(1);
       source$.next(true);

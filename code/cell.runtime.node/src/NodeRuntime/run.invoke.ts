@@ -82,7 +82,7 @@ export function invoke(args: {
       });
     };
 
-    if (args.hash && args.hash !== manifest.hash) {
+    if (args.hash && args.hash !== manifest.hash.files) {
       addError(`Bundle manifest does not match requested hash '${args.hash}'.`);
       preparationComplete();
       return done();

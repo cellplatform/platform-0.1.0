@@ -16,7 +16,7 @@ export type ITestSampleState = { module?: t.MyModule };
 export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampleState> {
   public state: ITestSampleState = {};
   private state$ = new Subject<Partial<ITestSampleState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   public static contextType = Module.Context;
   public context!: t.MyContext;

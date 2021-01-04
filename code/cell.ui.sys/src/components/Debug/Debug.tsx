@@ -14,7 +14,7 @@ export type IDebugState = t.Object;
 export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   public state: IDebugState = {};
   private state$ = new Subject<Partial<IDebugState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

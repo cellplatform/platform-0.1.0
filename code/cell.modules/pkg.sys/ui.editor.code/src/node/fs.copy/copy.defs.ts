@@ -140,7 +140,6 @@ async function copy(args: {
   await TypeManifest.createAndSave({
     base: fs.dirname(targetDir),
     dir: fs.basename(targetDir),
-    copyRefs: true,
   });
 
   // Finish up.

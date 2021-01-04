@@ -24,7 +24,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     borderWidth: 5,
     borderColor: 0.2,
   };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private state$ = new Subject<Partial<t.ITestState>>();
   private avatar$ = new Subject<t.AvatarEvent>();
   private image$ = new Subject<t.ImageEvent>();
@@ -37,13 +37,13 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const avatar$ = this.avatar$.pipe(takeUntil(this.unmounted$));
     const image$ = this.image$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
-    avatar$.subscribe(e => {
+    avatar$.subscribe((e) => {
       log.info('👱‍', e.type, e.payload);
     });
 
-    image$.subscribe(e => {
+    image$.subscribe((e) => {
       log.info('🐷', e.type, e.payload);
     });
   }

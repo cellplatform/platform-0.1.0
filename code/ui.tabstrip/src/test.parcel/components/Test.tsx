@@ -29,7 +29,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     ],
     selected: 0,
   };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.TabstripEvent>();
 

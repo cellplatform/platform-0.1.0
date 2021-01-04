@@ -21,7 +21,7 @@ export class ModuleViewFrame extends React.PureComponent<
 > {
   public state: IModuleViewFrameState = {};
   private state$ = new Subject<Partial<IModuleViewFrameState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

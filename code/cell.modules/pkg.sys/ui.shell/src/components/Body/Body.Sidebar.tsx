@@ -13,7 +13,7 @@ export type BodySidebarState = t.Object;
 export class BodySidebar extends React.PureComponent<IBodySidebarProps, BodySidebarState> {
   public state: BodySidebarState = {};
   private state$ = new Subject<Partial<BodySidebarState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

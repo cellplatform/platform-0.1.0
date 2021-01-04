@@ -38,7 +38,7 @@ export type ITestState = t.ITestState & {
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = { showDebug: storage.showDebug };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private state$ = new Subject<Partial<ITestState>>();
   private grid$ = new Subject<t.GridEvent>();
   private sync$ = new Subject<t.SyncEvent>();

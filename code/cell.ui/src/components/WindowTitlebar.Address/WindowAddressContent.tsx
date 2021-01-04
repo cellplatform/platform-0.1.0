@@ -17,7 +17,7 @@ export class WindowAddressContent extends React.PureComponent<
 > {
   public state: IWindowAddressContentState = {};
   private state$ = new Subject<Partial<IWindowAddressContentState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   public static contextType = ui.Context;
   public context!: t.IEnvContext;

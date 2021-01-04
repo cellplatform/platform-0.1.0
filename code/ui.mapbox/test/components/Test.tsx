@@ -10,7 +10,7 @@ export type ITestProps = {};
 
 export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public state: t.ITestState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private state$ = new Subject<Partial<t.ITestState>>();
   private cli: t.ICommandState = cli.init({ state$: this.state$ });
 
@@ -22,23 +22,23 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    */
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
     state$
       // Zoom.
       .pipe(
-        filter(e => Boolean(e.zoom)),
-        map(e => e.zoom as number),
+        filter((e) => Boolean(e.zoom)),
+        map((e) => e.zoom as number),
       )
-      .subscribe(zoom => (this.map.zoom = zoom));
+      .subscribe((zoom) => (this.map.zoom = zoom));
 
     state$
       // Center.
       .pipe(
-        filter(e => Boolean(e.center)),
-        map(e => e.center as t.ILngLat),
+        filter((e) => Boolean(e.center)),
+        map((e) => e.center as t.ILngLat),
       )
-      .subscribe(center => (this.map.center = center));
+      .subscribe((center) => (this.map.center = center));
   }
 
   public componentWillUnmount() {

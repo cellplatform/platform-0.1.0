@@ -93,7 +93,7 @@ Object.keys(SAMPLES).forEach((key) => {
 export type ITestProps = { style?: CssValue };
 
 export class Test extends React.PureComponent<ITestProps> {
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private treeview$ = new Subject<t.TreeviewEvent>();
   private tree = Treeview.State.create({
     root: SAMPLES.DEFAULT,

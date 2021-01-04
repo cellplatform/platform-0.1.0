@@ -27,7 +27,7 @@ export class CommandTreeView extends React.PureComponent<
   ICommandTreeViewState
 > {
   public state: ICommandTreeViewState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private state$ = new Subject<Partial<ICommandTreeViewState>>();
   private treeview$ = new Subject<t.TreeviewEvent>();
   private _events$ = new Subject<t.CommandTreeEvent>();

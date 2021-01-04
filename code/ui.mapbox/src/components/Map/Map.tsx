@@ -30,7 +30,7 @@ export type IMapProps = {
 };
 
 export class Map extends React.PureComponent<IMapProps> {
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   private map: mapboxgl.Map;
   private el!: HTMLDivElement;

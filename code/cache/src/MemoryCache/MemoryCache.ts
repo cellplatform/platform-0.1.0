@@ -104,7 +104,7 @@ export class MemoryCache<K extends string = string> implements t.IMemoryCache<K>
    */
   private item<V>(key: K): CacheItem<V> {
     if (!this.values[key]) {
-      this.values[key] = { put$: new Subject() };
+      this.values[key] = { put$: new Subject<void>() };
     }
     return this.values[key];
   }

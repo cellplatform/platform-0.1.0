@@ -25,7 +25,7 @@ export type ITestState = {
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = { panels: [PANELS[0]] };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private state$ = new Subject<Partial<ITestState>>();
 
   /**

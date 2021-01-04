@@ -61,7 +61,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
   private state$ = new Subject<Partial<ITestState>>();
 
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private treeview$ = new Subject<t.TreeviewEvent>();
   private tree = Tree.State.create({ root: DEFAULT, dispose$: this.unmounted$ });
 

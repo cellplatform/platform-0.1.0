@@ -17,7 +17,7 @@ function fromStorage<T = any>(key: string, defaultValue?: T): T | undefined {
 export type ITestProps = Record<string, unknown>;
 export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public state: t.ITestState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private state$ = new Subject<Partial<t.ITestState>>();
 
   /**

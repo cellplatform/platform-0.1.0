@@ -12,7 +12,7 @@ export type ITestDiagramState = t.Object;
 export class TestDiagram extends React.PureComponent<ITestDiagramProps, ITestDiagramState> {
   public state: ITestDiagramState = {};
   private state$ = new Subject<Partial<ITestDiagramState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

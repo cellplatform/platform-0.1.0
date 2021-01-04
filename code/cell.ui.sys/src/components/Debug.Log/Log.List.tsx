@@ -13,7 +13,7 @@ export type ILogListProps = {
 };
 
 export class LogList extends React.PureComponent<ILogListProps> {
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

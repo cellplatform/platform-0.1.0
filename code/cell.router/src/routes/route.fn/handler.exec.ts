@@ -132,7 +132,7 @@ async function execBundle(args: {
     tx,
     out: res.out,
     elapsed: res.elapsed,
-    bundle: { ...bundle, hash: manifest?.hash },
+    bundle: { ...bundle, hash: manifest?.hash.files },
     entry: res.entry,
     cache: { exists, pulled: pull ? true : !exists },
     size: {

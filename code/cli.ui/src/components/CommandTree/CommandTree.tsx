@@ -14,7 +14,7 @@ export type ICommandTreeProps = {
 };
 
 export class CommandTree extends React.PureComponent<ICommandTreeProps> {
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private _events$ = new Subject<t.CommandTreeEvent>();
   public events$ = this._events$.pipe(takeUntil(this.unmounted$), share());
 

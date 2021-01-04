@@ -34,7 +34,7 @@ export class ModuleViewTree extends React.PureComponent<
   public state: IModuleViewTreeState = {};
   private state$ = new Subject<Partial<IModuleViewTreeState>>();
   private treeview$ = new Subject<t.TreeviewEvent>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   private elTree!: Treeview;
   private elTreeRef = (ref: Treeview) => (this.elTree = ref);

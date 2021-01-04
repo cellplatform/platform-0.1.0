@@ -34,7 +34,7 @@ export class CommandShell extends React.PureComponent<ICommandShellProps> {
    * [Fields]
    */
 
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private tree$ = new Subject<t.CommandTreeEvent>();
 
   private prompt!: CommandPrompt;

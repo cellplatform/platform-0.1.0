@@ -10,7 +10,7 @@ export type IDebugHeaderState = { isOver?: boolean };
 export class DebugHeader extends React.PureComponent<IDebugHeaderProps, IDebugHeaderState> {
   public state: IDebugHeaderState = {};
   private state$ = new Subject<Partial<IDebugHeaderState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

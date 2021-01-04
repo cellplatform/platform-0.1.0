@@ -29,7 +29,7 @@ export type ITreeviewStateState = { addTextboxLabel?: string };
 export class TreeviewState extends React.PureComponent<ITreeviewStateProps, ITreeviewStateState> {
   public state: ITreeviewStateState = {};
   private state$ = new Subject<Partial<ITreeviewStateState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

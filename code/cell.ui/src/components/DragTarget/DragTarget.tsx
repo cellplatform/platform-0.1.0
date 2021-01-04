@@ -26,7 +26,7 @@ export class DragTarget extends React.PureComponent<IDragTargetProps, IDragTarge
 
   public state: IDragTargetState = {};
   private state$ = new Subject<Partial<IDragTargetState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private event$ = this.props.event$ || new Subject<t.DragTargetEvent>();
 
   /**

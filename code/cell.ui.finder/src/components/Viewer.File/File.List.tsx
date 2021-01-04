@@ -19,7 +19,7 @@ export type ViewerItemClickEventHandler = (e: ViewerItemClickEvent) => void;
 export class ViewerList extends React.PureComponent<IViewerListProps, IViewerListState> {
   public state: IViewerListState = {};
   private state$ = new Subject<Partial<IViewerListState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

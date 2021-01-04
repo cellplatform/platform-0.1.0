@@ -22,7 +22,7 @@ export type IGraphqlEditorProps = {
 };
 
 export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps> {
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   private _result: t.JsonMap | undefined;
   private _schema: t.JsonMap | undefined;

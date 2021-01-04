@@ -16,7 +16,7 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
 
   public state: IMonacoState = {};
   private state$ = new Subject<Partial<IMonacoState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private getEditorValue!: () => string;
   private editor: any;
 

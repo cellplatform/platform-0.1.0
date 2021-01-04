@@ -11,7 +11,7 @@ export type ISidebarDebugState = t.Object;
 export class SidebarDebug extends React.PureComponent<ISidebarDebugProps, ISidebarDebugState> {
   public state: ISidebarDebugState = {};
   private state$ = new Subject<Partial<ISidebarDebugState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

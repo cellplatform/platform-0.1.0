@@ -69,7 +69,7 @@ describe('wait', () => {
     const startedAt = now();
     expect(now() - startedAt).to.be.lessThan(10);
 
-    const ob$ = new Subject();
+    const ob$ = new Subject<void>();
     delay(15, () => ob$.next());
 
     await wait(ob$);

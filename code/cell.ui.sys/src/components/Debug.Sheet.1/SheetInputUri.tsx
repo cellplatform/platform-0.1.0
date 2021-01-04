@@ -12,7 +12,7 @@ export type ISheetInputUriProps = {
 };
 
 export class SheetInputUri extends React.PureComponent<ISheetInputUriProps> {
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

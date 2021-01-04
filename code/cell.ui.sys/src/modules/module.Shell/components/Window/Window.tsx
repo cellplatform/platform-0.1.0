@@ -18,7 +18,7 @@ export type IWindowProps = {
 };
 
 export class Window extends React.PureComponent<IWindowProps> {
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   public static contextType = ui.Context;
   public context!: t.IEnvContext;

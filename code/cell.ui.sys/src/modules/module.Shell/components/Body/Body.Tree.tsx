@@ -19,7 +19,7 @@ export type ILayoutTreeState = { isEmpty?: boolean };
 export class LayoutTree extends React.PureComponent<ILayoutTreeProps, ILayoutTreeState> {
   public state: ILayoutTreeState = {};
   private state$ = new Subject<Partial<ILayoutTreeState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private treeview$ = new Subject<t.TreeviewEvent>();
 
   private elTree!: ModuleViewTree;

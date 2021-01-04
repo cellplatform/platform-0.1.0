@@ -12,7 +12,7 @@ export type ISheetInfoProps = {
 };
 
 export class SheetInfo extends React.PureComponent<ISheetInfoProps> {
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private tree = Treeview.State.create({ root: { id: 'sheet', props: { label: 'Info' } } });
 
   /**

@@ -47,7 +47,7 @@ export type IInviteState = {
 export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   public state: IInviteState = {};
   private state$ = new Subject<Partial<IInviteState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   private client: t.IClient;
   private ns: string;

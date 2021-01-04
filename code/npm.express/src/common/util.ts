@@ -7,7 +7,7 @@ import { fs, NodeProcess } from './libs';
  * actions that occured.
  */
 export function monitorProcessEvents(process: NodeProcess) {
-  const done$ = new Subject();
+  const done$ = new Subject<void>();
   const process$ = process.events$.pipe(takeUntil(done$));
 
   let actions: string[] = [];
