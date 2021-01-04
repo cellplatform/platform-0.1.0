@@ -85,8 +85,6 @@ async function compileDeclarations(args: { model: t.CompilerModel; bundleDir: st
     return { source, outdir, silent: true };
   });
 
-  console.log('args.bundleDir', args.bundleDir);
-
   await Promise.all(params.map((params) => ts.declarations.transpile(params)));
   await ts.manifest.generate({ dir: args.bundleDir });
 }
