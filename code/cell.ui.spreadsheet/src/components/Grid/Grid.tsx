@@ -11,7 +11,7 @@ export type IGridState = { ns?: string };
 export class Grid extends React.PureComponent<IGridProps, IGridState> {
   public state: IGridState = {};
   private state$ = new Subject<Partial<IGridState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

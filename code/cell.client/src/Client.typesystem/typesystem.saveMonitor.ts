@@ -20,7 +20,7 @@ export function saveMonitor(args: {
   const queue = MemoryQueue.create();
 
   // Setup observables.
-  const dispose$ = new Subject();
+  const dispose$ = new Subject<void>();
   const changed$ = client.changes.changed$.pipe(takeUntil(dispose$));
   const subject$ = args.event$ || new Subject<E>();
   const event$ = subject$.pipe(takeUntil(dispose$), share());

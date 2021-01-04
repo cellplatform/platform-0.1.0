@@ -24,7 +24,7 @@ export function observable<P extends t.IProps>(initial?: P | (keyof P)[]): t.IOb
   const keys = Object.keys(values);
 
   // Observables.
-  const dispose$ = new Subject();
+  const dispose$ = new Subject<void>();
   const _events$ = new Subject<t.PropEvent>();
   const events$ = _events$.pipe(takeUntil(dispose$), share());
   const changing$ = events$.pipe(

@@ -1,7 +1,7 @@
 import { Stats } from 'webpack';
 
 import { fs, log, logger, Model, t, ProgressSpinner } from '../common';
-import { BundleManifest } from '../bundle';
+import { BundleManifest, TypeManifest } from '../manifest';
 import { afterCompile, wp } from './util';
 import { Typescript } from '../ts';
 
@@ -27,17 +27,18 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
       }
 
       compiler.run(async (err, stats) => {
-        spinner.stop();
-
         if (err) {
+          spinner.stop();
           return reject(err);
         }
         if (stats) {
           const res = toBundledResponse({ model, stats, webpack });
-          const compilation = stats.compilation;
 
+          spinner.label(`compiling type declarations (${log.green('.d.ts')} files)...`);
           await compileDeclarations({ model, bundleDir });
+          spinner.stop();
 
+          const compilation = stats.compilation;
           if (compilation) {
             await onCompiled({ model, bundleDir, compilation, webpack });
           }
@@ -48,6 +49,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
 
           resolve(res);
         } else {
+          spinner.stop();
           reject(new Error(`The compilation did not produce a stats object.`));
         }
       });
@@ -57,17 +59,6 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
   });
 };
 
-async function compileDeclarations(args: { model: t.CompilerModel; bundleDir: string }) {
-  if (!args.model.declarations || args.model.declarations.length === 0) return;
-  const declarations = args.model.declarations.map((d) => ({
-    include: d.include,
-    outfile: fs.join(args.bundleDir, d.outfile),
-    silent: true,
-  }));
-  const ts = Typescript.compiler();
-  await Promise.all(declarations.map((params) => ts.declarations(params)));
-}
-
 export async function onCompiled(args: {
   model: t.CompilerModel;
   bundleDir: string;
@@ -76,13 +67,29 @@ export async function onCompiled(args: {
 }) {
   const { model, bundleDir, compilation, webpack } = args;
   await copyStatic({ model, bundleDir });
-  await BundleManifest.createAndSave({ model, bundleDir });
+  await BundleManifest.createAndSave({ model, sourceDir: bundleDir });
   afterCompile({ model, compilation, webpack });
 }
 
 /**
  * [Helpers]
  */
+
+async function compileDeclarations(args: { model: t.CompilerModel; bundleDir: string }) {
+  if (!args.model.declarations || args.model.declarations.length === 0) return;
+  const ts = Typescript.compiler();
+
+  const params: t.TscTranspileDeclarationsArgs[] = args.model.declarations.map((lib) => {
+    const source = lib.include;
+    const outdir = fs.join(args.bundleDir, 'types.d', lib.dir);
+    return { source, outdir, silent: true };
+  });
+
+  console.log('args.bundleDir', args.bundleDir);
+
+  await Promise.all(params.map((params) => ts.declarations.transpile(params)));
+  await ts.manifest.generate({ dir: args.bundleDir });
+}
 
 function toBundledResponse(args: {
   model: t.CompilerModel;

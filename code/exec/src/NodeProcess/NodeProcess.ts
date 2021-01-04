@@ -63,7 +63,7 @@ export class NodeProcess {
   private _ = {
     NPM_TOKEN: undefined as undefined | string,
     child: undefined as undefined | exec.ICommandPromise,
-    dispose$: new Subject(),
+    dispose$: new Subject<void>(),
     events$: new Subject<t.NodeProcessEvent>(),
   };
   public readonly dispose$ = this._.dispose$.pipe(share());

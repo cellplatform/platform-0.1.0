@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 
 import { TreeviewStrategy } from '.';
 import { t, expect } from '../test';
-import { TreeViewState } from '../TreeviewState';
+import { TreeviewState } from '../TreeviewState';
 
 type A = t.TreeviewStrategyNextArgs;
 
@@ -16,7 +16,7 @@ const create = {
   },
 
   tree() {
-    return TreeViewState.create();
+    return TreeviewState.create();
   },
 
   next() {

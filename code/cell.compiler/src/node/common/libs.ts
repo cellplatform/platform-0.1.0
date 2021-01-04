@@ -1,7 +1,10 @@
 import { sortBy, sortWith, ascend, descend, prop, uniq, uniqBy, pipe, groupBy, clone } from 'ramda';
 export const R = { sortBy, sortWith, ascend, descend, prop, uniq, uniqBy, pipe, groupBy, clone };
 
-export { rx, id, defaultValue, value, time, deleteUndefined } from '@platform/util.value';
+import { id } from '@platform/util.value';
+export { id };
+export { rx, defaultValue, value, time, deleteUndefined } from '@platform/util.value';
+export const slug = id.shortid;
 
 export { Builder } from '@platform/cell.module';
 export { StateObject } from '@platform/state';

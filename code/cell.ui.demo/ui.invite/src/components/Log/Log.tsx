@@ -18,7 +18,7 @@ export type ILogState = {};
 export class Log extends React.PureComponent<ILogProps, ILogState> {
   public state: ILogState = {};
   private state$ = new Subject<Partial<ILogState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

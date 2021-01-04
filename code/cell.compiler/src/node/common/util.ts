@@ -3,6 +3,8 @@ import { isModel } from './util.model';
 
 export * from './util.model';
 export * from './util.logger';
+export * from './util.Package';
+export * from './util.NodeModules';
 
 /**
  * Flag tests.

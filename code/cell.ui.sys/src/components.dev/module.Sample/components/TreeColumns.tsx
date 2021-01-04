@@ -16,7 +16,7 @@ export class TreeColumns extends React.PureComponent<ITreeColumnsProps, ITreeCol
   public state: ITreeColumnsState = {};
   private state$ = new Subject<Partial<ITreeColumnsState>>();
 
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private treeview$ = new Subject<t.TreeviewEvent>();
   private tree = Tree.State.create({ root: DEFAULT, dispose$: this.unmounted$ });
 

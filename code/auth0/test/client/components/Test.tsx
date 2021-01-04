@@ -10,7 +10,7 @@ export type ITestProps = {};
 
 export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public state: t.ITestState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private state$ = new Subject<Partial<t.ITestState>>();
   private cli = cli.init({ state$: this.state$ });
 
@@ -18,7 +18,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
   public componentWillUnmount() {

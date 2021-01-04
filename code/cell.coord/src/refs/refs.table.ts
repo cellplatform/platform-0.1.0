@@ -60,7 +60,7 @@ class RefsTable implements t.IRefsTable {
   private readonly _getValue: t.RefGetValue;
   public readonly cache: t.IMemoryCache;
 
-  private readonly _dispose$ = new Subject();
+  private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _event$ = new Subject<t.RefsTableEvent>();

@@ -18,7 +18,7 @@ export type IDocState = {};
 export class Doc extends React.PureComponent<IDocProps, IDocState> {
   public state: IDocState = {};
   private state$ = new Subject<Partial<IDocState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

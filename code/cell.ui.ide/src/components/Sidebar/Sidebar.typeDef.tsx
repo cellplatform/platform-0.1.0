@@ -14,7 +14,7 @@ export class SidebarTypeDef extends React.PureComponent<
 > {
   public state: ISidebarTypeDefState = {};
   private state$ = new Subject<Partial<ISidebarTypeDefState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

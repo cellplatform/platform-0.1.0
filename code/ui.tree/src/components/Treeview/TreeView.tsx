@@ -15,7 +15,7 @@ import { constants, t } from '../../common';
 import * as themes from '../../themes';
 import { TreeEvents } from '../../TreeEvents';
 import { TreeUtil } from '../../TreeUtil';
-import { TreeViewState } from '../../TreeviewState';
+import { TreeviewState } from '../../TreeviewState';
 import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
 import { renderer } from './renderer';
@@ -62,8 +62,8 @@ export class Treeview extends React.PureComponent<ITreeviewProps, ITreeviewState
    */
   public static util = TreeUtil;
   public static query = TreeUtil.query;
-  public static Identity = TreeViewState.identity;
-  public static State = TreeViewState;
+  public static Identity = TreeviewState.identity;
+  public static State = TreeviewState;
 
   public static events<T extends N = N>(event$: Observable<E>, until$?: Observable<any>) {
     return TreeEvents.create<T>(event$, until$);

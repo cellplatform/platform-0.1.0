@@ -17,7 +17,7 @@ export type ITimeChooserState = {};
 export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeChooserState> {
   public state: ITimeChooserState = {};
   private state$ = new Subject<Partial<ITimeChooserState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

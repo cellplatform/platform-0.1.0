@@ -18,7 +18,7 @@ export class WindowTitlebarAddress extends React.PureComponent<
 > {
   public state: IWindowTitlebarAddressState = {};
   private state$ = new Subject<Partial<IWindowTitlebarAddressState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

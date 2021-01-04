@@ -15,7 +15,7 @@ export type ILogExpandedState = {};
 export class LogExpanded extends React.PureComponent<ILogExpandedProps, ILogExpandedState> {
   public state: ILogExpandedState = {};
   private state$ = new Subject<Partial<ILogExpandedState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

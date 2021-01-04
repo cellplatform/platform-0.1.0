@@ -26,8 +26,8 @@ describe('Is', () => {
     test({}, false);
 
     test({ subscribe: () => null }, true);
-    test(new Subject(), true);
-    test(new Subject().asObservable(), true);
+    test(new Subject<void>(), true);
+    test(new Subject<void>().asObservable(), true);
   });
 
   it('is.subject', () => {
@@ -44,8 +44,8 @@ describe('Is', () => {
     test({ subscribe: () => null }, false);
     test({ subscribe: () => null, next: () => null }, true);
 
-    test(new Subject(), true);
-    test(new Subject().asObservable(), false);
+    test(new Subject<void>(), true);
+    test(new Subject<void>().asObservable(), false);
   });
 
   it('is.stream', () => {
@@ -58,7 +58,7 @@ describe('Is', () => {
     test('hello', false);
     test(1223, false);
     test({}, false);
-    test(new Subject(), false);
+    test(new Subject<void>(), false);
 
     const stream = fs.createReadStream(fs.resolve('./package.json'));
     test(stream, true);

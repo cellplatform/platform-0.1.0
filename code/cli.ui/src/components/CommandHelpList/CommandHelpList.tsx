@@ -12,7 +12,7 @@ export type ICommandHelpListProps = {
 };
 
 export class CommandHelpList extends React.PureComponent<ICommandHelpListProps> {
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

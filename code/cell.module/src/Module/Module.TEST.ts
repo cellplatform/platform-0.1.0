@@ -131,7 +131,7 @@ describe('Module', () => {
 
   describe('events', () => {
     it('stops when [until$] fires', () => {
-      const until$ = new Subject();
+      const until$ = new Subject<void>();
       const events = Module.events(bus.event$, until$);
 
       let count = 0;
@@ -149,8 +149,8 @@ describe('Module', () => {
     });
 
     it('[until$] array of observables', () => {
-      const stop1 = new Subject();
-      const stop2 = new Subject();
+      const stop1 = new Subject<void>();
+      const stop2 = new Subject<void>();
       const events = Module.events(bus.event$, [stop1, stop2]);
 
       let count = 0;

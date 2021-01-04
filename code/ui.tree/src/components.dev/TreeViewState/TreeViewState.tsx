@@ -16,7 +16,7 @@ const DEFAULT = {
   CONNECTOR_HEIGHT: 40,
 };
 
-export type ITreeViewStateProps = {
+export type ITreeviewStateProps = {
   store: t.ITreeviewState;
   isRoot?: boolean;
   current?: string;
@@ -24,12 +24,12 @@ export type ITreeViewStateProps = {
   connectorHeight?: number;
   style?: CssValue;
 };
-export type ITreeViewStateState = { addTextboxLabel?: string };
+export type ITreeviewStateState = { addTextboxLabel?: string };
 
-export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITreeViewStateState> {
-  public state: ITreeViewStateState = {};
-  private state$ = new Subject<Partial<ITreeViewStateState>>();
-  private unmounted$ = new Subject();
+export class TreeviewState extends React.PureComponent<ITreeviewStateProps, ITreeviewStateState> {
+  public state: ITreeviewStateState = {};
+  private state$ = new Subject<Partial<ITreeviewStateState>>();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]
@@ -270,7 +270,7 @@ export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITre
     const elList = this.store.children.map((store) => {
       return (
         <div key={store.namespace} {...styles.child}>
-          <TreeViewState
+          <TreeviewState
             store={store}
             isRoot={false}
             current={current}

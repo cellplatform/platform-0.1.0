@@ -24,7 +24,7 @@ export type IHostState = { node?: t.ITreeNode<P> };
 export class Host extends React.PureComponent<IHostProps, IHostState> {
   public state: IHostState = {};
   private state$ = new Subject<Partial<IHostState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private bus = this.props.bus.type<E>();
 
   /**

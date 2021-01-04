@@ -246,7 +246,7 @@ export class Grid implements t.IGrid {
     table: (undefined as unknown) as Handsontable,
     dispose$: new Subject<void>(),
     events$: new Subject<t.GridEvent>(),
-    redraw$: new Subject(),
+    redraw$: new Subject<void>(),
     isReady: false,
     isEditing: false,
     ns: DEFAULT.NS,

@@ -20,7 +20,7 @@ export type IViewerInfoState = {
 export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInfoState> {
   public state: IViewerInfoState = {};
   private state$ = new Subject<Partial<IViewerInfoState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

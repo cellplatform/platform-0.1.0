@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.harness",
-  "version": "0.0.47",
+  "version": "0.0.50",
   "sideEffects": false,
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -20,16 +20,16 @@
     "serve": "cell.compiler serve $@"
   },
   "dependencies": {
-    "@platform/cell.module": "^0.0.82",
-    "@platform/state": "^0.7.25",
-    "@platform/ui.icon": "^0.0.179",
-    "@platform/ui.spinner": "^0.0.176",
-    "preset.env": "^0.0.8",
+    "@platform/cell.module": "^0.0.85",
+    "@platform/state": "^0.7.27",
+    "@platform/ui.icon": "^0.0.181",
+    "@platform/ui.spinner": "^0.0.178",
+    "preset.env": "^0.0.11",
     "react-icons": "^4.1.0",
-    "sys.ui.primitives": "^0.0.47"
+    "sys.ui.primitives": "^0.0.50"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.2.45",
+    "@platform/cell.compiler": "^0.2.48",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

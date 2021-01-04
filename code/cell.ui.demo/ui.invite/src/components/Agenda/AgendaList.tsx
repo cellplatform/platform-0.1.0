@@ -14,7 +14,7 @@ export type IAgendaListState = {};
 export class AgendaList extends React.PureComponent<IAgendaListProps, IAgendaListState> {
   public state: IAgendaListState = {};
   private state$ = new Subject<Partial<IAgendaListState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

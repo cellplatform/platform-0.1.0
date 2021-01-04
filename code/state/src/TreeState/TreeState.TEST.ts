@@ -113,7 +113,7 @@ describe('TreeState', () => {
     });
 
     it('takes a [dispose$] within constructor', () => {
-      const dispose$ = new Subject();
+      const dispose$ = new Subject<void>();
       const tree = create({ dispose$ });
       expect(tree.isDisposed).to.eql(false);
 
@@ -1305,7 +1305,7 @@ describe('TreeState', () => {
       const state1 = create({ root: tree1 });
       const state2 = create({ root: tree2, parent: 'foo:child-1' });
 
-      const until$ = new Subject();
+      const until$ = new Subject<void>();
       state1.syncFrom({ source: state2, until$ });
 
       const getChildren = () => state1.query.findById('foo:child-1')?.children || [];

@@ -23,7 +23,7 @@ export class DataGridOverlay extends React.PureComponent<
 > {
   public state: IDataGridOverlayState = {};
   private state$ = new Subject<Partial<IDataGridOverlayState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

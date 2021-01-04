@@ -21,7 +21,7 @@ export class WindowTitlebar extends React.PureComponent<
 > {
   public state: IWindowTitlebarState = {};
   private state$ = new Subject<Partial<IWindowTitlebarState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   public static HEIGHT = 38;
   public static GRADIENT = `linear-gradient(180deg, #E5E5E5 0%, #CDCDCD 100%)`;

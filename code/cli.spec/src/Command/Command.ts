@@ -92,7 +92,7 @@ export class Command<P extends t.ICommandProps = any, A extends t.CommandArgsOpt
     handler: undefined as t.CommandHandler | undefined,
     children: [] as Command[],
     params: [] as CommandParam[],
-    dispose$: new Subject(),
+    dispose$: new Subject<void>(),
     events$: new Subject<t.CommandEvent>(),
     tree: (undefined as unknown) as t.ITreeMethods | undefined,
   };

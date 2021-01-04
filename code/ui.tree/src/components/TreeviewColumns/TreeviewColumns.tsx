@@ -29,7 +29,7 @@ export class TreeviewColumns extends React.PureComponent<
 > {
   public state: ITreeviewColumnsState = {};
   private state$ = new Subject<Partial<ITreeviewColumnsState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private treeview$ = new Subject<t.TreeviewEvent>();
   private keyPress$ = this.props.keyPress$ || events.keyPress$;
 

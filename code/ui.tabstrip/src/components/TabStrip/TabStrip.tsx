@@ -33,7 +33,7 @@ export type ITabStripState = {
 export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState> {
   public state: ITabStripState = {};
   private state$ = new Subject<Partial<ITabStripState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private events$ = new Subject<t.TabstripEvent>();
   private focus$ = new Subject<boolean>();
   private draggingTabIndex = -1;

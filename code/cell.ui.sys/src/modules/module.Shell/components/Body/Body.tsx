@@ -16,7 +16,7 @@ export type ILayoutProps = {
 };
 
 export class Layout extends React.PureComponent<ILayoutProps> {
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   public static contextType = ui.Context;
   public context!: t.IEnvContext;

@@ -22,7 +22,7 @@ export type ITrainingVideoState = {
 export class TrainingVideo extends React.PureComponent<ITrainingVideoProps, ITrainingVideoState> {
   public state: ITrainingVideoState = {};
   private state$ = new Subject<Partial<ITrainingVideoState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

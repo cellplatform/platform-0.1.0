@@ -11,7 +11,7 @@ export type IRootOverlayState = t.Object;
 export class RootOverlay extends React.PureComponent<IRootOverlayProps, IRootOverlayState> {
   public state: IRootOverlayState = {};
   private state$ = new Subject<Partial<IRootOverlayState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

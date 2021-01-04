@@ -1,2 +1,2 @@
-export * from './Script';
 export * from './Vm';
+export * from './VmCode';

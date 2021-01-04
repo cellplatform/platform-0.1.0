@@ -43,7 +43,7 @@ export function remote(args: {
   };
 
   const loadScript: t.RuntimeRemoteWeb['script'] = () => {
-    const stop$ = new Subject<any>();
+    const stop$ = new Subject<void>();
     const _event$ = new Subject<t.IRuntimeWebScriptEvent>();
     const event$ = _event$.pipe(takeUntil(stop$));
 

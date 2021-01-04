@@ -16,7 +16,7 @@ import {
   ProgressSpinner,
   rx,
 } from '../common';
-import { BundleManifest } from '../bundle';
+import { BundleManifest } from '../manifest';
 import { FileRedirects, FileAccess } from '../config';
 
 type FileUri = t.IUriData<t.IFileData>;
@@ -84,7 +84,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
   const redirects = config.files?.redirects;
   const files = await getFiles({ bundleDir, targetDir, config });
 
-  const done$ = new Subject();
+  const done$ = new Subject<void>();
   writeLogFile(log, done$);
 
   const spinner = ProgressSpinner({ label: `uploading ${files.length} files`, silent });

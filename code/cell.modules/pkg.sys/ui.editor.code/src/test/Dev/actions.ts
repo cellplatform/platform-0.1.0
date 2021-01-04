@@ -1,19 +1,17 @@
-import { debounceTime } from 'rxjs/operators';
-import { Actions } from 'sys.ui.harness';
-
 import { CodeEditor } from '../../api';
-import { bundle, HttpClient, rx, StateObject, t, constants } from '../../common';
+import { bundle, HttpClient, rx, StateObject, t, constants, Actions } from './common';
 import { SaveTest } from './actions.save';
 
 console.log('__CELL__', __CELL__);
 
 const { PATH } = constants;
 
-type M = {
+export type DevModel = {
   editor?: t.CodeEditorInstance;
   selection?: t.CodeEditorSelection;
+  theme?: t.CodeEditorTheme;
 };
-type Ctx = { model: t.IStateObjectWritable<M>; fire?: t.CodeEditorInstanceEventsFire };
+type Ctx = { model: t.IStateObjectWritable<DevModel>; fire?: t.CodeEditorInstanceEventsFire };
 
 /**
  * Actions for a single editor.
@@ -21,7 +19,7 @@ type Ctx = { model: t.IStateObjectWritable<M>; fire?: t.CodeEditorInstanceEvents
 export const DevActions = (bus: t.CodeEditorEventBus) => {
   const events = CodeEditor.events(bus); // TEMP 🐷
 
-  const model = StateObject.create<M>({});
+  const model = StateObject.create<DevModel>({});
 
   const setSelection = () =>
     model.change((draft) => (draft.selection = model.state.editor?.selection));
@@ -61,6 +59,13 @@ export const DevActions = (bus: t.CodeEditorEventBus) => {
 
       console.log('uploaded', uploaded);
     });
+
+  /**
+   * Themes.
+   */
+  const themeActions = Actions<Ctx>()
+    .button('theme: light', () => model.change((draft) => (draft.theme = 'light')))
+    .button('theme: dark', () => model.change((draft) => (draft.theme = 'dark')));
 
   /**
    * Focus (between instances).
@@ -124,8 +129,12 @@ const total = a.reduce((acc, next) =>acc + next, 0)
    */
   const cmdActions = Actions<Ctx>()
     .title('Command Actions')
-    .button('format document', async (ctx) => {
+    .button('format document (prettier)', async (ctx) => {
       const res = await ctx.fire?.action('editor.action.formatDocument');
+      console.log('res', res);
+    })
+    .button('format selection', async (ctx) => {
+      const res = await ctx.fire?.action('editor.action.formatSelection');
       console.log('res', res);
     });
 
@@ -135,8 +144,26 @@ const total = a.reduce((acc, next) =>acc + next, 0)
   const libsActions = Actions<Ctx>()
     .title('Type Libraries')
     .button('clear', () => events.fire.libs.clear())
-    .button('load: lib.es.d.ts', async () => {
+    .button('load: lib.es', async () => {
       const url = bundle.path(PATH.STATIC.TYPES.ES);
+      const res = await events.fire.libs.load(url);
+      console.log('res', res);
+    })
+    .button('load: env', async () => {
+      const url = bundle.path('static/types.d/inner/env.d.txt');
+      // const url = bundle.path('dist/web/types.d/env.d.txt');
+
+      console.log('url', url);
+
+      const res = await events.fire.libs.load(url);
+      console.log('res', res);
+    })
+    .button('load: rxjs', async () => {
+      const url = bundle.path('static/types.d/rxjs');
+      // const url = bundle.path('dist/web/types.d/env.d.txt');
+
+      console.log('url', url);
+
       const res = await events.fire.libs.load(url);
       console.log('res', res);
     });
@@ -152,6 +179,8 @@ const total = a.reduce((acc, next) =>acc + next, 0)
     })
 
     .merge(tmpActions)
+    .hr()
+    .merge(themeActions)
     .hr()
     .merge(focusActions)
     .hr()

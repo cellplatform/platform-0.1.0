@@ -8,7 +8,7 @@ import { t, log, constants } from '../common';
 export function start(args: { app: t.IMicro; debounce?: number }) {
   const { app, debounce = 500 } = args;
 
-  const hr$ = new Subject();
+  const hr$ = new Subject<void>();
   hr$
     .pipe(
       filter(() => !constants.IS_CLOUD),

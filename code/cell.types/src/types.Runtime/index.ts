@@ -3,4 +3,4 @@ export * from './types.Runtime.bundle';
 export * from './types.Runtime.remote';
 export * from './types.Runtime.env';
 export * from './types.Runtime.pipe';
-export * from './types.inner.env';
+export * from './types.env.inner';

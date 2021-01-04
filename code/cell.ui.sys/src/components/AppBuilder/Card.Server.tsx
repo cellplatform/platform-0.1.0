@@ -12,7 +12,7 @@ export type IServerCardState = { info?: t.IResGetElectronSysInfo };
 export class ServerCard extends React.PureComponent<IServerCardProps, IServerCardState> {
   public state: IServerCardState = {};
   private state$ = new Subject<Partial<IServerCardState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

@@ -19,7 +19,7 @@ export type IBodyTreeState = { isEmpty?: boolean };
 export class BodyTree extends React.PureComponent<IBodyTreeProps, IBodyTreeState> {
   public state: IBodyTreeState = {};
   private state$ = new Subject<Partial<IBodyTreeState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private treeview$ = new Subject<t.TreeviewEvent>();
 
   private elTree!: ModuleViewTree;

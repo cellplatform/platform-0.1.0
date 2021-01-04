@@ -1,2 +1,2 @@
-import * as glob from './glob';
-export { glob };
+export { Glob } from './Glob';
+// export { glob };

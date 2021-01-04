@@ -2,14 +2,12 @@ import React, { useEffect, useState } from 'react';
 
 import { color, css, t, rx } from '../../common';
 import { CodeEditor } from '../../components/CodeEditor';
-import { DevActions } from './actions';
+import { DevActions, DevModel } from './actions';
 import { DevHost } from './Dev.host';
 import { crdt } from './Dev.CRDT';
 import { DevProps } from './Dev.props';
 
 const bus = rx.bus<t.CodeEditorEvent>();
-// const events = CodeEditor.events(bus);
-
 const actions = DevActions(bus);
 
 const filename = {
@@ -19,15 +17,11 @@ const filename = {
 
 crdt({ bus });
 
-// export type DevProps = {}
-
 export const Dev: React.FC = () => {
-  const [selection, setSelection] = useState<t.CodeEditorSelection>();
+  const [model, setModel] = useState<DevModel>();
 
   useEffect(() => {
-    actions.model.event.changed$.subscribe((e) => {
-      setSelection(e.to.selection);
-    });
+    actions.model.event.changed$.subscribe((e) => setModel(actions.model.state));
   }, []); // eslint-disable-line
 
   const styles = {
@@ -62,12 +56,18 @@ export const Dev: React.FC = () => {
             />
           </DevHost>
           <DevHost title={'<CodeEditor>: two'} filename={filename.two}>
-            <CodeEditor bus={bus} id={'two'} filename={filename.two} onReady={actions.onReady} />
+            <CodeEditor
+              bus={bus}
+              id={'two'}
+              theme={model?.theme}
+              filename={filename.two}
+              onReady={actions.onReady}
+            />
           </DevHost>
         </div>
         <div {...styles.right}>
           {actions.render({ style: { flex: 1 } })}
-          {<DevProps id={actions.model.state.editor?.id} selection={selection} />}
+          {<DevProps id={model?.editor?.id} selection={model?.selection} />}
         </div>
       </div>
     </React.StrictMode>

@@ -3,7 +3,7 @@ import { fs, log, PATH } from '../common';
 /**
  * Copy the bundled `monaco-editor` workers.
  */
-export function copyVs(options: { silent?: boolean } = {}) {
+export async function copyVs(options: { silent?: boolean } = {}) {
   const base = fs.resolve('.');
   const from = fs.join(PATH.NODE_MODULES, 'monaco-editor/min/vs/');
   const to = fs.resolve(PATH.STATIC.VS);
@@ -16,6 +16,6 @@ export function copyVs(options: { silent?: boolean } = {}) {
     log.info();
   }
 
-  fs.ensureDirSync(fs.dirname(to));
-  fs.copySync(from, to);
+  await fs.ensureDir(fs.dirname(to));
+  await fs.copy(from, to);
 }

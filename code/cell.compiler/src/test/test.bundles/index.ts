@@ -13,6 +13,7 @@ export const SampleBundles = {
         main: `${ENTRY}/main`,
         foo: `${ENTRY}/foo`,
       })
+      .declarations(`${ENTRY}/**/*`, 'main')
       .static('./static')
       .files((config) => config.redirect(false, '**/*.js').access('public', '**/*.png'))
       .expose('./foo', `${ENTRY}/foo`),

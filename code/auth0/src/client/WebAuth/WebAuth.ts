@@ -119,9 +119,9 @@ export class WebAuth {
   private _auth0: auth0.WebAuth;
   private _prevChange: t.IWebAuthChange | undefined;
   private _prevProps!: t.IWebAuthProps;
-  private _stopMonitor$ = new Subject();
+  private _stopMonitor$ = new Subject<void>();
 
-  private readonly _dispose$ = new Subject();
+  private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.WebAuthEvent>();

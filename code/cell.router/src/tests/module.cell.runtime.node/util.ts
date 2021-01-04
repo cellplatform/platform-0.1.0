@@ -14,7 +14,7 @@ export const noManifestFilter = (file: t.IHttpClientCellFileUpload) => {
 };
 
 export const createFuncMock = async () => {
-  const runtime = NodeRuntime.create();
+  const runtime = NodeRuntime.create({ stdlibs: ['os', 'fs', 'tty', 'util', 'path'] });
   const mock = await createMock({ runtime });
   const http = Http.create();
   const url = mock.urls.fn.run;

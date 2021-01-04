@@ -1,4 +1,4 @@
 import * as t from './types';
 
-import { TreeViewState as TreeviewStateClass } from './TreeviewState';
-export const TreeViewState = TreeviewStateClass as t.TreeviewState;
+import { TreeviewState as Class } from './TreeviewState';
+export const TreeviewState = Class as t.TreeviewState;

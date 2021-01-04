@@ -7,11 +7,11 @@ export default () =>
       config
         .target('web')
         .port(Package.compiler.port)
-        .entry('src/test/entry')
-        .entry('service.worker', 'src/test/workers/service.worker')
-        .declarations('src/**/*')
+        .entry('./src/test/entry')
+        .entry('service.worker', './src/test/workers/service.worker')
+        .declarations('./src/**/*')
         .static('static')
-        .expose('./Dev', 'src/test/components/Dev')
+        .expose('./Dev', './src/test/components/Dev')
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
         .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom'])),
     );

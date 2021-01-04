@@ -43,4 +43,10 @@ export const Is = {
   singletonEvent(e: t.Event) {
     return Is.editorEvent(e) && e.payload.instance === undefined;
   },
+
+  declarationFileUrl(url: string) {
+    url = (url || '').trim();
+    const start = url.split('?')[0].split('#')[0];
+    return start.endsWith('.d.txt');
+  },
 };

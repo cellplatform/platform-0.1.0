@@ -25,7 +25,7 @@ describe('IDisposable', () => {
   it('until', () => {
     const obj1 = dispose.create();
 
-    const $ = new Subject();
+    const $ = new Subject<void>();
     const obj2 = dispose.until(obj1, $);
 
     let count = 0;

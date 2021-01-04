@@ -526,7 +526,7 @@ describe('StateObject', () => {
     });
 
     it('dispose$ (param)', () => {
-      const dispose$ = new Subject();
+      const dispose$ = new Subject<void>();
       const combined = StateObject.combine<T>({ foo: { count: 0 }, bar: {} }, dispose$);
       expect(combined.store.isDisposed).to.eql(false);
 

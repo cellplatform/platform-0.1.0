@@ -88,5 +88,5 @@ export type CompilerModelStatic = { dir?: string }; // Static assets.
  */
 export type CompilerModelDeclarations = {
   include: string | string[]; // TSConfig "include" path. File or grep pattern, eg: src/foo/**/*
-  outfile: string;
+  dir: string;
 };

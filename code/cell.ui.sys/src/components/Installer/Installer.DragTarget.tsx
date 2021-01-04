@@ -26,7 +26,7 @@ export class InstallerDragTarget extends React.PureComponent<
 > {
   public state: InstallerDragTargetState = {};
   private state$ = new Subject<Partial<InstallerDragTargetState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private drag$ = new Subject<DragTargetEvent>();
 
   public static contextType = ui.Context;

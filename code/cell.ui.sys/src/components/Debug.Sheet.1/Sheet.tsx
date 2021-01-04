@@ -13,7 +13,7 @@ export type ISheetProps = { style?: CssValue };
 export class Sheet extends React.PureComponent<ISheetProps> {
   private store = StateObject.create<t.IDebugSheet, t.DebugSheetEvent>({ uri: '', error: {} });
 
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

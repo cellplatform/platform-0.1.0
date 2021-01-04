@@ -18,7 +18,7 @@ export function start(args: {
   actions?: t.FsWatchAction[];
   ignore?: RegExp;
 }): t.FsWatcher {
-  const dispose$ = new Subject();
+  const dispose$ = new Subject<void>();
   const { pattern } = args;
   const actions: t.FsWatchAction[] =
     args.actions === undefined ? ['add', 'change', 'remove'] : args.actions;

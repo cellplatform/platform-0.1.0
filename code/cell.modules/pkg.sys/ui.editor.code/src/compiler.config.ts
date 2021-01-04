@@ -11,6 +11,7 @@ export default () =>
 
         .entry('./src/test/entry')
         .entry('service.worker', './src/workers/service.worker')
+        .declarations('./src/types/env.ts', 'inner/env')
 
         .static('./static')
         .files((config) => config.redirect(false, 'static/**').redirect(false, '*.worker.js'))

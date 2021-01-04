@@ -11,7 +11,7 @@ export type IAuthStateProps = {
 
 export class AuthState extends React.PureComponent<IAuthStateProps, t.ITestState> {
   public state: t.ITestState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private state$ = new Subject<Partial<t.ITestState>>();
 
   /**
@@ -19,8 +19,8 @@ export class AuthState extends React.PureComponent<IAuthStateProps, t.ITestState
    */
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
-    state$.subscribe(e => this.forceUpdate());
+    state$.subscribe((e) => this.setState(e));
+    state$.subscribe((e) => this.forceUpdate());
   }
 
   public componentWillUnmount() {

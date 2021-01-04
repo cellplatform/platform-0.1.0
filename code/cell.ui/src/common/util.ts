@@ -15,6 +15,6 @@ export function getEnv() {
  */
 export function getEventBus<T = t.Event>() {
   const env = getEnv();
-  const event$ = env.event$ || new Subject();
+  const event$ = env.event$ || new Subject<void>();
   return (event$ as unknown) as Subject<T>;
 }

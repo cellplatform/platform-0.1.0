@@ -10,7 +10,7 @@ export type IFinderImageState = { elOver?: JSX.Element };
 export class FinderImage extends React.PureComponent<IFinderImageProps, IFinderImageState> {
   public state: IFinderImageState = {};
   private state$ = new Subject<Partial<IFinderImageState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   private drag$ = new Subject<t.DragTargetEvent>();
 

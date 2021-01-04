@@ -19,7 +19,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {
     value: DEFAULT.VALUE,
   };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.FormulaInputEvent>();
 

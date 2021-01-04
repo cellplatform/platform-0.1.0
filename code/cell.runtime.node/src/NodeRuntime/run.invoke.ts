@@ -1,5 +1,5 @@
 import { log, logger, t, time, fs, defaultValue, R, DEFAULT } from '../common';
-import { Script, Vm } from '../vm';
+import { Vm } from '../vm';
 
 type R = {
   ok: boolean;
@@ -19,9 +19,10 @@ export function invoke(args: {
   silent?: boolean;
   timeout?: number;
   hash?: string;
+  stdlibs?: t.AllowedStdlib[];
 }) {
   return new Promise<R>(async (resolve) => {
-    const { silent, manifest, dir } = args;
+    const { silent, manifest, dir, stdlibs } = args;
     const entry = (args.entry || manifest.bundle.entry || '').trim();
     const filename = fs.join(dir, entry);
 
@@ -81,7 +82,7 @@ export function invoke(args: {
       });
     };
 
-    if (args.hash && args.hash !== manifest.hash) {
+    if (args.hash && args.hash !== manifest.hash.files) {
       addError(`Bundle manifest does not match requested hash '${args.hash}'.`);
       preparationComplete();
       return done();
@@ -112,12 +113,11 @@ export function invoke(args: {
       },
     };
 
-    const sandbox: t.Global = { env };
+    const global: t.Global = { env };
 
     try {
-      const builtin = ['*']; // TEMP 🐷 - TODO allow only by policy
-      const vm = Vm.node({ silent, sandbox, builtin });
-      const code = await Script.get(filename);
+      const vm = Vm.node({ silent, global, stdlibs });
+      const code = await Vm.code(filename);
       preparationComplete(); // Stop the "preparation" timer.
 
       vm.run(code.script);

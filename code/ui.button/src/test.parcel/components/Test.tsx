@@ -20,7 +20,7 @@ orange.color.enabled = -0.7;
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private state$ = new Subject<ITestState>();
 
   private button$ = new Subject<t.ButtonEvent>();

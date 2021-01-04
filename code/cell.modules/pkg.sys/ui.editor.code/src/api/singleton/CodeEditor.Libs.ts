@@ -1,4 +1,4 @@
-import { t, http, bundle } from '../../common';
+import { bundle, t, http, Is, Schema } from '../../common';
 
 type M = t.ICodeEditorLibs;
 
@@ -39,18 +39,33 @@ export function CodeEditorLibs(monaco: t.IMonaco): t.ICodeEditorLibs {
 
   /**
    * Loads type-definitions from an HTTP source.
-   *
-   *    Pass either a complete URL, or the relative path to the type files the
-   *    editor is served from.  This should point to a directory which contains
-   *    [TypeFileManifest] file named "/index.json".
-   *
    */
   const fromNetwork: M['fromNetwork'] = async (url) => {
-    const manifest = await loadManifest(url);
-    const files = await Promise.all(
-      manifest.files.map((file) => file.path).map((filename) => loadDeclarationFile(url, filename)),
-    );
-    return files.map((file) => add(file.filename, file.content));
+    console.log('url', url);
+
+    const fromManifest = async (url: string) => {
+      const manifest = await loadManifest(url);
+      return Promise.all(
+        manifest.files
+          .map((file) => file.path)
+          .map((filename) => loadDeclarationFile(url, filename)),
+      );
+    };
+
+    if (Is.declarationFileUrl(url)) {
+      /**
+       * TODO 🐷
+       */
+
+      const index = url.lastIndexOf('/');
+      const filename = index >= 0 ? url.substring(index + 1) : url;
+      const dir = index >= 0 ? url.substring(0, index) : '';
+      const file = await loadDeclarationFile(dir, filename);
+      return [add(file.filename, file.content)];
+    } else {
+      const files = await fromManifest(url);
+      return files.map((file) => add(file.filename, file.content));
+    }
   };
 
   return {
@@ -74,7 +89,7 @@ const loadManifest = async (base: string) => {
     const err = `Failed to load type-definition manifest '${url}'. ${res.status}: ${res.statusText}`;
     throw new Error(err);
   } else {
-    return res.json as t.FsManifest;
+    return res.json as t.TypeManifest;
   }
 };
 

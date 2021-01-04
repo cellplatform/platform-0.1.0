@@ -15,7 +15,7 @@ export type IDebugLogItemProps = {
 };
 
 export class LogItem extends React.PureComponent<IDebugLogItemProps> {
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

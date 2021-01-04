@@ -9,13 +9,14 @@ import * as t from './types';
 export const WaitForResponse = <E extends t.Event>($: t.Observable<any>, type: E['type']) => {
   return {
     response(tx: string) {
-      return rx
-        .event<E>($, type)
-        .pipe(
-          take(1),
-          filter((e) => e.payload.tx === tx),
-        )
-        .toPromise();
+      return new Promise<E>((resolve, reject) => {
+        rx.event<E>($, type)
+          .pipe(
+            take(1),
+            filter((e) => e.payload.tx === tx),
+          )
+          .subscribe((e) => resolve(e));
+      });
     },
   };
 };

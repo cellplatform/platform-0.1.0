@@ -156,7 +156,7 @@ describe('Client.TypeSystem', function () {
 
         await time.wait(50);
 
-        sheet.dispose(); // NB: Auto un-watches so "goodbye" is not the final change.
+        sheet.dispose(); // NB: Auto un-watches so "goodbye" is not recorded as the final change.
         row.props.title = 'goodbye';
 
         await time.wait(50);
@@ -235,7 +235,7 @@ describe('Client.TypeSystem', function () {
           row.title = 'second'; // Trigger another save by changing the row again when the save starts.
         });
 
-        const responses$ = new Subject();
+        const responses$ = new Subject<void>();
         const responses: t.IHttpClientResponse<any>[] = [];
         saver.saved$.subscribe(async (e) => {
           const res = await client.http.ns('ns:foo.mySheet').read({ cells: true });

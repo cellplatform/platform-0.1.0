@@ -17,7 +17,7 @@ export type ILogInfoPanelState = {
 export class LogInfoPanel extends React.PureComponent<IDebugLogInfoPanelProps, ILogInfoPanelState> {
   public state: ILogInfoPanelState = {};
   private state$ = new Subject<Partial<ILogInfoPanelState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

@@ -349,7 +349,8 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       const { files } = await uploadBundle(client, samples.node.outdir, bundle);
       const manifest = getManifest(files);
-      const hash = manifest.hash;
+      const hash = manifest.hash.files;
+
       expect(hash).to.not.eql(undefined);
 
       const res = await runtime.run(bundle, { silent: true, hash });

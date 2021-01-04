@@ -49,7 +49,7 @@ describe('/fn:run', function () {
         expect(json.results[0].bundle.uri).to.eql(bundle.uri);
         expect(json.results[0].bundle.host).to.eql(bundle.host);
         expect(json.results[0].bundle.dir).to.eql(bundle.dir);
-        expect(json.results[0].bundle.hash).to.eql(manifest.hash);
+        expect(json.results[0].bundle.hash).to.eql(manifest.hash.files);
 
         const version = (process.version || '').replace(/^v/, '');
         expect(json.runtime.version).to.eql(`${version}`);
@@ -205,7 +205,7 @@ describe('/fn:run', function () {
         const { files } = await uploadBundle(client, samples.node.outdir, bundle);
         const manifest = getManifest(files);
 
-        const hash = manifest.hash;
+        const hash = manifest.hash.files;
         expect(hash).to.not.eql(undefined);
 
         const body: t.IReqPostFuncBody = [{ host, uri, dir, hash }];
@@ -234,7 +234,7 @@ describe('/fn:run', function () {
         expect(json.ok).to.eql(false);
 
         const result = json.results[0];
-        expect(result.bundle.hash).to.eql(manifest.hash);
+        expect(result.bundle.hash).to.eql(manifest.hash.files);
         expect(result.errors.length).to.eql(1);
 
         const error = result.errors[0];

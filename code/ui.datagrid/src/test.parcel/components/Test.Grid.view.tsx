@@ -21,7 +21,7 @@ export type ITestGridViewState = {};
 export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestGridViewState> {
   public state: ITestGridViewState = {};
   private state$ = new Subject<Partial<ITestGridViewState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private grid$ = this.props.events$ || new Subject<t.GridEvent>();
 
   /**

@@ -68,7 +68,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
    * [Fields]
    */
   public state: ITextInputState = { width: toInitialWidth(this.props) };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   private state$ = new Subject<Partial<ITextInputState>>();
   private events$ = new Subject<t.TextInputEvent>();
   private mouse = mouse.fromProps(this.props, {

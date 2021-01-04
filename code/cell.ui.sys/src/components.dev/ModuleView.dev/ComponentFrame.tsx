@@ -18,7 +18,7 @@ export class ComponentFrame extends React.PureComponent<
 > {
   public state: IComponentFrameState = {};
   private state$ = new Subject<Partial<IComponentFrameState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
 
   /**
    * [Lifecycle]

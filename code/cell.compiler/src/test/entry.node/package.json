@@ -1,0 +1,5 @@
+{
+  "name": "entry.node",
+  "version": "0.0.1",
+  "types": "./entry.d.ts"
+}

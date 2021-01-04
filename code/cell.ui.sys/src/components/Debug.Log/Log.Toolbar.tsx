@@ -12,7 +12,7 @@ export type ILogToolbarProps = {
 };
 
 export class LogToolbar extends React.PureComponent<ILogToolbarProps> {
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<void>();
   public static contextType = ui.Context;
   public context!: t.IAppContext;
 

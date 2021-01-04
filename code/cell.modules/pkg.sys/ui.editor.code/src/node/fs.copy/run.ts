@@ -1,4 +1,6 @@
 import { copy } from '.';
 
-copy.defs();
-copy.vs();
+(async () => {
+  await copy.defs();
+  await copy.vs();
+})();

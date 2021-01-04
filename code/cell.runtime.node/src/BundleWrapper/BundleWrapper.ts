@@ -4,7 +4,7 @@ type B = t.RuntimeBundleOrigin;
 
 /**
  * Wrapper around a raw origin {bundle} data object that
- * processes the contents into formatted values.
+ * processes the contents into useful formatted values.
  */
 export const BundleWrapper = {
   /**

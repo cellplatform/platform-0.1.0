@@ -1,5 +1,5 @@
 import { fs, join } from '../common';
-import { glob } from '../glob';
+import { Glob } from '../glob';
 import { is } from '../is';
 
 /**
@@ -18,7 +18,7 @@ export async function merge(
   }
 
   // Get a listing of the target files.
-  const targets = await glob.find(join(targetDir, '**'));
+  const targets = await Glob.find(join(targetDir, '**'));
 
   // Ensure sources are directories.
   const dirs = Array.isArray(sourceDir) ? sourceDir : [sourceDir];
@@ -41,7 +41,7 @@ export async function merge(
 
   const items: Item[] = await Promise.all(
     patterns.map(async ({ sourceDir, pattern }) => {
-      const sources = await glob.find(pattern);
+      const sources = await Glob.find(pattern);
       const paths = sources.map((from) => {
         return {
           from,
