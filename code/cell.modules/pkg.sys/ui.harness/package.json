@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.harness",
-  "version": "0.0.50",
+  "version": "0.0.51",
   "sideEffects": false,
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -26,10 +26,10 @@
     "@platform/ui.spinner": "^0.0.178",
     "preset.env": "^0.0.11",
     "react-icons": "^4.1.0",
-    "sys.ui.primitives": "^0.0.50"
+    "sys.ui.primitives": "^0.0.51"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.2.48",
+    "@platform/cell.compiler": "^0.3.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
