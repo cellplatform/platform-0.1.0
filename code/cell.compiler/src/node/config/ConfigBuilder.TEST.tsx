@@ -361,7 +361,7 @@ describe('Compiler (Config)', () => {
       test({}, undefined);
     });
 
-    it.only('declarations ([.d.ts] files)', () => {
+    it('declarations ([.d.ts] files)', () => {
       const { model, builder } = create();
       expect(model.state.static).to.eql(undefined);
 
@@ -397,7 +397,7 @@ describe('Compiler (Config)', () => {
       reset();
     });
 
-    it.only('declarations: de-duped "include" array)', () => {
+    it('declarations: de-duped "include" array)', () => {
       const src = 'src/**/*';
 
       const { model, builder } = create();
@@ -412,7 +412,7 @@ describe('Compiler (Config)', () => {
       ]);
     });
 
-    it.only('declarations: default directory named "main"', () => {
+    it('declarations: default directory named "main"', () => {
       const { builder, model } = create();
       const reset = () => builder.declarations(null);
       const test = (dir?: string) => {
