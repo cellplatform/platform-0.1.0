@@ -129,10 +129,12 @@ describe('TscCompiler', function () {
     });
   });
 
-  describe('declarations (.d.ts)', () => {
-    it('transpile declaration files only', async () => {
-      const outdir = fs.join(TMP, 'foo.d');
-      await fs.remove(outdir);
+  describe.only('declarations (.d.ts)', () => {
+    it.only('transpile declarations - copyRefs recursively (default)', async () => {
+      const outdir = fs.join(TMP, 'types.d/main');
+      const dir = fs.dirname(outdir);
+      await fs.remove(dir);
+      expect(await fs.pathExists(fs.join(dir, 'rxjs'))).to.eql(false);
 
       const compiler = TscCompiler();
       const res = await compiler.declarations.transpile({ source, outdir, silent: true });
@@ -141,6 +143,9 @@ describe('TscCompiler', function () {
       expect(res.tsconfig.include).to.eql([source]);
       expect(res.tsconfig.compilerOptions.emitDeclarationOnly).to.eql(true);
       expect(res.out.dir).to.eql(outdir);
+
+      expect(await fs.pathExists(fs.join(dir, 'main'))).to.eql(true);
+      expect(await fs.pathExists(fs.join(dir, 'rxjs'))).to.eql(true); // NB: refs copied (by default).
 
       const manifest = res.out.manifest;
       const manifestFiles = manifest.files.map((file) => file.path);
@@ -168,6 +173,19 @@ describe('TscCompiler', function () {
       const to = res.transformations.map(({ to }) => to);
       expect(from.every(included('.d.ts'))).to.eql(true);
       expect(to.every(included('.d.txt'))).to.eql(true);
+    });
+
+    it.only('transpile declarations - do not copyRefs', async () => {
+      const outdir = fs.join(TMP, 'types.d/main');
+      const dir = fs.dirname(outdir);
+      await fs.remove(dir);
+      expect(await fs.pathExists(fs.join(dir, 'rxjs'))).to.eql(false);
+
+      const compiler = TscCompiler();
+      await compiler.declarations.transpile({ source, outdir, silent: true, copyRefs: false });
+
+      expect(await fs.pathExists(fs.join(dir, 'main'))).to.eql(true);
+      expect(await fs.pathExists(fs.join(dir, 'rxjs'))).to.eql(false); // NB: refs not copied
     });
   });
 

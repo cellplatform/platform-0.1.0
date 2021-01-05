@@ -1,6 +1,5 @@
 import { exec, fs, ProgressSpinner, slug, t, Package } from '../../common';
 import { TscManifest } from './TscManifest';
-import { TypeManifest } from '../../manifest';
 
 /**
  * Wrapper for running the `tsc` typescript compiler
