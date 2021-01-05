@@ -129,8 +129,8 @@ describe('TscCompiler', function () {
     });
   });
 
-  describe.only('declarations (.d.ts)', () => {
-    it.only('transpile declarations - copyRefs recursively (default)', async () => {
+  describe('declarations (.d.ts)', () => {
+    it('transpile declarations - copyRefs recursively (default)', async () => {
       const outdir = fs.join(TMP, 'types.d/main');
       const dir = fs.dirname(outdir);
       await fs.remove(dir);
@@ -175,7 +175,7 @@ describe('TscCompiler', function () {
       expect(to.every(included('.d.txt'))).to.eql(true);
     });
 
-    it.only('transpile declarations - do not copyRefs', async () => {
+    it('transpile declarations - do not copyRefs', async () => {
       const outdir = fs.join(TMP, 'types.d/main');
       const dir = fs.dirname(outdir);
       await fs.remove(dir);
