@@ -361,13 +361,13 @@ describe('Compiler (Config)', () => {
       test({}, undefined);
     });
 
-    it('declarations ([.d.ts] files)', () => {
+    it.only('declarations ([.d.ts] files)', () => {
       const { model, builder } = create();
       expect(model.state.static).to.eql(undefined);
 
       type D = t.CompilerModelDeclarations;
 
-      const test = (include: string, dir: string, expected: D[]) => {
+      const test = (include: string, dir: string | undefined, expected: D[]) => {
         builder.declarations(include, dir);
         expect(model.state.declarations).to.eql(expected);
       };
@@ -389,20 +389,39 @@ describe('Compiler (Config)', () => {
       test(src, '//dir/bar///', [{ include: src, dir: 'dir/bar' }]);
       reset();
 
-      // Unique.
-      builder.declarations(src, 'types.d/foo');
-      builder.declarations(src, 'foo');
-      builder.declarations(src, 'types.d/foo');
-      expect(model.state.declarations).to.eql([{ include: src, dir: 'foo' }]);
+      // Default directory: "main"
+      test(src, '   ', [{ include: src, dir: 'main' }]);
+      reset();
+
+      test(src, undefined, [{ include: src, dir: 'main' }]);
+      reset();
     });
 
-    it('declarations: throw on empty dir', () => {
-      const { builder } = create();
-      const test = (dir: string) => {
-        const fn = () => builder.declarations('src/**/*', dir);
-        expect(fn).to.throw(/Directory name for declarations must be specified/);
+    it.only('declarations: de-duped "include" array)', () => {
+      const src = 'src/**/*';
+
+      const { model, builder } = create();
+      builder.declarations(src, 'types.d/foo');
+      builder.declarations('foo/**/*', 'foo');
+      builder.declarations(src, 'types.d/foo');
+      expect(model.state.declarations).to.eql([
+        {
+          include: [src, 'foo/**/*'], // NB: Stacked into "include" array on the dir, and de-duped.
+          dir: 'foo',
+        },
+      ]);
+    });
+
+    it.only('declarations: default directory named "main"', () => {
+      const { builder, model } = create();
+      const reset = () => builder.declarations(null);
+      const test = (dir?: string) => {
+        builder.declarations('src/**/*', dir);
+        expect(model.state.declarations).to.eql([{ include: 'src/**/*', dir: 'main' }]);
+        reset();
       };
 
+      test();
       test('');
       test('  ');
       test('types.d');
