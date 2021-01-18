@@ -4,5 +4,6 @@ export * from './keyboard';
 export * from './measure';
 export * from './mouse';
 export * from './util';
+export * from './resize'
 
 export * from './components/Foo';
