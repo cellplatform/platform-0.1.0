@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from '../test';
 import { Keyboard } from '.';
 import * as t from './types';
 
