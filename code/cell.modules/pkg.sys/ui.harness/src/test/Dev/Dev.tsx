@@ -12,7 +12,7 @@ export const Dev: React.FC = () => {
   const position = model.state.position;
 
   useEffect(() => {
-    const dispose$ = new Subject();
+    const dispose$ = new Subject<void>();
     model.event.changed$.pipe(takeUntil(dispose$)).subscribe((e) => setCount(count + 1));
     return () => dispose$.next();
   });
