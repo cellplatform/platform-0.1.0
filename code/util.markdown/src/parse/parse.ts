@@ -22,11 +22,8 @@ const processor = unified()
 export function toHtml(markdown: string) {
   return new Promise<string>((resolve, reject) => {
     processor.process(markdown, (err: Error, res: any) => {
-      if (err) {
-        reject(err);
-      }
-      const html = formatHtmlResponse(res.contents);
-      resolve(html);
+      if (err) return reject(err);
+      resolve(formatHtmlResponse(res.contents));
     });
   });
 }
