@@ -18,6 +18,8 @@ export const View: React.FC<ViewProps> = (props) => {
       overflowY: scrollable ? 'scroll' : 'hidden',
       fontFamily: constants.FONT.SANS,
       userSelect: 'none',
+      boxSizing: 'border-box',
+      paddingBottom: 50,
     }),
   };
 
