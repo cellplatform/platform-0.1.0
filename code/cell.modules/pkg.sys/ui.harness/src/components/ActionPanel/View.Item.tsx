@@ -13,6 +13,7 @@ export type ItemProps = {
 
 export const Item: React.FC<ItemProps> = (props) => {
   const { model } = props;
+  const type = model.type;
 
   if (model.type === 'button') {
     return <ButtonItem {...props} model={model} />;
@@ -26,5 +27,5 @@ export const Item: React.FC<ItemProps> = (props) => {
     return <TitleItem {...props} model={model} />;
   }
 
-  throw new Error(`Action type '${model.type}' not supported.`);
+  throw new Error(`Action type '${type}' not supported.`);
 };

@@ -15,8 +15,6 @@ export type ActionModelMethods<Ctx> = ActionModelInputMethods<Ctx> & {
 
   merge(actions: ActionModelBuilder<any>, options?: ActionAddOptions): B<Ctx>;
   context(ctx: t.ActionGetContext<Ctx>): B<Ctx>;
-  group(name: string, config?: ActionGroupConfig<Ctx>): B<Ctx>;
-  group(config: ActionGroupConfig<Ctx>): B<Ctx>;
 };
 
 export type ActionAddOptions = {
@@ -29,14 +27,6 @@ export type ActionModelInputMethods<Ctx> = {
   hr(config?: ActionHrConfig<Ctx>): B<Ctx>;
   title(text: string, config?: ActionTitleConfig<Ctx>): B<Ctx>;
   title(config: ActionTitleConfig<Ctx>): B<Ctx>;
-};
-
-/**
- * Group
- */
-export type ActionGroupConfig<Ctx> = (args: ActionGroupConfigArgs<Ctx>) => void;
-export type ActionGroupConfigArgs<Ctx> = ActionModelInputMethods<Ctx> & {
-  name(value: string): ActionGroupConfigArgs<Ctx>;
 };
 
 /**

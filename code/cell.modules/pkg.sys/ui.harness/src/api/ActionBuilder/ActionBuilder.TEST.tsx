@@ -47,13 +47,13 @@ describe('ActionBuilder', () => {
     });
 
     it('from <ActionPanel> component', () => {
-      const builder = ActionPanel.build().group('hello');
+      const builder = ActionPanel.build().button('hello');
       const obj = builder.toObject();
-      expect((obj.items[0] as t.ActionItemGroup).name).to.eql('hello');
+      expect((obj.items[0] as t.ActionItemButton).label).to.eql('hello');
     });
 
     it('from builder.toObject()', () => {
-      const base = ActionBuilder.builder().group('hello');
+      const base = ActionBuilder.builder().button('hello');
       const builder = ActionBuilder.builder(base.toObject());
       expect(builder.toObject()).to.eql(base.toObject());
     });
@@ -144,114 +144,31 @@ describe('ActionBuilder', () => {
     });
   });
 
-  describe('builder.group()', () => {
-    it('param: "name"', () => {
-      const { builder, model } = create();
-      expect(model.state.items).to.eql([]);
-
-      builder.group('Group 1').group('Group 2', (e) => e.name('renamed'));
-
-      const items = model.state.items;
-      expect(items.length).to.eql(2);
-
-      const group1 = items[0] as t.ActionItemGroup;
-      const group2 = items[1] as t.ActionItemGroup;
-
-      expect(group1.name).to.eql('Group 1');
-      expect(group2.name).to.eql('renamed');
-    });
-
-    it('config: "Unnamed"', () => {
-      const { builder, model } = create();
-      expect(model.state.items).to.eql([]);
-
-      builder.group((e) => null).group((e) => null);
-
-      const items = model.state.items;
-      expect(items.length).to.eql(2);
-
-      const test = (i: number) => {
-        const group = items[i] as t.ActionItemGroup;
-        expect(items[i].type).to.eql('group');
-        expect(group.name).to.eql('Unnamed');
-        expect(group.items).to.eql([]);
-      };
-      test(0);
-      test(1);
-    });
-
-    it('config.name', () => {
-      const { builder, model } = create();
-      builder.group((e) => e.name('  Hello  '));
-
-      const items = model.state.items;
-      expect(items.length).to.eql(1);
-
-      const group = items[0] as t.ActionItemGroup;
-      expect(group.type).to.eql('group');
-      expect(group.name).to.eql('Hello');
-    });
-
-    it('group: buttons', () => {
-      const { builder, model } = create();
-
-      const handler1 = () => null;
-      const handler2 = () => null;
-
-      builder.group((e) =>
-        e.button('One', handler1).button((config) => config.description('Hello').onClick(handler2)),
-      );
-
-      const items = model.state.items;
-      expect(items.length).to.eql(1);
-
-      const group = items[0] as t.ActionItemGroup;
-
-      expect(group.type).to.eql('group');
-      expect(group.items.length).to.eql(2);
-
-      const button1 = group.items[0] as t.ActionItemButton;
-      const button2 = group.items[1] as t.ActionItemButton;
-
-      expect(button1.type).to.eql('button');
-      expect(button2.type).to.eql('button');
-
-      expect(button1.label).to.eql('One');
-      expect(button2.label).to.eql('Unnamed');
-
-      expect(button1.description).to.eql(undefined);
-      expect(button2.description).to.eql('Hello');
-
-      expect(button1.onClick).to.eql(handler1);
-      expect(button2.onClick).to.eql(handler2);
-    });
-  });
-
   describe('builder.merge()', () => {
-    type G = t.ActionItemGroup;
-    const names = (builder: B) => builder.toObject().items.map((item) => (item as G).name);
+    type Button = t.ActionItemButton;
+    const labels = (builder: B) => builder.toObject().items.map((btn) => (btn as Button).label);
 
     const one = create();
     const two = create();
-    one.builder.group('one-a').group('one-b');
-    two.builder.group('two-a').group('two-b');
+    one.builder.button('one-a').button('one-b');
+    two.builder.button('two-a').button('two-b');
 
     it('adds items to end (default)', () => {
       const builder1 = one.builder.clone();
       const builder2 = two.builder.clone();
-      expect(names(builder1)).to.eql(['one-a', 'one-b']);
+      expect(labels(builder1)).to.eql(['one-a', 'one-b']);
 
       builder1.merge(builder2);
-      expect(names(builder1)).to.eql(['one-a', 'one-b', 'two-a', 'two-b']);
+      expect(labels(builder1)).to.eql(['one-a', 'one-b', 'two-a', 'two-b']);
     });
 
     it('adds items to start', () => {
       const builder1 = one.builder.clone();
       const builder2 = two.builder.clone();
-      expect(names(builder1)).to.eql(['one-a', 'one-b']);
+      expect(labels(builder1)).to.eql(['one-a', 'one-b']);
 
       builder1.merge(builder2, { insertAt: 'start' });
-      expect(names(builder1)).to.eql(['two-a', 'two-b', 'one-a', 'one-b']);
+      expect(labels(builder1)).to.eql(['two-a', 'two-b', 'one-a', 'one-b']);
     });
 
     it('sets context-factory if not already set', () => {

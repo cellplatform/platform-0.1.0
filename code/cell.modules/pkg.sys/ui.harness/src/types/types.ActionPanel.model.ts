@@ -17,14 +17,14 @@ export type ActionGetContext<T> = (prev: T | null) => T;
 /**
  * Item types.
  */
-export type ActionItem = ActionItemGroup | ActionItemInput;
+export type ActionItem = ActionItemInput;
 export type ActionItemInput = ActionItemButton | ActionItemHr | ActionItemTitle;
 
-export type ActionItemGroup = {
-  type: 'group';
-  name: string;
-  items: ActionItemInput[];
-};
+// export type ActionItemGroup = {
+//   type: 'group';
+//   name: string;
+//   items: ActionItemInput[];
+// };
 
 export type ActionItemButton = {
   type: 'button';

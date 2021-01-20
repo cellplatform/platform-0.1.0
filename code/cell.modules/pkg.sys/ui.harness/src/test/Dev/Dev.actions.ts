@@ -21,25 +21,30 @@ const change = (model: Ctx['model']) => {
  */
 export const actions = Actions<Ctx>()
   .context((prev) => prev || { model, change: model.change })
-  .group('foo')
+  // .group('foo')
   .button('foo', (ctx) => change(ctx.model))
   .button((e) => e.label(LOREM))
   .button((e) => e.description(LOREM))
-  .group('Group 1', (e) =>
-    e
-      .button('change text', (ctx) => change(ctx.model))
-      .button((config) => config.label('hello'))
-      .hr()
-      .button('console.log', (ctx) => console.log('hello', ctx)),
-  )
+
+  .hr()
+  .title('Group 1')
+
+  .button('change text', (ctx) => change(ctx.model))
+  .button((config) => config.label('hello'))
+  .hr()
+  .button('console.log', (ctx) => console.log('hello', ctx))
+  // .group('Group 1', (e) =>
+  //   e
+  // )
   // .group((e) => e.name('Group 2'))
-  .group('host', (e) =>
-    e
-      .button('center (clear)', (ctx) => ctx.change((draft) => (draft.position = undefined)))
-      .button('top left', (ctx) => ctx.change((draft) => (draft.position = { top: 50, left: 50 })))
-      .hr()
-      .title('color')
-      .button('red', () => null)
-      .button('green', () => null)
-      .button('blue', () => null),
-  );
+
+  .hr()
+  .title('Group 2')
+
+  .button('center (clear)', (ctx) => ctx.change((draft) => (draft.position = undefined)))
+  .button('top left', (ctx) => ctx.change((draft) => (draft.position = { top: 50, left: 50 })))
+  .hr()
+  .title('color')
+  .button('red', () => null)
+  .button('green', () => null)
+  .button('blue', () => null);

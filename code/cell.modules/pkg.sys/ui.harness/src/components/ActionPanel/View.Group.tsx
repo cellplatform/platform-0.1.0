@@ -19,12 +19,7 @@ export const Group: React.FC<GroupProps> = (props) => {
   };
 
   const elItems = props.items.map((item, i) => {
-    if (item.type === 'group') {
-      // RECURSION 🌳
-      return <Group key={i} name={item.name} items={item.items} onItemClick={props.onItemClick} />;
-    } else {
-      return <Item key={i} model={item} onClick={props.onItemClick} />;
-    }
+    return <Item key={i} model={item} onClick={props.onItemClick} />;
   });
 
   return (

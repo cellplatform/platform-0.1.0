@@ -3,7 +3,6 @@ import * as React from 'react';
 import { defaultValue, t } from '../../common';
 import { View as ActionPanel } from '../../components/ActionPanel/View';
 import { ButtonConfig } from './config.Button';
-import { GroupConfig } from './config.Group';
 import { HrConfig } from './config.Hr';
 import { TitleConfig } from './config.Title';
 import { toContext } from './util';
@@ -75,14 +74,6 @@ export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethod
         draft.getContext = obj.getContext;
       }
     });
-  },
-
-  /**
-   * A group of items.
-   */
-  group(args) {
-    const { item } = GroupConfig(args.params);
-    args.model.change((draft) => draft.items.push(item));
   },
 
   /**
