@@ -89,7 +89,9 @@ export const Rules = {
             // SVGO options
             //    https://github.com/svg/svgo
             //    https://gist.github.com/pladaria/69321af86ce165c2c1fc1c718b098dd0
-            svgoConfig: {},
+            svgoConfig: {
+              plugins: [{ cleanupIDs: false }],
+            },
           },
         },
       ],
