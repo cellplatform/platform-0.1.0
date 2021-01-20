@@ -1,4 +1,4 @@
-import { useResizeObserver } from './useResizeObserver';
+import { useResizeObserver } from '../hooks/useResizeObserver';
 import { ResizeObserver as observer } from './ResizeObserver';
 
 export { useResizeObserver };
