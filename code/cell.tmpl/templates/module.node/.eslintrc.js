@@ -1,4 +1,4 @@
-const fs = require('@platform/fs').fs;
+const fs = require('@platform/fs').fs; // eslint-disable-line
 
 const PATH = {
   local: fs.resolve('./node_modules/@platform/ts.libs/lint.js'),
