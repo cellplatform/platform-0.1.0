@@ -4,7 +4,7 @@ import { constants, css, defaultValue, t, time } from '../../common';
 import { Item } from './Item';
 
 export type ViewProps = t.ActionPanelProps & {
-  model: t.ActionModel<any>;
+  model: t.DevActionModel<any>;
   getContext?: () => any;
 };
 
@@ -25,7 +25,7 @@ export const View: React.FC<ViewProps> = (props) => {
     }),
   };
 
-  const onItemClick: t.ActionItemClickEventHandler = (e) => {
+  const onItemClick: t.DevActionItemClickEventHandler = (e) => {
     const ctx = props.getContext ? props.getContext() : undefined;
     time.delay(0, () => {
       // NB:  Delay for a tick to make focus related actions simpler to

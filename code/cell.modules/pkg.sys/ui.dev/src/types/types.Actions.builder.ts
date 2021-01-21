@@ -1,59 +1,60 @@
 import { t } from './common';
 
-type B<Ctx> = ActionModelBuilder<Ctx>;
+type B<Ctx> = DevActionModelBuilder<Ctx>;
 
 /**
  * Model Builder API
  */
-export type ActionModelBuilder<Ctx> = t.BuilderChain<ActionModelMethods<Ctx>>;
+export type DevActionModelBuilder<Ctx> = t.BuilderChain<DevActionModelMethods<Ctx>>;
 
-export type ActionModelMethods<Ctx> = ActionModelInputMethods<Ctx> & {
-  toObject(): t.ActionModel<Ctx>;
+export type DevActionModelMethods<Ctx> = DevActionModelInputMethods<Ctx> & {
+  toObject(): t.DevActionModel<Ctx>;
   toContext(): Ctx;
-  clone(ctx?: t.ActionGetContext<Ctx>): B<Ctx>;
+  clone(ctx?: t.DevActionGetContext<Ctx>): B<Ctx>;
 
   renderList(props?: t.ActionPanelProps): JSX.Element;
+  renderSubject(): t.DevActionRenderSubjectResult<Ctx>;
 
-  merge(actions: ActionModelBuilder<any>, options?: ActionAddOptions): B<Ctx>;
-  context(factory: t.ActionGetContext<Ctx>): B<Ctx>;
-  subject(factory: t.ActionRenderSubject): B<Ctx>;
+  merge(actions: DevActionModelBuilder<any>, options?: DevActionAddOptions): B<Ctx>;
+  context(factory: t.DevActionGetContext<Ctx>): B<Ctx>;
+  subject(factory: t.DevActionRenderSubject<Ctx>): B<Ctx>;
 };
 
-export type ActionAddOptions = { insertAt?: 'end' | 'start' };
+export type DevActionAddOptions = { insertAt?: 'end' | 'start' };
 
-export type ActionModelInputMethods<Ctx> = {
-  button(label: string, handler?: t.ActionHandler<Ctx>): B<Ctx>;
-  button(config: ActionButtonConfig<Ctx>): B<Ctx>;
+export type DevActionModelInputMethods<Ctx> = {
+  button(label: string, handler?: t.DevActionHandler<Ctx>): B<Ctx>;
+  button(config: DevActionButtonConfig<Ctx>): B<Ctx>;
   hr(height?: number, opacity?: number, margin?: t.DevEdgeSpacing): B<Ctx>;
-  hr(config?: ActionHrConfig<Ctx>): B<Ctx>;
-  title(text: string, config?: ActionTitleConfig<Ctx>): B<Ctx>;
-  title(config: ActionTitleConfig<Ctx>): B<Ctx>;
+  hr(config?: DevActionHrConfig<Ctx>): B<Ctx>;
+  title(text: string, config?: DevActionTitleConfig<Ctx>): B<Ctx>;
+  title(config: DevActionTitleConfig<Ctx>): B<Ctx>;
 };
 
 /**
  * Button
  */
-export type ActionButtonConfig<Ctx> = (args: ActionButtonConfigArgs<Ctx>) => void;
-export type ActionButtonConfigArgs<Ctx> = {
-  label(value: string): ActionButtonConfigArgs<Ctx>;
-  description(value: string): ActionButtonConfigArgs<Ctx>;
-  onClick(handler: t.ActionHandler<Ctx>): ActionButtonConfigArgs<Ctx>;
+export type DevActionButtonConfig<Ctx> = (args: DevActionButtonConfigArgs<Ctx>) => void;
+export type DevActionButtonConfigArgs<Ctx> = {
+  label(value: string): DevActionButtonConfigArgs<Ctx>;
+  description(value: string): DevActionButtonConfigArgs<Ctx>;
+  onClick(handler: t.DevActionHandler<Ctx>): DevActionButtonConfigArgs<Ctx>;
 };
 
 /**
  * Hr (Horizontal Rule)
  */
-export type ActionHrConfig<Ctx> = (args: ActionHrConfigArgs<Ctx>) => void;
-export type ActionHrConfigArgs<Ctx> = {
-  height(value: number): ActionHrConfigArgs<Ctx>;
-  opacity(value: number): ActionHrConfigArgs<Ctx>;
-  margin(value: t.DevEdgeSpacing): ActionHrConfigArgs<Ctx>;
+export type DevActionHrConfig<Ctx> = (args: DevActionHrConfigArgs<Ctx>) => void;
+export type DevActionHrConfigArgs<Ctx> = {
+  height(value: number): DevActionHrConfigArgs<Ctx>;
+  opacity(value: number): DevActionHrConfigArgs<Ctx>;
+  margin(value: t.DevEdgeSpacing): DevActionHrConfigArgs<Ctx>;
 };
 
 /**
  * Title
  */
-export type ActionTitleConfig<Ctx> = (args: ActionTitleConfigArgs<Ctx>) => void;
-export type ActionTitleConfigArgs<Ctx> = {
-  text(value: string): ActionTitleConfigArgs<Ctx>;
+export type DevActionTitleConfig<Ctx> = (args: DevActionTitleConfigArgs<Ctx>) => void;
+export type DevActionTitleConfigArgs<Ctx> = {
+  text(value: string): DevActionTitleConfigArgs<Ctx>;
 };

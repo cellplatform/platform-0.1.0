@@ -4,12 +4,12 @@ import { handlers } from './handlers';
 /**
  * Action builder factory.
  */
-export const ActionBuilder: t.ActionModelFactory = {
+export const ActionBuilder: t.DevActionModelFactory = {
   /**
    * Create a new data-model.
    */
   model<Ctx>() {
-    const initial = { ...DEFAULT.ACTIONS } as t.ActionModel<Ctx>;
+    const initial = { ...DEFAULT.ACTIONS } as t.DevActionModel<Ctx>;
     return StateObject.create<any>(initial);
   },
 
@@ -20,8 +20,8 @@ export const ActionBuilder: t.ActionModelFactory = {
     const model = (typeof input === 'object'
       ? StateObject.isStateObject(input)
         ? input
-        : StateObject.create<t.ActionModel<Ctx>>(input as any)
-      : ActionBuilder.model()) as t.ActionModelState<Ctx>;
-    return Builder.create<t.ActionModel<Ctx>, t.ActionModelMethods<Ctx>>({ model, handlers });
+        : StateObject.create<t.DevActionModel<Ctx>>(input as any)
+      : ActionBuilder.model()) as t.DevActionModelState<Ctx>;
+    return Builder.create<t.DevActionModel<Ctx>, t.DevActionModelMethods<Ctx>>({ model, handlers });
   },
 };

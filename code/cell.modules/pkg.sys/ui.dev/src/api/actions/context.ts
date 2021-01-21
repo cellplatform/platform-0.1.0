@@ -1,6 +1,6 @@
 import { t } from '../../common';
 
-export function toContext<Ctx>(model: t.ActionModelState<Ctx>): Ctx | null {
+export function toContext<Ctx>(model: t.DevActionModelState<Ctx>): Ctx | null {
   const state = model.state;
   if (state.getContext) {
     const ctx = state.getContext(state.ctx || null);

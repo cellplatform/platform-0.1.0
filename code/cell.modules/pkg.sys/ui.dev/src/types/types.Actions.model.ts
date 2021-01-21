@@ -1,21 +1,12 @@
 import { t } from './common';
 
-export type ActionModelState<Ctx> = t.BuilderModel<t.ActionModel<Ctx>>;
-export type ActionModel<Ctx> = {
-  items: t.ActionItem[];
+export type DevActionModelState<Ctx> = t.BuilderModel<t.DevActionModel<Ctx>>;
+export type DevActionModel<Ctx> = {
+  items: t.DevActionItem[];
   ctx?: Ctx;
-  getContext?: ActionGetContext<Ctx>;
-  renderSubject?: ActionRenderSubject;
+  getContext?: t.DevActionGetContext<Ctx>;
+  renderSubject?: t.DevActionRenderSubject<Ctx>;
 };
 
-export type ActionHandler<T> = (ctx: T) => void;
-export type ActionGetContext<T> = (prev: T | null) => T;
-
-export type ActionRenderSubject = (args: ActionRenderSubjectArgs) => void;
-export type ActionRenderSubjectArgs = {
-  stack(orientation: 'xy' | 'x' | 'y'): ActionRenderSubjectArgs;
-  render(el: JSX.Element): ActionRenderSubjectArgs;
-};
-export type ActionRenderSubjectResult = {
-  el: null | JSX.Element | JSX.Element[];
-};
+export type DevActionHandler<T> = (ctx: T) => void;
+export type DevActionGetContext<T> = (prev: T | null) => T;

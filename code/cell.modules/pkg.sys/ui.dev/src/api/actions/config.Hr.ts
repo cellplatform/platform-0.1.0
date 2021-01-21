@@ -4,9 +4,9 @@ import { t, R } from '../../common';
  * A [Horizontal Rule] configurator.
  */
 export function HrConfig(params: any[]) {
-  const item: t.ActionItemHr = { type: 'hr', height: 8, opacity: 0.06, margin: [8, 8] };
+  const item: t.DevActionItemHr = { type: 'hr', height: 8, opacity: 0.06, margin: [8, 8] };
 
-  const config: t.ActionHrConfigArgs<any> = {
+  const config: t.DevActionHrConfigArgs<any> = {
     height(value) {
       item.height = Math.max(0, value);
       return config;

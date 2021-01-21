@@ -3,24 +3,24 @@ import { t } from './common';
 /**
  * Item types.
  */
-export type ActionItem = ActionItemInput | ActionItemLayout;
-export type ActionItemLayout = ActionItemHr | ActionItemTitle;
-export type ActionItemInput = ActionItemButton;
+export type DevActionItem = DevActionItemInput | DevActionItemLayout;
+export type DevActionItemLayout = DevActionItemHr | DevActionItemTitle;
+export type DevActionItemInput = DevActionItemButton;
 
 /**
  * Simple clickable action.
  */
-export type ActionItemButton = {
+export type DevActionItemButton = {
   type: 'button';
   label: string;
   description?: string;
-  onClick?: t.ActionHandler<any>;
+  onClick?: t.DevActionHandler<any>;
 };
 
 /**
  * Horizontal rule (divider).
  */
-export type ActionItemHr = {
+export type DevActionItemHr = {
   type: 'hr';
   height: number;
   opacity: number;
@@ -30,7 +30,7 @@ export type ActionItemHr = {
 /**
  * Title text.
  */
-export type ActionItemTitle = {
+export type DevActionItemTitle = {
   type: 'title';
   text: string;
 };

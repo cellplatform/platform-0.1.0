@@ -1,16 +1,14 @@
-import { format, t } from '../../common';
-
-const UNTITLED = 'Untitled';
+import { format, t, DEFAULT } from '../../common';
 
 /**
  * A [Title] configurator.
  */
 export function TitleConfig(params: any[]) {
-  const item: t.ActionItemTitle = { type: 'title', text: UNTITLED };
+  const item: t.DevActionItemTitle = { type: 'title', text: DEFAULT.UNTITLED };
 
-  const config: t.ActionTitleConfigArgs<any> = {
+  const config: t.DevActionTitleConfigArgs<any> = {
     text(value) {
-      item.text = format.string(value, { trim: true }) || UNTITLED;
+      item.text = format.string(value, { trim: true }) || DEFAULT.UNTITLED;
       return config;
     },
   };

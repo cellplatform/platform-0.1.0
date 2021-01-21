@@ -6,9 +6,9 @@ import { HrItem } from './Item.hr';
 import { TitleItem } from './Item.title';
 
 export type ItemProps = {
-  model: t.ActionItem;
+  model: t.DevActionItem;
   style?: CssValue;
-  onClick?: t.ActionItemClickEventHandler;
+  onClick?: t.DevActionItemClickEventHandler;
 };
 
 export const Item: React.FC<ItemProps> = (props) => {

@@ -4,9 +4,9 @@ import { COLORS, constants, css, CssValue, t } from '../../common';
 import { Icons } from '../Icons';
 
 export type ButtonItemProps = {
-  model: t.ActionItemButton;
+  model: t.DevActionItemButton;
   style?: CssValue;
-  onClick?: t.ActionItemClickEventHandler;
+  onClick?: t.DevActionItemClickEventHandler;
 };
 
 export const ButtonItem: React.FC<ButtonItemProps> = (props) => {

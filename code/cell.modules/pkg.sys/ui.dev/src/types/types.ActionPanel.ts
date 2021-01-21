@@ -5,5 +5,5 @@ export type ActionPanelProps = {
   style?: t.CssValue;
 };
 
-export type ActionItemClickEvent = { model: t.ActionItem };
-export type ActionItemClickEventHandler = (e: ActionItemClickEvent) => void;
+export type DevActionItemClickEvent = { model: t.DevActionItem };
+export type DevActionItemClickEventHandler = (e: DevActionItemClickEvent) => void;

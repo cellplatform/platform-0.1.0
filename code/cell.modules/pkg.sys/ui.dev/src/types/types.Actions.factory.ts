@@ -1,11 +1,11 @@
 import { t } from './common';
 
-type B<Ctx> = t.ActionModelBuilder<Ctx>;
+type B<Ctx> = t.DevActionModelBuilder<Ctx>;
 
 /**
  * Factory
  */
-export type ActionModelFactory = {
-  model<Ctx>(): t.ActionModelState<Ctx>;
-  builder<Ctx>(input?: t.ActionModelState<Ctx> | t.ActionModel<Ctx>): B<Ctx>;
+export type DevActionModelFactory = {
+  model<Ctx>(): t.DevActionModelState<Ctx>;
+  builder<Ctx>(input?: t.DevActionModelState<Ctx> | t.DevActionModel<Ctx>): B<Ctx>;
 };

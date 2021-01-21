@@ -6,12 +6,13 @@ import { ButtonConfig } from './config.Button';
 import { HrConfig } from './config.Hr';
 import { TitleConfig } from './config.Title';
 import { toContext } from './context';
+import { renderSubject } from './render';
 
 /**
  * Action handlers.
  */
 
-export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethods<any>> = {
+export const handlers: t.BuilderHandlers<t.DevActionModel<any>, t.DevActionModelMethods<any>> = {
   /**
    * Convert builder to data model.
    */
@@ -41,6 +42,16 @@ export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethod
   },
 
   /**
+   * Render the subject(s) under test.
+   */
+  renderSubject(args) {
+    return renderSubject<any>({
+      ctx: args.builder.self.toContext(),
+      factory: args.model.state.renderSubject,
+    });
+  },
+
+  /**
    * Factory for the context (provided to each action).
    */
   context(args) {
@@ -62,8 +73,8 @@ export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethod
    * Merges in another Action model's items.
    */
   merge(args) {
-    const mergeBuilder = args.params[0] as t.ActionModelBuilder<any>;
-    const options = (args.params[1] || {}) as t.ActionAddOptions;
+    const mergeBuilder = args.params[0] as t.DevActionModelBuilder<any>;
+    const options = (args.params[1] || {}) as t.DevActionAddOptions;
     const insertAt = defaultValue(options.insertAt, 'end');
 
     args.model.change((draft) => {

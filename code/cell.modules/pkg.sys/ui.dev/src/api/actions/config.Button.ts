@@ -5,9 +5,9 @@ import { format, t } from '../../common';
  */
 export function ButtonConfig(params: any[]) {
   const LABEL = 'Unnamed';
-  const item: t.ActionItemButton = { type: 'button', label: LABEL };
+  const item: t.DevActionItemButton = { type: 'button', label: LABEL };
 
-  const config: t.ActionButtonConfigArgs<any> = {
+  const config: t.DevActionButtonConfigArgs<any> = {
     label(value) {
       item.label = format.string(value, { trim: true }) || LABEL;
       return config;

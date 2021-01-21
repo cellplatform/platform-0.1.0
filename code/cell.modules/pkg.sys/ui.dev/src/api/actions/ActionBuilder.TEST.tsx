@@ -5,8 +5,8 @@ import { ActionBuilder } from '.';
 import { ActionPanel } from '../../components/ActionPanel';
 
 type Ctx = { count: number };
-type M = t.ActionModel<Ctx>;
-type B = t.ActionModelBuilder<Ctx>;
+type M = t.DevActionModel<Ctx>;
+type B = t.DevActionModelBuilder<Ctx>;
 
 function create() {
   const model = ActionBuilder.model<Ctx>();
@@ -49,7 +49,7 @@ describe('ActionBuilder', () => {
     it('from <ActionPanel> component', () => {
       const builder = ActionPanel.build().button('hello');
       const obj = builder.toObject();
-      expect((obj.items[0] as t.ActionItemButton).label).to.eql('hello');
+      expect((obj.items[0] as t.DevActionItemButton).label).to.eql('hello');
     });
 
     it('from builder.toObject()', () => {
@@ -77,16 +77,50 @@ describe('ActionBuilder', () => {
   });
 
   describe.only('builder.renderSubject()', () => {
-    it('builder.renderSubject()', () => {
-      const { builder, model } = create();
-      const el = builder
-        .context(() => ({ count: 123 }))
+    it('factory not set', () => {
+      const { builder } = create();
+      const res = builder.renderSubject();
+      expect(res.ctx).to.eql(null);
+      expect(res.el).to.eql(null);
+      expect(res.orientation).to.eql('y'); // NB: vertical stack
+    });
+
+    it('passes context', () => {
+      const { builder } = create();
+      const ctx = { count: 123 };
+      let payload: t.DevActionRenderSubjectArgs<Ctx> | undefined;
+      const res = builder
+        .context(() => ctx)
+        .subject((e) => (payload = e))
+        .renderSubject();
+
+      expect(res.el).to.eql(null);
+      expect(res.ctx).to.eql(ctx);
+      expect(payload?.ctx).to.eql(ctx);
+    });
+
+    it('single element', () => {
+      const { builder } = create();
+      const div = <div>Foo</div>;
+      const res = builder.subject((e) => e.render(div)).renderSubject();
+      expect(res.orientation).to.eql('y');
+      expect(res.el).to.equal(div);
+    });
+
+    it('multiple elements (stack)', () => {
+      const { builder } = create();
+      const res = builder
         .subject((e) => {
-          return <div>foo</div>
-        });
+          e.render(<h1>Foo</h1>)
+            .render(<div>Hello</div>)
+            .stack('x'); // NB: horizontal stack
+        })
+        .renderSubject();
 
-
-        // const res = builder.re
+      const elements = res.el as JSX.Element[];
+      expect(res.orientation).to.eql('x');
+      expect(elements[0].type).to.equal('h1');
+      expect(elements[1].type).to.equal('div');
     });
   });
 
@@ -95,8 +129,8 @@ describe('ActionBuilder', () => {
       const { model, builder } = create();
       expect(model.state.getContext).to.eql(undefined);
 
-      const fn1: t.ActionGetContext<Ctx> = () => ({ count: 123 });
-      const fn2: t.ActionGetContext<Ctx> = () => ({ count: 456 });
+      const fn1: t.DevActionGetContext<Ctx> = () => ({ count: 123 });
+      const fn2: t.DevActionGetContext<Ctx> = () => ({ count: 456 });
 
       builder.context(fn1);
       expect(model.state.getContext).to.eql(fn1);
@@ -118,8 +152,8 @@ describe('ActionBuilder', () => {
       const { model, builder } = create();
       expect(model.state.renderSubject).to.eql(undefined);
 
-      const fn1: t.ActionRenderSubject = (e) => null;
-      const fn2: t.ActionRenderSubject = (e) => null;
+      const fn1: t.DevActionRenderSubject<Ctx> = (e) => null;
+      const fn2: t.DevActionRenderSubject<Ctx> = (e) => null;
 
       builder.subject(fn1);
       expect(model.state.renderSubject).to.eql(fn1);
@@ -165,7 +199,7 @@ describe('ActionBuilder', () => {
   describe('builder.clone()', () => {
     it('same context', () => {
       const { builder } = create();
-      const fn: t.ActionGetContext<Ctx> = () => ({ count: 123 });
+      const fn: t.DevActionGetContext<Ctx> = () => ({ count: 123 });
       const clone = builder.context(fn).clone();
       expect(clone).to.not.equal(builder); // NB: Different instance.
       expect(clone.toObject().getContext).to.eql(fn);
@@ -173,8 +207,8 @@ describe('ActionBuilder', () => {
 
     it('different context', () => {
       const { builder } = create();
-      const fn1: t.ActionGetContext<Ctx> = () => ({ count: 123 });
-      const fn2: t.ActionGetContext<Ctx> = () => ({ count: 456 });
+      const fn1: t.DevActionGetContext<Ctx> = () => ({ count: 123 });
+      const fn2: t.DevActionGetContext<Ctx> = () => ({ count: 456 });
       const clone = builder.context(fn1).clone(fn2);
       expect(clone).to.not.equal(builder); // NB: Different instance.
       expect(clone.toObject().getContext).to.eql(fn2);
@@ -182,7 +216,7 @@ describe('ActionBuilder', () => {
   });
 
   describe('builder.merge()', () => {
-    type Button = t.ActionItemButton;
+    type Button = t.DevActionItemButton;
     const labels = (builder: B) => builder.toObject().items.map((btn) => (btn as Button).label);
 
     const one = create();
@@ -212,7 +246,7 @@ describe('ActionBuilder', () => {
       const builder1 = one.builder.clone();
       const builder2 = two.builder.clone();
 
-      const fn: t.ActionGetContext<Ctx> = () => ({ count: 123 });
+      const fn: t.DevActionGetContext<Ctx> = () => ({ count: 123 });
       builder2.context(fn);
 
       builder1.merge(builder2);
@@ -223,8 +257,8 @@ describe('ActionBuilder', () => {
       const builder1 = one.builder.clone();
       const builder2 = two.builder.clone();
 
-      const fn1: t.ActionGetContext<Ctx> = () => ({ count: 123 });
-      const fn2: t.ActionGetContext<Ctx> = () => ({ count: 456 });
+      const fn1: t.DevActionGetContext<Ctx> = () => ({ count: 123 });
+      const fn2: t.DevActionGetContext<Ctx> = () => ({ count: 456 });
       builder1.context(fn1);
       builder2.context(fn2);
 
@@ -238,16 +272,16 @@ describe('ActionBuilder', () => {
       const { builder, model } = create();
       expect(model.state.items).to.eql([]);
 
-      const fn1: t.ActionHandler<any> = () => null;
-      const fn2: t.ActionHandler<any> = () => null;
+      const fn1: t.DevActionHandler<any> = () => null;
+      const fn2: t.DevActionHandler<any> = () => null;
       builder.button('  foo  ', fn1).button('bar', fn1).button('foo', fn2);
 
       const items = model.state.items;
       expect(items.length).to.eql(3);
 
-      const button1 = items[0] as t.ActionItemButton;
-      const button2 = items[1] as t.ActionItemButton;
-      const button3 = items[2] as t.ActionItemButton;
+      const button1 = items[0] as t.DevActionItemButton;
+      const button2 = items[1] as t.DevActionItemButton;
+      const button3 = items[2] as t.DevActionItemButton;
 
       expect(button1.type).to.eql('button');
       expect(button1.label).to.eql('foo');
@@ -270,7 +304,7 @@ describe('ActionBuilder', () => {
       const items = model.state.items;
       expect(items.length).to.eql(1);
 
-      const button = items[0] as t.ActionItemButton;
+      const button = items[0] as t.DevActionItemButton;
       expect(button.label).to.eql('foo');
       expect(button.onClick).to.eql(undefined);
     });
@@ -279,14 +313,14 @@ describe('ActionBuilder', () => {
       const { builder, model } = create();
       expect(model.state.items).to.eql([]);
 
-      const fn: t.ActionHandler<any> = () => null;
+      const fn: t.DevActionHandler<any> = () => null;
       builder.button((config) => config.label('foo').onClick(fn));
 
       const items = model.state.items;
       expect(items.length).to.eql(1);
       expect(items[0].type).to.eql('button');
 
-      const button = items[0] as t.ActionItemButton;
+      const button = items[0] as t.DevActionItemButton;
       expect(button.type).to.eql('button');
       expect(button.onClick).to.eql(fn);
     });
@@ -298,7 +332,7 @@ describe('ActionBuilder', () => {
       builder.button((config) => null);
 
       const items = model.state.items;
-      const button = items[0] as t.ActionItemButton;
+      const button = items[0] as t.DevActionItemButton;
       expect(button.type).to.eql('button');
       expect(button.label).to.eql('Unnamed');
     });
@@ -310,7 +344,7 @@ describe('ActionBuilder', () => {
       builder.button((config) => config.label('hello').label('  '));
 
       const items = model.state.items;
-      const button = items[0] as t.ActionItemButton;
+      const button = items[0] as t.DevActionItemButton;
       expect(button.type).to.eql('button');
       expect(button.label).to.eql('Unnamed');
     });
@@ -324,7 +358,7 @@ describe('ActionBuilder', () => {
       const items = model.state.items;
       expect(items.length).to.eql(1);
 
-      const button = items[0] as t.ActionItemButton;
+      const button = items[0] as t.DevActionItemButton;
       expect(button.type).to.eql('button');
       expect(button.description).to.eql('My description');
     });
@@ -340,7 +374,7 @@ describe('ActionBuilder', () => {
       const items = model.state.items;
       expect(items.length).to.eql(1);
 
-      const item = items[0] as t.ActionItemHr;
+      const item = items[0] as t.DevActionItemHr;
       expect(item.type).to.eql('hr');
       expect(item.height).to.eql(8);
       expect(item.opacity).to.eql(0.06);
@@ -356,7 +390,7 @@ describe('ActionBuilder', () => {
       const items = model.state.items;
       expect(items.length).to.eql(1);
 
-      const item = items[0] as t.ActionItemHr;
+      const item = items[0] as t.DevActionItemHr;
       expect(item.type).to.eql('hr');
       expect(item.height).to.eql(1);
       expect(item.opacity).to.eql(0.3);
@@ -367,7 +401,7 @@ describe('ActionBuilder', () => {
 
       builder.hr().hr(3).hr(1, 0.2, [10, 20, 30, 40]);
 
-      type H = t.ActionItemHr;
+      type H = t.DevActionItemHr;
       const items = model.state.items;
       const item1 = items[0] as H;
       const item2 = items[1] as H;
@@ -390,7 +424,7 @@ describe('ActionBuilder', () => {
       const { builder, model } = create();
       builder.hr().hr((config) => config.height(-1));
 
-      type H = t.ActionItemHr;
+      type H = t.DevActionItemHr;
       const items = model.state.items;
       const item1 = items[0] as H;
       const item2 = items[1] as H;
@@ -407,7 +441,7 @@ describe('ActionBuilder', () => {
         .hr((config) => config.opacity(99))
         .hr((config) => config.opacity(-1));
 
-      type H = t.ActionItemHr;
+      type H = t.DevActionItemHr;
       const items = model.state.items;
       const item1 = items[0] as H;
       const item2 = items[1] as H;
@@ -425,7 +459,7 @@ describe('ActionBuilder', () => {
         .hr((config) => config.margin([5, 10]))
         .hr((config) => config.margin([1, 2, 3, 4]));
 
-      type H = t.ActionItemHr;
+      type H = t.DevActionItemHr;
       const items = model.state.items;
       const item1 = items[0] as H;
       const item2 = items[1] as H;
@@ -447,7 +481,7 @@ describe('ActionBuilder', () => {
       const items = model.state.items;
       expect(items.length).to.eql(1);
 
-      const item = items[0] as t.ActionItemTitle;
+      const item = items[0] as t.DevActionItemTitle;
       expect(item.type).to.eql('title');
       expect(item.text).to.eql('Untitled');
     });
@@ -461,7 +495,7 @@ describe('ActionBuilder', () => {
       const items = model.state.items;
       expect(items.length).to.eql(1);
 
-      const item = items[0] as t.ActionItemTitle;
+      const item = items[0] as t.DevActionItemTitle;
       expect(item.type).to.eql('title');
       expect(item.text).to.eql('My Title');
     });
@@ -475,7 +509,7 @@ describe('ActionBuilder', () => {
       const items = model.state.items;
       expect(items.length).to.eql(1);
 
-      const item = items[0] as t.ActionItemTitle;
+      const item = items[0] as t.DevActionItemTitle;
       expect(item.type).to.eql('title');
       expect(item.text).to.eql('Hello');
     });
@@ -489,7 +523,7 @@ describe('ActionBuilder', () => {
       const items = model.state.items;
       expect(items.length).to.eql(1);
 
-      const item = items[0] as t.ActionItemTitle;
+      const item = items[0] as t.DevActionItemTitle;
       expect(item.type).to.eql('title');
       expect(item.text).to.eql('Hello');
     });
