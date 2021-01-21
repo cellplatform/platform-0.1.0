@@ -1,5 +1,5 @@
 import React from 'react';
-import { css, CssValue, t, color } from '../../common';
+import { css, CssValue, t, color, Format } from '../../common';
 
 export type HrItemProps = {
   model: t.ActionItemHr;
@@ -8,12 +8,15 @@ export type HrItemProps = {
 
 export const HrItem: React.FC<HrItemProps> = (props) => {
   const { model } = props;
+  const margin = Format.toEdges(model.margin);
 
   const styles = {
     base: css({
       boxSizing: 'border-box',
-      PaddingX: 8,
-      PaddingY: 8,
+      paddingTop: margin.top,
+      paddingRight: margin.right,
+      paddingBottom: margin.bottom,
+      paddingLeft: margin.left,
     }),
     hr: css({
       height: model.height,

@@ -23,7 +23,7 @@ export type ActionAddOptions = { insertAt?: 'end' | 'start' };
 export type ActionModelInputMethods<Ctx> = {
   button(label: string, handler?: t.ActionHandler<Ctx>): B<Ctx>;
   button(config: ActionButtonConfig<Ctx>): B<Ctx>;
-  hr(height?: number, opacity?: number): B<Ctx>;
+  hr(height?: number, opacity?: number, margin?: t.DevEdgeSpacing): B<Ctx>;
   hr(config?: ActionHrConfig<Ctx>): B<Ctx>;
   title(text: string, config?: ActionTitleConfig<Ctx>): B<Ctx>;
   title(config: ActionTitleConfig<Ctx>): B<Ctx>;
@@ -46,6 +46,7 @@ export type ActionHrConfig<Ctx> = (args: ActionHrConfigArgs<Ctx>) => void;
 export type ActionHrConfigArgs<Ctx> = {
   height(value: number): ActionHrConfigArgs<Ctx>;
   opacity(value: number): ActionHrConfigArgs<Ctx>;
+  margin(value: t.DevEdgeSpacing): ActionHrConfigArgs<Ctx>;
 };
 
 /**

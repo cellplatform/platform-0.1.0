@@ -294,7 +294,7 @@ describe('ActionBuilder', () => {
   });
 
   describe('builder.hr()', () => {
-    it('default configuration', () => {
+    it('param: none', () => {
       const { builder, model } = create();
       expect(model.state.items).to.eql([]);
 
@@ -307,9 +307,10 @@ describe('ActionBuilder', () => {
       expect(item.type).to.eql('hr');
       expect(item.height).to.eql(8);
       expect(item.opacity).to.eql(0.06);
+      expect(item.margin).to.eql([8, 8]);
     });
 
-    it('adjust configuration', () => {
+    it('param: fn', () => {
       const { builder, model } = create();
       expect(model.state.items).to.eql([]);
 
@@ -322,6 +323,30 @@ describe('ActionBuilder', () => {
       expect(item.type).to.eql('hr');
       expect(item.height).to.eql(1);
       expect(item.opacity).to.eql(0.3);
+    });
+
+    it('params: number (height, opacity, margin)', () => {
+      const { builder, model } = create();
+
+      builder.hr().hr(3).hr(1, 0.2, [10, 20, 30, 40]);
+
+      type H = t.ActionItemHr;
+      const items = model.state.items;
+      const item1 = items[0] as H;
+      const item2 = items[1] as H;
+      const item3 = items[2] as H;
+
+      expect(item1.height).to.eql(8);
+      expect(item2.height).to.eql(3);
+      expect(item3.height).to.eql(1);
+
+      expect(item1.opacity).to.eql(0.06);
+      expect(item2.opacity).to.eql(0.06);
+      expect(item3.opacity).to.eql(0.2);
+
+      expect(item1.margin).to.eql([8, 8]);
+      expect(item2.margin).to.eql([8, 8]);
+      expect(item3.margin).to.eql([10, 20, 30, 40]);
     });
 
     it('min-height: 0', () => {
@@ -337,7 +362,7 @@ describe('ActionBuilder', () => {
       expect(item2.height).to.eql(0);
     });
 
-    it('opacity - clamp: 0..1', () => {
+    it('opacity: clamp 0..1', () => {
       const { builder, model } = create();
 
       builder
@@ -356,10 +381,12 @@ describe('ActionBuilder', () => {
       expect(item3.opacity).to.eql(0);
     });
 
-    it('params: number (height, opacity)', () => {
+    it('margin: 0', () => {
       const { builder, model } = create();
-
-      builder.hr().hr(3).hr(1, 0.2);
+      builder
+        .hr((config) => config.margin(1))
+        .hr((config) => config.margin([5, 10]))
+        .hr((config) => config.margin([1, 2, 3, 4]));
 
       type H = t.ActionItemHr;
       const items = model.state.items;
@@ -367,13 +394,9 @@ describe('ActionBuilder', () => {
       const item2 = items[1] as H;
       const item3 = items[2] as H;
 
-      expect(item1.height).to.eql(8);
-      expect(item2.height).to.eql(3);
-      expect(item3.height).to.eql(1);
-
-      expect(item1.opacity).to.eql(0.06);
-      expect(item2.opacity).to.eql(0.06);
-      expect(item3.opacity).to.eql(0.2);
+      expect(item1.margin).to.eql(1); // NB: default
+      expect(item2.margin).to.eql([5, 10]);
+      expect(item3.margin).to.eql([1, 2, 3, 4]);
     });
   });
 

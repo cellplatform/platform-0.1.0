@@ -1,5 +1,6 @@
 export * from './types.Host';
 
+export * from './types';
 export * from './types.ActionPanel';
 export * from './types.Actions.model';
 export * from './types.Actions.model.items';

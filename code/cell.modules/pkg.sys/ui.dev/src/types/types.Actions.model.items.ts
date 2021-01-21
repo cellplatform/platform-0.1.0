@@ -24,6 +24,7 @@ export type ActionItemHr = {
   type: 'hr';
   height: number;
   opacity: number;
+  margin: t.DevEdgeSpacing;
 };
 
 /**
