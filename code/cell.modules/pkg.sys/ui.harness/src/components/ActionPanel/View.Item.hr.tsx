@@ -17,7 +17,7 @@ export const HrItem: React.FC<HrItemProps> = (props) => {
     }),
     hr: css({
       height: model.height,
-      backgroundColor: color.format(-0.06),
+      backgroundColor: color.format(0 - model.opacity),
     }),
   };
 

@@ -7,7 +7,7 @@ import { Host } from '../../components/Host';
 import { actions } from './Dev.actions';
 
 export const Dev: React.FC = () => {
-  const [count, setCount] = useState<number>(0);
+  const [count, setCount] = useState<number>(0); // NB: Hack for causing redraws.
   const model = actions.toContext().model;
   const position = model.state.position;
 
@@ -70,7 +70,7 @@ export const Dev: React.FC = () => {
             </div>
           </Host>
         </div>
-        <div {...styles.right}>{actions.render({ style: { flex: 1 } })}</div>
+        <div {...styles.right}>{actions.renderList({ scrollable: true, style: { flex: 1 } })}</div>
       </div>
     </React.StrictMode>
   );

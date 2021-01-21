@@ -21,7 +21,7 @@ const change = (model: Ctx['model']) => {
  */
 export const actions = Actions<Ctx>()
   .context((prev) => prev || { model, change: model.change })
-  // .group('foo')
+
   .button('foo', (ctx) => change(ctx.model))
   .button((e) => e.label(LOREM))
   .button((e) => e.description(LOREM))
@@ -33,10 +33,6 @@ export const actions = Actions<Ctx>()
   .button((config) => config.label('hello'))
   .hr()
   .button('console.log', (ctx) => console.log('hello', ctx))
-  // .group('Group 1', (e) =>
-  //   e
-  // )
-  // .group((e) => e.name('Group 2'))
 
   .hr()
   .title('Group 2')

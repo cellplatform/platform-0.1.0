@@ -14,7 +14,7 @@ function create() {
   return { model, builder };
 }
 
-describe('ActionBuilder', () => {
+describe.only('ActionBuilder', () => {
   describe('ActionBuilder.model()', () => {
     it('model', () => {
       const model = ActionBuilder.model();
@@ -65,7 +65,7 @@ describe('ActionBuilder', () => {
       const el = builder
         .context(() => ({ count: 123 }))
         .button('foo', () => null)
-        .render();
+        .renderList();
 
       expect(React.isValidElement(el)).to.eql(true);
       expect(el.props.model.items).to.eql(model.state.items);
@@ -306,13 +306,14 @@ describe('ActionBuilder', () => {
       const item = items[0] as t.ActionItemHr;
       expect(item.type).to.eql('hr');
       expect(item.height).to.eql(8);
+      expect(item.opacity).to.eql(0.06);
     });
 
     it('adjust configuration', () => {
       const { builder, model } = create();
       expect(model.state.items).to.eql([]);
 
-      builder.hr((config) => config.height(-10));
+      builder.hr((config) => config.height(1).opacity(0.3));
 
       const items = model.state.items;
       expect(items.length).to.eql(1);
@@ -320,6 +321,59 @@ describe('ActionBuilder', () => {
       const item = items[0] as t.ActionItemHr;
       expect(item.type).to.eql('hr');
       expect(item.height).to.eql(1);
+      expect(item.opacity).to.eql(0.3);
+    });
+
+    it('min-height: 0', () => {
+      const { builder, model } = create();
+      builder.hr().hr((config) => config.height(-1));
+
+      type H = t.ActionItemHr;
+      const items = model.state.items;
+      const item1 = items[0] as H;
+      const item2 = items[1] as H;
+
+      expect(item1.height).to.eql(8); // NB: default
+      expect(item2.height).to.eql(0);
+    });
+
+    it('opacity - clamp: 0..1', () => {
+      const { builder, model } = create();
+
+      builder
+        .hr()
+        .hr((config) => config.opacity(99))
+        .hr((config) => config.opacity(-1));
+
+      type H = t.ActionItemHr;
+      const items = model.state.items;
+      const item1 = items[0] as H;
+      const item2 = items[1] as H;
+      const item3 = items[2] as H;
+
+      expect(item1.opacity).to.eql(0.06); // NB: default.
+      expect(item2.opacity).to.eql(1);
+      expect(item3.opacity).to.eql(0);
+    });
+
+    it('params: number (height, opacity)', () => {
+      const { builder, model } = create();
+
+      builder.hr().hr(3).hr(1, 0.2);
+
+      type H = t.ActionItemHr;
+      const items = model.state.items;
+      const item1 = items[0] as H;
+      const item2 = items[1] as H;
+      const item3 = items[2] as H;
+
+      expect(item1.height).to.eql(8);
+      expect(item2.height).to.eql(3);
+      expect(item3.height).to.eql(1);
+
+      expect(item1.opacity).to.eql(0.06);
+      expect(item2.opacity).to.eql(0.06);
+      expect(item3.opacity).to.eql(0.2);
     });
   });
 
