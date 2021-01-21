@@ -59,7 +59,7 @@ describe('ActionBuilder', () => {
     });
   });
 
-  describe('builder.render()', () => {
+  describe('builder.renderList()', () => {
     it('JSX element', () => {
       const { builder, model } = create();
       const el = builder
@@ -73,6 +73,20 @@ describe('ActionBuilder', () => {
       const ctx = builder.toContext();
       expect(ctx).to.eql({ count: 123 });
       expect(el.props.getContext()).to.eql(ctx);
+    });
+  });
+
+  describe.only('builder.renderSubject()', () => {
+    it('builder.renderSubject()', () => {
+      const { builder, model } = create();
+      const el = builder
+        .context(() => ({ count: 123 }))
+        .subject((e) => {
+          return <div>foo</div>
+        });
+
+
+        // const res = builder.re
     });
   });
 
@@ -96,6 +110,29 @@ describe('ActionBuilder', () => {
       const { builder } = create();
       const fn = () => builder.context('foo' as any);
       expect(fn).to.throw(/Context factory function not provided/);
+    });
+  });
+
+  describe('builder.subject', () => {
+    it('stores root subject factory', () => {
+      const { model, builder } = create();
+      expect(model.state.renderSubject).to.eql(undefined);
+
+      const fn1: t.ActionRenderSubject = (e) => null;
+      const fn2: t.ActionRenderSubject = (e) => null;
+
+      builder.subject(fn1);
+      expect(model.state.renderSubject).to.eql(fn1);
+
+      // Replace with another factory.
+      builder.subject(fn2);
+      expect(model.state.renderSubject).to.eql(fn2);
+    });
+
+    it('throw if factory function not provided', () => {
+      const { builder } = create();
+      const fn = () => builder.subject('foo' as any);
+      expect(fn).to.throw(/Subject factory function not provided/);
     });
   });
 

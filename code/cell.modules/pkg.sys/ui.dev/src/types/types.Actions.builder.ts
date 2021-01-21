@@ -15,7 +15,8 @@ export type ActionModelMethods<Ctx> = ActionModelInputMethods<Ctx> & {
   renderList(props?: t.ActionPanelProps): JSX.Element;
 
   merge(actions: ActionModelBuilder<any>, options?: ActionAddOptions): B<Ctx>;
-  context(ctx: t.ActionGetContext<Ctx>): B<Ctx>;
+  context(factory: t.ActionGetContext<Ctx>): B<Ctx>;
+  subject(factory: t.ActionRenderSubject): B<Ctx>;
 };
 
 export type ActionAddOptions = { insertAt?: 'end' | 'start' };

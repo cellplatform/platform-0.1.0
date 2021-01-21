@@ -5,7 +5,7 @@ import { View as ActionPanel } from '../../components/ActionPanel/View';
 import { ButtonConfig } from './config.Button';
 import { HrConfig } from './config.Hr';
 import { TitleConfig } from './config.Title';
-import { toContext } from './util';
+import { toContext } from './context';
 
 /**
  * Action handlers.
@@ -20,9 +20,7 @@ export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethod
   /**
    * Derives the current context ("ctx") for the builder.
    */
-  toContext(args) {
-    return toContext(args.model);
-  },
+  toContext: (args) => toContext(args.model),
 
   /**
    * Create a clone of the builder (optionally changing the context factory.)
@@ -43,14 +41,21 @@ export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethod
   },
 
   /**
-   * The factory for the context (provided to each action).
+   * Factory for the context (provided to each action).
    */
   context(args) {
-    const value = args.params[0];
-    if (typeof value !== 'function') {
-      throw new Error('Context factory function not provided');
-    }
-    args.model.change((draft) => (draft.getContext = value));
+    const fn = args.params[0];
+    if (typeof fn !== 'function') throw new Error('Context factory function not provided');
+    args.model.change((draft) => (draft.getContext = fn));
+  },
+
+  /**
+   * Factory that renders the component under test.
+   */
+  subject(args) {
+    const fn = args.params[0];
+    if (typeof fn !== 'function') throw new Error('Subject factory function not provided');
+    args.model.change((draft) => (draft.renderSubject = fn));
   },
 
   /**
