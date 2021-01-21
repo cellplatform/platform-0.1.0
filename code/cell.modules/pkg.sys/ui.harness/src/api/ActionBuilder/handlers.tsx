@@ -36,7 +36,7 @@ export const handlers: t.BuilderHandlers<t.ActionModel<any>, t.ActionModelMethod
   /**
    * Render to an <ActionPanel>.
    */
-  render(args) {
+  renderList(args) {
     const props = args.params[0] || {};
     const getContext = () => args.builder.self.toContext();
     return <ActionPanel {...props} model={args.model.state} getContext={getContext} />;
