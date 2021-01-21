@@ -44,7 +44,7 @@ export const Host: React.FC<IHostProps> = (props = {}) => {
   };
 
   return (
-    <div {...css(styles.base, props.style)} className={'uih-Host'}>
+    <div {...css(styles.base, props.style)} className={'dev-Host'}>
       <div {...styles.body}>
         <div {...styles.content}>
           <Content {...layout}>{props.children}</Content>

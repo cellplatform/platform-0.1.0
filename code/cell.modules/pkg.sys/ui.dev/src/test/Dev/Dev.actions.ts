@@ -31,7 +31,7 @@ export const actions = Actions<Ctx>()
 
   .button('change text', (ctx) => change(ctx.model))
   .button((config) => config.label('hello'))
-  .hr(1, 0.2)
+  .hr(1, 0.14)
   .button('console.log', (ctx) => console.log('hello', ctx))
 
   .hr()

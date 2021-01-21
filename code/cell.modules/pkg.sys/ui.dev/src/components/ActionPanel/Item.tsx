@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { CssValue, t } from '../../common';
-import { ButtonItem } from './View.Item.button';
-import { HrItem } from './View.Item.hr';
-import { TitleItem } from './View.Item.title';
+import { ButtonItem } from './Item.button';
+import { HrItem } from './Item.hr';
+import { TitleItem } from './Item.title';
 
 export type ItemProps = {
   model: t.ActionItem;
