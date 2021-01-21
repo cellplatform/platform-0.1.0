@@ -1,6 +1,6 @@
 import React from 'react';
-import { bundle, css, CssValue, log } from '../../common';
-import Award from '../../../static/images/award.svg';
+import { bundle, css, CssValue, log } from '../common';
+import Award from '../../static/images/award.svg';
 
 log.info('bundle', bundle);
 

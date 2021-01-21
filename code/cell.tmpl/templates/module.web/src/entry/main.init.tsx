@@ -3,6 +3,6 @@ import './workers.init';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Dev } from './components/Dev';
+import { Dev } from '../components/Dev';
 
 ReactDOM.render(<Dev />, document.getElementById('root'));
