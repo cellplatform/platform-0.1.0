@@ -70,7 +70,12 @@ export const Dev: React.FC = () => {
             </div>
           </Host>
         </div>
-        <div {...styles.right}>{actions.renderList({ scrollable: true, style: { flex: 1 } })}</div>
+        <div {...styles.right}>
+          {actions.renderList({
+            scrollable: true, // default: true
+            style: { flex: 1 },
+          })}
+        </div>
       </div>
     </React.StrictMode>
   );

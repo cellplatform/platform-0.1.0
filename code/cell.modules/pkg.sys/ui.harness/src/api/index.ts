@@ -1,1 +1,1 @@
-export * from './ActionBuilder';
+export * from './action';

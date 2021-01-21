@@ -14,7 +14,7 @@ function create() {
   return { model, builder };
 }
 
-describe.only('ActionBuilder', () => {
+describe('ActionBuilder', () => {
   describe('ActionBuilder.model()', () => {
     it('model', () => {
       const model = ActionBuilder.model();
