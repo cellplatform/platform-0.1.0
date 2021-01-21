@@ -193,7 +193,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
     .merge(libsActions);
 
   return {
-    render: main.render,
+    render: main.renderList,
     onReady,
     model,
   };

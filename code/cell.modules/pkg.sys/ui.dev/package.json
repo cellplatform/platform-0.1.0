@@ -1,5 +1,5 @@
 {
-  "name": "sys.ui.harness",
+  "name": "sys.ui.dev",
   "version": "0.0.51",
   "sideEffects": false,
   "main": "lib/index",

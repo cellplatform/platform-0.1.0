@@ -1,2 +1,2 @@
 export * from '../../common';
-export { Actions } from 'sys.ui.harness';
+export { Actions } from 'sys.ui.dev';

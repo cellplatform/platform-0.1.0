@@ -1,5 +1,5 @@
 import React from 'react';
-import { Host } from 'sys.ui.harness';
+import { Host } from 'sys.ui.dev';
 
 import { css } from '../../common';
 

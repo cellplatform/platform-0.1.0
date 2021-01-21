@@ -17,6 +17,7 @@ export const View: React.FC<ViewProps> = (props) => {
       Scroll: scrollable,
       overflowY: scrollable ? 'scroll' : 'hidden',
       fontFamily: constants.FONT.SANS,
+      color: constants.COLORS.DARK,
       userSelect: 'none',
       boxSizing: 'border-box',
       paddingBottom: 50,
