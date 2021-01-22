@@ -4,31 +4,35 @@ import { css, defaultValue, formatColor, t } from '../../common';
 import { Cropmarks } from './Cropmarks';
 import { Labels } from './Labels';
 
-export type ContentProps = t.IDevHostedLayout;
+export type ContentCropmark = { size: number; margin: number };
+
+export type ContentProps = {
+  cropmark: ContentCropmark;
+  layout: t.IDevHostedLayout;
+};
 
 /**
  * The Host content.
  */
-export const Content: React.FC<ContentProps> = (props = {}) => {
-  if (!props.children) {
-    return null;
-  }
+export const Content: React.FC<ContentProps> = (props) => {
+  if (!props.children) return null;
+  const { layout } = props;
 
   const styles = {
     children: css({
+      flex: 1,
       position: 'relative',
-      width: props.width,
-      height: props.height,
+      width: layout.width,
+      height: layout.height,
       WebkitAppRegion: 'none',
       boxSizing: 'border-box',
-      flex: 1,
     }),
   };
 
   return (
     <>
       <ContentCropmarks {...props} />
-      <Labels label={props.label} />
+      <Labels label={layout.label} />
       <div {...styles.children}>{props.children}</div>
     </>
   );
@@ -37,17 +41,16 @@ export const Content: React.FC<ContentProps> = (props = {}) => {
 /**
  * Arrange cropmarks around the content.
  */
-const ContentCropmarks: React.FC<ContentProps> = (props = {}) => {
-  const cropmarks = defaultValue(props.cropmarks, true);
-  if (!cropmarks) {
-    return null;
-  }
+const ContentCropmarks: React.FC<ContentProps> = (props) => {
+  const { layout } = props;
+  const cropmarks = defaultValue(layout.cropmarks, true);
+  if (!cropmarks) return null;
 
-  const abs = props.position;
+  const abs = layout.position;
   const color = formatColor(cropmarks === true ? 1 : cropmarks);
 
-  const size = 20;
-  const margin = 6;
+  const size = props.cropmark.size;
+  const margin = props.cropmark.margin;
   const offset = size + margin;
 
   // Ensure the space surrounding an "absolute positioning" is

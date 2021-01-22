@@ -66,7 +66,7 @@ export const Dev: React.FC = () => {
           </DevHost>
         </div>
         <div {...styles.right}>
-          {actions.render({ style: { flex: 1 } })}
+          {actions.renderList({ style: { flex: 1 } })}
           {<DevProps id={model?.editor?.id} selection={model?.selection} />}
         </div>
       </div>

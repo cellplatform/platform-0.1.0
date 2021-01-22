@@ -39,8 +39,6 @@ export const Dev: React.FC = () => {
     }),
   };
 
-  console.log('actions.renderSubject()', actions.renderSubject());
-
   const subject = actions.renderSubject();
 
   return (

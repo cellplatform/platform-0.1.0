@@ -1,87 +1,100 @@
 import * as React from 'react';
-import { css, CssValue, defaultValue, color } from '../../common';
+import { css, CssValue, defaultValue, formatColor, R } from '../../common';
 
-export type ICropmarksProps = {
+export type CropmarksProps = {
   size: number;
   margin: number;
   color?: string | number;
   style?: CssValue;
 };
 
-export class Cropmarks extends React.PureComponent<ICropmarksProps> {
-  /**
-   * [Properties]
-   */
-  private get margin() {
-    return defaultValue(this.props.margin, 6);
-  }
+export const Cropmarks: React.FC<CropmarksProps> = (props) => {
+  const { margin, size } = props;
+  const offset = 0 - (size + margin);
 
-  private get size() {
-    return defaultValue(this.props.size, 20);
-  }
+  const styles = {
+    base: css({ Absolute: 0, pointerEvents: 'none' }),
+    topLeft: css({ Absolute: [offset, null, null, offset] }),
+    topRight: css({ Absolute: [offset, offset, null, null] }),
+    bottomLeft: css({ Absolute: [null, null, offset, offset] }),
+    bottomRight: css({ Absolute: [null, offset, offset, null] }),
+  };
 
-  private get color() {
-    return color.format(defaultValue(this.props.color, 1));
-  }
-
-  /**
-   * [Render]
-   */
-  public render() {
-    const size = this.size + this.margin;
-    const offset = 0 - size;
-
-    const styles = {
-      base: css({ Absolute: 0, pointerEvents: 'none' }),
-      topLeft: css({ Absolute: [offset, null, null, offset] }),
-      topRight: css({ Absolute: [offset, offset, null, null] }),
-      bottomLeft: css({ Absolute: [null, null, offset, offset] }),
-      bottomRight: css({ Absolute: [null, offset, offset, null] }),
-    };
-
+  const corner = (style: CssValue, x: 'W' | 'E', y: 'N' | 'S') => {
     return (
-      <div {...css(styles.base, this.props.style)}>
-        {this.renderCorner(styles.topLeft, 'E', 'S')}
-        {this.renderCorner(styles.topRight, 'W', 'S')}
-        {this.renderCorner(styles.bottomLeft, 'E', 'N')}
-        {this.renderCorner(styles.bottomRight, 'W', 'N')}
-      </div>
+      <CropmarkCorner x={x} y={y} margin={margin} size={size} color={props.color} style={style} />
     );
-  }
+  };
 
-  private renderCorner(style: CssValue, x: 'W' | 'E', y: 'N' | 'S') {
-    const margin = this.margin;
-    const size = this.size + margin;
+  return (
+    <div {...css(styles.base, props.style)}>
+      {corner(styles.topLeft, 'E', 'S')}
+      {corner(styles.topRight, 'W', 'S')}
+      {corner(styles.bottomLeft, 'E', 'N')}
+      {corner(styles.bottomRight, 'W', 'N')}
+    </div>
+  );
+};
 
-    const styles = {
-      base: css({ width: size, height: size }),
-      x: css({
-        background: this.color,
-        height: 1,
-        Absolute: [
-          y === 'N' ? 0 : null,
-          x === 'E' ? margin : 0,
-          y === 'S' ? 0 : null,
-          x === 'W' ? margin : 0,
-        ],
-      }),
-      y: css({
-        background: this.color,
-        width: 1,
-        Absolute: [
-          y === 'N' ? margin : 0,
-          x === 'E' ? 0 : null,
-          y === 'S' ? margin : 0,
-          x === 'W' ? 0 : null,
-        ],
-      }),
-    };
+export type CropmarkCornerProps = {
+  x: 'W' | 'E';
+  y: 'N' | 'S';
+  size: number;
+  margin: number;
+  color?: string | number;
+  style: CssValue;
+};
 
-    return (
-      <div {...css(style, styles.base)}>
-        <div {...styles.x} />
-        <div {...styles.y} />
-      </div>
-    );
-  }
-}
+export const CropmarkCorner: React.FC<CropmarkCornerProps> = (props) => {
+  const { x, y } = props;
+  const margin = props.margin;
+  const size = props.size + margin;
+  const color = formatColor(defaultValue(props.color, 1));
+
+  const styles = {
+    base: css({
+      width: size,
+      height: size,
+    }),
+    x: css({
+      background: color,
+      height: 1,
+      Absolute: [
+        y === 'N' ? 0 : null,
+        x === 'E' ? margin : 0,
+        y === 'S' ? 0 : null,
+        x === 'W' ? margin : 0,
+      ],
+    }),
+    y: css({
+      background: color,
+      width: 1,
+      Absolute: [
+        y === 'N' ? margin : 0,
+        x === 'E' ? 0 : null,
+        y === 'S' ? margin : 0,
+        x === 'W' ? 0 : null,
+      ],
+    }),
+  };
+
+  return (
+    <div {...css(props.style, styles.base)}>
+      <div {...styles.x} />
+      <div {...styles.y} />
+    </div>
+  );
+};
+
+/**
+ * Helpers
+ */
+
+// function isHidden(x: 'W' | 'E', y: 'N' | 'S', hidden: CropmarkAddress[]) {
+//   const isTop = y === 'N';
+//   const isBottom = y === 'S';
+
+//   return hidden.some((item) => {
+//     if (item.top && isTop) return false;
+//   });
+// }

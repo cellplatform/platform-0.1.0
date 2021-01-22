@@ -64,7 +64,7 @@ export const actions = Actions<Ctx>()
     }
 
     if (state.layout === 'double-x') {
-      return e.orientation('x', 10).render(el).render(el);
+      return e.orientation('x', 50).render(el).render(el);
     }
 
     if (state.layout === 'double-y') {
@@ -105,9 +105,8 @@ export const actions = Actions<Ctx>()
   .button('single: bottom right', (ctx) => ctx.change((d) => (d.layout = 'single:bottom-right')))
   .button('single: fill', (ctx) => ctx.change((d) => (d.layout = 'single:fill')))
   .button('single: fill (margin)', (ctx) => ctx.change((d) => (d.layout = 'single:fill-margin')))
-  .hr(1)
+  .hr(1, 0.1)
   .button('double: center (y)', (ctx) => ctx.change((d) => (d.layout = 'double-y')))
   .button('double: center (x)', (ctx) => ctx.change((d) => (d.layout = 'double-x')))
-  .hr(1)
 
   .hr();

@@ -6,7 +6,7 @@ import { t } from '../../common';
 export function renderSubject<Ctx>(args: { ctx: Ctx; factory?: t.DevActionRenderSubject<Ctx> }) {
   type R = t.DevActionSubject;
   const { ctx, factory } = args;
-  const res: R = { items: [], layout: {}, orientation: 'y', spacing: 20 };
+  const res: R = { items: [], layout: {}, orientation: 'y', spacing: 60 };
 
   if (factory) {
     const payload: t.DevActionRenderSubjectArgs<any> = {

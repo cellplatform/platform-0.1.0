@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { css, CssValue, defaultValue, formatColor, t } from '../../common';
-import { Content } from './Content';
+import { Content, ContentCropmark } from './Content';
 
 export type HostProps = {
   subject?: t.DevActionSubject;
@@ -35,6 +35,7 @@ export const Host: React.FC<HostProps> = (props = {}) => {
     const layout = { ...subject?.layout, ...item.layout };
     const abs = toAbsolute(layout.position);
     const margin = !isLast ? subject?.spacing : undefined;
+    const cropmark: ContentCropmark = { size: 15, margin: 6 };
 
     const style = css({
       display: 'flex',
@@ -48,7 +49,9 @@ export const Host: React.FC<HostProps> = (props = {}) => {
 
     return (
       <div key={i} {...style}>
-        <Content {...layout}>{item.el}</Content>
+        <Content cropmark={cropmark} layout={layout}>
+          {item.el}
+        </Content>
       </div>
     );
   });
