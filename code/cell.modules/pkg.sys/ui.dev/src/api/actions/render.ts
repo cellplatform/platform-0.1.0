@@ -7,27 +7,26 @@ export function renderSubject<Ctx>(args: { ctx: Ctx; factory?: t.DevActionRender
   type R = t.DevActionRenderSubjectResult<any>;
 
   const { ctx, factory } = args;
-  const res: R = { ctx, el: null, orientation: 'y' };
+  const res: R = { ctx, items: [], orientation: 'y', layout: {} };
 
   if (factory) {
-    const elements: JSX.Element[] = [];
-
     const payload: t.DevActionRenderSubjectArgs<any> = {
       ctx,
-      stack(value) {
+      orientation(value) {
         res.orientation = value;
         return payload;
       },
-      render(el: JSX.Element) {
-        if (el) elements.push(el);
+      layout(value) {
+        res.layout = value;
+        return payload;
+      },
+      render(el: JSX.Element, layout?: t.IDevHostedLayout) {
+        if (el) res.items.push({ el, layout });
         return payload;
       },
     };
 
     factory(payload);
-
-    if (elements.length === 1) res.el = elements[0];
-    if (elements.length > 1) res.el = elements;
   }
 
   return res;

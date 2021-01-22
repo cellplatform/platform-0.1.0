@@ -6,28 +6,24 @@ type StringOrNumber = string | number;
 /**
  * The layout configuration of a component being hosted.
  */
-export type IHostLayout = {
+export type IDevHostedLayout = {
   width?: number;
   height?: number;
-  background?: number | string;
+  background?: StringOrNumber;
   border?: boolean | number | string;
   cropmarks?: boolean | number;
-  position?: IHostLayoutPosition;
-  label?: ReactNode | Partial<IHostLayoutLabel>;
+  position?: StringOrNumber | [StringOrNumber, StringOrNumber] | IDevHostedAbsolute;
+  label?: ReactNode | Partial<IDevHostedLabel>;
 };
 
-export type IHostLayoutPosition = {
-  absolute?: StringOrNumber | [StringOrNumber, StringOrNumber] | IHostLayoutAbsolute;
+export type IDevHostedAbsolute = {
+  top?: StringOrNumber;
+  right?: StringOrNumber;
+  bottom?: StringOrNumber;
+  left?: StringOrNumber;
 };
 
-export type IHostLayoutAbsolute = {
-  top?: string | number;
-  right?: string | number;
-  bottom?: string | number;
-  left?: string | number;
-};
-
-export type IHostLayoutLabel = {
+export type IDevHostedLabel = {
   topLeft: ReactNode;
   topRight: ReactNode;
   bottomLeft: ReactNode;

@@ -3,8 +3,10 @@ import * as React from 'react';
 import { css, CssValue, defaultValue, formatColor, t } from '../../common';
 import { Content } from './Content';
 
-export type IHostProps = {
-  layout?: t.IHostLayout;
+export type HostProps = {
+  items?: t.DevActionRenderSubjectItem[];
+  layout?: t.IDevHostedLayout;
+  orientation?: t.DevOrientation;
   background?: number | string;
   style?: CssValue;
 };
@@ -12,44 +14,43 @@ export type IHostProps = {
 /**
  * A content container providing layout options for testing.
  */
-export const Host: React.FC<IHostProps> = (props = {}) => {
-  const { layout = {} } = props;
-  const abs = toAbsolute(layout.position?.absolute);
-
-  const borderColor = () => {
-    const border = defaultValue(layout.border, true);
-    const value = border === true ? 0.3 : border === false ? 0 : border;
-    return formatColor(value);
-  };
+export const Host: React.FC<HostProps> = (props = {}) => {
+  const orientation = defaultValue(props.orientation, 'y');
 
   const styles = {
     base: css({
       flex: 1,
       position: 'relative',
       boxSizing: 'border-box',
-      padding: 30,
       backgroundColor: formatColor(props.background),
     }),
     body: css({
       Absolute: 0,
-      Flex: abs ? undefined : 'center-center',
-    }),
-    content: css({
-      display: 'flex',
-      position: abs ? 'absolute' : 'relative',
-      Absolute: abs ? [abs.top, abs.right, abs.bottom, abs.left] : undefined,
-      border: `solid 1px ${borderColor()}`,
-      backgroundColor: formatColor(layout.background),
+      Flex: `${orientation === 'y' ? 'vertical' : 'horizontal'}-center-center`,
     }),
   };
 
+  const elContent = (props.items || []).map((item, i) => {
+    const layout = { ...props.layout, ...item.layout };
+    const abs = toAbsolute(layout.position);
+
+    const style = css({
+      display: 'flex',
+      position: abs ? 'absolute' : 'relative',
+      Absolute: abs ? [abs.top, abs.right, abs.bottom, abs.left] : undefined,
+      border: layout.border ? `solid 1px ${toBorderColor(layout.border)}` : undefined,
+      backgroundColor: formatColor(layout.background),
+    });
+    return (
+      <div key={i} {...style}>
+        <Content {...layout}>{item.el}</Content>
+      </div>
+    );
+  });
+
   return (
     <div {...css(styles.base, props.style)} className={'dev-Host'}>
-      <div {...styles.body}>
-        <div {...styles.content}>
-          <Content {...layout}>{props.children}</Content>
-        </div>
-      </div>
+      <div {...styles.body}>{elContent}</div>
     </div>
   );
 };
@@ -60,12 +61,8 @@ export default Host;
  * Helpers
  */
 
-const toAbsolute = (
-  input: t.IHostLayoutPosition['absolute'],
-): t.IHostLayoutAbsolute | undefined => {
-  if (!input) {
-    return undefined;
-  }
+const toAbsolute = (input: t.IDevHostedLayout['position']): t.IDevHostedAbsolute | undefined => {
+  if (input === undefined) return undefined;
 
   if (Array.isArray(input)) {
     return { top: input[0], right: input[1], bottom: input[0], left: input[1] };
@@ -75,5 +72,11 @@ const toAbsolute = (
     return { top: input, right: input, bottom: input, left: input };
   }
 
-  return input as t.IHostLayoutAbsolute;
+  return input as t.IDevHostedAbsolute;
+};
+
+const toBorderColor = (input: t.IDevHostedLayout['border']) => {
+  const border = defaultValue(input, true);
+  const value = border === true ? 0.3 : border === false ? 0 : border;
+  return formatColor(value);
 };

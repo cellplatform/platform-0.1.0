@@ -9,7 +9,6 @@ import { actions } from './Dev.actions';
 export const Dev: React.FC = () => {
   const [count, setCount] = useState<number>(0); // NB: Hack for causing redraws.
   const model = actions.toContext().model;
-  const position = model.state.position;
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
@@ -38,10 +37,11 @@ export const Dev: React.FC = () => {
       border: `solid 5px ${color.format(-0.1)}`,
       boxSizing: 'border-box',
     }),
-    content: css({
-      padding: 20,
-    }),
   };
+
+  console.log('actions.renderSubject()', actions.renderSubject());
+
+  const subject = actions.renderSubject();
 
   return (
     <React.StrictMode>
@@ -50,25 +50,25 @@ export const Dev: React.FC = () => {
           <Host
             style={styles.host}
             background={-0.04}
-            layout={{
-              width: 550,
-              border: -0.1,
-              cropmarks: -0.2,
-              background: 1,
-              position: position ? { absolute: position } : undefined,
-              // label: {
-              //   topLeft: 'top-left',
-              //   topRight: 'top-right',
-              //   bottomLeft: 'bottom-left',
-              //   bottomRight: 'bottom-right',
-              // },
-              label: 'foobar',
-            }}
-          >
-            <div {...styles.content}>
-              {count}. {model.state.text}
-            </div>
-          </Host>
+            items={subject.items}
+            layout={subject.layout}
+            orientation={subject.orientation}
+            // body={subject.body}
+            // layout={{
+            //   width: 550,
+            //   border: -0.1,
+            //   cropmarks: -0.2,
+            //   background: 1,
+            //   position: position ? { absolute: position } : undefined,
+            //   // label: {
+            //   //   topLeft: 'top-left',
+            //   //   topRight: 'top-right',
+            //   //   bottomLeft: 'bottom-left',
+            //   //   bottomRight: 'bottom-right',
+            //   // },
+            //   label: 'foobar',
+            // }}
+          />
         </div>
         <div {...styles.right}>
           {actions.renderList({

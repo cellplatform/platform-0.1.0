@@ -77,12 +77,13 @@ describe('ActionBuilder', () => {
   });
 
   describe.only('builder.renderSubject()', () => {
-    it('factory not set', () => {
+    it('factory not set (default values)', () => {
       const { builder } = create();
       const res = builder.renderSubject();
       expect(res.ctx).to.eql(null);
-      expect(res.el).to.eql(null);
+      expect(res.items).to.eql([]);
       expect(res.orientation).to.eql('y'); // NB: vertical stack
+      expect(res.layout).to.eql({});
     });
 
     it('passes context', () => {
@@ -94,17 +95,30 @@ describe('ActionBuilder', () => {
         .subject((e) => (payload = e))
         .renderSubject();
 
-      expect(res.el).to.eql(null);
+      expect(res.items).to.eql([]);
       expect(res.ctx).to.eql(ctx);
       expect(payload?.ctx).to.eql(ctx);
+    });
+
+    it('orientation (stacking direction)', () => {
+      const { builder } = create();
+      const res0 = builder.renderSubject();
+      const res1 = builder.subject((e) => e.orientation('x')).renderSubject();
+      const res2 = builder.subject((e) => e.orientation('y')).renderSubject();
+      expect(res0.orientation).to.eql('y'); // NB: default
+      expect(res1.orientation).to.eql('x');
+      expect(res2.orientation).to.eql('y');
     });
 
     it('single element', () => {
       const { builder } = create();
       const div = <div>Foo</div>;
       const res = builder.subject((e) => e.render(div)).renderSubject();
+
       expect(res.orientation).to.eql('y');
-      expect(res.el).to.equal(div);
+      expect(res.items.length).to.eql(1);
+      expect(res.items[0].el).to.equal(div);
+      expect(res.items[0].layout).to.eql(undefined);
     });
 
     it('multiple elements (stack)', () => {
@@ -112,15 +126,39 @@ describe('ActionBuilder', () => {
       const res = builder
         .subject((e) => {
           e.render(<h1>Foo</h1>)
-            .render(<div>Hello</div>)
-            .stack('x'); // NB: horizontal stack
+            .render(<div>Hello</div>, { label: 'MyLabel' })
+            .orientation('x'); // NB: horizontal stack
         })
         .renderSubject();
 
-      const elements = res.el as JSX.Element[];
+      const items = res.items;
       expect(res.orientation).to.eql('x');
-      expect(elements[0].type).to.equal('h1');
-      expect(elements[1].type).to.equal('div');
+      expect(items[0].el.type).to.equal('h1');
+      expect(items[1].el.type).to.equal('div');
+
+      expect(items[0].layout?.label).to.equal(undefined);
+      expect(items[1].layout?.label).to.equal('MyLabel');
+    });
+
+    it('layout: item (explicit)', () => {
+      const { builder } = create();
+      const div = <div>Foo</div>;
+
+      const res = builder.subject((e) => e.render(div, { label: 'MyLabel' })).renderSubject();
+      expect(res.layout).to.eql({});
+
+      const item = res.items[0];
+      expect(item.el).to.equal(div);
+      expect(item.layout).to.eql({ label: 'MyLabel' });
+    });
+
+    it('layout: shared across all items', () => {
+      const { builder } = create();
+      const div = <div>Foo</div>;
+      const res = builder
+        .subject((e) => e.layout({ label: 'MyLabel' }).render(div))
+        .renderSubject();
+      expect(res.layout).to.eql({ label: 'MyLabel' });
     });
   });
 

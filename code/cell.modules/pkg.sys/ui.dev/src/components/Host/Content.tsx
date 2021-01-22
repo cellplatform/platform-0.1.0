@@ -4,12 +4,12 @@ import { css, defaultValue, formatColor, t } from '../../common';
 import { Cropmarks } from './Cropmarks';
 import { Labels } from './Labels';
 
-export type IContentProps = t.IHostLayout;
+export type ContentProps = t.IDevHostedLayout;
 
 /**
  * The Host content.
  */
-export const Content: React.FC<IContentProps> = (props = {}) => {
+export const Content: React.FC<ContentProps> = (props = {}) => {
   if (!props.children) {
     return null;
   }
@@ -37,13 +37,13 @@ export const Content: React.FC<IContentProps> = (props = {}) => {
 /**
  * Arrange cropmarks around the content.
  */
-const ContentCropmarks: React.FC<IContentProps> = (props = {}) => {
+const ContentCropmarks: React.FC<ContentProps> = (props = {}) => {
   const cropmarks = defaultValue(props.cropmarks, true);
   if (!cropmarks) {
     return null;
   }
 
-  const abs = props.position?.absolute;
+  const abs = props.position;
   const color = formatColor(cropmarks === true ? 1 : cropmarks);
 
   const size = 20;
