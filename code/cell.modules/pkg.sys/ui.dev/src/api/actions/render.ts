@@ -4,16 +4,17 @@ import { t } from '../../common';
  * Render the subject(s) under test.
  */
 export function renderSubject<Ctx>(args: { ctx: Ctx; factory?: t.DevActionRenderSubject<Ctx> }) {
-  type R = t.DevActionRenderSubjectResult<any>;
-
+  type R = t.DevActionSubject;
   const { ctx, factory } = args;
-  const res: R = { ctx, items: [], orientation: 'y', layout: {} };
+  const res: R = { items: [], layout: {}, orientation: 'y', spacing: 20 };
 
   if (factory) {
     const payload: t.DevActionRenderSubjectArgs<any> = {
       ctx,
-      orientation(value) {
+      orientation(value, spacing) {
         res.orientation = value;
+        if (typeof spacing === 'number') res.spacing = Math.max(0, spacing);
+
         return payload;
       },
       layout(value) {

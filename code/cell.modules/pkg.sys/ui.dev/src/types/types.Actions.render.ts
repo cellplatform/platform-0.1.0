@@ -7,19 +7,19 @@ export type DevActionRenderSubject<Ctx> = (args: DevActionRenderSubjectArgs<Ctx>
 
 export type DevActionRenderSubjectArgs<Ctx> = {
   readonly ctx: Ctx;
-  orientation(value: t.DevOrientation): DevActionRenderSubjectArgs<Ctx>;
+  orientation(value: t.DevOrientation, spacing?: number): DevActionRenderSubjectArgs<Ctx>;
   layout(value: t.IDevHostedLayout): DevActionRenderSubjectArgs<Ctx>;
   render(el: JSX.Element, layout?: t.IDevHostedLayout): DevActionRenderSubjectArgs<Ctx>;
 };
 
-export type DevActionRenderSubjectResult<Ctx> = {
-  ctx: Ctx;
-  orientation: t.DevOrientation;
+export type DevActionSubject = {
+  items: t.DevActionSubjectItem[];
   layout: t.IDevHostedLayout; // NB: Default layout (individual item layout merged into this)
-  items: t.DevActionRenderSubjectItem[];
+  orientation: t.DevOrientation;
+  spacing: number;
 };
 
-export type DevActionRenderSubjectItem = {
+export type DevActionSubjectItem = {
   el: JSX.Element;
   layout?: t.IDevHostedLayout;
 };

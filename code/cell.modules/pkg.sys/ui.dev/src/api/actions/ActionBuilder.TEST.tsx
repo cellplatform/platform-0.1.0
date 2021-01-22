@@ -80,10 +80,10 @@ describe('ActionBuilder', () => {
     it('factory not set (default values)', () => {
       const { builder } = create();
       const res = builder.renderSubject();
-      expect(res.ctx).to.eql(null);
       expect(res.items).to.eql([]);
       expect(res.orientation).to.eql('y'); // NB: vertical stack
       expect(res.layout).to.eql({});
+      expect(res.spacing).to.eql(20);
     });
 
     it('passes context', () => {
@@ -96,7 +96,6 @@ describe('ActionBuilder', () => {
         .renderSubject();
 
       expect(res.items).to.eql([]);
-      expect(res.ctx).to.eql(ctx);
       expect(payload?.ctx).to.eql(ctx);
     });
 
@@ -159,6 +158,16 @@ describe('ActionBuilder', () => {
         .subject((e) => e.layout({ label: 'MyLabel' }).render(div))
         .renderSubject();
       expect(res.layout).to.eql({ label: 'MyLabel' });
+    });
+
+    it('orentation: spacing', () => {
+      const { builder } = create();
+      const res0 = builder.renderSubject();
+      const res1 = builder.subject((e) => e.orientation('x', 50)).renderSubject();
+      const res2 = builder.subject((e) => e.orientation('y', -10)).renderSubject();
+      expect(res0.spacing).to.eql(20); // NB: default
+      expect(res1.spacing).to.eql(50);
+      expect(res2.spacing).to.eql(0); // NB: Clamped: >0
     });
   });
 

@@ -50,9 +50,10 @@ export const Dev: React.FC = () => {
           <Host
             style={styles.host}
             background={-0.04}
-            items={subject.items}
-            layout={subject.layout}
-            orientation={subject.orientation}
+            subject={subject}
+            // items={subject.items}
+            // layout={subject.layout}
+            // orientation={subject.orientation}
             // body={subject.body}
             // layout={{
             //   width: 550,

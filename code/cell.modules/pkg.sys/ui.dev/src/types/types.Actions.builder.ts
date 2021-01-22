@@ -13,7 +13,7 @@ export type DevActionModelMethods<Ctx> = DevActionModelInputMethods<Ctx> & {
   clone(ctx?: t.DevActionGetContext<Ctx>): B<Ctx>;
 
   renderList(props?: t.ActionPanelProps): JSX.Element;
-  renderSubject(): t.DevActionRenderSubjectResult<Ctx>;
+  renderSubject(): t.DevActionSubject;
 
   merge(actions: DevActionModelBuilder<any>, options?: DevActionAddOptions): B<Ctx>;
   context(factory: t.DevActionGetContext<Ctx>): B<Ctx>;

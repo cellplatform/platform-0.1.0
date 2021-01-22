@@ -64,7 +64,7 @@ export const actions = Actions<Ctx>()
     }
 
     if (state.layout === 'double-x') {
-      return e.orientation('x').render(el).render(el);
+      return e.orientation('x', 10).render(el).render(el);
     }
 
     if (state.layout === 'double-y') {

@@ -4,9 +4,7 @@ import { css, CssValue, defaultValue, formatColor, t } from '../../common';
 import { Content } from './Content';
 
 export type HostProps = {
-  items?: t.DevActionRenderSubjectItem[];
-  layout?: t.IDevHostedLayout;
-  orientation?: t.DevOrientation;
+  subject?: t.DevActionSubject;
   background?: number | string;
   style?: CssValue;
 };
@@ -15,24 +13,28 @@ export type HostProps = {
  * A content container providing layout options for testing.
  */
 export const Host: React.FC<HostProps> = (props = {}) => {
-  const orientation = defaultValue(props.orientation, 'y');
+  const { subject } = props;
+  const orientation = defaultValue(subject?.orientation, 'y');
+  const items = subject?.items || [];
 
   const styles = {
     base: css({
       flex: 1,
       position: 'relative',
-      boxSizing: 'border-box',
       backgroundColor: formatColor(props.background),
     }),
     body: css({
       Absolute: 0,
+      boxSizing: 'border-box',
       Flex: `${orientation === 'y' ? 'vertical' : 'horizontal'}-center-center`,
     }),
   };
 
-  const elContent = (props.items || []).map((item, i) => {
-    const layout = { ...props.layout, ...item.layout };
+  const elContent = items.map((item, i) => {
+    const isLast = i === items.length - 1;
+    const layout = { ...subject?.layout, ...item.layout };
     const abs = toAbsolute(layout.position);
+    const margin = !isLast ? subject?.spacing : undefined;
 
     const style = css({
       display: 'flex',
@@ -40,7 +42,10 @@ export const Host: React.FC<HostProps> = (props = {}) => {
       Absolute: abs ? [abs.top, abs.right, abs.bottom, abs.left] : undefined,
       border: layout.border ? `solid 1px ${toBorderColor(layout.border)}` : undefined,
       backgroundColor: formatColor(layout.background),
+      marginBottom: orientation === 'y' && margin ? margin : undefined,
+      marginRight: orientation === 'x' && margin ? margin : undefined,
     });
+
     return (
       <div key={i} {...style}>
         <Content {...layout}>{item.el}</Content>
