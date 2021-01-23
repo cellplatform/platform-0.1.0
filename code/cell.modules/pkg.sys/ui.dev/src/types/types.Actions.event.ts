@@ -24,7 +24,8 @@ export type IDevActionCtxChangedEvent<Ctx extends O = any> = {
   payload: IDevActionCtxChanged<Ctx>;
 };
 export type IDevActionCtxChanged<Ctx extends O = any> = {
-  actions: string; // [Actions] model id.
+  actions: string; // ID of the [Actions] model.
   from: Ctx;
   to: Ctx;
+  patches: t.PatchSet;
 };

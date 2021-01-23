@@ -9,12 +9,43 @@ export type ButtonItemProps = {
   style?: CssValue;
 };
 
+/**
+ * Button.
+ */
 export const ButtonItem: React.FC<ButtonItemProps> = (props) => {
+  const { bus, model, style } = props;
+  const { label, description } = model;
+  const isActive = Boolean(model.onClick);
+
+  const clickHandler = () => {
+    bus.fire({ type: 'Dev/Action/button:click', payload: { model } });
+  };
+
+  return (
+    <ButtonView
+      label={label}
+      description={description}
+      isActive={isActive}
+      style={style}
+      onClick={clickHandler}
+    />
+  );
+};
+
+/**
+ * The button view, with no smarts about the event bus.
+ */
+export type ButtonViewProps = {
+  label: string;
+  description?: string;
+  isActive: boolean;
+  style?: CssValue;
+  onClick?: () => void;
+};
+export const ButtonView: React.FC<ButtonViewProps> = (props) => {
+  const { isActive, label, description, onClick } = props;
   const [isOver, setIsOver] = useState<boolean>(false);
   const [isDown, setIsDown] = useState<boolean>(false);
-
-  const { bus, model } = props;
-  const isActive = Boolean(model.onClick);
 
   const styles = {
     base: css({
@@ -71,9 +102,7 @@ export const ButtonItem: React.FC<ButtonItemProps> = (props) => {
     return (e: React.MouseEvent) => {
       if (isActive && e.button === 0) {
         setIsDown(isDown);
-        if (isDown) {
-          bus.fire({ type: 'Dev/Action/button:click', payload: { model } });
-        }
+        if (isDown && onClick) onClick();
       }
     };
   };
@@ -89,8 +118,8 @@ export const ButtonItem: React.FC<ButtonItemProps> = (props) => {
       >
         <Icons.Variable color={isOver ? COLORS.BLUE : COLORS.DARK} size={20} style={styles.icon} />
         <div {...styles.body}>
-          <div {...styles.label}>{model.label || 'Unnamed'}</div>
-          {model.description && <div {...styles.description}>{model.description}</div>}
+          <div {...styles.label}>{label || 'Unnamed'}</div>
+          {description && <div {...styles.description}>{description}</div>}
         </div>
       </div>
     </div>
