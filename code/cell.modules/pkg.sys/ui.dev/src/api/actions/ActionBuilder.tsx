@@ -1,5 +1,7 @@
-import { Builder, DEFAULT, StateObject, t } from '../../common';
+import { Builder, DEFAULT, StateObject, t, id } from '../../common';
 import { handlers } from './handlers';
+
+type O = Record<string, unknown>;
 
 /**
  * Action builder factory.
@@ -8,15 +10,15 @@ export const ActionBuilder: t.DevActionModelFactory = {
   /**
    * Create a new data-model.
    */
-  model<Ctx>() {
-    const initial = { ...DEFAULT.ACTIONS } as t.DevActionModel<Ctx>;
+  model<Ctx extends O>() {
+    const initial = { ...DEFAULT.ACTIONS, id: id.shortid() } as t.DevActionModel<Ctx>;
     return StateObject.create<any>(initial);
   },
 
   /**
-   * Create a new data-model builder API.
+   * Create a new model API builder.
    */
-  builder<Ctx>(input: any) {
+  api<Ctx extends O>(input: any) {
     const model = (typeof input === 'object'
       ? StateObject.isStateObject(input)
         ? input

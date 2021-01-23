@@ -1,14 +1,41 @@
 import React from 'react';
 
-import { t } from '../../common';
-import { ActionBuilder } from '../../api';
-import { View, ViewProps } from './View';
+import { constants, css, defaultValue, t } from '../../common';
+import { Item } from './Item';
+import { useActionController } from './useActionController';
 
-/**
- * Attach additional properties to the component.
- */
-type A = React.FC<ViewProps> & { build: t.DevActionModelFactory['builder'] };
-(View as A).build = ActionBuilder.builder;
+export type ActionPanelProps = t.ActionPanelProps & {
+  bus: t.EventBus;
+  model: t.DevActionModelState<any>;
+};
 
-export const ActionPanel = View as A;
-export default ActionPanel;
+export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
+  const { model } = props;
+  const scrollable = defaultValue(props.scrollable, true);
+  const bus = props.bus.type<t.DevEvent>();
+
+  useActionController({ bus, model });
+
+  const styles = {
+    base: css({
+      Scroll: scrollable,
+      overflowY: scrollable ? 'scroll' : 'hidden',
+      userSelect: 'none',
+      boxSizing: 'border-box',
+      paddingBottom: 50,
+      fontFamily: constants.FONT.SANS,
+      fontSize: 14,
+      color: constants.COLORS.DARK,
+    }),
+  };
+
+  const elItems = model.state.items.map((item, i) => {
+    return <Item key={i} model={item} bus={bus} />;
+  });
+
+  return (
+    <div {...css(styles.base, props.style)} className={'dev-ActionPanel'}>
+      {elItems}
+    </div>
+  );
+};

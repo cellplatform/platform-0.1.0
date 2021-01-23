@@ -21,8 +21,8 @@ export const COLORS = {
   },
 };
 
-const ACTIONS: t.DevActionModel<any> = { items: [] };
+const ACTIONS: t.DevActionModel<any> = { id: '', items: [] };
 export const DEFAULT = {
-  UNTITLED: 'Untitled',
   ACTIONS,
+  UNTITLED: 'Untitled',
 };

@@ -4,16 +4,16 @@ import { COLORS, constants, css, CssValue, t } from '../../common';
 import { Icons } from '../Icons';
 
 export type ButtonItemProps = {
+  bus: t.DevEventBus;
   model: t.DevActionItemButton;
   style?: CssValue;
-  onClick?: t.DevActionItemClickEventHandler;
 };
 
 export const ButtonItem: React.FC<ButtonItemProps> = (props) => {
   const [isOver, setIsOver] = useState<boolean>(false);
   const [isDown, setIsDown] = useState<boolean>(false);
 
-  const { model } = props;
+  const { bus, model } = props;
   const isActive = Boolean(model.onClick);
 
   const styles = {
@@ -62,9 +62,7 @@ export const ButtonItem: React.FC<ButtonItemProps> = (props) => {
     return () => {
       if (isActive) {
         setIsOver(isOver);
-        if (!isOver) {
-          setIsDown(false);
-        }
+        if (!isOver) setIsDown(false);
       }
     };
   };
@@ -73,8 +71,8 @@ export const ButtonItem: React.FC<ButtonItemProps> = (props) => {
     return (e: React.MouseEvent) => {
       if (isActive && e.button === 0) {
         setIsDown(isDown);
-        if (isDown && props.onClick) {
-          props.onClick({ model });
+        if (isDown) {
+          bus.fire({ type: 'Dev/Action/button:click', payload: { model } });
         }
       }
     };

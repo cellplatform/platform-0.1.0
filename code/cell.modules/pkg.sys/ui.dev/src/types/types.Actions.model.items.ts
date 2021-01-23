@@ -11,7 +11,7 @@ export type DevActionItemInput = DevActionItemButton;
  * Simple clickable action.
  */
 export type DevActionItemButton = {
-  type: 'button';
+  kind: 'button';
   label: string;
   description?: string;
   onClick?: t.DevActionHandler<any>;
@@ -21,7 +21,7 @@ export type DevActionItemButton = {
  * Horizontal rule (divider).
  */
 export type DevActionItemHr = {
-  type: 'hr';
+  kind: 'hr';
   height: number;
   opacity: number;
   margin: t.DevEdgeSpacing;
@@ -31,6 +31,6 @@ export type DevActionItemHr = {
  * Title text.
  */
 export type DevActionItemTitle = {
-  type: 'title';
+  kind: 'title';
   text: string;
 };

@@ -1,17 +1,16 @@
 import * as React from 'react';
 
-import { defaultValue, t } from '../../common';
-import { View as ActionPanel } from '../../components/ActionPanel/View';
+import { defaultValue, rx, t } from '../../common';
+import { ActionPanel } from '../../components/ActionPanel';
 import { ButtonConfig } from './config.Button';
 import { HrConfig } from './config.Hr';
 import { TitleConfig } from './config.Title';
-import { toContext } from './context';
+import { getModelContext } from './context';
 import { renderSubject } from './render';
 
 /**
  * Action handlers.
  */
-
 export const handlers: t.BuilderHandlers<t.DevActionModel<any>, t.DevActionModelMethods<any>> = {
   /**
    * Convert builder to data model.
@@ -21,7 +20,7 @@ export const handlers: t.BuilderHandlers<t.DevActionModel<any>, t.DevActionModel
   /**
    * Derives the current context ("ctx") for the builder.
    */
-  toContext: (args) => toContext(args.model),
+  toContext: (args) => getModelContext(args.model),
 
   /**
    * Create a clone of the builder (optionally changing the context factory.)
@@ -36,9 +35,10 @@ export const handlers: t.BuilderHandlers<t.DevActionModel<any>, t.DevActionModel
    * Render to an <ActionPanel>.
    */
   renderList(args) {
-    const props = args.params[0] || {};
-    const getContext = () => args.builder.self.toContext();
-    return <ActionPanel {...props} model={args.model.state} getContext={getContext} />;
+    const bus = args.params[0] as t.EventBus;
+    const props = (args.params[1] || {}) as t.ActionPanelProps;
+    if (!rx.isBus(bus)) throw new Error(`Event bus not provided`);
+    return <ActionPanel {...props} bus={bus} model={args.model} />;
   },
 
   /**
@@ -93,7 +93,7 @@ export const handlers: t.BuilderHandlers<t.DevActionModel<any>, t.DevActionModel
   },
 
   /**
-   * An action button.
+   * Button.
    */
   button(args) {
     const { item } = ButtonConfig(args.params);

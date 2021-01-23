@@ -14,7 +14,6 @@ export function renderSubject<Ctx>(args: { ctx: Ctx; factory?: t.DevActionRender
       orientation(value, spacing) {
         res.orientation = value;
         if (typeof spacing === 'number') res.spacing = Math.max(0, spacing);
-
         return payload;
       },
       layout(value) {

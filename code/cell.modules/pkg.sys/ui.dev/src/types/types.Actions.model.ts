@@ -2,6 +2,7 @@ import { t } from './common';
 
 export type DevActionModelState<Ctx> = t.BuilderModel<t.DevActionModel<Ctx>>;
 export type DevActionModel<Ctx> = {
+  id: string;
   items: t.DevActionItem[];
   ctx?: Ctx;
   getContext?: t.DevActionGetContext<Ctx>;

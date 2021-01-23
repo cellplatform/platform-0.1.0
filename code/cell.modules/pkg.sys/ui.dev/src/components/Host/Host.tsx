@@ -14,8 +14,8 @@ export type HostProps = {
  */
 export const Host: React.FC<HostProps> = (props = {}) => {
   const { subject } = props;
-  const orientation = defaultValue(subject?.orientation, 'y');
   const items = subject?.items || [];
+  const orientation = defaultValue(subject?.orientation, 'y');
 
   const styles = {
     base: css({
@@ -63,12 +63,9 @@ export const Host: React.FC<HostProps> = (props = {}) => {
   );
 };
 
-export default Host;
-
 /**
  * Helpers
  */
-
 const toAbsolute = (input: t.IDevHostedLayout['position']): t.IDevHostedAbsolute | undefined => {
   if (input === undefined) return undefined;
 
