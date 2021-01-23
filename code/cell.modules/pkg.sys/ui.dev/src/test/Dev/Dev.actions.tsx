@@ -1,5 +1,5 @@
 import React from 'react';
-import { Actions } from '../..';
+import { Actions, toObject } from '../..';
 import { css } from '../../common';
 
 type SampleLayout =
@@ -25,6 +25,40 @@ const LOREM =
  */
 export const actions = Actions<Ctx>()
   .context((prev) => prev || { layout: 'single', count: 0, text: LOREM })
+
+  .button('change text', (ctx) => {
+    ctx.count++;
+    ctx.text = ctx.text === 'hello' ? LOREM : 'hello';
+  })
+
+  .hr()
+
+  .title('Buttons')
+  .button((config) => config.label('hello'))
+  .hr(1, 0.14, [5, 0])
+  .button('console.log', (ctx) => console.log('hello', toObject(ctx)))
+  .button((e) => e.label(`Ellipsis - ${LOREM}`))
+  .button((e) => e.description(LOREM))
+  .hr(1, 0.15)
+  .boolean('boolean')
+
+  .hr()
+
+  .title('Layouts')
+  .button('single: center', (ctx) => (ctx.layout = 'single'))
+  .button('single: top left', (ctx) => (ctx.layout = 'single:top-left'))
+  .button('single: bottom right', (ctx) => (ctx.layout = 'single:bottom-right'))
+  .button('single: fill', (ctx) => (ctx.layout = 'single:fill'))
+  .button('single: fill (margin)', (ctx) => (ctx.layout = 'single:fill-margin'))
+  .hr(1, 0.1)
+  .button('double: center (y)', (ctx) => (ctx.layout = 'double-y'))
+  .button('double: center (x)', (ctx) => (ctx.layout = 'double-x'))
+
+  .hr()
+
+  /**
+   * Subject component renderer.
+   */
   .subject((e) => {
     const { ctx } = e;
     const style = css({ padding: 20 });
@@ -72,33 +106,4 @@ export const actions = Actions<Ctx>()
     }
 
     return e.render(el);
-  })
-
-  .button('change text', (ctx) => {
-    ctx.count++;
-    ctx.text = ctx.text === 'hello' ? LOREM : 'hello';
-  })
-  .button('no change', (ctx) => console.log('ctx', ctx))
-  .button((e) => e.label(`Ellipsis - ${LOREM}`))
-  .button((e) => e.description(LOREM))
-
-  .hr()
-
-  .title('Group 1')
-  .button((config) => config.label('hello'))
-  .hr(1, 0.14, [5, 0])
-  .button('console.log', (ctx) => console.log('hello', ctx))
-
-  .hr()
-
-  .title('layouts')
-  .button('single: center', (ctx) => (ctx.layout = 'single'))
-  .button('single: top left', (ctx) => (ctx.layout = 'single:top-left'))
-  .button('single: bottom right', (ctx) => (ctx.layout = 'single:bottom-right'))
-  .button('single: fill', (ctx) => (ctx.layout = 'single:fill'))
-  .button('single: fill (margin)', (ctx) => (ctx.layout = 'single:fill-margin'))
-  .hr(1, 0.1)
-  .button('double: center (y)', (ctx) => (ctx.layout = 'double-y'))
-  .button('double: center (x)', (ctx) => (ctx.layout = 'double-x'))
-
-  .hr();
+  });

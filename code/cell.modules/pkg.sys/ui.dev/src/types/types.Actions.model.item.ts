@@ -5,13 +5,20 @@ import { t } from './common';
  */
 export type DevActionItem = DevActionItemInput | DevActionItemLayout;
 export type DevActionItemLayout = DevActionItemHr | DevActionItemTitle;
-export type DevActionItemInput = DevActionItemButton;
+export type DevActionItemInput = DevActionItemButton | DevActionItemBoolean;
 
 /**
  * Simple clickable action.
  */
 export type DevActionItemButton = {
   kind: 'button';
+  label: string;
+  description?: string;
+  onClick?: t.DevActionHandler<any>;
+};
+
+export type DevActionItemBoolean = {
+  kind: 'boolean';
   label: string;
   description?: string;
   onClick?: t.DevActionHandler<any>;

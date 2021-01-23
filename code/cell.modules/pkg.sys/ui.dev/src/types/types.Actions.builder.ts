@@ -26,6 +26,8 @@ export type DevActionAddOptions = { insertAt?: 'end' | 'start' };
 export type DevActionModelInputMethods<Ctx extends O> = {
   button(label: string, handler?: t.DevActionHandler<Ctx>): B<Ctx>;
   button(config: DevActionButtonConfig<Ctx>): B<Ctx>;
+  boolean(label: string, handler?: t.DevActionHandler<Ctx>): B<Ctx>;
+  boolean(config: DevActionBooleanConfig<Ctx>): B<Ctx>;
   hr(height?: number, opacity?: number, margin?: t.DevEdgeSpacing): B<Ctx>;
   hr(config?: DevActionHrConfig<Ctx>): B<Ctx>;
   title(text: string, config?: DevActionTitleConfig<Ctx>): B<Ctx>;
@@ -40,6 +42,16 @@ export type DevActionButtonConfigArgs<Ctx extends O> = {
   label(value: string): DevActionButtonConfigArgs<Ctx>;
   description(value: string): DevActionButtonConfigArgs<Ctx>;
   onClick(handler: t.DevActionHandler<Ctx>): DevActionButtonConfigArgs<Ctx>;
+};
+
+/**
+ * Boolean (Switch)
+ */
+export type DevActionBooleanConfig<Ctx extends O> = (args: DevActionBooleanConfigArgs<Ctx>) => void;
+export type DevActionBooleanConfigArgs<Ctx extends O> = {
+  label(value: string): DevActionBooleanConfigArgs<Ctx>;
+  description(value: string): DevActionBooleanConfigArgs<Ctx>;
+  onClick(handler: t.DevActionHandler<Ctx>): DevActionBooleanConfigArgs<Ctx>;
 };
 
 /**

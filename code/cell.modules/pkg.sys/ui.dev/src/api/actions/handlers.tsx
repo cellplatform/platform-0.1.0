@@ -3,6 +3,7 @@ import * as React from 'react';
 import { defaultValue, rx, t } from '../../common';
 import { ActionPanel } from '../../components/ActionPanel';
 import { ButtonConfig } from './config.Button';
+import { BooleanConfig } from './config.Boolean';
 import { HrConfig } from './config.Hr';
 import { TitleConfig } from './config.Title';
 import { getModelContext } from './context';
@@ -97,6 +98,14 @@ export const handlers: t.BuilderHandlers<t.DevActionModel<any>, t.DevActionModel
    */
   button(args) {
     const { item } = ButtonConfig(args.params);
+    args.model.change((draft) => draft.items.push(item));
+  },
+
+  /**
+   * Boolean (Switch).
+   */
+  boolean(args) {
+    const { item } = BooleanConfig(args.params);
     args.model.change((draft) => draft.items.push(item));
   },
 

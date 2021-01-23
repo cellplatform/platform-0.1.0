@@ -409,6 +409,42 @@ describe('ActionBuilder', () => {
     });
   });
 
+  describe.only('builder.boolean()', () => {
+    it('label, handler', () => {
+      const { builder, model } = create();
+      expect(model.state.items).to.eql([]);
+
+      const fn1: t.DevActionHandler<any> = () => null;
+      const fn2: t.DevActionHandler<any> = () => null;
+      builder
+        .boolean('  foo  ', fn1)
+        .boolean('bar', fn1)
+        .boolean((config) => config.label('foo').onClick(fn2).description('a thing'));
+
+      const items = model.state.items;
+      expect(items.length).to.eql(3);
+
+      const button1 = items[0] as t.DevActionItemBoolean;
+      const button2 = items[1] as t.DevActionItemBoolean;
+      const button3 = items[2] as t.DevActionItemBoolean;
+
+      expect(button1.kind).to.eql('boolean');
+      expect(button1.label).to.eql('foo');
+      expect(button1.description).to.eql(undefined);
+      expect(button1.onClick).to.eql(fn1);
+
+      expect(button2.kind).to.eql('boolean');
+      expect(button2.label).to.eql('bar');
+      expect(button2.description).to.eql(undefined);
+      expect(button2.onClick).to.eql(fn1);
+
+      expect(button3.kind).to.eql('boolean');
+      expect(button3.label).to.eql('foo');
+      expect(button3.description).to.eql('a thing');
+      expect(button3.onClick).to.eql(fn2);
+    });
+  });
+
   describe('builder.hr()', () => {
     it('param: none', () => {
       const { builder, model } = create();
