@@ -1,4 +1,5 @@
 import React from 'react';
+import Select from 'react-select';
 
 import { color, css, rx } from '../../common';
 import { ActionsHost } from '../../components/Host';
@@ -28,6 +29,13 @@ export const Dev: React.FC = () => {
       border: `solid 5px ${color.format(-0.1)}`,
       boxSizing: 'border-box',
     }),
+    select: {
+      outer: css({
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        Absolute: [null, null, 20, 20],
+        width: 200,
+      }),
+    },
   };
 
   const elActions = actions.renderList(bus, {
@@ -35,11 +43,20 @@ export const Dev: React.FC = () => {
     style: { flex: 1 },
   });
 
+  const options = [
+    { value: 'chocolate', label: 'Chocolate' },
+    { value: 'strawberry', label: 'Strawberry' },
+    { value: 'vanilla', label: 'Vanilla' },
+  ];
+
   return (
     <React.StrictMode>
       <div {...styles.base}>
         <div {...styles.left}>
           <ActionsHost bus={bus} actions={actions} style={styles.host} background={-0.04} />
+          <div {...styles.select.outer}>
+            <Select options={options} menuPlacement={'top'} />
+          </div>
         </div>
         <div {...styles.right}>{elActions}</div>
       </div>
