@@ -15,6 +15,7 @@ type Ctx = {
   count: number;
   text: string;
   layout: SampleLayout;
+  isRunning?: boolean;
 };
 
 const LOREM =
@@ -24,7 +25,7 @@ const LOREM =
  * Actions
  */
 export const actions = Actions<Ctx>()
-  .context((prev) => prev || { layout: 'single', count: 0, text: LOREM })
+  .context((prev) => prev || { layout: 'single', count: 0, text: LOREM, isRunning: true })
 
   .button('change text', (ctx) => {
     ctx.count++;
@@ -36,11 +37,20 @@ export const actions = Actions<Ctx>()
   .title('Buttons')
   .button((config) => config.label('hello'))
   .hr(1, 0.14, [5, 0])
-  .button('console.log', (ctx) => console.log('hello', toObject(ctx)))
+  .button('console.log', (ctx, env) => {
+    console.group('🌳 button click');
+    console.log('ctx', toObject(ctx));
+    console.log('env', toObject(env));
+    console.groupEnd();
+  })
   .button((e) => e.label(`Ellipsis - ${LOREM}`))
   .button((e) => e.description(LOREM))
   .hr(1, 0.15)
-  .boolean('boolean')
+  .boolean('boolean (disabled)')
+  .boolean('is running', (ctx, e) => {
+    if (e.change) ctx.isRunning = !Boolean(ctx.isRunning);
+    return Boolean(ctx.isRunning);
+  })
 
   .hr()
 
@@ -74,7 +84,7 @@ export const actions = Actions<Ctx>()
 
     const el = (
       <div {...style}>
-        {ctx.count}: {e.ctx.text}
+        {ctx.count}: {e.ctx.text} (is running: {Boolean(ctx.isRunning).toString()})
       </div>
     );
 
@@ -95,7 +105,10 @@ export const actions = Actions<Ctx>()
     }
 
     if (ctx.layout === 'double-x') {
-      return e.orientation('x', 50).render(el, { label: 'one' }).render(el, { label: 'two' });
+      return e
+        .orientation('x', 50)
+        .render(el, { label: 'one', width: 200 })
+        .render(el, { label: 'two', width: 300 });
     }
 
     if (ctx.layout === 'double-y') {

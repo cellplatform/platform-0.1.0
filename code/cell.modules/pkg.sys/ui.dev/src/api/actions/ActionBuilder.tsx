@@ -11,7 +11,7 @@ export const ActionBuilder: t.DevActionModelFactory = {
    * Create a new data-model.
    */
   model<Ctx extends O>() {
-    const initial = { ...DEFAULT.ACTIONS, id: id.shortid() } as t.DevActionModel<Ctx>;
+    const initial = { ...DEFAULT.ACTIONS, ns: id.shortid() } as t.DevActionModel<Ctx>;
     return StateObject.create<any>(initial);
   },
 

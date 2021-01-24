@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { t } from './common';
 
 type ReactNode = React.ReactNode;
 type StringOrNumber = string | number;
@@ -12,15 +13,8 @@ export type IDevHostedLayout = {
   background?: StringOrNumber;
   border?: boolean | number | string;
   cropmarks?: boolean | number;
-  position?: StringOrNumber | [StringOrNumber, StringOrNumber] | IDevHostedAbsolute;
   label?: ReactNode | Partial<IDevHostedLabel>;
-};
-
-export type IDevHostedAbsolute = {
-  top?: StringOrNumber;
-  right?: StringOrNumber;
-  bottom?: StringOrNumber;
-  left?: StringOrNumber;
+  position?: StringOrNumber | [StringOrNumber, StringOrNumber] | t.IDevAbsolutePosition;
 };
 
 export type IDevHostedLabel = {

@@ -1,12 +1,13 @@
 import React from 'react';
 
 import { CssValue, t } from '../../common';
-import { BooleanItem } from './Item.boolean';
-import { ButtonItem } from './Item.button';
-import { HrItem } from './Item.hr';
-import { TitleItem } from './Item.title';
+import { BooleanItem } from './Item.Boolean';
+import { Button } from './Item.Button';
+import { HrItem } from './Item.Hr';
+import { TitleItem } from './Item.Title';
 
 export type ItemProps = {
+  ns: string;
   bus: t.DevEventBus;
   model: t.DevActionItem;
   style?: CssValue;
@@ -17,7 +18,7 @@ export const Item: React.FC<ItemProps> = (props) => {
   const kind = model.kind;
 
   if (model.kind === 'button') {
-    return <ButtonItem {...props} model={model} />;
+    return <Button {...props} model={model} />;
   }
 
   if (model.kind === 'hr') {

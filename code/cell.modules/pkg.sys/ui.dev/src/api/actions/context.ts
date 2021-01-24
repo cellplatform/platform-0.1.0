@@ -21,22 +21,44 @@ export function getModelContext<Ctx extends O>(model: t.DevActionModelState<Ctx>
  * Provides a way of working with a models current context
  * in a immutable way (but programatically mutable).
  */
-export function withinContext<Ctx extends O>(
+export function withinContext<Ctx extends O, Env extends t.DevEnv>(
+  bus: t.DevEventBus,
   model: t.DevActionModelState<Ctx>,
-  handler: (ctx: O) => void,
+  env: Env,
+  handler: (ctx: Ctx, env: Env) => any,
 ) {
   // Ensure the latest context is derived (and stored on the model).
   const ctx = getModelContext<Ctx>(model);
-  if (!ctx) return { ctx };
+  if (!ctx) {
+    throw new Error(`A context has not been setup within the Actions`);
+  }
 
-  // Run the callback handler passing in an immutable clone.
-  const state = StateObject.create<Ctx>(ctx);
-  const res = state.change((draft) => handler(draft));
+  // Run the callback handler passing in immutable clones.
+  type S = { ctx: Ctx; env: Env };
+  const state = StateObject.create<S>({ ctx, env });
+  const res = state.change((draft) => {
+    handler(draft.ctx, draft.env);
+  });
   state.dispose();
 
+  // Update the model [ctx] if the handler changed the context.
   const changed = res.changed;
-  if (changed) model.change((draft) => (draft.ctx = changed.to || undefined));
+  if (changed) model.change((draft) => (draft.ctx = changed.to.ctx || undefined));
 
   // Finish up.
-  return { ctx: model.state.ctx, changed: res.changed };
+  return {
+    ctx: model.state.ctx, // NB: This is the "current" value updated by the handler.
+    env: state.state.env,
+    changed: res.changed,
+    fireIfChanged() {
+      if (changed) {
+        const ns = model.state.ns;
+        const { from, to, patches } = changed;
+        bus.fire({
+          type: 'Dev/Action/ctx:changed',
+          payload: { ns, from, to, patches },
+        });
+      }
+    },
+  };
 }

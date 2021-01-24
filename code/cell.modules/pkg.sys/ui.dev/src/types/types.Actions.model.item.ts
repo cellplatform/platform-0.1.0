@@ -14,14 +14,14 @@ export type DevActionItemButton = {
   kind: 'button';
   label: string;
   description?: string;
-  onClick?: t.DevActionHandler<any>;
+  handler?: t.DevActionButtonHandler<any>;
 };
 
 export type DevActionItemBoolean = {
   kind: 'boolean';
   label: string;
   description?: string;
-  onClick?: t.DevActionHandler<any>;
+  handler?: t.DevActionBooleanHandler<any>;
 };
 
 /**

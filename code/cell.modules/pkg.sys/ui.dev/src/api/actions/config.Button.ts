@@ -17,7 +17,7 @@ export function ButtonConfig(params: any[]) {
       return config;
     },
     onClick(handler) {
-      item.onClick = handler;
+      item.handler = handler;
       return config;
     },
   };

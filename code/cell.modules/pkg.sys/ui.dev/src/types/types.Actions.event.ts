@@ -5,16 +5,36 @@ type O = Record<string, unknown>;
 /**
  * Events
  */
-export type DevActionEvent = IDevActionButtonClickEvent | IDevActionCtxChangedEvent<any>;
+export type DevActionEvent =
+  | IDevActionButtonEvent
+  | IDevActionBooleanEvent
+  | IDevActionCtxChangedEvent;
 
 /**
- * Fires when a button action is clicked.
+ * Fires for the simple Button action.
  */
-export type IDevActionButtonClickEvent = {
-  type: 'Dev/Action/button:click';
-  payload: IDevActionButtonClick;
+export type IDevActionButtonEvent = {
+  type: 'Dev/Action/button';
+  payload: IDevActionButton;
 };
-export type IDevActionButtonClick = { model: t.DevActionItemButton };
+export type IDevActionButton = {
+  ns: string;
+  model: t.DevActionItemButton;
+};
+
+/**
+ * Fires for the Boolean (switch) action.
+ */
+export type IDevActionBooleanEvent = {
+  type: 'Dev/Action/boolean';
+  payload: IDevActionBoolean;
+};
+export type IDevActionBoolean = {
+  ns: string;
+  model: t.DevActionItemBoolean;
+  change: boolean;
+  current(value: boolean): void;
+};
 
 /**
  * Fired when the context has changed.
@@ -24,7 +44,7 @@ export type IDevActionCtxChangedEvent<Ctx extends O = any> = {
   payload: IDevActionCtxChanged<Ctx>;
 };
 export type IDevActionCtxChanged<Ctx extends O = any> = {
-  actions: string; // ID of the [Actions] model.
+  ns: string; // ID of the [Actions] model.
   from: Ctx;
   to: Ctx;
   patches: t.PatchSet;

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { constants, css, defaultValue, t } from '../../common';
 import { Item } from './Item';
-import { useActionController } from './useActionController';
+import { useActionController } from '../../hooks/actions';
 
 export type ActionPanelProps = t.ActionPanelProps & {
   bus: t.EventBus;
@@ -13,6 +13,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   const { model } = props;
   const scrollable = defaultValue(props.scrollable, true);
   const bus = props.bus.type<t.DevEvent>();
+  const ns = model.state.ns;
 
   useActionController({ bus, model });
 
@@ -30,7 +31,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   };
 
   const elItems = model.state.items.map((item, i) => {
-    return <Item key={i} model={item} bus={bus} />;
+    return <Item key={i} ns={ns} model={item} bus={bus} />;
   });
 
   return (

@@ -16,17 +16,18 @@ export type ActionHostProps = HostProps & {
  */
 export const ActionsHost: React.FC<ActionHostProps> = (props) => {
   const { bus, actions } = props;
-  const [count, setCount] = useState<number>(0); // NB: Hack for causing redraws.
+  const [redraw, setRedraw] = useState<number>(0); // NB: Hack for causing redraws.
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
+    const ns = actions.toObject().ns;
 
     rx.payload<t.IDevActionCtxChangedEvent>(bus.event$, 'Dev/Action/ctx:changed')
       .pipe(
         takeUntil(dispose$),
-        filter((e) => e.actions === actions.toObject().id),
+        filter((e) => e.ns === ns),
       )
-      .subscribe((e) => setCount((prev) => prev + 1));
+      .subscribe((e) => setRedraw((prev) => prev + 1));
 
     return () => dispose$.next();
   }, [bus, actions]); // eslint-disable-line

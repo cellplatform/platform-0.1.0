@@ -16,8 +16,8 @@ export function BooleanConfig(params: any[]) {
       item.description = format.string(value, { trim: true });
       return config;
     },
-    onClick(handler) {
-      item.onClick = handler;
+    onChange(handler) {
+      item.handler = handler;
       return config;
     },
   };
@@ -25,7 +25,7 @@ export function BooleanConfig(params: any[]) {
   if (typeof params[0] === 'function') {
     params[0](config);
   } else {
-    config.label(params[0]).onClick(params[1]);
+    config.label(params[0]).onChange(params[1]);
   }
 
   return { item, config };

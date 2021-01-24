@@ -66,7 +66,7 @@ export const Host: React.FC<HostProps> = (props = {}) => {
 /**
  * Helpers
  */
-const toAbsolute = (input: t.IDevHostedLayout['position']): t.IDevHostedAbsolute | undefined => {
+const toAbsolute = (input: t.IDevHostedLayout['position']): t.IDevAbsolutePosition | undefined => {
   if (input === undefined) return undefined;
 
   if (Array.isArray(input)) {
@@ -77,7 +77,7 @@ const toAbsolute = (input: t.IDevHostedLayout['position']): t.IDevHostedAbsolute
     return { top: input, right: input, bottom: input, left: input };
   }
 
-  return input as t.IDevHostedAbsolute;
+  return input as t.IDevAbsolutePosition;
 };
 
 const toBorderColor = (input: t.IDevHostedLayout['border']) => {

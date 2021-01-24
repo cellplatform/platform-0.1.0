@@ -18,7 +18,7 @@ describe('ActionBuilder', () => {
   describe('ActionBuilder.model()', () => {
     it('model', () => {
       const model = ActionBuilder.model();
-      const id = model.state.id;
+      const id = model.state.ns;
       expect(id).not.to.eql('');
       expect(model.state).to.eql({ ...DEFAULT.ACTIONS, id });
     });
@@ -28,21 +28,21 @@ describe('ActionBuilder', () => {
     it('from no params', () => {
       const builder = ActionBuilder.api();
       const obj = builder.toObject();
-      expect(obj).to.eql({ ...DEFAULT.ACTIONS, id: obj.id });
+      expect(obj).to.eql({ ...DEFAULT.ACTIONS, id: obj.ns });
     });
 
     it('from {model} StateObject', () => {
       const model = StateObject.create<M>({ ...DEFAULT.ACTIONS });
       const builder = ActionBuilder.api(model);
       const obj = builder.toObject();
-      expect(obj).to.eql({ ...DEFAULT.ACTIONS, id: obj.id });
+      expect(obj).to.eql({ ...DEFAULT.ACTIONS, id: obj.ns });
     });
 
     it('from {model} object', () => {
       const model = StateObject.create<M>({ ...DEFAULT.ACTIONS });
       const builder = ActionBuilder.api(model.state);
       const obj = builder.toObject();
-      expect(obj).to.eql({ ...DEFAULT.ACTIONS, id: obj.id });
+      expect(obj).to.eql({ ...DEFAULT.ACTIONS, id: obj.ns });
     });
 
     it('from builder.toObject()', () => {
@@ -317,8 +317,8 @@ describe('ActionBuilder', () => {
       const { builder, model } = create();
       expect(model.state.items).to.eql([]);
 
-      const fn1: t.DevActionHandler<any> = () => null;
-      const fn2: t.DevActionHandler<any> = () => null;
+      const fn1: t.DevActionButtonHandler<any> = () => null;
+      const fn2: t.DevActionButtonHandler<any> = () => null;
       builder.button('  foo  ', fn1).button('bar', fn1).button('foo', fn2);
 
       const items = model.state.items;
@@ -330,15 +330,15 @@ describe('ActionBuilder', () => {
 
       expect(button1.kind).to.eql('button');
       expect(button1.label).to.eql('foo');
-      expect(button1.onClick).to.eql(fn1);
+      expect(button1.handler).to.eql(fn1);
 
       expect(button2.kind).to.eql('button');
       expect(button2.label).to.eql('bar');
-      expect(button2.onClick).to.eql(fn1);
+      expect(button2.handler).to.eql(fn1);
 
       expect(button3.kind).to.eql('button');
       expect(button3.label).to.eql('foo');
-      expect(button3.onClick).to.eql(fn2);
+      expect(button3.handler).to.eql(fn2);
     });
 
     it('label (no handler)', () => {
@@ -351,14 +351,14 @@ describe('ActionBuilder', () => {
 
       const button = items[0] as t.DevActionItemButton;
       expect(button.label).to.eql('foo');
-      expect(button.onClick).to.eql(undefined);
+      expect(button.handler).to.eql(undefined);
     });
 
     it('config', () => {
       const { builder, model } = create();
       expect(model.state.items).to.eql([]);
 
-      const fn: t.DevActionHandler<any> = () => null;
+      const fn: t.DevActionButtonHandler<any> = () => null;
       builder.button((config) => config.label('foo').onClick(fn));
 
       const items = model.state.items;
@@ -367,7 +367,7 @@ describe('ActionBuilder', () => {
 
       const button = items[0] as t.DevActionItemButton;
       expect(button.kind).to.eql('button');
-      expect(button.onClick).to.eql(fn);
+      expect(button.handler).to.eql(fn);
     });
 
     it('config: "Unnamed"', () => {
@@ -414,12 +414,12 @@ describe('ActionBuilder', () => {
       const { builder, model } = create();
       expect(model.state.items).to.eql([]);
 
-      const fn1: t.DevActionHandler<any> = () => null;
-      const fn2: t.DevActionHandler<any> = () => null;
+      const fn1: t.DevActionBooleanHandler<any> = () => true;
+      const fn2: t.DevActionBooleanHandler<any> = () => false;
       builder
         .boolean('  foo  ', fn1)
         .boolean('bar', fn1)
-        .boolean((config) => config.label('foo').onClick(fn2).description('a thing'));
+        .boolean((config) => config.label('foo').onChange(fn2).description('a thing'));
 
       const items = model.state.items;
       expect(items.length).to.eql(3);
@@ -431,17 +431,17 @@ describe('ActionBuilder', () => {
       expect(button1.kind).to.eql('boolean');
       expect(button1.label).to.eql('foo');
       expect(button1.description).to.eql(undefined);
-      expect(button1.onClick).to.eql(fn1);
+      expect(button1.handler).to.eql(fn1);
 
       expect(button2.kind).to.eql('boolean');
       expect(button2.label).to.eql('bar');
       expect(button2.description).to.eql(undefined);
-      expect(button2.onClick).to.eql(fn1);
+      expect(button2.handler).to.eql(fn1);
 
       expect(button3.kind).to.eql('boolean');
       expect(button3.label).to.eql('foo');
       expect(button3.description).to.eql('a thing');
-      expect(button3.onClick).to.eql(fn2);
+      expect(button3.handler).to.eql(fn2);
     });
   });
 

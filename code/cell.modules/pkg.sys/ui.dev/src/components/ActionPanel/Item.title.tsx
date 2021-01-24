@@ -2,6 +2,7 @@ import React from 'react';
 import { css, CssValue, t, color, COLORS } from '../../common';
 
 export type TitleItemProps = {
+  ns: string;
   bus: t.DevEventBus;
   model: t.DevActionItemTitle;
   style?: CssValue;
