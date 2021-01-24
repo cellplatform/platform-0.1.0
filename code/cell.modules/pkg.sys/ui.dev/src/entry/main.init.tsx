@@ -1,9 +1,8 @@
 import '@platform/css/reset.css';
-import './workers.init';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Dev } from '../components/Dev';
+import { Dev } from '../test/Dev';
 
 const el = <Dev />;
 const root = <React.StrictMode>{el}</React.StrictMode>;

@@ -6,7 +6,7 @@ export default () =>
     .variant('web', (config) =>
       config
         .port(Package.compiler.port)
-        .entry('./src/test/entry')
+        .entry('./src/entry/main')
 
         .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
         .expose('./Host', './src/components/Host')

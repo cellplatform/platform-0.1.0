@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { defaultValue, rx, t } from '../../common';
+import { DEFAULT, defaultValue, rx, t } from '../../common';
 import { ActionPanel } from '../../components/ActionPanel';
 import { ButtonConfig } from './config.Button';
 import { BooleanConfig } from './config.Boolean';
@@ -91,6 +91,14 @@ export const handlers: t.BuilderHandlers<t.DevActionModel<any>, t.DevActionModel
         draft.getContext = obj.getContext;
       }
     });
+  },
+
+  /**
+   * Name (of the set of actions)
+   */
+  name(args) {
+    const name = (args.params[0] || '').trim() || DEFAULT.UNNAMED;
+    args.model.change((draft) => (draft.name = name));
   },
 
   /**

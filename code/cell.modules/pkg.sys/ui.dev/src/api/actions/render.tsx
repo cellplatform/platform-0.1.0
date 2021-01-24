@@ -8,6 +8,12 @@ export function renderSubject<Ctx>(args: { ctx: Ctx; factory?: t.DevActionRender
   const { ctx, factory } = args;
   const res: R = { items: [], layout: {}, orientation: 'y', spacing: 60 };
 
+  if (!ctx) {
+    throw new Error(
+      `Cannot [renderSubject] - the Actions context has not been set. Make sure you've called [actions.context(...)]`,
+    );
+  }
+
   if (factory) {
     const payload: t.DevActionRenderSubjectArgs<any> = {
       ctx,
