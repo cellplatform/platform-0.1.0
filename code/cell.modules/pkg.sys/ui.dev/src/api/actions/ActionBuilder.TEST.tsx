@@ -15,7 +15,7 @@ function create() {
 }
 
 describe('ActionBuilder', () => {
-  describe.only('ActionBuilder.model()', () => {
+  describe('ActionBuilder.model()', () => {
     it('model', () => {
       const model = ActionBuilder.model();
       const ns = model.state.ns;
@@ -29,21 +29,21 @@ describe('ActionBuilder', () => {
     it('from no params', () => {
       const builder = ActionBuilder.api();
       const obj = builder.toObject();
-      expect(obj).to.eql({ ...DEFAULT.ACTIONS, id: obj.ns });
+      expect(obj).to.eql({ ...DEFAULT.ACTIONS, ns: obj.ns });
     });
 
     it('from {model} StateObject', () => {
       const model = StateObject.create<M>({ ...DEFAULT.ACTIONS });
       const builder = ActionBuilder.api(model);
       const obj = builder.toObject();
-      expect(obj).to.eql({ ...DEFAULT.ACTIONS, id: obj.ns });
+      expect(obj).to.eql({ ...DEFAULT.ACTIONS, ns: obj.ns });
     });
 
     it('from {model} object', () => {
       const model = StateObject.create<M>({ ...DEFAULT.ACTIONS });
       const builder = ActionBuilder.api(model.state);
       const obj = builder.toObject();
-      expect(obj).to.eql({ ...DEFAULT.ACTIONS, id: obj.ns });
+      expect(obj).to.eql({ ...DEFAULT.ACTIONS, ns: obj.ns });
     });
 
     it('from builder.toObject()', () => {
@@ -78,7 +78,7 @@ describe('ActionBuilder', () => {
   describe('builder.renderSubject()', () => {
     it('factory not set (default values)', () => {
       const { builder } = create();
-      const res = builder.renderSubject();
+      const res = builder.context(() => ({ count: 1234 })).renderSubject();
       expect(res.items).to.eql([]);
       expect(res.orientation).to.eql('y'); // NB: vertical stack
       expect(res.layout).to.eql({});
@@ -100,9 +100,12 @@ describe('ActionBuilder', () => {
 
     it('orientation (stacking direction)', () => {
       const { builder } = create();
+      builder.context(() => ({ count: 1234 }));
+
       const res0 = builder.renderSubject();
       const res1 = builder.subject((e) => e.orientation('x')).renderSubject();
       const res2 = builder.subject((e) => e.orientation('y')).renderSubject();
+
       expect(res0.orientation).to.eql('y'); // NB: default
       expect(res1.orientation).to.eql('x');
       expect(res2.orientation).to.eql('y');
@@ -111,7 +114,10 @@ describe('ActionBuilder', () => {
     it('single element', () => {
       const { builder } = create();
       const div = <div>Foo</div>;
-      const res = builder.subject((e) => e.render(div)).renderSubject();
+      const res = builder
+        .context(() => ({ count: 1234 }))
+        .subject((e) => e.render(div))
+        .renderSubject();
 
       expect(res.orientation).to.eql('y');
       expect(res.items.length).to.eql(1);
@@ -122,6 +128,7 @@ describe('ActionBuilder', () => {
     it('multiple elements (stack)', () => {
       const { builder } = create();
       const res = builder
+        .context(() => ({ count: 1234 }))
         .subject((e) => {
           e.render(<h1>Foo</h1>)
             .render(<div>Hello</div>, { label: 'MyLabel' })
@@ -142,7 +149,10 @@ describe('ActionBuilder', () => {
       const { builder } = create();
       const div = <div>Foo</div>;
 
-      const res = builder.subject((e) => e.render(div, { label: 'MyLabel' })).renderSubject();
+      const res = builder
+        .context(() => ({ count: 1234 }))
+        .subject((e) => e.render(div, { label: 'MyLabel' }))
+        .renderSubject();
       expect(res.layout).to.eql({});
 
       const item = res.items[0];
@@ -154,6 +164,7 @@ describe('ActionBuilder', () => {
       const { builder } = create();
       const div = <div>Foo</div>;
       const res = builder
+        .context(() => ({ count: 1234 }))
         .subject((e) => e.layout({ label: 'MyLabel' }).render(div))
         .renderSubject();
       expect(res.layout).to.eql({ label: 'MyLabel' });
@@ -161,6 +172,8 @@ describe('ActionBuilder', () => {
 
     it('orentation: spacing', () => {
       const { builder } = create();
+      builder.context(() => ({ count: 1234 }));
+
       const res0 = builder.renderSubject();
       const res1 = builder.subject((e) => e.orientation('x', 50)).renderSubject();
       const res2 = builder.subject((e) => e.orientation('y', -10)).renderSubject();
@@ -313,7 +326,7 @@ describe('ActionBuilder', () => {
     });
   });
 
-  describe.only('builder.name()', () => {
+  describe('builder.name()', () => {
     it('sets name', () => {
       const { builder, model } = create();
       expect(model.state.name).to.eql(DEFAULT.UNNAMED);
@@ -427,7 +440,7 @@ describe('ActionBuilder', () => {
     });
   });
 
-  describe.only('builder.boolean()', () => {
+  describe('builder.boolean()', () => {
     it('label, handler', () => {
       const { builder, model } = create();
       expect(model.state.items).to.eql([]);

@@ -5,8 +5,10 @@ import { css, color, CssValue, style } from '@platform/css';
 export { css, color, CssValue, style };
 export const formatColor = color.format;
 
-export { rx, time, defaultValue, id, dispose } from '@platform/util.value';
+import { id } from '@platform/util.value';
+export { rx, time, defaultValue, dispose } from '@platform/util.value';
 export { StateObject } from '@platform/state';
+export const slug = id.shortid;
 
 import { Builder } from '@platform/cell.module';
 export { Builder };
