@@ -9,7 +9,8 @@ type B<Ctx extends O> = DevActionsModelBuilder<Ctx>;
 export type DevActionsModelBuilder<Ctx extends O> = t.BuilderChain<DevActionsModelMethods<Ctx>>;
 
 export type DevActionsModelMethods<Ctx extends O> = DevActionsModelInputMethods<Ctx> & {
-  toObject(): t.DevActionsModel<Ctx>;
+  toEvents(): t.DevActionsModelState<Ctx>['event'];
+  toModel(): t.DevActionsModel<Ctx>;
   toContext(): Ctx;
   clone(ctx?: t.DevActionGetContext<Ctx>): B<Ctx>;
 

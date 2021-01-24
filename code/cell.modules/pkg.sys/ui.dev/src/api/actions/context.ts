@@ -41,22 +41,16 @@ export function withinContext<Ctx extends O, Env extends t.DevEnv>(
 
   // Update the model [ctx] if the handler changed the context.
   const changed = res.changed;
-  if (changed) model.change((draft) => (draft.ctx = changed.to.ctx || undefined));
+  if (changed) {
+    model.change((draft) => (draft.ctx = changed.to.ctx || undefined), {
+      action: 'Dev/Action/ctx',
+    });
+  }
 
   // Finish up.
   return {
     ctx: model.state.ctx, // NB: This is the "current" value updated by the handler.
     env: state.state.env,
     changed: res.changed,
-    fireIfChanged() {
-      if (changed) {
-        const ns = model.state.ns;
-        const { from, to, patches } = changed;
-        bus.fire({
-          type: 'Dev/Action/ctx:changed',
-          payload: { ns, from, to, patches },
-        });
-      }
-    },
   };
 }

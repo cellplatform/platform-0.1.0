@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { rx, t } from '../../common';
+import { t } from '../../common';
 import { Host, HostProps } from './Host';
 
 export type ActionHostProps = HostProps & {
@@ -20,12 +20,14 @@ export const ActionsHost: React.FC<ActionHostProps> = (props) => {
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const ns = actions.toObject().ns;
+    const ns = actions.toModel().ns;
+    const changed$ = actions.toEvents().changing$;
 
-    rx.payload<t.IDevActionCtxChangedEvent>(bus.event$, 'Dev/Action/ctx:changed')
+    changed$
       .pipe(
         takeUntil(dispose$),
-        filter((e) => e.ns === ns),
+        filter((e) => e.action === 'Dev/Action/ctx'),
+        filter((e) => e.to.ns === ns),
       )
       .subscribe((e) => setRedraw((prev) => prev + 1));
 

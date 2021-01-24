@@ -1,6 +1,8 @@
 import { t } from './common';
 
-export type DevActionsModelState<Ctx> = t.BuilderModel<t.DevActionsModel<Ctx>>;
+type A = t.DevActionsChangeType;
+
+export type DevActionsModelState<Ctx> = t.BuilderModel<t.DevActionsModel<Ctx>, A>;
 export type DevActionsModel<Ctx> = {
   ns: string;
   name: string;

@@ -12,11 +12,20 @@ import { renderSubject } from './render';
 /**
  * Action handlers.
  */
-export const handlers: t.BuilderHandlers<t.DevActionsModel<any>, t.DevActionsModelMethods<any>> = {
+export const handlers: t.BuilderHandlers<
+  t.DevActionsModel<any>,
+  t.DevActionsModelMethods<any>,
+  t.DevActionsChangeType
+> = {
   /**
    * Convert builder to data model.
    */
-  toObject: (args) => args.model.state,
+  toModel: (args) => args.model.state,
+
+  /**
+   * Convert builder to event object.
+   */
+  toEvents: (args) => args.model.event,
 
   /**
    * Derives the current context ("ctx") for the builder.
@@ -79,7 +88,7 @@ export const handlers: t.BuilderHandlers<t.DevActionsModel<any>, t.DevActionsMod
     const insertAt = defaultValue(options.insertAt, 'end');
 
     args.model.change((draft) => {
-      const obj = mergeBuilder.toObject();
+      const obj = mergeBuilder.toModel();
       if (insertAt === 'start') {
         draft.items = [...obj.items, ...draft.items];
       }

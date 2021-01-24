@@ -1,5 +1,6 @@
 import { t } from '../common';
 import { Observable } from '../common/types';
+
 type O = Record<string, unknown>;
 
 export type BuilderNamedItem = { name: string };
@@ -16,7 +17,7 @@ export type Builder = {
   format: t.BuilderFormat;
   isBuilder(input?: any): boolean;
 };
-export type BuilderChain<A extends O> = A & t.IDisposable;
+export type BuilderChain<F extends O> = F & t.IDisposable;
 
 /**
  * Model/State
@@ -25,37 +26,42 @@ export type BuilderChain<A extends O> = A & t.IDisposable;
  */
 export type BuilderModel<M extends O, A extends string = string> = {
   state: M;
-  change: BuilderModelChange<M>;
+  change: BuilderModelChange<M, A>;
   event: t.IStateObjectEvents<M, A>;
 };
-export type BuilderModelChange<M extends O> = (fn: (draft: M) => void) => void;
+export type BuilderModelChange<M extends O, A extends string = string> = (
+  fn: (draft: M) => void,
+  options?: { action?: A },
+) => void;
 
 /**
  * API Handlers
  */
-export type BuilderHandlers<M extends O, A extends O> = {
-  [K in keyof A]: BuilderHandler<M, A> | BuilderChild;
+export type BuilderHandlers<M extends O, F extends O, A extends string = string> = {
+  [K in keyof F]: BuilderHandler<M, F, A> | BuilderChild;
 };
 
-export type BuilderHandler<M extends O, A extends O> = (args: BuilderHandlerArgs<M, A>) => any;
-export type BuilderHandlerArgs<M extends O, A extends O> = {
+export type BuilderHandler<M extends O, F extends O, A extends string = string> = (
+  args: BuilderHandlerArgs<M, F, A>,
+) => any;
+export type BuilderHandlerArgs<M extends O, F extends O, A extends string = string> = {
   kind: BuilderMethodKind;
   key: string;
   path: string;
   index: number; // NB: -1 if not relevant (ie. not related to an array-list).
   params: any[];
-  builder: { self: BuilderChain<A>; parent?: BuilderChain<any>; dispose$: Observable<void> };
+  builder: { self: BuilderChain<F>; parent?: BuilderChain<any>; dispose$: Observable<void> };
   is: { list: boolean; map: boolean };
-  model: BuilderModel<M>;
-  clone(props?: Partial<M>): t.BuilderChain<A>;
+  model: BuilderModel<M, A>;
+  clone(props?: Partial<M>): t.BuilderChain<F>;
 };
 export type BuilderMethodKind = 'ROOT' | BuilderChild['kind'];
 export type BuilderMethodKindList = BuilderListByIndexDef['kind'] | BuilderListByNameDef['kind'];
 export type BuilderMethodKindObject = BuilderObjectDef['kind'] | BuilderMapDef['kind'];
 
-export type BuilderGetHandlers<M extends O, A extends O> = (
+export type BuilderGetHandlers<M extends O, F extends O> = (
   args: BuilderGetHandlersArgs,
-) => BuilderHandlers<M, A>;
+) => BuilderHandlers<M, F>;
 export type BuilderGetHandlersArgs = {
   path: string;
   index: number;
@@ -135,48 +141,48 @@ export type BuilderMapDef = {
   builder: BuilderMapFactory<any, any>;
   default?: () => O;
 };
-export type BuilderMap<T, K = string, A extends O = O> = (key: K, args?: A) => T;
+export type BuilderMap<T, K = string, F extends O = O> = (key: K, args?: F) => T;
 
 /**
  * FACTORY: Chain builder
  */
-export type BuilderChainFactory = <M extends O, A extends O>(
-  args: BuilderChainFactoryArgs<M, A>,
-) => BuilderChain<A>;
-export type BuilderChainFactoryArgs<M extends O, A extends O> = {
-  model: BuilderModel<M>;
-  handlers: BuilderHandlers<M, A>;
+export type BuilderChainFactory = <M extends O, F extends O, A extends string = string>(
+  args: BuilderChainFactoryArgs<M, F, A>,
+) => BuilderChain<F>;
+export type BuilderChainFactoryArgs<M extends O, F extends O, A extends string = string> = {
+  model: BuilderModel<M, A>;
+  handlers: BuilderHandlers<M, F, A>;
   parent?: BuilderChain<any>;
 };
 
 /**
  * FACTORY: Child builders
  */
-export type BuilderMapFactory<M extends O, A extends O> = (
-  args: BuilderMapFactoryArgs<M, A>,
-) => BuilderChain<A>;
-export type BuilderMapFactoryArgs<M extends O, A extends O> = BuilderChildFactoryArgs<M, A> & {
+export type BuilderMapFactory<M extends O, F extends O> = (
+  args: BuilderMapFactoryArgs<M, F>,
+) => BuilderChain<F>;
+export type BuilderMapFactoryArgs<M extends O, F extends O> = BuilderChildFactoryArgs<M, F> & {
   key: string;
 };
 
-export type BuilderListFactory<M extends O, A extends O> = (
-  args: BuilderListFactoryArgs<M, A>,
-) => BuilderChain<A>;
-export type BuilderListFactoryArgs<M extends O, A extends O> = BuilderChildFactoryArgs<M, A> & {
+export type BuilderListFactory<M extends O, F extends O> = (
+  args: BuilderListFactoryArgs<M, F>,
+) => BuilderChain<F>;
+export type BuilderListFactoryArgs<M extends O, F extends O> = BuilderChildFactoryArgs<M, F> & {
   index: number;
   name: string;
 };
 
 export type BuilderChildFactoryArgs<
   M extends O,
-  A extends O // eslint-disable-line
+  F extends O // eslint-disable-line
 > = {
   params: any[];
   path: string;
   model: BuilderModel<M>;
   builder: { parent: BuilderChain<any>; dispose$: Observable<void> };
-  create<M extends O, A extends O>(
-    handlers: BuilderHandlers<M, A>,
+  create<M extends O, F extends O>(
+    handlers: BuilderHandlers<M, F>,
     model?: BuilderModel<M>,
-  ): BuilderChain<A>;
+  ): BuilderChain<F>;
 };

@@ -2,6 +2,7 @@ import { Builder, DEFAULT, StateObject, t, slug } from '../../common';
 import { handlers } from './handlers';
 
 type O = Record<string, unknown>;
+type A = t.DevActionsChangeType;
 
 /**
  * Action builder factory.
@@ -12,7 +13,7 @@ export const ActionBuilder: t.DevActionModelFactory = {
    */
   model<Ctx extends O>() {
     const initial = { ...DEFAULT.ACTIONS, ns: slug() } as t.DevActionsModel<Ctx>;
-    return StateObject.create<any>(initial);
+    return StateObject.create<any, A>(initial);
   },
 
   /**
@@ -29,9 +30,8 @@ export const ActionBuilder: t.DevActionModelFactory = {
       model.change((draft) => (draft.ns = slug()));
     }
 
-    return Builder.create<t.DevActionsModel<Ctx>, t.DevActionsModelMethods<Ctx>>({
-      model,
-      handlers,
-    });
+    type M = t.DevActionsModel<Ctx>;
+    type F = t.DevActionsModelMethods<Ctx>;
+    return Builder.create<M, F, A>({ model, handlers });
   },
 };

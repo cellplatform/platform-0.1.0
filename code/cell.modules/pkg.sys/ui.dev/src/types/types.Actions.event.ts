@@ -1,14 +1,14 @@
 import { t } from './common';
 
-type O = Record<string, unknown>;
+/**
+ * State change actions.
+ */
+export type DevActionsChangeType = 'Dev/Action/ctx';
 
 /**
  * Events
  */
-export type DevActionEvent =
-  | IDevActionButtonEvent
-  | IDevActionBooleanEvent
-  | IDevActionCtxChangedEvent;
+export type DevActionEvent = IDevActionButtonEvent | IDevActionBooleanEvent;
 
 /**
  * Fires for the simple Button action.
@@ -34,18 +34,4 @@ export type IDevActionBoolean = {
   model: t.DevActionItemBoolean;
   change: boolean;
   current(value: boolean): void;
-};
-
-/**
- * Fired when the context has changed.
- */
-export type IDevActionCtxChangedEvent<Ctx extends O = any> = {
-  type: 'Dev/Action/ctx:changed';
-  payload: IDevActionCtxChanged<Ctx>;
-};
-export type IDevActionCtxChanged<Ctx extends O = any> = {
-  ns: string; // ID of the [Actions] model.
-  from: Ctx;
-  to: Ctx;
-  patches: t.PatchSet;
 };

@@ -33,7 +33,7 @@ export function useActionPanelController(args: {
         const { handler } = e.model;
         if (handler) {
           const env: t.DevEnv = { ns };
-          withinContext(bus, model, env, (ctx, env) => handler(ctx, env)).fireIfChanged();
+          withinContext(bus, model, env, (ctx, env) => handler(ctx, env));
         }
       });
 
@@ -48,12 +48,7 @@ export function useActionPanelController(args: {
         if (handler) {
           const env: t.DevEnvBoolean = { ns, change };
           let result = false;
-          withinContext(
-            bus,
-            model,
-            env,
-            (ctx, env) => (result = handler(ctx, env)),
-          ).fireIfChanged();
+          withinContext(bus, model, env, (ctx, env) => (result = handler(ctx, env)));
           e.current(result);
         }
       });
