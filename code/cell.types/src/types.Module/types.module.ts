@@ -56,7 +56,7 @@ export type ModuleRegistration = {
 /**
  * A module state-tree.
  */
-export type IModule<T extends P = AnyProps> = t.ITreeState<IModuleNode<T>, t.ModuleEvent>;
+export type IModule<T extends P = AnyProps> = t.ITreeState<IModuleNode<T>>;
 
 /**
  * A tree-node that contains details about a module.

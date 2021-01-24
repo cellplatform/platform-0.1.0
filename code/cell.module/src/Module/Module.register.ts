@@ -67,8 +67,8 @@ export function registerChild(args: {
   const { bus, parent, child } = args;
 
   parent.add({
-    root: child,
     parent: args.within ? toNodeId(args.within) : undefined,
+    root: child,
   });
 
   bus.fire({
