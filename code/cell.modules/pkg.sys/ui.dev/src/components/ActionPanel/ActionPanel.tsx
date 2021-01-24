@@ -2,7 +2,7 @@ import React from 'react';
 
 import { constants, css, defaultValue, t } from '../../common';
 import { Item } from './Item';
-import { useActionController } from '../../hooks/actions';
+import { useActionPanelController } from '../../hooks/actions';
 
 export type ActionPanelProps = t.ActionPanelProps & {
   bus: t.EventBus;
@@ -15,7 +15,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   const bus = props.bus.type<t.DevEvent>();
   const ns = model.state.ns;
 
-  useActionController({ bus, model });
+  useActionPanelController({ bus, model });
 
   const styles = {
     base: css({

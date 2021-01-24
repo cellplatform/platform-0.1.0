@@ -33,12 +33,10 @@ export function withinContext<Ctx extends O, Env extends t.DevEnv>(
     throw new Error(`A context has not been setup within the Actions`);
   }
 
-  // Run the callback handler passing in immutable clones.
+  // Run the callback handler passing in immutable proxies.
   type S = { ctx: Ctx; env: Env };
   const state = StateObject.create<S>({ ctx, env });
-  const res = state.change((draft) => {
-    handler(draft.ctx, draft.env);
-  });
+  const res = state.change((draft) => handler(draft.ctx, draft.env));
   state.dispose();
 
   // Update the model [ctx] if the handler changed the context.

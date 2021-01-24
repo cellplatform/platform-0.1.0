@@ -49,14 +49,18 @@ export const Dev: React.FC = () => {
     { value: 'vanilla', label: 'Vanilla' },
   ];
 
+  const elSelect = (
+    <div {...styles.select.outer}>
+      <Select options={options} menuPlacement={'top'} />
+    </div>
+  );
+
   return (
     <React.StrictMode>
       <div {...styles.base}>
         <div {...styles.left}>
           <ActionsHost bus={bus} actions={actions} style={styles.host} background={-0.04} />
-          <div {...styles.select.outer}>
-            <Select options={options} menuPlacement={'top'} />
-          </div>
+          {elSelect}
         </div>
         <div {...styles.right}>{elActions}</div>
       </div>

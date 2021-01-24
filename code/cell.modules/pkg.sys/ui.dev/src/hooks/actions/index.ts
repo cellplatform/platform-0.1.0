@@ -1,1 +1,1 @@
-export * from './useActionController';
+export * from './useActionPanelController';
