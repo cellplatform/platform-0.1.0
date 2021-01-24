@@ -7,8 +7,8 @@ import { Icons } from '../Icons';
  * The button view, with no smarts about the event bus.
  */
 export type ButtonViewProps = {
-  label: string;
-  description?: string;
+  label: React.ReactNode;
+  description?: React.ReactNode;
   isActive: boolean;
   icon?: t.IIcon;
   right?: React.ReactNode;

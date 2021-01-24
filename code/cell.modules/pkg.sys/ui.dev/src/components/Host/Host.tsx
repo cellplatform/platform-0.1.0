@@ -3,9 +3,8 @@ import * as React from 'react';
 import { css, CssValue, defaultValue, formatColor, t } from '../../common';
 import { Content, ContentCropmark } from './Content';
 
-export type HostProps = {
+export type HostProps = t.IDevHost & {
   subject?: t.DevActionSubject;
-  background?: number | string;
   style?: CssValue;
 };
 

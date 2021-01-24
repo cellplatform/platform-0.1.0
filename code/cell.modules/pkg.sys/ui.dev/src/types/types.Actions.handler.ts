@@ -4,7 +4,9 @@ import { t } from './common';
  * Environment parameter.
  */
 export type DevEnv = {
-  ns: string; // TEMP 🐷
+  ns: string;
+
+  // host: t.IDevHost;
 
   /**
    * TODO 🐷
