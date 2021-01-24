@@ -24,8 +24,9 @@ export type BuilderChain<A extends O> = A & t.IDisposable;
  *    This is a slimmed down version of an [IStateObjectWritable] type.
  */
 export type BuilderModel<M extends O> = {
-  change: BuilderModelChange<M>;
   state: M;
+  change: BuilderModelChange<M>;
+  event: t.IStateObjectEvents<M>;
 };
 export type BuilderModelChange<M extends O> = (fn: (draft: M) => void) => void;
 

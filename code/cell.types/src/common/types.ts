@@ -13,6 +13,7 @@ export {
   ITreeStateChanged,
   TreeIdentity,
   TreeQuery,
+  IStateObjectEvents,
 } from '@platform/state.types';
 
 export { TreeNodeIcon } from '@platform/ui.tree.types';
