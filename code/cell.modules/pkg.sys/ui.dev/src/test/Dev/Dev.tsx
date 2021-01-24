@@ -24,7 +24,7 @@ export const Dev: React.FC = () => {
       borderLeft: `solid 1px ${color.format(-0.08)}`,
     }),
     host: css({
-      Absolute: [100, 50, 50, 50],
+      Absolute: [100, 50, 100, 50],
       border: `solid 5px ${color.format(-0.1)}`,
       boxSizing: 'border-box',
     }),

@@ -15,12 +15,13 @@ function create() {
 }
 
 describe('ActionBuilder', () => {
-  describe('ActionBuilder.model()', () => {
+  describe.only('ActionBuilder.model()', () => {
     it('model', () => {
       const model = ActionBuilder.model();
-      const id = model.state.ns;
-      expect(id).not.to.eql('');
-      expect(model.state).to.eql({ ...DEFAULT.ACTIONS, id });
+      const ns = model.state.ns;
+      expect(ns).not.to.eql('');
+      expect(model.state).to.eql({ ...DEFAULT.ACTIONS, ns });
+      expect(model.state.name).to.eql(DEFAULT.UNNAMED);
     });
   });
 
@@ -309,6 +310,23 @@ describe('ActionBuilder', () => {
 
       builder1.merge(builder2);
       expect(builder1.toObject().getContext).to.eql(fn1);
+    });
+  });
+
+  describe.only('builder.name()', () => {
+    it('sets name', () => {
+      const { builder, model } = create();
+      expect(model.state.name).to.eql(DEFAULT.UNNAMED);
+
+      builder.name('   Foobar  ');
+
+      expect(model.state.name).to.eql('Foobar');
+
+      builder.name('  ');
+      expect(model.state.name).to.eql(DEFAULT.UNNAMED);
+
+      builder.name('foo').name(undefined as any);
+      expect(model.state.name).to.eql(DEFAULT.UNNAMED);
     });
   });
 

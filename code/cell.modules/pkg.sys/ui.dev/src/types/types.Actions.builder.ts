@@ -19,6 +19,7 @@ export type DevActionModelMethods<Ctx extends O> = DevActionModelInputMethods<Ct
   merge(actions: DevActionModelBuilder<any>, options?: DevActionAddOptions): B<Ctx>;
   context(factory: t.DevActionGetContext<Ctx>): B<Ctx>;
   subject(factory: t.DevActionRenderSubject<Ctx>): B<Ctx>;
+  name(name: string): B<Ctx>;
 };
 
 export type DevActionAddOptions = { insertAt?: 'end' | 'start' };

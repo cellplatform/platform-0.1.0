@@ -36,7 +36,7 @@ export function useActionController(args: { bus: t.DevEventBus; model: t.DevActi
     });
 
     /**
-     * Boolean
+     * Boolean (Switch)
      */
     boolean$.pipe().subscribe((e) => {
       const { handler } = e.model;
