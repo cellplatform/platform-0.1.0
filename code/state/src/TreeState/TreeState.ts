@@ -11,8 +11,6 @@ import * as events from './TreeState.events';
 import * as path from './TreeState.path';
 import * as sync from './TreeState.sync';
 
-type O = Record<string, unknown>;
-type Event = t.Event<O>;
 type N = t.ITreeNode;
 
 const Identity = TreeIdentity;
@@ -24,8 +22,8 @@ const Identity = TreeIdentity;
  *    All changes to the state tree are immutable.
  *
  */
-export class TreeState<T extends N = N, A extends Event = any> implements t.ITreeState<T, A> {
-  public static create<T extends N = N, A extends Event = any>(args?: t.ITreeStateArgs<T>) {
+export class TreeState<T extends N = N, A extends string = string> implements t.ITreeState<T, A> {
+  public static create<T extends N = N, A extends string = string>(args?: t.ITreeStateArgs<T>) {
     const root = args?.root || 'node';
     const e = { ...args, root } as t.ITreeStateArgs<T>;
     return new TreeState<T, A>(e) as t.ITreeState<T, A>;
@@ -95,7 +93,7 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
    * [Fields]
    */
   private _store: t.IStateObjectWritable<T>;
-  private _children: t.ITreeState<any>[] = [];
+  private _children: t.ITreeState<any, any>[] = [];
   private _kind = 'TreeState'; // NB: Used by [isInstance] helper.
 
   public readonly key: string;
@@ -148,7 +146,7 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
   public change: t.TreeStateChange<T, A> = (fn, options) => this._change(fn, options);
   private _change(
     fn: t.TreeStateChanger<T>,
-    options: { ensureNamespace?: boolean; action?: A['type'] } = {},
+    options: { ensureNamespace?: boolean; action?: A } = {},
   ) {
     const { action } = options;
     const res = this._store.change(
@@ -174,7 +172,7 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     }
 
     // Create the child instance.
-    const self = this as t.ITreeState<any>;
+    const self = this as t.ITreeState<any, any>;
     const child = this.getOrCreateInstance<any>(args as t.TreeStateAddArgs<C>);
     if (this.childExists(child)) {
       const err = `Cannot add child '${child.id}' as it already exists within the parent '${this.state.id}'.`;
@@ -208,7 +206,7 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     return child as t.ITreeState<C>;
   };
 
-  public remove = (input: string | t.ITreeState) => {
+  public remove = (input: string | t.ITreeState<any, any>) => {
     const child = this.child(input);
     if (!child) {
       const err = `Cannot remove child-state as it does not exist in the parent '${this.state.id}'.`;
@@ -219,12 +217,12 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     this._children = this._children.filter((item) => item.state.id !== child.state.id);
 
     // Finish up.
-    const self = this as t.ITreeState<any>;
+    const self = this as t.ITreeState<any, any>;
     this.fire({ type: 'TreeState/child/removed', payload: { parent: self, child } });
     return child;
   };
 
-  public clear = (): t.ITreeState<T> => {
+  public clear = (): t.ITreeState<T, A> => {
     this.children.forEach((child) => this.remove(child));
     return this;
   };
@@ -309,7 +307,8 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
 
     const initial = isObservable ? undefined : (args.source as t.ITreeState).state;
 
-    return sync.syncFrom({ target: this, parent, initial, source$, until$ });
+    const target = this as t.ITreeState<any, any>;
+    return sync.syncFrom({ target, parent, initial, source$, until$ });
   };
 
   /**

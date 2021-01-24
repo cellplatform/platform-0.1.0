@@ -27,15 +27,14 @@ type O = Record<string, unknown>;
  * To pass an read-only version of the [StateObject] around an application
  * use the plain [IStateObject] interface which does not expose the `change` method.
  */
-export class StateObject<T extends O, E extends t.Event<any>>
-  implements t.IStateObjectWritable<T, E> {
+export class StateObject<T extends O, A extends string> implements t.IStateObjectWritable<T, A> {
   /**
    * Create a new [StateObject] instance.
    */
-  public static create<T extends O, E extends t.Event<any> = any>(
+  public static create<T extends O, A extends string = string>(
     initial: T,
-  ): t.IStateObjectWritable<T, E> {
-    return new StateObject<T, E>({ initial });
+  ): t.IStateObjectWritable<T, A> {
+    return new StateObject<T, A>({ initial });
   }
 
   /**
@@ -48,10 +47,10 @@ export class StateObject<T extends O, E extends t.Event<any>>
    *    logic around an application.
    * 
    */
-  public static readonly<T extends O, E extends t.Event<any> = any>(
-    obj: t.IStateObjectWritable<T, E>,
-  ): t.IStateObject<T, E> {
-    return obj as t.IStateObject<T, E>;
+  public static readonly<T extends O, A extends string = string>(
+    obj: t.IStateObjectWritable<T, A>,
+  ): t.IStateObject<T, A> {
+    return obj as t.IStateObject<T, A>;
   }
 
   /**
@@ -104,7 +103,7 @@ export class StateObject<T extends O, E extends t.Event<any>>
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _event$ = new Subject<t.StateObjectEvent>();
-  public readonly event = events.create<T, E>(this._event$, this._dispose$);
+  public readonly event = events.create<T, A>(this._event$, this._dispose$);
 
   public readonly original: T;
 
@@ -120,15 +119,15 @@ export class StateObject<T extends O, E extends t.Event<any>>
   }
 
   public get readonly() {
-    return this as t.IStateObject<T, E>;
+    return this as t.IStateObject<T, A>;
   }
 
   /**
    * [Methods]
    */
-  public change: t.StateObjectChange<T, E> = (fn, options = {}) => {
+  public change: t.StateObjectChange<T, A> = (fn, options = {}) => {
     const cid = id.cuid(); // "change-id"
-    const type = (options.action || '').trim();
+    const type = (options.action || '').trim() as A;
 
     const from = this.state;
     const { to, op, patches } = next(from, fn);
@@ -137,7 +136,7 @@ export class StateObject<T extends O, E extends t.Event<any>>
     }
 
     // Fire BEFORE event.
-    const changing: t.IStateObjectChanging<T, E> = {
+    const changing: t.IStateObjectChanging<T, A> = {
       op,
       cid,
       from,
@@ -156,7 +155,7 @@ export class StateObject<T extends O, E extends t.Event<any>>
       this.fire({ type: 'StateObject/cancelled', payload: cancelled });
     }
 
-    const changed: t.IStateObjectChanged<T, E> | undefined = cancelled
+    const changed: t.IStateObjectChanged<T, A> | undefined = cancelled
       ? undefined
       : { op, cid, from, to, patches, action: type };
 

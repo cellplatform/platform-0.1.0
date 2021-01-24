@@ -9,9 +9,7 @@ import { StateObject as StateObjectClass } from './StateObject';
 
 type IFoo = { message?: string; count: number; items?: any[] };
 type IBar = { isEnabled?: boolean };
-type MyEvent = IncrementEvent | DecrementEvent;
-type IncrementEvent = { type: 'INCREMENT'; payload: { by: number } };
-type DecrementEvent = { type: 'DECREMENT'; payload: { count: number } };
+type MyAction = 'INCREMENT' | 'DECREMENT';
 
 describe('StateObject', () => {
   describe('lifecycle', () => {
@@ -318,7 +316,7 @@ describe('StateObject', () => {
   describe('events', () => {
     it('event: changing', () => {
       const initial = { count: 1 };
-      const obj = StateObject.create<IFoo, MyEvent>(initial);
+      const obj = StateObject.create<IFoo, MyAction>(initial);
 
       const events: t.StateObjectEvent[] = [];
       const changing: t.IStateObjectChanging[] = [];
@@ -401,7 +399,7 @@ describe('StateObject', () => {
     });
 
     it('event: changing/changed (with "action")', () => {
-      const obj = StateObject.create<IFoo, MyEvent>({ count: 1 });
+      const obj = StateObject.create<IFoo, MyAction>({ count: 1 });
 
       const changing: t.IStateObjectChanging[] = [];
       const changed: t.IStateObjectChanged[] = [];
@@ -430,7 +428,7 @@ describe('StateObject', () => {
     });
 
     it('event: changing/changed (via "replace" operation)', () => {
-      const obj = StateObject.create<IFoo, MyEvent>({ count: 1 });
+      const obj = StateObject.create<IFoo, MyAction>({ count: 1 });
 
       const changing: t.IStateObjectChanging[] = [];
       const changed: t.IStateObjectChanged[] = [];
@@ -452,7 +450,7 @@ describe('StateObject', () => {
     });
 
     it('event: changedPatches', () => {
-      const obj = StateObject.create<IFoo, MyEvent>({ count: 1 });
+      const obj = StateObject.create<IFoo, MyAction>({ count: 1 });
 
       const patches: t.IStateObjectPatched[] = [];
       obj.event.patched$.subscribe((e) => patches.push(e));
