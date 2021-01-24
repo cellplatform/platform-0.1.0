@@ -11,7 +11,7 @@ export const ActionBuilder: t.DevActionModelFactory = {
    * Create a new data-model.
    */
   model<Ctx extends O>() {
-    const initial = { ...DEFAULT.ACTIONS, ns: id.shortid() } as t.DevActionModel<Ctx>;
+    const initial = { ...DEFAULT.ACTIONS, ns: id.shortid() } as t.DevActionsModel<Ctx>;
     return StateObject.create<any>(initial);
   },
 
@@ -22,8 +22,11 @@ export const ActionBuilder: t.DevActionModelFactory = {
     const model = (typeof input === 'object'
       ? StateObject.isStateObject(input)
         ? input
-        : StateObject.create<t.DevActionModel<Ctx>>(input as any)
-      : ActionBuilder.model()) as t.DevActionModelState<Ctx>;
-    return Builder.create<t.DevActionModel<Ctx>, t.DevActionModelMethods<Ctx>>({ model, handlers });
+        : StateObject.create<t.DevActionsModel<Ctx>>(input as any)
+      : ActionBuilder.model()) as t.DevActionsModelState<Ctx>;
+    return Builder.create<t.DevActionsModel<Ctx>, t.DevActionsModelMethods<Ctx>>({
+      model,
+      handlers,
+    });
   },
 };

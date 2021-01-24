@@ -1,22 +1,22 @@
 import { t } from './common';
 
 type O = Record<string, unknown>;
-type B<Ctx extends O> = DevActionModelBuilder<Ctx>;
+type B<Ctx extends O> = DevActionsModelBuilder<Ctx>;
 
 /**
  * Model Builder API
  */
-export type DevActionModelBuilder<Ctx extends O> = t.BuilderChain<DevActionModelMethods<Ctx>>;
+export type DevActionsModelBuilder<Ctx extends O> = t.BuilderChain<DevActionsModelMethods<Ctx>>;
 
-export type DevActionModelMethods<Ctx extends O> = DevActionModelInputMethods<Ctx> & {
-  toObject(): t.DevActionModel<Ctx>;
+export type DevActionsModelMethods<Ctx extends O> = DevActionsModelInputMethods<Ctx> & {
+  toObject(): t.DevActionsModel<Ctx>;
   toContext(): Ctx;
   clone(ctx?: t.DevActionGetContext<Ctx>): B<Ctx>;
 
   renderList(bus: t.EventBus, props?: t.ActionPanelProps): JSX.Element;
   renderSubject(): t.DevActionSubject;
 
-  merge(actions: DevActionModelBuilder<any>, options?: DevActionAddOptions): B<Ctx>;
+  merge(actions: DevActionsModelBuilder<any>, options?: DevActionAddOptions): B<Ctx>;
   context(factory: t.DevActionGetContext<Ctx>): B<Ctx>;
   subject(factory: t.DevActionRenderSubject<Ctx>): B<Ctx>;
   name(name: string): B<Ctx>;
@@ -24,7 +24,7 @@ export type DevActionModelMethods<Ctx extends O> = DevActionModelInputMethods<Ct
 
 export type DevActionAddOptions = { insertAt?: 'end' | 'start' };
 
-export type DevActionModelInputMethods<Ctx extends O> = {
+export type DevActionsModelInputMethods<Ctx extends O> = {
   button(label: string, handler?: t.DevActionButtonHandler<Ctx>): B<Ctx>;
   button(config: DevActionButtonConfig<Ctx>): B<Ctx>;
   boolean(label: string, handler?: t.DevActionBooleanHandler<Ctx>): B<Ctx>;

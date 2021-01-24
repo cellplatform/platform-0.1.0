@@ -12,7 +12,7 @@ import { renderSubject } from './render';
 /**
  * Action handlers.
  */
-export const handlers: t.BuilderHandlers<t.DevActionModel<any>, t.DevActionModelMethods<any>> = {
+export const handlers: t.BuilderHandlers<t.DevActionsModel<any>, t.DevActionsModelMethods<any>> = {
   /**
    * Convert builder to data model.
    */
@@ -74,7 +74,7 @@ export const handlers: t.BuilderHandlers<t.DevActionModel<any>, t.DevActionModel
    * Merges in another Action model's items.
    */
   merge(args) {
-    const mergeBuilder = args.params[0] as t.DevActionModelBuilder<any>;
+    const mergeBuilder = args.params[0] as t.DevActionsModelBuilder<any>;
     const options = (args.params[1] || {}) as t.DevActionAddOptions;
     const insertAt = defaultValue(options.insertAt, 'end');
 

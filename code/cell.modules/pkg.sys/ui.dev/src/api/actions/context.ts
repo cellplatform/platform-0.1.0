@@ -6,7 +6,7 @@ type O = Record<string, unknown>;
  * Reads the context from the factory contained within a model
  * and stores that latest version of the context on the model.
  */
-export function getModelContext<Ctx extends O>(model: t.DevActionModelState<Ctx>): Ctx | null {
+export function getModelContext<Ctx extends O>(model: t.DevActionsModelState<Ctx>): Ctx | null {
   const state = model.state;
   if (state.getContext) {
     const ctx = state.getContext(state.ctx || null);
@@ -23,7 +23,7 @@ export function getModelContext<Ctx extends O>(model: t.DevActionModelState<Ctx>
  */
 export function withinContext<Ctx extends O, Env extends t.DevEnv>(
   bus: t.DevEventBus,
-  model: t.DevActionModelState<Ctx>,
+  model: t.DevActionsModelState<Ctx>,
   env: Env,
   handler: (ctx: Ctx, env: Env) => any,
 ) {

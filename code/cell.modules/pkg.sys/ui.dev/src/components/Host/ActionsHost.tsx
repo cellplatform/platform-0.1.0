@@ -7,7 +7,7 @@ import { Host, HostProps } from './Host';
 
 export type ActionHostProps = HostProps & {
   bus: t.EventBus;
-  actions: t.DevActionModelBuilder<any>;
+  actions: t.DevActionsModelBuilder<any>;
 };
 
 /**

@@ -6,7 +6,7 @@ import { useActionPanelController } from '../../hooks/actions';
 
 export type ActionPanelProps = t.ActionPanelProps & {
   bus: t.EventBus;
-  model: t.DevActionModelState<any>;
+  model: t.DevActionsModelState<any>;
 };
 
 export const ActionPanel: React.FC<ActionPanelProps> = (props) => {

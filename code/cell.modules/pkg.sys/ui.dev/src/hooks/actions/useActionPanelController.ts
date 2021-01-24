@@ -12,7 +12,7 @@ type O = Record<string, unknown>;
  */
 export function useActionPanelController(args: {
   bus: t.DevEventBus;
-  model: t.DevActionModelState<O>;
+  model: t.DevActionsModelState<O>;
 }) {
   const { bus, model } = args;
 

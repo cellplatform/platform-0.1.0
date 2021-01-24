@@ -4,8 +4,8 @@ import { expect, DEFAULT, StateObject, t, rx } from '../../test';
 import { ActionBuilder } from '.';
 
 type Ctx = { count: number };
-type M = t.DevActionModel<Ctx>;
-type B = t.DevActionModelBuilder<Ctx>;
+type M = t.DevActionsModel<Ctx>;
+type B = t.DevActionsModelBuilder<Ctx>;
 
 function create() {
   const model = ActionBuilder.model<Ctx>();
