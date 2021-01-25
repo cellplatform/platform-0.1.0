@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import { CssValue, t, time } from '../../common';
-import { ButtonView } from './Item.ButtonView';
+import { CssValue, t } from '../../common';
+import { useItemMonitor } from '../../hooks/actions';
 import { Switch } from '../Primitives';
+import { ButtonView } from './Item.ButtonView';
 
 export type BooleanItemProps = {
   ns: string;
@@ -12,27 +13,17 @@ export type BooleanItemProps = {
 };
 
 export const BooleanItem: React.FC<BooleanItemProps> = (props) => {
-  const { bus, model, style, ns } = props;
+  const { bus, style, ns } = props;
+  const model = useItemMonitor({ bus, model: props.model });
   const { label, description } = model;
   const isActive = Boolean(model.handler);
-  const [current, setCurrent] = useState<boolean>(false);
+  const value = Boolean(model.current);
 
   const fire = (change: boolean) => {
-    let current = false;
-    bus.fire({
-      type: 'Dev/Action/boolean',
-      payload: { ns, model, change, current: (value) => (current = value) },
-    });
-    return current;
+    bus.fire({ type: 'Dev/Action/boolean', payload: { ns, model, change } });
   };
 
-  useEffect(() => {
-    // NB: Delaying a tick allows the main [useActionController] to
-    //     finish registering before requests are made of it.
-    time.delay(0, () => setCurrent(fire(false)));
-  });
-
-  const elSwitch = <Switch value={current} isEnabled={isActive} height={18} />;
+  const elSwitch = <Switch value={value} isEnabled={isActive} height={18} />;
 
   return (
     <ButtonView
@@ -41,7 +32,7 @@ export const BooleanItem: React.FC<BooleanItemProps> = (props) => {
       isActive={isActive}
       right={elSwitch}
       style={style}
-      onClick={() => setCurrent(fire(true))}
+      onClick={() => fire(true)}
     />
   );
 };

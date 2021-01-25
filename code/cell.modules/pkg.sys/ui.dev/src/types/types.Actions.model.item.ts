@@ -12,6 +12,7 @@ export type DevActionItemInput = DevActionItemButton | DevActionItemBoolean;
  */
 export type DevActionItemButton = {
   kind: 'button';
+  id: string;
   label: string;
   description?: string;
   handler?: t.DevActionButtonHandler<any>;
@@ -19,9 +20,11 @@ export type DevActionItemButton = {
 
 export type DevActionItemBoolean = {
   kind: 'boolean';
+  id: string;
   label: string;
   description?: string;
   handler?: t.DevActionBooleanHandler<any>;
+  current?: boolean;
 };
 
 /**
@@ -29,6 +32,7 @@ export type DevActionItemBoolean = {
  */
 export type DevActionItemHr = {
   kind: 'hr';
+  id: string;
   height: number;
   opacity: number;
   margin: t.DevEdgeSpacing;
@@ -39,5 +43,6 @@ export type DevActionItemHr = {
  */
 export type DevActionItemTitle = {
   kind: 'title';
+  id: string;
   text: string;
 };

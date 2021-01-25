@@ -7,9 +7,9 @@ export type DevActionsModel<Ctx> = {
   ns: string;
   name: string;
   items: t.DevActionItem[];
-  ctx?: Ctx;
-  getContext?: t.DevActionGetContext<Ctx>;
   renderSubject?: t.DevActionRenderSubject<Ctx>;
+  ctx: { current?: Ctx; get?: t.DevActionGetContext<Ctx> };
+  env: { host?: t.IDevHost };
 };
 
 export type DevActionGetContext<T> = (prev: T | null) => T;
