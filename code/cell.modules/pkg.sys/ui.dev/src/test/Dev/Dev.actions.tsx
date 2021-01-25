@@ -1,6 +1,7 @@
 import React from 'react';
 import { Actions, toObject } from '../..';
 import { css, COLORS } from '../../common';
+import { ObjectView } from '@platform/ui.object';
 
 type SampleLayout =
   | 'single'
@@ -25,6 +26,7 @@ const LOREM =
  * Actions
  */
 export const actions = Actions<Ctx>()
+  .name('ui.dev')
   .context((prev) => prev || { layout: 'single', count: 0, text: LOREM, isRunning: true })
 
   .button('change text', (e) => {
@@ -73,12 +75,24 @@ export const actions = Actions<Ctx>()
 
   .hr()
 
+  .title('Layout')
+  .button('layout.background: 1', (e) => (e.layout.background = 1))
+  .button('layout.background: -0.3', (e) => {
+    console.log('BUTTON');
+    e.layout.background = -0.3;
+  })
+  .button('layout.cropmarks: 0.7', (e) => {
+    console.log('BUTTON');
+    e.layout.cropmarks = 0.7;
+  })
+
+  .hr()
+
   /**
    * Subject component renderer.
    */
   .subject((e) => {
     const { ctx } = e;
-    const style = css({ padding: 20 });
 
     // NB: common layout (variations merged in in render arg below)
     e.layout({
@@ -89,9 +103,19 @@ export const actions = Actions<Ctx>()
       label: 'foobar',
     });
 
+    const data = { isRunning: ctx.isRunning };
+
+    const styles = {
+      base: css({ padding: 20 }),
+      text: css({ marginBottom: 10 }),
+    };
+
     const el = (
-      <div {...style}>
-        {ctx.count}: {e.ctx.text} (is running: {Boolean(ctx.isRunning).toString()})
+      <div {...styles.base}>
+        <div {...styles.text}>
+          {ctx.count}: {e.ctx.text}
+        </div>
+        <ObjectView name={'subject'} data={data} />
       </div>
     );
 

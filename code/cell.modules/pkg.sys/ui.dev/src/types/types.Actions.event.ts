@@ -3,7 +3,7 @@ import { t } from './common';
 /**
  * State change actions.
  */
-export type DevActionsChangeType = 'Dev/Action/ctx';
+export type DevActionsChangeType = 'via:button' | 'via:boolean';
 
 /**
  * Events
@@ -17,7 +17,7 @@ export type DevActionEvent =
  * Fires for the simple Button action.
  */
 export type IDevActionButtonEvent = {
-  type: 'Dev/Action/button';
+  type: 'dev:action/button';
   payload: IDevActionButton;
 };
 export type IDevActionButton = {
@@ -29,7 +29,7 @@ export type IDevActionButton = {
  * Fires for the Boolean (switch) action.
  */
 export type IDevActionBooleanEvent = {
-  type: 'Dev/Action/boolean';
+  type: 'dev:action/boolean';
   payload: IDevActionBoolean;
 };
 export type IDevActionBoolean = {
@@ -42,7 +42,7 @@ export type IDevActionBoolean = {
  * Fires when a single action Item model changes.
  */
 export type IDevActionItemChangedEvent = {
-  type: 'Dev/Action/item:changed';
+  type: 'dev:action/item:changed';
   payload: IDevActionItemChanged;
 };
 export type IDevActionItemChanged = {

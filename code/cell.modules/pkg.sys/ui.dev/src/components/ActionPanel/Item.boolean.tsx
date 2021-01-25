@@ -20,7 +20,7 @@ export const BooleanItem: React.FC<BooleanItemProps> = (props) => {
   const value = Boolean(model.current);
 
   const fire = (change: boolean) => {
-    bus.fire({ type: 'Dev/Action/boolean', payload: { ns, model, change } });
+    bus.fire({ type: 'dev:action/boolean', payload: { ns, model, change } });
   };
 
   const elSwitch = <Switch value={value} isEnabled={isActive} height={18} />;

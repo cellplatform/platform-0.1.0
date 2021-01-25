@@ -18,7 +18,7 @@ export function useItemMonitor<M extends t.DevActionItem>(args: {
     const dispose$ = new Subject<void>();
     const $ = bus.event$.pipe(takeUntil(dispose$));
 
-    rx.payload<t.IDevActionItemChangedEvent>($, 'Dev/Action/item:changed')
+    rx.payload<t.IDevActionItemChangedEvent>($, 'dev:action/item:changed')
       .pipe(
         filter((e) => e.model.id === args.model.id),
         distinctUntilChanged((prev, next) => R.equals(prev, next)),

@@ -6,6 +6,7 @@ import { t } from './common';
 export type DevActionHandlerArgs<C> = {
   readonly ctx: C;
   readonly host: t.IDevHost;
+  readonly layout: t.IDevHostedLayout;
 };
 
 /**

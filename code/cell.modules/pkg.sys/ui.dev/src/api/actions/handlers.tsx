@@ -60,8 +60,8 @@ export const handlers: t.BuilderHandlers<
    */
   renderSubject(args) {
     const ctx = args.builder.self.toContext();
-    const factory = args.model.state.renderSubject;
-    return renderSubject<O>({ ctx, factory });
+    const model = args.model.state;
+    return renderSubject<O>({ ctx, model });
   },
 
   /**

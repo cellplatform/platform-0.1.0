@@ -18,9 +18,19 @@ export const ActionsHost: React.FC<ActionHostProps> = (props) => {
   const { actions } = props;
   const env = actions.toObject().env;
   useRedraw({
+    name: '<ActionsHost>',
     bus: props.bus.type<t.DevActionEvent>(),
     actions,
-    paths: ['ctx/current', 'env/host'],
+    paths: ['ctx/current', 'env'],
   });
-  return <Host {...props} subject={actions.renderSubject()} background={env.host?.background} />;
+  console.log('RENDER', '<actionsHost>');
+  return (
+    <Host
+      {...props}
+      subject={actions.renderSubject()}
+      host={env.host}
+      layout={env.layout}
+      background={env.host?.background}
+    />
+  );
 };

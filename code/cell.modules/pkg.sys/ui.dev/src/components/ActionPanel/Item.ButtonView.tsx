@@ -29,8 +29,8 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
     main: css({
       Flex: 'horizontal-stretch-stretch',
       PaddingY: 2,
-      paddingLeft: 8,
-      paddingRight: 10,
+      paddingLeft: 12,
+      paddingRight: 15,
       cursor: isActive ? 'pointer' : 'default',
       opacity: isActive ? 1 : 0.4,
     }),

@@ -6,10 +6,13 @@ import { ActionPanel } from '../../components/ActionPanel';
 /**
  * Render the subject(s) under test.
  */
-export function renderSubject<Ctx>(args: { ctx: Ctx; factory?: t.DevActionRenderSubject<Ctx> }) {
+export function renderSubject<Ctx>(args: { ctx: Ctx; model: t.DevActionsModel<any> }) {
   type R = t.DevActionSubject;
-  const { ctx, factory } = args;
+  const { ctx, model } = args;
+  const { renderSubject: factory, env } = model;
   const res: R = { items: [], layout: {}, orientation: 'y', spacing: 60 };
+
+  console.log('RENDER', 'subject', env);
 
   if (!ctx) {
     const err = `Cannot [renderSubject] - the Actions [context] has not been set. Make sure you've called [actions.context(...)]`;
