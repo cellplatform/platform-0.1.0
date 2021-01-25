@@ -63,8 +63,8 @@ export type ITreeStateReadonly<T extends N, A extends string> = {
  * Add
  */
 export type TreeStateAdd = <T extends N = N, A extends string = string>(
-  args: TreeStateAddArgs<T> | ITreeState<T, A>,
-) => ITreeState<T>;
+  args: TreeStateAddArgs<T, A> | ITreeState<T, A>,
+) => ITreeState<T, A>;
 export type TreeStateAddArgs<T extends N = N, A extends string = string> = {
   parent?: string;
   root: T | string | ITreeState<T, A>;

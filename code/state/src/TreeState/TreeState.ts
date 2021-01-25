@@ -136,14 +136,17 @@ export class TreeState<T extends N = N, A extends string = string> implements t.
   }
 
   public get path(): t.ITreeStatePath<T, A> {
-    return path.create<T, A>(this);
+    const self = this as t.ITreeState<T, A>;
+    return path.create<T, A>(self);
   }
 
   /**
    * [Methods]
    */
 
-  public change: t.TreeStateChange<T, A> = (fn, options) => this._change(fn, options);
+  public change: t.TreeStateChange<T, A> = (fn, options) => {
+    return this._change(fn, options);
+  };
   private _change(
     fn: t.TreeStateChanger<T>,
     options: { ensureNamespace?: boolean; action?: A } = {},
@@ -163,17 +166,17 @@ export class TreeState<T extends N = N, A extends string = string> implements t.
     return res;
   }
 
-  public add = <C extends N = N>(
-    args: { parent?: string; root: C | string | t.ITreeState<C> } | t.ITreeState<C>,
-  ) => {
+  public add = <C extends N = N, A extends string = string>(
+    args: { parent?: string; root: C | string | t.ITreeState<C, A> } | t.ITreeState<C, A>,
+  ): t.ITreeState<C, A> => {
     // Wrangle: Check if the arguments are in fact a [TreeState] instance.
     if (TreeState.isInstance(args)) {
-      args = { parent: this.id, root: args as t.ITreeState<C> };
+      args = { parent: this.id, root: args as t.ITreeState<C, A> };
     }
 
     // Create the child instance.
     const self = this as t.ITreeState<any, any>;
-    const child = this.getOrCreateInstance<any>(args as t.TreeStateAddArgs<C>);
+    const child = this.getOrCreateInstance<any, any>(args as t.TreeStateAddArgs<C, A>);
     if (this.childExists(child)) {
       const err = `Cannot add child '${child.id}' as it already exists within the parent '${this.state.id}'.`;
       throw new Error(err);
@@ -203,7 +206,7 @@ export class TreeState<T extends N = N, A extends string = string> implements t.
 
     // Finish up.
     this.fire({ type: 'TreeState/child/added', payload: { parent: self, child } });
-    return child as t.ITreeState<C>;
+    return child as t.ITreeState<C, A>;
   };
 
   public remove = (input: string | t.ITreeState<any, any>) => {
@@ -343,13 +346,13 @@ export class TreeState<T extends N = N, A extends string = string> implements t.
     return Boolean(this.child(input));
   }
 
-  private getOrCreateInstance<C extends N = N>(args: {
+  private getOrCreateInstance<C extends N = N, A extends string = string>(args: {
     parent?: string;
-    root: C | string | t.ITreeState<C>;
-  }): t.ITreeState<C> {
+    root: C | string | t.ITreeState<C, A>;
+  }): t.ITreeState<C, A> {
     const root = (typeof args.root === 'string' ? { id: args.root } : args.root) as C;
     if (TreeState.isInstance(root)) {
-      return args.root as t.ITreeState<C>;
+      return args.root as t.ITreeState<C, A>;
     }
 
     let parent = Identity.toString(args.parent);
@@ -361,7 +364,7 @@ export class TreeState<T extends N = N, A extends string = string> implements t.
     }
 
     parent = Identity.format(this.namespace, parent);
-    return TreeState.create<C>({ parent, root });
+    return TreeState.create<C, A>({ parent, root });
   }
 
   private listen(child: t.ITreeState<any>) {
