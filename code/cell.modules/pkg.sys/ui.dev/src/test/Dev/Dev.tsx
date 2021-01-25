@@ -55,7 +55,7 @@ export const Dev: React.FC = () => {
     <React.StrictMode>
       <div {...styles.base}>
         <div {...styles.main}>
-          <ActionsHost bus={bus} actions={actions} style={styles.host} background={-0.04} />
+          <ActionsHost bus={bus} actions={actions} style={styles.host} />
           {elSelect}
         </div>
         <div {...styles.right}>{elActions}</div>

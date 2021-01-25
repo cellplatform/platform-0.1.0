@@ -48,6 +48,7 @@ export const actions = Actions<Ctx>()
   .hr(1, 0.15)
   .boolean('boolean (disabled)')
   .boolean('is running', (e) => {
+    console.log('boolean is running');
     if (e.change) e.ctx.isRunning = !Boolean(e.ctx.isRunning);
     return Boolean(e.ctx.isRunning);
   })
@@ -79,6 +80,8 @@ export const actions = Actions<Ctx>()
   .subject((e) => {
     const { ctx } = e;
     const style = css({ padding: 20 });
+
+    console.log('render subject');
 
     // NB: common layout (variations merged in in render arg below)
     e.layout({

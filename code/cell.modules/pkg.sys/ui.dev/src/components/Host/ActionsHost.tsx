@@ -1,12 +1,13 @@
 import React from 'react';
 
-import { t } from '../../common';
+import { t, CssValue } from '../../common';
 import { useRedraw } from '../../hooks/actions';
-import { Host, HostProps } from './Host';
+import { Host } from './Host';
 
-export type ActionHostProps = HostProps & {
+export type ActionHostProps = {
   bus: t.EventBus;
   actions: t.DevActions<any>;
+  style?: CssValue;
 };
 
 /**
@@ -15,7 +16,11 @@ export type ActionHostProps = HostProps & {
  */
 export const ActionsHost: React.FC<ActionHostProps> = (props) => {
   const { actions } = props;
-  const bus = props.bus.type<t.DevActionEvent>();
-  useRedraw({ bus, actions });
-  return <Host {...props} subject={actions.renderSubject()} />;
+  const env = actions.toObject().env;
+  useRedraw({
+    bus: props.bus.type<t.DevActionEvent>(),
+    actions,
+    paths: ['ctx/current', 'env/host'],
+  });
+  return <Host {...props} subject={actions.renderSubject()} background={env.host?.background} />;
 };

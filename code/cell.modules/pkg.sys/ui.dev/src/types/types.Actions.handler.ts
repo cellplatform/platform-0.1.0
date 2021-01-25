@@ -27,5 +27,6 @@ export type DevActionButtonHandler<C> = (ctx: C, env: DevEnv) => void;
 export type DevActionBooleanHandler<C> = (e: t.DevActionBooleanHandlerArgs<C>) => boolean; // Return the state of the switch.
 export type DevActionBooleanHandlerArgs<C> = {
   readonly ctx: C;
-  change: boolean; // Flag indicating if the handler is being called because the value needs to change.
+  readonly change: boolean; // Flag indicating if the handler is being called because the value needs to change.
+  readonly host: t.IDevHost;
 };

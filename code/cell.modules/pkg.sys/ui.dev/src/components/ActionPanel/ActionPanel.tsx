@@ -17,7 +17,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   const ns = model.ns;
 
   useActionPanelController({ bus, actions });
-  useRedraw({ bus, actions });
+  useRedraw({ bus, actions, paths: ['ctx/current'] });
 
   const styles = {
     base: css({

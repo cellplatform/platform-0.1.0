@@ -4,10 +4,12 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import { t } from '../../common';
 
+type Path = 'ctx/current' | 'env/host';
+
 /**
  * Causes a redraw of a component when the state of the Action model changes.
  */
-export function useRedraw(args: { bus: t.DevEventBus; actions: t.DevActions<any> }) {
+export function useRedraw(args: { bus: t.DevEventBus; actions: t.DevActions<any>; paths: Path[] }) {
   const { bus, actions } = args;
   const [redraw, setRedraw] = useState<number>(0);
 
@@ -20,18 +22,21 @@ export function useRedraw(args: { bus: t.DevEventBus; actions: t.DevActions<any>
     changed$
       .pipe(
         takeUntil(dispose$),
-        filter((e) => e.action === 'Dev/Action/ctx'),
         filter((e) => e.to.ns === ns),
+        filter((e) => isChangedPath(args.paths, e.patches)),
       )
-      .subscribe((e) => {
-        try {
-          setRedraw((prev) => prev + 1);
-        } catch (error) {
-          console.log('error', error);
-          throw error;
-        }
-      });
+      .subscribe(() => setRedraw((prev) => prev + 1));
 
     return () => dispose$.next();
   }, [bus, actions]); // eslint-disable-line
+}
+
+/**
+ * [Helpers]
+ */
+
+function isChangedPath(paths: string[], patches: t.PatchSet) {
+  return patches.next.some((patch) => {
+    return paths.some((path) => patch.path === path || patch.path.startsWith(`${path}/`));
+  });
 }
