@@ -3,7 +3,7 @@ import { BooleanConfig } from './config.Boolean';
 import { ButtonConfig } from './config.Button';
 import { HrConfig } from './config.Hr';
 import { TitleConfig } from './config.Title';
-import { getContext } from './context';
+import { getAndStoreContext } from './context';
 import { renderList, renderSubject } from './render';
 
 type O = Record<string, unknown>;
@@ -34,7 +34,7 @@ export const handlers: t.BuilderHandlers<
   /**
    * Derives the current context ("ctx") for the builder.
    */
-  toContext: (args) => getContext(args.model),
+  toContext: (args) => getAndStoreContext(args.model),
 
   /**
    * Create a clone of the builder (optionally changing the context factory.)

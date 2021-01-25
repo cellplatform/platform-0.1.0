@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { getContext as getAndStoreContext, withinContext } from '../../api/actions';
-import { rx, t, toObject } from '../../common';
+import { getAndStoreContext } from '../../api/actions';
+import { rx, t } from '../../common';
 
 type O = Record<string, unknown>;
 
@@ -55,8 +55,18 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
       .subscribe((e) => {
         const { handler } = e.model;
         if (handler) {
-          const env: t.DevEnv = { ns };
-          withinContext(model, env, (ctx, env) => handler(ctx, env));
+          getAndStoreContext(model, { throw: true }); // NB: This will also assign the [ctx.current] value.
+
+          type P = t.DevActionButtonHandlerArgs<any>;
+          model.change((draft) => {
+            const ctx = draft.ctx.current;
+            const item = draft.items.find(({ id }) => id === e.model.id) as t.DevActionItemBoolean;
+            if (ctx && item) {
+              const host = draft.env.host || (draft.env.host = {});
+              const payload: P = { ctx, host };
+              handler(payload);
+            }
+          });
         }
       });
 
@@ -66,10 +76,11 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
     rx.payload<t.IDevActionBooleanEvent>($, 'Dev/Action/boolean')
       .pipe()
       .subscribe((e) => {
-        type P = t.DevActionBooleanHandlerArgs<any>;
         const { handler } = e.model;
         if (handler) {
           getAndStoreContext(model, { throw: true }); // NB: This will also assign the [ctx.current] value.
+
+          type P = t.DevActionBooleanHandlerArgs<any>;
           model.change((draft) => {
             const ctx = draft.ctx.current;
             const item = draft.items.find(({ id }) => id === e.model.id) as t.DevActionItemBoolean;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Actions, toObject } from '../..';
-import { css } from '../../common';
+import { css, COLORS } from '../../common';
 
 type SampleLayout =
   | 'single'
@@ -27,9 +27,9 @@ const LOREM =
 export const actions = Actions<Ctx>()
   .context((prev) => prev || { layout: 'single', count: 0, text: LOREM, isRunning: true })
 
-  .button('change text', (ctx) => {
-    ctx.count++;
-    ctx.text = ctx.text === 'hello' ? LOREM : 'hello';
+  .button('change text', (e) => {
+    e.ctx.count++;
+    e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
   })
 
   .hr()
@@ -37,10 +37,10 @@ export const actions = Actions<Ctx>()
   .title('Buttons')
   .button((config) => config.label('hello'))
   .hr(1, 0.14, [5, 0])
-  .button('console.log', (ctx, env) => {
+  .button('console.log', (e) => {
     console.group('🌳 button click');
-    console.log('ctx', toObject(ctx));
-    console.log('env', toObject(env));
+    console.log('e.ctx', toObject(e.ctx));
+    console.log('e.host', toObject(e.host));
     console.groupEnd();
   })
   .button((e) => e.label(`Ellipsis - ${LOREM}`))
@@ -48,7 +48,6 @@ export const actions = Actions<Ctx>()
   .hr(1, 0.15)
   .boolean('boolean (disabled)')
   .boolean('is running', (e) => {
-    console.log('boolean is running');
     if (e.change) e.ctx.isRunning = !Boolean(e.ctx.isRunning);
     return Boolean(e.ctx.isRunning);
   })
@@ -56,21 +55,21 @@ export const actions = Actions<Ctx>()
   .hr()
 
   .title('Layouts')
-  .button('single: center', (ctx) => (ctx.layout = 'single'))
-  .button('single: top left', (ctx) => (ctx.layout = 'single:top-left'))
-  .button('single: bottom right', (ctx) => (ctx.layout = 'single:bottom-right'))
-  .button('single: fill', (ctx) => (ctx.layout = 'single:fill'))
-  .button('single: fill (margin)', (ctx) => (ctx.layout = 'single:fill-margin'))
+  .button('single: center', (e) => (e.ctx.layout = 'single'))
+  .button('single: top left', (e) => (e.ctx.layout = 'single:top-left'))
+  .button('single: bottom right', (e) => (e.ctx.layout = 'single:bottom-right'))
+  .button('single: fill', (e) => (e.ctx.layout = 'single:fill'))
+  .button('single: fill (margin)', (e) => (e.ctx.layout = 'single:fill-margin'))
   .hr(1, 0.1)
-  .button('double: center (y)', (ctx) => (ctx.layout = 'double-y'))
-  .button('double: center (x)', (ctx) => (ctx.layout = 'double-x'))
+  .button('double: center (y)', (e) => (e.ctx.layout = 'double-y'))
+  .button('double: center (x)', (e) => (e.ctx.layout = 'double-x'))
 
   .hr()
 
-  .title('Env')
-  .button('bg: dark', (ctx, env) => {
-    console.log('env', toObject(env));
-  })
+  .title('Host')
+  .button('bg: dark (string)', (e) => (e.host.background = COLORS.DARK))
+  .button('bg: light (-0.04)', (e) => (e.host.background = -0.04))
+  .button('bg: white (0)', (e) => (e.host.background = 0))
 
   .hr()
 
@@ -80,8 +79,6 @@ export const actions = Actions<Ctx>()
   .subject((e) => {
     const { ctx } = e;
     const style = css({ padding: 20 });
-
-    console.log('render subject');
 
     // NB: common layout (variations merged in in render arg below)
     e.layout({
