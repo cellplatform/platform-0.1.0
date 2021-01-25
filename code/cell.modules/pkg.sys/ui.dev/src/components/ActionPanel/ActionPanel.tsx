@@ -1,21 +1,23 @@
 import React from 'react';
 
 import { constants, css, defaultValue, t } from '../../common';
+import { useActionPanelController, useRedraw } from '../../hooks/actions';
 import { Item } from './Item';
-import { useActionPanelController } from '../../hooks/actions';
 
 export type ActionPanelProps = t.ActionPanelProps & {
   bus: t.EventBus;
-  model: t.DevActionsModelState<any>;
+  actions: t.DevActions<any>;
 };
 
 export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
-  const { model } = props;
+  const { actions } = props;
   const scrollable = defaultValue(props.scrollable, true);
   const bus = props.bus.type<t.DevEvent>();
-  const ns = model.state.ns;
+  const model = actions.toObject();
+  const ns = model.ns;
 
-  useActionPanelController({ bus, model });
+  useActionPanelController({ bus, actions });
+  useRedraw({ bus, actions });
 
   const styles = {
     base: css({
@@ -24,13 +26,13 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
       userSelect: 'none',
       boxSizing: 'border-box',
       paddingBottom: 50,
+      color: constants.COLORS.DARK,
       fontFamily: constants.FONT.SANS,
       fontSize: 14,
-      color: constants.COLORS.DARK,
     }),
   };
 
-  const elItems = model.state.items.map((item, i) => {
+  const elItems = model.items.map((item, i) => {
     return <Item key={i} ns={ns} model={item} bus={bus} />;
   });
 

@@ -4,7 +4,7 @@ import { t } from './common';
  * Environment parameter.
  */
 export type DevEnv = {
-  ns: string;
+  readonly ns: string;
 
   // host: t.IDevHost;
 
@@ -24,5 +24,8 @@ export type DevActionButtonHandler<C> = (ctx: C, env: DevEnv) => void;
 /**
  * Boolean (switch) handler.
  */
-export type DevActionBooleanHandler<C> = (ctx: C, env: t.DevEnvBoolean) => boolean; // Return the state of the switch.
-export type DevEnvBoolean = t.DevEnv & { change: boolean };
+export type DevActionBooleanHandler<C> = (e: t.DevActionBooleanHandlerArgs<C>) => boolean; // Return the state of the switch.
+export type DevActionBooleanHandlerArgs<C> = {
+  readonly ctx: C;
+  change: boolean; // Flag indicating if the handler is being called because the value needs to change.
+};

@@ -1,39 +1,39 @@
 import { t } from './common';
 
 type O = Record<string, unknown>;
-type B<Ctx extends O> = DevActionsModelBuilder<Ctx>;
 
 /**
  * Model Builder API
  */
-export type DevActionsModelBuilder<Ctx extends O> = t.BuilderChain<DevActionsModelMethods<Ctx>>;
+export type DevActions<Ctx extends O> = t.BuilderChain<DevActionsModelMethods<Ctx>>;
 
 export type DevActionsModelMethods<Ctx extends O> = DevActionsModelInputMethods<Ctx> & {
   toEvents(): t.DevActionsModelState<Ctx>['event'];
-  toModel(): t.DevActionsModel<Ctx>;
+  toObject(): t.DevActionsModel<Ctx>;
+  toModel(): t.DevActionsModelState<Ctx>;
   toContext(): Ctx;
-  clone(ctx?: t.DevActionGetContext<Ctx>): B<Ctx>;
+  clone(ctx?: t.DevActionGetContext<Ctx>): t.DevActions<Ctx>;
 
   renderList(bus: t.EventBus, props?: t.ActionPanelProps): JSX.Element;
   renderSubject(): t.DevActionSubject;
 
-  merge(actions: DevActionsModelBuilder<any>, options?: DevActionAddOptions): B<Ctx>;
-  context(factory: t.DevActionGetContext<Ctx>): B<Ctx>;
-  subject(factory: t.DevActionRenderSubject<Ctx>): B<Ctx>;
-  name(name: string): B<Ctx>;
+  merge(actions: DevActions<any>, options?: DevActionAddOptions): t.DevActions<Ctx>;
+  context(factory: t.DevActionGetContext<Ctx>): t.DevActions<Ctx>;
+  subject(factory: t.DevActionRenderSubject<Ctx>): t.DevActions<Ctx>;
+  name(name: string): t.DevActions<Ctx>;
 };
 
 export type DevActionAddOptions = { insertAt?: 'end' | 'start' };
 
 export type DevActionsModelInputMethods<Ctx extends O> = {
-  button(label: string, handler?: t.DevActionButtonHandler<Ctx>): B<Ctx>;
-  button(config: DevActionButtonConfig<Ctx>): B<Ctx>;
-  boolean(label: string, handler?: t.DevActionBooleanHandler<Ctx>): B<Ctx>;
-  boolean(config: DevActionBooleanConfig<Ctx>): B<Ctx>;
-  hr(height?: number, opacity?: number, margin?: t.DevEdgeSpacing): B<Ctx>;
-  hr(config?: DevActionHrConfig<Ctx>): B<Ctx>;
-  title(text: string, config?: DevActionTitleConfig<Ctx>): B<Ctx>;
-  title(config: DevActionTitleConfig<Ctx>): B<Ctx>;
+  button(label: string, handler?: t.DevActionButtonHandler<Ctx>): t.DevActions<Ctx>;
+  button(config: DevActionButtonConfig<Ctx>): t.DevActions<Ctx>;
+  boolean(label: string, handler?: t.DevActionBooleanHandler<Ctx>): t.DevActions<Ctx>;
+  boolean(config: DevActionBooleanConfig<Ctx>): t.DevActions<Ctx>;
+  hr(height?: number, opacity?: number, margin?: t.DevEdgeSpacing): t.DevActions<Ctx>;
+  hr(config?: DevActionHrConfig<Ctx>): t.DevActions<Ctx>;
+  title(text: string, config?: DevActionTitleConfig<Ctx>): t.DevActions<Ctx>;
+  title(config: DevActionTitleConfig<Ctx>): t.DevActions<Ctx>;
 };
 
 /**

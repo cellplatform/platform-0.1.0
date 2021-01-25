@@ -47,9 +47,9 @@ export const actions = Actions<Ctx>()
   .button((e) => e.description(LOREM))
   .hr(1, 0.15)
   .boolean('boolean (disabled)')
-  .boolean('is running', (ctx, e) => {
-    if (e.change) ctx.isRunning = !Boolean(ctx.isRunning);
-    return Boolean(ctx.isRunning);
+  .boolean('is running', (e) => {
+    if (e.change) e.ctx.isRunning = !Boolean(e.ctx.isRunning);
+    return Boolean(e.ctx.isRunning);
   })
 
   .hr()
@@ -63,6 +63,13 @@ export const actions = Actions<Ctx>()
   .hr(1, 0.1)
   .button('double: center (y)', (ctx) => (ctx.layout = 'double-y'))
   .button('double: center (x)', (ctx) => (ctx.layout = 'double-x'))
+
+  .hr()
+
+  .title('Env')
+  .button('bg: dark', (ctx, env) => {
+    console.log('env', toObject(env));
+  })
 
   .hr()
 

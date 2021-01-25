@@ -1,10 +1,16 @@
-import { t, R } from '../../common';
+import { t, R, slug } from '../../common';
 
 /**
  * A [Horizontal Rule] configurator.
  */
 export function HrConfig(params: any[]) {
-  const item: t.DevActionItemHr = { kind: 'hr', height: 8, opacity: 0.06, margin: [8, 8] };
+  const item: t.DevActionItemHr = {
+    id: slug(),
+    kind: 'hr',
+    height: 8,
+    opacity: 0.06,
+    margin: [8, 8],
+  };
 
   const config: t.DevActionHrConfigArgs<any> = {
     height(value) {

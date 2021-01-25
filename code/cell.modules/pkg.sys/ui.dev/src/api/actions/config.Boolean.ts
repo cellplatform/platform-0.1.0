@@ -1,11 +1,11 @@
-import { format, t } from '../../common';
+import { format, t, slug } from '../../common';
 
 /**
  * A [Boolean] switch configurator.
  */
 export function BooleanConfig(params: any[]) {
   const LABEL = 'Unnamed';
-  const item: t.DevActionItemBoolean = { kind: 'boolean', label: LABEL };
+  const item: t.DevActionItemBoolean = { id: slug(), kind: 'boolean', label: LABEL };
 
   const config: t.DevActionBooleanConfigArgs<any> = {
     label(value) {

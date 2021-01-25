@@ -1,13 +1,12 @@
-import * as React from 'react';
-
-import { DEFAULT, defaultValue, rx, t } from '../../common';
-import { ActionPanel } from '../../components/ActionPanel';
-import { ButtonConfig } from './config.Button';
+import { DEFAULT, defaultValue, t } from '../../common';
 import { BooleanConfig } from './config.Boolean';
+import { ButtonConfig } from './config.Button';
 import { HrConfig } from './config.Hr';
 import { TitleConfig } from './config.Title';
-import { getModelContext } from './context';
-import { renderSubject } from './render';
+import { getContext } from './context';
+import { renderList, renderSubject } from './render';
+
+type O = Record<string, unknown>;
 
 /**
  * Action handlers.
@@ -20,7 +19,12 @@ export const handlers: t.BuilderHandlers<
   /**
    * Convert builder to data model.
    */
-  toModel: (args) => args.model.state,
+  toModel: (args) => args.model,
+
+  /**
+   * Convert builder to data model.
+   */
+  toObject: (args) => args.model.state,
 
   /**
    * Convert builder to event object.
@@ -30,7 +34,7 @@ export const handlers: t.BuilderHandlers<
   /**
    * Derives the current context ("ctx") for the builder.
    */
-  toContext: (args) => getModelContext(args.model),
+  toContext: (args) => getContext(args.model),
 
   /**
    * Create a clone of the builder (optionally changing the context factory.)
@@ -46,19 +50,18 @@ export const handlers: t.BuilderHandlers<
    */
   renderList(args) {
     const bus = args.params[0] as t.EventBus;
-    const props = (args.params[1] || {}) as t.ActionPanelProps;
-    if (!rx.isBus(bus)) throw new Error(`Event bus not provided`);
-    return <ActionPanel {...props} bus={bus} model={args.model} />;
+    const props = args.params[1] as t.ActionPanelProps;
+    const actions = args.builder.self;
+    return renderList({ bus, props, actions });
   },
 
   /**
    * Render the subject(s) under test.
    */
   renderSubject(args) {
-    return renderSubject<any>({
-      ctx: args.builder.self.toContext(),
-      factory: args.model.state.renderSubject,
-    });
+    const ctx = args.builder.self.toContext();
+    const factory = args.model.state.renderSubject;
+    return renderSubject<O>({ ctx, factory });
   },
 
   /**
@@ -67,7 +70,7 @@ export const handlers: t.BuilderHandlers<
   context(args) {
     const fn = args.params[0];
     if (typeof fn !== 'function') throw new Error('Context factory function not provided');
-    args.model.change((draft) => (draft.getContext = fn));
+    args.model.change((draft) => (draft.ctx.get = fn));
   },
 
   /**
@@ -83,12 +86,12 @@ export const handlers: t.BuilderHandlers<
    * Merges in another Action model's items.
    */
   merge(args) {
-    const mergeBuilder = args.params[0] as t.DevActionsModelBuilder<any>;
+    const mergeBuilder = args.params[0] as t.DevActions<any>;
     const options = (args.params[1] || {}) as t.DevActionAddOptions;
     const insertAt = defaultValue(options.insertAt, 'end');
 
     args.model.change((draft) => {
-      const obj = mergeBuilder.toModel();
+      const obj = mergeBuilder.toObject();
       if (insertAt === 'start') {
         draft.items = [...obj.items, ...draft.items];
       }
@@ -96,8 +99,8 @@ export const handlers: t.BuilderHandlers<
         draft.items = [...draft.items, ...obj.items];
       }
 
-      if (!draft.getContext && obj.getContext) {
-        draft.getContext = obj.getContext;
+      if (!draft.ctx.get && obj.ctx.get) {
+        draft.ctx.get = obj.ctx.get;
       }
     });
   },

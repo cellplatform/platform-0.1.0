@@ -2,11 +2,12 @@ import * as React from 'react';
 
 import { expect, DEFAULT, StateObject, t, rx, is } from '../../test';
 import { ActionBuilder } from '.';
+import { ActionPanelProps } from '../../components/ActionPanel';
 
 type Ctx = { count: number };
 type M = t.DevActionsModel<Ctx>;
 type A = t.DevActionsChangeType;
-type B = t.DevActionsModelBuilder<Ctx>;
+type B = t.DevActions<Ctx>;
 
 function create() {
   const model = ActionBuilder.model<Ctx>();
@@ -29,34 +30,42 @@ describe('ActionBuilder', () => {
   describe('ActionBuilder.builder()', () => {
     it('from no params', () => {
       const builder = ActionBuilder.api();
-      const obj = builder.toModel();
+      const obj = builder.toObject();
       expect(obj).to.eql({ ...DEFAULT.ACTIONS, ns: obj.ns });
     });
 
     it('from {model} StateObject', () => {
       const model = StateObject.create<M, A>({ ...DEFAULT.ACTIONS });
       const builder = ActionBuilder.api(model);
-      const obj = builder.toModel();
+      const obj = builder.toObject();
       expect(obj).to.eql({ ...DEFAULT.ACTIONS, ns: obj.ns });
     });
 
     it('from {model} object', () => {
       const model = StateObject.create<M>({ ...DEFAULT.ACTIONS });
       const builder = ActionBuilder.api(model.state);
-      const obj = builder.toModel();
+      const obj = builder.toObject();
       expect(obj).to.eql({ ...DEFAULT.ACTIONS, ns: obj.ns });
+    });
+
+    it('from builder.toObject() - model state', () => {
+      const base = ActionBuilder.api().button('hello');
+      const builder = ActionBuilder.api(base.toObject());
+      const obj = builder.toObject();
+      expect(obj).to.eql(base.toObject());
     });
 
     it('from builder.toModel() - model state', () => {
       const base = ActionBuilder.api().button('hello');
-      const builder = ActionBuilder.api(base.toModel());
-      const obj = builder.toModel();
-      expect(obj).to.eql(base.toModel());
+      const builder = ActionBuilder.api(base.toObject());
+      const model = builder.toModel();
+      expect(model.state).to.eql(base.toObject());
+      expect(model.change).to.be.an.instanceof(Function);
     });
 
     it('from builder.toEvents()', () => {
       const base = ActionBuilder.api().button('hello');
-      const builder = ActionBuilder.api(base.toModel());
+      const builder = ActionBuilder.api(base.toObject());
       const obj = builder.toEvents();
       expect(is.observable(obj.$)).to.eql(true);
       expect(is.observable(obj.changed$)).to.eql(true);
@@ -72,9 +81,11 @@ describe('ActionBuilder', () => {
         .renderList(bus, { scrollable: false });
 
       expect(React.isValidElement(el)).to.eql(true);
-      expect(el.props.model.state.items).to.eql(model.state.items);
-      expect(el.props.scrollable).to.eql(false);
-      expect(el.props.bus).to.equal(bus);
+
+      const props: ActionPanelProps = el.props;
+      expect(props.actions.toObject().items).to.eql(model.state.items);
+      expect(props.scrollable).to.eql(false);
+      expect(props.bus).to.equal(bus);
     });
 
     it('throw: bus not provided', () => {
@@ -195,17 +206,17 @@ describe('ActionBuilder', () => {
   describe('builder.context()', () => {
     it('assign: .context(...)', () => {
       const { model, builder } = create();
-      expect(model.state.getContext).to.eql(undefined);
+      expect(model.state.ctx.get).to.eql(undefined);
 
       const fn1: t.DevActionGetContext<Ctx> = () => ({ count: 123 });
       const fn2: t.DevActionGetContext<Ctx> = () => ({ count: 456 });
 
       builder.context(fn1);
-      expect(model.state.getContext).to.eql(fn1);
+      expect(model.state.ctx.get).to.eql(fn1);
 
       // Replace with another context function.
       builder.context(fn2);
-      expect(model.state.getContext).to.eql(fn2);
+      expect(model.state.ctx.get).to.eql(fn2);
     });
 
     it('throw if factory function not provided', () => {
@@ -254,12 +265,12 @@ describe('ActionBuilder', () => {
       });
 
       expect(builder.toContext()).to.eql({ count: 0 });
-      expect(model.state.ctx).to.eql({ count: 0 });
+      expect(model.state.ctx.current).to.eql({ count: 0 });
       expect(prev).to.eql(null);
 
       count = 123;
       expect(builder.toContext()).to.eql({ count: 123 });
-      expect(model.state.ctx).to.eql({ count: 123 });
+      expect(model.state.ctx.current).to.eql({ count: 123 });
       expect(prev).to.eql({ count: 0 });
     });
   });
@@ -270,7 +281,7 @@ describe('ActionBuilder', () => {
       const fn: t.DevActionGetContext<Ctx> = () => ({ count: 123 });
       const clone = builder.context(fn).clone();
       expect(clone).to.not.equal(builder); // NB: Different instance.
-      expect(clone.toModel().getContext).to.eql(fn);
+      expect(clone.toObject().ctx.get).to.eql(fn);
     });
 
     it('different context', () => {
@@ -279,13 +290,13 @@ describe('ActionBuilder', () => {
       const fn2: t.DevActionGetContext<Ctx> = () => ({ count: 456 });
       const clone = builder.context(fn1).clone(fn2);
       expect(clone).to.not.equal(builder); // NB: Different instance.
-      expect(clone.toModel().getContext).to.eql(fn2);
+      expect(clone.toObject().ctx.get).to.eql(fn2);
     });
   });
 
   describe('builder.merge()', () => {
     type Button = t.DevActionItemButton;
-    const labels = (builder: B) => builder.toModel().items.map((btn) => (btn as Button).label);
+    const labels = (builder: B) => builder.toObject().items.map((btn) => (btn as Button).label);
 
     const one = create();
     const two = create();
@@ -318,7 +329,7 @@ describe('ActionBuilder', () => {
       builder2.context(fn);
 
       builder1.merge(builder2);
-      expect(builder1.toModel().getContext).to.eql(fn);
+      expect(builder1.toObject().ctx.get).to.eql(fn);
     });
 
     it('does not overwrite existing context factory', () => {
@@ -331,7 +342,7 @@ describe('ActionBuilder', () => {
       builder2.context(fn2);
 
       builder1.merge(builder2);
-      expect(builder1.toModel().getContext).to.eql(fn1);
+      expect(builder1.toObject().ctx.get).to.eql(fn1);
     });
   });
 

@@ -1,2 +1,2 @@
 export { ActionBuilder } from './ActionBuilder';
-export { withinContext } from './context';
+export { withinContext, getContext } from './context';

@@ -13,7 +13,7 @@ export const Dev: React.FC = () => {
       Absolute: 0,
       Flex: 'horizontal-stretch-stretch',
     }),
-    left: css({
+    main: css({
       position: 'relative',
       flex: 1,
     }),
@@ -30,11 +30,7 @@ export const Dev: React.FC = () => {
       boxSizing: 'border-box',
     }),
     select: {
-      outer: css({
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-        Absolute: [null, null, 20, 20],
-        width: 200,
-      }),
+      outer: css({ Absolute: [null, null, 20, 20], width: 200 }),
     },
   };
 
@@ -58,7 +54,7 @@ export const Dev: React.FC = () => {
   return (
     <React.StrictMode>
       <div {...styles.base}>
-        <div {...styles.left}>
+        <div {...styles.main}>
           <ActionsHost bus={bus} actions={actions} style={styles.host} background={-0.04} />
           {elSelect}
         </div>

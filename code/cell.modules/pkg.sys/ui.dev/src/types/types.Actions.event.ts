@@ -8,7 +8,10 @@ export type DevActionsChangeType = 'Dev/Action/ctx';
 /**
  * Events
  */
-export type DevActionEvent = IDevActionButtonEvent | IDevActionBooleanEvent;
+export type DevActionEvent =
+  | IDevActionButtonEvent
+  | IDevActionBooleanEvent
+  | IDevActionItemChangedEvent;
 
 /**
  * Fires for the simple Button action.
@@ -33,5 +36,17 @@ export type IDevActionBoolean = {
   ns: string;
   model: t.DevActionItemBoolean;
   change: boolean;
-  current(value: boolean): void;
+};
+
+/**
+ * Fires when a single action Item model changes.
+ */
+export type IDevActionItemChangedEvent = {
+  type: 'Dev/Action/item:changed';
+  payload: IDevActionItemChanged;
+};
+export type IDevActionItemChanged = {
+  ns: string;
+  index: number;
+  model: t.DevActionItem;
 };

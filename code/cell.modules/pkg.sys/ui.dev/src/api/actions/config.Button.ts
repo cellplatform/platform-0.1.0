@@ -1,11 +1,11 @@
-import { format, t } from '../../common';
+import { format, t, slug } from '../../common';
 
 /**
  * A [Button] configurator.
  */
 export function ButtonConfig(params: any[]) {
   const LABEL = 'Unnamed';
-  const item: t.DevActionItemButton = { kind: 'button', label: LABEL };
+  const item: t.DevActionItemButton = { id: slug(), kind: 'button', label: LABEL };
 
   const config: t.DevActionButtonConfigArgs<any> = {
     label(value) {

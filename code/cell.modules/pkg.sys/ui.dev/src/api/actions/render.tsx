@@ -1,4 +1,7 @@
-import { t } from '../../common';
+import React from 'react';
+
+import { t, rx } from '../../common';
+import { ActionPanel } from '../../components/ActionPanel';
 
 /**
  * Render the subject(s) under test.
@@ -9,9 +12,8 @@ export function renderSubject<Ctx>(args: { ctx: Ctx; factory?: t.DevActionRender
   const res: R = { items: [], layout: {}, orientation: 'y', spacing: 60 };
 
   if (!ctx) {
-    throw new Error(
-      `Cannot [renderSubject] - the Actions context has not been set. Make sure you've called [actions.context(...)]`,
-    );
+    const err = `Cannot [renderSubject] - the Actions [context] has not been set. Make sure you've called [actions.context(...)]`;
+    throw new Error(err);
   }
 
   if (factory) {
@@ -36,4 +38,17 @@ export function renderSubject<Ctx>(args: { ctx: Ctx; factory?: t.DevActionRender
   }
 
   return res;
+}
+
+/**
+ * Renders the <ActionPanel> list component.
+ */
+export function renderList(args: {
+  bus: t.EventBus;
+  props?: t.ActionPanelProps;
+  actions: t.DevActions<any>;
+}) {
+  const { bus, actions, props = {} } = args;
+  if (!rx.isBus(bus)) throw new Error(`Event bus not provided`);
+  return <ActionPanel {...props} bus={bus} actions={actions} />;
 }
