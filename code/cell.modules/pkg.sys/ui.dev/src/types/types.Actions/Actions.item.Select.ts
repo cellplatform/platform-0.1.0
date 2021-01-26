@@ -1,7 +1,7 @@
 import { t } from '../common';
 
 /**
- * INPUT: A button with a toggle switch (boolean)
+ * INPUT: A button with a toggle switch (boolean).
  */
 export type DevActionSelect = t.DevActionSelectProps & {
   id: string;
@@ -10,6 +10,9 @@ export type DevActionSelect = t.DevActionSelectProps & {
   handler?: t.DevActionSelectHandler<any>;
 };
 
+/**
+ * Editable properties of a [Select] input.
+ */
 export type DevActionSelectProps = {
   label: string;
   description?: string;
