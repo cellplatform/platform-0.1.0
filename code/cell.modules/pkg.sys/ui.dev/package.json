@@ -17,7 +17,8 @@
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@"
+    "serve": "cell.compiler serve $@",
+    "public": "sh ./sh/ngrok.sh"
   },
   "dependencies": {
     "@platform/cell.module": "^0.0.85",

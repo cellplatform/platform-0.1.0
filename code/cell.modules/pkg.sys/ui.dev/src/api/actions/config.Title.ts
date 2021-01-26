@@ -4,7 +4,7 @@ import { format, t, DEFAULT, slug } from '../../common';
  * A [Title] configurator.
  */
 export function TitleConfig(params: any[]) {
-  const item: t.DevActionItemTitle = { id: slug(), kind: 'title', text: DEFAULT.UNTITLED };
+  const item: t.DevActionTitle = { id: slug(), kind: 'title', text: DEFAULT.UNTITLED };
 
   const config: t.DevActionTitleConfigArgs<any> = {
     text(value) {

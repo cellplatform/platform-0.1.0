@@ -32,7 +32,7 @@ export const Subject: React.FC<SubjectProps> = (props) => {
   return (
     <>
       <SubjectCropmarks {...props} />
-      <Labels label={layout.label} />
+      <Labels label={layout.label} color={layout.labelColor} />
       <div {...styles.children}>{props.children}</div>
     </>
   );

@@ -5,22 +5,25 @@ import { useItemMonitor } from '../../hooks/actions';
 import { Switch } from '../Primitives';
 import { ButtonView } from './Item.ButtonView';
 
-export type BooleanItemProps = {
+export type ItemBooleanProps = {
   ns: string;
   bus: t.DevEventBus;
-  model: t.DevActionItemBoolean;
+  model: t.DevActionBoolean;
   style?: CssValue;
 };
 
-export const BooleanItem: React.FC<BooleanItemProps> = (props) => {
-  const { bus, style, ns } = props;
+export const ItemBoolean: React.FC<ItemBooleanProps> = (props) => {
+  const { bus, ns } = props;
   const model = useItemMonitor({ bus, model: props.model });
   const { label, description } = model;
   const isActive = Boolean(model.handler);
   const value = Boolean(model.current);
 
   const fire = (change: boolean) => {
-    bus.fire({ type: 'dev:action/boolean', payload: { ns, model, change } });
+    bus.fire({
+      type: 'dev:action/Boolean',
+      payload: { ns, model, change },
+    });
   };
 
   const elSwitch = <Switch value={value} isEnabled={isActive} height={18} />;
@@ -31,7 +34,7 @@ export const BooleanItem: React.FC<BooleanItemProps> = (props) => {
       description={description}
       isActive={isActive}
       right={elSwitch}
-      style={style}
+      style={props.style}
       onClick={() => fire(true)}
     />
   );

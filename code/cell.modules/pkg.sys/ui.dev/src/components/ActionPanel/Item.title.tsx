@@ -1,14 +1,14 @@
 import React from 'react';
 import { css, CssValue, t, color, COLORS } from '../../common';
 
-export type TitleItemProps = {
+export type ItemTitleProps = {
   ns: string;
   bus: t.DevEventBus;
-  model: t.DevActionItemTitle;
+  model: t.DevActionTitle;
   style?: CssValue;
 };
 
-export const TitleItem: React.FC<TitleItemProps> = (props) => {
+export const ItemTitle: React.FC<ItemTitleProps> = (props) => {
   const { model } = props;
 
   const styles = {

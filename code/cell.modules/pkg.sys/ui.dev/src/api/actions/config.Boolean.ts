@@ -5,7 +5,7 @@ import { format, t, slug } from '../../common';
  */
 export function BooleanConfig(params: any[]) {
   const LABEL = 'Unnamed';
-  const item: t.DevActionItemBoolean = { id: slug(), kind: 'boolean', label: LABEL };
+  const item: t.DevActionBoolean = { id: slug(), kind: 'boolean', label: LABEL };
 
   const config: t.DevActionBooleanConfigArgs<any> = {
     label(value) {
@@ -16,7 +16,7 @@ export function BooleanConfig(params: any[]) {
       item.description = format.string(value, { trim: true });
       return config;
     },
-    onChange(handler) {
+    handler(handler) {
       item.handler = handler;
       return config;
     },
@@ -25,7 +25,7 @@ export function BooleanConfig(params: any[]) {
   if (typeof params[0] === 'function') {
     params[0](config);
   } else {
-    config.label(params[0]).onChange(params[1]);
+    config.label(params[0]).handler(params[1]);
   }
 
   return { item, config };

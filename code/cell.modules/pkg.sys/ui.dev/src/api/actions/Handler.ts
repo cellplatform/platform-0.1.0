@@ -13,6 +13,10 @@ export const Handler = {
     return { ctx, env, host, layout };
   },
 
+  /**
+   * Prepares a [settings()] function that is passed to handlers for
+   * modifying the environment state in standard ways.
+   */
   settings<T>(args: { env: t.DevActionsModelEnv; payload: T }) {
     const { env } = args;
     const fn: t.DevActionHandlerSettings<T> = (settings) => {

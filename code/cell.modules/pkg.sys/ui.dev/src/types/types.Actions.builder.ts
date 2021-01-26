@@ -30,6 +30,8 @@ export type DevActionsModelInputMethods<Ctx extends O> = {
   button(config: DevActionButtonConfig<Ctx>): t.DevActions<Ctx>;
   boolean(label: string, handler?: t.DevActionBooleanHandler<Ctx>): t.DevActions<Ctx>;
   boolean(config: DevActionBooleanConfig<Ctx>): t.DevActions<Ctx>;
+  select(label: string, handler?: t.DevActionSelectHandler<Ctx>): t.DevActions<Ctx>;
+  select(config: DevActionSelectConfig<Ctx>): t.DevActions<Ctx>;
   hr(height?: number, opacity?: number, margin?: t.DevEdgeSpacing): t.DevActions<Ctx>;
   hr(config?: DevActionHrConfig<Ctx>): t.DevActions<Ctx>;
   title(text: string, config?: DevActionTitleConfig<Ctx>): t.DevActions<Ctx>;
@@ -43,7 +45,7 @@ export type DevActionButtonConfig<Ctx extends O> = (args: DevActionButtonConfigA
 export type DevActionButtonConfigArgs<Ctx extends O> = {
   label(value: string): DevActionButtonConfigArgs<Ctx>;
   description(value: string): DevActionButtonConfigArgs<Ctx>;
-  onClick(handler: t.DevActionButtonHandler<Ctx>): DevActionButtonConfigArgs<Ctx>;
+  handler(handler: t.DevActionButtonHandler<Ctx>): DevActionButtonConfigArgs<Ctx>;
 };
 
 /**
@@ -53,7 +55,17 @@ export type DevActionBooleanConfig<Ctx extends O> = (args: DevActionBooleanConfi
 export type DevActionBooleanConfigArgs<Ctx extends O> = {
   label(value: string): DevActionBooleanConfigArgs<Ctx>;
   description(value: string): DevActionBooleanConfigArgs<Ctx>;
-  onChange(handler: t.DevActionBooleanHandler<Ctx>): DevActionBooleanConfigArgs<Ctx>;
+  handler(handler: t.DevActionBooleanHandler<Ctx>): DevActionBooleanConfigArgs<Ctx>;
+};
+
+/**
+ * Boolean (Switch)
+ */
+export type DevActionSelectConfig<Ctx extends O> = (args: DevActionSelectConfigArgs<Ctx>) => void;
+export type DevActionSelectConfigArgs<Ctx extends O> = {
+  label(value: string): DevActionSelectConfigArgs<Ctx>;
+  description(value: string): DevActionSelectConfigArgs<Ctx>;
+  handler(handler: t.DevActionSelectHandler<Ctx>): DevActionSelectConfigArgs<Ctx>;
 };
 
 /**

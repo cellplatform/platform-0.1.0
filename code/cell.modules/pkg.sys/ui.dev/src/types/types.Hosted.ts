@@ -14,6 +14,7 @@ export type IDevHostedLayout = {
   border?: boolean | number | string;
   cropmarks?: boolean | number;
   label?: ReactNode | Partial<IDevHostedLabel>;
+  labelColor?: string | number;
   position?: StringOrNumber | [StringOrNumber, StringOrNumber] | t.IDevAbsolutePosition;
 };
 

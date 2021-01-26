@@ -5,8 +5,8 @@ const KEYS: (keyof t.IDevHostedLabel)[] = ['topLeft', 'topRight', 'bottomLeft', 
 
 export type ILabelsProps = {
   label?: t.IDevHostedLayout['label'];
+  color?: t.IDevHostedLayout['labelColor'];
   fontSize?: number;
-  color?: string | number;
 };
 
 export const Labels: React.FC<ILabelsProps> = (props: ILabelsProps = {}) => {

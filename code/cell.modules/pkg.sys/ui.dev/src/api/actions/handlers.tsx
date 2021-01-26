@@ -1,5 +1,6 @@
 import { DEFAULT, defaultValue, t } from '../../common';
 import { BooleanConfig } from './config.Boolean';
+import { SelectConfig } from './config.Select';
 import { ButtonConfig } from './config.Button';
 import { HrConfig } from './config.Hr';
 import { TitleConfig } from './config.Title';
@@ -124,6 +125,14 @@ export const handlers: t.BuilderHandlers<
    */
   boolean(args) {
     const { item } = BooleanConfig(args.params);
+    args.model.change((draft) => draft.items.push(item));
+  },
+
+  /**
+   * Boolean (Switch).
+   */
+  select(args) {
+    const { item } = SelectConfig(args.params);
     args.model.change((draft) => draft.items.push(item));
   },
 

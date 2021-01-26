@@ -4,7 +4,7 @@ import { t, R, slug } from '../../common';
  * A [Horizontal Rule] configurator.
  */
 export function HrConfig(params: any[]) {
-  const item: t.DevActionItemHr = {
+  const item: t.DevActionHr = {
     id: slug(),
     kind: 'hr',
     height: 8,

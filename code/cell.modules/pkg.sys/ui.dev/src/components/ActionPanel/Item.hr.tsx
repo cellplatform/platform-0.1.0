@@ -1,14 +1,14 @@
 import React from 'react';
 import { css, CssValue, t, color, Format } from '../../common';
 
-export type HrItemProps = {
+export type ItemHrProps = {
   ns: string;
   bus: t.DevEventBus;
-  model: t.DevActionItemHr;
+  model: t.DevActionHr;
   style?: CssValue;
 };
 
-export const HrItem: React.FC<HrItemProps> = (props) => {
+export const ItemHr: React.FC<ItemHrProps> = (props) => {
   const { model } = props;
   const margin = Format.toEdges(model.margin);
 

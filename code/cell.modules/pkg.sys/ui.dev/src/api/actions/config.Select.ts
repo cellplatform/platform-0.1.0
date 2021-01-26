@@ -1,13 +1,13 @@
 import { format, t, slug } from '../../common';
 
 /**
- * A [Button] configurator.
+ * A [Select] dropdown configurator.
  */
-export function ButtonConfig(params: any[]) {
+export function SelectConfig(params: any[]) {
   const LABEL = 'Unnamed';
-  const item: t.DevActionButton = { id: slug(), kind: 'button', label: LABEL };
+  const item: t.DevActionSelect = { id: slug(), kind: 'select', label: LABEL, items: [] };
 
-  const config: t.DevActionButtonConfigArgs<any> = {
+  const config: t.DevActionSelectConfigArgs<any> = {
     label(value) {
       item.label = format.string(value, { trim: true }) || LABEL;
       return config;

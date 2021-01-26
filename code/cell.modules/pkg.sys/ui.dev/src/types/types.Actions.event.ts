@@ -3,50 +3,49 @@ import { t } from './common';
 /**
  * State change actions.
  */
-export type DevActionsChangeType = 'via:button' | 'via:boolean';
+export type DevActionsChangeType = 'via:button' | 'via:boolean' | 'via:select';
 
 /**
  * Events
  */
 export type DevActionEvent =
+  | IDevActionItemChangedEvent
   | IDevActionButtonEvent
   | IDevActionBooleanEvent
-  | IDevActionItemChangedEvent;
+  | IDevActionSelectEvent;
+
+/**
+ * Fires when a single action Item model's state changes.
+ */
+export type IDevActionItemChangedEvent = {
+  type: 'dev:action/item:changed';
+  payload: IDevActionItemChangedPayload;
+};
+export type IDevActionItemChangedPayload = { ns: string; index: number; model: t.DevActionItem };
 
 /**
  * Fires for the simple Button action.
  */
 export type IDevActionButtonEvent = {
-  type: 'dev:action/button';
-  payload: IDevActionButton;
+  type: 'dev:action/Button';
+  payload: IDevActionButtonPayload;
 };
-export type IDevActionButton = {
-  ns: string;
-  model: t.DevActionItemButton;
-};
+export type IDevActionButtonPayload = { ns: string; model: t.DevActionButton };
 
 /**
  * Fires for the Boolean (switch) action.
  */
 export type IDevActionBooleanEvent = {
-  type: 'dev:action/boolean';
-  payload: IDevActionBoolean;
+  type: 'dev:action/Boolean';
+  payload: IDevActionBooleanPayload;
 };
-export type IDevActionBoolean = {
-  ns: string;
-  model: t.DevActionItemBoolean;
-  change: boolean;
-};
+export type IDevActionBooleanPayload = { ns: string; model: t.DevActionBoolean; change: boolean };
 
 /**
- * Fires when a single action Item model changes.
+ * Fires for the Select (dropdown) action.
  */
-export type IDevActionItemChangedEvent = {
-  type: 'dev:action/item:changed';
-  payload: IDevActionItemChanged;
+export type IDevActionSelectEvent = {
+  type: 'dev:action/Select';
+  payload: IDevActionSelectPayload;
 };
-export type IDevActionItemChanged = {
-  ns: string;
-  index: number;
-  model: t.DevActionItem;
-};
+export type IDevActionSelectPayload = { ns: string; model: t.DevActionSelect; change: boolean };

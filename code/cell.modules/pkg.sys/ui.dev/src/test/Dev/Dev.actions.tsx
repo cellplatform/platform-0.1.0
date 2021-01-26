@@ -15,7 +15,7 @@ type SampleLayout =
 type Ctx = {
   count: number;
   text: string;
-  layout: SampleLayout;
+  myLayout: SampleLayout;
   isRunning?: boolean;
 };
 
@@ -27,18 +27,21 @@ const LOREM =
  */
 export const actions = Actions<Ctx>()
   .name('ui.dev')
-  .context((prev) => prev || { layout: 'single', count: 0, text: LOREM, isRunning: true })
+  .context((prev) => prev || { myLayout: 'single', count: 0, text: LOREM, isRunning: true })
 
   .button('change text', (e) => {
     e.ctx.count++;
     e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
+  })
+  .button('change label', (e) => {
+    console.log('e', e);
   })
 
   .hr()
 
   .title('Buttons')
   .button((config) => config.label('hello'))
-  .hr(1, 0.14, [5, 0])
+  .hr(1, 0.15, [5, 0])
   .button('console.log', (e) => {
     console.group('🌳 button click');
     console.log('e.ctx', toObject(e.ctx));
@@ -54,22 +57,41 @@ export const actions = Actions<Ctx>()
     return Boolean(e.ctx.isRunning);
   })
 
+  .hr(1, 0.15)
+
+  .select((config) => {
+    config
+      .label('select')
+      .description('My set of dropdown options')
+      .handler((e) => {
+        console.log('e', toObject(e));
+      });
+  })
+
   .hr()
 
   .title('Layouts')
-  .button('single: center', (e) => (e.ctx.layout = 'single'))
-  .button('single: top left', (e) => (e.ctx.layout = 'single:top-left'))
-  .button('single: bottom right', (e) => (e.ctx.layout = 'single:bottom-right'))
-  .button('single: fill', (e) => (e.ctx.layout = 'single:fill'))
-  .button('single: fill (margin)', (e) => (e.ctx.layout = 'single:fill-margin'))
+  .button('single: center', (e) => (e.ctx.myLayout = 'single'))
+  .button('single: top left', (e) => (e.ctx.myLayout = 'single:top-left'))
+  .button('single: bottom right', (e) => (e.ctx.myLayout = 'single:bottom-right'))
+  .button('single: fill', (e) => (e.ctx.myLayout = 'single:fill'))
+  .button('single: fill (margin)', (e) => (e.ctx.myLayout = 'single:fill-margin'))
   .hr(1, 0.1)
-  .button('double: center (y)', (e) => (e.ctx.layout = 'double-y'))
-  .button('double: center (x)', (e) => (e.ctx.layout = 'double-x'))
+  .button('double: center (y)', (e) => (e.ctx.myLayout = 'double-y'))
+  .button('double: center (x)', (e) => (e.ctx.myLayout = 'double-x'))
 
   .hr()
 
   .title('Host')
-  .button('bg: dark (string)', (e) => (e.host.background = COLORS.DARK))
+  .button('bg: dark (string)', (e) => {
+    e.settings({
+      host: { background: COLORS.DARK },
+      layout: {
+        cropmarks: 0.4,
+        labelColor: 0.4,
+      },
+    });
+  })
   .button('bg: light (-0.04)', (e) => (e.host.background = -0.04))
   .button('bg: white (0)', (e) => (e.host.background = 0))
   .button('settings (null)', (e) => e.settings({ host: null }))
@@ -77,7 +99,7 @@ export const actions = Actions<Ctx>()
 
   .hr()
 
-  .title('Layout')
+  .title('Layout (Item)')
   .button('background: 1', (e) => (e.layout.background = 1))
   .button('background: -0.3', (e) => (e.layout.background = -0.3))
   .button('cropmarks: 0.7', (e) => (e.layout.cropmarks = 0.7))
@@ -85,6 +107,10 @@ export const actions = Actions<Ctx>()
   .button('settings: {...}', (e) => e.settings({ layout: { background: -0.1, cropmarks: -0.6 } }))
 
   .hr()
+
+  .select('select (bottom)', (e) => {
+    // e.settings({ host: { background: -0.8 } });
+  })
 
   /**
    * Subject component renderer.
@@ -122,19 +148,19 @@ export const actions = Actions<Ctx>()
       </div>
     );
 
-    if (ctx.layout === 'single:top-left') {
+    if (ctx.myLayout === 'single:top-left') {
       return e.render(el, { position: { top: 50, left: 50 } });
     }
 
-    if (ctx.layout === 'single:bottom-right') {
+    if (ctx.myLayout === 'single:bottom-right') {
       return e.render(el, { position: { bottom: 50, right: 50 } });
     }
 
-    if (ctx.layout === 'single:fill') {
+    if (ctx.myLayout === 'single:fill') {
       return e.render(el, { position: 0, cropmarks: false, border: 0 });
     }
 
-    if (ctx.layout === 'single:fill-margin') {
+    if (ctx.myLayout === 'single:fill-margin') {
       return e.render(el, { position: 80 });
     }
 
@@ -142,14 +168,14 @@ export const actions = Actions<Ctx>()
      * TODO 🐷
      */
 
-    if (ctx.layout === 'double-x') {
+    if (ctx.myLayout === 'double-x') {
       return e
         .settings({ host: { orientation: 'x' } })
         .render(el, { label: 'one', width: 200 })
         .render(el, { label: 'two', width: 300 });
     }
 
-    if (ctx.layout === 'double-y') {
+    if (ctx.myLayout === 'double-y') {
       return e
         .settings({ host: { orientation: 'y' } })
         .render(el, { label: { topLeft: 'one' } })

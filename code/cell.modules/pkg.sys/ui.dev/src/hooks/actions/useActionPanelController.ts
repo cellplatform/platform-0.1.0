@@ -22,8 +22,12 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
       filter((e) => e.payload.ns === ns),
     );
 
+    /**
+     * Helpers that operate on the model within the context of this closure.
+     */
     const Model = {
       change(action: t.DevActionsChangeType, fn: (draft: t.DevActionsModel<any>) => void) {
+        getAndStoreContext(model, { throw: true }); // NB: This will also assign the [ctx.current] value.
         return model.change(fn, { action });
       },
       payload<T extends t.DevActionItemInput>(itemId: string, draft: t.DevActionsModel<any>) {
@@ -66,16 +70,14 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
     /**
      * Button
      */
-    rx.payload<t.IDevActionButtonEvent>($, 'dev:action/button')
+    rx.payload<t.IDevActionButtonEvent>($, 'dev:action/Button')
       .pipe()
       .subscribe((e) => {
         const { id, handler } = e.model;
         if (handler) {
-          type T = t.DevActionItemButton;
+          type T = t.DevActionButton;
           type P = t.DevActionButtonHandlerArgs<any>;
           type S = t.DevActionHandlerSettings<P>;
-
-          getAndStoreContext(model, { throw: true }); // NB: This will also assign the [ctx.current] value.
 
           Model.change('via:button', (draft) => {
             const { ctx, item, host, layout, env } = Model.payload<T>(id, draft);
@@ -91,16 +93,14 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
     /**
      * Boolean (Switch)
      */
-    rx.payload<t.IDevActionBooleanEvent>($, 'dev:action/boolean')
+    rx.payload<t.IDevActionBooleanEvent>($, 'dev:action/Boolean')
       .pipe()
       .subscribe((e) => {
         const { id, handler } = e.model;
         if (handler) {
-          type T = t.DevActionItemBoolean;
+          type T = t.DevActionBoolean;
           type P = t.DevActionBooleanHandlerArgs<any>;
           type S = t.DevActionHandlerSettings<P>;
-
-          getAndStoreContext(model, { throw: true }); // NB: This will also assign the [ctx.current] value.
 
           Model.change('via:boolean', (draft) => {
             const { ctx, item, host, layout, env } = Model.payload<T>(id, draft);
@@ -114,11 +114,46 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
       });
 
     /**
+     * Select (dropdown)
+     */
+    rx.payload<t.IDevActionSelectEvent>($, 'dev:action/Select')
+      .pipe()
+      .subscribe((e) => {
+        const { id, handler } = e.model;
+        if (handler) {
+          type T = t.DevActionSelect;
+          type P = t.DevActionSelectHandlerArgs<any>;
+          type S = t.DevActionHandlerSettings<P>;
+
+          // console.log('id', id, handler);
+
+          Model.change('via:select', (draft) => {
+            const { ctx, item, host, layout, env } = Model.payload<T>(id, draft);
+            if (ctx && item) {
+              const settings: S = (args) => Handler.settings({ env, payload })(args);
+              const payload: P = { ctx, change: e.change, host, layout, settings };
+              // item.current = handler(payload);
+
+              const r = handler(payload);
+
+              console.log('-------------------------------------------');
+              // console.log('r', r);
+            }
+          });
+        }
+      });
+
+    /**
+     * INITIALIZE
      * Setup the initial model state by running each value producing handler.
      */
     model.state.items.forEach((model) => {
       if (model.kind === 'boolean' && model.handler) {
-        bus.fire({ type: 'dev:action/boolean', payload: { ns, model, change: false } });
+        bus.fire({ type: 'dev:action/Boolean', payload: { ns, model, change: false } });
+      }
+
+      if (model.kind === 'select' && model.handler) {
+        bus.fire({ type: 'dev:action/Select', payload: { ns, model, change: false } });
       }
     });
 

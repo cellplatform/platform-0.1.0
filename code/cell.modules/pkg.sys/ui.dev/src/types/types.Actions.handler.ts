@@ -10,6 +10,15 @@ import { t } from './common';
 export type DevActionGetContext<T> = (prev: T | null) => T;
 
 /**
+ * Render "subject" (component under test)
+ */
+export type DevActionHandlerSubject<C> = (args: t.DevActionHandlerSubjectArgs<C>) => void;
+export type DevActionHandlerSubjectArgs<C> = t.DevActionHandlerArgs<C> & {
+  readonly settings: t.DevActionHandlerSettings<DevActionHandlerSubjectArgs<C>>;
+  render(el: JSX.Element, layout?: t.IDevHostedLayout): DevActionHandlerSubjectArgs<C>;
+};
+
+/**
  * Common values passed to all handlers.
  */
 export type DevActionHandlerArgs<C> = {
@@ -45,10 +54,10 @@ export type DevActionBooleanHandlerArgs<C> = t.DevActionHandlerArgs<C> & {
 };
 
 /**
- * Render "subject" (component under test)
+ * Select (dropdown) handler.
  */
-export type DevActionHandlerSubject<C> = (args: t.DevActionHandlerSubjectArgs<C>) => void;
-export type DevActionHandlerSubjectArgs<C> = t.DevActionHandlerArgs<C> & {
-  readonly settings: t.DevActionHandlerSettings<DevActionHandlerSubjectArgs<C>>;
-  render(el: JSX.Element, layout?: t.IDevHostedLayout): DevActionHandlerSubjectArgs<C>;
+export type DevActionSelectHandler<C> = (e: t.DevActionSelectHandlerArgs<C>) => void; // TODO 🐷
+export type DevActionSelectHandlerArgs<C> = t.DevActionHandlerArgs<C> & {
+  readonly settings: t.DevActionHandlerSettings<DevActionSelectHandlerArgs<C>>;
+  readonly change: boolean; // Flag indicating if the handler is being called because the value needs to change.
 };
