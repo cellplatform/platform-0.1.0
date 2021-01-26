@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { getAndStoreContext, Handler } from '../../api/actions';
+import { getAndStoreContext, Handler } from '../../api/Actions';
 import { toObject, rx, t } from '../../common';
 
 type O = Record<string, unknown>;
