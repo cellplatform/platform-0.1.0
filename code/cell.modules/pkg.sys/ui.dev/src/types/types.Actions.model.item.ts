@@ -3,46 +3,49 @@ import { t } from './common';
 /**
  * Item types.
  */
-export type DevActionItem = DevActionItemInput | DevActionItemLayout;
-export type DevActionItemLayout = DevActionItemHr | DevActionItemTitle;
+export type DevActionItem = DevActionItemInput | DevActionItemContent;
+export type DevActionItemContent = DevActionItemHr | DevActionItemTitle;
 export type DevActionItemInput = DevActionItemButton | DevActionItemBoolean;
 
 /**
- * Simple clickable action.
+ * INPUT: Simple clickable action.
  */
 export type DevActionItemButton = {
-  kind: 'button';
   id: string;
+  kind: 'button';
   label: string;
   description?: string;
   handler?: t.DevActionButtonHandler<any>;
 };
 
+/**
+ * INPUT: A button with a toggle switch (boolean)
+ */
 export type DevActionItemBoolean = {
-  kind: 'boolean';
   id: string;
+  kind: 'boolean';
   label: string;
   description?: string;
+  current?: boolean; // Latest value produced by the handler.
   handler?: t.DevActionBooleanHandler<any>;
-  current?: boolean;
 };
 
 /**
- * Horizontal rule (divider).
+ * CONTENT: Horizontal rule (divider).
  */
 export type DevActionItemHr = {
-  kind: 'hr';
   id: string;
+  kind: 'hr';
   height: number;
   opacity: number;
   margin: t.DevEdgeSpacing;
 };
 
 /**
- * Title text.
+ * CONTENT: Title text.
  */
 export type DevActionItemTitle = {
-  kind: 'title';
   id: string;
+  kind: 'title';
   text: string;
 };

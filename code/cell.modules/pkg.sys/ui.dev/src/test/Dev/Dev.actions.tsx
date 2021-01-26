@@ -72,19 +72,17 @@ export const actions = Actions<Ctx>()
   .button('bg: dark (string)', (e) => (e.host.background = COLORS.DARK))
   .button('bg: light (-0.04)', (e) => (e.host.background = -0.04))
   .button('bg: white (0)', (e) => (e.host.background = 0))
+  .button('settings (null)', (e) => e.settings({ host: null }))
+  .button('settings: {...}', (e) => e.settings({ host: { background: -0.8 } }))
 
   .hr()
 
   .title('Layout')
-  .button('layout.background: 1', (e) => (e.layout.background = 1))
-  .button('layout.background: -0.3', (e) => {
-    console.log('BUTTON');
-    e.layout.background = -0.3;
-  })
-  .button('layout.cropmarks: 0.7', (e) => {
-    console.log('BUTTON');
-    e.layout.cropmarks = 0.7;
-  })
+  .button('background: 1', (e) => (e.layout.background = 1))
+  .button('background: -0.3', (e) => (e.layout.background = -0.3))
+  .button('cropmarks: 0.7', (e) => (e.layout.cropmarks = 0.7))
+  .button('settings (null)', (e) => e.settings({ layout: null }))
+  .button('settings: {...}', (e) => e.settings({ layout: { background: -0.1, cropmarks: -0.6 } }))
 
   .hr()
 
@@ -95,12 +93,17 @@ export const actions = Actions<Ctx>()
     const { ctx } = e;
 
     // NB: common layout (variations merged in in render arg below)
-    e.layout({
-      width: 450,
-      border: -0.1,
-      cropmarks: -0.2,
-      background: 1,
-      label: 'foobar',
+    e.settings({
+      layout: {
+        width: 450,
+        border: -0.1,
+        cropmarks: -0.2,
+        background: 1,
+        label: 'foobar',
+      },
+      host: {
+        background: -0.04,
+      },
     });
 
     const data = { isRunning: ctx.isRunning };
@@ -135,16 +138,20 @@ export const actions = Actions<Ctx>()
       return e.render(el, { position: 80 });
     }
 
+    /**
+     * TODO 🐷
+     */
+
     if (ctx.layout === 'double-x') {
       return e
-        .orientation('x', 50)
+        .settings({ host: { orientation: 'x' } })
         .render(el, { label: 'one', width: 200 })
         .render(el, { label: 'two', width: 300 });
     }
 
     if (ctx.layout === 'double-y') {
       return e
-        .orientation('y')
+        .settings({ host: { orientation: 'y' } })
         .render(el, { label: { topLeft: 'one' } })
         .render(el, { label: { bottomRight: 'two' } });
     }

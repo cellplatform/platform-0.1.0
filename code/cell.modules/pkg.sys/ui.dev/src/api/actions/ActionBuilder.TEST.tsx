@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { expect, DEFAULT, StateObject, t, rx, is } from '../../test';
+import { expect, DEFAULT, StateObject, t, rx, is, toObject } from '../../test';
 import { ActionBuilder } from '.';
 import { ActionPanelProps } from '../../components/ActionPanel';
 
@@ -100,69 +100,57 @@ describe('ActionBuilder', () => {
       const { builder } = create();
       const res = builder.context(() => ({ count: 1234 })).renderSubject();
       expect(res.items).to.eql([]);
-      expect(res.orientation).to.eql('y'); // NB: vertical stack
       expect(res.layout).to.eql({});
-      expect(res.spacing).to.eql(60);
     });
 
     it('passes context', () => {
       const { builder } = create();
       const ctx = { count: 123 };
-      let payload: t.DevActionRenderSubjectArgs<Ctx> | undefined;
+
+      let fired: any = undefined;
       const res = builder
         .context(() => ctx)
-        .subject((e) => (payload = e))
+        .subject((e) => (fired = toObject(e.ctx)))
         .renderSubject();
 
       expect(res.items).to.eql([]);
-      expect(payload?.ctx).to.eql(ctx);
-    });
-
-    it('orientation (stacking direction)', () => {
-      const { builder } = create();
-      builder.context(() => ({ count: 1234 }));
-
-      const res0 = builder.renderSubject();
-      const res1 = builder.subject((e) => e.orientation('x')).renderSubject();
-      const res2 = builder.subject((e) => e.orientation('y')).renderSubject();
-
-      expect(res0.orientation).to.eql('y'); // NB: default
-      expect(res1.orientation).to.eql('x');
-      expect(res2.orientation).to.eql('y');
+      expect(res.ctx).to.eql(ctx);
+      expect(fired).to.eql(ctx);
     });
 
     it('single element', () => {
-      const { builder } = create();
+      const { builder, model } = create();
       const div = <div>Foo</div>;
       const res = builder
         .context(() => ({ count: 1234 }))
-        .subject((e) => e.render(div))
+        .subject((e) => e.settings({ host: { orientation: 'y' } }).render(div))
         .renderSubject();
 
-      expect(res.orientation).to.eql('y');
       expect(res.items.length).to.eql(1);
       expect(res.items[0].el).to.equal(div);
       expect(res.items[0].layout).to.eql(undefined);
+      expect(model.state.env.viaSubject.host?.orientation).to.eql('y');
     });
 
     it('multiple elements (stack)', () => {
-      const { builder } = create();
+      const { builder, model } = create();
       const res = builder
         .context(() => ({ count: 1234 }))
         .subject((e) => {
-          e.render(<h1>Foo</h1>)
-            .render(<div>Hello</div>, { label: 'MyLabel' })
-            .orientation('x'); // NB: horizontal stack
+          e.render(<h1>Foo</h1>).render(<div>Hello</div>, { label: 'MyLabel' });
+          e.host.orientation = 'x';
+          e.host.spacing = 100;
         })
         .renderSubject();
-
       const items = res.items;
-      expect(res.orientation).to.eql('x');
       expect(items[0].el.type).to.equal('h1');
       expect(items[1].el.type).to.equal('div');
-
       expect(items[0].layout?.label).to.equal(undefined);
       expect(items[1].layout?.label).to.equal('MyLabel');
+
+      const viaSubject = model.state.env.viaSubject;
+      expect(viaSubject.host?.orientation).to.eql('x');
+      expect(viaSubject.host?.spacing).to.eql(100);
     });
 
     it('layout: item (explicit)', () => {
@@ -180,26 +168,19 @@ describe('ActionBuilder', () => {
       expect(item.layout).to.eql({ label: 'MyLabel' });
     });
 
-    it('layout: shared across all items', () => {
-      const { builder } = create();
+    it('layout/host: shared across all items', () => {
+      const { builder, model } = create();
       const div = <div>Foo</div>;
-      const res = builder
+      builder
         .context(() => ({ count: 1234 }))
-        .subject((e) => e.layout({ label: 'MyLabel' }).render(div))
+        .subject((e) => {
+          e.settings({ host: { orientation: 'x' }, layout: { label: 'MyLabel' } }).render(div);
+        })
         .renderSubject();
-      expect(res.layout).to.eql({ label: 'MyLabel' });
-    });
 
-    it('orentation: spacing', () => {
-      const { builder } = create();
-      builder.context(() => ({ count: 1234 }));
-
-      const res0 = builder.renderSubject();
-      const res1 = builder.subject((e) => e.orientation('x', 50)).renderSubject();
-      const res2 = builder.subject((e) => e.orientation('y', -10)).renderSubject();
-      expect(res0.spacing).to.eql(60); // NB: default
-      expect(res1.spacing).to.eql(50);
-      expect(res2.spacing).to.eql(0); // NB: Clamped: >0
+      const viaSubject = model.state.env.viaSubject;
+      expect(viaSubject.host?.orientation).to.eql('x');
+      expect(viaSubject.layout?.label).to.eql('MyLabel');
     });
   });
 
@@ -231,8 +212,8 @@ describe('ActionBuilder', () => {
       const { model, builder } = create();
       expect(model.state.renderSubject).to.eql(undefined);
 
-      const fn1: t.DevActionRenderSubject<Ctx> = (e) => null;
-      const fn2: t.DevActionRenderSubject<Ctx> = (e) => null;
+      const fn1: t.DevActionHandlerSubject<Ctx> = (e) => null;
+      const fn2: t.DevActionHandlerSubject<Ctx> = (e) => null;
 
       builder.subject(fn1);
       expect(model.state.renderSubject).to.eql(fn1);

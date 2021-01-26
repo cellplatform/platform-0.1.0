@@ -1,10 +1,11 @@
 import * as React from 'react';
 
 import { css, CssValue, defaultValue, formatColor, t } from '../../common';
-import { Content, ContentCropmark } from './Content';
+import { Subject, SubjectCropmark } from './Subject';
 
-export type HostProps = t.IDevHost & {
-  subject?: t.DevActionSubject;
+export type HostProps = {
+  host?: t.IDevHost;
+  subject?: t.DevActionSubject<any>;
   style?: CssValue;
 };
 
@@ -12,15 +13,17 @@ export type HostProps = t.IDevHost & {
  * A content container providing layout options for testing.
  */
 export const Host: React.FC<HostProps> = (props = {}) => {
-  const { subject } = props;
+  const { subject, host } = props;
   const items = subject?.items || [];
-  const orientation = defaultValue(subject?.orientation, 'y');
+  const background = defaultValue(host?.background);
+  const orientation = defaultValue(host?.orientation, 'y');
+  const spacing = Math.max(0, defaultValue(host?.spacing, 60));
 
   const styles = {
     base: css({
       flex: 1,
       position: 'relative',
-      backgroundColor: formatColor(props.background),
+      backgroundColor: formatColor(background),
     }),
     body: css({
       Absolute: 0,
@@ -33,8 +36,8 @@ export const Host: React.FC<HostProps> = (props = {}) => {
     const isLast = i === items.length - 1;
     const layout = { ...subject?.layout, ...item.layout };
     const abs = toAbsolute(layout.position);
-    const margin = !isLast ? subject?.spacing : undefined;
-    const cropmark: ContentCropmark = { size: 15, margin: 6 };
+    const margin = !isLast ? spacing : undefined;
+    const cropmark: SubjectCropmark = { size: 15, margin: 6 };
 
     const style = css({
       display: 'flex',
@@ -48,9 +51,9 @@ export const Host: React.FC<HostProps> = (props = {}) => {
 
     return (
       <div key={i} {...style}>
-        <Content cropmark={cropmark} layout={layout}>
+        <Subject cropmark={cropmark} layout={layout}>
           {item.el}
-        </Content>
+        </Subject>
       </div>
     );
   });

@@ -15,11 +15,11 @@ export type DevActionsModelMethods<Ctx extends O> = DevActionsModelInputMethods<
   clone(ctx?: t.DevActionGetContext<Ctx>): t.DevActions<Ctx>;
 
   renderList(bus: t.EventBus, props?: t.ActionPanelProps): JSX.Element;
-  renderSubject(): t.DevActionSubject;
+  renderSubject(): t.DevActionSubject<Ctx>;
 
   merge(actions: DevActions<any>, options?: DevActionAddOptions): t.DevActions<Ctx>;
   context(factory: t.DevActionGetContext<Ctx>): t.DevActions<Ctx>;
-  subject(factory: t.DevActionRenderSubject<Ctx>): t.DevActions<Ctx>;
+  subject(factory: t.DevActionHandlerSubject<Ctx>): t.DevActions<Ctx>;
   name(name: string): t.DevActions<Ctx>;
 };
 

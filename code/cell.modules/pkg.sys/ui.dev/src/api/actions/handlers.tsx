@@ -4,9 +4,8 @@ import { ButtonConfig } from './config.Button';
 import { HrConfig } from './config.Hr';
 import { TitleConfig } from './config.Title';
 import { getAndStoreContext } from './context';
-import { renderList, renderSubject } from './render';
-
-type O = Record<string, unknown>;
+import { renderList } from './render.List';
+import { renderSubject } from './render.Subject';
 
 /**
  * Action handlers.
@@ -59,9 +58,8 @@ export const handlers: t.BuilderHandlers<
    * Render the subject(s) under test.
    */
   renderSubject(args) {
-    const ctx = args.builder.self.toContext();
-    const model = args.model.state;
-    return renderSubject<O>({ ctx, model });
+    const model = args.model;
+    return renderSubject({ model });
   },
 
   /**

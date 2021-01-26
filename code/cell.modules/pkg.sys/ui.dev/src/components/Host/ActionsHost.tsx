@@ -16,21 +16,24 @@ export type ActionHostProps = {
  */
 export const ActionsHost: React.FC<ActionHostProps> = (props) => {
   const { actions } = props;
-  const env = actions.toObject().env;
+
   useRedraw({
     name: '<ActionsHost>',
+    paths: ['ctx/current', 'env/viaAction'],
     bus: props.bus.type<t.DevActionEvent>(),
     actions,
-    paths: ['ctx/current', 'env'],
   });
-  console.log('RENDER', '<actionsHost>');
-  return (
-    <Host
-      {...props}
-      subject={actions.renderSubject()}
-      host={env.host}
-      layout={env.layout}
-      background={env.host?.background}
-    />
-  );
+
+  const subject = actions.renderSubject();
+  const env = actions.toObject().env;
+
+  /**
+   * NOTE
+   *    The host/layout settings assigned in the [renderSubject] handler
+   *    are overridden by any host/layout settings incrementally assigned
+   *    via executed Action handlers.
+   */
+  const host = { ...env.viaSubject.host, ...env.viaAction.host };
+
+  return <Host {...props} subject={subject} host={host} />;
 };

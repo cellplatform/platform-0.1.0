@@ -23,7 +23,13 @@ export const COLORS = {
 
 const UNNAMED = 'Unnamed';
 const UNTITLED = 'Untitled';
-const ACTIONS: t.DevActionsModel<any> = { ns: '', name: UNNAMED, items: [], ctx: {}, env: {} };
+const ACTIONS: t.DevActionsModel<any> = {
+  ns: '',
+  name: UNNAMED,
+  items: [],
+  ctx: {},
+  env: { viaAction: {}, viaSubject: {} },
+};
 export const DEFAULT = {
   ACTIONS,
   UNTITLED,
