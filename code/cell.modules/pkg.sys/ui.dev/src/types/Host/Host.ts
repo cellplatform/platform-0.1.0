@@ -1,4 +1,4 @@
-import { t } from './common';
+import { t } from '../common';
 
 /**
  * Display properties of a <Host>.

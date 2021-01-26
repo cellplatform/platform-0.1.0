@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { t } from './common';
+import { t } from '../common';
 
 type ReactNode = React.ReactNode;
 type StringOrNumber = string | number;
