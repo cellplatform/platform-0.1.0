@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { t, CssValue } from '../../common';
-import { useRedraw } from '../../hooks/actions';
+import { useRedraw } from '../../hooks/Actions';
 import { Host } from './Host';
 
 export type ActionHostProps = {

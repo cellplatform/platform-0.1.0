@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { constants, css, defaultValue, t } from '../../common';
-import { useActionPanelController, useRedraw } from '../../hooks/actions';
+import { useActionPanelController, useRedraw } from '../../hooks/Actions';
 import { Item } from './Item';
 
 export type ActionPanelProps = t.ActionPanelProps & {

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { CssValue, t } from '../../common';
-import { useItemMonitor } from '../../hooks/actions';
+import { useItemMonitor } from '../../hooks/Actions';
 import { Switch } from '../Primitives';
 import { ButtonView } from './Item.ButtonView';
 
