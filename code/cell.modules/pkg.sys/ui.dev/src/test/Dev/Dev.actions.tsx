@@ -22,6 +22,10 @@ type Ctx = {
 const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor.';
 
+const styles = {
+  bgr: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */ }),
+};
+
 let count = 0;
 
 /**
@@ -34,6 +38,12 @@ export const actions = Actions<Ctx>()
   .button('change text', (e) => {
     e.ctx.count++;
     e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
+  })
+  .button('inject React', (e) => {
+    const label = <div {...styles.bgr}>Hello</div>;
+    const description = <div {...styles.bgr}>{LOREM}</div>;
+    e.button.label = label;
+    e.settings({ button: { description } });
   })
 
   .hr()
@@ -84,6 +94,7 @@ export const actions = Actions<Ctx>()
     e.select.label = value ? value.label : `select single`;
     e.select.placeholder = !Boolean(value);
   })
+
   .select((config) => {
     config
       .label('select (multi)')

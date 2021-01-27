@@ -43,8 +43,8 @@ export type DevActionsModelInputMethods<Ctx extends O> = {
  */
 export type DevActionButtonConfig<Ctx extends O> = (args: DevActionButtonConfigArgs<Ctx>) => void;
 export type DevActionButtonConfigArgs<Ctx extends O> = {
-  label(value: string): DevActionButtonConfigArgs<Ctx>;
-  description(value: string): DevActionButtonConfigArgs<Ctx>;
+  label(value: string | t.ReactNode): DevActionButtonConfigArgs<Ctx>;
+  description(value: string | t.ReactNode): DevActionButtonConfigArgs<Ctx>;
   handler(handler: t.DevActionButtonHandler<Ctx>): DevActionButtonConfigArgs<Ctx>;
 };
 
@@ -53,8 +53,8 @@ export type DevActionButtonConfigArgs<Ctx extends O> = {
  */
 export type DevActionBooleanConfig<Ctx extends O> = (args: DevActionBooleanConfigArgs<Ctx>) => void;
 export type DevActionBooleanConfigArgs<Ctx extends O> = {
-  label(value: string): DevActionBooleanConfigArgs<Ctx>;
-  description(value: string): DevActionBooleanConfigArgs<Ctx>;
+  label(value: string | t.ReactNode): DevActionBooleanConfigArgs<Ctx>;
+  description(value: string | t.ReactNode): DevActionBooleanConfigArgs<Ctx>;
   handler(handler: t.DevActionBooleanHandler<Ctx>): DevActionBooleanConfigArgs<Ctx>;
 };
 
@@ -63,8 +63,8 @@ export type DevActionBooleanConfigArgs<Ctx extends O> = {
  */
 export type DevActionSelectConfig<Ctx extends O> = (args: DevActionSelectConfigArgs<Ctx>) => void;
 export type DevActionSelectConfigArgs<Ctx extends O> = {
-  label(value: string): DevActionSelectConfigArgs<Ctx>;
-  description(value: string): DevActionSelectConfigArgs<Ctx>;
+  label(value: string | t.ReactNode): DevActionSelectConfigArgs<Ctx>;
+  description(value: string | t.ReactNode): DevActionSelectConfigArgs<Ctx>;
   items(list: (t.DevActionSelectItem | string)[]): DevActionSelectConfigArgs<Ctx>;
   multi(value: boolean): DevActionSelectConfigArgs<Ctx>;
   clearable(value: boolean): DevActionSelectConfigArgs<Ctx>;

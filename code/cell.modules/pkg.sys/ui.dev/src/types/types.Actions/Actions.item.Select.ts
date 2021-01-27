@@ -14,8 +14,8 @@ export type DevActionSelect = t.DevActionSelectProps & {
  * Editable properties of a [Select] input.
  */
 export type DevActionSelectProps = {
-  label: string;
-  description?: string;
+  label: string | t.ReactNode;
+  description?: string | t.ReactNode;
   placeholder?: boolean;
   multi: boolean;
   clearable: boolean;

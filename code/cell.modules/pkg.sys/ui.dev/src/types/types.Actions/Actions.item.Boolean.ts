@@ -13,8 +13,8 @@ export type DevActionBoolean = t.DevActionBooleanProps & {
  * Editable properties of a [Boolean] button.
  */
 export type DevActionBooleanProps = {
-  label: string;
-  description?: string;
+  label: string | t.ReactNode;
+  description?: string | t.ReactNode;
   current?: boolean; // Latest value produced by the handler.
 };
 

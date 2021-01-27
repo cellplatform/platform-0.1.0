@@ -1,3 +1,4 @@
+export { ReactNode } from 'react';
 export { ActionTypes as SelectActionTypes } from 'react-select';
 
 export * from '@platform/types';

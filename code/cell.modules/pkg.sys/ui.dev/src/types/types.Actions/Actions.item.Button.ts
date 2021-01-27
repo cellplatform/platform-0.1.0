@@ -13,6 +13,6 @@ export type DevActionButton = t.DevActionButtonProps & {
  * Editable properties of a [Button].
  */
 export type DevActionButtonProps = {
-  label: string;
-  description?: string;
+  label: string | t.ReactNode;
+  description?: string | t.ReactNode;
 };
