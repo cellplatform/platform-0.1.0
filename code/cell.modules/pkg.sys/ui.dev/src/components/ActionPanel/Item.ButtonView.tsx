@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { COLORS, constants, css, CssValue, t } from '../../common';
+import { COLORS, constants, css, CssValue, t, markdown, DEFAULT } from '../../common';
 import { Icons } from '../Icons';
 
 /**
@@ -17,7 +17,7 @@ export type ButtonViewProps = {
   onClick?: () => void;
 };
 export const ButtonView: React.FC<ButtonViewProps> = (props) => {
-  const { isActive, label, description, placeholder, onClick } = props;
+  const { isActive, placeholder, onClick } = props;
   const [isOver, setIsOver] = useState<boolean>(false);
   const [isDown, setIsDown] = useState<boolean>(false);
 
@@ -84,6 +84,9 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
 
   const Icon = props.icon || Icons.Variable;
 
+  const label = props.label ? formatText(props.label) : DEFAULT.UNNAMED;
+  const description = props.description ? formatText(props.description) : undefined;
+
   return (
     <div {...css(styles.base, props.style)}>
       <div
@@ -95,7 +98,7 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
       >
         <Icon color={isOver ? COLORS.BLUE : COLORS.DARK} size={20} style={styles.main.icon} />
         <div {...styles.body.outer}>
-          <div {...styles.body.label}>{label || 'Unnamed'}</div>
+          <div {...styles.body.label}>{label}</div>
           {description && <div {...styles.body.description}>{description}</div>}
         </div>
         {props.right}
@@ -103,3 +106,18 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * [Helpers]
+ */
+
+function formatText(value?: string | t.ReactNode) {
+  if (typeof value !== 'string') return value;
+
+  const __html = markdown
+    .toHtmlSync(value)
+    .replace(/^\<p\>/, '')
+    .replace(/\<\/\p\>$/, '');
+
+  return <div dangerouslySetInnerHTML={{ __html }} />;
+}

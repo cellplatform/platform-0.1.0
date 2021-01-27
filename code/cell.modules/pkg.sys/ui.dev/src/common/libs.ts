@@ -16,3 +16,5 @@ export const format = Builder.format;
 import { StateObject } from '@platform/state';
 export { StateObject };
 export const toObject = StateObject.toObject;
+
+export { markdown } from '@platform/util.markdown';

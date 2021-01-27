@@ -57,8 +57,14 @@ export const actions = Actions<Ctx>()
     console.log('e.host', toObject(e.host));
     console.groupEnd();
   })
-  .button((e) => e.label(`Ellipsis - ${LOREM}`))
-  .button((e) => e.description(LOREM))
+  .button((config) => config.label(`Ellipsis - ${LOREM}`))
+  .button((config) => null)
+  .button((config) =>
+    config
+      .label('**markdown**')
+      .description(`*I am italic*, **I am bold** \`code\` ${LOREM}`)
+      .handler((e) => null),
+  )
   .button('button: change label', (e) => {
     count++;
     e.button.label = `count: ${count}`;
