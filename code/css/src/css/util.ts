@@ -88,12 +88,7 @@ export const toEdges: t.CssToEdges<t.ICssEdges> = (input, options = {}) => {
   if (top === undefined && right === undefined && bottom === undefined && left === undefined) {
     return {};
   }
-  return {
-    top,
-    right,
-    bottom,
-    left,
-  };
+  return { top, right, bottom, left };
 };
 
 /**

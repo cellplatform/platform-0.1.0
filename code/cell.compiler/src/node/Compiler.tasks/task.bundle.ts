@@ -1,15 +1,15 @@
 import { Stats } from 'webpack';
 
-import { fs, log, logger, Model, t, ProgressSpinner } from '../common';
-import { BundleManifest, TypeManifest } from '../manifest';
+import { fs, log, logger, Model, ProgressSpinner, t } from '../common';
+import { BundleManifest } from '../manifest';
+import { bundleDeclarations } from './task.bundle.declarations';
 import { afterCompile, wp } from './util';
-import { Typescript } from '../ts';
 
 /**
  * Bundle the project.
  */
 export const bundle: t.CompilerRunBundle = (input, options = {}) => {
-  return new Promise<t.WebpackBundleResponse>(async (resolve, reject) => {
+  return new Promise<t.CompilerRunBundleResponse>(async (resolve, reject) => {
     try {
       const { silent } = options;
       const { compiler, model, webpack } = wp.toCompiler(input);
@@ -27,16 +27,13 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
       }
 
       compiler.run(async (err, stats) => {
+        spinner.stop();
         if (err) {
-          spinner.stop();
           return reject(err);
         }
         if (stats) {
           const res = toBundledResponse({ model, stats, webpack });
-
-          spinner.label(`compiling type declarations (${log.green('.d.ts')} files)...`);
-          await compileDeclarations({ model, bundleDir });
-          spinner.stop();
+          await bundleDeclarations(input);
 
           const compilation = stats.compilation;
           if (compilation) {
@@ -75,25 +72,11 @@ export async function onCompiled(args: {
  * [Helpers]
  */
 
-async function compileDeclarations(args: { model: t.CompilerModel; bundleDir: string }) {
-  if (!args.model.declarations || args.model.declarations.length === 0) return;
-  const ts = Typescript.compiler();
-
-  const params: t.TscTranspileDeclarationsArgs[] = args.model.declarations.map((lib) => {
-    const source = lib.include;
-    const outdir = fs.join(args.bundleDir, 'types.d', lib.dir);
-    return { source, outdir, silent: true };
-  });
-
-  await Promise.all(params.map((params) => ts.declarations.transpile(params)));
-  await ts.manifest.generate({ dir: args.bundleDir });
-}
-
 function toBundledResponse(args: {
   model: t.CompilerModel;
   stats: Stats;
   webpack: t.WpConfig;
-}): t.WebpackBundleResponse {
+}): t.CompilerRunBundleResponse {
   const { model, webpack } = args;
   const stats = wp.stats(args.stats);
   return {

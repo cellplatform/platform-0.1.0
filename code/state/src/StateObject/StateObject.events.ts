@@ -6,7 +6,7 @@ import { t } from '../common';
 type O = Record<string, unknown>;
 type Event = t.StateObjectEvent;
 
-export function create<T extends O, A extends t.Event<any>>(
+export function create<T extends O, A extends string>(
   event$: Subject<Event>,
   dispose$: Observable<any>,
 ): t.IStateObjectEvents<T, A> {

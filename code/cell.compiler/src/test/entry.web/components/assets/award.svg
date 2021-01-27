@@ -1,1 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-award"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="award">
+<path id="ribbon" d="M8.21 13.8909L7 23.0009L12 20.0009L17 23.0009L15.79 13.8809" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="circle" d="M12 15C15.866 15 19 11.866 19 8C19 4.13401 15.866 1 12 1C8.13401 1 5 4.13401 5 8C5 11.866 8.13401 15 12 15Z" stroke="#FE0168" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

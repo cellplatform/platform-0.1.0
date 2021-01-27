@@ -18,9 +18,7 @@ export const image = (src: t.ImageSrc) => {
 /**
  * [View]
  */
-type IImageViewProps = t.IImageProps & {
-  src: t.ImageSrc;
-};
+type IImageViewProps = t.IImageProps & { src: t.ImageSrc };
 type IImageViewState = {
   isLoaderRendered?: boolean;
   opacity?: number;

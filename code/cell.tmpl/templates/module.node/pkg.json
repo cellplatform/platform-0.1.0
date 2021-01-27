@@ -5,6 +5,8 @@
   "scripts": {
     "start": "ts-node -T src/main/index",
     "dev": "yarn start",
+    "test": "ts test $@",
+    "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
     "bundle": "cell.compiler bundle node $@",
     "watch": "cell.compiler watch node $@",
@@ -12,9 +14,10 @@
     "info": "cell.compiler info node $@",
     "clean": "cell.compiler clean $@"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@platform/log": "latest"
+  },
   "devDependencies": {
-    "@platform/ts": "latest",
     "@platform/cell.compiler": "latest"
   },
   "license": "MIT",

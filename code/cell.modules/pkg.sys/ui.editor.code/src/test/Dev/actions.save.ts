@@ -1,5 +1,5 @@
 import { debounceTime } from 'rxjs/operators';
-import { Actions } from 'sys.ui.harness';
+import { Actions } from 'sys.ui.dev';
 
 import { CodeEditor } from '../../api';
 import { bundle, HttpClient, rx, StateObject, t, Schema } from '../../common';

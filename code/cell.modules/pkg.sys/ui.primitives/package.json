@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.primitives",
-  "version": "0.0.50",
+  "version": "0.0.51",
   "sideEffects": false,
   "compiler": {
     "port": 3005
@@ -27,7 +27,7 @@
     "preset.env": "^0.0.11"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.2.48",
+    "@platform/cell.compiler": "^0.3.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

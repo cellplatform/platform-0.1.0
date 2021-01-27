@@ -17,6 +17,7 @@ export const COMMANDS: t.Commands = {
       '--config': PARAMS.config,
       '--name': PARAMS.name,
       '--mode': PARAMS.mode,
+      '--declarations, -d': '(optional) Declarations (".d.ts" files) only',
     },
   },
   watch: {

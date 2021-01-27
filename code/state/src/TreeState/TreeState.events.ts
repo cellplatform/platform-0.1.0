@@ -6,7 +6,7 @@ import { t } from '../common';
 
 type Node = t.ITreeNode;
 
-export function create<T extends Node, A extends t.Event>(args: {
+export function create<T extends Node, A extends string>(args: {
   event$: Subject<t.TreeStateEvent>;
   until$: Observable<any>;
 }): t.ITreeStateEvents<T, A> {
@@ -14,7 +14,7 @@ export function create<T extends Node, A extends t.Event>(args: {
 
   const changed$ = $.pipe(
     filter((e) => e.type === 'TreeState/changed'),
-    map((e) => e.payload as t.ITreeStateChanged<T>),
+    map((e) => e.payload as t.ITreeStateChanged<T, A>),
     share(),
   );
 
@@ -36,7 +36,7 @@ export function create<T extends Node, A extends t.Event>(args: {
     share(),
   );
 
-  type P = t.TreeStateEvent | A;
+  type P = t.TreeStateEvent;
 
   return {
     $,

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import * as React from 'react';
 
-import { expect } from 'chai';
+import { expect } from '../test';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 

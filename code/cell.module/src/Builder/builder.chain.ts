@@ -14,9 +14,9 @@ type K = t.BuilderMethodKind;
  *    <M> Model
  *    <A> API
  */
-export function create<M extends O, A extends O>(args: {
-  handlers: t.BuilderHandlers<M, A>;
-  model: t.BuilderModel<M>;
+export function create<M extends O, F extends O, A extends string = string>(args: {
+  handlers: t.BuilderHandlers<M, F, A>;
+  model: t.BuilderModel<M, A>;
   parent?: B;
 
   // [Internal]
@@ -25,7 +25,7 @@ export function create<M extends O, A extends O>(args: {
   cache?: IMemoryCache;
   kind?: t.BuilderMethodKind;
   dispose$?: Observable<void>;
-}): t.BuilderChain<A> {
+}): t.BuilderChain<F> {
   const { handlers, parent, kind = 'ROOT', model } = args;
   const index = args.index === undefined || args.index < 0 ? -1 : args.index;
   const cache = args.cache || MemoryCache.create();
@@ -61,22 +61,22 @@ export function create<M extends O, A extends O>(args: {
   // Assign chained method modifiers.
   Object.keys(handlers)
     .filter((key) => typeof handlers[key] === 'function')
-    .map((key) => ({ key, handler: handlers[key] as t.BuilderHandler<M, A> }))
+    .map((key) => ({ key, handler: handlers[key] as t.BuilderHandler<M, F, A> }))
     .forEach(({ key, handler }) => {
       builder[key] = (...params: any[]) => {
-        const handlerArgs: t.BuilderHandlerArgs<M, A> = {
+        const handlerArgs: t.BuilderHandlerArgs<M, F, A> = {
           kind,
           key,
           index,
           params,
-          builder: { parent, self: builder as t.BuilderChain<A>, dispose$ },
+          builder: { parent, self: builder as t.BuilderChain<F>, dispose$ },
           path: args.path === undefined ? '$' : `${args.path || '$'}`,
           model,
           is: { list: is.list(kind), map: is.map(kind) },
           clone(props?: Partial<M>) {
             const initial = { ...args.model.state, ...props };
-            const model = StateObject.create<M>(initial);
-            return create({ model, handlers });
+            const model = StateObject.create<M, A>(initial);
+            return create<M, F, A>({ model, handlers });
           },
         };
         const res = handler(handlerArgs);
@@ -192,7 +192,7 @@ export function create<M extends O, A extends O>(args: {
     });
 
   // Finish up.
-  return builder as t.BuilderChain<A>;
+  return builder as t.BuilderChain<F>;
 }
 
 /**
@@ -214,7 +214,7 @@ const parentPath = (path: string) => {
 };
 
 const ensureObjectAt = (
-  model: t.BuilderModel<any>,
+  model: t.BuilderModel<any, any>,
   path: string,
   defaultObject?: () => O | O[],
 ) => {
@@ -263,7 +263,7 @@ const findListIndexByName = (list: any[], name: string, index?: t.BuilderIndexPa
 };
 
 const ensureDefaultAtIndex = (
-  model: t.BuilderModel<any>,
+  model: t.BuilderModel<any, any>,
   path: string,
   index: number,
   defaultValue?: () => O,
@@ -278,7 +278,7 @@ const ensureDefaultAtIndex = (
   }
 };
 
-const findListOrThrow = (model: t.BuilderModel<any>, path: string) => {
+const findListOrThrow = (model: t.BuilderModel<any, any>, path: string) => {
   const list = jpath.query(model.state, path)[0];
   if (!list) {
     throw new Error(`A containing list at path '${path}' does not exist on the model.`);
@@ -290,7 +290,7 @@ const findListOrThrow = (model: t.BuilderModel<any>, path: string) => {
 };
 
 const fromFactory = (args: {
-  model: t.BuilderModel<any>;
+  model: t.BuilderModel<any, any>;
   parent: t.BuilderChain<any>;
   dispose$: Observable<void>;
   params: any[];
@@ -315,12 +315,12 @@ const fromFactory = (args: {
         model: args.model,
         builder: { parent, dispose$ },
         params,
-        create<M extends O, A extends O>(
-          handlers: t.BuilderHandlers<M, A>,
-          model?: t.BuilderModel<M>,
+        create<M extends O, F extends O, A extends string = string>(
+          handlers: t.BuilderHandlers<M, F, A>,
+          model?: t.BuilderModel<M, A>,
         ) {
           model = model || args.model;
-          return create<M, A>({ kind, parent, model, handlers, path, index, dispose$ });
+          return create<M, F, A>({ kind, parent, model, handlers, path, index, dispose$ });
         },
       });
     },
@@ -340,12 +340,12 @@ const fromFactory = (args: {
         model: args.model,
         builder: { parent, dispose$ },
         params,
-        create<M extends O, A extends O>(
-          handlers: t.BuilderHandlers<M, A>,
-          model?: t.BuilderModel<M>,
+        create<M extends O, F extends O, A extends string = string>(
+          handlers: t.BuilderHandlers<M, F, A>,
+          model?: t.BuilderModel<M, A>,
         ) {
           model = model || args.model;
-          return create<M, A>({ kind, parent, model, handlers, path, dispose$ });
+          return create<M, F, A>({ kind, parent, model, handlers, path, dispose$ });
         },
       });
     },

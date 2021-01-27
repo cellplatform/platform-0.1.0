@@ -1,5 +1,6 @@
-import { t } from '../../common';
+import { t, defaultValue } from '../../common';
 import { TscTranspiler } from './TscCompiler.transpile';
+import { TscCopy } from './TscCopy';
 
 /**
  * Tools for compiling ".d.ts" declarations
@@ -10,11 +11,17 @@ export function TscDeclarations(tsconfig: t.TscConfig) {
      * Run the compiler to produce ".d.ts" files only.
      */
     async transpile(args) {
-      return TscTranspiler(tsconfig)({
+      const res = await TscTranspiler(tsconfig)({
         ...args,
         compilerOptions: { emitDeclarationOnly: true },
         transformPath: (path) => path.replace(/\.d\.ts$/, '.d.txt'),
       });
+
+      if (defaultValue(args.copyRefs, true)) {
+        await TscCopy.refs({ sourceDir: res.out.dir });
+      }
+
+      return res;
     },
   };
 

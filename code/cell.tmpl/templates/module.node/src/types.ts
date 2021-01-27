@@ -1,1 +1,1 @@
-export const Tmp = 'FooType'; // TEMP 🐷
+export const Tmp = 'TempFoo'; // TEMP 🐷

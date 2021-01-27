@@ -6,6 +6,7 @@ export type Compiler = {
   devserver: t.CompilerRunDevserver;
   watch: t.CompilerRunWatch;
   bundle: t.CompilerRunBundle;
+  bundleDeclarations: t.CompilerRunBundleDeclarations;
   cell: t.CompilerCreateCell;
 };
 

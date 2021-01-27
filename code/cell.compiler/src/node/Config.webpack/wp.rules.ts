@@ -1,5 +1,4 @@
 import { t } from '../common';
-import svgToMiniDataURI from 'mini-svg-data-uri';
 
 type IArgs = { model: t.CompilerModel; isProd: boolean; isDev: boolean };
 
@@ -86,6 +85,13 @@ export const Rules = {
           loader: '@svgr/webpack',
           options: {
             dimensions: false, // NB: Removes width/height from SVG itself so it can be set via React property.
+
+            // SVGO options
+            //    https://github.com/svg/svgo
+            //    https://gist.github.com/pladaria/69321af86ce165c2c1fc1c718b098dd0
+            svgoConfig: {
+              plugins: [{ cleanupIDs: false }],
+            },
           },
         },
       ],

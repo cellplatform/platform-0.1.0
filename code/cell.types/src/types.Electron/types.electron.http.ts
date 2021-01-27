@@ -4,7 +4,7 @@ import { t } from '../common';
  * HTTP (Server)
  */
 export type IResGetElectronSysInfo = t.IResGetSysInfo & {
-  app: IResGetSysInfoElectronApp;
+  runtime: IResGetSysInfoElectronApp;
 };
 
 export type IResGetSysInfoElectronApp = {

@@ -1,7 +1,4 @@
 export { log } from '@platform/log/lib/client';
-
 export { css, color, CssValue, formatColor } from '@platform/css';
-
-import { WebRuntime } from '@platform/cell.runtime/lib/runtime.web';
-export { WebRuntime };
-export const bundle = WebRuntime.bundle;
+export { WebRuntime, bundle } from '@platform/cell.runtime.web';
+export { useResizeObserver } from '@platform/react';

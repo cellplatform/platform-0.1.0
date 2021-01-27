@@ -9,6 +9,7 @@ type File = t.IHttpClientCellFileUpload;
  */
 export type CompilerTasks = {
   bundle: CompilerRunBundle;
+  bundleDeclarations: CompilerRunBundleDeclarations;
   watch: CompilerRunWatch;
   devserver: CompilerRunDevserver;
   cell: CompilerCreateCell;
@@ -20,13 +21,25 @@ export type CompilerTasks = {
 export type CompilerRunBundle = (
   input: M,
   options?: { silent?: boolean },
-) => Promise<WebpackBundleResponse>;
-export type WebpackBundleResponse = {
+) => Promise<CompilerRunBundleResponse>;
+export type CompilerRunBundleResponse = {
   ok: boolean;
   elapsed: number;
   stats: t.WebpackStats;
   model: t.CompilerModel;
   webpack: t.WpConfig;
+  dir: string;
+  toString(): string;
+};
+
+export type CompilerRunBundleDeclarations = (
+  input: M,
+  options?: { silent?: boolean },
+) => Promise<CompilerRunBundleDeclarationsResponse>;
+export type CompilerRunBundleDeclarationsResponse = {
+  ok: boolean;
+  elapsed: number;
+  model: t.CompilerModel;
   dir: string;
   toString(): string;
 };
@@ -71,7 +84,7 @@ export type CompilerCell = {
 export type CompilerCellRunBundle = (
   config: B,
   options?: CompilerCellRunBundleOptions,
-) => Promise<WebpackBundleResponse>;
+) => Promise<CompilerRunBundleResponse>;
 export type CompilerCellRunBundleOptions = { targetDir?: string; silent?: boolean };
 
 export type CompilerCellRunUpload = (

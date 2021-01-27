@@ -6,9 +6,11 @@
     "port": 3000
   },
   "scripts": {
-    "build": "ts build --no-esm $@",
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",
+    "test": "ts test $@",
+    "lint": "ts lint $@",
+    "build": "ts build --no-esm $@",
     "bundle": "cell.compiler bundle $@",
     "watch": "cell.compiler watch $@",
     "upload": "cell.compiler upload $@",
@@ -18,7 +20,6 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@platform/ts": "latest",
     "@platform/cell.compiler": "latest",
     "react": "latest",
     "react-dom": "latest"

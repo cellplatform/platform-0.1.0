@@ -9,5 +9,11 @@ export async function bundle(argv: t.Argv) {
   const name = util.nameArg(argv, 'web');
   const mode = util.modeArg(argv, 'production');
   const config = (await util.loadConfig(argv.config, { name })).mode(mode);
-  await Compiler.bundle(config);
+  const declarationsOnly = argv.declarations || argv.d;
+
+  if (declarationsOnly) {
+    await Compiler.bundleDeclarations(config);
+  } else {
+    await Compiler.bundle(config);
+  }
 }

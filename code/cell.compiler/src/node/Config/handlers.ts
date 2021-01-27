@@ -89,7 +89,7 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
       if (args.params[0] === null) {
         draft.declarations = undefined;
       } else {
-        draft.declarations = draft.declarations || [];
+        const declarations = (draft.declarations = draft.declarations || []);
 
         const include = format.string(args.params[0], { trim: true });
         if (typeof include === 'string') {
@@ -99,17 +99,24 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
           dir = dir.replace(/^types\.d/, '');
           dir = dir.replace(/^\/*/, '').replace(/\/*$/, '');
           dir = `${dir}`.replace(/\/*$/, '').trim();
+          dir = dir || 'main';
 
-          if (!dir) {
-            throw new Error(`Directory name for declarations must be specified`);
+          const existing = declarations.find((item) => item.dir === dir);
+
+          if (existing) {
+            const list = (existing.include = Array.isArray(existing.include)
+              ? existing.include
+              : [existing.include]);
+            if (!list.some((value) => value === include)) {
+              list.push(include); // NB: De-duped.
+            }
+          } else {
+            declarations.push({ include, dir });
           }
-
-          draft.declarations.push({ include, dir });
         }
 
-        draft.declarations =
-          (draft.declarations || []).length === 0 ? undefined : draft.declarations;
-        draft.declarations = draft.declarations ? R.uniq(draft.declarations) : draft.declarations;
+        // Remove array if empty.
+        if (draft.declarations?.length === 0) draft.declarations = undefined;
       }
     });
   },

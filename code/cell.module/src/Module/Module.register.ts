@@ -67,8 +67,8 @@ export function registerChild(args: {
   const { bus, parent, child } = args;
 
   parent.add({
-    root: child,
     parent: args.within ? toNodeId(args.within) : undefined,
+    root: child,
   });
 
   bus.fire({
@@ -86,7 +86,7 @@ export function registerChild(args: {
 }
 
 /**
- * Listener for "Module/register"events.
+ * Listener for "Module/register" events.
  */
 export function listen<T extends P>(bus: B, module: t.IModule<T>) {
   rx.payload<t.IModuleRegisterEvent>(bus.event$, 'Module/register')

@@ -4,7 +4,6 @@ import { takeUntil } from 'rxjs/operators';
 import { t, is } from '../common';
 
 type O = Record<string, unknown>;
-type Event = t.Event<any>;
 
 /**
  * Factory for creating [state-object] mergers.
@@ -14,10 +13,10 @@ export function create(factory: t.StateObject['create']) {
    * Merge multiple state-objects together to produce a
    * single synchronized state.
    */
-  return <T extends { [key: string]: O }, E extends Event = any>(
+  return <T extends { [key: string]: O }, A extends string = string>(
     initial: T | Record<keyof T, t.IStateObject<T[keyof T]>>,
     dispose$?: Observable<any>,
-  ): t.StateMerger<T, E> => {
+  ): t.StateMerger<T, A> => {
     // Wrangle initial arg into a simple {inital} object.
     type S = t.IStateObject<T[keyof T]>;
 
@@ -34,14 +33,14 @@ export function create(factory: t.StateObject['create']) {
     }, {}) as T;
 
     // Setup the store.
-    const store = factory<T, E>(initial);
+    const store = factory<T, A>(initial);
     if (dispose$) {
       dispose$.subscribe(() => api.dispose());
     }
 
     const change = (key: keyof T, to: any) => store.change((draft) => (draft[key] = to));
 
-    const api: t.StateMerger<T, E> = {
+    const api: t.StateMerger<T, A> = {
       store,
 
       get state() {

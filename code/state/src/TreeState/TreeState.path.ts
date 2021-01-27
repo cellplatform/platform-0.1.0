@@ -1,14 +1,14 @@
 import { t, toNodeId } from '../common';
 import { TreeQuery } from '../TreeQuery';
 
-type O = Record<string, unknown>;
 type N = t.ITreeNode;
-type E = t.Event<O>;
 
 /**
  * Creates a [TreeStatePath]
  */
-export function create<T extends N, A extends E>(tree: t.ITreeState<T, A>): t.ITreeStatePath<T, A> {
+export function create<T extends N, A extends string>(
+  tree: t.ITreeState<T, A>,
+): t.ITreeStatePath<T, A> {
   type S = t.ITreeState<T, A>;
 
   const get = (tree: S, parts: string[]): S | undefined => {
