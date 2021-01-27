@@ -487,29 +487,46 @@ describe('ActionBuilder', () => {
       builder
         .select('  foo  ', fn1)
         .select('bar', fn1)
-        .select((config) => config.label('foo').handler(fn2).description('a thing'));
+        .select((config) =>
+          config
+            .label('foo')
+            .items(['one', { label: 'two', value: 2 }])
+            .multi(true)
+            .clearable(true)
+            .handler(fn2)
+            .description('a thing'),
+        );
 
       const items = model.state.items;
       expect(items.length).to.eql(3);
 
-      const button1 = items[0] as t.DevActionSelect;
-      const button2 = items[1] as t.DevActionSelect;
-      const button3 = items[2] as t.DevActionSelect;
+      const select1 = items[0] as t.DevActionSelect;
+      const select2 = items[1] as t.DevActionSelect;
+      const select3 = items[2] as t.DevActionSelect;
 
-      expect(button1.kind).to.eql('select');
-      expect(button1.label).to.eql('foo');
-      expect(button1.description).to.eql(undefined);
-      expect(button1.handler).to.eql(fn1);
+      expect(select1.kind).to.eql('select');
+      expect(select1.label).to.eql('foo');
+      expect(select1.description).to.eql(undefined);
+      expect(select1.items).to.eql([]);
+      expect(select1.handler).to.eql(fn1);
+      expect(select1.multi).to.eql(false);
+      expect(select1.clearable).to.eql(false);
 
-      expect(button2.kind).to.eql('select');
-      expect(button2.label).to.eql('bar');
-      expect(button2.description).to.eql(undefined);
-      expect(button2.handler).to.eql(fn1);
+      expect(select2.kind).to.eql('select');
+      expect(select2.label).to.eql('bar');
+      expect(select2.description).to.eql(undefined);
+      expect(select2.items).to.eql([]);
+      expect(select2.handler).to.eql(fn1);
+      expect(select2.multi).to.eql(false);
+      expect(select2.clearable).to.eql(false);
 
-      expect(button3.kind).to.eql('select');
-      expect(button3.label).to.eql('foo');
-      expect(button3.description).to.eql('a thing');
-      expect(button3.handler).to.eql(fn2);
+      expect(select3.kind).to.eql('select');
+      expect(select3.label).to.eql('foo');
+      expect(select3.description).to.eql('a thing');
+      expect(select3.items).to.eql(['one', { label: 'two', value: 2 }]);
+      expect(select3.handler).to.eql(fn2);
+      expect(select3.multi).to.eql(true);
+      expect(select3.clearable).to.eql(true);
     });
   });
 

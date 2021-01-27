@@ -48,4 +48,8 @@ export type IDevActionSelectEvent = {
   type: 'dev:action/Select';
   payload: IDevActionSelectPayload;
 };
-export type IDevActionSelectPayload = { ns: string; model: t.DevActionSelect; change: boolean };
+export type IDevActionSelectPayload = {
+  ns: string;
+  model: t.DevActionSelect;
+  changing?: t.DevActionSelectChanging;
+};

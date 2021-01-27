@@ -4,7 +4,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import { t } from '../../common';
 
-type Path = 'ctx/current' | 'env/viaAction' | 'env/viaSubject';
+type Path = 'ctx/current' | 'env/viaAction' | 'env/viaSubject' | 'items';
 
 /**
  * Causes a redraw of a component when the state of the Action model changes.
@@ -44,6 +44,8 @@ export function useRedraw(args: {
 
 function isChangedPath(paths: string[], patches: t.PatchSet) {
   return patches.next.some((patch) => {
-    return paths.some((path) => patch.path === path || patch.path.startsWith(`${path}/`));
+    return paths.some((path) => {
+      return patch.path === path || patch.path.startsWith(`${path}/`);
+    });
   });
 }

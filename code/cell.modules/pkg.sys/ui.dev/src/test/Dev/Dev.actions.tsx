@@ -22,6 +22,8 @@ type Ctx = {
 const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor.';
 
+let count = 0;
+
 /**
  * Actions
  */
@@ -32,9 +34,6 @@ export const actions = Actions<Ctx>()
   .button('change text', (e) => {
     e.ctx.count++;
     e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
-  })
-  .button('change label', (e) => {
-    console.log('e', e);
   })
 
   .hr()
@@ -50,21 +49,56 @@ export const actions = Actions<Ctx>()
   })
   .button((e) => e.label(`Ellipsis - ${LOREM}`))
   .button((e) => e.description(LOREM))
+  .button('button: change label', (e) => {
+    count++;
+    e.button.label = `count: ${count}`;
+    e.settings({ button: { description: `Lorem ipsum dolar sit ${count}` } });
+  })
+
   .hr(1, 0.15)
   .boolean('boolean (disabled)')
   .boolean('is running', (e) => {
-    if (e.change) e.ctx.isRunning = !Boolean(e.ctx.isRunning);
+    if (e.change) {
+      count++;
+      const isRunning = !e.ctx.isRunning;
+      e.ctx.isRunning = isRunning;
+      e.boolean.label = isRunning ? 'running' : 'stopped';
+      e.settings({
+        boolean: { description: `the thing is ${e.boolean.label} (${count})` },
+      });
+    }
     return Boolean(e.ctx.isRunning);
   })
 
   .hr(1, 0.15)
 
+  .select('select single', (e) => {
+    e.settings({
+      select: {
+        items: ['one', { label: 'two', value: { count: 2 } }, 'three'],
+        clearable: true,
+      },
+    });
+
+    const value = e.select.current[0]; // NB: always first.
+    e.select.label = value ? value.label : `select single`;
+    e.select.placeholder = !Boolean(value);
+  })
   .select((config) => {
     config
-      .label('select')
+      .label('select (multi)')
       .description('My set of dropdown options')
+      .items(['Chocolate', 'Strawberry', 'Vanilla'])
+      .multi(true)
       .handler((e) => {
-        console.log('e', toObject(e));
+        if (e.changing) count++;
+        e.select.description = `My dropdown changed (${count})`;
+        const value = e.select.current
+          .map((m) => m.label)
+          .join(', ')
+          .trim();
+        e.select.label = value ? value : `select (multi)`;
+        e.select.placeholder = !Boolean(value);
       });
   })
 
@@ -107,10 +141,6 @@ export const actions = Actions<Ctx>()
   .button('settings: {...}', (e) => e.settings({ layout: { background: -0.1, cropmarks: -0.6 } }))
 
   .hr()
-
-  .select('select (bottom)', (e) => {
-    // e.settings({ host: { background: -0.8 } });
-  })
 
   /**
    * Subject component renderer.

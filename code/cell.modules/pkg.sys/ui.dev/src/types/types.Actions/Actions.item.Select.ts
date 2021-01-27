@@ -1,4 +1,5 @@
 import { t } from '../common';
+import { ActionTypes } from 'react-select';
 
 /**
  * INPUT: A button with a toggle switch (boolean).
@@ -6,7 +7,6 @@ import { t } from '../common';
 export type DevActionSelect = t.DevActionSelectProps & {
   id: string;
   kind: 'select';
-  current?: any; // Latest value produced by the handler.
   handler?: t.DevActionSelectHandler<any>;
 };
 
@@ -16,7 +16,16 @@ export type DevActionSelect = t.DevActionSelectProps & {
 export type DevActionSelectProps = {
   label: string;
   description?: string;
-  items: DevActionSelectItem[];
+  placeholder?: boolean;
+  multi: boolean;
+  clearable: boolean;
+  items: (t.DevActionSelectItem | string)[];
+  current: t.DevActionSelectItem[];
 };
 
 export type DevActionSelectItem<V = any> = { label: string; value: V };
+
+export type DevActionSelectChanging = {
+  action: t.SelectActionTypes;
+  next: t.DevActionSelectItem[];
+};

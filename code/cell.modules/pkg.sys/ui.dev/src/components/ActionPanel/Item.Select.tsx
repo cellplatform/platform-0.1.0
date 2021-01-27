@@ -19,7 +19,6 @@ export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
 
   const { label, description } = model;
   const isActive = Boolean(model.handler);
-  // const value = Boolean(model.current);
 
   const [isSelectVisible, setIsSelectVisible] = useState<boolean>();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -45,9 +44,14 @@ export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
     setIsSelectVisible(false);
   };
 
-  const handleChange = (...args: any[]) => {
-    console.log('args', args);
+  const handleChange = (value: any, meta: { action: t.SelectActionTypes }) => {
     hideSelect();
+    const { action } = meta;
+    const next = (Array.isArray(value) ? value : [value]) as t.DevActionSelectItem[];
+    bus.fire({
+      type: 'dev:action/Select',
+      payload: { ns, model, changing: { action, next } },
+    });
   };
 
   const styles = {
@@ -66,11 +70,7 @@ export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
     },
   };
 
-  const options = [
-    { value: { foo: 'chocolate' }, label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' },
-  ];
+  const options = model.items.map((v) => (typeof v === 'string' ? { value: v, label: v } : v));
 
   const elSelect = (
     <div {...styles.select.outer}>
@@ -80,7 +80,8 @@ export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
           options={options}
           placeholder={label}
           menuIsOpen={isMenuOpen}
-          isMulti={true}
+          isMulti={model.multi}
+          isClearable={model.clearable}
           onBlur={handleSelectBlur}
           onChange={handleChange}
         />
@@ -95,9 +96,9 @@ export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
       <ButtonView
         label={label}
         description={description}
+        placeholder={model.placeholder}
         isActive={isActive}
         right={elExpandIcon}
-        // style={props.style}
         onClick={showSelect}
       />
       {elSelect}

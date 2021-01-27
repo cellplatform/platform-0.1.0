@@ -1,3 +1,5 @@
+export { ActionTypes as SelectActionTypes } from 'react-select';
+
 export * from '@platform/types';
 export * from '@platform/cell.types/lib/types.Module';
 

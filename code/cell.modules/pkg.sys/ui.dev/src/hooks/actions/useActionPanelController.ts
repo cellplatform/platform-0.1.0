@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { getAndStoreContext, Handler } from '../../api/Actions';
-import { toObject, rx, t } from '../../common';
+import { toObject, rx, t, time } from '../../common';
 
 type O = Record<string, unknown>;
 
@@ -78,12 +78,18 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
           type T = t.DevActionButton;
           type P = t.DevActionButtonHandlerArgs<any>;
           type S = t.DevActionHandlerSettings<P>;
+          type A = t.DevActionHandlerSettingsButtonArgs;
 
           Model.change('via:button', (draft) => {
             const { ctx, item, host, layout, env } = Model.payload<T>(id, draft);
             if (ctx && item) {
-              const settings: S = (args) => Handler.settings({ env, payload })(args);
-              const payload: P = { ctx, host, layout, settings };
+              const settings: S = (args) =>
+                Handler.settings<P, A>({ env, payload }, (settings) => {
+                  const obj = settings.button;
+                  if (obj) Object.keys(obj).forEach((key) => (item[key] = obj[key]));
+                })(args);
+              const button = item as t.DevActionButtonProps;
+              const payload: P = { ctx, host, layout, settings, button };
               handler(payload);
             }
           });
@@ -101,12 +107,19 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
           type T = t.DevActionBoolean;
           type P = t.DevActionBooleanHandlerArgs<any>;
           type S = t.DevActionHandlerSettings<P>;
+          type A = t.DevActionHandlerSettingsBooleanArgs;
 
           Model.change('via:boolean', (draft) => {
             const { ctx, item, host, layout, env } = Model.payload<T>(id, draft);
             if (ctx && item) {
-              const settings: S = (args) => Handler.settings({ env, payload })(args);
-              const payload: P = { ctx, change: e.change, host, layout, settings };
+              const settings: S = (args) =>
+                Handler.settings<P, A>({ env, payload }, (settings) => {
+                  const obj = settings.boolean;
+                  if (obj) Object.keys(obj).forEach((key) => (item[key] = obj[key]));
+                })(args);
+              const change = e.change;
+              const boolean = item as t.DevActionBooleanProps;
+              const payload: P = { ctx, change, host, layout, settings, boolean };
               item.current = handler(payload);
             }
           });
@@ -124,20 +137,21 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
           type T = t.DevActionSelect;
           type P = t.DevActionSelectHandlerArgs<any>;
           type S = t.DevActionHandlerSettings<P>;
+          type A = t.DevActionHandlerSettingsSelectArgs;
 
-          // console.log('id', id, handler);
-
-          Model.change('via:select', (draft) => {
+          const res = Model.change('via:select', (draft) => {
             const { ctx, item, host, layout, env } = Model.payload<T>(id, draft);
             if (ctx && item) {
-              const settings: S = (args) => Handler.settings({ env, payload })(args);
-              const payload: P = { ctx, change: e.change, host, layout, settings };
-              // item.current = handler(payload);
-
-              const r = handler(payload);
-
-              console.log('-------------------------------------------');
-              // console.log('r', r);
+              const settings: S = (args) =>
+                Handler.settings<P, A>({ env, payload }, (settings) => {
+                  const obj = settings.select;
+                  if (obj) Object.keys(obj).forEach((key) => (item[key] = obj[key]));
+                })(args);
+              const changing = e.changing;
+              const select = item as t.DevActionSelectProps;
+              const payload: P = { ctx, changing, host, layout, settings, select };
+              if (changing) select.current = changing.next; // Update the item to the latest selection.
+              handler(payload);
             }
           });
         }
@@ -145,16 +159,22 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
 
     /**
      * INITIALIZE
-     * Setup the initial model state by running each value producing handler.
+     *    Setup the initial model state by invoking
+     *    each value producing handler.
+     * NOTE:
+     *    The delayed tick allows all components to setup their hooks
+     *    before the initial state configuration is established.
      */
-    model.state.items.forEach((model) => {
-      if (model.kind === 'boolean' && model.handler) {
-        bus.fire({ type: 'dev:action/Boolean', payload: { ns, model, change: false } });
-      }
-
-      if (model.kind === 'select' && model.handler) {
-        bus.fire({ type: 'dev:action/Select', payload: { ns, model, change: false } });
-      }
+    time.delay(0, () => {
+      model.state.items.forEach((model) => {
+        if (model.kind === 'boolean' && model.handler) {
+          const change = false; // TODO 🐷 turn into change:{...}
+          bus.fire({ type: 'dev:action/Boolean', payload: { ns, model, change } });
+        }
+        if (model.kind === 'select' && model.handler) {
+          bus.fire({ type: 'dev:action/Select', payload: { ns, model } });
+        }
+      });
     });
 
     return () => dispose$.next();

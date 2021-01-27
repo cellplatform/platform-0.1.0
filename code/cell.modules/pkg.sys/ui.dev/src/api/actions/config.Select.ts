@@ -5,7 +5,15 @@ import { format, t, slug } from '../../common';
  */
 export function SelectConfig(params: any[]) {
   const LABEL = 'Unnamed';
-  const item: t.DevActionSelect = { id: slug(), kind: 'select', label: LABEL, items: [] };
+  const item: t.DevActionSelect = {
+    id: slug(),
+    kind: 'select',
+    label: LABEL,
+    multi: false,
+    clearable: false,
+    items: [],
+    current: [],
+  };
 
   const config: t.DevActionSelectConfigArgs<any> = {
     label(value) {
@@ -14,6 +22,18 @@ export function SelectConfig(params: any[]) {
     },
     description(value) {
       item.description = format.string(value, { trim: true });
+      return config;
+    },
+    items(list) {
+      if (Array.isArray(list)) item.items = list;
+      return config;
+    },
+    multi(value) {
+      item.multi = value;
+      return config;
+    },
+    clearable(value) {
+      item.clearable = value;
       return config;
     },
     handler(handler) {

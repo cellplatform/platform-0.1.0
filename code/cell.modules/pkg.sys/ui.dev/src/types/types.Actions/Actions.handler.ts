@@ -30,27 +30,48 @@ export type DevActionHandlerArgs<C> = {
 /**
  * Method that updates the state of the harness.
  */
-export type DevActionHandlerSettings<T> = (settings: t.DevActionHandlerSettingsArgs) => T;
+export type DevActionHandlerSettings<
+  T,
+  A extends t.DevActionHandlerSettingsArgs = t.DevActionHandlerSettingsArgs
+> = (settings: A) => T;
 export type DevActionHandlerSettingsArgs = {
   host?: t.IDevHost | null;
   layout?: t.IDevHostedLayout | null;
 };
 
 /**
- * Simple button handler.
+ * Simple Button handler.
  */
 export type DevActionButtonHandler<C> = (e: t.DevActionButtonHandlerArgs<C>) => void;
 export type DevActionButtonHandlerArgs<C> = t.DevActionHandlerArgs<C> & {
-  readonly settings: t.DevActionHandlerSettings<DevActionButtonHandlerArgs<C>>;
+  readonly settings: t.DevActionHandlerSettings<
+    DevActionButtonHandlerArgs<C>,
+    DevActionHandlerSettingsButtonArgs
+  >;
+  readonly button: t.DevActionButtonProps;
+};
+export type DevActionHandlerSettingsButtonArgs = t.DevActionHandlerSettingsArgs & {
+  button?: Partial<t.DevActionButtonProps>;
 };
 
 /**
  * Boolean (switch) handler.
  */
-export type DevActionBooleanHandler<C> = (e: t.DevActionBooleanHandlerArgs<C>) => boolean; // Return the state of the switch.
+export type DevActionBooleanHandler<C> = (e: t.DevActionBooleanHandlerArgs<C>) => boolean; // TODO 🐷 make void (??)
 export type DevActionBooleanHandlerArgs<C> = t.DevActionHandlerArgs<C> & {
-  readonly settings: t.DevActionHandlerSettings<DevActionBooleanHandlerArgs<C>>;
+  readonly settings: t.DevActionHandlerSettings<
+    DevActionBooleanHandlerArgs<C>,
+    DevActionHandlerSettingsBooleanArgs
+  >;
+  readonly boolean: t.DevActionBooleanProps;
+
+  /**
+   * TODO 🐷 change into a {changing}
+   */
   readonly change: boolean; // Flag indicating if the handler is being called because the value needs to change.
+};
+export type DevActionHandlerSettingsBooleanArgs = t.DevActionHandlerSettingsArgs & {
+  boolean?: Partial<t.DevActionBooleanProps>;
 };
 
 /**
@@ -58,6 +79,13 @@ export type DevActionBooleanHandlerArgs<C> = t.DevActionHandlerArgs<C> & {
  */
 export type DevActionSelectHandler<C> = (e: t.DevActionSelectHandlerArgs<C>) => void; // TODO 🐷
 export type DevActionSelectHandlerArgs<C> = t.DevActionHandlerArgs<C> & {
-  readonly settings: t.DevActionHandlerSettings<DevActionSelectHandlerArgs<C>>;
-  readonly change: boolean; // Flag indicating if the handler is being called because the value needs to change.
+  readonly settings: t.DevActionHandlerSettings<
+    DevActionSelectHandlerArgs<C>,
+    DevActionHandlerSettingsSelectArgs
+  >;
+  readonly select: t.DevActionSelectProps;
+  readonly changing?: t.DevActionSelectChanging;
+};
+export type DevActionHandlerSettingsSelectArgs = t.DevActionHandlerSettingsArgs & {
+  select?: Partial<t.DevActionSelectProps>;
 };

@@ -59,12 +59,15 @@ export type DevActionBooleanConfigArgs<Ctx extends O> = {
 };
 
 /**
- * Boolean (Switch)
+ * Select (Dropdown)
  */
 export type DevActionSelectConfig<Ctx extends O> = (args: DevActionSelectConfigArgs<Ctx>) => void;
 export type DevActionSelectConfigArgs<Ctx extends O> = {
   label(value: string): DevActionSelectConfigArgs<Ctx>;
   description(value: string): DevActionSelectConfigArgs<Ctx>;
+  items(list: (t.DevActionSelectItem | string)[]): DevActionSelectConfigArgs<Ctx>;
+  multi(value: boolean): DevActionSelectConfigArgs<Ctx>;
+  clearable(value: boolean): DevActionSelectConfigArgs<Ctx>;
   handler(handler: t.DevActionSelectHandler<Ctx>): DevActionSelectConfigArgs<Ctx>;
 };
 

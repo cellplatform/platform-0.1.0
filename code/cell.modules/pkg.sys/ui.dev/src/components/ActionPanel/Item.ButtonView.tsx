@@ -9,6 +9,7 @@ import { Icons } from '../Icons';
 export type ButtonViewProps = {
   label: React.ReactNode;
   description?: React.ReactNode;
+  placeholder?: boolean;
   isActive: boolean;
   icon?: t.IIcon;
   right?: React.ReactNode;
@@ -16,7 +17,7 @@ export type ButtonViewProps = {
   onClick?: () => void;
 };
 export const ButtonView: React.FC<ButtonViewProps> = (props) => {
-  const { isActive, label, description, onClick } = props;
+  const { isActive, label, description, placeholder, onClick } = props;
   const [isOver, setIsOver] = useState<boolean>(false);
   const [isDown, setIsDown] = useState<boolean>(false);
 
@@ -46,17 +47,18 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
         marginLeft: 6,
         marginTop: 5,
         overflow: 'hidden',
-        transform: isDown ? `translateY(1px)` : undefined,
       }),
       label: css({
         width: '100%',
         fontFamily: constants.FONT.MONO,
-        color: isOver ? COLORS.BLUE : COLORS.DARK,
-        opacity: isActive ? 1 : 0.6,
+        fontStyle: placeholder ? 'italic' : undefined,
         fontSize: 12,
+        color: isOver && isActive ? COLORS.BLUE : COLORS.DARK,
+        opacity: !isActive ? 0.6 : !placeholder ? 1 : isOver ? 1 : 0.6,
         whiteSpace: 'nowrap',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
+        transform: isDown ? `translateY(1px)` : undefined,
       }),
       description: css({
         fontSize: 11,

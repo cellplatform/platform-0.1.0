@@ -17,7 +17,10 @@ export const Handler = {
    * Prepares a [settings()] function that is passed to handlers for
    * modifying the environment state in standard ways.
    */
-  settings<T>(args: { env: t.DevActionsModelEnv; payload: T }) {
+  settings<T, A extends t.DevActionHandlerSettingsArgs = t.DevActionHandlerSettingsArgs>(
+    args: { env: t.DevActionsModelEnv; payload: T },
+    onInvoke?: (settings: A) => void,
+  ) {
     const { env } = args;
     const fn: t.DevActionHandlerSettings<T> = (settings) => {
       const { layout, host } = settings || {};
@@ -27,6 +30,7 @@ export const Handler = {
       if (host !== undefined) {
         env.host = host === null ? {} : { ...env.host, ...host };
       }
+      if (typeof onInvoke === 'function') onInvoke(settings as A);
       return args.payload;
     };
     return fn;
