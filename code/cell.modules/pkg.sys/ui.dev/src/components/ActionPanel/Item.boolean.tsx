@@ -19,10 +19,14 @@ export const ItemBoolean: React.FC<ItemBooleanProps> = (props) => {
   const isActive = Boolean(model.handler);
   const value = Boolean(model.current);
 
-  const fire = (change: boolean) => {
+  const fire = () => {
     bus.fire({
       type: 'dev:action/Boolean',
-      payload: { ns, model, change },
+      payload: {
+        ns,
+        model,
+        changing: { next: !value },
+      },
     });
   };
 
@@ -35,7 +39,7 @@ export const ItemBoolean: React.FC<ItemBooleanProps> = (props) => {
       isActive={isActive}
       right={elSwitch}
       style={props.style}
-      onClick={() => fire(true)}
+      onClick={fire}
     />
   );
 };

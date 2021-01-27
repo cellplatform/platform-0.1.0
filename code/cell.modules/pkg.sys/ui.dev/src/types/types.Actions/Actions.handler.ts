@@ -57,18 +57,14 @@ export type DevActionHandlerSettingsButtonArgs = t.DevActionHandlerSettingsArgs 
 /**
  * Boolean (switch) handler.
  */
-export type DevActionBooleanHandler<C> = (e: t.DevActionBooleanHandlerArgs<C>) => boolean; // TODO 🐷 make void (??)
+export type DevActionBooleanHandler<C> = (e: t.DevActionBooleanHandlerArgs<C>) => void;
 export type DevActionBooleanHandlerArgs<C> = t.DevActionHandlerArgs<C> & {
   readonly settings: t.DevActionHandlerSettings<
     DevActionBooleanHandlerArgs<C>,
     DevActionHandlerSettingsBooleanArgs
   >;
   readonly boolean: t.DevActionBooleanProps;
-
-  /**
-   * TODO 🐷 change into a {changing}
-   */
-  readonly change: boolean; // Flag indicating if the handler is being called because the value needs to change.
+  readonly changing?: t.DevActionBooleanChanging; // Exists when an interaction has causes the state to change.
 };
 export type DevActionHandlerSettingsBooleanArgs = t.DevActionHandlerSettingsArgs & {
   boolean?: Partial<t.DevActionBooleanProps>;
@@ -77,14 +73,14 @@ export type DevActionHandlerSettingsBooleanArgs = t.DevActionHandlerSettingsArgs
 /**
  * Select (dropdown) handler.
  */
-export type DevActionSelectHandler<C> = (e: t.DevActionSelectHandlerArgs<C>) => void; // TODO 🐷
+export type DevActionSelectHandler<C> = (e: t.DevActionSelectHandlerArgs<C>) => void;
 export type DevActionSelectHandlerArgs<C> = t.DevActionHandlerArgs<C> & {
   readonly settings: t.DevActionHandlerSettings<
     DevActionSelectHandlerArgs<C>,
     DevActionHandlerSettingsSelectArgs
   >;
   readonly select: t.DevActionSelectProps;
-  readonly changing?: t.DevActionSelectChanging;
+  readonly changing?: t.DevActionSelectChanging; // Exists when an interaction has causes the state to change.
 };
 export type DevActionHandlerSettingsSelectArgs = t.DevActionHandlerSettingsArgs & {
   select?: Partial<t.DevActionSelectProps>;

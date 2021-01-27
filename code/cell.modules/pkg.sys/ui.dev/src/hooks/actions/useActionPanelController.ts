@@ -117,10 +117,11 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
                   const obj = settings.boolean;
                   if (obj) Object.keys(obj).forEach((key) => (item[key] = obj[key]));
                 })(args);
-              const change = e.change;
+              const changing = e.changing;
               const boolean = item as t.DevActionBooleanProps;
-              const payload: P = { ctx, change, host, layout, settings, boolean };
-              item.current = handler(payload);
+              const payload: P = { ctx, changing, host, layout, settings, boolean };
+              if (changing) item.current = changing.next;
+              handler(payload);
             }
           });
         }
@@ -139,7 +140,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
           type S = t.DevActionHandlerSettings<P>;
           type A = t.DevActionHandlerSettingsSelectArgs;
 
-          const res = Model.change('via:select', (draft) => {
+          Model.change('via:select', (draft) => {
             const { ctx, item, host, layout, env } = Model.payload<T>(id, draft);
             if (ctx && item) {
               const settings: S = (args) =>
@@ -150,7 +151,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
               const changing = e.changing;
               const select = item as t.DevActionSelectProps;
               const payload: P = { ctx, changing, host, layout, settings, select };
-              if (changing) select.current = changing.next; // Update the item to the latest selection.
+              if (changing) item.current = changing.next; // Update the item to the latest selection.
               handler(payload);
             }
           });
@@ -168,8 +169,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
     time.delay(0, () => {
       model.state.items.forEach((model) => {
         if (model.kind === 'boolean' && model.handler) {
-          const change = false; // TODO 🐷 turn into change:{...}
-          bus.fire({ type: 'dev:action/Boolean', payload: { ns, model, change } });
+          bus.fire({ type: 'dev:action/Boolean', payload: { ns, model } });
         }
         if (model.kind === 'select' && model.handler) {
           bus.fire({ type: 'dev:action/Select', payload: { ns, model } });

@@ -39,7 +39,11 @@ export type IDevActionBooleanEvent = {
   type: 'dev:action/Boolean';
   payload: IDevActionBooleanPayload;
 };
-export type IDevActionBooleanPayload = { ns: string; model: t.DevActionBoolean; change: boolean };
+export type IDevActionBooleanPayload = {
+  ns: string;
+  model: t.DevActionBoolean;
+  changing?: t.DevActionBooleanChanging;
+};
 
 /**
  * Fires for the Select (dropdown) action.

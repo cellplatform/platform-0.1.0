@@ -6,7 +6,6 @@ import { t } from '../common';
 export type DevActionBoolean = t.DevActionBooleanProps & {
   id: string;
   kind: 'boolean';
-  current?: boolean; // Latest value produced by the handler.
   handler?: t.DevActionBooleanHandler<any>;
 };
 
@@ -16,4 +15,7 @@ export type DevActionBoolean = t.DevActionBooleanProps & {
 export type DevActionBooleanProps = {
   label: string;
   description?: string;
+  current?: boolean; // Latest value produced by the handler.
 };
+
+export type DevActionBooleanChanging = { next: boolean };

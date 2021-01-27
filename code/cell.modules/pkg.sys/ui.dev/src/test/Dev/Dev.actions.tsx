@@ -58,16 +58,16 @@ export const actions = Actions<Ctx>()
   .hr(1, 0.15)
   .boolean('boolean (disabled)')
   .boolean('is running', (e) => {
-    if (e.change) {
+    if (e.changing) {
       count++;
-      const isRunning = !e.ctx.isRunning;
+      const isRunning = e.changing.next;
       e.ctx.isRunning = isRunning;
       e.boolean.label = isRunning ? 'running' : 'stopped';
-      e.settings({
-        boolean: { description: `the thing is ${e.boolean.label} (${count})` },
-      });
+      const description = `the thing is ${e.boolean.label} (${count})`;
+      e.settings({ boolean: { description } });
     }
-    return Boolean(e.ctx.isRunning);
+
+    e.boolean.current = e.ctx.isRunning;
   })
 
   .hr(1, 0.15)
@@ -193,10 +193,6 @@ export const actions = Actions<Ctx>()
     if (ctx.myLayout === 'single:fill-margin') {
       return e.render(el, { position: 80 });
     }
-
-    /**
-     * TODO 🐷
-     */
 
     if (ctx.myLayout === 'double-x') {
       return e
