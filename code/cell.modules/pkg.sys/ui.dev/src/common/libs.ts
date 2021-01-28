@@ -1,5 +1,5 @@
-import { equals, clone, clamp } from 'ramda';
-export const R = { equals, clone, clamp };
+import { equals, clone, clamp, uniq } from 'ramda';
+export const R = { equals, clone, clamp, uniq };
 
 import { css, color, CssValue, style } from '@platform/css';
 export { css, color, CssValue, style };
@@ -18,4 +18,3 @@ export { StateObject };
 export const toObject = StateObject.toObject;
 
 export { markdown } from '@platform/util.markdown';
-export { hash } from '@platform/util.hash';

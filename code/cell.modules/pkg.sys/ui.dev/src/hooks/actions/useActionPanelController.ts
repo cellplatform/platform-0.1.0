@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { Context, Handler, Select } from '../../api/Actions';
-import { toObject, rx, t, time } from '../../common';
+import { R, rx, t, time } from '../../common';
 
 type O = Record<string, unknown>;
 
@@ -80,25 +80,26 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
      * Monitor for changes to individual item models and alert listeners.
      * This looks for patch changes to the path:
      *
-     *    "item/<index>/current"
+     *    "item/<index>"
      *
      */
     model.event.changed$
       .pipe(
         filter((e) => e.op === 'update'),
-        map((e) => e.patches.next.filter((p) => p.path.match(/^items\/\d+\/current/))),
+        map((e) => e.patches.next.filter((p) => p.path.match(/^items\/\d+\//))),
         filter((patches) => patches.length > 0),
         map((patches) => patches.map((patch) => patch.path)),
-        map((paths) => paths.map((path) => path.replace(/^items\//, '').replace(/\/current$/, ''))),
-        map((paths) => paths.map((path) => parseInt(path))),
+        map((paths) => paths.map((path) => path.replace(/^items\//, ''))),
+        map((paths) => paths.map((path) => parseInt(path.substring(0, path.indexOf('/'))))),
+        map((indexes) => R.uniq(indexes)),
       )
       .subscribe((indexes) => {
         indexes.forEach((index) => {
-          const item = model.state.items[index];
-          if (item) {
+          const model = Model.find(index).item;
+          if (model) {
             bus.fire({
               type: 'dev:action/item:changed',
-              payload: { ns, index, model: item },
+              payload: { ns, index, model },
             });
           }
         });

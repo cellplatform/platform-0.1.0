@@ -23,7 +23,9 @@ export function useItemMonitor<M extends t.DevActionItem>(args: {
         filter((e) => e.model.id === args.model.id),
         distinctUntilChanged((prev, next) => R.equals(prev, next)),
       )
-      .subscribe((e) => setModel(e.model as M));
+      .subscribe((e) => {
+        setModel(e.model as M);
+      });
 
     return () => dispose$.next();
   }, []); // eslint-disable-line

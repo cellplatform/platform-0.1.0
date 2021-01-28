@@ -1,4 +1,4 @@
-import { format, t, DEFAULT, slug, hash } from '../../common';
+import { DEFAULT, format, slug, t } from '../../common';
 
 export const Title = {
   /**
