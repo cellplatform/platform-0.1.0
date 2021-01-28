@@ -19,8 +19,7 @@ type Ctx = {
   isRunning?: boolean;
 };
 
-const LOREM =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor.';
+const LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem.';
 
 let count = 0;
 
@@ -39,15 +38,16 @@ export const actions = Actions<Ctx>()
     count++;
 
     const styles = {
-      bgr: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */ }),
+      bgr: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' }),
       desc: css({
         borderLeft: `solid 8px ${color.format(-0.1)}`,
         paddingLeft: 8,
+        PaddingY: 5,
       }),
     };
 
     const label = <div {...styles.bgr}>Hello ({count})</div>;
-    const description = <div {...css(styles.bgr, styles.desc)}>{`${LOREM} - (${count})`}</div>;
+    const description = <div {...css(styles.bgr, styles.desc)}>{`${LOREM} (${count})`}</div>;
     e.button.label = label;
     e.settings({ button: { description } });
   })
@@ -65,16 +65,27 @@ export const actions = Actions<Ctx>()
   })
   .button((config) => config.label(`Ellipsis - ${LOREM}`))
   .button((config) => null)
-  .button((config) =>
+  .button((config) => {
+    const markdown = () => {
+      let text = '';
+      text = `${text} *I am italic*, **I am bold** \`code\` `;
+      text = `${text} \n- one\n- two\n - three`;
+      text = `${text}\n\n${LOREM}\n\n${LOREM} (${count})`;
+      return text.trim();
+    };
     config
-      .label('**markdown**')
-      .description(`*I am italic*, **I am bold** \`code\` ${LOREM}`)
-      .handler((e) => null),
-  )
+      .label('markdown')
+      .description(markdown())
+      .handler((e) => {
+        count++;
+        console.log('count', count);
+        e.button.description = markdown();
+      });
+  })
   .button('button: change label', (e) => {
     count++;
     e.button.label = `count: ${count}`;
-    e.settings({ button: { description: `Lorem ipsum dolar sit ${count}` } });
+    e.settings({ button: { description: `Lorem ipsum dolar sit (${count})` } });
   })
 
   .hr(1, 0.15)

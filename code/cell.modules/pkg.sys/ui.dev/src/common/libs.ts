@@ -1,7 +1,7 @@
 import { equals, clone, clamp, uniq } from 'ramda';
 export const R = { equals, clone, clamp, uniq };
 
-import { css, color, CssValue, style } from '@platform/css';
+import { css, color, CssValue, style,  } from '@platform/css';
 export { css, color, CssValue, style };
 export const formatColor = color.format;
 
@@ -17,4 +17,4 @@ import { StateObject } from '@platform/state';
 export { StateObject };
 export const toObject = StateObject.toObject;
 
-export { markdown } from '@platform/util.markdown';
+export { Markdown } from '@platform/util.markdown';

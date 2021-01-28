@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 
-import { COLORS, constants, css, CssValue, t, markdown, DEFAULT } from '../../common';
+import { COLORS, constants, css, CssValue, t, DEFAULT, color } from '../../common';
 import { Icons } from '../Icons';
+import { Markdown } from '../Markdown';
 
 /**
  * The button view, with no smarts about the event bus.
@@ -61,9 +62,9 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
         transform: isDown ? `translateY(1px)` : undefined,
       }),
       description: css({
-        fontSize: 11,
         marginTop: 4,
-        opacity: 0.6,
+        color: color.format(-0.4),
+        fontSize: 11,
       }),
     },
   };
@@ -84,8 +85,11 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
 
   const Icon = props.icon || Icons.Variable;
 
-  const label = props.label ? formatText(props.label) : DEFAULT.UNNAMED;
-  const description = props.description ? formatText(props.description) : undefined;
+  const label = props.label ? props.label : DEFAULT.UNNAMED;
+  const description = props.description ? (
+    // ? asMarkdown(props.description, styles.body.description)
+    <Markdown style={styles.body.description}>{props.description}</Markdown>
+  ) : undefined;
 
   return (
     <div {...css(styles.base, props.style)}>
@@ -99,25 +103,10 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
         <Icon color={isOver ? COLORS.BLUE : COLORS.DARK} size={20} style={styles.main.icon} />
         <div {...styles.body.outer}>
           <div {...styles.body.label}>{label}</div>
-          {description && <div {...styles.body.description}>{description}</div>}
+          {description}
         </div>
         {props.right}
       </div>
     </div>
   );
 };
-
-/**
- * [Helpers]
- */
-
-function formatText(value?: string | t.ReactNode) {
-  if (typeof value !== 'string') return value;
-
-  const __html = markdown
-    .toHtmlSync(value)
-    .replace(/^\<p\>/, '')
-    .replace(/\<\/\p\>$/, '');
-
-  return <div dangerouslySetInnerHTML={{ __html }} />;
-}

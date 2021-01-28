@@ -40,7 +40,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   const elItems = items.map((item, i) => <Item key={i} ns={ns} model={item} bus={bus} />);
 
   return (
-    <div {...css(styles.base, props.style)} className={'dev-ActionPanel'}>
+    <div {...css(styles.base, props.style)} className={constants.CSS.ACTIONS}>
       {elItems}
       {items.length > 0 && <div {...styles.spacer} />}
     </div>

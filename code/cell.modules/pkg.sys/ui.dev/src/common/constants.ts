@@ -35,3 +35,8 @@ export const DEFAULT = {
   UNTITLED,
   UNNAMED,
 };
+
+export const CSS = {
+  ACTIONS: 'uid-actions',
+  MARKDOWN: 'uid-markdown',
+};
