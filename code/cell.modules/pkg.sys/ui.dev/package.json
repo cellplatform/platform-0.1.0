@@ -25,6 +25,7 @@
     "@platform/state": "^0.7.27",
     "@platform/ui.icon": "^0.0.181",
     "@platform/ui.spinner": "^0.0.178",
+    "@platform/util.hash": "^0.0.50",
     "@platform/util.markdown": "^0.0.92",
     "preset.env": "^0.0.11",
     "react-icons": "^4.1.0",

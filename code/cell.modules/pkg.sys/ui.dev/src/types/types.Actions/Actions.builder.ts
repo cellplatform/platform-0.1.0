@@ -30,7 +30,6 @@ export type DevActionsModelInputMethods<Ctx extends O> = {
   button(config: DevActionButtonConfig<Ctx>): t.DevActions<Ctx>;
   boolean(label: string, handler?: t.DevActionBooleanHandler<Ctx>): t.DevActions<Ctx>;
   boolean(config: DevActionBooleanConfig<Ctx>): t.DevActions<Ctx>;
-  select(label: string, handler?: t.DevActionSelectHandler<Ctx>): t.DevActions<Ctx>;
   select(config: DevActionSelectConfig<Ctx>): t.DevActions<Ctx>;
   hr(height?: number, opacity?: number, margin?: t.DevEdgeSpacing): t.DevActions<Ctx>;
   hr(config?: DevActionHrConfig<Ctx>): t.DevActions<Ctx>;
@@ -65,7 +64,10 @@ export type DevActionSelectConfig<Ctx extends O> = (args: DevActionSelectConfigA
 export type DevActionSelectConfigArgs<Ctx extends O> = {
   label(value: string | t.ReactNode): DevActionSelectConfigArgs<Ctx>;
   description(value: string | t.ReactNode): DevActionSelectConfigArgs<Ctx>;
-  items(list: (t.DevActionSelectItem | string)[]): DevActionSelectConfigArgs<Ctx>;
+  items(list: t.DevActionSelectItemInput[]): DevActionSelectConfigArgs<Ctx>;
+  initial(
+    value: t.DevActionSelectItemInput | t.DevActionSelectItemInput[],
+  ): DevActionSelectConfigArgs<Ctx>;
   multi(value: boolean): DevActionSelectConfigArgs<Ctx>;
   clearable(value: boolean): DevActionSelectConfigArgs<Ctx>;
   handler(handler: t.DevActionSelectHandler<Ctx>): DevActionSelectConfigArgs<Ctx>;

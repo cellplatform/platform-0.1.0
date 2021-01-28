@@ -1,10 +1,10 @@
 import { DEFAULT, defaultValue, t } from '../../common';
-import { BooleanConfig } from './config.Boolean';
-import { SelectConfig } from './config.Select';
-import { ButtonConfig } from './config.Button';
-import { HrConfig } from './config.Hr';
-import { TitleConfig } from './config.Title';
-import { getAndStoreContext } from './context';
+import { Boolean } from './config.Boolean';
+import { Button } from './config.Button';
+import { Hr } from './config.Hr';
+import { Select } from './config.Select';
+import { Title } from './config.Title';
+import { Context } from './Context';
 import { renderList } from './render.List';
 import { renderSubject } from './render.Subject';
 
@@ -34,7 +34,7 @@ export const handlers: t.BuilderHandlers<
   /**
    * Derives the current context ("ctx") for the builder.
    */
-  toContext: (args) => getAndStoreContext(args.model),
+  toContext: (args) => Context.getAndStore(args.model),
 
   /**
    * Create a clone of the builder (optionally changing the context factory.)
@@ -116,7 +116,7 @@ export const handlers: t.BuilderHandlers<
    * Button.
    */
   button(args) {
-    const { item } = ButtonConfig(args.params);
+    const { item } = Button.config(args.params);
     args.model.change((draft) => draft.items.push(item));
   },
 
@@ -124,7 +124,7 @@ export const handlers: t.BuilderHandlers<
    * Boolean (Switch).
    */
   boolean(args) {
-    const { item } = BooleanConfig(args.params);
+    const { item } = Boolean.config(args.params);
     args.model.change((draft) => draft.items.push(item));
   },
 
@@ -132,7 +132,7 @@ export const handlers: t.BuilderHandlers<
    * Boolean (Switch).
    */
   select(args) {
-    const { item } = SelectConfig(args.params);
+    const { item } = Select.config(args.params);
     args.model.change((draft) => draft.items.push(item));
   },
 
@@ -140,7 +140,7 @@ export const handlers: t.BuilderHandlers<
    * Horizontal rule.
    */
   hr(args) {
-    const { item } = HrConfig(args.params);
+    const { item } = Hr.config(args.params);
     args.model.change((draft) => draft.items.push(item));
   },
 
@@ -148,7 +148,7 @@ export const handlers: t.BuilderHandlers<
    * Title block.
    */
   title(args) {
-    const { item } = TitleConfig(args.params);
+    const { item } = Title.config(args.params);
     args.model.change((draft) => draft.items.push(item));
   },
 };

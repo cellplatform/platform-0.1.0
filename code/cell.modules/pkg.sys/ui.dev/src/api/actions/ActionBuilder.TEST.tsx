@@ -485,12 +485,12 @@ describe('ActionBuilder', () => {
       const fn1: t.DevActionSelectHandler<any> = () => true;
       const fn2: t.DevActionSelectHandler<any> = () => false;
       builder
-        .select('  foo  ', fn1)
-        .select('bar', fn1)
+        .select((config) => config.label('  foo  ').handler(fn1))
         .select((config) =>
           config
-            .label('foo')
+            .label('bar')
             .items(['one', { label: 'two', value: 2 }])
+            .initial(2)
             .multi(true)
             .clearable(true)
             .handler(fn2)
@@ -498,35 +498,28 @@ describe('ActionBuilder', () => {
         );
 
       const items = model.state.items;
-      expect(items.length).to.eql(3);
+      expect(items.length).to.eql(2);
 
       const select1 = items[0] as t.DevActionSelect;
       const select2 = items[1] as t.DevActionSelect;
-      const select3 = items[2] as t.DevActionSelect;
 
       expect(select1.kind).to.eql('select');
       expect(select1.label).to.eql('foo');
       expect(select1.description).to.eql(undefined);
       expect(select1.items).to.eql([]);
+      expect(select1.initial).to.eql(undefined);
       expect(select1.handler).to.eql(fn1);
       expect(select1.multi).to.eql(false);
       expect(select1.clearable).to.eql(false);
 
       expect(select2.kind).to.eql('select');
       expect(select2.label).to.eql('bar');
-      expect(select2.description).to.eql(undefined);
-      expect(select2.items).to.eql([]);
-      expect(select2.handler).to.eql(fn1);
-      expect(select2.multi).to.eql(false);
-      expect(select2.clearable).to.eql(false);
-
-      expect(select3.kind).to.eql('select');
-      expect(select3.label).to.eql('foo');
-      expect(select3.description).to.eql('a thing');
-      expect(select3.items).to.eql(['one', { label: 'two', value: 2 }]);
-      expect(select3.handler).to.eql(fn2);
-      expect(select3.multi).to.eql(true);
-      expect(select3.clearable).to.eql(true);
+      expect(select2.description).to.eql('a thing');
+      expect(select2.items).to.eql(['one', { label: 'two', value: 2 }]);
+      expect(select2.initial).to.eql(2);
+      expect(select2.handler).to.eql(fn2);
+      expect(select2.multi).to.eql(true);
+      expect(select2.clearable).to.eql(true);
     });
   });
 

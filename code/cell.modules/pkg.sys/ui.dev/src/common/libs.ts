@@ -18,3 +18,4 @@ export { StateObject };
 export const toObject = StateObject.toObject;
 
 export { markdown } from '@platform/util.markdown';
+export { hash } from '@platform/util.hash';

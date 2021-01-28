@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { constants, css, defaultValue, t } from '../../common';
+import { constants, css, defaultValue, t, hash } from '../../common';
 import { useActionPanelController, useRedraw } from '../../hooks/Actions';
 import { Item } from './Item';
 
@@ -33,7 +33,8 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   };
 
   const elItems = items.map((item, i) => {
-    return <Item key={i} ns={ns} model={item} bus={bus} />;
+    const key = hash.sha256(item);
+    return <Item key={key} ns={ns} model={item} bus={bus} />;
   });
 
   return (

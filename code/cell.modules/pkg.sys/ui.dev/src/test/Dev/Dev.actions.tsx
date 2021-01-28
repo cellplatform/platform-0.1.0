@@ -1,6 +1,6 @@
 import React from 'react';
 import { Actions, toObject } from '../..';
-import { css, COLORS } from '../../common';
+import { css, COLORS, color } from '../../common';
 import { ObjectView } from '@platform/ui.object';
 
 type SampleLayout =
@@ -22,10 +22,6 @@ type Ctx = {
 const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor.';
 
-const styles = {
-  bgr: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */ }),
-};
-
 let count = 0;
 
 /**
@@ -40,8 +36,18 @@ export const actions = Actions<Ctx>()
     e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
   })
   .button('inject React', (e) => {
-    const label = <div {...styles.bgr}>Hello</div>;
-    const description = <div {...styles.bgr}>{LOREM}</div>;
+    count++;
+
+    const styles = {
+      bgr: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */ }),
+      desc: css({
+        borderLeft: `solid 8px ${color.format(-0.1)}`,
+        paddingLeft: 8,
+      }),
+    };
+
+    const label = <div {...styles.bgr}>Hello ({count})</div>;
+    const description = <div {...css(styles.bgr, styles.desc)}>{`${LOREM} - (${count})`}</div>;
     e.button.label = label;
     e.settings({ button: { description } });
   })
@@ -88,18 +94,18 @@ export const actions = Actions<Ctx>()
 
   .hr(1, 0.15)
 
-  .select('select single', (e) => {
-    e.settings({
-      select: {
-        items: ['one', { label: 'two', value: { count: 2 } }, 'three'],
-        clearable: true,
-      },
-    });
-
-    const value = e.select.current[0]; // NB: always first.
-    e.select.label = value ? value.label : `select single`;
-    e.select.placeholder = !Boolean(value);
-  })
+  .select((config) =>
+    config
+      .label('select single')
+      .items(['one', { label: 'two', value: { count: 2 } }, 3])
+      .initial(3)
+      .clearable(true)
+      .handler((e) => {
+        const value = e.select.current[0]; // NB: always first.
+        e.select.label = value ? value.label : `select single`;
+        e.select.placeholder = !Boolean(value);
+      }),
+  )
 
   .select((config) => {
     config

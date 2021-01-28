@@ -32,7 +32,12 @@ export type BuilderModel<M extends O, A extends string = string> = {
 export type BuilderModelChange<M extends O, A extends string = string> = (
   fn: (draft: M) => void,
   options?: { action?: A },
-) => void;
+) => BuilderModelChangeResponse<M, A>;
+
+export type BuilderModelChangeResponse<
+  M extends O,
+  A extends string
+> = t.IStateObjectChangeResponse<M, A>;
 
 /**
  * API Handlers

@@ -3,16 +3,26 @@ import { t } from '../common';
 /**
  * State change actions.
  */
-export type DevActionsChangeType = 'via:button' | 'via:boolean' | 'via:select';
+export type DevActionsChangeType = 'via:init' | 'via:button' | 'via:boolean' | 'via:select';
 
 /**
  * Events
  */
 export type DevActionEvent =
+  | IDevActionsInitEvent
   | IDevActionItemChangedEvent
   | IDevActionButtonEvent
   | IDevActionBooleanEvent
   | IDevActionSelectEvent;
+
+/**
+ * Fires when a single action Item model's state changes.
+ */
+export type IDevActionsInitEvent = {
+  type: 'dev:actions/init';
+  payload: IDevActionsInitPayload;
+};
+export type IDevActionsInitPayload = { ns: string };
 
 /**
  * Fires when a single action Item model's state changes.

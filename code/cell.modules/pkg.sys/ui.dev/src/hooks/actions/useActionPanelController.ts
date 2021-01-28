@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { getAndStoreContext, Handler } from '../../api/Actions';
+import { Context, Handler, Select } from '../../api/Actions';
 import { toObject, rx, t, time } from '../../common';
 
 type O = Record<string, unknown>;
@@ -27,7 +27,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
      */
     const Model = {
       change(action: t.DevActionsChangeType, fn: (draft: t.DevActionsModel<any>) => void) {
-        getAndStoreContext(model, { throw: true }); // NB: This will also assign the [ctx.current] value.
+        Context.getAndStore(model, { throw: true }); // NB: This will also assign the [ctx.current] value.
         return model.change(fn, { action });
       },
       payload<T extends t.DevActionItemInput>(itemId: string, draft: t.DevActionsModel<any>) {
@@ -37,7 +37,41 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
         const item = draft.items.find((item) => item.id === itemId) as T;
         return { ctx, host, item, layout, env };
       },
+      find(id: string | number) {
+        const items = model.state.items;
+        const index = typeof id === 'number' ? id : items.findIndex((item) => item.id === id);
+        const item = items[index];
+        return { index, item };
+      },
     };
+
+    /**
+     * INITIALIZE
+     *    Setup the initial model state by invoking
+     *    each value producing handler.
+     */
+    rx.payload<t.IDevActionsInitEvent>($, 'dev:actions/init')
+      .pipe()
+      .subscribe((e) => {
+        // Assign initial value as current.
+        model.state.items.forEach((model) => {
+          if (model.kind === 'select') {
+            const index = Model.find(model.id).index;
+            const res = Model.change('via:init', (d) => Select.assignInitial(d.items[index]));
+            if (res.changed) model = Model.find(model.id).item;
+          }
+        });
+
+        // Fire event that load initial value.
+        model.state.items.forEach((model) => {
+          if (model.kind === 'boolean' && model.handler) {
+            bus.fire({ type: 'dev:action/Boolean', payload: { ns, model } });
+          }
+          if (model.kind === 'select' && model.handler) {
+            bus.fire({ type: 'dev:action/Select', payload: { ns, model } });
+          }
+        });
+      });
 
     /**
      * Monitor for changes to individual item models and alert listeners.
@@ -140,7 +174,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
           type S = t.DevActionHandlerSettings<P>;
           type A = t.DevActionHandlerSettingsSelectArgs;
 
-          Model.change('via:select', (draft) => {
+          const res = Model.change('via:select', (draft) => {
             const { ctx, item, host, layout, env } = Model.payload<T>(id, draft);
             if (ctx && item) {
               const settings: S = (args) =>
@@ -152,30 +186,33 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
               const select = item as t.DevActionSelectProps;
               const payload: P = { ctx, changing, host, layout, settings, select };
               if (changing) item.current = changing.next; // Update the item to the latest selection.
+
+              console.group('🌳 ');
+              console.log('RUNNING HANDLER');
+
               handler(payload);
+
+              console.log('toObject(select)', toObject(select));
+              console.log('toObject(item)', toObject(item));
+              console.groupEnd();
             }
           });
+
+          console.log('-------------------------------------------');
+          console.log('res', res);
+          // console.log('model.items[15]', model.items[15]);
+          const f = Model.find(15);
+          console.log('f', f);
         }
       });
 
     /**
-     * INITIALIZE
-     *    Setup the initial model state by invoking
-     *    each value producing handler.
+     * INITIALIZE: Setup initial state.
      * NOTE:
      *    The delayed tick allows all components to setup their hooks
      *    before the initial state configuration is established.
      */
-    time.delay(0, () => {
-      model.state.items.forEach((model) => {
-        if (model.kind === 'boolean' && model.handler) {
-          bus.fire({ type: 'dev:action/Boolean', payload: { ns, model } });
-        }
-        if (model.kind === 'select' && model.handler) {
-          bus.fire({ type: 'dev:action/Select', payload: { ns, model } });
-        }
-      });
-    });
+    time.delay(0, () => bus.fire({ type: 'dev:actions/init', payload: { ns } }));
 
     return () => dispose$.next();
   }, [bus, actions, ns]);
