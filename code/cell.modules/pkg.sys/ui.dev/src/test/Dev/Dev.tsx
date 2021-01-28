@@ -3,7 +3,7 @@ import Select from 'react-select';
 
 import { color, css, rx } from '../../common';
 import { ActionsHost } from '../../components/Host';
-import { actions } from './Dev.actions';
+import { actions } from './Component.DEV';
 
 const bus = rx.bus();
 
