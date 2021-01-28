@@ -27,7 +27,7 @@ let count = 0;
  * Actions
  */
 export const actions = Actions<Ctx>()
-  .name('ui.dev')
+  .name('sample-1')
   .context((prev) => prev || { myLayout: 'single', count: 0, text: LOREM, isRunning: true })
 
   .button('change text', (e) => {
@@ -78,7 +78,6 @@ export const actions = Actions<Ctx>()
       .description(markdown())
       .handler((e) => {
         count++;
-        console.log('count', count);
         e.button.description = markdown();
       });
   })
@@ -189,11 +188,9 @@ export const actions = Actions<Ctx>()
         border: -0.1,
         cropmarks: -0.2,
         background: 1,
-        label: 'foobar',
+        label: 'sample-1',
       },
-      host: {
-        background: -0.04,
-      },
+      host: { background: -0.04 },
     });
 
     const data = { isRunning: ctx.isRunning };

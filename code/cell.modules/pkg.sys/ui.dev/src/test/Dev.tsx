@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Select from 'react-select';
 
-import { color, css, rx } from '../../common';
-import { ActionsHost } from '../../components/Host';
-import { actions } from './Component.DEV';
+import { color, css, rx, t } from '../common';
+import { ActionsHost } from '../components/Host';
+import * as sample1 from './sample-1/Component.DEV';
+import * as sample2 from './sample-2/Component.DEV';
 
 const bus = rx.bus();
 
 export const Dev: React.FC = () => {
+  const [actions, setActions] = useState<t.DevActions<any>>(sample1.actions);
+
   const styles = {
     base: css({
       Absolute: 0,
@@ -39,15 +42,22 @@ export const Dev: React.FC = () => {
     style: { flex: 1 },
   });
 
-  const options = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' },
+  const options: t.DevActionSelectItem[] = [
+    { label: 'sample-1', value: sample1.actions },
+    { label: 'sample-2', value: sample2.actions },
   ];
 
   const elSelect = (
     <div {...styles.select.outer}>
-      <Select options={options} menuPlacement={'top'} />
+      <Select
+        options={options}
+        menuPlacement={'top'}
+        onChange={(e) => {
+          const item = e as t.DevActionSelectItem;
+          console.log('e', e);
+          setActions(item.value);
+        }}
+      />
     </div>
   );
 
