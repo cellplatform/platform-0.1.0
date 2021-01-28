@@ -17,7 +17,12 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   const { ns, items } = model;
 
   useActionPanelController({ bus, actions });
-  useRedraw({ name: '<ActionPanel>', bus, actions, paths: ['ctx/current', 'items'] });
+  useRedraw({
+    name: '<ActionPanel>',
+    bus,
+    actions,
+    paths: ['ctx/current', 'items', 'initialized'],
+  });
 
   const styles = {
     base: css({
@@ -32,7 +37,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
     spacer: css({ height: 80 }),
   };
 
-  const elItems = items.map((item, i) => {
+  const elItems = items.map((item) => {
     const key = hash.sha256(item);
     return <Item key={key} ns={ns} model={item} bus={bus} />;
   });

@@ -13,6 +13,7 @@ export type DevActionsModel<Ctx> = {
     viaSubject: DevActionsModelEnv;
   };
   renderSubject?: t.DevActionHandlerSubject<Ctx>;
+  initialized?: boolean;
 };
 
 export type DevActionsModelEnv = {

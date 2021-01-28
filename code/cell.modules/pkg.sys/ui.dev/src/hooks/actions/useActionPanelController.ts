@@ -71,6 +71,9 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
             bus.fire({ type: 'dev:action/Select', payload: { ns, model } });
           }
         });
+
+        // Finish up.
+        model.change((draft) => (draft.initialized = true));
       });
 
     /**
@@ -174,7 +177,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
           type S = t.DevActionHandlerSettings<P>;
           type A = t.DevActionHandlerSettingsSelectArgs;
 
-          const res = Model.change('via:select', (draft) => {
+          Model.change('via:select', (draft) => {
             const { ctx, item, host, layout, env } = Model.payload<T>(id, draft);
             if (ctx && item) {
               const settings: S = (args) =>
@@ -186,23 +189,9 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
               const select = item as t.DevActionSelectProps;
               const payload: P = { ctx, changing, host, layout, settings, select };
               if (changing) item.current = changing.next; // Update the item to the latest selection.
-
-              console.group('🌳 ');
-              console.log('RUNNING HANDLER');
-
               handler(payload);
-
-              console.log('toObject(select)', toObject(select));
-              console.log('toObject(item)', toObject(item));
-              console.groupEnd();
             }
           });
-
-          console.log('-------------------------------------------');
-          console.log('res', res);
-          // console.log('model.items[15]', model.items[15]);
-          const f = Model.find(15);
-          console.log('f', f);
         }
       });
 

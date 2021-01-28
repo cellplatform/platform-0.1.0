@@ -16,7 +16,7 @@ export type DevActionEvent =
   | IDevActionSelectEvent;
 
 /**
- * Fires when a single action Item model's state changes.
+ * Fires to initialize the state of a set of actions.
  */
 export type IDevActionsInitEvent = {
   type: 'dev:actions/init';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Actions, toObject } from '../..';
 import { css, COLORS, color } from '../../common';
-import { ObjectView } from '@platform/ui.object';
+import { Component } from './Component';
 
 type SampleLayout =
   | 'single'
@@ -186,20 +186,8 @@ export const actions = Actions<Ctx>()
     });
 
     const data = { isRunning: ctx.isRunning };
-
-    const styles = {
-      base: css({ padding: 20 }),
-      text: css({ marginBottom: 10 }),
-    };
-
-    const el = (
-      <div {...styles.base}>
-        <div {...styles.text}>
-          {ctx.count}: {e.ctx.text}
-        </div>
-        <ObjectView name={'subject'} data={data} />
-      </div>
-    );
+    const text = `${ctx.count}: ${ctx.text}`;
+    const el = <Component text={text} data={data} />;
 
     if (ctx.myLayout === 'single:top-left') {
       return e.render(el, { position: { top: 50, left: 50 } });

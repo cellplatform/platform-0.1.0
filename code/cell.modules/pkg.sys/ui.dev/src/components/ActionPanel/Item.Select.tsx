@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import SelectComponent from 'react-select';
 
-import { color, css, CssValue, t, time, toObject } from '../../common';
+import { color, css, CssValue, t, time } from '../../common';
 import { useItemMonitor } from '../../hooks/Actions';
 import { ButtonView } from './Item.ButtonView';
 import { Icons } from '../Icons';
@@ -22,8 +22,6 @@ export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
   const isActive = Boolean(model.handler);
   const options = model.items.map((v) => Select.toOption(v));
   const current = model.multi ? model.current : model.current[0];
-
-  console.log('label:', label, toObject(model));
 
   const [isSelectVisible, setIsSelectVisible] = useState<boolean>();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
