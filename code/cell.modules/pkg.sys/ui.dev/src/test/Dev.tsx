@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Select from 'react-select';
 
 import { color, css, rx, t } from '../common';
 import { ActionsHost } from '../components/Host';
+import { ActionsSelect } from '../components/ActionsSelect';
 import * as sample1 from './sample-1/Component.DEV';
 import * as sample2 from './sample-2/Component.DEV';
 
@@ -42,23 +42,13 @@ export const Dev: React.FC = () => {
     style: { flex: 1 },
   });
 
-  const options: t.DevActionSelectItem[] = [
-    { label: 'sample-1', value: sample1.actions },
-    { label: 'sample-2', value: sample2.actions },
-  ];
-
   const elSelect = (
-    <div {...styles.select.outer}>
-      <Select
-        options={options}
-        menuPlacement={'top'}
-        onChange={(e) => {
-          const item = e as t.DevActionSelectItem;
-          console.log('e', e);
-          setActions(item.value);
-        }}
-      />
-    </div>
+    <ActionsSelect
+      style={styles.select.outer}
+      menuPlacement={'top'}
+      actions={[sample1.actions, sample2.actions]}
+      onChange={(e) => setActions(e.selected)}
+    />
   );
 
   return (

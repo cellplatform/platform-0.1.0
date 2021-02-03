@@ -1,14 +1,17 @@
 import { format, t, slug } from '../../common';
 
+type O = Record<string, unknown>;
+
 export const Boolean = {
   /**
    * A [Boolean] switch configurator.
    */
-  config(params: any[]) {
+  config<Ctx extends O>(ctx: Ctx, params: any[]) {
     const LABEL = 'Unnamed';
     const item: t.DevActionBoolean = { id: slug(), kind: 'boolean', label: LABEL };
 
     const config: t.DevActionBooleanConfigArgs<any> = {
+      ctx,
       label(value) {
         item.label = format.string(value, { trim: true }) || LABEL;
         return config;

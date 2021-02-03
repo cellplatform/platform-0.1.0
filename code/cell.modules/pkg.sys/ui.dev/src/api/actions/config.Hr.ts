@@ -1,10 +1,12 @@
 import { t, R, slug } from '../../common';
 
+type O = Record<string, unknown>;
+
 export const Hr = {
   /**
    * A [Horizontal Rule] configurator.
    */
-  config(params: any[]) {
+  config<Ctx extends O>(ctx: Ctx, params: any[]) {
     const item: t.DevActionHr = {
       id: slug(),
       kind: 'hr',
@@ -14,6 +16,7 @@ export const Hr = {
     };
 
     const config: t.DevActionHrConfigArgs<any> = {
+      ctx,
       height(value) {
         item.height = Math.max(0, value);
         return config;

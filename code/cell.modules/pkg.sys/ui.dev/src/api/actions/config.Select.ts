@@ -1,5 +1,7 @@
 import { DEFAULT, format, slug, t } from '../../common';
 
+type O = Record<string, unknown>;
+
 export const Select = {
   default(initial?: Partial<t.DevActionSelect>): t.DevActionSelect {
     return {
@@ -17,10 +19,11 @@ export const Select = {
   /**
    * A [Select] dropdown configurator.
    */
-  config(params: any[]) {
+  config<Ctx extends O>(ctx: Ctx, params: any[]) {
     const item = Select.default();
 
     const config: t.DevActionSelectConfigArgs<any> = {
+      ctx,
       label(value) {
         item.label = format.string(value, { trim: true }) || DEFAULT.UNNAMED;
         return config;

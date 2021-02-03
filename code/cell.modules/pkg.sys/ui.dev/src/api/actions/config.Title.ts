@@ -1,13 +1,16 @@
 import { DEFAULT, format, slug, t } from '../../common';
 
+type O = Record<string, unknown>;
+
 export const Title = {
   /**
    * A [Title] configurator.
    */
-  config(params: any[]) {
+  config<Ctx extends O>(ctx: Ctx, params: any[]) {
     const item: t.DevActionTitle = { id: slug(), kind: 'title', text: DEFAULT.UNTITLED };
 
     const config: t.DevActionTitleConfigArgs<any> = {
+      ctx,
       text(value) {
         item.text = format.string(value, { trim: true }) || DEFAULT.UNTITLED;
         return config;

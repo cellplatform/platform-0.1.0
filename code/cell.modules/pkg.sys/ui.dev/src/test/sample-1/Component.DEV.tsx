@@ -30,6 +30,12 @@ export const actions = Actions<Ctx>()
   .name('sample-1')
   .context((prev) => prev || { myLayout: 'single', count: 0, text: LOREM, isRunning: true })
 
+  .button('tmp', (e) => {
+    e.layout.position = undefined;
+  })
+
+  .button('err: {left, right}', (e) => (e.layout.position = { left: 80, right: 80 }))
+
   .button('change text', (e) => {
     e.ctx.count++;
     e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
@@ -126,12 +132,12 @@ export const actions = Actions<Ctx>()
       .handler((e) => {
         if (e.changing) count++;
         e.select.description = `My dropdown changed (${count})`;
-        const value = e.select.current
+        const current = e.select.current
           .map((m) => m.label)
           .join(', ')
           .trim();
-        e.select.label = value ? value : `select (multi)`;
-        e.select.placeholder = !Boolean(value);
+        e.select.label = current ? current : `select (multi)`;
+        e.select.placeholder = !Boolean(current);
       });
   })
 
