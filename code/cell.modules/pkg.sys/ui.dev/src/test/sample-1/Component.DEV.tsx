@@ -116,7 +116,7 @@ export const actions = Actions<Ctx>()
       .items(['one', { label: 'two', value: { count: 2 } }, 3])
       .initial(3)
       .clearable(true)
-      .handler((e) => {
+      .pipe((e) => {
         const value = e.select.current[0]; // NB: always first.
         e.select.label = value ? value.label : `select single`;
         e.select.placeholder = !Boolean(value);
@@ -129,7 +129,7 @@ export const actions = Actions<Ctx>()
       .description('My set of dropdown options')
       .items(['Chocolate', 'Strawberry', 'Vanilla'])
       .multi(true)
-      .handler((e) => {
+      .pipe((e) => {
         if (e.changing) count++;
         e.select.description = `My dropdown changed (${count})`;
         const current = e.select.current

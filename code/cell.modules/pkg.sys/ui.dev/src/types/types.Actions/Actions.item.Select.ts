@@ -6,7 +6,7 @@ import { t } from '../common';
 export type DevActionSelect = t.DevActionSelectProps & {
   id: string;
   kind: 'select';
-  handler?: t.DevActionSelectHandler<any>;
+  handlers: t.DevActionSelectHandler<any>[];
 };
 
 /**

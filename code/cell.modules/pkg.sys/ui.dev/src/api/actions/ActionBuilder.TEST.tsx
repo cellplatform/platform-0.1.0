@@ -454,7 +454,7 @@ describe('ActionBuilder', () => {
       expect(button.description).to.eql('My description');
     });
 
-    it('config: pipe multiple handlers', () => {
+    it('pipe multiple handlers', () => {
       const { builder, model } = create();
 
       const fn1: t.DevActionButtonHandler<any> = () => null;
@@ -510,7 +510,6 @@ describe('ActionBuilder', () => {
 
     it('label (no handler)', () => {
       const { builder, model } = create();
-
       builder.boolean('foo');
 
       const items = model.state.items;
@@ -521,7 +520,7 @@ describe('ActionBuilder', () => {
       expect(button.handlers).to.eql([]);
     });
 
-    it('config: pipe multiple handlers', () => {
+    it('pipe multiple handlers', () => {
       const { builder, model } = create();
 
       const fn1: t.DevActionBooleanHandler<any> = () => true;
@@ -548,7 +547,7 @@ describe('ActionBuilder', () => {
       const fn1: t.DevActionSelectHandler<any> = () => true;
       const fn2: t.DevActionSelectHandler<any> = () => false;
       builder
-        .select((config) => config.label('  foo  ').handler(fn1))
+        .select((config) => config.label('  foo  ').pipe(fn1))
         .select((config) =>
           config
             .label('bar')
@@ -556,7 +555,7 @@ describe('ActionBuilder', () => {
             .initial(2)
             .multi(true)
             .clearable(true)
-            .handler(fn2)
+            .pipe(fn2)
             .description('a thing'),
         );
 
@@ -571,7 +570,7 @@ describe('ActionBuilder', () => {
       expect(select1.description).to.eql(undefined);
       expect(select1.items).to.eql([]);
       expect(select1.initial).to.eql(undefined);
-      expect(select1.handler).to.eql(fn1);
+      expect(select1.handlers).to.eql([fn1]);
       expect(select1.multi).to.eql(false);
       expect(select1.clearable).to.eql(false);
 
@@ -580,9 +579,40 @@ describe('ActionBuilder', () => {
       expect(select2.description).to.eql('a thing');
       expect(select2.items).to.eql(['one', { label: 'two', value: 2 }]);
       expect(select2.initial).to.eql(2);
-      expect(select2.handler).to.eql(fn2);
+      expect(select2.handlers).to.eql([fn2]);
       expect(select2.multi).to.eql(true);
       expect(select2.clearable).to.eql(true);
+    });
+
+    it('label (no handler)', () => {
+      const { builder, model } = create();
+
+      builder.select((config) => config.label('foo'));
+
+      const items = model.state.items;
+      expect(items.length).to.eql(1);
+
+      const button = items[0] as t.DevActionSelect;
+      expect(button.label).to.eql('foo');
+      expect(button.handlers).to.eql([]);
+    });
+
+    it('pipe multiple handlers', () => {
+      const { builder, model } = create();
+
+      const fn1: t.DevActionSelectHandler<any> = () => true;
+      const fn2: t.DevActionSelectHandler<any> = () => false;
+
+      builder.select((config) => config.pipe(fn1, fn2, fn1));
+
+      const items = model.state.items;
+      expect(items.length).to.eql(1);
+      const select = items[0] as t.DevActionSelect;
+
+      expect(select.handlers.length).to.eql(3);
+      expect(select.handlers[0]).to.eql(fn1);
+      expect(select.handlers[1]).to.eql(fn2);
+      expect(select.handlers[2]).to.eql(fn1);
     });
   });
 

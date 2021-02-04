@@ -67,7 +67,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
           if (model.kind === 'boolean' && model.handlers.length > 0) {
             bus.fire({ type: 'dev:action/Boolean', payload: { ns, model } });
           }
-          if (model.kind === 'select' && model.handler) {
+          if (model.kind === 'select' && model.handlers.length > 0) {
             bus.fire({ type: 'dev:action/Select', payload: { ns, model } });
           }
         });
@@ -135,7 +135,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
                * - handle async
                */
 
-              console.log('TODO: piped Button handlers');
+              console.log('TODO: piped [Button] handlers');
 
               for (const fn of handlers) {
                 fn(payload);
@@ -152,7 +152,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
       .pipe()
       .subscribe((e) => {
         const { id, handlers } = e.model;
-        if (handlers) {
+        if (handlers.length > 0) {
           type T = t.DevActionBoolean;
           type P = t.DevActionBooleanHandlerArgs<any>;
           type S = t.DevActionHandlerSettings<P>;
@@ -170,7 +170,6 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
               const boolean = item as t.DevActionBooleanProps;
               const payload: P = { ctx, changing, host, layout, settings, boolean };
               if (changing) item.current = changing.next;
-              // handler(payload);
 
               /**
                * TODO 🐷
@@ -194,8 +193,8 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
     rx.payload<t.IDevActionSelectEvent>($, 'dev:action/Select')
       .pipe()
       .subscribe((e) => {
-        const { id, handler } = e.model;
-        if (handler) {
+        const { id, handlers } = e.model;
+        if (handlers.length > 0) {
           type T = t.DevActionSelect;
           type P = t.DevActionSelectHandlerArgs<any>;
           type S = t.DevActionHandlerSettings<P>;
@@ -213,7 +212,18 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
               const select = item as t.DevActionSelectProps;
               const payload: P = { ctx, changing, host, layout, settings, select };
               if (changing) item.current = changing.next; // Update the item to the latest selection.
-              handler(payload);
+
+              /**
+               * TODO 🐷
+               * - put within [runtime.web] piped execution, like [runtime.node]
+               * - handle async
+               */
+
+              console.log('TODO: piped [Select] handlers');
+
+              for (const fn of handlers) {
+                fn(payload);
+              }
             }
           });
         }

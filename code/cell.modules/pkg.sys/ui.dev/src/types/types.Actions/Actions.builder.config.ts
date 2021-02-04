@@ -38,7 +38,7 @@ export type DevActionSelectConfigArgs<Ctx extends O> = {
   ): DevActionSelectConfigArgs<Ctx>;
   multi(value: boolean): DevActionSelectConfigArgs<Ctx>;
   clearable(value: boolean): DevActionSelectConfigArgs<Ctx>;
-  handler(handler: t.DevActionSelectHandler<Ctx>): DevActionSelectConfigArgs<Ctx>;
+  pipe(...handlers: t.DevActionSelectHandler<Ctx>[]): DevActionSelectConfigArgs<Ctx>;
 };
 
 /**

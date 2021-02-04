@@ -12,6 +12,7 @@ export const Select = {
       clearable: false,
       items: [],
       current: [],
+      handlers: [],
       ...initial,
     };
   },
@@ -48,8 +49,8 @@ export const Select = {
         item.clearable = value;
         return config;
       },
-      handler(handler) {
-        item.handler = handler;
+      pipe(...handlers) {
+        item.handlers.push(...handlers.filter(Boolean));
         return config;
       },
     };

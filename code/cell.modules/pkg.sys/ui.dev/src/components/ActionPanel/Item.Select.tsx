@@ -19,7 +19,7 @@ export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
   const model = useItemMonitor({ bus, model: props.model });
 
   const { label, description } = model;
-  const isActive = Boolean(model.handler);
+  const isActive = model.handlers.length > 0;
   const options = model.items.map((v) => Select.toOption(v));
   const current = model.multi ? model.current : model.current[0];
 
