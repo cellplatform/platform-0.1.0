@@ -38,7 +38,7 @@ export class StateObject<T extends O, A extends string> implements t.IStateObjec
   }
 
   /**
-   * Convert a writeable [StateObject] to a readon-only version.
+   * Convert a writeable [StateObject] to a read-only version.
 
    * NOTE:
    *    This is useful when wishing to be principled and constrain

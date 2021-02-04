@@ -34,7 +34,9 @@ export const actions = Actions<Ctx>()
     e.layout.position = undefined;
   })
 
-  .button('err: {left, right}', (e) => (e.layout.position = { left: 80, right: 80 }))
+  .button('err: {left, right}', (e) => {
+    e.layout.position = { left: 80, right: 80 };
+  })
 
   .button('change text', (e) => {
     e.ctx.count++;

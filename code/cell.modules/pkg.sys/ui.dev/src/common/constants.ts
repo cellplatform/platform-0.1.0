@@ -1,4 +1,5 @@
 import * as t from './types';
+import { R } from './libs';
 
 export const FONT = {
   MONO: 'Menlo, monospace',
@@ -31,9 +32,11 @@ const ACTIONS: t.DevActionsModel<any> = {
   env: { viaAction: {}, viaSubject: {} },
 };
 export const DEFAULT = {
-  ACTIONS,
   UNTITLED,
   UNNAMED,
+  get ACTIONS() {
+    return R.clone(ACTIONS);
+  },
 };
 
 export const CSS = {

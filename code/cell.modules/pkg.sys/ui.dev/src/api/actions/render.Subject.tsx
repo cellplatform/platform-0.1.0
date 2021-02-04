@@ -40,15 +40,17 @@ export function renderSubject(args: { model: t.DevActionsModelState<any> }) {
 
       // Invoke the handler.
       fnRender(payload);
-
-      // Merge results (in priority order).
-      subject.layout = {
-        ...draft.env.viaSubject.layout,
-        ...draft.env.viaAction.layout,
-        ...subject.layout,
-      };
     });
   }
 
+  // Merge results (in priority order).
+  const env = model.state.env;
+  subject.layout = {
+    ...env.viaSubject.layout,
+    ...env.viaAction.layout,
+    ...subject.layout,
+  };
+
+  // Finish up.
   return subject;
 }
