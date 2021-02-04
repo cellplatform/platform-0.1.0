@@ -16,7 +16,7 @@ export function useEventBus(args: {
       const { selected } = e;
       const model = selected.toObject();
       const { ns, name } = model;
-      bus.fire({ type: 'dev:actions/select/change', payload: { ns, name } });
+      bus.fire({ type: 'dev:actions/select/changed', payload: { ns, name } });
     }
     if (args.onChange) args.onChange(e);
   };

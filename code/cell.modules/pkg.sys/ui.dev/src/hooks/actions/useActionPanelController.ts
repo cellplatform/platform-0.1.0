@@ -98,7 +98,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
           const model = Model.find(index).item;
           if (model) {
             bus.fire({
-              type: 'dev:action/item:changed',
+              type: 'dev:action/model/changed',
               payload: { ns, index, model },
             });
           }

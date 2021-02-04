@@ -10,8 +10,8 @@ export type DevActionsChangeType = 'via:init' | 'via:button' | 'via:boolean' | '
  */
 export type DevActionEvent =
   | IDevActionsInitEvent
-  | IDevActionsSelectChangeEvent
-  | IDevActionItemChangedEvent
+  | IDevActionsSelectChangedEvent
+  | IDevActionModelChangedEvent
   | IDevActionButtonEvent
   | IDevActionBooleanEvent
   | IDevActionSelectEvent;
@@ -28,20 +28,20 @@ export type IDevActionsInitPayload = { ns: string };
 /**
  * Fires when the <ActionsSelect> dropdown changes.
  */
-export type IDevActionsSelectChangeEvent = {
-  type: 'dev:actions/select/change';
-  payload: IDevActionsSelectChange;
+export type IDevActionsSelectChangedEvent = {
+  type: 'dev:actions/select/changed';
+  payload: IDevActionsSelectChanged;
 };
-export type IDevActionsSelectChange = { ns: string; name: string };
+export type IDevActionsSelectChanged = { ns: string; name: string };
 
 /**
  * Fires when a single action [Item] model state changes.
  */
-export type IDevActionItemChangedEvent = {
-  type: 'dev:action/item:changed';
-  payload: IDevActionItemChangedPayload;
+export type IDevActionModelChangedEvent = {
+  type: 'dev:action/model/changed';
+  payload: IDevActionModelChangedPayload;
 };
-export type IDevActionItemChangedPayload = { ns: string; index: number; model: t.DevActionItem };
+export type IDevActionModelChangedPayload = { ns: string; index: number; model: t.DevActionItem };
 
 /**
  * Fires for the simple Button action.
