@@ -8,8 +8,12 @@ import * as sample2 from './sample-2/Component.DEV';
 
 const bus = rx.bus();
 
+bus.event$.subscribe((e) => {
+  console.log('e', e);
+});
+
 export const Dev: React.FC = () => {
-  const [actions, setActions] = useState<t.DevActions<any>>(sample1.actions);
+  const [selectedActions, setSelectedActions] = useState<t.DevActions<any>>(sample1.actions);
 
   const styles = {
     base: css({
@@ -37,17 +41,19 @@ export const Dev: React.FC = () => {
     },
   };
 
-  const elActions = actions.renderList(bus, {
+  const elActionsList = selectedActions.renderList(bus, {
     scrollable: true, // default: true
     style: { flex: 1 },
   });
 
   const elSelect = (
     <ActionsSelect
+      bus={bus}
       style={styles.select.outer}
       menuPlacement={'top'}
+      selected={selectedActions}
       actions={[sample1.actions, sample2.actions]}
-      onChange={(e) => setActions(e.selected)}
+      onChange={(e) => setSelectedActions(e.selected)}
     />
   );
 
@@ -55,10 +61,10 @@ export const Dev: React.FC = () => {
     <React.StrictMode>
       <div {...styles.base}>
         <div {...styles.main}>
-          <ActionsHost bus={bus} actions={actions} style={styles.host} />
+          <ActionsHost bus={bus} actions={selectedActions} style={styles.host} />
           {elSelect}
         </div>
-        <div {...styles.right}>{elActions}</div>
+        <div {...styles.right}>{elActionsList}</div>
       </div>
     </React.StrictMode>
   );

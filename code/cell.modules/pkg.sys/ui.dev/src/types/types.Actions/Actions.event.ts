@@ -10,6 +10,7 @@ export type DevActionsChangeType = 'via:init' | 'via:button' | 'via:boolean' | '
  */
 export type DevActionEvent =
   | IDevActionsInitEvent
+  | IDevActionsSelectChangeEvent
   | IDevActionItemChangedEvent
   | IDevActionButtonEvent
   | IDevActionBooleanEvent
@@ -25,7 +26,16 @@ export type IDevActionsInitEvent = {
 export type IDevActionsInitPayload = { ns: string };
 
 /**
- * Fires when a single action Item model's state changes.
+ * Fires when the <ActionsSelect> dropdown changes.
+ */
+export type IDevActionsSelectChangeEvent = {
+  type: 'dev:actions/select/change';
+  payload: IDevActionsSelectChange;
+};
+export type IDevActionsSelectChange = { ns: string; name: string };
+
+/**
+ * Fires when a single action [Item] model state changes.
  */
 export type IDevActionItemChangedEvent = {
   type: 'dev:action/item:changed';

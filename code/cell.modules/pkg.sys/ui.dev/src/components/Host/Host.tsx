@@ -15,7 +15,6 @@ export type HostProps = {
 export const Host: React.FC<HostProps> = (props = {}) => {
   const { subject, host } = props;
   const items = subject?.items || [];
-  const background = defaultValue(host?.background);
   const orientation = defaultValue(host?.orientation, 'y');
   const spacing = Math.max(0, defaultValue(host?.spacing, 60));
 
@@ -23,7 +22,8 @@ export const Host: React.FC<HostProps> = (props = {}) => {
     base: css({
       flex: 1,
       position: 'relative',
-      backgroundColor: formatColor(background),
+      color: formatColor(host?.color),
+      backgroundColor: formatColor(host?.background),
     }),
     body: css({
       Absolute: 0,

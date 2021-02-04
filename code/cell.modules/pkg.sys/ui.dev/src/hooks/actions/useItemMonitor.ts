@@ -5,7 +5,8 @@ import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import { R, rx, t } from '../../common';
 
 /**
- * Updates an item model (state) when it has changed.
+ * Updates an item model (state) when changes are reported
+ * through the event-bus.
  */
 export function useItemMonitor<M extends t.DevActionItem>(args: {
   bus: t.DevEventBus;
