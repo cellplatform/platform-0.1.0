@@ -10,7 +10,7 @@ export type DevActionButtonConfigArgs<Ctx extends O> = {
   ctx: Ctx;
   label(value: string | t.ReactNode): DevActionButtonConfigArgs<Ctx>;
   description(value: string | t.ReactNode): DevActionButtonConfigArgs<Ctx>;
-  handler(handler: t.DevActionButtonHandler<Ctx>): DevActionButtonConfigArgs<Ctx>;
+  pipe(...handlers: t.DevActionButtonHandler<Ctx>[]): DevActionButtonConfigArgs<Ctx>;
 };
 
 /**

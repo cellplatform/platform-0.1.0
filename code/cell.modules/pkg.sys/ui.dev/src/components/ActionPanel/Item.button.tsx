@@ -16,7 +16,7 @@ export type ItemButtonProps = {
 export const ItemButton: React.FC<ItemButtonProps> = (props) => {
   const { bus, model, style, ns } = props;
   const { label, description } = model;
-  const isActive = Boolean(model.handler);
+  const isActive = model.handlers.length > 0;
 
   const clickHandler = () => bus.fire({ type: 'dev:action/Button', payload: { ns, model } });
 

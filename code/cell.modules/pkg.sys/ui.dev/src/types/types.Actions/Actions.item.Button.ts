@@ -6,7 +6,7 @@ import { t } from '../common';
 export type DevActionButton = t.DevActionButtonProps & {
   id: string;
   kind: 'button';
-  handler?: t.DevActionButtonHandler<any>;
+  handlers: t.DevActionButtonHandler<any>[];
 };
 
 /**

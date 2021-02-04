@@ -8,7 +8,7 @@ export const Button = {
    */
   config<Ctx extends O>(ctx: Ctx, params: any[]) {
     const LABEL = 'Unnamed';
-    const item: t.DevActionButton = { id: slug(), kind: 'button', label: LABEL };
+    const item: t.DevActionButton = { id: slug(), kind: 'button', label: LABEL, handlers: [] };
 
     const config: t.DevActionButtonConfigArgs<any> = {
       ctx,
@@ -20,8 +20,8 @@ export const Button = {
         item.description = format.string(value, { trim: true });
         return config;
       },
-      handler(handler) {
-        item.handler = handler;
+      pipe(...handlers) {
+        item.handlers.push(...handlers.filter(Boolean));
         return config;
       },
     };
@@ -29,7 +29,7 @@ export const Button = {
     if (typeof params[0] === 'function') {
       params[0](config);
     } else {
-      config.label(params[0]).handler(params[1]);
+      config.label(params[0]).pipe(params[1]);
     }
 
     return { item, config };

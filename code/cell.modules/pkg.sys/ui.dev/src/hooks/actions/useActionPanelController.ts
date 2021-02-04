@@ -111,8 +111,8 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
     rx.payload<t.IDevActionButtonEvent>($, 'dev:action/Button')
       .pipe()
       .subscribe((e) => {
-        const { id, handler } = e.model;
-        if (handler) {
+        const { id, handlers } = e.model;
+        if (handlers.length > 0) {
           type T = t.DevActionButton;
           type P = t.DevActionButtonHandlerArgs<any>;
           type S = t.DevActionHandlerSettings<P>;
@@ -128,7 +128,18 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
                 })(args);
               const button = item as t.DevActionButtonProps;
               const payload: P = { ctx, host, layout, settings, button };
-              handler(payload);
+
+              /**
+               * TODO 🐷
+               * - put within [runtime.web] piped execution, like [runtime.node]
+               * - handle async
+               */
+
+              console.log('TODO: piped Button handlers');
+
+              for (const fn of handlers) {
+                fn(payload);
+              }
             }
           });
         }

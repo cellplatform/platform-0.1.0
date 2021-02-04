@@ -30,20 +30,11 @@ export const actions = Actions<Ctx>()
   .name('sample-1')
   .context((prev) => prev || { myLayout: 'single', count: 0, text: LOREM, isRunning: true })
 
-  .button('tmp', (e) => {
-    e.layout.position = undefined;
-  })
-
-  .button('err: {left, right}', (e) => {
-    // e.layout.position = { left: 80, right: 80 };
-    e.layout.position = [200, 30, 4, 50];
-  })
-
   .button('change text', (e) => {
     e.ctx.count++;
     e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
   })
-  .button('inject React', (e) => {
+  .button('inject <React>', (e) => {
     count++;
 
     const styles = {
@@ -85,7 +76,7 @@ export const actions = Actions<Ctx>()
     config
       .label('markdown')
       .description(markdown())
-      .handler((e) => {
+      .pipe((e) => {
         count++;
         e.button.description = markdown();
       });
@@ -94,6 +85,12 @@ export const actions = Actions<Ctx>()
     count++;
     e.button.label = `count: ${count}`;
     e.settings({ button: { description: `Lorem ipsum dolar sit (${count})` } });
+  })
+  .button((config) => {
+    config.label('multiple handlers').pipe(
+      (e) => count++,
+      (e) => (e.button.label = `multi: ${count}`),
+    );
   })
 
   .hr(1, 0.15)
