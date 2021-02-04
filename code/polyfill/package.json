@@ -7,7 +7,7 @@
     "test": "echo no-op"
   },
   "dependencies": {
-    "core-js": "3.8.1",
+    "core-js": "3.8.3",
     "regenerator-runtime": "0.13.7"
   },
   "files": [
