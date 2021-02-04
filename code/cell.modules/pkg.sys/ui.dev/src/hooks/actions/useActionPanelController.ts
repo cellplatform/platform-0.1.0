@@ -64,7 +64,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
 
         // Fire event that load initial value.
         model.state.items.forEach((model) => {
-          if (model.kind === 'boolean' && model.handler) {
+          if (model.kind === 'boolean' && model.handlers.length > 0) {
             bus.fire({ type: 'dev:action/Boolean', payload: { ns, model } });
           }
           if (model.kind === 'select' && model.handler) {
@@ -151,8 +151,8 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
     rx.payload<t.IDevActionBooleanEvent>($, 'dev:action/Boolean')
       .pipe()
       .subscribe((e) => {
-        const { id, handler } = e.model;
-        if (handler) {
+        const { id, handlers } = e.model;
+        if (handlers) {
           type T = t.DevActionBoolean;
           type P = t.DevActionBooleanHandlerArgs<any>;
           type S = t.DevActionHandlerSettings<P>;
@@ -170,7 +170,19 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
               const boolean = item as t.DevActionBooleanProps;
               const payload: P = { ctx, changing, host, layout, settings, boolean };
               if (changing) item.current = changing.next;
-              handler(payload);
+              // handler(payload);
+
+              /**
+               * TODO 🐷
+               * - put within [runtime.web] piped execution, like [runtime.node]
+               * - handle async
+               */
+
+              console.log('TODO: piped [Boolean] handlers');
+
+              for (const fn of handlers) {
+                fn(payload);
+              }
             }
           });
         }

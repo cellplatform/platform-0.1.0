@@ -358,7 +358,7 @@ describe('ActionBuilder', () => {
     });
   });
 
-  describe.only('actions.button()', () => {
+  describe('actions.button()', () => {
     it('label, handler', () => {
       const { builder, model } = create();
       expect(model.state.items).to.eql([]);
@@ -483,7 +483,7 @@ describe('ActionBuilder', () => {
       builder
         .boolean('  foo  ', fn1)
         .boolean('bar', fn1)
-        .boolean((config) => config.label('foo').handler(fn2).description('a thing'));
+        .boolean((config) => config.label('foo').pipe(fn2).description('a thing'));
 
       const items = model.state.items;
       expect(items.length).to.eql(3);
@@ -495,17 +495,48 @@ describe('ActionBuilder', () => {
       expect(button1.kind).to.eql('boolean');
       expect(button1.label).to.eql('foo');
       expect(button1.description).to.eql(undefined);
-      expect(button1.handler).to.eql(fn1);
+      expect(button1.handlers).to.eql([fn1]);
 
       expect(button2.kind).to.eql('boolean');
       expect(button2.label).to.eql('bar');
       expect(button2.description).to.eql(undefined);
-      expect(button2.handler).to.eql(fn1);
+      expect(button2.handlers).to.eql([fn1]);
 
       expect(button3.kind).to.eql('boolean');
       expect(button3.label).to.eql('foo');
       expect(button3.description).to.eql('a thing');
-      expect(button3.handler).to.eql(fn2);
+      expect(button3.handlers).to.eql([fn2]);
+    });
+
+    it('label (no handler)', () => {
+      const { builder, model } = create();
+
+      builder.boolean('foo');
+
+      const items = model.state.items;
+      expect(items.length).to.eql(1);
+
+      const button = items[0] as t.DevActionBoolean;
+      expect(button.label).to.eql('foo');
+      expect(button.handlers).to.eql([]);
+    });
+
+    it('config: pipe multiple handlers', () => {
+      const { builder, model } = create();
+
+      const fn1: t.DevActionBooleanHandler<any> = () => true;
+      const fn2: t.DevActionBooleanHandler<any> = () => false;
+
+      builder.boolean((config) => config.pipe(fn1, fn2, fn1));
+
+      const items = model.state.items;
+      expect(items.length).to.eql(1);
+      const button = items[0] as t.DevActionBoolean;
+
+      expect(button.handlers.length).to.eql(3);
+      expect(button.handlers[0]).to.eql(fn1);
+      expect(button.handlers[1]).to.eql(fn2);
+      expect(button.handlers[2]).to.eql(fn1);
     });
   });
 

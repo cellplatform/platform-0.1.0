@@ -1,5 +1,5 @@
 import { DEFAULT, defaultValue, t } from '../../common';
-import { Boolean } from './config.Boolean';
+import { Bool } from './config.Bool';
 import { Button } from './config.Button';
 import { Hr } from './config.Hr';
 import { Select } from './config.Select';
@@ -126,7 +126,7 @@ export const handlers: t.BuilderHandlers<
    */
   boolean(args) {
     const ctx = args.builder.self.toContext();
-    const { item } = Boolean.config(ctx, args.params);
+    const { item } = Bool.config(ctx, args.params);
     args.model.change((draft) => draft.items.push(item));
   },
 

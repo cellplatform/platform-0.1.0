@@ -1,7 +1,7 @@
 export { ActionBuilder } from './ActionBuilder';
 export { Handler } from './Handler';
 
-export { Boolean } from './config.Boolean';
+export { Bool as Boolean } from './config.Bool';
 export { Button } from './config.Button';
 export { Hr } from './config.Hr';
 export { Select } from './config.Select';

@@ -16,7 +16,7 @@ export const ItemBoolean: React.FC<ItemBooleanProps> = (props) => {
   const { bus, ns } = props;
   const model = useItemMonitor({ bus, model: props.model });
   const { label, description } = model;
-  const isActive = Boolean(model.handler);
+  const isActive = model.handlers.length > 0;
   const value = Boolean(model.current);
 
   const fire = () => {

@@ -21,7 +21,7 @@ export type DevActionBooleanConfigArgs<Ctx extends O> = {
   ctx: Ctx;
   label(value: string | t.ReactNode): DevActionBooleanConfigArgs<Ctx>;
   description(value: string | t.ReactNode): DevActionBooleanConfigArgs<Ctx>;
-  handler(handler: t.DevActionBooleanHandler<Ctx>): DevActionBooleanConfigArgs<Ctx>;
+  pipe(...handlers: t.DevActionBooleanHandler<Ctx>[]): DevActionBooleanConfigArgs<Ctx>;
 };
 
 /**

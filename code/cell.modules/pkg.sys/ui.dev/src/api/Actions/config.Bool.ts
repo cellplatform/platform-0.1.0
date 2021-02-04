@@ -2,13 +2,13 @@ import { format, t, slug } from '../../common';
 
 type O = Record<string, unknown>;
 
-export const Boolean = {
+export const Bool = {
   /**
    * A [Boolean] switch configurator.
    */
   config<Ctx extends O>(ctx: Ctx, params: any[]) {
     const LABEL = 'Unnamed';
-    const item: t.DevActionBoolean = { id: slug(), kind: 'boolean', label: LABEL };
+    const item: t.DevActionBoolean = { id: slug(), kind: 'boolean', label: LABEL, handlers: [] };
 
     const config: t.DevActionBooleanConfigArgs<any> = {
       ctx,
@@ -20,8 +20,8 @@ export const Boolean = {
         item.description = format.string(value, { trim: true });
         return config;
       },
-      handler(handler) {
-        item.handler = handler;
+      pipe(...handlers) {
+        item.handlers.push(...handlers.filter(Boolean));
         return config;
       },
     };
@@ -29,7 +29,7 @@ export const Boolean = {
     if (typeof params[0] === 'function') {
       params[0](config);
     } else {
-      config.label(params[0]).handler(params[1]);
+      config.label(params[0]).pipe(params[1]);
     }
 
     return { item, config };
