@@ -72,7 +72,9 @@ const toAbsolute = (input: t.IDevHostedLayout['position']): t.IDevAbsolutePositi
   if (input === undefined) return undefined;
 
   if (Array.isArray(input)) {
-    return { top: input[0], right: input[1], bottom: input[0], left: input[1] };
+    return input.length > 2
+      ? { top: input[0], right: input[1], bottom: input[2], left: input[3] }
+      : { top: input[0], right: input[1], bottom: input[0], left: input[1] };
   }
 
   if (typeof input !== 'object') {

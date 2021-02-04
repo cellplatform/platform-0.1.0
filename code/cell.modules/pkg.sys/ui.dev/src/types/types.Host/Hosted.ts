@@ -15,7 +15,11 @@ export type IDevHostedLayout = {
   cropmarks?: boolean | number;
   label?: ReactNode | Partial<IDevHostedLabel>;
   labelColor?: string | number;
-  position?: StringOrNumber | [StringOrNumber, StringOrNumber] | t.IDevAbsolutePosition;
+  position?:
+    | StringOrNumber
+    | [StringOrNumber, StringOrNumber]
+    | [StringOrNumber, StringOrNumber, StringOrNumber, StringOrNumber]
+    | t.IDevAbsolutePosition;
 };
 
 export type IDevHostedLabel = {
