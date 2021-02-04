@@ -40,6 +40,7 @@ export const DEFAULT = {
 };
 
 export const CSS = {
-  ACTIONS: 'uid-actions',
-  MARKDOWN: 'uid-markdown',
+  HOST: 'dev-Host',
+  ACTIONS: 'dev-Actions',
+  MARKDOWN: 'dev-Markdown',
 };

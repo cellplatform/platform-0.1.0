@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { color, css, rx, t } from '../common';
 import { ActionsHost } from '../components/Host';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import { ActionsSelect } from '../components/ActionsSelect';
 import * as sample1 from './sample-1/Component.DEV';
 import * as sample2 from './sample-2/Component.DEV';
@@ -61,7 +62,9 @@ export const Dev: React.FC = () => {
     <React.StrictMode>
       <div {...styles.base}>
         <div {...styles.main}>
-          <ActionsHost bus={bus} actions={selectedActions} style={styles.host} />
+          <ErrorBoundary>
+            <ActionsHost bus={bus} actions={selectedActions} style={styles.host} />
+          </ErrorBoundary>
           {elSelect}
         </div>
         <div {...styles.right}>{elActionsList}</div>

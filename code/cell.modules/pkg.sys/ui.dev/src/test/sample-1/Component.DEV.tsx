@@ -17,6 +17,7 @@ type Ctx = {
   text: string;
   myLayout: SampleLayout;
   isRunning?: boolean;
+  throw?: boolean;
 };
 
 const LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem.';
@@ -50,6 +51,10 @@ export const actions = Actions<Ctx>()
     const description = <div {...css(styles.bgr, styles.desc)}>{`${LOREM} (${count})`}</div>;
     e.button.label = label;
     e.settings({ button: { description } });
+  })
+  .boolean('error', (e) => {
+    if (e.changing) e.ctx.throw = e.changing.next;
+    e.boolean.current = e.ctx.throw;
   })
 
   .hr()
@@ -202,6 +207,10 @@ export const actions = Actions<Ctx>()
     const data = { isRunning: ctx.isRunning };
     const text = `${ctx.count}: ${ctx.text}`;
     const el = <Component text={text} data={data} />;
+
+    if (ctx.throw) {
+      throw new Error('My Error');
+    }
 
     if (ctx.myLayout === 'single:top-left') {
       return e.render(el, { position: { top: 50, left: 50 } });

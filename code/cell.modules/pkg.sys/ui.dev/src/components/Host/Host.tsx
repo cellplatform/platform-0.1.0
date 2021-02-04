@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { css, CssValue, defaultValue, formatColor, t } from '../../common';
+import { css, CssValue, defaultValue, formatColor, t, constants } from '../../common';
 import { Subject, SubjectCropmark } from './Subject';
 
 export type HostProps = {
@@ -59,7 +59,7 @@ export const Host: React.FC<HostProps> = (props = {}) => {
   });
 
   return (
-    <div {...css(styles.base, props.style)} className={'dev-Host'}>
+    <div {...css(styles.base, props.style)} className={constants.CSS.HOST}>
       <div {...styles.body}>{elContent}</div>
     </div>
   );
