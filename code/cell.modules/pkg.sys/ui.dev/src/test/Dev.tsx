@@ -4,17 +4,32 @@ import { color, css, rx, t } from '../common';
 import { ActionsHost } from '../components/Host';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { ActionsSelect } from '../components/ActionsSelect';
+import { useActionsSelectState } from '../hooks/Actions';
 import * as sample1 from './sample-1/Component.DEV';
 import * as sample2 from './sample-2/Component.DEV';
 
 const bus = rx.bus();
 
 bus.event$.subscribe((e) => {
-  console.log('e', e);
+  // console.log('e', e);
 });
 
+const actionsList = [sample1.actions, sample2.actions];
+
+const selectedState: t.ActionsSelectedState = async (value) => {
+  const KEY = 'dev/actions/selected';
+  if (value !== undefined) localStorage.setItem(KEY, value.toObject().name);
+  return actionsList.find((actions) => actions.toObject().name === localStorage.getItem(KEY));
+};
+
 export const Dev: React.FC = () => {
-  const [selectedActions, setSelectedActions] = useState<t.DevActions<any>>(sample1.actions);
+  const actions = useActionsSelectState({
+    bus,
+    actions: actionsList,
+    selectedState,
+  });
+
+  // const [selectedActions, setSelectedActions] = useState<t.DevActions<any>>(sample1.actions);
 
   const styles = {
     base: css({
@@ -42,7 +57,7 @@ export const Dev: React.FC = () => {
     },
   };
 
-  const elActionsList = selectedActions.renderList(bus, {
+  const elActionsList = actions.selected?.renderList(bus, {
     scrollable: true, // default: true
     style: { flex: 1 },
   });
@@ -50,11 +65,11 @@ export const Dev: React.FC = () => {
   const elSelect = (
     <ActionsSelect
       bus={bus}
-      style={styles.select.outer}
+      selected={actions.selected}
+      actions={actions.list}
+      // onChange={(e) => setSelectedActions(e.selected)}
       menuPlacement={'top'}
-      selected={selectedActions}
-      actions={[sample1.actions, sample2.actions]}
-      onChange={(e) => setSelectedActions(e.selected)}
+      style={styles.select.outer}
     />
   );
 
@@ -63,7 +78,7 @@ export const Dev: React.FC = () => {
       <div {...styles.base}>
         <div {...styles.main}>
           <ErrorBoundary>
-            <ActionsHost bus={bus} actions={selectedActions} style={styles.host} />
+            <ActionsHost bus={bus} actions={actions.selected} style={styles.host} />
           </ErrorBoundary>
           {elSelect}
         </div>
