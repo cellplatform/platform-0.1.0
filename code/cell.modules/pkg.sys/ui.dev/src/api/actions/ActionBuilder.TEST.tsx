@@ -20,10 +20,7 @@ describe('ActionBuilder', () => {
   describe('ActionBuilder.model()', () => {
     it('model', () => {
       const model = ActionBuilder.model();
-      const ns = model.state.ns;
-      expect(ns).not.to.eql('');
-      expect(model.state).to.eql({ ...DEFAULT.ACTIONS, ns });
-      expect(model.state.name).to.eql(DEFAULT.UNNAMED);
+      expect(model.state).to.eql({ ...DEFAULT.ACTIONS });
     });
   });
 
@@ -341,20 +338,20 @@ describe('ActionBuilder', () => {
     });
   });
 
-  describe('actions.name()', () => {
-    it('sets name', () => {
+  describe('actions.namespace()', () => {
+    it('sets namespace', () => {
       const { builder, model } = create();
-      expect(model.state.name).to.eql(DEFAULT.UNNAMED);
+      expect(model.state.ns).to.eql(DEFAULT.UNNAMED);
 
-      builder.name('   Foobar  ');
+      builder.namespace('   Foobar  ');
 
-      expect(model.state.name).to.eql('Foobar');
+      expect(model.state.ns).to.eql('Foobar');
 
-      builder.name('  ');
-      expect(model.state.name).to.eql(DEFAULT.UNNAMED);
+      builder.namespace('  ');
+      expect(model.state.ns).to.eql(DEFAULT.UNNAMED);
 
-      builder.name('foo').name(undefined as any);
-      expect(model.state.name).to.eql(DEFAULT.UNNAMED);
+      builder.namespace('foo').namespace(undefined as any);
+      expect(model.state.ns).to.eql(DEFAULT.UNNAMED);
     });
   });
 

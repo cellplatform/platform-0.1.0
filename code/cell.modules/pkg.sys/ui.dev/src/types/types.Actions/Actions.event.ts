@@ -32,7 +32,7 @@ export type IDevActionsSelectChangedEvent = {
   type: 'dev:actions/select/changed';
   payload: IDevActionsSelectChanged;
 };
-export type IDevActionsSelectChanged = { ns: string; name: string };
+export type IDevActionsSelectChanged = { ns: string };
 
 /**
  * Fires when a single action [Item] model state changes.

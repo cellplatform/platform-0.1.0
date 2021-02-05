@@ -17,9 +17,9 @@ bus.event$.subscribe((e) => {
 const actionsList = [sample1.actions, sample2.actions];
 
 const selectedState: t.ActionsSelectedState = async (value) => {
-  const KEY = 'dev/actions/selected';
-  if (value !== undefined) localStorage.setItem(KEY, value.toObject().name);
-  return actionsList.find((actions) => actions.toObject().name === localStorage.getItem(KEY));
+  const KEY = 'DEV/actions/selected';
+  if (value !== undefined) localStorage.setItem(KEY, value.toObject().ns);
+  return actionsList.find((actions) => actions.toObject().ns === localStorage.getItem(KEY));
 };
 
 export const Dev: React.FC = () => {
@@ -28,8 +28,6 @@ export const Dev: React.FC = () => {
     actions: actionsList,
     selectedState,
   });
-
-  // const [selectedActions, setSelectedActions] = useState<t.DevActions<any>>(sample1.actions);
 
   const styles = {
     base: css({

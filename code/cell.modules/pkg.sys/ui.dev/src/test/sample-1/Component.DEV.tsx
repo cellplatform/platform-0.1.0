@@ -28,7 +28,7 @@ let count = 0;
  * Actions
  */
 export const actions = Actions<Ctx>()
-  .name('sample-1')
+  .namespace('sample-1')
   .context((prev) => prev || { myLayout: 'single', count: 0, text: LOREM, isRunning: true })
 
   .button('change text', (e) => {

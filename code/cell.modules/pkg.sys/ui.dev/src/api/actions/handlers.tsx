@@ -107,9 +107,9 @@ export const handlers: t.BuilderHandlers<
   /**
    * Name (of the set of actions)
    */
-  name(args) {
-    const name = (args.params[0] || '').trim() || DEFAULT.UNNAMED;
-    args.model.change((draft) => (draft.name = name));
+  namespace(args) {
+    const namespace = (args.params[0] || '').trim() || DEFAULT.UNNAMED;
+    args.model.change((draft) => (draft.ns = namespace));
   },
 
   /**

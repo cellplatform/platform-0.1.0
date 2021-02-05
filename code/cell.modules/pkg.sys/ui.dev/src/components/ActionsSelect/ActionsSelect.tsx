@@ -23,7 +23,7 @@ export const ActionsSelect: React.FC<ActionsSelectProps> = (props) => {
 
   const options: t.DevActionSelectItem<M>[] = actions.map((value) => {
     const model = value.toObject();
-    const label = model.name || DEFAULT.UNNAMED;
+    const label = model.ns || DEFAULT.UNNAMED;
     return { label, value };
   });
 

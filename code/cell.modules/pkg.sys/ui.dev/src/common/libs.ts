@@ -1,7 +1,7 @@
 import { equals, clone, clamp, uniq } from 'ramda';
 export const R = { equals, clone, clamp, uniq };
 
-import { css, color, CssValue, style,  } from '@platform/css';
+import { css, color, CssValue, style } from '@platform/css';
 export { css, color, CssValue, style };
 export const formatColor = color.format;
 

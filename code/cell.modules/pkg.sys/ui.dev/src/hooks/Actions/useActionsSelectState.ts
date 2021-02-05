@@ -25,7 +25,7 @@ export function useActionsSelectState(args: {
     rx.payload<t.IDevActionsSelectChangedEvent>($, 'dev:actions/select/changed')
       .pipe()
       .subscribe((e) => {
-        const current = list.find((actions) => actions.toObject().name === e.name);
+        const current = list.find((actions) => actions.toObject().ns === e.ns);
         setSelected(current);
         args.selectedState(current);
       });

@@ -10,7 +10,7 @@ type Ctx = {
  * Actions
  */
 export const actions = Actions<Ctx>()
-  .name('sample-2')
+  .namespace('sample-2')
   .context((prev) => prev || { count: 0 })
 
   .button('increment', (e) => e.ctx.count++)
