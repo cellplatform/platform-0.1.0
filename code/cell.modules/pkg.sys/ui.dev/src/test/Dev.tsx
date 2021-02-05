@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { color, css, rx, t } from '../common';
-import { ActionsHost, ErrorBoundary, ActionsSelect, useActionsSelectState, Store } from '..';
+import { ActionsHost, ActionsSelect, ErrorBoundary, Store, useActionsSelectState } from '..';
+import { color, css, rx } from '../common';
 import * as sample1 from './sample-1/Component.DEV';
 import * as sample2 from './sample-2/Component.DEV';
 
@@ -49,7 +49,7 @@ export const Dev: React.FC = () => {
     },
   };
 
-  const elActionsList = actions.selected?.renderList(bus, {
+  const elActions = actions.selected?.renderList(bus, {
     scrollable: true, // default: true
     style: { flex: 1 },
   });
@@ -59,7 +59,6 @@ export const Dev: React.FC = () => {
       bus={bus}
       selected={actions.selected}
       actions={actions.list}
-      // onChange={(e) => setSelectedActions(e.selected)}
       menuPlacement={'top'}
       style={styles.select.outer}
     />
@@ -74,7 +73,7 @@ export const Dev: React.FC = () => {
           </ErrorBoundary>
           {elSelect}
         </div>
-        <div {...styles.right}>{elActionsList}</div>
+        <div {...styles.right}>{elActions}</div>
       </div>
     </React.StrictMode>
   );
