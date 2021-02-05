@@ -91,7 +91,7 @@ export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
     </div>
   );
 
-  const elExpandIcon = <Icons.Chevron.Down />;
+  const elExpandIcon = <Icons.Chevron.Down size={20} />;
 
   return (
     <div {...css(styles.base, props.style)}>
