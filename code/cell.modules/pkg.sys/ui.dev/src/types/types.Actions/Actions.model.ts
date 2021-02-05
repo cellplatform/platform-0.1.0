@@ -4,7 +4,7 @@ type A = t.DevActionsChangeType;
 
 export type DevActionsModelState<Ctx> = t.BuilderModel<t.DevActionsModel<Ctx>, A>;
 export type DevActionsModel<Ctx> = {
-  ns: string;
+  namespace: string;
   items: t.DevActionItem[];
   ctx: { current?: Ctx; get?: t.DevActionGetContext<Ctx> };
   env: {

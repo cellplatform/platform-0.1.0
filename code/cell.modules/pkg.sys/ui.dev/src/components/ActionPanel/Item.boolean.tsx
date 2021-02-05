@@ -6,14 +6,14 @@ import { Switch } from '../Primitives';
 import { ButtonView } from './Item.ButtonView';
 
 export type ItemBooleanProps = {
-  ns: string;
+  namespace: string;
   bus: t.DevEventBus;
   model: t.DevActionBoolean;
   style?: CssValue;
 };
 
 export const ItemBoolean: React.FC<ItemBooleanProps> = (props) => {
-  const { bus, ns } = props;
+  const { bus, namespace } = props;
   const model = useItemMonitor({ bus, model: props.model });
   const { label, description } = model;
   const isActive = model.handlers.length > 0;
@@ -23,7 +23,7 @@ export const ItemBoolean: React.FC<ItemBooleanProps> = (props) => {
     bus.fire({
       type: 'dev:action/Boolean',
       payload: {
-        ns,
+        namespace,
         model,
         changing: { next: !value },
       },

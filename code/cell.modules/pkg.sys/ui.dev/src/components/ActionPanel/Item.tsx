@@ -8,7 +8,7 @@ import { ItemTitle } from './Item.Title';
 import { ItemSelect } from './Item.Select';
 
 export type ItemProps = {
-  ns: string;
+  namespace: string;
   bus: t.DevEventBus;
   model: t.DevActionItem;
   style?: CssValue;

@@ -25,7 +25,7 @@ export const COLORS = {
 const UNNAMED = 'Unnamed';
 const UNTITLED = 'Untitled';
 const ACTIONS: t.DevActionsModel<any> = {
-  ns: UNNAMED,
+  namespace: UNNAMED,
   items: [],
   ctx: {},
   env: { viaAction: {}, viaSubject: {} },

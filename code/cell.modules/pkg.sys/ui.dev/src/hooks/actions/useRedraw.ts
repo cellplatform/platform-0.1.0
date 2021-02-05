@@ -23,13 +23,13 @@ export function useRedraw(args: {
 
     if (actions) {
       const model = actions.toModel();
-      const ns = model.state.ns;
+      const ns = model.state.namespace;
       const changed$ = model.event.changed$;
 
       changed$
         .pipe(
           takeUntil(dispose$),
-          filter((e) => e.to.ns === ns),
+          filter((e) => e.to.namespace === ns),
           filter((e) => isChangedPath(args.paths, e.patches)),
         )
         .subscribe(() => {

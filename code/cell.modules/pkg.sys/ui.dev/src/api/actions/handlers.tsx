@@ -109,7 +109,7 @@ export const handlers: t.BuilderHandlers<
    */
   namespace(args) {
     const namespace = (args.params[0] || '').trim() || DEFAULT.UNNAMED;
-    args.model.change((draft) => (draft.ns = namespace));
+    args.model.change((draft) => (draft.namespace = namespace));
   },
 
   /**

@@ -2,7 +2,7 @@ import React from 'react';
 import { css, CssValue, t, color, Format } from '../../common';
 
 export type ItemHrProps = {
-  ns: string;
+  namespace: string;
   bus: t.DevEventBus;
   model: t.DevActionHr;
   style?: CssValue;

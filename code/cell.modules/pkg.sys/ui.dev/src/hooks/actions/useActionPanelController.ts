@@ -12,14 +12,14 @@ type O = Record<string, unknown>;
  */
 export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.DevActions<O> }) {
   const { bus, actions } = args;
-  const ns = actions.toObject().ns;
+  const ns = actions.toObject().namespace;
 
   useEffect(() => {
     const model = actions.toModel();
     const dispose$ = new Subject<void>();
     const $ = bus.event$.pipe(
       takeUntil(dispose$),
-      filter((e) => e.payload.ns === ns),
+      filter((e) => e.payload.namespace === ns),
     );
 
     /**
@@ -65,10 +65,10 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
         // Fire event that load initial value.
         model.state.items.forEach((model) => {
           if (model.kind === 'boolean' && model.handlers.length > 0) {
-            bus.fire({ type: 'dev:action/Boolean', payload: { ns, model } });
+            bus.fire({ type: 'dev:action/Boolean', payload: { namespace: ns, model } });
           }
           if (model.kind === 'select' && model.handlers.length > 0) {
-            bus.fire({ type: 'dev:action/Select', payload: { ns, model } });
+            bus.fire({ type: 'dev:action/Select', payload: { namespace: ns, model } });
           }
         });
 
@@ -99,7 +99,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
           if (model) {
             bus.fire({
               type: 'dev:action/model/changed',
-              payload: { ns, index, model },
+              payload: { namespace: ns, index, model },
             });
           }
         });
@@ -235,7 +235,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
      *    The delayed tick allows all components to setup their hooks
      *    before the initial state configuration is established.
      */
-    time.delay(0, () => bus.fire({ type: 'dev:actions/init', payload: { ns } }));
+    time.delay(0, () => bus.fire({ type: 'dev:actions/init', payload: { namespace: ns } }));
 
     return () => dispose$.next();
   }, [bus, actions, ns]);

@@ -18,8 +18,8 @@ const actionsList = [sample1.actions, sample2.actions];
 
 const selectedState: t.ActionsSelectedState = async (value) => {
   const KEY = 'DEV/actions/selected';
-  if (value !== undefined) localStorage.setItem(KEY, value.toObject().ns);
-  return actionsList.find((actions) => actions.toObject().ns === localStorage.getItem(KEY));
+  if (value !== undefined) localStorage.setItem(KEY, value.toObject().namespace);
+  return actionsList.find((actions) => actions.toObject().namespace === localStorage.getItem(KEY));
 };
 
 export const Dev: React.FC = () => {

@@ -8,14 +8,14 @@ import { Icons } from '../Icons';
 import { Select } from '../../api/Actions';
 
 export type ItemSelectProps = {
-  ns: string;
+  namespace: string;
   bus: t.DevEventBus;
   model: t.DevActionSelect;
   style?: CssValue;
 };
 
 export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
-  const { bus, ns } = props;
+  const { bus, namespace } = props;
   const model = useItemMonitor({ bus, model: props.model });
 
   const { label, description } = model;
@@ -53,7 +53,7 @@ export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
     const next = (Array.isArray(value) ? value : [value]) as t.DevActionSelectItem[];
     bus.fire({
       type: 'dev:action/Select',
-      payload: { ns, model, changing: { action, next } },
+      payload: { namespace, model, changing: { action, next } },
     });
   };
 

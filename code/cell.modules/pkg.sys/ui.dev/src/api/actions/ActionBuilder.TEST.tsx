@@ -28,21 +28,21 @@ describe('ActionBuilder', () => {
     it('from no params', () => {
       const builder = ActionBuilder.api();
       const obj = builder.toObject();
-      expect(obj).to.eql({ ...DEFAULT.ACTIONS, ns: obj.ns });
+      expect(obj).to.eql({ ...DEFAULT.ACTIONS });
     });
 
     it('from {model} StateObject', () => {
       const model = StateObject.create<M, A>({ ...DEFAULT.ACTIONS });
       const builder = ActionBuilder.api(model);
       const obj = builder.toObject();
-      expect(obj).to.eql({ ...DEFAULT.ACTIONS, ns: obj.ns });
+      expect(obj).to.eql({ ...DEFAULT.ACTIONS });
     });
 
     it('from {model} object', () => {
       const model = StateObject.create<M>({ ...DEFAULT.ACTIONS });
       const builder = ActionBuilder.api(model.state);
       const obj = builder.toObject();
-      expect(obj).to.eql({ ...DEFAULT.ACTIONS, ns: obj.ns });
+      expect(obj).to.eql({ ...DEFAULT.ACTIONS });
     });
 
     it('from builder.toObject() - model state', () => {
@@ -339,19 +339,19 @@ describe('ActionBuilder', () => {
   });
 
   describe('actions.namespace()', () => {
-    it('sets namespace', () => {
+    it('change namespace', () => {
       const { builder, model } = create();
-      expect(model.state.ns).to.eql(DEFAULT.UNNAMED);
+      expect(model.state.namespace).to.eql(DEFAULT.UNNAMED);
 
       builder.namespace('   Foobar  ');
 
-      expect(model.state.ns).to.eql('Foobar');
+      expect(model.state.namespace).to.eql('Foobar');
 
       builder.namespace('  ');
-      expect(model.state.ns).to.eql(DEFAULT.UNNAMED);
+      expect(model.state.namespace).to.eql(DEFAULT.UNNAMED);
 
       builder.namespace('foo').namespace(undefined as any);
-      expect(model.state.ns).to.eql(DEFAULT.UNNAMED);
+      expect(model.state.namespace).to.eql(DEFAULT.UNNAMED);
     });
   });
 

@@ -23,12 +23,12 @@ export const ActionsSelect: React.FC<ActionsSelectProps> = (props) => {
 
   const options: t.DevActionSelectItem<M>[] = actions.map((value) => {
     const model = value.toObject();
-    const label = model.ns || DEFAULT.UNNAMED;
+    const label = model.namespace || DEFAULT.UNNAMED;
     return { label, value };
   });
 
-  const selectedNs = props.selected?.toObject().ns;
-  const index = options.findIndex((opt) => opt.value.toObject().ns === selectedNs);
+  const selectedNs = props.selected?.toObject().namespace;
+  const index = options.findIndex((opt) => opt.value.toObject().namespace === selectedNs);
   const value = index < 0 ? undefined : options[index];
 
   const styles = {
