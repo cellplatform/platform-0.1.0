@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { color, css, rx, t } from '../common';
-import { ActionsHost } from '../components/Host';
-import { ErrorBoundary } from '../components/ErrorBoundary';
-import { ActionsSelect } from '../components/ActionsSelect';
-import { useActionsSelectState } from '../hooks/Actions';
+import { ActionsHost, ErrorBoundary, ActionsSelect, useActionsSelectState, Store } from '..';
 import * as sample1 from './sample-1/Component.DEV';
 import * as sample2 from './sample-2/Component.DEV';
 
@@ -14,19 +11,16 @@ bus.event$.subscribe((e) => {
   // console.log('e', e);
 });
 
-const actionsList = [sample1.actions, sample2.actions];
-
-const selectedState: t.ActionsSelectedState = async (value) => {
-  const KEY = 'DEV/actions/selected';
-  if (value !== undefined) localStorage.setItem(KEY, value.toObject().namespace);
-  return actionsList.find((actions) => actions.toObject().namespace === localStorage.getItem(KEY));
-};
+const list = [sample1.actions, sample2.actions];
 
 export const Dev: React.FC = () => {
   const actions = useActionsSelectState({
     bus,
-    actions: actionsList,
-    selectedState,
+    actions: list,
+    store: Store.ActionsSelect.localStorage({
+      actions: list,
+      key: 'ui.dev:actions/selected',
+    }),
   });
 
   const styles = {

@@ -9,4 +9,7 @@ export { ActionsSelect } from './components/ActionsSelect';
 export { Host, ActionsHost } from './components/Host';
 export { ErrorBoundary } from './components/ErrorBoundary';
 
+export { Store } from './store';
+export { useActionsSelectState } from './hooks/Actions';
+
 export * from './types';
