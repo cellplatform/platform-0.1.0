@@ -60,7 +60,7 @@ export const App = () => {
 
   const setCodeEditor = () => {
     const url = 'https://dev.db.team/cell:ckgse6r8l000ccwethl0ubdrh:A1/file/sample/remoteEntry.js';
-    const namespace = 'sys.ui.editor.code';
+    const namespace = 'sys.ui.code.editor';
     const entry = './Dev';
     setSystem({ url, namespace, entry });
     setState({ url });
@@ -116,7 +116,7 @@ export const App = () => {
         <button onClick={setFoo}>foo(2)</button>
         <button onClick={setter(1234, 'sys.ui.shell', './Dev')}>shell</button>
         <button onClick={setAi}>ai</button>
-        <button onClick={setter(3003, 'sys.ui.editor.code', './Dev')}>code (local)</button>
+        <button onClick={setter(3003, 'sys.ui.code.editor', './Dev')}>code (local)</button>
         <button onClick={setCodeEditor}>code (remote)</button>
       </div>
       <div>{state?.url || '-'}</div>

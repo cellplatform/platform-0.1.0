@@ -1,4 +1,4 @@
-# sys.ui.editor.code
+# sys.ui.code.editor
 
 <p>&nbsp;<p>
 

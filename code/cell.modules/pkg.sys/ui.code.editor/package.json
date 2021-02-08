@@ -1,5 +1,5 @@
 {
-  "name": "sys.ui.editor.code",
+  "name": "sys.ui.code.editor",
   "version": "0.0.51",
   "compiler": {
     "port": 3033

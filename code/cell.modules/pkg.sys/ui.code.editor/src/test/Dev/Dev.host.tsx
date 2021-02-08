@@ -17,7 +17,7 @@ export const DevHost: React.FC<DevHostProps> = (props) => {
       style={styles.host}
       layout={{
         label: {
-          topLeft: props.title || 'sys.ui.editor.code',
+          topLeft: props.title || 'sys.ui.code.editor',
           topRight: props.filename,
         },
         position: { absolute: [50, 80] },
