@@ -75,7 +75,7 @@ describe('ActionBuilder', () => {
       const el = builder
         .context(() => ({ count: 123 }))
         .button('foo', () => null)
-        .renderList(bus, { scrollable: false });
+        .renderActionPanel(bus, { scrollable: false });
 
       expect(React.isValidElement(el)).to.eql(true);
 
@@ -87,7 +87,7 @@ describe('ActionBuilder', () => {
 
     it('throw: bus not provided', () => {
       const { builder } = create();
-      const fn = () => builder.renderList({} as any);
+      const fn = () => builder.renderActionPanel({} as any);
       expect(fn).to.throw(/Event bus not provided/);
     });
   });

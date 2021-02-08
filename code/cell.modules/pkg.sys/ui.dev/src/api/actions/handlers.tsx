@@ -48,7 +48,7 @@ export const handlers: t.BuilderHandlers<
   /**
    * Render to an <ActionPanel>.
    */
-  renderList(args) {
+  renderActionPanel(args) {
     const bus = args.params[0] as t.EventBus;
     const props = args.params[1] as t.ActionPanelProps;
     const actions = args.builder.self;

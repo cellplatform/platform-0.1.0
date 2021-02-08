@@ -49,7 +49,7 @@ export const Dev: React.FC = () => {
     },
   };
 
-  const elActions = actions.selected?.renderList(bus, {
+  const elActions = actions.selected?.renderActionPanel(bus, {
     scrollable: true, // default: true
     style: { flex: 1 },
   });

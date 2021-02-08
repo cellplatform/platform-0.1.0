@@ -14,7 +14,7 @@ export type DevActionsModelMethods<Ctx extends O> = DevActionsModelInputMethods<
   toContext(): Ctx;
   clone(ctx?: t.DevActionGetContext<Ctx>): t.DevActions<Ctx>;
 
-  renderList(bus: t.EventBus, props?: t.ActionPanelProps): JSX.Element;
+  renderActionPanel(bus: t.EventBus, props?: t.ActionPanelProps): JSX.Element;
   renderSubject(): t.DevActionSubject<Ctx>;
 
   merge(actions: DevActions<any>, options?: DevActionAddOptions): t.DevActions<Ctx>;
