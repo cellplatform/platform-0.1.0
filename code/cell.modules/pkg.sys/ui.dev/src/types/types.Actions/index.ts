@@ -1,7 +1,6 @@
 export * from './ui.ActionPanel';
 
 export * from './Actions';
-export * from './Actions.config';
 export * from './Actions.event';
 export * from './Actions.factory';
 export * from './Actions.handler';

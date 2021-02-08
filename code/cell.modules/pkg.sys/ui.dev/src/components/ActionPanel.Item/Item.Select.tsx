@@ -5,7 +5,7 @@ import { color, css, CssValue, t, time } from '../../common';
 import { useItemMonitor } from '../../hooks/Actions';
 import { ButtonView } from './Item.ButtonView';
 import { Icons } from '../Icons';
-import { Select } from '../../api/Actions';
+import { Select } from '../../api/Actions.Item';
 
 export type ItemSelectProps = {
   namespace: string;

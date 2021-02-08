@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { Context, Handler, Select } from '../../api/Actions';
+import { Context, Handler } from '../../api/Actions';
+import { Select } from '../../api/Actions.Item';
 import { R, rx, t, time, Events } from '../../common';
 
 type O = Record<string, unknown>;

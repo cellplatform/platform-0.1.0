@@ -1,4 +1,4 @@
-import { ActionBuilder } from './api';
+import { ActionBuilder } from './api/Actions';
 export const Actions = ActionBuilder.api;
 
 export { StateObject, toObject } from './common';

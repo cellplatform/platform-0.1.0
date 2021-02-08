@@ -1,5 +1,24 @@
 import { t } from '../common';
 
+type O = Record<string, unknown>;
+
+/**
+ * Select (Dropdown)
+ */
+export type DevActionSelectConfig<Ctx extends O> = (args: DevActionSelectConfigArgs<Ctx>) => void;
+export type DevActionSelectConfigArgs<Ctx extends O> = {
+  ctx: Ctx;
+  label(value: string | t.ReactNode): DevActionSelectConfigArgs<Ctx>;
+  description(value: string | t.ReactNode): DevActionSelectConfigArgs<Ctx>;
+  items(list: t.DevActionSelectItemInput[]): DevActionSelectConfigArgs<Ctx>;
+  initial(
+    value?: t.DevActionSelectItemInput | t.DevActionSelectItemInput[],
+  ): DevActionSelectConfigArgs<Ctx>;
+  multi(value: boolean): DevActionSelectConfigArgs<Ctx>;
+  clearable(value: boolean): DevActionSelectConfigArgs<Ctx>;
+  pipe(...handlers: t.DevActionSelectHandler<Ctx>[]): DevActionSelectConfigArgs<Ctx>;
+};
+
 /**
  * INPUT: A button with a toggle switch (boolean).
  */

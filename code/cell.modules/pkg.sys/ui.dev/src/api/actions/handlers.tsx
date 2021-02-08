@@ -1,9 +1,6 @@
 import { DEFAULT, defaultValue, t } from '../../common';
-import { Bool } from './config.Bool';
-import { Button } from './config.Button';
-import { Hr } from './config.Hr';
-import { Select } from './config.Select';
-import { Title } from './config.Title';
+
+import { Bool, Button, Hr, Select, Title } from '../Actions.Item';
 import { Context } from './Context';
 import { renderList } from './render.List';
 import { renderSubject } from './render.Subject';
@@ -27,7 +24,7 @@ export const handlers: t.BuilderHandlers<
   toObject: (args) => args.model.state,
 
   /**
-   * Convert builder to event object.
+   * Convert builder to an [StateObject] event source.
    */
   toEvents: (args) => args.model.event,
 
