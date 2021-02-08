@@ -1,24 +1,27 @@
 import React, { useState, useRef } from 'react';
-import Select from 'react-select';
+import SelectComponent from 'react-select';
 
 import { color, css, CssValue, t, time } from '../../common';
 import { useItemMonitor } from '../../hooks/Actions';
 import { ButtonView } from './Item.ButtonView';
 import { Icons } from '../Icons';
+import { Select } from '../../api/Actions';
 
 export type ItemSelectProps = {
-  ns: string;
+  namespace: string;
   bus: t.DevEventBus;
   model: t.DevActionSelect;
   style?: CssValue;
 };
 
 export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
-  const { bus, ns } = props;
+  const { bus, namespace } = props;
   const model = useItemMonitor({ bus, model: props.model });
 
   const { label, description } = model;
-  const isActive = Boolean(model.handler);
+  const isActive = model.handlers.length > 0;
+  const options = model.items.map((v) => Select.toOption(v));
+  const current = model.multi ? model.current : model.current[0];
 
   const [isSelectVisible, setIsSelectVisible] = useState<boolean>();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -38,7 +41,7 @@ export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
     focus();
   };
 
-  const selectRef = useRef<Select>();
+  const selectRef = useRef<SelectComponent>();
 
   const handleSelectBlur = () => {
     setIsSelectVisible(false);
@@ -50,7 +53,7 @@ export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
     const next = (Array.isArray(value) ? value : [value]) as t.DevActionSelectItem[];
     bus.fire({
       type: 'dev:action/Select',
-      payload: { ns, model, changing: { action, next } },
+      payload: { namespace, model, changing: { action, next } },
     });
   };
 
@@ -70,14 +73,13 @@ export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
     },
   };
 
-  const options = model.items.map((v) => (typeof v === 'string' ? { value: v, label: v } : v));
-
   const elSelect = (
     <div {...styles.select.outer}>
       <div {...styles.select.inner}>
-        <Select
-          ref={(e) => (selectRef.current = (e as unknown) as Select)}
+        <SelectComponent
+          ref={(e) => (selectRef.current = (e as unknown) as SelectComponent)}
           options={options}
+          value={current}
           placeholder={label}
           menuIsOpen={isMenuOpen}
           isMulti={model.multi}
@@ -89,7 +91,7 @@ export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
     </div>
   );
 
-  const elExpandIcon = <Icons.Chevron.Down />;
+  const elExpandIcon = <Icons.Chevron.Down size={20} />;
 
   return (
     <div {...css(styles.base, props.style)}>

@@ -262,6 +262,29 @@ describe('Builder', () => {
       expect(clone.toObject().childObject?.count).to.eql(123);
       expect(clone.toObject().name).to.eql('hello');
     });
+
+    it('cloning builder API', () => {
+      type IModel = { name: string };
+      type IFoo = { name(value: string): IFoo; toObject(): IModel };
+
+      const handlers: t.BuilderHandlers<IModel, IFoo> = {
+        toObject: (args) => args.model.state,
+        name(args) {
+          args.model.change((draft) => (draft.name = args.params[0]));
+          return args.clone();
+        },
+      };
+
+      const model = StateObject.create<IModel>({ name: '' });
+      const builder = Builder.create<IModel, IFoo>({ model, handlers });
+
+      const res1 = builder.name('one');
+      const res2 = builder.name('two');
+      expect(res2).to.not.eql(res1); // NB: A cloned builder instance is returned.
+
+      expect(res1.toObject().name).to.eql('one');
+      expect(res2.toObject().name).to.eql('two');
+    });
   });
 
   describe('IDisposable', () => {

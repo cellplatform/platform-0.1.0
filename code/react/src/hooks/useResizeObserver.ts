@@ -1,4 +1,6 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { takeUntil } from 'rxjs/operators';
+
 import { DEFAULT, ResizeObserver } from '../resize/ResizeObserver';
 import * as t from '../types';
 
@@ -37,7 +39,7 @@ export function useResizeObserver(
 
   useEffect(() => {
     const element = root.watch(ref.current as HTMLElement);
-    element.$.subscribe((e) => setRect(e.payload.rect));
+    element.$.pipe(takeUntil(element.dispose$)).subscribe((e) => setRect(e.payload.rect));
     ready.current = true;
     return () => element.dispose();
   }, []); // eslint-disable-line

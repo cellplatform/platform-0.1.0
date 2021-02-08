@@ -1,10 +1,10 @@
 import { DEFAULT, defaultValue, t } from '../../common';
-import { BooleanConfig } from './config.Boolean';
-import { SelectConfig } from './config.Select';
-import { ButtonConfig } from './config.Button';
-import { HrConfig } from './config.Hr';
-import { TitleConfig } from './config.Title';
-import { getAndStoreContext } from './context';
+import { Bool } from './config.Bool';
+import { Button } from './config.Button';
+import { Hr } from './config.Hr';
+import { Select } from './config.Select';
+import { Title } from './config.Title';
+import { Context } from './Context';
 import { renderList } from './render.List';
 import { renderSubject } from './render.Subject';
 
@@ -34,7 +34,7 @@ export const handlers: t.BuilderHandlers<
   /**
    * Derives the current context ("ctx") for the builder.
    */
-  toContext: (args) => getAndStoreContext(args.model),
+  toContext: (args) => Context.getAndStore(args.model),
 
   /**
    * Create a clone of the builder (optionally changing the context factory.)
@@ -85,7 +85,7 @@ export const handlers: t.BuilderHandlers<
    * Merges in another Action model's items.
    */
   merge(args) {
-    const mergeBuilder = args.params[0] as t.DevActions<any>;
+    const mergeBuilder = args.params[0] as t.DevActions;
     const options = (args.params[1] || {}) as t.DevActionAddOptions;
     const insertAt = defaultValue(options.insertAt, 'end');
 
@@ -107,16 +107,17 @@ export const handlers: t.BuilderHandlers<
   /**
    * Name (of the set of actions)
    */
-  name(args) {
-    const name = (args.params[0] || '').trim() || DEFAULT.UNNAMED;
-    args.model.change((draft) => (draft.name = name));
+  namespace(args) {
+    const namespace = (args.params[0] || '').trim() || DEFAULT.UNNAMED;
+    args.model.change((draft) => (draft.namespace = namespace));
   },
 
   /**
    * Button.
    */
   button(args) {
-    const { item } = ButtonConfig(args.params);
+    const ctx = args.builder.self.toContext();
+    const { item } = Button.config(ctx, args.params);
     args.model.change((draft) => draft.items.push(item));
   },
 
@@ -124,7 +125,8 @@ export const handlers: t.BuilderHandlers<
    * Boolean (Switch).
    */
   boolean(args) {
-    const { item } = BooleanConfig(args.params);
+    const ctx = args.builder.self.toContext();
+    const { item } = Bool.config(ctx, args.params);
     args.model.change((draft) => draft.items.push(item));
   },
 
@@ -132,7 +134,8 @@ export const handlers: t.BuilderHandlers<
    * Boolean (Switch).
    */
   select(args) {
-    const { item } = SelectConfig(args.params);
+    const ctx = args.builder.self.toContext();
+    const { item } = Select.config(ctx, args.params);
     args.model.change((draft) => draft.items.push(item));
   },
 
@@ -140,7 +143,8 @@ export const handlers: t.BuilderHandlers<
    * Horizontal rule.
    */
   hr(args) {
-    const { item } = HrConfig(args.params);
+    const ctx = args.builder.self.toContext();
+    const { item } = Hr.config(ctx, args.params);
     args.model.change((draft) => draft.items.push(item));
   },
 
@@ -148,7 +152,8 @@ export const handlers: t.BuilderHandlers<
    * Title block.
    */
   title(args) {
-    const { item } = TitleConfig(args.params);
+    const ctx = args.builder.self.toContext();
+    const { item } = Title.config(ctx, args.params);
     args.model.change((draft) => draft.items.push(item));
   },
 };

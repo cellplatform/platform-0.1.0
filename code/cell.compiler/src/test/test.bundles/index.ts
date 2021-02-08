@@ -1,7 +1,10 @@
 import { TestCompile, Compiler } from '../TestCompile';
 export { TestCompile, Compiler };
 
-const ENTRY = './src/test/test.bundles/node.simple';
+// NB: Ensure native [node] types are correctly found.
+export { resolve } from 'path';
+
+const ENTRY = './src/test/test.bundles/simple.node';
 
 export const SampleBundles = {
   simpleNode: TestCompile.make(

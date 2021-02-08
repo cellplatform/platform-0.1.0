@@ -1,7 +1,7 @@
 import React from 'react';
 import { Actions, toObject } from '../..';
-import { css, COLORS } from '../../common';
-import { ObjectView } from '@platform/ui.object';
+import { css, COLORS, color } from '../../common';
+import { Component } from './Component';
 
 type SampleLayout =
   | 'single'
@@ -17,14 +17,10 @@ type Ctx = {
   text: string;
   myLayout: SampleLayout;
   isRunning?: boolean;
+  throw?: boolean;
 };
 
-const LOREM =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor.';
-
-const styles = {
-  bgr: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */ }),
-};
+const LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem.';
 
 let count = 0;
 
@@ -32,18 +28,33 @@ let count = 0;
  * Actions
  */
 export const actions = Actions<Ctx>()
-  .name('ui.dev')
+  .namespace('sample-1')
   .context((prev) => prev || { myLayout: 'single', count: 0, text: LOREM, isRunning: true })
 
   .button('change text', (e) => {
     e.ctx.count++;
     e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
   })
-  .button('inject React', (e) => {
-    const label = <div {...styles.bgr}>Hello</div>;
-    const description = <div {...styles.bgr}>{LOREM}</div>;
+  .button('inject <React>', (e) => {
+    count++;
+
+    const styles = {
+      bgr: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' }),
+      desc: css({
+        borderLeft: `solid 8px ${color.format(-0.1)}`,
+        paddingLeft: 8,
+        PaddingY: 5,
+      }),
+    };
+
+    const label = <div {...styles.bgr}>Hello ({count})</div>;
+    const description = <div {...css(styles.bgr, styles.desc)}>{`${LOREM} (${count})`}</div>;
     e.button.label = label;
     e.settings({ button: { description } });
+  })
+  .boolean('error', (e) => {
+    if (e.changing) e.ctx.throw = e.changing.next;
+    e.boolean.current = e.ctx.throw;
   })
 
   .hr()
@@ -59,16 +70,32 @@ export const actions = Actions<Ctx>()
   })
   .button((config) => config.label(`Ellipsis - ${LOREM}`))
   .button((config) => null)
-  .button((config) =>
+  .button((config) => {
+    const markdown = () => {
+      let text = '';
+      text = `${text} *I am italic*, **I am bold** \`code\` `;
+      text = `${text} \n- one\n- two\n - three`;
+      text = `${text}\n\n${LOREM}\n\n${LOREM} (${count})`;
+      return text.trim();
+    };
     config
-      .label('**markdown**')
-      .description(`*I am italic*, **I am bold** \`code\` ${LOREM}`)
-      .handler((e) => null),
-  )
+      .label('markdown')
+      .description(markdown())
+      .pipe((e) => {
+        count++;
+        e.button.description = markdown();
+      });
+  })
   .button('button: change label', (e) => {
     count++;
     e.button.label = `count: ${count}`;
-    e.settings({ button: { description: `Lorem ipsum dolar sit ${count}` } });
+    e.settings({ button: { description: `Lorem ipsum dolar sit (${count})` } });
+  })
+  .button((config) => {
+    config.label('multiple handlers').pipe(
+      (e) => count++,
+      (e) => (e.button.label = `multi: ${count}`),
+    );
   })
 
   .hr(1, 0.15)
@@ -88,18 +115,18 @@ export const actions = Actions<Ctx>()
 
   .hr(1, 0.15)
 
-  .select('select single', (e) => {
-    e.settings({
-      select: {
-        items: ['one', { label: 'two', value: { count: 2 } }, 'three'],
-        clearable: true,
-      },
-    });
-
-    const value = e.select.current[0]; // NB: always first.
-    e.select.label = value ? value.label : `select single`;
-    e.select.placeholder = !Boolean(value);
-  })
+  .select((config) =>
+    config
+      .label('select single')
+      .items(['one', { label: 'two', value: { count: 2 } }, 3])
+      .initial(3)
+      .clearable(true)
+      .pipe((e) => {
+        const value = e.select.current[0]; // NB: always first.
+        e.select.label = value ? value.label : `select single`;
+        e.select.placeholder = !Boolean(value);
+      }),
+  )
 
   .select((config) => {
     config
@@ -107,15 +134,15 @@ export const actions = Actions<Ctx>()
       .description('My set of dropdown options')
       .items(['Chocolate', 'Strawberry', 'Vanilla'])
       .multi(true)
-      .handler((e) => {
+      .pipe((e) => {
         if (e.changing) count++;
         e.select.description = `My dropdown changed (${count})`;
-        const value = e.select.current
+        const current = e.select.current
           .map((m) => m.label)
           .join(', ')
           .trim();
-        e.select.label = value ? value : `select (multi)`;
-        e.select.placeholder = !Boolean(value);
+        e.select.label = current ? current : `select (multi)`;
+        e.select.placeholder = !Boolean(current);
       });
   })
 
@@ -172,28 +199,18 @@ export const actions = Actions<Ctx>()
         border: -0.1,
         cropmarks: -0.2,
         background: 1,
-        label: 'foobar',
+        label: 'sample-1',
       },
-      host: {
-        background: -0.04,
-      },
+      host: { background: -0.04 },
     });
 
     const data = { isRunning: ctx.isRunning };
+    const text = `${ctx.count}: ${ctx.text}`;
+    const el = <Component text={text} data={data} />;
 
-    const styles = {
-      base: css({ padding: 20 }),
-      text: css({ marginBottom: 10 }),
-    };
-
-    const el = (
-      <div {...styles.base}>
-        <div {...styles.text}>
-          {ctx.count}: {e.ctx.text}
-        </div>
-        <ObjectView name={'subject'} data={data} />
-      </div>
-    );
+    if (ctx.throw) {
+      throw new Error('My Error');
+    }
 
     if (ctx.myLayout === 'single:top-left') {
       return e.render(el, { position: { top: 50, left: 50 } });

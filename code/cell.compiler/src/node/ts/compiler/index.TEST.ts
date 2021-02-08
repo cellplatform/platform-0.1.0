@@ -10,7 +10,7 @@ const find = async (dir: t.TscDir, pattern: string) => {
   return { paths, relative };
 };
 
-const source = 'src/test/test.bundles/node.simple/**/*';
+const source = 'src/test/test.bundles/simple.node/**/*';
 
 describe('TscCompiler', function () {
   this.timeout(99999);
@@ -54,7 +54,7 @@ describe('TscCompiler', function () {
 
       const manifest = res.out.manifest;
       expect(manifest.kind).to.eql('typelib');
-      expect(manifest.typelib.name).to.eql('node.simple');
+      expect(manifest.typelib.name).to.eql('simple.node');
       expect(manifest.typelib.version).to.eql('0.0.1');
       expect(manifest.typelib.entry).to.eql('./types.d.txt');
 
@@ -119,7 +119,7 @@ describe('TscCompiler', function () {
       expect(manifest.files.map((f) => f.path)).to.include('package.json');
 
       const pkg = (await fs.readJson(fs.join(outdir, 'package.json'))) as t.INpmPackageJson;
-      expect(pkg.name).to.eql('node.simple');
+      expect(pkg.name).to.eql('simple.node');
       expect(pkg.version).to.eql('0.0.1');
       expect(pkg.types).to.eql('./types.d.ts');
 
@@ -151,7 +151,7 @@ describe('TscCompiler', function () {
       const manifestFiles = manifest.files.map((file) => file.path);
 
       expect(manifest.kind).to.eql('typelib');
-      expect(manifest.typelib.name).to.eql('node.simple');
+      expect(manifest.typelib.name).to.eql('simple.node');
       expect(manifest.typelib.version).to.eql('0.0.1');
       expect(manifest.typelib.entry).to.eql('./types.d.txt');
 
@@ -233,7 +233,7 @@ describe('TscCompiler', function () {
       const res = await compiler.manifest.generate({ dir });
 
       const info = res.manifest.typelib;
-      expect(info.name).to.eql('node.simple');
+      expect(info.name).to.eql('simple.node');
       expect(info.version).to.eql('0.0.1');
       expect(info.entry).to.eql('./types.d.txt');
     });
@@ -327,7 +327,7 @@ describe('TscCompiler', function () {
       const manifest = res.manifest;
 
       expect(manifest.files.find((f) => f.path === 'package.json')?.path).to.eql('package.json');
-      expect(manifest.typelib.name).to.eql('node.simple');
+      expect(manifest.typelib.name).to.eql('simple.node');
       expect(manifest.typelib.version).to.eql('0.0.1');
       expect(manifest.typelib.entry).to.eql('./types.d.txt');
 
@@ -335,7 +335,7 @@ describe('TscCompiler', function () {
       expect(path).to.match(/foo\/package\.json$/);
 
       const pkg = (await fs.readJson(path || '')) as t.INpmPackageJson;
-      expect(pkg.name).to.eql('node.simple');
+      expect(pkg.name).to.eql('simple.node');
       expect(pkg.version).to.eql('0.0.1');
       expect(pkg.types).to.eql('./types.d.ts');
     });

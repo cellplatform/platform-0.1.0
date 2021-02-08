@@ -6,7 +6,7 @@ import { t } from '../common';
 export type DevActionBoolean = t.DevActionBooleanProps & {
   id: string;
   kind: 'boolean';
-  handler?: t.DevActionBooleanHandler<any>;
+  handlers: t.DevActionBooleanHandler<any>[];
 };
 
 /**

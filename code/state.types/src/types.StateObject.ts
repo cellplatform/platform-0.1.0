@@ -48,12 +48,12 @@ export type IStateObjectWritable<T extends O, A extends string = string> = IStat
 export type StateObjectChange<T extends O, A extends string> = (
   input: StateObjectChanger<T> | T,
   options?: IStateObjectChangeOptions<A>,
-) => IStateObjectChangeResponse<T>;
+) => IStateObjectChangeResponse<T, A>;
 
 export type StateObjectChangeOperation = 'update' | 'replace';
 export type IStateObjectChangeOptions<A extends string> = { action?: A };
 
-export type IStateObjectChangeResponse<T extends O, A extends string = string> = {
+export type IStateObjectChangeResponse<T extends O, A extends string> = {
   op: StateObjectChangeOperation;
   cid: string; // "change-id"
   patches: t.PatchSet;

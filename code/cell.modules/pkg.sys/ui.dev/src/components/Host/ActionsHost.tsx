@@ -6,7 +6,7 @@ import { Host } from './Host';
 
 export type ActionHostProps = {
   bus: t.EventBus;
-  actions: t.DevActions<any>;
+  actions?: t.DevActions<any>;
   style?: CssValue;
 };
 
@@ -23,6 +23,8 @@ export const ActionsHost: React.FC<ActionHostProps> = (props) => {
     bus: props.bus.type<t.DevActionEvent>(),
     actions,
   });
+
+  if (!actions) return null;
 
   const subject = actions.renderSubject();
   const env = actions.toObject().env;

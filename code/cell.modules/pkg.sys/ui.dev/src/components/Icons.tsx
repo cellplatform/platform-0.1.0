@@ -1,6 +1,6 @@
 import { Icon } from '@platform/ui.icon';
 import { VscSymbolVariable } from 'react-icons/vsc';
-import { MdExpandMore } from 'react-icons/md';
+import { MdExpandMore, MdClose } from 'react-icons/md';
 
 const icon = Icon.renderer;
 
@@ -9,6 +9,7 @@ const icon = Icon.renderer;
  */
 export const Icons = {
   Variable: icon(VscSymbolVariable),
+  Close: icon(MdClose),
 
   Chevron: {
     Down: icon(MdExpandMore),

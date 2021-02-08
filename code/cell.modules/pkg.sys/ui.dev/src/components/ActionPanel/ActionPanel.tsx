@@ -2,7 +2,7 @@ import React from 'react';
 
 import { constants, css, defaultValue, t } from '../../common';
 import { useActionPanelController, useRedraw } from '../../hooks/Actions';
-import { Item } from './Item';
+import { Item } from '../ActionPanel.Item';
 
 export type ActionPanelProps = t.ActionPanelProps & {
   bus: t.EventBus;
@@ -14,10 +14,15 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   const scrollable = defaultValue(props.scrollable, true);
   const bus = props.bus.type<t.DevEvent>();
   const model = actions.toObject();
-  const { ns, items } = model;
+  const { namespace, items } = model;
 
   useActionPanelController({ bus, actions });
-  useRedraw({ name: '<ActionPanel>', bus, actions, paths: ['ctx/current', 'items'] });
+  useRedraw({
+    name: '<ActionPanel>',
+    bus,
+    actions,
+    paths: ['ctx/current', 'items', 'initialized'],
+  });
 
   const styles = {
     base: css({
@@ -33,11 +38,12 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   };
 
   const elItems = items.map((item, i) => {
-    return <Item key={i} ns={ns} model={item} bus={bus} />;
+    const key = `item.${namespace}.${i}`;
+    return <Item key={key} namespace={namespace} model={item} bus={bus} />;
   });
 
   return (
-    <div {...css(styles.base, props.style)} className={'dev-ActionPanel'}>
+    <div {...css(styles.base, props.style)} className={constants.CSS.ACTIONS}>
       {elItems}
       {items.length > 0 && <div {...styles.spacer} />}
     </div>

@@ -1,8 +1,8 @@
 import React from 'react';
-import { css, CssValue, t, color, COLORS } from '../../common';
+import { COLORS, css, CssValue, t } from '../../common';
 
 export type ItemTitleProps = {
-  ns: string;
+  namespace: string;
   bus: t.DevEventBus;
   model: t.DevActionTitle;
   style?: CssValue;

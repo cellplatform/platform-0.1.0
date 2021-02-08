@@ -1,5 +1,5 @@
 import { t } from '../../common';
-import { getAndStoreContext } from './context';
+import { Context } from './Context';
 import { Handler } from './Handler';
 
 /**
@@ -9,7 +9,7 @@ export function renderSubject(args: { model: t.DevActionsModelState<any> }) {
   type R = t.DevActionSubject<any>;
   const { model } = args;
 
-  const ctx = getAndStoreContext(model);
+  const ctx = Context.getAndStore(model);
   if (!ctx) {
     const err = `Cannot [renderSubject] - the Actions [context] has not been set. Make sure you've called [actions.context(...)]`;
     throw new Error(err);
@@ -40,15 +40,17 @@ export function renderSubject(args: { model: t.DevActionsModelState<any> }) {
 
       // Invoke the handler.
       fnRender(payload);
-
-      // Merge results (in priority order).
-      subject.layout = {
-        ...draft.env.viaSubject.layout,
-        ...draft.env.viaAction.layout,
-        ...subject.layout,
-      };
     });
   }
 
+  // Merge results (in priority order).
+  const env = model.state.env;
+  subject.layout = {
+    ...env.viaSubject.layout,
+    ...env.viaAction.layout,
+    ...subject.layout,
+  };
+
+  // Finish up.
   return subject;
 }

@@ -29,17 +29,22 @@ export const ResizeObserver = (el?: HTMLElement | null): t.ResizeObserver => {
 
   const createItem = (target: HTMLElement) => {
     const item$ = new Subject<t.ResizeObserverEvent>();
+    const dispose$ = new Subject<void>();
     const dispose = () => {
-      item$.complete();
       items = items.filter((item) => item.element.target !== target);
+      item$.complete();
+      dispose$.next();
+      dispose$.complete();
       dom.unobserve(target);
     };
+    api.dispose$.subscribe(() => dispose());
 
     let rect: t.DomRect = DEFAULT.RECT;
     const $ = item$.pipe(takeUntil(dispose$), observeOn(animationFrameScheduler));
     const element: t.ResizeElementObserver = {
       target,
       $,
+      dispose$: dispose$.asObservable(),
       dispose,
       get rect() {
         return rect;
@@ -82,6 +87,7 @@ export const ResizeObserver = (el?: HTMLElement | null): t.ResizeObserver => {
 
   const api = {
     $: root$.pipe(takeUntil(dispose$)),
+    dispose$: dispose$.asObservable(),
 
     get elements() {
       return items.map((item) => item.element);

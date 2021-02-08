@@ -76,8 +76,11 @@ export type TreeStateAddArgs<T extends N = N, A extends string = string> = {
 export type TreeStateChange<T extends N = N, A extends string = string> = (
   fn: TreeStateChanger<T>,
   options?: TreeStateChangeOptions<A>,
-) => TreeStateChangeResponse<T>;
-export type TreeStateChangeResponse<T extends N = N> = t.IStateObjectChangeResponse<T>;
+) => TreeStateChangeResponse<T, A>;
+export type TreeStateChangeResponse<T extends N, A extends string> = t.IStateObjectChangeResponse<
+  T,
+  A
+>;
 export type TreeStateChangeOptions<A extends string> = { action?: A };
 export type TreeStateChanger<T extends N = N, P extends O = NonNullable<T['props']>> = (
   root: T,

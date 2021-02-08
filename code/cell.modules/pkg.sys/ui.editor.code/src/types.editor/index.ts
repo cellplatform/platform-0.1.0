@@ -1,5 +1,5 @@
 export * from './types';
-export * from './types.Action';
+export * from './types.Cmd.Action';
 
 export * from './types.event';
 export * from './types.Events';

@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { IDisposable } from '@platform/types';
 
 /**
  * Size and position of a rectangle.
@@ -18,21 +19,19 @@ export type DomRect = {
 /**
  * Programmatic wrapper around the W3C [ResizeObserver] object.
  */
-export type ResizeObserver = {
+export type ResizeObserver = IDisposable & {
   readonly $: Observable<ResizeObserverEvent>;
   readonly elements: ResizeElementObserver[];
-  dispose(): void;
   watch(target: HTMLElement): ResizeElementObserver;
   unwatch(target: HTMLElement): void;
 };
 
-export type ResizeElementObserver = {
+export type ResizeElementObserver = IDisposable & {
   readonly $: Observable<ResizeObserverEvent>;
   readonly target: HTMLElement;
   readonly rect: DomRect;
   dispose(): void;
 };
-
 
 /**
  * Events

@@ -19,8 +19,9 @@ export const copyRefs: t.TscCopyRefs = async (args): Promise<t.TscCopyRefsResult
     async moduleName(dir: D) {
       const source = fs.join(dir.source, dir.ref);
       const res = await Package.findClosestPath(source);
-      if (!res)
+      if (!res) {
         throw new Error(`[package.json] directory for module could not be found for: ${source}`);
+      }
       return res.name;
     },
 
@@ -73,18 +74,25 @@ export const copyRefs: t.TscCopyRefs = async (args): Promise<t.TscCopyRefsResult
     dirs.push(...file.declaration.imports.map((ref) => ({ ref, source: '' })));
     dirs.push(...file.declaration.exports.map((ref) => ({ ref, source: '' })));
   });
+  dirs = R.uniq(dirs.filter(Boolean));
   dirs = await Promise.all(
-    R.uniq(dirs.filter(Boolean)).map(async (path) => {
-      path.source = await NodeModules.pathToModule(sourceDir.base, path.ref);
-      return path;
+    dirs.map(async (dir) => {
+      dir.source = await NodeModules.pathToModule(sourceDir.base, dir.ref);
+      return dir;
     }),
   );
+
+  // Remove any paths that map into the default node-js types.
+  if (dirs.some((dir) => !Boolean(dir.source))) {
+    const node = await NodeModules.nodeJsTypes();
+    dirs = dirs.filter((dir) => (dir.source ? true : !node.includes(dir.ref)));
+  }
 
   // Ensure all modules have source files.
   const emptySource = dirs.filter((path) => !Boolean(path.source));
   if (emptySource.length > 0) {
-    const modules = emptySource.map((path) => `- ${path.ref}`).join('\n');
-    const err = `Cannot find source declarations (".d.ts") for modules.\nBase folder: ${sourceDir.base}\nModules:\n${modules}`;
+    const modules = emptySource.map((path) => `- "${path.ref}"`).join('\n');
+    const err = `Cannot find source declarations (".d.ts") for modules.\nBase folder: ${sourceDir.base}\nModule:\n${modules}`;
     throw new Error(err);
   }
 
@@ -116,12 +124,16 @@ export const copyRefs: t.TscCopyRefs = async (args): Promise<t.TscCopyRefsResult
 
     // Recurisvely copy references from within the newly copied directory.
     if (total > 0 && defaultValue(args.recursive, true)) {
-      const refs: string[] = (await TypeManifest.file.readDir(dir.source)).files
+      const node = await NodeModules.nodeJsTypes();
+      const files = (await TypeManifest.file.readDir(dir.source)).files;
+
+      const refs: string[] = files
         .filter((file) => file.hasRefs)
         .map((file) => file.declaration)
-        .reduce((acc, next) => [...acc, ...[...next.exports, ...next.imports]], [] as string[]);
+        .reduce((acc, next) => [...acc, ...[...next.exports, ...next.imports]], [] as string[])
+        .filter((ref) => !node.includes(ref));
 
-      for (const ref of refs) {
+      for (const ref of R.uniq(refs)) {
         const source = await NodeModules.pathToModule(sourceDir.base, ref, { root: true });
         await copyDir({ ref, source }); // <== 🌳 RECURSION
       }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { css, CssValue, defaultValue, formatColor, t } from '../../common';
+import { css, CssValue, defaultValue, formatColor, t, constants } from '../../common';
 import { Subject, SubjectCropmark } from './Subject';
 
 export type HostProps = {
@@ -15,7 +15,6 @@ export type HostProps = {
 export const Host: React.FC<HostProps> = (props = {}) => {
   const { subject, host } = props;
   const items = subject?.items || [];
-  const background = defaultValue(host?.background);
   const orientation = defaultValue(host?.orientation, 'y');
   const spacing = Math.max(0, defaultValue(host?.spacing, 60));
 
@@ -23,7 +22,8 @@ export const Host: React.FC<HostProps> = (props = {}) => {
     base: css({
       flex: 1,
       position: 'relative',
-      backgroundColor: formatColor(background),
+      color: formatColor(host?.color),
+      backgroundColor: formatColor(host?.background),
     }),
     body: css({
       Absolute: 0,
@@ -59,7 +59,7 @@ export const Host: React.FC<HostProps> = (props = {}) => {
   });
 
   return (
-    <div {...css(styles.base, props.style)} className={'dev-Host'}>
+    <div {...css(styles.base, props.style)} className={constants.CSS.HOST}>
       <div {...styles.body}>{elContent}</div>
     </div>
   );
@@ -72,7 +72,9 @@ const toAbsolute = (input: t.IDevHostedLayout['position']): t.IDevAbsolutePositi
   if (input === undefined) return undefined;
 
   if (Array.isArray(input)) {
-    return { top: input[0], right: input[1], bottom: input[0], left: input[1] };
+    return input.length > 2
+      ? { top: input[0], right: input[1], bottom: input[2], left: input[3] }
+      : { top: input[0], right: input[1], bottom: input[0], left: input[1] };
   }
 
   if (typeof input !== 'object') {

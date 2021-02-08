@@ -1,4 +1,5 @@
 import * as t from './types';
+import { R } from './libs';
 
 export const FONT = {
   MONO: 'Menlo, monospace',
@@ -24,14 +25,21 @@ export const COLORS = {
 const UNNAMED = 'Unnamed';
 const UNTITLED = 'Untitled';
 const ACTIONS: t.DevActionsModel<any> = {
-  ns: '',
-  name: UNNAMED,
+  namespace: UNNAMED,
   items: [],
   ctx: {},
   env: { viaAction: {}, viaSubject: {} },
 };
 export const DEFAULT = {
-  ACTIONS,
   UNTITLED,
   UNNAMED,
+  get ACTIONS() {
+    return R.clone(ACTIONS);
+  },
+};
+
+export const CSS = {
+  HOST: 'dev-Host',
+  ACTIONS: 'dev-Actions',
+  MARKDOWN: 'dev-Markdown',
 };

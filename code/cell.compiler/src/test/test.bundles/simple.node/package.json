@@ -1,5 +1,5 @@
 {
-  "name": "node.simple",
+  "name": "simple.node",
   "version": "0.0.1",
   "types": "./types.d.ts"
 }

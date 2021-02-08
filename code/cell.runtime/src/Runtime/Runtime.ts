@@ -8,8 +8,8 @@ const toEnv = (input?: RuntimeModule) => {
 export const Runtime = {
   /**
    * Wrapper around the __CELL__ constants inserted into modules
-   * by the [cell.compiler] packager, providing variables and helper
-   * methods for using the variables.
+   * by the [cell.compiler] which provides environment variables and helper
+   * methods for using these constants.
    *
    * See compiler plugins:
    *    -  wp.plugin.env => [DefinePlugin]

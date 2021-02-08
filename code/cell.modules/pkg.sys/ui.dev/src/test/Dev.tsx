@@ -1,13 +1,28 @@
 import React from 'react';
-import Select from 'react-select';
 
-import { color, css, rx } from '../../common';
-import { ActionsHost } from '../../components/Host';
-import { actions } from './Dev.actions';
+import { ActionsHost, ActionsSelect, ErrorBoundary, Store, useActionsSelectState } from '..';
+import { color, css, rx } from '../common';
+import * as sample1 from './sample-1/Component.DEV';
+import * as sample2 from './sample-2/Component.DEV';
 
 const bus = rx.bus();
 
+bus.event$.subscribe((e) => {
+  // console.log('e', e);
+});
+
+const list = [sample1.actions, sample2.actions];
+
 export const Dev: React.FC = () => {
+  const actions = useActionsSelectState({
+    bus,
+    actions: list,
+    store: Store.ActionsSelect.localStorage({
+      actions: list,
+      key: 'ui.dev:actions/selected',
+    }),
+  });
+
   const styles = {
     base: css({
       Absolute: 0,
@@ -34,28 +49,28 @@ export const Dev: React.FC = () => {
     },
   };
 
-  const elActions = actions.renderList(bus, {
+  const elActions = actions.selected?.renderList(bus, {
     scrollable: true, // default: true
     style: { flex: 1 },
   });
 
-  const options = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' },
-  ];
-
   const elSelect = (
-    <div {...styles.select.outer}>
-      <Select options={options} menuPlacement={'top'} />
-    </div>
+    <ActionsSelect
+      bus={bus}
+      selected={actions.selected}
+      actions={actions.list}
+      menuPlacement={'top'}
+      style={styles.select.outer}
+    />
   );
 
   return (
     <React.StrictMode>
       <div {...styles.base}>
         <div {...styles.main}>
-          <ActionsHost bus={bus} actions={actions} style={styles.host} />
+          <ErrorBoundary>
+            <ActionsHost bus={bus} actions={actions.selected} style={styles.host} />
+          </ErrorBoundary>
           {elSelect}
         </div>
         <div {...styles.right}>{elActions}</div>
