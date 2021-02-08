@@ -37,9 +37,10 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
     spacer: css({ height: 80 }),
   };
 
-  const elItems = items.map((item, i) => (
-    <Item key={i} namespace={namespace} model={item} bus={bus} />
-  ));
+  const elItems = items.map((item, i) => {
+    const key = `item.${namespace}.${i}`;
+    return <Item key={key} namespace={namespace} model={item} bus={bus} />;
+  });
 
   return (
     <div {...css(styles.base, props.style)} className={constants.CSS.ACTIONS}>
