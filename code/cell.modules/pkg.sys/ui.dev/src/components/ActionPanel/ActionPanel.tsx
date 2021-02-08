@@ -2,7 +2,7 @@ import React from 'react';
 
 import { constants, css, defaultValue, t } from '../../common';
 import { useActionPanelController, useRedraw } from '../../hooks/Actions';
-import { Item } from './Item';
+import { Item } from '../ActionPanel.Item';
 
 export type ActionPanelProps = t.ActionPanelProps & {
   bus: t.EventBus;
