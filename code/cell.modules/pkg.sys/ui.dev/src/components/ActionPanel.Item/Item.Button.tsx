@@ -6,7 +6,7 @@ import { ButtonView } from './Item.ButtonView';
 export type ItemButtonProps = {
   namespace: string;
   bus: t.DevEventBus;
-  model: t.DevActionButton;
+  model: t.ActionButton;
   style?: CssValue;
 };
 

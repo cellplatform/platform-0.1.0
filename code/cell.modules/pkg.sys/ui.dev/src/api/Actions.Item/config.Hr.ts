@@ -7,7 +7,7 @@ export const Hr = {
    * A [Horizontal Rule] configurator.
    */
   config<Ctx extends O>(ctx: Ctx, params: any[]) {
-    const item: t.DevActionHr = {
+    const item: t.ActionHr = {
       id: slug(),
       kind: 'hr',
       height: 8,
@@ -15,7 +15,7 @@ export const Hr = {
       margin: [8, 8],
     };
 
-    const config: t.DevActionHrConfigArgs<any> = {
+    const config: t.ActionHrConfigArgs<any> = {
       ctx,
       height(value) {
         item.height = Math.max(0, value);
@@ -41,7 +41,7 @@ export const Hr = {
       config.opacity(params[1]);
     }
     if (typeof params[2] === 'number' || Array.isArray(params[2])) {
-      config.margin(params[2] as t.DevEdgeSpacing);
+      config.margin(params[2] as t.EdgeSpacing);
     }
 
     return { item, config };

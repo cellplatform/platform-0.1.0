@@ -3,7 +3,7 @@ import { DEFAULT, format, slug, t } from '../../common';
 type O = Record<string, unknown>;
 
 export const Select = {
-  default(initial?: Partial<t.DevActionSelect>): t.DevActionSelect {
+  default(initial?: Partial<t.ActionSelect>): t.ActionSelect {
     return {
       id: slug(),
       kind: 'select',
@@ -23,7 +23,7 @@ export const Select = {
   config<Ctx extends O>(ctx: Ctx, params: any[]) {
     const item = Select.default();
 
-    const config: t.DevActionSelectConfigArgs<any> = {
+    const config: t.ActionSelectConfigArgs<any> = {
       ctx,
       label(value) {
         item.label = format.string(value, { trim: true }) || DEFAULT.UNNAMED;
@@ -65,7 +65,7 @@ export const Select = {
   /**
    * Convert a loose set of input types into a strongly-typed object.
    */
-  toOption<V extends any = any>(input?: t.DevActionSelectItemInput): t.DevActionSelectItem<V> {
+  toOption<V extends any = any>(input?: t.ActionSelectItemInput): t.ActionSelectItem<V> {
     if (typeof input === 'object') {
       return input;
     } else {
@@ -77,7 +77,7 @@ export const Select = {
   /**
    * Assigns the initial value as current (if there is one).
    */
-  assignInitial(item?: t.DevActionItem) {
+  assignInitial(item?: t.ActionItem) {
     if (item?.kind === 'select' && item.initial !== undefined) {
       let initial = Array.isArray(item.initial) ? item.initial : [item.initial];
       initial = item.multi ? initial : initial.slice(0, 1); // NB: if not "multi" only take the first item.

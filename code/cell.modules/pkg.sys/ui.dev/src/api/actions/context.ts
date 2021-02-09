@@ -8,7 +8,7 @@ export const Context = {
    * and stores that latest version of the context on the model.
    */
   getAndStore<Ctx extends O>(
-    model: t.DevActionsModelState<Ctx>,
+    model: t.ActionsModelState<Ctx>,
     options: { throw?: boolean } = {},
   ): Ctx | null {
     const state = model.state;

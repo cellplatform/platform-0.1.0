@@ -6,7 +6,7 @@ import { Item } from '../ActionPanel.Item';
 
 export type ActionPanelProps = t.ActionPanelProps & {
   bus: t.EventBus;
-  actions: t.DevActions<any>;
+  actions: t.Actions<any>;
 };
 
 export const ActionPanel: React.FC<ActionPanelProps> = (props) => {

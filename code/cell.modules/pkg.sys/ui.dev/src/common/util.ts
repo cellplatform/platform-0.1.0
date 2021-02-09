@@ -8,7 +8,7 @@ export const Format = {
   /**
    * Convert a margin into a [top, right, bottom left] array.
    */
-  toEdges: (input: t.DevEdgeSpacing) => style.toEdges(input),
+  toEdges: (input: t.EdgeSpacing) => style.toEdges(input),
 };
 
 /**

@@ -6,4 +6,4 @@ import { t } from '../common';
  *
  * Pass [undefined] to read.
  */
-export type ActionsSelectStore = (selected?: t.DevActions) => Promise<t.DevActions | undefined>;
+export type ActionsSelectStore = (selected?: t.Actions) => Promise<t.Actions | undefined>;

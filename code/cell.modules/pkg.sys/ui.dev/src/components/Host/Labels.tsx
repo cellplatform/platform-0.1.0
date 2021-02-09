@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { constants, css, formatColor, t } from '../../common';
 
-const KEYS: (keyof t.IDevHostedLabel)[] = ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'];
+const KEYS: (keyof t.HostedLabel)[] = ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'];
 
 export type ILabelsProps = {
-  label?: t.IDevHostedLayout['label'];
-  color?: t.IDevHostedLayout['labelColor'];
+  label?: t.HostedLayout['label'];
+  color?: t.HostedLayout['labelColor'];
   fontSize?: number;
 };
 
@@ -18,7 +18,7 @@ export const Labels: React.FC<ILabelsProps> = (props: ILabelsProps = {}) => {
   const offset = { x: 8, y: -22 };
 
   const isMap = isLabelMap(props.label);
-  const map = props.label as t.IDevHostedLabel;
+  const map = props.label as t.HostedLabel;
   const values = {
     topLeft: isMap ? map.topLeft : props.label,
     topRight: isMap ? map.topRight : undefined,
@@ -38,7 +38,7 @@ export const Labels: React.FC<ILabelsProps> = (props: ILabelsProps = {}) => {
     bottomRight: { Absolute: [null, offset.x, offset.y, null] },
   };
 
-  const render = (edge: keyof t.IDevHostedLabel) => {
+  const render = (edge: keyof t.HostedLabel) => {
     const children = values[edge];
     return children && <div {...css(styles.text, styles[edge])}>{children}</div>;
   };
@@ -57,9 +57,9 @@ export const Labels: React.FC<ILabelsProps> = (props: ILabelsProps = {}) => {
  * Helpers
  */
 
-const isLabelMap = (value: t.IDevHostedLayout['label']) => {
+const isLabelMap = (value: t.HostedLayout['label']) => {
   if (value !== null && typeof value === 'object') {
-    return Object.keys(value).some((key) => KEYS.includes(key as keyof t.IDevHostedLabel));
+    return Object.keys(value).some((key) => KEYS.includes(key as keyof t.HostedLabel));
   } else {
     return false;
   }

@@ -1,10 +1,19 @@
 type O = Record<string, unknown>;
 
 /**
- * Title
+ * CONFIGURE Title,
  */
-export type DevActionTitleConfig<Ctx extends O> = (args: DevActionTitleConfigArgs<Ctx>) => void;
-export type DevActionTitleConfigArgs<Ctx extends O> = {
+export type ActionTitleConfig<Ctx extends O> = (args: ActionTitleConfigArgs<Ctx>) => void;
+export type ActionTitleConfigArgs<Ctx extends O> = {
   ctx: Ctx;
-  text(value: string): DevActionTitleConfigArgs<Ctx>;
+  text(value: string): ActionTitleConfigArgs<Ctx>;
+};
+
+/**
+ * CONTENT: Title text.
+ */
+export type ActionTitle = {
+  id: string;
+  kind: 'title';
+  text: string;
 };

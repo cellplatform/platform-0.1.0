@@ -9,7 +9,7 @@ import { ActionPanel } from '../../components/ActionPanel';
 export function renderList(args: {
   bus: t.EventBus;
   props?: t.ActionPanelProps;
-  actions: t.DevActions;
+  actions: t.Actions;
 }) {
   const { bus, actions, props = {} } = args;
   if (!rx.isBus(bus)) throw new Error(`Event bus not provided`);

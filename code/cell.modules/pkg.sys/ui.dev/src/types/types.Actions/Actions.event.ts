@@ -3,81 +3,81 @@ import { t } from '../common';
 /**
  * State change actions.
  */
-export type DevActionsChangeType = 'via:init' | 'via:button' | 'via:boolean' | 'via:select';
+export type ActionsChangeType = 'via:init' | 'via:button' | 'via:boolean' | 'via:select';
 
 /**
  * Events
  */
-export type DevActionEvent =
-  | IDevActionsInitEvent
-  | IDevActionsSelectChangedEvent
-  | IDevActionModelChangedEvent
-  | IDevActionButtonEvent
-  | IDevActionBooleanEvent
-  | IDevActionSelectEvent;
+export type ActionEvent =
+  | IActionsInitEvent
+  | IActionsSelectChangedEvent
+  | IActionModelChangedEvent
+  | IActionButtonEvent
+  | IActionBooleanEvent
+  | IActionSelectEvent;
 
 /**
  * Fires to initialize the state of a set of actions.
  */
-export type IDevActionsInitEvent = {
+export type IActionsInitEvent = {
   type: 'dev:actions/init';
-  payload: IDevActionsInitPayload;
+  payload: IActionsInitPayload;
 };
-export type IDevActionsInitPayload = { namespace: string };
+export type IActionsInitPayload = { namespace: string };
 
 /**
  * Fires when the <ActionsSelect> dropdown changes.
  */
-export type IDevActionsSelectChangedEvent = {
+export type IActionsSelectChangedEvent = {
   type: 'dev:actions/select/changed';
-  payload: IDevActionsSelectChanged;
+  payload: IActionsSelectChanged;
 };
-export type IDevActionsSelectChanged = { namespace: string };
+export type IActionsSelectChanged = { namespace: string };
 
 /**
  * Fires when a single action [Item] model state changes.
  */
-export type IDevActionModelChangedEvent = {
+export type IActionModelChangedEvent = {
   type: 'dev:action/model/changed';
-  payload: IDevActionModelChangedPayload;
+  payload: IActionModelChangedPayload;
 };
-export type IDevActionModelChangedPayload = {
+export type IActionModelChangedPayload = {
   namespace: string;
   index: number;
-  model: t.DevActionItem;
+  model: t.ActionItem;
 };
 
 /**
  * Fires for the simple Button action.
  */
-export type IDevActionButtonEvent = {
+export type IActionButtonEvent = {
   type: 'dev:action/Button';
-  payload: IDevActionButtonPayload;
+  payload: IActionButtonPayload;
 };
-export type IDevActionButtonPayload = { namespace: string; model: t.DevActionButton };
+export type IActionButtonPayload = { namespace: string; model: t.ActionButton };
 
 /**
  * Fires for the Boolean (switch) action.
  */
-export type IDevActionBooleanEvent = {
+export type IActionBooleanEvent = {
   type: 'dev:action/Boolean';
-  payload: IDevActionBooleanPayload;
+  payload: IActionBooleanPayload;
 };
-export type IDevActionBooleanPayload = {
+export type IActionBooleanPayload = {
   namespace: string;
-  model: t.DevActionBoolean;
-  changing?: t.DevActionBooleanChanging;
+  model: t.ActionBoolean;
+  changing?: t.ActionBooleanChanging;
 };
 
 /**
  * Fires for the Select (dropdown) action.
  */
-export type IDevActionSelectEvent = {
+export type IActionSelectEvent = {
   type: 'dev:action/Select';
-  payload: IDevActionSelectPayload;
+  payload: IActionSelectPayload;
 };
-export type IDevActionSelectPayload = {
+export type IActionSelectPayload = {
   namespace: string;
-  model: t.DevActionSelect;
-  changing?: t.DevActionSelectChanging;
+  model: t.ActionSelect;
+  changing?: t.ActionSelectChanging;
 };

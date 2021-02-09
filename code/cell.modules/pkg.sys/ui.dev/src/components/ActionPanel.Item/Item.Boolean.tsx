@@ -8,7 +8,7 @@ import { ButtonView } from './Item.ButtonView';
 export type ItemBooleanProps = {
   namespace: string;
   bus: t.DevEventBus;
-  model: t.DevActionBoolean;
+  model: t.ActionBoolean;
   style?: CssValue;
 };
 

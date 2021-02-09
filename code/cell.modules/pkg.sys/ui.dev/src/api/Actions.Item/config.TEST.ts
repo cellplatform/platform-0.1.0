@@ -4,10 +4,7 @@ import { Select } from '.';
 describe('Actions/config', () => {
   describe('Select', () => {
     it('toOption', () => {
-      const test = (
-        input: t.DevActionSelectItemInput | undefined,
-        expected: t.DevActionSelectItem,
-      ) => {
+      const test = (input: t.ActionSelectItemInput | undefined, expected: t.ActionSelectItem) => {
         const res = Select.toOption(input);
         expect(res).to.eql(expected);
       };
@@ -23,8 +20,8 @@ describe('Actions/config', () => {
     });
 
     it('assignInitial', () => {
-      const test = (item: t.DevActionItem, expected: t.DevActionSelectItemInput[]) => {
-        const res = Select.assignInitial(item) as t.DevActionSelect;
+      const test = (item: t.ActionItem, expected: t.ActionSelectItemInput[]) => {
+        const res = Select.assignInitial(item) as t.ActionSelect;
         expect(res).to.equal(item);
         expect(res.current).to.eql(expected);
       };

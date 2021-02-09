@@ -6,7 +6,7 @@ import { Host } from './Host';
 
 export type ActionHostProps = {
   bus: t.EventBus;
-  actions?: t.DevActions<any>;
+  actions?: t.Actions<any>;
   style?: CssValue;
 };
 
@@ -20,7 +20,7 @@ export const ActionsHost: React.FC<ActionHostProps> = (props) => {
   useRedraw({
     name: '<ActionsHost>',
     paths: ['ctx/current', 'env/viaAction'],
-    bus: props.bus.type<t.DevActionEvent>(),
+    bus: props.bus.type<t.ActionEvent>(),
     actions,
   });
 

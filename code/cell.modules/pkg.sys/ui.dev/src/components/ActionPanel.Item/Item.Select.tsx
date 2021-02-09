@@ -10,7 +10,7 @@ import { Select } from '../../api/Actions.Item';
 export type ItemSelectProps = {
   namespace: string;
   bus: t.DevEventBus;
-  model: t.DevActionSelect;
+  model: t.ActionSelect;
   style?: CssValue;
 };
 
@@ -50,7 +50,7 @@ export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
   const handleChange = (value: any, meta: { action: t.SelectActionTypes }) => {
     hideSelect();
     const { action } = meta;
-    const next = (Array.isArray(value) ? value : [value]) as t.DevActionSelectItem[];
+    const next = (Array.isArray(value) ? value : [value]) as t.ActionSelectItem[];
     bus.fire({
       type: 'dev:action/Select',
       payload: { namespace, model, changing: { action, next } },

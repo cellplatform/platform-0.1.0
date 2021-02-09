@@ -4,8 +4,8 @@ import { css, CssValue, defaultValue, formatColor, t, constants } from '../../co
 import { Subject, SubjectCropmark } from './Subject';
 
 export type HostProps = {
-  host?: t.IDevHost;
-  subject?: t.DevActionSubject<any>;
+  host?: t.Host;
+  subject?: t.ActionSubject<any>;
   style?: CssValue;
 };
 
@@ -68,7 +68,7 @@ export const Host: React.FC<HostProps> = (props = {}) => {
 /**
  * Helpers
  */
-const toAbsolute = (input: t.IDevHostedLayout['position']): t.IDevAbsolutePosition | undefined => {
+const toAbsolute = (input: t.HostedLayout['position']): t.AbsolutePosition | undefined => {
   if (input === undefined) return undefined;
 
   if (Array.isArray(input)) {
@@ -81,10 +81,10 @@ const toAbsolute = (input: t.IDevHostedLayout['position']): t.IDevAbsolutePositi
     return { top: input, right: input, bottom: input, left: input };
   }
 
-  return input as t.IDevAbsolutePosition;
+  return input as t.AbsolutePosition;
 };
 
-const toBorderColor = (input: t.IDevHostedLayout['border']) => {
+const toBorderColor = (input: t.HostedLayout['border']) => {
   const border = defaultValue(input, true);
   const value = border === true ? 0.3 : border === false ? 0 : border;
   return formatColor(value);

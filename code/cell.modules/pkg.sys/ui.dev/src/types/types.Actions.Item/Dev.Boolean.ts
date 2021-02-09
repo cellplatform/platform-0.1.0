@@ -3,32 +3,32 @@ import { t } from '../common';
 type O = Record<string, unknown>;
 
 /**
- * Boolean (Switch)
+ * CONFIGURE Boolean (Switch)
  */
-export type DevActionBooleanConfig<Ctx extends O> = (args: DevActionBooleanConfigArgs<Ctx>) => void;
-export type DevActionBooleanConfigArgs<Ctx extends O> = {
+export type ActionBooleanConfig<Ctx extends O> = (args: ActionBooleanConfigArgs<Ctx>) => void;
+export type ActionBooleanConfigArgs<Ctx extends O> = {
   ctx: Ctx;
-  label(value: string | t.ReactNode): DevActionBooleanConfigArgs<Ctx>;
-  description(value: string | t.ReactNode): DevActionBooleanConfigArgs<Ctx>;
-  pipe(...handlers: t.DevActionBooleanHandler<Ctx>[]): DevActionBooleanConfigArgs<Ctx>;
+  label(value: string | t.ReactNode): ActionBooleanConfigArgs<Ctx>;
+  description(value: string | t.ReactNode): ActionBooleanConfigArgs<Ctx>;
+  pipe(...handlers: t.ActionBooleanHandler<Ctx>[]): ActionBooleanConfigArgs<Ctx>;
 };
 
 /**
  * INPUT: A Button with a toggle switch (boolean).
  */
-export type DevActionBoolean = t.DevActionBooleanProps & {
+export type ActionBoolean = t.ActionBooleanProps & {
   id: string;
   kind: 'boolean';
-  handlers: t.DevActionBooleanHandler<any>[];
+  handlers: t.ActionBooleanHandler<any>[];
 };
 
 /**
  * Editable properties of a [Boolean] button.
  */
-export type DevActionBooleanProps = {
+export type ActionBooleanProps = {
   label: string | t.ReactNode;
   description?: string | t.ReactNode;
   current?: boolean; // Latest value produced by the handler.
 };
 
-export type DevActionBooleanChanging = { next: boolean };
+export type ActionBooleanChanging = { next: boolean };

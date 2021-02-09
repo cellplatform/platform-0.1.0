@@ -8,10 +8,7 @@ import { R, rx, t, Events } from '../../common';
  * Updates an item model (state) when changes are reported
  * through the event-bus.
  */
-export function useItemMonitor<M extends t.DevActionItem>(args: {
-  bus: t.DevEventBus;
-  model: M;
-}): M {
+export function useItemMonitor<M extends t.ActionItem>(args: { bus: t.DevEventBus; model: M }): M {
   const { bus } = args;
   const [model, setModel] = useState<M>();
 
@@ -22,7 +19,7 @@ export function useItemMonitor<M extends t.DevActionItem>(args: {
       filter((e) => Events.isActionEvent(e)),
     );
 
-    rx.payload<t.IDevActionModelChangedEvent>($, 'dev:action/model/changed')
+    rx.payload<t.IActionModelChangedEvent>($, 'dev:action/model/changed')
       .pipe(
         filter((e) => e.model.id === args.model.id),
         distinctUntilChanged((prev, next) => R.equals(prev, next)),

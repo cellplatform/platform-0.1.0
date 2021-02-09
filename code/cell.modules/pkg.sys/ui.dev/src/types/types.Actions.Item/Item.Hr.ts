@@ -3,12 +3,23 @@ import { t } from '../common';
 type O = Record<string, unknown>;
 
 /**
- * Hr (Horizontal Rule)
+ * CONFIGURE Horizontal Rule
  */
-export type DevActionHrConfig<Ctx extends O> = (args: DevActionHrConfigArgs<Ctx>) => void;
-export type DevActionHrConfigArgs<Ctx extends O> = {
+export type ActionHrConfig<Ctx extends O> = (args: ActionHrConfigArgs<Ctx>) => void;
+export type ActionHrConfigArgs<Ctx extends O> = {
   ctx: Ctx;
-  height(value: number): DevActionHrConfigArgs<Ctx>;
-  opacity(value: number): DevActionHrConfigArgs<Ctx>;
-  margin(value: t.DevEdgeSpacing): DevActionHrConfigArgs<Ctx>;
+  height(value: number): ActionHrConfigArgs<Ctx>;
+  opacity(value: number): ActionHrConfigArgs<Ctx>;
+  margin(value: t.EdgeSpacing): ActionHrConfigArgs<Ctx>;
+};
+
+/**
+ * CONTENT: Horizontal rule (divider).
+ */
+export type ActionHr = {
+  id: string;
+  kind: 'hr';
+  height: number;
+  opacity: number;
+  margin: t.EdgeSpacing;
 };

@@ -5,8 +5,8 @@ import { Handler } from './Handler';
 /**
  * Render the subject(s) under test.
  */
-export function renderSubject(args: { model: t.DevActionsModelState<any> }) {
-  type R = t.DevActionSubject<any>;
+export function renderSubject(args: { model: t.ActionsModelState<any> }) {
+  type R = t.ActionSubject<any>;
   const { model } = args;
 
   const ctx = Context.getAndStore(model);
@@ -25,14 +25,14 @@ export function renderSubject(args: { model: t.DevActionsModelState<any> }) {
       const res = Handler.action({ ctx, env });
       const { host, layout } = res;
 
-      type P = t.DevActionHandlerSubjectArgs<any>;
+      type P = t.ActionHandlerSubjectArgs<any>;
 
       const payload: P = {
         ctx,
         host,
         layout,
         settings: (args) => Handler.settings({ env, payload })(args),
-        render(el: JSX.Element, layout?: t.IDevHostedLayout) {
+        render(el: JSX.Element, layout?: t.HostedLayout) {
           if (el) subject.items.push({ el, layout });
           return payload;
         },

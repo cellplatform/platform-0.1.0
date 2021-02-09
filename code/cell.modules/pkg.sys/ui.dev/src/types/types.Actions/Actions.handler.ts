@@ -7,81 +7,81 @@ import { t } from '../common';
  *    context is passed. Return this if a new context is not required.
  *
  */
-export type DevActionGetContext<T> = (prev: T | null) => T;
+export type ActionGetContext<T> = (prev: T | null) => T;
 
 /**
  * Render "subject" (component under test)
  */
-export type DevActionHandlerSubject<C> = (args: t.DevActionHandlerSubjectArgs<C>) => void;
-export type DevActionHandlerSubjectArgs<C> = t.DevActionHandlerArgs<C> & {
-  readonly settings: t.DevActionHandlerSettings<DevActionHandlerSubjectArgs<C>>;
-  render(el: JSX.Element, layout?: t.IDevHostedLayout): DevActionHandlerSubjectArgs<C>;
+export type ActionHandlerSubject<C> = (args: t.ActionHandlerSubjectArgs<C>) => void;
+export type ActionHandlerSubjectArgs<C> = t.ActionHandlerArgs<C> & {
+  readonly settings: t.ActionHandlerSettings<ActionHandlerSubjectArgs<C>>;
+  render(el: JSX.Element, layout?: t.HostedLayout): ActionHandlerSubjectArgs<C>;
 };
 
 /**
  * Common values passed to all handlers.
  */
-export type DevActionHandlerArgs<C> = {
+export type ActionHandlerArgs<C> = {
   readonly ctx: C;
-  readonly host: t.IDevHost;
-  readonly layout: t.IDevHostedLayout;
+  readonly host: t.Host;
+  readonly layout: t.HostedLayout;
 };
 
 /**
  * Method that updates the state of the harness.
  */
-export type DevActionHandlerSettings<
+export type ActionHandlerSettings<
   T,
-  A extends t.DevActionHandlerSettingsArgs = t.DevActionHandlerSettingsArgs
+  A extends t.ActionHandlerSettingsArgs = t.ActionHandlerSettingsArgs
 > = (settings: A) => T;
-export type DevActionHandlerSettingsArgs = {
-  host?: t.IDevHost | null;
-  layout?: t.IDevHostedLayout | null;
+export type ActionHandlerSettingsArgs = {
+  host?: t.Host | null;
+  layout?: t.HostedLayout | null;
 };
 
 /**
  * Simple Button handler.
  */
-export type DevActionButtonHandler<C> = (e: t.DevActionButtonHandlerArgs<C>) => void;
-export type DevActionButtonHandlerArgs<C> = t.DevActionHandlerArgs<C> & {
-  readonly settings: t.DevActionHandlerSettings<
-    DevActionButtonHandlerArgs<C>,
-    DevActionHandlerSettingsButtonArgs
+export type ActionButtonHandler<C> = (e: t.ActionButtonHandlerArgs<C>) => void;
+export type ActionButtonHandlerArgs<C> = t.ActionHandlerArgs<C> & {
+  readonly settings: t.ActionHandlerSettings<
+    ActionButtonHandlerArgs<C>,
+    ActionHandlerSettingsButtonArgs
   >;
-  readonly button: t.DevActionButtonProps;
+  readonly button: t.ActionButtonProps;
 };
-export type DevActionHandlerSettingsButtonArgs = t.DevActionHandlerSettingsArgs & {
-  button?: Partial<t.DevActionButtonProps>;
+export type ActionHandlerSettingsButtonArgs = t.ActionHandlerSettingsArgs & {
+  button?: Partial<t.ActionButtonProps>;
 };
 
 /**
  * Boolean (switch) handler.
  */
-export type DevActionBooleanHandler<C> = (e: t.DevActionBooleanHandlerArgs<C>) => void;
-export type DevActionBooleanHandlerArgs<C> = t.DevActionHandlerArgs<C> & {
-  readonly settings: t.DevActionHandlerSettings<
-    DevActionBooleanHandlerArgs<C>,
-    DevActionHandlerSettingsBooleanArgs
+export type ActionBooleanHandler<C> = (e: t.ActionBooleanHandlerArgs<C>) => void;
+export type ActionBooleanHandlerArgs<C> = t.ActionHandlerArgs<C> & {
+  readonly settings: t.ActionHandlerSettings<
+    ActionBooleanHandlerArgs<C>,
+    ActionHandlerSettingsBooleanArgs
   >;
-  readonly boolean: t.DevActionBooleanProps;
-  readonly changing?: t.DevActionBooleanChanging; // Exists when an interaction has causes the state to change.
+  readonly boolean: t.ActionBooleanProps;
+  readonly changing?: t.ActionBooleanChanging; // Exists when an interaction has causes the state to change.
 };
-export type DevActionHandlerSettingsBooleanArgs = t.DevActionHandlerSettingsArgs & {
-  boolean?: Partial<t.DevActionBooleanProps>;
+export type ActionHandlerSettingsBooleanArgs = t.ActionHandlerSettingsArgs & {
+  boolean?: Partial<t.ActionBooleanProps>;
 };
 
 /**
  * Select (dropdown) handler.
  */
-export type DevActionSelectHandler<C> = (e: t.DevActionSelectHandlerArgs<C>) => void;
-export type DevActionSelectHandlerArgs<C> = t.DevActionHandlerArgs<C> & {
-  readonly settings: t.DevActionHandlerSettings<
-    DevActionSelectHandlerArgs<C>,
-    DevActionHandlerSettingsSelectArgs
+export type ActionSelectHandler<C> = (e: t.ActionSelectHandlerArgs<C>) => void;
+export type ActionSelectHandlerArgs<C> = t.ActionHandlerArgs<C> & {
+  readonly settings: t.ActionHandlerSettings<
+    ActionSelectHandlerArgs<C>,
+    ActionHandlerSettingsSelectArgs
   >;
-  readonly select: t.DevActionSelectProps;
-  readonly changing?: t.DevActionSelectChanging; // Exists when an interaction has causes the state to change.
+  readonly select: t.ActionSelectProps;
+  readonly changing?: t.ActionSelectChanging; // Exists when an interaction has causes the state to change.
 };
-export type DevActionHandlerSettingsSelectArgs = t.DevActionHandlerSettingsArgs & {
-  select?: Partial<t.DevActionSelectProps>;
+export type ActionHandlerSettingsSelectArgs = t.ActionHandlerSettingsArgs & {
+  select?: Partial<t.ActionSelectProps>;
 };

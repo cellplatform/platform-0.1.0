@@ -11,7 +11,7 @@ type O = Record<string, unknown>;
 /**
  * Controller for handling actions.
  */
-export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.DevActions<O> }) {
+export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.Actions<O> }) {
   const { bus, actions } = args;
   const namespace = actions.toObject().namespace;
 
@@ -28,11 +28,11 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
      * Helpers that operate on the model within the context of this closure.
      */
     const Model = {
-      change(action: t.DevActionsChangeType, fn: (draft: t.DevActionsModel<any>) => void) {
+      change(action: t.ActionsChangeType, fn: (draft: t.ActionsModel<any>) => void) {
         Context.getAndStore(model, { throw: true }); // NB: This will also assign the [ctx.current] value.
         return model.change(fn, { action });
       },
-      payload<T extends t.DevActionItemInput>(itemId: string, draft: t.DevActionsModel<any>) {
+      payload<T extends t.ActionItemInput>(itemId: string, draft: t.ActionsModel<any>) {
         const ctx = draft.ctx.current;
         const env = draft.env.viaAction;
         const { host, layout } = Handler.action({ ctx, env });
@@ -52,7 +52,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
      *    Setup the initial model state by invoking
      *    each value producing handler.
      */
-    rx.payload<t.IDevActionsInitEvent>($, 'dev:actions/init')
+    rx.payload<t.IActionsInitEvent>($, 'dev:actions/init')
       .pipe()
       .subscribe((e) => {
         // Assign initial value as current.
@@ -110,15 +110,15 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
     /**
      * Button
      */
-    rx.payload<t.IDevActionButtonEvent>($, 'dev:action/Button')
+    rx.payload<t.IActionButtonEvent>($, 'dev:action/Button')
       .pipe()
       .subscribe((e) => {
         const { id, handlers } = e.model;
         if (handlers.length > 0) {
-          type T = t.DevActionButton;
-          type P = t.DevActionButtonHandlerArgs<any>;
-          type S = t.DevActionHandlerSettings<P>;
-          type A = t.DevActionHandlerSettingsButtonArgs;
+          type T = t.ActionButton;
+          type P = t.ActionButtonHandlerArgs<any>;
+          type S = t.ActionHandlerSettings<P>;
+          type A = t.ActionHandlerSettingsButtonArgs;
 
           Model.change('via:button', (draft) => {
             const { ctx, item, host, layout, env } = Model.payload<T>(id, draft);
@@ -128,7 +128,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
                   const obj = settings.button;
                   if (obj) Object.keys(obj).forEach((key) => (item[key] = obj[key]));
                 })(args);
-              const button = item as t.DevActionButtonProps;
+              const button = item as t.ActionButtonProps;
               const payload: P = { ctx, host, layout, settings, button };
 
               /**
@@ -150,15 +150,15 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
     /**
      * Boolean (Switch)
      */
-    rx.payload<t.IDevActionBooleanEvent>($, 'dev:action/Boolean')
+    rx.payload<t.IActionBooleanEvent>($, 'dev:action/Boolean')
       .pipe()
       .subscribe((e) => {
         const { id, handlers } = e.model;
         if (handlers.length > 0) {
-          type T = t.DevActionBoolean;
-          type P = t.DevActionBooleanHandlerArgs<any>;
-          type S = t.DevActionHandlerSettings<P>;
-          type A = t.DevActionHandlerSettingsBooleanArgs;
+          type T = t.ActionBoolean;
+          type P = t.ActionBooleanHandlerArgs<any>;
+          type S = t.ActionHandlerSettings<P>;
+          type A = t.ActionHandlerSettingsBooleanArgs;
 
           Model.change('via:boolean', (draft) => {
             const { ctx, item, host, layout, env } = Model.payload<T>(id, draft);
@@ -169,7 +169,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
                   if (obj) Object.keys(obj).forEach((key) => (item[key] = obj[key]));
                 })(args);
               const changing = e.changing;
-              const boolean = item as t.DevActionBooleanProps;
+              const boolean = item as t.ActionBooleanProps;
               const payload: P = { ctx, changing, host, layout, settings, boolean };
               if (changing) item.current = changing.next;
 
@@ -192,15 +192,15 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
     /**
      * Select (dropdown)
      */
-    rx.payload<t.IDevActionSelectEvent>($, 'dev:action/Select')
+    rx.payload<t.IActionSelectEvent>($, 'dev:action/Select')
       .pipe()
       .subscribe((e) => {
         const { id, handlers } = e.model;
         if (handlers.length > 0) {
-          type T = t.DevActionSelect;
-          type P = t.DevActionSelectHandlerArgs<any>;
-          type S = t.DevActionHandlerSettings<P>;
-          type A = t.DevActionHandlerSettingsSelectArgs;
+          type T = t.ActionSelect;
+          type P = t.ActionSelectHandlerArgs<any>;
+          type S = t.ActionHandlerSettings<P>;
+          type A = t.ActionHandlerSettingsSelectArgs;
 
           Model.change('via:select', (draft) => {
             const { ctx, item, host, layout, env } = Model.payload<T>(id, draft);
@@ -211,7 +211,7 @@ export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.
                   if (obj) Object.keys(obj).forEach((key) => (item[key] = obj[key]));
                 })(args);
               const changing = e.changing;
-              const select = item as t.DevActionSelectProps;
+              const select = item as t.ActionSelectProps;
               const payload: P = { ctx, changing, host, layout, settings, select };
               if (changing) item.current = changing.next; // Update the item to the latest selection.
 

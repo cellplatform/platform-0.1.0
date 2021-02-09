@@ -10,13 +10,13 @@ import { rx, t, Events } from '../../common';
  */
 export function useActionsSelectState(args: {
   bus: t.EventBus;
-  actions?: t.DevActions[];
+  actions?: t.Actions[];
   store?: t.ActionsSelectStore;
 }) {
   const store = args.store;
   const list = args.actions || [];
   const bus = args.bus?.type<t.DevEvent>();
-  const [selected, setSelected] = useState<t.DevActions>();
+  const [selected, setSelected] = useState<t.Actions>();
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
@@ -32,7 +32,7 @@ export function useActionsSelectState(args: {
     }
 
     // Monitor for changes to the dropdown.
-    rx.payload<t.IDevActionsSelectChangedEvent>($, 'dev:actions/select/changed')
+    rx.payload<t.IActionsSelectChangedEvent>($, 'dev:actions/select/changed')
       .pipe()
       .subscribe((e) => {
         const current = list.find((actions) => actions.toObject().namespace === e.namespace);

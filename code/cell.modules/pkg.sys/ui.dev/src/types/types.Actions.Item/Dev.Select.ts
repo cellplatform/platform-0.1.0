@@ -3,49 +3,47 @@ import { t } from '../common';
 type O = Record<string, unknown>;
 
 /**
- * Select (Dropdown)
+ * CONFIGURE Select (Dropdown)
  */
-export type DevActionSelectConfig<Ctx extends O> = (args: DevActionSelectConfigArgs<Ctx>) => void;
-export type DevActionSelectConfigArgs<Ctx extends O> = {
+export type ActionSelectConfig<Ctx extends O> = (args: ActionSelectConfigArgs<Ctx>) => void;
+export type ActionSelectConfigArgs<Ctx extends O> = {
   ctx: Ctx;
-  label(value: string | t.ReactNode): DevActionSelectConfigArgs<Ctx>;
-  description(value: string | t.ReactNode): DevActionSelectConfigArgs<Ctx>;
-  items(list: t.DevActionSelectItemInput[]): DevActionSelectConfigArgs<Ctx>;
-  initial(
-    value?: t.DevActionSelectItemInput | t.DevActionSelectItemInput[],
-  ): DevActionSelectConfigArgs<Ctx>;
-  multi(value: boolean): DevActionSelectConfigArgs<Ctx>;
-  clearable(value: boolean): DevActionSelectConfigArgs<Ctx>;
-  pipe(...handlers: t.DevActionSelectHandler<Ctx>[]): DevActionSelectConfigArgs<Ctx>;
+  label(value: string | t.ReactNode): ActionSelectConfigArgs<Ctx>;
+  description(value: string | t.ReactNode): ActionSelectConfigArgs<Ctx>;
+  items(list: t.ActionSelectItemInput[]): ActionSelectConfigArgs<Ctx>;
+  initial(value?: t.ActionSelectItemInput | t.ActionSelectItemInput[]): ActionSelectConfigArgs<Ctx>;
+  multi(value: boolean): ActionSelectConfigArgs<Ctx>;
+  clearable(value: boolean): ActionSelectConfigArgs<Ctx>;
+  pipe(...handlers: t.ActionSelectHandler<Ctx>[]): ActionSelectConfigArgs<Ctx>;
 };
 
 /**
  * INPUT: A button with a toggle switch (boolean).
  */
-export type DevActionSelect = t.DevActionSelectProps & {
+export type ActionSelect = t.ActionSelectProps & {
   id: string;
   kind: 'select';
-  handlers: t.DevActionSelectHandler<any>[];
+  handlers: t.ActionSelectHandler<any>[];
 };
 
 /**
  * Editable properties of a [Select] input.
  */
-export type DevActionSelectProps = {
+export type ActionSelectProps = {
   label: string | t.ReactNode;
   description?: string | t.ReactNode;
   placeholder?: boolean;
   multi: boolean;
   clearable: boolean;
-  items: t.DevActionSelectItemInput[];
-  initial?: t.DevActionSelectItemInput | t.DevActionSelectItemInput[];
-  current: t.DevActionSelectItem[];
+  items: t.ActionSelectItemInput[];
+  initial?: t.ActionSelectItemInput | t.ActionSelectItemInput[];
+  current: t.ActionSelectItem[];
 };
 
-export type DevActionSelectItem<V = any> = { label: string; value: V };
-export type DevActionSelectItemInput = string | number | boolean | t.DevActionSelectItem;
+export type ActionSelectItem<V = any> = { label: string; value: V };
+export type ActionSelectItemInput = string | number | boolean | t.ActionSelectItem;
 
-export type DevActionSelectChanging = {
+export type ActionSelectChanging = {
   action: t.SelectActionTypes;
-  next: t.DevActionSelectItem[];
+  next: t.ActionSelectItem[];
 };

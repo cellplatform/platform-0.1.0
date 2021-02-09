@@ -8,9 +8,9 @@ export const Bool = {
    */
   config<Ctx extends O>(ctx: Ctx, params: any[]) {
     const LABEL = 'Unnamed';
-    const item: t.DevActionBoolean = { id: slug(), kind: 'boolean', label: LABEL, handlers: [] };
+    const item: t.ActionBoolean = { id: slug(), kind: 'boolean', label: LABEL, handlers: [] };
 
-    const config: t.DevActionBooleanConfigArgs<any> = {
+    const config: t.ActionBooleanConfigArgs<any> = {
       ctx,
       label(value) {
         item.label = format.string(value, { trim: true }) || LABEL;

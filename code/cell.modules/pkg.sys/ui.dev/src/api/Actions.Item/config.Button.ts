@@ -8,9 +8,9 @@ export const Button = {
    */
   config<Ctx extends O>(ctx: Ctx, params: any[]) {
     const LABEL = 'Unnamed';
-    const item: t.DevActionButton = { id: slug(), kind: 'button', label: LABEL, handlers: [] };
+    const item: t.ActionButton = { id: slug(), kind: 'button', label: LABEL, handlers: [] };
 
-    const config: t.DevActionButtonConfigArgs<any> = {
+    const config: t.ActionButtonConfigArgs<any> = {
       ctx,
       label(value) {
         item.label = format.string(value, { trim: true }) || LABEL;

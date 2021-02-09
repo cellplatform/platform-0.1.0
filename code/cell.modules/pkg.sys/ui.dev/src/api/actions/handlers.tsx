@@ -9,9 +9,9 @@ import { renderSubject } from './render.Subject';
  * Action handlers.
  */
 export const handlers: t.BuilderHandlers<
-  t.DevActionsModel<any>,
-  t.DevActionsModelMethods<any>,
-  t.DevActionsChangeType
+  t.ActionsModel<any>,
+  t.ActionsModelMethods<any>,
+  t.ActionsChangeType
 > = {
   /**
    * Convert builder to data model.
@@ -82,8 +82,8 @@ export const handlers: t.BuilderHandlers<
    * Merges in another Action model's items.
    */
   merge(args) {
-    const mergeBuilder = args.params[0] as t.DevActions;
-    const options = (args.params[1] || {}) as t.DevActionAddOptions;
+    const mergeBuilder = args.params[0] as t.Actions;
+    const options = (args.params[1] || {}) as t.ActionAddOptions;
     const insertAt = defaultValue(options.insertAt, 'end');
 
     args.model.change((draft) => {

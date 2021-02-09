@@ -3,29 +3,29 @@ import { t } from '../common';
 type O = Record<string, unknown>;
 
 /**
- * Button
+ * CONFIGURE Button
  */
-export type DevActionButtonConfig<Ctx extends O> = (args: DevActionButtonConfigArgs<Ctx>) => void;
-export type DevActionButtonConfigArgs<Ctx extends O> = {
+export type ActionButtonConfig<Ctx extends O> = (args: ActionButtonConfigArgs<Ctx>) => void;
+export type ActionButtonConfigArgs<Ctx extends O> = {
   ctx: Ctx;
-  label(value: string | t.ReactNode): DevActionButtonConfigArgs<Ctx>;
-  description(value: string | t.ReactNode): DevActionButtonConfigArgs<Ctx>;
-  pipe(...handlers: t.DevActionButtonHandler<Ctx>[]): DevActionButtonConfigArgs<Ctx>;
+  label(value: string | t.ReactNode): ActionButtonConfigArgs<Ctx>;
+  description(value: string | t.ReactNode): ActionButtonConfigArgs<Ctx>;
+  pipe(...handlers: t.ActionButtonHandler<Ctx>[]): ActionButtonConfigArgs<Ctx>;
 };
 
 /**
  * INPUT: Simple clickable action.
  */
-export type DevActionButton = t.DevActionButtonProps & {
+export type ActionButton = t.ActionButtonProps & {
   id: string;
   kind: 'button';
-  handlers: t.DevActionButtonHandler<any>[];
+  handlers: t.ActionButtonHandler<any>[];
 };
 
 /**
  * Editable properties of a [Button].
  */
-export type DevActionButtonProps = {
+export type ActionButtonProps = {
   label: string | t.ReactNode;
   description?: string | t.ReactNode;
 };

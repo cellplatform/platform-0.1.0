@@ -8,7 +8,7 @@ export const ActionsSelect = {
    *
    * Pass [undefined] to read.
    */
-  localStorage(args: { key: string; actions: t.DevActions[] }): t.ActionsSelectStore {
+  localStorage(args: { key: string; actions: t.Actions[] }): t.ActionsSelectStore {
     const { key, actions } = args;
 
     const fn: t.ActionsSelectStore = async (value) => {

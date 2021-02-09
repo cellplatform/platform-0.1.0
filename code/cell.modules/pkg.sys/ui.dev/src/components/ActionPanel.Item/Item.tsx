@@ -10,7 +10,7 @@ import { ItemSelect } from './Item.Select';
 export type ItemProps = {
   namespace: string;
   bus: t.DevEventBus;
-  model: t.DevActionItem;
+  model: t.ActionItem;
   style?: CssValue;
 };
 

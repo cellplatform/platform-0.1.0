@@ -2,37 +2,43 @@ import { t } from '../common';
 
 type O = Record<string, unknown>;
 
-/**
- * Model Builder API
- */
-export type DevActions<Ctx extends O = any> = t.BuilderChain<DevActionsModelMethods<Ctx>>;
+export type ActionAddOptions = { insertAt?: 'end' | 'start' };
 
-export type DevActionsModelMethods<Ctx extends O> = DevActionsModelInputMethods<Ctx> & {
-  toEvents(): t.DevActionsModelState<Ctx>['event'];
-  toObject(): t.DevActionsModel<Ctx>;
-  toModel(): t.DevActionsModelState<Ctx>;
+/**
+ * Model builder API
+ */
+export type Actions<Ctx extends O = any> = t.BuilderChain<ActionsModelMethods<Ctx>>;
+
+/**
+ * Base methods of the Actions builder.
+ */
+export type ActionsModelMethods<Ctx extends O> = ActionsModelInputMethods<Ctx> & {
+  toEvents(): t.ActionsModelState<Ctx>['event'];
+  toObject(): t.ActionsModel<Ctx>;
+  toModel(): t.ActionsModelState<Ctx>;
   toContext(): Ctx;
-  clone(ctx?: t.DevActionGetContext<Ctx>): t.DevActions<Ctx>;
+  clone(ctx?: t.ActionGetContext<Ctx>): t.Actions<Ctx>;
 
   renderActionPanel(bus: t.EventBus, props?: t.ActionPanelProps): JSX.Element;
-  renderSubject(): t.DevActionSubject<Ctx>;
+  renderSubject(): t.ActionSubject<Ctx>;
 
-  merge(actions: DevActions<any>, options?: DevActionAddOptions): t.DevActions<Ctx>;
-  context(factory: t.DevActionGetContext<Ctx>): t.DevActions<Ctx>;
-  subject(factory: t.DevActionHandlerSubject<Ctx>): t.DevActions<Ctx>;
-  namespace(value: string): t.DevActions<Ctx>;
+  merge(actions: Actions<any>, options?: ActionAddOptions): t.Actions<Ctx>;
+  context(factory: t.ActionGetContext<Ctx>): t.Actions<Ctx>;
+  subject(factory: t.ActionHandlerSubject<Ctx>): t.Actions<Ctx>;
+  namespace(value: string): t.Actions<Ctx>;
 };
 
-export type DevActionAddOptions = { insertAt?: 'end' | 'start' };
-
-export type DevActionsModelInputMethods<Ctx extends O> = {
-  button(label: string, handler?: t.DevActionButtonHandler<Ctx>): t.DevActions<Ctx>;
-  button(config: t.DevActionButtonConfig<Ctx>): t.DevActions<Ctx>;
-  boolean(label: string, handler?: t.DevActionBooleanHandler<Ctx>): t.DevActions<Ctx>;
-  boolean(config: t.DevActionBooleanConfig<Ctx>): t.DevActions<Ctx>;
-  select(config: t.DevActionSelectConfig<Ctx>): t.DevActions<Ctx>;
-  hr(height?: number, opacity?: number, margin?: t.DevEdgeSpacing): t.DevActions<Ctx>;
-  hr(config?: t.DevActionHrConfig<Ctx>): t.DevActions<Ctx>;
-  title(text: string, config?: t.DevActionTitleConfig<Ctx>): t.DevActions<Ctx>;
-  title(config: t.DevActionTitleConfig<Ctx>): t.DevActions<Ctx>;
+/**
+ * Methods for "dev" (development) rapid building and testing of property state.
+ */
+export type ActionsModelInputMethods<Ctx extends O> = {
+  button(label: string, handler?: t.ActionButtonHandler<Ctx>): t.Actions<Ctx>;
+  button(config: t.ActionButtonConfig<Ctx>): t.Actions<Ctx>;
+  boolean(label: string, handler?: t.ActionBooleanHandler<Ctx>): t.Actions<Ctx>;
+  boolean(config: t.ActionBooleanConfig<Ctx>): t.Actions<Ctx>;
+  select(config: t.ActionSelectConfig<Ctx>): t.Actions<Ctx>;
+  hr(height?: number, opacity?: number, margin?: t.EdgeSpacing): t.Actions<Ctx>;
+  hr(config?: t.ActionHrConfig<Ctx>): t.Actions<Ctx>;
+  title(text: string, config?: t.ActionTitleConfig<Ctx>): t.Actions<Ctx>;
+  title(config: t.ActionTitleConfig<Ctx>): t.Actions<Ctx>;
 };

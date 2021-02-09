@@ -1,21 +1,21 @@
 import { t } from '../common';
 
-type A = t.DevActionsChangeType;
+type A = t.ActionsChangeType;
 
-export type DevActionsModelState<Ctx> = t.BuilderModel<t.DevActionsModel<Ctx>, A>;
-export type DevActionsModel<Ctx> = {
+export type ActionsModelState<Ctx> = t.BuilderModel<t.ActionsModel<Ctx>, A>;
+export type ActionsModel<Ctx> = {
   namespace: string;
-  items: t.DevActionItem[];
-  ctx: { current?: Ctx; get?: t.DevActionGetContext<Ctx> };
+  items: t.ActionItem[];
+  ctx: { current?: Ctx; get?: t.ActionGetContext<Ctx> };
   env: {
-    viaAction: DevActionsModelEnv;
-    viaSubject: DevActionsModelEnv;
+    viaAction: ActionsModelEnv;
+    viaSubject: ActionsModelEnv;
   };
-  renderSubject?: t.DevActionHandlerSubject<Ctx>;
+  renderSubject?: t.ActionHandlerSubject<Ctx>;
   initialized?: boolean;
 };
 
-export type DevActionsModelEnv = {
-  host?: t.IDevHost;
-  layout?: t.IDevHostedLayout;
+export type ActionsModelEnv = {
+  host?: t.Host;
+  layout?: t.HostedLayout;
 };

@@ -5,11 +5,11 @@ import { useEventBus } from './useEventBus';
 
 import { ActionsSelectOnChangeEventHandler } from './types';
 
-type M = t.DevActions;
+type M = t.Actions;
 
 export type ActionsSelectProps = {
-  selected?: t.DevActions;
-  actions?: t.DevActions[];
+  selected?: t.Actions;
+  actions?: t.Actions[];
   menuPlacement?: MenuPlacement;
   bus?: t.EventBus;
   style?: CssValue;
@@ -21,7 +21,7 @@ export const ActionsSelect: React.FC<ActionsSelectProps> = (props) => {
 
   const busController = useEventBus({ bus, onChange });
 
-  const options: t.DevActionSelectItem<M>[] = actions.map((value) => {
+  const options: t.ActionSelectItem<M>[] = actions.map((value) => {
     const model = value.toObject();
     const label = model.namespace || DEFAULT.UNNAMED;
     return { label, value };
@@ -43,7 +43,7 @@ export const ActionsSelect: React.FC<ActionsSelectProps> = (props) => {
         defaultValue={options[0]}
         menuPlacement={props.menuPlacement}
         onChange={(e) => {
-          const item = e as t.DevActionSelectItem;
+          const item = e as t.ActionSelectItem;
           busController.onChange({ selected: item.value, actions });
         }}
       />

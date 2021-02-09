@@ -12,7 +12,7 @@ type Path = 'initialized' | 'ctx/current' | 'env/viaAction' | 'env/viaSubject' |
 export function useRedraw(args: {
   name?: string;
   bus: t.DevEventBus;
-  actions?: t.DevActions<any>;
+  actions?: t.Actions<any>;
   paths: Path[];
 }) {
   const { bus, actions } = args;

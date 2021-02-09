@@ -7,9 +7,9 @@ export const Title = {
    * A [Title] configurator.
    */
   config<Ctx extends O>(ctx: Ctx, params: any[]) {
-    const item: t.DevActionTitle = { id: slug(), kind: 'title', text: DEFAULT.UNTITLED };
+    const item: t.ActionTitle = { id: slug(), kind: 'title', text: DEFAULT.UNTITLED };
 
-    const config: t.DevActionTitleConfigArgs<any> = {
+    const config: t.ActionTitleConfigArgs<any> = {
       ctx,
       text(value) {
         item.text = format.string(value, { trim: true }) || DEFAULT.UNTITLED;

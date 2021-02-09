@@ -6,7 +6,7 @@ export const Handler = {
   /**
    * Prepares methods and immutable proxies for a [DevAction] handler invokation.
    */
-  action<C extends O>(args: { ctx: C; env: t.DevActionsModelEnv }) {
+  action<C extends O>(args: { ctx: C; env: t.ActionsModelEnv }) {
     const { ctx, env } = args;
     const host = env.host || (env.host = {});
     const layout = env.layout || (env.layout = {});
@@ -17,12 +17,12 @@ export const Handler = {
    * Prepares a [settings()] function that is passed to handlers for
    * modifying the environment state in standard ways.
    */
-  settings<T, A extends t.DevActionHandlerSettingsArgs = t.DevActionHandlerSettingsArgs>(
-    args: { env: t.DevActionsModelEnv; payload: T },
+  settings<T, A extends t.ActionHandlerSettingsArgs = t.ActionHandlerSettingsArgs>(
+    args: { env: t.ActionsModelEnv; payload: T },
     onInvoke?: (settings: A) => void,
   ) {
     const { env } = args;
-    const fn: t.DevActionHandlerSettings<T> = (settings) => {
+    const fn: t.ActionHandlerSettings<T> = (settings) => {
       const { layout, host } = settings || {};
       if (layout !== undefined) {
         env.layout = layout === null ? {} : { ...env.layout, ...layout };
