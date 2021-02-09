@@ -65,14 +65,14 @@ describe('ActionsFactory', () => {
     });
 
     it('from builder.toObject() - model state', () => {
-      const base = ActionsFactory.compose([]).button('hello');
+      const base = ActionsFactory.compose([]); //.items((e) => e.button('hello'));
       const actions = ActionsFactory.compose([], base.toObject());
       const obj = actions.toObject();
       expect(obj).to.eql(base.toObject());
     });
 
     it('from builder.toModel() - model state', () => {
-      const base = ActionsFactory.compose([]).button('hello');
+      const base = ActionsFactory.compose([]); //.items((e) => e.button('hello'));
       const actions = ActionsFactory.compose([], base.toObject());
       const model = actions.toModel();
       expect(model.state).to.eql(base.toObject());
@@ -80,7 +80,7 @@ describe('ActionsFactory', () => {
     });
 
     it('from builder.toEvents()', () => {
-      const base = ActionsFactory.compose([]).button('hello');
+      const base = ActionsFactory.compose([]); //.items((e) => e.button('hello'));
       const actions = ActionsFactory.compose([], base.toObject());
       const obj = actions.toEvents();
       expect(is.observable(obj.$)).to.eql(true);
@@ -93,7 +93,7 @@ describe('ActionsFactory', () => {
       const { actions, model, bus } = create();
       const el = actions
         .context(() => ({ count: 123 }))
-        .button('foo', () => null)
+        .items((e) => e.button('foo', () => null))
         .renderActionPanel(bus, { scrollable: false });
 
       expect(React.isValidElement(el)).to.eql(true);
@@ -298,8 +298,8 @@ describe('ActionsFactory', () => {
 
     const one = create();
     const two = create();
-    one.actions.button('one-a').button('one-b');
-    two.actions.button('two-a').button('two-b');
+    one.actions.items((e) => e.button('one-a').button('one-b'));
+    two.actions.items((e) => e.button('two-a').button('two-b'));
 
     it('adds items to end (default)', () => {
       const builder1 = one.actions.clone();
@@ -352,7 +352,7 @@ describe('ActionsFactory', () => {
       builder1.merge(builder2);
       expect(labels(builder1)).to.eql(['one-a', 'one-b', 'two-a', 'two-b']);
 
-      builder2.button('two-c');
+      builder2.items((e) => e.button('two-c'));
       expect(labels(builder1)).to.eql(['one-a', 'one-b', 'two-a', 'two-b']);
       expect(labels(builder2)).to.eql(['two-a', 'two-b', 'two-c']);
     });

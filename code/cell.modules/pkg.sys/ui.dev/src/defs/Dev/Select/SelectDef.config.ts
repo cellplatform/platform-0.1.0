@@ -1,5 +1,4 @@
-import { DEFAULT, format, slug, t } from '../../../common';
-import { SelectUtil } from './util';
+import { DEFAULT, format, SelectUtil, t } from '../../../common';
 
 type O = Record<string, unknown>;
 

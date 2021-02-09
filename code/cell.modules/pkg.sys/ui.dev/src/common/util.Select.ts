@@ -1,4 +1,4 @@
-import { DEFAULT, format, slug, t } from '../common';
+import { DEFAULT, slug, t } from '../common';
 
 export const SelectUtil = {
   default(initial?: Partial<t.ActionSelect>): t.ActionSelect {

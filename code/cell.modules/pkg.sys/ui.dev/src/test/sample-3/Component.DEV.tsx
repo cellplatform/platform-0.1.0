@@ -1,9 +1,9 @@
 import React from 'react';
-import { DevActions, ActionsFactory, toObject } from '../..';
-import { Component } from './Component';
+
+import { ActionsFactory } from '../..';
 import { t } from '../../common';
-import { Button } from '../../api/Actions.Item';
 import { DevDefs, DisplayDefs } from '../../defs';
+import { Component } from './Component';
 
 type O = Record<string, unknown>;
 
@@ -23,10 +23,10 @@ export const actions = ComposedActions<Ctx>()
   .namespace('sample-3')
   .context((prev) => prev || { count: 0 })
 
-  .button('increment', (e) => e.ctx.count++)
-  .hr()
-
   .items((e) => {
+    e.button('increment', (e) => e.ctx.count++);
+    e.hr();
+
     e.title('My Title');
 
     e.button('button', (e) => console.log('hello', e.ctx.count));

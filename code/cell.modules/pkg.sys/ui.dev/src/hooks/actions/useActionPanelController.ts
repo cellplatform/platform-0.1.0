@@ -3,8 +3,10 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { Context, Handler } from '../../api/Actions';
-import { Select } from '../../api/Actions.Item';
-import { R, rx, t, time, Events } from '../../common';
+// import { Select } from '../../api/Actions.Item';
+import { R, rx, t, time, Events, SelectUtil } from '../../common';
+
+// import { part } from '../../def';
 
 type O = Record<string, unknown>;
 
@@ -60,7 +62,7 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
         model.state.items.forEach((model) => {
           if (model.kind === 'select') {
             const index = Model.find(model.id).index;
-            const res = Model.change('via:init', (d) => Select.assignInitial(d.items[index]));
+            const res = Model.change('via:init', (d) => SelectUtil.assignInitial(d.items[index]));
             if (res.changed) model = Model.find(model.id).item;
           }
         });

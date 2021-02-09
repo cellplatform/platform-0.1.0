@@ -1,10 +1,9 @@
 import React from 'react';
-import { DevActions, toObject } from '../..';
+
+import { DevActions } from '../..';
 import { Component } from './Component';
 
-type Ctx = {
-  count: number;
-};
+type Ctx = { count: number };
 
 /**
  * Actions
@@ -13,8 +12,10 @@ export const actions = DevActions<Ctx>()
   .namespace('sample-2')
   .context((prev) => prev || { count: 0 })
 
-  .button('increment', (e) => e.ctx.count++)
-  .hr()
+  .items((e) => {
+    e.button('increment', (e) => e.ctx.count++);
+    e.hr();
+  })
 
   /**
    * Render

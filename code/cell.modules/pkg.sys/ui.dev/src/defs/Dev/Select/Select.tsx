@@ -1,8 +1,7 @@
 import React, { useRef, useState } from 'react';
 import SelectComponent from 'react-select';
 
-import { SelectUtil } from '../Select/util';
-import { color, css, t, time } from '../common';
+import { color, css, t, time, SelectUtil } from '../common';
 import { useItemMonitor } from '../../../hooks/Actions';
 import { Icons } from '../../../components/Icons';
 import { ButtonView } from '../Button/ButtonView';

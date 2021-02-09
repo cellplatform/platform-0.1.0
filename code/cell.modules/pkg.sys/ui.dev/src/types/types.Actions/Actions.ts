@@ -5,7 +5,7 @@ type O = Record<string, unknown>;
 /**
  * Model builder API
  */
-export type Actions<Ctx extends O = any, Items extends O = any> = DevActionMethods<Ctx, Items> & {
+export type Actions<Ctx extends O = any, Items extends O = any> = {
   toDefs(): t.ActionDef[];
   toEvents(): t.ActionsModelState<Ctx>['event'];
   toObject(): t.ActionsModel<Ctx>;
@@ -26,18 +26,3 @@ export type Actions<Ctx extends O = any, Items extends O = any> = DevActionMetho
 };
 
 export type ActionAddOptions = { insertAt?: 'end' | 'start' };
-
-/**
- * Methods for "dev" (development) tp rapidly build and test component- states.
- */
-export type DevActionMethods<Ctx extends O, Items extends O = any> = {
-  button(label: string, handler?: t.ActionButtonHandler<Ctx>): t.Actions<Ctx, Items>;
-  button(config: t.ActionButtonConfig<Ctx>): t.Actions<Ctx, Items>;
-  boolean(label: string, handler?: t.ActionBooleanHandler<Ctx>): t.Actions<Ctx, Items>;
-  boolean(config: t.ActionBooleanConfig<Ctx>): t.Actions<Ctx, Items>;
-  select(config: t.ActionSelectConfig<Ctx>): t.Actions<Ctx, Items>;
-  hr(height?: number, opacity?: number, margin?: t.EdgeSpacing): t.Actions<Ctx, Items>;
-  hr(config?: t.ActionHrConfig<Ctx>): t.Actions<Ctx, Items>;
-  title(text: string, config?: t.ActionTitleConfig<Ctx>): t.Actions<Ctx, Items>;
-  title(config: t.ActionTitleConfig<Ctx>): t.Actions<Ctx, Items>;
-};
