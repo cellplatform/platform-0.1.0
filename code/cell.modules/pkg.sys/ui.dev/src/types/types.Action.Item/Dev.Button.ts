@@ -7,7 +7,7 @@ type O = Record<string, unknown>;
  */
 export type ActionButton = t.ActionButtonProps & {
   id: string;
-  kind: 'button';
+  kind: 'dev/button';
   handlers: t.ActionButtonHandler<any>[];
 };
 

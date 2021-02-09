@@ -65,7 +65,7 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
           }
         });
 
-        // Fire event that load initial value.
+        // Fire event that loads the initial value.
         model.state.items.forEach((item) => {
           if (item.kind === 'boolean') {
             const model = item as t.ActionBoolean;

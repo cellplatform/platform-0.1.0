@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { CssValue, t } from '../../common';
+import { t } from '../../common';
 import { useItemMonitor } from '../../hooks/Actions';
 import { Switch } from '../Primitives';
 import { ButtonView } from './Item.ButtonView';
@@ -9,7 +9,6 @@ export type ItemBooleanProps = {
   namespace: string;
   bus: t.EventBus;
   model: t.ActionBoolean;
-  style?: CssValue;
 };
 
 export const ItemBoolean: React.FC<ItemBooleanProps> = (props) => {
@@ -39,7 +38,6 @@ export const ItemBoolean: React.FC<ItemBooleanProps> = (props) => {
       description={description}
       isActive={isActive}
       right={elSwitch}
-      style={props.style}
       onClick={fire}
     />
   );

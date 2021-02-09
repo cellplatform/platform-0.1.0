@@ -6,7 +6,7 @@ export const Select = {
   default(initial?: Partial<t.ActionSelect>): t.ActionSelect {
     return {
       id: slug(),
-      kind: 'select',
+      kind: 'dev/select',
       label: DEFAULT.UNNAMED,
       multi: false,
       clearable: false,

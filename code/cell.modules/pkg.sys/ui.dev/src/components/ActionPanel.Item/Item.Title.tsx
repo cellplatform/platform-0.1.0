@@ -1,11 +1,11 @@
 import React from 'react';
-import { COLORS, css, CssValue, t } from '../../common';
+
+import { COLORS, css, t } from '../../common';
 
 export type ItemTitleProps = {
   namespace: string;
   bus: t.EventBus;
   model: t.ActionTitle;
-  style?: CssValue;
 };
 
 export const ItemTitle: React.FC<ItemTitleProps> = (props) => {
@@ -24,7 +24,7 @@ export const ItemTitle: React.FC<ItemTitleProps> = (props) => {
   };
 
   return (
-    <div {...css(styles.base, props.style)}>
+    <div {...styles.base}>
       <div>{model.text}</div>
     </div>
   );

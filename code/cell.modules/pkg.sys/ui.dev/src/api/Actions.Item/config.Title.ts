@@ -7,7 +7,7 @@ export const Title = {
    * A [Title] configurator.
    */
   config<Ctx extends O>(ctx: Ctx, params: any[]) {
-    const item: t.ActionTitle = { id: slug(), kind: 'title', text: DEFAULT.UNTITLED };
+    const item: t.ActionTitle = { id: slug(), kind: 'display/title', text: DEFAULT.UNTITLED };
 
     const config: t.ActionTitleConfigArgs<any> = {
       ctx,

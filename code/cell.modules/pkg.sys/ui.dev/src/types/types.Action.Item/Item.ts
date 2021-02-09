@@ -8,4 +8,5 @@ export type ActionItem = {
   id: string; //   Unique ID.
 };
 
+// TEMP 🐷
 export type ActionItemInput = t.ActionButton | t.ActionBoolean | t.ActionSelect;

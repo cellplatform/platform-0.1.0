@@ -5,7 +5,7 @@ type O = Record<string, unknown>;
  */
 export type ActionTitle = {
   id: string;
-  kind: 'title';
+  kind: 'display/title';
   text: string;
 };
 

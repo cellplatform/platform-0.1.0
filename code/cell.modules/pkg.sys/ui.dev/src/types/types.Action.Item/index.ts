@@ -1,6 +1,7 @@
 export * from './Item';
-export * from './Item.Hr';
-export * from './Item.Title';
+
+export * from './Display.Hr';
+export * from './Display.Title';
 
 export * from './Dev.Boolean';
 export * from './Dev.Button';

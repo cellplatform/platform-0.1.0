@@ -19,7 +19,7 @@ describe('Actions/config', () => {
       test(obj, obj);
     });
 
-    it('assignInitial', () => {
+    it.skip('assignInitial', () => {
       const test = (item: t.ActionItem, expected: t.ActionSelectItemInput[]) => {
         const res = Select.assignInitial(item) as t.ActionSelect;
         expect(res).to.equal(item);

@@ -14,6 +14,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   const scrollable = defaultValue(props.scrollable, true);
   const model = actions.toObject();
   const { namespace, items } = model;
+  const defs = actions.toDefs();
 
   useActionPanelController({ bus, actions });
   useRedraw({
@@ -37,7 +38,17 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   };
 
   const elItems = items.map((item, i) => {
+    console.log('item', item);
     const key = `item.${namespace}.${i}`;
+
+    const def = defs.find((def) => def.kind === item.kind);
+
+    const Component = def?.Component;
+
+    if (Component) return <Component key={key} namespace={namespace} model={item} bus={bus} />;
+
+    // if (def) return def.render({ namespace, model, bus });
+
     return <Item key={key} namespace={namespace} model={item} bus={bus} />;
   });
 

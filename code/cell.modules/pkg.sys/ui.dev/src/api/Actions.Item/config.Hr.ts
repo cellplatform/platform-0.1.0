@@ -9,7 +9,7 @@ export const Hr = {
   config<Ctx extends O>(ctx: Ctx, params: any[]) {
     const item: t.ActionHr = {
       id: slug(),
-      kind: 'hr',
+      kind: 'display/hr',
       height: 8,
       opacity: 0.06,
       margin: [8, 8],

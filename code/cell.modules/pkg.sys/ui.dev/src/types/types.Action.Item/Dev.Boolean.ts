@@ -7,7 +7,7 @@ type O = Record<string, unknown>;
  */
 export type ActionBoolean = t.ActionBooleanProps & {
   id: string;
-  kind: 'boolean';
+  kind: 'dev/boolean';
   handlers: t.ActionBooleanHandler<any>[];
 };
 

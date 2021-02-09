@@ -1,20 +1,19 @@
 import React from 'react';
 
-import { CssValue, t } from '../../common';
+import { t } from '../../common';
 import { ButtonView } from './Item.ButtonView';
 
 export type ItemButtonProps = {
   namespace: string;
   bus: t.EventBus;
   model: t.ActionButton;
-  style?: CssValue;
 };
 
 /**
  * Button.
  */
 export const ItemButton: React.FC<ItemButtonProps> = (props) => {
-  const { model, style, namespace } = props;
+  const { model, namespace } = props;
   const bus = props.bus.type<t.ActionEvent>();
 
   const { label, description } = model;
@@ -27,7 +26,6 @@ export const ItemButton: React.FC<ItemButtonProps> = (props) => {
       isActive={isActive}
       label={label}
       description={description}
-      style={style}
       onClick={clickHandler}
     />
   );

@@ -4,6 +4,7 @@ import { ActionsHost, ActionsSelect, ErrorBoundary, Store, useActionsSelectState
 import { color, css, rx } from '../common';
 import * as sample1 from './sample-1/Component.DEV';
 import * as sample2 from './sample-2/Component.DEV';
+import * as sample3 from './sample-3/Component.DEV';
 
 const bus = rx.bus();
 
@@ -11,7 +12,7 @@ bus.event$.subscribe((e) => {
   // console.log('e', e);
 });
 
-const list = [sample1.actions, sample2.actions];
+const list = [sample1.actions, sample2.actions, sample3.actions];
 
 export const Dev: React.FC = () => {
   const actions = useActionsSelectState({

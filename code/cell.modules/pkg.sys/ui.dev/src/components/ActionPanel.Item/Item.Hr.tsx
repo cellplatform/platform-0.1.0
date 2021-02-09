@@ -1,11 +1,11 @@
 import React from 'react';
-import { css, CssValue, t, color, Format } from '../../common';
+
+import { color, css, Format, t } from '../../common';
 
 export type ItemHrProps = {
   namespace: string;
   bus: t.EventBus;
   model: t.ActionHr;
-  style?: CssValue;
 };
 
 export const ItemHr: React.FC<ItemHrProps> = (props) => {
@@ -27,7 +27,7 @@ export const ItemHr: React.FC<ItemHrProps> = (props) => {
   };
 
   return (
-    <div {...css(styles.base, props.style)}>
+    <div {...styles.base}>
       <div {...styles.hr} />
     </div>
   );

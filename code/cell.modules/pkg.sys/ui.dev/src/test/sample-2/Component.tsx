@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { css, CssValue } from '../../common';
 
 export type ComponentProps = { count: number; style?: CssValue };
@@ -9,5 +9,5 @@ export const Component: React.FC<ComponentProps> = (props) => {
       padding: 20,
     }),
   };
-  return <div {...css(styles.base, props.style)}>Component ({props.count})</div>;
+  return <div {...css(styles.base, props.style)}>Sample-2 ({props.count})</div>;
 };

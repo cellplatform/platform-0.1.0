@@ -1,4 +1,3 @@
-export { Actions as ActionBuilder } from './Actions';
+export { ActionsFactory } from './ActionsFactory';
 export { Handler } from './Handler';
-
 export { Context } from './Context';

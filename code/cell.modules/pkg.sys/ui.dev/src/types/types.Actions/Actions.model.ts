@@ -7,10 +7,7 @@ export type ActionsModel<Ctx> = {
   namespace: string;
   items: t.ActionItem[];
   ctx: { current?: Ctx; get?: t.ActionGetContext<Ctx> };
-  env: {
-    viaAction: ActionsModelEnv;
-    viaSubject: ActionsModelEnv;
-  };
+  env: { viaAction: ActionsModelEnv; viaSubject: ActionsModelEnv };
   renderSubject?: t.ActionHandlerSubject<Ctx>;
   initialized?: boolean;
 };

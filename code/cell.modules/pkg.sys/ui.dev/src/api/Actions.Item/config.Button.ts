@@ -8,7 +8,7 @@ export const Button = {
    */
   config<Ctx extends O>(ctx: Ctx, params: any[]) {
     const LABEL = 'Unnamed';
-    const item: t.ActionButton = { id: slug(), kind: 'button', label: LABEL, handlers: [] };
+    const item: t.ActionButton = { id: slug(), kind: 'dev/button', label: LABEL, handlers: [] };
 
     const config: t.ActionButtonConfigArgs<any> = {
       ctx,

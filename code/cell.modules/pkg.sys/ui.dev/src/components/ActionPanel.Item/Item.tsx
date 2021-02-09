@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { CssValue, t } from '../../common';
+import { t } from '../../common';
 import { ItemBoolean } from './Item.Boolean';
 import { ItemButton } from './Item.Button';
 import { ItemHr } from './Item.Hr';
@@ -11,7 +11,6 @@ export type ItemProps = {
   namespace: string;
   bus: t.EventBus;
   model: t.ActionItem;
-  style?: CssValue;
 };
 
 export const Item: React.FC<ItemProps> = (props) => {

@@ -7,7 +7,7 @@ import { ActionsSelectOnChangeEventHandler } from './types';
 
 type M = t.Actions;
 
-export type ActionsSelectProps = {
+export type ActionsSelectorProps = {
   selected?: t.Actions;
   actions?: t.Actions[];
   menuPlacement?: MenuPlacement;
@@ -16,7 +16,7 @@ export type ActionsSelectProps = {
   onChange?: ActionsSelectOnChangeEventHandler;
 };
 
-export const ActionsSelect: React.FC<ActionsSelectProps> = (props) => {
+export const ActionsSelector: React.FC<ActionsSelectorProps> = (props) => {
   const { actions = [], bus, onChange } = props;
 
   const busController = useEventBus({ bus, onChange });

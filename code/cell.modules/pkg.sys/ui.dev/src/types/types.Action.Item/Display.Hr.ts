@@ -7,7 +7,7 @@ type O = Record<string, unknown>;
  */
 export type ActionHr = {
   id: string;
-  kind: 'hr';
+  kind: 'display/hr';
   height: number;
   opacity: number;
   margin: t.EdgeSpacing;

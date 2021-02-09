@@ -7,10 +7,9 @@ type O = Record<string, unknown>;
  */
 export type ActionSelect = t.ActionSelectProps & {
   id: string;
-  kind: 'select';
+  kind: 'dev/select';
   handlers: t.ActionSelectHandler<any>[];
 };
-
 
 /**
  * CONFIGURE Select (Dropdown)
@@ -26,7 +25,6 @@ export type ActionSelectConfigArgs<Ctx extends O> = {
   clearable(value: boolean): ActionSelectConfigArgs<Ctx>;
   pipe(...handlers: t.ActionSelectHandler<Ctx>[]): ActionSelectConfigArgs<Ctx>;
 };
-
 
 /**
  * Editable properties of a [Select] input.

@@ -1,17 +1,16 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import SelectComponent from 'react-select';
 
-import { color, css, CssValue, t, time } from '../../common';
-import { useItemMonitor } from '../../hooks/Actions';
-import { ButtonView } from './Item.ButtonView';
-import { Icons } from '../Icons';
 import { Select } from '../../api/Actions.Item';
+import { color, css, t, time } from '../../common';
+import { useItemMonitor } from '../../hooks/Actions';
+import { Icons } from '../Icons';
+import { ButtonView } from './Item.ButtonView';
 
 export type ItemSelectProps = {
   namespace: string;
   bus: t.EventBus;
   model: t.ActionSelect;
-  style?: CssValue;
 };
 
 export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
@@ -95,7 +94,7 @@ export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
   const elExpandIcon = <Icons.Chevron.Down size={20} />;
 
   return (
-    <div {...css(styles.base, props.style)}>
+    <div {...styles.base}>
       <ButtonView
         label={label}
         description={description}
