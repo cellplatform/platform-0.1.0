@@ -7,7 +7,7 @@ type A = t.ActionsChangeType;
 /**
  * Action builder factory.
  */
-export const ActionBuilder: t.ActionModelFactory = {
+export const Actions: t.ActionsFactory = {
   /**
    * Create a new data-model.
    */
@@ -17,14 +17,14 @@ export const ActionBuilder: t.ActionModelFactory = {
   },
 
   /**
-   * Create a new model API builder.
+   * Create a new API builder.
    */
-  api<Ctx extends O>(input: any) {
-    const model = (typeof input === 'object'
-      ? StateObject.isStateObject(input)
-        ? input
-        : StateObject.create<t.ActionsModel<Ctx>>(input as any)
-      : ActionBuilder.model()) as t.ActionsModelState<Ctx>;
+  api<Ctx extends O>(modelInput: any) {
+    const model = (typeof modelInput === 'object'
+      ? StateObject.isStateObject(modelInput)
+        ? modelInput
+        : StateObject.create<t.ActionsModel<Ctx>>(modelInput)
+      : Actions.model()) as t.ActionsModelState<Ctx>;
 
     type M = t.ActionsModel<Ctx>;
     type F = t.ActionsModelMethods<Ctx>;

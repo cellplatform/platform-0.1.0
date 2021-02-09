@@ -10,9 +10,8 @@ export type ActionPanelProps = t.ActionPanelProps & {
 };
 
 export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
-  const { actions } = props;
+  const { actions, bus } = props;
   const scrollable = defaultValue(props.scrollable, true);
-  const bus = props.bus.type<t.DevEvent>();
   const model = actions.toObject();
   const { namespace, items } = model;
 

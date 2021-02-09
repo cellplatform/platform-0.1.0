@@ -1,5 +1,5 @@
 import { ActionBuilder } from './api/Actions';
-export const Actions = ActionBuilder.api;
+export const DevActions = ActionBuilder.api;
 
 export { StateObject, toObject } from './common';
 

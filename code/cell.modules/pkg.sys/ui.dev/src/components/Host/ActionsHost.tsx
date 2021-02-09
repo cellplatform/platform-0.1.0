@@ -15,12 +15,12 @@ export type ActionHostProps = {
  * the [Actions] context data changes.
  */
 export const ActionsHost: React.FC<ActionHostProps> = (props) => {
-  const { actions } = props;
+  const { actions, bus } = props;
 
   useRedraw({
     name: '<ActionsHost>',
     paths: ['ctx/current', 'env/viaAction'],
-    bus: props.bus.type<t.ActionEvent>(),
+    bus,
     actions,
   });
 

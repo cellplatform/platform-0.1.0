@@ -3,7 +3,7 @@ import { css, CssValue, t, color, Format } from '../../common';
 
 export type ItemHrProps = {
   namespace: string;
-  bus: t.DevEventBus;
+  bus: t.EventBus;
   model: t.ActionHr;
   style?: CssValue;
 };

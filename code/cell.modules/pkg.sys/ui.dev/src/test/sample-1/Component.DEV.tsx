@@ -1,5 +1,5 @@
 import React from 'react';
-import { Actions, toObject } from '../..';
+import { DevActions, toObject } from '../..';
 import { css, COLORS, color } from '../../common';
 import { Component } from './Component';
 
@@ -27,7 +27,7 @@ let count = 0;
 /**
  * Actions
  */
-export const actions = Actions<Ctx>()
+export const actions = DevActions<Ctx>()
   .namespace('sample-1')
   .context((prev) => prev || { myLayout: 'single', count: 0, text: LOREM, isRunning: true })
 

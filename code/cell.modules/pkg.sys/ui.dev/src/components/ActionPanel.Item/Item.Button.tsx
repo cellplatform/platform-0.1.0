@@ -5,7 +5,7 @@ import { ButtonView } from './Item.ButtonView';
 
 export type ItemButtonProps = {
   namespace: string;
-  bus: t.DevEventBus;
+  bus: t.EventBus;
   model: t.ActionButton;
   style?: CssValue;
 };
@@ -14,7 +14,9 @@ export type ItemButtonProps = {
  * Button.
  */
 export const ItemButton: React.FC<ItemButtonProps> = (props) => {
-  const { bus, model, style, namespace } = props;
+  const { model, style, namespace } = props;
+  const bus = props.bus.type<t.ActionEvent>();
+
   const { label, description } = model;
   const isActive = model.handlers.length > 0;
 

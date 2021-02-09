@@ -9,14 +9,15 @@ import { Select } from '../../api/Actions.Item';
 
 export type ItemSelectProps = {
   namespace: string;
-  bus: t.DevEventBus;
+  bus: t.EventBus;
   model: t.ActionSelect;
   style?: CssValue;
 };
 
 export const ItemSelect: React.FC<ItemSelectProps> = (props) => {
-  const { bus, namespace } = props;
-  const model = useItemMonitor({ bus, model: props.model });
+  const { namespace } = props;
+  const model = useItemMonitor({ bus: props.bus, model: props.model });
+  const bus = props.bus.type<t.ActionEvent>();
 
   const { label, description } = model;
   const isActive = model.handlers.length > 0;

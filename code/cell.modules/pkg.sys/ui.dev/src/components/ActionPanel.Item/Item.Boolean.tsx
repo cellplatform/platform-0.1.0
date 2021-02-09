@@ -7,14 +7,15 @@ import { ButtonView } from './Item.ButtonView';
 
 export type ItemBooleanProps = {
   namespace: string;
-  bus: t.DevEventBus;
+  bus: t.EventBus;
   model: t.ActionBoolean;
   style?: CssValue;
 };
 
 export const ItemBoolean: React.FC<ItemBooleanProps> = (props) => {
-  const { bus, namespace } = props;
-  const model = useItemMonitor({ bus, model: props.model });
+  const { namespace } = props;
+  const model = useItemMonitor({ bus: props.bus, model: props.model });
+  const bus = props.bus.type<t.ActionEvent>();
   const { label, description } = model;
   const isActive = model.handlers.length > 0;
   const value = Boolean(model.current);

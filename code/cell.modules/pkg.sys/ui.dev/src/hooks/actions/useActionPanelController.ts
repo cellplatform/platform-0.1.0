@@ -11,9 +11,10 @@ type O = Record<string, unknown>;
 /**
  * Controller for handling actions.
  */
-export function useActionPanelController(args: { bus: t.DevEventBus; actions: t.Actions<O> }) {
-  const { bus, actions } = args;
+export function useActionPanelController(args: { bus: t.EventBus; actions: t.Actions<O> }) {
+  const { actions } = args;
   const namespace = actions.toObject().namespace;
+  const bus = args.bus.type<t.ActionEvent>();
 
   useEffect(() => {
     const model = actions.toModel();

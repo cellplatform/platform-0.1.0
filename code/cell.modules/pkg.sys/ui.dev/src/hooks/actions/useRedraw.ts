@@ -11,12 +11,13 @@ type Path = 'initialized' | 'ctx/current' | 'env/viaAction' | 'env/viaSubject' |
  */
 export function useRedraw(args: {
   name?: string;
-  bus: t.DevEventBus;
+  bus: t.EventBus;
   actions?: t.Actions<any>;
   paths: Path[];
 }) {
-  const { bus, actions } = args;
+  const { actions } = args;
   const [redraw, setRedraw] = useState<number>(0);
+  const bus = args.bus.type<t.ActionEvent>();
 
   useEffect(() => {
     const dispose$ = new Subject<void>();

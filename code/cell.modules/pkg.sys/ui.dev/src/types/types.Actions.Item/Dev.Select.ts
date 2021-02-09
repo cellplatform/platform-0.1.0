@@ -3,6 +3,16 @@ import { t } from '../common';
 type O = Record<string, unknown>;
 
 /**
+ * INPUT: A button with a toggle switch (boolean).
+ */
+export type ActionSelect = t.ActionSelectProps & {
+  id: string;
+  kind: 'select';
+  handlers: t.ActionSelectHandler<any>[];
+};
+
+
+/**
  * CONFIGURE Select (Dropdown)
  */
 export type ActionSelectConfig<Ctx extends O> = (args: ActionSelectConfigArgs<Ctx>) => void;
@@ -17,14 +27,6 @@ export type ActionSelectConfigArgs<Ctx extends O> = {
   pipe(...handlers: t.ActionSelectHandler<Ctx>[]): ActionSelectConfigArgs<Ctx>;
 };
 
-/**
- * INPUT: A button with a toggle switch (boolean).
- */
-export type ActionSelect = t.ActionSelectProps & {
-  id: string;
-  kind: 'select';
-  handlers: t.ActionSelectHandler<any>[];
-};
 
 /**
  * Editable properties of a [Select] input.
@@ -46,4 +48,20 @@ export type ActionSelectItemInput = string | number | boolean | t.ActionSelectIt
 export type ActionSelectChanging = {
   action: t.SelectActionTypes;
   next: t.ActionSelectItem[];
+};
+
+/**
+ * HANDLER Select (dropdown)
+ */
+export type ActionSelectHandler<C> = (e: t.ActionSelectHandlerArgs<C>) => void;
+export type ActionSelectHandlerArgs<C> = t.ActionHandlerArgs<C> & {
+  readonly settings: t.ActionHandlerSettings<
+    ActionSelectHandlerArgs<C>,
+    ActionHandlerSettingsSelectArgs
+  >;
+  readonly select: t.ActionSelectProps;
+  readonly changing?: t.ActionSelectChanging; // Exists when an interaction has causes the state to change.
+};
+export type ActionHandlerSettingsSelectArgs = t.ActionHandlerSettingsArgs & {
+  select?: Partial<t.ActionSelectProps>;
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Actions, toObject } from '../..';
+import { DevActions, toObject } from '../..';
 import { Component } from './Component';
 
 type Ctx = {
@@ -9,7 +9,7 @@ type Ctx = {
 /**
  * Actions
  */
-export const actions = Actions<Ctx>()
+export const actions = DevActions<Ctx>()
   .namespace('sample-2')
   .context((prev) => prev || { count: 0 })
 
