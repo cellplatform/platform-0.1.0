@@ -77,13 +77,15 @@ export const Select = {
   /**
    * Assigns the initial value as current (if there is one).
    */
-  assignInitial(item?: t.ActionItem) {
-    if (item?.kind === 'select' && item.initial !== undefined) {
-      let initial = Array.isArray(item.initial) ? item.initial : [item.initial];
-      initial = item.multi ? initial : initial.slice(0, 1); // NB: if not "multi" only take the first item.
-      item.current = initial.map((value) => Select.toOption(value));
+  assignInitial(input?: t.ActionItem) {
+    if (input?.kind === 'select') {
+      const item = input as t.ActionSelect;
+      if (item.initial !== undefined) {
+        let initial = Array.isArray(item.initial) ? item.initial : [item.initial];
+        initial = item.multi ? initial : initial.slice(0, 1); // NB: if not "multi" only take the first item.
+        item.current = initial.map((value) => Select.toOption(value));
+      }
     }
-
-    return item;
+    return input;
   },
 };

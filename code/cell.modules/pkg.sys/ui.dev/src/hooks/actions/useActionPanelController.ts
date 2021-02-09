@@ -66,12 +66,24 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
         });
 
         // Fire event that load initial value.
-        model.state.items.forEach((model) => {
-          if (model.kind === 'boolean' && model.handlers.length > 0) {
-            bus.fire({ type: 'dev:action/Boolean', payload: { namespace: namespace, model } });
+        model.state.items.forEach((item) => {
+          if (item.kind === 'boolean') {
+            const model = item as t.ActionBoolean;
+            if (model.handlers.length > 0) {
+              bus.fire({
+                type: 'dev:action/Boolean',
+                payload: { namespace, model },
+              });
+            }
           }
-          if (model.kind === 'select' && model.handlers.length > 0) {
-            bus.fire({ type: 'dev:action/Select', payload: { namespace: namespace, model } });
+          if (item.kind === 'select') {
+            const model = item as t.ActionSelect;
+            if (model.handlers.length > 0) {
+              bus.fire({
+                type: 'dev:action/Select',
+                payload: { namespace, model },
+              });
+            }
           }
         });
 
@@ -102,7 +114,7 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
           if (model) {
             bus.fire({
               type: 'dev:action/model/changed',
-              payload: { namespace: namespace, index, model },
+              payload: { namespace, index, model },
             });
           }
         });
@@ -235,10 +247,10 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
     /**
      * INITIALIZE: Setup initial state.
      * NOTE:
-     *    The delayed tick allows all components to setup their hooks
-     *    before the initial state configuration is established.
+     *    Delaying for a tick allows all interested  components to setup
+     *    their hooks before the initial state configuration is established.
      */
-    time.delay(0, () => bus.fire({ type: 'dev:actions/init', payload: { namespace: namespace } }));
+    time.delay(0, () => bus.fire({ type: 'dev:actions/init', payload: { namespace } }));
 
     return () => dispose$.next();
   }, [bus, actions, namespace]);
