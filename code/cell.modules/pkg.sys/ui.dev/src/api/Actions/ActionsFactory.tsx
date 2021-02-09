@@ -12,22 +12,7 @@ export const ActionsFactory: t.ActionsFactory = {
    * Create a new data-model.
    */
   model<Ctx extends O>(): t.ActionsModelState<Ctx> {
-    const initial = { ...DEFAULT.ACTIONS } as t.ActionsModel<Ctx>;
-    return StateObject.create<any, A>(initial);
-  },
-
-  /**
-   * Create a new API builder.
-   */
-  base__TEMP<Ctx extends O>(input: any) {
-    const model = asModel<Ctx>(input);
-
-    type M = t.ActionsModel<Ctx>;
-    type F = any;
-
-    const handlers = Handlers.compose([]);
-
-    return Builder.create<M, F, A>({ model, handlers });
+    return StateObject.create<any, A>({ ...DEFAULT.ACTIONS });
   },
 
   /**

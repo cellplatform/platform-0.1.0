@@ -1,10 +1,9 @@
 import * as React from 'react';
 
-import { expect, DEFAULT, StateObject, t, rx, is, toObject, R } from '../../test';
 import { ActionsFactory } from '.';
 import { ActionPanelProps } from '../../components/ActionPanel';
 import { DevDefs, DisplayDefs } from '../../defs';
-import { MdFlashOff } from 'react-icons/md';
+import { DEFAULT, expect, is, rx, StateObject, t, toObject } from '../../test';
 
 type Ctx = { count: number };
 

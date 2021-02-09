@@ -1,6 +1,5 @@
-import { ActionsFactory } from './api/Actions';
-export { ActionsFactory };
-export const DevActions = ActionsFactory.base__TEMP;
+export { ActionsFactory } from './api/Actions';
+export { DevActions } from './factory';
 
 export { StateObject, toObject } from './common';
 
