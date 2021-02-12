@@ -15,7 +15,7 @@ export type ActionEvent =
  * Fires to initialize the state of a set of actions.
  */
 export type IActionsInitEvent = {
-  type: 'dev:actions/init';
+  type: 'actions/init';
   payload: IActionsInitPayload;
 };
 export type IActionsInitPayload = { namespace: string };
@@ -24,7 +24,7 @@ export type IActionsInitPayload = { namespace: string };
  * Fires when the <ActionsSelect> dropdown changes.
  */
 export type IActionsSelectChangedEvent = {
-  type: 'dev:actions/select/changed';
+  type: 'actions/select/changed';
   payload: IActionsSelectChanged;
 };
 export type IActionsSelectChanged = { namespace: string };
@@ -33,7 +33,7 @@ export type IActionsSelectChanged = { namespace: string };
  * Fires when a single action [Item] model state changes.
  */
 export type IActionModelChangedEvent = {
-  type: 'dev:action/model/changed';
+  type: 'action/model/changed';
   payload: IActionModelChangedPayload;
 };
 export type IActionModelChangedPayload = {

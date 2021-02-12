@@ -19,7 +19,7 @@ export function useItemMonitor<M extends t.ActionItem>(args: { bus: t.EventBus; 
       filter((e) => Events.isActionEvent(e)),
     );
 
-    rx.payload<t.IActionModelChangedEvent>($, 'dev:action/model/changed')
+    rx.payload<t.IActionModelChangedEvent>($, 'action/model/changed')
       .pipe(
         filter((e) => e.item.id === args.model.id),
         distinctUntilChanged((prev, next) => R.equals(prev, next)),

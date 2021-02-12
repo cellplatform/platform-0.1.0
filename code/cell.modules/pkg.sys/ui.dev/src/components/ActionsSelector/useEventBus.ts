@@ -16,7 +16,7 @@ export function useEventBus(args: {
       const { selected } = e;
       const model = selected.toObject();
       const { namespace } = model;
-      bus.fire({ type: 'dev:actions/select/changed', payload: { namespace } });
+      bus.fire({ type: 'actions/select/changed', payload: { namespace } });
     }
     if (args.onChange) args.onChange(e);
   };

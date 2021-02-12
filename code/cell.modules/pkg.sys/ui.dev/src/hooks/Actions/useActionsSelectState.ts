@@ -32,7 +32,7 @@ export function useActionsSelectState(args: {
     }
 
     // Monitor for changes to the dropdown.
-    rx.payload<t.IActionsSelectChangedEvent>($, 'dev:actions/select/changed')
+    rx.payload<t.IActionsSelectChangedEvent>($, 'actions/select/changed')
       .pipe()
       .subscribe((e) => {
         const current = list.find((actions) => actions.toObject().namespace === e.namespace);

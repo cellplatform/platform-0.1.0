@@ -51,7 +51,7 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
      *    Setup the initial model state by invoking
      *    each value producing handler.
      */
-    rx.payload<t.IActionsInitEvent>(event$, 'dev:actions/init')
+    rx.payload<t.IActionsInitEvent>(event$, 'actions/init')
       .pipe()
       .subscribe((e) => {
         // Run initializer on each item.
@@ -94,7 +94,7 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
           const model = Model.find(index).item;
           if (model) {
             fire({
-              type: 'dev:action/model/changed',
+              type: 'action/model/changed',
               payload: { namespace, index, item: model },
             });
           }
@@ -107,7 +107,7 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
      *    Delaying for a tick allows all interested  components to setup
      *    their hooks before the initial state configuration is established.
      */
-    time.delay(0, () => fire({ type: 'dev:actions/init', payload: { namespace } }));
+    time.delay(0, () => fire({ type: 'actions/init', payload: { namespace } }));
 
     return () => dispose$.next();
   }, [bus, actions, namespace, defs]);
