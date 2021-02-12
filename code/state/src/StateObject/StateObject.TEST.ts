@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { StateObject } from '.';
-import { expect, t } from '../test';
+import { expect, t, time } from '../test';
 import { StateObject as StateObjectClass } from './StateObject';
 
 type IFoo = { message?: string; count: number; items?: any[] };
@@ -150,7 +150,7 @@ describe('StateObject', () => {
   });
 
   describe('change', () => {
-    it('change: update (via function)', () => {
+    it('sync/change: update (via function)', () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo>(initial);
       expect(obj.state).to.equal(obj.original); // NB: Same instance (no change yet).
@@ -181,6 +181,69 @@ describe('StateObject', () => {
       expect(obj.original).to.eql(initial);
     });
 
+    it('sync/change: replace (via {object} value)', () => {
+      const initial = { count: 1 };
+      const obj = StateObject.create<IFoo>(initial);
+      expect(obj.state).to.equal(obj.original); // NB: Same instance (no change yet).
+
+      const res1 = obj.change({ count: 2, message: 'hello' });
+
+      expect(res1.op).to.eql('replace');
+      expect(res1.changed?.from).to.eql({ count: 1 });
+      expect(res1.changed?.to).to.eql({ count: 2, message: 'hello' });
+      expect(obj.state).to.eql({ count: 2, message: 'hello' });
+
+      const res2 = obj.change({ count: 3 });
+
+      expect(res2.op).to.eql('replace');
+      expect(res2.changed?.from).to.eql({ count: 2, message: 'hello' });
+      expect(res2.changed?.to).to.eql({ count: 3 });
+      expect(obj.state).to.eql({ count: 3 });
+
+      expect(obj.original).to.eql(initial);
+    });
+
+    it('sync/change: disconnected method function can be passed around (bound)', () => {
+      const initial = { count: 1 };
+      const obj = StateObject.create<IFoo>(initial);
+      const change = obj.change;
+      const increment = () => change((draft) => draft.count++);
+
+      expect(obj.state.count).to.eql(1);
+
+      change((draft) => (draft.count -= 1));
+      expect(obj.state.count).to.eql(0);
+
+      change({ count: 99 });
+      expect(obj.state.count).to.eql(99);
+
+      increment();
+      increment();
+      expect(obj.state.count).to.eql(101);
+
+      expect(obj.original).to.eql(initial);
+    });
+
+    it('change (async)', async () => {
+      const initial = { count: 1 };
+      const obj = StateObject.create<IFoo>(initial);
+
+      const { changeAsync } = obj; // NB: Can be disconnected.
+
+      const res = await changeAsync(async (draft) => {
+        await time.wait(10);
+        draft.count++;
+        return 'NO EFFECT' as any;
+      });
+
+      expect(res.op).to.eql('update');
+      expect(res.changed?.from).to.eql({ count: 1 });
+      expect(res.changed?.to).to.eql({ count: 2 });
+
+      expect(res.patches.prev[0]).to.eql({ op: 'replace', path: 'count', value: 1 });
+      expect(res.patches.next[0]).to.eql({ op: 'replace', path: 'count', value: 2 });
+    });
+
     it('no change (does not fire events)', () => {
       const initial = { count: 0 };
       const obj = StateObject.create<IFoo>(initial);
@@ -203,49 +266,6 @@ describe('StateObject', () => {
 
       test((draft) => undefined); //         NB: Touched nothing.
       test((draft) => (draft.count = 0)); // NB: Set to same value.
-    });
-
-    it('change: replace (via {object} value)', () => {
-      const initial = { count: 1 };
-      const obj = StateObject.create<IFoo>(initial);
-      expect(obj.state).to.equal(obj.original); // NB: Same instance (no change yet).
-
-      const res1 = obj.change({ count: 2, message: 'hello' });
-
-      expect(res1.op).to.eql('replace');
-      expect(res1.changed?.from).to.eql({ count: 1 });
-      expect(res1.changed?.to).to.eql({ count: 2, message: 'hello' });
-      expect(obj.state).to.eql({ count: 2, message: 'hello' });
-
-      const res2 = obj.change({ count: 3 });
-
-      expect(res2.op).to.eql('replace');
-      expect(res2.changed?.from).to.eql({ count: 2, message: 'hello' });
-      expect(res2.changed?.to).to.eql({ count: 3 });
-      expect(obj.state).to.eql({ count: 3 });
-
-      expect(obj.original).to.eql(initial);
-    });
-
-    it('change: disconnected method function can be passed around (bound)', () => {
-      const initial = { count: 1 };
-      const obj = StateObject.create<IFoo>(initial);
-      const change = obj.change;
-      const increment = () => change((draft) => draft.count++);
-
-      expect(obj.state.count).to.eql(1);
-
-      change((draft) => (draft.count -= 1));
-      expect(obj.state.count).to.eql(0);
-
-      change({ count: 99 });
-      expect(obj.state.count).to.eql(99);
-
-      increment();
-      increment();
-      expect(obj.state.count).to.eql(101);
-
-      expect(obj.original).to.eql(initial);
     });
 
     it('throw: when property name contains "/"', () => {

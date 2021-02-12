@@ -1,12 +1,20 @@
 import { id } from '@platform/util.value';
-import { enablePatches, isDraft, original, produceWithPatches, setAutoFreeze } from 'immer';
+import {
+  createDraft,
+  enablePatches,
+  finishDraft,
+  isDraft,
+  original,
+  produceWithPatches,
+  setAutoFreeze,
+} from 'immer';
 import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 import { is, t } from '../common';
 import { Patch } from '../Patch';
-import * as events from './StateObject.events';
 import * as combine from './StateObject.combine';
+import * as events from './StateObject.events';
 
 if (typeof setAutoFreeze === 'function') {
   setAutoFreeze(false);
@@ -123,6 +131,70 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
    */
   public change: t.StateObjectChange<T> = (fn) => {
     const cid = id.cuid(); // "change-id"
+    const from = this.state;
+    const { to, op, patches } = next(from, fn);
+    if (Patch.isEmpty(patches)) {
+      return { op, cid, patches };
+    } else {
+      return this._changeComplete({ cid, from, to, op, patches });
+    }
+  };
+
+  public changeAsync: t.StateObjectChangeAsync<T> = async (fn) => {
+    const cid = id.cuid(); // "change-id"
+    const from = this.state;
+    const { to, op, patches } = await nextAsync(from, fn);
+    if (Patch.isEmpty(patches)) {
+      return { op, cid, patches };
+    } else {
+      return this._changeComplete({ cid, from, to, op, patches });
+    }
+  };
+
+  private _changeComplete = (args: {
+    cid: string;
+    from: T;
+    to: T;
+    op: t.StateObjectChangeOperation;
+    patches: t.PatchSet;
+  }) => {
+    const { cid, from, to, op, patches } = args;
+
+    // Fire BEFORE event.
+    const changing: t.IStateObjectChanging<T> = {
+      op,
+      cid,
+      from,
+      to,
+      patches,
+      cancelled: false,
+      cancel: () => (changing.cancelled = true),
+    };
+
+    this.fire({ type: 'StateObject/changing', payload: changing });
+
+    // Update state and alert listeners.
+    const cancelled = changing.cancelled ? changing : undefined;
+    if (cancelled) {
+      this.fire({ type: 'StateObject/cancelled', payload: cancelled });
+    }
+
+    const changed: t.IStateObjectChanged<T> | undefined = cancelled
+      ? undefined
+      : { op, cid, from, to, patches };
+
+    if (changed) {
+      this._state = to;
+      this.fire({ type: 'StateObject/changed', payload: changed });
+    }
+
+    // Finish up.
+    return { op, cid, changed, cancelled, patches };
+  };
+
+  private _change = (args: { fn: T | t.StateObjectChanger<T> }) => {
+    const { fn } = args;
+    const cid = id.cuid(); // "change-id"
 
     const from = this.state;
     const { to, op, patches } = next(from, fn);
@@ -159,13 +231,49 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
     }
 
     // Finish up.
-    return {
+    return { op, cid, changed, cancelled, patches };
+  };
+
+  private _changeORIGINAL = (args: { fn: T | t.StateObjectChanger<T> }) => {
+    const { fn } = args;
+    const cid = id.cuid(); // "change-id"
+
+    const from = this.state;
+    const { to, op, patches } = next(from, fn);
+    if (Patch.isEmpty(patches)) {
+      return { op, cid, patches };
+    }
+
+    // Fire BEFORE event.
+    const changing: t.IStateObjectChanging<T> = {
       op,
       cid,
-      changed,
-      cancelled,
+      from,
+      to,
       patches,
+      cancelled: false,
+      cancel: () => (changing.cancelled = true),
     };
+
+    this.fire({ type: 'StateObject/changing', payload: changing });
+
+    // Update state and alert listeners.
+    const cancelled = changing.cancelled ? changing : undefined;
+    if (cancelled) {
+      this.fire({ type: 'StateObject/cancelled', payload: cancelled });
+    }
+
+    const changed: t.IStateObjectChanged<T> | undefined = cancelled
+      ? undefined
+      : { op, cid, from, to, patches };
+
+    if (changed) {
+      this._state = to;
+      this.fire({ type: 'StateObject/changed', payload: changed });
+    }
+
+    // Finish up.
+    return { op, cid, changed, cancelled, patches };
   };
 
   /**
@@ -193,4 +301,15 @@ const next = <T extends O>(from: T, fn: t.StateObjectChanger<T> | T) => {
     const op: t.StateObjectChangeOperation = 'replace';
     return { op, to, patches };
   }
+};
+
+const nextAsync = async <T extends O>(from: T, fn: t.StateObjectChangerAsync<T>) => {
+  const draft = createDraft(from) as T;
+  await fn(draft);
+
+  let patches: t.PatchSet = { prev: [], next: [] };
+  const to = finishDraft(draft, (next, prev) => (patches = Patch.toPatchSet(next, prev)));
+
+  const op: t.StateObjectChangeOperation = 'update';
+  return { op, to, patches };
 };

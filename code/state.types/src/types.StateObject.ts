@@ -40,11 +40,16 @@ export type IStateObjectWritable<T extends O> = IStateObjectReadable<T> &
   t.IDisposable & {
     readonly readonly: IStateObject<T>;
     change: StateObjectChange<T>;
+    changeAsync: StateObjectChangeAsync<T>;
   };
 
 export type StateObjectChange<T extends O> = (
   input: StateObjectChanger<T> | T,
 ) => IStateObjectChangeResponse<T>;
+
+export type StateObjectChangeAsync<T extends O> = (
+  input: StateObjectChangerAsync<T>,
+) => Promise<IStateObjectChangeResponse<T>>;
 
 export type StateObjectChangeOperation = 'update' | 'replace';
 
@@ -56,6 +61,7 @@ export type IStateObjectChangeResponse<T extends O> = {
   cancelled?: t.IStateObjectCancelled<T>;
 };
 export type StateObjectChanger<T extends O> = (draft: T) => void;
+export type StateObjectChangerAsync<T extends O> = (draft: T) => Promise<void>;
 
 /**
  * Merge
