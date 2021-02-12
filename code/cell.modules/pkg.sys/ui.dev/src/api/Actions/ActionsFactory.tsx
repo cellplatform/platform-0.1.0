@@ -22,7 +22,7 @@ export const ActionsFactory: t.ActionsFactory = {
     defs: t.ActionDef[],
     model?: t.ActionsModel<any>,
   ): t.Actions<Ctx, Items> {
-    const actions = Builder.create<any, any, any>({
+    const actions = Builder.create<any, any>({
       model: asModel(model),
       handlers: Handlers.compose([...defs]),
     });

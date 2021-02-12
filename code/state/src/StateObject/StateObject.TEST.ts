@@ -1,7 +1,5 @@
-/* eslint-disable */
 import { isDraft } from 'immer';
 import { Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
 
 import { StateObject } from '.';
 import { expect, t, time } from '../test';
@@ -54,7 +52,7 @@ describe('StateObject', () => {
     it('dispose: events cease firing', () => {
       const obj = StateObject.create<IFoo>({ count: 1 });
 
-      let fired: t.StateObjectEvent[] = [];
+      const fired: t.StateObjectEvent[] = [];
       obj.event.$.subscribe((e) => fired.push(e));
 
       obj.change((draft) => (draft.message = 'hello'));

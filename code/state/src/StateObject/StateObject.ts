@@ -9,7 +9,6 @@ import {
   setAutoFreeze,
 } from 'immer';
 import { Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
 
 import { is, t } from '../common';
 import { Patch } from '../Patch';
@@ -104,7 +103,7 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
   private _state: T;
 
   private _dispose$ = new Subject<void>();
-  public readonly dispose$ = this._dispose$.pipe(share());
+  public readonly dispose$ = this._dispose$.asObservable();
 
   private readonly _event$ = new Subject<t.StateObjectEvent>();
   public readonly event = events.create<T>(this._event$, this._dispose$);

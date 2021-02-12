@@ -14,9 +14,9 @@ type K = t.BuilderMethodKind;
  *    <M> Model
  *    <A> API
  */
-export function create<M extends O, F extends O, A extends string = string>(args: {
-  handlers: t.BuilderHandlers<M, F, A>;
-  model: t.BuilderModel<M, A>;
+export function create<M extends O, F extends O>(args: {
+  handlers: t.BuilderHandlers<M, F>;
+  model: t.BuilderModel<M>;
   parent?: B;
 
   // [Internal]
@@ -61,10 +61,10 @@ export function create<M extends O, F extends O, A extends string = string>(args
   // Assign chained method modifiers.
   Object.keys(handlers)
     .filter((key) => typeof handlers[key] === 'function')
-    .map((key) => ({ key, handler: handlers[key] as t.BuilderHandler<M, F, A> }))
+    .map((key) => ({ key, handler: handlers[key] as t.BuilderHandler<M, F> }))
     .forEach(({ key, handler }) => {
       builder[key] = (...params: any[]) => {
-        const handlerArgs: t.BuilderHandlerArgs<M, F, A> = {
+        const handlerArgs: t.BuilderHandlerArgs<M, F> = {
           kind,
           key,
           index,
@@ -75,8 +75,8 @@ export function create<M extends O, F extends O, A extends string = string>(args
           is: { list: is.list(kind), map: is.map(kind) },
           clone(props?: Partial<M>) {
             const initial = { ...args.model.state, ...props };
-            const model = StateObject.create<M, A>(initial);
-            return create<M, F, A>({ model, handlers });
+            const model = StateObject.create<M>(initial);
+            return create<M, F>({ model, handlers });
           },
         };
         const res = handler(handlerArgs);
@@ -214,7 +214,7 @@ const parentPath = (path: string) => {
 };
 
 const ensureObjectAt = (
-  model: t.BuilderModel<any, any>,
+  model: t.BuilderModel<any>,
   path: string,
   defaultObject?: () => O | O[],
 ) => {
@@ -263,7 +263,7 @@ const findListIndexByName = (list: any[], name: string, index?: t.BuilderIndexPa
 };
 
 const ensureDefaultAtIndex = (
-  model: t.BuilderModel<any, any>,
+  model: t.BuilderModel<any>,
   path: string,
   index: number,
   defaultValue?: () => O,
@@ -278,7 +278,7 @@ const ensureDefaultAtIndex = (
   }
 };
 
-const findListOrThrow = (model: t.BuilderModel<any, any>, path: string) => {
+const findListOrThrow = (model: t.BuilderModel<any>, path: string) => {
   const list = jpath.query(model.state, path)[0];
   if (!list) {
     throw new Error(`A containing list at path '${path}' does not exist on the model.`);
@@ -290,7 +290,7 @@ const findListOrThrow = (model: t.BuilderModel<any, any>, path: string) => {
 };
 
 const fromFactory = (args: {
-  model: t.BuilderModel<any, any>;
+  model: t.BuilderModel<any>;
   parent: t.BuilderChain<any>;
   dispose$: Observable<void>;
   params: any[];
@@ -315,12 +315,12 @@ const fromFactory = (args: {
         model: args.model,
         builder: { parent, dispose$ },
         params,
-        create<M extends O, F extends O, A extends string = string>(
-          handlers: t.BuilderHandlers<M, F, A>,
-          model?: t.BuilderModel<M, A>,
+        create<M extends O, F extends O>(
+          handlers: t.BuilderHandlers<M, F>,
+          model?: t.BuilderModel<M>,
         ) {
           model = model || args.model;
-          return create<M, F, A>({ kind, parent, model, handlers, path, index, dispose$ });
+          return create<M, F>({ kind, parent, model, handlers, path, index, dispose$ });
         },
       });
     },
@@ -340,12 +340,12 @@ const fromFactory = (args: {
         model: args.model,
         builder: { parent, dispose$ },
         params,
-        create<M extends O, F extends O, A extends string = string>(
-          handlers: t.BuilderHandlers<M, F, A>,
-          model?: t.BuilderModel<M, A>,
+        create<M extends O, F extends O>(
+          handlers: t.BuilderHandlers<M, F>,
+          model?: t.BuilderModel<M>,
         ) {
           model = model || args.model;
-          return create<M, F, A>({ kind, parent, model, handlers, path, dispose$ });
+          return create<M, F>({ kind, parent, model, handlers, path, dispose$ });
         },
       });
     },
