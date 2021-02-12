@@ -6,10 +6,8 @@ type N = t.ITreeNode;
 /**
  * Creates a [TreeStatePath]
  */
-export function create<T extends N, A extends string>(
-  tree: t.ITreeState<T, A>,
-): t.ITreeStatePath<T, A> {
-  type S = t.ITreeState<T, A>;
+export function create<T extends N>(tree: t.ITreeState<T>): t.ITreeStatePath<T> {
+  type S = t.ITreeState<T>;
 
   const get = (tree: S, parts: string[]): S | undefined => {
     if (parts.length === 0) {
