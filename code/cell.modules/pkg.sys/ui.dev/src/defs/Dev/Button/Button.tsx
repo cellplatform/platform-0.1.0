@@ -14,7 +14,7 @@ export type ButtonProps = {
  */
 export const Button: React.FC<ButtonProps> = (props) => {
   const { model, namespace } = props;
-  const bus = props.bus.type<t.ActionEvent>();
+  const bus = props.bus.type<t.DevActionEvent>();
 
   const { label, description } = model;
   const isActive = model.handlers.length > 0;

@@ -1,23 +1,8 @@
-import * as React from 'react';
+import { Model } from '.';
+import { expect } from '../../test';
+import { create } from './ActionsFactory.TEST';
 
-import { ActionsFactory, Model } from '.';
-import { ActionPanelProps } from '../../components/ActionPanel';
-import { DevDefs, DisplayDefs } from '../../defs';
-import { DEFAULT, expect, is, rx, StateObject, t, toObject } from '../../test';
-
-type Ctx = { count: number };
-
-function create() {
-  type M = t.DevMethods<Ctx> & t.DisplayMethods<Ctx>;
-  const defs = [...DevDefs, ...DisplayDefs];
-
-  const model = ActionsFactory.model<Ctx>();
-  const actions = ActionsFactory.compose<Ctx, M>(defs, model);
-  const bus = rx.bus();
-  return { model, actions, bus };
-}
-
-describe.only('Actions / Model', () => {
+describe('Actions / Model', () => {
   it('Model.state', () => {
     const { actions, model } = create();
     expect(Model.state(actions)).to.equal(model.state);

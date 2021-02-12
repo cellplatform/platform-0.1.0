@@ -15,7 +15,7 @@ export type SelectProps = {
 export const Select: React.FC<SelectProps> = (props) => {
   const { namespace } = props;
   const model = useItemMonitor({ bus: props.bus, model: props.model });
-  const bus = props.bus.type<t.ActionEvent>();
+  const bus = props.bus.type<t.DevActionEvent>();
 
   const { label, description } = model;
   const isActive = model.handlers.length > 0;

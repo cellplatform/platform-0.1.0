@@ -7,7 +7,7 @@ import { DEFAULT, expect, is, rx, StateObject, t, toObject } from '../../test';
 
 type Ctx = { count: number };
 
-function create() {
+export function create() {
   type M = t.DevMethods<Ctx> & t.DisplayMethods<Ctx>;
   const defs = [...DevDefs, ...DisplayDefs];
   const model = ActionsFactory.model<Ctx>();
