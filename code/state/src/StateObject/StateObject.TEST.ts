@@ -8,7 +8,7 @@ import { StateObject as StateObjectClass } from './StateObject';
 type IFoo = { message?: string; count: number; items?: any[] };
 type IBar = { isEnabled?: boolean };
 
-describe('StateObject', () => {
+describe.only('StateObject', () => {
   describe('lifecycle', () => {
     it('create: store initial state', () => {
       const initial = { count: 1 };
