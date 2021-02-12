@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
 
-import { Context, Handler, Model, rx, t } from '../common';
+import { Context, Handler, Model, rx, t, is } from '../common';
 import { Button as Component } from './Button';
 import { config } from './ButtonDef.config';
 
@@ -24,12 +24,13 @@ export const ButtonDef: t.ActionDef<T, E> = {
 
   listen(args) {
     const { actions } = args;
-    const { item } = Model.item<T>(actions, args.id);
-    const namespace = actions.state.namespace;
 
     // Listen for events.
     rx.payload<E>(args.event$, 'dev:action/Button')
-      .pipe(filter((e) => e.item.handlers.length > 0))
+      .pipe(
+        filter((e) => e.item.id === args.id),
+        filter((e) => e.item.handlers.length > 0),
+      )
       .subscribe((e) => {
         Context.getAndStore(actions, { throw: true });
 
@@ -37,6 +38,7 @@ export const ButtonDef: t.ActionDef<T, E> = {
           const { ctx, item, host, layout, env } = Handler.params.payload<T>(e.item.id, draft);
           if (ctx && item) {
             //
+
             const settings: S = (args) =>
               Handler.settings.handler<P, A>({
                 env,

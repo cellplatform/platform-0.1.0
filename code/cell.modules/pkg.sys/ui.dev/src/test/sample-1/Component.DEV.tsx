@@ -1,6 +1,6 @@
 import React from 'react';
 import { DevActions, toObject } from '../..';
-import { css, COLORS, color } from '../../common';
+import { css, COLORS, color, time } from '../../common';
 import { Component } from './Component';
 
 type SampleLayout =
@@ -37,6 +37,7 @@ export const actions = DevActions<Ctx>()
       e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
     }).button('inject <React>', (e) => {
       count++;
+      console.log('count', count);
 
       const styles = {
         bgr: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' }),
@@ -61,6 +62,11 @@ export const actions = DevActions<Ctx>()
 
     e.title('Buttons');
     e.button((config) => config.label('hello'));
+    e.button('delay', async (e) => {
+      e.button.label = 'waiting...';
+      await time.delay(1200);
+      e.button.label = 'delay';
+    });
     e.hr(1, 0.15, [5, 0]);
     e.button('console.log', (e) => {
       console.group('🌳 button click');
