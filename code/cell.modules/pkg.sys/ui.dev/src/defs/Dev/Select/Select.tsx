@@ -9,12 +9,12 @@ import { ButtonView } from '../Button/ButtonView';
 export type SelectProps = {
   namespace: string;
   bus: t.EventBus;
-  model: t.ActionSelect;
+  item: t.ActionSelect;
 };
 
 export const Select: React.FC<SelectProps> = (props) => {
   const { namespace } = props;
-  const model = useItemMonitor({ bus: props.bus, model: props.model });
+  const model = useItemMonitor({ bus: props.bus, item: props.item });
   const bus = props.bus.type<t.DevActionEvent>();
 
   const { label, description } = model;

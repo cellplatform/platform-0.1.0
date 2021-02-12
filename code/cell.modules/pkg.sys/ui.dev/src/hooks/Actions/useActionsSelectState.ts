@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { rx, t, Events } from '../../common';
+import { rx, t } from '../../common';
 
 /**
  * Monitor the state of a <Select> dropdown of a set of actions
@@ -20,10 +20,7 @@ export function useActionsSelectState(args: {
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const $ = bus.event$.pipe(
-      takeUntil(dispose$),
-      filter((e) => Events.isActionEvent(e)),
-    );
+    const $ = bus.event$.pipe(takeUntil(dispose$));
 
     // Set initial state.
     if (!selected) {

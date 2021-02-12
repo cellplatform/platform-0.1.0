@@ -4,12 +4,12 @@ import { color, css, Format, t } from '../common';
 export type HrProps = {
   namespace: string;
   bus: t.EventBus;
-  model: t.ActionHr;
+  item: t.ActionHr;
 };
 
 export const Hr: React.FC<HrProps> = (props) => {
-  const { model } = props;
-  const margin = Format.toEdges(model.margin);
+  const { item } = props;
+  const margin = Format.toEdges(item.margin);
 
   const styles = {
     base: css({
@@ -20,8 +20,8 @@ export const Hr: React.FC<HrProps> = (props) => {
       paddingLeft: margin.left,
     }),
     hr: css({
-      height: model.height,
-      backgroundColor: color.format(0 - model.opacity),
+      height: item.height,
+      backgroundColor: color.format(0 - item.opacity),
     }),
   };
 

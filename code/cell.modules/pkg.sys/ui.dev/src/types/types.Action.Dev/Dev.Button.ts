@@ -9,6 +9,7 @@ export type ActionButton = t.ActionButtonProps & {
   id: string;
   kind: 'dev/button';
   handlers: t.ActionButtonHandler<any>[];
+  isSpinning?: boolean;
 };
 
 /**
@@ -33,7 +34,7 @@ export type ActionButtonProps = {
 /**
  * HANDLER: Simple Button.
  */
-export type ActionButtonHandler<C> = (e: t.ActionButtonHandlerArgs<C>) => void;
+export type ActionButtonHandler<C> = (e: t.ActionButtonHandlerArgs<C>) => any | Promise<any>;
 export type ActionButtonHandlerArgs<C> = t.ActionHandlerArgs<C> & {
   readonly settings: t.ActionHandlerSettings<
     ActionButtonHandlerArgs<C>,

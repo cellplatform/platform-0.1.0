@@ -44,7 +44,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
       throw new Error(`A definition for item '${item.kind}' (${i}) not found`);
     }
 
-    return <def.Component key={key} namespace={namespace} model={item} bus={bus} />;
+    return <def.Component key={key} namespace={namespace} item={item} bus={bus} />;
   });
 
   return (

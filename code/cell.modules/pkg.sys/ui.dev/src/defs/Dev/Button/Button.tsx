@@ -6,21 +6,23 @@ import { ButtonView } from './ButtonView';
 export type ButtonProps = {
   namespace: string;
   bus: t.EventBus;
-  model: t.ActionButton;
+  item: t.ActionButton;
 };
 
 /**
  * Button.
  */
 export const Button: React.FC<ButtonProps> = (props) => {
-  const { model, namespace } = props;
+  const { item, namespace } = props;
   const bus = props.bus.type<t.DevActionEvent>();
 
-  const { label, description } = model;
-  const isActive = model.handlers.length > 0;
+  const { label, description, isSpinning } = item;
+  const isActive = item.handlers.length > 0;
+
+  // console.log('isSpinning', isSpinning);
 
   const clickHandler = () =>
-    bus.fire({ type: 'dev:action/Button', payload: { namespace, item: model } });
+    bus.fire({ type: 'dev:action/Button', payload: { namespace, item: item } });
 
   return (
     <ButtonView

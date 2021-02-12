@@ -29,7 +29,10 @@ export const SelectDef: t.ActionDef<T, E> = {
 
     // Listen for events.
     rx.payload<E>(args.event$, 'dev:action/Select')
-      .pipe(filter((e) => e.item.handlers.length > 0))
+      .pipe(
+        filter((e) => e.item.id === args.id),
+        filter((e) => e.item.handlers.length > 0),
+      )
       .subscribe((e) => {
         Context.getAndStore(actions, { throw: true });
         actions.change((draft) => {

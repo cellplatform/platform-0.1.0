@@ -9,7 +9,7 @@ type O = Record<string, unknown>;
  */
 export type ActionDef<M extends t.ActionItem = t.ActionItem, E extends t.Event = t.Event> = {
   kind: M['kind'];
-  Component: FC<{ namespace: string; bus: t.EventBus; model: M }>;
+  Component: FC<{ namespace: string; bus: t.EventBus; item: M }>;
 
   /**
    * Defines the configuration method.

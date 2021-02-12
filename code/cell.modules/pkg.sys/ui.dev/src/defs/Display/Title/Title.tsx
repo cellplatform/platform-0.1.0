@@ -5,11 +5,11 @@ import { COLORS, css, t } from '../common';
 export type TitleProps = {
   namespace: string;
   bus: t.EventBus;
-  model: t.ActionTitle;
+  item: t.ActionTitle;
 };
 
 export const Title: React.FC<TitleProps> = (props) => {
-  const { model } = props;
+  const { item } = props;
 
   const styles = {
     base: css({
@@ -25,7 +25,7 @@ export const Title: React.FC<TitleProps> = (props) => {
 
   return (
     <div {...styles.base}>
-      <div>{model.text}</div>
+      <div>{item.text}</div>
     </div>
   );
 };

@@ -8,12 +8,12 @@ import { ButtonView } from '../Button/ButtonView';
 export type BoolProps = {
   namespace: string;
   bus: t.EventBus;
-  model: t.ActionBoolean;
+  item: t.ActionBoolean;
 };
 
 export const Bool: React.FC<BoolProps> = (props) => {
   const { namespace } = props;
-  const model = useItemMonitor({ bus: props.bus, model: props.model });
+  const model = useItemMonitor({ bus: props.bus, item: props.item });
   const bus = props.bus.type<t.DevActionEvent>();
   const { label, description } = model;
   const isActive = model.handlers.length > 0;

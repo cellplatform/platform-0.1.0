@@ -2,34 +2,31 @@ import { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 
-import { R, rx, t, Events } from '../../common';
+import { R, rx, t } from '../../common';
 
 /**
  * Updates an item model (state) when changes are reported
  * through the event-bus.
  */
-export function useItemMonitor<M extends t.ActionItem>(args: { bus: t.EventBus; model: M }): M {
+export function useItemMonitor<M extends t.ActionItem>(args: { bus: t.EventBus; item: M }): M {
   const bus = args.bus.type<t.ActionEvent>();
-  const [model, setModel] = useState<M>();
+  const [item, setItem] = useState<M>();
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const $ = bus.event$.pipe(
-      takeUntil(dispose$),
-      filter((e) => Events.isActionEvent(e)),
-    );
+    const $ = bus.event$.pipe(takeUntil(dispose$));
 
     rx.payload<t.IActionModelChangedEvent>($, 'action/model/changed')
       .pipe(
-        filter((e) => e.item.id === args.model.id),
+        filter((e) => e.item.id === args.item.id),
         distinctUntilChanged((prev, next) => R.equals(prev, next)),
       )
       .subscribe((e) => {
-        setModel(e.item as M);
+        setItem(e.item as M);
       });
 
     return () => dispose$.next();
   }, []); // eslint-disable-line
 
-  return model || args.model;
+  return item || args.item;
 }

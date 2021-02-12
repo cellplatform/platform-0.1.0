@@ -12,12 +12,3 @@ export const Format = {
    */
   toEdges: (input: t.EdgeSpacing) => style.toEdges(input),
 };
-
-/**
- * Helpers for working with events.
- */
-export const Events = {
-  isActionEvent(e: t.Event) {
-    return e.type.startsWith('dev:actions/') || e.type.startsWith('dev:action/');
-  },
-};
