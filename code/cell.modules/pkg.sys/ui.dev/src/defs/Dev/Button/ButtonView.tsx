@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-import { COLORS, constants, css, CssValue, t, DEFAULT, color } from '../common';
-import { Icons } from '../../../components/Icons';
-import { Markdown } from '../../../components/Markdown';
+import {
+  COLORS,
+  constants,
+  css,
+  CssValue,
+  t,
+  DEFAULT,
+  color,
+  Icons,
+  Markdown,
+  Spinner,
+} from '../common';
 
 /**
  * The button view, with no smarts about the event bus.
@@ -14,13 +23,19 @@ export type ButtonViewProps = {
   isActive: boolean;
   icon?: t.IIcon;
   right?: React.ReactNode;
+  isSpinning?: boolean;
   style?: CssValue;
   onClick?: () => void;
 };
 export const ButtonView: React.FC<ButtonViewProps> = (props) => {
-  const { isActive, placeholder, onClick } = props;
+  const { placeholder, onClick, isSpinning } = props;
   const [isOver, setIsOver] = useState<boolean>(false);
   const [isDown, setIsDown] = useState<boolean>(false);
+  const [isActive, setIsActive] = useState<boolean>(props.isActive);
+
+  useEffect(() => {
+    setIsActive(isSpinning ? false : props.isActive);
+  }, [props.isActive, isSpinning]);
 
   const styles = {
     base: css({
@@ -37,9 +52,14 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
         cursor: isActive ? 'pointer' : 'default',
         opacity: isActive ? 1 : 0.4,
       }),
-      icon: css({
-        opacity: isOver ? 1 : 0.4,
+      iconOuter: css({
         width: 20,
+        height: 20,
+        Flex: 'center-center',
+      }),
+      icon: css({ opacity: isOver ? 1 : 0.4 }),
+      spinner: css({
+        Absolute: [3, null, null, 13],
       }),
     },
     body: {
@@ -79,17 +99,16 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
   const clickHandler = (isDown: boolean) => (e: React.MouseEvent) => {
     if (isActive && e.button === 0) {
       setIsDown(isDown);
-      if (isDown && onClick) onClick();
+      if (!isDown && onClick) onClick();
     }
   };
 
   const Icon = props.icon || Icons.Variable;
 
   const label = props.label ? props.label : DEFAULT.UNNAMED;
-  const description = props.description ? (
-    // ? asMarkdown(props.description, styles.body.description)
+  const description = props.description && (
     <Markdown style={styles.body.description}>{props.description}</Markdown>
-  ) : undefined;
+  );
 
   return (
     <div {...css(styles.base, props.style)}>
@@ -100,7 +119,12 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
         onMouseDown={clickHandler(true)}
         onMouseUp={clickHandler(false)}
       >
-        <Icon color={isOver ? COLORS.BLUE : COLORS.DARK} size={20} style={styles.main.icon} />
+        <div {...styles.main.iconOuter}>
+          {!isSpinning && (
+            <Icon color={isOver ? COLORS.BLUE : COLORS.DARK} size={20} style={styles.main.icon} />
+          )}
+          {isSpinning && <Spinner style={styles.main.spinner} size={18} />}
+        </div>
         <div {...styles.body.outer}>
           <div {...styles.body.label}>{label}</div>
           {description}

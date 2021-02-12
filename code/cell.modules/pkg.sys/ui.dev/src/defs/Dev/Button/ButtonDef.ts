@@ -25,17 +25,21 @@ export const ButtonDef: t.ActionDef<T, E> = {
   listen(args) {
     const { actions } = args;
 
+    const isSpinning = (id: string, value: boolean) =>
+      actions.change((draft) => (Model.item<T>(draft, id).item.isSpinning = value));
+
     // Listen for events.
     rx.payload<E>(args.event$, 'dev:action/Button')
       .pipe(
         filter((e) => e.item.id === args.id),
         filter((e) => e.item.handlers.length > 0),
       )
-      .subscribe((e) => {
+      .subscribe(async (e) => {
         Context.getAndStore(actions, { throw: true });
+        const { id } = e.item;
 
-        actions.change((draft) => {
-          const { ctx, item, host, layout, env } = Handler.params.payload<T>(e.item.id, draft);
+        await actions.changeAsync(async (draft) => {
+          const { ctx, item, host, layout, env } = Handler.params.payload<T>(id, draft);
           if (ctx && item) {
             //
 
@@ -59,7 +63,13 @@ export const ButtonDef: t.ActionDef<T, E> = {
             console.log('TODO: piped [Button] handlers');
 
             for (const fn of e.item.handlers) {
-              fn(payload);
+              const res = fn(payload);
+
+              if (is.promise(res)) {
+                isSpinning(id, true);
+                await res;
+                isSpinning(id, false);
+              }
             }
           }
         });

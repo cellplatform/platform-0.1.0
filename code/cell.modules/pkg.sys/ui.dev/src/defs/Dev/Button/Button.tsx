@@ -19,14 +19,16 @@ export const Button: React.FC<ButtonProps> = (props) => {
   const { label, description, isSpinning } = item;
   const isActive = item.handlers.length > 0;
 
-  // console.log('isSpinning', isSpinning);
-
   const clickHandler = () =>
-    bus.fire({ type: 'dev:action/Button', payload: { namespace, item: item } });
+    bus.fire({
+      type: 'dev:action/Button',
+      payload: { namespace, item },
+    });
 
   return (
     <ButtonView
       isActive={isActive}
+      isSpinning={isSpinning}
       label={label}
       description={description}
       onClick={clickHandler}
