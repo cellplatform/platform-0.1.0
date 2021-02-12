@@ -13,10 +13,10 @@ export function create(factory: t.StateObject['create']) {
    * Merge multiple state-objects together to produce a
    * single synchronized state.
    */
-  return <T extends { [key: string]: O }, A extends string = string>(
+  return <T extends { [key: string]: O }>(
     initial: T | Record<keyof T, t.IStateObject<T[keyof T]>>,
     dispose$?: Observable<any>,
-  ): t.StateMerger<T, A> => {
+  ): t.StateMerger<T> => {
     // Wrangle initial arg into a simple {inital} object.
     type S = t.IStateObject<T[keyof T]>;
 
@@ -33,14 +33,14 @@ export function create(factory: t.StateObject['create']) {
     }, {}) as T;
 
     // Setup the store.
-    const store = factory<T, A>(initial);
+    const store = factory<T>(initial);
     if (dispose$) {
       dispose$.subscribe(() => api.dispose());
     }
 
     const change = (key: keyof T, to: any) => store.change((draft) => (draft[key] = to));
 
-    const api: t.StateMerger<T, A> = {
+    const api: t.StateMerger<T> = {
       store,
 
       get state() {

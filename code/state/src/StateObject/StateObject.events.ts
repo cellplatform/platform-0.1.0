@@ -6,10 +6,10 @@ import { t } from '../common';
 type O = Record<string, unknown>;
 type Event = t.StateObjectEvent;
 
-export function create<T extends O, A extends string>(
+export function create<T extends O>(
   event$: Subject<Event>,
   dispose$: Observable<any>,
-): t.IStateObjectEvents<T, A> {
+): t.IStateObjectEvents<T> {
   const $ = event$.pipe(takeUntil(dispose$));
 
   const changing$ = $.pipe(
@@ -20,16 +20,16 @@ export function create<T extends O, A extends string>(
 
   const changed$ = $.pipe(
     filter((e) => e.type === 'StateObject/changed'),
-    map((e) => e.payload as t.IStateObjectChanged<T, A>),
+    map((e) => e.payload as t.IStateObjectChanged<T>),
     share(),
   );
 
   const patched$ = changed$.pipe(
     map(
-      (e): t.IStateObjectPatched<A> => {
-        const { op, cid, action } = e;
+      (e): t.IStateObjectPatched => {
+        const { op, cid } = e;
         const { prev, next } = e.patches;
-        return { op, cid, action, prev, next };
+        return { op, cid, prev, next };
       },
     ),
   );

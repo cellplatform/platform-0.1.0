@@ -27,14 +27,12 @@ type O = Record<string, unknown>;
  * To pass an read-only version of the [StateObject] around an application
  * use the plain [IStateObject] interface which does not expose the `change` method.
  */
-export class StateObject<T extends O, A extends string> implements t.IStateObjectWritable<T, A> {
+export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
   /**
    * Create a new [StateObject] instance.
    */
-  public static create<T extends O, A extends string = string>(
-    initial: T,
-  ): t.IStateObjectWritable<T, A> {
-    return new StateObject<T, A>({ initial });
+  public static create<T extends O>(initial: T): t.IStateObjectWritable<T> {
+    return new StateObject<T>({ initial });
   }
 
   /**
@@ -47,10 +45,8 @@ export class StateObject<T extends O, A extends string> implements t.IStateObjec
    *    logic around an application.
    * 
    */
-  public static readonly<T extends O, A extends string = string>(
-    obj: t.IStateObjectWritable<T, A>,
-  ): t.IStateObject<T, A> {
-    return obj as t.IStateObject<T, A>;
+  public static readonly<T extends O>(obj: t.IStateObjectWritable<T>): t.IStateObject<T> {
+    return obj as t.IStateObject<T>;
   }
 
   /**
@@ -103,7 +99,7 @@ export class StateObject<T extends O, A extends string> implements t.IStateObjec
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _event$ = new Subject<t.StateObjectEvent>();
-  public readonly event = events.create<T, A>(this._event$, this._dispose$);
+  public readonly event = events.create<T>(this._event$, this._dispose$);
 
   public readonly original: T;
 
@@ -119,15 +115,14 @@ export class StateObject<T extends O, A extends string> implements t.IStateObjec
   }
 
   public get readonly() {
-    return this as t.IStateObject<T, A>;
+    return this as t.IStateObject<T>;
   }
 
   /**
    * [Methods]
    */
-  public change: t.StateObjectChange<T, A> = (fn, options = {}) => {
+  public change: t.StateObjectChange<T> = (fn) => {
     const cid = id.cuid(); // "change-id"
-    const type = (options.action || '').trim() as A;
 
     const from = this.state;
     const { to, op, patches } = next(from, fn);
@@ -136,7 +131,7 @@ export class StateObject<T extends O, A extends string> implements t.IStateObjec
     }
 
     // Fire BEFORE event.
-    const changing: t.IStateObjectChanging<T, A> = {
+    const changing: t.IStateObjectChanging<T> = {
       op,
       cid,
       from,
@@ -144,7 +139,6 @@ export class StateObject<T extends O, A extends string> implements t.IStateObjec
       patches,
       cancelled: false,
       cancel: () => (changing.cancelled = true),
-      action: type,
     };
 
     this.fire({ type: 'StateObject/changing', payload: changing });
@@ -155,9 +149,9 @@ export class StateObject<T extends O, A extends string> implements t.IStateObjec
       this.fire({ type: 'StateObject/cancelled', payload: cancelled });
     }
 
-    const changed: t.IStateObjectChanged<T, A> | undefined = cancelled
+    const changed: t.IStateObjectChanged<T> | undefined = cancelled
       ? undefined
-      : { op, cid, from, to, patches, action: type };
+      : { op, cid, from, to, patches };
 
     if (changed) {
       this._state = to;

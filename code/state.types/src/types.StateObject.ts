@@ -7,16 +7,16 @@ type CombineObject = { [key: string]: O };
  * Static entry point and helpers.
  */
 export type StateObject = {
-  create<T extends O, A extends string = string>(initial: T): IStateObjectWritable<T, A>;
+  create<T extends O>(initial: T): IStateObjectWritable<T>;
 
-  readonly<T extends O, A extends string = string>(
-    obj: IStateObjectWritable<T, A> | IStateObjectReadable<T, A>,
-  ): IStateObjectReadable<T, A>;
+  readonly<T extends O>(
+    obj: IStateObjectWritable<T> | IStateObjectReadable<T>,
+  ): IStateObjectReadable<T>;
 
-  combine<T extends CombineObject, A extends string = string>(
+  combine<T extends CombineObject>(
     initial: T | Record<keyof T, t.IStateObject<T[keyof T]>>,
     dispose$?: t.Observable<any>,
-  ): StateMerger<T, A>;
+  ): StateMerger<T>;
 
   toObject<T>(draft?: any): T | undefined;
   isStateObject(input: any): boolean;
@@ -25,33 +25,28 @@ export type StateObject = {
 /**
  * Read-only.
  */
-export type IStateObject<T extends O, A extends string = string> = IStateObjectReadable<T, A>;
-export type IStateObjectReadable<T extends O, A extends string = string> = {
+export type IStateObject<T extends O> = IStateObjectReadable<T>;
+export type IStateObjectReadable<T extends O> = {
   readonly original: T;
   readonly state: T;
-  readonly event: t.IStateObjectEvents<T, A>;
+  readonly event: t.IStateObjectEvents<T>;
   readonly isDisposed: boolean;
 };
 
 /**
  * Writeable.
  */
-export type IStateObjectWritable<T extends O, A extends string = string> = IStateObjectReadable<
-  T,
-  A
-> &
+export type IStateObjectWritable<T extends O> = IStateObjectReadable<T> &
   t.IDisposable & {
-    readonly readonly: IStateObject<T, A>;
-    change: StateObjectChange<T, A>;
+    readonly readonly: IStateObject<T>;
+    change: StateObjectChange<T>;
   };
 
-export type StateObjectChange<T extends O, A extends string> = (
+export type StateObjectChange<T extends O> = (
   input: StateObjectChanger<T> | T,
-  options?: IStateObjectChangeOptions<A>,
 ) => IStateObjectChangeResponse<T>;
 
 export type StateObjectChangeOperation = 'update' | 'replace';
-export type IStateObjectChangeOptions<A extends string> = { action?: A };
 
 export type IStateObjectChangeResponse<T extends O> = {
   op: StateObjectChangeOperation;
@@ -65,13 +60,13 @@ export type StateObjectChanger<T extends O> = (draft: T) => void;
 /**
  * Merge
  */
-export type StateMerger<T extends CombineObject, A extends string = string> = {
-  readonly store: t.IStateObjectReadable<T, A>;
+export type StateMerger<T extends CombineObject> = {
+  readonly store: t.IStateObjectReadable<T>;
   readonly state: T;
   readonly changed$: t.Observable<t.IStateObjectChanged>;
   add<K extends keyof T>(
     key: K,
     subject: t.IStateObject<T[K]> | t.Observable<t.IStateObjectChanged>,
-  ): StateMerger<T, A>;
+  ): StateMerger<T>;
   dispose(): void;
 };

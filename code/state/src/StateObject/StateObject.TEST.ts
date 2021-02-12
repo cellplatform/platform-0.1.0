@@ -9,7 +9,6 @@ import { StateObject as StateObjectClass } from './StateObject';
 
 type IFoo = { message?: string; count: number; items?: any[] };
 type IBar = { isEnabled?: boolean };
-type MyAction = 'INCREMENT' | 'DECREMENT';
 
 describe('StateObject', () => {
   describe('lifecycle', () => {
@@ -316,7 +315,7 @@ describe('StateObject', () => {
   describe('events', () => {
     it('event: changing', () => {
       const initial = { count: 1 };
-      const obj = StateObject.create<IFoo, MyAction>(initial);
+      const obj = StateObject.create<IFoo>(initial);
 
       const events: t.StateObjectEvent[] = [];
       const changing: t.IStateObjectChanging[] = [];
@@ -336,7 +335,6 @@ describe('StateObject', () => {
       const event = changing[0];
       expect(event.op).to.eql('update');
       expect(event.cancelled).to.eql(false);
-      expect(event.action).to.eql('');
       expect(event.from).to.eql(initial);
       expect(event.to).to.eql({ count: 2 });
       expect(event.patches).to.eql(res.patches);
@@ -392,43 +390,13 @@ describe('StateObject', () => {
       expect(event.from).to.eql(initial);
       expect(event.to).to.eql({ count: 2 });
       expect(event.to).to.equal(obj.state); // NB: Current state instance.
-      expect(event.action).to.equal('');
       expect(event.patches).to.eql(res.patches);
 
       expect(changing[0].cid).to.eql(changed[0].cid);
     });
 
-    it('event: changing/changed (with "action")', () => {
-      const obj = StateObject.create<IFoo, MyAction>({ count: 1 });
-
-      const changing: t.IStateObjectChanging[] = [];
-      const changed: t.IStateObjectChanged[] = [];
-      const actions: t.IStateObjectChanged[] = [];
-      obj.event.changing$.subscribe((e) => changing.push(e));
-      obj.event.changed$.subscribe((e) => changed.push(e));
-      obj.event.changed$
-        .pipe(filter((e) => e.action === 'INCREMENT'))
-        .subscribe((e) => actions.push(e));
-
-      obj.change((draft) => (draft.message = 'hello'));
-      expect(changing.length).to.eql(1);
-      expect(changed.length).to.eql(1);
-      expect(actions.length).to.eql(0);
-
-      obj.change((draft) => draft.count++, { action: 'INCREMENT' });
-      expect(changing.length).to.eql(2);
-      expect(changed.length).to.eql(2);
-      expect(actions.length).to.eql(1);
-
-      expect(changing[0].action).to.eql('');
-      expect(changing[1].action).to.eql('INCREMENT');
-
-      expect(changed[0].action).to.eql('');
-      expect(changed[1].action).to.eql('INCREMENT');
-    });
-
     it('event: changing/changed (via "replace" operation)', () => {
-      const obj = StateObject.create<IFoo, MyAction>({ count: 1 });
+      const obj = StateObject.create<IFoo>({ count: 1 });
 
       const changing: t.IStateObjectChanging[] = [];
       const changed: t.IStateObjectChanged[] = [];
@@ -450,18 +418,17 @@ describe('StateObject', () => {
     });
 
     it('event: changedPatches', () => {
-      const obj = StateObject.create<IFoo, MyAction>({ count: 1 });
+      const obj = StateObject.create<IFoo>({ count: 1 });
 
       const patches: t.IStateObjectPatched[] = [];
       obj.event.patched$.subscribe((e) => patches.push(e));
 
-      obj.change({ count: 888 }, { action: 'INCREMENT' });
+      obj.change({ count: 888 });
 
       expect(patches.length).to.eql(1);
 
       const e = patches[0];
       expect(e.op).to.eql('replace');
-      expect(e.action).to.eql('INCREMENT');
 
       expect(e.prev[0]).to.eql({ op: 'replace', path: '', value: { count: 1 } });
       expect(e.next[0]).to.eql({ op: 'replace', path: '', value: { count: 888 } });
