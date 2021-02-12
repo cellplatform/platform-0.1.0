@@ -63,4 +63,25 @@ describe('Is', () => {
     const stream = fs.createReadStream(fs.resolve('./package.json'));
     test(stream, true);
   });
+
+  it('is.promise', () => {
+    const test = (input: any, expected: boolean) => {
+      expect(is.promise(input)).to.eql(expected);
+    };
+
+    const wait = async () => null;
+
+    test(undefined, false);
+    test(123, false);
+    test('hello', false);
+    test(['hello', 123], false);
+    test(true, false);
+    test(null, false);
+    test({}, false);
+
+    test({ then: () => null }, true);
+    test(wait(), true);
+
+    //
+  });
 });

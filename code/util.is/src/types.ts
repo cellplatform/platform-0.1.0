@@ -13,4 +13,5 @@ export type IsMethods = {
   stream(input?: any): boolean;
   observable(input?: any): boolean;
   subject(input?: any): boolean;
+  promise(input?: any): boolean;
 };
