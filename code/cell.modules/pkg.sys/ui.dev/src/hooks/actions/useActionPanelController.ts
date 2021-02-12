@@ -3,23 +3,22 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { Context, Handler } from '../../api/Actions';
-import { Events, R, rx, t, time } from '../../common';
+import { R, rx, t, time } from '../../common';
 
 /**
  * Controller for handling actions.
  */
 export function useActionPanelController(args: { bus: t.EventBus; actions: t.Actions }) {
-  const { actions, bus } = args;
+  const { actions } = args;
   const namespace = actions.toObject().namespace;
   const defs = actions.toDefs();
 
   useEffect(() => {
     const model = actions.toModel();
     const dispose$ = new Subject<void>();
-    const { fire } = bus.type<t.ActionEvent>();
-    const event$ = bus.type<t.ActionEvent>().event$.pipe(
+    const bus = args.bus.type<t.ActionEvent>();
+    const event$ = bus.event$.pipe(
       takeUntil(dispose$),
-      filter((e) => Events.isActionEvent(e)),
       filter((e) => e.payload.namespace === namespace),
     );
 
@@ -62,7 +61,7 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
             def.listen({
               id,
               actions: actions.toModel(),
-              fire: bus.fire,
+              fire: args.bus.fire,
               event$,
             });
           }
@@ -93,7 +92,7 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
         indexes.forEach((index) => {
           const model = Model.find(index).item;
           if (model) {
-            fire({
+            bus.fire({
               type: 'action/model/changed',
               payload: { namespace, index, item: model },
             });
@@ -107,8 +106,8 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
      *    Delaying for a tick allows all interested  components to setup
      *    their hooks before the initial state configuration is established.
      */
-    time.delay(0, () => fire({ type: 'actions/init', payload: { namespace } }));
+    time.delay(0, () => bus.fire({ type: 'actions/init', payload: { namespace } }));
 
     return () => dispose$.next();
-  }, [bus, actions, namespace, defs]);
+  }, [args.bus, actions, namespace, defs]);
 }
