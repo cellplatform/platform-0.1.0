@@ -19,7 +19,8 @@ export const Button: React.FC<ButtonProps> = (props) => {
   const { label, description } = model;
   const isActive = model.handlers.length > 0;
 
-  const clickHandler = () => bus.fire({ type: 'dev:action/Button', payload: { namespace, model } });
+  const clickHandler = () =>
+    bus.fire({ type: 'dev:action/Button', payload: { namespace, item: model } });
 
   return (
     <ButtonView

@@ -11,6 +11,12 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
 
   const config: t.ActionSelectConfigArgs<any> = {
     ctx,
+    initial(value) {
+      let initial = Array.isArray(value) ? value : [value];
+      initial = item.multi ? initial : initial.slice(0, 1); // NB: if not "multi" only take the first item.
+      item.current = initial.map((value) => SelectUtil.toOption(value));
+      return config;
+    },
     label(value) {
       item.label = format.string(value, { trim: true }) || DEFAULT.UNNAMED;
       return config;
@@ -21,10 +27,6 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
     },
     items(list) {
       if (Array.isArray(list)) item.items = list;
-      return config;
-    },
-    initial(value) {
-      item.initial = value;
       return config;
     },
     multi(value) {

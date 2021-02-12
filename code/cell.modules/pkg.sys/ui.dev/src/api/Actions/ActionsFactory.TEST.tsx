@@ -10,7 +10,6 @@ type Ctx = { count: number };
 function create() {
   type M = t.DevMethods<Ctx> & t.DisplayMethods<Ctx>;
   const defs = [...DevDefs, ...DisplayDefs];
-
   const model = ActionsFactory.model<Ctx>();
   const actions = ActionsFactory.compose<Ctx, M>(defs, model);
   const bus = rx.bus();
@@ -27,7 +26,6 @@ describe('ActionsFactory', () => {
 
   describe('ActionsFactory.compose()', () => {
     type M = t.ActionsModel<Ctx>;
-    type A = t.ActionsChangeType;
 
     it('no defs', () => {
       const actions = ActionsFactory.compose([]);
@@ -51,7 +49,7 @@ describe('ActionsFactory', () => {
     });
 
     it('from {model} StateObject', () => {
-      const model = StateObject.create<M, A>({ ...DEFAULT.ACTIONS });
+      const model = StateObject.create<M>({ ...DEFAULT.ACTIONS });
       const actions = ActionsFactory.compose([], model);
       const obj = actions.toObject();
       expect(obj).to.eql({ ...DEFAULT.ACTIONS });
@@ -593,7 +591,6 @@ describe('ActionsFactory', () => {
         expect(select1.label).to.eql('foo');
         expect(select1.description).to.eql(undefined);
         expect(select1.items).to.eql([]);
-        expect(select1.initial).to.eql(undefined);
         expect(select1.handlers).to.eql([fn1]);
         expect(select1.multi).to.eql(false);
         expect(select1.clearable).to.eql(false);
@@ -602,7 +599,6 @@ describe('ActionsFactory', () => {
         expect(select2.label).to.eql('bar');
         expect(select2.description).to.eql('a thing');
         expect(select2.items).to.eql(['one', { label: 'two', value: 2 }]);
-        expect(select2.initial).to.eql(2);
         expect(select2.handlers).to.eql([fn2]);
         expect(select2.multi).to.eql(true);
         expect(select2.clearable).to.eql(true);

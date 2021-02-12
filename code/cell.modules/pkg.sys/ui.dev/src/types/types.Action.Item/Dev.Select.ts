@@ -36,7 +36,6 @@ export type ActionSelectProps = {
   multi: boolean;
   clearable: boolean;
   items: t.ActionSelectItemInput[];
-  initial?: t.ActionSelectItemInput | t.ActionSelectItemInput[];
   current: t.ActionSelectItem[];
 };
 
@@ -58,7 +57,7 @@ export type ActionSelectHandlerArgs<C> = t.ActionHandlerArgs<C> & {
     ActionHandlerSettingsSelectArgs
   >;
   readonly select: t.ActionSelectProps;
-  readonly changing?: t.ActionSelectChanging; // Exists when an interaction has causes the state to change.
+  readonly changing?: t.ActionSelectChanging; // Exists when an interaction has caused the state to change.
 };
 export type ActionHandlerSettingsSelectArgs = t.ActionHandlerSettingsArgs & {
   select?: Partial<t.ActionSelectProps>;

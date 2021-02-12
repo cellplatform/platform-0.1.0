@@ -1,8 +1,6 @@
 import { t } from '../common';
 
-type A = t.ActionsChangeType;
-
-export type ActionsModelState<Ctx> = t.BuilderModel<t.ActionsModel<Ctx>, A>;
+export type ActionsModelState<Ctx> = t.BuilderModel<t.ActionsModel<Ctx>>;
 export type ActionsModel<Ctx> = {
   namespace: string;
   items: t.ActionItem[];

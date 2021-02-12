@@ -1,11 +1,6 @@
 import { t } from '../common';
 
 /**
- * State change actions.
- */
-export type ActionsChangeType = 'via:init' | 'via:button' | 'via:boolean' | 'via:select';
-
-/**
  * Events
  */
 export type ActionEvent =
@@ -44,7 +39,7 @@ export type IActionModelChangedEvent = {
 export type IActionModelChangedPayload = {
   namespace: string;
   index: number;
-  model: t.ActionItem;
+  item: t.ActionItem;
 };
 
 /**
@@ -54,7 +49,10 @@ export type IActionButtonEvent = {
   type: 'dev:action/Button';
   payload: IActionButtonPayload;
 };
-export type IActionButtonPayload = { namespace: string; model: t.ActionButton };
+export type IActionButtonPayload = {
+  namespace: string;
+  item: t.ActionButton;
+};
 
 /**
  * Fires for the Boolean (switch) action.
@@ -65,7 +63,7 @@ export type IActionBooleanEvent = {
 };
 export type IActionBooleanPayload = {
   namespace: string;
-  model: t.ActionBoolean;
+  item: t.ActionBoolean;
   changing?: t.ActionBooleanChanging;
 };
 
@@ -78,6 +76,6 @@ export type IActionSelectEvent = {
 };
 export type IActionSelectPayload = {
   namespace: string;
-  model: t.ActionSelect;
+  item: t.ActionSelect;
   changing?: t.ActionSelectChanging;
 };

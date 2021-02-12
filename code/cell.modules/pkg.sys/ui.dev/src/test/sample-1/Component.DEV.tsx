@@ -106,8 +106,7 @@ export const actions = DevActions<Ctx>()
         const isRunning = e.changing.next;
         e.ctx.isRunning = isRunning;
         e.boolean.label = isRunning ? 'running' : 'stopped';
-        const description = `the thing is ${e.boolean.label} (${count})`;
-        e.settings({ boolean: { description } });
+        e.boolean.description = `the thing is ${e.boolean.label} (${count})`;
       }
 
       e.boolean.current = e.ctx.isRunning;
@@ -141,8 +140,16 @@ export const actions = DevActions<Ctx>()
             .map((m) => m.label)
             .join(', ')
             .trim();
-          e.select.label = current ? current : `select (multi)`;
-          e.select.placeholder = !Boolean(current);
+
+          // e.select.label = current ? current : `select (multi)`;
+          // e.select.placeholder = !Boolean(current);
+
+          e.settings({
+            select: {
+              label: current ? current : `select (multi)`,
+              placeholder: !Boolean(current),
+            },
+          });
         });
     });
 

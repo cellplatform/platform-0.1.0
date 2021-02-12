@@ -22,8 +22,7 @@ export function renderSubject(args: { model: t.ActionsModelState<any> }) {
     model.change((draft) => {
       const ctx = draft.ctx.current;
       const env = draft.env.viaSubject;
-      const res = Handler.action({ ctx, env });
-      const { host, layout } = res;
+      const { host, layout } = Handler.params.action({ ctx, env });
 
       type P = t.ActionHandlerSubjectArgs<any>;
 
@@ -31,7 +30,7 @@ export function renderSubject(args: { model: t.ActionsModelState<any> }) {
         ctx,
         host,
         layout,
-        settings: (args) => Handler.settings({ env, payload })(args),
+        settings: (args) => Handler.setting___OLD({ env, payload })(args),
         render(el: JSX.Element, layout?: t.HostedLayout) {
           if (el) subject.items.push({ el, layout });
           return payload;

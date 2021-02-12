@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ActionsHost, ActionsSelect, ErrorBoundary, Store, useActionsSelectState } from '..';
-import { color, css, rx } from '../common';
+import { color, css, rx, HttpClient } from '../common';
 import * as sample1 from './sample-1/Component.DEV';
 import * as sample2 from './sample-2/Component.DEV';
 import * as sample3 from './sample-3/Component.DEV';
@@ -12,16 +12,20 @@ bus.event$.subscribe((e) => {
   // console.log('e', e);
 });
 
+const client = HttpClient.create(5000);
+
 const list = [sample1.actions, sample2.actions, sample3.actions];
 
 export const Dev: React.FC = () => {
   const actions = useActionsSelectState({
     bus,
     actions: list,
-    store: Store.ActionsSelect.localStorage({
-      actions: list,
-      key: 'ui.dev:actions/selected',
-    }),
+    // store: Store.ActionsSelect.cell({
+    //   client,
+    //   uri: 'cell:ckkynysav001hrret8tzzg2pp:A1',
+    //   actions: list,
+    // }),
+    store: Store.ActionsSelect.localStorage({ actions: list }),
   });
 
   const styles = {

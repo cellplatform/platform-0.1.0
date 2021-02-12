@@ -1,9 +1,7 @@
-import { DEFAULT, defaultValue, t, R } from '../../common';
+import { DEFAULT, defaultValue, t } from '../../common';
 import { Context } from './Context';
 import { renderList } from './render.List';
 import { renderSubject } from './render.Subject';
-
-type O = Record<string, unknown>;
 
 /**
  * Action handlers.
@@ -13,7 +11,7 @@ export const Handlers = {
    * Composes a set of actions together with its
    */
   compose(defs: t.ActionDef[]) {
-    // Ensure there are not configuration name conflicts.
+    // Ensure there are no configuration method-name conflicts.
     defs.forEach((def) => {
       const method = def.config.method;
       const matches = defs.filter((def) => def.config.method === method);
@@ -23,7 +21,9 @@ export const Handlers = {
       }
     });
 
-    const handlers: t.BuilderHandlers<t.ActionsModel<any>, t.Actions<any>, t.ActionsChangeType> = {
+    type M = t.ActionsModel<any>;
+    type F = t.Actions<any>;
+    const handlers: t.BuilderHandlers<M, F> = {
       /**
        * Retrieves the action/method definitions.
        */
@@ -126,59 +126,14 @@ export const Handlers = {
       },
 
       /**
-       * Button.
-       */
-      // button(args) {
-      //   const ctx = args.builder.self.toContext();
-      //   const { item } = Button.config(ctx, args.params);
-      //   args.model.change((draft) => draft.items.push(item));
-      // },
-
-      /**
-       * Boolean (Switch).
-       */
-      // boolean(args) {
-      //   const ctx = args.builder.self.toContext();
-      //   const { item } = Bool.config(ctx, args.params);
-      //   args.model.change((draft) => draft.items.push(item));
-      // },
-
-      /**
-       * Boolean (Switch).
-       */
-      // select(args) {
-      //   const ctx = args.builder.self.toContext();
-      //   const { item } = Select.config(ctx, args.params);
-      //   args.model.change((draft) => draft.items.push(item));
-      // },
-
-      /**
-       * Horizontal rule.
-       */
-      // hr(args) {
-      //   const ctx = args.builder.self.toContext();
-      //   const { item } = Hr.config(ctx, args.params);
-      //   args.model.change((draft) => draft.items.push(item));
-      // },
-
-      /**
-       * Title block.
-       */
-      // title(args) {
-      //   const ctx = args.builder.self.toContext();
-      //   const { item } = Title.config(ctx, args.params);
-      //   args.model.change((draft) => draft.items.push(item));
-      // },
-
-      /**
        * A handler that exposes the API for configuring action items.
        */
       items(args) {
         const fn = args.params[0];
         if (typeof fn === 'function') {
-          const payload = {} as any;
           const actions = args.model;
           const ctx = args.builder.self.toContext();
+          const payload = {} as any;
 
           defs.forEach((def) => {
             const { method, handler } = def.config;

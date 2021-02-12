@@ -21,11 +21,11 @@ export function useItemMonitor<M extends t.ActionItem>(args: { bus: t.EventBus; 
 
     rx.payload<t.IActionModelChangedEvent>($, 'dev:action/model/changed')
       .pipe(
-        filter((e) => e.model.id === args.model.id),
+        filter((e) => e.item.id === args.model.id),
         distinctUntilChanged((prev, next) => R.equals(prev, next)),
       )
       .subscribe((e) => {
-        setModel(e.model as M);
+        setModel(e.item as M);
       });
 
     return () => dispose$.next();

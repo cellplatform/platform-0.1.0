@@ -24,7 +24,7 @@ export const Bool: React.FC<BoolProps> = (props) => {
       type: 'dev:action/Boolean',
       payload: {
         namespace,
-        model,
+        item: model,
         changing: { next: !value },
       },
     });

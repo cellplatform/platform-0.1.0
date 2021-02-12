@@ -2,7 +2,7 @@ import { t } from '../common';
 import { config } from './HrDef.config';
 import { Hr as Component } from './Hr';
 
-export const HrDef: t.ActionDef = {
+export const HrDef: t.ActionDef<t.ActionHr> = {
   kind: 'display/hr',
   Component,
 

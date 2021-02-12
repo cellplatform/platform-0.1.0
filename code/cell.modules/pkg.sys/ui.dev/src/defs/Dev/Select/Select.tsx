@@ -52,7 +52,7 @@ export const Select: React.FC<SelectProps> = (props) => {
     const next = (Array.isArray(value) ? value : [value]) as t.ActionSelectItem[];
     bus.fire({
       type: 'dev:action/Select',
-      payload: { namespace, model, changing: { action, next } },
+      payload: { namespace, item: model, changing: { action, next } },
     });
   };
 

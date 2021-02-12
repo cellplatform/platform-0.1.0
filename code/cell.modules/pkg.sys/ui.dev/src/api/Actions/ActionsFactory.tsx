@@ -2,7 +2,6 @@ import { Builder, DEFAULT, StateObject, t } from '../../common';
 import { Handlers } from './Handlers';
 
 type O = Record<string, unknown>;
-type A = t.ActionsChangeType;
 
 /**
  * Action builder factory.
@@ -12,7 +11,7 @@ export const ActionsFactory: t.ActionsFactory = {
    * Create a new data-model.
    */
   model<Ctx extends O>(): t.ActionsModelState<Ctx> {
-    return StateObject.create<any, A>({ ...DEFAULT.ACTIONS });
+    return StateObject.create<any>({ ...DEFAULT.ACTIONS });
   },
 
   /**

@@ -3,25 +3,21 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { Context, Handler } from '../../api/Actions';
-// import { Select } from '../../api/Actions.Item';
-import { R, rx, t, time, Events, SelectUtil } from '../../common';
-
-// import { part } from '../../def';
-
-type O = Record<string, unknown>;
+import { Events, R, rx, t, time } from '../../common';
 
 /**
  * Controller for handling actions.
  */
-export function useActionPanelController(args: { bus: t.EventBus; actions: t.Actions<O> }) {
-  const { actions } = args;
+export function useActionPanelController(args: { bus: t.EventBus; actions: t.Actions }) {
+  const { actions, bus } = args;
   const namespace = actions.toObject().namespace;
-  const bus = args.bus.type<t.ActionEvent>();
+  const defs = actions.toDefs();
 
   useEffect(() => {
     const model = actions.toModel();
     const dispose$ = new Subject<void>();
-    const $ = bus.event$.pipe(
+    const { fire } = bus.type<t.ActionEvent>();
+    const event$ = bus.type<t.ActionEvent>().event$.pipe(
       takeUntil(dispose$),
       filter((e) => Events.isActionEvent(e)),
       filter((e) => e.payload.namespace === namespace),
@@ -31,14 +27,14 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
      * Helpers that operate on the model within the context of this closure.
      */
     const Model = {
-      change(action: t.ActionsChangeType, fn: (draft: t.ActionsModel<any>) => void) {
+      change(fn: (draft: t.ActionsModel<any>) => void) {
         Context.getAndStore(model, { throw: true }); // NB: This will also assign the [ctx.current] value.
-        return model.change(fn, { action });
+        return model.change(fn);
       },
-      payload<T extends t.ActionItemInput>(itemId: string, draft: t.ActionsModel<any>) {
+      payload<T extends t.ActionItem>(itemId: string, draft: t.ActionsModel<any>) {
         const ctx = draft.ctx.current;
         const env = draft.env.viaAction;
-        const { host, layout } = Handler.action({ ctx, env });
+        const { host, layout } = Handler.params.action({ ctx, env });
         const item = draft.items.find((item) => item.id === itemId) as T;
         return { ctx, host, item, layout, env };
       },
@@ -55,37 +51,20 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
      *    Setup the initial model state by invoking
      *    each value producing handler.
      */
-    rx.payload<t.IActionsInitEvent>($, 'dev:actions/init')
+    rx.payload<t.IActionsInitEvent>(event$, 'dev:actions/init')
       .pipe()
       .subscribe((e) => {
-        // Assign initial value as current.
-        model.state.items.forEach((model) => {
-          if (model.kind === 'select') {
-            const index = Model.find(model.id).index;
-            const res = Model.change('via:init', (d) => SelectUtil.assignInitial(d.items[index]));
-            if (res.changed) model = Model.find(model.id).item;
-          }
-        });
-
-        // Fire event that loads the initial value.
+        // Run initializer on each item.
         model.state.items.forEach((item) => {
-          if (item.kind === 'boolean') {
-            const model = item as t.ActionBoolean;
-            if (model.handlers.length > 0) {
-              bus.fire({
-                type: 'dev:action/Boolean',
-                payload: { namespace, model },
-              });
-            }
-          }
-          if (item.kind === 'select') {
-            const model = item as t.ActionSelect;
-            if (model.handlers.length > 0) {
-              bus.fire({
-                type: 'dev:action/Select',
-                payload: { namespace, model },
-              });
-            }
+          const { id, kind } = item;
+          const def = defs.find((def) => def.kind === kind);
+          if (typeof def?.listen === 'function') {
+            def.listen({
+              id,
+              actions: actions.toModel(),
+              fire: bus.fire,
+              event$,
+            });
           }
         });
 
@@ -114,136 +93,12 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
         indexes.forEach((index) => {
           const model = Model.find(index).item;
           if (model) {
-            bus.fire({
+            fire({
               type: 'dev:action/model/changed',
-              payload: { namespace, index, model },
+              payload: { namespace, index, item: model },
             });
           }
         });
-      });
-
-    /**
-     * Button
-     */
-    rx.payload<t.IActionButtonEvent>($, 'dev:action/Button')
-      .pipe()
-      .subscribe((e) => {
-        const { id, handlers } = e.model;
-        if (handlers.length > 0) {
-          type T = t.ActionButton;
-          type P = t.ActionButtonHandlerArgs<any>;
-          type S = t.ActionHandlerSettings<P>;
-          type A = t.ActionHandlerSettingsButtonArgs;
-
-          Model.change('via:button', (draft) => {
-            const { ctx, item, host, layout, env } = Model.payload<T>(id, draft);
-            if (ctx && item) {
-              const settings: S = (args) =>
-                Handler.settings<P, A>({ env, payload }, (settings) => {
-                  const obj = settings.button;
-                  if (obj) Object.keys(obj).forEach((key) => (item[key] = obj[key]));
-                })(args);
-              const button = item as t.ActionButtonProps;
-              const payload: P = { ctx, host, layout, settings, button };
-
-              /**
-               * TODO 🐷
-               * - put within [runtime.web] piped execution, like [runtime.node]
-               * - handle async
-               */
-
-              console.log('TODO: piped [Button] handlers');
-
-              for (const fn of handlers) {
-                fn(payload);
-              }
-            }
-          });
-        }
-      });
-
-    /**
-     * Boolean (Switch)
-     */
-    rx.payload<t.IActionBooleanEvent>($, 'dev:action/Boolean')
-      .pipe()
-      .subscribe((e) => {
-        const { id, handlers } = e.model;
-        if (handlers.length > 0) {
-          type T = t.ActionBoolean;
-          type P = t.ActionBooleanHandlerArgs<any>;
-          type S = t.ActionHandlerSettings<P>;
-          type A = t.ActionHandlerSettingsBooleanArgs;
-
-          Model.change('via:boolean', (draft) => {
-            const { ctx, item, host, layout, env } = Model.payload<T>(id, draft);
-            if (ctx && item) {
-              const settings: S = (args) =>
-                Handler.settings<P, A>({ env, payload }, (settings) => {
-                  const obj = settings.boolean;
-                  if (obj) Object.keys(obj).forEach((key) => (item[key] = obj[key]));
-                })(args);
-              const changing = e.changing;
-              const boolean = item as t.ActionBooleanProps;
-              const payload: P = { ctx, changing, host, layout, settings, boolean };
-              if (changing) item.current = changing.next;
-
-              /**
-               * TODO 🐷
-               * - put within [runtime.web] piped execution, like [runtime.node]
-               * - handle async
-               */
-
-              console.log('TODO: piped [Boolean] handlers');
-
-              for (const fn of handlers) {
-                fn(payload);
-              }
-            }
-          });
-        }
-      });
-
-    /**
-     * Select (dropdown)
-     */
-    rx.payload<t.IActionSelectEvent>($, 'dev:action/Select')
-      .pipe()
-      .subscribe((e) => {
-        const { id, handlers } = e.model;
-        if (handlers.length > 0) {
-          type T = t.ActionSelect;
-          type P = t.ActionSelectHandlerArgs<any>;
-          type S = t.ActionHandlerSettings<P>;
-          type A = t.ActionHandlerSettingsSelectArgs;
-
-          Model.change('via:select', (draft) => {
-            const { ctx, item, host, layout, env } = Model.payload<T>(id, draft);
-            if (ctx && item) {
-              const settings: S = (args) =>
-                Handler.settings<P, A>({ env, payload }, (settings) => {
-                  const obj = settings.select;
-                  if (obj) Object.keys(obj).forEach((key) => (item[key] = obj[key]));
-                })(args);
-              const changing = e.changing;
-              const select = item as t.ActionSelectProps;
-              const payload: P = { ctx, changing, host, layout, settings, select };
-              if (changing) item.current = changing.next; // Update the item to the latest selection.
-
-              /**
-               * TODO 🐷
-               * - put within [runtime.web] piped execution, like [runtime.node]
-               * - handle async
-               */
-
-              console.log('TODO: piped [Select] handlers');
-
-              for (const fn of handlers) {
-                fn(payload);
-              }
-            }
-          });
-        }
       });
 
     /**
@@ -252,8 +107,8 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
      *    Delaying for a tick allows all interested  components to setup
      *    their hooks before the initial state configuration is established.
      */
-    time.delay(0, () => bus.fire({ type: 'dev:actions/init', payload: { namespace } }));
+    time.delay(0, () => fire({ type: 'dev:actions/init', payload: { namespace } }));
 
     return () => dispose$.next();
-  }, [bus, actions, namespace]);
+  }, [bus, actions, namespace, defs]);
 }
