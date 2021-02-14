@@ -42,14 +42,14 @@ export const ButtonDef: t.ActionDef<T, E> = {
         await actions.changeAsync(async (draft) => {
           const { ctx, item, host, layout, env } = Handler.params.payload<T>(id, draft);
           if (ctx && item) {
-            //
-
             const settings: S = (args) =>
               Handler.settings.handler<P, A>({
                 env,
                 payload,
-                syncSource: (args) => args.button,
-                syncTarget: item,
+                sync: {
+                  source: (args) => args.button,
+                  target: item,
+                },
               })(args);
 
             const button = item as t.ActionButtonProps;

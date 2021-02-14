@@ -1,4 +1,4 @@
-import { t } from '../../common';
+import { t, toObject } from '../../common';
 import { Context } from './Context';
 import { Handler } from './Handler';
 
@@ -27,10 +27,10 @@ export function renderSubject(args: { model: t.ActionsModelState<any> }) {
       type P = t.ActionHandlerSubjectArgs<any>;
 
       const payload: P = {
-        ctx,
+        ctx: toObject(ctx),
         host,
         layout,
-        settings: (args) => Handler.setting___OLD({ env, payload })(args),
+        settings: (args) => Handler.settings.handler({ env, payload })(args),
         render(el: JSX.Element, layout?: t.HostedLayout) {
           if (el) subject.items.push({ el, layout });
           return payload;
