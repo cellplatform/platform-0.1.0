@@ -20,6 +20,7 @@ export type StateObject = {
 
   toObject<T>(draft?: any): T | undefined;
   isStateObject(input: any): boolean;
+  isProxy(input: any): boolean;
 };
 
 /**

@@ -8,7 +8,7 @@ import { StateObject as StateObjectClass } from './StateObject';
 type IFoo = { message?: string; count: number; items?: any[] };
 type IBar = { isEnabled?: boolean };
 
-describe.only('StateObject', () => {
+describe('StateObject', () => {
   describe('lifecycle', () => {
     it('create: store initial state', () => {
       const initial = { count: 1 };
@@ -144,6 +144,25 @@ describe.only('StateObject', () => {
 
       const obj = StateObject.create<IFoo>({ count: 0 });
       test(obj, true);
+    });
+
+    it('isProxy', async () => {
+      const test = (input: any, expected: boolean) => {
+        const res = StateObject.isProxy(input);
+        expect(res).to.eql(expected);
+      };
+      const obj = StateObject.create<IFoo>({ count: 0 });
+
+      test(undefined, false);
+      test(null, false);
+      test('', false);
+      test(123, false);
+      test(true, false);
+      test({}, false);
+      test(obj, false);
+
+      obj.change((draft) => test(draft, true));
+      await obj.changeAsync(async (draft) => test(draft, true));
     });
   });
 

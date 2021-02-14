@@ -79,6 +79,13 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
   }
 
   /**
+   * Determines if the given value is a proxy (draft) object.
+   */
+  public static isProxy(input: any) {
+    return isDraft(input);
+  }
+
+  /**
    * [Lifecycle]
    */
   private constructor(args: { initial: T }) {
