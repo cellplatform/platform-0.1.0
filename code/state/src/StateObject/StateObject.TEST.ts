@@ -76,7 +76,7 @@ describe('StateObject', () => {
 
   describe('static', () => {
     describe('toObject', () => {
-      it('toObject (object)', () => {
+      it('object', () => {
         const initial = { count: 0 };
         const obj = StateObject.create<IFoo>(initial);
 
@@ -92,7 +92,7 @@ describe('StateObject', () => {
         expect(obj.state.count).to.eql(123);
       });
 
-      it('toObject (array)', () => {
+      it('array', () => {
         const initial = { count: 0, items: [] };
         const obj = StateObject.create<IFoo>(initial);
 
@@ -116,7 +116,7 @@ describe('StateObject', () => {
         expect(isDraft(list[1])).to.eql(false);
       });
 
-      it('toObject (undefined)', () => {
+      it('undefined', () => {
         const initial = { count: 0 };
         const obj = StateObject.create<IFoo>(initial);
 

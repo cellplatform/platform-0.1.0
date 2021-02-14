@@ -18,7 +18,7 @@ export type StateObject = {
     dispose$?: t.Observable<any>,
   ): StateMerger<T>;
 
-  toObject<T>(draft?: any): T | undefined;
+  toObject<T>(draft: any): T | undefined;
   isStateObject(input: any): boolean;
   isProxy(input: any): boolean;
 };
