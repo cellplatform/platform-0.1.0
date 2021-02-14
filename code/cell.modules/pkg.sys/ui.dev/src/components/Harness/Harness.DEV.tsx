@@ -33,7 +33,7 @@ export const actions = DevActions<Ctx>()
 
           const value = e.select.current[0]; // NB: always first.
           e.select.label = value ? value.label : `actionsEdge`;
-          e.select.placeholder = !Boolean(value);
+          e.select.isPlaceholder = !Boolean(value);
           e.ctx.props.acitonsEdge = value.value;
         });
     });

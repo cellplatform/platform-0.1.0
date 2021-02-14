@@ -33,7 +33,7 @@ export type ActionSelectConfigArgs<Ctx extends O> = {
 export type ActionSelectProps = {
   label: string | t.ReactNode;
   description?: string | t.ReactNode;
-  placeholder?: boolean;
+  isPlaceholder?: boolean;
   multi: boolean;
   clearable: boolean;
   items: t.ActionSelectItemInput[];

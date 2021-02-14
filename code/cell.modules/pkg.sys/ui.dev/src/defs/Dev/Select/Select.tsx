@@ -99,7 +99,7 @@ export const Select: React.FC<SelectProps> = (props) => {
         isSpinning={isSpinning}
         label={label}
         description={description}
-        placeholder={model.placeholder}
+        placeholder={model.isPlaceholder}
         right={elExpandIcon}
         onClick={showSelect}
       />

@@ -128,7 +128,7 @@ export const actions = DevActions<Ctx>()
         .pipe(async (e) => {
           const value = e.select.current[0]; // NB: always first.
           e.select.label = value ? value.label : `select single`;
-          e.select.placeholder = !Boolean(value);
+          e.select.isPlaceholder = !Boolean(value);
 
           if (e.changing) await time.wait(400);
         }),
@@ -154,7 +154,7 @@ export const actions = DevActions<Ctx>()
           e.settings({
             select: {
               label: current ? current : `select (multi)`,
-              placeholder: !Boolean(current),
+              isPlaceholder: !Boolean(current),
             },
           });
         });
