@@ -1,24 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { css, CssValue, t, color } from '../../common';
 
-// import { ActionsHost, ActionsSelect, ErrorBoundary, Store, useActionsSelectState } from '..';
 import { ActionsHost } from '../Host';
 import { ActionsSelector, useActionsSelectorState } from '../ActionsSelector';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { Store } from '../../store';
 
 export type HarnessActionsEdge = 'left' | 'right';
+export type HarnessActions = { edge?: HarnessActionsEdge };
 
 export type HarnessProps = {
   bus: t.EventBus;
   actions?: t.Actions[];
-  acitonsEdge?: HarnessActionsEdge;
-
+  actionsStyle?: HarnessActions;
   style?: CssValue;
 };
 
 export const Harness: React.FC<HarnessProps> = (props) => {
-  const { bus, acitonsEdge = 'right' } = props;
+  const { bus, actionsStyle = {} } = props;
+  const { edge: actionsEdge = 'right' } = actionsStyle;
 
   type TMP = { list: t.Actions[]; selected?: t.Actions };
   const actions: TMP = { list: [], selected: undefined };
@@ -32,8 +32,6 @@ export const Harness: React.FC<HarnessProps> = (props) => {
   //   // }),
   //   store: Store.ActionsSelect.localStorage({ actions: props.actions }),
   // });
-
-  console.log('acitonsEdge', acitonsEdge);
 
   const styles = {
     base: css({
@@ -81,23 +79,27 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     />
   );
 
-  const elLeft = acitonsEdge === 'left' && (
+  const elLeft = actionsEdge === 'left' && (
     <div {...css(styles.edge, styles.left)}>{elActions}</div>
   );
-  const elRight = acitonsEdge === 'right' && (
+  const elRight = actionsEdge === 'right' && (
     <div {...css(styles.edge, styles.right)}>{elActions}</div>
+  );
+
+  const elMain = (
+    <div {...styles.main}>
+      <ErrorBoundary>
+        <ActionsHost bus={bus} actions={actions.selected} style={styles.host} />
+      </ErrorBoundary>
+      {elSelect}
+    </div>
   );
 
   return (
     <React.StrictMode>
       <div {...css(styles.base, props.style)}>
         {elLeft}
-        <div {...styles.main}>
-          <ErrorBoundary>
-            <ActionsHost bus={bus} actions={actions.selected} style={styles.host} />
-          </ErrorBoundary>
-          {elSelect}
-        </div>
+        {elMain}
         {elRight}
       </div>
     </React.StrictMode>

@@ -1,7 +1,8 @@
 import React from 'react';
-import { DevActions, toObject } from '../..';
-import { css, COLORS, color, time, rx } from '../../common';
-import { Harness, HarnessProps, HarnessActionsEdge } from '.';
+
+import { Harness, HarnessActionsEdge, HarnessProps } from '.';
+import { DevActions } from '../..';
+import { rx } from '../../common';
 
 const bus = rx.bus();
 
@@ -16,25 +17,21 @@ type Ctx = {
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui.dev.Harness')
-  .context((prev) => prev || { props: { bus, actions: [] } })
+  .context((prev) => prev || { props: { bus, actions: [], actionsStyle: {} } })
 
   .items((e) => {
     e.title('props');
     e.select((e) => {
-      e.label('actionsEdge')
-        .initial('right')
+      e.initial('right')
+        .label('actions/edge')
         .items(ACTIONS_EDGE)
         .pipe((e) => {
-          /**
-           * TODO 🐷
-           * rename: placeholder => isPlaceholder
-           * - e.select('label') - with param, not working.
-           */
+          const value = e.select.current[0];
+          const actionsStyle = e.ctx.props.actionsStyle || (e.ctx.props.actionsStyle = {});
 
-          const value = e.select.current[0]; // NB: always first.
-          e.select.label = value ? value.label : `actionsEdge`;
+          e.select.label = value ? `actions/edge: ${value.label}` : `actions/edge`;
           e.select.isPlaceholder = !Boolean(value);
-          e.ctx.props.acitonsEdge = value.value;
+          actionsStyle.edge = value.value;
         });
     });
 
@@ -51,10 +48,11 @@ export const actions = DevActions<Ctx>()
         border: -0.1,
         cropmarks: -0.2,
         background: 1,
-        label: '<Harness>',
         position: [123, 80],
+        label: '<Harness>',
       },
     });
+
     e.render(<Harness {...e.ctx.props} style={{ Absolute: 0 }} />);
   });
 

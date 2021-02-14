@@ -17,6 +17,5 @@ export type DevMethods<Ctx extends O> = {
   boolean(label: string, handler?: t.ActionBooleanHandler<Ctx>): t.Actions<Ctx>;
   boolean(config: t.ActionBooleanConfig<Ctx>): t.Actions<Ctx>;
 
-  select(label: string, config: t.ActionSelectConfig<Ctx>): t.Actions<Ctx>;
   select(config: t.ActionSelectConfig<Ctx>): t.Actions<Ctx>;
 };
