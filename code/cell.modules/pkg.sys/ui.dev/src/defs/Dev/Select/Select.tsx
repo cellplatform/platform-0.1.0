@@ -1,10 +1,8 @@
 import React, { useRef, useState } from 'react';
 import SelectComponent from 'react-select';
 
-import { color, css, t, time, SelectUtil } from '../common';
-import { useItemMonitor } from '../../../hooks/Actions';
-import { Icons } from '../../../components/Icons';
-import { ButtonView } from '../Button/ButtonView';
+import { color, css, t, time, SelectUtil, Icons, useItemMonitor } from '../common';
+import { ButtonView } from '../Button';
 
 export type SelectProps = {
   namespace: string;

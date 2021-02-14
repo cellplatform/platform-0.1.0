@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { constants, css, defaultValue, t } from '../../common';
-import { useActionPanelController, useRedraw } from '../../hooks/Actions';
+import { useActionPanelController, useRedraw } from '../../components.hooks/Actions';
 
 export type ActionPanelProps = t.ActionPanelProps & {
   bus: t.EventBus;

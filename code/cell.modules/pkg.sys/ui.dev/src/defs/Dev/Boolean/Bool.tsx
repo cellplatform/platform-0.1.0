@@ -1,9 +1,8 @@
 import React from 'react';
 
-import { t } from '../common';
-import { useItemMonitor } from '../../../hooks/Actions';
+import { t, useItemMonitor } from '../common';
 import { Switch } from '../../../components/Primitives';
-import { ButtonView } from '../Button/ButtonView';
+import { ButtonView } from '../Button';
 
 export type BoolProps = {
   namespace: string;
