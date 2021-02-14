@@ -25,9 +25,6 @@ export const ButtonDef: t.ActionDef<T, E> = {
   listen(args) {
     const { actions } = args;
 
-    const isSpinning = (id: string, value: boolean) =>
-      actions.change((draft) => (Model.item<T>(draft, id).item.isSpinning = value));
-
     // Listen for events.
     rx.payload<E>(args.event$, 'dev:action/Button')
       .pipe(
@@ -37,6 +34,10 @@ export const ButtonDef: t.ActionDef<T, E> = {
       .subscribe(async (e) => {
         Context.getAndStore(actions, { throw: true });
         const { id } = e.item;
+
+        const isSpinning = (value: boolean) =>
+          actions.change((draft) => (Model.item<T>(draft, id).item.isSpinning = value));
+        isSpinning(false);
 
         await actions.changeAsync(async (draft) => {
           const { ctx, item, host, layout, env } = Handler.params.payload<T>(id, draft);
@@ -54,21 +55,12 @@ export const ButtonDef: t.ActionDef<T, E> = {
             const button = item as t.ActionButtonProps;
             const payload: P = { ctx, host, layout, settings, button };
 
-            /**
-             * TODO 🐷
-             * - put within [runtime.web] piped execution, like [runtime.node]
-             * - handle async
-             */
-
-            console.log('TODO: piped [Button] handlers');
-
             for (const fn of e.item.handlers) {
               const res = fn(payload);
-
               if (is.promise(res)) {
-                isSpinning(id, true);
+                isSpinning(true);
                 await res;
-                isSpinning(id, false);
+                isSpinning(false);
               }
             }
           }

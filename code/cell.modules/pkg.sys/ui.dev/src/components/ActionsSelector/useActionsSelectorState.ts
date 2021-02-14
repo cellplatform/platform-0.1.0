@@ -8,7 +8,7 @@ import { rx, t } from '../../common';
  * Monitor the state of a <Select> dropdown of a set of actions
  * and update a React state object, and store within a persistent store.
  */
-export function useActionsSelectState(args: {
+export function useActionsSelectorState(args: {
   bus: t.EventBus;
   actions?: t.Actions[];
   store?: t.ActionsSelectStore;

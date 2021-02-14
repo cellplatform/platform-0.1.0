@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
 
-import { Context, Handler, Model, rx, t } from '../common';
+import { Context, Handler, Model, rx, t, is } from '../common';
 import { Bool as Component } from './Bool';
 import { config } from './BooleanDef.config';
 
@@ -35,7 +35,13 @@ export const BooleanDef: t.ActionDef<T, E> = {
       )
       .subscribe((e) => {
         Context.getAndStore(actions, { throw: true });
-        actions.change((draft) => {
+
+        const { id } = e.item;
+        const isSpinning = (value: boolean) =>
+          actions.change((draft) => (Model.item<T>(draft, id).item.isSpinning = value));
+        isSpinning(false);
+
+        actions.changeAsync(async (draft) => {
           const { ctx, item, host, layout, env } = Handler.params.payload<T>(e.item.id, draft);
           if (ctx && item) {
             const settings: S = (args) =>
@@ -51,16 +57,13 @@ export const BooleanDef: t.ActionDef<T, E> = {
             const payload: P = { ctx, changing, host, layout, boolean, settings };
             if (changing) item.current = changing.next;
 
-            /**
-             * TODO 🐷
-             * - put within [runtime.web] piped execution, like [runtime.node]
-             * - handle async
-             */
-
-            console.log('TODO: piped [Boolean] handlers');
-
             for (const fn of e.item.handlers) {
-              fn(payload);
+              const res = fn(payload);
+              if (is.promise(res)) {
+                isSpinning(true);
+                await res;
+                isSpinning(false);
+              }
             }
           }
         });

@@ -15,7 +15,7 @@ export const Bool: React.FC<BoolProps> = (props) => {
   const { namespace } = props;
   const model = useItemMonitor({ bus: props.bus, item: props.item });
   const bus = props.bus.type<t.DevActionEvent>();
-  const { label, description } = model;
+  const { label, description, isSpinning } = model;
   const isActive = model.handlers.length > 0;
   const value = Boolean(model.current);
 
@@ -34,9 +34,10 @@ export const Bool: React.FC<BoolProps> = (props) => {
 
   return (
     <ButtonView
+      isActive={isActive}
+      isSpinning={isSpinning}
       label={label}
       description={description}
-      isActive={isActive}
       right={elSwitch}
       onClick={fire}
     />

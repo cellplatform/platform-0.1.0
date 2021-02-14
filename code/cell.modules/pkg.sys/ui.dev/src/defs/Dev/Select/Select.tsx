@@ -17,7 +17,7 @@ export const Select: React.FC<SelectProps> = (props) => {
   const model = useItemMonitor({ bus: props.bus, item: props.item });
   const bus = props.bus.type<t.DevActionEvent>();
 
-  const { label, description } = model;
+  const { label, description, isSpinning } = model;
   const isActive = model.handlers.length > 0;
   const options = model.items.map((v) => SelectUtil.toOption(v));
   const current = model.multi ? model.current : model.current[0];
@@ -95,10 +95,11 @@ export const Select: React.FC<SelectProps> = (props) => {
   return (
     <div {...styles.base}>
       <ButtonView
+        isActive={isActive}
+        isSpinning={isSpinning}
         label={label}
         description={description}
         placeholder={model.placeholder}
-        isActive={isActive}
         right={elExpandIcon}
         onClick={showSelect}
       />

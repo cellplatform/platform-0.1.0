@@ -27,3 +27,5 @@ export const actions = DevActions<Ctx>()
     });
     e.render(<Component count={e.ctx.count} />);
   });
+
+  export default actions;

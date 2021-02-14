@@ -9,6 +9,7 @@ export type ActionSelect = t.ActionSelectProps & {
   id: string;
   kind: 'dev/select';
   handlers: t.ActionSelectHandler<any>[];
+  isSpinning?: boolean;
 };
 
 /**
@@ -50,7 +51,7 @@ export type ActionSelectChanging = {
 /**
  * HANDLER Select (dropdown)
  */
-export type ActionSelectHandler<C> = (e: t.ActionSelectHandlerArgs<C>) => void;
+export type ActionSelectHandler<C> = (e: t.ActionSelectHandlerArgs<C>) => any | Promise<any>;
 export type ActionSelectHandlerArgs<C> = t.ActionHandlerArgs<C> & {
   readonly settings: t.ActionHandlerSettings<
     ActionSelectHandlerArgs<C>,

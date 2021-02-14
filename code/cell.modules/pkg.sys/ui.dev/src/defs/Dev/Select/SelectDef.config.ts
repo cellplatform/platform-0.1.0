@@ -45,6 +45,8 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
 
   if (typeof params[0] === 'function') {
     params[0](config);
+  } else {
+    config.label(params[0]).pipe(params[1]);
   }
 
   return { item, config };

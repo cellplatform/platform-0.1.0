@@ -9,6 +9,7 @@ export type ActionBoolean = t.ActionBooleanProps & {
   id: string;
   kind: 'dev/boolean';
   handlers: t.ActionBooleanHandler<any>[];
+  isSpinning?: boolean;
 };
 
 /**
@@ -36,7 +37,7 @@ export type ActionBooleanChanging = { next: boolean };
 /**
  * HANDLER Boolean (switch)
  */
-export type ActionBooleanHandler<C> = (e: t.ActionBooleanHandlerArgs<C>) => void;
+export type ActionBooleanHandler<C> = (e: t.ActionBooleanHandlerArgs<C>) => any | Promise<any>;
 export type ActionBooleanHandlerArgs<C> = t.ActionHandlerArgs<C> & {
   readonly settings: t.ActionHandlerSettings<
     ActionBooleanHandlerArgs<C>,

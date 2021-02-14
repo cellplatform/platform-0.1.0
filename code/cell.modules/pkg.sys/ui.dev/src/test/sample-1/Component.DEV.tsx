@@ -62,11 +62,7 @@ export const actions = DevActions<Ctx>()
 
     e.title('Buttons');
     e.button((config) => config.label('hello'));
-    e.button('delay', async (e) => {
-      e.button.label = 'waiting...';
-      await time.delay(1200);
-      e.button.label = 'delay';
-    });
+    e.button('delay', async (e) => await time.delay(1200));
     e.hr(1, 0.15, [5, 0]);
     e.button('console.log', (e) => {
       console.group('🌳 button click');
@@ -106,6 +102,9 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.15);
     e.boolean('boolean (disabled)');
+    e.boolean('spinner', async (e) => {
+      if (e.changing) await time.wait(800);
+    });
     e.boolean('is running', (e) => {
       if (e.changing) {
         count++;
@@ -126,10 +125,12 @@ export const actions = DevActions<Ctx>()
         .items(['one', { label: 'two', value: { count: 2 } }, 3])
         .initial(3)
         .clearable(true)
-        .pipe((e) => {
+        .pipe(async (e) => {
           const value = e.select.current[0]; // NB: always first.
           e.select.label = value ? value.label : `select single`;
           e.select.placeholder = !Boolean(value);
+
+          if (e.changing) await time.wait(400);
         }),
     );
 
@@ -260,3 +261,5 @@ export const actions = DevActions<Ctx>()
 
     return e.render(el);
   });
+
+export default actions;

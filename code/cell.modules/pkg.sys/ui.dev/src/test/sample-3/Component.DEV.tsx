@@ -46,3 +46,5 @@ export const actions = ComposedActions<Ctx>()
     });
     e.render(<Component count={e.ctx.count} />);
   });
+
+export default actions;

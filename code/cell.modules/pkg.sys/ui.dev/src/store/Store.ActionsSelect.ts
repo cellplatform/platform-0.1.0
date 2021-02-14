@@ -10,8 +10,8 @@ export const ActionsSelect = {
   /**
    * Browser's local-storage.
    */
-  localStorage(args: { actions: t.Actions[]; namespace?: string }): t.ActionsSelectStore {
-    const { namespace = 'dev', actions } = args;
+  localStorage(args: { actions?: t.Actions[]; namespace?: string }): t.ActionsSelectStore {
+    const { namespace = 'dev', actions = [] } = args;
     const field = `${namespace}:actions/selected`;
     const fn: t.ActionsSelectStore = async (value) => {
       if (value !== undefined) localStorage.setItem(field, value.toObject().namespace);
@@ -23,8 +23,8 @@ export const ActionsSelect = {
   /**
    * Browser's local-storage.
    */
-  cell(args: { client: t.IHttpClient; uri: string; actions: t.Actions[]; namespace?: string }) {
-    const { actions, namespace = 'dev' } = args;
+  cell(args: { client: t.IHttpClient; uri: string; actions?: t.Actions[]; namespace?: string }) {
+    const { actions = [], namespace = 'dev' } = args;
     const field = `${namespace}:actions/selected`;
     const uri = Uri.cell(args.uri);
 
