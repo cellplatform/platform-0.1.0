@@ -1,20 +1,21 @@
 import React from 'react';
-import { Actions, toObject } from '../..';
+
+import { DevActions } from '../..';
 import { Component } from './Component';
 
-type Ctx = {
-  count: number;
-};
+type Ctx = { count: number };
 
 /**
  * Actions
  */
-export const actions = Actions<Ctx>()
+export const actions = DevActions<Ctx>()
   .namespace('sample-2')
   .context((prev) => prev || { count: 0 })
 
-  .button('increment', (e) => e.ctx.count++)
-  .hr()
+  .items((e) => {
+    e.button('increment', (e) => e.ctx.count++);
+    e.hr();
+  })
 
   /**
    * Render
@@ -26,3 +27,5 @@ export const actions = Actions<Ctx>()
     });
     e.render(<Component count={e.ctx.count} />);
   });
+
+  export default actions;

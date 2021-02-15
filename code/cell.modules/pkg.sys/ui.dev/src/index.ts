@@ -1,15 +1,15 @@
-import { ActionBuilder } from './api';
-export const Actions = ActionBuilder.api;
+export { ActionsFactory } from './api/Actions';
+export { DevActions } from './factory';
 
 export { StateObject, toObject } from './common';
 
 export { ObjectView } from './components/Primitives';
 export { ActionPanel } from './components/ActionPanel';
-export { ActionsSelect } from './components/ActionsSelect';
-export { Host, ActionsHost } from './components/Host';
+export { ActionsSelector, useActionsSelectorState } from './components/ActionsSelector';
+export { HostLayout as Host, Host as ActionsHost } from './components/Host';
 export { ErrorBoundary } from './components/ErrorBoundary';
+export { Harness } from './components/Harness';
 
 export { Store } from './store';
-export { useActionsSelectState } from './hooks/Actions';
 
 export * from './types';

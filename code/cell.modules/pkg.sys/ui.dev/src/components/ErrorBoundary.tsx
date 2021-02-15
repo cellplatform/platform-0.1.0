@@ -57,6 +57,7 @@ export class ErrorBoundary extends React.PureComponent<IErrorBoundaryProps, IErr
         backgroundColor: COLORS.CLI.MAGENTA,
         color: COLORS.WHITE,
         borderRadius: 10,
+        overflow: 'hidden',
       }),
       close: css({
         Absolute: [5, 8, null, null],

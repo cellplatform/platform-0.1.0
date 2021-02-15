@@ -29,8 +29,8 @@ export function init(args: t.IArgs) {
     formatter: {
       type: 'codeframe',
       options: {
-        linesAbove: 2,
-        linesBelow: 3,
+        linesAbove: 1,
+        linesBelow: 0,
       },
     },
   });

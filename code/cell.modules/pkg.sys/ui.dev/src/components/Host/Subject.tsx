@@ -7,7 +7,7 @@ import { Labels } from './Labels';
 export type SubjectCropmark = { size: number; margin: number };
 export type SubjectProps = {
   cropmark: SubjectCropmark;
-  layout: t.IDevHostedLayout;
+  layout: t.HostedLayout;
 };
 
 /**

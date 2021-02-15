@@ -2,11 +2,11 @@ import * as t from './common';
 
 type O = Record<string, unknown>;
 
-export type IStateObjectEvents<T extends O, A extends string = string> = {
+export type IStateObjectEvents<T extends O> = {
   readonly $: t.Observable<t.StateObjectEvent>;
   readonly changing$: t.Observable<t.IStateObjectChanging<T>>;
-  readonly changed$: t.Observable<t.IStateObjectChanged<T, A>>;
-  readonly patched$: t.Observable<t.IStateObjectPatched<A>>;
+  readonly changed$: t.Observable<t.IStateObjectChanged<T>>;
+  readonly patched$: t.Observable<t.IStateObjectPatched>;
   readonly cancelled$: t.Observable<t.IStateObjectCancelled<T>>;
   readonly dispose$: t.Observable<any>;
 };
@@ -26,11 +26,11 @@ export type StateObjectEvent =
  * Fires before the state object is updated
  * (after a `change` method completes).
  */
-export type IStateObjectChangingEvent<T extends O = any, A extends string = string> = {
+export type IStateObjectChangingEvent<T extends O = any> = {
   type: 'StateObject/changing';
-  payload: IStateObjectChanging<T, A>;
+  payload: IStateObjectChanging<T>;
 };
-export type IStateObjectChanging<T extends O = any, A extends string = string> = {
+export type IStateObjectChanging<T extends O = any> = {
   op: t.StateObjectChangeOperation;
   cid: string; // "change-id"
   from: T;
@@ -38,22 +38,20 @@ export type IStateObjectChanging<T extends O = any, A extends string = string> =
   patches: t.PatchSet;
   cancelled: boolean;
   cancel(): void;
-  action: A;
 };
 
 /**
  * Fires AFTER the state object has been updated
  * (ie the "changing" event did not cancel the change).
  */
-export type IStateObjectChangedEvent<T extends O = any, A extends string = string> = {
+export type IStateObjectChangedEvent<T extends O = any> = {
   type: 'StateObject/changed';
-  payload: IStateObjectChanged<T, A>;
+  payload: IStateObjectChanged<T>;
 };
-export type IStateObjectChanged<T extends O = any, A extends string = string> = {
+export type IStateObjectChanged<T extends O = any> = {
   op: t.StateObjectChangeOperation;
   cid: string; // "change-id"
   patches: t.PatchSet;
-  action: A;
   from: T;
   to: T;
 };
@@ -63,16 +61,15 @@ export type IStateObjectChanged<T extends O = any, A extends string = string> = 
  * (NB: this can is useful for sending more lightweight payloads).
  */
 
-export type IStateObjectPatchedEvent<A extends string = string> = {
+export type IStateObjectPatchedEvent = {
   type: 'StateObject/changed/patched';
-  payload: IStateObjectPatched<A>;
+  payload: IStateObjectPatched;
 };
-export type IStateObjectPatched<A extends string = string> = {
+export type IStateObjectPatched = {
   op: t.StateObjectChangeOperation;
   cid: string; // "change-id"
   prev: t.PatchSet['prev'];
   next: t.PatchSet['next'];
-  action: A;
 };
 
 /**

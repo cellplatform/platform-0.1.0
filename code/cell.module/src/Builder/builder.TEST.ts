@@ -398,6 +398,7 @@ describe('Builder', () => {
       expect(args?.is.map).to.eql(false);
       expect(args?.model.state).to.eql(model.state);
       expect(typeof args?.model.change).to.eql('function');
+      expect(typeof args?.model.changeAsync).to.eql('function');
       expect(args?.path).to.eql('$');
       expect(args?.index).to.eql(-1);
       expect(args?.key).to.eql('name');

@@ -12,6 +12,13 @@ export const id = {
   },
 
   /**
+   * Alias to short-id.
+   */
+  slug() {
+    return id.shortid();
+  },
+
+  /**
    * Creates a CUID (collision-resistant id).
    *    Wrapper around the `cuid` NPM module.
    *    https://github.com/ericelliott/cuid

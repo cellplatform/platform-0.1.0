@@ -1,12 +1,15 @@
 import { t } from '../common';
 
 type O = Record<string, unknown>;
-type B<Ctx extends O> = t.DevActions<Ctx>;
 
 /**
  * Factory
  */
-export type DevActionModelFactory = {
-  model<Ctx extends O>(): t.DevActionsModelState<Ctx>;
-  api<Ctx extends O>(input?: t.DevActionsModelState<Ctx> | t.DevActionsModel<Ctx>): B<Ctx>;
+export type ActionsFactory = {
+  model<Ctx extends O>(): t.ActionsModelState<Ctx>;
+
+  compose<Ctx extends O, Items extends O>(
+    defs: t.ActionDef<any, any>[],
+    model?: t.ActionsModelState<Ctx> | t.ActionsModel<Ctx>,
+  ): t.Actions<Ctx, Items>;
 };

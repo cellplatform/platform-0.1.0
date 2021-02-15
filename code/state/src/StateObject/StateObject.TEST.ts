@@ -1,15 +1,12 @@
-/* eslint-disable */
 import { isDraft } from 'immer';
 import { Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
 
 import { StateObject } from '.';
-import { expect, t } from '../test';
+import { expect, t, time } from '../test';
 import { StateObject as StateObjectClass } from './StateObject';
 
 type IFoo = { message?: string; count: number; items?: any[] };
 type IBar = { isEnabled?: boolean };
-type MyAction = 'INCREMENT' | 'DECREMENT';
 
 describe('StateObject', () => {
   describe('lifecycle', () => {
@@ -55,7 +52,7 @@ describe('StateObject', () => {
     it('dispose: events cease firing', () => {
       const obj = StateObject.create<IFoo>({ count: 1 });
 
-      let fired: t.StateObjectEvent[] = [];
+      const fired: t.StateObjectEvent[] = [];
       obj.event.$.subscribe((e) => fired.push(e));
 
       obj.change((draft) => (draft.message = 'hello'));
@@ -79,7 +76,7 @@ describe('StateObject', () => {
 
   describe('static', () => {
     describe('toObject', () => {
-      it('toObject (object)', () => {
+      it('object', () => {
         const initial = { count: 0 };
         const obj = StateObject.create<IFoo>(initial);
 
@@ -95,7 +92,7 @@ describe('StateObject', () => {
         expect(obj.state.count).to.eql(123);
       });
 
-      it('toObject (array)', () => {
+      it('array', () => {
         const initial = { count: 0, items: [] };
         const obj = StateObject.create<IFoo>(initial);
 
@@ -119,7 +116,7 @@ describe('StateObject', () => {
         expect(isDraft(list[1])).to.eql(false);
       });
 
-      it('toObject (undefined)', () => {
+      it('undefined', () => {
         const initial = { count: 0 };
         const obj = StateObject.create<IFoo>(initial);
 
@@ -148,10 +145,29 @@ describe('StateObject', () => {
       const obj = StateObject.create<IFoo>({ count: 0 });
       test(obj, true);
     });
+
+    it('isProxy', async () => {
+      const test = (input: any, expected: boolean) => {
+        const res = StateObject.isProxy(input);
+        expect(res).to.eql(expected);
+      };
+      const obj = StateObject.create<IFoo>({ count: 0 });
+
+      test(undefined, false);
+      test(null, false);
+      test('', false);
+      test(123, false);
+      test(true, false);
+      test({}, false);
+      test(obj, false);
+
+      obj.change((draft) => test(draft, true));
+      await obj.changeAsync(async (draft) => test(draft, true));
+    });
   });
 
   describe('change', () => {
-    it('change: update (via function)', () => {
+    it('sync/change: update (via function)', () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo>(initial);
       expect(obj.state).to.equal(obj.original); // NB: Same instance (no change yet).
@@ -182,6 +198,69 @@ describe('StateObject', () => {
       expect(obj.original).to.eql(initial);
     });
 
+    it('sync/change: replace (via {object} value)', () => {
+      const initial = { count: 1 };
+      const obj = StateObject.create<IFoo>(initial);
+      expect(obj.state).to.equal(obj.original); // NB: Same instance (no change yet).
+
+      const res1 = obj.change({ count: 2, message: 'hello' });
+
+      expect(res1.op).to.eql('replace');
+      expect(res1.changed?.from).to.eql({ count: 1 });
+      expect(res1.changed?.to).to.eql({ count: 2, message: 'hello' });
+      expect(obj.state).to.eql({ count: 2, message: 'hello' });
+
+      const res2 = obj.change({ count: 3 });
+
+      expect(res2.op).to.eql('replace');
+      expect(res2.changed?.from).to.eql({ count: 2, message: 'hello' });
+      expect(res2.changed?.to).to.eql({ count: 3 });
+      expect(obj.state).to.eql({ count: 3 });
+
+      expect(obj.original).to.eql(initial);
+    });
+
+    it('sync/change: disconnected method function can be passed around (bound)', () => {
+      const initial = { count: 1 };
+      const obj = StateObject.create<IFoo>(initial);
+      const change = obj.change;
+      const increment = () => change((draft) => draft.count++);
+
+      expect(obj.state.count).to.eql(1);
+
+      change((draft) => (draft.count -= 1));
+      expect(obj.state.count).to.eql(0);
+
+      change({ count: 99 });
+      expect(obj.state.count).to.eql(99);
+
+      increment();
+      increment();
+      expect(obj.state.count).to.eql(101);
+
+      expect(obj.original).to.eql(initial);
+    });
+
+    it('change (async)', async () => {
+      const initial = { count: 1 };
+      const obj = StateObject.create<IFoo>(initial);
+
+      const { changeAsync } = obj; // NB: Can be disconnected.
+
+      const res = await changeAsync(async (draft) => {
+        await time.wait(10);
+        draft.count++;
+        return 'NO EFFECT' as any;
+      });
+
+      expect(res.op).to.eql('update');
+      expect(res.changed?.from).to.eql({ count: 1 });
+      expect(res.changed?.to).to.eql({ count: 2 });
+
+      expect(res.patches.prev[0]).to.eql({ op: 'replace', path: 'count', value: 1 });
+      expect(res.patches.next[0]).to.eql({ op: 'replace', path: 'count', value: 2 });
+    });
+
     it('no change (does not fire events)', () => {
       const initial = { count: 0 };
       const obj = StateObject.create<IFoo>(initial);
@@ -204,49 +283,6 @@ describe('StateObject', () => {
 
       test((draft) => undefined); //         NB: Touched nothing.
       test((draft) => (draft.count = 0)); // NB: Set to same value.
-    });
-
-    it('change: replace (via {object} value)', () => {
-      const initial = { count: 1 };
-      const obj = StateObject.create<IFoo>(initial);
-      expect(obj.state).to.equal(obj.original); // NB: Same instance (no change yet).
-
-      const res1 = obj.change({ count: 2, message: 'hello' });
-
-      expect(res1.op).to.eql('replace');
-      expect(res1.changed?.from).to.eql({ count: 1 });
-      expect(res1.changed?.to).to.eql({ count: 2, message: 'hello' });
-      expect(obj.state).to.eql({ count: 2, message: 'hello' });
-
-      const res2 = obj.change({ count: 3 });
-
-      expect(res2.op).to.eql('replace');
-      expect(res2.changed?.from).to.eql({ count: 2, message: 'hello' });
-      expect(res2.changed?.to).to.eql({ count: 3 });
-      expect(obj.state).to.eql({ count: 3 });
-
-      expect(obj.original).to.eql(initial);
-    });
-
-    it('change: disconnected method function can be passed around (bound)', () => {
-      const initial = { count: 1 };
-      const obj = StateObject.create<IFoo>(initial);
-      const change = obj.change;
-      const increment = () => change((draft) => draft.count++);
-
-      expect(obj.state.count).to.eql(1);
-
-      change((draft) => (draft.count -= 1));
-      expect(obj.state.count).to.eql(0);
-
-      change({ count: 99 });
-      expect(obj.state.count).to.eql(99);
-
-      increment();
-      increment();
-      expect(obj.state.count).to.eql(101);
-
-      expect(obj.original).to.eql(initial);
     });
 
     it('throw: when property name contains "/"', () => {
@@ -316,7 +352,7 @@ describe('StateObject', () => {
   describe('events', () => {
     it('event: changing', () => {
       const initial = { count: 1 };
-      const obj = StateObject.create<IFoo, MyAction>(initial);
+      const obj = StateObject.create<IFoo>(initial);
 
       const events: t.StateObjectEvent[] = [];
       const changing: t.IStateObjectChanging[] = [];
@@ -336,7 +372,6 @@ describe('StateObject', () => {
       const event = changing[0];
       expect(event.op).to.eql('update');
       expect(event.cancelled).to.eql(false);
-      expect(event.action).to.eql('');
       expect(event.from).to.eql(initial);
       expect(event.to).to.eql({ count: 2 });
       expect(event.patches).to.eql(res.patches);
@@ -392,43 +427,13 @@ describe('StateObject', () => {
       expect(event.from).to.eql(initial);
       expect(event.to).to.eql({ count: 2 });
       expect(event.to).to.equal(obj.state); // NB: Current state instance.
-      expect(event.action).to.equal('');
       expect(event.patches).to.eql(res.patches);
 
       expect(changing[0].cid).to.eql(changed[0].cid);
     });
 
-    it('event: changing/changed (with "action")', () => {
-      const obj = StateObject.create<IFoo, MyAction>({ count: 1 });
-
-      const changing: t.IStateObjectChanging[] = [];
-      const changed: t.IStateObjectChanged[] = [];
-      const actions: t.IStateObjectChanged[] = [];
-      obj.event.changing$.subscribe((e) => changing.push(e));
-      obj.event.changed$.subscribe((e) => changed.push(e));
-      obj.event.changed$
-        .pipe(filter((e) => e.action === 'INCREMENT'))
-        .subscribe((e) => actions.push(e));
-
-      obj.change((draft) => (draft.message = 'hello'));
-      expect(changing.length).to.eql(1);
-      expect(changed.length).to.eql(1);
-      expect(actions.length).to.eql(0);
-
-      obj.change((draft) => draft.count++, { action: 'INCREMENT' });
-      expect(changing.length).to.eql(2);
-      expect(changed.length).to.eql(2);
-      expect(actions.length).to.eql(1);
-
-      expect(changing[0].action).to.eql('');
-      expect(changing[1].action).to.eql('INCREMENT');
-
-      expect(changed[0].action).to.eql('');
-      expect(changed[1].action).to.eql('INCREMENT');
-    });
-
     it('event: changing/changed (via "replace" operation)', () => {
-      const obj = StateObject.create<IFoo, MyAction>({ count: 1 });
+      const obj = StateObject.create<IFoo>({ count: 1 });
 
       const changing: t.IStateObjectChanging[] = [];
       const changed: t.IStateObjectChanged[] = [];
@@ -450,18 +455,17 @@ describe('StateObject', () => {
     });
 
     it('event: changedPatches', () => {
-      const obj = StateObject.create<IFoo, MyAction>({ count: 1 });
+      const obj = StateObject.create<IFoo>({ count: 1 });
 
       const patches: t.IStateObjectPatched[] = [];
       obj.event.patched$.subscribe((e) => patches.push(e));
 
-      obj.change({ count: 888 }, { action: 'INCREMENT' });
+      obj.change({ count: 888 });
 
       expect(patches.length).to.eql(1);
 
       const e = patches[0];
       expect(e.op).to.eql('replace');
-      expect(e.action).to.eql('INCREMENT');
 
       expect(e.prev[0]).to.eql({ op: 'replace', path: '', value: { count: 1 } });
       expect(e.next[0]).to.eql({ op: 'replace', path: '', value: { count: 888 } });

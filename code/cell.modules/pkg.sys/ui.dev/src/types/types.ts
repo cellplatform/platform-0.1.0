@@ -1,9 +1,9 @@
 type N = number | null;
 
-export type DevEdgeSpacing = number | [N, N] | [N, N, N, N];
-export type DevOrientation = 'x' | 'y';
+export type EdgeSpacing = number | [N, N] | [N, N, N, N];
+export type Orientation = 'x' | 'y';
 
-export type IDevAbsolutePosition = {
+export type AbsolutePosition = {
   top?: string | number;
   right?: string | number;
   bottom?: string | number;

@@ -1,2 +1,2 @@
 export * from './Host';
-export * from './ActionsHost';
+export * from './HostLayout';

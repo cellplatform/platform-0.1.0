@@ -57,4 +57,11 @@ export const is: t.Is = {
   stream(input?: any) {
     return typeof input?.on === 'function';
   },
+
+  /**
+   * Determines whether the given value is a Promise.
+   */
+  promise(value?: any) {
+    return value ? typeof value === 'object' && typeof value.then === 'function' : false;
+  },
 };

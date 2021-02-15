@@ -1,23 +1,23 @@
 import React from 'react';
 
 import { constants, css, defaultValue, t } from '../../common';
-import { useActionPanelController, useRedraw } from '../../hooks/Actions';
-import { Item } from '../ActionPanel.Item';
+import { useActionsRedraw } from '../../components.hooks';
+import { useActionPanelController } from './useActionPanelController';
 
 export type ActionPanelProps = t.ActionPanelProps & {
   bus: t.EventBus;
-  actions: t.DevActions<any>;
+  actions: t.Actions<any>;
 };
 
 export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
-  const { actions } = props;
+  const { actions, bus } = props;
   const scrollable = defaultValue(props.scrollable, true);
-  const bus = props.bus.type<t.DevEvent>();
   const model = actions.toObject();
   const { namespace, items } = model;
+  const defs = actions.toDefs();
 
   useActionPanelController({ bus, actions });
-  useRedraw({
+  useActionsRedraw({
     name: '<ActionPanel>',
     bus,
     actions,
@@ -39,7 +39,9 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
 
   const elItems = items.map((item, i) => {
     const key = `item.${namespace}.${i}`;
-    return <Item key={key} namespace={namespace} model={item} bus={bus} />;
+    const def = defs.find((def) => def.kind === item.kind);
+    if (!def) throw new Error(`A definition for item '${item.kind}' (${i}) not found`);
+    return <def.Component key={key} namespace={namespace} item={item} bus={bus} />;
   });
 
   return (

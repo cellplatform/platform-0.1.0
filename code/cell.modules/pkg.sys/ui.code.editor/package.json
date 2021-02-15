@@ -1,0 +1,36 @@
+{
+  "name": "sys.ui.code.editor",
+  "version": "0.0.51",
+  "compiler": {
+    "port": 3033
+  },
+  "scripts": {
+    "test": "ts test $@",
+    "build": "ts build --no-esm $@",
+    "start": "cell.compiler dev $@",
+    "dev": "cell.compiler dev --no-exports $@",
+    "bundle": "cell.compiler bundle $@",
+    "watch": "cell.compiler watch $@",
+    "upload": "cell.compiler upload $@",
+    "clean": "cell.compiler clean $@",
+    "info": "cell.compiler info $@",
+    "serve": "cell.compiler serve $@",
+    "copy": "ts-node -T src/node/fs.copy/run",
+    "tmp": "ts-node -T src/node/tmp"
+  },
+  "dependencies": {
+    "@monaco-editor/react": "^3.7.4",
+    "@platform/state": "^0.7.27",
+    "monaco-editor": "^0.21.2"
+  },
+  "devDependencies": {
+    "@platform/cell.compiler": "^0.3.0",
+    "@types/prettier": "^2.1.6",
+    "automerge": "^0.14.1",
+    "prettier": "^2.2.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
+  "license": "MIT",
+  "private": true
+}

@@ -13,4 +13,9 @@ describe('id.shortid', () => {
     const ids = Array.from({ length: 1000 }).map(() => id.shortid());
     expect(ids.length).to.eql(R.uniq(ids).length);
   });
+
+  it('slug (alias)', () => {
+    const result = id.slug();
+    expect(result.length).to.be.greaterThan(5);
+  });
 });

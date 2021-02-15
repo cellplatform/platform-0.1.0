@@ -1,7 +1,7 @@
 import * as t from '@platform/types';
-import { Subject } from 'rxjs';
-import { share, filter } from 'rxjs/operators';
 import { is } from '@platform/util.is';
+import { Subject } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 type E = t.Event;
 
@@ -15,10 +15,7 @@ export function bus<T extends E = E>(input?: Subject<any> | t.EventBus<any>): t.
 
   const res: t.EventBus<T> = {
     type: <T extends E>() => (res as unknown) as t.EventBus<T>,
-    event$: subject$.pipe(
-      filter((e) => isEvent(e)),
-      share(),
-    ),
+    event$: subject$.pipe(filter((e) => isEvent(e))),
     fire(e) {
       subject$.next(e);
     },

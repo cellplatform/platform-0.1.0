@@ -2,13 +2,13 @@ import { t } from '../common';
 
 type O = Record<string, unknown>;
 
-export type DevActionSubject<C extends O> = {
+export type ActionSubject<C extends O> = {
   ctx: C;
-  items: t.DevActionSubjectItem[];
-  layout: t.IDevHostedLayout; // NB: Default layout (individual item layout merged into this)
+  items: t.ActionSubjectItem[];
+  layout: t.HostedLayout; // NB: Default layout (individual item layout merged into this)
 };
 
-export type DevActionSubjectItem = {
+export type ActionSubjectItem = {
   el: JSX.Element;
-  layout?: t.IDevHostedLayout;
+  layout?: t.HostedLayout;
 };
