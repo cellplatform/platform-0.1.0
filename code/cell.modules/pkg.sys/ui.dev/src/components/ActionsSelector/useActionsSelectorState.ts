@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { rx, t } from '../../common';
 

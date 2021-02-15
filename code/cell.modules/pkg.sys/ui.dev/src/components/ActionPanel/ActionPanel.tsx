@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { constants, css, defaultValue, t } from '../../common';
-import { useActionPanelController, useRedraw } from '../../components.hooks/Actions';
+import { useActionsRedraw } from '../../components.hooks';
+import { useActionPanelController } from './useActionPanelController';
 
 export type ActionPanelProps = t.ActionPanelProps & {
   bus: t.EventBus;
@@ -16,7 +17,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   const defs = actions.toDefs();
 
   useActionPanelController({ bus, actions });
-  useRedraw({
+  useActionsRedraw({
     name: '<ActionPanel>',
     bus,
     actions,
@@ -39,11 +40,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   const elItems = items.map((item, i) => {
     const key = `item.${namespace}.${i}`;
     const def = defs.find((def) => def.kind === item.kind);
-
-    if (!def) {
-      throw new Error(`A definition for item '${item.kind}' (${i}) not found`);
-    }
-
+    if (!def) throw new Error(`A definition for item '${item.kind}' (${i}) not found`);
     return <def.Component key={key} namespace={namespace} item={item} bus={bus} />;
   });
 

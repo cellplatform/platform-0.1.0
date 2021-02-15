@@ -242,7 +242,7 @@ export const actions = DevActions<Ctx>()
     }
 
     if (ctx.myLayout === 'single:fill-margin') {
-      return e.render(el, { position: 80 });
+      return e.render(el, { position: [150, 80] });
     }
 
     if (ctx.myLayout === 'double-x') {

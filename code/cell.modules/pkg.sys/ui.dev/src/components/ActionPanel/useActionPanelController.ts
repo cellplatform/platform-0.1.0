@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { Context, Handler } from '../../api/Actions';
-import { R, rx, t, time } from '../../common';
+import { R, rx, t, time } from '../common';
 
 /**
  * Controller for handling actions.

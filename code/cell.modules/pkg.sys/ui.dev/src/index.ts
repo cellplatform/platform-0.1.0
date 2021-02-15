@@ -8,6 +8,7 @@ export { ActionPanel } from './components/ActionPanel';
 export { ActionsSelector, useActionsSelectorState } from './components/ActionsSelector';
 export { Host, ActionsHost } from './components/Host';
 export { ErrorBoundary } from './components/ErrorBoundary';
+export { Harness } from './components/Harness';
 
 export { Store } from './store';
 

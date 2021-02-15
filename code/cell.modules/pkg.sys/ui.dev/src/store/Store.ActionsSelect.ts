@@ -29,14 +29,20 @@ export const ActionsSelect = {
     const uri = Uri.cell(args.uri);
 
     const fn: t.ActionsSelectStore = async (value) => {
-      if (value === undefined) {
-        const client = args.client.cell(uri);
-        const props = (await client.info()).body.data.props || {};
-        return actions.find((actions) => actions.toObject().namespace === props[field]);
-      } else {
-        const cell: t.ICellData = { props: { [field]: value.toObject().namespace } };
-        await args.client.ns(uri).write({ cells: { A1: cell } });
-        return value;
+      try {
+        if (value === undefined) {
+          const client = args.client.cell(uri);
+          const props = (await client.info()).body.data.props || {};
+          return actions.find((actions) => actions.toObject().namespace === props[field]);
+        } else {
+          const cell: t.ICellData = { props: { [field]: value.toObject().namespace } };
+          await args.client.ns(uri).write({ cells: { A1: cell } });
+          return value;
+        }
+      } catch (error) {
+        const action = value === undefined ? 'read' : 'write';
+        const err = `Failed to ${action} currently selected Actions. ${error.message}`;
+        throw new Error(err);
       }
     };
 

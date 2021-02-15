@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { t } from '../../common';
+import { t } from '../common';
 
 type Path = 'initialized' | 'ctx/current' | 'env/viaAction' | 'env/viaSubject' | 'items';
 
 /**
  * Causes a redraw of a component when the state of the Action model changes.
  */
-export function useRedraw(args: {
+export function useActionsRedraw(args: {
   name?: string;
   bus: t.EventBus;
   actions?: t.Actions<any>;

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { css, CssValue, t, color } from '../../common';
+import React from 'react';
+import { css, CssValue, t, color, defaultValue } from '../../common';
 
 import { ActionsHost } from '../Host';
 import { ActionsSelector, useActionsSelectorState } from '../ActionsSelector';
@@ -7,31 +7,34 @@ import { ErrorBoundary } from '../ErrorBoundary';
 import { Store } from '../../store';
 
 export type HarnessActionsEdge = 'left' | 'right';
-export type HarnessActions = { edge?: HarnessActionsEdge };
+export type HarnessActionsProps = {
+  edge?: HarnessActionsEdge;
+  width?: number;
+  background?: string | number;
+};
+
+export type HarnessHostProps = { background?: string | number };
 
 export type HarnessProps = {
   bus: t.EventBus;
   actions?: t.Actions[];
-  actionsStyle?: HarnessActions;
+  actionsStyle?: HarnessActionsProps;
+  hostStyle?: HarnessHostProps;
+  store?: t.ActionsSelectStore | boolean;
+  namespace?: string;
   style?: CssValue;
 };
 
 export const Harness: React.FC<HarnessProps> = (props) => {
-  const { bus, actionsStyle = {} } = props;
+  const { bus, actionsStyle = {}, hostStyle = {} } = props;
   const { edge: actionsEdge = 'right' } = actionsStyle;
+  const store = toStore(props.namespace, props.actions, props.store);
 
-  type TMP = { list: t.Actions[]; selected?: t.Actions };
-  const actions: TMP = { list: [], selected: undefined };
-  // const actions = useActionsSelectorState({
-  //   bus: props.bus,
-  //   actions: props.actions,
-  //   // store: Store.ActionsSelect.cell({
-  //   //   client,
-  //   //   uri: 'cell:ckkynysav001hrret8tzzg2pp:A1',
-  //   //   actions: list,
-  //   // }),
-  //   store: Store.ActionsSelect.localStorage({ actions: props.actions }),
-  // });
+  const actions = useActionsSelectorState({
+    bus,
+    actions: props.actions,
+    store,
+  });
 
   const styles = {
     base: css({
@@ -51,13 +54,13 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     edge: css({
       display: 'flex',
       position: 'relative',
-      width: 300,
-      backgroundColor: color.format(-0.03),
+      width: defaultValue(actionsStyle.width, 300),
+      backgroundColor: color.format(defaultValue(actionsStyle.background, -0.03)),
     }),
     host: css({
-      Absolute: [100, 50, 100, 50],
-      border: `solid 5px ${color.format(-0.1)}`,
+      Absolute: 0,
       boxSizing: 'border-box',
+      backgroundColor: color.format(defaultValue(hostStyle.background, 1)),
     }),
     select: {
       outer: css({ Absolute: [null, null, 20, 20], width: 200 }),
@@ -105,3 +108,16 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     </React.StrictMode>
   );
 };
+
+/**
+ * [Helpers]
+ */
+
+function toStore(
+  namespace?: string,
+  actions?: t.Actions[],
+  store?: t.ActionsSelectStore | boolean,
+): t.ActionsSelectStore | undefined {
+  if (typeof store === 'function') return store;
+  return store === false ? undefined : Store.ActionsSelect.localStorage({ namespace, actions });
+}

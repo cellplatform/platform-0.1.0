@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 
-import { R, rx, t } from '../../common';
+import { R, rx, t } from '../common';
 
 /**
  * Updates an item model (state) when changes are reported

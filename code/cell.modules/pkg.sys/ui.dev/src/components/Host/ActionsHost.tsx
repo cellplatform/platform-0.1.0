@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { t, CssValue } from '../../common';
-import { useRedraw } from '../../components.hooks/Actions';
+import { useActionsRedraw } from '../../components.hooks';
 import { Host } from './Host';
 
 export type ActionHostProps = {
@@ -17,7 +17,7 @@ export type ActionHostProps = {
 export const ActionsHost: React.FC<ActionHostProps> = (props) => {
   const { actions, bus } = props;
 
-  useRedraw({
+  useActionsRedraw({
     name: '<ActionsHost>',
     paths: ['ctx/current', 'env/viaAction'],
     bus,
