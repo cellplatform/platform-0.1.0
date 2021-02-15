@@ -15,7 +15,10 @@
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@types/vimeo__player": "^2.10.0",
+    "@vimeo/player": "^2.15.0"
+  },
   "devDependencies": {
     "@platform/cell.compiler": "0.3.0",
     "react": "17.0.1",
