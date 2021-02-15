@@ -24,6 +24,7 @@ export const Subject: React.FC<SubjectProps> = (props) => {
       position: 'relative',
       boxSizing: 'border-box',
       flex: 1,
+      display: 'flex',
       width,
       height,
     }),
