@@ -49,9 +49,10 @@ export const Harness: React.FC<HarnessProps> = (props) => {
       boxSizing: 'border-box',
       display: 'flex',
     }),
-    select: {
-      outer: css({ Absolute: [null, null, 20, 20], width: 200 }),
-    },
+    actionsSelector: css({
+      Absolute: [null, null, 20, 20],
+      width: 300,
+    }),
   };
 
   const elActionsSelector = actions.list.length > 1 && (
@@ -60,7 +61,7 @@ export const Harness: React.FC<HarnessProps> = (props) => {
       selected={selected}
       actions={actions.list}
       menuPlacement={'top'}
-      style={styles.select.outer}
+      style={styles.actionsSelector}
     />
   );
 
