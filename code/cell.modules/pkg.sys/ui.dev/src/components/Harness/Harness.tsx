@@ -1,5 +1,5 @@
-import React from 'react';
-import { css, CssValue, t, defaultValue } from '../../common';
+import React, { useEffect, useState } from 'react';
+import { css, CssValue, t, defaultValue, rx } from '../../common';
 
 import { Host } from '../Host';
 import { ActionsSelector, useActionsSelectorState } from '../ActionsSelector';
@@ -9,7 +9,7 @@ import { HarnessActions } from './HarnessActions';
 import { useActionsRedraw } from '../../components.hooks';
 
 export type HarnessProps = {
-  bus: t.EventBus;
+  bus?: t.EventBus;
   actions?: t.Actions | t.Actions[];
   store?: t.ActionsSelectStore | boolean;
   namespace?: string;
@@ -17,7 +17,11 @@ export type HarnessProps = {
 };
 
 export const Harness: React.FC<HarnessProps> = (props) => {
-  const { bus } = props;
+  const [bus, setBus] = useState<t.EventBus>(props.bus || rx.bus());
+  useEffect(() => {
+    if (props.bus) setBus(props.bus);
+  }, [props.bus]);
+
   const store = toStore(props.namespace, asActionsArray(props.actions), props.store);
   const actions = useActionsSelectorState({ bus, store, actions: asActionsArray(props.actions) });
 

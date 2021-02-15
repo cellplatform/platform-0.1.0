@@ -12,9 +12,11 @@ import sample3 from '../../test/sample-3/Component.DEV';
 const client = HttpClient.create(5000);
 const bus = rx.bus();
 
+bus.event$.subscribe((e) => {
+  // console.log('e', e);
+});
+
 const ACTIONS = [sample1, sample2, sample3];
-const ACTIONS_EDGE: t.HostedActionsEdge[] = ['left', 'right'];
-const ACTIONS_WIDTH: number[] = [200, 300, 400];
 
 type Ctx = { props: HarnessProps };
 const props: HarnessProps = {
