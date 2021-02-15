@@ -60,7 +60,7 @@ export const actions = DevActions<Ctx>()
 
     e.hr();
 
-    e.title('Buttons');
+    e.title('buttons');
     e.button((config) => config.label('hello'));
     e.button('delay', async (e) => await time.delay(1200));
     e.hr(1, 0.15, [5, 0]);
@@ -148,9 +148,6 @@ export const actions = DevActions<Ctx>()
             .join(', ')
             .trim();
 
-          // e.select.label = current ? current : `select (multi)`;
-          // e.select.placeholder = !Boolean(current);
-
           e.settings({
             select: {
               label: current ? current : `select (multi)`,
@@ -162,7 +159,7 @@ export const actions = DevActions<Ctx>()
 
     e.hr();
 
-    e.title('Layouts');
+    e.title('layouts');
     e.button('single: center', (e) => (e.ctx.myLayout = 'single'));
     e.button('single: top left', (e) => (e.ctx.myLayout = 'single:top-left'));
     e.button('single: bottom right', (e) => (e.ctx.myLayout = 'single:bottom-right'));
@@ -174,7 +171,7 @@ export const actions = DevActions<Ctx>()
 
     e.hr();
 
-    e.title('Host');
+    e.title('style: host');
     e.button('bg: dark (string)', (e) => {
       e.settings({
         host: { background: COLORS.DARK },
@@ -184,14 +181,27 @@ export const actions = DevActions<Ctx>()
         },
       });
     });
-    e.button('bg: light (-0.04)', (e) => (e.host.background = -0.04));
     e.button('bg: white (0)', (e) => (e.host.background = 0));
+    e.button('bg: light (-0.04)', (e) => (e.host.background = -0.04));
     e.button('settings (null)', (e) => e.settings({ host: null }));
     e.button('settings: {...}', (e) => e.settings({ host: { background: -0.8 } }));
 
     e.hr();
 
-    e.title('Layout (Item)');
+    e.title('style: actions');
+    e.button('bg: white (0)', (e) => (e.actions.background = 0));
+    e.button('bg: light (-0.04)', (e) => (e.actions.background = -0.04));
+    e.button('bg: dark (-0.1)', (e) => (e.actions.background = -0.1));
+    e.button('edge: left', (e) => (e.actions.edge = 'left'));
+    e.button('edge: right', (e) => (e.actions.edge = 'right'));
+    e.button('border: default', (e) => (e.actions.border = undefined));
+    e.button('border: thick', (e) => (e.actions.border = [-0.1, 5]));
+    e.button('width: 300 (default)', (e) => (e.actions.width = undefined));
+    e.button('width: 500', (e) => (e.actions.width = 500));
+
+    e.hr();
+
+    e.title('style: item layout');
     e.button('background: 1', (e) => (e.layout.background = 1));
     e.button('background: -0.3', (e) => (e.layout.background = -0.3));
     e.button('cropmarks: 0.7', (e) => (e.layout.cropmarks = 0.7));
@@ -218,7 +228,7 @@ export const actions = DevActions<Ctx>()
         background: 1,
         label: 'sample-1',
       },
-      host: { background: undefined },
+      host: { background: -0.03 },
     });
 
     const data = { isRunning: ctx.isRunning };

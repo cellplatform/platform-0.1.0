@@ -6,11 +6,12 @@ export type ActionsModel<Ctx> = {
   items: t.ActionItem[];
   ctx: { current?: Ctx; get?: t.ActionGetContext<Ctx> };
   env: { viaAction: ActionsModelEnv; viaSubject: ActionsModelEnv };
-  renderSubject?: t.ActionHandlerSubject<Ctx>;
+  subject?: t.ActionHandlerSubject<Ctx>;
   initialized?: boolean;
 };
 
 export type ActionsModelEnv = {
   host?: t.Host;
   layout?: t.HostedLayout;
+  actions?: t.HostedActions;
 };

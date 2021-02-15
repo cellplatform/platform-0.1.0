@@ -91,7 +91,7 @@ export const Handlers = {
       subject(args) {
         const fn = args.params[0];
         if (typeof fn !== 'function') throw new Error('Subject factory function not provided');
-        args.model.change((draft) => (draft.renderSubject = fn));
+        args.model.change((draft) => (draft.subject = fn));
       },
 
       /**

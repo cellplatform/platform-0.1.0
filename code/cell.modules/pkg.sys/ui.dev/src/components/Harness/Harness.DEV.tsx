@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { Harness, HarnessActionsEdge, HarnessProps } from '.';
+import { Harness, HarnessProps } from '.';
 import { Store } from '../../store';
 import { DevActions } from '../..';
-import { rx, HttpClient } from '../../common';
+import { rx, HttpClient, t } from '../../common';
 
 import sample1 from '../../test/sample-1/Component.DEV';
 import sample2 from '../../test/sample-2/Component.DEV';
@@ -13,15 +13,13 @@ const client = HttpClient.create(5000);
 const bus = rx.bus();
 
 const ACTIONS = [sample1, sample2, sample3];
-const ACTIONS_EDGE: HarnessActionsEdge[] = ['left', 'right'];
+const ACTIONS_EDGE: t.HostedActionsEdge[] = ['left', 'right'];
 const ACTIONS_WIDTH: number[] = [200, 300, 400];
 
 type Ctx = { props: HarnessProps };
 const props: HarnessProps = {
   bus,
   actions: ACTIONS,
-  actionsStyle: {},
-
   namespace: 'child-dev',
   store: true, // Default (local-storage).
 
@@ -40,31 +38,10 @@ export const actions = DevActions<Ctx>()
   .context((prev) => prev || { props: { ...props } })
 
   .items((e) => {
-    e.title('props');
-    e.select((e) => {
-      e.label('actions/edge')
-        .items(ACTIONS_EDGE)
-        .initial('right')
-        .pipe((e) => {
-          const current = e.select.current[0];
-          const actionsStyle = e.ctx.props.actionsStyle || (e.ctx.props.actionsStyle = {});
-          e.select.label = current ? `actions/edge: ${current.label}` : `actions/edge`;
-          e.select.isPlaceholder = !Boolean(current);
-          actionsStyle.edge = current.value;
-        });
-    });
-    e.select((e) => {
-      e.label('actions/width')
-        .items(ACTIONS_WIDTH)
-        .initial(300)
-        .pipe((e) => {
-          const current = e.select.current[0];
-          const actionsStyle = e.ctx.props.actionsStyle || (e.ctx.props.actionsStyle = {});
-          e.select.label = current ? `actions/width: ${current.label}` : `actions/width`;
-          e.select.isPlaceholder = !Boolean(current);
-          actionsStyle.width = current.value;
-        });
-    });
+    e.title('actions');
+    e.button('multiple', (e) => (e.ctx.props.actions = ACTIONS));
+    e.button('none (undefined)', (e) => (e.ctx.props.actions = undefined));
+    e.button('single', (e) => (e.ctx.props.actions = ACTIONS[0]));
 
     e.hr();
   })
@@ -75,6 +52,7 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     e.settings({
       host: { background: undefined },
+      actions: { background: -0.03 },
       layout: {
         border: -0.1,
         cropmarks: -0.2,

@@ -1,38 +1,38 @@
 import React from 'react';
-import { css, CssValue, t, color, defaultValue } from '../../common';
+import { css, CssValue, t, defaultValue } from '../../common';
 
-import { ActionsHost } from '../Host';
+import { Host } from '../Host';
 import { ActionsSelector, useActionsSelectorState } from '../ActionsSelector';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { Store } from '../../store';
-
-export type HarnessActionsEdge = 'left' | 'right';
-export type HarnessActionsProps = {
-  edge?: HarnessActionsEdge;
-  width?: number;
-  background?: string | number;
-};
-
-export type HarnessHostProps = { background?: string | number };
+import { HarnessActions } from './HarnessActions';
+import { useActionsRedraw } from '../../components.hooks';
 
 export type HarnessProps = {
   bus: t.EventBus;
-  actions?: t.Actions[];
-  actionsStyle?: HarnessActionsProps;
+  actions?: t.Actions | t.Actions[];
   store?: t.ActionsSelectStore | boolean;
   namespace?: string;
   style?: CssValue;
 };
 
 export const Harness: React.FC<HarnessProps> = (props) => {
-  const { bus, actionsStyle = {} } = props;
-  const { edge: actionsEdge = 'right' } = actionsStyle;
-  const store = toStore(props.namespace, props.actions, props.store);
+  const { bus } = props;
+  const store = toStore(props.namespace, asActionsArray(props.actions), props.store);
+  const actions = useActionsSelectorState({ bus, store, actions: asActionsArray(props.actions) });
 
-  const actions = useActionsSelectorState({
+  const selected = actions.selected;
+  selected?.renderSubject();
+
+  const env = selected?.toObject().env;
+  const actionsSettings = { ...env?.viaSubject.actions, ...env?.viaAction.actions };
+  const actionsEdge = defaultValue(actionsSettings.edge, 'right');
+
+  useActionsRedraw({
+    name: '<Harness>',
+    paths: [(path) => Boolean(path.match(/^env\/.*\/actions\/edge/))],
     bus,
-    actions: props.actions,
-    store,
+    actions: selected,
   });
 
   const styles = {
@@ -44,18 +44,6 @@ export const Harness: React.FC<HarnessProps> = (props) => {
       position: 'relative',
       flex: 1,
     }),
-    left: css({
-      borderRight: `solid 1px ${color.format(-0.08)}`,
-    }),
-    right: css({
-      borderLeft: `solid 1px ${color.format(-0.08)}`,
-    }),
-    edge: css({
-      display: 'flex',
-      position: 'relative',
-      width: defaultValue(actionsStyle.width, 300),
-      backgroundColor: color.format(defaultValue(actionsStyle.background, -0.03)),
-    }),
     host: css({
       Absolute: 0,
       boxSizing: 'border-box',
@@ -66,34 +54,26 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     },
   };
 
-  const elActions = actions.selected?.renderActionPanel(bus, {
-    scrollable: true, // default: true
-    style: { flex: 1 },
-  });
-
-  const elSelect = actions.list.length > 0 && (
+  const elActionsSelector = actions.list.length > 1 && (
     <ActionsSelector
       bus={bus}
-      selected={actions.selected}
+      selected={selected}
       actions={actions.list}
       menuPlacement={'top'}
       style={styles.select.outer}
     />
   );
 
-  const elLeft = actionsEdge === 'left' && (
-    <div {...css(styles.edge, styles.left)}>{elActions}</div>
-  );
-  const elRight = actionsEdge === 'right' && (
-    <div {...css(styles.edge, styles.right)}>{elActions}</div>
-  );
+  const elActions = selected && <HarnessActions bus={bus} actions={selected} edge={actionsEdge} />;
+  const elLeft = actionsEdge === 'left' && elActions;
+  const elRight = actionsEdge === 'right' && elActions;
 
   const elMain = (
     <div {...styles.main}>
       <ErrorBoundary>
-        <ActionsHost bus={bus} actions={actions.selected} style={styles.host} />
+        <Host bus={bus} actions={selected} style={styles.host} />
       </ErrorBoundary>
-      {elSelect}
+      {elActionsSelector}
     </div>
   );
 
@@ -119,4 +99,8 @@ function toStore(
 ): t.ActionsSelectStore | undefined {
   if (typeof store === 'function') return store;
   return store === false ? undefined : Store.ActionsSelect.localStorage({ namespace, actions });
+}
+
+export function asActionsArray(input?: t.Actions | t.Actions[]): t.Actions[] {
+  return input === undefined ? [] : Array.isArray(input) ? input : [input];
 }

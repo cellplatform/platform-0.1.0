@@ -11,18 +11,18 @@ export function renderSubject(args: { model: t.ActionsModelState<any> }) {
 
   const ctx = Context.getAndStore(model);
   if (!ctx) {
-    const err = `Cannot [renderSubject] - the Actions [context] has not been set. Make sure you've called [actions.context(...)]`;
+    const err = `Cannot [renderSubject] - the Actions [context] has not been set. Make sure you have called [actions.context(...)]`;
     throw new Error(err);
   }
 
-  const fnRender = model.state.renderSubject;
+  const fn = model.state.subject;
   const subject: R = { ctx, items: [], layout: {} };
 
-  if (fnRender) {
+  if (fn) {
     model.change((draft) => {
       const ctx = draft.ctx.current;
       const env = draft.env.viaSubject;
-      const { host, layout } = Handler.params.action({ ctx, env });
+      const { host, layout, actions } = Handler.params.action({ ctx, env });
 
       type P = t.ActionHandlerSubjectArgs<any>;
 
@@ -30,6 +30,7 @@ export function renderSubject(args: { model: t.ActionsModelState<any> }) {
         ctx: toObject(ctx),
         host,
         layout,
+        actions,
         settings: (args) => Handler.settings.handler({ env, payload })(args),
         render(el: JSX.Element, layout?: t.HostedLayout) {
           if (el) subject.items.push({ el, layout });
@@ -38,7 +39,7 @@ export function renderSubject(args: { model: t.ActionsModelState<any> }) {
       };
 
       // Invoke the handler.
-      fnRender(payload);
+      fn(payload);
     });
   }
 

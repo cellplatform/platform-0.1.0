@@ -5,6 +5,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { t } from '../common';
 
 type Path = 'initialized' | 'ctx/current' | 'env/viaAction' | 'env/viaSubject' | 'items';
+type PathMatch = (path: string) => boolean;
 
 /**
  * Causes a redraw of a component when the state of the Action model changes.
@@ -13,7 +14,7 @@ export function useActionsRedraw(args: {
   name?: string;
   bus: t.EventBus;
   actions?: t.Actions<any>;
-  paths: Path[];
+  paths: (Path | PathMatch)[];
 }) {
   const { actions } = args;
   const [redraw, setRedraw] = useState<number>(0);
@@ -46,9 +47,10 @@ export function useActionsRedraw(args: {
  * [Helpers]
  */
 
-function isChangedPath(paths: string[], patches: t.PatchSet) {
+function isChangedPath(paths: (string | PathMatch)[], patches: t.PatchSet) {
   return patches.next.some((patch) => {
     return paths.some((path) => {
+      if (typeof path === 'function') return path(patch.path);
       return patch.path === path || patch.path.startsWith(`${path}/`);
     });
   });

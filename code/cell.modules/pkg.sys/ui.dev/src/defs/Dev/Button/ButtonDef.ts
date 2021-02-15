@@ -40,7 +40,7 @@ export const ButtonDef: t.ActionDef<T, E> = {
         isSpinning(false);
 
         await actions.changeAsync(async (draft) => {
-          const { ctx, item, host, layout, env } = Handler.params.payload<T>(id, draft);
+          const { ctx, item, host, layout, actions, env } = Handler.params.payload<T>(id, draft);
           if (ctx && item) {
             const settings: S = (args) =>
               Handler.settings.handler<P, A>({
@@ -53,7 +53,7 @@ export const ButtonDef: t.ActionDef<T, E> = {
               })(args);
 
             const button = item as t.ActionButtonProps;
-            const payload: P = { ctx, host, layout, settings, button };
+            const payload: P = { ctx, host, layout, actions, settings, button };
 
             for (const fn of e.item.handlers) {
               const res = fn(payload);

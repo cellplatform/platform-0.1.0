@@ -23,10 +23,8 @@ export function useActionsSelectorState(args: {
     const $ = bus.event$.pipe(takeUntil(dispose$));
 
     // Set initial state.
-    if (!selected) {
-      if (store) store().then((e) => setSelected(e || list[0]));
-      if (!store) setSelected(list[0]);
-    }
+    if (store) store().then((e) => setSelected(e || list[0]));
+    if (!store) setSelected(list[0]);
 
     // Monitor for changes to the dropdown.
     rx.payload<t.IActionsSelectChangedEvent>($, 'actions/select/changed')

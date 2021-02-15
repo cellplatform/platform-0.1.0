@@ -224,17 +224,17 @@ describe('ActionsFactory', () => {
   describe('actions.subject()', () => {
     it('stores root subject factory', () => {
       const { model, actions } = create();
-      expect(model.state.renderSubject).to.eql(undefined);
+      expect(model.state.subject).to.eql(undefined);
 
       const fn1: t.ActionHandlerSubject<Ctx> = (e) => null;
       const fn2: t.ActionHandlerSubject<Ctx> = (e) => null;
 
       actions.subject(fn1);
-      expect(model.state.renderSubject).to.eql(fn1);
+      expect(model.state.subject).to.eql(fn1);
 
       // Replace with another factory.
       actions.subject(fn2);
-      expect(model.state.renderSubject).to.eql(fn2);
+      expect(model.state.subject).to.eql(fn2);
     });
 
     it('throw if factory function not provided', () => {

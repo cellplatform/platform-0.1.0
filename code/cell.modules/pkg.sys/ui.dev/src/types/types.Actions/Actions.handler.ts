@@ -25,6 +25,7 @@ export type ActionHandlerArgs<C> = {
   readonly ctx: C;
   readonly host: t.Host;
   readonly layout: t.HostedLayout;
+  readonly actions: t.HostedActions;
 };
 
 /**
@@ -37,4 +38,5 @@ export type ActionHandlerSettings<
 export type ActionHandlerSettingsArgs = {
   host?: t.Host | null;
   layout?: t.HostedLayout | null;
+  actions?: t.HostedActions | null;
 };

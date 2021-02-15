@@ -5,9 +5,7 @@ import { css, color, CssValue, style } from '@platform/css';
 export { css, color, CssValue, style };
 export const formatColor = color.format;
 
-import { id } from '@platform/util.value';
-export { rx, time, defaultValue, dispose, is } from '@platform/util.value';
-export const slug = id.shortid;
+export { rx, time, defaultValue, dispose, is, asArray, slug } from '@platform/util.value';
 
 import { StateObject } from '@platform/state';
 export { StateObject };

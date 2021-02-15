@@ -42,7 +42,7 @@ export const BooleanDef: t.ActionDef<T, E> = {
         isSpinning(false);
 
         actions.changeAsync(async (draft) => {
-          const { ctx, item, host, layout, env } = Handler.params.payload<T>(e.item.id, draft);
+          const { ctx, item, host, layout, actions, env } = Handler.params.payload<T>(id, draft);
           if (ctx && item) {
             const settings: S = (args) =>
               Handler.settings.handler<P, A>({
@@ -56,7 +56,7 @@ export const BooleanDef: t.ActionDef<T, E> = {
 
             const changing = e.changing;
             const boolean = item;
-            const payload: P = { ctx, changing, host, layout, boolean, settings };
+            const payload: P = { ctx, changing, host, layout, actions, boolean, settings };
             if (changing) item.current = changing.next;
 
             for (const fn of e.item.handlers) {

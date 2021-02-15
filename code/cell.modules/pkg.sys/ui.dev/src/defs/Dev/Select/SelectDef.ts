@@ -42,7 +42,7 @@ export const SelectDef: t.ActionDef<T, E> = {
         isSpinning(false);
 
         actions.changeAsync(async (draft) => {
-          const { ctx, item, host, layout, env } = Handler.params.payload<T>(e.item.id, draft);
+          const { ctx, item, host, layout, env, actions } = Handler.params.payload<T>(id, draft);
           if (ctx && item) {
             const settings: S = (args) =>
               Handler.settings.handler<P, A>({
@@ -56,7 +56,7 @@ export const SelectDef: t.ActionDef<T, E> = {
 
             const changing = e.changing;
             const select = item;
-            const payload: P = { ctx, changing, host, layout, select, settings };
+            const payload: P = { ctx, changing, host, layout, actions, select, settings };
             if (changing) item.current = changing.next; // Update the item to the latest selection.
 
             for (const fn of e.item.handlers) {
