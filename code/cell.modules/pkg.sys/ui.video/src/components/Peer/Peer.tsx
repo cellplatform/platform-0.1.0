@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, time } from '../../common';
+import { color, css, CssValue, t, time, cuid } from '../../common';
 import PeerLib from 'peerjs';
 import { TextInput } from '../Primitives';
 
@@ -18,7 +18,7 @@ export const Peer: React.FC<PeerProps> = (props) => {
   const localStreamRef = useRef<MediaStream>();
 
   useEffect(() => {
-    const peer = new PeerLib();
+    const peer = new PeerLib(cuid());
     setPeer(peer);
 
     // Open connection
@@ -40,7 +40,7 @@ export const Peer: React.FC<PeerProps> = (props) => {
     peer.on('call', async (call) => {
       console.log('on call', call);
 
-      const localStream = await getMedia({ video: true, audio: true });
+      const localStream = await getMedia({ video: { width: 300, height: 200 }, audio: true });
 
       call.answer(localStream);
       call.on('stream', (remoteStream) => {
@@ -89,19 +89,22 @@ export const Peer: React.FC<PeerProps> = (props) => {
       flex: 1,
       padding: 20,
     }),
-    videoOuter: css({
+    videoContainer: css({
       marginTop: 60,
       Flex: 'horizontal-center-center',
     }),
-    video: css({
-      width: 200,
+    videoOuter: css({
+      width: 300,
       height: 200,
       border: `solid 1px ${color.format(-0.1)}`,
+      overflow: 'hidden',
+      borderRadius: 16,
       marginRight: 50,
-      borderRadius: 8,
-      ':last-child': {
-        marginRight: 0,
-      },
+    }),
+    videoElement: css({
+      objectFit: 'contain',
+      width: '100%',
+      ':last-child': { marginRight: 0 },
     }),
     footer: css({
       padding: 10,
@@ -113,25 +116,25 @@ export const Peer: React.FC<PeerProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
         <div>Peer: {id}</div>
-        <div {...styles.videoOuter}>
-          <video
-            {...styles.video}
-            ref={videoSelfRef}
-            width={300}
-            height={300}
-            autoPlay={true}
-            muted={true}
-            onPlay={onPlay}
-          />
-          <video
-            {...styles.video}
-            ref={videoOtherRef}
-            width={300}
-            height={300}
-            autoPlay={true}
-            muted={false}
-            onPlay={onPlay}
-          />
+        <div {...styles.videoContainer}>
+          <div {...styles.videoOuter}>
+            <video
+              {...styles.videoElement}
+              ref={videoSelfRef}
+              autoPlay={true}
+              muted={true}
+              onPlay={onPlay}
+            />
+          </div>
+          <div {...styles.videoOuter}>
+            <video
+              {...styles.videoElement}
+              ref={videoOtherRef}
+              autoPlay={true}
+              muted={false}
+              onPlay={onPlay}
+            />
+          </div>
         </div>
       </div>
       <div {...styles.footer}>

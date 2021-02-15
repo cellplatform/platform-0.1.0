@@ -31,7 +31,7 @@ export const actions = DevActions<Ctx>()
         border: -0.1,
         cropmarks: -0.2,
         background: 1,
-        width: 600,
+        width: 800,
         height: 500,
         label: '<Peer>',
       },
