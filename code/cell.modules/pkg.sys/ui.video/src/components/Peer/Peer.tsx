@@ -14,7 +14,6 @@ export const Peer: React.FC<PeerProps> = (props) => {
   const [connectTo, setConnectTo] = useState<string>('');
   const videoSelfRef = useRef<HTMLVideoElement>(null);
   const videoOtherRef = useRef<HTMLVideoElement>(null);
-
   const localStreamRef = useRef<MediaStream>();
 
   useEffect(() => {
