@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { t } from '../common';
 
 type StringOrNumber = string | number;
+type StringOrNumberOrNil = string | number | null | undefined;
 
 /**
  * The layout configuration of a component being hosted.
@@ -16,8 +17,8 @@ export type HostedLayout = {
   labelColor?: string | number;
   position?:
     | StringOrNumber
-    | [StringOrNumber, StringOrNumber]
-    | [StringOrNumber, StringOrNumber, StringOrNumber, StringOrNumber]
+    | [StringOrNumberOrNil, StringOrNumberOrNil]
+    | [StringOrNumberOrNil, StringOrNumberOrNil, StringOrNumberOrNil, StringOrNumberOrNil]
     | t.AbsolutePosition;
 };
 

@@ -73,9 +73,17 @@ const toAbsolute = (input: t.HostedLayout['position']): t.AbsolutePosition | und
   if (input === undefined) return undefined;
 
   if (Array.isArray(input)) {
-    return input.length > 2
-      ? { top: input[0], right: input[1], bottom: input[2], left: input[3] }
-      : { top: input[0], right: input[1], bottom: input[0], left: input[1] };
+    type Input = string | number | null | undefined;
+    const toValue = (value: Input) => (value === null ? undefined : value);
+    const index = (index: number) => toValue(input[index]);
+
+    if (input.length > 2) {
+      return { top: index(0), right: index(1), bottom: index(2), left: index(3) };
+    } else {
+      const y = index(0);
+      const x = index(1);
+      return { top: y, right: x, bottom: y, left: x };
+    }
   }
 
   if (typeof input !== 'object') {
