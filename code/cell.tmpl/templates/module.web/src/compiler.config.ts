@@ -1,4 +1,4 @@
-import { Compiler, Package } from '@platform/cell.compiler';
+import { Compiler } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
@@ -6,11 +6,9 @@ export default () =>
     .variant('web', (config) =>
       config
         .target('web')
-        .port(Package.compiler.port)
+        .port(3000)
 
-        .entry('./src/entry/main')
-        .entry('service.worker', './src/workers/service.worker')
-
+        .entry('main', './src/entry/main')
         .declarations('./src/**/*')
         .static('static')
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
