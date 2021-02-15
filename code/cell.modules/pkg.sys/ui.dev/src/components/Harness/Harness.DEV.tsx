@@ -21,7 +21,6 @@ const props: HarnessProps = {
   bus,
   actions: ACTIONS,
   actionsStyle: {},
-  hostStyle: {},
 
   namespace: 'child-dev',
   store: true, // Default (local-storage).
@@ -75,7 +74,7 @@ export const actions = DevActions<Ctx>()
    */
   .subject((e) => {
     e.settings({
-      host: { background: -0.03 },
+      host: { background: undefined },
       layout: {
         border: -0.1,
         cropmarks: -0.2,

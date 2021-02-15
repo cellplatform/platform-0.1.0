@@ -19,14 +19,13 @@ export type HarnessProps = {
   bus: t.EventBus;
   actions?: t.Actions[];
   actionsStyle?: HarnessActionsProps;
-  hostStyle?: HarnessHostProps;
   store?: t.ActionsSelectStore | boolean;
   namespace?: string;
   style?: CssValue;
 };
 
 export const Harness: React.FC<HarnessProps> = (props) => {
-  const { bus, actionsStyle = {}, hostStyle = {} } = props;
+  const { bus, actionsStyle = {} } = props;
   const { edge: actionsEdge = 'right' } = actionsStyle;
   const store = toStore(props.namespace, props.actions, props.store);
 
@@ -60,7 +59,7 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     host: css({
       Absolute: 0,
       boxSizing: 'border-box',
-      backgroundColor: color.format(defaultValue(hostStyle.background, 1)),
+      display: 'flex',
     }),
     select: {
       outer: css({ Absolute: [null, null, 20, 20], width: 200 }),

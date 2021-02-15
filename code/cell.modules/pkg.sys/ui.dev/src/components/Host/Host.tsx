@@ -35,6 +35,7 @@ export const Host: React.FC<HostProps> = (props = {}) => {
   const elContent = items.map((item, i) => {
     const isLast = i === items.length - 1;
     const layout = { ...subject?.layout, ...item.layout };
+
     const abs = toAbsolute(layout.position);
     const margin = !isLast ? spacing : undefined;
     const cropmark: SubjectCropmark = { size: 15, margin: 6 };

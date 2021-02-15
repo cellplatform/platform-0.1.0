@@ -209,7 +209,7 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     const { ctx } = e;
 
-    // NB: common layout (variations merged in in render arg below)
+    // NB: common layout (variations merged into the render arg below)
     e.settings({
       layout: {
         width: 450,
@@ -218,7 +218,7 @@ export const actions = DevActions<Ctx>()
         background: 1,
         label: 'sample-1',
       },
-      host: { background: -0.04 },
+      host: { background: undefined },
     });
 
     const data = { isRunning: ctx.isRunning };
