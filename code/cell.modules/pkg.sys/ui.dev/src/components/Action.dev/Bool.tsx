@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { t, useItemMonitor } from '../common';
-import { Switch } from '../../../components/Primitives';
-import { ButtonView } from '../Button';
+import { t, useActionItemMonitor } from '../common';
+import { Switch } from '../Primitives';
+import { ButtonView } from './ButtonView';
 
 export type BoolProps = {
   namespace: string;
@@ -12,7 +12,7 @@ export type BoolProps = {
 
 export const Bool: React.FC<BoolProps> = (props) => {
   const { namespace } = props;
-  const model = useItemMonitor({ bus: props.bus, item: props.item });
+  const model = useActionItemMonitor({ bus: props.bus, item: props.item });
   const bus = props.bus.type<t.DevActionEvent>();
   const { label, description, isSpinning } = model;
   const isActive = model.handlers.length > 0;

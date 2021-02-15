@@ -1,17 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import {
-  COLORS,
-  constants,
-  css,
-  CssValue,
-  t,
-  DEFAULT,
-  color,
-  Icons,
-  Markdown,
-  Spinner,
-} from '../common';
+import { color, COLORS, constants, css, CssValue, DEFAULT, t } from '../common';
+import { Icons } from '../Icons';
+import { Markdown } from '../Markdown';
+import { Spinner } from '../Primitives';
 
 /**
  * The button view, with no smarts about the event bus.

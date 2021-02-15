@@ -1,7 +1,7 @@
 import { filter } from 'rxjs/operators';
 
 import { Context, Handler, Model, rx, t, is } from '../common';
-import { Button as Component } from './Button';
+import { Button as Component } from '../../../components/Action.dev';
 import { config } from './ButtonDef.config';
 
 type T = t.ActionButton;

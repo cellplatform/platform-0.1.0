@@ -1,8 +1,9 @@
 import React, { useRef, useState } from 'react';
 import SelectComponent from 'react-select';
 
-import { color, css, t, time, SelectUtil, Icons, useItemMonitor } from '../common';
-import { ButtonView } from '../Button';
+import { color, css, SelectUtil, t, time, useActionItemMonitor } from '../common';
+import { Icons } from '../Icons';
+import { ButtonView } from './ButtonView';
 
 export type SelectProps = {
   namespace: string;
@@ -12,7 +13,7 @@ export type SelectProps = {
 
 export const Select: React.FC<SelectProps> = (props) => {
   const { namespace } = props;
-  const model = useItemMonitor({ bus: props.bus, item: props.item });
+  const model = useActionItemMonitor({ bus: props.bus, item: props.item });
   const bus = props.bus.type<t.DevActionEvent>();
 
   const { label, description, isSpinning } = model;

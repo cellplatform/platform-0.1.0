@@ -1,3 +1,3 @@
 export * from './useActionPanelController';
-export * from './useItemMonitor';
+export * from './useActionItemMonitor';
 export * from './useRedraw';
