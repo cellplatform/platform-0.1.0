@@ -15,7 +15,12 @@ export default () =>
         // .declarations('./src/**/*')
 
         .static('./static')
-        .files((config) => config.redirect(false, 'static/**').redirect(false, '*.worker.js'))
+        .files((e) =>
+          e
+            .redirect(false, 'static/**')
+            .redirect(false, '*.worker.js')
+            .access('public', '**/*.{png,jpg,svg}'),
+        )
 
         .shared((config) => config.add(config.dependencies).singleton(['react', 'react-dom']))
         .expose('./Dev', './src/components/Dev')
