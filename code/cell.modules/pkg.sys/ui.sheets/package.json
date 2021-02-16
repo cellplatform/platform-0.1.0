@@ -1,9 +1,9 @@
 {
-  "name": "sys.ui.video",
+  "name": "sys.ui.sheets",
   "version": "0.0.0",
   "sideEffects": false,
   "compiler": {
-    "port": 3033
+    "port": 3035
   },
   "scripts": {
     "start": "cell.compiler dev $@",
@@ -16,14 +16,9 @@
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@",
-    "public": "sh ./sh/ngrok.sh"
+    "serve": "cell.compiler serve $@"
   },
-  "dependencies": {
-    "@types/vimeo__player": "^2.10.0",
-    "@vimeo/player": "^2.15.0",
-    "peerjs": "^1.3.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@platform/cell.compiler": "0.3.0",
     "react": "17.0.1",

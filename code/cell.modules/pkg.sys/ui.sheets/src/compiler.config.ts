@@ -2,7 +2,7 @@ import { Compiler, Package } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
-    .namespace('__NAME__')
+    .namespace('sys.ui.sheets')
     .variant('web', (config) =>
       config
         .target('web')

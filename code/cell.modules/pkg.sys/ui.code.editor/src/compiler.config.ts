@@ -1,4 +1,4 @@
-import { Compiler } from '@platform/cell.compiler';
+import { Compiler, Package } from '@platform/cell.compiler';
 import { copy } from './node/fs.copy';
 
 export default () =>
@@ -7,7 +7,7 @@ export default () =>
     .variant('web', (config) =>
       config
         .target('web')
-        .port(3034)
+        .port(Package.compiler.port)
 
         .entry('main', './src/entry/main')
         // .entry('service.worker', './src/workers/service.worker')
