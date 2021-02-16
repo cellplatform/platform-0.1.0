@@ -11,13 +11,16 @@
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
+    "cmd": "cell.compiler --help $@",
     "bundle": "cell.compiler bundle $@",
     "watch": "cell.compiler watch $@",
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "public": "sh ./sh/ngrok.sh"
+    "deploy": "yarn upload --sample --port 5000",
+    "public": "yarn open && sh ./sh/ngrok.sh",
+    "open": "open http://localhost:5000/cell:ckl7eyjap000c8iete89p6tq0:A1/fs/sample/index.html"
   },
   "dependencies": {
     "@types/vimeo__player": "^2.10.0",

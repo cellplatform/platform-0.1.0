@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { css, CssValue, t, color, cuid, PeerJS } from '../common';
+import { css, CssValue, t, color, cuid, PeerJS, COLORS } from '../common';
 import { MeetingDoc } from '../MeetingDoc';
 import { Peer } from '../Peer';
 
-export type LayoutProps = { style?: CssValue };
+export type LayoutProps = {
+  style?: CssValue;
+};
 
 export const Layout: React.FC<LayoutProps> = (props) => {
   const self = cuid();
@@ -21,6 +23,9 @@ export const Layout: React.FC<LayoutProps> = (props) => {
       flex: 1,
       Flex: 'vertical-stretch-stretch',
       PaddingX: 30,
+      color: COLORS.DARK,
+      userSelect: 'none',
+      overflow: 'hidden',
     }),
     body: css({
       flex: 1,
@@ -30,6 +35,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
       height: 280,
       borderTop: `solid 8px ${color.format(-0.1)}`,
       Flex: 'horizontal-center-spaceBetween',
+      overflow: 'hidden',
     }),
   };
   return (
@@ -40,8 +46,8 @@ export const Layout: React.FC<LayoutProps> = (props) => {
       <div {...styles.footer}>
         {peer && (
           <>
-            <Peer peer={peer} isSelf={true} muted={true} />
-            <Peer peer={peer} muted={true} />
+            <Peer peer={peer} isSelf={true} />
+            <Peer peer={peer} />
           </>
         )}
       </div>

@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { css, CssValue, t, color, defaultValue, cuid, PeerJS } from '../common';
-import { TextInput } from '../../Primitives';
+import { TextInput, Button } from '../../Primitives';
+import { Icons } from '../../Icons';
 
-const getUserMedia = navigator.mediaDevices.getUserMedia;
+import { PeerLabel } from './PeerLabel';
 
 export type PeerProps = {
   peer: PeerJS;
@@ -10,14 +11,16 @@ export type PeerProps = {
   width?: number;
   height?: number;
   autoPlay?: boolean;
-  muted?: boolean;
   style?: CssValue;
 };
 
 export const Peer: React.FC<PeerProps> = (props) => {
   const { width = 300, height = 200, isSelf, peer } = props;
   const autoPlay = defaultValue(props.autoPlay, true);
-  const muted = defaultValue(props.muted, false);
+
+  const [isMuted, setIsMuted] = useState<boolean>(true);
+
+  // const isMuted = defaultValue(props.isMuted, false);
 
   const [id, setId] = useState<string>('');
 
@@ -25,13 +28,12 @@ export const Peer: React.FC<PeerProps> = (props) => {
   const localStreamRef = useRef<MediaStream>();
 
   const loadLocalStream = async () => {
-    if (localStreamRef.current) return localStreamRef.current;
-
-    const constraints: MediaStreamConstraints = { video: true, audio: true };
-    const localStream = await navigator.mediaDevices.getUserMedia(constraints);
-    localStreamRef.current = localStream;
-
-    return localStream;
+    if (!localStreamRef.current) {
+      const constraints: MediaStreamConstraints = { video: true, audio: true };
+      const localStream = await navigator.mediaDevices.getUserMedia(constraints);
+      localStreamRef.current = localStream;
+    }
+    return localStreamRef.current;
   };
 
   const loadAsSelf = async () => {
@@ -39,20 +41,11 @@ export const Peer: React.FC<PeerProps> = (props) => {
     video.srcObject = await loadLocalStream();
   };
 
-  const connectToPeer = (id: string) => {
+  const startRemoteCall = (id: string) => {
     if (!peer) throw new Error(`The WebRTC peer has not been initialized.`);
     const video = videoRef.current as HTMLVideoElement;
     const localStream = localStreamRef.current as MediaStream;
-
-    console.log('peer', peer);
-    console.log('video', video);
-
-    console.log('localStream', localStream);
-
     const call = peer.call(id, localStream);
-
-    console.log('call', call);
-
     call.on('stream', (remoteStream) => (video.srcObject = remoteStream));
   };
 
@@ -65,21 +58,27 @@ export const Peer: React.FC<PeerProps> = (props) => {
     }
   }, []); // eslint-disable-line
 
+  /**
+   * Listen for incoming calls.
+   */
   useEffect(() => {
-    peer.on('call', async (call) => {
-      const video = videoRef.current as HTMLVideoElement;
-      const localStream = localStreamRef.current;
-      if (localStream) {
-        call.answer(localStream);
-        call.on('stream', (remoteStream) => (video.srcObject = remoteStream));
-      }
-    });
+    if (!isSelf) {
+      peer.on('call', async (call) => {
+        const video = videoRef.current as HTMLVideoElement;
+        const localStream = localStreamRef.current;
+        if (localStream) {
+          call.answer(localStream);
+          call.on('stream', (remoteStream) => (video.srcObject = remoteStream));
+        }
+      });
+    }
   }, []); // eslint-disable-line
 
   const styles = {
     base: css({}),
     video: {
       outer: css({
+        position: 'relative',
         width,
         height,
         border: `solid 5px ${color.format(-0.1)}`,
@@ -89,6 +88,16 @@ export const Peer: React.FC<PeerProps> = (props) => {
       object: css({
         objectFit: 'contain',
         width: '100%',
+      }),
+    },
+    mic: {
+      outer: css({
+        Absolute: [null, 10, 10, null],
+      }),
+      inner: css({
+        backgroundColor: color.format(0.8),
+        padding: 8,
+        borderRadius: 6,
       }),
     },
     footer: css({
@@ -101,6 +110,34 @@ export const Peer: React.FC<PeerProps> = (props) => {
     console.log('<video>: onPlay');
   };
 
+  const MicIcon = isMuted ? Icons.Mic.Off : Icons.Mic.On;
+
+  const elMic = (
+    <div {...styles.mic.outer}>
+      <Button onClick={() => setIsMuted((prev) => !prev)}>
+        <div {...styles.mic.inner}>
+          <MicIcon size={18} />
+        </div>
+      </Button>
+    </div>
+  );
+
+  const elTextbox = !isSelf && (
+    <TextInput
+      value={id}
+      placeholder={'Connect to ("peer")'}
+      valueStyle={{ fontFamily: 'sans-serif', fontSize: 14 }}
+      placeholderStyle={{ italic: true, color: color.format(-0.3) }}
+      disabledOpacity={1}
+      onChange={(e) => setId(e.to)}
+      spellCheck={false}
+      isEnabled={!isSelf}
+      onEnter={() => startRemoteCall(id)}
+    />
+  );
+
+  const elPeerLabel = isSelf && <PeerLabel id={id} />;
+
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.video.outer}>
@@ -108,23 +145,12 @@ export const Peer: React.FC<PeerProps> = (props) => {
           {...styles.video.object}
           ref={videoRef}
           autoPlay={autoPlay}
-          muted={muted}
+          muted={isMuted}
           onPlay={onPlay}
         />
+        {elMic}
       </div>
-      <div {...styles.footer}>
-        <TextInput
-          value={id}
-          placeholder={'connect to (peer)'}
-          valueStyle={{ fontFamily: 'sans-serif' }}
-          placeholderStyle={{ italic: true, color: color.format(-0.3) }}
-          disabledOpacity={1}
-          onChange={(e) => setId(e.to)}
-          spellCheck={false}
-          isEnabled={!isSelf}
-          onEnter={() => connectToPeer(id)}
-        />
-      </div>
+      <div {...styles.footer}>{elTextbox || elPeerLabel}</div>
     </div>
   );
 };
