@@ -4,15 +4,17 @@ import { MeetingDoc } from '../MeetingDoc';
 import { Peer } from '../Peer';
 
 export type LayoutProps = {
+  peers?: number;
   style?: CssValue;
 };
 
 export const Layout: React.FC<LayoutProps> = (props) => {
-  const self = cuid();
+  const { peers = 0 } = props;
 
   const [peer, setPeer] = useState<PeerJS>();
 
   useEffect(() => {
+    const self = cuid();
     const peer = new PeerJS(self);
     peer.on('open', (id) => setPeer(peer));
     return () => peer?.destroy();
@@ -38,6 +40,13 @@ export const Layout: React.FC<LayoutProps> = (props) => {
       overflow: 'hidden',
     }),
   };
+
+  const elPeers =
+    peer &&
+    Array.from({ length: peers }).map((v, i) => {
+      return <Peer key={i} peer={peer} />;
+    });
+
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
@@ -48,6 +57,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
           <>
             <Peer peer={peer} isSelf={true} />
             <Peer peer={peer} />
+            {elPeers}
           </>
         )}
       </div>

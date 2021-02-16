@@ -2,7 +2,7 @@ import React from 'react';
 
 import { DevActions } from 'sys.ui.dev';
 import { Layout, LayoutProps } from './Layout';
-import { css } from '../../common';
+import { css, cuid } from '../../common';
 
 type Ctx = { props: LayoutProps };
 
@@ -14,7 +14,13 @@ export const actions = DevActions<Ctx>()
   .context((prev) => prev || { props: {} })
 
   .items((e) => {
-    e.title('props');
+    e.title('Actions');
+
+    e.button('add peer', (e) => {
+      //
+      e.ctx.props.peers = (e.ctx.props.peers || 0) + 1;
+    });
+
     // e.boolean('muted', (e) => {
     //   if (e.changing) e.ctx.props.isMuted = e.changing.next;
     //   e.boolean.current = Boolean(e.ctx.props.isMuted);

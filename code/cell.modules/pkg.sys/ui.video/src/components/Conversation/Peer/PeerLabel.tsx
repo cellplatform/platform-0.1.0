@@ -3,10 +3,13 @@ import { css, CssValue, t, color } from '../common';
 
 export type PeerLabelProps = {
   id: string;
+  isSelf?: boolean;
   style?: CssValue;
 };
 
 export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
+  const { isSelf } = props;
+
   const styles = {
     base: css({
       Flex: 'horizontal-stretch-center',
@@ -32,7 +35,7 @@ export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
   };
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.title}>PEER</div>
+      <div {...styles.title}>{isSelf ? 'ME' : 'PEER'}</div>
       <div {...styles.id}>{props.id}</div>
     </div>
   );

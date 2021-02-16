@@ -136,7 +136,7 @@ export const Peer: React.FC<PeerProps> = (props) => {
     />
   );
 
-  const elPeerLabel = isSelf && <PeerLabel id={id} />;
+  const elPeerLabel = isSelf && <PeerLabel id={id} isSelf={isSelf} />;
 
   return (
     <div {...css(styles.base, props.style)}>
