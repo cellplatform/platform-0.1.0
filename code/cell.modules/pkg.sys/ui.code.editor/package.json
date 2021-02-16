@@ -1,9 +1,6 @@
 {
   "name": "sys.ui.code.editor",
   "version": "0.0.51",
-  "compiler": {
-    "port": 3033
-  },
   "scripts": {
     "test": "ts test $@",
     "build": "ts build --no-esm $@",

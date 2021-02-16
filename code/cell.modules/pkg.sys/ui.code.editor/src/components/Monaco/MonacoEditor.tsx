@@ -29,7 +29,7 @@ export type MonacoEditorProps = {
  */
 export const MonacoEditor: React.FC<MonacoEditorProps> = (props) => {
   const editorRef = useRef<E>();
-  const { language = DEFAULT.LANGUAGE.TS, theme = DEFAULT.THEME } = props;
+  const { language = DEFAULT.LANGUAGE.TS, theme } = props;
 
   const onMount: EditorDidMount = async (getValue, ed) => {
     const monaco = await CodeEditor.singleton(props.bus);

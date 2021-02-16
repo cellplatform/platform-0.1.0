@@ -9,8 +9,6 @@ let singleton: Promise<t.ICodeEditorSingleton>;
 
 /**
  * Static entry points.
- *
- *
  */
 export const CodeEditor = {
   /**
