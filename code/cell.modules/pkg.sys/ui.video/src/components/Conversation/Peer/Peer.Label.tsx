@@ -36,7 +36,9 @@ export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.title}>{isSelf ? 'ME' : 'PEER'}</div>
-      <div {...styles.id}>{props.id}</div>
+      <div {...styles.id} title={'Peer Identifier ("id")'}>
+        {props.id}
+      </div>
     </div>
   );
 };

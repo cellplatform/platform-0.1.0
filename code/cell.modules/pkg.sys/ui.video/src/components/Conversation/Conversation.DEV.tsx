@@ -10,7 +10,7 @@ type Ctx = { props: LayoutProps };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('components/Conversation')
+  .namespace('Conversation')
   .context((prev) => prev || { props: {} })
 
   .items((e) => {

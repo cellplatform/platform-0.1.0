@@ -19,7 +19,7 @@ const initial: Ctx = {
  * https://github.com/vimeo/player.js
  */
 export const actions = DevActions<Ctx>()
-  .namespace('components/VimeoBackground')
+  .namespace('player.VimeoBackground')
   .context((prev) => prev || initial)
 
   .items((e) => {
@@ -79,7 +79,13 @@ export const actions = DevActions<Ctx>()
    */
   .subject((e) => {
     e.settings({
-      layout: { border: 0.2, cropmarks: 0.4, label: '<Vimeo>', position: [200, 80] },
+      layout: {
+        border: 0.2,
+        cropmarks: 0.4,
+        label: '<Vimeo>',
+        labelColor: 0.4,
+        position: [200, 80],
+      },
       host: { background: COLORS.DARK, color: -1 },
     });
 

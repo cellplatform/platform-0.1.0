@@ -21,7 +21,7 @@ const initial: Ctx = {
  * https://github.com/vimeo/player.js
  */
 export const actions = DevActions<Ctx>()
-  .namespace('components/Vimeo')
+  .namespace('player.Vimeo')
   .context((prev) => prev || initial)
 
   .items((e) => {

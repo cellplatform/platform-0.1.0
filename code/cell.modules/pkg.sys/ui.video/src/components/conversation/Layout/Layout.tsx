@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { css, CssValue, t, color, cuid, PeerJS, COLORS } from '../common';
-import { MeetingDoc } from '../MeetingDoc';
+import { Diagram } from '../Diagram';
 import { Peer } from '../Peer';
 
 export type LayoutProps = {
@@ -10,7 +10,6 @@ export type LayoutProps = {
 
 export const Layout: React.FC<LayoutProps> = (props) => {
   const { peers = 0 } = props;
-
   const [peer, setPeer] = useState<PeerJS>();
 
   useEffect(() => {
@@ -24,7 +23,6 @@ export const Layout: React.FC<LayoutProps> = (props) => {
     base: css({
       flex: 1,
       Flex: 'vertical-stretch-stretch',
-      PaddingX: 30,
       color: COLORS.DARK,
       userSelect: 'none',
       overflow: 'hidden',
@@ -38,6 +36,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
       borderTop: `solid 8px ${color.format(-0.1)}`,
       Flex: 'horizontal-center-spaceBetween',
       overflow: 'hidden',
+      MarginX: 30,
     }),
   };
 
@@ -50,12 +49,12 @@ export const Layout: React.FC<LayoutProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
-        <MeetingDoc />
+        <Diagram dir={'static/images.tmp/'} />
       </div>
       <div {...styles.footer}>
         {peer && (
           <>
-            <Peer peer={peer} isSelf={true} />
+            <Peer peer={peer} isSelf={true} isMuted={true} isCircle={false} />
             <Peer peer={peer} />
             {elPeers}
           </>
