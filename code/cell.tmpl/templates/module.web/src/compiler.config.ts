@@ -1,4 +1,4 @@
-import { Compiler } from '@platform/cell.compiler';
+import { Compiler, Package } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
@@ -6,7 +6,7 @@ export default () =>
     .variant('web', (config) =>
       config
         .target('web')
-        .port(3000)
+        .port(Package.compiler.port)
 
         .entry('main', './src/entry/main')
         .declarations('./src/**/*')

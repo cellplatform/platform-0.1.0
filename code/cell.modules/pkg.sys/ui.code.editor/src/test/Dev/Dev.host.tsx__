@@ -15,16 +15,16 @@ export const DevHost: React.FC<DevHostProps> = (props) => {
   return (
     <Host
       style={styles.host}
-      layout={{
-        label: {
-          topLeft: props.title || 'sys.ui.code.editor',
-          topRight: props.filename,
-        },
-        position: { absolute: [50, 80] },
-        border: -0.1,
-        cropmarks: -0.2,
-        background: 1,
-      }}
+      // layout={{
+      //   label: {
+      //     topLeft: props.title || 'sys.ui.code.editor',
+      //     topRight: props.filename,
+      //   },
+      //   position: { absolute: [50, 80] },
+      //   border: -0.1,
+      //   cropmarks: -0.2,
+      //   background: 1,
+      // }}
     >
       {props.children}
     </Host>

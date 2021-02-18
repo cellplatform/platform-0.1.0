@@ -3,4 +3,5 @@ export const COLORS = {
   WHITE: '#fff',
   DARK: '#293042', // Inky blue/black.
   CYAN: '#00C2FF',
+  PINK: '#FE0168',
 };

@@ -2,11 +2,13 @@ import React from 'react';
 import { bundle, css, CssValue, log } from '../../common';
 import Award from '../../../static/images/award.svg';
 
+// import { part } from '../../../static/images/';
+
 log.info('bundle', bundle);
 
-export type ComponentProps = { count: number; style?: CssValue };
+export type SampleProps = { count: number; style?: CssValue };
 
-export const Component: React.FC<ComponentProps> = (props: ComponentProps) => {
+export const Sample: React.FC<SampleProps> = (props: SampleProps) => {
   const styles = {
     base: css({ PaddingX: 30 }),
     images: css({ Absolute: [-8, 0, null, null], Flex: 'horizontal-center-center' }),
@@ -39,4 +41,4 @@ export const Component: React.FC<ComponentProps> = (props: ComponentProps) => {
   );
 };
 
-export default Component;
+export default Sample;

@@ -36,18 +36,18 @@ describe('Runtime', () => {
     describe('create', () => {
       it('from <nothing>', () => {
         const bundle = Runtime.origin();
-        expect(bundle.host).to.eql('localhost:3000');
+        expect(bundle.host).to.eql(''); // NB: Host not available prior to compilation - in "dev" mode.
+        expect(bundle.dev).to.eql(true);
         expect(bundle.uri).to.eql('cell:dev:A1'); // NB: "dev" URI.
         expect(bundle.dir).to.eql('');
-        expect(bundle.dev).to.eql(true);
       });
 
       it('from __CELL__', () => {
         const bundle = Runtime.origin(__CELL__);
         expect(bundle.host).to.eql('foo.com');
+        expect(bundle.dev).to.eql(false); // NB: A host has been compiled into the __CELL__ - not "dev" mode
         expect(bundle.uri).to.eql('cell:foo:A1');
         expect(bundle.dir).to.eql('foobar');
-        expect(bundle.dev).to.eql(false);
       });
 
       it('ip address', () => {
@@ -72,15 +72,30 @@ describe('Runtime', () => {
     });
 
     describe('path', () => {
-      it('local', () => {
+      it('local (empty)', () => {
         const bundle = Runtime.origin();
         const test = (input: any, expected: string) => {
           const res = bundle.path(input);
           expect(res).to.eql(expected);
         };
-        test('', 'http://localhost:3000/'); // NB: local/dev
-        test('  ', 'http://localhost:3000/');
-        test('  /foo/img.png  ', 'http://localhost:3000/foo/img.png');
+        test('', '/'); // NB: local/dev
+        test('  ', '/');
+        test('/', '/');
+        test('  /foo/img.png  ', '/foo/img.png');
+      });
+
+      it('local (__CELL__)', () => {
+        const bundleFromHost = (host: string) => Runtime.origin(modify({ host }));
+        const test = (input: any, expected: string) => {
+          const res1 = bundleFromHost('localhost:5000').path(input);
+          const res2 = bundleFromHost('localhost').path(input);
+          expect(res1).to.eql(expected);
+          expect(res2).to.eql(expected);
+        };
+        test('', '/cell:foo:A1/fs/foobar/'); // NB: local/dev
+        test('  ', '/cell:foo:A1/fs/foobar/'); // NB: local/dev
+        test('/', '/cell:foo:A1/fs/foobar/'); // NB: local/dev
+        test('  /foo/img.png  ', '/cell:foo:A1/fs/foobar/foo/img.png');
       });
 
       it('remote (with dir)', () => {

@@ -1,15 +1,15 @@
 import React from 'react';
 
 import { DevActions } from 'sys.ui.dev';
-import { Component, ComponentProps } from './Component';
+import { Sample, SampleProps } from '.';
 
-type Ctx = ComponentProps;
+type Ctx = SampleProps;
 
 /**
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('sample-component')
+  .namespace('components/Sample')
   .context((prev) => prev || { count: 0 })
 
   .items((e) => {
@@ -28,12 +28,12 @@ export const actions = DevActions<Ctx>()
         border: -0.1,
         cropmarks: -0.2,
         background: 1,
-        label: '<Component>',
+        label: '<Sample>',
         position: [150, 80],
       },
       host: { background: -0.04 },
     });
-    e.render(<Component {...e.ctx} />);
+    e.render(<Sample {...e.ctx} />);
   });
 
 export default actions;

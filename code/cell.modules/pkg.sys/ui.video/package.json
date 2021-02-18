@@ -2,20 +2,31 @@
   "name": "sys.ui.video",
   "version": "0.0.0",
   "sideEffects": false,
+  "compiler": {
+    "port": 3033
+  },
   "scripts": {
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
+    "cmd": "cell.compiler --help $@",
     "bundle": "cell.compiler bundle $@",
     "watch": "cell.compiler watch $@",
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@"
+    "serve": "cell.compiler serve $@",
+    "deploy": "yarn upload --sample --port 5000",
+    "public": "yarn open && sh ./sh/ngrok.sh",
+    "open": "open https://os.ngrok.io/cell:ckl7eyjap000c8iete89p6tq0:A1/fs/sample/index.html"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@types/vimeo__player": "^2.10.0",
+    "@vimeo/player": "^2.15.0",
+    "peerjs": "^1.3.1"
+  },
   "devDependencies": {
     "@platform/cell.compiler": "0.3.0",
     "react": "17.0.1",

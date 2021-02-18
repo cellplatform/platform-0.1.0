@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { CssValue, t, rx, time } from '../../common';
+import { CssValue, t, rx, time, DEFAULT, css } from '../../common';
 import { Loading } from '../Loading';
 import { Monaco, MonacoEditor, MonacoEditorReadyEvent } from '../Monaco';
 import { CodeEditorInstance } from '../../api';
@@ -17,9 +17,12 @@ export type CodeEditorProps = {
 };
 
 export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
-  const { theme } = props;
+  // const { theme } = props;
   const editorRef = useRef<t.CodeEditorInstance>();
   const bus = rx.bus<t.CodeEditorEvent>(props.bus);
+
+  const [isReady, setIsReady] = useState<boolean>(false);
+  const [theme, setTheme] = useState<t.CodeEditorTheme>();
 
   const onReady = (e: MonacoEditorReadyEvent) => {
     const editor = CodeEditorInstance.create({
@@ -32,34 +35,32 @@ export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
 
     editorRef.current = editor;
 
-    // TEMP 🐷
-    // editor.value = 'const a:number[] = [1,2,3]';
+    if (props.onReady) props.onReady({ id: editor.id, editor });
+    if (props.focusOnLoad) editor.focus();
 
-    if (props.onReady) {
-      props.onReady({ id: editor.id, editor });
-    }
-
-    if (props.focusOnLoad) {
-      editor.focus();
-    }
+    // HACK: Theme not being applied until load finished.
+    setTheme(DEFAULT.THEME);
+    setIsReady(true);
   };
 
   useEffect(() => {
     // Clean up.
-    () => {
-      editorRef.current?.dispose();
-    };
+    () => editorRef.current?.dispose();
   });
 
-  const elLoading = <Loading theme={theme} />;
+  const elLoading = !isReady && <Loading theme={props.theme || DEFAULT.THEME} />;
+
+  const styles = {
+    base: css({ Absolute: 0 }),
+    editor: css({
+      display: isReady ? 'block' : 'none',
+    }),
+  };
 
   return (
-    <MonacoEditor
-      style={props.style}
-      theme={theme}
-      loading={elLoading}
-      onReady={onReady}
-      bus={bus}
-    />
+    <div {...css(styles.base, props.style)}>
+      {elLoading}
+      <MonacoEditor theme={theme} onReady={onReady} bus={bus} style={styles.editor} />
+    </div>
   );
 };

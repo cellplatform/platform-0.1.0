@@ -17,6 +17,8 @@ export const VERCEL = {
   URL: env('VERCEL_URL'),
 };
 
+console.log('VERCEL', VERCEL); // TEMP 🐷
+
 export const IS_CLOUD = Boolean(VERCEL.REGION);
 const TMP = IS_CLOUD ? '/tmp' : fs.resolve('tmp');
 

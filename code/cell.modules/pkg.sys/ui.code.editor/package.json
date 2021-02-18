@@ -2,7 +2,7 @@
   "name": "sys.ui.code.editor",
   "version": "0.0.51",
   "compiler": {
-    "port": 3033
+    "port": 3034
   },
   "scripts": {
     "test": "ts test $@",

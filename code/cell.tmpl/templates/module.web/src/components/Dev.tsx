@@ -1,7 +1,7 @@
 import React from 'react';
 import { Harness } from 'sys.ui.dev';
 
-import Component from './Component/Component.DEV';
-export const ACTIONS = [Component];
+import Sample from './Sample/Sample.DEV';
+export const ACTIONS = [Sample];
 
 export const Dev: React.FC = () => <Harness actions={ACTIONS} />;
