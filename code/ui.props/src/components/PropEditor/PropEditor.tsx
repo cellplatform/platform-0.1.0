@@ -46,7 +46,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   public state: IPropEditorState = {};
   private state$ = new Subject<Partial<IPropEditorState>>();
   private unmounted$ = new Subject<void>();
-  private didUpdate$ = new Subject();
+  private didUpdate$ = new Subject<void>();
   private value$ = new Subject<t.TextInputEvent>();
 
   private elValueInput!: TextInput;

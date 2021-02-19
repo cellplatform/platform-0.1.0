@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.ui.ide",
-  "version": "0.0.184",
+  "version": "0.0.185",
   "description": "IDE (Integrated Development Environment) UI components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,23 +18,23 @@
   },
   "dependencies": {
     "@monaco-editor/react": "4.0.10",
-    "@platform/cell.client": "0.3.42",
-    "@platform/cell.schema.sys": "0.0.91",
-    "@platform/cell.types": "0.5.52",
-    "@platform/cell.typesystem": "0.0.171",
-    "@platform/cell.ui": "0.1.182",
-    "@platform/libs": "0.2.6",
-    "@platform/react": "0.4.62",
-    "@platform/state": "0.7.27",
-    "@platform/types": "0.5.14",
-    "@platform/ui.icon": "0.0.181",
+    "@platform/cell.client": "0.3.43",
+    "@platform/cell.schema.sys": "0.0.92",
+    "@platform/cell.types": "0.5.53",
+    "@platform/cell.typesystem": "0.0.172",
+    "@platform/cell.ui": "0.1.183",
+    "@platform/libs": "0.2.7",
+    "@platform/react": "0.4.63",
+    "@platform/state": "0.7.28",
+    "@platform/types": "0.5.15",
+    "@platform/ui.icon": "0.0.182",
     "monaco-themes": "0.3.3",
     "react-icons": "4.2.0"
   },
   "devDependencies": {
-    "@platform/test": "0.2.2",
-    "@platform/ts": "4.1.5",
-    "@platform/ui.dev": "0.0.36"
+    "@platform/test": "0.2.3",
+    "@platform/ts": "4.1.6",
+    "@platform/ui.dev": "0.0.37"
   },
   "files": [
     "lib",

@@ -99,7 +99,7 @@ function parse(path: string, text: string) {
 
       case 'yml':
       case 'yaml':
-        return yaml.safeLoad(text);
+        return yaml.load(text);
 
       default:
         throw new Error(

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { CellEditor, color, css, datagrid, markdown, t } from '../common';
+import { CellEditor, color, css, datagrid, Markdown, t } from '../common';
 import { MyScreen } from '../components/MyScreen';
 import { TestGridView } from '../components/Test.Grid.view';
 
@@ -102,7 +102,7 @@ function renderCell(req: t.IGridFactoryRequest) {
 
 function formatValue(cell: t.IGridCellData) {
   let value = cell.props && cell.props.value ? cell.props.value : cell.value;
-  value = typeof value === 'string' && !value.startsWith('=') ? markdown.toHtmlSync(value) : value;
+  value = typeof value === 'string' && !value.startsWith('=') ? Markdown.toHtmlSync(value) : value;
   value = typeof value === 'object' ? JSON.stringify(value) : value;
   return value;
 }

@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.code.editor",
-  "version": "0.0.51",
+  "version": "0.0.52",
   "compiler": {
     "port": 3034
   },
@@ -20,11 +20,11 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^4.0.10",
-    "@platform/state": "^0.7.27",
+    "@platform/state": "^0.7.28",
     "monaco-editor": "^0.22.3"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.3.0",
+    "@platform/cell.compiler": "^0.3.1",
     "@types/prettier": "^2.1.6",
     "automerge": "^0.14.1",
     "prettier": "^2.2.1",

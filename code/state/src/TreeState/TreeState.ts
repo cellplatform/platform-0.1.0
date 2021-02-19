@@ -159,7 +159,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     return res;
   }
 
-  public add = <C extends N = N, A extends string = string>(
+  public add = <C extends N = N>(
     args: { parent?: string; root: C | string | t.ITreeState<C> } | t.ITreeState<C>,
   ): t.ITreeState<C> => {
     // Wrangle: Check if the arguments are in fact a [TreeState] instance.
@@ -169,7 +169,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
 
     // Create the child instance.
     const self = this as t.ITreeState<any>;
-    const child = this.getOrCreateInstance<any, any>(args as t.TreeStateAddArgs<C>);
+    const child = this.getOrCreateInstance<any>(args as t.TreeStateAddArgs<C>);
     if (this.childExists(child)) {
       const err = `Cannot add child '${child.id}' as it already exists within the parent '${this.state.id}'.`;
       throw new Error(err);
@@ -339,7 +339,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     return Boolean(this.child(input));
   }
 
-  private getOrCreateInstance<C extends N = N, A extends string = string>(args: {
+  private getOrCreateInstance<C extends N = N>(args: {
     parent?: string;
     root: C | string | t.ITreeState<C>;
   }): t.ITreeState<C> {

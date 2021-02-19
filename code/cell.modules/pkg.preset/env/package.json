@@ -1,12 +1,12 @@
 {
   "name": "preset.env",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "dependencies": {
-    "@platform/cell.schema": "^0.5.52",
-    "@platform/cell.types": "^0.5.52",
-    "@platform/libs": "^0.2.6",
-    "@platform/types": "^0.5.14",
-    "@platform/util.value": "^0.8.14"
+    "@platform/cell.schema": "^0.5.53",
+    "@platform/cell.types": "^0.5.53",
+    "@platform/libs": "^0.2.7",
+    "@platform/types": "^0.5.15",
+    "@platform/util.value": "^0.8.15"
   },
   "license": "MIT",
   "private": true

@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.runtime.electron",
-  "version": "0.0.167",
+  "version": "0.0.168",
   "description": "Electron shell for CellOS.",
   "scripts": {
     "ui": "cd app.ui && yarn start",
@@ -17,9 +17,9 @@
     "open": "cd app/out/make && open ."
   },
   "devDependencies": {
-    "@platform/cell.runtime": "0.10.11",
-    "@platform/cli.prompt": "0.3.39",
-    "@platform/ts": "4.1.5"
+    "@platform/cell.runtime": "0.10.12",
+    "@platform/cli.prompt": "0.3.40",
+    "@platform/ts": "4.1.6"
   },
   "files": [
     "lib",
