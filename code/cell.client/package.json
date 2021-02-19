@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.client",
-  "version": "0.3.43",
+  "version": "0.3.44",
   "description": "A strongly typed HTTP client for operating with a CellOS service end-point.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,20 +13,20 @@
     "prepare": "ts-node -T scripts.ts/prepare && ts prepare"
   },
   "dependencies": {
-    "@platform/cell.schema": "0.5.53",
-    "@platform/cell.types": "0.5.53",
-    "@platform/cell.typesystem": "0.0.172",
-    "@platform/http": "0.14.10",
-    "@platform/http.types": "0.2.35",
+    "@platform/cell.schema": "0.5.54",
+    "@platform/cell.types": "0.5.54",
+    "@platform/cell.typesystem": "0.0.173",
+    "@platform/http": "0.14.11",
+    "@platform/http.types": "0.2.36",
     "@platform/libs": "0.2.7",
-    "@platform/queue": "0.0.39",
-    "@platform/types": "0.5.15",
+    "@platform/queue": "0.0.40",
+    "@platform/types": "0.5.16",
     "form-data": "4.0.0"
   },
   "devDependencies": {
-    "@platform/npm": "0.3.28",
+    "@platform/npm": "0.3.29",
     "@platform/test": "0.2.3",
-    "@platform/ts": "4.1.6"
+    "@platform/ts": "4.1.7"
   },
   "files": [
     "lib",

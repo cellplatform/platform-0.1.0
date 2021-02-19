@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.icon",
   "description": "Icon component library.",
-  "version": "0.0.182",
+  "version": "0.0.183",
   "main": "lib/index",
   "scripts": {
     "start": "parcel src/test.parcel/index.html",
@@ -14,16 +14,16 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/css": "0.4.30",
-    "@platform/react": "0.4.63"
+    "@platform/css": "0.4.31",
+    "@platform/react": "0.4.64"
   },
   "peerDependencies": {
     "react-icons": "4.2.0"
   },
   "devDependencies": {
     "@platform/polyfill": "0.0.1",
-    "@platform/ts": "4.1.6",
-    "@platform/ui.dev": "0.0.37",
+    "@platform/ts": "4.1.7",
+    "@platform/ui.dev": "0.0.38",
     "react-icons": "4.2.0"
   },
   "files": [

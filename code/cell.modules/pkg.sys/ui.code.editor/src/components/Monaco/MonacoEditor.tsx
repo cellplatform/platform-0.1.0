@@ -1,4 +1,4 @@
-import MonacoEditorCore, { EditorDidMount } from '@monaco-editor/react';
+import MonacoEditorCore, { OnMount } from '@monaco-editor/react';
 import React, { useRef } from 'react';
 
 import { CodeEditor } from '../../api';
@@ -31,7 +31,7 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = (props) => {
   const editorRef = useRef<E>();
   const { language = DEFAULT.LANGUAGE.TS, theme } = props;
 
-  const onMount: EditorDidMount = async (getValue, ed) => {
+  const onMount: OnMount = async (getValue, ed) => {
     const monaco = await CodeEditor.singleton(props.bus);
     const editor = ed as any;
     editorRef.current = editor;
@@ -49,7 +49,7 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = (props) => {
       <MonacoEditorCore
         language={language}
         theme={theme}
-        editorDidMount={onMount}
+        onMount={onMount}
         loading={props.loading}
         options={{
           minimap: { enabled: true },

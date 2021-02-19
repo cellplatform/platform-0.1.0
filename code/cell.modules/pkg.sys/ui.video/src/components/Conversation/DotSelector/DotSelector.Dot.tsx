@@ -45,7 +45,7 @@ export const DotSelectorDot: React.FC<DotSelectorDotProps> = (props) => {
     }),
     border: css({
       Absolute: -2,
-      backgroundColor: color.format(0.2),
+      backgroundColor: color.format(0.4),
       borderRadius: '100%',
     }),
   };

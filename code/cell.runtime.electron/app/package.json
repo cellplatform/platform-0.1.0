@@ -31,7 +31,7 @@
     "@platform/cell.router": "0.8.93",
     "@platform/cell.schema": "0.5.53",
     "@platform/cell.schema.sys": "0.0.92",
-    "@platform/cell.service": "0.8.29",
+    "@platform/cell.service": "0.8.30",
     "@platform/cell.types": "0.5.53",
     "@platform/cell.typesystem": "0.0.172",
     "@platform/fs": "0.6.7",

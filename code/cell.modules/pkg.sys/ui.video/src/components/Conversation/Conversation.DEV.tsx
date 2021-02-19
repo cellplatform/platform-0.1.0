@@ -2,7 +2,8 @@ import React from 'react';
 
 import { DevActions } from 'sys.ui.dev';
 import { Layout, LayoutProps } from './Layout';
-import { css, cuid } from '../../common';
+import { css } from '../../common';
+import { asArray } from '@platform/util.value';
 
 type Ctx = { props: LayoutProps };
 
@@ -18,7 +19,7 @@ export const actions = DevActions<Ctx>()
 
     e.button('add peer', (e) => {
       //
-      e.ctx.props.peers = (e.ctx.props.peers || 0) + 1;
+      e.ctx.props.totalPeers = (e.ctx.props.totalPeers || 0) + 1;
     });
 
     // e.boolean('muted', (e) => {
@@ -28,16 +29,28 @@ export const actions = DevActions<Ctx>()
     e.hr();
   })
 
+  .items((e) => {
+    e.title('Folder (Content)');
+    e.button('peer-1', (e) => (e.ctx.props.imageDir = 'static/images.tmp.peer-1/'));
+    e.button('peer-2', (e) => (e.ctx.props.imageDir = 'static/images.tmp.peer-2/'));
+    e.hr();
+  })
+
   /**
    * Render
    */
   .subject((e) => {
+    const imageDirs = asArray(e.ctx.props.imageDir).filter(Boolean);
+
     e.settings({
       layout: {
         border: -0.1,
         cropmarks: -0.2,
         background: 1,
-        label: 'Conversation.Layout',
+        label: {
+          topLeft: 'Conversation.Layout',
+          topRight: `folder: ${imageDirs.join(', ') || '<none>'}`,
+        },
         position: [80, 80, 120, 80],
       },
       host: { background: -0.04 },

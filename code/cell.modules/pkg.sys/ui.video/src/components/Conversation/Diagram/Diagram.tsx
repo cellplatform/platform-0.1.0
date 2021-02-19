@@ -6,7 +6,7 @@ import { DotSelector, DotSelectorItem } from '../DotSelector';
 import { Images } from '../Views';
 
 export type DiagramProps = {
-  dir?: string;
+  dir?: string | string[];
   style?: CssValue;
 };
 
@@ -21,10 +21,14 @@ export const Diagram: React.FC<DiagramProps> = (props) => {
   const [paths, setPaths] = useState<string[]>();
 
   useEffect(() => {
+    const dirTmp = Array.isArray(dir) ? dir[0] : dir || '';
+    console.log('TODO', 'Load multiple dirs'); // TEMP 🐷
+
     const paths = !dir
       ? []
       : files
-          .filter((file) => file.path.startsWith(dir))
+          .filter(() => Boolean(dirTmp))
+          .filter((file) => file.path.startsWith(dirTmp))
           .filter((file) => isImagePath(file.path))
           .map((file) => bundle.path(file.path));
 

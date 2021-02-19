@@ -4,12 +4,13 @@ import { Diagram } from '../Diagram';
 import { Peer } from '../Peer';
 
 export type LayoutProps = {
-  peers?: number;
+  totalPeers?: number;
+  imageDir?: string | string[];
   style?: CssValue;
 };
 
 export const Layout: React.FC<LayoutProps> = (props) => {
-  const { peers = 0 } = props;
+  const { totalPeers = 0, imageDir } = props;
   const [peer, setPeer] = useState<PeerJS>();
 
   useEffect(() => {
@@ -42,14 +43,14 @@ export const Layout: React.FC<LayoutProps> = (props) => {
 
   const elPeers =
     peer &&
-    Array.from({ length: peers }).map((v, i) => {
+    Array.from({ length: totalPeers }).map((v, i) => {
       return <Peer key={i} peer={peer} />;
     });
 
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
-        <Diagram dir={'static/images.tmp/'} />
+       {imageDir && <Diagram dir={imageDir} />}
       </div>
       <div {...styles.footer}>
         {peer && (
