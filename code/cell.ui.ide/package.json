@@ -17,7 +17,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@monaco-editor/react": "3.7.4",
+    "@monaco-editor/react": "4.0.10",
     "@platform/cell.client": "0.3.42",
     "@platform/cell.schema.sys": "0.0.91",
     "@platform/cell.types": "0.5.52",
@@ -29,7 +29,7 @@
     "@platform/types": "0.5.14",
     "@platform/ui.icon": "0.0.181",
     "monaco-themes": "0.3.3",
-    "react-icons": "4.1.0"
+    "react-icons": "4.2.0"
   },
   "devDependencies": {
     "@platform/test": "0.2.2",

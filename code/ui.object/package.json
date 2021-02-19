@@ -20,7 +20,7 @@
   "devDependencies": {
     "@platform/polyfill": "0.0.1",
     "@platform/ts": "4.1.5",
-    "electron": "11.1.0"
+    "electron": "11.2.3"
   },
   "files": [
     "lib",

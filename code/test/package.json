@@ -12,11 +12,11 @@
     "prepare": "yarn build && yarn lint && yarn test"
   },
   "dependencies": {
-    "@types/chai": "4.2.14",
-    "@types/mocha": "8.2.0",
-    "chai": "4.2.0",
+    "@types/chai": "4.2.15",
+    "@types/mocha": "8.2.1",
+    "chai": "4.3.0",
     "findup-sync": "4.0.0",
-    "mocha": "8.2.1"
+    "mocha": "8.3.0"
   },
   "devDependencies": {
     "@platform/ts.libs": "4.1.2"

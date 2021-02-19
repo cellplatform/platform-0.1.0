@@ -28,7 +28,7 @@
     "@platform/util.markdown": "^0.0.92",
     "preset.env": "^0.0.11",
     "react-icons": "^4.1.0",
-    "react-select": "^4.0.2",
+    "react-select": "^4.1.0",
     "sys.ui.primitives": "^0.0.51"
   },
   "devDependencies": {

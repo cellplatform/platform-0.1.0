@@ -31,7 +31,7 @@
     "@platform/ts": "4.1.5",
     "@platform/ui.datagrid": "0.7.327",
     "@platform/ui.datagrid.cell": "0.2.161",
-    "electron": "11.1.0"
+    "electron": "11.2.3"
   },
   "files": [
     "lib",

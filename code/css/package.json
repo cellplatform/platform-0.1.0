@@ -19,7 +19,7 @@
     "@platform/util.value": "0.8.14",
     "@types/tinycolor2": "1.4.2",
     "glamor-jss": "1.4.1",
-    "jss-plugin-global": "10.5.0",
+    "jss-plugin-global": "10.5.1",
     "tinycolor2": "1.4.2"
   },
   "devDependencies": {

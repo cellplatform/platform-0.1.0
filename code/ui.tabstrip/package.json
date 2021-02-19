@@ -24,7 +24,7 @@
     "@platform/ui.dev": "0.0.36",
     "@platform/ui.icon": "0.0.181",
     "@types/react-sortable-hoc": "0.7.1",
-    "react-icons": "4.1.0"
+    "react-icons": "4.2.0"
   },
   "files": [
     "lib",
