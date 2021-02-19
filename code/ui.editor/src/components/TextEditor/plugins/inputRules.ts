@@ -4,6 +4,7 @@
  */
 
 import { Schema, NodeType } from 'prosemirror-model';
+import { Plugin } from 'prosemirror-state';
 import {
   inputRules,
   wrappingInputRule,
@@ -89,7 +90,7 @@ export function headingRule(nodeType: NodeType, maxLevel: number) {
  * A set of input rules for creating the basic { block } quotes, lists,
  * code blocks, and heading.
  */
-export function build(schema: Schema, options: { allowHeadings?: boolean }) {
+export function build(schema: Schema, options: { allowHeadings?: boolean }): Plugin {
   const nodes = schema.nodes;
   const rules = smartQuotes.concat(ellipsis, hrRule, emDash, loremRule);
 

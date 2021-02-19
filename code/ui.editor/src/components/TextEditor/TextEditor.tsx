@@ -163,8 +163,8 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   }
 
   public get editor() {
-    const view = this.view;
-    const state = view.state;
+    const view: EditorView = this.view;
+    const state: EditorState = view.state;
     return { view, state };
   }
 
