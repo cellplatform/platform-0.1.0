@@ -44,9 +44,11 @@ export type ActionSelectItem<V = any> = { label: string; value: V };
 export type ActionSelectItemInput = string | number | boolean | t.ActionSelectItem;
 
 export type ActionSelectChanging = {
-  action: t.SelectActionTypes;
+  action: t.ActionSelectKind;
   next: t.ActionSelectItem[];
 };
+
+export type ActionSelectKind = 'select-option';
 
 /**
  * HANDLER Select (dropdown)
