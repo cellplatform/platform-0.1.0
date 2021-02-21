@@ -15,7 +15,7 @@ describe('Manifest', function () {
 
   beforeEach(() => fs.remove(TMP));
 
-  it('filename', () => {
+  it('filename (default: index.json)', () => {
     expect(Manifest.filename).to.eql('index.json');
   });
 
@@ -41,63 +41,6 @@ describe('Manifest', function () {
     await test(`${sourceDir}///`);
   });
 
-  it('does not include manifest file within list', async () => {
-    const sourceDir = fs.join(TMP, 'src');
-    const write = async (name: string) => {
-      const path = fs.join(sourceDir, name);
-      await fs.ensureDir(fs.dirname(path));
-      await fs.writeFile(path, 'hello');
-    };
-
-    await write(Manifest.filename);
-    await write('one.txt');
-    await write('two.txt');
-    await write(fs.join('foo', Manifest.filename)); // NB: Descendent file with the manifest name "index.json" is not excluded.
-
-    const manifest = await Manifest.create({ sourceDir });
-    const files = manifest.files;
-
-    expect(files.length).to.eql(3);
-    expect(files.filter((file) => file.path === Manifest.filename).length).to.eql(0);
-  });
-
-  it('write flag: allowRedirects', async () => {
-    const model = config.toObject();
-    const manifest = await Manifest.create({ model, sourceDir });
-
-    const js = manifest.files.find((file) => file.path.endsWith('main.js'));
-    const png = manifest.files.find((file) => file.path.endsWith('.png'));
-
-    expect(js?.allowRedirect).to.eql(false);
-    expect(png?.allowRedirect).to.eql(undefined);
-  });
-
-  it('write flag: public', async () => {
-    const model = config.toObject();
-    const manifest = await Manifest.create({ model, sourceDir });
-
-    const images = manifest.files.filter((file) => file.path.endsWith('.png'));
-    const other = manifest.files.filter((file) => !file.path.endsWith('.png'));
-
-    expect(images.every((file) => file.public === true)).to.eql(true);
-    expect(other.every((file) => file.public === undefined)).to.eql(true);
-  });
-
-  it('writeFile => readFile', async () => {
-    const model = config.toObject();
-    const manifest = await Manifest.create({ model, sourceDir });
-
-    const path = fs.join(TMP, Manifest.filename);
-    expect(await fs.pathExists(path)).to.eql(false);
-
-    await Manifest.write({ manifest, dir: TMP });
-    expect(await fs.pathExists(path)).to.eql(true);
-
-    const read = await Manifest.read({ dir: TMP });
-    expect(read.path).to.eql(path);
-    expect(read.manifest).to.eql(manifest);
-  });
-
   it('createAndSave', async () => {
     const path = fs.join(TMP, Manifest.filename);
     expect(await fs.pathExists(path)).to.eql(false);
@@ -109,6 +52,68 @@ describe('Manifest', function () {
     const read = await Manifest.read({ dir: TMP });
     expect(read.path).to.eql(path);
     expect(read.manifest).to.eql(res.manifest);
+  });
+
+  describe('write', () => {
+    it('write flag: allowRedirects', async () => {
+      const model = config.toObject();
+      const manifest = await Manifest.create({ model, sourceDir });
+
+      const js = manifest.files.find((file) => file.path.endsWith('main.js'));
+      const png = manifest.files.find((file) => file.path.endsWith('.png'));
+
+      expect(js?.allowRedirect).to.eql(false);
+      expect(png?.allowRedirect).to.eql(undefined);
+    });
+
+    it('write flag: public', async () => {
+      const model = config.toObject();
+      const manifest = await Manifest.create({ model, sourceDir });
+
+      const png = manifest.files.filter((file) => file.path.endsWith('.png'));
+      const other = manifest.files.filter((file) => !file.path.endsWith('.png'));
+
+      expect(png.length).to.greaterThan(1);
+      expect(other.length).to.greaterThan(1);
+
+      expect(png.every((file) => file.public === true)).to.eql(true);
+      expect(other.every((file) => file.public === undefined)).to.eql(true);
+    });
+
+    it('writeFile => readFile', async () => {
+      const model = config.toObject();
+      const manifest = await Manifest.create({ model, sourceDir });
+
+      const path = fs.join(TMP, Manifest.filename);
+      expect(await fs.pathExists(path)).to.eql(false);
+
+      await Manifest.write({ manifest, dir: TMP });
+      expect(await fs.pathExists(path)).to.eql(true);
+
+      const read = await Manifest.read({ dir: TMP });
+      expect(read.path).to.eql(path);
+      expect(read.manifest).to.eql(manifest);
+    });
+
+    it('does not include manifest file within itself', async () => {
+      const sourceDir = fs.join(TMP, 'src');
+      const write = async (name: string) => {
+        const path = fs.join(sourceDir, name);
+        await fs.ensureDir(fs.dirname(path));
+        await fs.writeFile(path, 'hello');
+      };
+
+      await write(Manifest.filename);
+      await write('one.txt');
+      await write('two.txt');
+      await write(fs.join('foo', Manifest.filename)); // NB: Descendent file with the manifest name "index.json" is not excluded.
+
+      const manifest = await Manifest.create({ sourceDir });
+      const files = manifest.files;
+
+      expect(files.length).to.eql(3);
+      expect(files.filter((file) => file.path === Manifest.filename).length).to.eql(0);
+    });
   });
 
   describe('hash', () => {
@@ -219,6 +224,52 @@ describe('Manifest', function () {
       expect(error.message).to.include(
         `A file not within the manifest has been added to the file-system`,
       );
+    });
+  });
+
+  describe('image', () => {
+    const getStatic = async () => {
+      const model = config.toObject();
+      const res = await Manifest.createAndSave({ model, sourceDir });
+      const manifest = res.manifest;
+      const files = manifest.files.filter((file) => file.path.startsWith('static/'));
+      return { manifest, model, files };
+    };
+
+    it('toImages', async () => {
+      const { files } = await getStatic();
+
+      const png = files.find((file) => file.path.endsWith('.png'));
+      const path = png?.path || '';
+      const res = await Manifest.toImage(path);
+
+      expect(res?.kind).to.eql('png');
+      expect(res?.width).to.eql(247);
+      expect(res?.height).to.eql(245);
+    });
+
+    it('file entry has {image}', async () => {
+      const { files } = await getStatic();
+
+      const png = files.filter((file) => file.path.endsWith('.png'));
+      const jpg = files.filter((file) => file.path.endsWith('.jpg'));
+      const svg = files.filter((file) => file.path.endsWith('.svg'));
+      const images = [...png, ...jpg, ...svg];
+      const other = files.filter((file) => !images.some((img) => img.path === file.path));
+
+      expect(png.length).to.eql(2);
+      expect(jpg.length).to.eql(1);
+      expect(svg.length).to.eql(1);
+
+      for (const item of other) {
+        expect(item.image).to.eql(undefined);
+      }
+
+      for (const item of images) {
+        expect(item.image).to.not.eql(undefined);
+        expect(typeof item.image?.width).to.eql('number');
+        expect(typeof item.image?.height).to.eql('number');
+      }
     });
   });
 });
