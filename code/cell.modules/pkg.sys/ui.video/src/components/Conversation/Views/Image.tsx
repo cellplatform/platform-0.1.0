@@ -35,15 +35,14 @@ export const Image: React.FC<ImageProps> = (props) => {
     const dragger = drag.position({ el });
     const startZoom = zoom;
 
-    const drag$ = dragger.events$.pipe(
-      filter((e) => e.type === 'DRAG'),
-      observeOn(animationFrameScheduler),
-    );
+    const events$ = dragger.events$.pipe(observeOn(animationFrameScheduler));
+    // const start$ = events$.pipe(filter((e) => e.type === ''));
+    const drag$ = events$.pipe(filter((e) => e.type === 'DRAG'));
 
     drag$.pipe(filter((e) => isAltKeyPressed)).subscribe((e) => {
       const diff = e.delta.y / 100;
       const next = Math.max(0.1, startZoom + diff);
-      if (next <= 1) setOffset(0, 0);
+      // if (next <= 1) setOffset(0, 0);
       setZoom(next);
     });
 
@@ -54,6 +53,9 @@ export const Image: React.FC<ImageProps> = (props) => {
       )
       .subscribe((e) => {
         const { x, y } = e.delta;
+
+        console.log('e.start', e.start, x, y);
+
         setOffset(x, y);
       });
   };
@@ -64,9 +66,9 @@ export const Image: React.FC<ImageProps> = (props) => {
     }),
   };
 
-  console.log('-------------------------------------------');
-  console.log('translateX', offsetX);
-  console.log('translateY', offsetY);
+  // console.log('-------------------------------------------');
+  // console.log('translateX', offsetX);
+  // console.log('translateY', offsetY);
   // console.log('transform', transform);
 
   return (
