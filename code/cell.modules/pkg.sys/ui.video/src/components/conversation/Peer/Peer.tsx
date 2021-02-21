@@ -11,6 +11,7 @@ export type PeerProps = {
   isSelf?: boolean;
   isMuted?: boolean;
   isCircle?: boolean;
+  isCircleTransition?: number;
   width?: number;
   height?: number;
   autoPlay?: boolean;
@@ -85,6 +86,7 @@ export const Peer: React.FC<PeerProps> = (props) => {
         position: 'relative',
         overflow: 'hidden',
         borderRadius: isCircle ? '100%' : 16,
+        transition: `border-radius ${defaultValue(props.isCircleTransition, 100)}ms`,
         width,
         height,
         border: `solid 5px ${color.format(-0.1)}`,

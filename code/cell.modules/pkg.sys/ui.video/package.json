@@ -18,7 +18,7 @@
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "deploy": "yarn upload --sample --port 5000",
+    "deploy": "sh sh/deploy.sh",
     "public": "yarn open && sh ./sh/ngrok.sh",
     "open": "open https://os.ngrok.io/cell:ckl7eyjap000c8iete89p6tq0:A1/fs/sample/index.html"
   },

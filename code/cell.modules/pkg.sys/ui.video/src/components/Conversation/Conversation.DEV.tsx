@@ -7,18 +7,24 @@ import { asArray } from '@platform/util.value';
 
 type Ctx = { props: LayoutProps };
 
+const DIRS = {
+  PEER1: 'static/images.tmp.peer-1/',
+  PEER2: 'static/images.tmp.peer-2/',
+};
+
+const INITIAL: Ctx = { props: { imageDir: DIRS.PEER1 } };
+
 /**
  * Actions
  */
 export const actions = DevActions<Ctx>()
   .namespace('Conversation')
-  .context((prev) => prev || { props: {} })
+  .context((prev) => prev || INITIAL)
 
   .items((e) => {
     e.title('Actions');
 
     e.button('add peer', (e) => {
-      //
       e.ctx.props.totalPeers = (e.ctx.props.totalPeers || 0) + 1;
     });
 
@@ -31,8 +37,8 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Folder (Content)');
-    e.button('peer-1', (e) => (e.ctx.props.imageDir = 'static/images.tmp.peer-1/'));
-    e.button('peer-2', (e) => (e.ctx.props.imageDir = 'static/images.tmp.peer-2/'));
+    e.button('peer-1', (e) => (e.ctx.props.imageDir = DIRS.PEER1));
+    e.button('peer-2', (e) => (e.ctx.props.imageDir = DIRS.PEER2));
     e.hr();
   })
 
