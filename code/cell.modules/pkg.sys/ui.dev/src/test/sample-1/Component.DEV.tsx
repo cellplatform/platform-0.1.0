@@ -32,6 +32,7 @@ export const actions = DevActions<Ctx>()
   .context((prev) => prev || { myLayout: 'single', count: 0, text: LOREM, isRunning: true })
 
   .items((e) => {
+    e.title('state (ctx)');
     e.button('change text', (e) => {
       e.ctx.count++;
       e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
@@ -59,7 +60,16 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
+  })
 
+  .items((e) => {
+    e.title('hr');
+    e.hr(1, 0.15);
+    e.hr(1, 0.15, [5, 0]);
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('buttons');
     e.button((config) => config.label('hello'));
     e.button('delay', async (e) => await time.delay(1200));
@@ -100,7 +110,12 @@ export const actions = DevActions<Ctx>()
       );
     });
 
-    e.hr(1, 0.15);
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('boolean');
+
     e.boolean('boolean (disabled)');
     e.boolean('spinner', async (e) => {
       if (e.changing) await time.wait(800);
@@ -117,8 +132,11 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.isRunning;
     });
 
-    e.hr(1, 0.15);
+    e.hr();
+  })
 
+  .items((e) => {
+    e.title('select');
     e.select((config) =>
       config
         .label('select single')
@@ -158,7 +176,9 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
+  })
 
+  .items((e) => {
     e.title('layouts');
     e.button('single: center', (e) => (e.ctx.myLayout = 'single'));
     e.button('single: top left', (e) => (e.ctx.myLayout = 'single:top-left'));
@@ -170,7 +190,9 @@ export const actions = DevActions<Ctx>()
     e.button('double: center (x)', (e) => (e.ctx.myLayout = 'double-x'));
 
     e.hr();
+  })
 
+  .items((e) => {
     e.title('style: host');
     e.button('bg: dark (string)', (e) => {
       e.settings({
@@ -191,7 +213,9 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
+  })
 
+  .items((e) => {
     e.title('style: actions');
     e.button('bg: white (0)', (e) => (e.actions.background = 0));
     e.button('bg: light (-0.04)', (e) => (e.actions.background = -0.04));
@@ -204,7 +228,9 @@ export const actions = DevActions<Ctx>()
     e.button('width: 500', (e) => (e.actions.width = 500));
 
     e.hr();
+  })
 
+  .items((e) => {
     e.title('style: item layout');
     e.button('background: 1', (e) => (e.layout.background = 1));
     e.button('background: -0.3', (e) => (e.layout.background = -0.3));
