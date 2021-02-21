@@ -4,8 +4,9 @@ type O = Record<string, unknown>;
 
 export * from './Dev.Boolean';
 export * from './Dev.Button';
-export * from './Dev.Select';
 export * from './Dev.event';
+export * from './Dev.Select';
+export * from './Dev.Textbox';
 
 /**
  * Methods for "dev" (development) tp rapidly build and test component- states.
