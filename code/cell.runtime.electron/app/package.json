@@ -28,7 +28,7 @@
     "@platform/cell.client": "0.3.43",
     "@platform/cell.fs": "0.4.175",
     "@platform/cell.fs.local": "0.4.175",
-    "@platform/cell.router": "0.8.93",
+    "@platform/cell.router": "0.8.94",
     "@platform/cell.schema": "0.5.53",
     "@platform/cell.schema.sys": "0.0.92",
     "@platform/cell.service": "0.8.30",
