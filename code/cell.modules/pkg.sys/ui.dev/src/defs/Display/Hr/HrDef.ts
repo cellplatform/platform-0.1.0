@@ -1,6 +1,6 @@
 import { t } from '../common';
 import { config } from './HrDef.config';
-import { Hr as Component } from '../../../components/Action.display';
+import { Hr as Component } from '../../../components/Action.Display';
 
 export const HrDef: t.ActionDef<t.ActionHr> = {
   kind: 'display/hr',

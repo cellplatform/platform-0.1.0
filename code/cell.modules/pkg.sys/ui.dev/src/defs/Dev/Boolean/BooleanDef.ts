@@ -1,7 +1,7 @@
 import { filter } from 'rxjs/operators';
 
 import { Context, Handler, Model, rx, t, is } from '../common';
-import { Bool as Component } from '../../../components/Action.dev';
+import { Bool as Component } from '../../../components/Action.Dev';
 import { config } from './BooleanDef.config';
 
 type T = t.ActionBoolean;

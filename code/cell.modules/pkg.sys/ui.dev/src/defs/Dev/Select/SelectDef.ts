@@ -1,7 +1,7 @@
 import { filter } from 'rxjs/operators';
 
 import { Context, Handler, is, Model, rx, t } from '../common';
-import { Select as Component } from '../../../components/Action.dev';
+import { Select as Component } from '../../../components/Action.Dev';
 import { config } from './SelectDef.config';
 
 type T = t.ActionSelect;
