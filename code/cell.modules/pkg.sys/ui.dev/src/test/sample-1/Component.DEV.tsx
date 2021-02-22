@@ -72,7 +72,9 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Textbox');
     // TODO 🐷
-    e.button('🐷 TODO');
+    e.textbox('🐷 TODO', (e) => {
+      console.log('e', e);
+    });
     e.hr();
   })
 

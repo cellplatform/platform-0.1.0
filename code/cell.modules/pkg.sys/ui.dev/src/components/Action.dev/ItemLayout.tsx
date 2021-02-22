@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
-import { color, COLORS, constants, css, CssValue, DEFAULT, t } from '../common';
+import { color, COLORS, constants, css, CssValue, DEFAULT, t, defaultValue } from '../common';
 import { Icons } from '../Icons';
 import { Markdown } from '../Markdown';
 import { Spinner } from '../Primitives';
 
 /**
- * The button view, with no smarts about the event bus.
+ * A base layout for the display of an dev [Action] item.
  */
-export type ButtonViewProps = {
+export type ItemLayoutProps = {
   label: React.ReactNode;
   description?: React.ReactNode;
   placeholder?: boolean;
@@ -16,11 +16,14 @@ export type ButtonViewProps = {
   icon?: t.IIcon;
   right?: React.ReactNode;
   isSpinning?: boolean;
+  pressOffset?: number;
   style?: CssValue;
   onClick?: () => void;
 };
-export const ButtonView: React.FC<ButtonViewProps> = (props) => {
+export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
   const { placeholder, onClick, isSpinning } = props;
+  const pressOffset = defaultValue(props.pressOffset, 1);
+
   const [isOver, setIsOver] = useState<boolean>(false);
   const [isDown, setIsDown] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<boolean>(props.isActive);
@@ -33,7 +36,6 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
     base: css({
       position: 'relative',
       boxSizing: 'border-box',
-      color: COLORS.DARK,
     }),
     main: {
       outer: css({
@@ -71,7 +73,7 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
         whiteSpace: 'nowrap',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
-        transform: isDown ? `translateY(1px)` : undefined,
+        transform: isDown ? `translateY(${pressOffset}px)` : undefined,
       }),
       description: css({
         marginTop: 4,

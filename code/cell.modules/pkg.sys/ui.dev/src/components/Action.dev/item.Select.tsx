@@ -3,7 +3,7 @@ import SelectComponent from 'react-select';
 
 import { color, css, SelectUtil, t, time, useActionItemMonitor } from '../common';
 import { Icons } from '../Icons';
-import { ButtonView } from './ButtonView';
+import { ItemLayout } from './ItemLayout';
 
 export type SelectProps = {
   namespace: string;
@@ -94,7 +94,7 @@ export const Select: React.FC<SelectProps> = (props) => {
 
   return (
     <div {...styles.base}>
-      <ButtonView
+      <ItemLayout
         isActive={isActive}
         isSpinning={isSpinning}
         label={label}
