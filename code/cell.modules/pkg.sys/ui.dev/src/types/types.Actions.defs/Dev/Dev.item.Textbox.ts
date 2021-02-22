@@ -29,7 +29,10 @@ export type ActionTextboxConfigArgs<Ctx extends O> = {
 export type ActionTextboxProps = {
   label: string | t.ReactNode;
   description?: string | t.ReactNode;
+  current?: string; // Latest value produced by the handler.
 };
+
+export type ActionTextboxChanging = { next: string };
 
 /**
  * HANDLER: Simple Textbox.
@@ -41,6 +44,7 @@ export type ActionTextboxHandlerArgs<C> = t.ActionHandlerArgs<C> & {
     ActionHandlerSettingsTextboxArgs
   >;
   readonly textbox: ActionTextboxProps;
+  readonly changing?: t.ActionTextboxChanging; // Exists when an interaction has causes the state to change.
 };
 export type ActionHandlerSettingsTextboxArgs = t.ActionHandlerSettingsArgs & {
   textbox?: Partial<ActionTextboxProps>;
