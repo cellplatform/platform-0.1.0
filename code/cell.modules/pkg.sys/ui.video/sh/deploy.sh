@@ -1,3 +1,2 @@
 yarn bundle
-
-yarn upload --sample --no-bundle --port 5000
+yarn upload --dir=sample --no-bundle --port 5000

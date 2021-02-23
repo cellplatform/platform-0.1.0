@@ -15,6 +15,7 @@ import {
   time,
   ProgressSpinner,
   rx,
+  PATH,
 } from '../common';
 import { BundleManifest } from '../manifest';
 import { FileRedirects, FileAccess } from '../config';
@@ -290,7 +291,7 @@ async function updateManifest(args: {
 }
 
 function writeLogFile(log: t.IServerLog, until$: Observable<any>) {
-  const path = fs.resolve('./log/upload.log');
+  const path = fs.join(PATH.LOGDIR, 'upload.log');
   fs.ensureDirSync(fs.dirname(path));
   log.events$
     .pipe(
