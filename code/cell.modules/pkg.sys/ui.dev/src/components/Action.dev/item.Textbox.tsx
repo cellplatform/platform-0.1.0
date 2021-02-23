@@ -18,20 +18,20 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
   const isActive = model.handlers.length > 0;
   const value = Boolean(model.current);
 
-  const fire = () => {
-    // bus.fire({
-    //   type: 'dev:action/Boolean',
-    //   payload: {
-    //     namespace,
-    //     item: model,
-    //     changing: { next: !value },
-    //   },
-    // });
+  const fire = (args: { action: t.IActionTextboxPayload['action']; next?: string }) => {
+    const { next, action } = args;
+    bus.fire({
+      type: 'dev:action/Textbox',
+      payload: {
+        namespace,
+        item: model,
+        action,
+        changing: next ? { next } : undefined,
+      },
+    });
   };
 
-  // const elSwitch = <Switch value={value} isEnabled={isActive} height={18} />;
-
-  const placeholder = 'placeholder';
+  const placeholder = 'placeholder'; // TEMP 🐷
 
   const elTextbox = (
     <TextInput
@@ -39,7 +39,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
       valueStyle={{ fontFamily: 'monospace', fontWeight: 'NORMAL' }}
       placeholderStyle={{ fontFamily: 'sans-serif', italic: true, color: color.format(-0.3) }}
       onChange={(e) => {
-        console.log('e', e);
+        fire({ action: 'change', next: e.to });
       }}
     />
   );
@@ -50,7 +50,6 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
       isSpinning={isSpinning}
       label={elTextbox}
       description={description}
-      onClick={fire}
       pressOffset={0}
     />
   );
