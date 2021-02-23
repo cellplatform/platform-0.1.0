@@ -8,7 +8,7 @@
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build --no-esm",
     "build-test": "ts build",
     "prepare": "ts prepare"
   },

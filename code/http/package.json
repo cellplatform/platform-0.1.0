@@ -12,7 +12,7 @@
     "test:integration": "ts test --suffix INTEGRATION",
     "tddi": "ts test --suffix INTEGRATION --watch",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build --no-esm",
     "prepare": "ts prepare"
   },
   "dependencies": {

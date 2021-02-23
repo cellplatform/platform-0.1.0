@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 
 import { TreeState } from '.';
-import { expect, t } from '../test';
+import { time, expect, t } from '../test';
 import { TreeIdentity } from '../TreeIdentity';
 import { TreeQuery } from '../TreeQuery';
 import { helpers } from './helpers';
@@ -500,6 +500,9 @@ describe('TreeState', () => {
 
     it('simple', () => {
       const tree = create({ root });
+      expect(tree.state.props?.label).to.eql(undefined);
+      expect(tree.state.props?.icon).to.eql(undefined);
+
       const res = tree.change((draft, ctx) => {
         // NB: Convenience method.
         //     Ensures the props object is assigned and exists in a single-line-call.
@@ -595,6 +598,41 @@ describe('TreeState', () => {
       });
 
       expect(tree.query.findById('child-1')?.props).to.eql({ label: 'hello' });
+    });
+
+    it('changeAsync', async () => {
+      const tree = create({ root });
+      expect(tree.state.props?.label).to.eql(undefined);
+      expect(tree.state.props?.icon).to.eql(undefined);
+
+      const res = await tree.changeAsync(async (draft, ctx) => {
+        await time.wait(5);
+
+        // NB: Convenience method.
+        //     Ensures the props object is assigned and exists in a single-line-call.
+        ctx.props(draft, (p) => {
+          p.label = 'Hello!';
+          p.icon = 'face';
+        });
+      });
+
+      expect(tree.state.props?.label).to.eql('Hello!');
+      expect(tree.state.props?.icon).to.eql('face');
+
+      expect(res.op).to.eql('update');
+      expect(res.cid.length).to.greaterThan(10);
+      expect(res.changed?.from.props).to.eql(undefined);
+      expect(res.changed?.to.props?.label).to.eql('Hello!');
+
+      const { prev, next } = res.patches;
+      expect(prev.length).to.eql(1);
+      expect(next.length).to.eql(1);
+      expect(prev[0]).to.eql({ op: 'remove', path: 'props' });
+      expect(next[0]).to.eql({
+        op: 'add',
+        path: 'props',
+        value: { label: 'Hello!', icon: 'face' },
+      });
     });
   });
 

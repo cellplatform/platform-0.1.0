@@ -10,7 +10,7 @@ const createTest = () => {
 
 const state = (module: TestModule) => module.state.props?.treeview || {};
 
-describe.only('Builder.tree.node', () => {
+describe('Builder.tree.node', () => {
   it(':parent', () => {
     const { parent, builder } = createTest();
     expect(builder.parent()).to.equal(parent);
