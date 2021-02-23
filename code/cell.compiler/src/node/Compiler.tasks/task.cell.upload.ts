@@ -141,8 +141,13 @@ export const upload: t.CompilerRunUpload = async (args) => {
     /**
      * [2] Update the manifest with the file-hashes and re-upload it.
      */
-    await updateManifest({ bundleDir, uploadedFiles: fileUpload.body.files, redirects });
-    const manifestUpload = await client.fs.upload(await getManifestFile({ bundleDir, targetDir }));
+    const manifest = await updateManifest({
+      bundleDir,
+      uploadedFiles: fileUpload.body.files,
+      redirects,
+    });
+    const manifestFile = await getManifestFile({ bundleDir, targetDir });
+    const manifestUpload = await client.fs.upload(manifestFile);
     if (!manifestUpload.ok) {
       spinner.stop();
       logUploadFailure({ host, bundleDir, errors: manifestUpload.body.errors });
@@ -152,7 +157,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
     if (!silent) {
       spinner.stop();
       const elapsed = timer.elapsed.toString();
-      await logUpload({ baseDir, bundleDir, targetCell, host, elapsed });
+      await logUpload({ baseDir, bundleDir, targetCell, host, elapsed, manifest });
       logger.hr().newline();
       logUrls(toUrls(files));
       logger.newline().hr().newline();
@@ -180,8 +185,9 @@ async function logUpload(args: {
   bundleDir: string;
   targetCell: string | t.ICellUri;
   elapsed: string;
+  manifest: t.BundleManifest;
 }) {
-  const { host, baseDir, bundleDir, targetCell, elapsed } = args;
+  const { host, baseDir, bundleDir, targetCell, elapsed, manifest } = args;
   const size = await fs.size.dir(bundleDir);
   const files = size.files;
 
@@ -205,7 +211,9 @@ ${log.gray(`Uploaded`)}    ${log.gray(`(in ${log.yellow(elapsed)})`)}
 ${log.gray(`  from:     ${Path.trimBase(bundleDir)}`)}
 ${log.gray(`  to:`)}
 ${log.gray(table)}
-`);
+
+${log.gray('manifest.hash.files:')}
+${log.gray(manifest.hash.files)}`);
 }
 
 function logUrls(links: Record<string, string>) {
@@ -282,7 +290,7 @@ async function updateManifest(args: {
 }
 
 function writeLogFile(log: t.IServerLog, until$: Observable<any>) {
-  const path = fs.resolve('./tmp/logs/upload.log');
+  const path = fs.resolve('./log/upload.log');
   fs.ensureDirSync(fs.dirname(path));
   log.events$
     .pipe(
