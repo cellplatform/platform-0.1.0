@@ -18,6 +18,8 @@ export type PeerProps = {
   style?: CssValue;
 };
 
+let COUNT = 0;
+
 export const Peer: React.FC<PeerProps> = (props) => {
   const { isSelf, peer, isCircle } = props;
   const autoPlay = defaultValue(props.autoPlay, true);
@@ -47,7 +49,6 @@ export const Peer: React.FC<PeerProps> = (props) => {
   };
 
   const startRemoteCall = (targetId: string) => {
-    if (!peer) throw new Error(`The WebRTC peer has not been initialized.`);
     const video = videoRef.current as HTMLVideoElement;
     const localStream = localStreamRef.current as MediaStream;
     const call = peer.call(targetId, localStream);
@@ -79,8 +80,41 @@ export const Peer: React.FC<PeerProps> = (props) => {
     }
   }, []); // eslint-disable-line
 
+  /**
+   * Data Connection
+   */
+  useEffect(() => {
+    if (!isSelf) {
+      /**
+       * INCOMING (Recieve)
+       */
+      peer.on('connection', (conn) => {
+        conn.on('data', (data) => {
+          //
+          console.group('🌳 PEER:', peer.id);
+          console.log('incoming', data);
+          console.groupEnd();
+        });
+      });
+
+      /**
+       * OUTCOING (Connect)
+       */
+      // const conn = peer.connect()
+    }
+  }, []); // eslint-disable-line
+
+  const [dataConnection, setDataConnection] = useState<PeerJS.DataConnection>();
+
+  const sendData = () => {
+    //
+    COUNT++;
+  };
+
   const styles = {
-    base: css({}),
+    base: css({
+      position: 'relative',
+    }),
     video: {
       outer: css({
         position: 'relative',
@@ -115,6 +149,11 @@ export const Peer: React.FC<PeerProps> = (props) => {
     footer: css({
       marginTop: 10,
       PaddingX: 8,
+    }),
+
+    temp: css({
+      Absolute: [null, 0, 0, null],
+      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
     }),
   };
 
@@ -161,6 +200,11 @@ export const Peer: React.FC<PeerProps> = (props) => {
         {elMicIcon}
       </div>
       <div {...styles.footer}>{elTextbox || elPeerLabel}</div>
+      {/* {!isSelf &&   (
+        <Button style={styles.temp} onClick={sendData}>
+          Send
+        </Button>
+      )} */}
     </div>
   );
 };

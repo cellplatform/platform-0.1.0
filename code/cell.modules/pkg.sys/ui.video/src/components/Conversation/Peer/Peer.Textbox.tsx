@@ -18,7 +18,7 @@ export const PeerTextbox: React.FC<PeerTextboxProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       <TextInput
         value={props.value}
-        placeholder={'Call peer ("id")'}
+        placeholder={'Connect to peer ("id")'}
         valueStyle={{ fontFamily: 'sans-serif', fontSize: 14 }}
         placeholderStyle={{ italic: true, color: color.format(-0.3) }}
         disabledOpacity={1}

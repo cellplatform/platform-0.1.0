@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { css, CssValue, t, color, cuid, PeerJS, COLORS } from '../common';
 import { Diagram } from '../Diagram';
 import { Peer } from '../Peer';
+import { LayoutFooter } from './Layout.Footer';
 
 export type LayoutProps = {
   totalPeers?: number;
@@ -10,7 +11,7 @@ export type LayoutProps = {
 };
 
 export const Layout: React.FC<LayoutProps> = (props) => {
-  const { totalPeers = 0, imageDir } = props;
+  const { imageDir } = props;
   const [peer, setPeer] = useState<PeerJS>();
 
   useEffect(() => {
@@ -32,35 +33,12 @@ export const Layout: React.FC<LayoutProps> = (props) => {
       flex: 1,
       display: 'flex',
     }),
-    footer: css({
-      height: 280,
-      borderTop: `solid 8px ${color.format(-0.1)}`,
-      Flex: 'horizontal-center-spaceBetween',
-      overflow: 'hidden',
-      MarginX: 30,
-    }),
   };
-
-  const elPeers =
-    peer &&
-    Array.from({ length: totalPeers }).map((v, i) => {
-      return <Peer key={i} peer={peer} />;
-    });
 
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.body}>
-       {imageDir && <Diagram dir={imageDir} />}
-      </div>
-      <div {...styles.footer}>
-        {peer && (
-          <>
-            <Peer peer={peer} isSelf={true} isMuted={true} isCircle={false} />
-            <Peer peer={peer} />
-            {elPeers}
-          </>
-        )}
-      </div>
+      <div {...styles.body}>{imageDir && <Diagram dir={imageDir} />}</div>
+      {peer && <LayoutFooter peer={peer} totalPeers={props.totalPeers} />}
     </div>
   );
 };

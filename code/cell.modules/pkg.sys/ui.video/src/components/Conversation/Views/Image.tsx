@@ -36,7 +36,6 @@ export const Image: React.FC<ImageProps> = (props) => {
     const startZoom = zoom;
 
     const events$ = dragger.events$.pipe(observeOn(animationFrameScheduler));
-    // const start$ = events$.pipe(filter((e) => e.type === ''));
     const drag$ = events$.pipe(filter((e) => e.type === 'DRAG'));
 
     drag$.pipe(filter((e) => isAltKeyPressed)).subscribe((e) => {
