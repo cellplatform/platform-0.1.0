@@ -2,23 +2,23 @@ import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 
 import {
-  value,
   DEFAULT,
   fs,
   HttpClient,
   log,
   logger,
   Model,
+  PATH,
   Path,
+  ProgressSpinner,
+  rx,
   Schema,
   t,
   time,
-  ProgressSpinner,
-  rx,
-  PATH,
+  value,
 } from '../common';
+import { FileAccess, FileRedirects } from '../config';
 import { BundleManifest } from '../manifest';
-import { FileRedirects, FileAccess } from '../config';
 
 type FileUri = t.IUriData<t.IFileData>;
 type File = t.IHttpClientCellFileUpload;
