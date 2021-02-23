@@ -8,11 +8,12 @@ import { asArray } from '@platform/util.value';
 type Ctx = { props: LayoutProps };
 
 const DIRS = {
-  PEER1: 'static/images.tmp.peer-1/',
-  PEER2: 'static/images.tmp.peer-2/',
+  PEER1: 'static/images.tmp/peer-1/',
+  PEER2: 'static/images.tmp/peer-2/',
+  PEER3: 'static/images.tmp/peer-3/',
 };
 
-const INITIAL: Ctx = { props: { imageDir: DIRS.PEER1 } };
+const INITIAL: Ctx = { props: { imageDir: DIRS.PEER3 } };
 
 /**
  * Actions
@@ -28,17 +29,14 @@ export const actions = DevActions<Ctx>()
       e.ctx.props.totalPeers = (e.ctx.props.totalPeers || 0) + 1;
     });
 
-    // e.boolean('muted', (e) => {
-    //   if (e.changing) e.ctx.props.isMuted = e.changing.next;
-    //   e.boolean.current = Boolean(e.ctx.props.isMuted);
-    // });
     e.hr();
   })
 
   .items((e) => {
     e.title('Folder (Content)');
-    e.button('peer-1', (e) => (e.ctx.props.imageDir = DIRS.PEER1));
-    e.button('peer-2', (e) => (e.ctx.props.imageDir = DIRS.PEER2));
+    e.button('dir-1', (e) => (e.ctx.props.imageDir = DIRS.PEER1));
+    e.button('dir-2', (e) => (e.ctx.props.imageDir = DIRS.PEER2));
+    e.button('dir-3', (e) => (e.ctx.props.imageDir = DIRS.PEER3));
     e.hr();
   })
 
