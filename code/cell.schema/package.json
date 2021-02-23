@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.schema",
-  "version": "0.5.57",
+  "version": "0.5.58",
   "description": "URI and database schemas for the `cell.os`.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -23,7 +23,7 @@
     "@platform/util.value": "0.8.16"
   },
   "devDependencies": {
-    "@platform/npm": "0.3.29",
+    "@platform/npm": "0.4.0",
     "@platform/test": "0.2.3",
     "@platform/ts": "4.1.7"
   },
