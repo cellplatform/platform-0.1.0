@@ -1,3 +1,3 @@
-export * from './Display.item.Hr';
-export * from './Display.item.Title';
-export * from './Display.methods';
+export * from './item.Hr';
+export * from './item.Title';
+export * from './methods';

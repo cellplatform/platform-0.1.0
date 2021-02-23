@@ -46,10 +46,7 @@ export const ButtonDef: t.ActionDef<T, E> = {
               Handler.settings.handler<P, A>({
                 env,
                 payload,
-                sync: {
-                  source: (args) => args.button,
-                  target: item,
-                },
+                sync: { source: (args) => args.button, target: item },
               })(args);
 
             const button = item as t.ActionButtonProps;

@@ -48,10 +48,7 @@ export const SelectDef: t.ActionDef<T, E> = {
               Handler.settings.handler<P, A>({
                 env,
                 payload,
-                sync: {
-                  source: (args) => args.select,
-                  target: item,
-                },
+                sync: { source: (args) => args.select, target: item },
               })(args);
 
             const changing = e.changing;

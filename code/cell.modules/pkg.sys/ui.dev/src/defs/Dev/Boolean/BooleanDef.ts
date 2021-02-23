@@ -48,10 +48,7 @@ export const BooleanDef: t.ActionDef<T, E> = {
               Handler.settings.handler<P, A>({
                 env,
                 payload,
-                sync: {
-                  source: (args) => args.boolean,
-                  target: item,
-                },
+                sync: { source: (args) => args.boolean, target: item },
               })(args);
 
             const changing = e.changing;

@@ -48,10 +48,7 @@ export const TextboxDef: t.ActionDef<T, E> = {
               Handler.settings.handler<P, A>({
                 env,
                 payload,
-                sync: {
-                  source: (args) => args.boolean,
-                  target: item,
-                },
+                sync: { source: (args) => args.boolean, target: item },
               })(args);
 
             const changing = e.changing;
@@ -75,7 +72,7 @@ export const TextboxDef: t.ActionDef<T, E> = {
     if (item.handlers.length > 0) {
       args.fire({
         type: 'dev:action/Textbox',
-        payload: { namespace, item },
+        payload: { namespace, item, action: 'init' },
       });
     }
   },

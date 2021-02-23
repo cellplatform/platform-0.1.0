@@ -41,6 +41,7 @@ export type IActionTextboxEvent = {
 export type IActionTextboxPayload = {
   namespace: string;
   item: t.ActionTextbox;
+  action: 'init' | 'change' | 'enter';
   changing?: t.ActionTextboxChanging;
 };
 
