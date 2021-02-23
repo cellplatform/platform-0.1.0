@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { css, CssValue, t, color, defaultValue, cuid, PeerJS } from '../common';
+import { css, CssValue, t, color, defaultValue, PeerJS } from '../common';
 import { TextInput, Button } from '../../Primitives';
 import { Icons } from '../../Icons';
 
@@ -7,6 +7,7 @@ import { PeerLabel } from './Peer.Label';
 import { PeerTextbox } from './Peer.Textbox';
 
 export type PeerProps = {
+  bus: t.EventBus;
   peer: PeerJS;
   isSelf?: boolean;
   isMuted?: boolean;
@@ -23,6 +24,7 @@ let COUNT = 0;
 export const Peer: React.FC<PeerProps> = (props) => {
   const { isSelf, peer, isCircle } = props;
   const autoPlay = defaultValue(props.autoPlay, true);
+  const bus = props.bus.type<t.PeerEvent>();
 
   const height = props.height || 200;
   let width = props.width || 300;
@@ -70,45 +72,25 @@ export const Peer: React.FC<PeerProps> = (props) => {
   useEffect(() => {
     if (!isSelf) {
       peer.on('call', async (call) => {
+        // Connect the video stream.
         const video = videoRef.current as HTMLVideoElement;
         const localStream = localStreamRef.current;
         if (localStream) {
           call.answer(localStream);
           call.on('stream', (remoteStream) => (video.srcObject = remoteStream));
         }
+
+        // Start data connection.
+        bus.fire({ type: 'Peer/connect', payload: { id: call.peer } });
       });
     }
   }, []); // eslint-disable-line
-
-  /**
-   * Data Connection
-   */
-  useEffect(() => {
-    if (!isSelf) {
-      /**
-       * INCOMING (Recieve)
-       */
-      peer.on('connection', (conn) => {
-        conn.on('data', (data) => {
-          //
-          console.group('🌳 PEER:', peer.id);
-          console.log('incoming', data);
-          console.groupEnd();
-        });
-      });
-
-      /**
-       * OUTCOING (Connect)
-       */
-      // const conn = peer.connect()
-    }
-  }, []); // eslint-disable-line
-
-  const [dataConnection, setDataConnection] = useState<PeerJS.DataConnection>();
 
   const sendData = () => {
     //
     COUNT++;
+    const data = { msg: `count-${COUNT}` };
+    bus.fire({ type: 'Peer/publish', payload: { data } });
   };
 
   const styles = {
@@ -181,6 +163,7 @@ export const Peer: React.FC<PeerProps> = (props) => {
       }}
       onEnter={() => {
         startRemoteCall(id);
+        bus.fire({ type: 'Peer/connect', payload: { id } });
       }}
     />
   );
@@ -200,11 +183,11 @@ export const Peer: React.FC<PeerProps> = (props) => {
         {elMicIcon}
       </div>
       <div {...styles.footer}>{elTextbox || elPeerLabel}</div>
-      {/* {!isSelf &&   (
+      {!isSelf && (
         <Button style={styles.temp} onClick={sendData}>
           Send
         </Button>
-      )} */}
+      )}
     </div>
   );
 };

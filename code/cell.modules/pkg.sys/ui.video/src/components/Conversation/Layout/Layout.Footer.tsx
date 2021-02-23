@@ -5,14 +5,14 @@ import { Peer } from '../Peer';
 import { LayoutFooterResize } from './Layout.Footer.Resize';
 
 export type LayoutFooterProps = {
+  bus: t.EventBus;
   totalPeers?: number;
   peer: PeerJS;
-
   style?: CssValue;
 };
 
 export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
-  const { peer, totalPeers = 0 } = props;
+  const { peer, totalPeers = 0, bus } = props;
   const [zoom, setZoom] = useState<number>(1);
 
   const peerHeight = Math.max(80, 200 * zoom);
@@ -42,7 +42,7 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
   const elPeers =
     peer &&
     Array.from({ length: totalPeers }).map((v, i) => {
-      return <Peer key={i} peer={peer} width={peerWidth} height={peerHeight} />;
+      return <Peer key={i} bus={bus} peer={peer} width={peerWidth} height={peerHeight} />;
     });
 
   return (
@@ -50,6 +50,7 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
       <div {...styles.edge}></div>
       <div {...styles.body}>
         <Peer
+          bus={bus}
           peer={peer}
           isSelf={true}
           isMuted={true}
@@ -57,7 +58,7 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
           width={peerWidth}
           height={peerHeight}
         />
-        <Peer peer={peer} width={peerWidth} height={peerHeight} />
+        <Peer bus={bus} peer={peer} width={peerWidth} height={peerHeight} />
         {elPeers}
       </div>
       <div {...styles.edge}>

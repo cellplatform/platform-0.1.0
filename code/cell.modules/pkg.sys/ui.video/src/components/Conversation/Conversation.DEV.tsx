@@ -1,19 +1,20 @@
 import React from 'react';
 
 import { DevActions } from 'sys.ui.dev';
-import { Layout, LayoutProps } from './Layout';
-import { css } from '../../common';
+import { css, rx } from './common';
 import { asArray } from '@platform/util.value';
+import { Conversation, ConversationProps } from './Conversation';
 
-type Ctx = { props: LayoutProps };
+type Ctx = { props: ConversationProps };
 
+const bus = rx.bus();
 const DIRS = {
   PEER1: 'static/images.tmp/peer-1/',
   PEER2: 'static/images.tmp/peer-2/',
   PEER3: 'static/images.tmp/peer-3/',
 };
 
-const INITIAL: Ctx = { props: { imageDir: DIRS.PEER3 } };
+const INITIAL: Ctx = { props: { bus, imageDir: DIRS.PEER3 } };
 
 /**
  * Actions
@@ -25,9 +26,9 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Actions');
 
-    e.button('add peer', (e) => {
-      e.ctx.props.totalPeers = (e.ctx.props.totalPeers || 0) + 1;
-    });
+    // e.button('add peer', (e) => {
+    //   // e.ctx.props.totalPeers = (e.ctx.props.totalPeers || 0) + 1;
+    // });
 
     e.hr();
   })
@@ -61,8 +62,8 @@ export const actions = DevActions<Ctx>()
     });
 
     const el = (
-      <div {...css({ overflow: 'hidden', flex: 1, display: 'flex' })}>
-        <Layout {...e.ctx.props} />
+      <div {...css({ overflow: 'hidden', Absolute: 0, display: 'flex' })}>
+        <Conversation {...e.ctx.props} />
       </div>
     );
 
