@@ -5,13 +5,17 @@ dist
 lib
 lib.test
 
-.build
-.cell
 .cache
+.log/
+.build
+
+.cell
 /code/*/.dev
 .uiharness
+
 .publish
 .parcel*
+
 
 .env
 .env*
