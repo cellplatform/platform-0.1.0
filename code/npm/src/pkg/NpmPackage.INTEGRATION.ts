@@ -10,19 +10,22 @@ describe('NpmPackage (integration)', function () {
       {
         react: 'latest',
         'react-dom': '1.2.3',
+        express: '~latest',
       },
       (name, version) => version === 'latest',
     );
+
     log.info(res);
   });
 
-  it.skip('latestFields (static)', async () => {
+  it.only('latestFields (static)', async () => {
     const pkg = npm.pkg('./test/sample');
     const res = await pkg.updateVersions({
       // types: ['dependencies', 'devDependencies'],
       // updateState: false,
       filter: (name, version) => version === 'latest' || name === 'express',
     });
+
     log.info(res);
   });
 });

@@ -15,10 +15,10 @@
     "clean": "cell.compiler clean $@"
   },
   "dependencies": {
-    "@platform/log": "latest"
+    "@platform/log": "~latest"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "latest"
+    "@platform/cell.compiler": "~latest"
   },
   "license": "MIT",
   "private": true
