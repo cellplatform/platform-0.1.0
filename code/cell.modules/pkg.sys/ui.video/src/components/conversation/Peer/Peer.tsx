@@ -123,11 +123,6 @@ export const Peer: React.FC<PeerProps> = (props) => {
       marginTop: 10,
       PaddingX: 8,
     }),
-
-    temp: css({
-      Absolute: [null, 0, 0, null],
-      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-    }),
   };
 
   const onPlay = () => {

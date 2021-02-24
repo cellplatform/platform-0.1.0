@@ -1,52 +1,42 @@
 import React from 'react';
 
 import { DevActions } from 'sys.ui.dev';
-import { css, rx, t } from './common';
+import { css, rx, t, StateObject } from './common';
 import { asArray } from '@platform/util.value';
 import { Conversation, ConversationProps } from './Conversation';
+import { stateController } from './Conversation.controller';
 
-type Ctx = { props: ConversationProps };
-
-const bus = rx.bus();
-const fire = bus.type<t.PeerEvent>().fire;
-
-const DIRS = {
-  PEER1: 'static/images.tmp/peer-1/',
-  PEER2: 'static/images.tmp/peer-2/',
-  PEER3: 'static/images.tmp/peer-3/',
+type B = t.EventBus<t.PeerEvent>;
+type Ctx = {
+  fire: B['fire'];
+  props: ConversationProps;
 };
-
-const INITIAL: Ctx = { props: { bus } };
 
 /**
  * Actions
  */
 export const actions = DevActions<Ctx>()
   .namespace('Conversation')
-  .context((prev) => prev || INITIAL)
+  .context((prev) => {
+    if (prev) return prev;
 
-  .items((e) => {
-    e.title('Actions');
+    const bus = rx.bus<t.PeerEvent>();
+    const model = StateObject.create<t.ConversationState>({});
+    stateController({ bus, model });
 
-    // e.button('add peer', (e) => {
-    //   // e.ctx.props.totalPeers = (e.ctx.props.totalPeers || 0) + 1;
-    // });
-
-    e.hr();
+    return {
+      fire: bus.fire,
+      props: { bus, model },
+    };
   })
 
   .items((e) => {
-    e.title('Folder (Content)');
-    // e.button('dir-1', (e) => (e.ctx.props.imageDir = DIRS.PEER1));
-    // e.button('dir-2', (e) => (e.ctx.props.imageDir = DIRS.PEER2));
-    // e.button('dir-3', (e) => (e.ctx.props.imageDir = DIRS.PEER3));
+    e.title('Experiment 0.3.1');
 
-    e.button('e-1', (e) => {
-      const data = { imageDir: DIRS.PEER3 };
-      fire({ type: 'Peer/publish', payload: { data } });
-      // fire({ type: 'Peer/model', payload: { data } });
+    e.button('load diagrams', (e) => {
+      const imageDir = 'static/images.tmp/peer-4/';
+      e.ctx.fire({ type: 'Peer/publish', payload: { data: { imageDir } } });
     });
-
     e.hr();
   })
 
@@ -54,8 +44,7 @@ export const actions = DevActions<Ctx>()
    * Render
    */
   .subject((e) => {
-    // const imageDirs = asArray(e.ctx.props.imageDir).filter(Boolean);
-    const imageDirs: string[] = [];
+    const state = e.ctx.props.model.state;
 
     e.settings({
       layout: {
@@ -64,7 +53,7 @@ export const actions = DevActions<Ctx>()
         background: 1,
         label: {
           topLeft: 'Conversation.Layout',
-          topRight: `folder: ${imageDirs.join(', ') || '<none>'}`,
+          topRight: `folder: ${asArray(state.imageDir).join(', ') || '<none>'}`,
         },
         position: [80, 80, 120, 80],
       },
@@ -72,7 +61,7 @@ export const actions = DevActions<Ctx>()
     });
 
     const el = (
-      <div {...css({ overflow: 'hidden', Absolute: 0, display: 'flex' })}>
+      <div {...css({ Absolute: 0, overflow: 'hidden', display: 'flex' })}>
         <Conversation {...e.ctx.props} />
       </div>
     );

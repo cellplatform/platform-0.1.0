@@ -34,6 +34,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
             bus={bus}
             dir={model.imageDir}
             zoom={model.zoom}
+            offset={model.offset}
             selected={model.selected}
             onSelect={(e) => {
               const data = { selected: e.path };

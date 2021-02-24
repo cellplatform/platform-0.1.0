@@ -20,7 +20,7 @@
     "serve": "cell.compiler serve $@",
     "deploy": "sh sh/deploy.sh",
     "public": "yarn open && sh ./sh/ngrok.sh",
-    "open": "open https://os.ngrok.io/cell:ckl7eyjap000c8iete89p6tq0:A1/fs/sample/index.html"
+    "open": "open https://nz.ngrok.io/cell:cklk0ocdn000e3met7e0r8jol:A1/fs/james.0.0.2/index.html"
   },
   "dependencies": {
     "@types/vimeo__player": "^2.10.0",

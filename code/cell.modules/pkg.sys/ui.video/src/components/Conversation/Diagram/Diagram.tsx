@@ -7,6 +7,7 @@ import { Images } from '../Views';
 export type DiagramProps = {
   bus: t.EventBus<any>;
   zoom?: number;
+  offset?: { x: number; y: number };
   dir?: string | string[];
   selected?: string;
   style?: CssValue;
@@ -17,7 +18,7 @@ const isImagePath = (path: string) =>
   ['.png', '.jpg', '.jpeg'].map((path) => path.toLowerCase()).some((ext) => path.endsWith(ext));
 
 export const Diagram: React.FC<DiagramProps> = (props) => {
-  const { dir, bus, zoom } = props;
+  const { dir, bus } = props;
   const { files } = useBundleManifest();
   const [paths, setPaths] = useState<string[]>();
 
@@ -47,7 +48,8 @@ export const Diagram: React.FC<DiagramProps> = (props) => {
         bus={bus}
         style={styles.images}
         paths={paths}
-        zoom={zoom}
+        zoom={props.zoom}
+        offset={props.offset}
         selected={selected}
         onSelect={props.onSelect}
       />

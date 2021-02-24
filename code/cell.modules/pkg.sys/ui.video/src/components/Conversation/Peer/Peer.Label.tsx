@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { css, CssValue, t, color } from '../common';
+import { css, CssValue, t, color, copyToClipboard } from '../common';
+import { Button } from '../../Primitives';
 
 export type PeerLabelProps = {
   id: string;
@@ -8,14 +9,18 @@ export type PeerLabelProps = {
 };
 
 export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
-  const { isSelf } = props;
+  const { isSelf, id } = props;
 
   const styles = {
     base: css({
-      Flex: 'horizontal-stretch-center',
+      Flex: 'horizontal-stretch-spaceBetween',
       fontSize: 11,
       userSelect: 'none',
     }),
+    left: css({
+      Flex: 'horizontal-stretch-center',
+    }),
+    right: css({}),
     title: css({
       backgroundColor: color.format(-0.1),
       border: `solid 1px ${color.format(-0.1)}`,
@@ -33,12 +38,16 @@ export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
       userSelect: 'text',
     }),
   };
+
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.title}>{isSelf ? 'ME' : 'PEER'}</div>
-      <div {...styles.id} title={'Peer Identifier ("id")'}>
-        {props.id}
+      <div {...styles.left}>
+        <div {...styles.title}>{isSelf ? 'ME' : 'PEER'}</div>
+        <div {...styles.id} title={'Peer Identifier ("id")'}>
+          {id}
+        </div>
       </div>
+      <div {...styles.right}>{id && <Button onClick={() => copyToClipboard(id)}>copy</Button>}</div>
     </div>
   );
 };

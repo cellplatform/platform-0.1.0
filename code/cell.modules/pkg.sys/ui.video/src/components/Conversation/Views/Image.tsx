@@ -9,6 +9,7 @@ export type ImageProps = {
   src?: string;
   style?: CssValue;
   zoom?: number;
+  offset?: { x: number; y: number };
   onLoadStart?: () => void;
   onLoadComplete?: () => void;
   onLoadError?: () => void;
@@ -18,15 +19,8 @@ export const Image: React.FC<ImageProps> = (props) => {
   const { onLoadStart } = props;
   const bus = props.bus.type<t.PeerEvent>();
   const zoom = defaultValue(props.zoom, 1);
-
+  const offset = props.offset || { x: 0, y: 0 };
   const imageRef = useRef<HTMLImageElement>(null);
-
-  const [offsetX, setOffsetX] = useState<number>(0);
-  const [offsetY, setOffsetY] = useState<number>(0);
-  const setOffset = (x: number, y: number) => {
-    setOffsetX(x);
-    setOffsetY(y);
-  };
 
   useEffect(() => {
     if (onLoadStart) onLoadStart();
@@ -38,43 +32,38 @@ export const Image: React.FC<ImageProps> = (props) => {
     const el = imageRef.current as HTMLImageElement;
     const dragger = drag.position({ el });
     const startZoom = zoom;
+    const startOffset = offset;
 
     const events$ = dragger.events$.pipe(observeOn(animationFrameScheduler));
     const drag$ = events$.pipe(filter((e) => e.type === 'DRAG'));
 
+    // Zoom.
     drag$.pipe(filter((e) => isAltKeyPressed)).subscribe((e) => {
       const diff = e.delta.y / 100;
       const next = Math.max(0.1, startZoom + diff);
-      // if (next <= 1) setOffset(0, 0);
-
-      const data = { zoom: next };
-      bus.fire({ type: 'Peer/publish', payload: { data } });
+      bus.fire({ type: 'Peer/publish', payload: { data: { zoom: next } } });
     });
 
-    drag$
-      .pipe(
-        filter((e) => !isAltKeyPressed),
-        filter(() => zoom > 1),
-      )
-      .subscribe((e) => {
-        const { x, y } = e.delta;
-
-        // console.log('e.start', e.start, x, y);
-
-        setOffset(x, y);
+    // Pan ({x,y} offset).
+    drag$.pipe(filter((e) => !isAltKeyPressed)).subscribe((e) => {
+      const x = e.delta.x + startOffset.x;
+      const y = e.delta.y + startOffset.y;
+      bus.fire({
+        type: 'Peer/publish',
+        payload: { data: { offset: { x, y } } },
       });
+    });
+  };
+
+  const resetOffset = () => {
+    bus.fire({ type: 'Peer/publish', payload: { data: { zoom: undefined, offset: undefined } } });
   };
 
   const styles = {
     base: css({
-      transform: `scale(${zoom}) translate(${offsetX}px, ${offsetY}px)`,
+      transform: `scale(${zoom}) translate(${offset.x}px, ${offset.y}px)`,
     }),
   };
-
-  // console.log('-------------------------------------------');
-  // console.log('translateX', offsetX);
-  // console.log('translateY', offsetY);
-  // console.log('transform', transform);
 
   return (
     <img
@@ -82,6 +71,7 @@ export const Image: React.FC<ImageProps> = (props) => {
       ref={imageRef}
       onMouseDown={startDrag}
       onDragStart={(e) => e.preventDefault()}
+      onDoubleClick={resetOffset}
       src={props.src}
       onLoad={props.onLoadComplete}
       onError={(e) => props.onLoadError}

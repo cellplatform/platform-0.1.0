@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil, map } from 'rxjs/operators';
 
 import { Spinner } from '../../Primitives';
 import { COLORS, css, CssValue, events, t } from '../common';
@@ -13,6 +13,7 @@ export type ImagesProps = {
   paths?: string[];
   selected?: string;
   zoom?: number;
+  offset?: { x: number; y: number };
   style?: CssValue;
   onSelect?: (e: { path?: string }) => void;
 };
@@ -48,15 +49,27 @@ export const Images: React.FC<ImagesProps> = (props) => {
       filter((e) => e.isPressed),
     );
 
+    key$.subscribe((e) => {
+      if (!e.isPressed) setIsAltPressed(false);
+      if (e.isPressed) setIsAltPressed(e.altKey);
+    });
+
     pressed$.pipe(filter((e) => e.key === 'ArrowLeft')).subscribe(selecPrevious);
     pressed$.pipe(filter((e) => e.key === 'ArrowRight')).subscribe(selectNext);
     pressed$.pipe(filter((e) => e.key === 'Home')).subscribe(selectFirst);
     pressed$.pipe(filter((e) => e.key === 'End')).subscribe(selectLast);
 
-    key$.subscribe((e) => {
-      if (!e.isPressed) setIsAltPressed(false);
-      if (e.isPressed) setIsAltPressed(e.altKey);
-    });
+    pressed$
+      .pipe(
+        filter((e) => e.altKey),
+        map((e) => parseInt(e.key, 10)),
+        filter((e) => !Number.isNaN(e)),
+      )
+      .subscribe((e) => {
+        const index = (e === 0 ? 1 : e) - 1;
+        const item = items[index];
+        if (item) setSelected(item.value);
+      });
 
     return () => dispose$.next();
   }, [items, isOver]); // eslint-disable-line
@@ -118,6 +131,7 @@ export const Images: React.FC<ImagesProps> = (props) => {
           src={path}
           style={styles.img}
           zoom={props.zoom}
+          offset={props.offset}
           onLoadComplete={() => changeItem(path, { isLoaded: true })}
         />
       ),

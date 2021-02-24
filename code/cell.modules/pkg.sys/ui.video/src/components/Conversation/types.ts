@@ -1,4 +1,5 @@
 import { PeerJS } from '../../common/libs';
+import { IStateObjectWritable } from '@platform/state.types';
 
 export * from '../../common/types';
 
@@ -6,7 +7,10 @@ export type ConversationState = {
   imageDir?: string | string[];
   selected?: string;
   zoom?: number;
+  offset?: { x: number; y: number };
 };
+
+export type ConversationModel = IStateObjectWritable<ConversationState>;
 
 /**
  * Events

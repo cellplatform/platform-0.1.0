@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { css, CssValue, t, color, cuid, PeerJS, COLORS } from '../common';
-import { Diagram } from '../Diagram';
+import React, { useState } from 'react';
+
+import { color, css, CssValue, PeerJS, t } from '../common';
 import { Peer } from '../Peer';
 import { LayoutFooterResize } from './Layout.Footer.Resize';
 
@@ -15,7 +15,8 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
   const { peer, totalPeers = 0, bus } = props;
   const [zoom, setZoom] = useState<number>(1);
 
-  const peerHeight = Math.max(80, 200 * zoom);
+  const MIN = 100;
+  const peerHeight = Math.max(MIN, 200 * zoom);
   const peerWidth = peerHeight * 1.6;
 
   const styles = {
@@ -45,9 +46,18 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
       return <Peer key={i} bus={bus} peer={peer} width={peerWidth} height={peerHeight} />;
     });
 
+  const elResize = (
+    <LayoutFooterResize
+      percent={zoom}
+      onDragResize={(e) => {
+        setZoom(e.percent);
+      }}
+    />
+  );
+
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.edge}></div>
+      <div {...styles.edge}>{elResize}</div>
       <div {...styles.body}>
         <Peer
           bus={bus}
@@ -61,14 +71,7 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
         <Peer bus={bus} peer={peer} width={peerWidth} height={peerHeight} />
         {elPeers}
       </div>
-      <div {...styles.edge}>
-        <LayoutFooterResize
-          percent={zoom}
-          onDragResize={(e) => {
-            setZoom(e.percent);
-          }}
-        />
-      </div>
+      <div {...styles.edge}>{elResize}</div>
     </div>
   );
 };
