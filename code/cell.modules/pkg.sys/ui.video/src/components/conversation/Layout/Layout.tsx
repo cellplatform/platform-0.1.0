@@ -1,20 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { css, CssValue, t, color, cuid, PeerJS, COLORS } from '../common';
+
+import { color, COLORS, css, CssValue, PeerJS, t } from '../common';
 import { Diagram } from '../Diagram';
-import { Peer } from '../Peer';
 import { LayoutFooter } from './Layout.Footer';
-import { usePeerController } from '../usePeerController';
 
 export type LayoutProps = {
-  bus: t.EventBus;
+  bus: t.EventBus<any>;
   peer: PeerJS;
-  totalPeers?: number;
-  imageDir?: string | string[];
+  model?: t.ConversationState;
   style?: CssValue;
 };
 
 export const Layout: React.FC<LayoutProps> = (props) => {
-  const { bus, imageDir, peer } = props;
+  const { model, peer } = props;
+  const bus = props.bus.type<t.PeerEvent>();
 
   const styles = {
     base: css({
@@ -29,8 +28,20 @@ export const Layout: React.FC<LayoutProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.body}>{imageDir && <Diagram dir={imageDir} />}</div>
-      {peer && <LayoutFooter bus={bus} peer={peer} totalPeers={props.totalPeers} />}
+      <div {...styles.body}>
+        {model && (
+          <Diagram
+            dir={model.imageDir}
+            selected={model.selected}
+            onSelect={(e) => {
+              const data = { selected: e.path };
+              bus.fire({ type: 'Peer/publish', payload: { data } });
+            }}
+          />
+        )}
+      </div>
+
+      {peer && <LayoutFooter bus={bus} peer={peer} />}
     </div>
   );
 };

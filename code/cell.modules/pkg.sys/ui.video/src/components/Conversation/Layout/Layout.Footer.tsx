@@ -5,7 +5,7 @@ import { Peer } from '../Peer';
 import { LayoutFooterResize } from './Layout.Footer.Resize';
 
 export type LayoutFooterProps = {
-  bus: t.EventBus;
+  bus: t.EventBus<any>;
   totalPeers?: number;
   peer: PeerJS;
   style?: CssValue;

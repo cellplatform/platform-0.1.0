@@ -6,7 +6,9 @@ import { Images } from '../Views';
 
 export type DiagramProps = {
   dir?: string | string[];
+  selected?: string;
   style?: CssValue;
+  onSelect?: (e: { path?: string }) => void;
 };
 
 const isImagePath = (path: string) =>
@@ -38,9 +40,12 @@ export const Diagram: React.FC<DiagramProps> = (props) => {
     images: css({ Absolute: 0 }),
   };
 
+  const first = paths ? paths[0] : undefined;
+  const selected = props.selected ? props.selected : first;
+
   return (
     <div {...css(styles.base, props.style)}>
-      <Images style={styles.images} paths={paths} />
+      <Images style={styles.images} paths={paths} selected={selected} onSelect={props.onSelect} />
     </div>
   );
 };

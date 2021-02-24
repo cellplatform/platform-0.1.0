@@ -53,7 +53,7 @@ export const Image: React.FC<ImageProps> = (props) => {
       .subscribe((e) => {
         const { x, y } = e.delta;
 
-        console.log('e.start', e.start, x, y);
+        // console.log('e.start', e.start, x, y);
 
         setOffset(x, y);
       });

@@ -1,20 +1,22 @@
 import React from 'react';
 
 import { DevActions } from 'sys.ui.dev';
-import { css, rx } from './common';
+import { css, rx, t } from './common';
 import { asArray } from '@platform/util.value';
 import { Conversation, ConversationProps } from './Conversation';
 
 type Ctx = { props: ConversationProps };
 
 const bus = rx.bus();
+const fire = bus.type<t.PeerEvent>().fire;
+
 const DIRS = {
   PEER1: 'static/images.tmp/peer-1/',
   PEER2: 'static/images.tmp/peer-2/',
   PEER3: 'static/images.tmp/peer-3/',
 };
 
-const INITIAL: Ctx = { props: { bus, imageDir: DIRS.PEER3 } };
+const INITIAL: Ctx = { props: { bus } };
 
 /**
  * Actions
@@ -35,9 +37,16 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Folder (Content)');
-    e.button('dir-1', (e) => (e.ctx.props.imageDir = DIRS.PEER1));
-    e.button('dir-2', (e) => (e.ctx.props.imageDir = DIRS.PEER2));
-    e.button('dir-3', (e) => (e.ctx.props.imageDir = DIRS.PEER3));
+    // e.button('dir-1', (e) => (e.ctx.props.imageDir = DIRS.PEER1));
+    // e.button('dir-2', (e) => (e.ctx.props.imageDir = DIRS.PEER2));
+    // e.button('dir-3', (e) => (e.ctx.props.imageDir = DIRS.PEER3));
+
+    e.button('e-1', (e) => {
+      const data = { imageDir: DIRS.PEER3 };
+      fire({ type: 'Peer/publish', payload: { data } });
+      // fire({ type: 'Peer/model', payload: { data } });
+    });
+
     e.hr();
   })
 
@@ -45,7 +54,8 @@ export const actions = DevActions<Ctx>()
    * Render
    */
   .subject((e) => {
-    const imageDirs = asArray(e.ctx.props.imageDir).filter(Boolean);
+    // const imageDirs = asArray(e.ctx.props.imageDir).filter(Boolean);
+    const imageDirs: string[] = [];
 
     e.settings({
       layout: {

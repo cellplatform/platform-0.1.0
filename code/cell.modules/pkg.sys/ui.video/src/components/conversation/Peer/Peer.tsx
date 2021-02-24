@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { css, CssValue, t, color, defaultValue, PeerJS } from '../common';
-import { TextInput, Button } from '../../Primitives';
-import { Icons } from '../../Icons';
 
+import { Icons } from '../../Icons';
+import { Button } from '../../Primitives';
+import { color, css, CssValue, defaultValue, PeerJS, t } from '../common';
 import { PeerLabel } from './Peer.Label';
 import { PeerTextbox } from './Peer.Textbox';
 
 export type PeerProps = {
-  bus: t.EventBus;
+  bus: t.EventBus<any>;
   peer: PeerJS;
   isSelf?: boolean;
   isMuted?: boolean;
@@ -18,8 +18,6 @@ export type PeerProps = {
   autoPlay?: boolean;
   style?: CssValue;
 };
-
-let COUNT = 0;
 
 export const Peer: React.FC<PeerProps> = (props) => {
   const { isSelf, peer, isCircle } = props;
@@ -85,13 +83,6 @@ export const Peer: React.FC<PeerProps> = (props) => {
       });
     }
   }, []); // eslint-disable-line
-
-  const sendData = () => {
-    //
-    COUNT++;
-    const data = { msg: `count-${COUNT}` };
-    bus.fire({ type: 'Peer/publish', payload: { data } });
-  };
 
   const styles = {
     base: css({
@@ -183,11 +174,6 @@ export const Peer: React.FC<PeerProps> = (props) => {
         {elMicIcon}
       </div>
       <div {...styles.footer}>{elTextbox || elPeerLabel}</div>
-      {!isSelf && (
-        <Button style={styles.temp} onClick={sendData}>
-          Send
-        </Button>
-      )}
     </div>
   );
 };

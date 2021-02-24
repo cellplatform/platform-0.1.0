@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
@@ -10,16 +10,16 @@ import { Scale } from './Scale';
 
 export type ImagesProps = {
   paths?: string[];
+  selected?: string;
   style?: CssValue;
+  onSelect?: (e: { path?: string }) => void;
 };
 
 export const Images: React.FC<ImagesProps> = (props) => {
-  const { paths = [] } = props;
+  const { paths = [], onSelect, selected } = props;
 
   const [isOver, setIsOver] = useState<boolean>(false);
   const [items, setItems] = useState<DotSelectorItem[]>([]);
-  const [selected, setSelected] = useState<string>();
-
   const [isAltPressed, setIsAltPressed] = useState<boolean>(false);
 
   const getSelected = () => items.find((item) => item.value === selected);
@@ -27,12 +27,15 @@ export const Images: React.FC<ImagesProps> = (props) => {
   const isEmpty = items.length === 0;
   const isSelectedLoading = isEmpty ? false : !getSelected()?.isLoaded;
 
+  const setSelected = (path?: string) => {
+    if (onSelect) onSelect({ path });
+  };
+
   useEffect(() => {
     const toFilename = (path: string) => path.substring(path.lastIndexOf('/') + 1);
     const items: DotSelectorItem[] = paths.map((value) => ({ value, label: toFilename(value) }));
     setItems(items);
-    setSelected(items[0]?.value);
-  }, [paths]);
+  }, [paths, onSelect]); // eslint-disable-line
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
