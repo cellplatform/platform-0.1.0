@@ -2,11 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { animationFrameScheduler } from 'rxjs';
 import { filter, observeOn } from 'rxjs/operators';
 
-import { css, CssValue, drag } from '../common';
+import { css, CssValue, drag, t, defaultValue } from '../common';
 
 export type ImageProps = {
+  bus: t.EventBus<any>;
   src?: string;
   style?: CssValue;
+  zoom?: number;
   onLoadStart?: () => void;
   onLoadComplete?: () => void;
   onLoadError?: () => void;
@@ -14,8 +16,10 @@ export type ImageProps = {
 
 export const Image: React.FC<ImageProps> = (props) => {
   const { onLoadStart } = props;
+  const bus = props.bus.type<t.PeerEvent>();
+  const zoom = defaultValue(props.zoom, 1);
+
   const imageRef = useRef<HTMLImageElement>(null);
-  const [zoom, setZoom] = useState<number>(1);
 
   const [offsetX, setOffsetX] = useState<number>(0);
   const [offsetY, setOffsetY] = useState<number>(0);
@@ -42,7 +46,9 @@ export const Image: React.FC<ImageProps> = (props) => {
       const diff = e.delta.y / 100;
       const next = Math.max(0.1, startZoom + diff);
       // if (next <= 1) setOffset(0, 0);
-      setZoom(next);
+
+      const data = { zoom: next };
+      bus.fire({ type: 'Peer/publish', payload: { data } });
     });
 
     drag$

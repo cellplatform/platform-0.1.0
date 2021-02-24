@@ -5,6 +5,7 @@ export * from '../../common/types';
 export type ConversationState = {
   imageDir?: string | string[];
   selected?: string;
+  zoom?: number;
 };
 
 /**

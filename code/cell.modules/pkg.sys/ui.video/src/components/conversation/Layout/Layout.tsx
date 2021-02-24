@@ -31,7 +31,9 @@ export const Layout: React.FC<LayoutProps> = (props) => {
       <div {...styles.body}>
         {model && (
           <Diagram
+            bus={bus}
             dir={model.imageDir}
+            zoom={model.zoom}
             selected={model.selected}
             onSelect={(e) => {
               const data = { selected: e.path };

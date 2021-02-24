@@ -3,20 +3,22 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { Spinner } from '../../Primitives';
-import { COLORS, css, CssValue, events } from '../common';
+import { COLORS, css, CssValue, events, t } from '../common';
 import { DotSelector, DotSelectorItem } from '../DotSelector';
 import { Image } from './Image';
 import { Scale } from './Scale';
 
 export type ImagesProps = {
+  bus: t.EventBus<any>;
   paths?: string[];
   selected?: string;
+  zoom?: number;
   style?: CssValue;
   onSelect?: (e: { path?: string }) => void;
 };
 
 export const Images: React.FC<ImagesProps> = (props) => {
-  const { paths = [], onSelect, selected } = props;
+  const { paths = [], onSelect, selected, bus } = props;
 
   const [isOver, setIsOver] = useState<boolean>(false);
   const [items, setItems] = useState<DotSelectorItem[]>([]);
@@ -35,7 +37,7 @@ export const Images: React.FC<ImagesProps> = (props) => {
     const toFilename = (path: string) => path.substring(path.lastIndexOf('/') + 1);
     const items: DotSelectorItem[] = paths.map((value) => ({ value, label: toFilename(value) }));
     setItems(items);
-  }, [paths, onSelect]); // eslint-disable-line
+  }, [paths]); // eslint-disable-line
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
@@ -111,9 +113,11 @@ export const Images: React.FC<ImagesProps> = (props) => {
       path,
       el: (
         <Image
+          bus={bus}
           key={path}
           src={path}
           style={styles.img}
+          zoom={props.zoom}
           onLoadComplete={() => changeItem(path, { isLoaded: true })}
         />
       ),
