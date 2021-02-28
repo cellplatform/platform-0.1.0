@@ -1,5 +1,4 @@
 import { fs } from './libs';
-const env = fs.env.value;
 
 export { ERROR } from '@platform/cell.schema';
 
@@ -11,15 +10,12 @@ export { ERROR } from '@platform/cell.schema';
  *    https://vercel.com/docs/platform/environment-variables#system-environment-variables
  *
  */
-export const VERCEL = {
-  ENV: env('VERCEL_ENV'),
-  REGION: env('VERCEL_REGION'),
-  URL: env('VERCEL_URL'),
-};
 
-console.log('VERCEL', VERCEL); // TEMP 🐷
+export const CELL_REGION = process.env.CELL_REGION || 'local:device';
+export const IS_CLOUD = CELL_REGION.startsWith('cloud:');
 
-export const IS_CLOUD = Boolean(VERCEL.REGION);
+console.log('ROUTER / CELL_REGION', CELL_REGION);
+
 const TMP = IS_CLOUD ? '/tmp' : fs.resolve('tmp');
 
 export const PATH = {

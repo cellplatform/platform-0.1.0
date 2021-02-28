@@ -1,7 +1,7 @@
 import { util } from './common';
 
-export const NOW = process.env.VERCEL_REGION || 'dev1';
-export const IS_CLOUD = NOW !== 'dev1';
+import { IS_CLOUD } from '@platform/cell.service/lib/common/constants';
+export { IS_CLOUD };
 
 if (!IS_CLOUD) {
   util.env.load();

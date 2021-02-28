@@ -10,9 +10,6 @@ export function init(args: { router: t.IRouter; name?: string; deployedAt?: numb
    * GET: /, /.sys
    */
   router.get(routes.SYS.INFO, async (req) => {
-    const VERCEL = constants.VERCEL;
-    const region = VERCEL.REGION ? `cloud:${VERCEL.REGION}` : 'local:device';
-
     const name = args.name || 'Untitled';
     const deployedAt = args.deployedAt;
     const system = constants.getSystem();
@@ -21,7 +18,7 @@ export function init(args: { router: t.IRouter; name?: string; deployedAt?: numb
     const data: t.IResGetSysInfo = {
       name,
       host,
-      region,
+      region: constants.CELL_REGION,
       system: system.version,
       deployedAt,
     };
