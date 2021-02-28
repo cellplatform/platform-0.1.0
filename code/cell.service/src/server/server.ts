@@ -50,6 +50,7 @@ export function create(args: {
       runtime: runtime ? runtime.name : undefined,
       fs: `[${log.white(fs.type === 'LOCAL' ? 'local' : fs.type)}]${dir}`,
       'fs:s3': fs.type == 'S3' ? fs.endpoint.origin : undefined,
+      region: constants.CELL_REGION,
     },
   });
 

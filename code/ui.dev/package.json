@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.dev",
-  "version": "0.0.37",
+  "version": "0.0.38",
   "description": "UI development helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -8,25 +8,25 @@
     "start": "parcel src/test.parcel/index.html",
     "test": "ts test",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build --no-esm",
     "bundle": "sh script.sh/bundle.sh",
     "clean": "sh script.sh/clean.sh",
     "serve": "cd dist && serve",
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/css": "0.4.30",
+    "@platform/css": "0.4.31",
     "@platform/libs": "0.2.7",
-    "@platform/log": "0.1.45",
+    "@platform/log": "0.1.46",
     "@platform/polyfill": "0.0.1",
-    "@platform/react": "0.4.63",
-    "@platform/ui.object": "0.0.236",
-    "@platform/util.value": "0.8.15",
+    "@platform/react": "0.4.64",
+    "@platform/ui.object": "0.0.237",
+    "@platform/util.value": "0.8.16",
     "parcel-bundler": "1.12.4"
   },
   "devDependencies": {
     "@platform/test": "0.2.3",
-    "@platform/ts": "4.1.6"
+    "@platform/ts": "4.1.7"
   },
   "files": [
     "lib",

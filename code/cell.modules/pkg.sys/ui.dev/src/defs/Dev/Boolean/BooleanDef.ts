@@ -1,7 +1,7 @@
 import { filter } from 'rxjs/operators';
 
 import { Context, Handler, Model, rx, t, is } from '../common';
-import { Bool as Component } from '../../../components/Action.dev';
+import { Bool as Component } from '../../../components/Action.Dev';
 import { config } from './BooleanDef.config';
 
 type T = t.ActionBoolean;
@@ -48,10 +48,7 @@ export const BooleanDef: t.ActionDef<T, E> = {
               Handler.settings.handler<P, A>({
                 env,
                 payload,
-                sync: {
-                  source: (args) => args.boolean,
-                  target: item,
-                },
+                sync: { source: (args) => args.boolean, target: item },
               })(args);
 
             const changing = e.changing;

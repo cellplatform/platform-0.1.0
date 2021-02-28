@@ -1,7 +1,7 @@
 import { filter } from 'rxjs/operators';
 
 import { Context, Handler, Model, rx, t, is } from '../common';
-import { Button as Component } from '../../../components/Action.dev';
+import { Button as Component } from '../../../components/Action.Dev';
 import { config } from './ButtonDef.config';
 
 type T = t.ActionButton;
@@ -46,10 +46,7 @@ export const ButtonDef: t.ActionDef<T, E> = {
               Handler.settings.handler<P, A>({
                 env,
                 payload,
-                sync: {
-                  source: (args) => args.button,
-                  target: item,
-                },
+                sync: { source: (args) => args.button, target: item },
               })(args);
 
             const button = item as t.ActionButtonProps;

@@ -6,5 +6,5 @@ import VimeoBackground from './Vimeo/VimeoBackground.DEV';
 import Conversation from './Conversation/Conversation.DEV';
 import Peer from './Conversation/Peer/Peer.DEV';
 
-export const ACTIONS = [Vimeo, VimeoBackground, Conversation, Peer];
+export const ACTIONS = [Conversation, Peer, Vimeo, VimeoBackground];
 export const Dev: React.FC = () => <Harness actions={ACTIONS} />;

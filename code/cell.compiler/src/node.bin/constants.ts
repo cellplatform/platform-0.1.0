@@ -40,12 +40,11 @@ export const COMMANDS: t.Commands = {
   upload: {
     description: 'Bundle and upload to a cell',
     params: {
+      '--dir': `The target directory within the cell`,
       '--host': `The target host domain`,
       '--uri': `The target cell URI (eg "cell:<ns>:A1")`,
       '--config': PARAMS.config,
       '--name': PARAMS.name,
-      '--dir': `(optional) The target directory within the cell`,
-      '--sample': `(optional) Send to generated sample cell for testing`,
       '--no-bundle': `(optional) Skip bundling the project`,
       '--mode': PARAMS.mode,
     },

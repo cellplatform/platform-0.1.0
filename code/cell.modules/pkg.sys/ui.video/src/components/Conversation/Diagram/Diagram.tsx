@@ -1,48 +1,58 @@
 import React, { useEffect, useState } from 'react';
 
 import { useBundleManifest } from '../../../hooks';
-import { bundle, css, CssValue } from '../common';
-import { DotSelector, DotSelectorItem } from '../DotSelector';
+import { bundle, css, CssValue, t } from '../common';
 import { Images } from '../Views';
 
 export type DiagramProps = {
-  dir?: string;
+  bus: t.EventBus<any>;
+  zoom?: number;
+  offset?: { x: number; y: number };
+  dir?: string | string[];
+  selected?: string;
   style?: CssValue;
+  onSelect?: (e: { path?: string }) => void;
 };
-
-console.log('bundle', bundle);
 
 const isImagePath = (path: string) =>
   ['.png', '.jpg', '.jpeg'].map((path) => path.toLowerCase()).some((ext) => path.endsWith(ext));
 
 export const Diagram: React.FC<DiagramProps> = (props) => {
-  const { dir } = props;
+  const { dir, bus } = props;
   const { files } = useBundleManifest();
   const [paths, setPaths] = useState<string[]>();
 
   useEffect(() => {
+    const dirTmp = Array.isArray(dir) ? dir[0] : dir || '';
     const paths = !dir
       ? []
       : files
-          .filter((file) => file.path.startsWith(dir))
+          .filter(() => Boolean(dirTmp))
+          .filter((file) => file.path.startsWith(dirTmp))
           .filter((file) => isImagePath(file.path))
           .map((file) => bundle.path(file.path));
-
     setPaths(paths);
-  }, [files, dir]);
+  }, [dir, files]);
 
   const styles = {
-    base: css({
-      flex: 1,
-      position: 'relative',
-      overflow: 'hidden',
-    }),
+    base: css({ flex: 1, position: 'relative', overflow: 'hidden' }),
     images: css({ Absolute: 0 }),
   };
 
+  const first = paths ? paths[0] : undefined;
+  const selected = props.selected ? props.selected : first;
+
   return (
     <div {...css(styles.base, props.style)}>
-      <Images style={styles.images} paths={paths} />
+      <Images
+        bus={bus}
+        style={styles.images}
+        paths={paths}
+        zoom={props.zoom}
+        offset={props.offset}
+        selected={selected}
+        onSelect={props.onSelect}
+      />
     </div>
   );
 };

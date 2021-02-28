@@ -1,6 +1,6 @@
 {
   "name": "@platform/http",
-  "version": "0.14.10",
+  "version": "0.14.11",
   "description": "Tools for working with HTTP.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,20 +12,20 @@
     "test:integration": "ts test --suffix INTEGRATION",
     "tddi": "ts test --suffix INTEGRATION --watch",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build --no-esm",
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/http.types": "0.2.35",
+    "@platform/http.types": "0.2.36",
     "@platform/libs": "0.2.7",
-    "@platform/types": "0.5.15",
-    "@platform/util.mimetype": "0.1.31",
-    "@platform/util.value": "0.8.15",
+    "@platform/types": "0.5.16",
+    "@platform/util.mimetype": "0.1.32",
+    "@platform/util.value": "0.8.16",
     "isomorphic-fetch": "3.0.0"
   },
   "devDependencies": {
     "@platform/test": "0.2.3",
-    "@platform/ts": "4.1.6",
+    "@platform/ts": "4.1.7",
     "@types/isomorphic-fetch": "0.0.35"
   },
   "files": [

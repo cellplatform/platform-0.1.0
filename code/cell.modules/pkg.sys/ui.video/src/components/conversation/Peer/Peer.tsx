@@ -1,16 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { css, CssValue, t, color, defaultValue, cuid, PeerJS } from '../common';
-import { TextInput, Button } from '../../Primitives';
-import { Icons } from '../../Icons';
 
+import { Icons } from '../../Icons';
+import { Button } from '../../Primitives';
+import { color, css, CssValue, defaultValue, PeerJS, t } from '../common';
 import { PeerLabel } from './Peer.Label';
 import { PeerTextbox } from './Peer.Textbox';
 
 export type PeerProps = {
+  bus: t.EventBus<any>;
   peer: PeerJS;
   isSelf?: boolean;
   isMuted?: boolean;
   isCircle?: boolean;
+  isCircleTransition?: number;
   width?: number;
   height?: number;
   autoPlay?: boolean;
@@ -20,6 +22,7 @@ export type PeerProps = {
 export const Peer: React.FC<PeerProps> = (props) => {
   const { isSelf, peer, isCircle } = props;
   const autoPlay = defaultValue(props.autoPlay, true);
+  const bus = props.bus.type<t.PeerEvent>();
 
   const height = props.height || 200;
   let width = props.width || 300;
@@ -46,7 +49,6 @@ export const Peer: React.FC<PeerProps> = (props) => {
   };
 
   const startRemoteCall = (targetId: string) => {
-    if (!peer) throw new Error(`The WebRTC peer has not been initialized.`);
     const video = videoRef.current as HTMLVideoElement;
     const localStream = localStreamRef.current as MediaStream;
     const call = peer.call(targetId, localStream);
@@ -68,23 +70,30 @@ export const Peer: React.FC<PeerProps> = (props) => {
   useEffect(() => {
     if (!isSelf) {
       peer.on('call', async (call) => {
+        // Connect the video stream.
         const video = videoRef.current as HTMLVideoElement;
         const localStream = localStreamRef.current;
         if (localStream) {
           call.answer(localStream);
           call.on('stream', (remoteStream) => (video.srcObject = remoteStream));
         }
+
+        // Start data connection.
+        bus.fire({ type: 'Peer/connect', payload: { id: call.peer } });
       });
     }
   }, []); // eslint-disable-line
 
   const styles = {
-    base: css({}),
+    base: css({
+      position: 'relative',
+    }),
     video: {
       outer: css({
         position: 'relative',
         overflow: 'hidden',
         borderRadius: isCircle ? '100%' : 16,
+        transition: `border-radius ${defaultValue(props.isCircleTransition, 100)}ms`,
         width,
         height,
         border: `solid 5px ${color.format(-0.1)}`,
@@ -96,7 +105,7 @@ export const Peer: React.FC<PeerProps> = (props) => {
         height: '100%',
       }),
     },
-    mic: {
+    mute: {
       outer: css({
         pointerEvents: 'none',
         Absolute: 0,
@@ -122,10 +131,10 @@ export const Peer: React.FC<PeerProps> = (props) => {
 
   const MicIcon = isMuted ? Icons.Mic.Off : Icons.Mic.On;
 
-  const elMicIcon = (
-    <div {...styles.mic.outer}>
+  const elMuteButton = !isSelf && (
+    <div {...styles.mute.outer}>
       <Button onClick={() => setIsMuted((prev) => !prev)}>
-        <div {...styles.mic.inner}>
+        <div {...styles.mute.inner}>
           <MicIcon size={18} />
         </div>
       </Button>
@@ -140,6 +149,7 @@ export const Peer: React.FC<PeerProps> = (props) => {
       }}
       onEnter={() => {
         startRemoteCall(id);
+        bus.fire({ type: 'Peer/connect', payload: { id } });
       }}
     />
   );
@@ -156,7 +166,7 @@ export const Peer: React.FC<PeerProps> = (props) => {
           muted={isMuted}
           onPlay={onPlay}
         />
-        {elMicIcon}
+        {elMuteButton}
       </div>
       <div {...styles.footer}>{elTextbox || elPeerLabel}</div>
     </div>

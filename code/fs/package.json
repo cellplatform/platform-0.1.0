@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs",
-  "version": "0.6.7",
+  "version": "0.6.8",
   "description": "POSIX style file-system tools.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@platform/fs.types": "0.1.5",
-    "@platform/types": "0.5.15",
+    "@platform/types": "0.5.16",
     "@types/fs-extra": "9.0.7",
     "@types/js-yaml": "4.0.0",
     "archiver": "5.2.0",

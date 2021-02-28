@@ -11,8 +11,8 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@platform/ts": "latest",
-    "@platform/test": "latest"
+    "@platform/ts": "~latest",
+    "@platform/test": "~latest"
   },
   "license": "MIT",
   "private": true

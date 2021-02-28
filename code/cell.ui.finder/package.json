@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.ui.finder",
-  "version": "0.0.195",
+  "version": "0.0.200",
   "description": "Finder UI components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,23 +16,23 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.client": "0.3.43",
-    "@platform/cell.types": "0.5.53",
-    "@platform/cell.ui": "0.1.183",
+    "@platform/cell.client": "0.3.48",
+    "@platform/cell.types": "0.5.57",
+    "@platform/cell.ui": "0.1.188",
     "@platform/libs": "0.2.7",
-    "@platform/react": "0.4.63",
-    "@platform/state": "0.7.28",
-    "@platform/ui.spinner": "0.0.179",
-    "@platform/ui.tree": "0.8.26",
-    "@platform/util.value": "^0.8.15",
+    "@platform/react": "0.4.64",
+    "@platform/state": "0.7.31",
+    "@platform/ui.spinner": "0.0.180",
+    "@platform/ui.tree": "0.8.29",
+    "@platform/util.value": "^0.8.16",
     "path-sort": "0.1.0",
     "pretty-bytes": "5.5.0",
     "react-icons": "4.2.0"
   },
   "devDependencies": {
     "@platform/test": "0.2.3",
-    "@platform/ts": "4.1.6",
-    "@platform/ui.dev": "0.0.37",
+    "@platform/ts": "4.1.7",
+    "@platform/ui.dev": "0.0.38",
     "@types/recharts": "^1.8.18",
     "recharts": "1.8.5"
   },

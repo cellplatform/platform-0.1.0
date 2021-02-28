@@ -1,6 +1,6 @@
 {
   "name": "@platform/tmpl",
-  "version": "0.1.55",
+  "version": "0.1.57",
   "description": "Succinct powerful template stamper.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -9,20 +9,20 @@
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build --no-esm",
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cli": "0.5.65",
-    "@platform/fs": "0.6.7",
-    "@platform/npm": "0.3.28",
+    "@platform/cli": "0.5.66",
+    "@platform/fs": "0.6.8",
+    "@platform/npm": "0.4.0",
     "@types/inquirer": "7.3.1",
     "inquirer": "7.3.3",
     "isbinaryfile": "4.0.6"
   },
   "devDependencies": {
     "@platform/test": "0.2.3",
-    "@platform/ts": "4.1.6"
+    "@platform/ts": "4.1.7"
   },
   "files": [
     "lib",

@@ -18,9 +18,9 @@
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "deploy": "yarn upload --sample --port 5000",
-    "public": "yarn open && sh ./sh/ngrok.sh",
-    "open": "open https://os.ngrok.io/cell:ckl7eyjap000c8iete89p6tq0:A1/fs/sample/index.html"
+    "deploy": "sh sh/deploy.sh",
+    "public": "ngrok http 5000 --hostname=os.ngrok.io",
+    "open": "open https://nz.ngrok.io/cell:cklk0ocdn000e3met7e0r8jol:A1/fs/james.0.0.2/index.html"
   },
   "dependencies": {
     "@types/vimeo__player": "^2.10.0",
@@ -28,9 +28,9 @@
     "peerjs": "^1.3.1"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "0.3.1",
-    "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "@platform/cell.compiler": "^0.3.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   },
   "license": "MIT",
   "private": true

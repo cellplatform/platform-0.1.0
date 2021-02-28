@@ -1,4 +1,4 @@
-export { Json } from '@platform/types/lib/json';
+export { Json } from '@platform/types/lib/types.json';
 export * from '@platform/types';
 export * from '@platform/http/lib/types';
 export * from '../types';

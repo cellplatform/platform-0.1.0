@@ -1,8 +1,8 @@
 import { PKG } from './constants.pkg';
-import { VERCEL, IS_CLOUD, PATH } from '@platform/cell.router/lib/common/constants';
+import { IS_CLOUD, PATH, CELL_REGION } from '@platform/cell.router/lib/common/constants';
 
 export { ERROR } from '@platform/cell.schema';
-export { VERCEL, IS_CLOUD, PATH };
+export { IS_CLOUD, PATH, CELL_REGION };
 
 /**
  * Versions (from PACKAGE.json)

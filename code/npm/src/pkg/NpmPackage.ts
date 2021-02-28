@@ -1,4 +1,4 @@
-import { R, fs, value } from '../common';
+import { R, fs, value, parseVersionPrefix } from '../common';
 import * as t from './types';
 import { getVersions } from '../get';
 
@@ -298,7 +298,10 @@ export class NpmPackage {
     // Filter down on specific fields if required.
     if (filter) {
       Object.keys(fields)
-        .filter((name) => !filter(name, fields[name]))
+        .filter((name) => {
+          const { version } = parseVersionPrefix(fields[name]);
+          return !filter(name, version);
+        })
         .forEach((name, version) => {
           delete fields[name];
         });
@@ -306,6 +309,14 @@ export class NpmPackage {
 
     // Retrieve the latest versions.
     fields = await getVersions(fields);
+
+    // Re-insert any prefixes.
+    Object.keys(fields).forEach((name) => {
+      const { prefix } = parseVersionPrefix(original[name]);
+      if (prefix) fields[name] = `${prefix}${fields[name]}`;
+    });
+
+    // Finish up.
     return { ...original, ...fields };
   }
 }

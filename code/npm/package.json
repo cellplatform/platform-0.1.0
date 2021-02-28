@@ -1,6 +1,6 @@
 {
   "name": "@platform/npm",
-  "version": "0.3.28",
+  "version": "0.4.0",
   "description": "Helpers for working with NPM.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
@@ -10,25 +10,25 @@
     "test:integration": "ts test --suffix INTEGRATION",
     "tddi": "ts test --suffix INTEGRATION --watch",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build --no-esm",
     "prepare": "ts prepare",
     "pv": "ts-node -T scripts.ts/prompt-version.ts",
     "tmp": "ts-node -T scripts.ts/save.ts"
   },
   "dependencies": {
-    "@platform/cli.prompt": "0.3.40",
-    "@platform/exec": "0.2.76",
-    "@platform/fs": "0.6.7",
-    "@platform/log": "0.1.45",
-    "@platform/types": "0.5.15",
-    "@platform/util.value": "0.8.15",
+    "@platform/cli.prompt": "0.3.41",
+    "@platform/exec": "0.2.77",
+    "@platform/fs": "0.6.8",
+    "@platform/log": "0.1.46",
+    "@platform/types": "0.5.16",
+    "@platform/util.value": "0.8.16",
     "@types/semver": "7.3.4",
     "inquirer": "7.3.3",
     "semver": "7.3.4"
   },
   "devDependencies": {
     "@platform/test": "0.2.3",
-    "@platform/ts": "4.1.6",
+    "@platform/ts": "4.1.7",
     "@types/dotenv": "8.2.0",
     "@types/inquirer": "7.3.1",
     "dotenv": "8.2.0"

@@ -1,4 +1,4 @@
-import { monaco as MonacoEditor } from '@monaco-editor/react';
+import { loader } from '@monaco-editor/react';
 
 import { configure } from './config';
 import { t } from '../common';
@@ -22,7 +22,7 @@ export const CodeEditor = {
     return (singleton = new Promise<t.ICodeEditorSingleton>(async (resolve, reject) => {
       try {
         // Initialize.
-        const monaco = (await MonacoEditor.init()) as t.IMonaco;
+        const monaco = (await loader.init()) as t.IMonaco;
         const api = CodeEditorSingleton.create(bus, monaco);
 
         // Run configuration routines.

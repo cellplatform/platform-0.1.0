@@ -11,6 +11,10 @@ export function MonacoListeners(args: {
 }) {
   const { instance, id, bus } = args;
 
+  console.log('instance', instance);
+
+  // instance.ondidch
+
   const selection$ = new Subject<t.ICodeEditorSelectionChangedEvent>();
   selection$
     .pipe(distinctUntilChanged((prev, next) => R.equals(prev, next)))

@@ -17,9 +17,9 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@platform/cell.compiler": "latest",
-    "react": "latest",
-    "react-dom": "latest"
+    "@platform/cell.compiler": "~latest",
+    "react": "~latest",
+    "react-dom": "~latest"
   },
   "license": "MIT",
   "private": true

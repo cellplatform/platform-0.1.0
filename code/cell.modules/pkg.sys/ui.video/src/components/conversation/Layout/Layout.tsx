@@ -1,23 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { css, CssValue, t, color, cuid, PeerJS, COLORS } from '../common';
+
+import { color, COLORS, css, CssValue, PeerJS, t } from '../common';
 import { Diagram } from '../Diagram';
-import { Peer } from '../Peer';
+import { LayoutFooter } from './Layout.Footer';
 
 export type LayoutProps = {
-  peers?: number;
+  bus: t.EventBus<any>;
+  peer: PeerJS;
+  model?: t.ConversationState;
   style?: CssValue;
 };
 
 export const Layout: React.FC<LayoutProps> = (props) => {
-  const { peers = 0 } = props;
-  const [peer, setPeer] = useState<PeerJS>();
-
-  useEffect(() => {
-    const self = cuid();
-    const peer = new PeerJS(self);
-    peer.on('open', (id) => setPeer(peer));
-    return () => peer?.destroy();
-  }, []); // eslint-disable-line
+  const { model, peer } = props;
+  const bus = props.bus.type<t.PeerEvent>();
 
   const styles = {
     base: css({
@@ -27,37 +23,26 @@ export const Layout: React.FC<LayoutProps> = (props) => {
       userSelect: 'none',
       overflow: 'hidden',
     }),
-    body: css({
-      flex: 1,
-      display: 'flex',
-    }),
-    footer: css({
-      height: 280,
-      borderTop: `solid 8px ${color.format(-0.1)}`,
-      Flex: 'horizontal-center-spaceBetween',
-      overflow: 'hidden',
-      MarginX: 30,
-    }),
+    body: css({ flex: 1, display: 'flex' }),
   };
-
-  const elPeers =
-    peer &&
-    Array.from({ length: peers }).map((v, i) => {
-      return <Peer key={i} peer={peer} />;
-    });
 
   return (
     <div {...css(styles.base, props.style)}>
+      {peer && <LayoutFooter bus={bus} peer={peer} />}
+
       <div {...styles.body}>
-        <Diagram dir={'static/images.tmp/'} />
-      </div>
-      <div {...styles.footer}>
-        {peer && (
-          <>
-            <Peer peer={peer} isSelf={true} isMuted={true} isCircle={false} />
-            <Peer peer={peer} />
-            {elPeers}
-          </>
+        {model && (
+          <Diagram
+            bus={bus}
+            dir={model.imageDir}
+            zoom={model.zoom}
+            offset={model.offset}
+            selected={model.selected}
+            onSelect={(e) => {
+              const data = { selected: e.path };
+              bus.fire({ type: 'Peer/publish', payload: { data } });
+            }}
+          />
         )}
       </div>
     </div>

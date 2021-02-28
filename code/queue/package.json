@@ -1,6 +1,6 @@
 {
   "name": "@platform/queue",
-  "version": "0.0.39",
+  "version": "0.0.40",
   "description": "Queue abstraction.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -10,16 +10,16 @@
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build --no-esm",
     "prepare": "ts prepare"
   },
   "dependencies": {
     "@platform/libs": "0.2.7",
-    "@platform/util.value": "0.8.15"
+    "@platform/util.value": "0.8.16"
   },
   "devDependencies": {
     "@platform/test": "0.2.3",
-    "@platform/ts": "4.1.6"
+    "@platform/ts": "4.1.7"
   },
   "files": [
     "lib",

@@ -14,8 +14,8 @@
   "dependencies": {
     "@platform/cell.fs.local": "^0.4.175",
     "@platform/cell.fs.s3": "^0.4.180",
-    "@platform/cell.service": "^0.8.29",
-    "@platform/cell.router": "^0.8.93",
+    "@platform/cell.service": "^0.8.30",
+    "@platform/cell.router": "^0.8.94",
     "@platform/cell.runtime.node": "^0.0.22",
     "@platform/cell.schema": "^0.5.53",
     "@platform/cell.types": "^0.5.53",

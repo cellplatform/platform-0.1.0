@@ -39,6 +39,7 @@ export type ITreeState<T extends N = N> = t.IDisposable &
     remove(child: string | ITreeState<any>): ITreeState<T>;
     clear(): ITreeState<T>;
     change: TreeStateChange<T>;
+    changeAsync: TreeStateChangeAsync<T>;
     syncFrom: TreeStateSyncFrom;
     path: t.ITreeStatePath<T>;
   };
@@ -76,11 +77,23 @@ export type TreeStateAddArgs<T extends N = N> = {
 export type TreeStateChange<T extends N = N> = (
   fn: TreeStateChanger<T>,
 ) => TreeStateChangeResponse<T>;
+
+export type TreeStateChangeAsync<T extends N = N> = (
+  fn: TreeStateChangerAsync<T>,
+) => Promise<TreeStateChangeResponse<T>>;
+
 export type TreeStateChangeResponse<T extends N> = t.IStateObjectChangeResponse<T>;
+
 export type TreeStateChanger<T extends N = N, P extends O = NonNullable<T['props']>> = (
   root: T,
   ctx: TreeStateChangerContext<T, P>,
 ) => void;
+
+export type TreeStateChangerAsync<T extends N = N, P extends O = NonNullable<T['props']>> = (
+  root: T,
+  ctx: TreeStateChangerContext<T, P>,
+) => Promise<void>;
+
 export type TreeStateChangerContext<
   T extends N = N,
   P extends O = NonNullable<T['props']>

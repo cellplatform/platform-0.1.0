@@ -1,4 +1,4 @@
-import { deleteUndefined, fs, Schema, t, DEFAULT } from '../../common';
+import { deleteUndefined, fs, Schema, t, DEFAULT, sizeOfImage } from '../../common';
 import { FileAccess, FileRedirects } from '../../config';
 
 type M = t.Manifest;
@@ -48,19 +48,6 @@ export const Manifest = {
   write,
 
   /**
-   * Write the bundle manifest to the file-system.
-   */
-  async createAndSave(args: { sourceDir: string; filename?: string; model?: t.CompilerModel }) {
-    const { sourceDir, filename, model } = args;
-    return createAndSave<M>({
-      create: () => Manifest.create({ sourceDir, model, filename }),
-      sourceDir,
-      filename,
-      model,
-    });
-  },
-
-  /**
    * The filename of the bundle.
    */
   filename: DEFAULT.FILE.JSON.MANIFEST,
@@ -89,6 +76,19 @@ export const Manifest = {
     };
 
     return manifest as T;
+  },
+
+  /**
+   * Write the bundle manifest to the file-system.
+   */
+  async createAndSave(args: { sourceDir: string; filename?: string; model?: t.CompilerModel }) {
+    const { sourceDir, filename, model } = args;
+    return createAndSave<M>({
+      create: () => Manifest.create({ sourceDir, model, filename }),
+      sourceDir,
+      filename,
+      model,
+    });
   },
 
   /**
@@ -185,13 +185,28 @@ export const Manifest = {
     const bytes = file.byteLength;
     const filehash = Schema.hash.sha256(file);
     const path = args.path.substring(baseDir.length + 1);
+
     return deleteUndefined({
       path,
       bytes,
       filehash,
       allowRedirect: model ? toRedirect({ model, path }).flag : undefined,
       public: model ? toPublic({ model, path }) : undefined,
+      image: await Manifest.toImage(path),
     });
+  },
+
+  /**
+   * Generates image meta-data for the given path.
+   */
+  async toImage(path: string): Promise<t.ManifestFileImage | undefined> {
+    const kind = toImageKind(path);
+    if (!kind) return undefined;
+
+    const size = await sizeOfImage(path);
+    const width = size?.width || -1;
+    const height = size?.height || -1;
+    return { kind, width, height };
   },
 };
 
@@ -212,4 +227,12 @@ function toAccess(args: { model: t.CompilerModel; path: string }) {
 function toPublic(args: { model: t.CompilerModel; path: string }) {
   const access = toAccess(args);
   return access.public ? true : undefined;
+}
+
+function toImageKind(path: string) {
+  type K = t.ManifestFileImage['kind'];
+  const kinds = ['.jpg', '.png', '.svg'];
+  let ext = fs.path.extname(path).toLowerCase();
+  ext = ext === '.jpeg' ? '.jpg' : ext;
+  return kinds.includes(ext) ? (ext.replace(/^\./, '') as K) : undefined;
 }

@@ -32,6 +32,7 @@ export const actions = DevActions<Ctx>()
   .context((prev) => prev || { myLayout: 'single', count: 0, text: LOREM, isRunning: true })
 
   .items((e) => {
+    e.title('Context (ctx)');
     e.button('change text', (e) => {
       e.ctx.count++;
       e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
@@ -59,8 +60,40 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
+  })
 
-    e.title('buttons');
+  .items((e) => {
+    e.title('Hr');
+    e.hr(1, 0.15);
+    e.hr(1, 0.15, [5, 0]);
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Textbox');
+
+    e.textbox('my placeholder', (e) => {
+      console.log('e', e);
+    });
+
+    e.textbox((config) =>
+      config
+        .placeholder('hello')
+        .description('My textbox description.')
+        .pipe((e) => {
+          console.log('TEXTBOX', 'hello');
+          console.log('e', toObject(e));
+          console.log('e.changing.next', toObject(e.changing));
+          // console.log("e.action", e.)
+          // console.log('e.invoked?.value', e.invoked?.value);
+        }),
+    );
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Button');
     e.button((config) => config.label('hello'));
     e.button('delay', async (e) => await time.delay(1200));
     e.hr(1, 0.15, [5, 0]);
@@ -100,7 +133,12 @@ export const actions = DevActions<Ctx>()
       );
     });
 
-    e.hr(1, 0.15);
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Boolean');
+
     e.boolean('boolean (disabled)');
     e.boolean('spinner', async (e) => {
       if (e.changing) await time.wait(800);
@@ -117,8 +155,11 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.isRunning;
     });
 
-    e.hr(1, 0.15);
+    e.hr();
+  })
 
+  .items((e) => {
+    e.title('Select');
     e.select((config) =>
       config
         .label('select single')
@@ -158,8 +199,10 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
+  })
 
-    e.title('layouts');
+  .items((e) => {
+    e.title('Layouts');
     e.button('single: center', (e) => (e.ctx.myLayout = 'single'));
     e.button('single: top left', (e) => (e.ctx.myLayout = 'single:top-left'));
     e.button('single: bottom right', (e) => (e.ctx.myLayout = 'single:bottom-right'));
@@ -170,8 +213,10 @@ export const actions = DevActions<Ctx>()
     e.button('double: center (x)', (e) => (e.ctx.myLayout = 'double-x'));
 
     e.hr();
+  })
 
-    e.title('style: host');
+  .items((e) => {
+    e.title('Style: host');
     e.button('bg: dark (string)', (e) => {
       e.settings({
         host: { background: COLORS.DARK },
@@ -191,8 +236,10 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
+  })
 
-    e.title('style: actions');
+  .items((e) => {
+    e.title('Style: actions');
     e.button('bg: white (0)', (e) => (e.actions.background = 0));
     e.button('bg: light (-0.04)', (e) => (e.actions.background = -0.04));
     e.button('bg: dark (-0.1)', (e) => (e.actions.background = -0.1));
@@ -204,8 +251,10 @@ export const actions = DevActions<Ctx>()
     e.button('width: 500', (e) => (e.actions.width = 500));
 
     e.hr();
+  })
 
-    e.title('style: item layout');
+  .items((e) => {
+    e.title('Style: item layout');
     e.button('background: 1', (e) => (e.layout.background = 1));
     e.button('background: -0.3', (e) => (e.layout.background = -0.3));
     e.button('cropmarks: 0.7', (e) => (e.layout.cropmarks = 0.7));

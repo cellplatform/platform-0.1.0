@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
-import { color, COLORS, constants, css, CssValue, DEFAULT, t } from '../common';
+import { color, COLORS, constants, css, CssValue, DEFAULT, t, defaultValue } from '../common';
 import { Icons } from '../Icons';
 import { Markdown } from '../Markdown';
 import { Spinner } from '../Primitives';
 
 /**
- * The button view, with no smarts about the event bus.
+ * A base layout for the display of an dev [Action] item.
  */
-export type ButtonViewProps = {
+export type ItemLayoutProps = {
   label: React.ReactNode;
   description?: React.ReactNode;
   placeholder?: boolean;
@@ -16,11 +16,16 @@ export type ButtonViewProps = {
   icon?: t.IIcon;
   right?: React.ReactNode;
   isSpinning?: boolean;
+  ellipsis?: boolean;
+  pressOffset?: number;
   style?: CssValue;
   onClick?: () => void;
 };
-export const ButtonView: React.FC<ButtonViewProps> = (props) => {
+export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
   const { placeholder, onClick, isSpinning } = props;
+  const ellipsis = defaultValue(props.ellipsis, true);
+  const pressOffset = defaultValue(props.pressOffset, 1);
+
   const [isOver, setIsOver] = useState<boolean>(false);
   const [isDown, setIsDown] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<boolean>(props.isActive);
@@ -33,7 +38,6 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
     base: css({
       position: 'relative',
       boxSizing: 'border-box',
-      color: COLORS.DARK,
     }),
     main: {
       outer: css({
@@ -59,7 +63,7 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
         flex: 1,
         marginLeft: 6,
         marginTop: 5,
-        overflow: 'hidden',
+        overflow: ellipsis ? 'hidden' : undefined,
       }),
       label: css({
         width: '100%',
@@ -68,11 +72,15 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
         fontSize: 12,
         color: isOver && isActive ? COLORS.BLUE : COLORS.DARK,
         opacity: !isActive ? 0.6 : !placeholder ? 1 : isOver ? 1 : 0.6,
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        transform: isDown ? `translateY(1px)` : undefined,
+        transform: isDown ? `translateY(${pressOffset}px)` : undefined,
       }),
+      ellipsis:
+        ellipsis &&
+        css({
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }),
       description: css({
         marginTop: 4,
         color: color.format(-0.4),
@@ -118,7 +126,7 @@ export const ButtonView: React.FC<ButtonViewProps> = (props) => {
           {isSpinning && <Spinner style={styles.main.spinner} size={18} />}
         </div>
         <div {...styles.body.outer}>
-          <div {...styles.body.label}>{label}</div>
+          <div {...css(styles.body.label, styles.body.ellipsis)}>{label}</div>
           {description}
         </div>
         {props.right}

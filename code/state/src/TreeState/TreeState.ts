@@ -147,17 +147,23 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   public change: t.TreeStateChange<T> = (fn) => {
     return this._change(fn);
   };
+
   private _change(fn: t.TreeStateChanger<T>, options: { ensureNamespace?: boolean } = {}) {
-    const res = this._store.change((draft) => {
+    return this._store.change((draft) => {
       const ctx = this.ctx(draft);
       fn(draft, ctx);
       if (options.ensureNamespace !== false) {
         helpers.ensureNamespace(draft, this.namespace);
       }
     });
-
-    return res;
   }
+
+  public changeAsync: t.TreeStateChangeAsync<T> = (fn) => {
+    return this._store.changeAsync(async (draft) => {
+      const ctx = this.ctx(draft);
+      await fn(draft, ctx);
+    });
+  };
 
   public add = <C extends N = N>(
     args: { parent?: string; root: C | string | t.ITreeState<C> } | t.ITreeState<C>,

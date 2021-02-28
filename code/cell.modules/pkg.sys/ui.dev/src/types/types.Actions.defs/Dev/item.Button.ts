@@ -45,3 +45,15 @@ export type ActionButtonHandlerArgs<C> = t.ActionHandlerArgs<C> & {
 export type ActionHandlerSettingsButtonArgs = t.ActionHandlerSettingsArgs & {
   button?: Partial<t.ActionButtonProps>;
 };
+
+/**
+ * EVENT: Fires for the simple Button action.
+ */
+export type IActionButtonEvent = {
+  type: 'dev:action/Button';
+  payload: IActionButtonPayload;
+};
+export type IActionButtonPayload = {
+  namespace: string;
+  item: t.ActionButton;
+};

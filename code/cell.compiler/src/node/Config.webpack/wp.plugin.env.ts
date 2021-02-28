@@ -17,6 +17,7 @@ export function init(args: t.IArgs) {
   if (args.isDev && !json.origin) {
     json.origin = { host: `localhost:${model.port()}`, uri: 'cell:dev:A1' };
   }
+
   return new DefinePlugin({
     __CELL__: JSON.stringify(json),
   });

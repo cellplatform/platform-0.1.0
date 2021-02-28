@@ -2,13 +2,11 @@ import React from 'react';
 
 import { DevActions } from 'sys.ui.dev';
 import { Peer, PeerProps } from '.';
-import { cuid, PeerJS } from '../common';
+import { cuid, rx, createPeer } from '../common';
+
+const bus = rx.bus();
 
 type Ctx = { self: string; props: PeerProps };
-// const INITIAL = {
-//   self: cuid(),
-//   props: {},
-// };
 
 /**
  * Actions
@@ -20,7 +18,7 @@ export const actions = DevActions<Ctx>()
     return (
       prev || {
         self,
-        props: { peer: new PeerJS(self) },
+        props: { bus, peer: createPeer({ bus, id: self }) },
       }
     );
   })

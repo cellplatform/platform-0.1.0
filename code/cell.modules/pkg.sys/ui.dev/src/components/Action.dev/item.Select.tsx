@@ -3,7 +3,7 @@ import SelectComponent from 'react-select';
 
 import { color, css, SelectUtil, t, time, useActionItemMonitor } from '../common';
 import { Icons } from '../Icons';
-import { ButtonView } from './ButtonView';
+import { ItemLayout } from './ItemLayout';
 
 export type SelectProps = {
   namespace: string;
@@ -45,9 +45,10 @@ export const Select: React.FC<SelectProps> = (props) => {
     setIsSelectVisible(false);
   };
 
-  const handleChange = (value: any, meta: { action: t.SelectActionTypes }) => {
+  const handleChange = (value: any, meta: { action: string }) => {
     hideSelect();
-    const { action } = meta;
+    const action = meta.action as t.ActionSelectKind;
+
     const next = (Array.isArray(value) ? value : [value]) as t.ActionSelectItem[];
     bus.fire({
       type: 'dev:action/Select',
@@ -93,7 +94,7 @@ export const Select: React.FC<SelectProps> = (props) => {
 
   return (
     <div {...styles.base}>
-      <ButtonView
+      <ItemLayout
         isActive={isActive}
         isSpinning={isSpinning}
         label={label}

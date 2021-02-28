@@ -24,6 +24,7 @@ const TMP = IS_CLOUD ? '/tmp' : fs.resolve('tmp');
 
 export const PATH = {
   TMP,
+  LOGDIR: IS_CLOUD ? fs.join(TMP, '.log') : fs.resolve('./.log'),
   CACHEDIR: IS_CLOUD
     ? fs.join(TMP, '.cache/cell.compiler')
     : fs.resolve('./node_modules/.cache/cell.compiler'),
