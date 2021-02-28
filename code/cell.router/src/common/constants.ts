@@ -14,8 +14,6 @@ export { ERROR } from '@platform/cell.schema';
 export const CELL_REGION = process.env.CELL_REGION || 'local:device';
 export const IS_CLOUD = CELL_REGION.startsWith('cloud:');
 
-console.log('ROUTER / CELL_REGION', CELL_REGION);
-
 const TMP = IS_CLOUD ? '/tmp' : fs.resolve('tmp');
 
 export const PATH = {

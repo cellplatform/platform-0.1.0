@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.router",
-  "version": "0.8.98",
+  "version": "0.9.0",
   "description": "Isolated router logic for the Cell operating system HTTP server.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
