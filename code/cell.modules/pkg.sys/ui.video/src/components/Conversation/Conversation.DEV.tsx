@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { DevActions } from 'sys.ui.dev';
+import { DevActions, ActionButtonHandlerArgs } from 'sys.ui.dev';
+
 import { css, rx, t, StateObject } from './common';
 import { asArray } from '@platform/util.value';
 import { Conversation, ConversationProps } from './Conversation';
@@ -10,6 +11,11 @@ type B = t.EventBus<t.PeerEvent>;
 type Ctx = {
   fire: B['fire'];
   props: ConversationProps;
+};
+
+const loadDir = (e: ActionButtonHandlerArgs<Ctx>, dir: string) => {
+  const imageDir = `static/images.tmp/${dir}/`;
+  e.ctx.fire({ type: 'Peer/publish', payload: { data: { imageDir } } });
 };
 
 /**
@@ -31,12 +37,12 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Experiment 0.3.1');
+    e.title('Diagrams');
 
-    e.button('load diagrams', (e) => {
-      const imageDir = 'static/images.tmp/peer-5/';
-      e.ctx.fire({ type: 'Peer/publish', payload: { data: { imageDir } } });
-    });
+    e.button('load: peer-4', (e) => loadDir(e, 'peer-4'));
+    e.button('load: peer-5', (e) => loadDir(e, 'peer-5'));
+    e.button('load: peer-6', (e) => loadDir(e, 'peer-6'));
+
     e.hr();
   })
 

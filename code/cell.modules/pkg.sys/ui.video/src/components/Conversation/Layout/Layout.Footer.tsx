@@ -34,9 +34,9 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
       flex: 1,
       Flex: 'horizontal-center-spaceBetween',
       overflow: 'hidden',
-      borderTop: `solid 8px ${color.format(-0.1)}`,
-      paddingTop: 15,
+      borderBottom: `solid 8px ${color.format(-0.1)}`,
       paddingBottom: 10,
+      paddingTop: 15,
     }),
   };
 

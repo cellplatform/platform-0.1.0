@@ -28,6 +28,8 @@ export const Layout: React.FC<LayoutProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
+      {peer && <LayoutFooter bus={bus} peer={peer} />}
+
       <div {...styles.body}>
         {model && (
           <Diagram
@@ -43,8 +45,6 @@ export const Layout: React.FC<LayoutProps> = (props) => {
           />
         )}
       </div>
-
-      {peer && <LayoutFooter bus={bus} peer={peer} />}
     </div>
   );
 };
