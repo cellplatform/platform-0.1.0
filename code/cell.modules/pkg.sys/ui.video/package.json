@@ -19,7 +19,7 @@
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
     "deploy": "sh sh/deploy.sh",
-    "public": "yarn open && sh ./sh/ngrok.sh",
+    "public": "ngrok http 5000 --hostname=os.ngrok.io",
     "open": "open https://nz.ngrok.io/cell:cklk0ocdn000e3met7e0r8jol:A1/fs/james.0.0.2/index.html"
   },
   "dependencies": {

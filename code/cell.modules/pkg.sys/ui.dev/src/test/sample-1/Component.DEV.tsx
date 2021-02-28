@@ -32,7 +32,7 @@ export const actions = DevActions<Ctx>()
   .context((prev) => prev || { myLayout: 'single', count: 0, text: LOREM, isRunning: true })
 
   .items((e) => {
-    e.title('State (ctx)');
+    e.title('Context (ctx)');
     e.button('change text', (e) => {
       e.ctx.count++;
       e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
@@ -71,10 +71,24 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Textbox');
-    // TODO 🐷
-    e.textbox('🐷 TODO', (e) => {
+
+    e.textbox('my placeholder', (e) => {
       console.log('e', e);
     });
+
+    e.textbox((config) =>
+      config
+        .placeholder('hello')
+        .description('My textbox description.')
+        .pipe((e) => {
+          console.log('TEXTBOX', 'hello');
+          console.log('e', toObject(e));
+          console.log('e.changing.next', toObject(e.changing));
+          // console.log("e.action", e.)
+          // console.log('e.invoked?.value', e.invoked?.value);
+        }),
+    );
+
     e.hr();
   })
 

@@ -65,3 +65,16 @@ export type ActionSelectHandlerArgs<C> = t.ActionHandlerArgs<C> & {
 export type ActionHandlerSettingsSelectArgs = t.ActionHandlerSettingsArgs & {
   select?: Partial<t.ActionSelectProps>;
 };
+
+/**
+ * EVENT: Fires for the Select (dropdown) action.
+ */
+export type IActionSelectEvent = {
+  type: 'dev:action/Select';
+  payload: IActionSelectPayload;
+};
+export type IActionSelectPayload = {
+  namespace: string;
+  item: t.ActionSelect;
+  changing?: t.ActionSelectChanging;
+};

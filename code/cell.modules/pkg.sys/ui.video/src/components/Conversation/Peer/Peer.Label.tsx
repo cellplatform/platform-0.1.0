@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { css, CssValue, t, color, copyToClipboard } from '../common';
 import { Button } from '../../Primitives';
 
@@ -39,6 +39,8 @@ export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
     }),
   };
 
+  const copy = (id: string) => copyToClipboard(`peer: ${id}`);
+
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.left}>
@@ -47,7 +49,7 @@ export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
           {id}
         </div>
       </div>
-      <div {...styles.right}>{id && <Button onClick={() => copyToClipboard(id)}>copy</Button>}</div>
+      <div {...styles.right}>{id && <Button onClick={() => copy(id)}>copy</Button>}</div>
     </div>
   );
 };

@@ -18,7 +18,7 @@ export type ActionTextbox = ActionTextboxProps & {
 export type ActionTextboxConfig<Ctx extends O> = (args: ActionTextboxConfigArgs<Ctx>) => void;
 export type ActionTextboxConfigArgs<Ctx extends O> = {
   ctx: Ctx;
-  label(value: string | t.ReactNode): ActionTextboxConfigArgs<Ctx>;
+  placeholder(value: string): ActionTextboxConfigArgs<Ctx>;
   description(value: string | t.ReactNode): ActionTextboxConfigArgs<Ctx>;
   pipe(...handlers: ActionTextboxHandler<Ctx>[]): ActionTextboxConfigArgs<Ctx>;
 };
@@ -27,12 +27,13 @@ export type ActionTextboxConfigArgs<Ctx extends O> = {
  * Editable properties of a [Textbox].
  */
 export type ActionTextboxProps = {
-  label: string | t.ReactNode;
+  placeholder: string;
   description?: string | t.ReactNode;
   current?: string; // Latest value produced by the handler.
 };
 
-export type ActionTextboxChanging = { next: string };
+export type ActionTextboxChangeType = 'init' | 'invoke';
+export type ActionTextboxChanging = { next: string; action: t.ActionTextboxChangeType };
 
 /**
  * HANDLER: Simple Textbox.
@@ -48,4 +49,18 @@ export type ActionTextboxHandlerArgs<C> = t.ActionHandlerArgs<C> & {
 };
 export type ActionHandlerSettingsTextboxArgs = t.ActionHandlerSettingsArgs & {
   textbox?: Partial<ActionTextboxProps>;
+};
+
+/**
+ * EVENT: Fires for the Textbox action.
+ */
+export type IActionTextboxEvent = {
+  type: 'dev:action/Textbox';
+  payload: IActionTextboxPayload;
+};
+export type IActionTextboxPayload = {
+  namespace: string;
+  item: t.ActionTextbox;
+  action: t.ActionTextboxChangeType;
+  changing?: t.ActionTextboxChanging;
 };

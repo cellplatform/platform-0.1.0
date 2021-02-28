@@ -34,7 +34,7 @@ export const actions = DevActions<Ctx>()
     e.title('Experiment 0.3.1');
 
     e.button('load diagrams', (e) => {
-      const imageDir = 'static/images.tmp/peer-4/';
+      const imageDir = 'static/images.tmp/peer-5/';
       e.ctx.fire({ type: 'Peer/publish', payload: { data: { imageDir } } });
     });
     e.hr();

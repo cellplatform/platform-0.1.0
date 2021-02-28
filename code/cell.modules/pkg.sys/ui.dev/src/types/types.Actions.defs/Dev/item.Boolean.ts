@@ -49,3 +49,16 @@ export type ActionBooleanHandlerArgs<C> = t.ActionHandlerArgs<C> & {
 export type ActionHandlerSettingsBooleanArgs = t.ActionHandlerSettingsArgs & {
   boolean?: Partial<t.ActionBooleanProps>;
 };
+
+/**
+ * EVENT: Fires for the Boolean (switch) action.
+ */
+export type IActionBooleanEvent = {
+  type: 'dev:action/Boolean';
+  payload: IActionBooleanPayload;
+};
+export type IActionBooleanPayload = {
+  namespace: string;
+  item: t.ActionBoolean;
+  changing?: t.ActionBooleanChanging;
+};

@@ -19,7 +19,8 @@ export type ImagesProps = {
 };
 
 export const Images: React.FC<ImagesProps> = (props) => {
-  const { paths = [], onSelect, selected, bus } = props;
+  const { paths = [], onSelect, selected } = props;
+  const bus = props.bus.type<t.PeerEvent>();
 
   const [isOver, setIsOver] = useState<boolean>(false);
   const [items, setItems] = useState<DotSelectorItem[]>([]);
@@ -44,7 +45,12 @@ export const Images: React.FC<ImagesProps> = (props) => {
     const dispose$ = new Subject<void>();
     const key$ = events.keyPress$.pipe(takeUntil(dispose$));
 
-    const pressed$ = key$.pipe(
+    const keyup$ = key$.pipe(
+      takeUntil(dispose$),
+      filter((e) => !e.isPressed),
+    );
+
+    const keydown$ = key$.pipe(
       takeUntil(dispose$),
       filter((e) => e.isPressed),
     );
@@ -54,25 +60,36 @@ export const Images: React.FC<ImagesProps> = (props) => {
       if (e.isPressed) setIsAltPressed(e.altKey);
     });
 
-    pressed$.pipe(filter((e) => e.key === 'ArrowLeft')).subscribe(selecPrevious);
-    pressed$.pipe(filter((e) => e.key === 'ArrowRight')).subscribe(selectNext);
-    pressed$.pipe(filter((e) => e.key === 'Home')).subscribe(selectFirst);
-    pressed$.pipe(filter((e) => e.key === 'End')).subscribe(selectLast);
+    keydown$.pipe(filter((e) => e.key === 'ArrowLeft')).subscribe(selecPrevious);
+    keydown$.pipe(filter((e) => e.key === 'ArrowRight')).subscribe(selectNext);
+    keydown$.pipe(filter((e) => e.key === 'Home')).subscribe(selectFirst);
+    keydown$.pipe(filter((e) => e.key === 'End')).subscribe(selectLast);
 
-    pressed$
-      .pipe(
-        filter((e) => e.altKey),
-        map((e) => parseInt(e.key, 10)),
-        filter((e) => !Number.isNaN(e)),
-      )
-      .subscribe((e) => {
-        const index = (e === 0 ? 1 : e) - 1;
-        const item = items[index];
+    const number$ = keydown$.pipe(
+      filter((e) => e.code.startsWith('Numpad') || e.code.startsWith('Digit')),
+      map((e) => ({ ...e, key: e.code.replace(/^Numpad/, '').replace(/^Digit/, '') })),
+      map((e) => ({ ...e, number: parseInt(e.key, 10) })),
+      filter((num) => !Number.isNaN(num)),
+    );
+
+    number$.pipe(filter((e) => e.altKey)).subscribe((e) => {
+      if (e.number === 0) {
+        reset();
+      } else {
+        const item = items[e.number - 1];
         if (item) setSelected(item.value);
-      });
+      }
+    });
 
     return () => dispose$.next();
   }, [items, isOver]); // eslint-disable-line
+
+  const reset = () => {
+    bus.fire({
+      type: 'Peer/publish',
+      payload: { data: { zoom: undefined, offset: undefined } },
+    });
+  };
 
   const changeItem = (path: string, props: Partial<DotSelectorItem>) => {
     setItems(items?.map((item) => (item.value === path ? { ...item, ...props } : item)));

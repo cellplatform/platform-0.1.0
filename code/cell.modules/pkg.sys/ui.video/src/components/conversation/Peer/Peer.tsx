@@ -105,7 +105,7 @@ export const Peer: React.FC<PeerProps> = (props) => {
         height: '100%',
       }),
     },
-    mic: {
+    mute: {
       outer: css({
         pointerEvents: 'none',
         Absolute: 0,
@@ -131,10 +131,10 @@ export const Peer: React.FC<PeerProps> = (props) => {
 
   const MicIcon = isMuted ? Icons.Mic.Off : Icons.Mic.On;
 
-  const elMicIcon = (
-    <div {...styles.mic.outer}>
+  const elMuteButton = !isSelf && (
+    <div {...styles.mute.outer}>
       <Button onClick={() => setIsMuted((prev) => !prev)}>
-        <div {...styles.mic.inner}>
+        <div {...styles.mute.inner}>
           <MicIcon size={18} />
         </div>
       </Button>
@@ -166,7 +166,7 @@ export const Peer: React.FC<PeerProps> = (props) => {
           muted={isMuted}
           onPlay={onPlay}
         />
-        {elMicIcon}
+        {elMuteButton}
       </div>
       <div {...styles.footer}>{elTextbox || elPeerLabel}</div>
     </div>

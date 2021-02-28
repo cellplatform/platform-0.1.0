@@ -16,12 +16,14 @@ export type ItemLayoutProps = {
   icon?: t.IIcon;
   right?: React.ReactNode;
   isSpinning?: boolean;
+  ellipsis?: boolean;
   pressOffset?: number;
   style?: CssValue;
   onClick?: () => void;
 };
 export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
   const { placeholder, onClick, isSpinning } = props;
+  const ellipsis = defaultValue(props.ellipsis, true);
   const pressOffset = defaultValue(props.pressOffset, 1);
 
   const [isOver, setIsOver] = useState<boolean>(false);
@@ -61,7 +63,7 @@ export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
         flex: 1,
         marginLeft: 6,
         marginTop: 5,
-        overflow: 'hidden',
+        overflow: ellipsis ? 'hidden' : undefined,
       }),
       label: css({
         width: '100%',
@@ -70,11 +72,15 @@ export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
         fontSize: 12,
         color: isOver && isActive ? COLORS.BLUE : COLORS.DARK,
         opacity: !isActive ? 0.6 : !placeholder ? 1 : isOver ? 1 : 0.6,
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
         transform: isDown ? `translateY(${pressOffset}px)` : undefined,
       }),
+      ellipsis:
+        ellipsis &&
+        css({
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }),
       description: css({
         marginTop: 4,
         color: color.format(-0.4),
@@ -120,7 +126,7 @@ export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
           {isSpinning && <Spinner style={styles.main.spinner} size={18} />}
         </div>
         <div {...styles.body.outer}>
-          <div {...styles.body.label}>{label}</div>
+          <div {...css(styles.body.label, styles.body.ellipsis)}>{label}</div>
           {description}
         </div>
         {props.right}

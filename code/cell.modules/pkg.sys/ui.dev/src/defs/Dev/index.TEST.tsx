@@ -286,7 +286,7 @@ describe.only('Dev', () => {
       actions.items((e) => {
         e.textbox('  foo  ', fn1);
         e.textbox('bar', fn1);
-        e.textbox((config) => config.label('foo').pipe(fn2).description('a thing'));
+        e.textbox((config) => config.placeholder('foo').pipe(fn2).description('a thing'));
       });
 
       const items = model.state.items;
@@ -297,17 +297,17 @@ describe.only('Dev', () => {
       const button3 = items[2] as t.ActionTextbox;
 
       expect(button1.kind).to.eql('dev/textbox');
-      expect(button1.label).to.eql('foo');
+      expect(button1.placeholder).to.eql('foo');
       expect(button1.description).to.eql(undefined);
       expect(button1.handlers).to.eql([fn1]);
 
       expect(button2.kind).to.eql('dev/textbox');
-      expect(button2.label).to.eql('bar');
+      expect(button2.placeholder).to.eql('bar');
       expect(button2.description).to.eql(undefined);
       expect(button2.handlers).to.eql([fn1]);
 
       expect(button3.kind).to.eql('dev/textbox');
-      expect(button3.label).to.eql('foo');
+      expect(button3.placeholder).to.eql('foo');
       expect(button3.description).to.eql('a thing');
       expect(button3.handlers).to.eql([fn2]);
     });
@@ -320,7 +320,7 @@ describe.only('Dev', () => {
       expect(items.length).to.eql(1);
 
       const button = items[0] as t.ActionTextbox;
-      expect(button.label).to.eql('foo');
+      expect(button.placeholder).to.eql('foo');
       expect(button.handlers).to.eql([]);
     });
 
