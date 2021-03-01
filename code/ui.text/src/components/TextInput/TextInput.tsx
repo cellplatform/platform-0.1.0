@@ -274,6 +274,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
         onBlur={this.props.onBlur}
         onChange={this.handleChange}
         onEnter={this.props.onEnter}
+        onEscape={this.props.onEscape}
         onTab={this.props.onTab}
         onDblClick={this.handleInputDblClick}
         spellCheck={this.props.spellCheck}
