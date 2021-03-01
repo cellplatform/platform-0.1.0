@@ -14,6 +14,7 @@ export type ItemLayoutProps = {
   placeholder?: boolean;
   isActive: boolean;
   icon?: t.IIcon;
+  iconColor?: string | number;
   right?: React.ReactNode;
   isSpinning?: boolean;
   ellipsis?: boolean;
@@ -53,10 +54,8 @@ export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
         height: 20,
         Flex: 'center-center',
       }),
-      icon: css({ opacity: isOver ? 1 : 0.4 }),
-      spinner: css({
-        Absolute: [3, null, null, 13],
-      }),
+      icon: css({ opacity: isOver || props.iconColor !== undefined ? 1 : 0.4 }),
+      spinner: css({ Absolute: [3, null, null, 13] }),
     },
     body: {
       outer: css({
@@ -110,6 +109,9 @@ export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
     <Markdown style={styles.body.description}>{props.description}</Markdown>
   );
 
+  const iconColor = defaultValue(props.iconColor, isOver ? COLORS.BLUE : COLORS.DARK);
+  const elIcon = !isSpinning && <Icon color={iconColor} size={20} style={styles.main.icon} />;
+
   return (
     <div {...css(styles.base, props.style)}>
       <div
@@ -120,9 +122,7 @@ export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
         onMouseUp={clickHandler(false)}
       >
         <div {...styles.main.iconOuter}>
-          {!isSpinning && (
-            <Icon color={isOver ? COLORS.BLUE : COLORS.DARK} size={20} style={styles.main.icon} />
-          )}
+          {elIcon}
           {isSpinning && <Spinner style={styles.main.spinner} size={18} />}
         </div>
         <div {...styles.body.outer}>

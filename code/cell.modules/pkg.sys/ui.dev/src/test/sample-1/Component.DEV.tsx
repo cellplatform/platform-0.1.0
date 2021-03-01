@@ -81,11 +81,13 @@ export const actions = DevActions<Ctx>()
         .placeholder('hello')
         .description('My textbox description.')
         .pipe((e) => {
-          console.log('TEXTBOX', 'hello');
-          console.log('e', toObject(e));
-          console.log('e.changing.next', toObject(e.changing));
-          // console.log("e.action", e.)
-          // console.log('e.invoked?.value', e.invoked?.value);
+          if (e.changing?.action === 'invoke') {
+            count++;
+            e.textbox.description = `Textbox description (invoked ${count})`;
+            e.textbox.placeholder = `Placeholder (invoked ${count})`;
+            const next = e.changing.next || '';
+            e.textbox.current = `${(next[0] || '').toUpperCase()}${next.substring(1)}`;
+          }
         }),
     );
 
