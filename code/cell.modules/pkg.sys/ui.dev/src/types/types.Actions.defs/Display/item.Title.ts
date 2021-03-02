@@ -10,7 +10,7 @@ export type ActionTitle = {
 };
 
 /**
- * CONFIGURE Title,
+ * CONFIGURE Title.
  */
 export type ActionTitleConfig<Ctx extends O> = (args: ActionTitleConfigArgs<Ctx>) => void;
 export type ActionTitleConfigArgs<Ctx extends O> = {

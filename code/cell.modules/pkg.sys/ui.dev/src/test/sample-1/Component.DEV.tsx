@@ -22,6 +22,14 @@ type Ctx = {
 
 const LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem.';
 
+const markdown = () => {
+  let text = '';
+  text = `${text} *I am italic*, **I am bold** \`code\` `;
+  text = `${text} \n- one\n- two\n - three`;
+  text = `${text}\n\n${LOREM}\n\n${LOREM} (${count})`;
+  return text.trim();
+};
+
 let count = 0;
 
 /**
@@ -32,6 +40,9 @@ export const actions = DevActions<Ctx>()
   .context((prev) => prev || { myLayout: 'single', count: 0, text: LOREM, isRunning: true })
 
   .items((e) => {
+    e.title('Title');
+    e.markdown(markdown());
+
     e.title('Context (ctx)');
     e.button('change text', (e) => {
       e.ctx.count++;
@@ -58,6 +69,7 @@ export const actions = DevActions<Ctx>()
       if (e.changing) e.ctx.throw = e.changing.next;
       e.boolean.current = e.ctx.throw;
     });
+    e.markdown(markdown());
 
     e.hr();
   })
@@ -73,7 +85,7 @@ export const actions = DevActions<Ctx>()
     e.title('Textbox');
 
     e.textbox('my placeholder', (e) => {
-      console.log('e', e);
+      // console.log('e', e);
     });
 
     e.textbox((config) =>
@@ -99,6 +111,7 @@ export const actions = DevActions<Ctx>()
     e.button((config) => config.label('hello'));
     e.button('delay', async (e) => await time.delay(1200));
     e.hr(1, 0.15, [5, 0]);
+
     e.button('console.log', (e) => {
       console.group('🌳 button click');
       console.log('e.ctx', toObject(e.ctx));
@@ -108,13 +121,6 @@ export const actions = DevActions<Ctx>()
     e.button((config) => config.label(`Ellipsis - ${LOREM}`));
     e.button((config) => null);
     e.button((config) => {
-      const markdown = () => {
-        let text = '';
-        text = `${text} *I am italic*, **I am bold** \`code\` `;
-        text = `${text} \n- one\n- two\n - three`;
-        text = `${text}\n\n${LOREM}\n\n${LOREM} (${count})`;
-        return text.trim();
-      };
       config
         .label('markdown')
         .description(markdown())

@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { constants, css, CssValue, Markdown as M } from '../../common';
 
 export type MarkdownProps = { style?: CssValue };
+
 export const Markdown: React.FC<MarkdownProps> = (props) => {
   const children = useMemo(
     () => (typeof props.children === 'string' ? M.toHtmlSync(props.children) : props.children),
