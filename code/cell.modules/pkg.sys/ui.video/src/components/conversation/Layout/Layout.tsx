@@ -8,6 +8,7 @@ export type LayoutProps = {
   bus: t.EventBus<any>;
   peer: PeerJS;
   model?: t.ConversationState;
+  body?: JSX.Element;
   style?: CssValue;
 };
 
@@ -26,25 +27,28 @@ export const Layout: React.FC<LayoutProps> = (props) => {
     body: css({ flex: 1, display: 'flex' }),
   };
 
+  const elBody =
+    props.body ||
+    (model && (
+      <Diagram
+        bus={bus}
+        dir={model.imageDir}
+        zoom={model.zoom}
+        offset={model.offset}
+        selected={model.selected}
+        onSelect={(e) => {
+          bus.fire({
+            type: 'Conversation/publish',
+            payload: { data: { selected: e.path } },
+          });
+        }}
+      />
+    ));
+
   return (
     <div {...css(styles.base, props.style)}>
-      {peer && <LayoutFooter bus={bus} peer={peer} />}
-
-      <div {...styles.body}>
-        {model && (
-          <Diagram
-            bus={bus}
-            dir={model.imageDir}
-            zoom={model.zoom}
-            offset={model.offset}
-            selected={model.selected}
-            onSelect={(e) => {
-              const data = { selected: e.path };
-              bus.fire({ type: 'Peer/publish', payload: { data } });
-            }}
-          />
-        )}
-      </div>
+      {peer && <LayoutFooter bus={bus} peer={peer} zoom={model?.videoZoom} />}
+      <div {...styles.body}>{elBody}</div>
     </div>
   );
 };

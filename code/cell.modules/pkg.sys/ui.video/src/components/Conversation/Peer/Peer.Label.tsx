@@ -39,7 +39,10 @@ export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
     }),
   };
 
-  const copy = (id: string) => copyToClipboard(`peer: ${id}`);
+  const copy = (id: string) => {
+    const url = `${location.origin}${location.pathname}?connectTo=${id}`;
+    copyToClipboard(url);
+  };
 
   return (
     <div {...css(styles.base, props.style)}>

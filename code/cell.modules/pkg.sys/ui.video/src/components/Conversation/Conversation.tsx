@@ -8,6 +8,7 @@ import { Layout } from './Layout';
 export type ConversationProps = {
   bus: t.EventBus<any>;
   model: t.ConversationModel;
+  body?: JSX.Element;
   style?: CssValue;
 };
 
@@ -47,7 +48,7 @@ export const Conversation: React.FC<ConversationProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       {elSpinner}
-      {self && <Layout bus={bus} peer={self} model={state} />}
+      {self && <Layout bus={bus} peer={self} model={state} body={props.body} />}
     </div>
   );
 };

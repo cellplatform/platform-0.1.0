@@ -19,13 +19,13 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
   console.log('state controller');
 
   const changeModel = (data: Partial<t.ConversationState>) => {
-    bus.fire({ type: 'Peer/model', payload: { data } });
+    bus.fire({ type: 'Conversation/model:change', payload: { data } });
   };
 
   /**
    * Init
    */
-  rx.payload<t.PeerCreatedEvent>($, 'Peer/created')
+  rx.payload<t.ConversationCreatedEvent>($, 'Conversation/created')
     .pipe()
     .subscribe((e) => {
       console.log('created', e);
@@ -46,7 +46,7 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
   /**
    * Peer connected. Setup outgoing connection.
    */
-  rx.payload<t.PeerConnectEvent>($, 'Peer/connect')
+  rx.payload<t.ConversationConnectEvent>($, 'Conversation/connect')
     .pipe(filter((e) => Boolean(peer)))
     .subscribe((e) => {
       const conn = peer.connect(e.id);
@@ -56,7 +56,7 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
   /**
    * Listen for data publish events.
    */
-  rx.payload<t.PeerPublishEvent>($, 'Peer/publish')
+  rx.payload<t.ConversationPublishEvent>($, 'Conversation/publish')
     .pipe(filter((e) => Boolean(peer)))
     .subscribe((e) => {
       connections.forEach((conn) => conn.send(e.data));
@@ -66,7 +66,7 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
   /**
    * Update model with new state.
    */
-  rx.payload<t.PeerModelEvent>($, 'Peer/model')
+  rx.payload<t.ConversationModelChangeEvent>($, 'Conversation/model:change')
     .pipe(filter((e) => Boolean(peer)))
     .subscribe((e) => {
       const state = { ...model.state, ...e.data };

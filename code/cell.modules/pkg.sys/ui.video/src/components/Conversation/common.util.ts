@@ -9,6 +9,6 @@ export function createPeer(args: { bus: t.EventBus<any>; id?: string }) {
   const id = args.id || cuid();
   const bus = args.bus.type<t.PeerEvent>();
   const peer = new PeerJS(id);
-  bus.fire({ type: 'Peer/created', payload: { peer } });
+  bus.fire({ type: 'Conversation/created', payload: { peer } });
   return peer;
 }

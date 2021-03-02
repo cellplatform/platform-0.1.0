@@ -8,6 +8,12 @@ export type ConversationState = {
   selected?: string;
   zoom?: number;
   offset?: { x: number; y: number };
+  videoZoom?: number;
+  peers: { [id: string]: ConversationStatePeer };
+};
+
+export type ConversationStatePeer = {
+  id: string;
 };
 
 export type ConversationModel = IStateObjectWritable<ConversationState>;
@@ -15,40 +21,44 @@ export type ConversationModel = IStateObjectWritable<ConversationState>;
 /**
  * Events
  */
-export type PeerEvent = PeerCreatedEvent | PeerConnectEvent | PeerPublishEvent | PeerModelEvent;
+export type PeerEvent =
+  | ConversationCreatedEvent
+  | ConversationConnectEvent
+  | ConversationPublishEvent
+  | ConversationModelChangeEvent;
 
 /**
  * Peer created.
  */
-export type PeerCreatedEvent = {
-  type: 'Peer/created';
-  payload: PeerCreated;
+export type ConversationCreatedEvent = {
+  type: 'Conversation/created';
+  payload: ConversationCreated;
 };
-export type PeerCreated = { peer: PeerJS };
+export type ConversationCreated = { peer: PeerJS };
 
 /**
  * Connect to a peer.
  */
-export type PeerConnectEvent = {
-  type: 'Peer/connect';
-  payload: PeerConnect;
+export type ConversationConnectEvent = {
+  type: 'Conversation/connect';
+  payload: ConversationConnect;
 };
-export type PeerConnect = { id: string };
+export type ConversationConnect = { id: string };
 
 /**
  * Send data to all peers.
  */
-export type PeerPublishEvent = {
-  type: 'Peer/publish';
-  payload: PeerPublish;
+export type ConversationPublishEvent = {
+  type: 'Conversation/publish';
+  payload: ConversationPublish;
 };
-export type PeerPublish = { data: Partial<ConversationState> };
+export type ConversationPublish = { data: Partial<ConversationState> };
 
 /**
  * Send data to all peers.
  */
-export type PeerModelEvent = {
-  type: 'Peer/model';
-  payload: PeerModel;
+export type ConversationModelChangeEvent = {
+  type: 'Conversation/model:change';
+  payload: ConversationModelChange;
 };
-export type PeerModel = { data: Partial<ConversationState> };
+export type ConversationModelChange = { data: Partial<ConversationState> };
