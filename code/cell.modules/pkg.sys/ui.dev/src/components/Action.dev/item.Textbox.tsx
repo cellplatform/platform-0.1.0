@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import { color, COLORS, css, t, useActionItemMonitor } from '../common';
 import { TextInput } from '../Primitives';
@@ -17,6 +17,8 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
   const { placeholder, description, isSpinning } = model;
   const isActive = model.handlers.length > 0;
   const current = model.current;
+
+  const inputRef = useRef<TextInput>(null);
 
   const [pendingValue, setPendingValue] = useState<string | undefined>();
   const isPending = pendingValue !== undefined;
@@ -47,8 +49,9 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
   };
 
   const elTextbox = (
-    <div {...styles.textbox.outer} title={!value ? placeholder : undefined}>
+    <div {...styles.textbox.outer} title={value ? placeholder : undefined}>
       <TextInput
+        ref={inputRef}
         value={value || ''}
         placeholder={placeholder}
         valueStyle={{ fontFamily: 'monospace', fontWeight: 'NORMAL' }}
@@ -56,9 +59,11 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
         spellCheck={false}
         autoCorrect={false}
         autoCapitalize={false}
+        isEnabled={model.handlers.length > 0}
         onChange={(e) => setPendingValue(e.to)}
         onEscape={() => setPendingValue(undefined)}
         onEnter={() => fire({ action: 'invoke', next: value || '' })}
+        onFocus={() => inputRef.current?.selectAll()}
       />
     </div>
   );
@@ -72,6 +77,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
       pressOffset={0}
       ellipsis={false}
       iconColor={iconColor}
+      onClick={() => inputRef.current?.focus()}
     />
   );
 };

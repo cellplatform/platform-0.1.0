@@ -1,5 +1,7 @@
 import { SVG, Element as SvgElement } from '@svgdotjs/svg.js';
 
+export { SvgElement };
+
 export type ISvgRef = {
   filename: string;
   find(id: string): SvgElement | undefined;
