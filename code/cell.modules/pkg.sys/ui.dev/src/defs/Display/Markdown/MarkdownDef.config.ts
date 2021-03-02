@@ -12,7 +12,7 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
     id: slug(),
     kind: 'display/markdown',
     markdown: EMPTY,
-    margin: [5, 15, 5, 12],
+    margin: [5, 15, 5, 8],
   };
 
   const config: t.ActionMarkdownConfigArgs<any> = {

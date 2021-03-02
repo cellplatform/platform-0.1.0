@@ -7,7 +7,6 @@ import { rx, HttpClient, t } from '../../common';
 
 import sample1 from '../../test/sample-1/Component.DEV';
 import sample2 from '../../test/sample-2/Component.DEV';
-import sample3 from '../../test/sample-3/Component.DEV';
 
 const client = HttpClient.create(5000);
 const bus = rx.bus();
@@ -16,7 +15,7 @@ bus.event$.subscribe((e) => {
   // console.log('e', e);
 });
 
-const ACTIONS = [sample1, sample2, sample3];
+const ACTIONS = [sample1, sample2];
 
 type Ctx = { props: HarnessProps };
 const props: HarnessProps = {

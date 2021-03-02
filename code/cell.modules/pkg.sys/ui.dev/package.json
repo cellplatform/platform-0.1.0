@@ -10,7 +10,7 @@
   "scripts": {
     "test": "ts test $@",
     "build": "ts build --no-esm $@",
-    "start": "cell.compiler dev $@",
+    "start": "cell.compiler dev --port 1234 $@",
     "dev": "cell.compiler dev --no-exports $@",
     "bundle": "cell.compiler bundle $@",
     "watch": "cell.compiler watch $@",
