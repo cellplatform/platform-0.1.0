@@ -47,7 +47,9 @@ export const actions = DevActions<Ctx>()
     e.button('change text', (e) => {
       e.ctx.count++;
       e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
-    }).button('inject <React>', (e) => {
+    });
+
+    e.button('inject <React>', (btn) => {
       count++;
       console.log('count', count);
 
@@ -62,14 +64,18 @@ export const actions = DevActions<Ctx>()
 
       const label = <div {...styles.bgr}>Hello ({count})</div>;
       const description = <div {...css(styles.bgr, styles.desc)}>{`${LOREM} (${count})`}</div>;
-      e.button.label = label;
-      e.settings({ button: { description } });
+      btn.button.label = label;
+      btn.settings({ button: { description } });
     });
+
     e.boolean('error', (e) => {
       if (e.changing) e.ctx.throw = e.changing.next;
       e.boolean.current = e.ctx.throw;
     });
-    e.markdown(markdown());
+
+    e.markdown((config) => {
+      config.text(markdown()).margin([40, 35, 20, 20]);
+    });
 
     e.hr();
   })

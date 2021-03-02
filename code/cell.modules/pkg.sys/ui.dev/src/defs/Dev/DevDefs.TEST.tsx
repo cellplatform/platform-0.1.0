@@ -13,7 +13,7 @@ export function create() {
   return { model, actions, bus };
 }
 
-describe.only('Dev', () => {
+describe('Dev', () => {
   describe('button', () => {
     it('label, handler', () => {
       const { actions, model } = create();
@@ -276,7 +276,7 @@ describe.only('Dev', () => {
     });
   });
 
-  describe.only('textbox', () => {
+  describe('textbox', () => {
     it('label, handler', () => {
       const { actions, model } = create();
       expect(model.state.items).to.eql([]);
