@@ -97,6 +97,7 @@ export const actions = DevActions<Ctx>()
     e.textbox((config) =>
       config
         .placeholder('hello')
+        .initial('initial value')
         .description('My textbox description.')
         .pipe((e) => {
           if (e.changing?.action === 'invoke') {

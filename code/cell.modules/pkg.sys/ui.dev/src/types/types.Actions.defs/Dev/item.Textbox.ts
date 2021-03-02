@@ -18,6 +18,7 @@ export type ActionTextbox = ActionTextboxProps & {
 export type ActionTextboxConfig<Ctx extends O> = (args: ActionTextboxConfigArgs<Ctx>) => void;
 export type ActionTextboxConfigArgs<Ctx extends O> = {
   ctx: Ctx;
+  initial(value: string): ActionTextboxConfigArgs<Ctx>;
   placeholder(value: string): ActionTextboxConfigArgs<Ctx>;
   description(value: string | t.ReactNode): ActionTextboxConfigArgs<Ctx>;
   pipe(...handlers: ActionTextboxHandler<Ctx>[]): ActionTextboxConfigArgs<Ctx>;
