@@ -56,6 +56,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
         placeholder={placeholder}
         valueStyle={{ fontFamily: 'monospace', fontWeight: 'NORMAL' }}
         placeholderStyle={{ fontFamily: 'sans-serif', italic: true, color: color.format(-0.3) }}
+        disabledOpacity={1}
         spellCheck={false}
         autoCorrect={false}
         autoCapitalize={false}
