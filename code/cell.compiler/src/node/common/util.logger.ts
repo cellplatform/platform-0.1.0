@@ -1,4 +1,4 @@
-import { log, Model, t, Encoding } from '../common';
+import { log, Model, t, Encoding, defaultValue } from '../common';
 import { stats } from '../config.webpack';
 import { format } from './util.format';
 
@@ -28,13 +28,16 @@ export const logger = {
     return logger;
   },
 
-  model(input: t.CompilerModel, options: { indent?: number; url?: string | boolean } = {}) {
+  model(
+    input: t.CompilerModel,
+    options: { indent?: number; url?: string | boolean; port?: number } = {},
+  ) {
     const { indent } = options;
     const { cyan, gray } = log;
     const prefix = typeof indent === 'number' ? ' '.repeat(indent) : '';
     const model = Model(input);
     const obj = model.toObject();
-    const port = model.port();
+    const port = defaultValue(options.port, model.port());
 
     const green = (value?: any) => (value === undefined ? undefined : log.green(value));
 

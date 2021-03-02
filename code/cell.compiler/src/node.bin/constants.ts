@@ -35,6 +35,7 @@ export const COMMANDS: t.Commands = {
       '--name': PARAMS.name,
       '--mode': PARAMS.mode,
       '--no-exports': `(optional) Suppress module federation exports`,
+      '--port': `(optional) Override the default port`,
     },
   },
   upload: {
