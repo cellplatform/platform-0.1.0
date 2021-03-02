@@ -52,6 +52,7 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
     logger.clear().newline();
     log.info.gray(`DevServer (${count})`);
     logger.model(obj, { indent: 2, url: true, port }).newline();
+    logger.exports(obj, { disabled: noExports }).newline();
 
     if (noExports) {
       /**
@@ -61,7 +62,6 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
        */
       log.info.gray(`NOTE: module federation exports disabled (${log.white('--no-exports')})`);
     } else {
-      logger.exports(obj).newline();
     }
 
     logger.hr().stats(compilation);

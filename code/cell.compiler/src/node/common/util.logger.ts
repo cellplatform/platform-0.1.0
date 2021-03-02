@@ -67,13 +67,14 @@ export const logger = {
     return logger;
   },
 
-  exports(model: t.CompilerModel, options: { title?: string } = {}) {
+  exports(model: t.CompilerModel, options: { title?: string; disabled?: boolean } = {}) {
     if (model.exposes) {
-      const { title = 'Exports' } = options;
+      const { disabled } = options;
+      const title = options.title ? options.title : disabled ? 'Exports (disabled)' : 'Exports';
       const exposes = Encoding.transformKeys(model.exposes, Encoding.unescapePath);
       log.info.gray(title);
       Object.keys(exposes).forEach((path) => {
-        log.info(`  ${format.filepath(path)}`);
+        log.info.gray(`  ${format.filepath(path)}`);
       });
     }
     return logger;
