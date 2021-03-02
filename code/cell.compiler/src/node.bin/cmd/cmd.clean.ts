@@ -5,6 +5,10 @@ import { Typescript } from '../../node/ts';
  * Remove transient build artifacts.
  */
 export async function clean(argv: t.Argv) {
+  await runClean();
+}
+
+export async function runClean() {
   const spinner = ProgressSpinner({ label: 'cleaning...' });
   spinner.start();
 
@@ -29,5 +33,6 @@ export async function clean(argv: t.Argv) {
     path = path.substring(base.length + 1);
     log.info.gray(`  ${base}/${log.white(path)}`);
   });
+
   log.info();
 }

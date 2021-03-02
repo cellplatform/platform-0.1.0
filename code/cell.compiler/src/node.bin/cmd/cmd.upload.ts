@@ -1,10 +1,11 @@
 import { Compiler } from '../../node/compiler';
 import { fs, HttpClient, log, Model, PATH, t, Uri, Schema } from '../common';
 import * as util from '../util';
+import { runClean } from './cmd.clean';
 
 const logger = util.logger;
 
-type ISampleFile = {
+type IFileStore = {
   [dir: string]: {
     [mode: string]: { uri: string };
   };
@@ -63,6 +64,7 @@ export async function upload(argv: t.Argv) {
     return logger.errorAndExit(1, err);
   }
 
+  if (Boolean(argv.clean)) await runClean();
   const res = await Compiler.cell(host, cell.toString()).upload(config, { targetDir, bundle });
 
   const file = args.filepath.substring(fs.resolve('.').length + 1);
@@ -89,15 +91,15 @@ async function formatAndSaveArgs(args: {
   await fs.ensureDir(logDir);
 
   const generateUri = () => Uri.create.cell(Uri.cuid(), 'A1');
-  const write = (file: ISampleFile) => fs.writeFile(filepath, JSON.stringify(file, null, '  '));
+  const write = (file: IFileStore) => fs.writeFile(filepath, JSON.stringify(file, null, '  '));
 
   if (!(await fs.pathExists(filepath))) {
-    const file: ISampleFile = {};
+    const file: IFileStore = {};
     await write(file);
   }
 
   const key = Schema.encoding.escapePath(`/${targetDir}` || '/');
-  const file = (await fs.readJson(filepath)) as ISampleFile;
+  const file = (await fs.readJson(filepath)) as IFileStore;
   if (!file[key]) file[key] = {};
   if (!file[key][target]) {
     file[key][target] = { uri: generateUri() };
