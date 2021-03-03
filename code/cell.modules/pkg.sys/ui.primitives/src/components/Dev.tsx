@@ -1,5 +1,7 @@
 import React from 'react';
 import { Harness } from 'sys.ui.dev';
 
-export const ACTIONS = [];
+import useDragTarget from '../hooks/useDragTarget/useDragTarget.DEV';
+
+export const ACTIONS = [useDragTarget];
 export const Dev: React.FC = () => <Harness actions={ACTIONS} />;
