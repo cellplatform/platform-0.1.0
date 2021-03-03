@@ -22,8 +22,8 @@ export type PeerProps = {
 
 export const Peer: React.FC<PeerProps> = (props) => {
   const { isSelf, peer, isCircle } = props;
-  const autoPlay = defaultValue(props.autoPlay, true);
   const bus = props.bus.type<t.ConversationEvent>();
+  const autoPlay = defaultValue(props.autoPlay, true);
 
   const height = props.height || 200;
   let width = props.width || 300;

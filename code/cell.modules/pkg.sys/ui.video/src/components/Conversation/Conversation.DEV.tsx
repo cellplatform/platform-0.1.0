@@ -1,19 +1,16 @@
-import React from 'react';
-
-import { DevActions, ActionButtonHandlerArgs } from 'sys.ui.dev';
-
-import { css, rx, t, StateObject } from './common';
 import { asArray } from '@platform/util.value';
+import React from 'react';
+import { ActionButtonHandlerArgs, DevActions, toObject } from 'sys.ui.dev';
+
+import { css, rx, StateObject, t, bundle, WebRuntime } from './common';
 import { Conversation, ConversationProps } from './Conversation';
 import { stateController } from './Conversation.controller';
+import { PeerImage } from './PeerImage';
 import { Remote } from './Remote';
 
 type O = Record<string, unknown>;
 type B = t.EventBus<t.ConversationEvent>;
-type Ctx = {
-  fire: B['fire'];
-  props: ConversationProps;
-};
+type Ctx = { fire: B['fire']; props: ConversationProps };
 type E = ActionButtonHandlerArgs<Ctx>;
 
 const loadDir = (e: ActionButtonHandlerArgs<Ctx>, dir: string) => {
@@ -25,7 +22,7 @@ const loadDir = (e: ActionButtonHandlerArgs<Ctx>, dir: string) => {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('Conversation')
+  .namespace(`Conversation`)
   .context((prev) => {
     if (prev) return prev;
 
@@ -41,7 +38,7 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Conversation');
+    e.title(`Conversation - v${WebRuntime.module.version || '0.0.0'}`);
 
     e.button('log: model', (e) => console.log('model', e.ctx.props.model.state));
     e.button('log: peers', (e) => {
@@ -58,25 +55,18 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Diagrams');
-    e.button('load: peer-4', (e) => loadDir(e, 'peer-4'));
-    e.button('load: peer-5', (e) => loadDir(e, 'peer-5'));
-    e.button('load: peer-6', (e) => loadDir(e, 'peer-6'));
+    e.button('load: dir-4', (e) => loadDir(e, 'dir-4'));
+    e.button('load: dir-5', (e) => loadDir(e, 'dir-5'));
+    e.button('load: dir-6', (e) => loadDir(e, 'dir-6'));
     e.hr();
   })
 
   .items((e) => {
-    e.title('Load Remote');
-
-    const load = (e: E, url: string, props?: O) => {
-      const namespace = 'tdb.slc';
-      const entry = './MiniCanvasMouse';
-      e.ctx.props.body = <Remote url={url} namespace={namespace} entry={entry} props={props} />;
-    };
+    e.title('Body Component');
 
     const remote = 'https://dev.db.team/cell:cklrm37vp000el8et0cw7gaft:A1/fs/sample/remoteEntry.js';
     const local = 'http://localhost:3000/remoteEntry.js';
 
-    // e.button('load: local', (e) => load(e, 'http://localhost:3000/remoteEntry.js'));
     e.button('cloud: app', (e) => {
       const namespace = 'tdb.slc';
       const entry = './App';
@@ -91,6 +81,15 @@ export const actions = DevActions<Ctx>()
       const props = { theme: 'light', selected: 'purpose' };
       e.ctx.props.body = <Remote url={remote} namespace={namespace} entry={entry} props={props} />;
     });
+
+    e.button('load: <PeerImage>', (e) => {
+      const bus = toObject(e.ctx.props.bus) as t.EventBus<any>;
+      console.log('bus', bus);
+
+      e.ctx.props.body = <PeerImage bus={bus} style={{ Absolute: 50 }} />;
+    });
+
+    e.hr(1, 0.2);
 
     e.button('clear', (e) => (e.ctx.props.body = undefined));
     e.hr();

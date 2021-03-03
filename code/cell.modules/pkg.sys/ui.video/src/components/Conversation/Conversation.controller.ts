@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil, map } from 'rxjs/operators';
 
 import { PeerJS, R, rx, t } from './common';
 
@@ -36,6 +36,9 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
 
       const payload = input as t.ConversationPublish;
       if (payload.kind === 'model') changeModel(payload.data);
+      if (payload.kind === 'file') {
+        bus.fire({ type: 'Conversation/file', payload: { data: payload.data } });
+      }
     });
   };
 
@@ -75,15 +78,32 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
   /**
    * Listen: [Model] publish request.
    */
-  publish$.pipe(filter((e) => e.kind === 'model')).subscribe((e) => {
-    const id = peer.id;
-    const peers: t.ConversationStatePeers = {
-      [id]: { id, userAgent: navigator.userAgent, isSelf: true, resolution: {} },
-    };
-    const data = R.mergeDeepRight(e.data, { peers }) as t.ConversationState;
-    changeModel(data);
-    publish({ ...e, data });
-  });
+  publish$
+    .pipe(
+      filter((e) => e.kind === 'model'),
+      map((e) => e as t.ConversationPublishModel),
+    )
+    .subscribe((e) => {
+      const id = peer.id;
+      const peers: t.ConversationStatePeers = {
+        [id]: { id, userAgent: navigator.userAgent, isSelf: true, resolution: {} },
+      };
+      const data = R.mergeDeepRight(e.data, { peers }) as t.ConversationState;
+      changeModel(data);
+      publish({ ...e, data });
+    });
+
+  /**
+   * Listen: [File] publish request.
+   */
+  publish$
+    .pipe(
+      filter((e) => e.kind === 'file'),
+      map((e) => e as t.ConversationPublishFile),
+    )
+    .subscribe((e) => {
+      publish(e);
+    });
 
   /**
    * Update model with new state.

@@ -1,6 +1,8 @@
 import { PeerJS } from '../../common/libs';
 import { IStateObjectWritable } from '@platform/state.types';
 
+import * as t from '../../common/types';
+
 export * from '../../common/types';
 
 export type ConversationState = {
@@ -31,7 +33,8 @@ export type ConversationEvent =
   | ConversationCreatedEvent
   | ConversationConnectEvent
   | ConversationPublishEvent
-  | ConversationModelChangeEvent;
+  | ConversationModelChangeEvent
+  | ConversationFileEvent;
 
 /**
  * Peer created.
@@ -67,6 +70,17 @@ export type ConversationPublishEvent = {
   type: 'Conversation/publish';
   payload: ConversationPublish;
 };
-export type ConversationPublish = ConversationPublishModel;
-
+export type ConversationPublish = ConversationPublishModel | ConversationPublishFile;
 export type ConversationPublishModel = { kind: 'model'; data: Partial<ConversationState> };
+export type ConversationPublishFile = { kind: 'file'; data: t.IHttpClientCellFileUpload };
+
+/**
+ * File recieved event.
+ */
+export type ConversationFileEvent = {
+  type: 'Conversation/file';
+  payload: ConversationFile;
+};
+export type ConversationFile = {
+  data: t.IHttpClientCellFileUpload;
+};

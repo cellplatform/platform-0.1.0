@@ -36,6 +36,7 @@ export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
     id: css({
       borderRadius: 3,
       userSelect: 'text',
+      fontSize: 8,
     }),
   };
 
