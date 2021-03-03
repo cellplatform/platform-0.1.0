@@ -37,7 +37,6 @@ export function useDragTarget(ref: React.RefObject<HTMLElement>) {
     const onDrop = async (e: DragEvent) => {
       e.preventDefault();
       setIsDragOver(false);
-      // setIsDropped(true);
 
       const { dir, files, urls } = await readDropEvent(e);
       setDropped({ dir, files, urls });
