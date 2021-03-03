@@ -22,7 +22,7 @@ export const Conversation: React.FC<ConversationProps> = (props) => {
     const peer = createPeer({ bus });
     peer.on('open', () => {
       setSelf(peer);
-      bus.fire({ type: 'Conversation/model/publish', payload: { data: {} } }); // NB: Causes [peer] data to be broadcast.
+      bus.fire({ type: 'Conversation/publish', payload: { kind: 'model', data: {} } }); // NB: Causes [peer] data to be broadcast.
     });
 
     const dispose$ = new Subject<void>();

@@ -86,8 +86,8 @@ export const Images: React.FC<ImagesProps> = (props) => {
 
   const reset = () => {
     bus.fire({
-      type: 'Conversation/model/publish',
-      payload: { data: { zoom: undefined, offset: undefined } },
+      type: 'Conversation/publish',
+      payload: { kind: 'model', data: { zoom: undefined, offset: undefined } },
     });
   };
 

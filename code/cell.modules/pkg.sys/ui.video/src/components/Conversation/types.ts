@@ -30,7 +30,7 @@ export type ConversationModel = IStateObjectWritable<ConversationState>;
 export type ConversationEvent =
   | ConversationCreatedEvent
   | ConversationConnectEvent
-  | ConversationModelPublishEvent
+  | ConversationPublishEvent
   | ConversationModelChangeEvent;
 
 /**
@@ -61,10 +61,12 @@ export type ConversationModelChangeEvent = {
 export type ConversationModelChange = { data: Partial<ConversationState> };
 
 /**
- * Send data to all peers.
+ * Broaqdcast data to all peers.
  */
-export type ConversationModelPublishEvent = {
-  type: 'Conversation/model/publish';
-  payload: ConversationModelPublish;
+export type ConversationPublishEvent = {
+  type: 'Conversation/publish';
+  payload: ConversationPublish;
 };
-export type ConversationModelPublish = { data: Partial<ConversationState> };
+export type ConversationPublish = ConversationPublishModel;
+
+export type ConversationPublishModel = { kind: 'model'; data: Partial<ConversationState> };

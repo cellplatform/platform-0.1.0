@@ -31,8 +31,8 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         [id]: { resolution: { body } },
       };
       bus.fire({
-        type: 'Conversation/model/publish',
-        payload: { data: { peers: peers as any } },
+        type: 'Conversation/publish',
+        payload: { kind: 'model', data: { peers: peers as any } },
       });
     };
 
@@ -69,8 +69,8 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         selected={model.selected}
         onSelect={(e) => {
           bus.fire({
-            type: 'Conversation/model/publish',
-            payload: { data: { selected: e.path } },
+            type: 'Conversation/publish',
+            payload: { kind: 'model', data: { selected: e.path } },
           });
         }}
       />

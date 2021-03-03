@@ -15,6 +15,9 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
   const dispose = () => dispose$.next();
   const dispose$ = new Subject<void>();
   const $ = bus.event$.pipe(takeUntil(dispose$));
+  const publish$ = rx
+    .payload<t.ConversationPublishEvent>($, 'Conversation/publish')
+    .pipe(filter((e) => Boolean(peer)));
 
   const changeModel = (data: Partial<t.ConversationState>) => {
     bus.fire({
@@ -24,20 +27,33 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
   };
 
   /**
+   * Listen for incoming data.
+   */
+  const listen = (connection: PeerJS.DataConnection) => {
+    connection.on('data', (input) => {
+      if (typeof input !== 'object') return;
+      if (typeof input.kind !== 'string') return;
+
+      const payload = input as t.ConversationPublish;
+      if (payload.kind === 'model') changeModel(payload.data);
+    });
+  };
+
+  /**
+   * Broadcast a payload to all connected peers.
+   */
+  const publish = (payload: t.ConversationPublish) => {
+    connections.forEach((conn) => conn.send(payload));
+  };
+
+  /**
    * Init
    */
   rx.payload<t.ConversationCreatedEvent>($, 'Conversation/created')
     .pipe()
     .subscribe((e) => {
       peer = e.peer;
-      /**
-       * INCOMING (Recieve)
-       */
-      peer.on('connection', (conn) => {
-        conn.on('data', (data) => {
-          if (typeof data === 'object') changeModel(data);
-        });
-      });
+      peer.on('connection', (conn) => listen(conn));
     });
 
   /**
@@ -50,27 +66,24 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
       conn.on('open', () => {
         connections.push(conn);
         bus.fire({
-          type: 'Conversation/model/publish',
-          payload: { data: {} }, // NB: Ensure the peer's meta-data is published.
+          type: 'Conversation/publish',
+          payload: { kind: 'model', data: {} }, // NB: Ensure the peer's meta-data is published.
         });
       });
     });
 
   /**
-   * Listen for data publish events.
+   * Listen: [Model] publish request.
    */
-  rx.payload<t.ConversationModelPublishEvent>($, 'Conversation/model/publish')
-    .pipe(filter((e) => Boolean(peer)))
-    .subscribe((e) => {
-      const id = peer.id;
-      const peers: t.ConversationStatePeers = {
-        [id]: { id, userAgent: navigator.userAgent, isSelf: true, resolution: {} },
-      };
-
-      const data = R.mergeDeepRight(e.data, { peers }) as t.ConversationState;
-      changeModel(data);
-      connections.forEach((conn) => conn.send(model.state));
-    });
+  publish$.pipe(filter((e) => e.kind === 'model')).subscribe((e) => {
+    const id = peer.id;
+    const peers: t.ConversationStatePeers = {
+      [id]: { id, userAgent: navigator.userAgent, isSelf: true, resolution: {} },
+    };
+    const data = R.mergeDeepRight(e.data, { peers }) as t.ConversationState;
+    changeModel(data);
+    publish({ ...e, data });
+  });
 
   /**
    * Update model with new state.

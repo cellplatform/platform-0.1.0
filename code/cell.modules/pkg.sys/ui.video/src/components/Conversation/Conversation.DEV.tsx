@@ -18,7 +18,7 @@ type E = ActionButtonHandlerArgs<Ctx>;
 
 const loadDir = (e: ActionButtonHandlerArgs<Ctx>, dir: string) => {
   const imageDir = `static/images.tmp/${dir}/`;
-  e.ctx.fire({ type: 'Conversation/model/publish', payload: { data: { imageDir } } });
+  e.ctx.fire({ type: 'Conversation/publish', payload: { kind: 'model', data: { imageDir } } });
 };
 
 /**

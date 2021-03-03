@@ -41,7 +41,7 @@ export const Image: React.FC<ImageProps> = (props) => {
     drag$.pipe(filter((e) => isAltKeyPressed)).subscribe((e) => {
       const diff = e.delta.y / 100;
       const next = Math.max(0.1, startZoom + diff);
-      bus.fire({ type: 'Conversation/model/publish', payload: { data: { zoom: next } } });
+      bus.fire({ type: 'Conversation/publish', payload: { kind: 'model', data: { zoom: next } } });
     });
 
     // Pan ({x,y} offset).
@@ -49,16 +49,16 @@ export const Image: React.FC<ImageProps> = (props) => {
       const x = e.delta.x + startOffset.x;
       const y = e.delta.y + startOffset.y;
       bus.fire({
-        type: 'Conversation/model/publish',
-        payload: { data: { offset: { x, y } } },
+        type: 'Conversation/publish',
+        payload: { kind: 'model', data: { offset: { x, y } } },
       });
     });
   };
 
   const resetOffset = () => {
     bus.fire({
-      type: 'Conversation/model/publish',
-      payload: { data: { zoom: undefined, offset: undefined } },
+      type: 'Conversation/publish',
+      payload: { kind: 'model', data: { zoom: undefined, offset: undefined } },
     });
   };
 

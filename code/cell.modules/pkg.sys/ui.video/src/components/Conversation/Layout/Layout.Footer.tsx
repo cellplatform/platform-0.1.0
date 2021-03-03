@@ -54,8 +54,8 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
       percent={zoom}
       onDragResize={(e) => {
         bus.fire({
-          type: 'Conversation/model/publish',
-          payload: { data: { videoZoom: e.percent } },
+          type: 'Conversation/publish',
+          payload: { kind: 'model', data: { videoZoom: e.percent } },
         });
       }}
     />
