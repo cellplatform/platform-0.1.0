@@ -7,6 +7,7 @@ import { ErrorBoundary } from '../ErrorBoundary';
 import { Store } from '../../store';
 import { HarnessActions } from './HarnessActions';
 import { useActionsRedraw } from '../../components.hooks';
+import { HarnessEmpty } from './HarnessEmpty';
 
 export type HarnessProps = {
   bus?: t.EventBus;
@@ -82,13 +83,20 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     </div>
   );
 
+  const elHarness = !actions.empty && (
+    <div {...css(styles.base, props.style)}>
+      {elLeft}
+      {elMain}
+      {elRight}
+    </div>
+  );
+
+  const elEmpty = actions.empty && <HarnessEmpty />;
+
   return (
     <React.StrictMode>
-      <div {...css(styles.base, props.style)}>
-        {elLeft}
-        {elMain}
-        {elRight}
-      </div>
+      {elHarness}
+      {elEmpty}
     </React.StrictMode>
   );
 };
