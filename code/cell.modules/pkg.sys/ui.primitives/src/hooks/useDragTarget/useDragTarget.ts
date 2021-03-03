@@ -57,6 +57,7 @@ export function useDragTarget(ref: React.RefObject<HTMLElement>) {
 
   return {
     isDragOver,
+    isDropped: Boolean(dropped),
     dropped,
     reset,
   };
