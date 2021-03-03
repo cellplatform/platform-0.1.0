@@ -9,5 +9,5 @@ export { StateObject } from '@platform/state';
 import PeerJS from 'peerjs';
 export { PeerJS };
 
-import { equals } from 'ramda';
-export const R = { equals };
+import { equals, mergeDeepRight } from 'ramda';
+export const R = { equals, mergeDeepRight };

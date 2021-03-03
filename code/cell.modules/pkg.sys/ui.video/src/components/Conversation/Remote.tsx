@@ -3,12 +3,14 @@ import { WebRuntime } from '@platform/cell.runtime.web';
 
 import { css } from '../../common';
 
+type O = Record<string, unknown>;
+
 /**
  * See:
  *    https://github.com/module-federation/module-federation-examples/tree/master/dynamic-system-host
  */
 
-export type RemoteProps = { url: string; namespace: string; entry: string };
+export type RemoteProps = { url: string; namespace: string; entry: string; props?: O };
 
 /**
  * See:
@@ -57,8 +59,9 @@ export const Remote: React.FC<RemoteProps> = (props: RemoteProps) => {
   return (
     <React.Suspense fallback={elLoading}>
       <div {...styles.body}>
-        <Component theme={'light'} isRightListVisible={true} />
+        <Component {...props.props} />
       </div>
     </React.Suspense>
   );
 };
+

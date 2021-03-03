@@ -14,7 +14,8 @@ export type LayoutFooterProps = {
 };
 
 export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
-  const { peer, totalPeers = 0, bus } = props;
+  const { peer, totalPeers = 0 } = props;
+  const bus = props.bus.type<t.ConversationEvent>();
   const zoom = defaultValue(props.zoom, 1);
 
   const MIN = 100;
@@ -53,7 +54,7 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
       percent={zoom}
       onDragResize={(e) => {
         bus.fire({
-          type: 'Peer/publish',
+          type: 'Conversation/model/publish',
           payload: { data: { videoZoom: e.percent } },
         });
       }}

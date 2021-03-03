@@ -13,14 +13,12 @@ export type LayoutFooterResizeProps = {
 export const LayoutFooterResize: React.FC<LayoutFooterResizeProps> = (props) => {
   const rootRef = useRef<HTMLDivElement>(null);
 
-  const [zoom, setZoom] = useState<number>(defaultValue(props.percent, 1));
-
   const startDrag = (e: React.MouseEvent) => {
     const isAltKeyPressed = e.altKey;
 
     const el = rootRef.current as HTMLDivElement;
     const dragger = drag.position({ el });
-    const startZoom = zoom;
+    const startZoom = defaultValue(props.percent, 1);
 
     const events$ = dragger.events$.pipe(observeOn(animationFrameScheduler));
     const drag$ = events$.pipe(filter((e) => e.type === 'DRAG'));
@@ -28,13 +26,14 @@ export const LayoutFooterResize: React.FC<LayoutFooterResizeProps> = (props) => 
     drag$.pipe(filter((e) => isAltKeyPressed)).subscribe((e) => {
       const diff = e.delta.y / 100;
       const percent = Math.min(1.5, Math.max(0.1, startZoom + diff));
-      setZoom(percent);
       if (props.onDragResize) props.onDragResize({ percent });
     });
   };
 
   const styles = {
-    base: css({ flex: 1 }),
+    base: css({
+      flex: 1,
+    }),
   };
 
   return (

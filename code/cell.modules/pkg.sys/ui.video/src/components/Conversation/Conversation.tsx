@@ -13,13 +13,17 @@ export type ConversationProps = {
 };
 
 export const Conversation: React.FC<ConversationProps> = (props) => {
-  const { bus, model } = props;
+  const { model } = props;
+  const bus = props.bus.type<t.ConversationEvent>();
   const [self, setSelf] = useState<PeerJS>();
   const [state, setState] = useState<t.ConversationState>(model.state);
 
   useEffect(() => {
     const peer = createPeer({ bus });
-    peer.on('open', () => setSelf(peer));
+    peer.on('open', () => {
+      setSelf(peer);
+      bus.fire({ type: 'Conversation/model/publish', payload: { data: {} } }); // NB: Causes [peer] data to be broadcast.
+    });
 
     const dispose$ = new Subject<void>();
     model.event.changed$.subscribe((e) => setState(e.to));

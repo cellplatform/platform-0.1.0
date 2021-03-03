@@ -9,11 +9,17 @@ export type ConversationState = {
   zoom?: number;
   offset?: { x: number; y: number };
   videoZoom?: number;
-  peers: { [id: string]: ConversationStatePeer };
+  peers: ConversationStatePeers;
 };
 
+export type ConversationStatePeers = { [id: string]: ConversationStatePeer };
 export type ConversationStatePeer = {
   id: string;
+  userAgent: string;
+  isSelf?: boolean;
+  resolution: {
+    body?: { width: number; height: number };
+  };
 };
 
 export type ConversationModel = IStateObjectWritable<ConversationState>;
@@ -21,10 +27,10 @@ export type ConversationModel = IStateObjectWritable<ConversationState>;
 /**
  * Events
  */
-export type PeerEvent =
+export type ConversationEvent =
   | ConversationCreatedEvent
   | ConversationConnectEvent
-  | ConversationPublishEvent
+  | ConversationModelPublishEvent
   | ConversationModelChangeEvent;
 
 /**
@@ -48,17 +54,17 @@ export type ConversationConnect = { id: string };
 /**
  * Send data to all peers.
  */
-export type ConversationPublishEvent = {
-  type: 'Conversation/publish';
-  payload: ConversationPublish;
+export type ConversationModelChangeEvent = {
+  type: 'Conversation/model/change';
+  payload: ConversationModelChange;
 };
-export type ConversationPublish = { data: Partial<ConversationState> };
+export type ConversationModelChange = { data: Partial<ConversationState> };
 
 /**
  * Send data to all peers.
  */
-export type ConversationModelChangeEvent = {
-  type: 'Conversation/model:change';
-  payload: ConversationModelChange;
+export type ConversationModelPublishEvent = {
+  type: 'Conversation/model/publish';
+  payload: ConversationModelPublish;
 };
-export type ConversationModelChange = { data: Partial<ConversationState> };
+export type ConversationModelPublish = { data: Partial<ConversationState> };

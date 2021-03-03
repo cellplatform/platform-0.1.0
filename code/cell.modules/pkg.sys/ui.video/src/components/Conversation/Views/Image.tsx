@@ -17,7 +17,7 @@ export type ImageProps = {
 
 export const Image: React.FC<ImageProps> = (props) => {
   const { onLoadStart } = props;
-  const bus = props.bus.type<t.PeerEvent>();
+  const bus = props.bus.type<t.ConversationEvent>();
   const zoom = defaultValue(props.zoom, 1);
   const offset = props.offset || { x: 0, y: 0 };
   const imageRef = useRef<HTMLImageElement>(null);
@@ -41,7 +41,7 @@ export const Image: React.FC<ImageProps> = (props) => {
     drag$.pipe(filter((e) => isAltKeyPressed)).subscribe((e) => {
       const diff = e.delta.y / 100;
       const next = Math.max(0.1, startZoom + diff);
-      bus.fire({ type: 'Conversation/publish', payload: { data: { zoom: next } } });
+      bus.fire({ type: 'Conversation/model/publish', payload: { data: { zoom: next } } });
     });
 
     // Pan ({x,y} offset).
@@ -49,7 +49,7 @@ export const Image: React.FC<ImageProps> = (props) => {
       const x = e.delta.x + startOffset.x;
       const y = e.delta.y + startOffset.y;
       bus.fire({
-        type: 'Conversation/publish',
+        type: 'Conversation/model/publish',
         payload: { data: { offset: { x, y } } },
       });
     });
@@ -57,7 +57,7 @@ export const Image: React.FC<ImageProps> = (props) => {
 
   const resetOffset = () => {
     bus.fire({
-      type: 'Conversation/publish',
+      type: 'Conversation/model/publish',
       payload: { data: { zoom: undefined, offset: undefined } },
     });
   };
