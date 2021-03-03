@@ -10,4 +10,6 @@ export type DisplayMethods<Ctx extends O> = {
   hr(config?: t.ActionHrConfig<Ctx>): DisplayMethods<Ctx>;
   title(text: string, config?: t.ActionTitleConfig<Ctx>): t.Actions<Ctx>;
   title(config: t.ActionTitleConfig<Ctx>): t.Actions<Ctx>;
+  markdown(text: string, config?: t.ActionMarkdownConfig<Ctx>): t.Actions<Ctx>;
+  markdown(config: t.ActionMarkdownConfig<Ctx>): t.Actions<Ctx>;
 };

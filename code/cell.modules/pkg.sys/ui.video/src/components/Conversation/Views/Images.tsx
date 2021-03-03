@@ -20,7 +20,7 @@ export type ImagesProps = {
 
 export const Images: React.FC<ImagesProps> = (props) => {
   const { paths = [], onSelect, selected } = props;
-  const bus = props.bus.type<t.PeerEvent>();
+  const bus = props.bus.type<t.ConversationEvent>();
 
   const [isOver, setIsOver] = useState<boolean>(false);
   const [items, setItems] = useState<DotSelectorItem[]>([]);
@@ -86,8 +86,8 @@ export const Images: React.FC<ImagesProps> = (props) => {
 
   const reset = () => {
     bus.fire({
-      type: 'Peer/publish',
-      payload: { data: { zoom: undefined, offset: undefined } },
+      type: 'Conversation/publish',
+      payload: { kind: 'model', data: { zoom: undefined, offset: undefined } },
     });
   };
 

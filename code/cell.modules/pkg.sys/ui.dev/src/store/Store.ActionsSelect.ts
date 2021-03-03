@@ -11,7 +11,7 @@ export const ActionsSelect = {
    * Browser's local-storage.
    */
   localStorage(args: { actions?: t.Actions[]; namespace?: string }): t.ActionsSelectStore {
-    const { namespace = 'dev', actions = [] } = args;
+    const { namespace = 'sys.ui.dev', actions = [] } = args;
     const field = `${namespace}:actions/selected`;
     const fn: t.ActionsSelectStore = async (value) => {
       if (value !== undefined) localStorage.setItem(field, value.toObject().namespace);

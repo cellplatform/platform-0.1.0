@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, useActionItemMonitor, DEFAULT } from '../common';
+import React, { useEffect, useState, useRef } from 'react';
+
+import { color, COLORS, css, t, useActionItemMonitor } from '../common';
 import { TextInput } from '../Primitives';
-import { Icons } from '../Icons';
 import { ItemLayout } from './ItemLayout';
 
 export type TextboxProps = {
@@ -16,23 +16,24 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
   const bus = props.bus.type<t.DevActionEvent>();
   const { placeholder, description, isSpinning } = model;
   const isActive = model.handlers.length > 0;
+  const current = model.current;
+
+  const inputRef = useRef<TextInput>(null);
 
   const [pendingValue, setPendingValue] = useState<string | undefined>();
+  const isPending = pendingValue !== undefined;
 
-  const value = pendingValue !== undefined ? pendingValue : model.current;
+  useEffect(() => setPendingValue(undefined), [current]); // Reset pending when model's [current] value is updated (eg. by a handler)
+  const value = isPending ? pendingValue : current;
+  const iconColor = isPending ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.4);
 
   const fire = (args: { action: t.ActionTextboxChangeType; next?: string }) => {
     const { next, action } = args;
     const changing = typeof next === 'string' ? { next, action } : undefined;
-
+    const item = model;
     bus.fire({
       type: 'dev:action/Textbox',
-      payload: {
-        namespace,
-        item: model,
-        action,
-        changing,
-      },
+      payload: { namespace, item, action, changing },
     });
   };
 
@@ -47,23 +48,23 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
     },
   };
 
-  // const
   const elTextbox = (
-    <div {...styles.textbox.outer} title={!value ? placeholder : undefined}>
+    <div {...styles.textbox.outer} title={value ? placeholder : undefined}>
       <TextInput
+        ref={inputRef}
         value={value || ''}
         placeholder={placeholder}
         valueStyle={{ fontFamily: 'monospace', fontWeight: 'NORMAL' }}
         placeholderStyle={{ fontFamily: 'sans-serif', italic: true, color: color.format(-0.3) }}
+        disabledOpacity={1}
         spellCheck={false}
         autoCorrect={false}
         autoCapitalize={false}
-        onChange={(e) => {
-          setPendingValue(e.to);
-        }}
-        onEnter={() => {
-          fire({ action: 'invoke', next: value || '' });
-        }}
+        isEnabled={model.handlers.length > 0}
+        onChange={(e) => setPendingValue(e.to)}
+        onEscape={() => setPendingValue(undefined)}
+        onEnter={() => fire({ action: 'invoke', next: value || '' })}
+        onFocus={() => inputRef.current?.selectAll()}
       />
     </div>
   );
@@ -76,6 +77,8 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
       description={description}
       pressOffset={0}
       ellipsis={false}
+      iconColor={iconColor}
+      onClick={() => inputRef.current?.focus()}
     />
   );
 };

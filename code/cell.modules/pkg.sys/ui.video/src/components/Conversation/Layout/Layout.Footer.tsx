@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 
-import { color, css, CssValue, PeerJS, t } from '../common';
+import { color, css, CssValue, PeerJS, t, defaultValue } from '../common';
 import { Peer } from '../Peer';
 import { LayoutFooterResize } from './Layout.Footer.Resize';
+import { queryString } from '@platform/util.string/lib/queryString';
 
 export type LayoutFooterProps = {
   bus: t.EventBus<any>;
   totalPeers?: number;
+  zoom?: number;
   peer: PeerJS;
   style?: CssValue;
 };
 
 export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
-  const { peer, totalPeers = 0, bus } = props;
-  const [zoom, setZoom] = useState<number>(1);
+  const { peer, totalPeers = 0 } = props;
+  const bus = props.bus.type<t.ConversationEvent>();
+  const zoom = defaultValue(props.zoom, 1);
 
   const MIN = 100;
   const peerHeight = Math.max(MIN, 200 * zoom);
@@ -50,10 +53,16 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
     <LayoutFooterResize
       percent={zoom}
       onDragResize={(e) => {
-        setZoom(e.percent);
+        bus.fire({
+          type: 'Conversation/publish',
+          payload: { kind: 'model', data: { videoZoom: e.percent } },
+        });
       }}
     />
   );
+
+  const query = queryString.toObject(location.href);
+  const connectTo = (query.connectTo || '').toString();
 
   return (
     <div {...css(styles.base, props.style)}>
@@ -68,7 +77,7 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
           width={peerWidth}
           height={peerHeight}
         />
-        <Peer bus={bus} peer={peer} width={peerWidth} height={peerHeight} />
+        <Peer bus={bus} peer={peer} width={peerWidth} height={peerHeight} id={connectTo} />
         {elPeers}
       </div>
       <div {...styles.edge}>{elResize}</div>

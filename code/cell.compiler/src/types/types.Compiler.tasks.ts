@@ -52,7 +52,11 @@ export type CompilerRunWatch = (input: M) => Promise<void>;
 /**
  * Starts the development-server with HMR (hot-module-reloading).
  */
-export type CompilerRunDevserver = (input: M, options?: { exports?: boolean }) => Promise<void>;
+export type CompilerRunDevserver = (
+  input: M,
+  options?: CompilerRunDevserverOptions,
+) => Promise<void>;
+export type CompilerRunDevserverOptions = { exports?: boolean; port?: number };
 
 /**
  * Uploads a bundled distribution to a target cell.

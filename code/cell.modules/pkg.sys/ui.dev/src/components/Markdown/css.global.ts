@@ -6,7 +6,7 @@ const styles = {
   // Markdown: `code`.
   [`.${CSS.MARKDOWN} code`]: {
     color: '#D12A2A', // Console "red".
-    backgroundColor: color.format(-0.05),
+    backgroundColor: color.format(-0.03),
     border: `solid 1px ${color.format(-0.03)}`,
     borderRadius: 2,
     paddingLeft: 3,

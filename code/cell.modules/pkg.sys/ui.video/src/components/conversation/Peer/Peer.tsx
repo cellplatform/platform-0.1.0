@@ -9,6 +9,7 @@ import { PeerTextbox } from './Peer.Textbox';
 export type PeerProps = {
   bus: t.EventBus<any>;
   peer: PeerJS;
+  id?: string;
   isSelf?: boolean;
   isMuted?: boolean;
   isCircle?: boolean;
@@ -21,15 +22,16 @@ export type PeerProps = {
 
 export const Peer: React.FC<PeerProps> = (props) => {
   const { isSelf, peer, isCircle } = props;
+  const bus = props.bus.type<t.ConversationEvent>();
   const autoPlay = defaultValue(props.autoPlay, true);
-  const bus = props.bus.type<t.PeerEvent>();
 
   const height = props.height || 200;
   let width = props.width || 300;
   width = isCircle ? height : width;
 
-  const [isMuted, setIsMuted] = useState<boolean>(props.isMuted || false);
-  const [id, setId] = useState<string>('');
+  const host = location.hostname;
+  const [isMuted, setIsMuted] = useState<boolean>(props.isMuted || host === 'localhost'); // NB: Peers muted while in development (eg "localhost").
+  const [id, setId] = useState<string>(props.id || '');
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const localStreamRef = useRef<MediaStream>();
@@ -48,11 +50,16 @@ export const Peer: React.FC<PeerProps> = (props) => {
     video.srcObject = await loadLocalStream();
   };
 
-  const startRemoteCall = (targetId: string) => {
+  const startRemoteVideoCall = (targetId: string) => {
     const video = videoRef.current as HTMLVideoElement;
     const localStream = localStreamRef.current as MediaStream;
     const call = peer.call(targetId, localStream);
     call.on('stream', (remoteStream) => (video.srcObject = remoteStream));
+  };
+
+  const connectTo = async (targetId: string) => {
+    startRemoteVideoCall(targetId);
+    bus.fire({ type: 'Conversation/connect', payload: { id: targetId } });
   };
 
   useEffect(() => {
@@ -60,7 +67,9 @@ export const Peer: React.FC<PeerProps> = (props) => {
       loadAsSelf();
       setId(peer.id);
     } else {
-      loadLocalStream();
+      loadLocalStream().then(() => {
+        if (props.id) connectTo(props.id);
+      });
     }
   }, []); // eslint-disable-line
 
@@ -79,7 +88,7 @@ export const Peer: React.FC<PeerProps> = (props) => {
         }
 
         // Start data connection.
-        bus.fire({ type: 'Peer/connect', payload: { id: call.peer } });
+        bus.fire({ type: 'Conversation/connect', payload: { id: call.peer } });
       });
     }
   }, []); // eslint-disable-line
@@ -144,12 +153,9 @@ export const Peer: React.FC<PeerProps> = (props) => {
   const elTextbox = !isSelf && (
     <PeerTextbox
       value={id}
-      onChange={(e) => {
-        setId(e.value);
-      }}
+      onChange={(e) => setId(formatId(e.value))}
       onEnter={() => {
-        startRemoteCall(id);
-        bus.fire({ type: 'Peer/connect', payload: { id } });
+        connectTo(id);
       }}
     />
   );
@@ -172,3 +178,14 @@ export const Peer: React.FC<PeerProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * [Helpers]
+ */
+
+function formatId(value: string) {
+  return (value || '')
+    .trim()
+    .replace(/^peer\:/, '')
+    .trim();
+}

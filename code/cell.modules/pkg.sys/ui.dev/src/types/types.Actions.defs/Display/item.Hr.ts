@@ -14,7 +14,7 @@ export type ActionHr = {
 };
 
 /**
- * CONFIGURE Horizontal Rule
+ * CONFIGURE Horizontal Rule.
  */
 export type ActionHrConfig<Ctx extends O> = (args: ActionHrConfigArgs<Ctx>) => void;
 export type ActionHrConfigArgs<Ctx extends O> = {

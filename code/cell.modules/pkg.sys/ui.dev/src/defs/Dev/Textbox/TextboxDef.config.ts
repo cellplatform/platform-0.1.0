@@ -11,6 +11,10 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
 
   const config: t.ActionTextboxConfigArgs<any> = {
     ctx,
+    initial(value) {
+      item.current = format.string(value, { trim: true });
+      return config;
+    },
     placeholder(value) {
       item.placeholder = format.string(value, { trim: true }) || placeholder;
       return config;

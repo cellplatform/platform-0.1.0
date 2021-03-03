@@ -51,6 +51,7 @@ export type ITextInputEvents = {
   onKeyDown?: TextInputKeyEventHandler;
   onKeyUp?: TextInputKeyEventHandler;
   onEnter?: TextInputKeyEventHandler;
+  onEscape?: TextInputKeyEventHandler;
   onTab?: TextInputTabEventHandler;
   onFocus?: React.EventHandler<React.FocusEvent<HTMLInputElement>>;
   onBlur?: React.EventHandler<React.FocusEvent<HTMLInputElement>>;

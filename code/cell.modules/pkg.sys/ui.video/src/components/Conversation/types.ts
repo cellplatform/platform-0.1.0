@@ -1,6 +1,8 @@
 import { PeerJS } from '../../common/libs';
 import { IStateObjectWritable } from '@platform/state.types';
 
+import * as t from '../../common/types';
+
 export * from '../../common/types';
 
 export type ConversationState = {
@@ -8,6 +10,18 @@ export type ConversationState = {
   selected?: string;
   zoom?: number;
   offset?: { x: number; y: number };
+  videoZoom?: number;
+  peers: ConversationStatePeers;
+};
+
+export type ConversationStatePeers = { [id: string]: ConversationStatePeer };
+export type ConversationStatePeer = {
+  id: string;
+  userAgent: string;
+  isSelf?: boolean;
+  resolution: {
+    body?: { width: number; height: number };
+  };
 };
 
 export type ConversationModel = IStateObjectWritable<ConversationState>;
@@ -15,40 +29,58 @@ export type ConversationModel = IStateObjectWritable<ConversationState>;
 /**
  * Events
  */
-export type PeerEvent = PeerCreatedEvent | PeerConnectEvent | PeerPublishEvent | PeerModelEvent;
+export type ConversationEvent =
+  | ConversationCreatedEvent
+  | ConversationConnectEvent
+  | ConversationPublishEvent
+  | ConversationModelChangeEvent
+  | ConversationFileEvent;
 
 /**
  * Peer created.
  */
-export type PeerCreatedEvent = {
-  type: 'Peer/created';
-  payload: PeerCreated;
+export type ConversationCreatedEvent = {
+  type: 'Conversation/created';
+  payload: ConversationCreated;
 };
-export type PeerCreated = { peer: PeerJS };
+export type ConversationCreated = { peer: PeerJS };
 
 /**
  * Connect to a peer.
  */
-export type PeerConnectEvent = {
-  type: 'Peer/connect';
-  payload: PeerConnect;
+export type ConversationConnectEvent = {
+  type: 'Conversation/connect';
+  payload: ConversationConnect;
 };
-export type PeerConnect = { id: string };
+export type ConversationConnect = { id: string };
 
 /**
  * Send data to all peers.
  */
-export type PeerPublishEvent = {
-  type: 'Peer/publish';
-  payload: PeerPublish;
+export type ConversationModelChangeEvent = {
+  type: 'Conversation/model/change';
+  payload: ConversationModelChange;
 };
-export type PeerPublish = { data: Partial<ConversationState> };
+export type ConversationModelChange = { data: Partial<ConversationState> };
 
 /**
- * Send data to all peers.
+ * Broaqdcast data to all peers.
  */
-export type PeerModelEvent = {
-  type: 'Peer/model';
-  payload: PeerModel;
+export type ConversationPublishEvent = {
+  type: 'Conversation/publish';
+  payload: ConversationPublish;
 };
-export type PeerModel = { data: Partial<ConversationState> };
+export type ConversationPublish = ConversationPublishModel | ConversationPublishFile;
+export type ConversationPublishModel = { kind: 'model'; data: Partial<ConversationState> };
+export type ConversationPublishFile = { kind: 'file'; data: t.IHttpClientCellFileUpload };
+
+/**
+ * File recieved event.
+ */
+export type ConversationFileEvent = {
+  type: 'Conversation/file';
+  payload: ConversationFile;
+};
+export type ConversationFile = {
+  data: t.IHttpClientCellFileUpload;
+};

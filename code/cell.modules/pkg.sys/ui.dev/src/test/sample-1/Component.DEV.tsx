@@ -22,6 +22,14 @@ type Ctx = {
 
 const LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem.';
 
+const markdown = () => {
+  let text = '';
+  text = `${text} *I am italic*, **I am bold** \`code\` `;
+  text = `${text} \n- one\n- two\n - three`;
+  text = `${text}\n\n${LOREM}\n\n${LOREM} (${count})`;
+  return text.trim();
+};
+
 let count = 0;
 
 /**
@@ -32,11 +40,16 @@ export const actions = DevActions<Ctx>()
   .context((prev) => prev || { myLayout: 'single', count: 0, text: LOREM, isRunning: true })
 
   .items((e) => {
+    e.title('Title');
+    e.markdown(markdown());
+
     e.title('Context (ctx)');
     e.button('change text', (e) => {
       e.ctx.count++;
       e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
-    }).button('inject <React>', (e) => {
+    });
+
+    e.button('inject <React>', (btn) => {
       count++;
       console.log('count', count);
 
@@ -51,12 +64,17 @@ export const actions = DevActions<Ctx>()
 
       const label = <div {...styles.bgr}>Hello ({count})</div>;
       const description = <div {...css(styles.bgr, styles.desc)}>{`${LOREM} (${count})`}</div>;
-      e.button.label = label;
-      e.settings({ button: { description } });
+      btn.button.label = label;
+      btn.settings({ button: { description } });
     });
+
     e.boolean('error', (e) => {
       if (e.changing) e.ctx.throw = e.changing.next;
       e.boolean.current = e.ctx.throw;
+    });
+
+    e.markdown((config) => {
+      config.text(markdown()).margin([40, 35, 20, 20]);
     });
 
     e.hr();
@@ -73,19 +91,22 @@ export const actions = DevActions<Ctx>()
     e.title('Textbox');
 
     e.textbox('my placeholder', (e) => {
-      console.log('e', e);
+      // console.log('e', e);
     });
 
     e.textbox((config) =>
       config
         .placeholder('hello')
+        .initial('initial value')
         .description('My textbox description.')
         .pipe((e) => {
-          console.log('TEXTBOX', 'hello');
-          console.log('e', toObject(e));
-          console.log('e.changing.next', toObject(e.changing));
-          // console.log("e.action", e.)
-          // console.log('e.invoked?.value', e.invoked?.value);
+          if (e.changing?.action === 'invoke') {
+            count++;
+            e.textbox.description = `Textbox description (invoked ${count})`;
+            e.textbox.placeholder = `Placeholder (invoked ${count})`;
+            const next = e.changing.next || '';
+            e.textbox.current = `${(next[0] || '').toUpperCase()}${next.substring(1)}`;
+          }
         }),
     );
 
@@ -97,6 +118,7 @@ export const actions = DevActions<Ctx>()
     e.button((config) => config.label('hello'));
     e.button('delay', async (e) => await time.delay(1200));
     e.hr(1, 0.15, [5, 0]);
+
     e.button('console.log', (e) => {
       console.group('🌳 button click');
       console.log('e.ctx', toObject(e.ctx));
@@ -106,13 +128,6 @@ export const actions = DevActions<Ctx>()
     e.button((config) => config.label(`Ellipsis - ${LOREM}`));
     e.button((config) => null);
     e.button((config) => {
-      const markdown = () => {
-        let text = '';
-        text = `${text} *I am italic*, **I am bold** \`code\` `;
-        text = `${text} \n- one\n- two\n - three`;
-        text = `${text}\n\n${LOREM}\n\n${LOREM} (${count})`;
-        return text.trim();
-      };
       config
         .label('markdown')
         .description(markdown())

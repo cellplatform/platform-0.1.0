@@ -18,7 +18,8 @@ const isImagePath = (path: string) =>
   ['.png', '.jpg', '.jpeg'].map((path) => path.toLowerCase()).some((ext) => path.endsWith(ext));
 
 export const Diagram: React.FC<DiagramProps> = (props) => {
-  const { dir, bus } = props;
+  const { dir } = props;
+  const bus = props.bus.type<t.ConversationEvent>();
   const { files } = useBundleManifest();
   const [paths, setPaths] = useState<string[]>();
 

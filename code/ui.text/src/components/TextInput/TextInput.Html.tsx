@@ -246,12 +246,13 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
    */
 
   private handleKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const { onKeyDown, onTab } = this.props;
+    const { onKeyDown, onEscape, onTab } = this.props;
     const modifierKeys = { ...this.modifierKeys };
     const event = this.toKeyboardEvent(e);
-    if (onKeyDown) {
-      onKeyDown(event);
-    }
+
+    if (onKeyDown) onKeyDown(event);
+    if (onEscape && e.key === 'Escape') onEscape(event);
+
     if (onTab && e.key === 'Tab') {
       let isCancelled = false;
       onTab({
@@ -265,6 +266,7 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
         modifierKeys,
       });
     }
+
     this.fireKeyboard(event, true);
   };
 
@@ -302,12 +304,8 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
   private handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { onKeyPress, onEnter } = this.props;
     const modifierKeys = { ...this.modifierKeys };
-    if (onEnter && e.key === 'Enter') {
-      onEnter({ ...e, modifierKeys });
-    }
-    if (onKeyPress) {
-      onKeyPress({ ...e, modifierKeys });
-    }
+    if (onEnter && e.key === 'Enter') onEnter({ ...e, modifierKeys });
+    if (onKeyPress) onKeyPress({ ...e, modifierKeys });
   };
 
   private handleChange = (e: React.ChangeEvent) => {

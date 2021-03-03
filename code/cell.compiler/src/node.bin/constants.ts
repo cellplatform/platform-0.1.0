@@ -35,6 +35,7 @@ export const COMMANDS: t.Commands = {
       '--name': PARAMS.name,
       '--mode': PARAMS.mode,
       '--no-exports': `(optional) Suppress module federation exports`,
+      '--port': `(optional) Override the configured port`,
     },
   },
   upload: {
@@ -46,6 +47,7 @@ export const COMMANDS: t.Commands = {
       '--config': PARAMS.config,
       '--name': PARAMS.name,
       '--no-bundle': `(optional) Skip bundling the project`,
+      '--clean': `(optional) Clear cache before bundling`,
       '--mode': PARAMS.mode,
     },
   },
@@ -61,6 +63,7 @@ export const COMMANDS: t.Commands = {
     params: {
       '--config': PARAMS.config,
       '--name': PARAMS.name,
+      '--port': `(optional) Override the configured port`,
     },
   },
   clean: {

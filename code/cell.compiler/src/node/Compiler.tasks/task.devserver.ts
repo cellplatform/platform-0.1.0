@@ -1,6 +1,6 @@
 import DevServer from 'webpack-dev-server';
 
-import { log, Model, t, toModel, logger, port } from '../common';
+import { log, Model, t, toModel, logger, port, defaultValue } from '../common';
 import { wp } from '../config.webpack';
 import { afterCompile } from './util';
 
@@ -12,7 +12,7 @@ const portInUse = async (value: number) => port.isUsed(value, 'localhost');
 export const devserver: t.CompilerRunDevserver = async (input, options = {}) => {
   const obj = toModel(input);
   const model = Model(obj);
-  const port = model.port();
+  const port = defaultValue(options.port, model.port());
   const noExports = options.exports === false;
 
   if (await portInUse(port)) {
@@ -51,7 +51,8 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
     count++;
     logger.clear().newline();
     log.info.gray(`DevServer (${count})`);
-    logger.model(obj, { indent: 2, url: true }).newline();
+    logger.model(obj, { indent: 2, url: true, port }).newline();
+    logger.exports(obj, { disabled: noExports }).newline();
 
     if (noExports) {
       /**
@@ -61,7 +62,6 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
        */
       log.info.gray(`NOTE: module federation exports disabled (${log.white('--no-exports')})`);
     } else {
-      logger.exports(obj).newline();
     }
 
     logger.hr().stats(compilation);

@@ -38,5 +38,6 @@ export function useActionsSelectorState(args: {
     return () => dispose$.next();
   }, [bus, list]); // eslint-disable-line
 
-  return { list, selected };
+  const empty = list.length === 0;
+  return { list, selected, empty };
 }
