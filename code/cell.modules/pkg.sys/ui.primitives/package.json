@@ -3,7 +3,7 @@
   "version": "0.0.52",
   "sideEffects": false,
   "compiler": {
-    "port": 3005
+    "port": 3036
   },
   "scripts": {
     "build": "ts build --no-esm $@",
