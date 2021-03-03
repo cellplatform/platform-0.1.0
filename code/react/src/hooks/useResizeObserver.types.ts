@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import * as t from '../types';
 
 /**
@@ -5,6 +6,7 @@ import * as t from '../types';
  */
 export type UseResizeObserver = {
   ready: boolean;
+  $: Observable<t.DomRect>;
   root: t.ResizeObserver;
   rect: t.DomRect;
 };

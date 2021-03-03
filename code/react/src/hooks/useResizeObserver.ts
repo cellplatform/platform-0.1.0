@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { takeUntil, filter } from 'rxjs/operators';
 
 import { DEFAULT, ResizeObserver } from '../resize/ResizeObserver';
 import * as t from '../types';
@@ -19,7 +20,7 @@ import * as t from '../types';
  *
  *    Then use the [resize.rect] values that are updated as state.
  *
- *    For efficiency a single element observer can added to.
+ *    For efficiency a single element observer can be provided.
  *    This is helpful for performance and ensures that infinite callback loops
  *    and cyclic dependencies are avoided.
  *
@@ -33,16 +34,31 @@ export function useResizeObserver(
   ref: React.RefObject<HTMLElement>,
   options: { root?: t.ResizeObserver } = {},
 ): t.UseResizeObserver {
-  const root = options.root || ResizeObserver();
   const [rect, setRect] = useState<t.DomRect>(DEFAULT.RECT);
-  const ready = useRef<boolean>(false);
+  const readyRef = useRef<boolean>(false);
+  const rootRef = useRef<t.ResizeObserver>(options.root || ResizeObserver());
+  const change$ = useRef<Subject<t.DomRect>>(new Subject<t.DomRect>());
 
   useEffect(() => {
+    const root = rootRef.current;
     const element = root.watch(ref.current as HTMLElement);
-    element.$.pipe(takeUntil(element.dispose$)).subscribe((e) => setRect(e.payload.rect));
-    ready.current = true;
+
+    element.$.pipe(
+      takeUntil(element.dispose$),
+      filter((e) => e.payload.rect.x > -1),
+    ).subscribe((e) => {
+      setRect(e.payload.rect);
+      change$.current.next(e.payload.rect);
+    });
+
+    readyRef.current = true;
     return () => element.dispose();
   }, []); // eslint-disable-line
 
-  return { ready: ready.current, root, rect };
+  return {
+    ready: readyRef.current,
+    $: change$.current.asObservable(),
+    root: rootRef.current,
+    rect,
+  };
 }
