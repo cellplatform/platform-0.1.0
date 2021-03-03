@@ -50,7 +50,6 @@ export const Sample: React.FC = () => {
     }),
     toolbar: css({
       marginBottom: 20,
-      // backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
       paddingBottom: 10,
       borderBottom: `solid 1px ${color.format(-0.1)}`,
     }),
@@ -73,8 +72,8 @@ export const Sample: React.FC = () => {
     </div>
   );
 
-  const { isDragOver, dropped } = dragTarget;
-  const data = { isDragOver, dropped };
+  const { isDragOver, isDropped, dropped } = dragTarget;
+  const data = { isDragOver, isDropped, dropped };
 
   return (
     <div ref={ref} {...styles.base}>
