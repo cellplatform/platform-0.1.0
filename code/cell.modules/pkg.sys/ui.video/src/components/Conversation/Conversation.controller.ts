@@ -70,7 +70,10 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
         connections.push(conn);
         bus.fire({
           type: 'Conversation/publish',
-          payload: { kind: 'model', data: {} }, // NB: Ensure the peer's meta-data is published.
+          payload: {
+            kind: 'model',
+            data: model.state,
+          }, // NB: Ensure the peer's meta-data is published.
         });
       });
     });

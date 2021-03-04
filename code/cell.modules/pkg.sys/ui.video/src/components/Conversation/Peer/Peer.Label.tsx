@@ -53,7 +53,7 @@ export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
           {id}
         </div>
       </div>
-      <div {...styles.right}>{id && <Button onClick={() => copy(id)}>copy</Button>}</div>
+      <div {...styles.right}>{id && isSelf && <Button onClick={() => copy(id)}>copy</Button>}</div>
     </div>
   );
 };

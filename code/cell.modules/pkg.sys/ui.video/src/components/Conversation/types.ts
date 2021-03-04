@@ -73,10 +73,6 @@ export type ConversationPublishEvent = {
 export type ConversationPublish = ConversationPublishModel | ConversationPublishFile;
 export type ConversationPublishModel = { kind: 'model'; data: Partial<ConversationState> };
 export type ConversationPublishFile = { kind: 'file'; data: t.IHttpClientCellFileUpload };
-// export type ConversationPublishLoadRemote = {
-//   kind: 'load:remote';
-//   data?: { url: string; namespace: string; entry: string; props?: O };
-// };
 
 /**
  * File recieved event.

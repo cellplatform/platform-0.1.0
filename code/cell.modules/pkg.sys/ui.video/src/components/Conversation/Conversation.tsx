@@ -51,9 +51,7 @@ export const Conversation: React.FC<ConversationProps> = (props) => {
     </div>
   );
 
-  console.log('state', state.remote);
   const remote = state.remote;
-
   const elRemote = remote && (
     <Remote
       url={remote.url}

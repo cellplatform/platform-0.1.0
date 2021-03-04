@@ -12,7 +12,6 @@ export type LayoutProps = {
   bus: t.EventBus<any>;
   peer: PeerJS;
   model?: t.ConversationState;
-  // body?: JSX.Element;
   style?: CssValue;
 };
 
@@ -102,7 +101,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      {peer && <LayoutFooter bus={bus} peer={peer} zoom={model?.videoZoom} />}
+      {peer && <LayoutFooter bus={bus} peer={peer} model={model} zoom={model?.videoZoom} />}
       {elBody}
     </div>
   );

@@ -13,6 +13,6 @@ export default () =>
         .static('static')
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
 
-        .expose('./Dev', './src/components/Dev')
+        .expose('./Dev', './src/components/Dev.Harness')
         .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom'])),
     );
