@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { Spinner } from '../Primitives';
-import { createPeer, css, CssValue, PeerJS, t } from './common';
+import { createPeer, css, CssValue, PeerJS, rx, t } from './common';
 import { Layout } from './Layout';
+import { PeerImage } from './PeerImage';
+import { Remote } from './Remote';
 
 export type ConversationProps = {
   bus: t.EventBus<any>;
   model: t.ConversationModel;
-  body?: JSX.Element;
   style?: CssValue;
 };
 
@@ -26,7 +28,7 @@ export const Conversation: React.FC<ConversationProps> = (props) => {
     });
 
     const dispose$ = new Subject<void>();
-    model.event.changed$.subscribe((e) => setState(e.to));
+    model.event.changed$.pipe(takeUntil(dispose$)).subscribe((e) => setState(e.to));
 
     return () => {
       peer?.destroy();
@@ -49,10 +51,29 @@ export const Conversation: React.FC<ConversationProps> = (props) => {
     </div>
   );
 
+  console.log('state', state.remote);
+  const remote = state.remote;
+
+  const elRemote = remote && (
+    <Remote
+      url={remote.url}
+      namespace={remote.namespace}
+      entry={remote.entry}
+      props={remote.props}
+    />
+  );
+
+  const elLocal = !remote && <PeerImage bus={bus} style={{ Absolute: 50 }} />;
+
   return (
     <div {...css(styles.base, props.style)}>
       {elSpinner}
-      {self && <Layout bus={bus} peer={self} model={state} body={props.body} />}
+      {self && (
+        <Layout bus={bus} peer={self} model={state}>
+          {elLocal}
+          {elRemote}
+        </Layout>
+      )}
     </div>
   );
 };

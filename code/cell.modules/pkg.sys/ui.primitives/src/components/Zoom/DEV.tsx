@@ -67,9 +67,7 @@ const Sample: React.FC<{ ctx: Ctx }> = (props) => {
       Absolute: 0,
       display: 'flex',
     }),
-    body: css({
-      flex: 1,
-    }),
+    zoom: css({ flex: 1 }),
     content: css({
       flex: 1,
       backgroundImage: `url(${bundle.path('static/images/hello.png')})`,
@@ -92,10 +90,10 @@ const Sample: React.FC<{ ctx: Ctx }> = (props) => {
     offset,
     min: { zoom: 0.3, offset: { x: -200 } },
     max: { zoom: 5, offset: { y: 300 } },
-    onZoom: (e) => setLocalZoom(e.next),
-    onPan: (e) => setLocalOffset(e.next),
     canZoom: (e) => e.mouse.altKey,
     canPan: (e) => !e.mouse.altKey,
+    onZoom: (e) => setLocalZoom(e.next),
+    onPan: (e) => setLocalOffset(e.next),
   });
 
   const reset = () => {
@@ -105,7 +103,7 @@ const Sample: React.FC<{ ctx: Ctx }> = (props) => {
 
   return (
     <div {...styles.base} ref={ref} onDoubleClick={reset}>
-      <Zoom {...props} zoom={zoom} offset={offset} style={styles.body}>
+      <Zoom {...props} zoom={zoom} offset={offset} style={styles.zoom}>
         <div {...styles.content} />
       </Zoom>
     </div>
