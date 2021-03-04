@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { css, CssValue, defaultValue, formatColor, R } from '../../common';
+import { css, CssValue, defaultValue, formatColor } from '../../common';
 
 export type CropmarksProps = {
   size: number;

@@ -10,8 +10,5 @@ export default () =>
 
         .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
 
-        .expose('./Harness', './src/components/Harness')
-        .expose('./ActionPanel', './src/components/ActionPanel')
-        .expose('./Host', './src/components/Host')
         .expose('./Foo', './src/test/Foo'),
     );

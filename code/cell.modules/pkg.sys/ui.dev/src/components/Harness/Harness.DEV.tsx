@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { Harness, HarnessProps } from '.';
-import { Store } from '../../store';
 import { DevActions } from '../..';
 import { rx, HttpClient, t } from '../../common';
 
