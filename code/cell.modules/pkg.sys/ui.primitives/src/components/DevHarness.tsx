@@ -5,4 +5,4 @@ import useDragTarget from '../hooks/useDragTarget/DEV';
 import DotTabstrip from './DotTabstrip/DEV';
 
 export const ACTIONS = [useDragTarget, DotTabstrip];
-export const Dev: React.FC = () => <Harness actions={ACTIONS} />;
+export const DevHarness: React.FC = () => <Harness actions={ACTIONS} />;
