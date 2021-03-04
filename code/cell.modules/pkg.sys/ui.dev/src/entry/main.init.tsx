@@ -2,7 +2,7 @@ import '@platform/css/reset.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { DevHarness } from '../test/Dev';
+import { DevHarness } from '../test/Dev.Harness';
 
 const el = <DevHarness />;
 const root = <React.StrictMode>{el}</React.StrictMode>;
