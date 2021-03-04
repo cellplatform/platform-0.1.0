@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { DevActions, toObject } from 'sys.ui.dev';
 import { DotTabstrip, DotTabstripProps } from './DotTabstrip';
 import { toItems } from './util';
 import { t, log, COLORS } from '../../common';
+import { defaultValue } from '@platform/ui.image/lib/common';
 
 const createItems = (length: number, options: { isLoaded?: boolean } = {}): t.DotTabstripItem[] => {
   const { isLoaded } = options;
@@ -13,7 +14,6 @@ const createItems = (length: number, options: { isLoaded?: boolean } = {}): t.Do
 type Ctx = { props: DotTabstripProps };
 const INITIAL = {
   props: {
-    selected: 0,
     items: createItems(5, { isLoaded: true }),
   },
 };
@@ -61,9 +61,10 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('items');
-    e.button('empty', (e) => (e.ctx.props.items = undefined));
+    e.button('empty (undefined)', (e) => (e.ctx.props.items = undefined));
     e.button('1', (e) => (e.ctx.props.items = createItems(1, { isLoaded: true })));
     e.button('5', (e) => (e.ctx.props.items = createItems(5, { isLoaded: true })));
+    e.button('10', (e) => (e.ctx.props.items = createItems(10, { isLoaded: true })));
     e.hr();
   })
 
@@ -101,11 +102,27 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
     });
 
-    const Sample: React.FC<DotTabstripProps> = (props) => {
-      return <DotTabstrip {...{ ...e.ctx.props, ...props }} />;
+    const Sample: React.FC<DotTabstripProps> = () => {
+      const mouse = useMouse();
+      const props = e.ctx.props;
+      const selected = defaultValue(props.selected, mouse.selected);
+      return <DotTabstrip {...props} selected={selected} onClick={mouse.onClick} />;
     };
 
-    e.render(<Sample onClick={(e) => log.info('onClick', e)} />);
+    e.render(<Sample />);
   });
 
 export default actions;
+
+/**
+ * Helpers
+ */
+
+function useMouse() {
+  const [selected, setSelected] = useState<number | undefined>(undefined);
+  const onClick: t.DotTabstripClickEventHandler = (e) => {
+    setSelected(e.index);
+    log.info('onClick', e);
+  };
+  return { onClick, selected };
+}

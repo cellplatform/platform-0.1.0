@@ -29,12 +29,12 @@ export const DotTabstrip: React.FC<DotTabstripProps> = (props) => {
     },
   };
 
-  const elDots = items.map((item, i) => {
-    const isSelected = i === props.selected;
-    console.log('isSelected', isSelected);
+  const elItems = items.map((item, index) => {
+    const isSelected = index === props.selected;
     return (
       <DotTabstripItem
-        key={i}
+        key={index}
+        index={index}
         item={item}
         isSelected={isSelected}
         style={styles.dot}
@@ -47,7 +47,7 @@ export const DotTabstrip: React.FC<DotTabstripProps> = (props) => {
     );
   });
 
-  return <div {...css(styles.base, props.style)}>{elDots}</div>;
+  return <div {...css(styles.base, props.style)}>{elItems}</div>;
 };
 
 export default DotTabstrip;

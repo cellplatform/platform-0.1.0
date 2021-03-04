@@ -4,4 +4,6 @@ export type DotTabstripItem = {
   isLoaded?: boolean;
   error?: string;
 };
-export type DotTabstripClickEventHandler = (e: DotTabstripItem) => void;
+
+export type DotTabstripClickEvent = { item: DotTabstripItem; index: number };
+export type DotTabstripClickEventHandler = (e: DotTabstripClickEvent) => void;

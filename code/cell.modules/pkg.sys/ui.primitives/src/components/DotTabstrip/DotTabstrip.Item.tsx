@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { COLORS, color, css, CssValue, t, defaultValue } from '../../common';
 
 export type DotTabstripItemProps = {
+  index: number;
   item: t.DotTabstripItem;
   size?: number;
   isSelected?: boolean;
@@ -14,7 +15,7 @@ export type DotTabstripItemProps = {
 };
 
 export const DotTabstripItem: React.FC<DotTabstripItemProps> = (props) => {
-  const { isSelected, item } = props;
+  const { isSelected, item, index } = props;
   const { isLoaded, error } = item;
   const [isOver, setIsOver] = useState<boolean>(false);
   const tooltip = error ? `${item.label}\nError: ${error}` : item.label;
@@ -61,7 +62,7 @@ export const DotTabstripItem: React.FC<DotTabstripItemProps> = (props) => {
   };
 
   const handleClick = () => {
-    if (props.onClick) props.onClick(item);
+    if (props.onClick) props.onClick({ index, item });
   };
 
   return (
