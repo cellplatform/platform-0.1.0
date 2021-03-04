@@ -9,7 +9,7 @@ type Offset = { x: number; y: number };
 /**
  * Hook for reacting to drag transformations.
  */
-export function useDragTransform(args: {
+export function useZoomDrag(args: {
   ref: React.RefObject<HTMLElement>;
   zoom?: number;
   offset?: Offset;
@@ -71,24 +71,18 @@ export function useDragTransform(args: {
       });
     };
 
-    const onDragStart = (e: MouseEvent) => {
-      // NB: Dragging handled on the mouse-down.
-      //     Cancel the default drag behavior.
+    const preventDefault = (e: MouseEvent) => {
+      // NB: Dragging is handled on the mouse-down event.
+      //     Cancel the default drag behavior to allow that handler to operate.
       e.preventDefault();
     };
 
-    const onDoubleClick = (e: MouseEvent) => {
-      // start
-    };
-
     el.addEventListener('mousedown', onMouseDown);
-    el.addEventListener('dragstart', onDragStart);
-    el.addEventListener('dblclick', onDoubleClick);
+    el.addEventListener('dragstart', preventDefault);
 
     return () => {
       el.removeEventListener('mousedown', onMouseDown);
-      el.removeEventListener('dragstart', onDragStart);
-      el.removeEventListener('dblclick', onDoubleClick);
+      el.removeEventListener('dragstart', preventDefault);
     };
   });
 }

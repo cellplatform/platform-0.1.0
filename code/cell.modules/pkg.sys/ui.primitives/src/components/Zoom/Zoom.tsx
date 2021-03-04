@@ -1,7 +1,7 @@
 import React from 'react';
 import { css, CssValue, defaultValue } from '../../common';
 
-export type TransformParentProps = {
+export type ZoomProps = {
   zoom?: number;
   offset?: { x: number; y: number };
   style?: CssValue;
@@ -11,9 +11,8 @@ export type TransformParentProps = {
  * A container element that applies zoom (scale) and offset (translate)
  * transformations to child content via properties.
  */
-export const TransformParent: React.FC<TransformParentProps> = (props) => {
+export const Zoom: React.FC<ZoomProps> = (props) => {
   const zoom = defaultValue(props.zoom, 1);
-
   const offset = props.offset || { x: 0, y: 0 };
 
   const styles = {
@@ -42,3 +41,5 @@ export const TransformParent: React.FC<TransformParentProps> = (props) => {
     </div>
   );
 };
+
+export default Zoom;
