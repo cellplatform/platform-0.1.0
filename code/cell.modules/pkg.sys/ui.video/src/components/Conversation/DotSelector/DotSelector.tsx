@@ -52,4 +52,3 @@ export const DotSelector: React.FC<DotSelectorProps> = (props) => {
 
   return <div {...css(styles.base, props.style)}>{elDots}</div>;
 };
-export * from './DotSelector';
