@@ -16,6 +16,9 @@ export default () =>
 
         .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
         .expose('./Dev', './src/components/Dev')
+
+        .expose('./DotTabstrip', './src/components/DotTabstrip/DotTabstrip')
+
         .expose('./Button', './src/components.ref/button/Button')
         .expose('./Switch', './src/components.ref/button/Switch')
         .expose('./image', './src/components.ref/image/image')
