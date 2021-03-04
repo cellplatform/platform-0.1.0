@@ -9,7 +9,9 @@ export default () =>
         .entry('./src/entry/main')
 
         .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
-        .expose('./Host', './src/components/Host')
+
+        .expose('./Harness', './src/components/Harness')
         .expose('./ActionPanel', './src/components/ActionPanel')
+        .expose('./Host', './src/components/Host')
         .expose('./Foo', './src/test/Foo'),
     );
