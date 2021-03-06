@@ -91,8 +91,9 @@ export const Peer: React.FC<PeerProps> = (props) => {
         }
 
         // Start data connection.
-        setId(call.peer);
-        bus.fire({ type: 'Conversation/connect', payload: { id: call.peer } });
+        const id = call.peer;
+        setId(id);
+        bus.fire({ type: 'Conversation/connect', payload: { id } });
       });
     }
   }, []); // eslint-disable-line
@@ -138,9 +139,10 @@ export const Peer: React.FC<PeerProps> = (props) => {
       minHeight: 16,
     }),
     resolution: css({
-      Absolute: [5, 8, null, null],
-      fontSize: 9,
-      color: color.format(1),
+      Absolute: [-10, 8, null, 8],
+      fontSize: 8,
+      color: color.format(-0.3),
+      Flex: 'center-center',
     }),
   };
 
@@ -189,8 +191,8 @@ export const Peer: React.FC<PeerProps> = (props) => {
           onPlay={onPlay}
         />
         {elMuteButton}
-        {elResolution}
       </div>
+      {elResolution}
       <div {...styles.footer}>{elPeerLabel}</div>
     </div>
   );

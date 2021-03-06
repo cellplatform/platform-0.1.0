@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { toDataUri } from './util';
+import { ModuleIcon } from '../ModuleIcon';
 
 import { useDragTarget } from '../../Primitives';
-import { css, CssValue, rx, t } from '../common';
+import { COLORS, css, CssValue, rx, t, bundle, color } from '../common';
 
 export type PeerImageProps = {
   bus: t.EventBus<any>;
@@ -44,6 +45,7 @@ export const PeerImage: React.FC<PeerImageProps> = (props) => {
     base: css({
       position: 'relative',
       Flex: 'center-center',
+      color: COLORS.DARK,
     }),
     image: css({
       Absolute: 0,
@@ -54,10 +56,31 @@ export const PeerImage: React.FC<PeerImageProps> = (props) => {
       opacity: dragTarget.isDragOver ? 0.1 : 1,
       pointerEvents: 'none',
     }),
+    dragOver: {
+      base: css({
+        Absolute: 0,
+        Flex: 'center-center',
+        pointerEvents: 'none',
+      }),
+      content: css({
+        PaddingY: 20,
+        PaddingX: 120,
+        border: `solid 1px ${color.format(-0.06)}`,
+        borderRadius: 10,
+        boxShadow: `0 0px 70px 0 ${color.format(-0.12)}`,
+        backgroundColor: color.format(0.75),
+      }),
+    },
   };
 
-  const elEmpty = !dragTarget.isDragOver && !src && <div>Drag and Drop Image</div>;
-  const elDragOver = dragTarget.isDragOver && <div>Drop File</div>;
+  const elEmpty = !dragTarget.isDragOver && !src && (
+    <ModuleIcon style={{ pointerEvents: 'none' }} />
+  );
+  const elDragOver = dragTarget.isDragOver && (
+    <div {...styles.dragOver.base}>
+      <div {...styles.dragOver.content}>Drop File</div>
+    </div>
+  );
   const elImage = src && <div {...styles.image} />;
 
   return (
