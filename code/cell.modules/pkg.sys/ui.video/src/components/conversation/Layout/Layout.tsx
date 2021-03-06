@@ -66,7 +66,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
     ref: bodyRef,
     zoom: model?.zoom,
     offset: model?.offset,
-    min: { zoom: 0.2 },
+    min: { zoom: 0.5 },
     max: { zoom: 5 },
     canZoom: (e) => e.mouse.altKey,
     canPan: (e) => !e.mouse.altKey,

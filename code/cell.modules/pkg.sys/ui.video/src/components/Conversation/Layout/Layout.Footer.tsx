@@ -19,7 +19,7 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
   const zoom = defaultValue(props.zoom, 1);
 
   const MIN = 100;
-  const peerHeight = Math.max(MIN, 200 * zoom);
+  const peerHeight = Math.max(MIN, 120 * zoom);
   const peerWidth = peerHeight * 1.6;
 
   const styles = {

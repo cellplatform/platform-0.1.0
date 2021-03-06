@@ -11,6 +11,7 @@ import { Remote } from './Remote';
 export type ConversationProps = {
   bus: t.EventBus<any>;
   model: t.ConversationModel;
+  blur?: number;
   style?: CssValue;
 };
 
@@ -41,6 +42,8 @@ export const Conversation: React.FC<ConversationProps> = (props) => {
       position: 'relative',
       display: 'flex',
       flex: 1,
+      filter: props.blur ? `blur(8px)` : undefined,
+      transition: `filter 400ms`,
     }),
     spinner: css({ Absolute: 0, Flex: 'center-center' }),
   };
