@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { color, css, CssValue, PeerJS, t, defaultValue, R, getQuery } from '../common';
+import { color, css, CssValue, PeerJS, t, defaultValue, R, QueryString } from '../common';
 import { Peer } from '../Peer';
 import { LayoutFooterResize } from './Layout.Footer.Resize';
 
@@ -61,7 +61,7 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
     setPeerTokens((prev) => {
       const self = peer.id;
 
-      const connectTo = getQuery()
+      const connectTo = QueryString.parse()
         .connectTo.filter((token) => token !== self)
         .filter((token) => !prev.some((item) => item.token === token))
         .map((token) => ({ token }));

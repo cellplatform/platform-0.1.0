@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, takeUntil, map } from 'rxjs/operators';
 
-import { PeerJS, R, rx, t, getQuery } from './common';
+import { PeerJS, R, rx, t, QueryString } from './common';
 
 /**
  * Manages state changes.
@@ -67,10 +67,7 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
     .pipe()
     .subscribe((e) => {
       peer = e.peer;
-      peer.on('connection', (conn) => {
-        listen(conn);
-        // updateUrl();
-      });
+      peer.on('connection', (conn) => listen(conn));
     });
 
   /**
