@@ -1,12 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
+import { useZoomDrag, Zoom } from 'sys.ui.primitives/lib/components/Zoom';
 
-import { color, COLORS, css, CssValue, PeerJS, t, useResizeObserver } from '../common';
-import { Diagram } from '../Diagram';
+import { color, COLORS, css, CssValue, PeerJS, t, useResizeObserver, value } from '../common';
 import { LayoutFooter } from './Layout.Footer';
-
-import { Zoom, useZoomDrag } from 'sys.ui.primitives/lib/components/Zoom';
 
 export type LayoutProps = {
   bus: t.EventBus<any>;
@@ -27,7 +25,10 @@ export const Layout: React.FC<LayoutProps> = (props) => {
 
     const publishSize = (width: number, height: number) => {
       const id = peer.id;
-      const body = { width, height };
+      const body = {
+        width: value.round(width, 0),
+        height: value.round(height, 0),
+      };
       const peers: t.DeepPartial<t.ConversationStatePeers> = {
         [id]: { resolution: { body } },
       };
