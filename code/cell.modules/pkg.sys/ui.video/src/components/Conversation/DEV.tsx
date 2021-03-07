@@ -2,7 +2,7 @@ import { asArray } from '@platform/util.value';
 import React from 'react';
 import { ActionButtonHandlerArgs, DevActions } from 'sys.ui.dev';
 
-import { css, rx, StateObject, t, WebRuntime } from './common';
+import { css, rx, StateObject, t, WebRuntime, createPeer } from './common';
 import { Conversation, ConversationProps } from './Conversation';
 import { stateController } from './Conversation.controller';
 
@@ -23,8 +23,9 @@ export const actions = DevActions<Ctx>()
     if (prev) return prev;
 
     const bus = rx.bus<t.ConversationEvent>();
+    const peer = createPeer({ bus });
     const model = StateObject.create<t.ConversationState>({ peers: {} });
-    stateController({ bus, model });
+    stateController({ bus, peer, model });
 
     const ctx: Ctx = {
       fire: bus.fire,

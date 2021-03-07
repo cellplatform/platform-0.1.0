@@ -1,23 +1,25 @@
 import { Subject } from 'rxjs';
-import { filter, takeUntil, map } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { PeerJS, R, rx, t, QueryString } from './common';
+import { PeerJS, R, rx, t } from './common';
 
 /**
  * Manages state changes.
  */
-export function stateController(args: { bus: t.EventBus<any>; model: t.ConversationModel }) {
-  const { model } = args;
-  let peer: PeerJS;
+export function stateController(args: {
+  peer: PeerJS;
+  bus: t.EventBus<any>;
+  model: t.ConversationModel;
+}) {
+  const { peer, model } = args;
   const connections: PeerJS.DataConnection[] = [];
 
   const bus = args.bus.type<t.ConversationEvent>();
   const dispose = () => dispose$.next();
   const dispose$ = new Subject<void>();
+
   const $ = bus.event$.pipe(takeUntil(dispose$));
-  const publish$ = rx
-    .payload<t.ConversationPublishEvent>($, 'Conversation/publish')
-    .pipe(filter((e) => Boolean(peer)));
+  const publish$ = rx.payload<t.ConversationPublishEvent>($, 'Conversation/publish');
 
   const changeModel = (data: Partial<t.ConversationState>) => {
     bus.fire({
@@ -99,6 +101,7 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
       map((e) => e as t.ConversationPublishModel),
     )
     .subscribe((e) => {
+      console.log('e', e);
       const id = peer.id;
       const peers: t.ConversationStatePeers = {
         [id]: { id, userAgent: navigator.userAgent, isSelf: true, resolution: {} },
@@ -137,6 +140,7 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
       }
     });
 
+  // Finish up.
   return {
     dispose$: dispose$.asObservable(),
     dispose,
