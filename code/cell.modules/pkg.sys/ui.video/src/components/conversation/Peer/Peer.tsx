@@ -7,8 +7,8 @@ import { PeerLabel } from './Peer.Label';
 
 export type PeerProps = {
   bus: t.EventBus<any>;
-  peer: PeerJS;
   model?: t.ConversationState;
+  peer: PeerJS;
   id?: string;
   isSelf?: boolean;
   isMuted?: boolean;
