@@ -15,6 +15,7 @@ export type SubjectProps = {
  */
 export const Subject: React.FC<SubjectProps> = (props) => {
   if (!props.children) return null;
+
   const { layout } = props;
   const { width, height } = layout;
 
@@ -23,8 +24,8 @@ export const Subject: React.FC<SubjectProps> = (props) => {
       WebkitAppRegion: 'none', // Hint for how to handle dragging within electron.
       position: 'relative',
       boxSizing: 'border-box',
-      flex: 1,
       display: 'flex',
+      flex: 1,
       width,
       height,
     }),
@@ -45,6 +46,7 @@ export const Subject: React.FC<SubjectProps> = (props) => {
 const SubjectCropmarks: React.FC<SubjectProps> = (props) => {
   const { layout } = props;
   const cropmarks = defaultValue(layout.cropmarks, true);
+
   if (!cropmarks) return null;
 
   const abs = layout.position;
@@ -56,7 +58,14 @@ const SubjectCropmarks: React.FC<SubjectProps> = (props) => {
 
   // Ensure the space surrounding an "absolute positioning" is
   // not less than offset space of the cropmarks.
-  if (abs && Object.keys(abs).some((key) => abs[key] < offset)) return null;
+  if (abs) {
+    const belowOffset = (key: string) => {
+      const value = abs[key];
+      const isNil = value === undefined || value === null;
+      return isNil ? false : value < offset;
+    };
+    if (Object.keys(abs).some(belowOffset)) return null;
+  }
 
   // Finish up.
   return <Cropmarks color={color} margin={margin} size={size} />;

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t } from '../common';
+import React from 'react';
+import { css, CssValue } from '../common';
 
 export type FooProps = { style?: CssValue };
 

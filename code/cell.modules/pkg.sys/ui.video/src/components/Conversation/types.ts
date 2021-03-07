@@ -1,9 +1,10 @@
 import { PeerJS } from '../../common/libs';
 import { IStateObjectWritable } from '@platform/state.types';
-
 import * as t from '../../common/types';
 
 export * from '../../common/types';
+
+type O = Record<string, unknown>;
 
 export type ConversationState = {
   imageDir?: string | string[];
@@ -12,6 +13,7 @@ export type ConversationState = {
   offset?: { x: number; y: number };
   videoZoom?: number;
   peers: ConversationStatePeers;
+  remote?: { url: string; namespace: string; entry: string; props?: O };
 };
 
 export type ConversationStatePeers = { [id: string]: ConversationStatePeer };
@@ -19,9 +21,7 @@ export type ConversationStatePeer = {
   id: string;
   userAgent: string;
   isSelf?: boolean;
-  resolution: {
-    body?: { width: number; height: number };
-  };
+  resolution: { body?: { width: number; height: number } };
 };
 
 export type ConversationModel = IStateObjectWritable<ConversationState>;

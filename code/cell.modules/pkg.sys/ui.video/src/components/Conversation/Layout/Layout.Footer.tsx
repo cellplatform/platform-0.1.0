@@ -7,19 +7,19 @@ import { queryString } from '@platform/util.string/lib/queryString';
 
 export type LayoutFooterProps = {
   bus: t.EventBus<any>;
-  totalPeers?: number;
+  model?: t.ConversationState;
   zoom?: number;
   peer: PeerJS;
   style?: CssValue;
 };
 
 export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
-  const { peer, totalPeers = 0 } = props;
+  const { peer, model } = props;
   const bus = props.bus.type<t.ConversationEvent>();
   const zoom = defaultValue(props.zoom, 1);
 
   const MIN = 100;
-  const peerHeight = Math.max(MIN, 200 * zoom);
+  const peerHeight = Math.max(MIN, 120 * zoom);
   const peerWidth = peerHeight * 1.6;
 
   const styles = {
@@ -42,12 +42,6 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
       paddingTop: 15,
     }),
   };
-
-  const elPeers =
-    peer &&
-    Array.from({ length: totalPeers }).map((v, i) => {
-      return <Peer key={i} bus={bus} peer={peer} width={peerWidth} height={peerHeight} />;
-    });
 
   const elResize = (
     <LayoutFooterResize
@@ -76,9 +70,17 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
           isCircle={false}
           width={peerWidth}
           height={peerHeight}
+          model={model}
         />
-        <Peer bus={bus} peer={peer} width={peerWidth} height={peerHeight} id={connectTo} />
-        {elPeers}
+        <Peer
+          bus={bus}
+          peer={peer}
+          width={peerWidth}
+          height={peerHeight}
+          id={connectTo}
+          model={model}
+        />
+        {/* {elPeers} */}
       </div>
       <div {...styles.edge}>{elResize}</div>
     </div>

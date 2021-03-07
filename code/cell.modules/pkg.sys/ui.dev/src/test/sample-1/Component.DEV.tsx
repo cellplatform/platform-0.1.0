@@ -242,13 +242,14 @@ export const actions = DevActions<Ctx>()
     e.button('bg: light (-0.04)', (e) => (e.host.background = -0.04));
     e.button('settings (null)', (e) => e.settings({ host: null }));
     e.button('settings: {...}', (e) => e.settings({ host: { background: -0.8 } }));
-    e.button('position: {array-2}', (e) => {
+    e.button('position: [array-2]', (e) => {
       e.settings({ layout: { position: [null, 80], height: 300 } });
     });
-    e.button('position: {array-4}', (e) => {
+    e.button('position: [array-4]', (e) => {
       e.layout.position = [null, 80, 150, 80];
       e.layout.height = 300;
     });
+    e.button('position: [null, 80]', (e) => (e.layout.position = [null, 80]));
 
     e.hr();
   })

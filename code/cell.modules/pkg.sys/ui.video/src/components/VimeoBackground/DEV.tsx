@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
 import { COLORS } from '../../common';
-import { VIDEOS } from './Vimeo.DEV';
+import { VIDEOS } from '../Vimeo/DEV';
 import { VimeoBackground, VimeoBackgroundProps } from './VimeoBackground';
 
 type Ctx = {

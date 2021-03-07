@@ -4,10 +4,10 @@ import { Icons } from '../../Icons';
 import { Button } from '../../Primitives';
 import { color, css, CssValue, defaultValue, PeerJS, t } from '../common';
 import { PeerLabel } from './Peer.Label';
-import { PeerTextbox } from './Peer.Textbox';
 
 export type PeerProps = {
   bus: t.EventBus<any>;
+  model?: t.ConversationState;
   peer: PeerJS;
   id?: string;
   isSelf?: boolean;
@@ -21,7 +21,7 @@ export type PeerProps = {
 };
 
 export const Peer: React.FC<PeerProps> = (props) => {
-  const { isSelf, peer, isCircle } = props;
+  const { isSelf, peer, isCircle, model } = props;
   const bus = props.bus.type<t.ConversationEvent>();
   const autoPlay = defaultValue(props.autoPlay, true);
 
@@ -32,6 +32,9 @@ export const Peer: React.FC<PeerProps> = (props) => {
   const host = location.hostname;
   const [isMuted, setIsMuted] = useState<boolean>(props.isMuted || host === 'localhost'); // NB: Peers muted while in development (eg "localhost").
   const [id, setId] = useState<string>(props.id || '');
+
+  const getResolution = (id: string) => (model?.peers || {})[id]?.resolution?.body;
+  const resolution = getResolution(id);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const localStreamRef = useRef<MediaStream>();
@@ -88,7 +91,9 @@ export const Peer: React.FC<PeerProps> = (props) => {
         }
 
         // Start data connection.
-        bus.fire({ type: 'Conversation/connect', payload: { id: call.peer } });
+        const id = call.peer;
+        setId(id);
+        bus.fire({ type: 'Conversation/connect', payload: { id } });
       });
     }
   }, []); // eslint-disable-line
@@ -131,6 +136,13 @@ export const Peer: React.FC<PeerProps> = (props) => {
     footer: css({
       marginTop: 10,
       PaddingX: 8,
+      minHeight: 16,
+    }),
+    resolution: css({
+      Absolute: [-10, 8, null, 8],
+      fontSize: 8,
+      color: color.format(-0.3),
+      Flex: 'center-center',
     }),
   };
 
@@ -150,17 +162,23 @@ export const Peer: React.FC<PeerProps> = (props) => {
     </div>
   );
 
-  const elTextbox = !isSelf && (
-    <PeerTextbox
-      value={id}
-      onChange={(e) => setId(formatId(e.value))}
-      onEnter={() => {
-        connectTo(id);
-      }}
-    />
-  );
+  // const elTextbox = !isSelf && (
+  //   <PeerTextbox
+  //     value={id}
+  //     onChange={(e) => setId(formatId(e.value))}
+  //     onEnter={() => {
+  //       connectTo(id);
+  //     }}
+  //   />
+  // );
 
-  const elPeerLabel = isSelf && <PeerLabel id={id} isSelf={isSelf} />;
+  const elPeerLabel = id && <PeerLabel id={id} isSelf={isSelf} />;
+
+  const elResolution = resolution && (
+    <div {...styles.resolution}>
+      {resolution.width} x {resolution.height}
+    </div>
+  );
 
   return (
     <div {...css(styles.base, props.style)}>
@@ -174,7 +192,8 @@ export const Peer: React.FC<PeerProps> = (props) => {
         />
         {elMuteButton}
       </div>
-      <div {...styles.footer}>{elTextbox || elPeerLabel}</div>
+      {elResolution}
+      <div {...styles.footer}>{elPeerLabel}</div>
     </div>
   );
 };

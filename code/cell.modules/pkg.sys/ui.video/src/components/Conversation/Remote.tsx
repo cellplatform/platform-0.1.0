@@ -1,7 +1,9 @@
 import React from 'react';
 import { WebRuntime } from '@platform/cell.runtime.web';
+import { ModuleIcon } from './ModuleIcon';
 
-import { css } from '../../common';
+import { css, color } from '../../common';
+import { Spinner } from '../Primitives';
 
 type O = Record<string, unknown>;
 
@@ -34,18 +36,37 @@ export const Remote: React.FC<RemoteProps> = (props: RemoteProps) => {
       flex: 1,
       padding: 30,
       boxSizing: 'border-box',
+      Flex: 'center-center',
     }),
     body: css({
       flex: 1,
       Flex: 'center-center',
     }),
+    beforeLoad: {
+      base: css({ Flex: 'vertical-center-center' }),
+      content: css({ fontSize: 9 }),
+      indent: css({
+        marginTop: 5,
+        paddingLeft: 6,
+        borderLeft: `solid 8px ${color.format(-0.06)}`,
+      }),
+    },
   };
 
   if (!ready) {
     return (
       <div {...styles.base}>
-        <div>Loading dynamic script:</div>
-        <div>{url}</div>
+        <div {...styles.beforeLoad.base}>
+          <ModuleIcon />
+          <div {...styles.beforeLoad.content}>
+            <div>Loading remote cell:</div>
+            <div {...styles.beforeLoad.indent}>
+              <div>url: {url}</div>
+              <div>namespace: {namespace}</div>
+              <div>entry: {entry}</div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -53,7 +74,12 @@ export const Remote: React.FC<RemoteProps> = (props: RemoteProps) => {
     return <div {...styles.base}>Failed to load dynamic script: {url}</div>;
   }
 
-  const elLoading = <div {...styles.base}>Loading...</div>;
+  const elLoading = (
+    <div {...styles.base}>
+      <Spinner />
+    </div>
+  );
+
   const Component = React.lazy(remote.module);
 
   return (
@@ -64,4 +90,3 @@ export const Remote: React.FC<RemoteProps> = (props: RemoteProps) => {
     </React.Suspense>
   );
 };
-

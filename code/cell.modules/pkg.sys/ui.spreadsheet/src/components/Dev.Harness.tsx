@@ -6,4 +6,4 @@ import Spreadsheet from './Spreadsheet/Spreadsheet.DEV';
 
 export const ACTIONS = [Spreadsheet, Sample];
 
-export const Dev: React.FC = () => <Harness actions={ACTIONS} />;
+export const DevHarness: React.FC = () => <Harness actions={ACTIONS} />;

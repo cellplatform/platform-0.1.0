@@ -3,9 +3,9 @@ import './workers.init';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Dev } from '../components/Dev';
+import { DevHarness } from '../components/Dev.Harness';
 
-const el = <Dev />;
+const el = <DevHarness />;
 const root = <React.StrictMode>{el}</React.StrictMode>;
 
 ReactDOM.render(root, document.getElementById('root'));

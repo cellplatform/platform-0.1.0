@@ -6,11 +6,12 @@ import { color, COLORS, css, CssValue, PeerJS, t, useResizeObserver } from '../c
 import { Diagram } from '../Diagram';
 import { LayoutFooter } from './Layout.Footer';
 
+import { Zoom, useZoomDrag } from 'sys.ui.primitives/lib/components/Zoom';
+
 export type LayoutProps = {
   bus: t.EventBus<any>;
   peer: PeerJS;
   model?: t.ConversationState;
-  body?: JSX.Element;
   style?: CssValue;
 };
 
@@ -51,37 +52,57 @@ export const Layout: React.FC<LayoutProps> = (props) => {
       userSelect: 'none',
       overflow: 'hidden',
     }),
-    body: css({
-      flex: 1,
-      display: 'flex',
-      position: 'relative',
-    }),
+    body: {
+      outer: css({
+        flex: 1,
+        display: 'flex',
+        position: 'relative',
+      }),
+      zoom: { flex: 1 },
+    },
   };
 
-  const elBody =
-    props.body ||
-    (model && (
-      <Diagram
-        bus={bus}
-        dir={model.imageDir}
-        zoom={model.zoom}
-        offset={model.offset}
-        selected={model.selected}
-        onSelect={(e) => {
-          bus.fire({
-            type: 'Conversation/publish',
-            payload: { kind: 'model', data: { selected: e.path } },
-          });
-        }}
-      />
-    ));
+  useZoomDrag({
+    ref: bodyRef,
+    zoom: model?.zoom,
+    offset: model?.offset,
+    min: { zoom: 0.5 },
+    max: { zoom: 5 },
+    canZoom: (e) => e.mouse.altKey,
+    canPan: (e) => !e.mouse.altKey,
+    onZoom: (e) => {
+      bus.fire({
+        type: 'Conversation/publish',
+        payload: { kind: 'model', data: { zoom: e.next } },
+      });
+    },
+    onPan: (e) => {
+      bus.fire({
+        type: 'Conversation/publish',
+        payload: { kind: 'model', data: { offset: e.next } },
+      });
+    },
+  });
+
+  const resetZoom = () => {
+    bus.fire({
+      type: 'Conversation/publish',
+      payload: { kind: 'model', data: { zoom: undefined, offset: undefined } },
+    });
+  };
+
+  const elBody = (
+    <div ref={bodyRef} {...styles.body.outer} onDoubleClick={resetZoom}>
+      <Zoom zoom={model?.zoom} offset={model?.offset} style={styles.body.zoom}>
+        {props.children}
+      </Zoom>
+    </div>
+  );
 
   return (
     <div {...css(styles.base, props.style)}>
-      {peer && <LayoutFooter bus={bus} peer={peer} zoom={model?.videoZoom} />}
-      <div ref={bodyRef} {...styles.body}>
-        {elBody}
-      </div>
+      {peer && <LayoutFooter bus={bus} peer={peer} model={model} zoom={model?.videoZoom} />}
+      {elBody}
     </div>
   );
 };
