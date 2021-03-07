@@ -10,7 +10,6 @@ export type PeerProps = {
   model?: t.ConversationState;
   peer: PeerJS;
   id?: string;
-  call?: PeerJS.MediaConnection;
   isSelf?: boolean;
   isMuted?: boolean;
   isCircle?: boolean;

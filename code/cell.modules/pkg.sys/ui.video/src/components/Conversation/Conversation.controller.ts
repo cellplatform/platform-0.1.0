@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, takeUntil, map } from 'rxjs/operators';
 
-import { PeerJS, R, rx, t } from './common';
+import { PeerJS, R, rx, t, getQuery } from './common';
 
 /**
  * Manages state changes.
@@ -24,6 +24,7 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
       type: 'Conversation/model/change',
       payload: { data },
     });
+    updateUrl();
   };
 
   /**
@@ -49,6 +50,16 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
     connections.forEach((conn) => conn.send(payload));
   };
 
+  const updateUrl = () => {
+    const self = peer.id;
+    const modelPeers = Object.keys(model.state.peers).sort();
+    const urlPeers = R.uniq([peer.id, ...modelPeers.filter((id) => id !== self)]);
+    const querystring = `?connectTo=${urlPeers.join(',')}`;
+    if (location.search !== querystring) {
+      history.replaceState(null, 'Meeting Peers', querystring);
+    }
+  };
+
   /**
    * Init
    */
@@ -56,7 +67,10 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
     .pipe()
     .subscribe((e) => {
       peer = e.peer;
-      peer.on('connection', (conn) => listen(conn));
+      peer.on('connection', (conn) => {
+        listen(conn);
+        // updateUrl();
+      });
     });
 
   /**
@@ -75,6 +89,8 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
             data: model.state,
           }, // NB: Ensure the peer's meta-data is published.
         });
+
+        updateUrl();
       });
     });
 

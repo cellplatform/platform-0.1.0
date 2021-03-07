@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-import { color, css, CssValue, PeerJS, t, defaultValue } from '../common';
+import { color, css, CssValue, PeerJS, t, defaultValue, R, getQuery } from '../common';
 import { Peer } from '../Peer';
 import { LayoutFooterResize } from './Layout.Footer.Resize';
-import { queryString } from '@platform/util.string/lib/queryString';
 
 export type LayoutFooterProps = {
   bus: t.EventBus<any>;
@@ -17,6 +16,10 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
   const { peer, model } = props;
   const bus = props.bus.type<t.ConversationEvent>();
   const zoom = defaultValue(props.zoom, 1);
+
+  type P = { token: string; call?: PeerJS.MediaConnection };
+
+  const [peerTokens, setPeerTokens] = useState<P[]>([]);
 
   const MIN = 100;
   const peerHeight = Math.max(MIN, 120 * zoom);
@@ -43,6 +46,30 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
     }),
   };
 
+  useEffect(() => {
+    /**
+     * Listen for incoming calls.
+     */
+    peer.on('call', async (call) => {
+      const token = call.peer;
+      setPeerTokens((prev) => {
+        const exists = prev.some((item) => item.token === token);
+        return exists ? prev : [...prev, { token, call }];
+      });
+    });
+
+    setPeerTokens((prev) => {
+      const self = peer.id;
+
+      const connectTo = getQuery()
+        .connectTo.filter((token) => token !== self)
+        .filter((token) => !prev.some((item) => item.token === token))
+        .map((token) => ({ token }));
+
+      return R.uniq([...prev, ...connectTo]);
+    });
+  }, []); // eslint-disable-line
+
   const elResize = (
     <LayoutFooterResize
       percent={zoom}
@@ -55,8 +82,23 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
     />
   );
 
-  const query = queryString.toObject(location.href);
-  const connectTo = (query.connectTo || '').toString();
+  const elPeers = peerTokens
+    .filter((item) => item.token !== peer.id)
+    .map((item) => {
+      const { token, call } = item;
+      return (
+        <Peer
+          key={`peer-${token}`}
+          id={token}
+          call={call}
+          bus={bus}
+          peer={peer}
+          width={peerWidth}
+          height={peerHeight}
+          model={model}
+        />
+      );
+    });
 
   return (
     <div {...css(styles.base, props.style)}>
@@ -67,20 +109,11 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
           peer={peer}
           isSelf={true}
           isMuted={true}
-          isCircle={false}
           width={peerWidth}
           height={peerHeight}
           model={model}
         />
-        <Peer
-          bus={bus}
-          peer={peer}
-          width={peerWidth}
-          height={peerHeight}
-          id={connectTo}
-          model={model}
-        />
-        {/* {elPeers} */}
+        {elPeers}
       </div>
       <div {...styles.edge}>{elResize}</div>
     </div>

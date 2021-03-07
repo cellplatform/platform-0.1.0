@@ -54,11 +54,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
       overflow: 'hidden',
     }),
     body: {
-      outer: css({
-        flex: 1,
-        display: 'flex',
-        position: 'relative',
-      }),
+      outer: css({ flex: 1, display: 'flex', position: 'relative' }),
       zoom: { flex: 1 },
     },
   };
