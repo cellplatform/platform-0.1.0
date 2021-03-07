@@ -66,8 +66,7 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
   rx.payload<t.ConversationCreatedEvent>($, 'Conversation/created')
     .pipe()
     .subscribe((e) => {
-      peer = e.peer;
-      peer.on('connection', (conn) => listen(conn));
+      e.peer.on('connection', (conn) => listen(conn));
     });
 
   /**
