@@ -1,12 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
+import { useZoomDrag, Zoom } from 'sys.ui.primitives/lib/components/Zoom';
 
-import { color, COLORS, css, CssValue, PeerJS, t, useResizeObserver } from '../common';
-import { Diagram } from '../Diagram';
-import { LayoutFooter } from './Layout.Footer';
-
-import { Zoom, useZoomDrag } from 'sys.ui.primitives/lib/components/Zoom';
+import { color, COLORS, css, CssValue, PeerJS, t, useResizeObserver, value } from '../common';
+import { LayoutFooter } from './Layout.VideoBar';
 
 export type LayoutProps = {
   bus: t.EventBus<any>;
@@ -27,7 +25,10 @@ export const Layout: React.FC<LayoutProps> = (props) => {
 
     const publishSize = (width: number, height: number) => {
       const id = peer.id;
-      const body = { width, height };
+      const body = {
+        width: value.round(width, 0),
+        height: value.round(height, 0),
+      };
       const peers: t.DeepPartial<t.ConversationStatePeers> = {
         [id]: { resolution: { body } },
       };
@@ -52,9 +53,12 @@ export const Layout: React.FC<LayoutProps> = (props) => {
       userSelect: 'none',
       overflow: 'hidden',
     }),
+    videoBar: css({
+      Absolute: [15, 15, null, 15],
+    }),
     body: {
       outer: css({
-        flex: 1,
+        Absolute: 0,
         display: 'flex',
         position: 'relative',
       }),
@@ -99,10 +103,17 @@ export const Layout: React.FC<LayoutProps> = (props) => {
     </div>
   );
 
+  const elVideoBar = (
+    <div {...styles.videoBar}>
+      <LayoutFooter bus={bus} peer={peer} model={model} zoom={model?.videoZoom} />
+    </div>
+  );
+
   return (
     <div {...css(styles.base, props.style)}>
-      {peer && <LayoutFooter bus={bus} peer={peer} model={model} zoom={model?.videoZoom} />}
       {elBody}
+      {elVideoBar}
+      {/* {peer && <LayoutFooter bus={bus} peer={peer} model={model} zoom={model?.videoZoom} />} */}
     </div>
   );
 };

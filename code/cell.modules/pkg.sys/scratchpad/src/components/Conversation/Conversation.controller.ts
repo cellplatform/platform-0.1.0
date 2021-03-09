@@ -1,35 +1,39 @@
 import { Subject } from 'rxjs';
-import { filter, takeUntil, map } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { PeerJS, R, rx, t } from './common';
+import { PeerJS, R, rx, t, QueryString } from './common';
 
 /**
  * Manages state changes.
  */
-export function stateController(args: { bus: t.EventBus<any>; model: t.ConversationModel }) {
-  const { model } = args;
-  let peer: PeerJS;
+export function stateController(args: {
+  peer: PeerJS;
+  bus: t.EventBus<any>;
+  model: t.ConversationModel;
+}) {
+  const { peer, model } = args;
   const connections: PeerJS.DataConnection[] = [];
 
   const bus = args.bus.type<t.ConversationEvent>();
   const dispose = () => dispose$.next();
   const dispose$ = new Subject<void>();
+
   const $ = bus.event$.pipe(takeUntil(dispose$));
-  const publish$ = rx
-    .payload<t.ConversationPublishEvent>($, 'Conversation/publish')
-    .pipe(filter((e) => Boolean(peer)));
+  const publish$ = rx.payload<t.ConversationPublishEvent>($, 'Conversation/publish');
 
   const changeModel = (data: Partial<t.ConversationState>) => {
     bus.fire({
       type: 'Conversation/model/change',
       payload: { data },
     });
+    updateUrl();
   };
 
   /**
    * Listen for incoming data.
    */
   const listen = (connection: PeerJS.DataConnection) => {
+    console.log('listen', listen);
     connection.on('data', (input) => {
       if (typeof input !== 'object') return;
       if (typeof input.kind !== 'string') return;
@@ -46,18 +50,28 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
    * Broadcast a payload to all connected peers.
    */
   const publish = (payload: t.ConversationPublish) => {
+    // updateUrl();
     connections.forEach((conn) => conn.send(payload));
   };
+
+  const updateUrl = () => {
+    const self = peer.id;
+    const urlPeers = [self];
+    const querystring = QueryString.generate({ peers: urlPeers });
+    if (location.search !== querystring) {
+      history.replaceState(null, 'Meeting Peers', querystring);
+    }
+  };
+
+  const initPeer = (peer: PeerJS) => peer.on('connection', (conn) => listen(conn));
+  initPeer(peer);
 
   /**
    * Init
    */
   rx.payload<t.ConversationCreatedEvent>($, 'Conversation/created')
     .pipe()
-    .subscribe((e) => {
-      peer = e.peer;
-      peer.on('connection', (conn) => listen(conn));
-    });
+    .subscribe((e) => initPeer(e.peer));
 
   /**
    * Peer connected. Setup outgoing connection.
@@ -75,6 +89,8 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
             data: model.state,
           }, // NB: Ensure the peer's meta-data is published.
         });
+
+        updateUrl();
       });
     });
 
@@ -104,9 +120,7 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
       filter((e) => e.kind === 'file'),
       map((e) => e as t.ConversationPublishFile),
     )
-    .subscribe((e) => {
-      publish(e);
-    });
+    .subscribe((e) => publish(e));
 
   /**
    * Update model with new state.
@@ -125,6 +139,7 @@ export function stateController(args: { bus: t.EventBus<any>; model: t.Conversat
       }
     });
 
+  // Finish up.
   return {
     dispose$: dispose$.asObservable(),
     dispose,

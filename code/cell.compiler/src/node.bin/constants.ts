@@ -47,7 +47,7 @@ export const COMMANDS: t.Commands = {
       '--config': PARAMS.config,
       '--name': PARAMS.name,
       '--no-bundle': `(optional) Skip bundling the project`,
-      '--clean': `(optional) Clear cache before bundling`,
+      '--no-clean': `(optional) Do not clean the cache before bundling`,
       '--mode': PARAMS.mode,
     },
   },

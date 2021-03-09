@@ -1,0 +1,119 @@
+import React, { useEffect, useRef, useState } from 'react';
+
+import { Icons } from '../../Icons';
+import { Button } from '../../Primitives';
+import { color, css, CssValue, defaultValue, PeerJS, t } from '../common';
+import { PeerLabel } from './Peer.Label';
+
+
+export type PeerVideoProps = {
+  id: string;
+  isSelf?: boolean;
+  isMuted?: boolean;
+  isMuteVisible?: boolean;
+  width?: number;
+  height?: number;
+  autoPlay?: boolean;
+  style?: CssValue;
+  onPlay?: React.ReactEventHandler<HTMLVideoElement>;
+  resolution?: { width: number; height: number };
+};
+
+export const PeerVideo: React.FC<PeerVideoProps> = (props) => {
+  const { isSelf, resolution, id } = props;
+  const autoPlay = defaultValue(props.autoPlay, true);
+  const isMuteVisible = defaultValue(props.isMuteVisible, true);
+
+  const height = props.height || 200;
+  const width = props.width || 300;
+
+  const host = location.hostname;
+  const [isMuted, setIsMuted] = useState<boolean>(props.isMuted || host === 'localhost'); // NB: Peers muted while in development (eg "localhost").
+  // const [id, setId] = useState<string>(props.id || '');
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+  // const localStreamRef = useRef<MediaStream>();
+
+  const styles = {
+    base: css({
+      position: 'relative',
+    }),
+    video: {
+      outer: css({
+        position: 'relative',
+        overflow: 'hidden',
+        borderRadius: 16,
+        width,
+        height,
+        border: `solid 5px ${color.format(-0.1)}`,
+        backgroundColor: color.format(1),
+      }),
+      object: css({
+        objectFit: 'cover',
+        width: '100%',
+        height: '100%',
+      }),
+    },
+    mute: {
+      outer: css({
+        pointerEvents: 'none',
+        Absolute: 0,
+      }),
+      inner: css({
+        pointerEvents: 'auto',
+        backgroundColor: color.format(0.8),
+        padding: 8,
+        borderRadius: 6,
+        margin: 10,
+      }),
+    },
+    footer: css({
+      marginTop: 10,
+      PaddingX: 8,
+      minHeight: 16,
+    }),
+    resolution: css({
+      Absolute: [-10, 8, null, 8],
+      fontSize: 8,
+      color: color.format(-0.3),
+      Flex: 'center-center',
+    }),
+  };
+
+  const MicIcon = isMuted ? Icons.Mic.Off : Icons.Mic.On;
+
+  const elMuteButton = isMuteVisible && (
+    <div {...styles.mute.outer}>
+      <Button onClick={() => setIsMuted((prev) => !prev)}>
+        <div {...styles.mute.inner}>
+          <MicIcon size={18} />
+        </div>
+      </Button>
+    </div>
+  );
+
+  const elPeerLabel = id && <PeerLabel id={id} isSelf={isSelf} />;
+
+  const elResolution = resolution && (
+    <div {...styles.resolution}>
+      {resolution.width} x {resolution.height}
+    </div>
+  );
+
+  return (
+    <div {...css(styles.base, props.style)}>
+      <div {...styles.video.outer}>
+        <video
+          {...styles.video.object}
+          ref={videoRef}
+          autoPlay={autoPlay}
+          muted={isMuted}
+          onPlay={props.onPlay}
+        />
+        {elMuteButton}
+      </div>
+      {elResolution}
+      <div {...styles.footer}>{elPeerLabel}</div>
+    </div>
+  );
+};

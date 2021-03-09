@@ -1,5 +1,5 @@
 import { Compiler } from '../../node/compiler';
-import { fs, HttpClient, log, Model, PATH, t, Uri, Schema } from '../common';
+import { fs, HttpClient, log, Model, PATH, t, Uri, Schema, defaultValue } from '../common';
 import * as util from '../util';
 import { runClean } from './cmd.clean';
 
@@ -64,7 +64,7 @@ export async function upload(argv: t.Argv) {
     return logger.errorAndExit(1, err);
   }
 
-  if (Boolean(argv.clean)) await runClean();
+  if (defaultValue(argv.clean, true)) await runClean();
   const res = await Compiler.cell(host, cell.toString()).upload(config, { targetDir, bundle });
 
   const file = args.filepath.substring(fs.resolve('.').length + 1);

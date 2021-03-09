@@ -25,7 +25,7 @@ export const LayoutFooterResize: React.FC<LayoutFooterResizeProps> = (props) => 
 
     drag$.pipe(filter((e) => isAltKeyPressed)).subscribe((e) => {
       const diff = e.delta.y / 100;
-      const percent = Math.min(1.5, Math.max(0.1, startZoom + diff));
+      const percent = Math.min(3.5, Math.max(0.1, startZoom + diff));
       if (props.onDragResize) props.onDragResize({ percent });
     });
   };

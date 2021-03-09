@@ -2,7 +2,7 @@ import { asArray } from '@platform/util.value';
 import React from 'react';
 import { ActionButtonHandlerArgs, DevActions } from 'sys.ui.dev';
 
-import { css, rx, StateObject, t, WebRuntime } from './common';
+import { css, rx, StateObject, t, WebRuntime, createPeer, PeerJS, QueryString } from './common';
 import { Conversation, ConversationProps } from './Conversation';
 import { stateController } from './Conversation.controller';
 
@@ -23,12 +23,13 @@ export const actions = DevActions<Ctx>()
     if (prev) return prev;
 
     const bus = rx.bus<t.ConversationEvent>();
+    const peer = createPeer({ bus });
     const model = StateObject.create<t.ConversationState>({ peers: {} });
-    stateController({ bus, model });
+    stateController({ bus, peer, model });
 
     const ctx: Ctx = {
       fire: bus.fire,
-      props: { bus, model },
+      props: { peer, bus, model },
     };
 
     return ctx;
@@ -40,6 +41,13 @@ export const actions = DevActions<Ctx>()
     e.boolean('blur', (e) => {
       if (e.changing) e.ctx.props.blur = e.changing.next ? 8 : 0;
       return e.ctx.props.blur !== 0;
+    });
+
+    e.button('reset url (clear peers)', (e) => {
+      // const peer = e.ctx.props.peer;
+      // const querystring = QueryString.generate({ peers: [peer.id] });
+      const querystring = '?';
+      history.pushState(null, 'cleared pears', querystring);
     });
     e.hr();
 
