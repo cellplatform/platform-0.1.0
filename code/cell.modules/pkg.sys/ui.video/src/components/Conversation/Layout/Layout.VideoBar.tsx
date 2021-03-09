@@ -21,21 +21,23 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
 
   const [peerTokens, setPeerTokens] = useState<P[]>([]);
 
-  const MIN = 100;
-  const peerHeight = Math.max(MIN, 120 * zoom);
+  const MIN_HEIGHT = 60;
+  const peerHeight = Math.max(MIN_HEIGHT, 120 * zoom);
   const peerWidth = peerHeight * 1.6;
+  const isLabelVisible = peerWidth > 170;
 
   const styles = {
     base: css({
       Flex: 'horizontal-stretch-spaceBetween',
-      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+      backgroundColor: color.format(0.6),
       backdropFilter: `blur(8px)`,
       borderRadius: 20,
+      boxShadow: `0 0 15px 0 ${color.format(-0.1)}`,
     }),
 
     edge: css({
       position: 'relative',
-      width: 30,
+      width: 15,
       display: 'flex',
     }),
 
@@ -43,9 +45,9 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
       flex: 1,
       Flex: 'horizontal-center-spaceBetween',
       overflow: 'hidden',
+      // padding: 10,
       paddingBottom: 10,
       paddingTop: 15,
-      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
     }),
   };
 
@@ -99,6 +101,7 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
           width={peerWidth}
           height={peerHeight}
           model={model}
+          isLabelVisible={isLabelVisible}
         />
       );
     });
@@ -115,6 +118,7 @@ export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
           width={peerWidth}
           height={peerHeight}
           model={model}
+          isLabelVisible={isLabelVisible}
         />
         {elPeers}
       </div>

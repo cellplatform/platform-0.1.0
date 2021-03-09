@@ -16,4 +16,9 @@ export const QueryString = {
       connectTo,
     };
   },
+
+  generate(args: { peers: string[] }) {
+    const peers = args.peers.map((id) => (id || '').trim());
+    return `?connectTo=${peers.join(',')}`;
+  },
 };

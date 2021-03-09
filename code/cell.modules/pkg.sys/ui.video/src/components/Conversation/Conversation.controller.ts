@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { PeerJS, R, rx, t } from './common';
+import { PeerJS, R, rx, t, QueryString } from './common';
 
 /**
  * Manages state changes.
@@ -33,6 +33,7 @@ export function stateController(args: {
    * Listen for incoming data.
    */
   const listen = (connection: PeerJS.DataConnection) => {
+    console.log('listen', listen);
     connection.on('data', (input) => {
       if (typeof input !== 'object') return;
       if (typeof input.kind !== 'string') return;
@@ -49,27 +50,28 @@ export function stateController(args: {
    * Broadcast a payload to all connected peers.
    */
   const publish = (payload: t.ConversationPublish) => {
+    // updateUrl();
     connections.forEach((conn) => conn.send(payload));
   };
 
   const updateUrl = () => {
     const self = peer.id;
-    const modelPeers = Object.keys(model.state.peers).sort();
-    const urlPeers = R.uniq([peer.id, ...modelPeers.filter((id) => id !== self)]);
-    const querystring = `?connectTo=${urlPeers.join(',')}`;
+    const urlPeers = [self];
+    const querystring = QueryString.generate({ peers: urlPeers });
     if (location.search !== querystring) {
       history.replaceState(null, 'Meeting Peers', querystring);
     }
   };
+
+  const initPeer = (peer: PeerJS) => peer.on('connection', (conn) => listen(conn));
+  initPeer(peer);
 
   /**
    * Init
    */
   rx.payload<t.ConversationCreatedEvent>($, 'Conversation/created')
     .pipe()
-    .subscribe((e) => {
-      e.peer.on('connection', (conn) => listen(conn));
-    });
+    .subscribe((e) => initPeer(e.peer));
 
   /**
    * Peer connected. Setup outgoing connection.
@@ -101,7 +103,6 @@ export function stateController(args: {
       map((e) => e as t.ConversationPublishModel),
     )
     .subscribe((e) => {
-      console.log('e', e);
       const id = peer.id;
       const peers: t.ConversationStatePeers = {
         [id]: { id, userAgent: navigator.userAgent, isSelf: true, resolution: {} },
@@ -119,9 +120,7 @@ export function stateController(args: {
       filter((e) => e.kind === 'file'),
       map((e) => e as t.ConversationPublishFile),
     )
-    .subscribe((e) => {
-      publish(e);
-    });
+    .subscribe((e) => publish(e));
 
   /**
    * Update model with new state.

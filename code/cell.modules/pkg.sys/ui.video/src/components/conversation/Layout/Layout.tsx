@@ -4,7 +4,7 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { useZoomDrag, Zoom } from 'sys.ui.primitives/lib/components/Zoom';
 
 import { color, COLORS, css, CssValue, PeerJS, t, useResizeObserver, value } from '../common';
-import { LayoutFooter } from './Layout.Footer';
+import { LayoutFooter } from './Layout.VideoBar';
 
 export type LayoutProps = {
   bus: t.EventBus<any>;
@@ -53,8 +53,15 @@ export const Layout: React.FC<LayoutProps> = (props) => {
       userSelect: 'none',
       overflow: 'hidden',
     }),
+    videoBar: css({
+      Absolute: [15, 15, null, 15],
+    }),
     body: {
-      outer: css({ flex: 1, display: 'flex', position: 'relative' }),
+      outer: css({
+        Absolute: 0,
+        display: 'flex',
+        position: 'relative',
+      }),
       zoom: { flex: 1 },
     },
   };
@@ -96,10 +103,17 @@ export const Layout: React.FC<LayoutProps> = (props) => {
     </div>
   );
 
+  const elVideoBar = (
+    <div {...styles.videoBar}>
+      <LayoutFooter bus={bus} peer={peer} model={model} zoom={model?.videoZoom} />
+    </div>
+  );
+
   return (
     <div {...css(styles.base, props.style)}>
-      {peer && <LayoutFooter bus={bus} peer={peer} model={model} zoom={model?.videoZoom} />}
       {elBody}
+      {elVideoBar}
+      {/* {peer && <LayoutFooter bus={bus} peer={peer} model={model} zoom={model?.videoZoom} />} */}
     </div>
   );
 };

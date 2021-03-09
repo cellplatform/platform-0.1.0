@@ -29,9 +29,6 @@ export const actions = DevActions<Ctx>()
     e.boolean('isSelf', (e) => {
       if (e.changing) e.ctx.props.isSelf = e.changing.next;
     });
-    e.boolean('isCircle', (e) => {
-      if (e.changing) e.ctx.props.isCircle = e.changing.next;
-    });
 
     e.hr();
   })

@@ -3,12 +3,13 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Spinner } from '../Primitives';
-import { createPeer, css, CssValue, PeerJS, rx, t } from './common';
+import { css, CssValue, PeerJS, t } from './common';
 import { Layout } from './Layout';
 import { PeerImage } from './PeerImage';
 import { Remote } from './Remote';
 
 export type ConversationProps = {
+  peer: PeerJS;
   bus: t.EventBus<any>;
   model: t.ConversationModel;
   blur?: number;
@@ -16,13 +17,13 @@ export type ConversationProps = {
 };
 
 export const Conversation: React.FC<ConversationProps> = (props) => {
-  const { model } = props;
+  const { model, peer } = props;
   const bus = props.bus.type<t.ConversationEvent>();
   const [self, setSelf] = useState<PeerJS>();
   const [state, setState] = useState<t.ConversationState>(model.state);
 
   useEffect(() => {
-    const peer = createPeer({ bus });
+    // const peer = createPeer({ bus });
     peer.on('open', () => {
       setSelf(peer);
       bus.fire({ type: 'Conversation/publish', payload: { kind: 'model', data: {} } }); // NB: Causes [peer] data to be broadcast.

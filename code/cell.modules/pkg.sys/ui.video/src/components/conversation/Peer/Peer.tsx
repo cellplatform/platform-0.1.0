@@ -13,8 +13,7 @@ export type PeerProps = {
   call?: PeerJS.MediaConnection;
   isSelf?: boolean;
   isMuted?: boolean;
-  isCircle?: boolean;
-  isCircleTransition?: number;
+  isLabelVisible?: boolean;
   width?: number;
   height?: number;
   autoPlay?: boolean;
@@ -22,13 +21,13 @@ export type PeerProps = {
 };
 
 export const Peer: React.FC<PeerProps> = (props) => {
-  const { isSelf, peer, isCircle, model } = props;
+  const { isSelf, peer, model } = props;
   const bus = props.bus.type<t.ConversationEvent>();
   const autoPlay = defaultValue(props.autoPlay, true);
+  const isLabelVisible = defaultValue(props.isLabelVisible, true);
 
   const height = props.height || 200;
-  let width = props.width || 300;
-  width = isCircle ? height : width;
+  const width = props.width || 300;
 
   const host = location.hostname;
   const [isMuted, setIsMuted] = useState<boolean>(props.isMuted || host === 'localhost'); // NB: Peers muted while in development (eg "localhost").
@@ -42,8 +41,18 @@ export const Peer: React.FC<PeerProps> = (props) => {
 
   const loadLocalStream = async () => {
     if (!localStreamRef.current) {
-      const constraints: MediaStreamConstraints = { video: true, audio: true };
+      const constraints: MediaStreamConstraints = {
+        video: true,
+        audio: {
+          // https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/echoCancellation
+          // Found via:
+          //  - https://webrtc.github.io/samples/src/content/getusermedia/record/
+          //  - https://github.com/webrtc/samples/tree/gh-pages/src/content/getusermedia/record
+          echoCancellation: { ideal: true },
+        },
+      };
       const localStream = await navigator.mediaDevices.getUserMedia(constraints);
+
       localStreamRef.current = localStream;
     }
     return localStreamRef.current;
@@ -77,13 +86,25 @@ export const Peer: React.FC<PeerProps> = (props) => {
     }
   }, []); // eslint-disable-line
 
+  const [isConnected, setIsConnected] = useState<boolean>(false);
   /**
    * Listen for incoming calls.
    */
   useEffect(() => {
+    // const doIt = !isSelf
+
+    if (isSelf) return;
+    // if (condition)
+
     if (!isSelf) {
       peer.on('call', async (call) => {
         // Connect the video stream.
+
+        // call.peer.id
+        if (isConnected) return;
+
+        setIsConnected(true);
+
         const video = videoRef.current as HTMLVideoElement;
         const localStream = localStreamRef.current;
         if (localStream) {
@@ -107,8 +128,7 @@ export const Peer: React.FC<PeerProps> = (props) => {
       outer: css({
         position: 'relative',
         overflow: 'hidden',
-        borderRadius: isCircle ? '100%' : 16,
-        transition: `border-radius ${defaultValue(props.isCircleTransition, 100)}ms`,
+        borderRadius: 16,
         width,
         height,
         border: `solid 5px ${color.format(-0.1)}`,
@@ -124,7 +144,7 @@ export const Peer: React.FC<PeerProps> = (props) => {
       outer: css({
         pointerEvents: 'none',
         Absolute: 0,
-        Flex: isCircle ? 'end-center' : 'end-end',
+        Flex: 'end-end',
       }),
       inner: css({
         pointerEvents: 'auto',
@@ -184,7 +204,7 @@ export const Peer: React.FC<PeerProps> = (props) => {
         {elMuteButton}
       </div>
       {elResolution}
-      <div {...styles.footer}>{elPeerLabel}</div>
+      {isLabelVisible && <div {...styles.footer}>{elPeerLabel}</div>}
     </div>
   );
 };
