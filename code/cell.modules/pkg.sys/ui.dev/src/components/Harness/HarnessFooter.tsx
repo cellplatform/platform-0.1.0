@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { css, CssValue, t, WebRuntime, COLORS, color } from '../../common';
+import { color, COLORS, css, CssValue, t, WebRuntime } from '../../common';
 import { ActionsSelector } from '../ActionsSelector';
 import { Icons } from '../Icons';
 
@@ -18,7 +18,7 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
   const model = selected?.toObject();
   const env = { ...model?.env.viaSubject, ...model?.env.viaAction };
 
-  const buttonColor = env.layout?.labelColor || -0.5;
+  const labelColor = env.layout?.labelColor || -0.5;
   const buttonOverColor = COLORS.BLUE;
 
   selected?.renderSubject();
@@ -26,13 +26,13 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
   const styles = {
     base: css({
       Flex: 'horizontal-spaceBetween-stretch',
-      fontSize: 12,
-      color: color.format(buttonColor),
+      color: color.format(labelColor),
+      userSelect: 'none',
     }),
     actionsSelector: css({ position: 'relative' }),
     module: {
       base: css({ Flex: 'center-center' }),
-      label: css({ position: 'relative', top: 1, fontSize: 10 }),
+      label: css({ position: 'relative', fontSize: 11, textAlign: 'right' }),
       version: css({ fontSize: 8 }),
     },
   };
@@ -44,14 +44,18 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
       selected={selected}
       menuPlacement={'top'}
       style={styles.actionsSelector}
-      buttonColor={buttonColor}
+      buttonColor={labelColor}
       buttonOverColor={buttonOverColor}
     />
   );
 
   const elModule = (
     <div {...styles.module.base}>
-      <Icons.Package size={22} style={{ marginRight: 4, opacity: 0.7 }} />
+      <Icons.Package
+        size={22}
+        style={{ marginRight: 4, opacity: 0.7 }}
+        color={color.format(labelColor)}
+      />
       <div {...styles.module.label}>
         <div>{WebRuntime.module.name}</div>
         <div {...styles.module.version}>{WebRuntime.module.version}</div>

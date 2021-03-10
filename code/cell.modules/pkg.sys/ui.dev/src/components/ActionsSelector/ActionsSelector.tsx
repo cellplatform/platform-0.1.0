@@ -54,15 +54,16 @@ export const ActionsSelector: React.FC<ActionsSelectorProps> = (props) => {
   };
 
   const label = value?.label;
+  const labelColor = color.format(props.buttonColor || -0.5);
   const elButton = label && (
     <Button
       style={styles.button.base}
-      theme={{ color: { enabled: color.format(props.buttonColor) || -0.5 } }}
+      theme={{ color: { enabled: color.format(labelColor) || -0.5 } }}
       overTheme={{ color: { enabled: color.format(props.buttonOverColor) || COLORS.BLUE } }}
       onClick={() => setShowSelector(true)}
     >
       <div {...styles.button.body}>
-        <Icons.Tree size={20} style={{ marginRight: 4 }} />
+        <Icons.Tree size={20} style={{ marginRight: 4 }} color={labelColor} />
         <div {...styles.button.label}>{label}</div>
       </div>
     </Button>
