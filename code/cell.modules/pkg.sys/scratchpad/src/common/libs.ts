@@ -10,5 +10,5 @@ export { queryString } from '@platform/util.string/lib/queryString';
 import PeerJS from 'peerjs';
 export { PeerJS };
 
-import { equals, mergeDeepRight, uniq } from 'ramda';
-export const R = { equals, mergeDeepRight, uniq };
+import { equals, mergeDeepRight, uniq, clamp } from 'ramda';
+export const R = { equals, mergeDeepRight, uniq, clamp };

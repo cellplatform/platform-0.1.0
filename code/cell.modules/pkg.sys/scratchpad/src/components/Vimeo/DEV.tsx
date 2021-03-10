@@ -8,13 +8,7 @@ export const VIDEOS = [
   { label: 'stock/running', value: 287903693 }, // https://vimeo.com/stock/clip-287903693-silhouette-woman-running-on-beach-waves-splashing-female-athlete-runner-exercising-sprinting-intense-workout-on-rough-ocean-seas
 ];
 
-type Ctx = {
-  props: VimeoProps;
-};
-
-const initial: Ctx = {
-  props: { video: VIDEOS[1].value, controls: false },
-};
+type Ctx = { props: VimeoProps };
 
 /**
  * Actions
@@ -22,10 +16,35 @@ const initial: Ctx = {
  */
 export const actions = DevActions<Ctx>()
   .namespace('player.Vimeo')
-  .context((prev) => prev || initial)
+  .context((prev) => {
+    if (prev) return prev;
+
+    return {
+      props: {
+        video: VIDEOS[1].value,
+        controls: false,
+        isPlaying: false,
+        isLooping: false,
+      },
+    };
+  })
 
   .items((e) => {
     e.title('load options');
+
+    e.boolean('controls', (e) => {
+      if (e.changing) e.ctx.props.controls = e.changing.next;
+      e.boolean.current = e.ctx.props.controls;
+    });
+
+    e.button('width: 600', (e) => (e.ctx.props.width = 600));
+    e.button('width: 800', (e) => (e.ctx.props.width = 800));
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('instance');
 
     e.select((config) => {
       config
@@ -33,18 +52,32 @@ export const actions = DevActions<Ctx>()
         .items(VIDEOS)
         .initial(VIDEOS[1])
         .pipe((e) => {
-          const { ctx, select } = e;
-          const current = select.current[0]; // NB: always first.
-          select.label = current ? `video: ${current.label}` : `video`;
-          select.isPlaceholder = !Boolean(current);
-          ctx.props.video = current ? current.value : undefined;
+          const current = e.select.current[0]; // NB: always first.
+          e.select.label = current ? `video: ${current.label}` : `video`;
+          e.select.isPlaceholder = !Boolean(current);
+          e.ctx.props.video = current ? current.value : undefined;
         });
     });
 
-    e.boolean('controls', (e) => {
-      if (e.changing) e.ctx.props.controls = e.changing.next;
-      e.boolean.current = e.ctx.props.controls;
+    e.boolean('isPlaying', (e) => {
+      if (e.changing) e.ctx.props.isPlaying = e.changing.next;
+      e.boolean.current = e.ctx.props.isPlaying;
     });
+
+    e.boolean('isLooping', (e) => {
+      if (e.changing) e.ctx.props.isLooping = e.changing.next;
+      e.boolean.current = e.ctx.props.isLooping;
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('skipTo');
+    e.button('0 (start)', (e) => (e.ctx.props.skipTo = -10));
+    e.button('15', (e) => (e.ctx.props.skipTo = 15));
+    e.button('21', (e) => (e.ctx.props.skipTo = 21));
+    e.button('9999', (e) => (e.ctx.props.skipTo = 9999));
 
     e.hr();
   })
@@ -62,7 +95,14 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04, color: -1 },
     });
 
-    e.render(<Vimeo {...e.ctx.props} />);
+    e.render(
+      <Vimeo
+        {...e.ctx.props}
+        onUpdate={(e) => {
+          console.log('onUpdate', e);
+        }}
+      />,
+    );
   });
 
 export default actions;
