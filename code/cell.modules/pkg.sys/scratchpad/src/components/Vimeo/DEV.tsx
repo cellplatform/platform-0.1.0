@@ -1,14 +1,19 @@
 import React from 'react';
-import { DevActions } from 'sys.ui.dev';
+import { DevActions, ActionHandlerArgs } from 'sys.ui.dev';
 
 import { Vimeo, VimeoProps } from './Vimeo';
+import { rx, t } from '../../common';
+import * as types from './types';
 
 export const VIDEOS = [
   { label: 'app/tubes', value: 499921561 },
   { label: 'stock/running', value: 287903693 }, // https://vimeo.com/stock/clip-287903693-silhouette-woman-running-on-beach-waves-splashing-female-athlete-runner-exercising-sprinting-intense-workout-on-rough-ocean-seas
 ];
 
-type Ctx = { props: VimeoProps };
+type Ctx = { bus: t.EventBus<types.VimeoEvent>; props: VimeoProps };
+type A = ActionHandlerArgs<Ctx>;
+
+const id = 'sample';
 
 /**
  * Actions
@@ -19,22 +24,36 @@ export const actions = DevActions<Ctx>()
   .context((prev) => {
     if (prev) return prev;
 
+    const bus = rx.bus<types.VimeoEvent>();
+
+    bus.event$.subscribe((e) => {
+      console.log(e.type, e.payload);
+    });
+
     return {
+      bus,
       props: {
+        bus,
+        id,
         video: VIDEOS[1].value,
         controls: false,
-        isPlaying: false,
-        isLooping: false,
+        autoPlay: false,
+        loop: false,
       },
     };
   })
 
   .items((e) => {
-    e.title('load options');
+    e.title('options (reload)');
 
     e.boolean('controls', (e) => {
       if (e.changing) e.ctx.props.controls = e.changing.next;
       e.boolean.current = e.ctx.props.controls;
+    });
+
+    e.boolean('autoPlay', (e) => {
+      if (e.changing) e.ctx.props.autoPlay = e.changing.next;
+      e.boolean.current = e.ctx.props.autoPlay;
     });
 
     e.button('width: 600', (e) => (e.ctx.props.width = 600));
@@ -44,7 +63,12 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('instance');
+    e.title('props');
+
+    e.boolean('loop', (e) => {
+      if (e.changing) e.ctx.props.loop = e.changing.next;
+      e.boolean.current = e.ctx.props.loop;
+    });
 
     e.select((config) => {
       config
@@ -59,25 +83,26 @@ export const actions = DevActions<Ctx>()
         });
     });
 
-    e.boolean('isPlaying', (e) => {
-      if (e.changing) e.ctx.props.isPlaying = e.changing.next;
-      e.boolean.current = e.ctx.props.isPlaying;
-    });
-
-    e.boolean('isLooping', (e) => {
-      if (e.changing) e.ctx.props.isLooping = e.changing.next;
-      e.boolean.current = e.ctx.props.isLooping;
-    });
-
     e.hr();
   })
 
   .items((e) => {
-    e.title('skipTo');
-    e.button('0 (start)', (e) => (e.ctx.props.skipTo = -10));
-    e.button('15', (e) => (e.ctx.props.skipTo = 15));
-    e.button('21', (e) => (e.ctx.props.skipTo = 21));
-    e.button('9999', (e) => (e.ctx.props.skipTo = 9999));
+    e.title('start/stop');
+    e.button('play', (e) => e.ctx.bus.fire({ type: 'Vimeo/play', payload: { id } }));
+    e.button('pause', (e) => e.ctx.bus.fire({ type: 'Vimeo/pause', payload: { id } }));
+
+    e.hr(1, 0.1);
+  })
+
+  .items((e) => {
+    const fire = (e: A, seconds: number) => {
+      e.ctx.bus.fire({ type: 'Vimeo/seek', payload: { id, seconds } });
+    };
+    e.title('seek');
+    e.button('0 (start)', (e) => fire(e, -10));
+    e.button('15', (e) => fire(e, 15));
+    e.button('21', (e) => fire(e, 21));
+    e.button('9999', (e) => fire(e, 9999));
 
     e.hr();
   })
@@ -87,22 +112,11 @@ export const actions = DevActions<Ctx>()
    */
   .subject((e) => {
     e.settings({
-      layout: {
-        border: -0.1,
-        cropmarks: -0.2,
-        label: '<Vimeo>',
-      },
+      layout: { border: -0.1, cropmarks: -0.2, label: '<Vimeo>' },
       host: { background: -0.04, color: -1 },
     });
 
-    e.render(
-      <Vimeo
-        {...e.ctx.props}
-        onUpdate={(e) => {
-          console.log('onUpdate', e);
-        }}
-      />,
-    );
+    e.render(<Vimeo {...e.ctx.props} />);
   });
 
 export default actions;
