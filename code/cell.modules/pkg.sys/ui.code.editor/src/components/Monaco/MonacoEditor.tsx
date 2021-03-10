@@ -1,8 +1,7 @@
-import MonacoEditorCore, { OnMount } from '@monaco-editor/react';
+import MonacoEditorCore, { OnMount, BeforeMount } from '@monaco-editor/react';
 import React, { useRef } from 'react';
 
 import { CodeEditor } from '../../api';
-
 import { css, CssValue, DEFAULT, t } from '../../common';
 
 type E = t.IMonacoStandaloneCodeEditor;
@@ -31,12 +30,16 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = (props) => {
   const editorRef = useRef<E>();
   const { language = DEFAULT.LANGUAGE.TS, theme } = props;
 
-  const onMount: OnMount = async (getValue, ed) => {
-    const monaco = await CodeEditor.singleton(props.bus);
-    const editor = ed as any;
-    editorRef.current = editor;
+  const beforeMount: BeforeMount = (monaco) => {
+    monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
+  };
+
+  const afterMount: OnMount = async (editor, monaco) => {
+    const singleton = await CodeEditor.singleton(props.bus);
+    const instance = editor as any;
+
     if (props.onReady) {
-      props.onReady({ instance: editor, singleton: monaco });
+      props.onReady({ instance, singleton });
     }
   };
 
@@ -49,7 +52,8 @@ export const MonacoEditor: React.FC<MonacoEditorProps> = (props) => {
       <MonacoEditorCore
         language={language}
         theme={theme}
-        onMount={onMount}
+        beforeMount={beforeMount}
+        onMount={afterMount}
         loading={props.loading}
         options={{
           minimap: { enabled: true },

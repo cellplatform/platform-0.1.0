@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { DevActions } from 'sys.ui.dev';
 import { Sample, SampleProps } from '.';
 

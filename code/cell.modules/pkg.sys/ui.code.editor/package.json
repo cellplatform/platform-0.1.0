@@ -19,9 +19,9 @@
     "tmp": "ts-node -T src/node/tmp"
   },
   "dependencies": {
-    "@monaco-editor/react": "^4.0.10",
+    "@monaco-editor/react": "^4.0.11",
     "@platform/state": "^0.7.28",
-    "monaco-editor": "^0.22.3"
+    "monaco-editor": "^0.23.0"
   },
   "devDependencies": {
     "@platform/cell.compiler": "^0.3.1",

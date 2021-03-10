@@ -195,7 +195,6 @@ const total = a.reduce((acc, next) =>acc + next, 0)
 
     const renderEditor = (id: string, filename: string, props: CodeEditorProps = {}) => {
       props = { ...e.ctx.props, ...props };
-      console.log('props', props);
       return <CodeEditorView {...props} id={id} filename={filename} bus={bus} onReady={onReady} />;
     };
 

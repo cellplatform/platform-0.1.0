@@ -11,6 +11,7 @@ export default () =>
 
         .entry('main', './src/entry/main')
         // .declarations('./src/**/*')
+
         .static('static')
         .files((e) =>
           e

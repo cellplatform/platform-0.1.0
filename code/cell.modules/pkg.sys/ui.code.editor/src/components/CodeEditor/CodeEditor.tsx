@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { CssValue, t, rx, time, DEFAULT, css } from '../../common';
+import { CssValue, t, rx, DEFAULT, css } from '../../common';
 import { Loading } from '../Loading';
-import { Monaco, MonacoEditor, MonacoEditorReadyEvent } from '../Monaco';
+import { MonacoEditor, MonacoEditorReadyEvent } from '../Monaco';
 import { CodeEditorInstance } from '../../api';
 
 export type CodeEditorProps = {
@@ -17,7 +17,6 @@ export type CodeEditorProps = {
 };
 
 export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
-  // const { theme } = props;
   const editorRef = useRef<t.CodeEditorInstance>();
   const bus = rx.bus<t.CodeEditorEvent>(props.bus);
 
@@ -47,6 +46,10 @@ export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
     // Clean up.
     () => editorRef.current?.dispose();
   });
+
+  useEffect(() => {
+    setTheme(props.theme);
+  }, [props.theme]);
 
   const elLoading = !isReady && <Loading theme={props.theme || DEFAULT.THEME} />;
 
