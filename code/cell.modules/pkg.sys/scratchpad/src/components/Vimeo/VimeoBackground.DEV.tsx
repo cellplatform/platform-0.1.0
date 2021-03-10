@@ -99,8 +99,8 @@ export const actions = DevActions<Ctx>()
     };
     e.title('seek');
     e.button('0 (start)', (e) => fire(e, -10));
-    e.button('15', (e) => fire(e, 15));
-    e.button('20', (e) => fire(e, 20));
+    e.button('5', (e) => fire(e, 5));
+    e.button('10', (e) => fire(e, 10));
     e.button('9999', (e) => fire(e, 9999));
 
     e.hr();
