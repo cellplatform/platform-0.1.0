@@ -48,7 +48,7 @@ export const Vimeo: React.FC<VimeoProps> = (props) => {
     return () => {
       player?.destroy();
     };
-  }, [controls, width, height, autoPlay]); // eslint-disable-line
+  }, [controls, width, height]); // eslint-disable-line
 
   usePlayerController({ id: idRef.current, video, player, bus, autoPlay });
 

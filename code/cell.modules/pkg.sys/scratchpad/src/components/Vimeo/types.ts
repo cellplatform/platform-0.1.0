@@ -17,6 +17,7 @@ export type VimeoStatus = {
   seconds: number;
   percent: number;
   duration: number;
+  seek?: number; // Was seek jumped to the second.
 };
 
 /**

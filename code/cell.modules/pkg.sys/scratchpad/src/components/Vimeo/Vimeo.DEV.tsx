@@ -26,7 +26,7 @@ export const actions = DevActions<Ctx>()
 
     const bus = rx.bus<types.VimeoEvent>();
 
-    bus.event$.subscribe((e) => {
+    bus.event$.pipe().subscribe((e) => {
       console.log(e.type, e.payload);
     });
 
@@ -37,7 +37,7 @@ export const actions = DevActions<Ctx>()
         bus,
         video: VIDEOS[1].value,
         controls: false,
-        autoPlay: false,
+        autoPlay: true,
         loop: false,
       },
     };
@@ -51,11 +51,6 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.props.controls;
     });
 
-    e.boolean('autoPlay', (e) => {
-      if (e.changing) e.ctx.props.autoPlay = e.changing.next;
-      e.boolean.current = e.ctx.props.autoPlay;
-    });
-
     e.button('width: 600', (e) => (e.ctx.props.width = 600));
     e.button('width: 800', (e) => (e.ctx.props.width = 800));
 
@@ -64,6 +59,11 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('props');
+
+    e.boolean('autoPlay', (e) => {
+      if (e.changing) e.ctx.props.autoPlay = e.changing.next;
+      e.boolean.current = e.ctx.props.autoPlay;
+    });
 
     e.boolean('loop', (e) => {
       if (e.changing) e.ctx.props.loop = e.changing.next;
@@ -87,9 +87,9 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('start/stop');
-    e.button('play', (e) => e.ctx.bus.fire({ type: 'Vimeo/play', payload: { id } }));
-    e.button('pause', (e) => e.ctx.bus.fire({ type: 'Vimeo/pause', payload: { id } }));
+    e.title('video');
+    e.button('play (start)', (e) => e.ctx.bus.fire({ type: 'Vimeo/play', payload: { id } }));
+    e.button('pause (stop)', (e) => e.ctx.bus.fire({ type: 'Vimeo/pause', payload: { id } }));
     e.hr(1, 0.1);
   })
 
@@ -100,7 +100,7 @@ export const actions = DevActions<Ctx>()
     e.title('seek');
     e.button('0 (start)', (e) => fire(e, -10));
     e.button('15', (e) => fire(e, 15));
-    e.button('21', (e) => fire(e, 21));
+    e.button('20', (e) => fire(e, 20));
     e.button('9999', (e) => fire(e, 9999));
     e.hr();
   })

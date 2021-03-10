@@ -7,8 +7,7 @@ import VimeoBackground from './components/Vimeo/VimeoBackground.DEV';
 // import Peer from './components/Conversation/Peer/Peer.DEV';
 
 export const ACTIONS = [
-  // Conversation,
-  // Peer,
+  // Conversation, Peer,
   Vimeo,
   VimeoBackground,
 ];

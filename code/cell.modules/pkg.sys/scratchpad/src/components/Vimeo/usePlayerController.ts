@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { R, rx, t } from '../../common';
+import { R, rx, t, deleteUndefined } from '../../common';
 import * as types from './types';
 
 type D = { duration: number; percent: number; seconds: number };
@@ -19,35 +19,47 @@ export function usePlayerController(args: {
   bus?: t.EventBus<any>;
   autoPlay?: boolean;
 }) {
-  const lastKind = useRef<K>();
+  const seekRef = useRef<number | undefined>();
   const { id, player, video, autoPlay } = args;
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
+    const bus = (args.bus || rx.bus()).type<types.VimeoEvent>();
+
+    const fireStatus = (kind: K, data: D) => {
+      bus?.fire({
+        type: 'Vimeo/status',
+        payload: deleteUndefined({ id, video, kind, ...data, seek: seekRef.current }),
+      });
+    };
+
+    const onPlay = (data: D) => {
+      fireStatus('start', data);
+    };
+    const onUpdate = (data: D) => {
+      fireStatus('playing', data);
+      seekRef.current = undefined;
+    };
+    const onPause = (data: D) => {
+      fireStatus('pause', data);
+    };
+    const onEnd = (data: D) => {
+      fireStatus('end', data);
+    };
 
     if (args.bus && id && player) {
-      const bus = (args.bus || rx.bus()).type<types.VimeoEvent>();
       const $ = bus.event$.pipe(
         takeUntil(dispose$),
         filter((e) => e.payload.id === id),
       );
 
-      const fireStatus = (kind: K, data: D) => {
-        bus.fire({
-          type: 'Vimeo/status',
-          payload: { id, video, kind, ...data },
-        });
-      };
-
-      player.on('timeupdate', (data: D) => {
-        const kind: K = lastKind.current === 'playing' ? 'playing' : 'start';
-        lastKind.current = 'playing';
-        fireStatus(kind, data);
-      });
-      player.on('pause', (data: D) => fireStatus('pause', data));
-      player.on('ended', (data: D) => fireStatus('end', data));
+      player.on('play', onPlay);
+      player.on('timeupdate', onUpdate);
+      player.on('pause', onPause);
+      player.on('ended', onEnd);
 
       rx.payload<types.VimeoSeekEvent>($, 'Vimeo/seek').subscribe((e) => {
+        seekRef.current = e.seconds;
         setCurrentTime(player, e.seconds, autoPlay);
       });
 
@@ -58,9 +70,13 @@ export function usePlayerController(args: {
     }
 
     return () => {
+      player?.off('play', onPlay);
+      player?.off('timeupdate', onUpdate);
+      player?.off('pause', onPause);
+      player?.off('ended', onEnd);
       dispose$.next();
     };
-  }, [args.bus, id, player]); // eslint-disable-line
+  }, [args.bus, id, player, autoPlay]); // eslint-disable-line
 }
 
 /**
