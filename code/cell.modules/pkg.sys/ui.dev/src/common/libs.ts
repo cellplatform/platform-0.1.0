@@ -17,3 +17,5 @@ export { HttpClient, Uri } from '@platform/cell.client';
 import { Builder } from '@platform/cell.module';
 export { Builder };
 export const format = Builder.format;
+
+export { WebRuntime } from '@platform/cell.runtime.web';

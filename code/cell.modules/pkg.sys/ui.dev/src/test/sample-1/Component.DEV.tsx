@@ -1,7 +1,12 @@
 import React from 'react';
 import { DevActions, toObject } from '../..';
-import { css, COLORS, color, time } from '../../common';
+import { css, COLORS, color, time, WebRuntime } from '../../common';
 import { Component } from './Component';
+
+console.group('🌳 WebRuntime');
+console.log('bundle', WebRuntime.bundle);
+console.log('module', WebRuntime.module);
+console.groupEnd();
 
 type SampleLayout =
   | 'single'

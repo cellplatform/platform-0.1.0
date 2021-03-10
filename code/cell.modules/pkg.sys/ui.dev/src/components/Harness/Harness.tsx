@@ -55,7 +55,7 @@ export const Harness: React.FC<HarnessProps> = (props) => {
       display: 'flex',
     }),
     actionsSelector: css({
-      Absolute: [null, null, 20, 20],
+      Absolute: [null, null, 10, 10],
       width: 300,
     }),
   };
