@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { css, CssValue, t, defaultValue, rx } from '../../common';
 
-import { Host } from '../Host';
-import { ActionsSelector, useActionsSelectorState } from '../ActionsSelector';
-import { ErrorBoundary } from '../ErrorBoundary';
-import { Store } from '../../store';
-import { HarnessActions } from './HarnessActions';
+import { css, CssValue, defaultValue, rx, t } from '../../common';
 import { useActionsRedraw } from '../../components.hooks';
+import { Store } from '../../store';
+import { useActionsSelectorState } from '../ActionsSelector';
+import { ErrorBoundary } from '../ErrorBoundary';
+import { Host } from '../Host';
+import { HarnessActions } from './HarnessActions';
 import { HarnessEmpty } from './HarnessEmpty';
+import { HarnessFooter } from './HarnessFooter';
 
 export type HarnessProps = {
-  bus?: t.EventBus;
+  bus?: t.EventBus<any>;
   actions?: t.Actions | t.Actions[];
   store?: t.ActionsSelectStore | boolean;
   namespace?: string;
@@ -54,20 +55,11 @@ export const Harness: React.FC<HarnessProps> = (props) => {
       boxSizing: 'border-box',
       display: 'flex',
     }),
-    actionsSelector: css({
-      Absolute: [null, null, 10, 10],
-      width: 300,
-    }),
+    footer: css({ Absolute: [null, 10, 6, 10] }),
   };
 
-  const elActionsSelector = actions.list.length > 1 && (
-    <ActionsSelector
-      bus={bus}
-      selected={selected}
-      actions={actions.list}
-      menuPlacement={'top'}
-      style={styles.actionsSelector}
-    />
+  const elFooter = (
+    <HarnessFooter bus={bus} actions={actions.list} selected={selected} style={styles.footer} />
   );
 
   const elActions = selected && <HarnessActions bus={bus} actions={selected} edge={actionsEdge} />;
@@ -79,7 +71,7 @@ export const Harness: React.FC<HarnessProps> = (props) => {
       <ErrorBoundary>
         <Host bus={bus} actions={selected} style={styles.host} />
       </ErrorBoundary>
-      {elActionsSelector}
+      {elFooter}
     </div>
   );
 

@@ -13,6 +13,8 @@ export type ActionsSelectorProps = {
   selected?: t.Actions;
   actions?: t.Actions[];
   menuPlacement?: MenuPlacement;
+  buttonColor?: string | number;
+  buttonOverColor?: string | number;
   bus?: t.EventBus;
   style?: CssValue;
   onChange?: ActionsSelectOnChangeEventHandler;
@@ -34,48 +36,57 @@ export const ActionsSelector: React.FC<ActionsSelectorProps> = (props) => {
   const index = options.findIndex((opt) => opt.value.toObject().namespace === selectedNs);
   const value = index < 0 ? undefined : options[index];
 
-  const model = props.selected?.toObject();
-  const env = { ...model?.env.viaSubject, ...model?.env.viaAction };
-
   const styles = {
-    base: css({ color: COLORS.DARK }),
+    base: css({
+      position: 'relative',
+      color: COLORS.DARK,
+    }),
     button: {
       base: css({ fontSize: 12 }),
       body: css({ Flex: 'horizontal-center-center' }),
-      icon: css({ marginRight: 4 }),
+      label: css({ position: 'relative', top: 1 }),
     },
+    selector: css({
+      fontSize: 14,
+      Absolute: [null, null, 0, 0],
+      minWidth: 250,
+    }),
   };
 
   const label = value?.label;
-  const labelColor = color.format(env.layout?.labelColor) || -0.5;
-  const elButton = !showSelector && label && (
+  const elButton = label && (
     <Button
       style={styles.button.base}
-      theme={{ color: { enabled: labelColor } }}
-      overTheme={{ color: { enabled: COLORS.BLUE } }}
+      theme={{ color: { enabled: color.format(props.buttonColor) || -0.5 } }}
+      overTheme={{ color: { enabled: color.format(props.buttonOverColor) || COLORS.BLUE } }}
       onClick={() => setShowSelector(true)}
     >
       <div {...styles.button.body}>
-        <Icons.Tree size={20} style={styles.button.icon} />
-        {label}
+        <Icons.Tree size={20} style={{ marginRight: 4 }} />
+        <div {...styles.button.label}>{label}</div>
       </div>
     </Button>
   );
 
   const elSelector = showSelector && (
-    <Select
-      options={options}
-      value={value}
-      defaultValue={options[0]}
-      menuPlacement={props.menuPlacement}
-      menuIsOpen={true}
-      autoFocus={true}
-      onChange={(e) => {
-        const item = e as t.ActionSelectItem;
-        busController.onChange({ selected: item.value, actions });
-        setShowSelector(false);
-      }}
-    />
+    <div {...styles.selector}>
+      <Select
+        options={options}
+        value={value}
+        defaultValue={options[0]}
+        menuPlacement={props.menuPlacement}
+        menuIsOpen={true}
+        autoFocus={true}
+        onChange={(e) => {
+          const item = e as t.ActionSelectItem;
+          busController.onChange({
+            actions,
+            selected: item.value,
+          });
+          setShowSelector(false);
+        }}
+      />
+    </div>
   );
 
   return (
