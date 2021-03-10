@@ -22,7 +22,7 @@ export type VimeoProps = {
  */
 export const Vimeo: React.FC<VimeoProps> = (props) => {
   const { video, width, height, bus, autoPlay } = props;
-  const controls = defaultValue(props.controls, true);
+  const controls = defaultValue(props.controls, false);
   const divRef = useRef<HTMLDivElement>(null);
 
   const idRef = useRef<string>(props.id || cuid());

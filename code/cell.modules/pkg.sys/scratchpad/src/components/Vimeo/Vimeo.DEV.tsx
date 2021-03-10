@@ -37,7 +37,7 @@ export const actions = DevActions<Ctx>()
         bus,
         video: VIDEOS[1].value,
         controls: false,
-        autoPlay: true,
+        autoPlay: false,
         loop: false,
       },
     };
