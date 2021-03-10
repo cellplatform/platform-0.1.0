@@ -33,8 +33,8 @@ export const actions = DevActions<Ctx>()
     return {
       bus,
       props: {
-        bus,
         id,
+        bus,
         video: VIDEOS[1].value,
         controls: false,
         autoPlay: false,
@@ -90,7 +90,6 @@ export const actions = DevActions<Ctx>()
     e.title('start/stop');
     e.button('play', (e) => e.ctx.bus.fire({ type: 'Vimeo/play', payload: { id } }));
     e.button('pause', (e) => e.ctx.bus.fire({ type: 'Vimeo/pause', payload: { id } }));
-
     e.hr(1, 0.1);
   })
 
@@ -103,7 +102,6 @@ export const actions = DevActions<Ctx>()
     e.button('15', (e) => fire(e, 15));
     e.button('21', (e) => fire(e, 21));
     e.button('9999', (e) => fire(e, 9999));
-
     e.hr();
   })
 

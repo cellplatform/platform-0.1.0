@@ -1,18 +1,15 @@
 import React from 'react';
-import { DevActions } from 'sys.ui.dev';
+import { DevActions, ActionHandlerArgs } from 'sys.ui.dev';
 
-import { COLORS } from '../../common';
-import { VIDEOS } from '../Vimeo/DEV';
+import { COLORS, rx, t } from '../../common';
+import { VIDEOS } from './Vimeo.DEV';
 import { VimeoBackground, VimeoBackgroundProps } from './VimeoBackground';
+import * as types from '../Vimeo/types';
 
-type Ctx = {
-  props: VimeoBackgroundProps;
-};
+type Ctx = { bus: t.EventBus<types.VimeoEvent>; props: VimeoBackgroundProps };
+type A = ActionHandlerArgs<Ctx>;
 
-const INITIAL_VIDEO = VIDEOS[0];
-const initial: Ctx = {
-  props: { video: INITIAL_VIDEO.value, blur: 0, opacity: 1, opacityTransition: 300 },
-};
+const id = 'sample';
 
 /**
  * Actions
@@ -20,21 +17,36 @@ const initial: Ctx = {
  */
 export const actions = DevActions<Ctx>()
   .namespace('player.VimeoBackground')
-  .context((prev) => prev || initial)
+  .context((prev) => {
+    if (prev) return prev;
+
+    const bus = rx.bus<types.VimeoEvent>();
+
+    bus.event$.subscribe((e) => {
+      console.log(e.type, e.payload);
+    });
+
+    return {
+      bus,
+      props: {
+        id,
+        bus,
+        video: VIDEOS[0].value,
+        blur: 0,
+        opacity: 1,
+        opacityTransition: 300,
+      },
+    };
+  })
 
   .items((e) => {
-    //
-
-    /**
-     * Options
-     */
     e.title('display presets');
 
     e.select((config) => {
       config
         .label(`videos`)
         .items(VIDEOS)
-        .initial(INITIAL_VIDEO)
+        .initial(VIDEOS[0])
         .pipe((e) => {
           const { ctx, select } = e;
           const current = select.current[0]; // NB: always first.
@@ -70,6 +82,26 @@ export const actions = DevActions<Ctx>()
           ctx.props.opacityTransition = current ? current.value : undefined;
         });
     });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('start/stop');
+    e.button('play', (e) => e.ctx.bus.fire({ type: 'Vimeo/play', payload: { id } }));
+    e.button('pause', (e) => e.ctx.bus.fire({ type: 'Vimeo/pause', payload: { id } }));
+    e.hr(1, 0.1);
+  })
+
+  .items((e) => {
+    const fire = (e: A, seconds: number) => {
+      e.ctx.bus.fire({ type: 'Vimeo/seek', payload: { id, seconds } });
+    };
+    e.title('seek');
+    e.button('0 (start)', (e) => fire(e, -10));
+    e.button('15', (e) => fire(e, 15));
+    e.button('21', (e) => fire(e, 21));
+    e.button('9999', (e) => fire(e, 9999));
 
     e.hr();
   })

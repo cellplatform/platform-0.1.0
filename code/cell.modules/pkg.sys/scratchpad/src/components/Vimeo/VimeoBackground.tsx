@@ -1,29 +1,38 @@
-import React, { useRef, useEffect } from 'react';
-import { css, CssValue, defaultValue } from '../../common';
-import Player from '@vimeo/player';
+import VimeoPlayer from '@vimeo/player';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { css, cuid, defaultValue, t } from '../../common';
+import { usePlayerController } from './usePlayerController';
 
 export type VimeoBackgroundProps = {
-  video: string | number;
+  bus?: t.EventBus<any>;
+  id?: string;
+  video: number;
+  autoPlay?: boolean;
   opacity?: number;
   blur?: number;
   opacityTransition?: number; // msecs
 };
 
 export const VimeoBackground: React.FC<VimeoBackgroundProps> = (props) => {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const { video, bus, autoPlay } = props;
   const blur = defaultValue(props.blur, 0);
   const opacityTransition = defaultValue(props.opacityTransition, 300);
 
+  const idRef = useRef<string>(props.id || cuid());
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [player, setPlayer] = useState<VimeoPlayer>();
+
   useEffect(() => {
-    // console.log('isPlaying', props.isPlaying);
-    console.log('iframe.current', iframeRef.current);
-    const iframe = iframeRef.current as HTMLIFrameElement;
-    const player = new Player(iframe);
+    const player = new VimeoPlayer(iframeRef.current as HTMLIFrameElement);
+    setPlayer(player);
 
     return () => {
       player.destroy();
     };
   }, []); // eslint-disable-line
+
+  usePlayerController({ id: idRef.current, video, player, bus, autoPlay });
 
   const styles = {
     base: css({
@@ -60,7 +69,7 @@ export const VimeoBackground: React.FC<VimeoBackgroundProps> = (props) => {
     <div {...styles.base}>
       <iframe
         ref={iframeRef}
-        src={`https://player.vimeo.com/video/${props.video}?background=1`}
+        src={`https://player.vimeo.com/video/${props.video}?background=1&dnt=true`}
         frameBorder={'0'}
         allow={'autoplay'}
         allowFullScreen={false}
