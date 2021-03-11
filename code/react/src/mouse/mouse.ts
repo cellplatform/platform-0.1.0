@@ -24,8 +24,22 @@ type MouseEventInternal = t.MouseEvent & {
   _react: IMouseEvent; // NB: Used internally, should not be called externally as may cause pooling errors.
 };
 
+type FromPropsOptions = {
+  force?: t.MouseEventType[] | boolean; // Ensures a handler for the event-type is created, even if one is not passed as a prop.
+  getEnabled?: () => boolean;
+};
+
 const EVENT_TYPES: t.MouseEventType[] = ['CLICK', 'DOUBLE_CLICK', 'UP', 'DOWN', 'ENTER', 'LEAVE'];
 const dummy = () => null;
+
+/**
+ * State hook for generating handlers for a set of props.
+ */
+export function useState<T>(props: T, options?: FromPropsOptions) {
+  const [events, setEvents] = React.useState<t.IMouseHandlers>();
+  React.useEffect(() => setEvents(fromProps(props, options)), []); // eslint-disable-line
+  return events?.events;
+}
 
 /**
  * Retrieves the set of mouse-handlers from a components properties.
@@ -48,15 +62,10 @@ const dummy = () => null;
  *    }
  *
  */
-export const fromProps = (
-  props: t.IMouseEventProps,
-  args: {
-    force?: t.MouseEventType[] | boolean; // Ensures a handler for the event-type is created, even if one is not passed as a prop.
-    getEnabled?: () => boolean;
-  } = {},
-) => {
-  const { getEnabled } = args;
-  const force = args.force === true ? EVENT_TYPES : Array.isArray(args.force) ? args.force : [];
+export const fromProps = (props: t.IMouseEventProps, options: FromPropsOptions = {}) => {
+  const { getEnabled } = options;
+  const force =
+    options.force === true ? EVENT_TYPES : Array.isArray(options.force) ? options.force : [];
 
   const prep = (type: t.MouseEventType, handler?: React.MouseEventHandler) => {
     return handler ? handler : force.includes(type) ? dummy : undefined;

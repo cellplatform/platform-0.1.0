@@ -17,7 +17,7 @@ export default () =>
           .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
 
           .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
-          .expose('./Dev', './src/components/Dev.Harness'),
+          .expose('./Dev', './src/Dev.Harness'),
 
       // .expose('./DotTabstrip', './src/components/DotTabstrip/DotTabstrip')
       // .expose('./Button', './src/components.ref/button/Button')

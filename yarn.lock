@@ -2681,14 +2681,6 @@
     "@platform/react" "0.4.26"
     react-inspector "5.0.1"
 
-"@platform/ui.object@^0.0.236":
-  version "0.0.236"
-  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.236.tgz#76e39dfb83be5e69cc922658823481d01b75c366"
-  integrity sha512-kmcsY6vNRdqCZjxGCoRxkNLWK3nXJTwtB40HiHNcAkJ+ImpLSuJa1FWfHb3FwDXBR1qpJOLJzj9PDzzXlp0/xg==
-  dependencies:
-    "@platform/react" "0.4.63"
-    react-inspector "5.1.0"
-
 "@platform/ui.spinner@^0.0.179":
   version "0.0.179"
   resolved "https://registry.yarnpkg.com/@platform/ui.spinner/-/ui.spinner-0.0.179.tgz#b83098734711818c837f43f2742f74d2fb7cf9cb"
