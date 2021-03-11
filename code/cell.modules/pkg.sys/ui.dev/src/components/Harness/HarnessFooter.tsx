@@ -22,9 +22,20 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
 
   const styles = {
     base: css({
+      position: 'relative',
+      flex: 1,
       userSelect: 'none',
-      Flex: 'horizontal-spaceBetween-stretch',
       color: color.format(labelColor),
+      display: 'flex',
+    }),
+    bg: css({
+      Absolute: 0,
+      backdropFilter: `blur(6px) opacity(0.95)`,
+    }),
+    body: css({
+      Absolute: 0,
+      Flex: 'horizontal-spaceBetween-center',
+      MarginX: 10,
     }),
     actionsSelector: css({ position: 'relative' }),
     module: {
@@ -62,8 +73,11 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <div>{elActionsSelector}</div>
-      <div>{elModule}</div>
+      <div {...styles.bg} />
+      <div {...styles.body}>
+        <div>{elActionsSelector}</div>
+        <div>{elModule}</div>
+      </div>
     </div>
   );
 };

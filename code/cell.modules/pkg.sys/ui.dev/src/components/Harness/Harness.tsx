@@ -65,7 +65,15 @@ export const Harness: React.FC<HarnessProps> = (props) => {
       boxSizing: 'border-box',
       display: 'flex',
     }),
-    footer: css({ Absolute: [null, 12, 6, 10] }),
+    footer: css({
+      Absolute: [null, 0, 0, 0],
+      height: 34,
+      paddingTop: 6,
+      paddingRight: 12,
+      paddingBottom: 6,
+      paddingLeft: 10,
+      display: 'flex',
+    }),
   };
 
   const elFooter = (
