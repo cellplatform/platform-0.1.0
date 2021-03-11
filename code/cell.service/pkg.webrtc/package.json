@@ -1,5 +1,6 @@
 {
-  "name": "cell.peer-server",
+  "name": "@platform/cell.service.webrtc",
+  "description": "Signalling serverice to establish connections between WebRTC clients. (Data is not proxied through the server)",
   "version": "0.0.0",
   "scripts": {
     "start": "ts-node -T src/start.ts",
