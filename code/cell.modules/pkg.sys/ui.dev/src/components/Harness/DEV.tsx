@@ -35,7 +35,7 @@ const props: HarnessProps = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.dev.Harness')
+  .namespace('ui.dev/Harness')
   .context((prev) => prev || { props: { ...props } })
 
   .items((e) => {
