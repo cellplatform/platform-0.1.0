@@ -13,7 +13,7 @@ type Ctx = { props: MonacoEditorProps };
  *    https://microsoft.github.io/monaco-editor/api
  */
 export const actions = DevActions<Ctx>()
-  .namespace('components/MonacoEditor')
+  .namespace('ui.code/MonacoEditor')
   .context((prev) => {
     if (prev) return prev;
 

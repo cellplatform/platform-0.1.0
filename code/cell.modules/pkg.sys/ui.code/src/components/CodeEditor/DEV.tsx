@@ -20,7 +20,7 @@ const INITIAL: Ctx = { props: {} };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('components/CodeEditor')
+  .namespace('ui.code/CodeEditor')
   .context((prev) => prev || INITIAL)
 
   .items((e) => {

@@ -3,7 +3,7 @@ import { copy } from './node/fs.copy';
 
 export default () =>
   Compiler.config()
-    .namespace('sys.ui.code.editor')
+    .namespace('sys.ui.code')
     .variant('web', (config) =>
       config
         .target('web')
