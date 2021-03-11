@@ -96,19 +96,26 @@ export const Harness: React.FC<HarnessProps> = (props) => {
   );
 
   const elHarness = !actions.empty && (
-    <div {...css(styles.base, props.style)}>
+    <>
       {elLeft}
       {elMain}
       {elRight}
-    </div>
+    </>
   );
 
-  const elEmpty = actions.empty && <HarnessEmpty />;
+  const elEmpty = actions.empty && (
+    <>
+      <HarnessEmpty />
+      {elFooter}
+    </>
+  );
 
   return (
     <React.StrictMode>
-      {elHarness}
-      {elEmpty}
+      <div {...css(styles.base, props.style)}>
+        {elHarness}
+        {elEmpty}
+      </div>
     </React.StrictMode>
   );
 };
