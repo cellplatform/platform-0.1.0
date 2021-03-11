@@ -32,7 +32,10 @@ const ComposedActions = <Ctx extends O>() =>
  */
 export const actions = ComposedActions<Ctx>()
   .namespace('test/sample-2')
-  .context((prev) => prev || { count: 0 })
+  .context((prev) => {
+    if (prev) return prev;
+    return { count: 0 };
+  })
 
   .items((e) => {
     e.button('increment', (e) => e.ctx.count++);

@@ -37,7 +37,10 @@ let count = 0;
  */
 export const actions = DevActions<Ctx>()
   .namespace('test/sample-1')
-  .context((prev) => prev || { myLayout: 'single', count: 0, text: LOREM, isRunning: true })
+  .context((prev) => {
+    if (prev) return prev;
+    return { myLayout: 'single', count: 0, text: LOREM, isRunning: true };
+  })
 
   .items((e) => {
     e.title('Title');
