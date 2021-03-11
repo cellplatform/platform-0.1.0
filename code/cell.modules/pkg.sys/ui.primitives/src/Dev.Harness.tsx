@@ -5,6 +5,7 @@ import useDragTarget from './hooks/useDragTarget/DEV';
 import DotTabstrip from './components/DotTabstrip/DEV';
 import Zoom from './components/Zoom/DEV';
 import Card from './components/Card/DEV';
+import PropList from './components/PropList/DEV';
 
-export const ACTIONS = [useDragTarget, DotTabstrip, Zoom, Card];
+export const ACTIONS = [useDragTarget, DotTabstrip, Zoom, Card, PropList];
 export const DevHarness: React.FC = () => <Harness actions={ACTIONS} />;
