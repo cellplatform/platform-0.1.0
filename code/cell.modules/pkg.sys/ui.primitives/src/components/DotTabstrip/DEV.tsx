@@ -22,7 +22,7 @@ const INITIAL = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('components/DotTabstrip')
+  .namespace('ui/DotTabstrip')
   .context((prev) => prev || INITIAL)
 
   .items((e) => {

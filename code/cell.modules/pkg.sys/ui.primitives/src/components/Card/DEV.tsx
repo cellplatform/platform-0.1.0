@@ -11,7 +11,7 @@ const LOREM =
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('components/Card')
+  .namespace('ui/Card')
   .context((prev) => {
     if (prev) return prev;
     return {

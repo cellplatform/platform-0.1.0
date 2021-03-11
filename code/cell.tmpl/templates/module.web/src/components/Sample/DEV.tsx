@@ -27,11 +27,11 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     e.settings({
       layout: {
+        label: '<Sample>',
+        position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,
         background: 1,
-        label: '<Sample>',
-        position: [150, 80],
       },
       host: { background: -0.04 },
     });

@@ -8,11 +8,12 @@ type Ctx = { props: PropListProps };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('components/PropList')
+  .namespace('ui/PropList')
   .context((prev) => {
     if (prev) return prev;
     return {
       props: {
+        title: 'My Title',
         items: [
           { label: 'string', value: 'hello' },
           { label: 'number', value: 123 },
@@ -24,15 +25,19 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('props');
-    e.textbox('title', (e) => {
-      if (e.changing?.action === 'invoke') {
-        const title = e.changing.next;
-        e.ctx.props.title = title;
-        e.textbox.current = title;
-      }
-    });
 
-    // e.hr();
+    e.textbox((config) =>
+      config
+        .initial(config.ctx.props.title || '')
+        .placeholder('title')
+        .pipe((e) => {
+          if (e.changing) {
+            const title = e.changing.next;
+            e.textbox.current = title;
+            e.ctx.props.title = title;
+          }
+        }),
+    );
   })
 
   .subject((e) => {

@@ -14,7 +14,7 @@ const INITIAL = { dragEnabled: true, props: {} };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('components/ZoomPan')
+  .namespace('ui/ZoomPan')
   .context((prev) => prev || INITIAL)
 
   .items((e) => {
