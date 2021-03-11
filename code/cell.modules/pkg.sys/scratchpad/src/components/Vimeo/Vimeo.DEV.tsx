@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions, ActionHandlerArgs } from 'sys.ui.dev';
 
 import { Vimeo, VimeoProps } from './Vimeo';
-import { rx, t } from '../../common';
+import { rx, t, COLORS } from '../../common';
 import * as types from './types';
 
 export const VIDEOS = [
@@ -10,7 +10,11 @@ export const VIDEOS = [
   { label: 'stock/running', value: 287903693 }, // https://vimeo.com/stock/clip-287903693-silhouette-woman-running-on-beach-waves-splashing-female-athlete-runner-exercising-sprinting-intense-workout-on-rough-ocean-seas
 ];
 
-type Ctx = { bus: t.EventBus<types.VimeoEvent>; props: VimeoProps };
+type Ctx = {
+  theme: 'light' | 'dark';
+  bus: t.EventBus<types.VimeoEvent>;
+  props: VimeoProps;
+};
 type A = ActionHandlerArgs<Ctx>;
 
 const id = 'sample';
@@ -20,7 +24,7 @@ const id = 'sample';
  * https://github.com/vimeo/player.js
  */
 export const actions = DevActions<Ctx>()
-  .namespace('player.Vimeo')
+  .namespace('ui.video/Vimeo')
   .context((prev) => {
     if (prev) return prev;
 
@@ -32,13 +36,15 @@ export const actions = DevActions<Ctx>()
 
     return {
       bus,
+      theme: 'light',
       props: {
         id,
         bus,
         video: VIDEOS[1].value,
         controls: false,
         autoPlay: false,
-        loop: false,
+        loop: true,
+        borderRadius: 20,
       },
     };
   })
@@ -47,11 +53,23 @@ export const actions = DevActions<Ctx>()
     e.title('options (reload)');
     e.button('width: 600', (e) => (e.ctx.props.width = 600));
     e.button('width: 800', (e) => (e.ctx.props.width = 800));
-    e.hr();
+    e.hr(1, 0.1);
+  })
+
+  .items((e) => {
+    e.title('theme');
+    e.button('light', (e) => (e.ctx.theme = 'light'));
+    e.button('dark', (e) => (e.ctx.theme = 'dark'));
+    e.hr(1, 0.1);
   })
 
   .items((e) => {
     e.title('props');
+
+    e.boolean('borderRadius', (e) => {
+      if (e.changing) e.ctx.props.borderRadius = e.changing.next ? 20 : undefined;
+      e.boolean.current = e.ctx.props.borderRadius !== undefined;
+    });
 
     e.boolean('autoPlay', (e) => {
       if (e.changing) e.ctx.props.autoPlay = e.changing.next;
@@ -102,12 +120,25 @@ export const actions = DevActions<Ctx>()
    * Render
    */
   .subject((e) => {
-    e.settings({
-      layout: { border: -0.1, cropmarks: -0.2, label: '<Vimeo>' },
-      host: { background: -0.04, color: -1 },
-    });
+    const props = e.ctx.props;
+    const theme = e.ctx.theme;
 
-    e.render(<Vimeo {...e.ctx.props} />);
+    const label = '<Vimeo';
+    const size = { width: props.width, height: props.height };
+
+    e.settings(
+      theme === 'light'
+        ? {
+            layout: { label, cropmarks: -0.2, ...size },
+            host: { background: -0.04 },
+          }
+        : {
+            layout: { label, labelColor: 0.6, cropmarks: 0.4, ...size },
+            host: { background: COLORS.DARK },
+          },
+    );
+
+    e.render(<Vimeo {...props} />);
   });
 
 export default actions;

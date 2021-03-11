@@ -16,7 +16,7 @@ const id = 'sample';
  * https://github.com/vimeo/player.js
  */
 export const actions = DevActions<Ctx>()
-  .namespace('player.VimeoBackground')
+  .namespace('ui.video/VimeoBackground')
   .context((prev) => {
     if (prev) return prev;
 
@@ -112,9 +112,9 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     e.settings({
       layout: {
+        label: '<VimeoBackground>',
         border: 0.2,
         cropmarks: 0.4,
-        label: '<Vimeo>',
         labelColor: 0.4,
         position: [200, 80],
       },

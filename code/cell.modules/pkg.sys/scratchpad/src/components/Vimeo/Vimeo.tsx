@@ -12,6 +12,7 @@ export type VimeoProps = {
   loop?: boolean;
   width?: number;
   height?: number;
+  borderRadius?: number;
   style?: CssValue;
 };
 
@@ -20,8 +21,10 @@ export type VimeoProps = {
  * https://github.com/vimeo/player.js
  */
 export const Vimeo: React.FC<VimeoProps> = (props) => {
-  const { video, width, height, bus, autoPlay } = props;
+  const { video, width, height, bus, autoPlay, borderRadius } = props;
   const divRef = useRef<HTMLDivElement>(null);
+
+  console.log('borderRadius', borderRadius);
 
   const idRef = useRef<string>(props.id || cuid());
   const [player, setPlayer] = useState<VimeoPlayer>();
@@ -64,8 +67,12 @@ export const Vimeo: React.FC<VimeoProps> = (props) => {
 
   const styles = {
     base: css({
+      lineHeight: 0, // NB: Prevents space below IFrame.
       position: 'relative',
-      lineHeight: 0,
+      overflow: 'hidden',
+      borderRadius,
+      width,
+      height,
     }),
   };
 
