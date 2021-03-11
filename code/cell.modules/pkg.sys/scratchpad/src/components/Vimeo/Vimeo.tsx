@@ -1,7 +1,7 @@
 import VimeoPlayer from '@vimeo/player';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { css, CssValue, cuid, defaultValue, t } from '../../common';
+import { css, CssValue, cuid, t } from '../../common';
 import { usePlayerController } from './usePlayerController';
 
 export type VimeoProps = {
@@ -9,7 +9,6 @@ export type VimeoProps = {
   id?: string;
   video: number;
   autoPlay?: boolean;
-  controls?: boolean;
   loop?: boolean;
   width?: number;
   height?: number;
@@ -22,7 +21,6 @@ export type VimeoProps = {
  */
 export const Vimeo: React.FC<VimeoProps> = (props) => {
   const { video, width, height, bus, autoPlay } = props;
-  const controls = defaultValue(props.controls, false);
   const divRef = useRef<HTMLDivElement>(null);
 
   const idRef = useRef<string>(props.id || cuid());
@@ -31,30 +29,34 @@ export const Vimeo: React.FC<VimeoProps> = (props) => {
   useEffect(() => {
     const div = divRef.current as HTMLDivElement;
 
-    setPlayer(
-      new VimeoPlayer(div, {
-        id: video,
-        controls,
-        width,
-        height,
-        transparent: true,
-        title: false,
-        byline: false,
-        portrait: false,
-        dnt: true, // Do Not Track (no cookies or other tracking attempts)
-      }),
-    );
+    const player = new VimeoPlayer(div, {
+      id: video,
+      width,
+      height,
+      controls: false,
+      transparent: true,
+      title: false,
+      byline: false,
+      portrait: false,
+      dnt: true, // Do Not Track (no cookies or other tracking attempts)
+    });
+
+    setPlayer(player);
+
+    player.on('loaded', () => {
+      if (autoPlay) player.play();
+    });
 
     return () => {
       player?.destroy();
     };
-  }, [controls, width, height]); // eslint-disable-line
+  }, [width, height]); // eslint-disable-line
 
-  usePlayerController({ id: idRef.current, video, player, bus, autoPlay });
+  usePlayerController({ id: idRef.current, video, player, bus });
 
   useEffect(() => {
-    if (player) loadVideo(player, video);
-  }, [video, player]);
+    if (player) loadVideo(player, video, autoPlay);
+  }, [video, player]); // eslint-disable-line
 
   useEffect(() => {
     player?.setLoop(props.loop || false);
@@ -73,8 +75,9 @@ export const Vimeo: React.FC<VimeoProps> = (props) => {
 /**
  * Helpers
  */
-async function loadVideo(player: VimeoPlayer, video: number) {
+async function loadVideo(player: VimeoPlayer, video: number, autoPlay?: boolean) {
   if (video !== (await player.getVideoId())) {
     await player.loadVideo(video);
+    if (autoPlay) await player.play();
   }
 }

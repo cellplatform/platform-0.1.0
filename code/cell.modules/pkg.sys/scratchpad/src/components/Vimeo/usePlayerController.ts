@@ -17,10 +17,9 @@ export function usePlayerController(args: {
   video: number;
   player?: VimeoPlayer;
   bus?: t.EventBus<any>;
-  autoPlay?: boolean;
 }) {
   const seekRef = useRef<number | undefined>();
-  const { id, player, video, autoPlay } = args;
+  const { id, player, video } = args;
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
@@ -60,13 +59,11 @@ export function usePlayerController(args: {
 
       rx.payload<types.VimeoSeekEvent>($, 'Vimeo/seek').subscribe((e) => {
         seekRef.current = e.seconds;
-        setCurrentTime(player, e.seconds, autoPlay);
+        setCurrentTime(player, e.seconds);
       });
 
       rx.payload<types.VimeoPlayEvent>($, 'Vimeo/play').subscribe((e) => player.play());
       rx.payload<types.VimeoPauseEvent>($, 'Vimeo/pause').subscribe((e) => player.pause());
-
-      if (autoPlay) player.play();
     }
 
     return () => {
@@ -76,7 +73,7 @@ export function usePlayerController(args: {
       player?.off('ended', onEnd);
       dispose$.next();
     };
-  }, [args.bus, id, player, autoPlay]); // eslint-disable-line
+  }, [args.bus, id, player]); // eslint-disable-line
 }
 
 /**
@@ -87,5 +84,5 @@ async function setCurrentTime(player: VimeoPlayer, seconds: number, isPlaying?: 
   const max = await player.getDuration();
   const secs = R.clamp(0, max, seconds);
   await player.setCurrentTime(secs);
-  if (isPlaying && secs < max) player.play();
+  // if (isPlaying && secs < max) player.play();
 }

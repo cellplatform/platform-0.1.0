@@ -45,15 +45,8 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('options (reload)');
-
-    e.boolean('controls', (e) => {
-      if (e.changing) e.ctx.props.controls = e.changing.next;
-      e.boolean.current = e.ctx.props.controls;
-    });
-
     e.button('width: 600', (e) => (e.ctx.props.width = 600));
     e.button('width: 800', (e) => (e.ctx.props.width = 800));
-
     e.hr();
   })
 

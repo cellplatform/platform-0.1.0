@@ -8,14 +8,13 @@ export type VimeoBackgroundProps = {
   bus?: t.EventBus<any>;
   id?: string;
   video: number;
-  autoPlay?: boolean;
   opacity?: number;
   blur?: number;
   opacityTransition?: number; // msecs
 };
 
 export const VimeoBackground: React.FC<VimeoBackgroundProps> = (props) => {
-  const { video, bus, autoPlay } = props;
+  const { video, bus } = props;
   const blur = defaultValue(props.blur, 0);
   const opacityTransition = defaultValue(props.opacityTransition, 300);
 
@@ -26,13 +25,12 @@ export const VimeoBackground: React.FC<VimeoBackgroundProps> = (props) => {
   useEffect(() => {
     const player = new VimeoPlayer(iframeRef.current as HTMLIFrameElement);
     setPlayer(player);
-
     return () => {
       player.destroy();
     };
   }, []); // eslint-disable-line
 
-  usePlayerController({ id: idRef.current, video, player, bus, autoPlay });
+  usePlayerController({ id: idRef.current, video, player, bus });
 
   const styles = {
     base: css({
