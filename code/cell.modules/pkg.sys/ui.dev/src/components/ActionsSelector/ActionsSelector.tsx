@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Select, { MenuPlacement } from 'react-select';
-import { css, CssValue, t, DEFAULT, COLORS, color } from '../../common';
+import { css, CssValue, t, DEFAULT, COLORS, color, useClickOutside } from '../../common';
 import { useEventBus } from './useEventBus';
 
 import { Icons } from '../Icons';
@@ -26,15 +26,21 @@ export const ActionsSelector: React.FC<ActionsSelectorProps> = (props) => {
   const busController = useEventBus({ bus, onChange });
   const [showSelector, setShowSelector] = useState<boolean>(false);
 
+  const selectRef = useRef<HTMLDivElement>(null);
+  useClickOutside('down', selectRef, (e) => {
+    if (showSelector) setShowSelector(false);
+  });
+
   const options: t.ActionSelectItem<M>[] = actions.map((value) => {
     const model = value.toObject();
     const label = model.namespace || DEFAULT.UNNAMED;
     return { label, value };
   });
 
-  const selectedNs = props.selected?.toObject().namespace;
-  const index = options.findIndex((opt) => opt.value.toObject().namespace === selectedNs);
+  const selectedNamespace = props.selected?.toObject().namespace;
+  const index = options.findIndex((opt) => opt.value.toObject().namespace === selectedNamespace);
   const value = index < 0 ? undefined : options[index];
+  const isSelectable = actions.length > 1;
 
   const styles = {
     base: css({
@@ -54,12 +60,17 @@ export const ActionsSelector: React.FC<ActionsSelectorProps> = (props) => {
   };
 
   const label = value?.label;
-  const labelColor = color.format(props.buttonColor || -0.5);
+  const labelColor = color.format(props.buttonColor || -0.5) as string;
+
   const elButton = label && (
     <Button
       style={styles.button.base}
-      theme={{ color: { enabled: color.format(labelColor) || -0.5 } }}
-      overTheme={{ color: { enabled: color.format(props.buttonOverColor) || COLORS.BLUE } }}
+      isEnabled={isSelectable}
+      theme={{
+        color: { enabled: labelColor, disabled: labelColor },
+        disabledOpacity: 1,
+      }}
+      overTheme={{ color: { enabled: props.buttonOverColor || COLORS.BLUE } }}
       onClick={() => setShowSelector(true)}
     >
       <div {...styles.button.body}>
@@ -70,7 +81,7 @@ export const ActionsSelector: React.FC<ActionsSelectorProps> = (props) => {
   );
 
   const elSelector = showSelector && (
-    <div {...styles.selector}>
+    <div {...styles.selector} ref={selectRef}>
       <Select
         options={options}
         value={value}

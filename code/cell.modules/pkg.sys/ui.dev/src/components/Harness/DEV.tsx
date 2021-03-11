@@ -4,8 +4,10 @@ import { Harness, HarnessProps } from '.';
 import { DevActions } from '../..';
 import { rx, HttpClient, t } from '../../common';
 
-import sample1 from '../../test/sample-1/Component.DEV';
-import sample2 from '../../test/sample-2/Component.DEV';
+import sample1 from '../../test/sample-1/DEV';
+import sample2 from '../../test/sample-2/DEV';
+import sample3 from '../../test/sample-3/DEV';
+const ACTIONS = [sample1, sample2, sample3];
 
 const client = HttpClient.create(5000);
 const bus = rx.bus();
@@ -14,14 +16,13 @@ bus.event$.subscribe((e) => {
   // console.log('e', e);
 });
 
-const ACTIONS = [sample1, sample2];
-
 type Ctx = { props: HarnessProps };
 const props: HarnessProps = {
   bus,
   actions: ACTIONS,
   namespace: 'child-dev',
   store: true, // Default (local-storage).
+  allowRubberband: false,
 
   // store: Store.ActionsSelect.cell({
   //   client,
@@ -36,6 +37,16 @@ const props: HarnessProps = {
 export const actions = DevActions<Ctx>()
   .namespace('ui.dev.Harness')
   .context((prev) => prev || { props: { ...props } })
+
+  .items((e) => {
+    e.title('props');
+    e.boolean('allowRubberband', (e) => {
+      if (e.changing) e.ctx.props.allowRubberband = e.changing.next;
+      e.boolean.current = e.ctx.props.allowRubberband;
+    });
+
+    e.hr(1, 0.1);
+  })
 
   .items((e) => {
     e.title('actions');

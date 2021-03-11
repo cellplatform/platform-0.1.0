@@ -15,14 +15,21 @@ export type HarnessProps = {
   actions?: t.Actions | t.Actions[];
   store?: t.ActionsSelectStore | boolean;
   namespace?: string;
+  allowRubberband?: boolean; // Page rubber-band effect in Chrome. Default:false.
   style?: CssValue;
 };
 
 export const Harness: React.FC<HarnessProps> = (props) => {
   const [bus, setBus] = useState<t.EventBus>(props.bus || rx.bus());
+  const allowRubberband = defaultValue(props.allowRubberband, false);
+
   useEffect(() => {
     if (props.bus) setBus(props.bus);
   }, [props.bus]);
+
+  useEffect(() => {
+    document.body.style.overflow = allowRubberband ? 'auto' : 'hidden';
+  }, [allowRubberband]);
 
   const store = toStore(props.namespace, asActionsArray(props.actions), props.store);
   const actions = useActionsSelectorState({ bus, store, actions: asActionsArray(props.actions) });
@@ -30,16 +37,19 @@ export const Harness: React.FC<HarnessProps> = (props) => {
   const selected = actions.selected;
   selected?.renderSubject();
 
-  const env = selected?.toObject().env;
-  const actionsSettings = { ...env?.viaSubject.actions, ...env?.viaAction.actions };
-  const actionsEdge = defaultValue(actionsSettings.edge, 'right');
-
   useActionsRedraw({
     name: '<Harness>',
-    paths: [(path) => Boolean(path.match(/^env\/.*\/actions\/edge/))],
+    paths: [
+      (path) => Boolean(path.match(/^env\/.*\/actions\/edge/)),
+      (path) => Boolean(path.match(/^env\/via(Subject|Action)\//)),
+    ],
     bus,
     actions: selected,
   });
+
+  const env: t.ActionsModelEnv = selected?.toObject().env || { viaSubject: {}, viaAction: {} };
+  const envActions = { ...env?.viaSubject.actions, ...env?.viaAction.actions };
+  const actionsEdge = defaultValue(envActions.edge, 'right');
 
   const styles = {
     base: css({
@@ -55,22 +65,32 @@ export const Harness: React.FC<HarnessProps> = (props) => {
       boxSizing: 'border-box',
       display: 'flex',
     }),
-    footer: css({ Absolute: [null, 10, 6, 10] }),
+    footer: css({ Absolute: [null, 12, 6, 10] }),
   };
 
   const elFooter = (
-    <HarnessFooter bus={bus} actions={actions.list} selected={selected} style={styles.footer} />
+    <HarnessFooter
+      bus={bus}
+      env={env}
+      actions={actions.list}
+      selected={selected}
+      style={styles.footer}
+    />
   );
 
   const elActions = selected && <HarnessActions bus={bus} actions={selected} edge={actionsEdge} />;
   const elLeft = actionsEdge === 'left' && elActions;
   const elRight = actionsEdge === 'right' && elActions;
 
+  const elHost = (
+    <ErrorBoundary>
+      <Host bus={bus} actions={selected} style={styles.host} />
+    </ErrorBoundary>
+  );
+
   const elMain = (
     <div {...styles.main}>
-      <ErrorBoundary>
-        <Host bus={bus} actions={selected} style={styles.host} />
-      </ErrorBoundary>
+      {elHost}
       {elFooter}
     </div>
   );

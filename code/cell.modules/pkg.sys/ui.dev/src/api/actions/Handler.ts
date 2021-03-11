@@ -8,7 +8,7 @@ export const Handler = {
     /**
      * Prepares methods and immutable proxies for a [DevAction] handler invokation.
      */
-    action<C extends O>(draft: { ctx: C; env: t.ActionsModelEnv }) {
+    action<C extends O>(draft: { ctx: C; env: t.ActionsModelEnvProps }) {
       const { ctx, env } = draft;
       const host = env.host || (env.host = {});
       const layout = env.layout || (env.layout = {});
@@ -34,7 +34,7 @@ export const Handler = {
      * modifying the environment state in standard ways.
      */
     handler<T, A extends SettingsArgs = SettingsArgs>(args: {
-      env: t.ActionsModelEnv;
+      env: t.ActionsModelEnvProps;
       payload: T;
       sync?: {
         source: (args: A) => O | undefined;

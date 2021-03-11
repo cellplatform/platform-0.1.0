@@ -1,11 +1,12 @@
 import React from 'react';
 
-import { color, COLORS, css, CssValue, t, WebRuntime } from '../../common';
+import { color, COLORS, css, CssValue, log, t, WebRuntime } from '../../common';
 import { ActionsSelector } from '../ActionsSelector';
 import { Icons } from '../Icons';
 
 export type HarnessFooterProps = {
   bus: t.EventBus<any>;
+  env: t.ActionsModelEnv;
   actions: t.Actions[];
   selected?: t.Actions;
   style?: CssValue;
@@ -15,19 +16,15 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
   const { bus, selected, actions } = props;
   const isEmpty = actions.length === 0;
 
-  const model = selected?.toObject();
-  const env = { ...model?.env.viaSubject, ...model?.env.viaAction };
-
-  const labelColor = env.layout?.labelColor || -0.5;
+  const envLayout = { ...props.env.viaSubject.layout, ...props.env.viaAction.layout };
+  const labelColor = envLayout.labelColor || -0.5;
   const buttonOverColor = COLORS.BLUE;
-
-  selected?.renderSubject();
 
   const styles = {
     base: css({
+      userSelect: 'none',
       Flex: 'horizontal-spaceBetween-stretch',
       color: color.format(labelColor),
-      userSelect: 'none',
     }),
     actionsSelector: css({ position: 'relative' }),
     module: {
@@ -50,7 +47,7 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
   );
 
   const elModule = (
-    <div {...styles.module.base}>
+    <div {...styles.module.base} onClick={logRuntime}>
       <Icons.Package
         size={22}
         style={{ marginRight: 4, opacity: 0.7 }}
@@ -70,3 +67,14 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * [Helpers]
+ */
+
+function logRuntime() {
+  log.group('🌳 WebRuntime');
+  log.info('module:', WebRuntime.module);
+  log.info('bundle:', WebRuntime.bundle);
+  log.groupEnd();
+}

@@ -15,6 +15,15 @@ type Ctx = {
 
 type M = t.DevMethods<Ctx> & t.DisplayMethods<Ctx>;
 
+/**
+ * NOTE: This demonstrates the process of Action composition.
+ *
+ *       This is the same as importing the "pre-canned"
+ *       [DevActions] function.
+ *
+ *       The is an extensibility hook, allowing different sets of
+ *       tools to be assembled for different uses of the harness.
+ */
 const ComposedActions = <Ctx extends O>() =>
   ActionsFactory.compose<Ctx, M>([...DevDefs, ...DisplayDefs]);
 
@@ -22,7 +31,7 @@ const ComposedActions = <Ctx extends O>() =>
  * Actions
  */
 export const actions = ComposedActions<Ctx>()
-  .namespace('sample-2')
+  .namespace('test/sample-2')
   .context((prev) => prev || { count: 0 })
 
   .items((e) => {

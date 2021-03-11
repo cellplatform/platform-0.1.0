@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil, throttleTime, debounceTime } from 'rxjs/operators';
 
-import { t } from '../common';
+import { t, defaultValue } from '../common';
 
 type Path = 'initialized' | 'ctx/current' | 'env/viaAction' | 'env/viaSubject' | 'items';
 type PathMatch = (path: string) => boolean;
@@ -13,8 +13,9 @@ type PathMatch = (path: string) => boolean;
 export function useActionsRedraw(args: {
   name?: string;
   bus: t.EventBus;
-  actions?: t.Actions<any>;
   paths: (Path | PathMatch)[];
+  actions?: t.Actions<any>;
+  throttle?: number;
 }) {
   const { actions } = args;
   const [redraw, setRedraw] = useState<number>(0);
@@ -33,6 +34,8 @@ export function useActionsRedraw(args: {
           takeUntil(dispose$),
           filter((e) => e.to.namespace === ns),
           filter((e) => isChangedPath(args.paths, e.patches)),
+          throttleTime(defaultValue(args.throttle, 0)),
+          debounceTime(0),
         )
         .subscribe(() => {
           setRedraw((prev) => prev + 1);

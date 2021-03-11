@@ -1,12 +1,7 @@
 import React from 'react';
 import { DevActions, toObject } from '../..';
-import { css, COLORS, color, time, WebRuntime } from '../../common';
+import { css, COLORS, color, time } from '../../common';
 import { Component } from './Component';
-
-console.group('🌳 WebRuntime');
-console.log('bundle', WebRuntime.bundle);
-console.log('module', WebRuntime.module);
-console.groupEnd();
 
 type SampleLayout =
   | 'single'
@@ -41,7 +36,7 @@ let count = 0;
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('sample-1')
+  .namespace('test/sample-1')
   .context((prev) => prev || { myLayout: 'single', count: 0, text: LOREM, isRunning: true })
 
   .items((e) => {
