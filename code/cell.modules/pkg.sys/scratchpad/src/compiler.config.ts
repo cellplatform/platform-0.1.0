@@ -20,6 +20,6 @@ export default () =>
             .access('public', '**/*.{png,jpg,svg}'),
         )
 
-        .expose('./Dev', './src/components/Dev.Harness')
+        .expose('./Dev', './src/Dev.Harness')
         .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom'])),
     );

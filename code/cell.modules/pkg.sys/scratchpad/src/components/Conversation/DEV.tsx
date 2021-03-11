@@ -43,11 +43,12 @@ export const actions = DevActions<Ctx>()
       return e.ctx.props.blur !== 0;
     });
 
-    e.button('reset url (clear peers)', (e) => {
+    e.button('reset url (reload)', (e) => {
       // const peer = e.ctx.props.peer;
       // const querystring = QueryString.generate({ peers: [peer.id] });
       const querystring = '?';
       history.pushState(null, 'cleared pears', querystring);
+      location.reload();
     });
     e.hr();
 
