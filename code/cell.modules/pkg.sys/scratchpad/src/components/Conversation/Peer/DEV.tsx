@@ -2,9 +2,7 @@ import React from 'react';
 
 import { DevActions } from 'sys.ui.dev';
 import { Peer, PeerProps } from '.';
-import { cuid, rx, createPeer } from '../common';
-
-const bus = rx.bus();
+import { cuid, rx, createPeer, PeerJS, t } from '../common';
 
 type Ctx = { self: string; props: PeerProps };
 
@@ -14,13 +12,24 @@ type Ctx = { self: string; props: PeerProps };
 export const actions = DevActions<Ctx>()
   .namespace('Conversation.Peer')
   .context((prev) => {
+    if (prev) return prev;
+
     const self = cuid();
-    return (
-      prev || {
-        self,
-        props: { bus, peer: createPeer({ bus, id: self }) },
-      }
-    );
+    let peer: PeerJS;
+    const bus = rx.bus<t.ConversationEvent>();
+
+    return {
+      self,
+      props: {
+        bus,
+        get peer() {
+          // NB: Lazily loaded to avoid needless calls
+          //     to the peering server when these actions are not loaded.
+          if (!peer) peer = createPeer({ bus });
+          return peer;
+        },
+      },
+    };
   })
 
   .items((e) => {
@@ -39,13 +48,8 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     e.settings({
       layout: {
-        // border: -0.1,
         cropmarks: -0.2,
-        // background: 1,
-        label: '<Sample>',
-        // width: 300,
-        // height: 200,
-        // position: [150, 80],
+        label: '<Peer>',
       },
       host: { background: -0.04 },
     });
