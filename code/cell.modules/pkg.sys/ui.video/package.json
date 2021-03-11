@@ -1,26 +1,31 @@
 {
-  "name": "sys.ui.primitives",
-  "version": "0.0.52",
+  "name": "sys.ui.video",
+  "version": "0.0.0",
   "sideEffects": false,
   "compiler": {
-    "port": 3036
+    "port": 3037
   },
   "scripts": {
-    "build": "ts build --no-esm $@",
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",
-    "bundle": "cell.compiler bundle --name prod $@",
+    "test": "ts test $@",
+    "lint": "ts lint $@",
+    "build": "ts build --no-esm $@",
+    "bundle": "cell.compiler bundle $@",
     "watch": "cell.compiler watch $@",
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@types/vimeo__player": "^2.10.0",
+    "@vimeo/player": "^2.15.0"
+  },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.3.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "@platform/cell.compiler": "~0.3.6",
+    "react": "~17.0.1",
+    "react-dom": "~17.0.1"
   },
   "license": "MIT",
   "private": true
