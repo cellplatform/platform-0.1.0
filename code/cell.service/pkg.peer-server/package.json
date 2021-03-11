@@ -1,0 +1,23 @@
+{
+  "name": "cell.peer-server",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "ts-node -T src/start.ts",
+    "dev": "yarn start",
+    "test": "ts test",
+    "lint": "echo ts lint",
+    "build": "ts build --no-esm $@",
+    "prepare": "ts prepare",
+    "public": "ngrok http 9000 --hostname=sys.ngrok.io"
+  },
+  "dependencies": {
+    "@platform/log": "^0.1.46",
+    "peer": "^0.6.1"
+  },
+  "devDependencies": {
+    "@platform/test": "~0.2.3",
+    "@platform/ts": "~4.1.7"
+  },
+  "license": "MIT",
+  "private": true
+}
