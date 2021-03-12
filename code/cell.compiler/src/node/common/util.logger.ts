@@ -52,8 +52,8 @@ export const logger = {
     let name = green(model.name());
     name = obj.title ? gray(`${name}/${obj.title}`) : name;
 
-    add('name', name);
     add('namespace', green(obj.namespace));
+    add('name', name);
     add('mode', green(model.mode()));
     add('target', green(model.target()));
 
