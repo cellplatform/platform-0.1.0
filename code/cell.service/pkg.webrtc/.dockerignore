@@ -3,9 +3,9 @@
 npm-debug.log
 yarn-error.log
 
+node_modules/
+sh/
+
 .env
 .env*
-
-data/
-sh/
-node_modules/
+.data

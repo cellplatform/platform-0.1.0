@@ -2,9 +2,11 @@ import { log } from '@platform/log/lib/server';
 import { time } from '@platform/util.value';
 import { PeerServer } from 'peer';
 
+const pkg = require('../package.json') as { name: string; version: string };
+
 const timer = time.timer();
 const port = 9000;
-const path = '/rtc';
+const path = '/peer';
 
 type Client = {
   getId: () => string;
@@ -17,10 +19,13 @@ type Client = {
  */
 const server = PeerServer({ port, path, proxied: true }, (args) => {
   const elapsed = timer.elapsed.toString();
-  const address = log.cyan(`http://localhost:${log.white(port)}`);
+  const address = log.cyan(`http://localhost:${log.white(port)}${log.gray(`${path}`)}`);
   log.info();
-  log.info.gray(`👋 Running on: ${address} [${elapsed}]`);
-  log.info.gray(`   path: ${path}`);
+  log.info.gray(`👋 Running on ${address} [${elapsed}]`);
+  log.info();
+  log.info.gray(`   • package: ${pkg.name}@${pkg.version}`);
+  log.info.gray(`   • path:    ${path}`);
+  log.info.gray(`   • port:    ${port}`);
   log.info();
 });
 
