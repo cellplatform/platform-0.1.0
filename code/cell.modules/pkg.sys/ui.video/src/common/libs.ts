@@ -1,5 +1,5 @@
-import { clamp } from 'ramda';
-export const R = { clamp };
+import { clamp, mergeDeepRight } from 'ramda';
+export const R = { clamp, mergeDeepRight };
 
 export { log } from '@platform/log/lib/client';
 export { css, color, CssValue, formatColor } from '@platform/css';

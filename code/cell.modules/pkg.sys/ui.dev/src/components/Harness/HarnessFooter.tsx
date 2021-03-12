@@ -37,7 +37,9 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
       Flex: 'horizontal-spaceBetween-center',
       MarginX: 10,
     }),
-    actionsSelector: css({ position: 'relative' }),
+    actionsSelector: css({
+      position: 'relative',
+    }),
     module: {
       base: css({ Flex: 'center-center' }),
       label: css({ position: 'relative', fontSize: 11, textAlign: 'right' }),

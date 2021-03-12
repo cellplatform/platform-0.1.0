@@ -29,7 +29,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         width: value.round(width, 0),
         height: value.round(height, 0),
       };
-      const peers: t.DeepPartial<t.ConversationStatePeers> = {
+      const peers: t.PartialDeep<t.ConversationStatePeers> = {
         [id]: { resolution: { body } },
       };
       bus.fire({
