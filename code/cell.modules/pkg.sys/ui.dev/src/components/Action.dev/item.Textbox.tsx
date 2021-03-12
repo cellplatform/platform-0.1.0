@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { color, COLORS, css, t, useActionItemMonitor } from '../common';
-import { TextInput } from '../Primitives';
+import { Button, Icons, TextInput } from '../Primitives';
 import { ItemLayout } from './ItemLayout';
 
 export type TextboxProps = {
@@ -12,20 +12,22 @@ export type TextboxProps = {
 
 export const Textbox: React.FC<TextboxProps> = (props) => {
   const { namespace } = props;
-  const model = useActionItemMonitor({ bus: props.bus, item: props.item });
   const bus = props.bus.type<t.DevActionEvent>();
-  const { placeholder, description, isSpinning } = model;
+
+  const model = useActionItemMonitor({ bus: props.bus, item: props.item });
+  const { label, placeholder, description, isSpinning } = model;
   const isActive = model.handlers.length > 0;
   const current = model.current;
-
-  const inputRef = useRef<TextInput>(null);
 
   const [pendingValue, setPendingValue] = useState<string | undefined>();
   const isPending = pendingValue !== undefined;
 
-  useEffect(() => setPendingValue(undefined), [current]); // Reset pending when model's [current] value is updated (eg. by a handler)
+  const inputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    setPendingValue(undefined);
+  }, [current]); // Reset pending when model's [current] value is updated (eg. by a handler)
   const value = isPending ? pendingValue : current;
-  const iconColor = isPending ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.4);
 
   const fire = (args: { action: t.ActionTextboxChangeType; next?: string }) => {
     const { next, action } = args;
@@ -37,19 +39,34 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
     });
   };
 
+  const fireInvoke = () => {
+    if (isPending) {
+      const next = pendingValue || '';
+      fire({ action: 'invoke', next });
+    }
+  };
+
   const styles = {
-    textbox: {
-      outer: css({
-        position: 'relative',
-        borderBottom: `solid 1px ${color.format(-0.1)}`,
-        paddingBottom: 2,
-        top: -2,
-      }),
-    },
+    base: css({
+      boxSizing: 'border-box',
+    }),
+    label: css({
+      color: color.format(-0.4),
+      fontSize: 11,
+      marginTop: 5,
+      marginLeft: 12,
+    }),
+    textbox: css({
+      position: 'relative',
+      borderBottom: `dashed 1px ${color.format(-0.2)}`,
+      paddingBottom: 2,
+      top: -2,
+    }),
+    send: css({ marginLeft: 4 }),
   };
 
   const elTextbox = (
-    <div {...styles.textbox.outer} title={value ? placeholder : undefined}>
+    <div {...styles.textbox} title={value ? placeholder : undefined}>
       <TextInput
         ref={inputRef}
         value={value || ''}
@@ -61,13 +78,25 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
         autoCorrect={false}
         autoCapitalize={false}
         isEnabled={model.handlers.length > 0}
-        onChange={(e) => setPendingValue(e.to)}
-        onEscape={() => setPendingValue(undefined)}
-        onEnter={() => fire({ action: 'invoke', next: value || '' })}
+        onChange={(e) => setPendingValue(() => e.to)}
+        onEscape={() => setPendingValue(() => undefined)}
+        onEnter={fireInvoke}
         onFocus={() => inputRef.current?.selectAll()}
       />
     </div>
   );
+
+  const iconColor = isPending ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.4);
+
+  const elRight = (
+    <div {...styles.send} onClick={fireInvoke}>
+      <Button isEnabled={isPending}>
+        <Icons.Send size={18} color={iconColor} />
+      </Button>
+    </div>
+  );
+
+  const elLabel = label && <div {...styles.label}>{label}</div>;
 
   return (
     <ItemLayout
@@ -76,9 +105,10 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
       label={elTextbox}
       description={description}
       pressOffset={0}
+      icon={{ component: Icons.Text, color: iconColor }}
       ellipsis={false}
-      iconColor={iconColor}
-      onClick={() => inputRef.current?.focus()}
+      top={elLabel}
+      right={elRight}
     />
   );
 };

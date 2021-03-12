@@ -93,7 +93,7 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Textbox');
 
-    e.textbox('my placeholder', (e) => {
+    e.textbox('my textbox', (e) => {
       // console.log('e', e);
     });
 

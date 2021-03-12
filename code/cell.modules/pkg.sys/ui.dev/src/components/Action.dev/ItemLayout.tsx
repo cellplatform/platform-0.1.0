@@ -13,9 +13,9 @@ export type ItemLayoutProps = {
   description?: React.ReactNode;
   placeholder?: boolean;
   isActive: boolean;
-  icon?: t.IIcon;
-  iconColor?: string | number;
+  icon?: { component?: t.IIcon; color?: string | number; size?: number };
   right?: React.ReactNode;
+  top?: React.ReactNode;
   isSpinning?: boolean;
   ellipsis?: boolean;
   pressOffset?: number;
@@ -23,7 +23,7 @@ export type ItemLayoutProps = {
   onClick?: () => void;
 };
 export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
-  const { placeholder, onClick, isSpinning } = props;
+  const { placeholder, onClick, isSpinning, icon } = props;
   const ellipsis = defaultValue(props.ellipsis, true);
   const pressOffset = defaultValue(props.pressOffset, 1);
 
@@ -39,14 +39,14 @@ export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
     base: css({
       position: 'relative',
       boxSizing: 'border-box',
+      PaddingY: 2,
     }),
     main: {
       outer: css({
         Flex: 'horizontal-stretch-stretch',
-        PaddingY: 2,
         paddingLeft: 12,
         paddingRight: 15,
-        cursor: isActive ? 'pointer' : 'default',
+        cursor: isActive && props.onClick ? 'pointer' : 'default',
         opacity: isActive ? 1 : 0.4,
       }),
       iconOuter: css({
@@ -54,7 +54,9 @@ export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
         height: 20,
         Flex: 'center-center',
       }),
-      icon: css({ opacity: isOver || props.iconColor !== undefined ? 1 : 0.4 }),
+      icon: css({
+        opacity: isOver || props.icon?.color !== undefined ? 1 : 0.4,
+      }),
       spinner: css({ Absolute: [3, null, null, 13] }),
     },
     body: {
@@ -81,9 +83,9 @@ export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
           textOverflow: 'ellipsis',
         }),
       description: css({
-        marginTop: 4,
         color: color.format(-0.4),
         fontSize: 11,
+        marginTop: 4,
       }),
     },
   };
@@ -102,18 +104,23 @@ export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
     }
   };
 
-  const Icon = props.icon || Icons.Variable;
-
   const label = props.label ? props.label : DEFAULT.UNNAMED;
   const description = props.description && (
     <Markdown style={styles.body.description}>{props.description}</Markdown>
   );
 
-  const iconColor = defaultValue(props.iconColor, isOver ? COLORS.BLUE : COLORS.DARK);
-  const elIcon = !isSpinning && <Icon color={iconColor} size={20} style={styles.main.icon} />;
+  const Icon = props.icon?.component || Icons.Variable;
+  const elIcon = !isSpinning && (
+    <Icon
+      color={defaultValue(props.icon?.color, isOver ? COLORS.BLUE : COLORS.DARK)}
+      size={defaultValue(props.icon?.size, 20)}
+      style={styles.main.icon}
+    />
+  );
 
   return (
     <div {...css(styles.base, props.style)}>
+      {props.top}
       <div
         {...styles.main.outer}
         onMouseEnter={overHandler(true)}

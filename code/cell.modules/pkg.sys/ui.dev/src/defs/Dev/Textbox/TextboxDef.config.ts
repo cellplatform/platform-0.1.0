@@ -1,4 +1,4 @@
-import { format, t, slug, DEFAULT } from '../common';
+import { format, t, slug } from '../common';
 
 type O = Record<string, unknown>;
 
@@ -6,8 +6,7 @@ type O = Record<string, unknown>;
  * A [Boolean] switch configurator.
  */
 export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
-  const placeholder = DEFAULT.UNNAMED;
-  const item: t.ActionTextbox = { id: slug(), kind: 'dev/textbox', placeholder, handlers: [] };
+  const item: t.ActionTextbox = { id: slug(), kind: 'dev/textbox', handlers: [] };
 
   const config: t.ActionTextboxConfigArgs<any> = {
     ctx,
@@ -15,8 +14,12 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
       item.current = format.string(value, { trim: true });
       return config;
     },
+    label(value) {
+      item.label = format.string(value, { trim: true });
+      return config;
+    },
     placeholder(value) {
-      item.placeholder = format.string(value, { trim: true }) || placeholder;
+      item.placeholder = format.string(value, { trim: true });
       return config;
     },
     description(value) {
@@ -32,7 +35,7 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
   if (typeof params[0] === 'function') {
     params[0](config);
   } else {
-    config.placeholder(params[0]).pipe(params[1]);
+    config.label(params[0]).pipe(params[1]);
   }
 
   return { item, config };
