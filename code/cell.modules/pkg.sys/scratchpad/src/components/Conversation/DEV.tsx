@@ -1,18 +1,16 @@
 import { asArray } from '@platform/util.value';
 import React from 'react';
-import { ActionButtonHandlerArgs, DevActions } from 'sys.ui.dev';
+import { DevActions } from 'sys.ui.dev';
 
-import { css, rx, StateObject, t, WebRuntime, createPeer, PeerJS, QueryString } from './common';
+import { createPeer, css, PeerJS, rx, StateObject, t, WebRuntime } from './common';
 import { Conversation, ConversationProps } from './Conversation';
 import { stateController } from './Conversation.controller';
 
-type O = Record<string, unknown>;
 type B = t.EventBus<t.ConversationEvent>;
 type Ctx = {
   fire: B['fire'];
   props: ConversationProps;
 };
-type E = ActionButtonHandlerArgs<Ctx>;
 
 /**
  * Actions
@@ -22,14 +20,25 @@ export const actions = DevActions<Ctx>()
   .context((prev) => {
     if (prev) return prev;
 
+    let peer: PeerJS;
     const bus = rx.bus<t.ConversationEvent>();
-    const peer = createPeer({ bus });
     const model = StateObject.create<t.ConversationState>({ peers: {} });
-    stateController({ bus, peer, model });
 
     const ctx: Ctx = {
       fire: bus.fire,
-      props: { peer, bus, model },
+      props: {
+        get peer() {
+          if (!peer) {
+            // NB: Lazily loaded to avoid needless calls
+            //     to the peering server when these actions are not loaded.
+            peer = createPeer({ bus });
+            stateController({ bus, peer, model });
+          }
+          return peer;
+        },
+        bus,
+        model,
+      },
     };
 
     return ctx;
@@ -43,11 +52,12 @@ export const actions = DevActions<Ctx>()
       return e.ctx.props.blur !== 0;
     });
 
-    e.button('reset url (clear peers)', (e) => {
+    e.button('reset url (reload)', (e) => {
       // const peer = e.ctx.props.peer;
       // const querystring = QueryString.generate({ peers: [peer.id] });
       const querystring = '?';
       history.pushState(null, 'cleared pears', querystring);
+      location.reload();
     });
     e.hr();
 

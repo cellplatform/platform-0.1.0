@@ -33,7 +33,6 @@ export function stateController(args: {
    * Listen for incoming data.
    */
   const listen = (connection: PeerJS.DataConnection) => {
-    console.log('listen', listen);
     connection.on('data', (input) => {
       if (typeof input !== 'object') return;
       if (typeof input.kind !== 'string') return;

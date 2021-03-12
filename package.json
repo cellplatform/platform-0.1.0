@@ -8,9 +8,9 @@
   "workspaces": {
     "packages": [
       "code/*",
-      "code/cell.modules/pkg*/*",
+      "code/cell.modules/pkg.*/*",
       "code/cell.runtime.electron/app",
-      "code/cell.service/deployment"
+      "code/cell.service/pkg.*"
     ],
     "nohoist": [
       "**/electron",

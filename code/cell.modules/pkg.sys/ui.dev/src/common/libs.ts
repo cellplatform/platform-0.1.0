@@ -17,3 +17,8 @@ export { HttpClient, Uri } from '@platform/cell.client';
 import { Builder } from '@platform/cell.module';
 export { Builder };
 export const format = Builder.format;
+
+export { WebRuntime } from '@platform/cell.runtime.web';
+
+export { log } from '@platform/log/lib/client';
+export { useClickOutside } from '@platform/react/lib/hooks';

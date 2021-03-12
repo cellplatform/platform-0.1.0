@@ -260,19 +260,19 @@ async function copy(args: { sourceDir: string; targetDir: string }) {
 }
 
 async function getTmplDir() {
-  const name = 'deployment';
+  const dirname = 'pkg.deployment';
 
   const get = async (dir: string) => {
     dir = fs.resolve(dir);
     return (await fs.pathExists(dir)) ? dir : undefined;
   };
 
-  const local = await get(name);
+  const local = await get(dirname);
   if (local) {
     return local;
   }
 
-  const nodeModules = await get(`node_modules/@platform/cell.service/${name}`);
+  const nodeModules = await get(`node_modules/@platform/cell.service/${dirname}`);
   if (nodeModules) {
     return nodeModules;
   }

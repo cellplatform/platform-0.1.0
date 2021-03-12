@@ -1,0 +1,29 @@
+{
+  "name": "sys.net",
+  "version": "0.0.0",
+  "sideEffects": false,
+  "compiler": {
+    "port": 3040
+  },
+  "scripts": {
+    "start": "cell.compiler dev $@",
+    "dev": "cell.compiler dev --no-exports $@",
+    "test": "ts test $@",
+    "lint": "ts lint $@",
+    "build": "ts build --no-esm $@",
+    "bundle": "cell.compiler bundle $@",
+    "watch": "cell.compiler watch $@",
+    "upload": "cell.compiler upload $@",
+    "clean": "cell.compiler clean $@",
+    "info": "cell.compiler info $@",
+    "serve": "cell.compiler serve $@"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@platform/cell.compiler": "~0.3.6",
+    "react": "~17.0.1",
+    "react-dom": "~17.0.1"
+  },
+  "license": "MIT",
+  "private": true
+}

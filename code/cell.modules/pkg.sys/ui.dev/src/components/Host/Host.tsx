@@ -26,7 +26,6 @@ export const Host: React.FC<HostProps> = (props) => {
 
   if (!actions) return null;
 
-  // const subject = props.subject || actions.renderSubject();
   const subject = actions.renderSubject();
   const env = actions.toObject().env;
 

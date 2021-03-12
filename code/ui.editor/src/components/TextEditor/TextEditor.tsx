@@ -144,7 +144,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
-    this.view.destroy();
+    this.view?.destroy();
   }
 
   /**
