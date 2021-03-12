@@ -1,6 +1,6 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
-import { VideoStream, VideoStreamProps, VideoStreamController } from '.';
+import { VideoStream, VideoStreamProps, VideoStreamBusController, useVideoStreamState } from '.';
 import { t, rx, cuid } from '../../common';
 
 type Ctx = {
@@ -18,7 +18,7 @@ export const actions = DevActions<Ctx>()
 
     const id = cuid();
     const bus = rx.bus<t.VideoEvent>();
-    VideoStreamController({ bus });
+    VideoStreamBusController({ bus });
 
     return {
       bus,
@@ -55,14 +55,21 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const { id, bus } = e.ctx.props;
     e.settings({
+      host: { background: -0.04 },
       layout: {
-        // label: '<VideoStream>',
+        label: '<VideoStream>',
         cropmarks: -0.2,
       },
-      host: { background: -0.04 },
     });
-    e.render(<VideoStream {...e.ctx.props} />);
+
+    const Sample: React.FC = () => {
+      const { stream } = useVideoStreamState({ id, bus });
+      return <VideoStream {...e.ctx.props} stream={stream} />;
+    };
+
+    e.render(<Sample />);
   });
 
 export default actions;

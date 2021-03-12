@@ -38,7 +38,7 @@ server.on('disconnect', (e) => logEvent(log.yellow('disconnect'), e));
 function logEvent(name: string, e: Client) {
   const table = log.table({ border: false });
   const add = (label: string, value: string | number) => {
-    table.add([log.gray(label), '  ', log.white(value)]);
+    table.add([' • ', log.gray(label), '  ', log.white(value)]);
   };
 
   add('id', e.getId());

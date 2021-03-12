@@ -1,4 +1,5 @@
 export * from './types';
 
 export * from './VideoStream';
-export * from './VideoStreamController';
+export * from './VideoStreamBusController';
+export * from './useVideoStreamState';

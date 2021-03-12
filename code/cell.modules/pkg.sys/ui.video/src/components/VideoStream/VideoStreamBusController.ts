@@ -6,7 +6,7 @@ import { R, rx, t } from '../../common';
 /**
  * Manages an event bus dealing with video stream.
  */
-export function VideoStreamController(args: { bus: t.EventBus<any> }) {
+export function VideoStreamBusController(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
 
