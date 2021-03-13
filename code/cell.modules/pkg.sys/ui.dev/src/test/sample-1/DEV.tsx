@@ -93,7 +93,7 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Textbox');
 
-    e.textbox('my textbox', (e) => {
+    e.textbox('my textbox `code`', (e) => {
       // console.log('e', e);
     });
 

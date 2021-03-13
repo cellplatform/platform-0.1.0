@@ -23,6 +23,11 @@ const styles = {
   [`.${CSS.ACTIONS} .${CSS.MARKDOWN} :first-child`]: {
     marginTop: 0,
   },
+
+  // Last paragraph does not push out next element.
+  [`.${CSS.ACTIONS} .${CSS.MARKDOWN} p:last-child`]: {
+    marginBottom: 0,
+  },
 };
 
 style.global(styles);

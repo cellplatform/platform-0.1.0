@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { color, COLORS, css, t, useActionItemMonitor } from '../common';
 import { Button, Icons, TextInput } from '../Primitives';
-import { ItemLayout } from './ItemLayout';
+import { Layout, LayoutTitle } from './Layout';
 
 export type TextboxProps = {
   namespace: string;
@@ -15,7 +15,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
   const bus = props.bus.type<t.DevActionEvent>();
 
   const model = useActionItemMonitor({ bus: props.bus, item: props.item });
-  const { title: label, placeholder, description, isSpinning } = model;
+  const { title, placeholder, description, isSpinning } = model;
   const isActive = model.handlers.length > 0;
   const current = model.current;
 
@@ -49,12 +49,6 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
   const styles = {
     base: css({
       boxSizing: 'border-box',
-    }),
-    label: css({
-      color: color.format(-0.4),
-      fontSize: 11,
-      marginTop: 5,
-      marginLeft: 12,
     }),
     textbox: css({
       position: 'relative',
@@ -96,10 +90,10 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
     </div>
   );
 
-  const elLabel = label && <div {...styles.label}>{label}</div>;
+  const elTitle = title && <LayoutTitle>{title}</LayoutTitle>;
 
   return (
-    <ItemLayout
+    <Layout
       isActive={isActive}
       isSpinning={isSpinning}
       label={elTextbox}
@@ -107,7 +101,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
       pressOffset={0}
       icon={{ Component: Icons.Text, color: iconColor }}
       ellipsis={false}
-      top={elLabel}
+      top={elTitle}
       right={elRight}
     />
   );

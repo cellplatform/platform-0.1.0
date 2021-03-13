@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { t } from '../common';
-import { ItemLayout } from './ItemLayout';
+import { Layout } from './Layout';
 
 export type ButtonProps = {
   namespace: string;
@@ -26,7 +26,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
     });
 
   return (
-    <ItemLayout
+    <Layout
       isActive={isActive}
       isSpinning={isSpinning}
       label={label}

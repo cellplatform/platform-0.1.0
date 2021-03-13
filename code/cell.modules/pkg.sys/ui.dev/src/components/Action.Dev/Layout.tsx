@@ -5,24 +5,27 @@ import { Icons } from '../Icons';
 import { Markdown } from '../Markdown';
 import { Spinner } from '../Primitives';
 
+export * from './Layout.Title';
+
 /**
  * A base layout for the display of an dev [Action] item.
  */
-export type ItemLayoutProps = {
+export type LayoutProps = {
   label: React.ReactNode;
   description?: React.ReactNode;
   placeholder?: boolean;
   isActive: boolean;
   icon?: { Component?: t.IIcon; color?: string | number; size?: number };
-  right?: React.ReactNode;
   top?: React.ReactNode;
+  right?: React.ReactNode;
   isSpinning?: boolean;
   ellipsis?: boolean;
   pressOffset?: number;
   style?: CssValue;
   onClick?: () => void;
 };
-export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
+
+export const Layout: React.FC<LayoutProps> = (props) => {
   const { placeholder, onClick, isSpinning, icon } = props;
   const ellipsis = defaultValue(props.ellipsis, true);
   const pressOffset = defaultValue(props.pressOffset, 1);
@@ -59,6 +62,13 @@ export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
       }),
       spinner: css({ Absolute: [3, null, null, 13] }),
     },
+    title: {
+      markdown: css({
+        color: color.format(-0.4),
+        fontSize: 10,
+        marginTop: 4,
+      }),
+    },
     body: {
       outer: css({
         flex: 1,
@@ -86,6 +96,7 @@ export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
         color: color.format(-0.4),
         fontSize: 10,
         marginTop: 4,
+        marginBottom: 4,
       }),
     },
   };
@@ -104,8 +115,9 @@ export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
     }
   };
 
-  const label = props.label ? props.label : DEFAULT.UNNAMED;
-  const description = props.description && (
+  const elLabel = props.label ? props.label : DEFAULT.UNNAMED;
+
+  const elDescription = props.description && (
     <Markdown style={styles.body.description}>{props.description}</Markdown>
   );
 
@@ -133,8 +145,8 @@ export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
           {isSpinning && <Spinner style={styles.main.spinner} size={18} />}
         </div>
         <div {...styles.body.outer}>
-          <div {...css(styles.body.label, styles.body.ellipsis)}>{label}</div>
-          {description}
+          <div {...css(styles.body.label, styles.body.ellipsis)}>{elLabel}</div>
+          {elDescription}
         </div>
         {props.right}
       </div>

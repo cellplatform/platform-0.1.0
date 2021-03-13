@@ -2,7 +2,7 @@ import React from 'react';
 
 import { t, useActionItemMonitor } from '../common';
 import { Switch } from '../Primitives';
-import { ItemLayout } from './ItemLayout';
+import { Layout } from './Layout';
 
 export type BoolProps = {
   namespace: string;
@@ -32,7 +32,7 @@ export const Bool: React.FC<BoolProps> = (props) => {
   const elSwitch = <Switch value={value} isEnabled={isActive} height={18} />;
 
   return (
-    <ItemLayout
+    <Layout
       isActive={isActive}
       isSpinning={isSpinning}
       label={label}
