@@ -9,18 +9,18 @@ import { rx, t } from '../../common';
  */
 export function useVideoStreamState(args: { id: string; bus: t.EventBus<any> }) {
   const { id } = args;
-  const bus = args.bus.type<t.VideoEvent>();
+  const bus = args.bus.type<t.MediaEvent>();
   const [stream, setStream] = useState<MediaStream | undefined>();
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
     const $ = bus.event$.pipe(takeUntil(dispose$));
 
-    rx.payload<t.VideoStreamStartedEvent>($, 'VideoStream/started')
+    rx.payload<t.MediaStreamStartedEvent>($, 'MediaStream/started')
       .pipe(filter((e) => e.ref === id))
       .subscribe((e) => setStream(e.stream));
 
-    rx.payload<t.VideoStreamStopEvent>($, 'VideoStream/stop')
+    rx.payload<t.MediaStreamStopEvent>($, 'MediaStream/stop')
       .pipe(filter((e) => e.ref === id))
       .subscribe((e) => setStream(undefined));
 

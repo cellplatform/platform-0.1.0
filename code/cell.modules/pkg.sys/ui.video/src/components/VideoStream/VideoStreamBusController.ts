@@ -12,7 +12,7 @@ type Ref = { ref: string; stream: MediaStream; constraints: M };
  */
 export function VideoStreamBusController(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
-  const bus = args.bus.type<t.VideoEvent>();
+  const bus = args.bus.type<t.MediaEvent>();
   const $ = bus.event$.pipe(takeUntil(dispose$));
   let refs: Refs = {};
 
@@ -20,7 +20,7 @@ export function VideoStreamBusController(args: { bus: t.EventBus<any> }) {
    * STSTUS
    */
 
-  rx.payload<t.VideoStreamStatusRequestEvent>($, 'VideoStream/status:req')
+  rx.payload<t.MediaStreamStatusRequestEvent>($, 'MediaStream/status:req')
     .pipe()
     .subscribe((e) => {
       const { ref } = e;
@@ -31,7 +31,7 @@ export function VideoStreamBusController(args: { bus: t.EventBus<any> }) {
       const tracks = toTracks(item?.stream);
 
       bus.fire({
-        type: 'VideoStream/status:res',
+        type: 'MediaStream/status:res',
         payload: { ref, exists, stream, constraints, tracks },
       });
     });
@@ -39,7 +39,7 @@ export function VideoStreamBusController(args: { bus: t.EventBus<any> }) {
   /**
    * START Connect to local-device media (camera/audio).
    */
-  rx.payload<t.VideoStreamStartEvent>($, 'VideoStream/start')
+  rx.payload<t.MediaStreamStartEvent>($, 'MediaStream/start')
     .pipe()
     .subscribe(async (e) => {
       const { ref } = e;
@@ -57,7 +57,7 @@ export function VideoStreamBusController(args: { bus: t.EventBus<any> }) {
       const { stream } = refs[ref];
 
       bus.fire({
-        type: 'VideoStream/started',
+        type: 'MediaStream/started',
         payload: { ref, stream },
       });
     });
@@ -65,7 +65,7 @@ export function VideoStreamBusController(args: { bus: t.EventBus<any> }) {
   /**
    * STOP
    */
-  rx.payload<t.VideoStreamStopEvent>($, 'VideoStream/stop')
+  rx.payload<t.MediaStreamStopEvent>($, 'MediaStream/stop')
     .pipe()
     .subscribe((e) => {
       const { ref } = e;
@@ -76,7 +76,7 @@ export function VideoStreamBusController(args: { bus: t.EventBus<any> }) {
       const tracks = toTracks(stream);
 
       bus.fire({
-        type: 'VideoStream/stopped',
+        type: 'MediaStream/stopped',
         payload: { ref, tracks },
       });
     });
@@ -98,8 +98,8 @@ function toTracks(stream?: MediaStream) {
   return (stream?.getTracks() || []).map(toTrack);
 }
 
-function toTrack(input: MediaStreamTrack): t.VideoStreamTrack {
+function toTrack(input: MediaStreamTrack): t.MediaStreamTrack {
   const { id, enabled: isEnabled, muted: isMuted, label, readyState: state } = input;
-  const kind = input.kind as t.VideoStreamTrack['kind'];
+  const kind = input.kind as t.MediaStreamTrack['kind'];
   return { kind, id, isEnabled, isMuted, label, state };
 }

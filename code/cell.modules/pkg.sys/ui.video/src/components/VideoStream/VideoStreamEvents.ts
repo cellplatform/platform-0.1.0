@@ -9,7 +9,7 @@ import { rx, t } from '../../common';
 export function VideoStreamEvents(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
-  const bus = args.bus.type<t.VideoStreamEvent>();
+  const bus = args.bus.type<t.MediaStreamEvent>();
   const event$ = bus.event$.pipe(takeUntil(dispose$));
 
   return {
@@ -18,22 +18,22 @@ export function VideoStreamEvents(args: { bus: t.EventBus<any> }) {
 
     started(ref: string) {
       const $ = rx
-        .payload<t.VideoStreamStartedEvent>(event$, 'VideoStream/started')
+        .payload<t.MediaStreamStartedEvent>(event$, 'MediaStream/started')
         .pipe(filter((e) => e.ref === ref));
       return { ref, $ };
     },
 
     status(ref: string) {
       const request$ = rx
-        .payload<t.VideoStreamStatusRequestEvent>(event$, 'VideoStream/status:req')
+        .payload<t.MediaStreamStatusRequestEvent>(event$, 'MediaStream/status:req')
         .pipe(filter((e) => e.ref === ref));
       const response$ = rx
-        .payload<t.VideoStreamStatusResponseEvent>(event$, 'VideoStream/status:res')
+        .payload<t.MediaStreamStatusResponseEvent>(event$, 'MediaStream/status:res')
         .pipe(filter((e) => e.ref === ref));
 
       const get = () => {
         const res = firstValueFrom(response$);
-        bus.fire({ type: 'VideoStream/status:req', payload: { ref } });
+        bus.fire({ type: 'MediaStream/status:req', payload: { ref } });
         return res;
       };
 

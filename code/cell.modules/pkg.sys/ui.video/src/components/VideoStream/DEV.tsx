@@ -15,7 +15,7 @@ import {
 import { cuid, log, rx, t } from '../../common';
 
 type Ctx = {
-  bus: t.EventBus<t.VideoEvent>;
+  bus: t.EventBus<t.MediaEvent>;
   events: ReturnType<typeof VideoStreamEvents>;
   props: VideoStreamProps;
 };
@@ -29,12 +29,12 @@ export const actions = DevActions<Ctx>()
     if (prev) return prev;
 
     const id = cuid();
-    const bus = rx.bus<t.VideoEvent>();
+    const bus = rx.bus<t.MediaEvent>();
     const events = VideoStreamEvents({ bus });
     VideoStreamBusController({ bus });
     VideoStreamRecordController({ ref: id, bus });
 
-    rx.payload<t.VideoStreamRecordErrorEvent>(bus.event$, 'VideoStream/record/error')
+    rx.payload<t.MediaStreamRecordErrorEvent>(bus.event$, 'MediaStream/record/error')
       .pipe(filter((e) => e.ref === id))
       .subscribe((e) => {
         log.info('error', e);
@@ -50,25 +50,25 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Get Started');
 
-    e.button('fire: VideoStream/start', (e) => {
+    e.button('fire: MediaStream/start', (e) => {
       const ref = e.ctx.props.id;
       e.ctx.bus.fire({
-        type: 'VideoStream/start',
+        type: 'MediaStream/start',
         payload: { ref, constraints: { video: true } },
       });
     });
 
-    e.button('fire: VideoStream/stop [TODO]', (e) => {
+    e.button('fire: MediaStream/stop [TODO]', (e) => {
       const ref = e.ctx.props.id;
       e.ctx.bus.fire({
-        type: 'VideoStream/stop',
+        type: 'MediaStream/stop',
         payload: { ref },
       });
     });
 
     e.hr(1, 0.1);
 
-    e.button('fire: VideoStream/status:req ', async (e) => {
+    e.button('fire: MediaStream/status:req ', async (e) => {
       const ref = e.ctx.props.id;
       const res = await e.ctx.events.status(ref).get();
       const data = {
@@ -89,13 +89,13 @@ export const actions = DevActions<Ctx>()
 
     e.button('start', (e) => {
       const ref = e.ctx.props.id;
-      e.ctx.bus.fire({ type: 'VideoStream/record/start', payload: { ref } });
+      e.ctx.bus.fire({ type: 'MediaStream/record/start', payload: { ref } });
     });
 
     e.button('stop (and download)', (e) => {
       const ref = e.ctx.props.id;
       e.ctx.bus.fire({
-        type: 'VideoStream/record/stop',
+        type: 'MediaStream/record/stop',
         payload: { ref, download: { filename: 'test' } },
       });
     });
@@ -107,7 +107,7 @@ export const actions = DevActions<Ctx>()
         .pipe((e) => {
           const ref = e.ctx.props.id;
           e.ctx.bus.fire({
-            type: 'VideoStream/record/stop',
+            type: 'MediaStream/record/stop',
             payload: {
               ref,
               data: (file) => {

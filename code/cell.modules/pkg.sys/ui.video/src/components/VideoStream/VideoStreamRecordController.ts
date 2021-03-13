@@ -12,7 +12,7 @@ type M = 'video/webm';
 export function VideoStreamRecordController(args: { ref: string; bus: t.EventBus<any> }) {
   const { ref } = args;
   const dispose$ = new Subject<void>();
-  const bus = args.bus.type<t.VideoStreamRecordEvent>();
+  const bus = args.bus.type<t.MediaStreamRecordEvent>();
   const events = VideoStreamEvents({ bus });
   const $ = bus.event$.pipe(takeUntil(dispose$));
 
@@ -27,7 +27,7 @@ export function VideoStreamRecordController(args: { ref: string; bus: t.EventBus
    */
 
   const error = (error: string) => {
-    bus.fire({ type: 'VideoStream/record/error', payload: { ref, error } });
+    bus.fire({ type: 'MediaStream/record/error', payload: { ref, error } });
   };
 
   /**
@@ -38,7 +38,7 @@ export function VideoStreamRecordController(args: { ref: string; bus: t.EventBus
   /**
    * Start recording.
    */
-  rx.payload<t.VideoStreamRecordStartEvent>($, 'VideoStream/record/start')
+  rx.payload<t.MediaStreamRecordStartEvent>($, 'MediaStream/record/start')
     .pipe(filter((e) => e.ref === ref))
     .subscribe((e) => {
       if (!stream) {
@@ -53,13 +53,13 @@ export function VideoStreamRecordController(args: { ref: string; bus: t.EventBus
       const { mimetype = 'video/webm' } = e;
 
       recorder = Recorder({ stream, mimetype }).start();
-      bus.fire({ type: 'VideoStream/record/started', payload: e });
+      bus.fire({ type: 'MediaStream/record/started', payload: e });
     });
 
   /**
    * Stop recording.
    */
-  rx.payload<t.VideoStreamRecordStopEvent>($, 'VideoStream/record/stop')
+  rx.payload<t.MediaStreamRecordStopEvent>($, 'MediaStream/record/stop')
     .pipe(filter((e) => e.ref === ref))
     .subscribe(async (e) => {
       const { ref } = e;
@@ -73,7 +73,7 @@ export function VideoStreamRecordController(args: { ref: string; bus: t.EventBus
       if (e.data) e.data(blob);
 
       bus.fire({
-        type: 'VideoStream/record/stopped',
+        type: 'MediaStream/record/stopped',
         payload: { ref, file: blob },
       });
 
