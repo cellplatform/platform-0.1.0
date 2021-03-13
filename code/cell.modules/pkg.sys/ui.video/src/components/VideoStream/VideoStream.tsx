@@ -33,6 +33,7 @@ export const VideoStream: React.FC<VideoStreamProps> = (props) => {
       height,
     }),
     video: css({
+      display: stream?.active ? 'block' : 'none',
       objectFit: 'cover',
       width: '100%',
       height: '100%',

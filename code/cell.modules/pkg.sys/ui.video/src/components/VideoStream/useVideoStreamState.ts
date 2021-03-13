@@ -20,6 +20,10 @@ export function useVideoStreamState(args: { id: string; bus: t.EventBus<any> }) 
       .pipe(filter((e) => e.ref === id))
       .subscribe((e) => setStream(e.stream));
 
+    rx.payload<t.VideoStreamStopEvent>($, 'VideoStream/stop')
+      .pipe(filter((e) => e.ref === id))
+      .subscribe((e) => setStream(undefined));
+
     return () => dispose$.next();
   }, [bus, id]);
 
