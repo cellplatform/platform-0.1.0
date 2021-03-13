@@ -7,16 +7,16 @@ import { deleteUndefined } from '../../common';
 import {
   useVideoStreamState,
   VideoStream,
-  VideoStreamBusController,
-  VideoStreamEvents,
+  MediaStreamBusController,
+  MediaStreamEvents,
   VideoStreamProps,
-  VideoStreamRecordController,
+  MediaStreamRecordController,
 } from '.';
 import { cuid, log, rx, t } from '../../common';
 
 type Ctx = {
   bus: t.EventBus<t.MediaEvent>;
-  events: ReturnType<typeof VideoStreamEvents>;
+  events: ReturnType<typeof MediaStreamEvents>;
   props: VideoStreamProps;
 };
 
@@ -30,9 +30,9 @@ export const actions = DevActions<Ctx>()
 
     const id = cuid();
     const bus = rx.bus<t.MediaEvent>();
-    const events = VideoStreamEvents({ bus });
-    VideoStreamBusController({ bus });
-    VideoStreamRecordController({ ref: id, bus });
+    const events = MediaStreamEvents({ bus });
+    MediaStreamBusController({ bus });
+    MediaStreamRecordController({ ref: id, bus });
 
     rx.payload<t.MediaStreamRecordErrorEvent>(bus.event$, 'MediaStream/record/error')
       .pipe(filter((e) => e.ref === id))

@@ -2,18 +2,18 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { R, rx, t, time } from '../../common';
-import { VideoStreamEvents } from './VideoStreamEvents';
+import { MediaStreamEvents } from './MediaStream.Events';
 
 type M = 'video/webm';
 
 /**
  * Manages recording a video stream (via the given stream "ref" identifier).
  */
-export function VideoStreamRecordController(args: { ref: string; bus: t.EventBus<any> }) {
+export function MediaStreamRecordController(args: { ref: string; bus: t.EventBus<any> }) {
   const { ref } = args;
   const dispose$ = new Subject<void>();
   const bus = args.bus.type<t.MediaStreamRecordEvent>();
-  const events = VideoStreamEvents({ bus });
+  const events = MediaStreamEvents({ bus });
   const $ = bus.event$.pipe(takeUntil(dispose$));
 
   let stream: MediaStream | undefined;
@@ -27,7 +27,10 @@ export function VideoStreamRecordController(args: { ref: string; bus: t.EventBus
    */
 
   const error = (error: string) => {
-    bus.fire({ type: 'MediaStream/record/error', payload: { ref, error } });
+    bus.fire({
+      type: 'MediaStream/record/error',
+      payload: { ref, error },
+    });
   };
 
   /**

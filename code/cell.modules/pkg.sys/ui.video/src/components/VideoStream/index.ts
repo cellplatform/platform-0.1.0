@@ -1,8 +1,8 @@
 export * from './types';
 
 export * from './VideoStream';
-export * from './VideoStreamEvents';
-export * from './VideoStreamBusController';
-export * from './VideoStreamRecordController';
-
 export * from './useVideoStreamState';
+
+export * from './MediaStream.Events';
+export * from './MediaStream.BusController';
+export * from './MediaStream.RecordController';

@@ -10,7 +10,7 @@ type Ref = { ref: string; stream: MediaStream; constraints: M };
 /**
  * Manages an event bus dealing with video stream.
  */
-export function VideoStreamBusController(args: { bus: t.EventBus<any> }) {
+export function MediaStreamBusController(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
   const bus = args.bus.type<t.MediaEvent>();
   const $ = bus.event$.pipe(takeUntil(dispose$));
