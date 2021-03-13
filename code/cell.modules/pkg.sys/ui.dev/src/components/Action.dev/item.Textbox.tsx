@@ -15,7 +15,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
   const bus = props.bus.type<t.DevActionEvent>();
 
   const model = useActionItemMonitor({ bus: props.bus, item: props.item });
-  const { label, placeholder, description, isSpinning } = model;
+  const { title: label, placeholder, description, isSpinning } = model;
   const isActive = model.handlers.length > 0;
   const current = model.current;
 

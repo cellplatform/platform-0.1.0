@@ -14,8 +14,8 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
       item.current = format.string(value, { trim: true });
       return config;
     },
-    label(value) {
-      item.label = format.string(value, { trim: true });
+    title(value) {
+      item.title = format.string(value, { trim: true });
       return config;
     },
     placeholder(value) {
@@ -35,7 +35,7 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
   if (typeof params[0] === 'function') {
     params[0](config);
   } else {
-    config.label(params[0]).pipe(params[1]);
+    config.title(params[0]).pipe(params[1]);
   }
 
   return { item, config };

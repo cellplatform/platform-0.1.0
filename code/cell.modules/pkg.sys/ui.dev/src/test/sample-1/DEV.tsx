@@ -47,7 +47,7 @@ export const actions = DevActions<Ctx>()
     e.markdown(markdown());
 
     e.title('Context (ctx)');
-    e.button('change text', (e) => {
+    e.button('change text [TODO]', (e) => {
       e.ctx.count++;
       e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
     });
