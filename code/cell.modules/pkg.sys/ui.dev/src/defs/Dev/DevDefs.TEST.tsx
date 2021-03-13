@@ -1,3 +1,5 @@
+import React, { useEffect, useRef, useState } from 'react';
+import * as ReactDOM from 'react-dom';
 import { ActionsFactory } from '../..';
 import { DevDefs, DisplayDefs } from '../../defs';
 import { expect, rx, t } from '../../test';
@@ -34,14 +36,17 @@ describe('Dev', () => {
 
       expect(button1.kind).to.eql('dev/button');
       expect(button1.label).to.eql('foo');
+      expect(button1.title).to.eql(undefined);
       expect(button1.handlers).to.eql([fn1]);
 
       expect(button2.kind).to.eql('dev/button');
       expect(button2.label).to.eql('bar');
+      expect(button2.title).to.eql(undefined);
       expect(button2.handlers).to.eql([fn1]);
 
       expect(button3.kind).to.eql('dev/button');
       expect(button3.label).to.eql('foo');
+      expect(button3.title).to.eql(undefined);
       expect(button3.handlers).to.eql([fn2]);
     });
 
@@ -55,6 +60,7 @@ describe('Dev', () => {
 
       const button = items[0] as t.ActionButton;
       expect(button.label).to.eql('foo');
+      expect(button.title).to.eql(undefined);
       expect(button.handlers).to.eql([]);
     });
 
@@ -63,7 +69,9 @@ describe('Dev', () => {
       expect(model.state.items).to.eql([]);
 
       const fn: t.ActionButtonHandler<any> = () => null;
-      actions.items((e) => e.button((config) => config.label('foo').pipe(fn)));
+      actions.items((e) =>
+        e.button((config) => config.title('  my title ').label('  foo  ').pipe(fn)),
+      );
 
       const items = model.state.items;
       expect(items.length).to.eql(1);
@@ -71,7 +79,24 @@ describe('Dev', () => {
 
       const button = items[0] as t.ActionButton;
       expect(button.kind).to.eql('dev/button');
+      expect(button.label).to.eql('foo');
+      expect(button.title).to.eql('my title');
       expect(button.handlers).to.eql([fn]);
+    });
+
+    it('react components', () => {
+      const { actions, model } = create();
+      expect(model.state.items).to.eql([]);
+
+      const el = <div>Foo</div>;
+      actions.items((e) => e.button((config) => config.title(el).label(el).description(el)));
+
+      const items = model.state.items;
+      const button = items[0] as t.ActionButton;
+
+      expect(button.title).to.equal(el);
+      expect(button.label).to.equal(el);
+      expect(button.description).to.equal(el);
     });
 
     it('config: "Unnamed"', () => {
@@ -84,6 +109,7 @@ describe('Dev', () => {
       const button = items[0] as t.ActionButton;
       expect(button.kind).to.eql('dev/button');
       expect(button.label).to.eql('Unnamed');
+      expect(button.title).to.eql(undefined);
     });
 
     it('config: "Unnamed" (via empty value)', () => {
@@ -143,30 +169,35 @@ describe('Dev', () => {
       actions.items((e) => {
         e.boolean('  foo  ', fn1);
         e.boolean('bar', fn1);
-        e.boolean((config) => config.label('foo').pipe(fn2).description('a thing'));
+        e.boolean((config) =>
+          config.title(' my title ').label(' foo ').pipe(fn2).description('a thing'),
+        );
       });
 
       const items = model.state.items;
       expect(items.length).to.eql(3);
 
-      const button1 = items[0] as t.ActionBoolean;
-      const button2 = items[1] as t.ActionBoolean;
-      const button3 = items[2] as t.ActionBoolean;
+      const bool1 = items[0] as t.ActionBoolean;
+      const bool2 = items[1] as t.ActionBoolean;
+      const bool3 = items[2] as t.ActionBoolean;
 
-      expect(button1.kind).to.eql('dev/boolean');
-      expect(button1.label).to.eql('foo');
-      expect(button1.description).to.eql(undefined);
-      expect(button1.handlers).to.eql([fn1]);
+      expect(bool1.kind).to.eql('dev/boolean');
+      expect(bool1.title).to.eql(undefined);
+      expect(bool1.label).to.eql('foo');
+      expect(bool1.description).to.eql(undefined);
+      expect(bool1.handlers).to.eql([fn1]);
 
-      expect(button2.kind).to.eql('dev/boolean');
-      expect(button2.label).to.eql('bar');
-      expect(button2.description).to.eql(undefined);
-      expect(button2.handlers).to.eql([fn1]);
+      expect(bool2.kind).to.eql('dev/boolean');
+      expect(bool2.title).to.eql(undefined);
+      expect(bool2.label).to.eql('bar');
+      expect(bool2.description).to.eql(undefined);
+      expect(bool2.handlers).to.eql([fn1]);
 
-      expect(button3.kind).to.eql('dev/boolean');
-      expect(button3.label).to.eql('foo');
-      expect(button3.description).to.eql('a thing');
-      expect(button3.handlers).to.eql([fn2]);
+      expect(bool3.kind).to.eql('dev/boolean');
+      expect(bool3.title).to.eql('my title');
+      expect(bool3.label).to.eql('foo');
+      expect(bool3.description).to.eql('a thing');
+      expect(bool3.handlers).to.eql([fn2]);
     });
 
     it('label (no handler)', () => {
@@ -176,9 +207,24 @@ describe('Dev', () => {
       const items = model.state.items;
       expect(items.length).to.eql(1);
 
-      const button = items[0] as t.ActionBoolean;
-      expect(button.label).to.eql('foo');
-      expect(button.handlers).to.eql([]);
+      const bool = items[0] as t.ActionBoolean;
+      expect(bool.label).to.eql('foo');
+      expect(bool.handlers).to.eql([]);
+    });
+
+    it('react components', () => {
+      const { actions, model } = create();
+      expect(model.state.items).to.eql([]);
+
+      const el = <div>Foo</div>;
+      actions.items((e) => e.boolean((config) => config.title(el).label(el).description(el)));
+
+      const items = model.state.items;
+      const bool = items[0] as t.ActionBoolean;
+
+      expect(bool.title).to.equal(el);
+      expect(bool.label).to.equal(el);
+      expect(bool.description).to.equal(el);
     });
 
     it('pipe multiple handlers', () => {
@@ -191,12 +237,12 @@ describe('Dev', () => {
 
       const items = model.state.items;
       expect(items.length).to.eql(1);
-      const button = items[0] as t.ActionBoolean;
+      const bool = items[0] as t.ActionBoolean;
 
-      expect(button.handlers.length).to.eql(3);
-      expect(button.handlers[0]).to.eql(fn1);
-      expect(button.handlers[1]).to.eql(fn2);
-      expect(button.handlers[2]).to.eql(fn1);
+      expect(bool.handlers.length).to.eql(3);
+      expect(bool.handlers[0]).to.eql(fn1);
+      expect(bool.handlers[1]).to.eql(fn2);
+      expect(bool.handlers[2]).to.eql(fn1);
     });
   });
 
@@ -211,7 +257,8 @@ describe('Dev', () => {
         e.select((config) => config.label('  foo  ').pipe(fn1));
         e.select((config) =>
           config
-            .label('bar')
+            .title(' my title ')
+            .label(' bar ')
             .items(['one', { label: 'two', value: 2 }])
             .initial(2)
             .multi(true)
@@ -228,6 +275,7 @@ describe('Dev', () => {
       const select2 = items[1] as t.ActionSelect;
 
       expect(select1.kind).to.eql('dev/select');
+      expect(select1.title).to.eql(undefined);
       expect(select1.label).to.eql('foo');
       expect(select1.description).to.eql(undefined);
       expect(select1.items).to.eql([]);
@@ -236,6 +284,7 @@ describe('Dev', () => {
       expect(select1.clearable).to.eql(false);
 
       expect(select2.kind).to.eql('dev/select');
+      expect(select2.title).to.eql('my title');
       expect(select2.label).to.eql('bar');
       expect(select2.description).to.eql('a thing');
       expect(select2.items).to.eql(['one', { label: 'two', value: 2 }]);
@@ -255,6 +304,21 @@ describe('Dev', () => {
       const button = items[0] as t.ActionSelect;
       expect(button.label).to.eql('foo');
       expect(button.handlers).to.eql([]);
+    });
+
+    it('react components', () => {
+      const { actions, model } = create();
+      expect(model.state.items).to.eql([]);
+
+      const el = <div>Foo</div>;
+      actions.items((e) => e.select((config) => config.title(el).label(el).description(el)));
+
+      const items = model.state.items;
+      const select = items[0] as t.ActionSelect;
+
+      expect(select.title).to.equal(el);
+      expect(select.label).to.equal(el);
+      expect(select.description).to.equal(el);
     });
 
     it('pipe multiple handlers', () => {

@@ -46,6 +46,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
     }),
     main: {
       outer: css({
+        position: 'relative',
         Flex: 'horizontal-stretch-stretch',
         paddingLeft: 12,
         paddingRight: 15,
@@ -71,6 +72,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
     },
     body: {
       outer: css({
+        position: 'relative',
         flex: 1,
         marginLeft: 6,
         marginTop: 5,
@@ -86,15 +88,10 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         transform: isDown ? `translateY(${pressOffset}px)` : undefined,
       }),
       ellipsis:
-        ellipsis &&
-        css({
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }),
+        ellipsis && css({ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }),
       description: css({
         color: color.format(-0.4),
-        fontSize: 10,
+        fontSize: 11,
         marginTop: 4,
         marginBottom: 4,
       }),

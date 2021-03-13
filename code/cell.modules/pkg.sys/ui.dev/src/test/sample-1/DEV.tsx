@@ -24,7 +24,8 @@ const LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque 
 
 const markdown = () => {
   let text = '';
-  text = `${text} *I am italic*, **I am bold** \`code\` `;
+  text = `I am markdown. ${text} *I am italic*, **I am bold**,  `;
+  text = `${text} \nI am \`code\``;
   text = `${text} \n- one\n- two\n - three`;
   text = `${text}\n\n${LOREM}\n\n${LOREM} (${count})`;
   return text.trim();
@@ -132,6 +133,7 @@ export const actions = DevActions<Ctx>()
     e.button((config) => null);
     e.button((config) => {
       config
+        .title('My button title:')
         .label('markdown')
         .description(markdown())
         .pipe((e) => {
@@ -158,9 +160,18 @@ export const actions = DevActions<Ctx>()
     e.title('Boolean');
 
     e.boolean('boolean (disabled)');
-    e.boolean('spinner', async (e) => {
-      if (e.changing) await time.wait(800);
-    });
+
+    e.boolean((config) =>
+      config
+        .title('My switch title:')
+        .label('spinner')
+        .pipe(async (e) => {
+          if (e.changing) await time.wait(800);
+        }),
+    );
+
+    // e.boolean('spinner', async (e) => {});
+
     e.boolean('is running', (e) => {
       if (e.changing) {
         count++;
@@ -180,6 +191,7 @@ export const actions = DevActions<Ctx>()
     e.title('Select');
     e.select((config) =>
       config
+        .title('My dropdown title:')
         .label('select single')
         .items(['one', { label: 'two', value: { count: 2 } }, 3])
         .initial(3)

@@ -18,6 +18,7 @@ export type ActionSelect = t.ActionSelectProps & {
 export type ActionSelectConfig<Ctx extends O> = (args: ActionSelectConfigArgs<Ctx>) => void;
 export type ActionSelectConfigArgs<Ctx extends O> = {
   ctx: Ctx;
+  title(value: string | t.ReactNode): ActionSelectConfigArgs<Ctx>;
   label(value: string | t.ReactNode): ActionSelectConfigArgs<Ctx>;
   description(value: string | t.ReactNode): ActionSelectConfigArgs<Ctx>;
   items(list: t.ActionSelectItemInput[]): ActionSelectConfigArgs<Ctx>;
@@ -31,6 +32,7 @@ export type ActionSelectConfigArgs<Ctx extends O> = {
  * Editable properties of a [Select] input.
  */
 export type ActionSelectProps = {
+  title?: string | t.ReactNode;
   label: string | t.ReactNode;
   description?: string | t.ReactNode;
   isPlaceholder?: boolean;

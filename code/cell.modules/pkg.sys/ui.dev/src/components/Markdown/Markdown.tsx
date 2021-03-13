@@ -9,15 +9,16 @@ export const Markdown: React.FC<MarkdownProps> = (props) => {
     () => (typeof props.children === 'string' ? M.toHtmlSync(props.children) : props.children),
     [props.children],
   );
+
   if (typeof children !== 'string') {
     return <div {...css(props.style)}>{children}</div>;
-  } else {
-    return (
-      <div
-        {...props.style}
-        dangerouslySetInnerHTML={{ __html: children }}
-        className={constants.CSS.MARKDOWN}
-      />
-    );
   }
+
+  return (
+    <div
+      {...props.style}
+      dangerouslySetInnerHTML={{ __html: children }}
+      className={constants.CSS.MARKDOWN}
+    />
+  );
 };

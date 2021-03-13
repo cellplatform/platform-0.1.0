@@ -18,6 +18,7 @@ export type ActionButton = t.ActionButtonProps & {
 export type ActionButtonConfig<Ctx extends O> = (args: ActionButtonConfigArgs<Ctx>) => void;
 export type ActionButtonConfigArgs<Ctx extends O> = {
   ctx: Ctx;
+  title(value: string | t.ReactNode): ActionButtonConfigArgs<Ctx>;
   label(value: string | t.ReactNode): ActionButtonConfigArgs<Ctx>;
   description(value: string | t.ReactNode): ActionButtonConfigArgs<Ctx>;
   pipe(...handlers: t.ActionButtonHandler<Ctx>[]): ActionButtonConfigArgs<Ctx>;
@@ -27,6 +28,7 @@ export type ActionButtonConfigArgs<Ctx extends O> = {
  * Editable properties of a [Button].
  */
 export type ActionButtonProps = {
+  title?: string | t.ReactNode;
   label: string | t.ReactNode;
   description?: string | t.ReactNode;
 };

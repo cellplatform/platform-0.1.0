@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { t } from '../common';
-import { Layout } from './Layout';
+import { Layout, LayoutTitle } from './Layout';
 
 export type ButtonProps = {
   namespace: string;
@@ -16,7 +16,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
   const { item, namespace } = props;
   const bus = props.bus.type<t.DevActionEvent>();
 
-  const { label, description, isSpinning } = item;
+  const { title, label, description, isSpinning } = item;
   const isActive = item.handlers.length > 0;
 
   const clickHandler = () =>
@@ -25,12 +25,15 @@ export const Button: React.FC<ButtonProps> = (props) => {
       payload: { namespace, item },
     });
 
+  const elTitle = title && <LayoutTitle>{title}</LayoutTitle>;
+
   return (
     <Layout
       isActive={isActive}
       isSpinning={isSpinning}
       label={label}
       description={description}
+      top={elTitle}
       onClick={clickHandler}
     />
   );

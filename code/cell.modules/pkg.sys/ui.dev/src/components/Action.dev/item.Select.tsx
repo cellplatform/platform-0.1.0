@@ -3,7 +3,7 @@ import SelectComponent from 'react-select';
 
 import { color, css, SelectUtil, t, time, useActionItemMonitor } from '../common';
 import { Icons } from '../Icons';
-import { Layout } from './Layout';
+import { Layout, LayoutTitle } from './Layout';
 
 export type SelectProps = {
   namespace: string;
@@ -16,7 +16,7 @@ export const Select: React.FC<SelectProps> = (props) => {
   const model = useActionItemMonitor({ bus: props.bus, item: props.item });
   const bus = props.bus.type<t.DevActionEvent>();
 
-  const { label, description, isSpinning } = model;
+  const { title, label, description, isSpinning } = model;
   const isActive = model.handlers.length > 0;
   const options = model.items.map((v) => SelectUtil.toOption(v));
   const current = model.multi ? model.current : model.current[0];
@@ -90,6 +90,7 @@ export const Select: React.FC<SelectProps> = (props) => {
     </div>
   );
 
+  const elTitle = title && <LayoutTitle>{title}</LayoutTitle>;
   const elExpandIcon = <Icons.Chevron.Down size={20} />;
 
   return (
@@ -101,6 +102,7 @@ export const Select: React.FC<SelectProps> = (props) => {
         icon={{ Component: Icons.Checklist }}
         description={description}
         placeholder={model.isPlaceholder}
+        top={elTitle}
         right={elExpandIcon}
         onClick={showSelect}
       />

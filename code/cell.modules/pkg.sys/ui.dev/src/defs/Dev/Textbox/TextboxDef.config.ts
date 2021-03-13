@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { format, t, slug } from '../common';
 
 type O = Record<string, unknown>;
@@ -15,7 +17,7 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
       return config;
     },
     title(value) {
-      item.title = format.string(value, { trim: true });
+      item.title = React.isValidElement(value) ? value : format.string(value, { trim: true });
       return config;
     },
     placeholder(value) {
@@ -23,7 +25,7 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
       return config;
     },
     description(value) {
-      item.description = format.string(value, { trim: true });
+      item.description = React.isValidElement(value) ? value : format.string(value, { trim: true });
       return config;
     },
     pipe(...handlers) {

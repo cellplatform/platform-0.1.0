@@ -11,7 +11,7 @@ export const LayoutTitle: React.FC<LayoutTitleProps> = (props) => {
   const styles = {
     base: css({
       color: color.format(-0.4),
-      fontSize: 10,
+      fontSize: 11,
       marginTop: 5,
       marginLeft: 12,
     }),

@@ -1,4 +1,5 @@
-import { format, t, slug, DEFAULT } from '../common';
+import React from 'react';
+import { DEFAULT, format, slug, t } from '../common';
 
 type O = Record<string, unknown>;
 
@@ -11,12 +12,18 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
 
   const config: t.ActionButtonConfigArgs<any> = {
     ctx,
+    title(value) {
+      item.title = React.isValidElement(value) ? value : format.string(value, { trim: true });
+      return config;
+    },
     label(value) {
-      item.label = format.string(value, { trim: true }) || label;
+      item.label = React.isValidElement(value)
+        ? value
+        : format.string(value, { trim: true }) || label;
       return config;
     },
     description(value) {
-      item.description = format.string(value, { trim: true });
+      item.description = React.isValidElement(value) ? value : format.string(value, { trim: true });
       return config;
     },
     pipe(...handlers) {

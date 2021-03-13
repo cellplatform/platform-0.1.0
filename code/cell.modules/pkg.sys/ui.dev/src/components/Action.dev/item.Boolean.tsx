@@ -2,7 +2,7 @@ import React from 'react';
 
 import { t, useActionItemMonitor } from '../common';
 import { Switch } from '../Primitives';
-import { Layout } from './Layout';
+import { Layout, LayoutTitle } from './Layout';
 
 export type BoolProps = {
   namespace: string;
@@ -14,7 +14,7 @@ export const Bool: React.FC<BoolProps> = (props) => {
   const { namespace } = props;
   const model = useActionItemMonitor({ bus: props.bus, item: props.item });
   const bus = props.bus.type<t.DevActionEvent>();
-  const { label, description, isSpinning } = model;
+  const { title, label, description, isSpinning } = model;
   const isActive = model.handlers.length > 0;
   const value = Boolean(model.current);
 
@@ -30,6 +30,7 @@ export const Bool: React.FC<BoolProps> = (props) => {
   };
 
   const elSwitch = <Switch value={value} isEnabled={isActive} height={18} />;
+  const elTitle = title && <LayoutTitle>{title}</LayoutTitle>;
 
   return (
     <Layout
@@ -37,6 +38,7 @@ export const Bool: React.FC<BoolProps> = (props) => {
       isSpinning={isSpinning}
       label={label}
       description={description}
+      top={elTitle}
       right={elSwitch}
       onClick={fire}
     />
