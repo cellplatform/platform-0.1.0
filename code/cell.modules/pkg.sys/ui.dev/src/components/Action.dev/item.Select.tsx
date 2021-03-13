@@ -98,6 +98,7 @@ export const Select: React.FC<SelectProps> = (props) => {
         isActive={isActive}
         isSpinning={isSpinning}
         label={label}
+        icon={{ Component: Icons.Checklist }}
         description={description}
         placeholder={model.isPlaceholder}
         right={elExpandIcon}

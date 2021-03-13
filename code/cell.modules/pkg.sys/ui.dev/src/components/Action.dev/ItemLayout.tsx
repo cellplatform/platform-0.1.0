@@ -13,7 +13,7 @@ export type ItemLayoutProps = {
   description?: React.ReactNode;
   placeholder?: boolean;
   isActive: boolean;
-  icon?: { component?: t.IIcon; color?: string | number; size?: number };
+  icon?: { Component?: t.IIcon; color?: string | number; size?: number };
   right?: React.ReactNode;
   top?: React.ReactNode;
   isSpinning?: boolean;
@@ -109,7 +109,7 @@ export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
     <Markdown style={styles.body.description}>{props.description}</Markdown>
   );
 
-  const Icon = props.icon?.component || Icons.Variable;
+  const Icon = props.icon?.Component || Icons.Variable;
   const elIcon = !isSpinning && (
     <Icon
       color={defaultValue(props.icon?.color, isOver ? COLORS.BLUE : COLORS.DARK)}

@@ -15,11 +15,10 @@ type Ctx = {
  */
 export const actions = DevActions<Ctx>()
   .namespace('sys.net/Peer')
+
   .context((prev) => {
     if (prev) return prev;
-
     const bus = rx.bus<t.PeerEvent>();
-
     return {
       bus,
       address: 'rtc.cellfs.com/peer',
@@ -29,12 +28,13 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     //
-    e.title('PeerJS');
+    e.title('Peer');
 
     e.textbox((config) => {
       config
         .initial(config.ctx.address)
-        .placeholder('address: host/path')
+        .label('network address (`host/path`)')
+        .placeholder('host/path')
         .pipe((e) => {
           if (e.changing) {
             e.ctx.address = e.changing.next;
@@ -43,7 +43,7 @@ export const actions = DevActions<Ctx>()
         });
     });
 
-    e.button('peer: create', (e) => {
+    e.button('connect (start)', (e) => {
       const parseAddress = (address: string) => {
         const [host, path] = (address || '').trim().split('/');
         return { host, path };

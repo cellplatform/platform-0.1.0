@@ -105,7 +105,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
       label={elTextbox}
       description={description}
       pressOffset={0}
-      icon={{ component: Icons.Text, color: iconColor }}
+      icon={{ Component: Icons.Text, color: iconColor }}
       ellipsis={false}
       top={elLabel}
       right={elRight}

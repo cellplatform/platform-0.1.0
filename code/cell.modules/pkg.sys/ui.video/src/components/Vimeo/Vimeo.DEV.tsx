@@ -99,8 +99,8 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('video');
-    e.button('play (start)', (e) => e.ctx.bus.fire({ type: 'Vimeo/play', payload: { id } }));
-    e.button('pause (stop)', (e) => e.ctx.bus.fire({ type: 'Vimeo/pause', payload: { id } }));
+    e.button('start (play)', (e) => e.ctx.bus.fire({ type: 'Vimeo/play', payload: { id } }));
+    e.button('stop (pause)', (e) => e.ctx.bus.fire({ type: 'Vimeo/pause', payload: { id } }));
     e.hr(1, 0.1);
   })
 
@@ -112,7 +112,12 @@ export const actions = DevActions<Ctx>()
     e.button('0 (start)', (e) => fire(e, -10));
     e.button('15', (e) => fire(e, 15));
     e.button('20', (e) => fire(e, 20));
-    e.button('9999', (e) => fire(e, 9999));
+    e.button((config) =>
+      config
+        .label('999 (end)')
+        .description('NOTE: Overshoots total frames')
+        .pipe((e) => fire(e, 999)),
+    );
     e.hr();
   })
 
