@@ -2,8 +2,28 @@ import * as t from '../../common/types';
 
 export type VideoStreamMimetype = 'video/webm';
 
+export type VideoStreamTrack = {
+  kind: 'audio' | 'video';
+  id: string;
+  isEnabled: boolean;
+  isMuted: boolean;
+  label: string;
+  state: 'live' | 'ended';
+};
+
+/**
+ * EVENTS
+ */
 export type VideoEvent = VideoStreamEvent | VideoStreamRecordEvent;
-export type VideoStreamEvent = VideoStreamGetEvent | VideoStreamCreatedEvent;
+
+export type VideoStreamEvent =
+  | VideoStreamStatusRequestEvent
+  | VideoStreamStatusResponseEvent
+  | VideoStreamStartEvent
+  | VideoStreamStartedEvent
+  | VideoStreamStopEvent
+  | VideoStreamStoppedEvent;
+
 export type VideoStreamRecordEvent =
   | VideoStreamRecordStartEvent
   | VideoStreamRecordStartedEvent
@@ -12,28 +32,72 @@ export type VideoStreamRecordEvent =
   | VideoStreamRecordErrorEvent;
 
 /**
- * Request to connect to the users camera/audio.
+ * Fires to retrieve the status of a video stream.
  */
-export type VideoStreamGetEvent = {
-  type: 'VideoStream/get';
-  payload: VideoStreamGet;
+export type VideoStreamStatusRequestEvent = {
+  type: 'VideoStream/status:req';
+  payload: VideoStreamStatusRequest;
 };
-export type VideoStreamGet = {
+export type VideoStreamStatusRequest = {
+  ref: string;
+};
+
+/**
+ * Fires to retrieve the status of a video stream.
+ */
+export type VideoStreamStatusResponseEvent = {
+  type: 'VideoStream/status:res';
+  payload: VideoStreamStatusResponse;
+};
+export type VideoStreamStatusResponse = {
+  ref: string;
+  exists: boolean;
+  stream?: MediaStream;
+  constraints?: MediaStreamConstraints;
+  tracks: t.VideoStreamTrack[];
+};
+
+/**
+ * Fires to start a [VideoStream].
+ */
+export type VideoStreamStartEvent = {
+  type: 'VideoStream/start';
+  payload: VideoStreamStart;
+};
+export type VideoStreamStart = {
   ref: string; // ID of the requester (so response events can be recovered).
   constraints?: t.PartialDeep<MediaStreamConstraints>;
 };
 
 /**
- * A stream of media.
+ * Fires when a [VideoStream] has started.
  */
-export type VideoStreamCreatedEvent = {
-  type: 'VideoStream/created';
-  payload: VideoStreamCreated;
+export type VideoStreamStartedEvent = {
+  type: 'VideoStream/started';
+  payload: VideoStreamStarted;
 };
-export type VideoStreamCreated = {
+export type VideoStreamStarted = {
   ref: string;
   stream: MediaStream;
 };
+
+/**
+ * Fires to stop a VideoStream.
+ */
+export type VideoStreamStopEvent = {
+  type: 'VideoStream/stop';
+  payload: VideoStreamStop;
+};
+export type VideoStreamStop = { ref: string };
+
+/**
+ * Fires to [VideoStream] has stropped.
+ */
+export type VideoStreamStoppedEvent = {
+  type: 'VideoStream/stopped';
+  payload: VideoStreamStopped;
+};
+export type VideoStreamStopped = { ref: string; tracks: t.VideoStreamTrack[] };
 
 /**
  * Starts recording a stream.

@@ -1,6 +1,8 @@
 import React from 'react';
+import { firstValueFrom } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { DevActions } from 'sys.ui.dev';
+import { DevActions, ObjectView } from 'sys.ui.dev';
+import { deleteUndefined } from '../../common';
 
 import {
   useVideoStreamState,
@@ -47,22 +49,38 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Get Started');
-    e.button('fire: VideoStream/get', async (e) => {
+
+    e.button('fire: VideoStream/start', (e) => {
       const ref = e.ctx.props.id;
       e.ctx.bus.fire({
-        type: 'VideoStream/get',
+        type: 'VideoStream/start',
         payload: { ref, constraints: { video: true } },
       });
     });
-    e.hr();
-  })
 
-  .items((e) => {
-    e.title('Props');
-    e.boolean('isMuted', (e) => {
-      if (e.changing) e.ctx.props.isMuted = e.changing.next;
-      e.boolean.current = e.ctx.props.isMuted;
+    e.button('fire: VideoStream/stop [TODO]', (e) => {
+      const ref = e.ctx.props.id;
+      e.ctx.bus.fire({
+        type: 'VideoStream/stop',
+        payload: { ref },
+      });
     });
+
+    e.hr(1, 0.1);
+
+    e.button('fire: VideoStream/status:req ', async (e) => {
+      const ref = e.ctx.props.id;
+      const res = await e.ctx.events.status(ref).get();
+      const data = {
+        ref,
+        exists: res.exists,
+        constraints: res.constraints,
+        tracks: res.tracks,
+      };
+      const el = <ObjectView data={deleteUndefined(data)} fontSize={10} />;
+      e.button.description = el;
+    });
+
     e.hr();
   })
 
@@ -102,22 +120,6 @@ export const actions = DevActions<Ctx>()
           });
         }),
     );
-
-    // e.button('stop (and pipe to cell)', (e) => {
-    //   const ref = e.ctx.props.id;
-    //   e.ctx.bus.fire({
-    //     type: 'VideoStream/record/stop',
-    //     payload: {
-    //       ref,
-    //       data: (file) => {
-    //         /**
-    //          * TODO 🐷
-    //          */
-    //         console.log('stream (save to cell)', file);
-    //       },
-    //     },
-    //   });
-    // });
 
     e.hr();
   })

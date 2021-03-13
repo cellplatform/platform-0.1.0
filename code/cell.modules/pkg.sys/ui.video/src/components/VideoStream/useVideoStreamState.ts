@@ -16,7 +16,7 @@ export function useVideoStreamState(args: { id: string; bus: t.EventBus<any> }) 
     const dispose$ = new Subject<void>();
     const $ = bus.event$.pipe(takeUntil(dispose$));
 
-    rx.payload<t.VideoStreamCreatedEvent>($, 'VideoStream/created')
+    rx.payload<t.VideoStreamStartedEvent>($, 'VideoStream/started')
       .pipe(filter((e) => e.ref === id))
       .subscribe((e) => setStream(e.stream));
 

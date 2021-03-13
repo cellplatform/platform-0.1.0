@@ -84,7 +84,7 @@ export const ItemLayout: React.FC<ItemLayoutProps> = (props) => {
         }),
       description: css({
         color: color.format(-0.4),
-        fontSize: 11,
+        fontSize: 10,
         marginTop: 4,
       }),
     },

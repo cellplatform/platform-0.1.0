@@ -33,16 +33,13 @@ export function VideoStreamRecordController(args: { ref: string; bus: t.EventBus
   /**
    * Catch the referenced stream.
    */
-  events.streamCreated(ref).subscribe((e) => (stream = e.stream));
+  events.started(ref).$.subscribe((e) => (stream = e.stream));
 
   /**
-   * Start recording
+   * Start recording.
    */
   rx.payload<t.VideoStreamRecordStartEvent>($, 'VideoStream/record/start')
-    .pipe(
-      filter((e) => e.ref === ref),
-      // filter((e) => Boolean(stream)),
-    )
+    .pipe(filter((e) => e.ref === ref))
     .subscribe((e) => {
       if (!stream) {
         const message = `Cannot start recording as a media stream has not been created yet.`;
@@ -132,9 +129,9 @@ function Recorder(args: { stream: MediaStream; mimetype: M }) {
 function downloadFile(filename: string, blob: Blob) {
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.style.display = 'none';
   a.href = url;
   a.download = filename;
+  a.style.display = 'none';
   document.body.appendChild(a);
   a.click();
   time.delay(100, () => {

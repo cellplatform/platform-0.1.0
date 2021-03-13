@@ -8,7 +8,6 @@ export type VideoStreamProps = {
   stream?: MediaStream;
   width?: number;
   height?: number;
-  isMuted?: boolean;
   borderRadius?: number;
   style?: CssValue;
 };
@@ -17,7 +16,6 @@ export const VideoStream: React.FC<VideoStreamProps> = (props) => {
   const { stream } = props;
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const isMuted = defaultValue(props.isMuted, false);
   const width = defaultValue(props.width, 300);
   const height = defaultValue(props.height, 200);
   const borderRadius = defaultValue(props.borderRadius, 16);
@@ -42,7 +40,7 @@ export const VideoStream: React.FC<VideoStreamProps> = (props) => {
   };
   return (
     <div {...css(styles.base, props.style)}>
-      <video {...styles.video} ref={videoRef} autoPlay={true} muted={isMuted} />
+      <video {...styles.video} ref={videoRef} autoPlay={true} muted={false} />
     </div>
   );
 };
