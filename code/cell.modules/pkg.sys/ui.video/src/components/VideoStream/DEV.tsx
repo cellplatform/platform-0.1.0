@@ -1,18 +1,17 @@
 import React from 'react';
-import { firstValueFrom } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { deleteUndefined } from '../../common';
+import { css, color, CssValue } from '../../common';
 
 import {
-  useVideoStreamState,
-  VideoStream,
   MediaStreamBusController,
   MediaStreamEvents,
-  VideoStreamProps,
   MediaStreamRecordController,
+  useVideoStreamState,
+  VideoStream,
+  VideoStreamProps,
 } from '.';
-import { cuid, log, rx, t } from '../../common';
+import { cuid, deleteUndefined, HttpClient, log, rx, t } from '../../common';
 
 type Ctx = {
   bus: t.EventBus<t.MediaEvent>;
@@ -50,6 +49,11 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Get Started');
 
+    e.button('stream: video');
+    e.button('stream: audio [TODO]');
+    e.button('stream: screen [TODO]');
+    e.hr(1, 0.1);
+
     e.button('fire: MediaStream/start', (e) => {
       const ref = e.ctx.props.id;
       e.ctx.bus.fire({
@@ -58,7 +62,7 @@ export const actions = DevActions<Ctx>()
       });
     });
 
-    e.button('fire: MediaStream/stop [TODO]', (e) => {
+    e.button('fire: MediaStream/stop', (e) => {
       const ref = e.ctx.props.id;
       e.ctx.bus.fire({
         type: 'MediaStream/stop',
@@ -68,17 +72,11 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
-    e.button('fire: MediaStream/status:req ', async (e) => {
+    e.button('fire: MediaStream/status:req', async (e) => {
       const ref = e.ctx.props.id;
-      const res = await e.ctx.events.status(ref).get();
-      const data = {
-        ref,
-        exists: res.exists,
-        constraints: res.constraints,
-        tracks: res.tracks,
-      };
-      const el = <ObjectView data={deleteUndefined(data)} fontSize={10} />;
-      e.button.description = el;
+      const { exists, constraints, tracks } = await e.ctx.events.status(ref).get();
+      const data = deleteUndefined({ ref, exists, constraints, tracks });
+      e.button.description = <ObjectView name={'response: status'} data={data} fontSize={10} />;
     });
 
     e.hr();
@@ -102,7 +100,7 @@ export const actions = DevActions<Ctx>()
 
     e.button((config) =>
       config
-        .label('stop (and save to cell.fs)')
+        .label('stop (and save to cell.fs) [TODO]')
         .description('target: `localhost:5000/cell:<ns>:A1`')
         .pipe((e) => {
           const ref = e.ctx.props.id;
@@ -110,11 +108,19 @@ export const actions = DevActions<Ctx>()
             type: 'MediaStream/record/stop',
             payload: {
               ref,
-              data: (file) => {
-                /**
-                 * TODO 🐷
-                 */
-                console.log('stream (save to cell)', file);
+              data: async (file) => {
+                // const host = 5000;
+                const host = 'https://os.ngrok.io';
+
+                const client = HttpClient.create(host);
+                const cell = client.cell('cell:ckm8fe8o0000d9reteimz8y7v:A1');
+                const filename = 'test.webm';
+                const data = await file.arrayBuffer();
+                const res = await cell.fs.upload({ filename, data });
+
+                console.log('HTTP Response', res);
+
+                console.log('Saved to:', cell.url.file.byName(filename).toString());
               },
             },
           });
@@ -125,21 +131,55 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { id, bus } = e.ctx.props;
+    const { id, bus, width = 300 } = e.ctx.props;
+    const styles = {
+      streamRef: css({ fontSize: 9 }),
+    };
+
+    const elStreamRef = <div {...styles.streamRef}>ref:{id}</div>;
+
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: '<VideoStream>',
+        label: { topLeft: '<VideoStream>', bottomRight: elStreamRef },
         cropmarks: -0.2,
       },
     });
 
+    const borderRadius = 30;
+
     const Sample: React.FC = () => {
       const { stream } = useVideoStreamState({ id, bus });
-      return <VideoStream {...e.ctx.props} stream={stream} />;
+      const styles = {
+        base: css({
+          backgroundColor: color.format(-0.02),
+          border: `solid 1px ${color.format(-0.03)}`,
+          borderRadius,
+        }),
+      };
+      return (
+        <div {...styles.base}>
+          <VideoStream {...e.ctx.props} stream={stream} borderRadius={borderRadius} />
+        </div>
+      );
     };
 
     e.render(<Sample />);
+    e.render(<RecordControls />, {
+      label: null,
+      width,
+      background: 1,
+      cropmarks: false,
+    });
   });
-
 export default actions;
+
+/**
+ * <VideoStream> recorder control.
+ */
+export type RecordControlsProps = { style?: CssValue };
+
+export const RecordControls: React.FC<RecordControlsProps> = (props) => {
+  const styles = { base: css({}) };
+  return <div {...css(styles.base, props.style)}>RecordControls</div>;
+};

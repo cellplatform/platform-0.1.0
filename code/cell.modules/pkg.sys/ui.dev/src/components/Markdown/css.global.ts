@@ -1,4 +1,4 @@
-import { color, constants, style } from '../../common';
+import { color, constants, style, COLORS } from '../../common';
 
 const { CSS } = constants;
 
@@ -6,7 +6,8 @@ const styles = {
   // Markdown: `code`.
   [`.${CSS.MARKDOWN} code`]: {
     // color: color.format(-0.6),
-    color: '#D12A2A', // Console "red".
+    // color: '#D12A2A', // Console "red"
+    color: '#2F8FC5', // Cyan-blue.
     backgroundColor: color.format(-0.03),
     border: `solid 1px ${color.format(-0.03)}`,
     borderRadius: 2,
