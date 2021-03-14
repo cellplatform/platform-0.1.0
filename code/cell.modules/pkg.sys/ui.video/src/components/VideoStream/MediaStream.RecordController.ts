@@ -55,8 +55,12 @@ export function MediaStreamRecordController(args: { ref: string; bus: t.EventBus
 
       const { mimetype = 'video/webm' } = e;
 
+      const startedAt = time.now.timestamp;
       recorder = Recorder({ stream, mimetype }).start();
-      bus.fire({ type: 'MediaStream/record/started', payload: e });
+      bus.fire({
+        type: 'MediaStream/record/started',
+        payload: { ...e, startedAt },
+      });
     });
 
   /**

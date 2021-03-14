@@ -4,7 +4,7 @@ import { filter, take, takeUntil } from 'rxjs/operators';
 import { rx, t } from '../../common';
 
 /**
- * Helpers for working with VideoStream events.
+ * Helpers for working with <VideoStream> events.
  */
 export function MediaStreamEvents(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();

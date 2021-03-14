@@ -106,11 +106,13 @@ export type MediaStreamRecordStartEvent = {
   type: 'MediaStream/record/start';
   payload: VideoStreamRecordStart;
 };
+export type VideoStreamRecordStart = { ref: string; mimetype?: MediaStreamMimetype };
+
 export type MediaStreamRecordStartedEvent = {
   type: 'MediaStream/record/started';
-  payload: VideoStreamRecordStart;
+  payload: MediaStreamRecordStarteded;
 };
-export type VideoStreamRecordStart = { ref: string; mimetype?: MediaStreamMimetype };
+export type MediaStreamRecordStarteded = VideoStreamRecordStart & { startedAt: number };
 
 /**
  * Stops the recording of a stream.
