@@ -4,8 +4,10 @@ import { color, COLORS, constants, css, CssValue, DEFAULT, t, defaultValue } fro
 import { Icons } from '../Icons';
 import { Markdown } from '../Markdown';
 import { Spinner } from '../Primitives';
+import { LayoutLabel } from './Layout.Label';
 
 export * from './Layout.Title';
+export * from './Layout.Label';
 
 /**
  * A base layout for the display of an dev [Action] item.
@@ -26,9 +28,10 @@ export type LayoutProps = {
 };
 
 export const Layout: React.FC<LayoutProps> = (props) => {
-  const { placeholder, onClick, isSpinning, icon } = props;
+  const { placeholder, onClick, isSpinning } = props;
   const ellipsis = defaultValue(props.ellipsis, true);
   const pressOffset = defaultValue(props.pressOffset, 1);
+  const label = props.label ? props.label : DEFAULT.UNNAMED;
 
   const [isOver, setIsOver] = useState<boolean>(false);
   const [isDown, setIsDown] = useState<boolean>(false);
@@ -112,8 +115,6 @@ export const Layout: React.FC<LayoutProps> = (props) => {
     }
   };
 
-  const elLabel = props.label ? props.label : DEFAULT.UNNAMED;
-
   const elDescription = props.description && (
     <Markdown style={styles.body.description}>{props.description}</Markdown>
   );
@@ -142,7 +143,9 @@ export const Layout: React.FC<LayoutProps> = (props) => {
           {isSpinning && <Spinner style={styles.main.spinner} size={18} />}
         </div>
         <div {...styles.body.outer}>
-          <div {...css(styles.body.label, styles.body.ellipsis)}>{elLabel}</div>
+          <div {...css(styles.body.label, styles.body.ellipsis)}>
+            <LayoutLabel>{label}</LayoutLabel>
+          </div>
           {elDescription}
         </div>
         {props.right}
