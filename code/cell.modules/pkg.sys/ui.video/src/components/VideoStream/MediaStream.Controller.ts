@@ -10,16 +10,15 @@ type Ref = { ref: string; stream: MediaStream; constraints: M };
 /**
  * Manages an event bus dealing with video stream.
  */
-export function MediaStreamBusController(args: { bus: t.EventBus<any> }) {
+export function MediaStreamController(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
   const bus = args.bus.type<t.MediaEvent>();
   const $ = bus.event$.pipe(takeUntil(dispose$));
-  let refs: Refs = {};
+  const refs: Refs = {};
 
   /**
-   * STSTUS
+   * STATUS
    */
-
   rx.payload<t.MediaStreamStatusRequestEvent>($, 'MediaStream/status:req')
     .pipe()
     .subscribe((e) => {
@@ -29,7 +28,6 @@ export function MediaStreamBusController(args: { bus: t.EventBus<any> }) {
       const stream = item?.stream;
       const constraints = item?.constraints;
       const tracks = toTracks(item?.stream);
-
       bus.fire({
         type: 'MediaStream/status:res',
         payload: { ref, exists, stream, constraints, tracks },
@@ -85,7 +83,7 @@ export function MediaStreamBusController(args: { bus: t.EventBus<any> }) {
     dispose$: dispose$.asObservable(),
     dispose() {
       dispose$.next();
-      refs = {};
+      Object.keys(refs).forEach((key) => delete refs[key]);
     },
   };
 }

@@ -4,7 +4,7 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { css, color, CssValue } from '../../common';
 
 import {
-  MediaStreamBusController,
+  MediaStreamController,
   MediaStreamEvents,
   MediaStreamRecordController,
   useVideoStreamState,
@@ -30,13 +30,13 @@ export const actions = DevActions<Ctx>()
     const id = cuid();
     const bus = rx.bus<t.MediaEvent>();
     const events = MediaStreamEvents({ bus });
-    MediaStreamBusController({ bus });
+    MediaStreamController({ bus });
     MediaStreamRecordController({ ref: id, bus });
 
     rx.payload<t.MediaStreamRecordErrorEvent>(bus.event$, 'MediaStream/record/error')
       .pipe(filter((e) => e.ref === id))
       .subscribe((e) => {
-        log.info('error', e);
+        log.info('MediaStream/recortd/error:', e);
       });
 
     return {
@@ -136,7 +136,7 @@ export const actions = DevActions<Ctx>()
       streamRef: css({ fontSize: 9 }),
     };
 
-    const elStreamRef = <div {...styles.streamRef}>ref:{id}</div>;
+    const elStreamRef = <div {...styles.streamRef}>stream-ref:{id}</div>;
 
     e.settings({
       host: { background: -0.04 },
