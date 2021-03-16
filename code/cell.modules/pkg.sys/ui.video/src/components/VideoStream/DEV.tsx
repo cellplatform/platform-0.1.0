@@ -2,6 +2,7 @@ import React from 'react';
 import { filter } from 'rxjs/operators';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { css, color, CssValue } from '../../common';
+import { Waveform } from './DEV.waveform';
 
 import {
   MediaStreamController,
@@ -28,10 +29,13 @@ export const actions = DevActions<Ctx>()
     if (prev) return prev;
 
     const id = cuid();
+    const ref = id;
     const bus = rx.bus<t.MediaEvent>();
     const events = MediaStreamEvents({ bus });
     MediaStreamController({ bus });
-    MediaStreamRecordController({ ref: id, bus });
+    MediaStreamRecordController({ ref, bus });
+
+    bus.fire({ type: 'MediaStream/start', payload: { ref } });
 
     rx.payload<t.MediaStreamRecordErrorEvent>(bus.event$, 'MediaStream/record/error')
       .pipe(filter((e) => e.ref === id))
@@ -109,8 +113,8 @@ export const actions = DevActions<Ctx>()
             payload: {
               ref,
               data: async (file) => {
-                // const host = 5000;
-                const host = 'https://os.ngrok.io';
+                const host = 5000;
+                // const host = 'https://os.ngrok.io';
 
                 const client = HttpClient.create(host);
                 const cell = client.cell('cell:ckm8fe8o0000d9reteimz8y7v:A1');
@@ -119,7 +123,7 @@ export const actions = DevActions<Ctx>()
                 const res = await cell.fs.upload({ filename, data });
 
                 console.log('HTTP Response', res);
-
+                console.log('OK', res.ok);
                 console.log('Saved to:', cell.url.file.byName(filename).toString());
               },
             },
@@ -141,7 +145,6 @@ export const actions = DevActions<Ctx>()
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: { topLeft: '<VideoStream>', bottomRight: elStreamRef },
         cropmarks: -0.2,
       },
     });
@@ -164,13 +167,18 @@ export const actions = DevActions<Ctx>()
       );
     };
 
-    e.render(<Sample />);
-    e.render(<RecordControls />, {
-      label: null,
+    e.render(<Sample />, { label: { topLeft: '<VideoStream>', bottomRight: elStreamRef } });
+
+    e.render(<Waveform bus={bus} stream={id} width={width} height={30} />, {
       width,
       background: 1,
-      cropmarks: false,
     });
+
+    // e.render(<RecordControls />, {
+    //   width,
+    //   background: 1,
+    //   cropmarks: false,
+    // });
   });
 export default actions;
 
