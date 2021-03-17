@@ -1,11 +1,13 @@
-import React, { createRef, useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, time } from '../../common';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { css, CssValue, t } from '../../common';
+import { useAudioAnalyser } from './DEV.useAudioAnalyser';
+import { useDrawWaveform } from './DEV.useDrawWaveform';
 import { MediaStreamEvents } from './MediaStream.Events';
 
 export type WaveformProps = {
   stream?: string; // Stream ID reference.
   bus: t.EventBus<any>;
-  // stream?: MediaStream;
   width?: number;
   height?: number;
   style?: CssValue;
@@ -24,6 +26,9 @@ export const Waveform: React.FC<WaveformProps> = (props) => {
   const ref = props.stream;
   const bus = props.bus.type<t.MediaEvent>();
   const [stream, setStream] = useState<MediaStream | undefined>();
+
+  const { audioData } = useAudioAnalyser({ stream });
+  useDrawWaveform({ canvasRef, audioData });
 
   /**
    * Get hold of the Stream.
@@ -44,91 +49,8 @@ export const Waveform: React.FC<WaveformProps> = (props) => {
     return () => events.dispose();
   }, [bus, ref]); // eslint-disable-line
 
-  /**
-   * Setup audio Analyzer.
-   */
-  useEffect(() => {
-    const events = MediaStreamEvents({ bus });
-    const canvas = canvasRef.current as HTMLCanvasElement;
-    const canvasCtx = canvas.getContext('2d');
-
-    if (stream) {
-      console.log('stream', stream);
-
-      /**
-       *  Sample source:
-       *
-       *    https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Visualizations_with_Web_Audio_API
-       *    https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Basic_usage
-       *
-       */
-
-      const audioCtx = new AudioContext();
-      const analyser = audioCtx.createAnalyser();
-
-      analyser.fftSize = 2048;
-      const bufferLength = analyser.frequencyBinCount;
-      const dataArray = new Uint8Array(bufferLength);
-      analyser.getByteTimeDomainData(dataArray);
-
-      if (canvasCtx) {
-        canvasCtx.clearRect(0, 0, width, height);
-
-        const draw = () => {
-          //
-          // const drawVisual = requestAnimationFrame(draw);
-
-          analyser.getByteTimeDomainData(dataArray);
-
-          canvasCtx.fillStyle = 'rgb(0, 200, 200)';
-          canvasCtx.fillRect(0, 0, width, height);
-
-          console.log('-------------------------------------------');
-
-          canvasCtx.lineWidth = 2;
-          canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
-          canvasCtx.beginPath();
-
-          const sliceWidth = (width * 1.0) / bufferLength;
-          let x = 0;
-
-          for (let i = 0; i < bufferLength; i++) {
-            const v = dataArray[i] / 128.0;
-            const y = (v * height) / 2;
-
-            if (i === 0) {
-              canvasCtx.moveTo(x, y);
-            } else {
-              canvasCtx.lineTo(x, y);
-            }
-
-            x += sliceWidth;
-
-            canvasCtx.lineTo(canvas.width, canvas.height / 2);
-            canvasCtx.stroke();
-          }
-
-          requestAnimationFrame(draw);
-        };
-
-        // draw();
-        requestAnimationFrame(draw);
-      }
-
-      // ctx.clearRect(0, 0, WIDTH, HEIGHT);
-      // canvas;
-    }
-
-    return () => {
-      events.dispose();
-    };
-  }, [bus, stream, ref, width, height]);
-
   const styles = {
-    base: css({
-      width,
-      height,
-    }),
+    base: css({ width, height }),
   };
   return (
     <div {...css(styles.base, props.style)}>
