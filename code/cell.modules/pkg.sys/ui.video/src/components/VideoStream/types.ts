@@ -19,26 +19,27 @@ export type MediaEvent = MediaStreamEvent | MediaStreamRecordEvent;
 export type MediaStreamEvent =
   | MediaStreamStatusRequestEvent
   | MediaStreamStatusResponseEvent
-  | MediaStreamStartEvent
+  | MediaStreamStartVideoEvent
+  | MediaStreamStartScreenEvent
   | MediaStreamStartedEvent
   | MediaStreamStopEvent
-  | MediaStreamStoppedEvent;
+  | MediaStreamStoppedEvent
+  | MediaStreamErrorEvent;
 
 export type MediaStreamRecordEvent =
   | MediaStreamRecordStartEvent
   | MediaStreamRecordStartedEvent
   | MediaStreamRecordStopEvent
-  | MediaStreamRecordStoppedEvent
-  | MediaStreamRecordErrorEvent;
+  | MediaStreamRecordStoppedEvent;
 
 /**
  * Fires to retrieve the status of a video stream.
  */
 export type MediaStreamStatusRequestEvent = {
   type: 'MediaStream/status:req';
-  payload: VideoStreamStatusRequest;
+  payload: MediaStreamStatusRequest;
 };
-export type VideoStreamStatusRequest = {
+export type MediaStreamStatusRequest = {
   ref: string;
 };
 
@@ -60,12 +61,24 @@ export type VideoStreamStatusResponse = {
 /**
  * Fires to start a [VideoStream].
  */
-export type MediaStreamStartEvent = {
-  type: 'MediaStream/start';
-  payload: VideoStreamStart;
+export type MediaStreamStartVideoEvent = {
+  type: 'MediaStream/start:video';
+  payload: VideoStreamStartVideo;
 };
-export type VideoStreamStart = {
-  ref: string; // ID of the requester (so response events can be recovered).
+export type VideoStreamStartVideo = {
+  ref: string; // ID of the requester.
+  constraints?: t.PartialDeep<MediaStreamConstraints>;
+};
+
+/**
+ * Fires to start a Screen capture stream.
+ */
+export type MediaStreamStartScreenEvent = {
+  type: 'MediaStream/start:screen';
+  payload: VideoStreamStartScreen;
+};
+export type VideoStreamStartScreen = {
+  ref: string; // ID of the requester.
   constraints?: t.PartialDeep<MediaStreamConstraints>;
 };
 
@@ -100,6 +113,23 @@ export type MediaStreamStoppedEvent = {
 export type VideoStreamStopped = { ref: string; tracks: t.MediaStreamTrack[] };
 
 /**
+ * Fires when an error occurs during recording.
+ */
+export type MediaStreamErrorEvent = {
+  type: 'MediaStream/error';
+  payload: MediaStreamError;
+};
+export type MediaStreamError = {
+  ref: string;
+  kind: 'stream:error' | 'record:error';
+  error: string;
+};
+
+/**
+ * RECORD
+ */
+
+/**
  * Starts recording a stream.
  */
 export type MediaStreamRecordStartEvent = {
@@ -119,9 +149,9 @@ export type MediaStreamRecordStarteded = VideoStreamRecordStart & { startedAt: n
  */
 export type MediaStreamRecordStopEvent = {
   type: 'MediaStream/record/stop';
-  payload: VideoStreamRecordStop;
+  payload: MediaStreamRecordStop;
 };
-export type VideoStreamRecordStop = {
+export type MediaStreamRecordStop = {
   ref: string;
   download?: { filename: string };
   data?: (file: Blob) => void;
@@ -132,15 +162,6 @@ export type VideoStreamRecordStop = {
  */
 export type MediaStreamRecordStoppedEvent = {
   type: 'MediaStream/record/stopped';
-  payload: VideoStreamRecordStopped;
+  payload: MediaStreamRecordStopped;
 };
-export type VideoStreamRecordStopped = { ref: string; file: Blob };
-
-/**
- * Fires when an error occurs during recording.
- */
-export type MediaStreamRecordErrorEvent = {
-  type: 'MediaStream/record/error';
-  payload: VideoStreamRecordError;
-};
-export type VideoStreamRecordError = { ref: string; error: string };
+export type MediaStreamRecordStopped = { ref: string; file: Blob };

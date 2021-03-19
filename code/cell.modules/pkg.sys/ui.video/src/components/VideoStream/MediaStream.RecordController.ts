@@ -12,7 +12,7 @@ type M = 'video/webm';
 export function MediaStreamRecordController(args: { ref: string; bus: t.EventBus<any> }) {
   const { ref } = args;
   const dispose$ = new Subject<void>();
-  const bus = args.bus.type<t.MediaStreamRecordEvent>();
+  const bus = args.bus.type<t.MediaEvent>();
   const events = MediaStreamEvents({ bus });
   const $ = bus.event$.pipe(takeUntil(dispose$));
 
@@ -28,8 +28,8 @@ export function MediaStreamRecordController(args: { ref: string; bus: t.EventBus
 
   const error = (error: string) => {
     bus.fire({
-      type: 'MediaStream/record/error',
-      payload: { ref, error },
+      type: 'MediaStream/error',
+      payload: { ref, kind: 'record:error', error },
     });
   };
 

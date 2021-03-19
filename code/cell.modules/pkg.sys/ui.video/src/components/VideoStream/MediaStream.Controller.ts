@@ -5,7 +5,7 @@ import { R, rx, t } from '../../common';
 
 type M = MediaStreamConstraints;
 type Refs = { [ref: string]: Ref };
-type Ref = { ref: string; stream: MediaStream; constraints: M };
+type Ref = { kind: 'video' | 'screen'; ref: string; stream: MediaStream; constraints: M };
 
 /**
  * Manages an event bus dealing with video stream.
@@ -15,6 +15,13 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
   const bus = args.bus.type<t.MediaEvent>();
   const $ = bus.event$.pipe(takeUntil(dispose$));
   const refs: Refs = {};
+
+  const error = (ref: string, error: string) => {
+    bus.fire({
+      type: 'MediaStream/error',
+      payload: { ref, kind: 'stream:error', error },
+    });
+  };
 
   /**
    * STATUS
@@ -35,21 +42,32 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
     });
 
   /**
-   * START Connect to local-device media (camera/audio).
+   * START:VIDEO
+   * Connect to local-device media (camera/audio).
    */
-  rx.payload<t.MediaStreamStartEvent>($, 'MediaStream/start')
+  rx.payload<t.MediaStreamStartVideoEvent>($, 'MediaStream/start:video')
     .pipe()
     .subscribe(async (e) => {
       const { ref } = e;
 
+      if (refs[ref] && refs[ref].kind !== 'video') {
+        const kind = refs[ref].kind;
+        const err = `The stream '${ref}' is already in use as a '${kind}' stream.`;
+        return error(ref, err);
+      }
+
       if (!refs[ref]) {
         const base: M = {
           video: true,
-          audio: { echoCancellation: { ideal: true } },
+          audio: {
+            echoCancellation: { ideal: true },
+            noiseSuppression: { ideal: true },
+            autoGainControl: { ideal: true },
+          },
         };
         const constraints = R.mergeDeepRight(base, e.constraints || {}) as M;
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        refs[ref] = { ref, stream, constraints };
+        refs[ref] = { kind: 'video', ref, stream, constraints };
       }
 
       const { stream } = refs[ref];
@@ -61,7 +79,49 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
     });
 
   /**
-   * STOP
+   * START:SCREEN
+   * Start a screen capture of the local screen.
+   */
+  rx.payload<t.MediaStreamStartScreenEvent>($, 'MediaStream/start:screen')
+    .pipe()
+    .subscribe(async (e) => {
+      const { ref } = e;
+
+      if (refs[ref] && refs[ref].kind !== 'screen') {
+        const kind = refs[ref].kind;
+        const err = `The stream '${ref}' is already in use as a '${kind}' stream.`;
+        return error(ref, err);
+      }
+
+      if (!refs[ref]) {
+        const constraints: any = {
+          // cursor: 'motion',
+          // displaySurface: 'monitor',
+          // video: { cursor: 'always' },
+          // audio: false,
+          video: true,
+          audio: true,
+        };
+
+        // type G = (constants?: MediaStreamConstraints) => Promise<MediaStream>;
+        // const getDisplayMedia = (navigator.mediaDevices as any).getDisplayMedia as G;
+        const stream = await (navigator.mediaDevices as any).getDisplayMedia(constraints);
+
+        console.log('stream', stream);
+
+        refs[ref] = { kind: 'screen', ref, stream, constraints };
+      }
+
+      const { stream } = refs[ref];
+
+      bus.fire({
+        type: 'MediaStream/started',
+        payload: { ref, stream },
+      });
+    });
+
+  /**
+   * STOP a media stream.
    */
   rx.payload<t.MediaStreamStopEvent>($, 'MediaStream/stop')
     .pipe()

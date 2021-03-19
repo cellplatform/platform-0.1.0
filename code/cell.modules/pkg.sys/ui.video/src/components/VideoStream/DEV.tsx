@@ -32,15 +32,16 @@ export const actions = DevActions<Ctx>()
     const ref = id;
     const bus = rx.bus<t.MediaEvent>();
     const events = MediaStreamEvents({ bus });
+
     MediaStreamController({ bus });
     MediaStreamRecordController({ ref, bus });
 
-    bus.fire({ type: 'MediaStream/start', payload: { ref } });
+    bus.fire({ type: 'MediaStream/start:video', payload: { ref } });
 
-    rx.payload<t.MediaStreamRecordErrorEvent>(bus.event$, 'MediaStream/record/error')
+    rx.payload<t.MediaStreamErrorEvent>(bus.event$, 'MediaStream/error')
       .pipe(filter((e) => e.ref === id))
       .subscribe((e) => {
-        log.info('MediaStream/recortd/error:', e);
+        log.info('MediaStream/error:', e);
       });
 
     return {
@@ -58,11 +59,21 @@ export const actions = DevActions<Ctx>()
     e.button('stream: screen [TODO]');
     e.hr(1, 0.1);
 
-    e.button('fire: MediaStream/start', (e) => {
+    e.button('fire: MediaStream/start:video', async (e) => {
       const ref = e.ctx.props.id;
+      await e.ctx.events.stop(ref).fire();
       e.ctx.bus.fire({
-        type: 'MediaStream/start',
-        payload: { ref, constraints: { video: true } },
+        type: 'MediaStream/start:video',
+        payload: { ref },
+      });
+    });
+
+    e.button('fire: MediaStream/start:screen', async (e) => {
+      const ref = e.ctx.props.id;
+      await e.ctx.events.stop(ref).fire();
+      e.ctx.bus.fire({
+        type: 'MediaStream/start:screen',
+        payload: { ref },
       });
     });
 
@@ -173,12 +184,6 @@ export const actions = DevActions<Ctx>()
       width,
       background: 1,
     });
-
-    // e.render(<RecordControls />, {
-    //   width,
-    //   background: 1,
-    //   cropmarks: false,
-    // });
   });
 export default actions;
 
