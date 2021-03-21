@@ -20,8 +20,8 @@ export const LayoutFooterResize: React.FC<LayoutFooterResizeProps> = (props) => 
     const dragger = drag.position({ el });
     const startZoom = defaultValue(props.percent, 1);
 
-    const events$ = dragger.events$.pipe(observeOn(animationFrameScheduler));
-    const drag$ = events$.pipe(filter((e) => e.type === 'DRAG'));
+    const event$ = dragger.events$.pipe(observeOn(animationFrameScheduler));
+    const drag$ = event$.pipe(filter((e) => e.type === 'DRAG'));
 
     drag$.pipe(filter((e) => isAltKeyPressed)).subscribe((e) => {
       const diff = e.delta.y / 100;
