@@ -151,11 +151,23 @@ export const actions = DevActions<Ctx>()
         .multi(true) // NB: This is what turns the buttons into [x] checkboxes.
         .title('My checkbox options')
         .view('buttons')
-        .items(['Chocolate', 'Strawberry', 'Vanilla'])
+        .items(['Chocolate', 'Strawberry', 'Vanilla', 'Bananna'])
         .clearable(true)
         .pipe((e) => {
-          //
-          // e.select.current = [{ label: 'Chocolate', value: 'Chocolate' }];
+          if (e.changing) count++;
+          e.select.description = `My dropdown changed (${count})`;
+
+          const current = e.select.current
+            .map((m) => m.label)
+            .join(', ')
+            .trim();
+
+          e.settings({
+            select: {
+              label: current ? current : `select (multi)`,
+              isPlaceholder: !Boolean(current),
+            },
+          });
         });
     });
 

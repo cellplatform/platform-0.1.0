@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, COLORS, css, SelectUtil, t, R } from '../common';
+import { color, COLORS, css, SelectUtil, t, R, constants } from '../common';
 import { Icons } from '../Icons';
 import { Button, Radios, Checkboxes } from '../Primitives';
 import { Layout, LayoutTitle } from './Layout';
@@ -35,6 +35,11 @@ export const SelectButtons: React.FC<SelectButtonsProps> = (props) => {
       items={options}
       selected={current[0]}
       isClearable={item.clearable}
+      factory={{
+        label(props) {
+          return <Label {...props} />;
+        },
+      }}
       onClick={(e) => {
         if (e.action.select) {
           fireSelect([e.item]);
@@ -51,6 +56,11 @@ export const SelectButtons: React.FC<SelectButtonsProps> = (props) => {
       items={options}
       selected={current}
       isClearable={item.clearable}
+      factory={{
+        label(props) {
+          return <Label {...props} />;
+        },
+      }}
       onClick={(e) => {
         if (e.action.select) {
           fireSelect(R.uniq([...current, e.item]));
@@ -96,4 +106,19 @@ export const SelectButtons: React.FC<SelectButtonsProps> = (props) => {
       />
     </div>
   );
+};
+
+type LabelProps = { label: string; isSelected?: boolean };
+const Label: React.FC<LabelProps> = (props) => {
+  const styles = {
+    base: css({
+      fontSize: 12,
+      fontFamily: constants.FONT.MONO,
+      opacity: props.isSelected ? 1 : 0.6,
+      flex: 1,
+      height: 16,
+      Flex: 'center-stretch',
+    }),
+  };
+  return <div {...styles.base}>{props.label}</div>;
 };

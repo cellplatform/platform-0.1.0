@@ -3,7 +3,7 @@ import { DevActions } from 'sys.ui.dev';
 import { Radios, Checkboxes } from '.';
 
 import { OptionItem } from './types';
-import { R } from '../../common';
+import { R, css } from '../../common';
 
 type Ctx = {
   isEnabled: boolean;
@@ -82,10 +82,25 @@ export const actions = DevActions<Ctx>()
       }, [props.selected]);
       return (
         <Radios
+          style={{ flex: 1 }}
           isEnabled={isEnabled}
           items={items}
           selected={selected}
           isClearable={isClearable}
+          factory={{
+            label(props) {
+              if (props.index !== 1) return;
+              const styles = {
+                base: css({
+                  flex: 1,
+                  height: 50,
+                  fontWeight: props.isSelected ? 'bold' : 'normal',
+                  backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+                }),
+              };
+              return <div {...styles.base}>{props.label}</div>;
+            },
+          }}
           onClick={(e) => {
             if (e.action.select) setSelected(e.index);
             if (e.action.deselect) setSelected(undefined);
@@ -99,6 +114,7 @@ export const actions = DevActions<Ctx>()
       useEffect(() => setSelected(props.selected), [props.selected]);
       return (
         <Checkboxes
+          style={{ flex: 1 }}
           isEnabled={isEnabled}
           items={items}
           selected={selected}

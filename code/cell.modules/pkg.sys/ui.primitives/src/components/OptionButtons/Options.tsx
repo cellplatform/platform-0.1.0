@@ -2,7 +2,7 @@ import React from 'react';
 
 import { css, CssValue, defaultValue, R } from '../../common';
 import { OptionButton } from './Option';
-import { OptionClickEventHandler, OptionItem } from './types';
+import { OptionClickEventHandler, OptionItem, OptionRenderFactory } from './types';
 
 /**
  * Set of radio buttons.
@@ -12,6 +12,7 @@ export type RadiosProps = {
   selected?: OptionItem | number;
   isEnabled?: boolean;
   isClearable?: boolean;
+  factory?: OptionRenderFactory;
   style?: CssValue;
   onClick?: OptionClickEventHandler;
 };
@@ -28,10 +29,11 @@ export const Radios: React.FC<RadiosProps> = (props) => {
         key={`rdo-${index}`}
         ctx={{ items, index }}
         kind={'radio'}
-        option={option}
+        item={option}
         isSelected={isSelected}
         isEnabled={props.isEnabled}
         canDeselect={isClearable}
+        factory={props.factory}
         onClick={props.onClick}
       />
     );
@@ -49,6 +51,7 @@ export type CheckboxesProps = {
   selected?: OptionItem | OptionItem[] | number | number[];
   isEnabled?: boolean;
   isClearable?: boolean;
+  factory?: OptionRenderFactory;
   style?: CssValue;
   onClick?: OptionClickEventHandler;
 };
@@ -67,10 +70,11 @@ export const Checkboxes: React.FC<CheckboxesProps> = (props) => {
         key={`chk-${index}`}
         ctx={{ items, index }}
         kind={'checkbox'}
-        option={option}
+        item={option}
         isSelected={isSelected}
         isEnabled={props.isEnabled}
         canDeselect={canDeselect}
+        factory={props.factory}
         onClick={props.onClick}
       />
     );

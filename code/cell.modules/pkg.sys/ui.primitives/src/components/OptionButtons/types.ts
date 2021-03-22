@@ -7,3 +7,15 @@ export type OptionClickEvent = {
   items: OptionItem[];
   action: { select: boolean; deselect: boolean };
 };
+
+export type OptionRenderFactory = {
+  label?(props: {
+    // item: OptionItem;
+    label: string;
+    value: any;
+    index: number;
+    isSelected: boolean;
+    isEnabled: boolean;
+    isLast: boolean;
+  }): JSX.Element | undefined;
+};
