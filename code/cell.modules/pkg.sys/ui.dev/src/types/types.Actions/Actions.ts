@@ -3,7 +3,7 @@ import { t } from '../common';
 type O = Record<string, unknown>;
 
 /**
- * Model builder API
+ * Model builder API.
  */
 export type Actions<Ctx extends O = any, Items extends O = any> = {
   toDefs(): t.ActionDef[];
@@ -26,3 +26,9 @@ export type Actions<Ctx extends O = any, Items extends O = any> = {
 };
 
 export type ActionAddOptions = { insertAt?: 'end' | 'start' };
+
+/**
+ * A collection of actions.
+ */
+export type ActionsImport = Promise<any>;
+export type ActionsSet = t.Actions | ActionsImport | (t.Actions | t.ActionsImport)[];
