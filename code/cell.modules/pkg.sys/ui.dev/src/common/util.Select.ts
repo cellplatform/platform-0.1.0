@@ -4,10 +4,10 @@ export const SelectUtil = {
   default(initial?: Partial<t.ActionSelect>): t.ActionSelect {
     return {
       id: slug(),
+      view: 'dropdown',
       kind: 'dev/select',
-      label: DEFAULT.UNNAMED,
       multi: false,
-      clearable: false,
+      clearable: undefined,
       items: [],
       current: [],
       handlers: [],
@@ -26,19 +26,4 @@ export const SelectUtil = {
       return { label, value: input as V };
     }
   },
-
-  /**
-   * Assigns the initial value as current (if there is one).
-   */
-  // assignInitial(input?: t.ActionItem) {
-  //   const item = input as t.ActionSelect;
-  //   if (item?.kind === 'dev/select') {
-  //     if (item.initial !== undefined) {
-  //       let initial = Array.isArray(item.initial) ? item.initial : [item.initial];
-  //       initial = item.multi ? initial : initial.slice(0, 1); // NB: if not "multi" only take the first item.
-  //       item.current = initial.map((value) => SelectUtil.toOption(value));
-  //     }
-  //   }
-  //   return input;
-  // },
 };

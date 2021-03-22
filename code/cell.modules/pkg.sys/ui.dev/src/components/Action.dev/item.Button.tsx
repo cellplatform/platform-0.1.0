@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { t } from '../common';
+import { t, DEFAULT } from '../common';
 import { Layout, LayoutTitle } from './Layout';
 
 export type ButtonProps = {
@@ -16,7 +16,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
   const { item, namespace } = props;
   const bus = props.bus.type<t.DevActionEvent>();
 
-  const { title, label, description, isSpinning } = item;
+  const { title, label = DEFAULT.UNNAMED, description, isSpinning } = item;
   const isActive = item.handlers.length > 0;
 
   const clickHandler = () =>

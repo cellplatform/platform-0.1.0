@@ -45,6 +45,10 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
       item.clearable = value;
       return config;
     },
+    view(value) {
+      item.view = value;
+      return config;
+    },
     pipe(...handlers) {
       item.handlers.push(...handlers.filter(Boolean));
       return config;

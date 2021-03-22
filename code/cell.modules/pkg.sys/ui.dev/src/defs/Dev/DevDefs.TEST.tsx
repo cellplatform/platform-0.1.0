@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as ReactDOM from 'react-dom';
+import React from 'react';
 import { ActionsFactory } from '../..';
 import { DevDefs, DisplayDefs } from '../../defs';
 import { expect, rx, t } from '../../test';
@@ -281,7 +280,7 @@ describe('Dev', () => {
       expect(select1.items).to.eql([]);
       expect(select1.handlers).to.eql([fn1]);
       expect(select1.multi).to.eql(false);
-      expect(select1.clearable).to.eql(false);
+      expect(select1.clearable).to.eql(undefined);
 
       expect(select2.kind).to.eql('dev/select');
       expect(select2.title).to.eql('my title');
@@ -304,6 +303,24 @@ describe('Dev', () => {
       const button = items[0] as t.ActionSelect;
       expect(button.label).to.eql('foo');
       expect(button.handlers).to.eql([]);
+    });
+
+    it('view', () => {
+      const { actions, model } = create();
+
+      actions.items((e) => {
+        e.select((config) => config.label('one'));
+        e.select((config) => config.label('two').view('buttons'));
+      });
+
+      const items = model.state.items;
+      expect(items.length).to.eql(2);
+
+      const select1 = items[0] as t.ActionSelect;
+      const select2 = items[1] as t.ActionSelect;
+
+      expect(select1.view).to.eql('dropdown');
+      expect(select2.view).to.eql('buttons');
     });
 
     it('react components', () => {

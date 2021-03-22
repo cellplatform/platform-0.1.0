@@ -13,13 +13,15 @@ export * from './Layout.Label';
  * A base layout for the display of an dev [Action] item.
  */
 export type LayoutProps = {
-  label: React.ReactNode;
+  label?: React.ReactNode;
+  labelColor?: string | number;
+  body?: React.ReactNode;
   description?: React.ReactNode;
-  placeholder?: boolean;
-  isActive: boolean;
   icon?: { Component?: t.IIcon; color?: string | number; size?: number };
   top?: React.ReactNode;
   right?: React.ReactNode;
+  placeholder?: boolean;
+  isActive: boolean;
   isSpinning?: boolean;
   ellipsis?: boolean;
   pressOffset?: number;
@@ -28,10 +30,9 @@ export type LayoutProps = {
 };
 
 export const Layout: React.FC<LayoutProps> = (props) => {
-  const { placeholder, onClick, isSpinning } = props;
+  const { label, placeholder, onClick, isSpinning } = props;
   const ellipsis = defaultValue(props.ellipsis, true);
   const pressOffset = defaultValue(props.pressOffset, 1);
-  const label = props.label ? props.label : DEFAULT.UNNAMED;
 
   const [isOver, setIsOver] = useState<boolean>(false);
   const [isDown, setIsDown] = useState<boolean>(false);
@@ -78,7 +79,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         position: 'relative',
         flex: 1,
         marginLeft: 6,
-        marginTop: 5,
+        marginTop: 4,
         overflow: ellipsis ? 'hidden' : undefined,
       }),
       label: css({
@@ -86,7 +87,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         fontFamily: constants.FONT.MONO,
         fontStyle: placeholder ? 'italic' : undefined,
         fontSize: 12,
-        color: isOver && isActive ? COLORS.BLUE : COLORS.DARK,
+        color: props.labelColor ? props.labelColor : isOver && isActive ? COLORS.BLUE : COLORS.DARK,
         opacity: !isActive ? 0.6 : !placeholder ? 1 : isOver ? 1 : 0.6,
         transform: isDown ? `translateY(${pressOffset}px)` : undefined,
       }),
@@ -146,6 +147,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
           <div {...css(styles.body.label, styles.body.ellipsis)}>
             <LayoutLabel>{label}</LayoutLabel>
           </div>
+          {props.body}
           {elDescription}
         </div>
         {props.right}

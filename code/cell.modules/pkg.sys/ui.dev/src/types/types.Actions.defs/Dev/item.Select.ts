@@ -2,6 +2,8 @@ import { t } from '../../common';
 
 type O = Record<string, unknown>;
 
+export type ActionSelectView = 'dropdown' | 'buttons';
+
 /**
  * INPUT: A button with a toggle switch (boolean).
  */
@@ -25,6 +27,7 @@ export type ActionSelectConfigArgs<Ctx extends O> = {
   initial(value?: t.ActionSelectItemInput | t.ActionSelectItemInput[]): ActionSelectConfigArgs<Ctx>;
   multi(value: boolean): ActionSelectConfigArgs<Ctx>;
   clearable(value: boolean): ActionSelectConfigArgs<Ctx>;
+  view(value: ActionSelectView): ActionSelectConfigArgs<Ctx>;
   pipe(...handlers: t.ActionSelectHandler<Ctx>[]): ActionSelectConfigArgs<Ctx>;
 };
 
@@ -32,12 +35,13 @@ export type ActionSelectConfigArgs<Ctx extends O> = {
  * Editable properties of a [Select] input.
  */
 export type ActionSelectProps = {
+  view: ActionSelectView;
   title?: string | t.ReactNode;
-  label: string | t.ReactNode;
+  label?: string | t.ReactNode;
   description?: string | t.ReactNode;
   isPlaceholder?: boolean;
   multi: boolean;
-  clearable: boolean;
+  clearable?: boolean;
   items: t.ActionSelectItemInput[];
   current: t.ActionSelectItem[];
 };
@@ -45,12 +49,7 @@ export type ActionSelectProps = {
 export type ActionSelectItem<V = any> = { label: string; value: V };
 export type ActionSelectItemInput = string | number | boolean | t.ActionSelectItem;
 
-export type ActionSelectChanging = {
-  action: t.ActionSelectKind;
-  next: t.ActionSelectItem[];
-};
-
-export type ActionSelectKind = 'select-option';
+export type ActionSelectChanging = { next: t.ActionSelectItem[] };
 
 /**
  * HANDLER Select (dropdown)

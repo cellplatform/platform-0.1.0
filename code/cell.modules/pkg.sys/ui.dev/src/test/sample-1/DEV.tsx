@@ -92,6 +92,77 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.title('Select');
+    e.select((config) =>
+      config
+        .title('My dropdown title:')
+        .label('select single')
+        .items(['one', { label: 'two', value: { count: 2 } }, 3])
+        .initial(3)
+        .clearable(true)
+        .pipe(async (e) => {
+          const value = e.select.current[0]; // NB: always first.
+          e.select.label = value ? value.label : `select single`;
+          e.select.isPlaceholder = !Boolean(value);
+
+          if (e.changing) await time.wait(400);
+        }),
+    );
+
+    e.select((config) => {
+      config
+        .label('select (multi)')
+        .description('My set of dropdown options')
+        .items(['Chocolate', 'Strawberry', 'Vanilla'])
+        .multi(true)
+        .pipe((e) => {
+          if (e.changing) count++;
+          e.select.description = `My dropdown changed (${count})`;
+          const current = e.select.current
+            .map((m) => m.label)
+            .join(', ')
+            .trim();
+
+          e.settings({
+            select: {
+              label: current ? current : `select (multi)`,
+              isPlaceholder: !Boolean(current),
+            },
+          });
+        });
+    });
+
+    e.select((config) => {
+      config
+        .initial('Chocolate')
+        .title('My radio options')
+        .description('My set mutually exclusive options')
+        .view('buttons')
+        .items(['Chocolate', 'Strawberry', 'Vanilla'])
+        // .clearable(true)
+        .pipe((e) => {
+          //
+        });
+    });
+
+    e.select((config) => {
+      config
+        .label('checkbox')
+        .multi(true) // NB: This is what turns the buttons into [x] checkboxes.
+        .title('My checkbox options')
+        .view('buttons')
+        .items(['Chocolate', 'Strawberry', 'Vanilla'])
+        .clearable(true)
+        .pipe((e) => {
+          //
+          // e.select.current = [{ label: 'Chocolate', value: 'Chocolate' }];
+        });
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Textbox');
 
     e.textbox('my textbox `code`', (e) => {
@@ -182,50 +253,6 @@ export const actions = DevActions<Ctx>()
       }
 
       e.boolean.current = e.ctx.isRunning;
-    });
-
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('Select');
-    e.select((config) =>
-      config
-        .title('My dropdown title:')
-        .label('select single')
-        .items(['one', { label: 'two', value: { count: 2 } }, 3])
-        .initial(3)
-        .clearable(true)
-        .pipe(async (e) => {
-          const value = e.select.current[0]; // NB: always first.
-          e.select.label = value ? value.label : `select single`;
-          e.select.isPlaceholder = !Boolean(value);
-
-          if (e.changing) await time.wait(400);
-        }),
-    );
-
-    e.select((config) => {
-      config
-        .label('select (multi)')
-        .description('My set of dropdown options')
-        .items(['Chocolate', 'Strawberry', 'Vanilla'])
-        .multi(true)
-        .pipe((e) => {
-          if (e.changing) count++;
-          e.select.description = `My dropdown changed (${count})`;
-          const current = e.select.current
-            .map((m) => m.label)
-            .join(', ')
-            .trim();
-
-          e.settings({
-            select: {
-              label: current ? current : `select (multi)`,
-              isPlaceholder: !Boolean(current),
-            },
-          });
-        });
     });
 
     e.hr();

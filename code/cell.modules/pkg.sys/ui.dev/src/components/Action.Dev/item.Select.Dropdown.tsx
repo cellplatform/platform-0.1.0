@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
 import Dropdown from 'react-select';
 
-import { color, css, SelectUtil, t, time, useActionItemMonitor } from '../common';
+import { color, css, SelectUtil, t, time } from '../common';
 import { Icons } from '../Icons';
-import { Layout, LayoutTitle } from './Layout';
+import { Layout, LayoutTitle, LayoutLabel } from './Layout';
 
 export type SelectDropdownProps = {
   namespace: string;
@@ -12,14 +12,13 @@ export type SelectDropdownProps = {
 };
 
 export const SelectDropdown: React.FC<SelectDropdownProps> = (props) => {
-  const { namespace } = props;
-  const model = useActionItemMonitor({ bus: props.bus, item: props.item });
+  const { namespace, item } = props;
   const bus = props.bus.type<t.DevActionEvent>();
 
-  const { title, label, description, isSpinning } = model;
-  const isActive = model.handlers.length > 0;
-  const options = model.items.map((v) => SelectUtil.toOption(v));
-  const current = model.multi ? model.current : model.current[0];
+  const { title, label, description, isSpinning } = item;
+  const isActive = item.handlers.length > 0;
+  const options = item.items.map((value) => SelectUtil.toOption(value));
+  const current = item.multi ? item.current : item.current[0];
 
   const [isSelectVisible, setIsSelectVisible] = useState<boolean>();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -27,13 +26,13 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = (props) => {
   const focus = () => time.delay(0, () => selectRef.current?.focus());
   const blur = () => time.delay(0, () => selectRef.current?.blur());
 
-  const hideSelect = () => {
+  const hideDropdown = () => {
     setIsMenuOpen(false);
     setIsSelectVisible(false);
     blur();
   };
 
-  const showSelect = () => {
+  const showDropdown = () => {
     setIsSelectVisible((prev) => !prev);
     setIsMenuOpen(true);
     focus();
@@ -46,19 +45,17 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = (props) => {
   };
 
   const handleChange = (value: any, meta: { action: string }) => {
-    hideSelect();
-    const action = meta.action as t.ActionSelectKind;
-
+    hideDropdown();
     const next = (Array.isArray(value) ? value : [value]) as t.ActionSelectItem[];
     bus.fire({
       type: 'dev:action/Select',
-      payload: { namespace, item: model, changing: { action, next } },
+      payload: { namespace, item, changing: { next } },
     });
   };
 
   const styles = {
     base: css({ position: 'relative' }),
-    select: {
+    dropdown: {
       outer: css({
         Absolute: [-5, 0, null, 0],
         paddingLeft: 36,
@@ -72,17 +69,17 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = (props) => {
     },
   };
 
-  const elSelect = (
-    <div {...styles.select.outer}>
-      <div {...styles.select.inner}>
+  const elDropdown = (
+    <div {...styles.dropdown.outer}>
+      <div {...styles.dropdown.inner}>
         <Dropdown
           ref={(e) => (selectRef.current = (e as unknown) as Dropdown)}
           options={options}
           value={current}
           placeholder={label}
           menuIsOpen={isMenuOpen}
-          isMulti={model.multi}
-          isClearable={model.clearable}
+          isMulti={item.multi}
+          isClearable={item.clearable}
           onBlur={handleSelectBlur}
           onChange={handleChange}
         />
@@ -101,12 +98,12 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = (props) => {
         label={label}
         icon={{ Component: Icons.Checklist }}
         description={description}
-        placeholder={model.isPlaceholder}
+        placeholder={item.isPlaceholder}
         top={elTitle}
         right={elExpandIcon}
-        onClick={showSelect}
+        onClick={showDropdown}
       />
-      {elSelect}
+      {elDropdown}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { color, COLORS, css, CssValue } from '../../common';
+import { CssValue } from '../../common';
 import { LabelChip } from './Layout.LabelChip';
 
 export type LayoutLabelProps = { style?: CssValue };
@@ -30,23 +30,3 @@ function formatTodo(children?: React.ReactNode) {
     </>
   );
 }
-
-// /**
-//  * Display chip
-//  */
-// const Chip: React.FC = (props) => {
-//   const styles = {
-//     base: css({
-//       display: 'inline-block',
-//       backgroundColor: COLORS.CLI.MAGENTA,
-//       color: COLORS.WHITE,
-//       fontSize: 11,
-//       border: `solid 1px ${color.format(-0.03)}`,
-//       boxSizing: 'border-box',
-//       borderRadius: 2,
-//       paddingTop: 1,
-//       PaddingX: 4,
-//     }),
-//   };
-//   return <div {...styles.base}>{props.children}</div>;
-// };

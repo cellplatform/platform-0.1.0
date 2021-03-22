@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Tick from '../../../static/icons/checkbox-tick.svg';
+// import Tick from '../../../static/icons/checkbox-tick.svg';
 import { color, COLORS, constants, css, defaultValue } from '../../common';
 import { OptionClickEventHandler, OptionItem } from './types';
 
@@ -68,6 +68,15 @@ export const OptionButton: React.FC<OptionButtonProps> = (props) => {
       overflow: 'hidden',
       textOverflow: 'ellipsis',
     }),
+    tick: css({
+      boxSizing: 'border-box',
+      width: 5,
+      height: 9,
+      borderRight: `solid 2px ${COLORS.WHITE}`,
+      borderBottom: `solid 2px ${COLORS.WHITE}`,
+      transform: `rotate(38deg)`,
+      marginTop: -2,
+    }),
   };
 
   const handleClick = () => {
@@ -80,10 +89,7 @@ export const OptionButton: React.FC<OptionButtonProps> = (props) => {
           index,
           item,
           items,
-          action: {
-            select: !Boolean(isSelected),
-            deselect: Boolean(isSelected),
-          },
+          action: { select: !Boolean(isSelected), deselect: Boolean(isSelected) },
         });
       }
     }
@@ -95,7 +101,7 @@ export const OptionButton: React.FC<OptionButtonProps> = (props) => {
 
   const elCheckboxSelected = isSelected && kind === 'checkbox' && (
     <div {...styles.bullet.selected.checkbox}>
-      <Tick color={COLORS.WHITE} width={10} height={10} />
+      <div {...styles.tick} />
     </div>
   );
 

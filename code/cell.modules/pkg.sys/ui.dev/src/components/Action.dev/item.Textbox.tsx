@@ -96,7 +96,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
     <Layout
       isActive={isActive}
       isSpinning={isSpinning}
-      label={elTextbox}
+      body={elTextbox}
       description={description}
       pressOffset={0}
       icon={{ Component: Icons.Text, color: iconColor }}

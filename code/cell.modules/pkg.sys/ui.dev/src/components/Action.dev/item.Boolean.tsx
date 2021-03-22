@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { t, useActionItemMonitor } from '../common';
+import { t, useActionItemMonitor, DEFAULT } from '../common';
 import { Switch } from '../Primitives';
 import { Layout, LayoutTitle } from './Layout';
 
@@ -14,7 +14,7 @@ export const Bool: React.FC<BoolProps> = (props) => {
   const { namespace } = props;
   const model = useActionItemMonitor({ bus: props.bus, item: props.item });
   const bus = props.bus.type<t.DevActionEvent>();
-  const { title, label, description, isSpinning } = model;
+  const { title, label =  DEFAULT.UNNAMED, description, isSpinning } = model;
   const isActive = model.handlers.length > 0;
   const value = Boolean(model.current);
 
