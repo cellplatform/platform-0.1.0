@@ -8,6 +8,7 @@ export function useAudioAnalyser(args: { stream?: MediaStream }) {
   const [stream, setStream] = useState<MediaStream>();
   const [frame, setFrame] = useState<number>();
   const [audioData, setAudioData] = useState<Uint8Array>();
+  const [isActive, setIsActive] = useState<boolean>(false);
 
   useEffect(() => setStream(args.stream), [args.stream]);
 
@@ -15,7 +16,10 @@ export function useAudioAnalyser(args: { stream?: MediaStream }) {
     const ctx = new window.AudioContext();
     const analyser = ctx.createAnalyser();
     const dataArray = new Uint8Array(analyser.frequencyBinCount);
-    const source = stream ? ctx.createMediaStreamSource(stream) : undefined;
+    const audioTracks = stream?.getAudioTracks() || [];
+
+    const source =
+      stream && audioTracks.length > 0 ? ctx.createMediaStreamSource(stream) : undefined;
 
     const tick = () => {
       analyser.getByteTimeDomainData(dataArray);
@@ -25,15 +29,17 @@ export function useAudioAnalyser(args: { stream?: MediaStream }) {
 
     if (source) {
       source.connect(analyser);
+      setIsActive(true);
       setFrame(requestAnimationFrame(tick));
     }
 
     return () => {
       if (typeof frame === 'number') cancelAnimationFrame(frame);
+      setIsActive(false);
       analyser.disconnect();
       source?.disconnect();
     };
   }, [stream]); // eslint-disable-line
 
-  return { audioData };
+  return { isActive, audioData };
 }

@@ -183,6 +183,7 @@ export const actions = DevActions<Ctx>()
     e.render(<Waveform bus={bus} stream={id} width={width} height={30} />, {
       width,
       background: 1,
+      label: 'Audio Waveform',
     });
   });
 export default actions;
