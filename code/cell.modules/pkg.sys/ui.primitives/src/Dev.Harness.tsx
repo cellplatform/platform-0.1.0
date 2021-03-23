@@ -9,6 +9,9 @@ const imports = {
   PropList: import('./components/PropList/DEV'),
   TextEditor: import('./components/TextEditor/DEV'),
   OptionButtons: import('./components/OptionButtons/DEV'),
+
+  Button: import('@platform/ui.button/lib/components/Button/DEV'),
+  Switch: import('@platform/ui.button/lib/components/Switch/DEV'),
 };
 
 export const ACTIONS = Object.values(imports);

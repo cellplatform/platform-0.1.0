@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, defaultValue, mouse } from '../../common';
+import React from 'react';
+import { color, css, CssValue, defaultValue } from '../../common';
 
-export type CardProps = mouse.IMouseEventProps & {
+export type CardProps = {
   children?: React.ReactNode;
   background?: number | string;
   borderColor?: number | string;
@@ -12,6 +12,12 @@ export type CardProps = mouse.IMouseEventProps & {
   minHeight?: number;
   userSelect?: string | boolean;
   style?: CssValue;
+  onClick?: React.MouseEventHandler;
+  onDoubleClick?: React.MouseEventHandler;
+  onMouseDown?: React.MouseEventHandler;
+  onMouseUp?: React.MouseEventHandler;
+  onMouseEnter?: React.MouseEventHandler;
+  onMouseLeave?: React.MouseEventHandler;
 };
 
 export const Card: React.FC<CardProps> = (props) => {
@@ -34,7 +40,14 @@ export const Card: React.FC<CardProps> = (props) => {
   };
 
   return (
-    <div {...css(styles.base, props.style)} {...mouse.useState(props)}>
+    <div
+      {...css(styles.base, props.style)}
+      onDoubleClick={props.onDoubleClick}
+      onMouseDown={props.onMouseDown}
+      onMouseUp={props.onMouseUp}
+      onMouseEnter={props.onMouseEnter}
+      onMouseLeave={props.onMouseLeave}
+    >
       {props.children}
     </div>
   );

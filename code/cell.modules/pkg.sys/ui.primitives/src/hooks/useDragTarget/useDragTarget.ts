@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { readDropEvent } from './util';
 import { t } from '../../common';
 
-type Dropped = {
+export type Dropped = {
   dir: string;
   files: t.IHttpClientCellFileUpload[];
   urls: string[];
@@ -30,11 +30,11 @@ export function useDragTarget(ref: React.RefObject<HTMLElement>) {
       };
     };
 
-    const onDragOver = dragHandler(true);
-    const onDragLeave = dragHandler(false);
-    const onMouseLeave = dragHandler(false);
+    const handleDragOver = dragHandler(true);
+    const handleDragLeave = dragHandler(false);
+    const handleMouseLeave = dragHandler(false);
 
-    const onDrop = async (e: DragEvent) => {
+    const handleDrop = async (e: DragEvent) => {
       e.preventDefault();
       setIsDragOver(false);
 
@@ -42,16 +42,16 @@ export function useDragTarget(ref: React.RefObject<HTMLElement>) {
       setDropped({ dir, files, urls });
     };
 
-    el.addEventListener('dragover', onDragOver);
-    el.addEventListener('dragleave', onDragLeave);
-    el.addEventListener('mouseleave', onMouseLeave);
-    el.addEventListener('drop', onDrop);
+    el.addEventListener('dragover', handleDragOver);
+    el.addEventListener('dragleave', handleDragLeave);
+    el.addEventListener('mouseleave', handleMouseLeave);
+    el.addEventListener('drop', handleDrop);
 
     return () => {
-      el.removeEventListener('dragover', onDragOver);
-      el.removeEventListener('dragleave', onDragLeave);
-      el.removeEventListener('mouseleave', onMouseLeave);
-      el.removeEventListener('drop', onDrop);
+      el.removeEventListener('dragover', handleDragOver);
+      el.removeEventListener('dragleave', handleDragLeave);
+      el.removeEventListener('mouseleave', handleMouseLeave);
+      el.removeEventListener('drop', handleDrop);
     };
   }, [ref]);
 
