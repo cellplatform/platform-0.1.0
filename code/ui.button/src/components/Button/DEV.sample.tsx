@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Button, ButtonProps, ButtonTheme } from '.';
 import { COLORS, css, CssValue, defaultValue } from '../../common';
-import { IconButtonContent } from './DEV.sample.icons';
+import { IconContent } from './DEV.sample.icons';
 
 const PINK = '#CD638D';
 
@@ -58,13 +58,13 @@ export const SampleButtons: React.FC<SampleButtonsProps> = (props) => {
 
       <div {...styles.centerY}>
         <Button {...common} margin={[0, 20, 0, 0]}>
-          <IconButtonContent label={'Foo'} />
+          <IconContent label={'Foo'} />
         </Button>
         <Button {...common} margin={[0, 20, 0, 0]}>
-          <IconButtonContent label={'Bar'} />
+          <IconContent label={'Bar'} />
         </Button>
         <Button {...common}>
-          <IconButtonContent color={COLORS.BLUE} />
+          <IconContent color={COLORS.BLUE} />
         </Button>
       </div>
 
@@ -86,7 +86,7 @@ export const SampleButtons: React.FC<SampleButtonsProps> = (props) => {
         />
         <Button {...common} label={'Blue'} theme={ButtonTheme.BORDER.BLUE} />
         <Button {...common} theme={ButtonTheme.BORDER.BLUE}>
-          <IconButtonContent label={'Blue Icon'} color={1} />
+          <IconContent label={'Blue Icon'} color={1} />
         </Button>
       </div>
       <PinkDashed />

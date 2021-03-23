@@ -4,13 +4,10 @@ import { MdFace } from 'react-icons/md';
 
 import { color, css } from '../../common';
 
-const icon = Icon.renderer;
-export const Icons = {
-  Face: icon(MdFace),
-};
+const Face = Icon.renderer(MdFace);
 
-export type IconButtonContentProps = { label?: string; color?: number | string };
-export const IconButtonContent: React.FC<IconButtonContentProps> = (props) => {
+type IconContentProps = { label?: string; color?: number | string };
+export const IconContent: React.FC<IconContentProps> = (props) => {
   const { label } = props;
   const styles = {
     base: css({ Flex: 'horizontal-center-center' }),
@@ -19,7 +16,7 @@ export const IconButtonContent: React.FC<IconButtonContentProps> = (props) => {
   const elLabel = label && <div>{props.label}</div>;
   return (
     <div {...styles.base}>
-      <Icons.Face style={styles.icon} color={color.format(props.color)} />
+      <Face style={styles.icon} color={color.format(props.color)} />
       {elLabel}
     </div>
   );
