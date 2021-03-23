@@ -1,15 +1,15 @@
 import { color, css, CssValue } from '@platform/css';
-import { mouse } from '@platform/react';
+import { Mouse } from '@platform/react';
 import { defaultValue } from '@platform/util.value';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { Button } from '../Button';
+import { ButtonMouse } from './ButtonMouse';
 import { R, t } from '../common';
 import { SwitchTheme } from './SwitchTheme';
 
-export type ISwitchProps = mouse.IMouseEventProps & {
+export type SwitchProps = Mouse.IMouseEventProps & {
   id?: string;
   value?: boolean;
   width?: number;
@@ -23,13 +23,13 @@ export type ISwitchProps = mouse.IMouseEventProps & {
   events$?: Subject<t.SwitchEvent>;
   style?: CssValue;
 };
-export type ISwitchState = {
+export type SwitchState = {
   isDown?: boolean;
   isOver?: boolean;
   isLoaded?: boolean;
 };
 
-export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
+export class Switch extends React.PureComponent<SwitchProps, SwitchState> {
   /**
    * [Static]
    */
@@ -38,17 +38,17 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
   /**
    * [Fields]
    */
-  public state: ISwitchState = {};
-  private state$ = new Subject<Partial<ISwitchState>>();
+  public state: SwitchState = {};
+  private state$ = new Subject<Partial<SwitchState>>();
   private unmounted$ = new Subject<void>();
   private events$ = new Subject<t.SwitchEvent>();
-  private mouse: mouse.IMouseHandlers;
+  private mouse: Mouse.IMouseHandlers;
 
   /**
    * [Lifecycle]
    */
 
-  constructor(props: ISwitchProps) {
+  constructor(props: SwitchProps) {
     super(props);
 
     // Setup observables.
@@ -64,7 +64,7 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
     state$.subscribe((e) => this.setState(e));
 
     // Setup mouse.
-    this.mouse = Button.mouseState(this.props, this.state$, this.unmounted$, () => this.isEnabled);
+    this.mouse = ButtonMouse.state(this.props, this.state$, this.unmounted$, () => this.isEnabled);
     const mouse$ = this.mouse.events$.pipe(takeUntil(this.unmounted$));
     mouse$.subscribe((e) => this.fire({ type: 'SWITCH/mouse', payload: { ...e, id: this.id } }));
     mouse$
