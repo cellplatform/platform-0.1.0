@@ -38,6 +38,7 @@ export type IFileIntegrity = {
 export type IFilePresignedUploadUrl = {
   method: 'POST';
   expiresAt: number;
+  filesystem: t.FsType;
   filename: string;
   uri: string;
   url: string;

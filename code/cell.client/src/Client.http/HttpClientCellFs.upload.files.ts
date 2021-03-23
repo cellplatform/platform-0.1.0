@@ -1,4 +1,4 @@
-import { FormData, Schema, t } from '../common';
+import { FormData, t } from '../common';
 import { FireUploadEvent } from './HttpClientCellFs.upload.event';
 
 /**
@@ -23,6 +23,7 @@ export function uploadToTarget(args: {
 
     .map(async ({ upload, data }) => {
       const { url } = upload;
+      const path = upload.props.key;
 
       const uploadToS3 = async () => {
         // Prepare upload multi-part form.
@@ -44,14 +45,12 @@ export function uploadToTarget(args: {
         // HACK:  There is a problem sending the multi-part form to the local
         //        service, however just posting the data as a buffer (rather than the form)
         //        seems to work fine.
-        const path = upload.props.key;
         const headers = { 'content-type': 'multipart/form-data', path };
         return http.post(url, data, { headers });
       };
 
       // Upload data.
-      const isLocal = Schema.Url.isLocal(url);
-      const res = await (isLocal ? uploadToLocal() : uploadToS3());
+      const res = await (upload.filesystem === 'S3' ? uploadToS3() : uploadToLocal());
 
       // Prepare result.
       const { ok, status } = res;

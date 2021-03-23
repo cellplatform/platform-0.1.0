@@ -20,7 +20,8 @@
     "prepare": "ts-node -T script.ts/prepare && ts prepare && rm -rf tmp",
     "reset": "ts-node -T script.ts/reset",
     "nuke": "sh script.sh/nuke.sh",
-    "dbuild": "cd pkg.deployment && yarn dbuild"
+    "dbuild": "cd pkg.deployment && yarn dbuild",
+    "public": "ngrok http 8080 --hostname=os.ngrok.io"
   },
   "dependencies": {
     "@platform/cell.router": "0.9.0",
