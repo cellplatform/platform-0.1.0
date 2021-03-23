@@ -1,6 +1,6 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
-import { Samples, SamplesProps } from './DEV.samples';
+import { Samples, SamplesProps } from './DEV.sample';
 
 type Ctx = { props: SamplesProps };
 

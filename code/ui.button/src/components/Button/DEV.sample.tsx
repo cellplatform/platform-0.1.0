@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Button, ButtonProps, ButtonTheme } from '.';
 import { COLORS, css, CssValue, defaultValue } from '../../common';
-import { IconButtonContent } from './DEV.icons';
+import { IconButtonContent } from './DEV.sample.icons';
 
 const PINK = '#CD638D';
 
@@ -23,7 +23,7 @@ export const SampleButtons: React.FC<SampleButtonsProps> = (props) => {
     isEnabled,
     margin: [null, 10, null, null],
     onClick(e) {
-      log.info('onClick', e);
+      log.info('Icon/onClick', e);
     },
   };
 

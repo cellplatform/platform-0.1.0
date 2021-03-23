@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { Button, ButtonProps } from '.';
-import { SampleButtons, SampleButtonsProps } from './DEV.samples';
+import { SampleButtons, SampleButtonsProps } from './DEV.sample';
 
 type Ctx = { props: SampleButtonsProps };
 
