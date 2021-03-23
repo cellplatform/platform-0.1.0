@@ -80,7 +80,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         flex: 1,
         marginLeft: 6,
         marginTop: 4,
-        overflow: ellipsis ? 'hidden' : undefined,
+        overflow: ellipsis && label ? 'hidden' : undefined,
       }),
       label: css({
         width: '100%',
@@ -129,6 +129,12 @@ export const Layout: React.FC<LayoutProps> = (props) => {
     />
   );
 
+  const elLabel = label && (
+    <div {...css(styles.body.label, styles.body.ellipsis)}>
+      <LayoutLabel>{label}</LayoutLabel>
+    </div>
+  );
+
   return (
     <div {...css(styles.base, props.style)}>
       {props.top}
@@ -144,9 +150,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
           {isSpinning && <Spinner style={styles.main.spinner} size={18} />}
         </div>
         <div {...styles.body.outer}>
-          <div {...css(styles.body.label, styles.body.ellipsis)}>
-            <LayoutLabel>{label}</LayoutLabel>
-          </div>
+          {elLabel}
           {props.body}
           {elDescription}
         </div>

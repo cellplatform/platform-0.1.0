@@ -18,7 +18,10 @@ export const SelectButtons: React.FC<SelectButtonsProps> = (props) => {
 
   const styles = {
     base: css({ position: 'relative' }),
-    body: css({ marginTop: label === undefined ? 0 : 8 }),
+    body: css({
+      position: 'relative',
+      marginTop: label === undefined ? -1 : 8,
+    }),
   };
 
   const fireSelect = (next: t.ActionSelectItem[]) => {
@@ -97,6 +100,7 @@ export const SelectButtons: React.FC<SelectButtonsProps> = (props) => {
         icon={{
           Component: Icons.Checklist,
           color: color.alpha(COLORS.DARK, 0.4),
+          size: 19,
         }}
         description={description}
         placeholder={item.isPlaceholder}
