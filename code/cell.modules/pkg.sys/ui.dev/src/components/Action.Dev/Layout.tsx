@@ -13,8 +13,11 @@ export * from './Layout.Label';
  * A base layout for the display of an dev [Action] item.
  */
 export type LayoutProps = {
-  label?: React.ReactNode;
-  labelColor?: string | number;
+  label?: {
+    body?: React.ReactNode;
+    color?: string | number;
+    pressOffset?: number;
+  };
   body?: React.ReactNode;
   description?: React.ReactNode;
   icon?: { Component?: t.IIcon; color?: string | number; size?: number };
@@ -24,15 +27,17 @@ export type LayoutProps = {
   isActive: boolean;
   isSpinning?: boolean;
   ellipsis?: boolean;
-  pressOffset?: number;
   style?: CssValue;
   onClick?: () => void;
 };
 
 export const Layout: React.FC<LayoutProps> = (props) => {
-  const { label, placeholder, onClick, isSpinning } = props;
+  const { label: labelOptions = {}, placeholder, onClick, isSpinning } = props;
   const ellipsis = defaultValue(props.ellipsis, true);
-  const pressOffset = defaultValue(props.pressOffset, 1);
+
+  const labelBody = labelOptions.body;
+  const labelColor = labelOptions.color;
+  const labelPressOffset = defaultValue(labelOptions.pressOffset, 0);
 
   const [isOver, setIsOver] = useState<boolean>(false);
   const [isDown, setIsDown] = useState<boolean>(false);
@@ -80,16 +85,16 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         flex: 1,
         marginLeft: 6,
         marginTop: 4,
-        overflow: ellipsis && label ? 'hidden' : undefined,
+        overflow: ellipsis && labelBody ? 'hidden' : undefined,
       }),
       label: css({
         width: '100%',
         fontFamily: constants.FONT.MONO,
         fontStyle: placeholder ? 'italic' : undefined,
         fontSize: 12,
-        color: props.labelColor ? props.labelColor : isOver && isActive ? COLORS.BLUE : COLORS.DARK,
+        color: labelColor ? labelColor : isOver && isActive ? COLORS.BLUE : COLORS.DARK,
         opacity: !isActive ? 0.6 : !placeholder ? 1 : isOver ? 1 : 0.6,
-        transform: isDown ? `translateY(${pressOffset}px)` : undefined,
+        transform: isDown ? `translateY(${labelPressOffset}px)` : undefined,
       }),
       ellipsis:
         ellipsis && css({ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }),
@@ -129,9 +134,9 @@ export const Layout: React.FC<LayoutProps> = (props) => {
     />
   );
 
-  const elLabel = label && (
+  const elLabel = labelBody && (
     <div {...css(styles.body.label, styles.body.ellipsis)}>
-      <LayoutLabel>{label}</LayoutLabel>
+      <LayoutLabel>{labelBody}</LayoutLabel>
     </div>
   );
 

@@ -94,8 +94,10 @@ export const SelectButtons: React.FC<SelectButtonsProps> = (props) => {
       <Layout
         isActive={isActive}
         isSpinning={isSpinning}
-        label={label}
-        labelColor={COLORS.DARK}
+        label={{
+          body: label,
+          color: COLORS.DARK,
+        }}
         body={elBody}
         icon={{
           Component: Icons.Checklist,
@@ -106,7 +108,6 @@ export const SelectButtons: React.FC<SelectButtonsProps> = (props) => {
         placeholder={item.isPlaceholder}
         top={elTitle}
         right={elClear}
-        pressOffset={0}
       />
     </div>
   );

@@ -95,7 +95,7 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = (props) => {
       <Layout
         isActive={isActive}
         isSpinning={isSpinning}
-        label={label}
+        label={{ body: label }}
         icon={{ Component: Icons.Checklist }}
         description={description}
         placeholder={item.isPlaceholder}

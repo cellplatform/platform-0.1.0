@@ -115,29 +115,36 @@ export const actions = DevActions<Ctx>()
 
     e.button((config) =>
       config
-        .label('stop (and save to cell.fs) [TODO]')
-        .description('target: `localhost:5000/cell:<ns>:A1`')
+        .label('stop (and save to cell.fs)')
+        .description('target: `host/cell:<ns>:A1`')
         .pipe((e) => {
-          const ref = e.ctx.props.id;
-          e.ctx.bus.fire({
-            type: 'MediaStream/record/stop',
-            payload: {
-              ref,
-              data: async (file) => {
-                const host = 5000;
-                // const host = 'https://os.ngrok.io';
+          return new Promise<void>((resolve, reject) => {
+            const ref = e.ctx.props.id;
+            e.ctx.bus.fire({
+              type: 'MediaStream/record/stop',
+              payload: {
+                ref,
+                data: async (file) => {
+                  // const host = 5000;
+                  const host = 'https://os.ngrok.io';
 
-                const client = HttpClient.create(host);
-                const cell = client.cell('cell:ckm8fe8o0000d9reteimz8y7v:A1');
-                const filename = 'test.webm';
-                const data = await file.arrayBuffer();
-                const res = await cell.fs.upload({ filename, data });
+                  const client = HttpClient.create(host);
+                  const cell = client.cell('cell:ckm8fe8o0000d9reteimz8y7v:A1');
+                  const filename = 'tmp/record.webm';
+                  const data = await file.arrayBuffer();
+                  const res = await cell.fs.upload({ filename, data });
 
-                console.log('HTTP Response', res);
-                console.log('OK', res.ok);
-                console.log('Saved to:', cell.url.file.byName(filename).toString());
+                  console.log('HTTP Response', res);
+                  console.log('OK', res.ok);
+                  const url = cell.url.file.byName(filename).toString();
+                  console.log('Saved to:', url);
+
+                  const md = `recorded file [download](${url})`;
+                  e.button.description = md;
+                  resolve();
+                },
               },
-            },
+            });
           });
         }),
     );

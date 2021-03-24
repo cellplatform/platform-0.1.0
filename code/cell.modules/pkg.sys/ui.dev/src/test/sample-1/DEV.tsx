@@ -84,6 +84,45 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.title('Button');
+    e.button((config) => config.label('disabled (no handler)'));
+    e.button('delay', async (e) => await time.delay(1200));
+    e.hr(1, 0.15, [5, 0]);
+
+    e.button('console.log', (e) => {
+      console.group('🌳 button click');
+      console.log('e.ctx', toObject(e.ctx));
+      console.log('e.host', toObject(e.host));
+      console.groupEnd();
+    });
+    e.button((config) => config.label(`Ellipsis - ${LOREM}`));
+    e.button((config) => null);
+    e.button((config) => {
+      config
+        .title('My button title:')
+        .label('markdown')
+        .description(markdown())
+        .pipe((e) => {
+          count++;
+          e.button.description = markdown();
+        });
+    });
+    e.button('button: change label', (e) => {
+      count++;
+      e.button.label = `count: ${count}`;
+      e.settings({ button: { description: `Lorem ipsum dolar sit (${count})` } });
+    });
+    e.button((config) => {
+      config.label('multiple handlers').pipe(
+        (e) => count++,
+        (e) => (e.button.label = `multi: ${count}`),
+      );
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Hr');
     e.hr(1, 0.15);
     e.hr(1, 0.15, [5, 0]);
@@ -195,45 +234,6 @@ export const actions = DevActions<Ctx>()
           }
         }),
     );
-
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('Button');
-    e.button((config) => config.label('hello'));
-    e.button('delay', async (e) => await time.delay(1200));
-    e.hr(1, 0.15, [5, 0]);
-
-    e.button('console.log', (e) => {
-      console.group('🌳 button click');
-      console.log('e.ctx', toObject(e.ctx));
-      console.log('e.host', toObject(e.host));
-      console.groupEnd();
-    });
-    e.button((config) => config.label(`Ellipsis - ${LOREM}`));
-    e.button((config) => null);
-    e.button((config) => {
-      config
-        .title('My button title:')
-        .label('markdown')
-        .description(markdown())
-        .pipe((e) => {
-          count++;
-          e.button.description = markdown();
-        });
-    });
-    e.button('button: change label', (e) => {
-      count++;
-      e.button.label = `count: ${count}`;
-      e.settings({ button: { description: `Lorem ipsum dolar sit (${count})` } });
-    });
-    e.button((config) => {
-      config.label('multiple handlers').pipe(
-        (e) => count++,
-        (e) => (e.button.label = `multi: ${count}`),
-      );
-    });
 
     e.hr();
   })

@@ -14,7 +14,7 @@ export const Bool: React.FC<BoolProps> = (props) => {
   const { namespace } = props;
   const model = useActionItemMonitor({ bus: props.bus, item: props.item });
   const bus = props.bus.type<t.DevActionEvent>();
-  const { title, label =  DEFAULT.UNNAMED, description, isSpinning } = model;
+  const { title, label = DEFAULT.UNNAMED, description, isSpinning } = model;
   const isActive = model.handlers.length > 0;
   const value = Boolean(model.current);
 
@@ -36,7 +36,7 @@ export const Bool: React.FC<BoolProps> = (props) => {
     <Layout
       isActive={isActive}
       isSpinning={isSpinning}
-      label={label}
+      label={{ body: label }}
       description={description}
       top={elTitle}
       right={elSwitch}
