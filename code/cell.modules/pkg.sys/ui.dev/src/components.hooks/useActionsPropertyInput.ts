@@ -5,11 +5,15 @@ import { Format, t } from '../common';
  * Wrangles a flexible input type into a list of [Actions] objects.
  */
 export function useActionsPropertyInput(input?: t.ActionsSet) {
-  const [actions, setActions] = useState<t.Actions[]>([]);
+  const [total, setTotal] = useState<number>(0);
+  const [items, setItems] = useState<t.Actions[]>([]);
 
   useEffect(() => {
-    Format.toActionsArray(input).then((list) => setActions(list));
+    const actions = Format.toActionsArray(input);
+    setTotal(actions.total);
+    actions.load().then((items) => setItems(items));
   }, [input]);
 
-  return actions;
+  const isEmpty = total === 0;
+  return { isEmpty, total, items };
 }

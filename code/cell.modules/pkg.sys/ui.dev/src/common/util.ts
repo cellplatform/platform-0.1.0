@@ -15,23 +15,29 @@ export const Format = {
   /**
    * Convert to a simple list of [Actions] objects.
    */
-  async toActionsArray(input?: t.ActionsSet): Promise<t.Actions[]> {
-    if (input === undefined) return [];
-
+  toActionsArray(input?: t.ActionsSet) {
     type T = (t.Actions | t.ActionsImport)[];
-    const list: T = Array.isArray(input) ? input : [input];
+    type R = {
+      total: number;
+      items: t.Actions[];
+      load(): Promise<t.Actions[]>;
+    };
 
-    return await Promise.all(
-      list.map(async (item) => {
-        return value.isPromise(item) ? (await item).default : item;
-      }),
-    );
+    const items: T = input === undefined ? [] : Array.isArray(input) ? input : [input];
+
+    const res: R = {
+      total: items.length,
+      items: [],
+      async load() {
+        res.items = await Promise.all(
+          items.map(async (item) => {
+            return value.isPromise(item) ? (await item).default : item;
+          }),
+        );
+        return res.items;
+      },
+    };
+
+    return res;
   },
 };
-
-/**
- * Converts a
- */
-export function asActionsArray(input?: t.Actions | t.Actions[]): t.Actions[] {
-  return input === undefined ? [] : Array.isArray(input) ? input : [input];
-}

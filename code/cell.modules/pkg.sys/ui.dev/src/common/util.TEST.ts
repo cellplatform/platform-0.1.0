@@ -27,31 +27,42 @@ describe('util: Format', () => {
     const actions3 = import('../test/sample-3/DEV');
 
     it('undefined', async () => {
-      expect(await Format.toActionsArray()).to.eql([]);
+      const res = Format.toActionsArray();
+      expect(res.total).to.eql(0);
+      expect(res.items).to.eql([]);
+      expect(await res.load()).to.eql([]);
     });
 
     it('single', async () => {
-      const res = await Format.toActionsArray(actions1);
-      expect(res).to.eql([actions1]);
-      expect((res[0] as A).toObject().namespace).to.eql('one');
+      const res = Format.toActionsArray(actions1);
+      expect(res.total).to.eql(1);
+      expect(await res.load()).to.eql([actions1]);
+      expect(res.items).to.eql([actions1]);
+      expect((res.items[0] as A).toObject().namespace).to.eql('one');
     });
 
     it('[array]', async () => {
-      const res = await Format.toActionsArray([actions1, actions2]);
-      expect(res).to.eql([actions1, actions2]);
-      expect((res[0] as A).toObject().namespace).to.eql('one');
-      expect((res[1] as A).toObject().namespace).to.eql('two');
+      const res = Format.toActionsArray([actions1, actions2]);
+      expect(res.total).to.eql(2);
+      expect(await res.load()).to.eql([actions1, actions2]);
+      expect(res.items).to.eql([actions1, actions2]);
+      expect((res.items[0] as A).toObject().namespace).to.eql('one');
+      expect((res.items[1] as A).toObject().namespace).to.eql('two');
     });
 
     it('dynamic import', async () => {
-      const res = await Format.toActionsArray(actions3);
-      expect((res[0] as A).toObject().namespace).to.eql('test/sample-3');
+      const res = Format.toActionsArray(actions3);
+      expect(res.total).to.eql(1);
+      await res.load();
+      expect((res.items[0] as A).toObject().namespace).to.eql('test/sample-3');
     });
 
     it('dynamic import [array]', async () => {
-      const res = await Format.toActionsArray([actions1, actions3]);
-      expect((res[0] as A).toObject().namespace).to.eql('one');
-      expect((res[1] as A).toObject().namespace).to.eql('test/sample-3');
+      const res = Format.toActionsArray([actions1, actions3]);
+      expect(res.total).to.eql(2);
+      await res.load();
+      expect((res.items[0] as A).toObject().namespace).to.eql('one');
+      expect((res.items[1] as A).toObject().namespace).to.eql('test/sample-3');
     });
   });
 });

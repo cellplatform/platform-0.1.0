@@ -6,22 +6,24 @@ import { Store } from '../../store';
 import { useActionsSelectorState } from '../ActionsSelector';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { Host } from '../Host';
-import { HarnessActions } from './HarnessActions';
-import { HarnessEmpty } from './HarnessEmpty';
-import { HarnessFooter } from './HarnessFooter';
+import { HarnessActions } from './Harness.Actions';
+import { HarnessEmpty } from './Harness.Empty';
+import { HarnessFooter } from './Harness.Footer';
 
 export type HarnessProps = {
   bus?: t.EventBus<any>;
   actions?: t.ActionsSet;
   store?: t.ActionsSelectStore | boolean;
   namespace?: string;
-  allowRubberband?: boolean; // Page rubber-band effect in Chrome. Default:false.
+  allowRubberband?: boolean; // Page rubber-band effect in Chrome (default: false).
   style?: CssValue;
 };
 
 export const Harness: React.FC<HarnessProps> = (props) => {
   const [bus, setBus] = useState<t.EventBus>(props.bus || rx.bus());
   const allowRubberband = defaultValue(props.allowRubberband, false);
+
+  console.log('props.actions', props.actions);
 
   useEffect(() => {
     if (props.bus) setBus(props.bus);
@@ -32,8 +34,15 @@ export const Harness: React.FC<HarnessProps> = (props) => {
   }, [allowRubberband]);
 
   const actions = useActionsPropertyInput(props.actions);
-  const store = toStore(props.namespace, actions, props.store);
-  const actionsState = useActionsSelectorState({ bus, store, actions });
+  const store = toStore(props.namespace, actions.items, props.store);
+  const actionsState = useActionsSelectorState({ bus, store, actions: actions.items });
+
+  console.group('🌳 ');
+
+  console.log('actions', props.actions);
+  console.log('actionsState', actionsState);
+  // console.log('actionsState.empty', actionsState.empty);
+  console.groupEnd();
 
   const selected = actionsState.selected;
   selected?.renderSubject();
@@ -81,7 +90,7 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     <HarnessFooter
       bus={bus}
       env={env}
-      actions={actions}
+      actions={actions.items}
       selected={selected}
       style={styles.footer}
     />
@@ -104,7 +113,7 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     </div>
   );
 
-  const elHarness = !actionsState.empty && (
+  const elHarness = !actions.isEmpty && (
     <>
       {elLeft}
       {elMain}
@@ -112,7 +121,7 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     </>
   );
 
-  const elEmpty = actionsState.empty && (
+  const elEmpty = actions.isEmpty && (
     <>
       <HarnessEmpty />
       {elFooter}
