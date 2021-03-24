@@ -42,7 +42,7 @@ export const ButtonTheme = {
         const theme = BORDER.BASE;
         theme.backgroundColor.enabled = COLORS.BLUE;
         theme.backgroundColor.disabled = -0.1;
-        theme.color = { enabled: 1, disabled: -0.5 };
+        theme.color = { enabled: 1, disabled: -0.3 };
         return theme;
       },
       get BLUE() {

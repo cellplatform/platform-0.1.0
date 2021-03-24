@@ -86,7 +86,7 @@ export const SampleButtons: React.FC<SampleButtonsProps> = (props) => {
         />
         <Button {...common} label={'Blue'} theme={ButtonTheme.BORDER.BLUE} />
         <Button {...common} theme={ButtonTheme.BORDER.BLUE}>
-          <IconContent label={'Blue Icon'} color={1} />
+          <IconContent label={'Blue Icon'} color={isEnabled ? 1 : -0.3} />
         </Button>
       </div>
       <PinkDashed />
