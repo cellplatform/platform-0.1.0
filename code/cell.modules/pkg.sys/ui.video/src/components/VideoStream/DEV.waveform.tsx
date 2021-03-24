@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { css, CssValue, t } from '../../common';
-import { useAudioAnalyser } from './DEV.useAudioAnalyser';
-import { useDrawWaveform } from './DEV.useDrawWaveform';
+import { useAudioAnalyser } from './DEV.waveform.useAudioAnalyser';
+import { useDrawWaveform } from './DEV.waveform.useDrawWaveform';
 import { MediaStreamEvents } from './MediaStream.Events';
 
 export type WaveformProps = {
