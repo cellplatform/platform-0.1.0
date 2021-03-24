@@ -1,15 +1,6 @@
 import * as React from 'react';
 
-import {
-  color as colorUtil,
-  COLORS,
-  style,
-  css,
-  CssValue,
-  defaultValue,
-  t,
-  value,
-} from '../common';
+import { color, COLORS, style, css, CssValue, defaultValue, t, value } from '../common';
 
 export type IHrProps = {
   color?: string | number | 'PINK' | 'CYAN';
@@ -49,17 +40,16 @@ export class Hr extends React.PureComponent<IHrProps> {
     const opacity = value.defaultValue(this.props.opacity, 1);
     const margin = defaultValue(this.props.margin, [20, 0]);
 
-    let color = this.props.color;
-    color = color === 'PINK' ? COLORS.CLI.PINK : color;
-    color = color === 'CYAN' ? COLORS.CLI.CYAN : color;
-    console.log('color', color);
-    color = colorUtil.format(color || -1);
+    let borderColor = this.props.color;
+    borderColor = borderColor === 'PINK' ? COLORS.CLI.PINK : borderColor;
+    borderColor = borderColor === 'CYAN' ? COLORS.CLI.CYAN : borderColor;
+    borderColor = color.format(borderColor || -1);
 
     const styles = {
       base: css({
         boxSizing: 'border-box',
         border: 'none',
-        borderBottom: `${dashed ? 'dashed' : 'solid'} ${thickness}px ${color}`,
+        borderBottom: `${dashed ? 'dashed' : 'solid'} ${thickness}px ${borderColor}`,
         opacity,
         ...style.toMargins(margin),
       }),

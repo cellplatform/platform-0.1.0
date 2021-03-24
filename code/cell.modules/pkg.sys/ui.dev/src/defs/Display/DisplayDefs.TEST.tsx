@@ -29,6 +29,7 @@ describe('Display', () => {
       expect(item.height).to.eql(8);
       expect(item.opacity).to.eql(0.06);
       expect(item.margin).to.eql([8, 8]);
+      expect(item.borderStyle).to.eql('solid');
     });
 
     it('param: fn', () => {
@@ -68,6 +69,29 @@ describe('Display', () => {
       expect(item1.margin).to.eql([8, 8]);
       expect(item2.margin).to.eql([8, 8]);
       expect(item3.margin).to.eql([10, 20, 30, 40]);
+    });
+
+    it('borderStyle', () => {
+      const { actions, model } = create();
+
+      actions.items((e) => {
+        e.hr();
+        e.hr((config) => config.borderStyle('dashed'));
+        e.hr(1, 0.3, undefined, 'dashed');
+        e.hr((config) => config.borderStyle('foobar' as any));
+      });
+
+      type H = t.ActionHr;
+      const items = model.state.items;
+      const item1 = items[0] as H;
+      const item2 = items[1] as H;
+      const item3 = items[2] as H;
+      const item4 = items[3] as H;
+
+      expect(item1.borderStyle).to.eql('solid');
+      expect(item2.borderStyle).to.eql('dashed');
+      expect(item3.borderStyle).to.eql('dashed');
+      expect(item4.borderStyle).to.eql('solid'); // NB: Non-supported value is ignored.
     });
 
     it('min-height: 0', () => {

@@ -1,6 +1,7 @@
 import { t } from '../../common';
 
 type O = Record<string, unknown>;
+export type ActionHrBorderStyle = 'solid' | 'dashed';
 
 /**
  * Horizontal rule (divider).
@@ -11,6 +12,7 @@ export type ActionHr = {
   height: number;
   opacity: number;
   margin: t.EdgeSpacing;
+  borderStyle: ActionHrBorderStyle;
 };
 
 /**
@@ -22,4 +24,5 @@ export type ActionHrConfigArgs<Ctx extends O> = {
   height(value: number): ActionHrConfigArgs<Ctx>;
   opacity(value: number): ActionHrConfigArgs<Ctx>;
   margin(value: t.EdgeSpacing): ActionHrConfigArgs<Ctx>;
+  borderStyle(value: ActionHrBorderStyle): ActionHrConfigArgs<Ctx>;
 };

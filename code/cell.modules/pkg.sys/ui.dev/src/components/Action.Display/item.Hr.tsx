@@ -10,5 +10,12 @@ export type HrProps = {
 
 export const Hr: React.FC<HrProps> = (props) => {
   const { item } = props;
-  return <HrComponent color={0 - item.opacity} thickness={item.height} margin={item.margin} />;
+  return (
+    <HrComponent
+      color={0 - item.opacity}
+      thickness={item.height}
+      margin={item.margin}
+      dashed={item.borderStyle === 'dashed'}
+    />
+  );
 };

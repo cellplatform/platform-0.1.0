@@ -2,6 +2,8 @@ import { t, R, slug } from '../common';
 
 type O = Record<string, unknown>;
 
+const borderStyles: t.ActionHrBorderStyle[] = ['solid', 'dashed'];
+
 /**
  * A [Horizontal Rule] configurator.
  */
@@ -12,6 +14,7 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
     height: 8,
     opacity: 0.06,
     margin: [8, 8],
+    borderStyle: 'solid',
   };
 
   const config: t.ActionHrConfigArgs<any> = {
@@ -28,6 +31,10 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
       item.margin = value;
       return config;
     },
+    borderStyle(value) {
+      if (borderStyles.includes(value)) item.borderStyle = value;
+      return config;
+    },
   };
 
   if (typeof params[0] === 'function') {
@@ -41,6 +48,9 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
   }
   if (typeof params[2] === 'number' || Array.isArray(params[2])) {
     config.margin(params[2] as t.EdgeSpacing);
+  }
+  if (typeof params[3] === 'string') {
+    config.borderStyle(params[3] as t.ActionHrBorderStyle);
   }
 
   return { item, config };
