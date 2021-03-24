@@ -1,9 +1,19 @@
 import * as React from 'react';
-import { color as colorUtil, css, style, COLORS, value, CssValue } from '../common';
+
+import {
+  color as colorUtil,
+  COLORS,
+  style,
+  css,
+  CssValue,
+  defaultValue,
+  t,
+  value,
+} from '../common';
 
 export type IHrProps = {
   color?: string | number | 'PINK' | 'CYAN';
-  margin?: string | number | Array<string | number | null>;
+  margin?: t.EdgeSpacing;
   dashed?: boolean;
   opacity?: number;
   thickness?: number;
@@ -36,20 +46,22 @@ export class Hr extends React.PureComponent<IHrProps> {
   public render() {
     const { dashed } = this.props;
     const thickness = value.defaultValue(this.props.thickness, 1);
-    const margin = this.props.margin === undefined ? [20, 0] : this.props.margin;
-    const opacity = value.defaultValue(this.props.opacity, 0.1);
+    const opacity = value.defaultValue(this.props.opacity, 1);
+    const margin = defaultValue(this.props.margin, [20, 0]);
 
     let color = this.props.color;
     color = color === 'PINK' ? COLORS.CLI.PINK : color;
     color = color === 'CYAN' ? COLORS.CLI.CYAN : color;
+    console.log('color', color);
     color = colorUtil.format(color || -1);
 
     const styles = {
       base: css({
-        ...style.toMargins(margin),
+        boxSizing: 'border-box',
         border: 'none',
         borderBottom: `${dashed ? 'dashed' : 'solid'} ${thickness}px ${color}`,
         opacity,
+        ...style.toMargins(margin),
       }),
     };
     return <hr {...css(styles.base, this.props.style)} />;

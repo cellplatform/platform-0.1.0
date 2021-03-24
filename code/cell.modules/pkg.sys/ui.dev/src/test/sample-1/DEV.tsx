@@ -125,7 +125,8 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Hr');
     e.hr(1, 0.15);
-    e.hr(1, 0.15, [5, 0]);
+    e.hr(3, 0.15, [2, 50]);
+    e.hr(1, 0.15, [15, 0]);
     e.hr();
   })
 

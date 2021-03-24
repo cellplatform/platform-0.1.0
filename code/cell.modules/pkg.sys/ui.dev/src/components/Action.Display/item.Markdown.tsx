@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, css, Format, t } from '../common';
+import { color, css, Format, t, style } from '../common';
 import { Markdown as MarkdownComponent } from '../Markdown';
 
 export type MarkdownProps = {
@@ -11,7 +11,6 @@ export type MarkdownProps = {
 
 export const Markdown: React.FC<MarkdownProps> = (props) => {
   const { item } = props;
-  const margin = Format.toEdges(item.margin);
 
   const styles = {
     base: css({
@@ -19,10 +18,7 @@ export const Markdown: React.FC<MarkdownProps> = (props) => {
       boxSizing: 'border-box',
       fontSize: 11,
       color: color.format(-0.4),
-      paddingTop: margin.top,
-      paddingRight: margin.right,
-      paddingBottom: margin.bottom,
-      paddingLeft: margin.left,
+      ...style.toPadding(item.margin),
     }),
   };
 

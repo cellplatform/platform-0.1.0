@@ -13,6 +13,8 @@ const styles = {
     borderRadius: 2,
     paddingLeft: 3,
     paddingRight: 3,
+    marginLeft: 2,
+    marginRight: 2,
   },
 
   // Markdown: <ul>
