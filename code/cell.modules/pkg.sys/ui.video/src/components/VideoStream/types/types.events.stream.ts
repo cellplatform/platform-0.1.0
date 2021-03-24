@@ -1,23 +1,4 @@
-import * as t from '../../common/types';
-
-export type MediaStreamMimetype = 'video/webm';
-export type MediaStreamKind = 'video' | 'screen';
-
-export type MediaStreamTrack = {
-  kind: 'audio' | 'video';
-  id: string;
-  isEnabled: boolean;
-  isMuted: boolean;
-  label: string;
-  state: 'live' | 'ended';
-};
-
-/**
- * EVENTS
- */
-export type MediaEvent = MediaStreamEvent | MediaStreamsEvent | MediaStreamRecordEvent;
-
-export type MediaStreamsEvent = MediaStreamsStatusRequestEvent | MediaStreamsStatusResponseEvent;
+import { t } from './common';
 
 export type MediaStreamEvent =
   | MediaStreamStatusRequestEvent
@@ -28,12 +9,6 @@ export type MediaStreamEvent =
   | MediaStreamStopEvent
   | MediaStreamStoppedEvent
   | MediaStreamErrorEvent;
-
-export type MediaStreamRecordEvent =
-  | MediaStreamRecordStartEvent
-  | MediaStreamRecordStartedEvent
-  | MediaStreamRecordStopEvent
-  | MediaStreamRecordStoppedEvent;
 
 /**
  * Fires to retrieve the status of a media stream.
@@ -55,28 +30,10 @@ export type MediaStreamStatusResponse = {
   ref: string;
   exists: boolean;
   stream?: MediaStream;
-  kind?: MediaStreamKind;
+  kind?: t.MediaStreamKind;
   constraints?: MediaStreamConstraints;
   tracks: t.MediaStreamTrack[];
 };
-
-/**
- * PLURAL Fires to retrieve the status of all streams.
- */
-export type MediaStreamsStatusRequestEvent = {
-  type: 'MediaStreams/status:req';
-  payload: MediaStreamsStatusRequest;
-};
-export type MediaStreamsStatusRequest = { kind?: MediaStreamKind };
-
-/**
- * PLURAL Fires to retrieve the status of all streams.
- */
-export type MediaStreamsStatusResponseEvent = {
-  type: 'MediaStreams/status:res';
-  payload: MediaStreamsStatusResponse;
-};
-export type MediaStreamsStatusResponse = { streams: MediaStreamStatusResponse[] };
 
 /**
  * Fires to start a [MediaStream].
@@ -145,40 +102,3 @@ export type MediaStreamError = {
 /**
  * RECORD
  */
-
-/**
- * Starts recording a stream.
- */
-export type MediaStreamRecordStartEvent = {
-  type: 'MediaStream/record/start';
-  payload: MediaStreamRecordStart;
-};
-export type MediaStreamRecordStart = { ref: string; mimetype?: MediaStreamMimetype };
-
-export type MediaStreamRecordStartedEvent = {
-  type: 'MediaStream/record/started';
-  payload: MediaStreamRecordStarteded;
-};
-export type MediaStreamRecordStarteded = MediaStreamRecordStart & { startedAt: number };
-
-/**
- * Stops the recording of a stream.
- */
-export type MediaStreamRecordStopEvent = {
-  type: 'MediaStream/record/stop';
-  payload: MediaStreamRecordStop;
-};
-export type MediaStreamRecordStop = {
-  ref: string;
-  download?: { filename: string };
-  data?: (file: Blob) => void;
-};
-
-/**
- * Fires when a recording is stopped.
- */
-export type MediaStreamRecordStoppedEvent = {
-  type: 'MediaStream/record/stopped';
-  payload: MediaStreamRecordStopped;
-};
-export type MediaStreamRecordStopped = { ref: string; file: Blob };
