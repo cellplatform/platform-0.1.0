@@ -52,7 +52,7 @@ export type PeerStatusResponseEvent = {
   payload: PeerStatusResponse;
 };
 export type PeerStatusResponse = {
-  exists: boolean;
   id?: string; // NB: Ommit ID to retrieve
+  exists: boolean;
   peer?: t.PeerStatus;
 };

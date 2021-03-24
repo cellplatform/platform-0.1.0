@@ -60,7 +60,7 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
       const peer = toStatus(id || '');
       bus.fire({
         type: 'Peer/status:res',
-        payload: { exists: Boolean(peer), id, peer },
+        payload: { id, exists: Boolean(peer), peer },
       });
     });
 

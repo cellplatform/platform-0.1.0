@@ -62,7 +62,9 @@ export const actions = DevActions<Ctx>()
     e.button('fire: Peer/status:req', async (e) => {
       const ref = e.ctx.id;
       const data = deleteUndefined(await e.ctx.events.status(ref).get());
-      e.button.description = <ObjectView name={'response: status'} data={data} fontSize={10} />;
+      e.button.description = (
+        <ObjectView name={'response: status'} data={data} fontSize={10} expandLevel={3} />
+      );
     });
 
     e.hr();
