@@ -23,8 +23,6 @@ export const Harness: React.FC<HarnessProps> = (props) => {
   const [bus, setBus] = useState<t.EventBus>(props.bus || rx.bus());
   const allowRubberband = defaultValue(props.allowRubberband, false);
 
-  console.log('props.actions', props.actions);
-
   useEffect(() => {
     if (props.bus) setBus(props.bus);
   }, [props.bus]);
@@ -36,13 +34,6 @@ export const Harness: React.FC<HarnessProps> = (props) => {
   const actions = useActionsPropertyInput(props.actions);
   const store = toStore(props.namespace, actions.items, props.store);
   const actionsState = useActionsSelectorState({ bus, store, actions: actions.items });
-
-  console.group('🌳 ');
-
-  console.log('actions', props.actions);
-  console.log('actionsState', actionsState);
-  // console.log('actionsState.empty', actionsState.empty);
-  console.groupEnd();
 
   const selected = actionsState.selected;
   selected?.renderSubject();

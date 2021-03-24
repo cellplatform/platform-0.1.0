@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Harness, HarnessProps } from '.';
 import { DevActions } from '../..';
-import { rx, HttpClient, t } from '../../common';
+import { rx, HttpClient, t, log } from '../../common';
 
 import sample1 from '../../test/sample-1/DEV';
 import sample2 from '../../test/sample-2/DEV';
@@ -13,7 +13,7 @@ const client = HttpClient.create(5000);
 const bus = rx.bus();
 
 bus.event$.subscribe((e) => {
-  // console.log('e', e);
+  log.info('e', e);
 });
 
 type Ctx = { props: HarnessProps };

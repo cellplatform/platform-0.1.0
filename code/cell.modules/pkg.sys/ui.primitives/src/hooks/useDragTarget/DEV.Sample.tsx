@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
 import { ObjectView } from 'sys.ui.dev';
 
-import { useDragTarget, Dropped } from '.';
-import { color, css, HttpClient, t } from '../../common';
+import { useDragTarget } from '.';
+import { color, css } from '../../common';
 import { Button } from '../../components.ref/button/Button';
+import { Spinner } from '../../components.ref/spinner/Spinner';
+import { upload } from './DEV.Sample.upload';
 
 export const Sample: React.FC = () => {
   const ref = React.useRef<HTMLDivElement>(null);
+
   const dragTarget = useDragTarget(ref);
+  const { isDragOver, isDropped, dropped } = dragTarget;
+  const data = { isDragOver, isDropped, dropped };
+  const files = dragTarget.dropped?.files || [];
+
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
 
   const styles = {
     base: css({
@@ -28,13 +37,20 @@ export const Sample: React.FC = () => {
       Flex: 'center-center',
       pointerEvents: 'none',
     }),
+    footer: css({
+      Absolute: [null, 0, 0, 0],
+      padding: 15,
+      borderTop: `solid 1px ${color.format(-0.1)}`,
+    }),
+    button: css({
+      Flex: 'horizontal-center-center',
+    }),
   };
 
-  const handleUpload = () => {
-    const { dropped } = dragTarget;
-    // setRedraw((prev) => prev/ + 1);
-    // console.log('files', files);
-    console.log('dropped', dropped);
+  const handleUpload = async () => {
+    setIsUploading(true);
+    setUploadedUrls(await upload(files));
+    setIsUploading(false);
   };
 
   const elSpacer = <div {...styles.toolbar.divider} />;
@@ -49,20 +65,36 @@ export const Sample: React.FC = () => {
     <div {...styles.toolbar.base}>
       <Button onClick={() => dragTarget.reset()}>Reset</Button>
       {elSpacer}
-      <Button onClick={handleUpload}>Upload</Button>
+      <div {...styles.button}>
+        <Button
+          isEnabled={files.length > 0}
+          onClick={handleUpload}
+          label={'Upload'}
+          style={{ marginRight: 5 }}
+        />
+        {isUploading && <Spinner size={18} />}
+      </div>
     </div>
   );
 
-  const { isDragOver, isDropped, dropped } = dragTarget;
-  const data = { isDragOver, isDropped, dropped };
-
-  console.log('dropped >>', dropped);
+  const elFooter = uploadedUrls.length > 0 && (
+    <div {...styles.footer}>
+      {uploadedUrls.map((url, i) => {
+        return (
+          <a href={url} key={i} target={'_blank'} rel={'noreferrer'}>
+            {uploadedUrls}
+          </a>
+        );
+      })}
+    </div>
+  );
 
   return (
     <div ref={ref} {...styles.base}>
       {elToolbar}
       <ObjectView name={'debug'} data={data} expandLevel={10} />
       {elDragOver}
+      {elFooter}
     </div>
   );
 };

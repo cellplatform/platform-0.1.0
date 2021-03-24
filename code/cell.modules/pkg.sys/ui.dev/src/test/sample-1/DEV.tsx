@@ -55,7 +55,6 @@ export const actions = DevActions<Ctx>()
 
     e.button('inject <React>', (btn) => {
       count++;
-      console.log('count', count);
 
       const styles = {
         bgr: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' }),
