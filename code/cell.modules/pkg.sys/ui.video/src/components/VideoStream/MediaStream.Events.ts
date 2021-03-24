@@ -9,7 +9,7 @@ import { rx, t } from '../../common';
 export function MediaStreamEvents(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
-  const bus = args.bus.type<t.MediaStreamEvent>();
+  const bus = args.bus.type<t.MediaStreamEvent | t.MediaStreamsEvent>();
   const event$ = bus.event$.pipe(takeUntil(dispose$));
 
   /**
@@ -66,6 +66,25 @@ export function MediaStreamEvents(args: { bus: t.EventBus<any> }) {
     return { ref, get, request$, response$ };
   };
 
+  const all = {
+    status() {
+      const request$ = rx
+        .payload<t.MediaStreamsStatusRequestEvent>(event$, 'MediaStreams/status:req')
+        .pipe();
+      const response$ = rx
+        .payload<t.MediaStreamsStatusResponseEvent>(event$, 'MediaStreams/status:res')
+        .pipe();
+
+      const get = (kind?: t.MediaStreamKind) => {
+        const res = firstValueFrom(response$);
+        bus.fire({ type: 'MediaStreams/status:req', payload: { kind } });
+        return res;
+      };
+
+      return { get, request$, response$ };
+    },
+  };
+
   return {
     dispose,
     dispose$: dispose$.asObservable(),
@@ -73,5 +92,6 @@ export function MediaStreamEvents(args: { bus: t.EventBus<any> }) {
     stop,
     stopped,
     status,
+    all,
   };
 }

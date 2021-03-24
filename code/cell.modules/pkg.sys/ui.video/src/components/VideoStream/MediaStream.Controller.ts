@@ -5,7 +5,7 @@ import { R, rx, t } from '../../common';
 
 type M = MediaStreamConstraints;
 type Refs = { [ref: string]: Ref };
-type Ref = { kind: 'video' | 'screen'; ref: string; stream: MediaStream; constraints: M };
+type Ref = { kind: t.MediaStreamKind; ref: string; stream: MediaStream; constraints: M };
 
 /**
  * Manages an event bus dealing with video stream.
@@ -23,21 +23,39 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
     });
   };
 
+  const toStatusPayload = (ref: string): t.MediaStreamStatusResponse => {
+    const item = refs[ref];
+    return {
+      ref,
+      exists: Boolean(item),
+      kind: item?.kind,
+      stream: item?.stream,
+      constraints: item?.constraints,
+      tracks: toTracks(item?.stream),
+    };
+  };
+
   /**
    * STATUS
    */
   rx.payload<t.MediaStreamStatusRequestEvent>($, 'MediaStream/status:req')
     .pipe()
     .subscribe((e) => {
-      const { ref } = e;
-      const item = refs[ref];
-      const exists = Boolean(item);
-      const stream = item?.stream;
-      const constraints = item?.constraints;
-      const tracks = toTracks(item?.stream);
       bus.fire({
         type: 'MediaStream/status:res',
-        payload: { ref, exists, stream, constraints, tracks },
+        payload: toStatusPayload(e.ref),
+      });
+    });
+
+  rx.payload<t.MediaStreamsStatusRequestEvent>($, 'MediaStreams/status:req')
+    .pipe()
+    .subscribe((e) => {
+      const streams = Object.keys(refs)
+        .map((key) => toStatusPayload(key))
+        .filter((item) => (e.kind === undefined ? true : item.kind === e.kind));
+      bus.fire({
+        type: 'MediaStreams/status:res',
+        payload: { streams },
       });
     });
 
@@ -95,20 +113,10 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
 
       if (!refs[ref]) {
         const constraints: any = {
-          // cursor: 'motion',
-          // displaySurface: 'monitor',
-          // video: { cursor: 'always' },
-          // audio: false,
           video: true,
-          audio: true,
+          audio: false,
         };
-
-        // type G = (constants?: MediaStreamConstraints) => Promise<MediaStream>;
-        // const getDisplayMedia = (navigator.mediaDevices as any).getDisplayMedia as G;
         const stream = await (navigator.mediaDevices as any).getDisplayMedia(constraints);
-
-        console.log('stream', stream);
-
         refs[ref] = { kind: 'screen', ref, stream, constraints };
       }
 

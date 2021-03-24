@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-
-import { css, CssValue, defaultValue, rx, t } from '../../common';
+import React, { useEffect, useRef } from 'react';
+import { css, CssValue, defaultValue, t } from '../../common';
 
 export type VideoStreamProps = {
   id: string;

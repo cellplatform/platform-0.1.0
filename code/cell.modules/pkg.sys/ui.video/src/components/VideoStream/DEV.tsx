@@ -36,7 +36,7 @@ export const actions = DevActions<Ctx>()
     MediaStreamController({ bus });
     MediaStreamRecordController({ ref, bus });
 
-    bus.fire({ type: 'MediaStream/start:video', payload: { ref } });
+    // bus.fire({ type: 'MediaStream/start:video', payload: { ref } });
 
     rx.payload<t.MediaStreamErrorEvent>(bus.event$, 'MediaStream/error')
       .pipe(filter((e) => e.ref === id))
@@ -54,44 +54,37 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Get Started');
 
-    e.button('stream: video');
-    e.button('stream: audio [TODO]');
-    e.button('stream: screen [TODO]');
     e.hr(1, 0.1);
 
     e.button('fire: MediaStream/start:video', async (e) => {
       const ref = e.ctx.props.id;
       await e.ctx.events.stop(ref).fire();
-      e.ctx.bus.fire({
-        type: 'MediaStream/start:video',
-        payload: { ref },
-      });
+      e.ctx.bus.fire({ type: 'MediaStream/start:video', payload: { ref } });
     });
 
     e.button('fire: MediaStream/start:screen', async (e) => {
       const ref = e.ctx.props.id;
       await e.ctx.events.stop(ref).fire();
-      e.ctx.bus.fire({
-        type: 'MediaStream/start:screen',
-        payload: { ref },
-      });
+      e.ctx.bus.fire({ type: 'MediaStream/start:screen', payload: { ref } });
     });
 
     e.button('fire: MediaStream/stop', (e) => {
       const ref = e.ctx.props.id;
-      e.ctx.bus.fire({
-        type: 'MediaStream/stop',
-        payload: { ref },
-      });
+      e.ctx.bus.fire({ type: 'MediaStream/stop', payload: { ref } });
     });
 
     e.hr(1, 0.1);
 
     e.button('fire: MediaStream/status:req', async (e) => {
       const ref = e.ctx.props.id;
-      const { exists, constraints, tracks } = await e.ctx.events.status(ref).get();
-      const data = deleteUndefined({ ref, exists, constraints, tracks });
+      const data = deleteUndefined(await e.ctx.events.status(ref).get());
       e.button.description = <ObjectView name={'response: status'} data={data} fontSize={10} />;
+    });
+
+    e.button('fire: MediaStreams/status:req (all)', async (e) => {
+      const data = deleteUndefined(await e.ctx.events.all.status().get());
+      const name = 'response: status (all)';
+      e.button.description = <ObjectView name={name} data={data} fontSize={10} expandLevel={3} />;
     });
 
     e.hr();
@@ -162,9 +155,8 @@ export const actions = DevActions<Ctx>()
 
     e.settings({
       host: { background: -0.04 },
-      layout: {
-        cropmarks: -0.2,
-      },
+      layout: { cropmarks: -0.2 },
+      actions: { width: 350 },
     });
 
     const borderRadius = 30;
