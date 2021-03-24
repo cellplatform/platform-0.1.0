@@ -2,15 +2,15 @@
 
 import * as React from 'react';
 
-import { ITextProps, toTextCss, toShadow, constants } from '../../common';
+import { TextProps, toTextCss, toShadow, constants } from '../../common';
 
 import { css } from '@platform/css';
-import { mouse, MeasureSize } from '@platform/react';
+import { MeasureSize } from '@platform/react';
 
 /**
  * <Text> component with a monospace font-face.
  */
-export class Monospace extends React.PureComponent<ITextProps> {
+export class Monospace extends React.PureComponent<TextProps> {
   public measure() {
     return Text.measure(this.props);
   }
@@ -23,11 +23,11 @@ export class Monospace extends React.PureComponent<ITextProps> {
 /**
  * Standard text styled component.
  */
-export class Text extends React.PureComponent<ITextProps> {
+export class Text extends React.PureComponent<TextProps> {
   public static toTextCss = toTextCss;
   public static toShadow = toShadow;
   public static Monospace = Monospace;
-  public static measure = (props: ITextProps) => {
+  public static measure = (props: TextProps) => {
     const { children: content } = props;
     const style = { ...toTextCss(props), ...props.style };
     return MeasureSize.measure({ content, ...style });
@@ -39,8 +39,6 @@ export class Text extends React.PureComponent<ITextProps> {
   public get size() {
     return Text.measure(this.props);
   }
-
-  private mouse = mouse.fromProps(this.props);
 
   public render() {
     const { block = false, isSelectable = true, cursor = 'default' } = this.props;
@@ -58,7 +56,12 @@ export class Text extends React.PureComponent<ITextProps> {
         className={this.props.className}
         {...css(styles.base, this.props.style)}
         title={this.props.tooltip}
-        {...this.mouse.events}
+        onClick={this.props.onClick}
+        onDoubleClick={this.props.onDoubleClick}
+        onMouseDown={this.props.onMouseDown}
+        onMouseUp={this.props.onMouseUp}
+        onMouseEnter={this.props.onMouseEnter}
+        onMouseLeave={this.props.onMouseLeave}
       >
         {this.props.children}
       </div>

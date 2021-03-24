@@ -1,9 +1,8 @@
-import { IMouseEventProps } from '@platform/react';
 import { CssValue } from '@platform/css';
 
 export * from './components/TextInput/types';
 
-export type ITextStyle = {
+export type TextStyle = {
   color?: number | string;
   fontSize?: number;
   fontWeight?: 'LIGHT' | 'NORMAL' | 'BOLD';
@@ -17,13 +16,18 @@ export type ITextStyle = {
   uppercase?: boolean;
 };
 
-export type ITextProps = ITextStyle &
-  IMouseEventProps & {
-    className?: string;
-    children?: React.ReactNode;
-    block?: boolean;
-    tooltip?: string;
-    cursor?: string;
-    isSelectable?: boolean;
-    style?: CssValue;
-  };
+export type TextProps = TextStyle & {
+  className?: string;
+  children?: React.ReactNode;
+  block?: boolean;
+  tooltip?: string;
+  cursor?: string;
+  isSelectable?: boolean;
+  style?: CssValue;
+  onClick?: React.MouseEventHandler;
+  onDoubleClick?: React.MouseEventHandler;
+  onMouseDown?: React.MouseEventHandler;
+  onMouseUp?: React.MouseEventHandler;
+  onMouseEnter?: React.MouseEventHandler;
+  onMouseLeave?: React.MouseEventHandler;
+};

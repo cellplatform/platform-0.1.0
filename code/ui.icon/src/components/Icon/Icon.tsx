@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { t } from '../../common';
 
-import { IconView, IconProps, IconComponent } from './IconView';
+import { IconView, IconProps, IconComponent } from './Icon.View';
 export { IconProps, IconComponent };
 
 export const Icon = {

@@ -6,7 +6,7 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 import { color, css } from '@platform/css';
 import { log } from '@platform/ui.dev';
 import { COLORS, t } from '../../common';
-import { TextInput, ITextInputProps } from '../..';
+import { TextInput, TextInputProps } from '../..';
 
 export type ITestInputProps = { value?: string };
 export type ITestInputState = { value?: string; isClickableEditing?: boolean };
@@ -79,7 +79,7 @@ export class TestInput extends React.PureComponent<ITestInputProps, ITestInputSt
     this.updateState();
   }
 
-  public componentDidUpdate(prev: ITextInputProps) {
+  public componentDidUpdate(prev: TextInputProps) {
     const { value } = this.props;
     if (value !== prev.value) {
       this.updateState();
@@ -145,7 +145,7 @@ export class TestInput extends React.PureComponent<ITestInputProps, ITestInputSt
     );
   }
 
-  private Input = (props: Partial<ITextInputProps>) => {
+  private Input = (props: Partial<TextInputProps>) => {
     const styles = {
       base: css({
         marginBottom: 20,

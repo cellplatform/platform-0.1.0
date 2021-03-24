@@ -1,5 +1,5 @@
 import { css, CssValue } from '@platform/css';
-import { MeasureSize, mouse } from '@platform/react';
+import { MeasureSize } from '@platform/react';
 import { defaultValue, time } from '@platform/util.value';
 import * as React from 'react';
 import { Subject } from 'rxjs';
@@ -15,15 +15,14 @@ const DEFAULT = {
   DISABLED_OPACITY: 0.2,
 };
 
-export const toInitialWidth = (props: ITextInputProps) => {
+export const toInitialWidth = (props: TextInputProps) => {
   const { width, minWidth, autoSize } = props;
   return autoSize ? minWidth : width;
 };
 
-export type ITextInputProps = t.ITextInputFocusAction &
+export type TextInputProps = t.TextInputFocusAction &
   t.ITextInputEvents &
-  IInputValue &
-  t.IMouseEventProps & {
+  IInputValue & {
     events$?: Subject<t.TextInputEvent>;
     isEnabled?: boolean;
     isPassword?: boolean;
@@ -43,22 +42,26 @@ export type ITextInputProps = t.ITextInputFocusAction &
     selectionBackground?: number | string;
     className?: string;
     style?: CssValue;
+    onClick?: React.MouseEventHandler;
+    onDoubleClick?: React.MouseEventHandler;
+    onMouseDown?: React.MouseEventHandler;
+    onMouseUp?: React.MouseEventHandler;
+    onMouseEnter?: React.MouseEventHandler;
+    onMouseLeave?: React.MouseEventHandler;
   };
 
-export type ITextInputState = {
-  width?: number | string;
-};
+export type TextInputState = { width?: number | string };
 
 /**
  * A simple text input field.
  */
-export class TextInput extends React.PureComponent<ITextInputProps, ITextInputState> {
+export class TextInput extends React.PureComponent<TextInputProps, TextInputState> {
   /**
    * [Static]
    */
   public static DefaultTextStyle = DEFAULT.VALUE_STYLE;
   public static toTextCss = Text.toTextCss;
-  public static measure = (props: ITextInputProps) => {
+  public static measure = (props: TextInputProps) => {
     const { value: content, valueStyle = DEFAULT.VALUE_STYLE } = props;
     const style = toTextCss(valueStyle);
     return MeasureSize.measure({ content, ...style });
@@ -67,13 +70,10 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
   /**
    * [Fields]
    */
-  public state: ITextInputState = { width: toInitialWidth(this.props) };
+  public state: TextInputState = { width: toInitialWidth(this.props) };
   private unmounted$ = new Subject<void>();
-  private state$ = new Subject<Partial<ITextInputState>>();
+  private state$ = new Subject<Partial<TextInputState>>();
   private events$ = new Subject<t.TextInputEvent>();
-  private mouse = mouse.fromProps(this.props, {
-    force: ['CLICK', 'DOUBLE_CLICK', 'UP', 'DOWN', 'ENTER', 'LEAVE'],
-  });
 
   private input: HtmlInput;
   private inputRef = (el: HtmlInput) => (this.input = el);
@@ -82,7 +82,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
    * [Lifecycle]
    */
   public componentDidMount() {
-    const mouse$ = this.mouse.events$.pipe(takeUntil(this.unmounted$));
+    // const mouse$ = this.mouse.events$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
 
     state$.subscribe((e) => this.setState(e));
@@ -93,7 +93,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
     }
 
     // Bubble mouse events.
-    mouse$.subscribe((payload) => this.fire({ type: 'TEXT_INPUT/mouse', payload }));
+    // mouse$.subscribe((payload) => this.fire({ type: 'TEXT_INPUT/mouse', payload }));
 
     // Finish up.
     this.updateAutoSize();
@@ -287,7 +287,16 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
     );
 
     return (
-      <div {...css(styles.base, this.props.style)} className={'p-TextInput'} {...this.mouse.events}>
+      <div
+        {...css(styles.base, this.props.style)}
+        className={'p-TextInput'}
+        onClick={this.props.onClick}
+        onDoubleClick={this.props.onDoubleClick}
+        onMouseDown={this.props.onMouseDown}
+        onMouseUp={this.props.onMouseUp}
+        onMouseEnter={this.props.onMouseEnter}
+        onMouseLeave={this.props.onMouseLeave}
+      >
         <div {...css(styles.inner)}>
           {elPlaceholder}
           {elReadOnly}
@@ -362,7 +371,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
 /**
  * [Helpers]
  */
-export const toWidth = (props: ITextInputProps) => {
+export const toWidth = (props: TextInputProps) => {
   if (!props.autoSize) {
     return props.width;
   }
@@ -378,7 +387,7 @@ export const toWidth = (props: ITextInputProps) => {
   return width + charWidth; // NB: Adding an additional char-width prevents overflow jumping on char-enter.
 };
 
-export const toMinWidth = (props: ITextInputProps): number => {
+export const toMinWidth = (props: TextInputProps): number => {
   const { minWidth, placeholder, value } = props;
   if (minWidth !== undefined) {
     return minWidth as number;
@@ -397,7 +406,7 @@ export const toMinWidth = (props: ITextInputProps): number => {
   return -1;
 };
 
-export const placeholderStyle = (props: ITextInputProps) => {
+export const placeholderStyle = (props: TextInputProps) => {
   const isEnabled = defaultValue(props.isEnabled, true);
   const { valueStyle = DEFAULT.VALUE_STYLE, placeholderStyle } = props;
   const styles = { ...R.clone(valueStyle), ...placeholderStyle };

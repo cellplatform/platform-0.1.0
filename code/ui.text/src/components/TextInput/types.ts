@@ -7,7 +7,7 @@ export type ITextModifierKeys = {
   meta: boolean;
 };
 
-export type ITextInputFocusAction = {
+export type TextInputFocusAction = {
   focusOnLoad?: boolean;
   focusAction?: 'SELECT' | 'END';
 };
@@ -18,7 +18,7 @@ export type ITextInputMask = {
 };
 export type TextInputMaskHandler = (e: ITextInputMask) => boolean; // True - OK, False - disallow.
 
-export type ITextInputStyle = t.ITextStyle & { disabledColor?: number | string };
+export type ITextInputStyle = t.TextStyle & { disabledColor?: number | string };
 
 /**
  * [Events]
@@ -64,7 +64,6 @@ export type TextInputEvent =
   | ITextInputChangingEvent
   | ITextInputChangedEvent
   | ITextInputKeypressEvent
-  | ITextInputMouseEvent
   | ITextInputFocusEvent
   | ITextInputLabelDblClickEvent;
 
@@ -91,11 +90,6 @@ export type ITextInputKeypress = {
   isPressed: boolean;
   key: TextInputKeyEvent['key'];
   event: TextInputKeyEvent;
-};
-
-export type ITextInputMouseEvent = {
-  type: 'TEXT_INPUT/mouse';
-  payload: t.MouseEvent;
 };
 
 export type ITextInputFocusEvent = {
