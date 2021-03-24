@@ -28,11 +28,7 @@ export type MediaStreamStatusResponseEvent = {
 };
 export type MediaStreamStatusResponse = {
   ref: string;
-  exists: boolean;
-  stream?: MediaStream;
-  kind?: t.MediaStreamKind;
-  constraints?: MediaStreamConstraints;
-  tracks: t.MediaStreamTrack[];
+  stream?: t.MediaStreamStatus;
 };
 
 /**
@@ -98,7 +94,3 @@ export type MediaStreamError = {
   kind: 'stream:error' | 'record:error';
   error: string;
 };
-
-/**
- * RECORD
- */

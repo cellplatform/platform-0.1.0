@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { css, CssValue, t } from '../../common';
+import { css, CssValue, t } from './common';
 import { useAudioAnalyser } from './DEV.waveform.useAudioAnalyser';
 import { useDrawWaveform } from './DEV.waveform.useDrawWaveform';
-import { MediaStreamEvents } from './MediaStream.Events';
+import { MediaStreamEvents } from '../MediaStream.Events';
 
 export type WaveformProps = {
   stream?: string; // Stream ID reference.
@@ -41,7 +41,7 @@ export const Waveform: React.FC<WaveformProps> = (props) => {
       if (!stream) {
         const wait = events.status(ref).get();
         wait.then((e) => {
-          if (e.stream) setStream(e.stream);
+          if (e.stream) setStream(e.stream.media);
         });
       }
     }

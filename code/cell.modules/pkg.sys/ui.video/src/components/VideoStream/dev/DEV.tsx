@@ -1,7 +1,7 @@
 import React from 'react';
 import { filter } from 'rxjs/operators';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { css, color, CssValue } from '../../common';
+import { css, color, CssValue, cuid, deleteUndefined, HttpClient, log, rx, t } from './common';
 import { Waveform } from './DEV.waveform';
 
 import {
@@ -11,8 +11,7 @@ import {
   useVideoStreamState,
   VideoStream,
   VideoStreamProps,
-} from '.';
-import { cuid, deleteUndefined, HttpClient, log, rx, t } from '../../common';
+} from '..';
 
 type Ctx = {
   bus: t.EventBus<t.MediaEvent>;

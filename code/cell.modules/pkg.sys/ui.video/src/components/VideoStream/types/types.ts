@@ -1,3 +1,5 @@
+import { t } from './common';
+
 export type MediaStreamMimetype = 'video/webm';
 export type MediaStreamKind = 'video' | 'screen';
 
@@ -8,4 +10,12 @@ export type MediaStreamTrack = {
   isMuted: boolean;
   label: string;
   state: 'live' | 'ended';
+};
+
+export type MediaStreamStatus = {
+  ref: string;
+  media: MediaStream;
+  kind: t.MediaStreamKind;
+  constraints: MediaStreamConstraints;
+  tracks: t.MediaStreamTrack[];
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import { Harness } from 'sys.ui.dev';
 
 const imports = {
-  VideoStream: import('./components/VideoStream/DEV'),
+  VideoStream: import('./components/VideoStream/dev/DEV'),
   Vimeo: import('./components/Vimeo/Vimeo.DEV'),
   VimeoBackground: import('./components/Vimeo/VimeoBackground.DEV'),
 };

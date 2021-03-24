@@ -20,4 +20,4 @@ export type MediaStreamsStatusResponseEvent = {
   type: 'MediaStreams/status:res';
   payload: MediaStreamsStatusResponse;
 };
-export type MediaStreamsStatusResponse = { streams: t.MediaStreamStatusResponse[] };
+export type MediaStreamsStatusResponse = { streams: t.MediaStreamStatus[] };
