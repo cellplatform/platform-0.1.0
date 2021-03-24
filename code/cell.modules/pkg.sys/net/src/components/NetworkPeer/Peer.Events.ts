@@ -12,6 +12,9 @@ export function PeerEvents(args: { bus: t.EventBus<any> }) {
   const bus = args.bus.type<t.PeerEvent>();
   const event$ = bus.event$.pipe(takeUntil(dispose$));
 
+  /**
+   * CREATE
+   */
   const create = (signal: string, options: { id?: string } = {}) => {
     const id = options.id || cuid();
     const res = firstValueFrom(created(id).$);
@@ -19,6 +22,9 @@ export function PeerEvents(args: { bus: t.EventBus<any> }) {
     return res;
   };
 
+  /**
+   * CREATED
+   */
   const created = (id: string) => {
     const $ = rx
       .payload<t.PeerCreatedEvent>(event$, 'Peer/created')
@@ -26,11 +32,32 @@ export function PeerEvents(args: { bus: t.EventBus<any> }) {
     return { id, $ };
   };
 
+  /**
+   * STATUS
+   */
+  const status = (id?: string) => {
+    const request$ = rx
+      .payload<t.PeerStatusRequestEvent>(event$, 'Peer/status:req')
+      .pipe(filter((e) => e.id === id));
+    const response$ = rx
+      .payload<t.PeerStatusResponseEvent>(event$, 'Peer/status:res')
+      .pipe(filter((e) => e.id === id));
+
+    const get = () => {
+      const res = firstValueFrom(response$);
+      bus.fire({ type: 'Peer/status:req', payload: { id } });
+      return res;
+    };
+
+    return { id, get, request$, response$ };
+  };
+
   return {
     dispose,
     dispose$: dispose$.asObservable(),
 
-    connect: create,
-    connected: created,
+    create,
+    created,
+    status,
   };
 }

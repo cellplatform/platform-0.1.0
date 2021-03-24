@@ -3,7 +3,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { rx, t, PeerJS, cuid, time } from '../../common';
 
-type Ref = { peer: PeerJS; connected: t.PeerCreated };
+type Ref = { peer: PeerJS; createdAt: number; signal: t.PeerSignalEndpoint };
 type Refs = { [id: string]: Ref };
 
 /**
@@ -16,29 +16,51 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
 
   const refs: Refs = {};
 
+  const toStatus = (id: string): t.PeerStatus | undefined => {
+    const item = refs[id];
+    if (!item) return undefined;
+    const { createdAt, signal } = item;
+    return {
+      id,
+      createdAt,
+      signal,
+    };
+  };
+
   /**
-   * CONNECT
+   * CONNECT/CREATE
    */
   rx.payload<t.PeerCreateEvent>($, 'Peer/create')
     .pipe()
     .subscribe((e) => {
       const createdAt = time.now.timestamp;
-
       const id = (e.id || '').trim() || cuid();
-      console.log('id', id);
 
       if (!refs[id]) {
         const endpoint = parseEndpointAddress(e.signal);
         const { host, path, port, secure } = endpoint;
         const peer = new PeerJS(id, { host, path, port, secure });
-        const connected: t.PeerCreated = { id, createdAt, signal: endpoint };
-        refs[id] = { peer, connected };
+        refs[id] = { peer, createdAt, signal: endpoint };
       }
 
       const ref = refs[id];
       bus.fire({
         type: 'Peer/created',
-        payload: ref.connected,
+        payload: { id, createdAt: ref.createdAt, signal: ref.signal },
+      });
+    });
+
+  /**
+   * STATUS
+   */
+  rx.payload<t.PeerStatusRequestEvent>($, 'Peer/status:req')
+    .pipe()
+    .subscribe((e) => {
+      const { id } = e;
+      const peer = toStatus(id || '');
+      bus.fire({
+        type: 'Peer/status:res',
+        payload: { exists: Boolean(peer), id, peer },
       });
     });
 

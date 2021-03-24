@@ -2,7 +2,7 @@ import { firstValueFrom } from 'rxjs';
 
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { css, rx, t, PeerJS, cuid } from '../../common';
+import { css, rx, t, cuid, deleteUndefined } from '../../common';
 import { PeerController, PeerEvents } from '.';
 import { Icons } from '../Icons';
 
@@ -54,7 +54,15 @@ export const actions = DevActions<Ctx>()
 
     e.button('fire: Peer/create (singleton)', async (e) => {
       const { id, signal, events } = e.ctx;
-      e.ctx.data = await events.connect(signal, { id });
+      e.ctx.data = await events.create(signal, { id });
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('fire: Peer/status:req', async (e) => {
+      const ref = e.ctx.id;
+      const data = deleteUndefined(await e.ctx.events.status(ref).get());
+      e.button.description = <ObjectView name={'response: status'} data={data} fontSize={10} />;
     });
 
     e.hr();

@@ -1,7 +1,9 @@
 import React from 'react';
 import { Harness } from 'sys.ui.dev';
 
-import Peer from './components/NetworkPeer/DEV';
-export const ACTIONS = [Peer];
+const imports = {
+  Peer: import('./components/NetworkPeer/DEV'),
+};
 
+export const ACTIONS = Object.values(imports);
 export const DevHarness: React.FC = () => <Harness actions={ACTIONS} />;
