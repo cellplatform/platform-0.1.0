@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { color, COLORS, constants, css, CssValue, DEFAULT, t, defaultValue } from '../common';
+import { color, COLORS, constants, css, CssValue, t, defaultValue } from '../common';
 import { Icons } from '../Icons';
 import { Markdown } from '../Markdown';
 import { Spinner } from '../Primitives';
@@ -17,6 +17,7 @@ export type LayoutProps = {
     body?: React.ReactNode;
     color?: string | number;
     pressOffset?: number;
+    onClick?: () => void;
   };
   body?: React.ReactNode;
   description?: React.ReactNode;
@@ -28,16 +29,13 @@ export type LayoutProps = {
   isSpinning?: boolean;
   ellipsis?: boolean;
   style?: CssValue;
-  onClick?: () => void;
 };
 
 export const Layout: React.FC<LayoutProps> = (props) => {
-  const { label: labelOptions = {}, placeholder, onClick, isSpinning } = props;
+  const { label = {}, placeholder, isSpinning } = props;
   const ellipsis = defaultValue(props.ellipsis, true);
 
-  const labelBody = labelOptions.body;
-  const labelColor = labelOptions.color;
-  const labelPressOffset = defaultValue(labelOptions.pressOffset, 0);
+  const labelPressOffset = defaultValue(label.pressOffset, 0);
 
   const [isOver, setIsOver] = useState<boolean>(false);
   const [isDown, setIsDown] = useState<boolean>(false);
@@ -59,7 +57,6 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         Flex: 'horizontal-stretch-stretch',
         paddingLeft: 12,
         paddingRight: 15,
-        cursor: isActive && props.onClick ? 'pointer' : 'default',
         opacity: isActive ? 1 : 0.4,
       }),
       iconOuter: css({
@@ -85,16 +82,17 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         flex: 1,
         marginLeft: 6,
         marginTop: 4,
-        overflow: ellipsis && labelBody ? 'hidden' : undefined,
+        overflow: ellipsis && label.body ? 'hidden' : undefined,
       }),
       label: css({
         width: '100%',
         fontFamily: constants.FONT.MONO,
         fontStyle: placeholder ? 'italic' : undefined,
         fontSize: 12,
-        color: labelColor ? labelColor : isOver && isActive ? COLORS.BLUE : COLORS.DARK,
+        color: label.color ? label.color : isOver && isActive ? COLORS.BLUE : COLORS.DARK,
         opacity: !isActive ? 0.6 : !placeholder ? 1 : isOver ? 1 : 0.6,
         transform: isDown ? `translateY(${labelPressOffset}px)` : undefined,
+        cursor: isActive && label.onClick ? 'pointer' : 'default',
       }),
       ellipsis:
         ellipsis && css({ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }),
@@ -107,17 +105,17 @@ export const Layout: React.FC<LayoutProps> = (props) => {
     },
   };
 
-  const overHandler = (isOver: boolean) => () => {
+  const labelOverHandler = (isOver: boolean) => () => {
     if (isActive) {
       setIsOver(isOver);
       if (!isOver) setIsDown(false);
     }
   };
 
-  const clickHandler = (isDown: boolean) => (e: React.MouseEvent) => {
+  const labelClickHandler = (isDown: boolean) => (e: React.MouseEvent) => {
     if (isActive && e.button === 0) {
       setIsDown(isDown);
-      if (!isDown && onClick) onClick();
+      if (!isDown && label.onClick) label.onClick();
     }
   };
 
@@ -134,22 +132,22 @@ export const Layout: React.FC<LayoutProps> = (props) => {
     />
   );
 
-  const elLabel = labelBody && (
-    <div {...css(styles.body.label, styles.body.ellipsis)}>
-      <LayoutLabel>{labelBody}</LayoutLabel>
+  const elLabel = label.body && (
+    <div
+      {...css(styles.body.label, styles.body.ellipsis)}
+      onMouseEnter={labelOverHandler(true)}
+      onMouseLeave={labelOverHandler(false)}
+      onMouseDown={labelClickHandler(true)}
+      onMouseUp={labelClickHandler(false)}
+    >
+      <LayoutLabel>{label.body}</LayoutLabel>
     </div>
   );
 
   return (
     <div {...css(styles.base, props.style)}>
       {props.top}
-      <div
-        {...styles.main.outer}
-        onMouseEnter={overHandler(true)}
-        onMouseLeave={overHandler(false)}
-        onMouseDown={clickHandler(true)}
-        onMouseUp={clickHandler(false)}
-      >
+      <div {...styles.main.outer}>
         <div {...styles.main.iconOuter}>
           {elIcon}
           {isSpinning && <Spinner style={styles.main.spinner} size={18} />}

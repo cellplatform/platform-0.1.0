@@ -95,13 +95,12 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = (props) => {
       <Layout
         isActive={isActive}
         isSpinning={isSpinning}
-        label={{ body: label }}
+        label={{ body: label, onClick: showDropdown }}
         icon={{ Component: Icons.Checklist }}
         description={description}
         placeholder={item.isPlaceholder}
         top={elTitle}
         right={elExpandIcon}
-        onClick={showDropdown}
       />
       {elDropdown}
     </div>

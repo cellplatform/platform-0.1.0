@@ -36,11 +36,10 @@ export const Bool: React.FC<BoolProps> = (props) => {
     <Layout
       isActive={isActive}
       isSpinning={isSpinning}
-      label={{ body: label }}
+      label={{ body: label, onClick: fire }}
       description={description}
       top={elTitle}
       right={elSwitch}
-      onClick={fire}
     />
   );
 };

@@ -31,10 +31,9 @@ export const Button: React.FC<ButtonProps> = (props) => {
     <Layout
       isActive={isActive}
       isSpinning={isSpinning}
-      label={{ body: label, pressOffset: 1 }}
+      label={{ body: label, pressOffset: 1, onClick: clickHandler }}
       description={description}
       top={elTitle}
-      onClick={clickHandler}
     />
   );
 };
