@@ -1,1 +1,1 @@
-export * from '../components/NetworkPeer/types';
+export * from '../components/PeerNetwork/types';

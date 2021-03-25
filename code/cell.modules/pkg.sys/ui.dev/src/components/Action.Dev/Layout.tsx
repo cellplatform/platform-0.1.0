@@ -75,7 +75,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         left: props.icon?.offset?.x,
         top: props.icon?.offset?.y,
       }),
-      spinner: css({ Absolute: [3, null, null, 13] }),
+      spinner: css({ Absolute: [1, null, null, 13] }),
     },
     title: {
       markdown: css({

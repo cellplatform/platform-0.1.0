@@ -2,7 +2,7 @@ import React from 'react';
 import { Harness } from 'sys.ui.dev';
 
 const imports = {
-  Peer: import('./components/NetworkPeer/DEV'),
+  PeerNetwork: import('./components/PeerNetwork/dev/DEV'),
 };
 
 export const ACTIONS = Object.values(imports);
