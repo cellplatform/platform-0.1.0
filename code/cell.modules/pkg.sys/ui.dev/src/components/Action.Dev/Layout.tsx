@@ -103,7 +103,12 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         cursor: isActive && label.onClick ? 'pointer' : 'default',
       }),
       ellipsis:
-        ellipsis && css({ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }),
+        ellipsis &&
+        css({
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }),
       description: css({
         color: color.format(-0.4),
         fontSize: 11,

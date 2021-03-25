@@ -2,9 +2,11 @@ import * as React from 'react';
 
 import { color, COLORS, css, CssValue, defaultValue, t } from '../../common';
 import { PropListItem } from './PropList.Item';
+import { PropListTitle } from './PropList.Title';
 
 export type PropListProps = {
-  title?: string;
+  title?: string | React.ReactNode;
+  titleEllipsis?: boolean;
   items?: (t.IPropListItem | undefined)[] | Record<string, unknown>;
   style?: CssValue;
 };
@@ -48,14 +50,15 @@ export class PropList extends React.PureComponent<PropListProps> {
    * [Render]
    */
   public render() {
+    const { title } = this.props;
+
     const styles = {
       base: css({
         position: 'relative',
+        width: '100%',
         color: COLORS.DARK,
       }),
       title: css({
-        fontWeight: 'bold',
-        fontSize: 13,
         marginBottom: 5,
       }),
     };
@@ -72,9 +75,15 @@ export class PropList extends React.PureComponent<PropListProps> {
         return <PropListItem key={i} data={data} isFirst={isFirst} isLast={isLast} />;
       });
 
+    const elTitle = title && (
+      <PropListTitle style={styles.title} ellipsis={this.props.titleEllipsis}>
+        {title}
+      </PropListTitle>
+    );
+
     return (
       <div {...css(styles.base, this.props.style)}>
-        {this.props.title && <div {...styles.title}>{this.props.title}</div>}
+        {elTitle}
         <div>{elItems}</div>
       </div>
     );
