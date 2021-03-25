@@ -21,7 +21,12 @@ export type LayoutProps = {
   };
   body?: React.ReactNode;
   description?: React.ReactNode;
-  icon?: { Component?: t.IIcon; color?: string | number; size?: number };
+  icon?: {
+    Component?: t.IIcon;
+    color?: string | number;
+    size?: number;
+    offset?: { x?: number; y?: number };
+  };
   top?: React.ReactNode;
   right?: React.ReactNode;
   placeholder?: boolean;
@@ -65,7 +70,10 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         Flex: 'center-center',
       }),
       icon: css({
+        position: 'relative',
         opacity: isOver || props.icon?.color !== undefined ? 1 : 0.4,
+        left: props.icon?.offset?.x,
+        top: props.icon?.offset?.y,
       }),
       spinner: css({ Absolute: [3, null, null, 13] }),
     },

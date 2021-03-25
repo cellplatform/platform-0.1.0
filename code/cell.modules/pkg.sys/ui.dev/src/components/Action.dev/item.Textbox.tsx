@@ -66,7 +66,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
         value={value || ''}
         placeholder={placeholder}
         valueStyle={{ fontFamily: 'monospace', fontWeight: 'NORMAL' }}
-        placeholderStyle={{ fontFamily: 'sans-serif', italic: true, color: color.format(-0.3) }}
+        placeholderStyle={{ fontFamily: 'monospace', italic: true, color: color.format(-0.3) }}
         disabledOpacity={1}
         spellCheck={false}
         autoCorrect={false}
@@ -98,7 +98,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
       isSpinning={isSpinning}
       body={elTextbox}
       description={description}
-      icon={{ Component: Icons.Text, color: iconColor }}
+      icon={{ Component: Icons.Text, color: iconColor, offset: { y: 2 } }}
       ellipsis={false}
       top={elTitle}
       right={elRight}
