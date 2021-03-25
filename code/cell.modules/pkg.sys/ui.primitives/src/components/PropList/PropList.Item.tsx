@@ -4,14 +4,15 @@ import { color, css, CssValue, t } from '../../common';
 import { PropListItemValue } from './PropList.ItemValue';
 
 export type PropListItemProps = {
-  data: t.IPropListItem;
+  data: t.PropListItem;
   isFirst?: boolean;
   isLast?: boolean;
+  defaults?: t.PropListDefaults;
   style?: CssValue;
 };
 
 export const PropListItem: React.FC<PropListItemProps> = (props) => {
-  const { data, isFirst, isLast } = props;
+  const { data, isFirst, isLast, defaults } = props;
 
   const styles = {
     base: css({
@@ -25,12 +26,12 @@ export const PropListItem: React.FC<PropListItemProps> = (props) => {
   return (
     <div {...styles.base} title={data.tooltip}>
       <PropListLabel data={data} />
-      <PropListItemValue data={data} isFirst={isFirst} isLast={isLast} />
+      <PropListItemValue data={data} isFirst={isFirst} isLast={isLast} defaults={defaults} />
     </div>
   );
 };
 
-export type PropListLabelProps = { data: t.IPropListItem; style?: CssValue };
+export type PropListLabelProps = { data: t.PropListItem; style?: CssValue };
 export const PropListLabel: React.FC<PropListLabelProps> = (props) => {
   const styles = {
     base: css({

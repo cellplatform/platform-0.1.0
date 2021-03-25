@@ -7,7 +7,8 @@ import { PropListTitle } from './PropList.Title';
 export type PropListProps = {
   title?: string | React.ReactNode;
   titleEllipsis?: boolean;
-  items?: (t.IPropListItem | undefined)[] | Record<string, unknown>;
+  items?: (t.PropListItem | undefined)[] | Record<string, unknown>;
+  defaults?: t.PropListDefaults;
   style?: CssValue;
 };
 
@@ -38,7 +39,7 @@ export class PropList extends React.PureComponent<PropListProps> {
 
     if (typeof items === 'object') {
       return Object.keys(items).map((key) => {
-        const item: t.IPropListItem = { label: key, value: toRenderValue(items[key]) };
+        const item: t.PropListItem = { label: key, value: toRenderValue(items[key]) };
         return item;
       });
     }
@@ -50,7 +51,7 @@ export class PropList extends React.PureComponent<PropListProps> {
    * [Render]
    */
   public render() {
-    const { title } = this.props;
+    const { title, defaults } = this.props;
 
     const styles = {
       base: css({
@@ -69,8 +70,10 @@ export class PropList extends React.PureComponent<PropListProps> {
       .map((item, i) => {
         const isFirst = i === 0;
         const isLast = i === items.length - 1;
-        const data = item as t.IPropListItem;
-        return <PropListItem key={i} data={data} isFirst={isFirst} isLast={isLast} />;
+        const data = item as t.PropListItem;
+        return (
+          <PropListItem key={i} data={data} isFirst={isFirst} isLast={isLast} defaults={defaults} />
+        );
       });
 
     const elTitle = title && (

@@ -20,13 +20,26 @@ export const actions = DevActions<Ctx>()
       props: {
         title: 'MyTitle',
         titleEllipsis: true,
+        defaults: { clipboard: false },
         items: [
           { label: 'string', value: 'hello' },
-          { label: 'number', value: 123 },
+          { label: 'number', value: 123, clipboard: 'Value: 123' },
           { label: 'boolean', value: true },
         ],
       },
     };
+  })
+
+  .items((e) => {
+    e.title('Defaults');
+
+    e.boolean('clipboard', (e) => {
+      const props = e.ctx.props;
+      if (e.changing) props.defaults = { ...props.defaults, clipboard: e.changing.next };
+      e.boolean.current = Boolean(props.defaults?.clipboard);
+    });
+
+    e.hr();
   })
 
   .items((e) => {

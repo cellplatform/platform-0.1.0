@@ -8,9 +8,10 @@ import { Icons } from '../Icons';
 import { Switch } from '../../components.ref/button/Switch';
 
 export type PropListItemValueProps = {
-  data: t.IPropListItem;
+  data: t.PropListItem;
   isFirst?: boolean;
   isLast?: boolean;
+  defaults?: t.PropListDefaults;
   style?: CssValue;
 };
 export type PropListItemValueState = {
@@ -62,10 +63,18 @@ export class PropListItemValue extends React.PureComponent<
     return this.isString || this.isNumber;
   }
 
+  public get defaults(): t.PropListDefaults {
+    return {
+      clipboard: true,
+      ...this.props.defaults,
+    };
+  }
+
   public get isCopyable() {
     const { data } = this.props;
-    const { onClick } = data;
-    return !onClick && this.isSimple;
+    if (data.onClick) return false;
+    if (data.clipboard) return true;
+    return this.isSimple && this.defaults.clipboard;
   }
 
   public get clipboard() {
@@ -170,9 +179,10 @@ export class PropListItemValue extends React.PureComponent<
 
   private renderCopyIcon() {
     const { isOver, message } = this.state;
-    if (!isOver || message) {
-      return null;
-    }
+    if (!isOver || message) return null;
+
+    if (!this.isCopyable) return null;
+
     const styles = {
       base: css({
         Absolute: [2, -12, null, null],
