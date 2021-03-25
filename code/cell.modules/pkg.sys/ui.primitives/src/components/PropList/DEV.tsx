@@ -57,10 +57,7 @@ export const actions = DevActions<Ctx>()
     e.button('lorem ipsum', (e) => (e.ctx.props.title = LOREM));
     e.button('<Component>', (e) => {
       const styles = {
-        base: css({
-          Flex: 'horizontal-center-center',
-          backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-        }),
+        base: css({ Flex: 'horizontal-center-center', backgroundColor: 'rgba(255, 0, 0, 0.1)' }),
         title: css({ marginRight: 5 }),
       };
       e.ctx.props.title = (

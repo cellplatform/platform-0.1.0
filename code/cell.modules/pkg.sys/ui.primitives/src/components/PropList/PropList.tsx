@@ -58,9 +58,7 @@ export class PropList extends React.PureComponent<PropListProps> {
         width: '100%',
         color: COLORS.DARK,
       }),
-      title: css({
-        marginBottom: 5,
-      }),
+      title: css({ marginBottom: 5 }),
     };
 
     const items = this.items;
