@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { color, COLORS, css, CssValue, defaultValue, t } from '../../common';
+import { color, COLORS, css, CssValue, defaultValue, t, style } from '../../common';
 import { PropListItem } from './PropList.Item';
 import { PropListTitle } from './PropList.Title';
 
@@ -9,6 +9,8 @@ export type PropListProps = {
   titleEllipsis?: boolean;
   items?: (t.PropListItem | undefined)[] | Record<string, unknown>;
   defaults?: t.PropListDefaults;
+  padding?: t.CssEdgesInput;
+  margin?: t.CssEdgesInput;
   style?: CssValue;
 };
 
@@ -51,13 +53,16 @@ export class PropList extends React.PureComponent<PropListProps> {
    * [Render]
    */
   public render() {
-    const { title, defaults } = this.props;
+    const props = this.props;
+    const { title, defaults } = props;
 
     const styles = {
       base: css({
         position: 'relative',
         width: '100%',
         color: COLORS.DARK,
+        ...style.toMargins(props.margin),
+        ...style.toPadding(props.padding),
       }),
       title: css({ marginBottom: 5 }),
     };

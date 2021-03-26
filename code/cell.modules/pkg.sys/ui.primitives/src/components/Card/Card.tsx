@@ -4,14 +4,14 @@ import { color, css, CssValue, defaultValue, t, style } from '../../common';
 export type CardProps = {
   children?: React.ReactNode;
   background?: number | string;
-  borderColor?: number | string;
-  borderRadius?: number;
+  border?: { color?: number | string; radius?: number };
   padding?: t.CssEdgesInput;
   margin?: t.CssEdgesInput;
-  minWidth?: number;
-  minHeight?: number;
+  width?: number | { fixed?: number; min?: number; max?: number };
+  height?: number | { fixed?: number; min?: number; max?: number };
   userSelect?: string | boolean;
   style?: CssValue;
+
   onClick?: React.MouseEventHandler;
   onDoubleClick?: React.MouseEventHandler;
   onMouseDown?: React.MouseEventHandler;
@@ -22,17 +22,29 @@ export type CardProps = {
 
 export const Card: React.FC<CardProps> = (props) => {
   const background = defaultValue(props.background, 1);
+  const borderColor = defaultValue(props.border?.color, -0.2);
+
+  const width = typeof props.width === 'number' ? { fixed: props.width } : props.width;
+  const height = typeof props.height === 'number' ? { fixed: props.height } : props.height;
+
   const styles = {
     base: css({
       position: 'relative',
       boxSizing: 'border-box',
       display: 'inline-block',
-      border: `solid 1px ${color.format(defaultValue(props.borderColor, -0.2))}`,
-      borderRadius: defaultValue(props.borderRadius, 4),
-      background: color.format(background),
       userSelect: toUserSelect(props.userSelect),
-      minWidth: defaultValue(props.minWidth, 10),
-      minHeight: defaultValue(props.minHeight, 10),
+
+      border: `solid 1px ${color.format(borderColor)}`,
+      borderRadius: defaultValue(props.border?.radius, 4),
+      background: color.format(background),
+
+      width: width?.fixed,
+      height: height?.fixed,
+      minWidth: defaultValue(width?.min, 10),
+      minHeight: defaultValue(height?.min, 10),
+      maxWidth: width?.max,
+      maxHeight: height?.max,
+
       boxShadow: `0 2px 6px 0 ${color.format(-0.08)}`,
       ...style.toMargins(props.margin),
       ...style.toPadding(props.padding),
