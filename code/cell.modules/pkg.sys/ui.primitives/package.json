@@ -14,8 +14,7 @@
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@",
-    "tmp": "ts-node -T script.ts/upload.ts"
+    "serve": "cell.compiler serve $@"
   },
   "dependencies": {},
   "devDependencies": {

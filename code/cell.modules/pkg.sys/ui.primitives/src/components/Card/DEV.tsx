@@ -16,7 +16,8 @@ export const actions = DevActions<Ctx>()
     if (prev) return prev;
     return {
       props: {
-        // max
+        padding: [25, 30],
+        userSelect: true,
       },
     };
   })
@@ -26,7 +27,7 @@ export const actions = DevActions<Ctx>()
 
     e.boolean('userSelect', (e) => {
       if (e.changing) e.ctx.props.userSelect = e.changing.next;
-      return Boolean(e.ctx.props.userSelect);
+      e.boolean.current = Boolean(e.ctx.props.userSelect);
     });
 
     e.hr();
@@ -46,7 +47,7 @@ export const actions = DevActions<Ctx>()
     const styles = {
       base: css({}),
       body: css({
-        padding: 30,
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
       }),
     };
 

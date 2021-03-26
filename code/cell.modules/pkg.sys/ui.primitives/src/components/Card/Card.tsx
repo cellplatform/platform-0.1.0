@@ -1,13 +1,13 @@
 import React from 'react';
-import { color, css, CssValue, defaultValue } from '../../common';
+import { color, css, CssValue, defaultValue, t, style } from '../../common';
 
 export type CardProps = {
   children?: React.ReactNode;
   background?: number | string;
   borderColor?: number | string;
   borderRadius?: number;
-  padding?: number;
-  margin?: number;
+  padding?: t.CssEdgesInput;
+  margin?: t.CssEdgesInput;
   minWidth?: number;
   minHeight?: number;
   userSelect?: string | boolean;
@@ -30,12 +30,12 @@ export const Card: React.FC<CardProps> = (props) => {
       border: `solid 1px ${color.format(defaultValue(props.borderColor, -0.2))}`,
       borderRadius: defaultValue(props.borderRadius, 4),
       background: color.format(background),
-      padding: props.padding,
-      margin: props.margin,
       userSelect: toUserSelect(props.userSelect),
       minWidth: defaultValue(props.minWidth, 10),
       minHeight: defaultValue(props.minHeight, 10),
       boxShadow: `0 2px 6px 0 ${color.format(-0.08)}`,
+      ...style.toMargins(props.margin),
+      ...style.toPadding(props.padding),
     }),
   };
 
