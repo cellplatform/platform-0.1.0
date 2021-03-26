@@ -169,6 +169,11 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
         return fireError(message);
       }
 
+      if (ref.peer.id === target) {
+        const message = `Cannot connect to self`;
+        return fireError(message);
+      }
+
       if (e.kind === 'data') {
         const { reliable } = e;
         const conn = ref.peer.connect(target, { reliable });

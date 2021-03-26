@@ -3,7 +3,7 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { PeerNetworkController, PeerNetworkEvents } from '..';
 import { Button, copyToClipboard, css, cuid, deleteUndefined, Icons, rx, t, time } from './common';
-import { PeerInfo } from './DEV.PeerInfo';
+import { Info } from './DEV.Info';
 
 type Ctx = {
   id: string;
@@ -70,7 +70,7 @@ export const actions = DevActions<Ctx>()
       const ref = e.ctx.id;
       const data = deleteUndefined(await e.ctx.events.status(ref).get());
       e.button.description = (
-        <ObjectView name={'status:res'} data={data} fontSize={10} expandLevel={1} />
+        <ObjectView name={'status:res'} data={data} fontSize={10} expandLevel={2} />
       );
     });
 
@@ -96,15 +96,12 @@ export const actions = DevActions<Ctx>()
 
       if (!connectTo) {
         e.button.description = '🐷 ERROR: Target network not specified';
-        // return write('fail', { message: '🐷 Target network not specified (cuid)' });
       } else {
         const res = await events.connect(id, connectTo).data({ reliable });
 
         const name = res.error ? 'fail' : 'Success';
         const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
         e.button.description = el;
-
-        // write(res.error ? 'fail' : 'Success', res);
       }
     });
 
@@ -117,27 +114,27 @@ export const actions = DevActions<Ctx>()
     const { id, bus } = e.ctx;
 
     const styles = {
-      icon: {
+      labelRight: {
         base: css({
-          top: -5,
           position: 'relative',
           Flex: 'horizontal-center-center',
+          top: -5,
           fontSize: 11,
         }),
-        image: { marginLeft: 8 },
+        icon: { marginLeft: 8 },
       },
     };
 
-    const elIcon = (
-      <div {...styles.icon.base}>
-        <Button onClick={() => copyToClipboard(id)}>{id} (copy)</Button>
-        <Icons.Antenna size={20} style={styles.icon.image} />
+    const elLabelRight = (
+      <div {...styles.labelRight.base}>
+        peer:{id}
+        <Icons.Antenna size={20} style={styles.labelRight.icon} />
       </div>
     );
 
     e.settings({
       layout: {
-        label: { topLeft: 'PeerNetwork', topRight: elIcon },
+        label: { topLeft: 'PeerNetwork', topRight: elLabelRight },
         position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,
@@ -147,7 +144,7 @@ export const actions = DevActions<Ctx>()
       actions: { width: 380 },
     });
 
-    e.render(<PeerInfo id={id} bus={bus} />);
+    e.render(<Info id={id} bus={bus} />);
   });
 
 export default actions;
