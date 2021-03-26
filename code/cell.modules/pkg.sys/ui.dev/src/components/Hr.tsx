@@ -4,7 +4,7 @@ import { color, COLORS, style, css, CssValue, defaultValue, t, value } from '../
 
 export type IHrProps = {
   color?: string | number | 'PINK' | 'CYAN';
-  margin?: t.EdgeSpacing;
+  margin?: t.CssEdgesInput;
   dashed?: boolean;
   opacity?: number;
   thickness?: number;

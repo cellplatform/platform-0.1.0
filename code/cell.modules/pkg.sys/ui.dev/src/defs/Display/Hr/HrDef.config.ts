@@ -47,7 +47,7 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
     config.opacity(params[1]);
   }
   if (typeof params[2] === 'number' || Array.isArray(params[2])) {
-    config.margin(params[2] as t.EdgeSpacing);
+    config.margin(params[2] as t.CssEdgesInput);
   }
   if (typeof params[3] === 'string') {
     config.borderStyle(params[3] as t.ActionHrBorderStyle);

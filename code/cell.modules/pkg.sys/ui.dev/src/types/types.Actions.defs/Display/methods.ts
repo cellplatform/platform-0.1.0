@@ -9,7 +9,7 @@ export type DisplayMethods<Ctx extends O> = {
   hr(
     height?: number,
     opacity?: number,
-    margin?: t.EdgeSpacing,
+    margin?: t.CssEdgesInput,
     borderStyle?: t.ActionHrBorderStyle,
   ): DisplayMethods<Ctx>;
   hr(config?: t.ActionHrConfig<Ctx>): DisplayMethods<Ctx>;

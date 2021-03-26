@@ -4,7 +4,7 @@ export { ReactNode } from 'react';
 export * from '@platform/types';
 export * from '@platform/cell.types/lib/types.Module';
 
-export { CssValue, ICssEdges } from '@platform/css/lib/types';
+export { CssValue, CssEdges, CssEdgesInput } from '@platform/css/lib/types';
 
 export { IStateObject, IStateObjectWritable, PatchSet } from '@platform/state.types';
 export { IIcon } from '@platform/ui.icon/lib/types';

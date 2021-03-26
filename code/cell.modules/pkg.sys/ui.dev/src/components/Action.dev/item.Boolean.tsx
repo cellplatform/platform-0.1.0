@@ -29,7 +29,7 @@ export const Bool: React.FC<BoolProps> = (props) => {
     });
   };
 
-  const elSwitch = <Switch value={value} isEnabled={isActive} height={18} />;
+  const elSwitch = <Switch value={value} isEnabled={isActive} height={18}  />;
   const elTitle = title && <LayoutTitle>{title}</LayoutTitle>;
 
   return (
