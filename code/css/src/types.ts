@@ -19,9 +19,9 @@ export type ICssStyle = {
   global: CssGlobal;
   head: ICssHead;
   image: CssFormatImage;
-  toEdges: CssToEdges<ICssEdges>;
-  toMargins: CssToEdges<ICssMarginEdges>;
-  toPadding: CssToEdges<ICssPaddingEdges>;
+  toEdges: CssToEdges<CssEdges>;
+  toMargins: CssToEdges<CssMarginEdges>;
+  toPadding: CssToEdges<CssPaddingEdges>;
 };
 
 /**
@@ -35,24 +35,27 @@ export type ICssHead = {
 /**
  * Edges
  */
-export type CssEdgesInput = string | number | undefined | null | Array<string | number | null>;
+type N = string | number | null | undefined;
+
+export type CssEdgeInput = N;
+export type CssEdgesInput = N | [N] | [N, N] | [N, N, N, N];
 export type CssToEdges<T> = (
-  input?: CssEdgesInput,
+  input?: CssEdgesInput | [],
   options?: { defaultValue?: CssEdgesInput },
 ) => Partial<T>;
-export type ICssEdges = {
+export type CssEdges = {
   top: string | number;
   right: string | number;
   bottom: string | number;
   left: string | number;
 };
-export type ICssMarginEdges = {
+export type CssMarginEdges = {
   marginTop: string | number;
   marginRight: string | number;
   marginBottom: string | number;
   marginLeft: string | number;
 };
-export type ICssPaddingEdges = {
+export type CssPaddingEdges = {
   paddingTop: string | number;
   paddingRight: string | number;
   paddingBottom: string | number;
