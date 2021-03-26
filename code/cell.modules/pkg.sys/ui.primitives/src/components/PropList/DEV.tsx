@@ -23,8 +23,9 @@ export const actions = DevActions<Ctx>()
         defaults: { clipboard: false },
         items: [
           { label: 'string', value: 'hello' },
-          { label: 'number', value: 123, clipboard: 'Value: 123' },
+          { label: 'number', value: 123456, clipboard: 'Value: 123456', monospace: true },
           { label: 'boolean', value: true },
+          { label: 'thing monospace', value: 'thing', clipboard: true, monospace: true },
         ],
       },
     };

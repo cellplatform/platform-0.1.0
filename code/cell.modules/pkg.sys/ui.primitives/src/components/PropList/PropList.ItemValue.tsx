@@ -78,8 +78,9 @@ export class PropListItemValue extends React.PureComponent<
   }
 
   public get clipboard() {
-    if (this.props.data.clipboard) {
-      return this.props.data.clipboard;
+    const { data } = this.props;
+    if (data.clipboard) {
+      return typeof data.clipboard === 'boolean' ? data.value?.toString() || '' : data.clipboard;
     }
     if (this.isSimple) {
       return this.value?.toString() || '';
@@ -146,8 +147,9 @@ export class PropListItemValue extends React.PureComponent<
 
   private renderSimple(value: string | number) {
     const { isOver, message } = this.state;
-
-    const textColor = message ? color.format(-0.3) : isOver ? COLORS.BLUE : COLORS.DARK;
+    const isActive = isOver && this.isCopyable;
+    const isMonospace = this.data.monospace;
+    const textColor = message ? color.format(-0.3) : isActive ? COLORS.BLUE : COLORS.DARK;
 
     const styles = {
       base: css({
@@ -162,8 +164,9 @@ export class PropListItemValue extends React.PureComponent<
         whiteSpace: 'nowrap',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
-        cursor: 'pointer',
+        cursor: isActive ? 'pointer' : 'default',
         textAlign: 'right',
+        fontFamily: isMonospace ? 'monospace' : undefined,
       }),
     };
 
