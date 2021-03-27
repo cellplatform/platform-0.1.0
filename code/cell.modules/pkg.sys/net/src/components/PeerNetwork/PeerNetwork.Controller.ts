@@ -78,18 +78,18 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
    */
   const initDataConnection = (
     direction: t.PeerNetworkConnected['direction'],
-    local: NetworkRef,
+    network: NetworkRef,
     conn: PeerJS.DataConnection,
   ) => {
     const kind = 'data';
-    const connectionRef = addConnectionRef(local, kind, conn);
+    const connectionRef = addConnectionRef(network, kind, conn);
     bus.fire({
       type: 'PeerNetwork/connected',
       payload: {
-        local: local.id,
+        ref: network.id,
         kind,
         direction,
-        remote: connectionRef.id.remote,
+        target: connectionRef.id.remote,
         connection: toConnectionStatus(connectionRef),
       },
     });
@@ -98,7 +98,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
       bus.fire({
         type: 'PeerNetwork/connection:closed',
         payload: {
-          local: local.id,
+          ref: network.id,
           connection: toConnectionStatus(connectionRef),
         },
       });
@@ -111,7 +111,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   rx.payload<t.PeerNetworkCreateEvent>($, 'PeerNetwork/create')
     .pipe()
     .subscribe((e) => {
-      const local = (e.local || '').trim();
+      const local = (e.ref || '').trim();
 
       if (!refs[local]) {
         const createdAt = time.now.timestamp;
@@ -136,7 +136,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
       const ref = refs[local];
       bus.fire({
         type: 'PeerNetwork/created',
-        payload: { local: local, createdAt: ref.createdAt, signal: ref.signal },
+        payload: { ref: local, createdAt: ref.createdAt, signal: ref.signal },
       });
     });
 
@@ -146,12 +146,11 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   rx.payload<t.PeerNetworkStatusRequestEvent>($, 'PeerNetwork/status:req')
     .pipe()
     .subscribe((e) => {
-      const { local } = e;
-      const ref = refs[local];
+      const ref = refs[e.ref];
       const network = ref ? toStatus(ref) : undefined;
       bus.fire({
         type: 'PeerNetwork/status:res',
-        payload: { local, exists: Boolean(network), network },
+        payload: { ref: e.ref, exists: Boolean(network), network },
       });
     });
 
@@ -161,31 +160,31 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   rx.payload<t.PeerNetworkConnectEvent>($, 'PeerNetwork/connect')
     .pipe()
     .subscribe((e) => {
-      const { local, remote, kind } = e;
-      const ref = refs[local];
+      const { target, kind } = e;
+      const ref = refs[e.ref];
 
       const fire = (payload: Partial<t.PeerNetworkConnected>) => {
         bus.fire({
           type: 'PeerNetwork/connected',
-          payload: { kind, local, remote, direction: 'outgoing', ...payload },
+          payload: { kind, ref: e.ref, target, direction: 'outgoing', ...payload },
         });
       };
 
       const fireError = (message: string) => fire({ error: { message } });
 
       if (!ref) {
-        const message = `The local PeerNetwork '${local}' has not been created`;
+        const message = `The local PeerNetwork '${e.ref}' has not been created`;
         return fireError(message);
       }
 
-      if (ref.peer.id === remote) {
+      if (ref.id === target) {
         const message = `Cannot connect to self`;
         return fireError(message);
       }
 
       if (e.kind === 'data') {
         const { reliable } = e;
-        const conn = ref.peer.connect(remote, { reliable });
+        const conn = ref.peer.connect(target, { reliable });
         const errorMonitor = PeerJSError(ref.peer);
 
         conn.on('open', () => {
@@ -200,11 +199,11 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
         //  - timeout (peer id not found on network).
         errorMonitor.$.pipe(
           filter((err) => err.type === 'peer-unavailable'),
-          filter((err) => err.message.includes(`peer ${remote}`)),
+          filter((err) => err.message.includes(`peer ${target}`)),
           take(1),
         ).subscribe((err) => {
           errorMonitor.dispose();
-          fireError(`Failed to connect to peer '${remote}'. The remote target did not respond.`);
+          fireError(`Failed to connect to peer '${target}'. The remote target did not respond.`);
         });
       }
 

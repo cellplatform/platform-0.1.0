@@ -1,7 +1,7 @@
 import { t } from './common';
 
 /**
- * The local network peer-id.
+ * An identifier of a network peer.
  */
 export type PeerNetworkId = string;
 
@@ -27,7 +27,7 @@ export type PeerNetworkCreateEvent = {
   payload: PeerNetworkCreate;
 };
 export type PeerNetworkCreate = {
-  local: PeerNetworkId;
+  ref: PeerNetworkId;
   signal: string; // String containing the signal server endpoint: "host/path"
 };
 
@@ -39,7 +39,7 @@ export type PeerNetworkCreatedEvent = {
   payload: PeerNetworkCreated;
 };
 export type PeerNetworkCreated = {
-  local: PeerNetworkId;
+  ref: PeerNetworkId;
   createdAt: number;
   signal: t.PeerNetworkSignalEndpoint;
 };
@@ -51,7 +51,7 @@ export type PeerNetworkStatusRequestEvent = {
   type: 'PeerNetwork/status:req';
   payload: PeerNetworkStatusRequest;
 };
-export type PeerNetworkStatusRequest = { local: PeerNetworkId };
+export type PeerNetworkStatusRequest = { ref: PeerNetworkId };
 
 /**
  * Fired to retrieve the status of the specified peer.
@@ -61,7 +61,7 @@ export type PeerNetworkStatusResponseEvent = {
   payload: PeerNetworkStatusResponse;
 };
 export type PeerNetworkStatusResponse = {
-  local: PeerNetworkId;
+  ref: PeerNetworkId;
   exists: boolean;
   network?: t.PeerNetworkStatus;
 };
@@ -74,7 +74,7 @@ export type PeerNetworkPurgeEvent = {
   payload: PeerNetworkPurge;
 };
 export type PeerNetworkPurge = {
-  local: PeerNetworkId;
+  ref: PeerNetworkId;
   data?: true | PeerNetworkPurgeDetails; // NB: [true] clears all purgeable data.
 };
 export type PeerNetworkPurgeDetails = {
@@ -94,8 +94,8 @@ export type PeerNetworkConnectEvent = {
 };
 export type PeerNetworkConnect = PeerNetworkConnectData | PeerNetworkConnectMedia;
 type ConnectBase = {
-  local: PeerNetworkId;
-  remote: PeerNetworkId;
+  ref: PeerNetworkId;
+  target: PeerNetworkId;
 };
 export type PeerNetworkConnectData = ConnectBase & { kind: 'data'; reliable?: boolean };
 export type PeerNetworkConnectMedia = ConnectBase & { kind: 'media' };
@@ -108,8 +108,8 @@ export type PeerNetworkConnectedEvent = {
   payload: PeerNetworkConnected;
 };
 export type PeerNetworkConnected = {
-  local: PeerNetworkId;
-  remote: PeerNetworkId;
+  ref: PeerNetworkId;
+  target: PeerNetworkId;
   kind: 'data' | 'media';
   direction: 'incoming' | 'outgoing';
   connection?: t.PeerConnectionStatus;
@@ -125,6 +125,6 @@ export type PeerNetworkConnectionClosedEvent = {
 };
 
 export type PeerNetworkConnectionClosed = {
-  local: PeerNetworkId;
+  ref: PeerNetworkId;
   connection: t.PeerConnectionStatus;
 };

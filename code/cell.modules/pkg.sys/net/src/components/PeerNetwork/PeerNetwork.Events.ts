@@ -19,40 +19,40 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
    * CREATE
    */
   const create = (signal: string, options: { id?: string } = {}) => {
-    const local = options.id || cuid();
-    const res = firstValueFrom(created(local).$);
-    bus.fire({ type: 'PeerNetwork/create', payload: { local, signal } });
+    const id = options.id || cuid();
+    const res = firstValueFrom(created(id).$);
+    bus.fire({ type: 'PeerNetwork/create', payload: { ref: id, signal } });
     return res;
   };
 
   /**
    * CREATED
    */
-  const created = (local: string) => {
+  const created = (ref: string) => {
     const $ = rx
       .payload<t.PeerNetworkCreatedEvent>(event$, 'PeerNetwork/created')
-      .pipe(filter((e) => e.local === local));
-    return { local, $ };
+      .pipe(filter((e) => e.ref === ref));
+    return { ref, $ };
   };
 
   /**
    * STATUS
    */
-  const status = (local: string) => {
+  const status = (ref: string) => {
     const request$ = rx
       .payload<t.PeerNetworkStatusRequestEvent>(event$, 'PeerNetwork/status:req')
-      .pipe(filter((e) => e.local === local));
+      .pipe(filter((e) => e.ref === ref));
     const response$ = rx
       .payload<t.PeerNetworkStatusResponseEvent>(event$, 'PeerNetwork/status:res')
-      .pipe(filter((e) => e.local === local));
+      .pipe(filter((e) => e.ref === ref));
 
     const get = () => {
       const res = firstValueFrom(response$);
-      bus.fire({ type: 'PeerNetwork/status:req', payload: { local } });
+      bus.fire({ type: 'PeerNetwork/status:req', payload: { ref: ref } });
       return res;
     };
 
-    return { id: local, get, request$, response$ };
+    return { id: ref, get, request$, response$ };
   };
 
   /**
@@ -67,22 +67,22 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
   /**
    * CONNECT
    */
-  const connect = (local: string, remote: string) => {
+  const connect = (ref: string, target: string) => {
     return {
       data(options: { reliable?: boolean } = {}) {
         const { reliable } = options;
-        const res = firstValueFrom(connected(local, remote).$);
+        const res = firstValueFrom(connected(ref, target).$);
         bus.fire({
           type: 'PeerNetwork/connect',
-          payload: { local, remote: remote, kind: 'data', reliable },
+          payload: { ref: ref, target: target, kind: 'data', reliable },
         });
         return res;
       },
       media() {
-        const res = firstValueFrom(connected(local, remote).$);
+        const res = firstValueFrom(connected(ref, target).$);
         bus.fire({
           type: 'PeerNetwork/connect',
-          payload: { local: local, remote: remote, kind: 'media' },
+          payload: { ref: ref, target: target, kind: 'media' },
         });
         return res;
       },
@@ -92,7 +92,7 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
   const connected = (id: string, remote: string) => {
     const $ = rx
       .payload<t.PeerNetworkConnectedEvent>(event$, 'PeerNetwork/connected')
-      .pipe(filter((e) => e.local === id && e.remote === remote));
+      .pipe(filter((e) => e.ref === id && e.target === remote));
     return { id, $ };
   };
 
