@@ -14,6 +14,10 @@ export const Markdown: React.FC<MarkdownProps> = (props) => {
 
   const styles = {
     base: css({
+      boxSizing: 'border-box',
+      paddingLeft: typeof item.indent === 'number' ? item.indent : undefined,
+    }),
+    md: css({
       position: 'relative',
       boxSizing: 'border-box',
       fontSize: 11,
@@ -22,5 +26,9 @@ export const Markdown: React.FC<MarkdownProps> = (props) => {
     }),
   };
 
-  return <MarkdownComponent style={styles.base}>{item.markdown}</MarkdownComponent>;
+  return (
+    <div {...styles.base}>
+      <MarkdownComponent style={styles.md}>{item.markdown}</MarkdownComponent>
+    </div>
+  );
 };

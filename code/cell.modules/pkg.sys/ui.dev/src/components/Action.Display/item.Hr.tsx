@@ -1,5 +1,5 @@
 import React from 'react';
-import { t } from '../common';
+import { css, t } from '../common';
 import { Hr as HrComponent } from '../Hr';
 
 export type HrProps = {
@@ -10,12 +10,20 @@ export type HrProps = {
 
 export const Hr: React.FC<HrProps> = (props) => {
   const { item } = props;
+  const styles = {
+    base: css({
+      boxSizing: 'border-box',
+      paddingLeft: item.indent,
+    }),
+  };
   return (
-    <HrComponent
-      color={0 - item.opacity}
-      thickness={item.height}
-      margin={item.margin}
-      dashed={item.borderStyle === 'dashed'}
-    />
+    <div {...styles.base}>
+      <HrComponent
+        color={0 - item.opacity}
+        thickness={item.height}
+        margin={item.margin}
+        dashed={item.borderStyle === 'dashed'}
+      />
+    </div>
   );
 };

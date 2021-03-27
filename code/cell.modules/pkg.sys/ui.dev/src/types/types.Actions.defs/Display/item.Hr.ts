@@ -13,6 +13,7 @@ export type ActionHr = {
   opacity: number;
   margin: t.CssEdgesInput;
   borderStyle: ActionHrBorderStyle;
+  indent?: number;
 };
 
 /**
@@ -25,4 +26,5 @@ export type ActionHrConfigArgs<Ctx extends O> = {
   opacity(value: number): ActionHrConfigArgs<Ctx>;
   margin(value: t.CssEdgesInput): ActionHrConfigArgs<Ctx>;
   borderStyle(value: ActionHrBorderStyle): ActionHrConfigArgs<Ctx>;
+  indent(value: number): ActionHrConfigArgs<Ctx>;
 };

@@ -25,6 +25,10 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
       item.margin = value;
       return config;
     },
+    indent(value) {
+      item.indent = format.number(value, { min: 0, default: 0 });
+      return config;
+    },
   };
 
   if (typeof params[0] === 'function') {

@@ -1,4 +1,4 @@
-import { t, R, slug } from '../common';
+import { t, R, slug, format } from '../common';
 
 type O = Record<string, unknown>;
 
@@ -33,6 +33,10 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
     },
     borderStyle(value) {
       if (borderStyles.includes(value)) item.borderStyle = value;
+      return config;
+    },
+    indent(value) {
+      item.indent = format.number(value, { min: 0, default: 0 });
       return config;
     },
   };

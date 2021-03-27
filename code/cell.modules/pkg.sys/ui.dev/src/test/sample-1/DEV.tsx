@@ -45,9 +45,10 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Title');
+    e.title((config) => config.text('Title (Indented)').indent(25));
     e.markdown(markdown());
 
-    e.title('Context (ctx)');
+    e.title('Context');
     e.button('change text [TODO] foobar', (e) => {
       e.ctx.count++;
       e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
@@ -78,6 +79,10 @@ export const actions = DevActions<Ctx>()
 
     e.markdown((config) => {
       config.text(markdown()).margin([40, 35, 20, 20]);
+    });
+
+    e.markdown((config) => {
+      config.text('Markdown indented by `35` pixels').indent(35);
     });
 
     e.hr();
@@ -126,7 +131,7 @@ export const actions = DevActions<Ctx>()
     e.title('Hr');
     e.hr(1, 0.15);
     e.hr(3, 0.15, [2, 50]);
-    e.hr(1, 0.15, [15, 0]);
+    e.hr((config) => config.height(1).opacity(0.15).margin([15, 0]).indent(25));
     e.hr(1, 0.15, [15, 0], 'dashed');
     e.hr();
   })
