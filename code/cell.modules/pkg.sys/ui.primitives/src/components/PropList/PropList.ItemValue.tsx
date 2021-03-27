@@ -8,7 +8,7 @@ import { Icons } from '../Icons';
 import { Switch } from '../../components.ref/button/Switch';
 
 export type PropListItemValueProps = {
-  data: t.PropListItem;
+  item: t.PropListItem;
   isFirst?: boolean;
   isLast?: boolean;
   defaults?: t.PropListDefaults;
@@ -43,20 +43,23 @@ export class PropListItemValue extends React.PureComponent<
   /**
    * [Properties]
    */
-  public get data() {
-    return this.props.data;
+  public get item() {
+    return this.props.item;
   }
 
-  public get value() {
-    return this.data.value;
+  public get value(): t.PropListValue {
+    const value = this.item.value;
+    if (typeof value !== 'object') return { data: value };
+    if (React.isValidElement(value)) return { data: value };
+    return value as t.PropListValue;
   }
 
   public get isString() {
-    return typeof this.value === 'string';
+    return typeof this.value.data === 'string';
   }
 
   public get isNumber() {
-    return typeof this.value === 'number';
+    return typeof this.value.data === 'number';
   }
 
   public get isSimple() {
@@ -71,19 +74,20 @@ export class PropListItemValue extends React.PureComponent<
   }
 
   public get isCopyable() {
-    const { data } = this.props;
-    if (data.onClick) return false;
-    if (data.clipboard) return true;
+    const { item } = this.props;
+    if (item.onClick) return false;
+    if (this.value.clipboard) return true;
     return this.isSimple && this.defaults.clipboard;
   }
 
   public get clipboard() {
-    const { data } = this.props;
-    if (data.clipboard) {
-      return typeof data.clipboard === 'boolean' ? data.value?.toString() || '' : data.clipboard;
+    const { item } = this.props;
+    const value = this.value;
+    if (value.clipboard) {
+      return typeof value.clipboard === 'boolean' ? item.value?.toString() || '' : value.clipboard;
     }
     if (this.isSimple) {
-      return this.value?.toString() || '';
+      return value?.data?.toString() || '';
     }
     return undefined;
   }
@@ -119,7 +123,7 @@ export class PropListItemValue extends React.PureComponent<
     return (
       <div
         {...styles.base}
-        title={this.props.data.tooltip}
+        title={this.props.item.tooltip}
         onMouseEnter={this.overHandler(true)}
         onMouseLeave={this.overHandler(false)}
         onClick={this.onClick}
@@ -132,23 +136,23 @@ export class PropListItemValue extends React.PureComponent<
   private renderValue() {
     const value = this.value;
 
-    if (typeof value === 'boolean') {
+    if (typeof value.data === 'boolean') {
       return this.renderBoolean(value);
     }
-    if (typeof value === 'string' || typeof value === 'number') {
+    if (typeof value.data === 'string' || typeof value.data === 'number') {
       return this.renderSimple(value);
     }
     return null;
   }
 
-  private renderBoolean(value: boolean) {
-    return <Switch height={16} value={value} />;
+  private renderBoolean(value: t.PropListValue) {
+    return <Switch height={16} value={value.data as boolean} />;
   }
 
-  private renderSimple(value: string | number) {
+  private renderSimple(value: t.PropListValue) {
     const { isOver, message } = this.state;
     const isActive = isOver && this.isCopyable;
-    const isMonospace = this.data.monospace;
+    const isMonospace = value.monospace;
     const textColor = message ? color.format(-0.3) : isActive ? COLORS.BLUE : COLORS.DARK;
 
     const styles = {
@@ -170,7 +174,7 @@ export class PropListItemValue extends React.PureComponent<
       }),
     };
 
-    const text = message ? message : value;
+    const text = message ? message : value.data;
 
     return (
       <div {...css(styles.base)}>
@@ -204,7 +208,7 @@ export class PropListItemValue extends React.PureComponent<
   };
 
   private onClick = () => {
-    const data = this.data;
+    const data = this.item;
     const { onClick } = data;
     if (onClick) {
       onClick({

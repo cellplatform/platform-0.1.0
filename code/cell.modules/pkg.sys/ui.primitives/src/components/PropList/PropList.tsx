@@ -11,24 +11,12 @@ export type PropListProps = {
   defaults?: t.PropListDefaults;
   padding?: t.CssEdgesInput;
   margin?: t.CssEdgesInput;
+  width?: number | { fixed?: number; min?: number; max?: number };
+  height?: number | { fixed?: number; min?: number; max?: number };
   style?: CssValue;
 };
 
 export class PropList extends React.PureComponent<PropListProps> {
-  public static Hr = (props: { color?: string | number; margin?: number } = {}) => {
-    const style = css({
-      height: 1,
-      borderTop: `solid 4px ${color.format(defaultValue(props.color, -0.1))}`,
-      MarginY: defaultValue(props.margin, 15),
-    });
-    return <div {...style} />;
-  };
-
-  public static Space = (props: { height?: number }) => {
-    const style = css({ height: defaultValue(props.height, 20) });
-    return <div {...style} />;
-  };
-
   /**
    * [Properties]
    */
@@ -56,11 +44,21 @@ export class PropList extends React.PureComponent<PropListProps> {
     const props = this.props;
     const { title, defaults } = props;
 
+    const width = typeof props.width === 'number' ? { fixed: props.width } : props.width;
+    const height = typeof props.height === 'number' ? { fixed: props.height } : props.height;
+
     const styles = {
       base: css({
         position: 'relative',
-        width: '100%',
         color: COLORS.DARK,
+
+        width: width?.fixed === undefined ? '100%' : width?.fixed,
+        height: height?.fixed,
+        minWidth: defaultValue(width?.min, 10),
+        minHeight: defaultValue(height?.min, 10),
+        maxWidth: width?.max,
+        maxHeight: height?.max,
+
         ...style.toMargins(props.margin),
         ...style.toPadding(props.padding),
       }),

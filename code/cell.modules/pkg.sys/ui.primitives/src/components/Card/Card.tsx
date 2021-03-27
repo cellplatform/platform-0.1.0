@@ -37,6 +37,7 @@ export const Card: React.FC<CardProps> = (props) => {
       border: `solid 1px ${color.format(borderColor)}`,
       borderRadius: defaultValue(props.border?.radius, 4),
       background: color.format(background),
+      boxShadow: `0 2px 6px 0 ${color.format(-0.08)}`,
 
       width: width?.fixed,
       height: height?.fixed,
@@ -45,7 +46,6 @@ export const Card: React.FC<CardProps> = (props) => {
       maxWidth: width?.max,
       maxHeight: height?.max,
 
-      boxShadow: `0 2px 6px 0 ${color.format(-0.08)}`,
       ...style.toMargins(props.margin),
       ...style.toPadding(props.padding),
     }),

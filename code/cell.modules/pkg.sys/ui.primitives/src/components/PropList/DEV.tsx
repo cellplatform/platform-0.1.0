@@ -1,6 +1,6 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
-import { PropList, PropListProps } from '.';
+import { PropList, PropListProps, PropListItem } from '.';
 import { css, COLORS } from '../../common';
 import { Icons } from '../Icons';
 
@@ -16,17 +16,21 @@ export const actions = DevActions<Ctx>()
   .namespace('ui/PropList')
   .context((prev) => {
     if (prev) return prev;
+
+    const items: PropListItem[] = [
+      { label: 'string', value: 'hello' },
+      { label: 'number', value: { data: 123456, clipboard: 'Value: 123456', monospace: true } },
+      { label: 'boolean', value: true },
+      { label: 'thing monospace', value: { data: 'thing', clipboard: true, monospace: true } },
+      { label: 'long (ellipsis)', value: LOREM },
+    ];
+
     return {
       props: {
         title: 'MyTitle',
         titleEllipsis: true,
         defaults: { clipboard: false },
-        items: [
-          { label: 'string', value: 'hello' },
-          { label: 'number', value: 123456, clipboard: 'Value: 123456', monospace: true },
-          { label: 'boolean', value: true },
-          { label: 'thing monospace', value: 'thing', clipboard: true, monospace: true },
-        ],
+        items,
       },
     };
   })

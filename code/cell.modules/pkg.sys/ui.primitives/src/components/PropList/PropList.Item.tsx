@@ -26,7 +26,7 @@ export const PropListItem: React.FC<PropListItemProps> = (props) => {
   return (
     <div {...styles.base} title={data.tooltip}>
       <PropListLabel data={data} />
-      <PropListItemValue data={data} isFirst={isFirst} isLast={isLast} defaults={defaults} />
+      <PropListItemValue item={data} isFirst={isFirst} isLast={isLast} defaults={defaults} />
     </div>
   );
 };
