@@ -17,12 +17,47 @@ export const actions = DevActions<Ctx>()
   .context((prev) => {
     if (prev) return prev;
 
+    const styles = {
+      label: css({
+        boxSizing: 'border-box',
+        backgroundColor: 'rgba(255, 0, 0, 0.1)',
+        flex: 1,
+        height: 40,
+        padding: 3,
+        paddingLeft: 30,
+        Flex: 'horizontal-end-end',
+        color: COLORS.MAGENTA,
+      }),
+      value: css({
+        backgroundColor: 'rgba(255, 0, 0, 0.1)',
+        height: 40,
+        Flex: 'center-center',
+        flex: 1,
+      }),
+    };
+
     const items: PropListItem[] = [
       { label: 'string', value: 'hello' },
       { label: 'number', value: { data: 123456, clipboard: 'Value: 123456', monospace: true } },
       { label: 'boolean', value: true },
       { label: 'thing monospace', value: { data: 'thing', clipboard: true, monospace: true } },
       { label: 'long (ellipsis)', value: LOREM },
+      {
+        label: 'click handler',
+        value: {
+          data: 'click me',
+          onClick: (e) => e.message(<div style={{ color: COLORS.MAGENTA }}>foobar</div>, 3000),
+        },
+      },
+      {
+        label: 'label',
+        value: <div {...styles.value}>value</div>,
+      },
+
+      {
+        label: <div {...styles.label}>label</div>,
+        value: 'value',
+      },
     ];
 
     return {

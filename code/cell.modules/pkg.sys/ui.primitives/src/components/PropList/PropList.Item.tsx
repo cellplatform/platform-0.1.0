@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 import { color, css, CssValue, t } from '../../common';
-import { PropListItemValue } from './PropList.ItemValue';
+import { PropListValue } from './PropList.Value';
+import { PropListLabel } from './PropList.Label';
 
 export type PropListItemProps = {
   data: t.PropListItem;
@@ -16,29 +17,17 @@ export const PropListItem: React.FC<PropListItemProps> = (props) => {
 
   const styles = {
     base: css({
-      Flex: 'horizontal-center-spaceBetween',
+      Flex: 'horizontal-start-spaceBetween',
       PaddingY: 4,
+      fontSize: 12,
       borderBottom: `solid 1px ${color.format(isLast ? 0 : -0.1)}`,
       ':last-child': { border: 'none' },
-      fontSize: 12,
     }),
   };
   return (
     <div {...styles.base} title={data.tooltip}>
       <PropListLabel data={data} />
-      <PropListItemValue item={data} isFirst={isFirst} isLast={isLast} defaults={defaults} />
+      <PropListValue item={data} isFirst={isFirst} isLast={isLast} defaults={defaults} />
     </div>
   );
-};
-
-export type PropListLabelProps = { data: t.PropListItem; style?: CssValue };
-export const PropListLabel: React.FC<PropListLabelProps> = (props) => {
-  const styles = {
-    base: css({
-      opacity: 0.4,
-      marginRight: 15,
-      userSelect: 'none',
-    }),
-  };
-  return <div {...css(styles.base, props.style)}>{props.data.label}</div>;
 };

@@ -9,16 +9,17 @@ export type PropListItem = {
   value?: React.ReactNode | PropListValue;
   tooltip?: string;
   visible?: boolean;
-  onClick?: (e: PropListItemClickEventArgs) => void;
 };
 
 export type PropListValue = {
   data?: React.ReactNode;
   monospace?: boolean;
   clipboard?: string | boolean;
+  onClick?: (e: PropListValueEventArgs) => void;
 };
 
-export type PropListItemClickEventArgs = {
-  data: PropListItem;
-  message: (message: React.ReactNode, delay?: number) => void;
+export type PropListValueEventArgs = {
+  item: PropListItem;
+  value: PropListValue;
+  message: (value: React.ReactNode, delay?: number) => void;
 };
