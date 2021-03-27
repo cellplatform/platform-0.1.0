@@ -88,20 +88,21 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
       .pipe(filter((e) => e.ref === ref && e.remote === remote));
 
     const open = {
-      data(options: { reliable?: boolean } = {}) {
-        const { reliable } = options;
+      data(options: { reliable?: boolean; metadata?: t.JsonMap } = {}) {
+        const { reliable, metadata } = options;
         const res = firstValueFrom(connected$);
         bus.fire({
           type: 'PeerNetwork/connect:req',
-          payload: { ref, remote: remote, kind: 'data', reliable },
+          payload: { ref, remote: remote, kind: 'data', reliable, metadata },
         });
         return res;
       },
-      media() {
+      media(options: { metadata?: t.JsonMap } = {}) {
+        const { metadata } = options;
         const res = firstValueFrom(connected$);
         bus.fire({
           type: 'PeerNetwork/connect:req',
-          payload: { ref, remote: remote, kind: 'media' },
+          payload: { ref, remote: remote, kind: 'media', metadata },
         });
         return res;
       },

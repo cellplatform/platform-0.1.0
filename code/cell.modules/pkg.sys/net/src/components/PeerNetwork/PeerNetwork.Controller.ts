@@ -62,14 +62,14 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
 
     if (kind === 'data') {
       const conn = ref.conn as PeerJS.DataConnection;
-      const { reliable: isReliable, open: isOpen } = conn;
-      return { id, kind, isReliable, isOpen };
+      const { reliable: isReliable, open: isOpen, metadata } = conn;
+      return { id, kind, isReliable, isOpen, metadata };
     }
 
     if (kind === 'media') {
       const conn = ref.conn as PeerJS.MediaConnection;
-      const { open: isOpen } = conn;
-      return { id, kind, isOpen };
+      const { open: isOpen, metadata } = conn;
+      return { id, kind, isOpen, metadata };
     }
 
     throw new Error(`Kind of connection not supported: '${kind}' (${id})`);
@@ -202,10 +202,10 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   rx.payload<t.PeerNetworkConnectReqEvent>($, 'PeerNetwork/connect:req')
     .pipe()
     .subscribe((e) => {
-      const { remote, kind } = e;
+      const { remote, kind, metadata } = e;
       const ref = refs[e.ref];
 
-      const fire = (payload: Partial<t.PeerNetworkConnectRes>) => {
+      const fire = (payload?: Partial<t.PeerNetworkConnectRes>) => {
         bus.fire({
           type: 'PeerNetwork/connect:res',
           payload: { kind, ref: e.ref, remote, direction: 'outgoing', ...payload },
@@ -223,9 +223,17 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
         return fireError(message);
       }
 
+      // Check for existing remote connection.
+      const existing = ref.connections.find(
+        (item) => item.kind === kind && item.id.remote === remote,
+      );
+      if (existing) {
+        return fire();
+      }
+
       if (e.kind === 'data') {
         const { reliable } = e;
-        const conn = ref.peer.connect(remote, { reliable });
+        const conn = ref.peer.connect(remote, { reliable, metadata });
         const errorMonitor = PeerJSError(ref.peer);
 
         conn.on('open', () => {

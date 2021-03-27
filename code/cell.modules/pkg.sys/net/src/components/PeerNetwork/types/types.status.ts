@@ -15,7 +15,10 @@ export type PeerNetworkStatus = {
  */
 export type PeerConnectionStatus = PeerConnectionDataStatus | PeerConnectionMediaStatus;
 
-type PeerConnectionBase = { id: { local: string; remote: string } };
+type PeerConnectionBase = {
+  id: { local: string; remote: string };
+  metadata?: t.JsonMap;
+};
 
 export type PeerConnectionDataStatus = PeerConnectionBase & {
   kind: 'data';

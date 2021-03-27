@@ -102,7 +102,8 @@ export const actions = DevActions<Ctx>()
       if (!connectTo) {
         e.button.description = '🐷 ERROR: Remote network not specified';
       } else {
-        const res = await events.connection(id, connectTo).open.data({ reliable });
+        const metadata = { foo: 123 };
+        const res = await events.connection(id, connectTo).open.data({ reliable, metadata });
         const name = res.error ? 'fail' : 'Success';
         const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
         e.button.description = el;

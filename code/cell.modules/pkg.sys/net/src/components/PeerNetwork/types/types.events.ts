@@ -113,6 +113,7 @@ export type PeerNetworkConnectReq = PeerNetworkConnectDataReq | PeerNetworkConne
 type ConnectBase = {
   ref: PeerNetworkId;
   remote: PeerNetworkId;
+  metadata?: t.JsonMap;
 };
 export type PeerNetworkConnectDataReq = ConnectBase & { kind: 'data'; reliable?: boolean };
 export type PeerNetworkConnectMediaReq = ConnectBase & { kind: 'media' };
