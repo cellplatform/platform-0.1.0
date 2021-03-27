@@ -16,7 +16,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
   const { item, namespace } = props;
   const bus = props.bus.type<t.DevActionEvent>();
 
-  const { title, label = DEFAULT.UNNAMED, description, isSpinning } = item;
+  const { title, label = DEFAULT.UNNAMED, description, isSpinning, indent } = item;
   const isActive = item.handlers.length > 0;
 
   const clickHandler = () =>
@@ -34,6 +34,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
       label={{ body: label, pressOffset: 1, onClick: clickHandler }}
       description={description}
       top={elTitle}
+      indent={indent}
     />
   );
 };

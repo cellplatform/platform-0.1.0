@@ -37,6 +37,7 @@ describe('Dev', () => {
       expect(button1.label).to.eql('foo');
       expect(button1.title).to.eql(undefined);
       expect(button1.handlers).to.eql([fn1]);
+      expect(button1.indent).to.eql(undefined);
 
       expect(button2.kind).to.eql('dev/button');
       expect(button2.label).to.eql('bar');
@@ -69,7 +70,7 @@ describe('Dev', () => {
 
       const fn: t.ActionButtonHandler<any> = () => null;
       actions.items((e) =>
-        e.button((config) => config.title('  my title ').label('  foo  ').pipe(fn)),
+        e.button((config) => config.title('  my title ').label('  foo  ').indent(20).pipe(fn)),
       );
 
       const items = model.state.items;
@@ -81,6 +82,7 @@ describe('Dev', () => {
       expect(button.label).to.eql('foo');
       expect(button.title).to.eql('my title');
       expect(button.handlers).to.eql([fn]);
+      expect(button.indent).to.eql(20);
     });
 
     it('react components', () => {
@@ -169,7 +171,7 @@ describe('Dev', () => {
         e.boolean('  foo  ', fn1);
         e.boolean('bar', fn1);
         e.boolean((config) =>
-          config.title(' my title ').label(' foo ').pipe(fn2).description('a thing'),
+          config.title(' my title ').label(' foo ').pipe(fn2).description('a thing').indent(20),
         );
       });
 
@@ -185,6 +187,7 @@ describe('Dev', () => {
       expect(bool1.label).to.eql('foo');
       expect(bool1.description).to.eql(undefined);
       expect(bool1.handlers).to.eql([fn1]);
+      expect(bool1.indent).to.eql(undefined);
 
       expect(bool2.kind).to.eql('dev/boolean');
       expect(bool2.title).to.eql(undefined);
@@ -197,6 +200,7 @@ describe('Dev', () => {
       expect(bool3.label).to.eql('foo');
       expect(bool3.description).to.eql('a thing');
       expect(bool3.handlers).to.eql([fn2]);
+      expect(bool3.indent).to.eql(20);
     });
 
     it('label (no handler)', () => {
@@ -262,8 +266,9 @@ describe('Dev', () => {
             .initial(2)
             .multi(true)
             .clearable(true)
-            .pipe(fn2)
-            .description('a thing'),
+            .description('a thing')
+            .indent(20)
+            .pipe(fn2),
         );
       });
 
@@ -281,6 +286,7 @@ describe('Dev', () => {
       expect(select1.handlers).to.eql([fn1]);
       expect(select1.multi).to.eql(false);
       expect(select1.clearable).to.eql(undefined);
+      expect(select1.indent).to.eql(undefined);
 
       expect(select2.kind).to.eql('dev/select');
       expect(select2.title).to.eql('my title');
@@ -290,6 +296,7 @@ describe('Dev', () => {
       expect(select2.handlers).to.eql([fn2]);
       expect(select2.multi).to.eql(true);
       expect(select2.clearable).to.eql(true);
+      expect(select2.indent).to.eql(20);
     });
 
     it('label (no handler)', () => {
@@ -372,7 +379,8 @@ describe('Dev', () => {
             .title('  my title  ')
             .placeholder('  my placeholder  ')
             .pipe(fn2)
-            .description('  a thing  '),
+            .description('  a thing  ')
+            .indent(20),
         );
       });
 
@@ -388,6 +396,7 @@ describe('Dev', () => {
       expect(item1.current).to.eql(undefined);
       expect(item1.placeholder).to.eql(undefined);
       expect(item1.description).to.eql(undefined);
+      expect(item1.indent).to.eql(undefined);
       expect(item1.handlers).to.eql([fn1]);
 
       expect(item2.kind).to.eql('dev/textbox');
@@ -400,6 +409,7 @@ describe('Dev', () => {
       expect(item3.title).to.eql('my title');
       expect(item3.placeholder).to.eql('my placeholder');
       expect(item3.description).to.eql('a thing');
+      expect(item3.indent).to.eql(20);
       expect(item3.handlers).to.eql([fn2]);
     });
 

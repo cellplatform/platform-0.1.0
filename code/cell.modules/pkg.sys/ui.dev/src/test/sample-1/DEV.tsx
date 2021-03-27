@@ -95,7 +95,7 @@ export const actions = DevActions<Ctx>()
       console.log('e.host', toObject(e.host));
       console.groupEnd();
     });
-    e.button((config) => config.label(`Ellipsis - ${LOREM}`));
+    e.button((config) => config.label(`Indented Ellipsis - ${LOREM}`).indent(25));
     e.button((config) => null);
     e.button((config) => {
       config
@@ -155,6 +155,7 @@ export const actions = DevActions<Ctx>()
         .description('My set of dropdown options')
         .items(['Chocolate', 'Strawberry', 'Vanilla'])
         .multi(true)
+        .indent(25)
         .pipe((e) => {
           if (e.changing) count++;
           e.select.description = `My dropdown changed (${count})`;
@@ -193,6 +194,7 @@ export const actions = DevActions<Ctx>()
         .view('buttons')
         .items(['Chocolate', 'Strawberry', 'Vanilla', 'Bananna'])
         .clearable(true)
+        .indent(25)
         .pipe((e) => {
           if (e.changing) count++;
           e.select.description = `My dropdown changed (${count})`;
@@ -237,6 +239,10 @@ export const actions = DevActions<Ctx>()
         }),
     );
 
+    e.textbox((config) => {
+      config.indent(45).title('indented textbox');
+    });
+
     e.hr();
   })
 
@@ -267,6 +273,15 @@ export const actions = DevActions<Ctx>()
 
       e.boolean.current = e.ctx.isRunning;
     });
+
+    e.boolean((config) =>
+      config
+        .label('indented')
+        .indent(50)
+        .pipe(async (e) => {
+          if (e.changing) await time.wait(800);
+        }),
+    );
 
     e.hr();
   })

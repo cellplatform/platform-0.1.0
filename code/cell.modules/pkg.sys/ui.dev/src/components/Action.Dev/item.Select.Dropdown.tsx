@@ -15,7 +15,7 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = (props) => {
   const { namespace, item } = props;
   const bus = props.bus.type<t.DevActionEvent>();
 
-  const { title, label, description, isSpinning } = item;
+  const { title, label, description, isSpinning, indent } = item;
   const isActive = item.handlers.length > 0;
   const options = item.items.map((value) => SelectUtil.toOption(value));
   const current = item.multi ? item.current : item.current[0];
@@ -101,6 +101,7 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = (props) => {
         placeholder={item.isPlaceholder}
         top={elTitle}
         right={elExpandIcon}
+        indent={indent}
       />
       {elDropdown}
     </div>

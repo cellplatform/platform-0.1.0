@@ -22,6 +22,7 @@ export type ActionTextboxConfigArgs<Ctx extends O> = {
   title(value: string | t.ReactNode): ActionTextboxConfigArgs<Ctx>;
   placeholder(value: string): ActionTextboxConfigArgs<Ctx>;
   description(value: string | t.ReactNode): ActionTextboxConfigArgs<Ctx>;
+  indent(value: number): ActionTextboxConfigArgs<Ctx>;
   pipe(...handlers: ActionTextboxHandler<Ctx>[]): ActionTextboxConfigArgs<Ctx>;
 };
 
@@ -32,6 +33,7 @@ export type ActionTextboxProps = {
   title?: string | t.ReactNode;
   placeholder?: string;
   description?: string | t.ReactNode;
+  indent?: number;
   current?: string; // Latest value produced by the handler.
 };
 

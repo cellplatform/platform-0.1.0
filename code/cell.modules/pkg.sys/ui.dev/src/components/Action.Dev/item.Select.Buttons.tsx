@@ -11,7 +11,7 @@ export const SelectButtons: React.FC<SelectButtonsProps> = (props) => {
   const { namespace, item } = props;
   const bus = props.bus.type<t.DevActionEvent>();
 
-  const { title, label, description, isSpinning, multi } = item;
+  const { title, label, description, isSpinning, multi, indent } = item;
   const isActive = item.handlers.length > 0;
   const options = item.items.map((value) => SelectUtil.toOption(value));
   const current = Array.isArray(item.current) ? item.current : [item.current];
@@ -108,6 +108,7 @@ export const SelectButtons: React.FC<SelectButtonsProps> = (props) => {
         placeholder={item.isPlaceholder}
         top={elTitle}
         right={elClear}
+        indent={indent}
       />
     </div>
   );

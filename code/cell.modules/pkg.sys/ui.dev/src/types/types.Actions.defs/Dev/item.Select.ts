@@ -27,6 +27,7 @@ export type ActionSelectConfigArgs<Ctx extends O> = {
   initial(value?: t.ActionSelectItemInput | t.ActionSelectItemInput[]): ActionSelectConfigArgs<Ctx>;
   multi(value: boolean): ActionSelectConfigArgs<Ctx>;
   clearable(value: boolean): ActionSelectConfigArgs<Ctx>;
+  indent(value: number): ActionSelectConfigArgs<Ctx>;
   view(value: ActionSelectView): ActionSelectConfigArgs<Ctx>;
   pipe(...handlers: t.ActionSelectHandler<Ctx>[]): ActionSelectConfigArgs<Ctx>;
 };
@@ -42,6 +43,7 @@ export type ActionSelectProps = {
   isPlaceholder?: boolean;
   multi: boolean;
   clearable?: boolean;
+  indent?: number;
   items: t.ActionSelectItemInput[];
   current: t.ActionSelectItem[];
 };

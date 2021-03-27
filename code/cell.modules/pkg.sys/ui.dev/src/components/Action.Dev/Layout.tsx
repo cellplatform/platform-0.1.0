@@ -17,6 +17,7 @@ export type LayoutProps = {
     body?: React.ReactNode;
     color?: string | number;
     pressOffset?: number;
+    ellipsis?: boolean;
     onClick?: () => void;
   };
   body?: React.ReactNode;
@@ -32,15 +33,15 @@ export type LayoutProps = {
   placeholder?: boolean;
   isActive: boolean;
   isSpinning?: boolean;
-  ellipsis?: boolean;
+  indent?: number;
   style?: CssValue;
 };
 
 export const Layout: React.FC<LayoutProps> = (props) => {
-  const { label = {}, placeholder, isSpinning } = props;
-  const ellipsis = defaultValue(props.ellipsis, true);
+  const { label = {}, placeholder, isSpinning, indent } = props;
 
   const labelPressOffset = defaultValue(label.pressOffset, 0);
+  const labelEllipsis = defaultValue(label.ellipsis, true);
 
   const [isOver, setIsOver] = useState<boolean>(false);
   const [isDown, setIsDown] = useState<boolean>(false);
@@ -55,6 +56,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
       position: 'relative',
       boxSizing: 'border-box',
       PaddingY: 2,
+      paddingLeft: indent,
     }),
     main: {
       outer: css({
@@ -90,7 +92,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         flex: 1,
         marginLeft: 6,
         marginTop: 4,
-        overflow: ellipsis && label.body ? 'hidden' : undefined,
+        overflow: labelEllipsis && label.body ? 'hidden' : undefined,
       }),
       label: css({
         width: '100%',
@@ -103,7 +105,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         cursor: isActive && label.onClick ? 'pointer' : 'default',
       }),
       ellipsis:
-        ellipsis &&
+        labelEllipsis &&
         css({
           whiteSpace: 'nowrap',
           overflow: 'hidden',

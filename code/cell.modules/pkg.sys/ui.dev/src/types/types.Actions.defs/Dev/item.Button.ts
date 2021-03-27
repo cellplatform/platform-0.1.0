@@ -21,6 +21,7 @@ export type ActionButtonConfigArgs<Ctx extends O> = {
   title(value: string | t.ReactNode): ActionButtonConfigArgs<Ctx>;
   label(value: string | t.ReactNode): ActionButtonConfigArgs<Ctx>;
   description(value: string | t.ReactNode): ActionButtonConfigArgs<Ctx>;
+  indent(value: number): ActionButtonConfigArgs<Ctx>;
   pipe(...handlers: t.ActionButtonHandler<Ctx>[]): ActionButtonConfigArgs<Ctx>;
 };
 
@@ -31,6 +32,7 @@ export type ActionButtonProps = {
   title?: string | t.ReactNode;
   label: string | t.ReactNode;
   description?: string | t.ReactNode;
+  indent?: number;
 };
 
 /**

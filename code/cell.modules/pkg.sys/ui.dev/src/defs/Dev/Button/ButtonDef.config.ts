@@ -26,6 +26,11 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
       item.description = React.isValidElement(value) ? value : format.string(value, { trim: true });
       return config;
     },
+    indent(value) {
+      item.indent = format.number(value, { min: 0, default: 0 });
+      return config;
+    },
+
     pipe(...handlers) {
       item.handlers.push(...handlers.filter(Boolean));
       return config;

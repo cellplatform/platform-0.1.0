@@ -15,7 +15,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
   const bus = props.bus.type<t.DevActionEvent>();
 
   const model = useActionItemMonitor({ bus: props.bus, item: props.item });
-  const { title, placeholder, description, isSpinning } = model;
+  const { title, placeholder, description, isSpinning, indent } = model;
   const isActive = model.handlers.length > 0;
   const current = model.current;
 
@@ -99,9 +99,10 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
       body={elTextbox}
       description={description}
       icon={{ Component: Icons.Text, color: iconColor, offset: { y: 2 } }}
-      ellipsis={false}
+      label={{ ellipsis: false }}
       top={elTitle}
       right={elRight}
+      indent={indent}
     />
   );
 };

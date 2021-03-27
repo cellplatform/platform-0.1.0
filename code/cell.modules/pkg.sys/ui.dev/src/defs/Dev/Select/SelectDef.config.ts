@@ -45,6 +45,10 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
       item.clearable = value;
       return config;
     },
+    indent(value) {
+      item.indent = format.number(value, { min: 0, default: 0 });
+      return config;
+    },
     view(value) {
       item.view = value;
       return config;
