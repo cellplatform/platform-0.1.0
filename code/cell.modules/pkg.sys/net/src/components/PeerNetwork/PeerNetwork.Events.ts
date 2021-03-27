@@ -56,6 +56,15 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
   };
 
   /**
+   * PURGE
+   */
+  const purge = () => {
+    /**
+     * TODO 🐷
+     */
+  };
+
+  /**
    * CONNECT
    */
   const connect = (local: string, remote: string) => {
@@ -95,6 +104,7 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
     create,
     created,
     status,
+    purge,
     connect,
   };
 }

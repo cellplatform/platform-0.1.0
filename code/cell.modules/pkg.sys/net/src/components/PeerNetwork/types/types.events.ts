@@ -14,6 +14,7 @@ export type PeerNetworkEvent =
   | PeerNetworkCreatedEvent
   | PeerNetworkStatusRequestEvent
   | PeerNetworkStatusResponseEvent
+  | PeerNetworkPurgeEvent
   | PeerNetworkConnectEvent
   | PeerNetworkConnectedEvent
   | PeerNetworkConnectionClosedEvent;
@@ -64,6 +65,25 @@ export type PeerNetworkStatusResponse = {
   exists: boolean;
   network?: t.PeerNetworkStatus;
 };
+
+/**
+ * Purges obsolete state.
+ */
+export type PeerNetworkPurgeEvent = {
+  type: 'PeerNetwork/purge';
+  payload: PeerNetworkPurge;
+};
+export type PeerNetworkPurge = {
+  local: PeerNetworkId;
+  data?: true | PeerNetworkPurgeDetails; // NB: [true] clears all purgeable data.
+};
+export type PeerNetworkPurgeDetails = {
+  closedConnections?: boolean;
+};
+
+/**
+ * CONNECTION
+ */
 
 /**
  * Fired to initiate a data connection.

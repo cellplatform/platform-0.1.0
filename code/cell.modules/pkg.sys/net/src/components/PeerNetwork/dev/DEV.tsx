@@ -74,6 +74,14 @@ export const actions = DevActions<Ctx>()
       );
     });
 
+    e.button('fire: PeerNetwork/purge', async (e) => {
+      const ref = e.ctx.id;
+      const data = deleteUndefined(await e.ctx.events.status(ref).get());
+      e.button.description = (
+        <ObjectView name={'status:res'} data={data} fontSize={10} expandLevel={2} />
+      );
+    });
+
     e.hr();
 
     e.title('Connect: Data');
