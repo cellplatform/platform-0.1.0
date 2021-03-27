@@ -31,7 +31,7 @@ export function usePeerState(args: { id: string; bus: t.EventBus<any> }) {
 
     const changed$ = merge(
       $.pipe(
-        filter((e) => e.payload.id === id),
+        filter((e) => e.payload.local === id),
         filter((e) => types.includes(e.type)),
       ),
     );

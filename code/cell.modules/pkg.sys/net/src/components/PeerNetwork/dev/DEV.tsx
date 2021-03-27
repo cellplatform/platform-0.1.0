@@ -80,7 +80,7 @@ export const actions = DevActions<Ctx>()
     e.textbox((config) => {
       config
         .title('Remote network peer to connect to:')
-        .placeholder('target <cuid>')
+        .placeholder('remote <cuid>')
         .pipe((e) => {
           if (e.changing) e.ctx.connectTo = e.changing.next;
         });
@@ -101,7 +101,14 @@ export const actions = DevActions<Ctx>()
 
         const name = res.error ? 'fail' : 'Success';
         const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
-        e.button.description = el;
+        e.button.description = res.error ? (
+          <>
+            <div>🐷 ERROR: {res.error.message}</div>
+            {el}
+          </>
+        ) : (
+          el
+        );
       }
     });
 

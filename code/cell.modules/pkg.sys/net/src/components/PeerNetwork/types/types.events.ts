@@ -3,7 +3,7 @@ import { t } from './common';
 /**
  * The local network peer-id.
  */
-export type PeerNetworkLocalId = string;
+export type PeerNetworkId = string;
 
 /**
  * EVENTS
@@ -26,7 +26,7 @@ export type PeerNetworkCreateEvent = {
   payload: PeerNetworkCreate;
 };
 export type PeerNetworkCreate = {
-  id: PeerNetworkLocalId;
+  local: PeerNetworkId;
   signal: string; // String containing the signal server endpoint: "host/path"
 };
 
@@ -38,7 +38,7 @@ export type PeerNetworkCreatedEvent = {
   payload: PeerNetworkCreated;
 };
 export type PeerNetworkCreated = {
-  id: PeerNetworkLocalId;
+  local: PeerNetworkId;
   createdAt: number;
   signal: t.PeerNetworkSignalEndpoint;
 };
@@ -50,7 +50,7 @@ export type PeerNetworkStatusRequestEvent = {
   type: 'PeerNetwork/status:req';
   payload: PeerNetworkStatusRequest;
 };
-export type PeerNetworkStatusRequest = { id: PeerNetworkLocalId };
+export type PeerNetworkStatusRequest = { local: PeerNetworkId };
 
 /**
  * Fired to retrieve the status of the specified peer.
@@ -60,7 +60,7 @@ export type PeerNetworkStatusResponseEvent = {
   payload: PeerNetworkStatusResponse;
 };
 export type PeerNetworkStatusResponse = {
-  id: PeerNetworkLocalId;
+  local: PeerNetworkId;
   exists: boolean;
   network?: t.PeerNetworkStatus;
 };
@@ -74,8 +74,8 @@ export type PeerNetworkConnectEvent = {
 };
 export type PeerNetworkConnect = PeerNetworkConnectData | PeerNetworkConnectMedia;
 type ConnectBase = {
-  id: PeerNetworkLocalId;
-  target: string;
+  local: PeerNetworkId;
+  remote: PeerNetworkId;
 };
 export type PeerNetworkConnectData = ConnectBase & { kind: 'data'; reliable?: boolean };
 export type PeerNetworkConnectMedia = ConnectBase & { kind: 'media' };
@@ -88,10 +88,10 @@ export type PeerNetworkConnectedEvent = {
   payload: PeerNetworkConnected;
 };
 export type PeerNetworkConnected = {
-  id: PeerNetworkLocalId;
+  local: PeerNetworkId;
+  remote: PeerNetworkId;
   kind: 'data' | 'media';
   direction: 'incoming' | 'outgoing';
-  target: string;
   connection?: t.PeerConnectionStatus;
   error?: { message: string };
 };
@@ -105,6 +105,6 @@ export type PeerNetworkConnectionClosedEvent = {
 };
 
 export type PeerNetworkConnectionClosed = {
-  id: PeerNetworkLocalId;
+  local: PeerNetworkId;
   connection: t.PeerConnectionStatus;
 };
