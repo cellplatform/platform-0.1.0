@@ -1,3 +1,5 @@
+export type PeerNetworkError = { message: string };
+
 export type PeerNetworkSignalEndpoint = {
   host: string;
   port: number;

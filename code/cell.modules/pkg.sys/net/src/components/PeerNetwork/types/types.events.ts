@@ -10,23 +10,26 @@ export type PeerNetworkId = string;
  */
 
 export type PeerNetworkEvent =
-  | PeerNetworkCreateEvent
-  | PeerNetworkCreatedEvent
+  | PeerNetworkCreateReqEvent
+  | PeerNetworkCreatResEvent
   | PeerNetworkStatusRequestEvent
   | PeerNetworkStatusResponseEvent
-  | PeerNetworkPurgeEvent
-  | PeerNetworkConnectEvent
-  | PeerNetworkConnectedEvent
-  | PeerNetworkConnectionClosedEvent;
+  | PeerNetworkPurgeReqEvent
+  | PeerNetworkPurgeResEvent
+  | PeerNetworkConnectReqEvent
+  | PeerNetworkConnectResEvent
+  | PeerNetworkConnectionClosedEvent
+  | PeerNetworkDisconnectReqEvent
+  | PeerNetworkDisconnectResEvent;
 
 /**
  * Fires to initiate the creation of a Peer.
  */
-export type PeerNetworkCreateEvent = {
-  type: 'PeerNetwork/create';
-  payload: PeerNetworkCreate;
+export type PeerNetworkCreateReqEvent = {
+  type: 'PeerNetwork/create:req';
+  payload: PeerNetworkCreateReq;
 };
-export type PeerNetworkCreate = {
+export type PeerNetworkCreateReq = {
   ref: PeerNetworkId;
   signal: string; // String containing the signal server endpoint: "host/path"
 };
@@ -34,11 +37,11 @@ export type PeerNetworkCreate = {
 /**
  * Fires when a peer has connected.
  */
-export type PeerNetworkCreatedEvent = {
-  type: 'PeerNetwork/created';
-  payload: PeerNetworkCreated;
+export type PeerNetworkCreatResEvent = {
+  type: 'PeerNetwork/create:res';
+  payload: PeerNetworkCreateRes;
 };
-export type PeerNetworkCreated = {
+export type PeerNetworkCreateRes = {
   ref: PeerNetworkId;
   createdAt: number;
   signal: t.PeerNetworkSignalEndpoint;
@@ -69,16 +72,30 @@ export type PeerNetworkStatusResponse = {
 /**
  * Purges obsolete state.
  */
-export type PeerNetworkPurgeEvent = {
-  type: 'PeerNetwork/purge';
-  payload: PeerNetworkPurge;
+export type PeerNetworkPurgeReqEvent = {
+  type: 'PeerNetwork/purge:req';
+  payload: PeerNetworkPurgeReq;
 };
-export type PeerNetworkPurge = {
+export type PeerNetworkPurgeReq = {
   ref: PeerNetworkId;
-  data?: true | PeerNetworkPurgeDetails; // NB: [true] clears all purgeable data.
+  select?: true | { closedConnections?: boolean }; // NB: [true] clears all purgeable data.
 };
-export type PeerNetworkPurgeDetails = {
-  closedConnections?: boolean;
+
+export type PeerNetworkPurgeResEvent = {
+  type: 'PeerNetwork/purge:res';
+  payload: PeerNetworkPurgeRes;
+};
+export type PeerNetworkPurgeRes = {
+  ref: PeerNetworkId;
+  changed: boolean;
+  purged: t.PeerNetworkPurgedDetail;
+  error?: t.PeerNetworkError;
+};
+export type PeerNetworkPurgedDetail = {
+  closedConnections: {
+    data: number;
+    media: number;
+  };
 };
 
 /**
@@ -88,32 +105,61 @@ export type PeerNetworkPurgeDetails = {
 /**
  * Fired to initiate a data connection.
  */
-export type PeerNetworkConnectEvent = {
-  type: 'PeerNetwork/connect';
-  payload: PeerNetworkConnect;
+export type PeerNetworkConnectReqEvent = {
+  type: 'PeerNetwork/connect:req';
+  payload: PeerNetworkConnectReq;
 };
-export type PeerNetworkConnect = PeerNetworkConnectData | PeerNetworkConnectMedia;
+export type PeerNetworkConnectReq = PeerNetworkConnectDataReq | PeerNetworkConnectMediaReq;
 type ConnectBase = {
   ref: PeerNetworkId;
-  target: PeerNetworkId;
+  remote: PeerNetworkId;
 };
-export type PeerNetworkConnectData = ConnectBase & { kind: 'data'; reliable?: boolean };
-export type PeerNetworkConnectMedia = ConnectBase & { kind: 'media' };
+export type PeerNetworkConnectDataReq = ConnectBase & { kind: 'data'; reliable?: boolean };
+export type PeerNetworkConnectMediaReq = ConnectBase & { kind: 'media' };
 
 /**
  * Fired when a peer completes it's connection.
  */
-export type PeerNetworkConnectedEvent = {
-  type: 'PeerNetwork/connected';
-  payload: PeerNetworkConnected;
+export type PeerNetworkConnectResEvent = {
+  type: 'PeerNetwork/connect:res';
+  payload: PeerNetworkConnectRes;
 };
-export type PeerNetworkConnected = {
+export type PeerNetworkConnectRes = {
   ref: PeerNetworkId;
-  target: PeerNetworkId;
+  remote: PeerNetworkId;
   kind: 'data' | 'media';
   direction: 'incoming' | 'outgoing';
   connection?: t.PeerConnectionStatus;
-  error?: { message: string };
+  error?: t.PeerNetworkError;
+};
+
+/**
+ * Fired to close a connection.
+ */
+export type PeerNetworkDisconnectReqEvent = {
+  type: 'PeerNetwork/disconnect:req';
+  payload: PeerNetworkDisconnectReq;
+};
+export type PeerNetworkDisconnectReq = {
+  ref: PeerNetworkId;
+  remote: PeerNetworkId;
+};
+
+/**
+ * Fires when a "disconnect" request completes.
+ * NB:
+ *    The generic "connection:closed" request will also
+ *    fire upon completing.
+ */
+export type PeerNetworkDisconnectResEvent = {
+  type: 'PeerNetwork/disconnect:res';
+  payload: PeerNetworkDisconnectRes;
+};
+export type PeerNetworkDisconnectRes = {
+  ref: PeerNetworkId;
+  remote: PeerNetworkId;
+  connection?: t.PeerConnectionStatus;
+  error?: t.PeerNetworkError;
 };
 
 /**
@@ -123,7 +169,6 @@ export type PeerNetworkConnectionClosedEvent = {
   type: 'PeerNetwork/connection:closed';
   payload: PeerNetworkConnectionClosed;
 };
-
 export type PeerNetworkConnectionClosed = {
   ref: PeerNetworkId;
   connection: t.PeerConnectionStatus;

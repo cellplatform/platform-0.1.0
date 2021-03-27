@@ -24,8 +24,9 @@ export function usePeerState(args: { id: string; bus: t.EventBus<any> }) {
     };
 
     const types: t.PeerNetworkEvent['type'][] = [
-      'PeerNetwork/created',
-      'PeerNetwork/connected',
+      'PeerNetwork/create:res',
+      'PeerNetwork/connect:res',
+      'PeerNetwork/purge:res',
       'PeerNetwork/connection:closed',
     ];
 

@@ -1,9 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { css, CssValue, PropList, PropListItem, t, time } from './common';
 import { DataConnection } from './DEV.DataConnection';
+import { Filter } from '../util';
+import { PeerNetworkEvents } from '..';
 
 export type NetworkProps = {
   network: t.PeerNetworkStatus;
@@ -13,8 +15,8 @@ export type NetworkProps = {
 export const Network: React.FC<NetworkProps> = (props) => {
   const { network } = props;
   const connections = {
-    data: filterConnectionAs<t.PeerConnectionDataStatus>(network.connections, 'data'),
-    media: filterConnectionAs<t.PeerConnectionMediaStatus>(network.connections, 'media'),
+    data: Filter.connectionsAs<t.PeerConnectionDataStatus>(network.connections, 'data'),
+    media: Filter.connectionsAs<t.PeerConnectionMediaStatus>(network.connections, 'media'),
   };
 
   const [redraw, setRedraw] = useState<number>(0);
@@ -61,11 +63,6 @@ export const Network: React.FC<NetworkProps> = (props) => {
 /**
  * [Helpers]
  */
-
-type C = t.PeerConnectionStatus;
-function filterConnectionAs<T extends C>(connections: C[], kind: C['kind']) {
-  return connections.filter((item) => item.kind === kind).map((item) => item as T);
-}
 
 const toNetworkPropItems = (network?: t.PeerNetworkStatus): PropListItem[] => {
   if (!network) return [];

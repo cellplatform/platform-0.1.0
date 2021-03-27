@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, css, Format, t, style } from '../common';
+import { color, css, t, style } from '../common';
 import { Markdown as MarkdownComponent } from '../Markdown';
 
 export type MarkdownProps = {

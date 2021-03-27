@@ -1,5 +1,16 @@
 import { Subject } from 'rxjs';
-import { PeerJS } from '../../common';
+import { PeerJS, t } from '../../common';
+
+type C = t.PeerConnectionStatus;
+
+/**
+ * Common filtering methods.
+ */
+export const Filter = {
+  connectionsAs<T extends C>(connections: C[], kind: C['kind']) {
+    return connections.filter((item) => item.kind === kind).map((item) => item as T);
+  },
+};
 
 /**
  * Monitors errors on a PeerJS instance.

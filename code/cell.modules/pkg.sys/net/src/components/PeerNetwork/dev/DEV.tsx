@@ -8,7 +8,7 @@ import { Info } from './DEV.Info';
 type Ctx = {
   id: string;
   bus: t.EventBus<t.PeerNetworkEvent>;
-  signal: string; // Network address.
+  signal: string; // Signalling server network address (host/path).
   events: ReturnType<typeof PeerNetworkEvents>;
   connectTo?: string;
   reliable: boolean;
@@ -31,6 +31,7 @@ export const actions = DevActions<Ctx>()
     const events = PeerNetworkEvents({ bus });
 
     time.delay(0, () => events.create(signal, { id }));
+    events.connections(id).closed$.subscribe(() => events.purge(id).fire());
 
     return {
       id,
@@ -66,15 +67,15 @@ export const actions = DevActions<Ctx>()
       events.create(signal, { id });
     });
 
-    e.button('fire: PeerNetwork/status:req', async (e) => {
+    e.button('fire: PeerNetwork/purge', async (e) => {
       const ref = e.ctx.id;
-      const data = deleteUndefined(await e.ctx.events.status(ref).get());
+      const data = deleteUndefined(await e.ctx.events.purge(ref).fire());
       e.button.description = (
-        <ObjectView name={'status:res'} data={data} fontSize={10} expandLevel={2} />
+        <ObjectView name={'purged'} data={data} fontSize={10} expandLevel={2} />
       );
     });
 
-    e.button('fire: PeerNetwork/purge', async (e) => {
+    e.button('fire: PeerNetwork/status:req', async (e) => {
       const ref = e.ctx.id;
       const data = deleteUndefined(await e.ctx.events.status(ref).get());
       e.button.description = (
@@ -84,43 +85,56 @@ export const actions = DevActions<Ctx>()
 
     e.hr();
 
-    e.title('Connect: Data');
+    e.title('Connection');
     e.textbox((config) => {
       config
-        .title('Remote network peer to connect to:')
+        .title('Target network peer:')
         .placeholder('remote <cuid>')
         .pipe((e) => {
           if (e.changing) e.ctx.connectTo = e.changing.next;
         });
     });
 
-    e.boolean('reliable', (e) => {
-      if (e.changing) e.ctx.reliable = e.changing.next;
-      e.boolean.current = e.ctx.reliable;
-    });
+    e.hr(0, 0, 20);
 
     e.button('fire: PeerNetwork/connect (data)', async (e) => {
       const { id, connectTo, events, reliable } = e.ctx;
-
       if (!connectTo) {
-        e.button.description = '🐷 ERROR: Target network not specified';
+        e.button.description = '🐷 ERROR: Remote network not specified';
       } else {
-        const res = await events.connect(id, connectTo).data({ reliable });
-
+        const res = await events.connection(id, connectTo).open.data({ reliable });
         const name = res.error ? 'fail' : 'Success';
         const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
-        e.button.description = res.error ? (
-          <>
-            <div>🐷 ERROR: {res.error.message}</div>
-            {el}
-          </>
-        ) : (
-          el
-        );
+        e.button.description = el;
       }
     });
 
+    e.boolean((config) => {
+      config
+        .indent(25)
+        .label('reliable')
+        .pipe((e) => {
+          if (e.changing) e.ctx.reliable = e.changing.next;
+          e.boolean.current = e.ctx.reliable;
+        });
+    });
+
     e.button('fire: PeerNetwork/connect (video)');
+
+    e.hr(1, 0.1);
+
+    e.button('fire: PeerNetwork/disconnect', async (e) => {
+      const { id, connectTo, events } = e.ctx;
+
+      if (!connectTo) {
+        e.button.description = '🐷 ERROR: Remote network not specified';
+      } else {
+        const res = await events.connection(id, connectTo).close();
+        const name = res.error ? 'fail' : 'Success';
+        const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
+        e.button.description = el;
+      }
+    });
 
     e.hr();
   })

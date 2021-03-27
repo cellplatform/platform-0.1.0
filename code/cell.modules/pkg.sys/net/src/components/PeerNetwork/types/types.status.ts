@@ -25,4 +25,5 @@ export type PeerConnectionDataStatus = PeerConnectionBase & {
 
 export type PeerConnectionMediaStatus = PeerConnectionBase & {
   kind: 'media';
+  isOpen: boolean;
 };
