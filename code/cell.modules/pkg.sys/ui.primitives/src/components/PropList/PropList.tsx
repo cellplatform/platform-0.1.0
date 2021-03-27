@@ -16,87 +16,74 @@ export type PropListProps = {
   style?: CssValue;
 };
 
-export class PropList extends React.PureComponent<PropListProps> {
-  /**
-   * [Properties]
-   */
-  private get items() {
-    const { items } = this.props;
+export const PropList: React.FC<PropListProps> = (props) => {
+  const { title, defaults } = props;
+  const items = asItems(props.items);
+  const width = typeof props.width === 'number' ? { fixed: props.width } : props.width;
+  const height = typeof props.height === 'number' ? { fixed: props.height } : props.height;
 
-    if (Array.isArray(items)) {
-      return items;
-    }
+  const styles = {
+    base: css({
+      position: 'relative',
+      color: COLORS.DARK,
 
-    if (typeof items === 'object') {
-      return Object.keys(items).map((key) => {
-        const item: t.PropListItem = { label: key, value: toRenderValue(items[key]) };
-        return item;
-      });
-    }
+      width: width?.fixed === undefined ? '100%' : width?.fixed,
+      height: height?.fixed,
+      minWidth: defaultValue(width?.min, 10),
+      minHeight: defaultValue(height?.min, 10),
+      maxWidth: width?.max,
+      maxHeight: height?.max,
 
-    return [];
-  }
+      ...style.toMargins(props.margin),
+      ...style.toPadding(props.padding),
+    }),
+    title: css({ marginBottom: 5 }),
+  };
 
-  /**
-   * [Render]
-   */
-  public render() {
-    const props = this.props;
-    const { title, defaults } = props;
+  const elItems = items
+    .filter((item) => Boolean(item))
+    .filter((item) => defaultValue(item?.visible, true))
+    .map((item, i) => {
+      const isFirst = i === 0;
+      const isLast = i === items.length - 1;
+      const data = item as t.PropListItem;
+      return (
+        <PropListItem key={i} data={data} isFirst={isFirst} isLast={isLast} defaults={defaults} />
+      );
+    });
 
-    const width = typeof props.width === 'number' ? { fixed: props.width } : props.width;
-    const height = typeof props.height === 'number' ? { fixed: props.height } : props.height;
+  const elTitle = title && (
+    <PropListTitle style={styles.title} ellipsis={props.titleEllipsis}>
+      {title}
+    </PropListTitle>
+  );
 
-    const styles = {
-      base: css({
-        position: 'relative',
-        color: COLORS.DARK,
-
-        width: width?.fixed === undefined ? '100%' : width?.fixed,
-        height: height?.fixed,
-        minWidth: defaultValue(width?.min, 10),
-        minHeight: defaultValue(height?.min, 10),
-        maxWidth: width?.max,
-        maxHeight: height?.max,
-
-        ...style.toMargins(props.margin),
-        ...style.toPadding(props.padding),
-      }),
-      title: css({ marginBottom: 5 }),
-    };
-
-    const items = this.items;
-
-    const elItems = items
-      .filter((item) => Boolean(item))
-      .filter((item) => defaultValue(item?.visible, true))
-      .map((item, i) => {
-        const isFirst = i === 0;
-        const isLast = i === items.length - 1;
-        const data = item as t.PropListItem;
-        return (
-          <PropListItem key={i} data={data} isFirst={isFirst} isLast={isLast} defaults={defaults} />
-        );
-      });
-
-    const elTitle = title && (
-      <PropListTitle style={styles.title} ellipsis={this.props.titleEllipsis}>
-        {title}
-      </PropListTitle>
-    );
-
-    return (
-      <div {...css(styles.base, this.props.style)}>
-        {elTitle}
-        <div>{elItems}</div>
-      </div>
-    );
-  }
-}
+  return (
+    <div {...css(styles.base, props.style)}>
+      {elTitle}
+      <div>{elItems}</div>
+    </div>
+  );
+};
 
 /**
  * [Helpers]
  */
+
+function asItems(input: PropListProps['items']) {
+  if (Array.isArray(input)) {
+    return input;
+  }
+
+  if (typeof input === 'object') {
+    return Object.keys(input).map((key) => {
+      const item: t.PropListItem = { label: key, value: toRenderValue(input[key]) };
+      return item;
+    });
+  }
+
+  return [];
+}
 
 function toRenderValue(input: any) {
   if (input === null) {
