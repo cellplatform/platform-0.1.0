@@ -32,7 +32,7 @@ export const Network: React.FC<NetworkProps> = (props) => {
     interval(1000)
       .pipe(takeUntil(dispose$))
       .subscribe(() => {
-        // setRedraw((prev) => prev + 1);
+        setRedraw((prev) => prev + 1);
       });
 
     return () => dispose$.next();

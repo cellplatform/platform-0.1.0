@@ -28,12 +28,16 @@ export function FormatItem(item: t.PropListItem) {
       return typeof res.value.data === 'number';
     },
 
+    get isBoolean() {
+      return typeof res.value.data === 'boolean';
+    },
+
     get isComponent() {
       return React.isValidElement(res.value.data);
     },
 
     get isSimple() {
-      return res.isString || res.isNumber;
+      return res.isString || res.isNumber || res.isBoolean;
     },
 
     get clipboard() {

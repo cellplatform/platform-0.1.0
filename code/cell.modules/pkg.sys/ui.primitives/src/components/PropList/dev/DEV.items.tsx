@@ -29,6 +29,7 @@ export const items: PropListItem[] = [
   { label: 'string', value: 'hello' },
   { label: 'number', value: { data: 123456, clipboard: 'Value: 123456', monospace: true } },
   { label: 'boolean', value: true },
+  { label: 'boolean (switch)', value: { data: true, kind: 'Switch' } },
   { label: 'thing monospace', value: { data: 'thing', clipboard: true, monospace: true } },
   { label: 'long (ellipsis)', value: LOREM },
   {
