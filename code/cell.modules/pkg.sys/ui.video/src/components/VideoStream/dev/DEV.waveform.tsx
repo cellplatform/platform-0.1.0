@@ -6,7 +6,7 @@ import { useDrawWaveform } from './DEV.waveform.useDrawWaveform';
 import { MediaStreamEvents } from '../MediaStream.Events';
 
 export type WaveformProps = {
-  stream?: string; // Stream ID reference.
+  streamRef?: string; // Stream ID reference.
   bus: t.EventBus<any>;
   width?: number;
   height?: number;
@@ -23,7 +23,7 @@ export const Waveform: React.FC<WaveformProps> = (props) => {
   const { width = 300, height = 30 } = props;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const ref = props.stream;
+  const ref = props.streamRef;
   const bus = props.bus.type<t.MediaEvent>();
   const [stream, setStream] = useState<MediaStream | undefined>();
 

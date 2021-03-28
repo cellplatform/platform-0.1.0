@@ -14,6 +14,7 @@ import {
 } from '..';
 
 type Ctx = {
+  ref: string;
   bus: t.EventBus<t.MediaEvent>;
   events: ReturnType<typeof MediaStreamEvents>;
   props: VideoStreamProps;
@@ -27,8 +28,7 @@ export const actions = DevActions<Ctx>()
   .context((prev) => {
     if (prev) return prev;
 
-    const id = cuid();
-    const ref = id;
+    const ref = cuid();
     const bus = rx.bus<t.MediaEvent>();
     const events = MediaStreamEvents({ bus });
 
@@ -38,15 +38,16 @@ export const actions = DevActions<Ctx>()
     // bus.fire({ type: 'MediaStream/start:video', payload: { ref } });
 
     rx.payload<t.MediaStreamErrorEvent>(bus.event$, 'MediaStream/error')
-      .pipe(filter((e) => e.ref === id))
+      .pipe(filter((e) => e.ref === ref))
       .subscribe((e) => {
         log.info('MediaStream/error:', e);
       });
 
     return {
+      ref,
       bus,
       events,
-      props: { id, bus, isMuted: true },
+      props: { isMuted: true },
     };
   })
 
@@ -56,26 +57,26 @@ export const actions = DevActions<Ctx>()
     e.hr(1, 0.1);
 
     e.button('fire: MediaStream/start:video', async (e) => {
-      const ref = e.ctx.props.id;
+      const ref = e.ctx.ref;
       await e.ctx.events.stop(ref).fire();
       e.ctx.bus.fire({ type: 'MediaStream/start:video', payload: { ref } });
     });
 
     e.button('fire: MediaStream/start:screen', async (e) => {
-      const ref = e.ctx.props.id;
+      const ref = e.ctx.ref;
       await e.ctx.events.stop(ref).fire();
       e.ctx.bus.fire({ type: 'MediaStream/start:screen', payload: { ref } });
     });
 
     e.button('fire: MediaStream/stop', (e) => {
-      const ref = e.ctx.props.id;
+      const ref = e.ctx.ref;
       e.ctx.bus.fire({ type: 'MediaStream/stop', payload: { ref } });
     });
 
     e.hr(1, 0.1);
 
     e.button('fire: MediaStream/status:req', async (e) => {
-      const ref = e.ctx.props.id;
+      const ref = e.ctx.ref;
       const data = deleteUndefined(await e.ctx.events.status(ref).get());
       e.button.description = <ObjectView name={'response: status'} data={data} fontSize={10} />;
     });
@@ -93,12 +94,12 @@ export const actions = DevActions<Ctx>()
     e.title('Record');
 
     e.button('start', (e) => {
-      const ref = e.ctx.props.id;
+      const ref = e.ctx.ref;
       e.ctx.bus.fire({ type: 'MediaStream/record/start', payload: { ref } });
     });
 
     e.button('stop (and download)', (e) => {
-      const ref = e.ctx.props.id;
+      const ref = e.ctx.ref;
       e.ctx.bus.fire({
         type: 'MediaStream/record/stop',
         payload: { ref, download: { filename: 'test' } },
@@ -111,7 +112,7 @@ export const actions = DevActions<Ctx>()
         .description('target: `host/cell:<ns>:A1`')
         .pipe((e) => {
           return new Promise<void>((resolve, reject) => {
-            const ref = e.ctx.props.id;
+            const ref = e.ctx.ref;
             e.ctx.bus.fire({
               type: 'MediaStream/record/stop',
               payload: {
@@ -145,12 +146,13 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { id, bus, width = 300 } = e.ctx.props;
+    const { ref, bus } = e.ctx;
+    const { width = 300 } = e.ctx.props;
     const styles = {
       streamRef: css({ fontSize: 9 }),
     };
 
-    const elStreamRef = <div {...styles.streamRef}>stream-ref:{id}</div>;
+    const elStreamRef = <div {...styles.streamRef}>stream-ref:{ref}</div>;
 
     e.settings({
       host: { background: -0.04 },
@@ -161,7 +163,7 @@ export const actions = DevActions<Ctx>()
     const borderRadius = 30;
 
     const Sample: React.FC = () => {
-      const { stream } = useVideoStreamState({ id, bus });
+      const { stream } = useVideoStreamState({ ref, bus });
       const styles = {
         base: css({
           backgroundColor: color.format(-0.02),
@@ -178,7 +180,7 @@ export const actions = DevActions<Ctx>()
 
     e.render(<Sample />, { label: { topLeft: '<VideoStream>', bottomRight: elStreamRef } });
 
-    e.render(<Waveform bus={bus} stream={id} width={width} height={30} />, {
+    e.render(<Waveform bus={bus} streamRef={ref} width={width} height={30} />, {
       width,
       background: 1,
       label: 'Audio Waveform',

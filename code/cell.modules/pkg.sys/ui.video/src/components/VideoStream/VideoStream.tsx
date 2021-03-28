@@ -2,8 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import { css, CssValue, defaultValue, t } from '../../common';
 
 export type VideoStreamProps = {
-  id: string;
-  bus: t.EventBus<any>;
   stream?: MediaStream;
   width?: number;
   height?: number;
