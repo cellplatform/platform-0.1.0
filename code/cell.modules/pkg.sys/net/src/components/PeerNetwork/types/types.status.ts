@@ -8,6 +8,7 @@ export type PeerNetworkStatus = {
   createdAt: number;
   signal: t.PeerNetworkSignalEndpoint;
   connections: t.PeerConnectionStatus[];
+  media: { video?: MediaStream; screen?: MediaStream };
 };
 
 /**
@@ -29,4 +30,5 @@ export type PeerConnectionDataStatus = PeerConnectionBase & {
 export type PeerConnectionMediaStatus = PeerConnectionBase & {
   kind: 'media';
   isOpen: boolean;
+  media: MediaStream;
 };

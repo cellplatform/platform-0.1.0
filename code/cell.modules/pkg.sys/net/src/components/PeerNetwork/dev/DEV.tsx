@@ -2,16 +2,20 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { PeerNetworkController, PeerNetworkEvents } from '..';
-import { Button, copyToClipboard, css, cuid, deleteUndefined, Icons, rx, t, time } from './common';
-import { Info } from './DEV.Info';
+import { css, cuid, deleteUndefined, Icons, rx, t, time, MediaStreamEvents } from './common';
+import { Debug } from './DEV.Debug';
 
 type Ctx = {
   id: string;
   bus: t.EventBus<t.PeerNetworkEvent>;
   signal: string; // Signalling server network address (host/path).
-  events: ReturnType<typeof PeerNetworkEvents>;
+  events: {
+    network: ReturnType<typeof PeerNetworkEvents>;
+    media: ReturnType<typeof MediaStreamEvents>;
+  };
   connectTo?: string;
   reliable: boolean;
+  debugJson: boolean;
 };
 
 /**
@@ -28,10 +32,13 @@ export const actions = DevActions<Ctx>()
 
     PeerNetworkController({ bus });
     const signal = 'rtc.cellfs.com/peer';
-    const events = PeerNetworkEvents({ bus });
+    const events = {
+      network: PeerNetworkEvents({ bus }),
+      media: MediaStreamEvents({ bus }),
+    };
 
-    time.delay(0, () => events.create(signal, { id }));
-    events.connections(id).closed$.subscribe(() => events.purge(id).fire());
+    time.delay(100, () => events.network.create(signal, { id }));
+    events.network.connections(id).closed$.subscribe(() => events.network.purge(id).fire());
 
     return {
       id,
@@ -39,11 +46,17 @@ export const actions = DevActions<Ctx>()
       events,
       signal,
       reliable: false,
+      debugJson: false,
     };
   })
 
   .items((e) => {
     e.title('Environment');
+
+    e.boolean('debug (json)', (e) => {
+      if (e.changing) e.ctx.debugJson = e.changing.next;
+      e.boolean.current = e.ctx.debugJson;
+    });
 
     e.textbox((config) => {
       config
@@ -62,22 +75,22 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Events');
 
-    e.button('fire: PeerNetwork/create', async (e) => {
+    e.button('fire: PeerNetwork/init', async (e) => {
       const { id, signal, events } = e.ctx;
-      events.create(signal, { id });
+      events.network.create(signal, { id });
     });
 
     e.button('fire: PeerNetwork/purge', async (e) => {
       const ref = e.ctx.id;
-      const data = deleteUndefined(await e.ctx.events.purge(ref).fire());
+      const data = deleteUndefined(await e.ctx.events.network.purge(ref).fire());
       e.button.description = (
         <ObjectView name={'purged'} data={data} fontSize={10} expandLevel={2} />
       );
     });
 
-    e.button('fire: PeerNetwork/status:req', async (e) => {
+    e.button('fire: PeerNetwork/status', async (e) => {
       const ref = e.ctx.id;
-      const data = deleteUndefined(await e.ctx.events.status(ref).get());
+      const data = deleteUndefined(await e.ctx.events.network.status(ref).get());
       e.button.description = (
         <ObjectView name={'status:res'} data={data} fontSize={10} expandLevel={2} />
       );
@@ -100,11 +113,13 @@ export const actions = DevActions<Ctx>()
     e.button('fire: PeerNetwork/connect (data)', async (e) => {
       const { id, connectTo, events, reliable } = e.ctx;
       if (!connectTo) {
-        e.button.description = '🐷 ERROR: Remote network not specified';
+        e.button.description = '🐷 ERROR: Remote peer not specified';
       } else {
         const metadata = { foo: 123 };
-        const res = await events.connection(id, connectTo).open.data({ reliable, metadata });
-        const name = res.error ? 'fail' : 'Success';
+        const res = await events.network
+          .connection(id, connectTo)
+          .open.data({ reliable, metadata });
+        const name = res.error ? 'Fail' : 'Success';
         const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
         e.button.description = el;
       }
@@ -116,22 +131,47 @@ export const actions = DevActions<Ctx>()
         .label('reliable')
         .pipe((e) => {
           if (e.changing) e.ctx.reliable = e.changing.next;
-          e.boolean.current = e.ctx.reliable;
+          const reliable = e.ctx.reliable;
+          e.boolean.current = reliable;
+          e.boolean.description = reliable
+            ? '(eg. streaming or gaming)'
+            : '(eg. large file transfers)';
         });
     });
 
-    e.button('fire: PeerNetwork/connect (video)');
+    // e.button('fire: PeerNetwork/connect (media:video)', async (e) => {
+    //   const { id, connectTo, events } = e.ctx;
 
-    e.hr(1, 0.1);
+    //   if (!connectTo) {
+    //     e.button.description = '🐷 ERROR: Remote peer not specified';
+    //   } else {
+    //     const { stream } = await events.media.status(id).get();
+    //     const outgoing = stream?.media;
+
+    //     if (!outgoing) {
+    //       e.button.description = `🐷 ERROR: No outgoing MediaStream`;
+    //       return;
+    //     }
+
+    //     const metadata = { foo: 123 };
+    //     const open = events.network.connection(id, connectTo).open;
+    //     const res = await open.media({ metadata });
+    //     const name = res.error ? 'Fail' : 'Success';
+    //     const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
+    //     e.button.description = el;
+    //   }
+    // });
+
+    // e.hr(1, 0.1);
 
     e.button('fire: PeerNetwork/disconnect', async (e) => {
       const { id, connectTo, events } = e.ctx;
 
       if (!connectTo) {
-        e.button.description = '🐷 ERROR: Remote network not specified';
+        e.button.description = '🐷 ERROR: Remote peer not specified';
       } else {
-        const res = await events.connection(id, connectTo).close();
-        const name = res.error ? 'fail' : 'Success';
+        const res = await events.network.connection(id, connectTo).close();
+        const name = res.error ? 'Fail' : 'Success';
         const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
         e.button.description = el;
       }
@@ -174,7 +214,7 @@ export const actions = DevActions<Ctx>()
       actions: { width: 380 },
     });
 
-    e.render(<Info id={id} bus={bus} />);
+    e.render(<Debug id={id} bus={bus} debugJson={e.ctx.debugJson} />);
   });
 
 export default actions;

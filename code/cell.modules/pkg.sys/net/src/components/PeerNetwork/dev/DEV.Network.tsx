@@ -2,18 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, PropList, PropListItem, t, time } from './common';
-import { DataConnection } from './DEV.DataConnection';
+import { css, CssValue, PropList, PropListItem, t, time, color } from './common';
+import { ConnectionData } from './DEV.ConnectionData';
+import { ConnectionMedia } from './DEV.ConnectionMedia';
 import { Filter } from '../util';
-import { PeerNetworkEvents } from '..';
+import { VideoSelf } from './DEV.VideoSelf';
 
 export type NetworkProps = {
+  bus: t.EventBus<any>;
   network: t.PeerNetworkStatus;
   style?: CssValue;
 };
 
 export const Network: React.FC<NetworkProps> = (props) => {
   const { network } = props;
+  const bus = props.bus.type<t.PeerNetworkEvent>();
+
   const connections = {
     data: Filter.connectionsAs<t.PeerConnectionDataStatus>(network.connections, 'data'),
     media: Filter.connectionsAs<t.PeerConnectionMediaStatus>(network.connections, 'media'),
@@ -34,28 +38,67 @@ export const Network: React.FC<NetworkProps> = (props) => {
     return () => dispose$.next();
   }, []);
 
+  const styles = {
+    base: css({}),
+    network: css({
+      Flex: 'horizontal-spaceBetween-start',
+    }),
+    body: css({
+      display: 'flex',
+      flexWrap: 'wrap',
+    }),
+  };
+
   const items = toNetworkPropItems(network);
 
-  const elPropCard = network && (
+  const elNetworkCard = (
     <PropList
       title={'PeerNetwork'}
       defaults={{ clipboard: false }}
       items={items}
       margin={[null, null, 30, null]}
+      width={{ max: 280 }}
     />
   );
 
+  const cardMargin = 20;
+
   const elDataConnections = connections.data.map((item, i) => {
     const isLast = i === network.connections.length - 1;
-    return <DataConnection key={item.id.remote} connection={item} isLast={isLast} />;
+    return (
+      <ConnectionData
+        key={item.id.remote}
+        bus={bus}
+        connection={item}
+        isLast={isLast}
+        margin={cardMargin}
+      />
+    );
   });
 
-  const styles = { base: css({}) };
+  const elMediaConnections = connections.media.map((item, i) => {
+    const isLast = i === network.connections.length - 1;
+    return (
+      <ConnectionMedia
+        key={item.id.remote}
+        bus={bus}
+        connection={item}
+        isLast={isLast}
+        margin={cardMargin}
+      />
+    );
+  });
 
   return (
     <div {...css(styles.base, props.style)}>
-      {elPropCard}
-      {elDataConnections}
+      <div {...styles.network}>
+        {elNetworkCard}
+        <VideoSelf networkRef={network.id} bus={bus} />
+      </div>
+      <div {...styles.body}>
+        {elDataConnections}
+        {elMediaConnections}
+      </div>
     </div>
   );
 };
@@ -71,13 +114,13 @@ const toNetworkPropItems = (network?: t.PeerNetworkStatus): PropListItem[] => {
   const age = elapsed.min < 60 ? 'just now' : elapsed.toString();
   const signal = network.signal;
 
-  const items = [
-    { label: 'id', value: network?.id, clipboard: true, monospace: true },
-    { label: 'age', value: age },
+  const items: PropListItem[] = [
+    { label: 'id', value: { data: network.id, clipboard: true } },
     {
       label: `signal server ${signal.secure ? '(secure)' : ''}`,
       value: `${signal.host}:${signal.port}`,
     },
+    { label: 'age', value: age },
   ];
 
   return items;

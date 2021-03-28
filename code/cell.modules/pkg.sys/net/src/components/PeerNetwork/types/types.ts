@@ -1,3 +1,5 @@
+export type PeerConnectDirection = 'incoming' | 'outgoing';
+
 export type PeerNetworkError = { message: string };
 
 export type PeerNetworkSignalEndpoint = {

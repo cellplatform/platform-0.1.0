@@ -2,29 +2,29 @@ import { useEffect, useState } from 'react';
 import { merge } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { t } from '../../../common';
+import { t, cuid } from '../../../common';
 import { PeerNetworkEvents } from '../PeerNetwork.Events';
 
 /**
  * Monitors an event-bus keeping a set of state values
  * synced as peers interact with the network.
  */
-export function usePeerState(args: { id: string; bus: t.EventBus<any> }) {
-  const { id } = args;
+export function usePeerState(args: { ref: string; bus: t.EventBus<any> }) {
+  const { ref } = args;
   const bus = args.bus.type<t.PeerNetworkEvent>();
-  const [network, setNetwork] = useState<t.PeerNetworkStatus>();
+  const [status, setStatus] = useState<t.PeerNetworkStatus>();
 
   useEffect(() => {
     const events = PeerNetworkEvents({ bus });
     const $ = events.$;
 
     const updateState = async () => {
-      const { network } = await events.status(id).get();
-      setNetwork(network);
+      const { self } = await events.status(ref).get();
+      setStatus(self);
     };
 
     const types: t.PeerNetworkEvent['type'][] = [
-      'PeerNetwork/create:res',
+      'PeerNetwork/init:res',
       'PeerNetwork/connect:res',
       'PeerNetwork/purge:res',
       'PeerNetwork/connection:closed',
@@ -32,7 +32,7 @@ export function usePeerState(args: { id: string; bus: t.EventBus<any> }) {
 
     const changed$ = merge(
       $.pipe(
-        filter((e) => e.payload.ref === id),
+        filter((e) => e.payload.ref === ref),
         filter((e) => types.includes(e.type)),
       ),
     );
@@ -40,9 +40,9 @@ export function usePeerState(args: { id: string; bus: t.EventBus<any> }) {
     changed$.subscribe(updateState);
 
     return () => events.dispose();
-  }, [bus, id]);
+  }, [bus, ref]);
 
   return {
-    network,
+    network: status,
   };
 }

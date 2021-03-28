@@ -21,7 +21,7 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
   const create = (signal: string, options: { id?: string } = {}) => {
     const id = options.id || cuid();
     const res = firstValueFrom(created(id).$);
-    bus.fire({ type: 'PeerNetwork/create:req', payload: { ref: id, signal } });
+    bus.fire({ type: 'PeerNetwork/init:req', payload: { ref: id, signal } });
     return res;
   };
 
@@ -30,7 +30,7 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
    */
   const created = (ref: string) => {
     const $ = rx
-      .payload<t.PeerNetworkCreatResEvent>(event$, 'PeerNetwork/create:res')
+      .payload<t.PeerNetworkInitResEvent>(event$, 'PeerNetwork/init:res')
       .pipe(filter((e) => e.ref === ref));
     return { ref, $ };
   };
@@ -46,9 +46,10 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
       .payload<t.PeerNetworkStatusResponseEvent>(event$, 'PeerNetwork/status:res')
       .pipe(filter((e) => e.ref === ref));
 
-    const get = () => {
+    const get = (options: { tx?: string } = {}) => {
+      const { tx } = options;
       const res = firstValueFrom(response$);
-      bus.fire({ type: 'PeerNetwork/status:req', payload: { ref } });
+      bus.fire({ type: 'PeerNetwork/status:req', payload: { ref, tx } });
       return res;
     };
 
@@ -76,7 +77,7 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
   };
 
   /**
-   * CONNECT
+   * CONNECT (Outgoing)
    */
   const connection = (ref: string, remote: string) => {
     const connected$ = rx
@@ -93,7 +94,7 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
         const res = firstValueFrom(connected$);
         bus.fire({
           type: 'PeerNetwork/connect:req',
-          payload: { ref, remote: remote, kind: 'data', reliable, metadata },
+          payload: { ref, remote, kind: 'data', reliable, metadata, direction: 'outgoing' },
         });
         return res;
       },
@@ -102,7 +103,7 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
         const res = firstValueFrom(connected$);
         bus.fire({
           type: 'PeerNetwork/connect:req',
-          payload: { ref, remote: remote, kind: 'media', metadata },
+          payload: { ref, remote, kind: 'media', metadata, direction: 'outgoing' },
         });
         return res;
       },

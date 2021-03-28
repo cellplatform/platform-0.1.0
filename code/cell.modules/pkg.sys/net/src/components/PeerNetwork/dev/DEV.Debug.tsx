@@ -1,23 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { interval, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { ObjectView } from 'sys.ui.dev';
 
 import { usePeerState } from '../hooks';
-import { Card, COLORS, css, CssValue, PropList, PropListItem, t, time } from './common';
+import { COLORS, css, CssValue, t } from './common';
 import { Network } from './DEV.Network';
 
-export type InfoProps = {
+export type DebugProps = {
   id: string;
   bus: t.EventBus<any>;
+  debugJson?: boolean;
   style?: CssValue;
 };
 
-export const Info: React.FC<InfoProps> = (props) => {
+export const Debug: React.FC<DebugProps> = (props) => {
   const { id } = props;
   const bus = props.bus.type<t.PeerNetworkEvent>();
 
-  const state = usePeerState({ id, bus });
+  const state = usePeerState({ ref: id, bus });
   const network = state.network;
 
   const styles = {
@@ -37,6 +36,7 @@ export const Info: React.FC<InfoProps> = (props) => {
     right: css({
       flex: 1,
       padding: 20,
+      maxWidth: 350,
     }),
     card: css({
       display: 'block',
@@ -52,15 +52,21 @@ export const Info: React.FC<InfoProps> = (props) => {
     }),
   };
 
-  return (
-    <div {...css(styles.base, props.style)}>
-      <div {...styles.left}>{network && <Network network={network} />}</div>
+  const elJson = props.debugJson && (
+    <>
       <div {...styles.middle}>
         <div {...styles.verticalRule} />
       </div>
       <div {...styles.right}>
         <ObjectView name={'PeerNetwork'} data={state.network} expandLevel={5} />
       </div>
+    </>
+  );
+
+  return (
+    <div {...css(styles.base, props.style)}>
+      <div {...styles.left}>{network && <Network bus={bus} network={network} />}</div>
+      {elJson}
     </div>
   );
 };
