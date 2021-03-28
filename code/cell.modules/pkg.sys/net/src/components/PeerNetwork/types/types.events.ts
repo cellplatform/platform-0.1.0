@@ -14,9 +14,9 @@ export type PeerNetworkId = string;
 export type PeerNetworkEvent =
   | t.PeerNetworkInitReqEvent
   | t.PeerNetworkInitResEvent
-  | t.PeerNetworkSelfUpdateEvent
   | t.PeerNetworkStatusRequestEvent
   | t.PeerNetworkStatusResponseEvent
+  | t.PeerNetworkStatusChangedEvent
   | t.PeerNetworkPurgeReqEvent
   | t.PeerNetworkPurgeResEvent
   | t.PeerNetworkConnectReqEvent

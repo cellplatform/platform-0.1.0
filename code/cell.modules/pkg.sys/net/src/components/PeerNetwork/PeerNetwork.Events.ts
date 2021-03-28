@@ -46,10 +46,9 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
       .payload<t.PeerNetworkStatusResponseEvent>(event$, 'PeerNetwork/status:res')
       .pipe(filter((e) => e.ref === ref));
 
-    const get = (options: { tx?: string } = {}) => {
-      const { tx } = options;
+    const get = () => {
       const res = firstValueFrom(response$);
-      bus.fire({ type: 'PeerNetwork/status:req', payload: { ref, tx } });
+      bus.fire({ type: 'PeerNetwork/status:req', payload: { ref } });
       return res;
     };
 

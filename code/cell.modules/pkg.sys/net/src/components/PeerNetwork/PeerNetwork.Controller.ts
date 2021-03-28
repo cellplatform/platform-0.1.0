@@ -1,7 +1,7 @@
-import { Subject } from 'rxjs';
+import { Subject, merge } from 'rxjs';
 import { filter, take, takeUntil } from 'rxjs/operators';
 
-import { deleteUndefined, PeerJS, rx, t, time, defaultValue, cuid } from '../../common';
+import { deleteUndefined, PeerJS, rx, t, time } from '../../common';
 
 import { PeerJSError } from './util';
 
@@ -29,7 +29,7 @@ type ConnectionRef = {
  */
 export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
-  const bus = args.bus.type<t.PeerNetworkEvent | t.MediaEvent>();
+  const bus = args.bus.type<t.PeerNetworkEvent>();
   const $ = bus.event$.pipe(takeUntil(dispose$));
   const selfRefs: SelfRefs = {};
 
@@ -162,13 +162,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
         peer.on('connection', (dataConnection) => {
           addConnectionRef('data', ref, dataConnection);
           completeConnection('data', 'incoming', ref, dataConnection);
-          // time.delay(100, () => {
-          // });
         });
-
-        /**
-         * TODO 🐷
-         */
 
         // Listen for incoming MEDIA (video) connection requests.
         peer.on('call', (mediaConnection) => {
@@ -186,19 +180,6 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
     });
 
   /**
-   * SELF (update)
-   */
-  rx.payload<t.PeerNetworkSelfUpdateEvent>($, 'PeerNetwork/self')
-    .pipe()
-    .subscribe((e) => {
-      const self = selfRefs[e.ref];
-      if (!self) return;
-      if (e.video === null) self.media.video = undefined;
-      if (e.video) self.media.video = e.video;
-      self.media = deleteUndefined(self.media);
-    });
-
-  /**
    * STATUS
    */
   rx.payload<t.PeerNetworkStatusRequestEvent>($, 'PeerNetwork/status:req')
@@ -206,12 +187,36 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
     .subscribe((e) => {
       const self = selfRefs[e.ref];
       const status = self ? toStatus(self) : undefined;
-      const tx = e.tx || cuid();
+      const exists = Boolean(status);
       bus.fire({
         type: 'PeerNetwork/status:res',
-        payload: { ref: e.ref, tx, exists: Boolean(status), self: status },
+        payload: { ref: e.ref, exists, self: status },
       });
     });
+
+  merge(
+    $.pipe(
+      filter((e) => {
+        const types: t.PeerNetworkEvent['type'][] = [
+          'PeerNetwork/init:res',
+          'PeerNetwork/connect:res',
+          'PeerNetwork/purge:res',
+          'PeerNetwork/connection:closed',
+        ];
+        return types.includes(e.type);
+      }),
+    ),
+  ).subscribe((event) => {
+    const ref = event.payload.ref;
+    const self = selfRefs[ref];
+    if (self) {
+      const status = toStatus(self);
+      bus.fire({
+        type: 'PeerNetwork/status:changed',
+        payload: { ref, self: status, event },
+      });
+    }
+  });
 
   /**
    * PURGE
@@ -282,8 +287,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
 
       // Check for existing remote connection.
       const isMatch = (item: ConnectionRef) => item.kind === kind && item.id.remote === remote;
-      const existing = self.connections.find(isMatch);
-      if (existing) return fire();
+      if (self.connections.find(isMatch)) return fire();
 
       // Start a data connection.
       if (e.kind === 'data') {

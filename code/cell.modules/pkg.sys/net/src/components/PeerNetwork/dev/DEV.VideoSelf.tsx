@@ -29,7 +29,7 @@ export const VideoSelf: React.FC<VideoSelfProps> = (props) => {
     ref,
     bus,
     onChange: (stream) => {
-      bus.fire({ type: 'PeerNetwork/self', payload: { ref, video: stream } });
+      // bus.fire({ type: 'PeerNetwork/self', payload: { ref, video: stream } });
     },
   });
 

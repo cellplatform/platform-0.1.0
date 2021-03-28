@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import { merge } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 
-import { t, cuid } from '../../../common';
+import { rx, t } from '../../../common';
 import { PeerNetworkEvents } from '../PeerNetwork.Events';
 
 /**
@@ -23,21 +22,9 @@ export function usePeerState(args: { ref: string; bus: t.EventBus<any> }) {
       setStatus(self);
     };
 
-    const types: t.PeerNetworkEvent['type'][] = [
-      'PeerNetwork/init:res',
-      'PeerNetwork/connect:res',
-      'PeerNetwork/purge:res',
-      'PeerNetwork/connection:closed',
-    ];
-
-    const changed$ = merge(
-      $.pipe(
-        filter((e) => e.payload.ref === ref),
-        filter((e) => types.includes(e.type)),
-      ),
-    );
-
-    changed$.subscribe(updateState);
+    rx.payload<t.PeerNetworkStatusChangedEvent>($, 'PeerNetwork/status:changed')
+      .pipe(debounceTime(50))
+      .subscribe(updateState);
 
     return () => events.dispose();
   }, [bus, ref]);

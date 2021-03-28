@@ -26,26 +26,13 @@ export type PeerNetworkCreateRes = {
 };
 
 /**
- * Updates self state.
- */
-export type PeerNetworkSelfUpdateEvent = {
-  type: 'PeerNetwork/self';
-  payload: PeerNetworkSelfUpdate;
-};
-export type PeerNetworkSelfUpdate = {
-  ref: t.PeerNetworkId;
-  video?: MediaStream | null;
-  screen?: MediaStream | null;
-};
-
-/**
  * Fired to retrieve the status of the specified peer.
  */
 export type PeerNetworkStatusRequestEvent = {
   type: 'PeerNetwork/status:req';
   payload: PeerNetworkStatusRequest;
 };
-export type PeerNetworkStatusRequest = { ref: t.PeerNetworkId; tx?: string };
+export type PeerNetworkStatusRequest = { ref: t.PeerNetworkId };
 
 /**
  * Fired to retrieve the status of the specified peer.
@@ -56,9 +43,29 @@ export type PeerNetworkStatusResponseEvent = {
 };
 export type PeerNetworkStatusResponse = {
   ref: t.PeerNetworkId;
-  tx: string;
   exists: boolean;
   self?: t.PeerNetworkStatus;
+};
+
+/**
+ * Fired when the status of a peer network has changed.
+ * NOTE:
+ *    This is a derived event that is fired in response
+ *    to various different events completing that indicate
+ *    the status of the PeerNetwork has changed.
+ *
+ *    This is useful for redrawing UI that may be displaying
+ *    the status of the network.
+ *
+ */
+export type PeerNetworkStatusChangedEvent = {
+  type: 'PeerNetwork/status:changed';
+  payload: PeerNetworkStatusChanged;
+};
+export type PeerNetworkStatusChanged = {
+  ref: t.PeerNetworkId;
+  self: t.PeerNetworkStatus;
+  event: t.PeerNetworkEvent
 };
 
 /**
