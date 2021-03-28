@@ -6,8 +6,9 @@ import { deleteUndefined, PeerJS, rx, t, time, defaultValue, cuid } from '../../
 import { PeerJSError } from './util';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
-type NetworkRefs = { [id: string]: NetworkRef };
-type NetworkRef = {
+
+type SelfRefs = { [id: string]: SelfRef };
+type SelfRef = {
   id: string;
   peer: PeerJS;
   createdAt: number;
@@ -30,43 +31,42 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
   const bus = args.bus.type<t.PeerNetworkEvent | t.MediaEvent>();
   const $ = bus.event$.pipe(takeUntil(dispose$));
-
-  const refs: NetworkRefs = {};
+  const selfRefs: SelfRefs = {};
 
   /**
    * Add a new network-connection reference.
    */
   const addConnectionRef = (
     kind: ConnectionKind,
-    network: NetworkRef,
+    self: SelfRef,
     conn: PeerJS.DataConnection | PeerJS.MediaConnection,
     media?: MediaStream,
   ) => {
-    const existing = network.connections.find((item) => item.conn === conn);
+    const existing = self.connections.find((item) => item.conn === conn);
     if (existing) return existing;
 
-    const local = network.peer.id;
+    const local = self.peer.id;
     const remote = conn.peer;
     const ref: ConnectionRef = { kind, id: { local, remote }, conn, media };
-    network.connections = [...network.connections, ref];
+    self.connections = [...self.connections, ref];
     return ref;
   };
 
   const removeConnectionRef = (
-    network: NetworkRef,
+    self: SelfRef,
     conn: PeerJS.DataConnection | PeerJS.MediaConnection,
   ) => {
-    network.connections = network.connections.filter((item) => item.conn !== conn);
+    self.connections = self.connections.filter((item) => item.conn !== conn);
   };
 
   const getConnectionRef = (
-    network: NetworkRef,
+    self: SelfRef,
     conn: t.PeerNetworkId | PeerJS.DataConnection | PeerJS.MediaConnection,
   ) => {
     const remote = typeof conn === 'string' ? conn : conn.peer;
-    const ref = network.connections.find((ref) => ref.id.remote === remote);
+    const ref = self.connections.find((ref) => ref.id.remote === remote);
     if (!ref) {
-      const err = `The connection reference '${remote}' for local network '${network.id}' has not been added`;
+      const err = `The connection reference '${remote}' for local network '${self.id}' has not been added`;
       throw new Error(err);
     }
     return ref;
@@ -75,10 +75,10 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   /**
    * Convert a "local network client" to an immutable status object.
    */
-  const toStatus = (ref: NetworkRef): t.PeerNetworkStatus => {
-    const { peer, createdAt, signal, media } = ref;
+  const toStatus = (self: SelfRef): t.PeerNetworkStatus => {
+    const { peer, createdAt, signal, media } = self;
     const id = peer.id;
-    const connections = ref.connections.map((item) => toConnectionStatus(item));
+    const connections = self.connections.map((item) => toConnectionStatus(item));
     return deleteUndefined({ id, createdAt, signal, media, connections });
   };
 
@@ -110,15 +110,15 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   const completeConnection = (
     kind: ConnectionKind,
     direction: t.PeerNetworkConnectRes['direction'],
-    network: NetworkRef,
+    self: SelfRef,
     conn: PeerJS.DataConnection | PeerJS.MediaConnection,
   ) => {
-    const connectionRef = getConnectionRef(network, conn);
+    const connectionRef = getConnectionRef(self, conn);
 
     bus.fire({
       type: 'PeerNetwork/connect:res',
       payload: {
-        ref: network.id,
+        ref: self.id,
         kind,
         direction,
         remote: connectionRef.id.remote,
@@ -130,7 +130,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
       const connection = toConnectionStatus(connectionRef);
       bus.fire({
         type: 'PeerNetwork/connection:closed',
-        payload: { ref: network.id, connection },
+        payload: { ref: self.id, connection },
       });
     });
 
@@ -143,12 +143,12 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   rx.payload<t.PeerNetworkInitReqEvent>($, 'PeerNetwork/init:req')
     .pipe()
     .subscribe((e) => {
-      if (!refs[e.ref]) {
+      if (!selfRefs[e.ref]) {
         const createdAt = time.now.timestamp;
         const endpoint = parseEndpointAddress(e.signal);
         const { host, path, port, secure } = endpoint;
         const peer = new PeerJS(e.ref, { host, path, port, secure });
-        const ref: NetworkRef = {
+        const ref: SelfRef = {
           id: e.ref,
           peer,
           createdAt,
@@ -156,7 +156,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
           connections: [],
           media: {},
         };
-        refs[e.ref] = ref;
+        selfRefs[e.ref] = ref;
 
         // Listen for incoming DATA connection requests.
         peer.on('connection', (dataConnection) => {
@@ -177,7 +177,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
         });
       }
 
-      const ref = refs[e.ref];
+      const ref = selfRefs[e.ref];
 
       bus.fire({
         type: 'PeerNetwork/init:res',
@@ -191,7 +191,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   rx.payload<t.PeerNetworkSelfUpdateEvent>($, 'PeerNetwork/self')
     .pipe()
     .subscribe((e) => {
-      const ref = refs[e.ref];
+      const ref = selfRefs[e.ref];
       if (!ref) return;
       if (e.video === null) ref.media.video = undefined;
       if (e.video) ref.media.video = e.video;
@@ -204,7 +204,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   rx.payload<t.PeerNetworkStatusRequestEvent>($, 'PeerNetwork/status:req')
     .pipe()
     .subscribe((e) => {
-      const ref = refs[e.ref];
+      const ref = selfRefs[e.ref];
       const self = ref ? toStatus(ref) : undefined;
       const tx = e.tx || cuid();
       bus.fire({
@@ -219,7 +219,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   rx.payload<t.PeerNetworkPurgeReqEvent>($, 'PeerNetwork/purge:req')
     .pipe()
     .subscribe((e) => {
-      const ref = refs[e.ref];
+      const ref = selfRefs[e.ref];
       const select = typeof e.select === 'object' ? e.select : { closedConnections: true };
 
       let changed = false;
@@ -260,7 +260,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
     .pipe(filter((e) => e.direction === 'outgoing'))
     .subscribe((e) => {
       const { remote, kind } = e;
-      const ref = refs[e.ref];
+      const ref = selfRefs[e.ref];
 
       const fire = (payload?: Partial<t.PeerNetworkConnectRes>) => {
         bus.fire({
@@ -281,9 +281,8 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
       }
 
       // Check for existing remote connection.
-      const existing = ref.connections.find(
-        (item) => item.kind === kind && item.id.remote === remote,
-      );
+      const isMatch = (item: ConnectionRef) => item.kind === kind && item.id.remote === remote;
+      const existing = ref.connections.find(isMatch);
       if (existing) return fire();
 
       // Start a data connection.
@@ -346,7 +345,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
     .pipe()
     .subscribe((e) => {
       const { remote } = e;
-      const networkRef = refs[e.ref];
+      const networkRef = selfRefs[e.ref];
 
       const fire = (payload?: Partial<t.PeerNetworkDisconnectRes>) => {
         bus.fire({
@@ -375,7 +374,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
     dispose$,
     dispose() {
       dispose$.next();
-      Object.keys(refs).forEach((key) => refs[key]);
+      Object.keys(selfRefs).forEach((key) => selfRefs[key]);
     },
   };
 }
