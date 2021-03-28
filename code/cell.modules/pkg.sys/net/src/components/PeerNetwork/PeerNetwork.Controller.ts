@@ -177,11 +177,11 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
         });
       }
 
-      const ref = selfRefs[e.ref];
+      const self = selfRefs[e.ref];
 
       bus.fire({
         type: 'PeerNetwork/init:res',
-        payload: { ref: e.ref, createdAt: ref.createdAt, signal: ref.signal },
+        payload: { ref: e.ref, createdAt: self.createdAt, signal: self.signal },
       });
     });
 
@@ -191,11 +191,11 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   rx.payload<t.PeerNetworkSelfUpdateEvent>($, 'PeerNetwork/self')
     .pipe()
     .subscribe((e) => {
-      const ref = selfRefs[e.ref];
-      if (!ref) return;
-      if (e.video === null) ref.media.video = undefined;
-      if (e.video) ref.media.video = e.video;
-      ref.media = deleteUndefined(ref.media);
+      const self = selfRefs[e.ref];
+      if (!self) return;
+      if (e.video === null) self.media.video = undefined;
+      if (e.video) self.media.video = e.video;
+      self.media = deleteUndefined(self.media);
     });
 
   /**
@@ -204,12 +204,12 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   rx.payload<t.PeerNetworkStatusRequestEvent>($, 'PeerNetwork/status:req')
     .pipe()
     .subscribe((e) => {
-      const ref = selfRefs[e.ref];
-      const self = ref ? toStatus(ref) : undefined;
+      const self = selfRefs[e.ref];
+      const status = self ? toStatus(self) : undefined;
       const tx = e.tx || cuid();
       bus.fire({
         type: 'PeerNetwork/status:res',
-        payload: { ref: e.ref, tx, exists: Boolean(self), self },
+        payload: { ref: e.ref, tx, exists: Boolean(status), self: status },
       });
     });
 
@@ -219,7 +219,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   rx.payload<t.PeerNetworkPurgeReqEvent>($, 'PeerNetwork/purge:req')
     .pipe()
     .subscribe((e) => {
-      const ref = selfRefs[e.ref];
+      const self = selfRefs[e.ref];
       const select = typeof e.select === 'object' ? e.select : { closedConnections: true };
 
       let changed = false;
@@ -235,14 +235,14 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
       };
       const fireError = (message: string) => fire({ error: { message } });
 
-      if (!ref) {
+      if (!self) {
         const message = `The local PeerNetwork '${e.ref}' does not exist`;
         return fireError(message);
       }
 
       if (select.closedConnections) {
-        const closed = ref.connections.filter((item) => !toConnectionStatus(item).isOpen);
-        ref.connections = ref.connections.filter(({ id }) => !closed.some((c) => c.id === id));
+        const closed = self.connections.filter((item) => !toConnectionStatus(item).isOpen);
+        self.connections = self.connections.filter(({ id }) => !closed.some((c) => c.id === id));
         closed.forEach((item) => {
           changed = true;
           if (item.kind === 'data') purged.closedConnections.data++;
@@ -260,7 +260,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
     .pipe(filter((e) => e.direction === 'outgoing'))
     .subscribe((e) => {
       const { remote, kind } = e;
-      const ref = selfRefs[e.ref];
+      const self = selfRefs[e.ref];
 
       const fire = (payload?: Partial<t.PeerNetworkConnectRes>) => {
         bus.fire({
@@ -270,32 +270,32 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
       };
       const fireError = (message: string) => fire({ error: { message } });
 
-      if (!ref) {
+      if (!self) {
         const message = `The local PeerNetwork '${e.ref}' does not exist`;
         return fireError(message);
       }
 
-      if (ref.id === remote) {
+      if (self.id === remote) {
         const message = `Cannot connect to self`;
         return fireError(message);
       }
 
       // Check for existing remote connection.
       const isMatch = (item: ConnectionRef) => item.kind === kind && item.id.remote === remote;
-      const existing = ref.connections.find(isMatch);
+      const existing = self.connections.find(isMatch);
       if (existing) return fire();
 
       // Start a data connection.
       if (e.kind === 'data') {
         const { reliable, metadata } = e;
-        const errorMonitor = PeerJSError(ref.peer);
-        const dataConnection = ref.peer.connect(remote, { reliable, metadata });
-        addConnectionRef(e.kind, ref, dataConnection);
+        const errorMonitor = PeerJSError(self.peer);
+        const dataConnection = self.peer.connect(remote, { reliable, metadata });
+        addConnectionRef(e.kind, self, dataConnection);
 
         dataConnection.on('open', () => {
           // SUCCESS: Connected to the remote peer.
           errorMonitor.dispose();
-          completeConnection(e.kind, 'outgoing', ref, dataConnection);
+          completeConnection(e.kind, 'outgoing', self, dataConnection);
         });
 
         // Listen for a connection error.
@@ -307,7 +307,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
         ).subscribe((err) => {
           // FAIL
           errorMonitor.dispose();
-          removeConnectionRef(ref, dataConnection);
+          removeConnectionRef(self, dataConnection);
           fireError(`Failed to connect to peer '${remote}'. The remote target did not respond.`);
         });
       }
@@ -345,7 +345,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
     .pipe()
     .subscribe((e) => {
       const { remote } = e;
-      const networkRef = selfRefs[e.ref];
+      const selfRef = selfRefs[e.ref];
 
       const fire = (payload?: Partial<t.PeerNetworkDisconnectRes>) => {
         bus.fire({
@@ -355,12 +355,12 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
       };
       const fireError = (message: string) => fire({ error: { message } });
 
-      if (!networkRef) {
+      if (!selfRef) {
         const message = `The local PeerNetwork '${e.ref}' does not exist`;
         return fireError(message);
       }
 
-      const connRef = networkRef.connections.find((item) => item.id.remote === e.remote);
+      const connRef = selfRef.connections.find((item) => item.id.remote === e.remote);
       if (!connRef) {
         const message = `The remote connection '${remote}' does not exist`;
         return fireError(message);
