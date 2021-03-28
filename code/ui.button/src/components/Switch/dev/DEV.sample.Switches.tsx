@@ -35,7 +35,7 @@ export const SampleSwitches: React.FC<SampleSwitchesProps> = (props) => {
     );
   };
 
-  const blueTheme = theme === 'DARK' ? SwitchTheme.DARK.BLUE : SwitchTheme.LIGHT.BLUE;
+  const blueTheme = theme === 'DARK' ? SwitchTheme.dark.blue : SwitchTheme.light.blue;
 
   return (
     <div {...styles.base}>

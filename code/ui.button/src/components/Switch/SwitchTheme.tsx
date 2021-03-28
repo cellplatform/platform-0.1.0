@@ -1,38 +1,29 @@
-import { color } from '@platform/css';
-
-import { COLORS, R, t } from '../common';
+import { style, COLORS, R, t } from '../common';
 
 const { GREEN, WHITE, BLUE } = COLORS;
 
-export class SwitchTheme {
-  /**
-   * [Static.Methods]
-   */
-  public static merge(base: t.ISwitchTheme, theme: Partial<t.ISwitchTheme>) {
+export const SwitchTheme = {
+  merge(base: t.ISwitchTheme, theme: Partial<t.ISwitchTheme>) {
     const res = R.mergeDeepRight(base, theme) as t.ISwitchTheme;
     return R.clone(res);
-  }
+  },
 
-  public static fromString(theme: t.SwitchThemeName) {
+  fromString(theme: t.SwitchThemeName) {
     switch (theme) {
       case 'LIGHT':
-        return SwitchTheme.LIGHT;
+        return SwitchTheme.light;
       case 'DARK':
-        return SwitchTheme.DARK;
+        return SwitchTheme.dark;
       default:
         throw new Error(`Theme name '${theme}' not supported.`);
     }
-  }
+  },
 
-  public static toShadowCss(shadow: t.IShadow) {
-    const { x, y, blur } = shadow;
-    return `${x}px ${y}px ${blur}px 0 ${color.format(shadow.color)}`;
-  }
+  toShadowCss(shadow: t.CssShadow) {
+    return style.toShadow(shadow);
+  },
 
-  /**
-   * [Static.Properties]
-   */
-  public static get LIGHT() {
+  get light() {
     const BASE: t.ISwitchTheme = {
       trackColor: { on: GREEN, off: -0.1, disabled: -0.1 },
       thumbColor: { on: WHITE, off: WHITE, disabled: WHITE },
@@ -40,13 +31,13 @@ export class SwitchTheme {
       disabledOpacity: 0.45,
     };
     return {
-      DEFAULT: BASE,
-      GREEN: BASE,
-      BLUE: SwitchTheme.merge(BASE, { trackColor: { on: BLUE, off: -0.1, disabled: -0.1 } }),
+      default: BASE,
+      green: BASE,
+      blue: SwitchTheme.merge(BASE, { trackColor: { on: BLUE, off: -0.1, disabled: -0.1 } }),
     };
-  }
+  },
 
-  public static get DARK() {
+  get dark() {
     const BASE: t.ISwitchTheme = {
       trackColor: { on: GREEN, off: 0.2, disabled: 0.2 },
       thumbColor: { on: WHITE, off: WHITE, disabled: WHITE },
@@ -54,9 +45,9 @@ export class SwitchTheme {
       disabledOpacity: 0.3,
     };
     return {
-      DEFAULT: BASE,
-      GREEN: BASE,
-      BLUE: SwitchTheme.merge(BASE, { trackColor: { on: BLUE, off: 0.2, disabled: 0.2 } }),
+      default: BASE,
+      green: BASE,
+      blue: SwitchTheme.merge(BASE, { trackColor: { on: BLUE, off: 0.2, disabled: 0.2 } }),
     };
-  }
-}
+  },
+};

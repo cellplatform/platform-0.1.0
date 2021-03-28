@@ -24,5 +24,5 @@ export type ISwitchThumb = {
   yOffset: number;
   borderRadius: number;
   color: { on: number | string; off: number | string; disabled: number | string };
-  shadow: t.IShadow;
+  shadow: t.CssShadow;
 };
