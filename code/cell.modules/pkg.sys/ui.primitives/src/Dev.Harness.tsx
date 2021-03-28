@@ -6,7 +6,7 @@ const imports = {
   DotTabstrip: import('./components/DotTabstrip/DEV'),
   Zoom: import('./components/Zoom/DEV'),
   Card: import('./components/Card/DEV'),
-  PropList: import('./components/PropList/DEV'),
+  PropList: import('./components/PropList/dev/DEV'),
   TextEditor: import('./components/TextEditor/DEV'),
 
   Button: import('@platform/ui.button/lib/components/Button/DEV'),

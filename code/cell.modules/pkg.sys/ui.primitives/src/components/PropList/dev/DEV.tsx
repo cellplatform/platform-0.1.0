@@ -1,13 +1,11 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
-import { PropList, PropListProps, PropListItem } from '.';
-import { css, COLORS } from '../../common';
-import { Icons } from '../Icons';
+
+import { PropList, PropListProps } from '..';
+import { COLORS, css, Icons } from './common';
+import { items, LOREM } from './DEV.items';
 
 type Ctx = { props: PropListProps };
-
-const LOREM =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
 
 /**
  * Actions
@@ -16,50 +14,6 @@ export const actions = DevActions<Ctx>()
   .namespace('ui/PropList')
   .context((prev) => {
     if (prev) return prev;
-
-    const styles = {
-      label: css({
-        boxSizing: 'border-box',
-        backgroundColor: 'rgba(255, 0, 0, 0.1)',
-        flex: 1,
-        height: 40,
-        padding: 3,
-        paddingLeft: 30,
-        Flex: 'horizontal-end-end',
-        color: COLORS.MAGENTA,
-      }),
-      value: css({
-        backgroundColor: 'rgba(255, 0, 0, 0.1)',
-        height: 40,
-        Flex: 'center-center',
-        flex: 1,
-      }),
-    };
-
-    const items: PropListItem[] = [
-      { label: 'string', value: 'hello' },
-      { label: 'number', value: { data: 123456, clipboard: 'Value: 123456', monospace: true } },
-      { label: 'boolean', value: true },
-      { label: 'thing monospace', value: { data: 'thing', clipboard: true, monospace: true } },
-      { label: 'long (ellipsis)', value: LOREM },
-      {
-        label: 'click handler',
-        value: {
-          data: 'click me',
-          onClick: (e) => e.message(<div style={{ color: COLORS.MAGENTA }}>foobar</div>, 3000),
-        },
-      },
-      {
-        label: 'label',
-        value: <div {...styles.value}>value</div>,
-      },
-
-      {
-        label: <div {...styles.label}>label</div>,
-        value: 'value',
-      },
-    ];
-
     return {
       props: {
         title: 'MyTitle',
@@ -126,10 +80,7 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     e.settings({
-      layout: {
-        cropmarks: -0.2,
-        width: 260,
-      },
+      layout: { cropmarks: -0.2, width: 260 },
       host: { background: -0.04 },
     });
     e.render(<PropList {...e.ctx.props} style={{ flex: 1 }} />);
