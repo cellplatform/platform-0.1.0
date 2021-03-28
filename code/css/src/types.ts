@@ -22,6 +22,7 @@ export type ICssStyle = {
   toEdges: CssToEdges<CssEdges>;
   toMargins: CssToEdges<CssMarginEdges>;
   toPadding: CssToEdges<CssPaddingEdges>;
+  toShadow: CssToShadow;
 };
 
 /**
@@ -78,4 +79,16 @@ export type ICssBackgroundImage = {
   height?: number;
   backgroundSize: string;
   backgroundRepeat: string;
+};
+
+/**
+ * Shadow
+ */
+export type CssToShadow = (input?: CssShadow) => string | undefined;
+export type CssShadow = {
+  color: number | string;
+  blur: number;
+  x?: number;
+  y?: number;
+  inner?: boolean;
 };

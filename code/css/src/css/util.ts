@@ -1,4 +1,5 @@
 import { valueUtil, t } from '../common';
+import { color } from '../color';
 
 const isBlank = (value: t.CssEdgesInput) => {
   if (value === undefined || value === null) {
@@ -119,4 +120,17 @@ export const toMargins: t.CssToEdges<t.CssMarginEdges> = (input, options = {}) =
  */
 export const toPadding: t.CssToEdges<t.CssPaddingEdges> = (input, options = {}) => {
   return prefixEdges<t.CssPaddingEdges>('padding', toEdges(input, options));
+};
+
+/**
+ * Converts into to a box-shadow.
+ */
+export const toShadow: t.CssToShadow = (input) => {
+  if (input === undefined) return undefined;
+  const { blur } = input;
+  const x = input.x ? `${input.x}px` : '0';
+  const y = input.y ? `${input.y}px` : '0';
+  const col = color.format(input.color);
+  const inset = input.inner ? 'inset ' : '';
+  return `${inset}${x} ${y} ${blur}px 0 ${col}`;
 };
