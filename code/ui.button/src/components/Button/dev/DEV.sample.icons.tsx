@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon } from '@platform/ui.icon';
 import { MdFace } from 'react-icons/md';
 
-import { color, css } from '../../common';
+import { color, css } from './common';
 
 const Face = Icon.renderer(MdFace);
 

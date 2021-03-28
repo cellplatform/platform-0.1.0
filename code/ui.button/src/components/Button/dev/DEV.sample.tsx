@@ -1,8 +1,8 @@
 import { Hr, log } from 'sys.ui.dev';
 import React from 'react';
 
-import { Button, ButtonProps, ButtonTheme } from '.';
-import { COLORS, css, CssValue, defaultValue } from '../../common';
+import { Button, ButtonProps, ButtonTheme } from '..';
+import { COLORS, css, CssValue, defaultValue } from './common';
 import { IconContent } from './DEV.sample.icons';
 
 const PINK = '#CD638D';

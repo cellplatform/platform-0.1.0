@@ -11,6 +11,6 @@ export type IButtonThemeBorder = {
   isVisible: boolean;
   thickness: number;
   radius: number;
-  padding: t.Spacing;
+  padding: t.CssEdgesInput;
   color: number | string;
 };

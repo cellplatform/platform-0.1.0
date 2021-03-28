@@ -1,6 +1,6 @@
 import { color, css, CssValue, style } from '@platform/css';
 import { defaultValue } from '@platform/util.value';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import { t } from '../common';
 import { ButtonTheme } from './ButtonTheme';
@@ -14,7 +14,7 @@ export type ButtonProps = {
   theme?: Partial<t.IButtonTheme>;
   overTheme?: Partial<t.IButtonTheme>;
   downTheme?: Partial<t.IButtonTheme>;
-  margin?: string | number | Array<string | number | null>;
+  margin?: t.CssEdgesInput;
   minWidth?: number;
   tooltip?: string;
   style?: CssValue;

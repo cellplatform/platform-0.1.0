@@ -9,8 +9,8 @@ const imports = {
   PropList: import('./components/PropList/dev/DEV'),
   TextEditor: import('./components/TextEditor/DEV'),
 
-  Button: import('@platform/ui.button/lib/components/Button/DEV'),
-  Switch: import('@platform/ui.button/lib/components/Switch/DEV'),
+  Button: import('@platform/ui.button/lib/components/Button/dev/DEV'),
+  Switch: import('@platform/ui.button/lib/components/Switch/dev/DEV'),
   OptionButtons: import('sys.ui.dev/lib/components/OptionButtons/DEV'),
 };
 

@@ -1,7 +1,7 @@
 import { Hr } from 'sys.ui.dev';
 import React from 'react';
 
-import { COLORS, css, defaultValue } from '../../common';
+import { COLORS, css, defaultValue } from './common';
 import { SampleSwitches } from './DEV.sample.Switches';
 
 export type SamplesProps = { isEnabled?: boolean; isChecked?: boolean };
