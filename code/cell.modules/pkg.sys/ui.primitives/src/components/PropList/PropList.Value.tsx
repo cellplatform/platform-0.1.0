@@ -10,18 +10,14 @@ export type PropListValueProps = {
   item: t.PropListItem;
   isFirst?: boolean;
   isLast?: boolean;
-  defaults?: t.PropListDefaults;
+  defaults: t.PropListDefaults;
   style?: CssValue;
 };
 
 export const PropListValue: React.FC<PropListValueProps> = (props) => {
-  const defaults: t.PropListDefaults = {
-    clipboard: true,
-    ...props.defaults,
-  };
   const item = FormatItem(props.item);
   const value = item.value;
-  const isCopyable = item.isCopyable(defaults);
+  const isCopyable = item.isCopyable(props.defaults);
 
   const [isOver, setIsOver] = useState<boolean>(false);
   const [message, setMessage] = useState<React.ReactNode>();
@@ -49,7 +45,7 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
       onClick({ item, value, message: (message, delay) => showMessage(message, delay) });
     }
 
-    if (clipboard && item.isCopyable(defaults)) {
+    if (clipboard && isCopyable) {
       copyToClipboard(clipboard);
       if (!message) message = 'copied';
     }
@@ -61,13 +57,15 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
     if (typeof value.data === 'boolean') return <BooleanValue value={value} />;
     if (item.isSimple)
       return (
-        <SimpleValue value={value} message={message} isOver={isOver} isCopyable={isCopyable} />
+        <SimpleValue
+          value={value}
+          message={message}
+          isOver={isOver}
+          isCopyable={isCopyable}
+          defaults={props.defaults}
+        />
       );
-
-    // if (React.is)
-
     if (item.isComponent) return item.value.data;
-
     return null;
   };
 
@@ -80,11 +78,6 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
       onClick={handleClick}
     >
       {renderValue()}
-
-      {/* {typeof value.data === 'boolean' && <BooleanValue value={value} />}
-      {item.isSimple && (
-        <SimpleValue value={value} message={message} isOver={isOver} isCopyable={isCopyable} />
-      )} */}
     </div>
   );
 };
@@ -93,6 +86,7 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
  * SimpleValue
  */
 export const SimpleValue: React.FC<{
+  defaults: t.PropListDefaults;
   value: t.PropListValue;
   message?: React.ReactNode;
   isOver?: boolean;
@@ -101,7 +95,7 @@ export const SimpleValue: React.FC<{
   const { value, message, isOver, isCopyable } = props;
 
   const isCopyActive = isOver && isCopyable;
-  const isMonospace = value.monospace;
+  const isMonospace = defaultValue(value.monospace, props.defaults.monospace);
   const textColor = message ? color.format(-0.3) : isCopyActive ? COLORS.BLUE : COLORS.DARK;
 
   const styles = {

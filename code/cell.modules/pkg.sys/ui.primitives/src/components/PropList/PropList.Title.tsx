@@ -1,8 +1,9 @@
 import React from 'react';
-import { css, CssValue, defaultValue } from '../../common';
+import { css, CssValue, defaultValue, t } from '../../common';
 
 export type PropListTitleProps = {
   children?: React.ReactNode;
+  defaults: t.PropListDefaults;
   ellipsis?: boolean;
   style?: CssValue;
 };

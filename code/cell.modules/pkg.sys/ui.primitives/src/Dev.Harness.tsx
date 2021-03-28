@@ -8,10 +8,10 @@ const imports = {
   Card: import('./components/Card/DEV'),
   PropList: import('./components/PropList/DEV'),
   TextEditor: import('./components/TextEditor/DEV'),
-  OptionButtons: import('./components/OptionButtons/DEV'),
 
   Button: import('@platform/ui.button/lib/components/Button/DEV'),
   Switch: import('@platform/ui.button/lib/components/Switch/DEV'),
+  OptionButtons: import('sys.ui.dev/lib/components/OptionButtons/DEV'),
 };
 
 export const ACTIONS = Object.values(imports);

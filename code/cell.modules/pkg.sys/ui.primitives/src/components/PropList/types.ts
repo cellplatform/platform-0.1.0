@@ -2,6 +2,7 @@ import { React } from '@ungap/global-this';
 
 export type PropListDefaults = {
   clipboard?: boolean;
+  monospace?: boolean;
 };
 
 export type PropListItem = {

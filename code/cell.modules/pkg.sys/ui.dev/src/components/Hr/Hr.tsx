@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-import { color, COLORS, style, css, CssValue, defaultValue, t, value } from '../common';
+import { color, COLORS, style, css, CssValue, defaultValue, t } from '../../common';
 
-export type IHrProps = {
-  color?: string | number | 'PINK' | 'CYAN';
+export type HrProps = {
+  color?: string | number | 'MAGENTA' | 'CYAN';
   margin?: t.CssEdgesInput;
   dashed?: boolean;
   opacity?: number;
@@ -11,23 +11,23 @@ export type IHrProps = {
   style?: CssValue;
 };
 
-export class Hr extends React.PureComponent<IHrProps> {
+export class Hr extends React.PureComponent<HrProps> {
   /**
    * [Static]
    */
-  public static Dashed(props: IHrProps) {
+  public static Dashed(props: HrProps) {
     return <Hr dashed={true} opacity={0.3} {...props} />;
   }
-  public static Pink(props: IHrProps) {
+  public static Pink(props: HrProps) {
     return <Hr color={'PINK'} opacity={0.4} {...props} />;
   }
-  public static PinkDashed(props: IHrProps) {
+  public static PinkDashed(props: HrProps) {
     return <Hr.Pink dashed={true} opacity={0.5} {...props} />;
   }
-  public static Cyan(props: IHrProps) {
+  public static Cyan(props: HrProps) {
     return <Hr color={'CYAN'} opacity={0.7} {...props} />;
   }
-  public static CyanDashed(props: IHrProps) {
+  public static CyanDashed(props: HrProps) {
     return <Hr.Cyan dashed={true} opacity={1} {...props} />;
   }
 
@@ -35,13 +35,14 @@ export class Hr extends React.PureComponent<IHrProps> {
    * [Render]
    */
   public render() {
-    const { dashed } = this.props;
-    const thickness = value.defaultValue(this.props.thickness, 1);
-    const opacity = value.defaultValue(this.props.opacity, 1);
-    const margin = defaultValue(this.props.margin, [20, 0]);
+    const props = this.props;
+    const { dashed } = props;
+    const thickness = defaultValue(props.thickness, 1);
+    const opacity = defaultValue(props.opacity, 1);
+    const margin = defaultValue(props.margin, [20, 0]);
 
-    let borderColor = this.props.color;
-    borderColor = borderColor === 'PINK' ? COLORS.CLI.PINK : borderColor;
+    let borderColor = props.color;
+    borderColor = borderColor === 'MAGENTA' ? COLORS.CLI.MAGENTA : borderColor;
     borderColor = borderColor === 'CYAN' ? COLORS.CLI.CYAN : borderColor;
     borderColor = color.format(borderColor || -1);
 

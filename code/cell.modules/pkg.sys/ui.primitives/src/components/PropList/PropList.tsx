@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { color, COLORS, css, CssValue, defaultValue, t, style } from '../../common';
 import { PropListItem } from './PropList.Item';
@@ -17,10 +17,15 @@ export type PropListProps = {
 };
 
 export const PropList: React.FC<PropListProps> = (props) => {
-  const { title, defaults } = props;
+  const { title } = props;
   const items = asItems(props.items);
   const width = typeof props.width === 'number' ? { fixed: props.width } : props.width;
   const height = typeof props.height === 'number' ? { fixed: props.height } : props.height;
+
+  const defaults: t.PropListDefaults = {
+    clipboard: true,
+    ...props.defaults,
+  };
 
   const styles = {
     base: css({
@@ -44,16 +49,19 @@ export const PropList: React.FC<PropListProps> = (props) => {
     .filter((item) => Boolean(item))
     .filter((item) => defaultValue(item?.visible, true))
     .map((item, i) => {
-      const isFirst = i === 0;
-      const isLast = i === items.length - 1;
-      const data = item as t.PropListItem;
       return (
-        <PropListItem key={i} data={data} isFirst={isFirst} isLast={isLast} defaults={defaults} />
+        <PropListItem
+          key={i}
+          data={item as t.PropListItem}
+          isFirst={i == 0}
+          isLast={i === items.length - 1}
+          defaults={defaults}
+        />
       );
     });
 
   const elTitle = title && (
-    <PropListTitle style={styles.title} ellipsis={props.titleEllipsis}>
+    <PropListTitle style={styles.title} ellipsis={props.titleEllipsis} defaults={defaults}>
       {title}
     </PropListTitle>
   );

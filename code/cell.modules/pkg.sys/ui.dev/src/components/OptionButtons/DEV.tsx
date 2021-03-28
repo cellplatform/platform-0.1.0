@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DevActions } from 'sys.ui.dev';
+import { DevActions } from '../..';
 import { Radios, Checkboxes } from '.';
 
 import { OptionItem } from './types';

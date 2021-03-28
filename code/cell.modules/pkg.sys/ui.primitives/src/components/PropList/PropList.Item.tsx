@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { color, css, CssValue, t } from '../../common';
 import { PropListValue } from './PropList.Value';
@@ -8,7 +8,7 @@ export type PropListItemProps = {
   data: t.PropListItem;
   isFirst?: boolean;
   isLast?: boolean;
-  defaults?: t.PropListDefaults;
+  defaults: t.PropListDefaults;
   style?: CssValue;
 };
 
@@ -26,7 +26,7 @@ export const PropListItem: React.FC<PropListItemProps> = (props) => {
   };
   return (
     <div {...styles.base} title={data.tooltip}>
-      <PropListLabel data={data} />
+      <PropListLabel data={data} defaults={defaults} />
       <PropListValue item={data} isFirst={isFirst} isLast={isLast} defaults={defaults} />
     </div>
   );

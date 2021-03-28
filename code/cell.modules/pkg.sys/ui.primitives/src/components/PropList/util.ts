@@ -42,14 +42,19 @@ export function FormatItem(item: t.PropListItem) {
       if (value.clipboard) {
         return typeof value.clipboard === 'boolean' ? data?.toString() || '' : value.clipboard;
       }
-      if (res.isSimple) value?.data?.toString() || '';
-      return undefined;
+
+      if (data === null) return 'null';
+      if (data === undefined) return 'undefined';
+
+      if (typeof data === 'object') return JSON.stringify(data, null, '  ');
+
+      return data.toString();
     },
 
     isCopyable(defaults?: t.PropListDefaults) {
       if (res.value.onClick) return false;
-      if (res.value.clipboard) return true;
-      return res.isSimple && Boolean(defaults?.clipboard);
+      if (res.value.clipboard || defaults?.clipboard) return true;
+      return false;
     },
   };
 

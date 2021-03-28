@@ -1,9 +1,9 @@
-import * as React from 'react';
-
+import React from 'react';
 import { color, css, CssValue, t, COLORS } from '../../common';
 
 export type PropListLabelProps = {
   data: t.PropListItem;
+  defaults: t.PropListDefaults;
   style?: CssValue;
 };
 

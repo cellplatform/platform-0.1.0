@@ -2,7 +2,8 @@ import React from 'react';
 
 import { color, COLORS, css, SelectUtil, t, R, constants } from '../common';
 import { Icons } from '../Icons';
-import { Button, Radios, Checkboxes } from '../Primitives';
+import { Button } from '../Primitives';
+import { Radios, Checkboxes } from '../OptionButtons';
 import { Layout, LayoutTitle } from './Layout';
 
 export type SelectButtonsProps = { namespace: string; bus: t.EventBus; item: t.ActionSelect };
