@@ -39,8 +39,8 @@
     "@platform/ui.datagrid.cell": "0.2.166",
     "@platform/ui.datagrid.debug": "0.0.208",
     "@platform/ui.dev": "0.0.38",
-    "core-js": "3.9.0",
-    "parcel-bundler": "1.12.4"
+    "core-js": "3.9.1",
+    "parcel-bundler": "1.12.5"
   },
   "resolutions": {
     "prosemirror-state": "1.3.2"

@@ -22,7 +22,7 @@
     "@platform/react": "0.4.64",
     "@platform/ui.object": "0.0.237",
     "@platform/util.value": "0.8.16",
-    "parcel-bundler": "1.12.4"
+    "parcel-bundler": "1.12.5"
   },
   "devDependencies": {
     "@platform/test": "0.2.3",

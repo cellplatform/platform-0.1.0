@@ -19,7 +19,7 @@
   },
   "resolutions": {
     "rxjs": "7.0.0-beta.10",
-    "core-js": "3.9.0"
+    "core-js": "3.9.1"
   },
   "license": "MIT",
   "private": true

@@ -18,7 +18,7 @@
     "@platform/cell.types": "0.5.57",
     "@platform/cell.typesystem": "0.0.177",
     "@platform/libs": "0.2.7",
-    "semver": "7.3.4"
+    "semver": "7.3.5"
   },
   "devDependencies": {
     "@platform/test": "0.2.3",

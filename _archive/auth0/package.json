@@ -22,13 +22,13 @@
     "@types/jsonwebtoken": "8.5.0",
     "auth0-js": "9.14.3",
     "jsonwebtoken": "8.5.1",
-    "jwks-rsa": "1.12.2"
+    "jwks-rsa": "2.0.2"
   },
   "devDependencies": {
     "@platform/polyfill": "0.0.1",
     "@platform/react": "0.4.64",
     "@types/auth0-js": "9.14.2",
-    "apollo-server": "2.21.0",
+    "apollo-server": "2.22.1",
     "electron": "11.2.3",
     "graphql": "15.5.0",
     "@platform/ts": "4.1.7"

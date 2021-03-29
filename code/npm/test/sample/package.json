@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
-    "semver": "4.3.6",
+    "semver": "4.3.5",
     "express": "4.16.4"
   },
   "devDependencies": {
