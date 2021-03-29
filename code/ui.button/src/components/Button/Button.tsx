@@ -18,6 +18,7 @@ export type ButtonProps = {
   minWidth?: number;
   tooltip?: string;
   style?: CssValue;
+
   onClick?: React.MouseEventHandler;
   onMouseDown?: React.MouseEventHandler;
   onMouseUp?: React.MouseEventHandler;
