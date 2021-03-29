@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { t, css, mouse, defaultValue } from '../../common';
+import { t, css, defaultValue } from '../../common';
 import * as loader from './loader';
 
 /**
@@ -32,8 +32,6 @@ class ImageView extends React.PureComponent<IImageViewProps, IImageViewState> {
   private state$ = new Subject<Partial<IImageViewState>>();
   private unmounted$ = new Subject<void>();
   private events$ = new Subject<t.ImageEvent>();
-  private mouse: mouse.IMouseHandlers;
-
   public isLoaded = false;
 
   /**
@@ -41,7 +39,6 @@ class ImageView extends React.PureComponent<IImageViewProps, IImageViewState> {
    */
   constructor(props: IImageViewProps) {
     super(props);
-    this.mouse = mouse.fromProps(props);
 
     // Monitor the loader if it's already in progress.
     const loading = loader.get(this.props.src);
@@ -118,8 +115,9 @@ class ImageView extends React.PureComponent<IImageViewProps, IImageViewState> {
    * [Render]
    */
   public render() {
+    const props = this.props;
+    const { scale, origin, src, fadeIn } = props;
     const { isLoaderRendered, opacity } = this.state;
-    const { scale, origin, src, fadeIn } = this.props;
     const { x1, x2, width, height } = src;
     const transform = typeof scale === 'number' ? `scale(${scale})` : undefined;
     const elLoader = !isLoaderRendered && loader.create(this.props.src, this.events$);
@@ -133,7 +131,15 @@ class ImageView extends React.PureComponent<IImageViewProps, IImageViewState> {
       }),
     };
     return (
-      <div className={'p-image'} {...css(styles.base, this.props.style)} {...this.mouse.events}>
+      <div
+        className={'p-image'}
+        {...css(styles.base, props.style)}
+        onClick={props.onClick}
+        onMouseDown={props.onMouseDown}
+        onMouseUp={props.onMouseUp}
+        onMouseEnter={props.onMouseEnter}
+        onMouseLeave={props.onMouseLeave}
+      >
         {elLoader}
       </div>
     );

@@ -1,3 +1,3 @@
-import { Button } from '@platform/ui.button/lib/components/Button';
-export { Button };
+import { Button, ButtonProps, ButtonTheme } from '@platform/ui.button/lib/components/Button';
+export { Button, ButtonProps, ButtonTheme };
 export default Button;

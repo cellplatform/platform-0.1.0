@@ -65,7 +65,7 @@ export type PeerNetworkStatusChangedEvent = {
 export type PeerNetworkStatusChanged = {
   ref: t.PeerNetworkId;
   self: t.PeerNetworkStatus;
-  event: t.PeerNetworkEvent
+  event: t.PeerNetworkEvent;
 };
 
 /**

@@ -1,6 +1,6 @@
 {
   "name": "sys.net",
-  "version": "0.0.0",
+  "version": "0.0.5",
   "sideEffects": false,
   "compiler": {
     "port": 3040
@@ -16,15 +16,16 @@
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@"
+    "serve": "cell.compiler serve $@",
+    "deploy": "cell.compiler upload --dir sys.net $@"
   },
   "dependencies": {
     "peerjs": "^1.3.1"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "~0.3.6",
-    "react": "~17.0.1",
-    "react-dom": "~17.0.1"
+    "@platform/cell.compiler": "~0.3.11",
+    "react": "~17.0.2",
+    "react-dom": "~17.0.2"
   },
   "license": "MIT",
   "private": true

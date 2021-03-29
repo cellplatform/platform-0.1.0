@@ -6,11 +6,17 @@ import { cli, defaultValue, fs, log, PKG, t, time } from './common';
 const FILES = [
   'package.json',
   'vercel.json',
+  'static/favicon.ico',
+
+  // 'lib/common.js',
+  // 'lib/constants.js',
+  // 'lib/env.vercel.js',
+  // 'lib/types.js',
+
   'src/common.ts',
   'src/constants.ts',
   'src/env.vercel.ts',
   'src/types.ts',
-  'static/favicon.ico',
 ];
 
 type DeployTarget = 'now';

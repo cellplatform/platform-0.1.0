@@ -1,7 +1,7 @@
 import { Hr, log } from 'sys.ui.dev';
 import React from 'react';
 
-import { Button, ButtonProps, ButtonTheme } from '..';
+import { Button, ButtonProps, ButtonTheme } from '../Button';
 import { COLORS, css, CssValue, defaultValue } from './common';
 import { IconContent } from './DEV.sample.icons';
 
@@ -33,12 +33,8 @@ export const SampleButtons: React.FC<SampleButtonsProps> = (props) => {
       padding: 30,
       Scroll: true,
     }),
-    iconContent: css({
-      Flex: 'horizontal-center-center',
-    }),
-    centerY: css({
-      Flex: 'horizontal-start-start',
-    }),
+    iconContent: css({ Flex: 'horizontal-center-center' }),
+    centerY: css({ Flex: 'horizontal-start-start' }),
     pinkBg: css({
       backgroundColor: PINK,
       PaddingY: 30,

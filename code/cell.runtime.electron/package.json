@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.runtime.electron",
-  "version": "0.0.173",
+  "version": "0.0.176",
   "description": "Electron shell for CellOS.",
   "scripts": {
     "ui": "cd app.ui && yarn start",
@@ -18,9 +18,9 @@
     "public": "ngrok http 5000 --hostname=os.ngrok.io"
   },
   "devDependencies": {
-    "@platform/cell.runtime": "0.10.17",
-    "@platform/cli.prompt": "0.3.41",
-    "@platform/ts": "4.1.7"
+    "@platform/cell.runtime": "0.10.20",
+    "@platform/cli.prompt": "0.3.43",
+    "@platform/ts": "4.1.9"
   },
   "files": [
     "lib",

@@ -3,10 +3,7 @@ import { t } from '../common';
 /**
  * Events
  */
-export type ActionEvent =
-  | IActionsInitEvent
-  | IActionsSelectChangedEvent
-  | IActionModelChangedEvent
+export type ActionEvent = IActionsInitEvent | IActionsSelectChangedEvent | IActionModelChangedEvent;
 
 /**
  * Fires to initialize the state of a set of actions.
@@ -38,4 +35,3 @@ export type IActionModelChangedPayload = {
   index: number;
   item: t.ActionItem;
 };
-

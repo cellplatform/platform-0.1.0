@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { color as colorUtil, css, style, CssValue, COLORS } from '../common';
+import { CssEdgesInput } from '@platform/css/lib/types';
 
 export type IHrProps = {
   color?: string | number | 'PINK' | 'CYAN';
-  margin?: string | number | Array<string | number | null>;
+  margin?: CssEdgesInput;
   dashed?: boolean;
   opacity?: number;
   thickness?: number;
@@ -37,7 +38,7 @@ export class Hr extends React.PureComponent<IHrProps> {
     const { dashed } = this.props;
     const thickness = this.props.thickness === undefined ? 1 : this.props.thickness;
     const opacity = this.props.opacity === undefined ? 0.1 : this.props.opacity;
-    const margin = this.props.margin === undefined ? [20, 0] : this.props.margin;
+    const margin: CssEdgesInput = this.props.margin === undefined ? [20, 0] : this.props.margin;
 
     let color = this.props.color;
     color = color === 'PINK' ? COLORS.PINK : color;

@@ -44,7 +44,7 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
         {hr}
 
         <div {...styles.buttons}>
-          <div/>
+          <div />
           {/* <Button
             onClick={() => {
               bus.fire({
