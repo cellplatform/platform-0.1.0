@@ -14,7 +14,8 @@
     "reset": "sh script.sh/reset.sh",
     "nuke": "sh script.sh/nuke.sh",
     "bundle": "sh script.sh/bundle.ui.sys.sh",
-    "open": "cd app/out/make && open ."
+    "open": "cd app/out/make && open .",
+    "public": "ngrok http 5000 --hostname=os.ngrok.io"
   },
   "devDependencies": {
     "@platform/cell.runtime": "0.10.17",

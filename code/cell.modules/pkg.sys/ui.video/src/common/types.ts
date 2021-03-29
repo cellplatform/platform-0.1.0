@@ -1,2 +1,2 @@
 export * from '../types';
-export { EventBus } from '@platform/types';
+export { EventBus, PartialDeep } from '@platform/types';

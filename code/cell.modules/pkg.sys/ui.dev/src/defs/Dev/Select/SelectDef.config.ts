@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { DEFAULT, format, SelectUtil, t } from '../../../common';
 
 type O = Record<string, unknown>;
@@ -17,12 +19,18 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
       item.current = initial.map((value) => SelectUtil.toOption(value));
       return config;
     },
+    title(value) {
+      item.title = React.isValidElement(value) ? value : format.string(value, { trim: true });
+      return config;
+    },
     label(value) {
-      item.label = format.string(value, { trim: true }) || DEFAULT.UNNAMED;
+      item.label = React.isValidElement(value)
+        ? value
+        : format.string(value, { trim: true }) || DEFAULT.UNNAMED;
       return config;
     },
     description(value) {
-      item.description = format.string(value, { trim: true });
+      item.description = React.isValidElement(value) ? value : format.string(value, { trim: true });
       return config;
     },
     items(list) {
@@ -35,6 +43,14 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
     },
     clearable(value) {
       item.clearable = value;
+      return config;
+    },
+    indent(value) {
+      item.indent = format.number(value, { min: 0, default: 0 });
+      return config;
+    },
+    view(value) {
+      item.view = value;
       return config;
     },
     pipe(...handlers) {

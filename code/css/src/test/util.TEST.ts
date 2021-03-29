@@ -202,3 +202,24 @@ describe('toPadding', () => {
     expect(style.toPadding([null], { defaultValue: 10 })).to.eql(expected);
   });
 });
+
+describe('toShadow', () => {
+  it('undefined', () => {
+    expect(style.toShadow()).to.eql(undefined);
+  });
+
+  it('defaults (x, y)', () => {
+    const res = style.toShadow({ color: 0.1, blur: 3 });
+    expect(res).to.eql('0 0 3px 0 rgba(255, 255, 255, 0.1)');
+  });
+
+  it('x, y', () => {
+    const res = style.toShadow({ x: 123, y: 456, color: 0.3, blur: 10 });
+    expect(res).to.eql('123px 456px 10px 0 rgba(255, 255, 255, 0.3)');
+  });
+
+  it('inset', () => {
+    const res = style.toShadow({ color: 0.1, blur: 3, inner: true });
+    expect(res).to.eql('inset 0 0 3px 0 rgba(255, 255, 255, 0.1)');
+  });
+});

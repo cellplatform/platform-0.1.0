@@ -10,7 +10,7 @@ export async function copyVs(options: { silent?: boolean } = {}) {
 
   if (!options.silent) {
     log.info();
-    log.info.gray('Copy Monaco');
+    log.info.gray(`Copy ${log.cyan('Monaco')}`);
     log.info.gray(` • from: ${from}`);
     log.info.gray(` • to:   ${log.white(to.substring(base.length + 1))}`);
     log.info();

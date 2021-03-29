@@ -1,4 +1,5 @@
 import { valueUtil, t } from '../common';
+import { color } from '../color';
 
 const isBlank = (value: t.CssEdgesInput) => {
   if (value === undefined || value === null) {
@@ -23,8 +24,8 @@ const isBlank = (value: t.CssEdgesInput) => {
  *  - Y/X array    (eg. [20, 5])
  *
  */
-export const toEdges: t.CssToEdges<t.ICssEdges> = (input, options = {}) => {
-  if (isBlank(input)) {
+export const toEdges: t.CssToEdges<t.CssEdges> = (input, options = {}) => {
+  if ((Array.isArray(input) && input.length === 0) || isBlank(input)) {
     const { defaultValue } = options;
     if (defaultValue && !isBlank(defaultValue)) {
       input = defaultValue;
@@ -34,8 +35,9 @@ export const toEdges: t.CssToEdges<t.ICssEdges> = (input, options = {}) => {
   }
 
   input = input || 0;
+
   if (!Array.isArray(input)) {
-    input = input.toString().split(' ');
+    input = input.toString().split(' ') as [t.CssEdgeInput];
   }
 
   const edges = input
@@ -87,8 +89,9 @@ export const toEdges: t.CssToEdges<t.ICssEdges> = (input, options = {}) => {
 
   if (top === undefined && right === undefined && bottom === undefined && left === undefined) {
     return {};
+  } else {
+    return { top, right, bottom, left };
   }
-  return { top, right, bottom, left };
 };
 
 /**
@@ -96,7 +99,7 @@ export const toEdges: t.CssToEdges<t.ICssEdges> = (input, options = {}) => {
  */
 export function prefixEdges<T extends Record<string, unknown>>(
   prefix: string,
-  edges: Partial<t.ICssEdges>,
+  edges: Partial<t.CssEdges>,
 ): T {
   return Object.keys(edges).reduce((acc, key) => {
     const value = edges[key];
@@ -108,13 +111,26 @@ export function prefixEdges<T extends Record<string, unknown>>(
 /**
  * Converts input to CSS margin edges.
  */
-export const toMargins: t.CssToEdges<t.ICssMarginEdges> = (input, options = {}) => {
-  return prefixEdges<t.ICssMarginEdges>('margin', toEdges(input, options));
+export const toMargins: t.CssToEdges<t.CssMarginEdges> = (input, options = {}) => {
+  return prefixEdges<t.CssMarginEdges>('margin', toEdges(input, options));
 };
 
 /**
  * Converts input to CSS padding edges.
  */
-export const toPadding: t.CssToEdges<t.ICssPaddingEdges> = (input, options = {}) => {
-  return prefixEdges<t.ICssPaddingEdges>('padding', toEdges(input, options));
+export const toPadding: t.CssToEdges<t.CssPaddingEdges> = (input, options = {}) => {
+  return prefixEdges<t.CssPaddingEdges>('padding', toEdges(input, options));
+};
+
+/**
+ * Converts into to a box-shadow.
+ */
+export const toShadow: t.CssToShadow = (input) => {
+  if (input === undefined) return undefined;
+  const { blur } = input;
+  const x = input.x ? `${input.x}px` : '0';
+  const y = input.y ? `${input.y}px` : '0';
+  const col = color.format(input.color);
+  const inset = input.inner ? 'inset ' : '';
+  return `${inset}${x} ${y} ${blur}px 0 ${col}`;
 };

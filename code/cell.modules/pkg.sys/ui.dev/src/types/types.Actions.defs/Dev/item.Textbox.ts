@@ -19,8 +19,10 @@ export type ActionTextboxConfig<Ctx extends O> = (args: ActionTextboxConfigArgs<
 export type ActionTextboxConfigArgs<Ctx extends O> = {
   ctx: Ctx;
   initial(value: string): ActionTextboxConfigArgs<Ctx>;
+  title(value: string | t.ReactNode): ActionTextboxConfigArgs<Ctx>;
   placeholder(value: string): ActionTextboxConfigArgs<Ctx>;
   description(value: string | t.ReactNode): ActionTextboxConfigArgs<Ctx>;
+  indent(value: number): ActionTextboxConfigArgs<Ctx>;
   pipe(...handlers: ActionTextboxHandler<Ctx>[]): ActionTextboxConfigArgs<Ctx>;
 };
 
@@ -28,8 +30,10 @@ export type ActionTextboxConfigArgs<Ctx extends O> = {
  * Editable properties of a [Textbox].
  */
 export type ActionTextboxProps = {
-  placeholder: string;
+  title?: string | t.ReactNode;
+  placeholder?: string;
   description?: string | t.ReactNode;
+  indent?: number;
   current?: string; // Latest value produced by the handler.
 };
 

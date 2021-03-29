@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, css, Format, t } from '../common';
+import { color, css, t, style } from '../common';
 import { Markdown as MarkdownComponent } from '../Markdown';
 
 export type MarkdownProps = {
@@ -11,20 +11,24 @@ export type MarkdownProps = {
 
 export const Markdown: React.FC<MarkdownProps> = (props) => {
   const { item } = props;
-  const margin = Format.toEdges(item.margin);
 
   const styles = {
     base: css({
+      boxSizing: 'border-box',
+      paddingLeft: typeof item.indent === 'number' ? item.indent : undefined,
+    }),
+    md: css({
       position: 'relative',
       boxSizing: 'border-box',
       fontSize: 11,
       color: color.format(-0.4),
-      paddingTop: margin.top,
-      paddingRight: margin.right,
-      paddingBottom: margin.bottom,
-      paddingLeft: margin.left,
+      ...style.toPadding(item.margin),
     }),
   };
 
-  return <MarkdownComponent style={styles.base}>{item.markdown}</MarkdownComponent>;
+  return (
+    <div {...styles.base}>
+      <MarkdownComponent style={styles.md}>{item.markdown}</MarkdownComponent>
+    </div>
+  );
 };

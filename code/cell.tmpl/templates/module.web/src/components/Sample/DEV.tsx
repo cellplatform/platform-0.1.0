@@ -26,6 +26,7 @@ export const actions = DevActions<Ctx>()
    */
   .subject((e) => {
     e.settings({
+      host: { background: -0.04 },
       layout: {
         label: '<Sample>',
         position: [150, 80],
@@ -33,7 +34,6 @@ export const actions = DevActions<Ctx>()
         cropmarks: -0.2,
         background: 1,
       },
-      host: { background: -0.04 },
     });
     e.render(<Sample {...e.ctx.props} />);
   });

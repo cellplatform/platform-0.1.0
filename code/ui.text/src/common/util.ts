@@ -1,4 +1,4 @@
-import { ITextStyle } from '../types';
+import { TextStyle } from '../types';
 // import { color as colorUtil } from './libs';
 import { ROBOTO } from './constants';
 
@@ -7,7 +7,7 @@ import { color as colorUtil } from '@platform/css';
 /**
  * Converts <Text> style props to a CSS object.
  */
-export const toTextCss = (props: ITextStyle) => {
+export const toTextCss = (props: TextStyle) => {
   const {
     fontSize,
     color,

@@ -26,8 +26,8 @@ export const Peer: React.FC<PeerProps> = (props) => {
   const autoPlay = defaultValue(props.autoPlay, true);
   const isLabelVisible = defaultValue(props.isLabelVisible, true);
 
-  const height = props.height || 200;
   const width = props.width || 300;
+  const height = props.height || 200;
 
   const host = location.hostname;
   const [isMuted, setIsMuted] = useState<boolean>(props.isMuted || host === 'localhost'); // NB: Peers muted while in development (eg "localhost").
@@ -44,10 +44,14 @@ export const Peer: React.FC<PeerProps> = (props) => {
       const constraints: MediaStreamConstraints = {
         video: true,
         audio: {
-          // https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/echoCancellation
-          // Found via:
-          //  - https://webrtc.github.io/samples/src/content/getusermedia/record/
-          //  - https://github.com/webrtc/samples/tree/gh-pages/src/content/getusermedia/record
+          /**
+           * https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/echoCancellation
+           *
+           * Found via:
+           *  - https://webrtc.github.io/samples/src/content/getusermedia/record/
+           *  - https://github.com/webrtc/samples/tree/gh-pages/src/content/getusermedia/record
+           *
+           */
           echoCancellation: { ideal: true },
         },
       };

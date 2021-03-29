@@ -2,7 +2,7 @@ import { Compiler, Package } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
-    .namespace('ui.video')
+    .namespace('sys.ui.video')
     .variant('web', (config) =>
       config
         .target('web')

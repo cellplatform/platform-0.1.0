@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
 import { rx, t } from '../../common';
 
 /**
@@ -15,7 +14,9 @@ export function useActionsSelectorState(args: {
 }) {
   const store = args.store;
   const list = args.actions || [];
+  const total = list.length;
   const bus = args.bus?.type<t.DevEvent>();
+
   const [selected, setSelected] = useState<t.Actions>();
 
   useEffect(() => {
@@ -38,6 +39,5 @@ export function useActionsSelectorState(args: {
     return () => dispose$.next();
   }, [bus, list]); // eslint-disable-line
 
-  const empty = list.length === 0;
-  return { list, selected, empty };
+  return { list, selected };
 }

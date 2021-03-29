@@ -18,7 +18,7 @@ export const COLORS = {
     LIME: '#A6E130',
     DARK_RED: '#CB352F',
     PURPLE: '#8F2298',
-    PINK: '#DC6FEC',
+    PINK: '#FF0067',
   },
 };
 

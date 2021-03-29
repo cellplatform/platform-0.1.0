@@ -36,9 +36,9 @@ const dummy = () => null;
  * State hook for generating handlers for a set of props.
  */
 export function useState<T>(props: T, options?: FromPropsOptions) {
-  const [events, setEvents] = React.useState<t.IMouseHandlers>();
-  React.useEffect(() => setEvents(fromProps(props, options)), []); // eslint-disable-line
-  return events?.events;
+  const [handlers, setHandlers] = React.useState<t.IMouseHandlers>();
+  React.useEffect(() => setHandlers(fromProps(props, options)), []); // eslint-disable-line
+  return handlers;
 }
 
 /**

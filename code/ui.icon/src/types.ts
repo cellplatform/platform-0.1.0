@@ -1,6 +1,4 @@
 import { CssValue as t } from '@platform/css';
-import { MouseEvent, MouseEventHandler, mouse } from '@platform/react';
-export { MouseEvent, MouseEventHandler };
 
 /**
  * An <Icon> component function.
@@ -10,9 +8,15 @@ export type IIcon = (props: IIconProps) => JSX.Element;
 /**
  * Display properties for an icon.
  */
-export type IIconProps = mouse.IMouseEventProps & {
+export type IIconProps = {
   size?: number;
   color?: number | string;
   opacity?: number;
   style?: t;
+  onClick?: React.MouseEventHandler;
+  onDoubleClick?: React.MouseEventHandler;
+  onMouseDown?: React.MouseEventHandler;
+  onMouseUp?: React.MouseEventHandler;
+  onMouseEnter?: React.MouseEventHandler;
+  onMouseLeave?: React.MouseEventHandler;
 };

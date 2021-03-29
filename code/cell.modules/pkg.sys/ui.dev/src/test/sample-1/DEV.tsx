@@ -24,7 +24,8 @@ const LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque 
 
 const markdown = () => {
   let text = '';
-  text = `${text} *I am italic*, **I am bold** \`code\` `;
+  text = `I am markdown. ${text} *I am italic*, **I am bold**,  `;
+  text = `${text} \nI am \`code\``;
   text = `${text} \n- one\n- two\n - three`;
   text = `${text}\n\n${LOREM}\n\n${LOREM} (${count})`;
   return text.trim();
@@ -44,17 +45,17 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Title');
+    e.title((config) => config.text('Title (Indented)').indent(25));
     e.markdown(markdown());
 
-    e.title('Context (ctx)');
-    e.button('change text', (e) => {
+    e.title('Context');
+    e.button('change text [TODO] foobar', (e) => {
       e.ctx.count++;
       e.ctx.text = e.ctx.text === 'hello' ? LOREM : 'hello';
     });
 
     e.button('inject <React>', (btn) => {
       count++;
-      console.log('count', count);
 
       const styles = {
         bgr: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' }),
@@ -80,45 +81,16 @@ export const actions = DevActions<Ctx>()
       config.text(markdown()).margin([40, 35, 20, 20]);
     });
 
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('Hr');
-    e.hr(1, 0.15);
-    e.hr(1, 0.15, [5, 0]);
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('Textbox');
-
-    e.textbox('my placeholder', (e) => {
-      // console.log('e', e);
+    e.markdown((config) => {
+      config.text('Markdown indented by `35` pixels').indent(35);
     });
-
-    e.textbox((config) =>
-      config
-        .placeholder('hello')
-        .initial('initial value')
-        .description('My textbox description.')
-        .pipe((e) => {
-          if (e.changing?.action === 'invoke') {
-            count++;
-            e.textbox.description = `Textbox description (invoked ${count})`;
-            e.textbox.placeholder = `Placeholder (invoked ${count})`;
-            const next = e.changing.next || '';
-            e.textbox.current = `${(next[0] || '').toUpperCase()}${next.substring(1)}`;
-          }
-        }),
-    );
 
     e.hr();
   })
 
   .items((e) => {
     e.title('Button');
-    e.button((config) => config.label('hello'));
+    e.button((config) => config.label('disabled (no handler)'));
     e.button('delay', async (e) => await time.delay(1200));
     e.hr(1, 0.15, [5, 0]);
 
@@ -128,10 +100,11 @@ export const actions = DevActions<Ctx>()
       console.log('e.host', toObject(e.host));
       console.groupEnd();
     });
-    e.button((config) => config.label(`Ellipsis - ${LOREM}`));
+    e.button((config) => config.label(`Indented Ellipsis - ${LOREM}`).indent(25));
     e.button((config) => null);
     e.button((config) => {
       config
+        .title('My button title:')
         .label('markdown')
         .description(markdown())
         .pipe((e) => {
@@ -155,24 +128,11 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Boolean');
-
-    e.boolean('boolean (disabled)');
-    e.boolean('spinner', async (e) => {
-      if (e.changing) await time.wait(800);
-    });
-    e.boolean('is running', (e) => {
-      if (e.changing) {
-        count++;
-        const isRunning = e.changing.next;
-        e.ctx.isRunning = isRunning;
-        e.boolean.label = isRunning ? 'running' : 'stopped';
-        e.boolean.description = `the thing is ${e.boolean.label} (${count})`;
-      }
-
-      e.boolean.current = e.ctx.isRunning;
-    });
-
+    e.title('Hr');
+    e.hr(1, 0.15);
+    e.hr(3, 0.15, [2, 50]);
+    e.hr((config) => config.height(1).opacity(0.15).margin([15, 0]).indent(25));
+    e.hr(1, 0.15, [15, 0], 'dashed');
     e.hr();
   })
 
@@ -180,6 +140,7 @@ export const actions = DevActions<Ctx>()
     e.title('Select');
     e.select((config) =>
       config
+        .title('My dropdown title:')
         .label('select single')
         .items(['one', { label: 'two', value: { count: 2 } }, 3])
         .initial(3)
@@ -199,6 +160,7 @@ export const actions = DevActions<Ctx>()
         .description('My set of dropdown options')
         .items(['Chocolate', 'Strawberry', 'Vanilla'])
         .multi(true)
+        .indent(25)
         .pipe((e) => {
           if (e.changing) count++;
           e.select.description = `My dropdown changed (${count})`;
@@ -215,6 +177,116 @@ export const actions = DevActions<Ctx>()
           });
         });
     });
+
+    e.select((config) => {
+      config
+        .initial('Chocolate')
+        .title('My radio options')
+        .description('My set mutually exclusive options')
+        .view('buttons')
+        .items(['Chocolate', 'Strawberry', 'Vanilla'])
+        // .clearable(true)
+        .pipe((e) => {
+          //
+        });
+    });
+
+    e.select((config) => {
+      config
+        .label('checkbox')
+        .multi(true) // NB: This is what turns the buttons into [x] checkboxes.
+        .title('My checkbox options')
+        .view('buttons')
+        .items(['Chocolate', 'Strawberry', 'Vanilla', 'Bananna'])
+        .clearable(true)
+        .indent(25)
+        .pipe((e) => {
+          if (e.changing) count++;
+          e.select.description = `My dropdown changed (${count})`;
+
+          const current = e.select.current
+            .map((m) => m.label)
+            .join(', ')
+            .trim();
+
+          e.settings({
+            select: {
+              label: current ? current : `select (multi)`,
+              isPlaceholder: !Boolean(current),
+            },
+          });
+        });
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Textbox');
+
+    e.textbox('my textbox `code`', (e) => {
+      // console.log('e', e);
+    });
+
+    e.textbox((config) =>
+      config
+        .placeholder('hello')
+        .initial('initial value')
+        .description('My textbox description.')
+        .pipe((e) => {
+          if (e.changing?.action === 'invoke') {
+            count++;
+            e.textbox.description = `Textbox description (invoked ${count})`;
+            e.textbox.placeholder = `Placeholder (invoked ${count})`;
+            const next = e.changing.next || '';
+            e.textbox.current = `${(next[0] || '').toUpperCase()}${next.substring(1)}`;
+          }
+        }),
+    );
+
+    e.textbox((config) => {
+      config.indent(45).title('indented textbox');
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Boolean');
+
+    e.boolean('boolean (disabled)');
+
+    e.boolean((config) =>
+      config
+        .title('My switch title:')
+        .label('spinner')
+        .pipe(async (e) => {
+          if (e.changing) await time.wait(800);
+        }),
+    );
+
+    // e.boolean('spinner', async (e) => {});
+
+    e.boolean('is running', (e) => {
+      if (e.changing) {
+        count++;
+        const isRunning = e.changing.next;
+        e.ctx.isRunning = isRunning;
+        e.boolean.label = isRunning ? 'running' : 'stopped';
+        e.boolean.description = `the thing is ${e.boolean.label} (${count})`;
+      }
+
+      e.boolean.current = e.ctx.isRunning;
+    });
+
+    e.boolean((config) =>
+      config
+        .label('indented')
+        .indent(50)
+        .pipe(async (e) => {
+          if (e.changing) await time.wait(800);
+        }),
+    );
 
     e.hr();
   })

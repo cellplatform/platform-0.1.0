@@ -50,11 +50,12 @@ export async function uploadFileStart(args: {
     const expiresAt = time.day().add(seconds, 's').toDate().getTime();
 
     const upload: t.IFilePresignedUploadUrl = {
-      expiresAt,
       method: 'POST',
+      filesystem: fs.type,
       filename,
       uri: fileUri,
       url: fs.type === 'LOCAL' ? Schema.urls(host).local.fs.toString() : presignedPost.path,
+      expiresAt,
       props: presignedPost.props,
     };
 
@@ -79,11 +80,7 @@ export async function uploadFileStart(args: {
     }
 
     // Finish up.
-    const fileResponse = await fileInfo({
-      fileUri,
-      db,
-      host,
-    });
+    const fileResponse = await fileInfo({ fileUri, db, host });
     const { status } = fileResponse;
     const fileResponseData = fileResponse.data as t.IResGetFile;
     const res: t.IPayload<t.IResPostFileUploadStart> = {

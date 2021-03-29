@@ -1,18 +1,17 @@
-/* eslint-disable */
 import * as React from 'react';
 
 import { expect } from '../test';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { mouse } from '.';
+import { Mouse } from '.';
 
-describe('mouse', () => {
+describe('Mouse', () => {
   describe('events$', () => {
     it('fromProps', () => {
       // NB: Testing for typescript error on `takeUntil`.
-      const props: mouse.IMouseEventProps = {};
-      const events = mouse.fromProps(props);
+      const props: Mouse.IMouseEventProps = {};
+      const events = Mouse.fromProps(props);
       const unmounted$ = new Subject();
       events.events$.pipe(takeUntil(unmounted$));
     });
@@ -20,11 +19,11 @@ describe('mouse', () => {
     it('<div>', () => {
       type P = { name?: string; onClick?: () => void };
       class Foo extends React.PureComponent<P> {
-        private mouse: mouse.IMouseHandlers;
+        private mouse: Mouse.IMouseHandlers;
 
         constructor(props: P) {
           super(props);
-          this.mouse = mouse.fromProps(props);
+          this.mouse = Mouse.fromProps(props);
         }
 
         public render() {
@@ -34,30 +33,30 @@ describe('mouse', () => {
       }
 
       const el = <Foo name={'mary'} />;
-      expect(el.props).to.eql({ name: 'mary' }); // NB: Arbitrary assertion, not the point of the test.bw
+      expect(el.props).to.eql({ name: 'mary' }); // NB: Arbitrary assertion, not the point of the test.
     });
   });
 
   describe('handler', () => {
     it('single handler', () => {
-      const res = mouse.handle({ type: 'CLICK', handlers: [(e) => true] });
+      const res = Mouse.handle({ type: 'CLICK', handlers: [(e) => true] });
       expect(res).to.be.an.instanceof(Function);
     });
 
     it('multiple handlers', () => {
-      const res = mouse.handle({ type: 'CLICK', handlers: [(e) => true, (e) => false] });
+      const res = Mouse.handle({ type: 'CLICK', handlers: [(e) => true, (e) => false] });
       expect(res).to.be.an.instanceof(Function);
     });
 
     it('no handlers (undefined)', () => {
-      const res = mouse.handle({ type: 'CLICK' });
+      const res = Mouse.handle({ type: 'CLICK' });
       expect(res).to.eql(undefined);
     });
   });
 
   describe('handlers', () => {
     it('generic handler (for all mouse events)', () => {
-      const res = mouse.handlers((e) => true);
+      const res = Mouse.handlers((e) => true);
       expect(res.isActive).to.eql(true);
       expect(res.events$).to.be.an.instanceof(Observable);
       expect(res.events.onClick).to.be.an.instanceof(Function);
@@ -69,7 +68,7 @@ describe('mouse', () => {
     });
 
     it('no handlers', () => {
-      const res = mouse.handlers();
+      const res = Mouse.handlers();
       expect(res.isActive).to.eql(false);
       expect(res.events$).to.be.an.instanceof(Observable);
       expect(res.events.onClick).to.eql(undefined);
@@ -81,7 +80,7 @@ describe('mouse', () => {
     });
 
     it('no generic handler, one specific handler (all handlers returned)', () => {
-      const res = mouse.handlers(undefined, {
+      const res = Mouse.handlers(undefined, {
         onMouseEnter: (e) => true,
         onMouseLeave: (e) => true,
       });

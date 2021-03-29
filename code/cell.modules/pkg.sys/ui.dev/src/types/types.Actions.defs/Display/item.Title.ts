@@ -7,6 +7,7 @@ export type ActionTitle = {
   id: string;
   kind: 'display/title';
   text: string;
+  indent?: number;
 };
 
 /**
@@ -16,4 +17,5 @@ export type ActionTitleConfig<Ctx extends O> = (args: ActionTitleConfigArgs<Ctx>
 export type ActionTitleConfigArgs<Ctx extends O> = {
   ctx: Ctx;
   text(value: string): ActionTitleConfigArgs<Ctx>;
+  indent(value: number): ActionTitleConfigArgs<Ctx>;
 };

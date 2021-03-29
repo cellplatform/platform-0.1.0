@@ -10,7 +10,6 @@ export type TitleProps = {
 
 export const Title: React.FC<TitleProps> = (props) => {
   const { item } = props;
-
   const styles = {
     base: css({
       boxSizing: 'border-box',
@@ -21,11 +20,14 @@ export const Title: React.FC<TitleProps> = (props) => {
       fontWeight: 600,
       opacity: 0.8,
     }),
+    text: css({
+      paddingLeft: typeof item.indent === 'number' ? item.indent : undefined,
+    }),
   };
 
   return (
     <div {...styles.base}>
-      <div>{item.text}</div>
+      <div {...styles.text}>{item.text}</div>
     </div>
   );
 };

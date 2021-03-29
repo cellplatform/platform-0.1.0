@@ -1,7 +1,12 @@
 import { Icon } from '@platform/ui.icon';
-import { VscSymbolVariable, VscSymbolClass } from 'react-icons/vsc';
-import { MdExpandMore, MdClose } from 'react-icons/md';
 import { FiBox } from 'react-icons/fi';
+import { MdClose, MdExpandMore, MdSend } from 'react-icons/md';
+import {
+  VscChecklist,
+  VscSymbolClass,
+  VscSymbolParameter,
+  VscSymbolVariable,
+} from 'react-icons/vsc';
 
 const icon = Icon.renderer;
 
@@ -12,7 +17,9 @@ export const Icons = {
   Variable: icon(VscSymbolVariable),
   Tree: icon(VscSymbolClass),
   Package: icon(FiBox),
-
+  Text: icon(VscSymbolParameter),
+  Send: icon(MdSend),
+  Checklist: icon(VscChecklist),
   Close: icon(MdClose),
 
   Chevron: {

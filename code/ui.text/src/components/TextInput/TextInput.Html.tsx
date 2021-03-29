@@ -26,7 +26,7 @@ export type IInputValue = {
   mask?: t.TextInputMaskHandler;
 };
 
-export type IHtmlInputProps = t.ITextInputFocusAction &
+export type IHtmlInputProps = t.TextInputFocusAction &
   t.ITextInputEvents &
   IInputValue & {
     events$: Subject<t.TextInputEvent>;

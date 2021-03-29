@@ -2,7 +2,7 @@ import { Compiler, Package } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
-    .namespace('net')
+    .namespace('sys.net')
     .variant('web', (config) =>
       config
         .target('web')

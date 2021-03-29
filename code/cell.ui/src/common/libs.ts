@@ -1,8 +1,7 @@
 import { equals } from 'ramda';
 export const R = { equals };
 
-import { containsFocus, mouse } from '@platform/react';
-export { containsFocus, mouse };
+export { containsFocus, Mouse } from '@platform/react';
 
 import { css, color, CssValue } from '@platform/css';
 export { css, color, CssValue };

@@ -13,8 +13,9 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   const { actions, bus } = props;
   const scrollable = defaultValue(props.scrollable, true);
   const model = actions.toObject();
-  const { namespace, items } = model;
   const defs = actions.toDefs();
+  const { namespace, items } = model;
+  const hasItems = items.length > 0;
 
   useActionPanelController({ bus, actions });
   useActionsRedraw({
@@ -34,7 +35,10 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
       fontFamily: constants.FONT.SANS,
       fontSize: 14,
     }),
-    spacer: css({ height: 80 }),
+    spacer: {
+      top: css({ height: 5 }),
+      bottom: css({ height: 80 }),
+    },
   };
 
   const elItems = items.map((item, i) => {
@@ -46,8 +50,9 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)} className={constants.CSS.ACTIONS}>
+      {hasItems && <div {...styles.spacer.top} />}
       {elItems}
-      {items.length > 0 && <div {...styles.spacer} />}
+      {hasItems && <div {...styles.spacer.bottom} />}
     </div>
   );
 };

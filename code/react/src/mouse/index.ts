@@ -1,4 +1,4 @@
-import * as mouse from './mouse';
+import * as Mouse from './Mouse';
 
-export { mouse };
+export { Mouse };
 export * from './types';

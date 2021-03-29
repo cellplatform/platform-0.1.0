@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 
 import { css, CssValue, defaultValue, rx, t } from '../../common';
-import { useActionsRedraw } from '../../components.hooks';
+import { useActionsRedraw, useActionsPropertyInput } from '../../components.hooks';
 import { Store } from '../../store';
 import { useActionsSelectorState } from '../ActionsSelector';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { Host } from '../Host';
-import { HarnessActions } from './HarnessActions';
-import { HarnessEmpty } from './HarnessEmpty';
-import { HarnessFooter } from './HarnessFooter';
+import { HarnessActions } from './Harness.Actions';
+import { HarnessEmpty } from './Harness.Empty';
+import { HarnessFooter } from './Harness.Footer';
 
 export type HarnessProps = {
   bus?: t.EventBus<any>;
-  actions?: t.Actions | t.Actions[];
+  actions?: t.ActionsSet;
   store?: t.ActionsSelectStore | boolean;
   namespace?: string;
-  allowRubberband?: boolean; // Page rubber-band effect in Chrome. Default:false.
+  allowRubberband?: boolean; // Page rubber-band effect in Chrome (default: false).
   style?: CssValue;
 };
 
@@ -31,10 +31,11 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     document.body.style.overflow = allowRubberband ? 'auto' : 'hidden';
   }, [allowRubberband]);
 
-  const store = toStore(props.namespace, asActionsArray(props.actions), props.store);
-  const actions = useActionsSelectorState({ bus, store, actions: asActionsArray(props.actions) });
+  const actions = useActionsPropertyInput(props.actions);
+  const store = toStore(props.namespace, actions.items, props.store);
+  const actionsState = useActionsSelectorState({ bus, store, actions: actions.items });
 
-  const selected = actions.selected;
+  const selected = actionsState.selected;
   selected?.renderSubject();
 
   useActionsRedraw({
@@ -80,7 +81,7 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     <HarnessFooter
       bus={bus}
       env={env}
-      actions={actions.list}
+      actions={actions.items}
       selected={selected}
       style={styles.footer}
     />
@@ -103,7 +104,7 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     </div>
   );
 
-  const elHarness = !actions.empty && (
+  const elHarness = !actions.isEmpty && (
     <>
       {elLeft}
       {elMain}
@@ -111,7 +112,7 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     </>
   );
 
-  const elEmpty = actions.empty && (
+  const elEmpty = actions.isEmpty && (
     <>
       <HarnessEmpty />
       {elFooter}
@@ -139,8 +140,4 @@ function toStore(
 ): t.ActionsSelectStore | undefined {
   if (typeof store === 'function') return store;
   return store === false ? undefined : Store.ActionsSelect.localStorage({ namespace, actions });
-}
-
-export function asActionsArray(input?: t.Actions | t.Actions[]): t.Actions[] {
-  return input === undefined ? [] : Array.isArray(input) ? input : [input];
 }

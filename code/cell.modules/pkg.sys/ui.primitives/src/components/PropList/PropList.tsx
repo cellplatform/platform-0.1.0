@@ -1,89 +1,97 @@
-import * as React from 'react';
+import React from 'react';
 
-import { color, COLORS, css, CssValue, defaultValue, t } from '../../common';
+import { color, COLORS, css, CssValue, defaultValue, t, style } from '../../common';
 import { PropListItem } from './PropList.Item';
+import { PropListTitle } from './PropList.Title';
 
 export type PropListProps = {
-  title?: string;
-  items?: (t.IPropListItem | undefined)[] | Record<string, unknown>;
+  title?: string | React.ReactNode;
+  titleEllipsis?: boolean;
+  items?: (t.PropListItem | undefined)[] | Record<string, unknown>;
+  defaults?: t.PropListDefaults;
+  padding?: t.CssEdgesInput;
+  margin?: t.CssEdgesInput;
+  width?: number | { fixed?: number; min?: number; max?: number };
+  height?: number | { fixed?: number; min?: number; max?: number };
   style?: CssValue;
 };
 
-export class PropList extends React.PureComponent<PropListProps> {
-  public static Hr = (props: { color?: string | number; margin?: number } = {}) => {
-    const style = css({
-      height: 1,
-      borderTop: `solid 4px ${color.format(defaultValue(props.color, -0.1))}`,
-      MarginY: defaultValue(props.margin, 15),
+export const PropList: React.FC<PropListProps> = (props) => {
+  const { title } = props;
+  const items = asItems(props.items);
+  const width = typeof props.width === 'number' ? { fixed: props.width } : props.width;
+  const height = typeof props.height === 'number' ? { fixed: props.height } : props.height;
+
+  const defaults: t.PropListDefaults = {
+    clipboard: true,
+    ...props.defaults,
+  };
+
+  const styles = {
+    base: css({
+      position: 'relative',
+      color: COLORS.DARK,
+
+      width: width?.fixed === undefined ? '100%' : width?.fixed,
+      height: height?.fixed,
+      minWidth: defaultValue(width?.min, 10),
+      minHeight: defaultValue(height?.min, 10),
+      maxWidth: width?.max,
+      maxHeight: height?.max,
+
+      ...style.toMargins(props.margin),
+      ...style.toPadding(props.padding),
+    }),
+    title: css({ marginBottom: 5 }),
+  };
+
+  const elItems = items
+    .filter((item) => Boolean(item))
+    .filter((item) => defaultValue(item?.visible, true))
+    .map((item, i) => {
+      return (
+        <PropListItem
+          key={i}
+          data={item as t.PropListItem}
+          isFirst={i == 0}
+          isLast={i === items.length - 1}
+          defaults={defaults}
+        />
+      );
     });
-    return <div {...style} />;
-  };
 
-  public static Space = (props: { height?: number }) => {
-    const style = css({ height: defaultValue(props.height, 20) });
-    return <div {...style} />;
-  };
+  const elTitle = title && (
+    <PropListTitle style={styles.title} ellipsis={props.titleEllipsis} defaults={defaults}>
+      {title}
+    </PropListTitle>
+  );
 
-  /**
-   * [Properties]
-   */
-  private get items() {
-    const { items } = this.props;
-
-    if (Array.isArray(items)) {
-      return items;
-    }
-
-    if (typeof items === 'object') {
-      return Object.keys(items).map((key) => {
-        const item: t.IPropListItem = { label: key, value: toRenderValue(items[key]) };
-        return item;
-      });
-    }
-
-    return [];
-  }
-
-  /**
-   * [Render]
-   */
-  public render() {
-    const styles = {
-      base: css({
-        position: 'relative',
-        color: COLORS.DARK,
-      }),
-      title: css({
-        fontWeight: 'bold',
-        fontSize: 13,
-        marginBottom: 5,
-      }),
-    };
-
-    const items = this.items;
-
-    const elItems = items
-      .filter((item) => Boolean(item))
-      .filter((item) => defaultValue(item?.visible, true))
-      .map((item, i) => {
-        const isFirst = i === 0;
-        const isLast = i === items.length - 1;
-        const data = item as t.IPropListItem;
-        return <PropListItem key={i} data={data} isFirst={isFirst} isLast={isLast} />;
-      });
-
-    return (
-      <div {...css(styles.base, this.props.style)}>
-        {this.props.title && <div {...styles.title}>{this.props.title}</div>}
-        <div>{elItems}</div>
-      </div>
-    );
-  }
-}
+  return (
+    <div {...css(styles.base, props.style)}>
+      {elTitle}
+      <div>{elItems}</div>
+    </div>
+  );
+};
 
 /**
  * [Helpers]
  */
+
+function asItems(input: PropListProps['items']) {
+  if (Array.isArray(input)) {
+    return input;
+  }
+
+  if (typeof input === 'object') {
+    return Object.keys(input).map((key) => {
+      const item: t.PropListItem = { label: key, value: toRenderValue(input[key]) };
+      return item;
+    });
+  }
+
+  return [];
+}
 
 function toRenderValue(input: any) {
   if (input === null) {

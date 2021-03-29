@@ -22,6 +22,7 @@
     "public": "ngrok http 5000 --hostname=os.ngrok.io"
   },
   "dependencies": {
+    "d3": "^6.6.0",
     "peerjs": "^1.3.1"
   },
   "devDependencies": {

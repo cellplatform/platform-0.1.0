@@ -18,8 +18,10 @@ export type ActionBoolean = t.ActionBooleanProps & {
 export type ActionBooleanConfig<Ctx extends O> = (args: ActionBooleanConfigArgs<Ctx>) => void;
 export type ActionBooleanConfigArgs<Ctx extends O> = {
   ctx: Ctx;
+  title(value: string | t.ReactNode): ActionBooleanConfigArgs<Ctx>;
   label(value: string | t.ReactNode): ActionBooleanConfigArgs<Ctx>;
   description(value: string | t.ReactNode): ActionBooleanConfigArgs<Ctx>;
+  indent(value: number): ActionBooleanConfigArgs<Ctx>;
   pipe(...handlers: t.ActionBooleanHandler<Ctx>[]): ActionBooleanConfigArgs<Ctx>;
 };
 
@@ -27,8 +29,10 @@ export type ActionBooleanConfigArgs<Ctx extends O> = {
  * Editable properties of a [Boolean] button.
  */
 export type ActionBooleanProps = {
+  title?: string | t.ReactNode;
   label: string | t.ReactNode;
   description?: string | t.ReactNode;
+  indent?: number;
   current?: boolean; // Latest value produced by the handler.
 };
 

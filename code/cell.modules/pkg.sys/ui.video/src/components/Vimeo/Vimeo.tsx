@@ -24,8 +24,6 @@ export const Vimeo: React.FC<VimeoProps> = (props) => {
   const { video, width, height, bus, autoPlay, borderRadius } = props;
   const divRef = useRef<HTMLDivElement>(null);
 
-  console.log('borderRadius', borderRadius);
-
   const idRef = useRef<string>(props.id || cuid());
   const [player, setPlayer] = useState<VimeoPlayer>();
 

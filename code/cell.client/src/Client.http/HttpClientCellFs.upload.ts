@@ -19,7 +19,7 @@ export function uploadFiles(args: {
   const input = value.asArray(args.input).filter((file) => file.data.byteLength > 0); // NB: 0-byte files will cause upload error.
   const event = UploadEvent({ total: input.length, uri: cellUri });
 
-  const promise = new Promise<t.IHttpClientResponse<R>>(async (resolve, reject) => {
+  const promise = new Promise<t.IHttpClientResponse<R>>(async (resolve) => {
     await time.wait(0); // NB: Pause to allow any [event$] listeners to subscribe on the returned promise.
 
     const errors: R['errors'] = [];

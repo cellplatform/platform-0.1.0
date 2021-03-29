@@ -1,1 +1,1 @@
-export const Tmp = 'TempFoo'; // TEMP 🐷
+export * from '../components/PeerNetwork/types';

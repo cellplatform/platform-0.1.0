@@ -9,7 +9,8 @@ export type ActionMarkdown = {
   id: string;
   kind: 'display/markdown';
   markdown: string;
-  margin: t.EdgeSpacing;
+  margin: t.CssEdgesInput;
+  indent?: number;
 };
 
 /**
@@ -19,5 +20,6 @@ export type ActionMarkdownConfig<Ctx extends O> = (args: ActionMarkdownConfigArg
 export type ActionMarkdownConfigArgs<Ctx extends O> = {
   ctx: Ctx;
   text(value: string): ActionMarkdownConfigArgs<Ctx>;
-  margin(value: t.EdgeSpacing): ActionMarkdownConfigArgs<Ctx>;
+  margin(value: t.CssEdgesInput): ActionMarkdownConfigArgs<Ctx>;
+  indent(value: number): ActionMarkdownConfigArgs<Ctx>;
 };

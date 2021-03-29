@@ -16,23 +16,23 @@ const BASE: t.IButtonTheme = {
   },
 };
 
-export class ButtonTheme {
+export const ButtonTheme = {
   /**
    * [Static.Methods]
    */
-  public static merge(base: t.IButtonTheme, theme: Partial<t.IButtonTheme>) {
+  merge(base: t.IButtonTheme, theme: Partial<t.IButtonTheme>) {
     const res = R.mergeDeepRight(base, theme) as t.IButtonTheme;
     return R.clone(res);
-  }
+  },
 
   /**
    * [Static.Properties]
    */
-  public static get BASE() {
+  get BASE() {
     return R.clone(BASE);
-  }
+  },
 
-  public static get BORDER() {
+  get BORDER() {
     const border = { ...BASE.border, isVisible: true };
     const BORDER = {
       get BASE() {
@@ -42,7 +42,7 @@ export class ButtonTheme {
         const theme = BORDER.BASE;
         theme.backgroundColor.enabled = COLORS.BLUE;
         theme.backgroundColor.disabled = -0.1;
-        theme.color = { enabled: 1, disabled: -0.5 };
+        theme.color = { enabled: 1, disabled: -0.3 };
         return theme;
       },
       get BLUE() {
@@ -68,6 +68,7 @@ export class ButtonTheme {
         return ButtonTheme.merge(base || BORDER.BASE, theme);
       },
     };
+
     return BORDER;
-  }
-}
+  },
+};
