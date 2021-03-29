@@ -1,16 +1,13 @@
 import * as React from 'react';
 import { COLORS, css, CssValue } from '../common';
 
-export type IButtonProps = {
+export type ButtonProps = {
   label: string;
   style?: CssValue;
   onClick?: () => void;
 };
 
-export class Button extends React.PureComponent<IButtonProps> {
-  /**
-   * [Render]
-   */
+export class Button extends React.PureComponent<ButtonProps> {
   public render() {
     const styles = {
       base: css({

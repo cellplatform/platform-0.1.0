@@ -1,6 +1,6 @@
 {
   "name": "@platform/types",
-  "version": "0.5.16",
+  "version": "0.5.18",
   "description": "Common types used across @platform.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -11,8 +11,8 @@
     "prepare": "yarn build && yarn lint && yarn test"
   },
   "devDependencies": {
-    "@platform/test": "0.2.3",
-    "@platform/ts.libs": "4.1.3"
+    "@platform/test": "0.2.5",
+    "@platform/ts.libs": "4.2.1"
   },
   "files": [
     "lib",

@@ -3,7 +3,7 @@ import { Builder } from '..';
 
 const createTest = () => {
   const { module: parent, bus } = create.testModule();
-  const module = create.testModule(bus).module;
+  const module = create.testModule(bus).module as any;
   const builder = Builder.tree.node(module, parent);
   return { builder, parent, module, bus };
 };

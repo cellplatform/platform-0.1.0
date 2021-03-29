@@ -49,7 +49,7 @@ export function useState<T>(props: T, options?: FromPropsOptions) {
  *    export class Button extends React.PureComponent {
  *      private mouse: mouse.IMouseHandlers;
  *
- *      constructor(props: IButtonProps) {
+ *      constructor(props: ButtonProps) {
  *        super(props);
  *        this.mouse = mouse.fromProps(props);
  *      }

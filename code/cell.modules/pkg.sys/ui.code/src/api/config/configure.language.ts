@@ -40,4 +40,3 @@ export async function registerLanguage(api: t.ICodeEditorSingleton) {
     //
   ]);
 }
-

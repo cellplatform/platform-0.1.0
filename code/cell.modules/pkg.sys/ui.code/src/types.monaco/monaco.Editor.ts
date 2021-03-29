@@ -30,4 +30,3 @@ export type IMonacoTokenThemeRule = {
   fontStyle?: string;
   foreground?: string;
 };
-

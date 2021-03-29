@@ -149,21 +149,27 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
   public changeAsync: t.StateObjectChangeAsync<T> = async (fn) => {
     const cid = id.cuid(); // "change-id"
     const from = this.state;
-    const { to, op, patches } = await nextAsync(from, fn);
-    if (Patch.isEmpty(patches)) {
-      return { op, cid, patches };
+    const next = await nextAsync<T>(from, fn);
+    if (Patch.isEmpty(next.patches)) {
+      return { op: next.op, cid, patches: next.patches };
     } else {
-      return this._changeComplete({ cid, from, to, op, patches });
+      return this._changeComplete({
+        cid,
+        from,
+        to: next.to as T,
+        op: next.op,
+        patches: next.patches,
+      });
     }
   };
 
-  private _changeComplete = (args: {
+  private _changeComplete(args: {
     cid: string;
     from: T;
     to: T;
     op: t.StateObjectChangeOperation;
     patches: t.PatchSet;
-  }) => {
+  }) {
     const { cid, from, to, op, patches } = args;
 
     // Fire BEFORE event.
@@ -190,97 +196,97 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
       : { op, cid, from, to, patches };
 
     if (changed) {
-      this._state = to;
+      this._state = to as T;
       this.fire({ type: 'StateObject/changed', payload: changed });
     }
 
     // Finish up.
     return { op, cid, changed, cancelled, patches };
-  };
+  }
 
-  private _change = (args: { fn: T | t.StateObjectChanger<T> }) => {
-    const { fn } = args;
-    const cid = id.cuid(); // "change-id"
+  // private _change = (args: { fn: T | t.StateObjectChanger<T> }) => {
+  //   const { fn } = args;
+  //   const cid = id.cuid(); // "change-id"
 
-    const from = this.state;
-    const { to, op, patches } = next(from, fn);
-    if (Patch.isEmpty(patches)) {
-      return { op, cid, patches };
-    }
+  //   const from = this.state;
+  //   const { to, op, patches } = next(from, fn);
+  //   if (Patch.isEmpty(patches)) {
+  //     return { op, cid, patches };
+  //   }
 
-    // Fire BEFORE event.
-    const changing: t.IStateObjectChanging<T> = {
-      op,
-      cid,
-      from,
-      to,
-      patches,
-      cancelled: false,
-      cancel: () => (changing.cancelled = true),
-    };
+  //   // Fire BEFORE event.
+  //   const changing: t.IStateObjectChanging<T> = {
+  //     op,
+  //     cid,
+  //     from,
+  //     to,
+  //     patches,
+  //     cancelled: false,
+  //     cancel: () => (changing.cancelled = true),
+  //   };
 
-    this.fire({ type: 'StateObject/changing', payload: changing });
+  //   this.fire({ type: 'StateObject/changing', payload: changing });
 
-    // Update state and alert listeners.
-    const cancelled = changing.cancelled ? changing : undefined;
-    if (cancelled) {
-      this.fire({ type: 'StateObject/cancelled', payload: cancelled });
-    }
+  //   // Update state and alert listeners.
+  //   const cancelled = changing.cancelled ? changing : undefined;
+  //   if (cancelled) {
+  //     this.fire({ type: 'StateObject/cancelled', payload: cancelled });
+  //   }
 
-    const changed: t.IStateObjectChanged<T> | undefined = cancelled
-      ? undefined
-      : { op, cid, from, to, patches };
+  //   const changed: t.IStateObjectChanged<T> | undefined = cancelled
+  //     ? undefined
+  //     : { op, cid, from, to, patches };
 
-    if (changed) {
-      this._state = to;
-      this.fire({ type: 'StateObject/changed', payload: changed });
-    }
+  //   if (changed) {
+  //     this._state = to;
+  //     this.fire({ type: 'StateObject/changed', payload: changed });
+  //   }
 
-    // Finish up.
-    return { op, cid, changed, cancelled, patches };
-  };
+  //   // Finish up.
+  //   return { op, cid, changed, cancelled, patches };
+  // };
 
-  private _changeORIGINAL = (args: { fn: T | t.StateObjectChanger<T> }) => {
-    const { fn } = args;
-    const cid = id.cuid(); // "change-id"
+  // private _changeORIGINAL = (args: { fn: T | t.StateObjectChanger<T> }) => {
+  //   const { fn } = args;
+  //   const cid = id.cuid(); // "change-id"
 
-    const from = this.state;
-    const { to, op, patches } = next(from, fn);
-    if (Patch.isEmpty(patches)) {
-      return { op, cid, patches };
-    }
+  //   const from = this.state;
+  //   const { to, op, patches } = next(from, fn);
+  //   if (Patch.isEmpty(patches)) {
+  //     return { op, cid, patches };
+  //   }
 
-    // Fire BEFORE event.
-    const changing: t.IStateObjectChanging<T> = {
-      op,
-      cid,
-      from,
-      to,
-      patches,
-      cancelled: false,
-      cancel: () => (changing.cancelled = true),
-    };
+  //   // Fire BEFORE event.
+  //   const changing: t.IStateObjectChanging<T> = {
+  //     op,
+  //     cid,
+  //     from,
+  //     to,
+  //     patches,
+  //     cancelled: false,
+  //     cancel: () => (changing.cancelled = true),
+  //   };
 
-    this.fire({ type: 'StateObject/changing', payload: changing });
+  //   this.fire({ type: 'StateObject/changing', payload: changing });
 
-    // Update state and alert listeners.
-    const cancelled = changing.cancelled ? changing : undefined;
-    if (cancelled) {
-      this.fire({ type: 'StateObject/cancelled', payload: cancelled });
-    }
+  //   // Update state and alert listeners.
+  //   const cancelled = changing.cancelled ? changing : undefined;
+  //   if (cancelled) {
+  //     this.fire({ type: 'StateObject/cancelled', payload: cancelled });
+  //   }
 
-    const changed: t.IStateObjectChanged<T> | undefined = cancelled
-      ? undefined
-      : { op, cid, from, to, patches };
+  //   const changed: t.IStateObjectChanged<T> | undefined = cancelled
+  //     ? undefined
+  //     : { op, cid, from, to, patches };
 
-    if (changed) {
-      this._state = to;
-      this.fire({ type: 'StateObject/changed', payload: changed });
-    }
+  //   if (changed) {
+  //     this._state = to;
+  //     this.fire({ type: 'StateObject/changed', payload: changed });
+  //   }
 
-    // Finish up.
-    return { op, cid, changed, cancelled, patches };
-  };
+  //   // Finish up.
+  //   return { op, cid, changed, cancelled, patches };
+  // };
 
   /**
    * [Internal]

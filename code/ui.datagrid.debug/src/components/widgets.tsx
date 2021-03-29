@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { color, COLORS, constants, css, defaultValue, CssValue } from './common';
-import { Button, IButtonProps } from './primitives';
+import { Button, ButtonProps } from './primitives';
 
 const STYLES = {
   hr: css({
@@ -22,7 +22,7 @@ const STYLES = {
 export const Hr = () => <hr {...STYLES.hr} />;
 export const HrDashed = () => <hr {...STYLES.hrDashed} />;
 
-export const LinkButton = (props: IButtonProps) => {
+export const LinkButton = (props: ButtonProps) => {
   const styles = {
     base: css({
       color: COLORS.CLI.CYAN,

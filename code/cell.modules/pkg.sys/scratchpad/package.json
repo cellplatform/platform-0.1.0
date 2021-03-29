@@ -1,6 +1,6 @@
 {
   "name": "sys.scratchpad",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "sideEffects": false,
   "compiler": {
     "port": 3033
@@ -18,15 +18,15 @@
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "deploy": "yarn upload --dir=sample --port 5000",
-    "public": "ngrok http 5000 --hostname=os.ngrok.io"
+    "public": "ngrok http 5000 --hostname=os.ngrok.io",
+    "deploy": "yarn upload --dir=sys.scratchpad $@"
   },
   "dependencies": {
     "d3": "^6.6.1",
     "peerjs": "^1.3.1"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.3.6",
+    "@platform/cell.compiler": "^0.3.11",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

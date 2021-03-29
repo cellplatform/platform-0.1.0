@@ -1,5 +1,3 @@
-import { React } from '@ungap/global-this';
-
 /**
  * Default values used when optional properties are ommitted.
  */

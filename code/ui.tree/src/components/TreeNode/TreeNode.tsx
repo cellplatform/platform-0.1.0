@@ -1,5 +1,5 @@
 import { color, css, CssValue, style } from '@platform/css';
-import { mouse } from '@platform/react';
+import { Mouse } from '@platform/react';
 import { defaultValue } from '@platform/util.value';
 import * as React from 'react';
 
@@ -11,7 +11,7 @@ import { Text } from '@platform/ui.text/lib/components/Text';
 import { TreeUtil } from '../../TreeUtil';
 
 const DEFAULT = {
-  PADDING: [5, 0, 5, 5],
+  PADDING: [5, 0, 5, 5] as t.CssEdgesInput,
 };
 const SIZE = {
   LABEL: 24,
@@ -467,7 +467,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     target: t.TreeNodeMouseEventHandlerArgs['target'],
     onMouse?: t.TreeNodeMouseEventHandler,
   ) {
-    const handlers = mouse.handlers((e) => {
+    const handlers = Mouse.handlers((e) => {
       const node = getNode();
       const props = node.props?.treeview || {};
       const children = TreeUtil.children(node);

@@ -1,7 +1,7 @@
 import { log } from 'sys.ui.dev';
 import React from 'react';
 
-import { Switch, SwitchTheme, SwitchProps } from '..';
+import { Switch, SwitchTheme, SwitchProps } from '../Switch';
 import { COLORS, css, CssValue, t } from './common';
 
 const ORANGE = '#F6A623';

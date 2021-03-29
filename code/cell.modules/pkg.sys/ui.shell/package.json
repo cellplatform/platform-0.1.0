@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.shell",
-  "version": "0.0.52",
+  "version": "0.0.57",
   "sideEffects": false,
   "compiler": {
     "port": 1234
@@ -10,6 +10,7 @@
     "test": "ts test $@",
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",
+    "lint": "ts lint $@",
     "bundle": "cell.compiler bundle $@",
     "watch": "cell.compiler watch $@",
     "upload": "cell.compiler upload $@",
@@ -19,7 +20,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@platform/cell.compiler": "^0.3.6",
+    "@platform/cell.compiler": "^0.3.11",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

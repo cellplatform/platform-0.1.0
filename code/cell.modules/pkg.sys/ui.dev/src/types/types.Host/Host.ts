@@ -9,4 +9,3 @@ export type Host = {
   orientation?: t.Orientation;
   spacing?: number; // X or Y spacing between elements if more than one element is being rendered.
 };
-

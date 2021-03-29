@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.string",
-  "version": "0.5.29",
+  "version": "0.5.31",
   "description": "String helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,8 +18,8 @@
     "underscore.string": "3.3.5"
   },
   "devDependencies": {
-    "@platform/test": "0.2.3",
-    "@platform/ts": "4.1.7",
+    "@platform/test": "0.2.5",
+    "@platform/ts": "4.1.9",
     "@types/escape-string-regexp": "2.0.1"
   },
   "files": [

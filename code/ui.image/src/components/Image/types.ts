@@ -1,4 +1,3 @@
-import { IMouseEventProps } from '@platform/react';
 import { CssValue } from '@platform/css';
 import { Subject } from 'rxjs';
 
@@ -7,7 +6,7 @@ export type ImageLoadStatus = 'LOADING' | 'LOADED' | 'FAILED';
 
 export type ImageLoadedEventHandler = (e: IImageLoad) => void;
 
-export type IImageProps = IMouseEventProps & {
+export type IImageProps = {
   style?: CssValue;
   opacity?: number;
   scale?: number;
@@ -15,6 +14,12 @@ export type IImageProps = IMouseEventProps & {
   fadeIn?: number; // msecs.
   onLoaded?: ImageLoadedEventHandler;
   events$?: Subject<ImageEvent>;
+
+  onClick?: React.MouseEventHandler;
+  onMouseDown?: React.MouseEventHandler;
+  onMouseUp?: React.MouseEventHandler;
+  onMouseEnter?: React.MouseEventHandler;
+  onMouseLeave?: React.MouseEventHandler;
 };
 
 export type ImageSrc = {

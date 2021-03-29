@@ -1,24 +1,26 @@
 {
   "name": "sys.ui.primitives",
-  "version": "0.0.52",
+  "version": "0.0.57",
   "sideEffects": false,
   "compiler": {
     "port": 3036
   },
   "scripts": {
-    "build": "ts build --no-esm $@",
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",
-    "bundle": "cell.compiler bundle --name prod $@",
+    "lint": "ts lint $@",
+    "build": "ts build --no-esm $@",
+    "bundle": "cell.compiler bundle $@",
     "watch": "cell.compiler watch $@",
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@"
+    "serve": "cell.compiler serve $@",
+    "deploy": "cell.compiler upload --dir sys.ui.primitives $@"
   },
   "dependencies": {},
   "devDependencies": {
-    "@platform/cell.compiler": "^0.3.6",
+    "@platform/cell.compiler": "^0.3.11",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
