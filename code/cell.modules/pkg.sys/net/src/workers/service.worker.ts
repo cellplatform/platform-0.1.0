@@ -5,5 +5,7 @@ ctx.addEventListener('install', (e) => {
 });
 
 ctx.addEventListener('fetch', async (e) => {
-  // console.log('fetch:', e);
+  console.log('fetch/bundle:', e);
+  // console.log('value', value);
+  console.log('__CELL__', __CELL__);
 });
