@@ -1,5 +1,17 @@
 import { Compiler } from '../../node/compiler';
-import { fs, HttpClient, log, Model, PATH, t, Uri, Schema, defaultValue } from '../common';
+import {
+  constants,
+  defaultValue,
+  fs,
+  HttpClient,
+  log,
+  Model,
+  Package,
+  PATH,
+  Schema,
+  t,
+  Uri,
+} from '../common';
 import * as util from '../util';
 import { runClean } from './cmd.clean';
 
@@ -21,6 +33,9 @@ export async function upload(argv: t.Argv) {
   const config = (await util.loadConfig(argv.config, { name })).mode(mode);
   const model = Model(config);
   const target = model.target();
+  const bump = util.bumpArg(argv);
+
+  if (bump) await Package.bump(constants.PKG.PATH, bump);
 
   let uri: string | undefined = argv.uri;
   let targetDir: string = typeof argv.dir === 'string' ? argv.dir || '' : '';

@@ -1,4 +1,4 @@
-import { t, minimist, logger } from '../common';
+import { t, minimist } from '../common';
 
 type P = minimist.ParsedArgs;
 
@@ -23,4 +23,14 @@ export function modeArg(argv: P, defaultValue?: t.WpMode): t.WpMode {
     return 'development';
   }
   return defaultValue || 'production';
+}
+
+export function bumpArg(
+  argv: P,
+  defaultValue?: t.VersionBumpLevel,
+): t.VersionBumpLevel | undefined {
+  const value = argv.bump;
+  if (value === true) return 'patch';
+  if (typeof value === 'string') return value as t.VersionBumpLevel;
+  return defaultValue;
 }

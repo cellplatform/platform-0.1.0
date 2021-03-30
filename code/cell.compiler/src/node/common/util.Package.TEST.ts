@@ -7,7 +7,7 @@ const TEMPLATE = {
   verion: '0.0.0',
 };
 
-describe.only('util.Package', () => {
+describe('util.Package', () => {
   const loadJson = async () => (await fs.readJson(PATH)) as { version: string };
   const expectVersionInFile = async (version: string) => {
     const json = await loadJson();
