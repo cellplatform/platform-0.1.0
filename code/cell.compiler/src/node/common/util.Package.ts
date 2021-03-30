@@ -1,9 +1,10 @@
 import { fs, semver } from './libs';
 import * as t from './types';
-import { PKG } from './constants';
-import { JavascriptModulesPlugin } from 'webpack';
+
+type BumpLevel = 'major' | 'minor' | 'patch' | 'alpha' | 'beta';
 
 const NODE_MODULES = 'node_modules/';
+const BUMP_LEVELS: BumpLevel[] = ['major', 'minor', 'patch', 'alpha', 'beta'];
 
 export const Package = {
   /**
@@ -45,7 +46,13 @@ export const Package = {
   /**
    * Bump the [package.json].
    */
-  async bump(path: string, level: 'major' | 'minor' | 'patch' | 'alpha' | 'beta') {
+  async bump(path: string, level: BumpLevel) {
+    if (!BUMP_LEVELS.includes(level)) {
+      const supported = BUMP_LEVELS.join(',');
+      const err = `Version bump level [${level}] not supported. Supported levels: ${supported}`;
+      throw new Error(err);
+    }
+
     if (!(await fs.pathExists(path))) {
       const err = `Cannot [${level}] bump package.json. File does not exist: ${path}`;
       throw new Error(err);

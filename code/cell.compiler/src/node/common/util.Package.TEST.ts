@@ -1,4 +1,4 @@
-import { expect, fs } from '../../test';
+import { expect, expectError, fs } from '../../test';
 import { Package } from './util.Package';
 
 const PATH = fs.resolve('./tmp/test/util.Package/package.json');
@@ -76,7 +76,7 @@ describe.only('util.Package', () => {
       expect(res2.version.to).to.eql('0.0.1-beta.1');
     });
 
-    it('sequence (alpha ➔ beta  ➔ patch  ➔ minor ➔ major)', async () => {
+    it('sequence (alpha ➔ beta  ➔ patch ➔ minor ➔ major)', async () => {
       const res1 = await Package.bump(PATH, 'alpha');
       const res2 = await Package.bump(PATH, 'beta');
       const res3 = await Package.bump(PATH, 'patch');
@@ -88,6 +88,12 @@ describe.only('util.Package', () => {
       expect(res3.version.to).to.eql('0.0.1');
       expect(res4.version.to).to.eql('0.1.0');
       expect(res5.version.to).to.eql('1.0.0');
+    });
+
+    it('throw: not supported', async () => {
+      await expectError(async () => {
+        await Package.bump(PATH, 'foo' as any);
+      }, 'Version bump level [foo] not supported');
     });
   });
 });
