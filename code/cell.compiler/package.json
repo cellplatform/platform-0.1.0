@@ -44,6 +44,7 @@
     "@types/jsonpath": "0.2.0",
     "@types/webpack-dev-server": "3.11.3",
     "babel-loader": "8.2.2",
+    "core-js": "3.9.1",
     "css-loader": "5.2.0",
     "file-loader": "6.2.0",
     "fork-ts-checker-webpack-plugin": "6.2.0",
@@ -53,12 +54,12 @@
     "ora": "5.4.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "semver": "^7.3.5",
     "serve": "11.3.2",
     "style-loader": "2.0.0",
     "webpack": "5.28.0",
     "webpack-dev-server": "3.11.2",
-    "worker-loader": "3.0.8",
-    "core-js": "3.9.1"
+    "worker-loader": "3.0.8"
   },
   "devDependencies": {
     "@platform/cell.runtime.web": "0.1.30",

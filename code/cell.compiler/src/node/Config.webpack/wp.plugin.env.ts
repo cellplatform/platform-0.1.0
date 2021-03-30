@@ -12,7 +12,7 @@ export function init(args: t.IArgs) {
   const PKG = constants.PKG;
   const json: t.RuntimeModule = {
     ...model.env,
-    module: { name: PKG.name || '', version: PKG.version || '' },
+    module: { name: PKG.JSON.name || '', version: PKG.JSON.version || '' },
   };
   if (args.isDev && !json.origin) {
     json.origin = { host: `localhost:${model.port()}`, uri: 'cell:dev:A1' };

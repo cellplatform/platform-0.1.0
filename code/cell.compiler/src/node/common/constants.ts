@@ -14,9 +14,13 @@ const CONFIG = {
   entry: {},
 };
 
-export const PKG = fs.readJsonSync(fs.resolve('./package.json')) as t.CompilerPackageJson;
-if (!PKG.compiler) {
-  PKG.compiler = { port: CONFIG.port };
+const PKG_PATH = fs.resolve('./package.json');
+export const PKG = {
+  PATH: PKG_PATH,
+  JSON: fs.readJsonSync(PKG_PATH) as t.CompilerPackageJson,
+};
+if (!PKG.JSON.compiler) {
+  PKG.JSON.compiler = { port: CONFIG.port };
 }
 
 export const IS_CLOUD = Boolean(env('VERCEL_REGION'));
