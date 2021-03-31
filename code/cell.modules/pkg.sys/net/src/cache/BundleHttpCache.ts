@@ -1,3 +1,5 @@
+import { log } from '@platform/log/lib/client';
+
 type FetchEvent = Event & {
   clientId: string;
   request: Request;
@@ -16,7 +18,7 @@ type FetchEvent = Event & {
  *    https://gist.github.com/tiernan/c18a380935e45a6d942ac1e88c5bbaf3
  *
  */
-export const BundleCache = {
+export const BundleHttpCache = {
   get module() {
     return __CELL__.module;
   },
@@ -24,20 +26,22 @@ export const BundleCache = {
   /**
    * Initializes a service worker cache.
    */
-  serviceWorker(window: Window & typeof globalThis) {
+  serviceWorker(window: Window, options: { log?: boolean | 'verbose' } = {}) {
     const ctx = (window as unknown) as ServiceWorker;
+
+    const { log: logLevel } = options;
 
     ctx.addEventListener('fetch', async (event) => {
       const e = event as FetchEvent;
       const url = e.request.url;
-      const cacheName = `module:${BundleCache.module.name}@${BundleCache.module.version}`;
+      const name = `module:${BundleHttpCache.module.name}@${BundleHttpCache.module.version}`;
 
       e.respondWith(
-        caches.open(cacheName).then(async (cache) => {
+        caches.open(name).then(async (cache) => {
           const cached = await cache.match(e.request);
 
           if (cached) {
-            console.log('From cache:', url);
+            if (log) log.info(`From cache: ${url}`);
             return cached;
           }
 
@@ -45,7 +49,7 @@ export const BundleCache = {
 
           if (e.request.method === 'GET') {
             cache.put(e.request, fetched.clone());
-            console.log('Added to cache:', url);
+            if (log) log.info(`Saved to cache: ${url}`);
           }
 
           return fetched;

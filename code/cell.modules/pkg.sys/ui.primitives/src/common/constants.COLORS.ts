@@ -8,4 +8,5 @@ export const COLORS = {
   PINK: '#FE0168',
   YELLOW: '#FFAB0A',
   RED: '#FF0000',
+  PURPLE: '#A11D8E',
 };

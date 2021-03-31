@@ -1,10 +1,20 @@
 import { t } from './common';
 
 /**
+ * Network CONNECTION
+ */
+export type PeerConnectionEvent =
+  | t.PeerConnectReqEvent
+  | t.PeerConnectResEvent
+  | t.PeerConnectionClosedEvent
+  | t.PeerDisconnectReqEvent
+  | t.PeerDisconnectResEvent;
+
+/**
  * Fired to initiate a data connection.
  */
-export type PeerNetworkConnectReqEvent = {
-  type: 'PeerNetwork/connect:req';
+export type PeerConnectReqEvent = {
+  type: 'Peer/connect:req';
   payload: PeerNetworkConnectReq;
 };
 export type PeerNetworkConnectReq = PeerNetworkConnectDataReq | PeerNetworkConnectMediaReq;
@@ -22,8 +32,8 @@ export type PeerNetworkConnectMediaReq = ConnectBase & { kind: 'media'; timeout?
 /**
  * Fired when a peer completes it's connection.
  */
-export type PeerNetworkConnectResEvent = {
-  type: 'PeerNetwork/connect:res';
+export type PeerConnectResEvent = {
+  type: 'Peer/connect:res';
   payload: PeerNetworkConnectRes;
 };
 export type PeerNetworkConnectRes = {
@@ -38,8 +48,8 @@ export type PeerNetworkConnectRes = {
 /**
  * Fired to close a connection.
  */
-export type PeerNetworkDisconnectReqEvent = {
-  type: 'PeerNetwork/disconnect:req';
+export type PeerDisconnectReqEvent = {
+  type: 'Peer/disconnect:req';
   payload: PeerNetworkDisconnectReq;
 };
 export type PeerNetworkDisconnectReq = {
@@ -53,8 +63,8 @@ export type PeerNetworkDisconnectReq = {
  *    The generic "connection:closed" request will also
  *    fire upon completing.
  */
-export type PeerNetworkDisconnectResEvent = {
-  type: 'PeerNetwork/disconnect:res';
+export type PeerDisconnectResEvent = {
+  type: 'Peer/disconnect:res';
   payload: PeerNetworkDisconnectRes;
 };
 export type PeerNetworkDisconnectRes = {
@@ -67,8 +77,8 @@ export type PeerNetworkDisconnectRes = {
 /**
  * Fired when a connection closes.
  */
-export type PeerNetworkConnectionClosedEvent = {
-  type: 'PeerNetwork/connection:closed';
+export type PeerConnectionClosedEvent = {
+  type: 'Peer/connection:closed';
   payload: PeerNetworkConnectionClosed;
 };
 export type PeerNetworkConnectionClosed = {

@@ -1,1 +1,1 @@
-export * from './BundleCache';
+export * from './BundleHttpCache';

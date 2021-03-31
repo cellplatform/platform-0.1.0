@@ -1,6 +1,18 @@
 import { t } from './common';
 
 /**
+ * NETWORK
+ */
+export type PeerNetworkEvent =
+  | t.PeerNetworkInitReqEvent
+  | t.PeerNetworkInitResEvent
+  | t.PeerNetworkStatusRequestEvent
+  | t.PeerNetworkStatusResponseEvent
+  | t.PeerNetworkStatusChangedEvent
+  | t.PeerNetworkPurgeReqEvent
+  | t.PeerNetworkPurgeResEvent;
+
+/**
  * Fires to initiate the creation of a Peer.
  */
 export type PeerNetworkInitReqEvent = {
@@ -65,7 +77,7 @@ export type PeerNetworkStatusChangedEvent = {
 export type PeerNetworkStatusChanged = {
   ref: t.PeerNetworkId;
   self: t.PeerNetworkStatus;
-  event: t.PeerNetworkEvent;
+  event: t.PeerEvent;
 };
 
 /**

@@ -2,12 +2,12 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { PeerNetworkController, PeerNetworkEvents } from '..';
-import { css, cuid, deleteUndefined, Icons, rx, t, time, MediaStreamEvents } from './common';
+import { css, cuid, deleteUndefined, Icons, MediaStreamEvents, rx, t, time } from './common';
 import { Debug } from './DEV.Debug';
 
 type Ctx = {
   id: string;
-  bus: t.EventBus<t.PeerNetworkEvent>;
+  bus: t.EventBus<t.PeerEvent>;
   signal: string; // Signalling server network address (host/path).
   events: {
     network: ReturnType<typeof PeerNetworkEvents>;
@@ -28,7 +28,7 @@ export const actions = DevActions<Ctx>()
     if (prev) return prev;
 
     const id = cuid();
-    const bus = rx.bus<t.PeerNetworkEvent>();
+    const bus = rx.bus<t.PeerEvent>();
 
     PeerNetworkController({ bus });
     const signal = 'rtc.cellfs.com/peer';
@@ -131,11 +131,12 @@ export const actions = DevActions<Ctx>()
         .label('reliable')
         .pipe((e) => {
           if (e.changing) e.ctx.reliable = e.changing.next;
+
           const reliable = e.ctx.reliable;
+          const description = reliable ? '(eg. large file transfers)' : '(eg. streaming or gaming)';
+
           e.boolean.current = reliable;
-          e.boolean.description = reliable
-            ? '(eg. streaming or gaming)'
-            : '(eg. large file transfers)';
+          e.boolean.description = description;
         });
     });
 

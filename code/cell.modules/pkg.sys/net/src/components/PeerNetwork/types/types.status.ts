@@ -8,7 +8,7 @@ export type PeerNetworkStatus = {
   createdAt: number;
   signal: t.PeerNetworkSignalEndpoint;
   connections: t.PeerConnectionStatus[];
-  media: { video?: MediaStream; screen?: MediaStream };
+  isOnline: boolean;
 };
 
 /**

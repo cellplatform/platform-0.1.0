@@ -4,6 +4,11 @@ import { DevActions } from 'sys.ui.dev';
 import { Zoom, ZoomProps, useZoomDrag } from '.';
 import { css, bundle } from '../../common';
 
+/**
+ * Samples
+ * https://jclem.net/posts/pan-zoom-canvas-react
+ */
+
 type Ctx = {
   dragEnabled: boolean;
   props: ZoomProps;

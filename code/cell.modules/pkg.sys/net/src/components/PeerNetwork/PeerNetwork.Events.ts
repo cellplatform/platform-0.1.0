@@ -9,7 +9,7 @@ import { cuid, rx, t } from '../../common';
 export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
-  const bus = args.bus.type<t.PeerNetworkEvent>();
+  const bus = args.bus.type<t.PeerEvent>();
   const event$ = bus.event$.pipe(
     takeUntil(dispose$),
     filter((e) => e.type.startsWith('PeerNetwork/')),
@@ -80,11 +80,11 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
    */
   const connection = (ref: string, remote: string) => {
     const connected$ = rx
-      .payload<t.PeerNetworkConnectResEvent>(event$, 'PeerNetwork/connect:res')
+      .payload<t.PeerConnectResEvent>(event$, 'Peer/connect:res')
       .pipe(filter((e) => e.ref === ref && e.remote === remote));
 
     const disconnected$ = rx
-      .payload<t.PeerNetworkDisconnectResEvent>(event$, 'PeerNetwork/disconnect:res')
+      .payload<t.PeerDisconnectResEvent>(event$, 'Peer/disconnect:res')
       .pipe(filter((e) => e.ref === ref && e.remote === remote));
 
     const open = {
@@ -92,7 +92,7 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
         const { reliable, metadata } = options;
         const res = firstValueFrom(connected$);
         bus.fire({
-          type: 'PeerNetwork/connect:req',
+          type: 'Peer/connect:req',
           payload: { ref, remote, kind: 'data', reliable, metadata, direction: 'outgoing' },
         });
         return res;
@@ -101,7 +101,7 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
         const { metadata } = options;
         const res = firstValueFrom(connected$);
         bus.fire({
-          type: 'PeerNetwork/connect:req',
+          type: 'Peer/connect:req',
           payload: { ref, remote, kind: 'media', metadata, direction: 'outgoing' },
         });
         return res;
@@ -110,7 +110,7 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
 
     const close = () => {
       const res = firstValueFrom(disconnected$);
-      bus.fire({ type: 'PeerNetwork/disconnect:req', payload: { ref, remote } });
+      bus.fire({ type: 'Peer/disconnect:req', payload: { ref, remote } });
       return res;
     };
 
@@ -119,11 +119,11 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
 
   const connections = (ref: string) => {
     const opened$ = rx
-      .payload<t.PeerNetworkConnectResEvent>(event$, 'PeerNetwork/connect:res')
+      .payload<t.PeerConnectResEvent>(event$, 'Peer/connect:res')
       .pipe(filter((e) => e.ref === ref));
 
     const closed$ = rx
-      .payload<t.PeerNetworkConnectionClosedEvent>(event$, 'PeerNetwork/connection:closed')
+      .payload<t.PeerConnectionClosedEvent>(event$, 'Peer/connection:closed')
       .pipe(filter((e) => e.ref === ref));
 
     return { ref, opened$, closed$ };

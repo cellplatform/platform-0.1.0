@@ -23,7 +23,7 @@ export const VideoSelf: React.FC<VideoSelfProps> = (props) => {
   const { width = 150, height = 100 } = props;
 
   const ref = props.networkRef;
-  const bus = props.bus.type<t.PeerNetworkEvent | MediaEvent>();
+  const bus = props.bus.type<t.PeerEvent | MediaEvent>();
 
   const { stream } = useVideoStreamState({
     ref,

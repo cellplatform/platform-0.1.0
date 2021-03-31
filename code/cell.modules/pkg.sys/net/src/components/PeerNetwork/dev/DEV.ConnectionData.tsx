@@ -13,12 +13,8 @@ export type ConnectionDataProps = {
 
 export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
   const { connection } = props;
-  const bus = props.bus.type<t.PeerNetworkEvent>();
+  const bus = props.bus.type<t.PeerEvent>();
 
-  const [redraw, setRedraw] = useState<number>(0);
-
-  // const marginBottom = props.isLast ? 20 : null;
-  // marginBottom
   const id = connection.id;
 
   const styles = {
@@ -31,8 +27,8 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
   const items: PropListItem[] = [
     { label: 'id', value: { data: id.remote, clipboard: true } },
     { label: 'kind', value: connection.kind },
-    { label: 'open', value: connection.isOpen },
     { label: 'reliable', value: connection.isReliable },
+    { label: 'open', value: connection.isOpen },
   ];
 
   const hr = <Hr thickness={5} opacity={0.1} margin={[10, 0]} />;
@@ -40,7 +36,7 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <Card key={id.remote} padding={[15, 20]} margin={props.margin} width={280}>
-        <PropList items={items} />
+        <PropList items={items} defaults={{ clipboard: false }} />
         {hr}
 
         <div {...styles.buttons}>
@@ -58,7 +54,7 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
           <Button
             onClick={() => {
               bus.fire({
-                type: 'PeerNetwork/disconnect:req',
+                type: 'Peer/disconnect:req',
                 payload: { ref: id.local, remote: id.remote },
               });
             }}

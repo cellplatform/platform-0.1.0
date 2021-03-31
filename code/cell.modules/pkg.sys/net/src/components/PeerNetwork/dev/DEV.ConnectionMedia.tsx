@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ObjectView } from 'sys.ui.dev';
 
-import { Card, css, CssValue, PropListItem, t, time, PropList, Button, Hr } from './common';
+import { Button, Card, css, CssValue, Hr, PropList, PropListItem, t } from './common';
 
 export type ConnectionMediaProps = {
   bus: t.EventBus<any>;
@@ -13,9 +12,7 @@ export type ConnectionMediaProps = {
 
 export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
   const { connection } = props;
-  const bus = props.bus.type<t.PeerNetworkEvent>();
-
-  const [redraw, setRedraw] = useState<number>(0);
+  const bus = props.bus.type<t.PeerEvent>();
 
   const id = connection.id;
 
@@ -56,7 +53,7 @@ export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
           <Button
             onClick={() => {
               bus.fire({
-                type: 'PeerNetwork/disconnect:req',
+                type: 'Peer/disconnect:req',
                 payload: { ref: id.local, remote: id.remote },
               });
             }}

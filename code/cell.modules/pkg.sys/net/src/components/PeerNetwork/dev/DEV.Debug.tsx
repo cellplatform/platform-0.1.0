@@ -14,7 +14,7 @@ export type DebugProps = {
 
 export const Debug: React.FC<DebugProps> = (props) => {
   const { id } = props;
-  const bus = props.bus.type<t.PeerNetworkEvent>();
+  const bus = props.bus.type<t.PeerEvent>();
 
   const state = usePeerState({ ref: id, bus });
   const network = state.network;
