@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ObjectView } from 'sys.ui.dev';
 
-import { usePeerState } from '../hooks';
+import { usePeerNetworkState } from '../hooks';
 import { COLORS, css, CssValue, t } from './common';
 import { Network } from './DEV.Network';
 
@@ -16,7 +16,7 @@ export const Debug: React.FC<DebugProps> = (props) => {
   const { id } = props;
   const bus = props.bus.type<t.PeerEvent>();
 
-  const state = usePeerState({ ref: id, bus });
+  const state = usePeerNetworkState({ ref: id, bus });
   const network = state.network;
 
   const styles = {

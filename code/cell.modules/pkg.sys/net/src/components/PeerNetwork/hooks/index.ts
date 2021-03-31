@@ -1,1 +1,1 @@
-export * from './usePeerState';
+export * from './usePeerNetworkState';

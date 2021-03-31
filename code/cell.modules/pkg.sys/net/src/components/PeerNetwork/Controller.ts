@@ -201,13 +201,16 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
       });
     });
 
-  const changed$ = merge(
+  /**
+   * STATUS CHANGE
+   */
+  const statusChanged$ = merge(
     $.pipe(
       filter((e) => {
         const types: t.PeerEvent['type'][] = [
           'Peer/Network/init:res',
-          'Peer/connect:res',
           'Peer/Network/purge:res',
+          'Peer/connect:res',
           'Peer/connection:closed',
         ];
         return types.includes(e.type);
@@ -215,7 +218,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
     ),
   );
 
-  changed$.pipe().subscribe((event) => {
+  statusChanged$.pipe().subscribe((event) => {
     const ref = event.payload.ref;
     const self = selfRefs[ref];
     if (self) {

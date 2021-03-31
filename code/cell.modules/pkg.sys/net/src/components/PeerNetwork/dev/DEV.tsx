@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { PeerNetworkController, PeerNetworkEvents } from '..';
+import { PeerNetwork } from '..';
 import { css, cuid, deleteUndefined, Icons, MediaStreamEvents, rx, t, time } from './common';
 import { Debug } from './DEV.Debug';
 
@@ -10,7 +10,7 @@ type Ctx = {
   bus: t.EventBus<t.PeerEvent>;
   signal: string; // Signalling server network address (host/path).
   events: {
-    network: ReturnType<typeof PeerNetworkEvents>;
+    network: ReturnType<typeof PeerNetwork.Events>;
     media: ReturnType<typeof MediaStreamEvents>;
   };
   connectTo?: string;
@@ -30,10 +30,10 @@ export const actions = DevActions<Ctx>()
     const id = cuid();
     const bus = rx.bus<t.PeerEvent>();
 
-    PeerNetworkController({ bus });
+    PeerNetwork.Controller({ bus });
     const signal = 'rtc.cellfs.com/peer';
     const events = {
-      network: PeerNetworkEvents({ bus }),
+      network: PeerNetwork.Events({ bus }),
       media: MediaStreamEvents({ bus }),
     };
 

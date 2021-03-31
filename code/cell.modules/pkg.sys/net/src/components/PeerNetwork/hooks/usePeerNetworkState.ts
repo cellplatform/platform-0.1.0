@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import { debounceTime } from 'rxjs/operators';
 
 import { rx, t } from '../../../common';
-import { PeerNetworkEvents } from '../PeerNetwork.Events';
+import { PeerNetworkEvents } from '../Events';
 
 /**
  * Monitors an event-bus keeping a set of state values
  * synced as peers interact with the network.
  */
-export function usePeerState(args: { ref: string; bus: t.EventBus<any> }) {
+export function usePeerNetworkState(args: { ref: string; bus: t.EventBus<any> }) {
   const { ref } = args;
   const bus = args.bus.type<t.PeerEvent>();
   const [status, setStatus] = useState<t.PeerNetworkStatus>();
