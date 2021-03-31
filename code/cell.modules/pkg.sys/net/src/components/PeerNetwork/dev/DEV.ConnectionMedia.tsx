@@ -43,7 +43,7 @@ export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
           {/* <Button
             onClick={() => {
               bus.fire({
-                type: 'PeerNetwork/status:req',
+                type: 'Peer/Network/status:req',
                 payload: { ref: id.local },
               });
             }}

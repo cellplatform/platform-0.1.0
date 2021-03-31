@@ -44,7 +44,7 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
           {/* <Button
             onClick={() => {
               bus.fire({
-                type: 'PeerNetwork/status:req',
+                type: 'Peer/Network/status:req',
                 payload: { ref: id.local },
               });
             }}

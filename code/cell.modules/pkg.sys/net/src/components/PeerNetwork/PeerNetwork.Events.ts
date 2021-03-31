@@ -12,7 +12,7 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
   const bus = args.bus.type<t.PeerEvent>();
   const event$ = bus.event$.pipe(
     takeUntil(dispose$),
-    filter((e) => e.type.startsWith('PeerNetwork/')),
+    filter((e) => e.type.startsWith('Peer/Network/')),
   );
 
   /**
@@ -21,7 +21,7 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
   const create = (signal: string, options: { id?: string } = {}) => {
     const id = options.id || cuid();
     const res = firstValueFrom(created(id).$);
-    bus.fire({ type: 'PeerNetwork/init:req', payload: { ref: id, signal } });
+    bus.fire({ type: 'Peer/Network/init:req', payload: { ref: id, signal } });
     return res;
   };
 
@@ -30,7 +30,7 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
    */
   const created = (ref: string) => {
     const $ = rx
-      .payload<t.PeerNetworkInitResEvent>(event$, 'PeerNetwork/init:res')
+      .payload<t.PeerNetworkInitResEvent>(event$, 'Peer/Network/init:res')
       .pipe(filter((e) => e.ref === ref));
     return { ref, $ };
   };
@@ -40,15 +40,15 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
    */
   const status = (ref: string) => {
     const request$ = rx
-      .payload<t.PeerNetworkStatusRequestEvent>(event$, 'PeerNetwork/status:req')
+      .payload<t.PeerNetworkStatusRequestEvent>(event$, 'Peer/Network/status:req')
       .pipe(filter((e) => e.ref === ref));
     const response$ = rx
-      .payload<t.PeerNetworkStatusResponseEvent>(event$, 'PeerNetwork/status:res')
+      .payload<t.PeerNetworkStatusResponseEvent>(event$, 'Peer/Network/status:res')
       .pipe(filter((e) => e.ref === ref));
 
     const get = () => {
       const res = firstValueFrom(response$);
-      bus.fire({ type: 'PeerNetwork/status:req', payload: { ref } });
+      bus.fire({ type: 'Peer/Network/status:req', payload: { ref } });
       return res;
     };
 
@@ -60,15 +60,15 @@ export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
    */
   const purge = (ref: string) => {
     const purge$ = rx
-      .payload<t.PeerNetworkPurgeReqEvent>(event$, 'PeerNetwork/purge:req')
+      .payload<t.PeerNetworkPurgeReqEvent>(event$, 'Peer/Network/purge:req')
       .pipe(filter((e) => e.ref === ref));
     const purged$ = rx
-      .payload<t.PeerNetworkPurgeResEvent>(event$, 'PeerNetwork/purge:res')
+      .payload<t.PeerNetworkPurgeResEvent>(event$, 'Peer/Network/purge:res')
       .pipe(filter((e) => e.ref === ref));
 
     const fire = (select?: t.PeerNetworkPurgeReq['select']) => {
       const res = firstValueFrom(purged$);
-      bus.fire({ type: 'PeerNetwork/purge:req', payload: { ref, select } });
+      bus.fire({ type: 'Peer/Network/purge:req', payload: { ref, select } });
       return res;
     };
 

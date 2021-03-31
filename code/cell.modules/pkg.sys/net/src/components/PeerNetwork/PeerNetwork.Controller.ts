@@ -147,7 +147,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   /**
    * CREATE a new network client.
    */
-  rx.payload<t.PeerNetworkInitReqEvent>($, 'PeerNetwork/init:req')
+  rx.payload<t.PeerNetworkInitReqEvent>($, 'Peer/Network/init:req')
     .pipe()
     .subscribe((e) => {
       if (!selfRefs[e.ref]) {
@@ -181,7 +181,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
       const self = selfRefs[e.ref];
 
       bus.fire({
-        type: 'PeerNetwork/init:res',
+        type: 'Peer/Network/init:res',
         payload: { ref: e.ref, createdAt: self.createdAt, signal: self.signal },
       });
     });
@@ -189,14 +189,14 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   /**
    * STATUS
    */
-  rx.payload<t.PeerNetworkStatusRequestEvent>($, 'PeerNetwork/status:req')
+  rx.payload<t.PeerNetworkStatusRequestEvent>($, 'Peer/Network/status:req')
     .pipe()
     .subscribe((e) => {
       const self = selfRefs[e.ref];
       const status = self ? toStatus(self) : undefined;
       const exists = Boolean(status);
       bus.fire({
-        type: 'PeerNetwork/status:res',
+        type: 'Peer/Network/status:res',
         payload: { ref: e.ref, exists, self: status },
       });
     });
@@ -205,9 +205,9 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
     $.pipe(
       filter((e) => {
         const types: t.PeerEvent['type'][] = [
-          'PeerNetwork/init:res',
+          'Peer/Network/init:res',
           'Peer/connect:res',
-          'PeerNetwork/purge:res',
+          'Peer/Network/purge:res',
           'Peer/connection:closed',
         ];
         return types.includes(e.type);
@@ -221,7 +221,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
     if (self) {
       const status = toStatus(self);
       bus.fire({
-        type: 'PeerNetwork/status:changed',
+        type: 'Peer/Network/status:changed',
         payload: { ref, self: status, event },
       });
     }
@@ -230,7 +230,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   /**
    * PURGE
    */
-  rx.payload<t.PeerNetworkPurgeReqEvent>($, 'PeerNetwork/purge:req')
+  rx.payload<t.PeerNetworkPurgeReqEvent>($, 'Peer/Network/purge:req')
     .pipe()
     .subscribe((e) => {
       const self = selfRefs[e.ref];
@@ -243,7 +243,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
 
       const fire = (payload?: Partial<t.PeerNetworkPurgeRes>) => {
         bus.fire({
-          type: 'PeerNetwork/purge:res',
+          type: 'Peer/Network/purge:res',
           payload: { ref: e.ref, changed, purged, ...payload },
         });
       };

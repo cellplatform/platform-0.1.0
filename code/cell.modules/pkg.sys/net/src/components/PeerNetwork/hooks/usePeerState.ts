@@ -22,7 +22,7 @@ export function usePeerState(args: { ref: string; bus: t.EventBus<any> }) {
       setStatus(self);
     };
 
-    rx.payload<t.PeerNetworkStatusChangedEvent>($, 'PeerNetwork/status:changed')
+    rx.payload<t.PeerNetworkStatusChangedEvent>($, 'Peer/Network/status:changed')
       .pipe(debounceTime(50))
       .subscribe(updateState);
 
