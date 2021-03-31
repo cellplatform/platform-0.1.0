@@ -44,12 +44,10 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
    * Monitor network connectivity.
    */
   const handleOnlineStatusChanged = (e: Event) => {
-    console.log('e', e);
-    const isOnline = navigator.onLine;
     Object.keys(selfRefs).forEach((ref) => {
       bus.fire({
         type: 'Peer/Network/online:changed',
-        payload: { ref, isOnline },
+        payload: { ref, isOnline: navigator.onLine },
       });
     });
   };

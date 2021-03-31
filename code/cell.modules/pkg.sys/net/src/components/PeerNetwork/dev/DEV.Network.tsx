@@ -25,7 +25,7 @@ export const Network: React.FC<NetworkProps> = (props) => {
 
   const styles = {
     base: css({}),
-    network: css({ Flex: 'horizontal-spaceBetween-start' }),
+    header: css({ Flex: 'horizontal-spaceBetween-start' }),
     body: css({
       display: 'flex',
       flexWrap: 'wrap',
@@ -62,9 +62,9 @@ export const Network: React.FC<NetworkProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.network}>
+      <div {...styles.header}>
         <NetworkPropList network={network} />
-        <VideoSelf networkRef={network.id} bus={bus} />
+        <VideoSelf networkRef={network.id} bus={bus} isOffline={!network.isOnline} />
       </div>
       <Hr thickness={10} opacity={0.06} />
       <div {...styles.body}>

@@ -23,6 +23,7 @@ export const Debug: React.FC<DebugProps> = (props) => {
     base: css({
       flex: 1,
       Flex: 'horizontal-stretch-stretch',
+      color: COLORS.DARK,
     }),
     left: css({
       flex: 1,
