@@ -33,6 +33,29 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
   const $ = bus.event$.pipe(takeUntil(dispose$));
   const selfRefs: SelfRefs = {};
 
+  const dispose = () => {
+    dispose$.next();
+    window.removeEventListener('online', handleOnlineStatusChanged);
+    window.removeEventListener('offline', handleOnlineStatusChanged);
+    Object.keys(selfRefs).forEach((key) => selfRefs[key]);
+  };
+
+  /**
+   * Monitor network connectivity.
+   */
+  const handleOnlineStatusChanged = (e: Event) => {
+    console.log('e', e);
+    const isOnline = navigator.onLine;
+    Object.keys(selfRefs).forEach((ref) => {
+      bus.fire({
+        type: 'Peer/Network/online:changed',
+        payload: { ref, isOnline },
+      });
+    });
+  };
+  window.addEventListener('online', handleOnlineStatusChanged);
+  window.addEventListener('offline', handleOnlineStatusChanged);
+
   /**
    * Add a new network-connection reference.
    */
@@ -210,6 +233,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
         const types: t.PeerEvent['type'][] = [
           'Peer/Network/init:res',
           'Peer/Network/purge:res',
+          'Peer/Network/online:changed',
           'Peer/connect:res',
           'Peer/connection:closed',
         ];
@@ -222,10 +246,9 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
     const ref = event.payload.ref;
     const self = selfRefs[ref];
     if (self) {
-      const status = toStatus(self);
       bus.fire({
         type: 'Peer/Network/status:changed',
-        payload: { ref, self: status, event },
+        payload: { ref, self: toStatus(self), event },
       });
     }
   });
@@ -388,10 +411,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
 
   return {
     dispose$,
-    dispose() {
-      dispose$.next();
-      Object.keys(selfRefs).forEach((key) => selfRefs[key]);
-    },
+    dispose,
   };
 }
 

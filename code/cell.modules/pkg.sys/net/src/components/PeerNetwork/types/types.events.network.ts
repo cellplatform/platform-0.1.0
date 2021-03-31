@@ -4,13 +4,14 @@ import { t } from './common';
  * NETWORK
  */
 export type PeerNetworkEvent =
-  | t.PeerNetworkInitReqEvent
-  | t.PeerNetworkInitResEvent
-  | t.PeerNetworkStatusRequestEvent
-  | t.PeerNetworkStatusResponseEvent
-  | t.PeerNetworkStatusChangedEvent
-  | t.PeerNetworkPurgeReqEvent
-  | t.PeerNetworkPurgeResEvent;
+  | PeerNetworkInitReqEvent
+  | PeerNetworkInitResEvent
+  | PeerNetworkStatusRequestEvent
+  | PeerNetworkStatusResponseEvent
+  | PeerNetworkStatusChangedEvent
+  | PeerNetworkOnlineChangedEvent
+  | PeerNetworkPurgeReqEvent
+  | PeerNetworkPurgeResEvent;
 
 /**
  * Fires to initiate the creation of a Peer.
@@ -61,12 +62,13 @@ export type PeerNetworkStatusResponse = {
 
 /**
  * Fired when the status of a peer network has changed.
+ *
  * NOTE:
  *    This is a derived event that is fired in response
  *    to various different events completing that indicate
- *    the status of the PeerNetwork has changed.
+ *    the status of the [PeerNetwork] has changed.
  *
- *    This is useful for redrawing UI that may be displaying
+ *    Example usage: redrawing UI that may be displaying
  *    the status of the network.
  *
  */
@@ -78,6 +80,15 @@ export type PeerNetworkStatusChanged = {
   ref: t.PeerNetworkId;
   self: t.PeerNetworkStatus;
   event: t.PeerEvent;
+};
+
+export type PeerNetworkOnlineChangedEvent = {
+  type: 'Peer/Network/online:changed';
+  payload: PeerNetworkOnlineChanged;
+};
+export type PeerNetworkOnlineChanged = {
+  ref: t.PeerNetworkId;
+  isOnline: boolean;
 };
 
 /**

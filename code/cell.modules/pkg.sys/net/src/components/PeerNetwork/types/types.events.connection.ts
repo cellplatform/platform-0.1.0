@@ -4,11 +4,11 @@ import { t } from './common';
  * Network CONNECTION
  */
 export type PeerConnectionEvent =
-  | t.PeerConnectReqEvent
-  | t.PeerConnectResEvent
-  | t.PeerConnectionClosedEvent
-  | t.PeerDisconnectReqEvent
-  | t.PeerDisconnectResEvent;
+  | PeerConnectReqEvent
+  | PeerConnectResEvent
+  | PeerConnectionClosedEvent
+  | PeerDisconnectReqEvent
+  | PeerDisconnectResEvent;
 
 /**
  * Fired to initiate a data connection.
