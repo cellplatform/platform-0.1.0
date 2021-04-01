@@ -14,7 +14,7 @@ export type PeerConnectionEvent =
  * Fired to initiate a data connection.
  */
 export type PeerConnectReqEvent = {
-  type: 'Peer/connect:req';
+  type: 'Peer:Connection/connect:req';
   payload: PeerNetworkConnectReq;
 };
 export type PeerNetworkConnectReq = PeerNetworkConnectDataReq | PeerNetworkConnectMediaReq;
@@ -33,7 +33,7 @@ export type PeerNetworkConnectMediaReq = ConnectBase & { kind: 'media'; timeout?
  * Fired when a peer completes it's connection.
  */
 export type PeerConnectResEvent = {
-  type: 'Peer/connect:res';
+  type: 'Peer:Connection/connect:res';
   payload: PeerNetworkConnectRes;
 };
 export type PeerNetworkConnectRes = {
@@ -49,7 +49,7 @@ export type PeerNetworkConnectRes = {
  * Fired to close a connection.
  */
 export type PeerDisconnectReqEvent = {
-  type: 'Peer/disconnect:req';
+  type: 'Peer:Connection/disconnect:req';
   payload: PeerNetworkDisconnectReq;
 };
 export type PeerNetworkDisconnectReq = {
@@ -64,7 +64,7 @@ export type PeerNetworkDisconnectReq = {
  *    fire upon completing.
  */
 export type PeerDisconnectResEvent = {
-  type: 'Peer/disconnect:res';
+  type: 'Peer:Connection/disconnect:res';
   payload: PeerNetworkDisconnectRes;
 };
 export type PeerNetworkDisconnectRes = {
@@ -78,7 +78,7 @@ export type PeerNetworkDisconnectRes = {
  * Fired when a connection closes.
  */
 export type PeerConnectionClosedEvent = {
-  type: 'Peer/connection:closed';
+  type: 'Peer:Connection/closed';
   payload: PeerNetworkConnectionClosed;
 };
 export type PeerNetworkConnectionClosed = {

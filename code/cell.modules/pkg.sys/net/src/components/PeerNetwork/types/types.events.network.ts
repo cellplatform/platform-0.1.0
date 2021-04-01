@@ -17,7 +17,7 @@ export type PeerNetworkEvent =
  * Fires to initiate the creation of a Peer.
  */
 export type PeerNetworkInitReqEvent = {
-  type: 'Peer/Network/init:req';
+  type: 'Peer:Network/init:req';
   payload: PeerNetworkCreateReq;
 };
 export type PeerNetworkCreateReq = {
@@ -29,7 +29,7 @@ export type PeerNetworkCreateReq = {
  * Fires when a peer has connected.
  */
 export type PeerNetworkInitResEvent = {
-  type: 'Peer/Network/init:res';
+  type: 'Peer:Network/init:res';
   payload: PeerNetworkCreateRes;
 };
 export type PeerNetworkCreateRes = {
@@ -42,7 +42,7 @@ export type PeerNetworkCreateRes = {
  * Fired to retrieve the status of the specified peer.
  */
 export type PeerNetworkStatusRequestEvent = {
-  type: 'Peer/Network/status:req';
+  type: 'Peer:Network/status:req';
   payload: PeerNetworkStatusRequest;
 };
 export type PeerNetworkStatusRequest = { ref: t.PeerNetworkId };
@@ -51,7 +51,7 @@ export type PeerNetworkStatusRequest = { ref: t.PeerNetworkId };
  * Fired to retrieve the status of the specified peer.
  */
 export type PeerNetworkStatusResponseEvent = {
-  type: 'Peer/Network/status:res';
+  type: 'Peer:Network/status:res';
   payload: PeerNetworkStatusResponse;
 };
 export type PeerNetworkStatusResponse = {
@@ -73,7 +73,7 @@ export type PeerNetworkStatusResponse = {
  *
  */
 export type PeerNetworkStatusChangedEvent = {
-  type: 'Peer/Network/status:changed';
+  type: 'Peer:Network/status:changed';
   payload: PeerNetworkStatusChanged;
 };
 export type PeerNetworkStatusChanged = {
@@ -83,7 +83,7 @@ export type PeerNetworkStatusChanged = {
 };
 
 export type PeerNetworkOnlineChangedEvent = {
-  type: 'Peer/Network/online:changed';
+  type: 'Peer:Network/online:changed';
   payload: PeerNetworkOnlineChanged;
 };
 export type PeerNetworkOnlineChanged = {
@@ -95,7 +95,7 @@ export type PeerNetworkOnlineChanged = {
  * Purges obsolete state.
  */
 export type PeerNetworkPurgeReqEvent = {
-  type: 'Peer/Network/purge:req';
+  type: 'Peer:Network/purge:req';
   payload: PeerNetworkPurgeReq;
 };
 export type PeerNetworkPurgeReq = {
@@ -104,7 +104,7 @@ export type PeerNetworkPurgeReq = {
 };
 
 export type PeerNetworkPurgeResEvent = {
-  type: 'Peer/Network/purge:res';
+  type: 'Peer:Network/purge:res';
   payload: PeerNetworkPurgeRes;
 };
 export type PeerNetworkPurgeRes = {

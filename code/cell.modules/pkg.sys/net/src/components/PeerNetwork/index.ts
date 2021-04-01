@@ -1,7 +1,7 @@
-import { PeerNetworkController } from './Controller';
-import { PeerNetworkEvents } from './Events';
+import { PeerController } from './Controller';
+import { PeerEvents } from './Events';
 
 export const PeerNetwork = {
-  Controller: PeerNetworkController,
-  Events: PeerNetworkEvents,
+  Controller: PeerController,
+  Events: PeerEvents,
 };
