@@ -1,13 +1,13 @@
 import { firstValueFrom, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-
 import { cuid, rx, t } from '../../common';
 
 /**
  * Filter on Peer/Network/Connection events
  */
 export function isPeerEvent(e: t.Event) {
-  return e.type.startsWith('Peer:Network/') || e.type.startsWith('Peer:Connection/');
+  const prefixes = ['Peer:Network/', 'Peer:Connection/', 'Peer:Data/'];
+  return prefixes.some((prefix) => e.type.startsWith(prefix));
 }
 
 /**

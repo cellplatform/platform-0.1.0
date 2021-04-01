@@ -2,25 +2,9 @@ import { Subject, merge } from 'rxjs';
 import { filter, take, takeUntil, delay } from 'rxjs/operators';
 import { deleteUndefined, PeerJS, rx, t, time } from '../../common';
 import { PeerJSError } from './util';
+import { MemoryRefs, SelfRef, ConnectionRef } from './Refs';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
-
-type SelfRefs = { [id: string]: SelfRef };
-type SelfRef = {
-  id: string;
-  peer: PeerJS;
-  createdAt: number;
-  signal: t.PeerNetworkSignalEndpoint;
-  connections: ConnectionRef[];
-  media: { video?: MediaStream; screen?: MediaStream };
-};
-
-type ConnectionRef = {
-  kind: 'data' | 'media';
-  id: t.PeerConnectionStatus['id'];
-  conn: PeerJS.DataConnection | PeerJS.MediaConnection;
-  media?: MediaStream;
-};
 
 /**
  * EventBus contoller for a WebRTC [Peer] connection.
@@ -29,20 +13,20 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
   const bus = args.bus.type<t.PeerEvent>();
   const $ = bus.event$.pipe(takeUntil(dispose$));
-  const selfRefs: SelfRefs = {};
+  const refs = MemoryRefs();
 
   const dispose = () => {
     dispose$.next();
     window.removeEventListener('online', handleOnlineStatusChanged);
     window.removeEventListener('offline', handleOnlineStatusChanged);
-    Object.keys(selfRefs).forEach((key) => selfRefs[key]);
+    refs.dispose();
   };
 
   /**
    * Monitor network connectivity.
    */
   const handleOnlineStatusChanged = (e: Event) => {
-    Object.keys(selfRefs).forEach((ref) => {
+    Object.keys(refs.self).forEach((ref) => {
       bus.fire({
         type: 'Peer:Network/online:changed',
         payload: { ref, isOnline: navigator.onLine },
@@ -51,45 +35,6 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
   };
   window.addEventListener('online', handleOnlineStatusChanged);
   window.addEventListener('offline', handleOnlineStatusChanged);
-
-  /**
-   * Add a new network-connection reference.
-   */
-  const addConnectionRef = (
-    kind: ConnectionKind,
-    self: SelfRef,
-    conn: PeerJS.DataConnection | PeerJS.MediaConnection,
-    media?: MediaStream,
-  ) => {
-    const existing = self.connections.find((item) => item.conn === conn);
-    if (existing) return existing;
-
-    const local = self.peer.id;
-    const remote = conn.peer;
-    const ref: ConnectionRef = { kind, id: { local, remote }, conn, media };
-    self.connections = [...self.connections, ref];
-    return ref;
-  };
-
-  const removeConnectionRef = (
-    self: SelfRef,
-    conn: PeerJS.DataConnection | PeerJS.MediaConnection,
-  ) => {
-    self.connections = self.connections.filter((item) => item.conn !== conn);
-  };
-
-  const getConnectionRef = (
-    self: SelfRef,
-    conn: t.PeerNetworkId | PeerJS.DataConnection | PeerJS.MediaConnection,
-  ) => {
-    const remote = typeof conn === 'string' ? conn : conn.peer;
-    const ref = self.connections.find((ref) => ref.id.remote === remote);
-    if (!ref) {
-      const err = `The connection reference '${remote}' for local network '${self.id}' has not been added`;
-      throw new Error(err);
-    }
-    return ref;
-  };
 
   /**
    * Convert a "local network client" to an immutable status object.
@@ -139,7 +84,7 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
     self: SelfRef,
     conn: PeerJS.DataConnection | PeerJS.MediaConnection,
   ) => {
-    const connectionRef = getConnectionRef(self, conn);
+    const connectionRef = refs.connection(self).get(conn);
 
     bus.fire({
       type: 'Peer:Connection/connect:res',
@@ -169,37 +114,37 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
   rx.payload<t.PeerNetworkInitReqEvent>($, 'Peer:Network/init:req')
     .pipe(delay(0))
     .subscribe((e) => {
-      if (!selfRefs[e.ref]) {
+      if (!refs.self[e.ref]) {
         const createdAt = time.now.timestamp;
-        const endpoint = parseEndpointAddress(e.signal);
-        const { host, path, port, secure } = endpoint;
+        const signal = parseEndpointAddress(e.signal);
+        const { host, path, port, secure } = signal;
         const peer = new PeerJS(e.ref, { host, path, port, secure });
         const ref: SelfRef = {
           id: e.ref,
           peer,
           createdAt,
-          signal: endpoint,
+          signal,
           connections: [],
           media: {},
         };
-        selfRefs[e.ref] = ref;
+        refs.self[e.ref] = ref;
 
         // Listen for incoming DATA connection requests.
         peer.on('connection', (dataConnection) => {
           dataConnection.on('open', () => {
-            addConnectionRef('data', ref, dataConnection);
+            refs.connection(ref).add('data', dataConnection);
             completeConnection('data', 'incoming', ref, dataConnection);
           });
         });
 
         // Listen for incoming MEDIA (video) connection requests.
         peer.on('call', (mediaConnection) => {
-          addConnectionRef('media', ref, mediaConnection);
+          refs.connection(ref).add('media', mediaConnection);
           completeConnection('media', 'incoming', ref, mediaConnection);
         });
       }
 
-      const self = selfRefs[e.ref];
+      const self = refs.self[e.ref];
 
       bus.fire({
         type: 'Peer:Network/init:res',
@@ -213,7 +158,7 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
   rx.payload<t.PeerNetworkStatusRequestEvent>($, 'Peer:Network/status:req')
     .pipe(delay(0))
     .subscribe((e) => {
-      const self = selfRefs[e.ref];
+      const self = refs.self[e.ref];
       const status = self ? toStatus(self) : undefined;
       const exists = Boolean(status);
       bus.fire({
@@ -242,7 +187,7 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
 
   statusChanged$.pipe().subscribe((event) => {
     const ref = event.payload.ref;
-    const self = selfRefs[ref];
+    const self = refs.self[ref];
     if (self) {
       bus.fire({
         type: 'Peer:Network/status:changed',
@@ -257,7 +202,7 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
   rx.payload<t.PeerNetworkPurgeReqEvent>($, 'Peer:Network/purge:req')
     .pipe()
     .subscribe((e) => {
-      const self = selfRefs[e.ref];
+      const self = refs.self[e.ref];
       const select = typeof e.select === 'object' ? e.select : { closedConnections: true };
 
       let changed = false;
@@ -298,7 +243,7 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
     .pipe(filter((e) => e.direction === 'outgoing'))
     .subscribe((e) => {
       const { remote, kind } = e;
-      const self = selfRefs[e.ref];
+      const self = refs.self[e.ref];
 
       const fire = (payload?: Partial<t.PeerNetworkConnectRes>) => {
         bus.fire({
@@ -327,7 +272,7 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
         const { reliable, metadata } = e;
         const errorMonitor = PeerJSError(self.peer);
         const dataConnection = self.peer.connect(remote, { reliable, metadata });
-        addConnectionRef(e.kind, self, dataConnection);
+        refs.connection(self).add(e.kind, dataConnection);
 
         dataConnection.on('open', () => {
           // SUCCESS: Connected to the remote peer.
@@ -344,7 +289,7 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
         ).subscribe((err) => {
           // FAIL
           errorMonitor.dispose();
-          removeConnectionRef(self, dataConnection);
+          refs.connection(self).remove(dataConnection);
           fireError(`Failed to connect to peer '${remote}'. The remote target did not respond.`);
         });
       }
@@ -382,7 +327,7 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
     .pipe()
     .subscribe((e) => {
       const { remote } = e;
-      const selfRef = selfRefs[e.ref];
+      const selfRef = refs.self[e.ref];
 
       const fire = (payload?: Partial<t.PeerNetworkDisconnectRes>) => {
         bus.fire({
@@ -408,8 +353,11 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
     });
 
   return {
-    dispose$,
+    dispose$: dispose$.asObservable(),
     dispose,
+    get isDisposed() {
+      return dispose$.closed;
+    },
   };
 }
 
