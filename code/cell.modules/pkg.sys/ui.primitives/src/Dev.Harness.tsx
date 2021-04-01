@@ -3,9 +3,11 @@ import { Harness } from 'sys.ui.dev';
 
 const imports = {
   useDragTarget: import('./hooks/useDragTarget/DEV'),
+
   DotTabstrip: import('./components/DotTabstrip/DEV'),
   Zoom: import('./components/Zoom/DEV'),
   Card: import('./components/Card/DEV'),
+  CardStack: import('./components/CardStack/DEV'),
   PropList: import('./components/PropList/dev/DEV'),
   TextEditor: import('./components/TextEditor/DEV'),
 
