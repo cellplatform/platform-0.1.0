@@ -80,7 +80,7 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
             onClick={() => {
               bus.fire({
                 type: 'Peer:Connection/disconnect:req',
-                payload: { ref: networkRef, remote: id.remote },
+                payload: { self: networkRef, remote: id.remote },
               });
             }}
           >

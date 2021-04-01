@@ -21,7 +21,7 @@ export type PeerNetworkInitReqEvent = {
   payload: PeerNetworkCreateReq;
 };
 export type PeerNetworkCreateReq = {
-  ref: t.PeerNetworkId;
+  self: t.PeerNetworkId;
   signal: string; // String containing the signal server endpoint: "host/path"
 };
 
@@ -33,7 +33,7 @@ export type PeerNetworkInitResEvent = {
   payload: PeerNetworkCreateRes;
 };
 export type PeerNetworkCreateRes = {
-  ref: t.PeerNetworkId;
+  self: t.PeerNetworkId;
   createdAt: number;
   signal: t.PeerNetworkSignalEndpoint;
 };
@@ -45,7 +45,9 @@ export type PeerNetworkStatusRequestEvent = {
   type: 'Peer:Network/status:req';
   payload: PeerNetworkStatusRequest;
 };
-export type PeerNetworkStatusRequest = { ref: t.PeerNetworkId };
+export type PeerNetworkStatusRequest = {
+  self: t.PeerNetworkId;
+};
 
 /**
  * Fired to retrieve the status of the specified peer.
@@ -55,7 +57,7 @@ export type PeerNetworkStatusResponseEvent = {
   payload: PeerNetworkStatusResponse;
 };
 export type PeerNetworkStatusResponse = {
-  ref: t.PeerNetworkId;
+  self: t.PeerNetworkId;
   exists: boolean;
   network?: t.PeerNetworkStatus;
 };
@@ -77,7 +79,7 @@ export type PeerNetworkStatusChangedEvent = {
   payload: PeerNetworkStatusChanged;
 };
 export type PeerNetworkStatusChanged = {
-  ref: t.PeerNetworkId;
+  self: t.PeerNetworkId;
   network: t.PeerNetworkStatus;
   event: t.PeerEvent;
 };
@@ -87,7 +89,7 @@ export type PeerNetworkOnlineChangedEvent = {
   payload: PeerNetworkOnlineChanged;
 };
 export type PeerNetworkOnlineChanged = {
-  ref: t.PeerNetworkId;
+  self: t.PeerNetworkId;
   isOnline: boolean;
 };
 
@@ -99,7 +101,7 @@ export type PeerNetworkPurgeReqEvent = {
   payload: PeerNetworkPurgeReq;
 };
 export type PeerNetworkPurgeReq = {
-  ref: t.PeerNetworkId;
+  self: t.PeerNetworkId;
   select?: true | { closedConnections?: boolean }; // NB: [true] clears all purgeable data.
 };
 
@@ -108,7 +110,7 @@ export type PeerNetworkPurgeResEvent = {
   payload: PeerNetworkPurgeRes;
 };
 export type PeerNetworkPurgeRes = {
-  ref: t.PeerNetworkId;
+  self: t.PeerNetworkId;
   changed: boolean;
   purged: t.PeerNetworkPurged;
   error?: t.PeerNetworkError;

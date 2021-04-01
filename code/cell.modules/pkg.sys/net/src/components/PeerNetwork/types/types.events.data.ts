@@ -10,7 +10,7 @@ export type PeerDataSendEvent = {
   payload: PeerDataSend;
 };
 export type PeerDataSend = {
-  ref: t.PeerNetworkId;
+  self: t.PeerNetworkId;
   target?: t.PeerNetworkId | t.PeerNetworkId[]; // If omitted broadcast to all connected peers.
   data: t.JsonMap;
 };
@@ -20,7 +20,7 @@ export type PeerDataReceivedEvent = {
   payload: PeerDataReceived;
 };
 export type PeerDataReceived = {
-  ref: t.PeerNetworkId;
+  self: t.PeerNetworkId;
   data: t.JsonMap;
   from: t.PeerNetworkId;
   to: t.PeerNetworkId[];
