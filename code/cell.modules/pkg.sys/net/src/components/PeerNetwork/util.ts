@@ -4,6 +4,14 @@ import { PeerJS, t } from '../../common';
 type C = t.PeerConnectionStatus;
 
 /**
+ * Determine if the given value is a [t.Event].
+ */
+export const isEvent = (input: any) => {
+  if (typeof input !== 'object') return false;
+  return typeof input.type === 'string' && typeof input.payload === 'object';
+};
+
+/**
  * Common filtering methods.
  */
 export const Filter = {

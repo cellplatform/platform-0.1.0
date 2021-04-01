@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ObjectView } from 'sys.ui.dev';
 
 import { Card, css, CssValue, PropListItem, t, time, PropList, Button, Hr } from './common';
+import { PeerNetwork } from '..';
 
 export type ConnectionDataProps = {
   bus: t.EventBus<any>;
@@ -14,6 +15,8 @@ export type ConnectionDataProps = {
 export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
   const { connection } = props;
   const bus = props.bus.type<t.PeerEvent>();
+
+  const events = PeerNetwork.Events({ bus });
 
   const id = connection.id;
 
@@ -40,17 +43,12 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
         {hr}
 
         <div {...styles.buttons}>
-          <div />
-          {/* <Button
+          <Button
+            label={'Broadcast'}
             onClick={() => {
-              bus.fire({
-                type: 'Peer:Network/status:req',
-                payload: { ref: id.local },
-              });
+              events.data(id.local).send({ msg: 'foo' });
             }}
-          >
-            Redraw
-          </Button> */}
+          />
           <Button
             onClick={() => {
               bus.fire({

@@ -3,6 +3,7 @@ import { filter, take, takeUntil, delay } from 'rxjs/operators';
 import { deleteUndefined, PeerJS, rx, t, time } from '../../common';
 import { PeerJSError } from './util';
 import { MemoryRefs, SelfRef, ConnectionRef } from './Refs';
+import { asArray } from '@platform/util.value/lib/value/value.array';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 
@@ -104,6 +105,19 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
         payload: { ref: self.id, connection },
       });
     });
+
+    if (kind === 'data') {
+      const data = conn as PeerJS.DataConnection;
+      data.on('data', (data: t.JsonMap) => {
+        if (typeof data === 'object') {
+          const e = data as t.PeerDataSend;
+          bus.fire({
+            type: 'Peer:Data/received',
+            payload: { ref: self.id, data: e.data, from: e.ref, to: asArray(e.target || []) },
+          });
+        }
+      });
+    }
 
     return connectionRef;
   };
@@ -350,6 +364,20 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
 
       connRef.conn.close();
       fire();
+    });
+
+  /**
+   * DATA: Send
+   */
+  rx.payload<t.PeerDataSendEvent>($, 'Peer:Data/send')
+    .pipe()
+    .subscribe((e) => {
+      const target = e.target === undefined ? [] : asArray(e.target);
+      if (target.length === 0) target.push(...refs.connection(e.ref).ids);
+      refs
+        .connection(e.ref)
+        .data.filter((conn) => (!e.target ? true : target.includes(conn.peer)))
+        .forEach((conn) => conn.send({ ...e, target }));
     });
 
   return {

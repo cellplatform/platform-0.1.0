@@ -5,14 +5,14 @@ import { usePeerNetworkState } from '../hooks';
 import { COLORS, css, CssValue, t } from './common';
 import { Network } from './DEV.Network';
 
-export type DebugProps = {
+export type LayoutProps = {
   id: string;
   bus: t.EventBus<any>;
   debugJson?: boolean;
   style?: CssValue;
 };
 
-export const Debug: React.FC<DebugProps> = (props) => {
+export const Layout: React.FC<LayoutProps> = (props) => {
   const { id } = props;
   const bus = props.bus.type<t.PeerEvent>();
 
@@ -24,6 +24,7 @@ export const Debug: React.FC<DebugProps> = (props) => {
       flex: 1,
       Flex: 'horizontal-stretch-stretch',
       color: COLORS.DARK,
+      overflow: 'hidden',
     }),
     left: css({
       flex: 1,

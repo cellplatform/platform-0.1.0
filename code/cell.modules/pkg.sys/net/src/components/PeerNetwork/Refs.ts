@@ -26,7 +26,8 @@ export function MemoryRefs() {
   const refs = {
     self,
 
-    connection(self: SelfRef) {
+    connection(input: SelfRef | string) {
+      const self = typeof input === 'string' ? refs.self[input] : input;
       return {
         add(
           kind: ConnectionKind,
@@ -55,6 +56,22 @@ export function MemoryRefs() {
             throw new Error(err);
           }
           return ref;
+        },
+
+        get data() {
+          return self.connections
+            .filter((ref) => ref.kind === 'data')
+            .map((ref) => ref.conn as PeerJS.DataConnection);
+        },
+
+        get media() {
+          return self.connections
+            .filter((ref) => ref.kind === 'media')
+            .map((ref) => ref.conn as PeerJS.MediaConnection);
+        },
+
+        get ids() {
+          return self.connections.map((ref) => ref.id.remote);
         },
       };
     },

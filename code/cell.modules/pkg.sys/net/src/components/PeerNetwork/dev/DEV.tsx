@@ -1,13 +1,15 @@
+import { interval } from 'rxjs';
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { PeerNetwork } from '..';
 import { css, cuid, deleteUndefined, Icons, MediaStreamEvents, rx, t, time } from './common';
-import { Debug } from './DEV.Debug';
+import { Layout } from './DEV.Layout';
 
 type Ctx = {
   id: string;
   bus: t.EventBus<t.PeerEvent>;
+  netBus: t.EventBus;
   signal: string; // Signalling server network address (host/path).
   events: {
     network: ReturnType<typeof PeerNetwork.Events>;
@@ -38,11 +40,20 @@ export const actions = DevActions<Ctx>()
     };
 
     time.delay(100, () => events.network.create(signal, { id }));
+
+    // Purge connections as soon as one is closed.
     events.network.connections(id).closed$.subscribe(() => events.network.purge(id).fire());
+
+    const netBus = events.network.data(id).bus();
+
+    netBus.event$.subscribe((e) => {
+      console.log('BUS INCOMING', e);
+    });
 
     return {
       id,
       bus,
+      netBus,
       events,
       signal,
       reliable: false,
@@ -181,6 +192,17 @@ export const actions = DevActions<Ctx>()
     e.hr();
   })
 
+  .items((e) => {
+    e.title('NetworkBus');
+
+    e.button('fire', (e) => {
+      e.ctx.netBus.fire({
+        type: 'FOO',
+        payload: { count: 123 },
+      });
+    });
+  })
+
   .subject((e) => {
     const { id, bus } = e.ctx;
 
@@ -215,7 +237,7 @@ export const actions = DevActions<Ctx>()
       actions: { width: 380 },
     });
 
-    e.render(<Debug id={id} bus={bus} debugJson={e.ctx.debugJson} />);
+    e.render(<Layout id={id} bus={bus} debugJson={e.ctx.debugJson} />);
   });
 
 export default actions;

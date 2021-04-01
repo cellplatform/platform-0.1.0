@@ -1,6 +1,7 @@
 import { firstValueFrom, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { cuid, rx, t } from '../../common';
+import { isEvent } from './util';
 
 /**
  * Filter on Peer/Network/Connection events
@@ -133,6 +134,51 @@ export function PeerEvents(args: { bus: t.EventBus<any> }) {
     return { ref, opened$, closed$ };
   };
 
+  const data = (ref: string) => {
+    const send$ = rx
+      .payload<t.PeerDataSendEvent>(event$, 'Peer:Data/send')
+      .pipe(filter((e) => e.ref === ref));
+
+    const received$ = rx
+      .payload<t.PeerDataReceivedEvent>(event$, 'Peer:Data/received')
+      .pipe(filter((e) => e.ref === ref));
+
+    const send = (data: t.JsonMap, target?: t.PeerNetworkId | t.PeerNetworkId[]) => {
+      bus.fire({
+        type: 'Peer:Data/send',
+        payload: { ref, data, target },
+      });
+    };
+
+    return {
+      ref,
+      send$,
+      received$,
+      send,
+      bus<E extends t.Event>() {
+        const bus$ = new Subject<t.Event>();
+        let current: undefined | t.Event;
+
+        // Ferry events fired into the bus out to target connections.
+        bus$
+          .pipe(
+            takeUntil(dispose$),
+            filter((e) => e !== current), // NB: Prevent circular event loop.
+          )
+          .subscribe((e) => send(e));
+
+        // Listen for incoming events from the network and pass into the bus.
+        received$.pipe(filter((e) => isEvent(e.data))).subscribe((e) => {
+          current = e.data as t.Event;
+          bus$.next(current);
+          current = undefined;
+        });
+
+        return rx.bus<E>(bus$);
+      },
+    };
+  };
+
   return {
     dispose,
     dispose$: dispose$.asObservable(),
@@ -144,5 +190,6 @@ export function PeerEvents(args: { bus: t.EventBus<any> }) {
     purge,
     connection,
     connections,
+    data,
   };
 }
