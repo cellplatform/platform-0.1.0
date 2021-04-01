@@ -36,7 +36,7 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <Card key={id.remote} padding={[15, 20]} margin={props.margin} width={280}>
-        <PropList items={items} defaults={{ clipboard: false }} />
+        <PropList title={'Connection'} items={items} defaults={{ clipboard: false }} />
         {hr}
 
         <div {...styles.buttons}>

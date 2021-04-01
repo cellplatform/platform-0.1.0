@@ -186,8 +186,10 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
 
         // Listen for incoming DATA connection requests.
         peer.on('connection', (dataConnection) => {
-          addConnectionRef('data', ref, dataConnection);
-          completeConnection('data', 'incoming', ref, dataConnection);
+          dataConnection.on('open', () => {
+            addConnectionRef('data', ref, dataConnection);
+            completeConnection('data', 'incoming', ref, dataConnection);
+          });
         });
 
         // Listen for incoming MEDIA (video) connection requests.
