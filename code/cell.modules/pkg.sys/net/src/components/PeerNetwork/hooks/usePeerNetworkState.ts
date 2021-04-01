@@ -18,8 +18,8 @@ export function usePeerNetworkState(args: { ref: string; bus: t.EventBus<any> })
     const $ = events.$;
 
     const updateState = async () => {
-      const { self } = await events.status(ref).get();
-      setStatus(self);
+      const { network } = await events.status(ref).get();
+      setStatus(network);
     };
 
     rx.payload<t.PeerNetworkStatusChangedEvent>($, 'Peer:Network/status:changed')

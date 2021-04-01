@@ -46,11 +46,11 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
     const connections = self.connections.map((item) => toConnectionStatus(item));
     return deleteUndefined({
       id,
+      isOnline: navigator.onLine,
       createdAt,
       signal,
       media,
       connections,
-      isOnline: navigator.onLine,
     });
   };
 
@@ -173,11 +173,11 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
     .pipe(delay(0))
     .subscribe((e) => {
       const self = refs.self[e.ref];
-      const status = self ? toStatus(self) : undefined;
-      const exists = Boolean(status);
+      const network = self ? toStatus(self) : undefined;
+      const exists = Boolean(network);
       bus.fire({
         type: 'Peer:Network/status:res',
-        payload: { ref: e.ref, exists, self: status },
+        payload: { ref: e.ref, exists, network },
       });
     });
 
@@ -205,7 +205,7 @@ export function PeerController(args: { bus: t.EventBus<any> }) {
     if (self) {
       bus.fire({
         type: 'Peer:Network/status:changed',
-        payload: { ref, self: toStatus(self), event },
+        payload: { ref, network: toStatus(self), event },
       });
     }
   });

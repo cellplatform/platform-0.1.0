@@ -57,7 +57,7 @@ export type PeerNetworkStatusResponseEvent = {
 export type PeerNetworkStatusResponse = {
   ref: t.PeerNetworkId;
   exists: boolean;
-  self?: t.PeerNetworkStatus;
+  network?: t.PeerNetworkStatus;
 };
 
 /**
@@ -78,7 +78,7 @@ export type PeerNetworkStatusChangedEvent = {
 };
 export type PeerNetworkStatusChanged = {
   ref: t.PeerNetworkId;
-  self: t.PeerNetworkStatus;
+  network: t.PeerNetworkStatus;
   event: t.PeerEvent;
 };
 
