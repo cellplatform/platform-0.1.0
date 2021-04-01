@@ -1,13 +1,13 @@
 {
   "name": "sys.net",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "sideEffects": false,
   "compiler": {
     "port": 3040
   },
   "scripts": {
     "start": "cell.compiler dev $@",
-    "dev": "cell.compiler dev --no-exports $@",
+    "dev": "cell.compiler dev --no-exports --name web.dev $@",
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",

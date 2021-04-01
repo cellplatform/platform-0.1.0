@@ -14,6 +14,10 @@ setTimeout(() => {
  * Service-worker.
  */
 async function startServiceWorker() {
+  if (!('serviceWorker' in navigator)) {
+    return console.log('Service workers are not supported.');
+  }
+
   try {
     const registration = await navigator.serviceWorker.register('./service.worker.js');
     console.log('🎉 Service worker registered:', registration);
@@ -22,8 +26,7 @@ async function startServiceWorker() {
   }
 }
 
-if ('serviceWorker' in navigator) {
+if (location.hostname !== 'localhost') {
+  // HACK: Don't start service worker during dev (supress caching).
   startServiceWorker();
-} else {
-  console.log('Service workers are not supported.');
 }
