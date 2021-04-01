@@ -4,16 +4,20 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { cuid, rx, t } from '../../common';
 
 /**
+ * Filter on Peer/Network/Connection events
+ */
+export function isPeerEvent(e: t.Event) {
+  return e.type.startsWith('Peer/');
+}
+
+/**
  * Helpers for working with a [PeerNetwork].
  */
 export function PeerNetworkEvents(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
   const bus = args.bus.type<t.PeerEvent>();
-  const event$ = bus.event$.pipe(
-    takeUntil(dispose$),
-    filter((e) => e.type.startsWith('Peer/Network/')),
-  );
+  const event$ = bus.event$.pipe(takeUntil(dispose$), filter(isPeerEvent));
 
   /**
    * CREATE

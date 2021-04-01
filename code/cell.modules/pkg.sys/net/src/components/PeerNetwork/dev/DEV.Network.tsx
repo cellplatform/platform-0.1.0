@@ -26,10 +26,7 @@ export const Network: React.FC<NetworkProps> = (props) => {
   const styles = {
     base: css({}),
     header: css({ Flex: 'horizontal-spaceBetween-start' }),
-    body: css({
-      display: 'flex',
-      flexWrap: 'wrap',
-    }),
+    body: css({ display: 'flex', flexWrap: 'wrap' }),
   };
 
   const cardMargin = 20;

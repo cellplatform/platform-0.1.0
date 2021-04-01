@@ -1,8 +1,6 @@
 import { Subject, merge } from 'rxjs';
-import { filter, take, takeUntil } from 'rxjs/operators';
-
+import { filter, take, takeUntil, delay } from 'rxjs/operators';
 import { deleteUndefined, PeerJS, rx, t, time } from '../../common';
-
 import { PeerJSError } from './util';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
@@ -169,7 +167,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
    * CREATE a new network client.
    */
   rx.payload<t.PeerNetworkInitReqEvent>($, 'Peer/Network/init:req')
-    .pipe()
+    .pipe(delay(0))
     .subscribe((e) => {
       if (!selfRefs[e.ref]) {
         const createdAt = time.now.timestamp;
@@ -211,7 +209,7 @@ export function PeerNetworkController(args: { bus: t.EventBus<any> }) {
    * STATUS
    */
   rx.payload<t.PeerNetworkStatusRequestEvent>($, 'Peer/Network/status:req')
-    .pipe()
+    .pipe(delay(0))
     .subscribe((e) => {
       const self = selfRefs[e.ref];
       const status = self ? toStatus(self) : undefined;

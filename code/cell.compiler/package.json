@@ -44,7 +44,7 @@
     "@types/jsonpath": "0.2.0",
     "@types/webpack-dev-server": "3.11.3",
     "babel-loader": "8.2.2",
-    "core-js": "3.9.1",
+    "core-js": "3.10.0",
     "css-loader": "5.2.0",
     "file-loader": "6.2.0",
     "fork-ts-checker-webpack-plugin": "6.2.0",

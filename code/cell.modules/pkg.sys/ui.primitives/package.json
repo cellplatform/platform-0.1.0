@@ -18,7 +18,11 @@
     "serve": "cell.compiler serve $@",
     "deploy": "cell.compiler upload --dir sys.ui.primitives $@"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@dnd-kit/core": "^2.1.0",
+    "@dnd-kit/modifiers": "^1.0.5",
+    "@dnd-kit/sortable": "^2.0.1"
+  },
   "devDependencies": {
     "@platform/cell.compiler": "^0.3.11",
     "react": "^17.0.1",
