@@ -1,4 +1,4 @@
-import { t } from '../../common';
+import { t, R } from '../../common';
 
 type O = Record<string, unknown>;
 type SettingsArgs = t.ActionHandlerSettingsArgs;
@@ -44,14 +44,18 @@ export const Handler = {
       const { env, payload } = args;
       const fn: t.ActionHandlerSettings<T> = (settings) => {
         const { layout, host, actions } = settings || {};
+
         if (layout !== undefined) {
-          env.layout = layout === null ? {} : { ...env.layout, ...layout };
+          const next = layout === null ? {} : { ...env.layout, ...layout };
+          if (!R.equals(env.layout, next)) env.layout = next;
         }
         if (host !== undefined) {
-          env.host = host === null ? {} : { ...env.host, ...host };
+          const next = host === null ? {} : { ...env.host, ...host };
+          if (!R.equals(env.host, next)) env.host = next;
         }
         if (actions !== undefined) {
-          env.actions = actions === null ? {} : { ...env.actions, ...actions };
+          const next = actions === null ? {} : { ...env.actions, ...actions };
+          if (!R.equals(env.actions, next)) env.actions = next;
         }
 
         // Sync the source with the changes.
