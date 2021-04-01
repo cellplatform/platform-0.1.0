@@ -8,12 +8,13 @@ import { Network } from './DEV.Network';
 export type LayoutProps = {
   id: string;
   bus: t.EventBus<any>;
+  netbus: t.EventBus<any>;
   debugJson?: boolean;
   style?: CssValue;
 };
 
 export const Layout: React.FC<LayoutProps> = (props) => {
-  const { id } = props;
+  const { id, netbus } = props;
   const bus = props.bus.type<t.PeerEvent>();
 
   const state = usePeerNetworkState({ ref: id, bus });
@@ -67,7 +68,9 @@ export const Layout: React.FC<LayoutProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.left}>{network && <Network bus={bus} network={network} />}</div>
+      <div {...styles.left}>
+        {network && <Network bus={bus} netbus={netbus} network={network} />}
+      </div>
       {elJson}
     </div>
   );

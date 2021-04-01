@@ -9,7 +9,7 @@ import { Layout } from './DEV.Layout';
 type Ctx = {
   id: string;
   bus: t.EventBus<t.PeerEvent>;
-  netBus: t.EventBus;
+  netbus: t.EventBus;
   signal: string; // Signalling server network address (host/path).
   events: {
     network: ReturnType<typeof PeerNetwork.Events>;
@@ -44,16 +44,16 @@ export const actions = DevActions<Ctx>()
     // Purge connections as soon as one is closed.
     events.network.connections(id).closed$.subscribe(() => events.network.purge(id).fire());
 
-    const netBus = events.network.data(id).bus();
+    const netbus = events.network.data(id).bus();
 
-    netBus.event$.subscribe((e) => {
-      console.log('BUS INCOMING', e);
+    netbus.event$.subscribe((e) => {
+      console.log('Network Bus', e.type, e.payload);
     });
 
     return {
       id,
       bus,
-      netBus,
+      netbus: netbus,
       events,
       signal,
       reliable: false,
@@ -196,7 +196,7 @@ export const actions = DevActions<Ctx>()
     e.title('NetworkBus');
 
     e.button('fire', (e) => {
-      e.ctx.netBus.fire({
+      e.ctx.netbus.fire({
         type: 'FOO',
         payload: { count: 123 },
       });
@@ -204,7 +204,7 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { id, bus } = e.ctx;
+    const { id, bus, netbus } = e.ctx;
 
     const styles = {
       labelRight: {
@@ -237,7 +237,7 @@ export const actions = DevActions<Ctx>()
       actions: { width: 380 },
     });
 
-    e.render(<Layout id={id} bus={bus} debugJson={e.ctx.debugJson} />);
+    e.render(<Layout id={id} bus={bus} netbus={netbus} debugJson={e.ctx.debugJson} />);
   });
 
 export default actions;

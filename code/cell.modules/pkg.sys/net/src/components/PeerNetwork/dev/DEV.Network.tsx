@@ -2,20 +2,20 @@ import React from 'react';
 
 import { Filter } from '../util';
 import { css, CssValue, t } from './common';
-import { ConnectionData } from './DEV.ConnectionData';
-import { ConnectionMedia } from './DEV.ConnectionMedia';
+import { Connection } from './DEV.Connection';
 import { NetworkPropList } from './DEV.Network.PropList';
 import { VideoSelf } from './DEV.VideoSelf';
 import { Hr } from 'sys.ui.primitives/lib/components/Hr';
 
 export type NetworkProps = {
   bus: t.EventBus<any>;
+  netbus: t.EventBus<any>;
   network: t.PeerNetworkStatus;
   style?: CssValue;
 };
 
 export const Network: React.FC<NetworkProps> = (props) => {
-  const { network } = props;
+  const { network, netbus } = props;
   const bus = props.bus.type<t.PeerEvent>();
 
   const connections = {
@@ -34,22 +34,10 @@ export const Network: React.FC<NetworkProps> = (props) => {
   const elDataConnections = connections.data.map((item, i) => {
     const isLast = i === network.connections.length - 1;
     return (
-      <ConnectionData
+      <Connection
         key={item.id.remote}
         bus={bus}
-        connection={item}
-        isLast={isLast}
-        margin={cardMargin}
-      />
-    );
-  });
-
-  const elMediaConnections = connections.media.map((item, i) => {
-    const isLast = i === network.connections.length - 1;
-    return (
-      <ConnectionMedia
-        key={item.id.remote}
-        bus={bus}
+        netbus={netbus}
         connection={item}
         isLast={isLast}
         margin={cardMargin}
@@ -64,10 +52,7 @@ export const Network: React.FC<NetworkProps> = (props) => {
         <VideoSelf networkRef={network.id} bus={bus} isOffline={!network.isOnline} />
       </div>
       <Hr thickness={10} opacity={0.06} />
-      <div {...styles.body}>
-        {elDataConnections}
-        {elMediaConnections}
-      </div>
+      <div {...styles.body}>{elDataConnections}</div>
     </div>
   );
 };

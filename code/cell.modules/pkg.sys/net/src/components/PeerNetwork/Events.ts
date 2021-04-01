@@ -155,7 +155,7 @@ export function PeerEvents(args: { bus: t.EventBus<any> }) {
       send$,
       received$,
       send,
-      bus<E extends t.Event>() {
+      bus<E extends t.Event>(options: { target?: () => t.PeerDataSend['target'] } = {}) {
         const bus$ = new Subject<t.Event>();
         let current: undefined | t.Event;
 
@@ -165,7 +165,10 @@ export function PeerEvents(args: { bus: t.EventBus<any> }) {
             takeUntil(dispose$),
             filter((e) => e !== current), // NB: Prevent circular event loop.
           )
-          .subscribe((e) => send(e));
+          .subscribe((e) => {
+            const target = options.target ? options.target() : undefined;
+            send(e, target);
+          });
 
         // Listen for incoming events from the network and pass into the bus.
         received$.pipe(filter((e) => isEvent(e.data))).subscribe((e) => {
