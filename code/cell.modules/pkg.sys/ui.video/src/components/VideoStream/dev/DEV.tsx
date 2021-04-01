@@ -196,25 +196,9 @@ export const actions = DevActions<Ctx>()
       actions: { width: 350 },
     });
 
-    const borderRadius = 30;
-
-    const Sample: React.FC = () => {
-      const { stream } = useVideoStreamState({ ref, bus });
-      const styles = {
-        base: css({
-          backgroundColor: color.format(-0.02),
-          border: `solid 1px ${color.format(-0.03)}`,
-          borderRadius,
-        }),
-      };
-      return (
-        <div {...styles.base}>
-          <VideoStream {...e.ctx.props} stream={stream} borderRadius={borderRadius} />
-        </div>
-      );
-    };
-
-    e.render(<Sample />, { label: { topLeft: '<VideoStream>', bottomRight: elStreamRef } });
+    e.render(<Sample {...e.ctx.props} streamRef={ref} bus={bus} />, {
+      label: { topLeft: '<VideoStream>', bottomRight: elStreamRef },
+    });
 
     e.render(<Waveform bus={bus} streamRef={ref} width={width} height={30} />, {
       width,
@@ -224,12 +208,21 @@ export const actions = DevActions<Ctx>()
   });
 export default actions;
 
-/**
- * <VideoStream> recorder control.
- */
-export type RecordControlsProps = { style?: CssValue };
-
-export const RecordControls: React.FC<RecordControlsProps> = (props) => {
-  const styles = { base: css({}) };
-  return <div {...css(styles.base, props.style)}>RecordControls</div>;
+type SampleProps = VideoStreamProps & { streamRef: string; bus: t.EventBus<any> };
+const Sample: React.FC<SampleProps> = (props) => {
+  const { streamRef, bus } = props;
+  const { stream } = useVideoStreamState({ ref: streamRef, bus });
+  const borderRadius = 30;
+  const styles = {
+    base: css({
+      backgroundColor: color.format(-0.02),
+      border: `solid 1px ${color.format(-0.03)}`,
+      borderRadius,
+    }),
+  };
+  return (
+    <div {...styles.base}>
+      <VideoStream {...props} stream={stream} borderRadius={borderRadius} />
+    </div>
+  );
 };

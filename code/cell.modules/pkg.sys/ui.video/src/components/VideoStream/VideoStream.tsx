@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { css, CssValue, defaultValue, t } from '../../common';
+import { css, CssValue, defaultValue } from '../../common';
 
 export type VideoStreamProps = {
   stream?: MediaStream;
@@ -20,7 +20,9 @@ export const VideoStream: React.FC<VideoStreamProps> = (props) => {
   const borderRadius = defaultValue(props.borderRadius, 16);
 
   useEffect(() => {
-    if (stream && videoRef.current) videoRef.current.srcObject = stream;
+    if (videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+    }
   }, [stream, videoRef]);
 
   const styles = {
@@ -38,6 +40,7 @@ export const VideoStream: React.FC<VideoStreamProps> = (props) => {
       height: '100%',
     }),
   };
+
   return (
     <div {...css(styles.base, props.style)}>
       <video {...styles.video} ref={videoRef} autoPlay={true} muted={isMuted} />

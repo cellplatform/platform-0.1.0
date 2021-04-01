@@ -1,5 +1,5 @@
 import { Subject, firstValueFrom } from 'rxjs';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { rx, t } from '../../common';
 
@@ -15,7 +15,6 @@ export function MediaStreamEvents(args: { bus: t.EventBus<any> }) {
   /**
    * START
    */
-
   const start = (ref: string) => {
     const video$ = rx
       .payload<t.MediaStreamStartVideoEvent>(event$, 'MediaStream/start:video')
@@ -79,6 +78,7 @@ export function MediaStreamEvents(args: { bus: t.EventBus<any> }) {
     const request$ = rx
       .payload<t.MediaStreamStatusRequestEvent>(event$, 'MediaStream/status:req')
       .pipe(filter((e) => e.ref === ref));
+
     const response$ = rx
       .payload<t.MediaStreamStatusResponseEvent>(event$, 'MediaStream/status:res')
       .pipe(filter((e) => e.ref === ref));
