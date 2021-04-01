@@ -167,7 +167,7 @@ function toTracks(stream?: MediaStream) {
 }
 
 function toTrack(input: MediaStreamTrack): t.MediaStreamTrack {
-  const { id, enabled: isEnabled, muted: isMuted, label, readyState: state } = input;
+  const { id, enabled: isEnabled, label, readyState: state } = input;
   const kind = input.kind as t.MediaStreamTrack['kind'];
-  return { kind, id, isEnabled, isMuted, label, state };
+  return { kind, id, isEnabled, label, state };
 }

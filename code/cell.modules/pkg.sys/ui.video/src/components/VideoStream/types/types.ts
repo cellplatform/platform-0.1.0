@@ -7,7 +7,6 @@ export type MediaStreamTrack = {
   kind: 'audio' | 'video';
   id: string;
   isEnabled: boolean;
-  isMuted: boolean;
   label: string;
   state: 'live' | 'ended';
 };

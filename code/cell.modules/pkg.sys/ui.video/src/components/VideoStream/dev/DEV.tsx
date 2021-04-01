@@ -13,12 +13,25 @@ import {
   VideoStreamProps,
 } from '..';
 
+type Events = ReturnType<typeof MediaStreamEvents>;
 type Ctx = {
   ref: string;
   bus: t.EventBus<t.MediaEvent>;
-  events: ReturnType<typeof MediaStreamEvents>;
+  events: Events;
   props: VideoStreamProps;
+  muted: {
+    video: boolean;
+    audio: boolean;
+  };
 };
+
+async function updateMute(ctx: Ctx) {
+  const { stream } = await ctx.events.status(ctx.ref).get();
+  if (stream) {
+    stream.media.getAudioTracks().forEach((track) => (track.enabled = !ctx.muted.audio));
+    stream.media.getVideoTracks().forEach((track) => (track.enabled = !ctx.muted.video));
+  }
+}
 
 /**
  * Actions
@@ -35,8 +48,6 @@ export const actions = DevActions<Ctx>()
     MediaStreamController({ bus });
     MediaStreamRecordController({ ref, bus });
 
-    // bus.fire({ type: 'MediaStream/start:video', payload: { ref } });
-
     rx.payload<t.MediaStreamErrorEvent>(bus.event$, 'MediaStream/error')
       .pipe(filter((e) => e.ref === ref))
       .subscribe((e) => {
@@ -48,7 +59,30 @@ export const actions = DevActions<Ctx>()
       bus,
       events,
       props: { isMuted: true },
+      muted: { video: false, audio: false },
     };
+  })
+
+  .items((e) => {
+    e.title('Props');
+
+    e.boolean('video: muted', (e) => {
+      if (e.changing) e.ctx.muted.video = e.changing.next;
+      e.boolean.current = e.ctx.muted.video;
+      updateMute(e.ctx);
+    });
+
+    e.boolean('audio: muted', (e) => {
+      if (e.changing) e.ctx.muted.audio = e.changing.next;
+      e.boolean.current = e.ctx.muted.audio;
+      updateMute(e.ctx);
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('update mute', (e) => updateMute(e.ctx));
+
+    e.hr();
   })
 
   .items((e) => {
@@ -59,13 +93,15 @@ export const actions = DevActions<Ctx>()
     e.button('fire: MediaStream/start:video', async (e) => {
       const ref = e.ctx.ref;
       await e.ctx.events.stop(ref).fire();
-      e.ctx.bus.fire({ type: 'MediaStream/start:video', payload: { ref } });
+      await e.ctx.events.start(ref).video();
+      await updateMute(e.ctx);
     });
 
     e.button('fire: MediaStream/start:screen', async (e) => {
       const ref = e.ctx.ref;
       await e.ctx.events.stop(ref).fire();
-      e.ctx.bus.fire({ type: 'MediaStream/start:screen', payload: { ref } });
+      await e.ctx.events.start(ref).screen();
+      await updateMute(e.ctx);
     });
 
     e.button('fire: MediaStream/stop', (e) => {
