@@ -33,7 +33,10 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
 
   const styles = {
     base: css({ position: 'relative', fontSize: 14 }),
-    buttons: css({ Flex: 'horizontal-center-spaceBetween' }),
+    buttons: css({
+      Flex: 'horizontal-center-spaceBetween',
+      fontSize: 12,
+    }),
     events: css({ marginTop: 20, marginBottom: 8 }),
     close: css({ Absolute: [5, 5, null, null] }),
   };
