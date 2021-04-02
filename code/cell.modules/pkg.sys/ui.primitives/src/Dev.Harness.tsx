@@ -10,6 +10,7 @@ const imports = {
   CardStack: import('./components/CardStack/dev/DEV'),
   PropList: import('./components/PropList/dev/DEV'),
   TextEditor: import('./components/TextEditor/DEV'),
+  MotionDraggable: import('./components/MotionDraggable/dev/DEV'),
 
   Button: import('./components.ref/button/Button.dev/DEV'),
   Switch: import('./components.ref/button/Switch.dev/DEV'),
