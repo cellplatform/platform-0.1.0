@@ -3,7 +3,7 @@ import { t } from './common';
 export type PeerDataEvent = PeerDataSendEvent | PeerDataReceivedEvent;
 
 /**
- * Sends data over the network
+ * Fires to sends OUTGOING data over the network
  */
 export type PeerDataSendEvent = {
   type: 'Peer:Data/send';
@@ -15,6 +15,9 @@ export type PeerDataSend = {
   data: t.JsonMap;
 };
 
+/**
+ * Fires when INCOMING data is recieved from the network.
+ */
 export type PeerDataReceivedEvent = {
   type: 'Peer:Data/received';
   payload: PeerDataReceived;
