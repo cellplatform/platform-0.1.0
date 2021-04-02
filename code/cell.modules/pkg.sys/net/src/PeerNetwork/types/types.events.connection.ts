@@ -20,8 +20,8 @@ export type PeerConnectReqEvent = {
 export type PeerNetworkConnectReq = PeerNetworkConnectDataReq | PeerNetworkConnectMediaReq;
 
 type ConnectBase = {
-  self: t.PeerNetworkId;
-  remote: t.PeerNetworkId;
+  self: t.PeerId;
+  remote: t.PeerId;
   metadata?: t.JsonMap;
   direction: t.PeerConnectDirection;
 };
@@ -37,8 +37,8 @@ export type PeerConnectResEvent = {
   payload: PeerNetworkConnectRes;
 };
 export type PeerNetworkConnectRes = {
-  self: t.PeerNetworkId;
-  remote: t.PeerNetworkId;
+  self: t.PeerId;
+  remote: t.PeerId;
   kind: 'data' | 'media';
   direction: t.PeerConnectDirection;
   connection?: t.PeerConnectionStatus;
@@ -53,8 +53,8 @@ export type PeerDisconnectReqEvent = {
   payload: PeerNetworkDisconnectReq;
 };
 export type PeerNetworkDisconnectReq = {
-  self: t.PeerNetworkId;
-  remote: t.PeerNetworkId;
+  self: t.PeerId;
+  remote: t.PeerId;
 };
 
 /**
@@ -68,8 +68,8 @@ export type PeerDisconnectResEvent = {
   payload: PeerNetworkDisconnectRes;
 };
 export type PeerNetworkDisconnectRes = {
-  self: t.PeerNetworkId;
-  remote: t.PeerNetworkId;
+  self: t.PeerId;
+  remote: t.PeerId;
   connection?: t.PeerConnectionStatus;
   error?: t.PeerNetworkError;
 };
@@ -82,6 +82,6 @@ export type PeerConnectionClosedEvent = {
   payload: PeerNetworkConnectionClosed;
 };
 export type PeerNetworkConnectionClosed = {
-  self: t.PeerNetworkId;
+  self: t.PeerId;
   connection: t.PeerConnectionStatus;
 };

@@ -6,7 +6,7 @@ export * from './types.events.data';
 /**
  * An identifier of a network peer.
  */
-export type PeerNetworkId = string;
+export type PeerId = string;
 
 /**
  * EVENTS

@@ -8,7 +8,7 @@ import { PeerEvents } from '../Events';
  * Monitors an event-bus keeping a set of state values
  * synced as peers interact with the network.
  */
-export function usePeerNetworkState(args: { self: t.PeerNetworkId; bus: t.EventBus<any> }) {
+export function usePeerNetworkState(args: { self: t.PeerId; bus: t.EventBus<any> }) {
   const bus = args.bus.type<t.PeerEvent>();
   const [network, setNetwork] = useState<t.PeerNetworkStatus>();
 

@@ -21,7 +21,7 @@ export type PeerNetworkInitReqEvent = {
   payload: PeerNetworkCreateReq;
 };
 export type PeerNetworkCreateReq = {
-  self: t.PeerNetworkId;
+  self: t.PeerId;
   signal: string; // String containing the signal server endpoint: "host/path"
 };
 
@@ -33,7 +33,7 @@ export type PeerNetworkInitResEvent = {
   payload: PeerNetworkCreateRes;
 };
 export type PeerNetworkCreateRes = {
-  self: t.PeerNetworkId;
+  self: t.PeerId;
   createdAt: number;
   signal: t.PeerNetworkSignalEndpoint;
 };
@@ -46,7 +46,7 @@ export type PeerNetworkStatusRequestEvent = {
   payload: PeerNetworkStatusRequest;
 };
 export type PeerNetworkStatusRequest = {
-  self: t.PeerNetworkId;
+  self: t.PeerId;
 };
 
 /**
@@ -57,7 +57,7 @@ export type PeerNetworkStatusResponseEvent = {
   payload: PeerNetworkStatusResponse;
 };
 export type PeerNetworkStatusResponse = {
-  self: t.PeerNetworkId;
+  self: t.PeerId;
   exists: boolean;
   network?: t.PeerNetworkStatus;
 };
@@ -79,7 +79,7 @@ export type PeerNetworkStatusChangedEvent = {
   payload: PeerNetworkStatusChanged;
 };
 export type PeerNetworkStatusChanged = {
-  self: t.PeerNetworkId;
+  self: t.PeerId;
   network: t.PeerNetworkStatus;
   event: t.PeerEvent;
 };
@@ -89,7 +89,7 @@ export type PeerNetworkOnlineChangedEvent = {
   payload: PeerNetworkOnlineChanged;
 };
 export type PeerNetworkOnlineChanged = {
-  self: t.PeerNetworkId;
+  self: t.PeerId;
   isOnline: boolean;
 };
 
@@ -101,7 +101,7 @@ export type PeerNetworkPurgeReqEvent = {
   payload: PeerNetworkPurgeReq;
 };
 export type PeerNetworkPurgeReq = {
-  self: t.PeerNetworkId;
+  self: t.PeerId;
   select?: true | { closedConnections?: boolean }; // NB: [true] clears all purgeable data.
 };
 
@@ -110,7 +110,7 @@ export type PeerNetworkPurgeResEvent = {
   payload: PeerNetworkPurgeRes;
 };
 export type PeerNetworkPurgeRes = {
-  self: t.PeerNetworkId;
+  self: t.PeerId;
   changed: boolean;
   purged: t.PeerNetworkPurged;
   error?: t.PeerNetworkError;

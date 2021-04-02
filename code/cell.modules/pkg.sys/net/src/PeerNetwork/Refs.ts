@@ -48,7 +48,7 @@ export function MemoryRefs() {
           self.connections = self.connections.filter((item) => item.conn !== conn);
         },
 
-        get(conn: t.PeerNetworkId | PeerJS.DataConnection | PeerJS.MediaConnection) {
+        get(conn: t.PeerId | PeerJS.DataConnection | PeerJS.MediaConnection) {
           const remote = typeof conn === 'string' ? conn : conn.peer;
           const ref = self.connections.find((ref) => ref.id.remote === remote);
           if (!ref) {

@@ -6,7 +6,7 @@ import { COLORS, css, CssValue, t } from './common';
 import { Network } from './DEV.Network';
 
 export type LayoutProps = {
-  self: t.PeerNetworkId;
+  self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.EventBus<any>;
   debugJson?: boolean;
