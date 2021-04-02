@@ -27,15 +27,15 @@ type IFileStore = {
  * Bundle and upload to a cell.
  */
 export async function upload(argv: t.Argv) {
+  const bump = util.bumpArg(argv);
+  if (bump) await Package.bump(constants.PKG.PATH, bump);
+
   const bundle = argv.bundle; // NB: undefined by default (false if --no-bundle)
   const name = util.nameArg(argv, 'web');
   const mode = util.modeArg(argv, 'production');
   const config = (await util.loadConfig(argv.config, { name })).mode(mode);
   const model = Model(config);
   const target = model.target();
-  const bump = util.bumpArg(argv);
-
-  if (bump) await Package.bump(constants.PKG.PATH, bump);
 
   let uri: string | undefined = argv.uri;
   let targetDir: string = typeof argv.dir === 'string' ? argv.dir || '' : '';
