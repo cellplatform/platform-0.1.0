@@ -56,7 +56,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         <div {...styles.verticalRule} />
       </div>
       <div {...styles.right}>
-        <ObjectView name={'PeerNetwork'} data={state.network} expandLevel={5} />
+        <ObjectView name={'state'} data={state.network} expandLevel={5} />
       </div>
     </>
   );

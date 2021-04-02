@@ -24,7 +24,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('sys.net/PeerNetwork')
+  .namespace('sys.net/MeshNetwork')
 
   .context((prev) => {
     if (prev) return prev;
@@ -227,8 +227,8 @@ export const actions = DevActions<Ctx>()
 
     e.settings({
       layout: {
-        label: { topLeft: 'PeerNetwork', topRight: elLabelRight },
-        position: [150, 80],
+        label: { topLeft: 'MeshNetwork', topRight: elLabelRight },
+        position: [60, 60, 80, 60],
         border: -0.1,
         cropmarks: -0.2,
         background: 1,

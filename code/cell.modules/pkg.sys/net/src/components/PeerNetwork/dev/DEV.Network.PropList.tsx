@@ -26,7 +26,7 @@ export const NetworkPropList: React.FC<NetworkPropListProps> = (props) => {
 
   return (
     <PropList
-      title={'PeerNetwork'}
+      title={'MeshNetwork'}
       defaults={{ clipboard: false }}
       items={items}
       width={{ max: 280 }}
@@ -47,7 +47,7 @@ const toItems = (network?: t.PeerNetworkStatus): PropListItem[] => {
   const signal = network.signal;
 
   const items: PropListItem[] = [
-    { label: 'id', value: { data: network.id, clipboard: true } },
+    { label: 'peer:id', value: { data: network.id, clipboard: true } },
     {
       label: `signal server ${signal.secure ? '(secure)' : ''}`,
       value: `${signal.host}:${signal.port}`,

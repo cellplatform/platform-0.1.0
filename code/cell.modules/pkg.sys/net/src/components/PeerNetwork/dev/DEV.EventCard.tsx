@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
 import { Card, css, CssValue, ObjectView, PropList, PropListItem, t, COLORS } from './common';
 
 export type EventCardProps = {
@@ -13,6 +12,13 @@ export type EventCardProps = {
 export const EventCard: React.FC<EventCardProps> = (props) => {
   const { event, showPayload = false } = props;
   const styles = { base: css({}) };
+
+  const itemStyle = {
+    monospace: true,
+    fontSize: 10,
+    color: COLORS.PURPLE,
+  };
+
   const items: PropListItem[] = [
     { label: 'count', value: props.count },
     {
@@ -20,16 +26,14 @@ export const EventCard: React.FC<EventCardProps> = (props) => {
       value: {
         data: event.type,
         clipboard: JSON.stringify(event, null, '  '),
-        monospace: true,
-        color: COLORS.PURPLE,
+        ...itemStyle,
       },
     },
     {
       label: 'payload',
       value: {
         data: '{object}',
-        monospace: true,
-        color: COLORS.PURPLE,
+        ...itemStyle,
         onClick: () => {
           if (props.onToggleShowPayload) props.onToggleShowPayload();
         },

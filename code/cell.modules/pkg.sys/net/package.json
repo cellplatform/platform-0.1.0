@@ -1,6 +1,6 @@
 {
   "name": "sys.net",
-  "version": "0.0.6",
+  "version": "0.0.15",
   "sideEffects": false,
   "compiler": {
     "port": 3040
@@ -17,7 +17,7 @@
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "deploy": "cell.compiler upload --dir sys.net $@"
+    "deploy": "cell.compiler upload --bump --dir sys.net $@"
   },
   "dependencies": {
     "core-js": "^3.10.0",

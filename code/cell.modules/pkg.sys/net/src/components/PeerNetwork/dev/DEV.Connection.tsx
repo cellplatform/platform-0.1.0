@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ObjectView } from 'sys.ui.dev';
 
-import { Button, Card, css, CssValue, Hr, PropList, PropListItem, t } from './common';
+import { Icons, Button, Card, css, CssValue, Hr, PropList, PropListItem, t } from './common';
 import { EventStack } from './DEV.EventStack';
 
 export type ConnectionProps = {
@@ -24,12 +24,6 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
 
   const [debugCount, setDebugCount] = useState<number>(0);
 
-  const styles = {
-    base: css({ fontSize: 14 }),
-    buttons: css({ Flex: 'horizontal-center-spaceBetween' }),
-    events: css({ marginTop: 20, marginBottom: 6 }),
-  };
-
   const items: PropListItem[] = [
     { label: 'id', value: { data: id.remote, clipboard: true } },
     { label: 'kind', value: connection.kind },
@@ -37,19 +31,39 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
     { label: 'open', value: connection.isOpen },
   ];
 
+  const styles = {
+    base: css({ position: 'relative', fontSize: 14 }),
+    buttons: css({ Flex: 'horizontal-center-spaceBetween' }),
+    events: css({ marginTop: 20, marginBottom: 8 }),
+    close: css({ Absolute: [5, 5, null, null] }),
+  };
+
   const hr = <Hr thickness={5} opacity={0.1} margin={[10, 0]} />;
   const elEvents = <EventStack netbus={netbus} style={styles.events} />;
+
+  const handleClose = () => {
+    bus.fire({
+      type: 'Peer:Connection/disconnect:req',
+      payload: { self: networkRef, remote: id.remote },
+    });
+  };
+
+  const elCloseButton = (
+    <Button style={styles.close} onClick={handleClose}>
+      <Icons.Close size={18} />
+    </Button>
+  );
 
   return (
     <div {...css(styles.base, props.style)}>
       <Card key={id.remote} padding={[15, 20]} margin={props.margin} width={280} shadow={false}>
-        <PropList title={'Connection'} items={items} defaults={{ clipboard: false }} />
+        <PropList title={'PeerConnection'} items={items} defaults={{ clipboard: false }} />
 
         {hr}
 
         <div {...styles.buttons}>
           <Button
-            label={'Broadcast'}
+            label={'Broadcast Event'}
             onClick={() => {
               setDebugCount((prev) => prev + 1);
               netbus.fire({
@@ -59,19 +73,10 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
               });
             }}
           />
-          <Button
-            onClick={() => {
-              bus.fire({
-                type: 'Peer:Connection/disconnect:req',
-                payload: { self: networkRef, remote: id.remote },
-              });
-            }}
-          >
-            Close
-          </Button>
         </div>
 
         {elEvents}
+        {elCloseButton}
       </Card>
     </div>
   );
