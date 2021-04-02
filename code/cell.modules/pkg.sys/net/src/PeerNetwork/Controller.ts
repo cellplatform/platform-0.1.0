@@ -10,7 +10,7 @@ type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 /**
  * EventBus contoller for a WebRTC [Peer] connection.
  */
-export function PeerController(args: { bus: t.EventBus<any> }) {
+export function Controller(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
   const bus = args.bus.type<t.PeerEvent>();
   const $ = bus.event$.pipe(takeUntil(dispose$));

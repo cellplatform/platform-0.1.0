@@ -6,7 +6,7 @@ import { css, cuid, deleteUndefined, Icons, MediaStreamEvents, rx, t, time } fro
 import { Layout } from './DEV.Layout';
 
 type Ctx = {
-  id: string;
+  self: t.PeerId;
   bus: t.EventBus<t.PeerEvent>;
   netbus: t.EventBus;
   signal: string; // Signalling server network address (host/path).
@@ -14,6 +14,7 @@ type Ctx = {
     network: ReturnType<typeof PeerNetwork.Events>;
     media: ReturnType<typeof MediaStreamEvents>;
   };
+  strategy: t.PeerStrategy;
   connectTo?: string;
   reliable: boolean;
   debugJson: boolean;
@@ -28,32 +29,32 @@ export const actions = DevActions<Ctx>()
   .context((prev) => {
     if (prev) return prev;
 
-    const id = cuid();
+    const self = cuid();
     const bus = rx.bus<t.PeerEvent>();
 
     PeerNetwork.Controller({ bus });
+    const strategy = PeerNetwork.Strategy({ self, bus });
+
     const signal = 'rtc.cellfs.com/peer';
     const events = {
       network: PeerNetwork.Events({ bus }),
       media: MediaStreamEvents({ bus }),
     };
 
-    time.delay(100, () => events.network.create(signal, { id }));
+    time.delay(100, () => events.network.create(signal, self));
 
-    // Purge connections as soon as one is closed.
-    events.network.connections(id).closed$.subscribe(() => events.network.purge(id).fire());
-
-    const netbus = events.network.data(id).bus();
+    const netbus = events.network.data(self).bus();
 
     netbus.event$.subscribe((e) => {
       console.log('Network Bus', e.type, e.payload);
     });
 
     return {
-      id,
+      self,
       bus,
-      netbus: netbus,
+      netbus,
       events,
+      strategy,
       signal,
       reliable: false,
       debugJson: false,
@@ -86,12 +87,12 @@ export const actions = DevActions<Ctx>()
     e.title('Events');
 
     e.button('fire - Peer:Network/init', async (e) => {
-      const { id, signal, events } = e.ctx;
-      events.network.create(signal, { id });
+      const { self, signal, events } = e.ctx;
+      events.network.create(signal, self);
     });
 
     e.button('fire - Peer:Network/purge', async (e) => {
-      const ref = e.ctx.id;
+      const ref = e.ctx.self;
       const data = deleteUndefined(await e.ctx.events.network.purge(ref).fire());
       e.button.description = (
         <ObjectView name={'purged'} data={data} fontSize={10} expandLevel={2} />
@@ -99,7 +100,7 @@ export const actions = DevActions<Ctx>()
     });
 
     e.button('fire - Peer:Network/status', async (e) => {
-      const ref = e.ctx.id;
+      const ref = e.ctx.self;
       const data = deleteUndefined(await e.ctx.events.network.status(ref).get());
       e.button.description = (
         <ObjectView name={'status:res'} data={data} fontSize={10} expandLevel={2} />
@@ -121,13 +122,13 @@ export const actions = DevActions<Ctx>()
     e.hr(0, 0, 20);
 
     e.button('fire - Peer:Connection/connect (data)', async (e) => {
-      const { id, connectTo, events, reliable } = e.ctx;
+      const { self, connectTo, events, reliable } = e.ctx;
       if (!connectTo) {
         e.button.description = '🐷 ERROR: Remote peer not specified';
       } else {
         const metadata = { foo: 123 };
         const res = await events.network
-          .connection(id, connectTo)
+          .connection(self, connectTo)
           .open.data({ reliable, metadata });
         const name = res.error ? 'Fail' : 'Success';
         const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
@@ -176,12 +177,11 @@ export const actions = DevActions<Ctx>()
     // e.hr(1, 0.1);
 
     e.button('fire - Peer:Connection/disconnect', async (e) => {
-      const { id, connectTo, events } = e.ctx;
-
+      const { self, connectTo, events } = e.ctx;
       if (!connectTo) {
         e.button.description = '🐷 ERROR: Remote peer not specified';
       } else {
-        const res = await events.network.connection(id, connectTo).close();
+        const res = await events.network.connection(self, connectTo).close();
         const name = res.error ? 'Fail' : 'Success';
         const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
         e.button.description = el;
@@ -194,13 +194,20 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Strategies (Behavior)');
 
-    e.boolean('mesh connection propogation', (e) => {
+    e.boolean('purge connection on close', (e) => {
       //
+    });
+
+    e.boolean('mesh connection propogation', (e) => {
+      const { strategy } = e.ctx;
+      console.log('strategy.connection', strategy.connection);
+      if (e.changing) strategy.connection.purgeOnClose = e.changing.next;
+      e.boolean.current = strategy.connection.purgeOnClose;
     });
   })
 
   .subject((e) => {
-    const { id, bus, netbus } = e.ctx;
+    const { self, bus, netbus } = e.ctx;
 
     const styles = {
       labelRight: {
@@ -216,7 +223,7 @@ export const actions = DevActions<Ctx>()
 
     const elLabelRight = (
       <div {...styles.labelRight.base}>
-        peer:{id}
+        peer:{self}
         <Icons.Antenna size={20} style={styles.labelRight.icon} />
       </div>
     );
@@ -233,7 +240,7 @@ export const actions = DevActions<Ctx>()
       actions: { width: 380 },
     });
 
-    e.render(<Layout self={id} bus={bus} netbus={netbus} debugJson={e.ctx.debugJson} />);
+    e.render(<Layout self={self} bus={bus} netbus={netbus} debugJson={e.ctx.debugJson} />);
   });
 
 export default actions;

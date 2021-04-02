@@ -1,5 +1,5 @@
 import { firstValueFrom, Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { take, filter, takeUntil } from 'rxjs/operators';
 import { cuid, rx, t } from '../common';
 import { isEvent } from './util';
 
@@ -14,7 +14,7 @@ export function isPeerEvent(e: t.Event) {
 /**
  * Helpers for working with a [PeerNetwork].
  */
-export function PeerEvents(args: { bus: t.EventBus<any> }) {
+export function Events(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
   const bus = args.bus.type<t.PeerEvent>();
@@ -23,10 +23,10 @@ export function PeerEvents(args: { bus: t.EventBus<any> }) {
   /**
    * CREATE
    */
-  const create = (signal: string, options: { id?: string } = {}) => {
-    const id = options.id || cuid();
-    const res = firstValueFrom(created(id).$);
-    bus.fire({ type: 'Peer:Network/init:req', payload: { self: id, signal } });
+  const create = (signal: string, id?: t.PeerId) => {
+    const self = id || cuid();
+    const res = firstValueFrom(created(self).$);
+    bus.fire({ type: 'Peer:Network/init:req', payload: { self, signal } });
     return res;
   };
 
@@ -184,7 +184,7 @@ export function PeerEvents(args: { bus: t.EventBus<any> }) {
 
   return {
     dispose,
-    dispose$: dispose$.asObservable(),
+    dispose$: dispose$.pipe(take(1)),
 
     $: event$,
     create,
