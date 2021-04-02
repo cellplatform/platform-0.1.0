@@ -1,4 +1,3 @@
-import { interval } from 'rxjs';
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
@@ -24,7 +23,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('sys.net/MeshNetwork')
+  .namespace('sys.net/PeerNetwork')
 
   .context((prev) => {
     if (prev) return prev;
@@ -193,13 +192,10 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('NetworkBus');
+    e.title('Strategies (Behavior)');
 
-    e.button('fire', (e) => {
-      e.ctx.netbus.fire({
-        type: 'FOO',
-        payload: { count: 123 },
-      });
+    e.boolean('mesh connection propogation', (e) => {
+      //
     });
   })
 
@@ -227,7 +223,7 @@ export const actions = DevActions<Ctx>()
 
     e.settings({
       layout: {
-        label: { topLeft: 'MeshNetwork', topRight: elLabelRight },
+        label: { topLeft: 'PeerNetwork', topRight: elLabelRight },
         position: [60, 60, 80, 60],
         border: -0.1,
         cropmarks: -0.2,
@@ -237,7 +233,7 @@ export const actions = DevActions<Ctx>()
       actions: { width: 380 },
     });
 
-    e.render(<Layout id={id} bus={bus} netbus={netbus} debugJson={e.ctx.debugJson} />);
+    e.render(<Layout self={id} bus={bus} netbus={netbus} debugJson={e.ctx.debugJson} />);
   });
 
 export default actions;

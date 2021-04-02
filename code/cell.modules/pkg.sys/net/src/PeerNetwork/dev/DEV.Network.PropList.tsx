@@ -26,7 +26,7 @@ export const NetworkPropList: React.FC<NetworkPropListProps> = (props) => {
 
   return (
     <PropList
-      title={'MeshNetwork'}
+      title={'Network (Mesh)'}
       defaults={{ clipboard: false }}
       items={items}
       width={{ max: 280 }}

@@ -1,4 +1,4 @@
-import { PeerJS, t } from '../../common';
+import { PeerJS, t } from '../common';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 

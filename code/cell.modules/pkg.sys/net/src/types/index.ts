@@ -1,1 +1,1 @@
-export * from '../components/MeshNetwork/types';
+export * from '../PeerNetwork/types';

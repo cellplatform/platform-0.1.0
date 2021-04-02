@@ -1,6 +1,6 @@
 import { Subject, merge } from 'rxjs';
 import { filter, take, takeUntil, delay } from 'rxjs/operators';
-import { deleteUndefined, PeerJS, rx, t, time } from '../../common';
+import { deleteUndefined, PeerJS, rx, t, time } from '../common';
 import { PeerJSError } from './util';
 import { MemoryRefs, SelfRef, ConnectionRef } from './Refs';
 import { asArray } from '@platform/util.value/lib/value/value.array';

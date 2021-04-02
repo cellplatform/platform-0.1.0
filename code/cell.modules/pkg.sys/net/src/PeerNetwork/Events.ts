@@ -1,6 +1,6 @@
 import { firstValueFrom, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { cuid, rx, t } from '../../common';
+import { cuid, rx, t } from '../common';
 import { isEvent } from './util';
 
 /**

@@ -6,7 +6,7 @@ import { COLORS, css, CssValue, t } from './common';
 import { Network } from './DEV.Network';
 
 export type LayoutProps = {
-  id: string;
+  self: t.PeerNetworkId;
   bus: t.EventBus<any>;
   netbus: t.EventBus<any>;
   debugJson?: boolean;
@@ -14,10 +14,10 @@ export type LayoutProps = {
 };
 
 export const Layout: React.FC<LayoutProps> = (props) => {
-  const { id, netbus } = props;
+  const { netbus } = props;
   const bus = props.bus.type<t.PeerEvent>();
 
-  const state = usePeerNetworkState({ ref: id, bus });
+  const state = usePeerNetworkState({ self: props.self, bus });
   const network = state.network;
 
   const styles = {

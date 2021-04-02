@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { PeerJS, t } from '../../common';
+import { PeerJS, t } from '../common';
 
 type C = t.PeerConnectionStatus;
 
