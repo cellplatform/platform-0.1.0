@@ -37,7 +37,7 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
       Flex: 'horizontal-center-spaceBetween',
       fontSize: 12,
     }),
-    events: css({ marginTop: 20, marginBottom: 8 }),
+    events: css({ marginTop: 20 }),
     close: css({ Absolute: [5, 5, null, null] }),
   };
 
@@ -59,7 +59,13 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <Card key={id.remote} padding={[15, 20]} margin={props.margin} width={280} shadow={false}>
+      <Card
+        key={id.remote}
+        padding={[18, 20, 20, 20]}
+        margin={props.margin}
+        width={280}
+        shadow={false}
+      >
         <PropList title={'PeerConnection'} items={items} defaults={{ clipboard: false }} />
 
         {hr}
