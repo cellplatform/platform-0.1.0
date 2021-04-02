@@ -31,8 +31,8 @@ export const items: PropListItem[] = [
   { label: 'boolean', value: true },
   { label: 'boolean (switch)', value: { data: true, kind: 'Switch' } },
   {
-    label: 'thing monospace',
-    value: { data: 'thing', clipboard: true, monospace: true, color: COLORS.CYAN },
+    label: 'monospace (fontSize: 9)',
+    value: { data: 'thing', clipboard: true, monospace: true, color: COLORS.CYAN, fontSize: 9 },
   },
   { label: 'long (ellipsis)', value: LOREM },
   {

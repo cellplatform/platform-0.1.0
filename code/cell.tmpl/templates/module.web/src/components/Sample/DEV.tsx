@@ -8,7 +8,7 @@ type Ctx = { props: SampleProps };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('components/Sample')
+  .namespace('ui/Sample')
   .context((prev) => {
     if (prev) return prev;
     return { props: { count: 0 } };
