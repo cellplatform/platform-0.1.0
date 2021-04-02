@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { ObjectView } from 'sys.ui.dev';
 
-import { Icons, Button, Card, css, CssValue, Hr, PropList, PropListItem, t } from './common';
+import { Button, Card, css, CssValue, Hr, Icons, PropList, PropListItem, t } from './common';
 import { EventStack } from './DEV.EventStack';
 
 export type ConnectionProps = {
@@ -17,10 +14,8 @@ export type ConnectionProps = {
 
 export const Connection: React.FC<ConnectionProps> = (props) => {
   const { connection, netbus } = props;
-  const bus = props.bus.type<t.PeerEvent>();
-
   const id = connection.id;
-  const networkRef = id.local;
+  const bus = props.bus.type<t.PeerEvent>();
 
   const [debugCount, setDebugCount] = useState<number>(0);
 
@@ -47,7 +42,7 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
   const handleClose = () => {
     bus.fire({
       type: 'Peer:Connection/disconnect:req',
-      payload: { self: networkRef, remote: id.remote },
+      payload: { self: id.self, remote: id.remote },
     });
   };
 
@@ -77,8 +72,8 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
               setDebugCount((prev) => prev + 1);
               netbus.fire({
                 // NB: Arbitrary invented event.  When using in application, pass a set of strong event types to the bus.
-                type: 'Random/Sample:event',
-                payload: { msg: 'hello', from: networkRef, count: debugCount },
+                type: 'random/sample:event',
+                payload: { msg: 'hello', from: id.self, count: debugCount },
               });
             }}
           />

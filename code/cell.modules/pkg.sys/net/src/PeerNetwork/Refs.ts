@@ -39,7 +39,7 @@ export function MemoryRefs() {
 
           const local = self.peer.id;
           const remote = conn.peer;
-          const ref: ConnectionRef = { kind, id: { local, remote }, conn, media };
+          const ref: ConnectionRef = { kind, id: { self: local, remote }, conn, media };
           self.connections = [...self.connections, ref];
           return ref;
         },

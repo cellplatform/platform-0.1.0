@@ -4,7 +4,7 @@ import { t } from './common';
  * Network
  */
 export type PeerNetworkStatus = {
-  id: string;
+  id: t.PeerId;
   createdAt: number;
   signal: t.PeerNetworkSignalEndpoint;
   connections: t.PeerConnectionStatus[];
@@ -17,7 +17,7 @@ export type PeerNetworkStatus = {
 export type PeerConnectionStatus = PeerConnectionDataStatus | PeerConnectionMediaStatus;
 
 type PeerConnectionBase = {
-  id: { local: string; remote: string };
+  id: { self: t.PeerId; remote: t.PeerId };
   metadata?: t.JsonMap;
 };
 
