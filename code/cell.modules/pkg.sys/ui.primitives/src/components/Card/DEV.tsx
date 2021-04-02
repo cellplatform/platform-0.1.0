@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { Card, CardProps } from '.';
-import { css, color } from '../../common';
+import { css } from '../../common';
 
 type Ctx = { props: CardProps };
 const LOREM =
@@ -18,6 +18,7 @@ export const actions = DevActions<Ctx>()
       props: {
         padding: [25, 30],
         userSelect: true,
+        shadow: true,
       },
     };
   })
@@ -28,6 +29,11 @@ export const actions = DevActions<Ctx>()
     e.boolean('userSelect', (e) => {
       if (e.changing) e.ctx.props.userSelect = e.changing.next;
       e.boolean.current = Boolean(e.ctx.props.userSelect);
+    });
+
+    e.boolean('shadow', (e) => {
+      if (e.changing) e.ctx.props.shadow = e.changing.next;
+      e.boolean.current = Boolean(e.ctx.props.shadow);
     });
 
     e.hr();

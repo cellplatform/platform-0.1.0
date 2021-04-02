@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
 import { color, COLORS, css, defaultValue, t } from '../../common';
 import { CopyIcon } from './PropList.Value.common';
@@ -7,6 +7,7 @@ export type SimpleValueProps = {
   defaults: t.PropListDefaults;
   value: t.PropListValue;
   message?: React.ReactNode;
+  cursor?: CSSProperties['cursor'];
   isOver?: boolean;
   isCopyable?: boolean;
 };
@@ -16,6 +17,7 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
 
   const is = toFlags(props);
   const textColor = toTextColor(props);
+  const cursor = defaultValue(props.cursor, is.copyActive ? 'pointer' : 'default');
 
   const styles = {
     base: css({
@@ -30,7 +32,7 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
-      cursor: is.copyActive ? 'pointer' : 'default',
+      cursor,
       textAlign: 'right',
       fontFamily: is.monospace ? 'monospace' : undefined,
     }),

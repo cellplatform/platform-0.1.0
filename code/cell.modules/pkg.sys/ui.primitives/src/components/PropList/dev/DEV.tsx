@@ -83,6 +83,7 @@ export const actions = DevActions<Ctx>()
       layout: { cropmarks: -0.2, width: 260 },
       host: { background: -0.04 },
     });
+
     e.render(<PropList {...e.ctx.props} style={{ flex: 1 }} />);
   });
 

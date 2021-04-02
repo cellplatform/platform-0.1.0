@@ -6,6 +6,7 @@ import { Connection } from './DEV.Connection';
 import { NetworkPropList } from './DEV.Network.PropList';
 import { VideoSelf } from './DEV.VideoSelf';
 import { Hr } from 'sys.ui.primitives/lib/components/Hr';
+import { EventStack } from './DEV.EventStack';
 
 export type NetworkProps = {
   bus: t.EventBus<any>;

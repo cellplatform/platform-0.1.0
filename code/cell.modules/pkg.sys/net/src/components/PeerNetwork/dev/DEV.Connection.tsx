@@ -3,8 +3,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ObjectView } from 'sys.ui.dev';
 
-import { PeerNetwork } from '..';
 import { Button, Card, css, CssValue, Hr, PropList, PropListItem, t } from './common';
+import { EventStack } from './DEV.EventStack';
 
 export type ConnectionProps = {
   bus: t.EventBus<any>;
@@ -23,23 +23,11 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
   const networkRef = id.local;
 
   const [debugCount, setDebugCount] = useState<number>(0);
-  const [debugInfo, setDebugInfo] = useState<{ title: string; data: any }>();
-
-  useEffect(() => {
-    const dispose$ = new Subject<void>();
-
-    netbus.event$.pipe(takeUntil(dispose$)).subscribe((e) => {
-      setDebugInfo({ title: 'Network Bus', data: e });
-    });
-
-    return () => dispose$.next();
-  }, []); // eslint-disable-line
 
   const styles = {
     base: css({ fontSize: 14 }),
-    buttons: css({
-      Flex: 'horizontal-center-spaceBetween',
-    }),
+    buttons: css({ Flex: 'horizontal-center-spaceBetween' }),
+    events: css({ marginTop: 20, marginBottom: 6 }),
   };
 
   const items: PropListItem[] = [
@@ -50,18 +38,13 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
   ];
 
   const hr = <Hr thickness={5} opacity={0.1} margin={[10, 0]} />;
-
-  const elEventData = debugInfo && (
-    <>
-      {hr}
-      <ObjectView name={debugInfo.title} data={debugInfo.data} expandLevel={5} />
-    </>
-  );
+  const elEvents = <EventStack netbus={netbus} style={styles.events} />;
 
   return (
     <div {...css(styles.base, props.style)}>
-      <Card key={id.remote} padding={[15, 20]} margin={props.margin} width={280}>
+      <Card key={id.remote} padding={[15, 20]} margin={props.margin} width={280} shadow={false}>
         <PropList title={'Connection'} items={items} defaults={{ clipboard: false }} />
+
         {hr}
 
         <div {...styles.buttons}>
@@ -70,8 +53,8 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
             onClick={() => {
               setDebugCount((prev) => prev + 1);
               netbus.fire({
-                type: 'Random/Sample:event',
                 // NB: Arbitrary invented event.  When using in application, pass a set of strong event types to the bus.
+                type: 'Random/Sample:event',
                 payload: { msg: 'hello', from: networkRef, count: debugCount },
               });
             }}
@@ -88,7 +71,7 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
           </Button>
         </div>
 
-        {elEventData}
+        {elEvents}
       </Card>
     </div>
   );

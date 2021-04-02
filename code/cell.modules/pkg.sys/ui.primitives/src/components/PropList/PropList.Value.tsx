@@ -22,6 +22,8 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
   const [isOver, setIsOver] = useState<boolean>(false);
   const [message, setMessage] = useState<React.ReactNode>();
 
+  const cursor = item.value.onClick ? 'pointer' : undefined;
+
   const styles = {
     base: css({
       flex: 1,
@@ -67,6 +69,7 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
           message={message}
           isOver={isOver}
           isCopyable={isCopyable}
+          cursor={cursor}
           defaults={props.defaults}
         />
       );
