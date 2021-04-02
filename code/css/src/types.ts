@@ -23,6 +23,8 @@ export type ICssStyle = {
   toMargins: CssToEdges<CssMarginEdges>;
   toPadding: CssToEdges<CssPaddingEdges>;
   toShadow: CssToShadow;
+  toPosition: CssToPosition;
+  toAbsolute: CssToAbsolute;
 };
 
 /**
@@ -92,3 +94,12 @@ export type CssShadow = {
   y?: number;
   inner?: boolean;
 };
+
+/**
+ * Position
+ */
+export type CssPosition = 'absolute' | 'fixed' | 'relative' | 'static' | 'sticky';
+export type CssEdgePosition = CssEdges & { position: CssPosition };
+
+export type CssToPosition = (position: CssPosition, edges: CssEdgesInput) => CssEdgePosition;
+export type CssToAbsolute = (edges: CssEdgesInput) => CssEdgePosition;

@@ -223,3 +223,48 @@ describe('toShadow', () => {
     expect(res).to.eql('inset 0 0 3px 0 rgba(255, 255, 255, 0.1)');
   });
 });
+
+describe('toPosition', () => {
+  it('0 (single number)', () => {
+    const res = style.toPosition('absolute', 0);
+    expect(res.position).to.eql('absolute');
+    expect(res.top).to.eql(0);
+    expect(res.right).to.eql(0);
+    expect(res.bottom).to.eql(0);
+    expect(res.left).to.eql(0);
+  });
+
+  it('array [y, x]', () => {
+    const res = style.toPosition('fixed', [10, 30]);
+    expect(res.position).to.eql('fixed');
+    expect(res.top).to.eql(10);
+    expect(res.right).to.eql(30);
+    expect(res.bottom).to.eql(10);
+    expect(res.left).to.eql(30);
+  });
+
+  it('[top, right, bottom, left]', () => {
+    const res = style.toPosition('sticky', [10, 20, 30, 40]);
+    expect(res.position).to.eql('sticky');
+    expect(res.top).to.eql(10);
+    expect(res.right).to.eql(20);
+    expect(res.bottom).to.eql(30);
+    expect(res.left).to.eql(40);
+  });
+
+  it('toAbsolute', () => {
+    const res1 = style.toAbsolute(0);
+    expect(res1.position).to.eql('absolute');
+    expect(res1.top).to.eql(0);
+    expect(res1.right).to.eql(0);
+    expect(res1.bottom).to.eql(0);
+    expect(res1.left).to.eql(0);
+
+    const res2 = style.toAbsolute([10, 20, 30, 40]);
+    expect(res2.position).to.eql('absolute');
+    expect(res2.top).to.eql(10);
+    expect(res2.right).to.eql(20);
+    expect(res2.bottom).to.eql(30);
+    expect(res2.left).to.eql(40);
+  });
+});
