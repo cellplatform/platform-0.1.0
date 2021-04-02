@@ -41,11 +41,6 @@ export const Layout: React.FC<LayoutProps> = (props) => {
       padding: 20,
       maxWidth: 350,
     }),
-    card: css({
-      display: 'block',
-      marginBottom: 20,
-      width: 300,
-    }),
     verticalRule: css({
       flex: 1,
       width: 1,

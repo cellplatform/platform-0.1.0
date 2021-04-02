@@ -26,8 +26,13 @@ export const Network: React.FC<NetworkProps> = (props) => {
 
   const styles = {
     base: css({}),
-    header: css({ Flex: 'horizontal-spaceBetween-start' }),
-    body: css({ display: 'flex', flexWrap: 'wrap' }),
+    header: css({
+      Flex: 'horizontal-spaceBetween-start',
+    }),
+    body: css({
+      display: 'flex',
+      flexWrap: 'wrap',
+    }),
   };
 
   const cardMargin = 20;
@@ -52,7 +57,7 @@ export const Network: React.FC<NetworkProps> = (props) => {
         <NetworkPropList network={network} />
         <VideoSelf networkRef={network.id} bus={bus} isOffline={!network.isOnline} />
       </div>
-      <Hr thickness={10} opacity={0.06} />
+      <Hr thickness={10} opacity={0.06} margin={[30, 0, 20, 0]} />
       <div {...styles.body}>{elDataConnections}</div>
     </div>
   );

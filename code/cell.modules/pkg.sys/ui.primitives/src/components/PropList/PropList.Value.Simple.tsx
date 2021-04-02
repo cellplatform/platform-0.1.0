@@ -53,10 +53,13 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
  */
 
 function toTextColor(props: SimpleValueProps) {
-  const is = toFlags(props);
+  if (props.value.color !== undefined) return color.format(props.value.color);
   if (props.message) return color.format(-0.3);
+
+  const is = toFlags(props);
   if (is.copyActive) return COLORS.BLUE;
   if (is.boolean) return COLORS.PURPLE;
+
   return COLORS.DARK;
 }
 

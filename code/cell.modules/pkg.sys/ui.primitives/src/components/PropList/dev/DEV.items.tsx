@@ -30,7 +30,10 @@ export const items: PropListItem[] = [
   { label: 'number', value: { data: 123456, clipboard: 'Value: 123456', monospace: true } },
   { label: 'boolean', value: true },
   { label: 'boolean (switch)', value: { data: true, kind: 'Switch' } },
-  { label: 'thing monospace', value: { data: 'thing', clipboard: true, monospace: true } },
+  {
+    label: 'thing monospace',
+    value: { data: 'thing', clipboard: true, monospace: true, color: COLORS.CYAN },
+  },
   { label: 'long (ellipsis)', value: LOREM },
   {
     label: 'click handler',

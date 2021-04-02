@@ -29,6 +29,7 @@ type ValueBase = {
   monospace?: boolean;
   clipboard?: string | boolean;
   onClick?: (e: PropListValueEventArgs) => void;
+  color?: string | number;
 };
 
 /**

@@ -29,7 +29,6 @@ export const NetworkPropList: React.FC<NetworkPropListProps> = (props) => {
       title={'PeerNetwork'}
       defaults={{ clipboard: false }}
       items={items}
-      margin={[null, null, 30, null]}
       width={{ max: 280 }}
       style={props.style}
     />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Card, css, CssValue, ObjectView, PropList, PropListItem, t } from './common';
+import { Card, css, CssValue, ObjectView, PropList, PropListItem, t, COLORS } from './common';
 
 export type EventCardProps = {
   count: number;
@@ -17,15 +17,20 @@ export const EventCard: React.FC<EventCardProps> = (props) => {
     { label: 'count', value: props.count },
     {
       label: 'type',
-      value: { data: event.type, clipboard: JSON.stringify(event, null, '  ') },
+      value: {
+        data: event.type,
+        clipboard: JSON.stringify(event, null, '  '),
+        monospace: true,
+        color: COLORS.PURPLE,
+      },
     },
     {
       label: 'payload',
       value: {
         data: '{object}',
         monospace: true,
+        color: COLORS.PURPLE,
         onClick: () => {
-          console.log('click', event);
           if (props.onToggleShowPayload) props.onToggleShowPayload();
         },
       },
