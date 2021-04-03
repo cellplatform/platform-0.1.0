@@ -27,8 +27,14 @@ type ConnectBase = {
   direction: t.PeerConnectDirection;
 };
 
-export type PeerNetworkConnectDataReq = ConnectBase & { kind: 'data'; isReliable?: boolean };
-export type PeerNetworkConnectMediaReq = ConnectBase & { kind: 'media'; timeout?: number };
+export type PeerNetworkConnectDataReq = ConnectBase & {
+  kind: 'data';
+  isReliable?: boolean;
+};
+export type PeerNetworkConnectMediaReq = ConnectBase & {
+  kind: 'video' | 'screen';
+  timeout?: number;
+};
 
 /**
  * Fired when a peer completes it's connection.
@@ -41,6 +47,7 @@ export type PeerNetworkConnectRes = {
   self: t.PeerId;
   tx: string;
   remote: t.PeerId;
+  existing: boolean;
   kind: 'data' | 'media';
   direction: t.PeerConnectDirection;
   connection?: t.PeerConnectionStatus;

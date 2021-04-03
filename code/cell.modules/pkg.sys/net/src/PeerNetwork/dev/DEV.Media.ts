@@ -1,5 +1,5 @@
 import { PeerNetwork } from '..';
-import { MediaStreamEvents, slug, t } from './common';
+import { log, MediaStreamEvents, slug, t } from './common';
 
 export const Media = {
   videoRef: (self: t.PeerId) => `${self}:video`,
@@ -23,11 +23,13 @@ export const Media = {
      * NETWORK => VIDEO => NETWORK
      */
     events.net.media(args.self).req$.subscribe(async (e) => {
+      log.info('MEDIA BRIDGE / Req:', e);
       const tx = e.tx || slug();
       const ref = Media.videoRef(args.self);
       const { stream } = await events.media.status(ref).get();
       const media = stream?.media;
       const error = media ? undefined : { message: 'The media stream has not been started' };
+      log.info('MEDIA Stream', stream);
       events.net.media(args.self).respond({ tx, media, error });
     });
   },

@@ -44,7 +44,6 @@ export function ConnectionStrategy(args: {
       const { isReliable, metadata } = e.connection as t.PeerConnectionDataStatus;
       const connections = await getDataConnections();
       const peers = R.uniq(connections.map((conn) => conn.id.remote));
-
       if (peers.length > 0) {
         netbus.fire({
           type: 'NetworkStrategy/ensureConnected',
@@ -57,7 +56,6 @@ export function ConnectionStrategy(args: {
    * Listen for incoming "ensure connections" events from other
    * peers broadcasting the set of ID's to connect to.
    */
-
   rx.payload<t.StrategyEnsureConnectedEvent>(netbus.event$, 'NetworkStrategy/ensureConnected')
     .pipe()
     .subscribe(async (e) => {

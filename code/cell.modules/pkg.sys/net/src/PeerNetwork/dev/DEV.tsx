@@ -168,17 +168,9 @@ export const actions = DevActions<Ctx>()
       if (!connectTo) {
         e.button.description = '🐷 ERROR: Remote peer not specified';
       } else {
-        const { stream } = await events.media.status(self).get();
-        const outgoing = stream?.media;
-
-        if (!outgoing) {
-          e.button.description = `🐷 ERROR: No outgoing MediaStream`;
-          return;
-        }
-
         const metadata = { foo: 123 };
         const open = events.net.connection(self, connectTo).open;
-        const res = await open.media({ metadata });
+        const res = await open.video({ metadata });
         const name = res.error ? 'Fail' : 'Success';
         const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
         e.button.description = el;

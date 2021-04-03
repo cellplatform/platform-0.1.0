@@ -125,6 +125,9 @@ export function Events(args: { bus: t.EventBus<any> }) {
    * CONNECT (Outgoing)
    */
   const connection = (self: t.PeerId, remote: t.PeerId) => {
+    type M = t.PeerNetworkConnectMediaReq;
+    type MediaOptions = { metadata?: t.JsonMap };
+
     const connected$ = rx
       .payload<t.PeerConnectResEvent>(event$, 'Peer:Connection/connect:res')
       .pipe(filter((e) => e.self === self && e.remote === remote));
@@ -144,16 +147,19 @@ export function Events(args: { bus: t.EventBus<any> }) {
         });
         return res;
       },
-      media(options: { metadata?: t.JsonMap } = {}) {
+      media(kind: M['kind'], options: MediaOptions = {}) {
         const { metadata } = options;
         const tx = slug();
         const res = firstValueFrom(connected$.pipe(filter((e) => e.tx === tx)));
         bus.fire({
           type: 'Peer:Connection/connect:req',
-          payload: { self, tx, remote, kind: 'media', metadata, direction: 'outgoing' },
+          payload: { self, tx, remote, kind, metadata, direction: 'outgoing' },
         });
         return res;
       },
+
+      video: (options: MediaOptions) => open.media('video', options),
+      screen: (options: MediaOptions) => open.media('screen', options),
     };
 
     const close = () => {
@@ -167,9 +173,10 @@ export function Events(args: { bus: t.EventBus<any> }) {
   };
 
   const connections = (self: t.PeerId) => {
-    const opened$ = rx
-      .payload<t.PeerConnectResEvent>(event$, 'Peer:Connection/connect:res')
-      .pipe(filter((e) => e.self === self));
+    const opened$ = rx.payload<t.PeerConnectResEvent>(event$, 'Peer:Connection/connect:res').pipe(
+      filter((e) => e.self === self),
+      filter((e) => !e.existing),
+    );
 
     const closed$ = rx
       .payload<t.PeerConnectionClosedEvent>(event$, 'Peer:Connection/closed')

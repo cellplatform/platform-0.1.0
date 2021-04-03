@@ -84,9 +84,10 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     direction: t.PeerNetworkConnectRes['direction'],
     self: SelfRef,
     conn: PeerJS.DataConnection | PeerJS.MediaConnection,
+    tx?: string,
   ) => {
     const connectionRef = refs.connection(self).get(conn);
-    const tx = slug();
+    tx = tx || slug();
 
     bus.fire({
       type: 'Peer:Connection/connect:res',
@@ -95,6 +96,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         tx,
         kind,
         direction,
+        existing: false,
         remote: connectionRef.id.remote,
         connection: toConnectionStatus(connectionRef),
       },
@@ -260,14 +262,16 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   rx.payload<t.PeerConnectReqEvent>($, 'Peer:Connection/connect:req')
     .pipe(filter((e) => e.direction === 'outgoing'))
     .subscribe((e) => {
-      const { remote, kind } = e;
+      const { remote } = e;
       const self = refs.self[e.self];
       const tx = e.tx || slug();
 
       const fire = (payload?: Partial<t.PeerNetworkConnectRes>) => {
+        const kind = e.kind === 'data' ? 'data' : 'media';
+        const existing = Boolean(payload?.existing);
         bus.fire({
           type: 'Peer:Connection/connect:res',
-          payload: { kind, self: e.self, tx, remote, direction: 'outgoing', ...payload },
+          payload: { kind, self: e.self, tx, remote, direction: 'outgoing', existing, ...payload },
         });
       };
       const fireError = (message: string) => fire({ error: { message } });
@@ -283,8 +287,10 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       }
 
       // Check for existing remote connection.
-      const isMatch = (item: ConnectionRef) => item.kind === kind && item.id.remote === remote;
-      if (self.connections.find(isMatch)) return fire();
+      const isMatch = (item: ConnectionRef) => item.kind === e.kind && item.id.remote === remote;
+      if (self.connections.find(isMatch)) {
+        return fire({ existing: true });
+      }
 
       // Start a data connection.
       if (e.kind === 'data') {
@@ -296,7 +302,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         dataConnection.on('open', () => {
           // SUCCESS: Connected to the remote peer.
           errorMonitor.dispose();
-          completeConnection(e.kind, 'outgoing', self, dataConnection);
+          completeConnection(e.kind, 'outgoing', self, dataConnection, tx);
         });
 
         // Listen for a connection error.
@@ -314,8 +320,12 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       }
 
       // Start a media (video) call.
-      if (e.kind === 'media') {
+      if (e.kind === 'video' || e.kind === 'screen') {
         const { metadata } = e;
+
+        console.log('--media-----------------------------------------');
+        console.log('e', e);
+
         // const outgoingStream = e.media;
         // const mediaConnection = ref.peer.call(remote, outgoingStream, { metadata });
         // const connRef = addConnectionRef(e.kind, ref, mediaConnection);
