@@ -1,9 +1,10 @@
-import { Subject, merge } from 'rxjs';
-import { filter, take, takeUntil, delay } from 'rxjs/operators';
-import { deleteUndefined, PeerJS, rx, t, time, slug } from '../common';
-import { PeerJSError, Strings } from './util';
-import { MemoryRefs, SelfRef, ConnectionRef } from './Refs';
-import { asArray } from '@platform/util.value/lib/value/value.array';
+import { merge } from 'rxjs';
+import { delay, filter, take } from 'rxjs/operators';
+
+import { asArray, deleteUndefined, PeerJS, rx, slug, t, time, defaultValue } from '../common';
+import { Events } from './Events';
+import { ConnectionRef, MemoryRefs, SelfRef } from './Refs';
+import { PeerJSError, StringUtil } from './util';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 
@@ -11,16 +12,17 @@ type ConnectionKind = t.PeerNetworkConnectRes['kind'];
  * EventBus contoller for a WebRTC [Peer] connection.
  */
 export function Controller(args: { bus: t.EventBus<any> }) {
-  const dispose$ = new Subject<void>();
   const bus = args.bus.type<t.PeerEvent>();
-  const $ = bus.event$.pipe(takeUntil(dispose$));
+  const events = Events({ bus });
+  const $ = events.$;
+
   const refs = MemoryRefs();
 
   const dispose = () => {
-    dispose$.next();
+    events.dispose();
+    refs.dispose();
     window.removeEventListener('online', handleOnlineStatusChanged);
     window.removeEventListener('offline', handleOnlineStatusChanged);
-    refs.dispose();
   };
 
   /**
@@ -67,7 +69,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     }
 
     if (kind === 'media') {
-      const media = ref.media as MediaStream;
+      const media = ref.remoteStream as MediaStream;
       const conn = ref.conn as PeerJS.MediaConnection;
       const { open: isOpen, metadata } = conn;
       return { id, kind, isOpen, metadata, media };
@@ -134,10 +136,10 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     .subscribe((e) => {
       if (!refs.self[e.self]) {
         const createdAt = time.now.timestamp;
-        const signal = Strings.parseEndpointAddress(e.signal);
+        const signal = StringUtil.parseEndpointAddress(e.signal);
         const { host, path, port, secure } = signal;
         const peer = new PeerJS(e.self, { host, path, port, secure });
-        const ref: SelfRef = {
+        const self: SelfRef = {
           id: e.self,
           peer,
           createdAt,
@@ -145,20 +147,26 @@ export function Controller(args: { bus: t.EventBus<any> }) {
           connections: [],
           media: {},
         };
-        refs.self[e.self] = ref;
+        refs.self[e.self] = self;
 
         // Listen for incoming DATA connection requests.
         peer.on('connection', (dataConnection) => {
           dataConnection.on('open', () => {
-            refs.connection(ref).add('data', dataConnection);
-            completeConnection('data', 'incoming', ref, dataConnection);
+            refs.connection(self).add('data', dataConnection);
+            completeConnection('data', 'incoming', self, dataConnection);
           });
         });
 
-        // Listen for incoming MEDIA (video) connection requests.
-        peer.on('call', (mediaConnection) => {
-          refs.connection(ref).add('media', mediaConnection);
-          completeConnection('media', 'incoming', ref, mediaConnection);
+        // Listen for incoming MEDIA (video/screen) connection requests.
+        peer.on('call', async (mediaConnection) => {
+          const metadata = (mediaConnection.metadata || {}) as t.PeerConnectionMetadataMedia;
+          const { kind, constraints } = metadata;
+          const local = await events.media(self.id).request({ kind, constraints });
+          if (local.media) {
+            mediaConnection.answer(local.media);
+            refs.connection(self).add('media', mediaConnection);
+            completeConnection('media', 'incoming', self, mediaConnection);
+          }
         });
       }
 
@@ -261,7 +269,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
    */
   rx.payload<t.PeerConnectReqEvent>($, 'Peer:Connection/connect:req')
     .pipe(filter((e) => e.direction === 'outgoing'))
-    .subscribe((e) => {
+    .subscribe(async (e) => {
       const { remote } = e;
       const self = refs.self[e.self];
       const tx = e.tx || slug();
@@ -294,15 +302,15 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
       // Start a data connection.
       if (e.kind === 'data') {
-        const { isReliable: reliable, metadata } = e;
+        const { isReliable: reliable } = e;
         const errorMonitor = PeerJSError(self.peer);
-        const dataConnection = self.peer.connect(remote, { reliable, metadata });
-        refs.connection(self).add(e.kind, dataConnection);
+        const dataConnection = self.peer.connect(remote, { reliable });
+        refs.connection(self).add('data', dataConnection);
 
         dataConnection.on('open', () => {
           // SUCCESS: Connected to the remote peer.
           errorMonitor.dispose();
-          completeConnection(e.kind, 'outgoing', self, dataConnection, tx);
+          completeConnection('data', 'outgoing', self, dataConnection, tx);
         });
 
         // Listen for a connection error.
@@ -321,31 +329,36 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
       // Start a media (video) call.
       if (e.kind === 'video' || e.kind === 'screen') {
-        const { metadata } = e;
+        const { constraints } = e;
 
-        console.log('--media-----------------------------------------');
-        console.log('e', e);
+        // Retrieve the media stream.
+        const res = await events.media(self.id).request({ kind: e.kind, constraints });
+        const localStream = res.media;
+        if (res.error || !localStream) {
+          const err = res.error?.message || `Failed to retrieve a local media stream (${self.id}).`;
+          return fireError(err);
+        }
 
-        // const outgoingStream = e.media;
-        // const mediaConnection = ref.peer.call(remote, outgoingStream, { metadata });
-        // const connRef = addConnectionRef(e.kind, ref, mediaConnection);
+        // Start the network/peer connection.
+        const metadata: t.PeerConnectionMetadataMedia = { kind: e.kind, constraints };
+        const mediaConnection = self.peer.call(remote, localStream, { metadata });
+        const connRef = refs.connection(self).add('media', mediaConnection);
+        connRef.localStream = localStream;
 
-        // const msecs = defaultValue(e.timeout, 10000);
-        // const timeout = time.delay(msecs, () => {
-        //   removeConnectionRef(ref, mediaConnection);
-        //   fireError(`Failed to connect to peer '${remote}'. The connection attempt timed out.`);
-        // });
+        // Manage timeout.
+        const msecs = defaultValue(e.timeout, 10 * 1000);
+        const timeout = time.delay(msecs, () => {
+          refs.connection(self).remove(mediaConnection);
+          const err = `Failed to connect [${e.kind}] to peer '${remote}'. The connection attempt timed out.`;
+          fireError(err);
+        });
 
-        // mediaConnection.on('stream', (remoteStream) => {
-        //   if (timeout.isCancelled) return;
-        //   timeout.cancel();
-        //   connRef.media = remoteStream;
-        //   completeConnection(e.kind, 'outgoing', ref, mediaConnection);
-        // });
-
-        /**
-         * TODO 🐷
-         */
+        mediaConnection.on('stream', (remoteStream) => {
+          if (timeout.isCancelled) return;
+          timeout.cancel();
+          connRef.remoteStream = remoteStream;
+          completeConnection('media', 'outgoing', self, mediaConnection, tx);
+        });
       }
     });
 
@@ -397,10 +410,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     });
 
   return {
-    dispose$: dispose$.asObservable(),
+    dispose$: events.dispose$,
     dispose,
-    get isDisposed() {
-      return dispose$.closed;
-    },
   };
 }

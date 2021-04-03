@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react';
+
 import {
   color,
   css,
   CssValue,
-  t,
-  VideoStream,
-  useVideoStreamState,
+  Icons,
   MediaEvent,
   MediaStreamController,
   MediaStreamEvents,
-  Icons,
+  t,
+  useVideoStreamState,
+  VideoStream,
 } from './common';
 import { Media } from './DEV.Media';
 

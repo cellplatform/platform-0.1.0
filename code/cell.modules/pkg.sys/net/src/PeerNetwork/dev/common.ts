@@ -10,3 +10,4 @@ export { Hr } from 'sys.ui.primitives/lib/components/Hr';
 export { ObjectView } from 'sys.ui.dev';
 
 export * from 'sys.ui.video/lib/components/VideoStream';
+export * from '../util';

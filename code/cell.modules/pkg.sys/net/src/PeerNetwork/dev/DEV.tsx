@@ -138,10 +138,7 @@ export const actions = DevActions<Ctx>()
       if (!connectTo) {
         e.button.description = '🐷 ERROR: Remote peer not specified';
       } else {
-        const metadata = { foo: 123 };
-        const res = await events.net
-          .connection(self, connectTo)
-          .open.data({ isReliable, metadata });
+        const res = await events.net.connection(self, connectTo).open.data({ isReliable });
         const name = res.error ? 'Fail' : 'Success';
         const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
         e.button.description = el;
@@ -168,9 +165,8 @@ export const actions = DevActions<Ctx>()
       if (!connectTo) {
         e.button.description = '🐷 ERROR: Remote peer not specified';
       } else {
-        const metadata = { foo: 123 };
         const open = events.net.connection(self, connectTo).open;
-        const res = await open.video({ metadata });
+        const res = await open.video();
         const name = res.error ? 'Fail' : 'Success';
         const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
         e.button.description = el;

@@ -1,5 +1,5 @@
 import { firstValueFrom, Subject } from 'rxjs';
-import { take, filter, takeUntil } from 'rxjs/operators';
+import { take, filter, takeUntil, map } from 'rxjs/operators';
 import { cuid, rx, t, slug } from '../common';
 import { isEvent } from './util';
 
@@ -18,7 +18,11 @@ export function Events(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
   const bus = args.bus.type<t.PeerEvent>();
-  const event$ = bus.event$.pipe(takeUntil(dispose$), filter(isPeerEvent));
+  const event$ = bus.event$.pipe(
+    takeUntil(dispose$),
+    filter(isPeerEvent),
+    map((e) => e as t.PeerEvent),
+  );
 
   /**
    * CREATE
@@ -125,9 +129,6 @@ export function Events(args: { bus: t.EventBus<any> }) {
    * CONNECT (Outgoing)
    */
   const connection = (self: t.PeerId, remote: t.PeerId) => {
-    type M = t.PeerNetworkConnectMediaReq;
-    type MediaOptions = { metadata?: t.JsonMap };
-
     const connected$ = rx
       .payload<t.PeerConnectResEvent>(event$, 'Peer:Connection/connect:res')
       .pipe(filter((e) => e.self === self && e.remote === remote));
@@ -137,29 +138,32 @@ export function Events(args: { bus: t.EventBus<any> }) {
       .pipe(filter((e) => e.self === self && e.remote === remote));
 
     const open = {
-      data(options: { isReliable?: boolean; metadata?: t.JsonMap } = {}) {
-        const { isReliable, metadata } = options;
+      data(options: { isReliable?: boolean } = {}) {
+        const { isReliable } = options;
         const tx = slug();
         const res = firstValueFrom(connected$.pipe(filter((e) => e.tx === tx)));
         bus.fire({
           type: 'Peer:Connection/connect:req',
-          payload: { self, tx, remote, kind: 'data', isReliable, metadata, direction: 'outgoing' },
-        });
-        return res;
-      },
-      media(kind: M['kind'], options: MediaOptions = {}) {
-        const { metadata } = options;
-        const tx = slug();
-        const res = firstValueFrom(connected$.pipe(filter((e) => e.tx === tx)));
-        bus.fire({
-          type: 'Peer:Connection/connect:req',
-          payload: { self, tx, remote, kind, metadata, direction: 'outgoing' },
+          payload: { self, tx, remote, kind: 'data', isReliable, direction: 'outgoing' },
         });
         return res;
       },
 
-      video: (options: MediaOptions) => open.media('video', options),
-      screen: (options: MediaOptions) => open.media('screen', options),
+      video: (constraints?: t.PeerMediaConstraints) => open.media('video', { constraints }),
+      screen: (constraints?: t.PeerMediaConstraints) => open.media('screen', { constraints }),
+      media(
+        kind: t.PeerNetworkConnectMediaReq['kind'],
+        options: { constraints?: t.PeerMediaConstraints } = {},
+      ) {
+        const { constraints } = options;
+        const tx = slug();
+        const res = firstValueFrom(connected$.pipe(filter((e) => e.tx === tx)));
+        bus.fire({
+          type: 'Peer:Connection/connect:req',
+          payload: { self, tx, remote, kind, constraints, direction: 'outgoing' },
+        });
+        return res;
+      },
     };
 
     const close = () => {

@@ -15,7 +15,8 @@ export type ConnectionRef = {
   kind: 'data' | 'media';
   id: t.PeerConnectionStatus['id'];
   conn: PeerJS.DataConnection | PeerJS.MediaConnection;
-  media?: MediaStream;
+  localStream?: MediaStream;
+  remoteStream?: MediaStream;
 };
 
 /**
@@ -32,14 +33,19 @@ export function MemoryRefs() {
         add(
           kind: ConnectionKind,
           conn: PeerJS.DataConnection | PeerJS.MediaConnection,
-          media?: MediaStream,
+          remoteStream?: MediaStream,
         ) {
           const existing = self.connections.find((item) => item.conn.peer === conn.peer);
           if (existing) return existing;
 
           const local = self.peer.id;
           const remote = conn.peer;
-          const ref: ConnectionRef = { kind, id: { self: local, remote }, conn, media };
+          const ref: ConnectionRef = {
+            kind,
+            id: { self: local, remote },
+            conn,
+            remoteStream,
+          };
           self.connections = [...self.connections, ref];
           return ref;
         },
@@ -48,8 +54,8 @@ export function MemoryRefs() {
           self.connections = self.connections.filter((item) => item.conn !== conn);
         },
 
-        get(conn: t.PeerId | PeerJS.DataConnection | PeerJS.MediaConnection) {
-          const remote = typeof conn === 'string' ? conn : conn.peer;
+        get(conn: PeerJS.DataConnection | PeerJS.MediaConnection) {
+          const remote = conn.peer;
           const ref = self.connections.find((ref) => ref.id.remote === remote);
           if (!ref) {
             const err = `The connection reference '${remote}' for local network '${self.id}' has not been added`;

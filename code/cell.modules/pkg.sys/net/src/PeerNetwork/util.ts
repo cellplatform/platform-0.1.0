@@ -45,12 +45,12 @@ export const PeerJSError = (peer: PeerJS) => {
 /**
  * String helpers.
  */
-export const Strings = {
+export const StringUtil = {
   parseEndpointAddress(address: string): t.PeerSignallingEndpoint {
-    address = Strings.stripHttp((address || '').trim());
+    address = StringUtil.stripHttp((address || '').trim());
 
     const parts = address.trim().split('/');
-    const path = Strings.stripPathLeft(parts[1]) || undefined;
+    const path = StringUtil.stripPathLeft(parts[1]) || undefined;
 
     const hostParts = (parts[0] || '').split(':');
 

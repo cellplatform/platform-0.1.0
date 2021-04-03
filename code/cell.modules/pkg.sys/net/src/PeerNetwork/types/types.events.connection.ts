@@ -23,7 +23,6 @@ type ConnectBase = {
   self: t.PeerId;
   tx?: string;
   remote: t.PeerId;
-  metadata?: t.JsonMap;
   direction: t.PeerConnectDirection;
 };
 
@@ -33,6 +32,7 @@ export type PeerNetworkConnectDataReq = ConnectBase & {
 };
 export type PeerNetworkConnectMediaReq = ConnectBase & {
   kind: 'video' | 'screen';
+  constraints?: t.PeerMediaConstraints;
   timeout?: number;
 };
 
