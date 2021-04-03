@@ -4,17 +4,17 @@ import { t } from './common';
  * NOTE: These events are fired over the "network bus" to
  *       other connected clients.
  */
-export type StrategyEvent = StrategyEnsureConnectedEvent;
+export type StrategyEvent = StrategyEnsureConnectedDataEvent;
 
 /**
  * Broadcasts to peers a set of connections they should ensure
  * they are connected to.
  */
-export type StrategyEnsureConnectedEvent = {
-  type: 'NetworkStrategy/ensureConnected';
-  payload: StrategyEnsureConnected;
+export type StrategyEnsureConnectedDataEvent = {
+  type: 'NetworkStrategy/ensureConnected:data';
+  payload: StrategyEnsureConnectedData;
 };
-export type StrategyEnsureConnected = {
+export type StrategyEnsureConnectedData = {
   peers: t.PeerId[];
   isReliable: boolean;
   metadata?: t.JsonMap;

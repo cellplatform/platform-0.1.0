@@ -24,11 +24,13 @@ export const Media = {
      */
     events.net.media(args.self).req$.subscribe(async (e) => {
       log.info('MEDIA BRIDGE / Req:', e);
+
       const tx = e.tx || slug();
       const ref = Media.videoRef(args.self);
       const { stream } = await events.media.status(ref).get();
       const media = stream?.media;
       const error = media ? undefined : { message: 'The media stream has not been started' };
+
       log.info('MEDIA Stream', stream);
       events.net.media(args.self).respond({ tx, media, error });
     });
