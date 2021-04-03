@@ -1,17 +1,16 @@
 import React from 'react';
 import { filter } from 'rxjs/operators';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { css, color, CssValue, cuid, deleteUndefined, HttpClient, log, rx, t } from './common';
-import { Waveform } from './DEV.waveform';
 
 import {
   MediaStreamController,
   MediaStreamEvents,
   MediaStreamRecordController,
-  useVideoStreamState,
-  VideoStream,
   VideoStreamProps,
 } from '..';
+import { css, cuid, deleteUndefined, HttpClient, log, rx, t } from './common';
+import { Sample } from './DEV.Sample';
+import { Waveform } from './DEV.waveform';
 
 type Events = ReturnType<typeof MediaStreamEvents>;
 type Ctx = {
@@ -19,10 +18,7 @@ type Ctx = {
   bus: t.EventBus<t.MediaEvent>;
   events: Events;
   props: VideoStreamProps;
-  muted: {
-    video: boolean;
-    audio: boolean;
-  };
+  muted: { video: boolean; audio: boolean };
 };
 
 async function updateMute(ctx: Ctx) {
@@ -207,22 +203,3 @@ export const actions = DevActions<Ctx>()
     });
   });
 export default actions;
-
-type SampleProps = VideoStreamProps & { streamRef: string; bus: t.EventBus<any> };
-const Sample: React.FC<SampleProps> = (props) => {
-  const { streamRef, bus } = props;
-  const { stream } = useVideoStreamState({ ref: streamRef, bus });
-  const borderRadius = 30;
-  const styles = {
-    base: css({
-      backgroundColor: color.format(-0.02),
-      border: `solid 1px ${color.format(-0.03)}`,
-      borderRadius,
-    }),
-  };
-  return (
-    <div {...styles.base}>
-      <VideoStream {...props} stream={stream} borderRadius={borderRadius} />
-    </div>
-  );
-};

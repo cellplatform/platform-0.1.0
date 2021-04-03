@@ -35,17 +35,16 @@ export function MemoryRefs() {
           conn: PeerJS.DataConnection | PeerJS.MediaConnection,
           remoteStream?: MediaStream,
         ) {
-          const existing = self.connections.find((item) => item.conn.peer === conn.peer);
+          const existing = self.connections.find((item) => {
+            return item.conn.peer === conn.peer && item.kind === kind;
+          });
+
           if (existing) return existing;
 
           const local = self.peer.id;
           const remote = conn.peer;
-          const ref: ConnectionRef = {
-            kind,
-            id: { self: local, remote },
-            conn,
-            remoteStream,
-          };
+          const id = { self: local, remote };
+          const ref: ConnectionRef = { kind, id, conn, remoteStream };
           self.connections = [...self.connections, ref];
           return ref;
         },

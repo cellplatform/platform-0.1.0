@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
 import { Button, Card, css, CssValue, Hr, Icons, PropList, PropListItem, t } from './common';
-import { EventStack } from './DEV.EventStack';
 import { ConnectionData } from './DEV.Connection.Data';
+import { ConnectionMedia } from './DEV.Connection.Media';
 
 export type ConnectionProps = {
   bus: t.EventBus<any>;
@@ -61,6 +61,7 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
         {hr}
 
         {connection.kind === 'data' && <ConnectionData netbus={netbus} connection={connection} />}
+        {connection.kind === 'media' && <ConnectionMedia bus={bus} connection={connection} />}
 
         {elCloseButton}
       </Card>

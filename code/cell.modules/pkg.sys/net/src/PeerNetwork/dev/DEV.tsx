@@ -4,7 +4,7 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { PeerNetwork } from '..';
 import { css, cuid, deleteUndefined, Icons, MediaStreamEvents, rx, t, time } from './common';
 import { Layout } from './DEV.Layout';
-import { Media } from './DEV.Media';
+import { DevMedia } from './DEV.Media';
 
 type Ctx = {
   self: t.PeerId;
@@ -33,7 +33,7 @@ export const actions = DevActions<Ctx>()
     const self = cuid();
     const bus = rx.bus<t.PeerEvent>();
 
-    Media.startEventBridge({ self, bus });
+    DevMedia.startEventBridge({ self, bus });
     PeerNetwork.Controller({ bus });
     const strategy = PeerNetwork.Strategy({ self, bus });
 

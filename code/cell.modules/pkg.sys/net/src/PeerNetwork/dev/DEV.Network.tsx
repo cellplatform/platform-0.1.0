@@ -4,7 +4,7 @@ import { Hr } from 'sys.ui.primitives/lib/components/Hr';
 import { Filter } from '../util';
 import { css, CssValue, t } from './common';
 import { Connection } from './DEV.Connection';
-import { VideoSelf } from './DEV.Media.Self';
+import { DevVideo } from './DEV.Media.Video';
 import { NetworkPropList } from './DEV.Network.PropList';
 
 export type NetworkProps = {
@@ -30,9 +30,10 @@ export const Network: React.FC<NetworkProps> = (props) => {
   const connections = network.connections;
   const elConnections = connections.map((item, i) => {
     const isLast = i === connections.length - 1;
+    const key = `${item.id.remote}:${item.kind}`;
     return (
       <Connection
-        key={item.id.remote}
+        key={key}
         bus={bus}
         netbus={netbus}
         connection={item}
@@ -46,7 +47,7 @@ export const Network: React.FC<NetworkProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       <div {...styles.header}>
         <NetworkPropList network={network} />
-        <VideoSelf networkRef={network.id} bus={bus} isOffline={!network.isOnline} />
+        <DevVideo peer={network.id} bus={bus} />
       </div>
       <Hr thickness={10} opacity={0.06} margin={[30, 0, 20, 0]} />
       <div {...styles.body}>{elConnections}</div>

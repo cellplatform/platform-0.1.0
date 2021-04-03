@@ -9,24 +9,25 @@ import {
   MediaStreamController,
   MediaStreamEvents,
   t,
+  useOfflineState,
   useVideoStreamState,
   VideoStream,
 } from './common';
-import { Media } from './DEV.Media';
+import { DevMedia } from './DEV.Media';
 
-export type VideoSelfProps = {
-  networkRef: string;
+export type DevVideoProps = {
+  peer: t.PeerId;
   bus: t.EventBus<any>;
   width?: number;
   height?: number;
-  isOffline?: boolean;
   style?: CssValue;
 };
 
-export const VideoSelf: React.FC<VideoSelfProps> = (props) => {
+export const DevVideo: React.FC<DevVideoProps> = (props) => {
   const { width = 150, height = 100 } = props;
+  const wifi = useOfflineState();
 
-  const ref = Media.videoRef(props.networkRef);
+  const ref = DevMedia.videoRef(props.peer);
   const bus = props.bus.type<t.PeerEvent | MediaEvent>();
 
   const { stream } = useVideoStreamState({
@@ -55,7 +56,7 @@ export const VideoSelf: React.FC<VideoSelfProps> = (props) => {
     }),
     video: css({
       Absolute: [0, null, null, 0],
-      opacity: props.isOffline ? 0.12 : 1,
+      opacity: wifi.offline ? 0.12 : 1,
     }),
     overlay: css({
       Absolute: 0,
@@ -64,7 +65,7 @@ export const VideoSelf: React.FC<VideoSelfProps> = (props) => {
     }),
   };
 
-  const elOverlay = props.isOffline && (
+  const elOverlay = wifi.offline && (
     <div {...styles.overlay}>
       <Icons.Wifi.Off />
     </div>

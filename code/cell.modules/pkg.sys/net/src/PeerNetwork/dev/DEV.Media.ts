@@ -1,7 +1,7 @@
 import { PeerNetwork } from '..';
 import { log, MediaStreamEvents, slug, t } from './common';
 
-export const Media = {
+export const DevMedia = {
   videoRef: (self: t.PeerId) => `${self}:video`,
   screenRef: (self: t.PeerId) => `${self}:screen`,
 
@@ -26,7 +26,7 @@ export const Media = {
       log.info('MEDIA BRIDGE / Req:', e);
 
       const tx = e.tx || slug();
-      const ref = Media.videoRef(args.self);
+      const ref = DevMedia.videoRef(args.self);
       const { stream } = await events.media.status(ref).get();
       const media = stream?.media;
       const error = media ? undefined : { message: 'The media stream has not been started' };
