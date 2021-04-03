@@ -193,15 +193,25 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Strategies (Behavior)');
 
-    e.boolean('auto purge connection on close [TODO]', (e) => {
-      if (e.changing) e.ctx.strategy.connection.purgeOnClose = e.changing.next;
-      e.boolean.current = e.ctx.strategy.connection.purgeOnClose;
-    });
+    e.boolean((config) =>
+      config
+        .label('connection.autoPurgeOnClose [TODO]')
+        .description('Automatically purge connections when closed.')
+        .pipe((e) => {
+          if (e.changing) e.ctx.strategy.connection.autoPurgeOnClose = e.changing.next;
+          e.boolean.current = e.ctx.strategy.connection.autoPurgeOnClose;
+        }),
+    );
 
-    e.boolean('auto connection propogation (mesh) [TODO]', (e) => {
-      if (e.changing) e.ctx.strategy.connection.purgeOnClose = e.changing.next;
-      e.boolean.current = e.ctx.strategy.connection.purgeOnClose;
-    });
+    e.boolean((config) =>
+      config
+        .label('connection.autoMeshPropagation [TODO]')
+        .description('Automatically propogate data connections to peers.')
+        .pipe((e) => {
+          if (e.changing) e.ctx.strategy.connection.autoMeshPropagation = e.changing.next;
+          e.boolean.current = e.ctx.strategy.connection.autoMeshPropagation;
+        }),
+    );
   })
 
   .subject((e) => {

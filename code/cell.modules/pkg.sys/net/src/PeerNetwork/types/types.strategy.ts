@@ -14,10 +14,10 @@ export type PeerConnectionStrategy = t.IDisposable & {
   /**
    * Auto purge connections when closed.
    */
-  purgeOnClose: boolean;
+  autoPurgeOnClose: boolean;
 
   /**
    * Auto propogate new connections to all other connected clients.
    */
-  meshPropagation: boolean;
+  autoMeshPropagation: boolean;
 };

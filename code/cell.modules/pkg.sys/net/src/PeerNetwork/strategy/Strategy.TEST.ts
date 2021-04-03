@@ -24,12 +24,12 @@ describe.only('Strategy (Peer Network)', () => {
   describe('Connection', () => {
     it('purgeOnClose - default:true', () => {
       const connection = Strategy({ self, bus }).connection;
-      expect(connection.purgeOnClose).to.eql(true);
+      expect(connection.autoPurgeOnClose).to.eql(true);
     });
 
     it('meshPropagation - default:true', () => {
       const connection = Strategy({ self, bus }).connection;
-      expect(connection.meshPropagation).to.eql(true);
+      expect(connection.autoMeshPropagation).to.eql(true);
     });
   });
 });

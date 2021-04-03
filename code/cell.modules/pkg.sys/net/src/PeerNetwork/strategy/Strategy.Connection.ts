@@ -29,7 +29,7 @@ export function ConnectionStrategy(args: {
    * Auto purge connections when closed.
    */
   connections.closed$
-    .pipe(filter(() => strategy.purgeOnClose))
+    .pipe(filter(() => strategy.autoPurgeOnClose))
     .subscribe(() => events.purge(self).fire());
 
   /**
@@ -37,7 +37,7 @@ export function ConnectionStrategy(args: {
    */
   connections.opened$
     .pipe(
-      filter(() => strategy.meshPropagation),
+      filter(() => strategy.autoMeshPropagation),
       filter((e) => e.kind === 'data'),
     )
     .subscribe(async (e) => {
@@ -79,8 +79,8 @@ export function ConnectionStrategy(args: {
     dispose$: events.dispose$,
     dispose: events.dispose,
 
-    purgeOnClose: true,
-    meshPropagation: true,
+    autoPurgeOnClose: true,
+    autoMeshPropagation: true,
   };
 
   return strategy;
