@@ -1,7 +1,7 @@
 import { Subject, firstValueFrom } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { rx, t } from '../../common';
+import { rx, slug, t } from '../../common';
 
 /**
  * Helpers for working with <VideoStream> events.
@@ -24,8 +24,9 @@ export function MediaStreamEvents(args: { bus: t.EventBus<any> }) {
     const screen$ = start$.pipe(filter((e) => e.kind === 'screen'));
 
     const fire = (kind: t.MediaStreamStart['kind']) => {
-      const res = firstValueFrom(started(ref).$);
-      bus.fire({ type: 'MediaStream/start', payload: { kind, ref } });
+      const tx = slug();
+      const res = firstValueFrom(started(ref).$.pipe(filter((e) => e.tx === tx)));
+      bus.fire({ type: 'MediaStream/start', payload: { kind, tx, ref } });
       return res;
     };
 

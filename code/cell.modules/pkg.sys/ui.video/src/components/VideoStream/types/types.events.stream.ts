@@ -41,6 +41,7 @@ export type MediaStreamStart = {
   ref: string; // ID of the requester.
   kind: 'video' | 'screen';
   constraints?: t.PartialDeep<MediaStreamConstraints>;
+  tx?: string;
 };
 
 /**
@@ -50,7 +51,7 @@ export type MediaStreamStartedEvent = {
   type: 'MediaStream/started';
   payload: MediaStreamStarted;
 };
-export type MediaStreamStarted = { ref: string; stream: MediaStream };
+export type MediaStreamStarted = { ref: string; tx: string; stream: MediaStream };
 
 /**
  * Fires to stop a MediaStream.

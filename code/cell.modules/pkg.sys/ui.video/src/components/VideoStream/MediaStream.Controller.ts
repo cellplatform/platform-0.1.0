@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { R, rx, t } from '../../common';
+import { R, rx, t, slug } from '../../common';
 
 type M = MediaStreamConstraints;
 type Refs = { [ref: string]: Ref };
@@ -28,10 +28,10 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
     if (!item) return undefined;
     return {
       ref,
-      kind: item?.kind,
-      media: item?.media,
-      constraints: item?.constraints,
-      tracks: toTracks(item?.media),
+      kind: item.kind,
+      media: item.media,
+      constraints: item.constraints,
+      tracks: toTracks(item.media),
     };
   };
 
@@ -69,6 +69,7 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
     .pipe(filter((e) => e.kind === 'video'))
     .subscribe(async (e) => {
       const { ref } = e;
+      const tx = e.tx || slug();
 
       if (refs[ref] && refs[ref].kind !== 'video') {
         const kind = refs[ref].kind;
@@ -94,7 +95,7 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
 
       bus.fire({
         type: 'MediaStream/started',
-        payload: { ref, stream },
+        payload: { ref, tx, stream },
       });
     });
 
@@ -106,6 +107,7 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
     .pipe(filter((e) => e.kind === 'screen'))
     .subscribe(async (e) => {
       const { ref } = e;
+      const tx = e.tx || slug();
 
       if (refs[ref] && refs[ref].kind !== 'screen') {
         const kind = refs[ref].kind;
@@ -126,7 +128,7 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
 
       bus.fire({
         type: 'MediaStream/started',
-        payload: { ref, stream },
+        payload: { ref, tx, stream },
       });
     });
 
