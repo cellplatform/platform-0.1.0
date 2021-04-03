@@ -6,7 +6,7 @@ import { t } from './common';
 export type PeerNetworkStatus = {
   id: t.PeerId;
   createdAt: number;
-  signal: t.PeerNetworkSignalEndpoint;
+  signal: t.PeerSignallingEndpoint;
   connections: t.PeerConnectionStatus[];
   isOnline: boolean;
 };

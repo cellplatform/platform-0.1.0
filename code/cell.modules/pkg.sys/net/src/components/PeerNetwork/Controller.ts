@@ -1,6 +1,6 @@
 import { Subject, merge } from 'rxjs';
 import { filter, take, takeUntil, delay } from 'rxjs/operators';
-import { deleteUndefined, PeerJS, rx, t, time } from '../common';
+import { deleteUndefined, PeerJS, rx, t, time } from '../../common';
 import { PeerJSError } from './util';
 import { MemoryRefs, SelfRef, ConnectionRef } from './Refs';
 import { asArray } from '@platform/util.value/lib/value/value.array';
@@ -10,7 +10,7 @@ type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 /**
  * EventBus contoller for a WebRTC [Peer] connection.
  */
-export function Controller(args: { bus: t.EventBus<any> }) {
+export function PeerController(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
   const bus = args.bus.type<t.PeerEvent>();
   const $ = bus.event$.pipe(takeUntil(dispose$));

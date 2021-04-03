@@ -3,24 +3,24 @@ import { t } from './common';
 /**
  * NETWORK
  */
-export type PeerNetworkEvent =
-  | PeerNetworkInitReqEvent
-  | PeerNetworkInitResEvent
-  | PeerNetworkStatusRequestEvent
-  | PeerNetworkStatusResponseEvent
-  | PeerNetworkStatusChangedEvent
-  | PeerNetworkOnlineChangedEvent
-  | PeerNetworkPurgeReqEvent
-  | PeerNetworkPurgeResEvent;
+export type PeerLocalEvent =
+  | PeerLocalInitReqEvent
+  | PeerLocalInitResEvent
+  | PeerLocalStatusRequestEvent
+  | PeerLocalStatusResponseEvent
+  | PeerLocalStatusChangedEvent
+  | PeerLocalOnlineChangedEvent
+  | PeerLocalPurgeReqEvent
+  | PeerLocalPurgeResEvent;
 
 /**
  * Fires to initiate the creation of a Peer.
  */
-export type PeerNetworkInitReqEvent = {
+export type PeerLocalInitReqEvent = {
   type: 'Peer:Network/init:req';
-  payload: PeerNetworkCreateReq;
+  payload: PeerLocalCreateReq;
 };
-export type PeerNetworkCreateReq = {
+export type PeerLocalCreateReq = {
   self: t.PeerId;
   signal: string; // String containing the signal server endpoint: "host/path"
 };
@@ -28,35 +28,35 @@ export type PeerNetworkCreateReq = {
 /**
  * Fires when a peer has connected.
  */
-export type PeerNetworkInitResEvent = {
+export type PeerLocalInitResEvent = {
   type: 'Peer:Network/init:res';
-  payload: PeerNetworkCreateRes;
+  payload: PeerLocalCreateRes;
 };
-export type PeerNetworkCreateRes = {
+export type PeerLocalCreateRes = {
   self: t.PeerId;
   createdAt: number;
-  signal: t.PeerNetworkSignalEndpoint;
+  signal: t.PeerSignallingEndpoint;
 };
 
 /**
  * Fired to retrieve the status of the specified peer.
  */
-export type PeerNetworkStatusRequestEvent = {
+export type PeerLocalStatusRequestEvent = {
   type: 'Peer:Network/status:req';
-  payload: PeerNetworkStatusRequest;
+  payload: PeerLocalStatusRequest;
 };
-export type PeerNetworkStatusRequest = {
+export type PeerLocalStatusRequest = {
   self: t.PeerId;
 };
 
 /**
  * Fired to retrieve the status of the specified peer.
  */
-export type PeerNetworkStatusResponseEvent = {
+export type PeerLocalStatusResponseEvent = {
   type: 'Peer:Network/status:res';
-  payload: PeerNetworkStatusResponse;
+  payload: PeerLocalStatusResponse;
 };
-export type PeerNetworkStatusResponse = {
+export type PeerLocalStatusResponse = {
   self: t.PeerId;
   exists: boolean;
   network?: t.PeerNetworkStatus;
@@ -74,21 +74,21 @@ export type PeerNetworkStatusResponse = {
  *    the status of the network.
  *
  */
-export type PeerNetworkStatusChangedEvent = {
+export type PeerLocalStatusChangedEvent = {
   type: 'Peer:Network/status:changed';
-  payload: PeerNetworkStatusChanged;
+  payload: PeerLocalStatusChanged;
 };
-export type PeerNetworkStatusChanged = {
+export type PeerLocalStatusChanged = {
   self: t.PeerId;
   network: t.PeerNetworkStatus;
   event: t.PeerEvent;
 };
 
-export type PeerNetworkOnlineChangedEvent = {
+export type PeerLocalOnlineChangedEvent = {
   type: 'Peer:Network/online:changed';
-  payload: PeerNetworkOnlineChanged;
+  payload: PeerLocalOnlineChanged;
 };
-export type PeerNetworkOnlineChanged = {
+export type PeerLocalOnlineChanged = {
   self: t.PeerId;
   isOnline: boolean;
 };
@@ -96,25 +96,25 @@ export type PeerNetworkOnlineChanged = {
 /**
  * Purges obsolete state.
  */
-export type PeerNetworkPurgeReqEvent = {
+export type PeerLocalPurgeReqEvent = {
   type: 'Peer:Network/purge:req';
-  payload: PeerNetworkPurgeReq;
+  payload: PeerLocalPurgeReq;
 };
-export type PeerNetworkPurgeReq = {
+export type PeerLocalPurgeReq = {
   self: t.PeerId;
   select?: true | { closedConnections?: boolean }; // NB: [true] clears all purgeable data.
 };
 
-export type PeerNetworkPurgeResEvent = {
+export type PeerLocalPurgeResEvent = {
   type: 'Peer:Network/purge:res';
-  payload: PeerNetworkPurgeRes;
+  payload: PeerLocalPurgeRes;
 };
-export type PeerNetworkPurgeRes = {
+export type PeerLocalPurgeRes = {
   self: t.PeerId;
   changed: boolean;
-  purged: t.PeerNetworkPurged;
-  error?: t.PeerNetworkError;
+  purged: t.PeerLocalPurged;
+  error?: t.PeerError;
 };
-export type PeerNetworkPurged = {
+export type PeerLocalPurged = {
   closedConnections: { data: number; media: number };
 };

@@ -35,7 +35,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
    */
   const created = (self: t.PeerId) => {
     const $ = rx
-      .payload<t.PeerNetworkInitResEvent>(event$, 'Peer:Network/init:res')
+      .payload<t.PeerLocalInitResEvent>(event$, 'Peer:Network/init:res')
       .pipe(filter((e) => e.self === self));
     return { self, $ };
   };
@@ -45,10 +45,10 @@ export function Events(args: { bus: t.EventBus<any> }) {
    */
   const status = (self: t.PeerId) => {
     const request$ = rx
-      .payload<t.PeerNetworkStatusRequestEvent>(event$, 'Peer:Network/status:req')
+      .payload<t.PeerLocalStatusRequestEvent>(event$, 'Peer:Network/status:req')
       .pipe(filter((e) => e.self === self));
     const response$ = rx
-      .payload<t.PeerNetworkStatusResponseEvent>(event$, 'Peer:Network/status:res')
+      .payload<t.PeerLocalStatusResponseEvent>(event$, 'Peer:Network/status:res')
       .pipe(filter((e) => e.self === self));
 
     const get = () => {
@@ -65,13 +65,13 @@ export function Events(args: { bus: t.EventBus<any> }) {
    */
   const purge = (self: t.PeerId) => {
     const purge$ = rx
-      .payload<t.PeerNetworkPurgeReqEvent>(event$, 'Peer:Network/purge:req')
+      .payload<t.PeerLocalPurgeReqEvent>(event$, 'Peer:Network/purge:req')
       .pipe(filter((e) => e.self === self));
     const purged$ = rx
-      .payload<t.PeerNetworkPurgeResEvent>(event$, 'Peer:Network/purge:res')
+      .payload<t.PeerLocalPurgeResEvent>(event$, 'Peer:Network/purge:res')
       .pipe(filter((e) => e.self === self));
 
-    const fire = (select?: t.PeerNetworkPurgeReq['select']) => {
+    const fire = (select?: t.PeerLocalPurgeReq['select']) => {
       const res = firstValueFrom(purged$);
       bus.fire({ type: 'Peer:Network/purge:req', payload: { self, select } });
       return res;

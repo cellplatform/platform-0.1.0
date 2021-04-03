@@ -1,8 +1,8 @@
 export type PeerConnectDirection = 'incoming' | 'outgoing';
 
-export type PeerNetworkError = { message: string };
+export type PeerError = { message: string };
 
-export type PeerNetworkSignalEndpoint = {
+export type PeerSignallingEndpoint = {
   host: string;
   port: number;
   path?: string;

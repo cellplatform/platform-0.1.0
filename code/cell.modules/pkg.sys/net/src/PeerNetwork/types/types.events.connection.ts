@@ -42,7 +42,7 @@ export type PeerNetworkConnectRes = {
   kind: 'data' | 'media';
   direction: t.PeerConnectDirection;
   connection?: t.PeerConnectionStatus;
-  error?: t.PeerNetworkError;
+  error?: t.PeerError;
 };
 
 /**
@@ -71,7 +71,7 @@ export type PeerNetworkDisconnectRes = {
   self: t.PeerId;
   remote: t.PeerId;
   connection?: t.PeerConnectionStatus;
-  error?: t.PeerNetworkError;
+  error?: t.PeerError;
 };
 
 /**

@@ -150,30 +150,30 @@ export const actions = DevActions<Ctx>()
         });
     });
 
-    // e.button('fire - PeerNetwork/connect (media:video)', async (e) => {
-    //   const { id, connectTo, events } = e.ctx;
+    e.button('fire - Peer:Connection/connect (media:video)', async (e) => {
+      const { self, connectTo, events } = e.ctx;
 
-    //   if (!connectTo) {
-    //     e.button.description = '🐷 ERROR: Remote peer not specified';
-    //   } else {
-    //     const { stream } = await events.media.status(id).get();
-    //     const outgoing = stream?.media;
+      if (!connectTo) {
+        e.button.description = '🐷 ERROR: Remote peer not specified';
+      } else {
+        const { stream } = await events.media.status(self).get();
+        const outgoing = stream?.media;
 
-    //     if (!outgoing) {
-    //       e.button.description = `🐷 ERROR: No outgoing MediaStream`;
-    //       return;
-    //     }
+        if (!outgoing) {
+          e.button.description = `🐷 ERROR: No outgoing MediaStream`;
+          return;
+        }
 
-    //     const metadata = { foo: 123 };
-    //     const open = events.network.connection(id, connectTo).open;
-    //     const res = await open.media({ metadata });
-    //     const name = res.error ? 'Fail' : 'Success';
-    //     const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
-    //     e.button.description = el;
-    //   }
-    // });
+        const metadata = { foo: 123 };
+        const open = events.network.connection(self, connectTo).open;
+        const res = await open.media({ metadata });
+        const name = res.error ? 'Fail' : 'Success';
+        const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
+        e.button.description = el;
+      }
+    });
 
-    // e.hr(1, 0.1);
+    e.hr(1, 0.1);
 
     e.button('fire - Peer:Connection/disconnect', async (e) => {
       const { self, connectTo, events } = e.ctx;

@@ -6,7 +6,7 @@ export type SelfRef = {
   id: string;
   peer: PeerJS;
   createdAt: number;
-  signal: t.PeerNetworkSignalEndpoint;
+  signal: t.PeerSignallingEndpoint;
   connections: ConnectionRef[];
   media: { video?: MediaStream; screen?: MediaStream };
 };
