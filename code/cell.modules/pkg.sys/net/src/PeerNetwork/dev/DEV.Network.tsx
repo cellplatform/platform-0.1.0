@@ -1,12 +1,11 @@
 import React from 'react';
+import { Hr } from 'sys.ui.primitives/lib/components/Hr';
 
 import { Filter } from '../util';
 import { css, CssValue, t } from './common';
 import { Connection } from './DEV.Connection';
-import { NetworkPropList } from './DEV.Network.PropList';
 import { VideoSelf } from './DEV.Media.Self';
-import { Hr } from 'sys.ui.primitives/lib/components/Hr';
-import { EventStack } from './DEV.EventStack';
+import { NetworkPropList } from './DEV.Network.PropList';
 
 export type NetworkProps = {
   bus: t.EventBus<any>;
@@ -19,26 +18,18 @@ export const Network: React.FC<NetworkProps> = (props) => {
   const { network, netbus } = props;
   const bus = props.bus.type<t.PeerEvent>();
 
-  const connections = {
-    data: Filter.connectionsAs<t.PeerConnectionDataStatus>(network.connections, 'data'),
-    media: Filter.connectionsAs<t.PeerConnectionMediaStatus>(network.connections, 'media'),
-  };
-
   const styles = {
     base: css({}),
-    header: css({
-      Flex: 'horizontal-spaceBetween-start',
-    }),
+    header: css({ Flex: 'horizontal-spaceBetween-start' }),
     body: css({
       display: 'flex',
       flexWrap: 'wrap',
     }),
   };
 
-  const cardMargin = 20;
-
-  const elDataConnections = connections.data.map((item, i) => {
-    const isLast = i === network.connections.length - 1;
+  const connections = network.connections;
+  const elConnections = connections.map((item, i) => {
+    const isLast = i === connections.length - 1;
     return (
       <Connection
         key={item.id.remote}
@@ -46,7 +37,7 @@ export const Network: React.FC<NetworkProps> = (props) => {
         netbus={netbus}
         connection={item}
         isLast={isLast}
-        margin={cardMargin}
+        margin={20}
       />
     );
   });
@@ -58,7 +49,7 @@ export const Network: React.FC<NetworkProps> = (props) => {
         <VideoSelf networkRef={network.id} bus={bus} isOffline={!network.isOnline} />
       </div>
       <Hr thickness={10} opacity={0.06} margin={[30, 0, 20, 0]} />
-      <div {...styles.body}>{elDataConnections}</div>
+      <div {...styles.body}>{elConnections}</div>
     </div>
   );
 };

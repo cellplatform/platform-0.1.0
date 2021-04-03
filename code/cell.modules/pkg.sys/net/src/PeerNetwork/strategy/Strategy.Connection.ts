@@ -46,7 +46,7 @@ export function ConnectionStrategy(args: {
       const peers = R.uniq(connections.map((conn) => conn.id.remote));
       if (peers.length > 0) {
         netbus.fire({
-          type: 'NetworkStrategy/ensureConnected',
+          type: 'NetworkStrategy/ensureConnected:data',
           payload: { peers, isReliable, metadata },
         });
       }
@@ -56,17 +56,20 @@ export function ConnectionStrategy(args: {
    * Listen for incoming "ensure connections" events from other
    * peers broadcasting the set of ID's to connect to.
    */
-  rx.payload<t.StrategyEnsureConnectedEvent>(netbus.event$, 'NetworkStrategy/ensureConnected')
+  rx.payload<t.StrategyEnsureConnectedDataEvent>(
+    netbus.event$,
+    'NetworkStrategy/ensureConnected:data',
+  )
     .pipe()
     .subscribe(async (e) => {
-      const { isReliable, metadata } = e;
+      const { isReliable } = e;
       const connections = await getDataConnections();
       const peers = e.peers
         .filter((id) => id !== self)
         .filter((id) => !connections.some((item) => item.id.remote === id));
 
       R.uniq(peers).forEach((remote) => {
-        events.connection(self, remote).open.data({ isReliable, metadata });
+        events.connection(self, remote).open.data({ isReliable });
       });
     });
 

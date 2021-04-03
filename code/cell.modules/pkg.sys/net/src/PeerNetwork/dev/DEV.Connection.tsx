@@ -2,11 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { Button, Card, css, CssValue, Hr, Icons, PropList, PropListItem, t } from './common';
 import { EventStack } from './DEV.EventStack';
+import { ConnectionData } from './DEV.Connection.Data';
 
 export type ConnectionProps = {
   bus: t.EventBus<any>;
   netbus: t.EventBus<any>;
-  connection: t.PeerConnectionDataStatus;
+  connection: t.PeerConnectionStatus;
   isLast?: boolean;
   style?: CssValue;
   margin?: t.CssEdgesInput;
@@ -17,27 +18,21 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
   const id = connection.id;
   const bus = props.bus.type<t.PeerEvent>();
 
-  const [debugCount, setDebugCount] = useState<number>(0);
-
   const items: PropListItem[] = [
     { label: 'id', value: { data: id.remote, clipboard: true } },
     { label: 'kind', value: connection.kind },
-    { label: 'reliable', value: connection.isReliable },
     { label: 'open', value: connection.isOpen },
   ];
+  if (connection.kind === 'data') {
+    items.push(...[{ label: 'reliable', value: connection.isReliable }]);
+  }
 
   const styles = {
     base: css({ position: 'relative', fontSize: 14 }),
-    buttons: css({
-      Flex: 'horizontal-center-spaceBetween',
-      fontSize: 12,
-    }),
-    events: css({ marginTop: 20 }),
     close: css({ Absolute: [5, 5, null, null] }),
   };
 
   const hr = <Hr thickness={5} opacity={0.1} margin={[10, 0]} />;
-  const elEvents = <EventStack netbus={netbus} style={styles.events} />;
 
   const handleClose = () => {
     bus.fire({
@@ -65,21 +60,8 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
 
         {hr}
 
-        <div {...styles.buttons}>
-          <Button
-            label={'Broadcast Event'}
-            onClick={() => {
-              setDebugCount((prev) => prev + 1);
-              netbus.fire({
-                // NB: Arbitrary invented event.  When using in application, pass a set of strong event types to the bus.
-                type: 'random/sample:event',
-                payload: { msg: 'hello', from: id.self, count: debugCount },
-              });
-            }}
-          />
-        </div>
+        {connection.kind === 'data' && <ConnectionData netbus={netbus} connection={connection} />}
 
-        {elEvents}
         {elCloseButton}
       </Card>
     </div>
