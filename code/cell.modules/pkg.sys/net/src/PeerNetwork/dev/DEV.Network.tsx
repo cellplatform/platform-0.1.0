@@ -4,7 +4,7 @@ import { Filter } from '../util';
 import { css, CssValue, t } from './common';
 import { Connection } from './DEV.Connection';
 import { NetworkPropList } from './DEV.Network.PropList';
-import { VideoSelf } from './DEV.VideoSelf';
+import { VideoSelf } from './DEV.Media.Self';
 import { Hr } from 'sys.ui.primitives/lib/components/Hr';
 import { EventStack } from './DEV.EventStack';
 

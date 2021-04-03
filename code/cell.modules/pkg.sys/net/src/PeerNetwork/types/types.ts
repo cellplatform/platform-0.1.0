@@ -1,3 +1,5 @@
+export type PeerMediaKind = 'video' | 'screen';
+
 export type PeerConnectDirection = 'incoming' | 'outgoing';
 
 export type PeerError = { message: string };

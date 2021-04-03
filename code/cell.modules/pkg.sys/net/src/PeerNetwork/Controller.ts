@@ -1,7 +1,7 @@
 import { Subject, merge } from 'rxjs';
 import { filter, take, takeUntil, delay } from 'rxjs/operators';
 import { deleteUndefined, PeerJS, rx, t, time, slug } from '../common';
-import { PeerJSError } from './util';
+import { PeerJSError, Strings } from './util';
 import { MemoryRefs, SelfRef, ConnectionRef } from './Refs';
 import { asArray } from '@platform/util.value/lib/value/value.array';
 
@@ -132,7 +132,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     .subscribe((e) => {
       if (!refs.self[e.self]) {
         const createdAt = time.now.timestamp;
-        const signal = parseEndpointAddress(e.signal);
+        const signal = Strings.parseEndpointAddress(e.signal);
         const { host, path, port, secure } = signal;
         const peer = new PeerJS(e.self, { host, path, port, secure });
         const ref: SelfRef = {
@@ -394,30 +394,3 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     },
   };
 }
-
-/**
- * Helpers
- */
-
-const parseEndpointAddress = (address: string): t.PeerSignallingEndpoint => {
-  address = stripHttp((address || '').trim());
-
-  const parts = address.trim().split('/');
-  const path = stripPathLeft(parts[1]) || undefined;
-
-  const hostParts = (parts[0] || '').split(':');
-
-  const host = hostParts[0];
-  const secure = !host.startsWith('localhost');
-  const port = hostParts[1] ? parseInt(hostParts[1], 10) : secure ? 443 : 80;
-
-  return { host, port, path, secure };
-};
-
-const stripHttp = (text?: string) =>
-  (text || '')
-    .trim()
-    .replace(/^http\:\/\//, '')
-    .replace(/^https\:\/\//, '');
-
-const stripPathLeft = (text?: string) => (text || '').trim().replace(/^\/*/, '').trim();

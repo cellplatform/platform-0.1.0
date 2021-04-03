@@ -4,6 +4,7 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { PeerNetwork } from '..';
 import { css, cuid, deleteUndefined, Icons, MediaStreamEvents, rx, t, time } from './common';
 import { Layout } from './DEV.Layout';
+import { Media } from './DEV.Media';
 
 type Ctx = {
   self: t.PeerId;
@@ -11,7 +12,7 @@ type Ctx = {
   netbus: t.EventBus;
   signal: string; // Signalling server network address (host/path).
   events: {
-    network: ReturnType<typeof PeerNetwork.Events>;
+    net: ReturnType<typeof PeerNetwork.Events>;
     media: ReturnType<typeof MediaStreamEvents>;
   };
   strategy: t.PeerStrategy;
@@ -32,18 +33,19 @@ export const actions = DevActions<Ctx>()
     const self = cuid();
     const bus = rx.bus<t.PeerEvent>();
 
+    Media.startEventBridge({ self, bus });
     PeerNetwork.Controller({ bus });
     const strategy = PeerNetwork.Strategy({ self, bus });
 
     const signal = 'rtc.cellfs.com/peer';
     const events = {
-      network: PeerNetwork.Events({ bus }),
+      net: PeerNetwork.Events({ bus }),
       media: MediaStreamEvents({ bus }),
     };
 
-    time.delay(100, () => events.network.create(signal, self));
+    time.delay(100, () => events.net.create(signal, self));
 
-    const netbus = events.network.data(self).bus();
+    const netbus = events.net.data(self).bus();
 
     netbus.event$.subscribe((e) => {
       console.log('Network Bus', e.type, e.payload);
@@ -88,20 +90,30 @@ export const actions = DevActions<Ctx>()
 
     e.button('fire ⚡️ Peer:Local/init', async (e) => {
       const { self, signal, events } = e.ctx;
-      events.network.create(signal, self);
+      events.net.create(signal, self);
     });
 
     e.button('fire ⚡️ Peer:Local/purge', async (e) => {
-      const ref = e.ctx.self;
-      const data = deleteUndefined(await e.ctx.events.network.purge(ref).fire());
+      const self = e.ctx.self;
+      const data = deleteUndefined(await e.ctx.events.net.purge(self).fire());
       e.button.description = (
         <ObjectView name={'purged'} data={data} fontSize={10} expandLevel={2} />
       );
     });
 
+    e.button('fire ⚡️ Peer:Local/media (video)', async (e) => {
+      const self = e.ctx.self;
+      const data = deleteUndefined(await e.ctx.events.net.media(self).video());
+      e.button.description = (
+        <ObjectView name={'status:res'} data={data} fontSize={10} expandLevel={2} />
+      );
+    });
+
+    e.hr(1, 0.2);
+
     e.button('fire ⚡️ Peer:Local/status', async (e) => {
-      const ref = e.ctx.self;
-      const data = deleteUndefined(await e.ctx.events.network.status(ref).get());
+      const self = e.ctx.self;
+      const data = deleteUndefined(await e.ctx.events.net.status(self).get());
       e.button.description = (
         <ObjectView name={'status:res'} data={data} fontSize={10} expandLevel={2} />
       );
@@ -127,7 +139,7 @@ export const actions = DevActions<Ctx>()
         e.button.description = '🐷 ERROR: Remote peer not specified';
       } else {
         const metadata = { foo: 123 };
-        const res = await events.network
+        const res = await events.net
           .connection(self, connectTo)
           .open.data({ isReliable, metadata });
         const name = res.error ? 'Fail' : 'Success';
@@ -165,7 +177,7 @@ export const actions = DevActions<Ctx>()
         }
 
         const metadata = { foo: 123 };
-        const open = events.network.connection(self, connectTo).open;
+        const open = events.net.connection(self, connectTo).open;
         const res = await open.media({ metadata });
         const name = res.error ? 'Fail' : 'Success';
         const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
@@ -180,7 +192,7 @@ export const actions = DevActions<Ctx>()
       if (!connectTo) {
         e.button.description = '🐷 ERROR: Remote peer not specified';
       } else {
-        const res = await events.network.connection(self, connectTo).close();
+        const res = await events.net.connection(self, connectTo).close();
         const name = res.error ? 'Fail' : 'Success';
         const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
         e.button.description = el;

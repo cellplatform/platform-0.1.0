@@ -41,3 +41,34 @@ export const PeerJSError = (peer: PeerJS) => {
     },
   };
 };
+
+/**
+ * String helpers.
+ */
+export const Strings = {
+  parseEndpointAddress(address: string): t.PeerSignallingEndpoint {
+    address = Strings.stripHttp((address || '').trim());
+
+    const parts = address.trim().split('/');
+    const path = Strings.stripPathLeft(parts[1]) || undefined;
+
+    const hostParts = (parts[0] || '').split(':');
+
+    const host = hostParts[0];
+    const secure = !host.startsWith('localhost');
+    const port = hostParts[1] ? parseInt(hostParts[1], 10) : secure ? 443 : 80;
+
+    return { host, port, path, secure };
+  },
+
+  stripHttp(text?: string) {
+    return (text || '')
+      .trim()
+      .replace(/^http\:\/\//, '')
+      .replace(/^https\:\/\//, '');
+  },
+
+  stripPathLeft(text?: string) {
+    return (text || '').trim().replace(/^\/*/, '').trim();
+  },
+};

@@ -134,7 +134,8 @@ export type PeerLocalMediaReqEvent = {
 };
 export type PeerLocalMediaReq = {
   self: t.PeerId;
-  kind: 'video' | 'screen';
+  tx?: string;
+  kind: t.PeerMediaKind;
   constraints?: t.PartialDeep<MediaStreamConstraints>;
 };
 
@@ -147,4 +148,7 @@ export type PeerLocalMediaResEvent = {
 };
 export type PeerLocalMediaRes = {
   self: t.PeerId;
+  tx: string;
+  media?: MediaStream;
+  error?: t.PeerError;
 };

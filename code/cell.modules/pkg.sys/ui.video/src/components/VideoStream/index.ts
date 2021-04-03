@@ -1,7 +1,7 @@
 export * from './types';
 
 export * from './VideoStream';
-export * from './useVideoStreamState';
+export * from './hooks';
 
 export * from './MediaStream.Events';
 export * from './MediaStream.Controller';

@@ -8,8 +8,10 @@ import {
   useVideoStreamState,
   MediaEvent,
   MediaStreamController,
+  MediaStreamEvents,
   Icons,
 } from './common';
+import { Media } from './DEV.Media';
 
 export type VideoSelfProps = {
   networkRef: string;
@@ -23,7 +25,7 @@ export type VideoSelfProps = {
 export const VideoSelf: React.FC<VideoSelfProps> = (props) => {
   const { width = 150, height = 100 } = props;
 
-  const ref = props.networkRef;
+  const ref = Media.videoRef(props.networkRef);
   const bus = props.bus.type<t.PeerEvent | MediaEvent>();
 
   const { stream } = useVideoStreamState({
@@ -36,7 +38,9 @@ export const VideoSelf: React.FC<VideoSelfProps> = (props) => {
 
   useEffect(() => {
     MediaStreamController({ bus });
-    bus.fire({ type: 'MediaStream/start:video', payload: { ref } });
+    const events = MediaStreamEvents({ bus });
+    events.start(ref).video();
+    return () => events.dispose();
   }, [bus, ref]);
 
   const styles = {
