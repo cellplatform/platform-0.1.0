@@ -1,7 +1,9 @@
 import { t } from './common';
-export * from './types.events.network';
+
 export * from './types.events.connection';
 export * from './types.events.data';
+export * from './types.events.network';
+export * from './types.events.strategy';
 
 /**
  * An identifier of a network peer.

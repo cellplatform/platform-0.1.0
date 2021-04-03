@@ -26,7 +26,7 @@ type ConnectBase = {
   direction: t.PeerConnectDirection;
 };
 
-export type PeerNetworkConnectDataReq = ConnectBase & { kind: 'data'; reliable?: boolean };
+export type PeerNetworkConnectDataReq = ConnectBase & { kind: 'data'; isReliable?: boolean };
 export type PeerNetworkConnectMediaReq = ConnectBase & { kind: 'media'; timeout?: number };
 
 /**

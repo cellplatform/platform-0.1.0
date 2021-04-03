@@ -53,7 +53,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
 
     const get = () => {
       const res = firstValueFrom(response$);
-      bus.fire({ type: 'Peer:Network/status:req', payload: { self: self } });
+      bus.fire({ type: 'Peer:Network/status:req', payload: { self } });
       return res;
     };
 
@@ -73,7 +73,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
 
     const fire = (select?: t.PeerNetworkPurgeReq['select']) => {
       const res = firstValueFrom(purged$);
-      bus.fire({ type: 'Peer:Network/purge:req', payload: { self: self, select } });
+      bus.fire({ type: 'Peer:Network/purge:req', payload: { self, select } });
       return res;
     };
 
@@ -93,12 +93,12 @@ export function Events(args: { bus: t.EventBus<any> }) {
       .pipe(filter((e) => e.self === self && e.remote === remote));
 
     const open = {
-      data(options: { reliable?: boolean; metadata?: t.JsonMap } = {}) {
-        const { reliable, metadata } = options;
+      data(options: { isReliable?: boolean; metadata?: t.JsonMap } = {}) {
+        const { isReliable, metadata } = options;
         const res = firstValueFrom(connected$);
         bus.fire({
           type: 'Peer:Connection/connect:req',
-          payload: { self: self, remote, kind: 'data', reliable, metadata, direction: 'outgoing' },
+          payload: { self, remote, kind: 'data', isReliable, metadata, direction: 'outgoing' },
         });
         return res;
       },
@@ -107,7 +107,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
         const res = firstValueFrom(connected$);
         bus.fire({
           type: 'Peer:Connection/connect:req',
-          payload: { self: self, remote, kind: 'media', metadata, direction: 'outgoing' },
+          payload: { self, remote, kind: 'media', metadata, direction: 'outgoing' },
         });
         return res;
       },
@@ -115,7 +115,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
 
     const close = () => {
       const res = firstValueFrom(disconnected$);
-      bus.fire({ type: 'Peer:Connection/disconnect:req', payload: { self: self, remote } });
+      bus.fire({ type: 'Peer:Connection/disconnect:req', payload: { self, remote } });
       return res;
     };
 

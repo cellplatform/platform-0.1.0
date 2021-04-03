@@ -283,7 +283,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
       // Start a data connection.
       if (e.kind === 'data') {
-        const { reliable, metadata } = e;
+        const { isReliable: reliable, metadata } = e;
         const errorMonitor = PeerJSError(self.peer);
         const dataConnection = self.peer.connect(remote, { reliable, metadata });
         refs.connection(self).add(e.kind, dataConnection);

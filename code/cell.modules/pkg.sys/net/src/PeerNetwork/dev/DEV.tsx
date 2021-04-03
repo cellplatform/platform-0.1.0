@@ -16,7 +16,7 @@ type Ctx = {
   };
   strategy: t.PeerStrategy;
   connectTo?: string;
-  reliable: boolean;
+  isReliable: boolean;
   debugJson: boolean;
 };
 
@@ -56,7 +56,7 @@ export const actions = DevActions<Ctx>()
       events,
       strategy,
       signal,
-      reliable: false,
+      isReliable: false,
       debugJson: false,
     };
   })
@@ -122,14 +122,14 @@ export const actions = DevActions<Ctx>()
     e.hr(0, 0, 20);
 
     e.button('fire - Peer:Connection/connect (data)', async (e) => {
-      const { self, connectTo, events, reliable } = e.ctx;
+      const { self, connectTo, events, isReliable } = e.ctx;
       if (!connectTo) {
         e.button.description = '🐷 ERROR: Remote peer not specified';
       } else {
         const metadata = { foo: 123 };
         const res = await events.network
           .connection(self, connectTo)
-          .open.data({ reliable, metadata });
+          .open.data({ isReliable, metadata });
         const name = res.error ? 'Fail' : 'Success';
         const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
         e.button.description = el;
@@ -141,13 +141,12 @@ export const actions = DevActions<Ctx>()
         .indent(25)
         .label('reliable')
         .pipe((e) => {
-          if (e.changing) e.ctx.reliable = e.changing.next;
-
-          const reliable = e.ctx.reliable;
-          const description = reliable ? '(eg. large file transfers)' : '(eg. streaming or gaming)';
-
-          e.boolean.current = reliable;
-          e.boolean.description = description;
+          if (e.changing) e.ctx.isReliable = e.changing.next;
+          const isReliable = e.ctx.isReliable;
+          e.boolean.current = isReliable;
+          e.boolean.description = isReliable
+            ? '(eg. large file transfers)'
+            : '(eg. streaming or gaming)';
         });
     });
 
@@ -194,15 +193,14 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Strategies (Behavior)');
 
-    e.boolean('purge connection on close', (e) => {
-      //
+    e.boolean('auto purge connection on close [TODO]', (e) => {
+      if (e.changing) e.ctx.strategy.connection.purgeOnClose = e.changing.next;
+      e.boolean.current = e.ctx.strategy.connection.purgeOnClose;
     });
 
-    e.boolean('mesh connection propogation', (e) => {
-      const { strategy } = e.ctx;
-      console.log('strategy.connection', strategy.connection);
-      if (e.changing) strategy.connection.purgeOnClose = e.changing.next;
-      e.boolean.current = strategy.connection.purgeOnClose;
+    e.boolean('auto connection propogation (mesh) [TODO]', (e) => {
+      if (e.changing) e.ctx.strategy.connection.purgeOnClose = e.changing.next;
+      e.boolean.current = e.ctx.strategy.connection.purgeOnClose;
     });
   })
 

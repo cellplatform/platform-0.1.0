@@ -12,8 +12,12 @@ export type PeerStrategy = t.IDisposable & {
  */
 export type PeerConnectionStrategy = t.IDisposable & {
   /**
-   * Closed connections are autmatically purged from state.
-   * When false, manually fire the [purge] event.
+   * Auto purge connections when closed.
    */
   purgeOnClose: boolean;
+
+  /**
+   * Auto propogate new connections to all other connected clients.
+   */
+  meshPropagation: boolean;
 };

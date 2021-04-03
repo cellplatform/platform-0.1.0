@@ -1,3 +1,6 @@
+import { uniq } from 'ramda';
+export const R = { uniq };
+
 import PeerJS from 'peerjs';
 export { PeerJS };
 

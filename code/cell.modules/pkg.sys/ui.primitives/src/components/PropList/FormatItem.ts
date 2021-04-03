@@ -50,7 +50,9 @@ export function FormatItem(item: t.PropListItem) {
       if (data === null) return 'null';
       if (data === undefined) return 'undefined';
 
-      if (typeof data === 'object') return JSON.stringify(data, null, '  ');
+      if (typeof data === 'object' && !React.isValidElement(data)) {
+        return JSON.stringify(data, null, '  ');
+      }
 
       return data.toString();
     },

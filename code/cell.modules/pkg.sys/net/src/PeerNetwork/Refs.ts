@@ -34,7 +34,7 @@ export function MemoryRefs() {
           conn: PeerJS.DataConnection | PeerJS.MediaConnection,
           media?: MediaStream,
         ) {
-          const existing = self.connections.find((item) => item.conn === conn);
+          const existing = self.connections.find((item) => item.conn.peer === conn.peer);
           if (existing) return existing;
 
           const local = self.peer.id;
