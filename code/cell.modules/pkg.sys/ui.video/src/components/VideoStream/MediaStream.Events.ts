@@ -16,27 +16,26 @@ export function MediaStreamEvents(args: { bus: t.EventBus<any> }) {
    * START
    */
   const start = (ref: string) => {
-    const video$ = rx
-      .payload<t.MediaStreamStartVideoEvent>(event$, 'MediaStream/start:video')
+    const start$ = rx
+      .payload<t.MediaStreamStartEvent>(event$, 'MediaStream/start')
       .pipe(filter((e) => e.ref === ref));
 
-    const screen$ = rx
-      .payload<t.MediaStreamStartScreenEvent>(event$, 'MediaStream/start:screen')
-      .pipe(filter((e) => e.ref === ref));
+    const video$ = start$.pipe(filter((e) => e.kind === 'video'));
+    const screen$ = start$.pipe(filter((e) => e.kind === 'screen'));
 
-    type V = t.MediaStreamStartVideoEvent | t.MediaStreamStartScreenEvent;
-    const fire = (type: V['type']) => {
+    const fire = (kind: t.MediaStreamStart['kind']) => {
       const res = firstValueFrom(started(ref).$);
-      bus.fire({ type, payload: { ref } });
+      bus.fire({ type: 'MediaStream/start', payload: { kind, ref } });
       return res;
     };
 
     return {
       ref,
+      start$,
       video$,
       screen$,
-      video: () => fire('MediaStream/start:video'),
-      screen: () => fire('MediaStream/start:screen'),
+      video: () => fire('video'),
+      screen: () => fire('screen'),
     };
   };
 

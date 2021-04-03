@@ -3,8 +3,7 @@ import { t } from './common';
 export type MediaStreamEvent =
   | MediaStreamStatusRequestEvent
   | MediaStreamStatusResponseEvent
-  | MediaStreamStartVideoEvent
-  | MediaStreamStartScreenEvent
+  | MediaStreamStartEvent
   | MediaStreamStartedEvent
   | MediaStreamStopEvent
   | MediaStreamStoppedEvent
@@ -34,24 +33,13 @@ export type MediaStreamStatusResponse = {
 /**
  * Fires to start a [MediaStream].
  */
-export type MediaStreamStartVideoEvent = {
-  type: 'MediaStream/start:video';
-  payload: MediaStreamStartVideo;
+export type MediaStreamStartEvent = {
+  type: 'MediaStream/start';
+  payload: MediaStreamStart;
 };
-export type MediaStreamStartVideo = {
+export type MediaStreamStart = {
   ref: string; // ID of the requester.
-  constraints?: t.PartialDeep<MediaStreamConstraints>;
-};
-
-/**
- * Fires to start a Screen capture stream.
- */
-export type MediaStreamStartScreenEvent = {
-  type: 'MediaStream/start:screen';
-  payload: MediaStreamStartScreen;
-};
-export type MediaStreamStartScreen = {
-  ref: string; // ID of the requester.
+  kind: 'video' | 'screen';
   constraints?: t.PartialDeep<MediaStreamConstraints>;
 };
 

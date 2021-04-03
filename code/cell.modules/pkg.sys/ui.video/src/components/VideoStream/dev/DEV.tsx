@@ -90,34 +90,34 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
-    e.button('fire: MediaStream/start:video', async (e) => {
+    e.button('fire ⚡️ MediaStream/start (video)', async (e) => {
       const ref = e.ctx.ref;
       await e.ctx.events.stop(ref).fire();
       await e.ctx.events.start(ref).video();
       await updateMute(e.ctx);
     });
 
-    e.button('fire: MediaStream/start:screen', async (e) => {
+    e.button('fire ⚡️ MediaStream/start (screen)', async (e) => {
       const ref = e.ctx.ref;
       await e.ctx.events.stop(ref).fire();
       await e.ctx.events.start(ref).screen();
       await updateMute(e.ctx);
     });
 
-    e.button('fire: MediaStream/stop', (e) => {
+    e.button('fire ⚡️ MediaStream/stop', (e) => {
       const ref = e.ctx.ref;
       e.ctx.bus.fire({ type: 'MediaStream/stop', payload: { ref } });
     });
 
     e.hr(1, 0.1);
 
-    e.button('fire: MediaStream/status:req', async (e) => {
+    e.button('fire ⚡️ MediaStream/status:req', async (e) => {
       const ref = e.ctx.ref;
       const data = deleteUndefined(await e.ctx.events.status(ref).get());
       e.button.description = <ObjectView name={'response: status'} data={data} fontSize={10} />;
     });
 
-    e.button('fire: MediaStreams/status:req (all)', async (e) => {
+    e.button('fire ⚡️ MediaStreams/status:req (all)', async (e) => {
       const data = deleteUndefined(await e.ctx.events.all.status().get());
       const name = 'response: status (all)';
       e.button.description = <ObjectView name={name} data={data} fontSize={10} expandLevel={3} />;

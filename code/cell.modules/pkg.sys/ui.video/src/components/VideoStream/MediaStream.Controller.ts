@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { R, rx, t } from '../../common';
 
@@ -65,8 +65,8 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
    * START:VIDEO
    * Connect to local-device media (camera/audio).
    */
-  rx.payload<t.MediaStreamStartVideoEvent>($, 'MediaStream/start:video')
-    .pipe()
+  rx.payload<t.MediaStreamStartEvent>($, 'MediaStream/start')
+    .pipe(filter((e) => e.kind === 'video'))
     .subscribe(async (e) => {
       const { ref } = e;
 
@@ -102,8 +102,8 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
    * START:SCREEN
    * Start a screen capture of the local screen.
    */
-  rx.payload<t.MediaStreamStartScreenEvent>($, 'MediaStream/start:screen')
-    .pipe()
+  rx.payload<t.MediaStreamStartEvent>($, 'MediaStream/start')
+    .pipe(filter((e) => e.kind === 'screen'))
     .subscribe(async (e) => {
       const { ref } = e;
 
