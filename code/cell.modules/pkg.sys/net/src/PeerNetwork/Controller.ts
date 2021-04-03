@@ -1,6 +1,6 @@
 import { Subject, merge } from 'rxjs';
 import { filter, take, takeUntil, delay } from 'rxjs/operators';
-import { deleteUndefined, PeerJS, rx, t, time } from '../common';
+import { deleteUndefined, PeerJS, rx, t, time, slug } from '../common';
 import { PeerJSError } from './util';
 import { MemoryRefs, SelfRef, ConnectionRef } from './Refs';
 import { asArray } from '@platform/util.value/lib/value/value.array';
@@ -29,7 +29,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   const handleOnlineStatusChanged = (e: Event) => {
     Object.keys(refs.self).forEach((ref) => {
       bus.fire({
-        type: 'Peer:Network/online:changed',
+        type: 'Peer:Local/online:changed',
         payload: { self: ref, isOnline: navigator.onLine },
       });
     });
@@ -86,11 +86,13 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     conn: PeerJS.DataConnection | PeerJS.MediaConnection,
   ) => {
     const connectionRef = refs.connection(self).get(conn);
+    const tx = slug();
 
     bus.fire({
       type: 'Peer:Connection/connect:res',
       payload: {
         self: self.id,
+        tx,
         kind,
         direction,
         remote: connectionRef.id.remote,
@@ -125,7 +127,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   /**
    * CREATE a new network client.
    */
-  rx.payload<t.PeerLocalInitReqEvent>($, 'Peer:Network/init:req')
+  rx.payload<t.PeerLocalInitReqEvent>($, 'Peer:Local/init:req')
     .pipe(delay(0))
     .subscribe((e) => {
       if (!refs.self[e.self]) {
@@ -161,7 +163,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       const self = refs.self[e.self];
 
       bus.fire({
-        type: 'Peer:Network/init:res',
+        type: 'Peer:Local/init:res',
         payload: { self: e.self, createdAt: self.createdAt, signal: self.signal },
       });
     });
@@ -169,15 +171,16 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   /**
    * STATUS
    */
-  rx.payload<t.PeerLocalStatusRequestEvent>($, 'Peer:Network/status:req')
+  rx.payload<t.PeerLocalStatusRequestEvent>($, 'Peer:Local/status:req')
     .pipe(delay(0))
     .subscribe((e) => {
+      const tx = e.tx || slug();
       const self = refs.self[e.self];
       const network = self ? toStatus(self) : undefined;
       const exists = Boolean(network);
       bus.fire({
-        type: 'Peer:Network/status:res',
-        payload: { self: e.self, exists, network },
+        type: 'Peer:Local/status:res',
+        payload: { self: e.self, tx, exists, network },
       });
     });
 
@@ -188,9 +191,9 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     $.pipe(
       filter((e) => {
         const types: t.PeerEvent['type'][] = [
-          'Peer:Network/init:res',
-          'Peer:Network/purge:res',
-          'Peer:Network/online:changed',
+          'Peer:Local/init:res',
+          'Peer:Local/purge:res',
+          'Peer:Local/online:changed',
           'Peer:Connection/connect:res',
           'Peer:Connection/closed',
         ];
@@ -204,7 +207,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     const self = refs.self[ref];
     if (self) {
       bus.fire({
-        type: 'Peer:Network/status:changed',
+        type: 'Peer:Local/status:changed',
         payload: { self: ref, network: toStatus(self), event },
       });
     }
@@ -213,9 +216,10 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   /**
    * PURGE
    */
-  rx.payload<t.PeerLocalPurgeReqEvent>($, 'Peer:Network/purge:req')
+  rx.payload<t.PeerLocalPurgeReqEvent>($, 'Peer:Local/purge:req')
     .pipe()
     .subscribe((e) => {
+      const tx = e.tx || slug();
       const self = refs.self[e.self];
       const select = typeof e.select === 'object' ? e.select : { closedConnections: true };
 
@@ -226,8 +230,8 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
       const fire = (payload?: Partial<t.PeerLocalPurgeRes>) => {
         bus.fire({
-          type: 'Peer:Network/purge:res',
-          payload: { self: e.self, changed, purged, ...payload },
+          type: 'Peer:Local/purge:res',
+          payload: { self: e.self, tx, changed, purged, ...payload },
         });
       };
       const fireError = (message: string) => fire({ error: { message } });
@@ -258,11 +262,12 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     .subscribe((e) => {
       const { remote, kind } = e;
       const self = refs.self[e.self];
+      const tx = e.tx || slug();
 
       const fire = (payload?: Partial<t.PeerNetworkConnectRes>) => {
         bus.fire({
           type: 'Peer:Connection/connect:res',
-          payload: { kind, self: e.self, remote, direction: 'outgoing', ...payload },
+          payload: { kind, self: e.self, tx, remote, direction: 'outgoing', ...payload },
         });
       };
       const fireError = (message: string) => fire({ error: { message } });
@@ -342,11 +347,12 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     .subscribe((e) => {
       const { remote } = e;
       const selfRef = refs.self[e.self];
+      const tx = e.tx || slug();
 
       const fire = (payload?: Partial<t.PeerNetworkDisconnectRes>) => {
         bus.fire({
           type: 'Peer:Connection/disconnect:res',
-          payload: { self: e.self, remote, ...payload },
+          payload: { self: e.self, tx, remote, ...payload },
         });
       };
       const fireError = (message: string) => fire({ error: { message } });

@@ -1,13 +1,13 @@
 import { firstValueFrom, Subject } from 'rxjs';
 import { take, filter, takeUntil } from 'rxjs/operators';
-import { cuid, rx, t } from '../common';
+import { cuid, rx, t, slug } from '../common';
 import { isEvent } from './util';
 
 /**
  * Filter on Peer/Network/Connection events
  */
 export function isPeerEvent(e: t.Event) {
-  const prefixes = ['Peer:Network/', 'Peer:Connection/', 'Peer:Data/'];
+  const prefixes = ['Peer:Local/', 'Peer:Connection/', 'Peer:Data/'];
   return prefixes.some((prefix) => e.type.startsWith(prefix));
 }
 
@@ -26,7 +26,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
   const create = (signal: string, id?: t.PeerId) => {
     const self = id || cuid();
     const res = firstValueFrom(created(self).$);
-    bus.fire({ type: 'Peer:Network/init:req', payload: { self, signal } });
+    bus.fire({ type: 'Peer:Local/init:req', payload: { self, signal } });
     return res;
   };
 
@@ -35,7 +35,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
    */
   const created = (self: t.PeerId) => {
     const $ = rx
-      .payload<t.PeerLocalInitResEvent>(event$, 'Peer:Network/init:res')
+      .payload<t.PeerLocalInitResEvent>(event$, 'Peer:Local/init:res')
       .pipe(filter((e) => e.self === self));
     return { self, $ };
   };
@@ -45,15 +45,16 @@ export function Events(args: { bus: t.EventBus<any> }) {
    */
   const status = (self: t.PeerId) => {
     const request$ = rx
-      .payload<t.PeerLocalStatusRequestEvent>(event$, 'Peer:Network/status:req')
+      .payload<t.PeerLocalStatusRequestEvent>(event$, 'Peer:Local/status:req')
       .pipe(filter((e) => e.self === self));
     const response$ = rx
-      .payload<t.PeerLocalStatusResponseEvent>(event$, 'Peer:Network/status:res')
+      .payload<t.PeerLocalStatusResponseEvent>(event$, 'Peer:Local/status:res')
       .pipe(filter((e) => e.self === self));
 
     const get = () => {
-      const res = firstValueFrom(response$);
-      bus.fire({ type: 'Peer:Network/status:req', payload: { self } });
+      const tx = slug();
+      const res = firstValueFrom(response$.pipe(filter((e) => e.tx === tx)));
+      bus.fire({ type: 'Peer:Local/status:req', payload: { self, tx } });
       return res;
     };
 
@@ -65,15 +66,16 @@ export function Events(args: { bus: t.EventBus<any> }) {
    */
   const purge = (self: t.PeerId) => {
     const purge$ = rx
-      .payload<t.PeerLocalPurgeReqEvent>(event$, 'Peer:Network/purge:req')
+      .payload<t.PeerLocalPurgeReqEvent>(event$, 'Peer:Local/purge:req')
       .pipe(filter((e) => e.self === self));
     const purged$ = rx
-      .payload<t.PeerLocalPurgeResEvent>(event$, 'Peer:Network/purge:res')
+      .payload<t.PeerLocalPurgeResEvent>(event$, 'Peer:Local/purge:res')
       .pipe(filter((e) => e.self === self));
 
     const fire = (select?: t.PeerLocalPurgeReq['select']) => {
-      const res = firstValueFrom(purged$);
-      bus.fire({ type: 'Peer:Network/purge:req', payload: { self, select } });
+      const tx = slug();
+      const res = firstValueFrom(purged$.pipe(filter((e) => e.tx === tx)));
+      bus.fire({ type: 'Peer:Local/purge:req', payload: { self, tx, select } });
       return res;
     };
 
@@ -95,27 +97,30 @@ export function Events(args: { bus: t.EventBus<any> }) {
     const open = {
       data(options: { isReliable?: boolean; metadata?: t.JsonMap } = {}) {
         const { isReliable, metadata } = options;
-        const res = firstValueFrom(connected$);
+        const tx = slug();
+        const res = firstValueFrom(connected$.pipe(filter((e) => e.tx === tx)));
         bus.fire({
           type: 'Peer:Connection/connect:req',
-          payload: { self, remote, kind: 'data', isReliable, metadata, direction: 'outgoing' },
+          payload: { self, tx, remote, kind: 'data', isReliable, metadata, direction: 'outgoing' },
         });
         return res;
       },
       media(options: { metadata?: t.JsonMap } = {}) {
         const { metadata } = options;
-        const res = firstValueFrom(connected$);
+        const tx = slug();
+        const res = firstValueFrom(connected$.pipe(filter((e) => e.tx === tx)));
         bus.fire({
           type: 'Peer:Connection/connect:req',
-          payload: { self, remote, kind: 'media', metadata, direction: 'outgoing' },
+          payload: { self, tx, remote, kind: 'media', metadata, direction: 'outgoing' },
         });
         return res;
       },
     };
 
     const close = () => {
-      const res = firstValueFrom(disconnected$);
-      bus.fire({ type: 'Peer:Connection/disconnect:req', payload: { self, remote } });
+      const tx = slug();
+      const res = firstValueFrom(disconnected$.pipe(filter((e) => e.tx === tx)));
+      bus.fire({ type: 'Peer:Connection/disconnect:req', payload: { self, tx, remote } });
       return res;
     };
 

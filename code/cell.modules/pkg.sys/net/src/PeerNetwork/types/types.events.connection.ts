@@ -21,6 +21,7 @@ export type PeerNetworkConnectReq = PeerNetworkConnectDataReq | PeerNetworkConne
 
 type ConnectBase = {
   self: t.PeerId;
+  tx?: string;
   remote: t.PeerId;
   metadata?: t.JsonMap;
   direction: t.PeerConnectDirection;
@@ -38,6 +39,7 @@ export type PeerConnectResEvent = {
 };
 export type PeerNetworkConnectRes = {
   self: t.PeerId;
+  tx: string;
   remote: t.PeerId;
   kind: 'data' | 'media';
   direction: t.PeerConnectDirection;
@@ -54,6 +56,7 @@ export type PeerDisconnectReqEvent = {
 };
 export type PeerNetworkDisconnectReq = {
   self: t.PeerId;
+  tx?: string;
   remote: t.PeerId;
 };
 
@@ -69,6 +72,7 @@ export type PeerDisconnectResEvent = {
 };
 export type PeerNetworkDisconnectRes = {
   self: t.PeerId;
+  tx: string;
   remote: t.PeerId;
   connection?: t.PeerConnectionStatus;
   error?: t.PeerError;

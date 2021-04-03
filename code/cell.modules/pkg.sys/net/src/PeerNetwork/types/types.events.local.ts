@@ -11,13 +11,15 @@ export type PeerLocalEvent =
   | PeerLocalStatusChangedEvent
   | PeerLocalOnlineChangedEvent
   | PeerLocalPurgeReqEvent
-  | PeerLocalPurgeResEvent;
+  | PeerLocalPurgeResEvent
+  | PeerLocalMediaReqEvent
+  | PeerLocalMediaResEvent;
 
 /**
  * Fires to initiate the creation of a Peer.
  */
 export type PeerLocalInitReqEvent = {
-  type: 'Peer:Network/init:req';
+  type: 'Peer:Local/init:req';
   payload: PeerLocalCreateReq;
 };
 export type PeerLocalCreateReq = {
@@ -29,7 +31,7 @@ export type PeerLocalCreateReq = {
  * Fires when a peer has connected.
  */
 export type PeerLocalInitResEvent = {
-  type: 'Peer:Network/init:res';
+  type: 'Peer:Local/init:res';
   payload: PeerLocalCreateRes;
 };
 export type PeerLocalCreateRes = {
@@ -42,22 +44,24 @@ export type PeerLocalCreateRes = {
  * Fired to retrieve the status of the specified peer.
  */
 export type PeerLocalStatusRequestEvent = {
-  type: 'Peer:Network/status:req';
+  type: 'Peer:Local/status:req';
   payload: PeerLocalStatusRequest;
 };
 export type PeerLocalStatusRequest = {
   self: t.PeerId;
+  tx?: string;
 };
 
 /**
  * Fired to retrieve the status of the specified peer.
  */
 export type PeerLocalStatusResponseEvent = {
-  type: 'Peer:Network/status:res';
+  type: 'Peer:Local/status:res';
   payload: PeerLocalStatusResponse;
 };
 export type PeerLocalStatusResponse = {
   self: t.PeerId;
+  tx: string;
   exists: boolean;
   network?: t.PeerNetworkStatus;
 };
@@ -75,7 +79,7 @@ export type PeerLocalStatusResponse = {
  *
  */
 export type PeerLocalStatusChangedEvent = {
-  type: 'Peer:Network/status:changed';
+  type: 'Peer:Local/status:changed';
   payload: PeerLocalStatusChanged;
 };
 export type PeerLocalStatusChanged = {
@@ -85,7 +89,7 @@ export type PeerLocalStatusChanged = {
 };
 
 export type PeerLocalOnlineChangedEvent = {
-  type: 'Peer:Network/online:changed';
+  type: 'Peer:Local/online:changed';
   payload: PeerLocalOnlineChanged;
 };
 export type PeerLocalOnlineChanged = {
@@ -97,24 +101,50 @@ export type PeerLocalOnlineChanged = {
  * Purges obsolete state.
  */
 export type PeerLocalPurgeReqEvent = {
-  type: 'Peer:Network/purge:req';
+  type: 'Peer:Local/purge:req';
   payload: PeerLocalPurgeReq;
 };
 export type PeerLocalPurgeReq = {
   self: t.PeerId;
+  tx?: string;
   select?: true | { closedConnections?: boolean }; // NB: [true] clears all purgeable data.
 };
 
 export type PeerLocalPurgeResEvent = {
-  type: 'Peer:Network/purge:res';
+  type: 'Peer:Local/purge:res';
   payload: PeerLocalPurgeRes;
 };
 export type PeerLocalPurgeRes = {
   self: t.PeerId;
+  tx: string;
   changed: boolean;
   purged: t.PeerLocalPurged;
   error?: t.PeerError;
 };
 export type PeerLocalPurged = {
   closedConnections: { data: number; media: number };
+};
+
+/**
+ * Request a media-stream from the local environment.
+ */
+export type PeerLocalMediaReqEvent = {
+  type: 'Peer:Local/media:req';
+  payload: PeerLocalMediaReq;
+};
+export type PeerLocalMediaReq = {
+  self: t.PeerId;
+  kind: 'video' | 'screen';
+  constraints?: t.PartialDeep<MediaStreamConstraints>;
+};
+
+/**
+ * Response to a media-stream request.
+ */
+export type PeerLocalMediaResEvent = {
+  type: 'Peer:Local/media:res';
+  payload: PeerLocalMediaRes;
+};
+export type PeerLocalMediaRes = {
+  self: t.PeerId;
 };

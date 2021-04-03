@@ -21,7 +21,7 @@ export function usePeerNetworkState(args: { self: t.PeerId; bus: t.EventBus<any>
       setNetwork(network);
     };
 
-    rx.payload<t.PeerLocalStatusChangedEvent>($, 'Peer:Network/status:changed')
+    rx.payload<t.PeerLocalStatusChangedEvent>($, 'Peer:Local/status:changed')
       .pipe(debounceTime(50))
       .subscribe(updateState);
 

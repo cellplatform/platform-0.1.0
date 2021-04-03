@@ -86,12 +86,12 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Events');
 
-    e.button('fire - Peer:Network/init', async (e) => {
+    e.button('fire ⚡️ Peer:Local/init', async (e) => {
       const { self, signal, events } = e.ctx;
       events.network.create(signal, self);
     });
 
-    e.button('fire - Peer:Network/purge', async (e) => {
+    e.button('fire ⚡️ Peer:Local/purge', async (e) => {
       const ref = e.ctx.self;
       const data = deleteUndefined(await e.ctx.events.network.purge(ref).fire());
       e.button.description = (
@@ -99,7 +99,7 @@ export const actions = DevActions<Ctx>()
       );
     });
 
-    e.button('fire - Peer:Network/status', async (e) => {
+    e.button('fire ⚡️ Peer:Local/status', async (e) => {
       const ref = e.ctx.self;
       const data = deleteUndefined(await e.ctx.events.network.status(ref).get());
       e.button.description = (
@@ -121,7 +121,7 @@ export const actions = DevActions<Ctx>()
 
     e.hr(0, 0, 20);
 
-    e.button('fire - Peer:Connection/connect (data)', async (e) => {
+    e.button('fire ⚡️ Peer:Connection/connect (data)', async (e) => {
       const { self, connectTo, events, isReliable } = e.ctx;
       if (!connectTo) {
         e.button.description = '🐷 ERROR: Remote peer not specified';
@@ -150,7 +150,7 @@ export const actions = DevActions<Ctx>()
         });
     });
 
-    e.button('fire - Peer:Connection/connect (media:video)', async (e) => {
+    e.button('fire ⚡️ Peer:Connection/connect (media:video)', async (e) => {
       const { self, connectTo, events } = e.ctx;
 
       if (!connectTo) {
@@ -173,9 +173,9 @@ export const actions = DevActions<Ctx>()
       }
     });
 
-    e.hr(1, 0.1);
+    e.hr(1, 0.2);
 
-    e.button('fire - Peer:Connection/disconnect', async (e) => {
+    e.button('fire ⚡️ Peer:Connection/disconnect', async (e) => {
       const { self, connectTo, events } = e.ctx;
       if (!connectTo) {
         e.button.description = '🐷 ERROR: Remote peer not specified';
