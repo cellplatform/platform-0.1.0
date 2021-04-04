@@ -16,7 +16,7 @@ import {
 import { DevMedia } from './DEV.Media';
 
 export type DevVideoProps = {
-  peer: t.PeerId;
+  peerId: t.PeerId;
   bus: t.EventBus<any>;
   width?: number;
   height?: number;
@@ -27,7 +27,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
   const { width = 150, height = 100 } = props;
   const wifi = useOfflineState();
 
-  const ref = DevMedia.videoRef(props.peer);
+  const ref = DevMedia.videoRef(props.peerId);
   const bus = props.bus.type<t.PeerEvent | MediaEvent>();
 
   const { stream } = useVideoStreamState({

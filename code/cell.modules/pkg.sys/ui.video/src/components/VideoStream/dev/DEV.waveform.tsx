@@ -39,9 +39,11 @@ export const Waveform: React.FC<WaveformProps> = (props) => {
     if (ref) {
       events.started(ref).$.subscribe((e) => setStream(e.stream));
       if (!stream) {
+        console.log('ref', ref);
         const wait = events.status(ref).get();
-        wait.then((e) => {
-          if (e.stream) setStream(e.stream.media);
+        wait.then((res) => {
+          console.log('e', res);
+          if (res.stream) setStream(res.stream.media);
         });
       }
     }

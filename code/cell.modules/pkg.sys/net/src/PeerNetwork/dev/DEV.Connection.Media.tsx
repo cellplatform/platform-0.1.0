@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, PropList, PropListItem } from './common';
+import { color, css, CssValue, t, PropList, PropListItem, useVideoStreamState } from './common';
 import { DevVideo } from './DEV.Media.Video';
+
+import { Waveform } from 'sys.ui.video/lib/components/VideoStream/dev/DEV.waveform';
+import { DevMedia } from './DEV.Media';
 
 export type ConnectionMediaProps = {
   bus: t.EventBus<any>;
@@ -11,6 +14,9 @@ export type ConnectionMediaProps = {
 export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
   const { connection } = props;
   const bus = props.bus.type<t.PeerEvent>();
+
+  const peerId = connection.id.remote;
+  const streamRef = DevMedia.videoRef(peerId);
 
   const styles = {
     base: css({
@@ -30,9 +36,11 @@ export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.video}>
-        <DevVideo bus={bus} peer={connection.id.remote} />
+        <DevVideo bus={bus} peerId={peerId} />
       </div>
       <PropList items={items} />
+
+      <Waveform bus={bus} streamRef={streamRef} width={240} height={30} />
     </div>
   );
 };

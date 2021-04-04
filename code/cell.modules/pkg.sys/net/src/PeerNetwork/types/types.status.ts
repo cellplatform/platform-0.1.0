@@ -3,7 +3,7 @@ import { t } from './common';
 /**
  * Network
  */
-export type PeerNetworkStatus = {
+export type PeerStatus = {
   id: t.PeerId;
   createdAt: number;
   signal: t.PeerSignallingEndpoint;

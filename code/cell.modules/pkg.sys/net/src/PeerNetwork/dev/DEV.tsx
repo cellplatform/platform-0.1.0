@@ -3,7 +3,7 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { PeerNetwork } from '..';
 import { css, cuid, deleteUndefined, Icons, MediaStreamEvents, rx, t, time } from './common';
-import { Layout } from './DEV.Layout';
+import { RootLayout } from './DEV.Root';
 import { DevMedia } from './DEV.Media';
 
 type Ctx = {
@@ -248,7 +248,7 @@ export const actions = DevActions<Ctx>()
       actions: { width: 380 },
     });
 
-    e.render(<Layout self={self} bus={bus} netbus={netbus} debugJson={e.ctx.debugJson} />);
+    e.render(<RootLayout self={self} bus={bus} netbus={netbus} debugJson={e.ctx.debugJson} />);
   });
 
 export default actions;

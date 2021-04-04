@@ -63,7 +63,7 @@ export type PeerLocalStatusResponse = {
   self: t.PeerId;
   tx: string;
   exists: boolean;
-  network?: t.PeerNetworkStatus;
+  network?: t.PeerStatus;
 };
 
 /**
@@ -84,7 +84,7 @@ export type PeerLocalStatusChangedEvent = {
 };
 export type PeerLocalStatusChanged = {
   self: t.PeerId;
-  network: t.PeerNetworkStatus;
+  network: t.PeerStatus;
   event: t.PeerEvent;
 };
 

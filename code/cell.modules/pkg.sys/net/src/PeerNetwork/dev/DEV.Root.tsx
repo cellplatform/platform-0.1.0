@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { ObjectView } from 'sys.ui.dev';
 
 import { usePeerNetworkState } from '../hooks';
 import { COLORS, css, CssValue, t } from './common';
 import { Network } from './DEV.Network';
 
-export type LayoutProps = {
+export type RootLayoutProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.EventBus<any>;
@@ -13,7 +13,7 @@ export type LayoutProps = {
   style?: CssValue;
 };
 
-export const Layout: React.FC<LayoutProps> = (props) => {
+export const RootLayout: React.FC<RootLayoutProps> = (props) => {
   const { netbus } = props;
   const bus = props.bus.type<t.PeerEvent>();
 
@@ -64,7 +64,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.left}>
-        {network && <Network bus={bus} netbus={netbus} network={network} />}
+        {network && <Network bus={bus} netbus={netbus} status={network} />}
       </div>
       {elJson}
     </div>

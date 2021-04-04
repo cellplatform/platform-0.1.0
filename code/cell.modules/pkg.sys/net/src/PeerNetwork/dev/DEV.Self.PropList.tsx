@@ -4,13 +4,13 @@ import { takeUntil } from 'rxjs/operators';
 
 import { COLORS, css, CssValue, PropList, PropListItem, t, time, Icons } from './common';
 
-export type NetworkPropListProps = {
-  network: t.PeerNetworkStatus;
+export type SelfPropListProps = {
+  status: t.PeerStatus;
   style?: CssValue;
 };
 
-export const NetworkPropList: React.FC<NetworkPropListProps> = (props) => {
-  const items = toItems(props.network);
+export const SelfPropList: React.FC<SelfPropListProps> = (props) => {
+  const items = toItems(props.status);
   const [redraw, setRedraw] = useState<number>(0);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export const NetworkPropList: React.FC<NetworkPropListProps> = (props) => {
  * [Helpers]
  */
 
-const toItems = (network?: t.PeerNetworkStatus): PropListItem[] => {
+const toItems = (network?: t.PeerStatus): PropListItem[] => {
   if (!network) return [];
 
   const elapsed = time.elapsed(network.createdAt || -1);

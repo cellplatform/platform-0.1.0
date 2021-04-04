@@ -10,7 +10,7 @@ import { Events } from '../Events';
  */
 export function usePeerNetworkState(args: { self: t.PeerId; bus: t.EventBus<any> }) {
   const bus = args.bus.type<t.PeerEvent>();
-  const [network, setNetwork] = useState<t.PeerNetworkStatus>();
+  const [network, setNetwork] = useState<t.PeerStatus>();
 
   useEffect(() => {
     const events = Events({ bus });

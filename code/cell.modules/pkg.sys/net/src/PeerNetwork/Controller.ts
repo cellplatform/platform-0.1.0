@@ -42,7 +42,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   /**
    * Convert a "local network client" to an immutable status object.
    */
-  const toStatus = (self: SelfRef): t.PeerNetworkStatus => {
+  const toStatus = (self: SelfRef): t.PeerStatus => {
     const { peer, createdAt, signal, media } = self;
     const id = peer.id;
     const connections = self.connections.map((item) => toConnectionStatus(item));
