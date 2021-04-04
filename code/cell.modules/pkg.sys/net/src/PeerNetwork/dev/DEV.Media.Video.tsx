@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
+  AudioWaveform,
   color,
   css,
   CssValue,
@@ -8,13 +9,12 @@ import {
   MediaEvent,
   MediaStreamController,
   MediaStreamEvents,
+  PropList,
+  PropListItem,
   t,
   useOfflineState,
   useVideoStreamState,
   VideoStream,
-  PropList,
-  PropListItem,
-  AudioWaveform,
 } from './common';
 import { DevMedia } from './DEV.Media';
 
@@ -34,6 +34,9 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
   const videoRef = DevMedia.videoRef(peerId);
   const bus = props.bus.type<t.PeerEvent | MediaEvent>();
 
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const toggleIsMuted = () => setIsMuted((prev) => !prev);
+
   const { stream } = useVideoStreamState({
     ref: videoRef,
     bus,
@@ -49,9 +52,14 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
     return () => events.dispose();
   }, [bus, videoRef]);
 
-  const margin = {
-    waveform: 18,
-  };
+  // HACK: Ensure audio tracks are in sync with mic-muted state.
+  //       NB: This should be done at a global state level (via events).
+  if (stream) {
+    const audio = stream.getAudioTracks();
+    audio.forEach((track) => (track.enabled = !isMuted));
+  }
+
+  const MARGIN = { waveform: 18 };
 
   const styles = {
     base: css({
@@ -79,7 +87,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
       }),
     },
     waveform: {
-      base: css({ MarginX: margin.waveform }),
+      base: css({ MarginX: MARGIN.waveform }),
     },
   };
 
@@ -89,7 +97,9 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
     </div>
   );
 
-  const items: PropListItem[] = [{ label: 'microphone', value: { data: true, kind: 'Switch' } }];
+  const items: PropListItem[] = [
+    { label: 'microphone', value: { data: !isMuted, kind: 'Switch', onClick: toggleIsMuted } },
+  ];
 
   return (
     <div {...css(styles.base, props.style)}>
@@ -98,7 +108,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
           stream={stream}
           width={width}
           height={height}
-          isMuted={true}
+          isMuted={false}
           style={styles.video}
         />
         {elVideoOverlay}
@@ -107,7 +117,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
         <AudioWaveform
           bus={bus}
           streamRef={videoRef}
-          width={width - margin.waveform * 2}
+          width={width - MARGIN.waveform * 2}
           height={15}
         />
       </div>
