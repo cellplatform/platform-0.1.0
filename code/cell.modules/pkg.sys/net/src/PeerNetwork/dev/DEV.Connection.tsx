@@ -32,8 +32,6 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
     close: css({ Absolute: [5, 5, null, null] }),
   };
 
-  const hr = <Hr thickness={5} opacity={0.1} margin={[10, 0]} />;
-
   const handleClose = () => {
     bus.fire({
       type: 'Peer:Connection/disconnect:req',
@@ -57,8 +55,6 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
         shadow={false}
       >
         <PropList title={'PeerConnection'} items={items} defaults={{ clipboard: false }} />
-
-        {hr}
 
         {connection.kind === 'data' && <ConnectionData netbus={netbus} connection={connection} />}
         {connection.kind === 'media' && <ConnectionMedia bus={bus} connection={connection} />}

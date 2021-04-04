@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { css, CssValue, t } from './common';
-import { useAudioAnalyser } from './DEV.waveform.useAudioAnalyser';
-import { useDrawWaveform } from './DEV.waveform.useDrawWaveform';
+import { useAudioAnalyser } from './DEV.AudioWaveform.useAudioAnalyser';
+import { useDrawWaveform } from './DEV.AudioWaveform.useDrawWaveform';
 import { MediaStreamEvents } from '../MediaStream.Events';
 
-export type WaveformProps = {
+export type AudioWaveformProps = {
   streamRef?: string; // Stream ID reference.
   bus: t.EventBus<any>;
   width?: number;
@@ -19,7 +19,7 @@ export type WaveformProps = {
  *    https://www.twilio.com/blog/audio-visualisation-web-audio-api--react
  *
  */
-export const Waveform: React.FC<WaveformProps> = (props) => {
+export const AudioWaveform: React.FC<AudioWaveformProps> = (props) => {
   const { width = 300, height = 30 } = props;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);

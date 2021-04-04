@@ -12,6 +12,9 @@ import {
   useOfflineState,
   useVideoStreamState,
   VideoStream,
+  PropList,
+  PropListItem,
+  AudioWaveform,
 } from './common';
 import { DevMedia } from './DEV.Media';
 
@@ -27,60 +30,88 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
   const { width = 150, height = 100 } = props;
   const wifi = useOfflineState();
 
-  const ref = DevMedia.videoRef(props.peerId);
+  const peerId = props.peerId;
+  const videoRef = DevMedia.videoRef(peerId);
   const bus = props.bus.type<t.PeerEvent | MediaEvent>();
 
   const { stream } = useVideoStreamState({
-    ref,
+    ref: videoRef,
     bus,
     onChange: (stream) => {
-      // bus.fire({ type: 'Peer:Local/self', payload: { ref, video: stream } });
+      //
     },
   });
 
   useEffect(() => {
     MediaStreamController({ bus });
     const events = MediaStreamEvents({ bus });
-    events.start(ref).video();
+    events.start(videoRef).video();
     return () => events.dispose();
-  }, [bus, ref]);
+  }, [bus, videoRef]);
+
+  const margin = {
+    waveform: 18,
+  };
 
   const styles = {
     base: css({
+      boxSizing: 'border-box',
       position: 'relative',
-      backgroundColor: color.format(-0.02),
-      border: `solid 1px ${color.format(-0.03)}`,
-      borderRadius: 20,
-      width,
-      height,
     }),
-    video: css({
-      Absolute: [0, null, null, 0],
-      opacity: wifi.offline ? 0.12 : 1,
-    }),
-    overlay: css({
-      Absolute: 0,
-      pointerEvents: 'none',
-      Flex: 'horizontal-center-center',
-    }),
+    video: {
+      base: css({
+        backgroundColor: color.format(-0.02),
+        border: `solid 1px ${color.format(-0.03)}`,
+        borderRadius: 20,
+        position: 'relative',
+        width,
+        height,
+        marginBottom: 4,
+      }),
+      stream: css({
+        Absolute: [0, null, null, 0],
+        opacity: wifi.offline ? 0.12 : 1,
+      }),
+      overlay: css({
+        Absolute: 0,
+        pointerEvents: 'none',
+        Flex: 'horizontal-center-center',
+      }),
+    },
+    waveform: {
+      base: css({ MarginX: margin.waveform }),
+    },
   };
 
-  const elOverlay = wifi.offline && (
-    <div {...styles.overlay}>
+  const elVideoOverlay = wifi.offline && (
+    <div {...styles.video.overlay}>
       <Icons.Wifi.Off />
     </div>
   );
 
+  const items: PropListItem[] = [{ label: 'microphone', value: { data: true, kind: 'Switch' } }];
+
   return (
     <div {...css(styles.base, props.style)}>
-      <VideoStream
-        stream={stream}
-        width={width}
-        height={height}
-        isMuted={true}
-        style={styles.video}
-      />
-      {elOverlay}
+      <div {...styles.video.base}>
+        <VideoStream
+          stream={stream}
+          width={width}
+          height={height}
+          isMuted={true}
+          style={styles.video}
+        />
+        {elVideoOverlay}
+      </div>
+      <div {...styles.waveform.base}>
+        <AudioWaveform
+          bus={bus}
+          streamRef={videoRef}
+          width={width - margin.waveform * 2}
+          height={15}
+        />
+      </div>
+      <PropList items={items} />
     </div>
   );
 };

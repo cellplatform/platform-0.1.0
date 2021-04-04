@@ -10,7 +10,7 @@ import {
 } from '..';
 import { css, cuid, deleteUndefined, HttpClient, log, rx, t } from './common';
 import { Sample } from './DEV.Sample';
-import { Waveform } from './DEV.waveform';
+import { AudioWaveform } from './DEV.AudioWaveform';
 
 type Events = ReturnType<typeof MediaStreamEvents>;
 type Ctx = {
@@ -196,7 +196,7 @@ export const actions = DevActions<Ctx>()
       label: { topLeft: '<VideoStream>', bottomRight: elStreamRef },
     });
 
-    e.render(<Waveform bus={bus} streamRef={ref} width={width} height={30} />, {
+    e.render(<AudioWaveform bus={bus} streamRef={ref} width={width} height={30} />, {
       width,
       background: 1,
       label: 'Audio Waveform',

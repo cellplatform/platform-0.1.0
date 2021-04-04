@@ -25,6 +25,8 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
   };
   return (
     <div {...css(styles.base, props.style)}>
+      <Hr thickness={5} opacity={0.1} margin={[10, 0]} />
+
       <div {...styles.buttons}>
         <Button
           label={'Broadcast Event'}
