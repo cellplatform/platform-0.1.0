@@ -34,8 +34,11 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
   const videoRef = DevMedia.videoRef(peerId);
   const bus = props.bus.type<t.PeerEvent | MediaEvent>();
 
-  const [isMuted, setIsMuted] = useState<boolean>(false);
-  const toggleIsMuted = () => setIsMuted((prev) => !prev);
+  const [isVideoMuted, setVideoMuted] = useState<boolean>(true);
+  const [isAudioTrackMuted, setAudioTrackMuted] = useState<boolean>(false);
+
+  const toggleVideoMuted = () => setVideoMuted((prev) => !prev);
+  const toggleAudioTrackMuted = () => setAudioTrackMuted((prev) => !prev);
 
   const { stream } = useVideoStreamState({
     ref: videoRef,
@@ -56,10 +59,10 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
   //       NB: This should be done at a global state level (via events).
   if (stream) {
     const audio = stream.getAudioTracks();
-    audio.forEach((track) => (track.enabled = !isMuted));
+    audio.forEach((track) => (track.enabled = !isAudioTrackMuted));
   }
 
-  const MARGIN = { waveform: 18 };
+  const MARGIN = { waveform: 40 };
 
   const styles = {
     base: css({
@@ -98,7 +101,14 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
   );
 
   const items: PropListItem[] = [
-    { label: 'microphone', value: { data: !isMuted, kind: 'Switch', onClick: toggleIsMuted } },
+    {
+      label: '<video> muted',
+      value: { data: isVideoMuted, kind: 'Switch', onClick: toggleVideoMuted },
+    },
+    {
+      label: 'audio track muted',
+      value: { data: isAudioTrackMuted, kind: 'Switch', onClick: toggleAudioTrackMuted },
+    },
   ];
 
   return (
@@ -108,7 +118,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
           stream={stream}
           width={width}
           height={height}
-          isMuted={false}
+          isMuted={isVideoMuted}
           style={styles.video}
         />
         {elVideoOverlay}
