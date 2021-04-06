@@ -1,4 +1,5 @@
-export * from '../../common';
+export * from '../common';
+
 export { Icons } from '../../components/Icons';
 export { Button, ButtonProps } from '@platform/ui.button';
 export { copyToClipboard } from '@platform/react';

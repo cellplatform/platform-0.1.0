@@ -12,7 +12,7 @@ type Ctx = {
   netbus: t.EventBus;
   signal: string; // Signalling server network address (host/path).
   events: {
-    net: ReturnType<typeof PeerNetwork.Events>;
+    net: t.PeerNetworkEvents;
     media: ReturnType<typeof MediaStreamEvents>;
   };
   strategy: t.PeerStrategy;

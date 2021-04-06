@@ -105,6 +105,15 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     });
 
     conn.on('close', () => {
+      /**
+       * TODO 🐷 BUG
+       * The close event is not being fired for [Media] connections.
+       * Issue: https://github.com/peers/peerjs/issues/780
+       *
+       * Work around: use the data stream to issue
+       * side request to close the connection.
+       */
+
       const connection = toConnectionStatus(connectionRef);
       bus.fire({
         type: 'Peer:Connection/closed',

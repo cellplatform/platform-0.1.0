@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { debounceTime } from 'rxjs/operators';
 
-import { rx, t } from '../../common';
+import { rx, t } from '../common';
 import { Events } from '../Events';
 
 /**

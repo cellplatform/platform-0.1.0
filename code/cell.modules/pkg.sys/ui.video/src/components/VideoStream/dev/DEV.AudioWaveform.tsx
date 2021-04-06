@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+import { MediaStreamEvents } from '../MediaStream.Events';
 import { css, CssValue, t } from './common';
 import { useAudioAnalyser } from './DEV.AudioWaveform.useAudioAnalyser';
 import { useDrawWaveform } from './DEV.AudioWaveform.useDrawWaveform';
-import { MediaStreamEvents } from '../MediaStream.Events';
 
 export type AudioWaveformProps = {
   streamRef?: string; // Stream ID reference.
@@ -31,7 +31,7 @@ export const AudioWaveform: React.FC<AudioWaveformProps> = (props) => {
   useDrawWaveform({ canvasRef, audioData });
 
   /**
-   * Get hold of the Stream.
+   * Get hold of the Media Stream.
    */
   useEffect(() => {
     const events = MediaStreamEvents({ bus });
@@ -39,10 +39,8 @@ export const AudioWaveform: React.FC<AudioWaveformProps> = (props) => {
     if (ref) {
       events.started(ref).$.subscribe((e) => setStream(e.stream));
       if (!stream) {
-        console.log('ref', ref);
         const wait = events.status(ref).get();
         wait.then((res) => {
-          console.log('e', res);
           if (res.stream) setStream(res.stream.media);
         });
       }

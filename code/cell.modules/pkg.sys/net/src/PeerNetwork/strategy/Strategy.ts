@@ -1,6 +1,6 @@
-import { t } from '../../common';
+import { t } from '../common';
 import { Events } from '../Events';
-import { ConnectionStrategy } from './Strategy.Connection';
+import { ConnectionStrategy } from './ConnectionStrategy';
 
 /**
  * Single combined set of network strategies.

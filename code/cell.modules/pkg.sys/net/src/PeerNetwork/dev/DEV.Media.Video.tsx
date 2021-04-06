@@ -102,12 +102,12 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
 
   const items: PropListItem[] = [
     {
-      label: '<video> muted',
-      value: { data: isVideoMuted, kind: 'Switch', onClick: toggleVideoMuted },
-    },
-    {
       label: 'audio track muted',
       value: { data: isAudioTrackMuted, kind: 'Switch', onClick: toggleAudioTrackMuted },
+    },
+    {
+      label: '<video> muted',
+      value: { data: isVideoMuted, kind: 'Switch', onClick: toggleVideoMuted },
     },
   ];
 
@@ -119,7 +119,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
           width={width}
           height={height}
           isMuted={isVideoMuted}
-          style={styles.video}
+          style={styles.video.stream}
         />
         {elVideoOverlay}
       </div>

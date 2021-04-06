@@ -18,6 +18,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
   const bus = args.bus.type<t.PeerEvent>();
+
   const event$ = bus.event$.pipe(
     takeUntil(dispose$),
     filter(isPeerEvent),

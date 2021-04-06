@@ -1,8 +1,9 @@
 import { filter } from 'rxjs/operators';
 
-import { t, rx, R } from '../../common';
+import { t, rx, R } from '../common';
 import { Events } from '../Events';
 import { Filter } from '../util';
+import { autoPerge } from './ConnectionStrategy.autoPerge';
 
 /**
  * Handles strategies for connecting and disconnecting peers.
@@ -28,9 +29,7 @@ export function ConnectionStrategy(args: {
   /**
    * Auto purge connections when closed.
    */
-  connections.closed$
-    .pipe(filter(() => strategy.autoPurgeOnClose))
-    .subscribe(() => events.purge(self).fire());
+  autoPerge({ self, events, isEnabled: () => strategy.autoPurgeOnClose });
 
   /**
    * Auto propogate connections to peers.
