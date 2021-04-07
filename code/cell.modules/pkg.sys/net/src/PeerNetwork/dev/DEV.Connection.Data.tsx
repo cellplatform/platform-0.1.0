@@ -35,7 +35,7 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
 
   const items: PropListItem[] = [
     { label: 'id', value: { data: connection.id, clipboard: true } },
-    { label: 'remote peer', value: { data: peer.remote, clipboard: true } },
+    { label: 'peer (remote)', value: { data: peer.remote, clipboard: true } },
     { label: 'open', value: connection.isOpen },
     { label: 'reliable', value: connection.isReliable },
     {
@@ -54,9 +54,8 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
     },
   ];
 
-  useEffect(() => {
-    broadcastEvent(); // Fire initial sample netbus event.
-  }, []); // eslint-disable-line
+  // Fire initial sample event through the network-bus.
+  useEffect(() => broadcastEvent(), []); // eslint-disable-line
 
   const broadcastEvent = () => {
     const msg = eventMessage.trim() ? eventMessage : `<empty>`;
@@ -88,12 +87,12 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
       style={styles.textbox}
       enter={{
         handler: broadcastEvent,
-        icon: (
-          <Icons.Send
-            size={16}
-            color={eventMessage.trim() ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.3)}
-          />
-        ),
+        icon: (e) => {
+          const msg = eventMessage.trim();
+          const col = msg || e.isFocused ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.3);
+          const el = <Icons.Send size={16} color={col} />;
+          return el;
+        },
       }}
     />
   );

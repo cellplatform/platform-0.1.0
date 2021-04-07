@@ -22,14 +22,23 @@ export const TextInput: React.FC<TextInputProps> = (props) => {
 export type TextboxProps = {
   value?: string;
   placeholder?: string;
-  enter?: { icon?: JSX.Element; handler?: () => void };
+  enter?: {
+    icon?: JSX.Element | ((args: { isFocused: boolean }) => JSX.Element);
+    handler?: () => void;
+  };
   style?: CssValue;
   onChange?: TextInputProps['onChange'];
 };
 export const Textbox: React.FC<TextboxProps> = (props) => {
+  const { enter } = props;
+  const [isFocused, setFocused] = useState<boolean>(false);
+
   const styles = {
     base: css({ Flex: 'horiziontal-stretch-stretch' }),
-    input: css({ flex: 1, borderBottom: `dashed 1px ${color.format(-0.1)}` }),
+    input: css({
+      flex: 1,
+      borderBottom: `dashed 1px ${color.format(-0.15)}`,
+    }),
   };
 
   const handleEnter = () => {
@@ -37,9 +46,13 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
     if (handler) handler();
   };
 
-  const elEnterIcon = props.enter?.icon && (
-    <Button onClick={handleEnter}>{props.enter.icon}</Button>
-  );
+  const renderIcon = () => {
+    if (!enter?.icon) return undefined;
+    if (typeof enter.icon === 'function') return enter.icon({ isFocused });
+    return enter.icon;
+  };
+
+  const elEnterIcon = enter?.icon && <Button onClick={handleEnter}>{renderIcon()}</Button>;
 
   return (
     <div {...css(styles.base, props.style)}>
@@ -49,6 +62,8 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
         style={styles.input}
         onEnter={handleEnter}
         onChange={props.onChange}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
       />
       {elEnterIcon}
     </div>
