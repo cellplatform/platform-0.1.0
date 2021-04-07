@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { useVideoStreamState, useOfflineState, VideoStream, VideoStreamProps } from '..';
+import { MediaStream, VideoStream, VideoStreamProps } from '..';
 import { color, css, t } from './common';
 import { Icons } from '../../Icons';
 
 export type SampleProps = VideoStreamProps & { streamRef: string; bus: t.EventBus<any> };
 export const Sample: React.FC<SampleProps> = (props) => {
   const { streamRef, bus } = props;
-  const { stream } = useVideoStreamState({ ref: streamRef, bus });
-  const wifi = useOfflineState();
+  const { stream } = MediaStream.useVideoStreamState({ ref: streamRef, bus });
+  const wifi = MediaStream.useOfflineState();
   const borderRadius = 30;
   const styles = {
     base: css({

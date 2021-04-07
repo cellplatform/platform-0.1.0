@@ -2,17 +2,12 @@ import React from 'react';
 import { filter } from 'rxjs/operators';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import {
-  MediaStreamController,
-  MediaStreamEvents,
-  MediaStreamRecordController,
-  VideoStreamProps,
-} from '..';
+import { MediaStream, VideoStreamProps } from '..';
 import { css, cuid, deleteUndefined, HttpClient, log, rx, t } from './common';
 import { Sample } from './DEV.Sample';
 import { DevAudioWaveform } from './DEV.AudioWaveform';
 
-type Events = ReturnType<typeof MediaStreamEvents>;
+type Events = ReturnType<typeof MediaStream.Events>;
 type Ctx = {
   ref: string;
   bus: t.EventBus<t.MediaEvent>;
@@ -39,10 +34,10 @@ export const actions = DevActions<Ctx>()
 
     const ref = cuid();
     const bus = rx.bus<t.MediaEvent>();
-    const events = MediaStreamEvents({ bus });
+    const events = MediaStream.Events({ bus });
 
-    MediaStreamController({ bus });
-    MediaStreamRecordController({ ref, bus });
+    MediaStream.Controller({ bus });
+    MediaStream.RecordController({ ref, bus });
 
     rx.payload<t.MediaStreamErrorEvent>(bus.event$, 'MediaStream/error')
       .pipe(filter((e) => e.ref === ref))

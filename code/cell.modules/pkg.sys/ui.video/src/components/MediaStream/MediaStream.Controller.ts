@@ -8,7 +8,7 @@ type Refs = { [ref: string]: Ref };
 type Ref = { kind: t.MediaStreamKind; ref: string; media: MediaStream; constraints: M };
 
 /**
- * Manages an event bus dealing with video stream.
+ * Manages an event bus dealing with a MediaStream.
  */
 export function MediaStreamController(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
