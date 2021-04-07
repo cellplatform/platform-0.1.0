@@ -136,7 +136,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
 
     const disconnected$ = rx
       .payload<t.PeerDisconnectResEvent>(event$, 'Peer:Connection/disconnect:res')
-      .pipe(filter((e) => e.self === self && e.remote === remote));
+      .pipe(filter((e) => e.self === self));
 
     const open = {
       data(options: { isReliable?: boolean } = {}) {
@@ -167,10 +167,13 @@ export function Events(args: { bus: t.EventBus<any> }) {
       },
     };
 
-    const close = () => {
+    const close = (id: t.PeerConnectionId) => {
       const tx = slug();
       const res = firstValueFrom(disconnected$.pipe(filter((e) => e.tx === tx)));
-      bus.fire({ type: 'Peer:Connection/disconnect:req', payload: { self, tx, remote } });
+      bus.fire({
+        type: 'Peer:Connection/disconnect:req',
+        payload: { self, tx, remote, connection: id },
+      });
       return res;
     };
 
@@ -178,16 +181,22 @@ export function Events(args: { bus: t.EventBus<any> }) {
   };
 
   const connections = (self: t.PeerId) => {
-    const opened$ = rx.payload<t.PeerConnectResEvent>(event$, 'Peer:Connection/connect:res').pipe(
-      filter((e) => e.self === self),
-      filter((e) => !e.existing),
-    );
+    const connectResponse$ = rx
+      .payload<t.PeerConnectResEvent>(event$, 'Peer:Connection/connect:res')
+      .pipe(
+        filter((e) => e.self === self),
+        filter((e) => !e.existing),
+      );
+
+    const disconnectResponse$ = rx
+      .payload<t.PeerDisconnectResEvent>(event$, 'Peer:Connection/disconnect:res')
+      .pipe(filter((e) => e.self === self));
 
     const closed$ = rx
       .payload<t.PeerConnectionClosedEvent>(event$, 'Peer:Connection/closed')
       .pipe(filter((e) => e.self === self));
 
-    return { self, opened$, closed$ };
+    return { self, connectResponse$, disconnectResponse$, closed$ };
   };
 
   const data = (self: t.PeerId) => {

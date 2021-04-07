@@ -63,8 +63,9 @@ export type PeerDisconnectReqEvent = {
 };
 export type PeerNetworkDisconnectReq = {
   self: t.PeerId;
-  tx?: string;
   remote: t.PeerId;
+  connection: t.PeerConnectionId;
+  tx?: string;
 };
 
 /**
@@ -80,8 +81,7 @@ export type PeerDisconnectResEvent = {
 export type PeerNetworkDisconnectRes = {
   self: t.PeerId;
   tx: string;
-  remote: t.PeerId;
-  connection?: t.PeerConnectionStatus;
+  connection?: t.PeerConnectionId;
   error?: t.PeerError;
 };
 
@@ -94,5 +94,5 @@ export type PeerConnectionClosedEvent = {
 };
 export type PeerNetworkConnectionClosed = {
   self: t.PeerId;
-  // connection: t.PeerConnectionStatus;
+  connection: t.PeerConnectionStatus;
 };

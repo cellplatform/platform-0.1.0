@@ -115,10 +115,10 @@ export function Controller(args: { bus: t.EventBus<any> }) {
        * side request to close the connection.
        */
 
-      // const connection = toConnectionStatus(connectionRef);
+      const connection = toConnectionStatus(connectionRef);
       bus.fire({
         type: 'Peer:Connection/closed',
-        payload: { self: self.id },
+        payload: { self: self.id, connection },
       });
     });
 
@@ -380,14 +380,14 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   rx.payload<t.PeerDisconnectReqEvent>($, 'Peer:Connection/disconnect:req')
     .pipe()
     .subscribe((e) => {
-      const { remote } = e;
       const selfRef = refs.self[e.self];
       const tx = e.tx || slug();
 
       const fire = (payload?: Partial<t.PeerNetworkDisconnectRes>) => {
+        const connection = e.connection;
         bus.fire({
           type: 'Peer:Connection/disconnect:res',
-          payload: { self: e.self, tx, remote, ...payload },
+          payload: { self: e.self, tx, connection, ...payload },
         });
       };
       const fireError = (message: string) => fire({ error: { message } });
@@ -397,14 +397,14 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         return fireError(message);
       }
 
-      const connRef = selfRef.connections.find((item) => item.peer.remote === e.remote);
+      const connRef = selfRef.connections.find((item) => item.id === e.connection);
       if (!connRef) {
-        const message = `The remote connection '${remote}' does not exist`;
+        const message = `The remote connection '${e.connection}' does not exist`;
         return fireError(message);
       }
 
       connRef.conn.close();
-      fire();
+      fire({});
     });
 
   /**

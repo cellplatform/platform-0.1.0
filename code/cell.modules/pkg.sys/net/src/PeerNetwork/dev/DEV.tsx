@@ -60,7 +60,7 @@ export const actions = DevActions<Ctx>()
       signal,
       isReliable: false,
       debugJson: false,
-      connectTo: 'ckn6t8myi00023e5r14v4za6h', // TEMP 🐷
+      connectTo: '', // TEMP 🐷
     };
   })
 
@@ -175,25 +175,11 @@ export const actions = DevActions<Ctx>()
       }
     });
 
-    e.hr(1, 0.2);
-
-    e.button('fire ⚡️ Peer:Connection/disconnect', async (e) => {
-      const { self, connectTo, events } = e.ctx;
-      if (!connectTo) {
-        e.button.description = '🐷 ERROR: Remote peer not specified';
-      } else {
-        const res = await events.net.connection(self, connectTo).close();
-        const name = res.error ? 'Fail' : 'Success';
-        const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
-        e.button.description = el;
-      }
-    });
-
     e.hr();
   })
 
   .items((e) => {
-    e.title('Strategies (Behavior)');
+    e.title('Mesh Behavior Strategies');
 
     e.boolean((config) =>
       config
@@ -212,6 +198,16 @@ export const actions = DevActions<Ctx>()
         .pipe((e) => {
           if (e.changing) e.ctx.strategy.connection.autoMeshPropagation = e.changing.next;
           e.boolean.current = e.ctx.strategy.connection.autoMeshPropagation;
+        }),
+    );
+
+    e.boolean((config) =>
+      config
+        .label('connection.autoMeshPropagation [TODO]')
+        .description('Ensure closed connections are property closed on all peers')
+        .pipe((e) => {
+          if (e.changing) e.ctx.strategy.connection.ensureConnectionClosed = e.changing.next;
+          e.boolean.current = e.ctx.strategy.connection.ensureConnectionClosed;
         }),
     );
   })

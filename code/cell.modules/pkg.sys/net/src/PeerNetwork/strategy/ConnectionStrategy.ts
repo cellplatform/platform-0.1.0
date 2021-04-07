@@ -3,7 +3,7 @@ import { filter } from 'rxjs/operators';
 import { t, rx, R } from '../common';
 import { Events } from '../Events';
 import { Filter } from '../util';
-import { autoPerge } from './ConnectionStrategy.autoPerge';
+import { autoPerge, ensureClosed } from './ConnectionStrategy.close';
 
 /**
  * Handles strategies for connecting and disconnecting peers.
@@ -16,7 +16,7 @@ export function ConnectionStrategy(args: {
   const bus = args.bus.type<t.PeerEvent>();
   const events = Events({ bus });
   const connections = events.connections(self);
-  const netbus = events.data(self).bus<t.StrategyEvent>();
+  const netbus = events.data(self).bus<t.MeshEvent>();
 
   const getConnections = async () => {
     const { peer } = await events.status(self).get();
@@ -27,14 +27,15 @@ export function ConnectionStrategy(args: {
     Filter.connectionsAs<t.PeerConnectionDataStatus>(await getConnections(), 'data');
 
   /**
-   * Auto purge connections when closed.
+   * Initialize sub-strategies.
    */
   autoPerge({ self, events, isEnabled: () => strategy.autoPurgeOnClose });
+  ensureClosed({ self, events, isEnabled: () => strategy.ensureConnectionClosed });
 
   /**
    * Auto propogate connections to peers.
    */
-  connections.opened$
+  connections.connectResponse$
     .pipe(
       filter(() => strategy.autoMeshPropagation),
       filter((e) => e.kind === 'data'),
@@ -45,8 +46,8 @@ export function ConnectionStrategy(args: {
       const peers = R.uniq(connections.map((conn) => conn.peer.remote));
       if (peers.length > 0) {
         netbus.fire({
-          type: 'NetworkStrategy/ensureConnected:data',
-          payload: { peers, isReliable, metadata },
+          type: 'Mesh/ensureConnected:data',
+          payload: { from: self, peers, isReliable, metadata },
         });
       }
     });
@@ -55,19 +56,18 @@ export function ConnectionStrategy(args: {
    * Listen for incoming "ensure connections" events from other
    * peers broadcasting the set of ID's to connect to.
    */
-  rx.payload<t.StrategyEnsureConnectedDataEvent>(
-    netbus.event$,
-    'NetworkStrategy/ensureConnected:data',
-  )
+  rx.payload<t.MeshEnsureConnectedDataEvent>(netbus.event$, 'Mesh/ensureConnected:data')
     .pipe()
     .subscribe(async (e) => {
       const { isReliable } = e;
       const connections = await getDataConnections();
-      const peers = e.peers
-        .filter((id) => id !== self)
-        .filter((id) => !connections.some((item) => item.peer.remote === id));
+      const peers = R.uniq(
+        e.peers
+          .filter((id) => id !== self)
+          .filter((id) => !connections.some((item) => item.peer.remote === id)),
+      );
 
-      R.uniq(peers).forEach((remote) => {
+      peers.forEach((remote) => {
         events.connection(self, remote).open.data({ isReliable });
       });
     });
@@ -81,6 +81,7 @@ export function ConnectionStrategy(args: {
 
     autoPurgeOnClose: true,
     autoMeshPropagation: true,
+    ensureConnectionClosed: true,
   };
 
   return strategy;
