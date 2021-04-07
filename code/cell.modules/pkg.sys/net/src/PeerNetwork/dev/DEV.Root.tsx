@@ -29,7 +29,6 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
     }),
     left: css({
       flex: 1,
-      padding: 20,
       Flex: 'vertical-stretch-stretch',
     }),
     middle: css({

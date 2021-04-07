@@ -17,10 +17,32 @@ export const Network: React.FC<NetworkProps> = (props) => {
   const { status, netbus } = props;
   const bus = props.bus.type<t.PeerEvent>();
 
+  const PADDING = {
+    HEADER: 15,
+    CARD: 25,
+  };
+
   const styles = {
-    base: css({}),
-    header: css({ Flex: 'horizontal-spaceBetween-start' }),
-    body: css({ display: 'flex', flexWrap: 'wrap' }),
+    base: css({
+      flex: 1,
+      Flex: 'vertical-stretch-stretch',
+      boxSizing: 'border-box',
+    }),
+    header: css({
+      Flex: 'horizontal-spaceBetween-start',
+      padding: PADDING.HEADER,
+    }),
+    body: {
+      base: css({ flex: 1, position: 'relative' }),
+      scroll: css({
+        Absolute: 0,
+        Scroll: true,
+        display: 'flex',
+        flexWrap: 'wrap',
+        paddingBottom: 80,
+        paddingRight: PADDING.CARD,
+      }),
+    },
   };
 
   const connections = status.connections;
@@ -33,7 +55,7 @@ export const Network: React.FC<NetworkProps> = (props) => {
         netbus={netbus}
         connection={item}
         isLast={isLast}
-        margin={20}
+        margin={[PADDING.CARD, 0, 0, PADDING.CARD]}
       />
     );
   });
@@ -44,8 +66,10 @@ export const Network: React.FC<NetworkProps> = (props) => {
         <SelfPropList status={status} />
         <DevVideoSelf peerId={status.id} bus={bus} />
       </div>
-      <Hr thickness={10} opacity={0.06} margin={[30, 0, 20, 0]} />
-      <div {...styles.body}>{elConnections}</div>
+      <Hr thickness={10} opacity={0.05} margin={0} />
+      <div {...styles.body.base}>
+        <div {...styles.body.scroll}>{elConnections}</div>
+      </div>
     </div>
   );
 };

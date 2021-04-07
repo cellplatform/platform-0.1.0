@@ -15,7 +15,6 @@ export type ConnectionProps = {
 
 export const Connection: React.FC<ConnectionProps> = (props) => {
   const { connection, netbus } = props;
-  const kind = connection.kind;
   const peer = connection.peer;
   const bus = props.bus.type<t.PeerEvent>();
 
@@ -27,7 +26,7 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
   const handleClose = () => {
     bus.fire({
       type: 'Peer:Connection/disconnect:req',
-      payload: { self: peer.self, connection: connection.id, remote: connection.peer.remote },
+      payload: { self: peer.self, connection: connection.id, remote: peer.remote },
     });
   };
 
@@ -51,7 +50,7 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
         key={peer.remote}
         padding={[18, 20, 20, 20]}
         margin={props.margin}
-        width={300}
+        width={280}
         shadow={false}
       >
         {elData}
