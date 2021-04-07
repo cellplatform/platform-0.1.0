@@ -8,8 +8,8 @@ import {
   Icons,
   PropList,
   PropListItem,
-  useOfflineState,
   VideoStream,
+  MediaStream,
 } from './common';
 
 export type DevVideoProps = {
@@ -21,7 +21,7 @@ export type DevVideoProps = {
 
 export const DevVideo: React.FC<DevVideoProps> = (props) => {
   const { width = 150, height = 100, stream } = props;
-  const wifi = useOfflineState();
+  const wifi = MediaStream.useOfflineState();
 
   const [isVideoMuted, setVideoMuted] = useState<boolean>(true);
   const [isAudioTrackMuted, setAudioTrackMuted] = useState<boolean>(false);

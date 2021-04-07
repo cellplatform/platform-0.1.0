@@ -1,13 +1,6 @@
 import React, { useEffect } from 'react';
 
-import {
-  CssValue,
-  MediaEvent,
-  MediaStreamController,
-  MediaStreamEvents,
-  t,
-  useVideoStreamState,
-} from './common';
+import { CssValue, MediaEvent, MediaStream, t } from './common';
 import { EventBridge } from './DEV.EventBridge';
 import { DevVideo } from './DEV.Video';
 
@@ -24,11 +17,10 @@ export const DevVideoSelf: React.FC<DevVideoSelfProps> = (props) => {
   const videoRef = EventBridge.videoRef(props.peer);
   const bus = props.bus.type<t.PeerEvent | MediaEvent>();
 
-  const { stream } = useVideoStreamState({ bus, ref: videoRef });
+  const { stream } = MediaStream.useVideoStreamState({ bus, ref: videoRef });
 
   useEffect(() => {
-    MediaStreamController({ bus });
-    const events = MediaStreamEvents({ bus });
+    const events = MediaStream.Events({ bus });
     events.start(videoRef).video();
     return () => events.dispose();
   }, [bus, videoRef]);

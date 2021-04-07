@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { PeerNetwork } from '..';
-import { css, cuid, deleteUndefined, Icons, MediaStreamEvents, rx, t, time } from './common';
+import { css, cuid, deleteUndefined, Icons, MediaStream, rx, t, time } from './common';
 import { RootLayout } from './DEV.Root';
 import { EventBridge } from './DEV.EventBridge';
 
@@ -13,7 +13,7 @@ type Ctx = {
   signal: string; // Signalling server network address (host/path).
   events: {
     net: t.PeerNetworkEvents;
-    media: ReturnType<typeof MediaStreamEvents>;
+    media: ReturnType<typeof MediaStream.Events>;
   };
   strategy: t.PeerStrategy;
   connectTo?: string;
@@ -36,6 +36,7 @@ export const actions = DevActions<Ctx>()
 
     EventBridge.startEventBridge({ self, bus });
     PeerNetwork.Controller({ bus });
+    MediaStream.Controller({ bus });
     const strategy = PeerNetwork.Strategy({ self, bus });
 
     strategy.connection.autoPropagation = false; // TEMP 🐷
@@ -43,7 +44,7 @@ export const actions = DevActions<Ctx>()
     const signal = 'rtc.cellfs.com/peer';
     const events = {
       net: PeerNetwork.Events({ bus }),
-      media: MediaStreamEvents({ bus }),
+      media: MediaStream.Events({ bus }),
     };
 
     time.delay(100, () => events.net.create(signal, self));

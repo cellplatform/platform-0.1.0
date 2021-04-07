@@ -1,5 +1,5 @@
 import { PeerNetwork } from '..';
-import { log, MediaStreamEvents, slug, t } from './common';
+import { log, MediaStream, slug, t } from './common';
 
 export const EventBridge = {
   ref: (self: t.PeerId, kind: t.PeerMediaKind) => `${kind}:${self}`,
@@ -17,7 +17,7 @@ export const EventBridge = {
 
     const events = {
       net: PeerNetwork.Events({ bus }),
-      media: MediaStreamEvents({ bus }),
+      media: MediaStream.Events({ bus }),
     };
 
     /**
