@@ -18,7 +18,7 @@ export function ConnectionStrategy(args: {
    * Initialize sub-strategies.
    */
   autoPerge({ self, events, isEnabled: () => strategy.autoPurgeOnClose });
-  ensureClosed({ self, events, isEnabled: () => strategy.ensureConnectionClosed });
+  ensureClosed({ self, events, isEnabled: () => strategy.ensureClosed });
   autoPropagation({ self, events, isEnabled: () => strategy.autoPropagation });
 
   /**
@@ -30,7 +30,7 @@ export function ConnectionStrategy(args: {
 
     autoPurgeOnClose: true,
     autoPropagation: true,
-    ensureConnectionClosed: true,
+    ensureClosed: true,
   };
 
   return strategy;

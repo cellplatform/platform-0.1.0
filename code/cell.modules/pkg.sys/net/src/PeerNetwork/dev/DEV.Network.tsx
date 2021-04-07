@@ -3,7 +3,7 @@ import { Hr } from 'sys.ui.primitives/lib/components/Hr';
 
 import { css, CssValue, t } from './common';
 import { Connection } from './DEV.Connection';
-import { DevVideo } from './DEV.Media.Video';
+import { DevVideo } from './DEV.Video';
 import { SelfPropList } from './DEV.Self.PropList';
 
 export type NetworkProps = {

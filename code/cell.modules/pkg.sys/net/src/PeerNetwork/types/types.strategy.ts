@@ -24,5 +24,5 @@ export type PeerConnectionStrategy = t.IDisposable & {
   /**
    * Ensure connections are closed on all peers within the mesh.
    */
-  ensureConnectionClosed: boolean;
+  ensureClosed: boolean;
 };

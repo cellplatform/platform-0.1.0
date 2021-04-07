@@ -31,5 +31,10 @@ describe.only('Strategy (Peer Network)', () => {
       const connection = Strategy({ self, bus }).connection;
       expect(connection.autoPropagation).to.eql(true);
     });
+
+    it('ensureConnectionClosed - default:true', () => {
+      const connection = Strategy({ self, bus }).connection;
+      expect(connection.ensureClosed).to.eql(true);
+    });
   });
 });

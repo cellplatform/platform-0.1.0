@@ -4,7 +4,7 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { PeerNetwork } from '..';
 import { css, cuid, deleteUndefined, Icons, MediaStreamEvents, rx, t, time } from './common';
 import { RootLayout } from './DEV.Root';
-import { DevMedia } from './DEV.Media';
+import { EventBridge } from './DEV.EventBridge';
 
 type Ctx = {
   self: t.PeerId;
@@ -19,6 +19,7 @@ type Ctx = {
   connectTo?: string;
   isReliable: boolean;
   debugJson: boolean;
+  toStrategy(): t.PeerStrategy;
 };
 
 /**
@@ -33,7 +34,7 @@ export const actions = DevActions<Ctx>()
     const self = cuid();
     const bus = rx.bus<t.PeerEvent>();
 
-    DevMedia.startEventBridge({ self, bus });
+    EventBridge.startEventBridge({ self, bus });
     PeerNetwork.Controller({ bus });
     const strategy = PeerNetwork.Strategy({ self, bus });
 
@@ -60,7 +61,8 @@ export const actions = DevActions<Ctx>()
       signal,
       isReliable: false,
       debugJson: false,
-      connectTo: '', // TEMP 🐷
+      connectTo: '',
+      toStrategy: () => strategy,
     };
   })
 
@@ -102,9 +104,17 @@ export const actions = DevActions<Ctx>()
       );
     });
 
+    e.hr(1, 0.2);
+
     e.button('fire ⚡️ Peer:Local/media (video)', async (e) => {
-      const self = e.ctx.self;
-      const data = deleteUndefined(await e.ctx.events.net.media(self).video());
+      const data = deleteUndefined(await e.ctx.events.net.media(e.ctx.self).video());
+      e.button.description = (
+        <ObjectView name={'status:res'} data={data} fontSize={10} expandLevel={2} />
+      );
+    });
+
+    e.button('fire ⚡️ Peer:Local/media (screen)', async (e) => {
+      const data = deleteUndefined(await e.ctx.events.net.media(e.ctx.self).screen());
       e.button.description = (
         <ObjectView name={'status:res'} data={data} fontSize={10} expandLevel={2} />
       );
@@ -161,53 +171,42 @@ export const actions = DevActions<Ctx>()
         });
     });
 
-    e.button('fire ⚡️ Peer:Connection/connect (media:video)', async (e) => {
-      const { self, connectTo, events } = e.ctx;
-
-      if (!connectTo) {
-        e.button.description = '🐷 ERROR: Remote peer not specified';
-      } else {
-        const open = events.net.connection(self, connectTo).open;
-        const res = await open.video();
-        const name = res.error ? 'Fail' : 'Success';
-        const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
-        e.button.description = el;
-      }
-    });
-
     e.hr();
   })
 
   .items((e) => {
-    e.title('Mesh Behavior Strategies');
+    e.title('Strategies (Mesh Behavior)');
 
     e.boolean((config) =>
       config
-        .label('connection.autoPurgeOnClose [TODO]')
+        .label('connection.autoPurgeOnClose')
         .description('Automatically purge connections when closed.')
         .pipe((e) => {
-          if (e.changing) e.ctx.strategy.connection.autoPurgeOnClose = e.changing.next;
-          e.boolean.current = e.ctx.strategy.connection.autoPurgeOnClose;
+          const strategy = e.ctx.toStrategy();
+          if (e.changing) strategy.connection.autoPurgeOnClose = e.changing.next;
+          e.boolean.current = strategy.connection.autoPurgeOnClose;
         }),
     );
 
     e.boolean((config) =>
       config
-        .label('connection.autoPropagation [TODO]')
+        .label('connection.autoPropagation')
         .description('Automatically propogate data connections to peers.')
         .pipe((e) => {
-          if (e.changing) e.ctx.strategy.connection.autoPropagation = e.changing.next;
-          e.boolean.current = e.ctx.strategy.connection.autoPropagation;
+          const strategy = e.ctx.toStrategy();
+          if (e.changing) strategy.connection.autoPropagation = e.changing.next;
+          e.boolean.current = strategy.connection.autoPropagation;
         }),
     );
 
     e.boolean((config) =>
       config
-        .label('connection.autoMeshPropagation [TODO]')
-        .description('Ensure closed connections are properly closed on all peers.')
+        .label('connection.ensureClosed')
+        .description('Ensure connections are properly closed on all peers.')
         .pipe((e) => {
-          if (e.changing) e.ctx.strategy.connection.ensureConnectionClosed = e.changing.next;
-          e.boolean.current = e.ctx.strategy.connection.ensureConnectionClosed;
+          const strategy = e.ctx.toStrategy();
+          if (e.changing) strategy.connection.ensureClosed = e.changing.next;
+          e.boolean.current = strategy.connection.ensureClosed;
         }),
     );
   })

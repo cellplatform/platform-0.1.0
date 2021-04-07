@@ -16,7 +16,7 @@ import {
   useVideoStreamState,
   VideoStream,
 } from './common';
-import { DevMedia } from './DEV.Media';
+import { EventBridge } from './DEV.EventBridge';
 
 export type DevVideoProps = {
   peerId: t.PeerId;
@@ -31,7 +31,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
   const wifi = useOfflineState();
 
   const peerId = props.peerId;
-  const videoRef = DevMedia.videoRef(peerId);
+  const videoRef = EventBridge.videoRef(peerId);
   const bus = props.bus.type<t.PeerEvent | MediaEvent>();
 
   const [isVideoMuted, setVideoMuted] = useState<boolean>(true);

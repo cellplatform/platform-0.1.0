@@ -1,9 +1,10 @@
 import { PeerNetwork } from '..';
 import { log, MediaStreamEvents, slug, t } from './common';
 
-export const DevMedia = {
-  videoRef: (self: t.PeerId) => `${self}:video`,
-  screenRef: (self: t.PeerId) => `${self}:screen`,
+export const EventBridge = {
+  ref: (self: t.PeerId, kind: t.PeerMediaKind) => `${self}:${kind}`,
+  videoRef: (self: t.PeerId) => EventBridge.ref(self, 'video'),
+  screenRef: (self: t.PeerId) => EventBridge.ref(self, 'screen'),
 
   /**
    * Bridges events between the [Media] and [Net] modules.
@@ -23,16 +24,22 @@ export const DevMedia = {
      * NETWORK => VIDEO => NETWORK
      */
     events.net.media(args.self).req$.subscribe(async (e) => {
-      log.info('MEDIA BRIDGE / Req:', e);
+      log.info('EVENT BRIDGE / request:', e);
 
       const tx = e.tx || slug();
-      const ref = DevMedia.videoRef(args.self);
+      const ref = EventBridge.ref(e.self, e.kind);
+
+      /**
+       * TODO 🐷
+       * Start screen share stream when requested.
+       */
+
       const { stream } = await events.media.status(ref).get();
       const media = stream?.media;
-      const error = media ? undefined : { message: 'The media stream has not been started' };
+      const error = media ? undefined : { message: `The ${e.kind} stream has not been started.` };
 
       log.info('MEDIA Stream', stream);
-      events.net.media(args.self).respond({ tx, media, error });
+      events.net.media(e.self).respond({ tx, media, error });
     });
   },
 };

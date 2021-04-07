@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { css, CssValue, Hr, t, PropList, PropListItem } from './common';
-import { DevVideo } from './DEV.Media.Video';
+import { DevVideo } from './DEV.Video';
 
 export type ConnectionMediaProps = {
   bus: t.EventBus<any>;
