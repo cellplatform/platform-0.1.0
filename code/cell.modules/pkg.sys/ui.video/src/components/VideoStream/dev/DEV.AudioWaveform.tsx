@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
+import { AudioWaveform } from '../../AudioWaveform';
 import { MediaStreamEvents } from '../MediaStream.Events';
-import { css, CssValue, t } from './common';
-import { useAudioAnalyser } from './DEV.AudioWaveform.useAudioAnalyser';
-import { useDrawWaveform } from './DEV.AudioWaveform.useDrawWaveform';
+import { CssValue, t } from './common';
 
-export type AudioWaveformProps = {
+export type DevAudioWaveformProps = {
   streamRef?: string; // Stream ID reference.
   bus: t.EventBus<any>;
   width?: number;
@@ -13,22 +12,12 @@ export type AudioWaveformProps = {
   style?: CssValue;
 };
 
-/**
- *  Samples:
- *    https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Visualizations_with_Web_Audio_API
- *    https://www.twilio.com/blog/audio-visualisation-web-audio-api--react
- *
- */
-export const AudioWaveform: React.FC<AudioWaveformProps> = (props) => {
+export const DevAudioWaveform: React.FC<DevAudioWaveformProps> = (props) => {
   const { width = 300, height = 30 } = props;
 
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const ref = props.streamRef;
   const bus = props.bus.type<t.MediaEvent>();
   const [stream, setStream] = useState<MediaStream | undefined>();
-
-  const { audioData } = useAudioAnalyser({ stream });
-  useDrawWaveform({ canvasRef, audioData });
 
   /**
    * Get hold of the Media Stream.
@@ -49,12 +38,5 @@ export const AudioWaveform: React.FC<AudioWaveformProps> = (props) => {
     return () => events.dispose();
   }, [bus, ref]); // eslint-disable-line
 
-  const styles = {
-    base: css({ width, height }),
-  };
-  return (
-    <div {...css(styles.base, props.style)}>
-      <canvas ref={canvasRef} width={width} height={height} />
-    </div>
-  );
+  return <AudioWaveform width={width} height={height} stream={stream} />;
 };

@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 
 /**
- * Setup and maintain an AudioStream analyzer.
- * https://www.twilio.com/blog/audio-visualisation-web-audio-api--react
+ * Setup and maintain an [AudioStream] analyzer.
+ *
+ * Sample:
+ *    https://www.twilio.com/blog/audio-visualisation-web-audio-api--react
+ *
  */
 export function useAudioAnalyser(args: { stream?: MediaStream }) {
   const [stream, setStream] = useState<MediaStream>();

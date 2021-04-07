@@ -10,7 +10,7 @@ import {
 } from '..';
 import { css, cuid, deleteUndefined, HttpClient, log, rx, t } from './common';
 import { Sample } from './DEV.Sample';
-import { AudioWaveform } from './DEV.AudioWaveform';
+import { DevAudioWaveform } from './DEV.AudioWaveform';
 
 type Events = ReturnType<typeof MediaStreamEvents>;
 type Ctx = {
@@ -180,10 +180,7 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     const { ref, bus } = e.ctx;
     const { width = 300 } = e.ctx.props;
-    const styles = {
-      streamRef: css({ fontSize: 9 }),
-    };
-
+    const styles = { streamRef: css({ fontSize: 9 }) };
     const elStreamRef = <div {...styles.streamRef}>stream-ref:{ref}</div>;
 
     e.settings({
@@ -196,7 +193,7 @@ export const actions = DevActions<Ctx>()
       label: { topLeft: '<VideoStream>', bottomRight: elStreamRef },
     });
 
-    e.render(<AudioWaveform bus={bus} streamRef={ref} width={width} height={30} />, {
+    e.render(<DevAudioWaveform bus={bus} streamRef={ref} width={width} height={30} />, {
       width,
       background: 1,
       label: 'Audio Waveform',

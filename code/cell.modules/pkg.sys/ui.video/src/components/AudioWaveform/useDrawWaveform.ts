@@ -1,4 +1,10 @@
 import React, { useEffect } from 'react';
+import { color, defaultValue } from '../../common';
+
+type Props = {
+  lineColor?: string | number;
+  lineWidth?: number;
+};
 
 /**
  * Renders an oscilloscope waveform visualization to a <canvas>.
@@ -7,22 +13,22 @@ import React, { useEffect } from 'react';
  *    https://www.twilio.com/blog/audio-visualisation-web-audio-api--react
  *
  */
-export function useDrawWaveform(args: {
-  canvasRef?: React.RefObject<HTMLCanvasElement>;
-  audioData?: Uint8Array;
-}) {
+export function useDrawWaveform(
+  args: { canvasRef?: React.RefObject<HTMLCanvasElement>; audioData?: Uint8Array } & Props,
+) {
   useEffect(() => {
-    const { audioData } = args;
+    const { audioData, lineColor, lineWidth } = args;
     const canvas = args.canvasRef?.current;
-    if (canvas && audioData) draw({ canvas, audioData });
+    if (canvas && audioData) draw({ canvas, audioData, lineColor, lineWidth });
   });
 }
 
 /**
  * [Helpers]
  */
-const draw = (args: { canvas: HTMLCanvasElement; audioData: Uint8Array }) => {
+const draw = (args: { canvas: HTMLCanvasElement; audioData: Uint8Array } & Props) => {
   const { canvas, audioData } = args;
+  const lineColor = defaultValue(args.lineColor, -0.6);
 
   const { width, height } = canvas;
   const ctx = canvas.getContext('2d');
@@ -30,8 +36,8 @@ const draw = (args: { canvas: HTMLCanvasElement; audioData: Uint8Array }) => {
   let x = 0;
 
   if (ctx) {
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.6)';
+    ctx.lineWidth = defaultValue(args.lineWidth, 1);
+    ctx.strokeStyle = color.format(lineColor) as string;
     ctx.clearRect(0, 0, width, height);
 
     ctx.beginPath();
