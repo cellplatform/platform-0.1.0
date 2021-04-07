@@ -114,10 +114,10 @@ export function Controller(args: { bus: t.EventBus<any> }) {
        * side request to close the connection.
        */
 
-      const connection = toConnectionStatus(connectionRef);
+      // const connection = toConnectionStatus(connectionRef);
       bus.fire({
         type: 'Peer:Connection/closed',
-        payload: { self: self.id, connection },
+        payload: { self: self.id },
       });
     });
 

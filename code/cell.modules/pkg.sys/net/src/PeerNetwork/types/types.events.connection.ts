@@ -94,5 +94,5 @@ export type PeerConnectionClosedEvent = {
 };
 export type PeerNetworkConnectionClosed = {
   self: t.PeerId;
-  connection: t.PeerConnectionStatus;
+  // connection: t.PeerConnectionStatus;
 };
