@@ -95,6 +95,16 @@ export const Handlers = {
       },
 
       /**
+       * Factory for a general controller logic that is setup once
+       * (eg observable subscriptions)
+       */
+      controller(args) {
+        const fn = args.params[0];
+        if (typeof fn !== 'function') throw new Error('Controller factory function not provided');
+        args.model.change((draft) => (draft.controller = fn));
+      },
+
+      /**
        * Merges in another Action model's items.
        */
       merge(args) {
