@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button, Card, css, CssValue, Hr, Icons, PropList, PropListItem, t } from './common';
+import { Button, Card, css, CssValue, Icons, t } from './common';
 import { ConnectionData } from './DEV.Connection.Data';
 import { ConnectionMedia } from './DEV.Connection.Media';
 
@@ -15,17 +15,9 @@ export type ConnectionProps = {
 
 export const Connection: React.FC<ConnectionProps> = (props) => {
   const { connection, netbus } = props;
+  const kind = connection.kind;
   const peer = connection.peer;
-  const uri = connection.uri;
   const bus = props.bus.type<t.PeerEvent>();
-
-  const items: PropListItem[] = [
-    { label: 'uri', value: { data: uri, clipboard: true } },
-    { label: 'open', value: connection.isOpen },
-  ];
-  if (connection.kind === 'data') {
-    items.push(...[{ label: 'reliable', value: connection.isReliable }]);
-  }
 
   const styles = {
     base: css({ position: 'relative', fontSize: 14 }),
@@ -45,20 +37,25 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
     </Button>
   );
 
+  const elData = connection.kind === 'data' && (
+    <ConnectionData bus={bus} netbus={netbus} connection={connection} />
+  );
+
+  const elMedia = connection.kind === 'media' && (
+    <ConnectionMedia bus={bus} connection={connection} />
+  );
+
   return (
     <div {...css(styles.base, props.style)}>
       <Card
         key={peer.remote}
         padding={[18, 20, 20, 20]}
         margin={props.margin}
-        width={340}
+        width={300}
         shadow={false}
       >
-        <PropList title={'PeerConnection'} items={items} defaults={{ clipboard: false }} />
-
-        {connection.kind === 'data' && <ConnectionData netbus={netbus} connection={connection} />}
-        {connection.kind === 'media' && <ConnectionMedia bus={bus} connection={connection} />}
-
+        {elData}
+        {elMedia}
         {elCloseButton}
       </Card>
     </div>

@@ -193,18 +193,18 @@ export const actions = DevActions<Ctx>()
 
     e.boolean((config) =>
       config
-        .label('connection.autoMeshPropagation [TODO]')
+        .label('connection.autoPropagation [TODO]')
         .description('Automatically propogate data connections to peers.')
         .pipe((e) => {
-          if (e.changing) e.ctx.strategy.connection.autoMeshPropagation = e.changing.next;
-          e.boolean.current = e.ctx.strategy.connection.autoMeshPropagation;
+          if (e.changing) e.ctx.strategy.connection.autoPropagation = e.changing.next;
+          e.boolean.current = e.ctx.strategy.connection.autoPropagation;
         }),
     );
 
     e.boolean((config) =>
       config
         .label('connection.autoMeshPropagation [TODO]')
-        .description('Ensure closed connections are property closed on all peers')
+        .description('Ensure closed connections are properly closed on all peers.')
         .pipe((e) => {
           if (e.changing) e.ctx.strategy.connection.ensureConnectionClosed = e.changing.next;
           e.boolean.current = e.ctx.strategy.connection.ensureConnectionClosed;

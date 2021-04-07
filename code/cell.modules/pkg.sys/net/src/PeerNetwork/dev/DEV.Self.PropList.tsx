@@ -63,7 +63,7 @@ const toItems = (network?: t.PeerStatus): PropListItem[] => {
   );
 
   const items: PropListItem[] = [
-    { label: 'peer:id (self)', value: { data: network.id, clipboard: true } },
+    { label: 'peer (self)', value: { data: network.id, clipboard: true } },
     { label: `signal server`, value: elSignal },
     { label: 'age', value: age },
     { label: 'online', value: network.isOnline },

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { css, CssValue, Hr, t } from './common';
+import { css, CssValue, Hr, t, PropList, PropListItem } from './common';
 import { DevVideo } from './DEV.Media.Video';
 
 export type ConnectionMediaProps = {
@@ -12,7 +12,13 @@ export type ConnectionMediaProps = {
 export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
   const { connection } = props;
   const bus = props.bus.type<t.PeerEvent>();
-  const peerId = connection.peer.remote;
+  const peer = connection.peer;
+
+  const items: PropListItem[] = [
+    { label: 'peer', value: { data: peer.remote, clipboard: true } },
+    { label: 'id', value: { data: connection.id, clipboard: true } },
+    { label: 'open', value: connection.isOpen },
+  ];
 
   const styles = {
     base: css({ position: 'relative' }),
@@ -21,9 +27,12 @@ export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
+      <PropList title={'Media Connection'} items={items} defaults={{ clipboard: false }} />
+
       <Hr thickness={5} opacity={0.1} margin={[10, 0, 20, 0]} />
+
       <div {...styles.video}>
-        <DevVideo bus={bus} peerId={peerId} />
+        <DevVideo bus={bus} peerId={peer.remote} />
       </div>
     </div>
   );

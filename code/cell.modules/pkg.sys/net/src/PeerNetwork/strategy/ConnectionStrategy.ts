@@ -37,8 +37,9 @@ export function ConnectionStrategy(args: {
    */
   connections.connectResponse$
     .pipe(
-      filter(() => strategy.autoMeshPropagation),
+      filter(() => strategy.autoPropagation),
       filter((e) => e.kind === 'data'),
+      filter((e) => Boolean(e.connection)),
     )
     .subscribe(async (e) => {
       const { isReliable, metadata } = e.connection as t.PeerConnectionDataStatus;
@@ -80,7 +81,7 @@ export function ConnectionStrategy(args: {
     dispose: events.dispose,
 
     autoPurgeOnClose: true,
-    autoMeshPropagation: true,
+    autoPropagation: true,
     ensureConnectionClosed: true,
   };
 

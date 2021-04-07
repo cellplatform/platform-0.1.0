@@ -29,7 +29,7 @@ describe.only('Strategy (Peer Network)', () => {
 
     it('meshPropagation - default:true', () => {
       const connection = Strategy({ self, bus }).connection;
-      expect(connection.autoMeshPropagation).to.eql(true);
+      expect(connection.autoPropagation).to.eql(true);
     });
   });
 });

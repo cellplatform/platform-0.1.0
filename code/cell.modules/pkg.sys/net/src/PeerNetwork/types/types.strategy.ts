@@ -19,7 +19,7 @@ export type PeerConnectionStrategy = t.IDisposable & {
   /**
    * Auto propogate new connections to all other connected clients.
    */
-  autoMeshPropagation: boolean;
+  autoPropagation: boolean;
 
   /**
    * Ensure connections are closed on all peers within the mesh.
