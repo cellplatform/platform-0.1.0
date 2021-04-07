@@ -1,6 +1,5 @@
 import { TextStyle } from '../types';
-// import { color as colorUtil } from './libs';
-import { ROBOTO } from './constants';
+import { SYSTEM_FONT } from './constants';
 
 import { color as colorUtil } from '@platform/css';
 
@@ -26,13 +25,13 @@ export const toTextCss = (props: TextStyle) => {
     color: colorUtil.format(color),
     fontFamily,
     fontSize: fontSize,
-    fontWeight: ROBOTO.WEIGHTS[fontWeight],
+    fontWeight: SYSTEM_FONT.WEIGHTS[fontWeight],
     fontStyle: italic ? 'italic' : undefined,
     textAlign: align.toLowerCase(),
     opacity,
     letterSpacing,
     lineHeight,
-    textShadow: toShadow(textShadow),
+    textShadow: toTextShadow(textShadow),
     textTransform: uppercase ? ('uppercase' as React.CSSProperties['textTransform']) : undefined,
   };
 };
@@ -42,7 +41,7 @@ export const pluckTextStyles = (props: any) => {
     fontSize,
     color = -0.7,
     fontWeight = 'NORMAL',
-    fontFamily = ROBOTO.FAMILY,
+    fontFamily = SYSTEM_FONT.SANS.FAMILY,
     align = 'LEFT',
     italic = false,
     opacity = 1,
@@ -71,7 +70,7 @@ export const pluckTextStyles = (props: any) => {
  * Produces a `textShadow` CSS value from an array.
  * [0:offset-y, 1:color.format()]
  */
-export const toShadow = (value?: string | Array<number | string>) => {
+export const toTextShadow = (value?: string | Array<number | string>) => {
   if (value === undefined) {
     return;
   }

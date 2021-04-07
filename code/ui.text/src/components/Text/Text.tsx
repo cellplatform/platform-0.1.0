@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { TextProps, toTextCss, toShadow, constants } from '../../common';
+import { TextProps, toTextCss, toTextShadow, constants } from '../../common';
 
 import { css } from '@platform/css';
 import { MeasureSize } from '@platform/react';
@@ -25,7 +25,7 @@ export class Monospace extends React.PureComponent<TextProps> {
  */
 export class Text extends React.PureComponent<TextProps> {
   public static toTextCss = toTextCss;
-  public static toShadow = toShadow;
+  public static toShadow = toTextShadow;
   public static Monospace = Monospace;
   public static measure = (props: TextProps) => {
     const { children: content } = props;

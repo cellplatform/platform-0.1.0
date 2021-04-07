@@ -6,12 +6,12 @@ import { CardStack, CardStackItem, css, CssValue, slug, t } from './common';
 import { EventCard } from './DEV.EventCard';
 
 export type EventStackProps = {
-  netbus: t.EventBus<any>;
+  bus: t.EventBus<any>;
   style?: CssValue;
 };
 
 export const EventStack: React.FC<EventStackProps> = (props) => {
-  const { netbus } = props;
+  const { bus } = props;
 
   const [events, setEvents] = useState<{ id: string; event: t.Event; count: number }[]>([]);
   const [showPayload, setShowPayload] = useState<boolean>(false);
@@ -21,7 +21,7 @@ export const EventStack: React.FC<EventStackProps> = (props) => {
     const dispose$ = new Subject<void>();
     let count = 0;
 
-    netbus.event$.pipe(takeUntil(dispose$)).subscribe((event) => {
+    bus.event$.pipe(takeUntil(dispose$)).subscribe((event) => {
       count++;
       setEvents((prev) => {
         const MAX = 10;

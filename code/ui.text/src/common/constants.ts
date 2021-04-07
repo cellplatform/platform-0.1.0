@@ -15,12 +15,7 @@ const toGoogleUrl = (family: string) => `${GOOGLE.BASE}?family=${family}`;
  */
 export const ROBOTO = {
   FAMILY: `'Roboto', sans-serif`,
-  WEIGHTS: {
-    THIN: 100,
-    LIGHT: 300,
-    NORMAL: 400,
-    BOLD: 900,
-  },
+  WEIGHTS: { THIN: 100, LIGHT: 300, NORMAL: 400, BOLD: 900 },
   GOOGLE: {
     FAMILY: GOOGLE.ROBOTO,
     URL: toGoogleUrl(GOOGLE.ROBOTO),
@@ -36,11 +31,15 @@ export const ROBOTO = {
  *
  */
 export const MONOSPACE = {
-  FAMILY: `Roboto Mono, Menlo, Monaco, 'Lucida Console', Courier, monospace`,
-  GOOGLE: {
-    FAMILY: GOOGLE.ROBOTO_MONO,
-    URL: toGoogleUrl(GOOGLE.ROBOTO_MONO),
-  },
+  FAMILY: 'monospace',
+};
+export const SANS = {
+  FAMILY: 'sans-serif',
+};
+export const SYSTEM_FONT = {
+  WEIGHTS: { THIN: 100, LIGHT: 300, NORMAL: 400, BOLD: 900 },
+  MONOSPACE,
+  SANS,
 };
 
 export const COLORS = {

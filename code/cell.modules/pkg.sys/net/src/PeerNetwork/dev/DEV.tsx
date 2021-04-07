@@ -60,6 +60,7 @@ export const actions = DevActions<Ctx>()
       signal,
       isReliable: false,
       debugJson: false,
+      connectTo: 'ckn6qiipa00023e5r4dsas9u7', // TEMP 🐷
     };
   })
 
@@ -126,6 +127,7 @@ export const actions = DevActions<Ctx>()
       config
         .title('Target network peer:')
         .placeholder('remote <cuid>')
+        .initial(config.ctx.connectTo || '')
         .pipe((e) => {
           if (e.changing) e.ctx.connectTo = e.changing.next;
         });
