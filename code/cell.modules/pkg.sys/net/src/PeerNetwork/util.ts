@@ -76,3 +76,12 @@ export const StringUtil = {
     return (text || '').trim().replace(/^\/*/, '').trim();
   },
 };
+
+/**
+ * Network URIs.
+ */
+export const Uri = {
+  connection(kind: t.PeerConnectionKind, peer: t.PeerId, id: string) {
+    return `${kind}:${peer}:${StringUtil.formatConnectionId(id)}`;
+  },
+};

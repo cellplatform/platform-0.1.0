@@ -38,6 +38,8 @@ export const actions = DevActions<Ctx>()
     PeerNetwork.Controller({ bus });
     const strategy = PeerNetwork.Strategy({ self, bus });
 
+    strategy.connection.autoPropagation = false; // TEMP 🐷
+
     const signal = 'rtc.cellfs.com/peer';
     const events = {
       net: PeerNetwork.Events({ bus }),

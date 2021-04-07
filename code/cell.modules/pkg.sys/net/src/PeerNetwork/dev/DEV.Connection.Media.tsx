@@ -11,7 +11,6 @@ export type ConnectionMediaProps = {
 
 export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
   const { connection } = props;
-  const bus = props.bus.type<t.PeerEvent>();
   const peer = connection.peer;
 
   const items: PropListItem[] = [
@@ -32,8 +31,7 @@ export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
       <Hr thickness={5} opacity={0.1} margin={[10, 0, 20, 0]} />
 
       <div {...styles.video}>
-        <div />
-        {/* <DevVideo bus={bus} peerId={peer.remote} /> */}
+        <DevVideo stream={connection.media} />
       </div>
     </div>
   );

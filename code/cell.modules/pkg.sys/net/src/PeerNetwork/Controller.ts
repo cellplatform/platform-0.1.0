@@ -5,7 +5,6 @@ import { asArray, deleteUndefined, PeerJS, rx, slug, t, time, defaultValue } fro
 import { Events } from './Events';
 import { ConnectionRef, MemoryRefs, SelfRef } from './Refs';
 import { PeerJSError, StringUtil } from './util';
-import { Uri } from './Uri';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 
@@ -159,7 +158,9 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         };
         refs.self[e.self] = self;
 
-        // Listen for incoming DATA connection requests.
+        /**
+         * Listen for incoming DATA connection requests.
+         */
         peer.on('connection', (dataConnection) => {
           dataConnection.on('open', () => {
             refs.connection(self).add('data', dataConnection);
@@ -167,15 +168,19 @@ export function Controller(args: { bus: t.EventBus<any> }) {
           });
         });
 
-        // Listen for incoming MEDIA (video/screen) connection requests.
+        /**
+         * Listen for incoming MEDIA (video/screen) connection requests.
+         */
         peer.on('call', async (mediaConnection) => {
           const metadata = (mediaConnection.metadata || {}) as t.PeerConnectionMetadataMedia;
           const { kind, constraints } = metadata;
           const local = await events.media(self.id).request({ kind, constraints });
           if (local.media) {
             mediaConnection.answer(local.media);
-            refs.connection(self).add('media', mediaConnection);
-            completeConnection('media', 'incoming', self, mediaConnection);
+            mediaConnection.on('stream', (remoteStream) => {
+              refs.connection(self).add('media', mediaConnection, remoteStream);
+              completeConnection('media', 'incoming', self, mediaConnection);
+            });
           }
         });
       }

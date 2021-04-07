@@ -1,6 +1,5 @@
 import { PeerJS, t } from './common';
-import { Uri } from './Uri';
-import { StringUtil } from './util';
+import { StringUtil, Uri } from './util';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 

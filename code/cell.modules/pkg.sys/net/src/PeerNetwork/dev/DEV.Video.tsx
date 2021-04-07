@@ -85,9 +85,11 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
     },
   ];
 
+  const tooltip = stream ? `stream.id: ${stream.id}` : `Stream not loaded`;
+
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.video.base}>
+      <div {...styles.video.base} title={tooltip}>
         <VideoStream
           stream={stream}
           width={width}
