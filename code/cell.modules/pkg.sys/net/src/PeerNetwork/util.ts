@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { PeerJS, t } from '../common';
+import { PeerJS, t } from './common';
 
 type C = t.PeerConnectionStatus;
 
@@ -46,6 +46,10 @@ export const PeerJSError = (peer: PeerJS) => {
  * String helpers.
  */
 export const StringUtil = {
+  formatConnectionId(id: string) {
+    return (id || '').replace(/^dc_/, '').replace(/^mc_/, '');
+  },
+
   parseEndpointAddress(address: string): t.PeerSignallingEndpoint {
     address = StringUtil.stripHttp((address || '').trim());
 

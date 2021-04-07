@@ -18,7 +18,7 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
   const bus = props.bus.type<t.PeerEvent>();
 
   const state = usePeerNetworkState({ self: props.self, bus });
-  const network = state.network;
+  const network = state.peer;
 
   const styles = {
     base: css({
@@ -56,7 +56,7 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
         <div {...styles.verticalRule} />
       </div>
       <div {...styles.right}>
-        <ObjectView name={'state'} data={state.network} expandLevel={5} />
+        <ObjectView name={'state'} data={state.peer} expandLevel={5} />
       </div>
     </>
   );

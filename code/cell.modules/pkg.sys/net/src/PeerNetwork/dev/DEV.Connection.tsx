@@ -3,6 +3,7 @@ import React from 'react';
 import { Button, Card, css, CssValue, Hr, Icons, PropList, PropListItem, t } from './common';
 import { ConnectionData } from './DEV.Connection.Data';
 import { ConnectionMedia } from './DEV.Connection.Media';
+import { Uri } from '../Uri';
 
 export type ConnectionProps = {
   bus: t.EventBus<any>;
@@ -15,12 +16,12 @@ export type ConnectionProps = {
 
 export const Connection: React.FC<ConnectionProps> = (props) => {
   const { connection, netbus } = props;
-  const id = connection.id;
+  const peer = connection.peer;
+  const uri = connection.uri;
   const bus = props.bus.type<t.PeerEvent>();
 
   const items: PropListItem[] = [
-    { label: 'id', value: { data: id.remote, clipboard: true } },
-    { label: 'kind', value: connection.kind },
+    { label: 'uri', value: { data: uri, clipboard: true } },
     { label: 'open', value: connection.isOpen },
   ];
   if (connection.kind === 'data') {
@@ -35,7 +36,7 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
   const handleClose = () => {
     bus.fire({
       type: 'Peer:Connection/disconnect:req',
-      payload: { self: id.self, remote: id.remote },
+      payload: { self: peer.self, remote: peer.remote },
     });
   };
 
@@ -48,10 +49,10 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <Card
-        key={id.remote}
+        key={peer.remote}
         padding={[18, 20, 20, 20]}
         margin={props.margin}
-        width={280}
+        width={320}
         shadow={false}
       >
         <PropList title={'PeerConnection'} items={items} defaults={{ clipboard: false }} />

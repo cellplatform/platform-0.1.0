@@ -46,7 +46,7 @@ export const EventCard: React.FC<EventCardProps> = (props) => {
   );
 
   return (
-    <Card padding={[10, 15, 10, 10]} width={{ min: 235 }} shadow={false} style={styles.base}>
+    <Card padding={[10, 15, 10, 10]} width={270} shadow={false} style={styles.base}>
       <PropList title={'Network Bus'} items={items} defaults={{ clipboard: false }} />
       {elObject}
     </Card>

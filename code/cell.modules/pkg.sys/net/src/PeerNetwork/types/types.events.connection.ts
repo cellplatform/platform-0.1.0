@@ -48,7 +48,7 @@ export type PeerNetworkConnectRes = {
   tx: string;
   remote: t.PeerId;
   existing: boolean;
-  kind: 'data' | 'media';
+  kind: t.PeerConnectionKind;
   direction: t.PeerConnectDirection;
   connection?: t.PeerConnectionStatus;
   error?: t.PeerError;

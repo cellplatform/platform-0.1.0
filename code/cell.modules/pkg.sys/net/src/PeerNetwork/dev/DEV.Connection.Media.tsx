@@ -12,7 +12,7 @@ export type ConnectionMediaProps = {
 export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
   const { connection } = props;
   const bus = props.bus.type<t.PeerEvent>();
-  const peerId = connection.id.remote;
+  const peerId = connection.peer.remote;
 
   const styles = {
     base: css({ position: 'relative' }),

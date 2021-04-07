@@ -48,8 +48,8 @@ export const CardStack: React.FC<CardStackProps> = (props) => {
     const y = is.last ? 0 : 0 - position * 5;
     const percent = position * 0.05;
     const scale = 1 - percent;
-
     const el = typeof item?.el === 'function' ? item.el() : item?.el;
+
     return (
       <m.div key={item.id} animate={{ y, scale }} transition={{ duration }} exit={{ opacity: 0 }}>
         <div {...css(styles.base, is.last && styles.top)}>{el}</div>

@@ -26,7 +26,7 @@ export const Network: React.FC<NetworkProps> = (props) => {
   const connections = status.connections;
   const elConnections = connections.map((item, i) => {
     const isLast = i === connections.length - 1;
-    const key = `${item.id.remote}:${item.kind}`;
+    const key = `${item.peer.remote}:${item.kind}`;
     return (
       <Connection
         key={key}

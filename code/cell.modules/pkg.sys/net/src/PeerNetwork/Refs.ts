@@ -1,9 +1,11 @@
-import { PeerJS, t } from '../common';
+import { PeerJS, t } from './common';
+import { Uri } from './Uri';
+import { StringUtil } from './util';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 
 export type SelfRef = {
-  id: string;
+  id: t.PeerId;
   peer: PeerJS;
   createdAt: number;
   signal: t.PeerSignallingEndpoint;
@@ -12,8 +14,10 @@ export type SelfRef = {
 };
 
 export type ConnectionRef = {
-  kind: 'data' | 'media';
-  id: t.PeerConnectionStatus['id'];
+  kind: t.PeerConnectionKind;
+  peer: t.PeerConnectionStatus['peer'];
+  id: t.PeerConnectionId;
+  uri: t.PeerConnectionUri;
   conn: PeerJS.DataConnection | PeerJS.MediaConnection;
   localStream?: MediaStream;
   remoteStream?: MediaStream;
@@ -35,16 +39,15 @@ export function MemoryRefs() {
           conn: PeerJS.DataConnection | PeerJS.MediaConnection,
           remoteStream?: MediaStream,
         ) {
-          const existing = self.connections.find((item) => {
-            return item.conn.peer === conn.peer && item.kind === kind;
-          });
+          const remote = conn.peer;
+          const peer = { self: self.peer.id, remote };
+          const id = StringUtil.formatConnectionId((conn as any).connectionId);
+          const uri = Uri.connection(kind, remote, id);
 
+          const existing = self.connections.find((item) => item.uri === uri);
           if (existing) return existing;
 
-          const local = self.peer.id;
-          const remote = conn.peer;
-          const id = { self: local, remote };
-          const ref: ConnectionRef = { kind, id, conn, remoteStream };
+          const ref: ConnectionRef = { kind, uri, id, peer, conn, remoteStream };
           self.connections = [...self.connections, ref];
           return ref;
         },
@@ -55,7 +58,7 @@ export function MemoryRefs() {
 
         get(conn: PeerJS.DataConnection | PeerJS.MediaConnection) {
           const remote = conn.peer;
-          const ref = self.connections.find((ref) => ref.id.remote === remote);
+          const ref = self.connections.find((ref) => ref.peer.remote === remote);
           if (!ref) {
             const err = `The connection reference '${remote}' for local network '${self.id}' has not been added`;
             throw new Error(err);
@@ -76,7 +79,7 @@ export function MemoryRefs() {
         },
 
         get ids() {
-          return self.connections.map((ref) => ref.id.remote);
+          return self.connections.map((ref) => ref.peer.remote);
         },
       };
     },

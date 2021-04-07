@@ -6,11 +6,6 @@ export * from './types.events.local';
 export * from './types.events.strategy';
 
 /**
- * An identifier of a network peer.
- */
-export type PeerId = string;
-
-/**
  * EVENTS
  */
 export type PeerEvent = t.PeerLocalEvent | t.PeerConnectionEvent | t.PeerDataEvent;

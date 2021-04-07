@@ -13,7 +13,7 @@ export type ConnectionDataProps = {
 
 export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
   const { connection, netbus } = props;
-  const id = connection.id;
+  const id = connection.peer;
 
   const [eventCount, setEventCount] = useState<number>(0);
   const [eventMessage, setEventMessage] = useState<string>('');

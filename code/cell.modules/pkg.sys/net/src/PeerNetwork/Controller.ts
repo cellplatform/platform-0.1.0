@@ -1,10 +1,11 @@
 import { merge } from 'rxjs';
 import { delay, filter, take } from 'rxjs/operators';
 
-import { asArray, deleteUndefined, PeerJS, rx, slug, t, time, defaultValue } from '../common';
+import { asArray, deleteUndefined, PeerJS, rx, slug, t, time, defaultValue } from './common';
 import { Events } from './Events';
 import { ConnectionRef, MemoryRefs, SelfRef } from './Refs';
 import { PeerJSError, StringUtil } from './util';
+import { Uri } from './Uri';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 
@@ -60,22 +61,22 @@ export function Controller(args: { bus: t.EventBus<any> }) {
    * Convert a connection-reference to an immutable status object.
    */
   const toConnectionStatus = (ref: ConnectionRef): t.PeerConnectionStatus => {
-    const { kind, id } = ref;
+    const { kind, peer, id, uri } = ref;
 
     if (kind === 'data') {
       const conn = ref.conn as PeerJS.DataConnection;
       const { reliable: isReliable, open: isOpen, metadata } = conn;
-      return { id, kind, isReliable, isOpen, metadata };
+      return { uri, id, peer, kind, isReliable, isOpen, metadata };
     }
 
     if (kind === 'media') {
       const media = ref.remoteStream as MediaStream;
       const conn = ref.conn as PeerJS.MediaConnection;
       const { open: isOpen, metadata } = conn;
-      return { id, kind, isOpen, metadata, media };
+      return { uri, id, peer, kind, isOpen, metadata, media };
     }
 
-    throw new Error(`Kind of connection not supported: '${kind}' (${id})`);
+    throw new Error(`Kind of connection not supported: ${uri}`);
   };
 
   /**
@@ -99,7 +100,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         kind,
         direction,
         existing: false,
-        remote: connectionRef.id.remote,
+        remote: connectionRef.peer.remote,
         connection: toConnectionStatus(connectionRef),
       },
     });
@@ -195,11 +196,11 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     .subscribe((e) => {
       const tx = e.tx || slug();
       const self = refs.self[e.self];
-      const network = self ? toStatus(self) : undefined;
-      const exists = Boolean(network);
+      const peer = self ? toStatus(self) : undefined;
+      const exists = Boolean(peer);
       bus.fire({
         type: 'Peer:Local/status:res',
-        payload: { self: e.self, tx, exists, network },
+        payload: { self: e.self, tx, exists, peer },
       });
     });
 
@@ -227,7 +228,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     if (self) {
       bus.fire({
         type: 'Peer:Local/status:changed',
-        payload: { self: ref, network: toStatus(self), event },
+        payload: { self: ref, peer: toStatus(self), event },
       });
     }
   });
@@ -262,7 +263,9 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
       if (select.closedConnections) {
         const closed = self.connections.filter((item) => !toConnectionStatus(item).isOpen);
-        self.connections = self.connections.filter(({ id }) => !closed.some((c) => c.id === id));
+        self.connections = self.connections.filter(
+          ({ peer: id }) => !closed.some((c) => c.peer === id),
+        );
         closed.forEach((item) => {
           changed = true;
           if (item.kind === 'data') purged.closedConnections.data++;
@@ -304,14 +307,14 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       }
 
       // Check for existing remote connection.
-      const isMatch = (item: ConnectionRef) => item.kind === e.kind && item.id.remote === remote;
+      const isMatch = (item: ConnectionRef) => item.kind === e.kind && item.peer.remote === remote;
       if (self.connections.find(isMatch)) {
         return fire({ existing: true });
       }
 
       // Start a data connection.
       if (e.kind === 'data') {
-        const { isReliable: reliable } = e;
+        const reliable = e.isReliable;
         const errorMonitor = PeerJSError(self.peer);
         const dataConnection = self.peer.connect(remote, { reliable });
         refs.connection(self).add('data', dataConnection);
@@ -394,7 +397,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         return fireError(message);
       }
 
-      const connRef = selfRef.connections.find((item) => item.id.remote === e.remote);
+      const connRef = selfRef.connections.find((item) => item.peer.remote === e.remote);
       if (!connRef) {
         const message = `The remote connection '${remote}' does not exist`;
         return fireError(message);

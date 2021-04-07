@@ -42,7 +42,7 @@ export const EventStack: React.FC<EventStackProps> = (props) => {
 
   if (events.length === 0) return null;
 
-  const items: CardStackItem[] = events.map((item, i) => {
+  const items: CardStackItem[] = events.map((item) => {
     const { id, event, count } = item;
     const el = (
       <EventCard
@@ -59,7 +59,7 @@ export const EventStack: React.FC<EventStackProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <CardStack items={items} maxDepth={3} style={{ flex: 1 }} />
+      <CardStack items={items} maxDepth={3} />
     </div>
   );
 };

@@ -60,7 +60,7 @@ export const actions = DevActions<Ctx>()
       signal,
       isReliable: false,
       debugJson: false,
-      connectTo: 'ckn6qiipa00023e5r4dsas9u7', // TEMP 🐷
+      connectTo: 'ckn6t8myi00023e5r14v4za6h', // TEMP 🐷
     };
   })
 

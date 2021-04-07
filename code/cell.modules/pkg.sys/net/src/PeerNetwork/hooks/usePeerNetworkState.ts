@@ -10,15 +10,15 @@ import { Events } from '../Events';
  */
 export function usePeerNetworkState(args: { self: t.PeerId; bus: t.EventBus<any> }) {
   const bus = args.bus.type<t.PeerEvent>();
-  const [network, setNetwork] = useState<t.PeerStatus>();
+  const [peer, setPeer] = useState<t.PeerStatus>();
 
   useEffect(() => {
     const events = Events({ bus });
     const $ = events.$;
 
     const updateState = async () => {
-      const { network } = await events.status(args.self).get();
-      setNetwork(network);
+      const { peer } = await events.status(args.self).get();
+      setPeer(peer);
     };
 
     rx.payload<t.PeerLocalStatusChangedEvent>($, 'Peer:Local/status:changed')
@@ -29,6 +29,6 @@ export function usePeerNetworkState(args: { self: t.PeerId; bus: t.EventBus<any>
   }, [bus, args.self]);
 
   return {
-    network,
+    peer,
   };
 }
