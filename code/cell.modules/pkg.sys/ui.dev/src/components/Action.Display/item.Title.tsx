@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { COLORS, css, t } from '../common';
+import { Format } from './util';
 
 export type TitleProps = {
   namespace: string;
@@ -25,9 +26,11 @@ export const Title: React.FC<TitleProps> = (props) => {
     }),
   };
 
+  const text = useMemo(() => Format.todo(item.text), [item.text]);
+
   return (
     <div {...styles.base}>
-      <div {...styles.text}>{item.text}</div>
+      <div {...styles.text}>{text}</div>
     </div>
   );
 };
