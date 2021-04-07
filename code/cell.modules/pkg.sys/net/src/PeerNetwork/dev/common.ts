@@ -10,7 +10,7 @@ export { PropList, PropListItem } from 'sys.ui.primitives/lib/components/PropLis
 export { Hr } from 'sys.ui.primitives/lib/components/Hr';
 export { ObjectView } from 'sys.ui.dev';
 
-export * from 'sys.ui.video/lib/components/VideoStream';
+export * from 'sys.ui.video/lib/components/MediaStream';
 export * from '../util';
 
 export { AudioWaveform } from 'sys.ui.video/lib/components/AudioWaveform';

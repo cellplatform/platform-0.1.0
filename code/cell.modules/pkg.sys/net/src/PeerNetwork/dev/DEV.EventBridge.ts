@@ -2,7 +2,7 @@ import { PeerNetwork } from '..';
 import { log, MediaStreamEvents, slug, t } from './common';
 
 export const EventBridge = {
-  ref: (self: t.PeerId, kind: t.PeerMediaKind) => `${self}:${kind}`,
+  ref: (self: t.PeerId, kind: t.PeerMediaKind) => `${kind}:${self}`,
   videoRef: (self: t.PeerId) => EventBridge.ref(self, 'video'),
   screenRef: (self: t.PeerId) => EventBridge.ref(self, 'screen'),
 
@@ -24,10 +24,10 @@ export const EventBridge = {
      * NETWORK => VIDEO => NETWORK
      */
     events.net.media(args.self).req$.subscribe(async (e) => {
-      log.info('EVENT BRIDGE / request:', e);
-
       const tx = e.tx || slug();
       const ref = EventBridge.ref(e.self, e.kind);
+
+      log.info('EVENT BRIDGE / request:', e, ref);
 
       /**
        * TODO 🐷

@@ -64,7 +64,7 @@ export const Network: React.FC<NetworkProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       <div {...styles.header}>
         <SelfPropList status={status} />
-        <DevVideoSelf peerId={status.id} bus={bus} />
+        <DevVideoSelf peer={status.id} bus={bus} />
       </div>
       <Hr thickness={10} opacity={0.05} margin={0} />
       <div {...styles.body.base}>

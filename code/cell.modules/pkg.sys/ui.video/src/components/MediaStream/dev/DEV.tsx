@@ -33,7 +33,7 @@ async function updateMute(ctx: Ctx) {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.video/VideoStream')
+  .namespace('ui.video/MediaStream')
   .context((prev) => {
     if (prev) return prev;
 

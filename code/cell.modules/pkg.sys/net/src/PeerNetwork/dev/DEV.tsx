@@ -111,14 +111,14 @@ export const actions = DevActions<Ctx>()
     e.button('fire ⚡️ Peer:Local/media (video)', async (e) => {
       const data = deleteUndefined(await e.ctx.events.net.media(e.ctx.self).video());
       e.button.description = (
-        <ObjectView name={'status:res'} data={data} fontSize={10} expandLevel={2} />
+        <ObjectView name={'media:res'} data={data} fontSize={10} expandLevel={2} />
       );
     });
 
     e.button('fire ⚡️ Peer:Local/media (screen)', async (e) => {
       const data = deleteUndefined(await e.ctx.events.net.media(e.ctx.self).screen());
       e.button.description = (
-        <ObjectView name={'status:res'} data={data} fontSize={10} expandLevel={2} />
+        <ObjectView name={'media:res'} data={data} fontSize={10} expandLevel={2} />
       );
     });
 

@@ -12,7 +12,7 @@ import { EventBridge } from './DEV.EventBridge';
 import { DevVideo } from './DEV.Video';
 
 export type DevVideoSelfProps = {
-  peerId: t.PeerId;
+  peer: t.PeerId;
   bus: t.EventBus<any>;
   width?: number;
   height?: number;
@@ -21,11 +21,10 @@ export type DevVideoSelfProps = {
 
 export const DevVideoSelf: React.FC<DevVideoSelfProps> = (props) => {
   const { width = 150, height = 100 } = props;
-  const peerId = props.peerId;
-  const videoRef = EventBridge.videoRef(peerId);
+  const videoRef = EventBridge.videoRef(props.peer);
   const bus = props.bus.type<t.PeerEvent | MediaEvent>();
 
-  const { stream } = useVideoStreamState({ ref: videoRef, bus });
+  const { stream } = useVideoStreamState({ bus, ref: videoRef });
 
   useEffect(() => {
     MediaStreamController({ bus });

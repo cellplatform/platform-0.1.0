@@ -1,2 +1,2 @@
-export * from './components/VideoStream/types';
+export * from './components/MediaStream/types';
 export * from './components/Vimeo/types';
