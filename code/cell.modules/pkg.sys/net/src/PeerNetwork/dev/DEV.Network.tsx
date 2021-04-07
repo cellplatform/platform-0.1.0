@@ -3,7 +3,7 @@ import { Hr } from 'sys.ui.primitives/lib/components/Hr';
 
 import { css, CssValue, t } from './common';
 import { Connection } from './DEV.Connection';
-import { DevVideo } from './DEV.Video';
+import { DevVideoSelf } from './DEV.Video.Self';
 import { SelfPropList } from './DEV.Self.PropList';
 
 export type NetworkProps = {
@@ -42,7 +42,7 @@ export const Network: React.FC<NetworkProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       <div {...styles.header}>
         <SelfPropList status={status} />
-        <DevVideo peerId={status.id} bus={bus} />
+        <DevVideoSelf peerId={status.id} bus={bus} />
       </div>
       <Hr thickness={10} opacity={0.06} margin={[30, 0, 20, 0]} />
       <div {...styles.body}>{elConnections}</div>

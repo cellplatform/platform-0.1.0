@@ -32,7 +32,8 @@ export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
       <Hr thickness={5} opacity={0.1} margin={[10, 0, 20, 0]} />
 
       <div {...styles.video}>
-        <DevVideo bus={bus} peerId={peer.remote} />
+        <div />
+        {/* <DevVideo bus={bus} peerId={peer.remote} /> */}
       </div>
     </div>
   );

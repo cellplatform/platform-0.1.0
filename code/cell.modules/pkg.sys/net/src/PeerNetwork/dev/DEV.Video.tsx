@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import {
   AudioWaveform,
@@ -6,54 +6,28 @@ import {
   css,
   CssValue,
   Icons,
-  MediaEvent,
-  MediaStreamController,
-  MediaStreamEvents,
   PropList,
   PropListItem,
-  t,
   useOfflineState,
-  useVideoStreamState,
   VideoStream,
 } from './common';
-import { EventBridge } from './DEV.EventBridge';
 
 export type DevVideoProps = {
-  peerId: t.PeerId;
-  bus: t.EventBus<any>;
+  stream?: MediaStream;
   width?: number;
   height?: number;
   style?: CssValue;
 };
 
 export const DevVideo: React.FC<DevVideoProps> = (props) => {
-  const { width = 150, height = 100 } = props;
+  const { width = 150, height = 100, stream } = props;
   const wifi = useOfflineState();
-
-  const peerId = props.peerId;
-  const videoRef = EventBridge.videoRef(peerId);
-  const bus = props.bus.type<t.PeerEvent | MediaEvent>();
 
   const [isVideoMuted, setVideoMuted] = useState<boolean>(true);
   const [isAudioTrackMuted, setAudioTrackMuted] = useState<boolean>(false);
 
   const toggleVideoMuted = () => setVideoMuted((prev) => !prev);
   const toggleAudioTrackMuted = () => setAudioTrackMuted((prev) => !prev);
-
-  const { stream } = useVideoStreamState({
-    ref: videoRef,
-    bus,
-    onChange: (stream) => {
-      //
-    },
-  });
-
-  useEffect(() => {
-    MediaStreamController({ bus });
-    const events = MediaStreamEvents({ bus });
-    events.start(videoRef).video();
-    return () => events.dispose();
-  }, [bus, videoRef]);
 
   // HACK: Ensure audio tracks are in sync with mic-muted state.
   //       NB: This should be done at a global state level (via events).
@@ -124,12 +98,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
         {elVideoOverlay}
       </div>
       <div {...styles.waveform.base}>
-        <AudioWaveform
-          bus={bus}
-          streamRef={videoRef}
-          width={width - MARGIN.waveform * 2}
-          height={15}
-        />
+        <AudioWaveform stream={stream} width={width - MARGIN.waveform * 2} height={15} />
       </div>
       <PropList items={items} />
     </div>

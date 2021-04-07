@@ -13,4 +13,4 @@ export { ObjectView } from 'sys.ui.dev';
 export * from 'sys.ui.video/lib/components/VideoStream';
 export * from '../util';
 
-export { AudioWaveform } from 'sys.ui.video/lib/components/VideoStream/dev/DEV.AudioWaveform';
+export { AudioWaveform } from 'sys.ui.video/lib/components/AudioWaveform';
