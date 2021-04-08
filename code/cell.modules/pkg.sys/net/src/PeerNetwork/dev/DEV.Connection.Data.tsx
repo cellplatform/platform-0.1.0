@@ -48,7 +48,7 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
     {
       label: 'media',
       value: {
-        data: <Button>Start Screen Share</Button>,
+        data: <Button isEnabled={false}>Start Screen Share</Button>,
         onClick: () => open({ bus, self, remote, kind: 'screen' }),
       },
     },

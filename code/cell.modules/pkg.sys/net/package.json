@@ -1,6 +1,6 @@
 {
   "name": "sys.net",
-  "version": "0.0.23",
+  "version": "0.0.25",
   "sideEffects": false,
   "compiler": {
     "port": 3040

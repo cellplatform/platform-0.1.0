@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { PeerJS, t } from './common';
+import { PeerJS, t, defaultValue } from './common';
 
 type C = t.PeerConnectionStatus;
 
@@ -74,6 +74,14 @@ export const StringUtil = {
 
   stripPathLeft(text?: string) {
     return (text || '').trim().replace(/^\/*/, '').trim();
+  },
+
+  truncate(value: string, options: { edge?: number; divider?: string } = {}) {
+    const { divider = '...' } = options;
+    const edge = defaultValue(options.edge, 8);
+    const left = value.substring(0, edge);
+    const right = value.substring(value.length - edge);
+    return `${left}${divider}${right}`;
   },
 };
 
