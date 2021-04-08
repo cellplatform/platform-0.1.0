@@ -27,8 +27,13 @@ type IFileStore = {
  * Bundle and upload to a cell.
  */
 export async function upload(argv: t.Argv) {
+  const PKG = constants.PKG;
+  const version = { from: PKG.load().version || '', to: '' };
   const bump = util.bumpArg(argv);
-  if (bump) await Package.bump(constants.PKG.PATH, bump);
+  if (bump) {
+    await Package.bump(PKG.PATH, bump);
+    version.to = PKG.load().version || '';
+  }
 
   const bundle = argv.bundle; // NB: undefined by default (false if --no-bundle)
   const name = util.nameArg(argv, 'web');
@@ -84,6 +89,12 @@ export async function upload(argv: t.Argv) {
 
   const file = args.filepath.substring(fs.resolve('.').length + 1);
   log.info.gray(`Upload configuration stored in: ${file}`);
+
+  const logVersion = version.to
+    ? `${version.from} ➔ ${log.white(version.to)}`
+    : `${version.from} (no change)`;
+  log.info.gray(`package.json/version: ${logVersion}`);
+
   return res;
 }
 

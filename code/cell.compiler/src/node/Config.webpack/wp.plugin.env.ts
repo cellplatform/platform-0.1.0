@@ -9,10 +9,11 @@ import * as t from './types';
  */
 export function init(args: t.IArgs) {
   const model = Model(args.model);
-  const PKG = constants.PKG;
+  const PKG = constants.PKG.load();
+
   const json: t.RuntimeModule = {
     ...model.env,
-    module: { name: PKG.JSON.name || '', version: PKG.JSON.version || '' },
+    module: { name: PKG.name || '', version: PKG.version || '' },
   };
   if (args.isDev && !json.origin) {
     json.origin = { host: `localhost:${model.port()}`, uri: 'cell:dev:A1' };
