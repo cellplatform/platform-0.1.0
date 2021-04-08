@@ -5,10 +5,10 @@ import { t } from './common';
  */
 export type PeerStatus = {
   id: t.PeerId;
+  isOnline: boolean;
   createdAt: number;
   signal: t.PeerSignallingEndpoint;
   connections: t.PeerConnectionStatus[];
-  isOnline: boolean;
 };
 
 /**

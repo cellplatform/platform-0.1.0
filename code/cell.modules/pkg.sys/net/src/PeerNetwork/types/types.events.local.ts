@@ -149,6 +149,7 @@ export type PeerLocalMediaResEvent = {
 export type PeerLocalMediaRes = {
   self: t.PeerId;
   tx: string;
+  kind: t.PeerMediaKind;
   media?: MediaStream;
   error?: t.PeerError;
 };

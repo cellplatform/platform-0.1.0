@@ -1,9 +1,9 @@
 import React from 'react';
 import { ObjectView } from 'sys.ui.dev';
 
-import { usePeerNetworkState } from '../hooks';
+import { useLocalPeer } from '../hooks';
 import { COLORS, css, CssValue, t } from './common';
-import { Network } from './DEV.Network';
+import { DevNetwork } from './DEV.Network';
 
 export type RootLayoutProps = {
   self: t.PeerId;
@@ -16,9 +16,7 @@ export type RootLayoutProps = {
 export const RootLayout: React.FC<RootLayoutProps> = (props) => {
   const { netbus } = props;
   const bus = props.bus.type<t.PeerEvent>();
-
-  const state = usePeerNetworkState({ self: props.self, bus });
-  const network = state.peer;
+  const peer = useLocalPeer({ self: props.self, bus });
 
   const styles = {
     base: css({
@@ -49,22 +47,26 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
     }),
   };
 
+  const elNetwork = peer.status && (
+    <div {...styles.left}>
+      {<DevNetwork bus={bus} netbus={netbus} peer={peer.status} media={peer.media} />}
+    </div>
+  );
+
   const elJson = props.debugJson && (
     <>
       <div {...styles.middle}>
         <div {...styles.verticalRule} />
       </div>
       <div {...styles.right}>
-        <ObjectView name={'state'} data={state.peer} expandLevel={5} />
+        <ObjectView name={'state'} data={peer.status} expandLevel={5} />
       </div>
     </>
   );
 
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.left}>
-        {network && <Network bus={bus} netbus={netbus} status={network} />}
-      </div>
+      {elNetwork}
       {elJson}
     </div>
   );

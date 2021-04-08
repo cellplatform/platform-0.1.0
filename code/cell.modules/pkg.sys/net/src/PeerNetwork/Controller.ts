@@ -1,7 +1,7 @@
 import { merge } from 'rxjs';
-import { delay, filter, take } from 'rxjs/operators';
+import { map, delay, filter, take, distinctUntilChanged } from 'rxjs/operators';
 
-import { asArray, deleteUndefined, PeerJS, rx, slug, t, time, defaultValue } from './common';
+import { asArray, deleteUndefined, PeerJS, R, rx, slug, t, time, defaultValue } from './common';
 import { Events } from './Events';
 import { ConnectionRef, MemoryRefs, SelfRef } from './Refs';
 import { PeerJSError, StringUtil } from './util';
@@ -43,15 +43,14 @@ export function Controller(args: { bus: t.EventBus<any> }) {
    * Convert a "local network client" to an immutable status object.
    */
   const toStatus = (self: SelfRef): t.PeerStatus => {
-    const { peer, createdAt, signal, media } = self;
+    const { peer, createdAt, signal } = self;
     const id = peer.id;
     const connections = self.connections.map((item) => toConnectionStatus(item));
-    return deleteUndefined({
+    return deleteUndefined<t.PeerStatus>({
       id,
       isOnline: navigator.onLine,
       createdAt,
       signal,
-      media,
       connections,
     });
   };
@@ -106,18 +105,15 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
     conn.on('close', () => {
       /**
-       * TODO 🐷 BUG
+       * NOTE:
        * The close event is not being fired for [Media] connections.
        * Issue: https://github.com/peers/peerjs/issues/780
        *
-       * Work around: use the data stream to issue
-       * side request to close the connection.
+       * The work around uses the [netbus] "connection.ensureClosed" strategy.
        */
-
-      const connection = toConnectionStatus(connectionRef);
       bus.fire({
         type: 'Peer:Connection/closed',
-        payload: { self: self.id, connection },
+        payload: { self: self.id, connection: toConnectionStatus(connectionRef) },
       });
     });
 
@@ -137,56 +133,52 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     return connectionRef;
   };
 
+  const initializePeer = (e: t.PeerLocalCreateReq) => {
+    const createdAt = time.now.timestamp;
+    const signal = StringUtil.parseEndpointAddress(e.signal);
+    const { host, path, port, secure } = signal;
+    const peer = new PeerJS(e.self, { host, path, port, secure });
+    const self: SelfRef = { id: e.self, peer, createdAt, signal, connections: [], media: {} };
+
+    /**
+     * Listen for incoming DATA connection requests.
+     */
+    peer.on('connection', (dataConnection) => {
+      dataConnection.on('open', () => {
+        refs.connection(self).add('data', dataConnection);
+        completeConnection('data', 'incoming', self, dataConnection);
+      });
+    });
+
+    /**
+     * Listen for incoming MEDIA (video/screen) connection requests.
+     */
+    peer.on('call', async (mediaConnection) => {
+      const metadata = (mediaConnection.metadata || {}) as t.PeerConnectionMetadataMedia;
+      const { kind, constraints } = metadata;
+      const local = await events.media(self.id).request({ kind, constraints });
+      if (local.media) {
+        mediaConnection.answer(local.media);
+        mediaConnection.on('stream', (remoteStream) => {
+          refs.connection(self).add('media', mediaConnection, remoteStream);
+          completeConnection('media', 'incoming', self, mediaConnection);
+        });
+      }
+    });
+
+    // Finish up.
+    return self;
+  };
+
   /**
    * CREATE a new network client.
    */
   rx.payload<t.PeerLocalInitReqEvent>($, 'Peer:Local/init:req')
     .pipe(delay(0))
     .subscribe((e) => {
-      if (!refs.self[e.self]) {
-        const createdAt = time.now.timestamp;
-        const signal = StringUtil.parseEndpointAddress(e.signal);
-        const { host, path, port, secure } = signal;
-        const peer = new PeerJS(e.self, { host, path, port, secure });
-        const self: SelfRef = {
-          id: e.self,
-          peer,
-          createdAt,
-          signal,
-          connections: [],
-          media: {},
-        };
-        refs.self[e.self] = self;
-
-        /**
-         * Listen for incoming DATA connection requests.
-         */
-        peer.on('connection', (dataConnection) => {
-          dataConnection.on('open', () => {
-            refs.connection(self).add('data', dataConnection);
-            completeConnection('data', 'incoming', self, dataConnection);
-          });
-        });
-
-        /**
-         * Listen for incoming MEDIA (video/screen) connection requests.
-         */
-        peer.on('call', async (mediaConnection) => {
-          const metadata = (mediaConnection.metadata || {}) as t.PeerConnectionMetadataMedia;
-          const { kind, constraints } = metadata;
-          const local = await events.media(self.id).request({ kind, constraints });
-          if (local.media) {
-            mediaConnection.answer(local.media);
-            mediaConnection.on('stream', (remoteStream) => {
-              refs.connection(self).add('media', mediaConnection, remoteStream);
-              completeConnection('media', 'incoming', self, mediaConnection);
-            });
-          }
-        });
-      }
-
-      const self = refs.self[e.self];
-
+      const id = e.self;
+      if (!refs.self[id]) refs.self[id] = initializePeer(e);
+      const self = refs.self[id];
       bus.fire({
         type: 'Peer:Local/init:res',
         payload: { self: e.self, createdAt: self.createdAt, signal: self.signal },
@@ -225,17 +217,18 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         return types.includes(e.type);
       }),
     ),
+  ).pipe(
+    map((event) => ({ selfRef: refs.self[event.payload.self], event })),
+    filter((e) => Boolean(e.selfRef)),
+    map((e) => ({ event: e.event, status: toStatus(e.selfRef) })),
+    distinctUntilChanged((prev, next) => R.equals(prev.status, next.status)),
   );
 
-  statusChanged$.pipe().subscribe((event) => {
-    const ref = event.payload.self;
-    const self = refs.self[ref];
-    if (self) {
-      bus.fire({
-        type: 'Peer:Local/status:changed',
-        payload: { self: ref, peer: toStatus(self), event },
-      });
-    }
+  statusChanged$.subscribe((e) => {
+    bus.fire({
+      type: 'Peer:Local/status:changed',
+      payload: { self: e.status.id, peer: e.status, event: e.event },
+    });
   });
 
   /**

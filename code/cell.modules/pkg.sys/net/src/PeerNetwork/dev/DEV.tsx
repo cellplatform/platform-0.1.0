@@ -47,13 +47,20 @@ export const actions = DevActions<Ctx>()
       media: MediaStream.Events({ bus }),
     };
 
-    time.delay(100, () => events.net.create(signal, self));
+    time.delay(100, async () => {
+      events.media.start(EventBridge.videoRef(self)).video();
+      events.net.create(signal, self);
+      events.net.media(self).video();
+    });
 
     const netbus = events.net.data(self).bus();
 
-    netbus.event$.subscribe((e) => {
-      console.log('Network Bus', e.type, e.payload);
-    });
+    /**
+     * TODO 🐷
+     * - Sync mic/mute settings with screen shot
+     * - Timeout on screen media start.
+     * - Close LOCAL screen media
+     */
 
     return {
       self,

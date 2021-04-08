@@ -23,23 +23,30 @@ export const EventBridge = {
     /**
      * NETWORK => VIDEO => NETWORK
      */
-    events.net.media(args.self).req$.subscribe(async (e) => {
+    events.net.media(args.self).request$.subscribe(async (e) => {
+      const { self, kind } = e;
       const tx = e.tx || slug();
-      const ref = EventBridge.ref(e.self, e.kind);
+      const ref = EventBridge.ref(self, kind);
 
       log.info('EVENT BRIDGE / request:', e, ref);
 
-      /**
-       * TODO 🐷
-       * Start screen share stream when requested.
-       */
-
       const { stream } = await events.media.status(ref).get();
-      const media = stream?.media;
-      const error = media ? undefined : { message: `The ${e.kind} stream has not been started.` };
+      let media = stream?.media;
 
-      log.info('MEDIA Stream', stream);
-      events.net.media(e.self).respond({ tx, media, error });
+      if (!media) {
+        if (e.kind === 'video') {
+          const video = await events.media.start(ref).video();
+          media = video.stream;
+        }
+
+        if (e.kind === 'screen') {
+          const screen = await events.media.start(ref).screen();
+          media = screen.stream;
+        }
+      }
+
+      const error = media ? undefined : { message: `The ${kind} stream has not been started.` };
+      events.net.media(self).respond({ tx, kind, media, error });
     });
   },
 };

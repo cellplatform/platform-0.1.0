@@ -3,34 +3,27 @@ import { Hr } from 'sys.ui.primitives/lib/components/Hr';
 
 import { css, CssValue, t } from './common';
 import { Connection } from './DEV.Connection';
-import { DevVideoSelf } from './DEV.Video.Self';
-import { SelfPropList } from './DEV.Self.PropList';
+import { DevNetworkHeader } from './DEV.Network.Header';
 
-export type NetworkProps = {
+export type DevNetworkProps = {
   bus: t.EventBus<any>;
   netbus: t.EventBus<any>;
-  status: t.PeerStatus;
+  peer: t.PeerStatus;
+  media: { video?: MediaStream; screen?: MediaStream };
   style?: CssValue;
 };
 
-export const Network: React.FC<NetworkProps> = (props) => {
-  const { status, netbus } = props;
+export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
+  const { peer, media, netbus } = props;
   const bus = props.bus.type<t.PeerEvent>();
 
-  const PADDING = {
-    HEADER: 15,
-    CARD: 25,
-  };
+  const PADDING = { CARD: 25 };
 
   const styles = {
     base: css({
       flex: 1,
       Flex: 'vertical-stretch-stretch',
       boxSizing: 'border-box',
-    }),
-    header: css({
-      Flex: 'horizontal-spaceBetween-start',
-      padding: PADDING.HEADER,
     }),
     body: {
       base: css({ flex: 1, position: 'relative' }),
@@ -45,7 +38,7 @@ export const Network: React.FC<NetworkProps> = (props) => {
     },
   };
 
-  const connections = status.connections;
+  const connections = peer.connections;
   const elConnections = connections.map((item, i) => {
     const isLast = i === connections.length - 1;
     return (
@@ -62,10 +55,7 @@ export const Network: React.FC<NetworkProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.header}>
-        <SelfPropList status={status} />
-        <DevVideoSelf peer={status.id} bus={bus} />
-      </div>
+      <DevNetworkHeader bus={bus} peer={peer} media={media} />
       <Hr thickness={10} opacity={0.05} margin={0} />
       <div {...styles.body.base}>
         <div {...styles.body.scroll}>{elConnections}</div>

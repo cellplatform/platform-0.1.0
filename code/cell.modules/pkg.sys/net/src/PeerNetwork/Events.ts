@@ -91,10 +91,10 @@ export function Events(args: { bus: t.EventBus<any> }) {
    * LOCAL: Media
    */
   const media = (self: t.PeerId) => {
-    const req$ = rx
+    const request$ = rx
       .payload<t.PeerLocalMediaReqEvent>(event$, 'Peer:Local/media:req')
       .pipe(filter((e) => e.self === self));
-    const res$ = rx
+    const response$ = rx
       .payload<t.PeerLocalMediaResEvent>(event$, 'Peer:Local/media:res')
       .pipe(filter((e) => e.self === self));
 
@@ -107,7 +107,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
     const request = async (args: { kind: t.PeerMediaKind; constraints?: C; tx?: string }) => {
       const { kind, constraints } = args;
       const tx = args.tx || slug();
-      const res = firstValueFrom(res$.pipe(filter((e) => e.tx === tx)));
+      const res = firstValueFrom(response$.pipe(filter((e) => e.tx === tx)));
       bus.fire({
         type: 'Peer:Local/media:req',
         payload: { self, tx, kind, constraints },
@@ -115,15 +115,20 @@ export function Events(args: { bus: t.EventBus<any> }) {
       return res;
     };
 
-    const respond = (args: { tx: string; media?: MediaStream; error?: t.PeerError }) => {
-      const { tx, media, error } = args;
+    const respond = (args: {
+      tx: string;
+      kind: t.PeerMediaKind;
+      media?: MediaStream;
+      error?: t.PeerError;
+    }) => {
+      const { tx, kind, media, error } = args;
       bus.fire({
         type: 'Peer:Local/media:res',
-        payload: { self, tx, media, error },
+        payload: { self, tx, kind, media, error },
       });
     };
 
-    return { self, req$, res$, request, video, screen, respond };
+    return { self, request$, response$, request, video, screen, respond };
   };
 
   /**
