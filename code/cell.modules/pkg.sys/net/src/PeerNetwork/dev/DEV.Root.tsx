@@ -20,7 +20,7 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
 
   const styles = {
     base: css({
-      flex: 1,
+      Absolute: 0,
       Flex: 'horizontal-stretch-stretch',
       color: COLORS.DARK,
       overflow: 'hidden',

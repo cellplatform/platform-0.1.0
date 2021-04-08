@@ -13,6 +13,7 @@ export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
   const peer = connection.peer;
 
   const streamId = connection.media.id;
+  const isLocalhost = location.hostname === 'localhost';
 
   const items: PropListItem[] = [
     { label: 'id', value: { data: connection.id, clipboard: true } },
@@ -33,7 +34,7 @@ export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
       <Hr thickness={5} opacity={0.1} margin={[10, 0, 20, 0]} />
 
       <div {...styles.video}>
-        <DevVideo stream={connection.media} />
+        <DevVideo stream={connection.media} isVideoMuted={isLocalhost ? true : false} />
       </div>
     </div>
   );

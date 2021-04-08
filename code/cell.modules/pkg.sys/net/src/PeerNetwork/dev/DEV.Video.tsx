@@ -1,3 +1,4 @@
+import { defaultValue } from '@platform/util.value';
 import React, { useState } from 'react';
 
 import {
@@ -17,14 +18,15 @@ export type DevVideoProps = {
   width?: number;
   height?: number;
   style?: CssValue;
+  isVideoMuted?: boolean;
 };
 
 export const DevVideo: React.FC<DevVideoProps> = (props) => {
   const { width = 150, height = 100, stream } = props;
   const wifi = MediaStream.useOfflineState();
 
-  const [isVideoMuted, setVideoMuted] = useState<boolean>(true);
   const [isAudioTrackMuted, setAudioTrackMuted] = useState<boolean>(false);
+  const [isVideoMuted, setVideoMuted] = useState<boolean>(defaultValue(props.isVideoMuted, true));
 
   const toggleVideoMuted = () => setVideoMuted((prev) => !prev);
   const toggleAudioTrackMuted = () => setAudioTrackMuted((prev) => !prev);
