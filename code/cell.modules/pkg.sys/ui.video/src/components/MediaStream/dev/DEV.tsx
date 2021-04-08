@@ -105,7 +105,8 @@ export const actions = DevActions<Ctx>()
     e.button('fire ⚡️ MediaStream/status:req', async (e) => {
       const ref = e.ctx.ref;
       const data = deleteUndefined(await e.ctx.events.status(ref).get());
-      e.button.description = <ObjectView name={'response: status'} data={data} fontSize={10} />;
+      const name = 'response: status';
+      e.button.description = <ObjectView name={name} data={data} fontSize={10} expandLevel={3} />;
     });
 
     e.button('fire ⚡️ MediaStreams/status:req (all)', async (e) => {

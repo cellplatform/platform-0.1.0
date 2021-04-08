@@ -26,13 +26,12 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
   const toStatus = (ref: string): t.MediaStreamStatus | undefined => {
     const item = refs[ref];
     if (!item) return undefined;
-    return {
-      ref,
-      kind: item.kind,
-      media: item.media,
-      constraints: item.constraints,
-      tracks: toTracks(item.media),
-    };
+
+    const { media, constraints, kind } = item;
+    const tracks = toTracks(media);
+    const isEnded = tracks.every((track) => track.state === 'ended');
+
+    return { ref, kind, isEnded, media, constraints, tracks };
   };
 
   /**
@@ -42,9 +41,18 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
     .pipe()
     .subscribe((e) => {
       const { ref } = e;
+      let stream = toStatus(ref);
+
+      if (stream?.isEnded) {
+        // Ensure the stream has not ended, and if so, perform a proper STOP
+        // operation on it before returning the new status.
+        bus.fire({ type: 'MediaStream/stop', payload: { ref } });
+        stream = toStatus(ref);
+      }
+
       bus.fire({
         type: 'MediaStream/status:res',
-        payload: { ref, stream: toStatus(ref) },
+        payload: { ref, stream },
       });
     });
 
@@ -55,6 +63,7 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
         .map((key) => toStatus(key) as t.MediaStreamStatus)
         .filter(Boolean)
         .filter((item) => (e.kind === undefined ? true : item?.kind === e.kind));
+
       bus.fire({
         type: 'MediaStreams/status:res',
         payload: { streams },
@@ -125,6 +134,17 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
       }
 
       const { media: stream } = refs[ref];
+
+      // Monitor for when the track ends which will happen when the stream
+      // is closed externally by the host OS, for example when the
+      // "stop screen sharing" button is clicked.
+      stream.getTracks().forEach((track) => {
+        const onTrackEnded = () => {
+          const isEnded = stream.getTracks().every((t) => t.readyState === 'ended');
+          if (isEnded) bus.fire({ type: 'MediaStream/stop', payload: { ref } });
+        };
+        track.clone().onended = onTrackEnded;
+      });
 
       bus.fire({
         type: 'MediaStream/started',
