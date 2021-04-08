@@ -109,7 +109,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
        * The close event is not being fired for [Media] connections.
        * Issue: https://github.com/peers/peerjs/issues/780
        *
-       * The work around uses the [netbus] "connection.ensureClosed" strategy.
+       * See work-around that uses the [netbus] "connection.ensureClosed" strategy.
        */
       bus.fire({
         type: 'Peer:Connection/closed',
@@ -121,10 +121,11 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       const data = conn as PeerJS.DataConnection;
       data.on('data', (data: t.JsonMap) => {
         if (typeof data === 'object') {
-          const e = data as t.PeerDataSend;
+          const e = data as t.PeerDataOut;
+          const to = asArray(e.target || []);
           bus.fire({
-            type: 'Peer:Data/received',
-            payload: { self: self.id, data: e.data, from: e.self, to: asArray(e.target || []) },
+            type: 'Peer:Data/in',
+            payload: { self: self.id, data: e.data, from: e.self, to },
           });
         }
       });
@@ -400,9 +401,9 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     });
 
   /**
-   * DATA: Send
+   * DATA:OUT: Send
    */
-  rx.payload<t.PeerDataSendEvent>($, 'Peer:Data/send')
+  rx.payload<t.PeerDataOutEvent>($, 'Peer:Data/out')
     .pipe()
     .subscribe((e) => {
       const target = e.target === undefined ? [] : asArray(e.target);

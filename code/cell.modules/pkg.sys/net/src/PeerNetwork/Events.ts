@@ -205,27 +205,27 @@ export function Events(args: { bus: t.EventBus<any> }) {
   };
 
   const data = (self: t.PeerId) => {
-    const send$ = rx
-      .payload<t.PeerDataSendEvent>(event$, 'Peer:Data/send')
+    const out$ = rx
+      .payload<t.PeerDataOutEvent>(event$, 'Peer:Data/out')
       .pipe(filter((e) => e.self === self));
 
-    const received$ = rx
-      .payload<t.PeerDataReceivedEvent>(event$, 'Peer:Data/received')
+    const in$ = rx
+      .payload<t.PeerDataInEvent>(event$, 'Peer:Data/in')
       .pipe(filter((e) => e.self === self));
 
     const send = (data: t.JsonMap, target?: t.PeerId | t.PeerId[]) => {
       bus.fire({
-        type: 'Peer:Data/send',
+        type: 'Peer:Data/out',
         payload: { self, data, target },
       });
     };
 
     return {
       self,
-      send$,
-      received$,
+      in$,
+      out$,
       send,
-      bus<E extends t.Event>(options: { target?: () => t.PeerDataSend['target'] } = {}) {
+      bus<E extends t.Event>(options: { target?: () => t.PeerDataOut['target'] } = {}) {
         const bus$ = new Subject<t.Event>();
         let current: undefined | t.Event;
 
@@ -236,12 +236,13 @@ export function Events(args: { bus: t.EventBus<any> }) {
             filter((e) => e !== current), // NB: Prevent circular event loop.
           )
           .subscribe((e) => {
+            // NB: undefined target sends to all connections.
             const target = options.target ? options.target() : undefined;
             send(e, target);
           });
 
         // Listen for incoming events from the network and pass into the bus.
-        received$.pipe(filter((e) => isEvent(e.data))).subscribe((e) => {
+        in$.pipe(filter((e) => isEvent(e.data))).subscribe((e) => {
           current = e.data as t.Event;
           bus$.next(current);
           current = undefined;

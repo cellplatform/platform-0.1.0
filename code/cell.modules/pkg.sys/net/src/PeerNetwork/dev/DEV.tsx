@@ -57,9 +57,9 @@ export const actions = DevActions<Ctx>()
 
     /**
      * TODO 🐷
-     * - Sync mic/mute settings with screen shot
      * - Timeout on screen media start.
      * - Close LOCAL screen media
+     * -
      */
 
     return {

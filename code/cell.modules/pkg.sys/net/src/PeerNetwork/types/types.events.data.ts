@@ -1,15 +1,15 @@
 import { t } from './common';
 
-export type PeerDataEvent = PeerDataSendEvent | PeerDataReceivedEvent;
+export type PeerDataEvent = PeerDataOutEvent | PeerDataInEvent;
 
 /**
  * Fires to sends OUTGOING data over the network
  */
-export type PeerDataSendEvent = {
-  type: 'Peer:Data/send';
-  payload: PeerDataSend;
+export type PeerDataOutEvent = {
+  type: 'Peer:Data/out';
+  payload: PeerDataOut;
 };
-export type PeerDataSend = {
+export type PeerDataOut = {
   self: t.PeerId;
   target?: t.PeerId | t.PeerId[]; // If omitted broadcast to all connected peers.
   data: t.JsonMap;
@@ -18,11 +18,11 @@ export type PeerDataSend = {
 /**
  * Fires when INCOMING data is recieved from the network.
  */
-export type PeerDataReceivedEvent = {
-  type: 'Peer:Data/received';
-  payload: PeerDataReceived;
+export type PeerDataInEvent = {
+  type: 'Peer:Data/in';
+  payload: PeerDataIn;
 };
-export type PeerDataReceived = {
+export type PeerDataIn = {
   self: t.PeerId;
   data: t.JsonMap;
   from: t.PeerId;

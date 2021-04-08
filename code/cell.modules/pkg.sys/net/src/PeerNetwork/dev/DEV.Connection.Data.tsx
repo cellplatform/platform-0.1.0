@@ -42,12 +42,12 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
     { label: 'open', value: connection.isOpen },
     { label: 'reliable', value: connection.isReliable },
     {
-      label: 'media',
-      value: <Button onClick={open('video')} label={'Start Video'} />,
+      label: 'video',
+      value: <Button onClick={open('video')} label={'Start'} />,
     },
     {
-      label: 'media',
-      value: <Button isEnabled={false} onClick={open('screen')} label={'Start Screen Share'} />,
+      label: 'screen',
+      value: <Button onClick={open('screen')} label={'Share (two-way)'} />,
     },
   ];
 
