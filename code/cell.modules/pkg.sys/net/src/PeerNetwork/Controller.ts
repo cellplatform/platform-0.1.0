@@ -4,7 +4,7 @@ import { map, delay, filter, take, distinctUntilChanged } from 'rxjs/operators';
 import { asArray, deleteUndefined, PeerJS, R, rx, slug, t, time, defaultValue } from './common';
 import { Events } from './Events';
 import { ConnectionRef, MemoryRefs, SelfRef } from './Refs';
-import { PeerJSError, StringUtil } from './util';
+import { PeerJSError, StringUtil, StreamUtil } from './util';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 
@@ -134,7 +134,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     return connectionRef;
   };
 
-  const initializePeer = (e: t.PeerLocalCreateReq) => {
+  const initLocalPeer = (e: t.PeerLocalCreateReq) => {
     const createdAt = time.now.timestamp;
     const signal = StringUtil.parseEndpointAddress(e.signal);
     const { host, path, port, secure } = signal;
@@ -152,18 +152,29 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     });
 
     /**
-     * Listen for incoming MEDIA (video/screen) connection requests.
+     * Listen for incoming MEDIA connection requests (video/screen).
      */
     peer.on('call', async (mediaConnection) => {
       const metadata = (mediaConnection.metadata || {}) as t.PeerConnectionMetadataMedia;
       const { kind, constraints } = metadata;
-      const local = await events.media(self.id).request({ kind, constraints });
-      if (local.media) {
-        mediaConnection.answer(local.media);
+
+      const answer = (localStream?: MediaStream) => {
+        mediaConnection.answer(localStream);
         mediaConnection.on('stream', (remoteStream) => {
           refs.connection(self).add('media', mediaConnection, remoteStream);
           completeConnection('media', 'incoming', self, mediaConnection);
         });
+      };
+
+      if (kind === 'video') {
+        const local = await events.media(self.id).request({ kind, constraints });
+        answer(local.media);
+      }
+
+      if (kind === 'screen') {
+        // NB: Screen shares do not send back another stream so do
+        //     not request it from the user.
+        answer();
       }
     });
 
@@ -178,7 +189,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     .pipe(delay(0))
     .subscribe((e) => {
       const id = e.self;
-      if (!refs.self[id]) refs.self[id] = initializePeer(e);
+      if (!refs.self[id]) refs.self[id] = initLocalPeer(e);
       const self = refs.self[id];
       bus.fire({
         type: 'Peer:Local/init:res',
@@ -231,6 +242,19 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       payload: { self: e.status.id, peer: e.status, event: e.event },
     });
   });
+
+  rx.event<t.PeerLocalStatusRefreshEvent>($, 'Peer:Local/status:refresh')
+    .pipe()
+    .subscribe((event) => {
+      const { self } = event.payload;
+      const selfRef = refs.self[self];
+      if (selfRef) {
+        bus.fire({
+          type: 'Peer:Local/status:changed',
+          payload: { self, peer: toStatus(selfRef), event },
+        });
+      }
+    });
 
   /**
    * PURGE
@@ -358,11 +382,32 @@ export function Controller(args: { bus: t.EventBus<any> }) {
           fireError(err);
         });
 
-        mediaConnection.on('stream', (remoteStream) => {
-          if (timeout.isCancelled) return;
+        const completeMediaConnection = () => {
           timeout.cancel();
-          connRef.remoteStream = remoteStream;
           completeConnection('media', 'outgoing', self, mediaConnection, tx);
+        };
+
+        if (e.kind === 'video') {
+          mediaConnection.on('stream', (remoteStream) => {
+            if (timeout.isCancelled) return;
+            connRef.remoteStream = remoteStream;
+            completeMediaConnection();
+          });
+        }
+
+        if (e.kind === 'screen') {
+          // NB: Complete immediately without waiting for return stream.
+          //     Screen shares are always one-way (out) so there will be no incoming stream.
+          const completeUponOpen = () => {
+            if (!mediaConnection.open) return time.delay(50, completeUponOpen);
+            return completeMediaConnection();
+          };
+          completeUponOpen();
+        }
+
+        // Listen for external ending of the stream and clean up accordingly.
+        StreamUtil.onEnded(localStream, () => {
+          events.connection(self.id, remote).close(connRef.id);
         });
       }
     });
@@ -414,6 +459,9 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         .forEach((conn) => conn.send({ ...e, target }));
     });
 
+  /**
+   * API
+   */
   return {
     dispose$: events.dispose$,
     dispose,

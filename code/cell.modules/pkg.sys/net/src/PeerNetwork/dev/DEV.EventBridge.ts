@@ -28,10 +28,10 @@ export const EventBridge = {
       const tx = e.tx || slug();
       const ref = EventBridge.ref(self, kind);
 
-      log.info('EVENT BRIDGE / request:', e, ref);
-
       const { stream } = await events.media.status(ref).get();
       let media = stream?.media;
+
+      log.info('EVENT BRIDGE / request:', e, ref, media);
 
       if (!media) {
         if (e.kind === 'video') {

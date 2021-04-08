@@ -50,7 +50,7 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
         key={peer.remote}
         padding={[18, 20, 20, 20]}
         margin={props.margin}
-        width={290}
+        width={300}
         shadow={false}
       >
         {elData}

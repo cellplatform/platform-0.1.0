@@ -55,11 +55,18 @@ export const actions = DevActions<Ctx>()
 
     const netbus = events.net.data(self).bus();
 
+    events.net.status(self).changed$.subscribe((e) => {
+      console.log('CHANGED', e);
+    });
+
     /**
      * TODO 🐷
      * - Timeout on screen media start.
      * - Close LOCAL screen media
-     * -
+     *    - on connectino closed
+     *    - on OS "stop sharing" button click
+     * - HANDLE Start screen share, then cancel before selecting screen
+     * - Ensure OUTGOING screen-share connection is updated with "isOpen: true"
      */
 
     return {
@@ -112,6 +119,11 @@ export const actions = DevActions<Ctx>()
       e.button.description = (
         <ObjectView name={'purged'} data={data} fontSize={10} expandLevel={2} />
       );
+    });
+
+    e.button('fire ⚡️ Peer:Local/status:refresh', async (e) => {
+      const self = e.ctx.self;
+      e.ctx.events.net.status(self).refresh();
     });
 
     e.hr(1, 0.2);

@@ -9,6 +9,7 @@ export type PeerLocalEvent =
   | PeerLocalStatusRequestEvent
   | PeerLocalStatusResponseEvent
   | PeerLocalStatusChangedEvent
+  | PeerLocalStatusRefreshEvent
   | PeerLocalOnlineChangedEvent
   | PeerLocalPurgeReqEvent
   | PeerLocalPurgeResEvent
@@ -88,6 +89,20 @@ export type PeerLocalStatusChanged = {
   event: t.PeerEvent;
 };
 
+/**
+ * Fired to force the "status:changed" event.
+ */
+export type PeerLocalStatusRefreshEvent = {
+  type: 'Peer:Local/status:refresh';
+  payload: PeerLocalStatusRefresh;
+};
+export type PeerLocalStatusRefresh = {
+  self: t.PeerId;
+};
+
+/**
+ * Fires when the online (network connectivity) status changes.
+ */
 export type PeerLocalOnlineChangedEvent = {
   type: 'Peer:Local/online:changed';
   payload: PeerLocalOnlineChanged;

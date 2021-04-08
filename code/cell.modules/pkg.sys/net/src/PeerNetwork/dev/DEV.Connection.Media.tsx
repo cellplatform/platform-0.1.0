@@ -12,13 +12,17 @@ export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
   const { connection } = props;
   const peer = connection.peer;
 
-  const streamId = connection.media.id;
+  const streamId = connection.media?.id;
   const isLocalhost = location.hostname === 'localhost';
 
   const items: PropListItem[] = [
     { label: 'id', value: { data: connection.id, clipboard: true } },
     { label: 'peer (remote)', value: { data: peer.remote, clipboard: true } },
-    { label: 'stream.id', value: { data: StringUtil.truncate(streamId), clipboard: streamId } },
+    {
+      label: 'stream.id',
+      visible: Boolean(streamId),
+      value: { data: streamId ? StringUtil.truncate(streamId) : '<nothing>', clipboard: streamId },
+    },
     { label: 'open', value: connection.isOpen },
   ];
 
@@ -31,11 +35,15 @@ export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       <PropList title={'Media Connection'} items={items} defaults={{ clipboard: false }} />
 
-      <Hr thickness={5} opacity={0.1} margin={[10, 0, 20, 0]} />
+      {streamId && (
+        <>
+          <Hr thickness={5} opacity={0.1} margin={[10, 0, 20, 0]} />
 
-      <div {...styles.video}>
-        <DevVideo stream={connection.media} isVideoMuted={isLocalhost ? true : false} />
-      </div>
+          <div {...styles.video}>
+            <DevVideo stream={connection.media} isVideoMuted={isLocalhost ? true : false} />
+          </div>
+        </>
+      )}
     </div>
   );
 };

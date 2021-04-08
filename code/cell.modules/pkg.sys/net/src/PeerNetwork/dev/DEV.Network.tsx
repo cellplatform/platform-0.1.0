@@ -39,6 +39,7 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
   };
 
   const connections = peer.connections;
+
   const elConnections = connections.map((item, i) => {
     const isLast = i === connections.length - 1;
     return (

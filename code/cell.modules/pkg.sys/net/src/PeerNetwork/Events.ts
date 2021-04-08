@@ -55,6 +55,9 @@ export function Events(args: { bus: t.EventBus<any> }) {
     const response$ = rx
       .payload<t.PeerLocalStatusResponseEvent>(event$, 'Peer:Local/status:res')
       .pipe(filter((e) => e.self === self));
+    const changed$ = rx
+      .payload<t.PeerLocalStatusChangedEvent>(event$, 'Peer:Local/status:changed')
+      .pipe(filter((e) => e.self === self));
 
     const get = () => {
       const tx = slug();
@@ -63,7 +66,11 @@ export function Events(args: { bus: t.EventBus<any> }) {
       return res;
     };
 
-    return { self, get, request$, response$ };
+    const refresh = () => {
+      bus.fire({ type: 'Peer:Local/status:refresh', payload: { self } });
+    };
+
+    return { self, get, refresh, request$, response$, changed$ };
   };
 
   /**

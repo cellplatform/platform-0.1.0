@@ -48,6 +48,7 @@ export function MemoryRefs() {
 
           const ref: ConnectionRef = { kind, uri, id, peer, conn, remoteStream };
           self.connections = [...self.connections, ref];
+
           return ref;
         },
 

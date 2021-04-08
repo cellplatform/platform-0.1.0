@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { debounceTime } from 'rxjs/operators';
 
-import { rx, t } from '../common';
+import { t } from '../common';
 import { Events } from '../Events';
+import { StreamUtil } from '../util';
 
 /**
  * Monitors an event-bus keeping a set of state values
@@ -18,8 +19,12 @@ export function useLocalPeer(args: { self: t.PeerId; bus: t.EventBus<any> }) {
 
   useEffect(() => {
     const events = Events({ bus });
-    const $ = events.$;
     const media = events.media(self);
+
+    const setMedia = (kind: t.PeerMediaKind, media?: MediaStream) => {
+      if (kind === 'video') setVideo(media);
+      if (kind === 'screen') setScreen(media);
+    };
 
     const updateStatus = async () => {
       const { peer } = await events.status(self).get();
@@ -29,16 +34,14 @@ export function useLocalPeer(args: { self: t.PeerId; bus: t.EventBus<any> }) {
     /**
      * Listen for local peer status changes.
      */
-    rx.payload<t.PeerLocalStatusChangedEvent>($, 'Peer:Local/status:changed')
-      .pipe(debounceTime(50))
-      .subscribe(updateStatus);
+    events.status(self).changed$.pipe(debounceTime(50)).subscribe(updateStatus);
 
     /**
      * Listen for media requests.
      */
     media.response$.pipe().subscribe((e) => {
-      if (e.kind === 'screen') setScreen(e.media);
-      if (e.kind === 'video') setVideo(e.media);
+      setMedia(e.kind, e.media);
+      if (e.media) StreamUtil.onEnded(e.media, () => setMedia(e.kind, undefined));
     });
 
     return () => events.dispose();

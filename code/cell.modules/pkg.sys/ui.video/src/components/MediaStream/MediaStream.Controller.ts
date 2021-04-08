@@ -2,6 +2,7 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { R, rx, t, slug } from '../../common';
+import { StreamUtil } from './util';
 
 type M = MediaStreamConstraints;
 type Refs = { [ref: string]: Ref };
@@ -138,12 +139,8 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
       // Monitor for when the track ends which will happen when the stream
       // is closed externally by the host OS, for example when the
       // "stop screen sharing" button is clicked.
-      stream.getTracks().forEach((track) => {
-        const onTrackEnded = () => {
-          const isEnded = stream.getTracks().every((t) => t.readyState === 'ended');
-          if (isEnded) bus.fire({ type: 'MediaStream/stop', payload: { ref } });
-        };
-        track.clone().onended = onTrackEnded;
+      StreamUtil.onEnded(stream, () => {
+        bus.fire({ type: 'MediaStream/stop', payload: { ref } });
       });
 
       bus.fire({

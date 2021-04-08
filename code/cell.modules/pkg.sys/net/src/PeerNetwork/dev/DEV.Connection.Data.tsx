@@ -38,16 +38,16 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
 
   const items: PropListItem[] = [
     { label: 'id', value: { data: connection.id, clipboard: true } },
-    { label: 'remote peer', value: { data: peer.remote, clipboard: true } },
+    { label: 'peer (remote)', value: { data: peer.remote, clipboard: true } },
     { label: 'open', value: connection.isOpen },
     { label: 'reliable', value: connection.isReliable },
     {
       label: 'video',
-      value: <Button onClick={open('video')} label={'Start'} />,
+      value: <Button onClick={open('video')} label={'Start Video'} />,
     },
     {
       label: 'screen',
-      value: <Button onClick={open('screen')} label={'Share (two-way)'} />,
+      value: <Button onClick={open('screen')} label={'Share Screen'} />,
     },
   ];
 
