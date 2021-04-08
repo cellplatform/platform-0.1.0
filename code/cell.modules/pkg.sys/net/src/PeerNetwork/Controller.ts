@@ -311,12 +311,6 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         return fireError(message);
       }
 
-      // Check for existing remote connection.
-      const isMatch = (item: ConnectionRef) => item.kind === e.kind && item.peer.remote === remote;
-      if (self.connections.find(isMatch)) {
-        return fire({ existing: true });
-      }
-
       // Start a data connection.
       if (e.kind === 'data') {
         const reliable = e.isReliable;

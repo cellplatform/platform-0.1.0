@@ -30,12 +30,11 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
   const peer = connection.peer;
   const { self, remote } = peer;
 
-  const [eventCount, setEventCount] = useState<number>(0);
   const [eventMessage, setEventMessage] = useState<string>('');
 
   const items: PropListItem[] = [
     { label: 'id', value: { data: connection.id, clipboard: true } },
-    { label: 'peer (remote)', value: { data: peer.remote, clipboard: true } },
+    { label: 'remote peer', value: { data: peer.remote, clipboard: true } },
     { label: 'open', value: connection.isOpen },
     { label: 'reliable', value: connection.isReliable },
     {
@@ -59,12 +58,15 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
 
   const broadcastEvent = () => {
     const msg = eventMessage.trim() ? eventMessage : `<empty>`;
-    setEventCount((prev) => prev + 1);
     netbus.fire({
       // NB: Arbitrary invented event.
       // When using in application, pass a set of strong event types to the bus.
       type: 'sample/event',
-      payload: { msg, from: peer.self, count: eventCount },
+      payload: {
+        msg,
+        peer: `...${peer.self.substring(peer.self.length - 10)}`,
+        connection: connection.id,
+      },
     });
   };
 
