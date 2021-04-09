@@ -38,9 +38,7 @@ export function delay<T = any>(msecs: number, callback?: () => T): t.TimeDelayPr
   promise.cancel = () => {
     if (!promise.isCancelled) {
       promise.isCancelled = true;
-      if (timeout) {
-        clearTimeout(timeout);
-      }
+      if (timeout) clearTimeout(timeout);
       done();
     }
   };

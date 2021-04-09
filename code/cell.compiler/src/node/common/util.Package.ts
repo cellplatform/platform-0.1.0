@@ -1,7 +1,8 @@
-import { fs } from './libs';
+import { fs, semver } from './libs';
 import * as t from './types';
 
 const NODE_MODULES = 'node_modules/';
+export const BUMP_LEVELS: t.VersionBumpLevel[] = ['major', 'minor', 'patch', 'alpha', 'beta'];
 
 export const Package = {
   /**
@@ -38,5 +39,42 @@ export const Package = {
     const json = (await fs.readJson(pkg.path)) as t.INpmPackageJson;
     const res = { ...pkg, json };
     return res;
+  },
+
+  /**
+   * Bump the [package.json].
+   */
+  async bump(path: string, level: t.VersionBumpLevel) {
+    if (!BUMP_LEVELS.includes(level)) {
+      const supported = BUMP_LEVELS.join(',');
+      const err = `Version bump level [${level}] not supported. Supported levels: ${supported}.`;
+      throw new Error(err);
+    }
+
+    if (!(await fs.pathExists(path))) {
+      const err = `Cannot [${level}] bump package.json. File does not exist: ${path}`;
+      throw new Error(err);
+    }
+
+    const json = (await fs.readJson(path)) as t.INpmPackageJson;
+    const from = json.version || '0.0.0';
+
+    const isPrerelease = ['alpha', 'beta'].includes(level);
+    const increment = (isPrerelease ? 'prerelease' : level) as semver.ReleaseType;
+    const prereleasePrefix = isPrerelease ? level : undefined;
+
+    const to = semver.inc(json.version || '0.0.0', increment, prereleasePrefix) || undefined;
+    if (!to) {
+      const err = `Failed to bump package.json to [${level}]. An incremented version from '${from}' returned undefined.`;
+      throw new Error(err);
+    }
+
+    json.version = to;
+    await fs.writeFile(path, `${JSON.stringify(json, null, '  ')}\n`);
+
+    return {
+      version: { from, to },
+      json,
+    };
   },
 };

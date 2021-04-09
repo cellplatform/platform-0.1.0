@@ -134,3 +134,11 @@ export const toShadow: t.CssToShadow = (input) => {
   const inset = input.inner ? 'inset ' : '';
   return `${inset}${x} ${y} ${blur}px 0 ${col}`;
 };
+
+/**
+ * Convert to position (eg "absolute") with a set of edges ("top", "right" etc).
+ */
+export const toPosition: t.CssToPosition = (position, edges) => {
+  return { position, ...toEdges(edges) } as t.CssEdgePosition;
+};
+export const toAbsolute: t.CssToAbsolute = (edges) => toPosition('absolute', edges);

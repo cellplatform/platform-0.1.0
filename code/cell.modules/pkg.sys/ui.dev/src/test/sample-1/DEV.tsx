@@ -44,7 +44,7 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Title');
+    e.title('Title [TODO]');
     e.title((config) => config.text('Title (Indented)').indent(25));
     e.markdown(markdown());
 

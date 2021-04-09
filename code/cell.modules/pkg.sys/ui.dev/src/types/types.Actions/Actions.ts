@@ -21,6 +21,7 @@ export type Actions<Ctx extends O = any, Items extends O = any> = {
   namespace(value: string): t.Actions<Ctx, Items>;
   context(factory: t.ActionGetContext<Ctx>): t.Actions<Ctx, Items>;
   subject(factory: t.ActionHandlerSubject<Ctx>): t.Actions<Ctx, Items>;
+  controller(factory: t.ActionHandlerController<Ctx>): t.Actions<Ctx, Items>;
 
   items(handler: (args: Items) => void): t.Actions<Ctx, Items>;
 };

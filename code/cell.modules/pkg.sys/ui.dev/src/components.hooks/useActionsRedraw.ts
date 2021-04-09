@@ -37,7 +37,7 @@ export function useActionsRedraw(args: {
           throttleTime(defaultValue(args.throttle, 0)),
           debounceTime(0),
         )
-        .subscribe(() => {
+        .subscribe((e) => {
           setRedraw((prev) => prev + 1);
         });
     }

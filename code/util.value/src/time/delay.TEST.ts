@@ -24,13 +24,13 @@ describe('delay', () => {
     expect(now() - startedAt).to.be.greaterThan(8);
   });
 
-  it('cancels delay', async () => {
+  it('cancels delay (await promise)', async () => {
     const startedAt = now();
     let count = 0;
 
     expect(now() - startedAt).to.be.lessThan(8);
 
-    const res = delay(10, () => (count += 1));
+    const res = delay(10, () => count++);
     expect(res.isCancelled).to.eql(false);
     expect(typeof res === 'object').to.eql(true);
 

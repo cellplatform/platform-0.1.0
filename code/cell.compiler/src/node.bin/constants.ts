@@ -5,35 +5,39 @@ export const DEFAULT = {
 };
 
 const PARAMS = {
-  config: `(optional) Configuration file (default: "${DEFAULT.CONFIG.PATH}")`,
-  name: `(optional) Named configuration to use`,
-  mode: `(optional) 'production' of 'development' (or use --prod --dev)`,
+  COMMON: {
+    config: `(optional) Configuration file (default: "${DEFAULT.CONFIG.PATH}")`,
+    name: `(optional) Named configuration to use`,
+    mode: `(optional) 'production' of 'development' (or use --prod --dev)`,
+  },
+  BUMP: `(optional) Increment package.json version ("patch" (default), "minor", "major", "alpha", "beta")`,
 };
 
 export const COMMANDS: t.Commands = {
   bundle: {
     description: 'Compile the project into a bundle',
     params: {
-      '--config': PARAMS.config,
-      '--name': PARAMS.name,
-      '--mode': PARAMS.mode,
+      '--config': PARAMS.COMMON.config,
+      '--name': PARAMS.COMMON.name,
+      '--mode': PARAMS.COMMON.mode,
       '--declarations, -d': '(optional) Declarations (".d.ts" files) only',
+      '--bump': PARAMS.BUMP,
     },
   },
   watch: {
     description: 'Bundle and watch for file changes',
     params: {
-      '--config': PARAMS.config,
-      '--name': PARAMS.name,
-      '--mode': PARAMS.mode,
+      '--config': PARAMS.COMMON.config,
+      '--name': PARAMS.COMMON.name,
+      '--mode': PARAMS.COMMON.mode,
     },
   },
   dev: {
     description: 'Start development server (HMR)',
     params: {
-      '--config': PARAMS.config,
-      '--name': PARAMS.name,
-      '--mode': PARAMS.mode,
+      '--config': PARAMS.COMMON.config,
+      '--name': PARAMS.COMMON.name,
+      '--mode': PARAMS.COMMON.mode,
       '--no-exports': `(optional) Suppress module federation exports`,
       '--port': `(optional) Override the configured port`,
     },
@@ -44,26 +48,26 @@ export const COMMANDS: t.Commands = {
       '--dir': `The target directory within the cell`,
       '--host': `The target host domain`,
       '--uri': `The target cell URI (eg "cell:<ns>:A1")`,
-      '--config': PARAMS.config,
-      '--name': PARAMS.name,
-      '--no-bundle': `(optional) Skip bundling the project`,
+      '--config': PARAMS.COMMON.config,
+      '--name': PARAMS.COMMON.name,
+      '--no-bundle': `(common.optional) Skip bundling the project`,
       '--no-clean': `(optional) Do not clean the cache before bundling`,
-      '--mode': PARAMS.mode,
+      '--mode': PARAMS.COMMON.mode,
     },
   },
   info: {
     description: 'Information about a build configuration',
     params: {
-      '--config': PARAMS.config,
-      '--name': PARAMS.name,
+      '--config': PARAMS.COMMON.config,
+      '--name': PARAMS.COMMON.name,
     },
   },
   serve: {
     description: 'Simple HTTP static server (CORS)',
     params: {
-      '--config': PARAMS.config,
-      '--name': PARAMS.name,
-      '--port': `(optional) Override the configured port`,
+      '--config': PARAMS.COMMON.config,
+      '--name': PARAMS.COMMON.name,
+      '--port': `(optional) common.Override the configured port`,
     },
   },
   clean: {

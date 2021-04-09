@@ -1,6 +1,7 @@
-import { jss, R, t, valueUtil } from '../common';
-import { toEdges } from './util';
+import { jss, t, valueUtil } from '../common';
+import * as util from './util';
 
+// import { toEdges, toPosition } from './util';
 export * from './util';
 export const MEDIA_QUERY_RETINA = `@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)`;
 
@@ -69,31 +70,12 @@ const formatImage = (key: string, value: Array<string | number | undefined>, tar
 export const toPositionEdges = (
   key: string,
   value: any = undefined,
-):
-  | {
-      position: string;
-      top: number | string | undefined;
-      right: number | string | undefined;
-      bottom: number | string | undefined;
-      left: number | string | undefined;
-    }
-  | undefined => {
-  const edges = toEdges(value);
-  if (R.isEmpty(edges)) {
-    return undefined;
-  }
-  const { left, top, right, bottom } = edges;
-
-  if (top === undefined && right === undefined && bottom === undefined && left === undefined) {
-    return undefined;
-  }
-  return {
-    position: key.toLowerCase(),
-    top,
-    right,
-    bottom,
-    left,
-  };
+): t.CssEdgePosition | undefined => {
+  const position = key.toLowerCase() as t.CssPosition;
+  const res = util.toPosition(position, value);
+  const edges = ['top', 'right', 'bottom', 'left'];
+  const isEmpty = edges.every((edge) => res[edge] === undefined);
+  return isEmpty ? undefined : res;
 };
 
 export const formatPositionEdges = (key: string, target: any) => {
@@ -157,7 +139,7 @@ function formatSpacingPlane(
   target: any,
 ) {
   const styles = {};
-  const edges = toEdges(value);
+  const edges = util.toEdges(value);
   if (edges && plane.includes('x')) {
     styles[`${prefix}Left`] = edges.left;
     styles[`${prefix}Right`] = edges.right;

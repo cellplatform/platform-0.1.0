@@ -9,7 +9,8 @@ import * as t from './types';
  */
 export function init(args: t.IArgs) {
   const model = Model(args.model);
-  const PKG = constants.PKG;
+  const PKG = constants.PKG.load();
+
   const json: t.RuntimeModule = {
     ...model.env,
     module: { name: PKG.name || '', version: PKG.version || '' },

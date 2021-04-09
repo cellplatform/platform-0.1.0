@@ -92,9 +92,6 @@ export class TextInput extends React.PureComponent<TextInputProps, TextInputStat
       this.events$.subscribe(this.props.events$);
     }
 
-    // Bubble mouse events.
-    // mouse$.subscribe((payload) => this.fire({ type: 'TEXT_INPUT/mouse', payload }));
-
     // Finish up.
     this.updateAutoSize();
   }
@@ -237,7 +234,7 @@ export class TextInput extends React.PureComponent<TextInputProps, TextInputStat
 
     const elPlaceholder = !hasValue && placeholder && (
       <div
-        {...css(placeholderStyle(this.props), styles.placeholder)}
+        {...css(styles.placeholder, placeholderStyle(this.props))}
         onDoubleClick={this.labelDblClickHandler('PLACEHOLDER')}
       >
         {placeholder}

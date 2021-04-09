@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
 import { color, COLORS, css, defaultValue, t } from '../../common';
 import { CopyIcon } from './PropList.Value.common';
@@ -7,16 +7,17 @@ export type SimpleValueProps = {
   defaults: t.PropListDefaults;
   value: t.PropListValue;
   message?: React.ReactNode;
+  cursor?: CSSProperties['cursor'];
   isOver?: boolean;
   isCopyable?: boolean;
 };
 
 export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
-  const { value, message, isOver, isCopyable } = props;
+  const { value, message } = props;
 
-  const isCopyActive = isOver && isCopyable;
-  const isMonospace = defaultValue(value.monospace, props.defaults.monospace);
-  const textColor = message ? color.format(-0.3) : isCopyActive ? COLORS.BLUE : COLORS.DARK;
+  const is = toFlags(props);
+  const textColor = toTextColor(props);
+  const cursor = defaultValue(props.cursor, is.copyActive ? 'pointer' : 'default');
 
   const styles = {
     base: css({
@@ -31,9 +32,10 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
-      cursor: isCopyActive ? 'pointer' : 'default',
+      cursor,
       textAlign: 'right',
-      fontFamily: isMonospace ? 'monospace' : undefined,
+      fontFamily: is.monospace ? 'monospace' : undefined,
+      fontSize: value.fontSize !== undefined ? value.fontSize : undefined,
     }),
   };
 
@@ -42,7 +44,33 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
   return (
     <div {...css(styles.base)}>
       <div {...styles.text}>{text}</div>
-      {isCopyActive && !message && <CopyIcon />}
+      {is.copyActive && !message && <CopyIcon />}
     </div>
   );
 };
+
+/**
+ * [Helpers]
+ */
+
+function toTextColor(props: SimpleValueProps) {
+  if (props.value.color !== undefined) return color.format(props.value.color);
+  if (props.message) return color.format(-0.3);
+
+  const is = toFlags(props);
+  if (is.copyActive) return COLORS.BLUE;
+  if (is.boolean) return COLORS.PURPLE;
+
+  return COLORS.DARK;
+}
+
+function toFlags(props: SimpleValueProps) {
+  const { value, isOver, isCopyable, defaults } = props;
+  let monospace = defaultValue(value.monospace, defaults.monospace);
+  if (typeof value.data === 'boolean') monospace = true;
+  return {
+    boolean: typeof value.data === 'boolean',
+    copyActive: isOver && isCopyable,
+    monospace,
+  };
+}

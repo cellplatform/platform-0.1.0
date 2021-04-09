@@ -10,6 +10,7 @@ export type CardProps = {
   width?: number | { fixed?: number; min?: number; max?: number };
   height?: number | { fixed?: number; min?: number; max?: number };
   userSelect?: string | boolean;
+  shadow?: boolean | t.CssShadow;
   style?: CssValue;
 
   onClick?: React.MouseEventHandler;
@@ -24,6 +25,7 @@ export const Card: React.FC<CardProps> = (props) => {
   const background = defaultValue(props.background, 1);
   const borderColor = defaultValue(props.border?.color, -0.2);
 
+  const shadow = toShadow(props.shadow);
   const width = typeof props.width === 'number' ? { fixed: props.width } : props.width;
   const height = typeof props.height === 'number' ? { fixed: props.height } : props.height;
 
@@ -37,7 +39,7 @@ export const Card: React.FC<CardProps> = (props) => {
       border: `solid 1px ${color.format(borderColor)}`,
       borderRadius: defaultValue(props.border?.radius, 4),
       background: color.format(background),
-      boxShadow: `0 2px 6px 0 ${color.format(-0.08)}`,
+      boxShadow: style.toShadow(shadow),
 
       width: width?.fixed,
       height: height?.fixed,
@@ -74,4 +76,10 @@ function toUserSelect(value: CardProps['userSelect']) {
   value = value === true ? 'auto' : value;
   value = value === false ? 'none' : value;
   return value as React.CSSProperties['userSelect'];
+}
+
+function toShadow(value: CardProps['shadow']): t.CssShadow | undefined {
+  if (value === false) return undefined;
+  if (value === true || value === undefined) return { y: 2, color: -0.08, blur: 6 };
+  return value;
 }

@@ -19,6 +19,12 @@ export type ActionHandlerSubjectArgs<C> = t.ActionHandlerArgs<C> & {
 };
 
 /**
+ * Controller logic.
+ */
+export type ActionHandlerController<C> = (args: t.ActionHandlerControllerArgs<C>) => void;
+export type ActionHandlerControllerArgs<C> = t.ActionHandlerArgs<C>;
+
+/**
  * Common values passed to all handlers.
  */
 export type ActionHandlerArgs<C> = {
