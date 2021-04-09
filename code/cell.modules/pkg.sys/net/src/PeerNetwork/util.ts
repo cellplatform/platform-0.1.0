@@ -90,7 +90,7 @@ export const StringUtil = {
  */
 export const Uri = {
   connection(kind: t.PeerConnectionKind, peer: t.PeerId, id: string) {
-    return `${kind}:${peer}:${StringUtil.formatConnectionId(id)}`;
+    return `${kind.replace(/\//g, '.')}:${peer}:${StringUtil.formatConnectionId(id)}`;
   },
 };
 

@@ -21,9 +21,9 @@ export function useLocalPeer(args: { self: t.PeerId; bus: t.EventBus<any> }) {
     const events = Events({ bus });
     const media = events.media(self);
 
-    const setMedia = (kind: t.PeerMediaKind, media?: MediaStream) => {
-      if (kind === 'video') setVideo(media);
-      if (kind === 'screen') setScreen(media);
+    const setMedia = (kind: t.PeerConnectionKindMedia, media?: MediaStream) => {
+      if (kind === 'media/video') setVideo(media);
+      if (kind === 'media/screen') setScreen(media);
     };
 
     const updateStatus = async () => {

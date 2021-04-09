@@ -27,11 +27,11 @@ type ConnectBase = {
 };
 
 export type PeerNetworkConnectDataReq = ConnectBase & {
-  kind: 'data';
+  kind: t.PeerConnectionKindData;
   isReliable?: boolean;
 };
 export type PeerNetworkConnectMediaReq = ConnectBase & {
-  kind: 'video' | 'screen';
+  kind: t.PeerConnectionKindMedia;
   constraints?: t.PeerMediaConstraints;
   timeout?: number;
 };

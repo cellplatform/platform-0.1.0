@@ -15,7 +15,7 @@ export type ConnectionDataProps = {
 
 const fireOpen = async (args: {
   bus: t.EventBus<any>;
-  kind: t.PeerMediaKind;
+  kind: t.PeerConnectionKindMedia;
   self: t.PeerId;
   remote: t.PeerId;
 }) => {
@@ -32,22 +32,22 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
 
   const [eventMessage, setEventMessage] = useState<string>('');
 
-  const open = (kind: t.PeerMediaKind) => {
+  const open = (kind: t.PeerConnectionKindMedia) => {
     return () => fireOpen({ bus, self, remote, kind });
   };
 
   const items: PropListItem[] = [
     { label: 'id', value: { data: connection.id, clipboard: true } },
-    { label: 'peer (remote)', value: { data: peer.remote, clipboard: true } },
+    { label: 'remote peer', value: { data: peer.remote, clipboard: true } },
     { label: 'open', value: connection.isOpen },
     { label: 'reliable', value: connection.isReliable },
     {
       label: 'video',
-      value: <Button onClick={open('video')} label={'Start Video'} />,
+      value: <Button onClick={open('media/video')} label={'Start Video'} />,
     },
     {
       label: 'screen',
-      value: <Button onClick={open('screen')} label={'Share Screen'} />,
+      value: <Button onClick={open('media/screen')} label={'Share Screen'} />,
     },
   ];
 

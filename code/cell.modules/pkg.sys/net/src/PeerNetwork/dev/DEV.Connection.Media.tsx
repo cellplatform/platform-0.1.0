@@ -17,7 +17,7 @@ export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
 
   const items: PropListItem[] = [
     { label: 'id', value: { data: connection.id, clipboard: true } },
-    { label: 'peer (remote)', value: { data: peer.remote, clipboard: true } },
+    { label: 'remote peer', value: { data: peer.remote, clipboard: true } },
     {
       label: 'stream.id',
       visible: Boolean(streamId),

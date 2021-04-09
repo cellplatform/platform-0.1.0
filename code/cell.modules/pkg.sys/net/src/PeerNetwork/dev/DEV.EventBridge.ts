@@ -2,9 +2,9 @@ import { PeerNetwork } from '..';
 import { log, MediaStream, slug, t } from './common';
 
 export const EventBridge = {
-  ref: (self: t.PeerId, kind: t.PeerMediaKind) => `${kind}:${self}`,
-  videoRef: (self: t.PeerId) => EventBridge.ref(self, 'video'),
-  screenRef: (self: t.PeerId) => EventBridge.ref(self, 'screen'),
+  ref: (self: t.PeerId, kind: t.PeerConnectionKindMedia) => `${kind}:${self}`,
+  videoRef: (self: t.PeerId) => EventBridge.ref(self, 'media/video'),
+  screenRef: (self: t.PeerId) => EventBridge.ref(self, 'media/screen'),
 
   /**
    * Bridges events between the [Media] and [Net] modules.
@@ -34,12 +34,12 @@ export const EventBridge = {
       log.info('EVENT BRIDGE / request:', e, ref, media);
 
       if (!media) {
-        if (e.kind === 'video') {
+        if (e.kind === 'media/video') {
           const video = await events.media.start(ref).video();
           media = video.stream;
         }
 
-        if (e.kind === 'screen') {
+        if (e.kind === 'media/screen') {
           const screen = await events.media.start(ref).screen();
           media = screen.stream;
         }

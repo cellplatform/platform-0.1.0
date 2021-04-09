@@ -74,7 +74,7 @@ export function MemoryRefs() {
 
         get media() {
           return self.connections
-            .filter((ref) => ref.kind === 'media')
+            .filter((ref) => ref.kind === 'media/video' || ref.kind === 'media/screen')
             .map((ref) => ref.conn as PeerJS.MediaConnection);
         },
 

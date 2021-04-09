@@ -62,11 +62,7 @@ export const actions = DevActions<Ctx>()
     /**
      * TODO 🐷
      * - Timeout on screen media start.
-     * - Close LOCAL screen media
-     *    - on connectino closed
-     *    - on OS "stop sharing" button click
      * - HANDLE Start screen share, then cancel before selecting screen
-     * - Ensure OUTGOING screen-share connection is updated with "isOpen: true"
      */
 
     return {

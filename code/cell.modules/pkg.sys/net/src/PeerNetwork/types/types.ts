@@ -4,8 +4,10 @@ export type PeerMediaConstraints = t.PartialDeep<MediaStreamConstraints>;
 
 export type PeerId = string; // An identifier of a network peer.
 export type PeerConnectionId = string;
-export type PeerConnectionKind = 'data' | 'media';
-export type PeerMediaKind = 'video' | 'screen';
+
+export type PeerConnectionKind = PeerConnectionKindData | PeerConnectionKindMedia;
+export type PeerConnectionKindData = 'data';
+export type PeerConnectionKindMedia = 'media/video' | 'media/screen';
 
 export type PeerUri = PeerConnectionUri; // A URI identifying a network/peer resource.
 export type PeerConnectionUri = string;
@@ -24,6 +26,6 @@ export type PeerSignallingEndpoint = {
 export type PeerConnectionMetadata = PeerConnectionMetadataMedia;
 
 export type PeerConnectionMetadataMedia = {
-  kind: t.PeerMediaKind;
+  kind: t.PeerConnectionKindMedia;
   constraints?: t.PeerMediaConstraints;
 };

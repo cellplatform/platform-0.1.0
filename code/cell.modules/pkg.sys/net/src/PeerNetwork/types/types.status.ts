@@ -30,7 +30,7 @@ export type PeerConnectionDataStatus = PeerConnectionBase & {
 };
 
 export type PeerConnectionMediaStatus = PeerConnectionBase & {
-  kind: 'media';
+  kind: 'media/screen' | 'media/video';
   isOpen: boolean;
   media?: MediaStream;
 };

@@ -67,7 +67,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       return { uri, id, peer, kind, isReliable, isOpen, metadata };
     }
 
-    if (kind === 'media') {
+    if (kind === 'media/video' || kind === 'media/screen') {
       const media = ref.remoteStream as MediaStream;
       const conn = ref.conn as PeerJS.MediaConnection;
       const { open: isOpen, metadata } = conn;
@@ -161,17 +161,17 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       const answer = (localStream?: MediaStream) => {
         mediaConnection.answer(localStream);
         mediaConnection.on('stream', (remoteStream) => {
-          refs.connection(self).add('media', mediaConnection, remoteStream);
-          completeConnection('media', 'incoming', self, mediaConnection);
+          refs.connection(self).add(kind, mediaConnection, remoteStream);
+          completeConnection(kind, 'incoming', self, mediaConnection);
         });
       };
 
-      if (kind === 'video') {
+      if (kind === 'media/video') {
         const local = await events.media(self.id).request({ kind, constraints });
         answer(local.media);
       }
 
-      if (kind === 'screen') {
+      if (kind === 'media/screen') {
         // NB: Screen shares do not send back another stream so do
         //     not request it from the user.
         answer();
@@ -268,7 +268,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
       let changed = false;
       const purged: t.PeerLocalPurged = {
-        closedConnections: { data: 0, media: 0 },
+        closedConnections: { data: 0, video: 0, screen: 0 },
       };
 
       const fire = (payload?: Partial<t.PeerLocalPurgeRes>) => {
@@ -292,7 +292,8 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         closed.forEach((item) => {
           changed = true;
           if (item.kind === 'data') purged.closedConnections.data++;
-          if (item.kind === 'media') purged.closedConnections.data++;
+          if (item.kind === 'media/video') purged.closedConnections.video++;
+          if (item.kind === 'media/screen') purged.closedConnections.screen++;
         });
       }
 
@@ -310,11 +311,18 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       const tx = e.tx || slug();
 
       const fire = (payload?: Partial<t.PeerNetworkConnectRes>) => {
-        const kind = e.kind === 'data' ? 'data' : 'media';
         const existing = Boolean(payload?.existing);
         bus.fire({
           type: 'Peer:Connection/connect:res',
-          payload: { kind, self: e.self, tx, remote, direction: 'outgoing', existing, ...payload },
+          payload: {
+            kind: e.kind,
+            self: e.self,
+            tx,
+            remote,
+            direction: 'outgoing',
+            existing,
+            ...payload,
+          },
         });
       };
       const fireError = (message: string) => fire({ error: { message } });
@@ -357,7 +365,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       }
 
       // Start a media (video) call.
-      if (e.kind === 'video' || e.kind === 'screen') {
+      if (e.kind === 'media/video' || e.kind === 'media/screen') {
         const { constraints } = e;
 
         // Retrieve the media stream.
@@ -371,7 +379,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         // Start the network/peer connection.
         const metadata: t.PeerConnectionMetadataMedia = { kind: e.kind, constraints };
         const mediaConnection = self.peer.call(remote, localStream, { metadata });
-        const connRef = refs.connection(self).add('media', mediaConnection);
+        const connRef = refs.connection(self).add(e.kind, mediaConnection);
         connRef.localStream = localStream;
 
         // Manage timeout.
@@ -384,10 +392,10 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
         const completeMediaConnection = () => {
           timeout.cancel();
-          completeConnection('media', 'outgoing', self, mediaConnection, tx);
+          completeConnection(e.kind, 'outgoing', self, mediaConnection, tx);
         };
 
-        if (e.kind === 'video') {
+        if (e.kind === 'media/video') {
           mediaConnection.on('stream', (remoteStream) => {
             if (timeout.isCancelled) return;
             connRef.remoteStream = remoteStream;
@@ -395,7 +403,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
           });
         }
 
-        if (e.kind === 'screen') {
+        if (e.kind === 'media/screen') {
           // NB: Complete immediately without waiting for return stream.
           //     Screen shares are always one-way (out) so there will be no incoming stream.
           const completeUponOpen = () => {

@@ -15,7 +15,7 @@ export type ConnectionProps = {
 
 export const Connection: React.FC<ConnectionProps> = (props) => {
   const { connection, netbus } = props;
-  const peer = connection.peer;
+  const { peer } = connection;
   const bus = props.bus.type<t.PeerEvent>();
 
   const styles = {
@@ -40,7 +40,7 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
     <ConnectionData bus={bus} netbus={netbus} connection={connection} />
   );
 
-  const elMedia = connection.kind === 'media' && (
+  const elMedia = (connection.kind === 'media/video' || connection.kind === 'media/screen') && (
     <ConnectionMedia bus={bus} connection={connection} />
   );
 

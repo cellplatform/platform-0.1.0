@@ -109,9 +109,13 @@ export function Events(args: { bus: t.EventBus<any> }) {
     type C = Req['constraints'];
     type O = { constraints?: C; tx?: string };
 
-    const video = async (options?: O) => request({ kind: 'video', ...options });
-    const screen = async (options?: O) => request({ kind: 'screen', ...options });
-    const request = async (args: { kind: t.PeerMediaKind; constraints?: C; tx?: string }) => {
+    const video = async (options?: O) => request({ kind: 'media/video', ...options });
+    const screen = async (options?: O) => request({ kind: 'media/screen', ...options });
+    const request = async (args: {
+      kind: t.PeerConnectionKindMedia;
+      constraints?: C;
+      tx?: string;
+    }) => {
       const { kind, constraints } = args;
       const tx = args.tx || slug();
       const res = firstValueFrom(response$.pipe(filter((e) => e.tx === tx)));
@@ -124,7 +128,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
 
     const respond = (args: {
       tx: string;
-      kind: t.PeerMediaKind;
+      kind: t.PeerConnectionKindMedia;
       media?: MediaStream;
       error?: t.PeerError;
     }) => {
@@ -162,8 +166,8 @@ export function Events(args: { bus: t.EventBus<any> }) {
         return res;
       },
 
-      video: (constraints?: t.PeerMediaConstraints) => open.media('video', { constraints }),
-      screen: (constraints?: t.PeerMediaConstraints) => open.media('screen', { constraints }),
+      video: (constraints?: t.PeerMediaConstraints) => open.media('media/video', { constraints }),
+      screen: (constraints?: t.PeerMediaConstraints) => open.media('media/screen', { constraints }),
       media(
         kind: t.PeerNetworkConnectMediaReq['kind'],
         options: { constraints?: t.PeerMediaConstraints } = {},

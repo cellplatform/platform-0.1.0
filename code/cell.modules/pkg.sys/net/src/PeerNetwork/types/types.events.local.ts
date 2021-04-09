@@ -137,7 +137,7 @@ export type PeerLocalPurgeRes = {
   error?: t.PeerError;
 };
 export type PeerLocalPurged = {
-  closedConnections: { data: number; media: number };
+  closedConnections: { data: number; video: number; screen: number };
 };
 
 /**
@@ -150,7 +150,7 @@ export type PeerLocalMediaReqEvent = {
 export type PeerLocalMediaReq = {
   self: t.PeerId;
   tx?: string;
-  kind: t.PeerMediaKind;
+  kind: t.PeerConnectionKindMedia;
   constraints?: t.PartialDeep<MediaStreamConstraints>;
 };
 
@@ -164,7 +164,7 @@ export type PeerLocalMediaResEvent = {
 export type PeerLocalMediaRes = {
   self: t.PeerId;
   tx: string;
-  kind: t.PeerMediaKind;
+  kind: t.PeerConnectionKindMedia;
   media?: MediaStream;
   error?: t.PeerError;
 };
