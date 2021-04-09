@@ -40,7 +40,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
     audio.forEach((track) => (track.enabled = !isAudioTrackMuted));
   }
 
-  const MARGIN = { waveform: 40 };
+  const MARGIN = { waveform: 10 };
 
   const styles = {
     base: css({
@@ -105,8 +105,8 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
         />
         {elVideoOverlay}
       </div>
-      {elWaveform}
       {isVideo && <PropList items={items} />}
+      {elWaveform}
     </div>
   );
 };
