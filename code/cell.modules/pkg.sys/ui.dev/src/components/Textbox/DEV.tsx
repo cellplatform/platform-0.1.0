@@ -1,0 +1,93 @@
+import React, { useEffect, useState } from 'react';
+import { DevActions } from '../..';
+import { Textbox, TextboxProps } from '.';
+import { css, COLORS, color } from '../common';
+import { Icons } from '../Icons';
+
+type Ctx = { props: TextboxProps };
+
+/**
+ * Actions
+ */
+export const actions = DevActions<Ctx>()
+  .namespace('ui.dev/Textbox')
+  .context((prev) => {
+    if (prev) return prev;
+    return {
+      props: {
+        placeholder: 'my placeholder',
+        enter: {
+          icon: (e) => {
+            const col = e.isFocused || e.value ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.3);
+            const el = <Icons.Send size={18} color={col} />;
+            return el;
+          },
+        },
+      },
+    };
+  })
+
+  .items((e) => {
+    e.title('Props');
+    e.button('placeholder', (e) => (e.ctx.props.placeholder = 'My placeholder'));
+    e.button('placeholder: none', (e) => (e.ctx.props.placeholder = undefined));
+
+    e.hr(1, 0.2);
+
+    e.button('value', (e) => (e.ctx.props.value = 'My value'));
+    e.button('value: none', (e) => (e.ctx.props.value = undefined));
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Style');
+
+    e.select((config) =>
+      config
+        .title('fontSize')
+        .items(['small', 'normal', 'large'])
+        .initial('normal')
+        .view('buttons')
+        .pipe(async (e) => {
+          const props = e.ctx.props;
+          const value = e.select.current[0]; // NB: always first.
+
+          let fontSize = 14;
+          if (value.value === 'small') fontSize = 12;
+          if (value.value === 'large') fontSize = 16;
+
+          props.style = { ...props.style, fontSize };
+        }),
+    );
+
+    e.hr();
+  })
+
+  .subject((e) => {
+    e.settings({
+      host: { background: -0.04 },
+      layout: {
+        label: '<Textbox>',
+        cropmarks: -0.2,
+        width: 350,
+      },
+    });
+
+    const style = { flex: 1, ...e.ctx.props.style };
+
+    e.render(<Sample {...e.ctx.props} style={style} />);
+  });
+
+export default actions;
+
+/**
+ * Sample layout.
+ */
+export const Sample: React.FC<TextboxProps> = (props) => {
+  const [value, setValue] = useState<string>(props.value || '');
+
+  useEffect(() => setValue(props.value || ''), [props.value]);
+
+  return <Textbox {...props} value={value} onChange={(e) => setValue(e.to)} style={props.style} />;
+};

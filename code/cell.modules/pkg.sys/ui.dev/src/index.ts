@@ -9,6 +9,7 @@ export { ActionPanel } from './components/ActionPanel';
 export { ActionsSelector, useActionsSelectorState } from './components/ActionsSelector';
 export { ErrorBoundary } from './components/ErrorBoundary';
 export { Hr } from './components/Hr';
+export * from './components/Textbox';
 
 export { Store } from './store';
 export { StateObject, toObject, log } from './common';
