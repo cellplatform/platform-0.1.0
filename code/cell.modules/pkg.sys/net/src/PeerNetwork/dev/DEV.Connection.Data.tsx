@@ -1,9 +1,20 @@
 import { color } from '@platform/css';
 import React, { useEffect, useState } from 'react';
 
-import { Button, COLORS, css, CssValue, Hr, Icons, t, PropList, PropListItem } from './common';
+import {
+  Textbox,
+  Button,
+  COLORS,
+  css,
+  CssValue,
+  Hr,
+  Icons,
+  t,
+  PropList,
+  PropListItem,
+} from './common';
 import { EventStack } from './DEV.EventStack';
-import { Textbox } from './DEV.primitives';
+
 import { PeerNetwork } from '..';
 
 export type ConnectionDataProps = {

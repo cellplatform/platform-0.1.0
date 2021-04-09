@@ -31,17 +31,9 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
   const bus = props.bus.type<t.DevEvent>();
   const wifi = MediaStream.useOfflineState();
 
-  const [isAudioTrackMuted, setAudioTrackMuted] = useState<boolean>(false);
   const [isVideoMuted, setVideoMuted] = useState<boolean>(defaultValue(props.isVideoMuted, true));
 
   const toggleVideoMuted = () => setVideoMuted((prev) => !prev);
-
-  // HACK: Ensure audio tracks are in sync with mic-muted state.
-  //       NB: This should be done at a global state level (via events).
-  if (stream) {
-    const audio = stream.getAudioTracks();
-    audio.forEach((track) => (track.enabled = !isAudioTrackMuted));
-  }
 
   const MARGIN = { waveform: 10 };
 
@@ -83,8 +75,12 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
 
   const items: PropListItem[] = [
     {
-      label: 'muted',
-      value: { data: isVideoMuted, kind: 'Switch', onClick: toggleVideoMuted },
+      label: 'mic',
+      value: {
+        data: !isVideoMuted,
+        kind: 'Switch',
+        onClick: toggleVideoMuted,
+      },
     },
     {
       label: 'size',
