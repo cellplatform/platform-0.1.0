@@ -1,4 +1,6 @@
-export { copyToClipboard } from '@platform/react';
+import * as t from './DEV.types';
+
+export { copyToClipboard, useResizeObserver } from '@platform/react';
 export { Button, ButtonProps } from '@platform/ui.button';
 
 export { ObjectView } from 'sys.ui.dev';
@@ -13,3 +15,5 @@ export { MediaStream, MediaEvent, VideoStream } from 'sys.ui.video/lib/component
 export { Icons } from '../../components/Icons';
 export * from '../common';
 export * from '../util';
+
+export { t };

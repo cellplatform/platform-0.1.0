@@ -9,7 +9,7 @@ export type ConnectionMediaProps = {
 };
 
 export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
-  const { connection } = props;
+  const { connection, bus } = props;
   const { peer, kind } = connection;
 
   const streamId = connection.media?.id;
@@ -40,6 +40,7 @@ export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
               kind={kind}
               stream={connection.media}
               isVideoMuted={isLocalhost ? true : false}
+              bus={bus}
             />
           </div>
         </>

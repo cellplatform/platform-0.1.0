@@ -4,6 +4,8 @@ import { ObjectView } from 'sys.ui.dev';
 import { useLocalPeer } from '../hooks';
 import { COLORS, css, CssValue, t } from './common';
 import { DevNetwork } from './DEV.Network';
+import { useDevState } from './DEV.useDevState';
+import { DevVideoFullscreen } from './DEV.Video.Fullscreen';
 
 export type RootLayoutProps = {
   self: t.PeerId;
@@ -14,9 +16,9 @@ export type RootLayoutProps = {
 };
 
 export const RootLayout: React.FC<RootLayoutProps> = (props) => {
-  const { netbus } = props;
-  const bus = props.bus.type<t.PeerEvent>();
+  const { netbus, bus } = props;
   const peer = useLocalPeer({ self: props.self, bus });
+  const state = useDevState({ bus });
 
   const styles = {
     base: css({
@@ -64,10 +66,15 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
     </>
   );
 
+  const elFullscreenVideo = state.fullscreenMedia && (
+    <DevVideoFullscreen stream={state.fullscreenMedia} bus={bus} />
+  );
+
   return (
     <div {...css(styles.base, props.style)}>
       {elNetwork}
       {elJson}
+      {elFullscreenVideo}
     </div>
   );
 };

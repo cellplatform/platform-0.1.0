@@ -30,9 +30,14 @@ export const DevNetworkHeader: React.FC<DevNetworkHeaderProps> = (props) => {
       <SelfPropList status={peer} />
       <div {...styles.right}>
         {media.screen && (
-          <DevVideo kind={'media/screen'} stream={media.screen} style={{ marginRight: 15 }} />
+          <DevVideo
+            kind={'media/screen'}
+            stream={media.screen}
+            style={{ marginRight: 15 }}
+            bus={bus}
+          />
         )}
-        {media.video && <DevVideo kind={'media/video'} stream={media.video} />}
+        {media.video && <DevVideo kind={'media/video'} stream={media.video} bus={bus} />}
       </div>
     </div>
   );

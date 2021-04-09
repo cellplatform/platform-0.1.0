@@ -11,10 +11,12 @@ import {
   PropListItem,
   VideoStream,
   MediaStream,
+  Button,
   t,
 } from './common';
 
 export type DevVideoProps = {
+  bus: t.EventBus<any>;
   kind: t.PeerConnectionKindMedia;
   stream?: MediaStream;
   width?: number;
@@ -26,6 +28,7 @@ export type DevVideoProps = {
 export const DevVideo: React.FC<DevVideoProps> = (props) => {
   const { width = 150, height = 100, stream, kind } = props;
   const isVideo = kind === 'media/video';
+  const bus = props.bus.type<t.DevEvent>();
   const wifi = MediaStream.useOfflineState();
 
   const [isAudioTrackMuted, setAudioTrackMuted] = useState<boolean>(false);
@@ -83,6 +86,17 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
       label: 'muted',
       value: { data: isVideoMuted, kind: 'Switch', onClick: toggleVideoMuted },
     },
+    {
+      label: 'size',
+      value: (
+        <Button
+          label={'Full Screen'}
+          onClick={() => {
+            bus.fire({ type: 'DEV/media/fullscreen', payload: { stream: stream } });
+          }}
+        />
+      ),
+    },
   ];
 
   const tooltip = stream ? `stream.id: ${stream.id}` : `Stream not loaded`;
@@ -105,8 +119,8 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
         />
         {elVideoOverlay}
       </div>
-      {isVideo && <PropList items={items} />}
       {elWaveform}
+      {<PropList items={items} />}
     </div>
   );
 };
