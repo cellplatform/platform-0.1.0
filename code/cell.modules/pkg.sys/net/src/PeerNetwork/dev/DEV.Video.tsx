@@ -11,9 +11,11 @@ import {
   PropListItem,
   VideoStream,
   MediaStream,
+  t,
 } from './common';
 
 export type DevVideoProps = {
+  kind: t.PeerConnectionKindMedia;
   stream?: MediaStream;
   width?: number;
   height?: number;
@@ -22,14 +24,14 @@ export type DevVideoProps = {
 };
 
 export const DevVideo: React.FC<DevVideoProps> = (props) => {
-  const { width = 150, height = 100, stream } = props;
+  const { width = 150, height = 100, stream, kind } = props;
+  const isVideo = kind === 'media/video';
   const wifi = MediaStream.useOfflineState();
 
   const [isAudioTrackMuted, setAudioTrackMuted] = useState<boolean>(false);
   const [isVideoMuted, setVideoMuted] = useState<boolean>(defaultValue(props.isVideoMuted, true));
 
   const toggleVideoMuted = () => setVideoMuted((prev) => !prev);
-  const toggleAudioTrackMuted = () => setAudioTrackMuted((prev) => !prev);
 
   // HACK: Ensure audio tracks are in sync with mic-muted state.
   //       NB: This should be done at a global state level (via events).
@@ -78,16 +80,18 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
 
   const items: PropListItem[] = [
     {
-      label: 'audio track muted',
-      value: { data: isAudioTrackMuted, kind: 'Switch', onClick: toggleAudioTrackMuted },
-    },
-    {
-      label: '<video> muted',
+      label: 'muted',
       value: { data: isVideoMuted, kind: 'Switch', onClick: toggleVideoMuted },
     },
   ];
 
   const tooltip = stream ? `stream.id: ${stream.id}` : `Stream not loaded`;
+
+  const elWaveform = isVideo && (
+    <div {...styles.waveform.base}>
+      <AudioWaveform stream={stream} width={width - MARGIN.waveform * 2} height={15} />
+    </div>
+  );
 
   return (
     <div {...css(styles.base, props.style)}>
@@ -96,15 +100,13 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
           stream={stream}
           width={width}
           height={height}
-          isMuted={isVideoMuted}
+          isMuted={isVideo ? isVideoMuted : true}
           style={styles.video.stream}
         />
         {elVideoOverlay}
       </div>
-      <div {...styles.waveform.base}>
-        <AudioWaveform stream={stream} width={width - MARGIN.waveform * 2} height={15} />
-      </div>
-      <PropList items={items} />
+      {elWaveform}
+      {isVideo && <PropList items={items} />}
     </div>
   );
 };
