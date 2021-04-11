@@ -104,7 +104,7 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     </div>
   );
 
-  const elHarness = !actions.isEmpty && (
+  const elHarness = actions.isEmpty === false && (
     <>
       {elLeft}
       {elMain}
