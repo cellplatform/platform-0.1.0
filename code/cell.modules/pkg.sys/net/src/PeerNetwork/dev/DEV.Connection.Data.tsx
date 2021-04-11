@@ -50,6 +50,7 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
   const items: PropListItem[] = [
     { label: 'id', value: { data: connection.id, clipboard: true } },
     { label: 'remote peer', value: { data: peer.remote, clipboard: true } },
+    { label: 'kind', value: connection.kind },
     { label: 'open', value: connection.isOpen },
     { label: 'reliable', value: connection.isReliable },
     {

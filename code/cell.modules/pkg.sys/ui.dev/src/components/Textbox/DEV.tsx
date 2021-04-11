@@ -68,13 +68,7 @@ export const actions = DevActions<Ctx>()
         .pipe(async (e) => {
           const props = e.ctx.props;
           const item = e.select.current[0]; // NB: always first.
-
-          const fontSize = item.value;
-
-          props.style = { ...props.style, fontSize };
-
-          console.log('item', toObject(item));
-
+          props.style = { ...props.style, fontSize: item.value };
           e.select.current = [item];
         }),
     );
