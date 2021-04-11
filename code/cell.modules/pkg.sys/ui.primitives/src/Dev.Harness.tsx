@@ -6,11 +6,14 @@ const imports = {
 
   DotTabstrip: import('./components/DotTabstrip/DEV'),
   Zoom: import('./components/Zoom/DEV'),
-  Card: import('./components/Card/DEV'),
-  CardStack: import('./components/CardStack/dev/DEV'),
   PropList: import('./components/PropList/dev/DEV'),
   TextEditor: import('./components/TextEditor/DEV'),
   MotionDraggable: import('./components/Motion.Draggable/dev/DEV'),
+
+  Card: import('./components/Card/DEV'),
+  CardStack: import('./components/Card.Stack/dev/DEV'),
+
+  EventStack: import('./components/Event.Stack/dev/DEV'),
 
   Button: import('./components.ref/button/Button.dev/DEV'),
   Switch: import('./components.ref/button/Switch.dev/DEV'),
