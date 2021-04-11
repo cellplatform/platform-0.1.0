@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DevActions } from '../..';
-import { Textbox, TextboxProps } from '.';
-import { css, COLORS, color } from '../common';
+import { Textbox, TextboxProps, TextboxDisplayForamts } from '.';
+import { css, COLORS, color, toObject } from '../common';
 import { Icons } from '../Icons';
 
 type Ctx = { props: TextboxProps };
@@ -45,19 +45,37 @@ export const actions = DevActions<Ctx>()
 
     e.select((config) =>
       config
+        .title('displayFormat')
+        .items(TextboxDisplayForamts)
+        .initial(TextboxDisplayForamts[0])
+        .view('buttons')
+        .pipe(async (e) => {
+          const value = e.select.current[0].value; // NB: always first.
+          e.ctx.props.displayFormat = value;
+        }),
+    );
+
+    e.select((config) =>
+      config
         .title('fontSize')
-        .items(['small', 'normal', 'large'])
-        .initial('normal')
+        .items([
+          { label: 'small - 12', value: 12 },
+          { label: 'normal - 14', value: 14 },
+          { label: 'large - 18', value: 18 },
+        ])
+        .initial(14)
         .view('buttons')
         .pipe(async (e) => {
           const props = e.ctx.props;
-          const value = e.select.current[0]; // NB: always first.
+          const item = e.select.current[0]; // NB: always first.
 
-          let fontSize = 14;
-          if (value.value === 'small') fontSize = 12;
-          if (value.value === 'large') fontSize = 16;
+          const fontSize = item.value;
 
           props.style = { ...props.style, fontSize };
+
+          console.log('item', toObject(item));
+
+          e.select.current = [item];
         }),
     );
 

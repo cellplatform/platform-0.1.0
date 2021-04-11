@@ -14,7 +14,7 @@ export const SelectButtons: React.FC<SelectButtonsProps> = (props) => {
 
   const { title, label, description, isSpinning, multi, indent } = item;
   const isActive = item.handlers.length > 0;
-  const options = item.items.map((value) => SelectUtil.toOption(value));
+  const options = item.items.map((value) => SelectUtil.toItem(value));
   const current = Array.isArray(item.current) ? item.current : [item.current];
 
   const styles = {

@@ -4,6 +4,13 @@ type O = Record<string, unknown>;
 type SettingsArgs = t.ActionHandlerSettingsArgs;
 
 export const Handler = {
+  /**
+   * Retrieves a specific item from a set of actions.
+   */
+  findItem<T extends t.ActionItem>(itemId: string, actions: t.ActionsModel<any>) {
+    return actions.items.find((item) => item.id === itemId) as T;
+  },
+
   params: {
     /**
      * Prepares methods and immutable proxies for a [DevAction] handler invokation.
@@ -23,7 +30,7 @@ export const Handler = {
       const ctx = draft.ctx.current;
       const env = draft.env.viaAction;
       const { host, layout, actions } = Handler.params.action({ ctx, env });
-      const item = draft.items.find((item) => item.id === itemId) as T;
+      const item = Handler.findItem<T>(itemId, draft);
       return { ctx, item, host, layout, actions, env };
     },
   },

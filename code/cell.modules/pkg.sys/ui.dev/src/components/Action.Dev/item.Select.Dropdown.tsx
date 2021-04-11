@@ -17,7 +17,7 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = (props) => {
 
   const { title, label, description, isSpinning, indent } = item;
   const isActive = item.handlers.length > 0;
-  const options = item.items.map((value) => SelectUtil.toOption(value));
+  const options = item.items.map((value) => SelectUtil.toItem(value));
   const current = item.multi ? item.current : item.current[0];
 
   const [isSelectVisible, setIsSelectVisible] = useState<boolean>();

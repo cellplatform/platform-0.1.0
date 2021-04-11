@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
 
-import { Context, Handler, is, Model, rx, t } from '../common';
+import { toObject, Context, Handler, is, Model, rx, t, SelectUtil } from '../common';
 import { Select as Component } from '../../../components/Action.Dev';
 import { config } from './SelectDef.config';
 
@@ -43,7 +43,12 @@ export const SelectDef: t.ActionDef<T, E> = {
 
         actions.changeAsync(async (draft) => {
           const { ctx, item, host, layout, env, actions } = Handler.params.payload<T>(id, draft);
+
           if (ctx && item) {
+            if (!item.isInitialized && item.initial) {
+              item.current = SelectUtil.toInitial(item);
+            }
+
             const settings: S = (args) =>
               Handler.settings.handler<P, A>({
                 env,
@@ -73,6 +78,10 @@ export const SelectDef: t.ActionDef<T, E> = {
       args.fire({
         type: 'dev:action/Select',
         payload: { namespace, item },
+      });
+      actions.change((draft) => {
+        const model = Handler.findItem<t.ActionSelect>(item.id, draft);
+        if (model) model.isInitialized = true;
       });
     }
   },

@@ -12,6 +12,7 @@ export type ActionSelect = t.ActionSelectProps & {
   kind: 'dev/select';
   handlers: t.ActionSelectHandler<any>[];
   isSpinning?: boolean;
+  isInitialized: boolean;
 };
 
 /**
@@ -45,6 +46,7 @@ export type ActionSelectProps = {
   clearable?: boolean;
   indent?: number;
   items: t.ActionSelectItemInput[];
+  initial?: t.ActionSelectItemInput;
   current: t.ActionSelectItem[];
 };
 

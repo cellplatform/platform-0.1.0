@@ -1,7 +1,7 @@
 import React from 'react';
 import { ActionsFactory } from '../..';
 import { DevDefs, DisplayDefs } from '../../defs';
-import { expect, rx, t } from '../../test';
+import { expect, rx, t, SelectUtil } from '../../test';
 
 type Ctx = { count: number };
 
@@ -307,9 +307,9 @@ describe('Dev', () => {
       const items = model.state.items;
       expect(items.length).to.eql(1);
 
-      const button = items[0] as t.ActionSelect;
-      expect(button.label).to.eql('foo');
-      expect(button.handlers).to.eql([]);
+      const select = items[0] as t.ActionSelect;
+      expect(select.label).to.eql('foo');
+      expect(select.handlers).to.eql([]);
     });
 
     it('view', () => {
@@ -343,6 +343,72 @@ describe('Dev', () => {
       expect(select.title).to.equal(el);
       expect(select.label).to.equal(el);
       expect(select.description).to.equal(el);
+    });
+
+    it('initial (value)', () => {
+      const { actions, model } = create();
+      const sample = [
+        { label: 'one', value: 1 },
+        { label: 'two', value: 2 },
+      ];
+
+      actions.items((e) => {
+        e.select((config) => config.items([1, 2, 3]));
+        e.select((config) => config.items([1, 2, 3]).initial(2));
+        e.select((config) => config.items(sample).initial(sample[1]));
+      });
+
+      const items = model.state.items;
+      const select1 = items[0] as t.ActionSelect;
+      const select2 = items[1] as t.ActionSelect;
+      const select3 = items[2] as t.ActionSelect;
+
+      expect(select1.items).to.eql([1, 2, 3]);
+      expect(select1.current).to.eql([]);
+      expect(select1.initial).to.eql(undefined);
+
+      expect(select2.items).to.eql([1, 2, 3]);
+      expect(select2.current).to.eql([]);
+      expect(select2.initial).to.eql(2);
+
+      expect(select3.items).to.eql(sample);
+      expect(select3.current).to.eql([]);
+      expect(select3.initial).to.eql(sample[1]);
+    });
+
+    it('toInitial (util)', () => {
+      const { actions, model } = create();
+      const sample = [
+        { label: 'one', value: 1 },
+        { label: 'two', value: 2 },
+        { label: 'three', value: 3 },
+      ];
+
+      actions.items((e) => {
+        e.select((config) => config.items(sample).initial());
+        e.select((config) => config.items(sample).initial(2));
+        e.select((config) => config.items(sample).initial(sample[1]));
+        e.select((config) => config.items(sample).initial([1, 3]));
+        e.select((config) => config.items([1, 2, 3]).initial([1, 3]));
+      });
+
+      const items = model.state.items;
+      const select1 = items[0] as t.ActionSelect;
+      const select2 = items[1] as t.ActionSelect;
+      const select3 = items[2] as t.ActionSelect;
+      const select4 = items[3] as t.ActionSelect;
+      const select5 = items[4] as t.ActionSelect;
+
+      const toInitial = SelectUtil.toInitial;
+
+      expect(toInitial(select1)).to.eql([]);
+      expect(toInitial(select2)).to.eql([sample[1]]);
+      expect(toInitial(select3)).to.eql([sample[1]]);
+      expect(toInitial(select4)).to.eql([sample[0], sample[2]]);
+      expect(toInitial(select5)).to.eql([
+        { label: '1', value: 1 },
+        { label: '3', value: 3 },
+      ]);
     });
 
     it('pipe multiple handlers', () => {

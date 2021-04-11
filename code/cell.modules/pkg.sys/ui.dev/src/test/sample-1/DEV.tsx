@@ -198,6 +198,7 @@ export const actions = DevActions<Ctx>()
         .title('My checkbox options')
         .view('buttons')
         .items(['Chocolate', 'Strawberry', 'Vanilla', 'Bananna'])
+        .initial(['Strawberry', 'Vanilla'])
         .clearable(true)
         .indent(25)
         .pipe((e) => {
