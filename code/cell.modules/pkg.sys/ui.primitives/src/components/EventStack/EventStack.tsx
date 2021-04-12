@@ -2,43 +2,20 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, slug, t, useResizeObserver, defaultValue } from '../../common';
+import { css, CssValue, defaultValue, slug, t, useResizeObserver } from '../../common';
 import { CardStack, CardStackItem } from '../CardStack';
-import { EventStackCard } from '../EventStack.Card';
-
-export type EventStackEvent = { id: string; event: t.Event; count: number };
-export type EventStackCardFactoryArgs = EventStackEvent & {
-  width: number;
-  isTopCard: boolean;
-  showPayload?: boolean;
-  toggleShowPayload?: () => void;
-};
+import { cardFactory as defaultCardFactory } from './factory';
+import { EventStackCardFactory, EventStackEvent } from './types';
 
 export type EventStackProps = {
   bus: t.EventBus<any>;
-  cardFactory?: (args: EventStackCardFactoryArgs) => JSX.Element;
+  cardFactory?: EventStackCardFactory;
   maxDepth?: number;
   style?: CssValue;
 };
 
-const Default = {
-  cardCactory(args: EventStackCardFactoryArgs) {
-    return (
-      <EventStackCard
-        key={args.id}
-        count={args.count}
-        event={args.event}
-        width={args.width}
-        isTopCard={args.isTopCard}
-        showPayload={args.showPayload}
-        onShowPayloadToggle={args.toggleShowPayload}
-      />
-    );
-  },
-};
-
 export const EventStack: React.FC<EventStackProps> = (props) => {
-  const { bus, cardFactory = Default.cardCactory } = props;
+  const { bus, cardFactory = defaultCardFactory } = props;
   const maxDepth = defaultValue(props.maxDepth, 3);
 
   const baseRef = useRef<HTMLDivElement>(null);
