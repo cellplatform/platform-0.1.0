@@ -8,3 +8,5 @@ export { HttpClient } from '@platform/cell.client';
 
 import { equals, uniq } from 'ramda';
 export const R = { equals, uniq };
+
+export { ObjectView } from '@platform/ui.object';

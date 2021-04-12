@@ -13,7 +13,7 @@ import {
   PropList,
   PropListItem,
 } from './common';
-import { EventStack } from './DEV.EventStack';
+import { EventStack } from 'sys.ui.primitives/lib/components/EventStack';
 
 import { PeerNetwork } from '..';
 
