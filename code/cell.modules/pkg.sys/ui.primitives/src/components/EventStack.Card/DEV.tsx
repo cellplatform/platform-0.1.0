@@ -20,6 +20,8 @@ export const actions = DevActions<Ctx>()
         event,
         count: 0,
         width: 300,
+        isTopCard: true,
+        shadow: false,
       },
     };
   })
@@ -44,9 +46,20 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('props');
+
     e.boolean('showPayload', (e) => {
       if (e.changing) e.ctx.props.showPayload = e.changing.next;
       e.boolean.current = e.ctx.props.showPayload;
+    });
+
+    e.boolean('isTopCard', (e) => {
+      if (e.changing) e.ctx.props.isTopCard = e.changing.next;
+      e.boolean.current = e.ctx.props.isTopCard;
+    });
+
+    e.boolean('shadow', (e) => {
+      if (e.changing) e.ctx.props.shadow = e.changing.next;
+      e.boolean.current = Boolean(e.ctx.props.shadow);
     });
 
     e.hr();

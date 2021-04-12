@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { defaultValue, css, CssValue, t, COLORS, ObjectView } from '../../common';
 
 import { Card, CardProps } from '../Card';
@@ -7,6 +7,7 @@ import { PropList, PropListItem } from '../PropList';
 export type EventStackCardProps = {
   count: number;
   event: t.Event<any>;
+  isTopCard?: boolean;
   width?: number;
   height?: number;
   shadow?: CardProps['shadow'];
@@ -17,11 +18,11 @@ export type EventStackCardProps = {
 };
 
 export const EventStackCard: React.FC<EventStackCardProps> = (props) => {
-  const { event, width, height, showPayload = false } = props;
+  const { event, width, height, showPayload = false, isTopCard } = props;
   const shadow = defaultValue(props.shadow);
 
   const styles = {
-    base: css({ position: 'relative', width, height }),
+    base: css({ position: 'relative', width, height, minHeight: 40 }),
     inner: css({
       position: 'relative',
       boxSizing: 'border-box',
@@ -62,12 +63,16 @@ export const EventStackCard: React.FC<EventStackCardProps> = (props) => {
     <ObjectView name={'payload'} data={event?.payload} fontSize={10} />
   );
 
+  const elBody = isTopCard && (
+    <div {...styles.inner}>
+      <PropList title={'Network Bus'} items={items} defaults={{ clipboard: false }} />
+      {elObject}
+    </div>
+  );
+
   return (
     <Card shadow={shadow} style={styles.base}>
-      <div {...styles.inner}>
-        <PropList title={'Network Bus'} items={items} defaults={{ clipboard: false }} />
-        {elObject}
-      </div>
+      {elBody}
     </Card>
   );
 };

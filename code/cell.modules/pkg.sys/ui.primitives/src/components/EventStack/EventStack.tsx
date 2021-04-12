@@ -7,28 +7,30 @@ import { CardStack, CardStackItem } from '../CardStack';
 import { EventStackCard } from '../EventStack.Card';
 
 export type EventStackEvent = { id: string; event: t.Event; count: number };
-export type EventStackFactoryArgs = EventStackEvent & {
+export type EventStackCardFactoryArgs = EventStackEvent & {
   width: number;
+  isTopCard: boolean;
   showPayload?: boolean;
   toggleShowPayload?: () => void;
 };
 
 export type EventStackProps = {
   bus: t.EventBus<any>;
-  factory?: (args: EventStackFactoryArgs) => JSX.Element;
+  cardFactory?: (args: EventStackCardFactoryArgs) => JSX.Element;
   maxDepth?: number;
   style?: CssValue;
 };
 
 const Default = {
-  factory(args: EventStackFactoryArgs) {
+  cardCactory(args: EventStackCardFactoryArgs) {
     return (
       <EventStackCard
         key={args.id}
         count={args.count}
         event={args.event}
-        showPayload={args.showPayload}
         width={args.width}
+        isTopCard={args.isTopCard}
+        showPayload={args.showPayload}
         onShowPayloadToggle={args.toggleShowPayload}
       />
     );
@@ -36,7 +38,7 @@ const Default = {
 };
 
 export const EventStack: React.FC<EventStackProps> = (props) => {
-  const { bus, factory = Default.factory } = props;
+  const { bus, cardFactory = Default.cardCactory } = props;
   const maxDepth = defaultValue(props.maxDepth, 3);
 
   const baseRef = useRef<HTMLDivElement>(null);
@@ -70,10 +72,11 @@ export const EventStack: React.FC<EventStackProps> = (props) => {
     }),
   };
 
-  const items: CardStackItem[] = (resize.ready ? events : []).map((item) => {
+  const items: CardStackItem[] = (resize.ready ? events : []).map((item, i) => {
+    const isTopCard = i === events.length - 1;
     const { id } = item;
     const { width } = resize.rect;
-    const el = factory({ ...item, showPayload, toggleShowPayload, width });
+    const el = cardFactory({ ...item, showPayload, toggleShowPayload, width, isTopCard });
     return { id, el };
   });
 

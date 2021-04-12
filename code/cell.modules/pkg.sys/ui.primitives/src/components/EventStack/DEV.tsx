@@ -7,7 +7,6 @@ type Ctx = {
   bus: t.EventBus<any>;
   count: number;
   width?: number;
-  height?: number;
   props: EventStackProps;
 };
 
@@ -37,11 +36,6 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = typeof e.ctx.width === 'number';
     });
 
-    e.boolean('height', (e) => {
-      if (e.changing) e.ctx.height = e.changing.next ? 250 : undefined;
-      e.boolean.current = typeof e.ctx.height === 'number';
-    });
-
     e.hr();
   })
 
@@ -58,7 +52,7 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { width, height } = e.ctx;
+    const { width } = e.ctx;
     e.settings({
       host: { background: -0.04 },
       layout: {
@@ -66,7 +60,6 @@ export const actions = DevActions<Ctx>()
         cropmarks: -0.2,
         position: { top: 200 },
         width,
-        height,
       },
     });
     e.render(<EventStack {...e.ctx.props} style={{ flex: 1 }} />);
