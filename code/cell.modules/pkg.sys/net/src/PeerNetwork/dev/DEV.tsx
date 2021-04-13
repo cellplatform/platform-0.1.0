@@ -48,6 +48,9 @@ export const actions = DevActions<Ctx>()
     };
 
     time.delay(100, async () => {
+      /**
+       * Start "self" video.
+       */
       events.media.start(EventBridge.videoRef(self)).video();
       events.net.create(signal, self);
       events.net.media(self).video();

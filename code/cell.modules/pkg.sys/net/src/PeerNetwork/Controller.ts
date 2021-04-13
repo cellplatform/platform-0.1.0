@@ -1,10 +1,11 @@
 import { merge } from 'rxjs';
-import { map, delay, filter, take, distinctUntilChanged } from 'rxjs/operators';
+import { delay, distinctUntilChanged, filter, map, take } from 'rxjs/operators';
 
-import { asArray, deleteUndefined, PeerJS, R, rx, slug, t, time, defaultValue } from './common';
+import { asArray, defaultValue, PeerJS, R, rx, slug, t, time, WebRuntime } from './common';
 import { Events } from './Events';
-import { ConnectionRef, MemoryRefs, SelfRef } from './Refs';
-import { PeerJSError, StringUtil, StreamUtil } from './util';
+import { MemoryRefs, SelfRef } from './Refs';
+import { Status } from './Status';
+import { PeerJSError, StreamUtil, StringUtil } from './util';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 
@@ -40,44 +41,6 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   window.addEventListener('offline', handleOnlineStatusChanged);
 
   /**
-   * Convert a "local network client" to an immutable status object.
-   */
-  const toStatus = (self: SelfRef): t.PeerStatus => {
-    const { peer, createdAt, signal } = self;
-    const id = peer.id;
-    const connections = self.connections.map((item) => toConnectionStatus(item));
-    return deleteUndefined<t.PeerStatus>({
-      id,
-      isOnline: navigator.onLine,
-      createdAt,
-      signal,
-      connections,
-    });
-  };
-
-  /**
-   * Convert a connection-reference to an immutable status object.
-   */
-  const toConnectionStatus = (ref: ConnectionRef): t.PeerConnectionStatus => {
-    const { kind, peer, id, uri } = ref;
-
-    if (kind === 'data') {
-      const conn = ref.conn as PeerJS.DataConnection;
-      const { reliable: isReliable, open: isOpen, metadata } = conn;
-      return { uri, id, peer, kind, isReliable, isOpen, metadata };
-    }
-
-    if (kind === 'media/video' || kind === 'media/screen') {
-      const media = ref.remoteStream as MediaStream;
-      const conn = ref.conn as PeerJS.MediaConnection;
-      const { open: isOpen, metadata } = conn;
-      return { uri, id, peer, kind, isOpen, metadata, media };
-    }
-
-    throw new Error(`Kind of connection not supported: ${uri}`);
-  };
-
-  /**
    * Initialize a new PeerJS data-connection.
    */
   const completeConnection = (
@@ -99,7 +62,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         direction,
         existing: false,
         remote: connectionRef.peer.remote,
-        connection: toConnectionStatus(connectionRef),
+        connection: Status.toConnection(connectionRef),
       },
     });
 
@@ -113,7 +76,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
        */
       bus.fire({
         type: 'sys.net/peer/connection/closed',
-        payload: { self: self.id, connection: toConnectionStatus(connectionRef) },
+        payload: { self: self.id, connection: Status.toConnection(connectionRef) },
       });
     });
 
@@ -146,7 +109,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
      */
     peer.on('connection', (dataConnection) => {
       dataConnection.on('open', () => {
-        refs.connection(self).add('data', dataConnection);
+        refs.connection(self).add('data', 'incoming', dataConnection);
         completeConnection('data', 'incoming', self, dataConnection);
       });
     });
@@ -161,7 +124,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       const answer = (localStream?: MediaStream) => {
         mediaConnection.answer(localStream);
         mediaConnection.on('stream', (remoteStream) => {
-          refs.connection(self).add(kind, mediaConnection, remoteStream);
+          refs.connection(self).add(kind, 'incoming', mediaConnection, remoteStream);
           completeConnection(kind, 'incoming', self, mediaConnection);
         });
       };
@@ -205,7 +168,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     .subscribe((e) => {
       const tx = e.tx || slug();
       const self = refs.self[e.self];
-      const peer = self ? toStatus(self) : undefined;
+      const peer = self ? Status.toSelf(self) : undefined;
       const exists = Boolean(peer);
       bus.fire({
         type: 'sys.net/peer/local/status:res',
@@ -232,7 +195,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   ).pipe(
     map((event) => ({ selfRef: refs.self[event.payload.self], event })),
     filter((e) => Boolean(e.selfRef)),
-    map((e) => ({ event: e.event, status: toStatus(e.selfRef) })),
+    map((e) => ({ event: e.event, status: Status.toSelf(e.selfRef) })),
     distinctUntilChanged((prev, next) => R.equals(prev.status, next.status)),
   );
 
@@ -251,7 +214,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       if (selfRef) {
         bus.fire({
           type: 'sys.net/peer/local/status:changed',
-          payload: { self, peer: toStatus(selfRef), event },
+          payload: { self, peer: Status.toSelf(selfRef), event },
         });
       }
     });
@@ -285,7 +248,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       }
 
       if (select.closedConnections) {
-        const closed = self.connections.filter((item) => !toConnectionStatus(item).isOpen);
+        const closed = self.connections.filter((item) => !Status.toConnection(item).isOpen);
         self.connections = self.connections.filter(
           ({ peer: id }) => !closed.some((c) => c.peer === id),
         );
@@ -309,6 +272,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       const { remote } = e;
       const self = refs.self[e.self];
       const tx = e.tx || slug();
+      const module = { name: WebRuntime.module.name, version: WebRuntime.module.version };
 
       const fire = (payload?: Partial<t.PeerNetworkConnectRes>) => {
         const existing = Boolean(payload?.existing);
@@ -337,12 +301,15 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         return fireError(message);
       }
 
-      // Start a data connection.
+      /**
+       * START a data connection.
+       */
       if (e.kind === 'data') {
+        const metadata: t.PeerConnectionMetadataData = { kind: e.kind, module };
         const reliable = e.isReliable;
         const errorMonitor = PeerJSError(self.peer);
-        const dataConnection = self.peer.connect(remote, { reliable });
-        refs.connection(self).add('data', dataConnection);
+        const dataConnection = self.peer.connect(remote, { reliable, metadata });
+        refs.connection(self).add('data', 'outgoing', dataConnection);
 
         dataConnection.on('open', () => {
           // SUCCESS: Connected to the remote peer.
@@ -364,7 +331,9 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         });
       }
 
-      // Start a media (video) call.
+      /**
+       * START a media (video) call.
+       */
       if (e.kind === 'media/video' || e.kind === 'media/screen') {
         const { constraints } = e;
 
@@ -377,9 +346,9 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         }
 
         // Start the network/peer connection.
-        const metadata: t.PeerConnectionMetadataMedia = { kind: e.kind, constraints };
+        const metadata: t.PeerConnectionMetadataMedia = { kind: e.kind, constraints, module };
         const mediaConnection = self.peer.call(remote, localStream, { metadata });
-        const connRef = refs.connection(self).add(e.kind, mediaConnection);
+        const connRef = refs.connection(self).add(e.kind, 'outgoing', mediaConnection);
         connRef.localStream = localStream;
 
         // Manage timeout.

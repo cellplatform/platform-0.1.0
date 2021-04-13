@@ -1,5 +1,5 @@
 import { domAnimation, LazyMotion, m } from 'framer-motion';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
 import { color, COLORS, css, CssValue } from '../../common';
 import { EventLogItem } from '../Event/types';
@@ -35,7 +35,7 @@ export const EventPipeItem: React.FC<EventPipeItemProps> = (props) => {
       <m.div
         {...styles.base}
         style={{ originX: 'center', originY: 'center' }}
-        whileHover={{ scale: 3, transition: { duration: 0.3 } }}
+        whileHover={{ scale: 3, transition: { duration: 0.2 } }}
         whileTap={{ scale: 2 }}
         onClick={() => {
           if (onClick) onClick(item);

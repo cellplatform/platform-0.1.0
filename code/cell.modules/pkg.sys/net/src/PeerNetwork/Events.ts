@@ -3,13 +3,8 @@ import { take, filter, takeUntil, map } from 'rxjs/operators';
 import { cuid, rx, t, slug } from './common';
 import { isEvent } from './util';
 
-/**
- * Filter on Peer/Network/Connection events
- */
-export function isPeerEvent(e: t.Event) {
-  const prefixes = ['sys.net/peer/local/', 'sys.net/peer/connection/', 'Peer:Data/'];
-  return prefixes.some((prefix) => e.type.startsWith(prefix));
-}
+import { EventNamespace as ns } from './Events.ns';
+export { ns };
 
 /**
  * Helpers for working with a [PeerNetwork].
@@ -21,7 +16,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
 
   const event$ = bus.event$.pipe(
     takeUntil(dispose$),
-    filter(isPeerEvent),
+    filter(ns.is.peer.base),
     map((e) => e as t.PeerEvent),
   );
 
@@ -268,7 +263,9 @@ export function Events(args: { bus: t.EventBus<any> }) {
     dispose,
     dispose$: dispose$.pipe(take(1)),
 
+    ns,
     $: event$,
+
     create,
     created,
     status,

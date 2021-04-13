@@ -23,9 +23,19 @@ export type PeerSignallingEndpoint = {
   secure: boolean;
 };
 
-export type PeerConnectionMetadata = PeerConnectionMetadataMedia;
+/**
+ * Connection {metadata}.
+ */
+export type PeerConnectionMetadata = PeerConnectionMetadataMedia | PeerConnectionMetadataData;
+export type PeerConnectionModule = { name: string; version: string };
 
 export type PeerConnectionMetadataMedia = {
   kind: t.PeerConnectionKindMedia;
   constraints?: t.PeerMediaConstraints;
+  module: PeerConnectionModule;
+};
+
+export type PeerConnectionMetadataData = {
+  kind: PeerConnectionKindData;
+  module: PeerConnectionModule;
 };

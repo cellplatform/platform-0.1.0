@@ -1,21 +1,23 @@
 import { color } from '@platform/css';
 import React, { useEffect, useState } from 'react';
 
+import { PeerNetwork } from '..';
 import {
-  Textbox,
   Button,
   COLORS,
   css,
   CssValue,
+  EventPipe,
+  EventStack,
   Hr,
   Icons,
-  t,
   PropList,
   PropListItem,
+  t,
+  Textbox,
+  useEventBusHistory,
 } from './common';
-import { EventStack, useEventBusHistory, EventPipe } from 'sys.ui.primitives/lib/components/Event';
-
-import { PeerNetwork } from '..';
+import { ItemUtil } from './DEV.connection.util';
 
 export type ConnectionDataProps = {
   bus: t.EventBus<any>;
@@ -43,17 +45,14 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
 
   const [eventMessage, setEventMessage] = useState<string>('');
 
-  const history = useEventBusHistory({ bus });
+  const history = useEventBusHistory({ bus: netbus });
 
   const open = (kind: t.PeerConnectionKindMedia) => {
     return () => fireOpen({ bus, self, remote, kind });
   };
 
   const items: PropListItem[] = [
-    { label: 'id', value: { data: connection.id, clipboard: true } },
-    { label: 'remote peer', value: { data: peer.remote, clipboard: true } },
-    { label: 'kind', value: connection.kind },
-    { label: 'open', value: connection.isOpen },
+    ...ItemUtil.common(connection),
     { label: 'reliable', value: connection.isReliable },
     {
       label: 'video',
@@ -72,7 +71,7 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
     const msg = eventMessage.trim() ? eventMessage : `<empty>`;
     netbus.fire({
       // NB: Arbitrary invented event.
-      // When using in application, pass a set of strong event types to the bus.
+      //     When using in application, pass a set of strong event types to the bus.
       type: 'sample/event',
       payload: {
         msg,
@@ -120,7 +119,17 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
       <Hr thickness={5} opacity={0.1} margin={[10, 0, 15, 0]} />
       {elTextbox}
       <EventStack events={history.events} style={styles.events.stack} />
-      <EventPipe events={history.events} style={styles.events.pipe} />
+      <EventPipe
+        events={history.events}
+        style={styles.events.pipe}
+        onEventClick={(e) => {
+          console.group('🌳 event');
+          console.log('count', e.count);
+          console.log('type', e.event.type);
+          console.log('payload', e.event.payload);
+          console.groupEnd();
+        }}
+      />
     </div>
   );
 };
