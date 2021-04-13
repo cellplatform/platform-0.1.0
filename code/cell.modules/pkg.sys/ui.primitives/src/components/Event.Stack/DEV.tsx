@@ -3,7 +3,7 @@ import { Observable, Subject } from 'rxjs';
 import { DevActions } from 'sys.ui.dev';
 
 import { EventStack, EventStackProps, useEventBusHistory } from '.';
-import { rx, t } from '../../common';
+import { rx, t, time } from '../../common';
 
 type Ctx = {
   bus: t.EventBus<any>;
@@ -11,6 +11,7 @@ type Ctx = {
   count: number;
   width?: number;
   props: EventStackProps;
+  fireSample(msg?: string): void;
 };
 
 /**
@@ -24,12 +25,21 @@ export const actions = DevActions<Ctx>()
     const bus = rx.bus();
     const reset$ = new Subject<void>();
 
+    const fireSample = (msg?: string) => {
+      ctx.count++;
+      msg = msg || `hello ${ctx.count}`;
+      bus.fire({ type: 'sample/event', payload: { msg } });
+    };
+
+    time.delay(500, () => fireSample());
+
     const ctx: Ctx = {
       bus,
       reset$,
       count: 0,
       width: 300,
       props: {},
+      fireSample,
     };
 
     return ctx;
@@ -43,7 +53,10 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = typeof e.ctx.width === 'number';
     });
 
+    e.hr(1, 0.2);
+
     e.button('reset', (e) => e.ctx.reset$.next());
+    e.button('fire', (e) => e.ctx.fireSample());
 
     e.hr();
   })
@@ -63,18 +76,6 @@ export const actions = DevActions<Ctx>()
             (props.card || (props.card = {})).maxDepth = e.changing.next[0].value;
           }
         });
-    });
-
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('events');
-
-    e.button('fire', (e) => {
-      e.ctx.count++;
-      const msg = `hello ${e.ctx.count}`;
-      e.ctx.bus.fire({ type: 'sample/event', payload: { msg } });
     });
 
     e.hr();
