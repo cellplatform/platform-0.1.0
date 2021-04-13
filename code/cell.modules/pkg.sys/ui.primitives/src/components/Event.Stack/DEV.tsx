@@ -10,8 +10,8 @@ type Ctx = {
   reset$: Subject<void>;
   count: number;
   width?: number;
-  props: EventStackProps;
   fireSample(msg?: string): void;
+  props: EventStackProps;
 };
 
 /**
@@ -38,8 +38,8 @@ export const actions = DevActions<Ctx>()
       reset$,
       count: 0,
       width: 300,
-      props: {},
       fireSample,
+      props: {},
     };
 
     return ctx;

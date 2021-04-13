@@ -4,12 +4,13 @@ import { Observable, Subject } from 'rxjs';
 import { DevActions } from 'sys.ui.dev';
 import { EventPipe, EventPipeProps } from '.';
 import { useEventBusHistory } from '../Event';
-import { t, rx } from '../../common';
+import { t, rx, time } from '../../common';
 
 type Ctx = {
   bus: t.EventBus<any>;
   reset$: Subject<void>;
   count: number;
+  fireSample(msg?: string): void;
   props: EventPipeProps;
 };
 
@@ -24,17 +25,29 @@ export const actions = DevActions<Ctx>()
     const bus = rx.bus();
     const reset$ = new Subject<void>();
 
-    return {
+    const fireSample = (msg?: string) => {
+      ctx.count++;
+      msg = msg || `hello ${ctx.count}`;
+      bus.fire({ type: 'sample/event', payload: { msg } });
+    };
+
+    time.delay(500, () => fireSample());
+
+    const ctx: Ctx = {
       bus,
       reset$,
       count: 0,
+      fireSample,
       props: { orientation: 'x' },
     };
+
+    return ctx;
   })
 
   .items((e) => {
     e.title('debug');
     e.button('reset', (e) => e.ctx.reset$.next());
+    e.button('fire', (e) => e.ctx.fireSample());
     e.hr();
   })
 
@@ -50,18 +63,6 @@ export const actions = DevActions<Ctx>()
         .pipe((e) => {
           if (e.changing) e.ctx.props.orientation = e.changing.next[0].value;
         });
-    });
-
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('events');
-
-    e.button('fire', (e) => {
-      e.ctx.count++;
-      const msg = `hello ${e.ctx.count}`;
-      e.ctx.bus.fire({ type: 'sample/event', payload: { msg } });
     });
 
     e.hr();
@@ -90,5 +91,12 @@ export type SampleProps = EventPipeProps & { bus: t.EventBus<any>; reset$: Obser
 export const Sample: React.FC<SampleProps> = (props) => {
   const { bus, reset$ } = props;
   const history = useEventBusHistory({ bus, reset$ });
-  return <EventPipe {...props} events={history.events} style={{ flex: 1 }} />;
+  return (
+    <EventPipe
+      {...props}
+      events={history.events}
+      style={{ flex: 1 }}
+      onEventClick={(e) => console.log('onEventClick', e)}
+    />
+  );
 };

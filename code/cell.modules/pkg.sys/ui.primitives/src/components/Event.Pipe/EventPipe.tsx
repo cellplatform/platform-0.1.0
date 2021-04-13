@@ -1,9 +1,8 @@
-import { AnimatePresence, domMax, LazyMotion, m } from 'framer-motion';
-import React, { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, domAnimation, LazyMotion, m } from 'framer-motion';
+import React, { useRef } from 'react';
 
 import {
   color,
-  COLORS,
   css,
   CssValue,
   defaultValue,
@@ -11,20 +10,28 @@ import {
   useResizeObserver,
 } from '../../common';
 import { EventLogItem } from '../Event/types';
+import {
+  EventPipeItem,
+  EventPipeItemClickEvent,
+  EventPipeItemClickEventHandler,
+} from './EventPipe.Item';
+
+export { EventPipeItemClickEventHandler, EventPipeItemClickEvent };
 
 export type EventPipeProps = {
   events?: EventLogItem[];
   backgroundColor?: string | number;
-  event?: { color?: string | number; max?: number };
+  event?: { max?: number };
   orientation?: 'x' | 'y';
   thickness?: number;
-  duration?: number; // msecs
+  duration?: { slide?: number }; // msecs
   style?: CssValue;
+  onEventClick?: EventPipeItemClickEventHandler;
 };
 
 export const EventPipe: React.FC<EventPipeProps> = (props) => {
   const { orientation = 'x', thickness = 8, backgroundColor = -0.06 } = props;
-  const duration = defaultValue(props.duration, 300) / 1000;
+  const slideDuration = defaultValue(props.duration?.slide, 300) / 1000;
   const max = defaultValue(props.event?.max, 10);
 
   let events = props.events || [];
@@ -35,8 +42,7 @@ export const EventPipe: React.FC<EventPipeProps> = (props) => {
   const baseRef = useRef<HTMLDivElement>(null);
   const resize = useResizeObserver(baseRef);
   const isReady = resize.ready;
-  const baseOffset = orientation === 'x' ? resize.rect.width : resize.rect.height;
-  const eventColor = defaultValue(props.event?.color, COLORS.DARK);
+  const baseSize = orientation === 'x' ? resize.rect.width : resize.rect.height;
 
   const styles = {
     base: css({
@@ -47,24 +53,12 @@ export const EventPipe: React.FC<EventPipeProps> = (props) => {
       width: orientation === 'y' ? thickness : undefined,
       borderRadius: thickness,
     }),
-    event: {
-      base: css({
-        width: thickness,
-        height: thickness,
-        borderRadius: thickness,
-        backgroundColor: color.format(eventColor),
-
-        position: 'absolute',
-        left: orientation === 'x' ? baseOffset - thickness : undefined,
-        top: orientation === 'y' ? baseOffset - thickness : undefined,
-      }),
-    },
   };
 
   const elEvents = (isReady ? events : []).map((item, i) => {
     const total = events.length;
     const position = total - i - 1;
-    const space = baseOffset / (max - 3);
+    const space = baseSize / (max - 3);
 
     const offset = 0 - position * space;
     const x = orientation === 'x' ? offset : undefined;
@@ -75,15 +69,27 @@ export const EventPipe: React.FC<EventPipeProps> = (props) => {
     const animate = deleteUndefined({ x, y, opacity });
 
     return (
-      <m.div key={item.id} animate={animate} transition={{ duration }} exit={{ opacity: 0 }}>
-        <div {...css(styles.event.base)}></div>
+      <m.div
+        key={item.id}
+        animate={animate}
+        transition={{ duration: slideDuration }}
+        style={{ originX: 'center', originY: 'center' }}
+        exit={{ opacity: 0 }}
+      >
+        <EventPipeItem
+          item={item}
+          size={thickness}
+          parentSize={baseSize}
+          orientation={orientation}
+          onClick={props.onEventClick}
+        />
       </m.div>
     );
   });
 
   return (
     <div ref={baseRef} {...css(styles.base, props.style)}>
-      <LazyMotion features={domMax}>
+      <LazyMotion features={domAnimation}>
         <AnimatePresence>{isReady ? elEvents : []}</AnimatePresence>
       </LazyMotion>
     </div>
