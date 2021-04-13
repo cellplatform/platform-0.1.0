@@ -49,6 +49,26 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.title('props');
+
+    e.select((config) => {
+      config
+        .initial(config.ctx.props.card?.maxDepth || 3)
+        .title('card.maxDepth')
+        .view('buttons')
+        .items([0, 2, 3, 5, 10])
+        .pipe((e) => {
+          if (e.changing) {
+            const props = e.ctx.props;
+            (props.card || (props.card = {})).maxDepth = e.changing.next[0].value;
+          }
+        });
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('events');
 
     e.button('fire', (e) => {

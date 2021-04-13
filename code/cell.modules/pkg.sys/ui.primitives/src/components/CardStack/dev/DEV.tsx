@@ -39,8 +39,6 @@ export const actions = DevActions<Ctx>()
         .pipe((e) => {
           if (e.changing) {
             console.log('e.changing', e.changing);
-            const f = e.changing.next[0].value;
-            console.log('f', f);
             e.ctx.props.maxDepth = e.changing.next[0].value;
           }
         });
@@ -58,10 +56,6 @@ export const actions = DevActions<Ctx>()
       const props = e.ctx.props;
       const items = props.items || (props.items = []);
       items.push(createItem());
-      // const max = 5;
-      // if (items.length > max) {
-      //   props.items = items.slice(items.length - max);
-      // }
     });
 
     e.hr();
