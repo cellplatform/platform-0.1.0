@@ -44,7 +44,7 @@ export function ensureClosed(args: {
     .subscribe(({ connection }) => {
       if (connection) {
         netbus.fire({
-          type: 'Mesh/ensureConnectionClosed',
+          type: 'sys.net/mesh/ensureConnectionClosed',
           payload: { from: self, connection },
         });
       }
@@ -53,7 +53,10 @@ export function ensureClosed(args: {
   /**
    * Listen for mesh
    */
-  rx.payload<t.MeshEnsureConnectionClosedEvent>(netbus.event$, 'Mesh/ensureConnectionClosed')
+  rx.payload<t.MeshEnsureConnectionClosedEvent>(
+    netbus.event$,
+    'sys.net/mesh/ensureConnectionClosed',
+  )
     .pipe(
       filter(() => args.isEnabled()),
       filter((e) => e.from !== self),

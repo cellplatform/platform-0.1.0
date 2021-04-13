@@ -37,7 +37,7 @@ export function autoPropagation(args: {
       const peers = R.uniq(connections.map((conn) => conn.peer.remote));
       if (peers.length > 0) {
         netbus.fire({
-          type: 'Mesh/ensureConnected:data',
+          type: 'sys.net/mesh/ensureConnected:data',
           payload: { from: self, peers, isReliable, metadata },
         });
       }
@@ -47,7 +47,7 @@ export function autoPropagation(args: {
    * Listen for incoming "ensure connections" events from other
    * peers broadcasting the set of ID's to connect to.
    */
-  rx.payload<t.MeshEnsureConnectedDataEvent>(netbus.event$, 'Mesh/ensureConnected:data')
+  rx.payload<t.MeshEnsureConnectedDataEvent>(netbus.event$, 'sys.net/mesh/ensureConnected:data')
     .pipe()
     .subscribe(async (e) => {
       const { isReliable } = e;
