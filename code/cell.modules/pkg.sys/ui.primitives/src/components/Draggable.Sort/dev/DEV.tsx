@@ -1,6 +1,6 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
-import { App } from './DEV.App';
+import { Sample } from './Sample';
 import { css } from '../../../common';
 
 type Ctx = { count?: number };
@@ -37,13 +37,16 @@ export const actions = DevActions<Ctx>()
 
     const styles = {
       base: css({
+        Absolute: 0,
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
         display: 'block',
+        Scroll: true,
       }),
     };
 
     const el = (
       <div {...styles.base}>
-        <App />
+        <Sample />
       </div>
     );
 

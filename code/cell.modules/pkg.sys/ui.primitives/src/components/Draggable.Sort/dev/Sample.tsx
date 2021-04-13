@@ -15,14 +15,20 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
+  horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
 
-import { SortableItem } from './SortableItem';
-import { Item } from './Item';
+import { SortableItem } from './Sample.SortableItem';
+import { Item } from './Sample.Item';
 
-export function App() {
+import { color, css, CssValue, t } from './common';
+
+export type SampleProps = { style?: CssValue };
+
+export const Sample: React.FC<SampleProps> = (props) => {
   const [activeId, setActiveId] = useState<string | null>();
   const [items, setItems] = useState(['1', '2', '3']);
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -66,4 +72,4 @@ export function App() {
 
     setActiveId(null);
   }
-}
+};

@@ -2,7 +2,7 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-import { Item } from './Item';
+import { Item } from './Sample.Item';
 
 export function SortableItem(props: any) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
