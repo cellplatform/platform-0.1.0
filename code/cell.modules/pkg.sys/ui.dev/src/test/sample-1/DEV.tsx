@@ -1,5 +1,5 @@
 import React from 'react';
-import { DevActions, toObject } from '../..';
+import { DevActions } from '../..';
 import { css, COLORS, color, time } from '../../common';
 import { Component } from './Component';
 
@@ -96,8 +96,8 @@ export const actions = DevActions<Ctx>()
 
     e.button('console.log', (e) => {
       console.group('🌳 button click');
-      console.log('e.ctx', toObject(e.ctx));
-      console.log('e.host', toObject(e.host));
+      console.log('e.ctx', e.toObject(e.ctx));
+      console.log('e.host', e.toObject(e.host));
       console.groupEnd();
     });
     e.button((config) => config.label(`Indented Ellipsis - ${LOREM}`).indent(25));

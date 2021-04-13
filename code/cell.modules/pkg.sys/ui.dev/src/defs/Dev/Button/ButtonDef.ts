@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
 
-import { Context, Handler, Model, rx, t, is } from '../common';
+import { Context, Handler, Model, rx, t, is, toObject } from '../common';
 import { Button as Component } from '../../../components/Action.Dev';
 import { config } from './ButtonDef.config';
 
@@ -50,7 +50,7 @@ export const ButtonDef: t.ActionDef<T, E> = {
               })(args);
 
             const button = item as t.ActionButtonProps;
-            const payload: P = { ctx, host, layout, actions, settings, button };
+            const payload: P = { ctx, host, layout, actions, settings, button, toObject };
 
             for (const fn of e.item.handlers) {
               const res = fn(payload);

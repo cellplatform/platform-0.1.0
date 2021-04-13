@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
 
-import { Context, Handler, Model, rx, t, is } from '../common';
+import { Context, Handler, Model, rx, t, is, toObject } from '../common';
 import { Bool as Component } from '../../../components/Action.Dev';
 import { config } from './BooleanDef.config';
 
@@ -53,7 +53,16 @@ export const BooleanDef: t.ActionDef<T, E> = {
 
             const changing = e.changing;
             const boolean = item;
-            const payload: P = { ctx, changing, host, layout, actions, boolean, settings };
+            const payload: P = {
+              ctx,
+              changing,
+              host,
+              layout,
+              actions,
+              boolean,
+              settings,
+              toObject,
+            };
             if (changing) item.current = changing.next;
 
             for (const fn of e.item.handlers) {

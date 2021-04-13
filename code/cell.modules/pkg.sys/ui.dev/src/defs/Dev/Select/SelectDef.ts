@@ -58,7 +58,7 @@ export const SelectDef: t.ActionDef<T, E> = {
 
             const changing = e.changing;
             const select = item;
-            const payload: P = { ctx, changing, host, layout, actions, select, settings };
+            const payload: P = { ctx, changing, host, layout, actions, select, settings, toObject };
             if (changing) item.current = changing.next; // Update the item to the latest selection.
 
             for (const fn of e.item.handlers) {

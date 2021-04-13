@@ -32,6 +32,7 @@ export type ActionHandlerArgs<C> = {
   readonly host: t.Host;
   readonly layout: t.HostedLayout;
   readonly actions: t.HostedActions;
+  toObject<T>(proxy: any): T | undefined;
 };
 
 /**

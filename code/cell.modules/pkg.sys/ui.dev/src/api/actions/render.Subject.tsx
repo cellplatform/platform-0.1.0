@@ -28,6 +28,7 @@ export function renderSubject(args: { model: t.ActionsModelState<any> }) {
 
       const payload: P = {
         ctx: toObject(ctx),
+        toObject,
         host,
         layout,
         actions,

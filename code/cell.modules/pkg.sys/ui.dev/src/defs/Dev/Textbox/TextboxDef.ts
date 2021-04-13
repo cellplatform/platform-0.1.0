@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
 
-import { Context, Handler, Model, rx, t, is, value } from '../common';
+import { Context, Handler, Model, rx, t, is, toObject } from '../common';
 import { Textbox as Component } from '../../../components/Action.Dev';
 import { config } from './TextboxDef.config';
 
@@ -53,7 +53,16 @@ export const TextboxDef: t.ActionDef<T, E> = {
 
             const changing = e.changing;
             const textbox = item;
-            const payload: P = { ctx, changing, host, layout, actions, textbox, settings };
+            const payload: P = {
+              ctx,
+              changing,
+              host,
+              layout,
+              actions,
+              textbox,
+              settings,
+              toObject,
+            };
             if (changing) item.current = changing.next;
 
             for (const fn of e.item.handlers) {
