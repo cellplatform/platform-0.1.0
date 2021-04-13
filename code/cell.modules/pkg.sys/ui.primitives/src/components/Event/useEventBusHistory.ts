@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Subject, Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { useEffect, useState } from 'react';
+import { animationFrameScheduler, Subject } from 'rxjs';
+import { observeOn, takeUntil } from 'rxjs/operators';
 
-import { slug, t } from '../../common';
-import { EventLogItem, EventBusHistoryHook } from './types';
+import { slug } from '../../common';
+import { EventBusHistoryHook, EventLogItem } from './types';
 
 /**
  * Captures a running history of events within a state array.
@@ -20,12 +20,13 @@ export const useEventBusHistory: EventBusHistoryHook = (args) => {
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
+    const $ = bus.event$.pipe(takeUntil(dispose$), observeOn(animationFrameScheduler));
 
     if (reset$) {
-      reset$.pipe(takeUntil(dispose$)).subscribe(() => reset());
+      reset$.pipe(takeUntil(dispose$)).subscribe(reset);
     }
 
-    bus.event$.pipe(takeUntil(dispose$)).subscribe((event) => {
+    $.subscribe((event) => {
       let count = 0;
 
       setTotal((prev) => {

@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { EventStackCard } from './EventCard';
 import { EventStackCardFactory } from './types';
+
+import { EventStackCard } from '../Event.Card';
 
 export const cardFactory: EventStackCardFactory = (args) => {
   return (

@@ -10,7 +10,7 @@ import {
   deleteUndefined,
   useResizeObserver,
 } from '../../common';
-import { EventLogItem } from './types';
+import { EventLogItem } from '../Event/types';
 
 export type EventPipeProps = {
   events?: EventLogItem[];
