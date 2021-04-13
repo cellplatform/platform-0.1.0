@@ -1,6 +1,6 @@
 import React from 'react';
 import { DevActions } from '../..';
-import { css, COLORS, color, time } from '../../common';
+import { css, COLORS, color, time, lorem } from '../../common';
 import { Component } from './Component';
 
 type SampleLayout =
@@ -20,7 +20,7 @@ type Ctx = {
   throw?: boolean;
 };
 
-const LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem.';
+const LOREM = lorem.words(12, '.');
 
 const markdown = () => {
   let text = '';
