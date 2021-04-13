@@ -60,7 +60,7 @@ export type ActionHandlerSettingsTextboxArgs = t.ActionHandlerSettingsArgs & {
  * EVENT: Fires for the Textbox action.
  */
 export type IActionTextboxEvent = {
-  type: 'dev:action/Textbox';
+  type: 'sys.ui.dev/action/Textbox';
   payload: IActionTextboxPayload;
 };
 export type IActionTextboxPayload = {

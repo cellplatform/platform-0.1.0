@@ -27,7 +27,7 @@ export const SelectButtons: React.FC<SelectButtonsProps> = (props) => {
 
   const fireSelect = (next: t.ActionSelectItem[]) => {
     bus.fire({
-      type: 'dev:action/Select',
+      type: 'sys.ui.dev/action/Select',
       payload: { namespace, item, changing: { next } },
     });
   };

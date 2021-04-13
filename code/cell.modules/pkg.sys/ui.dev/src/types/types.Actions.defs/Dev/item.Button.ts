@@ -54,7 +54,7 @@ export type ActionHandlerSettingsButtonArgs = t.ActionHandlerSettingsArgs & {
  * EVENT: Fires for the simple Button action.
  */
 export type IActionButtonEvent = {
-  type: 'dev:action/Button';
+  type: 'sys.ui.dev/action/Button';
   payload: IActionButtonPayload;
 };
 export type IActionButtonPayload = {

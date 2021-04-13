@@ -28,7 +28,7 @@ export const BooleanDef: t.ActionDef<T, E> = {
     const namespace = actions.state.namespace;
 
     // Listen for events.
-    rx.payload<E>(args.event$, 'dev:action/Boolean')
+    rx.payload<E>(args.event$, 'sys.ui.dev/action/Boolean')
       .pipe(
         filter((e) => e.item.id === args.id),
         filter((e) => e.item.handlers.length > 0),
@@ -71,7 +71,7 @@ export const BooleanDef: t.ActionDef<T, E> = {
     // Initial state.
     if (item.handlers.length > 0) {
       args.fire({
-        type: 'dev:action/Boolean',
+        type: 'sys.ui.dev/action/Boolean',
         payload: { namespace, item },
       });
     }

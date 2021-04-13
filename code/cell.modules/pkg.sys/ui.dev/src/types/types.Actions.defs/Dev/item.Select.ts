@@ -75,7 +75,7 @@ export type ActionHandlerSettingsSelectArgs = t.ActionHandlerSettingsArgs & {
  * EVENT: Fires for the Select (dropdown) action.
  */
 export type IActionSelectEvent = {
-  type: 'dev:action/Select';
+  type: 'sys.ui.dev/action/Select';
   payload: IActionSelectPayload;
 };
 export type IActionSelectPayload = {

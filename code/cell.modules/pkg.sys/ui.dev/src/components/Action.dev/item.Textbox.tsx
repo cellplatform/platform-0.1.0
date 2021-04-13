@@ -34,7 +34,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
     const changing = typeof next === 'string' ? { next, action } : undefined;
     const item = model;
     bus.fire({
-      type: 'dev:action/Textbox',
+      type: 'sys.ui.dev/action/Textbox',
       payload: { namespace, item, action, changing },
     });
   };

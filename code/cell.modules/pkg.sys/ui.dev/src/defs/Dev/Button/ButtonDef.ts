@@ -26,7 +26,7 @@ export const ButtonDef: t.ActionDef<T, E> = {
     const { actions } = args;
 
     // Listen for events.
-    rx.payload<E>(args.event$, 'dev:action/Button')
+    rx.payload<E>(args.event$, 'sys.ui.dev/action/Button')
       .pipe(
         filter((e) => e.item.id === args.id),
         filter((e) => e.item.handlers.length > 0),
