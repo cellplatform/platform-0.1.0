@@ -9,7 +9,7 @@ type Ctx = { props: MotionDraggableProps };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui/MotionDraggable')
+  .namespace('ui.drag/Motion')
   .context((prev) => {
     if (prev) return prev;
     return { props: {} };

@@ -8,7 +8,9 @@ const imports = {
   Zoom: import('./components/Zoom/DEV'),
   PropList: import('./components/PropList/dev/DEV'),
   TextEditor: import('./components/TextEditor/DEV'),
-  MotionDraggable: import('./components/Motion.Draggable/dev/DEV'),
+
+  DraggableMotion: import('./components/Draggable.Motion/dev/DEV'),
+  DraggableSort: import('./components/Draggable.Sort/dev/DEV'),
 
   Card: import('./components/Card/DEV'),
   CardStack: import('./components/CardStack/dev/DEV'),
