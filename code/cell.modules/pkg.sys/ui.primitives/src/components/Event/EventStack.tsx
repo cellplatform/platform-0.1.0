@@ -3,11 +3,11 @@ import React, { useRef, useState } from 'react';
 import { css, CssValue, defaultValue, useResizeObserver } from '../../common';
 import { CardStack, CardStackItem } from '../CardStack';
 import { cardFactory as defaultCardFactory } from './factory';
-import { EventStackCardFactory, EventStackEvent } from './types';
+import { EventStackCardFactory, EventLogItem } from './types';
 
 export type EventStackProps = {
+  events?: EventLogItem[];
   card?: { factory?: EventStackCardFactory; maxDepth?: number };
-  events?: EventStackEvent[];
   style?: CssValue;
 };
 

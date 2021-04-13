@@ -1,9 +1,9 @@
 import { t } from '../../common';
 
-export type EventStackEvent = { id: string; event: t.Event; count: number };
+export type EventLogItem = { id: string; event: t.Event; count: number };
 
 export type EventStackCardFactory = (args: EventStackCardFactoryArgs) => JSX.Element;
-export type EventStackCardFactoryArgs = EventStackEvent & {
+export type EventStackCardFactoryArgs = EventLogItem & {
   width: number;
   isTopCard: boolean;
   showPayload?: boolean;
@@ -18,5 +18,5 @@ export type EventBusHistoryArgs = {
 };
 export type EventBusHistory = {
   total: number;
-  events: EventStackEvent[];
+  events: EventLogItem[];
 };

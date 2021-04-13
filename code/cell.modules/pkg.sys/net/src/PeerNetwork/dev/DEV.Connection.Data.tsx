@@ -13,7 +13,7 @@ import {
   PropList,
   PropListItem,
 } from './common';
-import { EventStack, useEventBusHistory } from 'sys.ui.primitives/lib/components/EventStack';
+import { EventStack, useEventBusHistory, EventPipe } from 'sys.ui.primitives/lib/components/Event';
 
 import { PeerNetwork } from '..';
 
@@ -89,8 +89,11 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
       fontSize: 12,
       marginTop: 15,
     }),
-    events: css({ marginTop: 20 }),
     textbox: css({ MarginX: 20, fontSize: 12 }),
+    events: {
+      stack: css({ marginTop: 20 }),
+      pipe: css({ marginTop: 15, MarginX: 15 }),
+    },
   };
 
   const elTextbox = (
@@ -116,7 +119,8 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
       <PropList title={'Data Connection'} items={items} defaults={{ clipboard: false }} />
       <Hr thickness={5} opacity={0.1} margin={[10, 0, 15, 0]} />
       {elTextbox}
-      <EventStack events={history.events} style={styles.events} />
+      <EventStack events={history.events} style={styles.events.stack} />
+      <EventPipe events={history.events} style={styles.events.pipe} />
     </div>
   );
 };

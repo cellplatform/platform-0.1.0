@@ -3,14 +3,14 @@ import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { slug, t } from '../../common';
-import { EventStackEvent, EventBusHistoryHook } from './types';
+import { EventLogItem, EventBusHistoryHook } from './types';
 
 /**
  * Captures a running history of events within a state array.
  */
 export const useEventBusHistory: EventBusHistoryHook = (args) => {
   const { bus, max, reset$ } = args;
-  const [events, setEvents] = useState<EventStackEvent[]>([]);
+  const [events, setEvents] = useState<EventLogItem[]>([]);
   const [total, setTotal] = useState<number>(0);
 
   const reset = () => {

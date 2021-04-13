@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { EventStackCard, EventStackCardProps } from '..';
-import { t } from '../../../common';
+import { t } from './common';
 
 type Ctx = { props: EventStackCardProps };
 
@@ -9,7 +9,7 @@ type Ctx = { props: EventStackCardProps };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui/EventStack.Card')
+  .namespace('ui.event/EventCard')
   .context((prev) => {
     if (prev) return prev;
 

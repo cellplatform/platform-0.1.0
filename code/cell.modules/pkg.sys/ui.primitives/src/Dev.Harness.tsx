@@ -13,8 +13,9 @@ const imports = {
   Card: import('./components/Card/DEV'),
   CardStack: import('./components/CardStack/dev/DEV'),
 
-  EventStack: import('./components/EventStack/dev/DEV.EventStack'),
-  EventStackCard: import('./components/EventStack/dev/DEV.EventStack.Card'),
+  EventStack: import('./components/Event/dev/DEV.EventStack'),
+  EventCard: import('./components/Event/dev/DEV.EventCard'),
+  EventPipe: import('./components/Event/dev/DEV.EventPipe'),
 
   Button: import('./components.ref/button/Button.dev/DEV'),
   Switch: import('./components.ref/button/Switch.dev/DEV'),
