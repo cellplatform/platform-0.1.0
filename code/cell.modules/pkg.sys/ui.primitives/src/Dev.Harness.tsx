@@ -13,8 +13,8 @@ const imports = {
   Card: import('./components/Card/DEV'),
   CardStack: import('./components/CardStack/dev/DEV'),
 
-  EventStack: import('./components/EventStack/DEV'),
-  EventStackCard: import('./components/EventStack.Card/DEV'),
+  EventStack: import('./components/EventStack/dev/DEV.EventStack'),
+  EventStackCard: import('./components/EventStack/dev/DEV.EventStack.Card'),
 
   Button: import('./components.ref/button/Button.dev/DEV'),
   Switch: import('./components.ref/button/Switch.dev/DEV'),

@@ -13,7 +13,7 @@ import {
   PropList,
   PropListItem,
 } from './common';
-import { EventStack } from 'sys.ui.primitives/lib/components/EventStack';
+import { EventStack, useEventBusHistory } from 'sys.ui.primitives/lib/components/EventStack';
 
 import { PeerNetwork } from '..';
 
@@ -42,6 +42,8 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
   const { self, remote } = peer;
 
   const [eventMessage, setEventMessage] = useState<string>('');
+
+  const history = useEventBusHistory({ bus });
 
   const open = (kind: t.PeerConnectionKindMedia) => {
     return () => fireOpen({ bus, self, remote, kind });
@@ -114,7 +116,7 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
       <PropList title={'Data Connection'} items={items} defaults={{ clipboard: false }} />
       <Hr thickness={5} opacity={0.1} margin={[10, 0, 15, 0]} />
       {elTextbox}
-      <EventStack bus={netbus} style={styles.events} />
+      <EventStack events={history.events} style={styles.events} />
     </div>
   );
 };

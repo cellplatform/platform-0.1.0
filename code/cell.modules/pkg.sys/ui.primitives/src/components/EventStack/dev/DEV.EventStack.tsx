@@ -1,10 +1,13 @@
 import React from 'react';
+import { Observable, Subject } from 'rxjs';
 import { DevActions } from 'sys.ui.dev';
-import { EventStack, EventStackProps } from '.';
-import { rx, t } from '../../common';
+
+import { EventStack, EventStackProps, useEventBusHistory } from '..';
+import { rx, t } from '../../../common';
 
 type Ctx = {
   bus: t.EventBus<any>;
+  reset$: Subject<void>;
   count: number;
   width?: number;
   props: EventStackProps;
@@ -19,13 +22,17 @@ export const actions = DevActions<Ctx>()
     if (prev) return prev;
 
     const bus = rx.bus();
+    const reset$ = new Subject<void>();
 
-    return {
+    const ctx: Ctx = {
       bus,
+      reset$,
       count: 0,
       width: 300,
-      props: { bus },
+      props: {},
     };
+
+    return ctx;
   })
 
   .items((e) => {
@@ -35,6 +42,8 @@ export const actions = DevActions<Ctx>()
       if (e.changing) e.ctx.width = e.changing.next ? 300 : undefined;
       e.boolean.current = typeof e.ctx.width === 'number';
     });
+
+    e.button('reset', (e) => e.ctx.reset$.next());
 
     e.hr();
   })
@@ -52,7 +61,7 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { width } = e.ctx;
+    const { width, props, bus, reset$ } = e.ctx;
     e.settings({
       host: { background: -0.04 },
       layout: {
@@ -62,7 +71,14 @@ export const actions = DevActions<Ctx>()
         width,
       },
     });
-    e.render(<EventStack {...e.ctx.props} style={{ flex: 1 }} />);
+    e.render(<Sample {...props} bus={bus} reset$={reset$} style={{ flex: 1 }} />);
   });
 
 export default actions;
+
+export type SampleProps = EventStackProps & { bus: t.EventBus<any>; reset$: Observable<void> };
+export const Sample: React.FC<SampleProps> = (props) => {
+  const { bus, reset$ } = props;
+  const history = useEventBusHistory({ bus, reset$ });
+  return <EventStack {...props} events={history.events} style={{ flex: 1 }} />;
+};

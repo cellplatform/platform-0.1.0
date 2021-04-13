@@ -9,3 +9,14 @@ export type EventStackCardFactoryArgs = EventStackEvent & {
   showPayload?: boolean;
   toggleShowPayload?: () => void;
 };
+
+export type EventBusHistoryHook = (args: EventBusHistoryArgs) => EventBusHistory;
+export type EventBusHistoryArgs = {
+  bus: t.EventBus<any>;
+  max?: number;
+  reset$?: t.Observable<void>;
+};
+export type EventBusHistory = {
+  total: number;
+  events: EventStackEvent[];
+};

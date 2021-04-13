@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
-import { EventStackCard, EventStackCardProps } from '.';
-import { t } from '../../common';
+import { EventStackCard, EventStackCardProps } from '..';
+import { t } from '../../../common';
 
 type Ctx = { props: EventStackCardProps };
 
