@@ -2,6 +2,7 @@ import React from 'react';
 import { DevActions } from '../..';
 import { css, COLORS, color, time, lorem } from '../../common';
 import { Component } from './Component';
+import { Button } from '../../components/Primitives';
 
 type SampleLayout =
   | 'single'
@@ -48,7 +49,12 @@ export const actions = DevActions<Ctx>()
 
     e.button('increment', (e) => e.ctx.count++);
 
-    type SampleProps = { text: string; count: number };
+    type SampleProps = {
+      text: string;
+      count: number;
+      onIncrement?: () => void;
+      onEnvironment?: () => void;
+    };
     const Sample: React.FC<SampleProps> = (props) => {
       const styles = {
         base: css({
@@ -62,21 +68,42 @@ export const actions = DevActions<Ctx>()
           fontSize: 10,
           opacity: 0.5,
         }),
+        buttons: css({
+          Flex: 'horizontal-spaceBetween-center',
+        }),
       };
       return (
         <div {...css(styles.base)}>
           <div>{props.text}</div>
           <div {...styles.count}>count: {props.count}</div>
+          <div {...styles.buttons}>
+            <Button onClick={props.onIncrement}>Increment</Button>
+            <Button onClick={props.onEnvironment}>Environment</Button>
+          </div>
         </div>
       );
     };
 
     e.component((e) => {
-      return <Sample text={'Foo'} count={e.ctx.count} />;
+      return (
+        <Sample
+          text={'Foo'}
+          count={e.ctx.count}
+          onIncrement={() => e.change.ctx((draft) => draft.count++)}
+          onEnvironment={() => e.change.settings({ host: { background: COLORS.DARK } })}
+        />
+      );
     });
 
     e.component((e) => {
-      return <Sample text={'Bar'} count={e.ctx.count} />;
+      return (
+        <Sample
+          text={'Bar'}
+          count={e.ctx.count}
+          onIncrement={() => e.change.ctx((draft) => draft.count++)}
+          onEnvironment={() => e.change.settings({ host: { background: -0.03 } })}
+        />
+      );
     });
 
     e.hr();

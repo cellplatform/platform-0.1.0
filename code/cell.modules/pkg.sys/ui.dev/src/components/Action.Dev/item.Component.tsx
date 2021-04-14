@@ -46,7 +46,7 @@ export function useComponentRenderMonitor(args: {
 
     rx.payload<t.IActionComponentRenderEvent>($, 'sys.ui.dev/action/Component/render')
       .pipe(filter((e) => e.item.id === id))
-      .subscribe((e) => setElement(e.el));
+      .subscribe((e) => setElement(e.element));
 
     return () => dispose$.next();
   }, [bus, id, namespace]);

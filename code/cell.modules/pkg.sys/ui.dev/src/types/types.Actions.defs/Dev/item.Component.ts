@@ -14,9 +14,16 @@ export type ActionComponent = {
 /**
  * HANDLER Component
  */
-export type ActionComponentHandler<C> = (e: t.ActionComponentHandlerProps<C>) => JSX.Element | null;
-export type ActionComponentHandlerProps<C> = {
+export type ActionComponentHandler<C> = (e: t.ActionComponentHandlerArgs<C>) => JSX.Element | null;
+export type ActionComponentHandlerArgs<C> = {
   ctx: C;
+  env: Required<t.ActionsModelEnvProps>;
+  change: ActionComponentChange<C>;
+};
+
+export type ActionComponentChange<C> = {
+  ctx(fn: (draft: C) => void): ActionComponentHandlerArgs<C>;
+  settings: t.ActionHandlerSettings<ActionComponentHandlerArgs<C>>;
 };
 
 /**
@@ -29,5 +36,5 @@ export type IActionComponentRenderEvent = {
 export type IActionComponentRenderPayload = {
   namespace: string;
   item: t.ActionComponent;
-  el?: JSX.Element | null;
+  element?: JSX.Element | null;
 };
