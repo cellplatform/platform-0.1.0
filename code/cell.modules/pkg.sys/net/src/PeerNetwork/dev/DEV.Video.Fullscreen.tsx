@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import {
   AudioWaveform,
@@ -6,6 +8,7 @@ import {
   color,
   css,
   CssValue,
+  events,
   Icons,
   t,
   useResizeObserver,
@@ -26,6 +29,26 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
   const resize = useResizeObserver(rootRef);
   const { width, height } = resize.rect;
 
+  const close = () => {
+    bus.fire({
+      type: 'DEV/media/fullscreen',
+      payload: { stream: undefined },
+    });
+  };
+
+  useEffect(() => {
+    const dispose$ = new Subject<void>();
+
+    const key$ = events.keyPress$.pipe(
+      takeUntil(dispose$),
+      filter((e) => e.isPressed),
+    );
+
+    key$.pipe(filter((e) => e.key === 'Escape')).subscribe(close);
+
+    return () => dispose$.next();
+  }, []);
+
   const styles = {
     base: css({
       Absolute: 0,
@@ -37,10 +60,7 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
 
   const elClose = (
     <Button style={styles.close}>
-      <Icons.Close
-        size={32}
-        onClick={() => bus.fire({ type: 'DEV/media/fullscreen', payload: { stream: undefined } })}
-      />
+      <Icons.Close size={32} onClick={close} />
     </Button>
   );
 
@@ -55,7 +75,7 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
   return (
     <div {...css(styles.base, props.style)} ref={rootRef}>
       {elVideo}
-      {elWaveform}
+      {/* {elWaveform} */}
       {elClose}
     </div>
   );

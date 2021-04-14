@@ -1,9 +1,16 @@
+/**
+ * External
+ */
 import { uniq, equals } from 'ramda';
 export const R = { uniq, equals };
 
 import PeerJS from 'peerjs';
 export { PeerJS };
 
+/**
+ * Platform
+ */
+export { events } from '@platform/react';
 export { log } from '@platform/log/lib/client';
 export { css, color, CssValue, formatColor } from '@platform/css';
 export { WebRuntime, bundle } from '@platform/cell.runtime.web';
