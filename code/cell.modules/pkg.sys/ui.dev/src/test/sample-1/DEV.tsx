@@ -39,8 +39,8 @@ let count = 0;
  */
 export const actions = DevActions<Ctx>()
   .namespace('test/sample-1')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
     return { myLayout: 'single', count: 0, text: LOREM, isRunning: true };
   })
 

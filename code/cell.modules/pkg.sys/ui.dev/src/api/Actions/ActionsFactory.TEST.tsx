@@ -276,9 +276,9 @@ describe('ActionsFactory', () => {
     it('read property and store on model (prev)', () => {
       const { actions, model } = create();
       let count = 0;
-      let prev: Ctx | null = null;
-      actions.context((input) => {
-        prev = input;
+      let prev: Ctx | undefined;
+      actions.context((e) => {
+        prev = e.prev;
         return { count };
       });
 

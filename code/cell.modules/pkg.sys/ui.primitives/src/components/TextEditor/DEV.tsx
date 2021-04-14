@@ -11,8 +11,8 @@ type Ctx = { props: TextEditorProps };
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui.editor/TextEditor')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
     return {
       props: {
         value: DEFAULT.MARKDOWN,

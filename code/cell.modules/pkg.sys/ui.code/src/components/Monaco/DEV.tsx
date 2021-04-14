@@ -14,8 +14,8 @@ type Ctx = { props: MonacoEditorProps };
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui.code/MonacoEditor')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
 
     const bus = rx.bus<t.CodeEditorEvent>();
 

@@ -198,7 +198,7 @@
 //    * Main
 //    */
 //   const main = DevActionsLib<Ctx>()
-//     .context((prev) => {
+//     .context((e) => {
 //       const editor = model.state.editor;
 //       const fire = editor ? editor.events.fire : undefined;
 //       return { model, fire };

@@ -7,7 +7,11 @@ import { t } from '../common';
  *    context is passed. Return this if a new context is not required.
  *
  */
-export type ActionGetContext<T> = (prev: T | null) => T;
+export type ActionGetContext<T> = (e: ActionGetContextArgs<T>) => T;
+
+export type ActionGetContextArgs<T> = {
+  prev: T | undefined;
+};
 
 /**
  * Render "subject" (component under test)

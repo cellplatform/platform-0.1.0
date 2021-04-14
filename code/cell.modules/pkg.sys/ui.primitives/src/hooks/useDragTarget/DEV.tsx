@@ -13,7 +13,7 @@ const INITIAL = { count: 0 };
  */
 export const actions = DevActions<Ctx>()
   .namespace('hook/useDragTarget')
-  .context((prev) => prev || INITIAL)
+  .context((e) => e.prev || INITIAL)
 
   /**
    * Render

@@ -25,8 +25,8 @@ const id = 'sample';
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui.video/Vimeo')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
 
     const bus = rx.bus<types.VimeoEvent>();
 

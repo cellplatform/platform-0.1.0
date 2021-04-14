@@ -19,8 +19,8 @@ type Ctx = {
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui.event/EventPipe')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
 
     const bus = rx.bus();
     const reset$ = new Subject<void>();

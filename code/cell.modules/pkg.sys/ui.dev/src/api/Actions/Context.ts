@@ -13,7 +13,10 @@ export const Context = {
   ): Ctx | null {
     const state = model.state;
     if (state.ctx.get) {
-      const value = state.ctx.get(state.ctx.current || null);
+      const prev = state.ctx.current;
+      const e: t.ActionGetContextArgs<Ctx> = { prev };
+
+      const value = state.ctx.get(e);
 
       model.change((draft) => (draft.ctx.current = value));
 

@@ -32,8 +32,8 @@ const ComposedActions = <Ctx extends O>() =>
  */
 export const actions = ComposedActions<Ctx>()
   .namespace('test/sample-2')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
     return { count: 0 };
   })
 

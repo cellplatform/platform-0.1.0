@@ -18,8 +18,8 @@ type Ctx = {
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui/OptionButtons')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
     return {
       isEnabled: true,
       isClearable: true,

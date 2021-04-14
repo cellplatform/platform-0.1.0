@@ -23,7 +23,7 @@ const INITIAL = {
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui/DotTabstrip')
-  .context((prev) => prev || INITIAL)
+  .context((e) => e.prev || INITIAL)
 
   .items((e) => {
     e.title('DotTabstrip');

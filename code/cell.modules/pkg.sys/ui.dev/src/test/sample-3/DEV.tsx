@@ -33,8 +33,8 @@ const LIGHT: t.ActionHandlerSettingsArgs = {
  */
 export const actions = DevActions<Ctx>()
   .namespace('test/sample-3')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
     return { theme: 'dark' };
   })
 

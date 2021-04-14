@@ -10,7 +10,7 @@ type Ctx = SampleProps;
  */
 export const actions = DevActions<Ctx>()
   .namespace('components/Sample')
-  .context((prev) => prev || { count: 0 })
+  .context((e) => e.prev || { count: 0 })
 
   .items((e) => {
     e.title('props');

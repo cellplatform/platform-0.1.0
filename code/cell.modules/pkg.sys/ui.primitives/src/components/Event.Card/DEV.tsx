@@ -10,8 +10,8 @@ type Ctx = { props: EventStackCardProps };
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui.event/EventCard')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
 
     const event: t.Event = { type: 'sample/event', payload: { message: 'hello' } };
 

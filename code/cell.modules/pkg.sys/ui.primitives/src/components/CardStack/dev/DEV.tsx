@@ -19,8 +19,8 @@ const createItem = () => {
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui/CardStack')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
 
     return {
       props: { items: createItems(3), maxDepth: 5 },

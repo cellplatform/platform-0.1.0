@@ -14,8 +14,8 @@ type Ctx = { count?: number };
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui.drag/Sort')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
     return {};
   })
 

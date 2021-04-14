@@ -11,8 +11,8 @@ type Ctx = { props: CardProps };
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui/Card')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
     return {
       props: {
         padding: [25, 30],
