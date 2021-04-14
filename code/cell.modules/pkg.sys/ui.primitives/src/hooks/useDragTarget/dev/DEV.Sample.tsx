@@ -17,10 +17,7 @@ export const Sample: React.FC = () => {
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
 
   const styles = {
-    base: css({
-      Absolute: 0,
-      display: 'flex',
-    }),
+    base: css({ Absolute: 0, display: 'flex' }),
     body: css({
       flex: 1,
       padding: 30,
