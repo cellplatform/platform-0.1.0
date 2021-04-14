@@ -203,6 +203,36 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.title('Textbox');
+
+    e.textbox('my textbox `code`', (e) => {
+      // console.log('e', e);
+    });
+
+    e.textbox((config) =>
+      config
+        .placeholder('hello')
+        .initial('initial value')
+        .description('My textbox description.')
+        .pipe((e) => {
+          if (e.changing?.action === 'invoke') {
+            count++;
+            e.textbox.description = `Textbox description (invoked ${count})`;
+            e.textbox.placeholder = `Placeholder (invoked ${count})`;
+            const next = e.changing.next || '';
+            e.textbox.current = `${(next[0] || '').toUpperCase()}${next.substring(1)}`;
+          }
+        }),
+    );
+
+    e.textbox((config) => {
+      config.indent(45).title('indented textbox');
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Select');
     e.select((config) =>
       config
@@ -283,36 +313,6 @@ export const actions = DevActions<Ctx>()
             },
           });
         });
-    });
-
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('Textbox');
-
-    e.textbox('my textbox `code`', (e) => {
-      // console.log('e', e);
-    });
-
-    e.textbox((config) =>
-      config
-        .placeholder('hello')
-        .initial('initial value')
-        .description('My textbox description.')
-        .pipe((e) => {
-          if (e.changing?.action === 'invoke') {
-            count++;
-            e.textbox.description = `Textbox description (invoked ${count})`;
-            e.textbox.placeholder = `Placeholder (invoked ${count})`;
-            const next = e.changing.next || '';
-            e.textbox.current = `${(next[0] || '').toUpperCase()}${next.substring(1)}`;
-          }
-        }),
-    );
-
-    e.textbox((config) => {
-      config.indent(45).title('indented textbox');
     });
 
     e.hr();

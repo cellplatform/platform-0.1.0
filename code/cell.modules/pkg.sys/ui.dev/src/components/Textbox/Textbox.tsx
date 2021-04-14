@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
-import { color, css, CssValue } from '../common';
+import { color, css, CssValue, defaultValue } from '../common';
 import { Button, TextInput, TextInputProps } from '../Primitives';
 
 type P = TextInputProps;
@@ -15,7 +15,11 @@ export type TextboxEnterIconArgs = {
 };
 
 export type TextboxProps = {
-  enter?: { icon?: JSX.Element | TextboxEnterIcon; handler?: () => void };
+  enter?: {
+    icon?: JSX.Element | TextboxEnterIcon;
+    isEnabled?: boolean;
+    handler?: () => void;
+  };
   displayFormat?: TextboxDisplayFormat;
 
   // From <TextInpu>
@@ -36,6 +40,7 @@ export type TextboxProps = {
   autoSize?: P['autoSize'];
   focusAction?: P['focusAction'];
   focusOnLoad?: P['focusOnLoad'];
+  selectOnFocus?: boolean;
 
   style?: CssValue;
 
@@ -50,6 +55,8 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
   const { enter, value, displayFormat = 'sans' } = props;
   const [isFocused, setFocused] = useState<boolean>(false);
 
+  const inputRef = useRef<TextInput>(null);
+
   const isMonospace = displayFormat === 'monospace';
   const isSans = displayFormat === 'sans';
 
@@ -61,6 +68,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
   const focusHandler = (isFocused: boolean, handler?: P['onFocus'] | P['onBlur']) => {
     return (event: React.FocusEvent<HTMLInputElement>) => {
       setFocused(isFocused);
+      if (isFocused && props.selectOnFocus) inputRef.current?.selectAll();
       if (handler) handler(event);
     };
   };
@@ -85,12 +93,17 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
     }),
   };
 
-  const elEnterIcon = enter?.icon && <Button onClick={enterHandler}>{renderIcon()}</Button>;
+  const elEnterIcon = enter?.icon && (
+    <Button isEnabled={defaultValue(enter.isEnabled, true)} onClick={enterHandler}>
+      {renderIcon()}
+    </Button>
+  );
 
   return (
     <div {...css(styles.base, props.style)}>
       <TextInput
         {...props}
+        ref={inputRef}
         value={value}
         placeholder={props.placeholder}
         valueStyle={{ fontFamily }}
