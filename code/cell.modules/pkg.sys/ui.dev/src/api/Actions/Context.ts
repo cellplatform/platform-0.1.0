@@ -1,4 +1,5 @@
 import { t } from '../../common';
+import { Handler } from './Handler';
 
 type O = Record<string, unknown>;
 
@@ -13,9 +14,26 @@ export const Context = {
   ): Ctx | null {
     const state = model.state;
     if (state.ctx.get) {
-      const prev = state.ctx.current;
-      const e: t.ActionGetContextArgs<Ctx> = { prev };
+      const change: t.ActionGetContextChange<Ctx> = {
+        ctx(fn) {
+          model.change((draft) => {
+            const ctx = draft.ctx.current;
+            if (!ctx) throw new Error(`Ensure the context has been initially set before changing.`);
+            fn(ctx);
+          });
+          return e;
+        },
+        settings(args) {
+          model.change((draft) => {
+            const env = draft.env.viaAction || (draft.env.viaAction = {});
+            Handler.settings.update(env, args);
+          });
+          return e;
+        },
+      };
 
+      const prev = state.ctx.current;
+      const e: t.ActionGetContextArgs<Ctx> = { prev, change };
       const value = state.ctx.get(e);
 
       model.change((draft) => (draft.ctx.current = value));

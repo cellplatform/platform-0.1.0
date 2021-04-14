@@ -7,10 +7,16 @@ import { t } from '../common';
  *    context is passed. Return this if a new context is not required.
  *
  */
-export type ActionGetContext<T> = (e: ActionGetContextArgs<T>) => T;
+export type ActionGetContext<C> = (e: ActionGetContextArgs<C>) => C;
 
-export type ActionGetContextArgs<T> = {
-  prev: T | undefined;
+export type ActionGetContextArgs<C> = {
+  prev: C | undefined;
+  change: ActionGetContextChange<C>;
+};
+
+export type ActionGetContextChange<C> = {
+  ctx(fn: (draft: C) => void): ActionGetContextArgs<C>;
+  settings: t.ActionHandlerSettings<ActionGetContextArgs<C>>;
 };
 
 /**
