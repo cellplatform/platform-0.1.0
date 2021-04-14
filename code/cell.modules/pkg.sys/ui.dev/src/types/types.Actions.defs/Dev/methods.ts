@@ -16,4 +16,6 @@ export type DevMethods<Ctx extends O> = {
   textbox(config: t.ActionTextboxConfig<Ctx>): t.Actions<Ctx>;
 
   select(config: t.ActionSelectConfig<Ctx>): t.Actions<Ctx>;
+
+  component(handler: t.ActionComponentHandler<Ctx>): t.Actions<Ctx>;
 };

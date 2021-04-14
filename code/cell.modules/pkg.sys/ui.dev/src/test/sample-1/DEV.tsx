@@ -44,6 +44,45 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.title('Component');
+
+    e.button('increment', (e) => e.ctx.count++);
+
+    type SampleProps = { text: string; count: number };
+    const Sample: React.FC<SampleProps> = (props) => {
+      const styles = {
+        base: css({
+          margin: 1,
+          padding: 12,
+          backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+          fontSize: 12,
+        }),
+        count: css({
+          Absolute: [3, 5, null, null],
+          fontSize: 10,
+          opacity: 0.5,
+        }),
+      };
+      return (
+        <div {...css(styles.base)}>
+          <div>{props.text}</div>
+          <div {...styles.count}>count: {props.count}</div>
+        </div>
+      );
+    };
+
+    e.component((e) => {
+      return <Sample text={'Foo'} count={e.ctx.count} />;
+    });
+
+    e.component((e) => {
+      return <Sample text={'Bar'} count={e.ctx.count} />;
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Title [TODO]');
     e.title((config) => config.text('Title (Indented)').indent(25));
     e.markdown(markdown());

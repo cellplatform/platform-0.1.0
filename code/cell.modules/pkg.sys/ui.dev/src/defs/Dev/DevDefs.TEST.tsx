@@ -15,6 +15,22 @@ export function create() {
 }
 
 describe('Dev', () => {
+  describe('component', () => {
+    it('config', () => {
+      const { actions, model } = create();
+      expect(model.state.items).to.eql([]);
+
+      const fn: t.ActionComponentHandler<Ctx> = (e) => <div>{e.ctx.count}</div>;
+      actions.items((e) => e.component(fn));
+
+      const items = model.state.items;
+      expect(items.length).to.eql(1);
+
+      const item = items[0] as t.ActionComponent;
+      expect(item.handler).to.eql(fn);
+    });
+  });
+
   describe('button', () => {
     it('label, handler', () => {
       const { actions, model } = create();
@@ -250,7 +266,7 @@ describe('Dev', () => {
   });
 
   describe('select', () => {
-    it('label, handler', () => {
+    it('config', () => {
       const { actions, model } = create();
       expect(model.state.items).to.eql([]);
 

@@ -4,4 +4,5 @@ export type DevActionEvent =
   | t.IActionButtonEvent
   | t.IActionBooleanEvent
   | t.IActionSelectEvent
-  | t.IActionTextboxEvent;
+  | t.IActionTextboxEvent
+  | t.IActionComponentRenderEvent;
