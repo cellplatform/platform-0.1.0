@@ -1,8 +1,8 @@
 import React from 'react';
 import { Hr } from 'sys.ui.primitives/lib/components/Hr';
 
-import { css, CssValue, t } from './common';
-import { DevConnection } from './connection';
+import { css, CssValue, t } from '../common';
+import { DevConnection } from '../Connection';
 import { DevNetworkHeader } from './DEV.Network.Header';
 
 export type DevNetworkProps = {

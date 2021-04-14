@@ -13,7 +13,7 @@ import {
   t,
   useResizeObserver,
   VideoStream,
-} from './common';
+} from '../common';
 
 export type DevVideoFullscreenProps = {
   bus: t.EventBus<any>;

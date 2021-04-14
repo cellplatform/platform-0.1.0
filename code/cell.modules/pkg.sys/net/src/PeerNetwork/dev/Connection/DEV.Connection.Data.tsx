@@ -1,5 +1,5 @@
 import { color } from '@platform/css';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { PeerNetwork } from '../..';
 import {
@@ -15,8 +15,8 @@ import {
   PropListItem,
   t,
   Textbox,
-  useEventBusHistory,
   useDragTarget,
+  useEventBusHistory,
 } from '../common';
 import { ItemUtil } from './util';
 

@@ -3,9 +3,9 @@ import { ObjectView } from 'sys.ui.dev';
 
 import { useLocalPeer } from '../hooks';
 import { COLORS, css, CssValue, t, useDragTarget } from './common';
-import { DevNetwork } from './DEV.Network';
+import { DevNetwork } from './Network';
 import { useDevState } from './DEV.useDevState';
-import { DevVideoFullscreen } from './DEV.Video.Fullscreen';
+import { DevVideoFullscreen } from './Media';
 
 export type RootLayoutProps = {
   self: t.PeerId;

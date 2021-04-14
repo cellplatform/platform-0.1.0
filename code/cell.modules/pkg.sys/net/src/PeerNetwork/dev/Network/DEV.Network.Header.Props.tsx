@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { COLORS, css, CssValue, PropList, PropListItem, t, time, Icons } from './common';
+import { COLORS, css, CssValue, Icons, PropList, PropListItem, t, time } from '../common';
 
 export type PeerPropListProps = {
   status: t.PeerStatus;
