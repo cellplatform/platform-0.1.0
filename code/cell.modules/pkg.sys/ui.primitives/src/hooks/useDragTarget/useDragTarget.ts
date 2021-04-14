@@ -12,42 +12,47 @@ export type Dropped = {
  * Provides hooks for treating a DIV element as a "drag-n-drop" target.
  */
 export function useDragTarget(ref: React.RefObject<HTMLElement>) {
-  const [isDragOver, setIsDragOver] = useState<boolean>(false);
+  const [isDragOver, setDragOver] = useState<boolean>(false);
   const [dropped, setDropped] = useState<Dropped | undefined>();
 
   const reset = () => {
-    setIsDragOver(false);
+    setDragOver(false);
     setDropped(undefined);
   };
 
   useEffect(() => {
     const el = ref.current as HTMLElement;
+    let count = 0;
 
-    const dragHandler = (isDragOver: boolean) => {
+    const dragHandler = (fn?: () => void) => {
       return (e: Event) => {
+        if (fn) fn();
         e.preventDefault();
-        setIsDragOver(isDragOver);
+        setDragOver(count > 0);
       };
     };
 
-    const handleDragOver = dragHandler(true);
-    const handleDragLeave = dragHandler(false);
-    const handleMouseLeave = dragHandler(false);
+    const handleDragEnter = dragHandler(() => count++);
+    const handleDragOver = dragHandler();
+    const handleDragLeave = dragHandler(() => count--);
+    const handleMouseLeave = dragHandler(() => (count = 0));
 
     const handleDrop = async (e: DragEvent) => {
       e.preventDefault();
-      setIsDragOver(false);
-
+      setDragOver(false);
+      count = 0;
       const { dir, files, urls } = await readDropEvent(e);
       setDropped({ dir, files, urls });
     };
 
+    el.addEventListener('dragenter', handleDragEnter);
     el.addEventListener('dragover', handleDragOver);
     el.addEventListener('dragleave', handleDragLeave);
     el.addEventListener('mouseleave', handleMouseLeave);
     el.addEventListener('drop', handleDrop);
 
     return () => {
+      el.removeEventListener('dragenter', handleDragEnter);
       el.removeEventListener('dragover', handleDragOver);
       el.removeEventListener('dragleave', handleDragLeave);
       el.removeEventListener('mouseleave', handleMouseLeave);

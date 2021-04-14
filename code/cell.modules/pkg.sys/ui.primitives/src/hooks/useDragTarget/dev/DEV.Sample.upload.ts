@@ -1,4 +1,4 @@
-import { HttpClient, t } from '../../common';
+import { HttpClient, t } from './common';
 
 /**
  * Sample file upload.

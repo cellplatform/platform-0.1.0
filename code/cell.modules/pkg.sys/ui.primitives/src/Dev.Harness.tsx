@@ -2,7 +2,7 @@ import React from 'react';
 import { Harness } from 'sys.ui.dev';
 
 const imports = {
-  useDragTarget: import('./hooks/useDragTarget/DEV'),
+  useDragTarget: import('./hooks/useDragTarget/dev/DEV'),
 
   DotTabstrip: import('./components/DotTabstrip/DEV'),
   Zoom: import('./components/Zoom/DEV'),
