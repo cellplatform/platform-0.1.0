@@ -14,9 +14,7 @@ export function config<Ctx extends O>(ctx: Ctx, params: any[]) {
   const config: t.ActionSelectConfigArgs<any> = {
     ctx,
     initial(value) {
-      let initial = Array.isArray(value) ? value : [value];
-      initial = item.multi ? initial : initial.slice(0, 1); // NB: if not "multi" only take the first item.
-      item.current = initial.map((value) => SelectUtil.toOption(value));
+      item.initial = value as t.ActionSelectItemInput;
       return config;
     },
     title(value) {

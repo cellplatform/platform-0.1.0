@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
 
-import { Context, Handler, is, Model, rx, t } from '../common';
+import { toObject, Context, Handler, is, Model, rx, t, SelectUtil } from '../common';
 import { Select as Component } from '../../../components/Action.Dev';
 import { config } from './SelectDef.config';
 
@@ -28,7 +28,7 @@ export const SelectDef: t.ActionDef<T, E> = {
     const namespace = actions.state.namespace;
 
     // Listen for events.
-    rx.payload<E>(args.event$, 'dev:action/Select')
+    rx.payload<E>(args.event$, 'sys.ui.dev/action/Select')
       .pipe(
         filter((e) => e.item.id === args.id),
         filter((e) => e.item.handlers.length > 0),
@@ -43,7 +43,12 @@ export const SelectDef: t.ActionDef<T, E> = {
 
         actions.changeAsync(async (draft) => {
           const { ctx, item, host, layout, env, actions } = Handler.params.payload<T>(id, draft);
+
           if (ctx && item) {
+            if (!item.isInitialized && item.initial) {
+              item.current = SelectUtil.toInitial(item);
+            }
+
             const settings: S = (args) =>
               Handler.settings.handler<P, A>({
                 env,
@@ -53,7 +58,7 @@ export const SelectDef: t.ActionDef<T, E> = {
 
             const changing = e.changing;
             const select = item;
-            const payload: P = { ctx, changing, host, layout, actions, select, settings };
+            const payload: P = { ctx, changing, host, layout, actions, select, settings, toObject };
             if (changing) item.current = changing.next; // Update the item to the latest selection.
 
             for (const fn of e.item.handlers) {
@@ -71,8 +76,12 @@ export const SelectDef: t.ActionDef<T, E> = {
     // Initial state.
     if (item.handlers.length > 0) {
       args.fire({
-        type: 'dev:action/Select',
+        type: 'sys.ui.dev/action/Select',
         payload: { namespace, item },
+      });
+      actions.change((draft) => {
+        const model = Handler.findItem<t.ActionSelect>(item.id, draft);
+        if (model) model.isInitialized = true;
       });
     }
   },

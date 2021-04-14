@@ -11,7 +11,7 @@ const INITIAL = { props: {} };
  */
 export const actions = DevActions<Ctx>()
   .namespace('components/Spreadsheet')
-  .context((prev) => prev || INITIAL)
+  .context((e) => e.prev || INITIAL)
 
   .items((e) => {
     e.title('props');

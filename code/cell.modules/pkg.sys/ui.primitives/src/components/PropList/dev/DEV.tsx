@@ -12,8 +12,8 @@ type Ctx = { props: PropListProps };
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui/PropList')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
     return {
       props: {
         title: 'MyTitle',

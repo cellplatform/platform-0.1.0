@@ -11,7 +11,7 @@ export type MeshEvent = MeshEnsureConnectedDataEvent | MeshEnsureConnectionClose
  * they are connected to.
  */
 export type MeshEnsureConnectedDataEvent = {
-  type: 'Mesh/ensureConnected:data';
+  type: 'sys.net/mesh/ensureConnected:data';
   payload: MeshEnsureConnectedData;
 };
 export type MeshEnsureConnectedData = {
@@ -25,7 +25,7 @@ export type MeshEnsureConnectedData = {
  * Ensure connection is closed are closed.
  */
 export type MeshEnsureConnectionClosedEvent = {
-  type: 'Mesh/ensureConnectionClosed';
+  type: 'sys.net/mesh/ensureConnectionClosed';
   payload: MeshEnsureConnectionClosed;
 };
 export type MeshEnsureConnectionClosed = {

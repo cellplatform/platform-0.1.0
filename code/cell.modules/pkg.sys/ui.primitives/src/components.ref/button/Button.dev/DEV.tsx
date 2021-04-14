@@ -9,8 +9,8 @@ type Ctx = { props: SampleButtonsProps };
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui.button/Button')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
     return { props: { isEnabled: true, isChecked: true } };
   })
 

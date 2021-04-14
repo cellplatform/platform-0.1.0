@@ -1,6 +1,6 @@
 export type Orientation = 'x' | 'y';
 
-export type AbsolutePosition = {
+export type EdgePosition = {
   top?: string | number;
   right?: string | number;
   bottom?: string | number;

@@ -13,6 +13,7 @@ export const HarnessEmpty: React.FC<HarnessEmptyProps> = (props) => {
       color: color.format(-0.6),
     }),
   };
+
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.body}>No actions to display.</div>

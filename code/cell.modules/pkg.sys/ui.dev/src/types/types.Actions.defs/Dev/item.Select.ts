@@ -12,6 +12,7 @@ export type ActionSelect = t.ActionSelectProps & {
   kind: 'dev/select';
   handlers: t.ActionSelectHandler<any>[];
   isSpinning?: boolean;
+  isInitialized: boolean;
 };
 
 /**
@@ -45,6 +46,7 @@ export type ActionSelectProps = {
   clearable?: boolean;
   indent?: number;
   items: t.ActionSelectItemInput[];
+  initial?: t.ActionSelectItemInput;
   current: t.ActionSelectItem[];
 };
 
@@ -73,7 +75,7 @@ export type ActionHandlerSettingsSelectArgs = t.ActionHandlerSettingsArgs & {
  * EVENT: Fires for the Select (dropdown) action.
  */
 export type IActionSelectEvent = {
-  type: 'dev:action/Select';
+  type: 'sys.ui.dev/action/Select';
   payload: IActionSelectPayload;
 };
 export type IActionSelectPayload = {

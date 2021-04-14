@@ -39,6 +39,7 @@ export type ActionDef<M extends t.ActionItem = t.ActionItem, E extends t.Event =
 export type ActionDefConfigHandler<Ctx extends O = any> = (
   args: ActionDefConfigHandlerArgs<Ctx>,
 ) => void;
+
 export type ActionDefConfigHandlerArgs<Ctx extends O = any> = {
   ctx: Ctx;
   actions: t.ActionsModelState<any>;

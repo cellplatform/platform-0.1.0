@@ -19,9 +19,11 @@
     "deploy": "cell.compiler upload --dir sys.ui.primitives $@"
   },
   "dependencies": {
-    "@dnd-kit/core": "^2.1.0",
+    "core-js": "^3.10.0",
+    "@dnd-kit/core": "^2.1.2",
     "@dnd-kit/modifiers": "^1.0.5",
     "@dnd-kit/sortable": "^2.0.1",
+    "@dnd-kit/utilities": "^1.0.3",
     "framer-motion": "^4.1.2"
   },
   "devDependencies": {

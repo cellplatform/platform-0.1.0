@@ -58,7 +58,7 @@ export type ActionHandlerSettingsBooleanArgs = t.ActionHandlerSettingsArgs & {
  * EVENT: Fires for the Boolean (switch) action.
  */
 export type IActionBooleanEvent = {
-  type: 'dev:action/Boolean';
+  type: 'sys.ui.dev/action/Boolean';
   payload: IActionBooleanPayload;
 };
 export type IActionBooleanPayload = {

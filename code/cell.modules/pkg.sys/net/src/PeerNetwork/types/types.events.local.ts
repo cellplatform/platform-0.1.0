@@ -20,7 +20,7 @@ export type PeerLocalEvent =
  * Fires to initiate the creation of a Peer.
  */
 export type PeerLocalInitReqEvent = {
-  type: 'Peer:Local/init:req';
+  type: 'sys.net/peer/local/init:req';
   payload: PeerLocalCreateReq;
 };
 export type PeerLocalCreateReq = {
@@ -32,7 +32,7 @@ export type PeerLocalCreateReq = {
  * Fires when a peer has connected.
  */
 export type PeerLocalInitResEvent = {
-  type: 'Peer:Local/init:res';
+  type: 'sys.net/peer/local/init:res';
   payload: PeerLocalCreateRes;
 };
 export type PeerLocalCreateRes = {
@@ -45,7 +45,7 @@ export type PeerLocalCreateRes = {
  * Fired to retrieve the status of the specified peer.
  */
 export type PeerLocalStatusRequestEvent = {
-  type: 'Peer:Local/status:req';
+  type: 'sys.net/peer/local/status:req';
   payload: PeerLocalStatusRequest;
 };
 export type PeerLocalStatusRequest = {
@@ -57,7 +57,7 @@ export type PeerLocalStatusRequest = {
  * Fired to retrieve the status of the specified peer.
  */
 export type PeerLocalStatusResponseEvent = {
-  type: 'Peer:Local/status:res';
+  type: 'sys.net/peer/local/status:res';
   payload: PeerLocalStatusResponse;
 };
 export type PeerLocalStatusResponse = {
@@ -80,7 +80,7 @@ export type PeerLocalStatusResponse = {
  *
  */
 export type PeerLocalStatusChangedEvent = {
-  type: 'Peer:Local/status:changed';
+  type: 'sys.net/peer/local/status:changed';
   payload: PeerLocalStatusChanged;
 };
 export type PeerLocalStatusChanged = {
@@ -93,7 +93,7 @@ export type PeerLocalStatusChanged = {
  * Fired to force the "status:changed" event.
  */
 export type PeerLocalStatusRefreshEvent = {
-  type: 'Peer:Local/status:refresh';
+  type: 'sys.net/peer/local/status:refresh';
   payload: PeerLocalStatusRefresh;
 };
 export type PeerLocalStatusRefresh = {
@@ -104,7 +104,7 @@ export type PeerLocalStatusRefresh = {
  * Fires when the online (network connectivity) status changes.
  */
 export type PeerLocalOnlineChangedEvent = {
-  type: 'Peer:Local/online:changed';
+  type: 'sys.net/peer/local/online:changed';
   payload: PeerLocalOnlineChanged;
 };
 export type PeerLocalOnlineChanged = {
@@ -116,7 +116,7 @@ export type PeerLocalOnlineChanged = {
  * Purges obsolete state.
  */
 export type PeerLocalPurgeReqEvent = {
-  type: 'Peer:Local/purge:req';
+  type: 'sys.net/peer/local/purge:req';
   payload: PeerLocalPurgeReq;
 };
 export type PeerLocalPurgeReq = {
@@ -126,7 +126,7 @@ export type PeerLocalPurgeReq = {
 };
 
 export type PeerLocalPurgeResEvent = {
-  type: 'Peer:Local/purge:res';
+  type: 'sys.net/peer/local/purge:res';
   payload: PeerLocalPurgeRes;
 };
 export type PeerLocalPurgeRes = {
@@ -144,7 +144,7 @@ export type PeerLocalPurged = {
  * Request a media-stream from the local environment.
  */
 export type PeerLocalMediaReqEvent = {
-  type: 'Peer:Local/media:req';
+  type: 'sys.net/peer/local/media:req';
   payload: PeerLocalMediaReq;
 };
 export type PeerLocalMediaReq = {
@@ -158,7 +158,7 @@ export type PeerLocalMediaReq = {
  * Response to a media-stream request.
  */
 export type PeerLocalMediaResEvent = {
-  type: 'Peer:Local/media:res';
+  type: 'sys.net/peer/local/media:res';
   payload: PeerLocalMediaRes;
 };
 export type PeerLocalMediaRes = {

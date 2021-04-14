@@ -21,7 +21,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
 
   const clickHandler = () =>
     bus.fire({
-      type: 'dev:action/Button',
+      type: 'sys.ui.dev/action/Button',
       payload: { namespace, item },
     });
 

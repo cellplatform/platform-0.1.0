@@ -16,8 +16,8 @@ const orientations = [
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui.primitives/Slider')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
     return {
       props: { orientation: 'x' },
     };

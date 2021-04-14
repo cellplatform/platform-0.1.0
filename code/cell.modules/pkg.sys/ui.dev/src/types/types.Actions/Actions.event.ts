@@ -9,7 +9,7 @@ export type ActionEvent = IActionsInitEvent | IActionsSelectChangedEvent | IActi
  * Fires to initialize the state of a set of actions.
  */
 export type IActionsInitEvent = {
-  type: 'actions/init';
+  type: 'sys.ui.dev/actions/init';
   payload: IActionsInitPayload;
 };
 export type IActionsInitPayload = { namespace: string };
@@ -18,7 +18,7 @@ export type IActionsInitPayload = { namespace: string };
  * Fires when the <ActionsSelect> dropdown changes.
  */
 export type IActionsSelectChangedEvent = {
-  type: 'actions/select/changed';
+  type: 'sys.ui.dev/actions/select/changed';
   payload: IActionsSelectChanged;
 };
 export type IActionsSelectChanged = { namespace: string };
@@ -27,7 +27,7 @@ export type IActionsSelectChanged = { namespace: string };
  * Fires when a single action [Item] model state changes.
  */
 export type IActionModelChangedEvent = {
-  type: 'action/model/changed';
+  type: 'sys.ui.dev/action/model/changed';
   payload: IActionModelChangedPayload;
 };
 export type IActionModelChangedPayload = {

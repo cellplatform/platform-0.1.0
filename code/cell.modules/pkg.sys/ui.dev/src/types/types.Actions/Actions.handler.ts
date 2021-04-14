@@ -7,7 +7,17 @@ import { t } from '../common';
  *    context is passed. Return this if a new context is not required.
  *
  */
-export type ActionGetContext<T> = (prev: T | null) => T;
+export type ActionGetContext<C> = (e: ActionGetContextArgs<C>) => C;
+
+export type ActionGetContextArgs<C> = {
+  prev: C | undefined;
+  change: ActionGetContextChange<C>;
+};
+
+export type ActionGetContextChange<C> = {
+  ctx(fn: (draft: C) => void): ActionGetContextArgs<C>;
+  settings: t.ActionHandlerSettings<ActionGetContextArgs<C>>;
+};
 
 /**
  * Render "subject" (component under test)
@@ -32,6 +42,7 @@ export type ActionHandlerArgs<C> = {
   readonly host: t.Host;
   readonly layout: t.HostedLayout;
   readonly actions: t.HostedActions;
+  toObject<T>(proxy: any): T | undefined;
 };
 
 /**

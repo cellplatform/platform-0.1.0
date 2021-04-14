@@ -1,6 +1,7 @@
 import React from 'react';
-import { css, CssValue, Hr, t, PropList, PropListItem, StringUtil } from './common';
+import { css, CssValue, Hr, t, PropList, PropListItem } from './common';
 import { DevVideo } from './DEV.Video';
+import { ItemUtil } from './DEV.connection.util';
 
 export type ConnectionMediaProps = {
   bus: t.EventBus<any>;
@@ -10,17 +11,12 @@ export type ConnectionMediaProps = {
 
 export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
   const { connection, bus } = props;
-  const { peer, kind } = connection;
+  const { kind } = connection;
 
   const streamId = connection.media?.id;
   const isLocalhost = location.hostname === 'localhost';
 
-  const items: PropListItem[] = [
-    { label: 'id', value: { data: connection.id, clipboard: true } },
-    { label: 'remote peer', value: { data: peer.remote, clipboard: true } },
-    { label: 'kind', value: kind },
-    { label: 'open', value: connection.isOpen },
-  ];
+  const items: PropListItem[] = [...ItemUtil.common(connection)];
 
   const styles = {
     base: css({ position: 'relative' }),

@@ -17,7 +17,7 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = (props) => {
 
   const { title, label, description, isSpinning, indent } = item;
   const isActive = item.handlers.length > 0;
-  const options = item.items.map((value) => SelectUtil.toOption(value));
+  const options = item.items.map((value) => SelectUtil.toItem(value));
   const current = item.multi ? item.current : item.current[0];
 
   const [isSelectVisible, setIsSelectVisible] = useState<boolean>();
@@ -48,7 +48,7 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = (props) => {
     hideDropdown();
     const next = (Array.isArray(value) ? value : [value]) as t.ActionSelectItem[];
     bus.fire({
-      type: 'dev:action/Select',
+      type: 'sys.ui.dev/action/Select',
       payload: { namespace, item, changing: { next } },
     });
   };

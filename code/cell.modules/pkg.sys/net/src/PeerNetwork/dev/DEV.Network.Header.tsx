@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { css, CssValue, t } from './common';
-import { SelfPropList } from './DEV.Self.PropList';
+import { PeerPropList } from './DEV.Network.Header.Props';
 import { DevVideo } from './DEV.Video';
 
 export type DevNetworkHeaderProps = {
@@ -27,7 +27,7 @@ export const DevNetworkHeader: React.FC<DevNetworkHeaderProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <SelfPropList status={peer} />
+      <PeerPropList status={peer} />
       <div {...styles.right}>
         {media.screen && (
           <DevVideo

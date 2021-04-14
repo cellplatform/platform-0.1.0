@@ -19,7 +19,7 @@ export type HostedLayout = {
     | StringOrNumber
     | [StringOrNumberOrNil, StringOrNumberOrNil]
     | [StringOrNumberOrNil, StringOrNumberOrNil, StringOrNumberOrNil, StringOrNumberOrNil]
-    | t.AbsolutePosition;
+    | t.EdgePosition;
 };
 
 export type HostedLabel = {

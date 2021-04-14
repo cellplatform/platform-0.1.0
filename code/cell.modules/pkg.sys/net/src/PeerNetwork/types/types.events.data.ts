@@ -6,7 +6,7 @@ export type PeerDataEvent = PeerDataOutEvent | PeerDataInEvent;
  * Fires to sends OUTGOING data over the network
  */
 export type PeerDataOutEvent = {
-  type: 'Peer:Data/out';
+  type: 'sys.net/peer/data/out';
   payload: PeerDataOut;
 };
 export type PeerDataOut = {
@@ -19,7 +19,7 @@ export type PeerDataOut = {
  * Fires when INCOMING data is recieved from the network.
  */
 export type PeerDataInEvent = {
-  type: 'Peer:Data/in';
+  type: 'sys.net/peer/data/in';
   payload: PeerDataIn;
 };
 export type PeerDataIn = {

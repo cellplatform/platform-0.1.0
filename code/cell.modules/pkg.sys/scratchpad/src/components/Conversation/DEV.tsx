@@ -17,8 +17,8 @@ type Ctx = {
  */
 export const actions = DevActions<Ctx>()
   .namespace(`Conversation`)
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
 
     let peer: PeerJS;
     const bus = rx.bus<t.ConversationEvent>();

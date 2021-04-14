@@ -20,7 +20,7 @@ export const Bool: React.FC<BoolProps> = (props) => {
 
   const fire = () => {
     bus.fire({
-      type: 'dev:action/Boolean',
+      type: 'sys.ui.dev/action/Boolean',
       payload: {
         namespace,
         item,

@@ -11,8 +11,8 @@ type Ctx = { self: string; props: PeerProps };
  */
 export const actions = DevActions<Ctx>()
   .namespace('Conversation.Peer')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
 
     const self = cuid();
     let peer: PeerJS;

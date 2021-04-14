@@ -20,7 +20,7 @@ const INITIAL = { dragEnabled: true, props: {} };
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui/ZoomPan')
-  .context((prev) => prev || INITIAL)
+  .context((e) => e.prev || INITIAL)
 
   .items((e) => {
     e.title('ZoomParent');

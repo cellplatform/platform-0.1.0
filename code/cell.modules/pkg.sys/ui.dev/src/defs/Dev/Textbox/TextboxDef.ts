@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
 
-import { Context, Handler, Model, rx, t, is, value } from '../common';
+import { Context, Handler, Model, rx, t, is, toObject } from '../common';
 import { Textbox as Component } from '../../../components/Action.Dev';
 import { config } from './TextboxDef.config';
 
@@ -28,7 +28,7 @@ export const TextboxDef: t.ActionDef<T, E> = {
     const namespace = actions.state.namespace;
 
     // Listen for events.
-    rx.payload<E>(args.event$, 'dev:action/Textbox')
+    rx.payload<E>(args.event$, 'sys.ui.dev/action/Textbox')
       .pipe(
         filter((e) => e.item.id === args.id),
         filter((e) => e.item.handlers.length > 0),
@@ -53,7 +53,16 @@ export const TextboxDef: t.ActionDef<T, E> = {
 
             const changing = e.changing;
             const textbox = item;
-            const payload: P = { ctx, changing, host, layout, actions, textbox, settings };
+            const payload: P = {
+              ctx,
+              changing,
+              host,
+              layout,
+              actions,
+              textbox,
+              settings,
+              toObject,
+            };
             if (changing) item.current = changing.next;
 
             for (const fn of e.item.handlers) {
@@ -71,7 +80,7 @@ export const TextboxDef: t.ActionDef<T, E> = {
     // Initial state.
     if (item.handlers.length > 0) {
       args.fire({
-        type: 'dev:action/Textbox',
+        type: 'sys.ui.dev/action/Textbox',
         payload: { namespace, item, action: 'init' },
       });
     }

@@ -1,19 +1,18 @@
 import React from 'react';
-import { DevActions } from 'sys.ui.dev';
+import { DevActions, lorem } from 'sys.ui.dev';
+
 import { Card, CardProps } from '.';
 import { css } from '../../common';
 
 type Ctx = { props: CardProps };
-const LOREM =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
 
 /**
  * Actions
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui/Card')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
     return {
       props: {
         padding: [25, 30],
@@ -57,7 +56,7 @@ export const actions = DevActions<Ctx>()
       }),
     };
 
-    const elBody = <div {...styles.body}>{LOREM}</div>;
+    const elBody = <div {...styles.body}>{lorem.toString()}</div>;
     const elCard = (
       <Card {...e.ctx.props} onClick={(e) => console.log('click', e)}>
         {elBody}

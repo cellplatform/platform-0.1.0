@@ -30,7 +30,6 @@ export const Sample: React.FC<SampleProps> = (props) => {
   };
   return (
     <div {...css(styles.base, props.style)}>
-      Sample
       <LazyMotion features={domMax}>
         <m.div ref={constraintsRef} style={styles.constrantsContainer}>
           <m.div

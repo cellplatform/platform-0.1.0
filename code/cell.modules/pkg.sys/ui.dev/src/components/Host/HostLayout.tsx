@@ -69,7 +69,7 @@ export const HostLayout: React.FC<HostLayoutProps> = (props = {}) => {
 /**
  * Helpers
  */
-const toAbsolute = (input: t.HostedLayout['position']): t.AbsolutePosition | undefined => {
+const toAbsolute = (input: t.HostedLayout['position']): t.EdgePosition | undefined => {
   if (input === undefined) return undefined;
 
   if (Array.isArray(input)) {
@@ -90,7 +90,7 @@ const toAbsolute = (input: t.HostedLayout['position']): t.AbsolutePosition | und
     return { top: input, right: input, bottom: input, left: input };
   }
 
-  return input as t.AbsolutePosition;
+  return input as t.EdgePosition;
 };
 
 const toBorderColor = (input: t.HostedLayout['border']) => {

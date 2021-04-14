@@ -21,7 +21,7 @@ const INITIAL: Ctx = { props: {} };
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui.code/CodeEditor')
-  .context((prev) => prev || INITIAL)
+  .context((e) => e.prev || INITIAL)
 
   .items((e) => {
     e.title('tmp');

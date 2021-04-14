@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { color, COLORS, css, t, useActionItemMonitor } from '../common';
-import { Button, Icons, TextInput } from '../Primitives';
+import { Icons } from '../Primitives';
 import { Layout, LayoutTitle } from './Layout';
+import { Textbox as TextboxCore } from '../Textbox';
 
 export type TextboxProps = {
   namespace: string;
@@ -22,8 +23,6 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
   const [pendingValue, setPendingValue] = useState<string | undefined>();
   const isPending = pendingValue !== undefined;
 
-  const inputRef = useRef<TextInput>(null);
-
   useEffect(() => {
     setPendingValue(undefined);
   }, [current]); // Reset pending when model's [current] value is updated (eg. by a handler)
@@ -34,7 +33,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
     const changing = typeof next === 'string' ? { next, action } : undefined;
     const item = model;
     bus.fire({
-      type: 'dev:action/Textbox',
+      type: 'sys.ui.dev/action/Textbox',
       payload: { namespace, item, action, changing },
     });
   };
@@ -47,22 +46,15 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
   };
 
   const styles = {
-    base: css({
-      boxSizing: 'border-box',
-    }),
-    textbox: css({
-      position: 'relative',
-      borderBottom: `dashed 1px ${color.format(-0.2)}`,
-      paddingBottom: 2,
-      top: -2,
-    }),
-    send: css({ marginLeft: 4 }),
+    base: css({ boxSizing: 'border-box' }),
+    textbox: css({ position: 'relative', top: -2 }),
   };
+
+  const iconColor = isPending ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.4);
 
   const elTextbox = (
     <div {...styles.textbox} title={value ? placeholder : undefined}>
-      <TextInput
-        ref={inputRef}
+      <TextboxCore
         value={value || ''}
         placeholder={placeholder}
         valueStyle={{ fontFamily: 'monospace', fontWeight: 'NORMAL' }}
@@ -71,22 +63,20 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
         spellCheck={false}
         autoCorrect={false}
         autoCapitalize={false}
+        selectOnFocus={true}
         isEnabled={model.handlers.length > 0}
         onChange={(e) => setPendingValue(() => e.to)}
         onEscape={() => setPendingValue(() => undefined)}
         onEnter={fireInvoke}
-        onFocus={() => inputRef.current?.selectAll()}
+        enter={{
+          isEnabled: isPending,
+          handler: fireInvoke,
+          icon: () => {
+            const el = <Icons.Send size={18} color={iconColor} />;
+            return el;
+          },
+        }}
       />
-    </div>
-  );
-
-  const iconColor = isPending ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.4);
-
-  const elRight = (
-    <div {...styles.send} onClick={fireInvoke}>
-      <Button isEnabled={isPending}>
-        <Icons.Send size={18} color={iconColor} />
-      </Button>
     </div>
   );
 
@@ -101,7 +91,6 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
       icon={{ Component: Icons.Text, color: iconColor, offset: { y: 2 } }}
       label={{ ellipsis: false }}
       top={elTitle}
-      right={elRight}
       indent={indent}
     />
   );

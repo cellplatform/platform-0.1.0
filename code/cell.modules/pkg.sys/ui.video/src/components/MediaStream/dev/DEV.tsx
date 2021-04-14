@@ -29,8 +29,8 @@ async function updateMute(ctx: Ctx) {
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui.video/MediaStream')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
 
     const ref = cuid();
     const bus = rx.bus<t.MediaEvent>();

@@ -1,7 +1,8 @@
 import React from 'react';
-import { DevActions, toObject } from '../..';
-import { css, COLORS, color, time } from '../../common';
+import { DevActions } from '../..';
+import { css, COLORS, color, time, lorem } from '../../common';
 import { Component } from './Component';
+import { Button } from '../../components/Primitives';
 
 type SampleLayout =
   | 'single'
@@ -20,7 +21,7 @@ type Ctx = {
   throw?: boolean;
 };
 
-const LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem.';
+const LOREM = lorem.words(12, '.');
 
 const markdown = () => {
   let text = '';
@@ -38,9 +39,74 @@ let count = 0;
  */
 export const actions = DevActions<Ctx>()
   .namespace('test/sample-1')
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
     return { myLayout: 'single', count: 0, text: LOREM, isRunning: true };
+  })
+
+  .items((e) => {
+    e.title('Component');
+
+    e.button('increment', (e) => e.ctx.count++);
+
+    type SampleProps = {
+      text: string;
+      count: number;
+      onIncrement?: () => void;
+      onEnvironment?: () => void;
+    };
+    const Sample: React.FC<SampleProps> = (props) => {
+      const styles = {
+        base: css({
+          margin: 1,
+          padding: 12,
+          backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+          fontSize: 12,
+        }),
+        count: css({
+          Absolute: [3, 5, null, null],
+          fontSize: 10,
+          opacity: 0.5,
+        }),
+        buttons: css({
+          Flex: 'horizontal-spaceBetween-center',
+        }),
+      };
+      return (
+        <div {...css(styles.base)}>
+          <div>{props.text}</div>
+          <div {...styles.count}>count: {props.count}</div>
+          <div {...styles.buttons}>
+            <Button onClick={props.onIncrement}>Increment</Button>
+            <Button onClick={props.onEnvironment}>Environment</Button>
+          </div>
+        </div>
+      );
+    };
+
+    e.component((e) => {
+      return (
+        <Sample
+          text={'Foo'}
+          count={e.ctx.count}
+          onIncrement={() => e.change.ctx((draft) => draft.count++)}
+          onEnvironment={() => e.change.settings({ host: { background: COLORS.DARK } })}
+        />
+      );
+    });
+
+    e.component((e) => {
+      return (
+        <Sample
+          text={'Bar'}
+          count={e.ctx.count}
+          onIncrement={() => e.change.ctx((draft) => draft.count++)}
+          onEnvironment={() => e.change.settings({ host: { background: -0.03 } })}
+        />
+      );
+    });
+
+    e.hr();
   })
 
   .items((e) => {
@@ -96,8 +162,8 @@ export const actions = DevActions<Ctx>()
 
     e.button('console.log', (e) => {
       console.group('🌳 button click');
-      console.log('e.ctx', toObject(e.ctx));
-      console.log('e.host', toObject(e.host));
+      console.log('e.ctx', e.toObject(e.ctx));
+      console.log('e.host', e.toObject(e.host));
       console.groupEnd();
     });
     e.button((config) => config.label(`Indented Ellipsis - ${LOREM}`).indent(25));
@@ -133,6 +199,36 @@ export const actions = DevActions<Ctx>()
     e.hr(3, 0.15, [2, 50]);
     e.hr((config) => config.height(1).opacity(0.15).margin([15, 0]).indent(25));
     e.hr(1, 0.15, [15, 0], 'dashed');
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Textbox');
+
+    e.textbox('my textbox `code`', (e) => {
+      // console.log('e', e);
+    });
+
+    e.textbox((config) =>
+      config
+        .placeholder('hello')
+        .initial('initial value')
+        .description('My textbox description.')
+        .pipe((e) => {
+          if (e.changing?.action === 'invoke') {
+            count++;
+            e.textbox.description = `Textbox description (invoked ${count})`;
+            e.textbox.placeholder = `Placeholder (invoked ${count})`;
+            const next = e.changing.next || '';
+            e.textbox.current = `${(next[0] || '').toUpperCase()}${next.substring(1)}`;
+          }
+        }),
+    );
+
+    e.textbox((config) => {
+      config.indent(45).title('indented textbox');
+    });
+
     e.hr();
   })
 
@@ -198,6 +294,7 @@ export const actions = DevActions<Ctx>()
         .title('My checkbox options')
         .view('buttons')
         .items(['Chocolate', 'Strawberry', 'Vanilla', 'Bananna'])
+        .initial(['Strawberry', 'Vanilla'])
         .clearable(true)
         .indent(25)
         .pipe((e) => {
@@ -216,36 +313,6 @@ export const actions = DevActions<Ctx>()
             },
           });
         });
-    });
-
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('Textbox');
-
-    e.textbox('my textbox `code`', (e) => {
-      // console.log('e', e);
-    });
-
-    e.textbox((config) =>
-      config
-        .placeholder('hello')
-        .initial('initial value')
-        .description('My textbox description.')
-        .pipe((e) => {
-          if (e.changing?.action === 'invoke') {
-            count++;
-            e.textbox.description = `Textbox description (invoked ${count})`;
-            e.textbox.placeholder = `Placeholder (invoked ${count})`;
-            const next = e.changing.next || '';
-            e.textbox.current = `${(next[0] || '').toUpperCase()}${next.substring(1)}`;
-          }
-        }),
-    );
-
-    e.textbox((config) => {
-      config.indent(45).title('indented textbox');
     });
 
     e.hr();

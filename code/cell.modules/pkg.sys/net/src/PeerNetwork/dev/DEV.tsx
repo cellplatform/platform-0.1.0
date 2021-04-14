@@ -28,8 +28,8 @@ type Ctx = {
 export const actions = DevActions<Ctx>()
   .namespace('sys.net/PeerNetwork')
 
-  .context((prev) => {
-    if (prev) return prev;
+  .context((e) => {
+    if (e.prev) return e.prev;
 
     const self = cuid();
     const bus = rx.bus<t.PeerEvent>();
@@ -48,6 +48,9 @@ export const actions = DevActions<Ctx>()
     };
 
     time.delay(100, async () => {
+      /**
+       * Start "self" video.
+       */
       events.media.start(EventBridge.videoRef(self)).video();
       events.net.create(signal, self);
       events.net.media(self).video();
@@ -253,7 +256,7 @@ export const actions = DevActions<Ctx>()
 
     e.settings({
       layout: {
-        label: { topLeft: 'PeerNetwork', topRight: elLabelRight },
+        label: { topLeft: 'Mesh', topRight: elLabelRight },
         position: [60, 60, 80, 60],
         border: -0.1,
         cropmarks: -0.2,

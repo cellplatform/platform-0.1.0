@@ -20,6 +20,7 @@ type PeerConnectionBase = {
   peer: { self: t.PeerId; remote: t.PeerId };
   id: t.PeerConnectionId;
   uri: t.PeerConnectionUri;
+  direction: t.PeerConnectDirection;
   metadata?: t.JsonMap;
 };
 
