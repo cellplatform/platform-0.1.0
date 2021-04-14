@@ -46,7 +46,7 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
     key$.pipe(filter((e) => e.key === 'Escape')).subscribe(closeFullscreen);
 
     return () => dispose$.next();
-  }, []);
+  }, []); // eslint-disable-line
 
   const styles = {
     base: css({
