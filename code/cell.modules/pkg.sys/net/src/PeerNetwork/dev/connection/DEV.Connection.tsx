@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { Button, Card, css, CssValue, Icons, t } from './common';
-import { ConnectionData } from './DEV.Connection.Data';
-import { ConnectionMedia } from './DEV.Connection.Media';
+import { Button, Card, css, CssValue, Icons, t } from '../common';
+import { DevConnectionData } from './DEV.Connection.Data';
+import { DevConnectionMedia } from './DEV.Connection.Media';
 
-export type ConnectionProps = {
+export type DevConnectionProps = {
   bus: t.EventBus<any>;
   netbus: t.EventBus<any>;
   connection: t.PeerConnectionStatus;
@@ -13,7 +13,7 @@ export type ConnectionProps = {
   margin?: t.CssEdgesInput;
 };
 
-export const Connection: React.FC<ConnectionProps> = (props) => {
+export const DevConnection: React.FC<DevConnectionProps> = (props) => {
   const { connection, netbus } = props;
   const { peer } = connection;
   const bus = props.bus.type<t.PeerEvent>();
@@ -24,9 +24,10 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
   };
 
   const handleClose = () => {
+    const { self, remote } = peer;
     bus.fire({
       type: 'sys.net/peer/connection/disconnect:req',
-      payload: { self: peer.self, connection: connection.id, remote: peer.remote },
+      payload: { self, remote, connection: connection.id },
     });
   };
 
@@ -37,22 +38,16 @@ export const Connection: React.FC<ConnectionProps> = (props) => {
   );
 
   const elData = connection.kind === 'data' && (
-    <ConnectionData bus={bus} netbus={netbus} connection={connection} />
+    <DevConnectionData bus={bus} netbus={netbus} connection={connection} />
   );
 
   const elMedia = (connection.kind === 'media/video' || connection.kind === 'media/screen') && (
-    <ConnectionMedia bus={bus} connection={connection} />
+    <DevConnectionMedia bus={bus} connection={connection} />
   );
 
   return (
     <div {...css(styles.base, props.style)}>
-      <Card
-        key={peer.remote}
-        padding={[18, 20, 20, 20]}
-        margin={props.margin}
-        width={300}
-        shadow={false}
-      >
+      <Card key={peer.remote} margin={props.margin} width={300} shadow={false}>
         {elData}
         {elMedia}
         {elCloseButton}

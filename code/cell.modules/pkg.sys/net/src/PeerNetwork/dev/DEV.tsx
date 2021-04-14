@@ -173,7 +173,8 @@ export const actions = DevActions<Ctx>()
       } else {
         const res = await events.net.connection(self, connectTo).open.data({ isReliable });
         const name = res.error ? 'Fail' : 'Success';
-        const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={1} />;
+        const expandLevel = res.error ? 1 : 0;
+        const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={expandLevel} />;
         e.button.description = el;
       }
     });

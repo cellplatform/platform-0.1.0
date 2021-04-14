@@ -2,7 +2,7 @@ import React from 'react';
 import { Hr } from 'sys.ui.primitives/lib/components/Hr';
 
 import { css, CssValue, t } from './common';
-import { Connection } from './DEV.Connection';
+import { DevConnection } from './connection';
 import { DevNetworkHeader } from './DEV.Network.Header';
 
 export type DevNetworkProps = {
@@ -43,7 +43,7 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
   const elConnections = connections.map((item, i) => {
     const isLast = i === connections.length - 1;
     return (
-      <Connection
+      <DevConnection
         key={item.uri}
         bus={bus}
         netbus={netbus}

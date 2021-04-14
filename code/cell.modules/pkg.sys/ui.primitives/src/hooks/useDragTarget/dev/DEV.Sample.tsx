@@ -7,7 +7,7 @@ import { upload } from './DEV.Sample.upload';
 
 export const Sample: React.FC = () => {
   const targetRef = React.useRef<HTMLDivElement>(null);
-  const drag = useDragTarget(targetRef);
+  const drag = useDragTarget(targetRef, (e) => console.log('onDropped (optional)', e));
 
   const { isDragOver, isDropped, dropped } = drag;
   const data = { isDragOver, isDropped, dropped };

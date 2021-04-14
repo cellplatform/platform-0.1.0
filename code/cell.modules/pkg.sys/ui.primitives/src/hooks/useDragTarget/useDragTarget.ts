@@ -11,7 +11,7 @@ export type Dropped = {
 /**
  * Provides hooks for treating a DIV element as a "drag-n-drop" target.
  */
-export function useDragTarget(ref: React.RefObject<HTMLElement>) {
+export function useDragTarget(ref: React.RefObject<HTMLElement>, onDrop?: (e: Dropped) => void) {
   const [isDragOver, setDragOver] = useState<boolean>(false);
   const [dropped, setDropped] = useState<Dropped | undefined>();
 
@@ -26,14 +26,14 @@ export function useDragTarget(ref: React.RefObject<HTMLElement>) {
 
     const dragHandler = (fn?: () => void) => {
       return (e: Event) => {
-        if (fn) fn();
         e.preventDefault();
+        if (fn) fn();
         setDragOver(count > 0);
       };
     };
 
     const handleDragEnter = dragHandler(() => count++);
-    const handleDragOver = dragHandler();
+    const handleDragOver = dragHandler(() => (count = count === 0 ? 1 : count));
     const handleDragLeave = dragHandler(() => count--);
     const handleMouseLeave = dragHandler(() => (count = 0));
 
@@ -42,7 +42,9 @@ export function useDragTarget(ref: React.RefObject<HTMLElement>) {
       setDragOver(false);
       count = 0;
       const { dir, files, urls } = await readDropEvent(e);
-      setDropped({ dir, files, urls });
+      const dropped: Dropped = { dir, files, urls };
+      setDropped(dropped);
+      if (onDrop) onDrop(dropped);
     };
 
     el.addEventListener('dragenter', handleDragEnter);
@@ -58,7 +60,7 @@ export function useDragTarget(ref: React.RefObject<HTMLElement>) {
       el.removeEventListener('mouseleave', handleMouseLeave);
       el.removeEventListener('drop', handleDrop);
     };
-  }, [ref]);
+  }, [ref]); // eslint-disable-line
 
   return {
     isDragOver,
