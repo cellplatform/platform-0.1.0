@@ -90,7 +90,7 @@ export default actions;
 export type SampleProps = EventPipeProps & { bus: t.EventBus<any>; reset$: Observable<void> };
 export const Sample: React.FC<SampleProps> = (props) => {
   const { bus, reset$ } = props;
-  const history = useEventBusHistory({ bus, reset$ });
+  const history = useEventBusHistory(bus, { reset$ });
   return (
     <EventPipe
       {...props}

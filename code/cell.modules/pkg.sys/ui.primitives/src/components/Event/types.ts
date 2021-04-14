@@ -1,14 +1,24 @@
 import { t } from '../../common';
 
-export type EventLogItem = { id: string; event: t.Event; count: number };
+export type EventHistoryItem = {
+  id: string;
+  timestamp: number;
+  event: t.Event;
+  count: number;
+};
 
-export type EventBusHistoryHook = (args: EventBusHistoryArgs) => EventBusHistory;
-export type EventBusHistoryArgs = {
-  bus: t.EventBus<any>;
+/**
+ * A state hook that stores a set of events coming via an event-bus.
+ */
+export type EventBusHistoryHook = (
+  bus: t.EventBus<any>,
+  options?: EventBusHistoryOptions,
+) => EventBusHistory;
+export type EventBusHistoryOptions = {
   max?: number;
   reset$?: t.Observable<void>;
 };
 export type EventBusHistory = {
   total: number;
-  events: EventLogItem[];
+  events: EventHistoryItem[];
 };

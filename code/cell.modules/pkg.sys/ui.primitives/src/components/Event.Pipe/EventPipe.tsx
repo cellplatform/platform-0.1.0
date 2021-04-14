@@ -9,7 +9,7 @@ import {
   deleteUndefined,
   useResizeObserver,
 } from '../../common';
-import { EventLogItem } from '../Event/types';
+import { EventHistoryItem } from '../Event/types';
 import {
   EventPipeItem,
   EventPipeItemClickEvent,
@@ -19,7 +19,7 @@ import {
 export { EventPipeItemClickEventHandler, EventPipeItemClickEvent };
 
 export type EventPipeProps = {
-  events?: EventLogItem[];
+  events?: EventHistoryItem[];
   backgroundColor?: string | number;
   event?: { max?: number };
   orientation?: 'x' | 'y';
