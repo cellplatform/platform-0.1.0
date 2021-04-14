@@ -29,7 +29,7 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
   const resize = useResizeObserver(rootRef);
   const { width, height } = resize.rect;
 
-  const close = () => {
+  const closeFullscreen = () => {
     bus.fire({
       type: 'DEV/media/fullscreen',
       payload: { stream: undefined },
@@ -38,13 +38,12 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
-
     const key$ = events.keyPress$.pipe(
       takeUntil(dispose$),
       filter((e) => e.isPressed),
     );
 
-    key$.pipe(filter((e) => e.key === 'Escape')).subscribe(close);
+    key$.pipe(filter((e) => e.key === 'Escape')).subscribe(closeFullscreen);
 
     return () => dispose$.next();
   }, []);
@@ -60,7 +59,7 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
 
   const elClose = (
     <Button style={styles.close}>
-      <Icons.Close size={32} onClick={close} />
+      <Icons.Close size={32} onClick={closeFullscreen} />
     </Button>
   );
 
