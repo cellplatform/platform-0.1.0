@@ -256,7 +256,7 @@ export const actions = DevActions<Ctx>()
 
     e.settings({
       layout: {
-        label: { topLeft: 'PeerNetwork', topRight: elLabelRight },
+        label: { topLeft: 'Mesh', topRight: elLabelRight },
         position: [60, 60, 80, 60],
         border: -0.1,
         cropmarks: -0.2,

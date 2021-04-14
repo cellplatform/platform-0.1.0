@@ -4,12 +4,12 @@ import { takeUntil } from 'rxjs/operators';
 
 import { COLORS, css, CssValue, PropList, PropListItem, t, time, Icons } from './common';
 
-export type SelfPropListProps = {
+export type PeerPropListProps = {
   status: t.PeerStatus;
   style?: CssValue;
 };
 
-export const SelfPropList: React.FC<SelfPropListProps> = (props) => {
+export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
   const items = toItems(props.status);
   const [redraw, setRedraw] = useState<number>(0);
 
@@ -26,7 +26,7 @@ export const SelfPropList: React.FC<SelfPropListProps> = (props) => {
 
   return (
     <PropList
-      title={'Mesh Network'}
+      title={'Peer Network'}
       defaults={{ clipboard: false }}
       items={items}
       width={{ max: 280 }}
