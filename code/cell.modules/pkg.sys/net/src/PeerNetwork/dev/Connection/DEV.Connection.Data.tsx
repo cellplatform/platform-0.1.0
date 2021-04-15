@@ -60,11 +60,11 @@ export const DevConnectionData: React.FC<DevConnectionDataProps> = (props) => {
     ...ItemUtil.common(connection),
     { label: 'reliable', value: connection.isReliable },
     {
-      label: 'video',
+      label: 'media/video',
       value: <Button onClick={open('media/video')} label={'Start Video'} />,
     },
     {
-      label: 'screen',
+      label: 'media/screen',
       value: <Button onClick={open('media/screen')} label={'Share Screen'} />,
     },
   ];
