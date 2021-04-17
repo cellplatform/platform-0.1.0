@@ -39,7 +39,7 @@ export const actions = DevActions<Ctx>()
     MediaStream.Controller({ bus });
     const strategy = PeerNetwork.Strategy({ self, bus });
 
-    // strategy.connection.autoPropagation = false; // TEMP 🐷
+    strategy.connection.autoPropagation = false; // TEMP 🐷
 
     const signal = 'rtc.cellfs.com/peer';
     const events = {

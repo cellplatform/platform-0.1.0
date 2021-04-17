@@ -24,6 +24,7 @@ type ConnectBase = {
   tx?: string;
   remote: t.PeerId;
   direction: t.PeerConnectDirection;
+  metadata?: t.JsonMap;
 };
 
 export type PeerNetworkConnectDataReq = ConnectBase & {

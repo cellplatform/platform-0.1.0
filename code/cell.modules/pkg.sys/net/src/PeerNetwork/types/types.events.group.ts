@@ -16,7 +16,7 @@ export type GroupEnsureConnectedDataEvent = {
 };
 export type GroupEnsureConnectedData = {
   from: t.PeerId;
-  peers: t.PeerId[];
+  connections: { peer: t.PeerId; id: t.PeerConnectionId }[];
   isReliable: boolean;
   metadata?: t.JsonMap;
 };

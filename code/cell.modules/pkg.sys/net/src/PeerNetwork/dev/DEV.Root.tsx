@@ -74,7 +74,6 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
     </>
   );
 
-
   return (
     <div ref={baseRef} {...css(styles.base, props.style)}>
       {elNetwork}
