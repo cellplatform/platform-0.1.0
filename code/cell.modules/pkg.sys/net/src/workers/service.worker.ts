@@ -1,4 +1,4 @@
-import { BundleHttpCache } from '../cache/BundleHttpCache';
+import { BundleHttpCache } from '../cache';
 
 const ctx: ServiceWorker = self as any;
 
