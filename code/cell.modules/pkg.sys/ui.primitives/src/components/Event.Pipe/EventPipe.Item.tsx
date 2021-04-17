@@ -2,13 +2,13 @@ import { domAnimation, LazyMotion, m } from 'framer-motion';
 import React from 'react';
 
 import { color, COLORS, css, CssValue } from '../../common';
-import { EventLogItem } from '../Event/types';
+import { EventHistoryItem } from '../Event/types';
 
-export type EventPipeItemClickEvent = EventLogItem;
+export type EventPipeItemClickEvent = EventHistoryItem;
 export type EventPipeItemClickEventHandler = (e: EventPipeItemClickEvent) => void;
 
 export type EventPipeItemProps = {
-  item: EventLogItem;
+  item: EventHistoryItem;
   size: number;
   parentSize: number;
   orientation: 'x' | 'y';

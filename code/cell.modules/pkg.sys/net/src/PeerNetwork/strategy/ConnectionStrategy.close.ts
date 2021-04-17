@@ -30,7 +30,7 @@ export function ensureClosed(args: {
   isEnabled: () => boolean;
 }) {
   const { self, events } = args;
-  const netbus = events.data(self).bus<t.MeshEvent>();
+  const netbus = events.data(self).bus<t.GroupEvent>();
   const connections = events.connections(self);
 
   /**
@@ -44,7 +44,7 @@ export function ensureClosed(args: {
     .subscribe(({ connection }) => {
       if (connection) {
         netbus.fire({
-          type: 'sys.net/mesh/ensureConnectionClosed',
+          type: 'sys.net/group/conn/ensure:closed',
           payload: { from: self, connection },
         });
       }
@@ -53,10 +53,7 @@ export function ensureClosed(args: {
   /**
    * Listen for mesh
    */
-  rx.payload<t.MeshEnsureConnectionClosedEvent>(
-    netbus.event$,
-    'sys.net/mesh/ensureConnectionClosed',
-  )
+  rx.payload<t.GroupEnsureConnectionClosedEvent>(netbus.event$, 'sys.net/group/conn/ensure:closed')
     .pipe(
       filter(() => args.isEnabled()),
       filter((e) => e.from !== self),

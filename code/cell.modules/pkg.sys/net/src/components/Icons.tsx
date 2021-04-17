@@ -10,6 +10,7 @@ import {
   MdSend,
 } from 'react-icons/md';
 import { FiMic, FiMicOff } from 'react-icons/fi';
+import { TiUpload } from 'react-icons/ti';
 
 const icon = Icon.renderer;
 
@@ -23,4 +24,5 @@ export const Icons = {
   Wifi: { On: icon(MdWifi), Off: icon(MdPortableWifiOff) },
   Mic: { On: icon(FiMic), Off: icon(FiMicOff) },
   Lock: { Closed: icon(MdLock), Open: icon(MdLockOpen), No: icon(MdNoEncryption) },
+  Upload: { Box: icon(TiUpload) },
 };

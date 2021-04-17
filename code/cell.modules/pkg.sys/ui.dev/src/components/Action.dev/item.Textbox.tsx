@@ -56,6 +56,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
     <div {...styles.textbox} title={value ? placeholder : undefined}>
       <TextboxCore
         value={value || ''}
+        displayFormat={'monospace'}
         placeholder={placeholder}
         valueStyle={{ fontFamily: 'monospace', fontWeight: 'NORMAL' }}
         placeholderStyle={{ fontFamily: 'monospace', italic: true, color: color.format(-0.3) }}

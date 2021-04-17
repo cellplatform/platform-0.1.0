@@ -1,11 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { ObjectView } from 'sys.ui.dev';
 
 import { useLocalPeer } from '../hooks';
-import { COLORS, css, CssValue, t } from './common';
-import { DevNetwork } from './DEV.Network';
-import { useDevState } from './DEV.useDevState';
-import { DevVideoFullscreen } from './DEV.Video.Fullscreen';
+import { COLORS, css, CssValue, t, useDragTarget } from './common';
+import { DevNetwork } from './Network';
 
 export type RootLayoutProps = {
   self: t.PeerId;
@@ -17,8 +15,19 @@ export type RootLayoutProps = {
 
 export const RootLayout: React.FC<RootLayoutProps> = (props) => {
   const { netbus, bus } = props;
+
   const peer = useLocalPeer({ self: props.self, bus });
-  const state = useDevState({ bus });
+
+  const baseRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * NOTE: This drag monitor is setup to prevent arbitrarily dropped
+   *       files from loading into a new tab (cancel default browser event).
+   *
+   *       This same hook can then be used within sub-components to actually
+   *       capture and work with OS level file drops as per each component's context.
+   */
+  useDragTarget(baseRef);
 
   const styles = {
     base: css({
@@ -65,15 +74,10 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
     </>
   );
 
-  const elFullscreenVideo = state.fullscreenMedia && (
-    <DevVideoFullscreen stream={state.fullscreenMedia} bus={bus} />
-  );
-
   return (
-    <div {...css(styles.base, props.style)}>
+    <div ref={baseRef} {...css(styles.base, props.style)}>
       {elNetwork}
       {elJson}
-      {elFullscreenVideo}
     </div>
   );
 };

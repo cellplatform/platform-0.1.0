@@ -1,15 +1,16 @@
 import React from 'react';
-import { css, CssValue, Hr, t, PropList, PropListItem } from './common';
-import { DevVideo } from './DEV.Video';
-import { ItemUtil } from './DEV.connection.util';
 
-export type ConnectionMediaProps = {
+import { css, CssValue, Hr, PropList, PropListItem, t } from '../common';
+import { DevVideo } from '../Media';
+import { ItemUtil } from './util';
+
+export type DevConnectionMediaProps = {
   bus: t.EventBus<any>;
   connection: t.PeerConnectionMediaStatus;
   style?: CssValue;
 };
 
-export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
+export const DevConnectionMedia: React.FC<DevConnectionMediaProps> = (props) => {
   const { connection, bus } = props;
   const { kind } = connection;
 
@@ -19,8 +20,14 @@ export const ConnectionMedia: React.FC<ConnectionMediaProps> = (props) => {
   const items: PropListItem[] = [...ItemUtil.common(connection)];
 
   const styles = {
-    base: css({ position: 'relative' }),
-    video: css({ Flex: 'vertical-center-center' }),
+    base: css({
+      position: 'relative',
+      padding: 20,
+      paddingTop: 18,
+    }),
+    video: css({
+      Flex: 'vertical-center-center',
+    }),
   };
 
   return (

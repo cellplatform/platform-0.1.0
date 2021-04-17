@@ -1,4 +1,4 @@
-import { t, PropListItem } from './common';
+import { t, PropListItem } from '../common';
 
 export const ItemUtil = {
   common(connection: t.PeerConnectionStatus) {

@@ -1,9 +1,11 @@
 import React from 'react';
 import { Hr } from 'sys.ui.primitives/lib/components/Hr';
 
-import { css, CssValue, t } from './common';
-import { Connection } from './DEV.Connection';
+import { css, CssValue, t } from '../common';
+import { DevConnection } from '../Connection';
 import { DevNetworkHeader } from './DEV.Network.Header';
+import { useDevState } from '../DEV.useDevState';
+import { DevVideoFullscreen } from '../Media';
 
 export type DevNetworkProps = {
   bus: t.EventBus<any>;
@@ -16,6 +18,7 @@ export type DevNetworkProps = {
 export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
   const { peer, media, netbus } = props;
   const bus = props.bus.type<t.PeerEvent>();
+  const state = useDevState({ bus });
 
   const PADDING = { CARD: 25 };
 
@@ -24,6 +27,7 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
       flex: 1,
       Flex: 'vertical-stretch-stretch',
       boxSizing: 'border-box',
+      position: 'relative',
     }),
     body: {
       base: css({ flex: 1, position: 'relative' }),
@@ -43,7 +47,7 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
   const elConnections = connections.map((item, i) => {
     const isLast = i === connections.length - 1;
     return (
-      <Connection
+      <DevConnection
         key={item.uri}
         bus={bus}
         netbus={netbus}
@@ -54,6 +58,10 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
     );
   });
 
+  const elFullscreenVideo = state.fullscreenMedia && (
+    <DevVideoFullscreen stream={state.fullscreenMedia} bus={bus} />
+  );
+
   return (
     <div {...css(styles.base, props.style)}>
       <DevNetworkHeader bus={bus} peer={peer} media={media} />
@@ -61,6 +69,7 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
       <div {...styles.body.base}>
         <div {...styles.body.scroll}>{elConnections}</div>
       </div>
+      {elFullscreenVideo}
     </div>
   );
 };

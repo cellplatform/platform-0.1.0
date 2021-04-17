@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react';
 import { animationFrameScheduler, Subject } from 'rxjs';
 import { observeOn, takeUntil } from 'rxjs/operators';
 
-import { slug } from '../../common';
-import { EventBusHistoryHook, EventLogItem } from './types';
+import { slug, time } from '../../common';
+import { EventBusHistoryHook, EventHistoryItem } from './types';
 
 /**
  * Captures a running history of events within a state array.
  */
-export const useEventBusHistory: EventBusHistoryHook = (args) => {
-  const { bus, max, reset$ } = args;
-  const [events, setEvents] = useState<EventLogItem[]>([]);
+export const useEventBusHistory: EventBusHistoryHook = (bus, options = {}) => {
+  const { max, reset$ } = options;
+  const [events, setEvents] = useState<EventHistoryItem[]>([]);
   const [total, setTotal] = useState<number>(0);
 
   const reset = () => {
@@ -35,7 +35,9 @@ export const useEventBusHistory: EventBusHistoryHook = (args) => {
       });
 
       setEvents((prev) => {
-        let events = [...prev, { id: slug(), event, count }];
+        const timestamp = time.now.timestamp;
+        const item: EventHistoryItem = { id: slug(), event, count, timestamp };
+        let events = [...prev, item];
         if (max !== undefined) events = events.slice(events.length - max);
         return events;
       });

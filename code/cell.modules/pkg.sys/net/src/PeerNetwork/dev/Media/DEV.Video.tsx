@@ -13,7 +13,7 @@ import {
   MediaStream,
   Button,
   t,
-} from './common';
+} from '../common';
 
 export type DevVideoProps = {
   bus: t.EventBus<any>;

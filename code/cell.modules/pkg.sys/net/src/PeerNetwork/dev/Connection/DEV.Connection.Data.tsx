@@ -1,7 +1,7 @@
 import { color } from '@platform/css';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { PeerNetwork } from '..';
+import { PeerNetwork } from '../..';
 import {
   Button,
   COLORS,
@@ -15,11 +15,12 @@ import {
   PropListItem,
   t,
   Textbox,
+  useDragTarget,
   useEventBusHistory,
-} from './common';
-import { ItemUtil } from './DEV.connection.util';
+} from '../common';
+import { ItemUtil } from './util';
 
-export type ConnectionDataProps = {
+export type DevConnectionDataProps = {
   bus: t.EventBus<any>;
   netbus: t.EventBus<any>;
   connection: t.PeerConnectionDataStatus;
@@ -38,14 +39,18 @@ const fireOpen = async (args: {
   events.dispose();
 };
 
-export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
+export const DevConnectionData: React.FC<DevConnectionDataProps> = (props) => {
   const { connection, netbus, bus } = props;
   const peer = connection.peer;
   const { self, remote } = peer;
 
   const [eventMessage, setEventMessage] = useState<string>('');
+  const history = useEventBusHistory(netbus);
 
-  const history = useEventBusHistory({ bus: netbus });
+  const baseRef = useRef<HTMLDivElement>(null);
+  const drag = useDragTarget(baseRef, (e) => {
+    console.log('file dropped', e);
+  });
 
   const open = (kind: t.PeerConnectionKindMedia) => {
     return () => fireOpen({ bus, self, remote, kind });
@@ -55,11 +60,11 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
     ...ItemUtil.common(connection),
     { label: 'reliable', value: connection.isReliable },
     {
-      label: 'video',
+      label: 'media/video',
       value: <Button onClick={open('media/video')} label={'Start Video'} />,
     },
     {
-      label: 'screen',
+      label: 'media/screen',
       value: <Button onClick={open('media/screen')} label={'Share Screen'} />,
     },
   ];
@@ -82,16 +87,31 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
   };
 
   const styles = {
-    base: css({}),
-    buttons: css({
-      Flex: 'horizontal-center-spaceBetween',
-      fontSize: 12,
-      marginTop: 15,
+    base: css({
+      position: 'relative',
+      padding: 20,
+      paddingTop: 18,
     }),
-    textbox: css({ MarginX: 20, fontSize: 12 }),
-    events: {
-      stack: css({ marginTop: 20 }),
-      pipe: css({ marginTop: 15, MarginX: 15 }),
+    body: {
+      base: css({
+        position: 'relative',
+        filter: drag.isDragOver ? `blur(3px)` : undefined,
+        opacity: drag.isDragOver ? 0.3 : 1,
+      }),
+      buttons: css({
+        Flex: 'horizontal-center-spaceBetween',
+        fontSize: 12,
+        marginTop: 15,
+      }),
+      textbox: css({ MarginX: 20, fontSize: 12 }),
+      events: {
+        stack: css({ marginTop: 20 }),
+        pipe: css({ marginTop: 15, MarginX: 15 }),
+      },
+    },
+    drag: {
+      overlay: css({ Absolute: 0, Flex: 'vertical-center-center' }),
+      icon: css({ marginBottom: 6, opacity: 0.2 }),
     },
   };
 
@@ -100,7 +120,7 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
       value={eventMessage}
       placeholder={'broadcast event'}
       onChange={(e) => setEventMessage(e.to)}
-      style={styles.textbox}
+      style={styles.body.textbox}
       enter={{
         handler: broadcastEvent,
         icon: (e) => {
@@ -113,23 +133,33 @@ export const ConnectionData: React.FC<ConnectionDataProps> = (props) => {
     />
   );
 
+  const elDragOverlay = drag.isDragOver && (
+    <div {...styles.drag.overlay}>
+      <Icons.Upload.Box size={46} style={styles.drag.icon} color={COLORS.DARK} />
+      <div>Drop File</div>
+    </div>
+  );
+
   return (
-    <div {...css(styles.base, props.style)}>
-      <PropList title={'Data Connection'} items={items} defaults={{ clipboard: false }} />
-      <Hr thickness={5} opacity={0.1} margin={[10, 0, 15, 0]} />
-      {elTextbox}
-      <EventStack events={history.events} style={styles.events.stack} />
-      <EventPipe
-        events={history.events}
-        style={styles.events.pipe}
-        onEventClick={(e) => {
-          console.group('🌳 event');
-          console.log('count', e.count);
-          console.log('type', e.event.type);
-          console.log('payload', e.event.payload);
-          console.groupEnd();
-        }}
-      />
+    <div ref={baseRef} {...css(styles.base, props.style)}>
+      <div {...styles.body.base}>
+        <PropList title={'Data Connection'} items={items} defaults={{ clipboard: false }} />
+        <Hr thickness={5} opacity={0.1} margin={[10, 0, 15, 0]} />
+        {elTextbox}
+        <EventStack events={history.events} style={styles.body.events.stack} />
+        <EventPipe
+          events={history.events}
+          style={styles.body.events.pipe}
+          onEventClick={(e) => {
+            console.group('🌳 event');
+            console.log('count', e.count);
+            console.log('type', e.event.type);
+            console.log('payload', e.event.payload);
+            console.groupEnd();
+          }}
+        />
+      </div>
+      {elDragOverlay}
     </div>
   );
 };

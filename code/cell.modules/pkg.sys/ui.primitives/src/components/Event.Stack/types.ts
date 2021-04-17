@@ -1,7 +1,7 @@
-import { EventLogItem } from '../Event/types';
+import { EventHistoryItem } from '../Event/types';
 
 export type EventStackCardFactory = (args: EventStackCardFactoryArgs) => JSX.Element;
-export type EventStackCardFactoryArgs = EventLogItem & {
+export type EventStackCardFactoryArgs = EventHistoryItem & {
   width: number;
   isTopCard: boolean;
   showPayload?: boolean;

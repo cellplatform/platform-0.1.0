@@ -1,27 +1,29 @@
 import React, { useState } from 'react';
 import { ObjectView } from 'sys.ui.dev';
 
-import { useDragTarget } from '.';
-import { color, css } from '../../common';
-import { Button } from '../../components.ref/button/Button';
-import { Spinner } from '../../components.ref/spinner/Spinner';
+import { useDragTarget } from '..';
+import { color, css, Button, Spinner } from './common';
 import { upload } from './DEV.Sample.upload';
 
 export const Sample: React.FC = () => {
-  const ref = React.useRef<HTMLDivElement>(null);
+  const targetRef = React.useRef<HTMLDivElement>(null);
+  const drag = useDragTarget(targetRef, (e) => console.log('onDropped (optional)', e));
 
-  const dragTarget = useDragTarget(ref);
-  const { isDragOver, isDropped, dropped } = dragTarget;
+  const { isDragOver, isDropped, dropped } = drag;
   const data = { isDragOver, isDropped, dropped };
-  const files = dragTarget.dropped?.files || [];
+  const files = drag.dropped?.files || [];
 
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
 
   const styles = {
-    base: css({
-      Absolute: 0,
+    base: css({ Absolute: 0, display: 'flex' }),
+    body: css({
+      flex: 1,
       padding: 30,
+      position: 'relative',
+      filter: drag.isDragOver ? `blur(1px)` : undefined,
+      opacity: drag.isDragOver ? 0.5 : 1,
     }),
     toolbar: {
       base: css({
@@ -55,7 +57,7 @@ export const Sample: React.FC = () => {
 
   const elSpacer = <div {...styles.toolbar.divider} />;
 
-  const elDragOver = dragTarget.isDragOver && (
+  const elDragOver = drag.isDragOver && (
     <div {...styles.dragOver}>
       <div>Drop File</div>
     </div>
@@ -63,7 +65,7 @@ export const Sample: React.FC = () => {
 
   const elToolbar = (
     <div {...styles.toolbar.base}>
-      <Button onClick={() => dragTarget.reset()}>Reset</Button>
+      <Button onClick={() => drag.reset()}>Reset</Button>
       {elSpacer}
       <div {...styles.button}>
         <Button
@@ -90,11 +92,13 @@ export const Sample: React.FC = () => {
   );
 
   return (
-    <div ref={ref} {...styles.base}>
-      {elToolbar}
-      <ObjectView name={'debug'} data={data} expandLevel={10} />
+    <div ref={targetRef} {...styles.base}>
+      <div {...styles.body}>
+        {elToolbar}
+        <ObjectView name={'debug'} data={data} expandLevel={10} />
+        {elFooter}
+      </div>
       {elDragOver}
-      {elFooter}
     </div>
   );
 };
