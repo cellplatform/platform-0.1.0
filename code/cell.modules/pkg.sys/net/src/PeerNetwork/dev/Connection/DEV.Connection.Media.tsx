@@ -22,12 +22,10 @@ export const DevConnectionMedia: React.FC<DevConnectionMediaProps> = (props) => 
   const styles = {
     base: css({
       position: 'relative',
-      padding: 20,
-      paddingTop: 18,
+      padding: 12,
+      paddingRight: 18,
     }),
-    video: css({
-      Flex: 'vertical-center-center',
-    }),
+    video: css({ Flex: 'vertical-center-center' }),
   };
 
   return (
