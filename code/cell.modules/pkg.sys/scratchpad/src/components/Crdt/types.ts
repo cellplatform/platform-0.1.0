@@ -1,3 +1,16 @@
+import { IDisposable } from '@platform/types';
+
+export type CrdtConnectionId = string;
+export type CrdtModelId = string;
+
+export type CrdtConnection = IDisposable & {
+  id: CrdtConnectionId;
+  isEnabled: boolean;
+};
+
+/**
+ * EVENTS
+ */
 export type CrdtEvent = CrdtBroadcastChangeEvent;
 
 /**
@@ -8,6 +21,6 @@ export type CrdtBroadcastChangeEvent = {
   payload: CrdtBroadcastChange;
 };
 export type CrdtBroadcastChange = {
-  id: string;
+  id: { connection: CrdtConnectionId; model: CrdtModelId };
   changes: string;
 };

@@ -1,40 +1,51 @@
 import React from 'react';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { DevActions } from 'sys.ui.dev';
-import { DevSample } from './DEV.Sample';
-import { rx, t, Automerge } from './common';
+
+import { Automerge, rx, t } from './common';
+import { DevConnection } from './DEV.Connection';
 
 type Ctx = {
   count: number;
-  bus: t.EventBus<t.CrdtEvent>;
-  docs: Automerge.DocSet<t.Doc>;
-  current: string;
   redraw(): void;
+  bus: t.EventBus<t.CrdtEvent>;
+  toObject(): {
+    list: { id: string; doc: t.Doc }[];
+    collection1: t.Docs;
+    collection2: t.Docs;
+  };
 };
 
-const Helpers = {
-  ids(ctx: Ctx) {
-    return Array.from(ctx.docs.docIds);
+const DocStorage = {
+  prefix: 'test/crdt/model',
+  key: (id: string) => `${DocStorage.prefix}/${id}`,
+  load(id: string): t.Doc | undefined {
+    const text = localStorage.getItem(DocStorage.key(id));
+    return text ? Automerge.load(text) : undefined;
   },
+  save(id: string, doc: t.Doc) {
+    const text = Automerge.save(doc);
+    localStorage.setItem(DocStorage.key(id), text);
+  },
+  reset() {
+    Object.keys(localStorage)
+      .filter((key) => key.startsWith(DocStorage.prefix))
+      .forEach((key) => localStorage.removeItem(key));
+  },
+};
 
-  items(ctx: Ctx) {
-    const items = Helpers.ids(ctx).map((id) => ({ id, doc: ctx.docs.getDoc(id) }));
-    return {
-      total: items.length,
-      docs: items.map((item) => item.doc),
-      items,
-      current: items.find(({ id }) => id === ctx.current),
-      others: items.filter(({ id }) => id !== ctx.current),
-    };
-  },
+const loadDocs = () => {
+  const load = DocStorage.load;
 
-  write(ctx: Ctx) {
-    const docs = Helpers.items(ctx);
-    console.log('');
-    console.log('total', docs.total);
-    docs.items.forEach(({ id, doc }) => {
-      console.log('doc', id, doc.count);
-    });
-  },
+  const doc1 = load('doc1') || Automerge.from<t.Doc>({ count: 0 });
+  const doc2 = load('doc2') || Automerge.merge<t.Doc>(Automerge.init(), doc1);
+  const doc3 = load('doc3') || Automerge.merge<t.Doc>(Automerge.init(), doc2);
+  const doc4 = load('doc4') || Automerge.merge<t.Doc>(Automerge.init(), doc3);
+
+  const docs = [doc1, doc2, doc3, doc4];
+  const list = docs.map((doc, i) => ({ id: `doc${i + 1}`, doc }));
+  return list;
 };
 
 /**
@@ -53,68 +64,84 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus<t.CrdtEvent>();
-    const docs = new Automerge.DocSet<t.Doc>();
+    const collection1 = new Automerge.DocSet<t.Doc>();
+    const collection2 = new Automerge.DocSet<t.Doc>();
 
-    const doc1 = Automerge.from<t.Doc>({ count: 0 });
-    const doc2 = Automerge.merge<t.Doc>(Automerge.init(), doc1);
-    const doc3 = Automerge.merge<t.Doc>(Automerge.init(), doc2);
-    docs.setDoc('doc1', doc1);
-    docs.setDoc('doc2', doc2);
-    docs.setDoc('doc3', doc3);
+    const monitor = (docs: Automerge.DocSet<t.Doc>) => {
+      const changed$ = new Subject<{ id: string; doc: t.Doc }>();
+      docs.registerHandler((id, doc) => changed$.next({ id, doc }));
+      changed$.pipe(debounceTime(500)).subscribe((e) => DocStorage.save(e.id, e.doc));
+    };
+
+    monitor(collection1);
+    const list = loadDocs();
 
     const redraw = () => e.change.ctx((draft) => draft.count++);
 
-    docs.registerHandler(() => {
-      Helpers.write(ctx);
-      redraw();
-    });
-
-    const ctx: Ctx = { bus, docs, current: 'doc1', count: 0, redraw };
+    const ctx: Ctx = {
+      count: 0,
+      redraw,
+      bus,
+      toObject() {
+        return { list, collection1, collection2 };
+      },
+    };
 
     return ctx;
   })
 
   .items((e) => {
-    e.title('Sample');
+    e.title('Debug');
+    e.button('reset', (e) => DocStorage.reset());
+    e.button('redraw', (e) => e.ctx.redraw());
+    e.hr();
 
-    e.select((config) => {
-      config
-        .title('current (doc id)')
-        .initial(config.ctx.current)
-        .items(Helpers.ids(config.ctx))
-        .view('buttons')
-        .pipe((e) => {
-          e.ctx.current = e.select.current[0].value;
-        });
+    e.button('add - one', (e) => {
+      const { collection1, list } = e.ctx.toObject();
+      const { id, doc } = list[0];
+      collection1.setDoc(id, doc);
     });
 
-    const changeCount = (ctx: Ctx, by: number) => {
-      const id = ctx.current;
-      const doc = ctx.docs.getDoc(ctx.current);
-      if (!doc) return;
-      const next = Automerge.change(doc, (draft) => {
-        draft.count = draft.count + by;
-        draft.text = `hello-${draft.count}`;
+    e.button('add - two', (e) => {
+      const { collection2, list } = e.ctx.toObject();
+      const { id, doc } = list[3];
+      collection2.setDoc(id, doc);
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('remove - one', (e) => {
+      const { collection1, list } = e.ctx.toObject();
+      const { id } = list[0];
+      collection1.removeDoc(id);
+    });
+
+    e.button('remove - two', (e) => {
+      const { collection2, list } = e.ctx.toObject();
+      const { id } = list[3];
+      collection2.removeDoc(id);
+    });
+
+    e.hr();
+
+    e.button('history', (e) => {
+      const list = e.ctx.toObject().list;
+      const doc = list[0].doc;
+      const history = Automerge.getHistory(doc);
+      Object.keys(history).forEach((key) => {
+        const { change, snapshot } = history[key];
+        console.group('🌳 ', key);
+        console.log('snapshot', JSON.parse(JSON.stringify(snapshot)));
+        console.log('change', change);
+        console.groupEnd();
       });
-      ctx.docs.setDoc(id, next);
-    };
+    });
 
-    e.button('increment', (e) => changeCount(e.ctx, 1));
-    e.button('decrement', (e) => changeCount(e.ctx, -1));
-
-    e.hr(1, 0.2);
-
-    e.button('merge', (e) => {
-      const ctx = e.ctx;
-      const items = Helpers.items(ctx);
-      const current = items.current;
-
-      if (current) {
-        items.others.forEach((item) => {
-          const next = Automerge.merge(item.doc, current.doc);
-          ctx.docs.setDoc(item.id, next);
-        });
-      }
+    e.button('conflicts', (e) => {
+      const list = e.ctx.toObject().list;
+      const doc = list[0].doc;
+      const conflicts = Automerge.getConflicts<t.Doc>(doc, 'count');
+      console.log('conflicts', conflicts);
     });
 
     e.hr();
@@ -123,11 +150,14 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     e.settings({
       host: { background: -0.04 },
-      layout: { label: 'CRDT', position: [150, 80], cropmarks: -0.2 },
+      layout: { label: 'CRDT', width: 450, cropmarks: -0.2 },
     });
 
-    const { bus, docs } = e.ctx;
-    e.render(<DevSample bus={bus} docs={docs} />);
+    const ctx = e.ctx;
+    const { bus } = ctx;
+    const { collection1: docs1, collection2: docs2 } = ctx.toObject();
+    e.render(<DevConnection bus={bus} docs={docs1} />);
+    e.render(<DevConnection bus={bus} docs={docs2} />);
   });
 
 export default actions;
