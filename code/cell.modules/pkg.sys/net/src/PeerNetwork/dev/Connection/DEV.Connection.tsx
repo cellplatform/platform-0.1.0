@@ -9,8 +9,8 @@ export type DevConnectionProps = {
   netbus: t.EventBus<any>;
   connection: t.PeerConnectionStatus;
   isLast?: boolean;
-  style?: CssValue;
   margin?: t.CssEdgesInput;
+  style?: CssValue;
 };
 
 export const DevConnection: React.FC<DevConnectionProps> = (props) => {
@@ -47,7 +47,7 @@ export const DevConnection: React.FC<DevConnectionProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <Card key={peer.remote} margin={props.margin} width={300} shadow={false}>
+      <Card margin={props.margin} width={300} shadow={false}>
         {elData}
         {elMedia}
         {elCloseButton}
