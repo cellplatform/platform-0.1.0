@@ -36,18 +36,9 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
       color: COLORS.DARK,
       overflow: 'hidden',
     }),
-    left: css({
-      flex: 1,
-      Flex: 'vertical-stretch-stretch',
-    }),
-    middle: css({
-      Flex: 'vertical-stretch-end',
-    }),
-    right: css({
-      flex: 1,
-      padding: 20,
-      maxWidth: 350,
-    }),
+    left: css({ flex: 1, display: 'flex' }),
+    middle: css({ Flex: 'vertical-stretch-end' }),
+    right: css({ flex: 1, padding: 20, maxWidth: 350 }),
     verticalRule: css({
       flex: 1,
       width: 1,
@@ -57,13 +48,13 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
     }),
   };
 
-  const elNetwork = peer.status && (
+  const elLeft = peer.status && (
     <div {...styles.left}>
-      {<DevNetwork bus={bus} netbus={netbus} peer={peer.status} media={peer.media} />}
+      <DevNetwork bus={bus} netbus={netbus} peer={peer.status} media={peer.media} />
     </div>
   );
 
-  const elJson = props.debugJson && (
+  const elRight = props.debugJson && (
     <>
       <div {...styles.middle}>
         <div {...styles.verticalRule} />
@@ -76,8 +67,8 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
 
   return (
     <div ref={baseRef} {...css(styles.base, props.style)}>
-      {elNetwork}
-      {elJson}
+      {elLeft}
+      {elRight}
     </div>
   );
 };

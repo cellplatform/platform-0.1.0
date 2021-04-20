@@ -31,8 +31,8 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
 
   const closeFullscreen = () => {
     bus.fire({
-      type: 'DEV/media/fullscreen',
-      payload: { stream: undefined },
+      type: 'DEV/modal',
+      payload: {},
     });
   };
 

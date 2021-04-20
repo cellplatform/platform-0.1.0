@@ -40,6 +40,10 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
         paddingRight: PADDING.CARD,
       }),
     },
+    modal: css({
+      Absolute: 0,
+      display: 'flex',
+    }),
   };
 
   const connections = peer.connections;
@@ -58,9 +62,8 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
     );
   });
 
-  const elFullscreenVideo = state.fullscreenMedia && (
-    <DevVideoFullscreen stream={state.fullscreenMedia} bus={bus} />
-  );
+  const modalSize = state.modal?.size;
+  const elModal = state.modal?.el && <div {...styles.modal}>{state.modal.el}</div>;
 
   return (
     <div {...css(styles.base, props.style)}>
@@ -68,8 +71,9 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
       <Hr thickness={10} opacity={0.05} margin={0} />
       <div {...styles.body.base}>
         <div {...styles.body.scroll}>{elConnections}</div>
+        {modalSize === 'body' && elModal}
       </div>
-      {elFullscreenVideo}
+      {modalSize === 'fullscreen' && elModal}
     </div>
   );
 };

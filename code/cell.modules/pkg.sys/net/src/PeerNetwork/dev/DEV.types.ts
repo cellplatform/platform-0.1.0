@@ -1,15 +1,32 @@
 export * from '../common/types';
 
-export type DevEvent = DevMediaFullScreenEvent;
+export type DevModalSize = 'fullscreen' | 'body';
 
 /**
- * Events
+ * EVENTS
  */
+export type DevEvent = DevModalEvent | DevMediaModalEvent;
 
-export type DevMediaFullScreenEvent = {
-  type: 'DEV/media/fullscreen';
-  payload: DevMediaFullScreen;
+/**
+ * A modal to display.
+ */
+export type DevModalEvent = {
+  type: 'DEV/modal';
+  payload: DevModal;
 };
-export type DevMediaFullScreen = {
+export type DevModal = {
+  el?: JSX.Element;
+  size?: DevModalSize;
+};
+
+/**
+ * Tragets a MediaStream into a fullscreen modal
+ */
+export type DevMediaModalEvent = {
+  type: 'DEV/media/modal';
+  payload: DevMediaModal;
+};
+export type DevMediaModal = {
   stream?: MediaStream;
+  size?: DevModalSize;
 };

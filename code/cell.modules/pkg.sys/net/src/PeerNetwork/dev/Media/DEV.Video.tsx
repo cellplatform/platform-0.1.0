@@ -87,9 +87,12 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
       value: (
         <Button
           label={'Full Screen'}
-          onClick={() => {
-            bus.fire({ type: 'DEV/media/fullscreen', payload: { stream: stream } });
-          }}
+          onClick={() =>
+            bus.fire({
+              type: 'DEV/media/modal',
+              payload: { stream, size: 'body' },
+            })
+          }
         />
       ),
     },

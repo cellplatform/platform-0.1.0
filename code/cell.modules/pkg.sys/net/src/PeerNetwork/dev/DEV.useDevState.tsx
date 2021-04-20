@@ -1,29 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { DevVideoFullscreen } from './Media';
 
 import { rx, t } from './common';
 
 export function useDevState(args: { bus: t.EventBus<any> }) {
   const bus = args.bus.type<t.DevEvent>();
-
-  const [fullscreenMedia, setFullscreenMedia] = useState<MediaStream>();
+  const [modal, setModal] = useState<t.DevModal | undefined>();
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
     const $ = bus.event$.pipe(takeUntil(dispose$));
 
-    rx.payload<t.DevMediaFullScreenEvent>($, 'DEV/media/fullscreen')
+    rx.payload<t.DevModalEvent>($, 'DEV/modal')
+      .pipe()
+      .subscribe((e) => setModal(e));
+
+    rx.payload<t.DevMediaModalEvent>($, 'DEV/media/modal')
       .pipe()
       .subscribe((e) => {
-        console.log('e', e);
-        setFullscreenMedia(e.stream);
+        const { size } = e;
+        const el = <DevVideoFullscreen bus={bus} stream={e.stream} />;
+        bus.fire({ type: 'DEV/modal', payload: { el, size } });
       });
 
     return () => dispose$.next();
   }, []); // eslint-disable-line
 
-  return {
-    fullscreenMedia,
-  };
+  return { modal };
 }
