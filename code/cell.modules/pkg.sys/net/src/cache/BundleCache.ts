@@ -18,7 +18,7 @@ type FetchEvent = Event & {
  *    https://gist.github.com/tiernan/c18a380935e45a6d942ac1e88c5bbaf3
  *
  */
-export const BundleHttpCache = {
+export const BundleCache = {
   get module() {
     return __CELL__.module;
   },
@@ -42,7 +42,7 @@ export const BundleHttpCache = {
     ctx.addEventListener('fetch', async (event) => {
       const e = event as FetchEvent;
       const url = e.request.url;
-      const name = `module:${BundleHttpCache.module.name}@${BundleHttpCache.module.version}`;
+      const name = `module:${BundleCache.module.name}@${BundleCache.module.version}`;
 
       e.respondWith(
         caches.open(name).then(async (cache) => {

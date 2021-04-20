@@ -20,16 +20,17 @@ type Ctx = {
   isReliable: boolean;
   debugJson: boolean;
   toStrategy(): t.PeerStrategy;
+  init(): void;
 };
 
 /**
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('sys.net/PeerNetwork')
+  .namespace('PeerNetwork')
 
   .context((e) => {
-    if (e.prev) return e.prev;
+    if (e.prev && e.count > 0) return e.prev;
 
     const self = cuid();
     const bus = rx.bus<t.PeerEvent>();
@@ -47,14 +48,16 @@ export const actions = DevActions<Ctx>()
       media: MediaStream.Events({ bus }),
     };
 
-    time.delay(100, async () => {
+    const init = () => {
       /**
        * Start "self" video.
        */
       events.media.start(EventBridge.videoRef(self)).video();
       events.net.create(signal, self);
       events.net.media(self).video();
-    });
+    };
+
+    time.delay(100, init);
 
     const netbus = events.net.data(self).bus();
 
@@ -73,6 +76,7 @@ export const actions = DevActions<Ctx>()
       debugJson: false,
       connectTo: '',
       toStrategy: () => strategy,
+      init,
     };
   })
 
