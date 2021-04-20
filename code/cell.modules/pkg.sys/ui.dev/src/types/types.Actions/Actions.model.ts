@@ -5,7 +5,11 @@ export type ActionsModelState<Ctx> = t.BuilderModel<t.ActionsModel<Ctx>>;
 export type ActionsModel<Ctx> = {
   namespace: string;
   items: t.ActionItem[];
-  ctx: { current?: Ctx; get?: t.ActionGetContext<Ctx> };
+  ctx: {
+    current?: Ctx;
+    get?: t.ActionGetContext<Ctx>;
+    count?: number; // Number of times the context [get] handler has been called. NB: Used to reset session when changing action-set.
+  };
   env: ActionsModelEnv;
   subject?: t.ActionHandlerSubject<Ctx>;
   controller?: t.ActionHandlerController<Ctx>;

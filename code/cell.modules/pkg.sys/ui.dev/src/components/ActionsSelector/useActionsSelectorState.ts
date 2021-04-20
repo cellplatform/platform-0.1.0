@@ -14,7 +14,6 @@ export function useActionsSelectorState(args: {
 }) {
   const store = args.store;
   const list = args.actions || [];
-  const total = list.length;
   const bus = args.bus?.type<t.DevEvent>();
 
   const [selected, setSelected] = useState<t.Actions>();
@@ -32,7 +31,11 @@ export function useActionsSelectorState(args: {
       .pipe()
       .subscribe((e) => {
         const current = list.find((actions) => actions.toObject().namespace === e.namespace);
-        setSelected(current);
+
+        setSelected((prev) => {
+          if (prev) prev.toModel().change((draft) => (draft.ctx.count = undefined)); // Reset invoke count.
+          return current;
+        });
         if (store) store(current);
       });
 

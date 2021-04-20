@@ -12,6 +12,7 @@ export type ActionGetContext<C> = (e: ActionGetContextArgs<C>) => C;
 export type ActionGetContextArgs<C> = {
   prev: C | undefined;
   change: ActionGetContextChange<C>;
+  count: number; // Number of times the context method has been called within the current selection.
 };
 
 export type ActionGetContextChange<C> = {
