@@ -36,6 +36,7 @@ export function useActionsSelectorState(args: {
           if (prev) prev.toModel().change((draft) => (draft.ctx.count = undefined)); // Reset invoke count.
           return current;
         });
+
         if (store) store(current);
       });
 
