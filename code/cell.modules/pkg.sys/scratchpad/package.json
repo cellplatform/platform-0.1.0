@@ -7,7 +7,7 @@
   },
   "scripts": {
     "start": "cell.compiler dev $@",
-    "dev": "cell.compiler dev --no-exports $@",
+    "dev": "cell.compiler dev --no-exports --name web.dev $@",
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
@@ -19,9 +19,10 @@
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
     "public": "ngrok http 5000 --hostname=os.ngrok.io",
-    "deploy": "yarn upload --dir=sys.scratchpad $@"
+    "deploy": "cell.compiler upload --bump --dir=sys.scratchpad $@"
   },
   "dependencies": {
+    "automerge": "^0.14.2",
     "d3": "^6.6.1"
   },
   "devDependencies": {

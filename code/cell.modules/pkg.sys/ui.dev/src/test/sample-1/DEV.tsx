@@ -276,8 +276,8 @@ export const actions = DevActions<Ctx>()
 
     e.select((config) => {
       config
-        .initial('Chocolate')
         .title('My radio options')
+        .initial('Chocolate')
         .description('My set mutually exclusive options')
         .view('buttons')
         .items(['Chocolate', 'Strawberry', 'Vanilla'])
@@ -289,9 +289,9 @@ export const actions = DevActions<Ctx>()
 
     e.select((config) => {
       config
+        .title('My checkbox options')
         .label('checkbox')
         .multi(true) // NB: This is what turns the buttons into [x] checkboxes.
-        .title('My checkbox options')
         .view('buttons')
         .items(['Chocolate', 'Strawberry', 'Vanilla', 'Bananna'])
         .initial(['Strawberry', 'Vanilla'])
