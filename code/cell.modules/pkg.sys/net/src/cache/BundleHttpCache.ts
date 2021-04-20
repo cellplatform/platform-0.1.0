@@ -26,10 +26,18 @@ export const BundleHttpCache = {
   /**
    * Initializes a service worker cache.
    */
-  serviceWorker(window: Window, options: { log?: boolean | 'verbose' } = {}) {
+  serviceWorker(window: Window, options: { log?: boolean | 'verbose'; force?: boolean } = {}) {
     const ctx = (window as unknown) as ServiceWorker;
+    const hostname = window.location.hostname;
 
-    const { log: logLevel } = options;
+    const verbose = (...items: any[]) => {
+      if (options.log === 'verbose') log.info(items);
+    };
+
+    if (hostname === 'localhost' && !options.force) {
+      verbose('Exiting Serviceworker cache while running on [localhost].');
+      return;
+    }
 
     ctx.addEventListener('fetch', async (event) => {
       const e = event as FetchEvent;
@@ -41,7 +49,7 @@ export const BundleHttpCache = {
           const cached = await cache.match(e.request);
 
           if (cached) {
-            if (log) log.info(`From cache: ${url}`);
+            verbose(`From cache: ${url}`);
             return cached;
           }
 
@@ -49,7 +57,7 @@ export const BundleHttpCache = {
 
           if (e.request.method === 'GET') {
             cache.put(e.request, fetched.clone());
-            if (log) log.info(`Saved to cache: ${url}`);
+            verbose(`Saved to cache: ${url}`);
           }
 
           return fetched;
@@ -57,8 +65,6 @@ export const BundleHttpCache = {
       );
     });
 
-    return {
-      ctx,
-    };
+    return { ctx };
   },
 };
