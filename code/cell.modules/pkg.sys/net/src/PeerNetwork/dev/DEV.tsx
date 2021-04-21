@@ -4,11 +4,12 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { PeerNetwork } from '..';
 import { css, cuid, deleteUndefined, Icons, MediaStream, rx, t, time } from './common';
 import { RootLayout } from './DEV.Root';
+import { DevModel } from './Model';
 import { EventBridge } from './DEV.EventBridge';
 
 type Ctx = {
   self: t.PeerId;
-  bus: t.EventBus<t.PeerEvent>;
+  bus: t.EventBus<t.PeerEvent | t.DevEvent>;
   netbus: t.EventBus;
   signal: string; // Signalling server network address (host/path).
   events: {
@@ -33,7 +34,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev && e.count > 0) return e.prev;
 
     const self = cuid();
-    const bus = rx.bus<t.PeerEvent>();
+    const bus = rx.bus<t.PeerEvent | t.DevEvent>();
 
     EventBridge.startEventBridge({ self, bus });
     PeerNetwork.Controller({ bus });
@@ -86,6 +87,12 @@ export const actions = DevActions<Ctx>()
     e.boolean('debug (json)', (e) => {
       if (e.changing) e.ctx.debugJson = e.changing.next;
       e.boolean.current = e.ctx.debugJson;
+    });
+
+    e.button('network model', (e) => {
+      console.log('e', e);
+      const el = <DevModel bus={e.ctx.bus} />;
+      e.ctx.bus.fire({ type: 'DEV/modal', payload: { el, size: 'body' } });
     });
 
     e.textbox((config) => {
