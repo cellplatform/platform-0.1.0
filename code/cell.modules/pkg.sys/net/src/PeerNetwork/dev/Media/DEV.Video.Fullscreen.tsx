@@ -29,12 +29,7 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
   const resize = useResizeObserver(rootRef);
   const { width, height } = resize.rect;
 
-  const closeFullscreen = () => {
-    bus.fire({
-      type: 'DEV/modal',
-      payload: {},
-    });
-  };
+  const closeFullscreen = () => bus.fire({ type: 'DEV/modal', payload: {} });
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
@@ -48,18 +43,22 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
     return () => dispose$.next();
   }, []); // eslint-disable-line
 
+  const SIZE = { CLOSE: 32 };
+
   const styles = {
-    base: css({
-      Absolute: 0,
-      backgroundColor: color.format(1),
-    }),
+    base: css({ Absolute: 0, backgroundColor: color.format(1) }),
     waveform: css({ Absolute: [null, 0, 10, 0] }),
-    close: css({ Absolute: [5, 5, null, null] }),
+    close: css({ Absolute: [5, 5, null, null], Size: SIZE.CLOSE }),
   };
 
   const elClose = (
-    <Button style={styles.close}>
-      <Icons.Close size={32} onClick={closeFullscreen} />
+    <Button style={styles.close} onClick={closeFullscreen}>
+      <Icons.Close
+        size={SIZE.CLOSE}
+        color={color.format(0.8)}
+        style={css({ Absolute: [1, null, null, 0] })}
+      />
+      <Icons.Close size={SIZE.CLOSE} style={css({ Absolute: 0 })} />
     </Button>
   );
 
