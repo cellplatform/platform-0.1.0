@@ -3,9 +3,8 @@ import { Hr } from 'sys.ui.primitives/lib/components/Hr';
 
 import { css, CssValue, t } from '../common';
 import { DevConnection } from '../Connection';
-import { DevNetworkHeader } from './DEV.Network.Header';
 import { useDevState } from '../DEV.useDevState';
-import { DevVideoFullscreen } from '../Media';
+import { DevNetworkHeader } from './DEV.Network.Header';
 
 export type DevNetworkProps = {
   bus: t.EventBus<any>;
@@ -40,13 +39,21 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
         paddingRight: PADDING.CARD,
       }),
     },
-    modal: css({
+    modal: css({ Absolute: 0, display: 'flex' }),
+    empty: css({
       Absolute: 0,
-      display: 'flex',
+      Flex: 'center-center',
+      fontSize: 14,
+      fontStyle: 'italic',
+      opacity: 0.3,
     }),
   };
 
   const connections = peer.connections;
+
+  const elEmpty = connections.length === 0 && (
+    <div {...styles.empty}>No connections to display.</div>
+  );
 
   const elConnections = connections.map((item, i) => {
     const isLast = i === connections.length - 1;
@@ -71,6 +78,7 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
       <Hr thickness={10} opacity={0.05} margin={0} />
       <div {...styles.body.base}>
         <div {...styles.body.scroll}>{elConnections}</div>
+        {elEmpty}
         {modalSize === 'body' && elModal}
       </div>
       {modalSize === 'fullscreen' && elModal}

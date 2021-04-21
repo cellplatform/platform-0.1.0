@@ -5,7 +5,7 @@ import { PeerNetwork } from '..';
 import { css, cuid, deleteUndefined, Icons, MediaStream, rx, t, time } from './common';
 import { RootLayout } from './DEV.Root';
 import { DevModel } from './Model';
-import { EventBridge } from './DEV.EventBridge';
+import { EventBridge } from './Event/DEV.EventBridge';
 
 type Ctx = {
   self: t.PeerId;
@@ -21,7 +21,6 @@ type Ctx = {
   isReliable: boolean;
   debugJson: boolean;
   toStrategy(): t.PeerStrategy;
-  init(): void;
 };
 
 /**
@@ -50,9 +49,6 @@ export const actions = DevActions<Ctx>()
     };
 
     const init = () => {
-      /**
-       * Start "self" video.
-       */
       events.media.start(EventBridge.videoRef(self)).video();
       events.net.create(signal, self);
       events.net.media(self).video();
@@ -63,7 +59,7 @@ export const actions = DevActions<Ctx>()
     const netbus = events.net.data(self).bus();
 
     events.net.status(self).changed$.subscribe((e) => {
-      console.log('CHANGED', e);
+      console.log('NET/CHANGED', e);
     });
 
     return {
@@ -73,11 +69,10 @@ export const actions = DevActions<Ctx>()
       events,
       strategy,
       signal,
-      isReliable: false,
+      isReliable: true,
       debugJson: false,
       connectTo: '',
       toStrategy: () => strategy,
-      init,
     };
   })
 
@@ -90,8 +85,8 @@ export const actions = DevActions<Ctx>()
     });
 
     e.button('network model', (e) => {
-      console.log('e', e);
-      const el = <DevModel bus={e.ctx.bus} />;
+      const { self, bus, netbus } = e.toObject(e.ctx) as Ctx;
+      const el = <DevModel bus={bus} netbus={netbus} self={self} />;
       e.ctx.bus.fire({ type: 'DEV/modal', payload: { el, size: 'body' } });
     });
 

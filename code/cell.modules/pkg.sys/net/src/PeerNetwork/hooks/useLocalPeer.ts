@@ -44,8 +44,10 @@ export function useLocalPeer(args: { self: t.PeerId; bus: t.EventBus<any> }) {
       if (e.media) StreamUtil.onEnded(e.media, () => setMedia(e.kind, undefined));
     });
 
+    if (status === undefined) updateStatus();
+
     return () => events.dispose();
-  }, [bus, self]);
+  }, [bus, self]); // eslint-disable-line
 
   return {
     status,

@@ -1,4 +1,4 @@
-import * as t from './DEV.types';
+import * as t from './types';
 
 export * from './common.libs';
 export * from '../common';

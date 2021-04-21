@@ -7,17 +7,14 @@ import {
   COLORS,
   css,
   CssValue,
-  EventPipe,
-  EventStack,
   Hr,
   Icons,
   PropList,
   PropListItem,
   t,
-  Textbox,
   useDragTarget,
-  useEventBusHistory,
 } from '../common';
+import { DevEventbus } from '../Event';
 import { ItemUtil } from './util';
 
 export type DevConnectionDataProps = {
@@ -44,9 +41,6 @@ export const DevConnectionData: React.FC<DevConnectionDataProps> = (props) => {
   const peer = connection.peer;
   const { self, remote } = peer;
 
-  const [eventMessage, setEventMessage] = useState<string>('');
-  const history = useEventBusHistory(netbus);
-
   const baseRef = useRef<HTMLDivElement>(null);
   const drag = useDragTarget(baseRef, (e) => {
     console.log('file dropped', e);
@@ -69,22 +63,20 @@ export const DevConnectionData: React.FC<DevConnectionDataProps> = (props) => {
     },
   ];
 
-  // Fire initial sample event through the network-bus.
-  useEffect(() => broadcastEvent(), []); // eslint-disable-line
-
-  const broadcastEvent = () => {
-    const msg = eventMessage.trim() ? eventMessage : `<empty>`;
-    netbus.fire({
-      // NB: Arbitrary invented event.
-      //     When using in application, pass a set of strong event types to the bus.
-      type: 'sample/event',
-      payload: {
-        msg,
-        peer: `...${peer.self.substring(peer.self.length - 10)}`,
-        connection: connection.id,
-      },
-    });
+  const samplePayload = () => {
+    return {
+      peer: `...${peer.self.substring(peer.self.length - 10)}`,
+      connection: connection.id,
+    };
   };
+
+  // Fire initial sample event through the network-bus.
+  useEffect(() => {
+    netbus.fire({
+      type: 'sample/loaded',
+      payload: samplePayload(),
+    });
+  }, []); // eslint-disable-line
 
   const styles = {
     base: css({
@@ -115,24 +107,6 @@ export const DevConnectionData: React.FC<DevConnectionDataProps> = (props) => {
     },
   };
 
-  const elTextbox = (
-    <Textbox
-      value={eventMessage}
-      placeholder={'broadcast event'}
-      onChange={(e) => setEventMessage(e.to)}
-      style={styles.body.textbox}
-      enter={{
-        handler: broadcastEvent,
-        icon: (e) => {
-          const msg = eventMessage.trim();
-          const col = msg || e.isFocused ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.3);
-          const el = <Icons.Send size={16} color={col} />;
-          return el;
-        },
-      }}
-    />
-  );
-
   const elDragOverlay = drag.isDragOver && (
     <div {...styles.drag.overlay}>
       <Icons.Upload.Box size={46} style={styles.drag.icon} color={COLORS.DARK} />
@@ -145,17 +119,16 @@ export const DevConnectionData: React.FC<DevConnectionDataProps> = (props) => {
       <div {...styles.body.base}>
         <PropList title={'Data Connection'} items={items} defaults={{ clipboard: false }} />
         <Hr thickness={5} opacity={0.1} margin={[10, 0, 15, 0]} />
-        {elTextbox}
-        <EventStack events={history.events} style={styles.body.events.stack} />
-        <EventPipe
-          events={history.events}
-          style={styles.body.events.pipe}
-          onEventClick={(e) => {
-            console.group('🌳 event');
-            console.log('count', e.count);
-            console.log('type', e.event.type);
-            console.log('payload', e.event.payload);
-            console.groupEnd();
+        <DevEventbus
+          bus={netbus}
+          onBroadcast={(e) => {
+            const msg = e.message ? e.message : `<empty>`;
+            netbus.fire({
+              // NB: Arbitrary invented event.
+              //     When using in application, pass a set of strong event types to the bus.
+              type: 'sample/event',
+              payload: { msg, ...samplePayload() },
+            });
           }}
         />
       </div>
