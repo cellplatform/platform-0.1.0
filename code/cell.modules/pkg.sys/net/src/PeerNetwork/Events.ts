@@ -150,27 +150,28 @@ export function Events(args: { bus: t.EventBus<any> }) {
       .pipe(filter((e) => e.self === self));
 
     const open = {
-      data(options: { isReliable?: boolean; metadata?: t.JsonMap } = {}) {
-        const { isReliable, metadata } = options;
+      data(options: { isReliable?: boolean } = {}) {
+        const { isReliable } = options;
         const tx = slug();
         const res = firstValueFrom(connected$.pipe(filter((e) => e.tx === tx)));
         bus.fire({
           type: 'sys.net/peer/connection/connect:req',
-          payload: { self, tx, remote, kind: 'data', direction: 'outgoing', isReliable, metadata },
+          payload: { self, tx, remote, kind: 'data', direction: 'outgoing', isReliable },
         });
         return res;
       },
 
       media(
         kind: t.PeerNetworkConnectMediaReq['kind'],
-        options: { constraints?: t.PeerMediaConstraints; metadata?: t.JsonMap } = {},
+        options: { constraints?: t.PeerMediaConstraints; data?: t.PeerConnectionId } = {},
       ) {
-        const { constraints, metadata } = options;
+        const { constraints, data } = options;
         const tx = slug();
         const res = firstValueFrom(connected$.pipe(filter((e) => e.tx === tx)));
+        const parent = data ? { data } : undefined;
         bus.fire({
           type: 'sys.net/peer/connection/connect:req',
-          payload: { self, tx, remote, kind, direction: 'outgoing', constraints, metadata },
+          payload: { self, tx, remote, kind, direction: 'outgoing', constraints, parent },
         });
         return res;
       },

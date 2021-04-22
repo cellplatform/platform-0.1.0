@@ -39,7 +39,6 @@ export function autoPropagation(args: {
 
       if (current.length > 0) {
         const { isReliable } = started;
-        const metadata = started.metadata;
 
         const connections = R.uniq(
           current.map((conn) => ({
@@ -50,7 +49,7 @@ export function autoPropagation(args: {
 
         netbus.fire({
           type: 'sys.net/group/conn/ensure:data',
-          payload: { from: self, connections, isReliable, metadata },
+          payload: { from: self, connections, isReliable },
         });
       }
     });
@@ -62,7 +61,7 @@ export function autoPropagation(args: {
   rx.payload<t.GroupEnsureConnectedDataEvent>(netbus.event$, 'sys.net/group/conn/ensure:data')
     .pipe(delay(0))
     .subscribe(async (e) => {
-      const { isReliable, metadata } = e;
+      const { isReliable } = e;
       const current = await getDataConnections();
 
       const connections = R.uniq(
@@ -73,7 +72,7 @@ export function autoPropagation(args: {
       );
 
       connections.forEach((item) => {
-        events.connection(self, item.peer).open.data({ isReliable, metadata });
+        events.connection(self, item.peer).open.data({ isReliable });
       });
     });
 }

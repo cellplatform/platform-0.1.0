@@ -305,7 +305,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
        * START a data connection.
        */
       if (e.kind === 'data') {
-        const metadata: t.PeerConnectionMetadataData = { ...e.metadata, kind: e.kind, module };
+        const metadata: t.PeerConnectionMetadataData = { kind: e.kind, module };
         const reliable = e.isReliable;
         const errorMonitor = PeerJSError(self.peer);
         const dataConnection = self.peer.connect(remote, { reliable, metadata });
@@ -347,10 +347,10 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
         // Start the network/peer connection.
         const metadata: t.PeerConnectionMetadataMedia = {
-          ...e.metadata,
           kind: e.kind,
           constraints,
           module,
+          parent: { ...e.parent },
         };
         const mediaConnection = self.peer.call(remote, localStream, { metadata });
         const connRef = refs.connection(self).add(e.kind, 'outgoing', mediaConnection);

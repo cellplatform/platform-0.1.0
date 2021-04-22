@@ -26,16 +26,17 @@ export type PeerSignallingEndpoint = {
 /**
  * Connection {metadata}.
  */
-export type PeerConnectionMetadata = PeerConnectionMetadataMedia | PeerConnectionMetadataData;
+export type PeerConnectionMetadata = PeerConnectionMetadataData | PeerConnectionMetadataMedia;
 export type PeerConnectionModule = { name: string; version: string };
-
-export type PeerConnectionMetadataMedia = {
-  kind: t.PeerConnectionKindMedia;
-  constraints?: t.PeerMediaConstraints;
-  module: PeerConnectionModule;
-};
 
 export type PeerConnectionMetadataData = {
   kind: PeerConnectionKindData;
   module: PeerConnectionModule;
+};
+
+export type PeerConnectionMetadataMedia = {
+  kind: t.PeerConnectionKindMedia;
+  module: PeerConnectionModule;
+  parent: { data?: t.PeerConnectionId };
+  constraints?: t.PeerMediaConstraints;
 };

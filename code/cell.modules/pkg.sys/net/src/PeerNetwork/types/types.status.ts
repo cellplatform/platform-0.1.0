@@ -21,17 +21,18 @@ type PeerConnectionBase = {
   id: t.PeerConnectionId;
   uri: t.PeerConnectionUri;
   direction: t.PeerConnectDirection;
-  metadata?: t.JsonMap;
 };
 
 export type PeerConnectionDataStatus = PeerConnectionBase & {
   kind: 'data';
   isReliable: boolean;
   isOpen: boolean;
+  metadata?: t.PeerConnectionMetadataData;
 };
 
 export type PeerConnectionMediaStatus = PeerConnectionBase & {
   kind: 'media/screen' | 'media/video';
   isOpen: boolean;
   media?: MediaStream;
+  metadata?: t.PeerConnectionMetadataMedia;
 };

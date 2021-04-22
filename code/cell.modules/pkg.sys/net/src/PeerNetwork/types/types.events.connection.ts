@@ -24,7 +24,6 @@ type ConnectBase = {
   tx?: string;
   remote: t.PeerId;
   direction: t.PeerConnectDirection;
-  metadata?: t.JsonMap;
 };
 
 export type PeerNetworkConnectDataReq = ConnectBase & {
@@ -35,6 +34,7 @@ export type PeerNetworkConnectMediaReq = ConnectBase & {
   kind: t.PeerConnectionKindMedia;
   constraints?: t.PeerMediaConstraints;
   timeout?: number;
+  parent?: { data: t.PeerConnectionId };
 };
 
 /**

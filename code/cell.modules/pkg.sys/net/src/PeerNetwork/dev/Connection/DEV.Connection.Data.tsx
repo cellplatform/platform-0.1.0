@@ -1,5 +1,4 @@
-import { color } from '@platform/css';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { PeerNetwork } from '../..';
 import {
@@ -27,12 +26,12 @@ export type DevConnectionDataProps = {
 const fireOpen = async (args: {
   bus: t.EventBus<any>;
   kind: t.PeerConnectionKindMedia;
-  self: t.PeerId;
-  remote: t.PeerId;
+  connection: { data: t.PeerConnectionId; self: t.PeerId; remote: t.PeerId };
 }) => {
   const { bus } = args;
   const events = PeerNetwork.Events({ bus });
-  await events.connection(args.self, args.remote).open.media(args.kind);
+  const { data, self, remote } = args.connection;
+  await events.connection(self, remote).open.media(args.kind, { data });
   events.dispose();
 };
 
@@ -47,7 +46,7 @@ export const DevConnectionData: React.FC<DevConnectionDataProps> = (props) => {
   });
 
   const open = (kind: t.PeerConnectionKindMedia) => {
-    return () => fireOpen({ bus, self, remote, kind });
+    return () => fireOpen({ bus, kind, connection: { data: connection.id, self, remote } });
   };
 
   const items: PropListItem[] = [

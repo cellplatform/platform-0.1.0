@@ -57,9 +57,7 @@ export const DevModel: React.FC<DevModelProps> = (props) => {
       marginTop: 30,
     }),
     body: {
-      base: css({
-        Flex: 'horizontal-stretch-stretch',
-      }),
+      base: css({ Flex: 'horizontal-stretch-stretch' }),
       left: css({ flex: 1 }),
       middle: css({ flex: 1 }),
       right: css({ flex: 1 }),
