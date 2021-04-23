@@ -1,4 +1,4 @@
-import { filter } from 'rxjs/operators';
+import { filter, debounceTime } from 'rxjs/operators';
 import { t, rx } from '../common';
 
 /**
@@ -12,16 +12,17 @@ export function autoPerge(args: {
   const { self, events } = args;
   const connections = events.connections(self);
 
-  connections.closed$
+  connections.disconnect.res$
     .pipe(
       filter((e) => e.self === self),
       filter(() => args.isEnabled()),
+      debounceTime(10),
     )
     .subscribe((e) => events.purge(self).fire());
 }
 
 /**
- * Strategy for closed connections are properly propergated
+ * Strategy for closed connections the close event is properly propergated
  * around the mesh.
  */
 export function ensureClosed(args: {
@@ -34,9 +35,9 @@ export function ensureClosed(args: {
   const connections = events.connections(self);
 
   /**
-   * List for local disconnection events, and alert the mesh.
+   * Listen for local disconnection events, and alert the mesh.
    */
-  connections.disconnectResponse$
+  connections.disconnect.req$
     .pipe(
       filter(() => args.isEnabled()),
       filter((e) => e.self === self),
@@ -51,7 +52,7 @@ export function ensureClosed(args: {
     });
 
   /**
-   * Listen for mesh
+   * Listen for mesh alerting that a connection is closed.
    */
   rx.payload<t.GroupEnsureConnectionClosedEvent>(netbus.event$, 'sys.net/group/conn/ensure:closed')
     .pipe(
@@ -61,8 +62,9 @@ export function ensureClosed(args: {
     .subscribe(async (e) => {
       const { peer } = await events.status(self).get();
       const connection = (peer?.connections || []).find(({ id }) => id === e.connection);
-      if (connection && connection.isOpen) {
-        events.connection(self, connection.peer.remote).close(connection.id);
+      if (connection) {
+        const remote = connection.peer.remote;
+        events.connection(self, remote).close(connection.id);
       }
     });
 }

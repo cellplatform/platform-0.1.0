@@ -1,7 +1,6 @@
 import { firstValueFrom, Subject } from 'rxjs';
 import { take, filter, takeUntil, map } from 'rxjs/operators';
-import { cuid, rx, t, slug } from './common';
-import { isEvent } from './util';
+import { cuid, rx, t, slug, isEvent } from './common';
 
 import { EventNamespace as ns } from './Events.ns';
 export { ns };
@@ -191,26 +190,26 @@ export function Events(args: { bus: t.EventBus<any> }) {
   };
 
   const connections = (self: t.PeerId) => {
-    const connectRequest$ = rx
-      .payload<t.PeerConnectReqEvent>(event$, 'sys.net/peer/conn/connect:req')
-      .pipe(filter((e) => e.self === self));
-
-    const connectResponse$ = rx
-      .payload<t.PeerConnectResEvent>(event$, 'sys.net/peer/conn/connect:res')
-      .pipe(
+    const connect = {
+      req$: rx
+        .payload<t.PeerConnectReqEvent>(event$, 'sys.net/peer/conn/connect:req')
+        .pipe(filter((e) => e.self === self)),
+      res$: rx.payload<t.PeerConnectResEvent>(event$, 'sys.net/peer/conn/connect:res').pipe(
         filter((e) => e.self === self),
         filter((e) => !e.existing),
-      );
+      ),
+    };
 
-    const disconnectResponse$ = rx
-      .payload<t.PeerDisconnectResEvent>(event$, 'sys.net/peer/conn/disconnect:res')
-      .pipe(filter((e) => e.self === self));
+    const disconnect = {
+      req$: rx
+        .payload<t.PeerDisconnectReqEvent>(event$, 'sys.net/peer/conn/disconnect:req')
+        .pipe(filter((e) => e.self === self)),
+      res$: rx
+        .payload<t.PeerDisconnectResEvent>(event$, 'sys.net/peer/conn/disconnect:res')
+        .pipe(filter((e) => e.self === self)),
+    };
 
-    const closed$ = rx
-      .payload<t.PeerConnectionClosedEvent>(event$, 'sys.net/peer/conn/closed')
-      .pipe(filter((e) => e.self === self));
-
-    return { self, connectRequest$, connectResponse$, disconnectResponse$, closed$ };
+    return { self, connect, disconnect };
   };
 
   const data = (self: t.PeerId) => {

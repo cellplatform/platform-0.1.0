@@ -1,11 +1,23 @@
 import { merge } from 'rxjs';
 import { delay, distinctUntilChanged, filter, map, take } from 'rxjs/operators';
 
-import { asArray, defaultValue, PeerJS, R, rx, slug, t, time, WebRuntime } from './common';
+import {
+  asArray,
+  defaultValue,
+  PeerJS,
+  PeerJSError,
+  R,
+  rx,
+  slug,
+  StreamUtil,
+  StringUtil,
+  t,
+  time,
+  WebRuntime,
+} from './common';
 import { Events } from './Events';
 import { MemoryRefs, SelfRef } from './Refs';
 import { Status } from './Status';
-import { PeerJSError, StreamUtil, StringUtil } from './util';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 
@@ -41,19 +53,6 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   window.addEventListener('offline', handleOnlineStatusChanged);
 
   /**
-   * Closes all child connections.
-   */
-  const closeConnectionChildren = (self: SelfRef, connection: t.PeerConnectionId) => {
-    const children = self.connections.filter(({ parent }) => parent === connection);
-    return Promise.all(
-      children.map((child) => {
-        const { self, remote } = child.peer;
-        return events.connection(self, remote).close(child.id);
-      }),
-    );
-  };
-
-  /**
    * Initialize a new PeerJS data-connection.
    */
   const completeConnection = (
@@ -87,11 +86,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
        *
        * See work-around that uses the [netbus] "connection.ensureClosed" strategy.
        */
-      await closeConnectionChildren(self, connRef.id);
-      bus.fire({
-        type: 'sys.net/peer/conn/closed',
-        payload: { self: self.id, connection: Status.toConnection(connRef) },
-      });
+      events.connection(connRef.peer.self, connRef.peer.remote).close(connRef.id);
     });
 
     if (kind === 'data') {
@@ -201,7 +196,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
           'sys.net/peer/local/purge:res',
           'sys.net/peer/local/online:changed',
           'sys.net/peer/conn/connect:res',
-          'sys.net/peer/conn/closed',
+          'sys.net/peer/conn/disconnect:res',
         ];
         return types.includes(e.type);
       }),
@@ -438,10 +433,32 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         return fireError(message);
       }
 
-      await closeConnectionChildren(selfRef, connRef.id);
-      connRef.conn.close();
+      // Ensure all child connections are closed.
+      const children = selfRef.connections.filter(({ parent }) => parent === e.connection);
+      await Promise.all(
+        children.map((child) => {
+          const { self, remote } = child.peer;
+          return events.connection(self, remote).close(child.id);
+        }),
+      );
+
+      // Close the connection.
+      if (connRef.conn.open) connRef.conn.close();
       fire({});
     });
+
+  /**
+   * Closes all child connections.
+   */
+  const closeConnectionChildren = (self: SelfRef, connection: t.PeerConnectionId) => {
+    const children = self.connections.filter(({ parent }) => parent === connection);
+    return Promise.all(
+      children.map((child) => {
+        const { self, remote } = child.peer;
+        return events.connection(self, remote).close(child.id);
+      }),
+    );
+  };
 
   /**
    * DATA:OUT: Send

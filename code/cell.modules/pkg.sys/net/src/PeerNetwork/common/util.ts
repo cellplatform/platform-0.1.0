@@ -1,5 +1,6 @@
 import { Subject } from 'rxjs';
-import { PeerJS, t, defaultValue } from './common';
+import * as t from './types';
+import { PeerJS, defaultValue } from '../../common';
 
 type C = t.PeerConnectionStatus;
 
@@ -14,7 +15,7 @@ export const isEvent = (input: any) => {
 /**
  * Common filtering methods.
  */
-export const Filter = {
+export const FilterUtil = {
   connectionsAs<T extends C>(connections: C[], kind: C['kind'] | C['kind'][]) {
     const kinds = Array.isArray(kind) ? kind : [kind];
     return connections.filter((item) => kinds.includes(item.kind)).map((item) => item as T);

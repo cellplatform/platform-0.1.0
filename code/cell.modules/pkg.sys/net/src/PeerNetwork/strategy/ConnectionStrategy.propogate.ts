@@ -1,7 +1,6 @@
 import { delay, filter } from 'rxjs/operators';
 
-import { R, rx, t } from '../common';
-import { Filter } from '../util';
+import { R, rx, t, FilterUtil } from '../common';
 
 /**
  * Strategy for auto propogating connections to all peers.
@@ -21,12 +20,12 @@ export function autoPropagation(args: {
   };
 
   const getDataConnections = async () =>
-    Filter.connectionsAs<t.PeerConnectionDataStatus>(await getConnections(), 'data');
+    FilterUtil.connectionsAs<t.PeerConnectionDataStatus>(await getConnections(), 'data');
 
   /**
    * Fire "ensure connected" events to peers when a connection is started locally.
    */
-  connections.connectResponse$
+  connections.connect.res$
     .pipe(
       delay(0),
       filter(() => args.isEnabled()),

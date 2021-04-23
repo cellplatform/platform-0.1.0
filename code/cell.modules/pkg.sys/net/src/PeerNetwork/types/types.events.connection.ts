@@ -6,7 +6,6 @@ import { t } from './common';
 export type PeerConnectionEvent =
   | PeerConnectReqEvent
   | PeerConnectResEvent
-  | PeerConnectionClosedEvent
   | PeerDisconnectReqEvent
   | PeerDisconnectResEvent;
 
@@ -84,16 +83,4 @@ export type PeerNetworkDisconnectRes = {
   tx: string;
   connection?: t.PeerConnectionId;
   error?: t.PeerError;
-};
-
-/**
- * Fired when a connection closes.
- */
-export type PeerConnectionClosedEvent = {
-  type: 'sys.net/peer/conn/closed';
-  payload: PeerNetworkConnectionClosed;
-};
-export type PeerNetworkConnectionClosed = {
-  self: t.PeerId;
-  connection: t.PeerConnectionStatus;
 };

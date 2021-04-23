@@ -1,5 +1,4 @@
-import { PeerJS, t } from './common';
-import { StringUtil, Uri } from './util';
+import { PeerJS, t, StringUtil, Uri } from './common';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 
@@ -35,6 +34,8 @@ export function MemoryRefs() {
 
     connection(input: SelfRef | string) {
       const self = typeof input === 'string' ? refs.self[input] : input;
+      type C = PeerJS.DataConnection | PeerJS.MediaConnection;
+      const getId = (conn: C) => StringUtil.formatConnectionId((conn as any).connectionId);
       return {
         add(
           kind: ConnectionKind,
@@ -44,7 +45,7 @@ export function MemoryRefs() {
         ) {
           const remote = conn.peer;
           const peer = { self: self.peer.id, remote };
-          const id = StringUtil.formatConnectionId((conn as any).connectionId);
+          const id = getId(conn);
           const uri = Uri.connection(kind, remote, id);
 
           const existing = self.connections.find((item) => item.uri === uri);
@@ -58,14 +59,15 @@ export function MemoryRefs() {
           return ref;
         },
 
-        remove(conn: PeerJS.DataConnection | PeerJS.MediaConnection) {
+        remove(conn: C) {
           self.connections = self.connections.filter((item) => item.conn !== conn);
         },
 
-        get(conn: PeerJS.DataConnection | PeerJS.MediaConnection) {
-          const remote = conn.peer;
-          const ref = self.connections.find((ref) => ref.peer.remote === remote);
+        get(conn: C) {
+          const id = getId(conn);
+          const ref = self.connections.find((ref) => ref.id == id);
           if (!ref) {
+            const remote = conn.peer;
             const err = `The connection reference '${remote}' for local network '${self.id}' has not been added`;
             throw new Error(err);
           }
