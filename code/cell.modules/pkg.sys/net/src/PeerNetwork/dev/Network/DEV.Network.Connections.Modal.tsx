@@ -59,15 +59,15 @@ const Header: React.FC<HeaderProps> = (props) => {
   const styles = {
     base: css({
       Absolute: [0, 10, null, 0],
+      backgroundColor: color.format(0.8),
       backdropFilter: `blur(5px)`,
       height,
-      backgroundColor: color.format(0.8),
     }),
     body: css({
+      Flex: 'horizontal-center-start',
       boxSizing: 'border-box',
       padding: 5,
       fontSize: 16,
-      Flex: 'horizontal-center-start',
     }),
     back: css({
       position: 'relative',
