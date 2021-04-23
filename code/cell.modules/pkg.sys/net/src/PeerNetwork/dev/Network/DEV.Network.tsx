@@ -48,7 +48,7 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
 
   const elBody = (
     <div {...styles.body}>
-      <DevNetworkConnections bus={bus} netbus={netbus} collapseData={true} self={peer.id} />
+      <DevNetworkConnections bus={bus} netbus={netbus} collapseCards={true} self={peer.id} />
       {elEmpty}
       {modalSize === 'body' && elModal}
     </div>

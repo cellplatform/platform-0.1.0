@@ -9,6 +9,7 @@ export type DevNetworkConnectionsModalProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.EventBus<any>;
+  header?: { title: React.ReactNode };
   filter?: DevNetworkConnectionsProps['filter'];
 };
 
@@ -36,12 +37,12 @@ export const DevNetworkConnectionsModal: React.FC<DevNetworkConnectionsModalProp
         self={self}
         bus={bus}
         netbus={netbus}
-        collapseData={false}
+        collapseCards={false}
         filter={props.filter}
         paddingTop={headerHeight}
       />
       <Header bus={bus} height={headerHeight}>
-        Data Connections
+        {props.header?.title || 'Untitled'}
       </Header>
     </DevModal>
   );

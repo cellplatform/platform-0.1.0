@@ -2,20 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { map } from 'rxjs/operators';
 
 import { css, CssValue, PeerNetwork, t } from '../common';
-import { DevConnection, DevDataConnections } from '../Connection';
+import {
+  DevConnection,
+  DevConnections,
+  DevDataConnections,
+  DevMediaConnections,
+} from '../Connection';
 
 export type DevNetworkConnectionsProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.EventBus<any>;
-  collapseData?: boolean;
+  collapseCards?: boolean;
   filter?: (connection: t.PeerConnectionStatus) => boolean;
   paddingTop?: number;
   style?: CssValue;
 };
 
 export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (props) => {
-  const { self, netbus, collapseData } = props;
+  const { self, netbus, collapseCards } = props;
   const bus = props.bus.type<t.PeerEvent>();
 
   const [connections, setConnections] = useState<t.PeerConnectionStatus[]>([]);
@@ -66,26 +71,32 @@ export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (prop
     );
   };
 
-  const elDataSingle = collapseData && data.length === 1 && toConnection(data[0]);
-  const elDataStack = collapseData && data.length > 1 && (
-    <DevDataConnections
-      self={self}
-      bus={bus}
-      netbus={netbus}
-      connections={data}
-      margin={[PADDING.CARD, 0, 0, PADDING.CARD]}
-    />
-  );
-  const elDataAll = !collapseData && data.map(toConnection);
+  const renderCard = <T extends t.PeerConnectionStatus>(
+    items: T[],
+    stackBody: (items: T[]) => JSX.Element,
+  ) => {
+    if (!collapseCards) return items.map(toConnection);
+    if (items.length < 1) return null;
+    if (items.length === 1) return toConnection(items[0]);
+    return (
+      <DevConnections bus={bus} connections={items} margin={[PADDING.CARD, 0, 0, PADDING.CARD]}>
+        {stackBody(items)}
+      </DevConnections>
+    );
+  };
 
-  const elMedia = media.map(toConnection);
+  const elData = renderCard(data, (items) => (
+    <DevDataConnections self={self} bus={bus} netbus={netbus} connections={items} />
+  ));
+
+  const elMedia = renderCard(media, (items) => (
+    <DevMediaConnections self={self} bus={bus} netbus={netbus} connections={items} />
+  ));
 
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.scroll}>
-        {elDataSingle}
-        {elDataStack}
-        {elDataAll}
+        {elData}
         {elMedia}
       </div>
     </div>
