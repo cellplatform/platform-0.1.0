@@ -1,6 +1,6 @@
 export * from '../common/types';
 
-export type DevModalSize = 'fullscreen' | 'body';
+export type DevModalTarget = 'fullscreen' | 'body';
 
 /**
  * EVENTS
@@ -16,7 +16,7 @@ export type DevModalEvent = {
 };
 export type DevModal = {
   el?: JSX.Element;
-  size?: DevModalSize;
+  target?: DevModalTarget;
 };
 
 /**
@@ -28,5 +28,5 @@ export type DevMediaModalEvent = {
 };
 export type DevMediaModal = {
   stream?: MediaStream;
-  size?: DevModalSize;
+  target?: DevModalTarget;
 };

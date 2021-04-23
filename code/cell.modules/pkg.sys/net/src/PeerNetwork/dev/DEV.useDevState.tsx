@@ -20,9 +20,9 @@ export function useDevState(args: { bus: t.EventBus<any> }) {
     rx.payload<t.DevMediaModalEvent>($, 'DEV/media/modal')
       .pipe()
       .subscribe((e) => {
-        const { size } = e;
+        const { target } = e;
         const el = <DevVideoFullscreen bus={bus} stream={e.stream} />;
-        bus.fire({ type: 'DEV/modal', payload: { el, size } });
+        bus.fire({ type: 'DEV/modal', payload: { el, target } });
       });
 
     return () => dispose$.next();

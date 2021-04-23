@@ -1,2 +1,2 @@
 export * from './DEV.EventBridge';
-export * from './DEV.Eventbus';
+export * from './DEV.EventBus';

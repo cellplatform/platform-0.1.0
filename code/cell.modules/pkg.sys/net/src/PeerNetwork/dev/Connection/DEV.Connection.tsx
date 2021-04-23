@@ -6,6 +6,7 @@ import { DevDataConnection } from './DEV.Data.Connection';
 import { DevMediaConnection } from './DEV.Media.Connection';
 
 export type DevConnectionProps = {
+  self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.EventBus<any>;
   connection: t.PeerConnectionStatus;
@@ -14,7 +15,7 @@ export type DevConnectionProps = {
 };
 
 export const DevConnection: React.FC<DevConnectionProps> = (props) => {
-  const { connection, netbus } = props;
+  const { connection, netbus, self } = props;
   const { peer } = connection;
   const bus = props.bus.type<t.PeerEvent>();
 
@@ -32,11 +33,11 @@ export const DevConnection: React.FC<DevConnectionProps> = (props) => {
   };
 
   const elData = connection.kind === 'data' && (
-    <DevDataConnection bus={bus} netbus={netbus} connection={connection} />
+    <DevDataConnection self={self} bus={bus} netbus={netbus} connection={connection} />
   );
 
   const elMedia = (connection.kind === 'media/video' || connection.kind === 'media/screen') && (
-    <DevMediaConnection bus={bus} connection={connection} />
+    <DevMediaConnection self={self} bus={bus} connection={connection} />
   );
 
   const handleDrop = (e: Dropped) => {

@@ -9,13 +9,8 @@ export const Status = {
     const { peer, createdAt, signal } = self;
     const id = peer.id;
     const connections = self.connections.map((ref) => Status.toConnection(ref));
-    return deleteUndefined<t.PeerStatus>({
-      id,
-      isOnline: navigator.onLine,
-      createdAt,
-      signal,
-      connections,
-    });
+    const isOnline = navigator.onLine;
+    return deleteUndefined<t.PeerStatus>({ id, isOnline, createdAt, signal, connections });
   },
 
   /**

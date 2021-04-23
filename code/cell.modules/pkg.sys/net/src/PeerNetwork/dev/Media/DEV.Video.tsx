@@ -90,7 +90,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
           onClick={() =>
             bus.fire({
               type: 'DEV/media/modal',
-              payload: { stream, size: 'body' },
+              payload: { stream, target: 'body' },
             })
           }
         />

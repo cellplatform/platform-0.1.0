@@ -19,7 +19,7 @@ import { useLocalPeer } from '../../hooks';
 import { Connection, CrdtConnection } from '../../../NetworkModel/Crdt.OLD';
 import { DevConnection } from '../../../NetworkModel/Crdt.OLD/dev/DEV.Connection';
 import Automerge from 'automerge';
-import { DevEventbus } from '../Event';
+import { DevEventBus } from '../Event';
 
 export type DevModelProps = {
   self: t.PeerId;
@@ -84,7 +84,7 @@ export const DevModel: React.FC<DevModelProps> = (props) => {
           </div>
           <div {...styles.body.middle}></div>
           <div {...styles.body.right}>
-            <DevEventbus bus={netbus} style={{ width: 350 }} />
+            <DevEventBus bus={netbus} style={{ width: 350 }} />
           </div>
         </div>
       </div>

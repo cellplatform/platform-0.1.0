@@ -1,5 +1,6 @@
-import { filter, delay } from 'rxjs/operators';
-import { t, rx, R } from '../common';
+import { delay, filter } from 'rxjs/operators';
+
+import { R, rx, t } from '../common';
 import { Filter } from '../util';
 
 /**

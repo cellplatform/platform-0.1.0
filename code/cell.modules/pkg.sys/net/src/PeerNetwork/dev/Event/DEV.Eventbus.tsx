@@ -17,15 +17,15 @@ export type DevEventbusOnBroadcastEvent = {
   bus: t.EventBus<any>;
   message: string;
 };
-export type DevEventbusOnBroadcastEventHandler = (e: DevEventbusOnBroadcastEvent) => void;
+export type DevEventBusOnBroadcastEventHandler = (e: DevEventbusOnBroadcastEvent) => void;
 
-export type DevEventbusProps = {
+export type DevEventBusProps = {
   bus: t.EventBus<any>;
   style?: CssValue;
-  onBroadcast?: DevEventbusOnBroadcastEventHandler;
+  onBroadcast?: DevEventBusOnBroadcastEventHandler;
 };
 
-export const DevEventbus: React.FC<DevEventbusProps> = (props) => {
+export const DevEventBus: React.FC<DevEventBusProps> = (props) => {
   const bus = props.bus;
   const history = useEventBusHistory(bus);
 
@@ -65,7 +65,6 @@ export const DevEventbus: React.FC<DevEventbusProps> = (props) => {
 
   const body = history.total > 0 && (
     <>
-      {elTextbox}
       <EventStack events={history.events} card={{ duration: 150 }} style={styles.stack} />
       <EventPipe
         events={history.events}
@@ -81,5 +80,10 @@ export const DevEventbus: React.FC<DevEventbusProps> = (props) => {
     </>
   );
 
-  return <div {...css(styles.base, props.style)}>{body}</div>;
+  return (
+    <div {...css(styles.base, props.style)}>
+      {elTextbox}
+      {body}
+    </div>
+  );
 };

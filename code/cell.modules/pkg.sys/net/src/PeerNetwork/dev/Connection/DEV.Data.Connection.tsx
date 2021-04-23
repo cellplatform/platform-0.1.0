@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 
-import { PeerNetwork } from '../..';
-import { Button, css, CssValue, Hr, PropList, PropListItem, t } from '../common';
-import { DevEventbus } from '../Event';
-import { ItemUtil } from './util';
+import { Button, css, CssValue, Hr, PropList, PropListItem, t, time } from '../common';
+import { DevEventBus } from '../Event';
+import { PropUtil, openHandler } from './util';
 
 export type DevDataConnectionProps = {
+  self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.EventBus<any>;
   connection: t.PeerConnectionDataStatus;
@@ -15,19 +15,11 @@ export type DevDataConnectionProps = {
 export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
   const { connection, netbus, bus } = props;
   const peer = connection.peer;
-  const { self, remote } = peer;
 
-  const open = (kind: t.PeerConnectionKindMedia) => {
-    return async () => {
-      const parent = connection.id;
-      const events = PeerNetwork.Events({ bus });
-      await events.connection(self, remote).open.media(kind, { parent });
-      events.dispose();
-    };
-  };
+  const open = (kind: t.PeerConnectionKindMedia) => openHandler({ bus, connection, kind });
 
   const items: PropListItem[] = [
-    ...ItemUtil.common(connection),
+    ...PropUtil.common(connection),
     { label: 'reliable', value: connection.isReliable },
     {
       label: 'media/video',
@@ -45,11 +37,6 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
       connection: connection.id,
     };
   };
-
-  // Fire initial sample event through the network-bus.
-  useEffect(() => {
-    netbus.fire({ type: 'sample/loaded', payload: samplePayload() });
-  }, []); // eslint-disable-line
 
   const styles = {
     base: css({
@@ -83,7 +70,7 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
       <div {...styles.body.base}>
         <PropList title={'Data Connection'} items={items} defaults={{ clipboard: false }} />
         <Hr thickness={5} opacity={0.1} margin={[10, 0, 15, 0]} />
-        <DevEventbus
+        <DevEventBus
           bus={netbus}
           onBroadcast={(e) => {
             const msg = e.message ? e.message : `<empty>`;

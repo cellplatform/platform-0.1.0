@@ -4,7 +4,7 @@ import { Hr } from 'sys.ui.primitives/lib/components/Hr';
 import { css, CssValue, t } from '../common';
 import { useDevState } from '../DEV.useDevState';
 import { DevNetworkHeader } from './DEV.Network.Header';
-import { DevNetworkCards } from './DEV.Network.Cards';
+import { DevNetworkConnections } from './DEV.Network.Connections';
 
 export type DevNetworkProps = {
   bus: t.EventBus<any>;
@@ -43,12 +43,12 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
     <div {...styles.empty}>No connections to display.</div>
   );
 
-  const modalSize = state.modal?.size;
+  const modalSize = state.modal?.target;
   const elModal = state.modal?.el && <div {...styles.modal}>{state.modal.el}</div>;
 
   const elBody = (
     <div {...styles.body}>
-      <DevNetworkCards bus={bus} netbus={netbus} peer={peer} />
+      <DevNetworkConnections bus={bus} netbus={netbus} collapseData={true} self={peer.id} />
       {elEmpty}
       {modalSize === 'body' && elModal}
     </div>

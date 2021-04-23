@@ -2,9 +2,10 @@ import React from 'react';
 
 import { css, CssValue, Hr, PropList, PropListItem, t } from '../common';
 import { DevVideo } from '../Media';
-import { ItemUtil } from './util';
+import { PropUtil } from './util';
 
 export type DevMediaConnectionProps = {
+  self: t.PeerId;
   bus: t.EventBus<any>;
   connection: t.PeerConnectionMediaStatus;
   style?: CssValue;
@@ -17,7 +18,7 @@ export const DevMediaConnection: React.FC<DevMediaConnectionProps> = (props) => 
   const streamId = connection.media?.id;
   const isLocalhost = location.hostname === 'localhost';
 
-  const items: PropListItem[] = [...ItemUtil.common(connection)];
+  const items: PropListItem[] = [...PropUtil.common(connection)];
 
   const styles = {
     base: css({

@@ -1,5 +1,4 @@
-import { PeerNetwork } from '../..';
-import { log, MediaStream, slug, t } from '../common';
+import { log, MediaStream, slug, t, PeerNetwork } from '../common';
 
 export const EventBridge = {
   ref: (self: t.PeerId, kind: t.PeerConnectionKindMedia) => `${kind}:${self}`,

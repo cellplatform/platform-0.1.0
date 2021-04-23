@@ -1,8 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { PeerNetwork } from '..';
-import { css, cuid, deleteUndefined, Icons, MediaStream, rx, t, time } from './common';
+import { css, cuid, deleteUndefined, Icons, MediaStream, rx, t, time, PeerNetwork } from './common';
 import { RootLayout } from './DEV.Root';
 import { DevModel } from './Model';
 import { EventBridge } from './Event/DEV.EventBridge';
@@ -87,7 +86,7 @@ export const actions = DevActions<Ctx>()
     e.button('network model', (e) => {
       const { self, bus, netbus } = e.toObject(e.ctx) as Ctx;
       const el = <DevModel bus={bus} netbus={netbus} self={self} />;
-      e.ctx.bus.fire({ type: 'DEV/modal', payload: { el, size: 'body' } });
+      e.ctx.bus.fire({ type: 'DEV/modal', payload: { el, target: 'body' } });
     });
 
     e.textbox((config) => {
