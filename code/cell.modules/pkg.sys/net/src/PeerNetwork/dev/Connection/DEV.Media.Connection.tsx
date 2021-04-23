@@ -4,13 +4,13 @@ import { css, CssValue, Hr, PropList, PropListItem, t } from '../common';
 import { DevVideo } from '../Media';
 import { ItemUtil } from './util';
 
-export type DevConnectionMediaProps = {
+export type DevMediaConnectionProps = {
   bus: t.EventBus<any>;
   connection: t.PeerConnectionMediaStatus;
   style?: CssValue;
 };
 
-export const DevConnectionMedia: React.FC<DevConnectionMediaProps> = (props) => {
+export const DevMediaConnection: React.FC<DevMediaConnectionProps> = (props) => {
   const { connection, bus } = props;
   const { kind } = connection;
 

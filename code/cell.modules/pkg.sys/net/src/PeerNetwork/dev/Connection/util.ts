@@ -2,9 +2,7 @@ import { t, PropListItem } from '../common';
 
 export const ItemUtil = {
   common(connection: t.PeerConnectionStatus) {
-    const { id, isOpen, peer, kind, direction } = connection;
-    const metadata = connection.metadata as t.PeerConnectionMetadata;
-    const module = metadata.module || {};
+    const { id, isOpen, peer, kind, direction, parent, module } = connection;
 
     const items: PropListItem[] = [
       { label: 'id', value: { data: id, clipboard: true } },
@@ -13,6 +11,10 @@ export const ItemUtil = {
       { label: 'kind', value: kind },
       { label: 'open', value: isOpen },
     ];
+
+    if (parent) {
+      items.splice(1, 0, { label: 'parent (connection)', value: parent });
+    }
 
     return items;
   },

@@ -38,7 +38,12 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
     }),
     left: css({ flex: 1, display: 'flex' }),
     middle: css({ Flex: 'vertical-stretch-end' }),
-    right: css({ flex: 1, padding: 20, maxWidth: 350 }),
+    right: css({
+      flex: 1,
+      padding: 20,
+      maxWidth: 350,
+      Scroll: true,
+    }),
     verticalRule: css({
       flex: 1,
       width: 1,
@@ -60,7 +65,7 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
         <div {...styles.verticalRule} />
       </div>
       <div {...styles.right}>
-        <ObjectView name={'state'} data={peer.status} expandLevel={5} />
+        <ObjectView name={'state'} data={peer.status} expandLevel={5} fontSize={10} />
       </div>
     </>
   );

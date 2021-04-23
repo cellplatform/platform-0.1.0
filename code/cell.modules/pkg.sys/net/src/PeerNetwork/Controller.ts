@@ -3,7 +3,7 @@ import { delay, distinctUntilChanged, filter, map, take } from 'rxjs/operators';
 
 import { asArray, defaultValue, PeerJS, R, rx, slug, t, time, WebRuntime } from './common';
 import { Events } from './Events';
-import { ConnectionRef, MemoryRefs, SelfRef } from './Refs';
+import { MemoryRefs, SelfRef } from './Refs';
 import { Status } from './Status';
 import { PeerJSError, StreamUtil, StringUtil } from './util';
 

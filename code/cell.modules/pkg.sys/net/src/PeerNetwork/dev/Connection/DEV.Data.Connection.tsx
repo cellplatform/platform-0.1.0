@@ -1,52 +1,29 @@
 import React, { useEffect, useRef } from 'react';
 
 import { PeerNetwork } from '../..';
-import {
-  Button,
-  COLORS,
-  css,
-  CssValue,
-  Hr,
-  Icons,
-  PropList,
-  PropListItem,
-  t,
-  useDragTarget,
-} from '../common';
+import { Button, COLORS, css, CssValue, Hr, Icons, PropList, PropListItem, t } from '../common';
 import { DevEventbus } from '../Event';
 import { ItemUtil } from './util';
 
-export type DevConnectionDataProps = {
+export type DevDataConnectionProps = {
   bus: t.EventBus<any>;
   netbus: t.EventBus<any>;
   connection: t.PeerConnectionDataStatus;
   style?: CssValue;
 };
 
-const fireOpen = async (args: {
-  bus: t.EventBus<any>;
-  kind: t.PeerConnectionKindMedia;
-  connection: { data: t.PeerConnectionId; self: t.PeerId; remote: t.PeerId };
-}) => {
-  const { bus } = args;
-  const events = PeerNetwork.Events({ bus });
-  const { data, self, remote } = args.connection;
-  await events.connection(self, remote).open.media(args.kind, { data });
-  events.dispose();
-};
-
-export const DevConnectionData: React.FC<DevConnectionDataProps> = (props) => {
+export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
   const { connection, netbus, bus } = props;
   const peer = connection.peer;
   const { self, remote } = peer;
 
-  const baseRef = useRef<HTMLDivElement>(null);
-  const drag = useDragTarget(baseRef, (e) => {
-    console.log('file dropped', e);
-  });
-
   const open = (kind: t.PeerConnectionKindMedia) => {
-    return () => fireOpen({ bus, kind, connection: { data: connection.id, self, remote } });
+    return async () => {
+      const parent = connection.id;
+      const events = PeerNetwork.Events({ bus });
+      await events.connection(self, remote).open.media(kind, { parent });
+      events.dispose();
+    };
   };
 
   const items: PropListItem[] = [
@@ -71,10 +48,7 @@ export const DevConnectionData: React.FC<DevConnectionDataProps> = (props) => {
 
   // Fire initial sample event through the network-bus.
   useEffect(() => {
-    netbus.fire({
-      type: 'sample/loaded',
-      payload: samplePayload(),
-    });
+    netbus.fire({ type: 'sample/loaded', payload: samplePayload() });
   }, []); // eslint-disable-line
 
   const styles = {
@@ -86,8 +60,6 @@ export const DevConnectionData: React.FC<DevConnectionDataProps> = (props) => {
     body: {
       base: css({
         position: 'relative',
-        filter: drag.isDragOver ? `blur(3px)` : undefined,
-        opacity: drag.isDragOver ? 0.3 : 1,
       }),
       buttons: css({
         Flex: 'horizontal-center-spaceBetween',
@@ -106,15 +78,8 @@ export const DevConnectionData: React.FC<DevConnectionDataProps> = (props) => {
     },
   };
 
-  const elDragOverlay = drag.isDragOver && (
-    <div {...styles.drag.overlay}>
-      <Icons.Upload.Box size={46} style={styles.drag.icon} color={COLORS.DARK} />
-      <div>Drop File</div>
-    </div>
-  );
-
   return (
-    <div ref={baseRef} {...css(styles.base, props.style)}>
+    <div {...css(styles.base, props.style)}>
       <div {...styles.body.base}>
         <PropList title={'Data Connection'} items={items} defaults={{ clipboard: false }} />
         <Hr thickness={5} opacity={0.1} margin={[10, 0, 15, 0]} />
@@ -131,7 +96,6 @@ export const DevConnectionData: React.FC<DevConnectionDataProps> = (props) => {
           }}
         />
       </div>
-      {elDragOverlay}
     </div>
   );
 };

@@ -48,7 +48,7 @@ export const DevEventbus: React.FC<DevEventbusProps> = (props) => {
   const elTextbox = (
     <Textbox
       value={eventMessage}
-      placeholder={'broadcast event'}
+      placeholder={'broadcast sample event'}
       onChange={(e) => setEventMessage(e.to)}
       style={styles.textbox}
       enter={{
@@ -66,7 +66,7 @@ export const DevEventbus: React.FC<DevEventbusProps> = (props) => {
   const body = history.total > 0 && (
     <>
       {elTextbox}
-      <EventStack events={history.events} style={styles.stack} />
+      <EventStack events={history.events} card={{ duration: 150 }} style={styles.stack} />
       <EventPipe
         events={history.events}
         style={styles.pipe}

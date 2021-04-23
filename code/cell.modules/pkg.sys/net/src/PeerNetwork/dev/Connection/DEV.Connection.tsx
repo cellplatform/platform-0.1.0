@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { Button, Card, css, CssValue, Icons, t } from '../common';
-import { DevConnectionData } from './DEV.Connection.Data';
-import { DevConnectionMedia } from './DEV.Connection.Media';
+import { css, CssValue, t, Dropped } from '../common';
+import { DevCard } from '../DEV.Card';
+import { DevDataConnection } from './DEV.Data.Connection';
+import { DevMediaConnection } from './DEV.Media.Connection';
 
 export type DevConnectionProps = {
   bus: t.EventBus<any>;
   netbus: t.EventBus<any>;
   connection: t.PeerConnectionStatus;
-  isLast?: boolean;
   margin?: t.CssEdgesInput;
   style?: CssValue;
 };
@@ -19,7 +19,7 @@ export const DevConnection: React.FC<DevConnectionProps> = (props) => {
   const bus = props.bus.type<t.PeerEvent>();
 
   const styles = {
-    base: css({ position: 'relative', fontSize: 14 }),
+    base: css({ position: 'relative' }),
     close: css({ Absolute: [5, 5, null, null] }),
   };
 
@@ -31,27 +31,28 @@ export const DevConnection: React.FC<DevConnectionProps> = (props) => {
     });
   };
 
-  const elCloseButton = (
-    <Button style={styles.close} onClick={handleClose}>
-      <Icons.Close size={18} />
-    </Button>
-  );
-
   const elData = connection.kind === 'data' && (
-    <DevConnectionData bus={bus} netbus={netbus} connection={connection} />
+    <DevDataConnection bus={bus} netbus={netbus} connection={connection} />
   );
 
   const elMedia = (connection.kind === 'media/video' || connection.kind === 'media/screen') && (
-    <DevConnectionMedia bus={bus} connection={connection} />
+    <DevMediaConnection bus={bus} connection={connection} />
   );
+
+  const handleDrop = (e: Dropped) => {
+    console.log('file dropped', e);
+  };
 
   return (
     <div {...css(styles.base, props.style)}>
-      <Card margin={props.margin} width={300} shadow={false}>
+      <DevCard
+        margin={props.margin}
+        onClose={handleClose}
+        onDrop={connection.kind === 'data' ? handleDrop : undefined}
+      >
         {elData}
         {elMedia}
-        {elCloseButton}
-      </Card>
+      </DevCard>
     </div>
   );
 };
