@@ -67,7 +67,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     tx = tx || slug();
 
     bus.fire({
-      type: 'sys.net/peer/connection/connect:res',
+      type: 'sys.net/peer/conn/connect:res',
       payload: {
         self: self.id,
         tx,
@@ -89,7 +89,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
        */
       await closeConnectionChildren(self, connRef.id);
       bus.fire({
-        type: 'sys.net/peer/connection/closed',
+        type: 'sys.net/peer/conn/closed',
         payload: { self: self.id, connection: Status.toConnection(connRef) },
       });
     });
@@ -200,8 +200,8 @@ export function Controller(args: { bus: t.EventBus<any> }) {
           'sys.net/peer/local/init:res',
           'sys.net/peer/local/purge:res',
           'sys.net/peer/local/online:changed',
-          'sys.net/peer/connection/connect:res',
-          'sys.net/peer/connection/closed',
+          'sys.net/peer/conn/connect:res',
+          'sys.net/peer/conn/closed',
         ];
         return types.includes(e.type);
       }),
@@ -280,7 +280,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   /**
    * CONNECT: Outgoing
    */
-  rx.payload<t.PeerConnectReqEvent>($, 'sys.net/peer/connection/connect:req')
+  rx.payload<t.PeerConnectReqEvent>($, 'sys.net/peer/conn/connect:req')
     .pipe(filter((e) => e.direction === 'outgoing'))
     .subscribe(async (e) => {
       const { remote } = e;
@@ -292,7 +292,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       const fire = (payload?: Partial<t.PeerNetworkConnectRes>) => {
         const existing = Boolean(payload?.existing);
         bus.fire({
-          type: 'sys.net/peer/connection/connect:res',
+          type: 'sys.net/peer/conn/connect:res',
           payload: {
             kind: e.kind,
             self: e.self,
@@ -412,7 +412,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   /**
    * DISCONNECT from a remote peer.
    */
-  rx.payload<t.PeerDisconnectReqEvent>($, 'sys.net/peer/connection/disconnect:req')
+  rx.payload<t.PeerDisconnectReqEvent>($, 'sys.net/peer/conn/disconnect:req')
     .pipe()
     .subscribe(async (e) => {
       const selfRef = refs.self[e.self];
@@ -421,7 +421,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       const fire = (payload?: Partial<t.PeerNetworkDisconnectRes>) => {
         const connection = e.connection;
         bus.fire({
-          type: 'sys.net/peer/connection/disconnect:res',
+          type: 'sys.net/peer/conn/disconnect:res',
           payload: { self: e.self, tx, connection, ...payload },
         });
       };

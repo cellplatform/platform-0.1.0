@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 import { PeerNetwork } from '../..';
-import { Button, COLORS, css, CssValue, Hr, Icons, PropList, PropListItem, t } from '../common';
+import { Button, css, CssValue, Hr, PropList, PropListItem, t } from '../common';
 import { DevEventbus } from '../Event';
 import { ItemUtil } from './util';
 

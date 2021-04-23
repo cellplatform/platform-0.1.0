@@ -142,11 +142,11 @@ export function Events(args: { bus: t.EventBus<any> }) {
    */
   const connection = (self: t.PeerId, remote: t.PeerId) => {
     const connected$ = rx
-      .payload<t.PeerConnectResEvent>(event$, 'sys.net/peer/connection/connect:res')
+      .payload<t.PeerConnectResEvent>(event$, 'sys.net/peer/conn/connect:res')
       .pipe(filter((e) => e.self === self && e.remote === remote));
 
     const disconnected$ = rx
-      .payload<t.PeerDisconnectResEvent>(event$, 'sys.net/peer/connection/disconnect:res')
+      .payload<t.PeerDisconnectResEvent>(event$, 'sys.net/peer/conn/disconnect:res')
       .pipe(filter((e) => e.self === self));
 
     const open = {
@@ -155,7 +155,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
         const tx = slug();
         const res = firstValueFrom(connected$.pipe(filter((e) => e.tx === tx)));
         bus.fire({
-          type: 'sys.net/peer/connection/connect:req',
+          type: 'sys.net/peer/conn/connect:req',
           payload: { self, tx, remote, kind: 'data', direction: 'outgoing', isReliable, parent },
         });
         return res;
@@ -170,7 +170,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
         const res = firstValueFrom(connected$.pipe(filter((e) => e.tx === tx)));
 
         bus.fire({
-          type: 'sys.net/peer/connection/connect:req',
+          type: 'sys.net/peer/conn/connect:req',
           payload: { self, tx, remote, kind, direction: 'outgoing', constraints, parent },
         });
         return res;
@@ -181,7 +181,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
       const tx = slug();
       const res = firstValueFrom(disconnected$.pipe(filter((e) => e.tx === tx)));
       bus.fire({
-        type: 'sys.net/peer/connection/disconnect:req',
+        type: 'sys.net/peer/conn/disconnect:req',
         payload: { self, tx, remote, connection: id },
       });
       return res;
@@ -192,22 +192,22 @@ export function Events(args: { bus: t.EventBus<any> }) {
 
   const connections = (self: t.PeerId) => {
     const connectRequest$ = rx
-      .payload<t.PeerConnectReqEvent>(event$, 'sys.net/peer/connection/connect:req')
+      .payload<t.PeerConnectReqEvent>(event$, 'sys.net/peer/conn/connect:req')
       .pipe(filter((e) => e.self === self));
 
     const connectResponse$ = rx
-      .payload<t.PeerConnectResEvent>(event$, 'sys.net/peer/connection/connect:res')
+      .payload<t.PeerConnectResEvent>(event$, 'sys.net/peer/conn/connect:res')
       .pipe(
         filter((e) => e.self === self),
         filter((e) => !e.existing),
       );
 
     const disconnectResponse$ = rx
-      .payload<t.PeerDisconnectResEvent>(event$, 'sys.net/peer/connection/disconnect:res')
+      .payload<t.PeerDisconnectResEvent>(event$, 'sys.net/peer/conn/disconnect:res')
       .pipe(filter((e) => e.self === self));
 
     const closed$ = rx
-      .payload<t.PeerConnectionClosedEvent>(event$, 'sys.net/peer/connection/closed')
+      .payload<t.PeerConnectionClosedEvent>(event$, 'sys.net/peer/conn/closed')
       .pipe(filter((e) => e.self === self));
 
     return { self, connectRequest$, connectResponse$, disconnectResponse$, closed$ };

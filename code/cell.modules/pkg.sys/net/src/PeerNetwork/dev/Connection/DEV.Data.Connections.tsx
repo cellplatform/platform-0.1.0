@@ -1,5 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { slug, color, css, CssValue, t, Card, CardStack, CardStackItem } from '../common';
+import {
+  slug,
+  color,
+  css,
+  CssValue,
+  t,
+  Card,
+  CardStack,
+  CardStackItem,
+  PropList,
+  PropListItem,
+} from '../common';
 import { DevCard } from '../DEV.Card';
 
 export type DevDataConnectionsProps = {
@@ -18,7 +29,7 @@ export const DevDataConnections: React.FC<DevDataConnectionsProps> = (props) => 
     connections.forEach((connection) => {
       const { self, remote } = connection.peer;
       bus.fire({
-        type: 'sys.net/peer/connection/disconnect:req',
+        type: 'sys.net/peer/conn/disconnect:req',
         payload: { self, remote, connection: connection.id },
       });
     });

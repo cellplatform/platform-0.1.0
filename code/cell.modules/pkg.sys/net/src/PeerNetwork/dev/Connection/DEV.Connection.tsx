@@ -26,7 +26,7 @@ export const DevConnection: React.FC<DevConnectionProps> = (props) => {
   const handleClose = () => {
     const { self, remote } = peer;
     bus.fire({
-      type: 'sys.net/peer/connection/disconnect:req',
+      type: 'sys.net/peer/conn/disconnect:req',
       payload: { self, remote, connection: connection.id },
     });
   };
