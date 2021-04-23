@@ -7,13 +7,10 @@ import { SampleCard } from './DEV.Sample.Card';
 type Ctx = { props: CardStackProps };
 
 const createItems = (length: number) => Array.from({ length }).map(() => createItem());
-const createItem = () => {
+const createItem = (): CardStackItem => {
   const id = slug();
-  const el: CardStackItemRender = (e) => {
-    return <SampleCard id={id} isTop={e.is.top} />;
-  };
-  const item: CardStackItem = { id, el };
-  return item;
+  const el: CardStackItemRender = (e) => <SampleCard id={id} isTop={e.is.top} />;
+  return { id, el };
 };
 
 /**
