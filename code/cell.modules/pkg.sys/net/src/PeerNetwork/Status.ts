@@ -26,15 +26,19 @@ export const Status = {
 
     if (kind === 'data') {
       const conn = ref.conn as PeerJS.DataConnection;
-      const { reliable: isReliable, open: isOpen, metadata } = conn;
-      return { uri, id, peer, kind, direction, isReliable, isOpen, metadata };
+      const { reliable: isReliable, open: isOpen } = conn;
+      const metadata = (conn.metadata || {}) as t.PeerConnectionMetadataData;
+      const { parent, module } = metadata;
+      return { uri, id, peer, kind, direction, isReliable, isOpen, parent, module };
     }
 
     if (kind === 'media/video' || kind === 'media/screen') {
       const media = ref.remoteStream as MediaStream;
       const conn = ref.conn as PeerJS.MediaConnection;
-      const { open: isOpen, metadata } = conn;
-      return { uri, id, peer, kind, direction, isOpen, metadata, media };
+      const { open: isOpen } = conn;
+      const metadata = (conn.metadata || {}) as t.PeerConnectionMetadataMedia;
+      const { parent, module } = metadata;
+      return { uri, id, peer, kind, direction, isOpen, media, parent, module };
     }
 
     throw new Error(`Kind of connection not supported: ${uri}`);

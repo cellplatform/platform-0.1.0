@@ -24,6 +24,7 @@ type ConnectBase = {
   tx?: string;
   remote: t.PeerId;
   direction: t.PeerConnectDirection;
+  parent?: t.PeerConnectionId; // A parent relationship to the conneciton that spawned this connection.
 };
 
 export type PeerNetworkConnectDataReq = ConnectBase & {
@@ -34,7 +35,6 @@ export type PeerNetworkConnectMediaReq = ConnectBase & {
   kind: t.PeerConnectionKindMedia;
   constraints?: t.PeerMediaConstraints;
   timeout?: number;
-  parent?: { data: t.PeerConnectionId };
 };
 
 /**

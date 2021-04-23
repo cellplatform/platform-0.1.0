@@ -21,6 +21,7 @@ export type ConnectionRef = {
   direction: t.PeerConnectDirection;
   localStream?: MediaStream;
   remoteStream?: MediaStream;
+  parent?: t.PeerConnectionId;
 };
 
 /**
@@ -28,6 +29,7 @@ export type ConnectionRef = {
  */
 export function MemoryRefs() {
   const self: { [id: string]: SelfRef } = {};
+
   const refs = {
     self,
 
@@ -48,7 +50,9 @@ export function MemoryRefs() {
           const existing = self.connections.find((item) => item.uri === uri);
           if (existing) return existing;
 
-          const ref: ConnectionRef = { kind, uri, id, peer, direction, conn, remoteStream };
+          const metadata = conn.metadata as t.PeerConnectionMetadata;
+          const parent = metadata.parent;
+          const ref: ConnectionRef = { kind, uri, id, peer, direction, conn, remoteStream, parent };
           self.connections = [...self.connections, ref];
 
           return ref;

@@ -21,6 +21,8 @@ type PeerConnectionBase = {
   id: t.PeerConnectionId;
   uri: t.PeerConnectionUri;
   direction: t.PeerConnectDirection;
+  module: t.PeerModule;
+  parent?: t.PeerConnectionId;
 };
 
 export type PeerConnectionDataStatus = PeerConnectionBase & {

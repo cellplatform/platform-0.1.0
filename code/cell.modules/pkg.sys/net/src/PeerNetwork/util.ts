@@ -15,8 +15,9 @@ export const isEvent = (input: any) => {
  * Common filtering methods.
  */
 export const Filter = {
-  connectionsAs<T extends C>(connections: C[], kind: C['kind']) {
-    return connections.filter((item) => item.kind === kind).map((item) => item as T);
+  connectionsAs<T extends C>(connections: C[], kind: C['kind'] | C['kind'][]) {
+    const kinds = Array.isArray(kind) ? kind : [kind];
+    return connections.filter((item) => kinds.includes(item.kind)).map((item) => item as T);
   },
 };
 

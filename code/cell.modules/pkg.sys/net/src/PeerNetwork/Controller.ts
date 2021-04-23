@@ -3,7 +3,7 @@ import { delay, distinctUntilChanged, filter, map, take } from 'rxjs/operators';
 
 import { asArray, defaultValue, PeerJS, R, rx, slug, t, time, WebRuntime } from './common';
 import { Events } from './Events';
-import { MemoryRefs, SelfRef } from './Refs';
+import { ConnectionRef, MemoryRefs, SelfRef } from './Refs';
 import { Status } from './Status';
 import { PeerJSError, StreamUtil, StringUtil } from './util';
 
@@ -41,6 +41,19 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   window.addEventListener('offline', handleOnlineStatusChanged);
 
   /**
+   * Closes all child connections.
+   */
+  const closeConnectionChildren = (self: SelfRef, connection: t.PeerConnectionId) => {
+    const children = self.connections.filter(({ parent }) => parent === connection);
+    return Promise.all(
+      children.map((child) => {
+        const { self, remote } = child.peer;
+        return events.connection(self, remote).close(child.id);
+      }),
+    );
+  };
+
+  /**
    * Initialize a new PeerJS data-connection.
    */
   const completeConnection = (
@@ -50,7 +63,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     conn: PeerJS.DataConnection | PeerJS.MediaConnection,
     tx?: string,
   ) => {
-    const connectionRef = refs.connection(self).get(conn);
+    const connRef = refs.connection(self).get(conn);
     tx = tx || slug();
 
     bus.fire({
@@ -61,12 +74,12 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         kind,
         direction,
         existing: false,
-        remote: connectionRef.peer.remote,
-        connection: Status.toConnection(connectionRef),
+        remote: connRef.peer.remote,
+        connection: Status.toConnection(connRef),
       },
     });
 
-    conn.on('close', () => {
+    conn.on('close', async () => {
       /**
        * NOTE:
        * The close event is not being fired for [Media] connections.
@@ -74,9 +87,10 @@ export function Controller(args: { bus: t.EventBus<any> }) {
        *
        * See work-around that uses the [netbus] "connection.ensureClosed" strategy.
        */
+      await closeConnectionChildren(self, connRef.id);
       bus.fire({
         type: 'sys.net/peer/connection/closed',
-        payload: { self: self.id, connection: Status.toConnection(connectionRef) },
+        payload: { self: self.id, connection: Status.toConnection(connRef) },
       });
     });
 
@@ -94,7 +108,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       });
     }
 
-    return connectionRef;
+    return connRef;
   };
 
   const initLocalPeer = (e: t.PeerLocalCreateReq) => {
@@ -273,6 +287,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       const self = refs.self[e.self];
       const tx = e.tx || slug();
       const module = { name: WebRuntime.module.name, version: WebRuntime.module.version };
+      const parent = e.parent;
 
       const fire = (payload?: Partial<t.PeerNetworkConnectRes>) => {
         const existing = Boolean(payload?.existing);
@@ -305,7 +320,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
        * START a data connection.
        */
       if (e.kind === 'data') {
-        const metadata: t.PeerConnectionMetadataData = { kind: e.kind, module };
+        const metadata: t.PeerConnectionMetadataData = { kind: e.kind, module, parent };
         const reliable = e.isReliable;
         const errorMonitor = PeerJSError(self.peer);
         const dataConnection = self.peer.connect(remote, { reliable, metadata });
@@ -350,7 +365,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
           kind: e.kind,
           constraints,
           module,
-          parent: { ...e.parent },
+          parent,
         };
         const mediaConnection = self.peer.call(remote, localStream, { metadata });
         const connRef = refs.connection(self).add(e.kind, 'outgoing', mediaConnection);
@@ -399,7 +414,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
    */
   rx.payload<t.PeerDisconnectReqEvent>($, 'sys.net/peer/connection/disconnect:req')
     .pipe()
-    .subscribe((e) => {
+    .subscribe(async (e) => {
       const selfRef = refs.self[e.self];
       const tx = e.tx || slug();
 
@@ -419,10 +434,11 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
       const connRef = selfRef.connections.find((item) => item.id === e.connection);
       if (!connRef) {
-        const message = `The remote connection '${e.connection}' does not exist`;
+        const message = `The connection to close '${e.connection}' does not exist`;
         return fireError(message);
       }
 
+      await closeConnectionChildren(selfRef, connRef.id);
       connRef.conn.close();
       fire({});
     });

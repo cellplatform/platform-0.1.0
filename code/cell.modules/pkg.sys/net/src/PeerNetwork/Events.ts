@@ -150,25 +150,25 @@ export function Events(args: { bus: t.EventBus<any> }) {
       .pipe(filter((e) => e.self === self));
 
     const open = {
-      data(options: { isReliable?: boolean } = {}) {
-        const { isReliable } = options;
+      data(options: { isReliable?: boolean; parent?: t.PeerConnectionId } = {}) {
+        const { isReliable, parent } = options;
         const tx = slug();
         const res = firstValueFrom(connected$.pipe(filter((e) => e.tx === tx)));
         bus.fire({
           type: 'sys.net/peer/connection/connect:req',
-          payload: { self, tx, remote, kind: 'data', direction: 'outgoing', isReliable },
+          payload: { self, tx, remote, kind: 'data', direction: 'outgoing', isReliable, parent },
         });
         return res;
       },
 
       media(
         kind: t.PeerNetworkConnectMediaReq['kind'],
-        options: { constraints?: t.PeerMediaConstraints; data?: t.PeerConnectionId } = {},
+        options: { constraints?: t.PeerMediaConstraints; parent?: t.PeerConnectionId } = {},
       ) {
-        const { constraints, data } = options;
+        const { constraints, parent } = options;
         const tx = slug();
         const res = firstValueFrom(connected$.pipe(filter((e) => e.tx === tx)));
-        const parent = data ? { data } : undefined;
+
         bus.fire({
           type: 'sys.net/peer/connection/connect:req',
           payload: { self, tx, remote, kind, direction: 'outgoing', constraints, parent },
