@@ -11,6 +11,7 @@ import {
   PropList,
   PropListItem,
   t,
+  Dropped,
 } from '../common';
 import { DevCard } from '../DEV.Card';
 import { DevNetworkConnectionsModal } from '../Network/';
@@ -39,13 +40,17 @@ export const DevDataConnections: React.FC<DevDataConnectionsProps> = (props) => 
     });
   };
 
+  const handleDrop = (e: Dropped) => {
+    console.log('dropped', e);
+  };
+
   const stack: CardStackItem[] = connections.map((item) => {
     return {
       id: item.id,
       el(e) {
         if (!e.is.top) return <Card margin={props.margin} width={300} shadow={false} />;
         return (
-          <DevCard margin={props.margin} onClose={handleClose}>
+          <DevCard margin={props.margin} onClose={handleClose} onDrop={handleDrop}>
             <Body self={self} bus={bus} netbus={netbus} connections={connections} />
           </DevCard>
         );
@@ -74,42 +79,49 @@ const Body: React.FC<BodyProps> = (props) => {
   const bus = props.bus.type<t.DevEvent>();
 
   const styles = {
-    base: css({ position: 'relative', padding: 12, paddingRight: 18, fontSize: 12 }),
+    base: css({ position: 'relative', padding: 12, fontSize: 12 }),
     footer: css({ Flex: 'horizontal-stretch-spaceBetween' }),
+    value: {
+      base: css({ Flex: 'horizontal-center-center' }),
+      label: css({ display: 'inline-block', marginRight: 8, opacity: 0.5 }),
+    },
   };
 
   const items: PropListItem[] = connections.map((connection, i) => {
     const open = (kind: t.PeerConnectionKindMedia) => openHandler({ bus, connection, kind });
     const value = (
-      <>
+      <div {...styles.value.base}>
+        <div {...styles.value.label}>start:</div>
         <Button label={'video'} onClick={open('media/video')} margin={[null, 8, null, null]} />
         <Button label={'screen'} onClick={open('media/screen')} />
-      </>
+      </div>
     );
     return { label: connection.id, value };
   });
 
+  const handleExpandClick = () => {
+    const el = (
+      <DevNetworkConnectionsModal
+        self={self}
+        bus={bus}
+        netbus={netbus}
+        filter={(e) => e.kind === 'data'}
+      />
+    );
+    bus.fire({
+      type: 'DEV/modal',
+      payload: { el, target: 'body' },
+    });
+  };
+
   return (
     <div {...styles.base}>
-      <PropList title={'Data Connections'} items={items} />
+      <PropList title={'Data Connections'} items={items} defaults={{ clipboard: false }} />
 
       <Hr thickness={5} opacity={0.1} margin={[10, 0, 10, 0]} />
       <div {...styles.footer}>
         <div />
-        <Button
-          label={'Expand'}
-          onClick={() => {
-            const el = (
-              <DevNetworkConnectionsModal
-                self={self}
-                bus={bus}
-                netbus={netbus}
-                filter={(e) => e.kind === 'data'}
-              />
-            );
-            bus.fire({ type: 'DEV/modal', payload: { el, target: 'body' } });
-          }}
-        />
+        <Button label={'Expand'} onClick={handleExpandClick} />
       </div>
     </div>
   );

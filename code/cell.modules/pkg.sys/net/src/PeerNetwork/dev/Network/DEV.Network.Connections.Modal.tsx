@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { filter, map } from 'rxjs/operators';
 
-import { PeerNetwork, t, css, color } from '../common';
+import { COLORS, PeerNetwork, t, css, color, Icons, Button } from '../common';
 import { DevModal } from '../DEV.Modal';
 import { DevNetworkConnections, DevNetworkConnectionsProps } from './DEV.Network.Connections';
 
@@ -30,18 +30,6 @@ export const DevNetworkConnectionsModal: React.FC<DevNetworkConnectionsModalProp
 
   const headerHeight = 44;
 
-  const styles = {
-    header: css({
-      boxSizing: 'border-box',
-      Absolute: [0, 10, null, 0],
-      backgroundColor: color.format(0.8),
-      backdropFilter: `blur(5px)`,
-      height: headerHeight,
-      padding: 14,
-      fontSize: 16,
-    }),
-  };
-
   return (
     <DevModal bus={bus} background={1}>
       <DevNetworkConnections
@@ -52,7 +40,53 @@ export const DevNetworkConnectionsModal: React.FC<DevNetworkConnectionsModalProp
         filter={props.filter}
         paddingTop={headerHeight}
       />
-      <div {...styles.header}>Data Connections</div>
+      <Header bus={bus} height={headerHeight}>
+        Data Connections
+      </Header>
     </DevModal>
+  );
+};
+
+/**
+ * Modal header.
+ */
+type HeaderProps = { bus: t.EventBus<any>; height: number };
+const Header: React.FC<HeaderProps> = (props) => {
+  const { height } = props;
+  const bus = props.bus.type<t.DevEvent>();
+  const SIZE = { BACK: 32 };
+
+  const styles = {
+    base: css({
+      Absolute: [0, 10, null, 0],
+      backdropFilter: `blur(5px)`,
+      height,
+      backgroundColor: color.format(0.8),
+    }),
+    body: css({
+      boxSizing: 'border-box',
+      padding: 5,
+      fontSize: 16,
+      Flex: 'horizontal-center-start',
+    }),
+    back: css({
+      position: 'relative',
+      top: -1,
+      Size: SIZE.BACK,
+      marginRight: 10,
+    }),
+  };
+
+  const handleClose = () => bus.fire({ type: 'DEV/modal', payload: {} });
+
+  return (
+    <div {...styles.base}>
+      <div {...styles.body}>
+        <Button style={styles.back} onClick={handleClose}>
+          <Icons.Arrow.Back size={SIZE.BACK} color={color.alpha(COLORS.DARK, 0.6)} />
+        </Button>
+        {props.children}
+      </div>
+    </div>
   );
 };
