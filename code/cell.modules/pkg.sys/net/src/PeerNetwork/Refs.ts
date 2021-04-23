@@ -43,10 +43,10 @@ export function MemoryRefs() {
           conn: PeerJS.DataConnection | PeerJS.MediaConnection,
           remoteStream?: MediaStream,
         ) {
-          const remote = conn.peer;
+          const remote = { id: conn.peer };
           const peer = { self: self.peer.id, remote };
           const id = getId(conn);
-          const uri = Uri.connection(kind, remote, id);
+          const uri = Uri.connection(kind, remote.id, id);
 
           const existing = self.connections.find((item) => item.uri === uri);
           if (existing) return existing;
@@ -87,7 +87,7 @@ export function MemoryRefs() {
         },
 
         get ids() {
-          return self.connections.map((ref) => ref.peer.remote);
+          return self.connections.map((ref) => ref.peer.remote.id);
         },
       };
     },

@@ -42,7 +42,7 @@ export function autoPropagation(args: {
 
         const connections = R.uniq(
           current.map((conn) => ({
-            peer: conn.peer.remote,
+            peer: conn.peer.remote.id,
             id: conn.id,
           })),
         );
@@ -68,7 +68,7 @@ export function autoPropagation(args: {
         e.connections
           .filter((item) => item.peer !== self)
           .filter((item) => !current.some((conn) => conn.id === item.id))
-          .filter((item) => !current.some((conn) => conn.peer.remote === item.peer)),
+          .filter((item) => !current.some((conn) => conn.peer.remote.id === item.peer)),
       );
 
       connections.forEach((item) => {

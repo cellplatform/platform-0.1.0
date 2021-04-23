@@ -63,7 +63,7 @@ export function ensureClosed(args: {
       const { peer } = await events.status(self).get();
       const connection = (peer?.connections || []).find(({ id }) => id === e.connection);
       if (connection) {
-        const remote = connection.peer.remote;
+        const remote = connection.peer.remote.id;
         events.connection(self, remote).close(connection.id);
       }
     });

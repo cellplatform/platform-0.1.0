@@ -73,7 +73,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         kind,
         direction,
         existing: false,
-        remote: connRef.peer.remote,
+        remote: connRef.peer.remote.id,
         connection: Status.toConnection(connRef),
       },
     });
@@ -86,7 +86,8 @@ export function Controller(args: { bus: t.EventBus<any> }) {
        *
        * See work-around that uses the [netbus] "connection.ensureClosed" strategy.
        */
-      events.connection(connRef.peer.self, connRef.peer.remote).close(connRef.id);
+      const peer = connRef.peer;
+      events.connection(peer.self, peer.remote.id).close(connRef.id);
     });
 
     if (kind === 'data') {
@@ -438,7 +439,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       await Promise.all(
         children.map((child) => {
           const { self, remote } = child.peer;
-          return events.connection(self, remote).close(child.id);
+          return events.connection(self, remote.id).close(child.id);
         }),
       );
 
@@ -446,19 +447,6 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       if (connRef.conn.open) connRef.conn.close();
       fire({});
     });
-
-  /**
-   * Closes all child connections.
-   */
-  const closeConnectionChildren = (self: SelfRef, connection: t.PeerConnectionId) => {
-    const children = self.connections.filter(({ parent }) => parent === connection);
-    return Promise.all(
-      children.map((child) => {
-        const { self, remote } = child.peer;
-        return events.connection(self, remote).close(child.id);
-      }),
-    );
-  };
 
   /**
    * DATA:OUT: Send

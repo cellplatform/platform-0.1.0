@@ -17,7 +17,7 @@ export type PeerStatus = {
 export type PeerConnectionStatus = PeerConnectionDataStatus | PeerConnectionMediaStatus;
 
 type PeerConnectionBase = {
-  peer: { self: t.PeerId; remote: t.PeerId };
+  peer: { self: t.PeerId; remote: { id: t.PeerId } };
   id: t.PeerConnectionId;
   uri: t.PeerConnectionUri;
   direction: t.PeerConnectDirection;

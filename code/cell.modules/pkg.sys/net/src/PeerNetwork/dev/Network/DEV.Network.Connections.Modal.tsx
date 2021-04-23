@@ -74,7 +74,7 @@ const Header: React.FC<HeaderProps> = (props) => {
       position: 'relative',
       top: -1,
       Size: SIZE.BACK,
-      marginRight: 10,
+      marginRight: 8,
     }),
   };
 
