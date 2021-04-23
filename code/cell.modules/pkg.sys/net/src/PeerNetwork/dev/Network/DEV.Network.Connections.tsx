@@ -8,19 +8,22 @@ import {
   DevDataConnections,
   DevMediaConnections,
 } from '../Connection';
+import { DevEventBusCard } from '../Event';
+import { DevCard } from '../DEV.Card';
 
 export type DevNetworkConnectionsProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.EventBus<any>;
   collapseCards?: boolean;
+  showNetbus?: boolean;
   filter?: (connection: t.PeerConnectionStatus) => boolean;
   paddingTop?: number;
   style?: CssValue;
 };
 
 export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (props) => {
-  const { self, netbus, collapseCards } = props;
+  const { self, netbus, collapseCards, showNetbus } = props;
   const bus = props.bus.type<t.PeerEvent>();
 
   const [connections, setConnections] = useState<t.PeerConnectionStatus[]>([]);
@@ -93,9 +96,14 @@ export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (prop
     <DevMediaConnections self={self} bus={bus} netbus={netbus} connections={items} />
   ));
 
+  const elNetbus = props.showNetbus && (
+    <DevEventBusCard bus={netbus} margin={[PADDING.CARD, 0, 0, PADDING.CARD]} />
+  );
+
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.scroll}>
+        {elNetbus}
         {elData}
         {elMedia}
       </div>

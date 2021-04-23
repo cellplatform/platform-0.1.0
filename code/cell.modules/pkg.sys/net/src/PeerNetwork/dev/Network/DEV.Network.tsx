@@ -30,33 +30,27 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
     }),
     body: css({ flex: 1, position: 'relative' }),
     modal: css({ Absolute: 0, display: 'flex' }),
-    empty: css({
-      Absolute: 0,
-      Flex: 'center-center',
-      fontStyle: 'italic',
-      opacity: 0.3,
-      userSelect: 'none',
-    }),
   };
-
-  const elEmpty = connections.length === 0 && (
-    <div {...styles.empty}>No connections to display.</div>
-  );
 
   const modalSize = state.modal?.target;
   const elModal = state.modal?.el && <div {...styles.modal}>{state.modal.el}</div>;
 
   const elBody = (
     <div {...styles.body}>
-      <DevNetworkConnections bus={bus} netbus={netbus} collapseCards={true} self={peer.id} />
-      {elEmpty}
+      <DevNetworkConnections
+        self={peer.id}
+        bus={bus}
+        netbus={netbus}
+        collapseCards={true}
+        showNetbus={true}
+      />
       {modalSize === 'body' && elModal}
     </div>
   );
 
   return (
     <div {...css(styles.base, props.style)}>
-      <DevNetworkHeader bus={bus} peer={peer} media={media} />
+      <DevNetworkHeader bus={bus} netbus={netbus} peer={peer} media={media} />
       <Hr thickness={10} opacity={0.05} margin={0} />
       {elBody}
       {modalSize === 'fullscreen' && elModal}

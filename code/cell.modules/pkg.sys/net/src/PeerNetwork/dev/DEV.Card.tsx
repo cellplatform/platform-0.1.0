@@ -16,6 +16,7 @@ import {
 export type DevCardProps = {
   width?: number;
   margin?: t.CssEdgesInput;
+  padding?: t.CssEdgesInput;
   shadow?: CardProps['shadow'];
   style?: CssValue;
   onClose?: () => void;
@@ -58,7 +59,7 @@ export const DevCard: React.FC<DevCardProps> = (props) => {
 
   return (
     <div ref={baseRef} {...css(styles.base, props.style)}>
-      <Card margin={props.margin} width={width} shadow={shadow}>
+      <Card margin={props.margin} padding={props.padding} width={width} shadow={shadow}>
         <div {...styles.body}>{props.children}</div>
         {elDragOverlay}
         {elCloseButton}

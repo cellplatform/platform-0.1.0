@@ -8,6 +8,7 @@ export const cardFactory: EventStackCardFactory = (args) => {
   return (
     <EventStackCard
       key={args.id}
+      title={args.title}
       count={args.count}
       event={args.event}
       width={args.width}

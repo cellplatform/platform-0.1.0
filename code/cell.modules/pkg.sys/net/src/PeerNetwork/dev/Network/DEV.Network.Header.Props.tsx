@@ -29,7 +29,7 @@ export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
       title={'Peer Network'}
       defaults={{ clipboard: false }}
       items={items}
-      width={{ max: 280 }}
+      width={{ min: 240, max: 260 }}
       style={props.style}
     />
   );

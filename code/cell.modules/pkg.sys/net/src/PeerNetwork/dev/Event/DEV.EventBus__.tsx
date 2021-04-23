@@ -11,23 +11,24 @@ import {
   t,
   Textbox,
   useEventBusHistory,
+  EventBusHistory,
 } from '../common';
 
-export type DevEventbusOnBroadcastEvent = {
-  bus: t.EventBus<any>;
-  message: string;
-};
+export type DevEventbusOnBroadcastEvent = { bus: t.EventBus<any>; message: string };
 export type DevEventBusOnBroadcastEventHandler = (e: DevEventbusOnBroadcastEvent) => void;
 
 export type DevEventBusProps = {
   bus: t.EventBus<any>;
+  canBroadcast?: boolean;
   style?: CssValue;
   onBroadcast?: DevEventBusOnBroadcastEventHandler;
+  onHistoryChange?: (e: EventBusHistory) => void;
 };
 
 export const DevEventBus: React.FC<DevEventBusProps> = (props) => {
+  const { canBroadcast, onHistoryChange } = props;
   const bus = props.bus;
-  const history = useEventBusHistory(bus);
+  const history = useEventBusHistory(bus, { onChange: onHistoryChange });
 
   const styles = {
     base: css({ position: 'relative' }),
@@ -45,7 +46,7 @@ export const DevEventBus: React.FC<DevEventBusProps> = (props) => {
     }
   };
 
-  const elTextbox = (
+  const elTextbox = canBroadcast && (
     <Textbox
       value={eventMessage}
       placeholder={'broadcast sample event'}
@@ -65,7 +66,11 @@ export const DevEventBus: React.FC<DevEventBusProps> = (props) => {
 
   const body = history.total > 0 && (
     <>
-      <EventStack events={history.events} card={{ duration: 150 }} style={styles.stack} />
+      <EventStack
+        events={history.events}
+        card={{ duration: 150, title: 'Event' }}
+        style={styles.stack}
+      />
       <EventPipe
         events={history.events}
         style={styles.pipe}

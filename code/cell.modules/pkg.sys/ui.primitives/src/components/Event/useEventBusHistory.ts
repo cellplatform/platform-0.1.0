@@ -39,6 +39,7 @@ export const useEventBusHistory: EventBusHistoryHook = (bus, options = {}) => {
         const item: EventHistoryItem = { id: slug(), event, count, timestamp };
         let events = [...prev, item];
         if (max !== undefined) events = events.slice(events.length - max);
+        if (options.onChange) options.onChange({ total: count, events });
         return events;
       });
     });

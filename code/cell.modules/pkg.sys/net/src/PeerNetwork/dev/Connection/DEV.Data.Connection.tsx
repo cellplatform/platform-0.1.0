@@ -13,7 +13,7 @@ export type DevDataConnectionProps = {
 };
 
 export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
-  const { connection, netbus, bus } = props;
+  const { connection, bus } = props;
   const peer = connection.peer;
 
   const open = (kind: t.PeerConnectionKindMedia) => openHandler({ bus, connection, kind });
@@ -31,13 +31,6 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
     },
   ];
 
-  const samplePayload = () => {
-    return {
-      peer: `...${peer.self.substring(peer.self.length - 10)}`,
-      connection: connection.id,
-    };
-  };
-
   const styles = {
     base: css({
       position: 'relative',
@@ -45,9 +38,7 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
       paddingRight: 18,
     }),
     body: {
-      base: css({
-        position: 'relative',
-      }),
+      base: css({ position: 'relative' }),
       buttons: css({
         Flex: 'horizontal-center-spaceBetween',
         fontSize: 12,
@@ -69,19 +60,6 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       <div {...styles.body.base}>
         <PropList title={'Data Connection'} items={items} defaults={{ clipboard: false }} />
-        <Hr thickness={5} opacity={0.1} margin={[10, 0, 15, 0]} />
-        <DevEventBus
-          bus={netbus}
-          onBroadcast={(e) => {
-            const msg = e.message ? e.message : `<empty>`;
-            netbus.fire({
-              // NB: Arbitrary invented event.
-              //     When using in application, pass a set of strong event types to the bus.
-              type: 'sample/event',
-              payload: { msg, ...samplePayload() },
-            });
-          }}
-        />
       </div>
     </div>
   );

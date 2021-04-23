@@ -20,7 +20,11 @@ export { PropList, PropListItem } from 'sys.ui.primitives/lib/components/PropLis
 export { AudioWaveform } from 'sys.ui.video/lib/components/AudioWaveform';
 export { MediaStream, MediaEvent, VideoStream } from 'sys.ui.video/lib/components/MediaStream';
 
-export { EventStack, useEventBusHistory } from 'sys.ui.primitives/lib/components/Event.Stack';
+export {
+  EventStack,
+  useEventBusHistory,
+  EventBusHistory,
+} from 'sys.ui.primitives/lib/components/Event.Stack';
 export { EventPipe } from 'sys.ui.primitives/lib/components/Event.Pipe';
 
 export { useDragTarget, Dropped } from 'sys.ui.primitives/lib/hooks/useDragTarget';
