@@ -5,6 +5,7 @@ import { PropList, PropListItem } from '../../PropList';
 
 export type SampleCardProps = {
   id: string;
+  isTop: boolean;
 };
 
 export const SampleCard: React.FC<SampleCardProps> = (props) => {
@@ -14,8 +15,8 @@ export const SampleCard: React.FC<SampleCardProps> = (props) => {
   ];
 
   return (
-    <Card padding={[10, 15]} width={{ min: 200 }}>
-      <PropList title={'Card'} items={items} />
+    <Card padding={[10, 15]} width={{ min: 250 }} shadow={props.isTop}>
+      {props.isTop && <PropList title={'Card'} items={items} />}
     </Card>
   );
 };
