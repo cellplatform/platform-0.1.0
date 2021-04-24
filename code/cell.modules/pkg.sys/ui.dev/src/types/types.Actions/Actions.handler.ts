@@ -13,6 +13,7 @@ export type ActionGetContextArgs<C> = {
   namespace: string;
   prev: C | undefined;
   change: ActionGetContextChange<C>;
+  redraw(): void;
 };
 
 export type ActionGetContextChange<C> = {

@@ -5,9 +5,7 @@ export type ComponentProps = { count: number; style?: CssValue };
 
 export const Component: React.FC<ComponentProps> = (props) => {
   const styles = {
-    base: css({
-      padding: 20,
-    }),
+    base: css({ padding: 20 }),
   };
   return <div {...css(styles.base, props.style)}>Sample-2 ({props.count})</div>;
 };

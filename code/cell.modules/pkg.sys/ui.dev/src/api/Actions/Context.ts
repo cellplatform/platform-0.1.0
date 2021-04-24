@@ -33,15 +33,14 @@ export const Context = {
       },
     };
 
-    const count = state.ctx.count === undefined ? 0 : state.ctx.count + 1;
+    const redraw = () => state.redraw$.next();
     const prev = state.ctx.current;
-    const e: t.ActionGetContextArgs<Ctx> = { prev, change, count };
+    const namespace = state.namespace;
+    const e: t.ActionGetContextArgs<Ctx> = { namespace, prev, change, redraw };
     const value = state.ctx.get(e);
 
     model.change((draft) => {
-      const { ctx } = draft;
-      ctx.current = value;
-      ctx.count = count;
+      draft.ctx.current = value;
     });
 
     if (!value && options.throw) {

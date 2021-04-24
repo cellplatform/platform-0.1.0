@@ -1,4 +1,4 @@
-export { Observable } from 'rxjs';
+export { Observable, Subject } from 'rxjs';
 export { ReactNode } from 'react';
 
 export * from '@platform/types';

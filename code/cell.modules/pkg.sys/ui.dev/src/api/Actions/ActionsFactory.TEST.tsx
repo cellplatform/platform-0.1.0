@@ -244,29 +244,6 @@ describe('ActionsFactory', () => {
     });
   });
 
-  describe('actions.controller()', () => {
-    it('stores/replaces controller factory', () => {
-      const { model, actions } = create();
-      expect(model.state.subject).to.eql(undefined);
-
-      const fn1: t.ActionHandlerController<Ctx> = (e) => null;
-      const fn2: t.ActionHandlerController<Ctx> = (e) => null;
-
-      actions.controller(fn1);
-      expect(model.state.controller).to.eql(fn1);
-
-      // Replace with another factory.
-      actions.controller(fn2);
-      expect(model.state.controller).to.eql(fn2);
-    });
-
-    it('throw if factory function not provided', () => {
-      const { actions } = create();
-      const fn = () => actions.controller('foo' as any);
-      expect(fn).to.throw(/Controller factory function not provided/);
-    });
-  });
-
   describe('actions.toContext()', () => {
     it('no factory: null', () => {
       const { actions } = create();

@@ -29,6 +29,14 @@ export function useActionsRedraw(args: {
       const ns = model.state.namespace;
       const changed$ = model.event.changed$;
 
+      const redraw = () => setRedraw((prev) => prev + 1);
+
+      // Redraw when explicitly invoked.
+      model.state.redraw$
+        .pipe(takeUntil(dispose$), throttleTime(defaultValue(args.throttle, 0)), debounceTime(10))
+        .subscribe(redraw);
+
+      // Redraw when specific model path's change.
       changed$
         .pipe(
           takeUntil(dispose$),
@@ -37,9 +45,7 @@ export function useActionsRedraw(args: {
           throttleTime(defaultValue(args.throttle, 0)),
           debounceTime(0),
         )
-        .subscribe((e) => {
-          setRedraw((prev) => prev + 1);
-        });
+        .subscribe((e) => redraw());
     }
 
     return () => dispose$.next();
