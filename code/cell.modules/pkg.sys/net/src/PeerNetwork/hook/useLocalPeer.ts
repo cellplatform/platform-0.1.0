@@ -38,7 +38,7 @@ export function useLocalPeer(args: { self: t.PeerId; bus: t.EventBus<any> }) {
     /**
      * Listen for media requests.
      */
-    media.response$.pipe().subscribe((e) => {
+    media.res$.pipe().subscribe((e) => {
       setMedia(e.kind, e.media);
       if (e.media) StreamUtil.onEnded(e.media, () => setMedia(e.kind, undefined));
     });

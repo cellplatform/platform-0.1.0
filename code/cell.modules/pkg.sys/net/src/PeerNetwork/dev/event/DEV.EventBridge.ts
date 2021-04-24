@@ -22,7 +22,7 @@ export const EventBridge = {
     /**
      * NETWORK => VIDEO => NETWORK
      */
-    events.net.media(args.self).request$.subscribe(async (e) => {
+    events.net.media(args.self).req$.subscribe(async (e) => {
       const { self, kind } = e;
       const tx = e.tx || slug();
       const ref = EventBridge.ref(self, kind);

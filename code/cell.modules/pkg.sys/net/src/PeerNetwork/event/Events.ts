@@ -43,10 +43,10 @@ export function Events(eventbus: t.EventBus<any>) {
    * STATUS
    */
   const status = (self: t.PeerId) => {
-    const request$ = rx
+    const req$ = rx
       .payload<t.PeerLocalStatusRequestEvent>(event$, 'sys.net/peer/local/status:req')
       .pipe(filter((e) => e.self === self));
-    const response$ = rx
+    const res$ = rx
       .payload<t.PeerLocalStatusResponseEvent>(event$, 'sys.net/peer/local/status:res')
       .pipe(filter((e) => e.self === self));
     const changed$ = rx
@@ -55,7 +55,7 @@ export function Events(eventbus: t.EventBus<any>) {
 
     const get = () => {
       const tx = slug();
-      const res = firstValueFrom(response$.pipe(filter((e) => e.tx === tx)));
+      const res = firstValueFrom(res$.pipe(filter((e) => e.tx === tx)));
       bus.fire({ type: 'sys.net/peer/local/status:req', payload: { self, tx } });
       return res;
     };
@@ -64,7 +64,7 @@ export function Events(eventbus: t.EventBus<any>) {
       bus.fire({ type: 'sys.net/peer/local/status:refresh', payload: { self } });
     };
 
-    return { self, get, refresh, request$, response$, changed$ };
+    return { self, get, refresh, req$, res$, changed$ };
   };
 
   /**
@@ -92,10 +92,10 @@ export function Events(eventbus: t.EventBus<any>) {
    * LOCAL: Media
    */
   const media = (self: t.PeerId) => {
-    const request$ = rx
+    const req$ = rx
       .payload<t.PeerLocalMediaReqEvent>(event$, 'sys.net/peer/local/media:req')
       .pipe(filter((e) => e.self === self));
-    const response$ = rx
+    const res$ = rx
       .payload<t.PeerLocalMediaResEvent>(event$, 'sys.net/peer/local/media:res')
       .pipe(filter((e) => e.self === self));
 
@@ -112,7 +112,7 @@ export function Events(eventbus: t.EventBus<any>) {
     }) => {
       const { kind, constraints } = args;
       const tx = args.tx || slug();
-      const res = firstValueFrom(response$.pipe(filter((e) => e.tx === tx)));
+      const res = firstValueFrom(res$.pipe(filter((e) => e.tx === tx)));
       bus.fire({
         type: 'sys.net/peer/local/media:req',
         payload: { self, tx, kind, constraints },
@@ -133,7 +133,7 @@ export function Events(eventbus: t.EventBus<any>) {
       });
     };
 
-    return { self, request$, response$, request, video, screen, respond };
+    return { self, req$, res$, request, video, screen, respond };
   };
 
   /**
