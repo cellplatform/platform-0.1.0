@@ -1,5 +1,5 @@
 import { t } from '../common';
-import { Events } from '../Event';
+import { Events } from '../Events';
 import { ConnectionStrategy } from './ConnectionStrategy';
 import { GroupStrategy } from './GroupStrategy';
 

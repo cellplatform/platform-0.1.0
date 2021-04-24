@@ -1,5 +1,4 @@
-import { t } from '../common';
-import { Events } from '../Event';
+import { t, Events } from '../common';
 import { autoPerge, ensureClosed } from './ConnectionStrategy.close';
 import { autoPropagation } from './ConnectionStrategy.propogate';
 

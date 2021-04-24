@@ -15,7 +15,7 @@ import {
   time,
   WebRuntime,
 } from './common';
-import { Events } from './Event';
+import { Events } from './Events';
 import { MemoryRefs, SelfRef } from './Refs';
 import { Status } from './Status';
 

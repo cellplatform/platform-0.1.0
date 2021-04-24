@@ -1,5 +1,4 @@
-import { t } from '../common';
-import { Events } from '../Event';
+import { t, Events } from '../common';
 import { groupConnections } from './GroupStrategy.connections';
 
 /**

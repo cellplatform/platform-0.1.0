@@ -1,6 +1,6 @@
 export * from '../../common/types';
 
-import { Events } from '../Event';
+import { Events } from '../Events';
 import { Controller } from '../Controller';
 
 export type PeerNetworkEvents = ReturnType<typeof Events>;

@@ -1,5 +1,4 @@
-import { t } from '../common';
-import { Events } from '../Event';
+import { t, Events } from '../common';
 
 /**
  * Strategy for retrieving peer/connection details for members of the mesh network.

@@ -1,5 +1,5 @@
 import { Controller } from './Controller';
-import { Events } from './Event';
+import { Events } from './Events';
 import { Strategy } from './Strategy';
 
 export const PeerNetwork = {
