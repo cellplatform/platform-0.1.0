@@ -46,7 +46,7 @@ export const DevMediaConnections: React.FC<DevMediaConnectionsProps> = (props) =
   return (
     <div {...css(styles.base, props.style)}>
       <PropList title={'Media Connections'} items={items} defaults={{ clipboard: false }} />
-      <Hr thickness={5} opacity={0.1} margin={[10, 0, 10, 0]} />
+      <Hr thickness={5} opacity={0.1} margin={[10, 0]} />
       <div {...styles.footer}>
         <div />
         <Button label={'Expand'} onClick={handleExpandClick} />

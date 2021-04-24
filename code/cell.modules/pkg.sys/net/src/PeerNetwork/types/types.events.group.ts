@@ -40,19 +40,25 @@ export type GroupEnsureConnectionClosed = {
  * Fires to retrieve a list of peer connections.
  */
 export type GroupConnectionsReqEvent = {
-  type: 'sys.net/group/peers:req';
-  payload: PeerConnectionsReq;
+  type: 'sys.net/group/connections:req';
+  payload: GroupPeerConnectionsReq;
 };
-export type PeerConnectionsReq = {
+export type GroupPeerConnectionsReq = {
   source: t.PeerId;
+  targets?: t.PeerId[];
   tx?: string;
 };
 
 export type GroupConnectionsResEvent = {
-  type: 'sys.net/group/peers:res';
-  payload: PeerConnectionsRes;
+  type: 'sys.net/group/connections:res';
+  payload: GroupPeerConnectionsRes;
 };
-export type PeerConnectionsRes = {
+export type GroupPeerConnectionsRes = {
   source: t.PeerId;
   tx: string;
+  peers: {
+    peer: t.PeerId;
+    module: t.PeerModule;
+    connections: { id: t.PeerConnectionId; kind: t.PeerConnectionKind }[];
+  }[];
 };

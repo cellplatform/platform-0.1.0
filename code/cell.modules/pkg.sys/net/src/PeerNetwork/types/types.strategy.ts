@@ -4,11 +4,12 @@ import { t } from './common';
  * Single combined set of network strategies.
  */
 export type PeerStrategy = t.IDisposable & {
-  connection: PeerConnectionStrategy;
+  connection: t.PeerConnectionStrategy;
+  group: t.PeerGroupStrategy;
 };
 
 /**
- * Handles strategies for connecting and disconnecting peers.
+ * Strategies for connecting and disconnecting peers.
  */
 export type PeerConnectionStrategy = t.IDisposable & {
   /**
@@ -25,4 +26,14 @@ export type PeerConnectionStrategy = t.IDisposable & {
    * Ensure connections are closed on all peers within the mesh.
    */
   ensureClosed: boolean;
+};
+
+/**
+ * Strategies for working with a group of peers ("mesh").
+ */
+export type PeerGroupStrategy = t.IDisposable & {
+  /**
+   * Retrieve details about the network of peers/connections.
+   */
+  connections: boolean;
 };

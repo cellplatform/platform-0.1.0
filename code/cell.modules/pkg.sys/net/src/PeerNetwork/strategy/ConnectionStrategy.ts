@@ -1,5 +1,5 @@
 import { t } from '../common';
-import { Events } from '../Events';
+import { Events } from '../Event';
 import { autoPerge, ensureClosed } from './ConnectionStrategy.close';
 import { autoPropagation } from './ConnectionStrategy.propogate';
 
@@ -28,6 +28,7 @@ export function ConnectionStrategy(args: {
     dispose$: events.dispose$,
     dispose: events.dispose,
 
+    // Enabled state.
     autoPurgeOnClose: true,
     autoPropagation: true,
     ensureClosed: true,

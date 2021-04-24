@@ -2,7 +2,7 @@ import { filter, debounceTime } from 'rxjs/operators';
 import { t, rx } from '../common';
 
 /**
- * Strategy for auto-purging connections when closed
+ * Strategy for auto-purging connections when closed.
  */
 export function autoPerge(args: {
   self: t.PeerId;
@@ -22,8 +22,8 @@ export function autoPerge(args: {
 }
 
 /**
- * Strategy for closed connections the close event is properly propergated
- * around the mesh.
+ * Strategy for closed connections the close event is properly
+ * propagated around the mesh network.
  */
 export function ensureClosed(args: {
   self: t.PeerId;

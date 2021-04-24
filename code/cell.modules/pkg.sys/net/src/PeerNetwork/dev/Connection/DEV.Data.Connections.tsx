@@ -55,7 +55,7 @@ export const DevDataConnections: React.FC<DevDataConnectionsProps> = (props) => 
   return (
     <div {...css(styles.base, props.style)}>
       <PropList title={'Data Connections'} items={items} defaults={{ clipboard: false }} />
-      <Hr thickness={5} opacity={0.1} margin={[10, 0, 10, 0]} />
+      <Hr thickness={5} opacity={0.1} margin={[10, 0]} />
       <div {...styles.footer}>
         <div />
         <Button label={'Expand'} onClick={handleExpandClick} />

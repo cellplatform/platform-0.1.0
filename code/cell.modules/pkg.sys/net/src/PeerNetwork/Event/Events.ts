@@ -1,6 +1,6 @@
 import { firstValueFrom, Subject } from 'rxjs';
 import { take, filter, takeUntil, map } from 'rxjs/operators';
-import { cuid, rx, t, slug, isEvent } from './common';
+import { cuid, rx, t, slug, isEvent } from '../common';
 
 import { EventNamespace as ns } from './Events.ns';
 export { ns };

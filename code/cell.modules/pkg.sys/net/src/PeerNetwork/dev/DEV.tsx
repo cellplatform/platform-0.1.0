@@ -242,6 +242,19 @@ export const actions = DevActions<Ctx>()
           e.boolean.current = strategy.connection.ensureClosed;
         }),
     );
+
+    e.hr(1, 0.1);
+
+    e.boolean((config) =>
+      config
+        .label('group.connections')
+        .description('Retrieve details about the network of peers/connections.')
+        .pipe((e) => {
+          const strategy = e.ctx.toStrategy();
+          if (e.changing) strategy.group.connections = e.changing.next;
+          e.boolean.current = strategy.group.connections;
+        }),
+    );
   })
 
   .subject((e) => {

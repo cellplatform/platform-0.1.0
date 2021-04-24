@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-import { Button, css, CssValue, Hr, PropList, PropListItem, t, time } from '../common';
-import { DevEventBus } from '../Event';
+import { Button, css, CssValue, Hr, PropList, PropListItem, t, time, PeerNetwork } from '../common';
 import { PropUtil, openHandler } from './util';
 
 export type DevDataConnectionProps = {
@@ -14,11 +13,10 @@ export type DevDataConnectionProps = {
 
 export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
   const { connection, bus } = props;
-  const peer = connection.peer;
 
   const open = (kind: t.PeerConnectionKindMedia) => openHandler({ bus, connection, kind });
 
-  const items: PropListItem[] = [
+  const mainItems: PropListItem[] = [
     ...PropUtil.common(connection),
     { label: 'reliable', value: connection.isReliable },
     {
@@ -28,6 +26,23 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
     {
       label: 'media/screen',
       value: <Button onClick={open('media/screen')} label={'Share Screen'} />,
+    },
+  ];
+
+  const strategyItems: PropListItem[] = [
+    {
+      label: 'group.connections',
+      value: (
+        <Button
+          label={'Fire'}
+          onClick={() => {
+            const events = PeerNetwork.Events({ bus });
+            console.log('fire', events);
+            //
+            // bus.fire({type:'sys.net/group/connections:req'})
+          }}
+        />
+      ),
     },
   ];
 
@@ -59,7 +74,9 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.body.base}>
-        <PropList title={'Data Connection'} items={items} defaults={{ clipboard: false }} />
+        <PropList title={'Data Connection'} items={mainItems} defaults={{ clipboard: false }} />
+        <Hr thickness={5} opacity={0.1} margin={[10, 0]} />
+        <PropList title={'Strategy'} items={strategyItems} defaults={{ clipboard: false }} />
       </div>
     </div>
   );
