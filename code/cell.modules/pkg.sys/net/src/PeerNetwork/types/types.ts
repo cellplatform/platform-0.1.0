@@ -16,14 +16,18 @@ export type PeerConnectDirection = 'incoming' | 'outgoing';
 
 export type PeerError = { message: string };
 
-export type PeerSignallingEndpoint = {
-  host: string;
-  port: number;
-  path?: string;
-  secure: boolean;
-};
+export type PeerSignallingEndpoint = { host: string; port: number; path?: string; secure: boolean };
 
 export type PeerModule = { name: string; version: string };
+
+/**
+ * Filter on a peer connection.
+ */
+export type PeerConnectionFilter = (e: PeerConnectionFilterArgs) => boolean;
+export type PeerConnectionFilterArgs = {
+  peer: t.PeerId;
+  connection: { id: t.PeerConnectionId; kind: t.PeerConnectionKind };
+};
 
 /**
  * Connection {metadata}.

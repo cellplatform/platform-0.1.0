@@ -14,14 +14,16 @@ import { DevCard } from '../DEV.Card';
 import { DevEventBus } from '../event';
 
 export type DevEventBusCardProps = {
+  self: t.PeerId;
   bus: t.EventBus<any>;
+  netbus: t.EventBus<any>;
   margin?: t.CssEdgesInput;
   style?: CssValue;
 };
 
 export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
-  const { bus } = props;
-  const history = useEventBusHistory(bus);
+  const { self, bus, netbus } = props;
+  const history = useEventBusHistory(netbus);
 
   const styles = {
     base: css({
@@ -38,18 +40,7 @@ export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
       <div {...styles.base}>
         <PropList title={'Network Bus'} items={items} defaults={{ clipboard: false }} />
         <Hr thickness={5} opacity={0.1} margin={[10, 0, 15, 0]} />
-
-        <DevEventBus
-          bus={bus}
-          canBroadcast={true}
-          history={history}
-          onBroadcast={(e) => {
-            // NB: Arbitrary invented event.
-            //     When using in application, pass a set of strong event types to the bus.
-            const msg = e.message ? e.message : `<empty>`;
-            bus.fire({ type: 'sample/event', payload: { msg } });
-          }}
-        />
+        <DevEventBus self={self} bus={bus} netbus={netbus} canBroadcast={true} history={history} />
       </div>
     </DevCard>
   );

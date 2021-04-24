@@ -1,18 +1,31 @@
 import { t } from './common';
 
-export type PeerDataEvent = PeerDataOutEvent | PeerDataInEvent;
+export type PeerDataEvent = PeerDataOutReqEvent | PeerDataOutResEvent | PeerDataInEvent;
 
 /**
  * Fires to sends OUTGOING data over the network
  */
-export type PeerDataOutEvent = {
-  type: 'sys.net/peer/data/out';
-  payload: PeerDataOut;
+export type PeerDataOutReqEvent = {
+  type: 'sys.net/peer/data/out:req';
+  payload: PeerDataOutReq;
 };
-export type PeerDataOut = {
+export type PeerDataOutReq = {
   self: t.PeerId;
-  target?: t.PeerId | t.PeerId[]; // If omitted broadcast to all connected peers.
-  data: t.JsonMap;
+  target?: t.PeerConnectionFilter; // If omitted broadcast to all connected peers.
+  data: any;
+  tx?: string;
+};
+
+export type PeerDataOutResEvent = {
+  type: 'sys.net/peer/data/out:res';
+  payload: PeerDataOutRes;
+};
+export type PeerDataOutRes = {
+  self: t.PeerId;
+  sent: { total: number; filtered: number };
+  targets: { peer: t.PeerId; connection: t.PeerConnectionId }[];
+  data: any;
+  tx?: string;
 };
 
 /**
@@ -24,7 +37,6 @@ export type PeerDataInEvent = {
 };
 export type PeerDataIn = {
   self: t.PeerId;
-  data: t.JsonMap;
-  source: t.PeerId;
-  target: t.PeerId[];
+  data: any;
+  source: { peer: t.PeerId; connection: t.PeerConnectionId };
 };

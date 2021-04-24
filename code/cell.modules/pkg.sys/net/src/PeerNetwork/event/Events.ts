@@ -213,27 +213,33 @@ export function Events(eventbus: t.EventBus<any>) {
   };
 
   const data = (self: t.PeerId) => {
-    const out$ = rx
-      .payload<t.PeerDataOutEvent>(event$, 'sys.net/peer/data/out')
-      .pipe(filter((e) => e.self === self));
+    const out = {
+      req$: rx
+        .payload<t.PeerDataOutReqEvent>(event$, 'sys.net/peer/data/out:req')
+        .pipe(filter((e) => e.self === self)),
+      res$: rx
+        .payload<t.PeerDataOutResEvent>(event$, 'sys.net/peer/data/out:res')
+        .pipe(filter((e) => e.self === self)),
+    };
 
     const in$ = rx
       .payload<t.PeerDataInEvent>(event$, 'sys.net/peer/data/in')
       .pipe(filter((e) => e.self === self));
 
-    const send = (data: any, target?: t.PeerId | t.PeerId[]) => {
-      bus.fire({
-        type: 'sys.net/peer/data/out',
-        payload: { self, target, data },
-      });
+    const send = (data: any, options: { target?: t.PeerConnectionFilter } = {}) => {
+      const { target } = options;
+      const tx = slug();
+      const res = firstValueFrom(out.res$.pipe(filter((e) => e.tx === tx)));
+      bus.fire({ type: 'sys.net/peer/data/out:req', payload: { self, target, data, tx } });
+      return res;
     };
 
     return {
       self,
+      out,
       in$,
-      out$,
       send,
-      bus<E extends t.Event>(options: { target?: () => t.PeerDataOut['target'] } = {}) {
+      bus<E extends t.Event>(options: { target?: t.PeerConnectionFilter } = {}) {
         const bus$ = new Subject<t.Event>();
         let current: undefined | t.Event;
 
@@ -245,15 +251,17 @@ export function Events(eventbus: t.EventBus<any>) {
           )
           .subscribe((e) => {
             // NB: undefined target sends to all connections.
-            const target = options.target ? options.target() : undefined;
-            send(e, target);
+            // send(e, options);
           });
 
         // Listen for incoming events from the network and pass into the bus.
         in$.pipe(filter((e) => isEvent(e.data))).subscribe((e) => {
-          current = e.data as t.Event;
-          bus$.next(current);
-          current = undefined;
+          /**
+           * TODO 🐷
+           */
+          // current = e.data as t.Event;
+          // bus$.next(current);
+          // current = undefined;
         });
 
         return rx.bus<E>(bus$);

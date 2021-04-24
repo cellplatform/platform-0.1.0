@@ -2,7 +2,6 @@ import { merge } from 'rxjs';
 import { delay, distinctUntilChanged, filter, map, take } from 'rxjs/operators';
 
 import {
-  asArray,
   defaultValue,
   PeerJS,
   PeerJSError,
@@ -63,13 +62,12 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     tx?: string,
   ) => {
     const connRef = refs.connection(self).get(conn);
-    tx = tx || slug();
 
     bus.fire({
       type: 'sys.net/peer/conn/connect:res',
       payload: {
         self: self.id,
-        tx,
+        tx: tx || slug(),
         kind,
         direction,
         existing: false,
@@ -92,13 +90,12 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
     if (kind === 'data') {
       const data = conn as PeerJS.DataConnection;
-      data.on('data', (data: t.JsonMap) => {
+      data.on('data', (data: any) => {
         if (typeof data === 'object') {
-          const e = data as t.PeerDataOut;
-          const target = asArray(e.target || []);
+          const source = { peer: connRef.peer.remote.id, connection: connRef.id };
           bus.fire({
             type: 'sys.net/peer/data/in',
-            payload: { self: self.id, data: e.data, source: e.self, target },
+            payload: { self: self.id, data, source },
           });
         }
       });
@@ -451,15 +448,41 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   /**
    * DATA:OUT: Send
    */
-  rx.payload<t.PeerDataOutEvent>($, 'sys.net/peer/data/out')
+  rx.payload<t.PeerDataOutReqEvent>($, 'sys.net/peer/data/out:req')
     .pipe()
     .subscribe((e) => {
-      const target = e.target === undefined ? [] : asArray(e.target);
-      if (target.length === 0) target.push(...refs.connection(e.self).ids);
-      refs
-        .connection(e.self)
-        .data.filter((conn) => (!e.target ? true : target.includes(conn.peer)))
-        .forEach((conn) => conn.send({ ...e, target }));
+      const selfRef = refs.self[e.self];
+      const tx = e.tx || slug();
+      let filtered = 0;
+
+      const targets = selfRef.connections
+        .filter((ref) => ref.kind === 'data')
+        .filter((ref) => {
+          if (!e.target) return true;
+          const send = e.target({
+            peer: ref.peer.remote.id,
+            connection: { id: ref.id, kind: ref.kind },
+          });
+          if (send === false) filtered = filtered += 1;
+          return send;
+        });
+
+      // Send the data over the wire.
+      targets.forEach((ref) => {
+        (ref.conn as PeerJS.DataConnection).send(e.data);
+      });
+
+      // Fire response event.
+      bus.fire({
+        type: 'sys.net/peer/data/out:res',
+        payload: {
+          tx,
+          self: e.self,
+          sent: { total: targets.length, filtered },
+          targets: targets.map((ref) => ({ peer: ref.peer.remote.id, connection: ref.id })),
+          data: e.data,
+        },
+      });
     });
 
   /**
