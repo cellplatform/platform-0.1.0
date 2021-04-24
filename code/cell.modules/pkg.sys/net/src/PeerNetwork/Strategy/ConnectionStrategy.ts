@@ -12,7 +12,7 @@ export function ConnectionStrategy(args: {
 }): t.PeerConnectionStrategy {
   const { self } = args;
   const bus = args.bus.type<t.PeerEvent>();
-  const events = Events({ bus });
+  const events = Events(bus);
 
   /**
    * Initialize sub-strategies.

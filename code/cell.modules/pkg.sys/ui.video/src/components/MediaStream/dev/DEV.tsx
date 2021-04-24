@@ -34,7 +34,7 @@ export const actions = DevActions<Ctx>()
 
     const ref = cuid();
     const bus = rx.bus<t.MediaEvent>();
-    const events = MediaStream.Events({ bus });
+    const events = MediaStream.Events(bus);
 
     MediaStream.Controller({ bus });
     MediaStream.RecordController({ ref, bus });

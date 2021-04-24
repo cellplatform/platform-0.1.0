@@ -17,7 +17,7 @@ export function useLocalPeer(args: { self: t.PeerId; bus: t.EventBus<any> }) {
   const [screen, setScreen] = useState<MediaStream>();
 
   useEffect(() => {
-    const events = Events({ bus });
+    const events = Events(bus);
     const media = events.media(self);
 
     const setMedia = (kind: t.PeerConnectionKindMedia, media?: MediaStream) => {

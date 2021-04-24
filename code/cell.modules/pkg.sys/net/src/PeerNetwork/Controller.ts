@@ -26,7 +26,7 @@ type ConnectionKind = t.PeerNetworkConnectRes['kind'];
  */
 export function Controller(args: { bus: t.EventBus<any> }) {
   const bus = args.bus.type<t.PeerEvent>();
-  const events = Events({ bus });
+  const events = Events(bus);
   const $ = events.$;
 
   const refs = MemoryRefs();

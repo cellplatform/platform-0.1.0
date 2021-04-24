@@ -15,7 +15,7 @@ export async function groupConnections(args: {
    * TODO 🐷
    */
   // const bus = args.bus.type<t.PeerEvent>();
-  // const events = Events({ bus });
+  // const events = Events(bus);
 
   // console.log('groupConnections', groupConnections);
 

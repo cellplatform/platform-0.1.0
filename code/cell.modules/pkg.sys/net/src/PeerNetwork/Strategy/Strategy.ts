@@ -8,7 +8,7 @@ import { GroupStrategy } from './GroupStrategy';
  */
 export function Strategy(args: { self: t.PeerId; bus: t.EventBus<any> }): t.PeerStrategy {
   const bus = args.bus.type<t.PeerEvent>();
-  const events = Events({ bus });
+  const events = Events(bus);
 
   const connection = ConnectionStrategy(args);
   const group = GroupStrategy(args);

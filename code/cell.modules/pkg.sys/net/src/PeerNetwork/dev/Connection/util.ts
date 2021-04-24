@@ -9,7 +9,7 @@ export function openHandler(args: {
     const { bus, kind, connection } = args;
     const { self, remote } = connection.peer;
     const parent = connection.id;
-    const events = PeerNetwork.Events({ bus });
+    const events = PeerNetwork.Events(bus);
     await events.connection(self, remote.id).open.media(kind, { parent });
     events.dispose();
   };

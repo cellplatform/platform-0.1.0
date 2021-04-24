@@ -36,7 +36,7 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
         <Button
           label={'Fire'}
           onClick={() => {
-            const events = PeerNetwork.Events({ bus });
+            const events = PeerNetwork.Events(bus);
             console.log('fire', events);
             //
             // bus.fire({type:'sys.net/group/connections:req'})

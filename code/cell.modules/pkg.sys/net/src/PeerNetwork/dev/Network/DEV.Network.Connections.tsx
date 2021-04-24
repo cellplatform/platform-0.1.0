@@ -40,7 +40,7 @@ export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (prop
   const media = connections.filter((e) => e.kind !== 'data') as t.PeerConnectionMediaStatus[];
 
   useEffect(() => {
-    const events = PeerNetwork.Events({ bus });
+    const events = PeerNetwork.Events(bus);
     const status$ = events.status(self).changed$.pipe(map((e) => e.peer));
 
     const updateConnections = async (peer?: t.PeerStatus) => {

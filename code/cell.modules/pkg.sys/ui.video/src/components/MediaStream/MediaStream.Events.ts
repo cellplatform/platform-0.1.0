@@ -6,10 +6,10 @@ import { rx, slug, t } from '../../common';
 /**
  * Helpers for working with <VideoStream> events.
  */
-export function MediaStreamEvents(args: { bus: t.EventBus<any> }) {
+export function MediaStreamEvents(eventbus: t.EventBus<any>) {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
-  const bus = args.bus.type<t.MediaStreamEvent | t.MediaStreamsEvent>();
+  const bus = eventbus.type<t.MediaStreamEvent | t.MediaStreamsEvent>();
   const event$ = bus.event$.pipe(takeUntil(dispose$));
 
   /**

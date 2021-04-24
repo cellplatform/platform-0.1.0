@@ -15,8 +15,8 @@ export const EventBridge = {
     const bus = args.bus.type<t.PeerEvent | t.MediaEvent>();
 
     const events = {
-      net: PeerNetwork.Events({ bus }),
-      media: MediaStream.Events({ bus }),
+      net: PeerNetwork.Events(bus),
+      media: MediaStream.Events(bus),
     };
 
     /**

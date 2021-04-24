@@ -47,8 +47,8 @@ export const actions = DevActions<Ctx>()
 
     const signal = 'rtc.cellfs.com/peer';
     const events = {
-      net: PeerNetwork.Events({ bus }),
-      media: MediaStream.Events({ bus }),
+      net: PeerNetwork.Events(bus),
+      media: MediaStream.Events(bus),
     };
 
     const init = () => {

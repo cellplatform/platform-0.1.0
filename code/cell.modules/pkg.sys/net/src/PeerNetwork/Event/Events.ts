@@ -8,10 +8,10 @@ export { ns };
 /**
  * Helpers for working with a [PeerNetwork].
  */
-export function Events(args: { bus: t.EventBus<any> }) {
+export function Events(eventbus: t.EventBus<any>) {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
-  const bus = args.bus.type<t.PeerEvent>();
+  const bus = eventbus.type<t.PeerEvent>();
 
   const event$ = bus.event$.pipe(
     takeUntil(dispose$),
