@@ -12,7 +12,7 @@ export type DevDataConnectionProps = {
 };
 
 export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
-  const { connection, bus } = props;
+  const { self, connection, bus, netbus } = props;
 
   const open = (kind: t.PeerConnectionKindMedia) => openHandler({ bus, connection, kind });
 
@@ -35,9 +35,11 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
       value: (
         <Button
           label={'Run'}
-          onClick={() => {
-            const events = PeerNetwork.Events(bus);
+          onClick={async () => {
+            const events = PeerNetwork.GroupEvents({ self, bus: netbus });
             console.log('fire', events);
+
+            const res = await events.connections().get();
             //
             // bus.fire({type:'sys.net/group/connections:req'})
           }}

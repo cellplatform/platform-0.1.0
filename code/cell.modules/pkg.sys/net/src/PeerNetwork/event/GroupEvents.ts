@@ -1,21 +1,45 @@
-import { t } from '../common';
-import { Events } from './Events';
+import { firstValueFrom, Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
+
+import { rx, slug, t } from '../common';
+import { EventNamespace as ns } from './Events.ns';
 
 /**
  * Helpers for working with group (mesh) related events.
  */
-export function GroupEvents(eventbus: t.EventBus<any>) {
-  // const { self } = args;
-  const events = Events(eventbus);
-  // const bus = eventbus.type<t.Group>();
+export function GroupEvents(args: { self: t.PeerId; bus: t.EventBus<any> }) {
+  const source = args.self;
+  const dispose$ = new Subject<void>();
+  const dispose = () => dispose$.next();
+  const bus = args.bus.type<t.GroupEvent>();
 
-  const connections = (self: t.PeerId) => {
-    //
+  const event$ = bus.event$.pipe(
+    takeUntil(dispose$),
+    filter(ns.is.group.base),
+    map((e) => e as t.GroupEvent),
+  );
+
+  const connections = () => {
+    const req$ = rx.payload<t.GroupConnectionsReqEvent>(event$, 'sys.net/group/connections:req');
+    const res$ = rx.payload<t.GroupConnectionsResEvent>(event$, 'sys.net/group/connections:res');
+
+    const get = (targets?: t.PeerId[]) => {
+      const tx = slug();
+      const res = firstValueFrom(res$.pipe(filter((e) => e.tx === tx)));
+      bus.fire({
+        type: 'sys.net/group/connections:req',
+        payload: { source, targets, tx },
+      });
+      return res;
+    };
+
+    return { req$, res$, get };
   };
 
   return {
-    self,
-    dispose: events.dispose,
-    dispose$: events.dispose$,
+    dispose,
+    dispose$,
+    $: event$,
+    connections,
   };
 }

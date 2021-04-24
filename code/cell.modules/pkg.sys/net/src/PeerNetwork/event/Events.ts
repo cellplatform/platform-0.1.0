@@ -221,10 +221,10 @@ export function Events(eventbus: t.EventBus<any>) {
       .payload<t.PeerDataInEvent>(event$, 'sys.net/peer/data/in')
       .pipe(filter((e) => e.self === self));
 
-    const send = (data: t.JsonMap, target?: t.PeerId | t.PeerId[]) => {
+    const send = (data: any, target?: t.PeerId | t.PeerId[]) => {
       bus.fire({
         type: 'sys.net/peer/data/out',
-        payload: { self, data, target },
+        payload: { self, target, data },
       });
     };
 
