@@ -10,6 +10,7 @@ import { t } from '../common';
 export type ActionGetContext<C> = (e: ActionGetContextArgs<C>) => C;
 
 export type ActionGetContextArgs<C> = {
+  namespace: string;
   prev: C | undefined;
   change: ActionGetContextChange<C>;
   count: number; // Number of times the context method has been called within the current lifecycle.
@@ -28,12 +29,6 @@ export type ActionHandlerSubjectArgs<C> = t.ActionHandlerArgs<C> & {
   readonly settings: t.ActionHandlerSettings<ActionHandlerSubjectArgs<C>>;
   render(el: JSX.Element, layout?: t.HostedLayout): ActionHandlerSubjectArgs<C>;
 };
-
-/**
- * Controller logic.
- */
-export type ActionHandlerController<C> = (args: t.ActionHandlerControllerArgs<C>) => void;
-export type ActionHandlerControllerArgs<C> = t.ActionHandlerArgs<C>;
 
 /**
  * Common values passed to all handlers.

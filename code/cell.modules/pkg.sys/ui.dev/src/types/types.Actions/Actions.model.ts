@@ -12,7 +12,6 @@ export type ActionsModel<Ctx> = {
   };
   env: ActionsModelEnv;
   subject?: t.ActionHandlerSubject<Ctx>;
-  controller?: t.ActionHandlerController<Ctx>;
   initialized?: boolean;
 };
 
