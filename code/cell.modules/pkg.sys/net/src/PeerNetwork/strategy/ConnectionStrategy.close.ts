@@ -46,7 +46,7 @@ export function ensureClosed(args: {
       if (connection) {
         netbus.fire({
           type: 'sys.net/group/conn/ensure:closed',
-          payload: { from: self, connection },
+          payload: { source: self, connection },
         });
       }
     });
@@ -57,7 +57,7 @@ export function ensureClosed(args: {
   rx.payload<t.GroupEnsureConnectionClosedEvent>(netbus.event$, 'sys.net/group/conn/ensure:closed')
     .pipe(
       filter(() => args.isEnabled()),
-      filter((e) => e.from !== self),
+      filter((e) => e.source !== self),
     )
     .subscribe(async (e) => {
       const { peer } = await events.status(self).get();

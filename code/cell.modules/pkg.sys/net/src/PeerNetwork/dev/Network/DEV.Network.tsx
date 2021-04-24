@@ -18,7 +18,6 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
   const { peer, media, netbus } = props;
   const bus = props.bus.type<t.PeerEvent>();
   const state = useDevState({ bus });
-  const connections = peer.connections;
 
   const styles = {
     base: css({
@@ -41,7 +40,7 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
         self={peer.id}
         bus={bus}
         netbus={netbus}
-        collapseCards={true}
+        collapse={{ data: true, media: false }}
         showNetbus={true}
       />
       {modalSize === 'body' && elModal}

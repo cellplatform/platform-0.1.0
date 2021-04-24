@@ -1,6 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { css, CssValue, EventBusHistory, Hr, PropList, PropListItem, t } from '../common';
+import {
+  css,
+  CssValue,
+  EventBusHistory,
+  Hr,
+  PropList,
+  PropListItem,
+  t,
+  useEventBusHistory,
+} from '../common';
 import { DevCard } from '../DEV.Card';
 import { DevEventBus } from '../Event';
 
@@ -12,8 +21,7 @@ export type DevEventBusCardProps = {
 
 export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
   const { bus } = props;
-
-  const [history, setHistory] = useState<EventBusHistory>({ total: 0, events: [] });
+  const history = useEventBusHistory(bus);
 
   const styles = {
     base: css({
@@ -34,7 +42,7 @@ export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
         <DevEventBus
           bus={bus}
           canBroadcast={true}
-          onHistoryChange={(e) => setHistory(e)}
+          history={history}
           onBroadcast={(e) => {
             // NB: Arbitrary invented event.
             //     When using in application, pass a set of strong event types to the bus.

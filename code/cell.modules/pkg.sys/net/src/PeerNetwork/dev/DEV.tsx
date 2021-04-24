@@ -1,5 +1,5 @@
 import React from 'react';
-import { DevActions, ObjectView } from 'sys.ui.dev';
+import { DevActions, ObjectView, LocalStorage } from 'sys.ui.dev';
 
 import { css, cuid, deleteUndefined, Icons, MediaStream, rx, t, time, PeerNetwork } from './common';
 import { RootLayout } from './DEV.Root';
@@ -11,15 +11,19 @@ type Ctx = {
   bus: t.EventBus<t.PeerEvent | t.DevEvent>;
   netbus: t.EventBus;
   signal: string; // Signalling server network address (host/path).
-  events: {
-    net: t.PeerNetworkEvents;
-    media: ReturnType<typeof MediaStream.Events>;
-  };
+  events: CtxEvents;
   strategy: t.PeerStrategy;
   connectTo?: string;
+  toStrategy(): t.PeerStrategy;
+  toFlags(): CtxFlags;
+};
+type CtxFlags = {
   isReliable: boolean;
   debugJson: boolean;
-  toStrategy(): t.PeerStrategy;
+};
+type CtxEvents = {
+  net: t.PeerNetworkEvents;
+  media: ReturnType<typeof MediaStream.Events>;
 };
 
 /**
@@ -29,7 +33,7 @@ export const actions = DevActions<Ctx>()
   .namespace('PeerNetwork')
 
   .context((e) => {
-    if (e.prev && e.count > 0) return e.prev;
+    if (e.prev) return e.prev;
 
     const self = cuid();
     const bus = rx.bus<t.PeerEvent | t.DevEvent>();
@@ -61,6 +65,10 @@ export const actions = DevActions<Ctx>()
       console.log('NET/CHANGED', e);
     });
 
+    const local = LocalStorage<CtxFlags>('sys.net/dev/');
+    const flags = local.object({ isReliable: true, debugJson: false });
+    local.changed$.subscribe(() => e.redraw());
+
     return {
       self,
       bus,
@@ -68,8 +76,9 @@ export const actions = DevActions<Ctx>()
       events,
       strategy,
       signal,
-      isReliable: true,
-      debugJson: false,
+      toFlags: () => flags,
+      // isReliable: true,
+      // debugJson: local.get('debugJson', false),
       connectTo: '',
       toStrategy: () => strategy,
     };
@@ -79,8 +88,9 @@ export const actions = DevActions<Ctx>()
     e.title('Environment');
 
     e.boolean('debug (json)', (e) => {
-      if (e.changing) e.ctx.debugJson = e.changing.next;
-      e.boolean.current = e.ctx.debugJson;
+      const flags = e.ctx.toFlags();
+      if (e.changing) flags.debugJson = e.changing.next;
+      e.boolean.current = flags.debugJson;
     });
 
     e.button('network model', (e) => {
@@ -166,10 +176,11 @@ export const actions = DevActions<Ctx>()
     e.hr(0, 0, 20);
 
     e.button('fire ⚡️ Peer:Connection/connect (data)', async (e) => {
-      const { self, connectTo, events, isReliable } = e.ctx;
+      const { self, connectTo, events } = e.ctx;
       if (!connectTo) {
         e.button.description = '🐷 ERROR: Remote peer not specified';
       } else {
+        const isReliable = e.ctx.toFlags().isReliable;
         const res = await events.net.connection(self, connectTo).open.data({ isReliable });
         const name = res.error ? 'Fail' : 'Success';
         const expandLevel = res.error ? 1 : 0;
@@ -183,8 +194,9 @@ export const actions = DevActions<Ctx>()
         .indent(25)
         .label('reliable')
         .pipe((e) => {
-          if (e.changing) e.ctx.isReliable = e.changing.next;
-          const isReliable = e.ctx.isReliable;
+          const flags = e.ctx.toFlags();
+          if (e.changing) flags.isReliable = e.changing.next;
+          const isReliable = flags.isReliable;
           e.boolean.current = isReliable;
           e.boolean.description = isReliable
             ? '(eg. large file transfers)'
@@ -234,6 +246,7 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     const { self, bus, netbus } = e.ctx;
+    const flags = e.ctx.toFlags();
 
     const styles = {
       labelRight: {
@@ -266,7 +279,7 @@ export const actions = DevActions<Ctx>()
       actions: { width: 380 },
     });
 
-    e.render(<RootLayout self={self} bus={bus} netbus={netbus} debugJson={e.ctx.debugJson} />);
+    e.render(<RootLayout self={self} bus={bus} netbus={netbus} debugJson={flags.debugJson} />);
   });
 
 export default actions;

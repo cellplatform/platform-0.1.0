@@ -7,7 +7,7 @@ export { Button, ButtonProps } from '@platform/ui.button';
 /**
  * System
  */
-export { ObjectView, Textbox, Hr } from 'sys.ui.dev';
+export { ObjectView, Textbox, Hr, LocalStorage } from 'sys.ui.dev';
 export { Card, CardProps } from 'sys.ui.primitives/lib/components/Card';
 export {
   CardStack,

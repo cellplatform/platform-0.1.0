@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { map } from 'rxjs/operators';
 
-import { css, CssValue, PeerNetwork, t } from '../common';
+import { css, CssValue, defaultValue, PeerNetwork, t } from '../common';
 import {
   DevConnection,
   DevConnections,
@@ -9,13 +9,12 @@ import {
   DevMediaConnections,
 } from '../Connection';
 import { DevEventBusCard } from '../Event';
-import { DevCard } from '../DEV.Card';
 
 export type DevNetworkConnectionsProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.EventBus<any>;
-  collapseCards?: boolean;
+  collapse?: boolean | { data?: boolean; media?: boolean };
   showNetbus?: boolean;
   filter?: (connection: t.PeerConnectionStatus) => boolean;
   paddingTop?: number;
@@ -23,8 +22,18 @@ export type DevNetworkConnectionsProps = {
 };
 
 export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (props) => {
-  const { self, netbus, collapseCards, showNetbus } = props;
+  const { self, netbus } = props;
   const bus = props.bus.type<t.PeerEvent>();
+  const collapse = {
+    data:
+      typeof props.collapse === 'boolean'
+        ? props.collapse
+        : defaultValue(props.collapse?.data, true),
+    media:
+      typeof props.collapse === 'boolean'
+        ? props.collapse
+        : defaultValue(props.collapse?.media, true),
+  };
 
   const [connections, setConnections] = useState<t.PeerConnectionStatus[]>([]);
   const data = connections.filter((e) => e.kind === 'data') as t.PeerConnectionDataStatus[];
@@ -75,10 +84,11 @@ export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (prop
   };
 
   const renderCard = <T extends t.PeerConnectionStatus>(
+    collapse: boolean,
     items: T[],
     stackBody: (items: T[]) => JSX.Element,
   ) => {
-    if (!collapseCards) return items.map(toConnection);
+    if (!collapse) return items.map(toConnection);
     if (items.length < 1) return null;
     if (items.length === 1) return toConnection(items[0]);
     return (
@@ -88,11 +98,11 @@ export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (prop
     );
   };
 
-  const elData = renderCard(data, (items) => (
+  const elData = renderCard(collapse.data, data, (items) => (
     <DevDataConnections self={self} bus={bus} netbus={netbus} connections={items} />
   ));
 
-  const elMedia = renderCard(media, (items) => (
+  const elMedia = renderCard(collapse.media, media, (items) => (
     <DevMediaConnections self={self} bus={bus} netbus={netbus} connections={items} />
   ));
 

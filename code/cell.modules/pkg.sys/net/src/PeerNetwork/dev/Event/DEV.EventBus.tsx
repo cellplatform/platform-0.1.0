@@ -1,17 +1,16 @@
 import { color } from '@platform/css';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   COLORS,
   css,
   CssValue,
+  EventBusHistory,
   EventPipe,
   EventStack,
   Icons,
   t,
   Textbox,
-  useEventBusHistory,
-  EventBusHistory,
 } from '../common';
 
 export type DevEventbusOnBroadcastEvent = { bus: t.EventBus<any>; message: string };
@@ -19,16 +18,15 @@ export type DevEventBusOnBroadcastEventHandler = (e: DevEventbusOnBroadcastEvent
 
 export type DevEventBusProps = {
   bus: t.EventBus<any>;
+  history: EventBusHistory;
   canBroadcast?: boolean;
   style?: CssValue;
   onBroadcast?: DevEventBusOnBroadcastEventHandler;
-  onHistoryChange?: (e: EventBusHistory) => void;
 };
 
 export const DevEventBus: React.FC<DevEventBusProps> = (props) => {
-  const { canBroadcast, onHistoryChange } = props;
+  const { canBroadcast, history } = props;
   const bus = props.bus;
-  const history = useEventBusHistory(bus, { onChange: onHistoryChange });
 
   const styles = {
     base: css({ position: 'relative' }),

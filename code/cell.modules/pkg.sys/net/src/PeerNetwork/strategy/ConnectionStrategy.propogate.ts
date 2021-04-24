@@ -49,7 +49,7 @@ export function autoPropagation(args: {
 
         netbus.fire({
           type: 'sys.net/group/conn/ensure:data',
-          payload: { from: self, connections, isReliable },
+          payload: { source: self, connections, isReliable },
         });
       }
     });

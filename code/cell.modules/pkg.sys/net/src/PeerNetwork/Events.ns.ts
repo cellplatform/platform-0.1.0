@@ -1,4 +1,4 @@
-import { t, R } from './common';
+import { t } from './common';
 
 const NAMESPACES = {
   base: 'sys.net',
@@ -8,8 +8,8 @@ const NAMESPACES = {
     connection: 'sys.net/peer/connection',
     local: 'sys.net/peer/local',
   },
-  mesh: {
-    base: 'sys.net/mesh',
+  group: {
+    base: 'sys.net/group',
   },
 };
 
@@ -30,8 +30,8 @@ export const EventNamespace = {
       connection: isMatchHandler(NAMESPACES.peer.connection),
       local: isMatchHandler(NAMESPACES.peer.local),
     },
-    mesh: {
-      base: isMatchHandler(NAMESPACES.mesh.base),
+    group: {
+      base: isMatchHandler(NAMESPACES.group.base),
     },
   },
 };

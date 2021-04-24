@@ -23,8 +23,8 @@ export const Status = {
       const conn = ref.conn as PeerJS.DataConnection;
       const { reliable: isReliable, open: isOpen } = conn;
       const metadata = (conn.metadata || {}) as t.PeerConnectionMetadataData;
-      const { parent, module } = metadata;
-      return { uri, id, peer, kind, direction, isReliable, isOpen, parent, module };
+      const { parent } = metadata;
+      return { uri, id, peer, kind, direction, isReliable, isOpen, parent };
     }
 
     if (kind === 'media/video' || kind === 'media/screen') {
@@ -32,8 +32,8 @@ export const Status = {
       const conn = ref.conn as PeerJS.MediaConnection;
       const { open: isOpen } = conn;
       const metadata = (conn.metadata || {}) as t.PeerConnectionMetadataMedia;
-      const { parent, module } = metadata;
-      return { uri, id, peer, kind, direction, isOpen, media, parent, module };
+      const { parent } = metadata;
+      return { uri, id, peer, kind, direction, isOpen, media, parent };
     }
 
     throw new Error(`Kind of connection not supported: ${uri}`);

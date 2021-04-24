@@ -43,16 +43,17 @@ export function MemoryRefs() {
           conn: PeerJS.DataConnection | PeerJS.MediaConnection,
           remoteStream?: MediaStream,
         ) {
-          const remote = { id: conn.peer };
-          const peer = { self: self.peer.id, remote };
           const id = getId(conn);
+          const metadata = conn.metadata as t.PeerConnectionMetadata;
+          const { parent, module } = metadata;
+
+          const remote = { id: conn.peer, module };
+          const peer = { self: self.peer.id, remote };
           const uri = Uri.connection(kind, remote.id, id);
 
           const existing = self.connections.find((item) => item.uri === uri);
           if (existing) return existing;
 
-          const metadata = conn.metadata as t.PeerConnectionMetadata;
-          const parent = metadata.parent;
           const ref: ConnectionRef = { kind, uri, id, peer, direction, conn, remoteStream, parent };
           self.connections = [...self.connections, ref];
 

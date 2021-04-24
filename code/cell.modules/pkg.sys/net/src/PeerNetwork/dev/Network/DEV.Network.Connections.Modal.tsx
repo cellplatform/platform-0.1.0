@@ -37,7 +37,7 @@ export const DevNetworkConnectionsModal: React.FC<DevNetworkConnectionsModalProp
         self={self}
         bus={bus}
         netbus={netbus}
-        collapseCards={false}
+        collapse={false}
         filter={props.filter}
         paddingTop={headerHeight}
       />

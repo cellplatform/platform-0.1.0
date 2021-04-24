@@ -13,6 +13,7 @@ export type DevVideoFullscreenProps = {
 export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => {
   const { stream } = props;
   const bus = props.bus.type<t.DevEvent>();
+  const isLocalhost = location.hostname === 'localhost';
 
   const rootRef = useRef<HTMLDivElement>(null);
   const resize = useResizeObserver(rootRef);
@@ -24,7 +25,13 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
   };
 
   const elVideo = resize.ready && stream && (
-    <VideoStream stream={stream} width={width} height={height} isMuted={true} borderRadius={0} />
+    <VideoStream
+      stream={stream}
+      width={width}
+      height={height}
+      isMuted={isLocalhost ? true : false}
+      borderRadius={0}
+    />
   );
 
   const elWaveform = resize.ready && stream && props.waveform && (

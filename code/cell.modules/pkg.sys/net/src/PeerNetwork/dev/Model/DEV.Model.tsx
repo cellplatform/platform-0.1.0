@@ -84,7 +84,7 @@ export const DevModel: React.FC<DevModelProps> = (props) => {
           </div>
           <div {...styles.body.middle}></div>
           <div {...styles.body.right}>
-            <DevEventBus bus={netbus} style={{ width: 350 }} />
+            {/* <DevEventBus bus={netbus} style={{ width: 350 }} /> */}
           </div>
         </div>
       </div>

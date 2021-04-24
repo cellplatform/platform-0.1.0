@@ -14,18 +14,13 @@ export type DevMediaConnectionProps = {
 export const DevMediaConnection: React.FC<DevMediaConnectionProps> = (props) => {
   const { connection, bus } = props;
   const { kind } = connection;
-
   const streamId = connection.media?.id;
   const isLocalhost = location.hostname === 'localhost';
 
   const items: PropListItem[] = [...PropUtil.common(connection)];
 
   const styles = {
-    base: css({
-      position: 'relative',
-      padding: 12,
-      paddingRight: 18,
-    }),
+    base: css({ position: 'relative', padding: 12, paddingRight: 18 }),
     video: css({ Flex: 'vertical-center-center' }),
   };
 

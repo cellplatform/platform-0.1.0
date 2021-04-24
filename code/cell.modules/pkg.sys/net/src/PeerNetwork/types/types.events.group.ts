@@ -4,7 +4,11 @@ import { t } from './common';
  * NOTE: These events are fired over the "network bus" to
  *       other connected clients.
  */
-export type GroupEvent = GroupEnsureConnectedDataEvent | GroupEnsureConnectionClosedEvent;
+export type GroupEvent =
+  | GroupEnsureConnectedDataEvent
+  | GroupEnsureConnectionClosedEvent
+  | GroupConnectionsReqEvent
+  | GroupConnectionsResEvent;
 
 /**
  * Broadcasts to peers a set of connections they should ensure
@@ -15,7 +19,7 @@ export type GroupEnsureConnectedDataEvent = {
   payload: GroupEnsureConnectedData;
 };
 export type GroupEnsureConnectedData = {
-  from: t.PeerId;
+  source: t.PeerId;
   connections: { peer: t.PeerId; id: t.PeerConnectionId }[];
   isReliable: boolean;
 };
@@ -28,6 +32,27 @@ export type GroupEnsureConnectionClosedEvent = {
   payload: GroupEnsureConnectionClosed;
 };
 export type GroupEnsureConnectionClosed = {
-  from: t.PeerId;
+  source: t.PeerId;
   connection: t.PeerConnectionId;
+};
+
+/**
+ * Fires to retrieve a list of peer connections.
+ */
+export type GroupConnectionsReqEvent = {
+  type: 'sys.net/group/peers:req';
+  payload: PeerConnectionsReq;
+};
+export type PeerConnectionsReq = {
+  source: t.PeerId;
+  tx?: string;
+};
+
+export type GroupConnectionsResEvent = {
+  type: 'sys.net/group/peers:res';
+  payload: PeerConnectionsRes;
+};
+export type PeerConnectionsRes = {
+  source: t.PeerId;
+  tx: string;
 };
