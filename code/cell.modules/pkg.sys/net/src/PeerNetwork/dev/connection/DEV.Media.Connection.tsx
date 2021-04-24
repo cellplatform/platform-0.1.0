@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { css, CssValue, Hr, PropList, PropListItem, t } from '../common';
-import { DevVideo } from '../Media';
+import { DevVideo } from '../media';
 import { PropUtil } from './util';
 
 export type DevMediaConnectionProps = {

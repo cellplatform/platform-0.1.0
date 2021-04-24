@@ -11,7 +11,7 @@ import {
   useEventBusHistory,
 } from '../common';
 import { DevCard } from '../DEV.Card';
-import { DevEventBus } from '../Event';
+import { DevEventBus } from '../event';
 
 export type DevEventBusCardProps = {
   bus: t.EventBus<any>;

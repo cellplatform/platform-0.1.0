@@ -3,7 +3,7 @@ import { ObjectView } from 'sys.ui.dev';
 
 import { useLocalPeer } from '../hooks';
 import { COLORS, css, CssValue, t, useDragTarget } from './common';
-import { DevNetwork } from './Network';
+import { DevNetwork } from './network';
 
 export type RootLayoutProps = {
   self: t.PeerId;

@@ -3,8 +3,8 @@ import { DevActions, ObjectView, LocalStorage } from 'sys.ui.dev';
 
 import { css, cuid, deleteUndefined, Icons, MediaStream, rx, t, time, PeerNetwork } from './common';
 import { RootLayout } from './DEV.Root';
-import { DevModel } from './Model';
-import { EventBridge } from './Event/DEV.EventBridge';
+import { DevModel } from './model';
+import { EventBridge } from './event';
 
 type Ctx = {
   self: t.PeerId;

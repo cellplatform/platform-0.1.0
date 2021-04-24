@@ -1,19 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Button, css, CssValue, Hr, PropList, PropListItem, t } from '../common';
-import { DevNetworkConnectionsModal } from '../Network/';
+import { DevNetworkConnectionsModal } from '../network';
+import { openHandler } from './util';
 
 /**
  * Card body.
  */
-export type DevMediaConnectionsProps = {
+export type DevDataConnectionsProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.EventBus<any>;
-  connections: t.PeerConnectionMediaStatus[];
+  connections: t.PeerConnectionDataStatus[];
   style?: CssValue;
 };
-export const DevMediaConnections: React.FC<DevMediaConnectionsProps> = (props) => {
+export const DevDataConnections: React.FC<DevDataConnectionsProps> = (props) => {
   const { netbus, connections, self } = props;
   const bus = props.bus.type<t.DevEvent>();
 
@@ -27,7 +28,15 @@ export const DevMediaConnections: React.FC<DevMediaConnectionsProps> = (props) =
   };
 
   const items: PropListItem[] = connections.map((connection, i) => {
-    return { label: connection.id, value: connection.kind };
+    const open = (kind: t.PeerConnectionKindMedia) => openHandler({ bus, connection, kind });
+    const value = (
+      <div {...styles.value.base}>
+        <div {...styles.value.label}>start:</div>
+        <Button label={'video'} onClick={open('media/video')} margin={[null, 8, null, null]} />
+        <Button label={'screen'} onClick={open('media/screen')} />
+      </div>
+    );
+    return { label: connection.id, value };
   });
 
   const handleExpandClick = () => {
@@ -36,8 +45,8 @@ export const DevMediaConnections: React.FC<DevMediaConnectionsProps> = (props) =
         self={self}
         bus={bus}
         netbus={netbus}
-        header={{ title: 'Media Connections' }}
-        filter={(e) => e.kind === 'media/screen' || e.kind === 'media/video'}
+        header={{ title: 'Data Connections' }}
+        filter={(e) => e.kind === 'data'}
       />
     );
     bus.fire({ type: 'DEV/modal', payload: { el, target: 'body' } });
@@ -45,7 +54,7 @@ export const DevMediaConnections: React.FC<DevMediaConnectionsProps> = (props) =
 
   return (
     <div {...css(styles.base, props.style)}>
-      <PropList title={'Media Connections'} items={items} defaults={{ clipboard: false }} />
+      <PropList title={'Data Connections'} items={items} defaults={{ clipboard: false }} />
       <Hr thickness={5} opacity={0.1} margin={[10, 0]} />
       <div {...styles.footer}>
         <div />

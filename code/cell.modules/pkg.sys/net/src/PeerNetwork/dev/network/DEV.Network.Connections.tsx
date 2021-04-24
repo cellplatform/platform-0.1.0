@@ -7,8 +7,8 @@ import {
   DevConnections,
   DevDataConnections,
   DevMediaConnections,
-} from '../Connection';
-import { DevEventBusCard } from '../Event';
+} from '../connection';
+import { DevEventBusCard } from '../event';
 
 export type DevNetworkConnectionsProps = {
   self: t.PeerId;

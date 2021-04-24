@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { css, CssValue, t } from '../common';
-import { DevVideo } from '../Media';
+import { DevVideo } from '../media';
 import { PeerPropList } from './DEV.Network.Header.Props';
-import { DevEventBus } from '../Event';
+import { DevEventBus } from '../event';
 
 export type DevNetworkHeaderProps = {
   peer: t.PeerStatus;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { DevVideoFullscreen } from './Media';
+import { DevVideoFullscreen } from './media';
 
 import { rx, t } from './common';
 
