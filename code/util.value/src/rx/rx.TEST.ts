@@ -162,29 +162,6 @@ describe('rx', () => {
 
       expect(fired.length).to.eql(0);
     });
-
-    it('filter', () => {
-      const source$ = new Subject<MyEvent>();
-
-      const fired: MyEvent[] = [];
-      source$.subscribe((e) => fired.push(e));
-
-      const bus1 = rx.bus<MyEvent>(source$);
-      const bus2 = bus1.filter<IBarEvent>((e) => e.type === 'Event/bar');
-
-      expect(bus1).to.not.equal(bus2); // NB: different instance.
-
-      bus2.fire({ type: 'Event/foo', payload: {} } as any); // NB: This will be filtered out.
-      expect(fired.length).to.eql(0);
-
-      bus2.fire({ type: 'Event/bar', payload: {} }); // NB: this passes the filter.
-      expect(fired.length).to.eql(1);
-      expect(fired[0].type).to.eql('Event/bar');
-
-      bus1.fire({ type: 'Event/foo', payload: {} }); // NB: original event bus not effected.
-      expect(fired.length).to.eql(2);
-      expect(fired[1].type).to.eql('Event/foo');
-    });
   });
 
   describe('isBus', () => {
