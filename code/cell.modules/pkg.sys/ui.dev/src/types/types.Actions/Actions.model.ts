@@ -8,7 +8,6 @@ export type ActionsModel<Ctx> = {
   ctx: {
     current?: Ctx;
     get?: t.ActionGetContext<Ctx>;
-    count?: number; // Number of times the context [get] handler has been called. NB: Used to reset session when changing action-set.
   };
   env: ActionsModelEnv;
   subject?: t.ActionHandlerSubject<Ctx>;

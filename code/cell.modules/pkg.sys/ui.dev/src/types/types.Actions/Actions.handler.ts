@@ -13,7 +13,6 @@ export type ActionGetContextArgs<C> = {
   namespace: string;
   prev: C | undefined;
   change: ActionGetContextChange<C>;
-  count: number; // Number of times the context method has been called within the current lifecycle.
 };
 
 export type ActionGetContextChange<C> = {

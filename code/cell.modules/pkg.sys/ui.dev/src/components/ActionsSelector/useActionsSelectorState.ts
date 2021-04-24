@@ -33,7 +33,13 @@ export function useActionsSelectorState(args: {
         const current = list.find((actions) => actions.toObject().namespace === e.namespace);
 
         setSelected((prev) => {
-          if (prev) prev.toModel().change((draft) => (draft.ctx.count = undefined)); // Reset invoke count.
+          if (prev) {
+            /**
+             * TODO 🐷
+             * Invoke `dispose` handler here (when implemented)
+             */
+          }
+
           return current;
         });
 
