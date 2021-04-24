@@ -25,6 +25,6 @@ export type PeerDataInEvent = {
 export type PeerDataIn = {
   self: t.PeerId;
   data: t.JsonMap;
-  from: t.PeerId;
-  to: t.PeerId[];
+  source: t.PeerId;
+  target: t.PeerId[];
 };

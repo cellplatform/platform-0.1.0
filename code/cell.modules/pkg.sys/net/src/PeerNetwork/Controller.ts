@@ -95,10 +95,10 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       data.on('data', (data: t.JsonMap) => {
         if (typeof data === 'object') {
           const e = data as t.PeerDataOut;
-          const to = asArray(e.target || []);
+          const target = asArray(e.target || []);
           bus.fire({
             type: 'sys.net/peer/data/in',
-            payload: { self: self.id, data: e.data, from: e.self, to },
+            payload: { self: self.id, data: e.data, source: e.self, target },
           });
         }
       });
