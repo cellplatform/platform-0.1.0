@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { debounceTime } from 'rxjs/operators';
 
 import { t, StreamUtil } from '../common';
-import { Events } from '../Events';
+import { Events } from '../event';
 
 /**
  * Monitors an event-bus keeping a set of state values
