@@ -4,6 +4,9 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 import { rx, slug, t, WebRuntime } from '../common';
 import { EventNamespace as ns } from './Events.ns';
 
+type R = t.GroupConnectionsResPeer;
+type P = { peer: t.PeerId; connection: t.PeerConnectionId; kind: t.PeerConnectionKind };
+
 /**
  * Helpers for working with group (mesh) related events.
  */
@@ -24,16 +27,18 @@ export function GroupEvents(eventbus: t.NetBus<any>) {
     const req$ = rx.payload<t.GroupConnectionsReqEvent>($, 'sys.net/group/connections:req');
     const res$ = rx.payload<t.GroupConnectionsResEvent>($, 'sys.net/group/connections:res');
 
+    /**
+     * Calculate the entire group from available connections.
+     */
     const get = async (targets?: t.PeerId[]) => {
-      const local: t.GroupConnectionsResPeer = {
+      const local: R = {
         peer: source,
         module,
         connections: netbus.connections.map((ref) => ({ id: ref.id, kind: ref.kind })),
       };
 
-      if (local.connections.filter(({ kind }) => kind === 'data').length === 0) {
-        return { local, remote: [] };
-      }
+      const total = local.connections.filter(({ kind }) => kind === 'data').length;
+      if (total === 0) return { local, remote: [], pending: [] };
 
       const tx = slug();
       const res = firstValueFrom(res$.pipe(filter((e) => e.tx === tx)));
@@ -42,10 +47,9 @@ export function GroupEvents(eventbus: t.NetBus<any>) {
         payload: { source, targets, tx },
       });
 
-      return {
-        local,
-        remote: (await res).peers,
-      };
+      const remote = (await res).peers;
+      const pending = toPending(local, remote);
+      return { local, remote, pending };
     };
 
     return { req$, res$, get };
@@ -58,3 +62,20 @@ export function GroupEvents(eventbus: t.NetBus<any>) {
     connections,
   };
 }
+
+/**
+ * [Helpers]
+ */
+
+const isLocal = (local: R, id: t.PeerConnectionId) => local.connections.some((c) => c.id === id);
+
+const toPending = (local: R, remote: R[]) => {
+  const res: P[] = [];
+  remote.forEach((item) => {
+    const peer = item.peer;
+    item.connections
+      .filter((conn) => !isLocal(local, conn.id))
+      .forEach(({ id, kind }) => res.push({ peer, connection: id, kind }));
+  });
+  return res;
+};

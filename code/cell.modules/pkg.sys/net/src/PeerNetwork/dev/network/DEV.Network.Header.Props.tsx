@@ -92,6 +92,7 @@ const toItems = (props: PeerPropListProps): PropListItem[] => {
             console.group('🌳 Group');
             console.log('local', res.local);
             console.log('remote', res.remote);
+            console.log('pending', res.pending);
             console.groupEnd();
             events.dispose();
           }}
