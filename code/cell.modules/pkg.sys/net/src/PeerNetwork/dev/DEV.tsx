@@ -1,7 +1,18 @@
 import React from 'react';
 import { DevActions, ObjectView, LocalStorage } from 'sys.ui.dev';
 
-import { css, cuid, deleteUndefined, Icons, MediaStream, rx, t, time, PeerNetwork } from './common';
+import {
+  css,
+  cuid,
+  deleteUndefined,
+  Icons,
+  MediaStream,
+  rx,
+  t,
+  time,
+  PeerNetwork,
+  Button,
+} from './common';
 import { RootLayout } from './DEV.Root';
 import { DevModel } from './model';
 import { EventBridge } from './event';
@@ -15,8 +26,10 @@ type Ctx = {
   connectTo?: string;
   toStrategy(): { peer: t.PeerStrategy; group: t.GroupStrategy };
   toFlags(): CtxFlags;
+  fullscreen(value: boolean): void;
 };
 type CtxFlags = {
+  isFullscreen: boolean;
   isReliable: boolean;
   debugJson: boolean;
   collapseData: boolean;
@@ -73,7 +86,9 @@ export const actions = DevActions<Ctx>()
     });
 
     const local = LocalStorage<CtxFlags>('sys.net/dev/');
+
     const flags = local.object({
+      isFullscreen: true,
       isReliable: true,
       debugJson: false,
       collapseData: false,
@@ -92,6 +107,7 @@ export const actions = DevActions<Ctx>()
       connectTo: '',
       toFlags: () => flags,
       toStrategy: () => strategy,
+      fullscreen: (value) => (flags.isFullscreen = value),
     };
   })
 
@@ -310,6 +326,7 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     const { self, bus, netbus } = e.ctx;
     const flags = e.ctx.toFlags();
+    const isFullscreen = flags.isFullscreen;
 
     const styles = {
       labelRight: {
@@ -330,6 +347,13 @@ export const actions = DevActions<Ctx>()
       </div>
     );
 
+    const elFullscreenButton = (
+      <Button style={css({ Size: 24 })} onClick={() => e.ctx.fullscreen(!isFullscreen)}>
+        {!isFullscreen && <Icons.Fullscreen.Enter />}
+        {isFullscreen && <Icons.Fullscreen.Exit />}
+      </Button>
+    );
+
     e.settings({
       layout: {
         label: { topLeft: 'Mesh', topRight: elLabelRight },
@@ -339,7 +363,7 @@ export const actions = DevActions<Ctx>()
         background: 1,
       },
       host: { background: -0.04 },
-      actions: { width: 380 },
+      actions: { width: !isFullscreen ? 380 : 0 },
     });
 
     e.render(
@@ -352,6 +376,13 @@ export const actions = DevActions<Ctx>()
         cards={{ data: flags.cardsData, media: flags.cardsMedia }}
       />,
     );
+
+    e.render(elFullscreenButton, {
+      position: [3, 3, null, null],
+      label: undefined,
+      border: 0,
+      background: 0,
+    });
   });
 
 export default actions;

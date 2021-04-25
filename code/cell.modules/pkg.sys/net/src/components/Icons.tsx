@@ -9,6 +9,8 @@ import {
   MdNoEncryption,
   MdSend,
   MdArrowBack,
+  MdFullscreen,
+  MdFullscreenExit,
 } from 'react-icons/md';
 import { FiMic, FiMicOff } from 'react-icons/fi';
 import { TiUpload } from 'react-icons/ti';
@@ -27,4 +29,5 @@ export const Icons = {
   Lock: { Closed: icon(MdLock), Open: icon(MdLockOpen), No: icon(MdNoEncryption) },
   Upload: { Box: icon(TiUpload) },
   Arrow: { Back: icon(MdArrowBack) },
+  Fullscreen: { Enter: icon(MdFullscreen), Exit: icon(MdFullscreenExit) },
 };
