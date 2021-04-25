@@ -453,18 +453,13 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     .subscribe((e) => {
       const selfRef = refs.self[e.self];
       const tx = e.tx || slug();
-      let filtered = 0;
 
       const targets = selfRef.connections
         .filter((ref) => ref.kind === 'data')
         .filter((ref) => {
-          if (!e.target) return true;
-          const send = e.target({
-            peer: ref.peer.remote.id,
-            connection: { id: ref.id, kind: ref.kind },
-          });
-          if (send === false) filtered = filtered += 1;
-          return send;
+          return !e.target
+            ? true
+            : e.target({ peer: ref.peer.remote.id, connection: { id: ref.id, kind: ref.kind } });
         });
 
       // Send the data over the wire.
@@ -478,8 +473,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         payload: {
           tx,
           self: e.self,
-          sent: { total: targets.length, filtered },
-          targets: targets.map((ref) => ({ peer: ref.peer.remote.id, connection: ref.id })),
+          sent: targets.map((ref) => ({ peer: ref.peer.remote.id, connection: ref.id })),
           data: e.data,
         },
       });

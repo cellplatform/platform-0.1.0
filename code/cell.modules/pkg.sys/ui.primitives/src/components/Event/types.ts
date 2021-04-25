@@ -11,7 +11,7 @@ export type EventHistoryItem = {
  * A state hook that stores a set of events coming via an event-bus.
  */
 export type EventBusHistoryHook = (
-  bus: t.EventBus<any>,
+  bus?: t.EventBus<any>,
   options?: EventBusHistoryOptions,
 ) => EventBusHistory;
 
@@ -19,6 +19,7 @@ export type EventBusHistoryOptions = {
   max?: number;
   reset$?: t.Observable<void>;
   onChange?: (e: EventBusHistory) => void;
+  filter?: (e: t.Event) => boolean;
 };
 
 export type EventBusHistory = { total: number; events: EventHistoryItem[] };

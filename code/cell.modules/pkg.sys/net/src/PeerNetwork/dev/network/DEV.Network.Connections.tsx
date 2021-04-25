@@ -107,12 +107,7 @@ export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (prop
   ));
 
   const elNetbus = props.showNetbus && (
-    <DevEventBusCard
-      self={self}
-      bus={bus}
-      netbus={netbus}
-      margin={[PADDING.CARD, 0, 0, PADDING.CARD]}
-    />
+    <DevEventBusCard self={self} bus={bus} margin={[PADDING.CARD, 0, 0, PADDING.CARD]} />
   );
 
   return (

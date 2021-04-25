@@ -3,27 +3,61 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   css,
   CssValue,
-  EventBusHistory,
   Hr,
   PropList,
   PropListItem,
   t,
   useEventBusHistory,
+  NetBus,
+  PeerNetwork,
 } from '../common';
 import { DevCard } from '../DEV.Card';
-import { DevEventBus } from '../event';
+import { DevEventBusStack } from './DEV.EventBus.Stack';
+import { DevEventBusTextbox } from './DEV.EventBus.Textbox';
 
 export type DevEventBusCardProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
-  netbus: t.EventBus<any>;
   margin?: t.CssEdgesInput;
   style?: CssValue;
 };
 
 export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
-  const { self, bus, netbus } = props;
+  const { self, bus } = props;
+
+  const [netbus, setNetbus] = useState<t.NetBus>();
+  useEffect(() => {
+    setNetbus(NetBus({ self, bus }));
+  }, [self, bus]);
+
   const history = useEventBusHistory(netbus);
+
+  const handleBroadcast = async (args: { message: string; filter: string }) => {
+    if (!netbus) return;
+
+    const msg = args.message.trim();
+    const event = { type: 'sample/event', payload: { msg: msg || `<empty>` } };
+
+    const filter: t.PeerConnectionFilter = (e) => {
+      const text = args.filter.trim();
+      return !text
+        ? true
+        : text
+            .split(',')
+            .map((text) => text.trim())
+            .some((text) => e.peer.endsWith(text) || e.connection.id.endsWith(text));
+    };
+
+    if (!args.filter) netbus.fire(event);
+    if (args.filter) {
+      const res = await netbus.target(filter).fire(event);
+
+      /**
+       * TODO 🐷
+       */
+      console.log('response (filtered):', res);
+    }
+  };
 
   const styles = {
     base: css({
@@ -33,14 +67,15 @@ export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
     }),
   };
 
-  const items: PropListItem[] = [];
+  const items: PropListItem[] = [{ label: 'total', value: history.total }];
 
   return (
     <DevCard margin={props.margin} style={props.style}>
       <div {...styles.base}>
         <PropList title={'Network Bus'} items={items} defaults={{ clipboard: false }} />
         <Hr thickness={5} opacity={0.1} margin={[10, 0, 15, 0]} />
-        <DevEventBus self={self} bus={bus} netbus={netbus} canBroadcast={true} history={history} />
+        <DevEventBusTextbox onBroadcast={handleBroadcast} />
+        <DevEventBusStack canBroadcast={true} history={history} />
       </div>
     </DevCard>
   );

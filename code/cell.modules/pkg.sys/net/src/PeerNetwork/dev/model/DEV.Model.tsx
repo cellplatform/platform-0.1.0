@@ -19,7 +19,6 @@ import { useLocalPeer } from '../../hook';
 import { Connection, CrdtConnection } from '../../../NetworkModel/Crdt.OLD';
 import { DevConnection } from '../../../NetworkModel/Crdt.OLD/dev/DEV.Connection';
 import Automerge from 'automerge';
-import { DevEventBus } from '../event';
 
 export type DevModelProps = {
   self: t.PeerId;

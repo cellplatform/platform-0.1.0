@@ -22,10 +22,9 @@ export type PeerDataOutResEvent = {
 };
 export type PeerDataOutRes = {
   self: t.PeerId;
-  sent: { total: number; filtered: number };
-  targets: { peer: t.PeerId; connection: t.PeerConnectionId }[];
+  sent: { peer: t.PeerId; connection: t.PeerConnectionId }[];
   data: any;
-  tx?: string;
+  tx: string;
 };
 
 /**

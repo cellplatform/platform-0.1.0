@@ -40,7 +40,7 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
         self={peer.id}
         bus={bus}
         netbus={netbus}
-        collapse={{ data: true, media: false }}
+        collapse={{ data: false, media: false }}
         showNetbus={true}
       />
       {modalSize === 'body' && elModal}
