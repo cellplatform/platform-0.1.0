@@ -89,7 +89,7 @@ const toItems = (props: PeerPropListProps): PropListItem[] => {
             const events = PeerNetwork.GroupEvents(netbus);
             const res = await events.connections().get();
 
-            console.group('🌳 Connections');
+            console.group('🌳 Group');
             console.log('local', res.local);
             console.log('remote', res.remote);
             console.groupEnd();
