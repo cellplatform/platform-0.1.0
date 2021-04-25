@@ -23,6 +23,13 @@ export const Harness: React.FC<HarnessProps> = (props) => {
   const [bus, setBus] = useState<t.EventBus>(props.bus || rx.bus());
   const allowRubberband = defaultValue(props.allowRubberband, false);
 
+  /**
+   * TODO 🐷
+   * - Handle fullscreen in Harness model (when that comes).
+   * - Do not default to TRUE.
+   */
+  const [isFullscreen, setIsFullscreen] = useState<boolean | undefined>(true);
+
   useEffect(() => {
     if (props.bus) setBus(props.bus);
   }, [props.bus]);
@@ -87,13 +94,26 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     />
   );
 
-  const elActions = selected && <HarnessActions bus={bus} actions={selected} edge={actionsEdge} />;
+  const elActions = selected && isFullscreen !== true && (
+    <HarnessActions bus={bus} actions={selected} edge={actionsEdge} />
+  );
   const elLeft = actionsEdge === 'left' && elActions;
   const elRight = actionsEdge === 'right' && elActions;
 
+  const handleFullscreenClick = () => setIsFullscreen((prev) => !prev);
+
   const elHost = (
     <ErrorBoundary>
-      <Host bus={bus} actions={selected} style={styles.host} />
+      <Host
+        bus={bus}
+        actions={selected}
+        style={styles.host}
+        fullscreen={
+          isFullscreen === undefined
+            ? undefined
+            : { value: isFullscreen, onClick: handleFullscreenClick }
+        }
+      />
     </ErrorBoundary>
   );
 
