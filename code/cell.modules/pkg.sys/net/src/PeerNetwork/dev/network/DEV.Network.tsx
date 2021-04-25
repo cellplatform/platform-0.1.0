@@ -12,6 +12,7 @@ export type DevNetworkProps = {
   peer: t.PeerStatus;
   media: { video?: MediaStream; screen?: MediaStream };
   collapse?: boolean | { data?: boolean; media?: boolean };
+  cards?: { data?: boolean; media?: boolean };
   style?: CssValue;
 };
 
@@ -42,6 +43,7 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
         bus={bus}
         netbus={netbus}
         collapse={props.collapse}
+        cards={props.cards}
         showNetbus={true}
       />
       {modalSize === 'body' && elModal}

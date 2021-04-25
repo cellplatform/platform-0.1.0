@@ -21,9 +21,12 @@ type CtxFlags = {
   debugJson: boolean;
   collapseData: boolean;
   collapseMedia: boolean;
+  cardsMedia: boolean;
+  cardsData: boolean;
 };
 type CtxEvents = {
-  net: t.PeerNetworkEvents;
+  peer: t.PeerNetworkEvents;
+  group: t.GroupEvents;
   media: ReturnType<typeof MediaStream.Events>;
 };
 
@@ -46,25 +49,26 @@ export const actions = DevActions<Ctx>()
     const signal = 'rtc.cellfs.com/peer';
     const netbus = PeerNetwork.NetBus({ bus, self });
     const events = {
-      net: PeerNetwork.Events(bus),
+      peer: PeerNetwork.Events(bus),
+      group: PeerNetwork.GroupEvents(netbus),
       media: MediaStream.Events(bus),
     };
 
     const strategy = {
       peer: PeerNetwork.PeerStrategy({ self, bus }),
-      group: PeerNetwork.GroupStrategy({ netbus }),
+      group: PeerNetwork.GroupStrategy({ bus, netbus }),
     };
 
     strategy.peer.connection.autoPropagation = false; // TEMP 🐷
 
     const init = () => {
       events.media.start(EventBridge.videoRef(self)).video();
-      events.net.create(signal, self);
-      events.net.media(self).video();
+      events.peer.create(signal, self);
+      events.peer.media(self).video();
     };
     time.delay(100, init);
 
-    events.net.status(self).changed$.subscribe((e) => {
+    events.peer.status(self).changed$.subscribe((e) => {
       console.log('NET/CHANGED', e);
     });
 
@@ -74,6 +78,8 @@ export const actions = DevActions<Ctx>()
       debugJson: false,
       collapseData: false,
       collapseMedia: false,
+      cardsData: true,
+      cardsMedia: false,
     });
     local.changed$.subscribe(() => e.redraw());
 
@@ -98,6 +104,19 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = flags.debugJson;
     });
 
+    e.button('debug (group)', async (e) => {
+      const res = await e.ctx.events.group.connections().get();
+
+      console.group('🌳 Group');
+      console.log('local', res.local);
+      console.log('remote', res.remote);
+      console.log('pending', res.pending);
+
+      console.groupEnd();
+    });
+
+    e.hr(1, 0.2);
+
     e.boolean('collapse: data', (e) => {
       const flags = e.ctx.toFlags();
       if (e.changing) flags.collapseData = e.changing.next;
@@ -109,6 +128,20 @@ export const actions = DevActions<Ctx>()
       if (e.changing) flags.collapseMedia = e.changing.next;
       e.boolean.current = flags.collapseMedia;
     });
+
+    e.boolean('cards: data', (e) => {
+      const flags = e.ctx.toFlags();
+      if (e.changing) flags.cardsData = e.changing.next;
+      e.boolean.current = flags.cardsData;
+    });
+
+    e.boolean('cards: media', (e) => {
+      const flags = e.ctx.toFlags();
+      if (e.changing) flags.cardsMedia = e.changing.next;
+      e.boolean.current = flags.cardsMedia;
+    });
+
+    e.hr(1, 0.2);
 
     e.button('network model', (e) => {
       const { self, bus, netbus } = e.toObject(e.ctx) as Ctx;
@@ -135,12 +168,12 @@ export const actions = DevActions<Ctx>()
 
     e.button('fire ⚡️ Peer:Local/init', async (e) => {
       const { self, signal, events } = e.ctx;
-      events.net.create(signal, self);
+      events.peer.create(signal, self);
     });
 
     e.button('fire ⚡️ Peer:Local/purge', async (e) => {
       const self = e.ctx.self;
-      const data = deleteUndefined(await e.ctx.events.net.purge(self).fire());
+      const data = deleteUndefined(await e.ctx.events.peer.purge(self).fire());
       e.button.description = (
         <ObjectView name={'purged'} data={data} fontSize={10} expandLevel={2} />
       );
@@ -148,20 +181,20 @@ export const actions = DevActions<Ctx>()
 
     e.button('fire ⚡️ Peer:Local/status:refresh', async (e) => {
       const self = e.ctx.self;
-      e.ctx.events.net.status(self).refresh();
+      e.ctx.events.peer.status(self).refresh();
     });
 
     e.hr(1, 0.2);
 
     e.button('fire ⚡️ Peer:Local/media (video)', async (e) => {
-      const data = deleteUndefined(await e.ctx.events.net.media(e.ctx.self).video());
+      const data = deleteUndefined(await e.ctx.events.peer.media(e.ctx.self).video());
       e.button.description = (
         <ObjectView name={'media:res'} data={data} fontSize={10} expandLevel={2} />
       );
     });
 
     e.button('fire ⚡️ Peer:Local/media (screen)', async (e) => {
-      const data = deleteUndefined(await e.ctx.events.net.media(e.ctx.self).screen());
+      const data = deleteUndefined(await e.ctx.events.peer.media(e.ctx.self).screen());
       e.button.description = (
         <ObjectView name={'media:res'} data={data} fontSize={10} expandLevel={2} />
       );
@@ -171,7 +204,7 @@ export const actions = DevActions<Ctx>()
 
     e.button('fire ⚡️ Peer:Local/status', async (e) => {
       const self = e.ctx.self;
-      const data = deleteUndefined(await e.ctx.events.net.status(self).get());
+      const data = deleteUndefined(await e.ctx.events.peer.status(self).get());
       e.button.description = (
         <ObjectView name={'status:res'} data={data} fontSize={10} expandLevel={2} />
       );
@@ -198,7 +231,7 @@ export const actions = DevActions<Ctx>()
         e.button.description = '🐷 ERROR: Remote peer not specified';
       } else {
         const isReliable = e.ctx.toFlags().isReliable;
-        const res = await events.net.connection(self, connectTo).open.data({ isReliable });
+        const res = await events.peer.connection(self, connectTo).open.data({ isReliable });
         const name = res.error ? 'Fail' : 'Success';
         const expandLevel = res.error ? 1 : 0;
         const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={expandLevel} />;
@@ -316,6 +349,7 @@ export const actions = DevActions<Ctx>()
         netbus={netbus}
         debugJson={flags.debugJson}
         collapse={{ data: flags.collapseData, media: flags.collapseMedia }}
+        cards={{ data: flags.cardsData, media: flags.cardsMedia }}
       />,
     );
   });

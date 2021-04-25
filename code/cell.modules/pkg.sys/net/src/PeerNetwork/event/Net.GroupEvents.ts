@@ -4,8 +4,8 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 import { rx, slug, t, WebRuntime } from '../common';
 import { EventNamespace as ns } from './Events.ns';
 
-type R = t.GroupConnectionsResPeer;
-type P = { peer: t.PeerId; connection: t.PeerConnectionId; kind: t.PeerConnectionKind };
+type P = t.GroupPeer;
+type C = t.GroupPeerConnection;
 
 /**
  * Helpers for working with group (mesh) related events.
@@ -17,24 +17,28 @@ export function GroupEvents(eventbus: t.NetBus<any>) {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
 
-  const $ = netbus.event$.pipe(
+  const event$ = netbus.event$.pipe(
     takeUntil(dispose$),
     filter(ns.is.group.base),
     map((e) => e as t.GroupEvent),
   );
 
   const connections = () => {
-    const req$ = rx.payload<t.GroupConnectionsReqEvent>($, 'sys.net/group/connections:req');
-    const res$ = rx.payload<t.GroupConnectionsResEvent>($, 'sys.net/group/connections:res');
+    const req$ = rx.payload<t.GroupConnectionsReqEvent>(event$, 'sys.net/group/connections:req');
+    const res$ = rx.payload<t.GroupConnectionsResEvent>(event$, 'sys.net/group/connections:res');
 
     /**
      * Calculate the entire group from available connections.
      */
-    const get = async (targets?: t.PeerId[]) => {
-      const local: R = {
+    const get = async (targets?: t.PeerId[]): Promise<t.GroupPeerStatus> => {
+      const local: P = {
         peer: source,
         module,
-        connections: netbus.connections.map((ref) => ({ id: ref.id, kind: ref.kind })),
+        connections: netbus.connections.map(({ id, kind, parent }) => ({
+          id,
+          kind,
+          parent,
+        })),
       };
 
       const total = local.connections.filter(({ kind }) => kind === 'data').length;
@@ -55,11 +59,35 @@ export function GroupEvents(eventbus: t.NetBus<any>) {
     return { req$, res$, get };
   };
 
+  const connect = () => {
+    const $ = rx.payload<t.GroupConnectEvent>(event$, 'sys.net/group/connect');
+
+    /**
+     * TODO 🐷
+     * clear up param names.
+     */
+
+    const fire = (target: t.PeerId, peer: t.PeerId, kind: t.PeerConnectionKind) =>
+      netbus.target.peer(target).fire({
+        type: 'sys.net/group/connect',
+        payload: { source, target: { peer, kind } },
+      });
+    return { $, fire };
+  };
+
+  const refresh = () => {
+    const $ = rx.payload<t.GroupRefreshEvent>(event$, 'sys.net/group/refresh');
+    const fire = () => netbus.fire({ type: 'sys.net/group/refresh', payload: { source } });
+    return { $, fire };
+  };
+
   return {
-    $,
+    $: event$,
     dispose$,
     dispose,
     connections,
+    refresh,
+    connect,
   };
 }
 
@@ -67,15 +95,15 @@ export function GroupEvents(eventbus: t.NetBus<any>) {
  * [Helpers]
  */
 
-const isLocal = (local: R, id: t.PeerConnectionId) => local.connections.some((c) => c.id === id);
+const isLocal = (local: P, id: t.PeerConnectionId) => local.connections.some((c) => c.id === id);
 
-const toPending = (local: R, remote: R[]) => {
-  const res: P[] = [];
+const toPending = (local: P, remote: P[]) => {
+  const res: C[] = [];
   remote.forEach((item) => {
     const peer = item.peer;
     item.connections
       .filter((conn) => !isLocal(local, conn.id))
-      .forEach(({ id, kind }) => res.push({ peer, connection: id, kind }));
+      .forEach(({ id, kind, parent }) => res.push({ peer, connection: id, kind, parent }));
   });
   return res;
 };

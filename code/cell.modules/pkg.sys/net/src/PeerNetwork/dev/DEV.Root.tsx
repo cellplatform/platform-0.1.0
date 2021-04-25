@@ -11,6 +11,7 @@ export type RootLayoutProps = {
   netbus: t.NetBus<any>;
   debugJson?: boolean;
   collapse?: boolean | { data?: boolean; media?: boolean };
+  cards?: { data?: boolean; media?: boolean };
   style?: CssValue;
 };
 
@@ -60,6 +61,7 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
         bus={bus}
         netbus={netbus}
         collapse={props.collapse}
+        cards={props.cards}
         peer={peer.status}
         media={peer.media}
       />

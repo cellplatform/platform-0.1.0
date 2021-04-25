@@ -8,7 +8,9 @@ export type GroupEvent =
   | GroupEnsureConnectedDataEvent
   | GroupEnsureConnectionClosedEvent
   | GroupConnectionsReqEvent
-  | GroupConnectionsResEvent;
+  | GroupConnectionsResEvent
+  | GroupRefreshEvent
+  | GroupConnectEvent;
 
 /**
  * Broadcasts to peers a set of connections they should ensure
@@ -56,10 +58,28 @@ export type GroupConnectionsResEvent = {
 export type GroupConnectionsRes = {
   source: t.PeerId;
   tx: string;
-  peers: GroupConnectionsResPeer[];
+  peers: t.GroupPeer[];
 };
-export type GroupConnectionsResPeer = {
-  peer: t.PeerId;
-  module: t.PeerModule;
-  connections: { id: t.PeerConnectionId; kind: t.PeerConnectionKind }[];
+
+/**
+ * Fired when a refresh to the group status is desired.
+ */
+export type GroupRefreshEvent = {
+  type: 'sys.net/group/refresh';
+  payload: GroupRefresh;
+};
+export type GroupRefresh = {
+  source: t.PeerId;
+};
+
+/**
+ * Fired to tell peers to start a connection.
+ */
+export type GroupConnectEvent = {
+  type: 'sys.net/group/connect';
+  payload: GroupConnect;
+};
+export type GroupConnect = {
+  source: t.PeerId;
+  target: { peer: t.PeerId; kind: t.PeerConnectionKind };
 };

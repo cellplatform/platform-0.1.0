@@ -23,9 +23,9 @@ export const PropUtil = {
     const items: PropListItem[] = [
       { label: 'id', value: { data: id, clipboard: true } },
       { label: 'remote peer', value: { data: peer.remote.id, clipboard: true } },
-      { label: 'module', value: `(${direction}) ${module.name}@${module.version}` },
+      // { label: 'module', value: `(${direction}) ${module.name}@${module.version}` },
       { label: 'kind', value: kind },
-      { label: 'open', value: isOpen },
+      // { label: 'open', value: isOpen },
     ];
 
     if (parent) {

@@ -8,14 +8,14 @@ import { slug, t, WebRuntime } from '../common';
  */
 export async function GroupConnectionsStrategy(args: {
   netbus: t.NetBus<t.GroupEvent>;
-  events: t.GroupEvents;
+  events: { group: t.GroupEvents; peer: t.PeerNetworkEvents };
   isEnabled: () => boolean;
 }) {
   const { netbus, events } = args;
   const module = { name: WebRuntime.module.name, version: WebRuntime.module.version };
   const self = netbus.self;
-  const req$ = events.connections().req$.pipe(filter(() => args.isEnabled()));
-  const res$ = events.connections().res$.pipe(filter(() => args.isEnabled()));
+  const req$ = events.group.connections().req$.pipe(filter(() => args.isEnabled()));
+  const res$ = events.group.connections().res$.pipe(filter(() => args.isEnabled()));
 
   /**
    * Listen for local requests,
@@ -39,7 +39,7 @@ export async function GroupConnectionsStrategy(args: {
       ),
     );
 
-    type P = t.GroupConnectionsResPeer;
+    type P = t.GroupPeer;
     const res = await Promise.all(waitFor);
     const peers = res.reduce((acc, next) => [...acc, ...next.peers], [] as P[]);
     netbus.target.local({
@@ -53,8 +53,12 @@ export async function GroupConnectionsStrategy(args: {
    */
   req$.pipe(filter((e) => e.source !== self)).subscribe(async (payload) => {
     const tx = payload.tx || slug();
-    const connections = netbus.connections.map((ref) => ({ id: ref.id, kind: ref.kind }));
-    const peer: t.GroupConnectionsResPeer = { peer: self, module, connections };
+    const connections = netbus.connections.map(({ id, kind, parent }) => ({
+      id,
+      kind,
+      parent,
+    }));
+    const peer: t.GroupPeer = { peer: self, module, connections };
 
     netbus.target
       .filter((e) => e.peer === payload.source)
@@ -63,4 +67,44 @@ export async function GroupConnectionsStrategy(args: {
         payload: { tx, source: self, peers: [peer] },
       });
   });
+
+  /**
+   * Listen for connect instructions.
+   */
+  events.group
+    .connect()
+    .$.pipe()
+    .subscribe(async (e) => {
+      console.log('connect', e);
+
+      const { kind } = e.target;
+
+      /**
+       * TODO 🐷
+       * - clearn up
+       * - don't auto start video by default
+       */
+      console.log('clean up');
+
+      // const events = PeerNetwork.Events(bus);
+      const remote = e.target.peer;
+      const open = events.peer.connection(self, remote).open;
+
+      if (kind === 'data') {
+        const exists = netbus.connections
+          .filter((conn) => conn.kind === 'data')
+          .some((conn) => conn.peer.remote.id == remote);
+        if (exists) return;
+
+        const res = await open.data();
+        console.log('open/data:', res);
+
+        // open.media('media/video', { parent: res.connection?.id });
+      }
+      if (kind === 'media/screen' || kind === 'media/video') {
+        // const parent = self.
+        const res = await open.media(kind, {});
+        console.log('open/media:', res);
+      }
+    });
 }

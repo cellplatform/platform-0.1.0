@@ -13,17 +13,33 @@ import {
   time,
   Button,
   PeerNetwork,
+  Textbox,
+  Hr,
+  color,
 } from '../common';
+import { useGroupState } from '../../hook';
+
+type P = PropListItem;
 
 export type PeerPropListProps = {
+  bus: t.EventBus<any>;
   netbus: t.NetBus<any>;
   status: t.PeerStatus;
   style?: CssValue;
 };
 
 export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
-  const items = toItems(props);
-  const [redraw, setRedraw] = useState<number>(0);
+  const { bus, netbus } = props;
+  const self = netbus.self;
+  const [count, setCount] = useState<number>(0);
+  const redraw = () => setCount((prev) => prev + 1);
+
+  const styles = {
+    base: css({}),
+    textbox: css({ fontSize: 12, marginBottom: 10, marginTop: 15 }),
+  };
+
+  const group = useGroupState({ bus, netbus });
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
@@ -31,19 +47,63 @@ export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
     // NB: Cause timestamp values to remain up-to-date.
     interval(1000)
       .pipe(takeUntil(dispose$))
-      .subscribe(() => setRedraw((prev) => prev + 1));
+      .subscribe(() => redraw());
 
     return () => dispose$.next();
   }, []);
 
-  return (
-    <PropList
-      title={'Peer Network'}
-      defaults={{ clipboard: false }}
-      items={items}
-      width={{ min: 240, max: 260 }}
-      style={props.style}
+  const width = { min: 240, max: 260 };
+
+  const [connectId, setConnectId] = useState<string>('');
+  const elConnect = (
+    <Textbox
+      value={connectId}
+      placeholder={'open connection'}
+      onChange={(e) => setConnectId(e.to)}
+      style={styles.textbox}
+      spellCheck={false}
+      selectOnFocus={true}
+      enter={{
+        async handler() {
+          const remote = connectId.trim();
+          if (!remote) return;
+
+          const isConnected = netbus.connections
+            .filter(({ kind }) => kind === 'data')
+            .some(({ peer }) => peer.remote.id === remote);
+
+          if (isConnected) return;
+
+          const events = PeerNetwork.Events(bus);
+          events.connection(self, remote).open.data();
+          events.dispose();
+        },
+        icon: (e) => {
+          const msg = connectId.trim();
+          const col = msg ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.3);
+          const el = <Icons.Antenna size={16} color={col} />;
+          return el;
+        },
+      }}
     />
+  );
+
+  return (
+    <div {...css(styles.base, props.style)}>
+      <PropList
+        title={'Peer Network'}
+        defaults={{ clipboard: false }}
+        items={networkItems(props)}
+        width={width}
+      />
+      <Hr thickness={10} opacity={0.05} margin={[5, 0]} />
+      {elConnect}
+      {/* <PropList
+        defaults={{ clipboard: false }}
+        items={groupItems({ bus, netbus, status: group.status })}
+        width={width}
+      /> */}
+    </div>
   );
 };
 
@@ -51,7 +111,7 @@ export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
  * [Helpers]
  */
 
-const toItems = (props: PeerPropListProps): PropListItem[] => {
+const networkItems = (props: PeerPropListProps) => {
   const { status, netbus } = props;
   if (!status) return [];
 
@@ -75,31 +135,81 @@ const toItems = (props: PeerPropListProps): PropListItem[] => {
     </div>
   );
 
-  const items: PropListItem[] = [
+  return [
     { label: 'local peer', value: { data: status.id, clipboard: true } },
     { label: `signal server`, value: elSignal },
     { label: 'age', value: age },
     { label: 'online', value: status.isOnline },
-    {
-      label: 'group',
-      value: (
-        <Button
-          label={'Calculate'}
-          onClick={async () => {
-            const events = PeerNetwork.GroupEvents(netbus);
-            const res = await events.connections().get();
+  ];
+};
 
-            console.group('🌳 Group');
-            console.log('local', res.local);
-            console.log('remote', res.remote);
-            console.log('pending', res.pending);
-            console.groupEnd();
-            events.dispose();
+const groupItems = (args: {
+  bus: t.EventBus<any>;
+  netbus: t.NetBus<any>;
+  status?: t.GroupPeerStatus;
+}) => {
+  const { bus, netbus, status } = args;
+  const self = netbus.self;
+  const totalPending = status?.pending.length || 0;
+
+  const styles = {
+    base: css({ Flex: 'horizontal-center-center' }),
+    label: css({ opacity: 0.4 }),
+  };
+
+  const group: P = {
+    label: 'group',
+    value: (
+      <>
+        {totalPending === 0 && <div {...styles.label}>({'“alone”'})</div>}
+        <Button
+          label={'refresh'}
+          margin={[null, null, null, 8]}
+          onClick={() => {
+            const group = PeerNetwork.GroupEvents(netbus);
+            group.refresh().fire();
+            group.dispose();
           }}
         />
-      ),
-    },
-  ];
+      </>
+    ),
+  };
 
-  return items;
+  const pending = (() => {
+    if (!status) return;
+    if (totalPending === 0) return;
+
+    return {
+      label: 'pending',
+      value: (
+        <div {...styles.base}>
+          <div {...styles.label}>{totalPending} pending</div>
+          <Button
+            label={'connect'}
+            margin={[null, null, null, 8]}
+            onClick={() => {
+              const events = PeerNetwork.Events(bus);
+
+              status.pending.forEach(async (remote) => {
+                const open = events.connection(self, remote.peer).open;
+                if (remote.kind === 'data') {
+                  const res = await open.data();
+                  console.log('open/data:', res);
+                }
+                if (remote.kind === 'media/screen' || remote.kind === 'media/video') {
+                  const { parent } = remote;
+                  const res = await open.media(remote.kind, { parent });
+                  console.log('open/media:', res);
+                }
+              });
+
+              events.dispose();
+            }}
+          />
+        </div>
+      ),
+    };
+  })();
+
+  return [group, pending].filter(Boolean);
 };

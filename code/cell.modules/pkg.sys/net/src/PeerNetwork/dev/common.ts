@@ -8,3 +8,5 @@ export * from '../common';
 export { PeerNetwork } from '..';
 
 export { t };
+
+export const isLocalhost = location.hostname === 'localhost';
