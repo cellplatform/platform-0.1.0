@@ -16,7 +16,16 @@ export type NetBus<E extends t.Event = t.Event> = t.IDisposable & {
  * Selected fires event to peers.
  */
 export type NetBusTarget<E extends t.Event> = {
+  /**
+   * Fires a targetted event.
+   */
   fire(event: E): Promise<NetBusFireResponse<E>>;
+
+  /**
+   * Fires an event only over the local bus.
+   * NB: This is a convenience method and overrides any existing filter.
+   */
+  // self(event: E): Promise<NetBusFireResponse<E>>;
 };
 
 export type NetBusFireResponse<E extends t.Event> = {

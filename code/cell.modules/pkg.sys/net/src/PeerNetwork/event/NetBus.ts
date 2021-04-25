@@ -1,5 +1,3 @@
-import { Subject } from 'rxjs';
-
 import { rx, t } from '../common';
 import { Events } from './Events';
 
@@ -15,15 +13,10 @@ export function NetBus<E extends t.Event>(args: {
   const data = events.data(self);
   const { dispose, dispose$ } = events;
 
-  const local$ = new Subject<t.Event>();
-  const fireLocal = (event: t.Event) => local$.next(event);
-  const bus = {
-    local: args.bus.type<t.PeerEvent>(),
-    network: rx.bus<E>(local$),
-  };
+  const local = rx.bus<E>();
 
   // Listen for incoming events from the network and pass into the bus.
-  data.in$.subscribe((e) => local$.next(e.data));
+  data.in$.subscribe((e) => local.fire(e.data));
 
   // Maintain a list of connections.
   let connections: t.PeerConnectionStatus[];
@@ -36,8 +29,8 @@ export function NetBus<E extends t.Event>(args: {
   /**
    * API
    */
-  const netbus: t.NetBus<E> = {
-    event$: bus.network.event$,
+  const api: t.NetBus<E> = {
+    event$: local.event$,
     dispose,
     dispose$,
 
@@ -47,38 +40,37 @@ export function NetBus<E extends t.Event>(args: {
 
     fire(event: E) {
       data.send(event);
-      fireLocal(event);
+      local.fire(event);
     },
 
     type<T extends t.Event>() {
-      return (netbus as unknown) as t.NetBus<T>;
+      return (api as unknown) as t.NetBus<T>;
     },
 
     /**
      * Target events as specific peers.
      */
     target(filter?: t.PeerConnectionFilter) {
-      const api = {
-        async fire(event: E) {
-          // Fire event to remote targets.
-          const { sent } = await data.send(event, { filter });
+      const fire: t.NetBusTarget<E>['fire'] = async (event) => {
+        // Fire event to remote targets.
+        const { sent } = await data.send(event, { filter });
 
-          // Test the filter against the local peer, and fire locally if any matches found.
-          if (filter) {
-            const localMatch = connections
-              .filter((ref) => ref.kind === 'data')
-              .some(({ id, kind }) => filter({ peer: self, connection: { id, kind } }));
-            if (localMatch) fireLocal(event);
-          }
-          if (!filter) fireLocal(event); // NB: No filter, so always fire out of local bus.
+        // Test the filter against the local peer, and fire locally if any matches found.
+        if (filter) {
+          const localMatch = connections
+            .filter((ref) => ref.kind === 'data')
+            .some(({ id, kind }) => filter({ peer: self, connection: { id, kind } }));
+          if (localMatch) local.fire(event);
+        }
+        if (!filter) local.fire(event); // NB: No filter, so always fire out of local bus.
 
-          // Finish up.
-          return { event, sent };
-        },
+        // Finish up.
+        return { event, sent };
       };
-      return api;
+
+      return { fire };
     },
   };
 
-  return netbus;
+  return api;
 }

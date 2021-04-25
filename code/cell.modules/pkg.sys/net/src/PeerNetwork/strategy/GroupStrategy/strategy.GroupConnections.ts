@@ -1,3 +1,16 @@
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+  tap,
+} from 'rxjs/operators';
 import { t, Events, GroupEvents } from '../common';
 
 /**
@@ -11,7 +24,7 @@ export async function GroupConnectionsStrategy(args: {
   const { netbus, events } = args;
   const connections = events.connections();
 
-  connections.req$.pipe().subscribe((e) => {
+  connections.req$.pipe(filter(() => args.isEnabled())).subscribe((e) => {
     console.log('group req', e);
   });
 
