@@ -8,14 +8,19 @@ import { EventStackCardFactory } from './types';
 
 export type EventStackProps = {
   events?: EventHistoryItem[];
-  card?: { factory?: EventStackCardFactory; maxDepth?: number };
+  card?: { title?: string; factory?: EventStackCardFactory; maxDepth?: number; duration?: number };
   style?: CssValue;
 };
 
 export const EventStack: React.FC<EventStackProps> = (props) => {
   const { events = [] } = props;
-  const cardFactory = props.card?.factory || defaultCardFactory;
-  const maxCardDepth = defaultValue(props.card?.maxDepth, 3);
+
+  const card = {
+    title: props.card?.title,
+    factory: props.card?.factory || defaultCardFactory,
+    maxDepth: defaultValue(props.card?.maxDepth, 3),
+    duration: defaultValue(props.card?.duration, 300),
+  };
 
   const baseRef = useRef<HTMLDivElement>(null);
   const resize = useResizeObserver(baseRef);
@@ -35,13 +40,16 @@ export const EventStack: React.FC<EventStackProps> = (props) => {
     const isTopCard = i === events.length - 1;
     const { id } = item;
     const { width } = resize.rect;
-    const el = cardFactory({ ...item, showPayload, toggleShowPayload, width, isTopCard });
+    const title = card.title;
+    const el = card.factory({ ...item, title, showPayload, toggleShowPayload, width, isTopCard });
     return { id, el };
   });
 
   return (
     <div ref={baseRef} {...css(styles.base, props.style)}>
-      {resize.ready && <CardStack items={items} maxDepth={maxCardDepth} />}
+      {resize.ready && (
+        <CardStack items={items} maxDepth={card.maxDepth} duration={card.duration} />
+      )}
     </div>
   );
 };

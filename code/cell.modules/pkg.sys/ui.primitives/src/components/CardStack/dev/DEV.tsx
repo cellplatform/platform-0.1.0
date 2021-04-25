@@ -1,17 +1,16 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
-import { CardStack, CardStackProps, CardStackItem } from '..';
+import { CardStack, CardStackProps, CardStackItem, CardStackItemRender } from '..';
 import { slug } from './common';
 import { SampleCard } from './DEV.Sample.Card';
 
 type Ctx = { props: CardStackProps };
 
 const createItems = (length: number) => Array.from({ length }).map(() => createItem());
-const createItem = () => {
+const createItem = (): CardStackItem => {
   const id = slug();
-  const el = <SampleCard id={id} />;
-  const item: CardStackItem = { id, el };
-  return item;
+  const el: CardStackItemRender = (e) => <SampleCard id={id} isTop={e.is.top} />;
+  return { id, el };
 };
 
 /**
@@ -23,7 +22,11 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     return {
-      props: { items: createItems(3), maxDepth: 5 },
+      props: {
+        items: createItems(3),
+        maxDepth: 5,
+        duration: 300,
+      },
     };
   })
 
@@ -32,15 +35,23 @@ export const actions = DevActions<Ctx>()
 
     e.select((config) => {
       config
-        .initial(config.ctx.props.maxDepth)
         .title('maxDepth')
         .view('buttons')
         .items([0, 2, 3, 5, 10])
+        .initial(config.ctx.props.maxDepth)
         .pipe((e) => {
-          if (e.changing) {
-            console.log('e.changing', e.changing);
-            e.ctx.props.maxDepth = e.changing.next[0].value;
-          }
+          if (e.changing) e.ctx.props.maxDepth = e.changing.next[0].value;
+        });
+    });
+
+    e.select((config) => {
+      config
+        .title('duration (msecs)')
+        .view('buttons')
+        .items([0, 150, { label: '300 (default)', value: 300 }, 500, 1000])
+        .initial(config.ctx.props.duration)
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.duration = e.changing.next[0].value;
         });
     });
 
@@ -49,8 +60,11 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Items');
+    e.button('reset (1)', (e) => (e.ctx.props.items = createItems(1)));
     e.button('reset (3)', (e) => (e.ctx.props.items = createItems(3)));
     e.button('none (undefined)', (e) => (e.ctx.props.items = undefined));
+
+    e.hr(1, 0.1);
 
     e.button('push', (e) => {
       const props = e.ctx.props;

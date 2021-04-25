@@ -1,77 +1,90 @@
 import React from 'react';
-import { DevActions, ObjectView } from 'sys.ui.dev';
+import { DevActions, ObjectView, LocalStorage } from 'sys.ui.dev';
 
-import { PeerNetwork } from '..';
-import { css, cuid, deleteUndefined, Icons, MediaStream, rx, t, time } from './common';
+import { css, cuid, deleteUndefined, Icons, MediaStream, rx, t, time, PeerNetwork } from './common';
 import { RootLayout } from './DEV.Root';
-import { EventBridge } from './DEV.EventBridge';
+import { DevModel } from './model';
+import { EventBridge } from './event';
 
 type Ctx = {
   self: t.PeerId;
-  bus: t.EventBus<t.PeerEvent>;
-  netbus: t.EventBus;
+  bus: t.EventBus<t.PeerEvent | t.DevEvent>;
+  netbus: t.NetBus;
   signal: string; // Signalling server network address (host/path).
-  events: {
-    net: t.PeerNetworkEvents;
-    media: ReturnType<typeof MediaStream.Events>;
-  };
-  strategy: t.PeerStrategy;
+  events: CtxEvents;
   connectTo?: string;
+  toStrategy(): { peer: t.PeerStrategy; group: t.GroupStrategy };
+  toFlags(): CtxFlags;
+};
+type CtxFlags = {
   isReliable: boolean;
   debugJson: boolean;
-  toStrategy(): t.PeerStrategy;
+  collapseData: boolean;
+  collapseMedia: boolean;
+};
+type CtxEvents = {
+  net: t.PeerNetworkEvents;
+  media: ReturnType<typeof MediaStream.Events>;
 };
 
 /**
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('sys.net/PeerNetwork')
+  .namespace('PeerNetwork')
 
   .context((e) => {
     if (e.prev) return e.prev;
 
     const self = cuid();
-    const bus = rx.bus<t.PeerEvent>();
+    const bus = rx.bus<t.PeerEvent | t.DevEvent>();
 
     EventBridge.startEventBridge({ self, bus });
     PeerNetwork.Controller({ bus });
     MediaStream.Controller({ bus });
-    const strategy = PeerNetwork.Strategy({ self, bus });
-
-    strategy.connection.autoPropagation = false; // TEMP 🐷
 
     const signal = 'rtc.cellfs.com/peer';
+    const netbus = PeerNetwork.NetBus({ bus, self });
     const events = {
-      net: PeerNetwork.Events({ bus }),
-      media: MediaStream.Events({ bus }),
+      net: PeerNetwork.Events(bus),
+      media: MediaStream.Events(bus),
     };
 
-    time.delay(100, async () => {
-      /**
-       * Start "self" video.
-       */
+    const strategy = {
+      peer: PeerNetwork.PeerStrategy({ self, bus }),
+      group: PeerNetwork.GroupStrategy({ netbus }),
+    };
+
+    strategy.peer.connection.autoPropagation = false; // TEMP 🐷
+
+    const init = () => {
       events.media.start(EventBridge.videoRef(self)).video();
       events.net.create(signal, self);
       events.net.media(self).video();
-    });
-
-    const netbus = events.net.data(self).bus();
+    };
+    time.delay(100, init);
 
     events.net.status(self).changed$.subscribe((e) => {
-      console.log('CHANGED', e);
+      console.log('NET/CHANGED', e);
     });
+
+    const local = LocalStorage<CtxFlags>('sys.net/dev/');
+    const flags = local.object({
+      isReliable: true,
+      debugJson: false,
+      collapseData: false,
+      collapseMedia: false,
+    });
+    local.changed$.subscribe(() => e.redraw());
 
     return {
       self,
       bus,
       netbus,
       events,
-      strategy,
       signal,
-      isReliable: false,
-      debugJson: false,
       connectTo: '',
+      toFlags: () => flags,
       toStrategy: () => strategy,
     };
   })
@@ -80,8 +93,27 @@ export const actions = DevActions<Ctx>()
     e.title('Environment');
 
     e.boolean('debug (json)', (e) => {
-      if (e.changing) e.ctx.debugJson = e.changing.next;
-      e.boolean.current = e.ctx.debugJson;
+      const flags = e.ctx.toFlags();
+      if (e.changing) flags.debugJson = e.changing.next;
+      e.boolean.current = flags.debugJson;
+    });
+
+    e.boolean('collapse: data', (e) => {
+      const flags = e.ctx.toFlags();
+      if (e.changing) flags.collapseData = e.changing.next;
+      e.boolean.current = flags.collapseData;
+    });
+
+    e.boolean('collapse: media', (e) => {
+      const flags = e.ctx.toFlags();
+      if (e.changing) flags.collapseMedia = e.changing.next;
+      e.boolean.current = flags.collapseMedia;
+    });
+
+    e.button('network model', (e) => {
+      const { self, bus, netbus } = e.toObject(e.ctx) as Ctx;
+      const el = <DevModel bus={bus} netbus={netbus} self={self} />;
+      e.ctx.bus.fire({ type: 'DEV/modal', payload: { el, target: 'body' } });
     });
 
     e.textbox((config) => {
@@ -161,10 +193,11 @@ export const actions = DevActions<Ctx>()
     e.hr(0, 0, 20);
 
     e.button('fire ⚡️ Peer:Connection/connect (data)', async (e) => {
-      const { self, connectTo, events, isReliable } = e.ctx;
+      const { self, connectTo, events } = e.ctx;
       if (!connectTo) {
         e.button.description = '🐷 ERROR: Remote peer not specified';
       } else {
+        const isReliable = e.ctx.toFlags().isReliable;
         const res = await events.net.connection(self, connectTo).open.data({ isReliable });
         const name = res.error ? 'Fail' : 'Success';
         const expandLevel = res.error ? 1 : 0;
@@ -178,8 +211,9 @@ export const actions = DevActions<Ctx>()
         .indent(25)
         .label('reliable')
         .pipe((e) => {
-          if (e.changing) e.ctx.isReliable = e.changing.next;
-          const isReliable = e.ctx.isReliable;
+          const flags = e.ctx.toFlags();
+          if (e.changing) flags.isReliable = e.changing.next;
+          const isReliable = flags.isReliable;
           e.boolean.current = isReliable;
           e.boolean.description = isReliable
             ? '(eg. large file transfers)'
@@ -199,8 +233,8 @@ export const actions = DevActions<Ctx>()
         .description('Automatically purge connections when closed.')
         .pipe((e) => {
           const strategy = e.ctx.toStrategy();
-          if (e.changing) strategy.connection.autoPurgeOnClose = e.changing.next;
-          e.boolean.current = strategy.connection.autoPurgeOnClose;
+          if (e.changing) strategy.peer.connection.autoPurgeOnClose = e.changing.next;
+          e.boolean.current = strategy.peer.connection.autoPurgeOnClose;
         }),
     );
 
@@ -210,8 +244,8 @@ export const actions = DevActions<Ctx>()
         .description('Automatically propogate data connections to peers.')
         .pipe((e) => {
           const strategy = e.ctx.toStrategy();
-          if (e.changing) strategy.connection.autoPropagation = e.changing.next;
-          e.boolean.current = strategy.connection.autoPropagation;
+          if (e.changing) strategy.peer.connection.autoPropagation = e.changing.next;
+          e.boolean.current = strategy.peer.connection.autoPropagation;
         }),
     );
 
@@ -221,14 +255,28 @@ export const actions = DevActions<Ctx>()
         .description('Ensure connections are properly closed on all peers.')
         .pipe((e) => {
           const strategy = e.ctx.toStrategy();
-          if (e.changing) strategy.connection.ensureClosed = e.changing.next;
-          e.boolean.current = strategy.connection.ensureClosed;
+          if (e.changing) strategy.peer.connection.ensureClosed = e.changing.next;
+          e.boolean.current = strategy.peer.connection.ensureClosed;
+        }),
+    );
+
+    e.hr(1, 0.1);
+
+    e.boolean((config) =>
+      config
+        .label('group.connections')
+        .description('Retrieve details about the network of peers/connections.')
+        .pipe((e) => {
+          const strategy = e.ctx.toStrategy();
+          if (e.changing) strategy.group.connections = e.changing.next;
+          e.boolean.current = strategy.group.connections;
         }),
     );
   })
 
   .subject((e) => {
     const { self, bus, netbus } = e.ctx;
+    const flags = e.ctx.toFlags();
 
     const styles = {
       labelRight: {
@@ -261,7 +309,15 @@ export const actions = DevActions<Ctx>()
       actions: { width: 380 },
     });
 
-    e.render(<RootLayout self={self} bus={bus} netbus={netbus} debugJson={e.ctx.debugJson} />);
+    e.render(
+      <RootLayout
+        self={self}
+        bus={bus}
+        netbus={netbus}
+        debugJson={flags.debugJson}
+        collapse={{ data: flags.collapseData, media: flags.collapseMedia }}
+      />,
+    );
   });
 
 export default actions;

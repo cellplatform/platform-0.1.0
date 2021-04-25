@@ -9,13 +9,8 @@ export const Status = {
     const { peer, createdAt, signal } = self;
     const id = peer.id;
     const connections = self.connections.map((ref) => Status.toConnection(ref));
-    return deleteUndefined<t.PeerStatus>({
-      id,
-      isOnline: navigator.onLine,
-      createdAt,
-      signal,
-      connections,
-    });
+    const isOnline = navigator.onLine;
+    return deleteUndefined<t.PeerStatus>({ id, isOnline, createdAt, signal, connections });
   },
 
   /**
@@ -26,15 +21,19 @@ export const Status = {
 
     if (kind === 'data') {
       const conn = ref.conn as PeerJS.DataConnection;
-      const { reliable: isReliable, open: isOpen, metadata } = conn;
-      return { uri, id, peer, kind, direction, isReliable, isOpen, metadata };
+      const { reliable: isReliable, open: isOpen } = conn;
+      const metadata = (conn.metadata || {}) as t.PeerConnectionMetadataData;
+      const { parent } = metadata;
+      return { uri, id, peer, kind, direction, isReliable, isOpen, parent };
     }
 
     if (kind === 'media/video' || kind === 'media/screen') {
       const media = ref.remoteStream as MediaStream;
       const conn = ref.conn as PeerJS.MediaConnection;
-      const { open: isOpen, metadata } = conn;
-      return { uri, id, peer, kind, direction, isOpen, metadata, media };
+      const { open: isOpen } = conn;
+      const metadata = (conn.metadata || {}) as t.PeerConnectionMetadataMedia;
+      const { parent } = metadata;
+      return { uri, id, peer, kind, direction, isOpen, media, parent };
     }
 
     throw new Error(`Kind of connection not supported: ${uri}`);

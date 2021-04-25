@@ -67,6 +67,8 @@ export const actions = ComposedActions<Ctx>()
    * Render
    */
   .subject((e) => {
+    console.log('SUBJECT');
+
     e.settings({
       host: { background: -0.04 },
       layout: { width: 450, border: -0.1, cropmarks: -0.2, background: 1, label: 'sample-1' },

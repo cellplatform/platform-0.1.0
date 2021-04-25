@@ -1,5 +1,6 @@
+import { Subject } from 'rxjs';
+
 import * as t from './types';
-import { R } from './libs';
 
 export const FONT = {
   MONO: 'Menlo, monospace',
@@ -24,17 +25,17 @@ export const COLORS = {
 
 const UNNAMED = 'Unnamed';
 const UNTITLED = 'Untitled';
-const ACTIONS: t.ActionsModel<any> = {
-  namespace: UNNAMED,
-  items: [],
-  ctx: {},
-  env: { viaAction: {}, viaSubject: {} },
-};
 export const DEFAULT = {
   UNTITLED,
   UNNAMED,
-  get ACTIONS() {
-    return R.clone(ACTIONS);
+  get ACTIONS(): t.ActionsModel<any> {
+    return {
+      namespace: UNNAMED,
+      items: [],
+      ctx: {},
+      env: { viaAction: {}, viaSubject: {} },
+      redraw$: new Subject<void>(),
+    };
   },
 };
 

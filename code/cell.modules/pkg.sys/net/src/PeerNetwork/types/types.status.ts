@@ -17,21 +17,23 @@ export type PeerStatus = {
 export type PeerConnectionStatus = PeerConnectionDataStatus | PeerConnectionMediaStatus;
 
 type PeerConnectionBase = {
-  peer: { self: t.PeerId; remote: t.PeerId };
+  peer: { self: t.PeerId; remote: { id: t.PeerId; module: t.PeerModule } };
   id: t.PeerConnectionId;
   uri: t.PeerConnectionUri;
   direction: t.PeerConnectDirection;
-  metadata?: t.JsonMap;
+  parent?: t.PeerConnectionId;
 };
 
 export type PeerConnectionDataStatus = PeerConnectionBase & {
   kind: 'data';
   isReliable: boolean;
   isOpen: boolean;
+  metadata?: t.PeerConnectionMetadataData;
 };
 
 export type PeerConnectionMediaStatus = PeerConnectionBase & {
   kind: 'media/screen' | 'media/video';
   isOpen: boolean;
   media?: MediaStream;
+  metadata?: t.PeerConnectionMetadataMedia;
 };

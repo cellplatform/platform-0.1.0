@@ -1,8 +1,8 @@
-import { BundleHttpCache } from '../cache';
+import { BundleCache } from '../cache';
 
 const ctx: ServiceWorker = self as any;
 
-BundleHttpCache.serviceWorker(self, { log: 'verbose' });
+BundleCache.serviceWorker(self, { log: 'verbose' });
 
 ctx.addEventListener('install', (e) => {
   console.log('🚀 service-worker installed:', e);

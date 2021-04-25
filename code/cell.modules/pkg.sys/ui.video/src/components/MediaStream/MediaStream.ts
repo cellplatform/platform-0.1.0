@@ -1,7 +1,7 @@
 import { MediaStreamEvents } from './MediaStream.Events';
 import { MediaStreamController } from './MediaStream.Controller';
 import { MediaStreamRecordController } from './MediaStream.RecordController';
-import { useVideoStreamState, useOfflineState } from './hooks';
+import { useVideoStreamState, useOfflineState } from './hook';
 import { VideoStream, VideoStreamProps } from './VideoStream';
 
 export * from './types';

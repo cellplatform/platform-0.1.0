@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { animationFrameScheduler, Subject } from 'rxjs';
-import { observeOn, takeUntil } from 'rxjs/operators';
+import { observeOn, takeUntil, filter } from 'rxjs/operators';
 
 import { slug, time } from '../../common';
 import { EventBusHistoryHook, EventHistoryItem } from './types';
@@ -20,7 +20,13 @@ export const useEventBusHistory: EventBusHistoryHook = (bus, options = {}) => {
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const $ = bus.event$.pipe(takeUntil(dispose$), observeOn(animationFrameScheduler));
+    if (!bus) return;
+
+    const $ = bus.event$.pipe(
+      takeUntil(dispose$),
+      filter((e) => (options.filter ? options.filter(e) : true)),
+      observeOn(animationFrameScheduler),
+    );
 
     if (reset$) {
       reset$.pipe(takeUntil(dispose$)).subscribe(reset);
@@ -39,12 +45,13 @@ export const useEventBusHistory: EventBusHistoryHook = (bus, options = {}) => {
         const item: EventHistoryItem = { id: slug(), event, count, timestamp };
         let events = [...prev, item];
         if (max !== undefined) events = events.slice(events.length - max);
+        if (options.onChange) options.onChange({ total: count, events });
         return events;
       });
     });
 
     return () => dispose$.next();
-  }, [reset$]); // eslint-disable-line
+  }, [bus, reset$]); // eslint-disable-line
 
   return { total, events, reset };
 };

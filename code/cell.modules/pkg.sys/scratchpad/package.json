@@ -22,7 +22,6 @@
     "deploy": "cell.compiler upload --bump --dir=sys.scratchpad $@"
   },
   "dependencies": {
-    "automerge": "^0.14.2",
     "d3": "^6.6.1"
   },
   "devDependencies": {

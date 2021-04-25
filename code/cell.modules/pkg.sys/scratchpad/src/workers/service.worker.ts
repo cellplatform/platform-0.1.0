@@ -1,4 +1,4 @@
-import { BundleHttpCache } from 'sys.net/lib/cache';
+import { BundleCache } from 'sys.net/lib/cache';
 
 const ctx: ServiceWorker = self as any;
 
@@ -6,4 +6,4 @@ ctx.addEventListener('install', (e) => {
   console.log('🚀 service-worker installed:', e);
 });
 
-BundleHttpCache.serviceWorker(self, { log: 'verbose' });
+BundleCache.serviceWorker(self, { log: 'verbose' });

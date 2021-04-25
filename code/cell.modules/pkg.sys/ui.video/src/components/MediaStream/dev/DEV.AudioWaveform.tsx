@@ -23,7 +23,7 @@ export const DevAudioWaveform: React.FC<DevAudioWaveformProps> = (props) => {
    * Get hold of the Media Stream.
    */
   useEffect(() => {
-    const events = MediaStreamEvents({ bus });
+    const events = MediaStreamEvents(bus);
 
     if (ref) {
       events.started(ref).$.subscribe((e) => setStream(e.stream));

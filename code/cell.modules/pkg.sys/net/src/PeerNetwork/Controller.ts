@@ -1,11 +1,22 @@
 import { merge } from 'rxjs';
 import { delay, distinctUntilChanged, filter, map, take } from 'rxjs/operators';
 
-import { asArray, defaultValue, PeerJS, R, rx, slug, t, time, WebRuntime } from './common';
-import { Events } from './Events';
+import {
+  defaultValue,
+  PeerJS,
+  PeerJSError,
+  R,
+  rx,
+  slug,
+  StreamUtil,
+  StringUtil,
+  t,
+  time,
+  WebRuntime,
+} from './common';
+import { Events } from './event';
 import { MemoryRefs, SelfRef } from './Refs';
 import { Status } from './Status';
-import { PeerJSError, StreamUtil, StringUtil } from './util';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 
@@ -14,7 +25,7 @@ type ConnectionKind = t.PeerNetworkConnectRes['kind'];
  */
 export function Controller(args: { bus: t.EventBus<any> }) {
   const bus = args.bus.type<t.PeerEvent>();
-  const events = Events({ bus });
+  const events = Events(bus);
   const $ = events.$;
 
   const refs = MemoryRefs();
@@ -50,23 +61,22 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     conn: PeerJS.DataConnection | PeerJS.MediaConnection,
     tx?: string,
   ) => {
-    const connectionRef = refs.connection(self).get(conn);
-    tx = tx || slug();
+    const connRef = refs.connection(self).get(conn);
 
     bus.fire({
-      type: 'sys.net/peer/connection/connect:res',
+      type: 'sys.net/peer/conn/connect:res',
       payload: {
         self: self.id,
-        tx,
+        tx: tx || slug(),
         kind,
         direction,
         existing: false,
-        remote: connectionRef.peer.remote,
-        connection: Status.toConnection(connectionRef),
+        remote: connRef.peer.remote.id,
+        connection: Status.toConnection(connRef),
       },
     });
 
-    conn.on('close', () => {
+    conn.on('close', async () => {
       /**
        * NOTE:
        * The close event is not being fired for [Media] connections.
@@ -74,27 +84,24 @@ export function Controller(args: { bus: t.EventBus<any> }) {
        *
        * See work-around that uses the [netbus] "connection.ensureClosed" strategy.
        */
-      bus.fire({
-        type: 'sys.net/peer/connection/closed',
-        payload: { self: self.id, connection: Status.toConnection(connectionRef) },
-      });
+      const peer = connRef.peer;
+      events.connection(peer.self, peer.remote.id).close(connRef.id);
     });
 
     if (kind === 'data') {
       const data = conn as PeerJS.DataConnection;
-      data.on('data', (data: t.JsonMap) => {
+      data.on('data', (data: any) => {
         if (typeof data === 'object') {
-          const e = data as t.PeerDataOut;
-          const to = asArray(e.target || []);
+          const source = { peer: connRef.peer.remote.id, connection: connRef.id };
           bus.fire({
             type: 'sys.net/peer/data/in',
-            payload: { self: self.id, data: e.data, from: e.self, to },
+            payload: { self: self.id, data, source },
           });
         }
       });
     }
 
-    return connectionRef;
+    return connRef;
   };
 
   const initLocalPeer = (e: t.PeerLocalCreateReq) => {
@@ -186,8 +193,8 @@ export function Controller(args: { bus: t.EventBus<any> }) {
           'sys.net/peer/local/init:res',
           'sys.net/peer/local/purge:res',
           'sys.net/peer/local/online:changed',
-          'sys.net/peer/connection/connect:res',
-          'sys.net/peer/connection/closed',
+          'sys.net/peer/conn/connect:res',
+          'sys.net/peer/conn/disconnect:res',
         ];
         return types.includes(e.type);
       }),
@@ -266,18 +273,19 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   /**
    * CONNECT: Outgoing
    */
-  rx.payload<t.PeerConnectReqEvent>($, 'sys.net/peer/connection/connect:req')
+  rx.payload<t.PeerConnectReqEvent>($, 'sys.net/peer/conn/connect:req')
     .pipe(filter((e) => e.direction === 'outgoing'))
     .subscribe(async (e) => {
       const { remote } = e;
       const self = refs.self[e.self];
       const tx = e.tx || slug();
       const module = { name: WebRuntime.module.name, version: WebRuntime.module.version };
+      const parent = e.parent;
 
       const fire = (payload?: Partial<t.PeerNetworkConnectRes>) => {
         const existing = Boolean(payload?.existing);
         bus.fire({
-          type: 'sys.net/peer/connection/connect:res',
+          type: 'sys.net/peer/conn/connect:res',
           payload: {
             kind: e.kind,
             self: e.self,
@@ -305,7 +313,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
        * START a data connection.
        */
       if (e.kind === 'data') {
-        const metadata: t.PeerConnectionMetadataData = { ...e.metadata, kind: e.kind, module };
+        const metadata: t.PeerConnectionMetadataData = { kind: e.kind, module, parent };
         const reliable = e.isReliable;
         const errorMonitor = PeerJSError(self.peer);
         const dataConnection = self.peer.connect(remote, { reliable, metadata });
@@ -347,10 +355,10 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
         // Start the network/peer connection.
         const metadata: t.PeerConnectionMetadataMedia = {
-          ...e.metadata,
           kind: e.kind,
           constraints,
           module,
+          parent,
         };
         const mediaConnection = self.peer.call(remote, localStream, { metadata });
         const connRef = refs.connection(self).add(e.kind, 'outgoing', mediaConnection);
@@ -397,16 +405,16 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   /**
    * DISCONNECT from a remote peer.
    */
-  rx.payload<t.PeerDisconnectReqEvent>($, 'sys.net/peer/connection/disconnect:req')
+  rx.payload<t.PeerDisconnectReqEvent>($, 'sys.net/peer/conn/disconnect:req')
     .pipe()
-    .subscribe((e) => {
+    .subscribe(async (e) => {
       const selfRef = refs.self[e.self];
       const tx = e.tx || slug();
 
       const fire = (payload?: Partial<t.PeerNetworkDisconnectRes>) => {
         const connection = e.connection;
         bus.fire({
-          type: 'sys.net/peer/connection/disconnect:res',
+          type: 'sys.net/peer/conn/disconnect:res',
           payload: { self: e.self, tx, connection, ...payload },
         });
       };
@@ -419,26 +427,56 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
       const connRef = selfRef.connections.find((item) => item.id === e.connection);
       if (!connRef) {
-        const message = `The remote connection '${e.connection}' does not exist`;
+        const message = `The connection to close '${e.connection}' does not exist`;
         return fireError(message);
       }
 
-      connRef.conn.close();
+      // Ensure all child connections are closed.
+      const children = selfRef.connections.filter(({ parent }) => parent === e.connection);
+      await Promise.all(
+        children.map((child) => {
+          const { self, remote } = child.peer;
+          return events.connection(self, remote.id).close(child.id);
+        }),
+      );
+
+      // Close the connection.
+      if (connRef.conn.open) connRef.conn.close();
       fire({});
     });
 
   /**
    * DATA:OUT: Send
    */
-  rx.payload<t.PeerDataOutEvent>($, 'sys.net/peer/data/out')
+  rx.payload<t.PeerDataOutReqEvent>($, 'sys.net/peer/data/out:req')
     .pipe()
     .subscribe((e) => {
-      const target = e.target === undefined ? [] : asArray(e.target);
-      if (target.length === 0) target.push(...refs.connection(e.self).ids);
-      refs
-        .connection(e.self)
-        .data.filter((conn) => (!e.target ? true : target.includes(conn.peer)))
-        .forEach((conn) => conn.send({ ...e, target }));
+      const selfRef = refs.self[e.self];
+      const tx = e.tx || slug();
+
+      const targets = selfRef.connections
+        .filter((ref) => ref.kind === 'data')
+        .filter((ref) => {
+          return !e.target
+            ? true
+            : e.target({ peer: ref.peer.remote.id, connection: { id: ref.id, kind: ref.kind } });
+        });
+
+      // Send the data over the wire.
+      targets.forEach((ref) => {
+        (ref.conn as PeerJS.DataConnection).send(e.data);
+      });
+
+      // Fire response event.
+      bus.fire({
+        type: 'sys.net/peer/data/out:res',
+        payload: {
+          tx,
+          self: e.self,
+          sent: targets.map((ref) => ({ peer: ref.peer.remote.id, connection: ref.id })),
+          data: e.data,
+        },
+      });
     });
 
   /**

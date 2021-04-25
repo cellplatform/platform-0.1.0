@@ -174,7 +174,12 @@ function formatScroll(key: string, value: any, target: any) {
   }
 }
 
-// --------------------------------------------------
+function formatSize(key: string, value: any, target: any) {
+  if (typeof value === 'number' || typeof value === 'string') {
+    const styles = { width: value, height: value };
+    mergeAndReplace(key, styles, target);
+  }
+}
 
 const AlignMap: { [k: string]: string } = {
   center: 'center',
@@ -317,6 +322,10 @@ export const transform = (
         case 'Scroll':
           formatScroll(key, value, style);
           break;
+        case 'Size':
+          formatSize(key, value, style);
+          break;
+
         default:
         // Ignore.
       }

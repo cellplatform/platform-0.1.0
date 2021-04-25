@@ -13,7 +13,7 @@ export function MediaStreamRecordController(args: { ref: string; bus: t.EventBus
   const { ref } = args;
   const dispose$ = new Subject<void>();
   const bus = args.bus.type<t.MediaEvent>();
-  const events = MediaStreamEvents({ bus });
+  const events = MediaStreamEvents(bus);
   const $ = bus.event$.pipe(takeUntil(dispose$));
 
   let stream: MediaStream | undefined;

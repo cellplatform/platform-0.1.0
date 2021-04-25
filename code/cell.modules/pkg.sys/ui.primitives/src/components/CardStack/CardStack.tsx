@@ -2,8 +2,7 @@ import { AnimatePresence, domMax, LazyMotion, m } from 'framer-motion';
 import React from 'react';
 
 import { css, CssValue, defaultValue } from '../../common';
-
-export type CardStackItem = { id: string; el?: JSX.Element | (() => JSX.Element) };
+import { CardStackItem, CardStackItemRenderArgs } from './types';
 
 export type CardStackProps = {
   items?: CardStackItem[];
@@ -17,42 +16,28 @@ export const CardStack: React.FC<CardStackProps> = (props) => {
   const maxDepth = defaultValue(props.maxDepth, 10);
 
   let items = props.items || [];
-  if (items.length > maxDepth) {
-    items = items.slice(items.length - maxDepth);
-  }
+  if (items.length > maxDepth) items = items.slice(items.length - maxDepth);
+  const top = items[items.length - 1];
 
   const styles = {
-    base: css({
-      position: 'relative',
-      boxSizing: 'border-box',
-    }),
+    base: css({ position: 'relative', boxSizing: 'border-box' }),
     item: {
       base: { position: 'absolute' },
       top: { position: 'relative' },
     },
   };
 
-  const elItems = items.map((item, i) => {
-    const total = items.length;
-    const position = total - i - 1;
-    const is = {
-      first: i === 0,
-      last: i === total - 1,
-    };
+  const elItems = items.map((item) => {
+    const card = render(items, item);
+    if (card.is.top) return undefined;
 
-    const styles = {
-      base: { position: 'absolute' },
-      top: { position: 'relative' },
-    };
-
-    const y = is.last ? 0 : 0 - position * 5;
-    const percent = position * 0.05;
+    const y = card.is.top ? 0 : 0 - card.position * 5;
+    const percent = card.position * 0.05;
     const scale = 1 - percent;
-    const el = typeof item?.el === 'function' ? item.el() : item?.el;
 
     return (
       <m.div key={item.id} animate={{ y, scale }} transition={{ duration }} exit={{ opacity: 0 }}>
-        <div {...css(styles.base, is.last && styles.top)}>{el}</div>
+        <div {...css(styles.item.base)}>{card.toElement()}</div>
       </m.div>
     );
   });
@@ -62,6 +47,21 @@ export const CardStack: React.FC<CardStackProps> = (props) => {
       <LazyMotion features={domMax}>
         <AnimatePresence>{elItems}</AnimatePresence>
       </LazyMotion>
+      {top && <div {...styles.item.top}>{render(items, top).toElement()}</div>}
     </div>
   );
 };
+
+/**
+ * [Helpers]
+ */
+
+function render(items: CardStackItem[], item: CardStackItem) {
+  const index = items.indexOf(item);
+  const total = items.length;
+  const position = total - index - 1;
+  const is = { bottom: index === 0, top: index === total - 1 };
+  const args: CardStackItemRenderArgs = { total, position, index, is };
+  const toElement = () => (typeof item.el === 'function' ? item.el(args) : item.el);
+  return { ...args, toElement };
+}

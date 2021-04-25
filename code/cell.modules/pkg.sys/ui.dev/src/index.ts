@@ -11,7 +11,7 @@ export { ErrorBoundary } from './components/ErrorBoundary';
 export { Hr } from './components/Hr';
 export * from './components/Textbox';
 
-export { Store } from './store';
+export { Store, LocalStorage } from './store';
 export { StateObject, toObject, log, LOREM, lorem } from './common';
 
 export * from './types';

@@ -78,3 +78,17 @@ describe('margin', function () {
     expect(res.marginLeft).to.equal(30);
   });
 });
+
+describe('size (width, height)', () => {
+  it('Size: number', () => {
+    const res = style.transform({ Size: 50 }) as any;
+    expect(res.width).to.equal(50);
+    expect(res.height).to.equal(50);
+  });
+
+  it('Size: string', () => {
+    const res = style.transform({ Size: '5em' }) as any;
+    expect(res.width).to.equal('5em');
+    expect(res.height).to.equal('5em');
+  });
+});

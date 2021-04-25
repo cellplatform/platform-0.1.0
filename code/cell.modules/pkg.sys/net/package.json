@@ -1,6 +1,6 @@
 {
   "name": "sys.net",
-  "version": "0.0.42",
+  "version": "0.0.48",
   "sideEffects": false,
   "compiler": {
     "port": 3040
@@ -20,6 +20,7 @@
     "deploy": "cell.compiler upload --bump --dir sys.net $@"
   },
   "dependencies": {
+    "automerge": "^0.14.2",
     "core-js": "^3.10.0",
     "peerjs": "^1.3.1"
   },

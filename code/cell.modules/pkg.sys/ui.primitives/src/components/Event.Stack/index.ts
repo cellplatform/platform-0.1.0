@@ -1,2 +1,2 @@
 export * from './EventStack';
-export { useEventBusHistory } from '../Event';
+export { useEventBusHistory, EventBusHistory, EventHistoryItem } from '../Event';

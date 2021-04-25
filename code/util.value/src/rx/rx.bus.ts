@@ -14,16 +14,9 @@ export function bus<T extends E = E>(input?: Subject<any> | t.EventBus<any>): t.
   const subject$ = (input as Subject<any>) || new Subject<any>();
 
   const res: t.EventBus<T> = {
-    type: <T extends E>() => (res as unknown) as t.EventBus<T>,
     event$: subject$.pipe(filter((e) => isEvent(e))),
-    fire(e) {
-      subject$.next(e);
-    },
-    filter<T extends E = E>(fn: t.EventBusFilter<T>) {
-      const clone$ = new Subject<T>();
-      clone$.pipe(filter((e) => fn(e))).subscribe((e) => subject$.next(e));
-      return bus<T>(clone$);
-    },
+    type: <T extends E>() => (res as unknown) as t.EventBus<T>,
+    fire: (e) => subject$.next(e),
   };
 
   return res;

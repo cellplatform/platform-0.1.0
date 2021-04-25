@@ -7,6 +7,7 @@ import { PropList, PropListItem } from '../PropList';
 export type EventStackCardProps = {
   count: number;
   event: t.Event<any>;
+  title?: string;
   isTopCard?: boolean;
   width?: number;
   height?: number;
@@ -65,7 +66,7 @@ export const EventStackCard: React.FC<EventStackCardProps> = (props) => {
 
   const elBody = isTopCard && (
     <div {...styles.inner}>
-      <PropList title={'Network Bus'} items={items} defaults={{ clipboard: false }} />
+      <PropList title={props.title} items={items} defaults={{ clipboard: false }} />
       {elObject}
     </div>
   );

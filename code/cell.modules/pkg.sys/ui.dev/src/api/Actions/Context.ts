@@ -13,39 +13,41 @@ export const Context = {
     options: { throw?: boolean } = {},
   ): Ctx | null {
     const state = model.state;
-    if (state.ctx.get) {
-      const change: t.ActionGetContextChange<Ctx> = {
-        ctx(fn) {
-          model.change((draft) => {
-            const ctx = draft.ctx.current;
-            if (!ctx) throw new Error(`Ensure the context has been initially set before changing.`);
-            fn(ctx);
-          });
-          return e;
-        },
-        settings(args) {
-          model.change((draft) => {
-            const env = draft.env.viaAction || (draft.env.viaAction = {});
-            Handler.settings.update(env, args);
-          });
-          return e;
-        },
-      };
+    if (!state.ctx.get) return null;
 
-      const prev = state.ctx.current;
-      const e: t.ActionGetContextArgs<Ctx> = { prev, change };
-      const value = state.ctx.get(e);
+    const change: t.ActionGetContextChange<Ctx> = {
+      ctx(fn) {
+        model.change((draft) => {
+          const ctx = draft.ctx.current;
+          if (!ctx) throw new Error(`Ensure the context has been initially set before changing.`);
+          fn(ctx);
+        });
+        return e;
+      },
+      settings(args) {
+        model.change((draft) => {
+          const env = draft.env.viaAction || (draft.env.viaAction = {});
+          Handler.settings.update(env, args);
+        });
+        return e;
+      },
+    };
 
-      model.change((draft) => (draft.ctx.current = value));
+    const redraw = () => state.redraw$.next();
+    const prev = state.ctx.current;
+    const namespace = state.namespace;
+    const e: t.ActionGetContextArgs<Ctx> = { namespace, prev, change, redraw };
+    const value = state.ctx.get(e);
 
-      if (!value && options.throw) {
-        const err = `The Actions [context] has not been set. Make sure you've called [actions.context(...)]`;
-        throw new Error(err);
-      }
+    model.change((draft) => {
+      draft.ctx.current = value;
+    });
 
-      return value;
-    } else {
-      return null;
+    if (!value && options.throw) {
+      const err = `The Actions [context] has not been set. Make sure you've called [actions.context(...)]`;
+      throw new Error(err);
     }
+
+    return value;
   },
 };

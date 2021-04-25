@@ -1,5 +1,4 @@
-import { PeerJS, t } from './common';
-import { StringUtil, Uri } from './util';
+import { PeerJS, t, StringUtil, Uri } from './common';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 
@@ -21,6 +20,7 @@ export type ConnectionRef = {
   direction: t.PeerConnectDirection;
   localStream?: MediaStream;
   remoteStream?: MediaStream;
+  parent?: t.PeerConnectionId;
 };
 
 /**
@@ -28,11 +28,14 @@ export type ConnectionRef = {
  */
 export function MemoryRefs() {
   const self: { [id: string]: SelfRef } = {};
+
   const refs = {
     self,
 
     connection(input: SelfRef | string) {
       const self = typeof input === 'string' ? refs.self[input] : input;
+      type C = PeerJS.DataConnection | PeerJS.MediaConnection;
+      const getId = (conn: C) => StringUtil.formatConnectionId((conn as any).connectionId);
       return {
         add(
           kind: ConnectionKind,
@@ -40,28 +43,32 @@ export function MemoryRefs() {
           conn: PeerJS.DataConnection | PeerJS.MediaConnection,
           remoteStream?: MediaStream,
         ) {
-          const remote = conn.peer;
+          const id = getId(conn);
+          const metadata = conn.metadata as t.PeerConnectionMetadata;
+          const { parent, module } = metadata;
+
+          const remote = { id: conn.peer, module };
           const peer = { self: self.peer.id, remote };
-          const id = StringUtil.formatConnectionId((conn as any).connectionId);
-          const uri = Uri.connection(kind, remote, id);
+          const uri = Uri.connection(kind, remote.id, id);
 
           const existing = self.connections.find((item) => item.uri === uri);
           if (existing) return existing;
 
-          const ref: ConnectionRef = { kind, uri, id, peer, direction, conn, remoteStream };
+          const ref: ConnectionRef = { kind, uri, id, peer, direction, conn, remoteStream, parent };
           self.connections = [...self.connections, ref];
 
           return ref;
         },
 
-        remove(conn: PeerJS.DataConnection | PeerJS.MediaConnection) {
+        remove(conn: C) {
           self.connections = self.connections.filter((item) => item.conn !== conn);
         },
 
-        get(conn: PeerJS.DataConnection | PeerJS.MediaConnection) {
-          const remote = conn.peer;
-          const ref = self.connections.find((ref) => ref.peer.remote === remote);
+        get(conn: C) {
+          const id = getId(conn);
+          const ref = self.connections.find((ref) => ref.id == id);
           if (!ref) {
+            const remote = conn.peer;
             const err = `The connection reference '${remote}' for local network '${self.id}' has not been added`;
             throw new Error(err);
           }
@@ -81,7 +88,7 @@ export function MemoryRefs() {
         },
 
         get ids() {
-          return self.connections.map((ref) => ref.peer.remote);
+          return self.connections.map((ref) => ref.peer.remote.id);
         },
       };
     },

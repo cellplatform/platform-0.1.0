@@ -1,9 +1,9 @@
 import { t } from './common';
 
-export * from './types.events.connection';
-export * from './types.events.data';
+export * from './types.events.peer.local';
+export * from './types.events.peer.conn';
+export * from './types.events.peer.data';
 export * from './types.events.group';
-export * from './types.events.local';
 
 /**
  * EVENTS

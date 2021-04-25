@@ -16,26 +16,33 @@ export type PeerConnectDirection = 'incoming' | 'outgoing';
 
 export type PeerError = { message: string };
 
-export type PeerSignallingEndpoint = {
-  host: string;
-  port: number;
-  path?: string;
-  secure: boolean;
+export type PeerSignallingEndpoint = { host: string; port: number; path?: string; secure: boolean };
+
+export type PeerModule = { name: string; version: string };
+
+/**
+ * Filter on a peer connection.
+ */
+export type PeerConnectionFilter = (e: PeerConnectionFilterArgs) => boolean;
+export type PeerConnectionFilterArgs = {
+  peer: t.PeerId;
+  connection: { id: t.PeerConnectionId; kind: t.PeerConnectionKind };
 };
 
 /**
  * Connection {metadata}.
  */
-export type PeerConnectionMetadata = PeerConnectionMetadataMedia | PeerConnectionMetadataData;
-export type PeerConnectionModule = { name: string; version: string };
+export type PeerConnectionMetadata = PeerConnectionMetadataData | PeerConnectionMetadataMedia;
+
+export type PeerConnectionMetadataData = {
+  kind: t.PeerConnectionKindData;
+  module: t.PeerModule;
+  parent?: t.PeerConnectionId;
+};
 
 export type PeerConnectionMetadataMedia = {
   kind: t.PeerConnectionKindMedia;
+  module: t.PeerModule;
   constraints?: t.PeerMediaConstraints;
-  module: PeerConnectionModule;
-};
-
-export type PeerConnectionMetadataData = {
-  kind: PeerConnectionKindData;
-  module: PeerConnectionModule;
+  parent?: t.PeerConnectionId;
 };
