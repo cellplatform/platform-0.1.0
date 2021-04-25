@@ -19,7 +19,7 @@ export type EventBusHistoryOptions = {
   max?: number;
   reset$?: t.Observable<void>;
   onChange?: (e: EventBusHistory) => void;
-  filter?: (e: t.Event) => boolean;
+  filter?: <E extends t.Event = t.Event>(e: E) => boolean;
 };
 
 export type EventBusHistory = { total: number; events: EventHistoryItem[] };

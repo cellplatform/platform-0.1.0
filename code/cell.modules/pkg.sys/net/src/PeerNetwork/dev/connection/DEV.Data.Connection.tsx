@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import {
   Button,
@@ -22,15 +22,11 @@ export type DevDataConnectionProps = {
 };
 
 export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
-  const { self, connection, bus, netbus } = props;
+  const { self, connection, bus } = props;
 
-  const history = useEventBusHistory(bus, {
-    filter: (args) => {
-      const e = args as t.PeerEvent;
-      if (e.type !== 'sys.net/peer/data/in') return false;
-      return true;
-    },
-  });
+  const [netbus, setNetbus] = useState<t.NetBus>();
+  const history = useEventBusHistory(netbus);
+  useEffect(() => setNetbus(PeerNetwork.NetBus({ self, bus })), [self, bus]);
 
   const open = (kind: t.PeerConnectionKindMedia) => openHandler({ bus, connection, kind });
 
@@ -54,10 +50,10 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
         <Button
           label={'Run'}
           onClick={async () => {
-            const events = PeerNetwork.GroupEvents({ self, bus: netbus });
-            console.log('fire', events);
-
-            const res = await events.connections().get();
+            console.log('RUN');
+            // const events = PeerNetwork.GroupEvents({ self, bus: netbus });
+            // console.log('fire', events);
+            // const res = await events.connections().get();
             //
             // bus.fire({type:'sys.net/group/connections:req'})
           }}
@@ -99,11 +95,7 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
           events={history.events}
           style={{ MarginY: 10 }}
           onEventClick={(item) => {
-            const e = item.event.payload as t.PeerDataIn;
-            console.group('🌳 Distributed Event (Incoming)');
-            console.log('source.peer', e.source.peer);
-            console.log('event', e.data);
-            console.groupEnd();
+            console.log('event', item.event);
           }}
         />
         <PropList title={'Strategy'} items={strategyItems} defaults={{ clipboard: false }} />

@@ -6,6 +6,5 @@ export * from './common.libs';
 export * from '../common';
 
 export { PeerNetwork } from '..';
-export { NetBus } from '../event';
 
 export { t };

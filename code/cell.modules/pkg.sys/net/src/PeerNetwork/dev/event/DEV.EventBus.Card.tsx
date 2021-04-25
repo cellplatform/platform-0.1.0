@@ -8,7 +8,6 @@ import {
   PropListItem,
   t,
   useEventBusHistory,
-  NetBus,
   PeerNetwork,
 } from '../common';
 import { DevCard } from '../DEV.Card';
@@ -26,9 +25,7 @@ export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
   const { self, bus } = props;
 
   const [netbus, setNetbus] = useState<t.NetBus>();
-  useEffect(() => {
-    setNetbus(NetBus({ self, bus }));
-  }, [self, bus]);
+  useEffect(() => setNetbus(PeerNetwork.NetBus({ self, bus })), [self, bus]);
 
   const history = useEventBusHistory(netbus);
 
@@ -75,7 +72,7 @@ export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
         <PropList title={'Network Bus'} items={items} defaults={{ clipboard: false }} />
         <Hr thickness={5} opacity={0.1} margin={[10, 0, 15, 0]} />
         <DevEventBusTextbox onBroadcast={handleBroadcast} />
-        <DevEventBusStack canBroadcast={true} history={history} />
+        <DevEventBusStack history={history} />
       </div>
     </DevCard>
   );

@@ -4,7 +4,6 @@ import { css, CssValue, EventBusHistory, EventPipe, EventStack } from '../common
 
 export type DevEventBusStackProps = {
   history: EventBusHistory;
-  canBroadcast?: boolean;
   style?: CssValue;
 };
 
@@ -27,12 +26,8 @@ export const DevEventBusStack: React.FC<DevEventBusStackProps> = (props) => {
       <EventPipe
         events={history.events}
         style={styles.pipe}
-        onEventClick={(e) => {
-          console.group('🌳 event');
-          console.log('count', e.count);
-          console.log('type', e.event.type);
-          console.log('payload', e.event.payload);
-          console.groupEnd();
+        onEventClick={(item) => {
+          console.log('event', item.event);
         }}
       />
     </>
