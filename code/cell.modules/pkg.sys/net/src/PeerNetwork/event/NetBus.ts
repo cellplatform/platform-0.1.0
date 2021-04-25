@@ -13,10 +13,10 @@ export function NetBus<E extends t.Event>(args: {
   const data = events.data(self);
   const { dispose, dispose$ } = events;
 
-  const netbus = rx.bus<E>();
+  const bus = rx.bus<E>();
 
   // Listen for incoming events from the network and pass into the bus.
-  data.in$.subscribe((e) => netbus.fire(e.data));
+  data.in$.subscribe((e) => bus.fire(e.data));
 
   // Maintain a list of connections.
   let connections: t.PeerConnectionStatus[];
@@ -36,9 +36,9 @@ export function NetBus<E extends t.Event>(args: {
       const localMatch = connections
         .filter((ref) => ref.kind === 'data')
         .some(({ id, kind }) => filter({ peer: args.self, connection: { id, kind } }));
-      if (localMatch) netbus.fire(event);
+      if (localMatch) bus.fire(event);
     }
-    if (!filter) netbus.fire(event); // NB: No filter, so always fire out of local bus.
+    if (!filter) bus.fire(event); // NB: No filter, so always fire out of local bus.
 
     // Finish up.
     return { event, sent };
@@ -49,7 +49,7 @@ export function NetBus<E extends t.Event>(args: {
    */
   const api: t.NetBus<E> = {
     self,
-    event$: netbus.event$,
+    event$: bus.event$,
     dispose,
     dispose$,
 
@@ -59,7 +59,7 @@ export function NetBus<E extends t.Event>(args: {
 
     fire(event: E) {
       data.send(event);
-      netbus.fire(event);
+      bus.fire(event);
     },
 
     type<T extends t.Event>() {
