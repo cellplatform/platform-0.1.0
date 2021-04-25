@@ -47,11 +47,7 @@ export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
 
     if (!args.filter) netbus.fire(event);
     if (args.filter) {
-      const res = await netbus.target(filter).fire(event);
-
-      /**
-       * TODO 🐷
-       */
+      const res = await netbus.target.filter(filter).fire(event);
       console.log('response (filtered):', res);
     }
   };

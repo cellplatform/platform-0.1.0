@@ -24,7 +24,7 @@ export async function GroupConnectionsStrategy(args: {
   req$.pipe(filter((e) => e.source === self)).subscribe(async (payload) => {
     const tx = slug();
     const targets = netbus.connections.map((conn) => conn.peer.remote.id);
-    const { sent } = await netbus.target().remote({
+    const { sent } = await netbus.target.remote({
       type: 'sys.net/group/connections:req',
       payload: { source: self, targets, tx },
     });
@@ -42,7 +42,7 @@ export async function GroupConnectionsStrategy(args: {
     type P = t.GroupConnectionsResPeer;
     const res = await Promise.all(waitFor);
     const peers = res.reduce((acc, next) => [...acc, ...next.peers], [] as P[]);
-    netbus.target().local({
+    netbus.target.local({
       type: 'sys.net/group/connections:res',
       payload: { tx: payload.tx || '', source: self, peers },
     });
@@ -55,8 +55,9 @@ export async function GroupConnectionsStrategy(args: {
     const tx = payload.tx || slug();
     const connections = netbus.connections.map((ref) => ({ id: ref.id, kind: ref.kind }));
     const peer: t.GroupConnectionsResPeer = { peer: self, module, connections };
-    netbus
-      .target((e) => e.peer === payload.source)
+
+    netbus.target
+      .filter((e) => e.peer === payload.source)
       .fire({
         type: 'sys.net/group/connections:res',
         payload: { tx, source: self, peers: [peer] },

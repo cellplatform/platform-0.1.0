@@ -37,7 +37,7 @@ export function GroupEvents(eventbus: t.NetBus<any>) {
 
       const tx = slug();
       const res = firstValueFrom(res$.pipe(filter((e) => e.tx === tx)));
-      netbus.target().local({
+      netbus.target.local({
         type: 'sys.net/group/connections:req',
         payload: { source, targets, tx },
       });

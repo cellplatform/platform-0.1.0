@@ -26,6 +26,24 @@ export function NetBus<E extends t.Event>(args: {
     .get()
     .then((e) => (connections = e.peer?.connections || []));
 
+  type N = t.NetBusTarget<E>;
+  const send = async (event: E, filter?: t.PeerConnectionFilter) => {
+    // Broadcast event to remote targets.
+    const { sent } = await data.send(event, { filter });
+
+    // Test the filter against the local peer, and fire locally if any matches found.
+    if (filter) {
+      const localMatch = connections
+        .filter((ref) => ref.kind === 'data')
+        .some(({ id, kind }) => filter({ peer: args.self, connection: { id, kind } }));
+      if (localMatch) netbus.fire(event);
+    }
+    if (!filter) netbus.fire(event); // NB: No filter, so always fire out of local bus.
+
+    // Finish up.
+    return { event, sent };
+  };
+
   /**
    * API
    */
@@ -49,47 +67,40 @@ export function NetBus<E extends t.Event>(args: {
     },
 
     /**
-     * Target events as specific peers.
+     * Target events at specific peers.
      */
-    target(filter?: t.PeerConnectionFilter) {
-      type N = t.NetBusTarget<E>;
-
-      const send = async (event: E, filter?: t.PeerConnectionFilter) => {
-        // Broadcast event to remote targets.
-        const { sent } = await data.send(event, { filter });
-
-        // Test the filter against the local peer, and fire locally if any matches found.
-        if (filter) {
-          const localMatch = connections
-            .filter((ref) => ref.kind === 'data')
-            .some(({ id, kind }) => filter({ peer: args.self, connection: { id, kind } }));
-          if (localMatch) netbus.fire(event);
-        }
-        if (!filter) netbus.fire(event); // NB: No filter, so always fire out of local bus.
-
-        // Finish up.
-        return { event, sent };
-      };
-
+    target: {
       /**
-       * Fires a targetted event.
+       * Fires an event over the local bus only.
        */
-      const fire: N['fire'] = async (event) => send(event, filter);
-
-      /**
-       * Fires an event only over the local bus.
-       * NB: This is a convenience method and overrides any existing filter.
-       */
-      const local: N['local'] = async (event) => send(event, (e) => e.peer === args.self);
+      async local(event) {
+        return send(event, (e) => e.peer === args.self);
+      },
 
       /**
        * Fires an event to remote peers only.
-       * NB: This is a convience method and [augments] any existing filter.
        */
-      const remote: N['remote'] = async (event) =>
-        send(event, (e) => (e.peer === args.self ? false : filter ? filter(e) : true));
+      async remote(event) {
+        return send(event, (e) => e.peer !== args.self);
+      },
 
-      return { fire, local, remote };
+      /**
+       * Broadcasts to a subset of peers.
+       */
+      filter(fn: t.PeerConnectionFilter) {
+        return {
+          fire: (event) => send(event, fn),
+        };
+      },
+
+      /**
+       * Broadcasts to a subset of peers.
+       */
+      peer(...id: t.PeerId[]) {
+        return {
+          fire: (event) => send(event, (e) => id.includes(e.peer)),
+        };
+      },
     },
   };
 
