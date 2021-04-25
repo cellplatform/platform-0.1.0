@@ -16,6 +16,7 @@ export type HarnessProps = {
   store?: t.ActionsSelectStore | boolean;
   namespace?: string;
   allowRubberband?: boolean; // Page rubber-band effect in Chrome (default: false).
+  fullscreen?: boolean;
   style?: CssValue;
 };
 
@@ -26,9 +27,8 @@ export const Harness: React.FC<HarnessProps> = (props) => {
   /**
    * TODO 🐷
    * - Handle fullscreen in Harness model (when that comes).
-   * - Do not default to TRUE.
    */
-  const [isFullscreen, setIsFullscreen] = useState<boolean | undefined>(true);
+  const [isFullscreen, setIsFullscreen] = useState<boolean | undefined>(props.fullscreen);
 
   useEffect(() => {
     if (props.bus) setBus(props.bus);
