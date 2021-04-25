@@ -1,2 +1,2 @@
 export * from '../common';
-export { Events } from '../event';
+export { Events, NetBus } from '../event';

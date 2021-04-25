@@ -1,8 +1,9 @@
 import { firstValueFrom, Subject } from 'rxjs';
 import { take, filter, takeUntil, map } from 'rxjs/operators';
-import { cuid, rx, t, slug, isEvent } from '../common';
+import { cuid, rx, t, slug } from '../common';
 
 import { EventNamespace as ns } from './Events.ns';
+import { NetBus } from './NetBus';
 export { ns };
 
 /**
@@ -15,7 +16,7 @@ export function Events(eventbus: t.EventBus<any>) {
 
   const event$ = bus.event$.pipe(
     takeUntil(dispose$),
-    filter(ns.is.peer.base),
+    filter((e) => ns.is.peer.base(e)),
     map((e) => e as t.PeerEvent),
   );
 
@@ -226,8 +227,8 @@ export function Events(eventbus: t.EventBus<any>) {
       .payload<t.PeerDataInEvent>(event$, 'sys.net/peer/data/in')
       .pipe(filter((e) => e.self === self));
 
-    const send = (data: any, options: { target?: t.PeerConnectionFilter } = {}) => {
-      const { target } = options;
+    const send = (data: any, options: { filter?: t.PeerConnectionFilter } = {}) => {
+      const { filter: target } = options;
       const tx = slug();
       const res = firstValueFrom(out.res$.pipe(filter((e) => e.tx === tx)));
       bus.fire({ type: 'sys.net/peer/data/out:req', payload: { self, target, data, tx } });
@@ -239,32 +240,8 @@ export function Events(eventbus: t.EventBus<any>) {
       out,
       in$,
       send,
-      bus<E extends t.Event>(options: { target?: t.PeerConnectionFilter } = {}) {
-        const bus$ = new Subject<t.Event>();
-        let current: undefined | t.Event;
-
-        // Ferry events fired into the bus out to target connections.
-        bus$
-          .pipe(
-            takeUntil(dispose$),
-            filter((e) => e !== current), // NB: Prevent circular event loop.
-          )
-          .subscribe((e) => {
-            // NB: undefined target sends to all connections.
-            // send(e, options);
-          });
-
-        // Listen for incoming events from the network and pass into the bus.
-        in$.pipe(filter((e) => isEvent(e.data))).subscribe((e) => {
-          /**
-           * TODO 🐷
-           */
-          // current = e.data as t.Event;
-          // bus$.next(current);
-          // current = undefined;
-        });
-
-        return rx.bus<E>(bus$);
+      netbus<E extends t.Event>() {
+        return NetBus<E>({ bus, self });
       },
     };
   };

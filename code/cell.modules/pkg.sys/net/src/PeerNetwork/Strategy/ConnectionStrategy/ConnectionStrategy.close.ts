@@ -1,5 +1,5 @@
 import { filter, debounceTime } from 'rxjs/operators';
-import { t, rx } from '../common';
+import { t, rx, Events, NetBus } from '../common';
 
 /**
  * Strategy for auto-purging connections when closed.
@@ -31,7 +31,7 @@ export function ensureClosed(args: {
   isEnabled: () => boolean;
 }) {
   const { self, events } = args;
-  const netbus = events.data(self).bus<t.GroupEvent>();
+  const netbus = events.data(self).netbus();
   const connections = events.connections(self);
 
   /**

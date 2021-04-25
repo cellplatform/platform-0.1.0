@@ -1,5 +1,4 @@
 import { delay, filter } from 'rxjs/operators';
-
 import { R, rx, t, FilterUtil } from '../common';
 
 /**
@@ -12,7 +11,7 @@ export function autoPropagation(args: {
 }) {
   const { self, events } = args;
   const connections = events.connections(self);
-  const netbus = events.data(self).bus<t.GroupEvent>();
+  const netbus = events.data(self).netbus<t.GroupEvent>();
 
   const getConnections = async () => {
     const { peer } = await events.status(self).get();

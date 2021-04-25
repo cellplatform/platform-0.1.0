@@ -9,7 +9,7 @@ import { EventBridge } from './event';
 type Ctx = {
   self: t.PeerId;
   bus: t.EventBus<t.PeerEvent | t.DevEvent>;
-  netbus: t.EventBus;
+  netbus: t.NetBus;
   signal: string; // Signalling server network address (host/path).
   events: CtxEvents;
   strategy: t.PeerStrategy;
@@ -46,6 +46,7 @@ export const actions = DevActions<Ctx>()
     strategy.connection.autoPropagation = false; // TEMP 🐷
 
     const signal = 'rtc.cellfs.com/peer';
+    const netbus = PeerNetwork.NetBus({ bus, self });
     const events = {
       net: PeerNetwork.Events(bus),
       media: MediaStream.Events(bus),
@@ -58,8 +59,6 @@ export const actions = DevActions<Ctx>()
     };
 
     time.delay(100, init);
-
-    const netbus = events.net.data(self).bus();
 
     events.net.status(self).changed$.subscribe((e) => {
       console.log('NET/CHANGED', e);
