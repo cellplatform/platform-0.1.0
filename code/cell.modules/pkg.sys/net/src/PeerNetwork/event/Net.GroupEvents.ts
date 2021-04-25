@@ -7,9 +7,9 @@ import { EventNamespace as ns } from './Events.ns';
 /**
  * Helpers for working with group (mesh) related events.
  */
-export function GroupEvents(args: { netbus: t.NetBus<any> }) {
+export function GroupEvents(eventbus: t.NetBus<any>) {
   const module = { name: WebRuntime.module.name, version: WebRuntime.module.version };
-  const netbus = args.netbus.type<t.GroupEvent>();
+  const netbus = eventbus.type<t.GroupEvent>();
   const source = netbus.self;
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();

@@ -19,6 +19,8 @@ type Ctx = {
 type CtxFlags = {
   isReliable: boolean;
   debugJson: boolean;
+  collapseData: boolean;
+  collapseMedia: boolean;
 };
 type CtxEvents = {
   net: t.PeerNetworkEvents;
@@ -67,7 +69,12 @@ export const actions = DevActions<Ctx>()
     });
 
     const local = LocalStorage<CtxFlags>('sys.net/dev/');
-    const flags = local.object({ isReliable: true, debugJson: false });
+    const flags = local.object({
+      isReliable: true,
+      debugJson: false,
+      collapseData: false,
+      collapseMedia: false,
+    });
     local.changed$.subscribe(() => e.redraw());
 
     return {
@@ -89,6 +96,18 @@ export const actions = DevActions<Ctx>()
       const flags = e.ctx.toFlags();
       if (e.changing) flags.debugJson = e.changing.next;
       e.boolean.current = flags.debugJson;
+    });
+
+    e.boolean('collapse: data', (e) => {
+      const flags = e.ctx.toFlags();
+      if (e.changing) flags.collapseData = e.changing.next;
+      e.boolean.current = flags.collapseData;
+    });
+
+    e.boolean('collapse: media', (e) => {
+      const flags = e.ctx.toFlags();
+      if (e.changing) flags.collapseMedia = e.changing.next;
+      e.boolean.current = flags.collapseMedia;
     });
 
     e.button('network model', (e) => {
@@ -290,7 +309,15 @@ export const actions = DevActions<Ctx>()
       actions: { width: 380 },
     });
 
-    e.render(<RootLayout self={self} bus={bus} netbus={netbus} debugJson={flags.debugJson} />);
+    e.render(
+      <RootLayout
+        self={self}
+        bus={bus}
+        netbus={netbus}
+        debugJson={flags.debugJson}
+        collapse={{ data: flags.collapseData, media: flags.collapseMedia }}
+      />,
+    );
   });
 
 export default actions;

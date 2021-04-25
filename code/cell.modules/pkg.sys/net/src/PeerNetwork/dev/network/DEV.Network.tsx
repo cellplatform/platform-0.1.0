@@ -11,6 +11,7 @@ export type DevNetworkProps = {
   netbus: t.NetBus<any>;
   peer: t.PeerStatus;
   media: { video?: MediaStream; screen?: MediaStream };
+  collapse?: boolean | { data?: boolean; media?: boolean };
   style?: CssValue;
 };
 
@@ -40,7 +41,7 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
         self={peer.id}
         bus={bus}
         netbus={netbus}
-        collapse={{ data: false, media: false }}
+        collapse={props.collapse}
         showNetbus={true}
       />
       {modalSize === 'body' && elModal}

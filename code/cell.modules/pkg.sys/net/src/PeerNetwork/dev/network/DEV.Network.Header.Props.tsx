@@ -86,7 +86,7 @@ const toItems = (props: PeerPropListProps): PropListItem[] => {
         <Button
           label={'Calculate'}
           onClick={async () => {
-            const events = PeerNetwork.GroupEvents({ netbus });
+            const events = PeerNetwork.GroupEvents(netbus);
             const res = await events.connections().get();
 
             console.group('🌳 Connections');

@@ -6,7 +6,7 @@ import { GroupConnectionsStrategy } from './strategy.GroupConnections';
  */
 export function GroupStrategy(args: { netbus: t.NetBus<any> }): t.GroupStrategy {
   const { netbus } = args;
-  const events = GroupEvents({ netbus });
+  const events = GroupEvents(netbus);
 
   /**
    * Initialize sub-strategies.

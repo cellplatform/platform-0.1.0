@@ -10,6 +10,7 @@ export type RootLayoutProps = {
   bus: t.EventBus<any>;
   netbus: t.NetBus<any>;
   debugJson?: boolean;
+  collapse?: boolean | { data?: boolean; media?: boolean };
   style?: CssValue;
 };
 
@@ -55,7 +56,13 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
 
   const elLeft = peer.status && (
     <div {...styles.left}>
-      <DevNetwork bus={bus} netbus={netbus} peer={peer.status} media={peer.media} />
+      <DevNetwork
+        bus={bus}
+        netbus={netbus}
+        collapse={props.collapse}
+        peer={peer.status}
+        media={peer.media}
+      />
     </div>
   );
 
