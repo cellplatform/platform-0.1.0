@@ -8,6 +8,7 @@ import {
   PeerNetwork,
   PropList,
   PropListItem,
+  Hr,
   t,
   useEventBusHistory,
 } from '../common';
@@ -23,7 +24,6 @@ export type DevDataConnectionProps = {
 
 export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
   const { self, connection, bus, netbus } = props;
-  const history = useEventBusHistory(netbus);
 
   const open = (kind: t.PeerConnectionKindMedia) => openHandler({ bus, connection, kind });
 
@@ -37,28 +37,6 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
     {
       label: 'media/screen',
       value: <Button onClick={open('media/screen')} label={'Share Screen'} />,
-    },
-  ];
-
-  const strategyItems: PropListItem[] = [
-    {
-      label: 'group.connections',
-      value: (
-        <Button
-          label={'Run'}
-          onClick={async () => {
-            console.log('RUN', netbus);
-
-            const events = PeerNetwork.GroupEvents({ self, netbus });
-
-            const res = await events.connections().get();
-            console.log('-------------------------------------------');
-            console.log('res', res);
-
-            events.dispose();
-          }}
-        />
-      ),
     },
   ];
 
@@ -91,14 +69,14 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       <div {...styles.body.base}>
         <PropList title={'Data Connection'} items={mainItems} defaults={{ clipboard: false }} />
-        <EventPipe
+        {/* <Hr thickness={5} opacity={0.1} margin={[10, 0]} /> */}
+        {/* <EventPipe
           events={history.events}
           style={{ MarginY: 10 }}
           onEventClick={(item) => {
             console.log('event', item.event);
           }}
-        />
-        <PropList title={'Strategy'} items={strategyItems} defaults={{ clipboard: false }} />
+        /> */}
       </div>
     </div>
   );

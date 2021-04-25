@@ -2,15 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { COLORS, css, CssValue, Icons, PropList, PropListItem, t, time } from '../common';
+import {
+  COLORS,
+  css,
+  CssValue,
+  Icons,
+  PropList,
+  PropListItem,
+  t,
+  time,
+  Button,
+  PeerNetwork,
+} from '../common';
 
 export type PeerPropListProps = {
+  netbus: t.NetBus<any>;
   status: t.PeerStatus;
   style?: CssValue;
 };
 
 export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
-  const items = toItems(props.status);
+  const items = toItems(props);
   const [redraw, setRedraw] = useState<number>(0);
 
   useEffect(() => {
@@ -39,12 +51,13 @@ export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
  * [Helpers]
  */
 
-const toItems = (network?: t.PeerStatus): PropListItem[] => {
-  if (!network) return [];
+const toItems = (props: PeerPropListProps): PropListItem[] => {
+  const { status, netbus } = props;
+  if (!status) return [];
 
-  const elapsed = time.elapsed(network.createdAt || -1);
+  const elapsed = time.elapsed(status.createdAt || -1);
   const age = elapsed.sec < 60 ? 'just now' : elapsed.toString();
-  const signal = network.signal;
+  const signal = status.signal;
 
   const styles = {
     signal: {
@@ -63,10 +76,28 @@ const toItems = (network?: t.PeerStatus): PropListItem[] => {
   );
 
   const items: PropListItem[] = [
-    { label: 'local peer', value: { data: network.id, clipboard: true } },
+    { label: 'local peer', value: { data: status.id, clipboard: true } },
     { label: `signal server`, value: elSignal },
     { label: 'age', value: age },
-    { label: 'online', value: network.isOnline },
+    { label: 'online', value: status.isOnline },
+    {
+      label: 'group',
+      value: (
+        <Button
+          label={'Calculate'}
+          onClick={async () => {
+            const events = PeerNetwork.GroupEvents({ netbus });
+            const res = await events.connections().get();
+
+            console.group('🌳 Connections');
+            console.log('local', res.local);
+            console.log('remote', res.remote);
+            console.groupEnd();
+            events.dispose();
+          }}
+        />
+      ),
+    },
   ];
 
   return items;

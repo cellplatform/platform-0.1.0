@@ -35,7 +35,7 @@ export const DevNetworkHeader: React.FC<DevNetworkHeaderProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.left}>
-        <PeerPropList status={peer} />
+        <PeerPropList status={peer} netbus={netbus} />
       </div>
       <div {...styles.right}>
         {elSelfScreen}

@@ -4,9 +4,9 @@ import { GroupConnectionsStrategy } from './strategy.GroupConnections';
 /**
  * Handles strategies for working with a group of peers ("mesh" network).
  */
-export function GroupStrategy(args: { self: t.PeerId; netbus: t.NetBus<any> }): t.GroupStrategy {
-  const { self, netbus } = args;
-  const events = GroupEvents({ self, netbus });
+export function GroupStrategy(args: { netbus: t.NetBus<any> }): t.GroupStrategy {
+  const { netbus } = args;
+  const events = GroupEvents({ netbus });
 
   /**
    * Initialize sub-strategies.

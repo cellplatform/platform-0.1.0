@@ -50,7 +50,7 @@ export const actions = DevActions<Ctx>()
 
     const strategy = {
       peer: PeerNetwork.PeerStrategy({ self, bus }),
-      group: PeerNetwork.GroupStrategy({ self, netbus }),
+      group: PeerNetwork.GroupStrategy({ netbus }),
     };
 
     strategy.peer.connection.autoPropagation = false; // TEMP 🐷

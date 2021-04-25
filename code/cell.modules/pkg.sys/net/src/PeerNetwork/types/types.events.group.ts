@@ -41,9 +41,9 @@ export type GroupEnsureConnectionClosed = {
  */
 export type GroupConnectionsReqEvent = {
   type: 'sys.net/group/connections:req';
-  payload: GroupPeerConnectionsReq;
+  payload: GroupConnectionsReq;
 };
-export type GroupPeerConnectionsReq = {
+export type GroupConnectionsReq = {
   source: t.PeerId;
   targets?: t.PeerId[];
   tx?: string;
@@ -51,14 +51,15 @@ export type GroupPeerConnectionsReq = {
 
 export type GroupConnectionsResEvent = {
   type: 'sys.net/group/connections:res';
-  payload: GroupPeerConnectionsRes;
+  payload: GroupConnectionsRes;
 };
-export type GroupPeerConnectionsRes = {
+export type GroupConnectionsRes = {
   source: t.PeerId;
   tx: string;
-  peers: {
-    peer: t.PeerId;
-    module: t.PeerModule;
-    connections: { id: t.PeerConnectionId; kind: t.PeerConnectionKind }[];
-  }[];
+  peers: GroupConnectionsResPeer[];
+};
+export type GroupConnectionsResPeer = {
+  peer: t.PeerId;
+  module: t.PeerModule;
+  connections: { id: t.PeerConnectionId; kind: t.PeerConnectionKind }[];
 };

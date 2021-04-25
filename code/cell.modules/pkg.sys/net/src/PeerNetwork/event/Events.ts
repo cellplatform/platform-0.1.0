@@ -16,7 +16,7 @@ export function Events(eventbus: t.EventBus<any>) {
 
   const event$ = bus.event$.pipe(
     takeUntil(dispose$),
-    filter((e) => ns.is.peer.base(e)),
+    filter(ns.is.peer.base),
     map((e) => e as t.PeerEvent),
   );
 
