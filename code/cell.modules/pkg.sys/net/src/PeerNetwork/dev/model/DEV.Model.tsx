@@ -23,7 +23,7 @@ import Automerge from 'automerge';
 export type DevModelProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
-  netbus: t.EventBus<any>;
+  netbus: t.NetBus<any>;
   style?: CssValue;
 };
 

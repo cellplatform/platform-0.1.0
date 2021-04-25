@@ -1,31 +1,12 @@
-import { filter, debounceTime } from 'rxjs/operators';
-import { t, rx, Events, NetBus } from '../common';
+import { filter } from 'rxjs/operators';
 
-/**
- * Strategy for auto-purging connections when closed.
- */
-export function autoPerge(args: {
-  self: t.PeerId;
-  events: t.PeerNetworkEvents;
-  isEnabled: () => boolean;
-}) {
-  const { self, events } = args;
-  const connections = events.connections(self);
-
-  connections.disconnect.res$
-    .pipe(
-      filter((e) => e.self === self),
-      filter(() => args.isEnabled()),
-      debounceTime(10),
-    )
-    .subscribe((e) => events.purge(self).fire());
-}
+import { rx, t } from '../../common';
 
 /**
  * Strategy for closed connections the close event is properly
  * propagated around the mesh network.
  */
-export function ensureClosed(args: {
+export function EnsureClosedStrategy(args: {
   self: t.PeerId;
   events: t.PeerNetworkEvents;
   isEnabled: () => boolean;

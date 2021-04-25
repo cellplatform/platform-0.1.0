@@ -16,17 +16,14 @@ import { openHandler, PropUtil } from './util';
 export type DevDataConnectionProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
-  netbus: t.EventBus<any>;
+  netbus: t.NetBus<any>;
   connection: t.PeerConnectionDataStatus;
   style?: CssValue;
 };
 
 export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
-  const { self, connection, bus } = props;
-
-  const [netbus, setNetbus] = useState<t.NetBus>();
+  const { self, connection, bus, netbus } = props;
   const history = useEventBusHistory(netbus);
-  useEffect(() => setNetbus(PeerNetwork.NetBus({ self, bus })), [self, bus]);
 
   const open = (kind: t.PeerConnectionKindMedia) => openHandler({ bus, connection, kind });
 
@@ -50,12 +47,15 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
         <Button
           label={'Run'}
           onClick={async () => {
-            console.log('RUN');
-            // const events = PeerNetwork.GroupEvents({ self, bus: netbus });
-            // console.log('fire', events);
-            // const res = await events.connections().get();
-            //
-            // bus.fire({type:'sys.net/group/connections:req'})
+            console.log('RUN', netbus);
+
+            const events = PeerNetwork.GroupEvents({ self, netbus });
+
+            const res = await events.connections().get();
+            console.log('-------------------------------------------');
+            console.log('res', res);
+
+            events.dispose();
           }}
         />
       ),

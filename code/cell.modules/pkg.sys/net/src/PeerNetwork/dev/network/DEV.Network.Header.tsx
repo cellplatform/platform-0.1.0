@@ -7,7 +7,7 @@ import { PeerPropList } from './DEV.Network.Header.Props';
 export type DevNetworkHeaderProps = {
   peer: t.PeerStatus;
   bus: t.EventBus<any>;
-  netbus: t.EventBus<any>;
+  netbus: t.NetBus<any>;
   media: { video?: MediaStream; screen?: MediaStream };
   style?: CssValue;
 };

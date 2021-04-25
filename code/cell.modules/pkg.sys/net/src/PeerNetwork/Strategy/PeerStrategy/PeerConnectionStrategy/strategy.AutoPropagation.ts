@@ -1,10 +1,10 @@
 import { delay, filter } from 'rxjs/operators';
-import { R, rx, t, FilterUtil } from '../common';
+import { R, rx, t, FilterUtil } from '../../common';
 
 /**
  * Strategy for auto propogating connections to all peers.
  */
-export function autoPropagation(args: {
+export function AutoPropagationStrategy(args: {
   self: t.PeerId;
   events: t.PeerNetworkEvents;
   isEnabled: () => boolean;

@@ -7,11 +7,11 @@ import { EventNamespace as ns } from './Events.ns';
 /**
  * Helpers for working with group (mesh) related events.
  */
-export function GroupEvents(args: { self: t.PeerId; bus: t.EventBus<any> }) {
+export function GroupEvents(args: { self: t.PeerId; netbus: t.NetBus<any> }) {
   const source = args.self;
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
-  const bus = args.bus.type<t.GroupEvent>();
+  const bus = args.netbus.type<t.GroupEvent>();
 
   const event$ = bus.event$.pipe(
     takeUntil(dispose$),

@@ -25,26 +25,33 @@ export function NetBus<E extends t.Event>(args: {
   // Listen for incoming events from the network and pass into the bus.
   data.in$.subscribe((e) => local$.next(e.data));
 
-  // Lazy load current connections (and keep up-to-date).
-  let connections: t.PeerConnectionStatus[] | undefined;
+  // Maintain a list of connections.
+  let connections: t.PeerConnectionStatus[];
   events.status(self).changed$.subscribe((e) => (connections = e.peer.connections));
-  const getConnections = async () => {
-    if (!connections) connections = (await events.status(self).get()).peer?.connections;
-    return connections || [];
-  };
+  events
+    .status(self)
+    .get()
+    .then((e) => (connections = e.peer?.connections || []));
 
   /**
    * API
    */
-  const netbus = {
+  const netbus: t.NetBus<E> = {
+    event$: bus.network.event$,
     dispose,
     dispose$,
 
-    event$: bus.network.event$,
-    type: bus.network.type,
+    get connections() {
+      return connections;
+    },
+
     fire(event: E) {
       data.send(event);
       fireLocal(event);
+    },
+
+    type<T extends t.Event>() {
+      return (netbus as unknown) as t.NetBus<T>;
     },
 
     /**
@@ -54,11 +61,11 @@ export function NetBus<E extends t.Event>(args: {
       const api = {
         async fire(event: E) {
           // Fire event to remote targets.
-          const res = await data.send(event, { filter });
+          const { sent } = await data.send(event, { filter });
 
           // Test the filter against the local peer, and fire locally if any matches found.
           if (filter) {
-            const localMatch = (await getConnections())
+            const localMatch = connections
               .filter((ref) => ref.kind === 'data')
               .some(({ id, kind }) => filter({ peer: self, connection: { id, kind } }));
             if (localMatch) fireLocal(event);
@@ -66,7 +73,7 @@ export function NetBus<E extends t.Event>(args: {
           if (!filter) fireLocal(event); // NB: No filter, so always fire out of local bus.
 
           // Finish up.
-          return { event, sent: res.sent };
+          return { event, sent };
         },
       };
       return api;

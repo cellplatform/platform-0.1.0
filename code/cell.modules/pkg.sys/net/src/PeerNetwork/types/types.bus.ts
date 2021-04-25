@@ -3,8 +3,12 @@ import { t } from './common';
 /**
  * An event-bus distributed across a number of peers.
  */
-export type NetBus<E extends t.Event = t.Event> = t.IDisposable & t.EventBus<E> & NetBusProps<E>;
-type NetBusProps<E extends t.Event> = {
+export type NetBus<E extends t.Event = t.Event> = t.IDisposable & {
+  event$: t.Observable<E>;
+  fire: t.FireEvent<E>;
+  type<T extends t.Event>(): t.NetBus<T>;
+
+  connections: t.PeerConnectionStatus[];
   target(filter?: t.PeerConnectionFilter): NetBusTarget<E>;
 };
 

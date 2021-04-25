@@ -5,7 +5,6 @@ import { t } from './common';
  */
 export type PeerStrategy = t.IDisposable & {
   connection: t.PeerConnectionStrategy;
-  group: t.PeerGroupStrategy;
 };
 
 /**
@@ -31,7 +30,7 @@ export type PeerConnectionStrategy = t.IDisposable & {
 /**
  * Strategies for working with a group of peers ("mesh").
  */
-export type PeerGroupStrategy = t.IDisposable & {
+export type GroupStrategy = t.IDisposable & {
   /**
    * Retrieve details about the network of peers/connections.
    */

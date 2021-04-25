@@ -12,9 +12,8 @@ type Ctx = {
   netbus: t.NetBus;
   signal: string; // Signalling server network address (host/path).
   events: CtxEvents;
-  strategy: t.PeerStrategy;
   connectTo?: string;
-  toStrategy(): t.PeerStrategy;
+  toStrategy(): { peer: t.PeerStrategy; group: t.GroupStrategy };
   toFlags(): CtxFlags;
 };
 type CtxFlags = {
@@ -41,9 +40,6 @@ export const actions = DevActions<Ctx>()
     EventBridge.startEventBridge({ self, bus });
     PeerNetwork.Controller({ bus });
     MediaStream.Controller({ bus });
-    const strategy = PeerNetwork.Strategy({ self, bus });
-
-    strategy.connection.autoPropagation = false; // TEMP 🐷
 
     const signal = 'rtc.cellfs.com/peer';
     const netbus = PeerNetwork.NetBus({ bus, self });
@@ -52,12 +48,18 @@ export const actions = DevActions<Ctx>()
       media: MediaStream.Events(bus),
     };
 
+    const strategy = {
+      peer: PeerNetwork.PeerStrategy({ self, bus }),
+      group: PeerNetwork.GroupStrategy({ self, netbus }),
+    };
+
+    strategy.peer.connection.autoPropagation = false; // TEMP 🐷
+
     const init = () => {
       events.media.start(EventBridge.videoRef(self)).video();
       events.net.create(signal, self);
       events.net.media(self).video();
     };
-
     time.delay(100, init);
 
     events.net.status(self).changed$.subscribe((e) => {
@@ -73,12 +75,9 @@ export const actions = DevActions<Ctx>()
       bus,
       netbus,
       events,
-      strategy,
       signal,
-      toFlags: () => flags,
-      // isReliable: true,
-      // debugJson: local.get('debugJson', false),
       connectTo: '',
+      toFlags: () => flags,
       toStrategy: () => strategy,
     };
   })
@@ -215,8 +214,8 @@ export const actions = DevActions<Ctx>()
         .description('Automatically purge connections when closed.')
         .pipe((e) => {
           const strategy = e.ctx.toStrategy();
-          if (e.changing) strategy.connection.autoPurgeOnClose = e.changing.next;
-          e.boolean.current = strategy.connection.autoPurgeOnClose;
+          if (e.changing) strategy.peer.connection.autoPurgeOnClose = e.changing.next;
+          e.boolean.current = strategy.peer.connection.autoPurgeOnClose;
         }),
     );
 
@@ -226,8 +225,8 @@ export const actions = DevActions<Ctx>()
         .description('Automatically propogate data connections to peers.')
         .pipe((e) => {
           const strategy = e.ctx.toStrategy();
-          if (e.changing) strategy.connection.autoPropagation = e.changing.next;
-          e.boolean.current = strategy.connection.autoPropagation;
+          if (e.changing) strategy.peer.connection.autoPropagation = e.changing.next;
+          e.boolean.current = strategy.peer.connection.autoPropagation;
         }),
     );
 
@@ -237,8 +236,8 @@ export const actions = DevActions<Ctx>()
         .description('Ensure connections are properly closed on all peers.')
         .pipe((e) => {
           const strategy = e.ctx.toStrategy();
-          if (e.changing) strategy.connection.ensureClosed = e.changing.next;
-          e.boolean.current = strategy.connection.ensureClosed;
+          if (e.changing) strategy.peer.connection.ensureClosed = e.changing.next;
+          e.boolean.current = strategy.peer.connection.ensureClosed;
         }),
     );
 

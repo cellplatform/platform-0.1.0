@@ -8,7 +8,7 @@ import { DevMediaConnection } from './DEV.Media.Connection';
 export type DevConnectionProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
-  netbus: t.EventBus<any>;
+  netbus: t.NetBus<any>;
   connection: t.PeerConnectionStatus;
   margin?: t.CssEdgesInput;
   style?: CssValue;

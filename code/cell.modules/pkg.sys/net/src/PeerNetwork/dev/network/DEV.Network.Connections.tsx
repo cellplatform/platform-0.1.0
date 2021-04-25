@@ -13,7 +13,7 @@ import { DevEventBusCard } from '../event';
 export type DevNetworkConnectionsProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
-  netbus: t.EventBus<any>;
+  netbus: t.NetBus<any>;
   collapse?: boolean | { data?: boolean; media?: boolean };
   showNetbus?: boolean;
   filter?: (connection: t.PeerConnectionStatus) => boolean;

@@ -10,7 +10,7 @@ import { openHandler } from './util';
 export type DevDataConnectionsProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
-  netbus: t.EventBus<any>;
+  netbus: t.NetBus<any>;
   connections: t.PeerConnectionDataStatus[];
   style?: CssValue;
 };

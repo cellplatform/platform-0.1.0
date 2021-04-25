@@ -8,7 +8,7 @@ import { DevNetworkConnections } from './DEV.Network.Connections';
 
 export type DevNetworkProps = {
   bus: t.EventBus<any>;
-  netbus: t.EventBus<any>;
+  netbus: t.NetBus<any>;
   peer: t.PeerStatus;
   media: { video?: MediaStream; screen?: MediaStream };
   style?: CssValue;
