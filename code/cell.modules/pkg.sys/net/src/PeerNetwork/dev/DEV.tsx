@@ -1,21 +1,10 @@
 import React from 'react';
-import { DevActions, ObjectView, LocalStorage } from 'sys.ui.dev';
+import { DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
 
-import {
-  css,
-  cuid,
-  deleteUndefined,
-  Icons,
-  MediaStream,
-  rx,
-  t,
-  time,
-  PeerNetwork,
-  Button,
-} from './common';
+import { css, cuid, deleteUndefined, Icons, MediaStream, PeerNetwork, rx, t, time } from './common';
 import { RootLayout } from './DEV.Root';
-import { DevModel } from './model';
 import { EventBridge } from './event';
+import { DevModel } from './model';
 
 type Ctx = {
   self: t.PeerId;
@@ -326,7 +315,6 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     const { self, bus, netbus } = e.ctx;
     const flags = e.ctx.toFlags();
-    const isFullscreen = flags.isFullscreen;
 
     const styles = {
       labelRight: {
@@ -347,23 +335,16 @@ export const actions = DevActions<Ctx>()
       </div>
     );
 
-    const elFullscreenButton = (
-      <Button style={css({ Size: 24 })} onClick={() => e.ctx.fullscreen(!isFullscreen)}>
-        {!isFullscreen && <Icons.Fullscreen.Enter />}
-        {isFullscreen && <Icons.Fullscreen.Exit />}
-      </Button>
-    );
-
     e.settings({
       layout: {
         label: { topLeft: 'Mesh', topRight: elLabelRight },
-        position: [60, 60, 80, 60],
+        position: [60, 60, 70, 60],
         border: -0.1,
         cropmarks: -0.2,
         background: 1,
       },
       host: { background: -0.04 },
-      actions: { width: !isFullscreen ? 380 : 0 },
+      actions: { width: 380 },
     });
 
     e.render(
@@ -376,13 +357,6 @@ export const actions = DevActions<Ctx>()
         cards={{ data: flags.cardsData, media: flags.cardsMedia }}
       />,
     );
-
-    e.render(elFullscreenButton, {
-      position: [3, 3, null, null],
-      label: undefined,
-      border: 0,
-      background: 0,
-    });
   });
 
 export default actions;
