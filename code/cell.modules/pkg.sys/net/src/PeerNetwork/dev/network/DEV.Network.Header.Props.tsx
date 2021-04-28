@@ -75,7 +75,7 @@ export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
           if (isConnected) return;
 
           const events = PeerNetwork.Events(bus);
-          events.connection(self, remote).open.data();
+          await events.connection(self, remote).open.data();
           events.dispose();
         },
         icon: (e) => {
@@ -192,10 +192,10 @@ const groupItems = (args: {
           <Button
             label={'connect'}
             margin={[null, null, null, 8]}
-            onClick={() => {
+            onClick={async () => {
               const events = PeerNetwork.Events(bus);
 
-              status.pending.forEach(async (remote) => {
+              const wait = status.pending.map(async (remote) => {
                 const open = events.connection(self, remote.peer).open;
                 if (remote.kind === 'data') {
                   const res = await open.data();
@@ -208,6 +208,7 @@ const groupItems = (args: {
                 }
               });
 
+              await Promise.all(wait);
               events.dispose();
             }}
           />

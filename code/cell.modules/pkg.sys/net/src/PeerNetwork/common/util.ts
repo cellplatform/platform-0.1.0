@@ -4,6 +4,8 @@ import { PeerJS, defaultValue } from '../../common';
 
 type C = t.PeerConnectionStatus;
 
+export * from './util.base64';
+
 /**
  * Determine if the given value is a [t.Event].
  */

@@ -20,7 +20,6 @@ import { DevVideo } from '../media';
 import { openHandler, PropUtil } from './util';
 
 export type DevDataConnectionProps = {
-  self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.NetBus<any>;
   connection: t.PeerConnectionDataStatus;
@@ -28,8 +27,8 @@ export type DevDataConnectionProps = {
 };
 
 export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
-  const { self, connection, bus, netbus } = props;
-
+  const { connection, bus, netbus } = props;
+  const self = netbus.self;
   const local = useLocalPeer({ self, bus });
 
   const children = local.connections.filter((conn) => conn.parent === connection.id);
@@ -46,14 +45,14 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
 
   const mediaHandler = (kind: t.PeerConnectionKindMedia) => {
     const open = openHandler({ bus, connection, kind });
-    return () => {
+    return async () => {
       const media = childMedia.filter((item) => item.kind === kind);
       if (media.length === 0) open();
       if (media.length > 0) {
         const events = PeerNetwork.Events(bus);
-        media.forEach((item) => {
-          events.connection(self, item.peer.remote.id).close(item.id);
-        });
+        await Promise.all(
+          media.map((item) => events.connection(self, item.peer.remote.id).close(item.id)),
+        );
         events.dispose();
       }
     };
@@ -139,7 +138,7 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
 
           if (!isConnectedLocally) {
             const events = PeerNetwork.Events(bus);
-            events.connection(self, remote).open.data();
+            await events.connection(self, remote).open.data();
             events.dispose();
           }
         },

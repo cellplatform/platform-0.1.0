@@ -178,7 +178,7 @@ export const actions = DevActions<Ctx>()
 
     e.button('network model', (e) => {
       const { self, bus, netbus } = e.toObject(e.ctx) as Ctx;
-      const el = <DevModel bus={bus} netbus={netbus} self={self} />;
+      const el = <DevModel bus={bus} netbus={netbus} />;
       e.ctx.bus.fire({ type: 'DEV/modal', payload: { el, target: 'body' } });
     });
 
@@ -374,6 +374,17 @@ export const actions = DevActions<Ctx>()
           e.boolean.current = strategy.group.connections;
         }),
     );
+
+    e.boolean((config) =>
+      config
+        .label('group.filesystem')
+        .description('Manage files between a group of peers.')
+        .pipe((e) => {
+          const strategy = e.ctx.toStrategy();
+          if (e.changing) strategy.group.filesystem = e.changing.next;
+          e.boolean.current = strategy.group.filesystem;
+        }),
+    );
   })
 
   .subject((e) => {
@@ -413,7 +424,6 @@ export const actions = DevActions<Ctx>()
 
     e.render(
       <RootLayout
-        self={self}
         bus={bus}
         netbus={netbus}
         debugJson={flags.debugJson}

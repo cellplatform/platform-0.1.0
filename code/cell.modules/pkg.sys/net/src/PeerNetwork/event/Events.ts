@@ -150,7 +150,7 @@ export function Events(eventbus: t.EventBus<any>) {
       .pipe(filter((e) => e.self === self));
 
     const open = {
-      data(options: { isReliable?: boolean; parent?: t.PeerConnectionId } = {}) {
+      async data(options: { isReliable?: boolean; parent?: t.PeerConnectionId } = {}) {
         const { isReliable, parent } = options;
         const tx = slug();
         const res = firstValueFrom(connected$.pipe(filter((e) => e.tx === tx)));
@@ -227,7 +227,7 @@ export function Events(eventbus: t.EventBus<any>) {
       .payload<t.PeerDataInEvent>(event$, 'sys.net/peer/data/in')
       .pipe(filter((e) => e.self === self));
 
-    const send = (data: any, options: { filter?: t.PeerConnectionFilter } = {}) => {
+    const send = (data: any, options: { filter?: t.PeerFilter } = {}) => {
       const { filter: target } = options;
       const tx = slug();
       const res = firstValueFrom(out.res$.pipe(filter((e) => e.tx === tx)));

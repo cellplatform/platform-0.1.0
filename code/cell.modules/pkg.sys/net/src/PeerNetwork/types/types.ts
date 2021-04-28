@@ -23,8 +23,8 @@ export type PeerModule = { name: string; version: string };
 /**
  * Filter on a peer connection.
  */
-export type PeerConnectionFilter = (e: PeerConnectionFilterArgs) => boolean;
-export type PeerConnectionFilterArgs = {
+export type PeerFilter = (e: PeerFilterArgs) => boolean;
+export type PeerFilterArgs = {
   peer: t.PeerId;
   connection: { id: t.PeerConnectionId; kind: t.PeerConnectionKind };
 };

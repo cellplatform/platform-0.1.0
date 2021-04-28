@@ -1,5 +1,6 @@
 import { Events, GroupEvents, t } from '../common';
 import { GroupConnectionsStrategy } from './strategy.GroupConnections';
+import { GroupFilesystemStrategy } from './strategy.GroupFilesystem';
 
 /**
  * Handles strategies for working with a group of peers ("mesh" network).
@@ -18,6 +19,7 @@ export function GroupStrategy(args: {
    * Initialize sub-strategies.
    */
   GroupConnectionsStrategy({ netbus, events, isEnabled: () => strategy.connections });
+  GroupFilesystemStrategy({ netbus, events, isEnabled: () => strategy.filesystem });
 
   /**
    * API
@@ -31,6 +33,7 @@ export function GroupStrategy(args: {
 
     // Enabled state.
     connections: true,
+    filesystem: true,
   };
 
   return strategy;

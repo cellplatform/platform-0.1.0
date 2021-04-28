@@ -21,7 +21,6 @@ import { DevConnection } from '../../../NetworkModel/Crdt.OLD/dev/DEV.Connection
 import Automerge from 'automerge';
 
 export type DevModelProps = {
-  self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.NetBus<any>;
   style?: CssValue;
@@ -30,7 +29,7 @@ export type DevModelProps = {
 export const DevModel: React.FC<DevModelProps> = (props) => {
   const { netbus } = props;
   const bus = props.bus.type<t.DevEvent>();
-  const peer = useLocalPeer({ self: props.self, bus });
+  const peer = useLocalPeer({ self: netbus.self, bus });
   // console.log('peer.status', peer.status);
 
   const [count, setCount] = useState<number>(0);

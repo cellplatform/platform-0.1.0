@@ -6,7 +6,6 @@ import { COLORS, css, CssValue, t, useDragTarget } from './common';
 import { DevNetwork } from './network';
 
 export type RootLayoutProps = {
-  self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.NetBus<any>;
   debugJson?: boolean;
@@ -18,7 +17,7 @@ export type RootLayoutProps = {
 export const RootLayout: React.FC<RootLayoutProps> = (props) => {
   const { netbus, bus } = props;
 
-  const peer = useLocalPeer({ self: props.self, bus });
+  const peer = useLocalPeer({ self: netbus.self, bus });
 
   const baseRef = useRef<HTMLDivElement>(null);
 

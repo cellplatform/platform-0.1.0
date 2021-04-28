@@ -3,13 +3,13 @@ import { t } from '../common';
 /**
  * Source: https://stackoverflow.com/questions/11089732/display-image-from-blob-using-javascript-and-websockets
  */
-export function toDataUri(file: t.IHttpClientCellFileUpload) {
-  const bytes = new Uint8Array(file.data);
-  const src = `data:${file.mimetype};base64,${encode(bytes)}`;
+export function toDataUri(data: ArrayBuffer, mimetype: string) {
+  const bytes = new Uint8Array(data);
+  const src = `data:${mimetype};base64,${encode(bytes)}`;
   return src;
 }
 
-export function encode(input: Uint8Array) {
+function encode(input: Uint8Array) {
   const keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
   let output = '';
   let chr1, chr2, chr3, enc1, enc2, enc3, enc4;

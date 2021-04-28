@@ -81,6 +81,21 @@ export function GroupEvents(eventbus: t.NetBus<any>) {
     return { $, fire };
   };
 
+  const fs = () => {
+    const files$ = rx.payload<t.GroupFsFilesEvent>(event$, 'sys.net/group/fs/files');
+
+    const fire = (args: { files: t.GroupFileData[]; dir?: string; filter?: t.PeerFilter }) => {
+      const { files, dir = '', filter } = args;
+      console.log('file', args);
+      netbus.target.filter(args.filter).fire({
+        type: 'sys.net/group/fs/files',
+        payload: { source, dir, files },
+      });
+    };
+
+    return { files$, fire };
+  };
+
   return {
     $: event$,
     dispose$,
@@ -88,6 +103,7 @@ export function GroupEvents(eventbus: t.NetBus<any>) {
     connections,
     refresh,
     connect,
+    fs,
   };
 }
 

@@ -6,7 +6,6 @@ import { DevDataConnection } from './DEV.Data.Connection';
 import { DevMediaConnection } from './DEV.Media.Connection';
 
 export type DevConnectionProps = {
-  self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.NetBus<any>;
   connection: t.PeerConnectionStatus;
@@ -15,9 +14,10 @@ export type DevConnectionProps = {
 };
 
 export const DevConnection: React.FC<DevConnectionProps> = (props) => {
-  const { connection, netbus, self } = props;
+  const { connection, netbus } = props;
   const { peer } = connection;
   const bus = props.bus.type<t.PeerEvent>();
+  const self = netbus.self;
 
   const styles = {
     base: css({ position: 'relative' }),
@@ -34,7 +34,7 @@ export const DevConnection: React.FC<DevConnectionProps> = (props) => {
   };
 
   const elData = connection.kind === 'data' && (
-    <DevDataConnection self={self} bus={bus} netbus={netbus} connection={connection} />
+    <DevDataConnection bus={bus} netbus={netbus} connection={connection} />
   );
 
   const elMedia = (connection.kind === 'media/video' || connection.kind === 'media/screen') && (

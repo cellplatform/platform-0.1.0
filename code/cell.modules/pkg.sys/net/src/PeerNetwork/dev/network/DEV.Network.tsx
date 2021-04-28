@@ -39,7 +39,6 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
   const elBody = (
     <div {...styles.body}>
       <DevNetworkConnections
-        self={peer.id}
         bus={bus}
         netbus={netbus}
         collapse={props.collapse}

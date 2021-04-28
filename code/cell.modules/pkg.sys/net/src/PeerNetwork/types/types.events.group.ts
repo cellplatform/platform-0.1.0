@@ -1,10 +1,13 @@
 import { t } from './common';
 
+import { GroupFsEvent } from './types.events.group.fs';
+
 /**
  * NOTE: These events are fired over the "network bus" to
  *       other connected clients.
  */
 export type GroupEvent =
+  | GroupFsEvent
   | GroupEnsureConnectedDataEvent
   | GroupEnsureConnectionClosedEvent
   | GroupConnectionsReqEvent
@@ -73,7 +76,7 @@ export type GroupRefresh = {
 };
 
 /**
- * Fired to tell peers to start a connection.
+ * Fired to tell peer(s) to start a connection.
  */
 export type GroupConnectEvent = {
   type: 'sys.net/group/connect';

@@ -35,4 +35,9 @@ export type GroupStrategy = t.IDisposable & {
    * Retrieve details about the network of peers/connections.
    */
   connections: boolean;
+
+  /**
+   * Manage files between a group of peers.
+   */
+  filesystem: boolean;
 };

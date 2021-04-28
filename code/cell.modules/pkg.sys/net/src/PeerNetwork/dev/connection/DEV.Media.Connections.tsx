@@ -7,15 +7,15 @@ import { DevNetworkConnectionsModal } from '../network/';
  * Card body.
  */
 export type DevMediaConnectionsProps = {
-  self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.NetBus<any>;
   connections: t.PeerConnectionMediaStatus[];
   style?: CssValue;
 };
 export const DevMediaConnections: React.FC<DevMediaConnectionsProps> = (props) => {
-  const { netbus, connections, self } = props;
+  const { netbus, connections } = props;
   const bus = props.bus.type<t.DevEvent>();
+  const self = netbus.self;
 
   const styles = {
     base: css({ position: 'relative', padding: 12, fontSize: 12 }),

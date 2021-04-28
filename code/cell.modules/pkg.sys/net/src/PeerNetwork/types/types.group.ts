@@ -22,3 +22,5 @@ export type GroupPeerConnection = {
   kind: t.PeerConnectionKind;
   parent?: t.PeerConnectionId;
 };
+
+export type GroupFileData = { filename: string; data: ArrayBuffer; mimetype?: string };
