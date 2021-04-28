@@ -26,24 +26,25 @@ export const FilterUtil = {
 /**
  * Monitors errors on a PeerJS instance.
  */
+export const PeerJsUtil = {
+  error(peer: PeerJS) {
+    const $ = new Subject<{ type: string; message: string }>();
 
-export const PeerJSError = (peer: PeerJS) => {
-  const $ = new Subject<{ type: string; message: string }>();
+    const handler = (error: any) => {
+      const { type, message } = error;
+      $.next({ type, message });
+    };
 
-  const handler = (error: any) => {
-    const { type, message } = error;
-    $.next({ type, message });
-  };
+    peer.on('error', handler);
 
-  peer.on('error', handler);
-
-  return {
-    $: $.asObservable(),
-    dispose() {
-      peer.off('error', handler);
-      $.complete();
-    },
-  };
+    return {
+      $: $.asObservable(),
+      dispose() {
+        peer.off('error', handler);
+        $.complete();
+      },
+    };
+  },
 };
 
 /**

@@ -4,7 +4,7 @@ import { delay, distinctUntilChanged, filter, map, take } from 'rxjs/operators';
 import {
   defaultValue,
   PeerJS,
-  PeerJSError,
+  PeerJsUtil,
   R,
   rx,
   slug,
@@ -315,7 +315,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       if (e.kind === 'data') {
         const metadata: t.PeerConnectionMetadataData = { kind: e.kind, module, parent };
         const reliable = e.isReliable;
-        const errorMonitor = PeerJSError(self.peer);
+        const errorMonitor = PeerJsUtil.error(self.peer);
         const dataConnection = self.peer.connect(remote, { reliable, metadata });
         refs.connection(self).add('data', 'outgoing', dataConnection);
 
