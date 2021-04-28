@@ -1,5 +1,3 @@
-export * from './types';
-
 export * from './wildcard';
 export * from './convert';
 export * from './fuzzy';
@@ -7,4 +5,5 @@ export * from './hash';
 export * from './plural';
 export * from './regex';
 export * from './tmpl';
-export * from './queryString';
+export * from './QueryString';
+export * from './Url';

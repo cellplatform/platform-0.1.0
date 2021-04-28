@@ -1,5 +1,5 @@
 // tslint:disable
-import { expect } from 'chai';
+import { expect } from '../test';
 import * as str from '.';
 
 describe('str.matchAll (regex)', () => {

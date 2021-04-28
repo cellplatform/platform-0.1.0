@@ -1,4 +1,4 @@
-import { t, queryString, wildcard } from '../common';
+import { t, QueryString, wildcard } from '../common';
 import { Uri } from '../Uri';
 
 type ILinksArgs = { prefix: string };
@@ -113,7 +113,7 @@ export class Links {
       .split('?')
       .map((part) => part.trim());
     const uri = Uri.parse<U>(parts[0] || '').parts;
-    const query = queryString.toObject<Q>(parts[1]);
+    const query = QueryString.toObject<Q>(parts[1]);
     const value = parts.join('?').replace(/\?$/, '');
     const res: t.ILinkValue<U, Q> = { value, uri, query };
     return res;

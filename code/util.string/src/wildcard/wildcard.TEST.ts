@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from '../test';
 import { curry } from 'ramda';
 import { str } from '..';
 

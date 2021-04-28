@@ -1,5 +1,5 @@
 // tslint:disable
-import { expect } from 'chai';
+import { expect } from '../test';
 import { tmpl } from '.';
 
 describe('tmpl', () => {
