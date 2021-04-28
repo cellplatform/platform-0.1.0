@@ -26,7 +26,7 @@ type Ctx = {
   signal: string; // Signalling server network address (host/path).
   events: CtxEvents;
   connectTo?: string;
-  toStrategy(): { peer: t.PeerStrategy; group: t.GroupStrategy };
+  toStrategy(): { peer: t.PeerStrategy; group: t.GroupStrategy; fs: t.FilesystemStrategy };
   toFlags(): CtxFlags;
   toSeed(): GroupSeed;
   fullscreen(value: boolean): void;
@@ -73,6 +73,7 @@ export const actions = DevActions<Ctx>()
     const strategy = {
       peer: PeerNetwork.PeerStrategy({ self, bus }),
       group: PeerNetwork.GroupStrategy({ bus, netbus }),
+      fs: PeerNetwork.FilesystemStrategy({ bus, netbus }),
     };
 
     strategy.peer.connection.autoPropagation = false; // TEMP 🐷
@@ -331,6 +332,7 @@ export const actions = DevActions<Ctx>()
 
     e.boolean((config) =>
       config
+        .title('connection')
         .label('connection.autoPurgeOnClose')
         .description('Automatically purge connections when closed.')
         .pipe((e) => {
@@ -366,6 +368,7 @@ export const actions = DevActions<Ctx>()
 
     e.boolean((config) =>
       config
+        .title('group')
         .label('group.connections')
         .description('Retrieve details about the network of peers/connections.')
         .pipe((e) => {
@@ -375,14 +378,17 @@ export const actions = DevActions<Ctx>()
         }),
     );
 
+    e.hr(1, 0.1);
+
     e.boolean((config) =>
       config
-        .label('group.filesystem')
-        .description('Manage files between a group of peers.')
+        .title('filesystem')
+        .label('filesystem.cache')
+        .description('De-dupe and manage caching network files.')
         .pipe((e) => {
           const strategy = e.ctx.toStrategy();
-          if (e.changing) strategy.group.filesystem = e.changing.next;
-          e.boolean.current = strategy.group.filesystem;
+          if (e.changing) strategy.fs.cache = e.changing.next;
+          e.boolean.current = strategy.fs.cache;
         }),
     );
   })

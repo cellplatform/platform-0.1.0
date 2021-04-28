@@ -1,10 +1,9 @@
 import { Subject } from 'rxjs';
 import * as t from './types';
-import { PeerJS, defaultValue } from '../../common';
+import { PeerJS, defaultValue, sha256 } from '../../common';
+import { toDataUri } from './util.base64';
 
 type C = t.PeerConnectionStatus;
-
-export * from './util.base64';
 
 /**
  * Determine if the given value is a [t.Event].
@@ -27,6 +26,7 @@ export const FilterUtil = {
 /**
  * Monitors errors on a PeerJS instance.
  */
+
 export const PeerJSError = (peer: PeerJS) => {
   const $ = new Subject<{ type: string; message: string }>();
 
@@ -112,5 +112,20 @@ export const StreamUtil = {
       if (isEnded()) callback();
     };
     tracks.forEach((track) => (track.onended = onTrackEnded));
+  },
+};
+
+/**
+ * Helpers for working with network files.
+ */
+export const FileUtil = {
+  toDataUri,
+  toFiles(
+    dir: string,
+    files: { filename: string; data: ArrayBuffer; mimetype: string }[],
+  ): t.PeerFile[] {
+    return files.map(({ data, filename, mimetype }) => {
+      return { dir, data, filename, mimetype, hash: sha256(data) };
+    });
   },
 };

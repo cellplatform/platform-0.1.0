@@ -11,6 +11,5 @@ export type GroupFsFilesEvent = {
 };
 export type GroupFsFiles = {
   source: t.PeerId;
-  dir: string;
-  files: t.GroupFileData[];
+  files: t.PeerFile[];
 };

@@ -10,7 +10,7 @@ import {
   useEventBusHistory,
   PeerNetwork,
   Dropped,
-  color,
+  FileUtil,
 } from '../common';
 import { DevCard } from '../DEV.Card';
 import { DevEventBusStack } from './DEV.EventBus.Stack';
@@ -26,15 +26,13 @@ export type DevEventBusCardProps = {
 
 export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
   const { bus, netbus } = props;
-  const self = netbus.self;
-
   const history = useEventBusHistory(netbus);
 
   const handleBroadcast = async (args: { message: string; filter: string }) => {
     if (!netbus) return;
 
     const msg = args.message.trim();
-    const event = { type: 'sample/event', payload: { msg: msg || `<empty>` } };
+    const event = { type: 'sample/event', payload: { msg: msg ?? `<empty>` } };
 
     const filter: t.PeerFilter = (e) => {
       const text = args.filter.trim();
@@ -55,18 +53,15 @@ export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
 
   const handleDrop = (e: Dropped) => {
     if (netbus) {
+      const files = FileUtil.toFiles(e.dir, e.files);
       const events = PeerNetwork.GroupEvents(netbus);
-      events.fs().fire(e);
+      events.fs().fire({ files });
       events.dispose();
     }
   };
 
   const styles = {
-    base: css({
-      position: 'relative',
-      padding: 12,
-      paddingBottom: 15,
-    }),
+    base: css({ position: 'relative', padding: 12, paddingBottom: 15 }),
     thumbnails: css({ marginTop: 10 }),
   };
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t } from '../common';
+import { color, css, CssValue, t, FileUtil } from '../common';
 import { useFileList } from '../../hook';
 import { DevImageFullscreen } from '../media';
 
@@ -14,8 +14,8 @@ export const DevThumbnails: React.FC<DevThumbnailsProps> = (props) => {
   const bus = props.bus.type<t.DevEvent>();
   const files = useFileList(netbus);
 
-  const showModal = (uri: string) => {
-    const el = <DevImageFullscreen bus={bus} uri={uri} />;
+  const showModal = (file: t.PeerFile) => {
+    const el = <DevImageFullscreen bus={bus} file={file} />;
     bus.fire({
       type: 'DEV/modal',
       payload: { el, target: 'body' },
@@ -29,12 +29,12 @@ export const DevThumbnails: React.FC<DevThumbnailsProps> = (props) => {
       Size: 32,
       display: 'inline-block',
       backgroundSize: 'cover',
-      backgroundImage: `url(${file.uri})`,
+      backgroundImage: `url(${FileUtil.toDataUri(file.data, file.mimetype)})`,
       border: `solid 1px ${color.format(-0.2)}`,
       borderRadius: 5,
       marginRight: 5,
     };
-    return <div key={i} {...css(style)} onClick={() => showModal(file.uri)} />;
+    return <div key={i} {...css(style)} onClick={() => showModal(file)} />;
   });
 
   return <div {...css(styles.base, props.style)}>{elThumbnails}</div>;

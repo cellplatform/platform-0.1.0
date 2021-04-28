@@ -2,18 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { readDropEvent } from './util';
 import { t } from '../../common';
 
-export type Dropped = {
-  dir: string;
-  files: t.IHttpClientCellFileUpload[];
-  urls: string[];
-};
-
 /**
  * Provides hooks for treating a DIV element as a "drag-n-drop" target.
  */
-export function useDragTarget(ref: React.RefObject<HTMLElement>, onDrop?: (e: Dropped) => void) {
+export function useDragTarget(ref: React.RefObject<HTMLElement>, onDrop?: (e: t.Dropped) => void) {
   const [isDragOver, setDragOver] = useState<boolean>(false);
-  const [dropped, setDropped] = useState<Dropped | undefined>();
+  const [dropped, setDropped] = useState<t.Dropped | undefined>();
 
   const reset = () => {
     setDragOver(false);
@@ -42,7 +36,7 @@ export function useDragTarget(ref: React.RefObject<HTMLElement>, onDrop?: (e: Dr
       setDragOver(false);
       count = 0;
       const { dir, files, urls } = await readDropEvent(e);
-      const dropped: Dropped = { dir, files, urls };
+      const dropped: t.Dropped = { dir, files, urls };
       setDropped(dropped);
       if (onDrop) onDrop(dropped);
     };

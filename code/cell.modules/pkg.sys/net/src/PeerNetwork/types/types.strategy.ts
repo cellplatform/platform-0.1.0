@@ -35,9 +35,14 @@ export type GroupStrategy = t.IDisposable & {
    * Retrieve details about the network of peers/connections.
    */
   connections: boolean;
+};
 
+/**
+ * Strategies for working with a group of peers ("mesh").
+ */
+export type FilesystemStrategy = t.IDisposable & {
   /**
    * Manage files between a group of peers.
    */
-  filesystem: boolean;
+  cache: boolean;
 };
