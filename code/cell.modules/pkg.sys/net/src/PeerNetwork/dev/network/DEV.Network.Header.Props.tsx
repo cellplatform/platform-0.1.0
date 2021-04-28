@@ -79,9 +79,14 @@ export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
           events.dispose();
         },
         icon: (e) => {
-          const msg = connectId.trim();
-          const col = msg ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.3);
-          const el = <Icons.Antenna size={16} color={col} />;
+          const input = connectId.trim();
+          const col = input ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.3);
+          const el = (
+            <div {...css({ Flex: 'horizontal-center-center' })}>
+              {input && <Icons.Arrow.Forward size={18} opacity={0.4} style={{ marginRight: 4 }} />}
+              <Icons.Antenna size={18} color={col} />
+            </div>
+          );
           return el;
         },
       }}

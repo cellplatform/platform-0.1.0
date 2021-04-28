@@ -17,7 +17,7 @@ import { RootLayout } from './DEV.Root';
 import { EventBridge } from './event';
 import { DevModel, DevGroupSeed, GroupSeed } from './model';
 
-import { queryString } from '@platform/util.string/lib/queryString';
+import { QueryString } from '@platform/util.string/lib/QueryString';
 
 type Ctx = {
   self: t.PeerId;
@@ -104,7 +104,7 @@ export const actions = DevActions<Ctx>()
     /**
      * Group seed model/controller
      */
-    const query = queryString.toObject<{ group: string }>(location.href);
+    const query = QueryString.toObject<{ group: string }>(location.href);
     const host = isLocalhost ? 5000 : location.host;
     const seed = DevGroupSeed({ self, bus, host, groupname: query.group });
     if (query.group) {

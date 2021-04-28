@@ -107,7 +107,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
         value={value}
         placeholder={props.placeholder}
         valueStyle={{ fontFamily }}
-        placeholderStyle={{ opacity: 0.3, italic: true }}
+        placeholderStyle={{ opacity: isFocused ? 0.5 : 0.3, italic: true }}
         onEnter={onEnter}
         onChange={props.onChange}
         onEscape={props.onEscape}

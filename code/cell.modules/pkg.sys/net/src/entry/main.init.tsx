@@ -6,5 +6,4 @@ import ReactDOM from 'react-dom';
 import { DevHarness } from '../Dev.Harness';
 
 const el = <DevHarness />;
-const root = <React.StrictMode>{el}</React.StrictMode>;
-ReactDOM.render(root, document.getElementById('root'));
+ReactDOM.render(el, document.getElementById('root'));

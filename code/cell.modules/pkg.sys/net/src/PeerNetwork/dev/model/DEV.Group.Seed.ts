@@ -35,7 +35,6 @@ export function DevGroupSeed(args: {
 
   let status: t.PeerStatus | undefined;
   const cell = client.cell(`cell:${ns}:A1`);
-  console.log('cell', cell.url.info.toString());
 
   const clear = async () => {
     const res = await client.ns(ns).write({

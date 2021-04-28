@@ -26,7 +26,4 @@ async function startServiceWorker() {
   }
 }
 
-if (location.hostname !== 'localhost') {
-  // HACK: Don't start service worker during dev (supress caching).
-  startServiceWorker();
-}
+if (location.hostname !== 'localhost') startServiceWorker();

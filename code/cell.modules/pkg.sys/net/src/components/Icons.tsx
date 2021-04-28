@@ -9,6 +9,7 @@ import {
   MdNoEncryption,
   MdSend,
   MdArrowBack,
+  MdArrowForward,
 } from 'react-icons/md';
 import { FiMic, FiMicOff } from 'react-icons/fi';
 import { TiUpload } from 'react-icons/ti';
@@ -26,5 +27,5 @@ export const Icons = {
   Mic: { On: icon(FiMic), Off: icon(FiMicOff) },
   Lock: { Closed: icon(MdLock), Open: icon(MdLockOpen), No: icon(MdNoEncryption) },
   Upload: { Box: icon(TiUpload) },
-  Arrow: { Back: icon(MdArrowBack) },
+  Arrow: { Back: icon(MdArrowBack), Forward: icon(MdArrowForward) },
 };

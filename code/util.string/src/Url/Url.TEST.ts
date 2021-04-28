@@ -78,4 +78,11 @@ describe('Url', () => {
     const res = Url('http://localhost#foo').hash<T>();
     expect(res.foo).to.eql(true);
   });
+
+  it('isLocalhost', () => {
+    expect(Url('https://foo.com').isLocalhost).to.eql(false);
+    expect(Url('https://localhost').isLocalhost).to.eql(true);
+    expect(Url('http://localhost').isLocalhost).to.eql(true);
+    expect(Url('http://localhost:1234').isLocalhost).to.eql(true);
+  });
 });
