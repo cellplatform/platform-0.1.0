@@ -11,7 +11,7 @@ type C = t.GroupPeerConnection;
  * Helpers for working with group (mesh) related events.
  */
 export function GroupEvents(eventbus: t.NetBus<any>) {
-  const module = { name: WebRuntime.module.name, version: WebRuntime.module.version };
+  const module = WebRuntime.module;
   const netbus = eventbus.type<t.NetGroupEvent>();
   const source = netbus.self;
   const dispose$ = new Subject<void>();
@@ -81,20 +81,6 @@ export function GroupEvents(eventbus: t.NetBus<any>) {
     return { $, fire };
   };
 
-  const fs = () => {
-    const files$ = rx.payload<t.FsFilesEvent>(event$, 'sys.net/fs/files');
-
-    const fire = (args: { files: t.PeerFile[]; filter?: t.PeerFilter }) => {
-      const { files, filter } = args;
-      netbus.target.filter(filter).fire({
-        type: 'sys.net/fs/files',
-        payload: { source, files },
-      });
-    };
-
-    return { files$, fire };
-  };
-
   return {
     $: event$,
     dispose$,
@@ -102,7 +88,6 @@ export function GroupEvents(eventbus: t.NetBus<any>) {
     connections,
     refresh,
     connect,
-    fs,
   };
 }
 

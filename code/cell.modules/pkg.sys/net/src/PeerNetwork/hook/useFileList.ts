@@ -1,20 +1,29 @@
 import { useEffect, useState } from 'react';
 
 import { t, FileUtil } from '../common';
-import { GroupEvents } from '../event';
+import { FilesystemEvents } from '../event';
+
+type T = { file: t.PeerFile; uri: string };
 
 /**
  * Manages files sent around the group.
  */
 export function useFileList(netbus: t.NetBus<any>) {
-  const [list, setList] = useState<t.PeerFile[]>([]);
+  const [list, setList] = useState<T[]>([]);
 
   useEffect(() => {
-    const events = GroupEvents(netbus);
-    const files$ = events.fs().files$;
+    const events = FilesystemEvents(netbus);
+    const files$ = events.add().$;
 
-    files$.subscribe((e) => {
-      setList((prev) => [...prev, ...e.files]);
+    files$.subscribe(async (e) => {
+      const items: T[] = await Promise.all(
+        e.files.map(async (file) => {
+          const uri = await FileUtil.toUri(file.blob);
+          return { file, uri };
+        }),
+      );
+
+      setList((prev) => [...prev, ...items]);
     });
 
     return () => events.dispose();

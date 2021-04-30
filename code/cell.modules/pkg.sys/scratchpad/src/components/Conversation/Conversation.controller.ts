@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { PeerJS, R, rx, t, QueryString } from './common';
+import { PeerJS, R, rx, t, Query } from './common';
 
 /**
  * Manages state changes.
@@ -56,7 +56,7 @@ export function stateController(args: {
   const updateUrl = () => {
     const self = peer.id;
     const urlPeers = [self];
-    const querystring = QueryString.generate({ peers: urlPeers });
+    const querystring = Query.generate({ peers: urlPeers });
     if (location.search !== querystring) {
       history.replaceState(null, 'Meeting Peers', querystring);
     }

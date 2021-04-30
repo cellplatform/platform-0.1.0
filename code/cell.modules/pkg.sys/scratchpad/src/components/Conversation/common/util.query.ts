@@ -1,6 +1,6 @@
 import { QueryString as QueryStringLib } from './libs';
 
-export const QueryString = {
+export const Query = {
   parse(href?: string) {
     href = href || location.href;
     const query = QueryStringLib.toObject(location.href);

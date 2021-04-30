@@ -1,15 +1,15 @@
 import { t } from './common';
 
-export type NetFsEvent = FsFilesEvent;
+export type NetFsEvent = NetFsAddEvent;
 
 /**
  * Represents a file to be transported over the network.
  */
-export type FsFilesEvent = {
-  type: 'sys.net/fs/files';
-  payload: GroupFsFiles;
+export type NetFsAddEvent = {
+  type: 'sys.net/fs/add';
+  payload: NetFsAdd;
 };
-export type GroupFsFiles = {
+export type NetFsAdd = {
   source: t.PeerId;
   files: t.PeerFile[];
 };

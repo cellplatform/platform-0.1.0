@@ -1,7 +1,8 @@
 import { Subject } from 'rxjs';
+
+import { defaultValue, PeerJS, sha256 } from '../../common';
 import * as t from './types';
-import { PeerJS, defaultValue, sha256 } from '../../common';
-import { toDataUri } from './util.base64';
+import filesize from 'filesize';
 
 type C = t.PeerConnectionStatus;
 
@@ -120,13 +121,43 @@ export const StreamUtil = {
  * Helpers for working with network files.
  */
 export const FileUtil = {
-  toDataUri,
+  /**
+   * Convert dropped files to a [PeerFile] data type.
+   */
   toFiles(
     dir: string,
     files: { filename: string; data: ArrayBuffer; mimetype: string }[],
   ): t.PeerFile[] {
     return files.map(({ data, filename, mimetype }) => {
-      return { dir, data, filename, mimetype, hash: sha256(data) };
+      const hash = sha256(data);
+      const blob = new Blob([data], { type: mimetype });
+      return { dir, blob, filename, hash };
     });
+  },
+
+  /**
+   * Load a file as a base64 encoded data URI.
+   */
+  toUri(blob: Blob) {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result !== 'string') {
+          return reject(new Error(`FileReader did not return a string`));
+        } else {
+          resolve(reader.result);
+        }
+      };
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(blob);
+    });
+  },
+
+  /**
+   * Turn the number of bytes into a human readable filesize.
+   */
+  size(blob: Blob) {
+    const bytes = blob.size;
+    return { bytes, toString: () => filesize(blob.size, { round: 1 }) };
   },
 };

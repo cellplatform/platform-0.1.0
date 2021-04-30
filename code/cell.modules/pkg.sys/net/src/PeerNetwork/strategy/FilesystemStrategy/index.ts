@@ -1,5 +1,5 @@
-import { Events, GroupEvents, t } from '../common';
-import { FilesystemCacheStrategy } from './strategy.Cache';
+import { Events, FilesystemEvents, t } from '../common';
+import { FilesystemCacheStrategy } from './strategy.FilesystemCache';
 
 /**
  * Handles strategies for working with network files.
@@ -11,7 +11,7 @@ export function FilesystemStrategy(args: {
   const { netbus } = args;
   const events = {
     peer: Events(args.bus),
-    group: GroupEvents(netbus),
+    fs: FilesystemEvents(netbus),
   };
 
   /**
@@ -23,9 +23,9 @@ export function FilesystemStrategy(args: {
    * API
    */
   const strategy = {
-    dispose$: events.group.dispose$,
+    dispose$: events.fs.dispose$,
     dispose() {
-      events.group.dispose();
+      events.fs.dispose();
       events.peer.dispose();
     },
 

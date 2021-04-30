@@ -58,8 +58,14 @@ export const DevCard: React.FC<DevCardProps> = (props) => {
   );
 
   return (
-    <div ref={baseRef} {...css(styles.base, props.style)}>
-      <Card margin={props.margin} padding={props.padding} width={width} shadow={shadow}>
+    <div {...css(styles.base, props.style)}>
+      <Card
+        ref={baseRef}
+        margin={props.margin}
+        padding={props.padding}
+        width={width}
+        shadow={shadow}
+      >
         <div {...styles.body}>{props.children}</div>
         {elDragOverlay}
         {elCloseButton}
