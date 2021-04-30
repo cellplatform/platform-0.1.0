@@ -11,7 +11,7 @@ export function AutoPropagationStrategy(args: {
 }) {
   const { self, events } = args;
   const connections = events.connections(self);
-  const netbus = events.data(self).netbus<t.GroupEvent>();
+  const netbus = events.data(self).netbus<t.NetGroupEvent>();
 
   const getConnections = async () => {
     const { peer } = await events.status(self).get();
@@ -57,7 +57,7 @@ export function AutoPropagationStrategy(args: {
    * Listen for incoming "ensure connected" events from other
    * peers broadcasting the set of ID's to connect to.
    */
-  rx.payload<t.GroupEnsureConnectedDataEvent>(netbus.event$, 'sys.net/group/conn/ensure:data')
+  rx.payload<t.NetGroupEnsureConnectedDataEvent>(netbus.event$, 'sys.net/group/conn/ensure:data')
     .pipe(delay(0))
     .subscribe(async (e) => {
       const { isReliable } = e;

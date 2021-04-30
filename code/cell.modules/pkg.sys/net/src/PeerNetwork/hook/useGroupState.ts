@@ -12,7 +12,7 @@ type Action = 'update';
  */
 export function useGroupState(args: { bus: t.EventBus<any>; netbus: t.NetBus<any> }) {
   const bus = args.bus.type<t.PeerEvent>();
-  const netbus = args.netbus.type<t.GroupEvent>();
+  const netbus = args.netbus.type<t.NetGroupEvent>();
 
   const [status, setStatus] = useState<t.GroupPeerStatus>();
 

@@ -1,25 +1,25 @@
 import { t } from './common';
 
-import { GroupFsEvent } from './types.events.group.fs';
+import { NetFsEvent } from './types.events.fs';
 
 /**
  * NOTE: These events are fired over the "network bus" to
  *       other connected clients.
  */
-export type GroupEvent =
-  | GroupFsEvent
-  | GroupEnsureConnectedDataEvent
-  | GroupEnsureConnectionClosedEvent
-  | GroupConnectionsReqEvent
-  | GroupConnectionsResEvent
-  | GroupRefreshEvent
-  | GroupConnectEvent;
+export type NetGroupEvent =
+  | NetFsEvent
+  | NetGroupEnsureConnectedDataEvent
+  | NetGroupEnsureConnectionClosedEvent
+  | NetGroupConnectionsReqEvent
+  | NetGroupConnectionsResEvent
+  | NetGroupRefreshEvent
+  | NetGroupConnectEvent;
 
 /**
  * Broadcasts to peers a set of connections they should ensure
  * they are connected to.
  */
-export type GroupEnsureConnectedDataEvent = {
+export type NetGroupEnsureConnectedDataEvent = {
   type: 'sys.net/group/conn/ensure:data';
   payload: GroupEnsureConnectedData;
 };
@@ -32,11 +32,11 @@ export type GroupEnsureConnectedData = {
 /**
  * Ensure connection is closed are closed.
  */
-export type GroupEnsureConnectionClosedEvent = {
+export type NetGroupEnsureConnectionClosedEvent = {
   type: 'sys.net/group/conn/ensure:closed';
-  payload: GroupEnsureConnectionClosed;
+  payload: NetGroupEnsureConnectionClosed;
 };
-export type GroupEnsureConnectionClosed = {
+export type NetGroupEnsureConnectionClosed = {
   source: t.PeerId;
   connection: t.PeerConnectionId;
 };
@@ -44,21 +44,21 @@ export type GroupEnsureConnectionClosed = {
 /**
  * Fires to retrieve a list of peer connections.
  */
-export type GroupConnectionsReqEvent = {
+export type NetGroupConnectionsReqEvent = {
   type: 'sys.net/group/connections:req';
-  payload: GroupConnectionsReq;
+  payload: NetGroupConnectionsReq;
 };
-export type GroupConnectionsReq = {
+export type NetGroupConnectionsReq = {
   source: t.PeerId;
   targets?: t.PeerId[];
   tx?: string;
 };
 
-export type GroupConnectionsResEvent = {
+export type NetGroupConnectionsResEvent = {
   type: 'sys.net/group/connections:res';
-  payload: GroupConnectionsRes;
+  payload: NetGroupConnectionsRes;
 };
-export type GroupConnectionsRes = {
+export type NetGroupConnectionsRes = {
   source: t.PeerId;
   tx: string;
   peers: t.GroupPeer[];
@@ -67,22 +67,22 @@ export type GroupConnectionsRes = {
 /**
  * Fired when a refresh to the group status is desired.
  */
-export type GroupRefreshEvent = {
+export type NetGroupRefreshEvent = {
   type: 'sys.net/group/refresh';
-  payload: GroupRefresh;
+  payload: NetGroupRefresh;
 };
-export type GroupRefresh = {
+export type NetGroupRefresh = {
   source: t.PeerId;
 };
 
 /**
  * Fired to tell peer(s) to start a connection.
  */
-export type GroupConnectEvent = {
+export type NetGroupConnectEvent = {
   type: 'sys.net/group/connect';
-  payload: GroupConnect;
+  payload: NetGroupConnect;
 };
-export type GroupConnect = {
+export type NetGroupConnect = {
   source: t.PeerId;
   target: { peer: t.PeerId; kind: t.PeerConnectionKind };
 };

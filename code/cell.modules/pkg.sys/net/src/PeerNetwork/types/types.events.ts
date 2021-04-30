@@ -5,7 +5,7 @@ export * from './types.events.peer.conn';
 export * from './types.events.peer.data';
 
 export * from './types.events.group';
-export * from './types.events.group.fs';
+export * from './types.events.fs';
 
 /**
  * EVENTS

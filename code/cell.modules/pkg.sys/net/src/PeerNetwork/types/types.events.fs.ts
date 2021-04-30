@@ -1,12 +1,12 @@
 import { t } from './common';
 
-export type GroupFsEvent = GroupFsFilesEvent;
+export type NetFsEvent = FsFilesEvent;
 
 /**
  * Represents a file to be transported over the network.
  */
-export type GroupFsFilesEvent = {
-  type: 'sys.net/group/fs/files';
+export type FsFilesEvent = {
+  type: 'sys.net/fs/files';
   payload: GroupFsFiles;
 };
 export type GroupFsFiles = {

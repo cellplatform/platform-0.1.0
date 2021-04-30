@@ -12,7 +12,7 @@ type C = t.GroupPeerConnection;
  */
 export function GroupEvents(eventbus: t.NetBus<any>) {
   const module = { name: WebRuntime.module.name, version: WebRuntime.module.version };
-  const netbus = eventbus.type<t.GroupEvent>();
+  const netbus = eventbus.type<t.NetGroupEvent>();
   const source = netbus.self;
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
@@ -20,12 +20,12 @@ export function GroupEvents(eventbus: t.NetBus<any>) {
   const event$ = netbus.event$.pipe(
     takeUntil(dispose$),
     filter(ns.is.group.base),
-    map((e) => e as t.GroupEvent),
+    map((e) => e as t.NetGroupEvent),
   );
 
   const connections = () => {
-    const req$ = rx.payload<t.GroupConnectionsReqEvent>(event$, 'sys.net/group/connections:req');
-    const res$ = rx.payload<t.GroupConnectionsResEvent>(event$, 'sys.net/group/connections:res');
+    const req$ = rx.payload<t.NetGroupConnectionsReqEvent>(event$, 'sys.net/group/connections:req');
+    const res$ = rx.payload<t.NetGroupConnectionsResEvent>(event$, 'sys.net/group/connections:res');
 
     /**
      * Calculate the entire group from available connections.
@@ -60,7 +60,7 @@ export function GroupEvents(eventbus: t.NetBus<any>) {
   };
 
   const connect = () => {
-    const $ = rx.payload<t.GroupConnectEvent>(event$, 'sys.net/group/connect');
+    const $ = rx.payload<t.NetGroupConnectEvent>(event$, 'sys.net/group/connect');
 
     /**
      * TODO 🐷
@@ -76,18 +76,18 @@ export function GroupEvents(eventbus: t.NetBus<any>) {
   };
 
   const refresh = () => {
-    const $ = rx.payload<t.GroupRefreshEvent>(event$, 'sys.net/group/refresh');
+    const $ = rx.payload<t.NetGroupRefreshEvent>(event$, 'sys.net/group/refresh');
     const fire = () => netbus.fire({ type: 'sys.net/group/refresh', payload: { source } });
     return { $, fire };
   };
 
   const fs = () => {
-    const files$ = rx.payload<t.GroupFsFilesEvent>(event$, 'sys.net/group/fs/files');
+    const files$ = rx.payload<t.FsFilesEvent>(event$, 'sys.net/fs/files');
 
     const fire = (args: { files: t.PeerFile[]; filter?: t.PeerFilter }) => {
       const { files, filter } = args;
       netbus.target.filter(filter).fire({
-        type: 'sys.net/group/fs/files',
+        type: 'sys.net/fs/files',
         payload: { source, files },
       });
     };
