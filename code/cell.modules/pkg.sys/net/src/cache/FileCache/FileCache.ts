@@ -1,16 +1,5 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-} from 'rxjs/operators';
+import { Subject } from 'rxjs';
+
 import { t } from '../../common';
 import * as types from './types';
 
@@ -39,9 +28,10 @@ type FileInfo = {
  *    https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
  *
  */
-export const FileCache = (name: string, version?: number) => {
+export const FileCache = (name?: string, version?: number) => {
   return new Promise<types.FileCache>((resolve, reject) => {
     try {
+      name = name ?? 'sys.fs';
       const open = indexedDB.open(name, version ?? 1);
 
       open.onsuccess = () => {
@@ -49,11 +39,11 @@ export const FileCache = (name: string, version?: number) => {
       };
 
       open.onerror = () => {
-        reject(new Error(`Failed while opening database '${name}'. ${open.error?.message}`));
+        const msg = `Failed while opening database '${name}'. ${open.error?.message}`.trim();
+        reject(new Error(msg));
       };
 
       open.onupgradeneeded = (e) => {
-        console.log('onupgradeneeded', e);
         const db = open.result;
         const store = db.createObjectStore(NAME.STORE, { keyPath: 'hash' });
         const index = store.createIndex(NAME.INDEX, [
@@ -100,19 +90,17 @@ const FileCacheDb = (db: IDBDatabase): types.FileCache => {
 
   const get = {
     byHash(hash: string) {
-      const tx = db.transaction(NAME.STORE, 'readonly');
-
-      const store = tx.objectStore(NAME.STORE);
-
       return new Promise<t.PeerFile | undefined>((resolve, reject) => {
-        const get = store.get(hash);
-        get.onsuccess = () => {
-          if (!get.result) return resolve(undefined);
-          const { hash, blob, info } = get.result as FileRecord;
+        const tx = db.transaction(NAME.STORE, 'readonly');
+        const store = tx.objectStore(NAME.STORE);
+        const req = store.get(hash);
+        req.onerror = () => reject(req.error);
+        req.onsuccess = () => {
+          if (!req.result) return resolve(undefined);
+          const { hash, blob, info } = req.result as FileRecord;
           const { filename, dir } = info;
           resolve({ hash, filename, dir, blob });
         };
-        get.onerror = () => reject(get.error);
       });
     },
   };
