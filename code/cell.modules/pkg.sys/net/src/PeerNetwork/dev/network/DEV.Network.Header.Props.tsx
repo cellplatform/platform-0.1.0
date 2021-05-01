@@ -39,8 +39,6 @@ export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
     textbox: css({ fontSize: 12, marginBottom: 10, marginTop: 15 }),
   };
 
-  const group = useGroupState({ bus, netbus });
-
   useEffect(() => {
     const dispose$ = new Subject<void>();
 
@@ -54,18 +52,18 @@ export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
 
   const width = { min: 240, max: 260 };
 
-  const [connectId, setConnectId] = useState<string>('');
+  const [connectTo, setConnectTo] = useState<string>('');
   const elConnect = (
     <Textbox
-      value={connectId}
+      value={connectTo}
       placeholder={'open connection'}
-      onChange={(e) => setConnectId(e.to)}
+      onChange={(e) => setConnectTo(e.to)}
       style={styles.textbox}
       spellCheck={false}
       selectOnFocus={true}
       enter={{
         async handler() {
-          const remote = connectId.trim();
+          const remote = connectTo.trim();
           if (!remote) return;
 
           const isConnected = netbus.connections
@@ -78,12 +76,13 @@ export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
           await events.connection(self, remote).open.data();
           events.dispose();
         },
+        isEnabled: Boolean(connectTo.trim()),
         icon: (e) => {
-          const input = connectId.trim();
-          const col = input ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.3);
+          const input = connectTo.trim();
+          const col = input ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.6);
           const el = (
             <div {...css({ Flex: 'horizontal-center-center' })}>
-              {input && <Icons.Arrow.Forward size={18} opacity={0.4} style={{ marginRight: 4 }} />}
+              {input && <Icons.Arrow.Forward size={18} opacity={0.5} style={{ marginRight: 4 }} />}
               <Icons.Antenna size={18} color={col} />
             </div>
           );
