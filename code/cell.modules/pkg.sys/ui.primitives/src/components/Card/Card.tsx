@@ -1,5 +1,6 @@
 import React from 'react';
-import { color, css, CssValue, defaultValue, t, style } from '../../common';
+
+import { color, css, CssValue, defaultValue, style, t } from '../../common';
 
 export type CardProps = {
   children?: React.ReactNode;
@@ -21,7 +22,7 @@ export type CardProps = {
   onMouseLeave?: React.MouseEventHandler;
 };
 
-export const Card: React.FC<CardProps> = (props) => {
+export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => {
   const background = defaultValue(props.background, 1);
   const borderColor = defaultValue(props.border?.color, -0.2);
 
@@ -55,6 +56,7 @@ export const Card: React.FC<CardProps> = (props) => {
 
   return (
     <div
+      ref={ref}
       {...css(styles.base, props.style)}
       onDoubleClick={props.onDoubleClick}
       onMouseDown={props.onMouseDown}
@@ -65,7 +67,9 @@ export const Card: React.FC<CardProps> = (props) => {
       {props.children}
     </div>
   );
-};
+});
+
+Card.displayName = 'Card';
 
 /**
  * [Helpers]

@@ -23,10 +23,12 @@ export type DevVideoProps = {
   height?: number;
   style?: CssValue;
   isVideoMuted?: boolean;
+  show?: { proplist?: boolean; waveform?: boolean };
 };
 
 export const DevVideo: React.FC<DevVideoProps> = (props) => {
   const { width = 150, height = 100, stream, kind } = props;
+  const show = { proplist: props.show?.proplist ?? true, waveform: props.show?.waveform ?? true };
   const isVideo = kind === 'media/video';
   const bus = props.bus.type<t.DevEvent>();
   const wifi = MediaStream.useOfflineState();
@@ -100,7 +102,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
 
   const tooltip = stream ? `stream.id: ${stream.id}` : `Stream not loaded`;
 
-  const elWaveform = isVideo && (
+  const elWaveform = isVideo && show.waveform && (
     <div {...styles.waveform.base}>
       <AudioWaveform stream={stream} width={width - MARGIN.waveform * 2} height={15} />
     </div>
@@ -119,7 +121,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
         {elVideoOverlay}
       </div>
       {elWaveform}
-      {<PropList items={items} />}
+      {show.proplist && <PropList items={items} />}
     </div>
   );
 };

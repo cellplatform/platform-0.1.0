@@ -1,4 +1,4 @@
-import { value, queryString } from '../common';
+import { value, QueryString } from '../common';
 
 /**
  * Parse a query string.
@@ -14,7 +14,7 @@ export function query<T extends Record<string, unknown>>(args: { path: string })
   }
 
   const parseType = (input: any) => value.toType(input);
-  const query: any = queryString.toObject(toString().replace(/^\?/, ''));
+  const query: any = QueryString.toObject(toString().replace(/^\?/, ''));
   Object.keys(query).forEach((key) => {
     const value = query[key];
     query[key] = Array.isArray(value) ? value.map((item) => parseType(item)) : parseType(value);

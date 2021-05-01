@@ -203,8 +203,8 @@ describe('ActionsFactory', () => {
       const { model, actions } = create();
       expect(model.state.ctx.get).to.eql(undefined);
 
-      const fn1: t.ActionGetContext<Ctx> = () => ({ count: 123 });
-      const fn2: t.ActionGetContext<Ctx> = () => ({ count: 456 });
+      const fn1: t.ActionHandlerContext<Ctx> = () => ({ count: 123 });
+      const fn2: t.ActionHandlerContext<Ctx> = () => ({ count: 456 });
 
       actions.context(fn1);
       expect(model.state.ctx.get).to.eql(fn1);
@@ -261,7 +261,7 @@ describe('ActionsFactory', () => {
 
       expect(actions.toContext()).to.eql({ count: 0 });
       expect(model.state.ctx.current).to.eql({ count: 0 });
-      expect(prev).to.eql(null);
+      expect(prev).to.eql(undefined);
 
       count = 123;
       expect(actions.toContext()).to.eql({ count: 123 });
@@ -273,7 +273,7 @@ describe('ActionsFactory', () => {
   describe('actions.clone()', () => {
     it('same context', () => {
       const { actions } = create();
-      const fn: t.ActionGetContext<Ctx> = () => ({ count: 123 });
+      const fn: t.ActionHandlerContext<Ctx> = () => ({ count: 123 });
       const clone = actions.context(fn).clone();
       expect(clone).to.not.equal(actions); // NB: Different instance.
       expect(clone.toObject().ctx.get).to.eql(fn);
@@ -281,8 +281,8 @@ describe('ActionsFactory', () => {
 
     it('different context', () => {
       const { actions } = create();
-      const fn1: t.ActionGetContext<Ctx> = () => ({ count: 123 });
-      const fn2: t.ActionGetContext<Ctx> = () => ({ count: 456 });
+      const fn1: t.ActionHandlerContext<Ctx> = () => ({ count: 123 });
+      const fn2: t.ActionHandlerContext<Ctx> = () => ({ count: 456 });
       const clone = actions.context(fn1).clone(fn2);
       expect(clone).to.not.equal(actions); // NB: Different instance.
       expect(clone.toObject().ctx.get).to.eql(fn2);
@@ -321,7 +321,7 @@ describe('ActionsFactory', () => {
       const builder1 = one.actions.clone();
       const builder2 = two.actions.clone();
 
-      const fn: t.ActionGetContext<Ctx> = () => ({ count: 123 });
+      const fn: t.ActionHandlerContext<Ctx> = () => ({ count: 123 });
       builder2.context(fn);
 
       builder1.merge(builder2);
@@ -332,8 +332,8 @@ describe('ActionsFactory', () => {
       const builder1 = one.actions.clone();
       const builder2 = two.actions.clone();
 
-      const fn1: t.ActionGetContext<Ctx> = () => ({ count: 123 });
-      const fn2: t.ActionGetContext<Ctx> = () => ({ count: 456 });
+      const fn1: t.ActionHandlerContext<Ctx> = () => ({ count: 123 });
+      const fn2: t.ActionHandlerContext<Ctx> = () => ({ count: 456 });
       builder1.context(fn1);
       builder2.context(fn2);
 

@@ -1,1 +1,2 @@
-export * from './queryString/types';
+export * from './QueryString/types';
+export * from './Url/types';

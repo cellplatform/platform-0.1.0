@@ -1,9 +1,9 @@
-import { queryString } from './libs';
+import { QueryString as QueryStringLib } from './libs';
 
-export const QueryString = {
+export const Query = {
   parse(href?: string) {
     href = href || location.href;
-    const query = queryString.toObject(location.href);
+    const query = QueryStringLib.toObject(location.href);
     const connectTo = (query.connectTo?.toString() || '')
       .split(',')
       .map((token) => token.trim())

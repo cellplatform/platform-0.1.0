@@ -1,36 +1,6 @@
 import { t } from '../common';
 
 /**
- * Handler that retrieves the current context.
- * NOTE:
- *    To not re-calculate the context each time, the previous
- *    context is passed. Return this if a new context is not required.
- *
- */
-export type ActionGetContext<C> = (e: ActionGetContextArgs<C>) => C;
-
-export type ActionGetContextArgs<C> = {
-  namespace: string;
-  prev: C | undefined;
-  change: ActionGetContextChange<C>;
-  redraw(): void;
-};
-
-export type ActionGetContextChange<C> = {
-  ctx(fn: (draft: C) => void): ActionGetContextArgs<C>;
-  settings: t.ActionHandlerSettings<ActionGetContextArgs<C>>;
-};
-
-/**
- * Render "subject" (component under test)
- */
-export type ActionHandlerSubject<C> = (args: t.ActionHandlerSubjectArgs<C>) => void;
-export type ActionHandlerSubjectArgs<C> = t.ActionHandlerArgs<C> & {
-  readonly settings: t.ActionHandlerSettings<ActionHandlerSubjectArgs<C>>;
-  render(el: JSX.Element, layout?: t.HostedLayout): ActionHandlerSubjectArgs<C>;
-};
-
-/**
  * Common values passed to all handlers.
  */
 export type ActionHandlerArgs<C> = {

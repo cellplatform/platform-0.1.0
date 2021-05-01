@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { css, CssValue, Hr, PropList, PropListItem, t } from '../common';
+import { css, CssValue, Hr, PropList, PropListItem, t, isLocalhost } from '../common';
 import { DevVideo } from '../media';
 import { PropUtil } from './util';
 
@@ -15,7 +15,6 @@ export const DevMediaConnection: React.FC<DevMediaConnectionProps> = (props) => 
   const { connection, bus } = props;
   const { kind } = connection;
   const streamId = connection.media?.id;
-  const isLocalhost = location.hostname === 'localhost';
 
   const items: PropListItem[] = [...PropUtil.common(connection)];
 

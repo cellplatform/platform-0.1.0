@@ -8,15 +8,15 @@ import { openHandler } from './util';
  * Card body.
  */
 export type DevDataConnectionsProps = {
-  self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.NetBus<any>;
   connections: t.PeerConnectionDataStatus[];
   style?: CssValue;
 };
 export const DevDataConnections: React.FC<DevDataConnectionsProps> = (props) => {
-  const { netbus, connections, self } = props;
+  const { netbus, connections } = props;
   const bus = props.bus.type<t.DevEvent>();
+  const self = netbus.self;
 
   const styles = {
     base: css({ position: 'relative', padding: 12, fontSize: 12 }),

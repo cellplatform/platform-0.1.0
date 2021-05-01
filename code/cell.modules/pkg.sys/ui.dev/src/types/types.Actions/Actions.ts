@@ -13,13 +13,13 @@ export type Actions<Ctx extends O = any, Items extends O = any> = {
   toContext(): Ctx;
 
   merge(actions: Actions<any>, options?: ActionAddOptions): t.Actions<Ctx, Items>;
-  clone(ctx?: t.ActionGetContext<Ctx>): t.Actions<Ctx, Items>;
+  clone(ctx?: t.ActionHandlerContext<Ctx>): t.Actions<Ctx, Items>;
 
   renderActionPanel(bus: t.EventBus, props?: t.ActionPanelProps): JSX.Element;
   renderSubject(): t.ActionSubject<Ctx>;
 
   namespace(value: string): t.Actions<Ctx, Items>;
-  context(factory: t.ActionGetContext<Ctx>): t.Actions<Ctx, Items>;
+  context(factory: t.ActionHandlerContext<Ctx>): t.Actions<Ctx, Items>;
   subject(factory: t.ActionHandlerSubject<Ctx>): t.Actions<Ctx, Items>;
   items(handler: (args: Items) => void): t.Actions<Ctx, Items>;
 };

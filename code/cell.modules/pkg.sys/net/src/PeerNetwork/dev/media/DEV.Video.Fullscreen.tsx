@@ -1,6 +1,15 @@
 import React, { useRef } from 'react';
 
-import { AudioWaveform, color, css, CssValue, t, useResizeObserver, VideoStream } from '../common';
+import {
+  AudioWaveform,
+  color,
+  css,
+  CssValue,
+  t,
+  useResizeObserver,
+  VideoStream,
+  isLocalhost,
+} from '../common';
 import { DevModal } from '../DEV.Modal';
 
 export type DevVideoFullscreenProps = {
@@ -13,7 +22,6 @@ export type DevVideoFullscreenProps = {
 export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => {
   const { stream } = props;
   const bus = props.bus.type<t.DevEvent>();
-  const isLocalhost = location.hostname === 'localhost';
 
   const rootRef = useRef<HTMLDivElement>(null);
   const resize = useResizeObserver(rootRef);

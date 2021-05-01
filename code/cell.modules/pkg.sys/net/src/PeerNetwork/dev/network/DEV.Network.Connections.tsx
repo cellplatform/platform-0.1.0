@@ -11,10 +11,10 @@ import {
 import { DevEventBusCard } from '../event';
 
 export type DevNetworkConnectionsProps = {
-  self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.NetBus<any>;
   collapse?: boolean | { data?: boolean; media?: boolean };
+  cards?: { data?: boolean; media?: boolean };
   showNetbus?: boolean;
   filter?: (connection: t.PeerConnectionStatus) => boolean;
   paddingTop?: number;
@@ -22,8 +22,10 @@ export type DevNetworkConnectionsProps = {
 };
 
 export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (props) => {
-  const { self, netbus } = props;
+  const { netbus } = props;
   const bus = props.bus.type<t.PeerEvent>();
+  const self = netbus.self;
+
   const collapse = {
     data:
       typeof props.collapse === 'boolean'
@@ -33,6 +35,11 @@ export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (prop
       typeof props.collapse === 'boolean'
         ? props.collapse
         : defaultValue(props.collapse?.media, true),
+  };
+
+  const cards = {
+    data: defaultValue(props.cards?.data, true),
+    media: defaultValue(props.cards?.media, true),
   };
 
   const [connections, setConnections] = useState<t.PeerConnectionStatus[]>([]);
@@ -73,7 +80,6 @@ export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (prop
   const toConnection = (item: t.PeerConnectionStatus) => {
     return (
       <DevConnection
-        self={self}
         key={item.uri}
         bus={bus}
         netbus={netbus}
@@ -98,16 +104,20 @@ export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (prop
     );
   };
 
-  const elData = renderCard(collapse.data, data, (items) => (
-    <DevDataConnections self={self} bus={bus} netbus={netbus} connections={items} />
-  ));
+  const elData = !cards.data
+    ? null
+    : renderCard(collapse.data, data, (items) => (
+        <DevDataConnections bus={bus} netbus={netbus} connections={items} />
+      ));
 
-  const elMedia = renderCard(collapse.media, media, (items) => (
-    <DevMediaConnections self={self} bus={bus} netbus={netbus} connections={items} />
-  ));
+  const elMedia = !cards.media
+    ? null
+    : renderCard(collapse.media, media, (items) => (
+        <DevMediaConnections bus={bus} netbus={netbus} connections={items} />
+      ));
 
   const elNetbus = props.showNetbus && (
-    <DevEventBusCard self={self} bus={bus} margin={[PADDING.CARD, 0, 0, PADDING.CARD]} />
+    <DevEventBusCard bus={bus} netbus={netbus} margin={[PADDING.CARD, 0, 0, PADDING.CARD]} />
   );
 
   return (

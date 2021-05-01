@@ -1,6 +1,8 @@
 import { Subject } from 'rxjs';
+
+import { defaultValue, PeerJS, sha256 } from '../../common';
 import * as t from './types';
-import { PeerJS, defaultValue } from '../../common';
+import filesize from 'filesize';
 
 type C = t.PeerConnectionStatus;
 
@@ -25,23 +27,25 @@ export const FilterUtil = {
 /**
  * Monitors errors on a PeerJS instance.
  */
-export const PeerJSError = (peer: PeerJS) => {
-  const $ = new Subject<{ type: string; message: string }>();
+export const PeerJsUtil = {
+  error(peer: PeerJS) {
+    const $ = new Subject<{ type: string; message: string }>();
 
-  const handler = (error: any) => {
-    const { type, message } = error;
-    $.next({ type, message });
-  };
+    const handler = (error: any) => {
+      const { type, message } = error;
+      $.next({ type, message });
+    };
 
-  peer.on('error', handler);
+    peer.on('error', handler);
 
-  return {
-    $: $.asObservable(),
-    dispose() {
-      peer.off('error', handler);
-      $.complete();
-    },
-  };
+    return {
+      $: $.asObservable(),
+      dispose() {
+        peer.off('error', handler);
+        $.complete();
+      },
+    };
+  },
 };
 
 /**
@@ -110,5 +114,50 @@ export const StreamUtil = {
       if (isEnded()) callback();
     };
     tracks.forEach((track) => (track.onended = onTrackEnded));
+  },
+};
+
+/**
+ * Helpers for working with network files.
+ */
+export const FileUtil = {
+  /**
+   * Convert dropped files to a [PeerFile] data type.
+   */
+  toFiles(
+    dir: string,
+    files: { filename: string; data: ArrayBuffer; mimetype: string }[],
+  ): t.PeerFile[] {
+    return files.map(({ data, filename, mimetype }) => {
+      const hash = sha256(data);
+      const blob = new Blob([data], { type: mimetype });
+      return { dir, blob, filename, hash };
+    });
+  },
+
+  /**
+   * Load a file as a base64 encoded data URI.
+   */
+  toUri(blob: Blob) {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result !== 'string') {
+          return reject(new Error(`FileReader did not return a string`));
+        } else {
+          resolve(reader.result);
+        }
+      };
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(blob);
+    });
+  },
+
+  /**
+   * Turn the number of bytes into a human readable filesize.
+   */
+  size(blob: Blob) {
+    const bytes = blob.size;
+    return { bytes, toString: () => filesize(blob.size, { round: 1 }) };
   },
 };

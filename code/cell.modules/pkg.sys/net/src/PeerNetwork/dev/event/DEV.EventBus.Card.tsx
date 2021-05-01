@@ -9,33 +9,32 @@ import {
   t,
   useEventBusHistory,
   PeerNetwork,
+  Dropped,
+  FileUtil,
 } from '../common';
 import { DevCard } from '../DEV.Card';
 import { DevEventBusStack } from './DEV.EventBus.Stack';
 import { DevEventBusTextbox } from './DEV.EventBus.Textbox';
+import { DevImageThumbnails } from '../media';
 
 export type DevEventBusCardProps = {
-  self: t.PeerId;
   bus: t.EventBus<any>;
+  netbus: t.NetBus<any>;
   margin?: t.CssEdgesInput;
   style?: CssValue;
 };
 
 export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
-  const { self, bus } = props;
-
-  const [netbus, setNetbus] = useState<t.NetBus>();
-  useEffect(() => setNetbus(PeerNetwork.NetBus({ self, bus })), [self, bus]);
-
+  const { bus, netbus } = props;
   const history = useEventBusHistory(netbus);
 
   const handleBroadcast = async (args: { message: string; filter: string }) => {
     if (!netbus) return;
 
     const msg = args.message.trim();
-    const event = { type: 'sample/event', payload: { msg: msg || `<empty>` } };
+    const event = { type: 'sample/event', payload: { msg: msg ?? `<empty>` } };
 
-    const filter: t.PeerConnectionFilter = (e) => {
+    const filter: t.PeerFilter = (e) => {
       const text = args.filter.trim();
       return !text
         ? true
@@ -52,23 +51,30 @@ export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
     }
   };
 
-  const styles = {
-    base: css({
-      position: 'relative',
-      padding: 12,
-      paddingBottom: 15,
-    }),
+  const handleDrop = (e: Dropped) => {
+    if (netbus) {
+      const files = FileUtil.toFiles(e.dir, e.files);
+      const events = PeerNetwork.FilesystemEvents(netbus);
+      events.add().fire({ files });
+      events.dispose();
+    }
   };
 
-  const items: PropListItem[] = [{ label: 'total', value: history.total }];
+  const styles = {
+    base: css({ position: 'relative', padding: 12, paddingBottom: 15 }),
+    thumbnails: css({ marginTop: 10 }),
+  };
+
+  const items: PropListItem[] = [{ label: 'total events', value: history.total }];
 
   return (
-    <DevCard margin={props.margin} style={props.style}>
+    <DevCard margin={props.margin} style={props.style} onDrop={handleDrop}>
       <div {...styles.base}>
         <PropList title={'Network Bus'} items={items} defaults={{ clipboard: false }} />
         <Hr thickness={5} opacity={0.1} margin={[10, 0, 15, 0]} />
         <DevEventBusTextbox onBroadcast={handleBroadcast} />
         <DevEventBusStack history={history} />
+        <DevImageThumbnails bus={bus} netbus={netbus} style={{ marginTop: 10 }} />
       </div>
     </DevCard>
   );

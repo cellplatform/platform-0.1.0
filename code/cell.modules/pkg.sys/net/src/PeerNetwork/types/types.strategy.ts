@@ -36,3 +36,13 @@ export type GroupStrategy = t.IDisposable & {
    */
   connections: boolean;
 };
+
+/**
+ * Strategies for working with a group of peers ("mesh").
+ */
+export type FilesystemStrategy = t.IDisposable & {
+  /**
+   * Manage files between a group of peers.
+   */
+  cache: boolean;
+};

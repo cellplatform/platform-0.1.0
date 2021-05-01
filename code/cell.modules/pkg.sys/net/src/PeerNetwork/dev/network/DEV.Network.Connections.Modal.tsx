@@ -34,7 +34,6 @@ export const DevNetworkConnectionsModal: React.FC<DevNetworkConnectionsModalProp
   return (
     <DevModal bus={bus} background={1}>
       <DevNetworkConnections
-        self={self}
         bus={bus}
         netbus={netbus}
         collapse={false}

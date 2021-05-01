@@ -1,4 +1,4 @@
-import { t, queryString } from '../common';
+import { t, QueryString } from '../common';
 import { Uri } from '../Uri';
 import { Links } from '../Links';
 
@@ -59,7 +59,7 @@ export class RefLinks {
   }
 
   public static toValue(uri: t.IUri, options: { hash?: string } = {}) {
-    const query = queryString.build({ allowNil: false }).add('hash', options.hash).toString();
+    const query = QueryString.build({ allowNil: false }).add('hash', options.hash).toString();
     return `${uri.toString()}${query}`;
   }
 

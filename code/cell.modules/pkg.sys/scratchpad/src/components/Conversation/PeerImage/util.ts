@@ -3,7 +3,6 @@ import { t } from '../common';
 /**
  * Source: https://stackoverflow.com/questions/11089732/display-image-from-blob-using-javascript-and-websockets
  */
-
 export function toDataUri(file: t.IHttpClientCellFileUpload) {
   const bytes = new Uint8Array(file.data);
   const src = `data:${file.mimetype};base64,${encode(bytes)}`;

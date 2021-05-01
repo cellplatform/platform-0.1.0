@@ -17,3 +17,4 @@ export { WebRuntime, bundle } from '@platform/cell.runtime.web';
 export { useResizeObserver } from '@platform/react';
 export { rx, defaultValue, cuid, time, deleteUndefined, asArray, slug } from '@platform/util.value';
 export { StateObject } from '@platform/state';
+export { sha256 } from '@platform/cell.schema/lib/common/hash';

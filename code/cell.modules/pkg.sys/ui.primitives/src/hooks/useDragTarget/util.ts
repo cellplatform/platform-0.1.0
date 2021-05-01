@@ -1,6 +1,6 @@
 import { t } from '../../common';
 
-type F = t.IHttpClientCellFileUpload;
+type F = t.DroppedFile;
 
 /**
  * HTML5 File-System Types.

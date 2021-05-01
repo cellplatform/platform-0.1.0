@@ -2,7 +2,8 @@ import React from 'react';
 import { Hr } from 'sys.ui.primitives/lib/components/Hr';
 
 import { css, CssValue, t } from '../common';
-import { useDevState } from '../DEV.useDevState';
+import { useDevLocalController } from '../DEV.useDevLocalController';
+import { useDevGroupController } from '../DEV.useDevGroupController';
 import { DevNetworkHeader } from './DEV.Network.Header';
 import { DevNetworkConnections } from './DEV.Network.Connections';
 
@@ -12,13 +13,16 @@ export type DevNetworkProps = {
   peer: t.PeerStatus;
   media: { video?: MediaStream; screen?: MediaStream };
   collapse?: boolean | { data?: boolean; media?: boolean };
+  cards?: { data?: boolean; media?: boolean };
   style?: CssValue;
 };
 
 export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
   const { peer, media, netbus } = props;
   const bus = props.bus.type<t.PeerEvent>();
-  const state = useDevState({ bus });
+
+  const local = useDevLocalController({ bus });
+  const group = useDevGroupController({ bus, netbus });
 
   const styles = {
     base: css({
@@ -32,16 +36,16 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
     modal: css({ Absolute: 0, display: 'flex' }),
   };
 
-  const modalSize = state.modal?.target;
-  const elModal = state.modal?.el && <div {...styles.modal}>{state.modal.el}</div>;
+  const modalSize = local.modal?.target;
+  const elModal = local.modal?.el && <div {...styles.modal}>{local.modal.el}</div>;
 
   const elBody = (
     <div {...styles.body}>
       <DevNetworkConnections
-        self={peer.id}
         bus={bus}
         netbus={netbus}
         collapse={props.collapse}
+        cards={props.cards}
         showNetbus={true}
       />
       {modalSize === 'body' && elModal}

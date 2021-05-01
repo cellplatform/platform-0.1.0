@@ -1,16 +1,16 @@
-import { expect } from 'chai';
-import { str, queryString } from '..';
+import { expect } from '../test';
+import { str, QueryString } from '..';
 
-describe('queryString', () => {
+describe('QueryString', () => {
   it('is exposed from module', () => {
-    expect(queryString.toObject).to.be.an.instanceof(Function);
-    expect(str.queryString.toObject).to.be.an.instanceof(Function);
+    expect(QueryString.toObject).to.be.an.instanceof(Function);
+    expect(str.QueryString.toObject).to.be.an.instanceof(Function);
   });
 
   describe('toObject', () => {
     it('handles empty/nothing', () => {
       const test = (input?: any) => {
-        expect(queryString.toObject(input)).to.eql({});
+        expect(QueryString.toObject(input)).to.eql({});
       };
       test('');
       test('  ');
@@ -21,7 +21,7 @@ describe('queryString', () => {
 
     it('parses href (full URL)', () => {
       const test = (input: string | undefined) => {
-        const res = queryString.toObject(input);
+        const res = QueryString.toObject(input);
         expect(res).to.eql({ foo: '123' });
       };
 
@@ -36,69 +36,69 @@ describe('queryString', () => {
     });
 
     it('reads key:value (without "?" prefix)', () => {
-      const result = queryString.toObject('zoo=123');
+      const result = QueryString.toObject('zoo=123');
       expect(result).to.eql({ zoo: '123' });
     });
 
     it('reads key:value (with "?" prefix)', () => {
-      const result = queryString.toObject('  ?search=abc  ');
+      const result = QueryString.toObject('  ?search=abc  ');
       expect(result).to.eql({ search: 'abc' });
     });
 
     it('reads key:value (with "#" prefix)', () => {
-      const result = queryString.toObject('#search=abc&color=red');
+      const result = QueryString.toObject('#search=abc&color=red');
       expect(result).to.eql({ search: 'abc', color: 'red' });
     });
 
     it('reads key:value with surrounding whitespaces', () => {
-      expect(queryString.toObject(' ?filter=abc  ')).to.eql({ filter: 'abc' });
-      expect(queryString.toObject('  search=cat ')).to.eql({ search: 'cat' });
+      expect(QueryString.toObject(' ?filter=abc  ')).to.eql({ filter: 'abc' });
+      expect(QueryString.toObject('  search=cat ')).to.eql({ search: 'cat' });
     });
 
     it('boolean <empty> key (defaults to true)', () => {
-      const result = queryString.toObject('?red');
+      const result = QueryString.toObject('?red');
       expect(result).to.eql({ red: true });
     });
 
     it('boolean key (true)', () => {
-      const result = queryString.toObject('?red=true');
+      const result = QueryString.toObject('?red=true');
       expect(result).to.eql({ red: true });
     });
 
     it('boolean key (false)', () => {
-      const result = queryString.toObject('?red=false');
+      const result = QueryString.toObject('?red=false');
       expect(result).to.eql({ red: false });
     });
 
     it('multiple key:value pairs', () => {
-      const result = queryString.toObject('?color=red&width=50px');
+      const result = QueryString.toObject('?color=red&width=50px');
       expect(result).to.eql({ color: 'red', width: '50px' });
     });
 
     it('multiple keys stack up into array', () => {
-      const result = queryString.toObject('?item=one&item&item=false');
+      const result = QueryString.toObject('?item=one&item&item=false');
       expect(result.item).to.eql(['one', true, false]);
     });
 
     it('decodeURIComponent', () => {
-      const result = queryString.toObject('?msg=into%20the%20wild');
+      const result = QueryString.toObject('?msg=into%20the%20wild');
       expect(result).to.eql({ msg: 'into the wild' });
     });
 
     it('supports specific generic type', () => {
-      const result = queryString.toObject<{ bar: string }>('?bar=abc');
+      const result = QueryString.toObject<{ bar: string }>('?bar=abc');
       expect(result.bar).to.eql('abc');
     });
 
     it('supports generic type <any>', () => {
-      const result = queryString.toObject<any>('?size=32x36');
+      const result = QueryString.toObject<any>('?size=32x36');
       expect(result.size).to.eql('32x36');
     });
   });
 
   describe('valueAsFlag', () => {
     const test = (value: any, result: boolean) => {
-      expect(queryString.valueAsFlag(value)).to.eql(result);
+      expect(QueryString.valueAsFlag(value)).to.eql(result);
     };
 
     it('is TRUE', () => {
@@ -120,8 +120,8 @@ describe('queryString', () => {
   });
 
   describe('isFlag', () => {
-    const test = (keys: string[], query: queryString.UrlQuery | undefined, result: boolean) => {
-      expect(queryString.isFlag(keys, query)).to.eql(result);
+    const test = (keys: string[], query: QueryString.UrlQuery | undefined, result: boolean) => {
+      expect(QueryString.isFlag(keys, query)).to.eql(result);
     };
 
     it('is TRUE', () => {
@@ -141,11 +141,11 @@ describe('queryString', () => {
 
   describe('build', () => {
     it('nothing', () => {
-      expect(queryString.build().toString()).to.eql('');
+      expect(QueryString.build().toString()).to.eql('');
     });
 
     it('add', () => {
-      const builder = queryString.build();
+      const builder = QueryString.build();
       expect(builder.toString()).to.eql('');
 
       builder.add('foo', 123);
@@ -158,19 +158,18 @@ describe('queryString', () => {
       builder.add('foo', 123).add('foo', 456);
       expect(builder.toString()).to.eql('?foo=123&bar=hello%20&foo=123&foo=456');
 
-      const obj = queryString.toObject(builder.toString());
+      const obj = QueryString.toObject(builder.toString());
       expect(obj).to.eql({ foo: ['123', '123', '456'], bar: 'hello ' });
     });
 
     describe('null | undefined | "" (<empty>)', () => {
       it('allowNil: true (default)', () => {
-        const builder = queryString.build().add('myNull', null).add('myUndefined');
+        const builder = QueryString.build().add('myNull', null).add('myUndefined');
         expect(builder.toString()).to.eql('?myNull&myUndefined');
       });
 
       it('allowNil: false', () => {
-        const builder = queryString
-          .build({ allowNil: false })
+        const builder = QueryString.build({ allowNil: false })
           .add('myNull', null)
           .add('myUndefined');
         expect(builder.toString()).to.eql('');

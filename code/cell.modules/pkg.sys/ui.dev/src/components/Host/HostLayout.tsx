@@ -2,10 +2,15 @@ import * as React from 'react';
 
 import { css, CssValue, defaultValue, formatColor, t, constants } from '../../common';
 import { Subject, SubjectCropmark } from './Subject';
+import { Icons } from '../Icons';
+import { Button } from '../Primitives';
+
+export type HostFullscreen = { value: boolean; onClick?: (e: { current: boolean }) => void };
 
 export type HostLayoutProps = {
   host?: t.Host;
   subject?: t.ActionSubject<any>;
+  fullscreen?: HostFullscreen;
   style?: CssValue;
 };
 
@@ -13,7 +18,7 @@ export type HostLayoutProps = {
  * A content container providing layout options for testing.
  */
 export const HostLayout: React.FC<HostLayoutProps> = (props = {}) => {
-  const { subject, host } = props;
+  const { subject, host, fullscreen } = props;
   const items = subject?.items || [];
   const orientation = defaultValue(host?.orientation, 'y');
   const spacing = Math.max(0, defaultValue(host?.spacing, 60));
@@ -30,7 +35,24 @@ export const HostLayout: React.FC<HostLayoutProps> = (props = {}) => {
       boxSizing: 'border-box',
       Flex: `${orientation === 'y' ? 'vertical' : 'horizontal'}-center-center`,
     }),
+    fullscreen: {
+      button: css({ Absolute: [3, 3, null, null] }),
+    },
   };
+
+  const isFullscreen = fullscreen?.value === true;
+  const elFullscreenButton = fullscreen !== undefined && (
+    <Button
+      style={styles.fullscreen.button}
+      onClick={() => {
+        const { onClick } = fullscreen;
+        if (onClick) onClick({ current: fullscreen.value });
+      }}
+    >
+      {!isFullscreen && <Icons.Fullscreen.Enter />}
+      {isFullscreen && <Icons.Fullscreen.Exit />}
+    </Button>
+  );
 
   const elContent = items.map((item, i) => {
     const isLast = i === items.length - 1;
@@ -62,6 +84,7 @@ export const HostLayout: React.FC<HostLayoutProps> = (props = {}) => {
   return (
     <div {...css(styles.base, props.style)} className={constants.CSS.HOST}>
       <div {...styles.body}>{elContent}</div>
+      {elFullscreenButton}
     </div>
   );
 };

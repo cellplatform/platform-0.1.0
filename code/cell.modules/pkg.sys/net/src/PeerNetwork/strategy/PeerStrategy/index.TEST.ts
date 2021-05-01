@@ -9,7 +9,7 @@ describe('PeerStrategy', () => {
   it('dispose', () => {
     const strategy = PeerStrategy({ self, bus });
 
-    const fire = { root: 0, connection: 0, group: 0 };
+    const fire = { root: 0, connection: 0 };
     strategy.dispose$.subscribe(() => fire.root++);
     strategy.connection.dispose$.subscribe(() => fire.connection++);
 
@@ -21,7 +21,6 @@ describe('PeerStrategy', () => {
 
     // NB: Disposes deeply.
     expect(fire.connection).to.eql(1);
-    expect(fire.group).to.eql(1);
   });
 
   describe('Connection', () => {

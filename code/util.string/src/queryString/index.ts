@@ -1,2 +1,2 @@
-import * as queryString from './queryString';
-export { queryString };
+import * as QueryString from './QueryString';
+export { QueryString };

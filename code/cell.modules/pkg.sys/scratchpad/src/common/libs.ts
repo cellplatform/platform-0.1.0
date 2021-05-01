@@ -5,7 +5,7 @@ export { useResizeObserver, events, drag, copyToClipboard } from '@platform/reac
 export { defaultValue, time, cuid, slug, rx, value, deleteUndefined } from '@platform/util.value';
 export { http } from '@platform/http';
 export { StateObject } from '@platform/state';
-export { queryString } from '@platform/util.string/lib/queryString';
+export { QueryString } from '@platform/util.string/lib/QueryString';
 
 import PeerJS from 'peerjs';
 export { PeerJS };

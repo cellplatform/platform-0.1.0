@@ -5,7 +5,7 @@ export type ActionsModelState<Ctx> = t.BuilderModel<t.ActionsModel<Ctx>>;
 export type ActionsModel<Ctx> = {
   namespace: string;
   items: t.ActionItem[];
-  ctx: { current?: Ctx; get?: t.ActionGetContext<Ctx> };
+  ctx: { current?: Ctx; get?: t.ActionHandlerContext<Ctx> };
   env: ActionsModelEnv;
   subject?: t.ActionHandlerSubject<Ctx>;
   initialized?: boolean;

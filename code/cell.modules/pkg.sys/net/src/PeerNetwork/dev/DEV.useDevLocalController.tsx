@@ -5,8 +5,9 @@ import { DevVideoFullscreen } from './media';
 
 import { rx, t } from './common';
 
-export function useDevState(args: { bus: t.EventBus<any> }) {
+export function useDevLocalController(args: { bus: t.EventBus<any> }) {
   const bus = args.bus.type<t.DevEvent>();
+
   const [modal, setModal] = useState<t.DevModal | undefined>();
 
   useEffect(() => {

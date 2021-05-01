@@ -30,7 +30,7 @@ export type NetBusTarget<E extends t.Event> = {
   /**
    * Broadcasts to a subset of peers.
    */
-  filter(fn: t.PeerConnectionFilter): { fire(event: E): Promise<NetBusFireResponse<E>> };
+  filter(fn?: t.PeerFilter): { fire(event: E): Promise<NetBusFireResponse<E>> };
 
   /**
    * Broadcasts to a specific peer(s).

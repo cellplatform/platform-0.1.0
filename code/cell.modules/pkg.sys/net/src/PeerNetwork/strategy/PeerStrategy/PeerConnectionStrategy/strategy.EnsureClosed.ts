@@ -35,7 +35,10 @@ export function EnsureClosedStrategy(args: {
   /**
    * Listen for mesh alerting that a connection is closed.
    */
-  rx.payload<t.GroupEnsureConnectionClosedEvent>(netbus.event$, 'sys.net/group/conn/ensure:closed')
+  rx.payload<t.NetGroupEnsureConnectionClosedEvent>(
+    netbus.event$,
+    'sys.net/group/conn/ensure:closed',
+  )
     .pipe(
       filter(() => args.isEnabled()),
       filter((e) => e.source !== self),

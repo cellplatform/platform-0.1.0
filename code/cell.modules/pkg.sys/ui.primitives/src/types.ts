@@ -5,3 +5,4 @@ export * from '@platform/ui.image/lib/types';
 
 export * from './components/DotTabstrip/types';
 export * from './components/PropList/types';
+export * from './hooks/useDragTarget/types';
