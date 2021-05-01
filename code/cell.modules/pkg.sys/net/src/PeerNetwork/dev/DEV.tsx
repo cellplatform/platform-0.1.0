@@ -16,6 +16,7 @@ import {
 import { RootLayout } from './DEV.Root';
 import { EventBridge } from './event';
 import { DevModel, DevGroupSeed, GroupSeed } from './model';
+import { DevVideosLayout } from './media';
 
 import { QueryString } from '@platform/util.string/lib/QueryString';
 
@@ -89,9 +90,9 @@ export const actions = DevActions<Ctx>()
       console.log('NET/CHANGED', e);
     });
 
-    const local = LocalStorage<CtxFlags>('sys.net/dev/');
+    const storage = LocalStorage<CtxFlags>('sys.net/dev/PeerNetwork');
 
-    const flags = local.object({
+    const flags = storage.object({
       isFullscreen: true,
       isReliable: true,
       debugJson: false,
@@ -100,7 +101,7 @@ export const actions = DevActions<Ctx>()
       cardsData: true,
       cardsMedia: false,
     });
-    local.changed$.subscribe(() => e.redraw());
+    storage.changed$.subscribe(() => e.redraw());
 
     /**
      * Group seed model/controller
@@ -178,10 +179,18 @@ export const actions = DevActions<Ctx>()
     e.hr(1, 0.2);
 
     e.button('network model', (e) => {
-      const { self, bus, netbus } = e.toObject(e.ctx) as Ctx;
+      const { bus, netbus } = e.toObject(e.ctx) as Ctx;
       const el = <DevModel bus={bus} netbus={netbus} />;
       e.ctx.bus.fire({ type: 'DEV/modal', payload: { el, target: 'body' } });
     });
+
+    e.button('videos layout', (e) => {
+      const { self, bus } = e.toObject(e.ctx) as Ctx;
+      const el = <DevVideosLayout self={self} bus={bus} />;
+      e.ctx.bus.fire({ type: 'DEV/modal', payload: { el, target: 'body' } });
+    });
+
+    e.hr(1, 0.2);
 
     e.textbox((config) => {
       config
