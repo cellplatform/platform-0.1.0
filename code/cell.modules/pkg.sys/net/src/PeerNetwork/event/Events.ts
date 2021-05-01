@@ -168,7 +168,6 @@ export function Events(eventbus: t.EventBus<any>) {
         const { constraints, parent } = options;
         const tx = slug();
         const res = firstValueFrom(connected$.pipe(filter((e) => e.tx === tx)));
-
         bus.fire({
           type: 'sys.net/peer/conn/connect:req',
           payload: { self, tx, remote, kind, direction: 'outgoing', constraints, parent },
