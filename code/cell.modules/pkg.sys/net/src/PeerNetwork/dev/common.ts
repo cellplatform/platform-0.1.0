@@ -1,4 +1,4 @@
-import * as t from './types';
+import * as t from './DEV.types';
 
 export { Icons } from '../../components/Icons';
 

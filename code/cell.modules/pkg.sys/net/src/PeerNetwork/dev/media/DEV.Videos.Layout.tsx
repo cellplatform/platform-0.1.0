@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { color, css, CssValue, t, rx, PeerNetwork } from '../common';
 import { DevVideo } from './DEV.Video';
+import { useLocalPeer } from '../../hook';
 
 import {
   MotionDraggable,
@@ -17,8 +18,8 @@ export type DevVideosLayoutProps = {
 export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
   const { self, bus } = props;
 
+  const local = useLocalPeer({ self, bus });
   const [dragBus, setDragBus] = useState<t.EventBus<any>>();
-  const [selfVideo, setSelfVideo] = useState<MediaStream>();
 
   useEffect(() => {
     const events = PeerNetwork.Events(bus);
@@ -26,12 +27,8 @@ export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
     const dragEvents = MotionDraggable.Events(dragBus);
     setDragBus(dragBus);
 
-    events
-      .media(self)
-      .video()
-      .then((e) => {
-        if (e.media) setSelfVideo(e.media);
-      });
+    // Ensure local video is open.
+    events.media(self).video();
 
     return () => {
       events.dispose();
@@ -42,19 +39,21 @@ export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
   const styles = {
     base: css({ flex: 1, backgroundColor: color.format(1) }),
     draggable: css({ Absolute: 20 }),
-    content: css({ padding: 20, borderRadius: 20, flex: 1 }),
   };
 
-  const items: MotionDraggableItem[] = [
-    { width: 100, height: 100, el: <div {...styles.content}>Foo-1</div> },
-    {
-      width: 150,
-      height: 160,
-      el() {
-        return <DevVideo bus={bus} kind={'media/video'} stream={selfVideo} />;
-      },
-    },
-  ];
+  const items: MotionDraggableItem[] = [];
+
+  const addVideo = (stream?: MediaStream) => {
+    if (!stream) return;
+    const el = <DevVideo bus={bus} kind={'media/video'} stream={stream} />;
+    items.push({ width: 150, height: 160, el });
+  };
+
+  addVideo(local.media.video);
+  local.connections
+    .filter((e) => e.kind === 'media/video')
+    .map((e) => e as t.PeerConnectionMediaStatus)
+    .forEach((e) => addVideo(e.media));
 
   return (
     <div {...css(styles.base, props.style)}>

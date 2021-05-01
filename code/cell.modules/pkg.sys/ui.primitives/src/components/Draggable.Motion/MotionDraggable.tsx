@@ -1,24 +1,11 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-} from 'rxjs/operators';
-import { domMax, LazyMotion, DragElastic } from 'framer-motion';
+import { domMax, DragElastic, LazyMotion } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
+import { filter } from 'rxjs/operators';
 
-import { css, CssValue, useResizeObserver, t, rx, slug } from '../../common';
+import { css, CssValue, t, useResizeObserver } from '../../common';
+import { Events } from './Events';
 import { Child } from './MotionDraggable.Child';
 import * as n from './types';
-import { Events } from './Events';
-import { items } from '../PropList/dev/DEV.items';
 
 export type MotionDraggableProps = {
   bus: t.EventBus<any>;
@@ -28,7 +15,8 @@ export type MotionDraggableProps = {
 };
 
 const View: React.FC<MotionDraggableProps> = (props) => {
-  const { items = [], elastic } = props;
+  const { elastic } = props;
+  const items = (props.items ?? []).filter(Boolean);
   const bus = props.bus.type<n.MotionDraggableEvent>();
   const rootRef = useRef<HTMLDivElement>(null);
   const resize = useResizeObserver(rootRef);

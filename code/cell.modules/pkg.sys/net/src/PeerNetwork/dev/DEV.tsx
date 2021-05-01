@@ -184,10 +184,20 @@ export const actions = DevActions<Ctx>()
       e.ctx.bus.fire({ type: 'DEV/modal', payload: { el, target: 'body' } });
     });
 
-    e.button('videos layout', (e) => {
-      const { self, bus } = e.toObject(e.ctx) as Ctx;
-      const el = <DevVideosLayout self={self} bus={bus} />;
-      e.ctx.bus.fire({ type: 'DEV/modal', payload: { el, target: 'body' } });
+    e.button('group/layout: cards (default)', (e) => {
+      const netbus = e.toObject<Ctx>(e.ctx)?.netbus as t.NetBus<t.DevEvent>;
+      netbus.fire({
+        type: 'DEV/group/layout',
+        payload: { kind: 'cards' },
+      });
+    });
+
+    e.button('group/layout: videos', (e) => {
+      const netbus = e.toObject<Ctx>(e.ctx)?.netbus as t.NetBus<t.DevEvent>;
+      netbus.fire({
+        type: 'DEV/group/layout',
+        payload: { kind: 'videos' },
+      });
     });
 
     e.hr(1, 0.2);
