@@ -1,5 +1,5 @@
 import { t, rx } from '../common';
-import { FileCache } from '../../../cache';
+import { FileCache } from '../../../cache/FileCache';
 
 /**
  * Strategy for caching files.

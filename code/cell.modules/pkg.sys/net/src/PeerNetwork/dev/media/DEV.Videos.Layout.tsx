@@ -39,14 +39,32 @@ export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
   const styles = {
     base: css({ flex: 1, backgroundColor: color.format(1) }),
     draggable: css({ Absolute: 20 }),
+    video: {
+      outer: css({
+        boxSizing: 'border-box',
+        padding: 8,
+        borderRadius: 25,
+        backgroundColor: color.format(0.7),
+        backdropFilter: `blur(5px)`,
+      }),
+    },
   };
 
   const items: MotionDraggableItem[] = [];
 
   const addVideo = (stream?: MediaStream) => {
     if (!stream) return;
-    const el = <DevVideo bus={bus} kind={'media/video'} stream={stream} />;
-    items.push({ width: 150, height: 160, el });
+    const el = (
+      <div {...styles.video.outer}>
+        <DevVideo
+          bus={bus}
+          kind={'media/video'}
+          stream={stream}
+          show={{ proplist: false, waveform: true }}
+        />
+      </div>
+    );
+    items.push({ width: 150, height: 135, el });
   };
 
   addVideo(local.media.video);
