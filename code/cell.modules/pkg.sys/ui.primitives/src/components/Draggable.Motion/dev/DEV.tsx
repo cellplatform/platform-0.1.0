@@ -108,10 +108,9 @@ const Sample: React.FC<MotionDraggableProps> = (props) => {
 
   const items: MotionDraggableItem[] = [
     { width: 100, height: 100, el: <div {...styles.content}>Foo-1</div> },
-    // { width: 100, height: 100, el: <div {...styles.content}>Foo-2</div> },
     {
-      width: 200,
-      height: 80,
+      width: () => 200,
+      height: () => 80,
       el() {
         return <div {...styles.content}>Foo-2</div>;
       },
@@ -121,8 +120,7 @@ const Sample: React.FC<MotionDraggableProps> = (props) => {
   return (
     <div {...styles.base}>
       <div {...styles.bg} onClick={handleBgClick}>{`background click: ${count}`}</div>
-      <MotionDraggable {...props} style={{ flex: 1, Absolute: 0 }} items={items} />
-      {/* <MotionDraggable {...props} style={{ flex: 1, Absolute: 0 }} items={items} /> */}
+      <MotionDraggable {...props} style={{ flex: 1 }} items={items} />
     </div>
   );
 };

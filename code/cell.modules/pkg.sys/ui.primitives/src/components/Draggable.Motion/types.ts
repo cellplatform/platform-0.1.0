@@ -1,14 +1,12 @@
-import { Observable, Subject, BehaviorSubject, firstValueFrom } from 'rxjs';
-
 import { IDisposable } from '@platform/types';
+import { Observable } from 'rxjs';
 
+type M = MotionDraggableItem;
 export type MotionDraggableItem = {
-  width: number | (() => number);
-  height: number | (() => number);
-  el: JSX.Element | MotionDraggableRenderItem;
+  width: number | ((e: M, index: number) => number);
+  height: number | ((e: M, index: number) => number);
+  el: JSX.Element | ((e: M, index: number) => JSX.Element);
 };
-
-export type MotionDraggableRenderItem = (e: MotionDraggableItem, index: number) => JSX.Element;
 
 export type MotionSpring = {
   stiffness?: number;

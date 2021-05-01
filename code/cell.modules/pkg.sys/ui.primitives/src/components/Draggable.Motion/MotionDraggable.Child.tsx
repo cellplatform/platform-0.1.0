@@ -7,6 +7,8 @@ import { t } from '../../common';
 import { Events } from './Events';
 import * as n from './types';
 
+type M = n.MotionDraggableItem;
+
 export type ChildProps = {
   bus: t.EventBus<any>;
   index: number;
@@ -17,7 +19,7 @@ export type ChildProps = {
 
 export const Child: React.FC<ChildProps> = (props) => {
   const { container, item, index, elastic = 0.3 } = props;
-  const { width, height } = toSize(item);
+  const { width, height } = toSize(item, index);
   const bus = props.bus.type<n.MotionDraggableEvent>();
 
   const x = useMotionValue(0);
@@ -34,7 +36,7 @@ export const Child: React.FC<ChildProps> = (props) => {
      * Retrieve item status.
      */
     events.status.item.req$.pipe(filter((e) => e.index === index)).subscribe((e) => {
-      const size = toSize(item);
+      const size = toSize(item, index);
       const position = { x: x.get(), y: y.get() };
       const status: n.MotionDraggableItemStatus = { index, size, position };
       bus.fire({ type: 'ui/MotionDraggable/item/status:res', payload: { tx: e.tx, status } });
@@ -119,9 +121,8 @@ export const Child: React.FC<ChildProps> = (props) => {
 /**
  * [Helpers]
  */
-
-function toSize(item: n.MotionDraggableItem) {
-  const width = typeof item.width === 'function' ? item.width() : item.width;
-  const height = typeof item.height === 'function' ? item.height() : item.height;
+function toSize(item: M, index: number) {
+  const width = typeof item.width === 'function' ? item.width(item, index) : item.width;
+  const height = typeof item.height === 'function' ? item.height(item, index) : item.height;
   return { width, height };
 }
