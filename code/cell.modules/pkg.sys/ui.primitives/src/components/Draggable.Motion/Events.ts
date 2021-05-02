@@ -29,21 +29,6 @@ export function Events(eventbus: t.EventBus<any>): n.MotionDraggableEvents {
   const status = {
     req$: Payload<n.MotionDraggableStatusReqEvent>($, 'ui/MotionDraggable/status:req'),
     res$: Payload<n.MotionDraggableStatusResEvent>($, 'ui/MotionDraggable/status:res'),
-    item: {
-      req$: Payload<n.MotionDraggableItemStatusReqEvent>($, 'ui/MotionDraggable/item/status:req'),
-      res$: Payload<n.MotionDraggableItemStatusResEvent>($, 'ui/MotionDraggable/item/status:res'),
-      async get(id: string) {
-        const tx = slug();
-        const res = firstValueFrom(
-          status.item.res$.pipe(
-            filter((e) => e.tx === tx),
-            filter((e) => e.status.id === id),
-          ),
-        );
-        bus.fire({ type: 'ui/MotionDraggable/item/status:req', payload: { tx, id } });
-        return (await res).status;
-      },
-    },
     async get() {
       const tx = slug();
       const res = firstValueFrom(status.res$.pipe(filter((e) => e.tx === tx)));
@@ -52,14 +37,31 @@ export function Events(eventbus: t.EventBus<any>): n.MotionDraggableEvents {
     },
   };
 
-  const move: n.MotionDraggableEvents['move'] = {
-    item: {
+  const item: n.MotionDraggableEvents['item'] = {
+    status: {
+      req$: Payload<n.MotionDraggableItemStatusReqEvent>($, 'ui/MotionDraggable/item/status:req'),
+      res$: Payload<n.MotionDraggableItemStatusResEvent>($, 'ui/MotionDraggable/item/status:res'),
+      async get(id: string) {
+        const tx = slug();
+        const res = firstValueFrom(
+          item.status.res$.pipe(
+            filter((e) => e.tx === tx),
+            filter((e) => e.status.id === id),
+          ),
+        );
+        bus.fire({ type: 'ui/MotionDraggable/item/status:req', payload: { tx, id } });
+        return (await res).status;
+      },
+    },
+
+    move: {
+      $: Payload<n.MotionDraggableItemMoveEvent>($, 'ui/MotionDraggable/item/move'),
       req$: Payload<n.MotionDraggableItemMoveReqEvent>($, 'ui/MotionDraggable/item/move:req'),
       res$: Payload<n.MotionDraggableItemMoveResEvent>($, 'ui/MotionDraggable/item/move:res'),
       async start(args) {
         const { id, x, y, spring } = args;
         const tx = slug();
-        const res = firstValueFrom(move.item.res$.pipe(filter((e) => e.tx === tx)));
+        const res = firstValueFrom(item.move.res$.pipe(filter((e) => e.tx === tx)));
         bus.fire({
           type: 'ui/MotionDraggable/item/move:req',
           payload: { tx, id, x, y, spring },
@@ -76,6 +78,6 @@ export function Events(eventbus: t.EventBus<any>): n.MotionDraggableEvents {
     dispose: () => dispose$.next(),
     size,
     status,
-    move,
+    item,
   };
 }

@@ -35,14 +35,16 @@ const View: React.FC<MotionDraggableProps> = (props) => {
 
     events.status.req$.pipe(filter((e) => resize.ready)).subscribe(async (e) => {
       const tx = e.tx;
-      const list = items.map((item) => events.status.item.get(item.id));
+      const list = items.map((item) => events.item.status.get(item.id));
       bus.fire({
         type: 'ui/MotionDraggable/status:res',
         payload: {
           tx,
           status: {
             size: await events.size.get(),
-            items: await Promise.all(list),
+            items: (await Promise.all(list))
+              .filter(Boolean)
+              .map((item) => item as n.MotionDraggableItemStatus),
           },
         },
       });

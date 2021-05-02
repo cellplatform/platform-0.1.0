@@ -15,6 +15,7 @@ export type ChildProps = {
 
 export const Child: React.FC<ChildProps> = (props) => {
   const { container, item, elastic = 0.3 } = props;
+  const id = item.id;
   const { width, height } = ItemUtil.toSize(item);
   const bus = props.bus.type<n.MotionDraggableEvent>();
 
@@ -31,6 +32,25 @@ export const Child: React.FC<ChildProps> = (props) => {
     max: scaleable.max,
   });
 
+  const dragHandler = (lifecycle: n.MotionDraggableItemDrag['lifecycle']) => {
+    return () => {
+      bus.fire({
+        type: 'ui/MotionDraggable/item/drag',
+        payload: { id, lifecycle },
+      });
+    };
+  };
+
+  const mouseHandler = (mouse: n.MotionDraggableItemMouse['mouse']) => {
+    return (e: React.MouseEvent) => {
+      const { button } = e;
+      bus.fire({
+        type: 'ui/MotionDraggable/item/mouse',
+        payload: { id, mouse, button },
+      });
+    };
+  };
+
   const constraints = {
     top: 0,
     left: 0,
@@ -40,8 +60,8 @@ export const Child: React.FC<ChildProps> = (props) => {
 
   const styles = {
     base: css({
-      pointerEvents: 'auto',
       display: 'flex',
+      pointerEvents: 'auto',
       boxSizing: 'border-box',
     }),
   };
@@ -54,6 +74,12 @@ export const Child: React.FC<ChildProps> = (props) => {
       dragMomentum={true}
       dragConstraints={constraints}
       style={{ x, y, width, height, scale }}
+      onPanStart={dragHandler('start')}
+      onPanEnd={dragHandler('complete')}
+      onMouseDown={mouseHandler('down')}
+      onMouseUp={mouseHandler('up')}
+      onMouseEnter={mouseHandler('enter')}
+      onMouseLeave={mouseHandler('leave')}
       {...styles.base}
     >
       {typeof item.el === 'function' ? item.el(item) : item.el}

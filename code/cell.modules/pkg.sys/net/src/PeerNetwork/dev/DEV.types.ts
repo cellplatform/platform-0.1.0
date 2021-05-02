@@ -1,3 +1,5 @@
+import * as t from '../common/types';
+
 export * from '../common/types';
 
 export type DevModalTarget = 'fullscreen' | 'body';
@@ -5,7 +7,8 @@ export type DevModalTarget = 'fullscreen' | 'body';
 /**
  * EVENTS
  */
-export type DevEvent = DevModalEvent | DevMediaModalEvent | DevGroupLayoutEvent;
+export type DevEvent = DevModalEvent | DevMediaModalEvent | DevGroupEvent;
+export type DevGroupEvent = DevGroupLayoutEvent | DevGroupLayoutItemsMoveEvent;
 
 /**
  * A modal to display.
@@ -38,4 +41,17 @@ export type DevGroupLayoutCards = {
 };
 export type DevGroupLayoutVideos = {
   kind: 'videos';
+};
+
+/**
+ * Broadcast layout changes.
+ */
+export type DevGroupLayoutItemsMoveEvent = {
+  type: 'DEV/group/layout/items/move';
+  payload: DevGroupLayoutItemsMove;
+};
+export type DevGroupLayoutItemsMove = {
+  source: t.PeerId;
+  lifecycle: 'start' | 'complete';
+  items: { id: string; x: number; y: number }[];
 };

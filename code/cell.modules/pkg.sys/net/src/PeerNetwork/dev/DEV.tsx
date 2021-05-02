@@ -16,7 +16,6 @@ import {
 import { RootLayout } from './DEV.Root';
 import { EventBridge } from './event';
 import { DevModel, DevGroupSeed, GroupSeed } from './model';
-import { DevVideosLayout } from './media';
 
 import { QueryString } from '@platform/util.string/lib/QueryString';
 

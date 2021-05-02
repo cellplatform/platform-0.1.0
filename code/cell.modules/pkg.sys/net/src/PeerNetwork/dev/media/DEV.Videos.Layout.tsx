@@ -1,3 +1,16 @@
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+  tap,
+} from 'rxjs/operators';
 import React, { useEffect, useRef, useState } from 'react';
 import { color, css, CssValue, t, rx, PeerNetwork } from '../common';
 import { DevVideo } from './DEV.Video';
@@ -12,11 +25,13 @@ import {
 export type DevVideosLayoutProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
+  netbus: t.NetBus<any>;
   style?: CssValue;
 };
 
 export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
   const { self, bus } = props;
+  const netbus = props.netbus.type<t.DevGroupEvent>();
 
   const local = useLocalPeer({ self, bus });
   const [dragBus, setDragBus] = useState<t.EventBus<any>>();
@@ -27,7 +42,39 @@ export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
     const dragEvents = MotionDraggable.Events(dragBus);
     setDragBus(dragBus);
 
-    // Ensure local video is open.
+    /**
+     * Monitor movement of video items that have been "dragged"
+     * and broadcast move updates to other peers.
+     */
+    dragEvents.item.move.$.pipe(filter((e) => e.via === 'drag')).subscribe(async (e) => {
+      const lifecycle = e.lifecycle;
+      const { id } = e.status;
+      const { x, y } = e.status.position;
+      const items = [{ id, x, y }];
+      netbus.target.remote({
+        type: 'DEV/group/layout/items/move',
+        payload: { source: self, lifecycle, items },
+      });
+    });
+
+    /**
+     * Monitor remote notifications of video items moving.
+     */
+    rx.payload<t.DevGroupLayoutItemsMoveEvent>(netbus.event$, 'DEV/group/layout/items/move')
+      .pipe(
+        filter((e) => e.source !== self),
+        filter((e) => e.lifecycle === 'complete'),
+      )
+      .subscribe((e) => {
+        e.items.forEach(async (item) => {
+          const { id, x, y } = item;
+          dragEvents.item.move.start({ id, x, y });
+        });
+      });
+
+    /**
+     * Ensure local video is open.
+     */
     events.media(self).video();
 
     return () => {

@@ -1,12 +1,19 @@
 import { animate, MotionValue } from 'framer-motion';
 import { useEffect } from 'react';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { t } from '../common';
+import { rx, t } from '../common';
 import { Events } from '../Events';
 import * as n from '../types';
 import { ItemUtil } from '../util';
+
+type Change = { axis: 'x' | 'y'; value: number };
+type DragMonitor = { isDragging: boolean; stop(): void };
+type MouseMonitor = { isDown: boolean; isOver: boolean; stop(): void };
+type MoveMonitor = { stop(): void };
+type MoveMonitorHandler = (e: MoveMonitorHandlerArgs) => void;
+type MoveMonitorHandlerArgs = { stop(): void; isDrag: boolean };
 
 /**
  * Monitors requests for an items current status.
@@ -21,29 +28,56 @@ export function useItemController(args: {
   const bus = args.bus.type<n.MotionDraggableEvent>();
 
   useEffect(() => {
+    const id = item.id;
     const events = Events(bus);
-    const changed$ = new Subject<{ axis: 'x' | 'y'; value: number }>();
+    const change$ = new Subject<Change>();
 
-    x.onChange((value) => changed$.next({ axis: 'x', value }));
-    y.onChange((value) => changed$.next({ axis: 'y', value }));
+    const drag = Monitor.drag(events.$);
+    const mouse = Monitor.mouse(events.$);
+
+    x.onChange((value) => change$.next({ axis: 'x', value }));
+    y.onChange((value) => change$.next({ axis: 'y', value }));
+
+    const toStatus = (): n.MotionDraggableItemStatus => {
+      const size = ItemUtil.toSize(item);
+      const position = { x: x.get(), y: y.get() };
+      return { id, size, position };
+    };
+
+    /**
+     * Fire [move] events.
+     */
+    const fireMove = (lifecycle: n.MotionDraggableItemMove['lifecycle'], isDrag: boolean) => {
+      const status = toStatus();
+      const via = isDrag ? 'drag' : 'move';
+      bus.fire({
+        type: 'ui/MotionDraggable/item/move',
+        payload: { id, lifecycle, status, via },
+      });
+    };
+    const moveMonitor = Monitor.move({
+      change$,
+      mouse,
+      onStart: (e) => fireMove('start', e.isDrag),
+      onComplete: (e) => fireMove('complete', e.isDrag),
+    });
 
     /**
      * Retrieve item status.
      */
-    events.status.item.req$.pipe(filter((e) => e.id === item.id)).subscribe((e) => {
-      const id = item.id;
-      const size = ItemUtil.toSize(item);
-      const position = { x: x.get(), y: y.get() };
-      const status: n.MotionDraggableItemStatus = { id, size, position };
-      bus.fire({ type: 'ui/MotionDraggable/item/status:res', payload: { tx: e.tx, status } });
+    events.item.status.req$.pipe(filter((e) => e.id === id)).subscribe((e) => {
+      bus.fire({
+        type: 'ui/MotionDraggable/item/status:res',
+        payload: { tx: e.tx, status: toStatus() },
+      });
     });
 
     /**
      * Move the item.
      */
-    events.move.item.req$
+    events.item.move.req$
       .pipe(
-        filter((e) => e.id === item.id),
+        filter((e) => e.id === id),
         filter((e) => typeof e.x === 'number' || typeof e.y === 'number'),
       )
       .subscribe(async (e) => {
@@ -54,35 +88,105 @@ export function useItemController(args: {
         const move = (value: MotionValue<number>, to: number | undefined) => {
           return new Promise<void>((resolve) => {
             if (to === undefined) return resolve();
-            const done$ = new Subject<void>();
-            changed$.pipe(takeUntil(done$), debounceTime(30)).subscribe(() => {
-              done$.next();
+
+            const onComplete: MoveMonitorHandler = (monitor) => {
+              monitor.stop();
               resolve();
-            });
+            };
+
+            Monitor.move({ change$, mouse, onComplete });
+
             animate(value, to, { ...spring, type: 'spring', stiffness, duration });
           });
         };
 
-        const before = await events.status.item.get(item.id);
+        const before = toStatus();
 
         if (before.position.x !== e.x && before.position.y !== e.y) {
           await Promise.all([move(x, e.x), move(y, e.y)]);
         }
 
-        const status = await events.status.item.get(item.id);
+        const status = toStatus();
         const target = { x: e.x, y: e.y };
         let interrupted = false;
         if (e.x !== undefined && status.position.x !== e.x) interrupted = true;
         if (e.y !== undefined && status.position.y !== e.y) interrupted = true;
         bus.fire({
           type: 'ui/MotionDraggable/item/move:res',
-          payload: { tx, status, target, interrupted },
+          payload: { tx, id, status, target, interrupted },
         });
       });
 
     /**
-     * Dispose
+     * Dispose.
      */
-    return () => events.dispose();
+    return () => {
+      moveMonitor.stop();
+      drag.stop();
+      mouse.stop();
+      events.dispose();
+    };
   }, [x, y, bus, item]);
 }
+
+/**
+ * [Helpers]
+ */
+
+const Monitor = {
+  drag($: Observable<n.MotionDraggableEvent>): DragMonitor {
+    const stop$ = new Subject<void>();
+    rx.payload<n.MotionDraggableItemDragEvent>($, 'ui/MotionDraggable/item/drag')
+      .pipe(takeUntil(stop$))
+      .subscribe((e) => (res.isDragging = e.lifecycle === 'start'));
+    const res = { isDragging: false, stop: () => stop$.next() };
+    return res;
+  },
+
+  mouse($: Observable<n.MotionDraggableEvent>): MouseMonitor {
+    const stop$ = new Subject<void>();
+    rx.payload<n.MotionDraggableItemMouseEvent>($, 'ui/MotionDraggable/item/mouse')
+      .pipe(takeUntil(stop$))
+      .subscribe((e) => {
+        if (e.mouse === 'down') res.isDown = true;
+        if (e.mouse === 'up') res.isDown = false;
+        if (e.mouse === 'enter') res.isOver = true;
+        if (e.mouse === 'leave') res.isOver = false;
+      });
+    const res = { isDown: false, isOver: false, stop: () => stop$.next() };
+    return res;
+  },
+
+  move(args: {
+    change$: Observable<Change>;
+    mouse: MouseMonitor;
+    onStart?: MoveMonitorHandler;
+    onComplete?: MoveMonitorHandler;
+  }): MoveMonitor {
+    const { change$, mouse, onStart, onComplete } = args;
+    const stop$ = new Subject<void>();
+    const stop = () => stop$.next();
+
+    let isMoving = false;
+    change$
+      .pipe(
+        takeUntil(stop$),
+        filter(() => !isMoving),
+      )
+      .subscribe((e) => {
+        isMoving = true;
+
+        const args: MoveMonitorHandlerArgs = { isDrag: mouse.isDown, stop };
+        onStart?.(args);
+
+        const complete$ = new Subject<void>();
+        change$.pipe(takeUntil(stop$), takeUntil(complete$), debounceTime(50)).subscribe((e) => {
+          isMoving = false;
+          complete$.next();
+          onComplete?.(args);
+        });
+      });
+
+    return { stop };
+  },
+};
