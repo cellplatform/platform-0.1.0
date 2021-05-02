@@ -58,11 +58,11 @@ const View: React.FC<MotionDraggableProps> = (props) => {
 
   const elBody =
     resize.ready &&
-    items.map((item, i) => {
+    items.map((item) => {
       return (
-        <div key={i} {...styles.item}>
+        <div key={item.id} {...styles.item}>
           <LazyMotion features={domMax}>
-            <Child index={i} bus={bus} item={item} container={resize.rect} elastic={elastic} />
+            <Child bus={bus} item={item} container={resize.rect} elastic={elastic} />
           </LazyMotion>
         </div>
       );

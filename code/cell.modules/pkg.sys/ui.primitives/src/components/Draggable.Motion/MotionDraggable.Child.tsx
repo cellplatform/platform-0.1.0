@@ -1,32 +1,28 @@
-import { animate, DragElastic, m, MotionValue, useMotionValue } from 'framer-motion';
+import { DragElastic, m, useMotionValue } from 'framer-motion';
 import React, { useEffect, useRef } from 'react';
-import { Subject } from 'rxjs';
-import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { useScale } from './hooks';
-import { t, css } from './common';
-import { Events } from './Events';
+import { css, t } from './common';
+import { useItemController, useScale } from './hooks';
 import * as n from './types';
-
-type M = n.MotionDraggableItem;
+import { ItemUtil } from './util';
 
 export type ChildProps = {
   bus: t.EventBus<any>;
-  index: number;
   item: n.MotionDraggableItem;
   container: { width: number; height: number };
   elastic?: DragElastic;
 };
 
 export const Child: React.FC<ChildProps> = (props) => {
-  const { container, item, index, elastic = 0.3 } = props;
-  const { width, height } = toSize(item);
+  const { container, item, elastic = 0.3 } = props;
+  const { width, height } = ItemUtil.toSize(item);
   const bus = props.bus.type<n.MotionDraggableEvent>();
 
   const rootRef = useRef<HTMLDivElement>(null);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  useItemController({ bus, item, x, y });
 
   const scaleable = typeof item.scaleable === 'object' ? item.scaleable : { min: 0.5, max: 5 };
   const scale = useScale(rootRef, {
@@ -34,69 +30,6 @@ export const Child: React.FC<ChildProps> = (props) => {
     min: scaleable.min,
     max: scaleable.max,
   });
-
-  useEffect(() => {
-    const events = Events(bus);
-    const changed$ = new Subject<{ axis: 'x' | 'y'; value: number }>();
-
-    x.onChange((value) => changed$.next({ axis: 'x', value }));
-    y.onChange((value) => changed$.next({ axis: 'y', value }));
-
-    /**
-     * Retrieve item status.
-     */
-    events.status.item.req$.pipe(filter((e) => e.id === item.id)).subscribe((e) => {
-      const id = item.id;
-      const size = toSize(item);
-      const position = { x: x.get(), y: y.get() };
-      const status: n.MotionDraggableItemStatus = { id, size, position };
-      bus.fire({ type: 'ui/MotionDraggable/item/status:res', payload: { tx: e.tx, status } });
-    });
-
-    /**
-     * Move the item.
-     */
-    events.move.item.req$
-      .pipe(
-        filter((e) => e.id === item.id),
-        filter((e) => typeof e.x === 'number' || typeof e.y === 'number'),
-      )
-      .subscribe(async (e) => {
-        const { spring = {}, tx } = e;
-        const stiffness = spring.stiffness ?? 100;
-        const duration = spring.duration === undefined ? undefined : spring.duration / 1000; // NB: Convert from msecs => secs.
-
-        const move = (value: MotionValue<number>, to: number | undefined) => {
-          return new Promise<void>((resolve) => {
-            if (to === undefined) return resolve();
-            const done$ = new Subject<void>();
-            changed$.pipe(takeUntil(done$), debounceTime(50)).subscribe(() => {
-              done$.next();
-              resolve();
-            });
-            animate(value, to, { ...spring, type: 'spring', stiffness, duration });
-          });
-        };
-
-        const before = await events.status.item.get(item.id);
-
-        if (before.position.x !== e.x && before.position.y !== e.y) {
-          await Promise.all([move(x, e.x), move(y, e.y)]);
-        }
-
-        const status = await events.status.item.get(item.id);
-        const target = { x: e.x, y: e.y };
-        let interrupted = false;
-        if (e.x !== undefined && status.position.x !== e.x) interrupted = true;
-        if (e.y !== undefined && status.position.y !== e.y) interrupted = true;
-        bus.fire({
-          type: 'ui/MotionDraggable/item/move:res',
-          payload: { tx, status, target, interrupted },
-        });
-      });
-
-    return () => events.dispose();
-  }, []); // eslint-disable-line
 
   const constraints = {
     top: 0,
@@ -127,13 +60,3 @@ export const Child: React.FC<ChildProps> = (props) => {
     </m.div>
   );
 };
-
-/**
- * [Helpers]
- */
-
-function toSize(item: M) {
-  const width = typeof item.width === 'function' ? item.width(item) : item.width;
-  const height = typeof item.height === 'function' ? item.height(item) : item.height;
-  return { width, height };
-}

@@ -64,7 +64,7 @@ export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
         />
       </div>
     );
-    items.push({ width: 150, height: 135, el });
+    items.push({ id: stream.id, width: 150, height: 135, el });
   };
 
   addVideo(local.media.video);
