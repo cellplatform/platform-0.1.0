@@ -1,7 +1,7 @@
 import { firstValueFrom, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { rx, slug, t } from '../../common';
+import { rx, slug, t } from './common';
 import * as n from './types';
 
 const Payload = rx.payload;

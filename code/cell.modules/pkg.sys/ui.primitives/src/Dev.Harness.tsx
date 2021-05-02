@@ -9,8 +9,8 @@ const imports = {
   PropList: import('./components/PropList/dev/DEV'),
   TextEditor: import('./components/TextEditor/DEV'),
 
-  DraggableMotion: import('./components/Draggable.Motion/dev/DEV'),
   DraggableSort: import('./components/Draggable.Sort/dev/DEV'),
+  DraggableMotion: import('./components/Draggable.Motion/dev/DEV'),
 
   Card: import('./components/Card/DEV'),
   CardStack: import('./components/CardStack/dev/DEV'),

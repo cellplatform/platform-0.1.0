@@ -1,9 +1,10 @@
 import { animate, DragElastic, m, MotionValue, useMotionValue } from 'framer-motion';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { t } from '../../common';
+import { useScale } from './hooks';
+import { t, css } from './common';
 import { Events } from './Events';
 import * as n from './types';
 
@@ -22,8 +23,17 @@ export const Child: React.FC<ChildProps> = (props) => {
   const { width, height } = toSize(item, index);
   const bus = props.bus.type<n.MotionDraggableEvent>();
 
+  const rootRef = useRef<HTMLDivElement>(null);
+
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+
+  const scaleable = typeof item.scaleable === 'object' ? item.scaleable : { min: 0.5, max: 5 };
+  const scale = useScale(rootRef, {
+    isEnabled: Boolean(item.scaleable),
+    min: scaleable.min,
+    max: scaleable.max,
+  });
 
   useEffect(() => {
     const events = Events(bus);
@@ -53,6 +63,7 @@ export const Child: React.FC<ChildProps> = (props) => {
       .subscribe(async (e) => {
         const { spring = {}, tx } = e;
         const stiffness = spring.stiffness ?? 100;
+        const duration = spring.duration === undefined ? undefined : spring.duration / 1000; // NB: Convert from msecs => secs.
 
         const move = (value: MotionValue<number>, to: number | undefined) => {
           return new Promise<void>((resolve) => {
@@ -62,7 +73,7 @@ export const Child: React.FC<ChildProps> = (props) => {
               done$.next();
               resolve();
             });
-            animate(value, to, { ...spring, type: 'spring', stiffness });
+            animate(value, to, { ...spring, type: 'spring', stiffness, duration });
           });
         };
 
@@ -94,24 +105,22 @@ export const Child: React.FC<ChildProps> = (props) => {
   };
 
   const styles = {
-    draggable: {
-      x,
-      y,
-      width,
-      height,
+    base: css({
       pointerEvents: 'auto',
       display: 'flex',
       boxSizing: 'border-box',
-    },
+    }),
   };
 
   return (
     <m.div
+      ref={rootRef}
       drag={true}
       dragElastic={elastic}
       dragMomentum={true}
       dragConstraints={constraints}
-      style={styles.draggable as any}
+      style={{ x, y, width, height, scale }}
+      {...styles.base}
     >
       {typeof item.el === 'function' ? item.el(item, index) : item.el}
     </m.div>
@@ -121,6 +130,7 @@ export const Child: React.FC<ChildProps> = (props) => {
 /**
  * [Helpers]
  */
+
 function toSize(item: M, index: number) {
   const width = typeof item.width === 'function' ? item.width(item, index) : item.width;
   const height = typeof item.height === 'function' ? item.height(item, index) : item.height;

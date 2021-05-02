@@ -1,63 +1,35 @@
 import { IDisposable } from '@platform/types';
 import { Observable } from 'rxjs';
-
-type M = MotionDraggableItem;
-export type MotionDraggableItem = {
-  width: number | ((e: M, index: number) => number);
-  height: number | ((e: M, index: number) => number);
-  el: JSX.Element | ((e: M, index: number) => JSX.Element);
-};
-
-export type MotionSpring = {
-  stiffness?: number;
-  duration?: number; // msecs
-  damping?: number;
-  mass?: number;
-  bounce?: number;
-  restSpeed?: number;
-  restDelta?: number;
-  velocity?: number;
-};
-
-export type MotionDraggableStatus = {
-  size: { width: number; height: number };
-  items: MotionDraggableItemStatus[];
-};
-
-export type MotionDraggableItemStatus = {
-  index: number;
-  size: { width: number; height: number };
-  position: { x: number; y: number };
-};
+import * as t from '.';
 
 export type MotionDraggableEvents = IDisposable & {
-  $: Observable<MotionDraggableEvent>;
+  $: Observable<t.MotionDraggableEvent>;
   size: {
-    req$: Observable<MotionDraggableSizeReq>;
-    res$: Observable<MotionDraggableSizeRes>;
+    req$: Observable<t.MotionDraggableSizeReq>;
+    res$: Observable<t.MotionDraggableSizeRes>;
     get(): Promise<{ width: number; height: number }>;
   };
   status: {
-    req$: Observable<MotionDraggableStatusReq>;
-    res$: Observable<MotionDraggableStatusRes>;
-    get(): Promise<MotionDraggableStatus>;
+    req$: Observable<t.MotionDraggableStatusReq>;
+    res$: Observable<t.MotionDraggableStatusRes>;
+    get(): Promise<t.MotionDraggableStatus>;
     item: {
-      req$: Observable<MotionDraggableItemStatusReq>;
-      res$: Observable<MotionDraggableItemStatusRes>;
-      get(index: number): Promise<MotionDraggableItemStatus>;
+      req$: Observable<t.MotionDraggableItemStatusReq>;
+      res$: Observable<t.MotionDraggableItemStatusRes>;
+      get(index: number): Promise<t.MotionDraggableItemStatus>;
     };
   };
   move: {
     item: {
-      req$: Observable<MotionDraggableItemMoveReq>;
-      res$: Observable<MotionDraggableItemMoveRes>;
+      req$: Observable<t.MotionDraggableItemMoveReq>;
+      res$: Observable<t.MotionDraggableItemMoveRes>;
       start(args: {
         index: number;
         x?: number;
         y?: number;
-        spring?: MotionSpring;
+        spring?: t.MotionSpring;
       }): Promise<{
-        status: MotionDraggableItemStatus;
+        status: t.MotionDraggableItemStatus;
         target: { x?: number; y?: number };
         interrupted: boolean; // true if the user grabbed the moving item during the animation and positioned it elsewhere.
       }>;
@@ -109,7 +81,7 @@ export type MotionDraggableStatusResEvent = {
 };
 export type MotionDraggableStatusRes = {
   tx: string;
-  status: MotionDraggableStatus;
+  status: t.MotionDraggableStatus;
 };
 
 /**
@@ -127,7 +99,7 @@ export type MotionDraggableItemStatusResEvent = {
 };
 export type MotionDraggableItemStatusRes = {
   tx: string;
-  status: MotionDraggableItemStatus;
+  status: t.MotionDraggableItemStatus;
 };
 
 /**
@@ -142,7 +114,7 @@ export type MotionDraggableItemMoveReq = {
   index: number;
   x?: number;
   y?: number;
-  spring?: MotionSpring;
+  spring?: t.MotionSpring;
 };
 
 export type MotionDraggableItemMoveResEvent = {
@@ -151,7 +123,7 @@ export type MotionDraggableItemMoveResEvent = {
 };
 export type MotionDraggableItemMoveRes = {
   tx: string;
-  status: MotionDraggableItemStatus;
+  status: t.MotionDraggableItemStatus;
   target: { x?: number; y?: number };
   interrupted: boolean; // true if the user grabbed the moving item during the animation and positioned it elsewhere.
 };

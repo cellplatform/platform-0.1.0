@@ -2,7 +2,7 @@ import { domMax, DragElastic, LazyMotion } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 import { filter } from 'rxjs/operators';
 
-import { css, CssValue, t, useResizeObserver } from '../../common';
+import { css, CssValue, t, useResizeObserver } from './common';
 import { Events } from './Events';
 import { Child } from './MotionDraggable.Child';
 import * as n from './types';
