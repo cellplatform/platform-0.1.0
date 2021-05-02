@@ -17,8 +17,9 @@ export const Sample: React.FC<MotionDraggableProps> = (props) => {
   };
 
   const items: MotionDraggableItem[] = [
-    { width: 100, height: 100, el: <Child>Foo-1</Child> },
+    { id: 'foo-1', width: 100, height: 100, el: <Child>Foo-1</Child> },
     {
+      id: 'foo-2',
       width: () => 200,
       height: () => 80,
       el() {

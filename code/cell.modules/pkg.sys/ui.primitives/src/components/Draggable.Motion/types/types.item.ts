@@ -1,8 +1,9 @@
 type M = MotionDraggableItem;
 export type MotionDraggableItem = {
-  width: number | ((e: M, index: number) => number);
-  height: number | ((e: M, index: number) => number);
-  el: JSX.Element | ((e: M, index: number) => JSX.Element);
+  id: string;
+  width: number | ((e: M) => number);
+  height: number | ((e: M) => number);
+  el: JSX.Element | ((e: M) => JSX.Element);
   scaleable?: boolean | { min: number; max: number };
 };
 

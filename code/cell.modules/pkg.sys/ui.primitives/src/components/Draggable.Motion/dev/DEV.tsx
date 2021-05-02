@@ -54,22 +54,25 @@ export const actions = DevActions<Ctx>()
       e.button.description = toObject('size', await events.size.get());
     });
 
-    e.button('status (single item [0])', async (e) => {
-      const status = e.ctx.events.status;
-      e.button.description = toObject('status', await status.item.get(0));
+    e.button('status (single item)', async (e) => {
+      const events = e.ctx.events;
+      const status = await events.status.get();
+      const id = status.items[0].id;
+      e.button.description = toObject('status', await events.status.item.get(id));
     });
 
     e.button('status (global)', async (e) => {
-      const status = e.ctx.events.status;
-      e.button.description = toObject('status', await status.get());
+      const events = e.ctx.events;
+      e.button.description = toObject('status', await events.status.get());
     });
 
     e.hr(1, 0.2);
 
     e.button('move', async (e) => {
       const events = e.ctx.events;
-      const index = 0;
-      const res = await events.move.item.start({ index, x: 200, y: 150 });
+      const status = await events.status.get();
+      const id = status.items[0].id;
+      const res = await events.move.item.start({ id, x: 200, y: 150 });
       e.button.description = toObject('move', res);
     });
 

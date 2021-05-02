@@ -32,15 +32,15 @@ export function Events(eventbus: t.EventBus<any>): n.MotionDraggableEvents {
     item: {
       req$: Payload<n.MotionDraggableItemStatusReqEvent>($, 'ui/MotionDraggable/item/status:req'),
       res$: Payload<n.MotionDraggableItemStatusResEvent>($, 'ui/MotionDraggable/item/status:res'),
-      async get(index: number) {
+      async get(id: string) {
         const tx = slug();
         const res = firstValueFrom(
           status.item.res$.pipe(
             filter((e) => e.tx === tx),
-            filter((e) => e.status.index === index),
+            filter((e) => e.status.id === id),
           ),
         );
-        bus.fire({ type: 'ui/MotionDraggable/item/status:req', payload: { tx, index } });
+        bus.fire({ type: 'ui/MotionDraggable/item/status:req', payload: { tx, id } });
         return (await res).status;
       },
     },
@@ -57,12 +57,12 @@ export function Events(eventbus: t.EventBus<any>): n.MotionDraggableEvents {
       req$: Payload<n.MotionDraggableItemMoveReqEvent>($, 'ui/MotionDraggable/item/move:req'),
       res$: Payload<n.MotionDraggableItemMoveResEvent>($, 'ui/MotionDraggable/item/move:res'),
       async start(args) {
-        const { index, x, y, spring } = args;
+        const { id, x, y, spring } = args;
         const tx = slug();
         const res = firstValueFrom(move.item.res$.pipe(filter((e) => e.tx === tx)));
         bus.fire({
           type: 'ui/MotionDraggable/item/move:req',
-          payload: { tx, index, x, y, spring },
+          payload: { tx, id, x, y, spring },
         });
         const { status, target, interrupted } = await res;
         return { status, target, interrupted };

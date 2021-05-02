@@ -16,7 +16,7 @@ export type MotionDraggableEvents = IDisposable & {
     item: {
       req$: Observable<t.MotionDraggableItemStatusReq>;
       res$: Observable<t.MotionDraggableItemStatusRes>;
-      get(index: number): Promise<t.MotionDraggableItemStatus>;
+      get(id: string): Promise<t.MotionDraggableItemStatus>;
     };
   };
   move: {
@@ -24,7 +24,7 @@ export type MotionDraggableEvents = IDisposable & {
       req$: Observable<t.MotionDraggableItemMoveReq>;
       res$: Observable<t.MotionDraggableItemMoveRes>;
       start(args: {
-        index: number;
+        id: string;
         x?: number;
         y?: number;
         spring?: t.MotionSpring;
@@ -91,7 +91,7 @@ export type MotionDraggableItemStatusReqEvent = {
   type: 'ui/MotionDraggable/item/status:req';
   payload: MotionDraggableItemStatusReq;
 };
-export type MotionDraggableItemStatusReq = { tx: string; index: number };
+export type MotionDraggableItemStatusReq = { tx: string; id: string };
 
 export type MotionDraggableItemStatusResEvent = {
   type: 'ui/MotionDraggable/item/status:res';
@@ -111,7 +111,7 @@ export type MotionDraggableItemMoveReqEvent = {
 };
 export type MotionDraggableItemMoveReq = {
   tx: string;
-  index: number;
+  id: string;
   x?: number;
   y?: number;
   spring?: t.MotionSpring;

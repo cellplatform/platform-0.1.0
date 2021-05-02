@@ -4,7 +4,7 @@ export type MotionDraggableStatus = {
 };
 
 export type MotionDraggableItemStatus = {
-  index: number;
+  id: string;
   size: { width: number; height: number };
   position: { x: number; y: number };
 };

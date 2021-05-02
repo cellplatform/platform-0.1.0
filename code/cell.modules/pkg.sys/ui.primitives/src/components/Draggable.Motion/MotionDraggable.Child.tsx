@@ -20,7 +20,7 @@ export type ChildProps = {
 
 export const Child: React.FC<ChildProps> = (props) => {
   const { container, item, index, elastic = 0.3 } = props;
-  const { width, height } = toSize(item, index);
+  const { width, height } = toSize(item);
   const bus = props.bus.type<n.MotionDraggableEvent>();
 
   const rootRef = useRef<HTMLDivElement>(null);
@@ -45,10 +45,11 @@ export const Child: React.FC<ChildProps> = (props) => {
     /**
      * Retrieve item status.
      */
-    events.status.item.req$.pipe(filter((e) => e.index === index)).subscribe((e) => {
-      const size = toSize(item, index);
+    events.status.item.req$.pipe(filter((e) => e.id === item.id)).subscribe((e) => {
+      const id = item.id;
+      const size = toSize(item);
       const position = { x: x.get(), y: y.get() };
-      const status: n.MotionDraggableItemStatus = { index, size, position };
+      const status: n.MotionDraggableItemStatus = { id, size, position };
       bus.fire({ type: 'ui/MotionDraggable/item/status:res', payload: { tx: e.tx, status } });
     });
 
@@ -57,7 +58,7 @@ export const Child: React.FC<ChildProps> = (props) => {
      */
     events.move.item.req$
       .pipe(
-        filter((e) => e.index === index),
+        filter((e) => e.id === item.id),
         filter((e) => typeof e.x === 'number' || typeof e.y === 'number'),
       )
       .subscribe(async (e) => {
@@ -77,13 +78,13 @@ export const Child: React.FC<ChildProps> = (props) => {
           });
         };
 
-        const before = await events.status.item.get(index);
+        const before = await events.status.item.get(item.id);
 
         if (before.position.x !== e.x && before.position.y !== e.y) {
           await Promise.all([move(x, e.x), move(y, e.y)]);
         }
 
-        const status = await events.status.item.get(index);
+        const status = await events.status.item.get(item.id);
         const target = { x: e.x, y: e.y };
         let interrupted = false;
         if (e.x !== undefined && status.position.x !== e.x) interrupted = true;
@@ -122,7 +123,7 @@ export const Child: React.FC<ChildProps> = (props) => {
       style={{ x, y, width, height, scale }}
       {...styles.base}
     >
-      {typeof item.el === 'function' ? item.el(item, index) : item.el}
+      {typeof item.el === 'function' ? item.el(item) : item.el}
     </m.div>
   );
 };
@@ -131,8 +132,8 @@ export const Child: React.FC<ChildProps> = (props) => {
  * [Helpers]
  */
 
-function toSize(item: M, index: number) {
-  const width = typeof item.width === 'function' ? item.width(item, index) : item.width;
-  const height = typeof item.height === 'function' ? item.height(item, index) : item.height;
+function toSize(item: M) {
+  const width = typeof item.width === 'function' ? item.width(item) : item.width;
+  const height = typeof item.height === 'function' ? item.height(item) : item.height;
   return { width, height };
 }
