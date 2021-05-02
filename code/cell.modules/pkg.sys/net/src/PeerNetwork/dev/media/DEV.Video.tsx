@@ -1,5 +1,6 @@
 import { defaultValue } from '@platform/util.value';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { useClickWithin, useClickOutside } from '@platform/react';
 
 import {
   AudioWaveform,
@@ -12,6 +13,7 @@ import {
   VideoStream,
   MediaStream,
   Button,
+  COLORS,
   t,
 } from '../common';
 
@@ -24,6 +26,10 @@ export type DevVideoProps = {
   style?: CssValue;
   isVideoMuted?: boolean;
   show?: { proplist?: boolean; waveform?: boolean };
+  selected?: {
+    showBorder?: boolean;
+    handler?: (e: { isSelected: boolean }) => void;
+  };
 };
 
 export const DevVideo: React.FC<DevVideoProps> = (props) => {
@@ -33,12 +39,20 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
   const bus = props.bus.type<t.DevEvent>();
   const wifi = MediaStream.useOfflineState();
 
-  const [isVideoMuted, setVideoMuted] = useState<boolean>(defaultValue(props.isVideoMuted, true));
+  const playerRef = useRef<HTMLDivElement>(null);
 
+  const [isVideoMuted, setVideoMuted] = useState<boolean>(defaultValue(props.isVideoMuted, true));
   const toggleVideoMuted = () => setVideoMuted((prev) => !prev);
 
-  const MARGIN = { waveform: 10 };
+  const [isSelected, setSelected] = useState<boolean>(false);
+  useClickWithin('down', playerRef, () => onSelectionChanged(true));
+  useClickOutside('down', playerRef, () => onSelectionChanged(false));
+  const onSelectionChanged = (isSelected: boolean) => {
+    setSelected(isSelected);
+    props.selected?.handler?.({ isSelected });
+  };
 
+  const MARGIN = { waveform: 10 };
   const styles = {
     base: css({
       boxSizing: 'border-box',
@@ -46,13 +60,19 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
     }),
     video: {
       base: css({
+        position: 'relative',
         backgroundColor: color.format(-0.02),
         border: `solid 1px ${color.format(-0.03)}`,
         borderRadius: 20,
-        position: 'relative',
         width,
         height,
         marginBottom: 4,
+      }),
+      border: css({
+        Absolute: -2,
+        border: `solid 2px ${COLORS.BLUE}`,
+        borderRadius: 22,
+        pointerEvents: 'none',
       }),
       stream: css({
         Absolute: [0, null, null, 0],
@@ -108,9 +128,13 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
     </div>
   );
 
+  const elSelectionBorder = props.selected?.showBorder && isSelected && (
+    <div {...styles.video.border} />
+  );
+
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.video.base} title={tooltip}>
+      <div ref={playerRef} {...styles.video.base} title={tooltip}>
         <VideoStream
           stream={stream}
           width={width}
@@ -119,6 +143,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
           style={styles.video.stream}
         />
         {elVideoOverlay}
+        {elSelectionBorder}
       </div>
       {elWaveform}
       {show.proplist && <PropList items={items} />}

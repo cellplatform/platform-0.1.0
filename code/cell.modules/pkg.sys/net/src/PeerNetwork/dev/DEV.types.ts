@@ -8,7 +8,10 @@ export type DevModalTarget = 'fullscreen' | 'body';
  * EVENTS
  */
 export type DevEvent = DevModalEvent | DevMediaModalEvent | DevGroupEvent;
-export type DevGroupEvent = DevGroupLayoutEvent | DevGroupLayoutItemsMoveEvent;
+export type DevGroupEvent =
+  | DevGroupLayoutEvent
+  | DevGroupLayoutItemsMoveEvent
+  | DevGroupLayoutFullscreenMediaEvent;
 
 /**
  * A modal to display.
@@ -54,4 +57,16 @@ export type DevGroupLayoutItemsMove = {
   source: t.PeerId;
   lifecycle: 'start' | 'complete';
   items: { id: string; x: number; y: number }[];
+};
+
+/**
+ * Full screen media layout
+ */
+export type DevGroupLayoutFullscreenMediaEvent = {
+  type: 'DEV/group/layout/fullscreenMedia';
+  payload: DevGroupLayoutFullscreenMedia;
+};
+export type DevGroupLayoutFullscreenMedia = {
+  source: t.PeerId;
+  media?: { id: string };
 };
