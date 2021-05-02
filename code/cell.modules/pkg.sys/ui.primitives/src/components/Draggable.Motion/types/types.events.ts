@@ -1,63 +1,53 @@
 import { IDisposable } from '@platform/types';
 import { Observable } from 'rxjs';
+import * as t from '.';
 
-type M = MotionDraggableItem;
-export type MotionDraggableItem = {
-  width: number | ((e: M, index: number) => number);
-  height: number | ((e: M, index: number) => number);
-  el: JSX.Element | ((e: M, index: number) => JSX.Element);
-};
+export type MotionDraggableEvent =
+  | MotionDraggableSizeReqEvent
+  | MotionDraggableSizeResEvent
+  | MotionDraggableStatusReqEvent
+  | MotionDraggableStatusResEvent
+  | MotionDraggableItemStatusReqEvent
+  | MotionDraggableItemStatusResEvent
+  | MotionDraggableItemMoveReqEvent
+  | MotionDraggableItemMoveResEvent
+  | MotionDraggableItemMoveEvent
+  | MotionDraggableItemDragEvent
+  | MotionDraggableItemMouseEvent;
 
-export type MotionSpring = {
-  stiffness?: number;
-  duration?: number; // msecs
-  damping?: number;
-  mass?: number;
-  bounce?: number;
-  restSpeed?: number;
-  restDelta?: number;
-  velocity?: number;
-};
-
-export type MotionDraggableStatus = {
-  size: { width: number; height: number };
-  items: MotionDraggableItemStatus[];
-};
-
-export type MotionDraggableItemStatus = {
-  index: number;
-  size: { width: number; height: number };
-  position: { x: number; y: number };
-};
-
+/**
+ * [Events] helper API.
+ */
 export type MotionDraggableEvents = IDisposable & {
-  $: Observable<MotionDraggableEvent>;
+  $: Observable<t.MotionDraggableEvent>;
   size: {
-    req$: Observable<MotionDraggableSizeReq>;
-    res$: Observable<MotionDraggableSizeRes>;
+    req$: Observable<t.MotionDraggableSizeReq>;
+    res$: Observable<t.MotionDraggableSizeRes>;
     get(): Promise<{ width: number; height: number }>;
   };
   status: {
-    req$: Observable<MotionDraggableStatusReq>;
-    res$: Observable<MotionDraggableStatusRes>;
-    get(): Promise<MotionDraggableStatus>;
-    item: {
-      req$: Observable<MotionDraggableItemStatusReq>;
-      res$: Observable<MotionDraggableItemStatusRes>;
-      get(index: number): Promise<MotionDraggableItemStatus>;
-    };
+    req$: Observable<t.MotionDraggableStatusReq>;
+    res$: Observable<t.MotionDraggableStatusRes>;
+    get(): Promise<t.MotionDraggableStatus>;
   };
-  move: {
-    item: {
-      req$: Observable<MotionDraggableItemMoveReq>;
-      res$: Observable<MotionDraggableItemMoveRes>;
+
+  item: {
+    status: {
+      req$: Observable<t.MotionDraggableItemStatusReq>;
+      res$: Observable<t.MotionDraggableItemStatusRes>;
+      get(id: string): Promise<t.MotionDraggableItemStatus | undefined>;
+    };
+    move: {
+      $: Observable<t.MotionDraggableItemMove>;
+      req$: Observable<t.MotionDraggableItemMoveReq>;
+      res$: Observable<t.MotionDraggableItemMoveRes>;
       start(args: {
-        index: number;
+        id: string;
         x?: number;
         y?: number;
-        spring?: MotionSpring;
+        spring?: t.MotionSpring;
       }): Promise<{
-        status: MotionDraggableItemStatus;
+        status: t.MotionDraggableItemStatus;
         target: { x?: number; y?: number };
         interrupted: boolean; // true if the user grabbed the moving item during the animation and positioned it elsewhere.
       }>;
@@ -68,16 +58,6 @@ export type MotionDraggableEvents = IDisposable & {
 /**
  * Events
  */
-
-export type MotionDraggableEvent =
-  | MotionDraggableSizeReqEvent
-  | MotionDraggableSizeResEvent
-  | MotionDraggableStatusReqEvent
-  | MotionDraggableStatusResEvent
-  | MotionDraggableItemStatusReqEvent
-  | MotionDraggableItemStatusResEvent
-  | MotionDraggableItemMoveReqEvent
-  | MotionDraggableItemMoveResEvent;
 
 /**
  * Retrieve the current size of the container.
@@ -109,7 +89,7 @@ export type MotionDraggableStatusResEvent = {
 };
 export type MotionDraggableStatusRes = {
   tx: string;
-  status: MotionDraggableStatus;
+  status: t.MotionDraggableStatus;
 };
 
 /**
@@ -119,7 +99,7 @@ export type MotionDraggableItemStatusReqEvent = {
   type: 'ui/MotionDraggable/item/status:req';
   payload: MotionDraggableItemStatusReq;
 };
-export type MotionDraggableItemStatusReq = { tx: string; index: number };
+export type MotionDraggableItemStatusReq = { tx: string; id: string };
 
 export type MotionDraggableItemStatusResEvent = {
   type: 'ui/MotionDraggable/item/status:res';
@@ -127,7 +107,7 @@ export type MotionDraggableItemStatusResEvent = {
 };
 export type MotionDraggableItemStatusRes = {
   tx: string;
-  status: MotionDraggableItemStatus;
+  status: t.MotionDraggableItemStatus;
 };
 
 /**
@@ -139,10 +119,10 @@ export type MotionDraggableItemMoveReqEvent = {
 };
 export type MotionDraggableItemMoveReq = {
   tx: string;
-  index: number;
+  id: string;
   x?: number;
   y?: number;
-  spring?: MotionSpring;
+  spring?: t.MotionSpring;
 };
 
 export type MotionDraggableItemMoveResEvent = {
@@ -151,7 +131,47 @@ export type MotionDraggableItemMoveResEvent = {
 };
 export type MotionDraggableItemMoveRes = {
   tx: string;
-  status: MotionDraggableItemStatus;
+  id: string;
+  status: t.MotionDraggableItemStatus;
   target: { x?: number; y?: number };
   interrupted: boolean; // true if the user grabbed the moving item during the animation and positioned it elsewhere.
+};
+
+/**
+ * Fires when an item starts/stops moving.
+ */
+export type MotionDraggableItemMoveEvent = {
+  type: 'ui/MotionDraggable/item/move';
+  payload: MotionDraggableItemMove;
+};
+export type MotionDraggableItemMove = {
+  id: string;
+  lifecycle: 'start' | 'complete';
+  via: 'move' | 'drag';
+  status: t.MotionDraggableItemStatus;
+};
+
+/**
+ * Fires when an item starts/stops being dragged.
+ */
+export type MotionDraggableItemDragEvent = {
+  type: 'ui/MotionDraggable/item/drag';
+  payload: MotionDraggableItemDrag;
+};
+export type MotionDraggableItemDrag = {
+  id: string;
+  lifecycle: 'start' | 'complete';
+};
+
+/**
+ * Fires for item mouse events.
+ */
+export type MotionDraggableItemMouseEvent = {
+  type: 'ui/MotionDraggable/item/mouse';
+  payload: MotionDraggableItemMouse;
+};
+export type MotionDraggableItemMouse = {
+  id: string;
+  mouse: 'down' | 'up' | 'enter' | 'leave';
+  button: number;
 };

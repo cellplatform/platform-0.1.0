@@ -2,7 +2,7 @@ import { domMax, DragElastic, LazyMotion } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 import { filter } from 'rxjs/operators';
 
-import { css, CssValue, t, useResizeObserver } from '../../common';
+import { css, CssValue, t, useResizeObserver } from './common';
 import { Events } from './Events';
 import { Child } from './MotionDraggable.Child';
 import * as n from './types';
@@ -35,15 +35,16 @@ const View: React.FC<MotionDraggableProps> = (props) => {
 
     events.status.req$.pipe(filter((e) => resize.ready)).subscribe(async (e) => {
       const tx = e.tx;
-      const length = items.length;
-      const list = Array.from({ length }).map((v, i) => events.status.item.get(i));
+      const list = items.map((item) => events.item.status.get(item.id));
       bus.fire({
         type: 'ui/MotionDraggable/status:res',
         payload: {
           tx,
           status: {
             size: await events.size.get(),
-            items: await Promise.all(list),
+            items: (await Promise.all(list))
+              .filter(Boolean)
+              .map((item) => item as n.MotionDraggableItemStatus),
           },
         },
       });
@@ -59,11 +60,11 @@ const View: React.FC<MotionDraggableProps> = (props) => {
 
   const elBody =
     resize.ready &&
-    items.map((item, i) => {
+    items.map((item) => {
       return (
-        <div key={i} {...styles.item}>
+        <div key={item.id} {...styles.item}>
           <LazyMotion features={domMax}>
-            <Child index={i} bus={bus} item={item} container={resize.rect} elastic={elastic} />
+            <Child bus={bus} item={item} container={resize.rect} elastic={elastic} />
           </LazyMotion>
         </div>
       );

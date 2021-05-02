@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { MotionDraggable, MotionDraggableProps, MotionDraggableItem } from '..';
-import { css, t, rx } from './common';
+
+import { MotionDraggable, MotionDraggableProps } from '..';
 import * as n from '../types';
+import { rx, t } from '../common';
+import { Sample } from './DEV.Sample';
 
 type Ctx = {
   bus: t.EventBus<n.MotionDraggableEvent>;
@@ -22,6 +24,10 @@ const toObject = (name: string, data: any) => (
  *    https://hohanga.medium.com/framer-motion-drag-and-scroll-progress-850571dfdb06
  *    https://github.com/samselikoff/2020-12-15-image-cropper
  *    https://www.youtube.com/watch?v=SBRUuMyAYw0
+ *
+ *    https://github.com/pmndrs/react-use-gesture
+ *    https://github.com/pmndrs/react-spring
+ *    https://www.jclem.net/posts/pan-zoom-canvas-react
  *
  */
 export const actions = DevActions<Ctx>()
@@ -48,9 +54,11 @@ export const actions = DevActions<Ctx>()
       e.button.description = toObject('size', await events.size.get());
     });
 
-    e.button('status (single item [0])', async (e) => {
+    e.button('status (single item)', async (e) => {
       const events = e.ctx.events;
-      e.button.description = toObject('status', await events.status.item.get(0));
+      const status = await events.status.get();
+      const id = status.items[0].id;
+      e.button.description = toObject('status', await events.item.status.get(id));
     });
 
     e.button('status (global)', async (e) => {
@@ -62,8 +70,9 @@ export const actions = DevActions<Ctx>()
 
     e.button('move', async (e) => {
       const events = e.ctx.events;
-      const index = 0;
-      const res = await events.move.item.start({ index, x: 200, y: 150 });
+      const status = await events.status.get();
+      const id = status.items[0].id;
+      const res = await events.item.move.start({ id, x: 200, y: 150 });
       e.button.description = toObject('move', res);
     });
 
@@ -86,41 +95,3 @@ export const actions = DevActions<Ctx>()
   });
 
 export default actions;
-
-const Sample: React.FC<MotionDraggableProps> = (props) => {
-  const [count, setCount] = useState<number>(0);
-  const handleBgClick = () => setCount((prev) => prev + 1);
-
-  const styles = {
-    base: css({
-      Absolute: 30,
-      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-      display: 'flex',
-    }),
-    bg: css({ Absolute: 0, Flex: 'center-center', userSelect: 'none', opacity: 0.3 }),
-    content: css({
-      padding: 20,
-      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-      borderRadius: 20,
-      flex: 1,
-    }),
-  };
-
-  const items: MotionDraggableItem[] = [
-    { width: 100, height: 100, el: <div {...styles.content}>Foo-1</div> },
-    {
-      width: () => 200,
-      height: () => 80,
-      el() {
-        return <div {...styles.content}>Foo-2</div>;
-      },
-    },
-  ];
-
-  return (
-    <div {...styles.base}>
-      <div {...styles.bg} onClick={handleBgClick}>{`background click: ${count}`}</div>
-      <MotionDraggable {...props} style={{ flex: 1 }} items={items} />
-    </div>
-  );
-};

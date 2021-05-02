@@ -1,90 +1,55 @@
-import { animate, DragElastic, m, MotionValue, useMotionValue } from 'framer-motion';
-import React, { useEffect } from 'react';
-import { Subject } from 'rxjs';
-import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { DragElastic, m, useMotionValue } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
 
-import { t } from '../../common';
-import { Events } from './Events';
+import { css, t } from './common';
+import { useItemController, useScale } from './hooks';
 import * as n from './types';
-
-type M = n.MotionDraggableItem;
+import { ItemUtil } from './util';
 
 export type ChildProps = {
   bus: t.EventBus<any>;
-  index: number;
   item: n.MotionDraggableItem;
   container: { width: number; height: number };
   elastic?: DragElastic;
 };
 
 export const Child: React.FC<ChildProps> = (props) => {
-  const { container, item, index, elastic = 0.3 } = props;
-  const { width, height } = toSize(item, index);
+  const { container, item, elastic = 0.3 } = props;
+  const id = item.id;
+  const { width, height } = ItemUtil.toSize(item);
   const bus = props.bus.type<n.MotionDraggableEvent>();
+
+  const rootRef = useRef<HTMLDivElement>(null);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  useItemController({ bus, item, x, y });
 
-  useEffect(() => {
-    const events = Events(bus);
-    const changed$ = new Subject<{ axis: 'x' | 'y'; value: number }>();
+  const scaleable = typeof item.scaleable === 'object' ? item.scaleable : { min: 0.5, max: 5 };
+  const scale = useScale(rootRef, {
+    isEnabled: Boolean(item.scaleable),
+    min: scaleable.min,
+    max: scaleable.max,
+  });
 
-    x.onChange((value) => changed$.next({ axis: 'x', value }));
-    y.onChange((value) => changed$.next({ axis: 'y', value }));
-
-    /**
-     * Retrieve item status.
-     */
-    events.status.item.req$.pipe(filter((e) => e.index === index)).subscribe((e) => {
-      const size = toSize(item, index);
-      const position = { x: x.get(), y: y.get() };
-      const status: n.MotionDraggableItemStatus = { index, size, position };
-      bus.fire({ type: 'ui/MotionDraggable/item/status:res', payload: { tx: e.tx, status } });
-    });
-
-    /**
-     * Move the item.
-     */
-    events.move.item.req$
-      .pipe(
-        filter((e) => e.index === index),
-        filter((e) => typeof e.x === 'number' || typeof e.y === 'number'),
-      )
-      .subscribe(async (e) => {
-        const { spring = {}, tx } = e;
-        const stiffness = spring.stiffness ?? 100;
-
-        const move = (value: MotionValue<number>, to: number | undefined) => {
-          return new Promise<void>((resolve) => {
-            if (to === undefined) return resolve();
-            const done$ = new Subject<void>();
-            changed$.pipe(takeUntil(done$), debounceTime(50)).subscribe(() => {
-              done$.next();
-              resolve();
-            });
-            animate(value, to, { ...spring, type: 'spring', stiffness });
-          });
-        };
-
-        const before = await events.status.item.get(index);
-
-        if (before.position.x !== e.x && before.position.y !== e.y) {
-          await Promise.all([move(x, e.x), move(y, e.y)]);
-        }
-
-        const status = await events.status.item.get(index);
-        const target = { x: e.x, y: e.y };
-        let interrupted = false;
-        if (e.x !== undefined && status.position.x !== e.x) interrupted = true;
-        if (e.y !== undefined && status.position.y !== e.y) interrupted = true;
-        bus.fire({
-          type: 'ui/MotionDraggable/item/move:res',
-          payload: { tx, status, target, interrupted },
-        });
+  const dragHandler = (lifecycle: n.MotionDraggableItemDrag['lifecycle']) => {
+    return () => {
+      bus.fire({
+        type: 'ui/MotionDraggable/item/drag',
+        payload: { id, lifecycle },
       });
+    };
+  };
 
-    return () => events.dispose();
-  }, []); // eslint-disable-line
+  const mouseHandler = (mouse: n.MotionDraggableItemMouse['mouse']) => {
+    return (e: React.MouseEvent) => {
+      const { button } = e;
+      bus.fire({
+        type: 'ui/MotionDraggable/item/mouse',
+        payload: { id, mouse, button },
+      });
+    };
+  };
 
   const constraints = {
     top: 0,
@@ -94,35 +59,30 @@ export const Child: React.FC<ChildProps> = (props) => {
   };
 
   const styles = {
-    draggable: {
-      x,
-      y,
-      width,
-      height,
-      pointerEvents: 'auto',
+    base: css({
       display: 'flex',
+      pointerEvents: 'auto',
       boxSizing: 'border-box',
-    },
+    }),
   };
 
   return (
     <m.div
+      ref={rootRef}
       drag={true}
       dragElastic={elastic}
       dragMomentum={true}
       dragConstraints={constraints}
-      style={styles.draggable as any}
+      style={{ x, y, width, height, scale }}
+      onPanStart={dragHandler('start')}
+      onPanEnd={dragHandler('complete')}
+      onMouseDown={mouseHandler('down')}
+      onMouseUp={mouseHandler('up')}
+      onMouseEnter={mouseHandler('enter')}
+      onMouseLeave={mouseHandler('leave')}
+      {...styles.base}
     >
-      {typeof item.el === 'function' ? item.el(item, index) : item.el}
+      {typeof item.el === 'function' ? item.el(item) : item.el}
     </m.div>
   );
 };
-
-/**
- * [Helpers]
- */
-function toSize(item: M, index: number) {
-  const width = typeof item.width === 'function' ? item.width(item, index) : item.width;
-  const height = typeof item.height === 'function' ? item.height(item, index) : item.height;
-  return { width, height };
-}
