@@ -6,18 +6,17 @@ import {
   cuid,
   deleteUndefined,
   Icons,
+  isLocalhost,
   MediaStream,
   PeerNetwork,
   rx,
   t,
   time,
-  isLocalhost,
+  QueryString,
 } from './common';
 import { RootLayout } from './DEV.Root';
 import { EventBridge } from './event';
-import { DevModel, DevGroupSeed, GroupSeed } from './model';
-
-import { QueryString } from '@platform/util.string/lib/QueryString';
+import { DevGroupSeed, DevModel, GroupSeed } from './model';
 
 type Ctx = {
   self: t.PeerId;
@@ -71,7 +70,7 @@ export const actions = DevActions<Ctx>()
     };
 
     const strategy = {
-      peer: PeerNetwork.PeerStrategy({ self, bus }),
+      peer: PeerNetwork.PeerStrategy({ bus, netbus }),
       group: PeerNetwork.GroupStrategy({ bus, netbus }),
       fs: PeerNetwork.FilesystemStrategy({ bus, netbus }),
     };

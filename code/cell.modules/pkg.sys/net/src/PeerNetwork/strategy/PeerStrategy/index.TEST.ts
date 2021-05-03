@@ -1,13 +1,15 @@
 import { expect, t, cuid, rx } from '../../../test';
 import { PeerStrategy } from '.';
+import { NetBus } from '../common';
 
 describe('PeerStrategy', () => {
   const self = cuid();
   const bus = rx.bus<t.PeerEvent>();
+  const netbus = NetBus({ self, bus });
   const $ = bus.event$;
 
   it('dispose', () => {
-    const strategy = PeerStrategy({ self, bus });
+    const strategy = PeerStrategy({ bus, netbus });
 
     const fire = { root: 0, connection: 0 };
     strategy.dispose$.subscribe(() => fire.root++);
@@ -25,17 +27,17 @@ describe('PeerStrategy', () => {
 
   describe('Connection', () => {
     it('default:true - purgeOnClose', () => {
-      const connection = PeerStrategy({ self, bus }).connection;
+      const connection = PeerStrategy({ bus, netbus }).connection;
       expect(connection.autoPurgeOnClose).to.eql(true);
     });
 
     it('default:true - meshPropagation', () => {
-      const connection = PeerStrategy({ self, bus }).connection;
+      const connection = PeerStrategy({ bus, netbus }).connection;
       expect(connection.autoPropagation).to.eql(true);
     });
 
     it('default:true - ensureConnectionClosed', () => {
-      const connection = PeerStrategy({ self, bus }).connection;
+      const connection = PeerStrategy({ bus, netbus }).connection;
       expect(connection.ensureClosed).to.eql(true);
     });
   });

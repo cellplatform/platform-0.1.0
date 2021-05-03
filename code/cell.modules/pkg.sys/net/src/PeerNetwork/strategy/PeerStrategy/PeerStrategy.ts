@@ -4,7 +4,10 @@ import { PeerConnectionStrategy } from './PeerConnectionStrategy';
 /**
  * Single combined set of network strategies.
  */
-export function PeerStrategy(args: { self: t.PeerId; bus: t.EventBus<any> }): t.PeerStrategy {
+export function PeerStrategy(args: {
+  bus: t.EventBus<any>;
+  netbus: t.NetBus<any>;
+}): t.PeerStrategy {
   const bus = args.bus.type<t.PeerEvent>();
   const events = Events(bus);
 
