@@ -94,7 +94,7 @@ export const DevImageDraggable: React.FC<DevImageDraggableProps> = (props) => {
      * Monitor scale of video items that have changed
      * and broadcast these changes to other peers.
      */
-    dragEvents.item.scale$.pipe().subscribe(async (e) => {
+    dragEvents.item.scale$.pipe(filter((e) => e.via === 'wheel')).subscribe(async (e) => {
       const { id, lifecycle } = e;
       const { scale } = e.status.size;
       const items = [{ id, scale }];

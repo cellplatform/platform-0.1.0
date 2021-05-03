@@ -48,6 +48,14 @@ export function useItemController(args: {
     y.onChange((value) => position$.next({ axis: 'y', value }));
     scale.onChange((value) => scale$.next({ value }));
 
+    const changeRequest = {
+      $: events.item.change.req$.pipe(filter((e) => e.id === id)),
+      count: 0,
+      get isChanging() {
+        return changeRequest.count > 0;
+      },
+    };
+
     const toStatus = (): n.MotionDraggableItemStatus => {
       const { width, height } = ItemUtil.toSize(item);
       const size = { width, height, scale: scale.get() };
@@ -58,9 +66,9 @@ export function useItemController(args: {
     /**
      * Fire [move] events.
      */
-    const fireMove = (lifecycle: n.MotionDraggableItemMove['lifecycle'], isDrag: boolean) => {
+    const fireMove = (lifecycle: n.MotionDraggableItemMove['lifecycle']) => {
       const status = toStatus();
-      const via = isDrag ? 'drag' : 'code';
+      const via = changeRequest.isChanging ? 'code/req' : 'drag';
       bus.fire({
         type: 'ui/MotionDraggable/item/move',
         payload: { id, lifecycle, status, via },
@@ -69,8 +77,8 @@ export function useItemController(args: {
     const moveMonitor = Monitor.move({
       position$,
       mouse: mouseMonitor,
-      onStart: (e) => fireMove('start', e.isDrag),
-      onComplete: (e) => fireMove('complete', e.isDrag),
+      onStart: (e) => fireMove('start'),
+      onComplete: (e) => fireMove('complete'),
     });
 
     /**
@@ -78,9 +86,10 @@ export function useItemController(args: {
      */
     const fireScale = (lifecycle: n.MotionDraggableItemScale['lifecycle']) => {
       const status = toStatus();
+      const via = changeRequest.isChanging ? 'code/req' : 'wheel';
       bus.fire({
         type: 'ui/MotionDraggable/item/scale',
-        payload: { id, lifecycle, status },
+        payload: { id, lifecycle, status, via },
       });
     };
     const scaleMonitor = Monitor.scale({
@@ -100,64 +109,61 @@ export function useItemController(args: {
     });
 
     /**
-     * Move the item.
+     * Change (move/scale) the item.
      */
-    events.item.change.req$
-      .pipe(
-        filter((e) => e.id === id),
-        filter(
-          (e) => typeof e.x === 'number' || typeof e.y === 'number' || typeof e.scale === 'number',
-        ),
-      )
-      .subscribe(async (e) => {
-        const { spring = {}, tx } = e;
-        const stiffness = spring.stiffness ?? 100;
-        const duration = spring.duration === undefined ? undefined : spring.duration / 1000; // NB: Convert from msecs => secs.
+    changeRequest.$.subscribe(async (e) => {
+      const { spring = {}, tx } = e;
+      const stiffness = spring.stiffness ?? 100;
+      const duration = spring.duration === undefined ? undefined : spring.duration / 1000; // NB: Convert from msecs => secs.
 
-        const changePosition = (value: MotionValue<number>, to: number | undefined) => {
-          return new Promise<void>((resolve) => {
-            if (to === undefined) return resolve();
-            const onComplete: MoveMonitorHandler = (monitor) => {
-              monitor.stop();
-              resolve();
-            };
-            Monitor.move({ position$, mouse: mouseMonitor, onComplete });
-            animate(value, to, { ...spring, type: 'spring', stiffness, duration });
-          });
-        };
+      changeRequest.count++;
 
-        const changeScale = (value: MotionValue<number>, to: number | undefined) => {
-          return new Promise<void>((resolve) => {
-            if (to === undefined) return resolve();
-            const onComplete: ScaleMonitorHandler = (monitor) => {
-              monitor.stop();
-              resolve();
-            };
-            Monitor.scale({ scale$, onComplete });
-            animate(value, to, { ...spring, type: 'spring', stiffness, duration });
-          });
-        };
-
-        const before = toStatus();
-
-        const wait: Promise<any>[] = [];
-        if (before.position.x !== e.x) wait.push(changePosition(x, e.x));
-        if (before.position.y !== e.y) wait.push(changePosition(y, e.y));
-        if (before.size.scale !== e.scale) wait.push(changeScale(scale, e.scale));
-
-        await Promise.all(wait);
-
-        const status = toStatus();
-        const target = { x: e.x, y: e.y, scale: e.scale };
-        let interrupted = false;
-        if (e.x !== undefined && status.position.x !== e.x) interrupted = true;
-        if (e.y !== undefined && status.position.y !== e.y) interrupted = true;
-        if (e.scale !== undefined && status.size.scale !== e.scale) interrupted = true;
-        bus.fire({
-          type: 'ui/MotionDraggable/item/change:res',
-          payload: { tx, id, status, target, interrupted },
+      const changePosition = (value: MotionValue<number>, to: number | undefined) => {
+        return new Promise<void>((resolve) => {
+          if (to === undefined) return resolve();
+          const onComplete: MoveMonitorHandler = (monitor) => {
+            monitor.stop();
+            resolve();
+          };
+          Monitor.move({ position$, mouse: mouseMonitor, onComplete });
+          animate(value, to, { ...spring, type: 'spring', stiffness, duration });
         });
+      };
+
+      const changeScale = (value: MotionValue<number>, to: number | undefined) => {
+        return new Promise<void>((resolve) => {
+          if (to === undefined) return resolve();
+          const onComplete: ScaleMonitorHandler = (monitor) => {
+            monitor.stop();
+            resolve();
+          };
+          Monitor.scale({ scale$, onComplete });
+          animate(value, to, { ...spring, type: 'spring', stiffness, duration });
+        });
+      };
+
+      const before = toStatus();
+
+      const wait: Promise<any>[] = [];
+      if (before.position.x !== e.x) wait.push(changePosition(x, e.x));
+      if (before.position.y !== e.y) wait.push(changePosition(y, e.y));
+      if (before.size.scale !== e.scale) wait.push(changeScale(scale, e.scale));
+
+      await Promise.all(wait);
+
+      const status = toStatus();
+      const target = { x: e.x, y: e.y, scale: e.scale };
+      let interrupted = false;
+      if (e.x !== undefined && status.position.x !== e.x) interrupted = true;
+      if (e.y !== undefined && status.position.y !== e.y) interrupted = true;
+      if (e.scale !== undefined && status.size.scale !== e.scale) interrupted = true;
+      bus.fire({
+        type: 'ui/MotionDraggable/item/change:res',
+        payload: { tx, id, status, target, interrupted },
       });
+
+      changeRequest.count--;
+    });
 
     /**
      * Dispose.

@@ -160,7 +160,7 @@ export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
           kind={'media/video'}
           stream={stream}
           show={{ proplist: false, waveform: true }}
-          selected={{ showBorder: true }}
+          selected={{ showBorder: false }}
         />
       </div>
     );

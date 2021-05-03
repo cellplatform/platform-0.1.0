@@ -151,7 +151,7 @@ export type MotionDraggableItemMoveEvent = {
 export type MotionDraggableItemMove = {
   id: string;
   lifecycle: 'start' | 'complete';
-  via: 'code' | 'drag';
+  via: 'code/req' | 'drag';
   status: t.MotionDraggableItemStatus;
 };
 
@@ -165,7 +165,7 @@ export type MotionDraggableItemScaleEvent = {
 export type MotionDraggableItemScale = {
   id: string;
   lifecycle: 'start' | 'complete';
-  // via: 'code' | 'mouse';
+  via: 'code/req' | 'wheel';
   status: t.MotionDraggableItemStatus;
 };
 
