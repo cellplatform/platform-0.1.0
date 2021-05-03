@@ -28,3 +28,9 @@ export {
 export { EventPipe } from 'sys.ui.primitives/lib/components/Event.Pipe';
 
 export { useDragTarget, Dropped } from 'sys.ui.primitives/lib/hooks/useDragTarget';
+
+export {
+  MotionDraggable,
+  MotionDraggableEvent,
+  MotionDraggableItem,
+} from 'sys.ui.primitives/lib/components/Draggable.Motion';

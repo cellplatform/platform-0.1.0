@@ -1,56 +1,41 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-} from 'rxjs/operators';
 import React, { useEffect, useRef, useState } from 'react';
+import { filter } from 'rxjs/operators';
+import { DevImageDraggable } from './DEV.Image.Draggable';
+
+import { useLocalPeer } from '../../hook';
 import {
+  MotionDraggable,
+  MotionDraggableEvent,
+  MotionDraggableItem,
+  Button,
   color,
   css,
   CssValue,
-  t,
-  rx,
   PeerNetwork,
+  rx,
+  t,
   useResizeObserver,
   VideoStream,
-  Button,
 } from '../common';
 import { DevVideo } from './DEV.Video';
-import { useLocalPeer } from '../../hook';
-
-import { useClickWithin, useClickOutside } from '@platform/react';
-
-import {
-  MotionDraggable,
-  MotionDraggableItem,
-  MotionDraggableEvent,
-} from 'sys.ui.primitives/lib/components/Draggable.Motion';
 
 export type DevVideosLayoutProps = {
-  self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.NetBus<any>;
   style?: CssValue;
 };
 
 export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
-  const { self, bus } = props;
-  const source = self;
+  const { bus } = props;
   const netbus = props.netbus.type<t.DevGroupEvent>();
+  const self = netbus.self;
+  const source = self;
 
   const baseRef = useRef<HTMLDivElement>(null);
   const resize = useResizeObserver(baseRef);
 
   const local = useLocalPeer({ self, bus });
-  const [dragBus, setDragBus] = useState<t.EventBus<any>>();
+  const [dragbus, setDragbus] = useState<t.EventBus<any>>();
 
   const [fullscreenMedia, setFullscreenMedia] = useState<MediaStream | undefined>();
   const handleFullscreenMediaClick = (stream?: MediaStream) => {
@@ -66,35 +51,37 @@ export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
     const events = PeerNetwork.Events(bus);
     const dragBus = rx.bus<MotionDraggableEvent>();
     const dragEvents = MotionDraggable.Events(dragBus);
-    setDragBus(dragBus);
+    setDragbus(dragBus);
+
+    const namespace = 'video/avatars';
 
     /**
      * Monitor movement of video items that have been "dragged"
-     * and broadcast move updates to other peers.
+     * and broadcast these changes to other peers.
      */
-    dragEvents.item.move.$.pipe(filter((e) => e.via === 'drag')).subscribe(async (e) => {
-      const lifecycle = e.lifecycle;
-      const { id } = e.status;
+    dragEvents.item.move$.pipe(filter((e) => e.via === 'drag')).subscribe(async (e) => {
+      const { id, lifecycle } = e;
       const { x, y } = e.status.position;
       const items = [{ id, x, y }];
       netbus.target.remote({
-        type: 'DEV/group/layout/items/move',
-        payload: { source, lifecycle, items },
+        type: 'DEV/group/layout/items/change',
+        payload: { source, lifecycle, items, namespace },
       });
     });
 
     /**
      * Monitor remote notifications of video items moving.
      */
-    rx.payload<t.DevGroupLayoutItemsMoveEvent>(netbus.event$, 'DEV/group/layout/items/move')
+    rx.payload<t.DevGroupLayoutItemsChangeEvent>(netbus.event$, 'DEV/group/layout/items/change')
       .pipe(
+        filter((e) => e.namespace === namespace),
         filter((e) => e.source !== self),
         filter((e) => e.lifecycle === 'complete'),
       )
       .subscribe((e) => {
         e.items.forEach(async (item) => {
           const { id, x, y } = item;
-          dragEvents.item.move.start({ id, x, y });
+          dragEvents.item.change.start({ id, x, y });
         });
       });
 
@@ -208,8 +195,9 @@ export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
 
   const elBody = resize.ready && (
     <>
+      <DevImageDraggable bus={bus} netbus={netbus} />
       {elFullscreenVideo}
-      {dragBus && <MotionDraggable bus={dragBus} style={styles.draggable} items={items} />}
+      {dragbus && <MotionDraggable bus={dragbus} style={styles.draggable} items={items} />}
     </>
   );
 

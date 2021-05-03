@@ -5,6 +5,6 @@ export type MotionDraggableStatus = {
 
 export type MotionDraggableItemStatus = {
   id: string;
-  size: { width: number; height: number };
+  size: { width: number; height: number; scale: number };
   position: { x: number; y: number };
 };

@@ -38,6 +38,9 @@ export function Events(eventbus: t.EventBus<any>): n.MotionDraggableEvents {
   };
 
   const item: n.MotionDraggableEvents['item'] = {
+    move$: Payload<n.MotionDraggableItemMoveEvent>($, 'ui/MotionDraggable/item/move'),
+    scale$: Payload<n.MotionDraggableItemScaleEvent>($, 'ui/MotionDraggable/item/scale'),
+
     status: {
       req$: Payload<n.MotionDraggableItemStatusReqEvent>($, 'ui/MotionDraggable/item/status:req'),
       res$: Payload<n.MotionDraggableItemStatusResEvent>($, 'ui/MotionDraggable/item/status:res'),
@@ -54,17 +57,17 @@ export function Events(eventbus: t.EventBus<any>): n.MotionDraggableEvents {
       },
     },
 
-    move: {
-      $: Payload<n.MotionDraggableItemMoveEvent>($, 'ui/MotionDraggable/item/move'),
-      req$: Payload<n.MotionDraggableItemMoveReqEvent>($, 'ui/MotionDraggable/item/move:req'),
-      res$: Payload<n.MotionDraggableItemMoveResEvent>($, 'ui/MotionDraggable/item/move:res'),
+    change: {
+      req$: Payload<n.MotionDraggableItemChangeReqEvent>($, 'ui/MotionDraggable/item/change:req'),
+      res$: Payload<n.MotionDraggableItemChangeResEvent>($, 'ui/MotionDraggable/item/change:res'),
+
       async start(args) {
-        const { id, x, y, spring } = args;
+        const { id, x, y, scale, spring } = args;
         const tx = slug();
-        const res = firstValueFrom(item.move.res$.pipe(filter((e) => e.tx === tx)));
+        const res = firstValueFrom(item.change.res$.pipe(filter((e) => e.tx === tx)));
         bus.fire({
-          type: 'ui/MotionDraggable/item/move:req',
-          payload: { tx, id, x, y, spring },
+          type: 'ui/MotionDraggable/item/change:req',
+          payload: { tx, id, x, y, scale, spring },
         });
         const { status, target, interrupted } = await res;
         return { status, target, interrupted };

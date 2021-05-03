@@ -10,8 +10,9 @@ export type DevModalTarget = 'fullscreen' | 'body';
 export type DevEvent = DevModalEvent | DevMediaModalEvent | DevGroupEvent;
 export type DevGroupEvent =
   | DevGroupLayoutEvent
-  | DevGroupLayoutItemsMoveEvent
-  | DevGroupLayoutFullscreenMediaEvent;
+  | DevGroupLayoutItemsChangeEvent
+  | DevGroupLayoutFullscreenMediaEvent
+  | DevGroupLayoutImageLoadEvent;
 
 /**
  * A modal to display.
@@ -49,14 +50,15 @@ export type DevGroupLayoutVideos = {
 /**
  * Broadcast layout changes.
  */
-export type DevGroupLayoutItemsMoveEvent = {
-  type: 'DEV/group/layout/items/move';
-  payload: DevGroupLayoutItemsMove;
+export type DevGroupLayoutItemsChangeEvent = {
+  type: 'DEV/group/layout/items/change';
+  payload: DevGroupLayoutItemsChange;
 };
-export type DevGroupLayoutItemsMove = {
+export type DevGroupLayoutItemsChange = {
   source: t.PeerId;
   lifecycle: 'start' | 'complete';
-  items: { id: string; x: number; y: number }[];
+  namespace: string;
+  items: { id: string; x?: number; y?: number; scale?: number }[];
 };
 
 /**
@@ -69,4 +71,18 @@ export type DevGroupLayoutFullscreenMediaEvent = {
 export type DevGroupLayoutFullscreenMedia = {
   source: t.PeerId;
   media?: { id: string };
+};
+
+/**
+ * Full screen media layout
+ */
+export type DevGroupLayoutImageLoadEvent = {
+  type: 'DEV/group/image/load';
+  payload: DevGroupLayoutImageLoad;
+};
+export type DevGroupLayoutImageLoad = {
+  source: t.PeerId;
+  data: ArrayBuffer;
+  filename: string;
+  mimetype: string;
 };

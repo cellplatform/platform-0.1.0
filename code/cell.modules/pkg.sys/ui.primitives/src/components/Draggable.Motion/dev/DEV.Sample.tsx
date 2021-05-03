@@ -1,8 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { MotionDraggable, MotionDraggableItem, MotionDraggableProps } from '..';
-import { css, useEventListener, CssValue, color } from '../common';
-import { useScale } from '../hooks';
+import { color, css, CssValue } from '../common';
 
 /**
  * Sample.
@@ -17,7 +16,7 @@ export const Sample: React.FC<MotionDraggableProps> = (props) => {
   };
 
   const items: MotionDraggableItem[] = [
-    { id: 'foo-1', width: 100, height: 100, el: <Child>Foo-1</Child> },
+    { id: 'foo-1', width: 100, height: 100, el: <Child>Foo-1</Child>, scaleable: true },
     {
       id: 'foo-2',
       width: () => 200,
@@ -25,7 +24,6 @@ export const Sample: React.FC<MotionDraggableProps> = (props) => {
       el() {
         return <Child>Foo-2</Child>;
       },
-      scaleable: true,
     },
   ];
 

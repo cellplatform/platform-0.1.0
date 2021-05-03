@@ -25,7 +25,7 @@ export function useDevGroupController(args: { bus: t.EventBus<any>; netbus: t.Ne
      * Physics video layout.
      */
     layout$.pipe(filter((e) => e.kind === 'videos')).subscribe((e) => {
-      const el = <DevVideosLayout self={self} bus={bus} netbus={netbus} />;
+      const el = <DevVideosLayout bus={bus} netbus={netbus} />;
       bus.fire({ type: 'DEV/modal', payload: { el, target: 'fullscreen' } });
     });
 

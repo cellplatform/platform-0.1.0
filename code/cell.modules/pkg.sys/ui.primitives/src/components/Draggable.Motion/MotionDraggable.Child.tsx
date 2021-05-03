@@ -21,16 +21,16 @@ export const Child: React.FC<ChildProps> = (props) => {
 
   const rootRef = useRef<HTMLDivElement>(null);
 
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  useItemController({ bus, item, x, y });
-
   const scaleable = typeof item.scaleable === 'object' ? item.scaleable : { min: 0.5, max: 5 };
   const scale = useScale(rootRef, {
     isEnabled: Boolean(item.scaleable),
     min: scaleable.min,
     max: scaleable.max,
   });
+
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  useItemController({ bus, item, x, y, scale });
 
   const dragHandler = (lifecycle: n.MotionDraggableItemDrag['lifecycle']) => {
     return () => {
@@ -73,7 +73,7 @@ export const Child: React.FC<ChildProps> = (props) => {
       dragElastic={elastic}
       dragMomentum={true}
       dragConstraints={constraints}
-      style={{ x, y, width, height, scale }}
+      style={{ scale, x, y, width, height }}
       onPanStart={dragHandler('start')}
       onPanEnd={dragHandler('complete')}
       onMouseDown={mouseHandler('down')}

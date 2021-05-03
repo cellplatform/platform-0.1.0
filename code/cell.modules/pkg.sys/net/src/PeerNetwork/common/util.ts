@@ -138,7 +138,7 @@ export const FileUtil = {
   /**
    * Load a file as a base64 encoded data URI.
    */
-  toUri(blob: Blob) {
+  toUri(input: Blob | ArrayBuffer) {
     return new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -149,6 +149,8 @@ export const FileUtil = {
         }
       };
       reader.onerror = () => reject(reader.error);
+
+      const blob = input instanceof Blob ? input : new Blob([input]);
       reader.readAsDataURL(blob);
     });
   },
@@ -156,7 +158,7 @@ export const FileUtil = {
   /**
    * Turn the number of bytes into a human readable filesize.
    */
-  size(blob: Blob) {
+  filesize(blob: Blob) {
     const bytes = blob.size;
     return { bytes, toString: () => filesize(blob.size, { round: 1 }) };
   },

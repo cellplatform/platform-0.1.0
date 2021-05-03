@@ -8,12 +8,19 @@ import { Events } from '../Events';
 import * as n from '../types';
 import { ItemUtil } from '../util';
 
-type Change = { axis: 'x' | 'y'; value: number };
+type PositionChange = { axis: 'x' | 'y'; value: number };
+type ScaleChange = { value: number };
+
 type DragMonitor = { isDragging: boolean; stop(): void };
 type MouseMonitor = { isDown: boolean; isOver: boolean; stop(): void };
+
 type MoveMonitor = { stop(): void };
 type MoveMonitorHandler = (e: MoveMonitorHandlerArgs) => void;
 type MoveMonitorHandlerArgs = { stop(): void; isDrag: boolean };
+
+type ScaleMonitor = { stop(): void };
+type ScaleMonitorHandler = (e: ScaleMonitorHandlerArgs) => void;
+type ScaleMonitorHandlerArgs = { stop(): void };
 
 /**
  * Monitors requests for an items current status.
@@ -23,23 +30,27 @@ export function useItemController(args: {
   item: n.MotionDraggableItem;
   x: MotionValue<number>;
   y: MotionValue<number>;
+  scale: MotionValue<number>;
 }) {
-  const { x, y, item } = args;
+  const { item, x, y, scale } = args;
   const bus = args.bus.type<n.MotionDraggableEvent>();
 
   useEffect(() => {
     const id = item.id;
     const events = Events(bus);
-    const change$ = new Subject<Change>();
+    const position$ = new Subject<PositionChange>();
+    const scale$ = new Subject<ScaleChange>();
 
-    const drag = Monitor.drag(events.$);
-    const mouse = Monitor.mouse(events.$);
+    const dragMonitor = Monitor.drag(events.$);
+    const mouseMonitor = Monitor.mouse(events.$);
 
-    x.onChange((value) => change$.next({ axis: 'x', value }));
-    y.onChange((value) => change$.next({ axis: 'y', value }));
+    x.onChange((value) => position$.next({ axis: 'x', value }));
+    y.onChange((value) => position$.next({ axis: 'y', value }));
+    scale.onChange((value) => scale$.next({ value }));
 
     const toStatus = (): n.MotionDraggableItemStatus => {
-      const size = ItemUtil.toSize(item);
+      const { width, height } = ItemUtil.toSize(item);
+      const size = { width, height, scale: scale.get() };
       const position = { x: x.get(), y: y.get() };
       return { id, size, position };
     };
@@ -49,17 +60,33 @@ export function useItemController(args: {
      */
     const fireMove = (lifecycle: n.MotionDraggableItemMove['lifecycle'], isDrag: boolean) => {
       const status = toStatus();
-      const via = isDrag ? 'drag' : 'move';
+      const via = isDrag ? 'drag' : 'code';
       bus.fire({
         type: 'ui/MotionDraggable/item/move',
         payload: { id, lifecycle, status, via },
       });
     };
     const moveMonitor = Monitor.move({
-      change$,
-      mouse,
+      position$,
+      mouse: mouseMonitor,
       onStart: (e) => fireMove('start', e.isDrag),
       onComplete: (e) => fireMove('complete', e.isDrag),
+    });
+
+    /**
+     * Fire [scale] events.
+     */
+    const fireScale = (lifecycle: n.MotionDraggableItemScale['lifecycle']) => {
+      const status = toStatus();
+      bus.fire({
+        type: 'ui/MotionDraggable/item/scale',
+        payload: { id, lifecycle, status },
+      });
+    };
+    const scaleMonitor = Monitor.scale({
+      scale$,
+      onStart: (e) => fireScale('start'),
+      onComplete: (e) => fireScale('complete'),
     });
 
     /**
@@ -75,44 +102,59 @@ export function useItemController(args: {
     /**
      * Move the item.
      */
-    events.item.move.req$
+    events.item.change.req$
       .pipe(
         filter((e) => e.id === id),
-        filter((e) => typeof e.x === 'number' || typeof e.y === 'number'),
+        filter(
+          (e) => typeof e.x === 'number' || typeof e.y === 'number' || typeof e.scale === 'number',
+        ),
       )
       .subscribe(async (e) => {
         const { spring = {}, tx } = e;
         const stiffness = spring.stiffness ?? 100;
         const duration = spring.duration === undefined ? undefined : spring.duration / 1000; // NB: Convert from msecs => secs.
 
-        const move = (value: MotionValue<number>, to: number | undefined) => {
+        const changePosition = (value: MotionValue<number>, to: number | undefined) => {
           return new Promise<void>((resolve) => {
             if (to === undefined) return resolve();
-
             const onComplete: MoveMonitorHandler = (monitor) => {
               monitor.stop();
               resolve();
             };
+            Monitor.move({ position$, mouse: mouseMonitor, onComplete });
+            animate(value, to, { ...spring, type: 'spring', stiffness, duration });
+          });
+        };
 
-            Monitor.move({ change$, mouse, onComplete });
-
+        const changeScale = (value: MotionValue<number>, to: number | undefined) => {
+          return new Promise<void>((resolve) => {
+            if (to === undefined) return resolve();
+            const onComplete: ScaleMonitorHandler = (monitor) => {
+              monitor.stop();
+              resolve();
+            };
+            Monitor.scale({ scale$, onComplete });
             animate(value, to, { ...spring, type: 'spring', stiffness, duration });
           });
         };
 
         const before = toStatus();
 
-        if (before.position.x !== e.x && before.position.y !== e.y) {
-          await Promise.all([move(x, e.x), move(y, e.y)]);
-        }
+        const wait: Promise<any>[] = [];
+        if (before.position.x !== e.x) wait.push(changePosition(x, e.x));
+        if (before.position.y !== e.y) wait.push(changePosition(y, e.y));
+        if (before.size.scale !== e.scale) wait.push(changeScale(scale, e.scale));
+
+        await Promise.all(wait);
 
         const status = toStatus();
-        const target = { x: e.x, y: e.y };
+        const target = { x: e.x, y: e.y, scale: e.scale };
         let interrupted = false;
         if (e.x !== undefined && status.position.x !== e.x) interrupted = true;
         if (e.y !== undefined && status.position.y !== e.y) interrupted = true;
+        if (e.scale !== undefined && status.size.scale !== e.scale) interrupted = true;
         bus.fire({
-          type: 'ui/MotionDraggable/item/move:res',
+          type: 'ui/MotionDraggable/item/change:res',
           payload: { tx, id, status, target, interrupted },
         });
       });
@@ -122,11 +164,12 @@ export function useItemController(args: {
      */
     return () => {
       moveMonitor.stop();
-      drag.stop();
-      mouse.stop();
+      scaleMonitor.stop();
+      dragMonitor.stop();
+      mouseMonitor.stop();
       events.dispose();
     };
-  }, [x, y, bus, item]);
+  }, [x, y, bus, item, scale]);
 }
 
 /**
@@ -158,17 +201,17 @@ const Monitor = {
   },
 
   move(args: {
-    change$: Observable<Change>;
+    position$: Observable<PositionChange>;
     mouse: MouseMonitor;
     onStart?: MoveMonitorHandler;
     onComplete?: MoveMonitorHandler;
   }): MoveMonitor {
-    const { change$, mouse, onStart, onComplete } = args;
+    const { position$, mouse, onStart, onComplete } = args;
     const stop$ = new Subject<void>();
     const stop = () => stop$.next();
 
     let isMoving = false;
-    change$
+    position$
       .pipe(
         takeUntil(stop$),
         filter(() => !isMoving),
@@ -180,8 +223,40 @@ const Monitor = {
         onStart?.(args);
 
         const complete$ = new Subject<void>();
-        change$.pipe(takeUntil(stop$), takeUntil(complete$), debounceTime(50)).subscribe((e) => {
+        position$.pipe(takeUntil(stop$), takeUntil(complete$), debounceTime(50)).subscribe((e) => {
           isMoving = false;
+          complete$.next();
+          onComplete?.(args);
+        });
+      });
+
+    return { stop };
+  },
+
+  scale(args: {
+    scale$: Observable<ScaleChange>;
+    onStart?: ScaleMonitorHandler;
+    onComplete?: ScaleMonitorHandler;
+  }): ScaleMonitor {
+    const { scale$: position$, onStart, onComplete } = args;
+    const stop$ = new Subject<void>();
+    const stop = () => stop$.next();
+
+    let isScaling = false;
+    position$
+      .pipe(
+        takeUntil(stop$),
+        filter(() => !isScaling),
+      )
+      .subscribe((e) => {
+        isScaling = true;
+
+        const args: ScaleMonitorHandlerArgs = { stop };
+        onStart?.(args);
+
+        const complete$ = new Subject<void>();
+        position$.pipe(takeUntil(stop$), takeUntil(complete$), debounceTime(50)).subscribe((e) => {
+          isScaling = false;
           complete$.next();
           onComplete?.(args);
         });
