@@ -38,6 +38,7 @@ type CtxFlags = {
   collapseMedia: boolean;
   cardsMedia: boolean;
   cardsData: boolean;
+  isLayoutFullscreen: boolean;
 };
 type CtxEvents = {
   peer: t.PeerNetworkEvents;
@@ -90,7 +91,9 @@ export const actions = DevActions<Ctx>()
 
     const storage = LocalStorage<CtxFlags>('sys.net/dev/PeerNetwork');
 
+    // Default flag values (NB: state stored in localStorage).
     const flags = storage.object({
+      isLayoutFullscreen: false,
       isFullscreen: true,
       isReliable: true,
       debugJson: false,
@@ -193,18 +196,32 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Layout');
 
-    const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind'], target?: t.DevModalTarget) => {
+    e.boolean('fullscreen', (e) => {
+      const flags = e.ctx.toFlags();
+      if (e.changing) flags.isLayoutFullscreen = e.changing.next;
+      const value = flags.isLayoutFullscreen;
+      e.boolean.current = value;
+      e.boolean.description = value ? `Show layout fullscreen` : `Show layout within body`;
+    });
+
+    e.hr(1, 0.2);
+
+    const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind']) => {
       const { netbus } = toObject(ctx) as Ctx;
+      const isLayoutFullscreen = ctx.toFlags().isLayoutFullscreen;
+      const target: t.DevModalTarget = isLayoutFullscreen ? 'fullscreen' : 'body';
       netbus.fire({
         type: 'DEV/group/layout',
         payload: { kind, target },
       });
     };
 
-    e.button('group: cards (default)', (e) => showLayout(e.ctx, 'cards'));
-    e.button('group: videos', (e) => showLayout(e.ctx, 'videos'));
-    e.button('group: crdt', (e) => showLayout(e.ctx, 'crdt', 'body'));
-    e.button('group: screensize', (e) => showLayout(e.ctx, 'screensize', 'body'));
+    e.button('group: videos (physics)', (e) => showLayout(e.ctx, 'videos'));
+    e.button('group: crdt', (e) => showLayout(e.ctx, 'crdt'));
+    e.button('group: screensize', (e) => showLayout(e.ctx, 'screensize'));
+
+    e.hr(1, 0.2);
+    e.button('reset', (e) => showLayout(e.ctx, 'cards'));
 
     e.hr();
   })
@@ -356,7 +373,7 @@ export const actions = DevActions<Ctx>()
 
     e.boolean((config) =>
       config
-        .label('connection.autoPropagation')
+        .label('connection.autoPropagation [TODO]')
         .description('Automatically propogate data connections to peers.')
         .pipe((e) => {
           const strategy = e.ctx.toStrategy();

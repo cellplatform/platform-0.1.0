@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { filter, map } from 'rxjs/operators';
 
 import { COLORS, PeerNetwork, t, css, color, Icons, Button } from '../common';
-import { DevModal } from '../DEV.Modal';
+import { DevModal } from '../layouts';
 import { DevNetworkConnections, DevNetworkConnectionsProps } from './DEV.Network.Connections';
 
 export type DevNetworkConnectionsModalProps = {

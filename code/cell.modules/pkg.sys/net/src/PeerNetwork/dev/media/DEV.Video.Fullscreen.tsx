@@ -10,7 +10,7 @@ import {
   VideoStream,
   isLocalhost,
 } from '../common';
-import { DevModal } from '../DEV.Modal';
+import { DevModal } from '../layouts';
 
 export type DevVideoFullscreenProps = {
   bus: t.EventBus<any>;

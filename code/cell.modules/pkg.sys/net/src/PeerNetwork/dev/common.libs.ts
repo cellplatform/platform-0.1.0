@@ -36,3 +36,5 @@ export {
   MotionDraggableItem,
   MotionDraggableDef,
 } from 'sys.ui.primitives/lib/components/Draggable.Motion';
+
+export { StateObject } from '@platform/state';

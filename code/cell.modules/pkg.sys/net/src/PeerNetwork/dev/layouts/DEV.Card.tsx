@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import {
   color,
   css,
@@ -11,7 +11,7 @@ import {
   useDragTarget,
   COLORS,
   Dropped,
-} from './common';
+} from '../common';
 
 export type DevCardProps = {
   width?: number;

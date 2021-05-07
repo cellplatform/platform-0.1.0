@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
 import { Card, CardStack, CardStackItem, css, CssValue, Dropped, t } from '../common';
-import { DevCard } from '../DEV.Card';
+import { DevCard } from '../layouts';
 
 export type DevConnectionsProps = {
   bus: t.EventBus<any>;

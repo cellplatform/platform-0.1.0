@@ -1,3 +1,4 @@
+import { IStateObjectWritable } from '@platform/state.types';
 import * as t from '../common/types';
 
 export * from '../common/types';
@@ -5,9 +6,32 @@ export * from '../common/types';
 export type DevModalTarget = 'fullscreen' | 'body';
 
 /**
+ * MODEL
+ */
+export type DevModel = { group: DevModelGroup };
+export type DevModelGroup = { screens: { [key: string]: DevModelScreenSize } };
+export type DevModelState = IStateObjectWritable<DevModel>;
+
+export type DevModelScreenSizeKind = 'root';
+export type DevModelScreenSize = {
+  peer: t.PeerId;
+  kind: 'root';
+  size: { width: number; height: number };
+  updatedAt: number;
+};
+
+/**
  * EVENTS
  */
-export type DevEvent = DevModalEvent | DevMediaModalEvent | DevGroupEvent | DevLayoutSizeEvent;
+export type DevEvent =
+  | DevModelEvent
+  | DevModalEvent
+  | DevMediaModalEvent
+  | DevGroupEvent
+  | DevLayoutSizeEvent;
+
+export type DevModelEvent = DevModelGetReqEvent | DevModelGetResEvent | DevModelChangedEvent;
+
 export type DevGroupEvent =
   | DevGroupLayoutEvent
   | DevGroupLayoutItemsChangeEvent
@@ -15,7 +39,30 @@ export type DevGroupEvent =
   | DevGroupLayoutImageLoadEvent;
 
 /**
- * A modal to display.
+ * Get the state model
+ */
+export type DevModelGetReqEvent = {
+  type: 'DEV/model/get:req';
+  payload: { tx: string };
+};
+
+export type DevModelGetResEvent = {
+  type: 'DEV/model/get:res';
+  payload: DevModelGetRes;
+};
+export type DevModelGetRes = { tx: string; model: DevModelState };
+
+/**
+ * Get the state model
+ */
+export type DevModelChangedEvent = {
+  type: 'DEV/model/changed';
+  payload: DevModelChanged;
+};
+export type DevModelChanged = { state: DevModel };
+
+/**
+ * A visual modal dialog to display.
  */
 export type DevModalEvent = {
   type: 'DEV/modal';
@@ -93,6 +140,6 @@ export type DevLayoutSizeEvent = {
 };
 export type DevLayoutSize = {
   source: t.PeerId;
-  kind: 'root';
+  kind: DevModelScreenSizeKind;
   size: { width: number; height: number };
 };

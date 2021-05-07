@@ -13,7 +13,7 @@ import {
 } from 'rxjs/operators';
 import React, { useEffect, useRef, useState } from 'react';
 import { color, css, CssValue, t, COLORS, Button } from '../common';
-import { DevModal } from '../DEV.Modal';
+import { DevModal } from '../layouts';
 import { useLocalPeer } from '../../hook';
 
 import { Connection, CrdtConnection } from '../../../NetworkModel/Crdt.OLD';
@@ -67,7 +67,7 @@ export const DevCrdtModel: React.FC<DevCrdtModelProps> = (props) => {
   };
   return (
     <div {...styles.base}>
-      <div>Distributed Network Model</div>
+      <div>Distributed Network State Model (CRDT)</div>
       <div {...styles.toolbar}>
         <Button
           label={'create'}

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StringUtil, color, css, CssValue, t, FileUtil, PropList, PropListItem } from '../common';
-import { DevModal } from '../DEV.Modal';
+import { DevModal } from '../layouts';
 
 export type DevImageFullscreenProps = {
   bus: t.EventBus<any>;

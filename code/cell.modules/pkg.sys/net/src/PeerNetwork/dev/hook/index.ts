@@ -1,3 +1,3 @@
-export * from './DEV.useDevGroupController';
+export * from './DEV.useGroupController';
 export * from './DEV.useDevLocalController';
-export * from './DEV.useScreensize';
+export * from './DEV.useGroupScreensize';
