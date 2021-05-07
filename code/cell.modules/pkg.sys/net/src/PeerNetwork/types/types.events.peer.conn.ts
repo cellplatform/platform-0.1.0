@@ -20,10 +20,10 @@ export type PeerNetworkConnectReq = PeerNetworkConnectDataReq | PeerNetworkConne
 
 type ConnectBase = {
   self: t.PeerId;
-  tx?: string;
   remote: t.PeerId;
   direction: t.PeerConnectDirection;
   parent?: t.PeerConnectionId; // A parent relationship to the conneciton that spawned this connection.
+  tx?: string;
 };
 
 export type PeerNetworkConnectDataReq = ConnectBase & {
@@ -45,13 +45,13 @@ export type PeerConnectResEvent = {
 };
 export type PeerNetworkConnectRes = {
   self: t.PeerId;
-  tx: string;
   remote: t.PeerId;
   existing: boolean;
   kind: t.PeerConnectionKind;
   direction: t.PeerConnectDirection;
   connection?: t.PeerConnectionStatus;
   error?: t.PeerError;
+  tx: string;
 };
 
 /**
@@ -80,7 +80,7 @@ export type PeerDisconnectResEvent = {
 };
 export type PeerNetworkDisconnectRes = {
   self: t.PeerId;
-  tx: string;
   connection?: t.PeerConnectionId;
   error?: t.PeerError;
+  tx: string;
 };
