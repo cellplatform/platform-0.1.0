@@ -1,5 +1,5 @@
 import React from 'react';
-import { DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
+import { toObject, DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
 
 import {
   css,
@@ -16,7 +16,7 @@ import {
 } from './common';
 import { RootLayout } from './DEV.Root';
 import { EventBridge } from './event';
-import { DevGroupSeed, DevModel, GroupSeed } from './model';
+import { DevGroupSeed, GroupSeed } from './layouts';
 
 type Ctx = {
   self: t.PeerId;
@@ -176,30 +176,6 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.2);
 
-    e.button('network model', (e) => {
-      const { bus, netbus } = e.toObject(e.ctx) as Ctx;
-      const el = <DevModel bus={bus} netbus={netbus} />;
-      e.ctx.bus.fire({ type: 'DEV/modal', payload: { el, target: 'body' } });
-    });
-
-    e.button('group/layout: cards (default)', (e) => {
-      const netbus = e.toObject<Ctx>(e.ctx)?.netbus as t.NetBus<t.DevEvent>;
-      netbus.fire({
-        type: 'DEV/group/layout',
-        payload: { kind: 'cards' },
-      });
-    });
-
-    e.button('group/layout: videos', (e) => {
-      const netbus = e.toObject<Ctx>(e.ctx)?.netbus as t.NetBus<t.DevEvent>;
-      netbus.fire({
-        type: 'DEV/group/layout',
-        payload: { kind: 'videos' },
-      });
-    });
-
-    e.hr(1, 0.2);
-
     e.textbox((config) => {
       config
         .initial(config.ctx.signal)
@@ -210,6 +186,25 @@ export const actions = DevActions<Ctx>()
           if (e.changing) e.ctx.signal = e.changing.next;
         });
     });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Layout');
+
+    const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind'], target?: t.DevModalTarget) => {
+      const { netbus } = toObject(ctx) as Ctx;
+      netbus.fire({
+        type: 'DEV/group/layout',
+        payload: { kind, target },
+      });
+    };
+
+    e.button('group: cards (default)', (e) => showLayout(e.ctx, 'cards'));
+    e.button('group: videos', (e) => showLayout(e.ctx, 'videos'));
+    e.button('group: crdt', (e) => showLayout(e.ctx, 'crdt', 'body'));
+    e.button('group: screensize', (e) => showLayout(e.ctx, 'screensize', 'body'));
 
     e.hr();
   })

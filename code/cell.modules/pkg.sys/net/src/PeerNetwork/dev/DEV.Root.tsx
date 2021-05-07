@@ -4,6 +4,7 @@ import { ObjectView } from 'sys.ui.dev';
 import { useLocalPeer } from '../hook';
 import { COLORS, css, CssValue, t, useDragTarget } from './common';
 import { DevNetwork } from './network';
+import { useDevScreensize } from './hook';
 
 export type RootLayoutProps = {
   bus: t.EventBus<any>;
@@ -17,9 +18,9 @@ export type RootLayoutProps = {
 export const RootLayout: React.FC<RootLayoutProps> = (props) => {
   const { netbus, bus } = props;
 
-  const peer = useLocalPeer({ self: netbus.self, bus });
-
   const baseRef = useRef<HTMLDivElement>(null);
+  const peer = useLocalPeer({ self: netbus.self, bus });
+  useDevScreensize({ bus, netbus, ref: baseRef });
 
   /**
    * NOTE: This drag monitor is setup to prevent arbitrarily dropped

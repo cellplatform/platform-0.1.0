@@ -20,13 +20,13 @@ import { Connection, CrdtConnection } from '../../../NetworkModel/Crdt.OLD';
 import { DevConnection } from '../../../NetworkModel/Crdt.OLD/dev/DEV.Connection';
 import Automerge from 'automerge';
 
-export type DevModelProps = {
+export type DevCrdtModelProps = {
   bus: t.EventBus<any>;
   netbus: t.NetBus<any>;
   style?: CssValue;
 };
 
-export const DevModel: React.FC<DevModelProps> = (props) => {
+export const DevCrdtModel: React.FC<DevCrdtModelProps> = (props) => {
   const { netbus } = props;
   const bus = props.bus.type<t.DevEvent>();
   const peer = useLocalPeer({ self: netbus.self, bus });
@@ -50,7 +50,11 @@ export const DevModel: React.FC<DevModelProps> = (props) => {
   }, []); // eslint-disable-line
 
   const styles = {
-    base: css({ flex: 1, padding: 30 }),
+    base: css({
+      flex: 1,
+      padding: 30,
+      backgroundColor: COLORS.WHITE,
+    }),
     toolbar: css({
       marginTop: 30,
     }),
@@ -62,30 +66,28 @@ export const DevModel: React.FC<DevModelProps> = (props) => {
     },
   };
   return (
-    <DevModal bus={bus} style={props.style} background={1}>
-      <div {...styles.base}>
-        <div>Distributed Network Model</div>
-        <div {...styles.toolbar}>
-          <Button
-            label={'create'}
-            margin={[null, 10, null, null]}
-            onClick={() => {
-              docs.setDoc('doc1', Automerge.from({ count: 0 }));
-              redraw();
-            }}
-          />
-          <Button label={'redraw'} onClick={redraw} />
+    <div {...styles.base}>
+      <div>Distributed Network Model</div>
+      <div {...styles.toolbar}>
+        <Button
+          label={'create'}
+          margin={[null, 10, null, null]}
+          onClick={() => {
+            docs.setDoc('doc1', Automerge.from({ count: 0 }));
+            redraw();
+          }}
+        />
+        <Button label={'redraw'} onClick={redraw} />
+      </div>
+      <div {...styles.body.base}>
+        <div {...styles.body.left}>
+          <DevConnection bus={netbus} docs={docs} style={{ maxWidth: 400, marginTop: 20 }} />
         </div>
-        <div {...styles.body.base}>
-          <div {...styles.body.left}>
-            <DevConnection bus={netbus} docs={docs} style={{ maxWidth: 400, marginTop: 20 }} />
-          </div>
-          <div {...styles.body.middle}></div>
-          <div {...styles.body.right}>
-            {/* <DevEventBus bus={netbus} style={{ width: 350 }} /> */}
-          </div>
+        <div {...styles.body.middle}></div>
+        <div {...styles.body.right}>
+          {/* <DevEventBus bus={netbus} style={{ width: 350 }} /> */}
         </div>
       </div>
-    </DevModal>
+    </div>
   );
 };

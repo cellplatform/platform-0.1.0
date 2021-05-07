@@ -408,7 +408,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
    * DISCONNECT from a remote peer.
    */
   rx.payload<t.PeerDisconnectReqEvent>($, 'sys.net/peer/conn/disconnect:req')
-    .pipe()
+    .pipe(filter((e) => Boolean(refs.self[e.self])))
     .subscribe(async (e) => {
       const selfRef = refs.self[e.self];
       const tx = e.tx || slug();
@@ -451,7 +451,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
    * DATA:OUT: Send
    */
   rx.payload<t.PeerDataOutReqEvent>($, 'sys.net/peer/data/out:req')
-    .pipe()
+    .pipe(filter((e) => Boolean(refs.self[e.self])))
     .subscribe((e) => {
       const selfRef = refs.self[e.self];
       const tx = e.tx || slug();

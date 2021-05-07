@@ -7,7 +7,7 @@ export type DevModalTarget = 'fullscreen' | 'body';
 /**
  * EVENTS
  */
-export type DevEvent = DevModalEvent | DevMediaModalEvent | DevGroupEvent;
+export type DevEvent = DevModalEvent | DevMediaModalEvent | DevGroupEvent | DevLayoutSizeEvent;
 export type DevGroupEvent =
   | DevGroupLayoutEvent
   | DevGroupLayoutItemsChangeEvent
@@ -39,12 +39,9 @@ export type DevGroupLayoutEvent = {
   type: 'DEV/group/layout';
   payload: DevGroupLayout;
 };
-export type DevGroupLayout = DevGroupLayoutCards | DevGroupLayoutVideos;
-export type DevGroupLayoutCards = {
-  kind: 'cards';
-};
-export type DevGroupLayoutVideos = {
-  kind: 'videos';
+export type DevGroupLayout = {
+  kind: 'cards' | 'videos' | 'crdt' | 'screensize';
+  target?: DevModalTarget;
 };
 
 /**
@@ -85,4 +82,17 @@ export type DevGroupLayoutImageLoad = {
   data: ArrayBuffer;
   filename: string;
   mimetype: string;
+};
+
+/**
+ * Share screen size metadata with peers.
+ */
+export type DevLayoutSizeEvent = {
+  type: 'DEV/layout/size';
+  payload: DevLayoutSize;
+};
+export type DevLayoutSize = {
+  source: t.PeerId;
+  kind: 'root';
+  size: { width: number; height: number };
 };

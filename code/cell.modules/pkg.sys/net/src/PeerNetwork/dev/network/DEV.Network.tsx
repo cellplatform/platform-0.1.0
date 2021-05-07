@@ -2,10 +2,9 @@ import React from 'react';
 import { Hr } from 'sys.ui.primitives/lib/components/Hr';
 
 import { css, CssValue, t } from '../common';
-import { useDevLocalController } from '../DEV.useDevLocalController';
-import { useDevGroupController } from '../DEV.useDevGroupController';
-import { DevNetworkHeader } from './DEV.Network.Header';
+import { useDevGroupController, useDevLocalController } from '../hook';
 import { DevNetworkConnections } from './DEV.Network.Connections';
+import { DevNetworkHeader } from './DEV.Network.Header';
 
 export type DevNetworkProps = {
   bus: t.EventBus<any>;
