@@ -141,7 +141,7 @@ export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
         footer: css({
           Absolute: [null, 0, 0, 0],
           padding: 10,
-          Flex: 'horizontal-center-center',
+          Flex: 'horizontal-spaceBetween-center',
           backgroundColor: color.format(-0.3),
           backdropFilter: `blur(6px)`,
         }),
@@ -183,12 +183,12 @@ export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
         borderRadius={0}
       />
       <div {...styles.video.fullscreen.footer}>
+        <div />
         <Button
           style={{ color: color.format(1) }}
           onClick={() => handleFullscreenMediaClick(undefined)}
-        >
-          Close
-        </Button>
+          label={'Close'}
+        ></Button>
       </div>
     </div>
   );

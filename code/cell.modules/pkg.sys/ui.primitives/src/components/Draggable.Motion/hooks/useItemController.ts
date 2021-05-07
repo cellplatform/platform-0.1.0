@@ -1,4 +1,3 @@
-import { MotionValue } from 'framer-motion';
 import { useEffect } from 'react';
 
 import { t } from '../common';
@@ -17,7 +16,7 @@ export function useItemController(args: { bus: t.EventBus<any>; def: n.MotionDra
   useEffect(() => {
     const controller = state ? Controller({ bus, state, motion }) : undefined;
     return () => controller?.dispose();
-  }, []); // eslint-disable-line
+  }, [state?.id]); // eslint-disable-line
 
   return { state, motion };
 }

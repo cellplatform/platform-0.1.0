@@ -30,7 +30,6 @@ export function Controller(args: {
   const { state, motion } = args;
   const bus = args.bus.type<n.MotionDraggableEvent>();
   const changed$ = state.changed$;
-
   const id = state.id;
   const events = Events(bus);
   const dragMonitor = Monitor.drag(events.$);

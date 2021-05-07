@@ -1,20 +1,10 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-} from 'rxjs/operators';
 import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t } from '../common';
-import { MotionDraggableDef, MotionDraggableItem } from '..';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { MotionDraggableItem } from '..';
 import { PropList, PropListItem } from '../../PropList';
+import { css, CssValue } from '../common';
 
 export type DevChildProps = {
   state?: MotionDraggableItem;
@@ -53,8 +43,8 @@ export const DevChild: React.FC<DevChildProps> = (props) => {
     ? []
     : [
         { label: 'id', value: current.id },
-        { label: 'position.x (left)', value: Math.round(current.position.x) },
-        { label: 'position.y (top)', value: Math.round(current.position.y) },
+        { label: 'position.x', value: Math.round(current.position.x) },
+        { label: 'position.y', value: Math.round(current.position.y) },
         { label: 'size.width', value: Math.round(current.size.width) },
         { label: 'size.height', value: Math.round(current.size.height) },
         { label: 'size.scale', value: Math.round(current.size.scale) },
