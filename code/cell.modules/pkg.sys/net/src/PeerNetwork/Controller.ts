@@ -280,6 +280,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       const self = refs.self[e.self];
       const tx = e.tx || slug();
       const module = { name: WebRuntime.module.name, version: WebRuntime.module.version };
+      const userAgent = navigator.userAgent;
       const parent = e.parent;
 
       const fire = (payload?: Partial<t.PeerNetworkConnectRes>) => {
@@ -313,7 +314,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
        * START a data connection.
        */
       if (e.kind === 'data') {
-        const metadata: t.PeerConnectionMetadataData = { kind: e.kind, module, parent };
+        const metadata: t.PeerConnectionMetadataData = { kind: e.kind, module, userAgent, parent };
         const reliable = e.isReliable;
         const errorMonitor = PeerJsUtil.error(self.peer);
         const dataConnection = self.peer.connect(remote, { reliable, metadata });
@@ -358,6 +359,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
           kind: e.kind,
           constraints,
           module,
+          userAgent,
           parent,
         };
         const mediaConnection = self.peer.call(remote, localStream, { metadata });

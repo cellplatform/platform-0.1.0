@@ -6,7 +6,7 @@ import { useLocalPeer } from '../../hook';
 import {
   MotionDraggable,
   MotionDraggableEvent,
-  MotionDraggableItem,
+  MotionDraggableDef,
   Button,
   color,
   css,
@@ -149,7 +149,7 @@ export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
     },
   };
 
-  const items: MotionDraggableItem[] = [];
+  const items: MotionDraggableDef[] = [];
 
   const addVideo = (stream?: MediaStream) => {
     if (!stream) return;

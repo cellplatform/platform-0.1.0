@@ -45,9 +45,9 @@ export function MemoryRefs() {
         ) {
           const id = getId(conn);
           const metadata = conn.metadata as t.PeerConnectionMetadata;
-          const { parent, module } = metadata;
+          const { parent, module, userAgent } = metadata;
 
-          const remote = { id: conn.peer, module };
+          const remote = { id: conn.peer, module, userAgent };
           const peer = { self: self.peer.id, remote };
           const uri = Uri.connection(kind, remote.id, id);
 

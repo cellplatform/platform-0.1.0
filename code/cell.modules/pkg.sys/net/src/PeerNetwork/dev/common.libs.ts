@@ -34,4 +34,5 @@ export {
   MotionDraggable,
   MotionDraggableEvent,
   MotionDraggableItem,
+  MotionDraggableDef,
 } from 'sys.ui.primitives/lib/components/Draggable.Motion';

@@ -37,12 +37,14 @@ export type PeerConnectionMetadata = PeerConnectionMetadataData | PeerConnection
 export type PeerConnectionMetadataData = {
   kind: t.PeerConnectionKindData;
   module: t.PeerModule;
+  userAgent: string;
   parent?: t.PeerConnectionId;
 };
 
 export type PeerConnectionMetadataMedia = {
   kind: t.PeerConnectionKindMedia;
   module: t.PeerModule;
+  userAgent: string;
   constraints?: t.PeerMediaConstraints;
   parent?: t.PeerConnectionId;
 };

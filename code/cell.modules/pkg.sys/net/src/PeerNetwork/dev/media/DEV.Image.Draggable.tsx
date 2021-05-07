@@ -1,31 +1,19 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-} from 'rxjs/operators';
 import React, { useEffect, useRef, useState } from 'react';
+import { filter } from 'rxjs/operators';
+
 import {
-  color,
+  COLORS,
   css,
   CssValue,
+  FileUtil,
+  Icons,
+  MotionDraggable,
+  MotionDraggableDef,
+  MotionDraggableEvent,
+  rx,
   t,
   useDragTarget,
-  COLORS,
-  Icons,
   useResizeObserver,
-  rx,
-  MotionDraggable,
-  MotionDraggableEvent,
-  MotionDraggableItem,
-  FileUtil,
 } from '../common';
 
 export type DevImageDraggableProps = {
@@ -150,7 +138,7 @@ export const DevImageDraggable: React.FC<DevImageDraggableProps> = (props) => {
     </div>
   );
 
-  const items: MotionDraggableItem[] = [];
+  const items: MotionDraggableDef[] = [];
 
   if (image && resize.ready) {
     const { width, height } = resize.rect;
