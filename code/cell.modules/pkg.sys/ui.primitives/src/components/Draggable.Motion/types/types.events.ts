@@ -1,5 +1,4 @@
-import { IDisposable } from '@platform/types';
-import { Observable } from 'rxjs';
+import { Observable, IDisposable } from './common';
 import * as t from '.';
 
 export type MotionDraggableEvent =

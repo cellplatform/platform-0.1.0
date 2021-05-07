@@ -10,6 +10,7 @@ type Ctx = {
   bus: t.EventBus<n.MotionDraggableEvent>;
   events: n.MotionDraggableEvents;
   count: number;
+  render: boolean;
   props: MotionDraggableProps;
 };
 
@@ -39,11 +40,21 @@ export const actions = DevActions<Ctx>()
     const events = MotionDraggable.Events(bus);
 
     return {
+      render: true,
       bus,
       events,
       count: 0,
       props: { bus },
     };
+  })
+
+  .items((e) => {
+    e.boolean('render subject', (e) => {
+      if (e.changing) e.ctx.render = e.changing.next;
+      e.boolean.current = e.ctx.render;
+    });
+
+    e.hr();
   })
 
   .items((e) => {
@@ -99,7 +110,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(<Sample {...e.ctx.props} />);
+    if (e.ctx.render) e.render(<Sample {...e.ctx.props} />);
   });
 
 export default actions;

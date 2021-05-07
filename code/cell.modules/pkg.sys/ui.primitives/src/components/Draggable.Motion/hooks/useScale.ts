@@ -1,4 +1,4 @@
-import { useMotionValue } from 'framer-motion';
+import { MotionValue } from 'framer-motion';
 import { RefObject } from 'react';
 
 import { useEventListener } from '../common';
@@ -11,19 +11,18 @@ type Direction = 'up' | 'down';
  */
 export function useScale(
   ref: RefObject<HTMLElement | null>,
+  value: MotionValue<number>,
   options: { min?: number; max?: number; isEnabled?: boolean } = {},
 ) {
   const MIN = options.min ?? 0.5;
   const MAX = options.max ?? 3;
   const isEnabled = options.isEnabled ?? true;
 
-  const scale = useMotionValue(1);
-
   const updateScale = (e: { direction: Direction; interval: number }) => {
     if (!isEnabled) return;
     const { direction, interval } = e;
 
-    const prev = scale.get();
+    const prev = value.get();
     let next: number;
 
     // Adjust up to or down to the maximum or minimum scale levels by `interval`.
@@ -39,7 +38,7 @@ export function useScale(
       next = prev;
     }
 
-    scale.set(next);
+    value.set(next);
   };
 
   useEventListener(ref, 'wheel', (e) => {
@@ -49,6 +48,4 @@ export function useScale(
       interval: 0.05,
     });
   });
-
-  return scale;
 }

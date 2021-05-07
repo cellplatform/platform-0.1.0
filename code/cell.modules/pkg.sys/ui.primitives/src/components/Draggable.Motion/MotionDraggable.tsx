@@ -9,7 +9,7 @@ import * as n from './types';
 
 export type MotionDraggableProps = {
   bus: t.EventBus<any>;
-  items?: n.MotionDraggableItem[];
+  items?: n.MotionDraggableDef[];
   elastic?: DragElastic;
   style?: CssValue;
 };
@@ -64,7 +64,7 @@ const View: React.FC<MotionDraggableProps> = (props) => {
       return (
         <div key={item.id} {...styles.item}>
           <LazyMotion features={domMax}>
-            <Child bus={bus} item={item} container={resize.rect} elastic={elastic} />
+            <Child bus={bus} def={item} container={resize.rect} elastic={elastic} />
           </LazyMotion>
         </div>
       );
