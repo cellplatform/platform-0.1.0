@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { color, css, CssValue, ObjectView, t } from '../common';
+import { COLORS, color, css, CssValue, ObjectView, t } from '../common';
 import { DevEvents } from '../event';
 
 export type DevScreensizeProps = {
@@ -40,17 +40,35 @@ export const DevScreensize: React.FC<DevScreensizeProps> = (props) => {
       padding: 30,
       backdropFilter: `blur(8px)`,
       backgroundColor: color.format(0.5),
+      display: 'flex',
     }),
-    body: css({
-      marginTop: 20,
+    body: {
+      base: css({
+        marginTop: 20,
+        Flex: 'horizontal-stretch-stretch',
+        flex: 1,
+      }),
+    },
+    left: css({
+      minWidth: 350,
+    }),
+    right: css({
+      flex: 1,
+      border: `solid 5px ${color.alpha(COLORS.MAGENTA, 0.1)}`,
+      marginLeft: 10,
     }),
   };
 
   return (
     <div ref={baseRef} {...css(styles.base, props.style)}>
-      <div>screen size</div>
-      <div {...styles.body}>
-        <ObjectView name={'model'} data={model} expandLevel={5} />
+      <div {...styles.body.base}>
+        <div {...styles.left}>
+          <ObjectView name={'model'} data={model} expandLevel={5} />
+        </div>
+        <div {...styles.right}>
+          <div>screen size</div>
+          <div>right</div>
+        </div>
       </div>
     </div>
   );

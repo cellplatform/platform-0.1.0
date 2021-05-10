@@ -221,7 +221,7 @@ export const actions = DevActions<Ctx>()
     e.button('group: screensize', (e) => showLayout(e.ctx, 'screensize'));
 
     e.hr(1, 0.2);
-    e.button('reset', (e) => showLayout(e.ctx, 'cards'));
+    e.button('reset (default)', (e) => showLayout(e.ctx, 'cards'));
 
     e.hr();
   })

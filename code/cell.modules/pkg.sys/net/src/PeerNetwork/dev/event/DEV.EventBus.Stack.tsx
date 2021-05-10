@@ -20,7 +20,7 @@ export const DevEventBusStack: React.FC<DevEventBusStackProps> = (props) => {
     <>
       <EventStack
         events={history.events}
-        card={{ duration: 150, title: 'Event' }}
+        card={{ duration: 150, title: 'Distributed Event' }}
         style={styles.stack}
       />
       <EventPipe
