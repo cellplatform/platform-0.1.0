@@ -22,7 +22,8 @@
   "dependencies": {
     "@types/vimeo__player": "^2.10.0",
     "@vimeo/player": "^2.15.0",
-    "core-js": "3.10.0"
+    "core-js": "3.10.0",
+    "framer-motion": "^4.1.2"
   },
   "devDependencies": {
     "@platform/cell.compiler": "~0.3.11",
