@@ -44,7 +44,6 @@ export function useGroupScreensize(args: {
 /**
  * Controller
  */
-
 export function Controller(args: {
   ref: React.RefObject<HTMLElement>;
   bus: t.EventBus<any>;
