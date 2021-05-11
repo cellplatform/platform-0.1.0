@@ -33,8 +33,7 @@ export const RecordButton: React.FC<RecordButtonProps> = (props) => {
   if (isEnabled) {
     if (state === 'recording' || state === 'paused') width = size * 4;
     if (state === 'recording' || state === 'paused') borderColor = COLORS.RED;
-    if (state === 'recording') innerBgColor = color.alpha(COLORS.RED, 0.1);
-    if (state === 'paused') innerBgColor = color.alpha(COLORS.RED, 1);
+    if (state === 'recording' || state === 'paused') innerBgColor = color.alpha(COLORS.RED, 0.1);
   }
 
   const styles = {
@@ -49,7 +48,7 @@ export const RecordButton: React.FC<RecordButtonProps> = (props) => {
       position: 'relative',
       Flex: 'center-center',
       overflow: 'hidden',
-      backdropFilter: `blur(8px)`,
+      backdropFilter: `blur(12px)`,
     }),
   };
 
@@ -97,7 +96,8 @@ export const RecordButton: React.FC<RecordButtonProps> = (props) => {
         <Paused
           state={state}
           isEnabled={isEnabled}
-          size={size}
+          width={width - 12}
+          height={size - 12}
           style={{ Absolute: 6 }}
           onClick={(e) => handleClick(['paused'], e.action)}
         />

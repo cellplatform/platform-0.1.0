@@ -34,7 +34,20 @@ export const Recording: React.FC<RecordingProps> = (props) => {
       color: COLORS.WHITE,
     }),
     waveform: css({ Absolute: 0, Flex: 'horizontal-center-center' }),
-    icon: css({ Absolute: 0, Flex: 'horizontal-center-center' }),
+    icon: css({ Absolute: 0, Flex: 'horizontal-center-center', paddingTop: 3 }),
+    labels: {
+      base: css({
+        Absolute: 0,
+        Flex: 'horizontal-spaceBetween-center',
+        boxSizing: 'border-box',
+        fontSize: 8,
+        fontWeight: 900,
+        color: COLORS.RED,
+        PaddingX: 8,
+        opacity: 0.7,
+        pointerEvents: 'none',
+      }),
+    },
   };
   return (
     <m.div
@@ -62,6 +75,10 @@ export const Recording: React.FC<RecordingProps> = (props) => {
         >
           <Icons.Player.Pause color={COLORS.RED} size={28} />
         </m.div>
+      </div>
+      <div {...styles.labels.base}>
+        <div>REC</div>
+        <div>0.0.00</div>
       </div>
     </m.div>
   );

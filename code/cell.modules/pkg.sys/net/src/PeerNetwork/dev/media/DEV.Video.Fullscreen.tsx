@@ -55,6 +55,7 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
         size={45}
         state={record.state}
         onClick={record.onClick}
+        style={{ marginBottom: 20 }}
       />
       <div />
     </div>
