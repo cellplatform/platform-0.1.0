@@ -1,30 +1,21 @@
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { R, rx, t, time } from '../../common';
-import { MediaStreamEvents } from './MediaStream.Events';
+import { rx, t, time } from '../../common';
 
 type M = 'video/webm';
 
 /**
  * Manages recording a video stream (via the given stream "ref" identifier).
  */
-export function MediaStreamRecordController(args: { ref: string; bus: t.EventBus<any> }) {
-  const { ref } = args;
+export function MediaStreamRecordController(args: { bus: t.EventBus<any>; stream: MediaStream }) {
+  const { stream } = args;
   const dispose$ = new Subject<void>();
   const bus = args.bus.type<t.MediaEvent>();
-  const events = MediaStreamEvents(bus);
   const $ = bus.event$.pipe(takeUntil(dispose$));
+  const ref = stream.id;
 
-  let stream: MediaStream | undefined;
   let recorder: ReturnType<typeof Recorder> | undefined;
-
-  /**
-   * TODO 🐷
-   * - pause/resume
-   * - download
-   * - purge
-   */
 
   const error = (error: string) => {
     bus.fire({
@@ -36,7 +27,21 @@ export function MediaStreamRecordController(args: { ref: string; bus: t.EventBus
   /**
    * Catch the referenced stream.
    */
-  events.started(ref).$.subscribe((e) => (stream = e.stream));
+  // events.started(ref).$.subscribe((e) => (stream = e.stream));
+
+  /**
+   * Recording status.
+   */
+  rx.payload<t.MediaStreamRecordStatusReqEvent>($, 'MediaStream/record/status:req')
+    .pipe(filter((e) => e.ref === ref))
+    .subscribe((e) => {
+      const { ref, tx } = e;
+      const status = recorder ? recorder.toStatus() : undefined;
+      bus.fire({
+        type: 'MediaStream/record/status:res',
+        payload: { ref, tx, status },
+      });
+    });
 
   /**
    * Start recording.
@@ -54,12 +59,30 @@ export function MediaStreamRecordController(args: { ref: string; bus: t.EventBus
       }
 
       const { mimetype = 'video/webm' } = e;
+      recorder = Recorder({ stream, mimetype });
 
-      const startedAt = time.now.timestamp;
-      recorder = Recorder({ stream, mimetype }).start();
       bus.fire({
         type: 'MediaStream/record/started',
-        payload: { ...e, startedAt },
+        payload: { ...e },
+      });
+    });
+
+  /**
+   * Pause/resume recording.
+   */
+  rx.payload<t.MediaStreamRecordInterruptEvent>($, 'MediaStream/record/interrupt')
+    .pipe(filter((e) => e.ref === ref))
+    .subscribe(async (e) => {
+      if (!recorder) {
+        return error(`Cannot pause recording as it has not yet been started.`);
+      }
+
+      if (e.action === 'pause') recorder.pause();
+      if (e.action === 'resume') recorder.resume();
+
+      bus.fire({
+        type: 'MediaStream/record/interrupted',
+        payload: { ...e },
       });
     });
 
@@ -72,7 +95,7 @@ export function MediaStreamRecordController(args: { ref: string; bus: t.EventBus
       const { ref } = e;
 
       if (!recorder) {
-        return error(`Cannot stop recording stream as it has not yet been started.`);
+        return error(`Cannot stop recording as it has not yet been started.`);
       }
 
       const blob = await recorder.stop();
@@ -89,7 +112,10 @@ export function MediaStreamRecordController(args: { ref: string; bus: t.EventBus
 
   return {
     dispose$: dispose$.asObservable(),
-    dispose: () => dispose$.next(),
+    dispose: () => {
+      dispose$.next();
+      recorder?.dispose();
+    },
   };
 }
 
@@ -108,25 +134,48 @@ function Recorder(args: { stream: MediaStream; mimetype: M }) {
     stream,
     mimetype,
     isStopped: false,
+    isPaused: false,
+    startedAt: time.now.timestamp,
 
     get blob() {
       return new Blob(chunks, { type: mimetype });
     },
 
-    start() {
-      recorder.start();
-      return res;
+    toStatus(): t.MediaStreamRecordStatus {
+      let state: t.MediaStreamRecordStatus['state'] = 'recording';
+      if (res.isPaused) state = 'paused';
+      if (res.isStopped) state = 'stopped';
+      const { startedAt } = res;
+      return { state, startedAt };
     },
 
     stop() {
       res.isStopped = true;
-      return new Promise<Blob>((resolve, reject) => {
+      res.isPaused = false;
+      return new Promise<Blob>((resolve) => {
         recorder.onstop = () => resolve(res.blob);
         recorder.stop();
       });
     },
+
+    pause() {
+      recorder.pause();
+      res.isPaused = true;
+      return res;
+    },
+
+    resume() {
+      recorder.resume();
+      res.isPaused = false;
+      return res;
+    },
+
+    dispose() {
+      res.stop();
+    },
   };
 
+  recorder.start();
   return res;
 }
 

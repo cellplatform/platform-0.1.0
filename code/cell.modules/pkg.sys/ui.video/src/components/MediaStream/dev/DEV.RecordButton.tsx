@@ -14,7 +14,7 @@ export const DevRecordButton: React.FC<DevRecordButtonProps> = (props) => {
 
   const ref = props.streamRef;
   const stream = useStreamState({ bus, ref });
-  const recorder = useRecordController({ bus, ref });
+  const recorder = useRecordController({ bus, stream });
 
   const styles = {
     base: css({ flex: 1, padding: 6, Flex: 'center-center' }),

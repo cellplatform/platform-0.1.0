@@ -19,3 +19,8 @@ export type MediaStreamTrack = {
   label: string;
   state: 'live' | 'ended';
 };
+
+export type MediaStreamRecordStatus = {
+  state: 'recording' | 'paused' | 'stopped';
+  startedAt: number;
+};

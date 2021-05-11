@@ -1,10 +1,33 @@
 import { t } from './common';
 
 export type MediaStreamRecordEvent =
+  | MediaStreamRecordStatusReqEvent
+  | MediaStreamRecordStatusResEvent
   | MediaStreamRecordStartEvent
   | MediaStreamRecordStartedEvent
+  | MediaStreamRecordInterruptEvent
+  | MediaStreamRecordInterruptedEvent
   | MediaStreamRecordStopEvent
   | MediaStreamRecordStoppedEvent;
+
+/**
+ * Status of a recording.
+ */
+export type MediaStreamRecordStatusReqEvent = {
+  type: 'MediaStream/record/status:req';
+  payload: MediaStreamRecordStatusReq;
+};
+export type MediaStreamRecordStatusReq = { ref: string; tx: string };
+
+export type MediaStreamRecordStatusResEvent = {
+  type: 'MediaStream/record/status:res';
+  payload: MediaStreamRecordStatusRes;
+};
+export type MediaStreamRecordStatusRes = {
+  ref: string;
+  tx: string;
+  status?: t.MediaStreamRecordStatus;
+};
 
 /**
  * Starts recording a stream.
@@ -19,7 +42,23 @@ export type MediaStreamRecordStartedEvent = {
   type: 'MediaStream/record/started';
   payload: MediaStreamRecordStarteded;
 };
-export type MediaStreamRecordStarteded = MediaStreamRecordStart & { startedAt: number };
+export type MediaStreamRecordStarteded = MediaStreamRecordStart;
+
+/**
+ * Apply an action to the recording: pause/resume
+ */
+export type MediaStreamRecordInterruptEvent = {
+  type: 'MediaStream/record/interrupt';
+  payload: MediaStreamRecordInterrupt;
+};
+export type MediaStreamRecordInterrupt = { ref: string; action: MediaStreamRecordInterruptAction };
+export type MediaStreamRecordInterruptAction = 'pause' | 'resume';
+
+export type MediaStreamRecordInterruptedEvent = {
+  type: 'MediaStream/record/interrupted';
+  payload: MediaStreamRecordInterrupted;
+};
+export type MediaStreamRecordInterrupted = MediaStreamRecordInterrupt;
 
 /**
  * Stops the recording of a stream.

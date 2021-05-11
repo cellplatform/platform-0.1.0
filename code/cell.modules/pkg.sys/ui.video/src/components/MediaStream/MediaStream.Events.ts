@@ -9,7 +9,7 @@ import { rx, slug, t } from '../../common';
 export function MediaStreamEvents(eventbus: t.EventBus<any>) {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
-  const bus = eventbus.type<t.MediaStreamEvent | t.MediaStreamsEvent>();
+  const bus = eventbus.type<t.MediaStreamEvent | t.MediaStreamsEvent | t.MediaStreamRecordEvent>();
   const event$ = bus.event$.pipe(takeUntil(dispose$));
 
   /**
@@ -111,6 +111,91 @@ export function MediaStreamEvents(eventbus: t.EventBus<any>) {
     },
   };
 
+  /**
+   * Record
+   */
+  const record = (input: string | MediaStream) => {
+    const ref = typeof input === 'string' ? input : input.id;
+    const start$ = rx
+      .payload<t.MediaStreamRecordStartEvent>(event$, 'MediaStream/record/start')
+      .pipe(filter((e) => e.ref === ref));
+    const started$ = rx
+      .payload<t.MediaStreamRecordStartedEvent>(event$, 'MediaStream/record/started')
+      .pipe(filter((e) => e.ref === ref));
+
+    const interrupt$ = rx
+      .payload<t.MediaStreamRecordInterruptEvent>(event$, 'MediaStream/record/interrupt')
+      .pipe(filter((e) => e.ref === ref));
+    const interrupted$ = rx
+      .payload<t.MediaStreamRecordInterruptedEvent>(event$, 'MediaStream/record/interrupted')
+      .pipe(filter((e) => e.ref === ref));
+
+    const stop$ = rx
+      .payload<t.MediaStreamRecordStopEvent>(event$, 'MediaStream/record/stop')
+      .pipe(filter((e) => e.ref === ref));
+    const stopped$ = rx
+      .payload<t.MediaStreamRecordStoppedEvent>(event$, 'MediaStream/record/stopped')
+      .pipe(filter((e) => e.ref === ref));
+
+    const start = () => {
+      const res = firstValueFrom(started$);
+      bus.fire({ type: 'MediaStream/record/start', payload: { ref } });
+      return res;
+    };
+
+    const stop = (
+      args: {
+        download?: t.MediaStreamRecordStop['download'];
+        data?: t.MediaStreamRecordStop['data'];
+      } = {},
+    ) => {
+      const { download, data } = args;
+      const res = firstValueFrom(stopped$);
+      bus.fire({ type: 'MediaStream/record/stop', payload: { ref, download, data } });
+      return res;
+    };
+
+    const pause = () => interrupt('pause');
+    const resume = () => interrupt('resume');
+    const interrupt = (action: t.MediaStreamRecordInterruptAction) => {
+      const res = firstValueFrom(interrupted$.pipe(filter((e) => e.action === action)));
+      bus.fire({ type: 'MediaStream/record/interrupt', payload: { ref, action } });
+      return res;
+    };
+
+    const status = {
+      req$: rx
+        .payload<t.MediaStreamRecordStatusReqEvent>(event$, 'MediaStream/record/status:req')
+        .pipe(filter((e) => e.ref === ref)),
+      res$: rx
+        .payload<t.MediaStreamRecordStatusResEvent>(event$, 'MediaStream/record/status:res')
+        .pipe(filter((e) => e.ref === ref)),
+
+      async get() {
+        const tx = slug();
+        const res = firstValueFrom(status.res$.pipe(filter((e) => e.tx === tx)));
+        bus.fire({ type: 'MediaStream/record/status:req', payload: { ref, tx } });
+        return res;
+      },
+    };
+
+    return {
+      ref,
+      status,
+      start,
+      start$,
+      started$,
+      interrupt$,
+      interrupted$,
+      interrupt,
+      pause,
+      resume,
+      stop,
+      stop$,
+      stopped$,
+    };
+  };
+
   return {
     dispose,
     dispose$: dispose$.asObservable(),
@@ -120,5 +205,6 @@ export function MediaStreamEvents(eventbus: t.EventBus<any>) {
     stopped,
     status,
     all,
+    record,
   };
 }

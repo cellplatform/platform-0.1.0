@@ -8,39 +8,46 @@ import { MediaStream } from '../MediaStream';
  * Handles binding the process of recording a MediaStream to the interactions
  * of the <RecordButton>.
  */
-export function useRecordController(args: { bus: t.EventBus<any>; ref?: string }) {
-  const { ref } = args;
+export function useRecordController(args: {
+  bus: t.EventBus<any>;
+  stream?: MediaStream;
+  filename?: string;
+}) {
+  const { stream, filename = 'filename' } = args;
   const bus = args.bus.type<t.MediaEvent>();
 
   const [onClick, setOnClick] = useState<RecordButtonClickEventHandler>();
   const [state, setState] = useState<RecordButtonState>('default');
 
   useEffect(() => {
-    const record = ref ? MediaStream.RecordController({ bus, ref }) : undefined;
+    const recorder = stream ? MediaStream.RecordController({ bus, stream }) : undefined;
+    const events = MediaStream.Events(bus);
 
     const handleClick: RecordButtonClickEventHandler = (e) => {
-      if (!ref) return;
+      if (!stream) return;
+
+      const recordEvents = events.record(stream);
 
       if (e.current === 'default') {
         setState('recording');
-        bus.fire({ type: 'MediaStream/record/start', payload: { ref } });
+        recordEvents.start();
       }
 
       if (e.current === 'recording') {
         setState('paused');
+        recordEvents.pause();
       }
 
       if (e.current === 'paused') {
         if (e.action === 'finish') {
           setState('default');
-          bus.fire({
-            type: 'MediaStream/record/stop',
-            payload: { ref, download: { filename: 'test' } },
-          });
+          // TODO 🐷 - options for downloading
+          recordEvents.stop({ download: { filename } });
         }
 
         if (e.action === 'resume') {
           setState('recording');
+          recordEvents.resume();
         }
       }
     };
@@ -48,9 +55,10 @@ export function useRecordController(args: { bus: t.EventBus<any>; ref?: string }
     setOnClick(() => handleClick);
 
     return () => {
-      record?.dispose();
+      recorder?.dispose();
+      events.dispose();
     };
-  }, []); // eslint-disable-line
+  }, [stream?.id]); // eslint-disable-line
 
   return { onClick, state };
 }

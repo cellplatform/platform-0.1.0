@@ -1,24 +1,12 @@
 import React, { useRef } from 'react';
-
-import {
-  AudioWaveform,
-  color,
-  css,
-  CssValue,
-  t,
-  useResizeObserver,
-  VideoStream,
-  isLocalhost,
-  COLORS,
-} from '../common';
-import { DevModal } from '../layouts';
-
 import { RecordButton, useRecordController } from 'sys.ui.video/lib/components/RecordButton';
+
+import { COLORS, css, CssValue, isLocalhost, t, useResizeObserver, VideoStream } from '../common';
+import { DevModal } from '../layouts';
 
 export type DevVideoFullscreenProps = {
   bus: t.EventBus<any>;
   stream?: MediaStream;
-  waveform?: boolean;
   style?: CssValue;
 };
 
@@ -30,26 +18,16 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
   const resize = useResizeObserver(mainRef);
   const { width, height } = resize.rect;
 
+  const record = useRecordController({ bus, stream });
+
   const styles = {
-    base: css({ Absolute: 0, display: 'flex' }),
-    body: css({
-      flex: 1,
-      position: 'relative',
-      Flex: 'vertical-stretch-stretch',
-      backgroundColor: COLORS.WHITE,
+    base: css({ Absolute: 0, backgroundColor: COLORS.WHITE }),
+    main: css({ Absolute: 0 }),
+    footer: css({
+      Absolute: [null, 0, 0, 0],
+      height: 66,
+      Flex: 'horizontal-spaceBetween-center',
     }),
-    main: {
-      base: css({ flex: 1, position: 'relative' }),
-    },
-    footer: {
-      base: css({
-        position: 'relative',
-        Flex: 'horizontal-spaceBetween-center',
-        backgroundColor: color.format(1),
-        height: 66,
-      }),
-    },
-    waveform: css({ Absolute: [null, 0, 10, 0] }),
   };
 
   const elVideo = resize.ready && stream && (
@@ -62,31 +40,30 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
     />
   );
 
-  const elWaveform = resize.ready && stream && props.waveform && (
-    <AudioWaveform stream={stream} width={width} height={120} style={styles.waveform} />
-  );
-
   const elMain = (
-    <div {...styles.main.base} ref={mainRef}>
+    <div {...styles.main} ref={mainRef}>
       {elVideo}
-      {elWaveform}
     </div>
   );
 
   const elFooter = (
-    <div {...styles.footer.base}>
+    <div {...styles.footer}>
       <div />
-      <RecordButton bus={bus} stream={stream} size={45} state={'recording'} />
+      <RecordButton
+        bus={bus}
+        stream={stream}
+        size={45}
+        state={record.state}
+        onClick={record.onClick}
+      />
       <div />
     </div>
   );
 
   return (
     <DevModal bus={bus} style={css(styles.base, props.style)}>
-      <div {...styles.body}>
-        {elMain}
-        {elFooter}
-      </div>
+      {elMain}
+      {elFooter}
     </DevModal>
   );
 };

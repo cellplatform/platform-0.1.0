@@ -116,6 +116,15 @@ export const actions = DevActions<Ctx>()
       e.button.description = <ObjectView name={name} data={data} fontSize={10} expandLevel={3} />;
     });
 
+    e.hr(1, 0.1);
+
+    e.button('fire ⚡️ MediaStreams/record/status:req', async (e) => {
+      const ref = e.ctx.ref;
+      const data = deleteUndefined(await e.ctx.events.record(ref).status.get());
+      const name = 'response: recording';
+      e.button.description = <ObjectView name={name} data={data} fontSize={10} expandLevel={3} />;
+    });
+
     e.hr();
   })
 

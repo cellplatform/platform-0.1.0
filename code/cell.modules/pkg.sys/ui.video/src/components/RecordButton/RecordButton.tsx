@@ -38,8 +38,19 @@ export const RecordButton: React.FC<RecordButtonProps> = (props) => {
   }
 
   const styles = {
-    base: css({ position: 'relative', cursor: 'default', userSelect: 'none', fontSize: 14 }),
-    inner: css({ position: 'relative', Flex: 'center-center', overflow: 'hidden', flex: 1 }),
+    base: css({
+      position: 'relative',
+      cursor: 'default',
+      userSelect: 'none',
+      fontSize: 14,
+    }),
+    inner: css({
+      flex: 1,
+      position: 'relative',
+      Flex: 'center-center',
+      overflow: 'hidden',
+      backdropFilter: `blur(8px)`,
+    }),
   };
 
   const fireClick = (action?: RecordButtonAction) => {
