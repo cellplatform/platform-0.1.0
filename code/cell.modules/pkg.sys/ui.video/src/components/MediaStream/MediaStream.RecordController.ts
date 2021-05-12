@@ -25,11 +25,6 @@ export function MediaStreamRecordController(args: { bus: t.EventBus<any>; stream
   };
 
   /**
-   * Catch the referenced stream.
-   */
-  // events.started(ref).$.subscribe((e) => (stream = e.stream));
-
-  /**
    * Recording status.
    */
   rx.payload<t.MediaStreamRecordStatusReqEvent>($, 'MediaStream/record/status:req')
@@ -74,7 +69,7 @@ export function MediaStreamRecordController(args: { bus: t.EventBus<any>; stream
     .pipe(filter((e) => e.ref === ref))
     .subscribe(async (e) => {
       if (!recorder) {
-        return error(`Cannot pause recording as it has not yet been started.`);
+        return error(`Cannot ${e.action} recording as it has not yet been started.`);
       }
 
       if (e.action === 'pause') recorder.pause();

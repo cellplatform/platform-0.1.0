@@ -6,8 +6,8 @@ import { RecordButtonAction, RecordButtonState } from './types';
 
 export type PausedProps = {
   isEnabled: boolean;
-  height: number;
   width: number;
+  height: number;
   state: RecordButtonState;
   style?: CssValue;
   onClick?: (e: { action: RecordButtonAction }) => void;
@@ -76,7 +76,7 @@ export const Paused: React.FC<PausedProps> = (props) => {
       transition={transition}
     >
       {edgeButton('resume', 'Resume', styles.left, 0 - offset)}
-      {edgeButton('finish', 'Save', styles.right, offset)}
+      {edgeButton('finish', 'Done', styles.right, offset)}
     </m.div>
   );
 };

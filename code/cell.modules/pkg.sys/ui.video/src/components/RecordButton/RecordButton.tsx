@@ -5,8 +5,7 @@ import { color, COLORS, css, CssValue, t, transition } from './common';
 import { Paused } from './RecordButton.Paused';
 import { Recording } from './RecordButton.Recording';
 import { RecordButtonAction, RecordButtonClickEventHandler, RecordButtonState } from './types';
-
-export const RecordButtonStates: RecordButtonState[] = ['default', 'recording', 'paused'];
+import { Background } from './RecordButton.Background';
 
 export type RecordButtonProps = {
   bus: t.EventBus<any>;
@@ -25,15 +24,12 @@ export const RecordButton: React.FC<RecordButtonProps> = (props) => {
   const size = props.size ?? 45;
   const isEnabled = props.isEnabled ?? true;
 
-  const height = size as number;
+  let height = size as number;
   let width = height;
-  let borderColor = color.format(-0.2);
-  let innerBgColor = isEnabled ? COLORS.RED : color.format(-0.2);
 
   if (isEnabled) {
-    if (state === 'recording' || state === 'paused') width = size * 4;
-    if (state === 'recording' || state === 'paused') borderColor = COLORS.RED;
-    if (state === 'recording' || state === 'paused') innerBgColor = color.alpha(COLORS.RED, 0.1);
+    if (['recording', 'paused', 'dialog'].includes(state)) width = size * 4;
+    if (['dialog'].includes(state)) height = height * 5;
   }
 
   const styles = {
@@ -42,13 +38,6 @@ export const RecordButton: React.FC<RecordButtonProps> = (props) => {
       cursor: 'default',
       userSelect: 'none',
       fontSize: 14,
-    }),
-    inner: css({
-      flex: 1,
-      position: 'relative',
-      Flex: 'center-center',
-      overflow: 'hidden',
-      backdropFilter: `blur(12px)`,
     }),
   };
 
@@ -62,27 +51,7 @@ export const RecordButton: React.FC<RecordButtonProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)} onClick={() => handleClick(['default', 'recording'])}>
       <LazyMotion features={domAnimation}>
-        <m.div
-          style={{
-            display: 'flex',
-            boxSizing: 'border-box',
-            borderRadius: size,
-            borderStyle: 'solid',
-            borderColor,
-            borderWidth: 3,
-            padding: 3,
-            width,
-            height: size,
-          }}
-          animate={{ width, borderColor }}
-          transition={transition}
-        >
-          <m.div
-            style={{ borderRadius: size, backgroundColor: innerBgColor }}
-            animate={{ borderColor, backgroundColor: innerBgColor }}
-            {...styles.inner}
-          />
-        </m.div>
+        <Background isEnabled={isEnabled} state={state} size={size} width={width} height={height} />
 
         <Recording
           stream={stream}
