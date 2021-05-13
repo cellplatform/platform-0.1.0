@@ -8,9 +8,14 @@ export const DevDialog: React.FC<DevDialogProps> = (props) => {
 
   const styles = {
     base: css({ flex: 1, Flex: 'vertical-stretch-stretch' }),
-    body: css({ flex: 1, display: 'flex', color: COLORS.DARK }),
+    body: css({ flex: 1, display: 'flex' }),
     footer: {
-      base: css({ borderTop: border, Flex: 'horizontal-stretch-stretch' }),
+      base: css({
+        borderTop: border,
+        Flex: 'horizontal-stretch-stretch',
+        color: COLORS.DARK,
+        fontSize: 13,
+      }),
       button: {
         base: css({
           flex: 1,
