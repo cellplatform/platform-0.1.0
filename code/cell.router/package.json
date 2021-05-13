@@ -5,8 +5,6 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "cd test.browser && yarn start",
-    "watch": "yarn start",
     "test": "ts test",
     "test:integration": "ts test --suffix INTEGRATION",
     "lint": "ts lint",

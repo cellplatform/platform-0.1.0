@@ -73,7 +73,7 @@ export async function start() {
     });
     log.info();
 
-    await window.createAll({ ctx });
+    // await window.createAll({ ctx });
 
     // ctx.apps.le
     // console.log('ctx.apps.total', ctx.apps.total);
@@ -85,7 +85,7 @@ export async function start() {
 
       const sys = ctx.apps.row(0);
       const name = sys.props.name;
-      window.createOne({ ctx, name });
+      // window.createOne({ ctx, name });
 
       // ctx.apps.forEach((app) => {
       //   const name = app.name;
