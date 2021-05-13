@@ -16,7 +16,7 @@
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "deploy": "cell.compiler upload --dir sys.ui.primitives $@"
+    "deploy": "cell.compiler upload --bump --dir sys.ui.primitives $@"
   },
   "dependencies": {
     "@dnd-kit/core": "^2.1.2",
