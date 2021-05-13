@@ -77,7 +77,7 @@ export type DevMediaModalEvent = {
   type: 'DEV/media/modal';
   payload: DevMediaModal;
 };
-export type DevMediaModal = { stream?: MediaStream; target?: DevModalTarget };
+export type DevMediaModal = { stream?: MediaStream; target?: DevModalTarget; isSelf?: boolean };
 
 /**
  * Broadcasts a display layout to peers.

@@ -29,7 +29,7 @@ export const DevNetworkHeader: React.FC<DevNetworkHeaderProps> = (props) => {
   );
 
   const elSelfVideo = media.video && (
-    <DevVideo kind={'media/video'} stream={media.video} bus={bus} />
+    <DevVideo kind={'media/video'} stream={media.video} bus={bus} isSelf={true} />
   );
 
   return (

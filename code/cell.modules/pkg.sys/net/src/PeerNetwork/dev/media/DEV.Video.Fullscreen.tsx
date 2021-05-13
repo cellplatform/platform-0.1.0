@@ -7,12 +7,15 @@ import { DevModal } from '../layouts';
 export type DevVideoFullscreenProps = {
   bus: t.EventBus<any>;
   stream?: MediaStream;
+  isSelf?: boolean;
   style?: CssValue;
 };
 
 export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => {
-  const { stream } = props;
+  const { stream, isSelf } = props;
   const bus = props.bus.type<t.DevEvent>();
+
+  console.log('isSelf', isSelf);
 
   const mainRef = useRef<HTMLDivElement>(null);
   const resize = useResizeObserver(mainRef);
@@ -35,7 +38,7 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
       stream={stream}
       width={width}
       height={height}
-      isMuted={isLocalhost ? true : false}
+      isMuted={isLocalhost || isSelf ? true : false}
       borderRadius={0}
     />
   );
