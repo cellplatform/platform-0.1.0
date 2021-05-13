@@ -21,9 +21,9 @@ export const Sample: React.FC<MotionDraggableProps> = (props) => {
     {
       id: 'foo-2',
       width: () => 200,
-      height: () => 200,
-      el(state) {
-        return <DevChild state={state} />;
+      height: () => 300,
+      el(e) {
+        return <DevChild state={e.state} container={e.container} />;
       },
     },
   ];

@@ -8,7 +8,7 @@ import * as n from './types';
 export type ChildProps = {
   bus: t.EventBus<any>;
   def: n.MotionDraggableDef;
-  container: { width: number; height: number };
+  container: n.MotionDraggableContainer;
   elastic?: DragElastic;
 };
 
@@ -52,8 +52,8 @@ export const Child: React.FC<ChildProps> = (props) => {
   const constraints = {
     top: 0,
     left: 0,
-    right: container.width - width.get(),
-    bottom: container.height - height.get(),
+    right: container.size.width - width.get(),
+    bottom: container.size.height - height.get(),
   };
 
   const styles = {
@@ -64,7 +64,7 @@ export const Child: React.FC<ChildProps> = (props) => {
     }),
   };
 
-  const el = typeof def.el !== 'function' ? def.el : def.el(state);
+  const el = typeof def.el !== 'function' ? def.el : def.el({ state, container });
 
   return (
     <m.div

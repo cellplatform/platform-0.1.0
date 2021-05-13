@@ -8,4 +8,12 @@ export type MotionDraggableDef = {
   scaleable?: boolean | { min: number; max: number };
 };
 
-export type MotionDraggableRender = (state: MotionDraggableItem) => JSX.Element;
+export type MotionDraggableRender = (props: MotionDraggableRenderProps) => JSX.Element;
+
+export type MotionDraggableRenderProps = {
+  state: MotionDraggableItem;
+  container: MotionDraggableContainer;
+};
+
+export type MotionDraggableSize = { width: number; height: number };
+export type MotionDraggableContainer = { size: MotionDraggableSize };

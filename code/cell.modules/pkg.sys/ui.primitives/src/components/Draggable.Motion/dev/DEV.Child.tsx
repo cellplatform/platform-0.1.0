@@ -2,17 +2,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { MotionDraggableItem } from '..';
+import { MotionDraggableItem, MotionDraggableContainer } from '..';
 import { PropList, PropListItem } from '../../PropList';
+import { Hr } from '../../Hr';
 import { css, CssValue } from '../common';
 
 export type DevChildProps = {
   state?: MotionDraggableItem;
+  container?: MotionDraggableContainer;
   style?: CssValue;
 };
 
 export const DevChild: React.FC<DevChildProps> = (props) => {
-  const { state } = props;
+  const { state, container } = props;
   const current = state?.current;
 
   const [count, setCount] = useState<number>(0);
@@ -39,23 +41,38 @@ export const DevChild: React.FC<DevChildProps> = (props) => {
     }),
   };
 
-  const items: PropListItem[] = !current
-    ? []
-    : [
-        { label: 'id', value: current.id },
-        { label: 'position.x', value: Math.round(current.position.x) },
-        { label: 'position.y', value: Math.round(current.position.y) },
-        { label: 'size.width', value: Math.round(current.size.width) },
-        { label: 'size.height', value: Math.round(current.size.height) },
-        { label: 'size.scale', value: Math.round(current.size.scale) },
-      ];
+  const round = (input?: number) => (typeof input === 'number' ? Math.round(input) : '-');
 
-  const elProps = props.state && <PropList items={items} />;
+  const elItems = props.state && (
+    <>
+      <PropList
+        title={'item'}
+        items={[
+          { label: 'id', value: current?.id },
+          { label: 'position.x', value: round(current?.position.x) },
+          { label: 'position.y', value: round(current?.position.y) },
+          { label: 'size.width', value: round(current?.size.width) },
+          { label: 'size.height', value: round(current?.size.height) },
+          { label: 'size.scale', value: round(current?.size.scale) },
+        ]}
+      />
+
+      <Hr thickness={5} opacity={0.1} />
+
+      <PropList
+        title={'container'}
+        items={[
+          { label: 'size.width', value: round(container?.size.width) },
+          { label: 'size.height', value: round(container?.size.height) },
+        ]}
+      />
+    </>
+  );
 
   return (
     <div {...css(styles.base, props.style)}>
       <div>{props.children}</div>
-      {elProps}
+      {elItems}
     </div>
   );
 };
