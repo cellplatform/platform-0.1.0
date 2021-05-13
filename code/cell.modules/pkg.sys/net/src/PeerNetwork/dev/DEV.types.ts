@@ -1,3 +1,4 @@
+import { IStateObjectWritable } from '@platform/state.types';
 import * as t from '../common/types';
 
 export * from '../common/types';
@@ -5,16 +6,63 @@ export * from '../common/types';
 export type DevModalTarget = 'fullscreen' | 'body';
 
 /**
- * EVENTS
+ * MODEL
  */
-export type DevEvent = DevModalEvent | DevMediaModalEvent | DevGroupEvent;
-export type DevGroupEvent =
-  | DevGroupLayoutEvent
-  | DevGroupLayoutItemsMoveEvent
-  | DevGroupLayoutFullscreenMediaEvent;
+export type DevModel = { group: DevModelGroup };
+export type DevModelGroup = { screens: { [key: string]: DevModelScreenSize } };
+export type DevModelState = IStateObjectWritable<DevModel>;
+
+export type DevModelScreenSizeKind = 'root';
+export type DevModelScreenSize = {
+  peer: t.PeerId;
+  kind: 'root';
+  size: { width: number; height: number };
+  updatedAt: number;
+};
 
 /**
- * A modal to display.
+ * EVENTS
+ */
+export type DevEvent =
+  | DevModelEvent
+  | DevModalEvent
+  | DevMediaModalEvent
+  | DevGroupEvent
+  | DevLayoutSizeEvent;
+
+export type DevModelEvent = DevModelGetReqEvent | DevModelGetResEvent | DevModelChangedEvent;
+
+export type DevGroupEvent =
+  | DevGroupLayoutEvent
+  | DevGroupLayoutItemsChangeEvent
+  | DevGroupLayoutFullscreenMediaEvent
+  | DevGroupLayoutImageLoadEvent;
+
+/**
+ * Get the state model
+ */
+export type DevModelGetReqEvent = {
+  type: 'DEV/model/get:req';
+  payload: { tx: string };
+};
+
+export type DevModelGetResEvent = {
+  type: 'DEV/model/get:res';
+  payload: DevModelGetRes;
+};
+export type DevModelGetRes = { tx: string; model: DevModelState };
+
+/**
+ * Get the state model
+ */
+export type DevModelChangedEvent = {
+  type: 'DEV/model/changed';
+  payload: DevModelChanged;
+};
+export type DevModelChanged = { state: DevModel };
+
+/**
+ * A visual modal dialog to display.
  */
 export type DevModalEvent = {
   type: 'DEV/modal';
@@ -29,7 +77,7 @@ export type DevMediaModalEvent = {
   type: 'DEV/media/modal';
   payload: DevMediaModal;
 };
-export type DevMediaModal = { stream?: MediaStream; target?: DevModalTarget };
+export type DevMediaModal = { stream?: MediaStream; target?: DevModalTarget; isSelf?: boolean };
 
 /**
  * Broadcasts a display layout to peers.
@@ -38,25 +86,23 @@ export type DevGroupLayoutEvent = {
   type: 'DEV/group/layout';
   payload: DevGroupLayout;
 };
-export type DevGroupLayout = DevGroupLayoutCards | DevGroupLayoutVideos;
-export type DevGroupLayoutCards = {
-  kind: 'cards';
-};
-export type DevGroupLayoutVideos = {
-  kind: 'videos';
+export type DevGroupLayout = {
+  kind: 'cards' | 'videos' | 'crdt' | 'screensize';
+  target?: DevModalTarget;
 };
 
 /**
  * Broadcast layout changes.
  */
-export type DevGroupLayoutItemsMoveEvent = {
-  type: 'DEV/group/layout/items/move';
-  payload: DevGroupLayoutItemsMove;
+export type DevGroupLayoutItemsChangeEvent = {
+  type: 'DEV/group/layout/items/change';
+  payload: DevGroupLayoutItemsChange;
 };
-export type DevGroupLayoutItemsMove = {
+export type DevGroupLayoutItemsChange = {
   source: t.PeerId;
   lifecycle: 'start' | 'complete';
-  items: { id: string; x: number; y: number }[];
+  namespace: string;
+  items: { id: string; x?: number; y?: number; scale?: number }[];
 };
 
 /**
@@ -69,4 +115,31 @@ export type DevGroupLayoutFullscreenMediaEvent = {
 export type DevGroupLayoutFullscreenMedia = {
   source: t.PeerId;
   media?: { id: string };
+};
+
+/**
+ * Full screen media layout
+ */
+export type DevGroupLayoutImageLoadEvent = {
+  type: 'DEV/group/image/load';
+  payload: DevGroupLayoutImageLoad;
+};
+export type DevGroupLayoutImageLoad = {
+  source: t.PeerId;
+  data: ArrayBuffer;
+  filename: string;
+  mimetype: string;
+};
+
+/**
+ * Share screen size metadata with peers.
+ */
+export type DevLayoutSizeEvent = {
+  type: 'DEV/layout/size';
+  payload: DevLayoutSize;
+};
+export type DevLayoutSize = {
+  source: t.PeerId;
+  kind: DevModelScreenSizeKind;
+  size: { width: number; height: number };
 };

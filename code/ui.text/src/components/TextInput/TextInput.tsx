@@ -217,7 +217,7 @@ export class TextInput extends React.PureComponent<TextInputProps, TextInputStat
       placeholder: {
         Absolute: 0,
         opacity: isEnabled ? 1 : disabledOpacity,
-        transition: `opacity 300ms`,
+        transition: `opacity 200ms`,
         Flex: 'horizontal-center-start',
         paddingLeft: 2, // Ensure the placeholder does not bump into the input-caret.
         whiteSpace: 'nowrap',

@@ -86,3 +86,15 @@ export type NetGroupConnect = {
   source: t.PeerId;
   target: { peer: t.PeerId; kind: t.PeerConnectionKind };
 };
+
+/**
+ * Fired to tell the group of a peers screen size.
+ */
+export type NetGroupPeerScreenEvent = {
+  type: 'sys.net/group/peer/screen';
+  payload: PeerScreen;
+};
+export type PeerScreen = {
+  self: t.PeerId;
+  size: { width: number; height: number };
+};

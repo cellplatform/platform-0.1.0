@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.video",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "sideEffects": false,
   "compiler": {
     "port": 3037
@@ -17,12 +17,13 @@
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "deploy": "cell.compiler upload --dir sys.ui.video $@"
+    "deploy": "cell.compiler upload --bump --dir sys.ui.video $@"
   },
   "dependencies": {
     "@types/vimeo__player": "^2.10.0",
     "@vimeo/player": "^2.15.0",
-    "core-js": "3.10.0"
+    "core-js": "3.10.0",
+    "framer-motion": "^4.1.2"
   },
   "devDependencies": {
     "@platform/cell.compiler": "~0.3.11",

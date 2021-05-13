@@ -1,5 +1,4 @@
-import { IDisposable } from '@platform/types';
-import { Observable } from 'rxjs';
+import { Observable, IDisposable } from './common';
 import * as t from '.';
 
 export type MotionDraggableEvent =
@@ -9,9 +8,10 @@ export type MotionDraggableEvent =
   | MotionDraggableStatusResEvent
   | MotionDraggableItemStatusReqEvent
   | MotionDraggableItemStatusResEvent
-  | MotionDraggableItemMoveReqEvent
-  | MotionDraggableItemMoveResEvent
+  | MotionDraggableItemChangeReqEvent
+  | MotionDraggableItemChangeResEvent
   | MotionDraggableItemMoveEvent
+  | MotionDraggableItemScaleEvent
   | MotionDraggableItemDragEvent
   | MotionDraggableItemMouseEvent;
 
@@ -32,23 +32,25 @@ export type MotionDraggableEvents = IDisposable & {
   };
 
   item: {
+    move$: Observable<t.MotionDraggableItemMove>;
+    scale$: Observable<t.MotionDraggableItemScale>;
     status: {
       req$: Observable<t.MotionDraggableItemStatusReq>;
       res$: Observable<t.MotionDraggableItemStatusRes>;
       get(id: string): Promise<t.MotionDraggableItemStatus | undefined>;
     };
-    move: {
-      $: Observable<t.MotionDraggableItemMove>;
-      req$: Observable<t.MotionDraggableItemMoveReq>;
-      res$: Observable<t.MotionDraggableItemMoveRes>;
+    change: {
+      req$: Observable<t.MotionDraggableItemChangeReq>;
+      res$: Observable<t.MotionDraggableItemChangeRes>;
       start(args: {
         id: string;
         x?: number;
         y?: number;
+        scale?: number;
         spring?: t.MotionSpring;
       }): Promise<{
         status: t.MotionDraggableItemStatus;
-        target: { x?: number; y?: number };
+        target: { x?: number; y?: number; scale?: number };
         interrupted: boolean; // true if the user grabbed the moving item during the animation and positioned it elsewhere.
       }>;
     };
@@ -113,27 +115,28 @@ export type MotionDraggableItemStatusRes = {
 /**
  * Cause one of more items to move.
  */
-export type MotionDraggableItemMoveReqEvent = {
-  type: 'ui/MotionDraggable/item/move:req';
-  payload: MotionDraggableItemMoveReq;
+export type MotionDraggableItemChangeReqEvent = {
+  type: 'ui/MotionDraggable/item/change:req';
+  payload: MotionDraggableItemChangeReq;
 };
-export type MotionDraggableItemMoveReq = {
+export type MotionDraggableItemChangeReq = {
   tx: string;
   id: string;
   x?: number;
   y?: number;
+  scale?: number;
   spring?: t.MotionSpring;
 };
 
-export type MotionDraggableItemMoveResEvent = {
-  type: 'ui/MotionDraggable/item/move:res';
-  payload: MotionDraggableItemMoveRes;
+export type MotionDraggableItemChangeResEvent = {
+  type: 'ui/MotionDraggable/item/change:res';
+  payload: MotionDraggableItemChangeRes;
 };
-export type MotionDraggableItemMoveRes = {
+export type MotionDraggableItemChangeRes = {
   tx: string;
   id: string;
   status: t.MotionDraggableItemStatus;
-  target: { x?: number; y?: number };
+  target: { x?: number; y?: number; scale?: number };
   interrupted: boolean; // true if the user grabbed the moving item during the animation and positioned it elsewhere.
 };
 
@@ -147,7 +150,21 @@ export type MotionDraggableItemMoveEvent = {
 export type MotionDraggableItemMove = {
   id: string;
   lifecycle: 'start' | 'complete';
-  via: 'move' | 'drag';
+  via: 'code/req' | 'drag';
+  status: t.MotionDraggableItemStatus;
+};
+
+/**
+ * Fires when an item starts/stops moving.
+ */
+export type MotionDraggableItemScaleEvent = {
+  type: 'ui/MotionDraggable/item/scale';
+  payload: MotionDraggableItemScale;
+};
+export type MotionDraggableItemScale = {
+  id: string;
+  lifecycle: 'start' | 'complete';
+  via: 'code/req' | 'wheel';
   status: t.MotionDraggableItemStatus;
 };
 

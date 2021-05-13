@@ -3,6 +3,7 @@
  */
 export { copyToClipboard, useResizeObserver } from '@platform/react';
 export { Button, ButtonProps } from '@platform/ui.button';
+export { QueryString } from '@platform/util.string/lib/QueryString';
 
 /**
  * System
@@ -28,3 +29,12 @@ export {
 export { EventPipe } from 'sys.ui.primitives/lib/components/Event.Pipe';
 
 export { useDragTarget, Dropped } from 'sys.ui.primitives/lib/hooks/useDragTarget';
+
+export {
+  MotionDraggable,
+  MotionDraggableEvent,
+  MotionDraggableItem,
+  MotionDraggableDef,
+} from 'sys.ui.primitives/lib/components/Draggable.Motion';
+
+export { StateObject } from '@platform/state';

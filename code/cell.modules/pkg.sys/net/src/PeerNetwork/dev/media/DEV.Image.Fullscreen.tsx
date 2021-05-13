@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StringUtil, color, css, CssValue, t, FileUtil, PropList, PropListItem } from '../common';
-import { DevModal } from '../DEV.Modal';
+import { DevModal } from '../layouts';
 
 export type DevImageFullscreenProps = {
   bus: t.EventBus<any>;
@@ -45,7 +45,7 @@ export const DevImageFullscreen: React.FC<DevImageFullscreenProps> = (props) => 
   const items: (PropListItem | undefined)[] = [
     { label: 'filename', value: file.filename },
     file.dir ? { label: 'dir', value: file.dir } : undefined,
-    { label: 'size', value: FileUtil.size(file.blob).toString() },
+    { label: 'size', value: FileUtil.filesize(file.blob).toString() },
     {
       label: 'hash (sha256)',
       value: { data: hash.truncated, clipboard: file.hash },

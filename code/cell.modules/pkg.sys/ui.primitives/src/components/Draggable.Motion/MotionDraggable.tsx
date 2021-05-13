@@ -1,5 +1,5 @@
 import { domMax, DragElastic, LazyMotion } from 'framer-motion';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { filter } from 'rxjs/operators';
 
 import { css, CssValue, t, useResizeObserver } from './common';
@@ -9,7 +9,7 @@ import * as n from './types';
 
 export type MotionDraggableProps = {
   bus: t.EventBus<any>;
-  items?: n.MotionDraggableItem[];
+  items?: n.MotionDraggableDef[];
   elastic?: DragElastic;
   style?: CssValue;
 };
@@ -61,10 +61,12 @@ const View: React.FC<MotionDraggableProps> = (props) => {
   const elBody =
     resize.ready &&
     items.map((item) => {
+      const { width, height } = resize.rect;
+      const container: n.MotionDraggableContainer = { size: { width, height } };
       return (
         <div key={item.id} {...styles.item}>
           <LazyMotion features={domMax}>
-            <Child bus={bus} item={item} container={resize.rect} elastic={elastic} />
+            <Child bus={bus} def={item} container={container} elastic={elastic} />
           </LazyMotion>
         </div>
       );

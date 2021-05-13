@@ -1,36 +1,34 @@
-import { DragElastic, m, useMotionValue } from 'framer-motion';
-import React, { useEffect, useRef } from 'react';
+import { DragElastic, m } from 'framer-motion';
+import React, { useRef } from 'react';
 
 import { css, t } from './common';
 import { useItemController, useScale } from './hooks';
 import * as n from './types';
-import { ItemUtil } from './util';
 
 export type ChildProps = {
   bus: t.EventBus<any>;
-  item: n.MotionDraggableItem;
-  container: { width: number; height: number };
+  def: n.MotionDraggableDef;
+  container: n.MotionDraggableContainer;
   elastic?: DragElastic;
 };
 
 export const Child: React.FC<ChildProps> = (props) => {
-  const { container, item, elastic = 0.3 } = props;
-  const id = item.id;
-  const { width, height } = ItemUtil.toSize(item);
+  const { container, def, elastic = 0.3 } = props;
+  const id = def.id;
   const bus = props.bus.type<n.MotionDraggableEvent>();
 
   const rootRef = useRef<HTMLDivElement>(null);
+  const { state, motion } = useItemController({ bus, def });
+  const { x, y, width, height, scale } = motion;
 
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  useItemController({ bus, item, x, y });
-
-  const scaleable = typeof item.scaleable === 'object' ? item.scaleable : { min: 0.5, max: 5 };
-  const scale = useScale(rootRef, {
-    isEnabled: Boolean(item.scaleable),
+  const scaleable = typeof def.scaleable === 'object' ? def.scaleable : { min: 0.5, max: 5 };
+  useScale(rootRef, scale, {
+    isEnabled: Boolean(def.scaleable),
     min: scaleable.min,
     max: scaleable.max,
   });
+
+  if (!state) return null;
 
   const dragHandler = (lifecycle: n.MotionDraggableItemDrag['lifecycle']) => {
     return () => {
@@ -54,8 +52,8 @@ export const Child: React.FC<ChildProps> = (props) => {
   const constraints = {
     top: 0,
     left: 0,
-    right: container.width - width,
-    bottom: container.height - height,
+    right: container.size.width - width.get(),
+    bottom: container.size.height - height.get(),
   };
 
   const styles = {
@@ -66,6 +64,8 @@ export const Child: React.FC<ChildProps> = (props) => {
     }),
   };
 
+  const el = typeof def.el !== 'function' ? def.el : def.el({ state, container });
+
   return (
     <m.div
       ref={rootRef}
@@ -73,7 +73,7 @@ export const Child: React.FC<ChildProps> = (props) => {
       dragElastic={elastic}
       dragMomentum={true}
       dragConstraints={constraints}
-      style={{ x, y, width, height, scale }}
+      style={{ scale, x, y, width, height }}
       onPanStart={dragHandler('start')}
       onPanEnd={dragHandler('complete')}
       onMouseDown={mouseHandler('down')}
@@ -82,7 +82,7 @@ export const Child: React.FC<ChildProps> = (props) => {
       onMouseLeave={mouseHandler('leave')}
       {...styles.base}
     >
-      {typeof item.el === 'function' ? item.el(item) : item.el}
+      {el}
     </m.div>
   );
 };

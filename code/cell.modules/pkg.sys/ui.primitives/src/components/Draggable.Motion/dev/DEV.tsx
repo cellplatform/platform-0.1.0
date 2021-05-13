@@ -10,6 +10,7 @@ type Ctx = {
   bus: t.EventBus<n.MotionDraggableEvent>;
   events: n.MotionDraggableEvents;
   count: number;
+  render: boolean;
   props: MotionDraggableProps;
 };
 
@@ -39,11 +40,21 @@ export const actions = DevActions<Ctx>()
     const events = MotionDraggable.Events(bus);
 
     return {
+      render: true,
       bus,
       events,
       count: 0,
       props: { bus },
     };
+  })
+
+  .items((e) => {
+    e.boolean('render subject', (e) => {
+      if (e.changing) e.ctx.render = e.changing.next;
+      e.boolean.current = e.ctx.render;
+    });
+
+    e.hr();
   })
 
   .items((e) => {
@@ -72,8 +83,16 @@ export const actions = DevActions<Ctx>()
       const events = e.ctx.events;
       const status = await events.status.get();
       const id = status.items[0].id;
-      const res = await events.item.move.start({ id, x: 200, y: 150 });
+      const res = await events.item.change.start({ id, x: 200, y: 150 });
       e.button.description = toObject('move', res);
+    });
+
+    e.button('scale', async (e) => {
+      const events = e.ctx.events;
+      const status = await events.status.get();
+      const id = status.items[0].id;
+      const res = await events.item.change.start({ id, scale: 2 });
+      e.button.description = toObject('scale', res);
     });
 
     e.hr();
@@ -91,7 +110,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(<Sample {...e.ctx.props} />);
+    if (e.ctx.render) e.render(<Sample {...e.ctx.props} />);
   });
 
 export default actions;

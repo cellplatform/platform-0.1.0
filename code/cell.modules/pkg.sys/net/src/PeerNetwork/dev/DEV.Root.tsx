@@ -17,9 +17,8 @@ export type RootLayoutProps = {
 export const RootLayout: React.FC<RootLayoutProps> = (props) => {
   const { netbus, bus } = props;
 
-  const peer = useLocalPeer({ self: netbus.self, bus });
-
   const baseRef = useRef<HTMLDivElement>(null);
+  const peer = useLocalPeer({ self: netbus.self, bus });
 
   /**
    * NOTE: This drag monitor is setup to prevent arbitrarily dropped

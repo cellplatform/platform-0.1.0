@@ -142,7 +142,7 @@ const networkItems = (props: PeerPropListProps) => {
   return [
     { label: 'local peer', value: { data: status.id, clipboard: true } },
     { label: `signal server`, value: elSignal },
-    { label: 'age', value: age },
+    { label: 'connected timespan', value: age },
     { label: 'online', value: status.isOnline },
   ];
 };

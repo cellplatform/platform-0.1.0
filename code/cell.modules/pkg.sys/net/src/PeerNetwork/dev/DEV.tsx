@@ -1,23 +1,22 @@
 import React from 'react';
-import { DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
+import { toObject, DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
 
 import {
   css,
   cuid,
   deleteUndefined,
   Icons,
+  isLocalhost,
   MediaStream,
   PeerNetwork,
   rx,
   t,
   time,
-  isLocalhost,
+  QueryString,
 } from './common';
 import { RootLayout } from './DEV.Root';
 import { EventBridge } from './event';
-import { DevModel, DevGroupSeed, GroupSeed } from './model';
-
-import { QueryString } from '@platform/util.string/lib/QueryString';
+import { DevGroupSeed, GroupSeed } from './layouts';
 
 type Ctx = {
   self: t.PeerId;
@@ -39,6 +38,7 @@ type CtxFlags = {
   collapseMedia: boolean;
   cardsMedia: boolean;
   cardsData: boolean;
+  isLayoutFullscreen: boolean;
 };
 type CtxEvents = {
   peer: t.PeerNetworkEvents;
@@ -71,7 +71,7 @@ export const actions = DevActions<Ctx>()
     };
 
     const strategy = {
-      peer: PeerNetwork.PeerStrategy({ self, bus }),
+      peer: PeerNetwork.PeerStrategy({ bus, netbus }),
       group: PeerNetwork.GroupStrategy({ bus, netbus }),
       fs: PeerNetwork.FilesystemStrategy({ bus, netbus }),
     };
@@ -91,7 +91,9 @@ export const actions = DevActions<Ctx>()
 
     const storage = LocalStorage<CtxFlags>('sys.net/dev/PeerNetwork');
 
+    // Default flag values (NB: state stored in localStorage).
     const flags = storage.object({
+      isLayoutFullscreen: false,
       isFullscreen: true,
       isReliable: true,
       debugJson: false,
@@ -177,30 +179,6 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.2);
 
-    e.button('network model', (e) => {
-      const { bus, netbus } = e.toObject(e.ctx) as Ctx;
-      const el = <DevModel bus={bus} netbus={netbus} />;
-      e.ctx.bus.fire({ type: 'DEV/modal', payload: { el, target: 'body' } });
-    });
-
-    e.button('group/layout: cards (default)', (e) => {
-      const netbus = e.toObject<Ctx>(e.ctx)?.netbus as t.NetBus<t.DevEvent>;
-      netbus.fire({
-        type: 'DEV/group/layout',
-        payload: { kind: 'cards' },
-      });
-    });
-
-    e.button('group/layout: videos', (e) => {
-      const netbus = e.toObject<Ctx>(e.ctx)?.netbus as t.NetBus<t.DevEvent>;
-      netbus.fire({
-        type: 'DEV/group/layout',
-        payload: { kind: 'videos' },
-      });
-    });
-
-    e.hr(1, 0.2);
-
     e.textbox((config) => {
       config
         .initial(config.ctx.signal)
@@ -211,6 +189,39 @@ export const actions = DevActions<Ctx>()
           if (e.changing) e.ctx.signal = e.changing.next;
         });
     });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Layout');
+
+    e.boolean('fullscreen', (e) => {
+      const flags = e.ctx.toFlags();
+      if (e.changing) flags.isLayoutFullscreen = e.changing.next;
+      const value = flags.isLayoutFullscreen;
+      e.boolean.current = value;
+      e.boolean.description = value ? `Show layout fullscreen` : `Show layout within body`;
+    });
+
+    e.hr(1, 0.2);
+
+    const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind']) => {
+      const { netbus } = toObject(ctx) as Ctx;
+      const isLayoutFullscreen = ctx.toFlags().isLayoutFullscreen;
+      const target: t.DevModalTarget = isLayoutFullscreen ? 'fullscreen' : 'body';
+      netbus.fire({
+        type: 'DEV/group/layout',
+        payload: { kind, target },
+      });
+    };
+
+    e.button('group: videos (physics)', (e) => showLayout(e.ctx, 'videos'));
+    e.button('group: crdt', (e) => showLayout(e.ctx, 'crdt'));
+    e.button('group: screensize', (e) => showLayout(e.ctx, 'screensize'));
+
+    e.hr(1, 0.2);
+    e.button('reset (default)', (e) => showLayout(e.ctx, 'cards'));
 
     e.hr();
   })
@@ -362,7 +373,7 @@ export const actions = DevActions<Ctx>()
 
     e.boolean((config) =>
       config
-        .label('connection.autoPropagation')
+        .label('connection.autoPropagation [TODO]')
         .description('Automatically propogate data connections to peers.')
         .pipe((e) => {
           const strategy = e.ctx.toStrategy();
@@ -401,7 +412,7 @@ export const actions = DevActions<Ctx>()
     e.boolean((config) =>
       config
         .title('filesystem')
-        .label('filesystem.cache')
+        .label('filesystem.cache [TODO]')
         .description('De-dupe and manage caching network files.')
         .pipe((e) => {
           const strategy = e.ctx.toStrategy();

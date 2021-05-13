@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Hr } from 'sys.ui.primitives/lib/components/Hr';
 
 import { css, CssValue, t } from '../common';
-import { useDevLocalController } from '../DEV.useDevLocalController';
-import { useDevGroupController } from '../DEV.useDevGroupController';
-import { DevNetworkHeader } from './DEV.Network.Header';
+import { useGroupController, useLocalController } from '../hook';
 import { DevNetworkConnections } from './DEV.Network.Connections';
+import { DevNetworkHeader } from './DEV.Network.Header';
+import { useGroupScreensize } from '../hook';
 
 export type DevNetworkProps = {
   bus: t.EventBus<any>;
@@ -21,8 +21,11 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
   const { peer, media, netbus } = props;
   const bus = props.bus.type<t.PeerEvent>();
 
-  const local = useDevLocalController({ bus });
-  const group = useDevGroupController({ bus, netbus });
+  const baseRef = useRef<HTMLDivElement>(null);
+
+  const local = useLocalController({ bus });
+  const group = useGroupController({ bus, netbus });
+  const screens = useGroupScreensize({ kind: 'root', ref: baseRef, netbus, bus });
 
   const styles = {
     base: css({
@@ -53,7 +56,7 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
   );
 
   return (
-    <div {...css(styles.base, props.style)}>
+    <div ref={baseRef} {...css(styles.base, props.style)}>
       <DevNetworkHeader bus={bus} netbus={netbus} peer={peer} media={media} />
       <Hr thickness={10} opacity={0.05} margin={0} />
       {elBody}

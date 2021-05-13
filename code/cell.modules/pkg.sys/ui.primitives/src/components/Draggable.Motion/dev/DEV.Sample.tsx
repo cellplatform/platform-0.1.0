@@ -1,8 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
-import { MotionDraggable, MotionDraggableItem, MotionDraggableProps } from '..';
-import { css, useEventListener, CssValue, color } from '../common';
-import { useScale } from '../hooks';
+import { MotionDraggable, MotionDraggableDef, MotionDraggableProps } from '..';
+import { color, css, CssValue } from '../common';
+import { DevChild } from './DEV.Child';
 
 /**
  * Sample.
@@ -16,16 +16,15 @@ export const Sample: React.FC<MotionDraggableProps> = (props) => {
     bg: css({ Absolute: 0, Flex: 'center-center', userSelect: 'none', opacity: 0.3 }),
   };
 
-  const items: MotionDraggableItem[] = [
-    { id: 'foo-1', width: 100, height: 100, el: <Child>Foo-1</Child> },
+  const items: MotionDraggableDef[] = [
+    { id: 'foo-1', width: 100, height: 100, el: <DevChild>Foo-1</DevChild>, scaleable: true },
     {
       id: 'foo-2',
       width: () => 200,
-      height: () => 80,
-      el() {
-        return <Child>Foo-2</Child>;
+      height: () => 300,
+      el(e) {
+        return <DevChild state={e.state} container={e.container} />;
       },
-      scaleable: true,
     },
   ];
 
@@ -33,29 +32,6 @@ export const Sample: React.FC<MotionDraggableProps> = (props) => {
     <div {...styles.base}>
       <div {...styles.bg} onClick={handleBgClick}>{`background click: ${count}`}</div>
       <MotionDraggable {...props} style={{ flex: 1 }} items={items} />
-    </div>
-  );
-};
-
-/**
- * Sample item (child).
- */
-export type ChildProps = { style?: CssValue };
-
-export const Child: React.FC<ChildProps> = (props) => {
-  const rootRef = useRef<HTMLDivElement>(null);
-
-  const styles = {
-    base: css({
-      flex: 1,
-      padding: 20,
-      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-      borderRadius: 20,
-    }),
-  };
-  return (
-    <div ref={rootRef} {...css(styles.base, props.style)}>
-      {props.children}
     </div>
   );
 };

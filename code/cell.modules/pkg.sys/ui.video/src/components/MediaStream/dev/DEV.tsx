@@ -6,6 +6,7 @@ import { MediaStream, VideoStreamProps } from '..';
 import { css, cuid, deleteUndefined, HttpClient, log, rx, t } from './common';
 import { Sample } from './DEV.Sample';
 import { DevAudioWaveform } from './DEV.AudioWaveform';
+import { DevRecordButton } from './DEV.RecordButton';
 
 type Events = ReturnType<typeof MediaStream.Events>;
 type Ctx = {
@@ -37,7 +38,7 @@ export const actions = DevActions<Ctx>()
     const events = MediaStream.Events(bus);
 
     MediaStream.Controller({ bus });
-    MediaStream.RecordController({ ref, bus });
+    // MediaStream.RecordController({ ref, bus });
 
     rx.payload<t.MediaStreamErrorEvent>(bus.event$, 'MediaStream/error')
       .pipe(filter((e) => e.ref === ref))
@@ -115,63 +116,72 @@ export const actions = DevActions<Ctx>()
       e.button.description = <ObjectView name={name} data={data} fontSize={10} expandLevel={3} />;
     });
 
+    e.hr(1, 0.1);
+
+    e.button('fire ⚡️ MediaStreams/record/status:req', async (e) => {
+      const ref = e.ctx.ref;
+      const data = deleteUndefined(await e.ctx.events.record(ref).status.get());
+      const name = 'response: recording';
+      e.button.description = <ObjectView name={name} data={data} fontSize={10} expandLevel={3} />;
+    });
+
     e.hr();
   })
 
-  .items((e) => {
-    e.title('Record');
+  // .items((e) => {
+  //   e.title('Record');
 
-    e.button('start', (e) => {
-      const ref = e.ctx.ref;
-      e.ctx.bus.fire({ type: 'MediaStream/record/start', payload: { ref } });
-    });
+  //   e.button('start', (e) => {
+  //     const ref = e.ctx.ref;
+  //     e.ctx.bus.fire({ type: 'MediaStream/record/start', payload: { ref } });
+  //   });
 
-    e.button('stop (and download)', (e) => {
-      const ref = e.ctx.ref;
-      e.ctx.bus.fire({
-        type: 'MediaStream/record/stop',
-        payload: { ref, download: { filename: 'test' } },
-      });
-    });
+  //   e.button('stop (and download)', (e) => {
+  //     const ref = e.ctx.ref;
+  //     e.ctx.bus.fire({
+  //       type: 'MediaStream/record/stop',
+  //       payload: { ref, download: { filename: 'test' } },
+  //     });
+  //   });
 
-    e.button((config) =>
-      config
-        .label('stop (and save to cell.fs)')
-        .description('target: `host/cell:<ns>:A1`')
-        .pipe((e) => {
-          return new Promise<void>((resolve, reject) => {
-            const ref = e.ctx.ref;
-            e.ctx.bus.fire({
-              type: 'MediaStream/record/stop',
-              payload: {
-                ref,
-                data: async (file) => {
-                  // const host = 5000;
-                  const host = 'https://os.ngrok.io';
+  //   e.button((config) =>
+  //     config
+  //       .label('stop (and save to cell.fs)')
+  //       .description('target: `host/cell:<ns>:A1`')
+  //       .pipe((e) => {
+  //         return new Promise<void>((resolve, reject) => {
+  //           const ref = e.ctx.ref;
+  //           e.ctx.bus.fire({
+  //             type: 'MediaStream/record/stop',
+  //             payload: {
+  //               ref,
+  //               data: async (file) => {
+  //                 // const host = 5000;
+  //                 const host = 'https://os.ngrok.io';
 
-                  const client = HttpClient.create(host);
-                  const cell = client.cell('cell:ckm8fe8o0000d9reteimz8y7v:A1');
-                  const filename = 'tmp/record.webm';
-                  const data = await file.arrayBuffer();
-                  const res = await cell.fs.upload({ filename, data });
+  //                 const client = HttpClient.create(host);
+  //                 const cell = client.cell('cell:ckm8fe8o0000d9reteimz8y7v:A1');
+  //                 const filename = 'tmp/record.webm';
+  //                 const data = await file.arrayBuffer();
+  //                 const res = await cell.fs.upload({ filename, data });
 
-                  console.log('HTTP Response', res);
-                  console.log('OK', res.ok);
-                  const url = cell.url.file.byName(filename).toString();
-                  console.log('Saved to:', url);
+  //                 console.log('HTTP Response', res);
+  //                 console.log('OK', res.ok);
+  //                 const url = cell.url.file.byName(filename).toString();
+  //                 console.log('Saved to:', url);
 
-                  const md = `recorded file [download](${url})`;
-                  e.button.description = md;
-                  resolve();
-                },
-              },
-            });
-          });
-        }),
-    );
+  //                 const md = `recorded file [download](${url})`;
+  //                 e.button.description = md;
+  //                 resolve();
+  //               },
+  //             },
+  //           });
+  //         });
+  //       }),
+  //   );
 
-    e.hr();
-  })
+  //   e.hr();
+  // })
 
   .subject((e) => {
     const { ref, bus } = e.ctx;
@@ -193,6 +203,12 @@ export const actions = DevActions<Ctx>()
       width,
       background: 1,
       label: 'Audio Waveform',
+    });
+
+    e.render(<DevRecordButton bus={bus} streamRef={ref} />, {
+      width,
+      background: 1,
+      label: '<RecordButton>',
     });
   });
 export default actions;

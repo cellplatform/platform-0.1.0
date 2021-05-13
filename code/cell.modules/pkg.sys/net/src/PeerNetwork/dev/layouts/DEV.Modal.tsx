@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { Button, color, css, CssValue, defaultValue, events, Icons, t, COLORS } from './common';
+import { Button, color, css, CssValue, defaultValue, events, Icons, t, COLORS } from '../common';
 
 export type DevModalProps = {
   bus: t.EventBus<any>;

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { css, CssValue, t, Dropped } from '../common';
-import { DevCard } from '../DEV.Card';
+import { DevCard } from '../layouts';
 import { DevDataConnection } from './DEV.Data.Connection';
 import { DevMediaConnection } from './DEV.Media.Connection';
 
