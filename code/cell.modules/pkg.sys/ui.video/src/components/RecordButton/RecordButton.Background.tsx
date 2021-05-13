@@ -6,15 +6,17 @@ import { RecordButtonState } from './types';
 
 export type BackgroundProps = {
   isEnabled: boolean;
+  borderRadius: { root: number; inner: number };
   state: RecordButtonState;
-  size: number;
   width: number;
   height: number;
+  blur?: number;
   style?: CssValue;
 };
 
 export const Background: React.FC<BackgroundProps> = (props) => {
-  const { isEnabled, size, width, height, state } = props;
+  const { isEnabled, borderRadius, width, height, state } = props;
+  const blur = props.blur ?? 12;
 
   let borderColor = color.format(-0.2);
 
@@ -22,15 +24,10 @@ export const Background: React.FC<BackgroundProps> = (props) => {
     bg: isEnabled ? COLORS.RED : color.format(-0.2),
   };
 
-  const borderRadius = {
-    root: size / 2,
-    inner: size / 2 - 5,
-  };
-
   if (isEnabled) {
     if (['recording', 'paused'].includes(state)) borderColor = COLORS.RED;
     if (['recording', 'paused'].includes(state)) inner.bg = color.alpha(COLORS.RED, 0.1);
-    if (['dialog'].includes(state)) inner.bg = color.format(-0.06);
+    if (['dialog'].includes(state)) inner.bg = color.format(0);
   }
 
   const styles = {
@@ -47,7 +44,7 @@ export const Background: React.FC<BackgroundProps> = (props) => {
       position: 'relative',
       Flex: 'center-center',
       overflow: 'hidden',
-      backdropFilter: `blur(12px)`,
+      backdropFilter: `blur(${blur}px)`,
     }),
   };
 
@@ -65,8 +62,8 @@ export const Background: React.FC<BackgroundProps> = (props) => {
           backgroundColor: inner.bg,
         }}
         animate={{
-          borderRadius: borderRadius.inner,
           borderColor,
+          borderRadius: borderRadius.inner,
           backgroundColor: inner.bg,
         }}
       />

@@ -1,11 +1,17 @@
-import { domAnimation, LazyMotion, m } from 'framer-motion';
+import { domAnimation, LazyMotion } from 'framer-motion';
 import React from 'react';
 
-import { color, COLORS, css, CssValue, t, transition } from './common';
+import { css, CssValue, t } from './common';
+import { Background } from './RecordButton.Background';
 import { Paused } from './RecordButton.Paused';
 import { Recording } from './RecordButton.Recording';
-import { RecordButtonAction, RecordButtonClickEventHandler, RecordButtonState } from './types';
-import { Background } from './RecordButton.Background';
+import { Dialog } from './RecordButton.Dialog';
+import {
+  RecordButtonAction,
+  RecordButtonClickEventHandler,
+  RecordButtonState,
+  RecordButtonDialogHandler,
+} from './types';
 
 export type RecordButtonProps = {
   bus: t.EventBus<any>;
@@ -15,6 +21,7 @@ export type RecordButtonProps = {
   isEnabled?: boolean;
   style?: CssValue;
   onClick?: RecordButtonClickEventHandler;
+  onDialog?: RecordButtonDialogHandler;
 };
 
 export const RecordButton: React.FC<RecordButtonProps> = (props) => {
@@ -26,6 +33,10 @@ export const RecordButton: React.FC<RecordButtonProps> = (props) => {
 
   let height = size as number;
   let width = height;
+  const borderRadius = {
+    root: size / 2,
+    inner: size / 2 - 5,
+  };
 
   if (isEnabled) {
     if (['recording', 'paused', 'dialog'].includes(state)) width = size * 4;
@@ -51,7 +62,13 @@ export const RecordButton: React.FC<RecordButtonProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)} onClick={() => handleClick(['default', 'recording'])}>
       <LazyMotion features={domAnimation}>
-        <Background isEnabled={isEnabled} state={state} size={size} width={width} height={height} />
+        <Background
+          isEnabled={isEnabled}
+          state={state}
+          width={width}
+          height={height}
+          borderRadius={borderRadius}
+        />
 
         <Recording
           stream={stream}
@@ -69,6 +86,14 @@ export const RecordButton: React.FC<RecordButtonProps> = (props) => {
           height={size - 12}
           style={{ Absolute: 6 }}
           onClick={(e) => handleClick(['paused'], e.action)}
+        />
+
+        <Dialog
+          isEnabled={isEnabled}
+          state={state}
+          borderRadius={borderRadius.inner}
+          style={{ Absolute: 6 }}
+          onDialog={props.onDialog}
         />
       </LazyMotion>
     </div>

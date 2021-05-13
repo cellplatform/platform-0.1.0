@@ -1,7 +1,17 @@
+import { CssProps } from '@platform/css';
 import React from 'react';
 import { DevActions, LocalStorage } from 'sys.ui.dev';
-import { RecordButton, RecordButtonProps, RecordButtonStates, RecordButtonState } from '..';
-import { t, rx } from './common';
+import {
+  RecordButton,
+  RecordButtonProps,
+  RecordButtonStates,
+  RecordButtonDialogHandlerArgs,
+} from '..';
+import { color, t, rx } from './common';
+import { DevDialog } from './DEV.Dialog';
+
+type DialogKind = 'hello' | 'dev/dialog';
+const DialogKinds: DialogKind[] = ['hello', 'dev/dialog'];
 
 type Ctx = {
   bus: t.EventBus<any>;
@@ -13,6 +23,7 @@ type CtxStorage = {
   state: RecordButtonProps['state'];
   size: RecordButtonProps['size'];
   isEnabled: RecordButtonProps['isEnabled'];
+  dialog: DialogKind;
 };
 
 /**
@@ -25,7 +36,12 @@ export const actions = DevActions<Ctx>()
 
     const bus = rx.bus();
     const local = LocalStorage<CtxStorage>(`${e.namespace}/dev`);
-    const storage = local.object({ state: 'default', size: 45, isEnabled: true });
+    const storage = local.object({
+      state: 'default',
+      size: 45,
+      isEnabled: true,
+      dialog: 'hello',
+    });
 
     return {
       bus,
@@ -73,6 +89,20 @@ export const actions = DevActions<Ctx>()
     );
 
     e.hr();
+
+    e.select((config) =>
+      config
+        .items(DialogKinds)
+        .initial(config.ctx.toStorage().dialog)
+        .view('buttons')
+        .pipe(async (e) => {
+          const store = e.ctx.toStorage();
+          const current = e.select.current[0]; // NB: always first.
+          e.select.label = current ? `dialog: ${current.value}` : `dialog: unknown`;
+          if (e.changing) store.dialog = current.value;
+          if (e.changing) e.ctx.redraw();
+        }),
+    );
   })
 
   .subject((e) => {
@@ -81,11 +111,34 @@ export const actions = DevActions<Ctx>()
       layout: { cropmarks: -0.2 },
     });
 
+    const dialogFactory = (args: RecordButtonDialogHandlerArgs) => {
+      const kind = e.ctx.toStorage().dialog;
+
+      if (kind === 'hello') {
+        const style: CssProps = {
+          flex: 1,
+          padding: 15,
+          backgroundColor: color.format(-0.03),
+        };
+        return <div style={style}>Hello! 👋</div>;
+      }
+
+      if (kind === 'dev/dialog') {
+        return <DevDialog />;
+      }
+
+      return undefined;
+    };
+
     e.render(
       <RecordButton
         {...e.ctx.toStorage()}
         bus={e.ctx.bus}
         onClick={(e) => console.log('onClick', e)}
+        onDialog={(e) => {
+          const view = dialogFactory(e);
+          e.element(view);
+        }}
       />,
     );
   });
