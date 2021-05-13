@@ -1,14 +1,10 @@
 import { CssProps } from '@platform/css';
 import React from 'react';
 import { DevActions, LocalStorage } from 'sys.ui.dev';
-import {
-  RecordButton,
-  RecordButtonProps,
-  RecordButtonStates,
-  RecordButtonDialogHandlerArgs,
-} from '..';
+import { RecordButton, RecordButtonProps, RecordButtonStates } from '..';
 import { color, t, rx } from './common';
 import { DevDialog } from './DEV.Dialog';
+import { PropList } from 'sys.ui.primitives/lib/components/PropList';
 
 type DialogKind = 'hello' | 'dev/dialog';
 const DialogKinds: DialogKind[] = ['hello', 'dev/dialog'];
@@ -111,20 +107,33 @@ export const actions = DevActions<Ctx>()
       layout: { cropmarks: -0.2 },
     });
 
-    const dialogFactory = (args: RecordButtonDialogHandlerArgs) => {
+    const dialogFactory = () => {
       const kind = e.ctx.toStorage().dialog;
 
+      const style: CssProps = {
+        flex: 1,
+        padding: 15,
+      };
+      const elHello = <div style={style}>Hello! 👋</div>;
+
       if (kind === 'hello') {
-        const style: CssProps = {
-          flex: 1,
-          padding: 15,
-          backgroundColor: color.format(-0.03),
-        };
-        return <div style={style}>Hello! 👋</div>;
+        return elHello;
       }
 
       if (kind === 'dev/dialog') {
-        return <DevDialog />;
+        return (
+          <DevDialog>
+            <PropList
+              margin={[10, 12]}
+              title={'PropList'}
+              items={[
+                { label: 'foo', value: 123 },
+                { label: 'bar', value: 456 },
+                { label: 'baz', value: 'Hello! 👋' },
+              ]}
+            />
+          </DevDialog>
+        );
       }
 
       return undefined;
@@ -135,10 +144,7 @@ export const actions = DevActions<Ctx>()
         {...e.ctx.toStorage()}
         bus={e.ctx.bus}
         onClick={(e) => console.log('onClick', e)}
-        onDialog={(e) => {
-          const view = dialogFactory(e);
-          e.element(view);
-        }}
+        dialog={{ element: dialogFactory() }}
       />,
     );
   });

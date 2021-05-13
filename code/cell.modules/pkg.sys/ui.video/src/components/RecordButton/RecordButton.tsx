@@ -10,7 +10,7 @@ import {
   RecordButtonAction,
   RecordButtonClickEventHandler,
   RecordButtonState,
-  RecordButtonDialogHandler,
+  RecordButtonDialog,
 } from './types';
 
 export type RecordButtonProps = {
@@ -21,7 +21,7 @@ export type RecordButtonProps = {
   isEnabled?: boolean;
   style?: CssValue;
   onClick?: RecordButtonClickEventHandler;
-  onDialog?: RecordButtonDialogHandler;
+  dialog?: RecordButtonDialog;
 };
 
 export const RecordButton: React.FC<RecordButtonProps> = (props) => {
@@ -73,27 +73,27 @@ export const RecordButton: React.FC<RecordButtonProps> = (props) => {
         <Recording
           stream={stream}
           state={state}
-          isEnabled={isEnabled}
-          width={width - 12}
           style={{ Absolute: 6 }}
+          width={width - 12}
+          isEnabled={isEnabled}
           onClick={() => handleClick(['recording'])}
         />
 
         <Paused
           state={state}
           isEnabled={isEnabled}
+          style={{ Absolute: 6 }}
           width={width - 12}
           height={size - 12}
-          style={{ Absolute: 6 }}
           onClick={(e) => handleClick(['paused'], e.action)}
         />
 
         <Dialog
           isEnabled={isEnabled}
           state={state}
-          borderRadius={borderRadius.inner}
           style={{ Absolute: 6 }}
-          onDialog={props.onDialog}
+          borderRadius={borderRadius.inner}
+          data={props.dialog}
         />
       </LazyMotion>
     </div>

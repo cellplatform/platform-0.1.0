@@ -26,47 +26,64 @@ export const Paused: React.FC<PausedProps> = (props) => {
       color: COLORS.WHITE,
       borderRadius: height,
     }),
-    edge: css({
-      flex: 1,
-      position: 'relative',
-      boxSizing: 'border-box',
-      PaddingX: 12,
-      paddingBottom: 2,
-      Flex: 'horizontal-center-center',
-      cursor: isEnabled ? 'pointer' : 'default',
-      overflow: 'hidden',
-    }),
-    left: css({
-      backgroundColor: COLORS.RED,
-      marginLeft: -10,
-      paddingLeft: 20,
-    }),
-    right: css({
-      backgroundColor: COLORS.BLACK,
-      marginRight: -10,
-      paddingRight: 20,
-      textAlign: 'right',
-    }),
+    button: {
+      base: css({
+        flex: 1,
+        position: 'relative',
+        boxSizing: 'border-box',
+        PaddingX: 12,
+        paddingBottom: 2,
+        cursor: isEnabled ? 'pointer' : 'default',
+        overflow: 'hidden',
+        Flex: 'horizontal-stretch-stretch',
+      }),
+      left: css({ backgroundColor: COLORS.RED, marginLeft: -10 }),
+      right: css({ backgroundColor: COLORS.BLACK, marginRight: -10 }),
+      body: {
+        base: css({ flex: 1, Flex: 'center-center', paddingBottom: 2 }),
+        left: css({ Absolute: [0, 0, 0, 10] }),
+        right: css({ Absolute: [0, 10, 0, 0], textAlign: 'right' }),
+      },
+    },
   };
 
   const clickHandler = (action: RecordButtonAction) => {
     return () => props.onClick?.({ action });
   };
 
-  const edgeButton = (action: RecordButtonAction, label: string, style: CssValue, x: number) => {
+  const edgeButtonBody = (label: string, style: CssValue) => {
+    return (
+      <m.div {...css(styles.button.body.base, style)} whileTap={{ y: 1 }}>
+        {label}
+      </m.div>
+    );
+  };
+
+  const edgeButtonOuter = (
+    action: RecordButtonAction,
+    style: CssValue,
+    x: number,
+    children: React.ReactNode,
+  ) => {
     return (
       <m.div
-        {...css(styles.edge, style)}
+        {...css(styles.button.base, style)}
         onClick={clickHandler(action)}
         style={{ x }}
         animate={{ x }}
       >
-        <m.div whileTap={{ y: 1 }}>{label}</m.div>
+        {children}
       </m.div>
     );
   };
 
   const offset = state === 'paused' ? 0 : width / 2;
+
+  const elLeftBody = edgeButtonBody('Resume', styles.button.body.left);
+  const elLeft = edgeButtonOuter('resume', styles.button.left, 0 - offset, elLeftBody);
+
+  const elRightBody = edgeButtonBody('Done', styles.button.body.right);
+  const elRight = edgeButtonOuter('finish', styles.button.right, offset, elRightBody);
 
   return (
     <m.div
@@ -75,8 +92,8 @@ export const Paused: React.FC<PausedProps> = (props) => {
       animate={{ opacity }}
       transition={transition}
     >
-      {edgeButton('resume', 'Resume', styles.left, 0 - offset)}
-      {edgeButton('finish', 'Done', styles.right, offset)}
+      {elLeft}
+      {elRight}
     </m.div>
   );
 };

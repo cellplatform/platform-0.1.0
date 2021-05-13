@@ -1,4 +1,4 @@
-import { m } from 'framer-motion';
+import { m, domAnimation, LazyMotion } from 'framer-motion';
 import React from 'react';
 
 import { color, COLORS, css, CssValue, transition } from './common';
@@ -45,6 +45,7 @@ export const Background: React.FC<BackgroundProps> = (props) => {
       Flex: 'center-center',
       overflow: 'hidden',
       backdropFilter: `blur(${blur}px)`,
+      borderRadius: borderRadius.inner,
     }),
   };
 
@@ -58,12 +59,11 @@ export const Background: React.FC<BackgroundProps> = (props) => {
       <m.div
         {...styles.inner}
         style={{
-          borderRadius: borderRadius.inner,
+          borderColor,
           backgroundColor: inner.bg,
         }}
         animate={{
           borderColor,
-          borderRadius: borderRadius.inner,
           backgroundColor: inner.bg,
         }}
       />

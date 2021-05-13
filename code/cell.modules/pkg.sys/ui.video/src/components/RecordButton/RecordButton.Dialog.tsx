@@ -1,35 +1,26 @@
 import React, { useEffect, useState } from 'react';
 
 import { css, CssValue } from './common';
-import {
-  RecordButtonDialogHandler,
-  RecordButtonDialogHandlerArgs,
-  RecordButtonState,
-} from './types';
+import { RecordButtonDialog, RecordButtonState } from './types';
 
 export type DialogProps = {
+  data?: RecordButtonDialog;
   isEnabled: boolean;
   state: RecordButtonState;
   borderRadius: number;
   style?: CssValue;
-  onDialog?: RecordButtonDialogHandler;
 };
 
 export const Dialog: React.FC<DialogProps> = (props) => {
-  const { state, borderRadius, onDialog } = props;
+  const { state, borderRadius, data } = props;
   const [elBody, setElBody] = useState<JSX.Element | undefined>();
 
   useEffect(() => {
-    if (onDialog) {
-      const args: RecordButtonDialogHandlerArgs = {
-        element: (view) => {
-          setElBody(() => view);
-          return args;
-        },
-      };
-      onDialog(args);
+    if (data && state === 'dialog') {
+      const el = typeof data.element === 'object' ? data.element : data.element?.();
+      setElBody(() => el);
     }
-  }, [state]); // eslint-disable-line
+  }, [state, data]); // eslint-disable-line
 
   if (state !== 'dialog') return null;
 
