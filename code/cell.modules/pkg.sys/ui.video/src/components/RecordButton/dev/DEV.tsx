@@ -1,6 +1,6 @@
 import { CssProps } from '@platform/css';
 import React from 'react';
-import { DevActions, LocalStorage } from 'sys.ui.dev';
+import { DevActions, LocalStorage, Hr } from 'sys.ui.dev';
 import { RecordButton, RecordButtonProps, RecordButtonStates } from '..';
 import { color, t, rx } from './common';
 import { DevDialog } from './DEV.Dialog';
@@ -132,6 +132,7 @@ export const actions = DevActions<Ctx>()
                 { label: 'baz', value: 'Hello! 👋' },
               ]}
             />
+            {/* <Hr thickness={5} opacity={1} /> */}
           </DevDialog>
         );
       }
