@@ -1,6 +1,6 @@
 {
   "name": "@platform/react",
-  "version": "0.4.67",
+  "version": "0.4.69",
   "description": "React refs and helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,17 +15,17 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/css": "0.4.34",
-    "@platform/util.is": "0.0.148",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.0"
+    "@platform/css": "0.4.36",
+    "@platform/util.is": "0.0.150",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@platform/polyfill": "0.0.2",
-    "@platform/test": "0.2.5",
-    "@platform/ts": "4.1.9",
+    "@platform/polyfill": "0.0.3",
+    "@platform/test": "0.2.6",
+    "@platform/ts": "4.1.11",
     "parcel-bundler": "1.12.5",
-    "react-inspector": "5.1.0"
+    "react-inspector": "5.1.1"
   },
   "files": [
     "lib",

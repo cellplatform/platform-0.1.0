@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.code",
-  "version": "0.0.57",
+  "version": "0.0.59",
   "compiler": {
     "port": 3034
   },
@@ -22,17 +22,16 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^4.0.11",
-    "@platform/state": "^0.7.35",
-    "monaco-editor": "^0.23.0",
+    "@platform/state": "^0.7.37",
+    "monaco-editor": "^0.24.0",
     "monaco-themes": "^0.3.3"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.3.11",
+    "@platform/cell.compiler": "^0.3.20",
     "@types/prettier": "^2.1.6",
-    "automerge": "^0.14.1",
-    "prettier": "^2.2.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "prettier": "^2.3.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "license": "MIT",
   "private": true
