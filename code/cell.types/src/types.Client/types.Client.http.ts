@@ -104,9 +104,10 @@ export type IHttpClientCellFsUploadOptions = {
   permission?: t.FsS3Permission;
 };
 
-export type IHttpClientCellFsUploadPromise = t.IHttpClientAsync<IHttpClientCellFileUploadResponse> & {
-  event$: t.Observable<t.IHttpClientUploadedEvent>;
-};
+export type IHttpClientCellFsUploadPromise =
+  t.IHttpClientAsync<IHttpClientCellFileUploadResponse> & {
+    event$: t.Observable<t.IHttpClientUploadedEvent>;
+  };
 
 export type IHttpClientCellFsCopyOptions = {
   changes?: boolean;

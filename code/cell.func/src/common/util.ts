@@ -21,7 +21,7 @@ export function eid() {
  * Convert an object `Error` with corresponding func/props.
  */
 export const toErrorObject = (input: t.IFuncError): t.IFuncError => {
-  const error = (new Error(input.message) as unknown) as t.IFuncError;
+  const error = new Error(input.message) as unknown as t.IFuncError;
   error.type = input.type;
   error.path = input.path;
   error.formula = input.formula;

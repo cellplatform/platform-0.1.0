@@ -9,8 +9,8 @@
     "packages": [
       "code/*",
       "code/cell.modules/pkg.*/*",
-      "code/cell.runtime.electron/app",
-      "code/cell.service/pkg.*"
+      "code/cell.service/pkg.*",
+      "code/cell.runtime.electron/app"
     ],
     "nohoist": [
       "**/electron",
@@ -18,8 +18,8 @@
     ]
   },
   "resolutions": {
-    "rxjs": "7.0.0-beta.15",
-    "core-js": "^3.10.0"
+    "rxjs": "7.0.1",
+    "core-js": "3.12.1"
   },
   "license": "MIT",
   "private": true

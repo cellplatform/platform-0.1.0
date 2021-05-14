@@ -1,6 +1,6 @@
 {
   "name": "cellos",
-  "version": "0.0.60",
+  "version": "0.0.62",
   "description": "The Cell operating system (CellOS)",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,11 +16,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.cli": "0.2.276"
+    "@platform/cell.cli": "0.2.278"
   },
   "devDependencies": {
-    "@platform/test": "0.2.5",
-    "@platform/ts": "4.1.9"
+    "@platform/test": "0.2.6",
+    "@platform/ts": "4.1.11"
   },
   "files": [
     "lib",

@@ -23,7 +23,7 @@ const arg = <T = string>(cmd: string, env: string, defaultValue: T, format?: (va
     value = argv[cmd] as T;
   }
   if (!value && process.env[env]) {
-    value = (process.env[env] as unknown) as T;
+    value = process.env[env] as unknown as T;
     value = typeof value === 'string' ? trimQuotes(value) : value;
   }
   value = typeof value === 'string' ? value.trim() : value;

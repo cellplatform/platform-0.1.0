@@ -215,9 +215,9 @@ export class Sync implements t.IDisposable {
         )
         .subscribe((e) => {
           const key = this.schema.grid.toCellKey(e.key);
-          const value = (typeof e.value === 'object'
-            ? e.value
-            : { value: e.value }) as t.IGridCellData;
+          const value = (
+            typeof e.value === 'object' ? e.value : { value: e.value }
+          ) as t.IGridCellData;
           this.fireSync({
             source: 'DB',
             kind: 'CELL',

@@ -18,7 +18,7 @@ export const downloadFilePreflight = async (args: {
     const fileResponse = await fileInfo({ fileUri, db, host });
     if (!util.isOK(fileResponse.status)) {
       // NB: This is an error.
-      error = (fileResponse as unknown) as t.IHttpError;
+      error = fileResponse as unknown as t.IHttpError;
       return { error };
     }
     const file = fileResponse.data as t.IResGetFile;

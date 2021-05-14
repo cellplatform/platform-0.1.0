@@ -59,7 +59,7 @@ type IFsMembers<
   Delete extends IFsDelete,
   Copy extends IFsCopy,
   CopyOptions extends IFsCopyOptions,
-  ResolveOptions extends IFsResolveOptions
+  ResolveOptions extends IFsResolveOptions,
 > = {
   type: Type;
   dir: string; // Root directory of the file-system.

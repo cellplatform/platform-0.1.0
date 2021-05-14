@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.runtime.electron",
-  "version": "0.0.176",
+  "version": "0.0.178",
   "description": "Electron shell for CellOS.",
   "scripts": {
     "ui": "cd app.ui && yarn start",
@@ -8,19 +8,18 @@
     "dev": "cd app && yarn dev",
     "test": "cd app && yarn test",
     "package": "cd app && yarn package",
-    "make": "yarn bundle && cd app && yarn make",
+    "make": "cd app && yarn make",
     "build": "cd app && yarn build",
     "clean": "sh script.sh/clean.sh",
     "reset": "sh script.sh/reset.sh",
     "nuke": "sh script.sh/nuke.sh",
-    "bundle": "sh script.sh/bundle.ui.sys.sh",
     "open": "cd app/out/make && open .",
     "public": "ngrok http 5000 --hostname=os.ngrok.io"
   },
   "devDependencies": {
-    "@platform/cell.runtime": "0.10.20",
-    "@platform/cli.prompt": "0.3.43",
-    "@platform/ts": "4.1.9"
+    "@platform/cell.runtime": "0.10.22",
+    "@platform/cli.prompt": "0.3.45",
+    "@platform/ts": "4.1.11"
   },
   "files": [
     "lib",

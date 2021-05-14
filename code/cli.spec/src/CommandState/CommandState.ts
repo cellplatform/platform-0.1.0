@@ -44,15 +44,15 @@ export class CommandState implements t.ICommandState {
    * [Fields]
    */
   private readonly _ = {
-    beforeInvoke: (undefined as unknown) as t.BeforeInvokeCommand,
+    beforeInvoke: undefined as unknown as t.BeforeInvokeCommand,
     dispose$: new Subject<void>(),
     events$: new Subject<t.CommandStateEvent>(),
-    root: (undefined as unknown) as Command,
+    root: undefined as unknown as Command,
     text: '',
-    namespace: (undefined as unknown) as t.ICommandNamespace,
+    namespace: undefined as unknown as t.ICommandNamespace,
     autoCompleted: undefined as t.ICommandAutoCompleted | undefined,
     prevChange: undefined as t.ICommandChange | undefined,
-    commandProps: ({} as unknown) as { [key: string]: any },
+    commandProps: {} as unknown as { [key: string]: any },
   };
 
   public readonly dispose$ = this._.dispose$.pipe(share());
@@ -143,9 +143,8 @@ export class CommandState implements t.ICommandState {
   public get fuzzy() {
     const currentId = this.command ? this.command.id : undefined;
     const root = this.namespace ? this.namespace.command : this.root;
-    const input = (this.autoCompleted
-      ? this.autoCompleted.matches.map((cmd) => cmd.name)
-      : [this.text]
+    const input = (
+      this.autoCompleted ? this.autoCompleted.matches.map((cmd) => cmd.name) : [this.text]
     ).filter((text) => Boolean(text.trim()));
     const isEmpty = input.length === 0;
     const matches = root.children

@@ -5,7 +5,7 @@ export const FOO = 12345;
 console.log('dynamic/app.ts', FOO);
 console.log('dynamic/app/process.env', process.env);
 
-const ctx = (global as unknown) as t.Global;
+const ctx = global as unknown as t.Global;
 ctx.res({
   msg: 'dynamic-import/app',
   env: process.env,

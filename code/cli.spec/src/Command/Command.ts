@@ -8,7 +8,7 @@ import { CommandParam, ICommandParamArgs } from '../CommandParam';
 
 type ICommandArgs<
   P extends t.ICommandProps = any, // eslint-disable-line
-  A extends t.CommandArgsOptions = any // eslint-disable-line
+  A extends t.CommandArgsOptions = any, // eslint-disable-line
 > = {
   name: string;
   description: string;
@@ -22,7 +22,8 @@ type ICommandArgs<
  * within a program that can optionally take parameter input.
  */
 export class Command<P extends t.ICommandProps = any, A extends t.CommandArgsOptions = any>
-  implements t.ICommand<P, A> {
+  implements t.ICommand<P, A>
+{
   /**
    * [Static]
    */
@@ -94,7 +95,7 @@ export class Command<P extends t.ICommandProps = any, A extends t.CommandArgsOpt
     params: [] as CommandParam[],
     dispose$: new Subject<void>(),
     events$: new Subject<t.CommandEvent>(),
-    tree: (undefined as unknown) as t.ITreeMethods | undefined,
+    tree: undefined as unknown as t.ITreeMethods | undefined,
   };
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(takeUntil(this.dispose$), share());
@@ -159,7 +160,7 @@ export class Command<P extends t.ICommandProps = any, A extends t.CommandArgsOpt
   public as<P1 extends Record<string, unknown>, A1 extends t.CommandArgsOptions>(
     fn: (e: Command<P1, A1>) => void,
   ) {
-    fn((this as unknown) as Command<P1, A1>);
+    fn(this as unknown as Command<P1, A1>);
     return this;
   }
 

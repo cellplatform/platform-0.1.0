@@ -3,6 +3,7 @@
 const { resolve } = require('path');
 const { fs } = require('@platform/fs');
 const dotenv = require('dotenv');
+
 dotenv.config({ path: resolve(process.cwd(), '../.env') });
 
 /**
@@ -75,6 +76,7 @@ const config = {
        */
       name: '@electron-forge/maker-dmg',
       config: {
+        title: '<name-version>',
         background: 'assets/macos/dmg-background.png',
         icon: 'assets/icons/app/app.icns',
         format: 'ULFO',
@@ -84,37 +86,57 @@ const config = {
   ],
 };
 
+const Configure = {
+  /**
+   * Update title string to include version numbers.
+   */
+  titles() {
+    const item = config.makers.find((item) => item.name === '@electron-forge/maker-dmg');
+    const pkg = fs.readJsonSync(resolve(process.cwd(), 'package.json'));
+    const version = pkg.version;
+    item.config.title = `${config.packagerConfig.name} - v${version}`;
+  },
+
+  /**
+   * Code signing setup.
+   */
+  notarization() {
+    if (process.platform !== 'darwin') {
+      return;
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+      return;
+    }
+
+    const { APPLE_ID, APPLE_ID_PASSWORD } = process.env;
+
+    if (!APPLE_ID || !APPLE_ID_PASSWORD) {
+      const msg = `\n\nShould be notarizing, but environment variables APPLE_ID or APPLE_ID_PASSWORD are missing!\n`;
+      console.warn(msg);
+      return;
+    }
+
+    if (process.env.NOTARIZE === 'false') {
+      return;
+    }
+
+    // console.warn('\n\n🐷 Skipping notarization (TEMPORARY)\n');
+    // return;
+
+    config.packagerConfig.osxNotarize = {
+      appleId: APPLE_ID,
+      appleIdPassword: APPLE_ID_PASSWORD,
+    };
+  },
+};
+
 /**
- * Add notarization configuration if necessary.
+ * Dynamic configuration of configuration object.
  */
 (() => {
-  if (process.platform !== 'darwin') {
-    return;
-  }
-
-  if (process.env.NODE_ENV === 'development') {
-    return;
-  }
-
-  const { APPLE_ID, APPLE_ID_PASSWORD } = process.env;
-
-  if (!APPLE_ID || !APPLE_ID_PASSWORD) {
-    const msg = `\n\nShould be notarizing, but environment variables APPLE_ID or APPLE_ID_PASSWORD are missing!\n`;
-    console.warn(msg);
-    return;
-  }
-
-  if (process.env.NOTARIZE === 'false') {
-    return;
-  }
-
-  // console.warn('\n\n🐷 Skipping notarization (TEMPORARY)\n');
-  // return;
-
-  config.packagerConfig.osxNotarize = {
-    appleId: APPLE_ID,
-    appleIdPassword: APPLE_ID_PASSWORD,
-  };
+  Configure.notarization();
+  Configure.titles();
 })();
 
 module.exports = config;
@@ -140,7 +162,7 @@ function ignore(path) {
     '/tslint.json',
     '/tsconfig.json',
     '/forge.config.js',
-    '/lib/build',
+    '/build',
     '/assets/icons/icon.src.iconsproj',
   ];
 

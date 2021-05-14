@@ -71,6 +71,7 @@ export const Paused: React.FC<PausedProps> = (props) => {
         onClick={clickHandler(action)}
         style={{ x }}
         animate={{ x }}
+        transition={{ type: 'tween' }}
       >
         {children}
       </m.div>

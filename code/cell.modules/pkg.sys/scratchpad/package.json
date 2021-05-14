@@ -1,6 +1,6 @@
 {
   "name": "sys.scratchpad",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "sideEffects": false,
   "compiler": {
     "port": 3033
@@ -25,9 +25,9 @@
     "d3": "^6.6.1"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.3.11",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "@platform/cell.compiler": "^0.3.20",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "license": "MIT",
   "private": true

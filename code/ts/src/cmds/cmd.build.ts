@@ -76,9 +76,16 @@ type IArgs = IBuildArgs & { as?: BuildFormat };
  * Runs a typescript build.
  */
 export async function build(args: IArgs): Promise<IResult & { errorLog?: string }> {
-  const { cwd = '', outDir = '', silent, watch, as, code, error, tsconfig } = await processArgs(
-    args,
-  );
+  const {
+    cwd = '',
+    outDir = '',
+    silent,
+    watch,
+    as,
+    code,
+    error,
+    tsconfig,
+  } = await processArgs(args);
   if (code !== 0) {
     return result.formatResult({ code, error });
   }

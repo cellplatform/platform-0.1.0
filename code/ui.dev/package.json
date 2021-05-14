@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.dev",
-  "version": "0.0.41",
+  "version": "0.0.43",
   "description": "UI development helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,18 +15,18 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/css": "0.4.34",
-    "@platform/libs": "0.2.9",
-    "@platform/log": "0.1.48",
-    "@platform/polyfill": "0.0.2",
-    "@platform/react": "0.4.67",
-    "@platform/ui.object": "0.0.240",
-    "@platform/util.value": "0.8.18",
+    "@platform/css": "0.4.36",
+    "@platform/libs": "0.2.10",
+    "@platform/log": "0.1.50",
+    "@platform/polyfill": "0.0.3",
+    "@platform/react": "0.4.69",
+    "@platform/ui.object": "0.0.242",
+    "@platform/util.value": "0.8.20",
     "parcel-bundler": "1.12.5"
   },
   "devDependencies": {
-    "@platform/test": "0.2.5",
-    "@platform/ts": "4.1.9"
+    "@platform/test": "0.2.6",
+    "@platform/ts": "4.1.11"
   },
   "files": [
     "lib",

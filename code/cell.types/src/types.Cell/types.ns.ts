@@ -15,7 +15,7 @@ export type INsData<
   V extends t.ICellData = t.ICellData,
   C extends t.IColumnData = t.IColumnData,
   R extends t.IRowData = t.IRowData,
-  F extends t.IFileData = t.IFileData
+  F extends t.IFileData = t.IFileData,
 > = INsDataChildren<V, C, R, F> & { ns: INs };
 
 /**
@@ -25,7 +25,7 @@ export type INsData<
 export type INsDataCoord<
   V extends t.ICellData = t.ICellData,
   C extends t.IColumnData = t.IColumnData,
-  R extends t.IRowData = t.IRowData
+  R extends t.IRowData = t.IRowData,
 > = {
   cells: t.ICellMap<V>;
   columns: t.IColumnMap<C>;
@@ -39,7 +39,7 @@ export type INsDataChildren<
   V extends t.ICellData = t.ICellData,
   C extends t.IColumnData = t.IColumnData,
   R extends t.IRowData = t.IRowData,
-  F extends t.IFileData = t.IFileData
+  F extends t.IFileData = t.IFileData,
 > = INsDataCoord<V, C, R> & {
   files: t.IFileMap<F>;
 };

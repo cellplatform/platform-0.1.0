@@ -30,11 +30,10 @@ export type ITemplateArgs = {
   processors?: TemplateMiddleware[];
 };
 
-export type Handler<
-  V extends ITemplateVariables = Record<string, unknown>
-> = TemplateMiddleware<V> & {
-  pathFilters?: TemplatePathFilter[];
-};
+export type Handler<V extends ITemplateVariables = Record<string, unknown>> =
+  TemplateMiddleware<V> & {
+    pathFilters?: TemplatePathFilter[];
+  };
 
 /**
  * Represents a set of template files to transform.

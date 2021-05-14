@@ -98,7 +98,10 @@ describe('TscCompiler', function () {
       expect(Files.dtxt.length).to.greaterThan(3);
       expect(Files.js.length).to.greaterThan(3);
 
-      const included = (...exts: string[]) => (p: string) => exts.some((ext) => p.endsWith(ext));
+      const included =
+        (...exts: string[]) =>
+        (p: string) =>
+          exts.some((ext) => p.endsWith(ext));
       expect(manifestFiles.every(included('.js', '.d.txt', 'package.json'))).to.eql(true);
       expect(manifestFiles.some(included('.d.ts'))).to.eql(false);
 
@@ -165,7 +168,10 @@ describe('TscCompiler', function () {
       expect(Files.dtxt.length).to.greaterThan(3);
       expect(Files.js.length).to.eql(0);
 
-      const included = (...exts: string[]) => (p: string) => exts.some((ext) => p.endsWith(ext));
+      const included =
+        (...exts: string[]) =>
+        (p: string) =>
+          exts.some((ext) => p.endsWith(ext));
       expect(manifestFiles.every(included('.d.txt', 'package.json'))).to.eql(true);
       expect(manifestFiles.some(included('.d.ts'))).to.eql(false);
 
@@ -352,7 +358,10 @@ describe('TscCompiler', function () {
         target: await find(res.to, '**/*'),
       };
 
-      const included = (...exts: string[]) => (p: string) => exts.some((ext) => p.endsWith(ext));
+      const included =
+        (...exts: string[]) =>
+        (p: string) =>
+          exts.some((ext) => p.endsWith(ext));
       expect(Files.target.relative.every(included('.js', '.json'))).to.eql(true);
       expect(res.transformations).to.eql([]);
     });
@@ -372,7 +381,10 @@ describe('TscCompiler', function () {
       const manifest = (await TypeManifest.read({ dir: res.to.base })).manifest;
       const manifestFiles = manifest?.files.map((file) => file.path) || [];
 
-      const included = (...exts: string[]) => (p: string) => exts.some((ext) => p.endsWith(ext));
+      const included =
+        (...exts: string[]) =>
+        (p: string) =>
+          exts.some((ext) => p.endsWith(ext));
       expect(Files.target.relative.every(included('.js', '.json', '.d.txt'))).to.eql(true);
       expect(Files.target.relative.some(included('.d.ts'))).to.eql(false);
 

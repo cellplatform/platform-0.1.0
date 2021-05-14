@@ -10,14 +10,14 @@ export type IModel<
   P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
-  C extends IModelChildrenSchema = any
+  C extends IModelChildrenSchema = any,
 > = IModelProps<P, D, L, C> & IModelMethods<P, D, L, C>;
 
 export type IModelProps<
   P extends Record<string, unknown>,
   D extends P,
   L extends IModelLinksSchema,
-  C extends IModelChildrenSchema = any
+  C extends IModelChildrenSchema = any,
 > = t.IDbTimestamps & {
   readonly path: string;
   readonly isDisposed: boolean;
@@ -38,7 +38,7 @@ export type IModelMethods<
   P extends Record<string, unknown>,
   D extends P,
   L extends IModelLinksSchema,
-  C extends IModelChildrenSchema = any
+  C extends IModelChildrenSchema = any,
 > = {
   load(options?: { force?: boolean; links?: boolean; silent?: boolean }): Promise<P>;
   reset(): IModel<P, D, L, C>;
@@ -57,7 +57,7 @@ export type IModelSaveResponse<
   P extends Record<string, unknown>,
   D extends P,
   L extends IModelLinksSchema, // eslint-disable-line
-  C extends IModelChildrenSchema = any // eslint-disable-line
+  C extends IModelChildrenSchema = any, // eslint-disable-line
 > = {
   saved: boolean;
   isChanged: boolean;
@@ -68,7 +68,7 @@ export type BeforeModelSave<
   P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
-  C extends IModelChildrenSchema = any
+  C extends IModelChildrenSchema = any,
 > = (args: IModelSave<P, D, L, C>) => Promise<any>;
 
 /**
@@ -83,7 +83,7 @@ export type BeforeModelDelete<
   P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
-  C extends IModelChildrenSchema = any
+  C extends IModelChildrenSchema = any,
 > = (args: IModelDelete<P, D, L, C>) => Promise<any>;
 
 /**
@@ -187,7 +187,7 @@ export type IModelReadPropEvent<
   P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
-  C extends IModelChildrenSchema = any
+  C extends IModelChildrenSchema = any,
 > = {
   type: 'MODEL/read/prop';
   typename: string;
@@ -197,7 +197,7 @@ export type IModelReadProp<
   P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
-  C extends IModelChildrenSchema = any
+  C extends IModelChildrenSchema = any,
 > = {
   model: IModel<P, D, L, C>;
   field: string;
@@ -234,7 +234,7 @@ export type IModelSave<
   P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
-  C extends IModelChildrenSchema = any
+  C extends IModelChildrenSchema = any,
 > = {
   force: boolean;
   isChanged: boolean;
@@ -248,7 +248,7 @@ export type IModelBeforeSaveEvent<
   P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
-  C extends IModelChildrenSchema = any
+  C extends IModelChildrenSchema = any,
 > = {
   type: 'MODEL/beforeSave';
   typename: string;
@@ -259,7 +259,7 @@ export type IModelSavedEvent<
   P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
-  C extends IModelChildrenSchema = any
+  C extends IModelChildrenSchema = any,
 > = {
   type: 'MODEL/saved';
   typename: string;
@@ -273,7 +273,7 @@ export type IModelDelete<
   P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
-  C extends IModelChildrenSchema = any
+  C extends IModelChildrenSchema = any,
 > = {
   model: IModel<P, D, L, C>;
   isCancelled: boolean;
@@ -284,7 +284,7 @@ export type IModelBeforeDeleteEvent<
   P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
-  C extends IModelChildrenSchema = any
+  C extends IModelChildrenSchema = any,
 > = {
   type: 'MODEL/beforeDelete';
   typename: string;
@@ -295,7 +295,7 @@ export type IModelDeletedEvent<
   P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
-  C extends IModelChildrenSchema = any
+  C extends IModelChildrenSchema = any,
 > = {
   type: 'MODEL/deleted';
   typename: string;

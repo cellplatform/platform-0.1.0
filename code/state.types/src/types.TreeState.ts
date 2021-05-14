@@ -94,15 +94,13 @@ export type TreeStateChangerAsync<T extends N = N, P extends O = NonNullable<T['
   ctx: TreeStateChangerContext<T, P>,
 ) => Promise<void>;
 
-export type TreeStateChangerContext<
-  T extends N = N,
-  P extends O = NonNullable<T['props']>
-> = t.ITreeQuery<T> & {
-  query(root?: T, namespace?: string): t.ITreeQuery<T>;
-  children<C extends T>(of: C, fn?: (children: C[]) => void): C[];
-  props(of: N, fn?: (props: P) => void): P;
-  toObject<D>(draft?: D): D | undefined;
-};
+export type TreeStateChangerContext<T extends N = N, P extends O = NonNullable<T['props']>> =
+  t.ITreeQuery<T> & {
+    query(root?: T, namespace?: string): t.ITreeQuery<T>;
+    children<C extends T>(of: C, fn?: (children: C[]) => void): C[];
+    props(of: N, fn?: (props: P) => void): P;
+    toObject<D>(draft?: D): D | undefined;
+  };
 
 /**
  * Sync

@@ -105,7 +105,7 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
   public readonly row: number;
   public readonly column: number;
   private readonly _ = {
-    table: (undefined as unknown) as Handsontable,
+    table: undefined as unknown as Handsontable,
     td: undefined as HTMLTableCellElement | undefined,
   };
 

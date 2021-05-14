@@ -56,7 +56,7 @@ export type IStoreEvent = {
 export type IDispatch<
   M extends O = any,
   E extends IStoreEvent = IStoreEvent,
-  D extends IStoreEvent = IStoreEvent
+  D extends IStoreEvent = IStoreEvent,
 > = {
   type: E['type'];
   payload: E['payload'];

@@ -14,8 +14,8 @@ export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): 
   const { router, fire } = args;
 
   return async (incoming, outgoing) => {
-    const req = (incoming as unknown) as t.IncomingMessage;
-    const res = (outgoing as unknown) as t.ServerResponse;
+    const req = incoming as unknown as t.IncomingMessage;
+    const res = outgoing as unknown as t.ServerResponse;
 
     const timer = time.timer();
     const method = req.method as t.HttpMethod;
@@ -66,7 +66,7 @@ export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): 
     }
 
     // Handle the request.
-    let handled = (await router.handler((req as unknown) as t.IRouteRequest, context)) || NOT_FOUND;
+    let handled = (await router.handler(req as unknown as t.IRouteRequest, context)) || NOT_FOUND;
 
     // Fire AFTER-event.
     const after: t.IMicroResponse = {

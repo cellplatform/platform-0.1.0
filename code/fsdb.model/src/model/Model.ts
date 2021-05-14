@@ -6,7 +6,7 @@ export type IModelArgs<
   P extends Record<string, unknown>,
   D extends P,
   L extends t.IModelLinksSchema,
-  C extends t.IModelChildrenSchema
+  C extends t.IModelChildrenSchema,
 > = {
   db: t.IDb;
   path: string;
@@ -35,8 +35,9 @@ export class Model<
   P extends Record<string, unknown>, //         Properties.
   D extends P = P, //                           Document properties (if additional to props, ie hidden values).
   L extends t.IModelLinksSchema = any, //       Link references.
-  C extends t.IModelChildrenSchema = any //     Child documents.
-> implements t.IModel<P, D, L, C> {
+  C extends t.IModelChildrenSchema = any, //     Child documents.
+> implements t.IModel<P, D, L, C>
+{
   /**
    * [Lifecycle]
    */
@@ -44,7 +45,7 @@ export class Model<
     P extends Record<string, unknown>,
     D extends P = P,
     L extends t.IModelLinksSchema = any,
-    C extends t.IModelChildrenSchema = any
+    C extends t.IModelChildrenSchema = any,
   >(
     args: IModelArgs<P, D, L, C>,
   ) => new Model<P, D, L, C>(args);
@@ -182,7 +183,7 @@ export class Model<
   public get doc(): D {
     this.throwIfDisposed('doc');
     const item = this._item;
-    const res = item ? ((item.value as unknown) as P) : undefined;
+    const res = item ? (item.value as unknown as P) : undefined;
     return (res || {}) as D;
   }
 
@@ -483,7 +484,7 @@ export class Model<
   public toObject(): P {
     this.throwIfDisposed('toObject');
     if (!this.isLoaded) {
-      return ({} as any) as P;
+      return {} as any as P;
     }
     const props = this.props;
     return Object.keys(this._args.initial).reduce((acc, key) => {

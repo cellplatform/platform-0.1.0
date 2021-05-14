@@ -13,7 +13,10 @@ export function create(options: { color: ColorFormatter }): ILog {
 
   const next = (level: LogLevel, items: Loggable[]) => logger.next(level, 'black', items) as any;
 
-  const logMethod = (level: LogLevel) => (...items: Loggable[]) => next(level, items);
+  const logMethod =
+    (level: LogLevel) =>
+    (...items: Loggable[]) =>
+      next(level, items);
 
   const TODO = (...items: Loggable[]) => next('warn', ['TODO:', ...items]);
 
@@ -75,7 +78,10 @@ function createLogger() {
 
 function configureMethods(log: ILog, colorFormatter: ColorFormatter, next: LogNext) {
   const applyMethodColors = (level: LogLevel, obj: any) => {
-    const method = (color: LogColor) => (...items: Loggable[]) => next(level, color, items);
+    const method =
+      (color: LogColor) =>
+      (...items: Loggable[]) =>
+        next(level, color, items);
     COLORS.forEach((color) => (obj[color] = method(color)));
   };
 

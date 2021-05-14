@@ -167,7 +167,7 @@ export function prune(keyPath: string, root: { [key: string]: any }) {
 export function toArray<T = Record<string, unknown>, K = keyof T>(
   obj: Record<string, any>,
 ): { key: K; value: T[keyof T] }[] {
-  return Object.keys(obj).map((key) => ({ key: (key as unknown) as K, value: obj[key] }));
+  return Object.keys(obj).map((key) => ({ key: key as unknown as K, value: obj[key] }));
 }
 
 /**

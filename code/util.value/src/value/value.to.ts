@@ -72,5 +72,5 @@ export function toType<T>(value: any) {
   }
 
   // Original type.
-  return (value as unknown) as T;
+  return value as unknown as T;
 }

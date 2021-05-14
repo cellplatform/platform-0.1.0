@@ -25,13 +25,11 @@ export function create<T extends O>(
   );
 
   const patched$ = changed$.pipe(
-    map(
-      (e): t.IStateObjectPatched => {
-        const { op, cid } = e;
-        const { prev, next } = e.patches;
-        return { op, cid, prev, next };
-      },
-    ),
+    map((e): t.IStateObjectPatched => {
+      const { op, cid } = e;
+      const { prev, next } = e.patches;
+      return { op, cid, prev, next };
+    }),
   );
 
   const cancelled$ = $.pipe(

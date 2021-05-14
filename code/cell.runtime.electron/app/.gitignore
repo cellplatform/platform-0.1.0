@@ -7,6 +7,6 @@ lib
 *.log
 
 /TEMP.md
-/tmp
+/tmp*
 /out
 

@@ -34,7 +34,7 @@ export function init() {
   ipc.init({ event$, cache, def });
   const env: t.IEnv = { host, def, cache, event$: event$ as Subject<t.Event> };
   if (isTopWindow) {
-    const win = (window as unknown) as t.ITopWindow;
+    const win = window as unknown as t.ITopWindow;
     win.env = env;
   }
 
