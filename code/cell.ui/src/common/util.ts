@@ -6,7 +6,7 @@ import * as t from './types';
  * Get the environment.
  */
 export function getEnv() {
-  const win = (window as unknown) as t.ITopWindow;
+  const win = window as unknown as t.ITopWindow;
   return win?.env as t.IEnv;
 }
 
@@ -16,5 +16,5 @@ export function getEnv() {
 export function getEventBus<T = t.Event>() {
   const env = getEnv();
   const event$ = env.event$ || new Subject<void>();
-  return (event$ as unknown) as Subject<T>;
+  return event$ as unknown as Subject<T>;
 }

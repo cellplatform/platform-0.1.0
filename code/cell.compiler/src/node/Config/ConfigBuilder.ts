@@ -23,11 +23,13 @@ export const ConfigBuilder: t.CompilerModelFactory = {
    * Create a new data-model builder API.
    */
   builder(input) {
-    const model = (typeof input === 'object'
-      ? StateObject.isStateObject(input)
-        ? input
-        : StateObject.create<t.CompilerModel>(input as any)
-      : ConfigBuilder.model(input || DEFAULT.BASE)) as t.CompilerModelState;
+    const model = (
+      typeof input === 'object'
+        ? StateObject.isStateObject(input)
+          ? input
+          : StateObject.create<t.CompilerModel>(input as any)
+        : ConfigBuilder.model(input || DEFAULT.BASE)
+    ) as t.CompilerModelState;
     return Builder.create<t.CompilerModel, t.CompilerModelMethods>({ model, handlers });
   },
 };

@@ -179,7 +179,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
   });
 
   describe('run', () => {
-    it('auto pulls before run', async () => {
+    it.only('auto pulls before run', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, samples.node.outdir, bundle);
 

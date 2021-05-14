@@ -57,7 +57,7 @@ export function toClientResponse<T>(
       // NB:  The body that has been returned is an [IHttpError] rather than
       //      the expected return object. Wrangle the response to return this
       //      as a standard error structure with no body content.
-      const error = (body as unknown) as t.IHttpError;
+      const error = body as unknown as t.IHttpError;
       return toError<any>(error.status, error.type, error.message, {});
     } else {
       return res;
@@ -76,7 +76,7 @@ export function toError<T>(
 ): t.IHttpClientResponse<T> {
   const error = { status, type, message };
   status = isOK(status) ? 500 : status; // NB: Ensure no OK status is handed back with the error.
-  body = body || (({} as unknown) as T); // HACK typescript sanity - because this is an error the calling code should beware.
+  body = body || ({} as unknown as T); // HACK typescript sanity - because this is an error the calling code should beware.
   const res = { ok: false, status, body, bodyType: 'JSON', error };
   return res as t.IHttpClientResponse<T>;
 }
