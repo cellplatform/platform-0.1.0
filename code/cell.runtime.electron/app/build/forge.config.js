@@ -162,7 +162,7 @@ function ignore(path) {
     '/tslint.json',
     '/tsconfig.json',
     '/forge.config.js',
-    '/lib/build',
+    '/build',
     '/assets/icons/icon.src.iconsproj',
   ];
 
