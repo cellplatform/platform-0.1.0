@@ -8,7 +8,7 @@
     "dev": "cd app && yarn dev",
     "test": "cd app && yarn test",
     "package": "cd app && yarn package",
-    "make": "yarn bundle && cd app && yarn make",
+    "make": "cd app && yarn make",
     "build": "cd app && yarn build",
     "clean": "sh script.sh/clean.sh",
     "reset": "sh script.sh/reset.sh",
