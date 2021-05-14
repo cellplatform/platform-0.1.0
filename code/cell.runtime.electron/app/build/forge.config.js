@@ -93,8 +93,7 @@ const Configure = {
   titles() {
     const item = config.makers.find((item) => item.name === '@electron-forge/maker-dmg');
     const pkg = fs.readJsonSync(resolve(process.cwd(), 'package.json'));
-    const version = pkg.version;
-    item.config.title = `${config.packagerConfig.name} - v${version}`;
+    item.config.title = `${config.packagerConfig.name} - version ${pkg.version}`;
   },
 
   /**
