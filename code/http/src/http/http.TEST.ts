@@ -495,7 +495,7 @@ describe('http', () => {
       const api = {
         port,
         instance,
-        headers: ({} as unknown) as t.IHttpHeaders,
+        headers: {} as unknown as t.IHttpHeaders,
         dispose: () => instance.close(),
       };
       return api;

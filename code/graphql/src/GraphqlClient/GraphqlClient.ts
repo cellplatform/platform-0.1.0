@@ -72,8 +72,8 @@ export class GraphqlClient implements t.IGqlClient {
    * [Fields]
    */
   private readonly _ = {
-    args: (undefined as unknown) as IConstructorArgs,
-    apollo: (undefined as unknown) as ApolloClient<Record<string, unknown>>,
+    args: undefined as unknown as IConstructorArgs,
+    apollo: undefined as unknown as ApolloClient<Record<string, unknown>>,
     dispose$: new Subject<void>(),
     events$: new Subject<t.GqlEvent>(),
   };

@@ -1,4 +1,4 @@
-import { t, queryString } from '../common';
+import { t, QueryString } from '../common';
 import { Uri } from '../Uri';
 import { Links } from '../Links';
 
@@ -48,8 +48,7 @@ export const FileLinks = {
     const res = fs.parseValue<t.IFileUri, t.IFileLinkQuery>(linkValue);
     const toString: t.FileLinkToString = (options = {}) => {
       const { status, hash } = res.query;
-      const query = queryString
-        .build({ allowNil: false })
+      const query = QueryString.build({ allowNil: false })
         .add('status', options.status === null ? null : options.status || status)
         .add('hash', options.hash === null ? null : options.hash || hash)
         .toString();

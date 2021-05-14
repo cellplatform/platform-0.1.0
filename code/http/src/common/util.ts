@@ -23,9 +23,9 @@ export function stringify(data: any, errorMessage: () => string) {
 export function parseJson(args: { url: string; text: string }) {
   const text = args.text;
   try {
-    return (typeof text === 'string' && valueUtil.isJson(args.text)
-      ? JSON.parse(text)
-      : text) as t.Json;
+    return (
+      typeof text === 'string' && valueUtil.isJson(args.text) ? JSON.parse(text) : text
+    ) as t.Json;
   } catch (error) {
     const body = text ? text : '<empty>';
     const msg = `Failed while parsing JSON for '${args.url}'.\nParse Error: ${error.message}\nBody: ${body}`;

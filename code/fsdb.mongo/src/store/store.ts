@@ -109,7 +109,7 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
         if (err) {
           reject(err);
         } else {
-          resolve((res.ops as unknown) as T[]);
+          resolve(res.ops as unknown as T[]);
         }
       });
     });

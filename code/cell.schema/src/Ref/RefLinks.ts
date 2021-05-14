@@ -42,8 +42,7 @@ export class RefLinks {
     const res = ref.parseValue<t.IRefLinkUri, t.IRefLinkQuery>(linkValue);
     const toString: t.RefLinkToString = (options = {}) => {
       const { hash } = res.query;
-      const query = queryString
-        .build({ allowNil: false })
+      const query = QueryString.build({ allowNil: false })
         .add('hash', options.hash === null ? null : options.hash || hash)
         .toString();
       return `${res.uri.toString()}${query}`;

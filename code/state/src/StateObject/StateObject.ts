@@ -138,7 +138,12 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
   public change: t.StateObjectChange<T> = (fn) => {
     const cid = id.cuid(); // "change-id"
     const from = this.state;
-    const { to, op, patches } = next(from, fn);
+
+    const res = next(from, fn);
+
+    const { patches, op } = res;
+    const to = res.to as T;
+
     if (Patch.isEmpty(patches)) {
       return { op, cid, patches };
     } else {
@@ -170,7 +175,7 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
     op: t.StateObjectChangeOperation;
     patches: t.PatchSet;
   }) {
-    const { cid, from, to, op, patches } = args;
+    const { cid, op, patches, from, to } = args;
 
     // Fire BEFORE event.
     const changing: t.IStateObjectChanging<T> = {

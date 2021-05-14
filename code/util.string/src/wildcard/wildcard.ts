@@ -19,8 +19,9 @@
  *        https://github.com/sindresorhus/matcher/blob/master/license
  *
  */
-import * as escapeStringRegexp from 'escape-string-regexp';
+// import escapeStringRegexp from 'escape-string-regexp';
 const cache = new Map();
+import { escapeStringRegex } from './escapeStringRegex';
 
 /**
  * Accepts an array of inputs and patterns.
@@ -86,7 +87,7 @@ function makeRegEx(pattern: string, shouldNegate: boolean): RegExMatcher {
     pattern = pattern.slice(1);
   }
 
-  pattern = escapeStringRegexp(pattern).replace(/\\\*/g, '.*');
+  pattern = escapeStringRegex(pattern).replace(/\\\*/g, '.*');
 
   if (negated && shouldNegate) {
     pattern = `(?!${pattern})`;

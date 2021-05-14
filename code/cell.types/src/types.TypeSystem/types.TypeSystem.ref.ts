@@ -7,7 +7,7 @@ import { t } from '../common';
  */
 export type ITypedSheetRef<
   T,
-  K extends keyof T // eslint-disable-line
+  K extends keyof T, // eslint-disable-line
 > = {
   typename: string;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;

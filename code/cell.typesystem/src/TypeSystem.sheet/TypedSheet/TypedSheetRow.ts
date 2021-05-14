@@ -181,7 +181,7 @@ export class TypedSheetRow<T, K extends keyof T> implements t.ITypedSheetRow<T, 
   public async load(
     options: { props?: (keyof T[K])[]; force?: boolean } = {},
   ): Promise<t.ITypedSheetRow<T, K>> {
-    const self = (this as unknown) as t.ITypedSheetRow<T, K>; // eslint-disable-line
+    const self = this as unknown as t.ITypedSheetRow<T, K>; // eslint-disable-line
 
     if (this.isLoaded && !options.force) {
       return self;

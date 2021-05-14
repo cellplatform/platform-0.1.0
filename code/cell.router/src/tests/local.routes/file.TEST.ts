@@ -11,9 +11,9 @@ export const testPostFile = async (args: {
 
   const cellUri = args.cellUri || 'cell:foo:A1';
   const client = mock.client.cell(cellUri);
-  const paths = (Array.isArray(args.source)
-    ? args.source
-    : [args.source].filter((m) => Boolean(m))) as string[];
+  const paths = (
+    Array.isArray(args.source) ? args.source : [args.source].filter((m) => Boolean(m))
+  ) as string[];
 
   const wait = paths.map(async (path) => {
     const filename = fs.basename(path);
