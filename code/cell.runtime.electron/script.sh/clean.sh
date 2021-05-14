@@ -1,8 +1,13 @@
+# 
+# Root
+# 
 rm -f  yarn-error.log
 rm -rf lib/
-rm -rf out/
 rm -rf tmp/
 
+# 
+# Electron application
+# 
 cd app.electron
 rm -f  yarn-error.log
 rm -rf lib
