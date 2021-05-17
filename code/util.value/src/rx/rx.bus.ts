@@ -27,7 +27,7 @@ export function bus<T extends E = E>(input?: Subject<any> | t.EventBus<any>): t.
  */
 export function isBus(input: any) {
   if (typeof input !== 'object' || input === null) return false;
-  return is.observable(input.event$) && typeof input.fire === 'function';
+  return is.observable(input.$) && typeof input.fire === 'function';
 }
 
 /**

@@ -156,7 +156,7 @@ describe('rx', () => {
       const test = (input: any) => {
         expect(rx.isBus(input)).to.eql(true);
       };
-      test({ event$: new Observable(), fire: () => null });
+      test({ $: new Observable(), fire: () => null });
       test(rx.bus());
     });
 
@@ -170,6 +170,7 @@ describe('rx', () => {
       test({});
       test([123, {}]);
       test({ event$: new Observable() });
+      test({ $: new Observable() });
       test({ fire: () => null });
     });
   });

@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.runtime.electron",
-  "version": "0.0.178",
+  "version": "0.0.179",
   "description": "Runtime for desktop environments",
   "scripts": {
     "start": "cd app && yarn start",
@@ -17,8 +17,8 @@
     "cmd": "ts-node -T node.bin $@"
   },
   "devDependencies": {
-    "@platform/ts": "4.1.11",
-    "@platform/cell.compiler": "0.3.20",
+    "@platform/ts": "4.1.12",
+    "@platform/cell.compiler": "0.3.21",
     "@types/minimist": "1.2.1",
     "minimist": "1.2.5",
     "ora": "5.4.0"
