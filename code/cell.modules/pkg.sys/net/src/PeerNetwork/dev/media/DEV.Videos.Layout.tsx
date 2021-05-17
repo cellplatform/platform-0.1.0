@@ -21,7 +21,7 @@ import { DevVideo } from './DEV.Video';
 
 export type DevVideosLayoutProps = {
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerBus<any>;
   style?: CssValue;
 };
 

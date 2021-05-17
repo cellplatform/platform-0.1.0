@@ -18,7 +18,7 @@ import {
 
 export type DevImageDraggableProps = {
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerBus<any>;
   style?: CssValue;
 };
 

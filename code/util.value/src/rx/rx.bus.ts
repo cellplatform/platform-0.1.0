@@ -2,6 +2,7 @@ import * as t from '@platform/types';
 import { is } from '@platform/util.is';
 import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { isEvent } from './rx.event';
 
 type E = t.Event;
 
@@ -31,20 +32,8 @@ export function isBus(input: any) {
 }
 
 /**
- * Determine if the given object is the shape of
- * a standard [Event], eg:
- *
- *    {
- *      type: string,
- *      payload: { ... }
- *    }
- *
+ * Convert a bus of one type into another type.
  */
-export function isEvent(input: any): boolean {
-  return (
-    input !== null &&
-    typeof input === 'object' &&
-    typeof input.type === 'string' &&
-    typeof input.payload === 'object'
-  );
+export function busType<T extends E>(bus: t.EventBus<any>) {
+  return bus as t.EventBus<T>;
 }

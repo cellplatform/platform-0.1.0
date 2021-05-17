@@ -7,7 +7,7 @@ import { DevNetwork } from './network';
 
 export type RootLayoutProps = {
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerBus<any>;
   debugJson?: boolean;
   collapse?: boolean | { data?: boolean; media?: boolean };
   cards?: { data?: boolean; media?: boolean };

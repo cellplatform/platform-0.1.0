@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { PeerNetwork, t } from '../common';
 import * as layouts from './DEV.useGroupController.layouts';
 
-export function useGroupController(args: { bus: t.EventBus<any>; netbus: t.NetBus<any> }) {
+export function useGroupController(args: { bus: t.EventBus<any>; netbus: t.PeerBus<any> }) {
   const bus = args.bus.type<t.DevEvent>();
   const netbus = args.netbus.type<t.DevEvent>();
 

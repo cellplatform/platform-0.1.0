@@ -12,7 +12,7 @@ import { DevEvents } from '../event';
 export function useGroupScreensize(args: {
   ref: React.RefObject<HTMLElement>;
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerBus<any>;
   kind: t.DevLayoutSize['kind'];
 }) {
   const { ref, kind } = args;
@@ -47,7 +47,7 @@ export function useGroupScreensize(args: {
 export function Controller(args: {
   ref: React.RefObject<HTMLElement>;
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerBus<any>;
   kind: t.DevLayoutSize['kind'];
   parentResize$: Observable<void>;
 }) {

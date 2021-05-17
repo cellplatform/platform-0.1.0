@@ -1,16 +1,22 @@
 import { t } from './common';
 
 /**
- * An event-bus distributed across a number of peers.
+ * An event-bus distributed across a network.
  */
-export type NetBus<E extends t.Event = t.Event> = t.IDisposable & {
+export type NetworkBus<E extends t.Event = t.Event> = t.IDisposable & {
   event$: t.Observable<E>;
   fire: t.FireEvent<E>;
-  type<T extends t.Event>(): t.NetBus<T>;
-
+  type<T extends t.Event>(): t.PeerBus<T>; // TEMP 🐷
   self: t.PeerId;
-  connections: t.PeerConnectionStatus[];
   target: NetBusTarget<E>;
+};
+
+/**
+ * An event-bus distributed across a number of peers.
+ */
+export type PeerBus<E extends t.Event = t.Event> = NetworkBus<E> & {
+  type<T extends t.Event>(): t.PeerBus<T>;
+  connections: t.PeerConnectionStatus[];
 };
 
 /**

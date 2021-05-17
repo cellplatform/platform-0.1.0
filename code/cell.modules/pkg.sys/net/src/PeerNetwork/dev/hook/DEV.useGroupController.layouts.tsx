@@ -11,7 +11,7 @@ import { DevVideosLayout } from '../media';
 export function listen(args: {
   network$: t.Observable<t.DevEvent>;
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerBus<any>;
 }) {
   const { network$: $ } = args;
   const bus = args.bus.type<t.DevEvent>();

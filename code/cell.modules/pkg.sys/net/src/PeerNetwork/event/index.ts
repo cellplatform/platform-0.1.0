@@ -1,4 +1,4 @@
 export * from './Events';
-export * from './NetBus';
+export * from './PeerBus';
 export * from './Net.GroupEvents';
 export * from './Net.FilesystemEvents';

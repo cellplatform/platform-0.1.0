@@ -26,3 +26,22 @@ export function payload<E extends { type: string; payload: unknown }>(
     map((e: any) => e.payload as E['payload']),
   );
 }
+
+/**
+ * Determine if the given object is the shape of
+ * a standard [Event], eg:
+ *
+ *    {
+ *      type: string,
+ *      payload: { ... }
+ *    }
+ *
+ */
+export function isEvent(input: any): boolean {
+  return (
+    input !== null &&
+    typeof input === 'object' &&
+    typeof input.type === 'string' &&
+    typeof input.payload === 'object'
+  );
+}

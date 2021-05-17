@@ -7,7 +7,7 @@ import { rx, t } from '../../common';
  * propagated around the mesh network.
  */
 export function EnsureClosedStrategy(args: {
-  netbus: t.NetBus<any>;
+  netbus: t.PeerBus<any>;
   events: t.PeerNetworkEvents;
   isEnabled: () => boolean;
 }) {

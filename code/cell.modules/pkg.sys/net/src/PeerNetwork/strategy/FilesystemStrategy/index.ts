@@ -6,7 +6,7 @@ import { FilesystemCacheStrategy } from './strategy.FilesystemCache';
  */
 export function FilesystemStrategy(args: {
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerBus<any>;
 }): t.FilesystemStrategy {
   const { netbus } = args;
   const events = {

@@ -129,19 +129,6 @@ describe('rx', () => {
       expect(bus2).to.equal(bus1);
     });
 
-    it('changes event type', () => {
-      const bus1 = rx.bus();
-
-      const fired: t.Event[] = [];
-      bus1.event$.subscribe((e) => fired.push(e));
-
-      const bus2 = bus1.type<MyEvent>();
-      bus2.fire({ type: 'Event/bar', payload: {} });
-
-      expect(fired.length).to.eql(1);
-      expect(fired[0].type).to.eql('Event/bar');
-    });
-
     it('filters out non-standard [event] objects from the stream', () => {
       const source$ = new Subject<any>();
       const bus = rx.bus<MyEvent>(source$);
@@ -206,6 +193,25 @@ describe('rx', () => {
       test({ type: 123, payload: {} }, false);
       test({ type: 'FOO' }, false);
       test({ type: 'FOO', payload: 123 }, false);
+    });
+  });
+
+  describe('busType', () => {
+    type MyEvent = IFooEvent | IBarEvent;
+    type IFooEvent = { type: 'Event/foo'; payload: { count?: number } };
+    type IBarEvent = { type: 'Event/bar'; payload: { count?: number } };
+
+    it('changes event type', () => {
+      const bus1 = rx.bus();
+
+      const fired: t.Event[] = [];
+      bus1.event$.subscribe((e) => fired.push(e));
+
+      const bus2 = rx.busType<MyEvent>(bus1);
+      bus2.fire({ type: 'Event/bar', payload: {} });
+
+      expect(fired.length).to.eql(1);
+      expect(fired[0].type).to.eql('Event/bar');
     });
   });
 });

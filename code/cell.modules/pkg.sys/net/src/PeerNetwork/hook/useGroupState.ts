@@ -10,7 +10,7 @@ type Action = 'update';
  * Manages listening to the network to determine the group peers
  * and any pending connections.
  */
-export function useGroupState(args: { bus: t.EventBus<any>; netbus: t.NetBus<any> }) {
+export function useGroupState(args: { bus: t.EventBus<any>; netbus: t.PeerBus<any> }) {
   const bus = args.bus.type<t.PeerEvent>();
   const netbus = args.netbus.type<t.NetGroupEvent>();
 

@@ -4,10 +4,10 @@ import { Events } from './Events';
 /**
  * An event-bus distributed across a number of peers.
  */
-export function NetBus<E extends t.Event>(args: {
+export function PeerBus<E extends t.Event>(args: {
   self: t.PeerId;
   bus: t.EventBus<any>;
-}): t.NetBus<E> {
+}): t.PeerBus<E> {
   const { self } = args;
   const events = Events(args.bus);
   const data = events.data(self);
@@ -46,7 +46,7 @@ export function NetBus<E extends t.Event>(args: {
   /**
    * API
    */
-  const api: t.NetBus<E> = {
+  const api: t.PeerBus<E> = {
     self,
     event$: bus.event$,
     dispose,
@@ -62,7 +62,7 @@ export function NetBus<E extends t.Event>(args: {
     },
 
     type<T extends t.Event>() {
-      return api as unknown as t.NetBus<T>;
+      return api as unknown as t.PeerBus<T>;
     },
 
     /**

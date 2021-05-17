@@ -22,7 +22,7 @@ import Automerge from 'automerge';
 
 export type DevCrdtModelProps = {
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerBus<any>;
   style?: CssValue;
 };
 

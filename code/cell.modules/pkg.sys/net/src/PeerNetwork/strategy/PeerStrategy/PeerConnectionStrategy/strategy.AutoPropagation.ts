@@ -5,7 +5,7 @@ import { R, rx, t, FilterUtil } from '../../common';
  * Strategy for auto propogating connections to all peers.
  */
 export function AutoPropagationStrategy(args: {
-  netbus: t.NetBus<any>;
+  netbus: t.PeerBus<any>;
   events: t.PeerNetworkEvents;
   isEnabled: () => boolean;
 }) {

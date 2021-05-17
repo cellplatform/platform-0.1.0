@@ -6,7 +6,7 @@ import { t } from '../../common';
  * Strategy for auto-purging connections when closed.
  */
 export function AutoPergeStrategy(args: {
-  netbus: t.NetBus<any>;
+  netbus: t.PeerBus<any>;
   events: t.PeerNetworkEvents;
   isEnabled: () => boolean;
 }) {
