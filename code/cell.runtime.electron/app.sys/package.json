@@ -1,0 +1,30 @@
+{
+  "name": "app.sys",
+  "version": "0.0.0",
+  "sideEffects": false,
+  "compiler": {
+    "port": 5050
+  },
+  "scripts": {
+    "start": "cell.compiler dev $@",
+    "dev": "cell.compiler dev --no-exports --name web.dev $@",
+    "test": "ts test $@",
+    "lint": "ts lint $@",
+    "build": "ts build --no-esm $@",
+    "bundle": "cell.compiler bundle $@",
+    "watch": "cell.compiler watch $@",
+    "upload": "cell.compiler upload $@",
+    "clean": "cell.compiler clean $@",
+    "info": "cell.compiler info $@",
+    "serve": "cell.compiler serve $@",
+    "deploy": "cell.compiler upload --dir sys.electron $@"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@platform/cell.compiler": "^0.3.20",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "license": "MIT",
+  "private": true
+}

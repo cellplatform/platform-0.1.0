@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { minimist } from './common';
 import * as cmd from './cmd';
-import { logger } from './util';
+import { Logger } from './util';
 
 /**
  * Makes the script crash on unhandled rejections instead of silently
@@ -44,6 +44,7 @@ const param = argv._[0];
     return cmd.clean(argv);
   }
 
-  logger.commands();
+  // NB: No matched command, list all available commands.
+  Logger.commands();
   return;
 })();

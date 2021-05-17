@@ -1,7 +1,7 @@
 import { t, exec, fs, Model, defaultValue } from '../common';
 import * as util from '../util';
 
-const logger = util.logger;
+const logger = util.Logger;
 
 /**
  * Start a simple HTTP server to serve bundled assets.

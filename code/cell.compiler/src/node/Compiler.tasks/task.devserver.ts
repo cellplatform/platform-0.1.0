@@ -1,6 +1,6 @@
 import DevServer from 'webpack-dev-server';
 
-import { log, Model, t, toModel, logger, port, defaultValue } from '../common';
+import { log, Model, t, toModel, Logger, port, defaultValue } from '../common';
 import { wp } from '../config.webpack';
 import { afterCompile } from './util';
 
@@ -49,10 +49,10 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
     afterCompile({ model: obj, webpack, compilation });
 
     count++;
-    logger.clear().newline();
+    Logger.clear().newline();
     log.info.gray(`DevServer (${count})`);
-    logger.model(obj, { indent: 2, url: true, port }).newline();
-    logger.exports(obj, { disabled: noExports }).newline();
+    Logger.model(obj, { indent: 2, url: true, port }).newline();
+    Logger.exports(obj, { disabled: noExports }).newline();
 
     if (noExports) {
       /**
@@ -64,12 +64,12 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
     } else {
     }
 
-    logger.hr().stats(compilation);
+    Logger.hr().stats(compilation);
   });
 
   const host = 'localhost';
   const args = { host, hot: true, stats: false };
   new DevServer(compiler, args).listen(port, host, () => {
-    logger.clear();
+    Logger.clear();
   });
 };

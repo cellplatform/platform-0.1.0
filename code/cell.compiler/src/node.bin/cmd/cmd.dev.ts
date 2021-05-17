@@ -2,7 +2,7 @@ import { Compiler } from '../../node/compiler';
 import { t } from '../common';
 import * as util from '../util';
 
-const logger = util.logger;
+const logger = util.Logger;
 
 /**
  * Start development server (HMR)

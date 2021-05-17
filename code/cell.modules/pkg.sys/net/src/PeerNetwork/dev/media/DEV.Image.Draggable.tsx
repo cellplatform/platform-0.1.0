@@ -30,9 +30,8 @@ export const DevImageDraggable: React.FC<DevImageDraggableProps> = (props) => {
   const baseRef = useRef<HTMLDivElement>(null);
 
   const [dragbus, setDragbus] = useState<t.EventBus<any>>();
-  const [image, setImage] = useState<
-    { uri: string; filename: string; mimetype: string } | undefined
-  >();
+  const [image, setImage] =
+    useState<{ uri: string; filename: string; mimetype: string } | undefined>();
 
   const resize = useResizeObserver(baseRef);
   const drag = useDragTarget(baseRef, async (e) => {

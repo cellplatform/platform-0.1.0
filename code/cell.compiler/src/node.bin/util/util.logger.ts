@@ -1,27 +1,27 @@
-import { log, logger as commonLogger, t } from '../common';
+import { log, Logger as commonLogger, t } from '../common';
 import { COMMANDS } from '../constants';
 
 type B = t.BuilderChain<t.CompilerModelMethods>;
 
 const { model, stats } = commonLogger;
 
-export const logger = {
+export const Logger = {
   model,
   stats,
 
   clear() {
     log.clear();
-    return logger;
+    return Logger;
   },
 
   newline(length = 1) {
     Array.from({ length }).forEach(() => log.info());
-    return logger;
+    return Logger;
   },
 
   hr(length = 60) {
     log.info.gray('━'.repeat(length));
-    return logger;
+    return Logger;
   },
 
   commands() {
@@ -40,7 +40,7 @@ export const logger = {
     table.log();
     log.info();
 
-    return logger;
+    return Logger;
   },
 
   errorAndExit(code: number, ...message: (string | undefined)[]) {

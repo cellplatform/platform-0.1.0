@@ -8,7 +8,7 @@ rm -rf tmp/
 # 
 # Electron application
 # 
-cd app.electron
+cd app
 rm -f  yarn-error.log
 rm -rf lib
 rm -rf .tmp.common_js

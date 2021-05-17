@@ -1,4 +1,4 @@
-import { log, R, fs, t, time, Path, logger, DEFAULT } from '../common';
+import { log, R, fs, t, time, Path, Logger, DEFAULT } from '../common';
 
 const filesize = fs.size.toString;
 
@@ -71,7 +71,7 @@ export const stats = (input?: t.WpStats | t.WpCompilation): t.WebpackStats => {
 
       return {
         list,
-        log: () => logger.errors(list),
+        log: () => Logger.errors(list),
       };
     },
   };

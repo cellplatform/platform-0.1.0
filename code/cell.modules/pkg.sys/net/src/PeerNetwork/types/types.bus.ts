@@ -4,11 +4,11 @@ import { t } from './common';
  * An event-bus distributed across a number of peers.
  */
 export type NetBus<E extends t.Event = t.Event> = t.IDisposable & {
-  self: t.PeerId;
   event$: t.Observable<E>;
   fire: t.FireEvent<E>;
   type<T extends t.Event>(): t.NetBus<T>;
 
+  self: t.PeerId;
   connections: t.PeerConnectionStatus[];
   target: NetBusTarget<E>;
 };
@@ -30,12 +30,16 @@ export type NetBusTarget<E extends t.Event> = {
   /**
    * Broadcasts to a subset of peers.
    */
-  filter(fn?: t.PeerFilter): { fire(event: E): Promise<NetBusFireResponse<E>> };
+  filter(fn?: t.PeerFilter): {
+    fire(event: E): Promise<NetBusFireResponse<E>>;
+  };
 
   /**
    * Broadcasts to a specific peer(s).
    */
-  peer(...id: t.PeerId[]): { fire(event: E): Promise<NetBusFireResponse<E>> };
+  peer(...id: t.PeerId[]): {
+    fire(event: E): Promise<NetBusFireResponse<E>>;
+  };
 };
 
 export type NetBusFireResponse<E extends t.Event> = {

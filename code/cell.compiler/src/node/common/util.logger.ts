@@ -3,29 +3,29 @@ import { stats } from '../config.webpack';
 import { format } from './util.format';
 
 /**
- * Log helpers for webpack.
+ * Log helpers for common logging output.
  */
-export const logger = {
+export const Logger = {
   format,
 
   clear() {
     log.clear();
-    return logger;
+    return Logger;
   },
 
   newline(length = 1) {
     Array.from({ length }).forEach(() => log.info());
-    return logger;
+    return Logger;
   },
 
   hr(length = 60) {
     log.info.gray('━'.repeat(length));
-    return logger;
+    return Logger;
   },
 
   stats(input?: t.WpStats | t.WpCompilation) {
     stats(input).log();
-    return logger;
+    return Logger;
   },
 
   model(
@@ -64,7 +64,7 @@ export const logger = {
     }
 
     table.log();
-    return logger;
+    return Logger;
   },
 
   exports(model: t.CompilerModel, options: { title?: string; disabled?: boolean } = {}) {
@@ -77,7 +77,7 @@ export const logger = {
         log.info.gray(`  ${format.filepath(path)}`);
       });
     }
-    return logger;
+    return Logger;
   },
 
   variants(model: t.CompilerModel, options: { title?: string } = {}) {
@@ -90,7 +90,7 @@ export const logger = {
         log.info.gray(` • ${log.white(name)}`);
       });
     }
-    return logger;
+    return Logger;
   },
 
   errors(list: { message: string }[]) {
@@ -99,6 +99,6 @@ export const logger = {
       log.info(err.message);
       log.info();
     });
-    return logger;
+    return Logger;
   },
 };

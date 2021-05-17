@@ -15,7 +15,7 @@ import {
 import * as util from '../util';
 import { runClean } from './cmd.clean';
 
-const logger = util.logger;
+const logger = util.Logger;
 
 type IFileStore = {
   [dir: string]: {

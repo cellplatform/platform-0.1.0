@@ -93,7 +93,7 @@ export async function GroupConnectionsStrategy(args: {
       if (kind === 'data') {
         const exists = netbus.connections
           .filter((conn) => conn.kind === 'data')
-          .some((conn) => conn.peer.remote.id == remote);
+          .some((conn) => conn.peer.remote.id === remote);
         if (exists) return;
 
         const res = await open.data();

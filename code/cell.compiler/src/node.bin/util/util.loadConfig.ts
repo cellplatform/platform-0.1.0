@@ -1,6 +1,6 @@
 import { fs, log, t, ProgressSpinner } from '../common';
 import { DEFAULT } from '../constants';
-import { logger } from './util.logger';
+import { Logger } from './util.logger';
 import { ts } from './util.ts';
 
 type B = t.CompilerModelBuilder;
@@ -45,7 +45,7 @@ export async function loadConfig(
     const config = (res && typeof res.then === 'function' ? await res : res) as B;
     if (!config) {
       const err = `The default export did not return a configuration builder.\n${log.white(path)}`;
-      logger.errorAndExit(1, err);
+      Logger.errorAndExit(1, err);
     }
     return done(config);
   }
@@ -53,7 +53,7 @@ export async function loadConfig(
   // Exported {object}.
   if (typeof imported !== 'object' && typeof imported.clone !== 'function') {
     const err = `The default export was not a configuration builder.\n${log.white(path)}`;
-    logger.errorAndExit(1, err);
+    Logger.errorAndExit(1, err);
   }
 
   return done(imported as B);
@@ -72,7 +72,7 @@ const toPaths = async (input?: string) => {
   file = (await fs.is.dir(file)) ? fs.join(file, FILENAME) : file;
   file = file.trim().replace(/\.js$/, '').replace(/\.ts$/, '');
   if (!file) {
-    logger.errorAndExit(1, `A path to the configuration file could not be derived.`);
+    Logger.errorAndExit(1, `A path to the configuration file could not be derived.`);
   }
 
   file = file.substring(fs.resolve('.').length + 1);
@@ -81,7 +81,7 @@ const toPaths = async (input?: string) => {
   let ts = fs.resolve(`${file}.ts`);
   ts = (await fs.pathExists(ts)) ? ts : fs.resolve(`${file}.tsx`);
   if (!(await fs.pathExists(ts))) {
-    logger.errorAndExit(1, `The configuration file path does not exist ${log.white(ts)}`);
+    Logger.errorAndExit(1, `The configuration file path does not exist ${log.white(ts)}`);
   }
 
   return { file, ts, js };
@@ -91,7 +91,7 @@ const filterOnVariant = (config: B, name?: string): B => {
   name = (name || '').trim();
   if (name && !config.find(name)) {
     const err = `A configuration named '${log.white(name)}' was not found.`;
-    logger.errorAndExit(1, err);
+    Logger.errorAndExit(1, err);
   }
   return name ? (config.find(name) as B) : config;
 };

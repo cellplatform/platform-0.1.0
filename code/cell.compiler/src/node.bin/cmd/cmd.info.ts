@@ -1,7 +1,7 @@
 import { log, t, ModuleFederationPlugin } from '../common';
 import * as util from '../util';
 
-const logger = util.logger;
+const logger = util.Logger;
 
 /**
  * Output info about the build.

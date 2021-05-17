@@ -1,6 +1,6 @@
 import { Stats } from 'webpack';
 
-import { fs, log, logger, Model, ProgressSpinner, t } from '../common';
+import { fs, log, Logger, Model, ProgressSpinner, t } from '../common';
 import { BundleManifest } from '../manifest';
 import { bundleDeclarations } from './task.bundle.declarations';
 import { afterCompile, wp } from './util';
@@ -22,7 +22,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
       if (!silent) {
         log.info();
         log.info.gray(`Bundle`);
-        logger.model(model, { indent: 2, url: false }).newline().hr();
+        Logger.model(model, { indent: 2, url: false }).newline().hr();
         spinner.start();
       }
 
@@ -41,7 +41,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
           }
 
           if (!silent) {
-            logger.newline().stats(stats);
+            Logger.newline().stats(stats);
           }
 
           resolve(res);

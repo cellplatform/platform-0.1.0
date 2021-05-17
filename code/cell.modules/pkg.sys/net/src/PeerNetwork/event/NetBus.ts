@@ -26,7 +26,6 @@ export function NetBus<E extends t.Event>(args: {
     .get()
     .then((e) => (connections = e.peer?.connections || []));
 
-  type N = t.NetBusTarget<E>;
   const send = async (event: E, filter?: t.PeerFilter) => {
     // Broadcast event to remote targets.
     const { sent } = await data.send(event, { filter });
@@ -63,7 +62,7 @@ export function NetBus<E extends t.Event>(args: {
     },
 
     type<T extends t.Event>() {
-      return (api as unknown) as t.NetBus<T>;
+      return api as unknown as t.NetBus<T>;
     },
 
     /**

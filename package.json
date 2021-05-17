@@ -10,7 +10,7 @@
       "code/*",
       "code/cell.modules/pkg.*/*",
       "code/cell.service/pkg.*",
-      "code/cell.runtime.electron/app.*"
+      "code/cell.runtime.electron/app*"
     ],
     "nohoist": [
       "**/electron",

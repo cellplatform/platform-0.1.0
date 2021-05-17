@@ -11,7 +11,7 @@ sh script.sh/clean.sh
 # 
 # Electron application
 # 
-cd app.electron/
+cd app/
 rm -rf node_modules
 rm -f  yarn.lock
 cd ..

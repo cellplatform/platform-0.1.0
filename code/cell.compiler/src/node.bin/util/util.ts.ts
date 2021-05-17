@@ -1,5 +1,5 @@
 import { fs, log, PATH } from '../common';
-import { logger } from './util.logger';
+import { Logger } from './util.logger';
 import { exec } from '@platform/exec';
 import { toHash } from './util.hash';
 
@@ -13,7 +13,7 @@ export const ts = {
     if (!res.ok) {
       const hint = log.gray(`Run ${log.white('yarn build')} to diagnose build errors`);
       const err = `Failed to transpile typescript into ${log.white('/lib/')}\n${hint}`;
-      logger.errorAndExit(res.code, err);
+      Logger.errorAndExit(res.code, err);
     }
   },
 

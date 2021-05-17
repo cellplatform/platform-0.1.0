@@ -52,7 +52,7 @@ export const BundleCache = {
    * Initializes a service worker cache.
    */
   serviceWorker(window: Window, options: { log?: boolean | 'verbose'; localhost?: boolean } = {}) {
-    const ctx = (window as unknown) as ServiceWorker;
+    const ctx = window as unknown as ServiceWorker;
     const hostname = window.location.hostname;
 
     const verbose = (...items: any[]) => {
