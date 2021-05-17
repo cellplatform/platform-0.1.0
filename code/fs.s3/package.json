@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs.s3",
-  "version": "0.7.51",
+  "version": "0.7.52",
   "description": "Filesystem like API into AWS S3 (and Digital Ocean Spaces)",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,20 +14,20 @@
     "tmp": "ts-node -T scripts/tmp"
   },
   "dependencies": {
-    "@platform/fs": "0.6.12",
-    "@platform/fs.s3.types": "0.3.16",
-    "@platform/http": "0.14.16",
+    "@platform/fs": "0.6.13",
+    "@platform/fs.s3.types": "0.3.17",
+    "@platform/http": "0.14.17",
     "@platform/libs": "0.2.10",
-    "@platform/log": "0.1.51",
-    "@platform/types": "0.5.20",
-    "@platform/util.mimetype": "0.1.37",
-    "@platform/util.value": "0.8.21",
+    "@platform/log": "0.1.52",
+    "@platform/types": "0.5.21",
+    "@platform/util.mimetype": "0.1.38",
+    "@platform/util.value": "0.8.22",
     "aws-sdk": "2.906.0",
     "form-data": "4.0.0"
   },
   "devDependencies": {
     "@platform/test": "0.2.6",
-    "@platform/ts": "4.1.12",
+    "@platform/ts": "4.1.13",
     "@types/dotenv": "8.2.0",
     "dotenv": "8.2.0"
   },
