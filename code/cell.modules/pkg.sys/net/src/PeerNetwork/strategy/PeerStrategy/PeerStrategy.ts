@@ -8,7 +8,7 @@ export function PeerStrategy(args: {
   bus: t.EventBus<any>;
   netbus: t.PeerBus<any>;
 }): t.PeerStrategy {
-  const bus = args.bus.type<t.PeerEvent>();
+  const bus = args.bus as t.EventBus<t.PeerEvent>;
   const events = Events(bus);
 
   const connection = PeerConnectionStrategy(args);

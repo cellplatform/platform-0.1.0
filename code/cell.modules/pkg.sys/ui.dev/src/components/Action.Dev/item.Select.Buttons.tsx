@@ -10,7 +10,7 @@ export type SelectButtonsProps = { namespace: string; bus: t.EventBus; item: t.A
 
 export const SelectButtons: React.FC<SelectButtonsProps> = (props) => {
   const { namespace, item } = props;
-  const bus = props.bus.type<t.DevActionEvent>();
+  const bus = props.bus as t.EventBus<t.DevActionEvent>;
 
   const { title, label, description, isSpinning, multi, indent } = item;
   const isActive = item.handlers.length > 0;

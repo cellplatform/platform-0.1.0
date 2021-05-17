@@ -11,12 +11,12 @@ type C = t.GroupPeerConnection;
  * Helpers for working with network filesystem related events.
  */
 export function FilesystemEvents(eventbus: t.PeerBus<any>) {
-  const netbus = eventbus.type<t.NetFsEvent>();
+  const netbus = eventbus as t.PeerBus<t.NetFsEvent>;
   const source = netbus.self;
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
 
-  const event$ = netbus.event$.pipe(
+  const event$ = netbus.$.pipe(
     takeUntil(dispose$),
     filter(ns.is.fs.base),
     map((e) => e as t.NetGroupEvent),

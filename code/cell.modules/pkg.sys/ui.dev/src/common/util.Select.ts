@@ -35,9 +35,9 @@ export const SelectUtil = {
   toInitial<V extends any = any>(model: t.ActionSelect): t.ActionSelectItem<V>[] {
     if (model.initial === undefined) return [];
 
-    const initial = (Array.isArray(model.initial)
-      ? model.initial
-      : [model.initial]) as t.ActionSelectItemInput[];
+    const initial = (
+      Array.isArray(model.initial) ? model.initial : [model.initial]
+    ) as t.ActionSelectItemInput[];
 
     return initial.map((value) => {
       if (!SelectUtil.isItem(value)) {

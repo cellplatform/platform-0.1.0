@@ -12,9 +12,9 @@ export { ns };
 export function Events(eventbus: t.EventBus<any>) {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
-  const bus = eventbus.type<t.PeerEvent>();
+  const bus = eventbus as t.EventBus<t.PeerEvent>;
 
-  const event$ = bus.event$.pipe(
+  const event$ = bus.$.pipe(
     takeUntil(dispose$),
     filter(ns.is.peer.base),
     map((e) => e as t.PeerEvent),

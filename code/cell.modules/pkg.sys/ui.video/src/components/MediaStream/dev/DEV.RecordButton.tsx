@@ -10,7 +10,7 @@ export type DevRecordButtonProps = {
 };
 
 export const DevRecordButton: React.FC<DevRecordButtonProps> = (props) => {
-  const bus = props.bus.type<t.MediaEvent>();
+  const bus = props.bus as t.EventBus<t.MediaEvent>;
 
   const ref = props.streamRef;
   const stream = useStreamState({ bus, ref });

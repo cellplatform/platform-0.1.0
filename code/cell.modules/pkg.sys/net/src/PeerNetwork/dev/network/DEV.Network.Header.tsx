@@ -14,7 +14,7 @@ export type DevNetworkHeaderProps = {
 
 export const DevNetworkHeader: React.FC<DevNetworkHeaderProps> = (props) => {
   const { peer, media, netbus } = props;
-  const bus = props.bus.type<t.PeerEvent>();
+  const bus = props.bus as t.EventBus<t.PeerEvent>;
 
   const styles = {
     base: css({ Flex: 'horizontal-spaceBetween-start', padding: 15 }),

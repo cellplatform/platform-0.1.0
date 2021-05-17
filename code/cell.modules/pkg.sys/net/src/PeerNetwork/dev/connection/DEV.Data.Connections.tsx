@@ -15,7 +15,7 @@ export type DevDataConnectionsProps = {
 };
 export const DevDataConnections: React.FC<DevDataConnectionsProps> = (props) => {
   const { netbus, connections } = props;
-  const bus = props.bus.type<t.DevEvent>();
+  const bus = props.bus as t.EventBus<t.DevEvent>;
   const self = netbus.self;
 
   const styles = {

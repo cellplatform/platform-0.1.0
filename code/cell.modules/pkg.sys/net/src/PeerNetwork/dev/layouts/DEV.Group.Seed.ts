@@ -27,11 +27,9 @@ export function DevGroupSeed(args: {
 }): GroupSeed {
   const { groupname, self } = args;
   const client = HttpClient.create(args.host);
-  const bus = args.bus.type<t.PeerEvent>();
+  const bus = args.bus as t.EventBus<t.PeerEvent>;
   const events = PeerNetwork.Events(bus);
   const { dispose, dispose$ } = events;
-
-  // const $ = bus.event$.pipe(takeUntil(dispose$))
 
   let status: t.PeerStatus | undefined;
   const cell = client.cell(`cell:${ns}:A1`);

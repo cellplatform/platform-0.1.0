@@ -6,7 +6,7 @@ describe('PeerStrategy', () => {
   const self = cuid();
   const bus = rx.bus<t.PeerEvent>();
   const netbus = NetBus({ self, bus });
-  const $ = bus.event$;
+  const $ = bus.$;
 
   it('dispose', () => {
     const strategy = PeerStrategy({ bus, netbus });

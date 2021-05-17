@@ -15,7 +15,7 @@ export type DevNetworkConnectionsModalProps = {
 
 export const DevNetworkConnectionsModal: React.FC<DevNetworkConnectionsModalProps> = (props) => {
   const { netbus, self } = props;
-  const bus = props.bus.type<t.DevEvent>();
+  const bus = props.bus as t.EventBus<t.DevEvent>;
 
   useEffect(() => {
     const events = PeerNetwork.Events(bus);
@@ -53,7 +53,7 @@ export const DevNetworkConnectionsModal: React.FC<DevNetworkConnectionsModalProp
 type HeaderProps = { bus: t.EventBus<any>; height: number };
 const Header: React.FC<HeaderProps> = (props) => {
   const { height } = props;
-  const bus = props.bus.type<t.DevEvent>();
+  const bus = props.bus as t.EventBus<t.DevEvent>;
   const SIZE = { BACK: 32 };
 
   const styles = {

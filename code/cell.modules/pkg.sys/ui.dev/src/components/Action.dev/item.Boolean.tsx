@@ -13,7 +13,7 @@ export type BoolProps = {
 export const Bool: React.FC<BoolProps> = (props) => {
   const { namespace } = props;
   const item = useActionItemMonitor({ bus: props.bus, item: props.item });
-  const bus = props.bus.type<t.DevActionEvent>();
+  const bus = props.bus as t.EventBus<t.DevActionEvent>;
   const { title, label = DEFAULT.UNNAMED, description, isSpinning, indent } = item;
   const isActive = item.handlers.length > 0;
   const value = Boolean(item.current);

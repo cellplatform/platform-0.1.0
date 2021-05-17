@@ -9,8 +9,10 @@ import { rx, slug, t } from '../../common';
 export function MediaStreamEvents(eventbus: t.EventBus<any>) {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
-  const bus = eventbus.type<t.MediaStreamEvent | t.MediaStreamsEvent | t.MediaStreamRecordEvent>();
-  const event$ = bus.event$.pipe(takeUntil(dispose$));
+  const bus = eventbus as t.EventBus<
+    t.MediaStreamEvent | t.MediaStreamsEvent | t.MediaStreamRecordEvent
+  >;
+  const event$ = bus.$.pipe(takeUntil(dispose$));
 
   /**
    * START

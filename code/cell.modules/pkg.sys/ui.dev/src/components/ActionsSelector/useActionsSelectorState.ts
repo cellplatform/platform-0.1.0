@@ -14,13 +14,13 @@ export function useActionsSelectorState(args: {
 }) {
   const store = args.store;
   const list = args.actions || [];
-  const bus = args.bus?.type<t.DevEvent>();
+  const bus = args.bus as t.EventBus<t.DevEvent>;
 
   const [selected, setSelected] = useState<t.Actions>();
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const $ = bus.event$.pipe(takeUntil(dispose$));
+    const $ = bus.$.pipe(takeUntil(dispose$));
 
     // Set initial state.
     if (store) store().then((e) => setSelected(e || list[0]));

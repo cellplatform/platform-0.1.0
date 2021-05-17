@@ -13,12 +13,12 @@ export function useVideoStreamState(args: {
   onChange?: (stream: MediaStream | undefined) => void;
 }) {
   const { ref, onChange } = args;
-  const bus = args.bus.type<t.MediaEvent>();
+  const bus = args.bus as t.EventBus<t.MediaEvent>;
   const [stream, setStream] = useState<MediaStream | undefined>();
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const $ = bus.event$.pipe(takeUntil(dispose$));
+    const $ = bus.$.pipe(takeUntil(dispose$));
 
     const handleChange = (stream?: MediaStream) => {
       setStream(stream);

@@ -28,7 +28,7 @@ export type DevCrdtModelProps = {
 
 export const DevCrdtModel: React.FC<DevCrdtModelProps> = (props) => {
   const { netbus } = props;
-  const bus = props.bus.type<t.DevEvent>();
+  const bus = props.bus as t.EventBus<t.DevEvent>;
   const peer = useLocalPeer({ self: netbus.self, bus });
   // console.log('peer.status', peer.status);
 
@@ -40,7 +40,7 @@ export const DevCrdtModel: React.FC<DevCrdtModelProps> = (props) => {
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const $ = netbus.event$.pipe(takeUntil(dispose$));
+    const $ = netbus.$.pipe(takeUntil(dispose$));
 
     $.subscribe((e) => {
       console.log('e', e);

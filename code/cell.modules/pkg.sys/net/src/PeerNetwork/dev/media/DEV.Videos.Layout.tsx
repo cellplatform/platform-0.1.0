@@ -27,7 +27,7 @@ export type DevVideosLayoutProps = {
 
 export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
   const { bus } = props;
-  const netbus = props.netbus.type<t.DevGroupEvent>();
+  const netbus = props.netbus as t.PeerBus<t.DevGroupEvent>;
   const self = netbus.self;
   const source = self;
 
@@ -72,7 +72,7 @@ export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
     /**
      * Monitor remote notifications of video items moving.
      */
-    rx.payload<t.DevGroupLayoutItemsChangeEvent>(netbus.event$, 'DEV/group/layout/items/change')
+    rx.payload<t.DevGroupLayoutItemsChangeEvent>(netbus.$, 'DEV/group/layout/items/change')
       .pipe(
         filter((e) => e.namespace === namespace),
         filter((e) => e.source !== self),
@@ -88,10 +88,7 @@ export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
     /**
      * Monitor remote notifications for full-screen media.
      */
-    rx.payload<t.DevGroupLayoutFullscreenMediaEvent>(
-      netbus.event$,
-      'DEV/group/layout/fullscreenMedia',
-    )
+    rx.payload<t.DevGroupLayoutFullscreenMediaEvent>(netbus.$, 'DEV/group/layout/fullscreenMedia')
       .pipe(filter((e) => e.source !== self))
       .subscribe(async (e) => {
         const { media } = e;

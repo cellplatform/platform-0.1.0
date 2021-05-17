@@ -1,17 +1,14 @@
 import { fromEvent as rxFromEvent, Observable, Subject } from 'rxjs';
-import { HasEventTargetAddRemove } from 'rxjs/dist/types/internal/observable/fromEvent';
-import { share } from 'rxjs/operators';
-
 import { is } from '@platform/util.is';
 
 /**
  * Create observable from event.
  */
 export const fromEvent = <T>(
-  source: HasEventTargetAddRemove<any> | undefined,
+  source: HTMLElement | Document | Window | undefined,
   event: string,
 ): Observable<T> => {
-  return source ? rxFromEvent(source, event).pipe(share()) : new Subject<any>().pipe(share()); // NB: Safe when server-rendered.
+  return source ? rxFromEvent(source as any, event) : new Subject<any>().asObservable(); // NB: Safe when server-rendered.
 };
 
 /**

@@ -9,7 +9,7 @@ const create: t.CodeEditorEventsFactory = (input) => {
   const bus = rx.bus<t.CodeEditorEvent>(input);
   const dispose$ = new Subject<void>();
 
-  const $ = bus.event$.pipe(
+  const $ = bus.$.pipe(
     takeUntil(dispose$),
     filter((e) => Is.editorEvent(e)),
     share(),

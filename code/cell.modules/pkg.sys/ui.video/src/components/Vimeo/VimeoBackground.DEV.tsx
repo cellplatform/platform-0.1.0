@@ -22,7 +22,7 @@ export const actions = DevActions<Ctx>()
 
     const bus = rx.bus<types.VimeoEvent>();
 
-    bus.event$.subscribe((e) => {
+    bus.$.subscribe((e) => {
       console.log(e.type, e.payload);
     });
 

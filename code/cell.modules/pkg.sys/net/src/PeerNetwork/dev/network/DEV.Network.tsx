@@ -19,7 +19,7 @@ export type DevNetworkProps = {
 
 export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
   const { peer, media, netbus } = props;
-  const bus = props.bus.type<t.PeerEvent>();
+  const bus = props.bus as t.EventBus<t.PeerEvent>;
 
   const baseRef = useRef<HTMLDivElement>(null);
 

@@ -5,8 +5,8 @@ import { rx, slug, t } from '../common';
 
 export function DevEvents(eventbus: t.EventBus<any>) {
   const dispose$ = new Subject<void>();
-  const bus = eventbus.type<t.DevEvent>();
-  const $ = bus.event$.pipe(takeUntil(dispose$));
+  const bus = eventbus as t.EventBus<t.DevEvent>;
+  const $ = bus.$.pipe(takeUntil(dispose$));
 
   const model = {
     req$: rx.payload<t.DevModelGetReqEvent>($, 'DEV/model/get:req'),

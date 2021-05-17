@@ -28,7 +28,7 @@ export function Controller(args: {
   motion: { x: N; y: N; width: N; height: N; scale: N };
 }) {
   const { state, motion } = args;
-  const bus = args.bus.type<n.MotionDraggableEvent>();
+  const bus = args.bus as t.EventBus<n.MotionDraggableEvent>;
   const changed$ = state.changed$;
   const id = state.id;
   const events = Events(bus);

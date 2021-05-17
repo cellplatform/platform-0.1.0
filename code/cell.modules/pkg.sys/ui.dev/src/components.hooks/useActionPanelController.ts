@@ -16,8 +16,8 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
   useEffect(() => {
     const model = actions.toModel();
     const dispose$ = new Subject<void>();
-    const bus = args.bus.type<t.ActionEvent>();
-    const event$ = bus.event$.pipe(
+    const bus = args.bus as t.EventBus<t.ActionEvent>;
+    const event$ = bus.$.pipe(
       takeUntil(dispose$),
       filter((e) => e.payload.namespace === namespace),
     );

@@ -23,7 +23,7 @@ export type DevNetworkConnectionsProps = {
 
 export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (props) => {
   const { netbus } = props;
-  const bus = props.bus.type<t.PeerEvent>();
+  const bus = props.bus as t.EventBus<t.PeerEvent>;
   const self = netbus.self;
 
   const collapse = {

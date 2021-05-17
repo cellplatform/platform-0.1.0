@@ -4,7 +4,7 @@ import { t, slug, WaitForResponse } from '../../common';
  * API for firing change events.
  */
 export function Fire(bus: t.EventBus<any>, instance: string): t.CodeEditorInstanceEventsFire {
-  const $ = bus.event$;
+  const $ = bus.$;
   const fire = (e: t.CodeEditorInstanceEvent) => bus.fire(e);
 
   const WaitFor = {

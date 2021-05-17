@@ -23,7 +23,7 @@ export type DevImageDraggableProps = {
 };
 
 export const DevImageDraggable: React.FC<DevImageDraggableProps> = (props) => {
-  const netbus = props.netbus.type<t.DevEvent>();
+  const netbus = props.netbus as t.PeerBus<t.DevEvent>;
   const self = netbus.self;
   const source = self;
 
@@ -55,7 +55,7 @@ export const DevImageDraggable: React.FC<DevImageDraggableProps> = (props) => {
     /**
      * Load image data from network.
      */
-    rx.payload<t.DevGroupLayoutImageLoadEvent>(netbus.event$, 'DEV/group/image/load')
+    rx.payload<t.DevGroupLayoutImageLoadEvent>(netbus.$, 'DEV/group/image/load')
       .pipe()
       .subscribe(async (e) => {
         const { data, mimetype, filename } = e;
@@ -94,7 +94,7 @@ export const DevImageDraggable: React.FC<DevImageDraggableProps> = (props) => {
     /**
      * Monitor remote notifications of video items moving.
      */
-    rx.payload<t.DevGroupLayoutItemsChangeEvent>(netbus.event$, 'DEV/group/layout/items/change')
+    rx.payload<t.DevGroupLayoutItemsChangeEvent>(netbus.$, 'DEV/group/layout/items/change')
       .pipe(
         filter((e) => e.namespace === namespace),
         filter((e) => e.source !== self),

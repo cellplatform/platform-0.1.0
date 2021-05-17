@@ -15,7 +15,7 @@ export type ChildProps = {
 export const Child: React.FC<ChildProps> = (props) => {
   const { container, def, elastic = 0.3 } = props;
   const id = def.id;
-  const bus = props.bus.type<n.MotionDraggableEvent>();
+  const bus = props.bus as t.EventBus<n.MotionDraggableEvent>;
 
   const rootRef = useRef<HTMLDivElement>(null);
   const { state, motion } = useItemController({ bus, def });

@@ -24,7 +24,7 @@ type ConnectionKind = t.PeerNetworkConnectRes['kind'];
  * EventBus contoller for a WebRTC [Peer] connection.
  */
 export function Controller(args: { bus: t.EventBus<any> }) {
-  const bus = args.bus.type<t.PeerEvent>();
+  const bus = args.bus as t.EventBus<t.PeerEvent>;
   const events = Events(bus);
   const $ = events.$;
 

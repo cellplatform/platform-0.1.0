@@ -12,7 +12,7 @@ export function EnsureClosedStrategy(args: {
   isEnabled: () => boolean;
 }) {
   const { events } = args;
-  const netbus = args.netbus.type<t.NetGroupEvent>();
+  const netbus = args.netbus as t.PeerBus<t.NetGroupEvent>;
   const self = netbus.self;
   const connections = events.connections(self);
 
@@ -36,10 +36,7 @@ export function EnsureClosedStrategy(args: {
   /**
    * Listen for mesh alerting that a connection is closed.
    */
-  rx.payload<t.NetGroupEnsureConnectionClosedEvent>(
-    netbus.event$,
-    'sys.net/group/conn/ensure:closed',
-  )
+  rx.payload<t.NetGroupEnsureConnectionClosedEvent>(netbus.$, 'sys.net/group/conn/ensure:closed')
     .pipe(
       filter(() => args.isEnabled()),
       filter((e) => e.source !== self),

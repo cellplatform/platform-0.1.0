@@ -8,7 +8,7 @@ export function useEventBus(args: {
   bus?: t.EventBus;
   onChange?: ActionsSelectOnChangeEventHandler;
 }) {
-  const bus = args.bus?.type<t.DevEvent>();
+  const bus = args.bus as t.EventBus<t.DevEvent>;
   const active = Boolean(bus);
 
   const onChange: ActionsSelectOnChangeEventHandler = (e) => {

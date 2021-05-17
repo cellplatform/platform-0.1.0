@@ -23,7 +23,7 @@ export function usePlayerController(args: {
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const bus = (args.bus || rx.bus()).type<types.VimeoEvent>();
+    const bus = (args.bus || rx.bus()) as t.EventBus<types.VimeoEvent>;
 
     const fireStatus = (kind: K, data: D) => {
       bus?.fire({
@@ -47,7 +47,7 @@ export function usePlayerController(args: {
     };
 
     if (args.bus && id && player) {
-      const $ = bus.event$.pipe(
+      const $ = bus.$.pipe(
         takeUntil(dispose$),
         filter((e) => e.payload.id === id),
       );

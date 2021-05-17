@@ -12,7 +12,7 @@ export const EventBridge = {
    *    between the modules.
    */
   startEventBridge(args: { self: t.PeerId; bus: t.EventBus<any> }) {
-    const bus = args.bus.type<t.PeerEvent | t.MediaEvent>();
+    const bus = args.bus as t.EventBus<t.PeerEvent | t.MediaEvent>;
 
     const events = {
       net: PeerNetwork.Events(bus),

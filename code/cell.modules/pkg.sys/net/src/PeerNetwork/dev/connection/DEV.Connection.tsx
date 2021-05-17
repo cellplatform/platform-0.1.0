@@ -16,7 +16,7 @@ export type DevConnectionProps = {
 export const DevConnection: React.FC<DevConnectionProps> = (props) => {
   const { connection, netbus } = props;
   const { peer } = connection;
-  const bus = props.bus.type<t.PeerEvent>();
+  const bus = props.bus as t.EventBus<t.PeerEvent>;
   const self = netbus.self;
 
   const styles = {

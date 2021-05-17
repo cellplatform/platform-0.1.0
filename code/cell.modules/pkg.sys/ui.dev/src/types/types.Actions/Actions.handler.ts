@@ -16,7 +16,7 @@ export type ActionHandlerArgs<C> = {
  */
 export type ActionHandlerSettings<
   T,
-  A extends t.ActionHandlerSettingsArgs = t.ActionHandlerSettingsArgs
+  A extends t.ActionHandlerSettingsArgs = t.ActionHandlerSettingsArgs,
 > = (settings: A) => T;
 export type ActionHandlerSettingsArgs = {
   host?: t.Host | null;

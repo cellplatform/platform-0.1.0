@@ -11,7 +11,7 @@ export type DevImageThumbnailsProps = {
 
 export const DevImageThumbnails: React.FC<DevImageThumbnailsProps> = (props) => {
   const { netbus } = props;
-  const bus = props.bus.type<t.DevEvent>();
+  const bus = props.bus as t.EventBus<t.DevEvent>;
   const files = useFileList(netbus);
 
   const showModal = (file: t.PeerFile, uri: string) => {

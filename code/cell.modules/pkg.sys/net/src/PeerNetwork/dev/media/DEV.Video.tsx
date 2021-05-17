@@ -37,7 +37,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
   const { width = 150, height = 100, stream, kind, isSelf } = props;
   const show = { proplist: props.show?.proplist ?? true, waveform: props.show?.waveform ?? true };
   const isVideo = kind === 'media/video';
-  const bus = props.bus.type<t.DevEvent>();
+  const bus = props.bus as t.EventBus<t.DevEvent>;
   const wifi = MediaStream.useOfflineState();
 
   const playerRef = useRef<HTMLDivElement>(null);

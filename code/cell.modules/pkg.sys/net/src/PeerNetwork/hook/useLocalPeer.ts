@@ -10,7 +10,7 @@ import { Events } from '../event';
  */
 export function useLocalPeer(args: { self: t.PeerId; bus: t.EventBus<any> }) {
   const { self } = args;
-  const bus = args.bus.type<t.PeerEvent>();
+  const bus = args.bus as t.EventBus<t.PeerEvent>;
 
   const [status, setStatus] = useState<t.PeerStatus>();
   const [video, setVideo] = useState<MediaStream>();

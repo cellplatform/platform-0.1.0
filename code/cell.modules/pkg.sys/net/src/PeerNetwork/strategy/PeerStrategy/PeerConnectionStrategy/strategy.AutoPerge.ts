@@ -11,7 +11,7 @@ export function AutoPergeStrategy(args: {
   isEnabled: () => boolean;
 }) {
   const { events } = args;
-  const netbus = args.netbus.type<t.NetGroupEvent>();
+  const netbus = args.netbus as t.PeerBus<t.NetGroupEvent>;
   const self = netbus.self;
   const connections = events.connections(self);
 

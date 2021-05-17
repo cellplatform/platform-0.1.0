@@ -40,7 +40,7 @@ export const actions = DevActions<Ctx>()
     MediaStream.Controller({ bus });
     // MediaStream.RecordController({ ref, bus });
 
-    rx.payload<t.MediaStreamErrorEvent>(bus.event$, 'MediaStream/error')
+    rx.payload<t.MediaStreamErrorEvent>(bus.$, 'MediaStream/error')
       .pipe(filter((e) => e.ref === ref))
       .subscribe((e) => {
         log.info('MediaStream/error:', e);

@@ -4,7 +4,7 @@ import { slug, t, WaitForResponse } from '../../common';
  * API for firing global events.
  */
 export function Fire(bus: t.EventBus<any>): t.CodeEditorEventsFire {
-  const $ = bus.event$;
+  const $ = bus.$;
   const fire = (e: t.CodeEditorSingletonEvent) => bus.fire(e);
 
   const WaitFor = {

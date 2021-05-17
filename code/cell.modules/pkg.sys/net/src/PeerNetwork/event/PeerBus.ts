@@ -47,11 +47,11 @@ export function PeerBus<E extends t.Event>(args: {
    * API
    */
   const api: t.PeerBus<E> = {
-    self,
-    event$: bus.event$,
+    $: bus.$,
     dispose,
     dispose$,
 
+    self,
     get connections() {
       return connections;
     },
@@ -59,10 +59,6 @@ export function PeerBus<E extends t.Event>(args: {
     fire(event: E) {
       data.send(event);
       bus.fire(event);
-    },
-
-    type<T extends t.Event>() {
-      return api as unknown as t.PeerBus<T>;
     },
 
     /**

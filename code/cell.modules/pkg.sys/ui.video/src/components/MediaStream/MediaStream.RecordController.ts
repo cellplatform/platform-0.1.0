@@ -11,8 +11,8 @@ type M = 'video/webm';
 export function MediaStreamRecordController(args: { bus: t.EventBus<any>; stream: MediaStream }) {
   const { stream } = args;
   const dispose$ = new Subject<void>();
-  const bus = args.bus.type<t.MediaEvent>();
-  const $ = bus.event$.pipe(takeUntil(dispose$));
+  const bus = args.bus as t.EventBus<t.MediaEvent>;
+  const $ = bus.$.pipe(takeUntil(dispose$));
   const ref = stream.id;
 
   let recorder: ReturnType<typeof Recorder> | undefined;

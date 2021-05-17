@@ -13,7 +13,7 @@ export type DevVideoFullscreenProps = {
 
 export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => {
   const { stream, isSelf } = props;
-  const bus = props.bus.type<t.DevEvent>();
+  const bus = props.bus as t.EventBus<t.DevEvent>;
 
   console.log('isSelf', isSelf);
 

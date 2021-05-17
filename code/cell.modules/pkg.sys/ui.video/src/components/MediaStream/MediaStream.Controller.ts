@@ -13,8 +13,8 @@ type Ref = { kind: t.MediaStreamKind; ref: string; media: MediaStream; constrain
  */
 export function MediaStreamController(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
-  const bus = args.bus.type<t.MediaEvent>();
-  const $ = bus.event$.pipe(takeUntil(dispose$));
+  const bus = args.bus as t.EventBus<t.MediaEvent>;
+  const $ = bus.$.pipe(takeUntil(dispose$));
   const refs: Refs = {};
 
   const error = (ref: string, error: string) => {

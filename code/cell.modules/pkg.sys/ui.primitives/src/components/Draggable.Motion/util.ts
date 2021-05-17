@@ -19,7 +19,7 @@ export const ItemUtil = {
 
   toState(args: { id: string; bus: t.EventBus<any>; x: N; y: N; width: N; height: N; scale: N }) {
     const { id } = args;
-    const bus = args.bus.type<n.MotionDraggableEvent>();
+    const bus = args.bus as t.EventBus<n.MotionDraggableEvent>;
     let _changed$: Subject<n.MotionDraggableItemChange> | undefined;
 
     const item: n.MotionDraggableItem = {

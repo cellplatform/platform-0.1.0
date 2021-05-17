@@ -12,7 +12,7 @@ const ACTIONS = [sample1, sample2, sample3];
 const client = HttpClient.create(5000);
 const bus = rx.bus();
 
-bus.event$.subscribe((e) => {
+bus.$.subscribe((e) => {
   log.info('e', e);
 });
 

@@ -14,8 +14,8 @@ export function listen(args: {
   netbus: t.PeerBus<any>;
 }) {
   const { network$: $ } = args;
-  const bus = args.bus.type<t.DevEvent>();
-  const netbus = args.netbus.type<t.DevEvent>();
+  const bus = args.bus as t.EventBus<t.DevEvent>;
+  const netbus = args.netbus as t.PeerBus<t.DevEvent>;
   const layout$ = rx.payload<t.DevGroupLayoutEvent>($, 'DEV/group/layout');
 
   const layout = (kind: t.DevGroupLayout['kind'], factory?: () => JSX.Element) => {

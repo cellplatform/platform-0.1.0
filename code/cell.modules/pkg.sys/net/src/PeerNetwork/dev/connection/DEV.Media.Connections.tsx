@@ -14,7 +14,7 @@ export type DevMediaConnectionsProps = {
 };
 export const DevMediaConnections: React.FC<DevMediaConnectionsProps> = (props) => {
   const { netbus, connections } = props;
-  const bus = props.bus.type<t.DevEvent>();
+  const bus = props.bus as t.EventBus<t.DevEvent>;
   const self = netbus.self;
 
   const styles = {

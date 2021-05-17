@@ -12,12 +12,12 @@ type C = t.GroupPeerConnection;
  */
 export function GroupEvents(eventbus: t.PeerBus<any>) {
   const module = WebRuntime.module;
-  const netbus = eventbus.type<t.NetGroupEvent>();
+  const netbus = eventbus as t.PeerBus<t.NetGroupEvent>;
   const source = netbus.self;
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
 
-  const event$ = netbus.event$.pipe(
+  const event$ = netbus.$.pipe(
     takeUntil(dispose$),
     filter(ns.is.group.base),
     map((e) => e as t.NetGroupEvent),
