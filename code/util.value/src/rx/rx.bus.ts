@@ -15,8 +15,7 @@ export function bus<T extends E = E>(input?: Subject<any> | t.EventBus<any>): t.
   const subject$ = (input as Subject<any>) || new Subject<any>();
 
   const res: t.EventBus<T> = {
-    event$: subject$.pipe(filter((e) => isEvent(e))),
-    type: <T extends E>() => res as unknown as t.EventBus<T>,
+    $: subject$.pipe(filter((e) => isEvent(e))),
     fire: (e) => subject$.next(e),
   };
 
@@ -34,6 +33,6 @@ export function isBus(input: any) {
 /**
  * Convert a bus of one type into another type.
  */
-export function busType<T extends E>(bus: t.EventBus<any>) {
+export function asType<T extends E>(bus: t.EventBus<any>) {
   return bus as t.EventBus<T>;
 }

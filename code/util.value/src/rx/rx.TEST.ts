@@ -99,7 +99,7 @@ describe('rx', () => {
       const bus = rx.bus();
 
       const fired: t.Event[] = [];
-      bus.event$.subscribe((e) => fired.push(e));
+      bus.$.subscribe((e) => fired.push(e));
 
       bus.fire({ type: 'ANY', payload: {} });
 
@@ -112,7 +112,7 @@ describe('rx', () => {
       const bus = rx.bus<MyEvent>(source$);
 
       const fired: MyEvent[] = [];
-      bus.event$.subscribe((e) => fired.push(e));
+      bus.$.subscribe((e) => fired.push(e));
 
       source$.next({ type: 'ANY', payload: {} });
 
@@ -134,7 +134,7 @@ describe('rx', () => {
       const bus = rx.bus<MyEvent>(source$);
 
       const fired: MyEvent[] = [];
-      bus.event$.subscribe((e) => fired.push(e));
+      bus.$.subscribe((e) => fired.push(e));
 
       // NB: All data-types that do not conform to the shape of a [Event].
       source$.next(undefined);
@@ -196,7 +196,7 @@ describe('rx', () => {
     });
   });
 
-  describe('busType', () => {
+  describe('asType', () => {
     type MyEvent = IFooEvent | IBarEvent;
     type IFooEvent = { type: 'Event/foo'; payload: { count?: number } };
     type IBarEvent = { type: 'Event/bar'; payload: { count?: number } };
@@ -205,9 +205,9 @@ describe('rx', () => {
       const bus1 = rx.bus();
 
       const fired: t.Event[] = [];
-      bus1.event$.subscribe((e) => fired.push(e));
+      bus1.$.subscribe((e) => fired.push(e));
 
-      const bus2 = rx.busType<MyEvent>(bus1);
+      const bus2 = rx.asType<MyEvent>(bus1);
       bus2.fire({ type: 'Event/bar', payload: {} });
 
       expect(fired.length).to.eql(1);

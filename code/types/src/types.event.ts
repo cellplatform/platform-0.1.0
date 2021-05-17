@@ -16,7 +16,6 @@ export type FireEvent<E extends Event = Event> = (event: E) => void;
  * An structure that exposes an observable and can fire events.
  */
 export type EventBus<E extends Event = Event> = {
-  event$: Observable<E>;
+  $: Observable<E>;
   fire: FireEvent<E>;
-  type<T extends Event>(): EventBus<T>;
 };
