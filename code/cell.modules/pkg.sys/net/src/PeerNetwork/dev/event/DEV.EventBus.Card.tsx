@@ -11,6 +11,7 @@ import {
   PeerNetwork,
   Dropped,
   FileUtil,
+  Uri,
 } from '../common';
 import { DevCard } from '../layouts';
 import { DevEventBusStack } from './DEV.EventBus.Stack';
@@ -34,14 +35,15 @@ export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
     const msg = args.message.trim();
     const event = { type: 'sample/event', payload: { msg: msg ?? `<empty>` } };
 
-    const filter: t.PeerFilter = (e) => {
+    const filter: t.NetworkBusFilter = (e) => {
       const text = args.filter.trim();
-      return !text
-        ? true
-        : text
-            .split(',')
-            .map((text) => text.trim())
-            .some((text) => e.peer.endsWith(text) || e.connection.id.endsWith(text));
+      if (!text) return true; // NB: no filter applied.
+
+      const uri = Uri.connection.parse(e.uri, { throw: true });
+      return text
+        .split(',')
+        .map((text) => text.trim())
+        .some((text) => uri?.peer.endsWith(text) || uri?.connection.endsWith(text));
     };
 
     if (!args.filter) netbus.fire(event);

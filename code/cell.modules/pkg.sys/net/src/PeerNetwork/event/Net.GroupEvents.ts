@@ -68,7 +68,7 @@ export function GroupEvents(eventbus: t.PeerBus<any>) {
      */
 
     const fire = (target: t.PeerId, peer: t.PeerId, kind: t.PeerConnectionKind) =>
-      netbus.target.peer(target).fire({
+      netbus.target.node(target).fire({
         type: 'sys.net/group/connect',
         payload: { source, target: { peer, kind } },
       });

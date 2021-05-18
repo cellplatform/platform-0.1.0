@@ -1,7 +1,7 @@
 import { expect, t } from '../../test';
 import { EventNamespace } from './Events.ns';
 
-describe.only('Events Namespace', () => {
+describe('Events Namespace', () => {
   describe('is', () => {
     const payload = {};
     const { is } = EventNamespace;

@@ -25,7 +25,7 @@ export function FilesystemEvents(eventbus: t.PeerBus<any>) {
   const add = () => {
     const $ = rx.payload<t.NetFsAddEvent>(event$, 'sys.net/fs/add');
 
-    const fire = (args: { files: t.PeerFile[]; filter?: t.PeerFilter }) => {
+    const fire = (args: { files: t.PeerFile[]; filter?: t.NetworkBusFilter }) => {
       const { files, filter } = args;
       netbus.target.filter(filter).fire({
         type: 'sys.net/fs/add',

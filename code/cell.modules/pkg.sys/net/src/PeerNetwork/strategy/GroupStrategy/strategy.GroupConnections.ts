@@ -1,7 +1,7 @@
 import { firstValueFrom } from 'rxjs';
 import { filter, timeout } from 'rxjs/operators';
 
-import { slug, t, WebRuntime } from '../common';
+import { slug, t, WebRuntime, Uri } from '../common';
 
 /**
  * Strategy for retrieving peer/connection details for members of the mesh network.
@@ -17,6 +17,8 @@ export async function GroupConnectionsStrategy(args: {
   const req$ = events.group.connections().req$.pipe(filter(() => args.isEnabled()));
   const res$ = events.group.connections().res$.pipe(filter(() => args.isEnabled()));
 
+  const toConnectionUri = (input: string) => Uri.connection.parse(input, { throw: true });
+
   /**
    * Listen for local requests,
    * then broadcast event out to all connected peers.
@@ -24,16 +26,16 @@ export async function GroupConnectionsStrategy(args: {
   req$.pipe(filter((e) => e.source === self)).subscribe(async (payload) => {
     const tx = slug();
     const targets = netbus.connections.map((conn) => conn.peer.remote.id);
-    const { sent } = await netbus.target.remote({
+    const { targetted } = await netbus.target.remote({
       type: 'sys.net/group/connections:req',
       payload: { source: self, targets, tx },
     });
 
-    const waitFor = sent.map((item) =>
+    const waitFor = targetted.map((uri) =>
       firstValueFrom(
         res$.pipe(
           filter((e) => e.tx === tx),
-          filter((e) => e.source === item.peer),
+          filter((e) => e.source === toConnectionUri(uri)?.peer),
           timeout(5000),
         ),
       ),
@@ -61,7 +63,7 @@ export async function GroupConnectionsStrategy(args: {
     const peer: t.GroupPeer = { peer: self, module, connections };
 
     netbus.target
-      .filter((e) => e.peer === payload.source)
+      .filter((e) => toConnectionUri(e.uri)?.peer === payload.source)
       .fire({
         type: 'sys.net/group/connections:res',
         payload: { tx, source: self, peers: [peer] },

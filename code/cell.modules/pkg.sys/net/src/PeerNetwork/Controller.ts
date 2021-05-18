@@ -459,9 +459,9 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       const targets = selfRef.connections
         .filter((ref) => ref.kind === 'data')
         .filter((ref) => {
-          return !e.target
+          return !e.filter
             ? true
-            : e.target({ peer: ref.peer.remote.id, connection: { id: ref.id, kind: ref.kind } });
+            : e.filter({ peer: ref.peer.remote.id, connection: { id: ref.id, kind: ref.kind } });
         });
 
       // Send the data over the wire.

@@ -1,4 +1,4 @@
-import { rx, t } from '../common';
+import { rx, t, Uri } from '../common';
 import { Events } from './Events';
 
 /**
@@ -27,20 +27,30 @@ export function PeerBus<E extends t.Event>(args: {
     .then((e) => (connections = e.peer?.connections || []));
 
   const send = async (event: E, filter?: t.PeerFilter) => {
-    // Broadcast event to remote targets.
-    const { sent } = await data.send(event, { filter });
+    /**
+     * Broadcast event to REMOTE targets.
+     */
+    const res = await data.send(event, { filter });
+    const targetted = res.sent.map(({ peer, connection }) => {
+      return Uri.connection.create('data', peer, connection);
+    });
 
-    // Test the filter against the local peer, and fire locally if any matches found.
+    /**
+     * Broadcast through LOCAL observable.
+     */
     if (filter) {
+      // Test the filter against the local peer, and fire locally if any matches found.
       const localMatch = connections
         .filter((ref) => ref.kind === 'data')
-        .some(({ id, kind }) => filter({ peer: args.self, connection: { id, kind } }));
+        .some(({ id, kind }) => filter({ peer: self, connection: { id, kind } }));
       if (localMatch) bus.fire(event);
+    } else {
+      // NB: No filter given, so default to firing out of the local bus.
+      bus.fire(event);
     }
-    if (!filter) bus.fire(event); // NB: No filter, so always fire out of local bus.
 
     // Finish up.
-    return { event, sent };
+    return { event, targetted };
   };
 
   /**
@@ -57,8 +67,7 @@ export function PeerBus<E extends t.Event>(args: {
     },
 
     fire(event: E) {
-      data.send(event);
-      bus.fire(event);
+      send(event);
     },
 
     /**
@@ -82,18 +91,24 @@ export function PeerBus<E extends t.Event>(args: {
       /**
        * Broadcasts to a subset of peers.
        */
-      filter(fn?: t.PeerFilter) {
+      filter(fn?: t.NetworkBusFilter) {
         return {
-          fire: (event) => send(event, fn),
+          fire(event) {
+            return send(event, (e) => {
+              if (!fn) return true;
+              const uri = Uri.connection.create(e.connection.kind, e.peer, e.connection.id);
+              return fn({ uri });
+            });
+          },
         };
       },
 
       /**
        * Broadcasts to a subset of peers.
        */
-      peer(...id: t.PeerId[]) {
+      node(...target: t.NetworkBusUri[]) {
         return {
-          fire: (event) => send(event, (e) => id.includes(e.peer)),
+          fire: (event) => send(event, (e) => target.includes(e.peer)),
         };
       },
     },
