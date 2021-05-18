@@ -25,7 +25,7 @@ function testBus(options: { event?: MyEvent; uris?: t.NetworkBusUri[]; local?: s
   return res;
 }
 
-describe.only('NetworkBus', () => {
+describe('NetworkBus', () => {
   it('observable', () => {
     const bus = testBus().bus;
     expect(is.observable(bus.$)).to.eql(true);

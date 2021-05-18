@@ -9,6 +9,8 @@ type Scope = 'local' | 'remote';
 export function NetworkBus<E extends t.Event = t.Event>(args: {
   local: () => Promise<t.NetworkBusUri>;
   remotes: () => Promise<t.NetworkBusUri[]>;
+  in$: Observable<E>;
+  out: (args: { targets: t.NetworkBusUri[]; event: E }) => void;
 }): t.NetworkBus<E> {
   const bus = rx.bus<E>();
 

@@ -1,7 +1,6 @@
 import { map } from 'rxjs/operators';
 
-import { NetworkBus } from '../../NetworkBus';
-import { t, Uri } from '../common';
+import { t, Uri, NetworkBus } from '../common';
 import { Events } from './Events';
 
 /**
