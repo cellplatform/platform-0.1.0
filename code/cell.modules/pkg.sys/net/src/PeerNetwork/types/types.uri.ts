@@ -1,15 +1,20 @@
 import { t } from './common';
 
-export type PeerNetworkUri = PeerNetworkPeerUri | PeerNetworkConnectionUri;
+export type PeerConnectionUriString = string;
 
-export type PeerNetworkPeerUri = {
+/**
+ * Parsed URI Objects
+ */
+export type PeerUri = PeerPeerUri | PeerConnectionUri;
+
+export type PeerPeerUri = {
   ok: boolean;
   type: 'peer';
   peer: t.PeerId;
   errors: string[];
 };
 
-export type PeerNetworkConnectionUri = {
+export type PeerConnectionUri = {
   ok: boolean;
   type: 'connection';
   kind: t.PeerConnectionKind;

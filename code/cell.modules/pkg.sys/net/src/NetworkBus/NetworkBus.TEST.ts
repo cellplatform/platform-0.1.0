@@ -1,25 +1,27 @@
-import { t, expect, time } from '../test';
-import { NetworkBus } from '.';
-
 import { is } from '@platform/util.value';
+import { Subject } from 'rxjs';
+
+import { NetworkBus } from '.';
+import { expect, t, time } from '../test';
 
 type MyEvent = { type: 'foo'; payload: { count: number } };
 
 function testBus(options: { event?: MyEvent; uris?: t.NetworkBusUri[]; local?: string } = {}) {
-  const uris = options.uris ?? [];
   const local = options.local ?? 'uri:me';
-
+  const uris = options.uris ?? [];
+  const in$ = new Subject<MyEvent>();
   const state = {
-    sent: [] as { uri: string; event: t.Event }[],
+    sent: [] as { targets: string[]; event: t.Event }[],
   };
 
   const bus = NetworkBus<MyEvent>({
     local: async () => local,
     remotes: async () => uris,
-    send: (e) => state.sent.push(e),
+    out: (e) => state.sent.push(e),
+    in$,
   });
 
-  const res = { bus, state, local, uris };
+  const res = { bus, state, local, uris, in$ };
   return res;
 }
 
@@ -54,13 +56,9 @@ describe.only('NetworkBus', () => {
       expect(state.sent.length).to.eql(0); // NB: Network events are always sent asynchronously.
 
       await time.wait(0);
-      expect(state.sent.length).to.eql(2);
-
-      expect(state.sent[0].uri).to.eql(uris[0]);
-      expect(state.sent[1].uri).to.eql(uris[1]);
-
+      expect(state.sent.length).to.eql(1);
+      expect(state.sent[0].targets).to.eql(uris);
       expect(state.sent[0].event).to.eql(event);
-      expect(state.sent[1].event).to.eql(event);
     });
   });
 });

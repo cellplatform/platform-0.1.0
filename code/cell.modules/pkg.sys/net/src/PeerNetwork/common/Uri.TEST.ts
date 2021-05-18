@@ -1,7 +1,7 @@
 import { expect } from '../../test';
 import { Uri } from './Uri';
 
-describe.only('PeerNetwork URI', () => {
+describe('PeerNetwork URI', () => {
   describe('is', () => {
     it('is.peer', () => {
       const test = (input: any, expected: boolean) => {
@@ -70,6 +70,18 @@ describe.only('PeerNetwork URI', () => {
         expect(res?.ok).to.eql(false);
         expect(res?.errors.length).to.eql(1);
         expect(res?.errors[0]).to.include('No peer identifier');
+      });
+
+      it('error: throw (param)', () => {
+        const test = (input: any) => {
+          const fn = () => Uri.peer.parse(input, { throw: true });
+          expect(fn).to.throw(/Peer URI could not be parsed/);
+        };
+
+        test('');
+        test('peer:');
+        test('conn:data:foo.bar');
+        test('foobar');
       });
     });
   });
@@ -163,6 +175,8 @@ describe.only('PeerNetwork URI', () => {
         test('conn:data:foo.');
         test('conn:data:.bar');
         test('conn:BOO:foo.bar');
+        test('peer:foo');
+        test('');
       });
     });
   });

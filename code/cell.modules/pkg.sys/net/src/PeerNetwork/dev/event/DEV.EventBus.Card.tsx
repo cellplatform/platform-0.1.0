@@ -39,11 +39,14 @@ export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
       const text = args.filter.trim();
       if (!text) return true; // NB: no filter applied.
 
-      const uri = Uri.connection.parse(e.uri, { throw: true });
       return text
         .split(',')
         .map((text) => text.trim())
-        .some((text) => uri?.peer.endsWith(text) || uri?.connection.endsWith(text));
+        .some((text) => {
+          if (Uri.is.peer(e.uri) && e.uri.endsWith(text)) return true;
+          const uri = Uri.connection.parse(e.uri);
+          return uri?.peer.endsWith(text) || uri?.connection.endsWith(text);
+        });
     };
 
     if (!args.filter) netbus.fire(event);

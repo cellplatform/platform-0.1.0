@@ -226,12 +226,13 @@ export function Events(eventbus: t.EventBus<any>) {
       .payload<t.PeerDataInEvent>(event$, 'sys.net/peer/data/in')
       .pipe(filter((e) => e.self === self));
 
-    const send = (data: any, options: { filter?: t.PeerFilter } = {}) => {
+    const send = (data: any, options: { targets?: t.PeerConnectionUriString[] } = {}) => {
+      const { targets } = options;
       const tx = slug();
       const res = firstValueFrom(out.res$.pipe(filter((e) => e.tx === tx)));
       bus.fire({
         type: 'sys.net/peer/data/out:req',
-        payload: { tx, self, data, filter: options.filter },
+        payload: { tx, self, data, targets },
       });
       return res;
     };

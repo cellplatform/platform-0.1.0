@@ -15,7 +15,7 @@ export type ConnectionRef = {
   kind: t.PeerConnectionKind;
   peer: t.PeerConnectionStatus['peer'];
   id: t.PeerConnectionId;
-  uri: t.PeerConnectionUri;
+  uri: t.PeerConnectionUriString;
   conn: PeerJS.DataConnection | PeerJS.MediaConnection;
   direction: t.PeerConnectDirection;
   localStream?: MediaStream;

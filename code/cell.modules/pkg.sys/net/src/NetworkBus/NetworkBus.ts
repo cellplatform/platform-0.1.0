@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { t, rx } from './common';
 
 type Scope = 'local' | 'remote';
@@ -8,9 +9,10 @@ type Scope = 'local' | 'remote';
 export function NetworkBus<E extends t.Event = t.Event>(args: {
   local: () => Promise<t.NetworkBusUri>;
   remotes: () => Promise<t.NetworkBusUri[]>;
-  send: (args: { uri: t.NetworkBusUri; event: E }) => void;
 }): t.NetworkBus<E> {
   const bus = rx.bus<E>();
+
+  args.in$.subscribe((e) => bus.fire(e));
 
   const fire = async (event: E, scope: Scope[], filter?: t.NetworkBusFilter) => {
     const local = await args.local();
@@ -35,9 +37,9 @@ export function NetworkBus<E extends t.Event = t.Event>(args: {
      * Broadcast event to REMOTE targets.
      */
     if (scope.includes('remote')) {
-      const remotes = await args.remotes();
-      await Promise.all(remotes.map(async (uri) => args.send({ uri, event })));
-      targetted.push(...remotes);
+      const targets = (await args.remotes()).filter((uri) => (filter ? filter({ uri }) : true));
+      targetted.push(...targets);
+      args.out({ targets, event });
     }
 
     return { event, targetted };

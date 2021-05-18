@@ -19,7 +19,7 @@ export type PeerConnectionStatus = PeerConnectionDataStatus | PeerConnectionMedi
 type PeerConnectionBase = {
   peer: { self: t.PeerId; remote: { id: t.PeerId; module: t.PeerModule } };
   id: t.PeerConnectionId;
-  uri: t.PeerConnectionUri;
+  uri: t.PeerConnectionUriString;
   direction: t.PeerConnectDirection;
   parent?: t.PeerConnectionId;
 };
