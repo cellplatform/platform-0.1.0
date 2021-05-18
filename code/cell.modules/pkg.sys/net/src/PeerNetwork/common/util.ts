@@ -53,7 +53,7 @@ export const PeerJsUtil = {
  */
 export const StringUtil = {
   formatConnectionId(id: string) {
-    return (id || '').replace(/^dc_/, '').replace(/^mc_/, '');
+    return (id || '').trim().replace(/^dc_/, '').replace(/^mc_/, '');
   },
 
   parseEndpointAddress(address: string): t.PeerSignallingEndpoint {

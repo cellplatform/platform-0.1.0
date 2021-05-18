@@ -1,6 +1,13 @@
 import { t } from './common';
 
-export type PeerNetworkUri = PeerNetworkConnectionUri;
+export type PeerNetworkUri = PeerNetworkPeerUri | PeerNetworkConnectionUri;
+
+export type PeerNetworkPeerUri = {
+  ok: boolean;
+  type: 'peer';
+  peer: t.PeerId;
+  errors: string[];
+};
 
 export type PeerNetworkConnectionUri = {
   ok: boolean;

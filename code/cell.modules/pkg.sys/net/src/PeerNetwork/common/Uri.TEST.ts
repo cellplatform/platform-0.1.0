@@ -1,21 +1,22 @@
 import { expect } from '../../test';
 import { Uri } from './Uri';
 
-describe('PeerNetwork URI', () => {
-  describe('connection', () => {
-    it('create: data', () => {
-      const res = Uri.connection.create('data', 'foo', 'bar');
-      expect(res).to.eql('conn:data:foo.bar');
-    });
+describe.only('PeerNetwork URI', () => {
+  describe('is', () => {
+    it('is.peer', () => {
+      const test = (input: any, expected: boolean) => {
+        expect(Uri.is.peer(input)).to.eql(expected);
+      };
 
-    it('create: media/screen', () => {
-      const res = Uri.connection.create('media/screen', 'foo', 'bar');
-      expect(res).to.eql('conn:media.screen:foo.bar');
-    });
+      test('', false);
+      test(' ', false);
+      test(123, false);
+      test({}, false);
+      test('peer', false);
+      test('conn:data:foo.bar', false);
 
-    it('create: media/video', () => {
-      const res = Uri.connection.create('media/video', 'foo', 'bar');
-      expect(res).to.eql('conn:media.video:foo.bar');
+      test('peer:foo', true);
+      test('  peer:foo  ', true);
     });
 
     it('is.connection', () => {
@@ -27,9 +28,66 @@ describe('PeerNetwork URI', () => {
       test(' ', false);
       test(123, false);
       test({}, false);
+      test('conn', false);
+      test('peer:foo', false);
 
       test('conn:data:foo.bar', true);
       test('  conn:data:foo.bar  ', true);
+    });
+  });
+
+  describe('peer', () => {
+    it('create', () => {
+      const res = Uri.peer.create('  foo  ');
+      expect(res).to.eql('peer:foo');
+    });
+
+    describe('parse', () => {
+      it('success', () => {
+        const res1 = Uri.peer.parse('peer:foo');
+
+        expect(res1?.ok).to.eql(true);
+        expect(res1?.type).to.eql('peer');
+        expect(res1?.peer).to.eql('foo');
+        expect(res1?.errors).to.eql([]);
+      });
+
+      it('fail: no match (undefined)', () => {
+        const test = (input: any) => {
+          expect(Uri.peer.parse(input)).to.eql(undefined);
+        };
+        test('');
+        test('foobar');
+        test('cell:ns:A1');
+        test(undefined);
+        test(null);
+        test({ foo: 123 });
+        test([1, 2, 3]);
+      });
+
+      it('error: identifiers', () => {
+        const res = Uri.peer.parse('peer:');
+        expect(res?.ok).to.eql(false);
+        expect(res?.errors.length).to.eql(1);
+        expect(res?.errors[0]).to.include('No peer identifier');
+      });
+    });
+  });
+
+  describe('connection', () => {
+    it('create: data', () => {
+      const res = Uri.connection.create('data', '  foo  ', '  bar  ');
+      expect(res).to.eql('conn:data:foo.bar');
+    });
+
+    it('create: media/screen', () => {
+      const res = Uri.connection.create('media/screen', 'foo', 'bar');
+      expect(res).to.eql('conn:media.screen:foo.bar');
+    });
+
+    it('create: media/video', () => {
+      const res = Uri.connection.create('media/video', 'foo', 'bar');
+      expect(res).to.eql('conn:media.video:foo.bar');
     });
 
     describe('parse', () => {
@@ -49,7 +107,7 @@ describe('PeerNetwork URI', () => {
         expect(res3?.kind).to.eql('media/video');
       });
 
-      it('fail: unknown (undefined)', () => {
+      it('fail: no match (undefined)', () => {
         const test = (input: any) => {
           expect(Uri.connection.parse(input)).to.eql(undefined);
         };

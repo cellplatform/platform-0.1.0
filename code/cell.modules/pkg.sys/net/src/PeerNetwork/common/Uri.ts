@@ -5,22 +5,50 @@ import { StringUtil } from './util';
  * Network URIs.
  */
 export const Uri = {
+  /**
+   * A URI that represents a unique peer.
+   */
+  peer: {
+    create(id: t.PeerId) {
+      return `peer:${id.trim()}`;
+    },
+
+    parse(input: any, options: { throw?: boolean } = {}): t.PeerNetworkPeerUri | undefined {
+      const value = toString(input);
+      if (!value.startsWith('peer:')) return;
+
+      const parts = value.split(':').map((part) => part.trim());
+      const peer = parts[1] || '';
+      const uri: t.PeerNetworkPeerUri = { ok: true, type: 'peer', peer, errors: [] };
+
+      const error = (message: string) => uri.errors.push(message);
+      if (!uri.peer) error(`No peer identifier`);
+
+      uri.ok = uri.errors.length === 0;
+      if (!uri.ok && options.throw) {
+        throw new Error(`Peer URI could not be parsed:\n${uri.errors.join('\n')}`);
+      }
+
+      return uri;
+    },
+  },
+
+  /**
+   * A URI that represents a peer connection.
+   */
   connection: {
     create(kind: t.PeerConnectionKind, peer: t.PeerId, id: string) {
-      return `conn:${kind.replace(/\//g, '.')}:${peer}.${StringUtil.formatConnectionId(id)}`;
+      const type = kind.trim().replace(/\//g, '.');
+      return `conn:${type}:${peer.trim()}.${StringUtil.formatConnectionId(id)}`;
     },
 
     parse(input: any, options: { throw?: boolean } = {}): t.PeerNetworkConnectionUri | undefined {
-      const value = (typeof input === 'string' ? input : '').trim();
+      const value = toString(input);
       if (!value.startsWith('conn:')) return;
 
-      const parts = value
-        .replace(/^conn\:/, '')
-        .split(':')
-        .map((part) => part.trim());
-
-      const kind = (parts[0] || '').replace(/\./g, '/') as t.PeerConnectionKind;
-      const id = (parts[1] || '').split('.');
+      const parts = value.split(':').map((part) => part.trim());
+      const kind = (parts[1] || '').replace(/\./g, '/') as t.PeerConnectionKind;
+      const id = (parts[2] || '').split('.');
       const peer = (id[0] || '') as t.PeerId;
       const connection = (id[1] || '') as t.PeerConnectionId;
 
@@ -38,8 +66,8 @@ export const Uri = {
       if (!kinds.includes(uri.kind)) error(`Connection kind not supported`);
       if (!uri.peer) error(`No peer identifier`);
       if (!uri.connection) error(`No connection identifier`);
-      uri.ok = uri.errors.length === 0;
 
+      uri.ok = uri.errors.length === 0;
       if (!uri.ok && options.throw) {
         throw new Error(`Connection URI could not be parsed:\n${uri.errors.join('\n')}`);
       }
@@ -49,9 +77,14 @@ export const Uri = {
   },
 
   is: {
-    connection(input: any) {
-      const value = (typeof input === 'string' ? input : '').trim();
-      return value.startsWith('conn:');
-    },
+    peer: (input: any) => toString(input).startsWith('peer:'),
+    connection: (input: any) => toString(input).startsWith('conn:'),
   },
 };
+
+/**
+ * [Helpers]
+ */
+function toString(input: any) {
+  return (typeof input === 'string' ? input : '').trim();
+}
