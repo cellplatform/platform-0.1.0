@@ -22,7 +22,7 @@ export function NetworkBus<T extends E = E>(args: {
     const passesFilter = (uri: string) => (filter ? filter({ uri }) : true);
 
     /**
-     * Broadcast through LOCAL observable.
+     * Broadcast the event through LOCAL observable.
      */
     if (scope.includes('local')) {
       if (filter) {
@@ -39,7 +39,7 @@ export function NetworkBus<T extends E = E>(args: {
     }
 
     /**
-     * Broadcast event to REMOTE targets.
+     * Broadcast the event to REMOTE targets.
      */
     if (scope.includes('remote')) {
       const remotes = await args.remotes();
