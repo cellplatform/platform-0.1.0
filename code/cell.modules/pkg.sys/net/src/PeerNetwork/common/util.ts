@@ -92,15 +92,6 @@ export const StringUtil = {
 };
 
 /**
- * Network URIs.
- */
-export const Uri = {
-  connection(kind: t.PeerConnectionKind, peer: t.PeerId, id: string) {
-    return `${kind.replace(/\//g, '.')}:${peer}:${StringUtil.formatConnectionId(id)}`;
-  },
-};
-
-/**
  * MediaStream helpers.
  */
 export const StreamUtil = {
