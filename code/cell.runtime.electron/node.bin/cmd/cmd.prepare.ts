@@ -93,7 +93,9 @@ async function runYarn(args: { mode: Mode; install: boolean }) {
   if (args.install) {
     const cmd = 'yarn';
     const cwd = mode === 'make' ? Path.app : Path.root;
-    spinner.update({ label: `running ${log.white(cmd)} (install) in ${cwd}` }).start();
+    spinner
+      .update({ label: `running ${log.white(cmd)} (${log.green('install')}) in ${cwd}` })
+      .start();
     const res = await exec.command(cmd).run({ silent: true, cwd });
     spinner.stop();
 

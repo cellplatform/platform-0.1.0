@@ -14,7 +14,9 @@
     "reset": "sh script.sh/reset.sh",
     "nuke": "sh script.sh/nuke.sh",
     "public": "ngrok http 5000 --hostname=os.ngrok.io",
-    "cmd": "ts-node -T node.bin $@"
+    "cmd": "ts-node -T node.bin $@",
+    "prepare-make": "yarn cmd prepare make",
+    "prepare-dev": "yarn cmd prepare dev"
   },
   "devDependencies": {
     "@platform/ts": "4.1.13",
