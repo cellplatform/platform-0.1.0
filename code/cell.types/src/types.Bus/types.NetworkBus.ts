@@ -9,7 +9,7 @@ export type NetworkBusSend<E extends t.Event = t.Event> = (e: NetworkBusSendArgs
 export type NetworkBusSendArgs<E extends t.Event = t.Event> = { event: E; uri: NetworkBusUri };
 
 /**
- * An event-bus distributed across a network of peers.
+ * An event-bus distributed across a network.
  */
 export type NetworkBus<E extends t.Event = t.Event> = {
   $: t.Observable<E>;
@@ -18,7 +18,7 @@ export type NetworkBus<E extends t.Event = t.Event> = {
 };
 
 /**
- * Selected fires event to peers.
+ * Target events at specific network endpoints.
  */
 export type NetworkBusTarget<E extends t.Event> = {
   /**
@@ -27,19 +27,19 @@ export type NetworkBusTarget<E extends t.Event> = {
   local(event: E): Promise<NetworkBusFireResponse<E>>;
 
   /**
-   * Fires an event to remote peers only.
+   * Fires an event to remote network targets only.
    */
   remote(event: E): Promise<NetworkBusFireResponse<E>>;
 
   /**
-   * Broadcasts to a subset of peers.
+   * Broadcasts to a subset of network targets.
    */
   filter(fn?: NetworkBusFilter): {
     fire(event: E): Promise<NetworkBusFireResponse<E>>;
   };
 
   /**
-   * Broadcasts to a specific peer(s).
+   * Broadcasts to a specific network target address(es).
    */
   node(...target: NetworkBusUri[]): {
     fire(event: E): Promise<NetworkBusFireResponse<E>>;
