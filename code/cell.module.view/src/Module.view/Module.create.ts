@@ -2,7 +2,7 @@ import { Module } from '@platform/cell.module';
 import { equals } from 'ramda';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 
-import { t } from '../common';
+import { t, rx } from '../common';
 import { events } from './Module.events';
 import { fire } from './Module.fire';
 
@@ -33,9 +33,9 @@ export function create<T extends P>(args: t.ViewModuleArgs<T>): t.IModule<T> {
  * relevant events when matched.
  */
 export function monitorAndDispatch<T extends P>(args: { bus: B; module: t.IModule<T> }) {
-  const module$ = args.bus
-    .type<t.ModuleEvent>()
-    .event$.pipe(filter((e) => e.payload.module === args.module.id));
+  const module$ = rx
+    .busAsType<t.ModuleEvent>(args.bus)
+    .$.pipe(filter((e) => e.payload.module === args.module.id));
 
   const event = events<P>(module$);
   const next = fire(args.bus);

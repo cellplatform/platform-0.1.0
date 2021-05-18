@@ -197,7 +197,7 @@ describe('rx', () => {
     });
   });
 
-  describe('asType', () => {
+  describe('busAsType', () => {
     type MyEvent = IFooEvent | IBarEvent;
     type IFooEvent = { type: 'Event/foo'; payload: { count?: number } };
     type IBarEvent = { type: 'Event/bar'; payload: { count?: number } };
@@ -208,7 +208,7 @@ describe('rx', () => {
       const fired: t.Event[] = [];
       bus1.$.subscribe((e) => fired.push(e));
 
-      const bus2 = rx.asType<MyEvent>(bus1);
+      const bus2 = rx.busAsType<MyEvent>(bus1);
       bus2.fire({ type: 'Event/bar', payload: {} });
 
       expect(fired.length).to.eql(1);

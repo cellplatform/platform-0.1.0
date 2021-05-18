@@ -33,6 +33,6 @@ export function isBus(input: any) {
 /**
  * Convert a bus of one type into another type.
  */
-export function asType<T extends E>(bus: t.EventBus<any>) {
+export function busAsType<T extends E>(bus: t.EventBus<any>) {
   return bus as t.EventBus<T>;
 }
