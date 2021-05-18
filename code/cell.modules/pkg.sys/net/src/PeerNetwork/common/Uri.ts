@@ -13,7 +13,7 @@ export const Uri = {
       return `peer:${id.trim()}`;
     },
 
-    parse(input: any, options: { throw?: boolean } = {}): t.PeerPeerUri | undefined {
+    parse(input: any, options: { throw?: boolean } = {}): t.PeerUriObject | undefined {
       const value = toString(input);
 
       const throwError = (errors: string[] = []) => {
@@ -29,7 +29,7 @@ export const Uri = {
 
       const parts = value.split(':').map((part) => part.trim());
       const peer = parts[1] || '';
-      const uri: t.PeerPeerUri = { ok: true, type: 'peer', peer, errors: [] };
+      const uri: t.PeerUriObject = { ok: true, type: 'peer', peer, errors: [] };
 
       const error = (message: string) => uri.errors.push(message);
       if (!uri.peer) error(`No peer identifier`);
@@ -52,7 +52,7 @@ export const Uri = {
       return `conn:${type}:${peer.trim()}.${StringUtil.formatConnectionId(id)}`;
     },
 
-    parse(input: any, options: { throw?: boolean } = {}): t.PeerConnectionUri | undefined {
+    parse(input: any, options: { throw?: boolean } = {}): t.PeerConnectionUriObject | undefined {
       const value = toString(input);
 
       const throwError = (errors: string[] = []) => {
@@ -72,7 +72,7 @@ export const Uri = {
       const peer = (id[0] || '') as t.PeerId;
       const connection = (id[1] || '') as t.PeerConnectionId;
 
-      const uri: t.PeerConnectionUri = {
+      const uri: t.PeerConnectionUriObject = {
         ok: true,
         type: 'connection',
         kind,
