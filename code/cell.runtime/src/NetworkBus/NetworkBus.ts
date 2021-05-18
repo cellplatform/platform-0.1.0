@@ -1,22 +1,22 @@
-import { Observable } from 'rxjs';
 import { t, rx } from './common';
 
 type Scope = 'local' | 'remote';
+type E = t.Event;
 
 /**
  * An event-bus distributed across a network of peers.
  */
-export function NetworkBus<E extends t.Event = t.Event>(args: {
+export function NetworkBus<T extends E = E>(args: {
+  pump: t.NetworkPump<T>;
   local: () => Promise<t.NetworkBusUri>;
   remotes: () => Promise<t.NetworkBusUri[]>;
-  in$: Observable<E>;
-  out: (args: { targets: t.NetworkBusUri[]; event: E }) => void;
-}): t.NetworkBus<E> {
-  const bus = rx.bus<E>();
+}): t.NetworkBus<T> {
+  const { pump } = args;
+  const bus = rx.bus<T>();
 
-  args.in$.subscribe((e) => bus.fire(e));
+  pump.in((e) => bus.fire(e));
 
-  const fire = async (event: E, scope: Scope[], filter?: t.NetworkBusFilter) => {
+  const fire = async (event: T, scope: Scope[], filter?: t.NetworkBusFilter) => {
     const local = await args.local();
     const targetted: t.NetworkBusUri[] = [];
 
@@ -41,16 +41,16 @@ export function NetworkBus<E extends t.Event = t.Event>(args: {
     if (scope.includes('remote')) {
       const targets = (await args.remotes()).filter((uri) => (filter ? filter({ uri }) : true));
       targetted.push(...targets);
-      args.out({ targets, event });
+      pump.out({ targets, event });
     }
 
     return { event, targetted };
   };
 
-  const api: t.NetworkBus<E> = {
+  const api: t.NetworkBus<T> = {
     $: bus.$,
 
-    fire(event: E) {
+    fire(event: T) {
       fire(event, ['local', 'remote']);
     },
 

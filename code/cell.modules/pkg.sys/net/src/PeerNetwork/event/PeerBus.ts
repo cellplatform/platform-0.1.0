@@ -15,14 +15,18 @@ export function PeerBus<E extends t.Event>(args: {
   const data = events.data(self);
   const { dispose, dispose$ } = events;
 
+  const pump: t.NetworkPump<E> = {
+    in: (fn) => data.in$.pipe(map((e) => e.data as E)).subscribe(fn),
+    out: (e) => data.send(e.event, { targets: e.targets }),
+  };
+
   const netbus = NetworkBus<E>({
+    pump,
     local: async () => Uri.peer.create(self),
     remotes: async () => {
       const uri = Uri.connection.create;
       return connections.map((conn) => uri(conn.kind, conn.peer.remote.id, conn.id));
     },
-    out: (e) => data.send(e.event, { targets: e.targets }),
-    in$: data.in$.pipe(map((e) => e.data as E)),
   });
 
   // Maintain a list of connections.
@@ -31,18 +35,18 @@ export function PeerBus<E extends t.Event>(args: {
   events
     .status(self)
     .get()
-    .then((e) => (connections = e.peer?.connections || []));
+    .then((e) => (connections = e.peer?.connections || [])); // NB: Initial load of current connections.
 
   /**
    * API
    */
   return {
     ...netbus,
-    dispose,
-    dispose$,
     self,
     get connections() {
       return connections;
     },
+    dispose,
+    dispose$,
   };
 }
