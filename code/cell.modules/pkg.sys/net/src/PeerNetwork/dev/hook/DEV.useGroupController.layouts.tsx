@@ -2,8 +2,13 @@ import React from 'react';
 import { filter } from 'rxjs/operators';
 
 import { rx, t } from '../common';
-import { DevCrdtModel, DevScreensize } from '../layouts';
-import { DevVideosPhysicsLayout, DevVideosGroupLayout } from '../media';
+import {
+  DevCrdtModel,
+  DevScreensize,
+  DevVideosPhysicsLayout,
+  DevVideosGroupLayout,
+  DevImagePasteboard,
+} from '../layouts';
 
 /**
  * Listen for requests for a view to display and load it into the environment.
@@ -32,4 +37,5 @@ export function listen(args: {
   layout('screensize', () => <DevScreensize bus={bus} netbus={netbus} />);
   layout('video/physics', () => <DevVideosPhysicsLayout bus={bus} netbus={netbus} />);
   layout('video/group', () => <DevVideosGroupLayout bus={bus} netbus={netbus} />);
+  layout('image/pasteboard', () => <DevImagePasteboard bus={bus} netbus={netbus} />);
 }

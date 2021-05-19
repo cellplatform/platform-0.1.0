@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { filter } from 'rxjs/operators';
-import { DevImageDraggable } from './DEV.Image.Draggable';
+import { DevImageDraggable } from '../media';
 
 import { useLocalPeer } from '../../hook';
 import {
@@ -17,7 +17,7 @@ import {
   useResizeObserver,
   VideoStream,
 } from '../common';
-import { DevVideo } from './DEV.Video';
+import { DevVideo } from '../media/DEV.Video';
 
 export type DevVideosPhysicsLayoutProps = {
   bus: t.EventBus<any>;

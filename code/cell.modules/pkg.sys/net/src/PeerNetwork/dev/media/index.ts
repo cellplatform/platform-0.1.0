@@ -3,5 +3,3 @@ export * from './DEV.Video.Fullscreen';
 export * from './DEV.Image.Fullscreen';
 export * from './DEV.Image.Thumbnails';
 export * from './DEV.Image.Draggable';
-export * from './DEV.Videos.PhysicsLayout';
-export * from './DEV.Videos.GroupLayout';
