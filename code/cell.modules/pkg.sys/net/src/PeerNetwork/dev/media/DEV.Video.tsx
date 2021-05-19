@@ -21,6 +21,7 @@ export type DevVideoProps = {
   bus: t.EventBus<any>;
   kind: t.PeerConnectionKindMedia;
   isSelf?: boolean;
+  isRecordable?: boolean;
   stream?: MediaStream;
   width?: number;
   height?: number;
@@ -34,7 +35,7 @@ export type DevVideoProps = {
 };
 
 export const DevVideo: React.FC<DevVideoProps> = (props) => {
-  const { width = 150, height = 100, stream, kind, isSelf } = props;
+  const { width = 150, height = 100, stream, kind, isSelf, isRecordable = false } = props;
   const show = { proplist: props.show?.proplist ?? true, waveform: props.show?.waveform ?? true };
   const isVideo = kind === 'media/video';
   const bus = props.bus as t.EventBus<t.DevEvent>;
@@ -113,7 +114,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
           onClick={() =>
             bus.fire({
               type: 'DEV/media/modal',
-              payload: { stream, target: 'body', isSelf },
+              payload: { stream, target: 'body', isSelf, isRecordable },
             })
           }
         />

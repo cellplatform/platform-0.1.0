@@ -19,13 +19,13 @@ import {
 } from '../common';
 import { DevVideo } from './DEV.Video';
 
-export type DevVideosLayoutProps = {
+export type DevVideosPhysicsLayoutProps = {
   bus: t.EventBus<any>;
   netbus: t.PeerBus<any>;
   style?: CssValue;
 };
 
-export const DevVideosLayout: React.FC<DevVideosLayoutProps> = (props) => {
+export const DevVideosPhysicsLayout: React.FC<DevVideosPhysicsLayoutProps> = (props) => {
   const { bus } = props;
   const netbus = props.netbus as t.PeerBus<t.DevGroupEvent>;
   const self = netbus.self;

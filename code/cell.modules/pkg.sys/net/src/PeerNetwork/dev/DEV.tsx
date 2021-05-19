@@ -216,9 +216,10 @@ export const actions = DevActions<Ctx>()
       });
     };
 
-    e.button('group: videos (physics)', (e) => showLayout(e.ctx, 'videos'));
-    e.button('group: crdt', (e) => showLayout(e.ctx, 'crdt'));
-    e.button('group: screensize', (e) => showLayout(e.ctx, 'screensize'));
+    e.button('video/group', (e) => showLayout(e.ctx, 'video/group'));
+    e.button('video/physics', (e) => showLayout(e.ctx, 'video/physics'));
+    e.button('screensize', (e) => showLayout(e.ctx, 'screensize'));
+    e.button('crdt', (e) => showLayout(e.ctx, 'crdt'));
 
     e.hr(1, 0.2);
     e.button('reset (default)', (e) => showLayout(e.ctx, 'cards'));

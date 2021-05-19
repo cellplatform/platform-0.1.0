@@ -3,7 +3,7 @@ import { filter } from 'rxjs/operators';
 
 import { rx, t } from '../common';
 import { DevCrdtModel, DevScreensize } from '../layouts';
-import { DevVideosLayout } from '../media';
+import { DevVideosPhysicsLayout, DevVideosGroupLayout } from '../media';
 
 /**
  * Listen for requests for a view to display and load it into the environment.
@@ -26,8 +26,10 @@ export function listen(args: {
     });
   };
 
-  layout('cards'); // NB: Clear
-  layout('videos', () => <DevVideosLayout bus={bus} netbus={netbus} />);
+  layout('cards'); // NB: Clear (reset).
+
   layout('crdt', () => <DevCrdtModel bus={bus} netbus={netbus} />);
   layout('screensize', () => <DevScreensize bus={bus} netbus={netbus} />);
+  layout('video/physics', () => <DevVideosPhysicsLayout bus={bus} netbus={netbus} />);
+  layout('video/group', () => <DevVideosGroupLayout bus={bus} netbus={netbus} />);
 }

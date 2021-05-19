@@ -51,8 +51,15 @@ export function useLocalController(args: { bus: t.EventBus<any> }) {
     rx.payload<t.DevMediaModalEvent>($, 'DEV/media/modal')
       .pipe()
       .subscribe((e) => {
-        const { target, isSelf } = e;
-        const el = <DevVideoFullscreen bus={bus} stream={e.stream} isSelf={isSelf} />;
+        const { target, isSelf, isRecordable } = e;
+        const el = (
+          <DevVideoFullscreen
+            bus={bus}
+            stream={e.stream}
+            isSelf={isSelf}
+            isRecordable={isRecordable}
+          />
+        );
         bus.fire({ type: 'DEV/modal', payload: { el, target } });
       });
 

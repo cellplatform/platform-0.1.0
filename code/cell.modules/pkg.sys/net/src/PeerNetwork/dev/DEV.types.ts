@@ -16,8 +16,8 @@ export type DevModelScreenSizeKind = 'root';
 export type DevModelScreenSize = {
   peer: t.PeerId;
   kind: 'root';
-  size: { width: number; height: number };
   updatedAt: number;
+  size: { width: number; height: number };
 };
 
 /**
@@ -77,7 +77,12 @@ export type DevMediaModalEvent = {
   type: 'DEV/media/modal';
   payload: DevMediaModal;
 };
-export type DevMediaModal = { stream?: MediaStream; target?: DevModalTarget; isSelf?: boolean };
+export type DevMediaModal = {
+  stream?: MediaStream;
+  target?: DevModalTarget;
+  isSelf?: boolean;
+  isRecordable?: boolean;
+};
 
 /**
  * Broadcasts a display layout to peers.
@@ -86,8 +91,9 @@ export type DevGroupLayoutEvent = {
   type: 'DEV/group/layout';
   payload: DevGroupLayout;
 };
-export type DevGroupLayout = {
-  kind: 'cards' | 'videos' | 'crdt' | 'screensize';
+export type DevGroupLayout = DevGroupLayoutSimple;
+export type DevGroupLayoutSimple = {
+  kind: 'cards' | 'crdt' | 'screensize' | 'video/physics' | 'video/group';
   target?: DevModalTarget;
 };
 
