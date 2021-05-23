@@ -20,9 +20,8 @@ export const DevVideosGroupLayout: React.FC<DevVideosGroupLayoutProps> = (props)
   const videoStreams = local.connections
     .filter((item) => item.kind === 'media/video')
     .map((item) => item as t.PeerConnectionMediaStatus);
-  const videoPanelWidth = videoStreams.length === 0 ? -1 : resize.rect.width / videoStreams.length;
 
-  console.log('videoStreams', videoStreams);
+  const isEmpty = videoStreams.length === 0;
 
   const styles = {
     base: css({
@@ -39,19 +38,29 @@ export const DevVideosGroupLayout: React.FC<DevVideosGroupLayoutProps> = (props)
         backdropFilter: 'blur(5px)',
       }),
     },
+    empty: css({
+      Absolute: 0,
+      Flex: 'center-center',
+      color: color.format(-0.3),
+      fontStyle: 'italic',
+      fontSize: 14,
+      userSelect: 'none',
+    }),
   };
 
   const elVideoPanels =
     resize.ready &&
+    !isEmpty &&
     videoStreams.map((item, i) => {
       const isLast = i === videoStreams.length - 1;
+      const width = isEmpty ? -1 : resize.rect.width / videoStreams.length;
       return (
         <div key={`${item.uri}`} {...styles.video.base}>
           <VideoStream
             stream={item.media}
-            width={videoPanelWidth}
+            width={width}
             height={resize.rect.height}
-            isMuted={isLocalhost ?? false}
+            isMuted={true}
             borderRadius={0}
           />
           {!isLast && <div {...styles.video.divider} />}
@@ -61,9 +70,16 @@ export const DevVideosGroupLayout: React.FC<DevVideosGroupLayoutProps> = (props)
 
   const elBody = resize.ready && <div {...styles.body}>{elVideoPanels}</div>;
 
+  const elEmpty = isEmpty && (
+    <div {...styles.empty}>
+      <div>No video connections to display.</div>
+    </div>
+  );
+
   return (
     <div ref={baseRef} {...css(styles.base, props.style)}>
       {elBody}
+      {elEmpty}
     </div>
   );
 };
