@@ -24,7 +24,7 @@ export const PropUtil = {
       { label: 'id', value: { data: id, clipboard: true } },
       { label: 'remote peer', value: { data: peer.remote.id, clipboard: true } },
       // { label: 'module', value: `(${direction}) ${module.name}@${module.version}` },
-      { label: 'kind', value: kind },
+      { label: 'kind', value: `${kind} (v${module.version})` },
       // { label: 'open', value: isOpen },
     ];
 
