@@ -13,4 +13,4 @@ const imports = {
 };
 
 export const ACTIONS = Object.values(imports);
-export const DevHarness: React.FC = () => <Harness actions={ACTIONS} fullscreen={true} />;
+export const DevHarness: React.FC = () => <Harness actions={ACTIONS} showActions={true} />;
