@@ -28,7 +28,8 @@ export type DevEvent =
   | DevModalEvent
   | DevMediaModalEvent
   | DevGroupEvent
-  | DevLayoutSizeEvent;
+  | DevLayoutSizeEvent
+  | DevImagePasteboardUriEvent;
 
 export type DevModelEvent = DevModelGetReqEvent | DevModelGetResEvent | DevModelChangedEvent;
 
@@ -148,4 +149,21 @@ export type DevLayoutSize = {
   source: t.PeerId;
   kind: DevModelScreenSizeKind;
   size: { width: number; height: number };
+};
+
+/**
+ * Used to share [ImagePasteboard] data between peers.
+ */
+export type DevImagePasteboardUriEvent = {
+  type: 'DEV/ImagePasteboard';
+  payload: DevImagePasteboardUri;
+};
+export type DevImagePasteboardUri = {
+  tx: string;
+  action: 'paste:presend' | 'paste:send';
+  data: {
+    bytes: number;
+    mimetype: string;
+    uri?: string; // A base64 encoded CSS <image> "dataUri".
+  };
 };

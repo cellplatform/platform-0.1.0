@@ -121,7 +121,7 @@ describe('NetworkBus', () => {
       });
 
       describe('bus.target.node', () => {
-        it('"uri:me" (local only)', async () => {
+        it('local target URI only ("uri:me")', async () => {
           const { bus, state } = testBus({ uris });
 
           const fired: MyEvent[] = [];
@@ -137,7 +137,7 @@ describe('NetworkBus', () => {
           expect(state.out.length).to.eql(0);
         });
 
-        it('single remote URI', async () => {
+        it('single target remote URI', async () => {
           const { bus, state } = testBus({ uris });
 
           const fired: MyEvent[] = [];
@@ -155,7 +155,7 @@ describe('NetworkBus', () => {
           expect(state.out[0].targets).to.eql([target]);
         });
 
-        it('multiple URIs (local and remote)', async () => {
+        it('multiple target URIs (local and remote)', async () => {
           const { bus, state } = testBus({ uris });
 
           const fired: MyEvent[] = [];
@@ -187,8 +187,8 @@ describe('NetworkBus', () => {
         });
       });
 
-      describe('filter', () => {
-        it('filters on specific URI(s)', async () => {
+      describe('bus.target.filter', () => {
+        it('filters on specific target URI(s)', async () => {
           const { bus, state } = testBus({ uris });
 
           const fired: MyEvent[] = [];
@@ -207,7 +207,7 @@ describe('NetworkBus', () => {
           expect(state.out[0].targets).to.eql(['uri:two']);
         });
 
-        it('no filter: broadcasts everywhere (not intended usage scenario)', async () => {
+        it('no filter: broadcasts everywhere (NB: edge-case, not an intended usage scenario)', async () => {
           const { bus, state } = testBus({ uris });
 
           const fired: MyEvent[] = [];
