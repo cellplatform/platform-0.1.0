@@ -16,8 +16,8 @@ export function serverMenu(args: { paths: t.IAppPaths; port: number }): M {
     label: 'Local',
     submenu: [
       {
-        label: 'HTTP',
-        click: () => openBrowser('/'),
+        label: 'HTTP Endpoint',
+        submenu: [{ label: 'main', click: () => openBrowser('/') }],
       },
       {
         label: 'Logs',

@@ -9,13 +9,12 @@ import { ENV, log, t } from '../common';
  */
 export async function RuntimeInfo(args: { paths: t.IAppPaths }) {
   const { paths } = args;
-  const pkg = await ENV.load.pkg();
   const env = process.env.NODE_ENV as t.IElectronRuntimeInfo['env'];
   const versions = process.versions;
 
   const info: t.IElectronRuntimeInfo = {
     type: 'cell.runtime.electron',
-    version: pkg.version,
+    version: ENV.pkg.version,
     packaged: electron.isPackaged,
     env,
     paths: {
