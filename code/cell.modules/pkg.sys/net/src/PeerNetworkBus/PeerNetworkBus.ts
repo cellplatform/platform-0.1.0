@@ -1,4 +1,4 @@
-import { map } from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
 import { t, Uri, NetworkBus, Events } from './common';
 
 /**
@@ -11,7 +11,6 @@ export function PeerNetworkBus<E extends t.Event>(args: {
   const { self } = args;
   const events = Events(args.bus);
   const data = events.data(self);
-  const { dispose, dispose$ } = events;
 
   const pump: t.NetworkPump<E> = {
     in: (fn) => data.in$.pipe(map((e) => e.data as E)).subscribe(fn),
@@ -44,7 +43,5 @@ export function PeerNetworkBus<E extends t.Event>(args: {
     get connections() {
       return connections;
     },
-    dispose,
-    dispose$,
   };
 }

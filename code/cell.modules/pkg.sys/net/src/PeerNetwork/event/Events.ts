@@ -6,7 +6,7 @@ import { EventNamespace as ns } from './Events.ns';
 export { ns };
 
 /**
- * Helpers for working with a [PeerNetwork].
+ * Helpers for working with the events model for a [PeerNetwork].
  */
 export function Events(eventbus: t.EventBus<any>) {
   const dispose$ = new Subject<void>();
