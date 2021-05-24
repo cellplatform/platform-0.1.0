@@ -10,10 +10,15 @@ type Pkg = {
   resolutions?: { [key: string]: string };
 };
 
+type CacheFile = { mode: Mode };
+
 const Path = {
   app: fs.resolve('./app'),
   root: fs.resolve('../..'),
-  node_modules: fs.resolve('./app/node_modules'),
+  node_modules: {
+    base: fs.resolve('./app/node_modules'),
+    cacheFile: fs.resolve('./app/node_modules/.cache/cmd.prepare.json'),
+  },
   pkg: {
     app: fs.resolve('./app/package.json'),
     root: fs.resolve('../../package.json'),
@@ -26,6 +31,7 @@ const Path = {
 export async function prepare(argv: t.Argv) {
   const mode = ((argv._[1] || '').toLowerCase().trim() || 'dev') as Mode;
   const install = argv.install ?? true;
+  const force = argv.force ?? false;
 
   if (!modes.includes(mode)) {
     const err = `Unsupported preparation mode "${mode}". Supported modes: ${modes.join(', ')}`;
@@ -36,13 +42,17 @@ export async function prepare(argv: t.Argv) {
   log.info(`Prepare electron app for ${log.cyan(mode)}`);
 
   await preparePackageJson({ mode });
-  await runYarn({ mode, install });
+  await runYarn({ mode, install, force });
 
   log.info();
 }
 
 /**
  * [Helpers]
+ */
+
+/**
+ * Make alterations to the application [package.json] file.
  */
 async function preparePackageJson(args: { mode: Mode }) {
   const { mode } = args;
@@ -77,21 +87,43 @@ async function preparePackageJson(args: { mode: Mode }) {
   await fs.writeFile(path.app, `${json}\n`);
 }
 
-async function runYarn(args: { mode: Mode; install: boolean }) {
+/**
+ * Run the [yarn] install process.
+ */
+async function runYarn(args: { mode: Mode; install: boolean; force: boolean }) {
   const { mode } = args;
+  const spinner = ProgressSpinner({});
+  const cache = await Cache.read();
 
   /**
-   * Delete [node_modules].
+   * Delete [node_modules] folder.
    */
-  const spinner = ProgressSpinner({}).start();
-  spinner.update({ label: `Deleting ${log.white(Path.node_modules)}` });
-  await fs.remove(Path.node_modules);
-  spinner.stop();
+  let deleteNodeModules = true;
+  if (!args.force) {
+    if (mode === 'dev' && cache?.mode === 'dev') deleteNodeModules = false;
+  }
+
+  if (deleteNodeModules) {
+    spinner.start();
+    spinner.update({ label: `Deleting ${log.white(Path.node_modules.base)}` });
+    await fs.remove(Path.node_modules.base);
+    spinner.stop();
+  }
 
   /**
    * Install.
    */
-  if (args.install) {
+  let runInstall = args.install;
+  if (runInstall && !args.force) {
+    if (mode === 'dev' && cache?.mode === 'dev') {
+      const msg = `The ${log.cyan(mode)} mode is already prepared.`;
+      const hint = `To force use ${log.white('--force')} flag.`;
+      log.info.gray(`${msg} ${hint}`);
+      runInstall = false;
+    }
+  }
+
+  if (runInstall) {
     const cmd = 'yarn';
     const cwd = mode === 'make' ? Path.app : Path.root;
     spinner
@@ -108,4 +140,19 @@ async function runYarn(args: { mode: Mode; install: boolean }) {
     log.info.gray(`cmd: ${cmd}`);
     log.info.gray(`dir: ${cwd}`);
   }
+
+  // Finish up.
+  await Cache.write({ mode });
 }
+
+const Cache = {
+  async write(obj: CacheFile) {
+    const path = Path.node_modules.cacheFile;
+    await fs.ensureDir(fs.dirname(path));
+    await fs.writeJson(path, obj);
+  },
+  async read() {
+    const path = Path.node_modules.cacheFile;
+    return (await fs.pathExists(path)) ? ((await fs.readJson(path)) as CacheFile) : undefined;
+  },
+};

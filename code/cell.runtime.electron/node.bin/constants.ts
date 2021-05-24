@@ -14,11 +14,8 @@ export const COMMANDS: t.Commands = {
     description: 'Prepare the electron "/app" package folder',
     params: {
       argument: 'mode: "make" or "dev" (default)',
-      '--no-install': '(optional) Supress the "yarn install" process',
+      '--no-install': '(optional) Suppress the "yarn install" process',
+      '--force': '(optional) Alaways delete [node_modules] and force a fresh install',
     },
   },
-  // 'prepare-make': {
-  //   description: 'Prepare the electron application package for the [make] operation',
-  //   params: {},
-  // },
 };
