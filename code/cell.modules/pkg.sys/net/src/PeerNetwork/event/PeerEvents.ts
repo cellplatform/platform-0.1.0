@@ -2,18 +2,18 @@ import { firstValueFrom, Subject } from 'rxjs';
 import { take, filter, takeUntil, map } from 'rxjs/operators';
 import { cuid, rx, t, slug } from '../common';
 
-import { EventNamespace as ns } from './Events.ns';
+import { PeerEventNamespace as ns } from './PeerEvents.ns';
 export { ns };
 
 /**
  * Helpers for working with the events model for a [PeerNetwork].
  */
-export function Events(eventbus: t.EventBus<any>) {
+export function PeerEvents(eventbus: t.EventBus<any>) {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
   const bus = eventbus as t.EventBus<t.PeerEvent>;
 
-  const event$ = bus.$.pipe(
+  const bus$ = bus.$.pipe(
     takeUntil(dispose$),
     filter(ns.is.peer.base),
     map((e) => e as t.PeerEvent),
@@ -34,7 +34,7 @@ export function Events(eventbus: t.EventBus<any>) {
    */
   const created = (self: t.PeerId) => {
     const $ = rx
-      .payload<t.PeerLocalInitResEvent>(event$, 'sys.net/peer/local/init:res')
+      .payload<t.PeerLocalInitResEvent>(bus$, 'sys.net/peer/local/init:res')
       .pipe(filter((e) => e.self === self));
     return { self, $ };
   };
@@ -44,13 +44,13 @@ export function Events(eventbus: t.EventBus<any>) {
    */
   const status = (self: t.PeerId) => {
     const req$ = rx
-      .payload<t.PeerLocalStatusRequestEvent>(event$, 'sys.net/peer/local/status:req')
+      .payload<t.PeerLocalStatusRequestEvent>(bus$, 'sys.net/peer/local/status:req')
       .pipe(filter((e) => e.self === self));
     const res$ = rx
-      .payload<t.PeerLocalStatusResponseEvent>(event$, 'sys.net/peer/local/status:res')
+      .payload<t.PeerLocalStatusResponseEvent>(bus$, 'sys.net/peer/local/status:res')
       .pipe(filter((e) => e.self === self));
     const changed$ = rx
-      .payload<t.PeerLocalStatusChangedEvent>(event$, 'sys.net/peer/local/status:changed')
+      .payload<t.PeerLocalStatusChangedEvent>(bus$, 'sys.net/peer/local/status:changed')
       .pipe(filter((e) => e.self === self));
 
     const get = () => {
@@ -72,10 +72,10 @@ export function Events(eventbus: t.EventBus<any>) {
    */
   const purge = (self: t.PeerId) => {
     const purge$ = rx
-      .payload<t.PeerLocalPurgeReqEvent>(event$, 'sys.net/peer/local/purge:req')
+      .payload<t.PeerLocalPurgeReqEvent>(bus$, 'sys.net/peer/local/purge:req')
       .pipe(filter((e) => e.self === self));
     const purged$ = rx
-      .payload<t.PeerLocalPurgeResEvent>(event$, 'sys.net/peer/local/purge:res')
+      .payload<t.PeerLocalPurgeResEvent>(bus$, 'sys.net/peer/local/purge:res')
       .pipe(filter((e) => e.self === self));
 
     const fire = (select?: t.PeerLocalPurgeReq['select']) => {
@@ -93,10 +93,10 @@ export function Events(eventbus: t.EventBus<any>) {
    */
   const media = (self: t.PeerId) => {
     const req$ = rx
-      .payload<t.PeerLocalMediaReqEvent>(event$, 'sys.net/peer/local/media:req')
+      .payload<t.PeerLocalMediaReqEvent>(bus$, 'sys.net/peer/local/media:req')
       .pipe(filter((e) => e.self === self));
     const res$ = rx
-      .payload<t.PeerLocalMediaResEvent>(event$, 'sys.net/peer/local/media:res')
+      .payload<t.PeerLocalMediaResEvent>(bus$, 'sys.net/peer/local/media:res')
       .pipe(filter((e) => e.self === self));
 
     type Req = t.PeerLocalMediaReq;
@@ -141,11 +141,11 @@ export function Events(eventbus: t.EventBus<any>) {
    */
   const connection = (self: t.PeerId, remote: t.PeerId) => {
     const connected$ = rx
-      .payload<t.PeerConnectResEvent>(event$, 'sys.net/peer/conn/connect:res')
+      .payload<t.PeerConnectResEvent>(bus$, 'sys.net/peer/conn/connect:res')
       .pipe(filter((e) => e.self === self && e.remote === remote));
 
     const disconnected$ = rx
-      .payload<t.PeerDisconnectResEvent>(event$, 'sys.net/peer/conn/disconnect:res')
+      .payload<t.PeerDisconnectResEvent>(bus$, 'sys.net/peer/conn/disconnect:res')
       .pipe(filter((e) => e.self === self));
 
     const open = {
@@ -191,9 +191,9 @@ export function Events(eventbus: t.EventBus<any>) {
   const connections = (self: t.PeerId) => {
     const connect = {
       req$: rx
-        .payload<t.PeerConnectReqEvent>(event$, 'sys.net/peer/conn/connect:req')
+        .payload<t.PeerConnectReqEvent>(bus$, 'sys.net/peer/conn/connect:req')
         .pipe(filter((e) => e.self === self)),
-      res$: rx.payload<t.PeerConnectResEvent>(event$, 'sys.net/peer/conn/connect:res').pipe(
+      res$: rx.payload<t.PeerConnectResEvent>(bus$, 'sys.net/peer/conn/connect:res').pipe(
         filter((e) => e.self === self),
         filter((e) => !e.existing),
       ),
@@ -201,10 +201,10 @@ export function Events(eventbus: t.EventBus<any>) {
 
     const disconnect = {
       req$: rx
-        .payload<t.PeerDisconnectReqEvent>(event$, 'sys.net/peer/conn/disconnect:req')
+        .payload<t.PeerDisconnectReqEvent>(bus$, 'sys.net/peer/conn/disconnect:req')
         .pipe(filter((e) => e.self === self)),
       res$: rx
-        .payload<t.PeerDisconnectResEvent>(event$, 'sys.net/peer/conn/disconnect:res')
+        .payload<t.PeerDisconnectResEvent>(bus$, 'sys.net/peer/conn/disconnect:res')
         .pipe(filter((e) => e.self === self)),
     };
 
@@ -214,15 +214,15 @@ export function Events(eventbus: t.EventBus<any>) {
   const data = (self: t.PeerId) => {
     const out = {
       req$: rx
-        .payload<t.PeerDataOutReqEvent>(event$, 'sys.net/peer/data/out:req')
+        .payload<t.PeerDataOutReqEvent>(bus$, 'sys.net/peer/data/out:req')
         .pipe(filter((e) => e.self === self)),
       res$: rx
-        .payload<t.PeerDataOutResEvent>(event$, 'sys.net/peer/data/out:res')
+        .payload<t.PeerDataOutResEvent>(bus$, 'sys.net/peer/data/out:res')
         .pipe(filter((e) => e.self === self)),
     };
 
     const in$ = rx
-      .payload<t.PeerDataInEvent>(event$, 'sys.net/peer/data/in')
+      .payload<t.PeerDataInEvent>(bus$, 'sys.net/peer/data/in')
       .pipe(filter((e) => e.self === self));
 
     const send = (data: any, options: { targets?: t.PeerConnectionUriString[] } = {}) => {
@@ -244,7 +244,7 @@ export function Events(eventbus: t.EventBus<any>) {
     dispose$: dispose$.pipe(take(1)),
 
     ns,
-    $: event$,
+    $: bus$,
 
     create,
     created,

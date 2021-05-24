@@ -9,7 +9,7 @@ export function useGroupController(args: { bus: t.EventBus<any>; netbus: t.PeerN
   const netbus = args.netbus as t.PeerNetworkBus<t.DevEvent>;
 
   useEffect(() => {
-    const local = PeerNetwork.Events(bus);
+    const local = PeerNetwork.PeerEvents(bus);
     const network$ = netbus.$.pipe(takeUntil(local.dispose$));
 
     /**

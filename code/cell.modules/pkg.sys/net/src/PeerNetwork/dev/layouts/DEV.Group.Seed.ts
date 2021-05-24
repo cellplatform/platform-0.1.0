@@ -28,7 +28,7 @@ export function DevGroupSeed(args: {
   const { groupname, self } = args;
   const client = HttpClient.create(args.host);
   const bus = args.bus as t.EventBus<t.PeerEvent>;
-  const events = PeerNetwork.Events(bus);
+  const events = PeerNetwork.PeerEvents(bus);
   const { dispose, dispose$ } = events;
 
   let status: t.PeerStatus | undefined;

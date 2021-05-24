@@ -1,2 +1,2 @@
 export * from '../PeerNetwork/common';
-export { Events } from '../PeerNetwork/event/Events';
+export { PeerEvents } from '../PeerNetwork/event/PeerEvents';

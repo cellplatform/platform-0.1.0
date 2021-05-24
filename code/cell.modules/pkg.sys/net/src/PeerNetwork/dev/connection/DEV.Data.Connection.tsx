@@ -39,7 +39,7 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
   const childScreen = childMedia.filter((child) => child.kind === 'media/screen');
 
   useEffect(() => {
-    const events = PeerNetwork.Events(bus);
+    const events = PeerNetwork.PeerEvents(bus);
     return () => events.dispose();
   }, []); // eslint-disable-line
 
@@ -49,7 +49,7 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
       const media = childMedia.filter((item) => item.kind === kind);
       if (media.length === 0) open();
       if (media.length > 0) {
-        const events = PeerNetwork.Events(bus);
+        const events = PeerNetwork.PeerEvents(bus);
         await Promise.all(
           media.map((item) => events.connection(self, item.peer.remote.id).close(item.id)),
         );
@@ -137,7 +137,7 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
             .some((child) => child.peer.remote.id === remote);
 
           if (!isConnectedLocally) {
-            const events = PeerNetwork.Events(bus);
+            const events = PeerNetwork.PeerEvents(bus);
             await events.connection(self, remote).open.data();
             events.dispose();
           }

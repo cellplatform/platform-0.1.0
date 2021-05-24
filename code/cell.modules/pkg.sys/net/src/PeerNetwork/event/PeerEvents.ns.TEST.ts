@@ -1,10 +1,10 @@
 import { expect, t } from '../../test';
-import { EventNamespace } from './Events.ns';
+import { PeerEventNamespace } from './PeerEvents.ns';
 
 describe('Events Namespace', () => {
   describe('is', () => {
     const payload = {};
-    const { is } = EventNamespace;
+    const { is } = PeerEventNamespace;
 
     it('is.event ({ type, payload })', () => {
       expect(is.event(undefined)).to.eql(false);

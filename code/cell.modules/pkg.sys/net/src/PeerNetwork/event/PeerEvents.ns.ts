@@ -39,7 +39,7 @@ const is = {
 /**
  * Event namespace index and helpers.
  */
-export const EventNamespace = {
+export const PeerEventNamespace = {
   ...NS,
   is,
 };

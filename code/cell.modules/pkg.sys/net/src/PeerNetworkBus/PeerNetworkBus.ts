@@ -1,5 +1,5 @@
-import { map, filter } from 'rxjs/operators';
-import { t, Uri, NetworkBus, Events } from './common';
+import { map } from 'rxjs/operators';
+import { PeerEvents, NetworkBus, t, Uri } from './common';
 
 /**
  * An event-bus distributed across a number of peers.
@@ -9,7 +9,7 @@ export function PeerNetworkBus<E extends t.Event>(args: {
   bus: t.EventBus<any>;
 }): t.PeerNetworkBus<E> {
   const { self } = args;
-  const events = Events(args.bus);
+  const events = PeerEvents(args.bus);
   const data = events.data(self);
 
   const pump: t.NetworkPump<E> = {

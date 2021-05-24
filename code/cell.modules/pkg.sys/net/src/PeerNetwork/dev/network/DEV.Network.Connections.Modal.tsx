@@ -18,7 +18,7 @@ export const DevNetworkConnectionsModal: React.FC<DevNetworkConnectionsModalProp
   const bus = props.bus as t.EventBus<t.DevEvent>;
 
   useEffect(() => {
-    const events = PeerNetwork.Events(bus);
+    const events = PeerNetwork.PeerEvents(bus);
     const status$ = events.status(self).changed$.pipe(map((e) => e.peer));
 
     // Remove modal when all connections have been closed.

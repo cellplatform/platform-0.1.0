@@ -14,7 +14,7 @@ import {
   time,
   WebRuntime,
 } from './common';
-import { Events } from './event';
+import { PeerEvents } from './event';
 import { MemoryRefs, SelfRef } from './Refs';
 import { Status } from './Status';
 
@@ -25,7 +25,7 @@ type ConnectionKind = t.PeerNetworkConnectRes['kind'];
  */
 export function Controller(args: { bus: t.EventBus<any> }) {
   const bus = args.bus as t.EventBus<t.PeerEvent>;
-  const events = Events(bus);
+  const events = PeerEvents(bus);
   const $ = events.$;
 
   const refs = MemoryRefs();

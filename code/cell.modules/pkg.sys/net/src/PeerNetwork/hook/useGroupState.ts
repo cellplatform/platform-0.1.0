@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
 import { R, t } from '../common';
-import { Events, GroupEvents } from '../event';
+import { PeerEvents, GroupEvents } from '../event';
 
 type Action = 'update';
 
@@ -18,7 +18,7 @@ export function useGroupState(args: { bus: t.EventBus<any>; netbus: t.PeerNetwor
 
   useEffect(() => {
     const self = netbus.self;
-    const events = Events(bus);
+    const events = PeerEvents(bus);
     const group = GroupEvents(netbus);
 
     const updateStatus = async () => {

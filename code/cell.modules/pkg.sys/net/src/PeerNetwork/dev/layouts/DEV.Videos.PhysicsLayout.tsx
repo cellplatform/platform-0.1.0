@@ -48,7 +48,7 @@ export const DevVideosPhysicsLayout: React.FC<DevVideosPhysicsLayoutProps> = (pr
   };
 
   useEffect(() => {
-    const events = PeerNetwork.Events(bus);
+    const events = PeerNetwork.PeerEvents(bus);
     const dragBus = rx.bus<MotionDraggableEvent>();
     const dragEvents = MotionDraggable.Events(dragBus);
     setDragbus(dragBus);

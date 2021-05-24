@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { filter, debounceTime, takeUntil } from 'rxjs/operators';
 
 import { t, StreamUtil } from '../common';
-import { Events } from '../event';
+import { PeerEvents } from '../event';
 
 /**
  * Monitors an event-bus keeping a set of state values
@@ -17,7 +17,7 @@ export function useLocalPeer(args: { self: t.PeerId; bus: t.EventBus<any> }) {
   const [screen, setScreen] = useState<MediaStream>();
 
   useEffect(() => {
-    const events = Events(bus);
+    const events = PeerEvents(bus);
     const media = events.media(self);
     const dispose$ = events.dispose$;
 

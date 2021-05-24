@@ -1,8 +1,8 @@
-import { firstValueFrom, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { rx, slug, t, WebRuntime } from '../common';
-import { EventNamespace as ns } from './Events.ns';
+import { rx, t } from '../common';
+import { PeerEventNamespace as ns } from './PeerEvents.ns';
 
 type P = t.GroupPeer;
 type C = t.GroupPeerConnection;
