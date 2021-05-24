@@ -6,12 +6,12 @@ import { color, css, CssValue, filesize, rx, slug, Spinner, t, time } from '../c
 
 export type DevImagePasteboardProps = {
   bus: t.EventBus<any>;
-  netbus: t.PeerBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   style?: CssValue;
 };
 
 export const DevImagePasteboard: React.FC<DevImagePasteboardProps> = (props) => {
-  const netbus = props.netbus as t.PeerBus<t.DevEvent>;
+  const netbus = props.netbus as t.PeerNetworkBus<t.DevEvent>;
 
   type D = t.DevImagePasteboardUri['data'];
   const [incoming, setIncoming] = useState<{ data: D; tx: string }[]>([]);
@@ -134,8 +134,11 @@ function clipboardToDataUri(e: ClipboardEvent) {
           const mimetype = blob.type;
           const reader = new FileReader();
           reader.onload = function (event) {
-            const uri = event.target?.result as string;
-            return resolve({ uri, mimetype, bytes });
+            resolve({
+              mimetype,
+              bytes,
+              uri: event.target?.result as string,
+            });
           };
           reader.readAsDataURL(blob);
         }

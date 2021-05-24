@@ -10,8 +10,8 @@ type C = t.GroupPeerConnection;
 /**
  * Helpers for working with network filesystem related events.
  */
-export function FilesystemEvents(eventbus: t.PeerBus<any>) {
-  const netbus = eventbus as t.PeerBus<t.NetFsEvent>;
+export function FilesystemEvents(eventbus: t.PeerNetworkBus<any>) {
+  const netbus = eventbus as t.PeerNetworkBus<t.NetFsEvent>;
   const source = netbus.self;
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();

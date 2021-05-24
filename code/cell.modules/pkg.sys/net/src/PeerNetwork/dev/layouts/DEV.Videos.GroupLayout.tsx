@@ -4,7 +4,7 @@ import { useLocalPeer } from '../../hook';
 
 export type DevVideosGroupLayoutProps = {
   bus: t.EventBus<any>;
-  netbus: t.PeerBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   isSelf?: boolean;
   style?: CssValue;
 };

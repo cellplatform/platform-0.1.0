@@ -9,7 +9,7 @@ import { useGroupScreensize } from '../hook';
 
 export type DevNetworkProps = {
   bus: t.EventBus<any>;
-  netbus: t.PeerBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   peer: t.PeerStatus;
   media: { video?: MediaStream; screen?: MediaStream };
   collapse?: boolean | { data?: boolean; media?: boolean };

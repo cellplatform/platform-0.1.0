@@ -21,13 +21,13 @@ import { DevVideo } from '../media/DEV.Video';
 
 export type DevVideosPhysicsLayoutProps = {
   bus: t.EventBus<any>;
-  netbus: t.PeerBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   style?: CssValue;
 };
 
 export const DevVideosPhysicsLayout: React.FC<DevVideosPhysicsLayoutProps> = (props) => {
   const { bus } = props;
-  const netbus = props.netbus as t.PeerBus<t.DevGroupEvent>;
+  const netbus = props.netbus as t.PeerNetworkBus<t.DevGroupEvent>;
   const self = netbus.self;
   const source = self;
 

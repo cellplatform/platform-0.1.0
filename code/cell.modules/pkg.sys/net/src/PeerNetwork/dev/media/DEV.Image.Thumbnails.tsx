@@ -5,7 +5,7 @@ import { DevImageFullscreen } from '../media';
 
 export type DevImageThumbnailsProps = {
   bus: t.EventBus<any>;
-  netbus: t.PeerBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   style?: CssValue;
 };
 

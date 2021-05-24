@@ -18,12 +18,12 @@ import {
 
 export type DevImageDraggableProps = {
   bus: t.EventBus<any>;
-  netbus: t.PeerBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   style?: CssValue;
 };
 
 export const DevImageDraggable: React.FC<DevImageDraggableProps> = (props) => {
-  const netbus = props.netbus as t.PeerBus<t.DevEvent>;
+  const netbus = props.netbus as t.PeerNetworkBus<t.DevEvent>;
   const self = netbus.self;
   const source = self;
 

@@ -1,9 +1,9 @@
-import { t } from './common';
+import * as t from '../common/types';
 
 /**
  * An event-bus distributed across a number of peers.
  */
-export type PeerBus<E extends t.Event = t.Event> = t.NetworkBus<E> &
+export type PeerNetworkBus<E extends t.Event = t.Event> = t.NetworkBus<E> &
   t.IDisposable & {
     self: t.PeerId;
     connections: t.PeerConnectionStatus[];

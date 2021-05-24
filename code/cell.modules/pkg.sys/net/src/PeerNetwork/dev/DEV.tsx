@@ -13,6 +13,7 @@ import {
   t,
   time,
   QueryString,
+  PeerNetworkBus,
 } from './common';
 import { RootLayout } from './DEV.Root';
 import { EventBridge } from './event';
@@ -21,7 +22,7 @@ import { DevGroupSeed, GroupSeed } from './layouts';
 type Ctx = {
   self: t.PeerId;
   bus: t.EventBus<t.PeerEvent | t.DevEvent>;
-  netbus: t.PeerBus;
+  netbus: t.PeerNetworkBus;
   signal: string; // Signalling server network address (host/path).
   events: CtxEvents;
   connectTo?: string;
@@ -63,7 +64,7 @@ export const actions = DevActions<Ctx>()
     MediaStream.Controller({ bus });
 
     const signal = 'rtc.cellfs.com/peer';
-    const netbus = PeerNetwork.PeerBus({ bus, self });
+    const netbus = PeerNetworkBus({ bus, self });
     const events = {
       peer: PeerNetwork.Events(bus),
       group: PeerNetwork.GroupEvents(netbus),

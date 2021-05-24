@@ -23,7 +23,7 @@ type P = PropListItem;
 
 export type PeerPropListProps = {
   bus: t.EventBus<any>;
-  netbus: t.PeerBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   status: t.PeerStatus;
   style?: CssValue;
 };
@@ -149,7 +149,7 @@ const networkItems = (props: PeerPropListProps) => {
 
 const groupItems = (args: {
   bus: t.EventBus<any>;
-  netbus: t.PeerBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   status?: t.GroupPeerStatus;
 }) => {
   const { bus, netbus, status } = args;

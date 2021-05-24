@@ -12,12 +12,12 @@ import { DevEvents } from '../event';
 export function useGroupScreensize(args: {
   ref: React.RefObject<HTMLElement>;
   bus: t.EventBus<any>;
-  netbus: t.PeerBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   kind: t.DevLayoutSize['kind'];
 }) {
   const { ref, kind } = args;
   const local = args.bus as t.EventBus<t.DevEvent>;
-  const network = args.netbus as t.PeerBus<t.DevEvent>;
+  const network = args.netbus as t.PeerNetworkBus<t.DevEvent>;
   const self = network.self;
   const source = self;
 
@@ -47,13 +47,13 @@ export function useGroupScreensize(args: {
 export function Controller(args: {
   ref: React.RefObject<HTMLElement>;
   bus: t.EventBus<any>;
-  netbus: t.PeerBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   kind: t.DevLayoutSize['kind'];
   parentResize$: Observable<void>;
 }) {
   const { ref, kind, parentResize$ } = args;
   const local = args.bus as t.EventBus<t.DevEvent>;
-  const network = args.netbus as t.PeerBus<t.DevEvent>;
+  const network = args.netbus as t.PeerNetworkBus<t.DevEvent>;
   const self = network.self;
   const source = self;
 

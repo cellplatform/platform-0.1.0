@@ -3,7 +3,7 @@ import { Url } from '@platform/util.string/lib/Url';
 import * as t from './types';
 
 /**
- * Browser cache.
+ * Browser cache for managing code/bundle downloads.
  *
  * Refs:
  *    https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker

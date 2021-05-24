@@ -20,7 +20,7 @@ import { DevImageThumbnails } from '../media';
 
 export type DevEventBusCardProps = {
   bus: t.EventBus<any>;
-  netbus: t.PeerBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   margin?: t.CssEdgesInput;
   style?: CssValue;
 };

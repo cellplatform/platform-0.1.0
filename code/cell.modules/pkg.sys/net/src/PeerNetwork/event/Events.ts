@@ -3,7 +3,6 @@ import { take, filter, takeUntil, map } from 'rxjs/operators';
 import { cuid, rx, t, slug } from '../common';
 
 import { EventNamespace as ns } from './Events.ns';
-import { PeerBus } from './PeerBus';
 export { ns };
 
 /**
@@ -237,15 +236,7 @@ export function Events(eventbus: t.EventBus<any>) {
       return res;
     };
 
-    return {
-      self,
-      out,
-      in$,
-      send,
-      netbus<E extends t.Event>() {
-        return PeerBus<E>({ bus, self });
-      },
-    };
+    return { self, out, in$, send };
   };
 
   return {

@@ -7,7 +7,7 @@ import { slug, t, WebRuntime, Uri } from '../common';
  * Strategy for retrieving peer/connection details for members of the mesh network.
  */
 export async function GroupConnectionsStrategy(args: {
-  netbus: t.PeerBus<t.NetGroupEvent>;
+  netbus: t.PeerNetworkBus<t.NetGroupEvent>;
   events: { group: t.GroupEvents; peer: t.PeerNetworkEvents };
   isEnabled: () => boolean;
 }) {

@@ -5,12 +5,12 @@ import { R, rx, t, FilterUtil } from '../../common';
  * Strategy for auto propogating connections to all peers.
  */
 export function AutoPropagationStrategy(args: {
-  netbus: t.PeerBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   events: t.PeerNetworkEvents;
   isEnabled: () => boolean;
 }) {
   const { events } = args;
-  const netbus = args.netbus as t.PeerBus<t.NetGroupEvent>;
+  const netbus = args.netbus as t.PeerNetworkBus<t.NetGroupEvent>;
   const self = netbus.self;
   const connections = events.connections(self);
 

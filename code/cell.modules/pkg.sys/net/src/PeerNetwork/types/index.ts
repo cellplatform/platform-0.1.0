@@ -1,5 +1,4 @@
 export * from './types';
-export * from './types.bus';
 export * from './types.status';
 export * from './types.uri';
 

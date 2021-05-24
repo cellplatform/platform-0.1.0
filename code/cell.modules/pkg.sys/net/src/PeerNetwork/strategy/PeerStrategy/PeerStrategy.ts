@@ -6,7 +6,7 @@ import { PeerConnectionStrategy } from './PeerConnectionStrategy';
  */
 export function PeerStrategy(args: {
   bus: t.EventBus<any>;
-  netbus: t.PeerBus<any>;
+  netbus: t.PeerNetworkBus<any>;
 }): t.PeerStrategy {
   const bus = args.bus as t.EventBus<t.PeerEvent>;
   const events = Events(bus);
