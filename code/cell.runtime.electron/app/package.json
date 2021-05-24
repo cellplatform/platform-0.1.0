@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "0.1.172",
+  "version": "0.1.173",
   "description": "cell.runtime.electron",
   "main": "lib/main/index",
   "types": "lib/index.d.ts",
@@ -17,7 +17,8 @@
     "bundle.preload": "sh script.sh/bundle.preload.sh",
     "prepackage": "yarn build && yarn bundle.preload",
     "package": "export NOTARIZE=false && yarn prepackage && electron-forge package",
-    "make": "npm version patch && yarn prepackage && electron-forge make"
+    "make": "npm version patch && yarn prepackage && electron-forge make",
+    "open": "cd out/make && open ."
   },
   "dependencies": {
     "@platform/cell.client": "0.3.56",
@@ -59,5 +60,14 @@
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "license": "MIT",
-  "private": true
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "*"
+    ]
+  },
+  "resolutions": {
+    "rxjs": "7.0.1",
+    "core-js": "3.12.1"
+  }
 }

@@ -51,9 +51,6 @@ export function Controller(args: {
   kind: t.DevLayoutSize['kind'];
   parentResize$: Observable<void>;
 }) {
-  //
-  console.log('-------------------------------------------');
-
   const { ref, kind, parentResize$ } = args;
   const local = args.bus as t.EventBus<t.DevEvent>;
   const network = args.netbus as t.PeerBus<t.DevEvent>;

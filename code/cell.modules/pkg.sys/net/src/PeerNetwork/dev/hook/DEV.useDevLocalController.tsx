@@ -32,9 +32,6 @@ export function useLocalController(args: { bus: t.EventBus<any> }) {
       });
 
     model.event.changed$.pipe(takeUntil(dispose$)).subscribe((e) => {
-      // TODO 🐷
-      console.log('MODEL changed', e);
-      console.log('e.to', e.to);
       bus.fire({
         type: 'DEV/model/changed',
         payload: { state: e.to },
