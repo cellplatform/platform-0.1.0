@@ -4,6 +4,9 @@
 import { uniq, equals } from 'ramda';
 export const R = { uniq, equals };
 
+import filesize from 'filesize';
+export { filesize };
+
 import PeerJS from 'peerjs';
 export { PeerJS };
 

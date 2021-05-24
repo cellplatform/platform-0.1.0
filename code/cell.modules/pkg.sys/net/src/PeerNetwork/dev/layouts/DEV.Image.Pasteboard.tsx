@@ -1,18 +1,8 @@
-import { Observable, Subject, BehaviorSubject, firstValueFrom } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-} from 'rxjs/operators';
 import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, rx, slug } from '../common';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
+
+import { color, css, CssValue, filesize, rx, slug, Spinner, t, time } from '../common';
 
 export type DevImagePasteboardProps = {
   bus: t.EventBus<any>;
@@ -21,11 +11,15 @@ export type DevImagePasteboardProps = {
 };
 
 export const DevImagePasteboard: React.FC<DevImagePasteboardProps> = (props) => {
-  // const { netbus } = props;
   const netbus = props.netbus as t.PeerBus<t.DevEvent>;
 
+  type D = t.DevImagePasteboardUri['data'];
+  const [incoming, setIncoming] = useState<{ data: D; tx: string }[]>([]);
   const [imageUri, setImageUri] = useState<string | undefined>();
+
   const isEmpty = !imageUri;
+  const isSpinning = incoming.length > 0;
+  const incomingBytes = incoming.reduce((acc, next) => acc + next.data.bytes, 0);
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
@@ -37,10 +31,8 @@ export const DevImagePasteboard: React.FC<DevImagePasteboardProps> = (props) => 
      */
     document.addEventListener('paste', async (e) => {
       const data = await clipboardToDataUri(e);
-
       const { uri, bytes, mimetype } = data;
 
-      // const dataUri = data.uri;
       setImageUri(uri);
 
       const tx = slug();
@@ -61,20 +53,17 @@ export const DevImagePasteboard: React.FC<DevImagePasteboardProps> = (props) => 
      * INCOMING [before] data is sent.
      */
     incoming$.pipe(filter((e) => e.action === 'paste:presend')).subscribe((e) => {
-      // if (e.data.uri) setImageUri(e.data.uri);
-      //
-      console.log('REMOTE INCOMING // paste board (size)', e.data.bytes, e.data.mimetype);
-      //
+      const { data, tx } = e;
+      setIncoming((prev) => [...prev, { data, tx }]);
     });
 
     /**
      * INCOMING data.
      */
     incoming$.pipe(filter((e) => e.action === 'paste:send')).subscribe((e) => {
-      if (e.data.uri) setImageUri(e.data.uri);
-      //
-      console.log('REMOTE INCOMING // paste board (data)', e);
-      //
+      const { data, tx } = e;
+      if (data.uri) setImageUri(data.uri);
+      setIncoming((prev) => prev.filter((item) => item.tx !== tx));
     });
 
     return () => dispose$.next();
@@ -88,7 +77,6 @@ export const DevImagePasteboard: React.FC<DevImagePasteboardProps> = (props) => 
     }),
     imageBorder: css({
       Absolute: 50,
-      // backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
       backdropFilter: 'blur(8px)',
     }),
     image: css({
@@ -98,12 +86,28 @@ export const DevImagePasteboard: React.FC<DevImagePasteboardProps> = (props) => 
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center center',
     }),
+    spinner: {
+      base: css({
+        Absolute: [10, null, null, 10],
+        Flex: 'horizontal-center-center',
+      }),
+      label: css({ marginLeft: 6 }),
+    },
   };
+
+  const elSpinner = isSpinning && (
+    <div {...styles.spinner.base}>
+      <Spinner size={18} />
+      <div {...styles.spinner.label}>{filesize(incomingBytes, { round: 0 })} incoming</div>
+    </div>
+  );
+
   return (
     <div {...css(styles.base, props.style)}>
       {/* <div {...styles.imageBorder} /> */}
       <div {...styles.image} />
       {/* <img {...styles.image} src={imageUri} /> */}
+      {elSpinner}
     </div>
   );
 };

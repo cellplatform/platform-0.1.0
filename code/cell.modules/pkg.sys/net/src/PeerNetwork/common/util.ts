@@ -1,8 +1,7 @@
 import { Subject } from 'rxjs';
 
-import { defaultValue, PeerJS, sha256 } from '../../common';
+import { defaultValue, PeerJS, sha256, filesize } from '../../common';
 import * as t from './types';
-import filesize from 'filesize';
 
 type C = t.PeerConnectionStatus;
 
