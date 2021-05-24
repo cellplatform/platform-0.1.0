@@ -9,7 +9,7 @@
     "package": "cd app && yarn package",
     "make": "yarn cmd prepare make && cd app && yarn make",
     "build": "cd app && yarn build",
-    "open": "cd app/out/make && open .",
+    "open": "cd app && yarn open",
     "clean": "sh script.sh/clean.sh",
     "reset": "sh script.sh/reset.sh",
     "nuke": "sh script.sh/nuke.sh",

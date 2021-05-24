@@ -1,11 +1,11 @@
 import { local } from '@platform/cell.fs.local';
+import { NodeRuntime } from '@platform/cell.runtime.node';
 import { server } from '@platform/cell.service/lib/server';
 import { NeDb } from '@platform/fsdb.nedb';
-import { app as electron } from 'electron';
 import { filter } from 'rxjs/operators';
-import { NodeRuntime } from '@platform/cell.runtime.node';
 
 import { constants, fs, log, t, Urls, util } from '../common';
+import { RuntimeInfo } from './server.info';
 
 type IInitArgs = {
   prod?: boolean;
@@ -31,7 +31,7 @@ export function init(args: IInitArgs = {}) {
 }
 
 /**
- * Start a CellOS HTTP server.
+ * Start a system HTTP server.
  */
 export async function start(args: IInitArgs & { port?: number; isDev?: boolean } = {}) {
   const { app, paths } = init(args);
@@ -39,28 +39,7 @@ export async function start(args: IInitArgs & { port?: number; isDev?: boolean }
   const port = await util.port.unused(args.port);
   const instance = await app.start({ port });
   const host = `localhost:${port}`;
-
-  // Return extra information about the app on the sys-info route.
-  type Info = t.IResGetSysInfoElectronApp;
-  const info = ((): Info => {
-    const env = process.env.NODE_ENV as Info['env'];
-    const versions = process.versions;
-    return {
-      packaged: electron.isPackaged,
-      env,
-      paths: {
-        db: paths.db,
-        fs: paths.fs,
-        log: log.file.path,
-      },
-      versions: {
-        node: versions.node,
-        electron: versions.electron,
-        chrome: versions.chrome,
-        v8: versions.v8,
-      },
-    };
-  })();
+  const info = await RuntimeInfo({ paths });
 
   app.response$
     // Add electron specific meta-data to sys-info.

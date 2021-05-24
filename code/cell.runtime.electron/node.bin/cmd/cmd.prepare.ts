@@ -73,7 +73,8 @@ async function preparePackageJson(args: { mode: Mode }) {
   /**
    * Save file changes.
    */
-  await fs.writeFile(path.app, JSON.stringify(pkg.app, null, '  '));
+  const json = JSON.stringify(pkg.app, null, '  ');
+  await fs.writeFile(path.app, `${json}\n`);
 }
 
 async function runYarn(args: { mode: Mode; install: boolean }) {
