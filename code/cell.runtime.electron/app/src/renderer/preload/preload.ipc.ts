@@ -15,15 +15,15 @@ export function init(args: { def: string; cache: t.IEnv['cache']; event$: Subjec
   const isIpcEvent = (e: t.Event) => e.type.startsWith(IPC.EVENT_PREFIX);
 
   // Listen for global events being broadcast through the electron IPC channels.
-  const ipc$ = new Subject<t.IpcEvent>();
-  ipcRenderer.on(IPC.CHANNEL, (ipc, event: t.IpcEvent) => ipc$.next(event));
+  const ipc$ = new Subject<t.IpcEvent_OLD>();
+  ipcRenderer.on(IPC.CHANNEL, (ipc, event: t.IpcEvent_OLD) => ipc$.next(event));
 
   // Listen for IPC events fired by this window and broadcast
   // out to other processes (ie. "MAIN" | <renderer>'s).
   event$
     .pipe(
       filter(isIpcEvent),
-      map((e) => e as t.IpcEvent),
+      map((e) => e as t.IpcEvent_OLD),
       filter((e) => e.payload.source === args.def),
     )
     .subscribe((e) => {
@@ -40,7 +40,7 @@ export function init(args: { def: string; cache: t.IEnv['cache']; event$: Subjec
 
 function ferryIpcEventsToLocalBus(args: {
   def: string;
-  ipc$: Observable<t.IpcEvent>;
+  ipc$: Observable<t.IpcEvent_OLD>;
   fire: (e: t.AppEvent) => void;
 }) {
   const { ipc$, fire } = args;

@@ -3,7 +3,7 @@ import { t, Observable } from './common';
 /**
  * Events used by the Electron application.
  */
-export type AppEvent = t.TypedSheetEvent | t.IpcEvent;
+export type AppEvent = t.TypedSheetEvent | t.IpcEvent_OLD;
 
 /**
  * Context passed around the Electron application.

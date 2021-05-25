@@ -21,3 +21,5 @@ export { coord };
 
 import { AppSchema, AppWindowModel, AppModel } from '@platform/cell.schema.sys';
 export { AppSchema, AppWindowModel, AppModel };
+
+export { NetworkBus } from '@platform/cell.runtime/lib/NetworkBus';

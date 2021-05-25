@@ -2,11 +2,12 @@ import { app } from 'electron';
 import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { Client, constants, ENV, fs, log, rx, t } from './common';
+import { Client, constants, ENV, fs, log, rx, t, time } from './common';
 import * as server from './main.server';
 import { sys } from './main.sys';
 import { window } from './main.window';
 import { menu } from './main.menu';
+import { IpcNetworkBus } from './main.bus';
 
 /**
  *  NOTE:
@@ -38,6 +39,13 @@ export async function start() {
   // Start the HTTP server.
   const port = prod ? undefined : 5000;
   const { paths, host, instance } = await server.start({ log, prod, port });
+
+  type Foo = { type: 'foo'; payload: any };
+  const netbus = IpcNetworkBus<t.IpcEvent | Foo>();
+  time.delay(500, () => {
+    console.log('fire');
+    netbus.fire({ type: 'foo', payload: { count: 123 } });
+  });
 
   // instance.
 
@@ -92,7 +100,7 @@ export async function start() {
       // });
     }
 
-    rx.payload<t.IpcDebugEvent>(event$, 'IPC/debug')
+    rx.payload<t.IpcDebugEvent__OLD>(event$, 'IPC/debug')
       .pipe(filter((e) => e.source !== 'MAIN'))
       .subscribe((e) => {
         const name = e.data.name;

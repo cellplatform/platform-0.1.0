@@ -16,7 +16,7 @@ export function ipc(args: { ctx: t.IContext; event$: Subject<t.AppEvent> }) {
    * Broadcast changes to each window.
    */
   client.changes.changed$.pipe(debounceTime(50)).subscribe((e) => {
-    const payload: t.IpcSheetChangedEvent = {
+    const payload: t.IpcSheetChangedEvent__OLD = {
       type: 'IPC/sheet/changed',
       payload: {
         source: 'MAIN',
@@ -29,11 +29,11 @@ export function ipc(args: { ctx: t.IContext; event$: Subject<t.AppEvent> }) {
   /**
    * Listen for events broadcast back from windows.
    */
-  ipcMain.on(IPC.CHANNEL, (ipc, event: t.IpcEvent) => event$.next(event));
+  ipcMain.on(IPC.CHANNEL, (ipc, event: t.IpcEvent_OLD) => event$.next(event));
 
   const ipc$ = event$.pipe(
     filter((e) => e.type.startsWith('IPC/')),
-    map((e) => e as t.IpcEvent),
+    map((e) => e as t.IpcEvent_OLD),
   );
 
   // rx.m style={ styles. }
@@ -43,7 +43,7 @@ export function ipc(args: { ctx: t.IContext; event$: Subject<t.AppEvent> }) {
   /**
    * Monitor changes to sheets from window.
    */
-  rx.payload<t.IpcSheetChangedEvent>(window$, 'IPC/sheet/changed').subscribe(async (e) => {
+  rx.payload<t.IpcSheetChangedEvent__OLD>(window$, 'IPC/sheet/changed').subscribe(async (e) => {
     const { changes } = e;
     const uri = changes.uri;
 

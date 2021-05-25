@@ -42,10 +42,11 @@ export async function start(args: IInitArgs & { port?: number; isDev?: boolean }
   const info = await RuntimeInfo({ paths });
 
   app.response$
-    // Add electron specific meta-data to sys-info.
+    // Add electron specific meta-data to system-info.
     .pipe(
       filter((e) => {
-        const route = app.router.find({ method: 'GET', url: e.url });
+        const { url } = e;
+        const route = app.router.find({ method: 'GET', url });
         return !route ? false : Urls.routes.SYS.INFO.some((path) => route.path === path);
       }),
     )
