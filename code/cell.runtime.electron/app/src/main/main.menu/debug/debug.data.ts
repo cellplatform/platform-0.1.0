@@ -4,7 +4,7 @@ import { t, fs, log } from '../../common';
 /**
  * Menu for snapshotting and backing up data.
  */
-export function dataMenu(args: { paths: t.IAppPaths; port: number }): M {
+export function dataMenu(args: { paths: t.IElectronPaths; port: number }): M {
   const { paths } = args;
 
   const item: M = {
@@ -37,7 +37,7 @@ const data = {
    * Makes a snapshot of the current data, then resets the app.
    */
   async reset(
-    paths: t.IAppPaths,
+    paths: t.IElectronPaths,
     options: { openDir?: boolean; reopen?: boolean; quit?: boolean },
   ) {
     const { openDir } = options;
@@ -52,7 +52,7 @@ const data = {
     }
   },
 
-  async snapshot(paths: t.IAppPaths, options: { openDir?: boolean; suffix?: string } = {}) {
+  async snapshot(paths: t.IElectronPaths, options: { openDir?: boolean; suffix?: string } = {}) {
     await fs.ensureDir(paths.archive);
 
     // Count number of folders.

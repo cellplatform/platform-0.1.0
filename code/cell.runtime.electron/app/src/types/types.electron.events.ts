@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t } from './common';
 
 export type IpcEventSource = 'MAIN' | string;
 

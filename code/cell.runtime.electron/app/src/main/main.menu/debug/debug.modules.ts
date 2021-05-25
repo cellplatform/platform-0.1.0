@@ -4,7 +4,7 @@ import { constants, t, fs, log, ConfigFile } from '../../common';
 /**
  * Menu for installing a new module.
  */
-export function modulesMenu(args: { paths: t.IAppPaths; port: number }): M {
+export function modulesMenu(args: { paths: t.IElectronPaths; port: number }): M {
   const { paths } = args;
 
   const item: M = {

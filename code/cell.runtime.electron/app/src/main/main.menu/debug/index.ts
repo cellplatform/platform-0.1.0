@@ -8,7 +8,7 @@ import { modulesMenu } from './debug.modules';
 /**
  * Menu for working with debug tools.
  */
-export function debugMenu(args: { paths: t.IAppPaths; port: number; isMac: boolean }): M {
+export function debugMenu(args: { paths: t.IElectronPaths; port: number; isMac: boolean }): M {
   const { paths } = args;
   const item: M = {
     label: 'Debug',

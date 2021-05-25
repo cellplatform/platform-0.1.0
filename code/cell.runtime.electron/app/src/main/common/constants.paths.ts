@@ -11,7 +11,7 @@ const resolve = (path: string) =>
 export const paths = {
   resolve,
 
-  data(args: { prod?: boolean; dirname?: string } = {}): t.IAppPaths {
+  data(args: { prod?: boolean; dirname?: string } = {}): t.IElectronPaths {
     const { prod = false, dirname = 'A1' } = args;
     const dir = prod ? fs.join(app.getPath('documents'), dirname) : fs.resolve('../.data');
     return {
