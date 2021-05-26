@@ -90,6 +90,28 @@ describe('rx', () => {
     });
   });
 
+  describe('isEvent', () => {
+    const test = (input: any, expected: boolean) => {
+      expect(rx.isEvent(input)).to.eql(expected);
+    };
+
+    it('is an event', () => {
+      test({ type: 'MyEvent', payload: {} }, true);
+    });
+
+    it('is not an event', () => {
+      test(undefined, false);
+      test(null, false);
+      test(1, false);
+      test(true, false);
+      test('two', false);
+      test({}, false);
+      test({ type: 123, payload: {} }, false);
+      test({ type: 'FOO' }, false);
+      test({ type: 'FOO', payload: 123 }, false);
+    });
+  });
+
   describe('bus', () => {
     type MyEvent = IFooEvent | IBarEvent;
     type IFooEvent = { type: 'Event/foo'; payload: { count?: number } };
@@ -175,28 +197,6 @@ describe('rx', () => {
     });
   });
 
-  describe('isEvent', () => {
-    const test = (input: any, expected: boolean) => {
-      expect(rx.isEvent(input)).to.eql(expected);
-    };
-
-    it('is an event', () => {
-      test({ type: 'MyEvent', payload: {} }, true);
-    });
-
-    it('is not an event', () => {
-      test(undefined, false);
-      test(null, false);
-      test(1, false);
-      test(true, false);
-      test('two', false);
-      test({}, false);
-      test({ type: 123, payload: {} }, false);
-      test({ type: 'FOO' }, false);
-      test({ type: 'FOO', payload: 123 }, false);
-    });
-  });
-
   describe('busAsType', () => {
     type MyEvent = IFooEvent | IBarEvent;
     type IFooEvent = { type: 'Event/foo'; payload: { count?: number } };
@@ -213,6 +213,35 @@ describe('rx', () => {
 
       expect(fired.length).to.eql(1);
       expect(fired[0].type).to.eql('Event/bar');
+    });
+  });
+
+  describe('disposable', () => {
+    it('method: dispose', () => {
+      const { dispose$, dispose } = rx.disposable();
+
+      let count = 0;
+      dispose$.subscribe(() => count++);
+
+      dispose();
+      dispose();
+      dispose();
+
+      expect(count).to.eql(1); // NB: Multiple calls only fire the observable event once.
+    });
+
+    it('until$', () => {
+      const until$ = new Subject<number>();
+      const { dispose$ } = rx.disposable(until$);
+
+      let count = 0;
+      dispose$.subscribe(() => count++);
+
+      expect(count).to.eql(0);
+
+      until$.next(123);
+      until$.next(456);
+      expect(count).to.eql(1);
     });
   });
 });
