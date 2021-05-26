@@ -44,12 +44,12 @@ describe('PeerNetwork URI', () => {
 
     describe('parse', () => {
       it('success', () => {
-        const res1 = Uri.peer.parse('peer:foo');
+        const res = Uri.peer.parse('peer:foo');
 
-        expect(res1?.ok).to.eql(true);
-        expect(res1?.type).to.eql('peer');
-        expect(res1?.peer).to.eql('foo');
-        expect(res1?.errors).to.eql([]);
+        expect(res?.ok).to.eql(true);
+        expect(res?.type).to.eql('peer');
+        expect(res?.peer).to.eql('foo');
+        expect(res?.errors).to.eql([]);
       });
 
       it('fail: no match (undefined)', () => {
