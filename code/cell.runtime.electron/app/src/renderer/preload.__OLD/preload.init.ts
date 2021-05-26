@@ -24,8 +24,10 @@ export function init() {
   const { PROCESS } = constants;
   const isTopWindow = typeof window === 'object' && window === window.top;
 
-  const def = findArgv(PROCESS.DEF);
-  const host = findArgv(PROCESS.HOST);
+  // const def = findArgv(PROCESS.DEF);
+  // const host = findArgv(PROCESS.HOST);
+  const def = 'tmp';
+  const host = 'tmp';
   const isDev = Boolean(findArgv(PROCESS.DEV));
 
   // Initialize the environment
