@@ -41,22 +41,12 @@ export async function start() {
   const port = prod ? undefined : 5000;
   const { paths, host, instance } = await server.start({ log, prod, port });
 
-  type Foo = { type: 'foo'; payload: any };
-  const netbus = IpcNetworkBus<Foo>();
-  time.delay(500, () => {
-    console.log('fire');
-    netbus.fire({ type: 'foo', payload: { count: 123 } });
-  });
-
-  console.log('host', host);
-
   /**
    * Initialize controllers
    */
   const bus = rx.bus<t.ElectronEvent>();
   Window.Controller({ bus, host });
 
-  // instance.
 
   // instance.request$.subscribe((e) => {
   //   console.log(' > ', e.method, e.url); // TEMP 🐷

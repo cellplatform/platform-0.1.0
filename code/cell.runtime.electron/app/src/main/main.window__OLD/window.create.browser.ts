@@ -22,8 +22,8 @@ export async function createBrowserWindow(args: {
 
   const argv = [
     ENV.isDev ? PROCESS.DEV : '',
-    `${PROCESS.HOST}=${host}`,
-    `${PROCESS.DEF}=${uri}`,
+    // `${PROCESS.HOST}=${host}`,
+    // `${PROCESS.DEF}=${uri}`,
   ].filter((item) => Boolean(item));
 
   // Create the browser window.
