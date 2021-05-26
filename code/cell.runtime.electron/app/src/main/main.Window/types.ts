@@ -12,6 +12,7 @@ export type ElectronWindowStatus = {
   url: string;
   title: string;
   bounds: ElectronWindowBounds;
+  isVisible: boolean;
 };
 export type ElectronWindowBounds = { x: number; y: number; width: number; height: number };
 
@@ -37,9 +38,9 @@ export type ElectronWindowCreateReqEvent = {
 export type ElectronWindowCreateReq = {
   tx: string;
   url: string;
-  showOnLoad?: boolean;
   devTools?: boolean | 'undocked' | 'right' | 'bottom' | 'detach';
   props: {
+    isVisible?: boolean; // Default: true
     title?: string;
     x?: number;
     y?: number;
@@ -57,7 +58,7 @@ export type ElectronWindowCreateResEvent = {
 };
 export type ElectronWindowCreateRes = {
   tx: string;
-  isShowing: boolean; // NB: Will be true if [showOnLoad] was requested.
+  isVisible: boolean;
 };
 
 /**
@@ -85,6 +86,7 @@ export type ElectronWindowChangeEvent = {
 export type ElectronWindowChange = {
   uri: t.ElectronWindowUri;
   bounds?: Partial<ElectronWindowBounds>;
+  isVisible?: boolean;
 };
 
 /**

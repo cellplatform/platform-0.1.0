@@ -1,5 +1,5 @@
 import { app, MenuItemConstructorOptions as M, shell, BrowserWindow } from 'electron';
-import { constants, t, fs, log, ConfigFile } from '../../common';
+import { constants, t, fs, log, ConfigFile, time } from '../../common';
 import { Window } from '../../main.Window';
 import { IpcNetworkBus } from '../../main.Bus';
 
@@ -43,7 +43,10 @@ export function modulesMenu(args: {
 
           const uri = windows[0]?.uri;
 
-          events.change.fire(uri, { bounds: { x: 50, y: 100 } });
+          events.change.fire(uri, {
+            bounds: { x: 50, y: 100 },
+            // isVisible: false,
+          });
 
           // type Foo = { type: 'foo'; payload: any };
           // const netbus = IpcNetworkBus<Foo>({ bus });
@@ -66,9 +69,8 @@ export function modulesMenu(args: {
 
           const res = await events.create.fire({
             url,
-            props: { width: 1200, height: 900 },
-            showOnLoad: true,
             devTools: true,
+            props: { width: 1200, height: 900 },
           });
 
           console.log('create/res:', res);

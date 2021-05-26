@@ -28,7 +28,7 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
   rx.payload<t.ElectronWindowCreateReqEvent>($, 'runtime.electron/window/create:req')
     .pipe()
     .subscribe(async (e) => {
-      const { tx, url, props, showOnLoad = true } = e;
+      const { tx, url, props } = e;
 
       const PROCESS = constants.PROCESS;
       console.log('ENV.isDev', ENV.isDev);
@@ -104,11 +104,11 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
           browser.webContents.openDevTools({ mode });
         }
 
-        if (showOnLoad) browser.show();
-
+        const isVisible = props.isVisible ?? true;
+        if (isVisible) browser.show();
         bus.fire({
           type: 'runtime.electron/window/create:res',
-          payload: { tx, isShowing: showOnLoad },
+          payload: { tx, isVisible },
         });
       });
 
@@ -128,6 +128,7 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
           url: browser.webContents.getURL(),
           title: browser.getTitle(),
           bounds: browser.getBounds(),
+          isVisible: browser.isVisible(),
         };
       });
       bus.fire({
@@ -145,6 +146,8 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
       const browser = refs.find((ref) => ref.uri === e.uri)?.browser;
       if (!browser) return;
 
+      console.log('e', e);
+
       if (e.bounds) {
         const { x, y, width, height } = e.bounds;
         const current = browser.getBounds();
@@ -154,6 +157,11 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
           width: width ?? current.width,
           height: height ?? current.height,
         });
+      }
+
+      if (typeof e.isVisible === 'boolean') {
+        if (e.isVisible && !browser.isVisible()) browser.show();
+        if (!e.isVisible && browser.isVisible()) browser.hide();
       }
     });
 

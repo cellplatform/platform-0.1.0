@@ -19,16 +19,15 @@ export function WindowEvents(args: { bus: t.EventBus<any> }) {
     res$: rx.payload<t.ElectronWindowCreateResEvent>($, 'runtime.electron/window/create:res'),
     fire(args: {
       url: string;
-      showOnLoad?: boolean;
       devTools?: t.ElectronWindowCreateReq['devTools'];
       props?: t.ElectronWindowCreateReq['props'];
     }) {
-      const { url, showOnLoad, devTools, props = {} } = args;
+      const { url, devTools, props = {} } = args;
       const tx = slug();
       const res = firstValueFrom(create.res$.pipe(filter((e) => e.tx === tx)));
       bus.fire({
         type: 'runtime.electron/window/create:req',
-        payload: { tx, url, showOnLoad, devTools, props },
+        payload: { tx, url, devTools, props },
       });
       return res;
     },
@@ -60,13 +59,13 @@ export function WindowEvents(args: { bus: t.EventBus<any> }) {
     after$: rx.payload<t.ElectronWindowChangedEvent>($, 'runtime.electron/window/changed'),
     fire(
       window: t.ElectronWindowIdParam,
-      options: { bounds?: Partial<t.ElectronWindowBounds> } = {},
+      options: { bounds?: Partial<t.ElectronWindowBounds>; isVisible?: boolean } = {},
     ) {
-      const { bounds } = options;
+      const { bounds, isVisible } = options;
       const uri = typeof window === 'string' ? window : RuntimeUri.window.create(window);
       bus.fire({
         type: 'runtime.electron/window/change',
-        payload: { uri, bounds },
+        payload: { uri, bounds, isVisible },
       });
     },
   };
