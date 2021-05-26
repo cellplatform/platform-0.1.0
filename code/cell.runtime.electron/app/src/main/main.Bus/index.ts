@@ -1,1 +1,2 @@
-export * from './IpcNetworkBus';
+export * from './main.IpcNetworkBus';
+export * from './main.IpcNetworkPump';

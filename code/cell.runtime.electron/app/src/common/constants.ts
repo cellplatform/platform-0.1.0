@@ -1,10 +1,9 @@
 export const IPC = {
-  EVENT_PREFIX: 'IPC/',
-  CHANNEL: 'APP/ipc',
+  EVENT_PREFIX: 'IPC/', // TEMP 🐷
+  CHANNEL: 'cell.runtime.electron',
 };
 
 export const PROCESS = {
-  DEF: 'env:def',
-  HOST: 'env:host',
   DEV: 'env:dev',
+  RUNTIME: 'env:runtime',
 };
