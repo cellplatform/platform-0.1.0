@@ -5,7 +5,12 @@ import { t } from '../../common';
 /**
  * Root menu for operating on files.
  */
-export function fileMenu(args: { paths: t.IElectronPaths; port: number; isMac: boolean }): M {
+export function fileMenu(args: {
+  bus: t.EventBus<t.ElectronEvent>;
+  paths: t.IElectronPaths;
+  port: number;
+  isMac: boolean;
+}): M {
   const { paths, isMac } = args;
 
   const item: M = {

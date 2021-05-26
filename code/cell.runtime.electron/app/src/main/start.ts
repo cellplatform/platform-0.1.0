@@ -5,9 +5,10 @@ import { filter } from 'rxjs/operators';
 import { Client, constants, ENV, fs, log, rx, t, time } from './common';
 import * as server from './main.server';
 import { sys } from './main.sys';
-import { window } from './main.window';
+import { window } from './main.window__OLD';
+import { Window } from './main.Window';
 import { menu } from './main.menu';
-import { IpcNetworkBus } from './main.bus';
+import { IpcNetworkBus } from './main.Bus';
 
 /**
  *  NOTE:
@@ -41,11 +42,19 @@ export async function start() {
   const { paths, host, instance } = await server.start({ log, prod, port });
 
   type Foo = { type: 'foo'; payload: any };
-  const netbus = IpcNetworkBus<t.IpcEvent | Foo>();
+  const netbus = IpcNetworkBus<Foo>();
   time.delay(500, () => {
     console.log('fire');
     netbus.fire({ type: 'foo', payload: { count: 123 } });
   });
+
+  console.log('host', host);
+
+  /**
+   * Initialize controllers
+   */
+  const bus = rx.bus<t.ElectronEvent>();
+  Window.Controller({ bus, host });
 
   // instance.
 
@@ -69,7 +78,7 @@ export async function start() {
       preload: bundle.preload,
     });
     await app.whenReady();
-    await menu.build({ paths, port: instance.port });
+    await menu.build({ bus, paths, port: instance.port });
 
     // Initialize the system models.
     const ctx = await sys.init({ client, event$ });

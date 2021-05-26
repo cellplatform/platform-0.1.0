@@ -91,11 +91,25 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
         const base: M = {
           video: true,
           audio: {
-            echoCancellation: { ideal: true },
-            noiseSuppression: { ideal: true },
-            autoGainControl: { ideal: true },
+            // echoCancellation: { ideal: true },
+            // noiseSuppression: { ideal: true },
+            // autoGainControl: { ideal: true },
+
+            /**
+             * 🐷
+             * NOTE: experiment, turning off audio algorithmic options
+             *       to see if this supresses issues with recording audio
+             *       in the first 2-5 seconds.
+             */
+
+            echoCancellation: { ideal: false },
+            noiseSuppression: { ideal: false },
+            autoGainControl: { ideal: false },
           },
         };
+
+        console.log('base audio constraints', base.audio);
+
         const constraints = R.mergeDeepRight(base, e.constraints || {}) as M;
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         refs[ref] = { kind: 'video', ref, media: stream, constraints };

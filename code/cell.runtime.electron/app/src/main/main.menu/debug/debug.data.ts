@@ -4,7 +4,11 @@ import { t, fs, log } from '../../common';
 /**
  * Menu for snapshotting and backing up data.
  */
-export function dataMenu(args: { paths: t.IElectronPaths; port: number }): M {
+export function dataMenu(args: {
+  bus: t.EventBus<t.ElectronEvent>;
+  paths: t.IElectronPaths;
+  port: number;
+}): M {
   const { paths } = args;
 
   const item: M = {

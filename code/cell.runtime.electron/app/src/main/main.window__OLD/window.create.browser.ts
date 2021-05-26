@@ -28,7 +28,7 @@ export async function createBrowserWindow(args: {
 
   // Create the browser window.
   // Reference docs:
-  //        https://www.electronjs.org/docs/api/browser-window
+  //   https://www.electronjs.org/docs/api/browser-window
   //
   const browser = new BrowserWindow({
     show: false,

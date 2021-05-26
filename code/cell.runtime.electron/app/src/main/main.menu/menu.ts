@@ -6,7 +6,11 @@ import { t } from '../common';
 /**
  * Builds the application menus.
  */
-export async function build(args: { paths: t.IElectronPaths; port: number }) {
+export async function build(args: {
+  bus: t.EventBus<t.ElectronEvent>;
+  paths: t.IElectronPaths;
+  port: number;
+}) {
   const isMac = process.platform === 'darwin';
 
   /**

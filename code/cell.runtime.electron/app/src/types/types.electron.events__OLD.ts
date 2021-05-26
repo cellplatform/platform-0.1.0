@@ -3,20 +3,6 @@ import { t } from './common';
 export type IpcEventSource = 'MAIN' | string;
 
 /**
- * [Events]
- */
-export type IpcEvent = IpcDataEvent;
-
-export type IpcDataEvent = {
-  type: 'cell.runtime.electron/data';
-  payload: IpcData;
-};
-
-export type IpcData = {
-  data: any;
-};
-
-/**
  * OLD
  */
 export type IpcEvent_OLD = IpcSheetChangedEvent__OLD | IpcDebugEvent__OLD;
