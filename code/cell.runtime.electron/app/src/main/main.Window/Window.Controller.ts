@@ -1,12 +1,12 @@
 import { BrowserWindow } from 'electron';
 import { takeUntil } from 'rxjs/operators';
 
-import { constants, ENV, rx, t } from '../common';
+import { constants, ENV, rx, t, RuntimeUri, R } from '../common';
 import { WindowEvents } from './Window.Events';
 
 type WindowRef = {
   tx: string;
-  url: string;
+  uri: t.ElectronWindowUri;
   browser: BrowserWindow;
 };
 
@@ -28,13 +28,14 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
   rx.payload<t.ElectronWindowCreateReqEvent>($, 'runtime.electron/window/create:req')
     .pipe()
     .subscribe(async (e) => {
-      console.log('creeate', e);
       const { tx, url, props, showOnLoad = true } = e;
 
       const PROCESS = constants.PROCESS;
       console.log('ENV.isDev', ENV.isDev);
-      // const argv = [ENV.isDev ? PROCESS.DEV : '', `${PROCESS.HOST}=${host}`].filter(Boolean);
-      const argv: string[] = [];
+      const argv = [
+        ENV.isDev ? PROCESS.DEV : '',
+        `${PROCESS.RUNTIME}=${'cell.runtime.electron'}@${ENV.pkg.version}`,
+      ].filter(Boolean);
 
       const browser = new BrowserWindow({
         show: false,
@@ -63,38 +64,39 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
         },
       });
       const id = browser.id;
-      refs = [...refs, { tx, url, browser }];
+      const uri = RuntimeUri.window.create(id);
+      refs = [...refs, { tx, uri, browser }];
+
+      const fireChanged = (
+        action: t.ElectronWindowChanged['action'],
+        bounds?: t.ElectronWindowChanged['bounds'],
+      ) => {
+        bus.fire({
+          type: 'runtime.electron/window/changed',
+          payload: {
+            uri,
+            action,
+            bounds: bounds ?? { width: -1, height: -1, x: -1, y: -1 },
+          },
+        });
+      };
 
       /**
        * Remove reference when closed.
        */
       browser.once('closed', () => {
         refs = refs.filter((ref) => ref.tx !== tx);
-        const bounds = { width: -1, height: -1, x: -1, y: -1 };
-        bus.fire({
-          type: 'runtime.electron/window/changed',
-          payload: { id, action: 'closed', bounds },
-        });
+        fireChanged('close');
       });
 
       /**
-       * Track changes.
+       * Track changes and alert listeners.
        */
-      browser.on('resize', () => {
-        bus.fire({
-          type: 'runtime.electron/window/changed',
-          payload: { id, action: 'resized', bounds: browser.getBounds() },
-        });
-      });
-      browser.on('move', () => {
-        bus.fire({
-          type: 'runtime.electron/window/changed',
-          payload: { id, action: 'moved', bounds: browser.getBounds() },
-        });
-      });
+      browser.on('resize', () => fireChanged('resize', browser.getBounds()));
+      browser.on('move', () => fireChanged('move', browser.getBounds()));
 
       /**
-       * Show and alert listeners when complete.
+       * Show and alert listeners when browser creation is complete.
        */
       browser.once('ready-to-show', () => {
         if (e.devTools && ENV.isDev) {
@@ -120,10 +122,10 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
     .pipe()
     .subscribe((e) => {
       const { tx } = e;
-      const windows: t.ElectronWindowStatus[] = refs.map(({ url, browser }) => {
+      const windows: t.ElectronWindowStatus[] = refs.map(({ uri, browser }) => {
         return {
-          url,
-          id: browser.id,
+          uri,
+          url: browser.webContents.getURL(),
           title: browser.getTitle(),
           bounds: browser.getBounds(),
         };
@@ -132,6 +134,44 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
         type: 'runtime.electron/windows/status:res',
         payload: { tx, windows },
       });
+    });
+
+  /**
+   * Window change requests (eg, move, resize).
+   */
+  rx.payload<t.ElectronWindowChangeEvent>($, 'runtime.electron/window/change')
+    .pipe()
+    .subscribe((e) => {
+      const browser = refs.find((ref) => ref.uri === e.uri)?.browser;
+      if (!browser) return;
+
+      if (e.bounds) {
+        const { x, y, width, height } = e.bounds;
+        const current = browser.getBounds();
+        browser.setBounds({
+          x: x ?? current.x,
+          y: y ?? current.y,
+          width: width ?? current.width,
+          height: height ?? current.height,
+        });
+      }
+    });
+
+  /**
+   * IPC send requests.
+   */
+  rx.payload<t.ElectronWindowIpcSendEvent>($, 'runtime.electron/window/ipc/send')
+    .pipe()
+    .subscribe((e) => {
+      //
+      console.log('send', e);
+
+      const { targets, event } = e;
+      const channel = constants.IPC.CHANNEL;
+
+      const windows = refs.filter((ref) => targets.includes(ref.uri));
+
+      windows.forEach(({ browser }) => browser.webContents.send(channel, event));
     });
 
   /**

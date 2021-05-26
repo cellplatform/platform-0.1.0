@@ -1,7 +1,7 @@
 import { firstValueFrom } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { rx, slug, t } from '../common';
+import { RuntimeUri, rx, slug, t } from '../common';
 
 /**
  * Event API for working with Electron windows.
@@ -47,7 +47,27 @@ export function WindowEvents(args: { bus: t.EventBus<any> }) {
         type: 'runtime.electron/windows/status:req',
         payload: { tx },
       });
-      return (await res).windows;
+      const { windows } = await res;
+      return { windows };
+    },
+  };
+
+  /**
+   * Change window state (eg, move, resize)
+   */
+  const change = {
+    before$: rx.payload<t.ElectronWindowChangeEvent>($, 'runtime.electron/window/change'),
+    after$: rx.payload<t.ElectronWindowChangedEvent>($, 'runtime.electron/window/changed'),
+    fire(
+      window: t.ElectronWindowIdParam,
+      options: { bounds?: Partial<t.ElectronWindowBounds> } = {},
+    ) {
+      const { bounds } = options;
+      const uri = typeof window === 'string' ? window : RuntimeUri.window.create(window);
+      bus.fire({
+        type: 'runtime.electron/window/change',
+        payload: { uri, bounds },
+      });
     },
   };
 
@@ -56,5 +76,6 @@ export function WindowEvents(args: { bus: t.EventBus<any> }) {
     dispose,
     create,
     status,
+    change,
   };
 }

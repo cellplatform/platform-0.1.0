@@ -1,8 +1,14 @@
+import * as t from '../common/types';
+
+export type ElectronWindowChangeAction = 'close' | 'resize' | 'move';
+export type ElectronWindowId = number;
+export type ElectronWindowIdParam = ElectronWindowId | t.ElectronWindowUri;
+
 /**
  * The current status of an electron window.
  */
 export type ElectronWindowStatus = {
-  id: number;
+  uri: t.ElectronWindowUri;
   url: string;
   title: string;
   bounds: ElectronWindowBounds;
@@ -17,7 +23,9 @@ export type ElectronWindowEvent =
   | ElectronWindowCreateResEvent
   | ElectronWindowsStatusReqEvent
   | ElectronWindowsStatusResEvent
-  | ElectronWindowChangedEvent;
+  | ElectronWindowChangeEvent
+  | ElectronWindowChangedEvent
+  | ElectronWindowIpcSendEvent;
 
 /**
  * Fired to create a new window.
@@ -68,6 +76,18 @@ export type ElectronWindowsStatusResEvent = {
 export type ElectronWindowsStatusRes = { tx: string; windows: ElectronWindowStatus[] };
 
 /**
+ * Fires to initiate a change to a window
+ */
+export type ElectronWindowChangeEvent = {
+  type: 'runtime.electron/window/change';
+  payload: ElectronWindowChange;
+};
+export type ElectronWindowChange = {
+  uri: t.ElectronWindowUri;
+  bounds?: Partial<ElectronWindowBounds>;
+};
+
+/**
  * Fired when a windows state has changed.
  */
 export type ElectronWindowChangedEvent = {
@@ -75,7 +95,19 @@ export type ElectronWindowChangedEvent = {
   payload: ElectronWindowChanged;
 };
 export type ElectronWindowChanged = {
-  id: number;
-  action: 'closed' | 'resized' | 'moved';
+  uri: t.ElectronWindowUri;
+  action: ElectronWindowChangeAction;
   bounds: ElectronWindowBounds;
+};
+
+/**
+ * Fired to send data over the IPC channel.
+ */
+export type ElectronWindowIpcSendEvent = {
+  type: 'runtime.electron/window/ipc/send';
+  payload: ElectronWindowIpcSend;
+};
+export type ElectronWindowIpcSend = {
+  targets: t.ElectronWindowUri[];
+  event: t.Event;
 };
