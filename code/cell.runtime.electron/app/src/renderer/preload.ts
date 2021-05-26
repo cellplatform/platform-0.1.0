@@ -13,6 +13,7 @@ ipcRenderer.on(CHANNEL, (ipc, event: Event) => {
 });
 
 const send = (event: Event) => {
+  console.log('SEND to', CHANNEL, 'event: ', event);
   ipcRenderer.send(CHANNEL, event);
 };
 

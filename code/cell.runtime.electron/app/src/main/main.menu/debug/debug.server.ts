@@ -5,7 +5,7 @@ import { t, fs, log } from '../../common';
  * Menu for opening tools around the locally running HTTP server.
  */
 export function serverMenu(args: {
-  bus: t.EventBus<t.ElectronEvent>;
+  bus: t.ElectronRuntimeBus;
   paths: t.IElectronPaths;
   port: number;
 }): M {

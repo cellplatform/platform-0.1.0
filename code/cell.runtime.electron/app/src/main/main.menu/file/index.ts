@@ -6,7 +6,7 @@ import { t } from '../../common';
  * Root menu for operating on files.
  */
 export function fileMenu(args: {
-  bus: t.EventBus<t.ElectronEvent>;
+  bus: t.ElectronRuntimeBus;
   paths: t.IElectronPaths;
   port: number;
   isMac: boolean;

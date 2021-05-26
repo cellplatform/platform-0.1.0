@@ -15,7 +15,7 @@ type WindowRef = {
  */
 export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
   const { host } = args;
-  const bus = rx.busAsType<t.ElectronWindowEvent>(args.bus);
+  const bus = rx.busAsType<t.WindowEvent>(args.bus);
   const events = WindowEvents({ bus });
   const { dispose, dispose$ } = events;
   const $ = bus.$.pipe(takeUntil(dispose$));
@@ -118,7 +118,7 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
   /**
    * Window status.
    */
-  rx.payload<t.ElectronWindowsStatusReqEvent>($, 'runtime.electron/windows/status:req')
+  rx.payload<t.WindowsStatusReqEvent>($, 'runtime.electron/windows/status:req')
     .pipe()
     .subscribe((e) => {
       const { tx } = e;
@@ -140,7 +140,7 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
   /**
    * Window change requests (eg, move, resize).
    */
-  rx.payload<t.ElectronWindowChangeEvent>($, 'runtime.electron/window/change')
+  rx.payload<t.WindowChangeEvent>($, 'runtime.electron/window/change')
     .pipe()
     .subscribe((e) => {
       const browser = refs.find((ref) => ref.uri === e.uri)?.browser;
@@ -168,10 +168,13 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
   /**
    * IPC send requests.
    */
-  rx.payload<t.ElectronWindowIpcSendEvent>($, 'runtime.electron/window/ipc/send')
+  rx.payload<t.IpcSendEvent>($, 'runtime.electron/ipc/send')
     .pipe()
     .subscribe((e) => {
       //
+      /**
+       * TODO 🐷
+       */
       console.log('send', e);
 
       const { targets, event } = e;

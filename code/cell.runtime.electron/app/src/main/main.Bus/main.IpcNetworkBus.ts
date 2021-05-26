@@ -11,7 +11,7 @@ import { IpcNetworkPump } from './main.IpcNetworkPump';
  * Refs:
  *    https://www.electronjs.org/docs/api/ipc-main
  */
-export function IpcNetworkBus<E extends t.Event>(args: { bus: t.EventBus<t.ElectronEvent> }) {
+export function IpcNetworkBus<E extends t.Event>(args: { bus: t.ElectronRuntimeBus }) {
   const { bus } = args;
 
   const windowEvents = Window.Events({ bus });

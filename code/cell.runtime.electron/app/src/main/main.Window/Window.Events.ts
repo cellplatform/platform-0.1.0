@@ -8,7 +8,7 @@ import { RuntimeUri, rx, slug, t } from '../common';
  */
 export function WindowEvents(args: { bus: t.EventBus<any> }) {
   const { dispose$, dispose } = rx.disposable();
-  const bus = rx.busAsType<t.ElectronWindowEvent>(args.bus);
+  const bus = rx.busAsType<t.WindowEvent>(args.bus);
   const $ = bus.$.pipe(takeUntil(dispose$));
 
   /**
@@ -16,7 +16,7 @@ export function WindowEvents(args: { bus: t.EventBus<any> }) {
    */
   const create = {
     req$: rx.payload<t.ElectronWindowCreateReqEvent>($, 'runtime.electron/window/create:req'),
-    res$: rx.payload<t.ElectronWindowCreateResEvent>($, 'runtime.electron/window/create:res'),
+    res$: rx.payload<t.WindowCreateResEvent>($, 'runtime.electron/window/create:res'),
     fire(args: {
       url: string;
       devTools?: t.ElectronWindowCreateReq['devTools'];
@@ -37,8 +37,8 @@ export function WindowEvents(args: { bus: t.EventBus<any> }) {
    * Window status
    */
   const status = {
-    req$: rx.payload<t.ElectronWindowsStatusReqEvent>($, 'runtime.electron/windows/status:req'),
-    res$: rx.payload<t.ElectronWindowsStatusResEvent>($, 'runtime.electron/windows/status:res'),
+    req$: rx.payload<t.WindowsStatusReqEvent>($, 'runtime.electron/windows/status:req'),
+    res$: rx.payload<t.WindowsStatusResEvent>($, 'runtime.electron/windows/status:res'),
     async get() {
       const tx = slug();
       const res = firstValueFrom(status.res$.pipe(filter((e) => e.tx === tx)));
@@ -55,11 +55,11 @@ export function WindowEvents(args: { bus: t.EventBus<any> }) {
    * Change window state (eg, move, resize)
    */
   const change = {
-    before$: rx.payload<t.ElectronWindowChangeEvent>($, 'runtime.electron/window/change'),
+    before$: rx.payload<t.WindowChangeEvent>($, 'runtime.electron/window/change'),
     after$: rx.payload<t.ElectronWindowChangedEvent>($, 'runtime.electron/window/changed'),
     fire(
       window: t.ElectronWindowIdParam,
-      options: { bounds?: Partial<t.ElectronWindowBounds>; isVisible?: boolean } = {},
+      options: { bounds?: Partial<t.WindowBounds>; isVisible?: boolean } = {},
     ) {
       const { bounds, isVisible } = options;
       const uri = typeof window === 'string' ? window : RuntimeUri.window.create(window);

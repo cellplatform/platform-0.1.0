@@ -7,12 +7,14 @@ import { IpcNetworkBus } from '../../main.Bus';
  * Menu for installing a new module.
  */
 export function modulesMenu(args: {
-  bus: t.EventBus<t.ElectronEvent>;
+  bus: t.ElectronRuntimeBus;
   paths: t.IElectronPaths;
   port: number;
 }): M {
   const { paths, bus } = args;
 
+  type Foo = { type: 'foo'; payload: any };
+  const netbus = IpcNetworkBus<Foo>({ bus });
   const events = Window.Events({ bus });
 
   const item: M = {
@@ -29,9 +31,6 @@ export function modulesMenu(args: {
       {
         label: 'tmp.netbus',
         click: async () => {
-          type Foo = { type: 'foo'; payload: any };
-          const netbus = IpcNetworkBus<Foo>({ bus });
-          console.log('fire');
           netbus.fire({ type: 'foo', payload: { count: 123 } });
         },
       },

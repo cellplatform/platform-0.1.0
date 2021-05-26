@@ -1,6 +1,21 @@
-import { t, NetworkBus, RuntimeUri } from '../common';
+import { Observable, Subject, BehaviorSubject, firstValueFrom } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+  tap,
+} from 'rxjs/operators';
+import { t, NetworkBus, RuntimeUri, constants } from '../common';
 import { ipcMain } from 'electron';
 import { Window } from '../main.Window';
+
+const CHANNEL = constants.IPC.CHANNEL;
 
 /**
  * An event-pump for passing messages over an
@@ -8,11 +23,15 @@ import { Window } from '../main.Window';
  *
  * Refs:
  *    https://www.electronjs.org/docs/api/ipc-main
+ *
  */
-export function IpcNetworkPump<E extends t.Event>(args: { bus: t.EventBus<t.ElectronEvent> }) {
+export function IpcNetworkPump<E extends t.Event>(args: { bus: t.ElectronRuntimeBus }) {
   const { bus } = args;
 
   console.log('IpcNetworkPump', IpcNetworkPump);
+
+  const in$ = new Subject<t.Event>();
+  ipcMain.on(CHANNEL, (ipc, event: t.Event) => in$.next(event));
 
   const pump: t.NetworkPump<E> = {
     in: (fn) => {
@@ -23,12 +42,15 @@ export function IpcNetworkPump<E extends t.Event>(args: { bus: t.EventBus<t.Elec
     out: (e) => {
       const { targets, event } = e;
       if (targets.length > 0) {
+        console.log('pump/out', e);
+
         /**
-         * Broadcast event to renderers.
+         * Broadcast event to windows.
          */
+        const sender = RuntimeUri.main;
         bus.fire({
-          type: 'runtime.electron/window/ipc/send',
-          payload: { targets, event },
+          type: 'runtime.electron/ipc/send',
+          payload: { sender, targets, event },
         });
       }
     },

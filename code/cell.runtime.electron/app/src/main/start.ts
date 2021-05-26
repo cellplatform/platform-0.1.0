@@ -44,9 +44,8 @@ export async function start() {
   /**
    * Initialize controllers
    */
-  const bus = rx.bus<t.ElectronEvent>();
+  const bus = rx.bus<t.ElectronRuntimeEvent>();
   Window.Controller({ bus, host });
-
 
   // instance.request$.subscribe((e) => {
   //   console.log(' > ', e.method, e.url); // TEMP 🐷
@@ -86,7 +85,6 @@ export async function start() {
     // console.log('ctx.apps.total', ctx.apps.total);
     // console.log('ctx.windowRefs.length', ctx.windowRefs.length);
 
-    // if (ctx.windowRefs.length < ctx.apps.total) {
     if (ctx.windowRefs.length === 0) {
       // TEMP 🐷- Ensure at least one window for each app exists.
 

@@ -11,22 +11,21 @@ export type ElectronWindowStatus = {
   uri: t.ElectronWindowUri;
   url: string;
   title: string;
-  bounds: ElectronWindowBounds;
+  bounds: WindowBounds;
   isVisible: boolean;
 };
-export type ElectronWindowBounds = { x: number; y: number; width: number; height: number };
+export type WindowBounds = { x: number; y: number; width: number; height: number };
 
 /**
  * EVENTS
  */
-export type ElectronWindowEvent =
+export type WindowEvent =
   | ElectronWindowCreateReqEvent
-  | ElectronWindowCreateResEvent
-  | ElectronWindowsStatusReqEvent
-  | ElectronWindowsStatusResEvent
-  | ElectronWindowChangeEvent
-  | ElectronWindowChangedEvent
-  | ElectronWindowIpcSendEvent;
+  | WindowCreateResEvent
+  | WindowsStatusReqEvent
+  | WindowsStatusResEvent
+  | WindowChangeEvent
+  | ElectronWindowChangedEvent;
 
 /**
  * Fired to create a new window.
@@ -52,11 +51,11 @@ export type ElectronWindowCreateReq = {
     maxHeight?: number;
   };
 };
-export type ElectronWindowCreateResEvent = {
+export type WindowCreateResEvent = {
   type: 'runtime.electron/window/create:res';
-  payload: ElectronWindowCreateRes;
+  payload: WindowCreateRes;
 };
-export type ElectronWindowCreateRes = {
+export type WindowCreateRes = {
   tx: string;
   isVisible: boolean;
 };
@@ -64,28 +63,28 @@ export type ElectronWindowCreateRes = {
 /**
  * Fired to retrieve the status of open windows.
  */
-export type ElectronWindowsStatusReqEvent = {
+export type WindowsStatusReqEvent = {
   type: 'runtime.electron/windows/status:req';
-  payload: ElectronWindowsStatusReq;
+  payload: WindowsStatusReq;
 };
-export type ElectronWindowsStatusReq = { tx: string };
+export type WindowsStatusReq = { tx: string };
 
-export type ElectronWindowsStatusResEvent = {
+export type WindowsStatusResEvent = {
   type: 'runtime.electron/windows/status:res';
-  payload: ElectronWindowsStatusRes;
+  payload: WindowsStatusRes;
 };
-export type ElectronWindowsStatusRes = { tx: string; windows: ElectronWindowStatus[] };
+export type WindowsStatusRes = { tx: string; windows: ElectronWindowStatus[] };
 
 /**
  * Fires to initiate a change to a window
  */
-export type ElectronWindowChangeEvent = {
+export type WindowChangeEvent = {
   type: 'runtime.electron/window/change';
-  payload: ElectronWindowChange;
+  payload: WindowChange;
 };
-export type ElectronWindowChange = {
+export type WindowChange = {
   uri: t.ElectronWindowUri;
-  bounds?: Partial<ElectronWindowBounds>;
+  bounds?: Partial<WindowBounds>;
   isVisible?: boolean;
 };
 
@@ -99,17 +98,5 @@ export type ElectronWindowChangedEvent = {
 export type ElectronWindowChanged = {
   uri: t.ElectronWindowUri;
   action: ElectronWindowChangeAction;
-  bounds: ElectronWindowBounds;
-};
-
-/**
- * Fired to send data over the IPC channel.
- */
-export type ElectronWindowIpcSendEvent = {
-  type: 'runtime.electron/window/ipc/send';
-  payload: ElectronWindowIpcSend;
-};
-export type ElectronWindowIpcSend = {
-  targets: t.ElectronWindowUri[];
-  event: t.Event;
+  bounds: WindowBounds;
 };
