@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.mapbox",
-  "version": "0.0.116",
+  "version": "0.0.117",
   "description": "Mapbox UI components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,7 +13,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.4.71",
+    "@platform/react": "0.4.72",
     "@types/mapbox-gl": "2.1.2",
     "mapbox-gl": "2.2.0"
   },

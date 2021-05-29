@@ -5,8 +5,6 @@ import { t, env } from '../common';
  * Derives a network bus from the environment.
  */
 export function NetworkBus<E extends t.Event>() {
-  console.log('env', env);
-
   const ipc = env?.ipc;
 
   if (typeof ipc !== 'object')
