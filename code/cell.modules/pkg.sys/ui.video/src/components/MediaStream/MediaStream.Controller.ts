@@ -102,9 +102,9 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
              *       in the first 2-5 seconds.
              */
 
-            echoCancellation: { ideal: false },
-            noiseSuppression: { ideal: false },
-            autoGainControl: { ideal: false },
+            echoCancellation: { ideal: true },
+            noiseSuppression: { ideal: true },
+            autoGainControl: { ideal: true },
           },
         };
 
