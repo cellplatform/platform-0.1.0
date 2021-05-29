@@ -1,4 +1,5 @@
 type O = Record<string, unknown>;
+type Uri = string;
 type E = { type: string; payload: O };
 
 /**
@@ -19,4 +20,4 @@ export type NetworkInSubscriber<T extends E> = (e: T) => void;
  * Pumps messages/events outward into the network.
  */
 export type NetworkOut<T extends E> = (e: NetworkOutArgs<T>) => void;
-export type NetworkOutArgs<T extends E> = { event: T; targets: t.NetworkBusUri[] };
+export type NetworkOutArgs<T extends E> = { event: T; targets: Uri[] };
