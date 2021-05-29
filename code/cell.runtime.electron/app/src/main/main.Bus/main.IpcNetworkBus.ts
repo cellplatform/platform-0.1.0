@@ -1,7 +1,5 @@
-import { t, NetworkBus, RuntimeUri } from '../common';
-import { ipcMain } from 'electron';
+import { NetworkBus, RuntimeUri, t } from '../common';
 import { Window } from '../main.Window';
-
 import { IpcNetworkPump } from './main.IpcNetworkPump';
 
 /**
@@ -11,7 +9,7 @@ import { IpcNetworkPump } from './main.IpcNetworkPump';
  * Refs:
  *    https://www.electronjs.org/docs/api/ipc-main
  */
-export function IpcNetworkBus<E extends t.Event>(args: { bus: t.ElectronRuntimeBus }) {
+export function IpcNetworkBus<E extends t.Event>(args: { bus: t.ElectronMainBus }) {
   const { bus } = args;
 
   const windowEvents = Window.Events({ bus });

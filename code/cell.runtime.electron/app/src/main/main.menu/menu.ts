@@ -7,7 +7,7 @@ import { t } from '../common';
  * Builds the application menus.
  */
 export async function build(args: {
-  bus: t.ElectronRuntimeBus;
+  bus: t.ElectronMainBus;
   paths: t.IElectronPaths;
   port: number;
 }) {

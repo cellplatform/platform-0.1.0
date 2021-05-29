@@ -6,7 +6,7 @@ import { IpcEvent } from './types.events.ipc';
 /**
  * Event bus for the electron runtime.
  */
-export type ElectronRuntimeBus = t.EventBus<t.ElectronRuntimeEvent>;
+export type ElectronMainBus = t.EventBus<t.ElectronRuntimeEvent>;
 
 /**
  * Union of all [cell.runtime.electron] events.

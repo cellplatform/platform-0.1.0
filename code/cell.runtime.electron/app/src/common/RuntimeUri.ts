@@ -1,4 +1,5 @@
 import * as t from './types';
+import { slug } from './libs';
 
 /**
  * Electron application URIs.
@@ -13,8 +14,8 @@ export const RuntimeUri = {
    * A URI that represents a unique window.
    */
   window: {
-    create(id: t.ElectronWindowId) {
-      return `process:window:${id}`;
+    create(id?: t.ElectronWindowId | string) {
+      return `process:window:${id ?? slug()}`;
     },
 
     parse(input: any, options: { throw?: boolean } = {}): t.ElectronWindowUriObject | undefined {
@@ -32,13 +33,16 @@ export const RuntimeUri = {
       }
 
       const parts = value.split(':').map((part) => part.trim());
-      const parsedId = parseInt(parts[2], 10);
-      const id = Number.isNaN(parsedId) ? -1 : parsedId;
-
-      const uri: t.ElectronWindowUriObject = { ok: true, type: 'window', id, errors: [] };
+      const slug = toString(parts[2]);
+      const uri: t.ElectronWindowUriObject = {
+        ok: true,
+        type: 'window',
+        slug, // NB: A randomly generated id created for the window.
+        errors: [],
+      };
 
       const error = (message: string) => uri.errors.push(message);
-      if (id < 1) error(`Not a valid window id (number)`);
+      if (!slug) error(`Not a valid id (slug)`);
 
       uri.ok = uri.errors.length === 0;
       if (!uri.ok && options.throw) {

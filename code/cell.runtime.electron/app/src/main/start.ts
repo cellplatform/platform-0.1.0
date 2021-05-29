@@ -24,6 +24,12 @@ import { IpcNetworkBus } from './main.Bus';
 app.allowRendererProcessReuse = true;
 
 /**
+ * Ensure all renderer processes are opened in "sandbox" mode.
+ * https://www.electronjs.org/docs/tutorial/sandbox#enabling-the-sandbox-globally
+ */
+app.enableSandbox();
+
+/**
  * Environment.
  */
 if (app.isPackaged) {
@@ -45,7 +51,7 @@ export async function start() {
    * Initialize controllers
    */
   const bus = rx.bus<t.ElectronRuntimeEvent>();
-  Window.Controller({ bus, host });
+  Window.Controller({ bus });
 
   // instance.request$.subscribe((e) => {
   //   console.log(' > ', e.method, e.url); // TEMP 🐷

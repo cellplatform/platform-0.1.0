@@ -12,6 +12,6 @@ export type ElectronUriObject = ElectronWindowUriObject;
 export type ElectronWindowUriObject = {
   ok: boolean;
   type: 'window';
-  id: t.ElectronWindowId;
+  slug: string;
   errors: string[];
 };

@@ -23,13 +23,13 @@ export function ipc(args: { ctx: t.IContext; event$: Subject<t.AppEvent> }) {
         changes: e.changes,
       },
     };
-    ctx.windowRefs.forEach((ref) => ref.send(IPC.CHANNEL, payload));
+    ctx.windowRefs.forEach((ref) => ref.send(IPC.MESSAGE_CHANNEL, payload));
   });
 
   /**
    * Listen for events broadcast back from windows.
    */
-  ipcMain.on(IPC.CHANNEL, (ipc, event: t.IpcEvent_OLD) => event$.next(event));
+  ipcMain.on(IPC.MESSAGE_CHANNEL, (ipc, event: t.IpcEvent_OLD) => event$.next(event));
 
   const ipc$ = event$.pipe(
     filter((e) => e.type.startsWith('IPC/')),

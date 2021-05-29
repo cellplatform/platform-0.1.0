@@ -2,6 +2,9 @@ import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { Sample, SampleProps } from '.';
 
+import { NetworkBus } from '../../NetworkBus';
+
+type Foo = { type: 'foo'; payload: { count: number } };
 type Ctx = { props: SampleProps };
 
 /**
@@ -11,6 +14,16 @@ export const actions = DevActions<Ctx>()
   .namespace('ui/Sample')
   .context((e) => {
     if (e.prev) return e.prev;
+
+    const netbus = NetworkBus<Foo>();
+
+    console.log('-------------------------------------------');
+    netbus.$.subscribe((e) => {
+      console.log(' >> netbus', e);
+    });
+
+    netbus.fire({ type: 'foo', payload: { count: 123 } });
+
     return { props: { count: 0 } };
   })
 

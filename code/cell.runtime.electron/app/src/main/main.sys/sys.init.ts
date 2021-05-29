@@ -5,7 +5,7 @@ import { ConfigFile, rx, t } from '../common';
 import { typeDef } from '../main.type';
 import { toContext } from './sys.ctx';
 import * as types from './sys.init.types';
-import { ipc } from './sys.ipc';
+// import { ipc } from './sys.ipc';
 import { monitor } from './sys.monitor';
 
 /**
@@ -21,7 +21,8 @@ export async function init(args: { client: t.IClientTypesystem; event$: Subject<
   const config = await ConfigFile.read();
   const ctx = await toContext({ config, client, event$ });
   monitor({ ctx, event$ });
-  ipc({ ctx, event$ });
+
+  // ipc({ ctx, event$ }); // TEMP 🐷 - Obsolete
 
   // Initialize application type-defs.
   if (ctx.apps.total === 0) {

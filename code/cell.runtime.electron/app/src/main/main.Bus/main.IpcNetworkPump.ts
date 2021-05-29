@@ -1,21 +1,5 @@
-import { Observable, Subject, BehaviorSubject, firstValueFrom } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-} from 'rxjs/operators';
-import { t, NetworkBus, RuntimeUri, constants } from '../common';
 import { ipcMain } from 'electron';
-import { Window } from '../main.Window';
-
-const CHANNEL = constants.IPC.CHANNEL;
+import { constants, RuntimeUri, t } from '../common';
 
 /**
  * An event-pump for passing messages over an
@@ -25,35 +9,41 @@ const CHANNEL = constants.IPC.CHANNEL;
  *    https://www.electronjs.org/docs/api/ipc-main
  *
  */
-export function IpcNetworkPump<E extends t.Event>(args: { bus: t.ElectronRuntimeBus }) {
+export function IpcNetworkPump<E extends t.Event>(args: { bus: t.ElectronMainBus }) {
   const { bus } = args;
+  const sender = RuntimeUri.main;
 
-  console.log('IpcNetworkPump', IpcNetworkPump);
-
-  const in$ = new Subject<t.Event>();
-  ipcMain.on(CHANNEL, (ipc, event: t.Event) => in$.next(event));
+  const broadcast = (targets: t.ElectronUri[], data: t.Event) => {
+    targets = targets.filter((uri) => uri !== RuntimeUri.main);
+    if (targets.length > 0 && typeof data === 'object') {
+      // NB: See the [Window.Controller] that catches this event
+      //     and ferries the wrapped child event out to all windows.
+      bus.fire({
+        type: 'runtime.electron/ipc/msg',
+        payload: { sender, targets, data },
+      });
+    }
+  };
 
   const pump: t.NetworkPump<E> = {
-    in: (fn) => {
-      // fn()
-      // data.in$.pipe(map((e) => e.data as E)).subscribe(fn);
-      console.log('pump/in', fn); // TODO 🐷
+    /**
+     * Recieve incoming event messages from windows.
+     */
+    in: (main) => {
+      ipcMain.on(constants.IPC.CHANNEL, (ipc, event: t.IpcEvent) => {
+        if (event.type === 'runtime.electron/ipc/msg') {
+          const targets = event.payload.targets;
+          const data = event.payload.data as E;
+          broadcast(targets, data); // NB: ferry over to windows.
+          if (targets.includes(RuntimeUri.main)) main(data);
+        }
+      });
     },
-    out: (e) => {
-      const { targets, event } = e;
-      if (targets.length > 0) {
-        console.log('pump/out', e);
 
-        /**
-         * Broadcast event to windows.
-         */
-        const sender = RuntimeUri.main;
-        bus.fire({
-          type: 'runtime.electron/ipc/send',
-          payload: { sender, targets, event },
-        });
-      }
-    },
+    /**
+     * Broadcast event to windows.
+     */
+    out: (e) => broadcast(e.targets, e.event),
   };
 
   return pump;

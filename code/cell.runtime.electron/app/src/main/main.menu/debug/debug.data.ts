@@ -5,7 +5,7 @@ import { t, fs, log } from '../../common';
  * Menu for snapshotting and backing up data.
  */
 export function dataMenu(args: {
-  bus: t.ElectronRuntimeBus;
+  bus: t.ElectronMainBus;
   paths: t.IElectronPaths;
   port: number;
 }): M {

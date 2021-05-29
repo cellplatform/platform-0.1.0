@@ -2,10 +2,11 @@ import { BrowserWindow } from 'electron';
 import { takeUntil } from 'rxjs/operators';
 
 import { constants, ENV, rx, t, RuntimeUri, R } from '../common';
-import { WindowEvents } from './Window.Events';
+import { WindowEvents } from './main.Window.Events';
+import { IpcSysInfo } from './main.IpcSysInfo';
 
 type WindowRef = {
-  tx: string;
+  id: t.ElectronWindowId;
   uri: t.ElectronWindowUri;
   browser: BrowserWindow;
 };
@@ -13,14 +14,14 @@ type WindowRef = {
 /**
  * Controller logic for working with Electron windows.
  */
-export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
-  const { host } = args;
+export function WindowController(args: { bus: t.EventBus<any> }) {
   const bus = rx.busAsType<t.WindowEvent>(args.bus);
   const events = WindowEvents({ bus });
   const { dispose, dispose$ } = events;
   const $ = bus.$.pipe(takeUntil(dispose$));
 
   let refs: WindowRef[] = [];
+  const sys = IpcSysInfo({ getRefs: () => refs }).listen();
 
   /**
    * Window creation.
@@ -29,12 +30,14 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
     .pipe()
     .subscribe(async (e) => {
       const { tx, url, props } = e;
+      const uri = RuntimeUri.window.create();
 
+      // Generate constants to pass into the browser process.
       const PROCESS = constants.PROCESS;
-      console.log('ENV.isDev', ENV.isDev);
       const argv = [
         ENV.isDev ? PROCESS.DEV : '',
         `${PROCESS.RUNTIME}=${'cell.runtime.electron'}@${ENV.pkg.version}`,
+        `${PROCESS.URI_SELF}=${uri}`,
       ].filter(Boolean);
 
       const browser = new BrowserWindow({
@@ -55,29 +58,33 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
         acceptFirstMouse: true,
 
         webPreferences: {
-          sandbox: true, // https://www.electronjs.org/docs/api/sandbox-option
-          nodeIntegration: false, // NB: Obsolete (see `contextIsolation`) but leaving around for safety.
-          contextIsolation: true, // https://www.electronjs.org/docs/tutorial/context-isolation
+          sandbox: true, //           https://www.electronjs.org/docs/api/sandbox-option
+          contextIsolation: true, //  https://www.electronjs.org/docs/tutorial/context-isolation
+          nodeIntegration: false, //  NB: Obsolete (see `contextIsolation`) but leaving around for safety.
           enableRemoteModule: false,
           preload: constants.paths.bundle.preload,
           additionalArguments: argv,
         },
       });
+
+      // SECURITY: Prevent un-controlled creation of new windows from within the loaded page.
+      browser.webContents.setWindowOpenHandler((e) => {
+        // shell.openExternal(url);
+        return { action: 'deny' };
+      });
+
+      // Store reference to the browser instance.
       const id = browser.id;
-      const uri = RuntimeUri.window.create(id);
-      refs = [...refs, { tx, uri, browser }];
+      refs = [...refs, { id, uri, browser }];
 
       const fireChanged = (
         action: t.ElectronWindowChanged['action'],
-        bounds?: t.ElectronWindowChanged['bounds'],
+        windowBounds?: t.ElectronWindowChanged['bounds'],
       ) => {
+        const bounds = windowBounds ?? { width: -1, height: -1, x: -1, y: -1 };
         bus.fire({
           type: 'runtime.electron/window/changed',
-          payload: {
-            uri,
-            action,
-            bounds: bounds ?? { width: -1, height: -1, x: -1, y: -1 },
-          },
+          payload: { uri, action, bounds },
         });
       };
 
@@ -85,8 +92,9 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
        * Remove reference when closed.
        */
       browser.once('closed', () => {
-        refs = refs.filter((ref) => ref.tx !== tx);
+        refs = refs.filter((ref) => ref.uri !== uri);
         fireChanged('close');
+        sys.broadcast(); // NB: This will cause all other windows to get the current state of windows.
       });
 
       /**
@@ -106,9 +114,10 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
 
         const isVisible = props.isVisible ?? true;
         if (isVisible) browser.show();
+
         bus.fire({
           type: 'runtime.electron/window/create:res',
-          payload: { tx, isVisible },
+          payload: { tx, uri, isVisible },
         });
       });
 
@@ -122,8 +131,9 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
     .pipe()
     .subscribe((e) => {
       const { tx } = e;
-      const windows: t.ElectronWindowStatus[] = refs.map(({ uri, browser }) => {
+      const windows: t.ElectronWindowStatus[] = refs.map(({ id, uri, browser }) => {
         return {
+          id,
           uri,
           url: browser.webContents.getURL(),
           title: browser.getTitle(),
@@ -146,8 +156,6 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
       const browser = refs.find((ref) => ref.uri === e.uri)?.browser;
       if (!browser) return;
 
-      console.log('e', e);
-
       if (e.bounds) {
         const { x, y, width, height } = e.bounds;
         const current = browser.getBounds();
@@ -166,23 +174,15 @@ export function WindowController(args: { bus: t.EventBus<any>; host: string }) {
     });
 
   /**
-   * IPC send requests.
+   * IPC: Broadcast event/data to windows.
    */
-  rx.payload<t.IpcSendEvent>($, 'runtime.electron/ipc/send')
+  rx.event<t.IpcMessageEvent>($, 'runtime.electron/ipc/msg')
     .pipe()
     .subscribe((e) => {
-      //
-      /**
-       * TODO 🐷
-       */
-      console.log('send', e);
-
-      const { targets, event } = e;
       const channel = constants.IPC.CHANNEL;
-
+      const targets = e.payload.targets.filter((uri) => uri !== RuntimeUri.main);
       const windows = refs.filter((ref) => targets.includes(ref.uri));
-
-      windows.forEach(({ browser }) => browser.webContents.send(channel, event));
+      windows.forEach(({ browser }) => browser.webContents.send(channel, e));
     });
 
   /**

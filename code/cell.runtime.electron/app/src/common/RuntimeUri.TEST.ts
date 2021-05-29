@@ -40,17 +40,32 @@ describe('Uri', () => {
   });
 
   describe('window', () => {
-    it('create', () => {
-      const res = RuntimeUri.window.create(1);
-      expect(res).to.eql('process:window:1');
+    describe('create', () => {
+      it('with number', () => {
+        const res = RuntimeUri.window.create(1);
+        expect(res).to.eql('process:window:1');
+      });
+
+      it('with slug', () => {
+        const res = RuntimeUri.window.create('abcd');
+        expect(res).to.eql('process:window:abcd');
+      });
+
+      it('generated slug', () => {
+        const res = RuntimeUri.window.create();
+        const slug = res.split(':')[2];
+        expect(res.startsWith('process:window')).to.eql(true);
+        expect(typeof slug === 'string').to.eql(true);
+        expect(slug.length > 3).to.eql(true);
+      });
     });
 
     describe('parse', () => {
       it('success', () => {
-        const res = RuntimeUri.window.parse('  process:window:123 ');
+        const res = RuntimeUri.window.parse('  process:window:abc ');
         expect(res?.ok).to.eql(true);
         expect(res?.type).to.eql('window');
-        expect(res?.id).to.eql(123);
+        expect(res?.slug).to.eql('abc');
         expect(res?.errors).to.eql([]);
       });
 
@@ -73,7 +88,7 @@ describe('Uri', () => {
         const res = RuntimeUri.window.parse('process:window:');
         expect(res?.ok).to.eql(false);
         expect(res?.errors.length).to.eql(1);
-        expect(res?.errors[0]).to.include('Not a valid window id (number)');
+        expect(res?.errors[0]).to.include('Not a valid id (slug)');
       });
     });
   });
