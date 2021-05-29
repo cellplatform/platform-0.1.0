@@ -1,6 +1,5 @@
-import { t } from '../common';
-
-type E = t.Event;
+type O = Record<string, unknown>;
+type E = { type: string; payload: O };
 
 /**
  * A two-way message pump that can ferry events IN and OUT of a network.
