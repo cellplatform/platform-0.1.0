@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 
 import { ConfigFile, rx, t } from '../common';
-import { typeDef } from '../main.type';
+import { typeDef } from '../main.type__OLD';
 import { toContext } from './sys.ctx';
 import * as types from './sys.init.types';
 // import { ipc } from './sys.ipc';

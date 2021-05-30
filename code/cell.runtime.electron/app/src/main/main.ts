@@ -1,14 +1,9 @@
 import { app } from 'electron';
-import { Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
 
-import { Client, constants, ENV, fs, log, rx, t, time } from './common';
-import * as server from './main.server';
-// import { sys } from './main.sys';
-// import { window } from './main.window__OLD';
-import { Window } from './main.Window';
+import { constants, ENV, fs, log, rx, t } from './common';
 import { menu } from './main.menu';
-// import { IpcNetworkBus } from './main.Bus';
+import * as server from './main.server';
+import { Window } from './main.Window';
 
 /**
  *  NOTE:
@@ -80,11 +75,7 @@ async function logMain(args: {
   log: string;
   preload: string;
   paths: t.IElectronPaths;
-  // db: string;
-  // fs: string;
 }) {
-  // const { paths } = args;
-
   const table = log.table({ border: false });
   const add = (key: string, value: any) => {
     key = ` • ${log.green(key)} `;

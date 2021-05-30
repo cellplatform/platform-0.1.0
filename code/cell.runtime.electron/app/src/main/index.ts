@@ -1,2 +1,2 @@
-import { start } from './start';
-start();
+import * as main from './main';
+main.start();

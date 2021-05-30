@@ -1,5 +1,5 @@
 import { constants, t } from '../common';
-import { typeDef } from '../main.type';
+import { typeDef } from '../main.type__OLD';
 
 /**
  * Initialize application type-defs.
