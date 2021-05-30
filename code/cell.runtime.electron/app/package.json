@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "0.1.176",
+  "version": "0.1.177",
   "description": "cell.runtime.electron",
   "main": "lib/main/index",
   "types": "lib/index.d.ts",

@@ -27,11 +27,5 @@ export const paths = {
     icons: resolve('assets/icons'),
   },
 
-  bundle: {
-    preload: resolve('lib/preload.js'),
-    'cell.ui.sys': resolve('.bundle/cell.ui.sys'),
-    'cell.ui.ide': resolve('.bundle/cell.ui.ide'),
-    'cell.ui.finder': resolve('.bundle/cell.ui.finder'),
-    'cell.ui.spreadsheet': resolve('.bundle/cell.ui.spreadsheet'),
-  },
+  preload: resolve('lib/preload.js'),
 };

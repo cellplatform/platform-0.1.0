@@ -4,11 +4,11 @@ import { filter } from 'rxjs/operators';
 
 import { Client, constants, ENV, fs, log, rx, t, time } from './common';
 import * as server from './main.server';
-import { sys } from './main.sys';
-import { window } from './main.window__OLD';
+// import { sys } from './main.sys';
+// import { window } from './main.window__OLD';
 import { Window } from './main.Window';
 import { menu } from './main.menu';
-import { IpcNetworkBus } from './main.Bus';
+// import { IpcNetworkBus } from './main.Bus';
 
 /**
  *  NOTE:
@@ -40,7 +40,7 @@ if (app.isPackaged) {
  * Startup the application.
  */
 export async function start() {
-  log.info.green('━'.repeat(60));
+  log.info.gray('━'.repeat(60));
   const prod = ENV.isProd;
 
   // Start the HTTP server.
@@ -50,69 +50,18 @@ export async function start() {
   /**
    * Initialize controllers
    */
-  const bus = rx.bus<t.ElectronRuntimeEvent>();
-  Window.Controller({ bus });
-
-  // instance.request$.subscribe((e) => {
-  //   console.log(' > ', e.method, e.url); // TEMP 🐷
-  // });
-
-  // Initialize the typesystem HTTP client.
-  const event$ = new Subject<t.AppEvent>();
-  const client = Client.typesystem({ http: host, event$: event$ as Subject<t.TypedSheetEvent> });
-
-  // Log main process.
-  const bundle = constants.paths.bundle;
+  const mainbus = rx.bus<t.ElectronRuntimeEvent>();
+  Window.Controller({ mainbus });
 
   try {
-    await logMain({
-      host,
-      log: log.file.path,
-      db: paths.db,
-      fs: paths.fs,
-      preload: bundle.preload,
-    });
+    /**
+     * Log main process.
+     */
+    await logMain({ host, paths, log: log.file.path, preload: constants.paths.preload });
+
     await app.whenReady();
-    await menu.build({ bus, paths, port: instance.port });
 
-    // Initialize the system models.
-    const ctx = await sys.init({ client, event$ });
-
-    log.info();
-    log.info(`app modules: ${log.yellow(ctx.apps.total)}`);
-    ctx.apps.forEach((app) => {
-      log.info.gray(` • ${log.magenta(app.name)}`);
-    });
-    log.info();
-
-    // await window.createAll({ ctx });
-
-    // ctx.apps.le
-    // console.log('ctx.apps.total', ctx.apps.total);
-    // console.log('ctx.windowRefs.length', ctx.windowRefs.length);
-
-    if (ctx.windowRefs.length === 0) {
-      // TEMP 🐷- Ensure at least one window for each app exists.
-
-      const sys = ctx.apps.row(0);
-      const name = sys.props.name;
-      // window.createOne({ ctx, name });
-
-      // ctx.apps.forEach((app) => {
-      //   const name = app.name;
-      // });
-    }
-
-    rx.payload<t.IpcDebugEvent__OLD>(event$, 'IPC/debug')
-      .pipe(filter((e) => e.source !== 'MAIN'))
-      .subscribe((e) => {
-        const name = e.data.name;
-        const arg = e.data.arg || '';
-        if (name && e.data.action === 'OPEN') {
-          console.log('createOne', name, arg);
-          window.createOne({ ctx, name, argv: [arg] });
-        }
-      });
+    await menu.build({ bus: mainbus, paths, port: instance.port });
 
     // TEMP 🐷
     // refs.tray = tray.init({ host, def, ctx }).tray;
@@ -129,10 +78,13 @@ export async function start() {
 async function logMain(args: {
   host: string;
   log: string;
-  db: string;
-  fs: string;
   preload: string;
+  paths: t.IElectronPaths;
+  // db: string;
+  // fs: string;
 }) {
+  // const { paths } = args;
+
   const table = log.table({ border: false });
   const add = (key: string, value: any) => {
     key = ` • ${log.green(key)} `;
@@ -162,12 +114,13 @@ async function logMain(args: {
 
   add('packaged:', ENV.isPackaged);
   add('env:', ENV.node || '<empty>');
-  add('host:', `http://${args.host.split(':')[0]}:${log.magenta(args.host.split(':')[1])}`);
+  add('host:', `http://${args.host.split(':')[0]}:${log.white(args.host.split(':')[1])}`);
 
-  add('log:', await path(args.log));
-  add('db:', await path(args.db));
-  add('fs:', await path(args.fs));
   add('preload:', await path(args.preload));
+  add('log:', await path(args.log));
+  add('db:', await path(args.paths.db));
+  add('fs:', await path(args.paths.fs));
+  add('config:', await path(args.paths.config));
 
   log.info.gray(`
 ${log.white('main')}

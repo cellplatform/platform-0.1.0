@@ -14,9 +14,7 @@ export function saveLogger(args: { ctx: t.IContext; saved$: Observable<t.ITypedS
     if (sheet) {
       for (const item of sheet.types) {
         for (const type of item.columns) {
-          if (type.column === column) {
-            return type;
-          }
+          if (type.column === column) return type;
         }
       }
     }

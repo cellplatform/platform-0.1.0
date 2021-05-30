@@ -12,8 +12,8 @@ type WindowRef = {
 /**
  * Helpers for working with the "system information" IPC channel.
  */
-export function IpcSysInfo(args: { getRefs: () => WindowRef[] }) {
-  const channel = constants.IPC.CHANNEL;
+export function IpcSysInfo(args: { channel: string; getRefs: () => WindowRef[] }) {
+  const { channel } = args;
 
   const sys = {
     /**

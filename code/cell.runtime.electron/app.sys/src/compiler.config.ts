@@ -16,7 +16,7 @@ const web = (config: Config) =>
 
 export default () =>
   Compiler.config()
-    .namespace('app.sys')
+    .namespace('cell.runtime.electron.sys')
     .variant('web.dev', (config) => web(config))
     .variant('web', (config) => {
       // NB: worker entries not included for development builds as

@@ -14,14 +14,16 @@ type WindowRef = {
 /**
  * Controller logic for working with Electron windows.
  */
-export function WindowController(args: { bus: t.EventBus<any> }) {
-  const bus = rx.busAsType<t.WindowEvent>(args.bus);
+export function WindowController(args: { mainbus: t.EventBus<any> }) {
+  const bus = rx.busAsType<t.WindowEvent>(args.mainbus);
   const events = WindowEvents({ bus });
   const { dispose, dispose$ } = events;
   const $ = bus.$.pipe(takeUntil(dispose$));
 
   let refs: WindowRef[] = [];
-  const sys = IpcSysInfo({ getRefs: () => refs }).listen();
+
+  const channel = constants.IPC.CHANNEL;
+  const sys = IpcSysInfo({ channel, getRefs: () => refs }).listen();
 
   /**
    * Window creation.
@@ -62,7 +64,7 @@ export function WindowController(args: { bus: t.EventBus<any> }) {
           contextIsolation: true, //  https://www.electronjs.org/docs/tutorial/context-isolation
           nodeIntegration: false, //  NB: Obsolete (see `contextIsolation`) but leaving around for safety.
           enableRemoteModule: false,
-          preload: constants.paths.bundle.preload,
+          preload: constants.paths.preload,
           additionalArguments: argv,
         },
       });
@@ -179,7 +181,6 @@ export function WindowController(args: { bus: t.EventBus<any> }) {
   rx.event<t.IpcMessageEvent>($, 'runtime.electron/ipc/msg')
     .pipe()
     .subscribe((e) => {
-      const channel = constants.IPC.CHANNEL;
       const targets = e.payload.targets.filter((uri) => uri !== RuntimeUri.main);
       const windows = refs.filter((ref) => targets.includes(ref.uri));
       windows.forEach(({ browser }) => browser.webContents.send(channel, e));

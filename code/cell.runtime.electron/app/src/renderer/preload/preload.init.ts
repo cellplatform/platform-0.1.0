@@ -1,7 +1,7 @@
 import { IpcTransport } from './preload.IpcTransport';
 import { contextBridge } from 'electron';
 
-import { IPC, PROCESS, ENV_KEY } from '../common/constants';
+import { IPC, PROCESS, ENV_KEY } from '../common';
 
 /**
  * The preload (sandbox) environment initialization.
@@ -30,9 +30,10 @@ export function init() {
   if (isDev) {
     console.group('🌳 preload (sandbox)');
     console.log('isDev', isDev);
+    console.log('self', self);
     process.argv
       .filter((value) => value.startsWith('env:'))
-      .forEach((value) => console.log(`process.argv/${value}`));
+      .forEach((value) => console.log(`• process.argv/${value}`));
     console.groupEnd();
     console.log('-------------------------------------------');
   }

@@ -51,7 +51,7 @@ export async function createBrowserWindow(args: {
       nodeIntegration: false, // NB: Obsolete (see `contextIsolation`) but leaving around for safety.
       contextIsolation: true, // https://www.electronjs.org/docs/tutorial/context-isolation
       enableRemoteModule: false,
-      preload: constants.paths.bundle.preload,
+      // preload: constants.paths.bundle.preload,
       additionalArguments: argv,
     },
   });
