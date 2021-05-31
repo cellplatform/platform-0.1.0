@@ -1,6 +1,6 @@
 import { ipcRenderer as ipc } from 'electron';
 import { NetworkPump } from '@platform/cell.types/lib/types.Bus/types.NetworkPump';
-import { IpcEvent, IpcMessageEvent, IpcSystemReqEvent } from '../../types/types.events.ipc';
+import { IpcEvent, IpcMessageEvent, IpcSystemReqEvent } from '../types/types.events.ipc';
 
 type Uri = string;
 type O = Record<string, unknown>;

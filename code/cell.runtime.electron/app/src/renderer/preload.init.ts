@@ -1,7 +1,7 @@
-import { IpcTransport } from './preload.IpcTransport';
 import { contextBridge } from 'electron';
 
-import { IPC, PROCESS, ENV_KEY } from '../common';
+import { ENV_KEY, IPC, PROCESS } from '../common/constants';
+import { IpcTransport } from './preload.IpcTransport';
 
 /**
  * The preload (sandbox) environment initialization.
@@ -9,7 +9,6 @@ import { IPC, PROCESS, ENV_KEY } from '../common';
 export function init() {
   const isDev = Boolean(findArgv(PROCESS.DEV));
   const self = findArgv(PROCESS.URI_SELF);
-  const runtime = findArgv(PROCESS.RUNTIME);
   const channel = IPC.CHANNEL;
 
   /**
@@ -21,7 +20,7 @@ export function init() {
   /**
    * Store the runtime environment.
    */
-  const env = { self, runtime, ipc };
+  const env = { self, ipc };
   contextBridge.exposeInMainWorld(ENV_KEY, env);
 
   /**

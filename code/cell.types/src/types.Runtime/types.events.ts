@@ -1,10 +1,10 @@
-export type RuntimeEvent = IRuntimeWebScriptEvent;
+export type RuntimeEvent = RuntimeWebScriptEvent;
 
-export type IRuntimeWebScriptEvent = {
-  type: 'Runtime/web/script';
-  payload: IRuntimeWebScript;
+export type RuntimeWebScriptEvent = {
+  type: 'cell.runtime.web/script';
+  payload: RuntimeWebScript;
 };
-export type IRuntimeWebScript = {
+export type RuntimeWebScript = {
   url: string;
   namespace: string;
   ready: boolean;
