@@ -10,7 +10,7 @@ export class ConfigFile {
 
   public static default(): IConfigFile {
     return {
-      ns: { appType: '', appData: Uri.toNs().toString() },
+      ns: { main: Uri.toNs().toString() },
     };
   }
 

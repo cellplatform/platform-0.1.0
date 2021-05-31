@@ -23,4 +23,5 @@ export default () =>
       //     they prevent effect hot-reloading.
       // .entry('service.worker', './src/workers/service.worker')
       // .entry('web.worker', './src/workers/web.worker');
+      return web(config);
     });

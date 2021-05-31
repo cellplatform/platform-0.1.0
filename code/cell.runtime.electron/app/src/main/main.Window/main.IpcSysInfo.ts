@@ -1,8 +1,6 @@
 import { BrowserWindow, ipcMain as ipc } from 'electron';
-import { takeUntil } from 'rxjs/operators';
 
-import { constants, ENV, rx, t, RuntimeUri, R, slug } from '../common';
-import { WindowEvents } from './main.Window.Events';
+import { RuntimeUri, t } from '../common';
 
 type WindowRef = {
   uri: t.ElectronWindowUri;

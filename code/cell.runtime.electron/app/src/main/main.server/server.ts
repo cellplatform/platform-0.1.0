@@ -5,17 +5,15 @@ import { NeDb } from '@platform/fsdb.nedb';
 import { filter } from 'rxjs/operators';
 
 import { constants, fs, log, t, Urls, util } from '../common';
-import { RuntimeInfo } from './server.info';
+import { RuntimeInfo } from './server.RuntimeInfo';
 
-type IInitArgs = {
-  prod?: boolean;
-  log?: t.ILog;
-};
+type InitArgs = { prod?: boolean; log?: t.ILog };
+type StartArgs = InitArgs & { port?: number; isDev?: boolean };
 
 /**
- * Configure and initialize a CellOS http server.
+ * Configure a system [http server].
  */
-export function init(args: IInitArgs = {}) {
+export function init(args: InitArgs = {}) {
   const { log: logger, prod = false } = args;
   const paths = constants.paths.data({ prod });
 
@@ -31,9 +29,9 @@ export function init(args: IInitArgs = {}) {
 }
 
 /**
- * Start a system HTTP server.
+ * Configure and start a system [http server].
  */
-export async function start(args: IInitArgs & { port?: number; isDev?: boolean } = {}) {
+export async function start(args: StartArgs = {}) {
   const { app, paths } = init(args);
 
   const port = await util.port.unused(args.port);

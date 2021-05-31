@@ -1,7 +1,7 @@
 import { BrowserWindow } from 'electron';
 import { takeUntil } from 'rxjs/operators';
 
-import { constants, ENV, rx, t, RuntimeUri, R } from '../common';
+import { constants, ENV, rx, t, RuntimeUri } from '../common';
 import { WindowEvents } from './main.Window.Events';
 import { IpcSysInfo } from './main.IpcSysInfo';
 

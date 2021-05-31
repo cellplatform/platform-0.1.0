@@ -2,7 +2,7 @@ import { t } from './common';
 
 export type ElectronUri = ElectronMainUri | ElectronWindowUri;
 export type ElectronMainUri = 'process:main';
-export type ElectronWindowUri = string; // "process:window:<id>"
+export type ElectronWindowUri = string; // format: "process:window:<id>"
 
 /**
  * Parsed URI objects.
