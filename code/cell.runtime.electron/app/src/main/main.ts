@@ -1,7 +1,7 @@
 import { app } from 'electron';
 
 import { constants, ENV, fs, log, rx, t, ConfigFile } from './common';
-import { menu } from './main.menu';
+import { menu } from './main.menu__OLD';
 import * as server from './main.server';
 import { Window } from './main.Window';
 import { Log } from './main.Log';

@@ -3,7 +3,7 @@ import { BrowserWindow, ipcMain as ipc } from 'electron';
 import { RuntimeUri, t } from '../common';
 
 type WindowRef = {
-  uri: t.ElectronWindowUri;
+  uri: t.ElectronProcessWindowUri;
   browser: BrowserWindow;
 };
 

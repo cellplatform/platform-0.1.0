@@ -1,2 +1,1 @@
-import * as menu from './menu';
-export { menu };
+export * from './main.Menu';
