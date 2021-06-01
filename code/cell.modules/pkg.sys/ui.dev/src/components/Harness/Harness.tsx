@@ -27,7 +27,7 @@ export const Harness: React.FC<HarnessProps> = (props) => {
    * TODO 🐷
    * - Handle showActions/fullscreen in Harness model (when that comes).
    */
-  const [showActions, setShowActions] = useState<boolean | undefined>(props.showActions);
+  const [showActions, setShowActions] = useState<boolean | undefined>(props.showActions ?? true);
 
   useEffect(() => {
     if (props.bus) setBus(props.bus);
