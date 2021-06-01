@@ -1,13 +1,13 @@
-import { takeUntil } from 'rxjs/operators';
 import { t, rx } from '../common';
+import { Events } from './Name.Events';
 
 /**
  * Behavioral event controller.
  */
 export function Controller(args: { bus: t.EventBus<any> }) {
-  const { dispose, dispose$ } = rx.disposable();
-  const bus = rx.busAsType<t.BundleEvent>(args.bus);
-  const $ = bus.$.pipe(takeUntil(dispose$));
+  const bus = rx.busAsType<t.NameEvent>(args.bus);
+  const events = Events({ bus });
+  const { dispose, dispose$ } = events;
 
   return {
     dispose,
