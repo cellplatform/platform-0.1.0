@@ -8,7 +8,7 @@ import { t } from '../common';
  */
 export async function build(args: {
   bus: t.ElectronMainBus;
-  paths: t.IElectronPaths;
+  paths: t.ElectronDataPaths;
   port: number;
 }) {
   const isMac = process.platform === 'darwin';

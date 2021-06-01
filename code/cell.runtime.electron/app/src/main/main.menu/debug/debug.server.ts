@@ -6,7 +6,7 @@ import { t, fs, log } from '../../common';
  */
 export function serverMenu(args: {
   bus: t.ElectronMainBus;
-  paths: t.IElectronPaths;
+  paths: t.ElectronDataPaths;
   port: number;
 }): M {
   const { paths } = args;
@@ -25,7 +25,7 @@ export function serverMenu(args: {
       },
       {
         label: 'Logs',
-        click: () => shell.openPath(log.file.path),
+        click: () => shell.openPath(paths.log),
       },
     ],
   };

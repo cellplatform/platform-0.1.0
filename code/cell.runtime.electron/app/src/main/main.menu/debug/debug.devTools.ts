@@ -6,7 +6,7 @@ import { t, fs, log } from '../../common';
  */
 export function devToolsMenu(args: {
   bus: t.ElectronMainBus;
-  paths: t.IElectronPaths;
+  paths: t.ElectronDataPaths;
   port: number;
 }): M {
   const { paths } = args;

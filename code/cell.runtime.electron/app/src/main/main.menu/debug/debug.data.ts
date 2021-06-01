@@ -6,7 +6,7 @@ import { t, fs, log } from '../../common';
  */
 export function dataMenu(args: {
   bus: t.ElectronMainBus;
-  paths: t.IElectronPaths;
+  paths: t.ElectronDataPaths;
   port: number;
 }): M {
   const { paths } = args;
@@ -41,7 +41,7 @@ const data = {
    * Makes a snapshot of the current data, then resets the app.
    */
   async reset(
-    paths: t.IElectronPaths,
+    paths: t.ElectronDataPaths,
     options: { openDir?: boolean; reopen?: boolean; quit?: boolean },
   ) {
     const { openDir } = options;
@@ -56,7 +56,7 @@ const data = {
     }
   },
 
-  async snapshot(paths: t.IElectronPaths, options: { openDir?: boolean; suffix?: string } = {}) {
+  async snapshot(paths: t.ElectronDataPaths, options: { openDir?: boolean; suffix?: string } = {}) {
     await fs.ensureDir(paths.archive);
 
     // Count number of folders.

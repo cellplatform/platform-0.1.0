@@ -2,8 +2,6 @@ import React from 'react';
 import { bundle, css, CssValue, log } from '../../common';
 import Award from '../../../static/images/award.svg';
 
-// import { part } from '../../../static/images/';
-
 log.info('bundle', bundle);
 
 export type SampleProps = { count: number; style?: CssValue };

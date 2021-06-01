@@ -1,9 +1,11 @@
 import { app } from 'electron';
 
-import { constants, ENV, fs, log, rx, t } from './common';
+import { constants, ENV, fs, log, rx, t, ConfigFile } from './common';
 import { menu } from './main.menu';
 import * as server from './main.server';
 import { Window } from './main.Window';
+import { Log } from './main.Log';
+import { Bundle } from './main.Bundle';
 
 /**
  *  NOTE:
@@ -36,6 +38,8 @@ if (app.isPackaged) {
  */
 export async function start() {
   log.info.gray('━'.repeat(60));
+
+  const bus = rx.bus<t.ElectronRuntimeEvent>();
   const prod = ENV.isProd;
 
   // Start the HTTP server.
@@ -45,18 +49,30 @@ export async function start() {
   /**
    * Initialize controllers
    */
-  const mainbus = rx.bus<t.ElectronRuntimeEvent>();
-  Window.Controller({ mainbus });
+  Window.Controller({ bus });
+  Log.Controller({ bus });
+  Bundle.Controller({ bus, host });
 
   try {
-    /**
-     * Log main process.
-     */
-    await logMain({ host, paths, log: log.file.path, preload: constants.paths.preload });
+    const bundle = Bundle.Events({ bus });
+    await bundle.upload.fire({
+      sourceDir: constants.paths.bundle.sys,
+      targetDir: 'app.sys/web',
+    });
+
+    const res = await bundle.status.get({ dir: 'app.sys/web' });
+
+    console.log('-------------------------------------------');
+    console.log('res', res);
+
+    // const config = await ConfigFile.read();
+    // console.log('config', config);
+
+    await logMain({ host, paths: { data: paths, preload: constants.paths.preload } });
 
     await app.whenReady();
 
-    await menu.build({ bus: mainbus, paths, port: instance.port });
+    await menu.build({ bus: bus, paths, port: instance.port });
 
     // TEMP 🐷
     // refs.tray = tray.init({ host, def, ctx }).tray;
@@ -72,9 +88,7 @@ export async function start() {
 
 async function logMain(args: {
   host: string;
-  log: string;
-  preload: string;
-  paths: t.IElectronPaths;
+  paths: { preload: string; data: t.ElectronDataPaths };
 }) {
   const table = log.table({ border: false });
   const add = (key: string, value: any) => {
@@ -106,15 +120,14 @@ async function logMain(args: {
   add('packaged:', ENV.isPackaged);
   add('env:', ENV.node || '<empty>');
   add('host:', `http://${args.host.split(':')[0]}:${log.white(args.host.split(':')[1])}`);
-
-  add('preload:', await path(args.preload));
-  add('log:', await path(args.log));
-  add('db:', await path(args.paths.db));
-  add('fs:', await path(args.paths.fs));
-  add('config:', await path(args.paths.config));
+  add('preload:', await path(args.paths.preload));
+  add('log:', await path(args.paths.data.log));
+  add('db:', await path(args.paths.data.db));
+  add('fs:', await path(args.paths.data.fs));
+  add('config:', await path(args.paths.data.config));
 
   log.info.gray(`
-${log.white('main')}
+runtime.electron.${log.white('main')}:
 ${table}
 `);
 }

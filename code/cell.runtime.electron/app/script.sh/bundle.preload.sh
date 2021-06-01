@@ -13,6 +13,8 @@ browserify lib/renderer/preload.js \
   -o lib/preload.js
 
 # 
-# Copy compiled JS from [.sys]
+# Copy bundled system JS into app folder.
 # 
-cp -r ../app.sys/dist ./.bundle
+rm -rf ./lib.bundle
+mkdir -p ./lib.bundle/app.sys
+cp -r ../app.sys/dist/web ./lib.bundle/app.sys/web

@@ -155,7 +155,7 @@ function ignore(path) {
 
   const startsWith = [
     '/src',
-    '/sh',
+    '/script.sh',
     '/tmp',
     '/yarn.lock',
     '/tslint.json',

@@ -8,7 +8,7 @@ import { IpcNetworkBus } from '../../main.Bus';
  */
 export function modulesMenu(args: {
   bus: t.ElectronMainBus;
-  paths: t.IElectronPaths;
+  paths: t.ElectronDataPaths;
   port: number;
 }): M {
   const { paths, bus } = args;

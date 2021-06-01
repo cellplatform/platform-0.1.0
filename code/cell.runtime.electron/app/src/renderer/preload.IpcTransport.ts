@@ -1,12 +1,13 @@
 import { ipcRenderer as ipc } from 'electron';
 import { NetworkPump } from '@platform/cell.types/lib/types.Bus/types.NetworkPump';
+import { RuntimeDesktopEnvTransport } from '@platform/cell.types/lib/types.Runtime/types.Runtime.desktop';
 import { IpcEvent, IpcMessageEvent, IpcSystemReqEvent } from '../types/types.events.ipc';
 
 type Uri = string;
 type O = Record<string, unknown>;
 type Event = { type: string; payload: O };
 
-export function IpcTransport(args: { self: Uri; channel: string }) {
+export function IpcTransport(args: { self: Uri; channel: string }): RuntimeDesktopEnvTransport {
   const { channel } = args;
   const sender = args.self;
 
@@ -40,10 +41,8 @@ export function IpcTransport(args: { self: Uri; channel: string }) {
     },
   };
 
-  const get = {
-    local: async () => args.self,
-    remotes: async () => uris.filter((uri) => uri !== args.self),
-  };
+  const local = async () => args.self;
+  const remotes = async () => uris.filter((uri) => uri !== args.self);
 
   /**
    * Initialize.
@@ -54,5 +53,5 @@ export function IpcTransport(args: { self: Uri; channel: string }) {
   /**
    * Finish up.
    */
-  return { pump, get };
+  return { pump, local, remotes };
 }

@@ -8,5 +8,5 @@ export * from './colors';
 import { WebRuntime } from './libs';
 export const bundle = WebRuntime.bundle;
 
-const env = (window as any)[constants.ENV_KEY] as t.Env;
+const env = (window as any)[constants.ENV_KEY] as t.RuntimeDesktopEnv;
 export { env };

@@ -1,5 +1,6 @@
 import { contextBridge } from 'electron';
 
+import { RuntimeDesktopEnv } from '@platform/cell.types/lib/types.Runtime/types.Runtime.desktop';
 import { ENV_KEY, IPC, PROCESS } from '../common/constants';
 import { IpcTransport } from './preload.IpcTransport';
 
@@ -8,6 +9,7 @@ import { IpcTransport } from './preload.IpcTransport';
  */
 export function init() {
   const isDev = Boolean(findArgv(PROCESS.DEV));
+  const kind = findArgv(PROCESS.RUNTIME);
   const self = findArgv(PROCESS.URI_SELF);
   const channel = IPC.CHANNEL;
 
@@ -15,13 +17,15 @@ export function init() {
    * Setup the network pump.
    * (used by the NetworkBus in the loaded environment)
    */
-  const ipc = IpcTransport({ self, channel });
+  const network = IpcTransport({ self, channel });
 
   /**
    * Store the runtime environment.
    */
-  const env = { self, ipc };
+  const env: RuntimeDesktopEnv = { kind, network };
   contextBridge.exposeInMainWorld(ENV_KEY, env);
+
+  console.log('env', env);
 
   /**
    * Print environment details.

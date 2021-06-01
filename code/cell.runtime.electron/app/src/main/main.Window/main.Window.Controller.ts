@@ -7,15 +7,15 @@ import { IpcSysInfo } from './main.IpcSysInfo';
 
 type WindowRef = {
   id: t.ElectronWindowId;
-  uri: t.ElectronWindowUri;
+  uri: t.ElectronProcessWindowUri;
   browser: BrowserWindow;
 };
 
 /**
  * Controller logic for working with Electron windows.
  */
-export function WindowController(args: { mainbus: t.EventBus<any> }) {
-  const bus = rx.busAsType<t.WindowEvent>(args.mainbus);
+export function WindowController(args: { bus: t.EventBus<any> }) {
+  const bus = rx.busAsType<t.WindowEvent>(args.bus);
   const events = WindowEvents({ bus });
   const { dispose, dispose$ } = events;
   const $ = bus.$.pipe(takeUntil(dispose$));

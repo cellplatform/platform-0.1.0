@@ -1,12 +1,17 @@
-import { Uri } from './libs';
-import { filter, map } from 'rxjs/operators';
 import { create } from '@platform/log/lib/server';
+import electron from 'electron-log';
+import { filter, map } from 'rxjs/operators';
+
+import { Uri } from './libs';
 import * as t from './types';
 
-const electron = require('electron-log'); // eslint-disable-line
+import { IServerLog } from '@platform/log/lib/server/types';
+export type ElectronLog = IServerLog & { format: ElectronLogFormat };
+export type ElectronLogFormat = { uri(input?: string | t.IUri): string };
+
 const logger = create();
 
-const format: t.IElectronLogFormat = {
+const format: ElectronLogFormat = {
   uri(input?: string | t.IUri) {
     input = input || '';
     input = typeof input === 'string' ? input.trim() : input;
@@ -39,18 +44,9 @@ const format: t.IElectronLogFormat = {
 /**
  * Create default log that writes to the console.
  */
-export const log: t.IElectronLog = {
+export const log: ElectronLog = {
   ...logger,
   format,
-
-  /**
-   * Meta-data about the file the log is stored within.
-   */
-  get file() {
-    return {
-      path: electron.transports.file.getFile().path as string,
-    };
-  },
 };
 
 /**

@@ -7,7 +7,7 @@ import { t } from '../../common';
  */
 export function fileMenu(args: {
   bus: t.ElectronMainBus;
-  paths: t.IElectronPaths;
+  paths: t.ElectronDataPaths;
   port: number;
   isMac: boolean;
 }): M {

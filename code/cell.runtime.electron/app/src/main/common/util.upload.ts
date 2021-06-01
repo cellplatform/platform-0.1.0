@@ -1,6 +1,7 @@
 import { app } from 'electron';
 import { fs, HttpClient, log, t, time } from '../common';
 
+type Uri = string;
 type File = t.IHttpClientCellFileUpload;
 
 /**
@@ -28,7 +29,7 @@ export async function getFiles(args: { sourceDir: string; targetDir?: string }) 
 export async function upload(args: {
   host: string;
   sourceDir: string;
-  targetCell: string | t.ICellUri;
+  targetCell: Uri | t.ICellUri;
   targetDir?: string;
   files?: File[];
   silent?: boolean;
@@ -37,8 +38,12 @@ export async function upload(args: {
   const { host, sourceDir, targetDir, targetCell } = args;
   const files = args.files ? args.files : await getFiles({ sourceDir, targetDir });
 
-  const done = (ok: boolean) => {
-    return { ok, files };
+  let errors: string[] = [];
+  const error = (message: string) => errors.push(message);
+
+  const done = () => {
+    const ok = errors.length === 0;
+    return { ok, files, errors };
   };
 
   try {
@@ -46,6 +51,9 @@ export async function upload(args: {
     const res = await client.cell(targetCell).fs.upload(files);
 
     if (!res.ok) {
+      error('Failed while uploading files');
+      res.body.errors.forEach((err) => error(`${err.type}: ${err.message}`));
+
       log.info.yellow(`Failed to upload files.`);
       log.info.gray(' • packaged:', app.isPackaged);
       log.info.gray(' • dir:     ', sourceDir);
@@ -57,7 +65,7 @@ export async function upload(args: {
         log.info.gray(`    message:  ${err.message}`);
       });
 
-      return done(false);
+      return done();
     }
 
     if (!args.silent) {
@@ -65,13 +73,14 @@ export async function upload(args: {
       logUpload({ sourceDir, targetCell, host, files, elapsed });
     }
 
-    return done(true);
+    return done();
   } catch (err) {
     if (err.message.includes('ECONNREFUSED')) {
       log.info.yellow(`Ensure the target server is online. ${log.gray(host)}`);
       log.info();
     }
-    return done(false);
+    error(err.message);
+    return done();
   }
 }
 

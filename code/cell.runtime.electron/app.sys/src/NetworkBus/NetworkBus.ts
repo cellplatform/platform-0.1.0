@@ -5,12 +5,13 @@ import { t, env } from '../common';
  * Derives a network bus from the environment.
  */
 export function NetworkBus<E extends t.Event>() {
-  const ipc = env?.ipc;
+  const network = env?.network;
 
-  if (typeof ipc !== 'object')
-    throw new Error('[env] IPC network pump not provided by preload script.');
+  if (typeof network !== 'object')
+    throw new Error('[env] network pump not provided by preload script.');
 
-  const { get, pump } = ipc;
-  const { local, remotes } = get;
+  const { local, remotes } = network;
+  const pump = network.pump as unknown as t.NetworkPump<E>;
+
   return NetworkBusCore<E>({ pump, local, remotes });
 }

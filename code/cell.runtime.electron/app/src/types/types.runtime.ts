@@ -3,12 +3,12 @@ import { t } from './common';
 /**
  * HTTP (Server)
  */
-export type IResGetElectronSysInfo = t.IResGetSysInfo & { runtime: IElectronRuntimeInfo };
+export type IResGetElectronSysInfo = t.IResGetSysInfo & { runtime: ElectronRuntimeInfo };
 
 /**
  * Electron runtime properties.
  */
-export type IElectronRuntimeInfo = {
+export type ElectronRuntimeInfo = {
   type: 'cell.runtime.electron';
   version: string; // semver
   env?: 'development' | 'production';

@@ -16,7 +16,13 @@ export class ConfigFile {
 
   public static async read(): Promise<IConfigFile> {
     const path = ConfigFile.path;
-    return (await fs.file.loadAndParse<IConfigFile>(path)) || ConfigFile.default();
+
+    let file = await fs.file.loadAndParse<IConfigFile>(path);
+    if (file) return file;
+
+    file = ConfigFile.default();
+    await ConfigFile.write(file);
+    return file;
   }
 
   public static write(data: IConfigFile) {

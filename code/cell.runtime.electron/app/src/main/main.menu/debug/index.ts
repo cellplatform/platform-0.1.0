@@ -10,7 +10,7 @@ import { modulesMenu } from './debug.modules';
  */
 export function debugMenu(args: {
   bus: t.EventBus<any>;
-  paths: t.IElectronPaths;
+  paths: t.ElectronDataPaths;
   port: number;
   isMac: boolean;
 }): M {

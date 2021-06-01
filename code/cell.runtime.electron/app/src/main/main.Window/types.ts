@@ -2,14 +2,14 @@ import * as t from '../common/types';
 
 export type ElectronWindowAction = 'close' | 'resize' | 'move';
 export type ElectronWindowId = number;
-export type ElectronWindowIdParam = ElectronWindowId | t.ElectronWindowUri;
+export type ElectronWindowIdParam = ElectronWindowId | t.ElectronProcessWindowUri;
 
 /**
  * The current status of an electron window.
  */
 export type ElectronWindowStatus = {
   id: ElectronWindowId;
-  uri: t.ElectronWindowUri;
+  uri: t.ElectronProcessWindowUri;
   url: string;
   title: string;
   bounds: WindowBounds;
@@ -85,7 +85,7 @@ export type WindowChangeEvent = {
   payload: WindowChange;
 };
 export type WindowChange = {
-  uri: t.ElectronWindowUri;
+  uri: t.ElectronProcessWindowUri;
   bounds?: Partial<WindowBounds>;
   isVisible?: boolean;
 };
@@ -98,7 +98,7 @@ export type ElectronWindowChangedEvent = {
   payload: ElectronWindowChanged;
 };
 export type ElectronWindowChanged = {
-  uri: t.ElectronWindowUri;
+  uri: t.ElectronProcessWindowUri;
   action: ElectronWindowAction;
   bounds: WindowBounds;
 };
