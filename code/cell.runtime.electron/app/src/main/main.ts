@@ -6,6 +6,7 @@ import * as server from './main.server';
 import { Window } from './main.Window';
 import { Log } from './main.Log';
 import { Bundle } from './main.Bundle';
+import { Menu } from './main.Menu';
 
 /**
  *  NOTE:
@@ -52,6 +53,7 @@ export async function start() {
   Window.Controller({ bus });
   Log.Controller({ bus });
   Bundle.Controller({ bus, host });
+  Menu.Controller({ bus });
 
   try {
     const bundle = Bundle.Events({ bus });
@@ -62,8 +64,8 @@ export async function start() {
 
     const res = await bundle.status.get({ dir: 'app.sys/web' });
 
-    console.log('-------------------------------------------');
-    console.log('res', res);
+    // console.log('-------------------------------------------');
+    // console.log('res', res);
 
     // const config = await ConfigFile.read();
     // console.log('config', config);
@@ -72,7 +74,24 @@ export async function start() {
 
     await app.whenReady();
 
-    await menu.build({ bus: bus, paths, port: instance.port });
+    // await menu.build({ bus, paths, port: instance.port });
+
+    const e = Menu.Events({ bus });
+
+    e.load.fire([
+      { label: 'foo' },
+      {
+        label: 'Edit',
+        submenu: [
+          { role: 'undo' },
+          { role: 'redo' },
+          { type: 'separator' },
+          { role: 'cut' },
+          { role: 'copy' },
+          { role: 'paste' },
+        ],
+      },
+    ]);
 
     // TEMP 🐷
     // refs.tray = tray.init({ host, def, ctx }).tray;

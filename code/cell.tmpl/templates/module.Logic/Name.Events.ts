@@ -10,7 +10,6 @@ export function Events(args: { bus: t.EventBus<any> }) {
   const $ = bus.$.pipe(takeUntil(dispose$));
 
   return {
-    $,
     dispose,
     dispose$,
   };
