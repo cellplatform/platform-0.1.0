@@ -515,7 +515,7 @@ describe('TreeState', () => {
       expect(tree.state.props?.icon).to.eql('face');
 
       expect(res.op).to.eql('update');
-      expect(res.cid.length).to.greaterThan(10);
+      expect(res.cid.length).to.eql(8);
       expect(res.changed?.from.props).to.eql(undefined);
       expect(res.changed?.to.props?.label).to.eql('Hello!');
 
@@ -620,7 +620,7 @@ describe('TreeState', () => {
       expect(tree.state.props?.icon).to.eql('face');
 
       expect(res.op).to.eql('update');
-      expect(res.cid.length).to.greaterThan(10);
+      expect(res.cid.length).to.eql(8);
       expect(res.changed?.from.props).to.eql(undefined);
       expect(res.changed?.to.props?.label).to.eql('Hello!');
 

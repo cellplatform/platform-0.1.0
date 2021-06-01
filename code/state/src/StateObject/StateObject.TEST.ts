@@ -270,7 +270,7 @@ describe('StateObject', () => {
       obj.event.changing$.subscribe((e) => changing++);
       obj.event.changed$.subscribe((e) => changed++);
 
-      const test = (changer: t.StateObjectChanger<IFoo>) => {
+      const test = (changer: t.StateChanger<IFoo>) => {
         const res = obj.change(changer);
 
         expect(changing).to.eql(0);
