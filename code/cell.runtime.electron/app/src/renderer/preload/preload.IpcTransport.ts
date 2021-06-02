@@ -1,7 +1,7 @@
 import { ipcRenderer as ipc } from 'electron';
 import { NetworkPump } from '@platform/cell.types/lib/types.Bus/types.NetworkPump';
 import { RuntimeDesktopEnvTransport } from '@platform/cell.types/lib/types.Runtime/types.Runtime.desktop';
-import { IpcEvent, IpcMessageEvent, IpcSystemReqEvent } from '../types/types.events.ipc';
+import { IpcEvent, IpcMessageEvent, IpcSystemReqEvent } from './common';
 
 type Uri = string;
 type O = Record<string, unknown>;

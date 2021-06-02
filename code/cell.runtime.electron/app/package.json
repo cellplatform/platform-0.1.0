@@ -1,7 +1,7 @@
 {
-  "name": "app",
-  "version": "0.1.178",
-  "description": "cell.runtime.electron",
+  "name": "cell.runtime.electron",
+  "version": "0.1.199",
+  "description": "Desktop runtime environment.",
   "main": "lib/main/index",
   "types": "lib/index.d.ts",
   "config": {
@@ -17,7 +17,7 @@
     "bundle.preload": "sh script.sh/bundle.preload.sh",
     "prepackage": "yarn build && yarn bundle.preload",
     "package": "export NOTARIZE=false && yarn prepackage && electron-forge package",
-    "make": "npm version patch && yarn prepackage && electron-forge make",
+    "make": "yarn prepackage && electron-forge make",
     "open": "cd out/make && open ."
   },
   "dependencies": {

@@ -7,7 +7,8 @@
     "dev": "cd app && yarn dev",
     "test": "cd app && yarn test",
     "package": "cd app && yarn package",
-    "make": "yarn cmd prepare make && cd app && yarn make",
+    "make": "sh script.sh/make.sh",
+    "make-local": "sh script.sh/make-local.sh",
     "build": "cd app && yarn build",
     "open": "cd app && yarn open",
     "clean": "sh script.sh/clean.sh",
@@ -15,8 +16,8 @@
     "nuke": "sh script.sh/nuke.sh",
     "public": "ngrok http 5000 --hostname=os.ngrok.io",
     "cmd": "ts-node -T node.bin $@",
-    "prepare-make": "yarn cmd prepare make",
-    "prepare-dev": "yarn cmd prepare dev"
+    "prep-make": "yarn cmd prepare make",
+    "prep-dev": "yarn cmd prepare dev"
   },
   "devDependencies": {
     "@platform/ts": "4.1.13",

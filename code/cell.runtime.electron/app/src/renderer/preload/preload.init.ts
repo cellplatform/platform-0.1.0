@@ -1,7 +1,7 @@
 import { contextBridge } from 'electron';
 
 import { RuntimeDesktopEnv } from '@platform/cell.types/lib/types.Runtime/types.Runtime.desktop';
-import { ENV_KEY, IPC, PROCESS } from '../common/constants';
+import { ENV_KEY, IPC, PROCESS } from './common';
 import { IpcTransport } from './preload.IpcTransport';
 
 /**
