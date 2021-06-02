@@ -78,20 +78,23 @@ export async function start() {
 
     const e = Menu.Events({ bus });
 
-    e.load.fire([
-      { label: 'foo' },
+    const resmenu = await e.load.fire([
+      { id: 'my-id', label: 'foo', type: 'normal' },
       {
         label: 'Edit',
+        type: 'normal',
         submenu: [
-          { role: 'undo' },
-          { role: 'redo' },
+          { role: 'undo', type: 'normal' },
+          { role: 'redo', type: 'normal' },
           { type: 'separator' },
-          { role: 'cut' },
-          { role: 'copy' },
-          { role: 'paste' },
+          { role: 'cut', type: 'normal' },
+          { role: 'copy', type: 'normal' },
+          { role: 'paste', type: 'normal' },
         ],
       },
     ]);
+
+    console.log('resmenu', resmenu);
 
     // TEMP 🐷
     // refs.tray = tray.init({ host, def, ctx }).tray;

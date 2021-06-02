@@ -1934,6 +1934,18 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
+"@platform/cell.schema.sys@0.0.107":
+  version "0.0.107"
+  resolved "https://registry.yarnpkg.com/@platform/cell.schema.sys/-/cell.schema.sys-0.0.107.tgz#5d78f19586e37e203df1d4a8f232e1b887b82f89"
+  integrity sha512-tMneAyv60NBi9blQa21FM9fiKx3lzjSasFPrQjTeW31FdPG6CizHMjuaUsdF9Zi7sOIoYPGldEvVfITXhbzAbA==
+  dependencies:
+    "@platform/cell.client" "0.3.58"
+    "@platform/cell.schema" "0.5.68"
+    "@platform/cell.types" "0.5.66"
+    "@platform/cell.typesystem" "0.0.187"
+    "@platform/libs" "0.2.10"
+    semver "7.3.5"
+
 "@platform/css@0.3.19":
   version "0.3.19"
   resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.3.19.tgz#912b0ca61d7b91bf8374cda85b685b2a8e9e3da5"

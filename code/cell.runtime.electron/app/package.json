@@ -36,6 +36,7 @@
     "@platform/libs": "0.2.10",
     "@platform/log": "0.1.52",
     "@platform/state": "0.7.40",
+    "@platform/state.types": "0.1.4",
     "@platform/types": "0.5.21",
     "@platform/util.value": "0.8.23",
     "electron-log": "4.3.5"
@@ -61,14 +62,5 @@
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "license": "MIT",
-  "private": true,
-  "workspaces": {
-    "packages": [
-      "*"
-    ]
-  },
-  "resolutions": {
-    "rxjs": "7.0.1",
-    "core-js": "3.12.1"
-  }
+  "private": true
 }

@@ -3,7 +3,7 @@ import { MenuTree } from './util.MenuTree';
 
 type N = t.MenuItemNormal;
 
-describe.only('MenuTree', () => {
+describe('MenuTree', () => {
   const root: t.MenuItemNormal = {
     id: '0',
     label: 'root',
@@ -60,6 +60,28 @@ describe.only('MenuTree', () => {
       const ids = walked.map((item) => item.id);
       expect(ids).to.eql(['0', '1']);
     });
+
+    it('walk: mutates source object', () => {
+      const menu: t.Menu = [
+        { id: '1', label: 'one', type: 'normal' },
+        {
+          id: '2',
+          label: 'two',
+          type: 'normal',
+          submenu: [
+            { id: '2.1', label: 'two.a', type: 'normal' },
+            { id: '2.2', label: 'two.b', type: 'normal' },
+          ],
+        },
+      ];
+
+      MenuTree(menu).walk((e) => {
+        if (e.item.type === 'normal') e.item.label = `${e.item.label}:foo`;
+      });
+
+      expect((menu[0] as N).label).to.eql('one:foo');
+      expect(((menu[1] as N).submenu?.[1] as N).label).to.eql('two.b:foo');
+    });
   });
 
   describe('filter', () => {
@@ -88,12 +110,6 @@ describe.only('MenuTree', () => {
   });
 
   describe('find', () => {
-    it('no match', () => {
-      const tree = MenuTree(root);
-      const res = tree.find((e) => e.id === '404');
-      expect(res).to.eql(undefined);
-    });
-
     it('match', () => {
       const walked: string[] = [];
       const res = MenuTree(root).find<N>((e) => {
@@ -101,7 +117,13 @@ describe.only('MenuTree', () => {
         return e.id === '2.1';
       });
       expect(res?.id).to.eql('2.1');
-      expect(walked).to.eql(['0', '1', '2', '2.1']); // NB: no items walked after item found
+      expect(walked).to.eql(['0', '1', '2', '2.1']); // NB: no items walked after target item is found.
+    });
+
+    it('no match', () => {
+      const tree = MenuTree(root);
+      const res = tree.find((e) => e.id === '404');
+      expect(res).to.eql(undefined);
     });
 
     it('no match (excluded by filter)', () => {

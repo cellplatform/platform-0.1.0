@@ -110,7 +110,7 @@ export type MenuLoadReqEvent = {
 };
 export type MenuLoadReq = {
   tx?: string;
-  menu: MenuItem[];
+  menu: Menu;
 };
 
 export type MenuLoadResEvent = {
@@ -119,5 +119,5 @@ export type MenuLoadResEvent = {
 };
 export type MenuLoadRes = {
   tx: string;
-  menu: MenuItem[];
+  menu: Menu;
 };

@@ -38,7 +38,7 @@ export async function upload(args: {
   const { host, sourceDir, targetDir, targetCell } = args;
   const files = args.files ? args.files : await getFiles({ sourceDir, targetDir });
 
-  let errors: string[] = [];
+  const errors: string[] = [];
   const error = (message: string) => errors.push(message);
 
   const done = () => {
