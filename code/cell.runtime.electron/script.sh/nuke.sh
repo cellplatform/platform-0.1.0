@@ -1,4 +1,4 @@
-echo `🤯 Nuke (cell.runtime.electron)`
+echo "🤯 Nuke (cell.runtime.electron)"
 pwd
 echo
 

@@ -12,9 +12,3 @@ browserify lib/renderer/preload.js \
   --insert-global-vars=__filename,__dirname \
   -o lib/preload.js
 
-# 
-# Copy bundled system JS into app folder.
-# 
-rm -rf ./lib.bundle
-mkdir -p ./lib.bundle/app.sys
-cp -r ../app.sys/dist/web ./lib.bundle/app.sys/web

@@ -11,7 +11,7 @@
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
-    "bundle": "cell.compiler bundle $@",
+    "bundle": "sh script.sh/bundle.sh",
     "watch": "cell.compiler watch $@",
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
