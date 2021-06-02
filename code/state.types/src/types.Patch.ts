@@ -16,8 +16,8 @@ type A = t.ArrayPatch;
 export type Patch = {
   toPatchSet(forward?: A | A[], backward?: A | A[]): t.PatchSet;
   isEmpty(patches: t.PatchSet): boolean;
-  produce<T extends O>(from: T, fn: t.StateChanger<T> | T): t.PatchChange<T>;
-  produceAsync<T extends O>(from: T, fn: t.StateChangerAsync<T>): Promise<t.PatchChange<T>>;
+  change<T extends O>(from: T, fn: t.StateChanger<T> | T): t.PatchChange<T>;
+  changeAsync<T extends O>(from: T, fn: t.StateChangerAsync<T>): Promise<t.PatchChange<T>>;
   apply<T extends O>(from: T, patches: t.PatchOperation[] | t.PatchSet): T;
 };
 

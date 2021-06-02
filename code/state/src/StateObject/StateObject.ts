@@ -1,5 +1,5 @@
 import { slug } from '@platform/util.value';
-import { enablePatches, isDraft, original, setAutoFreeze } from 'immer';
+import { isDraft, original, setAutoFreeze } from 'immer';
 import { Subject } from 'rxjs';
 
 import { is, t } from '../common';
@@ -9,9 +9,6 @@ import * as events from './StateObject.events';
 
 if (typeof setAutoFreeze === 'function') {
   setAutoFreeze(false);
-}
-if (typeof enablePatches === 'function') {
-  enablePatches();
 }
 
 type O = Record<string, unknown>;
@@ -130,8 +127,7 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
   public change: t.StateObjectChange<T> = (fn) => {
     const cid = slug(); // "change-id"
     const from = this.state;
-
-    const res = Patch.produce(from, fn);
+    const res = Patch.change(from, fn);
 
     const { patches, op } = res;
     const to = res.to as T;
@@ -146,7 +142,7 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
   public changeAsync: t.StateObjectChangeAsync<T> = async (fn) => {
     const cid = slug(); // "change-id"
     const from = this.state;
-    const next = await Patch.produceAsync(from, fn);
+    const next = await Patch.changeAsync(from, fn);
     if (Patch.isEmpty(next.patches)) {
       return { op: next.op, cid, patches: next.patches };
     } else {

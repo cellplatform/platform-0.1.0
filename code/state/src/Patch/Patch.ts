@@ -1,7 +1,11 @@
-import { applyPatches, createDraft, finishDraft, produceWithPatches } from 'immer';
+import { applyPatches, createDraft, finishDraft, produceWithPatches, enablePatches } from 'immer';
 import { t } from '../common';
 
 type O = Record<string, unknown>;
+
+if (typeof enablePatches === 'function') {
+  enablePatches();
+}
 
 /**
  * Patch
@@ -27,7 +31,7 @@ export const Patch: t.Patch = {
       : isEmptyArray(input.prev) && isEmptyArray(input.next);
   },
 
-  produce<T extends O>(from: T, fn: t.StateChanger<T> | T) {
+  change<T extends O>(from: T, fn: t.StateChanger<T> | T) {
     if (typeof fn === 'function') {
       const [to, forward, backward] = produceWithPatches<T>(from, (draft) => {
         fn(draft as T);
@@ -44,7 +48,7 @@ export const Patch: t.Patch = {
     }
   },
 
-  async produceAsync<T extends O>(from: T, fn: t.StateChangerAsync<T>) {
+  async changeAsync<T extends O>(from: T, fn: t.StateChangerAsync<T>) {
     const draft = createDraft(from) as T;
     await fn(draft);
 

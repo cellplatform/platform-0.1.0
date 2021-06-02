@@ -70,7 +70,7 @@ describe('Patch', () => {
     it('produce (op: "update" change)', () => {
       const obj = { msg: 'hello', child: { foo: [123] } };
 
-      const res = Patch.produce(obj, (draft) => {
+      const res = Patch.change(obj, (draft) => {
         draft.msg = 'foobar';
         draft.child.foo.push(456);
       });
@@ -87,7 +87,7 @@ describe('Patch', () => {
       const obj1 = { child: { msg: 'one' } };
       const obj2 = { child: { msg: 'two' } };
 
-      const res = Patch.produce(obj1, obj2);
+      const res = Patch.change(obj1, obj2);
 
       expect(res.op).to.eql('replace');
       expect(res.to).to.eql(obj2);
@@ -99,7 +99,7 @@ describe('Patch', () => {
     it('produceAsync', async () => {
       const obj = { msg: 'hello', child: { foo: [123] } };
 
-      const res = await Patch.produceAsync(obj, async (draft) => {
+      const res = await Patch.changeAsync(obj, async (draft) => {
         await time.wait(10);
         draft.msg = 'foobar';
         draft.child.foo.push(456);
@@ -117,7 +117,7 @@ describe('Patch', () => {
   describe('apply', () => {
     it('applies patches forward (next)', () => {
       const obj = { child: { foo: [123] } };
-      const res = Patch.produce(obj, (draft) => draft.child.foo.push(456));
+      const res = Patch.change(obj, (draft) => draft.child.foo.push(456));
 
       expect(obj.child.foo).to.eql([123]); // NB: No change.
       expect(res.op).to.eql('update');
@@ -129,7 +129,7 @@ describe('Patch', () => {
 
     it('applies patches backward (prev)', () => {
       const obj = { child: { foo: [123] } };
-      const res = Patch.produce(obj, (draft) => draft.child.foo.push(456));
+      const res = Patch.change(obj, (draft) => draft.child.foo.push(456));
 
       const next = Patch.apply(obj, res.patches.next);
       const prev = Patch.apply(next, res.patches.prev);
