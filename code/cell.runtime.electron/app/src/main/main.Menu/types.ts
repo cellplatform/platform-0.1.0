@@ -1,3 +1,30 @@
+/**
+ * Menu Helpers
+ */
+export type MenuTree = {
+  walk(visitor: MenuTreeVisitor): MenuTree;
+  filter(filter: MenuTreeMatch): MenuTree;
+  find<M extends MenuItem = MenuItem>(filter: MenuTreeMatch): M | undefined;
+};
+
+export type MenuTreeMatch = (args: MenuTreeMatchArgs) => boolean;
+export type MenuTreeMatchArgs = {
+  id: string;
+  item: MenuItem;
+  parent?: MenuItem;
+};
+
+export type MenuTreeVisitor = (args: MenuTreeVisitorArgs) => void;
+export type MenuTreeVisitorArgs = {
+  id: string;
+  item: MenuItem;
+  parent?: MenuItem;
+  stop(): void;
+};
+
+/**
+ * Menu Object
+ */
 export type Menu = MenuItem[];
 
 export type MenuItem =
@@ -8,6 +35,7 @@ export type MenuItem =
   | MenuItemSeperator;
 
 type MenuItemBase = {
+  id?: string;
   label?: string;
   sublabel?: string;
   accelerator?: string; // Shortcut key.
@@ -19,11 +47,11 @@ type MenuItemBase = {
   submenu?: Menu;
 };
 
-export type MenuItemNormal = MenuItemBase; //& { type: 'normal' };
+export type MenuItemNormal = MenuItemBase & { type: 'normal' };
 export type MenuItemSubmenu = MenuItemBase & { type: 'submenu' };
 export type MenuItemCheckbox = MenuItemBase & { type: 'checkbox' };
-export type MenuItemRadio = MenuItemBase & { type: 'raqdio' };
-export type MenuItemSeperator = { type: 'separator' };
+export type MenuItemRadio = MenuItemBase & { type: 'radio' };
+export type MenuItemSeperator = { type: 'separator'; id?: string };
 
 export type MenuItemRole =
   | 'undo'
