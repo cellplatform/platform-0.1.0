@@ -9,7 +9,7 @@ export function DataMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
   const { bus } = args;
   const events = { system: System.Events({ bus }) };
   const getStatus = () => events.system.status.get();
-  const paths = async () => (await getStatus()).paths;
+  const paths = async () => (await getStatus()).runtime.paths;
 
   const item: t.MenuItem = {
     type: 'normal',

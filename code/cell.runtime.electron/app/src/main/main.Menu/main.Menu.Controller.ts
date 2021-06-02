@@ -1,4 +1,4 @@
-import { Menu, MenuItemConstructorOptions as M } from 'electron';
+import { Menu } from 'electron';
 
 import { t, rx, slug, R } from '../common';
 import { Events } from './main.Menu.Events';
@@ -12,13 +12,32 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   const events = Events({ bus });
   const { dispose, dispose$ } = events;
 
-  const ref = { menu: [] as t.Menu };
+  const ref = { current: [] as t.Menu };
 
   const clickHandler = (args: { item: t.MenuItem; parent?: t.MenuItem; handler?: () => void }) => {
     return () => {
       args.handler?.();
       events.clicked.fire(args.item, args.parent);
     };
+  };
+
+  const setApplicationMenu = (menu: t.Menu) => {
+    const template = R.clone(menu);
+
+    MenuTree(template).walk((e) => {
+      const { item, parent } = e;
+
+      // Intercept click handlers.
+      if (item.type !== 'separator') {
+        const handler = item.click;
+        item.click = clickHandler({ item, parent, handler });
+      }
+
+      // NB: Electron assumes "normal" and passign in the "normal" type causes the menu to not load.
+      if (item.type === 'normal') delete (item as any).type;
+    });
+
+    Menu.setApplicationMenu(Menu.buildFromTemplate(template as any));
   };
 
   /**
@@ -28,7 +47,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     const { tx = slug() } = e;
     bus.fire({
       type: 'runtime.electron/Menu/status:res',
-      payload: { tx, menu: ref.menu },
+      payload: { tx, menu: ref.current },
     });
   });
 
@@ -44,24 +63,11 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       .filter((e) => !e.id)
       .walk((e) => (e.item.id = slug()));
 
-    // Load into electron.
-    const template = R.clone(menu);
-    MenuTree(template).walk((e) => {
-      const { item, parent } = e;
-
-      // Intercept click handlers.
-      if (item.type !== 'separator') {
-        const handler = item.click;
-        item.click = clickHandler({ item, parent, handler });
-      }
-
-      // NB: Electron assumes "normal" and passign in the "normal" type causes the menu to not load.
-      if (item.type === 'normal') delete (item as any).type;
-    });
-    Menu.setApplicationMenu(Menu.buildFromTemplate(template as any));
+    // Load into the electron menu.
+    setApplicationMenu(menu);
+    ref.current = menu;
 
     // Finish up.
-    ref.menu = menu;
     bus.fire({
       type: 'runtime.electron/Menu/load:res',
       payload: { tx, menu },
