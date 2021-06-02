@@ -120,8 +120,8 @@ const Configure = {
       return;
     }
 
-    // console.warn('\n\n🐷 Skipping notarization (TEMPORARY)\n');
-    // return;
+    console.warn('\n\n🐷 Skipping notarization (TEMPORARY)\n');
+    return;
 
     config.packagerConfig.osxNotarize = {
       appleId: APPLE_ID,

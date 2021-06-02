@@ -108,10 +108,11 @@ function logUpload(args: {
     const { filename, data } = file;
     const name = filename.endsWith('.map') ? log.gray(filename) : log.green(filename);
     const size = fs.size.toString(data.byteLength);
-    table.add(['', name, size]);
+    table.add(['', `${name} `, size]);
   };
   files.filter((file) => file.filename.endsWith('.map')).forEach((file) => addFile(file));
   files.filter((file) => !file.filename.endsWith('.map')).forEach((file) => addFile(file));
+  table.add(['', '', log.white(size)]);
 
   log.info(`
 

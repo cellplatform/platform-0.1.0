@@ -37,7 +37,7 @@ export async function start(args: StartArgs = {}) {
   const port = await util.port.unused(args.port);
   const instance = await app.start({ port });
   const host = `localhost:${port}`;
-  const info = await RuntimeInfo({ paths });
+  const info = RuntimeInfo({ paths });
 
   app.response$
     // Add electron specific meta-data to system-info.

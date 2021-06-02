@@ -7,7 +7,7 @@ import { ENV, log, t } from '../common';
  *    This is extra information about the application runtime that is
  *    appended to the on the system-info route.
  */
-export async function RuntimeInfo(args: { paths: t.ElectronDataPaths }) {
+export function RuntimeInfo(args: { paths: t.ElectronDataPaths }) {
   const { paths } = args;
   const env = process.env.NODE_ENV as t.ElectronRuntimeInfo['env'];
   const versions = process.versions;

@@ -1,4 +1,4 @@
-import { ConfigFile, HttpClient, rx, slug, t, Uri, util } from '../common';
+import { ConfigFile, HttpClient, rx, slug, t, Uri, util, Urls, fs } from '../common';
 import { Events } from './main.Bundle.Events';
 
 /**
@@ -34,7 +34,10 @@ export function Controller(args: { bus: t.EventBus<any>; host: string }) {
     }
 
     const manifest = (await file.download()).body as t.BundleManifest;
-    const status: t.BundleStatus = { host, cell, dir, manifest };
+    const entry = fs.join(dir, manifest.bundle.entry);
+    const url = Urls.create(host).cell(cell).file.byName(entry).toString();
+    const status: t.BundleStatus = { host, cell, dir, url, manifest };
+
     return bus.fire({
       type: 'runtime.electron/Bundle/status:res',
       payload: { tx, exists: true, status },
@@ -48,8 +51,8 @@ export function Controller(args: { bus: t.EventBus<any>; host: string }) {
     const { sourceDir, targetDir, silent, tx = slug() } = e;
 
     const current = await events.status.get({ dir: targetDir });
-    if (current.status && !e.force) {
-      const files = current.status.manifest.files.map(({ path, bytes }) => ({ path, bytes }));
+    if (current && !e.force) {
+      const files = current.manifest.files.map(({ path, bytes }) => ({ path, bytes }));
       return bus.fire({
         type: 'runtime.electron/Bundle/upload:res',
         payload: { tx, ok: true, files, errors: [], action: 'unchanged' },
@@ -64,7 +67,7 @@ export function Controller(args: { bus: t.EventBus<any>; host: string }) {
       bytes: data.byteLength,
     }));
 
-    const action = current.exists ? 'replaced' : 'written';
+    const action = Boolean(current) ? 'replaced' : 'written';
     return bus.fire({
       type: 'runtime.electron/Bundle/upload:res',
       payload: { tx, ok, files, errors, action },

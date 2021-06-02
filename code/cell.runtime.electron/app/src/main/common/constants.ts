@@ -24,4 +24,7 @@ export const ENV = {
   get isProd() {
     return ENV.isPackaged ? true : ENV.node === 'production';
   },
+  get isMac() {
+    return process.platform === 'darwin';
+  },
 };

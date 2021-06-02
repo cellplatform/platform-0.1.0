@@ -1,12 +1,13 @@
 import { app } from 'electron';
 
 import { constants, ENV, fs, log, rx, t, ConfigFile } from './common';
-import { menu } from './main.menu__OLD';
 import * as server from './main.server';
 import { Window } from './main.Window';
 import { Log } from './main.Log';
 import { Bundle } from './main.Bundle';
 import { Menu } from './main.Menu';
+import { System } from './main.System';
+import { BuildMenu } from './main.Menu.build';
 
 /**
  *  NOTE:
@@ -42,6 +43,7 @@ export async function start() {
 
   const bus = rx.bus<t.ElectronRuntimeEvent>();
   const prod = ENV.isProd;
+  const dev = ENV.isDev;
 
   // Start the HTTP server.
   const port = prod ? undefined : 5000;
@@ -50,6 +52,7 @@ export async function start() {
   /**
    * Initialize controllers
    */
+  System.Controller({ bus, paths, host });
   Window.Controller({ bus });
   Log.Controller({ bus });
   Bundle.Controller({ bus, host });
@@ -60,12 +63,12 @@ export async function start() {
     await bundle.upload.fire({
       sourceDir: constants.paths.bundle.sys,
       targetDir: 'app.sys/web',
+      force: dev,
     });
 
-    const res = await bundle.status.get({ dir: 'app.sys/web' });
-
+    const uploadRes = await bundle.status.get({ dir: 'app.sys/web' });
     // console.log('-------------------------------------------');
-    // console.log('res', res);
+    // console.log('uploadRes', uploadRes);
 
     // const config = await ConfigFile.read();
     // console.log('config', config);
@@ -76,25 +79,11 @@ export async function start() {
 
     // await menu.build({ bus, paths, port: instance.port });
 
-    const e = Menu.Events({ bus });
+    BuildMenu({ bus }).load();
 
-    const resmenu = await e.load.fire([
-      { id: 'my-id', label: 'foo', type: 'normal' },
-      {
-        label: 'Edit',
-        type: 'normal',
-        submenu: [
-          { role: 'undo', type: 'normal' },
-          { role: 'redo', type: 'normal' },
-          { type: 'separator' },
-          { role: 'cut', type: 'normal' },
-          { role: 'copy', type: 'normal' },
-          { role: 'paste', type: 'normal' },
-        ],
-      },
-    ]);
-
-    console.log('resmenu', resmenu);
+    const sysEvents = System.Events({ bus });
+    const sysStatus = await sysEvents.status.get();
+    log.info('sysStatus', sysStatus);
 
     // TEMP 🐷
     // refs.tray = tray.init({ host, def, ctx }).tray;

@@ -16,7 +16,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
   const status = {
     req$: rx.payload<t.BundleStatusReqEvent>($, 'runtime.electron/Bundle/status:req'),
     res$: rx.payload<t.BundleStatusResEvent>($, 'runtime.electron/Bundle/status:res'),
-    get(args: { dir: string; cell?: Uri | t.ICellUri }) {
+    async get(args: { dir: string; cell?: Uri | t.ICellUri }) {
       const { dir } = args;
       const cell = typeof args.cell === 'object' ? args.cell.toString() : args.cell;
       const tx = slug();
@@ -25,7 +25,7 @@ export function Events(args: { bus: t.EventBus<any> }) {
         type: 'runtime.electron/Bundle/status:req',
         payload: { tx, dir, cell },
       });
-      return res;
+      return (await res).status;
     },
   };
 

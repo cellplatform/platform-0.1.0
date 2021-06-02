@@ -1,6 +1,6 @@
 import { Menu, MenuItemConstructorOptions as M } from 'electron';
 
-import { t, rx, slug, Patch, R } from '../common';
+import { t, rx, slug, R } from '../common';
 import { Events } from './main.Menu.Events';
 import { MenuTree } from './util';
 
@@ -12,6 +12,26 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   const events = Events({ bus });
   const { dispose, dispose$ } = events;
 
+  const ref = { menu: [] as t.Menu };
+
+  const clickHandler = (args: { item: t.MenuItem; parent?: t.MenuItem; handler?: () => void }) => {
+    return () => {
+      args.handler?.();
+      events.clicked.fire(args.item, args.parent);
+    };
+  };
+
+  /**
+   * Status
+   */
+  events.status.req$.subscribe((e) => {
+    const { tx = slug() } = e;
+    bus.fire({
+      type: 'runtime.electron/Menu/status:res',
+      payload: { tx, menu: ref.menu },
+    });
+  });
+
   /**
    * Load a menu structure.
    */
@@ -20,19 +40,28 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
     // Ensure each item has an id.
     const menu = R.clone(e.menu);
-    MenuTree(menu).walk((e) => {
-      if (!e.id) e.item.id = slug();
-    });
+    MenuTree(menu)
+      .filter((e) => !e.id)
+      .walk((e) => (e.item.id = slug()));
 
     // Load into electron.
     const template = R.clone(menu);
     MenuTree(template).walk((e) => {
+      const { item, parent } = e;
+
+      // Intercept click handlers.
+      if (item.type !== 'separator') {
+        const handler = item.click;
+        item.click = clickHandler({ item, parent, handler });
+      }
+
       // NB: Electron assumes "normal" and passign in the "normal" type causes the menu to not load.
-      if (e.item.type === 'normal') delete (e.item as any).type;
+      if (item.type === 'normal') delete (item as any).type;
     });
     Menu.setApplicationMenu(Menu.buildFromTemplate(template as any));
 
     // Finish up.
+    ref.menu = menu;
     bus.fire({
       type: 'runtime.electron/Menu/load:res',
       payload: { tx, menu },

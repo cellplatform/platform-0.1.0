@@ -15,24 +15,14 @@ export type MenuTreeMatchArgs = {
 };
 
 export type MenuTreeVisitor = (args: MenuTreeVisitorArgs) => void;
-export type MenuTreeVisitorArgs = {
-  id: string;
-  item: MenuItem;
-  parent?: MenuItem;
-  stop(): void;
-};
+export type MenuTreeVisitorArgs = MenuTreeMatchArgs & { stop(): void };
 
 /**
  * Menu Object
  */
 export type Menu = MenuItem[];
 
-export type MenuItem =
-  | MenuItemNormal
-  | MenuItemSubmenu
-  | MenuItemCheckbox
-  | MenuItemRadio
-  | MenuItemSeperator;
+export type MenuItem = MenuItemNormal | MenuItemCheckbox | MenuItemRadio | MenuItemSeperator;
 
 type MenuItemBase = {
   id?: string;
@@ -48,7 +38,6 @@ type MenuItemBase = {
 };
 
 export type MenuItemNormal = MenuItemBase & { type: 'normal' };
-export type MenuItemSubmenu = MenuItemBase & { type: 'submenu' };
 export type MenuItemCheckbox = MenuItemBase & { type: 'checkbox' };
 export type MenuItemRadio = MenuItemBase & { type: 'radio' };
 export type MenuItemSeperator = { type: 'separator'; id?: string };
@@ -99,10 +88,33 @@ export type MenuItemRole =
 /**
  * Events
  */
-export type MenuEvent = MenuLoadReqEvent | MenuLoadResEvent;
+export type MenuEvent =
+  | MenuStatusReqEvent
+  | MenuStatusResEvent
+  | MenuLoadReqEvent
+  | MenuLoadResEvent
+  | MenuItemClickedEvent;
 
 /**
- *
+ * Retrieve the current status of the menu
+ */
+export type MenuStatusReqEvent = {
+  type: 'runtime.electron/Menu/status:req';
+  payload: MenuStatusReq;
+};
+export type MenuStatusReq = { tx?: string };
+
+export type MenuStatusResEvent = {
+  type: 'runtime.electron/Menu/status:res';
+  payload: MenuStatusRes;
+};
+export type MenuStatusRes = {
+  tx?: string;
+  menu: Menu;
+};
+
+/**
+ * Loads the menu.
  */
 export type MenuLoadReqEvent = {
   type: 'runtime.electron/Menu/load:req';
@@ -120,4 +132,18 @@ export type MenuLoadResEvent = {
 export type MenuLoadRes = {
   tx: string;
   menu: Menu;
+};
+
+/**
+ * Fires when a menu item is clicked.
+ */
+
+export type MenuItemClickedEvent = {
+  type: 'runtime.eleectron/Menu/clicked';
+  payload: MenuItemClicked;
+};
+export type MenuItemClicked = {
+  id: string;
+  item: MenuItem;
+  parent?: MenuItem;
 };

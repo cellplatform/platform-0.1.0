@@ -11,6 +11,17 @@ export function Events(args: { bus: t.EventBus<any> }) {
   const bus = rx.busAsType<t.MenuEvent>(args.bus);
   const $ = bus.$.pipe(takeUntil(dispose$));
 
+  const status = {
+    req$: rx.payload<t.MenuStatusReqEvent>($, 'runtime.electron/Menu/status:req'),
+    res$: rx.payload<t.MenuStatusResEvent>($, 'runtime.electron/Menu/status:res'),
+    get() {
+      const tx = slug();
+      const res = firstValueFrom(status.res$.pipe(filter((e) => e.tx === tx)));
+      bus.fire({ type: 'runtime.electron/Menu/status:req', payload: { tx } });
+      return res;
+    },
+  };
+
   const load = {
     req$: rx.payload<t.MenuLoadReqEvent>($, 'runtime.electron/Menu/load:req'),
     res$: rx.payload<t.MenuLoadResEvent>($, 'runtime.electron/Menu/load:res'),
@@ -25,9 +36,22 @@ export function Events(args: { bus: t.EventBus<any> }) {
     },
   };
 
+  const clicked = {
+    $: rx.payload<t.MenuItemClickedEvent>($, 'runtime.eleectron/Menu/clicked'),
+    fire(item: t.MenuItem, parent?: t.MenuItem) {
+      const { id = '' } = item;
+      bus.fire({
+        type: 'runtime.eleectron/Menu/clicked',
+        payload: { id, item, parent },
+      });
+    },
+  };
+
   return {
     dispose,
     dispose$,
+    status,
     load,
+    clicked,
   };
 }

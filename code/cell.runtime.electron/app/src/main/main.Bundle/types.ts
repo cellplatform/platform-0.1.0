@@ -6,6 +6,7 @@ export type BundleStatus = {
   host: string;
   cell: Uri;
   dir: string;
+  url: string;
   manifest: t.BundleManifest;
 };
 
