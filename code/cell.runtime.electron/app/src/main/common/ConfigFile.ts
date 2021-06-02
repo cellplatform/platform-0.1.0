@@ -9,8 +9,11 @@ export class ConfigFile {
   public static path = paths.data({ prod: ENV.isProd }).config;
 
   public static default(): IConfigFile {
+    const { name, version } = ENV.pkg;
+    const createdBy = `${name}@${version}`;
     return {
-      ns: { genesis: Uri.toNs().toString() },
+      createdBy,
+      refs: { genesis: Uri.toNs().toString() },
     };
   }
 
