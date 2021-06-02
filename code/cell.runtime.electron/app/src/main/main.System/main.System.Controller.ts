@@ -1,33 +1,36 @@
-import { t, rx, slug, ENV, ConfigFile } from '../common';
+import { t, rx, slug, ENV } from '../common';
 import { Events } from './main.System.Events';
 import { RuntimeInfo } from '../main.server';
-
-type Protocol = t.SystemStatusService['protocol'];
 
 /**
  * Behavioral event controller.
  */
 export function Controller(args: {
   bus: t.EventBus<any>;
-  paths: t.ElectronDataPaths;
   host: string;
+  paths: t.ElectronDataPaths;
+  config: t.IConfigFile;
 }) {
-  const { paths, host } = args;
-  const protocol = (host.startsWith('localhost') ? 'http' : 'https') as Protocol;
-  const service: t.SystemStatusService = { protocol, host, endpoint: `${protocol}://${host}` };
+  const { paths, config } = args;
+  const service = toServiceInfo(args.host);
 
   const bus = rx.busAsType<t.SystemEvent>(args.bus);
   const events = Events({ bus });
   const { dispose, dispose$ } = events;
 
+  const getStatus = (): t.SystemStatus => {
+    const runtime = RuntimeInfo({ paths });
+    const is = { prod: ENV.isProd, dev: ENV.isDev, mac: ENV.isMac };
+    const ns = config.refs;
+    return { refs: ns, is, service, runtime };
+  };
+
   /**
-   * Status.
+   * System Status
    */
   events.status.req$.subscribe(async (e) => {
     const { tx = slug() } = e;
-    const runtime = RuntimeInfo({ paths });
-    const is = { prod: ENV.isProd, dev: ENV.isDev, mac: ENV.isMac };
-    const status: t.SystemStatus = { service, is, runtime, paths };
+    const status = getStatus();
     bus.fire({
       type: 'runtime.electron/sys/status:res',
       payload: { tx, status },
@@ -38,4 +41,15 @@ export function Controller(args: {
     dispose,
     dispose$,
   };
+}
+
+/**
+ * [Helpers]
+ */
+
+function toServiceInfo(host: string): t.SystemStatusService {
+  const protocol = (host.startsWith('localhost') ? 'http' : 'https') as t.HttpProtocol;
+  const port = parseInt(host.split(':')[1], 10);
+  const url = `${protocol}://${host}`;
+  return { protocol, port, host, url };
 }

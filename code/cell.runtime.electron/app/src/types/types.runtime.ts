@@ -9,10 +9,10 @@ export type IResGetElectronSysInfo = t.IResGetSysInfo & { runtime: ElectronRunti
  * Electron runtime properties.
  */
 export type ElectronRuntimeInfo = {
-  type: 'cell.runtime.electron';
+  type: string;
   version: string; // semver
   env?: 'development' | 'production';
   packaged: boolean;
-  paths: { db: string; fs: string; log: string; config: string };
+  paths: t.ElectronDataPaths;
   versions: { node: string; electron: string; chrome: string; v8: string };
 };

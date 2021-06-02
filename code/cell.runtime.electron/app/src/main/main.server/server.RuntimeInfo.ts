@@ -1,5 +1,5 @@
 import { app as electron } from 'electron';
-import { ENV, log, t } from '../common';
+import { ENV, t } from '../common';
 
 /**
  * Derive the runtime info for the electron application.
@@ -13,16 +13,11 @@ export function RuntimeInfo(args: { paths: t.ElectronDataPaths }) {
   const versions = process.versions;
 
   const info: t.ElectronRuntimeInfo = {
-    type: 'cell.runtime.electron',
+    type: ENV.pkg.name,
     version: ENV.pkg.version,
     packaged: electron.isPackaged,
     env,
-    paths: {
-      db: paths.db,
-      fs: paths.fs,
-      config: paths.config,
-      log: paths.log,
-    },
+    paths,
     versions: {
       node: versions.node,
       electron: versions.electron,

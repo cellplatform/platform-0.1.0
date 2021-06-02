@@ -4,14 +4,14 @@ export type SystemStatus = {
   service: SystemStatusService;
   is: { prod: boolean; dev: boolean; mac: boolean };
   runtime: t.ElectronRuntimeInfo;
-  paths: t.ElectronDataPaths;
-  ns: t.IConfigFile['ns'];
+  refs: t.IConfigFile['refs'];
 };
 
 export type SystemStatusService = {
+  protocol: t.HttpProtocol;
   host: string;
-  protocol: 'http' | 'https';
-  endpoint: string;
+  port: number;
+  url: string;
 };
 
 /**
