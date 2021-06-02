@@ -131,7 +131,7 @@ const Configure = {
 };
 
 /**
- * Dynamic configuration of configuration object.
+ * Dynamic configuration of object.
  */
 (() => {
   Configure.notarization();
