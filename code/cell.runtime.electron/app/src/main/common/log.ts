@@ -3,6 +3,7 @@ import electron from 'electron-log';
 import { filter, map } from 'rxjs/operators';
 
 import { Uri } from './libs';
+import { ENV } from './constants';
 import * as t from './types';
 
 import { IServerLog } from '@platform/log/lib/server/types';
@@ -57,7 +58,10 @@ events$
   // Logging.
   .pipe(filter((e) => e.type === 'LOG'))
   .pipe(map((e) => e.payload as t.ILogEvent))
-  .subscribe((e) => electron.info(e.output));
+  .subscribe((e) => {
+    const output = ENV.isProd ? log.stripAnsi(e.output) : e.output;
+    electron.info(output);
+  });
 
 events$
   // Clear console.
