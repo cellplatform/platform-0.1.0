@@ -40,53 +40,58 @@ if (app.isPackaged) {
  */
 export async function start() {
   log.info.gray('━'.repeat(60));
-
   const bus = rx.bus<t.ElectronRuntimeEvent>();
   const prod = ENV.isProd;
-  const dev = ENV.isDev;
-
-  // Start the HTTP server.
-  const port = prod ? undefined : 5000;
-  const { paths, host, instance } = await server.start({ log, prod, port });
-
-  /**
-   * Initialize controllers
-   */
-  System.Controller({ bus, paths, host });
-  Window.Controller({ bus });
-  Log.Controller({ bus });
-  Bundle.Controller({ bus, host });
-  Menu.Controller({ bus });
 
   try {
+    // Start the HTTP server.
+    const port = prod ? undefined : 5000;
+    const { paths, host, instance } = await server.start({ log, prod, port });
+
+    // Load the configuration JSON file.
+    const config = await ConfigFile.read();
+    log.info('config', config);
+
+    await app.whenReady();
+
+    /**
+     * Initialize controllers
+     */
+    System.Controller({ bus, paths, host, config });
+    Window.Controller({ bus });
+    Log.Controller({ bus });
+    Menu.Controller({ bus });
+    Bundle.Controller({ bus, host });
+
+    log.info(`Controllers initialized`);
+
     const bundle = Bundle.Events({ bus });
     await bundle.upload.fire({
       sourceDir: constants.paths.bundle.sys,
       targetDir: 'app.sys/web',
-      force: dev,
+      // force: dev,
+      force: true, // TODO 🐷 - overwrite if later
     });
 
     const uploadRes = await bundle.status.get({ dir: 'app.sys/web' });
-    // console.log('-------------------------------------------');
-    // console.log('uploadRes', uploadRes);
+    console.log('-------------------------------------------');
+    console.log('uploadRes', uploadRes);
 
-    // const config = await ConfigFile.read();
-    // console.log('config', config);
+    const preload = constants.paths.preload;
 
-    await logMain({ host, paths: { data: paths, preload: constants.paths.preload } });
-
-    await app.whenReady();
+    await logMain({ host, paths: { data: paths, preload } });
 
     // await menu.build({ bus, paths, port: instance.port });
-
     BuildMenu({ bus }).load();
 
     const sysEvents = System.Events({ bus });
     const sysStatus = await sysEvents.status.get();
-    log.info('sysStatus', sysStatus);
+    log.info('System Status', sysStatus);
 
     // TEMP 🐷
     // refs.tray = tray.init({ host, def, ctx }).tray;
+
+    log.info(`✨ Startup Complete`);
   } catch (error) {
     log.error('🐷 Failed on startup:');
     log.error(error);

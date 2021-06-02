@@ -8,6 +8,7 @@
 #   - does not bundle the [app.sys] module.
 #   - bump verion: "patch"
 # 
+yarn cmd prepare make
 export NODE_ENV=production
 export NOTARIZE=false 
 

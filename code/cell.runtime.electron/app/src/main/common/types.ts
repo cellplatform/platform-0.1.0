@@ -6,7 +6,7 @@ type Uri = string;
  * The shape of the configuration JSON file.
  */
 export type IConfigFile = {
-  createdBy: string;
+  created: { by: string; at: number };
   refs: {
     /**
      * The "genesis" cell for the application.

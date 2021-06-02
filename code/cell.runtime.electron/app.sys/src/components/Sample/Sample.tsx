@@ -20,8 +20,8 @@ export const Sample: React.FC<SampleProps> = (props: SampleProps) => {
     <div {...css(styles.base, props.style)}>
       <h1>{props.count}. Hello World! </h1>
       <div {...styles.images}>
-        <Award width={60} style={styles.award} />
-        <img src={bundle.path('/static/images/wax@2x.png')} {...styles.wax} />
+        {/* <Award width={60} style={styles.award} />
+        <img src={bundle.path('/static/images/wax@2x.png')} {...styles.wax} /> */}
       </div>
       <ul {...styles.ul}>
         {Object.keys(bundle)

@@ -1,8 +1,8 @@
 # 
 # Package ("make") the application.
 # 
+yarn cmd prepare make --force
 export NODE_ENV=production
-yarn prep-make
 
 
 cd app.sys
