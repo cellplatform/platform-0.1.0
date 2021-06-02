@@ -5,6 +5,7 @@ export type SystemStatus = {
   is: { prod: boolean; dev: boolean; mac: boolean };
   runtime: t.ElectronRuntimeInfo;
   paths: t.ElectronDataPaths;
+  ns: t.IConfigFile['ns'];
 };
 
 export type SystemStatusService = {

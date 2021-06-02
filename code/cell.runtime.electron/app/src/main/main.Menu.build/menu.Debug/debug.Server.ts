@@ -1,6 +1,6 @@
 import { shell } from 'electron';
 
-import { t } from '../common';
+import { t, Uri } from '../common';
 import { System } from '../../main.System';
 
 /**
@@ -14,6 +14,7 @@ export function ServerMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
   const openBrowser = async (path: string) => {
     const status = await getStatus();
     const url = `${status.service.endpoint}/${path.replace(/^\//, '')}`;
+
     shell.openExternal(url);
   };
 
@@ -24,7 +25,18 @@ export function ServerMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
       {
         type: 'normal',
         label: 'HTTP Endpoint',
-        submenu: [{ label: 'main', type: 'normal', click: () => openBrowser('/') }],
+        submenu: [
+          { type: 'normal', label: 'local runtime', click: () => openBrowser('/') },
+          {
+            type: 'normal',
+            label: 'genesis cell',
+            click: async () => {
+              const status = await getStatus();
+              const uri = Uri.create.cell(status.ns.genesis, 'A1');
+              openBrowser(`/${uri}`);
+            },
+          },
+        ],
       },
       {
         type: 'normal',

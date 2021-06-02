@@ -10,7 +10,7 @@ export class ConfigFile {
 
   public static default(): IConfigFile {
     return {
-      ns: { main: Uri.toNs().toString() },
+      ns: { genesis: Uri.toNs().toString() },
     };
   }
 

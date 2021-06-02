@@ -33,8 +33,8 @@ type MenuItemBase = {
   enabled?: boolean;
   toolTip?: string;
   role?: MenuItemRole;
-  click?: () => any;
   submenu?: Menu;
+  click?: () => any;
 };
 
 export type MenuItemNormal = MenuItemBase & { type: 'normal' };

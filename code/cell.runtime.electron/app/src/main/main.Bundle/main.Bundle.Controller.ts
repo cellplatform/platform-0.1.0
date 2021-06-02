@@ -12,7 +12,7 @@ export function Controller(args: { bus: t.EventBus<any>; host: string }) {
 
   const defaultCellUri = async () => {
     const config = await ConfigFile.read();
-    return Uri.create.cell(config.ns.main, 'A1');
+    return Uri.create.cell(config.ns.genesis, 'A1');
   };
 
   /**

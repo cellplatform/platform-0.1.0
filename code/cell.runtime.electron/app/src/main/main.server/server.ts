@@ -23,6 +23,7 @@ export function init(args: InitArgs = {}) {
     fs: local.init({ dir: paths.fs, fs }),
     runtime: NodeRuntime.create(),
     logger,
+    prod,
   });
 
   return { app, paths };
