@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t } from '../../common';
 
 /**
  * Helper for walking a tree of menu item.

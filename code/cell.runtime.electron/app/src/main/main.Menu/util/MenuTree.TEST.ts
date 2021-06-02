@@ -1,5 +1,5 @@
-import { expect, t } from '../../test';
-import { MenuTree } from './util.MenuTree';
+import { expect, t } from '../../../test';
+import { MenuTree } from './MenuTree';
 
 type N = t.MenuItemNormal;
 
