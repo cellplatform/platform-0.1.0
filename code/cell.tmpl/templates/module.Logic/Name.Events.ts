@@ -7,10 +7,15 @@ import { t, rx } from '../common';
 export function Events(args: { bus: t.EventBus<any> }) {
   const { dispose, dispose$ } = rx.disposable();
   const bus = rx.busAsType<t.NameEvent>(args.bus);
-  const $ = bus.$.pipe(takeUntil(dispose$));
 
-  return {
-    dispose,
-    dispose$,
+  const is = {
+    base: (input: any) => rx.isEvent(input, { startsWith: 'namespace/' }),
   };
+
+  const $ = bus.$.pipe(
+    takeUntil(dispose$),
+    filter((e) => is.base(e)),
+  );
+
+  return { $, is, dispose, dispose$ };
 }
