@@ -110,6 +110,23 @@ describe('rx', () => {
       test({ type: 'FOO' }, false);
       test({ type: 'FOO', payload: 123 }, false);
     });
+
+    it('is an event of given type', () => {
+      const test = (input: any, type: any, expected: boolean) => {
+        expect(rx.isEvent(input, type)).to.eql(expected);
+      };
+
+      test(undefined, 'foo', false);
+      test(null, 'foo', false);
+      test(123, 'foo', false);
+      test({}, 'foo', false);
+      test({ type: 'foo', payload: {} }, 'bar', false);
+
+      test({ type: 'foo', payload: {} }, 'foo', true);
+      test({ type: 'foo', payload: {} }, '  foo  ', false);
+      test({ type: 'foo', payload: {} }, 123, false);
+      test({ type: 'foo', payload: {} }, null, false);
+    });
   });
 
   describe('bus', () => {
