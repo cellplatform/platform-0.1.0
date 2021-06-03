@@ -9,7 +9,15 @@ import { rx, slug, t } from '../common';
 export function Events(args: { bus: t.EventBus<any> }) {
   const { dispose, dispose$ } = rx.disposable();
   const bus = rx.busAsType<t.MenuEvent>(args.bus);
-  const $ = bus.$.pipe(takeUntil(dispose$));
+
+  const is = {
+    base: (input: any) => rx.isEvent(input, { startsWith: 'runtime.electron/Menu/' }),
+  };
+
+  const $ = bus.$.pipe(
+    takeUntil(dispose$),
+    filter((e) => is.base(e)),
+  );
 
   const status = {
     req$: rx.payload<t.MenuStatusReqEvent>($, 'runtime.electron/Menu/status:req'),
@@ -47,11 +55,5 @@ export function Events(args: { bus: t.EventBus<any> }) {
     },
   };
 
-  return {
-    dispose,
-    dispose$,
-    status,
-    load,
-    clicked,
-  };
+  return { $, is, dispose, dispose$, status, load, clicked };
 }

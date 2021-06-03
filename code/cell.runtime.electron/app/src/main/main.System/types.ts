@@ -23,7 +23,7 @@ export type SystemEvent = SystemStatusReqEvent | SystemStatusResEvent;
  * Retrieve the main system status.
  */
 export type SystemStatusReqEvent = {
-  type: 'runtime.electron/sys/status:req';
+  type: 'runtime.electron/System/status:req';
   payload: SystemStatusReq;
 };
 export type SystemStatusReq = {
@@ -31,7 +31,7 @@ export type SystemStatusReq = {
 };
 
 export type SystemStatusResEvent = {
-  type: 'runtime.electron/sys/status:res';
+  type: 'runtime.electron/System/status:res';
   payload: SystemStatusRes;
 };
 export type SystemStatusRes = {

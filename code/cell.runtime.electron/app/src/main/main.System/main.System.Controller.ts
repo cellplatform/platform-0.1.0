@@ -32,7 +32,7 @@ export function Controller(args: {
     const { tx = slug() } = e;
     const status = getStatus();
     bus.fire({
-      type: 'runtime.electron/sys/status:res',
+      type: 'runtime.electron/System/status:res',
       payload: { tx, status },
     });
   });

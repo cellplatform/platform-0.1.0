@@ -11,7 +11,15 @@ type Uri = string;
 export function Events(args: { bus: t.EventBus<any> }) {
   const { dispose, dispose$ } = rx.disposable();
   const bus = rx.busAsType<t.BundleEvent>(args.bus);
-  const $ = bus.$.pipe(takeUntil(dispose$));
+
+  const is = {
+    base: (input: any) => rx.isEvent(input, { startsWith: 'runtime.electron/Bundle/' }),
+  };
+
+  const $ = bus.$.pipe(
+    takeUntil(dispose$),
+    filter((e) => is.base(e)),
+  );
 
   const status = {
     req$: rx.payload<t.BundleStatusReqEvent>($, 'runtime.electron/Bundle/status:req'),
@@ -44,10 +52,5 @@ export function Events(args: { bus: t.EventBus<any> }) {
     },
   };
 
-  return {
-    dispose,
-    dispose$,
-    status,
-    upload,
-  };
+  return { $, is, dispose, dispose$, status, upload };
 }
