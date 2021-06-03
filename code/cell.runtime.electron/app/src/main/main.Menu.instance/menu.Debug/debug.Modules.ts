@@ -10,14 +10,8 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
     system: System.Events({ bus }),
     bundle: Bundle.Events({ bus }),
   };
-  // const getStatus = () => events.system.status.get();
 
-  const item: t.MenuItem = {
-    type: 'normal',
-    label: 'Modules',
-    submenu: [],
-  };
-
+  const item: t.MenuItem = { type: 'normal', label: 'Modules', submenu: [] };
   const submenu = item.submenu || [];
 
   const openWindow = async (url: string) => {
@@ -52,15 +46,30 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
     },
   });
 
-  submenu.push({
-    type: 'normal',
-    label: 'Install: sys.net',
-    async click() {
-      const url = 'https://dev.db.team/cell:ckmv1vll1000e01etelnr0s9a:A1/fs/sys.net/index.html';
-      console.log('url', url);
-
-      await openWindow(url);
+  type T = { ns: string; url: string };
+  const refs: T[] = [
+    {
+      ns: 'sys.net',
+      url: 'https://dev.db.team/cell:ckmv1vll1000e01etelnr0s9a:A1/fs/sys.net/index.html',
     },
+    {
+      ns: 'sys.ui.code',
+      url: 'https://dev.db.team/cell:ckmv1vll1000e01etelnr0s9a:A1/fs/sys.net/index.html',
+    },
+  ];
+
+  refs.forEach((ref) => {
+    const handler = async () => {
+      const url = ref.url;
+      console.log('url', url);
+      await openWindow(url);
+    };
+
+    submenu.push({
+      type: 'normal',
+      label: `${ref.ns}`,
+      click: handler,
+    });
   });
 
   // Finish up.

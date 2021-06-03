@@ -7,7 +7,7 @@ import { Log } from './main.Log';
 import { Bundle } from './main.Bundle';
 import { Menu } from './main.Menu';
 import { System } from './main.System';
-import { BuildMenu } from './main.Menu.build';
+import { BuildMenu } from './main.Menu.instance';
 
 /**
  *  NOTE:
