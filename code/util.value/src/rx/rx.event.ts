@@ -33,7 +33,7 @@ export function payload<E extends Event>(ob$: Observable<unknown>, type: E['type
  *    }
  *
  */
-export function isEvent(input: any, type?: string): boolean {
+export function isEvent(input: any, type?: string | { startsWith: string }): boolean {
   if (
     !(
       input !== null &&
@@ -45,9 +45,18 @@ export function isEvent(input: any, type?: string): boolean {
     return false;
   }
 
+  if (type === null) return false;
+
   if (type !== undefined) {
-    if (typeof type !== 'string') return false;
-    if ((input as Event).type !== type) return false;
+    const event = input as Event;
+
+    if (typeof type === 'object') {
+      if (typeof type.startsWith !== 'string') return false;
+      return event.type.startsWith(type.startsWith);
+    } else {
+      if (typeof type !== 'string') return false;
+      if (event.type !== type) return false;
+    }
   }
 
   return true;

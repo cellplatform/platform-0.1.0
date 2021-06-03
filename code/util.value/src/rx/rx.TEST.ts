@@ -123,9 +123,16 @@ describe('rx', () => {
       test({ type: 'foo', payload: {} }, 'bar', false);
 
       test({ type: 'foo', payload: {} }, 'foo', true);
+      test({ type: 'foo/bar', payload: {} }, { startsWith: 'foo/bar' }, true);
+      test({ type: 'foo/bar', payload: {} }, { startsWith: 'foo/' }, true);
+      test({ type: 'foo/bar', payload: {} }, { startsWith: 'foo' }, true);
+
       test({ type: 'foo', payload: {} }, '  foo  ', false);
       test({ type: 'foo', payload: {} }, 123, false);
       test({ type: 'foo', payload: {} }, null, false);
+      test({ type: 'foo', payload: {} }, {}, false);
+      test({ type: 'foo/bar', payload: {} }, { startsWith: undefined }, false);
+      test({ type: 'foo/bar', payload: {} }, { startsWith: null }, false);
     });
   });
 
