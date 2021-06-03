@@ -1,17 +1,19 @@
 export * from '../../common/types';
 
-type Uri = string;
+type NamespaceUri = string;
 
 /**
- * The shape of the configuration JSON file.
+ * The shape of the application configuration file (JSON).
  */
 export type IConfigFile = {
-  created: { by: string; at: number };
+  created: { process: string; time: number };
   refs: {
     /**
-     * The "genesis" cell for the application.
-     * This is the root entry point for the web/growth-network of the user's information space.
+     * The user's "genesis" cell.
+     *
+     * This is the root entry point for the network of information
+     * that grows around the user.
      */
-    genesis: Uri;
+    genesis: NamespaceUri; // eg. "ns:<id>"
   };
 };

@@ -14,7 +14,10 @@ export class ConfigFile {
   public static default(): IConfigFile {
     const { name, version } = ENV.pkg;
     return {
-      created: { by: `${name}@${version}`, at: time.now.timestamp },
+      created: {
+        process: `${name}@${version}`,
+        time: time.now.timestamp,
+      },
       refs: { genesis: Uri.toNs().toString() },
     };
   }

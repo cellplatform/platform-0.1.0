@@ -18,10 +18,10 @@ export const paths = {
     const dir = prod ? fs.join(app.getPath('documents'), dirname) : fs.resolve('../.data');
     return {
       dir,
-      db: `${dir}/local.db`,
-      fs: `${dir}/local.fs`,
-      config: `${dir}/.config.json`,
-      archive: `${dir}/.archive`,
+      db: `${dir}/data/local.db`,
+      fs: `${dir}/data/local.fs`,
+      config: `${dir}/data/config.json`,
+      archive: `${dir}/data.backup`,
       log: electronLog.transports.file.getFile().path,
     };
   },
