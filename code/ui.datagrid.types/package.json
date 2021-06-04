@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid.types",
-  "version": "0.7.219",
+  "version": "0.7.221",
   "description": "Abstract types for @platform/ui.datagrid",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,8 +12,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.types": "0.5.67",
-    "@platform/react": "0.4.72"
+    "@platform/cell.types": "0.5.68",
+    "@platform/react": "0.4.73"
   },
   "devDependencies": {
     "@platform/test": "0.2.6",

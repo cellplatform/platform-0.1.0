@@ -2261,6 +2261,18 @@
     "@platform/libs" "0.2.2"
     "@platform/types" "0.5.8"
 
+"@platform/http@0.14.18":
+  version "0.14.18"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.14.18.tgz#d03b100c812d2103bf9c87c06c5bc1af8f1321fc"
+  integrity sha512-Jap/QXwXmN8UmIaPZyhM+w+Yh877BQ+GXGX6BGLCPQQzgezBmFJTe2VthnslaS8C3rXsZc0VdNeCWDCGVPuESg==
+  dependencies:
+    "@platform/http.types" "0.2.42"
+    "@platform/libs" "0.2.10"
+    "@platform/types" "0.5.21"
+    "@platform/util.mimetype" "0.1.38"
+    "@platform/util.value" "0.8.23"
+    isomorphic-fetch "3.0.0"
+
 "@platform/libs@0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.2.2.tgz#c69ce4107553be94210404714e7921ab5f829f04"
@@ -2288,6 +2300,14 @@
     "@platform/libs" "0.2.2"
     chalk "4.1.0"
     cli-table "0.3.1"
+
+"@platform/queue@0.0.47":
+  version "0.0.47"
+  resolved "https://registry.yarnpkg.com/@platform/queue/-/queue-0.0.47.tgz#117af2bb81625143cb05d3c2831612a20438958d"
+  integrity sha512-wOFrqf4RBY5ujy+N5KRQXTVrk/ez2CLj/JIKJ7pi1pXD3LYXR5NKwAEHEQWJjJpoOQCiZlXpw4s0X0UXdz2MfA==
+  dependencies:
+    "@platform/libs" "0.2.10"
+    "@platform/util.value" "0.8.23"
 
 "@platform/react@0.4.26":
   version "0.4.26"
@@ -2377,6 +2397,17 @@
     "@platform/util.is" "0.0.131"
     cuid "2.1.8"
     dayjs "1.9.1"
+
+"@platform/util.value@0.8.23":
+  version "0.8.23"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.8.23.tgz#4c9d14a2f4740974a434cc48ea8b28207b95b956"
+  integrity sha512-C0IzPQd3CTxuKmzKFjizlYUyFdUrA5a5F/vLLsc+/xNHvTP03L8J0/ucJ96vIXW8/lGkXUAIWJSzHtJ6Uq/FLw==
+  dependencies:
+    "@platform/libs" "0.2.10"
+    "@platform/types" "0.5.21"
+    "@platform/util.is" "0.0.152"
+    cuid "2.1.8"
+    dayjs "1.10.4"
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
@@ -2720,15 +2751,20 @@
     "@types/estree" "*"
     "@types/json-schema" "*"
 
-"@types/estree@*", "@types/estree@^0.0.47":
+"@types/estree@*":
+  version "0.0.48"
+  resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.48.tgz#18dc8091b285df90db2f25aa7d906cfc394b7f74"
+  integrity sha512-LfZwXoGUDo0C3me81HXgkBg5CTQYb6xzEl+fNmbO4JdRiSKQ8A0GD1OBBvKAIsbCUgoyAty7m99GqqMQe784ew==
+
+"@types/estree@^0.0.47":
   version "0.0.47"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.47.tgz#d7a51db20f0650efec24cd04994f523d93172ed4"
   integrity sha512-c5ciR06jK8u9BstrmJyO97m+klJrrhCf9u3rLu3DEAJBirxRqSCvDQoYKmxuYwQI5SZChAWu+tq9oVlGRuzPAg==
 
 "@types/express-serve-static-core@*", "@types/express-serve-static-core@^4.17.18":
-  version "4.17.20"
-  resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.20.tgz#44caee029f2c26c46711da5e845cdc12167ad72d"
-  integrity sha512-8qqFN4W53IEWa9bdmuVrUcVkFemQWnt5DKPQ/oa8xKDYgtjCr2OO6NX5TIK49NLFr3mPYU2cLh92DQquC3oWWQ==
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.21.tgz#a427278e106bca77b83ad85221eae709a3414d42"
+  integrity sha512-gwCiEZqW6f7EoR8TTEfalyEhb1zA5jQJnRngr97+3pzMaO1RKoI1w2bw07TK72renMUVWcWS5mLI6rk1NqN0nA==
   dependencies:
     "@types/node" "*"
     "@types/qs" "*"
@@ -3039,9 +3075,9 @@
     "@types/node" "*"
 
 "@types/node@*", "@types/node@>=6":
-  version "15.6.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.6.1.tgz#32d43390d5c62c5b6ec486a9bc9c59544de39a08"
-  integrity sha512-7EIraBEyRHEe7CH+Fm1XvgqU6uwZN8Q7jppJGcqjROMT29qhAuuOxYB1uEY5UMYQKEmA5D+5tBnhdaPXSsLONA==
+  version "15.12.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.12.0.tgz#6a459d261450a300e6865faeddb5af01c3389bb3"
+  integrity sha512-+aHJvoCsVhO2ZCuT4o5JtcPrCPyDE3+1nvbDprYes+pPkEsbjH7AGUCNtjMOXS0fqH14t+B7yLzaqSz92FPWyw==
 
 "@types/node@15.0.3":
   version "15.0.3"
@@ -3054,9 +3090,9 @@
   integrity sha512-F0KIgDJfy2nA3zMLmWGKxcH2ZVEtCZXHHdOQs2gSaQ27+lNeEfGxzkIw90aXswATX7AZ33tahPbzy6KAfUreVw==
 
 "@types/node@^14.6.2":
-  version "14.17.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.17.1.tgz#5e07e0cb2ff793aa7a1b41deae76221e6166049f"
-  integrity sha512-/tpUyFD7meeooTRwl3sYlihx2BrJE7q9XF71EguPFIySj9B7qgnRtHsHTho+0AUm4m1SvWGm6uSncrR94q6Vtw==
+  version "14.17.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.17.2.tgz#1e94476db57ec93a372c7f7d29aa5707cfb92339"
+  integrity sha512-sld7b/xmFum66AAKuz/rp/CUO8+98fMpyQ3SBfzzBNGMd/1iHBTAg9oyAvcYlAj46bpc74r91jSw2iFdnx29nw==
 
 "@types/nodemailer@6.4.1":
   version "6.4.1"
@@ -6472,9 +6508,9 @@ concat-stream@^1.6.0, concat-stream@^1.6.1, concat-stream@^1.6.2, concat-stream@
     typedarray "^0.0.6"
 
 config-chain@^1.1.11:
-  version "1.1.12"
-  resolved "https://registry.yarnpkg.com/config-chain/-/config-chain-1.1.12.tgz#0fde8d091200eb5e808caf25fe618c02f48e4efa"
-  integrity sha512-a1eOIcu8+7lUInge4Rpf/n4Krkf3Dd9lqhljRzII1/Zno/kRtUWnznPO3jOKBmTEktkt3fkxisUcivoj0ebzoA==
+  version "1.1.13"
+  resolved "https://registry.yarnpkg.com/config-chain/-/config-chain-1.1.13.tgz#fad0795aa6a6cdaff9ed1b68e9dff94372c232f4"
+  integrity sha512-qj+f8APARXHrM0hraqXYb2/bOVSV4PvJQlNZ/DVj0QrmNM2q2euizkeuVckQ57J+W0mRH6Hvi+k50M4Jul2VRQ==
   dependencies:
     ini "^1.3.4"
     proto-list "~1.2.1"
@@ -7984,9 +8020,9 @@ electron-squirrel-startup@1.0.0:
     debug "^2.2.0"
 
 electron-to-chromium@^1.3.47, electron-to-chromium@^1.3.723:
-  version "1.3.743"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.743.tgz#fcec24d6d647cb84fd796b42caa1b4039a180894"
-  integrity sha512-K2wXfo9iZQzNJNx67+Pld0DRF+9bYinj62gXCdgPhcu1vidwVuLPHQPPFnCdO55njWigXXpfBiT90jGUPbw8Zg==
+  version "1.3.747"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.747.tgz#c8d6bc625fe783f506aee7710772adab47b0bf29"
+  integrity sha512-+K1vnBc08GNYxCWwdRe9o3Ml30DhsNyK/qIl/NE1Dic+qCy9ZREcqGNiV4jiLiAdALK1DUG3pakJHGkJUd9QQw==
 
 electron-window-state@5.0.3:
   version "5.0.3"
@@ -9759,9 +9795,9 @@ graphql-tools@^4.0.8:
     uuid "^3.1.0"
 
 graphql-ws@^4.3.2, graphql-ws@^4.4.1:
-  version "4.7.0"
-  resolved "https://registry.yarnpkg.com/graphql-ws/-/graphql-ws-4.7.0.tgz#b323fbf35a3736eed85dac24c0054d6d10c93e62"
-  integrity sha512-Md8SsmC9ZlsogFPd3Ot8HbIAAqsHh8Xoq7j4AmcIat1Bh6k91tjVyQvA0Au1/BolXSYq+RDvib6rATU2Hcf1Xw==
+  version "4.8.0"
+  resolved "https://registry.yarnpkg.com/graphql-ws/-/graphql-ws-4.8.0.tgz#4b0a82fa1ad00a3baa1cae980032dcaaad08b339"
+  integrity sha512-0jk0c7GPfAlQfA7xZ4CKlLvFF4JBPYbczIHIXl/tk/fXoCLzmrmwQ/HNwOoOHfFMS3usbD1nt77k67pgXx2BYQ==
 
 graphql@15.5.0:
   version "15.5.0"
