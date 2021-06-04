@@ -50,8 +50,8 @@ export async function start() {
 
     // Load the configuration JSON file.
     const config = await ConfigFile.read();
-    log.info('config', config);
 
+    // Wait for electron to finish starting.
     await app.whenReady();
 
     /**
@@ -63,22 +63,18 @@ export async function start() {
     Menu.Controller({ bus });
     Bundle.Controller({ bus, host });
 
-    log.info(`Controllers initialized`);
-
     const bundle = Bundle.Events({ bus });
     await bundle.upload.fire({
       sourceDir: constants.paths.bundle.sys,
       targetDir: 'app.sys/web',
-      // force: dev,
-      force: true, // TODO 🐷 - overwrite if later
+      force: ENV.isDev,
     });
 
-    const uploadRes = await bundle.status.get({ dir: 'app.sys/web' });
-    console.log('-------------------------------------------');
-    console.log('uploadRes', uploadRes);
+    const webStatus = await bundle.status.get({ dir: 'app.sys/web' });
+    // console.log('-------------------------------------------');
+    // console.log('webStatus', webStatus);
 
     const preload = constants.paths.preload;
-
     await logMain({ host, paths: { data: paths, preload } });
 
     // await menu.build({ bus, paths, port: instance.port });
@@ -86,7 +82,7 @@ export async function start() {
 
     const sysEvents = System.Events({ bus });
     const sysStatus = await sysEvents.status.get();
-    log.info('System Status', sysStatus);
+    // log.info('System Status', sysStatus);
 
     // TEMP 🐷
     // refs.tray = tray.init({ host, def, ctx }).tray;

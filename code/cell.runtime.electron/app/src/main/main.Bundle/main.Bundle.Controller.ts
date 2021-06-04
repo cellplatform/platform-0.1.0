@@ -50,8 +50,17 @@ export function Controller(args: { bus: t.EventBus<any>; host: string }) {
   events.upload.req$.subscribe(async (e) => {
     const { sourceDir, targetDir, silent, tx = slug() } = e;
 
+    const manifest = (await fs.readJson(fs.join(sourceDir, 'index.json'))) as t.BundleManifest;
     const current = await events.status.get({ dir: targetDir });
-    if (current && !e.force) {
+
+    const hash = {
+      current: current?.manifest.hash.files || '',
+      next: manifest.hash.files,
+    };
+
+    const isChanged = current ? hash.current !== hash.next : false;
+
+    if (!isChanged && !e.force && current) {
       const files = current.manifest.files.map(({ path, bytes }) => ({ path, bytes }));
       return bus.fire({
         type: 'runtime.electron/Bundle/upload:res',

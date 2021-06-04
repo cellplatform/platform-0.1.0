@@ -1,6 +1,6 @@
 {
   "name": "cell.runtime.electron.sys",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "sideEffects": false,
   "compiler": {
     "port": 5050
@@ -11,7 +11,7 @@
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
-    "bundle": "sh script.sh/bundle.sh",
+    "bundle": "npm version patch && sh script.sh/bundle.sh",
     "watch": "cell.compiler watch $@",
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
