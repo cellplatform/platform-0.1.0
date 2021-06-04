@@ -55,7 +55,7 @@ export async function start() {
     await app.whenReady();
 
     /**
-     * Initialize controllers
+     * Initialize controllers.
      */
     System.Controller({ bus, paths, host, config });
     Window.Controller({ bus });
@@ -63,6 +63,9 @@ export async function start() {
     Menu.Controller({ bus });
     Bundle.Controller({ bus, host });
 
+    /**
+     * Upload bundled system code into the local service.
+     */
     const bundle = Bundle.Events({ bus });
     await bundle.upload.fire({
       sourceDir: constants.paths.bundle.sys,

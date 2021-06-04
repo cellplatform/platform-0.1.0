@@ -63,8 +63,11 @@ export async function onCompiled(args: {
   webpack: t.WpConfig;
 }) {
   const { model, bundleDir, compilation, webpack } = args;
+
   await copyStatic({ model, bundleDir });
   await BundleManifest.createAndSave({ model, sourceDir: bundleDir });
+  await fs.zip(bundleDir).save(`${bundleDir}.zip`);
+
   afterCompile({ model, compilation, webpack });
 }
 
