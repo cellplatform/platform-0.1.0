@@ -139,7 +139,7 @@ export type MenuLoadRes = {
  */
 
 export type MenuItemClickedEvent = {
-  type: 'runtime.eleectron/Menu/clicked';
+  type: 'runtime.electron/Menu/clicked';
   payload: MenuItemClicked;
 };
 export type MenuItemClicked = {

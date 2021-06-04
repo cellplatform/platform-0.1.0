@@ -10,8 +10,9 @@ export function Events(args: { bus: t.EventBus<any> }) {
   const { dispose, dispose$ } = rx.disposable();
   const bus = rx.busAsType<t.MenuEvent>(args.bus);
 
+  const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
   const is = {
-    base: (input: any) => rx.isEvent(input, { startsWith: 'runtime.electron/Menu/' }),
+    base: matcher('runtime.electron/Menu/'),
   };
 
   const $ = bus.$.pipe(
@@ -45,11 +46,11 @@ export function Events(args: { bus: t.EventBus<any> }) {
   };
 
   const clicked = {
-    $: rx.payload<t.MenuItemClickedEvent>($, 'runtime.eleectron/Menu/clicked'),
+    $: rx.payload<t.MenuItemClickedEvent>($, 'runtime.electron/Menu/clicked'),
     fire(item: t.MenuItem, parent?: t.MenuItem) {
       const { id = '' } = item;
       bus.fire({
-        type: 'runtime.eleectron/Menu/clicked',
+        type: 'runtime.electron/Menu/clicked',
         payload: { id, item, parent },
       });
     },

@@ -1,11 +1,11 @@
 import { expect, rx } from '../../test';
-import { Bundle } from '.';
+import { Window } from '.';
 
 const bus = rx.bus();
 
-describe('main.Bundle', () => {
+describe('main.Window', () => {
   describe('Events', () => {
-    const events = Bundle.Events({ bus });
+    const events = Window.Events({ bus });
 
     it('is.base', () => {
       const test = (type: string, expected: boolean) => {
@@ -13,10 +13,10 @@ describe('main.Bundle', () => {
       };
 
       test('foo', false);
-      test('runtime.electron/Bundle', false);
+      test('runtime.electron/Window', false);
 
-      test('runtime.electron/Bundle/', true);
-      test('runtime.electron/Bundle/status:req', true);
+      test('runtime.electron/Window/', true);
+      test('runtime.electron/Window/status:req', true);
     });
   });
 });

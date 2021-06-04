@@ -21,14 +21,13 @@ export function WindowController(args: { bus: t.EventBus<any> }) {
   const $ = bus.$.pipe(takeUntil(dispose$));
 
   let refs: WindowRef[] = [];
-
   const channel = constants.IPC.CHANNEL;
   const sys = IpcSysInfo({ channel, getRefs: () => refs }).listen();
 
   /**
    * Window creation.
    */
-  rx.payload<t.ElectronWindowCreateReqEvent>($, 'runtime.electron/window/create:req')
+  rx.payload<t.ElectronWindowCreateReqEvent>($, 'runtime.electron/Window/create:req')
     .pipe()
     .subscribe(async (e) => {
       const { tx, url, props } = e;
@@ -85,7 +84,7 @@ export function WindowController(args: { bus: t.EventBus<any> }) {
       ) => {
         const bounds = windowBounds ?? { width: -1, height: -1, x: -1, y: -1 };
         bus.fire({
-          type: 'runtime.electron/window/changed',
+          type: 'runtime.electron/Window/changed',
           payload: { uri, action, bounds },
         });
       };
@@ -118,7 +117,7 @@ export function WindowController(args: { bus: t.EventBus<any> }) {
         if (isVisible) browser.show();
 
         bus.fire({
-          type: 'runtime.electron/window/create:res',
+          type: 'runtime.electron/Window/create:res',
           payload: { tx, uri, isVisible },
         });
       });
@@ -129,7 +128,7 @@ export function WindowController(args: { bus: t.EventBus<any> }) {
   /**
    * Window status.
    */
-  rx.payload<t.WindowsStatusReqEvent>($, 'runtime.electron/windows/status:req')
+  rx.payload<t.WindowStatusReqEvent>($, 'runtime.electron/Window/status:req')
     .pipe()
     .subscribe((e) => {
       const { tx } = e;
@@ -144,7 +143,7 @@ export function WindowController(args: { bus: t.EventBus<any> }) {
         };
       });
       bus.fire({
-        type: 'runtime.electron/windows/status:res',
+        type: 'runtime.electron/Window/status:res',
         payload: { tx, windows },
       });
     });
@@ -152,7 +151,7 @@ export function WindowController(args: { bus: t.EventBus<any> }) {
   /**
    * Window change requests (eg, move, resize).
    */
-  rx.payload<t.WindowChangeEvent>($, 'runtime.electron/window/change')
+  rx.payload<t.WindowChangeEvent>($, 'runtime.electron/Window/change')
     .pipe()
     .subscribe((e) => {
       const browser = refs.find((ref) => ref.uri === e.uri)?.browser;

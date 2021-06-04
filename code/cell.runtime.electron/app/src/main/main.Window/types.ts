@@ -23,7 +23,7 @@ export type WindowBounds = { x: number; y: number; width: number; height: number
 export type WindowEvent =
   | ElectronWindowCreateReqEvent
   | WindowCreateResEvent
-  | WindowsStatusReqEvent
+  | WindowStatusReqEvent
   | WindowsStatusResEvent
   | WindowChangeEvent
   | ElectronWindowChangedEvent;
@@ -32,7 +32,7 @@ export type WindowEvent =
  * Fired to create a new window.
  */
 export type ElectronWindowCreateReqEvent = {
-  type: 'runtime.electron/window/create:req';
+  type: 'runtime.electron/Window/create:req';
   payload: ElectronWindowCreateReq;
 };
 export type ElectronWindowCreateReq = {
@@ -53,7 +53,7 @@ export type ElectronWindowCreateReq = {
   };
 };
 export type WindowCreateResEvent = {
-  type: 'runtime.electron/window/create:res';
+  type: 'runtime.electron/Window/create:res';
   payload: WindowCreateRes;
 };
 export type WindowCreateRes = {
@@ -65,14 +65,14 @@ export type WindowCreateRes = {
 /**
  * Fired to retrieve the status of open windows.
  */
-export type WindowsStatusReqEvent = {
-  type: 'runtime.electron/windows/status:req';
-  payload: WindowsStatusReq;
+export type WindowStatusReqEvent = {
+  type: 'runtime.electron/Window/status:req';
+  payload: WindowStatusReq;
 };
-export type WindowsStatusReq = { tx: string };
+export type WindowStatusReq = { tx: string };
 
 export type WindowsStatusResEvent = {
-  type: 'runtime.electron/windows/status:res';
+  type: 'runtime.electron/Window/status:res';
   payload: WindowsStatusRes;
 };
 export type WindowsStatusRes = { tx: string; windows: ElectronWindowStatus[] };
@@ -81,7 +81,7 @@ export type WindowsStatusRes = { tx: string; windows: ElectronWindowStatus[] };
  * Fires to initiate a change to a window
  */
 export type WindowChangeEvent = {
-  type: 'runtime.electron/window/change';
+  type: 'runtime.electron/Window/change';
   payload: WindowChange;
 };
 export type WindowChange = {
@@ -94,7 +94,7 @@ export type WindowChange = {
  * Fired when a windows state has changed.
  */
 export type ElectronWindowChangedEvent = {
-  type: 'runtime.electron/window/changed';
+  type: 'runtime.electron/Window/changed';
   payload: ElectronWindowChanged;
 };
 export type ElectronWindowChanged = {

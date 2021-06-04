@@ -1,6 +1,7 @@
 import { t, rx, slug, ENV } from '../common';
 import { Events } from './main.System.Events';
 import { RuntimeInfo } from '../main.server';
+import { DataController } from './main.System.Controller.data';
 
 /**
  * Behavioral event controller.
@@ -17,6 +18,8 @@ export function Controller(args: {
   const bus = rx.busAsType<t.SystemEvent>(args.bus);
   const events = Events({ bus });
   const { dispose, dispose$ } = events;
+
+  DataController({ bus, events, paths });
 
   const getStatus = (): t.SystemStatus => {
     const runtime = RuntimeInfo({ paths });
@@ -37,10 +40,7 @@ export function Controller(args: {
     });
   });
 
-  return {
-    dispose,
-    dispose$,
-  };
+  return { dispose, dispose$ };
 }
 
 /**

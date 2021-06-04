@@ -10,14 +10,10 @@ export type NameCommandReqEvent = {
   type: 'module.name/ns/command:req';
   payload: NameCommandReq;
 };
-export type NameCommandReq = {
-  tx?: string;
-};
+export type NameCommandReq = { tx?: string };
 
 export type NameCommandResEvent = {
   type: 'module.name/ns/command:res';
   payload: NameCommandRes;
 };
-export type NameCommandRes = {
-  tx: string;
-};
+export type NameCommandRes = { tx: string };

@@ -8,8 +8,9 @@ export function Events(args: { bus: t.EventBus<any> }) {
   const { dispose, dispose$ } = rx.disposable();
   const bus = rx.busAsType<t.NameEvent>(args.bus);
 
+  const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
   const is = {
-    base: (input: any) => rx.isEvent(input, { startsWith: 'namespace/' }),
+    base: matcher('namespace/'),
   };
 
   const $ = bus.$.pipe(
