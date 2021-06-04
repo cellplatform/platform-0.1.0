@@ -63,8 +63,9 @@ export function WindowController(args: { bus: t.EventBus<any> }) {
           contextIsolation: true, //  https://www.electronjs.org/docs/tutorial/context-isolation
           nodeIntegration: false, //  NB: Obsolete (see `contextIsolation`) but leaving around for safety.
           enableRemoteModule: false,
-          preload: constants.paths.preload,
+          allowRunningInsecureContent: false, // NB: Default:false - but explicitly set false for good measure.
           additionalArguments: argv,
+          preload: constants.paths.preload,
         },
       });
 
