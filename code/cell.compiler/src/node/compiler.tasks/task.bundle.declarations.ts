@@ -7,6 +7,7 @@ import { Typescript } from '../ts';
 export const bundleDeclarations: t.CompilerRunBundleDeclarations = async (input, options = {}) => {
   const { silent } = options;
   const timer = time.timer();
+
   const label = `compiling type declarations (${log.green('.d.ts')} files)...`;
   const spinner = ProgressSpinner({ label });
   if (!silent) {
