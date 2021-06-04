@@ -62,5 +62,14 @@
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "license": "MIT",
-  "private": true
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "*"
+    ]
+  },
+  "resolutions": {
+    "rxjs": "7.0.1",
+    "core-js": "3.12.1"
+  }
 }
