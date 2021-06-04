@@ -53,8 +53,8 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
       url: 'https://dev.db.team/cell:ckmv1vll1000e01etelnr0s9a:A1/fs/sys.net/index.html',
     },
     {
-      ns: 'sys.ui.code',
-      url: 'https://dev.db.team/cell:ckmv1vll1000e01etelnr0s9a:A1/fs/sys.net/index.html',
+      ns: 'sys.scratchpad',
+      url: 'https://dev.db.team/cell:ckmv3zeal000d1xetdafghfj9:A1/fs/sys.scratchpad/index.html',
     },
   ];
 
