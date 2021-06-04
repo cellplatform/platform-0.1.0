@@ -1,4 +1,4 @@
-import { t, defaultValue } from '../../common';
+import { t } from '../../common';
 import { TscTranspiler } from './TscCompiler.transpile';
 import { TscCopy } from './TscCopy';
 
@@ -17,7 +17,7 @@ export function TscDeclarations(tsconfig: t.TscConfig) {
         transformPath: (path) => path.replace(/\.d\.ts$/, '.d.txt'),
       });
 
-      if (defaultValue(args.copyRefs, true)) {
+      if (args.copyRefs ?? true) {
         await TscCopy.refs({ sourceDir: res.out.dir });
       }
 
