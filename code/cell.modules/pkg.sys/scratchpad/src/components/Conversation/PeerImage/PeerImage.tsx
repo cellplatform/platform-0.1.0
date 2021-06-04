@@ -13,7 +13,7 @@ export type PeerImageProps = {
 };
 
 export const PeerImage: React.FC<PeerImageProps> = (props) => {
-  const bus = props.bus.type<t.ConversationEvent>();
+  const bus = rx.busAsType<t.ConversationEvent>(props.bus);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const [src, setSrc] = useState<string | undefined>();
@@ -31,7 +31,7 @@ export const PeerImage: React.FC<PeerImageProps> = (props) => {
   useEffect(() => {
     const dispose$ = new Subject<void>();
 
-    rx.payload<t.ConversationFileEvent>(bus.event$, 'Conversation/file')
+    rx.payload<t.ConversationFileEvent>(bus.$, 'Conversation/file')
       .pipe(takeUntil(dispose$))
       .subscribe((e) => {
         setSrc(toDataUri(e.data));

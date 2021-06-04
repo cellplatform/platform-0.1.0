@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Spinner } from '../Primitives';
-import { css, CssValue, PeerJS, t } from './common';
+import { css, CssValue, PeerJS, t, rx } from './common';
 import { Layout } from './Layout';
 import { PeerImage } from './PeerImage';
 import { Remote } from './Remote';
@@ -18,7 +18,7 @@ export type ConversationProps = {
 
 export const Conversation: React.FC<ConversationProps> = (props) => {
   const { model, peer } = props;
-  const bus = props.bus.type<t.ConversationEvent>();
+  const bus = rx.busAsType<t.ConversationEvent>(props.bus);
   const [self, setSelf] = useState<PeerJS>();
   const [state, setState] = useState<t.ConversationState>(model.state);
 

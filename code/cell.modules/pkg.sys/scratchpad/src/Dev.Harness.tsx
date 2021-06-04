@@ -6,6 +6,7 @@ const imports = {
   Peer: import('./components/Conversation/Peer/DEV'),
   Slider: import('./components/Slider/DEV'),
   Crdt: import('./components/Crdt/dev/DEV'),
+  SlugProject: import('./components/SlugProject/dev/DEV'),
 };
 
 export const ACTIONS = Object.values(imports);

@@ -14,11 +14,11 @@ export function stateController(args: {
   const { peer, model } = args;
   const connections: PeerJS.DataConnection[] = [];
 
-  const bus = args.bus.type<t.ConversationEvent>();
+  const bus = rx.busAsType<t.ConversationEvent>(args.bus);
   const dispose = () => dispose$.next();
   const dispose$ = new Subject<void>();
 
-  const $ = bus.event$.pipe(takeUntil(dispose$));
+  const $ = bus.$.pipe(takeUntil(dispose$));
   const publish$ = rx.payload<t.ConversationPublishEvent>($, 'Conversation/publish');
 
   const changeModel = (data: Partial<t.ConversationState>) => {

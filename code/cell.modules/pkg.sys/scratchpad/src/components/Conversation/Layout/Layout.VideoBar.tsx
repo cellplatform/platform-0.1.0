@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { color, css, CssValue, PeerJS, t, defaultValue, R, Query } from '../common';
+import { color, css, CssValue, PeerJS, t, defaultValue, R, Query, rx } from '../common';
 import { Peer } from '../Peer';
 import { LayoutFooterResize } from './Layout.VideoBar.Resize';
 
@@ -14,7 +14,7 @@ export type LayoutFooterProps = {
 
 export const LayoutFooter: React.FC<LayoutFooterProps> = (props) => {
   const { peer, model } = props;
-  const bus = props.bus.type<t.ConversationEvent>();
+  const bus = rx.busAsType<t.ConversationEvent>(props.bus);
   const zoom = defaultValue(props.zoom, 1);
 
   type P = { token: string; call?: PeerJS.MediaConnection };

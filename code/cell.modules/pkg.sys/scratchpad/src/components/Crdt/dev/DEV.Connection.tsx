@@ -15,7 +15,7 @@ export type DevConnectionProps = {
 
 export const DevConnection: React.FC<DevConnectionProps> = (props) => {
   const { docs } = props;
-  const bus = props.bus.type<t.CrdtEvent>();
+  const bus = rx.busAsType<t.CrdtEvent>(props.bus);
 
   const [count, setCount] = useState<number>(0);
   const redraw = () => setCount((prev) => prev + 1);
@@ -27,7 +27,7 @@ export const DevConnection: React.FC<DevConnectionProps> = (props) => {
     setConnection(Connection({ bus, docs }));
 
     const dispose$ = new Subject<void>();
-    const $ = bus.event$.pipe(takeUntil(dispose$));
+    const $ = bus.$.pipe(takeUntil(dispose$));
 
     rx.payload<types.CrdtBroadcastChangeEvent>($, 'CRDT/broadcast/change')
       .pipe(debounceTime(100))

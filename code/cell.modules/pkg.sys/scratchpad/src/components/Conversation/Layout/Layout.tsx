@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { useZoomDrag, Zoom } from 'sys.ui.primitives/lib/components/Zoom';
 
-import { color, COLORS, css, CssValue, PeerJS, t, useResizeObserver, value } from '../common';
+import { color, COLORS, css, CssValue, PeerJS, t, useResizeObserver, value, rx } from '../common';
 import { LayoutFooter } from './Layout.VideoBar';
 
 export type LayoutProps = {
@@ -15,7 +15,7 @@ export type LayoutProps = {
 
 export const Layout: React.FC<LayoutProps> = (props) => {
   const { model, peer } = props;
-  const bus = props.bus.type<t.ConversationEvent>();
+  const bus = rx.busAsType<t.ConversationEvent>(props.bus);
 
   const bodyRef = useRef<HTMLDivElement>(null);
   const bodyResize = useResizeObserver(bodyRef);
