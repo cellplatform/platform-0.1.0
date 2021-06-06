@@ -13,6 +13,7 @@ export const SlugProject: React.FC<SlugProjectProps> = (props) => {
     body: css({
       Absolute: 0,
       Flex: 'horizontal-end-center',
+      overflow: 'hidden',
     }),
   };
 
