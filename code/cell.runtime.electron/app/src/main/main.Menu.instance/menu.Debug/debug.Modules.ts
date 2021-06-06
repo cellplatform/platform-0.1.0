@@ -46,6 +46,8 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
     },
   });
 
+  submenu.push({ type: 'separator' });
+
   type T = { ns: string; url: string };
   const refs: T[] = [
     {

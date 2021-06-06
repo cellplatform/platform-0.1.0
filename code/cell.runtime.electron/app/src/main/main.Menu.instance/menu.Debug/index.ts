@@ -1,7 +1,7 @@
 import { t } from '../common';
 import { DataMenu } from './debug.Data';
-import { DevToolsMenu } from './debug.DevTools';
-import { ServerMenu } from './debug.Server';
+import { DevToolsMenu } from './debug.Tools';
+import { ServerMenu } from './debug.Http';
 import { ModulesMenu } from './debug.Modules';
 
 /**
@@ -15,9 +15,9 @@ export function DebugMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
     submenu: [
       ModulesMenu({ bus }),
       { type: 'separator' },
-      DevToolsMenu({ bus }),
       ServerMenu({ bus }),
       DataMenu({ bus }),
+      DevToolsMenu({ bus }),
     ],
   };
   return item;

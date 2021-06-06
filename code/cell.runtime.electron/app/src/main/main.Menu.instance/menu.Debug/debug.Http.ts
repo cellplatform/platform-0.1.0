@@ -1,7 +1,5 @@
 import { shell } from 'electron';
-
-import { System } from '../../main.System';
-import { t, Uri } from '../common';
+import { t, System, Uri } from '../common';
 
 /**
  * Dev tools menu.
@@ -24,18 +22,8 @@ export function ServerMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
 
   const item: t.MenuItem = {
     type: 'normal',
-    label: 'Local',
+    label: 'Local (HTTP)',
     submenu: [
-      {
-        type: 'normal',
-        label: 'Logs',
-        async click() {
-          const status = await getStatus();
-          open.finder(status.runtime.paths.log);
-        },
-      },
-      { type: 'separator' },
-      { type: 'normal', label: 'HTTP Endpoints', enabled: false },
       {
         type: 'normal',
         label: '• Local Runtime',

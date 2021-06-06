@@ -18,6 +18,7 @@ export function DataMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
         label: 'Reveal Folder',
         click: async () => events.system.open.path.fire((await paths()).dir),
       },
+      { type: 'separator' },
       {
         type: 'normal',
         label: 'Snapshot',
