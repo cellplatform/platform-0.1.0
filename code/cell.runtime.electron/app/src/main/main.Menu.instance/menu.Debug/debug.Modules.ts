@@ -56,7 +56,7 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
     },
     {
       ns: 'sys.scratchpad',
-      url: 'https://dev.db.team/cell:ckmv3zeal000d1xetdafghfj9:A1/fs/sys.scratchpad/index.html',
+      url: 'https://dev.db.team/cell:ckmv3zeal000d1xetdafghfj9:A1/fs/sys.scratchpad/index.html?ui.dev.ns=ui/SlugProject',
     },
   ];
 
