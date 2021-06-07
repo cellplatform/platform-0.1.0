@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { Sample, SampleProps } from '.';
 
-import { NetworkBus } from '../../NetworkBus';
+import { IpcBus } from '../../IpcBus';
 
 type Foo = { type: 'foo'; payload: { count: number } };
 type Ctx = { props: SampleProps };
@@ -15,7 +15,7 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const netbus = NetworkBus<Foo>();
+    const netbus = IpcBus<Foo>();
 
     console.log('-------------------------------------------');
     netbus.$.subscribe((e) => {

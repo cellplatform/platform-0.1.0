@@ -2,9 +2,10 @@ import { NetworkBus as NetworkBusCore } from '@platform/cell.runtime/lib/Network
 import { t, env } from '../common';
 
 /**
- * Derives a network bus from the environment.
+ * Derives a NetworkBus from the Electron environment
+ * using IPC (the "inter-process communication" transport).
  */
-export function NetworkBus<E extends t.Event>() {
+export function IpcBus<E extends t.Event>() {
   const network = env?.network;
 
   if (typeof network !== 'object')
