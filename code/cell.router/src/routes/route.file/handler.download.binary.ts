@@ -14,7 +14,7 @@ export const downloadBinaryFile = async (args: {
 
   try {
     // Perform preliminary argument checks.
-    const preflight = await downloadFilePreflight({ host, db, fileUri, filename, matchHash });
+    const preflight = await downloadFilePreflight({ host, db, fs, fileUri, filename, matchHash });
 
     const { error, file, location, mime = 'application/octet-stream' } = preflight;
     if (error) {

@@ -88,7 +88,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
 
       return !paramData.ns || error
         ? { status, data: { error } }
-        : uploadCellFilesComplete({ db, cellUri, body, host, changes });
+        : uploadCellFilesComplete({ db, fs, cellUri, body, host, changes });
     } catch (err) {
       return util.toErrorPayload(err);
     }

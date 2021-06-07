@@ -16,6 +16,10 @@ describe('cell.fs: upload', function () {
     const upload = await client.fs.upload([{ filename, data }]);
     expect(upload.ok).to.eql(true);
 
+    // Ensure the absolute file-path is exposed, not the shortened ("~") home folder.
+    expect(upload.body.files.length).to.eql(1);
+    expect(upload.body.files[0].data.props.location?.startsWith('file://~')).to.eql(false);
+
     const download = await client.file.name(filename).download();
     expect(download.ok).to.eql(true);
 

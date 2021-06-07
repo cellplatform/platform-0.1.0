@@ -80,9 +80,10 @@ export async function uploadFileStart(args: {
     }
 
     // Finish up.
-    const fileResponse = await fileInfo({ fileUri, db, host });
+    const fileResponse = await fileInfo({ fileUri, db, fs, host });
     const { status } = fileResponse;
     const fileResponseData = fileResponse.data as t.IResGetFile;
+
     const res: t.IPayload<t.IResPostFileUploadStart> = {
       status,
       data: {

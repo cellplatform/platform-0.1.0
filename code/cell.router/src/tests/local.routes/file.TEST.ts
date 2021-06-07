@@ -75,7 +75,8 @@ describe('file:', () => {
 
     it('binay image file (.png)', async () => {
       const source = 'src/test/assets/bird.png';
-      const { mock, fileUri } = await testPostFile({ source, dispose: false });
+      const upload = await testPostFile({ source, dispose: false });
+      const { mock, fileUri } = upload;
 
       const urls = mock.urls.file(fileUri);
       const resDownload = await http.get(urls.download.toString());
@@ -87,6 +88,7 @@ describe('file:', () => {
       const json = resInfo.json as t.IResGetFile;
       const props = json.data.props;
 
+      expect(upload.res.body.files[0].data).to.eql(json.data);
       expect(json.uri).to.eql(fileUri);
       expect(props.mimetype).to.eql('image/png');
       expect(props.location).to.match(/^file:\/\//);
@@ -104,7 +106,7 @@ describe('file:', () => {
       expect(file1.toString()).to.eql(file2.toString());
     });
 
-    it('file with hash query-string', async () => {
+    it('error: file with hash query-string', async () => {
       const source = 'src/test/assets/func.wasm';
       const { mock, fileUri } = await testPostFile({
         source,
@@ -126,6 +128,35 @@ describe('file:', () => {
       expect(error.status).to.eql(409);
       expect(error.type).to.eql('HTTP/hash/mismatch');
       expect(error.message).to.contain('does not match the stored file');
+    });
+
+    it('store location path from root dir only', async () => {
+      const source = 'src/test/assets/func.wasm';
+      const upload = await testPostFile({
+        source,
+        dispose: false,
+      });
+
+      const { mock, fileUri } = upload;
+
+      const urls = mock.urls.file(fileUri);
+      const resInfo = await http.get(urls.info.toString());
+      const data = upload.res.body.files[0].data;
+
+      const db = (await fs.readFile(mock.filename)).toString();
+      mock.dispose();
+
+      expect(resInfo.status).to.eql(200);
+      expect((resInfo.json as t.IResGetFile).data).to.eql(data);
+      expect(data.props.location?.startsWith('file://~')).to.eql(false);
+
+      // Ensure the DB stores the relative path only.
+      const relativeLocation = Schema.File.Path.Local.toRelativeLocation({
+        path: data.props.location || '',
+        root: mock.fs.dir,
+      });
+
+      expect(db.includes(relativeLocation)).to.eql(true); // NB: location stored in DB with home directory prefix ("~").
     });
   });
 });

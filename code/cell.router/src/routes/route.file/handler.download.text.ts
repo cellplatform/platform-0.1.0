@@ -36,7 +36,7 @@ export const downloadTextFile = async (args: {
     }
 
     // Perform preliminary argument checks.
-    const preflight = await downloadFilePreflight({ host, db, fileUri, filename, matchHash });
+    const preflight = await downloadFilePreflight({ host, db, fs, fileUri, filename, matchHash });
     const { error, file, location } = preflight;
     if (error) {
       const { status, message, type } = error;

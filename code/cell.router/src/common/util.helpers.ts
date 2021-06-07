@@ -12,7 +12,7 @@ export function isOK(status: number | string = 200) {
  * Determines if the given string is an HTTP link.
  */
 export function isHttp(input = '') {
-  input = input.trim();
+  input = input.trimLeft();
   return input.startsWith('https://') || input.startsWith('http://');
 }
 
@@ -20,7 +20,7 @@ export function isHttp(input = '') {
  * Determines if the given string is a FILE link.
  */
 export function isFile(input = '') {
-  return input.trim().startsWith('file://');
+  return input.trimLeft().startsWith('file://');
 }
 
 /**

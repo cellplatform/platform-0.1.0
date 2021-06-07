@@ -6,8 +6,8 @@ import { getTypes } from './handler.typesystem';
 /**
  * Namespace routes.
  */
-export function init(args: { db: t.IDb; router: t.IRouter }) {
-  const { db, router } = args;
+export function init(args: { fs: t.IFileSystem; db: t.IDb; router: t.IRouter }) {
+  const { fs, db, router } = args;
 
   const getParams = (req: t.IRouteRequest) => {
     const params = req.params as t.IUrlParamsNs;
@@ -52,7 +52,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
     const host = req.host;
     const query = req.query as t.IReqQueryNsInfo;
     const { status, id, error } = getParams(req);
-    return !id || error ? { status, data: { error } } : getNs({ host, db, id, query });
+    return !id || error ? { status, data: { error } } : getNs({ host, fs, db, id, query });
   });
 
   /**
@@ -63,7 +63,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
     const query = req.query as t.IReqQueryNsWrite;
     const { status, id, error } = getParams(req);
     const body = (await req.body.json<t.IReqPostNsBody>()) || {};
-    return !id || error ? { status, data: { error } } : postNs({ host, db, id, body, query });
+    return !id || error ? { status, data: { error } } : postNs({ host, db, fs, id, body, query });
   });
 
   /**

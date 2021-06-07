@@ -3,19 +3,20 @@ import { fileInfo } from './handler.info';
 
 export const downloadFilePreflight = async (args: {
   host: string;
+  fs: t.IFileSystem;
   db: t.IDb;
   fileUri: string;
   filename?: string;
   matchHash?: string;
 }) => {
   try {
-    const { db, fileUri, filename, host, matchHash } = args;
+    const { db, fs, fileUri, filename, host, matchHash } = args;
     const mime = util.toMimetype(filename) || 'application/octet-stream';
 
     let error: t.IHttpError | undefined;
 
     // Pull the file meta-data.
-    const fileResponse = await fileInfo({ fileUri, db, host });
+    const fileResponse = await fileInfo({ fileUri, fs, db, host });
     if (!util.isOK(fileResponse.status)) {
       // NB: This is an error.
       error = fileResponse as unknown as t.IHttpError;

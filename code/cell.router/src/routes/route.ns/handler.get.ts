@@ -1,13 +1,15 @@
 import { models, Schema, t } from '../common';
 import * as util from './util';
+import { ensureAbsoluteLocations } from '../../fs.local';
 
 export async function getNs(args: {
   host: string;
   db: t.IDb;
+  fs: t.IFileSystem;
   id: string;
   query: t.IReqQueryNsInfo;
 }): Promise<t.IPayload<t.IResGetNs> | t.IErrorPayload> {
-  const { db, id, query, host } = args;
+  const { db, fs, id, query, host } = args;
   const uri = Schema.Uri.create.ns(id);
   const model = await models.Ns.create({ db, uri }).ready;
 
@@ -15,7 +17,7 @@ export async function getNs(args: {
   const { createdAt, modifiedAt } = model;
 
   type T = { data: Partial<t.INsDataChildren>; totals: Partial<t.INsTotals> };
-  const nsDataResponse = await getNsData({ model, query });
+  const nsDataResponse = await getNsData({ fs, model, query });
   if (util.isErrorPayload(nsDataResponse)) {
     return nsDataResponse as t.IErrorPayload;
   }
@@ -47,9 +49,10 @@ export async function getNs(args: {
 export async function getNsData(args: {
   model: t.IDbModelNs;
   query: t.IReqQueryNsInfo;
+  fs: t.IFileSystem;
 }): Promise<{ data: Partial<t.INsDataChildren>; totals: Partial<t.INsTotals> } | t.IErrorPayload> {
   try {
-    const { model, query } = args;
+    const { model, query, fs } = args;
     if (Object.keys(query).length === 0) {
       return { data: {}, totals: {} };
     }
@@ -62,7 +65,15 @@ export async function getNsData(args: {
     const total = query.total;
 
     // Query the database.
-    return models.ns.getChildData({ model, cells, columns, rows, files, total });
+    let res = await models.ns.getChildData({ model, cells, columns, rows, files, total });
+
+    // Ensure all local file-system paths are absolute.
+    if (fs.type === 'LOCAL' && res.data.files) {
+      const files = ensureAbsoluteLocations({ fs, files: res.data.files });
+      res = { ...res, data: { ...res.data, files } };
+    }
+
+    return res;
   } catch (err) {
     return util.toErrorPayload(err);
   }

@@ -21,7 +21,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const query = req.query as t.IReqQueryFileInfo;
     const params = req.params as t.IUrlParamsFile;
     const { status, ns, error, fileUri } = getParams(params);
-    return !ns || error ? { status, data: { error } } : fileInfo({ fileUri, db, host });
+    return !ns || error ? { status, data: { error } } : fileInfo({ fileUri, fs, db, host });
   });
 
   /**

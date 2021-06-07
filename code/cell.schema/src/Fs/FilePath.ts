@@ -2,7 +2,7 @@ import { Uri } from '../Uri';
 import { Url } from '../Url';
 
 /**
- * Helpers for parsing a file path.
+ * Helpers for working with a file path.
  */
 export const FilePath = {
   /**
@@ -43,5 +43,60 @@ export const FilePath = {
       error: error ? error : undefined,
       toString: () => parsed.path,
     };
+  },
+
+  /**
+   * Helpers for working with paths on a [local] file-system implementation.
+   */
+  Local: {
+    /**
+     * Convert a value to an absolute path.
+     */
+    toAbsolutePath(args: { path: string; root: string }) {
+      const root = Clean.root(args.root);
+      const path = Clean.path(args.path, root);
+      return `${root}/${path}`;
+    },
+
+    /**
+     * Convert a valuew to a relative path, using the home ("~") character.
+     */
+    toRelativePath(args: { path: string; root: string }) {
+      const root = Clean.root(args.root);
+      const path = Clean.path(args.path, root);
+      return `~/${path}`;
+    },
+
+    /**
+     * Convert a path to a location field value.
+     */
+    toAbsoluteLocation(args: { path: string; root: string }) {
+      return `file://${FilePath.Local.toAbsolutePath(args)}`;
+    },
+
+    /**
+     * Convert a path to a relative location, using the home ("~") character.
+     */
+    toRelativeLocation(args: { path: string; root: string }) {
+      return `file://${FilePath.Local.toRelativePath(args)}`;
+    },
+  },
+};
+
+/**
+ * [Helpers]
+ */
+
+const Clean = {
+  root(path: string) {
+    return (path ?? '').trim().replace(/\/*$/, '');
+  },
+  path(path: string, root: string) {
+    return (path ?? '')
+      .trim()
+      .replace(/^file\:\/\//, '')
+      .replace(new RegExp(`^${root}`), '')
+      .replace(/^\~\//, '')
+      .replace(/^\/*/, '');
   },
 };
