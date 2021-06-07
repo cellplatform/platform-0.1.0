@@ -4,7 +4,7 @@ export default () =>
   Compiler.config()
     .port(Package.compiler.port)
     .namespace('sys.ui.shell')
-    .entry('./src/test/entry.web')
+    .entry('main', './src/test/entry.web')
     .static('./static')
     .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
     .expose('./Dev', './src/test/App')

@@ -4,7 +4,7 @@ const web = (config: Config) =>
   config
     .target('web')
     .port(Package.compiler.port)
-    .entry('main', './src/entry/main')
+    .entry('main', './src/entry/dom')
 
     // .declarations('./src/**/*')
 

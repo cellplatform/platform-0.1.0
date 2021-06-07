@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { App } from './components/App';
-import './workers/init';
+import './workers.init';
 
 /**
  * React
