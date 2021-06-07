@@ -7,7 +7,7 @@ const worker = new Worker();
 worker.onmessage = (e: MessageEvent) => console.log('🌼 event (from worker thread)', e.data);
 
 setTimeout(() => {
-  worker.postMessage({ msg: 'Hello from [App.entry.tsx]' });
+  worker.postMessage({ msg: 'Hello from [workers.init]' });
 }, 500);
 
 /**
