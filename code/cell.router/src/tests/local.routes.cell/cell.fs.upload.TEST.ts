@@ -1,5 +1,3 @@
-/* eslint-disable */
-import { parse as parseUrl } from 'url';
 import { createMock, expect, fs, Http, readFile, Schema, t, http, is } from '../../test';
 
 describe('cell.fs: upload', function () {
@@ -376,17 +374,16 @@ describe('cell.fs: upload', function () {
     const filesRes = await client.fs.list();
     const cellRes = await client.info();
 
+    await mock.dispose();
+
     const links = uploadRes.body.cell.links || {};
     expect(cellRes.body.data.links).to.eql(links); // Cell links match on upload response with current cell info..
 
     const fileUri = links['fs:func:wasm'];
-    const query = parseUrl(fileUri, true).query;
+    const hash = new URL(fileUri).searchParams.get('hash');
 
-    expect(query.hash).to.match(/^sha256-/);
-    expect(query.hash).to.eql(filesRes.body[0].hash);
-
-    // Finish up.
-    await mock.dispose();
+    expect(hash).to.match(/^sha256-/);
+    expect(hash).to.eql(filesRes.body[0].hash);
   });
 
   /**
