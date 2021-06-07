@@ -23,7 +23,7 @@ export default () =>
         )
 
         .shared((config) => config.add(config.dependencies).singleton(['react', 'react-dom']))
-        .expose('./Dev', './src/components/Dev.Harness')
+        .expose('./Dev', './src/Dev.Harness')
         .expose('./CodeEditor', './src/components/CodeEditor'),
     )
 

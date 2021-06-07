@@ -20,7 +20,6 @@ type Ctx = { props: HarnessProps };
 const props: HarnessProps = {
   bus,
   actions: ACTIONS,
-  namespace: 'child-dev',
   store: true, // Default (local-storage).
   allowRubberband: false,
 

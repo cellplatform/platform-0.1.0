@@ -7,6 +7,8 @@ const imports = {
 };
 
 const isLocalhost = location.hostname === 'localhost';
+const ns = new URL(location.href).searchParams.get('ui.dev.ns');
 
-export const ACTIONS = Object.values(imports);
-export const DevHarness: React.FC = () => <Harness actions={ACTIONS} showActions={!isLocalhost} />;
+export const DevHarness: React.FC = () => (
+  <Harness actions={Object.values(imports)} initial={ns} showActions={!isLocalhost} />
+);

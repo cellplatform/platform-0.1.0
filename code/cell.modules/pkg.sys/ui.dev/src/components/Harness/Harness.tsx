@@ -14,7 +14,7 @@ export type HarnessProps = {
   bus?: t.EventBus<any>;
   actions?: t.ActionsSet;
   store?: t.ActionsSelectStore | boolean;
-  namespace?: string;
+  initial?: t.Namespace | null;
   allowRubberband?: boolean; // Page rubber-band effect in Chrome (default: false).
   showActions?: boolean;
   style?: CssValue;
@@ -39,8 +39,13 @@ export const Harness: React.FC<HarnessProps> = (props) => {
   }, [props.allowRubberband]);
 
   const actions = useActionsPropertyInput(props.actions);
-  const store = toStore(props.namespace, actions.items, props.store);
-  const actionsState = useActionsSelectorState({ bus, store, actions: actions.items });
+  const store = toStore(undefined, actions.items, props.store);
+  const actionsState = useActionsSelectorState({
+    bus,
+    store,
+    actions: actions.items,
+    initial: props.initial || undefined,
+  });
 
   const selected = actionsState.selected;
   selected?.renderSubject();
@@ -153,5 +158,5 @@ function toStore(
   store?: t.ActionsSelectStore | boolean,
 ): t.ActionsSelectStore | undefined {
   if (typeof store === 'function') return store;
-  return store === false ? undefined : Store.ActionsSelect.localStorage({ namespace, actions });
+  return store === false ? undefined : Store.ActionsSelect.localStorage({ actions, namespace });
 }
