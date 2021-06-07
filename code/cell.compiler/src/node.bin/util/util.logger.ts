@@ -1,8 +1,6 @@
 import { log, Logger as commonLogger, t } from '../common';
 import { COMMANDS } from '../constants';
 
-type B = t.BuilderChain<t.CompilerModelMethods>;
-
 const { model, stats } = commonLogger;
 
 export const Logger = {
