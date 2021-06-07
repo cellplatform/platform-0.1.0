@@ -1,6 +1,6 @@
 {
   "name": "cell.runtime.electron",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "description": "Desktop runtime environment.",
   "main": "lib/main/index",
   "types": "lib/index.d.ts",

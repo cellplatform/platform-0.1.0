@@ -1,5 +1,6 @@
 import { format, fs, log, Model, ProgressSpinner, t, time, toModel } from '../common';
 import { Typescript } from '../ts';
+import { Manifest } from '../manifest';
 
 /**
  * Bundle the typescript declarations (".d.ts") files for a project.
@@ -21,15 +22,26 @@ export const bundleDeclarations: t.CompilerRunBundleDeclarations = async (input,
 
   if (declarations) {
     const ts = Typescript.compiler();
+    const dir = fs.join(bundleDir, 'types.d');
 
+    // Transpile and assemble the ".d.ts" files.
     const params: t.TscTranspileDeclarationsArgs[] = declarations.map((lib) => {
       const source = lib.include;
-      const outdir = fs.join(bundleDir, 'types.d', lib.dir);
+      const outdir = fs.join(dir, lib.dir);
       return { source, outdir, silent: true };
     });
-
     const res = await Promise.all(params.map((params) => ts.declarations.transpile(params)));
-    await ts.manifest.generate({ dir: bundleDir });
+
+    // Zip typelib folders.
+    if (options.zip ?? true) {
+      for (const typedir of await fs.glob.find(`${dir}/*/`)) {
+        await fs.zip(typedir).save(`${typedir.replace(/\/$/, '')}.zip`);
+        await fs.remove(typedir);
+      }
+    }
+
+    // Create a manifest index.
+    await Manifest.createAndSave({ sourceDir: dir });
 
     if (!silent) {
       spinner.stop();
