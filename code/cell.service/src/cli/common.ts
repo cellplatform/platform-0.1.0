@@ -1,6 +1,6 @@
 import { fs } from '@platform/fs';
-import * as t from '../common/types';
-export { Config } from '../server/config';
+import * as t from '../node/common/types';
+export { Config } from '../node/server/config';
 
 export { fs, t };
 export { cli } from '@platform/cli';
@@ -8,7 +8,7 @@ export { log } from '@platform/log/lib/server';
 export { defaultValue, time } from '@platform/util.value';
 export { http } from '@platform/http';
 
-export { PKG } from '../common/constants';
+export { PKG } from '../node/common/constants';
 export const PATH = {
   CONFIG_DIR: fs.resolve('config'),
 };

@@ -8,4 +8,4 @@ export * from '@platform/micro/lib/types';
 export * from '@platform/log/lib/types';
 export { IRouter } from '@platform/http.router/lib/types';
 
-export * from '../types';
+export * from '../../types';
