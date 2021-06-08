@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.service.webrtc",
-  "description": "Signalling service to establish connections between WebRTC clients. (Data is not proxied through the server)",
+  "description": "Signalling service to establish connections between WebRTC clients. (NB: data is not proxied through the server)",
   "version": "0.0.9",
   "scripts": {
     "start": "ts-node -T src/start.ts",
