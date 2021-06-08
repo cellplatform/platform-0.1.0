@@ -1,11 +1,12 @@
-import { NetworkBus as NetworkBusCore } from '@platform/cell.runtime/lib/NetworkBus';
+import { NetworkBus } from '@platform/cell.runtime/lib/NetworkBus';
+
 import { t, env } from '../common';
 
 /**
- * Derives a NetworkBus from the Electron environment
+ * Derives a [NetworkBus] from the Electron environment
  * using IPC (the "inter-process communication" transport).
  */
-export function IpcBus<E extends t.Event>() {
+export function IpcBus<E extends t.Event>(): t.NetworkBus<E> {
   const network = env?.network;
 
   if (typeof network !== 'object')
@@ -14,5 +15,5 @@ export function IpcBus<E extends t.Event>() {
   const { local, remotes } = network;
   const pump = network.pump as unknown as t.NetworkPump<E>;
 
-  return NetworkBusCore<E>({ pump, local, remotes });
+  return NetworkBus<E>({ pump, local, remotes });
 }

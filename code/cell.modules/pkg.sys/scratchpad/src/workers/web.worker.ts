@@ -1,9 +1,18 @@
+import { WorkerBus, WorkerTransport } from '../WorkerBus';
+
 const ctx: Worker = self as any;
-
-// Post data to parent thread.
-ctx.postMessage({ msg: '|| Hello from [web.worker.ts]' });
-
-// Respond to message from parent thread.
-ctx.addEventListener('message', (e) => console.log('🌳 event (from parent thread)', e.data));
-
 export default ctx;
+
+const transport = WorkerTransport();
+
+type MyEvent = { type: 'foo'; payload: { msg?: string } };
+const bus = WorkerBus<MyEvent>(transport);
+// console.log('bus', bus);
+
+bus.$.subscribe((e) => {
+  console.log('WORKER subscribe', e);
+});
+
+setTimeout(() => {
+  bus.fire({ type: 'foo', payload: { msg: 'hello from worker' } });
+}, 3500);

@@ -7,6 +7,10 @@ type Uri = string;
 type O = Record<string, unknown>;
 type Event = { type: string; payload: O };
 
+/**
+ * Initializes a [NetworkPump] based on runtime hooks
+ * available on a desktop (Electron) environment.
+ */
 export function IpcTransport(args: { self: Uri; channel: string }): RuntimeDesktopEnvTransport {
   const { channel } = args;
   const sender = args.self;
