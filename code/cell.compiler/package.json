@@ -15,7 +15,6 @@
     "lint": "ts lint",
     "build": "ts build --no-esm $@",
     "prepare": "ts prepare",
-    "cmd": "node lib/node.bin $@",
     "bundle": "yarn cmd bundle $@",
     "watch": "yarn cmd watch $@",
     "start": "yarn cmd dev $@",
@@ -24,7 +23,8 @@
     "serve": "yarn cmd serve $@",
     "info": "yarn cmd info $@",
     "clean": "rm -rf tmp && yarn cmd clean $@",
-    "node": "ts-node -T script.ts/tmp.node.runtime $@"
+    "node": "ts-node -T script.ts/tmp.node.runtime $@",
+    "cmd": "node lib/node.cli $@"
   },
   "dependencies": {
     "@babel/core": "7.14.2",
