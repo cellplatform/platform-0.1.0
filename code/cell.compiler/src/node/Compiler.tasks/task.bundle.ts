@@ -12,6 +12,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
   return new Promise<t.CompilerRunBundleResponse>(async (resolve, reject) => {
     try {
       const { silent } = options;
+
       const { compiler, model, webpack } = wp.toCompiler(input);
       await ensureEntriesExist({ model });
 
@@ -33,7 +34,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
         }
         if (stats) {
           const res = toBundledResponse({ model, stats, webpack });
-          await bundleDeclarations(input);
+          await bundleDeclarations(input, { silent });
 
           const compilation = stats.compilation;
           if (compilation) {

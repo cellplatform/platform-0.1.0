@@ -1,14 +1,7 @@
 import { Compiler } from '..';
 import { expect, Uri } from '../../test';
-import { ConfigBuilder } from '../config';
 
 const host = 'localhost';
-
-const create = () => {
-  const model = ConfigBuilder.model('foo');
-  const builder = Compiler.config(model);
-  return { model, builder };
-};
 
 describe('Compiler (Tasks)', () => {
   describe('cell', () => {

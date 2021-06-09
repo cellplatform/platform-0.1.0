@@ -17,9 +17,10 @@ export const TestCompile = {
  */
 
 async function bundle(args: { config: t.CompilerModelBuilder; force?: boolean }) {
-  const outdir = fs.resolve(args.config.toObject().outdir || '');
-  if (args.force || !(await fs.pathExists(outdir))) {
-    await Compiler.bundle(args.config);
+  const { config, force } = args;
+  const outdir = fs.resolve(config.toObject().outdir || '');
+  if (force || !(await fs.pathExists(outdir))) {
+    await Compiler.bundle(config);
   }
 }
 
@@ -29,6 +30,9 @@ function make(dir: string, config: t.CompilerModelBuilder) {
   return {
     config,
     outdir: `${outdir}/${config.toObject().target || ''}`,
-    bundle: (force?: boolean) => bundle({ config, force }),
+    bundle(args: { force?: boolean }) {
+      const { force } = args;
+      return bundle({ config, force });
+    },
   };
 }

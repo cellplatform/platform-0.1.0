@@ -11,12 +11,21 @@ describe('TypeManifest', function () {
 
   const TMP = fs.resolve('tmp/test/TypeManifest');
   const config = SampleBundles.simpleNode.config;
-  const base = fs.join(SampleBundles.simpleNode.outdir, 'types.d');
+  const base = `${TMP}.types.d`;
   const dir = 'main';
 
   before(async () => {
     const force = false;
-    await SampleBundles.simpleNode.bundle(force);
+    await SampleBundles.simpleNode.bundle({ force });
+
+    // Copy the [types.d] and unzip it.
+    await fs.remove(base);
+    await fs.copy(fs.join(SampleBundles.simpleNode.outdir, 'types.d'), base);
+    for (const zipped of await fs.glob.find(`${base}/*.zip`)) {
+      const dir = zipped.substring(0, zipped.lastIndexOf('.'));
+      await fs.unzip(zipped, dir);
+      await fs.remove(zipped);
+    }
   });
 
   beforeEach(async () => await fs.remove(TMP));
@@ -84,6 +93,7 @@ describe('TypeManifest', function () {
   it('write => read', async () => {
     const model = config.toObject();
     const manifest = await TypeManifest.create({ model, base, dir });
+
     expect(manifest.files.length).to.greaterThan(0);
 
     const path = fs.join(TMP, TypeManifest.filename);
