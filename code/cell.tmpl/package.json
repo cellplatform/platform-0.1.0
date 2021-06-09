@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.tmpl",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Template generator for the system",
   "main": "lib/index",
   "types": "lib/index.d.ts",
