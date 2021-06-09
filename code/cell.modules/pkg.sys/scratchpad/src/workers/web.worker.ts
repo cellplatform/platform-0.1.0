@@ -1,4 +1,4 @@
-import { WorkerBus, WorkerTransport } from '../WorkerBus';
+import { WorkerBus, WorkerTransport } from '@platform/cell.runtime.web';
 
 const ctx: Worker = self as any;
 export default ctx;

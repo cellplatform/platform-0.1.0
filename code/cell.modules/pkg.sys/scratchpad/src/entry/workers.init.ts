@@ -1,6 +1,6 @@
 import Worker from 'worker-loader?inline=no-fallback!../workers/web.worker';
 
-import { WindowTransport, WorkerBus } from '../WorkerBus';
+import { WindowTransport, WorkerBus } from '@platform/cell.runtime.web';
 
 /**
  * Web-worker.
