@@ -1,5 +1,5 @@
 import { Config } from '.';
-import { t, expect, fs } from '../../test';
+import { t, expect, fs } from '../../../test';
 
 const loadSync = (args: t.IHttpConfigFileArgs) => {
   const path = args.path || 'default.yml';

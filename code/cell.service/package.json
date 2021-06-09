@@ -5,10 +5,9 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
-    "cell": "lib/cli/bin.js"
+    "cell.service": "lib/node.cli/index.js"
   },
   "scripts": {
-    "cell": "node lib/cli/bin $@",
     "start": "cd pkg.deployment && yarn start $@",
     "dev": "export NODE_ENV=development && yarn start",
     "watch": "cd pkg.deployment && yarn watch $@",
@@ -21,7 +20,8 @@
     "reset": "ts-node -T script.ts/reset",
     "nuke": "sh script.sh/nuke.sh",
     "dbuild": "cd pkg.deployment && yarn dbuild",
-    "public": "ngrok http 8080 --hostname=os.ngrok.io"
+    "public": "ngrok http 8080 --hostname=os.ngrok.io",
+    "cmd": "node lib/node.cli $@"
   },
   "dependencies": {
     "@platform/cell.router": "0.9.16",
