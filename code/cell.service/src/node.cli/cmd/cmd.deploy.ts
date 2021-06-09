@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { getConfigFiles, logNoConfigFiles } from './cmd.list';
-import { cli, defaultValue, fs, log, PKG, t, time } from './common';
+import { cli, defaultValue, fs, log, PKG, t, time } from '../common';
 
 const FILES = [
   'package.json',
@@ -24,7 +24,11 @@ type DeployTarget = 'now';
 /**
  * Run a deployment.
  */
-export async function run(args: { target: DeployTarget; force?: boolean; dry?: boolean }) {
+export async function deploy(argv: t.Argv) {
+  run({ target: 'now', force: argv.force as boolean, dry: argv.dry });
+}
+
+async function run(args: { target: DeployTarget; force?: boolean; dry?: boolean }) {
   const { target } = args;
   const force = defaultValue(args.force, false);
 

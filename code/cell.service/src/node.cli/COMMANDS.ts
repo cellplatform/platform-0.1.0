@@ -8,12 +8,19 @@ const PARAMS = {
 };
 
 export const COMMANDS: t.Commands = {
-  verb: {
-    description: 'Description of <verb> command',
+  init: {
+    description: 'Initialize new deployment configuration',
+    params: {},
+  },
+  ls: {
+    description: 'List deployment configurations',
+    params: {},
+  },
+  deploy: {
+    description: 'Deploy to cloud',
     params: {
-      '--name': PARAMS.COMMON.name,
-      '--mode': PARAMS.COMMON.mode,
-      '--force, -f': '(optional) Example with abbreviation',
+      '--force': `Force a new deployment even if nothing has changed`,
+      '--dry': `Dry run (prepares but will not deploy)`,
     },
   },
 };

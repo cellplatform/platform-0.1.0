@@ -1,9 +1,10 @@
-import { log, util, fs, cli, Config } from './common';
+import { log, fs, cli, Config } from '../common';
+import { util } from '../util';
 
 /**
  * List available deployment configurations.
  */
-export async function run() {
+export async function list() {
   // Read in the config files.
   const files = await getConfigFiles();
   const dir = files.dir;

@@ -1,3 +1,5 @@
+export * from '../node/common/types';
+
 import { minimist } from './common';
 
 export type Commands = Record<string, Command>;

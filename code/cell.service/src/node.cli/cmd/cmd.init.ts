@@ -1,7 +1,8 @@
-import { cli, fs, log, util } from './common';
+import { t, cli, fs, log } from '../common';
+import { util } from '../util';
 
 const TMPL = `
-title:          # Title of this CellOS provider.
+title:          # Title of this provider.
 
 fs:
   endpoint:     # URL to S3 endpoint.
@@ -23,7 +24,7 @@ secret:
 /**
  * Initialize a new deployment.
  */
-export async function run() {
+export async function init() {
   // Prepare the filename.
   const dir = await util.ensureConfigDir();
   let filename = await cli.prompt.text({ message: 'File name:', default: 'deploy.yml' });
