@@ -1,7 +1,7 @@
 {
   "name": "@platform/cell.tmpl",
-  "version": "0.1.119",
-  "description": "Template generator for CellOS.",
+  "version": "0.2.0",
+  "description": "Template generator for the system",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {

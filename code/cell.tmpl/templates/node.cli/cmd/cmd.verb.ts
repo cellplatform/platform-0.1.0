@@ -4,7 +4,7 @@ import * as util from '../util';
 const logger = util.Logger;
 
 /**
- * Bundle and start file watcher.
+ * Command.
  */
 export async function verb(argv: t.Argv) {
   logger.clear();
