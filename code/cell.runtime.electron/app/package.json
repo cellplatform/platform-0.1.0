@@ -1,6 +1,6 @@
 {
   "name": "cell.runtime.electron",
-  "version": "0.11.1",
+  "version": "0.11.3",
   "description": "Desktop runtime environment.",
   "main": "lib/main/index",
   "types": "lib/index.d.ts",
@@ -27,7 +27,7 @@
     "@platform/cell.router": "0.9.17",
     "@platform/cell.schema": "0.5.73",
     "@platform/cell.schema.sys": "0.0.107",
-    "@platform/cell.service": "0.8.52",
+    "@platform/cell.service": "0.8.54",
     "@platform/cell.types": "0.5.70",
     "@platform/cell.typesystem": "0.0.192",
     "@platform/cell.runtime.node": "0.0.42",

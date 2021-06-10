@@ -1,4 +1,4 @@
-import * as t from '../common/types';
+import { t } from './common';
 
 type Uri = string;
 

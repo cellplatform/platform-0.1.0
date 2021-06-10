@@ -1,8 +1,9 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
-import { Sample, SampleProps } from '.';
+import { Sample, SampleProps } from '..';
 
-import { IpcBus } from '../../IpcBus';
+import { IpcBus } from '../../../common';
+import { Foo } from '../../../../../app/src/renderer/renderer.Window'; // TEMP 🐷
 
 type Foo = { type: 'foo'; payload: { count: number } };
 type Ctx = { props: SampleProps };
@@ -15,14 +16,18 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const netbus = IpcBus<Foo>();
+    const bus = {
+      ipc: IpcBus<Foo>(),
+    };
+    // const netbus = IpcBus<Foo>();
 
+    console.log('Foo', Foo);
     console.log('-------------------------------------------');
-    netbus.$.subscribe((e) => {
+    bus.ipc.$.subscribe((e) => {
       console.log(' >> netbus', e);
     });
 
-    netbus.fire({ type: 'foo', payload: { count: 123 } });
+    bus.ipc.fire({ type: 'foo', payload: { count: 123 } });
 
     return { props: { count: 0 } };
   })

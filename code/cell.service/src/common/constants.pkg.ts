@@ -1,6 +1,6 @@
 export const PKG = {
   name: '@platform/cell.service',
-  version: '0.8.52',
+  version: '0.8.54',
   dependencies: {
     '@platform/cell.router': '0.9.17',
     '@platform/cell.schema': '0.5.73',

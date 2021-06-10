@@ -10,7 +10,7 @@ export function Controller(args: {
   bus: t.EventBus<any>;
   host: string;
   paths: t.ElectronDataPaths;
-  config: t.IConfigFile;
+  config: t.ElectronConfigFile;
 }) {
   const { paths, config } = args;
   const service = toServiceInfo(args.host);

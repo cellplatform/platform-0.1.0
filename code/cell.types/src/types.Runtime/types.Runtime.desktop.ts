@@ -5,7 +5,8 @@ type O = Record<string, unknown>;
 type Event = { type: string; payload: O };
 
 export type RuntimeDesktopEnv = {
-  kind: string;
+  self: Uri;
+  runtime: string;
   network: RuntimeDesktopEnvTransport;
 };
 

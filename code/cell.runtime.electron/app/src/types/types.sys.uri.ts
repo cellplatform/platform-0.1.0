@@ -10,7 +10,6 @@ export type ElectronProcessWindowUri = string; // format: "process:window:<id>"
  * Parsed URI objects.
  */
 export type ElectronUriObject = ElectronWindowUriObject;
-
 export type ElectronWindowUriObject = {
   ok: boolean;
   type: 'window';

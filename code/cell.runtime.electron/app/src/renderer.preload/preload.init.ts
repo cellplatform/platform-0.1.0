@@ -1,15 +1,15 @@
+import { RuntimeDesktopEnv } from '@platform/cell.types/lib/types.Runtime/types.Runtime.desktop';
 import { contextBridge } from 'electron';
 
-import { RuntimeDesktopEnv } from '@platform/cell.types/lib/types.Runtime/types.Runtime.desktop';
 import { ENV_KEY, IPC, PROCESS } from './common';
 import { IpcTransport } from './preload.IpcTransport';
 
 /**
- * The preload (sandbox) environment initialization.
+ * The preload (secure "sandbox") environment initialization.
  */
 export function init() {
   const isDev = Boolean(findArgv(PROCESS.DEV));
-  const kind = findArgv(PROCESS.RUNTIME);
+  const runtime = findArgv(PROCESS.RUNTIME);
   const self = findArgv(PROCESS.URI_SELF);
   const channel = IPC.CHANNEL;
 
@@ -22,10 +22,8 @@ export function init() {
   /**
    * Store the runtime environment.
    */
-  const env: RuntimeDesktopEnv = { kind, network };
+  const env: RuntimeDesktopEnv = { self, runtime, network };
   contextBridge.exposeInMainWorld(ENV_KEY, env);
-
-  console.log('env', env);
 
   /**
    * Print environment details.
@@ -33,7 +31,7 @@ export function init() {
   if (isDev) {
     console.group('🌳 preload (sandbox)');
     console.log('isDev', isDev);
-    console.log('self', self);
+    console.log('env', env);
     process.argv
       .filter((value) => value.startsWith('env:'))
       .forEach((value) => console.log(`• process.argv/${value}`));

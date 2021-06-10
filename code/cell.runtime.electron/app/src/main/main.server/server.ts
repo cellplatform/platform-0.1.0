@@ -1,6 +1,6 @@
 import { local } from '@platform/cell.fs.local';
 import { NodeRuntime } from '@platform/cell.runtime.node';
-import { server } from '@platform/cell.service/lib/server';
+import { server } from '@platform/cell.service/lib/node/server';
 import { NeDb } from '@platform/fsdb.nedb';
 import { filter } from 'rxjs/operators';
 

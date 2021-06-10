@@ -1,6 +1,6 @@
 import { ENV, paths } from './constants';
 import { fs, Uri, time } from './libs';
-import { IConfigFile } from './types';
+import { ElectronConfigFile } from './types';
 
 /**
  * Configuration data.
@@ -11,7 +11,7 @@ export class ConfigFile {
   /**
    * Generate a new "default" configuration file.
    */
-  public static default(): IConfigFile {
+  public static default(): ElectronConfigFile {
     const { name, version } = ENV.pkg;
     return {
       created: {
@@ -25,10 +25,10 @@ export class ConfigFile {
   /**
    * Read the configuration file from disk.
    */
-  public static async read(): Promise<IConfigFile> {
+  public static async read(): Promise<ElectronConfigFile> {
     const path = ConfigFile.path;
 
-    let file = await fs.file.loadAndParse<IConfigFile>(path);
+    let file = await fs.file.loadAndParse<ElectronConfigFile>(path);
     if (file) return file;
 
     file = ConfigFile.default();
@@ -39,8 +39,8 @@ export class ConfigFile {
   /**
    * Write the configuration file to disk.
    */
-  public static write(data: IConfigFile) {
+  public static write(data: ElectronConfigFile) {
     const path = ConfigFile.path;
-    return fs.file.stringifyAndSave<IConfigFile>(path, data);
+    return fs.file.stringifyAndSave<ElectronConfigFile>(path, data);
   }
 }

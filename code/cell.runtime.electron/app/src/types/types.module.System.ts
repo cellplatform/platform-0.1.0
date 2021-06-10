@@ -1,10 +1,10 @@
-import * as t from '../common/types';
+import { t } from './common';
 
 export type SystemStatus = {
   service: SystemStatusService;
   is: { prod: boolean; dev: boolean; mac: boolean };
   runtime: t.ElectronRuntimeInfo;
-  refs: t.IConfigFile['refs'];
+  refs: t.ElectronConfigFile['refs'];
 };
 
 export type SystemStatusService = {
