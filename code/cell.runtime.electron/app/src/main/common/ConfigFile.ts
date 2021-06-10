@@ -53,7 +53,7 @@ export const ConfigFile = {
   log: {
     async updateStarted() {
       const file = await ConfigFile.read();
-      let started = [...(file.started ?? [])];
+      const started = [...(file.started ?? [])];
 
       const now = (() => {
         const item = getIdentifierLogItem();
@@ -66,8 +66,8 @@ export const ConfigFile = {
         : undefined;
 
       /**
-       * Save the latest time (if the current version hasn't changed)
-       * of append the log with the new version if newer.
+       * Save the latest time (if the current version hasn't changed) or append the
+       * log with the newer version if a new version is opening the data folder.
        */
       if (!last) append();
       if (last) {
