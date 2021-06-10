@@ -21,7 +21,6 @@ export const SystemServer = {
       fs: local.init({ dir: paths.fs, fs }),
       runtime: NodeRuntime.create(),
       logger: args.log,
-      prod,
     });
 
     return { app, paths };

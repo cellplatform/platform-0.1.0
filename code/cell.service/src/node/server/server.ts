@@ -17,7 +17,6 @@ export function create(args: {
   name?: string;
   deployedAt?: number | string;
   logger?: t.ILog;
-  prod?: boolean;
 }) {
   const { db, name, fs, runtime } = args;
   const logger = args.logger || log;

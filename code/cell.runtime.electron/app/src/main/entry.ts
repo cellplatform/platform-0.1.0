@@ -11,38 +11,25 @@ import { BuildMenu } from './main.Menu.instance';
 import { IpcBus } from './main.Bus';
 
 /**
- *  NOTE:
- *    Setting this value to true (the default in Electron 9+)
- *    prevents the following warning being emitted in the
- *    console at startup.
- *
- *  WARNING (AVOIDED):
- *    (electron) The default value of app.allowRendererProcessReuse is deprecated,
- *    it is currently "false".  It will change to be "true" in Electron 9.
- *    For more information please check https://github.com/electron/electron/issues/18397
- */
-app.allowRendererProcessReuse = true;
-
-/**
  * Ensure all renderer processes are opened in "sandbox" mode.
  * https://www.electronjs.org/docs/tutorial/sandbox#enabling-the-sandbox-globally
  */
 app.enableSandbox();
 
 /**
- * Environment.
- */
-if (app.isPackaged) {
-  process.env.NODE_ENV = 'production';
-}
-
-/**
  * Startup the application.
  */
 export async function start() {
-  log.info.gray('━'.repeat(60));
-  const bus = rx.bus<t.ElectronRuntimeEvent>();
+  // Ensure the NODE_ENV value is cleanly set to "production" if packaged.
+  if (app.isPackaged || ENV.isProd) process.env.NODE_ENV = 'production';
   const prod = ENV.isProd;
+
+  log.info.gray('━'.repeat(60));
+
+  /**
+   * Prepare buses.
+   */
+  const bus = rx.bus<t.ElectronRuntimeEvent>();
 
   const ipcbus = IpcBus({ bus });
   ipcbus.$.subscribe((e) => {
@@ -57,7 +44,7 @@ export async function start() {
   try {
     // Start the HTTP server.
     const port = prod ? undefined : 5000;
-    const { paths, host, instance } = await SystemServer.start({ log, prod, port });
+    const { paths, host } = await SystemServer.start({ log, prod, port });
 
     // Load the configuration JSON file.
     const config = await ConfigFile.read();
@@ -81,7 +68,7 @@ export async function start() {
     await bundle.upload.fire({
       sourceDir: constants.paths.bundle.sys,
       targetDir: 'app.sys/web',
-      force: ENV.isDev,
+      force: ENV.isDev, // NB: Only repeat upload when running in development mode.
     });
 
     const webStatus = await bundle.status.get({ dir: 'app.sys/web' });
@@ -148,8 +135,8 @@ async function logMain(args: {
   };
 
   add('runtime:', ConfigFile.process);
-  add('packaged:', ENV.isPackaged);
   add('env:', ENV.node || '<empty>');
+  add('packaged:', ENV.isPackaged);
   add('host:', `http://${args.host.split(':')[0]}:${log.white(args.host.split(':')[1])}`);
   add('preload:', await path(args.paths.preload));
   add('log:', await path(args.paths.data.log));
