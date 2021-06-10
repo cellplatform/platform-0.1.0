@@ -1,7 +1,7 @@
 import { app } from 'electron';
 
 import { constants, ENV, fs, log, rx, t, ConfigFile } from './common';
-import * as server from './main.server';
+import { SystemServer } from './main.System.server';
 import { Window } from './main.Window';
 import { Log } from './main.Log';
 import { Bundle } from './main.Bundle';
@@ -46,7 +46,7 @@ export async function start() {
   try {
     // Start the HTTP server.
     const port = prod ? undefined : 5000;
-    const { paths, host, instance } = await server.start({ log, prod, port });
+    const { paths, host, instance } = await SystemServer.start({ log, prod, port });
 
     // Load the configuration JSON file.
     const config = await ConfigFile.read();

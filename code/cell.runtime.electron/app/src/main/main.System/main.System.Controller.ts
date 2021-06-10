@@ -1,6 +1,6 @@
 import { t, rx, slug, ENV } from '../common';
 import { Events } from './main.System.Events';
-import { RuntimeInfo } from '../main.server';
+import { RuntimeInfo } from '../main.System.server';
 import { DataController } from './main.System.Controller.data';
 
 /**
