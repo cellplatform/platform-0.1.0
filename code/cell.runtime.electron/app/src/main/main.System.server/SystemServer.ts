@@ -16,7 +16,7 @@ export const SystemServer = {
     const paths = constants.paths.data({ prod });
 
     const app = server.create({
-      name: 'local',
+      name: 'main',
       db: NeDb.create({ filename: paths.db }),
       fs: local.init({ dir: paths.fs, fs }),
       runtime: NodeRuntime.create(),
@@ -50,7 +50,7 @@ export const SystemServer = {
       .subscribe((e) => {
         const data: t.IResGetElectronSysInfo = {
           ...e.res.data,
-          region: 'local:app:main',
+          region: 'local:desktop',
           runtime: info,
         };
         e.modify({ ...e.res, data });
