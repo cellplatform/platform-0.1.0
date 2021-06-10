@@ -116,7 +116,7 @@ async function runYarn(args: { mode: Mode; install: boolean; force: boolean }) {
   let runInstall = args.install;
   if (runInstall && !args.force) {
     if (mode === 'dev' && cache?.mode === 'dev') {
-      const msg = `The ${log.cyan(mode)} mode is already prepared.`;
+      const msg = `The ${log.cyan(mode)} mode is ${log.green('already prepared')}.`;
       const hint = `To force use ${log.white('--force')} flag.`;
       log.info.gray(`${msg} ${hint}`);
       runInstall = false;
