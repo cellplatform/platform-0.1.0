@@ -1,46 +1,99 @@
 import { ENV, paths } from './constants';
-import { fs, Uri, time } from './libs';
-import { ElectronConfigFile } from './types';
+import { fs, R, semver, time, Uri } from './libs';
+import * as t from './types';
 
 /**
  * Configuration data.
  */
-export class ConfigFile {
-  public static path = paths.data({ prod: ENV.isProd }).config;
+export const ConfigFile = {
+  path: paths.data({ prod: ENV.isProd }).config,
+
+  get process() {
+    const { name, version } = ENV.pkg;
+    return `${name}@${version}`;
+  },
 
   /**
    * Generate a new "default" configuration file.
    */
-  public static default(): ElectronConfigFile {
+  default(): t.ElectronConfigFile {
     const { name, version } = ENV.pkg;
     return {
-      created: {
-        process: `${name}@${version}`,
-        time: time.now.timestamp,
-      },
       refs: { genesis: Uri.toNs().toString() },
+      created: getIdentifierLogItem(),
+      started: [],
     };
-  }
+  },
 
   /**
    * Read the configuration file from disk.
    */
-  public static async read(): Promise<ElectronConfigFile> {
+  async read(): Promise<t.ElectronConfigFile> {
     const path = ConfigFile.path;
 
-    let file = await fs.file.loadAndParse<ElectronConfigFile>(path);
+    let file = await fs.file.loadAndParse<t.ElectronConfigFile>(path);
     if (file) return file;
 
     file = ConfigFile.default();
     await ConfigFile.write(file);
     return file;
-  }
+  },
 
   /**
    * Write the configuration file to disk.
    */
-  public static write(data: ElectronConfigFile) {
+  write(data: t.ElectronConfigFile) {
     const path = ConfigFile.path;
-    return fs.file.stringifyAndSave<ElectronConfigFile>(path, data);
-  }
+    return fs.file.stringifyAndSave<t.ElectronConfigFile>(path, data);
+  },
+
+  /**
+   * Appends the startup log.
+   */
+  log: {
+    async updateStarted() {
+      const file = await ConfigFile.read();
+      let started = [...(file.started ?? [])];
+
+      const now = (() => {
+        const item = getIdentifierLogItem();
+        return { item, process: parseProcess(item.process) };
+      })();
+      const append = () => started.push(now.item);
+
+      const last = started[started.length - 1]
+        ? parseProcess(started[started.length - 1].process)
+        : undefined;
+
+      /**
+       * Save the latest time (if the current version hasn't changed)
+       * of append the log with the new version if newer.
+       */
+      if (!last) append();
+      if (last) {
+        if (semver.gt(now.process.version, last.version)) append();
+      }
+
+      const next = { ...file, started };
+      const changed = !R.equals(file, next);
+      if (changed) await ConfigFile.write(next);
+
+      return { changed, started };
+    },
+  },
+};
+
+/**
+ * [Helpers]
+ */
+function getIdentifierLogItem(): t.ElectronRuntimeIdentifierLogItem {
+  return {
+    process: ConfigFile.process,
+    time: time.now.timestamp,
+  };
+}
+
+function parseProcess(input: string) {
+  const [runtime, version] = input.split('@');
+  return { runtime, version };
 }

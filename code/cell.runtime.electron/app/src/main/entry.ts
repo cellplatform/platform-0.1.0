@@ -101,6 +101,10 @@ export async function start() {
     // TEMP 🐷
     // refs.tray = tray.init({ host, def, ctx }).tray;
 
+    /**
+     * Finish up.
+     */
+    await ConfigFile.log.updateStarted();
     log.info(`✨ Startup Complete`);
   } catch (error) {
     log.error('🐷 Failed on startup:');
@@ -143,6 +147,7 @@ async function logMain(args: {
     return output;
   };
 
+  add('runtime:', ConfigFile.process);
   add('packaged:', ENV.isPackaged);
   add('env:', ENV.node || '<empty>');
   add('host:', `http://${args.host.split(':')[0]}:${log.white(args.host.split(':')[1])}`);
@@ -153,7 +158,7 @@ async function logMain(args: {
   add('config:', await path(args.paths.data.config));
 
   log.info.gray(`
-runtime.electron.${log.white('main')}:
+${log.white('main')}:
 ${table}
 `);
 }

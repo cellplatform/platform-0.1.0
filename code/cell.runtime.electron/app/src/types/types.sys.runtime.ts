@@ -36,7 +36,8 @@ export type ElectronDataPaths = {
  * The shape of the application configuration file (JSON).
  */
 export type ElectronConfigFile = {
-  created: { process: string; time: number };
+  created: ElectronRuntimeIdentifierLogItem;
+  started: ElectronRuntimeIdentifierLogItem[];
   refs: {
     /**
      * The user's "genesis" cell.
@@ -47,3 +48,5 @@ export type ElectronConfigFile = {
     genesis: NamespaceUri; // eg. "ns:<id>"
   };
 };
+
+export type ElectronRuntimeIdentifierLogItem = { process: string; time: number };
