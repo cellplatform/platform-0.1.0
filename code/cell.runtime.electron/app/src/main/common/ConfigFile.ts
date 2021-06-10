@@ -71,7 +71,10 @@ export const ConfigFile = {
        */
       if (!last) append();
       if (last) {
-        if (semver.eq(now.process.version, last.version)) started.pop(); // NB: remove last item so "current" started time is replaced (but not appended).
+        if (semver.eq(now.process.version, last.version)) {
+          // Remove last item so "current" started time is updated for the last item at this version (but not appended).
+          started.pop();
+        }
         append();
       }
 
