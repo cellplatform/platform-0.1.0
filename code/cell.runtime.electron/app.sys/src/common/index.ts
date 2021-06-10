@@ -1,7 +1,5 @@
 import * as t from './types';
-import * as constants from './constants';
-
-export { t, constants };
+export { t };
 
 export * from './colors';
 export * from './libs';

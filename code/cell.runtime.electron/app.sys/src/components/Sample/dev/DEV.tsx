@@ -2,11 +2,16 @@ import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { Sample, SampleProps } from '..';
 
-import { IpcBus } from '../../../common';
+import { IpcBus, t, Window } from '../../../common';
 // import { Foo } from '../../../../../app/src/renderer/renderer.Window'; // TEMP 🐷
 
 type Foo = { type: 'foo'; payload: { count: number } };
-type Ctx = { props: SampleProps };
+type Ctx = {
+  bus: {
+    ipc: t.NetworkBus<Foo>;
+  };
+  props: SampleProps;
+};
 
 /**
  * Actions
@@ -29,7 +34,7 @@ export const actions = DevActions<Ctx>()
 
     bus.ipc.fire({ type: 'foo', payload: { count: 123 } });
 
-    return { props: { count: 0 } };
+    return { bus, props: { count: 0 } };
   })
 
   .items((e) => {
@@ -37,6 +42,14 @@ export const actions = DevActions<Ctx>()
     e.button('count: increment', (e) => e.ctx.props.count++);
     e.button('count: decrement', (e) => e.ctx.props.count--);
     e.hr();
+
+    e.button('window/status', async (e) => {
+      const bus = e.ctx.bus.ipc;
+      const events = Window.Events({ bus });
+
+      const status = await events.status.get();
+      console.log('status', status);
+    });
   })
 
   /**
