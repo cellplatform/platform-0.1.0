@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
 import { R, t } from '../common';
-import { Events, GroupEvents } from '../event';
+import { PeerEvents, GroupEvents } from '../event';
 
 type Action = 'update';
 
@@ -10,15 +10,15 @@ type Action = 'update';
  * Manages listening to the network to determine the group peers
  * and any pending connections.
  */
-export function useGroupState(args: { bus: t.EventBus<any>; netbus: t.NetBus<any> }) {
-  const bus = args.bus.type<t.PeerEvent>();
-  const netbus = args.netbus.type<t.NetGroupEvent>();
+export function useGroupState(args: { bus: t.EventBus<any>; netbus: t.PeerNetworkBus<any> }) {
+  const bus = args.bus as t.EventBus<t.PeerEvent>;
+  const netbus = args.netbus as t.PeerNetworkBus<t.NetGroupEvent>;
 
   const [status, setStatus] = useState<t.GroupPeerStatus>();
 
   useEffect(() => {
     const self = netbus.self;
-    const events = Events(bus);
+    const events = PeerEvents(bus);
     const group = GroupEvents(netbus);
 
     const updateStatus = async () => {

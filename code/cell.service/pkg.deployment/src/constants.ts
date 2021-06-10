@@ -1,6 +1,6 @@
 import { util } from './common';
 
-import { IS_CLOUD } from '@platform/cell.service/lib/common/constants';
+import { IS_CLOUD } from '@platform/cell.service/lib/node/common/constants';
 export { IS_CLOUD };
 
 if (!IS_CLOUD) {

@@ -22,7 +22,7 @@ export const useEventBusHistory: EventBusHistoryHook = (bus, options = {}) => {
     const dispose$ = new Subject<void>();
     if (!bus) return;
 
-    const $ = bus.event$.pipe(
+    const $ = bus.$.pipe(
       takeUntil(dispose$),
       filter((e) => (options.filter ? options.filter(e) : true)),
       observeOn(animationFrameScheduler),

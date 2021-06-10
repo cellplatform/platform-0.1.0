@@ -13,7 +13,7 @@ const create: t.CodeEditorInstanceEventsFactory = (input, instance) => {
   const bus = rx.bus<E>(input);
   const dispose$ = new Subject<void>();
 
-  const $ = bus.event$.pipe(
+  const $ = bus.$.pipe(
     takeUntil(dispose$),
     filter((e) => Is.instanceEvent(e)),
     filter((e) => (instance ? e.payload.instance === instance : true)),

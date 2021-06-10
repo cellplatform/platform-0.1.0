@@ -1,10 +1,20 @@
+/**
+ * Key used to store the [env] object on the [window].
+ */
+export const ENV_KEY = 'cell.runtime.electron';
+
 export const IPC = {
-  EVENT_PREFIX: 'IPC/',
-  CHANNEL: 'APP/ipc',
+  /**
+   * Channel that event-bus messages are transmitted on.
+   */
+  CHANNEL: 'runtime/sys',
 };
 
+/**
+ * Keys of values stored in [process.argv].
+ */
 export const PROCESS = {
-  DEF: 'env:def',
-  HOST: 'env:host',
   DEV: 'env:dev',
+  RUNTIME: 'env:runtime',
+  URI_SELF: 'env:uri:self',
 };

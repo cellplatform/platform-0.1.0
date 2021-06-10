@@ -8,7 +8,7 @@ type T = { file: t.PeerFile; uri: string };
 /**
  * Manages files sent around the group.
  */
-export function useFileList(netbus: t.NetBus<any>) {
+export function useFileList(netbus: t.PeerNetworkBus<any>) {
   const [list, setList] = useState<T[]>([]);
 
   useEffect(() => {

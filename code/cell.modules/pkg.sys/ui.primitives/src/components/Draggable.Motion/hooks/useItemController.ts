@@ -10,7 +10,7 @@ import { useItemState } from './useItemState';
  */
 export function useItemController(args: { bus: t.EventBus<any>; def: n.MotionDraggableDef }) {
   const { def } = args;
-  const bus = args.bus.type<n.MotionDraggableEvent>();
+  const bus = args.bus as t.EventBus<n.MotionDraggableEvent>;
   const { state, motion } = useItemState({ bus, def });
 
   useEffect(() => {

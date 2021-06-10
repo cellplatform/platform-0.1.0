@@ -4,13 +4,14 @@ import * as util from './util';
 
 export async function postNs(args: {
   db: t.IDb;
+  fs: t.IFileSystem;
   id: string;
   body: t.IReqPostNsBody;
   query: t.IReqQueryNsWrite;
   host: string;
 }) {
   try {
-    const { db, id, query, host } = args;
+    const { db, fs, id, query, host } = args;
     let body = { ...args.body };
     const uri = Schema.Uri.create.ns(id);
     const ns = await models.Ns.create({ db, uri }).ready;
@@ -58,7 +59,7 @@ export async function postNs(args: {
     }
 
     // Retrieve NS data.
-    const res = (await getNs({ db, id, query, host })) as t.IPayload<t.IResGetNs>;
+    const res = (await getNs({ db, fs, id, query, host })) as t.IPayload<t.IResGetNs>;
     if (util.isErrorPayload(res)) {
       return res;
     }

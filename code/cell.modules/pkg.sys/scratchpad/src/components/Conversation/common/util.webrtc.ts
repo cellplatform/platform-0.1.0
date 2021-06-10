@@ -1,4 +1,4 @@
-import { PeerJS, cuid } from '../../../common';
+import { PeerJS, cuid, rx } from '../../../common';
 import * as t from '../types';
 
 /**
@@ -19,7 +19,7 @@ export function createPeer(args: { bus: t.EventBus<any>; id?: string }) {
   console.groupEnd();
 
   const id = args.id === undefined ? cuid() : args.id;
-  const bus = args.bus.type<t.ConversationEvent>();
+  const bus = rx.busAsType<t.ConversationEvent>(args.bus);
 
   // https://peerjs-server-hcx2v.ondigitalocean.app/myapp
 

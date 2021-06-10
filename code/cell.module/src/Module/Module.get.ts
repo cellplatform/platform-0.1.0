@@ -60,7 +60,7 @@ export function find<T extends P = P>(bus: B, args: t.IModuleFindArgs = {}): t.I
  * Listener for "Module/request" and "Module/find" events.
  */
 export function listen<T extends P>(bus: B, module: t.IModule<T>) {
-  const $ = bus.event$.pipe(takeUntil(module.dispose$));
+  const $ = bus.$.pipe(takeUntil(module.dispose$));
 
   type A = t.IModuleFindArgs;
   type D = NonNullable<A['data']>;

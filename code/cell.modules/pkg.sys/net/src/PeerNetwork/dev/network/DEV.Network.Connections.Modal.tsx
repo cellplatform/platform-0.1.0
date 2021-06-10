@@ -8,17 +8,17 @@ import { DevNetworkConnections, DevNetworkConnectionsProps } from './DEV.Network
 export type DevNetworkConnectionsModalProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   header?: { title: React.ReactNode };
   filter?: DevNetworkConnectionsProps['filter'];
 };
 
 export const DevNetworkConnectionsModal: React.FC<DevNetworkConnectionsModalProps> = (props) => {
   const { netbus, self } = props;
-  const bus = props.bus.type<t.DevEvent>();
+  const bus = props.bus as t.EventBus<t.DevEvent>;
 
   useEffect(() => {
-    const events = PeerNetwork.Events(bus);
+    const events = PeerNetwork.PeerEvents(bus);
     const status$ = events.status(self).changed$.pipe(map((e) => e.peer));
 
     // Remove modal when all connections have been closed.
@@ -53,7 +53,7 @@ export const DevNetworkConnectionsModal: React.FC<DevNetworkConnectionsModalProp
 type HeaderProps = { bus: t.EventBus<any>; height: number };
 const Header: React.FC<HeaderProps> = (props) => {
   const { height } = props;
-  const bus = props.bus.type<t.DevEvent>();
+  const bus = props.bus as t.EventBus<t.DevEvent>;
   const SIZE = { BACK: 32 };
 
   const styles = {

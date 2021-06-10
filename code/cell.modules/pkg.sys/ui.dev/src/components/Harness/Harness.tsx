@@ -14,33 +14,38 @@ export type HarnessProps = {
   bus?: t.EventBus<any>;
   actions?: t.ActionsSet;
   store?: t.ActionsSelectStore | boolean;
-  namespace?: string;
+  initial?: t.Namespace | null;
   allowRubberband?: boolean; // Page rubber-band effect in Chrome (default: false).
-  fullscreen?: boolean;
+  showActions?: boolean;
   style?: CssValue;
 };
 
 export const Harness: React.FC<HarnessProps> = (props) => {
   const [bus, setBus] = useState<t.EventBus>(props.bus || rx.bus());
-  const allowRubberband = defaultValue(props.allowRubberband, false);
 
   /**
    * TODO 🐷
-   * - Handle fullscreen in Harness model (when that comes).
+   * - Handle showActions/fullscreen in Harness model (when that comes).
    */
-  const [isFullscreen, setIsFullscreen] = useState<boolean | undefined>(props.fullscreen);
+  const [showActions, setShowActions] = useState<boolean | undefined>(props.showActions ?? true);
 
   useEffect(() => {
     if (props.bus) setBus(props.bus);
   }, [props.bus]);
 
   useEffect(() => {
+    const allowRubberband = props.allowRubberband ?? false;
     document.body.style.overflow = allowRubberband ? 'auto' : 'hidden';
-  }, [allowRubberband]);
+  }, [props.allowRubberband]);
 
   const actions = useActionsPropertyInput(props.actions);
-  const store = toStore(props.namespace, actions.items, props.store);
-  const actionsState = useActionsSelectorState({ bus, store, actions: actions.items });
+  const store = toStore(undefined, actions.items, props.store);
+  const actionsState = useActionsSelectorState({
+    bus,
+    store,
+    actions: actions.items,
+    initial: props.initial || undefined,
+  });
 
   const selected = actionsState.selected;
   selected?.renderSubject();
@@ -60,14 +65,8 @@ export const Harness: React.FC<HarnessProps> = (props) => {
   const actionsEdge = defaultValue(envActions.edge, 'right');
 
   const styles = {
-    base: css({
-      Absolute: 0,
-      Flex: 'horizontal-stretch-stretch',
-    }),
-    main: css({
-      position: 'relative',
-      flex: 1,
-    }),
+    base: css({ Absolute: 0, Flex: 'horizontal-stretch-stretch' }),
+    main: css({ position: 'relative', flex: 1 }),
     host: css({
       Absolute: 0,
       boxSizing: 'border-box',
@@ -94,13 +93,13 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     />
   );
 
-  const elActions = selected && isFullscreen !== true && (
+  const elActions = selected && showActions && (
     <HarnessActions bus={bus} actions={selected} edge={actionsEdge} />
   );
   const elLeft = actionsEdge === 'left' && elActions;
   const elRight = actionsEdge === 'right' && elActions;
 
-  const handleFullscreenClick = () => setIsFullscreen((prev) => !prev);
+  const handleFullscreenClick = () => setShowActions((prev) => !prev);
 
   const elHost = (
     <ErrorBoundary>
@@ -109,9 +108,9 @@ export const Harness: React.FC<HarnessProps> = (props) => {
         actions={selected}
         style={styles.host}
         fullscreen={
-          isFullscreen === undefined
+          showActions === undefined
             ? undefined
-            : { value: isFullscreen, onClick: handleFullscreenClick }
+            : { value: showActions, onClick: handleFullscreenClick }
         }
       />
     </ErrorBoundary>
@@ -159,5 +158,5 @@ function toStore(
   store?: t.ActionsSelectStore | boolean,
 ): t.ActionsSelectStore | undefined {
   if (typeof store === 'function') return store;
-  return store === false ? undefined : Store.ActionsSelect.localStorage({ namespace, actions });
+  return store === false ? undefined : Store.ActionsSelect.localStorage({ actions, namespace });
 }

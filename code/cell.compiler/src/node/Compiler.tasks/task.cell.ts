@@ -1,4 +1,4 @@
-import { logger, parseUrl, t, Uri, defaultValue } from '../common';
+import { Logger, parseUrl, t, Uri, defaultValue } from '../common';
 import { bundle } from './task.bundle';
 import { upload } from './task.cell.upload';
 
@@ -39,7 +39,7 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
       }
 
       if (!silent) {
-        logger.hr();
+        Logger.hr();
       }
 
       /**

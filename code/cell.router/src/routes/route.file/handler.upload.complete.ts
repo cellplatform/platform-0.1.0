@@ -1,4 +1,4 @@
-import { defaultValue, models, t, time, util } from '../common';
+import { defaultValue, models, t, time, util, Schema } from '../common';
 import { fileInfo } from './handler.info';
 
 export async function uploadFileComplete(args: {
@@ -51,12 +51,22 @@ export async function uploadFileComplete(args: {
       };
     }
 
-    // Store S3 specific details.
+    // Store [S3] specific details.
     if (fs.type === 'S3') {
       const s3 = fsFileInfo as t.IFsInfoS3;
       if (s3['s3:etag']) {
         after['s3:etag'] = s3['s3:etag'];
         after['s3:permission'] = s3['s3:permission'];
+      }
+    }
+
+    // Make [local] file-system adjustments.
+    if (fs.type === 'LOCAL') {
+      // Store the relative file location in the DB only. Example: "file://~/" (home directory).
+      if (after.location) {
+        const path = after.location;
+        const root = fs.dir;
+        after.location = Schema.File.Path.Local.toRelativeLocation({ path, root });
       }
     }
 
@@ -75,12 +85,15 @@ export async function uploadFileComplete(args: {
     }
 
     // Finish up.
-    const fileInfoAfter = await fileInfo({ fileUri, db, host });
+    const fileInfoAfter = await fileInfo({ fileUri, fs, db, host });
     const fileInfoAfterData = fileInfoAfter.data as t.IResGetFile;
     const res: t.IPayload<t.IResPostFileUploadComplete> = {
       status: error ? 500 : fileInfoAfter.status,
       data: {
-        ...{ ...fileInfoAfterData, data: { ...fileInfoAfterData.data, error } },
+        ...{
+          ...fileInfoAfterData,
+          data: { ...fileInfoAfterData.data, error },
+        },
         changes: sendChanges ? changes : undefined,
       },
     };

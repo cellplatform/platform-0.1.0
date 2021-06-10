@@ -11,6 +11,7 @@ import {
   PeerNetwork,
   Dropped,
   FileUtil,
+  Uri,
 } from '../common';
 import { DevCard } from '../layouts';
 import { DevEventBusStack } from './DEV.EventBus.Stack';
@@ -19,7 +20,7 @@ import { DevImageThumbnails } from '../media';
 
 export type DevEventBusCardProps = {
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   margin?: t.CssEdgesInput;
   style?: CssValue;
 };
@@ -34,14 +35,18 @@ export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
     const msg = args.message.trim();
     const event = { type: 'sample/event', payload: { msg: msg ?? `<empty>` } };
 
-    const filter: t.PeerFilter = (e) => {
+    const filter: t.NetworkBusFilter = (e) => {
       const text = args.filter.trim();
-      return !text
-        ? true
-        : text
-            .split(',')
-            .map((text) => text.trim())
-            .some((text) => e.peer.endsWith(text) || e.connection.id.endsWith(text));
+      if (!text) return true; // NB: no filter applied.
+
+      return text
+        .split(',')
+        .map((text) => text.trim())
+        .some((text) => {
+          if (Uri.is.peer(e.uri) && e.uri.endsWith(text)) return true;
+          const uri = Uri.connection.parse(e.uri);
+          return uri?.peer.endsWith(text) || uri?.connection.endsWith(text);
+        });
     };
 
     if (!args.filter) netbus.fire(event);

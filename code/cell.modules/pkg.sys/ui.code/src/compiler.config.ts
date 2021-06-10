@@ -9,7 +9,7 @@ export default () =>
         .target('web')
         .port(Package.compiler.port)
 
-        .entry('main', './src/entry/main')
+        .entry('main', './src/entry/dom')
         // .entry('service.worker', './src/workers/service.worker')
         .declarations('./src/types/env.ts', 'inner/env')
         // .declarations('./src/**/*')
@@ -23,7 +23,7 @@ export default () =>
         )
 
         .shared((config) => config.add(config.dependencies).singleton(['react', 'react-dom']))
-        .expose('./Dev', './src/components/Dev.Harness')
+        .expose('./Dev', './src/Dev.Harness')
         .expose('./CodeEditor', './src/components/CodeEditor'),
     )
 

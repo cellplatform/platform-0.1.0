@@ -1,5 +1,6 @@
 export * from './types.Node';
 export * from './types.Patch';
+export * from './types.State';
 export * from './types.StateObject';
 export * from './types.StateObject.events';
 export * from './types.Store';

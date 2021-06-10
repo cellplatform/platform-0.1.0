@@ -23,7 +23,7 @@ type P = PropListItem;
 
 export type PeerPropListProps = {
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   status: t.PeerStatus;
   style?: CssValue;
 };
@@ -72,7 +72,7 @@ export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
 
           if (isConnected) return;
 
-          const events = PeerNetwork.Events(bus);
+          const events = PeerNetwork.PeerEvents(bus);
           await events.connection(self, remote).open.data();
           events.dispose();
         },
@@ -149,7 +149,7 @@ const networkItems = (props: PeerPropListProps) => {
 
 const groupItems = (args: {
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   status?: t.GroupPeerStatus;
 }) => {
   const { bus, netbus, status } = args;
@@ -192,7 +192,7 @@ const groupItems = (args: {
             label={'connect'}
             margin={[null, null, null, 8]}
             onClick={async () => {
-              const events = PeerNetwork.Events(bus);
+              const events = PeerNetwork.PeerEvents(bus);
 
               const wait = status.pending.map(async (remote) => {
                 const open = events.connection(self, remote.peer).open;

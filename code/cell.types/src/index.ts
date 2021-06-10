@@ -1,8 +1,8 @@
 export * from './types';
 
+export * from './types.Bus';
 export * from './types.Cell';
 export * from './types.Client';
-export * from './types.Electron';
 export * from './types.Env';
 export * from './types.Error';
 export * from './types.Module';

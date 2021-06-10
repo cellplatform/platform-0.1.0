@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { Icons } from '../../Icons';
 import { Button } from '../../Primitives';
-import { color, css, CssValue, defaultValue, PeerJS, t } from '../common';
+import { color, css, CssValue, defaultValue, PeerJS, t, rx } from '../common';
 import { PeerLabel } from './Peer.Label';
 
 export type PeerProps = {
@@ -22,7 +22,7 @@ export type PeerProps = {
 
 export const Peer: React.FC<PeerProps> = (props) => {
   const { isSelf, peer, model } = props;
-  const bus = props.bus.type<t.ConversationEvent>();
+  const bus = rx.busAsType<t.ConversationEvent>(props.bus);
   const autoPlay = defaultValue(props.autoPlay, true);
   const isLabelVisible = defaultValue(props.isLabelVisible, true);
 

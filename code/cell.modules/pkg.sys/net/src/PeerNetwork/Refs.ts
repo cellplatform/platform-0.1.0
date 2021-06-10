@@ -15,7 +15,7 @@ export type ConnectionRef = {
   kind: t.PeerConnectionKind;
   peer: t.PeerConnectionStatus['peer'];
   id: t.PeerConnectionId;
-  uri: t.PeerConnectionUri;
+  uri: t.PeerConnectionUriString;
   conn: PeerJS.DataConnection | PeerJS.MediaConnection;
   direction: t.PeerConnectDirection;
   localStream?: MediaStream;
@@ -49,7 +49,7 @@ export function MemoryRefs() {
 
           const remote = { id: conn.peer, module, userAgent };
           const peer = { self: self.peer.id, remote };
-          const uri = Uri.connection(kind, remote.id, id);
+          const uri = Uri.connection.create(kind, remote.id, id);
 
           const existing = self.connections.find((item) => item.uri === uri);
           if (existing) return existing;

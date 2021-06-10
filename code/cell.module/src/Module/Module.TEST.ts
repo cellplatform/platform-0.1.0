@@ -132,7 +132,7 @@ describe('Module', () => {
   describe('events', () => {
     it('stops when [until$] fires', () => {
       const until$ = new Subject<void>();
-      const events = Module.events(bus.event$, until$);
+      const events = Module.events(bus.$, until$);
 
       let count = 0;
       events.$.subscribe((e) => count++);
@@ -151,7 +151,7 @@ describe('Module', () => {
     it('[until$] array of observables', () => {
       const stop1 = new Subject<void>();
       const stop2 = new Subject<void>();
-      const events = Module.events(bus.event$, [stop1, stop2]);
+      const events = Module.events(bus.$, [stop1, stop2]);
 
       let count = 0;
       events.$.subscribe((e) => count++);
@@ -202,7 +202,7 @@ describe('Module', () => {
       const child = create({ root: 'child' });
 
       const fired: t.IModuleChildRegistered[] = [];
-      const events = Module.events(bus.event$);
+      const events = Module.events(bus.$);
       events.childRegistered$.subscribe((e) => fired.push(e));
 
       const res = fire.register(child, parent.id);
@@ -461,7 +461,7 @@ describe('Module', () => {
       const module = create({ root: 'foo' });
 
       const fired: t.IModuleChanged<P>[] = [];
-      Module.events<P>(bus.event$).changed$.subscribe((e) => fired.push(e));
+      Module.events<P>(bus.$).changed$.subscribe((e) => fired.push(e));
 
       module.change((draft, ctx) => {
         ctx.props(draft, (props) => {
@@ -478,7 +478,7 @@ describe('Module', () => {
       const module = create({ root: 'foo' });
 
       const fired: t.IModulePatched[] = [];
-      Module.events<P>(bus.event$).patched$.subscribe((e) => fired.push(e));
+      Module.events<P>(bus.$).patched$.subscribe((e) => fired.push(e));
 
       module.change((draft, ctx) => {
         ctx.props(draft, (props) => {

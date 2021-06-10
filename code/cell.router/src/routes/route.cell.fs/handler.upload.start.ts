@@ -91,6 +91,7 @@ export async function uploadCellFilesStart(args: {
 
   const postNsRes = await postNsResponse({
     db,
+    fs,
     id: ns,
     body: { cells: { [cellKey]: { links } } },
     query: { cells: cellKey, changes: sendChanges },

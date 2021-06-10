@@ -1,7 +1,7 @@
 {
   "name": "@platform/cell.service.webrtc",
-  "description": "Signalling service to establish connections between WebRTC clients. (Data is not proxied through the server)",
-  "version": "0.0.5",
+  "description": "Signalling service to establish connections between WebRTC clients. (NB: data is not proxied through the server)",
+  "version": "0.0.9",
   "scripts": {
     "start": "ts-node -T src/start.ts",
     "dev": "yarn start",
@@ -16,13 +16,13 @@
     "drun": "docker run --rm -p 9000:9000 domains/rtc:0.0.1"
   },
   "dependencies": {
-    "@platform/log": "^0.1.50",
-    "@platform/util.value": "^0.8.20",
+    "@platform/log": "^0.1.52",
+    "@platform/util.value": "^0.9.0",
     "peer": "^0.6.1"
   },
   "devDependencies": {
     "@platform/test": "~0.2.6",
-    "@platform/ts": "~4.1.11"
+    "@platform/ts": "~4.1.13"
   },
   "license": "MIT",
   "private": true

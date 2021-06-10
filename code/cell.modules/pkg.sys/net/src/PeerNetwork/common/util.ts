@@ -1,8 +1,7 @@
 import { Subject } from 'rxjs';
 
-import { defaultValue, PeerJS, sha256 } from '../../common';
+import { defaultValue, PeerJS, sha256, filesize } from '../../common';
 import * as t from './types';
-import filesize from 'filesize';
 
 type C = t.PeerConnectionStatus;
 
@@ -53,7 +52,7 @@ export const PeerJsUtil = {
  */
 export const StringUtil = {
   formatConnectionId(id: string) {
-    return (id || '').replace(/^dc_/, '').replace(/^mc_/, '');
+    return (id || '').trim().replace(/^dc_/, '').replace(/^mc_/, '');
   },
 
   parseEndpointAddress(address: string): t.PeerSignallingEndpoint {
@@ -88,15 +87,6 @@ export const StringUtil = {
     const left = value.substring(0, edge);
     const right = value.substring(value.length - edge);
     return `${left}${divider}${right}`;
-  },
-};
-
-/**
- * Network URIs.
- */
-export const Uri = {
-  connection(kind: t.PeerConnectionKind, peer: t.PeerId, id: string) {
-    return `${kind.replace(/\//g, '.')}:${peer}:${StringUtil.formatConnectionId(id)}`;
   },
 };
 

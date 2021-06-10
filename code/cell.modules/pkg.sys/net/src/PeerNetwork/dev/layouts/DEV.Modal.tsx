@@ -12,7 +12,7 @@ export type DevModalProps = {
 };
 
 export const DevModal: React.FC<DevModalProps> = (props) => {
-  const bus = props.bus.type<t.DevEvent>();
+  const bus = props.bus as t.EventBus<t.DevEvent>;
   const closeOnEscape = defaultValue(props.closeOnEscape, true);
 
   const closeModal = () => bus.fire({ type: 'DEV/modal', payload: {} });

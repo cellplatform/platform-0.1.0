@@ -37,10 +37,10 @@ export type IResPostFileUploadComplete = IResGetFile & {
 /**
  * LOCAL (local device stand-in for external/cloud systems)
  * NOTE:
- *    Used on locally running instances to recieve bindary file data to save.
+ *    Used on locally running instances to recieve binary file data to save.
  *    When working against S3, this is the cloud end-point (using a presigned-url).
  */
-export type IResPostFileUploadLocal = { path: string };
+export type IResPostFileUploadLocal = { path: { relative: string; absolute: string } };
 export type IReqQueryLocalFs = O; // 🐷 Placeholder type.
 
 /**

@@ -72,6 +72,9 @@ describe('fs.local', () => {
     expect(res.exists).to.eql(true);
     expect(res.bytes).to.greaterThan(-1);
     expect(res.hash).to.match(/^sha256-/);
+
+    expect(res.location.startsWith('file:///Users')).to.eql(true);
+    expect(res.location.endsWith('ns.foo/bird')).to.eql(true);
   });
 
   it('info (404)', async () => {

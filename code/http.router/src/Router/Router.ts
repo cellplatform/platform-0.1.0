@@ -1,8 +1,7 @@
 import { parse as pathToTokens, pathToRegexp } from 'path-to-regexp';
-import { parse as parseUrl } from 'url';
 
 import { createBody } from './body';
-import { t } from '../common';
+import { t, Url } from '../common';
 import * as parse from '../parse';
 
 type P = t.RoutePath;
@@ -169,7 +168,7 @@ export class Router<C extends Record<string, unknown> = any> implements t.IRoute
    */
   public find(req: { method?: string; url?: string }) {
     const route = this.routes.find((route) => {
-      return req.method === route.method && route.regex.test(toPath(req.url));
+      return req.method === route.method && route.regex.test(Url.toPath(req.url));
     });
     return route || findWildcard(this.routes) || this._wildcard;
   }
@@ -178,5 +177,5 @@ export class Router<C extends Record<string, unknown> = any> implements t.IRoute
 /**
  * [Helpers]
  */
-const toPath = (url?: string) => parseUrl(url || '', false).pathname || '';
+
 const findWildcard = (routes: t.IRoute[]) => routes.find((route) => route.path === '*');

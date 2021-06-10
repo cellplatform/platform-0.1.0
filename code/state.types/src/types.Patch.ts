@@ -1,10 +1,12 @@
 import * as t from './common';
 
+type O = Record<string, unknown>;
+
 /**
  * Inline copy of the `immer` Patch type.
  */
 export type ArrayPatch = {
-  op: 'replace' | 'remove' | 'add';
+  op: PatchOperation['op'];
   path: (string | number)[];
   value?: any;
 };
@@ -14,6 +16,15 @@ type A = t.ArrayPatch;
 export type Patch = {
   toPatchSet(forward?: A | A[], backward?: A | A[]): t.PatchSet;
   isEmpty(patches: t.PatchSet): boolean;
+  change<T extends O>(from: T, fn: t.StateChanger<T> | T): t.PatchChange<T>;
+  changeAsync<T extends O>(from: T, fn: t.StateChangerAsync<T>): Promise<t.PatchChange<T>>;
+  apply<T extends O>(from: T, patches: t.PatchOperation[] | t.PatchSet): T;
+};
+
+export type PatchChange<T extends O> = {
+  to: T;
+  op: t.StateChangeOperation;
+  patches: t.PatchSet;
 };
 
 /**

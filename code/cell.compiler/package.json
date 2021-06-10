@@ -1,11 +1,11 @@
 {
   "name": "@platform/cell.compiler",
-  "version": "0.3.20",
+  "version": "0.3.31",
   "description": "Code compilation and bundling.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
-    "cell.compiler": "lib/node.bin/index.js"
+    "cell.compiler": "lib/node.cli/index.js"
   },
   "compiler": {
     "port": 5050
@@ -15,7 +15,6 @@
     "lint": "ts lint",
     "build": "ts build --no-esm $@",
     "prepare": "ts prepare",
-    "cmd": "node lib/node.bin $@",
     "bundle": "yarn cmd bundle $@",
     "watch": "yarn cmd watch $@",
     "start": "yarn cmd dev $@",
@@ -24,7 +23,8 @@
     "serve": "yarn cmd serve $@",
     "info": "yarn cmd info $@",
     "clean": "rm -rf tmp && yarn cmd clean $@",
-    "node": "ts-node -T script.ts/tmp.node.runtime $@"
+    "node": "ts-node -T script.ts/tmp.node.runtime $@",
+    "cmd": "node lib/node.cli $@"
   },
   "dependencies": {
     "@babel/core": "7.14.2",
@@ -33,12 +33,12 @@
     "@babel/preset-env": "7.14.2",
     "@babel/preset-react": "7.13.13",
     "@babel/preset-typescript": "7.13.0",
-    "@platform/cell.module": "0.0.97",
-    "@platform/cell.runtime.node": "0.0.32",
-    "@platform/cell.types": "0.5.62",
-    "@platform/css": "0.4.36",
+    "@platform/cell.module": "0.0.108",
+    "@platform/cell.runtime.node": "0.0.43",
+    "@platform/cell.types": "0.5.71",
+    "@platform/css": "0.4.40",
     "@platform/libs": "0.2.10",
-    "@platform/log": "0.1.50",
+    "@platform/log": "0.1.52",
     "@platform/polyfill": "0.0.3",
     "@svgr/webpack": "5.5.0",
     "@types/jsonpath": "0.2.0",
@@ -62,10 +62,10 @@
     "worker-loader": "3.0.8"
   },
   "devDependencies": {
-    "@platform/cell.runtime.web": "0.1.32",
-    "@platform/react": "0.4.69",
+    "@platform/cell.runtime.web": "0.1.43",
+    "@platform/react": "0.4.73",
     "@platform/test": "0.2.6",
-    "@platform/ts": "4.1.11",
+    "@platform/ts": "4.1.13",
     "@types/minimist": "1.2.1",
     "@types/qrcode": "1.4.0",
     "qrcode": "1.4.4"

@@ -12,7 +12,7 @@ import { DevEventBusCard } from '../event';
 
 export type DevNetworkConnectionsProps = {
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   collapse?: boolean | { data?: boolean; media?: boolean };
   cards?: { data?: boolean; media?: boolean };
   showNetbus?: boolean;
@@ -23,7 +23,7 @@ export type DevNetworkConnectionsProps = {
 
 export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (props) => {
   const { netbus } = props;
-  const bus = props.bus.type<t.PeerEvent>();
+  const bus = props.bus as t.EventBus<t.PeerEvent>;
   const self = netbus.self;
 
   const collapse = {
@@ -47,7 +47,7 @@ export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (prop
   const media = connections.filter((e) => e.kind !== 'data') as t.PeerConnectionMediaStatus[];
 
   useEffect(() => {
-    const events = PeerNetwork.Events(bus);
+    const events = PeerNetwork.PeerEvents(bus);
     const status$ = events.status(self).changed$.pipe(map((e) => e.peer));
 
     const updateConnections = async (peer?: t.PeerStatus) => {

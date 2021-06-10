@@ -1,4 +1,4 @@
-import { log, logger, Model, t } from '../common';
+import { log, Logger, Model, t } from '../common';
 import { onCompiled } from './task.bundle';
 import { wp } from './util';
 
@@ -17,8 +17,8 @@ export const watch: t.CompilerRunWatch = async (input) => {
     }
 
     count++;
-    logger.clear().newline();
+    Logger.clear().newline();
     log.info.gray(`Watching (${count})`);
-    logger.model(model, { indent: 2, url: false }).newline().hr().stats(stats);
+    Logger.model(model, { indent: 2, url: false }).newline().hr().stats(stats);
   });
 };

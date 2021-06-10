@@ -1,7 +1,8 @@
-import { path, t, Schema, util } from '../common';
+import { path, Schema, t, util } from '../common';
 
 export * from '../types';
-const toLocation = (path: string) => `file://${path}`;
+
+const LocalFile = Schema.File.Path.Local;
 
 /**
  * Initializes a "local" file-system API.
@@ -9,8 +10,9 @@ const toLocation = (path: string) => `file://${path}`;
 export function init(args: { dir: string; fs: t.IFs }): t.IFsLocal {
   const fs = args.fs;
   const dir = fs.resolve(args.dir);
+  const root = dir;
 
-  const res: t.IFsLocal = {
+  const local: t.IFsLocal = {
     type: 'LOCAL',
 
     /**
@@ -22,7 +24,7 @@ export function init(args: { dir: string; fs: t.IFs }): t.IFsLocal {
      * Convert the given string to an absolute path.
      */
     resolve(uri: string, options?: t.IFsResolveOptionsLocal): t.IFsLocation {
-      const type = options ? options.type : 'DEFAULT';
+      const type = options?.type ?? 'DEFAULT';
 
       if (type === 'SIGNED/post') {
         // NB: A local simulated end-point of an AWS/S3 "presignedPost" URL.
@@ -42,7 +44,7 @@ export function init(args: { dir: string; fs: t.IFs }): t.IFsLocal {
 
       return {
         path: path.resolve({ uri, dir }),
-        props: {},
+        props: {}, // NB: only relevant for S3 (pre-signed POST).
       };
     },
 
@@ -51,9 +53,8 @@ export function init(args: { dir: string; fs: t.IFs }): t.IFsLocal {
      */
     async info(uri: string): Promise<t.IFsInfoLocal> {
       uri = (uri || '').trim();
-      const path = res.resolve(uri).path;
-      const location = toLocation(path);
-
+      const path = local.resolve(uri).path;
+      const location = LocalFile.toAbsoluteLocation({ path, root });
       const readResponse = await this.read(uri);
       const { status, file } = readResponse;
       const exists = status !== 404;
@@ -72,8 +73,8 @@ export function init(args: { dir: string; fs: t.IFs }): t.IFsLocal {
      */
     async read(uri: string): Promise<t.IFsReadLocal> {
       uri = (uri || '').trim();
-      const path = res.resolve(uri).path;
-      const location = toLocation(path);
+      const path = local.resolve(uri).path;
+      const location = LocalFile.toAbsoluteLocation({ path, root });
 
       // Ensure the file exists.
       if (!(await fs.exists(path))) {
@@ -119,8 +120,8 @@ export function init(args: { dir: string; fs: t.IFs }): t.IFsLocal {
       }
 
       uri = (uri || '').trim();
-      const path = res.resolve(uri).path;
-      const location = toLocation(path);
+      const path = local.resolve(uri).path;
+      const location = LocalFile.toAbsoluteLocation({ path, root });
       const file: t.IFsFileData = {
         path,
         location,
@@ -152,8 +153,8 @@ export function init(args: { dir: string; fs: t.IFs }): t.IFsLocal {
      */
     async delete(uri: string | string[]): Promise<t.IFsDeleteLocal> {
       const uris = (Array.isArray(uri) ? uri : [uri]).map((uri) => (uri || '').trim());
-      const paths = uris.map((uri) => res.resolve(uri).path);
-      const locations = paths.map((path) => toLocation(path));
+      const paths = uris.map((uri) => local.resolve(uri).path);
+      const locations = paths.map((path) => LocalFile.toAbsoluteLocation({ path, root }));
 
       try {
         await Promise.all(paths.map((path) => fs.remove(path)));
@@ -174,7 +175,7 @@ export function init(args: { dir: string; fs: t.IFs }): t.IFsLocal {
     async copy(sourceUri: string, targetUri: string): Promise<t.IFsCopyLocal> {
       const format = (input: string) => {
         const uri = (input || '').trim();
-        const path = res.resolve(uri).path;
+        const path = local.resolve(uri).path;
         return { uri, path };
       };
 
@@ -202,5 +203,5 @@ export function init(args: { dir: string; fs: t.IFs }): t.IFsLocal {
     },
   };
 
-  return res;
+  return local;
 }

@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.button",
-  "version": "0.3.104",
+  "version": "0.3.108",
   "description": "Button components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -11,15 +11,15 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/css": "0.4.36",
+    "@platform/css": "0.4.40",
     "@platform/libs": "0.2.10",
-    "@platform/react": "0.4.69",
-    "@platform/util.value": "0.8.20"
+    "@platform/react": "0.4.73",
+    "@platform/util.value": "0.9.0"
   },
   "devDependencies": {
     "@platform/test": "0.2.6",
-    "@platform/ts": "4.1.11",
-    "@platform/ui.icon": "0.0.188",
+    "@platform/ts": "4.1.13",
+    "@platform/ui.icon": "0.0.192",
     "react-icons": "4.2.0"
   },
   "files": [

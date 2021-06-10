@@ -1,6 +1,6 @@
-import { Schema } from '../common';
+import { Schema } from '../node/common';
 
 export { expect, expectError } from '@platform/test';
-export * from '../common';
+export * from '../node/common';
 
 Schema.Uri.ALLOW.NS = ['foo*'];

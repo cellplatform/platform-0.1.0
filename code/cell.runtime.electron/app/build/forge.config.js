@@ -93,8 +93,7 @@ const Configure = {
   titles() {
     const item = config.makers.find((item) => item.name === '@electron-forge/maker-dmg');
     const pkg = fs.readJsonSync(resolve(process.cwd(), 'package.json'));
-    const version = pkg.version;
-    item.config.title = `${config.packagerConfig.name} - v${version}`;
+    item.config.title = `${config.packagerConfig.name} - v${pkg.version}`;
   },
 
   /**
@@ -121,8 +120,8 @@ const Configure = {
       return;
     }
 
-    // console.warn('\n\n🐷 Skipping notarization (TEMPORARY)\n');
-    // return;
+    // console.warn('\n\n🐷🐷🐷 Skipping notarization (TEMPORARY) 🐷🐷🐷\n');
+    // return; // TEMP 🐷
 
     config.packagerConfig.osxNotarize = {
       appleId: APPLE_ID,
@@ -132,7 +131,7 @@ const Configure = {
 };
 
 /**
- * Dynamic configuration of configuration object.
+ * Dynamic configuration of object.
  */
 (() => {
   Configure.notarization();
@@ -156,7 +155,7 @@ function ignore(path) {
 
   const startsWith = [
     '/src',
-    '/sh',
+    '/script.sh',
     '/tmp',
     '/yarn.lock',
     '/tslint.json',

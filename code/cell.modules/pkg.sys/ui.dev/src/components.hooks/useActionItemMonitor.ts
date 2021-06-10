@@ -12,12 +12,12 @@ export function useActionItemMonitor<M extends t.ActionItem>(args: {
   bus: t.EventBus;
   item: M;
 }): M {
-  const bus = args.bus.type<t.ActionEvent>();
+  const bus = args.bus as t.EventBus<t.ActionEvent>;
   const [item, setItem] = useState<M>();
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const $ = bus.event$.pipe(takeUntil(dispose$));
+    const $ = bus.$.pipe(takeUntil(dispose$));
 
     rx.payload<t.IActionModelChangedEvent>($, 'sys.ui.dev/action/model/changed')
       .pipe(

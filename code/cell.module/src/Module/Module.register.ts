@@ -10,7 +10,7 @@ type P = t.IModuleProps;
  * Registers a module.
  */
 export function register(bus: B, module: t.IModule, parent?: t.NodeIdentifier) {
-  const event$ = bus.event$.pipe(takeUntil(module.dispose$));
+  const event$ = bus.$.pipe(takeUntil(module.dispose$));
   const res: t.ModuleRegistration = { ok: false, module };
 
   const parentResponse = (parent?: string) => {
@@ -89,7 +89,7 @@ export function registerChild(args: {
  * Listener for "Module/register" events.
  */
 export function listen<T extends P>(bus: B, module: t.IModule<T>) {
-  rx.payload<t.IModuleRegisterEvent>(bus.event$, 'Module/register')
+  rx.payload<t.IModuleRegisterEvent>(bus.$, 'Module/register')
     .pipe(
       filter((e) => e.module !== module.id && Boolean(e.parent)),
       filter((e) => e.parent === module.id || Boolean(module.query.findById(e.parent))),

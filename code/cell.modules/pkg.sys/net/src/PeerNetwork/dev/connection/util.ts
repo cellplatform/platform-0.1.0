@@ -9,7 +9,7 @@ export function openHandler(args: {
     const { bus, kind, connection } = args;
     const { self, remote } = connection.peer;
     const parent = connection.id;
-    const events = PeerNetwork.Events(bus);
+    const events = PeerNetwork.PeerEvents(bus);
     await events.connection(self, remote.id).open.media(kind, { parent });
     events.dispose();
   };
@@ -24,7 +24,7 @@ export const PropUtil = {
       { label: 'id', value: { data: id, clipboard: true } },
       { label: 'remote peer', value: { data: peer.remote.id, clipboard: true } },
       // { label: 'module', value: `(${direction}) ${module.name}@${module.version}` },
-      { label: 'kind', value: kind },
+      { label: 'kind', value: `${kind} (v${module.version})` },
       // { label: 'open', value: isOpen },
     ];
 

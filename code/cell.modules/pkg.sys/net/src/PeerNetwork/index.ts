@@ -1,16 +1,15 @@
 import { Controller } from './Controller';
-import { Events, FilesystemEvents, GroupEvents, NetBus } from './event';
+import { PeerEvents, FilesystemEvents, GroupEvents } from './event';
 import { FilesystemStrategy, GroupStrategy, PeerStrategy } from './strategy';
 
 export const PeerNetwork = {
   Controller,
-  NetBus,
 
   GroupStrategy,
   PeerStrategy,
   FilesystemStrategy,
 
-  Events,
+  PeerEvents,
   GroupEvents,
   FilesystemEvents,
 };

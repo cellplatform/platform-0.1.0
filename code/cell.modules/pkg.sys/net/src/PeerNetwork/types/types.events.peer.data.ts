@@ -11,7 +11,7 @@ export type PeerDataOutReqEvent = {
 };
 export type PeerDataOutReq = {
   self: t.PeerId;
-  target?: t.PeerFilter; // If omitted broadcast to all connected peers.
+  targets?: t.PeerConnectionUriString[];
   data: any;
   tx?: string;
 };

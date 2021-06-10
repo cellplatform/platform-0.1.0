@@ -201,6 +201,7 @@ export async function copyCellFiles(args: {
             const body: t.IReqPostCellFsUploadCompleteBody = {};
             const res = await uploadCellFilesComplete({
               db,
+              fs,
               host: item.target.host,
               cellUri: item.target.cell,
               body,

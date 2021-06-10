@@ -1,23 +1,8 @@
-import { Subject, Observable } from 'rxjs';
-export { Subject, Observable };
-
-import { groupBy } from 'ramda';
-export const R = { groupBy };
-
-import { Schema, Urls, Uri } from '@platform/cell.schema';
-export { Schema, Urls, Uri };
-
-import { Client, HttpClient } from '@platform/cell.client';
-export { Client, HttpClient };
-
-import { TypeSystem } from '@platform/cell.typesystem';
-export { TypeSystem };
-
-import { defaultValue, time, value, rx } from '@platform/util.value';
-export { defaultValue, time, value, rx };
-
-import { coord } from '@platform/cell.coord';
-export { coord };
-
-import { AppSchema, AppWindowModel, AppModel } from '@platform/cell.schema.sys';
-export { AppSchema, AppWindowModel, AppModel };
+/**
+ * Platform
+ */
+export { Schema, Urls, Uri } from '@platform/cell.schema';
+export { Client, HttpClient } from '@platform/cell.client';
+export { TypeSystem } from '@platform/cell.typesystem';
+export { defaultValue, time, value, rx, slug } from '@platform/util.value';
+export { NetworkBus } from '@platform/cell.runtime/lib/NetworkBus';

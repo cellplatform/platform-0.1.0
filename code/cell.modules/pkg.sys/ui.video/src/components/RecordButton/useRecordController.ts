@@ -14,7 +14,7 @@ export function useRecordController(args: {
   filename?: string;
 }) {
   const { stream, filename = 'filename' } = args;
-  const bus = args.bus.type<t.MediaEvent>();
+  const bus = args.bus as t.EventBus<t.MediaEvent>;
 
   const [onClick, setOnClick] = useState<RecordButtonClickEventHandler>();
   const [state, setState] = useState<RecordButtonState>('default');

@@ -5,7 +5,7 @@ import { FileCache } from '../../../cache/FileCache';
  * Strategy for caching files.
  */
 export async function FilesystemCacheStrategy(args: {
-  netbus: t.NetBus<t.NetGroupEvent>;
+  netbus: t.PeerNetworkBus<t.NetGroupEvent>;
   events: { fs: t.FilesystemEvents; peer: t.PeerNetworkEvents };
   isEnabled: () => boolean;
 }) {

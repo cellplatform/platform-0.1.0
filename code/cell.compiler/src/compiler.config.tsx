@@ -14,7 +14,7 @@ export default () =>
     .variant('web', (config) =>
       config
         .target('web')
-        .entry('main', './src/test/entry.web/entry')
+        .entry('main', './src/test/entry.web/dom')
         .entry('service.worker', './src/test/entry.web/workers/service.worker')
         .static('./static')
         .shared((e) => e.singleton(['react', 'react-dom']))

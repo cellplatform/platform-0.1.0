@@ -7,14 +7,14 @@ import { PeerPropList } from './DEV.Network.Header.Props';
 export type DevNetworkHeaderProps = {
   peer: t.PeerStatus;
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   media: { video?: MediaStream; screen?: MediaStream };
   style?: CssValue;
 };
 
 export const DevNetworkHeader: React.FC<DevNetworkHeaderProps> = (props) => {
   const { peer, media, netbus } = props;
-  const bus = props.bus.type<t.PeerEvent>();
+  const bus = props.bus as t.EventBus<t.PeerEvent>;
 
   const styles = {
     base: css({ Flex: 'horizontal-spaceBetween-start', padding: 15 }),
@@ -29,7 +29,13 @@ export const DevNetworkHeader: React.FC<DevNetworkHeaderProps> = (props) => {
   );
 
   const elSelfVideo = media.video && (
-    <DevVideo kind={'media/video'} stream={media.video} bus={bus} isSelf={true} />
+    <DevVideo
+      kind={'media/video'}
+      stream={media.video}
+      bus={bus}
+      isSelf={true}
+      isRecordable={true}
+    />
   );
 
   return (

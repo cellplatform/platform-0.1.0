@@ -13,7 +13,7 @@ export type TextboxProps = {
 
 export const Textbox: React.FC<TextboxProps> = (props) => {
   const { namespace } = props;
-  const bus = props.bus.type<t.DevActionEvent>();
+  const bus = props.bus as t.EventBus<t.DevActionEvent>;
 
   const model = useActionItemMonitor({ bus: props.bus, item: props.item });
   const { title, placeholder, description, isSpinning, indent } = model;

@@ -4,12 +4,13 @@ import { getCellFiles, toFileList } from './handler.list';
 
 export async function uploadCellFilesComplete(args: {
   db: t.IDb;
+  fs: t.IFileSystem;
   cellUri: string;
   body: t.IReqPostCellFsUploadCompleteBody;
   host: string;
   changes?: boolean;
 }) {
-  const { db, host } = args;
+  const { db, fs, host } = args;
   const cellUri = Schema.Uri.cell(args.cellUri);
   const cellKey = cellUri.key;
   const sendChanges = defaultValue(args.changes, true);
@@ -22,7 +23,7 @@ export async function uploadCellFilesComplete(args: {
   //  - removing "uploading" status
   //  - adding the new hash of the file-model.
   const cellLinks = { ...(cell.props.links || {}) };
-  const filesBefore = (await getCellFiles({ ns, cellLinks })).list;
+  const filesBefore = (await getCellFiles({ ns, fs, cellLinks })).list;
   const cellLinkFiles = Object.keys(cellLinks)
     .filter((key) => Schema.File.Links.is.fileKey(key))
     .map((key) => ({ key, value: cellLinks[key] }));
@@ -42,10 +43,11 @@ export async function uploadCellFilesComplete(args: {
     });
 
   // Save the model.
-  // NB: This is done through the master [Namespace] POST
+  // NB: This is done through the master [namespace] POST
   //     handler as this ensures all hashes are updated.
   const nsResponse = await postNsResponse({
     db,
+    fs,
     id: ns.props.id,
     body: { cells: { [cellKey]: { links: cellLinks } } },
     query: { cells: cellKey, files: true, changes: sendChanges },

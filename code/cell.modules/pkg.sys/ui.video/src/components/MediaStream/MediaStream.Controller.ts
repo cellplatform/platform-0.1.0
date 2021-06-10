@@ -13,8 +13,8 @@ type Ref = { kind: t.MediaStreamKind; ref: string; media: MediaStream; constrain
  */
 export function MediaStreamController(args: { bus: t.EventBus<any> }) {
   const dispose$ = new Subject<void>();
-  const bus = args.bus.type<t.MediaEvent>();
-  const $ = bus.event$.pipe(takeUntil(dispose$));
+  const bus = args.bus as t.EventBus<t.MediaEvent>;
+  const $ = bus.$.pipe(takeUntil(dispose$));
   const refs: Refs = {};
 
   const error = (ref: string, error: string) => {
@@ -91,11 +91,25 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
         const base: M = {
           video: true,
           audio: {
+            // echoCancellation: { ideal: true },
+            // noiseSuppression: { ideal: true },
+            // autoGainControl: { ideal: true },
+
+            /**
+             * 🐷
+             * NOTE: experiment, turning off audio algorithmic options
+             *       to see if this supresses issues with recording audio
+             *       in the first 2-5 seconds.
+             */
+
             echoCancellation: { ideal: true },
             noiseSuppression: { ideal: true },
             autoGainControl: { ideal: true },
           },
         };
+
+        console.log('base audio constraints', base.audio);
+
         const constraints = R.mergeDeepRight(base, e.constraints || {}) as M;
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         refs[ref] = { kind: 'video', ref, media: stream, constraints };

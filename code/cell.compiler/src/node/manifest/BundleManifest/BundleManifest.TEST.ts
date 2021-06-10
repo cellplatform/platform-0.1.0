@@ -10,7 +10,7 @@ describe('BundleManifest', function () {
 
   before(async () => {
     const force = false;
-    await SampleBundles.simpleNode.bundle(force);
+    await SampleBundles.simpleNode.bundle({ force });
   });
 
   beforeEach(() => fs.remove(TMP));

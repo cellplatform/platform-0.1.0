@@ -11,26 +11,35 @@ export function useActionsSelectorState(args: {
   bus: t.EventBus;
   actions?: t.Actions[];
   store?: t.ActionsSelectStore;
+  initial?: t.Namespace;
 }) {
   const store = args.store;
   const list = args.actions || [];
-  const bus = args.bus?.type<t.DevEvent>();
+  const bus = args.bus as t.EventBus<t.DevEvent>;
 
   const [selected, setSelected] = useState<t.Actions>();
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const $ = bus.event$.pipe(takeUntil(dispose$));
+    const $ = bus.$.pipe(takeUntil(dispose$));
+
+    const Find = {
+      namespace: (ns: string) => list.find((a) => a.toObject().namespace === ns),
+      initial() {
+        const first = list[0];
+        return args.initial ? Find.namespace(args.initial) ?? first : first;
+      },
+    };
 
     // Set initial state.
-    if (store) store().then((e) => setSelected(e || list[0]));
-    if (!store) setSelected(list[0]);
+    if (!store) setSelected(Find.initial());
+    if (store) store().then((e) => setSelected(e && !args.initial ? e : Find.initial()));
 
     // Monitor for changes to the dropdown.
     rx.payload<t.IActionsSelectChangedEvent>($, 'sys.ui.dev/actions/select/changed')
       .pipe()
       .subscribe((e) => {
-        const current = list.find((actions) => actions.toObject().namespace === e.namespace);
+        const current = Find.namespace(e.namespace);
 
         setSelected((prev) => {
           if (prev) {

@@ -9,7 +9,7 @@ import { useGroupScreensize } from '../hook';
 
 export type DevNetworkProps = {
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   peer: t.PeerStatus;
   media: { video?: MediaStream; screen?: MediaStream };
   collapse?: boolean | { data?: boolean; media?: boolean };
@@ -19,7 +19,7 @@ export type DevNetworkProps = {
 
 export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
   const { peer, media, netbus } = props;
-  const bus = props.bus.type<t.PeerEvent>();
+  const bus = props.bus as t.EventBus<t.PeerEvent>;
 
   const baseRef = useRef<HTMLDivElement>(null);
 

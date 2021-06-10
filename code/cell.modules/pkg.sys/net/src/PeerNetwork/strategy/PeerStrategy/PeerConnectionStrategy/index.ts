@@ -8,10 +8,10 @@ import { AutoPropagationStrategy } from './strategy.AutoPropagation';
  */
 export function PeerConnectionStrategy(args: {
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerNetworkBus<any>;
 }): t.PeerConnectionStrategy {
   const { netbus } = args;
-  const bus = args.bus.type<t.PeerEvent>();
+  const bus = args.bus as t.EventBus<t.PeerEvent>;
   const events = Events(bus);
 
   /**

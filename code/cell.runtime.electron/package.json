@@ -1,25 +1,30 @@
 {
   "name": "@platform/cell.runtime.electron",
-  "version": "0.0.178",
-  "description": "Electron shell for CellOS.",
+  "version": "0.0.189",
+  "description": "Runtime for desktop environments",
   "scripts": {
-    "ui": "cd app.ui && yarn start",
     "start": "cd app && yarn start",
     "dev": "cd app && yarn dev",
     "test": "cd app && yarn test",
     "package": "cd app && yarn package",
-    "make": "cd app && yarn make",
+    "make": "sh script.sh/make.sh",
+    "make-local": "sh script.sh/make-local.sh",
     "build": "cd app && yarn build",
+    "open": "cd app && yarn open",
     "clean": "sh script.sh/clean.sh",
     "reset": "sh script.sh/reset.sh",
     "nuke": "sh script.sh/nuke.sh",
-    "open": "cd app/out/make && open .",
-    "public": "ngrok http 5000 --hostname=os.ngrok.io"
+    "public": "ngrok http 5000 --hostname=os.ngrok.io",
+    "cmd": "ts-node -T node.bin $@",
+    "prep-make": "yarn cmd prepare make $@",
+    "prep-dev": "yarn cmd prepare dev $@"
   },
   "devDependencies": {
-    "@platform/cell.runtime": "0.10.22",
-    "@platform/cli.prompt": "0.3.45",
-    "@platform/ts": "4.1.11"
+    "@platform/ts": "4.1.13",
+    "@platform/cell.compiler": "0.3.31",
+    "@types/minimist": "1.2.1",
+    "minimist": "1.2.5",
+    "ora": "5.4.0"
   },
   "files": [
     "lib",

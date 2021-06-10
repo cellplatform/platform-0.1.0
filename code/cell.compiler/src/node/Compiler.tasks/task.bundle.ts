@@ -1,6 +1,6 @@
 import { Stats } from 'webpack';
 
-import { fs, log, logger, Model, ProgressSpinner, t } from '../common';
+import { fs, log, Logger, Model, ProgressSpinner, t } from '../common';
 import { BundleManifest } from '../manifest';
 import { bundleDeclarations } from './task.bundle.declarations';
 import { afterCompile, wp } from './util';
@@ -12,6 +12,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
   return new Promise<t.CompilerRunBundleResponse>(async (resolve, reject) => {
     try {
       const { silent } = options;
+
       const { compiler, model, webpack } = wp.toCompiler(input);
       await ensureEntriesExist({ model });
 
@@ -22,7 +23,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
       if (!silent) {
         log.info();
         log.info.gray(`Bundle`);
-        logger.model(model, { indent: 2, url: false }).newline().hr();
+        Logger.model(model, { indent: 2, url: false }).newline().hr();
         spinner.start();
       }
 
@@ -33,7 +34,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
         }
         if (stats) {
           const res = toBundledResponse({ model, stats, webpack });
-          await bundleDeclarations(input);
+          await bundleDeclarations(input, { silent });
 
           const compilation = stats.compilation;
           if (compilation) {
@@ -41,7 +42,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
           }
 
           if (!silent) {
-            logger.newline().stats(stats);
+            Logger.newline().stats(stats);
           }
 
           resolve(res);
@@ -63,8 +64,11 @@ export async function onCompiled(args: {
   webpack: t.WpConfig;
 }) {
   const { model, bundleDir, compilation, webpack } = args;
+
   await copyStatic({ model, bundleDir });
   await BundleManifest.createAndSave({ model, sourceDir: bundleDir });
+  await fs.zip(bundleDir).save(`${bundleDir}.zip`);
+
   afterCompile({ model, compilation, webpack });
 }
 

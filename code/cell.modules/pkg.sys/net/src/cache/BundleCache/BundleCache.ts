@@ -3,7 +3,7 @@ import { Url } from '@platform/util.string/lib/Url';
 import * as t from './types';
 
 /**
- * Browser cache.
+ * Browser cache for managing code/bundle downloads.
  *
  * Refs:
  *    https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker
@@ -52,7 +52,7 @@ export const BundleCache = {
    * Initializes a service worker cache.
    */
   serviceWorker(window: Window, options: { log?: boolean | 'verbose'; localhost?: boolean } = {}) {
-    const ctx = (window as unknown) as ServiceWorker;
+    const ctx = window as unknown as ServiceWorker;
     const hostname = window.location.hostname;
 
     const verbose = (...items: any[]) => {

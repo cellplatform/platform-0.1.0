@@ -11,8 +11,8 @@ const Payload = rx.payload;
  */
 export function Events(eventbus: t.EventBus<any>): n.MotionDraggableEvents {
   const dispose$ = new Subject<void>();
-  const bus = eventbus.type<n.MotionDraggableEvent>();
-  const $ = bus.event$.pipe(takeUntil(dispose$));
+  const bus = eventbus as t.EventBus<n.MotionDraggableEvent>;
+  const $ = bus.$.pipe(takeUntil(dispose$));
 
   const size = {
     req$: Payload<n.MotionDraggableSizeReqEvent>($, 'ui/MotionDraggable/size:req'),

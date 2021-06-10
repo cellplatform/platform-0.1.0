@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import * as fsSync from '@platform/cell.fs.sync/lib/cli';
-import * as tmpl from '@platform/cell.tmpl/lib/cli';
 import { cli, constants } from './common';
 
 const log = cli.log;
@@ -13,7 +12,6 @@ const log = cli.log;
  */
 export const app = cli.create('cell');
 fsSync.init(app.plugins);
-tmpl.init(app.plugins);
 
 // Log header (meta-data).
 const PKG = constants.PKG;

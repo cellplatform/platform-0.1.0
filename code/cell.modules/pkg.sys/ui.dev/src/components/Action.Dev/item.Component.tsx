@@ -34,12 +34,12 @@ export function useComponentRenderMonitor(args: {
   id: string;
 }) {
   const { namespace, id } = args;
-  const bus = args.bus.type<t.DevActionEvent>();
+  const bus = args.bus as t.EventBus<t.DevActionEvent>;
   const [element, setElement] = useState<JSX.Element | null>();
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const $ = bus.event$.pipe(
+    const $ = bus.$.pipe(
       takeUntil(dispose$),
       filter((e) => e.payload.namespace === namespace),
     );

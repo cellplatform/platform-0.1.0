@@ -17,7 +17,7 @@ export type MotionDraggableProps = {
 const View: React.FC<MotionDraggableProps> = (props) => {
   const { elastic } = props;
   const items = (props.items ?? []).filter(Boolean);
-  const bus = props.bus.type<n.MotionDraggableEvent>();
+  const bus = props.bus as t.EventBus<n.MotionDraggableEvent>;
   const rootRef = useRef<HTMLDivElement>(null);
   const resize = useResizeObserver(rootRef);
 

@@ -1,6 +1,5 @@
 import { IDisposable } from '@platform/types';
 import { Observable, Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
 
 export const dispose = {
   /**
@@ -9,8 +8,8 @@ export const dispose = {
    */
   create(until$?: Observable<any>): IDisposable {
     const dispose$ = new Subject<void>();
-    const disposable = {
-      dispose$: dispose$.pipe(share()),
+    const disposable: IDisposable = {
+      dispose$: dispose$.asObservable(),
       dispose: () => {
         dispose$.next();
         dispose$.complete();
@@ -18,7 +17,7 @@ export const dispose = {
     };
 
     if (until$) {
-      until$.subscribe(() => dispose$.next());
+      until$.subscribe(() => disposable.dispose());
     }
 
     return disposable;

@@ -16,8 +16,8 @@ export type DevModelScreenSizeKind = 'root';
 export type DevModelScreenSize = {
   peer: t.PeerId;
   kind: 'root';
-  size: { width: number; height: number };
   updatedAt: number;
+  size: { width: number; height: number };
 };
 
 /**
@@ -28,7 +28,8 @@ export type DevEvent =
   | DevModalEvent
   | DevMediaModalEvent
   | DevGroupEvent
-  | DevLayoutSizeEvent;
+  | DevLayoutSizeEvent
+  | DevImagePasteboardUriEvent;
 
 export type DevModelEvent = DevModelGetReqEvent | DevModelGetResEvent | DevModelChangedEvent;
 
@@ -77,7 +78,12 @@ export type DevMediaModalEvent = {
   type: 'DEV/media/modal';
   payload: DevMediaModal;
 };
-export type DevMediaModal = { stream?: MediaStream; target?: DevModalTarget; isSelf?: boolean };
+export type DevMediaModal = {
+  stream?: MediaStream;
+  target?: DevModalTarget;
+  isSelf?: boolean;
+  isRecordable?: boolean;
+};
 
 /**
  * Broadcasts a display layout to peers.
@@ -86,8 +92,9 @@ export type DevGroupLayoutEvent = {
   type: 'DEV/group/layout';
   payload: DevGroupLayout;
 };
-export type DevGroupLayout = {
-  kind: 'cards' | 'videos' | 'crdt' | 'screensize';
+export type DevGroupLayout = DevGroupLayoutSimple;
+export type DevGroupLayoutSimple = {
+  kind: 'cards' | 'crdt' | 'screensize' | 'video/physics' | 'video/group' | 'image/pasteboard';
   target?: DevModalTarget;
 };
 
@@ -142,4 +149,21 @@ export type DevLayoutSize = {
   source: t.PeerId;
   kind: DevModelScreenSizeKind;
   size: { width: number; height: number };
+};
+
+/**
+ * Used to share [ImagePasteboard] data between peers.
+ */
+export type DevImagePasteboardUriEvent = {
+  type: 'DEV/ImagePasteboard';
+  payload: DevImagePasteboardUri;
+};
+export type DevImagePasteboardUri = {
+  tx: string;
+  action: 'paste:presend' | 'paste:send';
+  data: {
+    bytes: number;
+    mimetype: string;
+    uri?: string; // A base64 encoded CSS <image> "dataUri".
+  };
 };

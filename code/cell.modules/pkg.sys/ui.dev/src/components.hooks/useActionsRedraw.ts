@@ -19,7 +19,7 @@ export function useActionsRedraw(args: {
 }) {
   const { actions } = args;
   const [redraw, setRedraw] = useState<number>(0);
-  const bus = args.bus.type<t.ActionEvent>();
+  const bus = args.bus as t.EventBus<t.ActionEvent>;
 
   useEffect(() => {
     const dispose$ = new Subject<void>();

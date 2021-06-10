@@ -2,7 +2,7 @@ import { firstValueFrom, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { rx, slug, t, WebRuntime } from '../common';
-import { EventNamespace as ns } from './Events.ns';
+import { PeerEventNamespace as ns } from './PeerEvents.ns';
 
 type P = t.GroupPeer;
 type C = t.GroupPeerConnection;
@@ -10,14 +10,14 @@ type C = t.GroupPeerConnection;
 /**
  * Helpers for working with group (mesh) related events.
  */
-export function GroupEvents(eventbus: t.NetBus<any>) {
+export function GroupEvents(eventbus: t.PeerNetworkBus<any>) {
   const module = WebRuntime.module;
-  const netbus = eventbus.type<t.NetGroupEvent>();
+  const netbus = eventbus as t.PeerNetworkBus<t.NetGroupEvent>;
   const source = netbus.self;
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
 
-  const event$ = netbus.event$.pipe(
+  const event$ = netbus.$.pipe(
     takeUntil(dispose$),
     filter(ns.is.group.base),
     map((e) => e as t.NetGroupEvent),
@@ -68,7 +68,7 @@ export function GroupEvents(eventbus: t.NetBus<any>) {
      */
 
     const fire = (target: t.PeerId, peer: t.PeerId, kind: t.PeerConnectionKind) =>
-      netbus.target.peer(target).fire({
+      netbus.target.node(target).fire({
         type: 'sys.net/group/connect',
         payload: { source, target: { peer, kind } },
       });

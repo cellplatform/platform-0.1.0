@@ -2,8 +2,7 @@ import { sortBy, sortWith, ascend, descend, prop, uniq, uniqBy, pipe, groupBy, c
 export const R = { sortBy, sortWith, ascend, descend, prop, uniq, uniqBy, pipe, groupBy, clone };
 
 import { id } from '@platform/util.value';
-export { id };
-export { rx, defaultValue, value, time, deleteUndefined } from '@platform/util.value';
+export { id, rx, defaultValue, value, time, deleteUndefined } from '@platform/util.value';
 export const slug = id.shortid;
 
 export { Builder } from '@platform/cell.module';
@@ -19,9 +18,6 @@ export { log } from '@platform/log/lib/server';
 export { Client, HttpClient } from '@platform/cell.client';
 
 export { Schema, Uri, Encoding } from '@platform/cell.schema';
-
-import minimist from 'minimist';
-export { minimist };
 
 /* eslint-disable */
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');

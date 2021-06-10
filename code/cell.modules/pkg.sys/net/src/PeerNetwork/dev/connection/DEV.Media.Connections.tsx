@@ -8,13 +8,13 @@ import { DevNetworkConnectionsModal } from '../network/';
  */
 export type DevMediaConnectionsProps = {
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   connections: t.PeerConnectionMediaStatus[];
   style?: CssValue;
 };
 export const DevMediaConnections: React.FC<DevMediaConnectionsProps> = (props) => {
   const { netbus, connections } = props;
-  const bus = props.bus.type<t.DevEvent>();
+  const bus = props.bus as t.EventBus<t.DevEvent>;
   const self = netbus.self;
 
   const styles = {

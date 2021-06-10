@@ -3,8 +3,7 @@ import React, { useState } from 'react';
 import { DevActions, toObject } from 'sys.ui.dev';
 import { DotTabstrip, DotTabstripProps } from './DotTabstrip';
 import { toItems } from './util';
-import { t, log, COLORS } from '../../common';
-import { defaultValue } from '@platform/ui.image/lib/common';
+import { t, log, COLORS, defaultValue } from '../../common';
 
 const createItems = (length: number, options: { isLoaded?: boolean } = {}): t.DotTabstripItem[] => {
   const { isLoaded } = options;

@@ -2,8 +2,13 @@ import React from 'react';
 import { filter } from 'rxjs/operators';
 
 import { rx, t } from '../common';
-import { DevCrdtModel, DevScreensize } from '../layouts';
-import { DevVideosLayout } from '../media';
+import {
+  DevCrdtModel,
+  DevScreensize,
+  DevVideosPhysicsLayout,
+  DevVideosGroupLayout,
+  DevImagePasteboard,
+} from '../layouts';
 
 /**
  * Listen for requests for a view to display and load it into the environment.
@@ -11,11 +16,11 @@ import { DevVideosLayout } from '../media';
 export function listen(args: {
   network$: t.Observable<t.DevEvent>;
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerNetworkBus<any>;
 }) {
   const { network$: $ } = args;
-  const bus = args.bus.type<t.DevEvent>();
-  const netbus = args.netbus.type<t.DevEvent>();
+  const bus = args.bus as t.EventBus<t.DevEvent>;
+  const netbus = args.netbus as t.PeerNetworkBus<t.DevEvent>;
   const layout$ = rx.payload<t.DevGroupLayoutEvent>($, 'DEV/group/layout');
 
   const layout = (kind: t.DevGroupLayout['kind'], factory?: () => JSX.Element) => {
@@ -26,8 +31,11 @@ export function listen(args: {
     });
   };
 
-  layout('cards'); // NB: Clear
-  layout('videos', () => <DevVideosLayout bus={bus} netbus={netbus} />);
+  layout('cards'); // NB: Clear (reset).
+
   layout('crdt', () => <DevCrdtModel bus={bus} netbus={netbus} />);
   layout('screensize', () => <DevScreensize bus={bus} netbus={netbus} />);
+  layout('video/physics', () => <DevVideosPhysicsLayout bus={bus} netbus={netbus} />);
+  layout('video/group', () => <DevVideosGroupLayout bus={bus} netbus={netbus} />);
+  layout('image/pasteboard', () => <DevImagePasteboard bus={bus} netbus={netbus} />);
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { animationFrameScheduler } from 'rxjs';
 import { filter, observeOn } from 'rxjs/operators';
 
-import { css, CssValue, drag, t, defaultValue } from '../common';
+import { css, CssValue, drag, t, defaultValue, rx } from '../common';
 
 export type ImageProps = {
   bus: t.EventBus<any>;
@@ -17,7 +17,7 @@ export type ImageProps = {
 
 export const Image: React.FC<ImageProps> = (props) => {
   const { onLoadStart } = props;
-  const bus = props.bus.type<t.ConversationEvent>();
+  const bus = rx.busAsType<t.ConversationEvent>(props.bus);
   const zoom = defaultValue(props.zoom, 1);
   const offset = props.offset || { x: 0, y: 0 };
   const imageRef = useRef<HTMLImageElement>(null);

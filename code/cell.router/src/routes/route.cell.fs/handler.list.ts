@@ -1,4 +1,5 @@
 import { models, Schema, t, util, defaultValue, minimatch } from '../common';
+import { getNsData } from '../route.ns';
 
 export async function listCellFiles(args: {
   db: t.IDb;
@@ -11,7 +12,7 @@ export async function listCellFiles(args: {
   filter?: string; // Grep style filter pattern.
 }) {
   try {
-    const { db, host, expires, filter } = args;
+    const { db, fs, host, expires, filter } = args;
     const includeFiles = defaultValue(args.includeFiles, true);
     const includeUrls = defaultValue(args.includeUrls, true);
 
@@ -30,7 +31,7 @@ export async function listCellFiles(args: {
     };
 
     const getFiles = async () => {
-      return (await getCellFiles({ ns, cellLinks })).map;
+      return (await getCellFiles({ ns, fs, cellLinks })).map;
     };
 
     // Prepare response.
@@ -55,15 +56,21 @@ export async function listCellFiles(args: {
  * Helpers
  */
 
-export async function getCellFiles(args: { ns: t.IDbModelNs; cellLinks: t.IUriMap }) {
-  const { ns, cellLinks } = args;
+export async function getCellFiles(args: {
+  ns: t.IDbModelNs;
+  fs: t.IFileSystem;
+  cellLinks: t.IUriMap;
+}) {
+  const { ns, fs, cellLinks } = args;
 
   const linkExists = (fileid: string, cellLinks: t.IUriMap) => {
     const fileUri = Schema.Uri.create.file(ns.props.id, fileid);
     return Object.values(cellLinks).some((value) => value.startsWith(fileUri));
   };
 
-  const map = { ...(await models.ns.getChildFiles({ model: ns })) };
+  const res = await getNsData({ fs, model: ns, query: { files: true } });
+  const data = res.data as Partial<t.INsDataChildren>;
+  const map = data.files || {};
 
   Object.keys(map).forEach((fileid) => {
     if (!linkExists(fileid, cellLinks)) {

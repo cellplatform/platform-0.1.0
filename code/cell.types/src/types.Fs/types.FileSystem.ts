@@ -81,7 +81,7 @@ export type IFsLocation = {
 
 export type IFsResolveOptions = IFsResolveOptionsLocal | IFsResolveOptionsS3;
 
-export type IFsResolveOptionsLocal = IFsResolveOptionsS3; // NB: the local file-system simulates the S3 post.
+export type IFsResolveOptionsLocal = IFsResolveOptionsS3; // NB: the local file-system can simulate an S3 post.
 
 export type IFsResolveOptionsS3 =
   | IFsResolveDefaultOptionsS3

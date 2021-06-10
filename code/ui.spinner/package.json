@@ -1,26 +1,26 @@
 {
   "name": "@platform/ui.spinner",
   "description": "Wait spinner.",
-  "version": "0.0.185",
+  "version": "0.0.189",
   "main": "lib/index",
   "scripts": {
     "start": "parcel src/test.parcel/index.html",
     "test": "ts test $@",
     "lint": "ts lint $@",
-    "build": "ts build $@",
+    "build": "ts build --no-esm $@",
     "bundle": "sh script.sh/bundle.sh",
     "clean": "sh script.sh/clean.sh",
     "serve": "cd dist && serve",
     "prepare": "ts prepare $@"
   },
   "dependencies": {
-    "@platform/css": "0.4.36",
-    "@platform/react": "0.4.69"
+    "@platform/css": "0.4.40",
+    "@platform/react": "0.4.73"
   },
   "devDependencies": {
     "@platform/test": "0.2.6",
-    "@platform/ts": "4.1.11",
-    "@platform/ui.dev": "0.0.43"
+    "@platform/ts": "4.1.13",
+    "@platform/ui.dev": "0.0.47"
   },
   "files": [
     "lib",

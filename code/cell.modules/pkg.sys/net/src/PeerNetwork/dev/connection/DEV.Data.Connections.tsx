@@ -9,13 +9,13 @@ import { openHandler } from './util';
  */
 export type DevDataConnectionsProps = {
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   connections: t.PeerConnectionDataStatus[];
   style?: CssValue;
 };
 export const DevDataConnections: React.FC<DevDataConnectionsProps> = (props) => {
   const { netbus, connections } = props;
-  const bus = props.bus.type<t.DevEvent>();
+  const bus = props.bus as t.EventBus<t.DevEvent>;
   const self = netbus.self;
 
   const styles = {

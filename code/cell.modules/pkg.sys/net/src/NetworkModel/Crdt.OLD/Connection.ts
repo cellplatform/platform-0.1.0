@@ -26,8 +26,8 @@ export function Connection(args: {
     conn.close();
   };
 
-  const bus = args.bus.type<types.CrdtEvent>();
-  const $ = bus.event$.pipe(takeUntil(dispose$));
+  const bus = args.bus as t.EventBus<types.CrdtEvent>;
+  const $ = bus.$.pipe(takeUntil(dispose$));
 
   const sendMessage = (msg: Automerge.Message) => {
     const connection = id;

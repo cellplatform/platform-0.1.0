@@ -1,12 +1,11 @@
 node_modules
 lib
+lib.bundle
 .DS_Store
 .npmrc
 .env
-.bundle
 *.log
 
 /TEMP.md
 /tmp*
 /out
-

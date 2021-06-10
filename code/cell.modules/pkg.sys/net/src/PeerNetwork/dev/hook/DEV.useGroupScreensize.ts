@@ -12,12 +12,12 @@ import { DevEvents } from '../event';
 export function useGroupScreensize(args: {
   ref: React.RefObject<HTMLElement>;
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   kind: t.DevLayoutSize['kind'];
 }) {
   const { ref, kind } = args;
-  const local = args.bus.type<t.DevEvent>();
-  const network = args.netbus.type<t.DevEvent>();
+  const local = args.bus as t.EventBus<t.DevEvent>;
+  const network = args.netbus as t.PeerNetworkBus<t.DevEvent>;
   const self = network.self;
   const source = self;
 
@@ -47,22 +47,19 @@ export function useGroupScreensize(args: {
 export function Controller(args: {
   ref: React.RefObject<HTMLElement>;
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   kind: t.DevLayoutSize['kind'];
   parentResize$: Observable<void>;
 }) {
-  //
-  console.log('-------------------------------------------');
-
   const { ref, kind, parentResize$ } = args;
-  const local = args.bus.type<t.DevEvent>();
-  const network = args.netbus.type<t.DevEvent>();
+  const local = args.bus as t.EventBus<t.DevEvent>;
+  const network = args.netbus as t.PeerNetworkBus<t.DevEvent>;
   const self = network.self;
   const source = self;
 
   const events = DevEvents(local);
   const local$ = events.$;
-  const network$ = network.event$.pipe(takeUntil(events.dispose$));
+  const network$ = network.$.pipe(takeUntil(events.dispose$));
   const resize$ = args.parentResize$.pipe(takeUntil(events.dispose$));
 
   const getSize = () => {

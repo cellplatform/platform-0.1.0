@@ -8,7 +8,7 @@ export function CodeEditorLibsEventHandlers(
   singleton: t.ICodeEditorSingleton,
 ) {
   const fire = (e: t.CodeEditorSingletonEvent) => bus.fire(e);
-  const $ = bus.event$;
+  const $ = bus.$;
   const libs = singleton.libs;
 
   /**

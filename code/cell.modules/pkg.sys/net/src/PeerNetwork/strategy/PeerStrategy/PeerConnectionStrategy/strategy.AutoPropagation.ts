@@ -5,12 +5,12 @@ import { R, rx, t, FilterUtil } from '../../common';
  * Strategy for auto propogating connections to all peers.
  */
 export function AutoPropagationStrategy(args: {
-  netbus: t.NetBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   events: t.PeerNetworkEvents;
   isEnabled: () => boolean;
 }) {
   const { events } = args;
-  const netbus = args.netbus.type<t.NetGroupEvent>();
+  const netbus = args.netbus as t.PeerNetworkBus<t.NetGroupEvent>;
   const self = netbus.self;
   const connections = events.connections(self);
 
@@ -58,7 +58,7 @@ export function AutoPropagationStrategy(args: {
    * Listen for incoming "ensure connected" events from other
    * peers broadcasting the set of ID's to connect to.
    */
-  rx.payload<t.NetGroupEnsureConnectedDataEvent>(netbus.event$, 'sys.net/group/conn/ensure:data')
+  rx.payload<t.NetGroupEnsureConnectedDataEvent>(netbus.$, 'sys.net/group/conn/ensure:data')
     .pipe(delay(0))
     .subscribe(async (e) => {
       const { isReliable } = e;

@@ -22,19 +22,21 @@ export async function uploadLocalFile(args: {
     }
 
     // Read in the path.
-    let path = args.path;
-    if (!path) {
+    if (!args.path) {
       const err = `No file [path] passed in headers.`;
       return util.toErrorPayload(err, { status: 400 });
     }
 
     // Prepare the path.
-    path = path.replace(new RegExp(`^${fs.dir}/`), '');
-    path = `${fs.dir}/${path}`;
+    const relative = args.path.replace(new RegExp(`^${fs.dir}/`), '');
+    const path = {
+      relative,
+      absolute: `${fs.dir}/${relative}`,
+    };
 
     // Save the file.
-    await util.fs.ensureDir(util.fs.dirname(path));
-    await util.fs.writeFile(path, data);
+    await util.fs.ensureDir(util.fs.dirname(path.absolute));
+    await util.fs.writeFile(path.absolute, data);
 
     // Finish up.
     const res: t.IPayload<t.IResPostFileUploadLocal> = {

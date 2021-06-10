@@ -1,2 +1,3 @@
 export * from '../common';
-export { Events, NetBus, GroupEvents, FilesystemEvents } from '../event';
+export { PeerEvents as Events, GroupEvents, FilesystemEvents } from '../event';
+export { PeerNetworkBus } from '../../PeerNetworkBus';

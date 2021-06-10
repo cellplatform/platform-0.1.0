@@ -4,6 +4,7 @@
 export { copyToClipboard, useResizeObserver } from '@platform/react';
 export { Button, ButtonProps } from '@platform/ui.button';
 export { QueryString } from '@platform/util.string/lib/QueryString';
+export { Spinner } from '@platform/ui.spinner';
 
 /**
  * System

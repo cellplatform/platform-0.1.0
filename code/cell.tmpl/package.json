@@ -1,29 +1,31 @@
 {
   "name": "@platform/cell.tmpl",
-  "version": "0.1.110",
-  "description": "Template generator for CellOS.",
+  "version": "0.2.3",
+  "description": "Template generator for the system",
   "main": "lib/index",
   "types": "lib/index.d.ts",
+  "bin": {
+    "cell.tmpl": "lib/index.js"
+  },
   "scripts": {
-    "start": "sh script.sh/demo.sh",
     "test": "ts test",
     "lint": "ts lint",
     "build": "ts build --no-esm $@",
-    "clean": "sh script.sh/clean.sh",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "cmd": "node lib/index.js $@"
   },
   "dependencies": {
-    "@platform/cell.types": "0.5.62",
-    "@platform/cli": "0.5.70",
-    "@platform/fs": "0.6.11",
+    "@platform/cell.types": "0.5.71",
+    "@platform/cli": "0.5.74",
+    "@platform/fs": "0.6.13",
     "@platform/libs": "0.2.10",
-    "@platform/npm": "0.4.4",
-    "@platform/tmpl": "0.1.61",
-    "@platform/types": "0.5.19"
+    "@platform/npm": "0.4.8",
+    "@platform/tmpl": "0.1.65",
+    "@platform/types": "0.5.21"
   },
   "devDependencies": {
     "@platform/test": "0.2.6",
-    "@platform/ts": "4.1.11"
+    "@platform/ts": "4.1.13"
   },
   "files": [
     "lib",

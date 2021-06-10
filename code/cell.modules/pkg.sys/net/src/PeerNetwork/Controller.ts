@@ -14,7 +14,7 @@ import {
   time,
   WebRuntime,
 } from './common';
-import { Events } from './event';
+import { PeerEvents } from './event';
 import { MemoryRefs, SelfRef } from './Refs';
 import { Status } from './Status';
 
@@ -24,8 +24,8 @@ type ConnectionKind = t.PeerNetworkConnectRes['kind'];
  * EventBus contoller for a WebRTC [Peer] connection.
  */
 export function Controller(args: { bus: t.EventBus<any> }) {
-  const bus = args.bus.type<t.PeerEvent>();
-  const events = Events(bus);
+  const bus = args.bus as t.EventBus<t.PeerEvent>;
+  const events = PeerEvents(bus);
   const $ = events.$;
 
   const refs = MemoryRefs();
@@ -458,11 +458,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
       const targets = selfRef.connections
         .filter((ref) => ref.kind === 'data')
-        .filter((ref) => {
-          return !e.target
-            ? true
-            : e.target({ peer: ref.peer.remote.id, connection: { id: ref.id, kind: ref.kind } });
-        });
+        .filter((ref) => (e.targets || []).some((uri) => uri === ref.uri));
 
       // Send the data over the wire.
       targets.forEach((ref) => {

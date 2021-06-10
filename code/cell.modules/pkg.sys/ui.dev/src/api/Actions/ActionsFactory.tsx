@@ -26,7 +26,7 @@ export const ActionsFactory: t.ActionsFactory = {
       model: asModel(model),
       handlers: Handlers.compose([...defs]),
     });
-    return (actions as unknown) as t.Actions<Ctx, Items>;
+    return actions as unknown as t.Actions<Ctx, Items>;
   },
 };
 
@@ -35,9 +35,11 @@ export const ActionsFactory: t.ActionsFactory = {
  */
 
 function asModel<Ctx extends O>(input?: any) {
-  return (typeof input === 'object'
-    ? StateObject.isStateObject(input)
-      ? input
-      : StateObject.create<t.ActionsModel<Ctx>>(input)
-    : ActionsFactory.model()) as t.ActionsModelState<Ctx>;
+  return (
+    typeof input === 'object'
+      ? StateObject.isStateObject(input)
+        ? input
+        : StateObject.create<t.ActionsModel<Ctx>>(input)
+      : ActionsFactory.model()
+  ) as t.ActionsModelState<Ctx>;
 }

@@ -13,7 +13,7 @@ export type SelectDropdownProps = {
 
 export const SelectDropdown: React.FC<SelectDropdownProps> = (props) => {
   const { namespace, item } = props;
-  const bus = props.bus.type<t.DevActionEvent>();
+  const bus = props.bus as t.EventBus<t.DevActionEvent>;
 
   const { title, label, description, isSpinning, indent } = item;
   const isActive = item.handlers.length > 0;
@@ -73,7 +73,7 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = (props) => {
     <div {...styles.dropdown.outer}>
       <div {...styles.dropdown.inner}>
         <Dropdown
-          ref={(e) => (selectRef.current = (e as unknown) as Dropdown)}
+          ref={(e) => (selectRef.current = e as unknown as Dropdown)}
           options={options}
           value={current}
           placeholder={label}

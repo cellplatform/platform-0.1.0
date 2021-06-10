@@ -13,6 +13,7 @@ import {
   t,
   time,
   QueryString,
+  PeerNetworkBus,
 } from './common';
 import { RootLayout } from './DEV.Root';
 import { EventBridge } from './event';
@@ -21,7 +22,7 @@ import { DevGroupSeed, GroupSeed } from './layouts';
 type Ctx = {
   self: t.PeerId;
   bus: t.EventBus<t.PeerEvent | t.DevEvent>;
-  netbus: t.NetBus;
+  netbus: t.PeerNetworkBus;
   signal: string; // Signalling server network address (host/path).
   events: CtxEvents;
   connectTo?: string;
@@ -63,9 +64,9 @@ export const actions = DevActions<Ctx>()
     MediaStream.Controller({ bus });
 
     const signal = 'rtc.cellfs.com/peer';
-    const netbus = PeerNetwork.NetBus({ bus, self });
+    const netbus = PeerNetworkBus({ bus, self });
     const events = {
-      peer: PeerNetwork.Events(bus),
+      peer: PeerNetwork.PeerEvents(bus),
       group: PeerNetwork.GroupEvents(netbus),
       media: MediaStream.Events(bus),
     };
@@ -216,9 +217,11 @@ export const actions = DevActions<Ctx>()
       });
     };
 
-    e.button('group: videos (physics)', (e) => showLayout(e.ctx, 'videos'));
-    e.button('group: crdt', (e) => showLayout(e.ctx, 'crdt'));
-    e.button('group: screensize', (e) => showLayout(e.ctx, 'screensize'));
+    e.button('screensize', (e) => showLayout(e.ctx, 'screensize'));
+    e.button('crdt', (e) => showLayout(e.ctx, 'crdt'));
+    e.button('video/physics', (e) => showLayout(e.ctx, 'video/physics'));
+    e.button('video/group', (e) => showLayout(e.ctx, 'video/group'));
+    e.button('image/pasteboard', (e) => showLayout(e.ctx, 'image/pasteboard'));
 
     e.hr(1, 0.2);
     e.button('reset (default)', (e) => showLayout(e.ctx, 'cards'));

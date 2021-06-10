@@ -6,7 +6,7 @@ import {
   fs,
   HttpClient,
   log,
-  logger,
+  Logger,
   Model,
   PATH,
   Path,
@@ -159,9 +159,9 @@ export const upload: t.CompilerRunUpload = async (args) => {
       spinner.stop();
       const elapsed = timer.elapsed.toString();
       await logUpload({ baseDir, bundleDir, targetCell, host, elapsed, manifest });
-      logger.hr().newline();
+      Logger.hr().newline();
       logUrls(toUrls(files));
-      logger.newline().hr().newline();
+      Logger.newline().hr().newline();
     }
 
     return done(true);
@@ -194,12 +194,12 @@ async function logUpload(args: {
 
   const table = log.table({ border: false });
   table.add(['  • host', host]);
-  table.add(['  • cell', logger.format.uri(targetCell.toString())]);
+  table.add(['  • cell', Logger.format.uri(targetCell.toString())]);
   table.add(['  • files: ']);
 
   const addFile = (path: string, bytes: number) => {
     path = path.substring(baseDir.length + 1);
-    path = logger.format.filepath(path);
+    path = Logger.format.filepath(path);
     const size = filesize(bytes);
     table.add(['', `${path}  `, log.green(size)]);
   };
@@ -223,7 +223,7 @@ function logUrls(links: Record<string, string>) {
   Object.keys(links).forEach((key) => {
     const link = links[key];
     if (link) {
-      const url = logger.format.url(link);
+      const url = Logger.format.url(link);
       table.add([`  ${key} `, url]);
     }
   });

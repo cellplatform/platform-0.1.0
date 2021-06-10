@@ -9,9 +9,6 @@ export type PeerConnectionKind = PeerConnectionKindData | PeerConnectionKindMedi
 export type PeerConnectionKindData = 'data';
 export type PeerConnectionKindMedia = 'media/video' | 'media/screen';
 
-export type PeerUri = PeerConnectionUri; // A URI identifying a network/peer resource.
-export type PeerConnectionUri = string;
-
 export type PeerConnectDirection = 'incoming' | 'outgoing';
 
 export type PeerError = { message: string };

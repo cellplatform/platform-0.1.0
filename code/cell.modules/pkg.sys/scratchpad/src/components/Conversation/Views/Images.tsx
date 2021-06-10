@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil, map } from 'rxjs/operators';
 
 import { Spinner } from '../../Primitives';
-import { COLORS, css, CssValue, events, t } from '../common';
+import { COLORS, css, CssValue, events, t, rx } from '../common';
 import { DotSelector, DotSelectorItem } from '../DotSelector';
 import { Image } from './Image';
 import { Scale } from './Scale';
@@ -20,7 +20,7 @@ export type ImagesProps = {
 
 export const Images: React.FC<ImagesProps> = (props) => {
   const { paths = [], onSelect, selected } = props;
-  const bus = props.bus.type<t.ConversationEvent>();
+  const bus = rx.busAsType<t.ConversationEvent>(props.bus);
 
   const [isOver, setIsOver] = useState<boolean>(false);
   const [items, setItems] = useState<DotSelectorItem[]>([]);

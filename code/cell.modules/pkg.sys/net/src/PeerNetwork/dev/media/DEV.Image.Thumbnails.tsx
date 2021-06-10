@@ -5,13 +5,13 @@ import { DevImageFullscreen } from '../media';
 
 export type DevImageThumbnailsProps = {
   bus: t.EventBus<any>;
-  netbus: t.NetBus<any>;
+  netbus: t.PeerNetworkBus<any>;
   style?: CssValue;
 };
 
 export const DevImageThumbnails: React.FC<DevImageThumbnailsProps> = (props) => {
   const { netbus } = props;
-  const bus = props.bus.type<t.DevEvent>();
+  const bus = props.bus as t.EventBus<t.DevEvent>;
   const files = useFileList(netbus);
 
   const showModal = (file: t.PeerFile, uri: string) => {

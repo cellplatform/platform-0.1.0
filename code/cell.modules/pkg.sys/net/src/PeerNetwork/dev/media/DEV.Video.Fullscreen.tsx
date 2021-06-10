@@ -8,14 +8,13 @@ export type DevVideoFullscreenProps = {
   bus: t.EventBus<any>;
   stream?: MediaStream;
   isSelf?: boolean;
+  isRecordable?: boolean;
   style?: CssValue;
 };
 
 export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => {
-  const { stream, isSelf } = props;
-  const bus = props.bus.type<t.DevEvent>();
-
-  console.log('isSelf', isSelf);
+  const { stream, isSelf, isRecordable = false } = props;
+  const bus = props.bus as t.EventBus<t.DevEvent>;
 
   const mainRef = useRef<HTMLDivElement>(null);
   const resize = useResizeObserver(mainRef);
@@ -52,14 +51,16 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
   const elFooter = (
     <div {...styles.footer}>
       <div />
-      <RecordButton
-        bus={bus}
-        stream={stream}
-        size={45}
-        state={record.state}
-        onClick={record.onClick}
-        style={{ marginBottom: 20 }}
-      />
+      {isRecordable && (
+        <RecordButton
+          bus={bus}
+          stream={stream}
+          size={45}
+          state={record.state}
+          onClick={record.onClick}
+          style={{ marginBottom: 20 }}
+        />
+      )}
       <div />
     </div>
   );

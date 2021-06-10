@@ -9,8 +9,10 @@ export default () =>
         .target('web')
         .port(Package.compiler.port)
 
-        .entry('main', './src/entry/main')
+        .entry('main', './src/entry/dom')
+
         // .declarations('./src/**/*')
+
         .static('static')
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
 

@@ -34,7 +34,7 @@ export type CompilerRunBundleResponse = {
 
 export type CompilerRunBundleDeclarations = (
   input: M,
-  options?: { silent?: boolean },
+  options?: { silent?: boolean; zip?: boolean },
 ) => Promise<CompilerRunBundleDeclarationsResponse>;
 export type CompilerRunBundleDeclarationsResponse = {
   ok: boolean;

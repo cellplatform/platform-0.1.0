@@ -5,5 +5,6 @@ const imports = {
   Sample: import('./components/Sample/DEV'),
 };
 
-export const ACTIONS = Object.values(imports);
-export const DevHarness: React.FC = () => <Harness actions={ACTIONS} />;
+const ns = new URL(location.href).searchParams.get('ui.dev.ns');
+
+export const DevHarness: React.FC = () => <Harness actions={Object.values(imports)} initial={ns} />;

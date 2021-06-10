@@ -1,9 +1,8 @@
 import { Tray, Menu } from 'electron';
 import { fs, t } from '../common';
-// import { createWindow } from '../main.window';
 
-export function init(args: { host: string; def: string; ctx: t.IContext }) {
-  const { host, def, ctx } = args;
+export function init(args: { host: string; def: string }) {
+  const { host, def } = args;
 
   const icon = fs.join(__dirname, '../../../assets/icons/tray/tray.png');
   const tray = new Tray(icon);

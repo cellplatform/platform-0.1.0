@@ -31,7 +31,7 @@ export type IStateObjectChangingEvent<T extends O = any> = {
   payload: IStateObjectChanging<T>;
 };
 export type IStateObjectChanging<T extends O = any> = {
-  op: t.StateObjectChangeOperation;
+  op: t.StateChangeOperation;
   cid: string; // "change-id"
   from: T;
   to: T;
@@ -49,7 +49,7 @@ export type IStateObjectChangedEvent<T extends O = any> = {
   payload: IStateObjectChanged<T>;
 };
 export type IStateObjectChanged<T extends O = any> = {
-  op: t.StateObjectChangeOperation;
+  op: t.StateChangeOperation;
   cid: string; // "change-id"
   patches: t.PatchSet;
   from: T;
@@ -66,7 +66,7 @@ export type IStateObjectPatchedEvent = {
   payload: IStateObjectPatched;
 };
 export type IStateObjectPatched = {
-  op: t.StateObjectChangeOperation;
+  op: t.StateChangeOperation;
   cid: string; // "change-id"
   prev: t.PatchSet['prev'];
   next: t.PatchSet['next'];

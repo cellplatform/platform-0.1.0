@@ -45,24 +45,20 @@ export type IStateObjectWritable<T extends O> = IStateObjectReadable<T> &
   };
 
 export type StateObjectChange<T extends O> = (
-  input: StateObjectChanger<T> | T,
+  input: t.StateChanger<T> | T,
 ) => IStateObjectChangeResponse<T>;
 
 export type StateObjectChangeAsync<T extends O> = (
-  input: StateObjectChangerAsync<T>,
+  input: t.StateChangerAsync<T>,
 ) => Promise<IStateObjectChangeResponse<T>>;
 
-export type StateObjectChangeOperation = 'update' | 'replace';
-
 export type IStateObjectChangeResponse<T extends O> = {
-  op: StateObjectChangeOperation;
+  op: t.StateChangeOperation;
   cid: string; // "change-id"
   patches: t.PatchSet;
   changed?: t.IStateObjectChanged<T>;
   cancelled?: t.IStateObjectCancelled<T>;
 };
-export type StateObjectChanger<T extends O> = (draft: T) => void;
-export type StateObjectChangerAsync<T extends O> = (draft: T) => Promise<void>;
 
 /**
  * Merge

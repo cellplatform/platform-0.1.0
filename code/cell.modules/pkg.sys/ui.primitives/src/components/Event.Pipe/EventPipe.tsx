@@ -52,6 +52,7 @@ export const EventPipe: React.FC<EventPipeProps> = (props) => {
       height: orientation === 'x' ? thickness : undefined,
       width: orientation === 'y' ? thickness : undefined,
       borderRadius: thickness,
+      overflow: 'hidden',
     }),
   };
 
