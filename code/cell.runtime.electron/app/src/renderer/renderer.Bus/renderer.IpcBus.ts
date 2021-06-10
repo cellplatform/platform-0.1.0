@@ -1,13 +1,13 @@
 import { NetworkBus } from '@platform/cell.runtime/lib/NetworkBus';
 
-import { t, env } from '../common';
+import { t, Env } from '../common';
 
 /**
  * Derives a [NetworkBus] from the Electron environment
  * using IPC (the "inter-process communication" transport).
  */
 export function IpcBus<E extends t.Event>(): t.NetworkBus<E> {
-  const network = env?.network;
+  const network = Env.get()?.network;
 
   if (typeof network !== 'object')
     throw new Error('[env] network pump not provided by preload script.');

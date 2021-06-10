@@ -2,7 +2,7 @@ import { BrowserWindow } from 'electron';
 import { takeUntil } from 'rxjs/operators';
 
 import { constants, ENV, rx, t, RuntimeUri } from '../common';
-import { WindowEvents } from './main.Window.Events';
+import { Events } from './main.Window.Events';
 import { IpcSysInfo } from './main.IpcSysInfo';
 
 type WindowRef = {
@@ -14,9 +14,9 @@ type WindowRef = {
 /**
  * Controller logic for working with Electron windows.
  */
-export function WindowController(args: { bus: t.EventBus<any> }) {
+export function Controller(args: { bus: t.EventBus<any> }) {
   const bus = rx.busAsType<t.WindowEvent>(args.bus);
-  const events = WindowEvents({ bus });
+  const events = Events({ bus });
   const { dispose, dispose$ } = events;
   const $ = bus.$.pipe(takeUntil(dispose$));
 

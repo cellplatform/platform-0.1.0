@@ -1,1 +1,5 @@
-export const Foo = 123;
+import { Events } from './renderer.Window.Events';
+
+export const Window = {
+  Events,
+};

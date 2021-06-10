@@ -3,7 +3,7 @@ import { DevActions } from 'sys.ui.dev';
 import { Sample, SampleProps } from '..';
 
 import { IpcBus } from '../../../common';
-import { Foo } from '../../../../../app/src/renderer/renderer.Window'; // TEMP 🐷
+// import { Foo } from '../../../../../app/src/renderer/renderer.Window'; // TEMP 🐷
 
 type Foo = { type: 'foo'; payload: { count: number } };
 type Ctx = { props: SampleProps };
@@ -21,7 +21,7 @@ export const actions = DevActions<Ctx>()
     };
     // const netbus = IpcBus<Foo>();
 
-    console.log('Foo', Foo);
+    // console.log('Foo', Foo);
     console.log('-------------------------------------------');
     bus.ipc.$.subscribe((e) => {
       console.log(' >> netbus', e);
