@@ -1,6 +1,6 @@
 {
   "name": "cell.runtime.electron",
-  "version": "0.11.3",
+  "version": "0.12.0",
   "description": "Desktop runtime environment.",
   "main": "lib/main/index",
   "types": "lib/index.d.ts",
@@ -62,14 +62,5 @@
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "license": "MIT",
-  "private": true,
-  "workspaces": {
-    "packages": [
-      "*"
-    ]
-  },
-  "resolutions": {
-    "rxjs": "7.0.1",
-    "core-js": "3.12.1"
-  }
+  "private": true
 }

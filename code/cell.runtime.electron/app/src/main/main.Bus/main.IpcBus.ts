@@ -1,6 +1,6 @@
 import { NetworkBus, RuntimeUri, t } from '../common';
 import { Window } from '../main.Window';
-import { IpcNetworkPump } from './main.IpcNetworkPump';
+import { IpcPump } from './main.IpcPump';
 
 /**
  * An event-bus distributed across a number of electron windows
@@ -9,16 +9,16 @@ import { IpcNetworkPump } from './main.IpcNetworkPump';
  * Refs:
  *    https://www.electronjs.org/docs/api/ipc-main
  */
-export function IpcNetworkBus<E extends t.Event>(args: { bus: t.ElectronMainBus }) {
+export function IpcBus<E extends t.Event>(args: { bus: t.ElectronMainBus }) {
   const { bus } = args;
 
-  const windowEvents = Window.Events({ bus });
-  const pump = IpcNetworkPump<E>({ bus });
+  const events = Window.Events({ bus });
+  const pump = IpcPump<E>({ bus });
 
   const netbus = NetworkBus<E>({
     pump,
     local: async () => RuntimeUri.main,
-    remotes: async () => (await windowEvents.status.get()).windows.map(({ uri }) => uri),
+    remotes: async () => (await events.status.get()).windows.map(({ uri }) => uri),
   });
 
   return netbus;

@@ -8,6 +8,7 @@ import { Bundle } from './main.Bundle';
 import { Menu } from './main.Menu';
 import { System } from './main.System';
 import { BuildMenu } from './main.Menu.instance';
+import { IpcBus } from './main.Bus';
 
 /**
  *  NOTE:
@@ -42,6 +43,16 @@ export async function start() {
   log.info.gray('━'.repeat(60));
   const bus = rx.bus<t.ElectronRuntimeEvent>();
   const prod = ENV.isProd;
+
+  const ipcbus = IpcBus({ bus });
+  ipcbus.$.subscribe((e) => {
+    console.log('ipc bus:', e);
+  });
+
+  /**
+   * TODO 🐷
+   *   bridge between [ipcBus] and [mainBus]
+   */
 
   try {
     // Start the HTTP server.

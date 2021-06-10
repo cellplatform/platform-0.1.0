@@ -9,7 +9,7 @@ import { constants, RuntimeUri, t } from '../common';
  *    https://www.electronjs.org/docs/api/ipc-main
  *
  */
-export function IpcNetworkPump<E extends t.Event>(args: { bus: t.ElectronMainBus }) {
+export function IpcPump<E extends t.Event>(args: { bus: t.ElectronMainBus }) {
   const { bus } = args;
   const sender = RuntimeUri.main;
 

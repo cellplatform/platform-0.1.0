@@ -1,6 +1,6 @@
 {
   "name": "cell.runtime.electron.sys",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "sideEffects": false,
   "compiler": {
     "port": 5050
