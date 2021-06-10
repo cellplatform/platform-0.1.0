@@ -8,6 +8,8 @@ import { constants, fs, log, t, Urls, util } from '../common';
 import { RuntimeInfo } from './RuntimeInfo';
 
 export const SystemServer = {
+  region: 'local:desktop',
+
   /**
    * Configure a system [http server].
    */
@@ -21,6 +23,7 @@ export const SystemServer = {
       fs: local.init({ dir: paths.fs, fs }),
       runtime: NodeRuntime.create(),
       logger: args.log,
+      region: SystemServer.region,
     });
 
     return { app, paths };
@@ -49,7 +52,7 @@ export const SystemServer = {
       .subscribe((e) => {
         const data: t.IResGetElectronSysInfo = {
           ...e.res.data,
-          region: 'local:desktop',
+          region: SystemServer.region,
           runtime: info,
         };
         e.modify({ ...e.res, data });
