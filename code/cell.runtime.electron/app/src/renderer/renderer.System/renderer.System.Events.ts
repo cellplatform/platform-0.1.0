@@ -8,13 +8,7 @@ import { t, rx, slug } from '../common';
 export function Events(args: { bus: t.EventBus<any> }) {
   const { dispose, dispose$ } = rx.disposable();
   const bus = rx.busAsType<t.SystemEvent>(args.bus);
-
-  const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
-  const is = {
-    base: matcher('runtime.electron/System/'),
-    data: matcher('runtime.electron/System/data/'),
-    open: matcher('runtime.electron/System/open/'),
-  };
+  const is = Events.is;
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -58,3 +52,13 @@ export function Events(args: { bus: t.EventBus<any> }) {
 
   return { $, is, dispose, dispose$, status, open, data };
 }
+
+/**
+ * Event matching.
+ */
+const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
+Events.is = {
+  base: matcher('runtime.electron/System/'),
+  data: matcher('runtime.electron/System/data/'),
+  open: matcher('runtime.electron/System/open/'),
+};

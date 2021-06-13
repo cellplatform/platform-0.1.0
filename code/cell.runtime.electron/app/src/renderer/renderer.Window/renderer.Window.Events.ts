@@ -9,11 +9,7 @@ import { RuntimeUri, rx, slug, t } from '../common';
 export function Events(args: { bus: t.EventBus<any> }) {
   const { dispose$, dispose } = rx.disposable();
   const bus = rx.busAsType<t.WindowEvent>(args.bus);
-
-  const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
-  const is = {
-    base: matcher('runtime.electron/Window/'),
-  };
+  const is = Events.is;
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -81,3 +77,11 @@ export function Events(args: { bus: t.EventBus<any> }) {
 
   return { $, is, dispose$, dispose, create, status, change };
 }
+
+/**
+ * Event matching.
+ */
+const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
+Events.is = {
+  base: matcher('runtime.electron/Window/'),
+};

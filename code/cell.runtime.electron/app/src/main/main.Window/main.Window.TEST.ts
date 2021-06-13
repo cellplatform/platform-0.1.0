@@ -5,11 +5,16 @@ const bus = rx.bus();
 
 describe('main.Window', () => {
   describe('Events', () => {
-    const events = Window.Events({ bus });
+    const is = Window.Events.is;
+
+    it('is (static/instance)', () => {
+      const events = Window.Events({ bus });
+      expect(events.is).to.equal(Window.Events.is);
+    });
 
     it('is.base', () => {
       const test = (type: string, expected: boolean) => {
-        expect(events.is.base({ type, payload: {} })).to.eql(expected);
+        expect(is.base({ type, payload: {} })).to.eql(expected);
       };
 
       test('foo', false);

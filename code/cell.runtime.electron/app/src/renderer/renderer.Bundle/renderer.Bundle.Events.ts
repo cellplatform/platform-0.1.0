@@ -1,6 +1,5 @@
 import { firstValueFrom } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-
 import { rx, slug, t } from '../common';
 
 type Uri = string;
@@ -11,11 +10,7 @@ type Uri = string;
 export function Events(args: { bus: t.EventBus<any> }) {
   const { dispose, dispose$ } = rx.disposable();
   const bus = rx.busAsType<t.BundleEvent>(args.bus);
-
-  const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
-  const is = {
-    base: matcher('runtime.electron/Bundle/'),
-  };
+  const is = Events.is;
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -55,3 +50,11 @@ export function Events(args: { bus: t.EventBus<any> }) {
 
   return { $, is, dispose, dispose$, status, upload };
 }
+
+/**
+ * Event matching.
+ */
+const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
+Events.is = {
+  base: matcher('runtime.electron/Bundle/'),
+};
