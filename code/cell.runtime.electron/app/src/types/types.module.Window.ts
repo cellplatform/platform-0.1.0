@@ -75,7 +75,10 @@ export type WindowsStatusResEvent = {
   type: 'runtime.electron/Window/status:res';
   payload: WindowsStatusRes;
 };
-export type WindowsStatusRes = { tx: string; windows: ElectronWindowStatus[] };
+export type WindowsStatusRes = {
+  tx: string;
+  windows: ElectronWindowStatus[];
+};
 
 /**
  * Fires to initiate a change to a window

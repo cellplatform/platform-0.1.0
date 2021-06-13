@@ -10,6 +10,8 @@ import { System } from './main.System';
 import { BuildMenu } from './main.Menu.instance';
 import { IpcBus } from './main.Bus';
 
+import { TestIpcBusBridging } from './entry.TMP';
+
 /**
  * Ensure all renderer processes are opened in "sandbox" mode.
  * https://www.electronjs.org/docs/tutorial/sandbox#enabling-the-sandbox-globally
@@ -31,15 +33,11 @@ export async function start() {
    */
   const bus = rx.bus<t.ElectronRuntimeEvent>();
 
-  const ipcbus = IpcBus({ bus });
-  ipcbus.$.subscribe((e) => {
-    console.log('ipc bus:', e);
-  });
-
   /**
-   * TODO 🐷
+   * TEMP 🐷
    *   bridge between [ipcBus] and [mainBus]
    */
+  TestIpcBusBridging({ bus });
 
   try {
     // Start the HTTP server.

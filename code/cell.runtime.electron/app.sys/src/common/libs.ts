@@ -9,4 +9,4 @@ export { useResizeObserver } from '@platform/react';
 /**
  * Electron App (Renderer).
  */
-export { IpcBus, Bundle, Log, Menu, System, Window } from '../../../app/src/renderer';
+export { IpcBus, Bundle, Log, Menu, System, Window, env } from '../../../app/src/renderer';

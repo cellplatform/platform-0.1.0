@@ -4,3 +4,5 @@ export * from './renderer.Log';
 export * from './renderer.Menu';
 export * from './renderer.System';
 export * from './renderer.Window';
+
+export { env } from './common/env';
