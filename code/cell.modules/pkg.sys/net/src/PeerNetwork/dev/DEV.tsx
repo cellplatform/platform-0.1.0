@@ -1,7 +1,7 @@
 import React from 'react';
 import { toObject, DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
 
-import { Window, IpcBus, env } from '@platform/cell.runtime.electron/app/lib/renderer';
+// import { Window, IpcBus, env } from '@platform/cell.runtime.electron/app/lib/renderer';
 
 import {
   css,
@@ -25,7 +25,7 @@ type Ctx = {
   self: t.PeerId;
   bus: t.EventBus<t.PeerEvent | t.DevEvent>;
   netbus: t.PeerNetworkBus;
-  ipcbus: t.NetworkBus<any>;
+  // ipcbus: t.NetworkBus<any>;
   signal: string; // Signalling server network address (host/path).
   events: CtxEvents;
   connectTo?: string;
@@ -66,7 +66,7 @@ export const actions = DevActions<Ctx>()
     PeerNetwork.Controller({ bus });
     MediaStream.Controller({ bus });
 
-    const ipcbus = IpcBus();
+    // const ipcbus = IpcBus();
 
     const signal = 'rtc.cellfs.com/peer';
     const netbus = PeerNetworkBus({ bus, self });
@@ -94,6 +94,10 @@ export const actions = DevActions<Ctx>()
     events.peer.status(self).changed$.subscribe((e) => {
       console.log('NET/CHANGED', e);
     });
+
+    // ipcbus.$.subscribe((e) => {
+    //   netbus.fire(e); // TEMP 🐷 - bridge all events into the netbus
+    // });
 
     const storage = LocalStorage<CtxFlags>('sys.net/dev/PeerNetwork');
 
@@ -127,7 +131,7 @@ export const actions = DevActions<Ctx>()
       self,
       bus,
       netbus,
-      ipcbus,
+      // ipcbus,
       events,
       signal,
       connectTo: '',
@@ -138,48 +142,48 @@ export const actions = DevActions<Ctx>()
     };
   })
 
-  .items((e) => {
-    e.title('IPC/Window (Desktop App)');
+  // .items((e) => {
+  //   e.title('IPC/Window (Desktop App)');
 
-    e.button('status', async (e) => {
-      const bus = e.ctx.ipcbus;
-      const events = Window.Events({ bus });
-      const status = await events.status.get();
-      e.button.description = (
-        <ObjectView name={'status'} data={status} fontSize={10} expandLevel={2} />
-      );
-    });
+  //   e.button('status', async (e) => {
+  //     const bus = e.ctx.ipcbus;
+  //     const events = Window.Events({ bus });
+  //     const status = await events.status.get();
+  //     e.button.description = (
+  //       <ObjectView name={'status'} data={status} fontSize={10} expandLevel={2} />
+  //     );
+  //   });
 
-    e.button('window/move', async (e) => {
-      const bus = e.ctx.ipcbus;
-      const events = Window.Events({ bus });
+  //   e.button('window/move', async (e) => {
+  //     const bus = e.ctx.ipcbus;
+  //     const events = Window.Events({ bus });
 
-      const self = env?.self ?? '';
+  //     const self = env?.self ?? '';
 
-      const getCurrent = async () => {
-        const status = await events.status.get();
-        const current = status.windows.find((item) => item.uri === self);
-        return current;
-      };
+  //     const getCurrent = async () => {
+  //       const status = await events.status.get();
+  //       const current = status.windows.find((item) => item.uri === self);
+  //       return current;
+  //     };
 
-      const current = await getCurrent();
+  //     const current = await getCurrent();
 
-      if (current) {
-        const by = 50;
-        const bounds = current.bounds;
-        const x = bounds.x + by;
-        const y = bounds.y + by;
-        events.change.fire(self, { bounds: { x, y } });
-      }
+  //     if (current) {
+  //       const by = 50;
+  //       const bounds = current.bounds;
+  //       const x = bounds.x + by;
+  //       const y = bounds.y + by;
+  //       events.change.fire(self, { bounds: { x, y } });
+  //     }
 
-      const data = await getCurrent();
-      e.button.description = (
-        <ObjectView name={'moved'} data={data} fontSize={10} expandLevel={2} />
-      );
-    });
+  //     const data = await getCurrent();
+  //     e.button.description = (
+  //       <ObjectView name={'moved'} data={data} fontSize={10} expandLevel={2} />
+  //     );
+  //   });
 
-    e.hr();
-  })
+  //   e.hr();
+  // })
 
   .items((e) => {
     e.title('Environment');
