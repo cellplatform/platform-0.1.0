@@ -13,12 +13,8 @@ export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellDa
   ): t.IUriMap | undefined => {
     uri = (uri || '').trim();
     uri = !uri ? undefined : uri;
-    // const o = links || ({} as t.IUriMap);
-
     const input = { ...links, [key]: uri };
-
     return squash.object<t.IUriMap>(input);
-    // return squash.object({ ...o, [key]: uri });
   };
 
   const api = {
@@ -69,15 +65,11 @@ export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellDa
           const uri = links[key];
           if (uri) {
             const res = setLink(uris, key, uri);
-            if (res) {
-              uris = { ...uris, ...res };
-            }
+            if (res) uris = { ...uris, ...res };
           }
         });
         Object.keys(links).forEach((key) => {
-          if (links[key] === undefined) {
-            delete uris[key];
-          }
+          if (links[key] === undefined) delete uris[key];
         });
       }
       uris = squash.object(uris) as t.IUriMap;

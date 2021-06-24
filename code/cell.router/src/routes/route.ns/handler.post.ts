@@ -12,7 +12,11 @@ export async function postNs(args: {
 }) {
   try {
     const { db, fs, id, query, host } = args;
-    const update = ['merge', 'overwrite'].includes(query.update ?? '') ? query.update : 'merge';
+
+    const onConflict = ['merge', 'overwrite'].includes(query.onConflict ?? '')
+      ? query.onConflict
+      : 'merge'; // Simple "merge" (least-destructive) by default.
+
     const uri = Schema.Uri.create.ns(id);
     const ns = await models.Ns.create({ db, uri }).ready;
     let body = { ...args.body };
@@ -34,7 +38,7 @@ export async function postNs(args: {
       const { cells, rows, columns } = body;
       if (cells || rows || columns) {
         const data = { cells, rows, columns };
-        const res = await models.ns.setChildData({ ns, data, update });
+        const res = await models.ns.setChildData({ ns, data, onConflict });
         res.changes.forEach((change) => changes.push(change));
       }
     };

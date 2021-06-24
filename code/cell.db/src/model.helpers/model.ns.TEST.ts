@@ -1,6 +1,4 @@
-/* eslint-disable */
-
-import { t, expect, getTestDb, value, time } from '../test';
+import { t, expect, getTestDb, value } from '../test';
 import { models } from '..';
 import {
   getChildRows,
@@ -12,7 +10,6 @@ import {
   getChildFiles,
 } from './model.ns';
 
-type P = t.ICellProps;
 type R = t.IRowProps & { grid: { height?: number } };
 type C = t.IRowProps & { grid: { width?: number } };
 
@@ -117,7 +114,7 @@ describe('helpers: model.ns', () => {
       expect(res2.changes.map((c) => c.field)).to.eql(['props', 'hash']);
     });
 
-    it('overwrite data', async () => {
+    it('onConflict: "overwrite" data', async () => {
       const db = await getTestDb({});
       const ns = models.Ns.create({ uri: 'ns:foo', db });
       const read = async () => await getChildCells({ model: ns });
@@ -135,7 +132,7 @@ describe('helpers: model.ns', () => {
       expect(res1.A1?.links).to.eql({ foo: 'bar' });
 
       await setChildData({
-        update: 'overwrite',
+        onConflict: 'overwrite',
         ns,
         data: {
           cells: { A1: { value: 'hello', props: { bar: 456 } as any, links: { zoo: 'hello' } } },
@@ -149,7 +146,7 @@ describe('helpers: model.ns', () => {
       expect(res2.A1?.links).to.eql({ zoo: 'hello' });
     });
 
-    it('merge data (default)', async () => {
+    it('onConflict: "merge" data (default)', async () => {
       const db = await getTestDb({});
       const ns = models.Ns.create({ uri: 'ns:foo', db });
       const read = async () => await getChildCells({ model: ns });
@@ -173,7 +170,7 @@ describe('helpers: model.ns', () => {
       expect(res1.A1?.links).to.eql({ foo: 'bar' });
 
       await setChildData({
-        // update: 'merge', // NB: Merge is default value
+        // onConflict: 'merge', // NB: Merge is default conflict strategy.
         ns,
         data: {
           cells: {

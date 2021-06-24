@@ -216,9 +216,9 @@ export async function setProps<P extends t.INsProps = t.INsProps>(args: {
 export async function setChildData(args: {
   ns: t.IDbModelNs;
   data?: Partial<t.INsDataCoord>;
-  update?: t.IDbModelConflictAction;
+  onConflict?: t.IDbModelConflictStrategy;
 }) {
-  const { ns, update } = args;
+  const { ns, onConflict } = args;
   let changes: t.IDbModelChange[] = [];
   const saved = { cells: 0, rows: 0, columns: 0 };
 
@@ -226,14 +226,16 @@ export async function setChildData(args: {
     return { isChanged: false, saved, changes };
   }
 
-  const wait = [
+  const setters = [
     { field: 'cells', fn: setChildCells },
     { field: 'rows', fn: setChildRows },
     { field: 'columns', fn: setChildColumns },
-  ].map(async ({ field, fn }) => {
+  ];
+
+  const wait = setters.map(async ({ field, fn }) => {
     const data = args.data ? args.data[field] : undefined;
     if (data) {
-      const res = await fn({ ns, data, update });
+      const res = await fn({ ns, data, onConflict });
       changes = [...changes, ...res.changes];
       saved[field] += res.total;
     }
@@ -250,16 +252,16 @@ export async function setChildData(args: {
 export async function setChildCells(args: {
   ns: t.IDbModelNs;
   data?: t.IMap<t.ICellData>;
-  update?: t.IDbModelConflictAction;
+  onConflict?: t.IDbModelConflictStrategy;
 }) {
-  const { data, update } = args;
+  const { data, onConflict } = args;
   const db = args.ns.db;
   const getUri = (key: string) => Uri.create.cell(toId(args.ns), key);
   return setChildren({
     data,
     getUri,
     getModel: (key) => Cell.create({ db, uri: getUri(key) }),
-    update,
+    onConflict,
   });
 }
 
@@ -269,16 +271,16 @@ export async function setChildCells(args: {
 export async function setChildRows(args: {
   ns: t.IDbModelNs;
   data?: t.IMap<t.IRowData>;
-  update?: t.IDbModelConflictAction;
+  onConflict?: t.IDbModelConflictStrategy;
 }) {
-  const { data, update } = args;
+  const { data, onConflict } = args;
   const db = args.ns.db;
   const getUri = (key: string) => Uri.create.row(toId(args.ns), key);
   return setChildren({
     data,
     getUri,
     getModel: (key) => Row.create({ db, uri: getUri(key) }),
-    update,
+    onConflict,
   });
 }
 
@@ -288,9 +290,9 @@ export async function setChildRows(args: {
 export async function setChildColumns(args: {
   ns: t.IDbModelNs;
   data?: t.IMap<t.IColumnData>;
-  update?: t.IDbModelConflictAction;
+  onConflict?: t.IDbModelConflictStrategy;
 }) {
-  const { data, update } = args;
+  const { data, onConflict } = args;
   const id = toId(args.ns);
   const db = args.ns.db;
   const getUri = (key: string) => Uri.create.column(id, key);
@@ -298,7 +300,7 @@ export async function setChildColumns(args: {
     data,
     getUri,
     getModel: (key) => Column.create({ db, uri: getUri(key) }),
-    update,
+    onConflict,
   });
 }
 
@@ -306,9 +308,7 @@ export async function setChildColumns(args: {
  * [Helpers]
  */
 function toRangeUnion(input?: string) {
-  if (!input) {
-    return undefined;
-  }
+  if (!input) return undefined;
   const ranges = input.split(',').map((key) => (key.includes(':') ? key : `${key}:${key}`));
   return coord.range.union(ranges);
 }
@@ -321,22 +321,23 @@ async function setChildren(args: {
   data: t.IMap<Record<string, unknown>> | undefined;
   getUri: (key: string) => string;
   getModel: (key: string) => t.IModel;
-  update?: t.IDbModelConflictAction;
+  onConflict?: t.IDbModelConflictStrategy;
 }) {
-  const { data, update = 'merge' } = args;
+  const { data, onConflict = 'merge' } = args;
   let total = 0;
   let changes: t.IDbModelChange[] = [];
 
   if (!data) {
-    return { total, changes, isChanged: changes.length > 0 };
+    const isChanged = changes.length > 0;
+    return { total, changes, isChanged };
   }
 
-  const wait = Object.keys(data).map(async (key) => {
+  const write = async (key: string) => {
     let props = data[key];
     if (typeof props === 'object') {
       const model = await args.getModel(key).ready;
 
-      if (update === 'merge') props = R.mergeDeepRight(model.doc, props);
+      if (onConflict === 'merge') props = R.mergeDeepRight(model.doc, props);
       model.set(props);
 
       if (model.isChanged) {
@@ -346,8 +347,10 @@ async function setChildren(args: {
         changes = [...changes, ...toChanges(uri, res.changes)];
       }
     }
-  });
+  };
 
-  await Promise.all(wait);
-  return { total, changes, isChanged: changes.length > 0 };
+  await Promise.all(Object.keys(data).map(write));
+
+  const isChanged = changes.length > 0;
+  return { total, changes, isChanged };
 }

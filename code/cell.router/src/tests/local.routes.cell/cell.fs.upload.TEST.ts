@@ -416,9 +416,9 @@ describe('cell.fs: upload', function () {
     const links = (await cellClient.links()).body;
 
     // Upload the same image, hashes should not change.
-    const before1 = (await links.files[0].file.info()).body;
+    const before1 = (await links.files[0].http.info()).body;
     await cellClient.fs.upload({ filename: 'func.wasm', data: file1 });
-    const after1 = (await links.files[0].file.info()).body;
+    const after1 = (await links.files[0].http.info()).body;
     expect(before1.data.hash).to.eql(after1.data.hash);
 
     // Perform a download - should work find (because hashes still match).
@@ -427,9 +427,9 @@ describe('cell.fs: upload', function () {
 
     // Upload a different image, with the same name.
     // Hash should change.
-    const before2 = (await links.files[0].file.info()).body;
+    const before2 = (await links.files[0].http.info()).body;
     await cellClient.fs.upload({ filename: 'func.wasm', data: file2 });
-    const after2 = (await links.files[0].file.info()).body;
+    const after2 = (await links.files[0].http.info()).body;
     expect(before2.data.hash).to.not.eql(after2.data.hash);
 
     // Attempt to download the image from the cell.

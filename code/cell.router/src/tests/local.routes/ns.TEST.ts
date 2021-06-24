@@ -367,10 +367,10 @@ describe('ns:', function () {
       expect(res3.data.ns.props).to.eql(undefined); // NB: Squashed.
     });
 
-    it('update: "replaces" value/props/links (default)', async () => {
+    it('onConflict: "overwrite" (replace) value/props/links (default)', async () => {
       const mock = await createMock();
       const post = async (A1: t.ICellData<any>) =>
-        TestPost.ns('ns:foo?update=overwrite', { cells: { A1 } }, { mock });
+        TestPost.ns('ns:foo?onConflict=overwrite', { cells: { A1 } }, { mock });
 
       await post({ value: 'one', props: { foo: 123 }, links: { mylink: '123' } });
       await post({ value: 'two', props: { bar: 456 } });
@@ -385,7 +385,7 @@ describe('ns:', function () {
       expect(data.links).to.eql({ mylink: '456' });
     });
 
-    it('update: "merge" value/props/links', async () => {
+    it('onConflict: "merge" value/props/links', async () => {
       const mock = await createMock();
       const post = async (A1: t.ICellData<any>) =>
         TestPost.ns('ns:foo', { cells: { A1 } }, { mock }); // Default: update=merge

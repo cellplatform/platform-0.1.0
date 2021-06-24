@@ -34,6 +34,7 @@ export type PatchSet = { prev: PatchOperation[]; next: PatchOperation[] };
 
 /**
  * Patch
+ *
  * Standard:
  *    RFC-6902 JSON patch standard
  *    https://tools.ietf.org/html/rfc6902

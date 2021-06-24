@@ -1,5 +1,4 @@
 import { t } from '../common';
-import { ICellUri, INsUri } from '../types.Schema';
 
 type Duration = string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
 
@@ -67,10 +66,10 @@ export type IHttpClientCell = {
 
 export type IHttpClientCellLinks = {
   toObject(): t.ICellData['links'];
-  readonly list: IHttpClientCellLink[];
-  readonly files: IHttpClientCellLinkFile[];
-  readonly cells: IHttpClientCellLinkCell[];
-  readonly namespaces: IHttpClientCellLinkNs[];
+  readonly list: t.IHttpClientCellLink[];
+  readonly files: t.IHttpClientCellLinkFile[];
+  readonly cells: t.IHttpClientCellLinkCell[];
+  readonly namespaces: t.IHttpClientCellLinkNs[];
 };
 
 /**
@@ -149,49 +148,6 @@ export type IHttpClientCellFileCopyTarget = {
   uri: string; //       Cell URI
   host?: string; //     NB: Same as source if ommitted.
   filename?: string; // NB: Same as source if ommitted.
-};
-
-/**
- * Cell Links
- */
-export type IHttpClientCellLink =
-  | IHttpClientCellLinkUnknown
-  | IHttpClientCellLinkFile
-  | IHttpClientCellLinkCell
-  | IHttpClientCellLinkNs;
-
-export type IHttpClientCellLinkUnknown = {
-  type: 'UNKNOWN';
-  key: string;
-  value: string;
-};
-
-export type IHttpClientCellLinkFile = {
-  type: 'FILE';
-  key: string;
-  value: string;
-  uri: t.IFileUri;
-  path: string;
-  dir: string;
-  name: string;
-  hash: string;
-  client: IHttpClientFile;
-};
-
-export type IHttpClientCellLinkCell = {
-  type: 'CELL';
-  key: string;
-  value: string;
-  uri: ICellUri;
-  client: IHttpClientCell;
-};
-
-export type IHttpClientCellLinkNs = {
-  type: 'NS';
-  key: string;
-  value: string;
-  uri: INsUri;
-  client: IHttpClientNs;
 };
 
 /**
