@@ -1,6 +1,6 @@
 /* eslint-disable no-console, @typescript-eslint/ban-ts-comment */
 
-import { t, expect, http, createMock, stripHashes, post, constants } from '../../test';
+import { t, expect, http, createMock, stripHashes, TestPost, constants } from '../../test';
 import { testPostFile } from './file.TEST';
 
 /**
@@ -314,14 +314,14 @@ describe('ns:', function () {
     });
   });
 
-  describe('POST', () => {
+  describe('POST (write)', () => {
     it('data (?changes=false)', async () => {
-      const { res, json, data } = await post.ns('ns:foo?cells&changes=false', {
+      const { response, json, data } = await TestPost.ns('ns:foo?cells&changes=false', {
         cells: { A1: { value: 'hello' } },
       });
       const cells = data.cells || {};
 
-      expect(res.status).to.eql(200);
+      expect(response.status).to.eql(200);
       expect(json.uri).to.eql('ns:foo');
       expect(json.exists).to.eql(true); // NB: Model exists after first save.
       expect(json.createdAt).to.not.eql(-1);
@@ -336,7 +336,7 @@ describe('ns:', function () {
     });
 
     it('data with changes (default: ?changes=true)', async () => {
-      const { json } = await post.ns('ns:foo?cells', {
+      const { json } = await TestPost.ns('ns:foo?cells', {
         cells: { A1: { value: 'hello' } },
       });
 
@@ -352,58 +352,101 @@ describe('ns:', function () {
     });
 
     it('namespace props ("name", etc)', async () => {
-      const res1 = await post.ns('ns:foo?ns', {});
+      const res1 = await TestPost.ns('ns:foo?ns', {});
       expect(res1.data.ns.hash).to.eql('');
       expect(res1.data.ns.id).to.eql('foo');
       expect(res1.data.ns.props).to.eql(undefined);
 
-      const res2 = await post.ns('ns:foo?ns', { ns: { title: 'MySheet' } });
+      const res2 = await TestPost.ns('ns:foo?ns', { ns: { title: 'MySheet' } });
 
       expect(res2.data.ns.hash).to.not.eql(res1.data.ns.hash); // Hash updated.
       expect((res2.data.ns.props || {}).title).to.eql('MySheet');
 
-      const res3 = await post.ns('ns:foo?ns', { ns: { title: undefined } });
+      const res3 = await TestPost.ns('ns:foo?ns', { ns: { title: undefined } });
       expect(res3.data.ns.hash).to.not.eql(res2.data.ns.hash); // Hash updated.
       expect(res3.data.ns.props).to.eql(undefined); // NB: Squashed.
+    });
+
+    it('update: "replaces" value/props/links (default)', async () => {
+      const mock = await createMock();
+      const post = async (A1: t.ICellData<any>) =>
+        TestPost.ns('ns:foo?update=overwrite', { cells: { A1 } }, { mock });
+
+      await post({ value: 'one', props: { foo: 123 }, links: { mylink: '123' } });
+      await post({ value: 'two', props: { bar: 456 } });
+      await post({ value: 'three' });
+      await post({ links: { mylink: '456' } });
+      const res = await mock.client.cell('cell:foo:A1').info();
+      mock.dispose();
+
+      const data = res.body.data;
+      expect(data.value).to.eql('three');
+      expect(data.props).to.eql({ bar: 456 });
+      expect(data.links).to.eql({ mylink: '456' });
+    });
+
+    it('update: "merge" value/props/links', async () => {
+      const mock = await createMock();
+      const post = async (A1: t.ICellData<any>) =>
+        TestPost.ns('ns:foo', { cells: { A1 } }, { mock }); // Default: update=merge
+
+      await post({ value: 'one' });
+      await post({ links: { link1: '123' } });
+      await post({ props: { foo: 123 }, links: { link2: '456' } });
+      await post({ value: 'two' });
+      await post({ props: { foo: 456, msg: 'hello' }, links: { link1: '888', link3: 'hello' } });
+      await post({ props: { count: 404 } });
+
+      const res = await mock.client.cell('cell:foo:A1').info();
+      mock.dispose();
+
+      const data = res.body.data;
+      expect(data.value).to.eql('two');
+      expect(data.links).to.eql({ link1: '888', link2: '456', link3: 'hello' });
+      expect(data.props).to.eql({ foo: 456, msg: 'hello', count: 404 });
     });
   });
 
   describe('POST hash updates (SHA256)', () => {
     it('generate namespace hash', async () => {
-      const res = await post.ns('ns:foo?cells', { cells: { A1: { value: 123 } } });
+      const res = await TestPost.ns('ns:foo?cells', { cells: { A1: { value: 123 } } });
       const hash = res.data.ns.hash;
       expect(hash).to.match(/^sha256-/);
       expect(hash && hash.length).to.greaterThan(20);
     });
 
     it('recalculate hash on namespace (ns props changed)', async () => {
-      const res1 = await post.ns('ns:foo?cells', { ns: { title: 'hello world' } });
+      const res1 = await TestPost.ns('ns:foo?cells', { ns: { title: 'hello world' } });
       expect(res1.data.ns.hash).to.match(/^sha256-/);
 
-      const res2 = await post.ns('ns:foo?cells', { cells: { A1: { value: 124 } } });
+      const res2 = await TestPost.ns('ns:foo?cells', { cells: { A1: { value: 124 } } });
       expect(res2.data.ns.hash).to.match(/^sha256-/);
       expect(res1.data.ns.hash).to.not.eql(res2.data.ns.hash);
     });
 
     it('recalculate hashes on cells', async () => {
-      const res1 = await post.ns('ns:foo?cells', { cells: { A1: { value: 123 } } });
-      const res2 = await post.ns('ns:foo?cells', { cells: { A1: { value: 124 } } });
+      const res1 = await TestPost.ns('ns:foo?cells', { cells: { A1: { value: 123 } } });
+      const res2 = await TestPost.ns('ns:foo?cells', { cells: { A1: { value: 124 } } });
       const cells1 = res1.data.cells || {};
       const cells2 = res2.data.cells || {};
       expect(cells1.A1 && cells1.A1.hash).to.not.eql(cells2.A1 && cells2.A1.hash);
     });
 
     it('recalculate hashes on rows', async () => {
-      const res1 = await post.ns('ns:foo?rows', { rows: { 1: { props: { height: 60 } } } });
-      const res2 = await post.ns('ns:foo?rows', { rows: { 1: { props: { height: 61 } } } });
+      const res1 = await TestPost.ns('ns:foo?rows', { rows: { 1: { props: { height: 60 } } } });
+      const res2 = await TestPost.ns('ns:foo?rows', { rows: { 1: { props: { height: 61 } } } });
       const rows1 = res1.data.rows || {};
       const rows2 = res2.data.rows || {};
       expect(rows1['1'] && rows1['1'].hash).to.not.eql(rows2['1'] && rows2['1'].hash);
     });
 
     it('recalculate hashes on columns', async () => {
-      const res1 = await post.ns('ns:foo?columns', { columns: { A: { props: { width: 160 } } } });
-      const res2 = await post.ns('ns:foo?columns', { columns: { A: { props: { width: 161 } } } });
+      const res1 = await TestPost.ns('ns:foo?columns', {
+        columns: { A: { props: { width: 160 } } },
+      });
+      const res2 = await TestPost.ns('ns:foo?columns', {
+        columns: { A: { props: { width: 161 } } },
+      });
       const cols1 = res1.data.columns || {};
       const cols2 = res2.data.columns || {};
       expect(cols1.A && cols1.A.hash).to.not.eql(cols2.A && cols2.A.hash);
@@ -417,9 +460,9 @@ describe('ns:', function () {
         A2: { value: '123' },
       };
 
-      const res1 = await post.ns('ns:foo?cells', { cells }); // Default: calc=false
-      const res2 = await post.ns('ns:foo?cells', { cells, calc: true });
-      const res3 = await post.ns('ns:foo?cells', { cells, calc: false });
+      const res1 = await TestPost.ns('ns:foo?cells', { cells }); // Default: calc=false
+      const res2 = await TestPost.ns('ns:foo?cells', { cells, calc: true });
+      const res3 = await TestPost.ns('ns:foo?cells', { cells, calc: false });
 
       const cells1 = res1.data.cells || {};
       const cells2 = res2.data.cells || {};
@@ -439,10 +482,10 @@ describe('ns:', function () {
         A1: { value: '=A2' },
         A2: { value: 123 },
       };
-      const res1 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+      const res1 = await TestPost.ns('ns:foo?cells', { cells, calc: true }, { mock });
 
       cells = { ...cells, A2: { value: 456 } };
-      const res2 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+      const res2 = await TestPost.ns('ns:foo?cells', { cells, calc: true }, { mock });
 
       await mock.dispose();
 
@@ -467,7 +510,7 @@ describe('ns:', function () {
         Z9: { value: 'hello' },
       };
 
-      const res = await post.ns('ns:foo?cells', { cells: before, calc: 'A1:B9,D' }, { mock }); // NB: C1 not included.
+      const res = await TestPost.ns('ns:foo?cells', { cells: before, calc: 'A1:B9,D' }, { mock }); // NB: C1 not included.
       const after = res.data.cells || {};
 
       await mock.dispose();
@@ -486,8 +529,8 @@ describe('ns:', function () {
         A1: { value: '=A2' },
         A2: { value: 123 },
       };
-      const res1 = await post.ns('ns:foo?cells', { cells }, { mock }); // NB: calc=false (default).
-      const res2 = await post.ns('ns:foo?cells', { calc: true }, { mock });
+      const res1 = await TestPost.ns('ns:foo?cells', { cells }, { mock }); // NB: calc=false (default).
+      const res2 = await TestPost.ns('ns:foo?cells', { calc: true }, { mock });
 
       await mock.dispose();
 
@@ -511,8 +554,8 @@ describe('ns:', function () {
         Z9: { value: 'hello' },
       };
 
-      await post.ns('ns:foo?cells', { cells: before, calc: false }, { mock }); // NB: calc=false (default).
-      const res = await post.ns('ns:foo?cells', { calc: 'A1:B9,D' }, { mock });
+      await TestPost.ns('ns:foo?cells', { cells: before, calc: false }, { mock }); // NB: calc=false (default).
+      const res = await TestPost.ns('ns:foo?cells', { calc: 'A1:B9,D' }, { mock });
       const after = res.data.cells || {};
 
       await mock.dispose();
@@ -532,7 +575,7 @@ describe('ns:', function () {
         A2: { value: 123 },
       };
 
-      const res = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+      const res = await TestPost.ns('ns:foo?cells', { cells, calc: true }, { mock });
 
       await mock.dispose();
 
@@ -551,10 +594,10 @@ describe('ns:', function () {
         A2: { value: 123 },
       };
 
-      const res1 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+      const res1 = await TestPost.ns('ns:foo?cells', { cells, calc: true }, { mock });
       cells.A1.value = '=A2'; // Remove function, clearing error.
 
-      const res2 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+      const res2 = await TestPost.ns('ns:foo?cells', { cells, calc: true }, { mock });
 
       await mock.dispose();
 
@@ -577,7 +620,7 @@ describe('ns:', function () {
         A2: { value: 123 },
       };
 
-      const res = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+      const res = await TestPost.ns('ns:foo?cells', { cells, calc: true }, { mock });
       await mock.dispose();
 
       const A1 = (res.data.cells || {}).A1 || {};

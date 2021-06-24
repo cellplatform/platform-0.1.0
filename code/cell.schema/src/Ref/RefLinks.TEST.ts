@@ -83,15 +83,26 @@ describe('RefLinks', () => {
   });
 
   it('parseKey', () => {
-    const key = RefLinks.toKey('foo/bar.t');
+    const key = RefLinks.toKey('foo.bar/thing.t');
     const res = RefLinks.parseKey(key);
 
     expect(res.prefix).to.eql('ref');
-    expect(res.key).to.eql('ref:foo::bar:t');
-    expect(res.path).to.eql('foo/bar.t');
-    expect(res.name).to.eql('bar.t');
-    expect(res.dir).to.eql('foo');
+    expect(res.key).to.eql('ref:foo:bar::thing:t');
+    expect(res.path).to.eql('foo.bar/thing.t');
+    expect(res.name).to.eql('thing.t');
+    expect(res.dir).to.eql('foo.bar');
     expect(res.ext).to.eql('t');
+  });
+
+  it('parseKey (no extension)', () => {
+    const key = RefLinks.toKey('foo.bar/thing');
+    const res = RefLinks.parseKey(key);
+
+    expect(res.prefix).to.eql('ref');
+    expect(res.path).to.eql('foo.bar/thing');
+    expect(res.name).to.eql('thing');
+    expect(res.dir).to.eql('foo.bar');
+    expect(res.ext).to.eql('');
   });
 
   it('toValue', () => {

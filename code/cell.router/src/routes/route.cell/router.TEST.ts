@@ -1,4 +1,4 @@
-import { t, expect, http, createMock, post } from '../../test';
+import { t, expect, http, createMock, TestPost } from '../../test';
 
 describe('cell: coordinate routes (CELL | ROW | COL)', () => {
   describe('invalid URI', () => {
@@ -94,7 +94,7 @@ describe('cell: coordinate routes (CELL | ROW | COL)', () => {
   describe('cell:', () => {
     it('cell', async () => {
       const mock = await createMock();
-      await post.ns('ns:foo', { cells: { A1: { value: 123 } } }, { mock });
+      await TestPost.ns('ns:foo', { cells: { A1: { value: 123 } } }, { mock });
 
       const uri = 'cell:foo:A1';
       const res = await http.get(mock.url(uri));
@@ -114,7 +114,7 @@ describe('cell: coordinate routes (CELL | ROW | COL)', () => {
 
     it('column', async () => {
       const mock = await createMock();
-      await post.ns('ns:foo', { columns: { A: { props: { width: 123 } } } }, { mock });
+      await TestPost.ns('ns:foo', { columns: { A: { props: { width: 123 } } } }, { mock });
 
       const uri = 'cell:foo:A';
       const res = await http.get(mock.url(uri));
@@ -134,7 +134,7 @@ describe('cell: coordinate routes (CELL | ROW | COL)', () => {
 
     it('row', async () => {
       const mock = await createMock();
-      await post.ns('ns:foo', { rows: { 1: { props: { height: 80 } } } }, { mock });
+      await TestPost.ns('ns:foo', { rows: { 1: { props: { height: 80 } } } }, { mock });
 
       const uri = 'cell:foo:1';
       const res = await http.get(mock.url(uri));

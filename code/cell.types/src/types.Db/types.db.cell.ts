@@ -3,32 +3,6 @@ import { IModel, IModelLinksSchema, IModelChildrenSchema } from '@platform/fsdb.
 
 type O = Record<string, unknown>;
 
-export type IDbModelChange = {
-  uri: string;
-  field: string;
-  from?: any;
-  to?: any;
-};
-
-/**
- * Namespace
- */
-export type IDbModelNs<P extends O = any> = IModel<
-  IDbModelNsProps<P>,
-  IDbModelNsDoc<P>,
-  IDbModelNsLinks,
-  IDbModelNsChildren
->;
-export type IDbModelNsProps<P extends O = any> = t.INs & P;
-export type IDbModelNsDoc<P extends O = any> = IDbModelNsProps<P>;
-export type IDbModelNsLinks = IModelLinksSchema;
-export type IDbModelNsChildren = {
-  cells: IDbModelCell[];
-  columns: IDbModelColumn[];
-  rows: IDbModelRow[];
-  files: IDbModelFile[];
-};
-
 /**
  * Cell
  */
@@ -43,7 +17,7 @@ export type IDbModelCellDataProps<P extends O = any> = t.ICellProps & P;
 export type IDbModelCellDoc<P extends O = any> = IDbModelCellProps<P> & {
   nsRefs?: string[];
 };
-export type IDbModelCellLinks = { namespaces: IDbModelNs[] };
+export type IDbModelCellLinks = { namespaces: t.IDbModelNs[] };
 export type IDbModelCellChilden = IModelChildrenSchema;
 
 /**
@@ -75,17 +49,3 @@ export type IDbModelColumnDataProps<P extends O = any> = t.IColumnProps & P;
 export type IDbModelColumnDoc<P extends O = any> = IDbModelColumnProps<P>;
 export type IDbModelColumnLinks = IModelLinksSchema;
 export type IDbModelColumnChildren = IModelChildrenSchema;
-
-/**
- * File
- */
-export type IDbModelFile = IModel<
-  IDbModelFileProps,
-  IDbModelFileDataProps,
-  IDbModelFileLinks,
-  IDbModelFileChildren
->;
-export type IDbModelFileProps = t.IFileData;
-export type IDbModelFileDataProps = IDbModelFileProps;
-export type IDbModelFileLinks = IModelLinksSchema;
-export type IDbModelFileChildren = IModelChildrenSchema;

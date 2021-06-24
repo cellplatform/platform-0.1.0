@@ -1,5 +1,7 @@
 import { Schema, t, Uri } from '../common';
 import { HttpClientFile } from './HttpClientFile';
+import { HttpClientCell } from './HttpClientCell';
+import { HttpClientNs } from './HttpClientNs';
 
 type IHttpClientCellLinksArgs = {
   links: t.ICellData['links'];
@@ -37,6 +39,14 @@ export class HttpClientCellLinks implements t.IHttpClientCellLinks {
     return this.list.filter((item) => item.type === 'FILE') as t.IHttpClientCellLinkFile[];
   }
 
+  public get cells() {
+    return this.list.filter((item) => item.type === 'CELL') as t.IHttpClientCellLinkCell[];
+  }
+
+  public get namespaces() {
+    return this.list.filter((item) => item.type === 'NS') as t.IHttpClientCellLinkNs[];
+  }
+
   /**
    * [Methods]
    */
@@ -53,28 +63,59 @@ export class HttpClientCellLinks implements t.IHttpClientCellLinks {
     const type = uri.parts.type;
 
     if (type === 'FILE') {
-      let file: t.IHttpClientFile | undefined;
+      let client: t.IHttpClientFile | undefined;
       const link = Schema.File.Links.parseValue(value);
       const uri = link.uri;
       const hash = link.query.hash || '';
       const { name, dir, path } = Schema.File.Links.parseKey(key);
       const res: t.IHttpClientCellLinkFile = {
         type: 'FILE',
-        uri: uri.toString(),
+        value,
+        uri,
         key,
         path,
         dir,
         name,
         hash,
-        get file() {
-          return file || (file = HttpClientFile.create({ uri, urls, http }));
+        get client() {
+          return client || (client = HttpClientFile.create({ uri, urls, http }));
         },
       };
       return res;
     }
 
-    // Type unknown.
-    const res: t.IHttpClientCellLinkUnknown = { type: 'UNKNOWN', key, uri: value };
+    if (type === 'CELL') {
+      let client: t.IHttpClientCell | undefined;
+      const uri = Uri.cell(value);
+      const res: t.IHttpClientCellLinkCell = {
+        type: 'CELL',
+        key,
+        value,
+        uri,
+        get client() {
+          return client || (client = HttpClientCell.create({ uri, urls, http }));
+        },
+      };
+      return res;
+    }
+
+    if (type === 'NS') {
+      let client: t.IHttpClientNs | undefined;
+      const uri = Uri.ns(value);
+      const res: t.IHttpClientCellLinkNs = {
+        type: 'NS',
+        key,
+        value,
+        uri,
+        get client() {
+          return client || (client = HttpClientNs.create({ uri, urls, http }));
+        },
+      };
+      return res;
+    }
+
+    // Unknown type.
+    const res: t.IHttpClientCellLinkUnknown = { type: 'UNKNOWN', key, value };
     return res;
   }
 }

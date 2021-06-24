@@ -213,8 +213,12 @@ export async function setProps<P extends t.INsProps = t.INsProps>(args: {
 /**
  * Save child data (cells|rows|columns).
  */
-export async function setChildData(args: { ns: t.IDbModelNs; data?: Partial<t.INsDataCoord> }) {
-  const { ns } = args;
+export async function setChildData(args: {
+  ns: t.IDbModelNs;
+  data?: Partial<t.INsDataCoord>;
+  update?: t.IDbModelConflictAction;
+}) {
+  const { ns, update } = args;
   let changes: t.IDbModelChange[] = [];
   const saved = { cells: 0, rows: 0, columns: 0 };
 
@@ -229,7 +233,7 @@ export async function setChildData(args: { ns: t.IDbModelNs; data?: Partial<t.IN
   ].map(async ({ field, fn }) => {
     const data = args.data ? args.data[field] : undefined;
     if (data) {
-      const res = await fn({ ns, data });
+      const res = await fn({ ns, data, update });
       changes = [...changes, ...res.changes];
       saved[field] += res.total;
     }
@@ -243,38 +247,50 @@ export async function setChildData(args: { ns: t.IDbModelNs; data?: Partial<t.IN
 /**
  * Saves child cell data.
  */
-export async function setChildCells(args: { ns: t.IDbModelNs; data?: t.IMap<t.ICellData> }) {
-  const { data } = args;
-  const id = toId(args.ns);
+export async function setChildCells(args: {
+  ns: t.IDbModelNs;
+  data?: t.IMap<t.ICellData>;
+  update?: t.IDbModelConflictAction;
+}) {
+  const { data, update } = args;
   const db = args.ns.db;
-  const getUri = (key: string) => Uri.create.cell(id, key);
+  const getUri = (key: string) => Uri.create.cell(toId(args.ns), key);
   return setChildren({
     data,
     getUri,
     getModel: (key) => Cell.create({ db, uri: getUri(key) }),
+    update,
   });
 }
 
 /**
  * Saves child row data.
  */
-export async function setChildRows(args: { ns: t.IDbModelNs; data?: t.IMap<t.IRowData> }) {
-  const { data } = args;
-  const id = toId(args.ns);
+export async function setChildRows(args: {
+  ns: t.IDbModelNs;
+  data?: t.IMap<t.IRowData>;
+  update?: t.IDbModelConflictAction;
+}) {
+  const { data, update } = args;
   const db = args.ns.db;
-  const getUri = (key: string) => Uri.create.row(id, key);
+  const getUri = (key: string) => Uri.create.row(toId(args.ns), key);
   return setChildren({
     data,
     getUri,
     getModel: (key) => Row.create({ db, uri: getUri(key) }),
+    update,
   });
 }
 
 /**
  * Saves child column data.
  */
-export async function setChildColumns(args: { ns: t.IDbModelNs; data?: t.IMap<t.IColumnData> }) {
-  const { data } = args;
+export async function setChildColumns(args: {
+  ns: t.IDbModelNs;
+  data?: t.IMap<t.IColumnData>;
+  update?: t.IDbModelConflictAction;
+}) {
+  const { data, update } = args;
   const id = toId(args.ns);
   const db = args.ns.db;
   const getUri = (key: string) => Uri.create.column(id, key);
@@ -282,6 +298,7 @@ export async function setChildColumns(args: { ns: t.IDbModelNs; data?: t.IMap<t.
     data,
     getUri,
     getModel: (key) => Column.create({ db, uri: getUri(key) }),
+    update,
   });
 }
 
@@ -304,8 +321,9 @@ async function setChildren(args: {
   data: t.IMap<Record<string, unknown>> | undefined;
   getUri: (key: string) => string;
   getModel: (key: string) => t.IModel;
+  update?: t.IDbModelConflictAction;
 }) {
-  const { data } = args;
+  const { data, update = 'merge' } = args;
   let total = 0;
   let changes: t.IDbModelChange[] = [];
 
@@ -314,9 +332,13 @@ async function setChildren(args: {
   }
 
   const wait = Object.keys(data).map(async (key) => {
-    const props = data[key];
+    let props = data[key];
     if (typeof props === 'object') {
-      const model = (await args.getModel(key).ready).set(props);
+      const model = await args.getModel(key).ready;
+
+      if (update === 'merge') props = R.mergeDeepRight(model.doc, props);
+      model.set(props);
+
       if (model.isChanged) {
         total++;
         const res = await model.save();
@@ -327,6 +349,5 @@ async function setChildren(args: {
   });
 
   await Promise.all(wait);
-
   return { total, changes, isChanged: changes.length > 0 };
 }

@@ -1,6 +1,7 @@
 export * from './types';
 
 export * from './types.Bus';
+export * from './types.Db';
 export * from './types.Cell';
 export * from './types.Client';
 export * from './types.Env';

@@ -12,9 +12,10 @@ export async function postNs(args: {
 }) {
   try {
     const { db, fs, id, query, host } = args;
-    let body = { ...args.body };
+    const update = ['merge', 'overwrite'].includes(query.update ?? '') ? query.update : 'merge';
     const uri = Schema.Uri.create.ns(id);
     const ns = await models.Ns.create({ db, uri }).ready;
+    let body = { ...args.body };
 
     const changes: t.IDbModelChange[] = [];
     let isNsChanged = false;
@@ -33,7 +34,7 @@ export async function postNs(args: {
       const { cells, rows, columns } = body;
       if (cells || rows || columns) {
         const data = { cells, rows, columns };
-        const res = await models.ns.setChildData({ ns, data });
+        const res = await models.ns.setChildData({ ns, data, update });
         res.changes.forEach((change) => changes.push(change));
       }
     };
