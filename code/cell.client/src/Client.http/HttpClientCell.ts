@@ -78,7 +78,7 @@ export class HttpClientCell implements t.IHttpClientCell {
     const cell = info.body.data;
     const links = cell.links || {};
     const urls = this.args.urls;
-    const body = HttpClientCellLinks.create({ links, urls, http });
+    const body = HttpClientCellLinks({ links, urls, http });
 
     return util.toClientResponse<T>(200, body);
   }
