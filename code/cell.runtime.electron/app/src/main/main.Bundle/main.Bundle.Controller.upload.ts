@@ -1,13 +1,67 @@
 import { app } from 'electron';
-import { fs, HttpClient, log, t, time } from '../common';
+import { ConfigFile, fs, HttpClient, log, slug, t, time } from '../common';
 
 type Uri = string;
 type File = t.IHttpClientCellFileUpload;
 
 /**
+ * Bundle upload behavior logic.
+ */
+export function UploadController(args: {
+  bus: t.EventBus<t.BundleEvent>;
+  events: t.BundleEvents;
+  host: string;
+}) {
+  const { events, host, bus } = args;
+
+  /**
+   * Upload bundles to the local server.
+   */
+  events.upload.req$.subscribe(async (e) => {
+    const { sourceDir, targetDir, silent, tx = slug() } = e;
+
+    const manifest = (await fs.readJson(fs.join(sourceDir, 'index.json'))) as t.BundleManifest;
+    const current = await events.status.get({ dir: targetDir });
+
+    const hash = {
+      current: current?.manifest.hash.files || '',
+      next: manifest.hash.files,
+    };
+
+    const isChanged = current ? hash.current !== hash.next : false;
+
+    if (!isChanged && !e.force && current) {
+      const files = current.manifest.files.map(({ path, bytes }) => ({ path, bytes }));
+      return bus.fire({
+        type: 'runtime.electron/Bundle/upload:res',
+        payload: { tx, ok: true, files, errors: [], action: 'unchanged' },
+      });
+    }
+
+    const targetCell = await ConfigFile.genesisUri();
+    const res = await upload({ host, targetCell, sourceDir, targetDir, silent });
+    const { ok, errors } = res;
+    const files = res.files.map(({ filename, data }) => ({
+      path: filename,
+      bytes: data.byteLength,
+    }));
+
+    const action = Boolean(current) ? 'replaced' : 'written';
+    return bus.fire({
+      type: 'runtime.electron/Bundle/upload:res',
+      payload: { tx, ok, files, errors, action },
+    });
+  });
+}
+
+/**
+ * Helpers
+ */
+
+/**
  * Retrieve the set of files to upload.
  */
-export async function getFiles(args: { sourceDir: string; targetDir?: string }) {
+async function getFiles(args: { sourceDir: string; targetDir?: string }) {
   const { sourceDir, targetDir = '' } = args;
   const paths = await fs.glob.find(fs.resolve(`${sourceDir}/**`));
 
@@ -26,7 +80,7 @@ export async function getFiles(args: { sourceDir: string; targetDir?: string }) 
 /**
  * Upload files to the given target.
  */
-export async function upload(args: {
+async function upload(args: {
   host: string;
   sourceDir: string;
   targetCell: Uri | t.ICellUri;
@@ -84,10 +138,6 @@ export async function upload(args: {
   }
 }
 
-/**
- * Helpers
- */
-
 function logUpload(args: {
   sourceDir: string;
   targetCell: string | t.ICellUri;
@@ -101,12 +151,12 @@ function logUpload(args: {
 
   const table = log.table({ border: false });
   table.add(['  • host', host]);
-  table.add(['  • cell', targetCell.toString()]);
+  table.add(['  • cell', log.format.uri(targetCell)]);
   table.add(['  • files: ']);
 
   const addFile = (file: File) => {
     const { filename, data } = file;
-    const name = filename.endsWith('.map') ? log.gray(filename) : log.green(filename);
+    const name = log.format.filepath(filename);
     const size = fs.size.toString(data.byteLength);
     table.add(['', `${name} `, size]);
   };
@@ -116,7 +166,7 @@ function logUpload(args: {
 
   log.info(`
 
-${log.blue(`uploaded`)}    ${log.gray(`(${size} in ${elapsed})`)}
+${log.white(`uploaded`)}    ${log.gray(`(${elapsed})`)}
 ${log.gray(` from:      ${sourceDir}`)}
 ${log.gray(` to:`)}
 ${log.gray(table)}

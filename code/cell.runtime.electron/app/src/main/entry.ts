@@ -28,17 +28,6 @@ export async function start() {
 
   log.info.gray('━'.repeat(60));
 
-  /**
-   * Prepare buses.
-   */
-  const bus = rx.bus<t.ElectronRuntimeEvent>();
-
-  /**
-   * TEMP 🐷
-   *   bridge between [ipcBus] and [mainBus]
-   */
-  TestIpcBusBridging({ bus });
-
   try {
     // Start the HTTP server.
     const port = prod ? undefined : 5000;
@@ -49,6 +38,17 @@ export async function start() {
 
     // Wait for electron to finish starting.
     await app.whenReady();
+
+    /**
+     * Prepare buses.
+     */
+    const bus = rx.bus<t.ElectronRuntimeEvent>();
+
+    /**
+     * TEMP 🐷
+     *  - bridge between [ipcBus] and [mainBus]
+     */
+    TestIpcBusBridging({ bus });
 
     /**
      * Initialize controllers.

@@ -26,6 +26,14 @@ export const ConfigFile = {
   },
 
   /**
+   * Retrieve the URI of the genesis cell.
+   */
+  async genesisUri() {
+    const config = await ConfigFile.read();
+    return Uri.create.cell(config.refs.genesis, 'A1');
+  },
+
+  /**
    * Read the configuration file from disk.
    */
   async read(): Promise<t.ElectronConfigFile> {

@@ -7,7 +7,7 @@ type Uri = string;
 /**
  * Event API.
  */
-export function Events(args: { bus: t.EventBus<any> }) {
+export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
   const { dispose, dispose$ } = rx.disposable();
   const bus = rx.busAsType<t.BundleEvent>(args.bus);
   const is = Events.is;

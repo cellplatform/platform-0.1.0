@@ -1,8 +1,9 @@
 import { ConfigFile, HttpClient, rx, slug, t, Uri, util, Urls, fs } from '../common';
 import { Events } from './main.Bundle.Events';
+import { UploadController } from './main.Bundle.Controller.upload';
 
 /**
- * Behavioral event controller.
+ * Bundle behavior logic.
  */
 export function Controller(args: { bus: t.EventBus<any>; host: string }) {
   const { host } = args;
@@ -10,10 +11,8 @@ export function Controller(args: { bus: t.EventBus<any>; host: string }) {
   const events = Events({ bus });
   const { dispose, dispose$ } = events;
 
-  const defaultCellUri = async () => {
-    const config = await ConfigFile.read();
-    return Uri.create.cell(config.refs.genesis, 'A1');
-  };
+  // Initialise sub-controllers.
+  UploadController({ bus, events, host });
 
   /**
    * Retrieve the status of a local bundle.
@@ -22,7 +21,7 @@ export function Controller(args: { bus: t.EventBus<any>; host: string }) {
     const { tx = slug(), dir } = e;
 
     const path = `${dir.replace(/\/$/, '')}/index.json`;
-    const client = HttpClient.create(host).cell(e.cell ?? (await defaultCellUri()));
+    const client = HttpClient.create(host).cell(e.cell ?? (await ConfigFile.genesisUri()));
     const cell = client.uri.toString();
     const file = client.file.name(path);
 
@@ -41,45 +40,6 @@ export function Controller(args: { bus: t.EventBus<any>; host: string }) {
     return bus.fire({
       type: 'runtime.electron/Bundle/status:res',
       payload: { tx, exists: true, status },
-    });
-  });
-
-  /**
-   * Upload bundles to the local server.
-   */
-  events.upload.req$.subscribe(async (e) => {
-    const { sourceDir, targetDir, silent, tx = slug() } = e;
-
-    const manifest = (await fs.readJson(fs.join(sourceDir, 'index.json'))) as t.BundleManifest;
-    const current = await events.status.get({ dir: targetDir });
-
-    const hash = {
-      current: current?.manifest.hash.files || '',
-      next: manifest.hash.files,
-    };
-
-    const isChanged = current ? hash.current !== hash.next : false;
-
-    if (!isChanged && !e.force && current) {
-      const files = current.manifest.files.map(({ path, bytes }) => ({ path, bytes }));
-      return bus.fire({
-        type: 'runtime.electron/Bundle/upload:res',
-        payload: { tx, ok: true, files, errors: [], action: 'unchanged' },
-      });
-    }
-
-    const targetCell = await defaultCellUri();
-    const res = await util.upload({ host, targetCell, sourceDir, targetDir, silent });
-    const { ok, errors } = res;
-    const files = res.files.map(({ filename, data }) => ({
-      path: filename,
-      bytes: data.byteLength,
-    }));
-
-    const action = Boolean(current) ? 'replaced' : 'written';
-    return bus.fire({
-      type: 'runtime.electron/Bundle/upload:res',
-      payload: { tx, ok, files, errors, action },
     });
   });
 
