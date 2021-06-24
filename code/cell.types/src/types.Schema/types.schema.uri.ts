@@ -4,7 +4,7 @@ export type IUriMap = { [key: string]: string };
 export type IUriData<D> = { uri: string; data: D };
 
 /**
- * URI Parts (parsed).
+ * Uri Parts (parsed).
  */
 export type IUriParts<P extends t.IUri = t.IUri> = {
   ok: boolean;
@@ -16,7 +16,7 @@ export type IUriParts<P extends t.IUri = t.IUri> = {
 };
 
 /**
- * URI
+ * Uri
  */
 export type UriType = IUri['type'];
 export type IUri = INsUri | ICoordUri | IFileUri | IUnknownUri;

@@ -1,8 +1,20 @@
 import { t } from '../common';
 import { ICellUri, INsUri } from '../types.Schema';
 
+export type IHttpClientCellLinks = {
+  info(): t.IHttpClientAsync<t.IHttpClientCellLinksInfo>;
+};
+
+export type IHttpClientCellLinksInfo = {
+  toObject(): t.ICellData['links'];
+  readonly list: t.IHttpClientCellLink[];
+  readonly files: t.IHttpClientCellLinkFile[];
+  readonly cells: t.IHttpClientCellLinkCell[];
+  readonly namespaces: t.IHttpClientCellLinkNs[];
+};
+
 /**
- * Cell Links
+ * Link types
  */
 export type IHttpClientCellLink =
   | IHttpClientCellLinkUnknown

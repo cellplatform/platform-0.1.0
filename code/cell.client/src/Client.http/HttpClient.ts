@@ -107,7 +107,7 @@ export class HttpClient implements t.IHttpClient {
     const http = this.http;
     const urls = this.urls;
     const uri = Uri.cell(input);
-    return HttpClientCell.create({ uri, urls, http });
+    return HttpClientCell({ uri, urls, http });
   }
 
   public file(input: string | t.IFileUri) {
