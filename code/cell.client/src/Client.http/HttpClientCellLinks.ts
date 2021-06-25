@@ -14,6 +14,10 @@ export function HttpClientCellLinks(args: {
   const RefLinks = Schema.Ref.Links;
 
   const api: t.IHttpClientCellLinks = {
+    get uri() {
+      return uri.toString();
+    },
+
     /**
      * Retrieve information about the cell's links.
      */
@@ -37,10 +41,10 @@ export function HttpClientCellLinks(args: {
      * Write link(s) to the cell.
      */
     async write(
-      input: t.HttpClientCellLinksSet | t.HttpClientCellLinksSet[],
+      link: t.HttpClientCellLinksSet | t.HttpClientCellLinksSet[],
       options?: t.IReqQueryNsWrite,
     ) {
-      const list = Array.isArray(input) ? input : [input];
+      const list = Array.isArray(link) ? link : [link];
       const links = list
         .map((link) => ({ ...link, key: RefLinks.toKey(link.key) }))
         .reduce((acc, next) => {
@@ -54,10 +58,21 @@ export function HttpClientCellLinks(args: {
     /**
      * Removes link(s) from the cell.
      */
-    async delete(input: string | string[], options?: t.IReqQueryNsWrite) {
-      const keys = Array.isArray(input) ? input : [input];
+    async delete(key: string | string[], options?: t.IReqQueryNsWrite) {
+      const keys = Array.isArray(key) ? key : [key];
       const links = keys.map((key) => ({ key, value: '' })); // NB: Empty values are removed.
       return api.write(links, options);
+    },
+
+    /**
+     * Determine if the given key(s) exist on the cell.
+     */
+    async exists(key: string | string[]) {
+      const wanted = Array.isArray(key) ? key : [key];
+      const links = (await api.read()).body;
+      const linked = links.list.map((link) => Schema.Ref.Links.parseKey(link.key).path);
+      const exists = linked.some((linkedKey) => wanted.includes(linkedKey));
+      return exists;
     },
   };
 

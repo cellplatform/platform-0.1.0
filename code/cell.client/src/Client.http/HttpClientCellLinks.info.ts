@@ -46,9 +46,10 @@ function toLink(args: {
   key: string;
   value: string;
 }): t.IHttpClientCellLink {
-  const { http, urls, key, value } = args;
+  const { http, urls, value } = args;
   const uri = Uri.parse(value);
   const type = uri.parts.type;
+  const key = Schema.Ref.Links.parseKey(args.key).path;
 
   if (type === 'FILE') {
     let client: t.IHttpClientFile | undefined;
