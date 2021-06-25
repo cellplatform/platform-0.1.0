@@ -32,7 +32,5 @@ export function HttpClientCellLinks(args: {
     },
   };
 
-  console.log('api', api);
-
   return api;
 }

@@ -69,6 +69,7 @@ export type IHttpClientFile = {
   readonly uri: t.IFileUri;
   readonly url: t.IUrlsFile;
   info(): t.IHttpClientAsync<t.IResGetFile>;
+  toString(): string;
 };
 
 export type IHttpClientFileData = t.IFileData & {

@@ -19,11 +19,14 @@ export function HttpClientCell(args: {
 
   const api: t.IHttpClientCell = {
     uri,
-    url: urls.cell(uri),
+
+    get url() {
+      return urls.cell(uri);
+    },
 
     get file(): t.IHttpClientCellFile {
       if (file) return file;
-      return (file = HttpClientCellFile.create({ parent, urls, http }));
+      return (file = HttpClientCellFile({ parent, urls, http }));
     },
 
     get fs(): t.IHttpClientCellFs {

@@ -66,7 +66,7 @@ function toLink(args: {
       name,
       hash,
       get http() {
-        return client || (client = HttpClientFile.create({ uri, urls, http }));
+        return client || (client = HttpClientFile({ uri, urls, http }));
       },
     };
     return res;
@@ -96,7 +96,7 @@ function toLink(args: {
       value,
       uri,
       get http() {
-        return client || (client = HttpClientNs.create({ uri, urls, http }));
+        return client || (client = HttpClientNs({ uri, urls, http }));
       },
     };
     return res;
