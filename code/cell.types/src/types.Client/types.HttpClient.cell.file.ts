@@ -3,16 +3,14 @@ import { t } from '../common';
 type Duration = string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
 
 export type IHttpClientCellFile = {
-  name(path: string): IHttpClientCellFileByName;
-};
-
-export type IHttpClientCellFileByName = {
+  readonly path: string;
   exists(): Promise<boolean>;
   info(): t.IHttpClientAsync<t.IResGetFile>;
   download(options?: { expires?: Duration }): t.IHttpClientAsync<ReadableStream | t.Json | string>;
 };
 
 export type IHttpClientCellFs = {
+  file(path: string): IHttpClientCellFile;
   urls(): t.IHttpClientAsync<IHttpClientCellFileUrl[]>;
   map(): t.IHttpClientAsync<t.IFileMap>;
   list(options?: { filter?: string }): t.IHttpClientAsync<t.IHttpClientFileData[]>;
