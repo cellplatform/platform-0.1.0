@@ -29,6 +29,7 @@ export class Uri {
     row: (ns: string, key: string) => toUri('cell', 'ROW', ns, key),
     column: (ns: string, key: string) => toUri('cell', 'COLUMN', ns, key),
     file: (ns: string, fileid: string) => toUri('file', 'FILE', ns, fileid), // NB: use `slug` for file-id.
+    A1: () => Uri.create.cell(cuid(), 'A1'),
   };
 
   /**

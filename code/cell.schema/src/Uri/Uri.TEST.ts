@@ -511,6 +511,13 @@ describe('Uri', () => {
   });
 
   describe('create', () => {
+    it('A1', () => {
+      const res = Uri.create.A1();
+      expect(Uri.is.cell(res)).to.eql(true);
+      expect(res.endsWith(':A1')).to.eql(true);
+      expect(res).to.not.eql(Uri.create.A1()); // NB: unique each time.
+    });
+
     it('ns', () => {
       const test = (id: string, expected: string) => {
         const res = Uri.create.ns(id);
