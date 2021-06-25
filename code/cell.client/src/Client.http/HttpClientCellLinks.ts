@@ -17,7 +17,7 @@ export function HttpClientCellLinks(args: {
     /**
      * Retrieve information about the cell's links.
      */
-    async get() {
+    async read() {
       type T = t.IHttpClientCellLinksInfo;
 
       const info = await args.getInfo();
@@ -36,9 +36,9 @@ export function HttpClientCellLinks(args: {
     /**
      * Write link(s) to the cell.
      */
-    async set(
+    async write(
       input: t.HttpClientCellLinksSet | t.HttpClientCellLinksSet[],
-      options: t.IReqQueryNsWrite = {},
+      options?: t.IReqQueryNsWrite,
     ) {
       const list = Array.isArray(input) ? input : [input];
       const links = list
@@ -49,6 +49,15 @@ export function HttpClientCellLinks(args: {
         }, {});
       const ns = HttpClientNs({ uri: Uri.ns(uri.ns), urls, http });
       return ns.write({ cells: { [uri.key]: { links } } }, options);
+    },
+
+    /**
+     * Removes link(s) from the cell.
+     */
+    async delete(input: string | string[], options?: t.IReqQueryNsWrite) {
+      const keys = Array.isArray(input) ? input : [input];
+      const links = keys.map((key) => ({ key, value: '' })); // NB: Empty values are removed.
+      return api.write(links, options);
     },
   };
 

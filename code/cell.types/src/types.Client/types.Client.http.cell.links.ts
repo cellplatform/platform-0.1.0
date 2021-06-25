@@ -2,11 +2,12 @@ import { t } from '../common';
 import { ICellUri, INsUri } from '../types.Schema';
 
 export type IHttpClientCellLinks = {
-  get(): t.IHttpClientAsync<t.IHttpClientCellLinksInfo>;
-  set(
+  read(): t.IHttpClientAsync<t.IHttpClientCellLinksInfo>;
+  write(
     link: HttpClientCellLinksSet | HttpClientCellLinksSet[],
     options?: t.IReqQueryNsWrite,
   ): t.IHttpClientAsync<t.IResPostNs>;
+  delete(key: string | string[], options?: t.IReqQueryNsWrite): t.IHttpClientAsync<t.IResPostNs>;
 };
 export type HttpClientCellLinksSet = { key: string; value: string };
 

@@ -1,5 +1,6 @@
 import { app } from 'electron';
-import { ConfigFile, fs, HttpClient, log, slug, t, time } from '../common';
+
+import { ConfigFile, fs, HttpClient, log, Schema, slug, t, time } from '../common';
 
 type Uri = string;
 type File = t.IHttpClientCellFileUpload;
@@ -38,7 +39,10 @@ export function UploadController(args: {
       });
     }
 
-    const targetCell = await ConfigFile.genesisUri();
+    const targetCell = await getRegistryCell({ host });
+
+    return; // TEMP 🐷
+
     const res = await upload({ host, targetCell, sourceDir, targetDir, silent });
     const { ok, errors } = res;
     const files = res.files.map(({ filename, data }) => ({
@@ -57,6 +61,42 @@ export function UploadController(args: {
 /**
  * Helpers
  */
+
+async function getRegistryCell(args: { host: string }) {
+  const genesis = await ConfigFile.genesisUri();
+
+  const client = HttpClient.create(args.host);
+  const key = 'sys.module.registry';
+
+  const cell = client.cell(genesis);
+
+  // console.log('-------------------------------------------');
+  // console.log('links.body.list', links.body.list);
+
+  // links.body.list
+
+  const res = await cell.links.write({
+    key,
+    value: 'ns:ckqa7r07z0009ktetg7e107qe',
+  });
+
+  // const res = await cell.links.delete(key);
+
+  // console.log('res', res);
+
+  console.log('-------------------------------------------');
+  const links = await cell.links.read();
+  console.log('links', links.body.list);
+
+  console.log('-------------------------------------------');
+  console.log('genesis', genesis);
+
+  // client.ns('').wr
+  // client.ns(genesis).write({
+  // })
+
+  return genesis;
+}
 
 /**
  * Retrieve the set of files to upload.
