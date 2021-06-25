@@ -1,6 +1,4 @@
-import { Schema, t, util } from '../common';
-
-// type GetError = (args: { status: number }) => string;
+import { t, util } from '../common';
 
 /**
  * HTTP client for operating on a set of [Cell] files.
@@ -16,19 +14,15 @@ export function HttpClientCellDb(args: {
   const api: t.IHttpClientCellDb = {
     uri,
 
-    get url() {
-      return urls.cell(uri);
-    },
-
     toString: () => uri.toString(),
 
     async exists() {
-      const res = await http.get(api.url.info.toString());
+      const res = await http.get(urls.cell(uri).info.toString());
       return res.status.toString().startsWith('2');
     },
 
     async read(options: t.IReqQueryCellInfo = {}) {
-      const url = api.url.info.query(options).toString();
+      const url = urls.cell(uri).info.query(options).toString();
       const res = await http.get(url);
       return util.fromHttpResponse(res).toClientResponse<t.IResGetCell>();
     },

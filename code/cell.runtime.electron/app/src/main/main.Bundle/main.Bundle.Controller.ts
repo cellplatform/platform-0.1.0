@@ -24,7 +24,7 @@ export function Controller(args: { bus: t.EventBus<any>; host: string }) {
     const path = `${dir.replace(/\/$/, '')}/index.json`;
     const client = HttpClient.create(host).cell(e.cell ?? (await genesis.cell.uri()));
     const cell = client.uri.toString();
-    const file = client.file.name(path);
+    const file = client.fs.file(path);
 
     if (!(await file.exists())) {
       return bus.fire({

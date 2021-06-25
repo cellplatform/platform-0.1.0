@@ -2,24 +2,55 @@ import { ConfigFile } from './ConfigFile';
 import { Schema, Uri, HttpClient } from './libs';
 
 /**
- * Helpers for working with the Genesis cell.
+ * Helpers for working with the "Genesis" cell.
  */
-
 export function Genesis(host: string) {
+  const urls = Schema.Urls.create(host);
+  const client = HttpClient.create(host);
+  let genesisUri: string | undefined;
+
   const api = {
     cell: {
       /**
        * The URI of the genesis cell.
        */
       async uri() {
-        const config = await ConfigFile.read();
-        const A1 = Uri.create.cell(config.refs.genesis, 'A1');
+        if (!genesisUri) genesisUri = (await ConfigFile.read()).refs.genesis;
+        const A1 = Uri.create.cell(genesisUri, 'A1');
         return Uri.cell(A1);
       },
 
+      /**
+       * Formats a URL to the genesis cell.
+       */
       async url() {
         const uri = await api.cell.uri();
-        return Schema.Urls.create(host).cell(uri).info;
+        return urls.cell(uri).info.toString();
+      },
+
+      /**
+       * Ensure the genesis cell exists.
+       */
+      async ensureExists() {
+        const cell = client.cell(await api.cell.uri());
+
+        const exists = await cell.exists();
+        if (exists) return { created: false };
+
+        // cell.
+        // cell.fs.file
+        // cell.db.url.
+
+        /**
+         * - cell.db.write (info)
+         */
+
+        /**
+         * TODO 🐷
+         */
+        console.log('exists', exists);
+
+        return { created: true };
       },
     },
 
@@ -29,10 +60,8 @@ export function Genesis(host: string) {
       /**
        * The cell that contains the registry of installed modules.
        */
-      async uri(args: { host: string }) {
+      async uri() {
         const key = api.modules.linkKey;
-
-        const client = HttpClient.create(args.host);
         const cell = client.cell(await api.cell.uri());
 
         // Write regsitry reference if it does not already exist.

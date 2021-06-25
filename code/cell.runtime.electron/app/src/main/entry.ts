@@ -37,9 +37,11 @@ export async function start() {
 
     // Load the configuration JSON file.
     const config = await ConfigFile.read();
+    const genesis = Genesis(host);
 
     // Wait for electron to finish starting.
     await app.whenReady();
+    await genesis.cell.ensureExists();
 
     /**
      * Prepare buses.
@@ -148,10 +150,10 @@ async function logMain(args: {
   add('config:', await path(args.paths.data.config));
   line();
   add('host:', `http://${args.host.split(':')[0]}:${log.white(args.host.split(':')[1])}`);
-  add('genesis', (await genesis.cell.url()).toString());
+  add('genesis', await genesis.cell.url());
 
   log.info.gray(`
 ${log.white('main')}:
-${table}
+${table.toString()}
 `);
 }
