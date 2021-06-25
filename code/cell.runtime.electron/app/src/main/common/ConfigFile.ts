@@ -17,20 +17,11 @@ export const ConfigFile = {
    * Generate a new "default" configuration file.
    */
   default(): t.ElectronConfigFile {
-    const { name, version } = ENV.pkg;
     return {
       refs: { genesis: Uri.toNs().toString() },
       created: getIdentifierLogItem(),
       started: [],
     };
-  },
-
-  /**
-   * Retrieve the URI of the genesis cell.
-   */
-  async genesisUri() {
-    const config = await ConfigFile.read();
-    return Uri.create.cell(config.refs.genesis, 'A1');
   },
 
   /**
@@ -65,7 +56,8 @@ export const ConfigFile = {
 
       const now = (() => {
         const item = getIdentifierLogItem();
-        return { item, process: parseProcess(item.process) };
+        const process = parseProcess(item.process);
+        return { item, process };
       })();
       const append = () => started.push(now.item);
 

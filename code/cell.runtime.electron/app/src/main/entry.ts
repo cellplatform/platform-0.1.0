@@ -1,6 +1,6 @@
 import { app } from 'electron';
 
-import { constants, ENV, fs, log, rx, t, ConfigFile } from './common';
+import { constants, ENV, fs, log, rx, t, ConfigFile, time, Genesis } from './common';
 import { SystemServer } from './main.System.server';
 import { Window } from './main.Window';
 import { Log } from './main.Log';
@@ -22,6 +22,8 @@ app.enableSandbox();
  * Startup the application.
  */
 export async function start() {
+  const timer = time.timer();
+
   // Ensure the NODE_ENV value is cleanly set to "production" if packaged.
   if (app.isPackaged || ENV.isProd) process.env.NODE_ENV = 'production';
   const prod = ENV.isProd;
@@ -69,9 +71,9 @@ export async function start() {
       force: ENV.isDev, // NB: Only repeat upload when running in development mode.
     });
 
-    const webStatus = await bundle.status.get({ dir: 'app.sys/web' });
-    // console.log('-------------------------------------------');
-    // console.log('webStatus', webStatus);
+    const bundleStatus = await bundle.status.get({ dir: 'app.sys/web' });
+    console.log('-------------------------------------------');
+    console.log('bundleStatus', bundleStatus);
 
     const preload = constants.paths.preload;
     await logMain({ host, paths: { data: paths, preload } });
@@ -90,7 +92,7 @@ export async function start() {
      * Finish up.
      */
     await ConfigFile.log.updateStarted();
-    log.info(`✨ Startup Complete`);
+    log.info.gray(`✨ ${log.white('Startup Complete')} (${timer.elapsed.toString()})`);
   } catch (error) {
     log.error('🐷 Failed on startup:');
     log.error(error);
@@ -105,7 +107,10 @@ async function logMain(args: {
   host: string;
   paths: { preload: string; data: t.ElectronDataPaths };
 }) {
+  const genesis = Genesis(args.host);
+
   const table = log.table({ border: false });
+  const line = () => table.add(['', '']);
   const add = (key: string, value: any) => {
     key = ` • ${log.green(key)} `;
     table.add([key, value]);
@@ -135,12 +140,15 @@ async function logMain(args: {
   add('runtime:', ConfigFile.process);
   add('env:', ENV.node || '<empty>');
   add('packaged:', ENV.isPackaged);
-  add('host:', `http://${args.host.split(':')[0]}:${log.white(args.host.split(':')[1])}`);
+  line();
   add('preload:', await path(args.paths.preload));
   add('log:', await path(args.paths.data.log));
   add('db:', await path(args.paths.data.db));
   add('fs:', await path(args.paths.data.fs));
   add('config:', await path(args.paths.data.config));
+  line();
+  add('host:', `http://${args.host.split(':')[0]}:${log.white(args.host.split(':')[1])}`);
+  add('genesis', (await genesis.cell.url()).toString());
 
   log.info.gray(`
 ${log.white('main')}:

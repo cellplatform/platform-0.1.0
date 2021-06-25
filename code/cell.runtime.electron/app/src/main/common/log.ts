@@ -54,10 +54,7 @@ const format: ElectronLogFormat = {
 /**
  * Create default log that writes to the console.
  */
-export const log: ElectronLog = {
-  ...logger,
-  format,
-};
+export const log: ElectronLog = { ...logger, format };
 
 /**
  * Write log events to the `electron-log` module.

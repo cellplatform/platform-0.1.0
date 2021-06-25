@@ -1,6 +1,6 @@
-import { ConfigFile, HttpClient, rx, slug, t, Uri, util, Urls, fs } from '../common';
-import { Events } from './main.Bundle.Events';
+import { fs, Genesis, HttpClient, rx, slug, t, Urls } from '../common';
 import { UploadController } from './main.Bundle.Controller.upload';
+import { Events } from './main.Bundle.Events';
 
 /**
  * Bundle behavior logic.
@@ -19,9 +19,10 @@ export function Controller(args: { bus: t.EventBus<any>; host: string }) {
    */
   events.status.req$.subscribe(async (e) => {
     const { tx = slug(), dir } = e;
+    const genesis = Genesis(host);
 
     const path = `${dir.replace(/\/$/, '')}/index.json`;
-    const client = HttpClient.create(host).cell(e.cell ?? (await ConfigFile.genesisUri()));
+    const client = HttpClient.create(host).cell(e.cell ?? (await genesis.cell.uri()));
     const cell = client.uri.toString();
     const file = client.file.name(path);
 
