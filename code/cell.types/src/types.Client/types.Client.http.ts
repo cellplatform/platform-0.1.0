@@ -33,6 +33,7 @@ export type IHttpClient = {
   ns(input: string | t.INsUri | t.ICoordUri | t.IFileUri): IHttpClientNs;
   cell(input: string | t.ICellUri): IHttpClientCell;
   file(input: string | t.IFileUri): IHttpClientFile;
+  toString(): string;
 };
 
 export type IHttpClientOptions = { host?: string | number; http?: t.IHttp };
@@ -46,6 +47,7 @@ export type IHttpClientNs = {
   exists(): Promise<boolean>;
   read(options?: t.IReqQueryNsInfo): t.IHttpClientAsync<t.IResGetNs>;
   write(data: t.IReqPostNsBody, options?: t.IReqQueryNsWrite): t.IHttpClientAsync<t.IResPostNs>;
+  toString(): string;
 };
 
 /**

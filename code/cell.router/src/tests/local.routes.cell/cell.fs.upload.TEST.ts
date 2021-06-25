@@ -413,7 +413,7 @@ describe('cell.fs: upload', function () {
     }
     expect((await readFile(path)).toString()).to.eql(file1.toString());
 
-    const links = (await cellClient.links.get()).body;
+    const links = (await cellClient.links.read()).body;
 
     // Upload the same image, hashes should not change.
     const before1 = (await links.files[0].http.info()).body;

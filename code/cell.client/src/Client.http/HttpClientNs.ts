@@ -36,6 +36,8 @@ export function HttpClientNs(args: {
       const res = await http.post(url, data);
       return util.fromHttpResponse(res).toClientResponse<t.IResPostNs>();
     },
+
+    toString: () => uri.toString(),
   };
 
   return api;
