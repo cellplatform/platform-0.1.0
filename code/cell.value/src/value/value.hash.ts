@@ -1,5 +1,4 @@
-import { Schema, t, Uri } from '../common';
-import { squash } from './value.squash';
+import { Schema, Squash, t, Uri } from '../common';
 
 const { sha256 } = Schema.hash;
 
@@ -47,16 +46,12 @@ export const hash = {
 
     // Format data.
     const data = args.data as t.IFileData;
-    const props = squash.object(data ? data.props : undefined);
+    const props = Squash.object(data ? data.props : undefined);
     const error = data ? data.error : undefined;
 
     const obj: any = { uri };
-    if (props) {
-      obj.props = props;
-    }
-    if (error) {
-      obj.error = error;
-    }
+    if (props) obj.props = props;
+    if (error) obj.error = error;
 
     return sha256(obj);
   },
@@ -72,23 +67,15 @@ export const hash = {
 
     const { data } = args;
     const value = data ? data.value : undefined;
-    const props = squash.props(data ? data.props : undefined);
+    const props = Squash.props(data ? data.props : undefined);
     const error = data ? data.error : undefined;
     const links = data ? data.links : undefined;
 
     const obj: any = { uri };
-    if (value) {
-      obj.value = value;
-    }
-    if (props) {
-      obj.props = props;
-    }
-    if (error) {
-      obj.error = error;
-    }
-    if (links) {
-      obj.links = links;
-    }
+    if (value) obj.value = value;
+    if (props) obj.props = props;
+    if (error) obj.error = error;
+    if (links) obj.links = links;
 
     return sha256(obj);
   },
@@ -130,18 +117,13 @@ function hashAxis(args: {
   data?: t.IRowData | t.IColumnData;
 }) {
   const uri = (args.uri || '').trim();
-
   const { data } = args;
-  const props = squash.props(data ? data.props : undefined);
+  const props = Squash.props(data ? data.props : undefined);
   const error = data ? data.error : undefined;
 
   const obj: any = { uri };
-  if (props) {
-    obj.props = props;
-  }
-  if (error) {
-    obj.error = error;
-  }
+  if (props) obj.props = props;
+  if (error) obj.error = error;
 
   return sha256(obj);
 }

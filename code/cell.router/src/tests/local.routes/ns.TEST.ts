@@ -398,12 +398,29 @@ describe('ns:', function () {
       await post({ props: { count: 404 } });
 
       const res = await mock.client.cell('cell:foo:A1').info();
+      const data = res.body.data;
       mock.dispose();
 
-      const data = res.body.data;
       expect(data.value).to.eql('two');
       expect(data.links).to.eql({ link1: '888', link2: '456', link3: 'hello' });
       expect(data.props).to.eql({ foo: 456, msg: 'hello', count: 404 });
+    });
+
+    it('squashes empty links', async () => {
+      const mock = await createMock();
+      const post = async (A1: t.ICellData<any>) =>
+        TestPost.ns('ns:foo', { cells: { A1 } }, { mock }); // Default: update=merge
+
+      const read = () => mock.client.cell('cell:foo:A1').info();
+
+      await post({ links: { foo: 'one', bar: 'two' } });
+      await post({ links: { foo: '  ' } }); // NB: whitespace trimmed.
+      expect((await read()).body.data.links).to.eql({ bar: 'two' });
+
+      await post({ links: { bar: '' } });
+      expect((await read()).body.data.links).to.eql(undefined);
+
+      mock.dispose();
     });
   });
 

@@ -18,7 +18,8 @@ export function HttpClientFile(args: {
     },
 
     async info() {
-      const res = await http.get(api.url.toString());
+      const url = api.url.info.toString();
+      const res = await http.get(url);
       return util.fromHttpResponse(res).toClientResponse<t.IResGetFile>();
     },
 

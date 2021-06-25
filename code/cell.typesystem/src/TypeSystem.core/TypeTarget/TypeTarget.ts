@@ -1,4 +1,4 @@
-import { ERROR, RefLinks, squash, t, Uri } from '../../common';
+import { ERROR, RefLinks, Squash, t, Uri } from '../../common';
 
 type Input = t.CellTypeTarget | t.IColumnTypeDef;
 const asTarget = (input?: Input) => {
@@ -147,8 +147,8 @@ export class TypeTarget {
         }
 
         // Finish up.
-        cell.props = squash.props(cell.props);
-        return squash.cell(cell) || {};
+        cell.props = Squash.props(cell.props);
+        return Squash.cell(cell) || {};
       },
     };
   }
@@ -206,8 +206,8 @@ export class TypeTarget {
         const key = RefLinks.toKey('type');
         const value = RefLinks.toValue(uri, { hash });
         const links = { ...(cell.links || {}), [key]: value };
-        cell.links = squash.object(links) as t.IUriMap;
-        return squash.cell(cell) || {};
+        cell.links = Squash.object(links) as t.IUriMap;
+        return Squash.cell(cell) || {};
       },
 
       /**
@@ -223,8 +223,8 @@ export class TypeTarget {
         const links = cell.links || {};
         delete links[key];
 
-        cell.links = squash.object(links) as t.IUriMap;
-        return squash.cell(cell) || {};
+        cell.links = Squash.object(links) as t.IUriMap;
+        return Squash.cell(cell) || {};
       },
     };
   }

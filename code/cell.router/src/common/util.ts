@@ -7,6 +7,4 @@ export * from './util.error';
 
 export const env = fs.env;
 export const resolve = fs.resolve;
-
 export { cell };
-export const squash = cell.value.squash;

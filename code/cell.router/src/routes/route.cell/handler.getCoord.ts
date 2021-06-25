@@ -1,4 +1,4 @@
-import { cell, t } from '../common';
+import { t, Schema } from '../common';
 
 export async function getCoord<T extends t.IUriResponse<any, any>>(args: {
   uri: string;
@@ -10,7 +10,7 @@ export async function getCoord<T extends t.IUriResponse<any, any>>(args: {
   const exists = Boolean(model.exists);
   const { createdAt, modifiedAt } = model;
 
-  const data = cell.value.squash.object(model.toObject()) || {};
+  const data = Schema.Squash.object(model.toObject()) || {};
   const urls = args.getUrls();
 
   const res = {

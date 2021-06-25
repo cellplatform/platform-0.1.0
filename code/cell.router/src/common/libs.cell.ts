@@ -1,4 +1,4 @@
-export { Schema, Uri, Urls } from '@platform/cell.schema';
+export { Schema, Uri, Urls, Squash } from '@platform/cell.schema';
 export { TypeSystem } from '@platform/cell.typesystem';
 export { value } from '@platform/cell.value';
 export { coord } from '@platform/cell.coord';

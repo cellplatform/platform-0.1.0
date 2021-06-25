@@ -1,4 +1,4 @@
-import { defaultValue, func, models, Schema, t } from '../common';
+import { defaultValue, func, models, Schema, t, Squash } from '../common';
 import { getNs } from './handler.get';
 import * as util from './util';
 

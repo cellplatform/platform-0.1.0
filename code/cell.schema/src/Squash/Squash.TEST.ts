@@ -1,6 +1,6 @@
 import { expect } from '../test';
 import { t } from '../common';
-import { squash } from './squash';
+import { Squash } from '.';
 
 type P = t.ICellProps & {
   style: { bold?: boolean; italic?: boolean; underline?: boolean };
@@ -11,10 +11,10 @@ type P = t.ICellProps & {
 type R = t.IRowProps & { grid?: { height?: number } };
 type C = t.IColumnProps & { grid?: { width?: number } };
 
-describe('squash', () => {
-  it('squash.props (cell)', () => {
+describe('Squash', () => {
+  it('Squash.props (cell)', () => {
     const test = (props?: Partial<P>, expected?: any) => {
-      const res = squash.props(props);
+      const res = Squash.props(props);
       expect(res).to.eql(expected);
     };
     test();
@@ -25,9 +25,9 @@ describe('squash', () => {
     test({ style: { bold: true }, merge: {} }, { style: { bold: true } });
   });
 
-  it('squash.props (row)', () => {
+  it('Squash.props (row)', () => {
     const test = (props?: Partial<R>, expected?: any) => {
-      const res = squash.props(props);
+      const res = Squash.props(props);
       expect(res).to.eql(expected);
     };
     test();
@@ -39,9 +39,9 @@ describe('squash', () => {
     test({ foo: null } as any, { foo: null }); // NB: [null] values retained (not the same as [undefined]).
   });
 
-  it('squash.props (column)', () => {
+  it('Squash.props (column)', () => {
     const test = (props?: Partial<C>, expected?: any) => {
-      const res = squash.props(props);
+      const res = Squash.props(props);
       expect(res).to.eql(expected);
     };
     test();
@@ -55,7 +55,7 @@ describe('squash', () => {
 
   it('squash.cell', () => {
     const test = (cell?: t.ICellData, expected?: any, empty?: any) => {
-      const res = squash.cell(cell, { empty });
+      const res = Squash.cell(cell, { empty });
       expect(res).to.eql(expected);
     };
     test();
@@ -81,7 +81,7 @@ describe('squash', () => {
       expected?: any,
       options?: { empty?: Record<string, unknown> },
     ) => {
-      const res = squash.object(obj, options);
+      const res = Squash.object(obj, options);
       expect(res).to.eql(expected);
     };
     test();

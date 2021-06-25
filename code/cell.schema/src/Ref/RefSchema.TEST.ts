@@ -5,6 +5,6 @@ import { Schema } from '../Schema';
 describe('RefSchema', () => {
   it('exposed from Schema (static)', () => {
     expect(Schema.Ref).to.equal(RefSchema);
-    expect(Schema.Ref.links).to.equal(RefLinks);
+    expect(Schema.Ref.Links).to.equal(RefLinks);
   });
 });

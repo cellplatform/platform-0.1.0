@@ -3,9 +3,9 @@ import { isUndefinedOrEmptyObject, defaultValue, t } from '../common';
 /**
  * Collapses empty values on data objects.
  */
-export const squash = {
+export const Squash = {
   props<T = Record<string, unknown>>(props?: t.ICellProps | t.IRowProps | t.IColumnProps) {
-    return squash.object<T>(props);
+    return Squash.object<T>(props);
   },
 
   cell<T = t.ICellData>(
@@ -13,15 +13,13 @@ export const squash = {
     options: { empty?: Record<string, unknown> } = {},
   ): T | undefined {
     const empty = defaultValue(options.empty, undefined) as T;
-    if (!cell) {
-      return empty;
-    } else {
-      const res = { ...cell };
-      Object.keys(res)
-        .filter((key) => isUndefinedOrEmptyObject(res[key]))
-        .forEach((key) => delete res[key]);
-      return squash.object<T>(res, options);
-    }
+    if (!cell) return empty;
+
+    const res = { ...cell };
+    Object.keys(res)
+      .filter((key) => isUndefinedOrEmptyObject(res[key]))
+      .forEach((key) => delete res[key]);
+    return Squash.object<T>(res, options);
   },
 
   object<T = Record<string, unknown>>(

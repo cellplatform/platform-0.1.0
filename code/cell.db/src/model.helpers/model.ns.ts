@@ -1,8 +1,8 @@
-import { coord, Schema, t, Uri, util, R } from '../common';
+import { coord, Schema, t, Uri, util, R, Squash } from '../common';
 import { Cell, Column, Row } from '../model.db';
 import { toChanges } from './util';
 
-const { squash, isNilOrEmptyObject } = util.value;
+const { isNilOrEmptyObject } = util.value;
 
 /**
  * Render the model into a simple [t.INS] object.
@@ -12,7 +12,7 @@ export async function toObject(model: t.IDbModelNs) {
   const res: t.INs = {
     id,
     hash: '', // Default (if does not exist, otherwise should be on the DB data object).
-    ...squash.object(model.toObject()),
+    ...Squash.object(model.toObject()),
   };
   return res;
 }
@@ -47,7 +47,7 @@ export async function getChildCells(args: { model: t.IDbModelNs; range?: string 
   return models.reduce((acc, next) => {
     const { parts } = Schema.from.cell(next);
     if (includeKey(parts.key, union)) {
-      acc[parts.key] = squash.cell(next.toObject());
+      acc[parts.key] = Squash.cell(next.toObject());
     }
     return acc;
   }, {}) as t.ICellMap;
@@ -62,7 +62,7 @@ export async function getChildRows(args: { model: t.IDbModelNs; range?: string }
   return models.reduce((acc, next) => {
     const { parts } = Schema.from.row(next);
     if (includeKey(parts.key, union)) {
-      acc[parts.key] = squash.object(next.toObject());
+      acc[parts.key] = Squash.object(next.toObject());
     }
     return acc;
   }, {}) as t.ICellMap;
@@ -77,7 +77,7 @@ export async function getChildColumns(args: { model: t.IDbModelNs; range?: strin
   return models.reduce((acc, next) => {
     const { parts } = Schema.from.column(next);
     if (includeKey(parts.key, union)) {
-      acc[parts.key] = squash.object(next.toObject());
+      acc[parts.key] = Squash.object(next.toObject());
     }
     return acc;
   }, {}) as t.ICellMap;
@@ -90,7 +90,7 @@ export async function getChildFiles(args: { model: t.IDbModelNs }) {
   const models = await args.model.children.files;
   return models.reduce((acc, next) => {
     const { parts } = Schema.from.file(next);
-    acc[parts.file] = squash.object(next.toObject());
+    acc[parts.file] = Squash.object(next.toObject());
     return acc;
   }, {}) as t.IFileMap;
 }

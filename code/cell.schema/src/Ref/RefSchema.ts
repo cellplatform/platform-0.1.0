@@ -1,8 +1,8 @@
-import { RefLinks } from './RefLinks';
+import { RefLinks as Links } from './RefLinks';
 
 /**
  * Schema for a reference (link).
  */
 export const RefSchema = {
-  links: RefLinks,
+  Links,
 };

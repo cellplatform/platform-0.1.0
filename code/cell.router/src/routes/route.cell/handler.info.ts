@@ -54,8 +54,11 @@ export async function get<T extends t.IUriResponse<any, any>>(args: {
 }): Promise<t.IPayload<T> | t.IErrorPayload> {
   const { uri, getModel, getUrls } = args;
   try {
-    return getCoord<T>({ uri, getModel, getUrls });
-  } catch (err) {
+    const res = await getCoord<T>({ uri, getModel, getUrls });
+    return res;
+  } catch (error) {
+    console.log('error.stack', error.stack);
+    const err = `Failed to get info for [${uri}]. ${error.message}`;
     return util.toErrorPayload(err);
   }
 }

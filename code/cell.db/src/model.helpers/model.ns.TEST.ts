@@ -95,7 +95,7 @@ describe('helpers: model.ns', () => {
   });
 
   describe('setChildData', () => {
-    it('return change set (un-changed values not reported)', async () => {
+    it('return set of changes (un-changed values not reported)', async () => {
       const db = await getTestDb({});
       const ns = models.Ns.create({ uri: 'ns:foo', db });
 
