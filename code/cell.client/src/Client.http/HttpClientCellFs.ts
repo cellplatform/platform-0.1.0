@@ -1,4 +1,5 @@
 import { ERROR, Schema, t, util } from '../common';
+import { HttpClientCellFile } from './HttpClientCellFile';
 import { copyFiles } from './HttpClientCellFs.copy';
 import { deleteFiles } from './HttpClientCellFs.delete';
 import { uploadFiles } from './HttpClientCellFs.upload';
@@ -36,6 +37,13 @@ export function HttpClientCellFs(args: {
   };
 
   const api: t.IHttpClientCellFs = {
+    file(path: string) {
+      return HttpClientCellFile({ parent, urls, http, path });
+    },
+
+    /**
+     * A listing of URLs for the files attached to the cell.
+     */
     async urls() {
       type T = t.IHttpClientCellFileUrl[];
 
@@ -49,6 +57,9 @@ export function HttpClientCellFs(args: {
       return util.toClientResponse<T>(status, body || []);
     },
 
+    /**
+     * An {object} map of the cell files.
+     */
     async map() {
       type T = t.IFileMap;
       const getError: GetError = () => `Failed to get file map for [${uri.toString()}]`;
@@ -61,6 +72,9 @@ export function HttpClientCellFs(args: {
       return util.toClientResponse<T>(status, body, { error });
     },
 
+    /**
+     * An [array] list of the cell files.
+     */
     async list(options: { filter?: string } = {}) {
       const { filter } = options;
 
@@ -94,6 +108,9 @@ export function HttpClientCellFs(args: {
       return util.toClientResponse<T>(200, body);
     },
 
+    /**
+     * Upload (write) a new file to the cell.
+     */
     upload(
       input: t.IHttpClientCellFileUpload | t.IHttpClientCellFileUpload[],
       options: { changes?: boolean } = {},
@@ -103,16 +120,26 @@ export function HttpClientCellFs(args: {
       return uploadFiles({ input, http, urls, cellUri, changes });
     },
 
+    /**
+     * Delete the file.
+     */
     delete(filename: string | string[]) {
       const urls = parent.url;
       return deleteFiles({ http, urls, filename, action: 'DELETE' });
     },
 
+    /**
+     * Unlink the file from the cell (without deleting).
+     * NOTE: Used when the file is referenced by another cell.
+     */
     unlink(filename: string | string[]) {
       const urls = parent.url;
       return deleteFiles({ http, urls, filename, action: 'UNLINK' });
     },
 
+    /**
+     * Make a copy of the file(s).
+     */
     copy(
       files: t.IHttpClientCellFileCopy | t.IHttpClientCellFileCopy[],
       options: t.IHttpClientCellFsCopyOptions = {},

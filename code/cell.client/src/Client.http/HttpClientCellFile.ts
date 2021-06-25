@@ -7,84 +7,81 @@ export function HttpClientCellFile(args: {
   parent: t.IHttpClientCell;
   urls: t.IUrls;
   http: t.IHttp;
+  path: string;
 }): t.IHttpClientCellFile {
-  const { parent, urls, http } = args;
+  const { parent, urls, http, path } = args;
 
   const api: t.IHttpClientCellFile = {
-    name(path: string) {
-      const file: t.IHttpClientCellFileByName = {
-        /**
-         * Meta-data about the file.
-         */
-        async info() {
-          const linkRes = await getCellLinkByFilename(parent, path);
-          if (linkRes.error) {
-            return linkRes.error as any;
-          }
-          if (!linkRes.link) {
-            throw new Error(`Link should exist.`);
-          }
+    path,
 
-          // Prepare the URL.
-          const link = linkRes.link;
-          const url = urls.file(link.uri).info;
+    /**
+     * Meta-data about the file.
+     */
+    async info() {
+      const linkRes = await getCellLinkByFilename(parent, path);
+      if (linkRes.error) {
+        return linkRes.error as any;
+      }
+      if (!linkRes.link) {
+        throw new Error(`Link should exist.`);
+      }
 
-          // Call the service.
-          const res = await http.get(url.toString());
-          return util.fromHttpResponse(res).toClientResponse<t.IResGetFile>();
-        },
+      // Prepare the URL.
+      const link = linkRes.link;
+      const url = urls.file(link.uri).info;
 
-        /**
-         * Determine if the file exists or not.
-         */
-        async exists() {
-          const info = await file.info();
-          return info.ok && info.body.exists;
-        },
+      // Call the service.
+      const res = await http.get(url.toString());
+      return util.fromHttpResponse(res).toClientResponse<t.IResGetFile>();
+    },
 
-        /**
-         * Retrieve the info about the given file.
-         */
-        async download(
-          options: { expires?: string } = {},
-        ): Promise<t.IHttpClientResponse<ReadableStream | t.Json | string>> {
-          type T = ReadableStream | string;
-          const { expires } = options;
-          const linkRes = await getCellLinkByFilename(parent, path);
+    /**
+     * Determine if the file exists or not.
+     */
+    async exists() {
+      const info = await api.info();
+      return info.ok && info.body.exists;
+    },
 
-          if (linkRes.error) return linkRes.error as any;
-          if (!linkRes.link) {
-            throw new Error(`Link should exist.`);
-          }
+    /**
+     * Retrieve the info about the given file.
+     */
+    async download(
+      options: { expires?: string } = {},
+    ): Promise<t.IHttpClientResponse<ReadableStream | t.Json | string>> {
+      type T = ReadableStream | string;
+      const { expires } = options;
+      const linkRes = await getCellLinkByFilename(parent, path);
 
-          // Prepare the URL.
-          const { link } = linkRes;
-          const hash = link.query.hash || undefined;
-          const url = parent.url.file
-            .byFileUri(link.uri.toString(), link.ext)
-            .query({ hash, expires })
-            .toString();
+      if (linkRes.error) return linkRes.error as any;
+      if (!linkRes.link) {
+        throw new Error(`Link should exist.`);
+      }
 
-          // Request the download.
-          const res = await http.get(url);
-          if (res.ok) {
-            const mime = (res.headers['content-type'] || '').toString().trim();
-            const bodyType = toBodyType(mime);
-            return util.fromHttpResponse(res).toClientResponse<T>({ bodyType });
-          } else {
-            const message = `Failed while downloading file "${parent.uri.toString()}".`;
-            const httpError = res.contentType.is.json ? (res.json as t.IHttpError) : undefined;
-            if (httpError) {
-              const error = `${message} ${httpError.message}`;
-              return util.toError<T>(res.status, httpError.type, error);
-            } else {
-              return util.toError<T>(res.status, ERROR.HTTP.SERVER, message);
-            }
-          }
-        },
-      };
+      // Prepare the URL.
+      const { link } = linkRes;
+      const hash = link.query.hash || undefined;
+      const url = parent.url.file
+        .byFileUri(link.uri.toString(), link.ext)
+        .query({ hash, expires })
+        .toString();
 
-      return file;
+      // Request the download.
+      const res = await http.get(url);
+      if (res.ok) {
+        const mime = (res.headers['content-type'] || '').toString().trim();
+        const bodyType = toBodyType(mime);
+        return util.fromHttpResponse(res).toClientResponse<T>({ bodyType });
+      } else {
+        const message = `Failed while downloading file "${parent.uri.toString()}".`;
+        const httpError = res.contentType.is.json ? (res.json as t.IHttpError) : undefined;
+        if (httpError) {
+          const error = `${message} ${httpError.message}`;
+          return util.toError<T>(res.status, httpError.type, error);
+        } else {
+          return util.toError<T>(res.status, ERROR.HTTP.SERVER, message);
+        }
+      }
     },
   };
 

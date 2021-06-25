@@ -1,5 +1,4 @@
 import { t, util } from '../common';
-import { HttpClientCellFile } from './HttpClientCellFile';
 import { HttpClientCellFs } from './HttpClientCellFs';
 import { HttpClientCellLinks } from './HttpClientCellLinks';
 
@@ -13,7 +12,6 @@ export function HttpClientCell(args: {
 }): t.IHttpClientCell {
   const { uri, urls, http } = args;
 
-  let file: t.IHttpClientCellFile | undefined;
   let fs: t.IHttpClientCellFs | undefined;
   let links: t.IHttpClientCellLinks | undefined;
 
@@ -22,11 +20,6 @@ export function HttpClientCell(args: {
 
     get url() {
       return urls.cell(uri);
-    },
-
-    get file(): t.IHttpClientCellFile {
-      if (file) return file;
-      return (file = HttpClientCellFile({ parent, urls, http }));
     },
 
     get fs(): t.IHttpClientCellFs {
