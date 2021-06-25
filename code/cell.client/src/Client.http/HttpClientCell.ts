@@ -31,7 +31,7 @@ export function HttpClientCell(args: {
 
     get fs(): t.IHttpClientCellFs {
       if (fs) return fs;
-      return (fs = HttpClientCellFs.create({ parent, urls, http }));
+      return (fs = HttpClientCellFs({ parent, urls, http }));
     },
 
     get links(): t.IHttpClientCellLinks {
