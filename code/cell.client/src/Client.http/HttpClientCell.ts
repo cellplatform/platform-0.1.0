@@ -1,4 +1,5 @@
-import { t, util } from '../common';
+import { t } from '../common';
+import { HttpClientCellDb } from './HttpClientCellDb';
 import { HttpClientCellFs } from './HttpClientCellFs';
 import { HttpClientCellLinks } from './HttpClientCellLinks';
 
@@ -13,6 +14,7 @@ export function HttpClientCell(args: {
   const { uri, urls, http } = args;
 
   let fs: t.IHttpClientCellFs | undefined;
+  let db: t.IHttpClientCellDb | undefined;
   let links: t.IHttpClientCellLinks | undefined;
 
   const api: t.IHttpClientCell = {
@@ -20,6 +22,11 @@ export function HttpClientCell(args: {
 
     get url() {
       return urls.cell(uri);
+    },
+
+    get db(): t.IHttpClientCellDb {
+      if (db) return db;
+      return (db = HttpClientCellDb({ parent, urls, http }));
     },
 
     get fs(): t.IHttpClientCellFs {
@@ -32,15 +39,12 @@ export function HttpClientCell(args: {
       return (links = HttpClientCellLinks({ uri, urls, http, getInfo: () => this.info() }));
     },
 
-    async exists() {
-      const res = await http.get(api.url.info.toString());
-      return res.status.toString().startsWith('2');
+    exists() {
+      return api.db.exists();
     },
 
-    async info(options: t.IReqQueryCellInfo = {}) {
-      const url = api.url.info.query(options).toString();
-      const res = await http.get(url);
-      return util.fromHttpResponse(res).toClientResponse<t.IResGetCell>();
+    info(options: t.IReqQueryCellInfo = {}) {
+      return api.db.read(options);
     },
 
     toString: () => uri.toString(),

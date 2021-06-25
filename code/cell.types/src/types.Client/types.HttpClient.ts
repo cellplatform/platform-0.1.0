@@ -56,6 +56,7 @@ export type IHttpClientNs = {
 export type IHttpClientCell = {
   readonly uri: t.ICellUri;
   readonly url: t.IUrlsCell;
+  readonly db: t.IHttpClientCellDb;
   readonly fs: t.IHttpClientCellFs;
   readonly links: t.IHttpClientCellLinks;
   exists(): Promise<boolean>;

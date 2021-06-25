@@ -10,6 +10,7 @@ export type IHttpClientCellFile = {
 };
 
 export type IHttpClientCellFs = {
+  readonly uri: t.ICellUri;
   file(path: string): IHttpClientCellFile;
   urls(): t.IHttpClientAsync<IHttpClientCellFileUrl[]>;
   map(): t.IHttpClientAsync<t.IFileMap>;
@@ -24,6 +25,7 @@ export type IHttpClientCellFs = {
     files: t.IHttpClientCellFileCopy | t.IHttpClientCellFileCopy[],
     options?: IHttpClientCellFsCopyOptions,
   ): t.IHttpClientAsync<t.IResPostCellFsCopyData>;
+  toString(): string;
 };
 
 export type IHttpClientCellFsUploadOptions = {

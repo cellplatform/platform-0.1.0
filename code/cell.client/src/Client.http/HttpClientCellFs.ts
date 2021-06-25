@@ -37,6 +37,9 @@ export function HttpClientCellFs(args: {
   };
 
   const api: t.IHttpClientCellFs = {
+    uri,
+    toString: () => uri.toString(),
+
     file(path: string) {
       return HttpClientCellFile({ parent, urls, http, path });
     },
