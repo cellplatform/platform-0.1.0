@@ -1,5 +1,5 @@
 # 
-# Package ("make") the application.
+# Package ("make") the application into a distributable binary.
 # 
 yarn cmd prepare make --force
 export NODE_ENV=production
@@ -12,4 +12,5 @@ cd ..
 
 cd app 
 npm version minor
-yarn make
+yarn make-x64
+# yarn make-arm64
