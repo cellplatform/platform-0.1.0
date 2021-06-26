@@ -1,16 +1,16 @@
 import { t } from './common';
 
-export type ElectronUri = ElectronProcessUri;
+export type RuntimeUri = ProcessUri;
 
-export type ElectronProcessUri = ElectronProcessMainUri | ElectronProcessWindowUri;
-export type ElectronProcessMainUri = 'process:main';
-export type ElectronProcessWindowUri = string; // format: "process:window:<id>"
+export type ProcessUri = ProcessMainUri | ProcessWindowUri;
+export type ProcessMainUri = 'process:main';
+export type ProcessWindowUri = string; // format: "process:window:<id>" (renderer)
 
 /**
  * Parsed URI objects.
  */
-export type ElectronUriObject = ElectronWindowUriObject;
-export type ElectronWindowUriObject = {
+export type RuntimeUriObject = WindowUriObject;
+export type WindowUriObject = {
   ok: boolean;
   type: 'window';
   slug: string;

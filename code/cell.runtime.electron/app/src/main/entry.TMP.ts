@@ -17,7 +17,15 @@ export async function TestIpcBusBridging(args: { bus: t.ElectronMainBus }) {
     }
     if (e.type === 'runtime.electron/Window/status:req') {
       // TEMP 🐷
-      console.log('ipcbus:', e);
+
+      /**
+       * TODO 🐷
+       * - make ferrying events from the IPC bus more intilligence
+       * - BUG: The TEMP code here is causing the same event to be fired multiple times.
+       *
+       */
+
+      console.log('ipcbus (bridge):', e);
       const events = Window.Events({ bus });
       const status = await events.status.get();
       ipcbus.fire({

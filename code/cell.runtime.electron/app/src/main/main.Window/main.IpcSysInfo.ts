@@ -1,11 +1,7 @@
-import { BrowserWindow, ipcMain as ipc } from 'electron';
+import { ipcMain as ipc } from 'electron';
 
 import { RuntimeUri, t } from '../common';
-
-type WindowRef = {
-  uri: t.ElectronProcessWindowUri;
-  browser: BrowserWindow;
-};
+import { WindowRef } from './types';
 
 /**
  * Helpers for working with the "system information" IPC channel.
@@ -17,7 +13,7 @@ export function IpcSysInfo(args: { channel: string; getRefs: () => WindowRef[] }
     /**
      * Broadcast the current system state to all windows.
      */
-    broadcast(options: { targets?: t.ElectronUri[] } = {}) {
+    broadcast(options: { targets?: t.RuntimeUri[] } = {}) {
       const { targets } = options;
       const refs = args.getRefs();
       const windows = refs.map((ref) => ref.uri);

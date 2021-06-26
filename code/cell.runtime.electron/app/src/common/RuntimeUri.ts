@@ -14,11 +14,11 @@ export const RuntimeUri = {
    * A URI that represents a unique window.
    */
   window: {
-    create(id?: t.ElectronWindowId | string) {
+    create(id?: t.WindowId | string) {
       return `process:window:${id ?? slug()}`;
     },
 
-    parse(input: any, options: { throw?: boolean } = {}): t.ElectronWindowUriObject | undefined {
+    parse(input: any, options: { throw?: boolean } = {}): t.WindowUriObject | undefined {
       const value = toString(input);
 
       const throwError = (errors: string[] = []) => {
@@ -34,7 +34,7 @@ export const RuntimeUri = {
 
       const parts = value.split(':').map((part) => part.trim());
       const slug = toString(parts[2]);
-      const uri: t.ElectronWindowUriObject = {
+      const uri: t.WindowUriObject = {
         ok: true,
         type: 'window',
         slug, // NB: A randomly generated id created for the window.

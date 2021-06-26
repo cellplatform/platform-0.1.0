@@ -58,6 +58,17 @@ export const SystemServer = {
         e.modify({ ...e.res, data });
       });
 
+    app.response$.subscribe((e) => {
+      /**
+       * TODO 🐷
+       * - check for local "security" token to prevent external apps for mucking with the API.
+       */
+      // e.modify({
+      //   status: 500,
+      //   data: { error: 'Fail' },
+      // });
+    });
+
     // Finish up.
     return { app, instance, paths, host, port };
   },

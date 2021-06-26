@@ -6,7 +6,7 @@ import { Events } from './main.Bundle.Events';
 /**
  * Bundle behavior logic.
  */
-export function Controller(args: { bus: t.EventBus<any>; host: string; http: t.IHttpClient }) {
+export function Controller(args: { bus: t.EventBus<any>; http: t.IHttpClient }) {
   const { http } = args;
   const bus = rx.busAsType<t.BundleEvent>(args.bus);
   const events = Events({ bus });

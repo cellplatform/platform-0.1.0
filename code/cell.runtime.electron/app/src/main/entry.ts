@@ -34,7 +34,16 @@ export async function start() {
     // Start the HTTP server.
     const port = prod ? undefined : 5000;
     const { paths, host } = await SystemServer.start({ log, prod, port });
+
+    // Initialize the HTTP client.
     const http = HttpClient.create(host);
+    http.request$.subscribe((e) => {
+      /**
+       * TODO 🐷
+       * Add a "security token" to lock down the server to the app only.
+       * See `SystemServer` for the other-side that checks the token before responding.
+       */
+    });
 
     // Load the configuration JSON file.
     const config = await ConfigFile.read();
@@ -58,11 +67,11 @@ export async function start() {
     /**
      * Initialize controllers.
      */
-    System.Controller({ bus, paths, host, config });
+    System.Controller({ bus, host, paths, config });
+    Bundle.Controller({ bus, http });
     Window.Controller({ bus });
     Log.Controller({ bus });
     Menu.Controller({ bus });
-    Bundle.Controller({ bus, host, http });
 
     /**
      * Upload bundled system code into the local service.
@@ -75,8 +84,8 @@ export async function start() {
     });
 
     const bundleStatus = await bundle.status.get({ dir: 'app.sys/web' });
-    console.log('-------------------------------------------');
-    console.log('bundleStatus', bundleStatus);
+    // console.log('-------------------------------------------');
+    // console.log('bundleStatus', bundleStatus);
 
     const preload = constants.paths.preload;
     await logMain({ http, paths: { data: paths, preload } });

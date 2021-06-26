@@ -12,8 +12,8 @@ export function Controller(args: {
   paths: t.ElectronDataPaths;
   config: t.ElectronConfigFile;
 }) {
-  const { paths, config } = args;
-  const service = toServiceInfo(args.host);
+  const { paths, config, host } = args;
+  const service = toServiceInfo(host);
 
   const bus = rx.busAsType<t.SystemEvent>(args.bus);
   const events = Events({ bus });

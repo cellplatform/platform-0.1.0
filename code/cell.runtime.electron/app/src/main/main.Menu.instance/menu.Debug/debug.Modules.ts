@@ -32,7 +32,7 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
         bundle: await events.bundle.status.get({ dir: 'app.sys/web' }),
       };
 
-      console.log('status.bundle', status.bundle);
+      // console.log('status.bundle', status.bundle);
 
       const urls = {
         dev: 'http://localhost:5050', // TEMP 🐷

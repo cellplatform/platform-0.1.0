@@ -1,15 +1,15 @@
-import { t } from './common';
+import { t, Observable } from './common';
 
-export type ElectronWindowAction = 'close' | 'resize' | 'move';
-export type ElectronWindowId = number;
-export type ElectronWindowIdParam = ElectronWindowId | t.ElectronProcessWindowUri;
+export type WindowAction = 'close' | 'resize' | 'move';
+export type WindowId = number;
+export type WindowIdParam = WindowId | t.ProcessWindowUri;
 
 /**
  * The current status of an electron window.
  */
-export type ElectronWindowStatus = {
-  id: ElectronWindowId;
-  uri: t.ElectronProcessWindowUri;
+export type WindowStatus = {
+  id: WindowId;
+  uri: t.ProcessWindowUri;
   url: string;
   title: string;
   bounds: WindowBounds;
@@ -18,24 +18,57 @@ export type ElectronWindowStatus = {
 export type WindowBounds = { x: number; y: number; width: number; height: number };
 
 /**
+ * Event API.
+ */
+export type WindowEvents = t.IDisposable & {
+  $: Observable<WindowEvent>;
+  is: { base(input: any): boolean };
+
+  create: {
+    req$: Observable<t.WindowCreateReq>;
+    res$: Observable<t.WindowCreateRes>;
+    fire(args: {
+      url: string;
+      devTools?: t.WindowCreateReq['devTools'];
+      props?: t.WindowCreateReq['props'];
+    }): Promise<t.WindowCreateRes>;
+  };
+
+  status: {
+    req$: Observable<t.WindowStatusReq>;
+    res$: Observable<t.WindowsStatusRes>;
+    get(): Promise<{ windows: t.WindowStatus[] }>;
+  };
+
+  change: {
+    before$: Observable<t.WindowChange>;
+    after$: Observable<t.WindowChanged>;
+    fire(
+      window: t.WindowIdParam,
+      options?: { bounds?: Partial<t.WindowBounds>; isVisible?: boolean },
+    ): void;
+  };
+};
+
+/**
  * EVENTS
  */
 export type WindowEvent =
-  | ElectronWindowCreateReqEvent
+  | WindowCreateReqEvent
   | WindowCreateResEvent
   | WindowStatusReqEvent
   | WindowsStatusResEvent
   | WindowChangeEvent
-  | ElectronWindowChangedEvent;
+  | WindowChangedEvent;
 
 /**
  * Fired to create a new window.
  */
-export type ElectronWindowCreateReqEvent = {
+export type WindowCreateReqEvent = {
   type: 'runtime.electron/Window/create:req';
-  payload: ElectronWindowCreateReq;
+  payload: WindowCreateReq;
 };
-export type ElectronWindowCreateReq = {
+export type WindowCreateReq = {
   tx: string;
   url: string;
   devTools?: boolean | 'undocked' | 'right' | 'bottom' | 'detach';
@@ -77,7 +110,7 @@ export type WindowsStatusResEvent = {
 };
 export type WindowsStatusRes = {
   tx: string;
-  windows: ElectronWindowStatus[];
+  windows: WindowStatus[];
 };
 
 /**
@@ -88,7 +121,7 @@ export type WindowChangeEvent = {
   payload: WindowChange;
 };
 export type WindowChange = {
-  uri: t.ElectronProcessWindowUri;
+  uri: t.ProcessWindowUri;
   bounds?: Partial<WindowBounds>;
   isVisible?: boolean;
 };
@@ -96,12 +129,12 @@ export type WindowChange = {
 /**
  * Fired when a windows state has changed.
  */
-export type ElectronWindowChangedEvent = {
+export type WindowChangedEvent = {
   type: 'runtime.electron/Window/changed';
-  payload: ElectronWindowChanged;
+  payload: WindowChanged;
 };
-export type ElectronWindowChanged = {
-  uri: t.ElectronProcessWindowUri;
-  action: ElectronWindowAction;
+export type WindowChanged = {
+  uri: t.ProcessWindowUri;
+  action: WindowAction;
   bounds: WindowBounds;
 };
