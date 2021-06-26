@@ -147,7 +147,7 @@ describe('cell.fs: download', function () {
       let headers: undefined | t.IHttpHeaders;
       mock.client.response$.subscribe((e) => (headers = e.response.headers));
 
-      const res = await client.file.name(filename).download();
+      const res = await client.fs.file(filename).download();
       const html = await bodyToString(res.body);
 
       expect(res.ok).to.eql(true);
@@ -171,7 +171,7 @@ describe('cell.fs: download', function () {
       let headers: undefined | t.IHttpHeaders;
       mock.client.response$.subscribe((e) => (headers = e.response.headers));
 
-      const res = await client.file.name('  ///foo/bar/m.root.html  ').download(); // NB: path prefix slahses "/" are trimmed.
+      const res = await client.fs.file('  ///foo/bar/m.root.html  ').download(); // NB: path prefix slahses "/" are trimmed.
       const html = await bodyToString(res.body);
 
       expect(res.ok).to.eql(true);
@@ -195,7 +195,7 @@ describe('cell.fs: download', function () {
       let headers: undefined | t.IHttpHeaders;
       mock.client.response$.subscribe((e) => (headers = e.response.headers));
 
-      const res = await client.file.name(filename).download();
+      const res = await client.fs.file(filename).download();
       const html = await bodyToString(res.body);
 
       expect(res.ok).to.eql(true);
@@ -242,7 +242,7 @@ describe('cell.fs: download', function () {
         // Download the file and check headers.
         let headers: undefined | t.IHttpHeaders;
         mock.client.response$.subscribe((e) => (headers = e.response.headers));
-        const res = await client.file.name('/index.html').download();
+        const res = await client.fs.file('/index.html').download();
         const html = await bodyToString(res.body);
         await mock.dispose();
 
@@ -263,7 +263,7 @@ describe('cell.fs: download', function () {
           { filename: '/foo/bar/file.js', data: files.js },
         ]);
 
-        const res = await client.file.name('/foo/bar/index.html').download();
+        const res = await client.fs.file('/foo/bar/index.html').download();
         const html = await bodyToString(res.body);
         await mock.dispose();
 

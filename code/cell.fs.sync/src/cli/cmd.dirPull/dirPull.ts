@@ -76,7 +76,7 @@ export async function dirPull(args: { dir: string; silent?: boolean }) {
     const size = bytes < 0 ? '' : `(${toBytesString(bytes)})`;
     const title = gray(`pull ${log.green(file.path)} ${size}`);
     tasks.task(title, async () => {
-      const res = await client.file.name(file.path).download();
+      const res = await client.fs.file(file.path).download();
       await fs.stream.save(file.localPath, res.body);
     });
   };

@@ -89,7 +89,7 @@ export function pullMethod(args: { cachedir: string }) {
     await Promise.all(
       list.map(async (file) => {
         try {
-          const download = await client.file.name(file.path).download();
+          const download = await client.fs.file(file.path).download();
           if (download.ok) {
             count++;
             await save(file, download.body);

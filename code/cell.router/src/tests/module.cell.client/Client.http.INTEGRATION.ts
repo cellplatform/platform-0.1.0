@@ -27,7 +27,7 @@ describe('HttpClient (Integration)', function () {
       const info = await cell.info();
       log.info.green(info.body.urls.files);
 
-      const fileInfo = await cell.file.name(filename).info();
+      const fileInfo = await cell.fs.file(filename).info();
       expect(fileInfo.body.data.props['s3:permission']).to.eql('private');
     });
 
@@ -36,7 +36,7 @@ describe('HttpClient (Integration)', function () {
       const res = await cell.fs.upload(upload, { permission: 'public-read' });
       expect(res.status).to.eql(200);
 
-      const fileInfo = await cell.file.name(filename).info();
+      const fileInfo = await cell.fs.file(filename).info();
       expect(fileInfo.body.data.props['s3:permission']).to.eql('public-read');
     });
   });
@@ -58,7 +58,7 @@ describe('HttpClient (Integration)', function () {
       const { upload } = await testFile(filename1, { foo: 123 });
       await source.fs.upload(upload);
 
-      const file1 = await source.file.name(filename1).info();
+      const file1 = await source.fs.file(filename1).info();
       expect(file1.ok).to.eql(true);
       if (file1.body.data.props['s3:permission']) {
         expect(file1.body.data.props['s3:permission']).to.eql('private');
@@ -80,7 +80,7 @@ describe('HttpClient (Integration)', function () {
       expect(res.body.files[0].target.status).to.eql('NEW');
       expect(res.body.changes?.length).to.greaterThan(1);
 
-      const file2 = await target.file.name(filename2).info();
+      const file2 = await target.fs.file(filename2).info();
       expect(file2.status).to.eql(200);
       if (file2.body.data.props['s3:permission']) {
         expect(file2.body.data.props['s3:permission']).to.eql('public-read');
@@ -107,7 +107,7 @@ describe('HttpClient (Integration)', function () {
       expect(res1.body.files[0].source.status).to.eql('EXISTING');
       expect(res1.body.files[0].target.status).to.eql('NEW');
 
-      await fs.stream.save(tmp, (await target.file.name(filename1).download()).body);
+      await fs.stream.save(tmp, (await target.fs.file(filename1).download()).body);
       expect(await fs.readJson(tmp)).to.eql({ foo: 1 });
 
       const res2 = await source.fs.copy({
@@ -119,7 +119,7 @@ describe('HttpClient (Integration)', function () {
       expect(res2.body.files[0].source.status).to.eql('EXISTING');
       expect(res2.body.files[0].target.status).to.eql('EXISTING');
 
-      await fs.stream.save(tmp, (await target.file.name(filename1).download()).body);
+      await fs.stream.save(tmp, (await target.fs.file(filename1).download()).body);
       expect(await fs.readJson(tmp)).to.eql({ foo: 2 });
     });
 
@@ -133,7 +133,7 @@ describe('HttpClient (Integration)', function () {
       const file = await testFile(filename1, { foo: 'hello' });
       await source.fs.upload([file.upload]);
 
-      expect((await source.file.name(filename2).info()).status).to.eql(404);
+      expect((await source.fs.file(filename2).info()).status).to.eql(404);
 
       const res = await source.fs.copy({
         filename: filename1,
@@ -143,12 +143,12 @@ describe('HttpClient (Integration)', function () {
       expect(res.body.files[0].source.status).to.eql('EXISTING');
       expect(res.body.files[0].target.status).to.eql('NEW');
 
-      expect((await source.file.name(filename2).info()).status).to.eql(200);
+      expect((await source.fs.file(filename2).info()).status).to.eql(200);
 
-      await fs.stream.save(tmp, (await source.file.name(filename1).download()).body);
+      await fs.stream.save(tmp, (await source.fs.file(filename1).download()).body);
       expect(await fs.readJson(tmp)).to.eql({ foo: 'hello' });
 
-      await fs.stream.save(tmp, (await source.file.name(filename2).download()).body);
+      await fs.stream.save(tmp, (await source.fs.file(filename2).download()).body);
       expect(await fs.readJson(tmp)).to.eql({ foo: 'hello' });
     });
 
@@ -162,16 +162,16 @@ describe('HttpClient (Integration)', function () {
       const file = await testFile(filename, { foo: 123 });
       await source.fs.upload([file.upload]);
 
-      expect((await target.file.name(filename).info()).status).to.eql(404);
+      expect((await target.fs.file(filename).info()).status).to.eql(404);
 
       await source.fs.copy({
         filename: filename,
         target: { uri: CELL.SOURCE, host: HOST2 },
       });
 
-      expect((await target.file.name(filename).info()).status).to.eql(200);
+      expect((await target.fs.file(filename).info()).status).to.eql(200);
 
-      await fs.stream.save(tmp, (await target.file.name(filename).download()).body);
+      await fs.stream.save(tmp, (await target.fs.file(filename).download()).body);
       expect(await fs.readJson(tmp)).to.eql({ foo: 123 });
     });
 
@@ -187,8 +187,8 @@ describe('HttpClient (Integration)', function () {
       const file2 = await testFile(filename2, { foo: 2 });
       await source.fs.upload([file1.upload, file2.upload]);
 
-      expect((await target.file.name(filename1).info()).status).to.eql(404);
-      expect((await target.file.name(filename2).info()).status).to.eql(404);
+      expect((await target.fs.file(filename1).info()).status).to.eql(404);
+      expect((await target.fs.file(filename2).info()).status).to.eql(404);
 
       await source.fs.copy([
         {
@@ -201,11 +201,11 @@ describe('HttpClient (Integration)', function () {
         },
       ]);
 
-      await fs.stream.save(tmp, (await target.file.name(filename1).download()).body);
+      await fs.stream.save(tmp, (await target.fs.file(filename1).download()).body);
       expect(await fs.readJson(tmp)).to.eql({ foo: 1 });
 
-      expect((await target.file.name(filename1).info()).status).to.eql(200);
-      expect((await target.file.name(filename2).info()).status).to.eql(200);
+      expect((await target.fs.file(filename1).info()).status).to.eql(200);
+      expect((await target.fs.file(filename2).info()).status).to.eql(200);
     });
   });
 });

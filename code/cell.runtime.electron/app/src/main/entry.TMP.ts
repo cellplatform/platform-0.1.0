@@ -20,7 +20,7 @@ export async function TestIpcBusBridging(args: { bus: t.ElectronMainBus }) {
 
       /**
        * TODO 🐷
-       * - make ferrying events from the IPC bus more intilligence
+       * - make ferrying events from the IPC bus smarter
        * - BUG: The TEMP code here is causing the same event to be fired multiple times.
        *
        */

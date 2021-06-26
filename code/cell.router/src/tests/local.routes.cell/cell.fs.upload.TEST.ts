@@ -18,7 +18,7 @@ describe('cell.fs: upload', function () {
     expect(upload.body.files.length).to.eql(1);
     expect(upload.body.files[0].data.props.location?.startsWith('file://~')).to.eql(false);
 
-    const download = await client.file.name(filename).download();
+    const download = await client.fs.file(filename).download();
     expect(download.ok).to.eql(true);
 
     // Save and compare.
@@ -72,7 +72,7 @@ describe('cell.fs: upload', function () {
 
     // Check the files exist.
     const downloadAndSave = async (filename: string, compareWith: Buffer) => {
-      const byName = client.file.name(filename);
+      const byName = client.fs.file(filename);
       const res = await byName.download();
       const path = fs.resolve(`tmp/download`);
       if (typeof res.body === 'object') {
@@ -110,7 +110,7 @@ describe('cell.fs: upload', function () {
     expect(file2.data.props.allowRedirect).to.eql(true);
     expect(file3.data.props.allowRedirect).to.eql(undefined);
 
-    const info = await client.file.name('foo/1.jpg').info();
+    const info = await client.fs.file('foo/1.jpg').info();
     expect(info.body.data.props.allowRedirect).to.eql(false);
 
     // Finish up.
@@ -138,7 +138,7 @@ describe('cell.fs: upload', function () {
     expect(file3.data.props['s3:permission']).to.eql('private');
 
     const expectPermission = async (path: string, permission: t.FsS3Permission) => {
-      const info = await client.file.name(path).info();
+      const info = await client.fs.file(path).info();
       expect(info.body.data.props['s3:permission']).to.eql(permission);
     };
     await expectPermission('foo/1.jpg', 'private');
@@ -407,7 +407,7 @@ describe('cell.fs: upload', function () {
 
     // Save and compare the downloaded stream.
     const path = fs.resolve('tmp/test/download/func.wasm');
-    const res = await cellClient.file.name('func.wasm').download();
+    const res = await cellClient.fs.file('func.wasm').download();
     if (typeof res.body === 'object') {
       await fs.stream.save(path, res.body);
     }
@@ -422,7 +422,7 @@ describe('cell.fs: upload', function () {
     expect(before1.data.hash).to.eql(after1.data.hash);
 
     // Perform a download - should work find (because hashes still match).
-    const download1 = await cellClient.file.name('func.wasm').download();
+    const download1 = await cellClient.fs.file('func.wasm').download();
     expect(download1.status).to.eql(200);
 
     // Upload a different image, with the same name.
@@ -434,13 +434,13 @@ describe('cell.fs: upload', function () {
 
     // Attempt to download the image from the cell.
     // ERROR should happen because of hash-mismatch.
-    const download2 = await cellClient.file.name('func.wasm').download();
+    const download2 = await cellClient.fs.file('func.wasm').download();
     expect(download2.ok).to.eql(false);
     expect(download2.status).to.eql(409);
     expect(download2.error && download2.error.message).to.contains('hash does not match');
 
     // Get info about the file, from the `file.name` client.
-    const fileInfo = await cellClient.file.name('func.wasm').info();
+    const fileInfo = await cellClient.fs.file('func.wasm').info();
     expect(fileInfo.status).to.eql(200);
     expect(fileInfo.body.data.props.bytes).to.eql(file1.length);
 

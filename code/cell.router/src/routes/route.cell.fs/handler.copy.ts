@@ -92,7 +92,7 @@ export async function copyCellFiles(args: {
         if (!filename) {
           addError(`A filename was not provided.`);
         } else {
-          const info = await sourceClient.file.name(filename).info();
+          const info = await sourceClient.fs.file(filename).info();
           if (info.status === 404 || !info.body.exists) {
             addError(
               `The filename/path '${filename}' does not exist on the source cell [${cellUri}]`,
@@ -135,7 +135,7 @@ export async function copyCellFiles(args: {
     try {
       const { source, target } = item;
       const path = util.fs.join(constants.PATH.TMP, 'file', `tmp.${Schema.cuid()}`);
-      const download = await sourceClient.file.name(source.filename).download();
+      const download = await sourceClient.fs.file(source.filename).download();
 
       await util.fs.stream.save(path, download.body);
 

@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.runtime.web",
-  "version": "0.1.45",
+  "version": "0.1.46",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -10,7 +10,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.runtime": "0.10.35",
+    "@platform/cell.runtime": "0.10.36",
     "react": "17.0.2",
     "react-dom": "17.0.2"
   },

@@ -18,7 +18,7 @@ describe('cell.fs: copy', () => {
       const res = await source.fs.copy({ filename, target: { uri: Z9 } });
       expect(res.status).to.eql(200);
 
-      await fs.stream.save(tmp, (await target.file.name(filename).download()).body);
+      await fs.stream.save(tmp, (await target.fs.file(filename).download()).body);
       expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
 
       expect(res.body.files.length).to.eql(1);
@@ -54,7 +54,7 @@ describe('cell.fs: copy', () => {
       });
       expect(res.status).to.eql(200);
 
-      await fs.stream.save(tmp, (await target.file.name(filename2).download()).body);
+      await fs.stream.save(tmp, (await target.fs.file(filename2).download()).body);
       expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
 
       mock.dispose();
@@ -73,8 +73,8 @@ describe('cell.fs: copy', () => {
         { filename: filename2, data: file2 },
       ]);
 
-      expect(await target.file.name(filename1).exists()).to.eql(false);
-      expect(await target.file.name(filename2).exists()).to.eql(false);
+      expect(await target.fs.file(filename1).exists()).to.eql(false);
+      expect(await target.fs.file(filename2).exists()).to.eql(false);
 
       const res = await source.fs.copy([
         { filename: filename1, target: { uri: Z9 } },
@@ -84,13 +84,13 @@ describe('cell.fs: copy', () => {
       expect(res.body.changes).to.eql([]); // NB: Flag to return changes not set.
       expect(res.body.files.length).to.eql(2);
 
-      expect(await target.file.name(filename1).exists()).to.eql(true);
-      expect(await target.file.name(filename2).exists()).to.eql(true);
+      expect(await target.fs.file(filename1).exists()).to.eql(true);
+      expect(await target.fs.file(filename2).exists()).to.eql(true);
 
-      await fs.stream.save(tmp, (await target.file.name(filename1).download()).body);
+      await fs.stream.save(tmp, (await target.fs.file(filename1).download()).body);
       expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
 
-      await fs.stream.save(tmp, (await target.file.name(filename2).download()).body);
+      await fs.stream.save(tmp, (await target.fs.file(filename2).download()).body);
       expect((await fs.readFile(tmp)).toString()).to.eql(file2.toString());
 
       mock.dispose();
@@ -117,7 +117,7 @@ describe('cell.fs: copy', () => {
       expect(res1.body.files[0].source.status).to.eql('EXISTING');
       expect(res1.body.files[0].target.status).to.eql('NEW');
 
-      await fs.stream.save(tmp, (await source.file.name(filename1).download()).body);
+      await fs.stream.save(tmp, (await source.fs.file(filename1).download()).body);
       expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
 
       const res2 = await source.fs.copy({
@@ -128,7 +128,7 @@ describe('cell.fs: copy', () => {
       expect(res2.body.files[0].source.status).to.eql('EXISTING');
       expect(res2.body.files[0].target.status).to.eql('EXISTING');
 
-      await fs.stream.save(tmp, (await target.file.name(filename1).download()).body);
+      await fs.stream.save(tmp, (await target.fs.file(filename1).download()).body);
       expect((await fs.readFile(tmp)).toString()).to.eql(file2.toString());
 
       mock.dispose();
@@ -143,7 +143,7 @@ describe('cell.fs: copy', () => {
       const filename2 = 'bar.png';
       await source.fs.upload([{ filename: filename1, data: file1 }]);
 
-      expect(await source.file.name(filename2).exists()).to.eql(false);
+      expect(await source.fs.file(filename2).exists()).to.eql(false);
 
       const res = await source.fs.copy({
         filename: filename1,
@@ -153,12 +153,12 @@ describe('cell.fs: copy', () => {
       expect(res.body.files[0].source.status).to.eql('EXISTING');
       expect(res.body.files[0].target.status).to.eql('NEW');
 
-      expect(await source.file.name(filename2).exists()).to.eql(true);
+      expect(await source.fs.file(filename2).exists()).to.eql(true);
 
-      await fs.stream.save(tmp, (await source.file.name(filename1).download()).body);
+      await fs.stream.save(tmp, (await source.fs.file(filename1).download()).body);
       expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
 
-      await fs.stream.save(tmp, (await source.file.name(filename2).download()).body);
+      await fs.stream.save(tmp, (await source.fs.file(filename2).download()).body);
       expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
 
       mock.dispose();
@@ -174,14 +174,14 @@ describe('cell.fs: copy', () => {
       const filename = 'foo.png';
       await source.fs.upload([{ filename: filename, data: file1 }]);
 
-      expect(await target.file.name(filename).exists()).to.eql(false);
+      expect(await target.fs.file(filename).exists()).to.eql(false);
 
       await source.fs.copy({
         filename: filename,
         target: { uri: A1, host: mock2.host },
       });
 
-      expect(await target.file.name(filename).exists()).to.eql(true);
+      expect(await target.fs.file(filename).exists()).to.eql(true);
 
       mock1.dispose();
       mock2.dispose();
