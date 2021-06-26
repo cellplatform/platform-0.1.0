@@ -1,6 +1,6 @@
 import { app } from 'electron';
 
-import { constants, ENV, fs, log, rx, t, ConfigFile, time, Genesis } from './common';
+import { constants, ENV, fs, log, rx, t, ConfigFile, time, Genesis, HttpClient } from './common';
 import { SystemServer } from './main.System.server';
 import { Window } from './main.Window';
 import { Log } from './main.Log';
@@ -34,10 +34,11 @@ export async function start() {
     // Start the HTTP server.
     const port = prod ? undefined : 5000;
     const { paths, host } = await SystemServer.start({ log, prod, port });
+    const http = HttpClient.create(host);
 
     // Load the configuration JSON file.
     const config = await ConfigFile.read();
-    const genesis = Genesis(host);
+    const genesis = Genesis(http);
 
     // Wait for electron to finish starting.
     await app.whenReady();
@@ -61,7 +62,7 @@ export async function start() {
     Window.Controller({ bus });
     Log.Controller({ bus });
     Menu.Controller({ bus });
-    Bundle.Controller({ bus, host });
+    Bundle.Controller({ bus, host, http });
 
     /**
      * Upload bundled system code into the local service.
@@ -78,7 +79,7 @@ export async function start() {
     console.log('bundleStatus', bundleStatus);
 
     const preload = constants.paths.preload;
-    await logMain({ host, paths: { data: paths, preload } });
+    await logMain({ http, paths: { data: paths, preload } });
 
     // await menu.build({ bus, paths, port: instance.port });
     BuildMenu({ bus }).load();
@@ -106,10 +107,11 @@ export async function start() {
  */
 
 async function logMain(args: {
-  host: string;
+  http: t.IHttpClient;
   paths: { preload: string; data: t.ElectronDataPaths };
 }) {
-  const genesis = Genesis(args.host);
+  const genesis = Genesis(args.http);
+  const host = args.http.origin;
 
   const table = log.table({ border: false });
   const line = () => table.add(['', '']);
@@ -149,7 +151,7 @@ async function logMain(args: {
   add('fs:', await path(args.paths.data.fs));
   add('config:', await path(args.paths.data.config));
   line();
-  add('host:', `http://${args.host.split(':')[0]}:${log.white(args.host.split(':')[1])}`);
+  add('host:', `http:${host.split(':')[1]}:${log.white(host.split(':')[2])}`);
   add('genesis', await genesis.cell.url());
 
   log.info.gray(`

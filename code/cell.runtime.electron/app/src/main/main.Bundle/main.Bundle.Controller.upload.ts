@@ -1,6 +1,6 @@
 import { app } from 'electron';
 
-import { fs, HttpClient, log, slug, t, time, Genesis } from '../common';
+import { fs, log, slug, t, time, Genesis } from '../common';
 
 type Uri = string;
 type File = t.IHttpClientCellFileUpload;
@@ -11,9 +11,9 @@ type File = t.IHttpClientCellFileUpload;
 export function UploadController(args: {
   bus: t.EventBus<t.BundleEvent>;
   events: t.BundleEvents;
-  host: string;
+  http: t.IHttpClient;
 }) {
-  const { events, host, bus } = args;
+  const { events, http, bus } = args;
 
   /**
    * Upload bundles to the local server.
@@ -39,9 +39,9 @@ export function UploadController(args: {
       });
     }
 
-    const genesis = Genesis(host);
+    const genesis = Genesis(http);
     const targetCell = await genesis.modules.uri();
-    const res = await upload({ host, targetCell, sourceDir, targetDir, silent });
+    const res = await upload({ http, targetCell, sourceDir, targetDir, silent });
     const { ok, errors } = res;
     const files = res.files.map(({ filename, data }) => ({
       path: filename,
@@ -83,7 +83,7 @@ async function getFiles(args: { sourceDir: string; targetDir?: string }) {
  * Upload files to the given target.
  */
 async function upload(args: {
-  host: string;
+  http: t.IHttpClient;
   sourceDir: string;
   targetCell: Uri | t.ICellUri;
   targetDir?: string;
@@ -91,7 +91,8 @@ async function upload(args: {
   silent?: boolean;
 }) {
   const timer = time.timer();
-  const { host, sourceDir, targetDir, targetCell } = args;
+  const { http, sourceDir, targetDir, targetCell } = args;
+  const host = http.origin;
   const files = args.files ? args.files : await getFiles({ sourceDir, targetDir });
 
   const errors: string[] = [];
@@ -103,8 +104,7 @@ async function upload(args: {
   };
 
   try {
-    const client = HttpClient.create(host);
-    const res = await client.cell(targetCell).fs.upload(files);
+    const res = await http.cell(targetCell).fs.upload(files);
 
     if (!res.ok) {
       error('Failed while uploading files');

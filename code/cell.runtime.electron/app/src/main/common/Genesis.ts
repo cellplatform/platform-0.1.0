@@ -1,14 +1,14 @@
 import { ConfigFile } from './ConfigFile';
-import { Schema, Uri, HttpClient } from './libs';
+import { Schema, Uri } from './libs';
+import * as t from './types';
 
 export type GenesisProps = { title: string };
 
 /**
  * Helpers for working with the "Genesis" cell.
  */
-export function Genesis(host: string) {
-  const urls = Schema.Urls.create(host);
-  const client = HttpClient.create(host);
+export function Genesis(http: t.IHttpClient) {
+  const urls = Schema.Urls.create(http.origin);
   let genesisUri: string | undefined;
 
   const api = {
@@ -34,7 +34,7 @@ export function Genesis(host: string) {
        * Ensure the genesis cell exists.
        */
       async ensureExists() {
-        const cell = client.cell(await api.cell.uri());
+        const cell = http.cell(await api.cell.uri());
         const exists = await cell.exists();
         if (exists) return { created: false };
         await cell.db.props.write<GenesisProps>({ title: 'Genesis Cell' });
@@ -43,14 +43,12 @@ export function Genesis(host: string) {
     },
 
     modules: {
-      linkKey: 'sys.modules',
-
       /**
        * The cell that contains the registry of installed modules.
        */
       async uri() {
-        const key = api.modules.linkKey;
-        const cell = client.cell(await api.cell.uri());
+        const key = 'sys.modules';
+        const cell = http.cell(await api.cell.uri());
 
         // Write regsitry reference if it does not already exist.
         const exists = await cell.links.exists(key);
