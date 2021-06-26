@@ -1,6 +1,6 @@
 {
   "name": "cell.runtime.electron",
-  "version": "0.18.2",
+  "version": "0.23.0",
   "description": "Desktop runtime environment.",
   "main": "lib/main/index",
   "types": "lib/index.d.ts",
@@ -17,7 +17,8 @@
     "bundle.preload": "sh script.sh/bundle.preload.sh",
     "prepackage": "yarn build && yarn bundle.preload",
     "package": "export NOTARIZE=false && yarn prepackage && electron-forge package",
-    "make": "yarn prepackage && electron-forge make --arch x64",
+    "make-x64": "yarn prepackage && electron-forge make --arch x64",
+    "make-arm64": "yarn prepackage && electron-forge make --arch arm64",
     "open": "cd out/make && open ."
   },
   "dependencies": {
@@ -63,14 +64,5 @@
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "license": "MIT",
-  "private": true,
-  "workspaces": {
-    "packages": [
-      "*"
-    ]
-  },
-  "resolutions": {
-    "rxjs": "7.0.1",
-    "core-js": "3.12.1"
-  }
+  "private": true
 }
