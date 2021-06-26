@@ -4,8 +4,8 @@ import { DebugMenu } from './menu.Debug';
 import { EditMenu } from './menu.Edit';
 import { FileMenu } from './menu.File';
 
-export function BuildMenu(args: { bus: t.ElectronMainBus }) {
-  const { bus } = args;
+export function BuildMenu(args: { bus: t.ElectronMainBus; http: t.IHttpClient }) {
+  const { bus, http } = args;
   const isMac = ENV.isMac;
   const events = Menu.Events({ bus });
 
@@ -14,7 +14,7 @@ export function BuildMenu(args: { bus: t.ElectronMainBus }) {
   if (isMac) menu.push(AppMenu({ bus }));
   menu.push(FileMenu({ bus }));
   menu.push(EditMenu({ bus }));
-  menu.push(DebugMenu({ bus }));
+  menu.push(DebugMenu({ bus, http }));
 
   return {
     menu,

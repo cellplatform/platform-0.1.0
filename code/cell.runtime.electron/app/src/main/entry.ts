@@ -91,7 +91,7 @@ export async function start() {
     await logMain({ http, paths: { data: paths, preload } });
 
     // await menu.build({ bus, paths, port: instance.port });
-    BuildMenu({ bus }).load();
+    BuildMenu({ bus, http }).load();
 
     const sysEvents = System.Events({ bus });
     const sysStatus = await sysEvents.status.get();
