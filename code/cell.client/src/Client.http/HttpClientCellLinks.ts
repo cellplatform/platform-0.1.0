@@ -40,7 +40,7 @@ export function HttpClientCellLinks(args: {
     /**
      * Write link(s) to the cell.
      */
-    async write(
+    write(
       link: t.HttpClientCellLinksSet | t.HttpClientCellLinksSet[],
       options?: t.IReqQueryNsWrite,
     ) {
