@@ -1,6 +1,6 @@
 {
   "name": "cell.runtime.electron",
-  "version": "0.23.0",
+  "version": "0.27.0",
   "description": "Desktop runtime environment.",
   "main": "lib/main/index",
   "types": "lib/index.d.ts",
@@ -17,9 +17,7 @@
     "bundle.preload": "sh script.sh/bundle.preload.sh",
     "prepackage": "yarn build && yarn bundle.preload",
     "package": "export NOTARIZE=false && yarn prepackage && electron-forge package",
-    "make-x64": "yarn prepackage && electron-forge make --arch x64",
-    "make-arm64": "yarn prepackage && electron-forge make --arch arm64",
-    "open": "cd out/make && open ."
+    "make": "yarn prepackage && electron-forge make $@"
   },
   "dependencies": {
     "@platform/cell.client": "0.3.67",

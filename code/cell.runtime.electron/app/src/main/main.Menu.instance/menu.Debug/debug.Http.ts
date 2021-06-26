@@ -11,11 +11,6 @@ export function ServerMenu(args: { bus: t.ElectronMainBus; http: t.IHttpClient }
 
   const getStatus = () => events.system.status.get();
 
-  /**
-   * TODO 🐷
-   * - sys.modules
-   */
-
   const open = {
     finder: async (path: string) => shell.openPath(path),
 
