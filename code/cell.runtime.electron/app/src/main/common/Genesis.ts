@@ -1,6 +1,8 @@
 import { ConfigFile } from './ConfigFile';
 import { Schema, Uri, HttpClient } from './libs';
 
+export type GenesisProps = { title: string };
+
 /**
  * Helpers for working with the "Genesis" cell.
  */
@@ -33,23 +35,9 @@ export function Genesis(host: string) {
        */
       async ensureExists() {
         const cell = client.cell(await api.cell.uri());
-
         const exists = await cell.exists();
         if (exists) return { created: false };
-
-        // cell.
-        // cell.fs.file
-        // cell.db.url.
-
-        /**
-         * - cell.db.write (info)
-         */
-
-        /**
-         * TODO 🐷
-         */
-        console.log('exists', exists);
-
+        await cell.db.props.write<GenesisProps>({ title: 'Genesis Cell' });
         return { created: true };
       },
     },
