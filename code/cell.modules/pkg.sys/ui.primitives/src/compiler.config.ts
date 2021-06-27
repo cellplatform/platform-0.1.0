@@ -3,6 +3,7 @@ import { Compiler, Package } from '@platform/cell.compiler';
 export default () =>
   Compiler.config()
     .namespace('sys.ui.primitives')
+    .version(Package.version)
 
     .variant('web', (config) =>
       config

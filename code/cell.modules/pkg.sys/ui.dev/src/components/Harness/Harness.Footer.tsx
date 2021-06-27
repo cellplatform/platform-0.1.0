@@ -30,7 +30,7 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
     }),
     bg: css({
       Absolute: 0,
-      backdropFilter: `blur(6px) opacity(0.95)`,
+      // backdropFilter: `blur(6px) opacity(0.95)`,
     }),
     body: css({
       Absolute: 0,
