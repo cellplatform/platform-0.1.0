@@ -36,7 +36,8 @@ export const BundleManifest = {
     const manifest = await Manifest.create({ sourceDir, model, filename });
     const { hash, files } = manifest;
 
-    const namespace = model.namespace || '';
+    const version = data.version();
+    const namespace = data.namespace();
     if (!namespace) throw new Error(`A bundle 'namespace' is required to create manifest.`);
 
     const REMOTE = DEFAULT.FILE.JS.REMOTE_ENTRY;
@@ -44,6 +45,7 @@ export const BundleManifest = {
 
     const bundle: M['bundle'] = deleteUndefined({
       namespace,
+      version,
       mode: data.mode(),
       target: data.target(),
       entry: data.entryFile,

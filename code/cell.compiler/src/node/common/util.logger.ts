@@ -52,6 +52,7 @@ export const Logger = {
     let name = green(model.name());
     name = obj.title ? gray(`${name}/${obj.title}`) : name;
 
+    add('version', obj.version ? cyan(obj.version) : log.gray('0.0.0'));
     add('namespace', green(obj.namespace));
     add('name', name);
     add('mode', green(model.mode()));

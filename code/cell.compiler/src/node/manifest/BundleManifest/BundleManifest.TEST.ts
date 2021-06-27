@@ -31,6 +31,8 @@ describe('BundleManifest', function () {
     expect(manifest.hash.files).to.match(/^sha256-/);
 
     expect(manifest.bundle.namespace).to.eql('ns.test');
+    expect(manifest.bundle.version).to.eql('0.0.0');
+
     expect(manifest.bundle.mode).to.eql('production');
     expect(manifest.bundle.target).to.eql('node');
     expect(manifest.bundle.entry).to.eql('main.js');

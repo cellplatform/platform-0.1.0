@@ -286,6 +286,8 @@ describe('Compiler (Config)', () => {
       test('  =v2  ', '2.0.0');
       test('  =v2.1  ', '2.1.0');
 
+      test(undefined, undefined);
+      test(null, undefined);
       test('', undefined);
       test('  ', undefined);
     });

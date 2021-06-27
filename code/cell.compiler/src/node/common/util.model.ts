@@ -49,19 +49,27 @@ export function Model(input: M) {
     },
 
     get env() {
-      return model.env || {};
+      return model.env ?? {};
     },
 
     name(defaultValue?: string) {
-      return model.name || defaultValue || DEFAULT.CONFIG.name;
+      return model.name ?? defaultValue ?? DEFAULT.CONFIG.name;
+    },
+
+    namespace(defaultValue?: string) {
+      return model.namespace ?? defaultValue ?? '';
+    },
+
+    version(defaultValue?: string) {
+      return model.version ?? defaultValue ?? '0.0.0';
     },
 
     mode(defaultValue?: t.WpMode) {
-      return model.mode || defaultValue || DEFAULT.CONFIG.mode;
+      return model.mode ?? defaultValue ?? DEFAULT.CONFIG.mode;
     },
 
     target(defaultTarget?: string) {
-      return model.target || defaultTarget || DEFAULT.CONFIG.target;
+      return model.target ?? defaultTarget ?? DEFAULT.CONFIG.target;
     },
 
     port(defaultPort?: number) {
@@ -69,25 +77,25 @@ export function Model(input: M) {
     },
 
     outdir(defaultValue?: string) {
-      const dir = model.outdir || defaultValue || DEFAULT.CONFIG.outdir;
+      const dir = model.outdir ?? defaultValue ?? DEFAULT.CONFIG.outdir;
       return fs.resolve(dir);
     },
 
     static() {
-      const value = model.static || [];
+      const value = model.static ?? [];
       return Array.isArray(value) ? value : [value];
     },
 
     entry(defaultValue?: t.CompilerModel['entry']) {
-      return model.entry || defaultValue || DEFAULT.CONFIG.entry;
+      return model.entry ?? defaultValue ?? DEFAULT.CONFIG.entry;
     },
 
     rules(defaultValue?: t.CompilerModelWebpack['rules']) {
-      return model.webpack?.rules || defaultValue || DEFAULT.WEBPACK.rules;
+      return model.webpack?.rules ?? defaultValue ?? DEFAULT.WEBPACK.rules;
     },
 
     plugins(defaultValue?: t.CompilerModelWebpack['plugins']) {
-      return model.webpack?.plugins || defaultValue || DEFAULT.WEBPACK.plugins;
+      return model.webpack?.plugins ?? defaultValue ?? DEFAULT.WEBPACK.plugins;
     },
   };
 

@@ -11,6 +11,8 @@ export type BundleManifest = t.Manifest<BundleManifestFile> & {
 export type BundleManifestFile = t.ManifestFile;
 
 export type BundleManifestInfo = {
+  namespace: string;
+  version: string; // semver ("0.0.0" if not specified)
   mode: string; // production | development
   target: string; // web | node
   entry: string;

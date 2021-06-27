@@ -22,6 +22,8 @@ const web = (config: Config) =>
 export default () =>
   Compiler.config()
     .namespace('sys.scratchpad')
+    .version(Package.version)
+
     .variant('web.dev', (config) => web(config))
     .variant('web', (config) => {
       // NB: worker entries not included for development builds as
