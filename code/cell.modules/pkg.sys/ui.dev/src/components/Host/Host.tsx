@@ -38,5 +38,7 @@ export const Host: React.FC<HostProps> = (props) => {
    */
   const host = { ...env.viaSubject.host, ...env.viaAction.host };
 
-  return <HostLayout {...props} subject={subject} host={host} fullscreen={props.fullscreen} />;
+  return (
+    <HostLayout {...props} env={env} subject={subject} host={host} fullscreen={props.fullscreen} />
+  );
 };

@@ -57,6 +57,7 @@ export const actions = DevActions<Ctx>()
         width: 300,
         border: isDark ? 0.1 : -0.1,
         cropmarks: isDark ? 0.3 : -0.2,
+        labelColor: isDark ? COLORS.WHITE : -0.7,
       },
     });
 
