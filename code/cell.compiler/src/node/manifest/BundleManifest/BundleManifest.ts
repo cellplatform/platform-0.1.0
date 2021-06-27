@@ -36,10 +36,14 @@ export const BundleManifest = {
     const manifest = await Manifest.create({ sourceDir, model, filename });
     const { hash, files } = manifest;
 
+    const namespace = model.namespace || '';
+    if (!namespace) throw new Error(`A bundle 'namespace' is required to create manifest.`);
+
     const REMOTE = DEFAULT.FILE.JS.REMOTE_ENTRY;
     const remoteEntry = files.some((file) => file.path.endsWith(REMOTE)) ? REMOTE : undefined;
 
     const bundle: M['bundle'] = deleteUndefined({
+      namespace,
       mode: data.mode(),
       target: data.target(),
       entry: data.entryFile,

@@ -1,5 +1,5 @@
 import { BundleManifest, Manifest } from '..';
-import { expect, fs, SampleBundles, t } from '../../../test';
+import { expect, fs, SampleBundles, t, expectError } from '../../../test';
 
 describe('BundleManifest', function () {
   this.timeout(99999);
@@ -30,6 +30,7 @@ describe('BundleManifest', function () {
     expect(manifest.hash.files).to.eql(Manifest.hash.files(manifest));
     expect(manifest.hash.files).to.match(/^sha256-/);
 
+    expect(manifest.bundle.namespace).to.eql('ns.test');
     expect(manifest.bundle.mode).to.eql('production');
     expect(manifest.bundle.target).to.eql('node');
     expect(manifest.bundle.entry).to.eql('main.js');
@@ -48,6 +49,15 @@ describe('BundleManifest', function () {
     expectEvery((file) => file.path.length > 0);
     expectSome((file) => file.public !== undefined);
     expectSome((file) => file.allowRedirect !== undefined);
+  });
+
+  it('throw: no namespace', async () => {
+    const model: t.CompilerModel = {
+      ...config.toObject(),
+      namespace: undefined, // NB: setup error condition (no "namespace").
+    };
+    const fn = () => BundleManifest.create({ model, sourceDir });
+    expectError(fn, `A bundle 'namespace' is required`);
   });
 
   it('writeFile => readFile', async () => {

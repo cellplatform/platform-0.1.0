@@ -10,7 +10,7 @@ export const SampleBundles = {
   simpleNode: TestCompile.make(
     'simple',
     Compiler.config('simple')
-      .namespace('test')
+      .namespace('ns.test')
       .target('node')
       .entry({
         main: `${ENTRY}/main`,
