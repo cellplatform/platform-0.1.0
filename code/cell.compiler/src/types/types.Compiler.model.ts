@@ -12,6 +12,7 @@ export type CompilerModel = {
    */
   name: string; // Configuration name (eg: "base", "prod", "dev")
   namespace?: string; // Module federation "scope": https://webpack.js.org/concepts/module-federation/#dynamic-remote-containers
+  version?: string; // semver
   title?: string;
   mode: t.WpMode;
   port?: number;

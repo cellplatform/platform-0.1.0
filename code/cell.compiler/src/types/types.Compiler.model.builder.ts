@@ -30,6 +30,7 @@ export type CompilerModelMethods = {
 
   title(value: string | null): B;
   namespace(value: string): B;
+  version(value: string): B;
   mode(value: t.WpMode | 'prod' | 'dev'): B;
   port(value: number | null): B;
   target(value: string | null): B;
