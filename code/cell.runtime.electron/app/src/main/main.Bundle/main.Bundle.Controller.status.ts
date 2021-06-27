@@ -18,10 +18,10 @@ export function StatusController(args: {
     const { tx = slug(), dir } = e;
     const genesis = Genesis(http);
 
-    const path = `${dir.replace(/\/$/, '')}/index.json`;
+    const manifestPath = `${dir.replace(/\/$/, '')}/index.json`;
     const client = http.cell(e.cell ?? (await genesis.modules.uri()));
     const cell = client.uri.toString();
-    const file = client.fs.file(path);
+    const file = client.fs.file(manifestPath);
 
     if (!(await file.exists())) {
       return bus.fire({

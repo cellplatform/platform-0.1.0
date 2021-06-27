@@ -1,6 +1,7 @@
+import { filter, take } from 'rxjs/operators';
+
 import { t } from './common';
 import { IpcBus } from './main.Bus';
-import { Window } from './main.Window';
 
 /**
  * TODO / TEMP 🐷
@@ -9,29 +10,40 @@ import { Window } from './main.Window';
 export async function TestIpcBusBridging(args: { bus: t.ElectronMainBus }) {
   const { bus } = args;
 
+  const localbus = bus;
   const ipcbus = IpcBus<t.ElectronRuntimeEvent>({ bus });
 
   ipcbus.$.subscribe(async (e) => {
-    if (Window.Events.is.base(e)) {
-      bus.fire(e as any);
-    }
-    if (e.type === 'runtime.electron/Window/status:req') {
-      // TEMP 🐷
+    /**
+     * Match a "req:res" (request => response) event pattern.
+     * Once matched:
+     *  - grab the "tx" (transaction id)
+     *  - setup a filter that looks for the corresponding response (matching on "type" and "tx")
+     *  - fire the response, when it comes, back through the [NetworkBus].
+     */
+    type P = { tx: string };
+    const isRequest = e.type.endsWith(':req');
+    const tx = (e.payload as P).tx;
 
-      /**
-       * TODO 🐷
-       * - make ferrying events from the IPC bus smarter
-       * - BUG: The TEMP code here is causing the same event to be fired multiple times.
-       *
-       */
+    if (isRequest && tx && typeof tx === 'string') {
+      const responseType = e.type.replace(/\:req$/, ':res');
 
-      console.log('ipcbus (bridge):', e);
-      const events = Window.Events({ bus });
-      const status = await events.status.get();
-      ipcbus.fire({
-        type: 'runtime.electron/Window/status:res',
-        payload: { tx: e.payload.tx, windows: status.windows },
+      const res$ = localbus.$.pipe(
+        filter((e) => e.type === responseType),
+        filter((e) => (e.payload as P).tx === tx),
+      );
+
+      res$.pipe(take(1)).subscribe((e) => {
+        console.log('NetworkBus (IPC) Response:', e);
+        ipcbus.fire(e);
       });
     }
+
+    // Fire incoming event from the [NetworkBus] into the local [EventBus].
+    /**
+     * TODO 🐷
+     * - insert security check here.
+     */
+    localbus.fire(e);
   });
 }
