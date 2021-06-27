@@ -3,9 +3,13 @@ import { t } from '../common';
 /**
  * Manifest of a library of ".d.ts" declaration files.
  */
-export type TypelibManifest = t.Manifest<TypelibManifestFile> & {
+export type TypelibManifest = {
   kind: 'typelib';
   typelib: t.TypelibManifestInfo;
+  files: TypelibManifestFile[];
+  hash: {
+    files: string; // NB: The hash of all [filehash]'s in the manifest.
+  };
 };
 
 export type TypelibManifestFile = t.ManifestFile & {
