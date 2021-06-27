@@ -3,6 +3,7 @@ import { Harness } from 'sys.ui.dev';
 
 const imports = {
   Sample: import('./components/Sample/dev/DEV'),
+  Manifest: import('./components/Manifest/dev/DEV'),
 };
 
 export const ACTIONS = Object.values(imports);

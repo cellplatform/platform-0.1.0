@@ -1,0 +1,137 @@
+{
+  "hash": {
+    "files": "sha256-c095f673b440ebf0db01afb1c860cddc49f7654b2e356af5681f2b16b2be6025"
+  },
+  "kind": "bundle",
+  "bundle": {
+    "mode": "production",
+    "target": "web",
+    "entry": "index.html",
+    "remoteEntry": "remoteEntry.js"
+  },
+  "files": [
+    {
+      "path": "450.js",
+      "bytes": 1297352,
+      "filehash": "sha256-c1a7665a500353fb64b604853b3998a5c587038845165fc5f6ee90c0b8c43416"
+    },
+    {
+      "path": "450.js.LICENSE.txt",
+      "bytes": 1714,
+      "filehash": "sha256-e6f2903d3f56fd248dc10df7a13f1cbde0b91c7d0a2894bce070dfed6691ca55"
+    },
+    {
+      "path": "452.js",
+      "bytes": 20385,
+      "filehash": "sha256-22b2c3169b08c9ebb867a6e156177a314ca075e01bb23a6ba56981512eeac325"
+    },
+    {
+      "path": "504.js",
+      "bytes": 24347,
+      "filehash": "sha256-ca9be01c1fd3b043a5d61d8be8c19e3d7f9f778cb1d38570bdbec8a8b1af362f"
+    },
+    {
+      "path": "602.js",
+      "bytes": 6521,
+      "filehash": "sha256-77879a352b8e4812ae8400f61ff97fdb021cbe24144abf836f260520e981d33e"
+    },
+    {
+      "path": "696.js",
+      "bytes": 502814,
+      "filehash": "sha256-446c205339c227053a1d3530ddcf365757ed7b2a956e4de0314b47f2cab7175f"
+    },
+    {
+      "path": "701.js",
+      "bytes": 27141,
+      "filehash": "sha256-a8b36a63ff303be9fec6c93b9e14aca55db18febd626e6ff14ca6c6d3ed46435"
+    },
+    {
+      "path": "735.js",
+      "bytes": 7104,
+      "filehash": "sha256-1d745030872e925d72d7784f82e7d0d218c72b6da63e9e26ba35d6138b0aea47"
+    },
+    {
+      "path": "735.js.LICENSE.txt",
+      "bytes": 294,
+      "filehash": "sha256-a0afb13901feb154dfc10c9a6abe98149a16665a1dd5855ad83a098eeb4adbf6"
+    },
+    {
+      "path": "755.js",
+      "bytes": 46976,
+      "filehash": "sha256-92a5605ec3f341b252d274ce251303bb578323d02dcc142192488b1f530b3648"
+    },
+    {
+      "path": "788.js",
+      "bytes": 123866,
+      "filehash": "sha256-38af92bf7f76807f66c0dfe698025273a9c2e9b326f71a23673f61b58f5cbca8"
+    },
+    {
+      "path": "788.js.LICENSE.txt",
+      "bytes": 545,
+      "filehash": "sha256-9fa92ee02006887aeac98fb55dc7569e901fec682a5c63a8691ed07315897c8f"
+    },
+    {
+      "path": "859.js",
+      "bytes": 5542,
+      "filehash": "sha256-13a41ea963b7d017f57bda6beec723db627a8a099ff509a679c1e59dd07d8b3b"
+    },
+    {
+      "path": "932.js",
+      "bytes": 2107,
+      "filehash": "sha256-1d9085c9692d6f9cdbf25e17c5a6f483081a69ab4973b98a36dc6f9896c740ac"
+    },
+    {
+      "path": "index.html",
+      "bytes": 313,
+      "filehash": "sha256-ca8464c1a2072456313d57960d3031ce4d3744d1d2b374d43af9df0cca94f5d4"
+    },
+    {
+      "path": "main.js",
+      "bytes": 30866,
+      "filehash": "sha256-1b982d70d7aa52732d80a5d032e13df46018374f3016f9ecd180e7f50d9d521a"
+    },
+    {
+      "path": "remoteEntry.js",
+      "bytes": 6536,
+      "filehash": "sha256-5d3efd4fc396ad6d64cffe5e83c047269d65faf9cdcdd2254eb36638c8458ac4"
+    },
+    {
+      "path": "static/favicon.ico",
+      "bytes": 55313,
+      "filehash": "sha256-ccdb85eb44bbb5498437eb8806955f2a901f55641a15667c18b5372c1e900507"
+    },
+    {
+      "path": "static/images/award.svg",
+      "bytes": 325,
+      "filehash": "sha256-17f2539d5b1269b7a74b1adbb20291715156105aa4a4d5256f86a66544197e93",
+      "public": true,
+      "image": {
+        "kind": "svg",
+        "width": 24,
+        "height": 24
+      }
+    },
+    {
+      "path": "static/images/wax.png",
+      "bytes": 47835,
+      "filehash": "sha256-b7377046e23950a8948b43dbfcd79ff6e629d9d9b495e8101f6f22c3fb56b4a7",
+      "public": true,
+      "image": {
+        "kind": "png",
+        "width": 247,
+        "height": 245
+      }
+    },
+    {
+      "path": "static/images/wax@2x.png",
+      "bytes": 163745,
+      "filehash": "sha256-4c13287f806239af38b4585d1617e12bf3ee63ee73ecc3794ac96dbfdd5c7480",
+      "public": true,
+      "image": {
+        "kind": "png",
+        "width": 492,
+        "height": 490
+      }
+    }
+  ]
+}
