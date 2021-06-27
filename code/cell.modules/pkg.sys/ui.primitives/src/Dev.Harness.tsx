@@ -7,6 +7,7 @@ const imports = {
   DotTabstrip: import('./components/DotTabstrip/DEV'),
   Zoom: import('./components/Zoom/DEV'),
   PropList: import('./components/PropList/dev/DEV'),
+  QRCode: import('./components/QRCode/dev/DEV'),
   TextEditor: import('./components/TextEditor/DEV'),
 
   DraggableSort: import('./components/Draggable.Sort/dev/DEV'),
@@ -22,6 +23,8 @@ const imports = {
   Button: import('./components.ref/button/Button.dev/DEV'),
   Switch: import('./components.ref/button/Switch.dev/DEV'),
   OptionButtons: import('sys.ui.dev/lib/components/OptionButtons/DEV'),
+
+  Tree: import('./components.ref/tree/Tree.dev/DEV'),
 };
 
 const ns = new URL(location.href).searchParams.get('ui.dev.ns');
