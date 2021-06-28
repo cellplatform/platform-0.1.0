@@ -1,6 +1,6 @@
 import { t } from './common';
 import { IpcEvent } from './types.sys.ipc';
-import { ElectronModuleEvent } from 'sys.runtime.electron/lib/types';
+import { ElectronModuleEvent } from '@platform/cell.types/lib/types.Runtime.electron';
 
 /**
  * Event bus for the electron runtime.
