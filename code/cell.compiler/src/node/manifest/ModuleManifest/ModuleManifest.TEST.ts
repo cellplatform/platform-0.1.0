@@ -37,6 +37,7 @@ describe('ModuleManifest', function () {
 
     expect(manifest.module.namespace).to.eql('ns.test');
     expect(manifest.module.version).to.eql('0.0.0');
+    expect(manifest.module.compiler.startsWith('@platform/cell.compiler@')).to.eql(true);
 
     expect(manifest.module.mode).to.eql('production');
     expect(manifest.module.target).to.eql('node');

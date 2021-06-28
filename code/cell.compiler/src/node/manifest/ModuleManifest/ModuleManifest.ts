@@ -1,4 +1,4 @@
-import { DEFAULT, deleteUndefined, Model, Schema, t } from '../../common';
+import { DEFAULT, deleteUndefined, Model, Schema, t, constants } from '../../common';
 import { Manifest, createAndSave } from '../Manifest';
 
 type M = t.ModuleManifest;
@@ -49,13 +49,15 @@ export const ModuleManifest = {
     filename?: string; // Default: index.json
   }): Promise<M> {
     const { sourceDir, model, filename = ModuleManifest.filename } = args;
+
+    const pkg = constants.PKG.load();
     const data = Model(model);
     const manifest = await Manifest.create({ sourceDir, model, filename });
     const { files } = manifest;
 
     const version = data.version();
     const namespace = data.namespace();
-    if (!namespace) throw new Error(`A bundle 'namespace' is required to create manifest.`);
+    if (!namespace) throw new Error(`A bundle 'namespace' is required to create a manifest.`);
 
     const REMOTE = DEFAULT.FILE.JS.REMOTE_ENTRY;
     const remoteEntry = files.some((file) => file.path.endsWith(REMOTE)) ? REMOTE : undefined;
@@ -63,6 +65,7 @@ export const ModuleManifest = {
     const module: t.ModuleManifestInfo = deleteUndefined({
       namespace,
       version,
+      compiler: `${pkg.name}@${pkg.version ?? '0.0.0'}`,
       mode: data.mode(),
       target: data.target(),
       entry: data.entryFile,
