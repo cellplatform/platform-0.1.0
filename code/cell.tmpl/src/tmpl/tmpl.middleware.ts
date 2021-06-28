@@ -71,10 +71,9 @@ export function processPackage(args: { filename: string; done?: D }): M {
     // Get latest NPM versions.
     res.alert({ message: `Retrieving latest version information...` });
 
-    const pkg = npm.pkg({ json: JSON.parse(req.text || '') });
-    await pkg.updateVersions({
-      filter: (name, version) => version === 'latest',
-    });
+    const json = JSON.parse(req.text || '');
+    const pkg = npm.pkg({ json });
+    await pkg.updateVersions({ filter: (name, version) => version === 'latest' });
 
     // Update the package JSON.
     res.alert({ message: 'Updating [package.json] file' });
