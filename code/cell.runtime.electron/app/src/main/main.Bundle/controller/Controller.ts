@@ -1,7 +1,7 @@
-import { rx, t } from '../common';
-import { StatusController } from './main.Bundle.Controller.status';
-import { UploadController } from './main.Bundle.Controller.upload';
-import { Events } from './main.Bundle.Events';
+import { rx, t } from '../../common';
+import { StatusController } from './Controller.status';
+import { UploadController } from './Controller.upload';
+import { Events } from '../Bundle.Events';
 
 /**
  * Bundle behavior logic.

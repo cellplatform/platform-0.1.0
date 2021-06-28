@@ -1,6 +1,6 @@
 import { app } from 'electron';
 
-import { fs, log, slug, t, time, Genesis } from '../common';
+import { fs, log, slug, t, time, Genesis } from '../../common';
 
 type Uri = string;
 type File = t.IHttpClientCellFileUpload;
