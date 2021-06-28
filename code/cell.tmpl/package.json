@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.tmpl",
-  "version": "0.2.6",
+  "version": "0.2.8",
   "description": "Template generator for the system",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,7 +15,7 @@
     "cmd": "node lib/index.js $@"
   },
   "dependencies": {
-    "@platform/cell.types": "0.5.74",
+    "@platform/cell.types": "0.5.76",
     "@platform/cli": "0.5.74",
     "@platform/fs": "0.6.13",
     "@platform/libs": "0.2.10",

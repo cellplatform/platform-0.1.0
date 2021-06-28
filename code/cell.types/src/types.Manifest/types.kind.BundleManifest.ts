@@ -3,13 +3,18 @@ import { t } from '../common';
 /**
  * Details about a compiled bundle of code.
  */
-export type BundleManifest = {
+// export type BundleManifest = {
+//   kind: 'bundle';
+//   bundle: BundleManifestInfo;
+//   files: BundleManifestFile[];
+//   hash: {
+//     files: string; // NB: The hash of all [filehash]'s in the manifest.
+//   };
+// };
+
+export type BundleManifest = t.Manifest<BundleManifestFile> & {
   kind: 'bundle';
   bundle: BundleManifestInfo;
-  files: BundleManifestFile[];
-  hash: {
-    files: string; // NB: The hash of all [filehash]'s in the manifest.
-  };
 };
 
 export type BundleManifestFile = t.ManifestFile;
