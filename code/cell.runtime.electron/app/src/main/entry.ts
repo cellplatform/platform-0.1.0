@@ -78,7 +78,7 @@ export async function start() {
      */
     const bundle = Bundle.Events({ bus });
     await bundle.upload.fire({
-      sourceDir: constants.paths.bundle.sys,
+      sourceDir: constants.Paths.bundle.sys,
       targetDir: 'app.sys/web',
       force: ENV.isDev, // NB: Only repeat upload when running in development mode.
     });
@@ -87,7 +87,7 @@ export async function start() {
     // console.log('-------------------------------------------');
     // console.log('bundleStatus', bundleStatus);
 
-    const preload = constants.paths.preload;
+    const preload = constants.Paths.preload;
     await logMain({ http, paths: { data: paths, preload } });
 
     // await menu.build({ bus, paths, port: instance.port });

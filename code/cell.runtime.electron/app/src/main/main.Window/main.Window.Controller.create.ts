@@ -56,7 +56,7 @@ export function WindowCreationController(args: {
           enableRemoteModule: false,
           allowRunningInsecureContent: false, // NB: Default:false - but explicitly set false for good measure.
           additionalArguments: argv,
-          preload: constants.paths.preload,
+          preload: constants.Paths.preload,
         },
       });
 

@@ -15,7 +15,7 @@ export const SystemServer = {
    */
   init(args: { prod?: boolean; log?: t.ILog }) {
     const { prod = false } = args;
-    const paths = constants.paths.data({ prod });
+    const paths = constants.Paths.data({ prod });
 
     const app = server.create({
       name: 'main',

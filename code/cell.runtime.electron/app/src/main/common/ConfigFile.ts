@@ -1,4 +1,4 @@
-import { ENV, paths } from './constants';
+import { ENV, Paths } from './constants';
 import { fs, R, semver, time, Uri } from './libs';
 import * as t from './types';
 
@@ -6,7 +6,7 @@ import * as t from './types';
  * Configuration data.
  */
 export const ConfigFile = {
-  path: paths.data({ prod: ENV.isProd }).config,
+  path: Paths.data({ prod: ENV.isProd }).config,
 
   get process() {
     const { name, version } = ENV.pkg;

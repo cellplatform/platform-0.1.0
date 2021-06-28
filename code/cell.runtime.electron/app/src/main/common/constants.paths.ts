@@ -10,7 +10,7 @@ const resolve = (path: string) =>
 /**
  * File paths.
  */
-export const paths = {
+export const Paths = {
   resolve,
 
   data(args: { prod?: boolean; dirname?: string } = {}): t.ElectronDataPaths {
