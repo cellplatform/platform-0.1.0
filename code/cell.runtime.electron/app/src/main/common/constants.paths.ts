@@ -33,7 +33,7 @@ export const Paths = {
     return {
       base,
       sys: {
-        source: resolve(fs.join(base, 'sys.runtime/web')),
+        source: fs.join(base, 'sys.runtime/web'),
         target: 'sys.runtime/web',
       },
     };

@@ -19,40 +19,46 @@ export function UploadController(args: {
    * Upload bundles to the local server.
    */
   events.upload.req$.subscribe(async (e) => {
-    const { sourceDir, targetDir, silent, tx = slug() } = e;
+    try {
+      const { sourceDir, targetDir, silent, tx = slug() } = e;
+      const sourceDirExists = await fs.exists(sourceDir);
 
-    const manifest = (await fs.readJson(fs.join(sourceDir, 'index.json'))) as t.ModuleManifest;
-    const current = await events.status.get({ dir: targetDir });
+      const manifest = (await fs.readJson(fs.join(sourceDir, 'index.json'))) as t.ModuleManifest;
+      const current = await events.status.get({ dir: targetDir });
 
-    const hash = {
-      current: current?.manifest.hash.files || '',
-      next: manifest.hash.files,
-    };
+      const hash = {
+        current: current?.manifest.hash.files || '',
+        next: manifest.hash.files,
+      };
 
-    const isChanged = current ? hash.current !== hash.next : false;
+      const isChanged = current ? hash.current !== hash.next : false;
 
-    if (!isChanged && !e.force && current) {
-      const files = current.manifest.files.map(({ path, bytes }) => ({ path, bytes }));
+      if (!isChanged && !e.force && current) {
+        const files = current.manifest.files.map(({ path, bytes }) => ({ path, bytes }));
+        return bus.fire({
+          type: 'runtime.electron/Bundle/upload:res',
+          payload: { tx, ok: true, files, errors: [], action: 'unchanged' },
+        });
+      }
+
+      const genesis = Genesis(http);
+      const targetCell = await genesis.modules.uri();
+      const res = await upload({ http, targetCell, sourceDir, targetDir, silent });
+      const { ok, errors } = res;
+      const files = res.files.map(({ filename, data }) => ({
+        path: filename,
+        bytes: data.byteLength,
+      }));
+
+      const action = Boolean(current) ? 'replaced' : 'written';
       return bus.fire({
         type: 'runtime.electron/Bundle/upload:res',
-        payload: { tx, ok: true, files, errors: [], action: 'unchanged' },
+        payload: { tx, ok, files, errors, action },
       });
+    } catch (error) {
+      log.error('Bundle Upload Error: ', error.message);
+      log.error();
     }
-
-    const genesis = Genesis(http);
-    const targetCell = await genesis.modules.uri();
-    const res = await upload({ http, targetCell, sourceDir, targetDir, silent });
-    const { ok, errors } = res;
-    const files = res.files.map(({ filename, data }) => ({
-      path: filename,
-      bytes: data.byteLength,
-    }));
-
-    const action = Boolean(current) ? 'replaced' : 'written';
-    return bus.fire({
-      type: 'runtime.electron/Bundle/upload:res',
-      payload: { tx, ok, files, errors, action },
-    });
   });
 }
 
