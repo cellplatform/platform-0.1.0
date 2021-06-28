@@ -8,8 +8,8 @@ import { ModulesMenu } from './debug.Modules';
 /**
  * Debug menu
  */
-export function DebugMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
-  const { bus } = args;
+export function DebugMenu(args: { bus: t.ElectronMainBus; http: t.IHttpClient }): t.MenuItem {
+  const { bus, http } = args;
   const events = { system: System.Events({ bus }) };
 
   const getStatus = () => events.system.status.get();
@@ -26,7 +26,7 @@ export function DebugMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
 
       { type: 'separator' },
 
-      ServerMenu({ bus }),
+      ServerMenu({ bus, http }),
       DataMenu({ bus }),
       DevToolsMenu({ bus }),
 

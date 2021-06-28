@@ -38,7 +38,7 @@ export type RuntimePullResponse = {
 export type RuntimeRunResponse = {
   ok: boolean;
   entry: string;
-  manifest?: t.BundleManifest;
+  manifest?: t.ModuleManifest;
   out: t.RuntimeOut;
   errors: t.IRuntimeError[];
   elapsed: { prep: number; run: number };

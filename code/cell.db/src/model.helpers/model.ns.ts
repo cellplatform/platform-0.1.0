@@ -1,8 +1,8 @@
-import { coord, Schema, t, Uri, util, R } from '../common';
+import { coord, Schema, t, Uri, util, R, Squash } from '../common';
 import { Cell, Column, Row } from '../model.db';
 import { toChanges } from './util';
 
-const { squash, isNilOrEmptyObject } = util.value;
+const { isNilOrEmptyObject } = util.value;
 
 /**
  * Render the model into a simple [t.INS] object.
@@ -12,7 +12,7 @@ export async function toObject(model: t.IDbModelNs) {
   const res: t.INs = {
     id,
     hash: '', // Default (if does not exist, otherwise should be on the DB data object).
-    ...squash.object(model.toObject()),
+    ...Squash.object(model.toObject()),
   };
   return res;
 }
@@ -47,7 +47,7 @@ export async function getChildCells(args: { model: t.IDbModelNs; range?: string 
   return models.reduce((acc, next) => {
     const { parts } = Schema.from.cell(next);
     if (includeKey(parts.key, union)) {
-      acc[parts.key] = squash.cell(next.toObject());
+      acc[parts.key] = Squash.cell(next.toObject());
     }
     return acc;
   }, {}) as t.ICellMap;
@@ -62,7 +62,7 @@ export async function getChildRows(args: { model: t.IDbModelNs; range?: string }
   return models.reduce((acc, next) => {
     const { parts } = Schema.from.row(next);
     if (includeKey(parts.key, union)) {
-      acc[parts.key] = squash.object(next.toObject());
+      acc[parts.key] = Squash.object(next.toObject());
     }
     return acc;
   }, {}) as t.ICellMap;
@@ -77,7 +77,7 @@ export async function getChildColumns(args: { model: t.IDbModelNs; range?: strin
   return models.reduce((acc, next) => {
     const { parts } = Schema.from.column(next);
     if (includeKey(parts.key, union)) {
-      acc[parts.key] = squash.object(next.toObject());
+      acc[parts.key] = Squash.object(next.toObject());
     }
     return acc;
   }, {}) as t.ICellMap;
@@ -90,7 +90,7 @@ export async function getChildFiles(args: { model: t.IDbModelNs }) {
   const models = await args.model.children.files;
   return models.reduce((acc, next) => {
     const { parts } = Schema.from.file(next);
-    acc[parts.file] = squash.object(next.toObject());
+    acc[parts.file] = Squash.object(next.toObject());
     return acc;
   }, {}) as t.IFileMap;
 }
@@ -213,8 +213,12 @@ export async function setProps<P extends t.INsProps = t.INsProps>(args: {
 /**
  * Save child data (cells|rows|columns).
  */
-export async function setChildData(args: { ns: t.IDbModelNs; data?: Partial<t.INsDataCoord> }) {
-  const { ns } = args;
+export async function setChildData(args: {
+  ns: t.IDbModelNs;
+  data?: Partial<t.INsDataCoord>;
+  onConflict?: t.IDbModelConflictStrategy;
+}) {
+  const { ns, onConflict } = args;
   let changes: t.IDbModelChange[] = [];
   const saved = { cells: 0, rows: 0, columns: 0 };
 
@@ -222,14 +226,16 @@ export async function setChildData(args: { ns: t.IDbModelNs; data?: Partial<t.IN
     return { isChanged: false, saved, changes };
   }
 
-  const wait = [
+  const setters = [
     { field: 'cells', fn: setChildCells },
     { field: 'rows', fn: setChildRows },
     { field: 'columns', fn: setChildColumns },
-  ].map(async ({ field, fn }) => {
+  ];
+
+  const wait = setters.map(async ({ field, fn }) => {
     const data = args.data ? args.data[field] : undefined;
     if (data) {
-      const res = await fn({ ns, data });
+      const res = await fn({ ns, data, onConflict });
       changes = [...changes, ...res.changes];
       saved[field] += res.total;
     }
@@ -243,38 +249,50 @@ export async function setChildData(args: { ns: t.IDbModelNs; data?: Partial<t.IN
 /**
  * Saves child cell data.
  */
-export async function setChildCells(args: { ns: t.IDbModelNs; data?: t.IMap<t.ICellData> }) {
-  const { data } = args;
-  const id = toId(args.ns);
+export async function setChildCells(args: {
+  ns: t.IDbModelNs;
+  data?: t.IMap<t.ICellData>;
+  onConflict?: t.IDbModelConflictStrategy;
+}) {
+  const { data, onConflict } = args;
   const db = args.ns.db;
-  const getUri = (key: string) => Uri.create.cell(id, key);
+  const getUri = (key: string) => Uri.create.cell(toId(args.ns), key);
   return setChildren({
     data,
     getUri,
     getModel: (key) => Cell.create({ db, uri: getUri(key) }),
+    onConflict,
   });
 }
 
 /**
  * Saves child row data.
  */
-export async function setChildRows(args: { ns: t.IDbModelNs; data?: t.IMap<t.IRowData> }) {
-  const { data } = args;
-  const id = toId(args.ns);
+export async function setChildRows(args: {
+  ns: t.IDbModelNs;
+  data?: t.IMap<t.IRowData>;
+  onConflict?: t.IDbModelConflictStrategy;
+}) {
+  const { data, onConflict } = args;
   const db = args.ns.db;
-  const getUri = (key: string) => Uri.create.row(id, key);
+  const getUri = (key: string) => Uri.create.row(toId(args.ns), key);
   return setChildren({
     data,
     getUri,
     getModel: (key) => Row.create({ db, uri: getUri(key) }),
+    onConflict,
   });
 }
 
 /**
  * Saves child column data.
  */
-export async function setChildColumns(args: { ns: t.IDbModelNs; data?: t.IMap<t.IColumnData> }) {
-  const { data } = args;
+export async function setChildColumns(args: {
+  ns: t.IDbModelNs;
+  data?: t.IMap<t.IColumnData>;
+  onConflict?: t.IDbModelConflictStrategy;
+}) {
+  const { data, onConflict } = args;
   const id = toId(args.ns);
   const db = args.ns.db;
   const getUri = (key: string) => Uri.create.column(id, key);
@@ -282,6 +300,7 @@ export async function setChildColumns(args: { ns: t.IDbModelNs; data?: t.IMap<t.
     data,
     getUri,
     getModel: (key) => Column.create({ db, uri: getUri(key) }),
+    onConflict,
   });
 }
 
@@ -289,9 +308,7 @@ export async function setChildColumns(args: { ns: t.IDbModelNs; data?: t.IMap<t.
  * [Helpers]
  */
 function toRangeUnion(input?: string) {
-  if (!input) {
-    return undefined;
-  }
+  if (!input) return undefined;
   const ranges = input.split(',').map((key) => (key.includes(':') ? key : `${key}:${key}`));
   return coord.range.union(ranges);
 }
@@ -304,19 +321,25 @@ async function setChildren(args: {
   data: t.IMap<Record<string, unknown>> | undefined;
   getUri: (key: string) => string;
   getModel: (key: string) => t.IModel;
+  onConflict?: t.IDbModelConflictStrategy;
 }) {
-  const { data } = args;
+  const { data, onConflict = 'merge' } = args;
   let total = 0;
   let changes: t.IDbModelChange[] = [];
 
   if (!data) {
-    return { total, changes, isChanged: changes.length > 0 };
+    const isChanged = changes.length > 0;
+    return { total, changes, isChanged };
   }
 
-  const wait = Object.keys(data).map(async (key) => {
-    const props = data[key];
+  const write = async (key: string) => {
+    let props = data[key];
     if (typeof props === 'object') {
-      const model = (await args.getModel(key).ready).set(props);
+      const model = await args.getModel(key).ready;
+
+      if (onConflict === 'merge') props = R.mergeDeepRight(model.doc, props);
+      model.set(props);
+
       if (model.isChanged) {
         total++;
         const res = await model.save();
@@ -324,9 +347,10 @@ async function setChildren(args: {
         changes = [...changes, ...toChanges(uri, res.changes)];
       }
     }
-  });
+  };
 
-  await Promise.all(wait);
+  await Promise.all(Object.keys(data).map(write));
 
-  return { total, changes, isChanged: changes.length > 0 };
+  const isChanged = changes.length > 0;
+  return { total, changes, isChanged };
 }

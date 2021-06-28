@@ -58,7 +58,6 @@ export function FormatItem(item: t.PropListItem) {
     },
 
     isCopyable(defaults?: t.PropListDefaults) {
-      if (res.value.onClick) return false;
       if (res.value.clipboard || defaults?.clipboard) return true;
       return false;
     },

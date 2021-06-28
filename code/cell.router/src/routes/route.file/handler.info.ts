@@ -11,7 +11,7 @@ export async function fileInfo(args: {
     const model = await models.File.create({ db, uri }).ready;
     const exists = Boolean(model.exists);
     const { createdAt, modifiedAt } = model;
-    const data = (util.squash.object(model.toObject()) || {}) as t.IFileData;
+    const data = (Schema.Squash.object(model.toObject()) || {}) as t.IFileData;
 
     // Ensure the saved file location is an absolute path.
     // NB: When stored in the local file-system the root directory is

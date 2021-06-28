@@ -245,7 +245,6 @@ export const actions = DevActions<Ctx>()
           const value = e.select.current[0]; // NB: always first.
           e.select.label = value ? value.label : `select single`;
           e.select.isPlaceholder = !Boolean(value);
-
           if (e.changing) await time.wait(400);
         }),
     );

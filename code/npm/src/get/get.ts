@@ -96,7 +96,7 @@ async function getJson(
   try {
     const env = NPM_TOKEN ? { NPM_TOKEN } : undefined;
     const result = await exec.command(cmd).run({ cwd, env, silent: true });
-    const text = result.info.join('\n');
+    const text = result.info.join();
     return result.info.length > 0 ? parseJson(text) : undefined;
   } catch (error) {
     if (error.message.includes('Not found')) {

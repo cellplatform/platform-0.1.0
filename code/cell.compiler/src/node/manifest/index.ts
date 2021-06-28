@@ -1,3 +1,3 @@
 export { Manifest } from './Manifest';
-export { BundleManifest } from './BundleManifest';
+export { ModuleManifest } from './ModuleManifest';
 export { TypeManifest } from './TypeManifest';

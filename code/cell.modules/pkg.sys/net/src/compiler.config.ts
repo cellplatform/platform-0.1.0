@@ -17,10 +17,12 @@ const web = (config: Config) =>
 export default () =>
   Compiler.config()
     .namespace('sys.net')
+    .version(Package.version)
+
     .variant('web.dev', (config) => web(config))
     .variant('web', (config) => {
       // NB: worker entries not included for development builds as
-      //     they prevent effect hot-reloading.
+      //     they prevent effective hot-reloading.
       web(config)
         .entry('service.worker', './src/workers/service.worker')
         .entry('web.worker', './src/workers/web.worker');

@@ -55,7 +55,7 @@ export function runMethod(args: { cachedir: string; stdlibs?: t.AllowedStdlib[] 
         return undefined;
       } else {
         try {
-          const manifest = (await fs.readJson(path)) as t.BundleManifest;
+          const manifest = (await fs.readJson(path)) as t.ModuleManifest;
           return manifest;
         } catch (error) {
           const msg = error.message;
@@ -71,7 +71,7 @@ export function runMethod(args: { cachedir: string; stdlibs?: t.AllowedStdlib[] 
       return done();
     }
 
-    const entry = (options.entry || manifest.bundle.entry || '').trim().replace(/^\/*/, '');
+    const entry = (options.entry || manifest.module.entry || '').trim().replace(/^\/*/, '');
 
     if (!silent) {
       const bytes = manifest.files.reduce((acc, next) => acc + next.bytes, 0);
@@ -82,7 +82,7 @@ export function runMethod(args: { cachedir: string; stdlibs?: t.AllowedStdlib[] 
       };
 
       add('runtime  ', 'node');
-      add('target', `${manifest.bundle.target} (${manifest.bundle.mode})`);
+      add('target', `${manifest.module.target} (${manifest.module.mode})`);
       add('manifest ', logger.format.url(bundle.urls.manifest));
       add('files ', logger.format.url(bundle.urls.files));
       add('entry', entry);

@@ -3,6 +3,8 @@ import { Compiler, Package } from '@platform/cell.compiler';
 export default () =>
   Compiler.config()
     .namespace('sys.ui.dev')
+    .version(Package.version)
+
     .variant('web', (config) =>
       config
         .port(Package.compiler.port)

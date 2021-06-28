@@ -1,4 +1,4 @@
-import { defaultValue, func, models, Schema, t } from '../common';
+import { defaultValue, func, models, Schema, t, Squash } from '../common';
 import { getNs } from './handler.get';
 import * as util from './util';
 
@@ -12,9 +12,14 @@ export async function postNs(args: {
 }) {
   try {
     const { db, fs, id, query, host } = args;
-    let body = { ...args.body };
+
+    const onConflict = ['merge', 'overwrite'].includes(query.onConflict ?? '')
+      ? query.onConflict
+      : 'merge'; // Simple "merge" (least-destructive) by default.
+
     const uri = Schema.Uri.create.ns(id);
     const ns = await models.Ns.create({ db, uri }).ready;
+    let body = { ...args.body };
 
     const changes: t.IDbModelChange[] = [];
     let isNsChanged = false;
@@ -33,7 +38,7 @@ export async function postNs(args: {
       const { cells, rows, columns } = body;
       if (cells || rows || columns) {
         const data = { cells, rows, columns };
-        const res = await models.ns.setChildData({ ns, data });
+        const res = await models.ns.setChildData({ ns, data, onConflict });
         res.changes.forEach((change) => changes.push(change));
       }
     };

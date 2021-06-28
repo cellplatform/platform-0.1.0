@@ -1,7 +1,7 @@
 import { Stats } from 'webpack';
 
 import { fs, log, Logger, Model, ProgressSpinner, t } from '../common';
-import { BundleManifest } from '../manifest';
+import { ModuleManifest } from '../manifest';
 import { bundleDeclarations } from './task.bundle.declarations';
 import { afterCompile, wp } from './util';
 
@@ -66,7 +66,7 @@ export async function onCompiled(args: {
   const { model, bundleDir, compilation, webpack } = args;
 
   await copyStatic({ model, bundleDir });
-  await BundleManifest.createAndSave({ model, sourceDir: bundleDir });
+  await ModuleManifest.createAndSave({ model, sourceDir: bundleDir });
   await fs.zip(bundleDir).save(`${bundleDir}.zip`);
 
   afterCompile({ model, compilation, webpack });

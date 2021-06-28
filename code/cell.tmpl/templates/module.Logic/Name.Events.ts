@@ -7,11 +7,7 @@ import { t, rx } from '../common';
 export function Events(args: { bus: t.EventBus<any> }) {
   const { dispose, dispose$ } = rx.disposable();
   const bus = rx.busAsType<t.NameEvent>(args.bus);
-
-  const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
-  const is = {
-    base: matcher('namespace/'),
-  };
+  const is = Events.is;
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -20,3 +16,11 @@ export function Events(args: { bus: t.EventBus<any> }) {
 
   return { $, is, dispose, dispose$ };
 }
+
+/**
+ * Event matching.
+ */
+const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
+Events.is = {
+  base: matcher('namespace/'),
+};

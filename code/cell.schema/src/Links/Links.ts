@@ -89,10 +89,12 @@ export class Links {
     let path = key.replace(new RegExp(`^${prefix}\:`), '');
     path = shouldDecode(path) ? Links.decodeKey(path) : path;
     const lastSlash = path.lastIndexOf('/');
-    const lastPeriod = path.lastIndexOf('.');
     const name = lastSlash < 0 ? path : path.substring(lastSlash + 1);
     const dir = lastSlash < 0 ? '' : path.substring(0, lastSlash);
-    const ext = lastPeriod < 0 ? '' : path.substring(lastPeriod + 1);
+
+    const lastPeriod = name.lastIndexOf('.');
+    const ext = lastPeriod < 0 ? '' : name.substring(lastPeriod + 1);
+
     const res: t.ILinkKey = { prefix, key, path, name, dir, ext };
     return res;
   }

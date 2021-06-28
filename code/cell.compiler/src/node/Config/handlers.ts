@@ -1,4 +1,4 @@
-import { Builder, DEFAULT, Encoding, fs, R, t, value as valueUtil } from '../common';
+import { Builder, DEFAULT, Encoding, fs, R, t, value as valueUtil, semver } from '../common';
 import { wp } from '../config.webpack';
 import { webpackMethods } from './handlers.webpack';
 import { validate } from './util';
@@ -26,6 +26,21 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
       throw new Error(`Invalid namespace ("scope"). ${error}`);
     }
     args.model.change((draft) => (draft.namespace = value));
+  },
+
+  version(args) {
+    let value = format.string(args.params[0], { trim: true });
+    if (value) {
+      value = semver.coerce(value)?.version || undefined;
+      value = semver.clean(value || '') || undefined;
+
+      const isValid = Boolean(semver.valid(value));
+      if (!isValid) {
+        throw new Error(`Invalid version "${value}" (https://semver.org).`);
+      }
+    }
+
+    args.model.change((draft) => (draft.version = value));
   },
 
   title(args) {

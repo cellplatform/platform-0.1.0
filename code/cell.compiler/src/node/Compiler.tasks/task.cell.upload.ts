@@ -18,7 +18,7 @@ import {
   value,
 } from '../common';
 import { FileAccess, FileRedirects } from '../config';
-import { BundleManifest } from '../manifest';
+import { ModuleManifest } from '../manifest';
 
 type FileUri = t.IUriData<t.IFileData>;
 type File = t.IHttpClientCellFileUpload;
@@ -29,7 +29,7 @@ const filesize = fs.size.toString;
  */
 export const manifestFileFilter = (bundleDir: string) => {
   return (path: string) => {
-    return path.substring(bundleDir.length + 1) === BundleManifest.filename;
+    return path.substring(bundleDir.length + 1) === ModuleManifest.filename;
   };
 };
 
@@ -186,7 +186,7 @@ async function logUpload(args: {
   bundleDir: string;
   targetCell: string | t.ICellUri;
   elapsed: string;
-  manifest: t.BundleManifest;
+  manifest: t.ModuleManifest;
 }) {
   const { host, baseDir, bundleDir, targetCell, elapsed, manifest } = args;
   const size = await fs.size.dir(bundleDir);
@@ -266,7 +266,7 @@ async function updateManifest(args: {
   redirects?: t.CompilerModelRedirect[];
 }) {
   const { uploadedFiles, bundleDir, redirects } = args;
-  const { manifest, path } = await BundleManifest.read({ dir: bundleDir });
+  const { manifest, path } = await ModuleManifest.read({ dir: bundleDir });
   if (!manifest) {
     throw new Error(`A bundle manifest does not exist at: ${path}`);
   }
@@ -275,7 +275,7 @@ async function updateManifest(args: {
   const findFile = (hash: string) => uploadedFiles.find((file) => toHash(file) === hash);
 
   manifest.files
-    .filter((item) => item.path !== BundleManifest.filename)
+    .filter((item) => item.path !== ModuleManifest.filename)
     .forEach((item) => {
       const file = findFile(item.filehash);
       if (!file) {
@@ -286,7 +286,7 @@ async function updateManifest(args: {
       }
     });
 
-  await BundleManifest.write({ manifest, dir: bundleDir });
+  await ModuleManifest.write({ manifest, dir: bundleDir });
   return manifest;
 }
 

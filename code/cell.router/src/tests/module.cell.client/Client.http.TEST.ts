@@ -127,7 +127,7 @@ describe('HttpClient', () => {
       const cell = mock.client.cell('cell:foo:A1');
 
       const filename = 'foo.png';
-      const file = cell.file.name(filename);
+      const file = cell.fs.file(filename);
       expect(await file.exists()).to.eql(false);
 
       const { file1: data } = await testFiles();
@@ -142,7 +142,7 @@ describe('HttpClient', () => {
       const cell = mock.client.cell('cell:foo:A1');
 
       const filename = 'foo.png';
-      const file = cell.file.name(filename);
+      const file = cell.fs.file(filename);
 
       const { file1 } = await testFiles();
       await cell.fs.upload([{ filename, data: file1 }]);

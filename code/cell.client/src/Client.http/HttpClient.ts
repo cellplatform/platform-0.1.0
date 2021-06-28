@@ -100,20 +100,20 @@ export class HttpClient implements t.IHttpClient {
     const http = this.http;
     const urls = this.urls;
     const uri = Uri.toNs(input);
-    return HttpClientNs.create({ uri, urls, http });
+    return HttpClientNs({ uri, urls, http });
   }
 
   public cell(input: string | t.ICellUri) {
     const http = this.http;
     const urls = this.urls;
     const uri = Uri.cell(input);
-    return HttpClientCell.create({ uri, urls, http });
+    return HttpClientCell({ uri, urls, http });
   }
 
   public file(input: string | t.IFileUri) {
     const http = this.http;
     const urls = this.urls;
     const uri = Uri.file(input);
-    return HttpClientFile.create({ uri, urls, http });
+    return HttpClientFile({ uri, urls, http });
   }
 }

@@ -1,6 +1,5 @@
-import { t } from '../common';
+import { t, Squash } from '../common';
 import { setCellProp } from './value.setProp';
-import { squash } from './value.squash';
 
 /**
  * Helpers for reading/writing to cell data.
@@ -13,12 +12,8 @@ export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellDa
   ): t.IUriMap | undefined => {
     uri = (uri || '').trim();
     uri = !uri ? undefined : uri;
-    // const o = links || ({} as t.IUriMap);
-
     const input = { ...links, [key]: uri };
-
-    return squash.object<t.IUriMap>(input);
-    // return squash.object({ ...o, [key]: uri });
+    return Squash.object<t.IUriMap>(input);
   };
 
   const api = {
@@ -34,7 +29,7 @@ export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellDa
      */
     setValue(value: t.CellValue): t.ICellData<P> {
       const input = { ...(cell || {}), value };
-      return squash.cell(input) as t.ICellData<P>;
+      return Squash.cell(input) as t.ICellData<P>;
     },
 
     /**
@@ -47,7 +42,7 @@ export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellDa
       value?: P[K][keyof P[K]];
     }): t.ICellData<P> | undefined {
       const props = setCellProp({ ...args, props: cell ? cell.props : undefined });
-      return squash.cell(cell ? { ...cell, props } : { props });
+      return Squash.cell(cell ? { ...cell, props } : { props });
     },
 
     /**
@@ -55,7 +50,7 @@ export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellDa
      */
     setLink(key: string, uri?: string): t.ICellData<P> | undefined {
       const links = setLink((cell || {}).links, key, uri);
-      return squash.cell(cell ? { ...cell, links } : { links });
+      return Squash.cell(cell ? { ...cell, links } : { links });
     },
 
     /**
@@ -69,19 +64,15 @@ export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellDa
           const uri = links[key];
           if (uri) {
             const res = setLink(uris, key, uri);
-            if (res) {
-              uris = { ...uris, ...res };
-            }
+            if (res) uris = { ...uris, ...res };
           }
         });
         Object.keys(links).forEach((key) => {
-          if (links[key] === undefined) {
-            delete uris[key];
-          }
+          if (links[key] === undefined) delete uris[key];
         });
       }
-      uris = squash.object(uris) as t.IUriMap;
-      return squash.cell(cell ? { ...cell, links: uris } : { links: uris });
+      uris = Squash.object(uris) as t.IUriMap;
+      return Squash.cell(cell ? { ...cell, links: uris } : { links: uris });
     },
   };
 

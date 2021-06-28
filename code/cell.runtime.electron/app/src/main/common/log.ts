@@ -2,13 +2,16 @@ import { create } from '@platform/log/lib/server';
 import electron from 'electron-log';
 import { filter, map } from 'rxjs/operators';
 
-import { Uri } from './libs';
+import { Uri, fs } from './libs';
 import { ENV } from './constants';
 import * as t from './types';
 
 import { IServerLog } from '@platform/log/lib/server/types';
 export type ElectronLog = IServerLog & { format: ElectronLogFormat };
-export type ElectronLogFormat = { uri(input?: string | t.IUri): string };
+export type ElectronLogFormat = {
+  uri(input?: string | t.IUri): string;
+  filepath(input?: string): string;
+};
 
 const logger = create();
 
@@ -16,9 +19,7 @@ const format: ElectronLogFormat = {
   uri(input?: string | t.IUri) {
     input = input || '';
     input = typeof input === 'string' ? input.trim() : input;
-    if (!input) {
-      return logger.gray('<empty>');
-    }
+    if (!input) return logger.gray('<empty>');
 
     const parsed = Uri.parse(input.toString());
     const type = parsed.type;
@@ -40,15 +41,20 @@ const format: ElectronLogFormat = {
 
     return log.gray(parsed.toString());
   },
+
+  filepath(input?: string) {
+    input = input || '';
+    if (!input || typeof input !== 'string') return logger.gray('<empty>');
+    const dir = fs.dirname(input);
+    const basename = fs.basename(input);
+    return log.gray(`${dir}/${log.white(basename)}`);
+  },
 };
 
 /**
  * Create default log that writes to the console.
  */
-export const log: ElectronLog = {
-  ...logger,
-  format,
-};
+export const log: ElectronLog = { ...logger, format };
 
 /**
  * Write log events to the `electron-log` module.

@@ -1,43 +1,30 @@
 import { t, util } from '../common';
 
-export type IClientFileArgs = { uri: t.IFileUri; urls: t.IUrls; http: t.IHttp };
-
 /**
  * HTTP client for operating on files.
  */
-export class HttpClientFile implements t.IHttpClientFile {
-  public static create(args: IClientFileArgs): t.IHttpClientFile {
-    return new HttpClientFile(args);
-  }
+export function HttpClientFile(args: {
+  uri: t.IFileUri;
+  urls: t.IUrls;
+  http: t.IHttp;
+}): t.IHttpClientFile {
+  const { uri, urls, http } = args;
 
-  /**
-   * [Lifecycle]
-   */
-  private constructor(args: IClientFileArgs) {
-    const { urls } = args;
-    this.args = args;
-    this.uri = args.uri;
-    this.url = urls.file(args.uri);
-  }
+  const api: t.IHttpClientFile = {
+    uri,
 
-  /**
-   * [Fields]
-   */
-  private readonly args: IClientFileArgs;
-  public readonly uri: t.IFileUri;
-  public readonly url: t.IUrlsFile;
+    get url() {
+      return urls.file(uri);
+    },
 
-  /**
-   * [Methods]
-   */
-  public toString() {
-    return this.uri.toString();
-  }
+    async info() {
+      const url = api.url.info.toString();
+      const res = await http.get(url);
+      return util.fromHttpResponse(res).toClientResponse<t.IResGetFile>();
+    },
 
-  public async info() {
-    const http = this.args.http;
-    const url = this.url.info;
-    const res = await http.get(url.toString());
-    return util.fromHttpResponse(res).toClientResponse<t.IResGetFile>();
-  }
+    toString: () => uri.toString(),
+  };
+
+  return api;
 }

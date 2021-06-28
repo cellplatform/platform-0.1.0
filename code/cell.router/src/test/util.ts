@@ -21,17 +21,16 @@ export function stripHashes(input: Record<string, unknown>) {
 /**
  * Helpers for posting to a mock.
  */
-export const post = {
+export const TestPost = {
   /**
    * POST namespace data.
    */
   async ns(url: string, body: t.IReqPostNsBody, options: { mock?: IMock } = {}) {
     const mock = options.mock || (await createMock());
-    const res = await http.post(mock.url(url), body);
-    const json = res.json as t.IResPostNs;
-    if (!options.mock) {
-      await mock.dispose();
-    }
-    return { res, json, data: json.data };
+    const response = await http.post(mock.url(url), body);
+    const json = response.json as t.IResPostNs;
+    const data = json.data;
+    if (!options.mock) await mock.dispose();
+    return { response, json, data };
   },
 };

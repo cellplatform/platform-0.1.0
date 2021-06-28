@@ -5,6 +5,7 @@ import { Compiler, Package } from '.';
 export default () =>
   Compiler.config()
     .port(Package.compiler.port)
+    .version(Package.version)
     .namespace('sample.compiler')
     .title('Compiler Sample')
     .env({ foo: 1234 })

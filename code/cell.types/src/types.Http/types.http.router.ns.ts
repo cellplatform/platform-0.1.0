@@ -38,6 +38,7 @@ export type IResGetNsTypes = {
  */
 export type IReqQueryNsWrite = t.IReqQueryNsInfo & {
   changes?: boolean; // NB: return list of changes (default: true).
+  onConflict?: t.IDbModelConflictStrategy; // (default: "merge")
 };
 
 export type IReqPostNsBody = {

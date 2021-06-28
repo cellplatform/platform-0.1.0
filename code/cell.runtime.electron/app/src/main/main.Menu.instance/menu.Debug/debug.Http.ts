@@ -1,17 +1,19 @@
 import { shell } from 'electron';
-import { t, System, Uri } from '../common';
+import { t, System, Uri, Genesis } from '../common';
 
 /**
  * Dev tools menu.
  */
-export function ServerMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
-  const { bus } = args;
+export function ServerMenu(args: { bus: t.ElectronMainBus; http: t.IHttpClient }): t.MenuItem {
+  const { bus, http } = args;
   const events = { system: System.Events({ bus }) };
+  const genesis = Genesis(http);
 
   const getStatus = () => events.system.status.get();
 
   const open = {
     finder: async (path: string) => shell.openPath(path),
+
     async browser(path: string) {
       path = path.replace(/^\//, '');
       const status = await getStatus();
@@ -26,15 +28,23 @@ export function ServerMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
     submenu: [
       {
         type: 'normal',
-        label: '• Local Runtime',
+        label: 'Local Runtime',
         click: () => open.browser('/'),
+      },
+      { type: 'separator' },
+      {
+        type: 'normal',
+        label: 'Genesis (Cell)',
+        click: async () => {
+          const uri = await genesis.cell.uri();
+          open.browser(`/${uri.toString()}`);
+        },
       },
       {
         type: 'normal',
-        label: '• Genesis Cell',
+        label: 'System Modules',
         click: async () => {
-          const status = await getStatus();
-          const uri = Uri.create.cell(status.refs.genesis, 'A1');
+          const uri = await genesis.modules.uri();
           open.browser(`/${uri}`);
         },
       },

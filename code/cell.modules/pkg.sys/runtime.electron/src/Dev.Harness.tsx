@@ -1,0 +1,11 @@
+import React from 'react';
+import { Harness } from 'sys.ui.dev';
+
+const imports = {
+  Sample: import('./components/Sample/DEV'),
+  Manifest: import('./components/Manifest/dev/DEV'),
+};
+
+const ns = new URL(location.href).searchParams.get('ui.dev.ns');
+
+export const DevHarness: React.FC = () => <Harness actions={Object.values(imports)} initial={ns} />;

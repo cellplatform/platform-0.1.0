@@ -1,6 +1,5 @@
-import { t } from '../common';
+import { t, Squash } from '../common';
 import { isEmptyProps } from './value.isEmpty';
-import { squash } from './value.squash';
 
 /**
  * Determine if the given cell is empty (no value, no props).
@@ -22,7 +21,7 @@ export function isEmptyCellValue(value?: t.CellValue) {
  * Determine if the given cell's links are empty.
  */
 export function isEmptyCellLinks(links?: t.ICellData['links']) {
-  return typeof links !== 'object' ? true : !squash.object(links);
+  return typeof links !== 'object' ? true : !Squash.object(links);
 }
 
 /**

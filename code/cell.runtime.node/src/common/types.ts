@@ -2,7 +2,7 @@ export * from '../types';
 export * from '@platform/cell.types/lib/types.Runtime';
 
 export {
-  BundleManifest,
+  ModuleManifest,
   IRuntimeError,
   IHttpClientResponse,
   IHttpClientFileData,

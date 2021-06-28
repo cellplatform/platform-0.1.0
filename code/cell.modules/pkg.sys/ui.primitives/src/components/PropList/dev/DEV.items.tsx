@@ -19,9 +19,10 @@ const styles = {
   }),
   value: css({
     backgroundColor: 'rgba(255, 0, 0, 0.1)',
-    height: 40,
     Flex: 'center-center',
     flex: 1,
+    height: 30,
+    borderRadius: 4,
   }),
 };
 
@@ -30,6 +31,7 @@ export const items: PropListItem[] = [
   { label: 'number', value: { data: 123456, clipboard: 'Value: 123456', monospace: true } },
   { label: 'boolean', value: true },
   { label: 'boolean (switch)', value: { data: true, kind: 'Switch' } },
+  { label: 'clipboard function', value: { data: 'hello', clipboard: () => Math.random() } },
   {
     label: 'monospace (fontSize: 9)',
     value: { data: 'thing', clipboard: true, monospace: true, color: COLORS.CYAN, fontSize: 9 },
@@ -39,7 +41,7 @@ export const items: PropListItem[] = [
     label: 'click handler',
     value: {
       data: 'click me',
-      onClick: (e) => e.message(<div style={{ color: COLORS.MAGENTA }}>foobar</div>, 3000),
+      onClick: (e) => e.message(<div style={{ color: COLORS.MAGENTA }}>clicked!</div>, 1200),
     },
   },
   {
@@ -49,5 +51,15 @@ export const items: PropListItem[] = [
   {
     label: <div {...styles.label}>label</div>,
     value: 'value',
+  },
+  {
+    label: 'component (clipboard)',
+    value: {
+      data: <div {...styles.value}>value</div>,
+      clipboard: () => `random: ${Math.random()}`,
+      onClick: (e) => {
+        e.message(<div style={{ color: COLORS.MAGENTA }}>clicked!</div>, 1200);
+      },
+    },
   },
 ];

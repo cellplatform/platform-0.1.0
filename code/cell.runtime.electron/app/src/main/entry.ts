@@ -1,6 +1,6 @@
 import { app } from 'electron';
 
-import { constants, ENV, fs, log, rx, t, ConfigFile } from './common';
+import { constants, fs, log, rx, t, ConfigFile, time, Genesis, HttpClient } from './common';
 import { SystemServer } from './main.System.server';
 import { Window } from './main.Window';
 import { Log } from './main.Log';
@@ -10,18 +10,9 @@ import { System } from './main.System';
 import { BuildMenu } from './main.Menu.instance';
 import { IpcBus } from './main.Bus';
 
-/**
- *  NOTE:
- *    Setting this value to true (the default in Electron 9+)
- *    prevents the following warning being emitted in the
- *    console at startup.
- *
- *  WARNING (AVOIDED):
- *    (electron) The default value of app.allowRendererProcessReuse is deprecated,
- *    it is currently "false".  It will change to be "true" in Electron 9.
- *    For more information please check https://github.com/electron/electron/issues/18397
- */
-app.allowRendererProcessReuse = true;
+import { TestIpcBusBridging } from './entry.TMP';
+
+const { ENV, Paths } = constants;
 
 /**
  * Ensure all renderer processes are opened in "sandbox" mode.
@@ -30,69 +21,106 @@ app.allowRendererProcessReuse = true;
 app.enableSandbox();
 
 /**
- * Environment.
- */
-if (app.isPackaged) {
-  process.env.NODE_ENV = 'production';
-}
-
-/**
  * Startup the application.
  */
 export async function start() {
-  log.info.gray('━'.repeat(60));
-  const bus = rx.bus<t.ElectronRuntimeEvent>();
+  const timer = time.timer();
+
+  // Ensure the NODE_ENV value is cleanly set to "production" if packaged.
+  if (app.isPackaged || ENV.isProd) process.env.NODE_ENV = 'production';
   const prod = ENV.isProd;
 
-  const ipcbus = IpcBus({ bus });
-  ipcbus.$.subscribe((e) => {
-    console.log('ipc bus:', e);
-  });
-
-  /**
-   * TODO 🐷
-   *   bridge between [ipcBus] and [mainBus]
-   */
+  log.info.gray('━'.repeat(60));
 
   try {
     // Start the HTTP server.
     const port = prod ? undefined : 5000;
-    const { paths, host, instance } = await SystemServer.start({ log, prod, port });
+    const { paths, host } = await SystemServer.start({ log, prod, port });
+
+    log.DEBUG('server started');
+
+    // Initialize the HTTP client.
+    const http = HttpClient.create(host);
+    http.request$.subscribe((e) => {
+      /**
+       * TODO 🐷
+       * Add a "security token" to lock down the server to the app only.
+       * See `SystemServer` for the other-side that checks the token before responding.
+       */
+    });
 
     // Load the configuration JSON file.
     const config = await ConfigFile.read();
+    const genesis = Genesis(http);
+
+    log.DEBUG('config file loaded');
+    log.DEBUG(config);
 
     // Wait for electron to finish starting.
     await app.whenReady();
+    await genesis.cell.ensureExists();
+
+    /**
+     * Prepare buses.
+     */
+    const bus = rx.bus<t.ElectronRuntimeEvent>();
+
+    /**
+     * TEMP 🐷
+     *  - bridge between [ipcBus] and [mainBus]
+     */
+    TestIpcBusBridging({ bus });
+
+    log.DEBUG('Initialize sub-contollers:');
+    log.DEBUG();
 
     /**
      * Initialize controllers.
      */
-    System.Controller({ bus, paths, host, config });
+    log.DEBUG('• System.Controller');
+    System.Controller({ bus, host, paths, config });
+    log.DEBUG('--done');
+
+    log.DEBUG('• Bundle.Controller');
+    Bundle.Controller({ bus, http });
+    log.DEBUG('--done');
+
+    log.DEBUG('• Window.Controller');
     Window.Controller({ bus });
+    log.DEBUG('--done');
+
+    log.DEBUG('• Log.Controller');
     Log.Controller({ bus });
+    log.DEBUG('--done');
+
+    log.DEBUG('• Menu.Controller');
     Menu.Controller({ bus });
-    Bundle.Controller({ bus, host });
+    log.DEBUG('--done');
 
     /**
      * Upload bundled system code into the local service.
      */
     const bundle = Bundle.Events({ bus });
     await bundle.upload.fire({
-      sourceDir: constants.paths.bundle.sys,
-      targetDir: 'app.sys/web',
-      force: ENV.isDev,
+      sourceDir: Paths.bundle.sys.source,
+      targetDir: Paths.bundle.sys.target,
+      force: ENV.isDev, // NB: Only repeat upload when running in development mode.
     });
+    log.DEBUG('--done: upload');
 
-    const webStatus = await bundle.status.get({ dir: 'app.sys/web' });
+    const bundleStatus = await bundle.status.get({ dir: Paths.bundle.sys.target });
     // console.log('-------------------------------------------');
-    // console.log('webStatus', webStatus);
+    // console.log('bundleStatus', bundleStatus);
 
-    const preload = constants.paths.preload;
-    await logMain({ host, paths: { data: paths, preload } });
+    log.DEBUG('+ logMain');
+    const preload = Paths.preload;
+    await logMain({ http, paths: { data: paths, preload } });
+    log.DEBUG('--done: logging main');
 
     // await menu.build({ bus, paths, port: instance.port });
-    BuildMenu({ bus }).load();
+    log.DEBUG('+ BuildMenu');
+    BuildMenu({ bus, http }).load();
+    log.DEBUG('--done: building menu');
 
     const sysEvents = System.Events({ bus });
     const sysStatus = await sysEvents.status.get();
@@ -105,7 +133,7 @@ export async function start() {
      * Finish up.
      */
     await ConfigFile.log.updateStarted();
-    log.info(`✨ Startup Complete`);
+    log.info.gray(`✨ ${log.white('Startup Complete')} (${timer.elapsed.toString()})`);
   } catch (error) {
     log.error('🐷 Failed on startup:');
     log.error(error);
@@ -117,16 +145,19 @@ export async function start() {
  */
 
 async function logMain(args: {
-  host: string;
+  http: t.IHttpClient;
   paths: { preload: string; data: t.ElectronDataPaths };
 }) {
+  const genesis = Genesis(args.http);
+  const host = args.http.origin;
+
   const table = log.table({ border: false });
+  const line = () => table.add(['', '']);
   const add = (key: string, value: any) => {
     key = ` • ${log.green(key)} `;
     table.add([key, value]);
   };
 
-  const ENV = constants.ENV;
   const isDev = ENV.isDev;
 
   const toSize = async (path: string) => {
@@ -148,17 +179,20 @@ async function logMain(args: {
   };
 
   add('runtime:', ConfigFile.process);
-  add('packaged:', ENV.isPackaged);
   add('env:', ENV.node || '<empty>');
-  add('host:', `http://${args.host.split(':')[0]}:${log.white(args.host.split(':')[1])}`);
+  add('packaged:', ENV.isPackaged);
+  line();
   add('preload:', await path(args.paths.preload));
   add('log:', await path(args.paths.data.log));
   add('db:', await path(args.paths.data.db));
   add('fs:', await path(args.paths.data.fs));
   add('config:', await path(args.paths.data.config));
+  line();
+  add('host:', `http:${host.split(':')[1]}:${log.white(host.split(':')[2])}`);
+  add('genesis', await genesis.cell.url());
 
   log.info.gray(`
 ${log.white('main')}:
-${table}
+${table.toString()}
 `);
 }

@@ -1,1 +1,1 @@
-export * from '@platform/cell.types/lib/types/types.db';
+export * from '@platform/cell.types/lib/types.Db';

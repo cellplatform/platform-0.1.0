@@ -1,4 +1,4 @@
-import { ENV, paths } from './constants';
+import { ENV, Paths } from './constants';
 import { fs, R, semver, time, Uri } from './libs';
 import * as t from './types';
 
@@ -6,7 +6,7 @@ import * as t from './types';
  * Configuration data.
  */
 export const ConfigFile = {
-  path: paths.data({ prod: ENV.isProd }).config,
+  path: Paths.data({ prod: ENV.isProd }).config,
 
   get process() {
     const { name, version } = ENV.pkg;
@@ -17,7 +17,6 @@ export const ConfigFile = {
    * Generate a new "default" configuration file.
    */
   default(): t.ElectronConfigFile {
-    const { name, version } = ENV.pkg;
     return {
       refs: { genesis: Uri.toNs().toString() },
       created: getIdentifierLogItem(),
@@ -57,7 +56,8 @@ export const ConfigFile = {
 
       const now = (() => {
         const item = getIdentifierLogItem();
-        return { item, process: parseProcess(item.process) };
+        const process = parseProcess(item.process);
+        return { item, process };
       })();
       const append = () => started.push(now.item);
 

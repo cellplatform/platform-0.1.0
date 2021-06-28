@@ -1,17 +1,11 @@
 import { t } from './common';
-
-import { IpcEvent } from './types.sys.events.ipc';
-import { WindowEvent, LogEvent, BundleEvent, SystemEvent, MenuEvent } from './types.modules';
+import { IpcEvent } from './types.sys.ipc';
+import { ElectronModuleEvent } from '@platform/cell.types/lib/types.Runtime.electron';
 
 /**
  * Event bus for the electron runtime.
  */
 export type ElectronMainBus = t.EventBus<t.ElectronRuntimeEvent>;
-
-/**
- * Union of all [module] events.
- */
-export type ElectronModuleEvent = WindowEvent | LogEvent | BundleEvent | SystemEvent | MenuEvent;
 
 /**
  * Union of all [cell.runtime.electron] events.

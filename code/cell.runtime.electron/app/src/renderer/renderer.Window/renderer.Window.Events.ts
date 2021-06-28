@@ -6,14 +6,10 @@ import { RuntimeUri, rx, slug, t } from '../common';
 /**
  * Event API for working with Electron windows.
  */
-export function Events(args: { bus: t.EventBus<any> }) {
+export function Events(args: { bus: t.EventBus<any> }): t.WindowEvents {
   const { dispose$, dispose } = rx.disposable();
   const bus = rx.busAsType<t.WindowEvent>(args.bus);
-
-  const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
-  const is = {
-    base: matcher('runtime.electron/Window/'),
-  };
+  const is = Events.is;
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -24,12 +20,12 @@ export function Events(args: { bus: t.EventBus<any> }) {
    * Events that create a window.
    */
   const create = {
-    req$: rx.payload<t.ElectronWindowCreateReqEvent>($, 'runtime.electron/Window/create:req'),
+    req$: rx.payload<t.WindowCreateReqEvent>($, 'runtime.electron/Window/create:req'),
     res$: rx.payload<t.WindowCreateResEvent>($, 'runtime.electron/Window/create:res'),
     fire(args: {
       url: string;
-      devTools?: t.ElectronWindowCreateReq['devTools'];
-      props?: t.ElectronWindowCreateReq['props'];
+      devTools?: t.WindowCreateReq['devTools'];
+      props?: t.WindowCreateReq['props'];
     }) {
       const { url, devTools, props = {} } = args;
       const tx = slug();
@@ -65,9 +61,9 @@ export function Events(args: { bus: t.EventBus<any> }) {
    */
   const change = {
     before$: rx.payload<t.WindowChangeEvent>($, 'runtime.electron/Window/change'),
-    after$: rx.payload<t.ElectronWindowChangedEvent>($, 'runtime.electron/Window/changed'),
+    after$: rx.payload<t.WindowChangedEvent>($, 'runtime.electron/Window/changed'),
     fire(
-      window: t.ElectronWindowIdParam,
+      window: t.WindowIdParam,
       options: { bounds?: Partial<t.WindowBounds>; isVisible?: boolean } = {},
     ) {
       const { bounds, isVisible } = options;
@@ -81,3 +77,11 @@ export function Events(args: { bus: t.EventBus<any> }) {
 
   return { $, is, dispose$, dispose, create, status, change };
 }
+
+/**
+ * Event matching.
+ */
+const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
+Events.is = {
+  base: matcher('runtime.electron/Window/'),
+};

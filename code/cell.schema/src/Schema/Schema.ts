@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
-
 import { cuid, slug, t, hash, coord, Mime } from '../common';
 import { FileSchema } from '../Fs';
 import { RefSchema } from '../Ref';
 import { Uri } from '../Uri';
 import { Urls, Url } from '../Url';
 import { Encoding } from '../Encoding';
+import { Squash } from '../Squash';
 
 /**
  * Schema mapping URI's to DB paths and other common operating-system
@@ -18,15 +17,16 @@ import { Encoding } from '../Encoding';
  */
 
 export const Schema = {
-  Mime: Mime,
+  Mime,
   File: FileSchema,
   Ref: RefSchema,
 
-  cuid: cuid,
-  slug: slug,
-  hash: hash,
-  coord: coord,
+  cuid,
+  slug,
+  hash,
+  coord,
   encoding: Encoding,
+  Squash,
 
   Uri,
   Url,

@@ -27,7 +27,7 @@ export type PropListValueSwitch = ValueBase & { data?: boolean; kind: 'Switch' }
 
 type ValueBase = {
   monospace?: boolean;
-  clipboard?: string | boolean;
+  clipboard?: string | boolean | (() => string);
   color?: string | number;
   fontSize?: number;
   onClick?: (e: PropListValueEventArgs) => void;

@@ -12,8 +12,8 @@ export function Controller(args: {
   paths: t.ElectronDataPaths;
   config: t.ElectronConfigFile;
 }) {
-  const { paths, config } = args;
-  const service = toServiceInfo(args.host);
+  const { paths, config, host } = args;
+  const service = toServiceInfo(host);
 
   const bus = rx.busAsType<t.SystemEvent>(args.bus);
   const events = Events({ bus });
@@ -24,8 +24,8 @@ export function Controller(args: {
   const getStatus = (): t.SystemStatus => {
     const runtime = RuntimeInfo({ paths });
     const is = { prod: ENV.isProd, dev: ENV.isDev, mac: ENV.isMac };
-    const ns = config.refs;
-    return { refs: ns, is, service, runtime };
+    const genesis = config.refs.genesis;
+    return { genesis, is, service, runtime };
   };
 
   /**

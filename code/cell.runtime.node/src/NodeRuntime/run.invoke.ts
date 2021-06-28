@@ -13,7 +13,7 @@ type R = {
  */
 export function invoke(args: {
   dir: string;
-  manifest: t.BundleManifest;
+  manifest: t.ModuleManifest;
   entry?: string;
   in?: Partial<t.RuntimeIn>;
   silent?: boolean;
@@ -23,7 +23,7 @@ export function invoke(args: {
 }) {
   return new Promise<R>(async (resolve) => {
     const { silent, manifest, dir, stdlibs } = args;
-    const entry = (args.entry || manifest.bundle.entry || '').trim();
+    const entry = (args.entry || manifest.module.entry || '').trim();
     const filename = fs.join(dir, entry);
 
     /**

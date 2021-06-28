@@ -4,6 +4,8 @@ import { copy } from './node/fs.copy';
 export default () =>
   Compiler.config()
     .namespace('sys.ui.code')
+    .version(Package.version)
+
     .variant('web', (config) =>
       config
         .target('web')

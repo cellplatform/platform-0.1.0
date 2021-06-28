@@ -117,6 +117,27 @@ describe('model.Cell', () => {
     })();
   });
 
+  it('clears empty links', async () => {
+    const db = await getTestDb({});
+    const uri = 'cell:foo:A1';
+
+    const model1 = await Cell.create({ db, uri }).ready;
+    await model1.set({ links: { foo: 'one', bar: 'two' } }).save();
+
+    const model2 = await Cell.create({ db, uri }).ready;
+    expect(model2.toObject().links).to.eql({ foo: 'one', bar: 'two' });
+
+    await model2.set({ links: { foo: '  ', bar: 'two' } }).save();
+
+    const model3 = await Cell.create({ db, uri }).ready;
+    expect(model3.toObject().links).to.eql({ bar: 'two' });
+
+    await model3.set({ links: { foo: '  ', bar: '' } }).save();
+
+    const model4 = await Cell.create({ db, uri }).ready;
+    expect(model4.toObject().links).to.eql({});
+  });
+
   it('sets then clears props', async () => {
     const db = await getTestDb({});
     const uri = 'cell:foo:A1';

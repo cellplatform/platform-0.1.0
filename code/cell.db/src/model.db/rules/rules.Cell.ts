@@ -8,6 +8,15 @@ export const beforeCellSave: t.BeforeModelSave<t.IDbModelCellProps> = async (arg
   const model = args.model as t.IDbModelCell;
   const schema = Schema.from.cell(model.path);
 
+  // Remove empty links.
+  if (model.props.links) {
+    const links = model.props.links || {};
+    Object.keys(links).forEach((key) => {
+      const value = links[key];
+      if (!(value || '').trim()) delete links[key];
+    });
+  }
+
   // Update cell namespace {links:{..}} to document-joins.
   if (changes.map.links) {
     const links = toUriList(model.props.links);
@@ -24,9 +33,7 @@ export const beforeCellSave: t.BeforeModelSave<t.IDbModelCellProps> = async (arg
     (model.doc.nsRefs || []).forEach((path) => {
       const uri = Schema.from.ns(path).uri;
       const exists = links.some((link) => link.uri === uri);
-      if (!exists) {
-        model.links.namespaces.unlink([path]);
-      }
+      if (!exists) model.links.namespaces.unlink([path]);
     });
   }
 

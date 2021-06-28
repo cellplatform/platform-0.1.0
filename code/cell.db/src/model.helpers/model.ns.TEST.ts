@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { t, expect, getTestDb, value } from '../test';
 import { models } from '..';
 import {
@@ -12,7 +10,6 @@ import {
   getChildFiles,
 } from './model.ns';
 
-type P = t.ICellProps;
 type R = t.IRowProps & { grid: { height?: number } };
 type C = t.IRowProps & { grid: { width?: number } };
 
@@ -98,7 +95,7 @@ describe('helpers: model.ns', () => {
   });
 
   describe('setChildData', () => {
-    it('return change set (un-changed values not reported)', async () => {
+    it('return set of changes (un-changed values not reported)', async () => {
       const db = await getTestDb({});
       const ns = models.Ns.create({ uri: 'ns:foo', db });
 
@@ -115,6 +112,82 @@ describe('helpers: model.ns', () => {
 
       expect(res2.changes.length).to.eql(2); // NB: not 3, as the "value" field has not changed ("=A2").
       expect(res2.changes.map((c) => c.field)).to.eql(['props', 'hash']);
+    });
+
+    it('onConflict: "overwrite" data', async () => {
+      const db = await getTestDb({});
+      const ns = models.Ns.create({ uri: 'ns:foo', db });
+      const read = async () => await getChildCells({ model: ns });
+
+      await setChildData({
+        ns,
+        data: {
+          cells: { A1: { value: '=A3', props: { foo: 123 } as any, links: { foo: 'bar' } } },
+        },
+      });
+
+      const res1 = await read();
+      expect(res1.A1?.value).to.eql('=A3');
+      expect(res1.A1?.props).to.eql({ foo: 123 });
+      expect(res1.A1?.links).to.eql({ foo: 'bar' });
+
+      await setChildData({
+        onConflict: 'overwrite',
+        ns,
+        data: {
+          cells: { A1: { value: 'hello', props: { bar: 456 } as any, links: { zoo: 'hello' } } },
+        },
+      });
+      await ns.save();
+
+      const res2 = await read();
+      expect(res2.A1?.value).to.eql('hello');
+      expect(res2.A1?.props).to.eql({ bar: 456 }); // NB: Replaced ("foo" key removed)
+      expect(res2.A1?.links).to.eql({ zoo: 'hello' });
+    });
+
+    it('onConflict: "merge" data (default)', async () => {
+      const db = await getTestDb({});
+      const ns = models.Ns.create({ uri: 'ns:foo', db });
+      const read = async () => await getChildCells({ model: ns });
+
+      await setChildData({
+        ns,
+        data: {
+          cells: {
+            A1: {
+              value: '=A3',
+              props: { foo: 123, child: { msg: 'one' } } as any,
+              links: { foo: 'bar' },
+            },
+          },
+        },
+      });
+
+      const res1 = await read();
+      expect(res1.A1?.value).to.eql('=A3');
+      expect(res1.A1?.props).to.eql({ foo: 123, child: { msg: 'one' } });
+      expect(res1.A1?.links).to.eql({ foo: 'bar' });
+
+      await setChildData({
+        // onConflict: 'merge', // NB: Merge is default conflict strategy.
+        ns,
+        data: {
+          cells: {
+            A1: {
+              value: 'hello',
+              props: { bar: 456, child: { count: 1 } } as any,
+              links: { zoo: 'hello' },
+            },
+          },
+        },
+      });
+      await ns.save();
+
+      const res2 = await read();
+      expect(res2.A1?.value).to.eql('hello');
+      expect(res2.A1?.props).to.eql({ foo: 123, bar: 456, child: { msg: 'one', count: 1 } }); // NB: Objects are merged.
+      expect(res2.A1?.links).to.eql({ zoo: 'hello', foo: 'bar' });
     });
 
     it('sets error, then clear error', async () => {

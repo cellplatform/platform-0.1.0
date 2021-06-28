@@ -5,11 +5,16 @@ const bus = rx.bus();
 
 describe('main.System', () => {
   describe('Events', () => {
-    const events = System.Events({ bus });
+    const is = System.Events.is;
+
+    it('is (static/instance)', () => {
+      const events = System.Events({ bus });
+      expect(events.is).to.equal(System.Events.is);
+    });
 
     it('is.base', () => {
       const test = (type: string, expected: boolean) => {
-        expect(events.is.base({ type, payload: {} })).to.eql(expected);
+        expect(is.base({ type, payload: {} })).to.eql(expected);
       };
       test('foo', false);
       test('runtime.electron/System/', true);
@@ -17,7 +22,7 @@ describe('main.System', () => {
 
     it('is.data', () => {
       const test = (type: string, expected: boolean) => {
-        expect(events.is.data({ type, payload: {} })).to.eql(expected);
+        expect(is.data({ type, payload: {} })).to.eql(expected);
       };
       test('foo', false);
       test('runtime.electron/System/data/', true);
@@ -25,7 +30,7 @@ describe('main.System', () => {
 
     it('is.open', () => {
       const test = (type: string, expected: boolean) => {
-        expect(events.is.open({ type, payload: {} })).to.eql(expected);
+        expect(is.open({ type, payload: {} })).to.eql(expected);
       };
       test('foo', false);
       test('runtime.electron/System/open/', true);

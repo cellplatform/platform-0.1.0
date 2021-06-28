@@ -9,7 +9,6 @@ import { requestHandler } from './server.requestHandler';
 export * from '../types';
 
 const cors = require('micro-cors')(); // eslint-disable-line
-const IS_PROD = process.env.NODE_ENV === 'production';
 
 /**
  * Initialize the [server].
@@ -28,8 +27,12 @@ export function create(
   const router = args.router || Router.create({ body });
   const logger = args.logger || log;
 
+  const is = {
+    prod: process.env.NODE_ENV === 'production',
+  };
+
   const _events$ = new Subject<t.MicroEvent>();
-  const events$ = _events$.pipe(share());
+  const events$ = _events$.pipe();
   const request$ = _events$.pipe(
     filter((e) => e.type === 'SERVICE/request'),
     map((e) => e.payload as t.IMicroRequest),
@@ -57,27 +60,19 @@ export function create(
 
       const stop: t.IMicroService['stop'] = () => {
         return new Promise<void>(async (resolve, reject) => {
-          if (!service.isRunning) {
-            return resolve(); // Already stopped.
-          } else {
-            listener.close((err) => {
-              service.isRunning = false;
-              api.service = undefined;
-              fire({
-                type: 'SERVICE/stopped',
-                payload: {
-                  port,
-                  elapsed: timer.elapsed,
-                  error: err ? err.message : undefined,
-                },
-              });
-              if (err) {
-                reject(err);
-              } else {
-                resolve();
-              }
+          if (!service.isRunning) return resolve(); // Already stopped.
+
+          listener.close((err) => {
+            service.isRunning = false;
+            api.service = undefined;
+            const error = err ? err.message : undefined;
+            fire({
+              type: 'SERVICE/stopped',
+              payload: { port, elapsed: timer.elapsed, error },
             });
-          }
+            if (err) return reject(err);
+            if (!err) return resolve();
+          });
         });
       };
 
@@ -100,7 +95,7 @@ export function create(
           const url = log.cyan(`http://localhost:${log.white(PORT.external)}${portMap} ${elapsed}`);
           const props = value.deleteUndefined({
             ...(options.log || args.log || {}),
-            prod: IS_PROD,
+            prod: is.prod,
           });
           const keys = Object.keys(props);
           const max = keys.reduce((acc, next) => (next.length > acc ? next.length : acc), 0) + 2;

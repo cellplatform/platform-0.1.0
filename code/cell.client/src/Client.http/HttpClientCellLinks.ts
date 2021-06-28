@@ -1,80 +1,80 @@
-import { Schema, t, Uri } from '../common';
-import { HttpClientFile } from './HttpClientFile';
+import { t, util, Schema, Uri } from '../common';
+import { HttpClientCellLinksInfo } from './HttpClientCellLinks';
+import { HttpClientNs } from './HttpClientNs';
 
-type IHttpClientCellLinksArgs = {
-  links: t.ICellData['links'];
+export * from './HttpClientCellLinks.info';
+
+export function HttpClientCellLinks(args: {
+  uri: t.ICellUri;
   urls: t.IUrls;
   http: t.IHttp;
-};
+  getInfo: () => Promise<t.IHttpClientResponse<t.IResGetCell>>;
+}): t.IHttpClientCellLinks {
+  const { uri, urls, http } = args;
+  const RefLinks = Schema.Ref.Links;
 
-/**
- * HTTP client for operating on a [Cell]'s links.
- */
-export class HttpClientCellLinks implements t.IHttpClientCellLinks {
-  public static create(args: IHttpClientCellLinksArgs): t.IHttpClientCellLinks {
-    return new HttpClientCellLinks(args);
-  }
+  const api: t.IHttpClientCellLinks = {
+    get uri() {
+      return uri.toString();
+    },
 
-  /**
-   * [Lifecycle]
-   */
-  private constructor(args: IHttpClientCellLinksArgs) {
-    const { links = {} } = args;
-    this.args = args;
-    this.list = Object.keys(links).map((key) => this.toLink(key, links[key]));
-  }
+    /**
+     * Retrieve information about the cell's links.
+     */
+    async read() {
+      type T = t.IHttpClientCellLinksInfo;
 
-  /**
-   * [Fields]
-   */
-  private readonly args: IHttpClientCellLinksArgs;
-  public readonly list: t.IHttpClientCellLink[];
+      const info = await args.getInfo();
+      if (info.error) {
+        const message = `Failed to get links for '${uri.toString()}'. ${info.error.message}`;
+        return util.toError<T>(info.status, info.error.type, message);
+      }
 
-  /**
-   * [Properties]
-   */
-  public get files() {
-    return this.list.filter((item) => item.type === 'FILE') as t.IHttpClientCellLinkFile[];
-  }
+      const cell = info.body.data;
+      const links = cell.links || {};
+      const body = HttpClientCellLinksInfo({ links, urls, http });
 
-  /**
-   * [Methods]
-   */
-  public toObject() {
-    return this.args.links;
-  }
+      return util.toClientResponse<T>(200, body);
+    },
 
-  /**
-   * Helpers
-   */
-  private toLink(key: string, value: string): t.IHttpClientCellLink {
-    const { http, urls } = this.args;
-    const uri = Uri.parse(value);
-    const type = uri.parts.type;
+    /**
+     * Write link(s) to the cell.
+     */
+    write(
+      link: t.HttpClientCellLinksSet | t.HttpClientCellLinksSet[],
+      options?: t.IReqQueryNsWrite,
+    ) {
+      const list = Array.isArray(link) ? link : [link];
+      const links = list
+        .map((link) => ({ ...link, key: RefLinks.toKey(link.key) }))
+        .reduce((acc, next) => {
+          acc[next.key] = (next.value || '').trim();
+          return acc;
+        }, {});
+      const ns = HttpClientNs({ uri: Uri.ns(uri.ns), urls, http });
+      return ns.write({ cells: { [uri.key]: { links } } }, options);
+    },
 
-    if (type === 'FILE') {
-      let file: t.IHttpClientFile | undefined;
-      const link = Schema.File.Links.parseValue(value);
-      const uri = link.uri;
-      const hash = link.query.hash || '';
-      const { name, dir, path } = Schema.File.Links.parseKey(key);
-      const res: t.IHttpClientCellLinkFile = {
-        type: 'FILE',
-        uri: uri.toString(),
-        key,
-        path,
-        dir,
-        name,
-        hash,
-        get file() {
-          return file || (file = HttpClientFile.create({ uri, urls, http }));
-        },
-      };
-      return res;
-    }
+    /**
+     * Removes link(s) from the cell.
+     */
+    async delete(key: string | string[], options?: t.IReqQueryNsWrite) {
+      const keys = Array.isArray(key) ? key : [key];
+      const links = keys.map((key) => ({ key, value: '' })); // NB: Empty values are removed.
+      return api.write(links, options);
+    },
 
-    // Type unknown.
-    const res: t.IHttpClientCellLinkUnknown = { type: 'UNKNOWN', key, uri: value };
-    return res;
-  }
+    /**
+     * Determine if the given key(s) exist on the cell.
+     */
+    async exists(key: string | string[]) {
+      const wanted = Array.isArray(key) ? key : [key];
+      const links = (await api.read()).body;
+      const linked = links.list.map((link) => Schema.Ref.Links.parseKey(link.key).path);
+      const exists = linked.some((linkedKey) => wanted.includes(linkedKey));
+      return exists;
+    },
+  };
+
+  return api;
 }

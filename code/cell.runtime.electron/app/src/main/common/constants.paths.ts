@@ -10,7 +10,7 @@ const resolve = (path: string) =>
 /**
  * File paths.
  */
-export const paths = {
+export const Paths = {
   resolve,
 
   data(args: { prod?: boolean; dirname?: string } = {}): t.ElectronDataPaths {
@@ -27,10 +27,18 @@ export const paths = {
   },
 
   preload: resolve('lib/preload.js'),
-  bundle: {
-    base: resolve('lib.bundle'),
-    sys: resolve('lib.bundle/app.sys/web'),
+
+  get bundle() {
+    const base = resolve('lib.bundle');
+    return {
+      base,
+      sys: {
+        source: fs.join(base, 'sys.runtime/web'),
+        target: 'sys.runtime/web',
+      },
+    };
   },
+
   assets: {
     icons: resolve('assets/icons'),
   },

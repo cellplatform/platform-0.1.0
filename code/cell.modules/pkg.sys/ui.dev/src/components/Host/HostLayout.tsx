@@ -8,6 +8,7 @@ import { Button } from '../Primitives';
 export type HostFullscreen = { value: boolean; onClick?: (e: { current: boolean }) => void };
 
 export type HostLayoutProps = {
+  env: t.ActionsModelEnv;
   host?: t.Host;
   subject?: t.ActionSubject<any>;
   fullscreen?: HostFullscreen;
@@ -17,11 +18,14 @@ export type HostLayoutProps = {
 /**
  * A content container providing layout options for testing.
  */
-export const HostLayout: React.FC<HostLayoutProps> = (props = {}) => {
+export const HostLayout: React.FC<HostLayoutProps> = (props) => {
   const { subject, host, fullscreen } = props;
   const items = subject?.items || [];
   const orientation = defaultValue(host?.orientation, 'y');
   const spacing = Math.max(0, defaultValue(host?.spacing, 60));
+
+  const envLayout = { ...props.env.viaSubject.layout, ...props.env.viaAction.layout };
+  const labelColor = envLayout.labelColor ?? -0.5;
 
   const styles = {
     base: css({
@@ -50,8 +54,8 @@ export const HostLayout: React.FC<HostLayoutProps> = (props = {}) => {
         if (onClick) onClick({ current: fullscreen.value });
       }}
     >
-      {!isFullscreen && <Icons.Fullscreen.Enter />}
-      {isFullscreen && <Icons.Fullscreen.Exit />}
+      {!isFullscreen && <Icons.Fullscreen.Enter color={labelColor} />}
+      {isFullscreen && <Icons.Fullscreen.Exit color={labelColor} />}
     </Button>
   );
 

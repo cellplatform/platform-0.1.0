@@ -9,6 +9,5 @@ export * from './value.isEmpty.column';
 export * from './value.isEmpty.row';
 export * from './value.isEmpty.ns';
 export * from './value.setProp';
-export * from './value.squash';
 export * from './value.toggleProp';
-export { isNilOrEmptyObject, isEmptyObject } from '../common';
+export { isNilOrEmptyObject, isEmptyObject, Squash as squash } from '../common';

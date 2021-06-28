@@ -13,12 +13,12 @@ export { Client, HttpClient } from '@platform/cell.client';
 export { MemoryCache, FileCache } from '@platform/cache';
 export { wildcard } from '@platform/util.string/lib/wildcard';
 
-export { TypeSystem, Uri } from './libs.cell';
+export { TypeSystem } from './libs.cell';
 import * as cell from './libs.cell';
 export { cell };
-
 export const models = cell.models;
-export const Schema = cell.Schema;
+
+export { Schema, Uri, Urls, Squash } from '@platform/cell.schema';
 
 import minimatch from 'minimatch';
 export { minimatch };

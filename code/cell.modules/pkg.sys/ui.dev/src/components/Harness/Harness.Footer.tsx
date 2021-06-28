@@ -17,7 +17,7 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
   const isEmpty = actions.length === 0;
 
   const envLayout = { ...props.env.viaSubject.layout, ...props.env.viaAction.layout };
-  const labelColor = envLayout.labelColor || -0.5;
+  const labelColor = envLayout.labelColor ?? -0.5;
   const buttonOverColor = COLORS.BLUE;
 
   const styles = {
@@ -30,7 +30,7 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
     }),
     bg: css({
       Absolute: 0,
-      backdropFilter: `blur(6px) opacity(0.95)`,
+      // backdropFilter: `blur(6px) opacity(0.95)`,
     }),
     body: css({
       Absolute: 0,

@@ -1,4 +1,4 @@
-import { t, util } from '../common';
+import { t, Squash } from '../common';
 
 /**
  * Convert a model change list to [IDbModelChanges].
@@ -23,7 +23,7 @@ export function setProps<P extends Record<string, unknown> = any>(
 ) {
   if (props) {
     model.set({
-      props: util.squash.object({ ...(model.props.props || {}), ...props }) as P,
+      props: Squash.object({ ...(model.props.props || {}), ...props }) as P,
     });
   }
   return model;

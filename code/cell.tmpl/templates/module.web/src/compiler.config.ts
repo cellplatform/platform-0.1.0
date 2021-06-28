@@ -3,6 +3,8 @@ import { Compiler, Package } from '@platform/cell.compiler';
 export default () =>
   Compiler.config()
     .namespace('__NAME__')
+    .version(Package.version)
+
     .variant('web', (config) =>
       config
         .target('web')

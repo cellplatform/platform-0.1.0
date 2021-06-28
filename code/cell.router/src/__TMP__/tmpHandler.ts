@@ -35,7 +35,7 @@ export const tmpHandler: t.RouteHandler = async (req) => {
     log.info('bundle', bundle);
 
     const client = HttpClient.create(bundle.host).cell(bundle.uri);
-    const clientFile = client.file.name('sample/index.json');
+    const clientFile = client.fs.file('sample/index.json');
 
     const res = await clientFile.download();
 

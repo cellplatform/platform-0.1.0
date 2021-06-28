@@ -231,7 +231,7 @@ describe('Compiler (Config)', () => {
       test({}, undefined);
     });
 
-    it('scope', () => {
+    it('namesapce ("scope")', () => {
       const { model, builder } = create();
       expect(model.state.namespace).to.eql(undefined);
 
@@ -249,9 +249,8 @@ describe('Compiler (Config)', () => {
       test('  _foo  ', '_foo');
     });
 
-    it('scope: throw (invalid scope-name)', () => {
-      const { model, builder } = create();
-      expect(model.state.namespace).to.eql(undefined);
+    it('scope: throw (invalid namespace)', () => {
+      const { builder } = create();
 
       const test = (input: any) => {
         const fn = () => builder.namespace(input);
@@ -269,6 +268,40 @@ describe('Compiler (Config)', () => {
       test('  ');
       test(null);
       test({});
+    });
+
+    it('version', () => {
+      const { model, builder } = create();
+      expect(model.state.version).to.eql(undefined);
+
+      const test = (input: any, expected: any) => {
+        builder.version(input);
+        expect(model.state.version).to.eql(expected);
+      };
+
+      test('0.0.0', '0.0.0');
+      test('  1.2.3  ', '1.2.3');
+      test('  ~1.2.3  ', '1.2.3');
+      test('  =v1.2.3  ', '1.2.3');
+      test('  =v2  ', '2.0.0');
+      test('  =v2.1  ', '2.1.0');
+
+      test(undefined, undefined);
+      test(null, undefined);
+      test('', undefined);
+      test('  ', undefined);
+    });
+
+    it('version: throw (invalid semver)', () => {
+      const { builder } = create();
+
+      const test = (input: any) => {
+        const fn = () => builder.version(input);
+        expect(fn).to.throw(/Invalid version/);
+      };
+
+      test('abc');
+      test('-');
     });
 
     it('mode', () => {

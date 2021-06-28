@@ -8,12 +8,14 @@ import { constants, fs, log, t, Urls, util } from '../common';
 import { RuntimeInfo } from './RuntimeInfo';
 
 export const SystemServer = {
+  region: 'local:desktop',
+
   /**
    * Configure a system [http server].
    */
   init(args: { prod?: boolean; log?: t.ILog }) {
     const { prod = false } = args;
-    const paths = constants.paths.data({ prod });
+    const paths = constants.Paths.data({ prod });
 
     const app = server.create({
       name: 'main',
@@ -21,7 +23,7 @@ export const SystemServer = {
       fs: local.init({ dir: paths.fs, fs }),
       runtime: NodeRuntime.create(),
       logger: args.log,
-      prod,
+      region: SystemServer.region,
     });
 
     return { app, paths };
@@ -50,11 +52,22 @@ export const SystemServer = {
       .subscribe((e) => {
         const data: t.IResGetElectronSysInfo = {
           ...e.res.data,
-          region: 'local:desktop',
+          region: SystemServer.region,
           runtime: info,
         };
         e.modify({ ...e.res, data });
       });
+
+    app.response$.subscribe((e) => {
+      /**
+       * TODO 🐷
+       * - check for local "security" token to prevent external apps for mucking with the API.
+       */
+      // e.modify({
+      //   status: 500,
+      //   data: { error: 'Fail' },
+      // });
+    });
 
     // Finish up.
     return { app, instance, paths, host, port };

@@ -1,4 +1,4 @@
-import { t, ENV, Window, System, Bundle } from '../common';
+import { t, ENV, Window, System, Bundle, Paths } from '../common';
 
 /**
  * Module management
@@ -25,14 +25,13 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
 
   submenu.push({
     type: 'normal',
-    label: 'Install: app.sys/web (local)',
+    label: `${Paths.bundle.sys.target} (local)`,
     async click() {
+      const dir = Paths.bundle.sys.target;
       const status = {
         system: await events.system.status.get(),
-        bundle: await events.bundle.status.get({ dir: 'app.sys/web' }),
+        bundle: await events.bundle.status.get({ dir }),
       };
-
-      console.log('status.bundle', status.bundle);
 
       const urls = {
         dev: 'http://localhost:5050', // TEMP 🐷
@@ -48,6 +47,19 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
 
   submenu.push({ type: 'separator' });
 
+  const Push = {
+    item(label: string, url: string) {
+      const handler = async () => {
+        console.log('url', url);
+        await openWindow(url);
+      };
+      submenu.push({ type: 'normal', label: label, click: handler });
+    },
+    separator() {
+      submenu.push({ type: 'separator' });
+    },
+  };
+
   type T = { ns: string; url: string };
   const refs: T[] = [
     {
@@ -60,19 +72,14 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
     },
   ];
 
-  refs.forEach((ref) => {
-    const handler = async () => {
-      const url = ref.url;
-      console.log('url', url);
-      await openWindow(url);
-    };
+  refs.forEach((ref) => Push.item(ref.ns, ref.url));
 
-    submenu.push({
-      type: 'normal',
-      label: `${ref.ns}`,
-      click: handler,
-    });
-  });
+  if (ENV.isDev) {
+    Push.separator();
+
+    const ports = [3032, 3033, 3034, 3036, 3037, 3040];
+    ports.forEach((port) => Push.item(`localhost:${port}`, `http://localhost:${port}`));
+  }
 
   // Finish up.
   return item;

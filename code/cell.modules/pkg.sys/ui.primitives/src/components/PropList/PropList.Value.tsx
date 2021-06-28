@@ -40,19 +40,29 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
 
   const handleClick = () => {
     let message: React.ReactNode;
+    let delay: number | undefined;
+
     const { clipboard, value } = item;
     const { onClick } = value;
 
     if (onClick) {
-      onClick({ item, value, message: (message, delay) => showMessage(message, delay) });
+      onClick({
+        item,
+        value,
+        message: (text, msecs) => {
+          message = text;
+          delay = msecs;
+        },
+      });
     }
 
     if (clipboard && isCopyable) {
-      copyToClipboard(clipboard);
+      const value = typeof clipboard === 'function' ? clipboard() : clipboard;
+      copyToClipboard(value);
       if (!message) message = 'copied';
     }
 
-    if (message) showMessage(message);
+    if (message) showMessage(message, delay);
   };
 
   const renderValue = () => {
@@ -62,7 +72,7 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
       return <SwitchValue value={value} />;
     }
 
-    if (item.isSimple) {
+    if (item.isSimple || message) {
       return (
         <SimpleValue
           value={value}

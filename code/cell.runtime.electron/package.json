@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.runtime.electron",
-  "version": "0.0.189",
+  "version": "0.0.197",
   "description": "Runtime for desktop environments",
   "scripts": {
     "start": "cd app && yarn start",
@@ -10,7 +10,7 @@
     "make": "sh script.sh/make.sh",
     "make-local": "sh script.sh/make-local.sh",
     "build": "cd app && yarn build",
-    "open": "cd app && yarn open",
+    "open": "cd app/out/make/dmg && open .",
     "clean": "sh script.sh/clean.sh",
     "reset": "sh script.sh/reset.sh",
     "nuke": "sh script.sh/nuke.sh",
@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@platform/ts": "4.1.13",
-    "@platform/cell.compiler": "0.3.31",
+    "@platform/cell.compiler": "0.3.39",
     "@types/minimist": "1.2.1",
     "minimist": "1.2.5",
     "ora": "5.4.0"

@@ -13,7 +13,7 @@ export function IpcPump<E extends t.Event>(args: { bus: t.ElectronMainBus }) {
   const { bus } = args;
   const sender = RuntimeUri.main;
 
-  const broadcast = (targets: t.ElectronUri[], data: t.Event) => {
+  const broadcast = (targets: t.RuntimeUri[], data: t.Event) => {
     targets = targets.filter((uri) => uri !== RuntimeUri.main);
     if (targets.length > 0 && typeof data === 'object') {
       // NB: See the [Window.Controller] that catches this event

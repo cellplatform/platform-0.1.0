@@ -21,6 +21,9 @@ dotenv.config({ path: resolve(process.cwd(), '../.env') });
  * Blog posts:
  *    https://kilianvalkhof.com/2019/electron/notarizing-your-electron-application
  *
+ * Details about building for the new Apple M1 silicon:
+ *    https://www.electronjs.org/blog/apple-silicon
+ *
  */
 const config = {
   packagerConfig: {

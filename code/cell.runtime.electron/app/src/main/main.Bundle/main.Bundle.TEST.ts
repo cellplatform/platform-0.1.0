@@ -5,11 +5,16 @@ const bus = rx.bus();
 
 describe('main.Bundle', () => {
   describe('Events', () => {
-    const events = Bundle.Events({ bus });
+    const is = Bundle.Events.is;
+
+    it('is (static/instance)', () => {
+      const events = Bundle.Events({ bus });
+      expect(events.is).to.equal(Bundle.Events.is);
+    });
 
     it('is.base', () => {
       const test = (type: string, expected: boolean) => {
-        expect(events.is.base({ type, payload: {} })).to.eql(expected);
+        expect(is.base({ type, payload: {} })).to.eql(expected);
       };
 
       test('foo', false);
