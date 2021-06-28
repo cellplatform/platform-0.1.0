@@ -5,7 +5,7 @@ import { NpmPackage } from '.';
 describe('NpmPackage (integration)', function () {
   this.timeout(20000);
 
-  it.skip('latestFields (static)', async () => {
+  it.skip('getLatestVersions: "~latest" (static)', async () => {
     const res = await NpmPackage.getLatestVersions(
       {
         react: 'latest',
@@ -18,7 +18,7 @@ describe('NpmPackage (integration)', function () {
     log.info(res);
   });
 
-  it.only('latestFields (static)', async () => {
+  it.only('updateVersions: "~latest" (instance)', async () => {
     const pkg = npm.pkg('./test/sample');
     const res = await pkg.updateVersions({
       // types: ['dependencies', 'devDependencies'],
