@@ -48,7 +48,7 @@ export const bundleToFiles = async (sourceDir: string, targetDir?: string) => {
 export const getManifest = (files: t.IHttpClientCellFileUpload[]) => {
   const file = files.find((f) => f.filename.endsWith('index.json'));
   const json = JSON.parse(file?.data.toString() || '');
-  return json as t.BundleManifest;
+  return json as t.ModuleManifest;
 };
 
 export const uploadBundle = async (
