@@ -34,7 +34,7 @@ export const Paths = {
       base,
       sys: {
         source: resolve(fs.join(base, 'sys.runtime/web')),
-        target: 'app.sys/web',
+        target: 'sys.runtime/web',
       },
     };
   },
