@@ -12,7 +12,7 @@ export const File: React.FC<FileProps> = (props) => {
   const { file } = props;
   const styles = {
     base: css({ Flex: 'horizontal-center-start' }),
-    icon: css({ opacity: 0.3, marginRight: 4, marginTop: -2 }),
+    icon: css({ opacity: 0.3, marginRight: 12, marginTop: -2 }),
     dir: css({ opacity: 0.4 }),
     filename: css({}),
   };
