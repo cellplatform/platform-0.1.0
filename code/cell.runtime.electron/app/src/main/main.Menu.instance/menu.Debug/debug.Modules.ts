@@ -1,4 +1,4 @@
-import { t, ENV, Window, System, Bundle } from '../common';
+import { t, ENV, Window, System, Bundle, Paths } from '../common';
 
 /**
  * Module management
@@ -25,11 +25,12 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
 
   submenu.push({
     type: 'normal',
-    label: 'Install: app.sys/web (local)',
+    label: `${Paths.bundle.sys.target} (local)`,
     async click() {
+      const dir = Paths.bundle.sys.target;
       const status = {
         system: await events.system.status.get(),
-        bundle: await events.bundle.status.get({ dir: 'app.sys/web' }),
+        bundle: await events.bundle.status.get({ dir }),
       };
 
       // console.log('status.bundle', status.bundle);
