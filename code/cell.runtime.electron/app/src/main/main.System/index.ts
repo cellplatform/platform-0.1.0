@@ -1,5 +1,5 @@
-import { Controller } from './main.System.Controller';
-import { Events } from './main.System.Events';
+import { Controller } from './System.Controller';
+import { Events } from './System.Events';
 
 export const System = {
   Controller,

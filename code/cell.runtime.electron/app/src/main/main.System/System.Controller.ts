@@ -1,7 +1,7 @@
 import { t, rx, slug, ENV } from '../common';
-import { Events } from './main.System.Events';
+import { Events } from './System.Events';
 import { RuntimeInfo } from '../main.System.server';
-import { DataController } from './main.System.Controller.data';
+import { DataController } from './System.Controller.data';
 
 /**
  * Behavioral event controller.

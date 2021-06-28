@@ -1,6 +1,6 @@
 import { NetworkBus, RuntimeUri, t } from '../common';
 import { Window } from '../main.Window';
-import { IpcPump } from './main.IpcPump';
+import { IpcPump } from './IpcPump';
 
 /**
  * An event-bus distributed across a number of electron windows

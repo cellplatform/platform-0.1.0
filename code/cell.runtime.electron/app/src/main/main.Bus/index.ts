@@ -1,2 +1,2 @@
-export * from './main.IpcBus';
-export * from './main.IpcPump';
+export * from './IpcBus';
+export * from './IpcPump';

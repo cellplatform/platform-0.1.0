@@ -1,9 +1,9 @@
 import { constants, RuntimeUri, rx, t } from '../common';
-import { IpcSysInfo } from './main.IpcSysInfo';
-import { WindowCreationController } from './main.Window.Controller.create';
-import { WindowStatusController } from './main.Window.Controller.status';
-import { Events } from './main.Window.Events';
-import { WindowChangeController } from './main.Window.Controller.change';
+import { IpcSysInfo } from './IpcSysInfo';
+import { WindowCreationController } from './Window.Controller.create';
+import { WindowStatusController } from './Window.Controller.status';
+import { Events } from './Window.Events';
+import { WindowChangeController } from './Window.Controller.change';
 
 /**
  * Controller logic for working with Electron windows.

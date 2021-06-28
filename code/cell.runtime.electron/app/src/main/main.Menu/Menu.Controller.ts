@@ -1,7 +1,7 @@
 import { Menu } from 'electron';
 
 import { t, rx, slug, R } from '../common';
-import { Events } from './main.Menu.Events';
+import { Events } from './Menu.Events';
 import { MenuTree } from './util';
 
 /**

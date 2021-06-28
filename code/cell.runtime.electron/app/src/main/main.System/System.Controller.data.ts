@@ -1,6 +1,6 @@
 import { app, shell } from 'electron';
 import { t, rx, log, fs } from '../common';
-import { Events } from './main.System.Events';
+import { Events } from './System.Events';
 
 type Events = ReturnType<typeof Events>;
 
