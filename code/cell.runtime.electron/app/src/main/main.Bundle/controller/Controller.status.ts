@@ -1,4 +1,4 @@
-import { fs, Genesis, slug, t, Urls } from '../common';
+import { fs, Genesis, slug, t, Urls } from '../../common';
 
 /**
  * Bundle status logic

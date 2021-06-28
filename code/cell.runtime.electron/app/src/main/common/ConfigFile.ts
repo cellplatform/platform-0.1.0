@@ -18,7 +18,7 @@ export const ConfigFile = {
    */
   default(): t.ElectronConfigFile {
     return {
-      refs: { genesis: Uri.toNs().toString() },
+      refs: { genesis: Uri.create.A1() },
       created: getIdentifierLogItem(),
       started: [],
     };
