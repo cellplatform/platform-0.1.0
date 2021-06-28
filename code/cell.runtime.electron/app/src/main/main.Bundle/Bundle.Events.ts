@@ -1,1 +1,1 @@
-export * from '../../renderer/renderer.Bundle/renderer.Bundle.Events';
+export * from '../../renderer/renderer.Bundle/Bundle.Events';

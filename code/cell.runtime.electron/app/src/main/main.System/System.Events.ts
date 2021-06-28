@@ -1,1 +1,1 @@
-export * from '../../renderer/renderer.System/renderer.System.Events';
+export * from '../../renderer/renderer.System/System.Events';

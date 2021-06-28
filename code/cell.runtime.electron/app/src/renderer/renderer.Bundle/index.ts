@@ -1,5 +1,2 @@
-import { Events } from './renderer.Bundle.Events';
-
-export const Bundle = {
-  Events,
-};
+import { Events } from './Bundle.Events';
+export const Bundle = { Events };

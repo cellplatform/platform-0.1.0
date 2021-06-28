@@ -1,1 +1,1 @@
-export * from '../../renderer/renderer.Menu/renderer.Menu.Events';
+export * from '../../renderer/renderer.Menu/Menu.Events';

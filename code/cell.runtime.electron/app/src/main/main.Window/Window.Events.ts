@@ -1,1 +1,1 @@
-export * from '../../renderer/renderer.Window/renderer.Window.Events';
+export * from '../../renderer/renderer.Window/Window.Events';

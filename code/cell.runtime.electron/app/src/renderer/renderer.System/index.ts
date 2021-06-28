@@ -1,5 +1,2 @@
-import { Events } from './renderer.System.Events';
-
-export const System = {
-  Events,
-};
+import { Events } from './System.Events';
+export const System = { Events };
