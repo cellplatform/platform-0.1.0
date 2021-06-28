@@ -9,5 +9,5 @@ export type Manifest<
 };
 
 export type ManifestHash = {
-  files: string; // NB: The hash of all [filehash]'s in the manifest's [files] list.
+  files: string; // The hash of all [filehash] values in the manifest [files] list.
 };

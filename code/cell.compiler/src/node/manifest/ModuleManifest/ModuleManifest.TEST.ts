@@ -30,12 +30,12 @@ describe('ModuleManifest', function () {
     expect(manifest.hash.files).to.eql(Manifest.hash.files(manifest));
     expect(manifest.hash.files).to.match(/^sha256-/);
 
-    expect(manifest.bundle.namespace).to.eql('ns.test');
-    expect(manifest.bundle.version).to.eql('0.0.0');
+    expect(manifest.module.namespace).to.eql('ns.test');
+    expect(manifest.module.version).to.eql('0.0.0');
 
-    expect(manifest.bundle.mode).to.eql('production');
-    expect(manifest.bundle.target).to.eql('node');
-    expect(manifest.bundle.entry).to.eql('main.js');
+    expect(manifest.module.mode).to.eql('production');
+    expect(manifest.module.target).to.eql('node');
+    expect(manifest.module.entry).to.eql('main.js');
     expect(manifest.files.length).to.greaterThan(2);
 
     const expectEvery = (fn: (file: t.ManifestFile) => boolean) => {

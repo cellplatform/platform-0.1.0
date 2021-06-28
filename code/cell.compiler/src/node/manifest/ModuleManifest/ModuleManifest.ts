@@ -43,7 +43,7 @@ export const ModuleManifest = {
     const REMOTE = DEFAULT.FILE.JS.REMOTE_ENTRY;
     const remoteEntry = files.some((file) => file.path.endsWith(REMOTE)) ? REMOTE : undefined;
 
-    const bundle: M['bundle'] = deleteUndefined({
+    const module: M['module'] = deleteUndefined({
       namespace,
       version,
       mode: data.mode(),
@@ -54,8 +54,8 @@ export const ModuleManifest = {
 
     return {
       hash,
-      kind: 'bundle',
-      bundle,
+      kind: 'module',
+      module,
       files,
     };
   },

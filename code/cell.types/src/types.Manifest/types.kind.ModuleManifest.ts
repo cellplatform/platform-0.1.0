@@ -1,14 +1,16 @@
 import { t } from '../common';
 
 /**
- * Details about a compiled bundle of code.
+ * Details about a compiled Module ("bundle of code").
  */
 export type ModuleManifest = t.Manifest<ModuleManifestFile, ModuleManifestHash> & {
-  kind: 'bundle';
-  bundle: ModuleManifestInfo;
+  kind: 'module';
+  module: ModuleManifestInfo;
 };
 
-export type ModuleManifestHash = t.ManifestHash;
+export type ModuleManifestHash = t.ManifestHash & {
+  // module: string; // The hash of all files AND the [ModuleInfo] meta-data.
+};
 
 export type ModuleManifestFile = t.ManifestFile;
 
