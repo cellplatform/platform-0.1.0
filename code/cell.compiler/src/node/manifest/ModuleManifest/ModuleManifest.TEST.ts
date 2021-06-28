@@ -1,10 +1,10 @@
-import { BundleManifest, Manifest } from '..';
+import { ModuleManifest, Manifest } from '..';
 import { expect, fs, SampleBundles, t, expectError } from '../../../test';
 
-describe('BundleManifest', function () {
+describe('ModuleManifest', function () {
   this.timeout(99999);
 
-  const TMP = fs.resolve('./tmp/test/BundleManifest');
+  const TMP = fs.resolve('./tmp/test/ModuleManifest');
   const config = SampleBundles.simpleNode.config;
   const sourceDir = SampleBundles.simpleNode.outdir;
 
@@ -16,12 +16,12 @@ describe('BundleManifest', function () {
   beforeEach(() => fs.remove(TMP));
 
   it('filename', () => {
-    expect(BundleManifest.filename).to.eql('index.json');
+    expect(ModuleManifest.filename).to.eql('index.json');
   });
 
   it('create', async () => {
     const model = config.toObject();
-    const manifest = await BundleManifest.create({ model, sourceDir });
+    const manifest = await ModuleManifest.create({ model, sourceDir });
     const files = manifest.files;
 
     expect(files.length).to.greaterThan(0);
@@ -58,34 +58,34 @@ describe('BundleManifest', function () {
       ...config.toObject(),
       namespace: undefined, // NB: setup error condition (no "namespace").
     };
-    const fn = () => BundleManifest.create({ model, sourceDir });
+    const fn = () => ModuleManifest.create({ model, sourceDir });
     expectError(fn, `A bundle 'namespace' is required`);
   });
 
   it('writeFile => readFile', async () => {
     const model = config.toObject();
-    const manifest = await BundleManifest.create({ model, sourceDir });
+    const manifest = await ModuleManifest.create({ model, sourceDir });
 
-    const path = fs.join(TMP, BundleManifest.filename);
+    const path = fs.join(TMP, ModuleManifest.filename);
     expect(await fs.pathExists(path)).to.eql(false);
 
-    await BundleManifest.write({ manifest, dir: TMP });
+    await ModuleManifest.write({ manifest, dir: TMP });
     expect(await fs.pathExists(path)).to.eql(true);
 
-    const read = await BundleManifest.read({ dir: TMP });
+    const read = await ModuleManifest.read({ dir: TMP });
     expect(read.path).to.eql(path);
     expect(read.manifest).to.eql(manifest);
   });
 
   it('createAndSave', async () => {
-    const path = fs.join(TMP, BundleManifest.filename);
+    const path = fs.join(TMP, ModuleManifest.filename);
     expect(await fs.pathExists(path)).to.eql(false);
 
     const model = config.toObject();
-    const res = await BundleManifest.createAndSave({ model, sourceDir: TMP });
+    const res = await ModuleManifest.createAndSave({ model, sourceDir: TMP });
     expect(res.path).to.eql(path);
 
-    const read = await BundleManifest.read({ dir: TMP });
+    const read = await ModuleManifest.read({ dir: TMP });
     expect(read.path).to.eql(path);
     expect(read.manifest).to.eql(res.manifest);
   });

@@ -1,12 +1,12 @@
 import { DEFAULT, deleteUndefined, Model, Schema, t } from '../../common';
 import { Manifest, createAndSave } from '../Manifest';
 
-type M = t.BundleManifest;
+type M = t.ModuleManifest;
 
 /**
- * Helpers for creating and working with a [BundleManifest].
+ * Helpers for creating and working with a [ModuleManifest].
  */
-export const BundleManifest = {
+export const ModuleManifest = {
   hash: Manifest.hash,
   validate: Manifest.validate,
 
@@ -31,7 +31,7 @@ export const BundleManifest = {
     sourceDir: string;
     filename?: string; // Default: index.json
   }): Promise<M> {
-    const { sourceDir, model, filename = BundleManifest.filename } = args;
+    const { sourceDir, model, filename = ModuleManifest.filename } = args;
     const data = Model(model);
     const manifest = await Manifest.create({ sourceDir, model, filename });
     const { hash, files } = manifest;
@@ -70,7 +70,7 @@ export const BundleManifest = {
   }) {
     const { model, sourceDir, filename } = args;
     return createAndSave<M>({
-      create: () => BundleManifest.create({ sourceDir, model, filename }),
+      create: () => ModuleManifest.create({ sourceDir, model, filename }),
       sourceDir,
       filename,
       model,
