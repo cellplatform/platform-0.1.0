@@ -4,13 +4,13 @@ type Uri = string;
 type O = Record<string, unknown>;
 type Event = { type: string; payload: O };
 
-export type RuntimeDesktopEnv = {
+export type ElectronEnv = {
   self: Uri;
   runtime: string;
-  network: RuntimeDesktopEnvTransport;
+  network: ElectronEnvTransport;
 };
 
-export type RuntimeDesktopEnvTransport = {
+export type ElectronEnvTransport = {
   pump: NetworkPump<Event>;
   local: () => Promise<Uri>;
   remotes: () => Promise<Uri[]>;
