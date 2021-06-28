@@ -27,7 +27,6 @@ export const ManifestHeader: React.FC<ManifestHeaderProps> = (props) => {
         data: shorten(hash.replace(/^sha256-/, ''), 20),
         clipboard: hash,
         monospace: true,
-        color: COLORS.MAGENTA,
       },
     },
     { label: 'namespace', value: manifest.module.namespace },
@@ -57,7 +56,7 @@ const shorten = (text: string, max: number) => {
   if (text.length < max) {
     return text;
   } else {
-    const DIV = '[..]';
+    const DIV = '..';
     const length = max / 2 - DIV.length / 2;
     const left = text.substring(0, length);
     const right = text.substring(text.length - length);
@@ -66,6 +65,7 @@ const shorten = (text: string, max: number) => {
       base: css({
         Flex: 'horizontal-center-center',
         fontFamily: 'monospace',
+        cursor: 'pointer',
       }),
       edge: css({ color: COLORS.CYAN }),
       left: css({}),
