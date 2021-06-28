@@ -25,10 +25,15 @@ describe('ModuleManifest', function () {
     const files = manifest.files;
 
     expect(files.length).to.greaterThan(0);
-    expect(manifest.kind).to.eql('bundle');
-    expect(manifest.hash.files).to.eql(Manifest.hash.files(files));
-    expect(manifest.hash.files).to.eql(Manifest.hash.files(manifest));
+    expect(manifest.kind).to.eql('module');
+
+    expect(manifest.hash.files).to.eql(ModuleManifest.hash.files(files));
+    expect(manifest.hash.files).to.eql(ModuleManifest.hash.files(manifest));
     expect(manifest.hash.files).to.match(/^sha256-/);
+
+    expect(manifest.hash.module).to.eql(ModuleManifest.hash.module(manifest));
+    expect(manifest.hash.module).to.not.eql(ModuleManifest.hash.files(manifest));
+    expect(manifest.hash.module).to.match(/^sha256-/);
 
     expect(manifest.module.namespace).to.eql('ns.test');
     expect(manifest.module.version).to.eql('0.0.0');

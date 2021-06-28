@@ -9,7 +9,7 @@ export type ModuleManifest = t.Manifest<ModuleManifestFile, ModuleManifestHash> 
 };
 
 export type ModuleManifestHash = t.ManifestHash & {
-  // module: string; // The hash of all files AND the [ModuleInfo] meta-data.
+  module: string; // The hash of all files AND the [ModuleInfo] meta-data.
 };
 
 export type ModuleManifestFile = t.ManifestFile;

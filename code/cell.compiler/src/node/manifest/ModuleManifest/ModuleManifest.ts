@@ -7,8 +7,25 @@ type M = t.ModuleManifest;
  * Helpers for creating and working with a [ModuleManifest].
  */
 export const ModuleManifest = {
-  hash: Manifest.hash,
   validate: Manifest.validate,
+
+  /**
+   * Tools for working with hash checksums of a manifest.
+   */
+  hash: {
+    ...Manifest.hash,
+
+    /**
+     * Calculates the complete module hash, being the:
+     *  1. hash of all files, PLUS
+     *  2. the hash of the "module" meta-data object.
+     */
+    module(input: t.ModuleManifest) {
+      const files = Manifest.hash.files(input.files);
+      const module = input.module;
+      return Schema.hash.sha256({ module, files });
+    },
+  },
 
   /**
    * The filename of the bundle.
@@ -34,7 +51,7 @@ export const ModuleManifest = {
     const { sourceDir, model, filename = ModuleManifest.filename } = args;
     const data = Model(model);
     const manifest = await Manifest.create({ sourceDir, model, filename });
-    const { hash, files } = manifest;
+    const { files } = manifest;
 
     const version = data.version();
     const namespace = data.namespace();
@@ -43,7 +60,7 @@ export const ModuleManifest = {
     const REMOTE = DEFAULT.FILE.JS.REMOTE_ENTRY;
     const remoteEntry = files.some((file) => file.path.endsWith(REMOTE)) ? REMOTE : undefined;
 
-    const module: M['module'] = deleteUndefined({
+    const module: t.ModuleManifestInfo = deleteUndefined({
       namespace,
       version,
       mode: data.mode(),
@@ -51,6 +68,11 @@ export const ModuleManifest = {
       entry: data.entryFile,
       remoteEntry,
     });
+
+    const hash: t.ModuleManifestHash = {
+      files: manifest.hash.files,
+      module: Schema.hash.sha256({ module, files: manifest.hash.files }),
+    };
 
     return {
       hash,

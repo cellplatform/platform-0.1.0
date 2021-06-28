@@ -70,11 +70,11 @@ export const Manifest = {
     const toFile = (path: string) => Manifest.loadFile({ path, baseDir: sourceDir, model });
     const files: t.ManifestFile[] = await Promise.all(paths.map((path) => toFile(path)));
 
-    const manifest: M = {
-      hash: { files: Manifest.hash.files(files) },
-      files,
+    const hash: t.ManifestHash = {
+      files: Manifest.hash.files(files),
     };
 
+    const manifest: M = { hash, files };
     return manifest as T;
   },
 
