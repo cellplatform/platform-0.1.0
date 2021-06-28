@@ -1,6 +1,6 @@
 import { app } from 'electron';
 
-import { constants, ENV, fs, log, rx, t, ConfigFile, time, Genesis, HttpClient } from './common';
+import { constants, fs, log, rx, t, ConfigFile, time, Genesis, HttpClient } from './common';
 import { SystemServer } from './main.System.server';
 import { Window } from './main.Window';
 import { Log } from './main.Log';
@@ -11,6 +11,8 @@ import { BuildMenu } from './main.Menu.instance';
 import { IpcBus } from './main.Bus';
 
 import { TestIpcBusBridging } from './entry.TMP';
+
+const { ENV, Paths } = constants;
 
 /**
  * Ensure all renderer processes are opened in "sandbox" mode.
@@ -78,16 +80,16 @@ export async function start() {
      */
     const bundle = Bundle.Events({ bus });
     await bundle.upload.fire({
-      sourceDir: constants.Paths.bundle.sys,
-      targetDir: 'app.sys/web',
+      sourceDir: Paths.bundle.sys.source,
+      targetDir: Paths.bundle.sys.target,
       force: ENV.isDev, // NB: Only repeat upload when running in development mode.
     });
 
-    const bundleStatus = await bundle.status.get({ dir: 'app.sys/web' });
+    const bundleStatus = await bundle.status.get({ dir: Paths.bundle.sys.target });
     // console.log('-------------------------------------------');
     // console.log('bundleStatus', bundleStatus);
 
-    const preload = constants.Paths.preload;
+    const preload = Paths.preload;
     await logMain({ http, paths: { data: paths, preload } });
 
     // await menu.build({ bus, paths, port: instance.port });
@@ -129,7 +131,6 @@ async function logMain(args: {
     table.add([key, value]);
   };
 
-  const ENV = constants.ENV;
   const isDev = ENV.isDev;
 
   const toSize = async (path: string) => {

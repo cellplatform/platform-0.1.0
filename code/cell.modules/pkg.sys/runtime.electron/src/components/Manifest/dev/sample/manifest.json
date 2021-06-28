@@ -1,9 +1,12 @@
 {
   "hash": {
-    "files": "sha256-c095f673b440ebf0db01afb1c860cddc49f7654b2e356af5681f2b16b2be6025"
+    "files": "sha256-f11947c4a9b286c5da257daf6a62f617ca2a66e2359e86a353108581dddf44af",
+    "module": "sha256-72f1b5bbb709a08d47c4bf27626ab2f33fc47eaf55254781ecdc44a0d3801f23"
   },
-  "kind": "bundle",
-  "bundle": {
+  "kind": "module",
+  "module": {
+    "namespace": "ui.runtime",
+    "version": "0.0.3",
     "mode": "production",
     "target": "web",
     "entry": "index.html",
@@ -11,89 +14,105 @@
   },
   "files": [
     {
-      "path": "450.js",
-      "bytes": 1297352,
-      "filehash": "sha256-c1a7665a500353fb64b604853b3998a5c587038845165fc5f6ee90c0b8c43416"
+      "path": "150.js",
+      "bytes": 10939,
+      "filehash": "sha256-cafa121309bb1e7346e5a1903f2f27314b36d88e411506274eee894f81451e12"
     },
     {
-      "path": "450.js.LICENSE.txt",
-      "bytes": 1714,
-      "filehash": "sha256-e6f2903d3f56fd248dc10df7a13f1cbde0b91c7d0a2894bce070dfed6691ca55"
+      "path": "350.js",
+      "bytes": 123857,
+      "filehash": "sha256-ead242903b313d9b8370eda18627506ebf59dea346e1b0069fe52198675733ac"
     },
     {
-      "path": "452.js",
-      "bytes": 20385,
-      "filehash": "sha256-22b2c3169b08c9ebb867a6e156177a314ca075e01bb23a6ba56981512eeac325"
-    },
-    {
-      "path": "504.js",
-      "bytes": 24347,
-      "filehash": "sha256-ca9be01c1fd3b043a5d61d8be8c19e3d7f9f778cb1d38570bdbec8a8b1af362f"
-    },
-    {
-      "path": "602.js",
-      "bytes": 6521,
-      "filehash": "sha256-77879a352b8e4812ae8400f61ff97fdb021cbe24144abf836f260520e981d33e"
-    },
-    {
-      "path": "696.js",
-      "bytes": 502814,
-      "filehash": "sha256-446c205339c227053a1d3530ddcf365757ed7b2a956e4de0314b47f2cab7175f"
-    },
-    {
-      "path": "701.js",
-      "bytes": 27141,
-      "filehash": "sha256-a8b36a63ff303be9fec6c93b9e14aca55db18febd626e6ff14ca6c6d3ed46435"
-    },
-    {
-      "path": "735.js",
-      "bytes": 7104,
-      "filehash": "sha256-1d745030872e925d72d7784f82e7d0d218c72b6da63e9e26ba35d6138b0aea47"
-    },
-    {
-      "path": "735.js.LICENSE.txt",
-      "bytes": 294,
-      "filehash": "sha256-a0afb13901feb154dfc10c9a6abe98149a16665a1dd5855ad83a098eeb4adbf6"
-    },
-    {
-      "path": "755.js",
-      "bytes": 46976,
-      "filehash": "sha256-92a5605ec3f341b252d274ce251303bb578323d02dcc142192488b1f530b3648"
-    },
-    {
-      "path": "788.js",
-      "bytes": 123866,
-      "filehash": "sha256-38af92bf7f76807f66c0dfe698025273a9c2e9b326f71a23673f61b58f5cbca8"
-    },
-    {
-      "path": "788.js.LICENSE.txt",
+      "path": "350.js.LICENSE.txt",
       "bytes": 545,
       "filehash": "sha256-9fa92ee02006887aeac98fb55dc7569e901fec682a5c63a8691ed07315897c8f"
     },
     {
-      "path": "859.js",
-      "bytes": 5542,
-      "filehash": "sha256-13a41ea963b7d017f57bda6beec723db627a8a099ff509a679c1e59dd07d8b3b"
+      "path": "403.js",
+      "bytes": 16833,
+      "filehash": "sha256-0443bc7e1ac3f578c78192ba4816401a533bfb1949f9546f33c135c5ac6cb515"
     },
     {
-      "path": "932.js",
-      "bytes": 2107,
-      "filehash": "sha256-1d9085c9692d6f9cdbf25e17c5a6f483081a69ab4973b98a36dc6f9896c740ac"
+      "path": "536.js",
+      "bytes": 1314521,
+      "filehash": "sha256-a5670b97aceb53721e3197c12f7a508ae9b5cb2efcee838ae3676be550a00b02"
+    },
+    {
+      "path": "536.js.LICENSE.txt",
+      "bytes": 1714,
+      "filehash": "sha256-e6f2903d3f56fd248dc10df7a13f1cbde0b91c7d0a2894bce070dfed6691ca55"
+    },
+    {
+      "path": "57.js",
+      "bytes": 20902,
+      "filehash": "sha256-ceaf6be41d1cbc5fbd26db7e76b9740d911338c6dd8cb56400a17cd3af50ea59"
+    },
+    {
+      "path": "572.js",
+      "bytes": 12648,
+      "filehash": "sha256-610b924f09aafec7c0b6b9c21e31a4689c48ad3d9b8a872a26c45c04e977c61d"
+    },
+    {
+      "path": "572.js.LICENSE.txt",
+      "bytes": 75,
+      "filehash": "sha256-a99c2f2c3b4abbbfcd5e740f1de023f7855db0de5f882e7e0f50cad3b580ff4a"
+    },
+    {
+      "path": "606.js",
+      "bytes": 24330,
+      "filehash": "sha256-a605bcfc6f9ef85d30496e23b97241cc5987788b249175d2e836bd9ddfa98df2"
+    },
+    {
+      "path": "696.js",
+      "bytes": 2224,
+      "filehash": "sha256-73df14770041523e7cdb819c4a876ec01329448655de8f1d3699b4b3c6597327"
+    },
+    {
+      "path": "858.js",
+      "bytes": 10073,
+      "filehash": "sha256-5617c8fb41c49646cd1dc35061194a8eb2b68041ab05114ff5422f2058d6ceac"
+    },
+    {
+      "path": "901.js",
+      "bytes": 502886,
+      "filehash": "sha256-8474d8af6c7d431c75c82e6a8ee6994e67e0190b3740a0b18162c9564d16e6e6"
+    },
+    {
+      "path": "902.js",
+      "bytes": 7094,
+      "filehash": "sha256-0bcd4865c251684ffd21ed1436f0b4b1d20aa3b837c92bede5c5cc9fca3f29d5"
+    },
+    {
+      "path": "902.js.LICENSE.txt",
+      "bytes": 294,
+      "filehash": "sha256-a0afb13901feb154dfc10c9a6abe98149a16665a1dd5855ad83a098eeb4adbf6"
+    },
+    {
+      "path": "971.js",
+      "bytes": 20409,
+      "filehash": "sha256-a5e16c1b2f0007450cd83c5624fc7a01b36505922d735540d7658e7c0c665607"
     },
     {
       "path": "index.html",
-      "bytes": 313,
-      "filehash": "sha256-ca8464c1a2072456313d57960d3031ce4d3744d1d2b374d43af9df0cca94f5d4"
+      "bytes": 404,
+      "filehash": "sha256-0564463b464336dca72b22c76111f09b6057f958db989807106038974b818d93"
     },
     {
       "path": "main.js",
-      "bytes": 30866,
-      "filehash": "sha256-1b982d70d7aa52732d80a5d032e13df46018374f3016f9ecd180e7f50d9d521a"
+      "bytes": 30837,
+      "filehash": "sha256-db5a1d661f1f5183b569fd3b9ab50c4244536dd2eea0be5f0225b4050294a480"
     },
     {
       "path": "remoteEntry.js",
-      "bytes": 6536,
-      "filehash": "sha256-5d3efd4fc396ad6d64cffe5e83c047269d65faf9cdcdd2254eb36638c8458ac4"
+      "bytes": 6480,
+      "filehash": "sha256-5553a947c315c6686b53c7be947d8c792227abc55e3ed32bf7270ddcf1ebc06c"
+    },
+    {
+      "path": "service.worker.js",
+      "bytes": 31372,
+      "filehash": "sha256-419297d5c422356511b04226b88e38859a3ce93f083c93b5e0ac9be65e65266e",
+      "allowRedirect": false
     },
     {
       "path": "static/favicon.ico",
@@ -101,37 +120,10 @@
       "filehash": "sha256-ccdb85eb44bbb5498437eb8806955f2a901f55641a15667c18b5372c1e900507"
     },
     {
-      "path": "static/images/award.svg",
-      "bytes": 325,
-      "filehash": "sha256-17f2539d5b1269b7a74b1adbb20291715156105aa4a4d5256f86a66544197e93",
-      "public": true,
-      "image": {
-        "kind": "svg",
-        "width": 24,
-        "height": 24
-      }
-    },
-    {
-      "path": "static/images/wax.png",
-      "bytes": 47835,
-      "filehash": "sha256-b7377046e23950a8948b43dbfcd79ff6e629d9d9b495e8101f6f22c3fb56b4a7",
-      "public": true,
-      "image": {
-        "kind": "png",
-        "width": 247,
-        "height": 245
-      }
-    },
-    {
-      "path": "static/images/wax@2x.png",
-      "bytes": 163745,
-      "filehash": "sha256-4c13287f806239af38b4585d1617e12bf3ee63ee73ecc3794ac96dbfdd5c7480",
-      "public": true,
-      "image": {
-        "kind": "png",
-        "width": 492,
-        "height": 490
-      }
+      "path": "web.worker.js",
+      "bytes": 13058,
+      "filehash": "sha256-397fa69d5de04310d5ac568935d90a373f02d6cbdd47db07fed742bb209ee9cb",
+      "allowRedirect": false
     }
   ]
 }

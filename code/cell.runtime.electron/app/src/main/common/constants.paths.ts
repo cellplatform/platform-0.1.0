@@ -27,10 +27,18 @@ export const Paths = {
   },
 
   preload: resolve('lib/preload.js'),
-  bundle: {
-    base: resolve('lib.bundle'),
-    sys: resolve('lib.bundle/app.sys/web'),
+
+  get bundle() {
+    const base = resolve('lib.bundle');
+    return {
+      base,
+      sys: {
+        source: resolve(fs.join(base, 'sys.runtime/web')),
+        target: 'app.sys/web',
+      },
+    };
   },
+
   assets: {
     icons: resolve('assets/icons'),
   },

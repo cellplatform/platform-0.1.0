@@ -14,7 +14,7 @@ export default () =>
         .entry('service.worker', './src/workers/service.worker')
         .entry('web.worker', './src/workers/web.worker')
 
-        .declarations('./src/**/*')
+        // .declarations('./src/**/*')
 
         .static('static')
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))

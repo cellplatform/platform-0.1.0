@@ -10,14 +10,13 @@ export type ManifestHeaderProps = {
 
 export const ManifestHeader: React.FC<ManifestHeaderProps> = (props) => {
   const { manifest } = props;
-  const hash = manifest.hash.files;
+  const hash = manifest.hash.module;
 
   const totalBytes = manifest.files.reduce((acc, next) => acc + next.bytes, 0);
+  const size = filesize(totalBytes, { round: 1 });
 
   const styles = {
-    base: css({
-      Flex: 'horizontal-stretch-start',
-    }),
+    base: css({ Flex: 'horizontal-stretch-start' }),
     qr: css({ position: 'relative', width: 180 }),
   };
 
@@ -31,15 +30,10 @@ export const ManifestHeader: React.FC<ManifestHeaderProps> = (props) => {
         color: COLORS.MAGENTA,
       },
     },
-    { label: 'mode', value: manifest.module.mode },
-    { label: 'target', value: manifest.module.target },
-    { label: 'size', value: filesize(totalBytes, { round: 1 }) },
+    { label: 'namespace', value: manifest.module.namespace },
+    { label: 'version', value: manifest.module.version },
+    { label: 'compilation', value: `${manifest.module.target}:${manifest.module.mode} (${size})` },
   ];
-
-  Object.keys(manifest.module).forEach((key) => {
-    // const value = manifest.bundle[key];
-    // items.push({ label: key, value });
-  });
 
   const elQRCode = (
     <div {...styles.qr}>
@@ -67,7 +61,6 @@ const shorten = (text: string, max: number) => {
     const length = max / 2 - DIV.length / 2;
     const left = text.substring(0, length);
     const right = text.substring(text.length - length);
-    // return `${left}${DIV}${right}`;
 
     const styles = {
       base: css({
