@@ -1,5 +1,5 @@
 {
-  "name": "sys.ui.runtime",
+  "name": "sys.runtime.electron",
   "version": "0.0.3",
   "sideEffects": false,
   "compiler": {

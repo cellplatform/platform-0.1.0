@@ -1,10 +1,12 @@
 import { t } from './common';
 
+type Uri = string;
+
 export type SystemStatus = {
   service: SystemStatusService;
   is: { prod: boolean; dev: boolean; mac: boolean };
   runtime: t.ElectronRuntimeInfo;
-  refs: t.ElectronConfigFile['refs'];
+  genesis: Uri;
 };
 
 export type SystemStatusService = {

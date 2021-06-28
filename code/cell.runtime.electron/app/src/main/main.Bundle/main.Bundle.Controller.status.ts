@@ -30,8 +30,8 @@ export function StatusController(args: {
       });
     }
 
-    const manifest = (await file.download()).body as t.BundleManifest;
-    const entry = fs.join(dir, manifest.bundle.entry);
+    const manifest = (await file.download()).body as t.ModuleManifest;
+    const entry = fs.join(dir, manifest.module.entry);
     const url = Urls.create(host).cell(cell).file.byName(entry).toString();
     const status: t.BundleStatus = { host, cell, dir, url, manifest };
 

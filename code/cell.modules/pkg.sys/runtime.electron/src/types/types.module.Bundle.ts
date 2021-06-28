@@ -1,4 +1,4 @@
-import { t, Observable } from './common';
+import { t } from './common';
 
 type Uri = string;
 
@@ -7,23 +7,23 @@ export type BundleStatus = {
   cell: Uri;
   dir: string;
   url: string;
-  manifest: t.BundleManifest;
+  manifest: t.ModuleManifest;
 };
 
 /**
  * Event API.
  */
 export type BundleEvents = t.IDisposable & {
-  $: Observable<BundleEvent>;
+  $: t.Observable<BundleEvent>;
   is: { base(input: any): boolean };
   status: {
-    req$: Observable<BundleStatusReq>;
-    res$: Observable<BundleStatusRes>;
+    req$: t.Observable<BundleStatusReq>;
+    res$: t.Observable<BundleStatusRes>;
     get(args: { dir: string; cell?: Uri | t.ICellUri }): Promise<BundleStatus | undefined>;
   };
   upload: {
-    req$: Observable<t.BundleUploadReq>;
-    res$: Observable<t.BundleUploadRes>;
+    req$: t.Observable<t.BundleUploadReq>;
+    res$: t.Observable<t.BundleUploadRes>;
     fire(args: { sourceDir: string; targetDir: string; force?: boolean }): Promise<BundleUploadRes>;
   };
 };

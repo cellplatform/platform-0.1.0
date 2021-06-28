@@ -1,6 +1,6 @@
 import React from 'react';
 import { bundle, css, CssValue, log } from '../../common';
-import Award from '../../../static/images/award.svg';
+// import Award from '../../../static/images/award.svg';
 
 // import { part } from '../../../static/images/';
 
@@ -21,10 +21,7 @@ export const Sample: React.FC<SampleProps> = (props: SampleProps) => {
   return (
     <div {...css(styles.base, props.style)}>
       <h1>{props.count}. Hello World! </h1>
-      <div {...styles.images}>
-        <Award width={60} style={styles.award} />
-        <img src={bundle.path('/static/images/wax@2x.png')} {...styles.wax} />
-      </div>
+      <div {...styles.images}></div>
       <ul {...styles.ul}>
         {Object.keys(bundle)
           .map((key) => ({ key, value: bundle[key] }))

@@ -21,7 +21,7 @@ export function UploadController(args: {
   events.upload.req$.subscribe(async (e) => {
     const { sourceDir, targetDir, silent, tx = slug() } = e;
 
-    const manifest = (await fs.readJson(fs.join(sourceDir, 'index.json'))) as t.BundleManifest;
+    const manifest = (await fs.readJson(fs.join(sourceDir, 'index.json'))) as t.ModuleManifest;
     const current = await events.status.get({ dir: targetDir });
 
     const hash = {

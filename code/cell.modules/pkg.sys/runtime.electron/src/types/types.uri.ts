@@ -1,5 +1,3 @@
-import { t } from './common';
-
 export type RuntimeUri = ProcessUri;
 
 export type ProcessUri = ProcessMainUri | ProcessWindowUri;

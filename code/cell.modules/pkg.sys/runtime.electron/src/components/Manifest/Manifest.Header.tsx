@@ -4,7 +4,7 @@ import { filesize, color, css, CssValue, t, PropList, PropListItem, COLORS } fro
 import { QRCode } from 'sys.ui.primitives/lib/components/QRCode';
 
 export type ManifestHeaderProps = {
-  manifest: t.BundleManifest;
+  manifest: t.ModuleManifest;
   style?: CssValue;
 };
 
@@ -36,7 +36,7 @@ export const ManifestHeader: React.FC<ManifestHeaderProps> = (props) => {
     { label: 'size', value: filesize(totalBytes, { round: 1 }) },
   ];
 
-  Object.keys(manifest.bundle).forEach((key) => {
+  Object.keys(manifest.module).forEach((key) => {
     // const value = manifest.bundle[key];
     // items.push({ label: key, value });
   });

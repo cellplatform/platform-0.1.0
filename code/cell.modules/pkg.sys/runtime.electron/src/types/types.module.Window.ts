@@ -1,4 +1,4 @@
-import { t, Observable } from './common';
+import { t } from './common';
 
 export type WindowAction = 'close' | 'resize' | 'move';
 export type WindowId = number;
@@ -21,12 +21,12 @@ export type WindowBounds = { x: number; y: number; width: number; height: number
  * Event API.
  */
 export type WindowEvents = t.IDisposable & {
-  $: Observable<WindowEvent>;
+  $: t.Observable<WindowEvent>;
   is: { base(input: any): boolean };
 
   create: {
-    req$: Observable<t.WindowCreateReq>;
-    res$: Observable<t.WindowCreateRes>;
+    req$: t.Observable<t.WindowCreateReq>;
+    res$: t.Observable<t.WindowCreateRes>;
     fire(args: {
       url: string;
       devTools?: t.WindowCreateReq['devTools'];
@@ -35,14 +35,14 @@ export type WindowEvents = t.IDisposable & {
   };
 
   status: {
-    req$: Observable<t.WindowStatusReq>;
-    res$: Observable<t.WindowsStatusRes>;
+    req$: t.Observable<t.WindowStatusReq>;
+    res$: t.Observable<t.WindowsStatusRes>;
     get(): Promise<{ windows: t.WindowStatus[] }>;
   };
 
   change: {
-    before$: Observable<t.WindowChange>;
-    after$: Observable<t.WindowChanged>;
+    before$: t.Observable<t.WindowChange>;
+    after$: t.Observable<t.WindowChanged>;
     fire(
       window: t.WindowIdParam,
       options?: { bounds?: Partial<t.WindowBounds>; isVisible?: boolean },

@@ -11,11 +11,7 @@ export type IpcMessageEvent = {
   type: 'runtime.electron/ipc/msg';
   payload: IpcMessage;
 };
-export type IpcMessage = {
-  sender: Uri;
-  targets: Uri[];
-  data: Event;
-};
+export type IpcMessage = { sender: Uri; targets: Uri[]; data: Event };
 
 /**
  * Fired to retrieve the current system state.
@@ -24,15 +20,10 @@ export type IpcSystemReqEvent = {
   type: 'runtime.electron/ipc/sys:req';
   payload: IpcSystemReq;
 };
-export type IpcSystemReq = {
-  sender: Uri;
-};
+export type IpcSystemReq = { sender: Uri };
 
 export type IpcSystemResEvent = {
   type: 'runtime.electron/ipc/sys:res';
   payload: IpcSystemRes;
 };
-export type IpcSystemRes = {
-  main: Uri;
-  windows: Uri[];
-};
+export type IpcSystemRes = { main: Uri; windows: Uri[] };
