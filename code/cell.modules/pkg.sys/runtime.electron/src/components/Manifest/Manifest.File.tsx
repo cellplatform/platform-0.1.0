@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, COLORS, css, CssValue, t } from '../../common';
+import { COLORS, css, CssValue, t } from '../../common';
 import { Icons } from './Icons';
 
 /**
@@ -12,7 +12,7 @@ export const File: React.FC<FileProps> = (props) => {
   const { file } = props;
   const styles = {
     base: css({ Flex: 'horizontal-center-start' }),
-    icon: css({ marginRight: 4, opacity: 0.3 }),
+    icon: css({ opacity: 0.3, marginRight: 4, marginTop: -2 }),
     dir: css({ opacity: 0.4 }),
     filename: css({}),
   };
