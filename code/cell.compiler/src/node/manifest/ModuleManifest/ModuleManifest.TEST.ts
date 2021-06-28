@@ -1,4 +1,4 @@
-import { ModuleManifest, Manifest } from '..';
+import { ModuleManifest } from '..';
 import { expect, fs, SampleBundles, t, expectError } from '../../../test';
 
 describe('ModuleManifest', function () {

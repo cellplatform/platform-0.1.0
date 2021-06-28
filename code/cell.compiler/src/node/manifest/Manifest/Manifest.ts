@@ -150,7 +150,7 @@ export const Manifest = {
       });
     }
 
-    // Compare file-hashe checksums.
+    // Compare file-hash checksums.
     await Promise.all(
       manifest.files.map(async (file) => {
         const path = fs.join(dir, file.path);
