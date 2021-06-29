@@ -67,9 +67,20 @@ export async function onCompiled(args: {
 
   await copyStatic({ model, bundleDir });
   await ModuleManifest.createAndSave({ model, sourceDir: bundleDir });
-  await fs.zip(bundleDir).save(`${bundleDir}.zip`);
+  await saveZippedBundle({ bundleDir });
 
   afterCompile({ model, compilation, webpack });
+}
+
+async function saveZippedBundle(args: { bundleDir: string }) {
+  const targetDir = `${args.bundleDir}.bundle`;
+  const bundleCopy = fs.join(targetDir, 'bundle');
+
+  await fs.ensureDir(targetDir);
+  await fs.copy(fs.join(args.bundleDir, 'index.json'), fs.join(targetDir, 'manifest.json'));
+  await fs.copy(args.bundleDir, bundleCopy);
+  await fs.zip(bundleCopy).save(`${bundleCopy}.zip`);
+  await fs.remove(bundleCopy);
 }
 
 /**
