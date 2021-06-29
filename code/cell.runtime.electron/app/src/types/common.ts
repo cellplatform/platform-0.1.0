@@ -1,2 +1,2 @@
-import * as t from '../common/types';
+import * as t from '../renderer/common/types';
 export { t };

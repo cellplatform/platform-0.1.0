@@ -1,4 +1,4 @@
-import { expect } from '../test';
+import { expect } from '../../test';
 import { RuntimeUri } from './RuntimeUri';
 
 describe('Uri', () => {

@@ -1,6 +1,6 @@
 import { app } from 'electron';
 
-export * from '../../common/constants';
+export * from '../../renderer.preload/constants';
 export * from './constants.paths';
 
 type Pkg = { name: string; version: string };

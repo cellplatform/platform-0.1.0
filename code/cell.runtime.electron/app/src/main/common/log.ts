@@ -6,8 +6,7 @@ import { Uri, fs } from './libs';
 import { ENV } from './constants';
 import * as t from './types';
 
-import { IServerLog } from '@platform/log/lib/server/types';
-export type ElectronLog = IServerLog & { format: ElectronLogFormat };
+export type ElectronLog = t.IServerLog & { format: ElectronLogFormat };
 export type ElectronLogFormat = {
   uri(input?: string | t.IUri): string;
   filepath(input?: string): string;

@@ -8,6 +8,6 @@ export * from './libs';
 export * from './log';
 export * from './ConfigFile';
 export * from './Genesis';
-export * from '../../common/RuntimeUri';
+export * from '../../renderer/common/RuntimeUri';
 
 export const ENV = constants.ENV;
