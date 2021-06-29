@@ -4,7 +4,7 @@ import { server } from '@platform/cell.service/lib/node/server';
 import { NeDb } from '@platform/fsdb.nedb';
 import { filter } from 'rxjs/operators';
 
-import { constants, fs, log, t, Urls, util } from '../common';
+import { fs, log, t, Urls, util, Paths } from '../common';
 import { RuntimeInfo } from './RuntimeInfo';
 
 export const SystemServer = {
@@ -13,16 +13,16 @@ export const SystemServer = {
   /**
    * Configure a system [http server].
    */
-  init(args: { prod?: boolean; log?: t.ILog }) {
-    const { prod = false } = args;
-    const paths = constants.Paths.data({ prod });
+  init(options: { prod?: boolean; log?: t.ILog }) {
+    const { prod = false } = options;
+    const paths = Paths.data({ prod });
 
     const app = server.create({
       name: 'main',
       db: NeDb.create({ filename: paths.db }),
       fs: local.init({ dir: paths.fs, fs }),
       runtime: NodeRuntime.create(),
-      logger: args.log,
+      logger: options.log,
       region: SystemServer.region,
     });
 
@@ -33,12 +33,18 @@ export const SystemServer = {
    * Configure and start a system [http server].
    */
   async start(
-    args: { prod?: boolean; log?: t.ILog; port?: number; isDev?: boolean; silent?: boolean } = {},
+    options: {
+      prod?: boolean;
+      log?: t.ILog;
+      port?: number;
+      isDev?: boolean;
+      silent?: boolean;
+    } = {},
   ) {
-    const { silent } = args;
-    const { app, paths } = SystemServer.init(args);
+    const { silent } = options;
+    const { app, paths } = SystemServer.init(options);
 
-    const port = await util.port.unused(args.port);
+    const port = await util.port.unused(options.port);
     const instance = await app.start({ port, silent });
     const host = `localhost:${port}`;
     const info = RuntimeInfo({ paths });
