@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { filesize, color, css, CssValue, t, PropList, PropListItem, COLORS } from '../../common';
 
+import { Icons } from './Icons';
 import { QRCode } from 'sys.ui.primitives/lib/components/QRCode';
 
 export type ManifestHeaderProps = {
@@ -21,6 +22,17 @@ export const ManifestHeader: React.FC<ManifestHeaderProps> = (props) => {
   };
 
   const items: PropListItem[] = [
+    { label: 'namespace', value: { data: manifest.module.namespace, bold: true } },
+    { label: 'version', value: { data: manifest.module.version } },
+    {
+      label: 'compilation',
+      tooltip: `using: ${manifest.module.compiler}`,
+      value: (
+        <div>
+          {manifest.module.target}:{manifest.module.mode} ({size})
+        </div>
+      ),
+    },
     {
       label: 'hash (sha256)',
       value: {
@@ -29,9 +41,6 @@ export const ManifestHeader: React.FC<ManifestHeaderProps> = (props) => {
         monospace: true,
       },
     },
-    { label: 'namespace', value: manifest.module.namespace },
-    { label: 'version', value: manifest.module.version },
-    { label: 'compilation', value: `${manifest.module.target}:${manifest.module.mode} (${size})` },
   ];
 
   const elQRCode = (
@@ -43,7 +52,7 @@ export const ManifestHeader: React.FC<ManifestHeaderProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       {elQRCode}
-      <PropList title={'Module Bundle'} items={items} defaults={{ clipboard: false }} />
+      <PropList title={'Module'} items={items} defaults={{ clipboard: false }} />
     </div>
   );
 };
