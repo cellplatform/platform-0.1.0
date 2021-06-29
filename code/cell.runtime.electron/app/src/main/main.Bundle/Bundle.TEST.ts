@@ -1,4 +1,4 @@
-import { expect, rx } from '../../test';
+import { expect, rx, Mock, IMock } from '../../test';
 import { Bundle } from '.';
 
 const bus = rx.bus();
@@ -22,6 +22,20 @@ describe('main.Bundle', () => {
 
       test('runtime.electron/Bundle/', true);
       test('runtime.electron/Bundle/status:req', true);
+    });
+  });
+
+  describe.only('Controller', () => {
+    describe('list', () => {
+      let mock: IMock;
+      before(async () => (mock = await Mock.init()));
+      after(async () => mock?.dispose());
+
+      it('empty', async () => {
+        const res = await mock.events.bundle.list.get();
+        expect(res.items).to.eql([]);
+        expect(res.error).to.eql(undefined);
+      });
     });
   });
 });

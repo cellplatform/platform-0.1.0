@@ -21,8 +21,6 @@ export function UploadController(args: {
   events.upload.req$.subscribe(async (e) => {
     try {
       const { sourceDir, targetDir, silent, tx = slug() } = e;
-      const sourceDirExists = await fs.exists(sourceDir);
-
       const manifest = (await fs.readJson(fs.join(sourceDir, 'index.json'))) as t.ModuleManifest;
       const current = await events.status.get({ dir: targetDir });
 

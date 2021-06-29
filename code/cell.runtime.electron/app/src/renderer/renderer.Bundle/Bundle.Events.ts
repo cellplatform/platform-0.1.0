@@ -1,5 +1,5 @@
-import { firstValueFrom } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { firstValueFrom, of } from 'rxjs';
+import { filter, takeUntil, timeout, catchError } from 'rxjs/operators';
 import { rx, slug, t } from '../common';
 
 type Uri = string;
@@ -16,6 +16,28 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
     takeUntil(dispose$),
     filter((e) => is.base(e)),
   );
+
+  const list: t.BundleEvents['list'] = {
+    req$: rx.payload<t.BundleListReqEvent>($, 'runtime.electron/Bundle/list:req'),
+    res$: rx.payload<t.BundleListResEvent>($, 'runtime.electron/Bundle/list:res'),
+    async get(args = {}) {
+      const msecs = args.timeout ?? 1000;
+      const tx = slug();
+      const first = firstValueFrom(
+        list.res$.pipe(
+          filter((e) => e.tx === tx),
+          timeout(msecs),
+          catchError(() => of(`Bundle listing timed out after ${msecs} msecs`)),
+        ),
+      );
+      bus.fire({
+        type: 'runtime.electron/Bundle/list:req',
+        payload: { tx },
+      });
+      const res = await first;
+      return typeof res === 'string' ? { items: [], error: res } : { items: res.items };
+    },
+  };
 
   const status = {
     req$: rx.payload<t.BundleStatusReqEvent>($, 'runtime.electron/Bundle/status:req'),
@@ -48,7 +70,7 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
     },
   };
 
-  return { $, is, dispose, dispose$, status, upload };
+  return { $, is, dispose, dispose$, list, status, upload };
 }
 
 /**

@@ -12,6 +12,19 @@ export function StatusController(args: {
   const host = http.origin;
 
   /**
+   * List
+   */
+  events.list.req$.subscribe(async (e) => {
+    console.log('list', e);
+    const { tx = slug() } = e;
+
+    return bus.fire({
+      type: 'runtime.electron/Bundle/list:res',
+      payload: { tx, items: [] },
+    });
+  });
+
+  /**
    * Retrieve the status of a local bundle.
    */
   events.status.req$.subscribe(async (e) => {

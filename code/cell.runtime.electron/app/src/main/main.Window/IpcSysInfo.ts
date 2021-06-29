@@ -31,7 +31,7 @@ export function IpcSysInfo(args: { channel: string; getRefs: () => WindowRef[] }
      * Listen to the IPC channel for incoming requests.
      */
     listen() {
-      ipc.on(channel, (ipc, event: t.IpcEvent) => {
+      ipc?.on(channel, (ipc, event: t.IpcEvent) => {
         if (event.type === 'runtime.electron/ipc/sys:req') {
           const targets = [event.payload.sender];
           sys.broadcast({ targets });
