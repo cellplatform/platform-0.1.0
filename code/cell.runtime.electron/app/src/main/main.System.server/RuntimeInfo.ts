@@ -15,7 +15,7 @@ export function RuntimeInfo(args: { paths: t.ElectronDataPaths }) {
   const info: t.ElectronRuntimeInfo = {
     type: ENV.pkg.name,
     version: ENV.pkg.version,
-    packaged: electron.isPackaged,
+    packaged: electron?.isPackaged ?? false,
     env,
     paths,
     versions: {

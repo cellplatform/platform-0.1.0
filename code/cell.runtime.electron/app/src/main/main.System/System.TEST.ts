@@ -1,4 +1,4 @@
-import { expect, rx } from '../../test';
+import { expect, rx, Mock, t, ENV } from '../../test';
 import { System } from '.';
 
 const bus = rx.bus();
@@ -34,6 +34,22 @@ describe('main.System', () => {
       };
       test('foo', false);
       test('runtime.electron/System/open/', true);
+    });
+  });
+
+  describe('Server', () => {
+    it('start (http)', async () => {
+      const mock = await Mock.server();
+
+      const res = await mock.http.info();
+      const body = res.body as t.IResGetElectronSysInfo;
+      mock.dispose();
+
+      expect(res.status).to.eql(200);
+      expect(body.host).to.eql(`localhost:${mock.port}`);
+      expect(body.region).to.eql('local:desktop');
+      expect(body.runtime.type).to.eql('cell.runtime.electron');
+      expect(body.runtime.version).to.eql(ENV.pkg.version);
     });
   });
 });
