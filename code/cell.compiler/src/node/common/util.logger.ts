@@ -60,7 +60,7 @@ export const Logger = {
 
     if (options.url) {
       let url = typeof options.url === 'string' ? options.url : 'http://localhost';
-      url = port === 80 ? url : `${url}:${port}`;
+      url = port === 80 ? url : `${url}:${log.white(port)}`;
       add('url', cyan(url));
     }
 
