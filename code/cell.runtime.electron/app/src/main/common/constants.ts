@@ -19,7 +19,7 @@ export const ENV = {
     return app ? app.isPackaged : false;
   },
   get isDev() {
-    return ENV.isPackaged ? false : ENV.node === 'development';
+    return ENV.isPackaged ? false : ENV.node !== 'production';
   },
   get isProd() {
     return ENV.isPackaged ? true : ENV.node === 'production';

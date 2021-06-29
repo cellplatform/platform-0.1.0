@@ -1,8 +1,8 @@
 import { app } from 'electron';
+import log from 'electron-log';
+
 import { fs } from './libs';
 import * as t from './types';
-
-import electronLog from 'electron-log';
 
 const resolve = (path: string) =>
   app?.isPackaged ? fs.join(app.getAppPath(), path) : fs.resolve(path);
@@ -13,16 +13,26 @@ const resolve = (path: string) =>
 export const Paths = {
   resolve,
 
-  data(args: { prod?: boolean; dirname?: string } = {}): t.ElectronDataPaths {
-    const { prod = false, dirname = 'A1' } = args;
-    const dir = prod ? fs.join(app.getPath('documents'), dirname) : fs.resolve('../.data');
+  tmp: {
+    base: fs.resolve('../tmp'),
+    test: fs.resolve('../tmp.test'),
+  },
+
+  data(options: { prod?: boolean; dirname?: string } = {}): t.ElectronDataPaths {
+    const { prod = false, dirname = 'A1' } = options;
+    const NODE_ENV = process.env.NODE_ENV;
+
+    let dir = '';
+    if (prod) dir = fs.join(app.getPath('documents'), dirname);
+    if (!prod) dir = NODE_ENV === 'test' ? Paths.tmp.test : Paths.tmp.base;
+
     return {
       dir,
       db: `${dir}/data/local.db`,
       fs: `${dir}/data/local.fs`,
       config: `${dir}/data/config.json`,
       archive: `${dir}/data.backup`,
-      log: electronLog.transports.file.getFile().path,
+      log: log.transports.file.getFile().path,
     };
   },
 
