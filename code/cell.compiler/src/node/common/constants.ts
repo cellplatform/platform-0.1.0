@@ -19,6 +19,14 @@ export const PKG = {
   load: () => fs.readJsonSync(PKG.PATH) as t.CompilerPackageJson,
 };
 
+export const COMPILER = {
+  PATH: fs.join(__dirname, '../../../package.json'),
+  load() {
+    const { name, version } = fs.readJsonSync(COMPILER.PATH) as t.INpmPackageJson;
+    return { name, version };
+  },
+};
+
 export const IS_CLOUD = Boolean(env('VERCEL_REGION'));
 const TMP = IS_CLOUD ? '/tmp' : fs.resolve('tmp');
 

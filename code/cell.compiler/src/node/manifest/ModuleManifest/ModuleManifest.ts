@@ -50,7 +50,7 @@ export const ModuleManifest = {
   }): Promise<M> {
     const { sourceDir, model, filename = ModuleManifest.filename } = args;
 
-    const pkg = constants.PKG.load();
+    const pkg = constants.COMPILER.load();
     const data = Model(model);
     const manifest = await Manifest.create({ sourceDir, model, filename });
     const { files } = manifest;
