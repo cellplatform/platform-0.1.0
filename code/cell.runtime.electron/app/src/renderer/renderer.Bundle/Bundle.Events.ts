@@ -20,9 +20,9 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
   const list: t.BundleEvents['list'] = {
     req$: rx.payload<t.BundleListReqEvent>($, 'runtime.electron/Bundle/list:req'),
     res$: rx.payload<t.BundleListResEvent>($, 'runtime.electron/Bundle/list:res'),
-    async get(args = {}) {
-      const msecs = args.timeout ?? 1000;
+    async get(options = {}) {
       const tx = slug();
+      const msecs = options.timeout ?? 1000;
       const first = firstValueFrom(
         list.res$.pipe(
           filter((e) => e.tx === tx),
@@ -39,7 +39,29 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
     },
   };
 
-  const status = {
+  const put: t.BundleEvents['put'] = {
+    req$: rx.payload<t.BundlePutReqEvent>($, 'runtime.electron/Bundle/put:req'),
+    res$: rx.payload<t.BundlePutResEvent>($, 'runtime.electron/Bundle/put:res'),
+    async add(source, options = {}) {
+      const tx = slug();
+      const msecs = options.timeout ?? 1000;
+      const first = firstValueFrom(
+        put.res$.pipe(
+          filter((e) => e.tx === tx),
+          timeout(msecs),
+          catchError(() => of(`Bundle listing timed out after ${msecs} msecs`)),
+        ),
+      );
+      bus.fire({
+        type: 'runtime.electron/Bundle/put:req',
+        payload: { tx, action: 'add', source },
+      });
+      const res = await first;
+      return { tx, error: typeof res === 'string' ? res : res.error };
+    },
+  };
+
+  const status: t.BundleEvents['status'] = {
     req$: rx.payload<t.BundleStatusReqEvent>($, 'runtime.electron/Bundle/status:req'),
     res$: rx.payload<t.BundleStatusResEvent>($, 'runtime.electron/Bundle/status:res'),
     async get(args: { dir: string; cell?: Uri | t.ICellUri }) {
@@ -55,7 +77,7 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
     },
   };
 
-  const upload = {
+  const upload: t.BundleEvents['upload'] = {
     req$: rx.payload<t.BundleUploadReqEvent>($, 'runtime.electron/Bundle/upload:req'),
     res$: rx.payload<t.BundleUploadResEvent>($, 'runtime.electron/Bundle/upload:res'),
     fire(args: { sourceDir: string; targetDir: string; force?: boolean }) {
@@ -70,7 +92,7 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
     },
   };
 
-  return { $, is, dispose, dispose$, list, status, upload };
+  return { $, is, dispose, dispose$, list, put, status, upload };
 }
 
 /**
