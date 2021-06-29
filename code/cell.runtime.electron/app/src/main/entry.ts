@@ -37,8 +37,6 @@ export async function start() {
     const port = prod ? undefined : 5000;
     const { paths, host } = await SystemServer.start({ log, prod, port });
 
-    log.DEBUG('server started');
-
     // Initialize the HTTP client.
     const http = HttpClient.create(host);
     http.request$.subscribe((e) => {
@@ -52,9 +50,6 @@ export async function start() {
     // Load the configuration JSON file.
     const config = await ConfigFile.read();
     const genesis = Genesis(http);
-
-    log.DEBUG('config file loaded');
-    log.DEBUG(config);
 
     // Wait for electron to finish starting.
     await app.whenReady();
@@ -71,31 +66,14 @@ export async function start() {
      */
     TestIpcBusBridging({ bus });
 
-    log.DEBUG('Initialize sub-contollers:');
-    log.DEBUG();
-
     /**
      * Initialize controllers.
      */
-    log.DEBUG('• System.Controller');
     System.Controller({ bus, host, paths, config });
-    log.DEBUG('--done');
-
-    log.DEBUG('• Bundle.Controller');
     Bundle.Controller({ bus, http });
-    log.DEBUG('--done');
-
-    log.DEBUG('• Window.Controller');
     Window.Controller({ bus });
-    log.DEBUG('--done');
-
-    log.DEBUG('• Log.Controller');
     Log.Controller({ bus });
-    log.DEBUG('--done');
-
-    log.DEBUG('• Menu.Controller');
     Menu.Controller({ bus });
-    log.DEBUG('--done');
 
     /**
      * Upload bundled system code into the local service.
@@ -106,28 +84,20 @@ export async function start() {
       targetDir: Paths.bundle.sys.target,
       force: ENV.isDev, // NB: Only repeat upload when running in development mode.
     });
-    log.DEBUG('--done: upload');
 
     const bundleStatus = await bundle.status.get({ dir: Paths.bundle.sys.target });
     // console.log('-------------------------------------------');
     // console.log('bundleStatus', bundleStatus);
 
-    log.DEBUG('+ logMain');
     const preload = Paths.preload;
     await logMain({ http, paths: { data: paths, preload } });
-    log.DEBUG('--done: logging main');
 
     // await menu.build({ bus, paths, port: instance.port });
-    log.DEBUG('+ BuildMenu');
     BuildMenu({ bus, http }).load();
-    log.DEBUG('--done: building menu');
 
     const sysEvents = System.Events({ bus });
     const sysStatus = await sysEvents.status.get();
     // log.info('System Status', sysStatus);
-
-    // TEMP 🐷
-    // refs.tray = tray.init({ host, def, ctx }).tray;
 
     /**
      * Finish up.

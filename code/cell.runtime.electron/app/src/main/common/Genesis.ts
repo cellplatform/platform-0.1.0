@@ -18,7 +18,7 @@ export function Genesis(http: t.IHttpClient) {
        */
       async uri() {
         if (!genesisUri) genesisUri = (await ConfigFile.read()).refs.genesis;
-        const A1 = Uri.create.cell(genesisUri, 'A1');
+        const A1 = Uri.cell(genesisUri);
         return Uri.cell(A1);
       },
 

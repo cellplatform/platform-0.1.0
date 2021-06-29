@@ -1,5 +1,5 @@
-import { Controller } from './main.Menu.Controller';
-import { Events } from './main.Menu.Events';
+import { Controller } from './Menu.Controller';
+import { Events } from './Menu.Events';
 
 export const Menu = {
   Controller,

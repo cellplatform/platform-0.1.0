@@ -32,11 +32,14 @@ export const SystemServer = {
   /**
    * Configure and start a system [http server].
    */
-  async start(args: { prod?: boolean; log?: t.ILog; port?: number; isDev?: boolean }) {
+  async start(
+    args: { prod?: boolean; log?: t.ILog; port?: number; isDev?: boolean; silent?: boolean } = {},
+  ) {
+    const { silent } = args;
     const { app, paths } = SystemServer.init(args);
 
     const port = await util.port.unused(args.port);
-    const instance = await app.start({ port });
+    const instance = await app.start({ port, silent });
     const host = `localhost:${port}`;
     const info = RuntimeInfo({ paths });
 

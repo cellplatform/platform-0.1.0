@@ -1,7 +1,10 @@
-import { RuntimeDesktopEnv } from '@platform/cell.types/lib/types.Runtime/types.Runtime.desktop';
+import {
+  ElectronEnv,
+  ElectronEnvKey,
+} from '@platform/cell.types/lib/types.Runtime.electron/types.env';
 import { contextBridge } from 'electron';
 
-import { ENV_KEY, IPC, PROCESS } from './common';
+import { IPC, PROCESS } from './common';
 import { IpcTransport } from './preload.IpcTransport';
 
 /**
@@ -22,8 +25,9 @@ export function init() {
   /**
    * Store the runtime environment.
    */
-  const env: RuntimeDesktopEnv = { self, runtime, network };
-  contextBridge.exposeInMainWorld(ENV_KEY, env);
+  const env: ElectronEnv = { self, runtime, network };
+  const key: ElectronEnvKey = 'cell.runtime.electron';
+  contextBridge.exposeInMainWorld(key, env);
 
   /**
    * Print environment details.

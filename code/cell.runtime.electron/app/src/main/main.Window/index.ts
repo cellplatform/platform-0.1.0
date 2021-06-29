@@ -1,5 +1,5 @@
-import { Controller } from './main.Window.Controller';
-import { Events } from './main.Window.Events';
+import { Controller } from './Window.Controller';
+import { Events } from './Window.Events';
 
 export const Window = {
   Controller,

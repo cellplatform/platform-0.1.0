@@ -1,5 +1,5 @@
-import { Controller } from './main.Bundle.Controller';
-import { Events } from './main.Bundle.Events';
+import { Controller } from './controller';
+import { Events } from './Bundle.Events';
 
 export const Bundle = {
   Controller,
