@@ -148,7 +148,9 @@ async function logMain(args: {
     return output;
   };
 
-  add('runtime:', ConfigFile.process);
+  const process = ConfigFile.process.split('@');
+
+  add('runtime:', `${log.white(process[0])}@${process[1]}`);
   add('env:', ENV.node || '<empty>');
   add('packaged:', ENV.isPackaged);
   line();
