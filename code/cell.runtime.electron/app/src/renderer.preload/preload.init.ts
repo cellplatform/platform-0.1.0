@@ -1,11 +1,8 @@
-import {
-  ElectronEnv,
-  ElectronEnvKey,
-} from '@platform/cell.types/lib/types.Runtime.electron/types.env';
 import { contextBridge } from 'electron';
 
-import { IPC, PROCESS } from './common';
+import { IPC, PROCESS } from './constants';
 import { IpcTransport } from './preload.IpcTransport';
+import { ElectronEnv, ElectronEnvKey } from './types';
 
 /**
  * The preload (secure "sandbox") environment initialization.
@@ -18,7 +15,16 @@ export function init() {
 
   /**
    * Setup the network pump.
-   * (used by the NetworkBus in the loaded environment)
+   * (used to construct a [NetworkBus] in the loaded environment).
+   *
+   * NOTE:
+   *    A full [NetworkBus] instance is not constructed within the pre-load
+   *    script in order to keep the pre-load script dependencies as minimal
+   *    as possible, thereby lowering the number of potential security
+   *    attack vectors accidently leaking into the sandbox.
+   *
+   *    The [IpcTransport] uses simple functions only.
+   *
    */
   const network = IpcTransport({ self, channel });
 

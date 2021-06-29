@@ -1,2 +1,2 @@
-import { init } from './preload.init';
-init();
+import * as preload from './preload.init';
+preload.init();
