@@ -65,8 +65,8 @@ events$
   .pipe(filter((e) => e.type === 'LOG'))
   .pipe(map((e) => e.payload as t.ILogEvent))
   .subscribe((e) => {
-    const output = ENV.isProd ? log.stripAnsi(e.output) : e.output;
-    electron.info(output);
+    if (ENV.isProd) electron.info(log.stripAnsi(e.output)); // NB: Color output stripped for external logfile.
+    if (ENV.isDev) console.log(e.output);
   });
 
 events$
