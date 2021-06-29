@@ -10,7 +10,7 @@
   "scripts": {
     "start": "yarn bundle.preload && electron-forge start",
     "dev": "export NODE_ENV=development && yarn start",
-    "test": "ts test",
+    "test": "export NODE_ENV=test && ts test",
     "lint": "ts lint",
     "build": "ts build --no-esm $@",
     "prepare": "ts prepare",

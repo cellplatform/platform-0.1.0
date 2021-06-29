@@ -1,9 +1,14 @@
 # 
+# Delete temporary data.
+# 
+sh script.sh/reset.sh
+
+
+# 
 # Root
 # 
 rm -f  yarn-error.log
-rm -rf lib/
-rm -rf tmp/
+rm -rf lib
 
 # 
 # Electron application
