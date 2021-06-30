@@ -64,9 +64,17 @@ events$
   .pipe(filter((e) => e.type === 'LOG'))
   .pipe(map((e) => e.payload as t.ILogEvent))
   .subscribe((e) => {
-    if (ENV.isProd) electron.info(log.stripAnsi(e.output)); // NB: Color output stripped for external logfile.
-    if (ENV.isDev) console.log(e.output);
+    if (ENV.isProd) write(e.level, e.output);
+    if (ENV.isDev) console.log(e.output); // NB: Simple (colorful) output to directly to local console.
   });
+
+const write = (level: t.LogLevel, output: string) => {
+  output = log.stripAnsi(output); //  NB: Color output stripped for external logfile.
+  if (level === 'info') return electron.info(output);
+  if (level === 'warn') return electron.warn(output);
+  if (level === 'error') return electron.error(output);
+  electron.log(output); // NB: not caught with known 'level' - generic write to log.
+};
 
 events$
   // Clear console.
