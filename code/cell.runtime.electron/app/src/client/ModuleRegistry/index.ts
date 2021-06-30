@@ -1,1 +1,1 @@
-export * from './ModuleRegistry';
+export { ModuleRegistry } from './ModuleRegistry';

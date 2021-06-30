@@ -1,3 +1,5 @@
+export * as semver from 'semver';
+
 /**
  * Platform
  */

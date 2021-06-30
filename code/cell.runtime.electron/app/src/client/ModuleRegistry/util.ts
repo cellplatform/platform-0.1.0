@@ -1,3 +1,8 @@
+import { d } from './common';
+
+/**
+ * String cleaning.
+ */
 export const Clean = {
   domain(input: string, options: { throw?: boolean } = {}) {
     const invalid = `Invalid domain '${input}'`;
@@ -34,3 +39,23 @@ export const Clean = {
     return ns;
   },
 };
+
+/**
+ * Provides meta-data about a path to a manifest.
+ */
+export function ManifestSource(input: string): d.RegistryManifestSource {
+  const invalid = `Invalid manifest source '${input}'`;
+  if (typeof input !== 'string') throw new Error(`${invalid} - not a string`);
+
+  const manifest = (input || '').trim();
+
+  if (!manifest) throw new Error(`${invalid} - empty`);
+
+  const isHttp = manifest.startsWith('http://') || manifest.startsWith('https://');
+  const kind = isHttp ? 'url' : 'filepath';
+
+  if (kind === 'filepath' && !manifest.startsWith('/'))
+    throw new Error(`${invalid} - filepath must start with "/"`);
+
+  return { manifest, kind };
+}

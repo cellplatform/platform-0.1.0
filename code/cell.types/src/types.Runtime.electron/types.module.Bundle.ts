@@ -2,20 +2,13 @@ import { t } from './common';
 
 type Uri = string;
 type Url = string;
-type Path = string;
-
-/**
- * Details of an installed bundle
- */
-export type BundleInfo = {
-  source: BundleSource;
-};
+type Filepath = string;
 
 export type BundleSource = BundleSourceLocalPackage | BundleSourceRemote;
 
 export type BundleSourceLocalPackage = {
   kind: 'local:package'; // Bundle packaged and shipped within the electron build.
-  manifest: Path;
+  manifest: Filepath;
 };
 
 export type BundleSourceRemote = {
@@ -43,7 +36,12 @@ export type BundleEvents = t.IDisposable & {
   list: {
     req$: t.Observable<BundleListReq>;
     res$: t.Observable<BundleListRes>;
-    get(args?: { timeout?: number }): Promise<{ items: BundleListItem[]; error?: string }>;
+    get(options?: { timeout?: number }): Promise<{ items: BundleListItem[]; error?: string }>;
+  };
+  put: {
+    req$: t.Observable<BundlePutReq>;
+    res$: t.Observable<BundlePutRes>;
+    add(source: t.BundleSource, options?: { timeout?: number }): Promise<t.BundlePutRes>;
   };
   status: {
     req$: t.Observable<BundleStatusReq>;
@@ -63,6 +61,8 @@ export type BundleEvents = t.IDisposable & {
 export type BundleEvent =
   | BundleListReqEvent
   | BundleListResEvent
+  | BundlePutReqEvent
+  | BundlePutResEvent
   | BundleStatusReqEvent
   | BundleStatusResEvent
   | BundleUploadReqEvent
@@ -83,6 +83,23 @@ export type BundleListResEvent = {
 };
 export type BundleListRes = { tx: string; items: BundleListItem[]; error?: string };
 export type BundleListItem = { namespace: string; version: string; hash: string };
+
+/**
+ * Write module changes to the database (add/update).
+ */
+export type BundlePutReqEvent = {
+  type: 'runtime.electron/Bundle/put:req';
+  payload: BundlePutReq;
+};
+export type BundlePutReq = { tx?: string } & (BundlePutReqAdd | BundlePutReqUpdate);
+export type BundlePutReqAdd = { action: 'add'; source: BundleSource };
+export type BundlePutReqUpdate = { action: 'update' };
+
+export type BundlePutResEvent = {
+  type: 'runtime.electron/Bundle/put:res';
+  payload: BundlePutRes;
+};
+export type BundlePutRes = { tx: string; error?: string };
 
 /**
  * Retrieve the status of a bundle.
