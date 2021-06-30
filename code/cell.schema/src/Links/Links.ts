@@ -1,5 +1,6 @@
 import { t, QueryString, wildcard } from '../common';
 import { Uri } from '../Uri';
+import { KeyEncoding } from '../Encoding/Encoding.Key';
 
 type ILinksArgs = { prefix: string };
 
@@ -7,8 +8,8 @@ type ILinksArgs = { prefix: string };
  * Helpers for operating on links
  */
 export class Links {
-  public static encodeKey = encode;
-  public static decodeKey = decode;
+  public static encodeKey = KeyEncoding.escape;
+  public static decodeKey = KeyEncoding.unescape;
 
   /**
    * [Lifecycle]
@@ -62,7 +63,7 @@ export class Links {
       throw new Error(`Link key must have a value.`);
     }
     prefix = (prefix || '').trim().replace(/:*$/, '');
-    return `${prefix}:${encode(input)}`;
+    return `${prefix}:${KeyEncoding.escape(input)}`;
   }
 
   /**
@@ -171,68 +172,68 @@ export class Links {
 /**
  * Escapes illegal characters from a field key.
  */
-function encode(input: string): string {
-  const ILLEGAL = [':'];
-  ILLEGAL.forEach((char) => {
-    if (input.includes(char)) {
-      throw new Error(`Link key cannot contain "${char}" character.`);
-    }
-  });
+// function encode(input: string): string {
+//   const ILLEGAL = [':'];
+//   ILLEGAL.forEach((char) => {
+//     if (input.includes(char)) {
+//       throw new Error(`Link key cannot contain "${char}" character.`);
+//     }
+//   });
 
-  // Trim surrounding "/" characters.
-  input = trimSlashes(input);
+//   // Trim surrounding "/" characters.
+//   input = trimSlashes(input);
 
-  // Special escaping multi-period characters (".." => "[..]").
-  const escapeMultiPeriods = (input: string): string => {
-    const regex = new RegExp(/\.{2,}/g);
-    const match = regex.exec(input);
-    if (match && match[0]) {
-      const left = input.substring(0, match.index);
-      const middle = ':'.repeat(match[0].length);
-      const right = input.substring(match.index + match[0].length);
-      input = `${left}[${middle}]${right}`;
-      return escapeMultiPeriods(input); // <== RECURSION 🌳
-    } else {
-      return input;
-    }
-  };
+//   // Special escaping multi-period characters (".." => "[..]").
+//   const escapeMultiPeriods = (input: string): string => {
+//     const regex = new RegExp(/\.{2,}/g);
+//     const match = regex.exec(input);
+//     if (match && match[0]) {
+//       const left = input.substring(0, match.index);
+//       const middle = ':'.repeat(match[0].length);
+//       const right = input.substring(match.index + match[0].length);
+//       input = `${left}[${middle}]${right}`;
+//       return escapeMultiPeriods(input); // <== RECURSION 🌳
+//     } else {
+//       return input;
+//     }
+//   };
 
-  input = escapeMultiPeriods(input)
-    .replace(/\//g, '::') // Path seperator (/) characters escaped.
-    .replace(/\./g, ':'); // Single period (.) characters escaped.
-  return input;
-}
+//   input = escapeMultiPeriods(input)
+//     .replace(/\//g, '::') // Path seperator (/) characters escaped.
+//     .replace(/\./g, ':'); // Single period (.) characters escaped.
+//   return input;
+// }
 
-/**
- * Converts escaped key values back to their original form.
- */
-function decode(input: string): string {
-  // Unescape the special multi-period escaping ("[..]" => "..").
-  const unescapeMultiPeriods = (input: string): string => {
-    const regex = new RegExp(/\[:{2,}\]/g);
-    const match = regex.exec(input);
-    if (match && match[0]) {
-      const left = input.substring(0, match.index);
-      const middle = '.'.repeat(match[0].length - 2);
-      const right = input.substring(match.index + match[0].length);
-      input = `${left}${middle}${right}`;
-      return unescapeMultiPeriods(input); // <== RECURSION 🌳
-    } else {
-      return input;
-    }
-  };
+// /**
+//  * Converts escaped key values back to their original form.
+//  */
+// function decode(input: string): string {
+//   // Unescape the special multi-period escaping ("[..]" => "..").
+//   const unescapeMultiPeriods = (input: string): string => {
+//     const regex = new RegExp(/\[:{2,}\]/g);
+//     const match = regex.exec(input);
+//     if (match && match[0]) {
+//       const left = input.substring(0, match.index);
+//       const middle = '.'.repeat(match[0].length - 2);
+//       const right = input.substring(match.index + match[0].length);
+//       input = `${left}${middle}${right}`;
+//       return unescapeMultiPeriods(input); // <== RECURSION 🌳
+//     } else {
+//       return input;
+//     }
+//   };
 
-  // Replace escaped characters.
-  input = unescapeMultiPeriods(input)
-    .replace(/::/g, '/') // Path seperator (/) characters escaped.
-    .replace(/:/g, '.'); // Single period (.) characters escaped.
-  return input;
-}
+//   // Replace escaped characters.
+//   input = unescapeMultiPeriods(input)
+//     .replace(/::/g, '/') // Path seperator (/) characters escaped.
+//     .replace(/:/g, '.'); // Single period (.) characters escaped.
+//   return input;
+// }
 
 function shouldDecode(input: string) {
   return input.includes(':');
 }
 
-function trimSlashes(input: string) {
-  return (input || '').replace(/^\/*/, '').replace(/\/*$/, '');
-}
+// function trimSlashes(input: string) {
+//   return (input || '').replace(/^\/*/, '').replace(/\/*$/, '');
+// }

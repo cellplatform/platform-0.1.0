@@ -2,7 +2,7 @@ import { ConfigFile } from './ConfigFile';
 import { Schema, Uri } from './libs';
 import * as t from './types';
 
-export type GenesisProps = { title: string };
+export type CellInfo = { title: string };
 
 /**
  * Helpers for working with the "Genesis" cell.
@@ -37,7 +37,7 @@ export function Genesis(http: t.IHttpClient) {
         const cell = http.cell(await api.cell.uri());
         const exists = await cell.exists();
         if (exists) return { created: false };
-        await cell.db.props.write<GenesisProps>({ title: 'Genesis Cell' });
+        await cell.db.props.write<CellInfo>({ title: 'Genesis' });
         return { created: true };
       },
     },
@@ -48,19 +48,21 @@ export function Genesis(http: t.IHttpClient) {
        */
       async uri() {
         const key = 'sys.modules';
-        const cell = http.cell(await api.cell.uri());
+        const genesis = http.cell(await api.cell.uri());
 
-        // Write regsitry reference if it does not already exist.
-        const exists = await cell.links.exists(key);
+        // Write registry reference if it does not already exist.
+        const exists = await genesis.links.exists(key);
         if (!exists) {
-          await cell.links.write({ key, value: Schema.Uri.create.A1() });
+          const A1 = Schema.Uri.create.A1();
+          await genesis.links.write({ key, value: A1 });
+          await http.cell(A1).db.props.write<CellInfo>({ title: 'Module Registry' });
         }
 
         // Filter on the registry-cell link.
-        const links = await cell.links.read();
+        const links = await genesis.links.read();
         const registryLink = links.body.cells.find((item) => item.key === key);
         if (!registryLink) {
-          const err = `A '${key}' link could not be found on genesis [${cell.uri.toString()}]`;
+          const err = `A '${key}' link could not be found on genesis [${genesis.uri.toString()}]`;
           throw new Error(err);
         }
 

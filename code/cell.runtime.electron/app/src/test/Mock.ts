@@ -1,4 +1,4 @@
-import { ConfigFile, HttpClient, rx, t, fs, Paths } from '../main/common';
+import { time, ConfigFile, HttpClient, rx, t, fs, Paths } from '../main/common';
 import { Bundle } from '../main/main.Bundle';
 import { Log } from '../main/main.Log';
 import { Menu } from '../main/main.Menu';
@@ -6,11 +6,19 @@ import { System } from '../main/main.System';
 import { SystemServer } from '../main/main.System.server';
 import { Window } from '../main/main.Window';
 
-export type IMock = {
+export type IMockServer = {
+  host: string;
+  port: number;
+  paths: t.ElectronDataPaths;
+  http: t.IHttpClient;
+  dispose(): Promise<void>;
+};
+
+export type IMockControllers = {
   bus: t.ElectronMainBus;
   http: t.IHttpClient;
   events: { bundle: t.BundleEvents };
-  dispose(data?: boolean): Promise<void>;
+  dispose(): Promise<void>;
 };
 
 export const Mock = {
@@ -43,13 +51,12 @@ export const Mock = {
       // menu: Menu.Events({ bus }),
     };
 
-    const mock: IMock = {
+    const mock: IMockControllers = {
       bus,
       http,
       events,
-      async dispose(data?: boolean) {
+      async dispose() {
         await server.dispose();
-        if (data) await Mock.delete();
       },
     };
 
@@ -62,21 +69,26 @@ export const Mock = {
   async server() {
     const { instance, paths, port, host } = await SystemServer.start({ prod: false, silent: true });
     let http: t.IHttpClient | undefined;
-    return {
+    const mock: IMockServer = {
       host,
       port,
       paths,
       get http() {
         return http ?? (http = HttpClient.create(host));
       },
-      dispose: () => instance.stop(),
+      async dispose() {
+        await instance.stop();
+        await time.wait(10); // NB: Brief pause prevents fs error (renaming the DB file).
+      },
     };
+    return mock;
   },
 
   /**
    * Delete test data.
    */
   async delete() {
+    await time.wait(50); // NB: Brief pause prevents fs error (renaming the DB file).
     await fs.remove(Paths.tmp.test);
   },
 };

@@ -1,3 +1,5 @@
+import { KeyEncoding } from './Encoding.Key';
+
 /**
  * Utilities for escaping/unescaping strings.
  */
@@ -21,6 +23,16 @@ export const Encoding = {
    * Removing escaping from "scope" namespace.
    */
   unescapeNamespace: (value: string) => value.replace(/__/g, '.'),
+
+  /**
+   * Escape an object-field key (eg. used in {links}).
+   */
+  escapeKey: KeyEncoding.escape,
+
+  /**
+   * Remove escaping of object-field key.
+   */
+  unescapeKey: KeyEncoding.unescape,
 
   /**
    * Apply encoding function to an object.

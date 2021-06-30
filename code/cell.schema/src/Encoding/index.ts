@@ -1,1 +1,1 @@
-export * from './Encoding';
+export { Encoding } from './Encoding';
