@@ -7,14 +7,14 @@ import { Clean } from './util';
 export function ModuleRegistryNamespace(args: {
   http: t.IHttpClient;
   namespace: string;
-  host: { name: string; uri: string };
+  domain: { name: string; uri: string };
 }) {
-  const { host } = args;
+  const { domain } = args;
   const namespace = Clean.namespace(args.namespace, { throw: true });
 
   return {
     namespace,
-    host,
+    domain,
   };
 }
 

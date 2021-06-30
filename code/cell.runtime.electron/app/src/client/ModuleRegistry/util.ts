@@ -1,6 +1,6 @@
 export const Clean = {
-  host(input: string, options: { throw?: boolean } = {}) {
-    const invalid = `Invalid host '${input}'`;
+  domain(input: string, options: { throw?: boolean } = {}) {
+    const invalid = `Invalid domain '${input}'`;
     if (typeof input !== 'string') throw new Error(invalid);
 
     const host = (input || '')

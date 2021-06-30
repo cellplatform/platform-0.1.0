@@ -5,18 +5,18 @@ import { Clean } from './util';
 /**
  * Handles a [ModuleRegistry] for a single "host" domain.
  */
-export function ModuleRegistryHost(args: {
+export function ModuleRegistryDomain(args: {
   http: t.IHttpClient;
-  host: string;
+  domain: string;
   parent: t.ICellUri | string; // Parent cell containing the link-index to hosts.
 }) {
   const { http } = args;
   const parent = http.cell(args.parent);
-  const host = Clean.host(args.host, { throw: true });
-  const key = host.replace(/\:/g, '.'); // NB: avoid invalid key with ":" character (eg. "domain:port").
+  const domain = Clean.domain(args.domain, { throw: true });
+  const key = domain.replace(/\:/g, '.'); // NB: avoid invalid key with ":" character (eg. "domain:port").
 
   const api = {
-    host,
+    host: domain,
 
     /**
      * The URI of the cell containing the modules of the "host".
@@ -35,23 +35,14 @@ export function ModuleRegistryHost(args: {
      * Retrieve the API for working with a module "namespace".
      */
     async namespace(namespace: string) {
+      const uri = (await api.uri()).toString();
       return ModuleRegistryNamespace({
         http,
         namespace,
-        host: { name: host, uri: (await api.uri()).toString() },
+        domain: { name: domain, uri },
       });
     },
   };
 
   return api;
 }
-
-/**
- * - host
- * - namespace
- * - verion
- */
-
-/**
- * [Helpers]
- */

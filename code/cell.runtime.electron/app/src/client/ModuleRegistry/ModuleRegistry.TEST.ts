@@ -25,12 +25,12 @@ describe.only('client: ModuleRegistry', () => {
     });
   });
 
-  describe('ModuleRegistryHost', () => {
-    it('create: registry.host', async () => {
+  describe('ModuleRegistryDomain', () => {
+    it('create', async () => {
       const { registry } = await mockRegistry();
 
       const test = (host: string, expected: string) => {
-        const res = registry.host(host);
+        const res = registry.domain(host);
         expect(res.host).to.eql(expected);
       };
 
@@ -45,11 +45,11 @@ describe.only('client: ModuleRegistry', () => {
       test('  https://domain.com:1234  ', 'domain.com:1234');
     });
 
-    it('throw: invalid host', async () => {
+    it('throw: invalid domain', async () => {
       const { registry } = await mockRegistry();
       const test = (host: any) => {
-        const fn = () => registry.host(host);
-        expect(fn).to.throw(/Invalid host/);
+        const fn = () => registry.domain(host);
+        expect(fn).to.throw(/Invalid domain/);
       };
       test('');
       test('  ');
@@ -61,7 +61,7 @@ describe.only('client: ModuleRegistry', () => {
 
     it('uri', async () => {
       const { registry, http } = await mockRegistry();
-      const host = registry.host('localhost:1234');
+      const host = registry.domain('localhost:1234');
 
       const res1 = await host.uri();
       const res2 = await host.uri();
@@ -76,17 +76,17 @@ describe.only('client: ModuleRegistry', () => {
   describe('ModuleRegistryNamespace', () => {
     it('create', async () => {
       const { registry, http } = await mockRegistry();
-      const host = registry.host('localhost:1234');
+      const host = registry.domain('localhost:1234');
       const ns = await host.namespace('  foo.bar  ');
 
       expect(ns.namespace).to.eql('foo.bar');
-      expect(ns.host.uri).to.eql((await host.uri()).toString());
-      expect(ns.host.name).to.eql('localhost:1234');
+      expect(ns.domain.uri).to.eql((await host.uri()).toString());
+      expect(ns.domain.name).to.eql('localhost:1234');
     });
 
     it('throw: invalid namespace', async () => {
       const { registry } = await mockRegistry();
-      const host = registry.host('localhost:1234');
+      const host = registry.domain('localhost:1234');
 
       const test = async (namespace: string) => {
         const fn = () => host.namespace(namespace);

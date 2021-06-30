@@ -1,6 +1,5 @@
 import { t, Uri } from './common';
-import { ModuleRegistryHost } from './ModuleRegistry.Host';
-import { ModuleRegistryNamespace } from './ModuleRegistry.Namespace';
+import { ModuleRegistryDomain } from './ModuleRegistry.Domain';
 
 /**
  * Client for reading/writing data about installed modules.
@@ -17,9 +16,9 @@ export function ModuleRegistry(args: {
     /**
      * Retrieve a Registry partitioned on a source host.
      */
-    host(host: string) {
+    domain(domain: string) {
       const parent = uri;
-      return ModuleRegistryHost({ http, host, parent });
+      return ModuleRegistryDomain({ http, domain, parent });
     },
   };
 }
