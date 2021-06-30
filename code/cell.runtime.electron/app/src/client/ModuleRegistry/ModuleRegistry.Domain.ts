@@ -1,9 +1,11 @@
 import { t, Uri } from './common';
 import { ModuleRegistryNamespace } from './ModuleRegistry.Namespace';
 import { Clean } from './util';
+import { DomainCellProps } from './types';
 
 /**
- * Handles a [ModuleRegistry] for a single "host" domain.
+ * Handles a [ModuleRegistry] for a source domain
+ * (eg. "hostname" where the module source was retrieved).
  */
 export function ModuleRegistryDomain(args: {
   http: t.IHttpClient;
@@ -16,7 +18,7 @@ export function ModuleRegistryDomain(args: {
   const key = domain.replace(/\:/g, '.'); // NB: avoid invalid key with ":" character (eg. "domain:port").
 
   const api = {
-    host: domain,
+    domain,
 
     /**
      * The URI of the cell containing the modules of the "host".
@@ -28,7 +30,14 @@ export function ModuleRegistryDomain(args: {
 
       const value = Uri.create.A1();
       await parent.links.write({ key, value });
-      return Uri.cell(value, true);
+
+      const cell = http.cell(value);
+      await cell.db.props.write<DomainCellProps>({
+        title: 'Module Registry (Domain)',
+        domain,
+      });
+
+      return cell.uri;
     },
 
     /**

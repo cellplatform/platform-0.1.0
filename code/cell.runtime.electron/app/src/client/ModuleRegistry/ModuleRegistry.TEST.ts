@@ -1,5 +1,6 @@
 import { expect, Mock, Uri, time, expectError, IMockServer } from '../../test';
 import { ModuleRegistry } from '.';
+import { DomainCellProps } from './types';
 
 describe.only('client: ModuleRegistry', () => {
   let server: IMockServer;
@@ -29,9 +30,9 @@ describe.only('client: ModuleRegistry', () => {
     it('create', async () => {
       const { registry } = await mockRegistry();
 
-      const test = (host: string, expected: string) => {
-        const res = registry.domain(host);
-        expect(res.host).to.eql(expected);
+      const test = (input: string, expected: string) => {
+        const res = registry.domain(input);
+        expect(res.domain).to.eql(expected);
       };
 
       test('localhost', 'localhost');
@@ -45,10 +46,22 @@ describe.only('client: ModuleRegistry', () => {
       test('  https://domain.com:1234  ', 'domain.com:1234');
     });
 
+    it('writes [DomainCellProps]', async () => {
+      const { registry, http } = await mockRegistry();
+
+      const domain = registry.domain('  https://domain.com  ');
+      const uri = await domain.uri();
+      const cell = http.cell(uri);
+      const props = (await cell.info()).body.data.props as DomainCellProps;
+
+      expect(props?.title).to.eql('Module Registry (Domain)');
+      expect(props?.domain).to.eql('domain.com'); // NB: cleaned.
+    });
+
     it('throw: invalid domain', async () => {
       const { registry } = await mockRegistry();
-      const test = (host: any) => {
-        const fn = () => registry.domain(host);
+      const test = (input: any) => {
+        const fn = () => registry.domain(input);
         expect(fn).to.throw(/Invalid domain/);
       };
       test('');
@@ -57,6 +70,11 @@ describe.only('client: ModuleRegistry', () => {
       test('foo/bar'); // no path character ("/").
       test('foobar:');
       test(':foobar');
+      test(123);
+      test(true);
+      test({});
+      test([]);
+      test(null);
     });
 
     it('uri', async () => {
@@ -75,7 +93,7 @@ describe.only('client: ModuleRegistry', () => {
 
   describe('ModuleRegistryNamespace', () => {
     it('create', async () => {
-      const { registry, http } = await mockRegistry();
+      const { registry } = await mockRegistry();
       const host = registry.domain('localhost:1234');
       const ns = await host.namespace('  foo.bar  ');
 
@@ -88,8 +106,8 @@ describe.only('client: ModuleRegistry', () => {
       const { registry } = await mockRegistry();
       const host = registry.domain('localhost:1234');
 
-      const test = async (namespace: string) => {
-        const fn = () => host.namespace(namespace);
+      const test = async (input: any) => {
+        const fn = () => host.namespace(input);
         await expectError(fn, 'Invalid namespace');
       };
 
@@ -99,6 +117,11 @@ describe.only('client: ModuleRegistry', () => {
       await test('!foo');
       await test('foo-bar');
       await test('foo bar');
+      await test(123);
+      await test(true);
+      await test({});
+      await test([]);
+      await test(null);
     });
   });
 });
