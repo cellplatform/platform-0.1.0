@@ -3,18 +3,7 @@ import { t } from './common';
 type Uri = string;
 type Url = string;
 type Filepath = string;
-
-export type BundleSource = BundleSourceLocalPackage | BundleSourceRemote;
-
-export type BundleSourceLocalPackage = {
-  kind: 'local:package'; // Bundle packaged and shipped within the electron build.
-  manifest: Filepath;
-};
-
-export type BundleSourceRemote = {
-  kind: 'remote';
-  manifest: Url;
-};
+type ManifestSourcePath = Url | Filepath;
 
 /**
  * Info about an installed bundle.
@@ -41,7 +30,7 @@ export type BundleEvents = t.IDisposable & {
   put: {
     req$: t.Observable<BundlePutReq>;
     res$: t.Observable<BundlePutRes>;
-    add(source: t.BundleSource, options?: { timeout?: number }): Promise<t.BundlePutRes>;
+    add(source: ManifestSourcePath, options?: { timeout?: number }): Promise<t.BundlePutRes>;
   };
   status: {
     req$: t.Observable<BundleStatusReq>;
@@ -92,7 +81,7 @@ export type BundlePutReqEvent = {
   payload: BundlePutReq;
 };
 export type BundlePutReq = { tx?: string } & (BundlePutReqAdd | BundlePutReqUpdate);
-export type BundlePutReqAdd = { action: 'add'; source: BundleSource };
+export type BundlePutReqAdd = { action: 'add'; source: ManifestSourcePath };
 export type BundlePutReqUpdate = { action: 'update' };
 
 export type BundlePutResEvent = {

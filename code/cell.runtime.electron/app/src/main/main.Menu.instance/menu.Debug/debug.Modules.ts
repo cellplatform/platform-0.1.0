@@ -23,26 +23,41 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
     console.log('create/res:', res);
   };
 
+  const openRuntimeUI = async (params?: t.Json) => {
+    const dir = Paths.bundle.sys.target;
+
+    const status = {
+      system: await events.system.status.get(),
+      bundle: await events.bundle.status.get({ dir }),
+    };
+
+    const urls = {
+      dev: 'http://localhost:5050', // TEMP 🐷
+      prod: status.bundle?.url || '',
+    };
+
+    const url = status.system.is.prod ? urls.prod : urls.dev;
+
+    console.log('openRuntimeUI');
+    console.log('url', url);
+    console.log('params', params);
+    console.log();
+
+    await openWindow(url);
+  };
+
+  submenu.push({
+    type: 'normal',
+    label: 'Install...',
+    click: () => openRuntimeUI({ view: 'module:installer' }),
+  });
+
+  submenu.push({ type: 'separator' });
+
   submenu.push({
     type: 'normal',
     label: `${Paths.bundle.sys.target} (local)`,
-    async click() {
-      const dir = Paths.bundle.sys.target;
-      const status = {
-        system: await events.system.status.get(),
-        bundle: await events.bundle.status.get({ dir }),
-      };
-
-      const urls = {
-        dev: 'http://localhost:5050', // TEMP 🐷
-        prod: status.bundle?.url || '',
-      };
-
-      const url = status.system.is.prod ? urls.prod : urls.dev;
-      console.log('url', url);
-
-      await openWindow(url);
-    },
+    click: () => openRuntimeUI({ view: 'ui.dev' }),
   });
 
   submenu.push({ type: 'separator' });
@@ -77,7 +92,7 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
   if (ENV.isDev) {
     Push.separator();
 
-    const ports = [3032, 3033, 3034, 3036, 3037, 3040];
+    const ports = [3032, 3033, 3034, 3036, 3037, 3040, 5050];
     ports.forEach((port) => Push.item(`localhost:${port}`, `http://localhost:${port}`));
   }
 
