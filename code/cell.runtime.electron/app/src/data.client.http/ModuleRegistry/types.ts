@@ -10,17 +10,19 @@ export type RegistryCellPropsDomain = {
 };
 
 export type RegistryCellPropsNamespace = {
+  kind: 'registry:namespace';
   title: string;
   namespace: string;
   versions: RegistryNamespaceVersion[];
 };
 
 export type RegistryNamespaceVersion = {
+  kind: 'registry:module';
   createdAt: number;
   modifiedAt: number;
   version: string;
   hash: string;
-  source: RegistryManifestSource;
+  source: ManifestSource;
   fs: CellUri;
 };
 

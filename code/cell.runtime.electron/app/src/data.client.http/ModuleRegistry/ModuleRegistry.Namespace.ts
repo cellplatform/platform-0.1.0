@@ -1,5 +1,6 @@
 import { t, Uri, d, semver, time } from './common';
-import { Clean, ManifestSource } from './util';
+import { Clean } from './util';
+import { ManifestSource } from './ManifestSource';
 
 /**
  * Handles storing module registry data for a single namespace.
@@ -14,7 +15,7 @@ export function ModuleRegistryNamespace(args: {
   const namespace = Clean.namespace(args.namespace, { throw: true });
   const uri = Uri.cell(args.uri);
 
-  const Find = {
+  const Filter = {
     versionEntry(list: d.RegistryNamespaceVersion[], match: string) {
       return list.find((item) => semver.satisfies(item.version, match));
     },
@@ -42,7 +43,7 @@ export function ModuleRegistryNamespace(args: {
      * Retrieve the entry for the given version.
      */
     async get(semver: string) {
-      return Find.versionEntry(await api.versions(), semver);
+      return Filter.versionEntry(await api.versions(), semver);
     },
 
     /**
@@ -57,17 +58,18 @@ export function ModuleRegistryNamespace(args: {
 
       const source = ManifestSource(args.source);
       const versions = await api.versions();
-      const index = Find.versionIndex(versions, manifest.module.version);
+      const index = Filter.versionIndex(versions, manifest.module.version);
       const exists = index >= 0;
 
       const create = (): d.RegistryNamespaceVersion => {
         const now = time.now.timestamp;
         return {
+          kind: 'registry:module',
           createdAt: now,
           modifiedAt: now,
           version: manifest.module.version,
           hash: manifest.hash.module,
-          source,
+          source: source.manifest,
           fs: Uri.create.A1(),
         };
       };
@@ -78,7 +80,7 @@ export function ModuleRegistryNamespace(args: {
           modifiedAt: time.now.timestamp,
           version: manifest.module.version,
           hash: manifest.hash.module,
-          source,
+          source: source.manifest,
         };
       };
 
@@ -108,13 +110,3 @@ export function ModuleRegistryNamespace(args: {
 
   return api;
 }
-
-/**
- * [Helpers]
- */
-
-/**
- * - host
- * - namespace
- * - verion
- */

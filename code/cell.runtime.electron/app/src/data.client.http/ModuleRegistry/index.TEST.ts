@@ -1,8 +1,8 @@
 import { expect, Mock, Uri, expectError, IMockServer, TestSample, time } from '../../test';
-import { ModuleRegistry } from '.';
+import { ModuleRegistry, ManifestSource } from '.';
 import { d } from './common';
 
-describe.only('client: ModuleRegistry', () => {
+describe('ModuleRegistry (Http Client)', () => {
   let server: IMockServer;
 
   before(async () => (server = await Mock.server()));
@@ -184,8 +184,7 @@ describe.only('client: ModuleRegistry', () => {
         expect(entry.version).to.eql(version);
         expect(entry.fs.startsWith('cell:')).to.eql(true);
         expect(entry.hash.startsWith('sha256-')).to.eql(true);
-        expect(entry.source.manifest).to.eql(source);
-        expect(entry.source.kind).to.eql('filepath');
+        expect(entry.source).to.eql(source);
 
         await time.wait(10);
 
@@ -233,17 +232,17 @@ describe.only('client: ModuleRegistry', () => {
         const filepath = '/dir/index.json';
         const url = 'https://domain.com/cell:foo:A1/fs/dir/index.json';
 
+        expect(ManifestSource(filepath).kind).to.eql('filepath');
+        expect(ManifestSource(url).kind).to.eql('url');
+
         const res1 = await ns.put({ source: filepath, manifest });
         const res2 = await ns.put({
           source: url,
           manifest,
         });
 
-        expect(res1.entry.source.kind).to.eql('filepath');
-        expect(res2.entry.source.kind).to.eql('url');
-
-        expect(res1.entry.source.manifest).to.eql(filepath);
-        expect(res2.entry.source.manifest).to.eql(url);
+        expect(res1.entry.source).to.eql(filepath);
+        expect(res2.entry.source).to.eql(url);
       });
 
       it('throw: invalid manifest source', async () => {
@@ -262,7 +261,8 @@ describe.only('client: ModuleRegistry', () => {
 
         await test('');
         await test(' ');
-        await test('file/path'); // NB: does not start with "/".
+        await test('file/path/index.json'); // NB: does not start with "/".
+        await test('/path/index'); // NB: Not a JSON file.
 
         await test(123);
         await test(true);

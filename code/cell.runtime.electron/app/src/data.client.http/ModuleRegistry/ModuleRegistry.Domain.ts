@@ -55,6 +55,7 @@ export function ModuleRegistryDomain(args: {
       namespace = Clean.namespace(namespace, { throw: true });
       const uri = await getOrCreateLink(await api.uri(), namespace, async (key, uri) => {
         await http.cell(uri).db.props.write<d.RegistryCellPropsNamespace>({
+          kind: 'registry:namespace',
           title: 'Module Registry (Namespace)',
           namespace,
           versions: [],
