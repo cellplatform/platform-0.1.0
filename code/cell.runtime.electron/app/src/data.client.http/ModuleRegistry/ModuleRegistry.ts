@@ -1,5 +1,6 @@
-import { t, Uri } from './common';
+import { d, t, Uri, Schema } from './common';
 import { ModuleRegistryDomain } from './ModuleRegistry.Domain';
+import { Encoding } from './util';
 
 /**
  * Client for reading/writing data about installed modules.
@@ -12,6 +13,18 @@ export function ModuleRegistry(args: {
   const uri = Uri.cell(args.uri, true);
   return {
     uri,
+
+    /**
+     * Retrieve a list of all [domains] within the registry.
+     */
+    async domains() {
+      const cell = http.cell(uri);
+      const links = (await cell.links.read()).body;
+      return links.cells
+        .map((link) => link.key)
+        .filter(Encoding.domainKey.is)
+        .map(Encoding.domainKey.unescape);
+    },
 
     /**
      * Retrieve a Registry partitioned on a source host.

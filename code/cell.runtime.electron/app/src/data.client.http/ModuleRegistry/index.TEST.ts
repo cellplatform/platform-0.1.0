@@ -1,8 +1,9 @@
 import { expect, Mock, Uri, expectError, IMockServer, TestSample, time } from '../../test';
 import { ModuleRegistry, ManifestSource } from '.';
+import { Encoding } from './util';
 import { d } from './common';
 
-describe('ModuleRegistry (Http Client)', () => {
+describe.only('ModuleRegistry (Http Client)', () => {
   let server: IMockServer;
 
   before(async () => (server = await Mock.server()));
@@ -18,11 +19,86 @@ describe('ModuleRegistry (Http Client)', () => {
     return { http, registry };
   };
 
+  describe('Encoding', () => {
+    describe('domain key', () => {
+      it('encode => decode', () => {
+        const test = (input: string, expected: string) => {
+          const encoded = Encoding.domainKey.escape(input);
+          expect(encoded).to.eql(expected, 'escape');
+          expect(Encoding.domainKey.unescape(encoded)).to.eql(input.trim(), 'unescape');
+        };
+        test('  localhost  ', 'domain.localhost');
+        test('localhost:8080', 'domain.localhost[.]8080');
+        test('local:package', 'domain.local[.]package');
+        test('foo.bar:package', 'domain.foo.bar[.]package');
+      });
+
+      it('is (flag)', () => {
+        const test = (input: string, expected: boolean) => {
+          expect(Encoding.domainKey.is(input)).to.eql(expected);
+        };
+        test('  domain.localhost  ', true);
+        test('domain.localhost[.]8080', true);
+        test('  localhost  ', false);
+        test('', false);
+      });
+    });
+
+    describe('namespace key', () => {
+      it('encode => decode', () => {
+        const test = (input: string, expected: string) => {
+          const encoded = Encoding.namespaceKey.escape(input);
+          expect(encoded).to.eql(expected, 'escape');
+          expect(Encoding.namespaceKey.unescape(encoded)).to.eql(input.trim(), 'unescape');
+        };
+        test('  localhost  ', 'ns.localhost');
+        test('localhost:8080', 'ns.localhost[.]8080');
+        test('local:package', 'ns.local[.]package');
+        test('foo.bar:package', 'ns.foo.bar[.]package');
+      });
+
+      it('is (flag)', () => {
+        const test = (input: string, expected: boolean) => {
+          expect(Encoding.namespaceKey.is(input)).to.eql(expected);
+        };
+        test('  ns.localhost  ', true);
+        test('ns.localhost[.]8080', true);
+        test('  localhost  ', false);
+        test('', false);
+      });
+    });
+  });
+
   describe('ModuleRegistry', () => {
     it('create', async () => {
       const uri = Uri.create.A1();
       const { registry } = await mockRegistry({ uri });
       expect(registry.uri.toString()).to.eql(uri);
+    });
+
+    it('list: domains (empty)', async () => {
+      const { registry } = await mockRegistry();
+      const res = await registry.domains();
+      expect(res).to.eql([]);
+    });
+
+    it('list: domains', async () => {
+      const { registry } = await mockRegistry();
+
+      const domain1 = registry.domain('  domain.com:1234  ');
+      const domain2 = registry.domain('  local:package  ');
+      expect(await registry.domains()).to.eql([]); // NB: Nothing written to DB yet.
+
+      const ns1 = await domain1.namespace('foo.bar');
+      const ns2 = await domain2.namespace('foo.bar');
+
+      const res = await registry.domains();
+
+      expect(res[0]).to.eql('domain.com:1234');
+      expect(res[1]).to.eql('local:package');
+
+      expect(res[0]).to.eql(ns1.domain);
+      expect(res[1]).to.eql(ns2.domain);
     });
   });
 
@@ -100,8 +176,37 @@ describe('ModuleRegistry (Http Client)', () => {
       expect(res1.toString()).to.eql(res2.toString());
 
       const links = (await http.cell(registry.uri).links.read()).body;
-      const link = links.cells.find((link) => link.key === 'localhost.1234');
+
+      const link = links.cells.find((link) => {
+        const key = Encoding.domainKey.unescape(link.key);
+        return key === 'localhost:1234';
+      });
+
       expect(link?.value).to.eql(res1.toString());
+    });
+
+    it('list: namespaces (empty)', async () => {
+      const { registry } = await mockRegistry();
+      const domain = registry.domain('localhost:1234');
+      expect(await domain.namespaces()).to.eql([]);
+    });
+
+    it('list: namespaces', async () => {
+      const { registry } = await mockRegistry();
+      const domain = registry.domain('localhost:1234');
+
+      const ns1 = await domain.namespace('ns.a');
+      const ns2 = await domain.namespace('ns.a'); // NB: repeat (does not duplicate).
+      const ns3 = await domain.namespace('ns.b');
+
+      const res = await domain.namespaces();
+
+      expect(res.length).to.eql(2);
+      expect(res[0]).to.eql('ns.a');
+      expect(res[1]).to.eql('ns.b');
+
+      expect(res[0]).to.eql(ns1.namespace);
+      expect(res[1]).to.eql(ns3.namespace);
     });
   });
 
@@ -156,7 +261,7 @@ describe('ModuleRegistry (Http Client)', () => {
         const ns = await domain.namespace('ns.foo');
         const manifest = await TestSample.manifest({ namespace: 'ns.bar' });
 
-        const fn = () => ns.put({ source: '/dir/index.json', manifest });
+        const fn = () => ns.write({ source: '/dir/index.json', manifest });
         await expectError(fn, 'Namespace mismatch');
       });
 
@@ -172,8 +277,8 @@ describe('ModuleRegistry (Http Client)', () => {
 
         expect(await ns.versions()).to.eql([]);
 
-        const res = await ns.put({ source, manifest });
-        const v1 = await ns.get(version);
+        const res = await ns.write({ source, manifest });
+        const v1 = await ns.read(version);
         expect(res.action).to.eql('created');
 
         const versions = await ns.versions();
@@ -188,7 +293,7 @@ describe('ModuleRegistry (Http Client)', () => {
 
         await time.wait(10);
 
-        const v2 = await ns.get(version);
+        const v2 = await ns.read(version);
         expect(v2?.modifiedAt).to.eql(v1?.modifiedAt); // NB: no change.
       });
 
@@ -204,18 +309,18 @@ describe('ModuleRegistry (Http Client)', () => {
         const manifest1 = await TestSample.manifest({ namespace, version });
         const manifest2 = await TestSample.manifest({ namespace, version });
 
-        await ns.put({ source, manifest: manifest1 });
-        expect((await ns.get(version))?.hash).to.eql(manifest1.hash.module);
-        const v1 = await ns.get(version);
+        await ns.write({ source, manifest: manifest1 });
+        expect((await ns.read(version))?.hash).to.eql(manifest1.hash.module);
+        const v1 = await ns.read(version);
 
         await time.wait(10);
 
         const change = 'sha256-changed';
         manifest2.hash.module = change;
-        const res = await ns.put({ source, manifest: manifest2 });
+        const res = await ns.write({ source, manifest: manifest2 });
         expect(res.action).to.eql('updated');
 
-        const v2 = await ns.get(version);
+        const v2 = await ns.read(version);
         expect(v2?.hash).to.eql(change);
         expect(v2).to.eql(res.entry);
 
@@ -235,8 +340,8 @@ describe('ModuleRegistry (Http Client)', () => {
         expect(ManifestSource(filepath).kind).to.eql('filepath');
         expect(ManifestSource(url).kind).to.eql('url');
 
-        const res1 = await ns.put({ source: filepath, manifest });
-        const res2 = await ns.put({
+        const res1 = await ns.write({ source: filepath, manifest });
+        const res2 = await ns.write({
           source: url,
           manifest,
         });
@@ -255,7 +360,7 @@ describe('ModuleRegistry (Http Client)', () => {
         const manifest = await TestSample.manifest({ namespace, version });
 
         const test = async (source: any) => {
-          const fn = () => ns.put({ source, manifest });
+          const fn = () => ns.write({ source, manifest });
           await expectError(fn, 'Invalid manifest source');
         };
 

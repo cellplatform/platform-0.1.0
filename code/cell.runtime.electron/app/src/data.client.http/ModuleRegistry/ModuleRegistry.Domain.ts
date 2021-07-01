@@ -1,6 +1,6 @@
 import { d, t, Uri } from './common';
 import { ModuleRegistryNamespace } from './ModuleRegistry.Namespace';
-import { Clean } from './util';
+import { Clean, Encoding } from './util';
 
 /**
  * Handles a [ModuleRegistry] for a source domain
@@ -13,7 +13,7 @@ export function ModuleRegistryDomain(args: {
 }) {
   const { http } = args;
   const domain = Clean.domain(args.domain, { throw: true });
-  const linkKey = domain.replace(/\:/g, '.'); // NB: avoid invalid key with ":" character (eg. "domain:port").
+  const domainLinkKey = Encoding.domainKey.escape(domain);
 
   const getOrCreateLink = async (
     subject: t.ICellUri | string,
@@ -36,10 +36,10 @@ export function ModuleRegistryDomain(args: {
     domain,
 
     /**
-     * The URI of the cell containing the modules of the "host".
+     * The URI of the cell containing the modules of the "domain".
      */
     async uri() {
-      const uri = await getOrCreateLink(args.parent, linkKey, async (key, uri) => {
+      const uri = await getOrCreateLink(args.parent, domainLinkKey, async (key, uri) => {
         await http.cell(uri).db.props.write<d.RegistryCellPropsDomain>({
           title: 'Module Registry (Domain)',
           domain,
@@ -49,11 +49,25 @@ export function ModuleRegistryDomain(args: {
     },
 
     /**
+     * Retrieve a list of all [namespaces] within the domain.
+     */
+    async namespaces() {
+      const uri = await api.uri();
+      const cell = http.cell(uri);
+      const links = (await cell.links.read()).body;
+      return links.cells
+        .map((link) => link.key)
+        .filter(Encoding.namespaceKey.is)
+        .map(Encoding.namespaceKey.unescape);
+    },
+
+    /**
      * Retrieve the API for working with a module "namespace".
      */
     async namespace(namespace: string) {
       namespace = Clean.namespace(namespace, { throw: true });
-      const uri = await getOrCreateLink(await api.uri(), namespace, async (key, uri) => {
+      const linkKey = Encoding.namespaceKey.escape(namespace);
+      const uri = await getOrCreateLink(await api.uri(), linkKey, async (key, uri) => {
         await http.cell(uri).db.props.write<d.RegistryCellPropsNamespace>({
           kind: 'registry:namespace',
           title: 'Module Registry (Namespace)',

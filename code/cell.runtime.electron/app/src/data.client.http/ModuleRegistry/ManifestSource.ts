@@ -12,19 +12,19 @@ export function ManifestSource(input: string) {
 
   if (typeof input !== 'string') throwError('not a string');
 
-  const manifest = (input || '').trim();
-  if (!manifest) throwError('empty');
+  const path = (input || '').trim();
+  if (!path) throwError('empty');
 
-  const isHttp = manifest.startsWith('http://') || manifest.startsWith('https://');
+  const isHttp = path.startsWith('http://') || path.startsWith('https://');
   const kind = (isHttp ? 'url' : 'filepath') as S['kind'];
 
-  if (!manifest.endsWith('.json')) throwError('not a path to a ".json" file');
-  if (kind === 'filepath' && !manifest.startsWith('/')) throwError('filepath must start with "/"');
+  if (!path.endsWith('.json')) throwError('not a path to a ".json" file');
+  if (kind === 'filepath' && !path.startsWith('/')) throwError('filepath must start with "/"');
 
   return {
-    manifest,
+    path,
     kind,
-    toObject: () => ({ manifest, kind } as S),
-    toString: () => manifest,
+    toObject: () => ({ manifest: path, kind } as S),
+    toString: () => path,
   };
 }

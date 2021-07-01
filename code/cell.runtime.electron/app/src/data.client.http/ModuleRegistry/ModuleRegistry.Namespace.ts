@@ -42,14 +42,14 @@ export function ModuleRegistryNamespace(args: {
     /**
      * Retrieve the entry for the given version.
      */
-    async get(semver: string) {
+    async read(semver: string) {
       return Filter.versionEntry(await api.versions(), semver);
     },
 
     /**
-     * Write a manifest to the set.
+     * Write a manifest to the list of namespace versions.
      */
-    async put(args: { source: d.ManifestSource; manifest: t.ModuleManifest }) {
+    async write(args: { source: d.ManifestSource; manifest: t.ModuleManifest }) {
       const { manifest } = args;
 
       if (manifest.module.namespace !== namespace) {
@@ -69,7 +69,7 @@ export function ModuleRegistryNamespace(args: {
           modifiedAt: now,
           version: manifest.module.version,
           hash: manifest.hash.module,
-          source: source.manifest,
+          source: source.path,
           fs: Uri.create.A1(),
         };
       };
@@ -80,11 +80,11 @@ export function ModuleRegistryNamespace(args: {
           modifiedAt: time.now.timestamp,
           version: manifest.module.version,
           hash: manifest.hash.module,
-          source: source.manifest,
+          source: source.path,
         };
       };
 
-      // Get or create
+      // Get or create {entry}.
       const entry = exists ? update(versions[index]) : create();
       versions[index < 0 ? 0 : index] = entry;
 
@@ -92,8 +92,7 @@ export function ModuleRegistryNamespace(args: {
       type P = Partial<d.RegistryCellPropsNamespace>;
       const cell = http.cell(uri);
       const res = await cell.db.props.write<P>({ versions });
-      if (!res.ok)
-        throw new Error(`Failed to write manifest version update. ${res.error?.message}`);
+      if (!res.ok) throw new Error(`Failed to write manifest to database. ${res.error?.message}`);
 
       // Finish up.
       return {
