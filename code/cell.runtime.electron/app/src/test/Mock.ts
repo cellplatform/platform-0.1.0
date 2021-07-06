@@ -94,7 +94,7 @@ export const Mock = {
   },
 
   /**
-   * Helpers for working with a ModuleRegistry
+   * Helpers for working with a [ModuleRegistry].
    */
   Registry: {
     async get(http: t.IHttpClient) {

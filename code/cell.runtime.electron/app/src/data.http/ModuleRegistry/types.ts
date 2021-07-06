@@ -1,3 +1,4 @@
+import { ManifestSourceKind } from '../Manifest/types';
 type CellUri = string;
 
 export type ManifestUrl = string;
@@ -28,5 +29,5 @@ export type RegistryNamespaceVersion = {
 
 export type RegistryManifestSource = {
   manifest: ManifestSource;
-  kind: 'url' | 'filepath';
+  kind: ManifestSourceKind;
 };

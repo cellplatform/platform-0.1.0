@@ -1,11 +1,9 @@
 import { d } from './common';
 
-type S = d.RegistryManifestSource;
-
 /**
- * Provides meta-data about a path to a manifest.
+ * Parses a source string providing meta-data about a path to a manifest file.
  */
-export function ManifestSource(input: string) {
+export function ManifestSource(input: string): d.ManifestSource {
   const throwError = (detail: string) => {
     throw new Error(`Invalid manifest source '${input}' - ${detail}`);
   };
@@ -16,7 +14,7 @@ export function ManifestSource(input: string) {
   if (!path) throwError('empty');
 
   const isHttp = path.startsWith('http://') || path.startsWith('https://');
-  const kind = (isHttp ? 'url' : 'filepath') as S['kind'];
+  const kind = (isHttp ? 'url' : 'filepath') as d.ManifestSourceKind;
 
   if (!path.endsWith('.json')) throwError('not a path to a ".json" file');
   if (kind === 'filepath') {
@@ -31,7 +29,6 @@ export function ManifestSource(input: string) {
   return {
     path,
     kind,
-    toObject: () => ({ manifest: path, kind } as S),
     toString: () => path,
 
     get domain() {

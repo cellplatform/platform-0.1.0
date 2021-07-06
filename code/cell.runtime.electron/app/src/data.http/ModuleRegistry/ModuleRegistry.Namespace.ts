@@ -1,6 +1,5 @@
-import { t, Uri, d, semver, time } from './common';
+import { t, Uri, d, semver, time, ManifestSource } from './common';
 import { Clean } from './util';
-import { ManifestSource } from './ManifestSource';
 
 /**
  * Handles storing module registry data for a single namespace.
