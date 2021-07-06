@@ -21,6 +21,7 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
     req$: rx.payload<t.BundleListReqEvent>($, 'runtime.electron/Bundle/list:req'),
     res$: rx.payload<t.BundleListResEvent>($, 'runtime.electron/Bundle/list:res'),
     async get(options = {}) {
+      const { domain } = options;
       const tx = slug();
       const msecs = options.timeout ?? 1000;
       const first = firstValueFrom(
@@ -30,41 +31,47 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
           catchError(() => of(`Bundle listing timed out after ${msecs} msecs`)),
         ),
       );
+
       bus.fire({
         type: 'runtime.electron/Bundle/list:req',
-        payload: { tx },
+        payload: { tx, domain },
       });
+
       const res = await first;
-      return typeof res === 'string' ? { items: [], error: res } : { items: res.items };
+      return typeof res === 'string' ? { items: [], error: res } : res;
     },
   };
 
-  const put: t.BundleEvents['put'] = {
-    req$: rx.payload<t.BundlePutReqEvent>($, 'runtime.electron/Bundle/put:req'),
-    res$: rx.payload<t.BundlePutResEvent>($, 'runtime.electron/Bundle/put:res'),
-    async add(source, options = {}) {
+  const install: t.BundleEvents['install'] = {
+    req$: rx.payload<t.BundleInstallReqEvent>($, 'runtime.electron/Bundle/install:req'),
+    res$: rx.payload<t.BundleInstallResEvent>($, 'runtime.electron/Bundle/install:res'),
+    async fire(source, options = {}) {
       const tx = slug();
-      const msecs = options.timeout ?? 1000;
+      const { force, timeout: msecs = 3000 } = options;
       const first = firstValueFrom(
-        put.res$.pipe(
+        install.res$.pipe(
           filter((e) => e.tx === tx),
           timeout(msecs),
-          catchError(() => of(`Bundle listing timed out after ${msecs} msecs`)),
+          catchError(() => of(`Installation timed out after ${msecs} msecs`)),
         ),
       );
+
       bus.fire({
-        type: 'runtime.electron/Bundle/put:req',
-        payload: { tx, action: 'add', source },
+        type: 'runtime.electron/Bundle/install:req',
+        payload: { tx, source, force },
       });
+
       const res = await first;
-      return { tx, error: typeof res === 'string' ? res : res.error };
+      return typeof res === 'string'
+        ? { tx, ok: false, action: 'error', source, errors: [res], elapsed: -1 }
+        : res;
     },
   };
 
   const status: t.BundleEvents['status'] = {
     req$: rx.payload<t.BundleStatusReqEvent>($, 'runtime.electron/Bundle/status:req'),
     res$: rx.payload<t.BundleStatusResEvent>($, 'runtime.electron/Bundle/status:res'),
-    async get(args: { dir: string; cell?: Uri | t.ICellUri }) {
+    async get(args: { dir: string; cell: Uri | t.ICellUri }) {
       const { dir } = args;
       const cell = typeof args.cell === 'object' ? args.cell.toString() : args.cell;
       const tx = slug();
@@ -77,22 +84,24 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
     },
   };
 
-  const upload: t.BundleEvents['upload'] = {
-    req$: rx.payload<t.BundleUploadReqEvent>($, 'runtime.electron/Bundle/upload:req'),
-    res$: rx.payload<t.BundleUploadResEvent>($, 'runtime.electron/Bundle/upload:res'),
-    fire(args: { sourceDir: string; targetDir: string; force?: boolean }) {
-      const { sourceDir, targetDir, force } = args;
-      const tx = slug();
-      const res = firstValueFrom(upload.res$.pipe(filter((e) => e.tx === tx)));
-      bus.fire({
-        type: 'runtime.electron/Bundle/upload:req',
-        payload: { tx, sourceDir, targetDir, force },
-      });
-      return res;
+  const fs: t.BundleEvents['fs'] = {
+    save: {
+      req$: rx.payload<t.BundleFsSaveReqEvent>($, 'runtime.electron/Bundle/fs/save:req'),
+      res$: rx.payload<t.BundleFsSaveResEvent>($, 'runtime.electron/Bundle/fs/save:res'),
+      fire(args) {
+        const { source, target, force, silent } = args;
+        const tx = slug();
+        const res = firstValueFrom(fs.save.res$.pipe(filter((e) => e.tx === tx)));
+        bus.fire({
+          type: 'runtime.electron/Bundle/fs/save:req',
+          payload: { tx, source, target, force, silent },
+        });
+        return res;
+      },
     },
   };
 
-  return { $, is, dispose, dispose$, list, put, status, upload };
+  return { $, is, dispose, dispose$, list, install, status, fs };
 }
 
 /**

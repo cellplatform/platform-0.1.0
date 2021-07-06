@@ -43,6 +43,7 @@ export const Paths = {
     return {
       base,
       sys: {
+        project: resolve('../../cell.modules/pkg.sys/runtime.electron'),
         source: fs.join(base, 'sys.runtime/web'),
         target: 'sys.runtime/web',
       },

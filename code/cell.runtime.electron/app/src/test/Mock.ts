@@ -1,10 +1,11 @@
-import { time, ConfigFile, HttpClient, rx, t, fs, Paths } from '../main/common';
+import { time, ConfigFile, HttpClient, rx, t, fs, Paths, Genesis } from '../main/common';
 import { Bundle } from '../main/main.Bundle';
 import { Log } from '../main/main.Log';
 import { Menu } from '../main/main.Menu';
 import { System } from '../main/main.System';
 import { SystemServer } from '../main/main.System.server';
 import { Window } from '../main/main.Window';
+import { ModuleRegistry } from '../data.client.http';
 
 export type IMockServer = {
   host: string;
@@ -90,5 +91,20 @@ export const Mock = {
   async delete() {
     await time.wait(50); // NB: Brief pause prevents fs error (renaming the DB file).
     await fs.remove(Paths.tmp.test);
+  },
+
+  /**
+   * Helpers for working with a ModuleRegistry
+   */
+  Registry: {
+    async get(http: t.IHttpClient) {
+      const genesis = Genesis(http);
+      return ModuleRegistry({ http, uri: await genesis.modules.uri() });
+    },
+
+    async clear(http: t.IHttpClient) {
+      const registry = await Mock.Registry.get(http);
+      await registry.delete();
+    },
   },
 };

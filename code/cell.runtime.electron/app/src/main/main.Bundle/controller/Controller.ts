@@ -1,8 +1,9 @@
-import { rx, t } from '../../common';
 import { Events } from '../Bundle.Events';
-import { PutController } from './Controller.put';
+import { rx, t } from '../common';
+import { InstallController } from './Controller.install';
+import { ListController } from './Controller.list';
 import { StatusController } from './Controller.status';
-import { UploadController } from './Controller.upload';
+import { FilesystemController } from './Controller.fs';
 
 /**
  * Bundle behavior logic.
@@ -14,9 +15,11 @@ export function Controller(args: { bus: t.EventBus<any>; http: t.IHttpClient }) 
   const { dispose, dispose$ } = events;
 
   // Initialise sub-controllers.
-  PutController({ bus, events, http });
+  InstallController({ bus, events, http });
+  ListController({ bus, events, http });
   StatusController({ bus, events, http });
-  UploadController({ bus, events, http });
+  FilesystemController({ bus, events, http });
 
+  // Finish up.
   return { dispose, dispose$ };
 }
