@@ -1,6 +1,5 @@
-import { t, Uri } from './common';
+import { Encoding, t, Uri } from './common';
 import { ModuleRegistryDomain } from './ModuleRegistry.Domain';
-import { Encoding } from './util';
 
 /**
  * Client for reading/writing data about installed modules.

@@ -1,6 +1,5 @@
-import { d, t, Uri, asArray } from './common';
+import { asArray, Clean, Encoding, t, Uri } from './common';
 import { ModuleRegistryNamespace } from './ModuleRegistry.Namespace';
-import { Clean, Encoding } from './util';
 
 /**
  * Handles a [ModuleRegistry] for a source domain
@@ -43,7 +42,7 @@ export function ModuleRegistryDomain(args: {
     async uri() {
       if (!_uri) {
         const uri = await getOrCreateLink(args.parent, domainLinkKey, async (key, uri) => {
-          await http.cell(uri).db.props.write<d.RegistryCellPropsDomain>({
+          await http.cell(uri).db.props.write<t.RegistryCellPropsDomain>({
             title: 'Module Registry (Domain)',
             domain,
           });
@@ -72,7 +71,7 @@ export function ModuleRegistryDomain(args: {
       namespace = Clean.namespace(namespace, { throw: true });
       const linkKey = Encoding.namespaceKey.escape(namespace);
       const uri = await getOrCreateLink(await api.uri(), linkKey, async (key, uri) => {
-        await http.cell(uri).db.props.write<d.RegistryCellPropsNamespace>({
+        await http.cell(uri).db.props.write<t.RegistryCellPropsNamespace>({
           kind: 'registry:namespace',
           title: 'Module Registry (Namespace)',
           namespace,

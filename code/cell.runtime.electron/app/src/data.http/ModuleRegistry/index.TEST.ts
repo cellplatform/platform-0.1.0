@@ -1,7 +1,7 @@
 import { ModuleRegistry } from '.';
-import { expect, expectError, IMockServer, Mock, t, TestSample, time, Uri } from '../../test';
-import { d } from './common';
-import { Encoding } from './util';
+import { expect, expectError, IMockServer, Mock, TestSample, time, Uri } from '../../test';
+
+import { t, Encoding } from './common';
 
 describe('ModuleRegistry (Http Client)', () => {
   let server: IMockServer;
@@ -154,7 +154,7 @@ describe('ModuleRegistry (Http Client)', () => {
       expect(domain.toString()).to.eql('[ModuleRegistryDomain:domain.com]');
 
       const cell = http.cell(await domain.uri());
-      const props = (await cell.info()).body.data.props as d.RegistryCellPropsDomain;
+      const props = (await cell.info()).body.data.props as t.RegistryCellPropsDomain;
 
       expect(props?.title).to.eql('Module Registry (Domain)');
       expect(props?.domain).to.eql('domain.com'); // NB: cleaned.
@@ -165,7 +165,7 @@ describe('ModuleRegistry (Http Client)', () => {
       const domain = registry.domain('  local:package  ');
 
       const cell = http.cell(await domain.uri());
-      const props = (await cell.info()).body.data.props as d.RegistryCellPropsDomain;
+      const props = (await cell.info()).body.data.props as t.RegistryCellPropsDomain;
 
       expect(props.domain).to.eql('local:package');
       expect(domain.domain).to.eql('local:package');
@@ -233,7 +233,7 @@ describe('ModuleRegistry (Http Client)', () => {
     });
 
     it('delete', async () => {
-      type P = d.RegistryCellPropsNamespace;
+      type P = t.RegistryCellPropsNamespace;
 
       const { registry, http } = await mockRegistry();
       const domain = registry.domain('localhost:1234');
@@ -281,7 +281,7 @@ describe('ModuleRegistry (Http Client)', () => {
       }
 
       expect(await fs.file(filename).exists()).to.eql(false); // NB: file attached to "ns.a" is deleted.
-      expect((info2.props as d.RegistryCellPropsDomain).domain).to.eql('localhost:1234');
+      expect((info2.props as t.RegistryCellPropsDomain).domain).to.eql('localhost:1234');
       expect(Object.keys(links2)).to.eql(['ref:ns:ns:b', 'ref:ns:ns:c']);
 
       await domain.delete(); // NB: No param, delete remaining items.
@@ -305,7 +305,7 @@ describe('ModuleRegistry (Http Client)', () => {
       const ns = await domain.namespace('  foo.bar  ');
 
       const cell = http.cell(ns.uri);
-      const props = (await cell.info()).body.data.props as d.RegistryCellPropsNamespace;
+      const props = (await cell.info()).body.data.props as t.RegistryCellPropsNamespace;
 
       expect(props.title).to.eql('Module Registry (Namespace)');
       expect(props.namespace).to.eql('foo.bar'); // NB: cleaned.

@@ -1,5 +1,4 @@
-import { t, Uri, d, semver, time, ManifestSource } from './common';
-import { Clean } from './util';
+import { Clean, ManifestSource, semver, t, time, Uri } from './common';
 
 /**
  * Handles storing module registry data for a single namespace.
@@ -15,10 +14,10 @@ export function ModuleRegistryNamespace(args: {
   const uri = Uri.cell(args.uri);
 
   const Filter = {
-    versionEntry(list: d.RegistryNamespaceVersion[], match: string) {
+    versionEntry(list: t.RegistryNamespaceVersion[], match: string) {
       return list.find((item) => semver.satisfies(item.version, match));
     },
-    versionIndex(list: d.RegistryNamespaceVersion[], match: string) {
+    versionIndex(list: t.RegistryNamespaceVersion[], match: string) {
       return list.findIndex((item) => semver.satisfies(item.version, match));
     },
   };
@@ -47,10 +46,10 @@ export function ModuleRegistryNamespace(args: {
      * Retrieve referenced versions of the namespace.
      */
     async read(options: { order?: 'asc' | 'desc' } = {}) {
-      type V = d.RegistryNamespaceVersion;
+      type V = t.RegistryNamespaceVersion;
       const { order = 'desc' } = options;
       const cell = http.cell(uri);
-      const info = (await cell.db.props.read<d.RegistryCellPropsNamespace>()).body;
+      const info = (await cell.db.props.read<t.RegistryCellPropsNamespace>()).body;
       const compare = (a: V, b: V) =>
         order === 'asc'
           ? semver.compare(a.version, b.version)
@@ -61,7 +60,7 @@ export function ModuleRegistryNamespace(args: {
     /**
      * Write a manifest to the list of namespace versions.
      */
-    async write(args: { source: d.ManifestSource; manifest: t.ModuleManifest }) {
+    async write(args: { source: t.ManifestSource; manifest: t.ModuleManifest }) {
       const { manifest } = args;
 
       if (manifest.module.namespace !== namespace) {
@@ -73,7 +72,7 @@ export function ModuleRegistryNamespace(args: {
       const index = Filter.versionIndex(versions, manifest.module.version);
       const exists = index >= 0;
 
-      const create = (): d.RegistryNamespaceVersion => {
+      const create = (): t.RegistryNamespaceVersion => {
         const now = time.now.timestamp;
         return {
           kind: 'registry:module',
@@ -86,7 +85,7 @@ export function ModuleRegistryNamespace(args: {
         };
       };
 
-      const update = (input: d.RegistryNamespaceVersion): d.RegistryNamespaceVersion => {
+      const update = (input: t.RegistryNamespaceVersion): t.RegistryNamespaceVersion => {
         return {
           ...input,
           modifiedAt: time.now.timestamp,
@@ -101,7 +100,7 @@ export function ModuleRegistryNamespace(args: {
       versions[exists ? index : versions.length] = entry;
 
       // Write to DB.
-      type P = Partial<d.RegistryCellPropsNamespace>;
+      type P = Partial<t.RegistryCellPropsNamespace>;
       const cell = http.cell(uri);
       const res = await cell.db.props.write<P>({ versions });
       if (!res.ok) throw new Error(`Failed to write manifest to database. ${res.error?.message}`);
@@ -132,8 +131,8 @@ export function ModuleRegistryNamespace(args: {
       );
 
       // Delete database properties.
-      const writeDb = async (versions: d.RegistryNamespaceVersion[]) => {
-        type P = Partial<d.RegistryCellPropsNamespace>;
+      const writeDb = async (versions: t.RegistryNamespaceVersion[]) => {
+        type P = Partial<t.RegistryCellPropsNamespace>;
         const cell = http.cell(uri);
         const res = await cell.db.props.write<P>({ versions });
         if (!res.ok) throw new Error(`Failed to write manifest to database. ${res.error?.message}`);
