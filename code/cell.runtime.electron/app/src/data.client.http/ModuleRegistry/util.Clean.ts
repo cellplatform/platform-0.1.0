@@ -16,7 +16,6 @@ export const Clean = {
 
     if (options.throw) {
       if (!host) throwError(`empty`);
-      if (host.length < 5) throwError(`too short`);
       if (host.includes('/')) throwError(`may not include "/"`);
       if (host.startsWith(':')) throwError(`may not start with ":"`);
       if (host.endsWith(':')) throwError(`may not end with ":"`);

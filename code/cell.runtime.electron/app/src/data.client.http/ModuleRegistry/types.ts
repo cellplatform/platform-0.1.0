@@ -1,8 +1,8 @@
 type CellUri = string;
 
 export type ManifestUrl = string;
-export type ManifestFilepath = string;
-export type ManifestSource = ManifestUrl | ManifestFilepath;
+export type ManifestPath = string;
+export type ManifestSource = ManifestUrl | ManifestPath;
 
 export type RegistryCellPropsDomain = {
   title: string;

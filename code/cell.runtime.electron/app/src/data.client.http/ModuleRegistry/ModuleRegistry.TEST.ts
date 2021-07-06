@@ -1,9 +1,9 @@
-import { expect, Mock, Uri, expectError, IMockServer, TestSample, time } from '../../test';
-import { ModuleRegistry, ManifestSource } from '.';
-import { Encoding } from './util';
+import { ManifestSource, ModuleRegistry } from '.';
+import { expect, expectError, IMockServer, Mock, t, TestSample, time, Uri } from '../../test';
 import { d } from './common';
+import { Encoding } from './util';
 
-describe.only('ModuleRegistry (Http Client)', () => {
+describe('ModuleRegistry (Http Client)', () => {
   let server: IMockServer;
 
   before(async () => (server = await Mock.server()));
@@ -19,6 +19,60 @@ describe.only('ModuleRegistry (Http Client)', () => {
     return { http, registry };
   };
 
+  const uploadSampleFile = async (http: t.IHttpClient, uri: string, filename?: string) => {
+    filename = filename ?? 'test.txt';
+    const data = new Uint8Array([1, 2, 3, 4]).buffer;
+    const fs = http.cell(uri).fs;
+    await fs.upload({ filename, data });
+    return { fs, filename, data };
+  };
+
+  describe('ManifestSource', () => {
+    it('kind: filepath', () => {
+      const path = '/foo/bar/index.json';
+      const source = ManifestSource(`  ${path}  `); // NB: trimmed.
+      expect(source.kind).to.eql('filepath');
+      expect(source.domain).to.eql('local:package');
+      expect(source.dir).to.eql('/foo/bar');
+      expect(source.path).to.eql(path);
+      expect(source.toString()).to.eql(path);
+    });
+
+    it('kind: url', () => {
+      const path = 'https://domain.com:1234/cell:foo:A1/fs/foo/bar/index.json';
+      const source = ManifestSource(`  ${path}  `); // NB: trimmed.
+      expect(source.kind).to.eql('url');
+      expect(source.path).to.eql(path);
+      expect(source.domain).to.eql('domain.com:1234');
+      expect(source.dir).to.eql('/foo/bar');
+      expect(source.toString()).to.eql(path);
+    });
+
+    it('throw', () => {
+      const test = (input: any) => {
+        const fn = () => ManifestSource(input);
+        expect(fn).to.throw();
+      };
+
+      test('');
+      test('  ');
+      test(undefined);
+      test(null);
+      test({});
+      test([]);
+      test(123);
+      test(true);
+
+      // Not an ".json" file.
+      test('/foo/bar');
+      test('/foo/bar.js');
+      test('foo/bar/index.json'); // Directory paths must be absolute.
+
+      test('https://domain.com/ns:abc/fs/foo/index.json'); // Not a valid cell URI.
+      test('https://domain.com/cell:abc:A1/foo/index.json'); // Not a "/fs/..." cell filesystem path.
+    });
+  });
+
   describe('Encoding', () => {
     describe('domain key', () => {
       it('encode => decode', () => {
@@ -31,6 +85,7 @@ describe.only('ModuleRegistry (Http Client)', () => {
         test('localhost:8080', 'domain.localhost[.]8080');
         test('local:package', 'domain.local[.]package');
         test('foo.bar:package', 'domain.foo.bar[.]package');
+        test('domain.foo', 'domain.domain.foo');
       });
 
       it('is (flag)', () => {
@@ -55,6 +110,7 @@ describe.only('ModuleRegistry (Http Client)', () => {
         test('localhost:8080', 'ns.localhost[.]8080');
         test('local:package', 'ns.local[.]package');
         test('foo.bar:package', 'ns.foo.bar[.]package');
+        test('ns.a', 'ns.ns.a');
       });
 
       it('is (flag)', () => {
@@ -99,6 +155,20 @@ describe.only('ModuleRegistry (Http Client)', () => {
 
       expect(res[0]).to.eql(ns1.domain);
       expect(res[1]).to.eql(ns2.domain);
+    });
+
+    it('delete', async () => {
+      const { registry } = await mockRegistry();
+
+      const domain1 = registry.domain('domain.com');
+      const domain2 = registry.domain('local:package');
+      await domain1.namespace('foo.bar');
+      await domain2.namespace('foo.bar');
+
+      expect(await registry.domains()).to.eql(['domain.com', 'local:package']);
+
+      await registry.delete();
+      expect(await registry.domains()).to.eql([]);
     });
   });
 
@@ -156,7 +226,6 @@ describe.only('ModuleRegistry (Http Client)', () => {
       };
       test('');
       test('  ');
-      test('1234'); // minimum length 5 characters.
       test('foo/bar'); // no path character ("/").
       test('foobar:');
       test(':foobar');
@@ -208,6 +277,62 @@ describe.only('ModuleRegistry (Http Client)', () => {
       expect(res[0]).to.eql(ns1.namespace);
       expect(res[1]).to.eql(ns3.namespace);
     });
+
+    it('delete', async () => {
+      type P = d.RegistryCellPropsNamespace;
+
+      const { registry, http } = await mockRegistry();
+      const domain = registry.domain('localhost:1234');
+      const cell = http.cell(await domain.uri());
+      const getDomainInfo = async () => (await cell.info()).body.data;
+
+      await domain.namespace('ns.a');
+      await domain.namespace('ns.b');
+      await domain.namespace('ns.c');
+
+      const source = '/dir/index.json';
+      const version = '1.2.3';
+      const manifest = await TestSample.manifest({ namespace: 'ns.a', version });
+      const ns = await domain.namespace('ns.a');
+      const { entry } = await ns.write({ source, manifest });
+
+      const filename = 'lib/test.txt';
+      const { fs } = await uploadSampleFile(http, entry.fs, filename);
+
+      expect(await fs.file(filename).exists()).to.eql(true);
+      expect(await domain.namespaces()).to.eql(['ns.a', 'ns.b', 'ns.c']);
+
+      // NB: Namespaces linked.
+      const info1 = await getDomainInfo();
+      const links1 = info1.links || {};
+      for (const key of Object.keys(links1)) {
+        const uri = links1[key];
+        const props = (await http.cell(uri).db.props.read<P>()).body;
+        expect(props?.kind).to.eql('registry:namespace');
+      }
+
+      await domain.delete('  ns.a  ');
+      const info2 = await getDomainInfo();
+      const links2 = info2.links || {};
+
+      // NB: namespace "ns.a" removed, others remain.
+      for (const key of Object.keys(links1)) {
+        const uri = links1[key];
+        const props = (await http.cell(uri).db.props.read<P>()).body;
+        if (key === 'ref:ns:ns:a') {
+          expect(props).to.eql(undefined); // NB: Deleted.
+        } else {
+          expect(props?.kind).to.eql('registry:namespace'); // NB: Remaining.
+        }
+      }
+
+      expect(await fs.file(filename).exists()).to.eql(false); // NB: file attached to "ns.a" is deleted.
+      expect((info2.props as d.RegistryCellPropsDomain).domain).to.eql('localhost:1234');
+      expect(Object.keys(links2)).to.eql(['ref:ns:ns:b', 'ref:ns:ns:c']);
+
+      await domain.delete(); // NB: No param, delete remaining items.
+      expect(await getDomainInfo()).to.eql({}); // NB: everything gone.
+    });
   });
 
   describe('ModuleRegistryNamespace', () => {
@@ -254,7 +379,7 @@ describe.only('ModuleRegistry (Http Client)', () => {
       await test(null);
     });
 
-    describe('put', () => {
+    describe('read/write', () => {
       it('throw - namespace mismatch', async () => {
         const { registry } = await mockRegistry();
         const domain = registry.domain('local:package');
@@ -275,13 +400,13 @@ describe.only('ModuleRegistry (Http Client)', () => {
         const manifest = await TestSample.manifest({ namespace, version });
         const ns = await domain.namespace(namespace);
 
-        expect(await ns.versions()).to.eql([]);
+        expect(await ns.read()).to.eql([]);
 
         const res = await ns.write({ source, manifest });
-        const v1 = await ns.read(version);
+        const v1 = await ns.version(version);
         expect(res.action).to.eql('created');
 
-        const versions = await ns.versions();
+        const versions = await ns.read();
         expect(versions.length).to.eql(1);
 
         const entry = versions[0];
@@ -293,7 +418,7 @@ describe.only('ModuleRegistry (Http Client)', () => {
 
         await time.wait(10);
 
-        const v2 = await ns.read(version);
+        const v2 = await ns.version(version);
         expect(v2?.modifiedAt).to.eql(v1?.modifiedAt); // NB: no change.
       });
 
@@ -310,8 +435,8 @@ describe.only('ModuleRegistry (Http Client)', () => {
         const manifest2 = await TestSample.manifest({ namespace, version });
 
         await ns.write({ source, manifest: manifest1 });
-        expect((await ns.read(version))?.hash).to.eql(manifest1.hash.module);
-        const v1 = await ns.read(version);
+        expect((await ns.version(version))?.hash).to.eql(manifest1.hash.module);
+        const v1 = await ns.version(version);
 
         await time.wait(10);
 
@@ -320,60 +445,100 @@ describe.only('ModuleRegistry (Http Client)', () => {
         const res = await ns.write({ source, manifest: manifest2 });
         expect(res.action).to.eql('updated');
 
-        const v2 = await ns.read(version);
+        const v2 = await ns.version(version);
         expect(v2?.hash).to.eql(change);
         expect(v2).to.eql(res.entry);
 
         expect(v2?.modifiedAt).to.greaterThan(v1?.modifiedAt ?? -1);
       });
 
-      it('manifest source: url | filepath', async () => {
+      it('add later version (lists versions in descending order)', async () => {
         const { registry } = await mockRegistry();
-        const domain = registry.domain('localhost:1234');
-        const namespace = 'foo.bar';
-        const manifest = await TestSample.manifest({ namespace });
-        const ns = await domain.namespace(namespace);
+        const domain = registry.domain('local:package');
 
-        const filepath = '/dir/index.json';
-        const url = 'https://domain.com/cell:foo:A1/fs/dir/index.json';
-
-        expect(ManifestSource(filepath).kind).to.eql('filepath');
-        expect(ManifestSource(url).kind).to.eql('url');
-
-        const res1 = await ns.write({ source: filepath, manifest });
-        const res2 = await ns.write({
-          source: url,
-          manifest,
-        });
-
-        expect(res1.entry.source).to.eql(filepath);
-        expect(res2.entry.source).to.eql(url);
-      });
-
-      it('throw: invalid manifest source', async () => {
-        const { registry } = await mockRegistry();
-        const domain = registry.domain('localhost:1234');
-
-        const version = '1.2.3';
+        const source = '/dir/index.json';
         const namespace = 'foo.bar';
         const ns = await domain.namespace(namespace);
-        const manifest = await TestSample.manifest({ namespace, version });
 
-        const test = async (source: any) => {
-          const fn = () => ns.write({ source, manifest });
-          await expectError(fn, 'Invalid manifest source');
+        const manifest1 = await TestSample.manifest({ namespace, version: '1.0.0' });
+        const manifest2 = await TestSample.manifest({ namespace, version: '1.0.1' });
+
+        const res1 = await ns.write({ source, manifest: manifest1 });
+        const res2 = await ns.write({ source, manifest: manifest2 });
+
+        expect(res1.action).to.eql('created');
+        expect(res2.action).to.eql('created'); // NB: New version registered as a "create" action.
+
+        const versions = {
+          ascending: (await ns.read({ order: 'asc' })).map((item) => item.version),
+          descending: (await ns.read()).map((item) => item.version), // Default order: "desc".
         };
 
-        await test('');
-        await test(' ');
-        await test('file/path/index.json'); // NB: does not start with "/".
-        await test('/path/index'); // NB: Not a JSON file.
+        expect(versions.ascending).to.eql(['1.0.0', '1.0.1']);
+        expect(versions.descending).to.eql(['1.0.1', '1.0.0']);
+      });
 
-        await test(123);
-        await test(true);
-        await test({});
-        await test([]);
-        await test(null);
+      it('latest (version)', async () => {
+        const { registry } = await mockRegistry();
+        const domain = registry.domain('local:package');
+
+        const source = '/dir/index.json';
+        const namespace = 'foo.bar';
+        const ns = await domain.namespace(namespace);
+
+        const manifest1 = await TestSample.manifest({ namespace, version: '1.0.0' });
+        const manifest2 = await TestSample.manifest({ namespace, version: '1.0.1' });
+
+        expect(await ns.latest()).to.eql(undefined);
+
+        await ns.write({ source, manifest: manifest1 });
+        expect((await ns.latest()).version).to.eql('1.0.0');
+
+        await ns.write({ source, manifest: manifest2 });
+        expect((await ns.latest()).version).to.eql('1.0.1');
+      });
+
+      it('delete: version(s)', async () => {
+        const { registry, http } = await mockRegistry();
+        const domain = registry.domain('local:package');
+
+        const source = '/dir/index.json';
+        const namespace = 'foo.bar';
+        const ns = await domain.namespace(namespace);
+
+        const ensureVersions = async (versions: string[]) => {
+          const res = (await ns.read()).map(({ version }) => version);
+          expect(res).to.eql(versions);
+        };
+
+        const manifest1 = await TestSample.manifest({ namespace, version: '1.0.0' });
+        const manifest2 = await TestSample.manifest({ namespace, version: '1.0.1' });
+        const manifest3 = await TestSample.manifest({ namespace, version: '1.2.3' });
+
+        await ensureVersions([]);
+        await ns.delete(); // NB: nothing to delete.
+        await ensureVersions([]);
+
+        const { entry } = await ns.write({ source, manifest: manifest1 });
+        await ns.write({ source, manifest: manifest2 });
+        await ns.write({ source, manifest: manifest3 });
+        await ensureVersions(['1.2.3', '1.0.1', '1.0.0']);
+
+        // Upload sample file.
+        const filename = 'lib/test.txt';
+        const { fs } = await uploadSampleFile(http, entry.fs, filename);
+        expect(await fs.file(filename).exists()).to.eql(true);
+
+        await ns.delete('5.0.0'); // NB: does not exist - no change.
+        await ensureVersions(['1.2.3', '1.0.1', '1.0.0']);
+
+        await ns.delete('  1.0.1  '); // NB: trimmed.
+        await ensureVersions(['1.2.3', '1.0.0']);
+
+        await ns.delete();
+        await ensureVersions([]); // NB: all remaining versions removed.
+
+        expect(await fs.file(filename).exists()).to.eql(false); // Uploaded file does not exist.
       });
     });
   });

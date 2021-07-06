@@ -1,4 +1,4 @@
-import { d, t, Uri } from './common';
+import { d, t, Uri, asArray } from './common';
 import { ModuleRegistryNamespace } from './ModuleRegistry.Namespace';
 import { Clean, Encoding } from './util';
 
@@ -32,6 +32,8 @@ export function ModuleRegistryDomain(args: {
     return value;
   };
 
+  let _uri: t.ICellUri | undefined;
+
   const api = {
     domain,
 
@@ -39,21 +41,23 @@ export function ModuleRegistryDomain(args: {
      * The URI of the cell containing the modules of the "domain".
      */
     async uri() {
-      const uri = await getOrCreateLink(args.parent, domainLinkKey, async (key, uri) => {
-        await http.cell(uri).db.props.write<d.RegistryCellPropsDomain>({
-          title: 'Module Registry (Domain)',
-          domain,
+      if (!_uri) {
+        const uri = await getOrCreateLink(args.parent, domainLinkKey, async (key, uri) => {
+          await http.cell(uri).db.props.write<d.RegistryCellPropsDomain>({
+            title: 'Module Registry (Domain)',
+            domain,
+          });
         });
-      });
-      return Uri.cell(uri);
+        _uri = Uri.cell(uri);
+      }
+      return _uri;
     },
 
     /**
      * Retrieve a list of all [namespaces] within the domain.
      */
     async namespaces() {
-      const uri = await api.uri();
-      const cell = http.cell(uri);
+      const cell = http.cell(await api.uri());
       const links = (await cell.links.read()).body;
       return links.cells
         .map((link) => link.key)
@@ -76,6 +80,40 @@ export function ModuleRegistryDomain(args: {
         });
       });
       return ModuleRegistryNamespace({ http, namespace, domain, uri });
+    },
+
+    /**
+     * Delete a namespace or the entire domain.
+     *  - delete all namespace version bundles (fs).
+     *  - delete namespace props (db)
+     *  - delete link reference
+     */
+    async delete(namespace?: string | string[]) {
+      const namespaces =
+        namespace === undefined
+          ? await api.namespaces()
+          : asArray(namespace)
+              .map((ns) => (ns || '').trim())
+              .filter(Boolean);
+
+      const httpDomain = http.cell(await api.uri());
+      const encoding = Encoding.namespaceKey;
+      const links = (await httpDomain.links.read()).body.cells
+        .filter((link) => encoding.is(link.key))
+        .filter((link) => namespaces.includes(encoding.unescape(link.key)));
+
+      const deleteNamespace = async (namespace: string) => {
+        await (await api.namespace(namespace)).delete();
+        const link = links.find((item) => encoding.unescape(item.key) === namespace);
+        await link?.http.db.props.write({}, { onConflict: 'overwrite' });
+      };
+
+      await Promise.all(namespaces.map(deleteNamespace));
+      await httpDomain.links.delete(links.map(({ key }) => key));
+
+      if (namespace === undefined) {
+        await httpDomain.db.props.write({}, { onConflict: 'overwrite' });
+      }
     },
 
     /**

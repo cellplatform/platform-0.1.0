@@ -1,4 +1,4 @@
-import { d, t, Uri, Schema } from './common';
+import { t, Uri } from './common';
 import { ModuleRegistryDomain } from './ModuleRegistry.Domain';
 import { Encoding } from './util';
 
@@ -11,7 +11,7 @@ export function ModuleRegistry(args: {
 }) {
   const { http } = args;
   const uri = Uri.cell(args.uri, true);
-  return {
+  const api = {
     uri,
 
     /**
@@ -33,5 +33,16 @@ export function ModuleRegistry(args: {
       const parent = uri;
       return ModuleRegistryDomain({ http, domain, parent });
     },
+
+    /**
+     * Delete all domains.
+     */
+    async delete() {
+      const domains = await api.domains();
+      await Promise.all(domains.map(async (domain) => await api.domain(domain).delete()));
+      await http.cell(uri).links.delete(domains.map((name) => Encoding.domainKey.escape(name)));
+    },
   };
+
+  return api;
 }

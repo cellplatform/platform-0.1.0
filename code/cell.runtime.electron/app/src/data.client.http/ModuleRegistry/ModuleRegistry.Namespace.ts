@@ -30,20 +30,33 @@ export function ModuleRegistryNamespace(args: {
     domain,
 
     /**
-     * Retrieve referenced versions of the namespace.
+     * Retrieve the entry for the given version.
      */
-    async versions() {
-      const cell = http.cell(uri);
-      const info = (await cell.db.props.read<d.RegistryCellPropsNamespace>()).body;
-      const versions = (info?.versions ?? []).sort((a, b) => semver.compare(a.version, b.version));
-      return versions;
+    async version(version: string) {
+      return Filter.versionEntry(await api.read(), version);
     },
 
     /**
-     * Retrieve the entry for the given version.
+     * Retrieve the entry with the latest version.
      */
-    async read(semver: string) {
-      return Filter.versionEntry(await api.versions(), semver);
+    async latest() {
+      const versions = await api.read({ order: 'desc' });
+      return versions[0];
+    },
+
+    /**
+     * Retrieve referenced versions of the namespace.
+     */
+    async read(options: { order?: 'asc' | 'desc' } = {}) {
+      type V = d.RegistryNamespaceVersion;
+      const { order = 'desc' } = options;
+      const cell = http.cell(uri);
+      const info = (await cell.db.props.read<d.RegistryCellPropsNamespace>()).body;
+      const compare = (a: V, b: V) =>
+        order === 'asc'
+          ? semver.compare(a.version, b.version)
+          : semver.compare(b.version, a.version);
+      return (info?.versions ?? []).sort(compare);
     },
 
     /**
@@ -57,7 +70,7 @@ export function ModuleRegistryNamespace(args: {
       }
 
       const source = ManifestSource(args.source);
-      const versions = await api.versions();
+      const versions = await api.read();
       const index = Filter.versionIndex(versions, manifest.module.version);
       const exists = index >= 0;
 
@@ -86,7 +99,7 @@ export function ModuleRegistryNamespace(args: {
 
       // Get or create {entry}.
       const entry = exists ? update(versions[index]) : create();
-      versions[index < 0 ? 0 : index] = entry;
+      versions[exists ? index : versions.length] = entry;
 
       // Write to DB.
       type P = Partial<d.RegistryCellPropsNamespace>;
@@ -99,6 +112,36 @@ export function ModuleRegistryNamespace(args: {
         action: !exists ? 'created' : 'updated',
         entry,
       };
+    },
+
+    async delete(version?: string) {
+      version = (version || '').trim();
+      const versions = await api.read();
+
+      if (!version && versions.length === 0) return;
+      if (version && !versions.map((m) => m.version).includes(version)) return;
+
+      // Delete files.
+      await Promise.all(
+        versions.map(async (item) => {
+          if (!version || item.version === version) {
+            const cell = http.cell(item.fs);
+            const filenames = (await cell.links.read()).body.files.map((link) => link.path);
+            await cell.fs.delete(filenames);
+          }
+        }),
+      );
+
+      // Delete database properties.
+      const writeDb = async (versions: d.RegistryNamespaceVersion[]) => {
+        type P = Partial<d.RegistryCellPropsNamespace>;
+        const cell = http.cell(uri);
+        const res = await cell.db.props.write<P>({ versions });
+        if (!res.ok) throw new Error(`Failed to write manifest to database. ${res.error?.message}`);
+      };
+
+      if (!version) await writeDb([]);
+      if (version) await writeDb(versions.filter((item) => item.version !== version));
     },
 
     /**
