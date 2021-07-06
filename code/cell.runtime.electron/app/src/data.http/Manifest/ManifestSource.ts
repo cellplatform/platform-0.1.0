@@ -1,9 +1,10 @@
-import { d } from './common';
+import { t } from './common';
 
 /**
- * Parses a source string providing meta-data about a path to a manifest file.
+ * Parses a source string providing meta-data
+ * about a path to a manifest file.
  */
-export function ManifestSource(input: string): d.ManifestSource {
+export function ManifestSource(input: string): t.ManifestSource {
   const throwError = (detail: string) => {
     throw new Error(`Invalid manifest source '${input}' - ${detail}`);
   };
@@ -14,7 +15,7 @@ export function ManifestSource(input: string): d.ManifestSource {
   if (!path) throwError('empty');
 
   const isHttp = path.startsWith('http://') || path.startsWith('https://');
-  const kind = (isHttp ? 'url' : 'filepath') as d.ManifestSourceKind;
+  const kind = (isHttp ? 'url' : 'filepath') as t.ManifestSourceKind;
 
   if (!path.endsWith('.json')) throwError('not a path to a ".json" file');
   if (kind === 'filepath') {
