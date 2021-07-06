@@ -5,7 +5,7 @@ import { Menu } from '../main/main.Menu';
 import { System } from '../main/main.System';
 import { SystemServer } from '../main/main.System.server';
 import { Window } from '../main/main.Window';
-import { ModuleRegistry } from '../data.client.http';
+import { ModuleRegistry } from '../data.http';
 
 export type IMockServer = {
   host: string;
