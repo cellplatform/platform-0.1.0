@@ -45,8 +45,8 @@ export function create(args: {
     router,
     log: {
       server: `${PKG.name}@${PKG.version}`,
-      router: `- ${deps['@platform/cell.router']}`,
-      schema: `- ${deps['@platform/cell.schema']}`,
+      router: `- v${deps['@platform/cell.router']}`,
+      schema: `- v${deps['@platform/cell.schema']}`,
       region: args.region ?? constants.CELL_REGION,
       runtime: runtime
         ? log.gray(`${Format.namespace(runtime.name)}@${runtime.version}`)
