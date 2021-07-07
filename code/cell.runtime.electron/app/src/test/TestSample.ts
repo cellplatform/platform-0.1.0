@@ -17,7 +17,7 @@ export const TestSample = {
    */
   async ensureBundle() {
     const paths = Paths.bundle.sys;
-    const dir = paths.source;
+    const dir = paths.source.dir;
     const exists = await fs.pathExists(dir);
 
     if (!exists) {

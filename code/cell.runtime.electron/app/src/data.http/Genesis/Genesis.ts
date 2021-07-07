@@ -46,7 +46,7 @@ export function Genesis(http: t.IHttpClient, getUri: () => Promise<string>) {
        * The cell that contains the "Module Registry" of installed code bundles.
        */
       async uri() {
-        const key = 'sys.modules';
+        const key = 'sys.ModuleRegistry';
         const genesis = http.cell(await api.cell.uri());
 
         // Write registry reference if it does not already exist.

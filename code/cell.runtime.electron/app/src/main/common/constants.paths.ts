@@ -40,11 +40,12 @@ export const Paths = {
 
   get bundle() {
     const base = resolve('lib.bundle');
+    const source = fs.join(base, 'sys.runtime/web');
     return {
       base,
       sys: {
         project: resolve('../../cell.modules/pkg.sys/runtime.electron'),
-        source: fs.join(base, 'sys.runtime/web'),
+        source: { dir: source, manifest: fs.join(source, 'index.json') },
         target: 'sys.runtime/web',
       },
     };

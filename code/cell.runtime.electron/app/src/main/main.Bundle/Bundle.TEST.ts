@@ -12,7 +12,7 @@ describe('main.Bundle', function () {
 
   async function sampleUpload(options: { source?: string; dir?: string; cell?: string } = {}) {
     const mock = await Mock.controllers();
-    const source = options.source ?? fs.join(Paths.bundle.sys.source, 'index.json');
+    const source = options.source ?? Paths.bundle.sys.source.manifest;
     const target = {
       dir: options.dir ?? `test/dir.${slug()}`,
       cell: options.cell ?? Uri.create.A1(),
@@ -50,7 +50,7 @@ describe('main.Bundle', function () {
   });
 
   describe('Controller', () => {
-    const manifestPath = `${Paths.bundle.sys.source}/index.json`;
+    const manifestPath = Paths.bundle.sys.source.manifest;
 
     describe('list', () => {
       it('list: empty (nothing installed)', async () => {
