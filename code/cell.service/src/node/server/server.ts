@@ -47,10 +47,10 @@ export function create(args: {
       server: `${PKG.name}@${PKG.version}`,
       router: deps['@platform/cell.router'],
       schema: deps['@platform/cell.schema'],
-      runtime: runtime ? runtime.name : undefined,
+      region: args.region ?? constants.CELL_REGION,
+      runtime: runtime ? Format.namespace(runtime.name) : undefined,
       fs: `[${log.white(fs.type === 'LOCAL' ? 'local' : fs.type)}]${dir}`,
       'fs:s3': fs.type == 'S3' ? fs.endpoint.origin : undefined,
-      region: args.region ?? constants.CELL_REGION,
     },
   });
 
@@ -60,3 +60,15 @@ export function create(args: {
   // Finish up.
   return app;
 }
+
+/**
+ * [Helpers]
+ */
+
+const Format = {
+  namespace(input: string) {
+    const parts = (input || '').trim().split('.');
+    const formatted = parts.map((part, i) => (i === parts.length - 1 ? log.white(part) : part));
+    return log.cyan(formatted.join('.'));
+  },
+};

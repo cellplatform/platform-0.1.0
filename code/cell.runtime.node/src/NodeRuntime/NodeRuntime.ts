@@ -19,7 +19,7 @@ export const NodeRuntime = {
     const cachedir = args.cachedir || PATH.CACHE_DIR;
 
     const runtime: t.RuntimeEnvNode = {
-      name: 'node',
+      name: 'cell.runtime.node',
       version: (process.version || '').replace(/^v/, ''),
       pull: pullMethod({ cachedir }),
       run: runMethod({ cachedir, stdlibs }),
