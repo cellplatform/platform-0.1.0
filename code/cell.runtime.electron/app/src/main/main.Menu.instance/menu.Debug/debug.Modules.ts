@@ -1,4 +1,4 @@
-import { t, ENV, Window, System, Bundle, Paths } from '../common';
+import { t, ENV, Window, System, Bundle, Paths, fs, log } from '../common';
 
 /**
  * Module management
@@ -23,25 +23,42 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
     console.log('create/res:', res);
   };
 
-  const openRuntimeUI = async (params?: t.Json) => {
-    const dir = Paths.bundle.sys.target;
+  const installRuntime = async () => {
+    /**
+     * Upload bundled system code into the local service.
+     */
+    const source = Paths.bundle.sys.source.manifest;
+    const res = await events.bundle.install.fire(source, {
+      force: ENV.isDev, // NB: Only repeat upload when running in development mode.
+    });
 
-    const status = {
-      system: await events.system.status.get(),
-      bundle: await events.bundle.status.get({ dir }),
+    log.info();
+    log.info('Installed Module', res);
+    log.info();
+  };
+
+  const openRuntimeUI = async (params?: t.Json) => {
+    const getStatus = () => {
+      return events.bundle.status.get({
+        domain: 'local:package',
+        namespace: 'sys.ui.runtime',
+      });
     };
+
+    let bundle = await getStatus();
+    if (!bundle.exists) {
+      await installRuntime();
+      bundle = await getStatus();
+    }
 
     const urls = {
       dev: 'http://localhost:5050', // TEMP 🐷
-      prod: status.bundle?.url || '',
+      prod: bundle.status?.urls.entry || '',
     };
 
-    const url = status.system.is.prod ? urls.prod : urls.dev;
-
-    console.log('openRuntimeUI');
-    console.log('url', url);
-    console.log('params', params);
-    console.log();
+    // TEMP 🐷
+    // const url = status.system.is.prod ? urls.prod : urls.dev;
+    const url = urls.prod;
 
     await openWindow(url);
   };
@@ -49,7 +66,7 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
   submenu.push({
     type: 'normal',
     label: 'Install...',
-    click: () => openRuntimeUI({ view: 'module:installer' }),
+    click: () => installRuntime(),
   });
 
   submenu.push({ type: 'separator' });

@@ -1,6 +1,5 @@
 import { Bundle } from '.';
 import { expect, fs, Mock, Paths, rx, slug, t, TestSample, Uri, Urls } from '../../test';
-import { ManifestFetch } from './common';
 
 describe('main.Bundle', function () {
   this.timeout(30000);
