@@ -1,14 +1,13 @@
 import { app } from 'electron';
 
-import { constants, fs, log, rx, t, ConfigFile, time, Genesis, HttpClient } from './common';
+import { ConfigFile, constants, fs, Genesis, HttpClient, log, rx, t, time } from './common';
+import { Bundle } from './main.Bundle';
+import { Log } from './main.Log';
+import { Menu } from './main.Menu';
+import { BuildMenu } from './main.Menu.instance';
+import { System } from './main.System';
 import { SystemServer } from './main.System.server';
 import { Window } from './main.Window';
-import { Log } from './main.Log';
-import { Bundle } from './main.Bundle';
-import { Menu } from './main.Menu';
-import { System } from './main.System';
-import { BuildMenu } from './main.Menu.instance';
-import { IpcBus } from './main.Bus';
 
 import { TestIpcBusBridging } from './entry.TMP';
 
@@ -79,13 +78,13 @@ export async function start() {
      * Upload bundled system code into the local service.
      */
     const bundle = Bundle.Events({ bus });
-    await bundle.upload.fire({
-      sourceDir: Paths.bundle.sys.source,
-      targetDir: Paths.bundle.sys.target,
+    const res = await bundle.install.fire(fs.join(Paths.bundle.sys.source, 'index.json'), {
       force: ENV.isDev, // NB: Only repeat upload when running in development mode.
     });
 
-    const bundleStatus = await bundle.status.get({ dir: Paths.bundle.sys.target });
+    console.log('installed module:', res);
+
+    // const bundleStatus = await bundle.status.get({ dir: Paths.bundle.sys.target });
     // console.log('-------------------------------------------');
     // console.log('bundleStatus', bundleStatus);
 
@@ -150,7 +149,7 @@ async function logMain(args: {
 
   const process = ConfigFile.process.split('@');
 
-  add('runtime:', `${log.white(process[0])}@${process[1]}`);
+  add('runtime:', `${Format.namespace(process[0])}@${process[1]}`);
   add('env:', ENV.node || '<empty>');
   add('packaged:', ENV.isPackaged);
   line();
@@ -160,11 +159,20 @@ async function logMain(args: {
   add('fs:', await path(args.paths.data.fs));
   add('config:', await path(args.paths.data.config));
   line();
-  add('host:', `http:${host.split(':')[1]}:${log.white(host.split(':')[2])}`);
+  add('host:', log.cyan(`http:${host.split(':')[1]}:${log.white(host.split(':')[2])}`));
   add('genesis', await genesis.cell.url());
+  add('registry', await genesis.modules.url());
 
   log.info.gray(`
 ${log.white('main')}:
 ${table.toString()}
 `);
 }
+
+const Format = {
+  namespace(input: string) {
+    const parts = (input || '').trim().split('.');
+    const formatted = parts.map((part, i) => (i === parts.length - 1 ? log.white(part) : part));
+    return log.cyan(formatted.join('.'));
+  },
+};
