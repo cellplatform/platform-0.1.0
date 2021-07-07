@@ -14,8 +14,8 @@ describe('data.http: Genesis', () => {
     await genesis.cell.ensureExists();
 
     const props = (await getProps()).body;
-    expect(props.title).to.eql('Genesis');
-    expect(props.type).to.eql('sys.data.Genesis');
+    expect(props?.title).to.eql('Genesis');
+    expect(props?.type).to.eql('sys.data.Genesis');
 
     await dispose();
   });

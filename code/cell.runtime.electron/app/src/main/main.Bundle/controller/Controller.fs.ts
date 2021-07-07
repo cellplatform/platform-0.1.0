@@ -1,5 +1,6 @@
 import { asArray, fs, log, ManifestSource, Schema, slug, t, time, ManifestFetch } from '../common';
-import { uploadLocal, uploadRemote } from './Controller.fs.upload';
+import { uploadLocal } from './Controller.fs.upload.fromLocal';
+import { uploadRemote } from './Controller.fs.upload.fromRemote';
 
 export function FilesystemController(args: {
   bus: t.EventBus<t.BundleEvent>;
