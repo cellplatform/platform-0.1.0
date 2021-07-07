@@ -33,7 +33,7 @@ export const Logger = {
     options: { indent?: number; url?: string | boolean; port?: number } = {},
   ) {
     const { indent } = options;
-    const { cyan, gray } = log;
+    const { white, cyan, gray } = log;
     const prefix = typeof indent === 'number' ? ' '.repeat(indent) : '';
     const model = Model(input);
     const obj = model.toObject();
@@ -44,7 +44,7 @@ export const Logger = {
     const table = log.table({ border: false });
     const add = (key: string, value: string | undefined) => {
       if (value) {
-        const left = log.gray(`${prefix}${log.white(key)} `);
+        const left = log.gray(`${prefix}${key} `);
         table.add([left, value]);
       }
     };
@@ -52,7 +52,7 @@ export const Logger = {
     let name = green(model.name());
     name = obj.title ? gray(`${name}/${obj.title}`) : name;
 
-    add('version', obj.version ? cyan(obj.version) : log.gray('0.0.0'));
+    add('version', obj.version ? white(obj.version) : log.gray('0.0.0'));
     add('namespace', green(obj.namespace));
     add('name', name);
     add('mode', green(model.mode()));
