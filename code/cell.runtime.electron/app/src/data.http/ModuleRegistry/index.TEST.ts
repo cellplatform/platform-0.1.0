@@ -3,7 +3,7 @@ import { expect, expectError, IMockServer, Mock, TestSample, time, Uri } from '.
 
 import { t, Encoding } from './common';
 
-describe('ModuleRegistry (Http Client)', () => {
+describe('data.http: ModuleRegistry', () => {
   let server: IMockServer;
 
   before(async () => (server = await Mock.server()));

@@ -129,7 +129,7 @@ describe('main.Bundle', function () {
         await Mock.Registry.clear(mock.http);
         await mock.fireUpload();
 
-        // Prepare the uploaded sample bundle as the source to install from
+        // Prepare the uploaded sample bundle as the source to install from.
         const filepath = `${mock.target.dir}/index.json`;
         const urls = Urls.create(mock.http.origin);
         const source = urls.cell(mock.target.cell).file.byName(filepath).toString();

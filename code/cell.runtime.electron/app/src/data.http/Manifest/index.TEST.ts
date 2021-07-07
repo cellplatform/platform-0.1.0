@@ -1,7 +1,7 @@
 import { ManifestSource, ManifestUrl } from '.';
 import { expect, Uri } from '../../test';
 
-describe('Manifest', () => {
+describe('data.http: Manifest', () => {
   describe('ManifestSource', () => {
     it('kind: filepath', () => {
       const path = '/foo/bar/index.json';

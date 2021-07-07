@@ -1,15 +1,13 @@
-import { ConfigFile } from './ConfigFile';
-import { Schema, Uri } from './libs';
-import * as t from './types';
+import { Schema, Uri, t } from '../common';
 
-export type CellInfo = { title: string };
+export type CellInfo = { title: string; type: string };
 
 /**
  * Helpers for working with the "Genesis" cell.
  */
-export function Genesis(http: t.IHttpClient) {
+export function Genesis(http: t.IHttpClient, getUri: () => Promise<string>) {
   const urls = Schema.Urls.create(http.origin);
-  let genesisUri: string | undefined;
+  let _uri: string | undefined;
 
   const api = {
     cell: {
@@ -17,9 +15,8 @@ export function Genesis(http: t.IHttpClient) {
        * The URI of the genesis cell.
        */
       async uri() {
-        if (!genesisUri) genesisUri = (await ConfigFile.read()).refs.genesis;
-        const A1 = Uri.cell(genesisUri);
-        return Uri.cell(A1);
+        if (!_uri) _uri = await getUri();
+        return Uri.cell(_uri);
       },
 
       /**
@@ -35,16 +32,18 @@ export function Genesis(http: t.IHttpClient) {
        */
       async ensureExists() {
         const cell = http.cell(await api.cell.uri());
-        const exists = await cell.exists();
+        const info = await cell.db.props.read<CellInfo>();
+        const exists = Boolean(info.body);
         if (exists) return { created: false };
-        await cell.db.props.write<CellInfo>({ title: 'Genesis' });
+
+        await cell.db.props.write<CellInfo>({ title: 'Genesis', type: 'sys.data.Genesis' });
         return { created: true };
       },
     },
 
     modules: {
       /**
-       * The cell that contains the registry of installed modules.
+       * The cell that contains the "Module Registry" of installed code bundles.
        */
       async uri() {
         const key = 'sys.modules';
@@ -55,7 +54,10 @@ export function Genesis(http: t.IHttpClient) {
         if (!exists) {
           const A1 = Schema.Uri.create.A1();
           await genesis.links.write({ key, value: A1 });
-          await http.cell(A1).db.props.write<CellInfo>({ title: 'Module Registry' });
+          await http.cell(A1).db.props.write<CellInfo>({
+            title: 'Module Registry',
+            type: 'sys.data.ModuleRegistry',
+          });
         }
 
         // Filter on the registry-cell link.
@@ -68,6 +70,14 @@ export function Genesis(http: t.IHttpClient) {
 
         // Finish up.
         return Uri.cell(registryLink.value);
+      },
+
+      /**
+       * Formats a URL to the "Module Registry".
+       */
+      async url() {
+        const uri = await api.modules.uri();
+        return urls.cell(uri).info.toString();
       },
     },
   };
