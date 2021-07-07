@@ -16,7 +16,7 @@ export function FilesystemController(args: {
     type Res = t.BundleFsSaveRes;
     const timer = time.timer();
     const { silent, tx = slug(), target } = e;
-    const host = http.origin;
+    const host = new URL(http.origin).host;
 
     const done = (
       action: Res['action'],
@@ -57,13 +57,13 @@ export function FilesystemController(args: {
       const manifest =
         source.kind === 'filepath'
           ? await loadManifestFromFile(source.toString())
-          : (await downloadManifestFromUrl(source.toString())).manifest;
+          : (await downloadManifestFromUrl(source.toString())).json;
 
       if (!manifest) return fireError(`Failed to load manifest`);
 
       const current = await downloadCurrentManifest();
       const hash = {
-        current: current.manifest?.hash.files || '',
+        current: current.json?.hash.files || '',
         next: manifest.hash.files,
       };
 

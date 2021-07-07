@@ -34,7 +34,7 @@ export function ModuleRegistryDomain(args: {
   let _uri: t.ICellUri | undefined;
 
   const api = {
-    domain,
+    name: domain,
 
     /**
      * The URI of the cell containing the modules of the "domain".

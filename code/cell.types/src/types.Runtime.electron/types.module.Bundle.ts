@@ -11,11 +11,10 @@ type Milliseconds = number;
  * Info about an installed bundle.
  */
 export type BundleStatus = {
-  host: string;
-  cell: Uri;
-  dir: string;
-  url: string;
-  manifest: t.ModuleManifest;
+  latest: boolean;
+  compiler: string;
+  module: BundleItem;
+  urls: { manifest: string; entry: string };
 };
 
 export type BundleItem = {
@@ -33,15 +32,6 @@ export type BundleEvents = t.IDisposable & {
   $: t.Observable<BundleEvent>;
   is: { base(input: any): boolean };
 
-  list: {
-    req$: t.Observable<BundleListReq>;
-    res$: t.Observable<BundleListRes>;
-    get(options?: {
-      domain?: string;
-      timeout?: number;
-    }): Promise<{ items: BundleItem[]; error?: string }>;
-  };
-
   install: {
     req$: t.Observable<BundleInstallReq>;
     res$: t.Observable<BundleInstallRes>;
@@ -51,10 +41,24 @@ export type BundleEvents = t.IDisposable & {
     ): Promise<t.BundleInstallRes>;
   };
 
+  list: {
+    req$: t.Observable<BundleListReq>;
+    res$: t.Observable<BundleListRes>;
+    get(options?: {
+      domain?: string;
+      timeout?: number;
+    }): Promise<{ items: BundleItem[]; error?: string }>;
+  };
+
   status: {
     req$: t.Observable<BundleStatusReq>;
     res$: t.Observable<BundleStatusRes>;
-    get(args: { dir: string; cell: Uri | t.ICellUri }): Promise<BundleStatus | undefined>;
+    get(args: {
+      domain: string;
+      namespace: string;
+      version?: string;
+      timeout?: number;
+    }): Promise<BundleStatusRes>;
   };
 
   fs: {
@@ -131,8 +135,9 @@ export type BundleStatusReqEvent = {
 };
 export type BundleStatusReq = {
   tx?: string;
-  dir: Directory;
-  cell: Uri;
+  domain: string;
+  namespace: string;
+  version?: string;
 };
 
 export type BundleStatusResEvent = {
@@ -143,6 +148,7 @@ export type BundleStatusRes = {
   tx: string;
   exists: boolean;
   status?: BundleStatus;
+  error?: string;
 };
 
 /**

@@ -13,10 +13,10 @@ export const ManifestFetch = {
     const url = urls.cell(args.cell).file.byName(path).toString();
     const res = await fetch(url);
     const { ok, status } = res;
-    const manifest = ok ? ((await res.json()) as T) : undefined;
-    const exists = Boolean(manifest);
-    const files = manifest?.files ?? [];
-    return { ok, url, path, status, exists, manifest, files };
+    const json = ok ? ((await res.json()) as T) : undefined;
+    const exists = Boolean(json);
+    const files = json?.files ?? [];
+    return { ok, url, path, status, exists, json, files };
   },
 
   /**

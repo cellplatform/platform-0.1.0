@@ -1,4 +1,4 @@
-import { ENV, fs, log, ManifestSource, t, time } from '../common';
+import { ENV, fs, log, t, time } from '../common';
 
 type Uri = string;
 type Directory = string;
@@ -15,7 +15,7 @@ export async function uploadLocal(args: {
 }) {
   const timer = time.timer();
   const { http, source } = args;
-  const host = http.origin;
+  const host = new URL(http.origin).host;
   const target = {
     cell: args.target.cell,
     dir: (args.target.dir || '').trim().replace(/^\/*/, '').replace(/\/*$/, ''),

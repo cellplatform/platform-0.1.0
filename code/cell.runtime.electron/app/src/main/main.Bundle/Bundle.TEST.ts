@@ -168,6 +168,46 @@ describe('main.Bundle', function () {
       });
     });
 
+    describe('status', () => {
+      it('exists: true', async () => {
+        const mock = await Mock.controllers();
+        await mock.events.bundle.install.fire(manifestPath); // NB: Install a module, but not the domain we are looking for.
+
+        const res = await mock.events.bundle.status.get({
+          domain: 'local:package',
+          namespace: 'sys.ui.runtime',
+        });
+
+        await mock.dispose();
+        const status = res.status;
+
+        expect(res.exists).to.eql(true);
+        expect(res.error).to.eql(undefined);
+
+        expect(status?.latest).to.eql(true);
+        expect(status?.compiler).to.match(/^@platform\/cell\.compiler\@/);
+
+        expect(status?.module.hash).to.match(/^sha256-/);
+        expect(status?.module.domain).to.eql('local:package');
+        expect(status?.module.namespace).to.eql('sys.ui.runtime');
+        expect(status?.module.version).to.match(/^\d+\.\d+\.\d+$/);
+        expect(status?.module.fs).to.match(/cell\:[\d\w]+\:[A-Z]+[1-9]+$/);
+      });
+
+      it('exists: false', async () => {
+        const mock = await Mock.controllers();
+        const res = await mock.events.bundle.status.get({
+          domain: 'local:package',
+          namespace: 'foo.bar.404',
+        });
+        await mock.dispose();
+
+        expect(res.exists).to.eql(false);
+        expect(res.error).to.eql(undefined);
+        expect(res.status).to.eql(undefined);
+      });
+    });
+
     describe('fs.save: upload', () => {
       it('upload (filepath): "created"', async () => {
         const mock = await sampleUpload();

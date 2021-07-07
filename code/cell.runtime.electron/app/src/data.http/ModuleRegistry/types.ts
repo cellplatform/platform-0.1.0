@@ -1,9 +1,9 @@
 import { ManifestSourceKind } from '../Manifest/types';
 type CellUri = string;
 
-export type ManifestUrl = string;
-export type ManifestPath = string;
-export type ManifestSource = ManifestUrl | ManifestPath;
+export type ManifestSourceUrl = string;
+export type ManifestSourcePath = string;
+export type ManifestSourceAddress = ManifestSourceUrl | ManifestSourcePath;
 
 export type RegistryCellPropsDomain = {
   title: string;
@@ -23,11 +23,11 @@ export type RegistryNamespaceVersion = {
   modifiedAt: number;
   version: string;
   hash: string;
-  source: ManifestSource;
+  source: ManifestSourceAddress;
   fs: CellUri;
 };
 
 export type RegistryManifestSource = {
-  manifest: ManifestSource;
+  manifest: ManifestSourceAddress;
   kind: ManifestSourceKind;
 };

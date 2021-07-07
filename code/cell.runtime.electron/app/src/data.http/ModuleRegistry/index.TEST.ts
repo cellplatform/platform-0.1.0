@@ -130,10 +130,10 @@ describe('data.http: ModuleRegistry', () => {
     it('create', async () => {
       const { registry } = await mockRegistry();
 
-      const test = (input: string, expected: string) => {
-        const res = registry.domain(input);
-        expect(res.domain).to.eql(expected);
-        expect(res.toString()).to.eql(`[ModuleRegistryDomain:${expected}]`);
+      const test = (input: string, expectedName: string) => {
+        const domain = registry.domain(input);
+        expect(domain.name).to.eql(expectedName);
+        expect(domain.toString()).to.eql(`[ModuleRegistryDomain:${expectedName}]`);
       };
 
       test('localhost', 'localhost');
@@ -168,7 +168,7 @@ describe('data.http: ModuleRegistry', () => {
       const props = (await cell.info()).body.data.props as t.RegistryCellPropsDomain;
 
       expect(props.domain).to.eql('local:package');
-      expect(domain.domain).to.eql('local:package');
+      expect(domain.name).to.eql('local:package');
       expect(domain.toString()).to.eql('[ModuleRegistryDomain:local:package]');
     });
 
@@ -228,8 +228,8 @@ describe('data.http: ModuleRegistry', () => {
       expect(res[0]).to.eql('ns.a');
       expect(res[1]).to.eql('ns.b');
 
-      expect(res[0]).to.eql(ns1.namespace);
-      expect(res[1]).to.eql(ns3.namespace);
+      expect(res[0]).to.eql(ns1.name);
+      expect(res[1]).to.eql(ns3.name);
     });
 
     it('delete', async () => {
@@ -295,7 +295,7 @@ describe('data.http: ModuleRegistry', () => {
       const domain = registry.domain('  localhost:1234  ');
       const ns = await domain.namespace('  foo.bar  ');
 
-      expect(ns.namespace).to.eql('foo.bar');
+      expect(ns.name).to.eql('foo.bar');
       expect(ns.domain).to.eql('localhost:1234');
     });
 

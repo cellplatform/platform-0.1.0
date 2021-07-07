@@ -71,16 +71,27 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
   const status: t.BundleEvents['status'] = {
     req$: rx.payload<t.BundleStatusReqEvent>($, 'runtime.electron/Bundle/status:req'),
     res$: rx.payload<t.BundleStatusResEvent>($, 'runtime.electron/Bundle/status:res'),
-    async get(args: { dir: string; cell: Uri | t.ICellUri }) {
-      const { dir } = args;
-      const cell = typeof args.cell === 'object' ? args.cell.toString() : args.cell;
+    async get(args) {
+      const { domain, namespace, version, timeout: msecs = 1000 } = args;
       const tx = slug();
-      const res = firstValueFrom(status.res$.pipe(filter((e) => e.tx === tx)));
+      const first = firstValueFrom(
+        status.res$.pipe(
+          filter((e) => e.tx === tx),
+          timeout(msecs),
+          catchError(() => {
+            const ver = version ? `@${version}` : '';
+            const context = `${domain}/${namespace}${ver}`;
+            return of(`Status request [${context}] timed out after ${msecs} msecs`);
+          }),
+        ),
+      );
       bus.fire({
         type: 'runtime.electron/Bundle/status:req',
-        payload: { tx, dir, cell },
+        payload: { tx, domain, namespace, version },
       });
-      return (await res).status;
+
+      const res = await first;
+      return typeof res === 'string' ? { tx, exists: false, error: res } : res;
     },
   };
 

@@ -24,7 +24,7 @@ export function ModuleRegistryNamespace(args: {
 
   const api = {
     uri,
-    namespace,
+    name: namespace,
     domain,
 
     /**
@@ -60,7 +60,7 @@ export function ModuleRegistryNamespace(args: {
     /**
      * Write a manifest to the list of namespace versions.
      */
-    async write(args: { source: t.ManifestSource; manifest: t.ModuleManifest }) {
+    async write(args: { source: t.ManifestSourceAddress; manifest: t.ModuleManifest }) {
       const { manifest } = args;
 
       if (manifest.module.namespace !== namespace) {
