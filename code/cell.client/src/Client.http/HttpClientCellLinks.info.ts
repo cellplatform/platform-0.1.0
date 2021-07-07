@@ -105,6 +105,7 @@ function toLink(args: {
   }
 
   // Unknown type.
+  const key = Schema.Ref.Links.parseKey(args.key).path;
   const res: t.IHttpClientCellLinkUnknown = { type: 'UNKNOWN', key, value };
   return res;
 }
