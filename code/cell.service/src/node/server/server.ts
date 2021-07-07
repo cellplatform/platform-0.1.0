@@ -45,10 +45,12 @@ export function create(args: {
     router,
     log: {
       server: `${PKG.name}@${PKG.version}`,
-      router: deps['@platform/cell.router'],
-      schema: deps['@platform/cell.schema'],
+      router: `- ${deps['@platform/cell.router']}`,
+      schema: `- ${deps['@platform/cell.schema']}`,
       region: args.region ?? constants.CELL_REGION,
-      runtime: runtime ? Format.namespace(runtime.name) : undefined,
+      runtime: runtime
+        ? log.gray(`${Format.namespace(runtime.name)}@${runtime.version}`)
+        : undefined,
       fs: `[${log.white(fs.type === 'LOCAL' ? 'local' : fs.type)}]${dir}`,
       'fs:s3': fs.type == 'S3' ? fs.endpoint.origin : undefined,
     },
