@@ -192,6 +192,7 @@ describe('Uri', () => {
       test('cell:foo:A1', false);
       test('cell:foo:1', false);
       test('cell:foo:A', false);
+      test('ns:boo', false); // Un-supported cuid format.
     });
 
     it('is.file', () => {
@@ -218,6 +219,7 @@ describe('Uri', () => {
       test(undefined, false);
       test('ns:foo', false);
       test('col:foo:A', false);
+      test('cell:boo:A1', false); // Un-supported cuid format.
     });
 
     it('is.row', () => {
@@ -231,6 +233,7 @@ describe('Uri', () => {
       test(undefined, false);
       test('ns:foo', false);
       test('cell:foo:A', false);
+      test('cell:boo:A', false); // Un-supported cuid format.
     });
 
     it('is.column', () => {
@@ -244,6 +247,7 @@ describe('Uri', () => {
       test(undefined, false);
       test('ns:foo', false);
       test('row:foo:1', false);
+      test('cell:boo:1', false); // Un-supported cuid format.
     });
   });
 

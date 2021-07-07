@@ -1,8 +1,5 @@
-import { fs, Genesis, slug, t, Urls } from '../../common';
+import { fs, Genesis, slug, t, Urls } from '../common';
 
-/**
- * Bundle status logic
- */
 export function StatusController(args: {
   bus: t.EventBus<t.BundleEvent>;
   events: t.BundleEvents;
@@ -10,19 +7,6 @@ export function StatusController(args: {
 }) {
   const { events, http, bus } = args;
   const host = http.origin;
-
-  /**
-   * List
-   */
-  events.list.req$.subscribe(async (e) => {
-    console.log('list', e);
-    const { tx = slug() } = e;
-
-    return bus.fire({
-      type: 'runtime.electron/Bundle/list:res',
-      payload: { tx, items: [] },
-    });
-  });
 
   /**
    * Retrieve the status of a local bundle.
@@ -35,6 +19,8 @@ export function StatusController(args: {
     const client = http.cell(e.cell ?? (await genesis.modules.uri()));
     const cell = client.uri.toString();
     const file = client.fs.file(manifestPath);
+
+    throw new Error('REFACTOR 🐷🐷🐷'); // TEMP 🐷
 
     if (!(await file.exists())) {
       return bus.fire({

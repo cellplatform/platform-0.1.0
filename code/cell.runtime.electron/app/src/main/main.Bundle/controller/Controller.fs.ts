@@ -1,5 +1,5 @@
-import { asArray, fs, log, ManifestSource, Schema, slug, t, time } from '../common';
-import { upload } from './Controller.fs.upload';
+import { asArray, fs, log, ManifestSource, Schema, slug, t, time, ManifestFetch } from '../common';
+import { uploadLocal, uploadRemote } from './Controller.fs.upload';
 
 export function FilesystemController(args: {
   bus: t.EventBus<t.BundleEvent>;
@@ -15,6 +15,7 @@ export function FilesystemController(args: {
     type Res = t.BundleFsSaveRes;
     const timer = time.timer();
     const { silent, tx = slug(), target } = e;
+    const host = http.origin;
 
     const done = (
       action: Res['action'],
@@ -33,10 +34,17 @@ export function FilesystemController(args: {
 
     const fireError = (error: string | string[]) => done('error', { errors: asArray(error) });
 
-    const toManifestSource = (input: string) => {
-      const dir = (input || '').trim().replace(/index\.json$/, '');
-      const path = fs.join(dir, 'index.json');
-      return ManifestSource(path);
+    const loadManifestFromFile = async (path: string) => {
+      return (await fs.readJson(path)) as t.ModuleManifest;
+    };
+
+    const downloadCurrentManifest = async () => {
+      const { cell, dir: path } = target;
+      return ManifestFetch.get<t.ModuleManifest>({ host, cell, path });
+    };
+
+    const downloadManifestFromUrl = async (source: string) => {
+      return ManifestFetch.url(source).get<t.ModuleManifest>();
     };
 
     try {
@@ -44,23 +52,15 @@ export function FilesystemController(args: {
         return fireError(`Invalid target cell URI ("${target.cell}")`);
       }
 
-      const source = toManifestSource(e.source);
-      const manifest = (await fs.readJson(source.toString())) as t.ModuleManifest;
+      const source = ManifestSource(e.source);
+      const manifest =
+        source.kind === 'filepath'
+          ? await loadManifestFromFile(source.toString())
+          : (await downloadManifestFromUrl(source.toString())).manifest;
 
-      const downloadManifest = async () => {
-        const path = `${target.dir}/index.json`;
-        const cell = http.cell(target.cell);
-        const res = await cell.fs.file(path).download();
+      if (!manifest) return fireError(`Failed to load manifest`);
 
-        const { ok } = res;
-        const manifest = !ok ? undefined : (res.body as t.ModuleManifest);
-        const exists = Boolean(manifest);
-        const files = manifest?.files ?? [];
-
-        return { exists, manifest, files, path };
-      };
-
-      const current = await downloadManifest();
+      const current = await downloadCurrentManifest();
       const hash = {
         current: current.manifest?.hash.files || '',
         next: manifest.hash.files,
@@ -73,7 +73,11 @@ export function FilesystemController(args: {
         return done('unchanged', { files });
       }
 
-      const uploaded = await upload({ http, source: source.toString(), target, silent });
+      const uploaded =
+        source.kind === 'filepath'
+          ? await uploadLocal({ http, source, target, silent })
+          : await uploadRemote({ http, source, target, manifest, silent });
+
       const { errors } = uploaded;
       const files = uploaded.files.map((file) => ({
         path: file.filename,

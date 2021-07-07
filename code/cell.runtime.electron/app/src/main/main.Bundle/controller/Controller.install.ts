@@ -1,4 +1,15 @@
-import { fs, Genesis, ManifestSource, ModuleRegistry, slug, t, time, asArray } from '../common';
+import {
+  fs,
+  Genesis,
+  ManifestSource,
+  ManifestUrl,
+  ModuleRegistry,
+  slug,
+  t,
+  time,
+  asArray,
+  HttpClient,
+} from '../common';
 
 /**
  * Bundle logic for handling writes (PUT).
@@ -40,7 +51,7 @@ export function InstallController(args: {
       /**
        * Read in the manifest.
        */
-      const fetched = await fetchManifest(http, e.source);
+      const fetched = await fetchManifest(e.source);
       const { source, manifest } = fetched;
       if (fetched.error) return fireError(fetched.error);
       if (!manifest) return fireError('Manifest not found');
@@ -92,10 +103,14 @@ export function InstallController(args: {
  * [Helpers]
  */
 
-const fetchManifest = async (http: t.IHttpClient, path: string) => {
+const fetchManifest = async (path: string) => {
   const source = ManifestSource(path);
-  const success = (manifest?: t.ModuleManifest) => ({ source, manifest, error: undefined });
   const error = (error?: string) => ({ source, manifest: undefined, error });
+  const success = (manifest?: t.ModuleManifest) => ({
+    source,
+    manifest,
+    error: undefined,
+  });
 
   try {
     /**
@@ -113,14 +128,16 @@ const fetchManifest = async (http: t.IHttpClient, path: string) => {
      * URL end-point.
      */
     if (source.kind === 'url') {
-      throw new Error(`Not implemented - fetch manifest`);
+      const url = ManifestUrl(source.toString());
+      if (!url.ok) return error(url.error);
 
-      /**
-       * TODO 🐷
-       * - parse URL
-       * - extract host
-       * - extract path - pull file from cell HttpClient
-       */
+      const http = HttpClient.create(url.domain);
+      const file = http.cell(url.cell).fs.file(url.path);
+      const res = await file.download();
+      if (!res.ok) return error(`Failed to download manifest. ${res.error || ''}`.trim());
+
+      const manifest = res.body as t.ModuleManifest;
+      return success(manifest);
     }
   } catch (err) {
     return error(`Failed while fetching manifest. ${err.message}`);

@@ -1,2 +1,2 @@
 export * from '../common';
-export * from '../../data.http/ModuleRegistry';
+export { ModuleRegistry, ManifestSource, ManifestUrl, ManifestFetch } from '../../data.http';

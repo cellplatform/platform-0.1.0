@@ -1,8 +1,8 @@
 import { t } from './common';
 
 /**
- * Parses a source string providing meta-data
- * about a path to a manifest file.
+ * Parses a source string to a manifest-file
+ * providing meta-data about the path.
  */
 export function ManifestSource(input: string): t.ManifestSource {
   const throwError = (detail: string) => {
