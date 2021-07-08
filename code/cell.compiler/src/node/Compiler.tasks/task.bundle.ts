@@ -74,10 +74,10 @@ export async function onCompiled(args: {
 
 async function saveZippedBundle(args: { bundleDir: string }) {
   const targetDir = `${args.bundleDir}.bundle`;
-  const bundleCopy = fs.join(targetDir, 'bundle');
+  const bundleCopy = fs.join(targetDir, 'dist');
 
   await fs.ensureDir(targetDir);
-  await fs.copy(fs.join(args.bundleDir, 'index.json'), fs.join(targetDir, 'manifest.json'));
+  await fs.copy(fs.join(args.bundleDir, 'index.json'), fs.join(targetDir, 'dist.json'));
   await fs.copy(args.bundleDir, bundleCopy);
   await fs.zip(bundleCopy).save(`${bundleCopy}.zip`);
   await fs.remove(bundleCopy);

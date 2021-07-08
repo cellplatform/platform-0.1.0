@@ -6,7 +6,7 @@ describe('ModuleManifest', function () {
 
   const TMP = fs.resolve('./tmp/test/ModuleManifest');
   const config = SampleBundles.simpleNode.config;
-  const sourceDir = SampleBundles.simpleNode.outdir;
+  const sourceDir = SampleBundles.simpleNode.outdir.dist;
 
   before(async () => {
     const force = false;
