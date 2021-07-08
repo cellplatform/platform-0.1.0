@@ -53,7 +53,7 @@ describe('/fn:run', function () {
 
         const version = (process.version || '').replace(/^v/, '');
         expect(json.runtime.version).to.eql(`${version}`);
-        expect(json.runtime.name).to.eql('node');
+        expect(json.runtime.name).to.eql('cell.runtime.node');
 
         expectFuncResponse(json.results[0]);
 
