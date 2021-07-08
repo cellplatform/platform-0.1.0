@@ -2,6 +2,7 @@ import {
   fs,
   Genesis,
   ManifestSource,
+  ManifestFetch,
   ManifestUrl,
   ModuleRegistry,
   slug,
@@ -9,6 +10,7 @@ import {
   time,
   asArray,
   HttpClient,
+  log,
 } from '../common';
 
 /**
@@ -28,6 +30,12 @@ export function InstallController(args: {
     type Res = t.BundleInstallRes;
     const timer = time.timer();
     const { tx = slug() } = e;
+
+    if (!e.silent) {
+      log.info();
+      log.info(`installing...`);
+    }
+
     const genesis = Genesis(http);
     const registry = ModuleRegistry({ http, uri: await genesis.modules.uri() });
 
@@ -39,9 +47,16 @@ export function InstallController(args: {
       const elapsed = timer.elapsed.msec;
       const ok = errors.length === 0;
       if (!ok) action = 'error';
+
+      const payload: t.BundleInstallRes = { tx, ok, action, source, module, errors, elapsed };
+
+      if (!e.silent) {
+        Log.installComplete(payload);
+      }
+
       bus.fire({
         type: 'runtime.electron/Bundle/install:res',
-        payload: { tx, ok, action, source, module, errors, elapsed },
+        payload,
       });
     };
 
@@ -55,6 +70,15 @@ export function InstallController(args: {
       const { source, manifest } = fetched;
       if (fetched.error) return fireError(fetched.error);
       if (!manifest) return fireError('Manifest not found');
+
+      if (!e.silent) {
+        const proximity =
+          source.kind === 'url'
+            ? `from ${log.green('"remote"')} source`
+            : `from ${log.green('"local"')} package`;
+        log.info.gray(`   ${`${proximity}`}:`);
+        log.info.gray(`   ${source}`);
+      }
 
       const domain = source.domain;
       const namespace = manifest.module.namespace;
@@ -128,20 +152,53 @@ const fetchManifest = async (path: string) => {
      * URL end-point.
      */
     if (source.kind === 'url') {
-      const url = ManifestUrl(source.toString());
-      if (!url.ok) return error(url.error);
-
-      const http = HttpClient.create(url.domain);
-      const file = http.cell(url.cell).fs.file(url.path);
-      const res = await file.download();
-      if (!res.ok) return error(`Failed to download manifest. ${res.error || ''}`.trim());
-
-      const manifest = res.body as t.ModuleManifest;
-      return success(manifest);
+      const res = await ManifestFetch.url(source.toString()).get<t.ModuleManifest>();
+      const manifest = res.json;
+      return res.ok && manifest ? success(manifest) : error(`Failed to download manifest.`.trim());
     }
   } catch (err) {
     return error(`Failed while fetching manifest. ${err.message}`);
   }
 
   return error(`Manifest source kind '${source.kind}' not supported`);
+};
+
+const Log = {
+  installComplete(payload: t.BundleInstallRes) {
+    const table = log.table({ border: false });
+    const line = () => table.add(['', '']);
+    const add = (key: string, value: any) => {
+      key = log.gray(`   • ${key} `);
+      table.add([key, log.green(value)]);
+    };
+
+    const { module, errors } = payload;
+    const elapsed = time.duration(payload.elapsed).toString();
+
+    log.info();
+    log.info(`Module Installed ✨✨ ${log.gray(`[${elapsed}]`)}`);
+
+    add('ok', payload.ok);
+    add('action', payload.action);
+    add('source', log.gray(payload.source));
+
+    if (module) {
+      line();
+      table.add(['   module']);
+      add('hash', log.gray(module.hash));
+      add('domain', log.gray(module.domain));
+      add('namespace', log.white(module.namespace));
+      add('version', module.version);
+      add('fs', module.fs);
+    }
+
+    log.info(table.toString());
+    log.info();
+
+    errors.forEach((error, i) => {
+      log.error(`ERROR (${log.white(i + 1)} of ${errors.length})`);
+      log.info(error);
+      log.info();
+    });
+  },
 };

@@ -37,7 +37,7 @@ export type BundleEvents = t.IDisposable & {
     res$: t.Observable<BundleInstallRes>;
     fire(
       source: ManifestSourcePath,
-      options?: { timeout?: number; force?: boolean },
+      options?: { timeout?: number; force?: boolean; silent?: boolean },
     ): Promise<t.BundleInstallRes>;
   };
 
@@ -110,7 +110,12 @@ export type BundleInstallReqEvent = {
   type: 'runtime.electron/Bundle/install:req';
   payload: BundleInstallReq;
 };
-export type BundleInstallReq = { tx?: string; source: ManifestSourcePath; force?: boolean };
+export type BundleInstallReq = {
+  tx?: string;
+  source: ManifestSourcePath;
+  force?: boolean;
+  silent?: boolean;
+};
 
 export type BundleInstallResEvent = {
   type: 'runtime.electron/Bundle/install:res';

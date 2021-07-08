@@ -17,6 +17,32 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
     filter((e) => is.base(e)),
   );
 
+  const install: t.BundleEvents['install'] = {
+    req$: rx.payload<t.BundleInstallReqEvent>($, 'runtime.electron/Bundle/install:req'),
+    res$: rx.payload<t.BundleInstallResEvent>($, 'runtime.electron/Bundle/install:res'),
+    async fire(source, options = {}) {
+      const tx = slug();
+      const { force, timeout: msecs = 3000, silent } = options;
+      const first = firstValueFrom(
+        install.res$.pipe(
+          filter((e) => e.tx === tx),
+          timeout(msecs),
+          catchError(() => of(`Installation timed out after ${msecs} msecs`)),
+        ),
+      );
+
+      bus.fire({
+        type: 'runtime.electron/Bundle/install:req',
+        payload: { tx, source, force, silent },
+      });
+
+      const res = await first;
+      return typeof res === 'string'
+        ? { tx, ok: false, action: 'error', source, errors: [res], elapsed: -1 }
+        : res;
+    },
+  };
+
   const list: t.BundleEvents['list'] = {
     req$: rx.payload<t.BundleListReqEvent>($, 'runtime.electron/Bundle/list:req'),
     res$: rx.payload<t.BundleListResEvent>($, 'runtime.electron/Bundle/list:res'),
@@ -39,32 +65,6 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
 
       const res = await first;
       return typeof res === 'string' ? { items: [], error: res } : res;
-    },
-  };
-
-  const install: t.BundleEvents['install'] = {
-    req$: rx.payload<t.BundleInstallReqEvent>($, 'runtime.electron/Bundle/install:req'),
-    res$: rx.payload<t.BundleInstallResEvent>($, 'runtime.electron/Bundle/install:res'),
-    async fire(source, options = {}) {
-      const tx = slug();
-      const { force, timeout: msecs = 3000 } = options;
-      const first = firstValueFrom(
-        install.res$.pipe(
-          filter((e) => e.tx === tx),
-          timeout(msecs),
-          catchError(() => of(`Installation timed out after ${msecs} msecs`)),
-        ),
-      );
-
-      bus.fire({
-        type: 'runtime.electron/Bundle/install:req',
-        payload: { tx, source, force },
-      });
-
-      const res = await first;
-      return typeof res === 'string'
-        ? { tx, ok: false, action: 'error', source, errors: [res], elapsed: -1 }
-        : res;
     },
   };
 

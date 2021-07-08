@@ -1,4 +1,5 @@
 import { t, ENV, Window, System, Bundle, Paths, fs, log } from '../common';
+import { ManifestSource } from '../../../data.http';
 
 /**
  * Module management
@@ -23,18 +24,12 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
     console.log('create/res:', res);
   };
 
-  const installRuntime = async () => {
-    /**
-     * Upload bundled system code into the local service.
-     */
-    const source = Paths.bundle.sys.source.manifest;
-    const res = await events.bundle.install.fire(source, {
+  const installModule = async (from: string) => {
+    const source = ManifestSource(from);
+    await events.bundle.install.fire(source.toString(), {
       force: ENV.isDev, // NB: Only repeat upload when running in development mode.
+      timeout: 30000,
     });
-
-    log.info();
-    log.info('Installed Module', res);
-    log.info();
   };
 
   const openRuntimeUI = async (params?: t.Json) => {
@@ -47,7 +42,7 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
 
     let bundle = await getStatus();
     if (!bundle.exists) {
-      await installRuntime();
+      await installModule(Paths.bundle.sys.source.manifest);
       bundle = await getStatus();
     }
 
@@ -65,8 +60,19 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
 
   submenu.push({
     type: 'normal',
-    label: 'Install...',
-    click: () => installRuntime(),
+    label: 'Install: sys.runtime (local)',
+    click: () => {
+      installModule(Paths.bundle.sys.source.manifest);
+    },
+  });
+
+  submenu.push({
+    type: 'normal',
+    label: 'Install: sys.runtime (remote)',
+    click: async () => {
+      const url = 'https://dev.db.team/cell:ckqua3ubz000f4eet1ndfghx1:A1/fs/ui.runtime/index.json';
+      installModule(url);
+    },
   });
 
   submenu.push({ type: 'separator' });
