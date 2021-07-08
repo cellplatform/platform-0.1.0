@@ -21,6 +21,7 @@ export function create(args: {
 }) {
   const { db, name, fs, runtime } = args;
   const logger = args.logger || log;
+  const { cyan, gray, white } = logger;
   const base = filesystem.resolve('.');
   const dir = fs.dir.startsWith(base) ? fs.dir.substring(base.length) : fs.dir;
   const deployedAt =
@@ -44,15 +45,13 @@ export function create(args: {
     logger,
     router,
     log: {
-      runtime: runtime
-        ? log.gray(`${Format.namespace(runtime.name)}@${runtime.version}`)
-        : undefined,
-      server: `${PKG.name}@${PKG.version}`,
-      router: ` - v${deps['@platform/cell.router']}`,
-      schema: ` - v${deps['@platform/cell.schema']}`,
+      runtime: runtime ? gray(`${Format.namespace(runtime.name)}@${runtime.version}`) : undefined,
+      server: Format.package('@platform/', cyan('cell.service'), PKG.version),
+      router: Format.package('          ', cyan('cell.router'), deps['@platform/cell.router']),
+      schema: Format.package('          ', cyan('cell.schema'), deps['@platform/cell.schema']),
       region: args.region ?? constants.CELL_REGION,
-      fs: `[${log.white(fs.type === 'LOCAL' ? 'local' : fs.type)}]${dir}`,
-      'fs:s3': fs.type == 'S3' ? fs.endpoint.origin : undefined,
+      fs: `[${white(fs.type === 'LOCAL' ? 'local' : fs.type)}]${dir}`,
+      'fs:s3': fs.type === 'S3' ? fs.endpoint.origin : undefined,
     },
   });
 
@@ -72,5 +71,9 @@ const Format = {
     const parts = (input || '').trim().split('.');
     const formatted = parts.map((part, i) => (i === parts.length - 1 ? log.white(part) : part));
     return log.cyan(formatted.join('.'));
+  },
+
+  package(ns: string, name: string, version: string) {
+    return log.gray(`${ns}${name}@${version}`);
   },
 };
