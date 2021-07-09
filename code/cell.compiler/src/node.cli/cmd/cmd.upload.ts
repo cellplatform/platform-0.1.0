@@ -84,7 +84,7 @@ export async function upload(argv: t.Argv) {
     return logger.errorAndExit(1, err);
   }
 
-  if (defaultValue(argv.clean, true)) await runClean();
+  if (argv.clean ?? (true && bundle !== false)) await runClean();
   const res = await Compiler.cell(host, cell.toString()).upload(config, { targetDir, bundle });
 
   const file = args.filepath.substring(fs.resolve('.').length + 1);

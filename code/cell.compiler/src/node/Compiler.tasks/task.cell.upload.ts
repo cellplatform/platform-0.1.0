@@ -215,16 +215,19 @@ async function logUpload(args: {
   };
 
   files.forEach((file) => addFile(file.path, file.bytes));
-  table.add(['', '', log.cyan(size.toString()), log.gray(`(${files.length} files)`)]);
+
+  const summary = log.gray(`(${files.length} files in ${log.yellow(elapsed)})`);
+  table.add(['', '', log.cyan(size.toString()), summary]);
 
   log.info(`
-${log.gray(`Uploaded`)}    ${log.gray(`(in ${log.yellow(elapsed)})`)}
-${log.gray(`  from:     ${Path.trimBase(distDir)}`)}
+${log.gray(`Uploaded`)}
+${log.gray(`  from:     ${log.white(Path.trimBase(distDir))}`)}
 ${log.gray(`  to:`)}
 ${log.gray(table)}
 
-${log.gray('manifest.hash.files:')}
-${log.gray(manifest.hash.files)}`);
+${log.gray('manifest.hash:')}
+  files:   ${log.gray(manifest.hash.files)}
+  module:  ${log.gray(manifest.hash.module)}`);
 }
 
 function logUrls(links: Record<string, string>) {
