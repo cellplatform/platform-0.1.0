@@ -30,9 +30,11 @@ export function InstallController(args: {
     const timer = time.timer();
     const { tx = slug() } = e;
 
+    const outTx = log.gray(`(tx:${tx})`);
+
     if (!e.silent) {
       log.info();
-      log.info.blue(`Installing...`);
+      log.info.blue(`installing... ${outTx}`);
     }
 
     const genesis = Genesis(http);
@@ -51,6 +53,7 @@ export function InstallController(args: {
 
       if (!e.silent) {
         Log.installComplete(payload);
+        log.info.blue(`done ${outTx}`);
       }
 
       bus.fire({
@@ -73,9 +76,9 @@ export function InstallController(args: {
       if (!e.silent) {
         const proximity =
           source.kind === 'url'
-            ? `from ${log.green('"remote"')} source`
-            : `from ${log.green('"local"')} package`;
-        log.info.gray(`   ${`${proximity}`}:`);
+            ? `from ${log.green('"remote"')} source (url)`
+            : `from ${log.green('"local:package"')}`;
+        log.info.gray(`   ${`${proximity}`}`);
         log.info.gray(`   ${source}`);
       }
 
@@ -181,7 +184,7 @@ const Log = {
     });
 
     log.info();
-    log.info(`Module Installed ✨✨ ${log.gray(`[${elapsed}]`)}`);
+    log.info(`Installed ✨✨ ${log.gray(`[${elapsed}]`)}`);
 
     add('ok', payload.ok);
     add('action', payload.action);
@@ -192,7 +195,7 @@ const Log = {
       line();
       table.add(['   module']);
       add('hash', log.gray(module.hash));
-      add('domain', log.gray(module.domain));
+      add('domain', log.white(module.domain));
       add('namespace', log.white(module.namespace));
       add('version', module.version);
       add('fs', Format.cell(module.fs));

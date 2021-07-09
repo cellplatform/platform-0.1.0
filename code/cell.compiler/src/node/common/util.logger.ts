@@ -54,9 +54,9 @@ export const Logger = {
 
     add('version', obj.version ? white(obj.version) : log.gray('0.0.0'));
     add('namespace', green(obj.namespace));
-    add('name', name);
-    add('mode', green(model.mode()));
-    add('target', green(model.target()));
+    add('name', white(name));
+    add('mode', gray(model.mode()));
+    add('target', gray(model.target()));
 
     if (options.url) {
       let url = typeof options.url === 'string' ? options.url : 'http://localhost';
