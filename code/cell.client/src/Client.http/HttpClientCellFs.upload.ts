@@ -1,4 +1,4 @@
-import { defaultValue, ERROR, Schema, t, time, util, value } from '../common';
+import { ERROR, Schema, t, time, util, value } from '../common';
 import { UploadEvent } from './HttpClientCellFs.upload.event';
 import { uploadToTarget } from './HttpClientCellFs.upload.files';
 
@@ -15,7 +15,8 @@ export function uploadFiles(args: {
   changes?: boolean;
 }): t.IHttpClientCellFsUploadPromise {
   const { http, urls, cellUri } = args;
-  const sendChanges = defaultValue(args.changes, false);
+  const sendChanges = args.changes ?? false;
+
   const input = value.asArray(args.input).filter((file) => file.data.byteLength > 0); // NB: 0-byte files will cause upload error.
   const event = UploadEvent({ total: input.length, uri: cellUri });
 

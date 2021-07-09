@@ -42,26 +42,30 @@ export async function getFiles(args: {
   filter?: (path: string) => boolean;
   config?: t.CompilerModel;
 }) {
-  const { distDir, targetDir = '', config } = args;
-  const paths = await fs.glob.find(fs.resolve(`${distDir}/**`));
-  const files = await Promise.all(
-    paths
-      .filter((path) => (args.filter ? args.filter(path) : true))
-      .map(async (path) => {
-        const data = await fs.readFile(path);
-        const filename = fs.join(targetDir, path.substring(distDir.length + 1));
-        const access = toAccess({ config, path, distDir });
-        const file = value.deleteUndefined<File>({
-          filename,
-          data,
-          allowRedirect: toRedirect({ config, path, distDir }).flag,
-          's3:permission': access.public ? 'public-read' : undefined,
-        });
-        return file;
-      }),
-  );
+  try {
+    const { distDir, targetDir = '', config } = args;
+    const paths = await fs.glob.find(fs.resolve(`${distDir}/**`));
+    const files = await Promise.all(
+      paths
+        .filter((path) => (args.filter ? args.filter(path) : true))
+        .map(async (path) => {
+          const data = await fs.readFile(path);
+          const filename = fs.join(targetDir, path.substring(distDir.length + 1));
+          const access = toAccess({ config, path, distDir });
+          const file = value.deleteUndefined<File>({
+            filename,
+            data,
+            allowRedirect: toRedirect({ config, path, distDir }).flag,
+            's3:permission': access.public ? 'public-read' : undefined,
+          });
+          return file;
+        }),
+    );
 
-  return files.filter((file) => file.data.byteLength > 0);
+    return files.filter((file) => file.data.byteLength > 0);
+  } catch (error) {
+    throw new Error(`Failed during 'getFiles'. ${error.message}`);
+  }
 }
 
 /**
@@ -82,8 +86,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
   const { host, targetDir, targetCell, config, silent } = args;
 
   const model = Model(args.config);
-  const paths = model.paths;
-  const distDir = paths.out.dist;
+  const distDir = fs.resolve(model.paths.out.dist);
   const redirects = config.files?.redirects;
   const files = await getFiles({ distDir, targetDir, config });
 
@@ -149,7 +152,12 @@ export const upload: t.CompilerRunUpload = async (args) => {
       uploadedFiles: fileUpload.body.files,
       redirects,
     });
+
     const manifestFile = await getManifestFile({ distDir, targetDir });
+    if (!manifestFile) {
+      throw new Error(`Failed while updating manifest. The new manifest file was not retrieved.`);
+    }
+
     const manifestUpload = await client.fs.upload(manifestFile);
     if (!manifestUpload.ok) {
       spinner.stop();
@@ -187,8 +195,8 @@ async function logUpload(args: {
   baseDir: string;
   distDir: string;
   targetCell: string | t.ICellUri;
-  elapsed: string;
   manifest: t.ModuleManifest;
+  elapsed: string;
 }) {
   const { host, baseDir, distDir, targetCell, elapsed, manifest } = args;
   const size = await fs.size.dir(distDir);
@@ -267,29 +275,32 @@ async function updateManifest(args: {
   uploadedFiles: FileUri[];
   redirects?: t.CompilerModelRedirect[];
 }) {
-  const { uploadedFiles, distDir } = args;
-  const { manifest, path } = await ModuleManifest.read({ dir: distDir });
-  if (!manifest) {
-    throw new Error(`A bundle manifest does not exist at: ${path}`);
-  }
+  try {
+    const { uploadedFiles, distDir } = args;
+    const { manifest, path } = await ModuleManifest.read({ dir: distDir });
+    if (!manifest) {
+      throw new Error(`A bundle manifest does not exist at: ${path}`);
+    }
 
-  const toHash = (file: FileUri) => file.data.props.integrity?.filehash;
-  const findFile = (hash: string) => uploadedFiles.find((file) => toHash(file) === hash);
+    const toHash = (file: FileUri) => file.data.props.integrity?.filehash;
+    const findFile = (hash: string) => uploadedFiles.find((file) => toHash(file) === hash);
 
-  manifest.files
-    .filter((item) => item.path !== ModuleManifest.filename)
-    .forEach((item) => {
-      const file = findFile(item.filehash);
-      if (!file) {
-        const err = `UPLOAD FAILED: An uploaded file URI could not be found for file '${item.path}'.`;
-        throw new Error(err);
-      } else {
+    manifest.files
+      .filter((item) => item.path !== ModuleManifest.filename)
+      .forEach((item) => {
+        const file = findFile(item.filehash);
+        if (!file) {
+          const err = `UPLOAD FAILED: An uploaded file URI could not be found for file '${item.path}'.`;
+          throw new Error(err);
+        }
         item.uri = file.uri;
-      }
-    });
+      });
 
-  await ModuleManifest.write({ manifest, dir: distDir });
-  return manifest;
+    await ModuleManifest.write({ manifest, dir: distDir });
+    return manifest;
+  } catch (error) {
+    throw new Error(`Failed while updating manifest. ${error.message}`);
+  }
 }
 
 function writeLogFile(log: t.IServerLog, until$: Observable<any>) {
