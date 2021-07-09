@@ -47,13 +47,13 @@ describe('Compiler', function () {
       await test('**/*.txt');
     });
 
-    it('dir: dist', async () => {
+    it('dir: <dist>', async () => {
       const dir = SampleBundles.simpleNode.paths.out.dist;
       const manifest = fs.resolve(fs.join(dir, 'index.json'));
       expect(await fs.pathExists(manifest)).to.eql(true);
     });
 
-    it('dir: dist.bundle (zip)', async () => {
+    it('dir: <dist>.bundle (zip)', async () => {
       const exists = async (path: string) => {
         const dir = SampleBundles.simpleNode.paths.out.bundle;
         const target = fs.resolve(fs.join(dir, path));

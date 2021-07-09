@@ -1,6 +1,6 @@
 import { Stats } from 'webpack';
 
-import { fs, log, Logger, Model, ModelPaths, ProgressSpinner, t } from '../common';
+import { fs, log, Logger, Model, ModelPaths, ProgressSpinner, t, ZippedBundle } from '../common';
 import { ModuleManifest } from '../manifest';
 import { bundleDeclarations } from './task.bundle.declarations';
 import { afterCompile, wp } from './util';
@@ -67,21 +67,9 @@ export async function onCompiled(args: {
 
   await copyStatic({ model, bundleDir: paths.out.dist });
   await ModuleManifest.createAndSave({ model, dir: paths.out.dist });
-  await saveZippedBundle(model);
+  await ZippedBundle(model).save();
 
   afterCompile({ model, compilation, webpack });
-}
-
-async function saveZippedBundle(model: t.CompilerModel) {
-  const paths = ModelPaths(model);
-  const bundleDir = paths.out.bundle;
-  const bundleDirDist = fs.join(bundleDir, 'dist');
-
-  await fs.ensureDir(bundleDir);
-  await fs.copy(fs.join(paths.out.dist, 'index.json'), fs.join(bundleDir, 'dist.json'));
-  await fs.copy(paths.out.dist, bundleDirDist);
-  await fs.zip(bundleDirDist).save(`${bundleDirDist}.zip`);
-  await fs.remove(bundleDirDist);
 }
 
 /**

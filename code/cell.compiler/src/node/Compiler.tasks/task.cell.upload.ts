@@ -82,7 +82,8 @@ export const upload: t.CompilerRunUpload = async (args) => {
   const { host, targetDir, targetCell, config, silent } = args;
 
   const model = Model(args.config);
-  const distDir = model.paths.out.dist;
+  const paths = model.paths;
+  const distDir = paths.out.dist;
   const redirects = config.files?.redirects;
   const files = await getFiles({ distDir, targetDir, config });
 
@@ -245,18 +246,18 @@ const logUploadFailure = (args: { host: string; distDir: string; errors: t.IHttp
   });
 };
 
-function trimDistDir(dir: string | undefined, path: string) {
+function trimDir(dir: string | undefined, path: string) {
   return dir ? path.substring(dir.length + 1) : path;
 }
 
 function toRedirect(args: { config?: t.CompilerModel; distDir?: string; path: string }) {
-  const path = trimDistDir(args.distDir, args.path);
+  const path = trimDir(args.distDir, args.path);
   const redirects = FileRedirects(args.config?.files?.redirects);
   return redirects.path(path);
 }
 
 function toAccess(args: { config?: t.CompilerModel; distDir?: string; path: string }) {
-  const path = trimDistDir(args.distDir, args.path);
+  const path = trimDir(args.distDir, args.path);
   const access = FileAccess(args.config?.files?.access);
   return access.path(path);
 }
@@ -266,7 +267,7 @@ async function updateManifest(args: {
   uploadedFiles: FileUri[];
   redirects?: t.CompilerModelRedirect[];
 }) {
-  const { uploadedFiles, distDir, redirects } = args;
+  const { uploadedFiles, distDir } = args;
   const { manifest, path } = await ModuleManifest.read({ dir: distDir });
   if (!manifest) {
     throw new Error(`A bundle manifest does not exist at: ${path}`);
