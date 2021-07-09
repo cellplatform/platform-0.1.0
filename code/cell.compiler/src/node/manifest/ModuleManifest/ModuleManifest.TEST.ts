@@ -1,4 +1,5 @@
 import { ModuleManifest } from '..';
+import { fromString } from '../../../../../cell.coord/lib/table/table.string';
 import { expect, fs, SampleBundles, t, expectError } from '../../../test';
 
 describe('ModuleManifest', function () {
@@ -6,7 +7,7 @@ describe('ModuleManifest', function () {
 
   const TMP = fs.resolve('./tmp/test/ModuleManifest');
   const config = SampleBundles.simpleNode.config;
-  const sourceDir = SampleBundles.simpleNode.outdir.dist;
+  const sourceDir = SampleBundles.simpleNode.paths.out.dist;
 
   before(async () => {
     const force = false;
@@ -21,7 +22,7 @@ describe('ModuleManifest', function () {
 
   it('create', async () => {
     const model = config.toObject();
-    const manifest = await ModuleManifest.create({ model, sourceDir });
+    const manifest = await ModuleManifest.create({ model, dir: sourceDir });
     const files = manifest.files;
 
     expect(files.length).to.greaterThan(0);
@@ -64,13 +65,13 @@ describe('ModuleManifest', function () {
       ...config.toObject(),
       namespace: undefined, // NB: setup error condition (no "namespace").
     };
-    const fn = () => ModuleManifest.create({ model, sourceDir });
+    const fn = () => ModuleManifest.create({ model, dir: sourceDir });
     expectError(fn, `A bundle 'namespace' is required`);
   });
 
   it('writeFile => readFile', async () => {
     const model = config.toObject();
-    const manifest = await ModuleManifest.create({ model, sourceDir });
+    const manifest = await ModuleManifest.create({ model, dir: sourceDir });
 
     const path = fs.join(TMP, ModuleManifest.filename);
     expect(await fs.pathExists(path)).to.eql(false);
@@ -88,7 +89,7 @@ describe('ModuleManifest', function () {
     expect(await fs.pathExists(path)).to.eql(false);
 
     const model = config.toObject();
-    const res = await ModuleManifest.createAndSave({ model, sourceDir: TMP });
+    const res = await ModuleManifest.createAndSave({ model, dir: TMP });
     expect(res.path).to.eql(path);
 
     const read = await ModuleManifest.read({ dir: TMP });

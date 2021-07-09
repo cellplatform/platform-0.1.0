@@ -27,9 +27,9 @@ const filesize = fs.size.toString;
 /**
  * A filter for narrowing in on the manifest file (index.json)
  */
-export const manifestFileFilter = (bundleDir: string) => {
+export const manifestFileFilter = (distDir: string) => {
   return (path: string) => {
-    return path.substring(bundleDir.length + 1) === ModuleManifest.filename;
+    return path.substring(distDir.length + 1) === ModuleManifest.filename;
   };
 };
 
@@ -37,24 +37,24 @@ export const manifestFileFilter = (bundleDir: string) => {
  * Retrieve the set of files to upload.
  */
 export async function getFiles(args: {
-  bundleDir: string;
+  distDir: string;
   targetDir?: string;
   filter?: (path: string) => boolean;
   config?: t.CompilerModel;
 }) {
-  const { bundleDir, targetDir = '', config } = args;
-  const paths = await fs.glob.find(fs.resolve(`${bundleDir}/**`));
+  const { distDir, targetDir = '', config } = args;
+  const paths = await fs.glob.find(fs.resolve(`${distDir}/**`));
   const files = await Promise.all(
     paths
       .filter((path) => (args.filter ? args.filter(path) : true))
       .map(async (path) => {
         const data = await fs.readFile(path);
-        const filename = fs.join(targetDir, path.substring(bundleDir.length + 1));
-        const access = toAccess({ config, path, bundleDir });
+        const filename = fs.join(targetDir, path.substring(distDir.length + 1));
+        const access = toAccess({ config, path, distDir });
         const file = value.deleteUndefined<File>({
           filename,
           data,
-          allowRedirect: toRedirect({ config, path, bundleDir }).flag,
+          allowRedirect: toRedirect({ config, path, distDir }).flag,
           's3:permission': access.public ? 'public-read' : undefined,
         });
         return file;
@@ -67,10 +67,10 @@ export async function getFiles(args: {
 /**
  * Retrieves the manifest file.
  */
-export async function getManifestFile(args: { bundleDir: string; targetDir?: string }) {
-  const { bundleDir, targetDir } = args;
-  const filter = manifestFileFilter(bundleDir);
-  return (await getFiles({ bundleDir, targetDir, filter }))[0];
+export async function getManifestFile(args: { distDir: string; targetDir?: string }) {
+  const { distDir, targetDir } = args;
+  const filter = manifestFileFilter(distDir);
+  return (await getFiles({ distDir, targetDir, filter }))[0];
 }
 
 /**
@@ -80,10 +80,11 @@ export const upload: t.CompilerRunUpload = async (args) => {
   const timer = time.timer();
   const baseDir = fs.resolve('.');
   const { host, targetDir, targetCell, config, silent } = args;
+
   const model = Model(args.config);
-  const bundleDir = model.bundleDir;
+  const distDir = model.paths.out.dist;
   const redirects = config.files?.redirects;
-  const files = await getFiles({ bundleDir, targetDir, config });
+  const files = await getFiles({ distDir, targetDir, config });
 
   const done$ = new Subject<void>();
   writeLogFile(log, done$);
@@ -135,7 +136,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
 
     if (!fileUpload.ok) {
       spinner.stop();
-      logUploadFailure({ host, bundleDir, errors: fileUpload.body.errors });
+      logUploadFailure({ host, distDir, errors: fileUpload.body.errors });
       return done(false);
     }
 
@@ -143,22 +144,22 @@ export const upload: t.CompilerRunUpload = async (args) => {
      * [2] Update the manifest with the file-hashes and re-upload it.
      */
     const manifest = await updateManifest({
-      bundleDir,
+      distDir,
       uploadedFiles: fileUpload.body.files,
       redirects,
     });
-    const manifestFile = await getManifestFile({ bundleDir, targetDir });
+    const manifestFile = await getManifestFile({ distDir, targetDir });
     const manifestUpload = await client.fs.upload(manifestFile);
     if (!manifestUpload.ok) {
       spinner.stop();
-      logUploadFailure({ host, bundleDir, errors: manifestUpload.body.errors });
+      logUploadFailure({ host, distDir, errors: manifestUpload.body.errors });
       return done(false);
     }
 
     if (!silent) {
       spinner.stop();
       const elapsed = timer.elapsed.toString();
-      await logUpload({ baseDir, bundleDir, targetCell, host, elapsed, manifest });
+      await logUpload({ baseDir, distDir, targetCell, host, elapsed, manifest });
       Logger.hr().newline();
       logUrls(toUrls(files));
       Logger.newline().hr().newline();
@@ -183,13 +184,13 @@ export const upload: t.CompilerRunUpload = async (args) => {
 async function logUpload(args: {
   host: string;
   baseDir: string;
-  bundleDir: string;
+  distDir: string;
   targetCell: string | t.ICellUri;
   elapsed: string;
   manifest: t.ModuleManifest;
 }) {
-  const { host, baseDir, bundleDir, targetCell, elapsed, manifest } = args;
-  const size = await fs.size.dir(bundleDir);
+  const { host, baseDir, distDir, targetCell, elapsed, manifest } = args;
+  const size = await fs.size.dir(distDir);
   const files = size.files;
 
   const table = log.table({ border: false });
@@ -209,7 +210,7 @@ async function logUpload(args: {
 
   log.info(`
 ${log.gray(`Uploaded`)}    ${log.gray(`(in ${log.yellow(elapsed)})`)}
-${log.gray(`  from:     ${Path.trimBase(bundleDir)}`)}
+${log.gray(`  from:     ${Path.trimBase(distDir)}`)}
 ${log.gray(`  to:`)}
 ${log.gray(table)}
 
@@ -230,11 +231,11 @@ function logUrls(links: Record<string, string>) {
   table.log();
 }
 
-const logUploadFailure = (args: { host: string; bundleDir: string; errors: t.IHttpError[] }) => {
-  const { host, bundleDir, errors } = args;
+const logUploadFailure = (args: { host: string; distDir: string; errors: t.IHttpError[] }) => {
+  const { host, distDir, errors } = args;
 
   log.info.yellow(`Failed to upload files.`);
-  log.info.gray(' • dir:      ', bundleDir);
+  log.info.gray(' • dir:      ', distDir);
   log.info.gray(' • host:     ', host);
   log.info.gray(' • errors:');
   errors.forEach((err) => {
@@ -244,29 +245,29 @@ const logUploadFailure = (args: { host: string; bundleDir: string; errors: t.IHt
   });
 };
 
-function trimBundleDir(bundleDir: string | undefined, path: string) {
-  return bundleDir ? path.substring(bundleDir.length + 1) : path;
+function trimDistDir(dir: string | undefined, path: string) {
+  return dir ? path.substring(dir.length + 1) : path;
 }
 
-function toRedirect(args: { config?: t.CompilerModel; bundleDir?: string; path: string }) {
-  const path = trimBundleDir(args.bundleDir, args.path);
+function toRedirect(args: { config?: t.CompilerModel; distDir?: string; path: string }) {
+  const path = trimDistDir(args.distDir, args.path);
   const redirects = FileRedirects(args.config?.files?.redirects);
   return redirects.path(path);
 }
 
-function toAccess(args: { config?: t.CompilerModel; bundleDir?: string; path: string }) {
-  const path = trimBundleDir(args.bundleDir, args.path);
+function toAccess(args: { config?: t.CompilerModel; distDir?: string; path: string }) {
+  const path = trimDistDir(args.distDir, args.path);
   const access = FileAccess(args.config?.files?.access);
   return access.path(path);
 }
 
 async function updateManifest(args: {
-  bundleDir: string;
+  distDir: string;
   uploadedFiles: FileUri[];
   redirects?: t.CompilerModelRedirect[];
 }) {
-  const { uploadedFiles, bundleDir, redirects } = args;
-  const { manifest, path } = await ModuleManifest.read({ dir: bundleDir });
+  const { uploadedFiles, distDir, redirects } = args;
+  const { manifest, path } = await ModuleManifest.read({ dir: distDir });
   if (!manifest) {
     throw new Error(`A bundle manifest does not exist at: ${path}`);
   }
@@ -286,7 +287,7 @@ async function updateManifest(args: {
       }
     });
 
-  await ModuleManifest.write({ manifest, dir: bundleDir });
+  await ModuleManifest.write({ manifest, dir: distDir });
   return manifest;
 }
 

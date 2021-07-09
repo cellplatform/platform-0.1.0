@@ -11,7 +11,7 @@ const createAndSave: CreateAndSave = async (args) => {
   const dirs = formatDirs(args.base, args.dir);
   const res = await ManifestCreateAndSave<M>({
     create: () => TypeManifest.create({ base, dir, model, filename, info }),
-    sourceDir: dirs.join(),
+    dir: dirs.join(),
     filename,
     model,
   });
@@ -45,7 +45,7 @@ export const TypeManifest = {
     const { base, dir, model, filename = TypeManifest.filename } = args;
     const dirs = formatDirs(args.base, args.dir);
     const manifest = await Manifest.create({
-      sourceDir: dirs.join(),
+      dir: dirs.join(),
       filename,
       model,
     });

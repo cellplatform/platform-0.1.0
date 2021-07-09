@@ -16,6 +16,7 @@ export type CompilerModelMethods = {
   name(): string;
   toObject(): t.CompilerModel;
   toWebpack(): t.WpConfig;
+  toPaths(): t.CompilerModelPaths;
 
   clone(initial?: Partial<t.CompilerModel>): B;
   find(name: string): B | null;

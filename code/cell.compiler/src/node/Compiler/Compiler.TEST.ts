@@ -17,25 +17,48 @@ describe('Compiler', function () {
     expect(typeof Compiler.cell).to.eql('function');
   });
 
-  it('create configuration', () => {
+  it('toObject', () => {
     const config = Compiler.config('myName');
-    expect(config.toObject().name).to.eql('myName');
+    const obj = config.toObject();
+    expect(obj.name).to.eql('myName');
+    expect(obj.outdir).to.eql('dist');
+  });
+
+  it('toPaths', () => {
+    const config = Compiler.config();
+    const paths = config.toPaths();
+    expect(paths.out.base).to.eql('dist');
+    expect(paths.out.dist).to.eql('dist/web');
+    expect(paths.out.bundle).to.eql('dist/web.bundle');
   });
 
   describe('bundle: output', () => {
-    it('dist', async () => {
-      const dir = SampleBundles.simpleNode.outdir.dist;
+    it('compiles output files', async () => {
+      const test = async (pattern: string) => {
+        const dir = SampleBundles.simpleNode.paths.out.dist;
+        const files = await fs.glob.find(`${dir}/${pattern}`);
+        expect(files.length).to.greaterThan(0);
+      };
+      await test('**/*.js');
+      await test('**/*.json');
+      await test('**/*.svg');
+      await test('**/*.jpg');
+      await test('**/*.png');
+      await test('**/*.txt');
+    });
+
+    it('dir: dist', async () => {
+      const dir = SampleBundles.simpleNode.paths.out.dist;
       const manifest = fs.resolve(fs.join(dir, 'index.json'));
       expect(await fs.pathExists(manifest)).to.eql(true);
     });
 
-    it('bundle', async () => {
+    it('dir: dist.bundle (zip)', async () => {
       const exists = async (path: string) => {
-        const dir = SampleBundles.simpleNode.outdir.zipped;
+        const dir = SampleBundles.simpleNode.paths.out.bundle;
         const target = fs.resolve(fs.join(dir, path));
         expect(await fs.pathExists(target)).to.eql(true);
       };
-
       await exists(''); // NB: Root folder.
       await exists('dist.json');
       await exists('dist.zip');

@@ -8,13 +8,13 @@ type M = t.Manifest;
  */
 export const createAndSave = async <T extends M>(args: {
   create: () => Promise<T>;
-  sourceDir: string;
+  dir: string;
   filename?: string;
   model?: t.CompilerModel;
 }) => {
-  const { model, sourceDir, filename } = args;
+  const { model, dir, filename } = args;
   const manifest = await args.create();
-  return write<T>({ manifest, dir: sourceDir, filename });
+  return write<T>({ manifest, dir, filename });
 };
 
 /**
@@ -56,13 +56,13 @@ export const Manifest = {
    * Generates a manifest.
    */
   async create<T extends M>(args: {
-    sourceDir: string;
+    dir: string;
     model?: t.CompilerModel;
     filename?: string; // Default: index.json
   }) {
     const { model, filename = Manifest.filename } = args;
-    const sourceDir = (args.sourceDir || '').trim().replace(/\/*$/, '');
-    const pattern = `${args.sourceDir}/**`;
+    const sourceDir = (args.dir || '').trim().replace(/\/*$/, '');
+    const pattern = `${args.dir}/**`;
 
     let paths = await fs.glob.find(pattern, { includeDirs: false });
     paths = paths.filter((path) => path.substring(sourceDir.length + 1) !== filename);
@@ -81,11 +81,11 @@ export const Manifest = {
   /**
    * Write the bundle manifest to the file-system.
    */
-  async createAndSave(args: { sourceDir: string; filename?: string; model?: t.CompilerModel }) {
-    const { sourceDir, filename, model } = args;
+  async createAndSave(args: { dir: string; filename?: string; model?: t.CompilerModel }) {
+    const { dir, filename, model } = args;
     return createAndSave<M>({
-      create: () => Manifest.create({ sourceDir, model, filename }),
-      sourceDir,
+      create: () => Manifest.create({ dir, model, filename }),
+      dir,
       filename,
       model,
     });

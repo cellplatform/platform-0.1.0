@@ -6,7 +6,7 @@ describe('Manifest', function () {
 
   const TMP = fs.resolve('./tmp/test/FileManifest');
   const config = SampleBundles.simpleNode.config;
-  const sourceDir = SampleBundles.simpleNode.outdir.dist;
+  const sourceDir = SampleBundles.simpleNode.paths.out.dist;
 
   before(async () => {
     const force = false;
@@ -21,7 +21,7 @@ describe('Manifest', function () {
 
   it('create (default)', async () => {
     const test = async (sourceDir: string) => {
-      const manifest = await Manifest.create({ sourceDir });
+      const manifest = await Manifest.create({ dir: sourceDir });
       const files = manifest.files;
       expect(manifest.hash.files).to.eql(Manifest.hash.files(files));
       expect(files.length).to.greaterThan(0);
@@ -46,7 +46,7 @@ describe('Manifest', function () {
     expect(await fs.pathExists(path)).to.eql(false);
 
     const model = config.toObject();
-    const res = await Manifest.createAndSave({ model, sourceDir: TMP });
+    const res = await Manifest.createAndSave({ model, dir: TMP });
     expect(res.path).to.eql(path);
 
     const read = await Manifest.read({ dir: TMP });
@@ -57,7 +57,7 @@ describe('Manifest', function () {
   describe('write', () => {
     it('write flag: allowRedirects', async () => {
       const model = config.toObject();
-      const manifest = await Manifest.create({ model, sourceDir });
+      const manifest = await Manifest.create({ model, dir: sourceDir });
 
       const js = manifest.files.find((file) => file.path.endsWith('main.js'));
       const png = manifest.files.find((file) => file.path.endsWith('.png'));
@@ -68,7 +68,7 @@ describe('Manifest', function () {
 
     it('write flag: public', async () => {
       const model = config.toObject();
-      const manifest = await Manifest.create({ model, sourceDir });
+      const manifest = await Manifest.create({ model, dir: sourceDir });
 
       const png = manifest.files.filter((file) => file.path.endsWith('.png'));
       const other = manifest.files.filter((file) => !file.path.endsWith('.png'));
@@ -82,7 +82,7 @@ describe('Manifest', function () {
 
     it('writeFile => readFile', async () => {
       const model = config.toObject();
-      const manifest = await Manifest.create({ model, sourceDir });
+      const manifest = await Manifest.create({ model, dir: sourceDir });
 
       const path = fs.join(TMP, Manifest.filename);
       expect(await fs.pathExists(path)).to.eql(false);
@@ -108,7 +108,7 @@ describe('Manifest', function () {
       await write('two.txt');
       await write(fs.join('foo', Manifest.filename)); // NB: Descendent file with the manifest name "index.json" is not excluded.
 
-      const manifest = await Manifest.create({ sourceDir });
+      const manifest = await Manifest.create({ dir: sourceDir });
       const files = manifest.files;
 
       expect(files.length).to.eql(3);
@@ -125,14 +125,14 @@ describe('Manifest', function () {
     });
 
     it('hash.files - {manifest}', async () => {
-      const manifest = await Manifest.create({ sourceDir });
+      const manifest = await Manifest.create({ dir: sourceDir });
       const hash = Schema.hash.sha256(manifest.files.map((file) => file.filehash));
       expect(manifest.hash.files).to.eql(hash);
       expect(Manifest.hash.files(manifest)).to.eql(hash);
     });
 
     it('hash.filehash', async () => {
-      const manifest = await Manifest.create({ sourceDir });
+      const manifest = await Manifest.create({ dir: sourceDir });
       const filename = 'main.js';
       const file = manifest.files.find((file) => file.path === filename);
       const hash = await Manifest.hash.filehash(fs.join(sourceDir, filename));
@@ -151,7 +151,7 @@ describe('Manifest', function () {
     };
 
     it('ok', async () => {
-      const manifest = await Manifest.create({ sourceDir });
+      const manifest = await Manifest.create({ dir: sourceDir });
       const res = await Manifest.validate(sourceDir, manifest);
 
       expect(res.ok).to.eql(true);
@@ -161,7 +161,7 @@ describe('Manifest', function () {
 
     it('error: filehash changed', async () => {
       await prepare();
-      const manifest = await Manifest.create({ sourceDir: tmp });
+      const manifest = await Manifest.create({ dir: tmp });
       const filename = 'main.js';
       const file = manifest.files.find((file) => file.path === filename);
       const path = fs.resolve(fs.join(tmp, filename));
@@ -183,7 +183,7 @@ describe('Manifest', function () {
 
     it('error: filesystem - removed file', async () => {
       await prepare();
-      const manifest = await Manifest.create({ sourceDir: tmp });
+      const manifest = await Manifest.create({ dir: tmp });
 
       const res1 = await Manifest.validate(tmp, manifest);
       expect(res1.ok).to.eql(true);
@@ -205,7 +205,7 @@ describe('Manifest', function () {
 
     it('error: filesystem - added file', async () => {
       await prepare();
-      const manifest = await Manifest.create({ sourceDir: tmp });
+      const manifest = await Manifest.create({ dir: tmp });
 
       const res1 = await Manifest.validate(tmp, manifest);
       expect(res1.ok).to.eql(true);
@@ -230,7 +230,7 @@ describe('Manifest', function () {
   describe('image', () => {
     const getStatic = async () => {
       const model = config.toObject();
-      const res = await Manifest.createAndSave({ model, sourceDir });
+      const res = await Manifest.createAndSave({ model, dir: sourceDir });
       const manifest = res.manifest;
       const files = manifest.files.filter((file) => file.path.startsWith('static/'));
       return { manifest, model, files };

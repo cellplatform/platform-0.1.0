@@ -76,7 +76,7 @@ describe('util.Package', () => {
       expect(res2.version.to).to.eql('0.0.1-beta.1');
     });
 
-    it('sequence (alpha ➔ beta  ➔ patch ➔ minor ➔ major)', async () => {
+    it('sequence (alpha ➔ beta ➔ patch ➔ minor ➔ major)', async () => {
       const res1 = await Package.bump(PATH, 'alpha');
       const res2 = await Package.bump(PATH, 'beta');
       const res3 = await Package.bump(PATH, 'patch');

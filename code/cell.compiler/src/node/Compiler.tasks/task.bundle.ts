@@ -1,6 +1,6 @@
 import { Stats } from 'webpack';
 
-import { fs, log, Logger, Model, ProgressSpinner, t } from '../common';
+import { fs, log, Logger, Model, ModelPaths, ProgressSpinner, t } from '../common';
 import { ModuleManifest } from '../manifest';
 import { bundleDeclarations } from './task.bundle.declarations';
 import { afterCompile, wp } from './util';
@@ -16,8 +16,8 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
       const { compiler, model, webpack } = wp.toCompiler(input);
       await ensureEntriesExist({ model });
 
-      const bundleDir = Model(model).bundleDir;
-      await fs.remove(bundleDir);
+      const paths = ModelPaths(model);
+      await fs.remove(paths.out.dist);
 
       const spinner = ProgressSpinner({ label: 'bundling...', silent });
       if (!silent) {
@@ -38,7 +38,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
 
           const compilation = stats.compilation;
           if (compilation) {
-            await onCompiled({ model, bundleDir, compilation, webpack });
+            await onCompiled({ model, compilation, webpack });
           }
 
           if (!silent) {
@@ -59,28 +59,29 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
 
 export async function onCompiled(args: {
   model: t.CompilerModel;
-  bundleDir: string;
   compilation: t.WpCompilation;
   webpack: t.WpConfig;
 }) {
-  const { model, bundleDir, compilation, webpack } = args;
+  const { model, compilation, webpack } = args;
+  const paths = ModelPaths(model);
 
-  await copyStatic({ model, bundleDir });
-  await ModuleManifest.createAndSave({ model, sourceDir: bundleDir });
-  await saveZippedBundle({ bundleDir });
+  await copyStatic({ model, bundleDir: paths.out.dist });
+  await ModuleManifest.createAndSave({ model, dir: paths.out.dist });
+  await saveZippedBundle(model);
 
   afterCompile({ model, compilation, webpack });
 }
 
-async function saveZippedBundle(args: { bundleDir: string }) {
-  const targetDir = `${args.bundleDir}.bundle`;
-  const bundleCopy = fs.join(targetDir, 'dist');
+async function saveZippedBundle(model: t.CompilerModel) {
+  const paths = ModelPaths(model);
+  const bundleDir = paths.out.bundle;
+  const bundleDirDist = fs.join(bundleDir, 'dist');
 
-  await fs.ensureDir(targetDir);
-  await fs.copy(fs.join(args.bundleDir, 'index.json'), fs.join(targetDir, 'dist.json'));
-  await fs.copy(args.bundleDir, bundleCopy);
-  await fs.zip(bundleCopy).save(`${bundleCopy}.zip`);
-  await fs.remove(bundleCopy);
+  await fs.ensureDir(bundleDir);
+  await fs.copy(fs.join(paths.out.dist, 'index.json'), fs.join(bundleDir, 'dist.json'));
+  await fs.copy(paths.out.dist, bundleDirDist);
+  await fs.zip(bundleDirDist).save(`${bundleDirDist}.zip`);
+  await fs.remove(bundleDirDist);
 }
 
 /**

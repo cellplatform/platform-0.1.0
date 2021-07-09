@@ -1,4 +1,4 @@
-import { Model, t, toModel } from '../common';
+import { Model, t, toModel, fs } from '../common';
 import { Plugins } from './wp.plugins';
 import { Rules } from './wp.rules';
 import { beforeCompile } from './hooks';
@@ -28,7 +28,7 @@ export function toWebpackConfig(
 
     const entry = model.entry();
     const target = model.target();
-    const path = model.bundleDir;
+    const path = fs.resolve(model.paths.out.dist);
 
     const rules = [
       ...Rules.init({ model: data, isProd: prod, isDev: dev }),

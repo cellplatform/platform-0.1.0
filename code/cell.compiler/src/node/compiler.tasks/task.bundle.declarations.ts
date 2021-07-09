@@ -1,4 +1,4 @@
-import { format, fs, log, Model, ProgressSpinner, t, time, toModel } from '../common';
+import { format, fs, log, ModelPaths, ProgressSpinner, t, time, toModel } from '../common';
 import { Typescript } from '../ts';
 import { Manifest } from '../manifest';
 
@@ -17,12 +17,12 @@ export const bundleDeclarations: t.CompilerRunBundleDeclarations = async (input,
   }
 
   const model = toModel(input);
-  const bundleDir = Model(model).bundleDir;
+  const distDir = ModelPaths(model).out.dist;
   const declarations = model.declarations;
 
   if (declarations) {
     const ts = Typescript.compiler();
-    const dir = fs.join(bundleDir, 'types.d');
+    const dir = fs.join(distDir, 'types.d');
 
     // Transpile and assemble the ".d.ts" files.
     const params: t.TscTranspileDeclarationsArgs[] = declarations.map((lib) => {
@@ -41,7 +41,7 @@ export const bundleDeclarations: t.CompilerRunBundleDeclarations = async (input,
     }
 
     // Create a manifest index.
-    await Manifest.createAndSave({ sourceDir: dir });
+    await Manifest.createAndSave({ dir });
 
     if (!silent) {
       spinner.stop();
@@ -61,6 +61,6 @@ export const bundleDeclarations: t.CompilerRunBundleDeclarations = async (input,
     ok: true,
     elapsed: timer.elapsed.msec,
     model,
-    dir: bundleDir,
+    dir: distDir,
   };
 };
