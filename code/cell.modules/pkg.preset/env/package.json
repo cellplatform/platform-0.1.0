@@ -1,9 +1,9 @@
 {
   "name": "preset.env",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "dependencies": {
-    "@platform/cell.schema": "^0.5.84",
-    "@platform/cell.types": "^0.5.81",
+    "@platform/cell.schema": "^0.5.85",
+    "@platform/cell.types": "^0.5.82",
     "@platform/libs": "^0.2.10",
     "@platform/types": "^0.5.21",
     "@platform/util.value": "^0.9.0"

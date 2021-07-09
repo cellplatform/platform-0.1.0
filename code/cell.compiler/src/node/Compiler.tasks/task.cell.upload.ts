@@ -244,8 +244,7 @@ function logUrls(links: Record<string, string>) {
   Object.keys(links).forEach((key) => {
     const link = links[key];
     if (link) {
-      const url = Logger.format.url(link);
-      table.add([`  ${key} `, url]);
+      table.add([`  ${key} `, Logger.format.url(link)]);
     }
   });
   table.log();

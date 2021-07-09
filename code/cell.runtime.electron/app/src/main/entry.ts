@@ -147,7 +147,7 @@ async function logMain(args: {
 
   const addPath = async (key: string, value: string) => {
     const size = isDev
-      ? log.blue(await toSize(value)) // NB: only take the cost of calculating size when running in "dev".
+      ? log.gray(await toSize(value)) // NB: only take the cost of calculating size when running in "dev".
       : undefined;
     add(key, formatPath(value), size);
   };

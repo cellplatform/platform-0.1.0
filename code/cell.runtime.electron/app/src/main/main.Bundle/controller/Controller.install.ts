@@ -32,7 +32,7 @@ export function InstallController(args: {
 
     if (!e.silent) {
       log.info();
-      log.info(`Installing...`);
+      log.info.blue(`Installing...`);
     }
 
     const genesis = Genesis(http);
