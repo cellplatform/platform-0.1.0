@@ -13,9 +13,9 @@ export const SystemServer = {
   /**
    * Configure a system [http server].
    */
-  init(options: { prod?: boolean; log?: t.ILog }) {
+  init(options: { prod?: boolean; log?: t.ILog; paths?: Partial<t.ElectronDataPaths> }) {
     const { prod = false } = options;
-    const paths = Paths.data({ prod });
+    const paths = { ...Paths.data({ prod }), ...options.paths };
 
     const app = server.create({
       name: 'main',
@@ -39,6 +39,7 @@ export const SystemServer = {
       port?: number;
       isDev?: boolean;
       silent?: boolean;
+      paths?: Partial<t.ElectronDataPaths>;
     } = {},
   ) {
     const { silent } = options;

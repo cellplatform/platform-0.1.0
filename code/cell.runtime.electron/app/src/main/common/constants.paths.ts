@@ -13,18 +13,14 @@ const resolve = (path: string) =>
 export const Paths = {
   resolve,
 
-  tmp: {
-    base: fs.resolve('../tmp'),
-    test: fs.resolve('../tmp.test'),
-  },
+  tmp: fs.resolve('../tmp'),
 
   data(options: { prod?: boolean; dirname?: string } = {}): t.ElectronDataPaths {
     const { prod = false, dirname = 'A1' } = options;
-    const NODE_ENV = process.env.NODE_ENV;
 
     let dir = '';
     if (prod) dir = fs.join(app.getPath('documents'), dirname);
-    if (!prod) dir = NODE_ENV === 'test' ? Paths.tmp.test : Paths.tmp.base;
+    if (!prod) dir = Paths.tmp;
 
     return {
       dir,

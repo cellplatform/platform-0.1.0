@@ -1,4 +1,4 @@
-import { time, ConfigFile, HttpClient, rx, t, fs, Paths, Genesis } from '../main/common';
+import { time, ConfigFile, HttpClient, rx, t, fs, Paths, Genesis, slug } from '../main/common';
 import { Bundle } from '../main/main.Bundle';
 import { Log } from '../main/main.Log';
 import { Menu } from '../main/main.Menu';
@@ -18,6 +18,7 @@ export type IMockServer = {
 export type IMockControllers = {
   bus: t.ElectronMainBus;
   http: t.IHttpClient;
+  paths: t.ElectronDataPaths;
   events: { bundle: t.BundleEvents };
   dispose(): Promise<void>;
 };
@@ -56,6 +57,7 @@ export const Mock = {
       bus,
       http,
       events,
+      paths,
       async dispose() {
         await server.dispose();
       },
@@ -68,7 +70,11 @@ export const Mock = {
    * Mock server.
    */
   async server() {
-    const { instance, paths, port, host } = await SystemServer.start({ prod: false, silent: true });
+    const { instance, paths, port, host } = await SystemServer.start({
+      prod: false,
+      silent: true,
+      paths: Mock.paths(),
+    });
     let http: t.IHttpClient | undefined;
     const mock: IMockServer = {
       host,
@@ -79,18 +85,30 @@ export const Mock = {
       },
       async dispose() {
         await instance.stop();
-        await time.wait(10); // NB: Brief pause prevents fs error (renaming the DB file).
+        time.delay(100, () => fs.remove(paths.dir)); // NB: Delay before deleting to prevent the DB's own delayed clean process from failing.
       },
     };
     return mock;
   },
 
   /**
+   * Generate mock paths
+   */
+  paths(): Partial<t.ElectronDataPaths> | undefined {
+    const dir = fs.join(Paths.tmp, 'data.test', slug());
+    return {
+      dir,
+      db: fs.join(dir, 'local.db'),
+      fs: fs.join(dir, 'local.fs'),
+      config: fs.join(dir, 'local.config'),
+    };
+  },
+
+  /**
    * Delete test data.
    */
   async delete() {
-    await time.wait(50); // NB: Brief pause prevents fs error (renaming the DB file).
-    await fs.remove(Paths.tmp.test);
+    await fs.remove(fs.join(Paths.tmp, 'data.test'));
   },
 
   /**

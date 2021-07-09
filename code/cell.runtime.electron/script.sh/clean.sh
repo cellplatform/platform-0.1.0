@@ -10,6 +10,7 @@ sh script.sh/reset.sh
 rm -f  yarn-error.log
 rm -rf lib
 
+
 # 
 # Electron application
 # 

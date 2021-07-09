@@ -15,7 +15,7 @@ export async function uploadRemote(args: {
   silent?: boolean;
 }) {
   const { http, target, manifest, silent } = args;
-  const tmp = fs.join(Paths.tmp.base, `copy.${slug()}`);
+  const tmp = fs.join(Paths.tmp, `copy.${slug()}`);
   const url = ManifestUrl(args.source.toString());
   const httpSource = HttpClient.create(url.domain).cell(url.cell);
 

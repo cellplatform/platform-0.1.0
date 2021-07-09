@@ -16,15 +16,16 @@ describe('main.Bundle', function () {
       dir: options.dir ?? `test/dir.${slug()}`,
       cell: options.cell ?? Uri.create.A1(),
     };
-    const { http, dispose } = mock;
+    const { http, paths, dispose } = mock;
     const events = mock.events.bundle;
+    const urls = Urls.create(http.origin);
 
-    const fireUpload = async (options: { silent?: boolean; force?: boolean } = {}) => {
+    const upload = async (options: { silent?: boolean; force?: boolean } = {}) => {
       const { silent = true, force = false } = options;
       return events.fs.save.fire({ source, target, silent, force });
     };
 
-    return { source, events, target, http, fireUpload, dispose };
+    return { source, events, target, urls, http, paths, upload, dispose };
   }
 
   describe('Events', () => {
@@ -65,7 +66,7 @@ describe('main.Bundle', function () {
 
       it('list: empty ("domain" does not exist)', async () => {
         const mock = await Mock.controllers();
-        await mock.events.bundle.install.fire(manifestPath); // NB: Install a module, but not the domain we are looking for.
+        await mock.events.bundle.install.fire(manifestPath, { silent: true }); // NB: Install a module, but not the domain we are looking for.
 
         const res = await mock.events.bundle.list.get({ domain: '404' });
         await mock.dispose();
@@ -76,7 +77,7 @@ describe('main.Bundle', function () {
 
       it('list: item', async () => {
         const mock = await Mock.controllers();
-        await mock.events.bundle.install.fire(manifestPath); // NB: Install a module, but not the domain we are looking for.
+        await mock.events.bundle.install.fire(manifestPath, { silent: true }); // NB: Install a module, but not the domain we are looking for.
 
         const res1 = await mock.events.bundle.list.get();
         const res2 = await mock.events.bundle.list.get({ domain: '  local:package  ' });
@@ -98,7 +99,7 @@ describe('main.Bundle', function () {
         const mock = await Mock.controllers();
         await Mock.Registry.clear(mock.http);
 
-        const res = await mock.events.bundle.install.fire(manifestPath);
+        const res = await mock.events.bundle.install.fire(manifestPath, { silent: true });
         const list = (await mock.events.bundle.list.get()).items;
 
         expect(res.source).to.eql(manifestPath);
@@ -126,7 +127,7 @@ describe('main.Bundle', function () {
 
         // Upload a sample source bundle.
         await Mock.Registry.clear(mock.http);
-        await mock.fireUpload();
+        await mock.upload();
 
         // Prepare the uploaded sample bundle as the source to install from.
         const filepath = `${mock.target.dir}/index.json`;
@@ -134,7 +135,8 @@ describe('main.Bundle', function () {
         const source = urls.cell(mock.target.cell).file.byName(filepath).toString();
 
         // Run the installer event.
-        const res = await mock.events.install.fire(source);
+
+        const res = await mock.events.install.fire(source, { silent: true });
         const list = (await mock.events.list.get()).items;
 
         expect(list.length).to.eql(1);
@@ -156,9 +158,9 @@ describe('main.Bundle', function () {
         await Mock.Registry.clear(mock.http);
 
         const install = mock.events.bundle.install;
-        const res1 = await install.fire(manifestPath);
-        const res2 = await install.fire(manifestPath);
-        const res3 = await install.fire(manifestPath, { force: true });
+        const res1 = await install.fire(manifestPath, { silent: true });
+        const res2 = await install.fire(manifestPath, { silent: true });
+        const res3 = await install.fire(manifestPath, { force: true, silent: true });
         await mock.dispose();
 
         expect(res1.action).to.eql('created');
@@ -170,7 +172,7 @@ describe('main.Bundle', function () {
     describe('status', () => {
       it('exists: true', async () => {
         const mock = await Mock.controllers();
-        await mock.events.bundle.install.fire(manifestPath); // NB: Install a module, but not the domain we are looking for.
+        await mock.events.bundle.install.fire(manifestPath, { silent: true }); // NB: Install a module, but not the domain we are looking for.
 
         const res = await mock.events.bundle.status.get({
           domain: 'local:package',
@@ -208,81 +210,102 @@ describe('main.Bundle', function () {
     });
 
     describe('fs.save: upload', () => {
-      it('upload (filepath): "created"', async () => {
-        const mock = await sampleUpload();
-        const { target, source, events } = mock;
-        const paths = await fs.glob.find(`${fs.dirname(source)}/**`);
-
-        const file = mock.http.cell(target.cell).fs.file(`${target.dir}/index.json`);
-        expect(await file.exists()).to.eql(false); // NB: File not on server yet.
-
-        const silent = true;
-        const res = await events.fs.save.fire({ source, target, silent });
-
-        expect(res.ok).to.eql(true);
-        expect(res.cell).to.eql(target.cell);
-        expect(res.files.length).to.eql(paths.length);
-        expect(res.action).to.eql('created');
-        expect(res.elapsed).to.greaterThan(0);
-        expect(res.errors).to.eql([]);
-
-        expect(await file.exists()).to.eql(true); // NB: File uploaded to server.
-        await mock.dispose();
-      });
-
-      it('upload (filepath): existing ("unchanged" => force)', async () => {
-        const mock = await sampleUpload();
-        const { target, source, events } = mock;
-
-        const silent = true;
-        const res1 = await events.fs.save.fire({ source, target, silent });
-        const res2 = await events.fs.save.fire({ source, target, silent });
-        const res3 = await events.fs.save.fire({ source, target, force: true, silent });
-
-        expect(res1.action).to.eql('created');
-        expect(res2.action).to.eql('unchanged');
-        expect(res3.action).to.eql('replaced');
-
-        const file = mock.http.cell(target.cell).fs.file(`${target.dir}/index.json`);
-        expect(await file.exists()).to.eql(true); // NB: Uploaded to server.
-
-        await mock.dispose();
-      });
-
       it('upload: trims target dir path ("/")', async () => {
         const mock = await sampleUpload({ dir: '///foo/bar///' });
-        const res = await mock.fireUpload();
+        const res = await mock.upload();
         await mock.dispose();
         expect(res.files.every((file) => file.path.startsWith('foo/bar/'))).to.eql(true);
       });
 
-      it('upload (url)', async () => {
-        const mock = await sampleUpload();
+      describe('filepath: source.fs(local) => source.http(local)', () => {
+        it('upload: "created"', async () => {
+          const mock = await sampleUpload();
+          const { target, source, events } = mock;
+          const paths = await fs.glob.find(`${fs.dirname(source)}/**`);
 
-        // Upload a bundle to use as the source.
-        await mock.fireUpload();
-        const filepath = `${mock.target.dir}/index.json`;
-        const urls = Urls.create(mock.http.origin);
-        const source = urls.cell(mock.target.cell).file.byName(filepath).toString();
+          const file = mock.http.cell(target.cell).fs.file(`${target.dir}/index.json`);
+          expect(await file.exists()).to.eql(false); // NB: File not on server yet.
 
-        const target = {
-          dir: `foo`,
-          cell: Uri.create.A1(),
-        };
+          const res = await events.fs.save.fire({ source, target, silent: true });
 
-        const file = mock.http.cell(target.cell).fs.file(`${target.dir}/index.json`);
-        expect(await file.exists()).to.eql(false); // NB: File not on server yet.
+          expect(res.ok).to.eql(true);
+          expect(res.cell).to.eql(target.cell);
+          expect(res.files.length).to.eql(paths.length);
+          expect(res.action).to.eql('created');
+          expect(res.elapsed).to.greaterThan(0);
+          expect(res.errors).to.eql([]);
 
-        const res = await mock.events.fs.save.fire({ source, target, silent: true });
+          expect(await file.exists()).to.eql(true); // NB: File uploaded to server.
+          await mock.dispose();
+        });
 
-        expect(res.ok).to.eql(true);
-        expect(res.cell).to.eql(target.cell);
-        expect(res.action).to.eql('created');
-        expect(res.elapsed).to.greaterThan(0);
-        expect(res.errors).to.eql([]);
+        it('upload: existing ("unchanged" => force)', async () => {
+          const mock = await sampleUpload();
+          const { target, source, events } = mock;
 
-        expect(await file.exists()).to.eql(true); // NB: File uploaded to server.
-        await mock.dispose();
+          const res1 = await events.fs.save.fire({ source, target, silent: true });
+          const res2 = await events.fs.save.fire({ source, target, silent: true });
+          const res3 = await events.fs.save.fire({ source, target, force: true, silent: true });
+
+          expect(res1.action).to.eql('created');
+          expect(res2.action).to.eql('unchanged');
+          expect(res3.action).to.eql('replaced');
+
+          const file = mock.http.cell(target.cell).fs.file(`${target.dir}/index.json`);
+          expect(await file.exists()).to.eql(true); // NB: Uploaded to server.
+
+          await mock.dispose();
+        });
+      });
+
+      describe('url: source.http => source.http', () => {
+        it('upload: local  => local', async () => {
+          const sample = await sampleUpload();
+
+          // Upload a bundle to use as the local HTTP source.
+          await sample.upload();
+
+          const target = {
+            dir: `foo`,
+            cell: Uri.create.A1(),
+          };
+
+          const file = sample.http.cell(target.cell).fs.file(`${target.dir}/index.json`);
+          expect(await file.exists()).to.eql(false); // NB: File not on server yet.
+
+          // Upload to another cell on the same server.
+          const filepath = `${sample.target.dir}/index.json`;
+          const source = sample.urls.cell(sample.target.cell).file.byName(filepath).toString();
+          const res = await sample.events.fs.save.fire({ source, target, silent: true });
+
+          expect(res.ok).to.eql(true);
+          expect(res.cell).to.eql(target.cell);
+          expect(res.action).to.eql('created');
+          expect(res.elapsed).to.greaterThan(0);
+          expect(res.errors).to.eql([]);
+
+          expect(await file.exists()).to.eql(true); // NB: File uploaded to server.
+          await sample.dispose();
+        });
+
+        it('upload: local  => remote', async () => {
+          const local = await sampleUpload();
+          // const remote = await sampleUpload();
+
+          console.log('-------------------------------------------');
+          console.log('local.paths', local.paths);
+
+          // process.exit();
+
+          // await local.upload();
+          await local.dispose();
+        });
+
+        /**
+         * TODO 🐷
+         */
+        it.skip('upload: remote => local  (via local copy)', async () => {});
+        it.skip('upload: remote => remote (via local copy)', async () => {});
       });
     });
   });

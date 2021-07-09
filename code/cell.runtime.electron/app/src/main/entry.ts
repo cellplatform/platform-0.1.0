@@ -25,7 +25,7 @@ app.enableSandbox();
 export async function start() {
   const timer = time.timer();
 
-  // Ensure the NODE_ENV value is cleanly set to "production" if packaged.
+  // Ensure the NODE_ENV value is definitively set to "production" if packaged.
   if (app.isPackaged || ENV.isProd) process.env.NODE_ENV = 'production';
   const prod = ENV.isProd;
 
