@@ -122,29 +122,34 @@ async function logMain(args: {
 
   const table = log.table({ border: false });
   const line = () => table.add(['', '']);
-  const add = (key: string, value: any) => {
+  const add = (key: string, value: any, suffix?: any) => {
     key = `   • ${log.gray(key)} `;
-    table.add([key, value]);
+    const line = [key, value];
+    if (suffix !== undefined) line.push(suffix);
+    table.add(line);
   };
 
   const isDev = ENV.isDev;
 
   const toSize = async (path: string) => {
     const exists = await fs.exists(path);
-    return exists ? (await fs.size.file(path)).toString({ round: 0, spacer: '' }) : '0B';
+    return exists ? (await fs.size.file(path)).toString({ round: 0, spacer: ' ' }) : '0B';
   };
 
-  const path = async (input: string) => {
+  const formatPath = (input: string) => {
     let output = input;
     if (isDev) {
       const prefix = fs.resolve('..');
       output = output.startsWith(prefix) ? output.substring(prefix.length + 1) : output;
     }
-    if (isDev) {
-      const size = await toSize(input);
-      output = `${output} ${log.blue(size)}`;
-    }
     return output;
+  };
+
+  const addPath = async (key: string, value: string) => {
+    const size = isDev
+      ? log.blue(await toSize(value)) // NB: only take the cost of calculating size when running in "dev".
+      : undefined;
+    add(key, formatPath(value), size);
   };
 
   const process = ConfigFile.process.split('@');
@@ -152,12 +157,15 @@ async function logMain(args: {
   add(log.green('runtime:'), `${Format.namespace(process[0])}@${process[1]}`);
   add('env:', ENV.node || '<empty>');
   add('packaged:', ENV.isPackaged);
-  add('preload:', await path(args.paths.preload));
-  add('log:', await path(args.paths.data.log));
-  add('db:', await path(args.paths.data.db));
-  add('fs:', await path(args.paths.data.fs));
-  add('config:', await path(args.paths.data.config));
+
   line();
+  await addPath('preload:', args.paths.preload);
+  await addPath('db:', args.paths.data.db);
+  await addPath('fs:', args.paths.data.fs);
+  await addPath('config:', args.paths.data.config);
+  await addPath('log:', args.paths.data.log);
+  line();
+
   add(log.green('host:'), log.cyan(`http:${host.split(':')[1]}:${log.white(host.split(':')[2])}`));
   add('genesis', await genesis.cell.url());
   add('registry', await genesis.modules.url());

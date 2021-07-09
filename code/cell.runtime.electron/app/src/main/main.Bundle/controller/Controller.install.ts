@@ -1,16 +1,15 @@
 import {
+  asArray,
   fs,
   Genesis,
-  ManifestSource,
+  log,
   ManifestFetch,
-  ManifestUrl,
+  ManifestSource,
   ModuleRegistry,
   slug,
   t,
   time,
-  asArray,
-  HttpClient,
-  log,
+  Uri,
 } from '../common';
 
 /**
@@ -33,7 +32,7 @@ export function InstallController(args: {
 
     if (!e.silent) {
       log.info();
-      log.info(`installing...`);
+      log.info(`Installing...`);
     }
 
     const genesis = Genesis(http);
@@ -175,12 +174,19 @@ const Log = {
     const { module, errors } = payload;
     const elapsed = time.duration(payload.elapsed).toString();
 
+    errors.forEach((error, i) => {
+      log.error(`ERROR (${log.white(i + 1)} of ${errors.length})`);
+      log.info(error);
+      log.info();
+    });
+
     log.info();
     log.info(`Module Installed ✨✨ ${log.gray(`[${elapsed}]`)}`);
 
     add('ok', payload.ok);
     add('action', payload.action);
     add('source', log.gray(payload.source));
+    if (errors.length > 0) add('errors', errors.length);
 
     if (module) {
       line();
@@ -189,16 +195,18 @@ const Log = {
       add('domain', log.gray(module.domain));
       add('namespace', log.white(module.namespace));
       add('version', module.version);
-      add('fs', module.fs);
+      add('fs', Format.cell(module.fs));
     }
 
-    log.info(table.toString());
-    log.info();
+    log.info(`
+${table.toString()}    
+`);
+  },
+};
 
-    errors.forEach((error, i) => {
-      log.error(`ERROR (${log.white(i + 1)} of ${errors.length})`);
-      log.info(error);
-      log.info();
-    });
+const Format = {
+  cell(input: string | t.ICellUri) {
+    const uri = Uri.cell(input);
+    return log.gray(`${log.cyan('cell:')}${uri.ns}:${log.white(uri.key)}`);
   },
 };
