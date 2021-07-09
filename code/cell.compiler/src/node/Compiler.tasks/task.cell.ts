@@ -1,4 +1,4 @@
-import { Logger, parseUrl, t, Uri, defaultValue } from '../common';
+import { Logger, parseUrl, t, Uri } from '../common';
 import { bundle } from './task.bundle';
 import { upload } from './task.cell.upload';
 
@@ -27,14 +27,14 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
     uri,
 
     async upload(config, options = {}) {
-      const { silent, targetDir } = options;
-      const targetCell = uri.toString();
+      const { silent, source = 'dist' } = options;
+      const target = { cell: uri.toString(), dir: options.targetDir };
 
       /**
        * [1] Bundle the code.
        */
-      const origin: t.RuntimeBundleOrigin = { host, uri: targetCell, dir: targetDir };
-      if (defaultValue(options.bundle, true)) {
+      const origin: t.RuntimeBundleOrigin = { host, uri: target.cell, dir: target.dir };
+      if (options.runBundle ?? true) {
         await runBundle({ config, origin, silent });
       }
 
@@ -48,8 +48,8 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
       const res = await upload({
         host,
         config: config.toObject(),
-        targetCell,
-        targetDir,
+        source,
+        target,
         silent,
       });
 

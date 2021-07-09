@@ -25,70 +25,18 @@ type File = t.IHttpClientCellFileUpload;
 const filesize = fs.size.toString;
 
 /**
- * A filter for narrowing in on the manifest file (index.json)
- */
-export const manifestFileFilter = (distDir: string) => {
-  return (path: string) => {
-    return path.substring(distDir.length + 1) === ModuleManifest.filename;
-  };
-};
-
-/**
- * Retrieve the set of files to upload.
- */
-export async function getFiles(args: {
-  distDir: string;
-  targetDir?: string;
-  filter?: (path: string) => boolean;
-  config?: t.CompilerModel;
-}) {
-  try {
-    const { distDir, targetDir = '', config } = args;
-    const paths = await fs.glob.find(fs.resolve(`${distDir}/**`));
-    const files = await Promise.all(
-      paths
-        .filter((path) => (args.filter ? args.filter(path) : true))
-        .map(async (path) => {
-          const data = await fs.readFile(path);
-          const filename = fs.join(targetDir, path.substring(distDir.length + 1));
-          const access = toAccess({ config, path, distDir });
-          const file = value.deleteUndefined<File>({
-            filename,
-            data,
-            allowRedirect: toRedirect({ config, path, distDir }).flag,
-            's3:permission': access.public ? 'public-read' : undefined,
-          });
-          return file;
-        }),
-    );
-
-    return files.filter((file) => file.data.byteLength > 0);
-  } catch (error) {
-    throw new Error(`Failed during 'getFiles'. ${error.message}`);
-  }
-}
-
-/**
- * Retrieves the manifest file.
- */
-export async function getManifestFile(args: { distDir: string; targetDir?: string }) {
-  const { distDir, targetDir } = args;
-  const filter = manifestFileFilter(distDir);
-  return (await getFiles({ distDir, targetDir, filter }))[0];
-}
-
-/**
  * Upload files to the given target.
  */
 export const upload: t.CompilerRunUpload = async (args) => {
   const timer = time.timer();
   const baseDir = fs.resolve('.');
-  const { host, targetDir, targetCell, config, silent } = args;
+  const { host, target, config, silent } = args;
 
   const model = Model(args.config);
-  const distDir = fs.resolve(model.paths.out.dist);
+  const paths = model.paths.out;
+  const sourceDir = fs.resolve(args.source === 'dist' ? paths.dist : paths.bundle);
   const redirects = config.files?.redirects;
-  const files = await getFiles({ distDir, targetDir, config });
+  const files = await getFiles({ sourceDir, targetDir: target.dir, config });
 
   const done$ = new Subject<void>();
   writeLogFile(log, done$);
@@ -111,8 +59,8 @@ export const upload: t.CompilerRunUpload = async (args) => {
       return file ? cell.file.byName(file.filename).toString() : '';
     };
 
-    const cell = Schema.urls(args.host).cell(args.targetCell);
-    const filter = targetDir ? `${targetDir}/**` : undefined;
+    const cell = Schema.urls(args.host).cell(target.cell);
+    const filter = target.dir ? `${target.dir}/**` : undefined;
 
     return {
       cell: cell.info.toString(),
@@ -124,7 +72,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
   };
 
   try {
-    const client = HttpClient.create(host).cell(targetCell);
+    const client = HttpClient.create(host).cell(target.cell);
 
     /**
      * [1] Perform initial upload of files (retrieving the generated file URIs).
@@ -140,7 +88,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
 
     if (!fileUpload.ok) {
       spinner.stop();
-      logUploadFailure({ host, distDir, errors: fileUpload.body.errors });
+      logUploadFailure({ host, distDir: sourceDir, errors: fileUpload.body.errors });
       return done(false);
     }
 
@@ -148,12 +96,12 @@ export const upload: t.CompilerRunUpload = async (args) => {
      * [2] Update the manifest with the file-hashes and re-upload it.
      */
     const manifest = await updateManifest({
-      distDir,
+      distDir: sourceDir,
       uploadedFiles: fileUpload.body.files,
       redirects,
     });
 
-    const manifestFile = await getManifestFile({ distDir, targetDir });
+    const manifestFile = await getManifestFile({ sourceDir, targetDir: target.dir });
     if (!manifestFile) {
       throw new Error(`Failed while updating manifest. The new manifest file was not retrieved.`);
     }
@@ -161,17 +109,24 @@ export const upload: t.CompilerRunUpload = async (args) => {
     const manifestUpload = await client.fs.upload(manifestFile);
     if (!manifestUpload.ok) {
       spinner.stop();
-      logUploadFailure({ host, distDir, errors: manifestUpload.body.errors });
+      logUploadFailure({ host, distDir: sourceDir, errors: manifestUpload.body.errors });
       return done(false);
     }
 
     if (!silent) {
       spinner.stop();
       const elapsed = timer.elapsed.toString();
-      await logUpload({ baseDir, distDir, targetCell, host, elapsed, manifest });
-      Logger.hr().newline();
+      await logUpload({
+        baseDir,
+        distDir: sourceDir,
+        targetCell: target.cell,
+        host,
+        elapsed,
+        manifest,
+      });
+      // Logger.hr().newline();
       logUrls(toUrls(files));
-      Logger.newline().hr().newline();
+      Logger.newline();
     }
 
     return done(true);
@@ -185,6 +140,59 @@ export const upload: t.CompilerRunUpload = async (args) => {
     return done(false);
   }
 };
+
+/**
+ * A filter for narrowing in on the manifest file (index.json)
+ */
+export const manifestFileFilter = (distDir: string) => {
+  return (path: string) => {
+    return path.substring(distDir.length + 1) === ModuleManifest.filename;
+  };
+};
+
+/**
+ * Retrieve the set of files to upload.
+ */
+export async function getFiles(args: {
+  sourceDir: string;
+  targetDir?: string;
+  filter?: (path: string) => boolean;
+  config?: t.CompilerModel;
+}) {
+  try {
+    const { sourceDir, targetDir = '', config } = args;
+    const paths = await fs.glob.find(fs.resolve(`${sourceDir}/**`));
+    const files = await Promise.all(
+      paths
+        .filter((path) => (args.filter ? args.filter(path) : true))
+        .map(async (path) => {
+          const data = await fs.readFile(path);
+          const filename = fs.join(targetDir, path.substring(sourceDir.length + 1));
+          const access = toAccess({ config, path, dir: sourceDir });
+          const file = value.deleteUndefined<File>({
+            filename,
+            data,
+            allowRedirect: toRedirect({ config, path, dir: sourceDir }).flag,
+            's3:permission': access.public ? 'public-read' : undefined,
+          });
+          return file;
+        }),
+    );
+
+    return files.filter((file) => file.data.byteLength > 0);
+  } catch (error) {
+    throw new Error(`Failed during 'getFiles'. ${error.message}`);
+  }
+}
+
+/**
+ * Retrieves the manifest file.
+ */
+export async function getManifestFile(args: { sourceDir: string; targetDir?: string }) {
+  const { sourceDir, targetDir } = args;
+  const filter = manifestFileFilter(sourceDir);
+  return (await getFiles({ sourceDir, targetDir, filter }))[0];
+}
 
 /**
  * Helpers
@@ -226,12 +234,12 @@ ${log.gray(`  to:`)}
 ${log.gray(table)}
 
 ${log.gray('manifest.hash:')}
-  files:   ${log.gray(manifest.hash.files)}
-  module:  ${log.gray(manifest.hash.module)}`);
+  files:    ${log.gray(manifest.hash.files)}
+  module:   ${log.gray(manifest.hash.module)} ${log.gray('(everything)')}`);
 }
 
 function logUrls(links: Record<string, string>) {
-  log.info.gray('Links');
+  log.info.gray('links:');
   const table = log.table({ border: false });
   Object.keys(links).forEach((key) => {
     const link = links[key];
@@ -261,14 +269,14 @@ function trimDir(dir: string | undefined, path: string) {
   return dir ? path.substring(dir.length + 1) : path;
 }
 
-function toRedirect(args: { config?: t.CompilerModel; distDir?: string; path: string }) {
-  const path = trimDir(args.distDir, args.path);
+function toRedirect(args: { config?: t.CompilerModel; dir?: string; path: string }) {
+  const path = trimDir(args.dir, args.path);
   const redirects = FileRedirects(args.config?.files?.redirects);
   return redirects.path(path);
 }
 
-function toAccess(args: { config?: t.CompilerModel; distDir?: string; path: string }) {
-  const path = trimDir(args.distDir, args.path);
+function toAccess(args: { config?: t.CompilerModel; dir?: string; path: string }) {
+  const path = trimDir(args.dir, args.path);
   const access = FileAccess(args.config?.files?.access);
   return access.path(path);
 }

@@ -1,5 +1,5 @@
 import { Compiler } from '../../node/compiler';
-import { t, constants, Package } from '../common';
+import { constants, Package, t } from '../common';
 import * as util from '../util';
 
 /**

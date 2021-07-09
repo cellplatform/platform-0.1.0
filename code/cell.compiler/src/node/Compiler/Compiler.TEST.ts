@@ -60,8 +60,9 @@ describe('Compiler', function () {
         expect(await fs.pathExists(target)).to.eql(true);
       };
       await exists(''); // NB: Root folder.
-      await exists('dist.json');
+      await exists('index.json');
       await exists('dist.zip');
+      await exists('dist.zip.json');
     });
   });
 });

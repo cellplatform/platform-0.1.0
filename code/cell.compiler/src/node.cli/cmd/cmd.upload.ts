@@ -1,17 +1,5 @@
 import { Compiler } from '../../node/compiler';
-import {
-  constants,
-  defaultValue,
-  fs,
-  HttpClient,
-  log,
-  Model,
-  Package,
-  PATH,
-  Schema,
-  t,
-  Uri,
-} from '../common';
+import { constants, fs, HttpClient, log, Model, Package, PATH, Schema, t, Uri } from '../common';
 import * as util from '../util';
 import { runClean } from './cmd.clean';
 
@@ -35,7 +23,7 @@ export async function upload(argv: t.Argv) {
     version.to = PKG.load().version || '';
   }
 
-  const bundle = argv.bundle; // NB: undefined by default (false if --no-bundle)
+  const runBundle = argv.bundle; // NB: undefined by default (false if --no-bundle)
   const name = util.nameArg(argv, 'web');
   const mode = util.modeArg(argv, 'production');
   const config = (await util.loadConfig(argv.config, { name })).mode(mode);
@@ -84,8 +72,16 @@ export async function upload(argv: t.Argv) {
     return logger.errorAndExit(1, err);
   }
 
-  if (argv.clean ?? (true && bundle !== false)) await runClean();
-  const res = await Compiler.cell(host, cell.toString()).upload(config, { targetDir, bundle });
+  if (argv.clean ?? (true && runBundle !== false)) await runClean();
+
+  const compiler = Compiler.cell(host, cell.toString());
+
+  await compiler.upload(config, { source: 'dist', targetDir, runBundle });
+  await compiler.upload(config, {
+    source: 'bundle',
+    targetDir: `${targetDir}.bundle`,
+    runBundle: false, // NB: No need to re-bundle, done in prior step (if requested).
+  });
 
   const file = args.filepath.substring(fs.resolve('.').length + 1);
   log.info.gray(`Upload configuration stored in: ${file}`);
@@ -95,7 +91,7 @@ export async function upload(argv: t.Argv) {
     : `${version.from} (no change)`;
   log.info.gray(`package.json/version: ${logVersion}`);
 
-  return res;
+  return;
 }
 
 /**
