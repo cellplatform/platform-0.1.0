@@ -17,7 +17,7 @@ export const ManifestHeader: React.FC<ManifestHeaderProps> = (props) => {
   const size = filesize(totalBytes, { round: 1 });
 
   const styles = {
-    base: css({ Flex: 'horizontal-stretch-start' }),
+    base: css({ Flex: 'horizontal-stretch-start', userSelect: 'none' }),
     qr: css({ position: 'relative', width: 180 }),
   };
 
