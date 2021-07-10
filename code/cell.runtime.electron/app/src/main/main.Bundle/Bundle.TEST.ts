@@ -209,16 +209,16 @@ describe('main.Bundle', function () {
       });
     });
 
-    describe('fs.save: upload', () => {
-      it('upload: trims target dir path ("/")', async () => {
+    describe.only('fs.save (upload)', () => {
+      it('trims target dir path ("/")', async () => {
         const mock = await SampleUploadMock({ dir: '///foo/bar///' });
         const res = await mock.upload();
         await mock.dispose();
         expect(res.files.every((file) => file.path.startsWith('foo/bar/'))).to.eql(true);
       });
 
-      describe('filepath: source.fs(local) => source.http(local)', () => {
-        it('upload: "created"', async () => {
+      describe('source.fs(local) => target.http', () => {
+        it('fs(local) => http (action: "created")', async () => {
           const mock = await SampleUploadMock();
           const { target, source, events } = mock;
           const paths = await fs.glob.find(`${fs.dirname(source)}/**`);
@@ -242,7 +242,7 @@ describe('main.Bundle', function () {
           await mock.dispose();
         });
 
-        it('upload: existing ("unchanged" => force)', async () => {
+        it('fs(local) => http (existing: "unchanged" => force)', async () => {
           const mock = await SampleUploadMock();
           const { target, source, events } = mock;
 
@@ -261,8 +261,8 @@ describe('main.Bundle', function () {
         });
       });
 
-      describe('url: source.http => source.http', () => {
-        it('upload: local  => local  (same server)', async () => {
+      describe('source.http => target.http', () => {
+        it('local  => local  (same server)', async () => {
           // Upload a bundle to use as the local HTTP source.
           const sample = await SampleUploadMock();
           await sample.upload();
@@ -291,7 +291,7 @@ describe('main.Bundle', function () {
           await sample.dispose();
         });
 
-        it('upload: local  => remote (different server)', async () => {
+        it('local  => remote (different server)', async () => {
           const local = await SampleUploadMock();
           const remote = await Mock.server();
 
@@ -332,7 +332,7 @@ describe('main.Bundle', function () {
           await remote.dispose();
         });
 
-        it('upload: remote => local  (via local copy)', async () => {
+        it('remote => local  (via local copy)', async () => {
           const remote = await SampleUploadMock();
           const local = await Mock.server();
 
@@ -370,7 +370,7 @@ describe('main.Bundle', function () {
           await remote.dispose();
         });
 
-        it('upload: remote => remote (via local copy)', async () => {
+        it('remote => remote (via local copy)', async () => {
           const remote1 = await SampleUploadMock();
           const remote2 = await SampleUploadMock();
 
@@ -406,6 +406,24 @@ describe('main.Bundle', function () {
 
           await remote2.dispose();
           await remote1.dispose();
+        });
+      });
+
+      describe.skip('source.http => target.fs(local)', () => {
+        it('http(local) => fs(local)', async () => {
+          const local = await SampleUploadMock();
+
+          // Upload a bundle to use as the local HTTP source.
+          await local.upload();
+          const localFile = local.http
+            .cell(local.target.cell)
+            .fs.file(`${local.target.dir}/index.json`);
+          expect(await localFile.exists()).to.eql(true, 'local file exists');
+
+          const tmp = fs.join(Paths.tmp, `save.${slug()}`);
+          console.log('tmp', tmp);
+
+          await local.dispose();
         });
       });
     });

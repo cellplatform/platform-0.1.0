@@ -10,7 +10,7 @@ type Directory = string;
 export async function uploadFromRemote(args: {
   httpFactory: (host: string) => t.IHttpClient;
   source: t.ManifestSource;
-  manifest: t.ModuleManifest;
+  manifest: t.Manifest;
   target: { host: string; cell: Uri; dir: Directory };
   silent?: boolean;
 }) {

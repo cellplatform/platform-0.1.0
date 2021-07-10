@@ -51,15 +51,16 @@ export function FilesystemController(args: {
 
     const fireError = (error: string | string[]) => done('error', { errors: asArray(error) });
 
+    type M = t.Manifest;
     const LoadManifest = {
       async fromLocalFile(path: string) {
-        return (await fs.readJson(path)) as t.ModuleManifest;
+        return (await fs.readJson(path)) as M;
       },
       async fromHost(host: string, cell: Uri, path: string) {
-        return await ManifestFetch.get<t.ModuleManifest>({ host, cell, path });
+        return await ManifestFetch.get<M>({ host, cell, path });
       },
       async fromUrl(source: string) {
-        return ManifestFetch.url(source).get<t.ModuleManifest>();
+        return ManifestFetch.url(source).get<M>();
       },
     };
 
