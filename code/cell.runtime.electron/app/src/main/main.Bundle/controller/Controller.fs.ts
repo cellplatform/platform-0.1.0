@@ -1,13 +1,26 @@
-import { asArray, fs, log, ManifestSource, Schema, slug, t, time, ManifestFetch } from '../common';
-import { uploadLocal } from './Controller.fs.upload.fromLocal';
-import { uploadRemote } from './Controller.fs.upload.fromRemote';
+import {
+  asArray,
+  fs,
+  log,
+  ManifestFetch,
+  ManifestSource,
+  Schema,
+  slug,
+  t,
+  time,
+  toHost,
+} from '../common';
+import { uploadFromLocal } from './Controller.fs.upload.fromLocal';
+import { uploadFromRemote } from './Controller.fs.upload.fromRemote';
+
+type Uri = string;
 
 export function FilesystemController(args: {
+  httpFactory: (host?: string) => t.IHttpClient;
   bus: t.EventBus<t.BundleEvent>;
   events: t.BundleEvents;
-  http: t.IHttpClient;
 }) {
-  const { events, http, bus } = args;
+  const { events, httpFactory, bus } = args;
 
   /**
    * Upload bundles to the local server.
@@ -15,53 +28,55 @@ export function FilesystemController(args: {
   events.fs.save.req$.subscribe(async (e) => {
     type Res = t.BundleFsSaveRes;
     const timer = time.timer();
-    const { silent, tx = slug(), target } = e;
-    const host = new URL(http.origin).host;
+    const { silent, tx = slug() } = e;
+
+    const host = e.target.host ? toHost(e.target.host) : toHost(httpFactory().origin);
+    const target = { ...e.target, host };
 
     const done = (
       action: Res['action'],
       options: { files?: Res['files']; errors?: Res['errors'] } = {},
     ) => {
       const { files = [], errors = [] } = options;
-      const cell = target.cell;
-      const elapsed = timer.elapsed.msec;
+      const source = e.source;
       const ok = errors.length === 0;
+      const elapsed = timer.elapsed.msec;
       if (!ok) action = 'error';
       return bus.fire({
         type: 'runtime.electron/Bundle/fs/save:res',
-        payload: { tx, ok, cell, files, errors, action, elapsed },
+        payload: { tx, ok, action, source, target, files, errors, elapsed },
       });
     };
 
     const fireError = (error: string | string[]) => done('error', { errors: asArray(error) });
 
-    const loadManifestFromFile = async (path: string) => {
-      return (await fs.readJson(path)) as t.ModuleManifest;
-    };
-
-    const downloadCurrentManifest = async () => {
-      const { cell, dir: path } = target;
-      return ManifestFetch.get<t.ModuleManifest>({ host, cell, path });
-    };
-
-    const downloadManifestFromUrl = async (source: string) => {
-      return ManifestFetch.url(source).get<t.ModuleManifest>();
+    const LoadManifest = {
+      async fromLocalFile(path: string) {
+        return (await fs.readJson(path)) as t.ModuleManifest;
+      },
+      async fromHost(host: string, cell: Uri, path: string) {
+        return await ManifestFetch.get<t.ModuleManifest>({ host, cell, path });
+      },
+      async fromUrl(source: string) {
+        return ManifestFetch.url(source).get<t.ModuleManifest>();
+      },
     };
 
     try {
-      if (!Schema.Uri.is.cell(target.cell)) {
-        return fireError(`Invalid target cell URI ("${target.cell}")`);
+      if (!Schema.Uri.is.cell(e.target.cell)) {
+        return fireError(`Invalid target cell URI ("${e.target.cell}")`);
       }
 
       const source = ManifestSource(e.source);
+
       const manifest =
         source.kind === 'filepath'
-          ? await loadManifestFromFile(source.toString())
-          : (await downloadManifestFromUrl(source.toString())).json;
+          ? await LoadManifest.fromLocalFile(source.toString())
+          : (await LoadManifest.fromUrl(source.toString())).json;
 
       if (!manifest) return fireError(`Failed to load manifest`);
 
-      const current = await downloadCurrentManifest();
+      const current = await LoadManifest.fromHost(host, e.target.cell, e.target.dir);
       const hash = {
         current: current.json?.hash.files || '',
         next: manifest.hash.files,
@@ -74,11 +89,17 @@ export function FilesystemController(args: {
         return done('unchanged', { files });
       }
 
-      const uploaded =
-        source.kind === 'filepath'
-          ? await uploadLocal({ http, source, target, silent })
-          : await uploadRemote({ http, source, target, manifest, silent });
+      const runUpload = async () => {
+        if (source.kind === 'filepath') {
+          return await uploadFromLocal({ httpFactory, source, target, silent });
+        }
+        if (source.kind === 'url') {
+          return await uploadFromRemote({ httpFactory, source, target, manifest, silent });
+        }
+        throw new Error(`Source kind '${source.kind}' not supported.`);
+      };
 
+      const uploaded = await runUpload();
       const { errors } = uploaded;
       const files = uploaded.files.map((file) => ({
         path: file.filename,
@@ -86,7 +107,6 @@ export function FilesystemController(args: {
       }));
 
       const action: Res['action'] = current.exists ? 'replaced' : 'created';
-
       return done(action, { files, errors }); // Success.
     } catch (error) {
       log.error(error.message);

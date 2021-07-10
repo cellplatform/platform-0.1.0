@@ -1,4 +1,15 @@
-import { time, ConfigFile, HttpClient, rx, t, fs, Paths, Genesis, slug } from '../main/common';
+import {
+  time,
+  ConfigFile,
+  HttpClient,
+  rx,
+  t,
+  fs,
+  Paths,
+  Genesis,
+  slug,
+  Urls,
+} from '../main/common';
 import { Bundle } from '../main/main.Bundle';
 import { Log } from '../main/main.Log';
 import { Menu } from '../main/main.Menu';
@@ -10,14 +21,16 @@ import { ModuleRegistry } from '../data.http';
 export type IMockServer = {
   host: string;
   port: number;
-  paths: t.ElectronDataPaths;
   http: t.IHttpClient;
+  urls: t.IUrls;
+  paths: t.ElectronDataPaths;
   dispose(): Promise<void>;
 };
 
 export type IMockControllers = {
   bus: t.ElectronMainBus;
   http: t.IHttpClient;
+  urls: t.IUrls;
   paths: t.ElectronDataPaths;
   events: { bundle: t.BundleEvents };
   dispose(): Promise<void>;
@@ -30,7 +43,7 @@ export const Mock = {
   async controllers() {
     const bus = rx.bus<t.ElectronRuntimeEvent>();
     const server = await Mock.server();
-    const { host, paths, http } = server;
+    const { host, paths, http, urls } = server;
     const config = await ConfigFile.read();
 
     /**
@@ -53,16 +66,11 @@ export const Mock = {
       // menu: Menu.Events({ bus }),
     };
 
-    const mock: IMockControllers = {
-      bus,
-      http,
-      events,
-      paths,
-      async dispose() {
-        await server.dispose();
-      },
+    const dispose = async () => {
+      await server.dispose();
     };
 
+    const mock: IMockControllers = { bus, http, events, paths, urls, dispose };
     return mock;
   },
 
@@ -75,19 +83,16 @@ export const Mock = {
       silent: true,
       paths: Mock.paths(),
     });
-    let http: t.IHttpClient | undefined;
-    const mock: IMockServer = {
-      host,
-      port,
-      paths,
-      get http() {
-        return http ?? (http = HttpClient.create(host));
-      },
-      async dispose() {
-        await instance.stop();
-        time.delay(100, () => fs.remove(paths.dir)); // NB: Delay before deleting to prevent the DB's own delayed clean process from failing.
-      },
+
+    const http = HttpClient.create(host);
+    const urls = Urls.create(host);
+
+    const dispose = async () => {
+      await instance.stop();
+      time.delay(100, () => fs.remove(paths.dir)); // NB: Delay before deleting to prevent the DB's own delayed clean process from failing.
     };
+
+    const mock: IMockServer = { host, port, paths, http, urls, dispose };
     return mock;
   },
 

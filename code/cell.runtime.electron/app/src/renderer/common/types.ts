@@ -13,6 +13,7 @@ export {
   ICoordUri,
   INsUri,
   IUri,
+  IUrls,
   IResGetSysInfo,
   ModuleManifest,
   Manifest,

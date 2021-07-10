@@ -1,5 +1,5 @@
 import { Bundle } from '.';
-import { expect, fs, Mock, Paths, rx, slug, t, TestSample, Uri, Urls } from '../../test';
+import { toHost, expect, fs, Mock, Paths, rx, slug, t, TestSample, Uri, Urls } from '../../test';
 
 describe('main.Bundle', function () {
   this.timeout(30000);
@@ -9,7 +9,7 @@ describe('main.Bundle', function () {
     await TestSample.ensureBundle();
   });
 
-  async function sampleUpload(options: { source?: string; dir?: string; cell?: string } = {}) {
+  async function SampleUploadMock(options: { source?: string; dir?: string; cell?: string } = {}) {
     const mock = await Mock.controllers();
     const source = options.source ?? Paths.bundle.sys.source.manifest;
     const target = {
@@ -123,7 +123,7 @@ describe('main.Bundle', function () {
 
       it('install: url', async () => {
         const manifest = (await fs.readJson(manifestPath)) as t.ModuleManifest;
-        const mock = await sampleUpload();
+        const mock = await SampleUploadMock();
 
         // Upload a sample source bundle.
         await Mock.Registry.clear(mock.http);
@@ -209,9 +209,9 @@ describe('main.Bundle', function () {
       });
     });
 
-    describe('fs.save: upload', () => {
+    describe.only('fs.save: upload', () => {
       it('upload: trims target dir path ("/")', async () => {
-        const mock = await sampleUpload({ dir: '///foo/bar///' });
+        const mock = await SampleUploadMock({ dir: '///foo/bar///' });
         const res = await mock.upload();
         await mock.dispose();
         expect(res.files.every((file) => file.path.startsWith('foo/bar/'))).to.eql(true);
@@ -219,7 +219,7 @@ describe('main.Bundle', function () {
 
       describe('filepath: source.fs(local) => source.http(local)', () => {
         it('upload: "created"', async () => {
-          const mock = await sampleUpload();
+          const mock = await SampleUploadMock();
           const { target, source, events } = mock;
           const paths = await fs.glob.find(`${fs.dirname(source)}/**`);
 
@@ -229,18 +229,21 @@ describe('main.Bundle', function () {
           const res = await events.fs.save.fire({ source, target, silent: true });
 
           expect(res.ok).to.eql(true);
-          expect(res.cell).to.eql(target.cell);
+          expect(res.errors).to.eql([]);
+          expect(res.source).to.eql(source);
+          expect(res.target.cell).to.eql(target.cell);
+          expect(res.target.host).to.eql(new URL(mock.http.origin).host);
           expect(res.files.length).to.eql(paths.length);
+          expect(res.files.every((file) => file.path.startsWith(target.dir))).to.eql(true);
           expect(res.action).to.eql('created');
           expect(res.elapsed).to.greaterThan(0);
-          expect(res.errors).to.eql([]);
 
           expect(await file.exists()).to.eql(true); // NB: File uploaded to server.
           await mock.dispose();
         });
 
         it('upload: existing ("unchanged" => force)', async () => {
-          const mock = await sampleUpload();
+          const mock = await SampleUploadMock();
           const { target, source, events } = mock;
 
           const res1 = await events.fs.save.fire({ source, target, silent: true });
@@ -259,10 +262,9 @@ describe('main.Bundle', function () {
       });
 
       describe('url: source.http => source.http', () => {
-        it('upload: local  => local', async () => {
-          const sample = await sampleUpload();
-
+        it('upload: local  => local (same server)', async () => {
           // Upload a bundle to use as the local HTTP source.
+          const sample = await SampleUploadMock();
           await sample.upload();
 
           const target = {
@@ -279,26 +281,55 @@ describe('main.Bundle', function () {
           const res = await sample.events.fs.save.fire({ source, target, silent: true });
 
           expect(res.ok).to.eql(true);
-          expect(res.cell).to.eql(target.cell);
-          expect(res.action).to.eql('created');
-          expect(res.elapsed).to.greaterThan(0);
           expect(res.errors).to.eql([]);
+          expect(res.source).to.eql(source);
+          expect(res.target.cell).to.eql(target.cell);
+          expect(res.target.host).to.eql(new URL(sample.http.origin).host);
+          expect(res.action).to.eql('created');
 
           expect(await file.exists()).to.eql(true); // NB: File uploaded to server.
           await sample.dispose();
         });
 
-        it('upload: local  => remote', async () => {
-          const local = await sampleUpload();
-          // const remote = await sampleUpload();
+        it('upload: local  => remote (different server)', async () => {
+          const local = await SampleUploadMock();
+          const remote = await Mock.server();
 
-          console.log('-------------------------------------------');
-          console.log('local.paths', local.paths);
+          // Upload a bundle to use as the local HTTP source.
+          await local.upload();
+          const localFile = local.http
+            .cell(local.target.cell)
+            .fs.file(`${local.target.dir}/index.json`);
+          expect(await localFile.exists()).to.eql(true, 'local file exists');
 
-          // process.exit();
+          const target = {
+            host: remote.host,
+            dir: `foo/1.2.3`,
+            cell: Uri.create.A1(),
+          };
+          const remoteFile = remote.http.cell(target.cell).fs.file(`${target.dir}/index.json`);
+          expect(await remoteFile.exists()).to.eql(false); // NB: File not on server yet.
 
-          // await local.upload();
+          // Upload to the different (remote) server.
+          const source = local.urls.cell(local.target.cell).file.byName(localFile.path).toString();
+
+          const res1 = await local.events.fs.save.fire({ source, target, silent: true });
+          const res2 = await local.events.fs.save.fire({ source, target, silent: true });
+
+          expect(res1.action).to.eql('created');
+          expect(res2.action).to.eql('unchanged');
+
+          expect(res1.ok).to.eql(true);
+          expect(res1.source).to.eql(source);
+          expect(res1.target.host).to.eql(toHost(remote.host));
+          expect(res1.target.cell).to.eql(target.cell);
+          expect(res1.files.every((file) => file.path.startsWith(target.dir))).to.eql(true);
+
+          // NB: Exists on remote server now.
+          expect(await remoteFile.exists()).to.eql(true);
+
           await local.dispose();
+          await remote.dispose();
         });
 
         /**

@@ -37,7 +37,7 @@ export type BundleEvents = t.IDisposable & {
     res$: t.Observable<BundleInstallRes>;
     fire(
       source: ManifestSourcePath,
-      options?: { timeout?: number; force?: boolean; silent?: boolean },
+      options?: { timeout?: Milliseconds; force?: boolean; silent?: boolean },
     ): Promise<t.BundleInstallRes>;
   };
 
@@ -46,7 +46,7 @@ export type BundleEvents = t.IDisposable & {
     res$: t.Observable<BundleListRes>;
     get(options?: {
       domain?: string;
-      timeout?: number;
+      timeout?: Milliseconds;
     }): Promise<{ items: BundleItem[]; error?: string }>;
   };
 
@@ -57,7 +57,7 @@ export type BundleEvents = t.IDisposable & {
       domain: string;
       namespace: string;
       version?: string;
-      timeout?: number;
+      timeout?: Milliseconds;
     }): Promise<BundleStatusRes>;
   };
 
@@ -67,9 +67,10 @@ export type BundleEvents = t.IDisposable & {
       res$: t.Observable<t.BundleFsSaveRes>;
       fire(args: {
         source: Directory;
-        target: { cell: Uri; dir: Directory };
+        target: { host?: string; cell: Uri; dir: Directory };
         force?: boolean;
         silent?: boolean; // Event log.
+        timeout?: Milliseconds;
       }): Promise<BundleFsSaveRes>;
     };
   };
@@ -166,7 +167,7 @@ export type BundleFsSaveReqEvent = {
 export type BundleFsSaveReq = {
   tx?: string;
   source: Directory | Url;
-  target: { cell: Uri; dir: Directory };
+  target: { host?: string; cell: Uri; dir: Directory };
   silent?: boolean;
   force?: boolean; // Re-upload if already exists.
 };
@@ -178,9 +179,10 @@ export type BundleFsSaveResEvent = {
 export type BundleFsSaveRes = {
   tx: string;
   ok: boolean;
-  files: { path: string; bytes: number }[];
-  cell: Uri;
-  errors: string[];
   action: 'created' | 'replaced' | 'unchanged' | 'error';
+  errors: string[];
+  source: Directory | Url;
+  target: { host: string; cell: Uri; dir: Directory };
+  files: { path: string; bytes: number }[];
   elapsed: Milliseconds;
 };

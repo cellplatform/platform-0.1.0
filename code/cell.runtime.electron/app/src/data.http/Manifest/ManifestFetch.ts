@@ -28,8 +28,8 @@ export const ManifestFetch = {
       url,
       async get<T extends t.Manifest>() {
         if (url.error) throw new Error(`Cannot GET manifest. ${url.error}`);
-        const { domain: host, cell, path } = url;
-        return ManifestFetch.get<T>({ host, cell, path });
+        const { domain, cell, path } = url;
+        return ManifestFetch.get<T>({ host: domain, cell, path });
       },
     };
   },

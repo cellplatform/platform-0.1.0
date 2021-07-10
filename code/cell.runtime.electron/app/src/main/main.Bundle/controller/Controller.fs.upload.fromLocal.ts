@@ -1,21 +1,24 @@
-import { ENV, fs, log, t, time } from '../common';
+import { toHost, ENV, fs, log, t, time } from '../common';
 
 type Uri = string;
 type Directory = string;
 type File = t.IHttpClientCellFileUpload;
 
 /**
- * Upload files to the given target.
+ * Upload local files to the given target.
  */
-export async function uploadLocal(args: {
-  http: t.IHttpClient;
+export async function uploadFromLocal(args: {
+  httpFactory: (host?: string) => t.IHttpClient;
   source: t.ManifestSource;
-  target: { cell: Uri; dir: Directory };
+  target: { host: string; cell: Uri; dir: Directory };
   silent?: boolean;
 }) {
   const timer = time.timer();
-  const { http, source } = args;
-  const host = new URL(http.origin).host;
+  const { source, httpFactory } = args;
+
+  const host = toHost(args.target.host);
+  const http = httpFactory(args.target.host);
+
   const target = {
     cell: args.target.cell,
     dir: (args.target.dir || '').trim().replace(/^\/*/, '').replace(/\/*$/, ''),

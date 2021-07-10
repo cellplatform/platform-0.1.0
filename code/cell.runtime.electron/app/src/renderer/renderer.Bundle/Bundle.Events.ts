@@ -99,15 +99,37 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
     save: {
       req$: rx.payload<t.BundleFsSaveReqEvent>($, 'runtime.electron/Bundle/fs/save:req'),
       res$: rx.payload<t.BundleFsSaveResEvent>($, 'runtime.electron/Bundle/fs/save:res'),
-      fire(args) {
-        const { source, target, force, silent } = args;
+      async fire(args) {
+        const { source, target, force, silent, timeout: msecs = 3000 } = args;
         const tx = slug();
-        const res = firstValueFrom(fs.save.res$.pipe(filter((e) => e.tx === tx)));
+
+        const first = firstValueFrom(
+          fs.save.res$.pipe(
+            filter((e) => e.tx === tx),
+            timeout(msecs),
+            catchError(() => of(`Filesystem save ("upload") timed out after ${msecs} msecs`)),
+          ),
+        );
+
         bus.fire({
           type: 'runtime.electron/Bundle/fs/save:req',
           payload: { tx, source, target, force, silent },
         });
-        return res;
+
+        const res = await first;
+        if (typeof res !== 'string') return res; // Success.
+
+        // Failure.
+        return {
+          tx,
+          ok: false,
+          action: 'error',
+          elapsed: msecs,
+          source,
+          target: { ...target, host: target.host || '' },
+          files: [],
+          errors: [res],
+        };
       },
     },
   };
