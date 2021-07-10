@@ -116,6 +116,7 @@ export type BundleInstallReq = {
   source: ManifestSourcePath;
   force?: boolean;
   silent?: boolean;
+  timeout?: Milliseconds;
 };
 
 export type BundleInstallResEvent = {

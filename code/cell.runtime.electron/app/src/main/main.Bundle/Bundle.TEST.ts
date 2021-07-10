@@ -209,7 +209,7 @@ describe('main.Bundle', function () {
       });
     });
 
-    describe.only('fs.save: upload', () => {
+    describe('fs.save: upload', () => {
       it('upload: trims target dir path ("/")', async () => {
         const mock = await SampleUploadMock({ dir: '///foo/bar///' });
         const res = await mock.upload();
@@ -262,7 +262,7 @@ describe('main.Bundle', function () {
       });
 
       describe('url: source.http => source.http', () => {
-        it('upload: local  => local (same server)', async () => {
+        it('upload: local  => local  (same server)', async () => {
           // Upload a bundle to use as the local HTTP source.
           const sample = await SampleUploadMock();
           await sample.upload();
@@ -310,7 +310,7 @@ describe('main.Bundle', function () {
           const remoteFile = remote.http.cell(target.cell).fs.file(`${target.dir}/index.json`);
           expect(await remoteFile.exists()).to.eql(false); // NB: File not on server yet.
 
-          // Upload to the different (remote) server.
+          // Save to the different ("remote") server.
           const source = local.urls.cell(local.target.cell).file.byName(localFile.path).toString();
 
           const res1 = await local.events.fs.save.fire({ source, target, silent: true });
@@ -325,18 +325,88 @@ describe('main.Bundle', function () {
           expect(res1.target.cell).to.eql(target.cell);
           expect(res1.files.every((file) => file.path.startsWith(target.dir))).to.eql(true);
 
-          // NB: Exists on remote server now.
+          // NB: Exists on "remote" server now.
           expect(await remoteFile.exists()).to.eql(true);
 
           await local.dispose();
           await remote.dispose();
         });
 
-        /**
-         * TODO 🐷
-         */
-        it.skip('upload: remote => local  (via local copy)', async () => {});
-        it.skip('upload: remote => remote (via local copy)', async () => {});
+        it('upload: remote => local  (via local copy)', async () => {
+          const remote = await SampleUploadMock();
+          const local = await Mock.server();
+
+          // Upload a bundle to use as the remote HTTP source.
+          await remote.upload();
+          const remoteFile = remote.http
+            .cell(remote.target.cell)
+            .fs.file(`${remote.target.dir}/index.json`);
+          expect(await remoteFile.exists()).to.eql(true, 'local file exists');
+
+          const target = {
+            host: local.host,
+            dir: `foo/1.2.3`,
+            cell: Uri.create.A1(),
+          };
+          const localFile = local.http.cell(target.cell).fs.file(`${target.dir}/index.json`);
+          expect(await localFile.exists()).to.eql(false); // NB: File not on server yet.
+
+          // Save to the different ("local") server.
+          const source = remote.urls
+            .cell(remote.target.cell)
+            .file.byName(remoteFile.path)
+            .toString();
+
+          const res1 = await remote.events.fs.save.fire({ source, target, silent: true });
+          const res2 = await remote.events.fs.save.fire({ source, target, silent: true });
+
+          expect(res1.action).to.eql('created');
+          expect(res2.action).to.eql('unchanged');
+
+          // NB: Exists on "local" server now.
+          expect(await localFile.exists()).to.eql(true);
+
+          await local.dispose();
+          await remote.dispose();
+        });
+
+        it('upload: remote => remote (via local copy)', async () => {
+          const remote1 = await SampleUploadMock();
+          const remote2 = await SampleUploadMock();
+
+          // Upload a bundle to use as the remote HTTP source.
+          await remote1.upload();
+          const remoteFile1 = remote1.http
+            .cell(remote1.target.cell)
+            .fs.file(`${remote1.target.dir}/index.json`);
+          expect(await remoteFile1.exists()).to.eql(true, 'local file exists');
+
+          const target = {
+            host: toHost(remote2.http.origin),
+            dir: `foo/1.2.3`,
+            cell: Uri.create.A1(),
+          };
+          const remoteFile2 = remote2.http.cell(target.cell).fs.file(`${target.dir}/index.json`);
+          expect(await remoteFile2.exists()).to.eql(false); // NB: File not on server yet.
+
+          // Save to the different ("remote") server.
+          const source = remote1.urls
+            .cell(remote1.target.cell)
+            .file.byName(remoteFile1.path)
+            .toString();
+
+          const res1 = await remote1.events.fs.save.fire({ source, target, silent: true });
+          const res2 = await remote1.events.fs.save.fire({ source, target, silent: true });
+
+          expect(res1.action).to.eql('created');
+          expect(res2.action).to.eql('unchanged');
+
+          // NB: Exists on "local" server now.
+          expect(await remoteFile2.exists()).to.eql(true);
+
+          await remote2.dispose();
+          await remote1.dispose();
+        });
       });
     });
   });

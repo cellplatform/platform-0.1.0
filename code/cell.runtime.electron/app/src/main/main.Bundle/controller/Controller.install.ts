@@ -28,7 +28,7 @@ export function InstallController(args: {
   events.install.req$.subscribe(async (e) => {
     type Res = t.BundleInstallRes;
     const timer = time.timer();
-    const { tx = slug() } = e;
+    const { tx = slug(), timeout } = e;
 
     const outTx = log.gray(`(tx:${tx})`);
 
@@ -111,6 +111,7 @@ export function InstallController(args: {
         target,
         silent: true,
         force: true,
+        timeout,
       });
 
       if (!fsResponse.ok) {
@@ -184,10 +185,11 @@ const Log = {
     });
 
     log.info();
-    log.info(`Installed ✨✨ ${log.gray(`[${elapsed}]`)}`);
+    log.info(`Installed ✨ ${log.gray(`[${elapsed}]`)}`);
 
-    add('ok', payload.ok);
-    add('action', payload.action);
+    const { ok } = payload;
+    add('ok', ok ? true : log.red(false));
+    add('action', ok ? payload.action : log.red(payload.action));
     add('source', log.gray(payload.source));
     if (errors.length > 0) add('errors', errors.length);
 

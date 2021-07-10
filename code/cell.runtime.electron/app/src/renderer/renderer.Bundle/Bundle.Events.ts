@@ -33,7 +33,7 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
 
       bus.fire({
         type: 'runtime.electron/Bundle/install:req',
-        payload: { tx, source, force, silent },
+        payload: { tx, source, force, silent, timeout: msecs },
       });
 
       const res = await first;
