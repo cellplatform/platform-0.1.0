@@ -25,7 +25,7 @@ export type HttpClient = {
 /**
  * Client (Root)
  */
-export type IHttpClient = {
+export type IHttpClient = t.IDisposable & {
   readonly origin: string;
   readonly request$: t.Observable<t.IHttpBefore>;
   readonly response$: t.Observable<t.IHttpAfter>;
