@@ -6,7 +6,13 @@ import { slug, t } from '../common';
 type Uri = string;
 type State = { window: Uri; workers: Uri[] };
 
-const ctx: Worker = self as any;
+const getSelf = () => {
+  if (typeof self !== 'undefined') return self as any;
+  if (typeof window !== 'undefined') return window as any;
+  throw new Error(`self context not found`);
+};
+
+const ctx: Worker = getSelf();
 
 /**
  * Initializes a [NetworkPump] for a WebWorker thread.
