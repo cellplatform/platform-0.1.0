@@ -1,9 +1,14 @@
-import { Uri, t } from './common';
+import { Urls, Uri, t } from './common';
+
+export const ManifestUrl = {
+  parse: ParseManifestUrl,
+  create: CreateMaifestUrl,
+};
 
 /**
  * Parses a URL to a manifest file.
  */
-export function ManifestUrl(input: string): t.ManifestUrl {
+export function ParseManifestUrl(input: string): t.ManifestUrl {
   const { url, error } = parseUrl(input);
 
   const api = {
@@ -50,6 +55,24 @@ export function ManifestUrl(input: string): t.ManifestUrl {
 
   api.ok = !Boolean(api.error);
   return api;
+}
+
+/**
+ * Generate manifest URL for a host end-point
+ */
+export function CreateMaifestUrl(host: string | number) {
+  //
+  const urls = Urls.create(host);
+
+  console.log('CreateMaifestUrl');
+  /**
+   * TODO 🐷
+   */
+  return {
+    entry() {
+      return 'hello-entry';
+    },
+  };
 }
 
 /**
