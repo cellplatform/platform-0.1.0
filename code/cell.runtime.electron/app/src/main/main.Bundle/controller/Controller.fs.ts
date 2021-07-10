@@ -16,7 +16,8 @@ import { uploadFromRemote } from './Controller.fs.upload.fromRemote';
 type Uri = string;
 
 export function FilesystemController(args: {
-  httpFactory: (host?: string) => t.IHttpClient;
+  localhost: string;
+  httpFactory: (host: string) => t.IHttpClient;
   bus: t.EventBus<t.BundleEvent>;
   events: t.BundleEvents;
 }) {
@@ -30,7 +31,7 @@ export function FilesystemController(args: {
     const timer = time.timer();
     const { silent, tx = slug() } = e;
 
-    const host = e.target.host ? toHost(e.target.host) : toHost(httpFactory().origin);
+    const host = e.target.host ? toHost(e.target.host) : toHost(args.localhost);
     const target = { ...e.target, host };
 
     const done = (

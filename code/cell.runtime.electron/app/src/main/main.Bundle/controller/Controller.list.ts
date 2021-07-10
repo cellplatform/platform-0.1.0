@@ -1,20 +1,23 @@
-import { asArray, fs, Genesis, ModuleRegistry, slug, t } from '../common';
+import { asArray, Genesis, ModuleRegistry, slug, t } from '../common';
 
 export function ListController(args: {
   bus: t.EventBus<t.BundleEvent>;
   events: t.BundleEvents;
-  http: t.IHttpClient;
+  localhost: string;
+  httpFactory: (host: string) => t.IHttpClient;
 }) {
-  const { events, http, bus } = args;
+  const { events, localhost, httpFactory, bus } = args;
 
   /**
    * List
    */
   events.list.req$.subscribe(async (e) => {
     const { tx = slug() } = e;
+    const http = httpFactory(localhost);
 
     const done = (args: { items?: t.BundleItem[]; error?: string } = {}) => {
       const { items = [], error } = args;
+      http.dispose();
       return bus.fire({
         type: 'runtime.electron/Bundle/list:res',
         payload: { tx, items, error },

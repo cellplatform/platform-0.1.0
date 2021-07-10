@@ -34,17 +34,24 @@ export async function start() {
   try {
     // Start the HTTP server.
     const port = prod ? undefined : 5000;
-    const { paths, host } = await SystemServer.start({ log, prod, port });
+    const server = await SystemServer.start({ log, prod, port });
+    const { paths } = server;
+    const localhost = server.host;
+
+    const httpFactory = (host: string) => {
+      const http = HttpClient.create(host);
+      http.request$.subscribe((e) => {
+        /**
+         * TODO 🐷
+         * Add a "security token" to lock down the server to the app only.
+         * See `SystemServer` for the other-side that checks the token before responding.
+         */
+      });
+      return http;
+    };
 
     // Initialize the HTTP client.
-    const http = HttpClient.create(host);
-    http.request$.subscribe((e) => {
-      /**
-       * TODO 🐷
-       * Add a "security token" to lock down the server to the app only.
-       * See `SystemServer` for the other-side that checks the token before responding.
-       */
-    });
+    const http = httpFactory(localhost);
 
     // Load the configuration JSON file.
     const config = await ConfigFile.read();
@@ -68,8 +75,8 @@ export async function start() {
     /**
      * Initialize controllers.
      */
-    System.Controller({ bus, host, paths, config });
-    Bundle.Controller({ bus, http });
+    System.Controller({ bus, localhost, paths, config });
+    Bundle.Controller({ bus, localhost, httpFactory });
     Window.Controller({ bus });
     Log.Controller({ bus });
     Menu.Controller({ bus });

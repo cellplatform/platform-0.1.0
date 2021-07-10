@@ -3,9 +3,10 @@ import { Genesis, ManifestFetch, ModuleRegistry, slug, t, Urls } from '../common
 export function StatusController(args: {
   bus: t.EventBus<t.BundleEvent>;
   events: t.BundleEvents;
-  http: t.IHttpClient;
+  localhost: string;
+  httpFactory: (host: string) => t.IHttpClient;
 }) {
-  const { events, http, bus } = args;
+  const { events, httpFactory, localhost, bus } = args;
 
   /**
    * Retrieve the status of a local bundle.
@@ -13,11 +14,13 @@ export function StatusController(args: {
   events.status.req$.subscribe(async (e) => {
     type Res = t.BundleStatusRes;
     const { tx = slug() } = e;
+    const http = httpFactory(localhost);
     const host = new URL(http.origin).host;
 
     const done = (options: { status?: Res['status']; error?: Res['error'] } = {}) => {
       const { status, error } = options;
       const exists = Boolean(status);
+      http.dispose();
       bus.fire({
         type: 'runtime.electron/Bundle/status:res',
         payload: { tx, exists, status, error },

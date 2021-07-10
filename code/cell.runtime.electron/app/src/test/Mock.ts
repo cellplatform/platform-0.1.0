@@ -43,14 +43,17 @@ export const Mock = {
   async controllers() {
     const bus = rx.bus<t.ElectronRuntimeEvent>();
     const server = await Mock.server();
-    const { host, paths, http, urls } = server;
+    const { paths, http, urls } = server;
     const config = await ConfigFile.read();
+
+    const localhost = server.host;
+    const httpFactory = (host: string) => HttpClient.create(host);
 
     /**
      * Initialize controllers.
      */
-    System.Controller({ bus, host, paths, config });
-    Bundle.Controller({ bus, http });
+    System.Controller({ bus, localhost, paths, config });
+    Bundle.Controller({ bus, localhost, httpFactory });
     Window.Controller({ bus });
     Log.Controller({ bus });
     Menu.Controller({ bus });

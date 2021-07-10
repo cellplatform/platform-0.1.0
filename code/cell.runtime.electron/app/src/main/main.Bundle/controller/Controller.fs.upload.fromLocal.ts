@@ -8,7 +8,7 @@ type File = t.IHttpClientCellFileUpload;
  * Upload local files to the given target.
  */
 export async function uploadFromLocal(args: {
-  httpFactory: (host?: string) => t.IHttpClient;
+  httpFactory: (host: string) => t.IHttpClient;
   source: t.ManifestSource;
   target: { host: string; cell: Uri; dir: Directory };
   silent?: boolean;
@@ -29,6 +29,7 @@ export async function uploadFromLocal(args: {
   const error = (message: string) => errors.push(message);
   const done = () => {
     const ok = errors.length === 0;
+    http.dispose();
     return { ok, files, errors };
   };
 

@@ -8,7 +8,7 @@ type Directory = string;
  * Upload files from the given remote location.
  */
 export async function uploadFromRemote(args: {
-  httpFactory: (host?: string) => t.IHttpClient;
+  httpFactory: (host: string) => t.IHttpClient;
   source: t.ManifestSource;
   manifest: t.ModuleManifest;
   target: { host: string; cell: Uri; dir: Directory };
@@ -17,7 +17,9 @@ export async function uploadFromRemote(args: {
   const { target, manifest, silent, httpFactory } = args;
   const tmp = fs.join(Paths.tmp, `copy.${slug()}`);
   const url = ManifestUrl(args.source.toString());
-  const httpSource = httpFactory(url.domain).cell(url.cell);
+
+  const http = httpFactory(url.domain);
+  const httpSourceCell = http.cell(url.cell);
 
   const prefixPath = (path: string) => (url.dir ? fs.join(url.dir, path) : path);
   const writeFile = async (path: string, data: ReadableStream<any> | t.Json) => {
@@ -32,7 +34,7 @@ export async function uploadFromRemote(args: {
   await Promise.all(
     manifest.files.map(async (item) => {
       const path = prefixPath(item.path);
-      const file = await httpSource.fs.file(path).download();
+      const file = await httpSourceCell.fs.file(path).download();
       await writeFile(path, file.body);
     }),
   );
@@ -46,6 +48,7 @@ export async function uploadFromRemote(args: {
   const res = await uploadFromLocal({ httpFactory, source, target, silent });
 
   // Finish up.
+  http.dispose();
   await fs.remove(tmp);
   return res;
 }

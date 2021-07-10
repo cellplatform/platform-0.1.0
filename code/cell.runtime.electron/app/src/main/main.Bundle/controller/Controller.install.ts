@@ -18,9 +18,10 @@ import {
 export function InstallController(args: {
   bus: t.EventBus<t.BundleEvent>;
   events: t.BundleEvents;
-  http: t.IHttpClient;
+  localhost: string;
+  httpFactory: (host: string) => t.IHttpClient;
 }) {
-  const { events, http, bus } = args;
+  const { bus, events, httpFactory, localhost } = args;
 
   /**
    * Install
@@ -29,7 +30,7 @@ export function InstallController(args: {
     type Res = t.BundleInstallRes;
     const timer = time.timer();
     const { tx = slug(), timeout } = e;
-
+    const http = httpFactory(localhost);
     const outTx = log.gray(`(tx:${tx})`);
 
     if (!e.silent) {
@@ -56,6 +57,7 @@ export function InstallController(args: {
         log.info.blue(`done ${outTx}`);
       }
 
+      http.dispose();
       bus.fire({
         type: 'runtime.electron/Bundle/install:res',
         payload,

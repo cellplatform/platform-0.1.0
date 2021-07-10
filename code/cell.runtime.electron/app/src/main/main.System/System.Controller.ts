@@ -8,12 +8,12 @@ import { DataController } from './System.Controller.data';
  */
 export function Controller(args: {
   bus: t.EventBus<any>;
-  host: string;
+  localhost: string;
   paths: t.ElectronDataPaths;
   config: t.ElectronConfigFile;
 }) {
-  const { paths, config, host } = args;
-  const service = toServiceInfo(host);
+  const { paths, config, localhost } = args;
+  const service = toServiceInfo(localhost);
 
   const bus = rx.busAsType<t.SystemEvent>(args.bus);
   const events = Events({ bus });
