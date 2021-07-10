@@ -7,7 +7,7 @@ describe('data.http: Manifest', () => {
       const path = '/foo/bar/index.json';
       const source = ManifestSource(`  ${path}  `); // NB: trimmed.
       expect(source.kind).to.eql('filepath');
-      expect(source.domain).to.eql('local:package');
+      expect(source.domain).to.eql('runtime:electron:bundle');
       expect(source.dir).to.eql('/foo/bar');
       expect(source.path).to.eql(path);
       expect(source.toString()).to.eql(path);

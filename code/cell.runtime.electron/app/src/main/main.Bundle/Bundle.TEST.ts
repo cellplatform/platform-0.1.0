@@ -80,7 +80,7 @@ describe('main.Bundle', function () {
         await mock.events.bundle.install.fire(manifestPath, { silent: true }); // NB: Install a module, but not the domain we are looking for.
 
         const res1 = await mock.events.bundle.list.get();
-        const res2 = await mock.events.bundle.list.get({ domain: '  local:package  ' });
+        const res2 = await mock.events.bundle.list.get({ domain: '  runtime:electron:bundle  ' });
         await mock.dispose();
 
         expect(res1.error).to.eql(undefined);
@@ -88,13 +88,13 @@ describe('main.Bundle', function () {
 
         expect(res1.items).to.eql(res2.items);
         expect(res1.items.length).to.eql(1);
-        expect(res1.items[0].domain).to.eql('local:package');
+        expect(res1.items[0].domain).to.eql('runtime:electron:bundle');
         expect(res1.items[0].namespace).to.eql('sys.ui.runtime');
       });
     });
 
     describe('install', () => {
-      it('"local:package" (filepath)', async () => {
+      it('"runtime:electron:bundle" (filepath)', async () => {
         const manifest = (await fs.readJson(manifestPath)) as t.ModuleManifest;
         const mock = await Mock.controllers();
         await Mock.Registry.clear(mock.http);
@@ -107,14 +107,14 @@ describe('main.Bundle', function () {
         expect(res.errors).to.eql([]);
 
         expect(list.length).to.eql(1);
-        expect(list[0].domain).to.eql('local:package');
+        expect(list[0].domain).to.eql('runtime:electron:bundle');
         expect(list[0].namespace).to.eql(manifest.module.namespace);
         expect(list[0].version).to.eql(manifest.module.version);
         expect(list[0].hash).to.eql(manifest.hash.module);
         expect(list[0].fs).to.match(/^cell\:[\d\w]*\:A1$/);
         expect(list[0]).to.eql(res.module);
 
-        // Copied locally by default (domain: "local:package").
+        // Copied locally by default (domain: "runtime:electron:bundle").
         const file = mock.http.cell(res.module?.fs || '').fs.file(`lib/index.json`);
         expect(await file.exists()).to.eql(true);
 
@@ -175,7 +175,7 @@ describe('main.Bundle', function () {
         await mock.events.bundle.install.fire(manifestPath, { silent: true }); // NB: Install a module, but not the domain we are looking for.
 
         const res = await mock.events.bundle.status.get({
-          domain: 'local:package',
+          domain: 'runtime:electron:bundle',
           namespace: 'sys.ui.runtime',
         });
 
@@ -189,7 +189,7 @@ describe('main.Bundle', function () {
         expect(status?.compiler).to.match(/^@platform\/cell\.compiler\@/);
 
         expect(status?.module.hash).to.match(/^sha256-/);
-        expect(status?.module.domain).to.eql('local:package');
+        expect(status?.module.domain).to.eql('runtime:electron:bundle');
         expect(status?.module.namespace).to.eql('sys.ui.runtime');
         expect(status?.module.version).to.match(/^\d+\.\d+\.\d+$/);
         expect(status?.module.fs).to.match(/cell\:[\d\w]+\:[A-Z]+[1-9]+$/);
@@ -198,7 +198,7 @@ describe('main.Bundle', function () {
       it('exists: false', async () => {
         const mock = await Mock.controllers();
         const res = await mock.events.bundle.status.get({
-          domain: 'local:package',
+          domain: 'runtime:electron:bundle',
           namespace: 'foo.bar.404',
         });
         await mock.dispose();

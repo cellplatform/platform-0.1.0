@@ -37,7 +37,7 @@ describe('data.http: ModuleRegistry', () => {
         };
         test('  localhost  ', 'domain.localhost');
         test('localhost:8080', 'domain.localhost[.]8080');
-        test('local:package', 'domain.local[.]package');
+        test('runtime:electron:bundle', 'domain.runtime[.]electron[.]bundle');
         test('foo.bar:package', 'domain.foo.bar[.]package');
         test('domain.foo', 'domain.domain.foo');
       });
@@ -62,7 +62,7 @@ describe('data.http: ModuleRegistry', () => {
         };
         test('  localhost  ', 'ns.localhost');
         test('localhost:8080', 'ns.localhost[.]8080');
-        test('local:package', 'ns.local[.]package');
+        test('runtime:electron:bundle', 'ns.runtime[.]electron[.]bundle');
         test('foo.bar:package', 'ns.foo.bar[.]package');
         test('ns.a', 'ns.ns.a');
       });
@@ -96,7 +96,7 @@ describe('data.http: ModuleRegistry', () => {
       const { registry } = await mockRegistry();
 
       const domain1 = registry.domain('  domain.com:1234  ');
-      const domain2 = registry.domain('  local:package  ');
+      const domain2 = registry.domain('  runtime:electron:bundle  ');
       expect(await registry.domains()).to.eql([]); // NB: Nothing written to DB yet.
 
       const ns1 = await domain1.namespace('foo.bar');
@@ -105,7 +105,7 @@ describe('data.http: ModuleRegistry', () => {
       const res = await registry.domains();
 
       expect(res[0]).to.eql('domain.com:1234');
-      expect(res[1]).to.eql('local:package');
+      expect(res[1]).to.eql('runtime:electron:bundle');
 
       expect(res[0]).to.eql(ns1.domain);
       expect(res[1]).to.eql(ns2.domain);
@@ -115,11 +115,11 @@ describe('data.http: ModuleRegistry', () => {
       const { registry } = await mockRegistry();
 
       const domain1 = registry.domain('domain.com');
-      const domain2 = registry.domain('local:package');
+      const domain2 = registry.domain('runtime:electron:bundle');
       await domain1.namespace('foo.bar');
       await domain2.namespace('foo.bar');
 
-      expect(await registry.domains()).to.eql(['domain.com', 'local:package']);
+      expect(await registry.domains()).to.eql(['domain.com', 'runtime:electron:bundle']);
 
       await registry.delete();
       expect(await registry.domains()).to.eql([]);
@@ -160,16 +160,16 @@ describe('data.http: ModuleRegistry', () => {
       expect(props?.domain).to.eql('domain.com'); // NB: cleaned.
     });
 
-    it('domain "local:package"', async () => {
+    it('domain "runtime:electron:bundle"', async () => {
       const { registry, http } = await mockRegistry();
-      const domain = registry.domain('  local:package  ');
+      const domain = registry.domain('  runtime:electron:bundle  ');
 
       const cell = http.cell(await domain.uri());
       const props = (await cell.info()).body.data.props as t.RegistryCellPropsDomain;
 
-      expect(props.domain).to.eql('local:package');
-      expect(domain.name).to.eql('local:package');
-      expect(domain.toString()).to.eql('[ModuleRegistryDomain:local:package]');
+      expect(props.domain).to.eql('runtime:electron:bundle');
+      expect(domain.name).to.eql('runtime:electron:bundle');
+      expect(domain.toString()).to.eql('[ModuleRegistryDomain:runtime:electron:bundle]');
     });
 
     it('throw: invalid domain', async () => {
@@ -336,7 +336,7 @@ describe('data.http: ModuleRegistry', () => {
     describe('read/write', () => {
       it('throw - namespace mismatch', async () => {
         const { registry } = await mockRegistry();
-        const domain = registry.domain('local:package');
+        const domain = registry.domain('runtime:electron:bundle');
         const ns = await domain.namespace('ns.foo');
         const manifest = await TestSample.manifest({ namespace: 'ns.bar' });
 
@@ -346,7 +346,7 @@ describe('data.http: ModuleRegistry', () => {
 
       it('create version entry', async () => {
         const { registry } = await mockRegistry();
-        const domain = registry.domain('local:package');
+        const domain = registry.domain('runtime:electron:bundle');
 
         const source = '/dir/index.json';
         const version = '1.2.3';
@@ -378,7 +378,7 @@ describe('data.http: ModuleRegistry', () => {
 
       it('update existing version entry', async () => {
         const { registry } = await mockRegistry();
-        const domain = registry.domain('local:package');
+        const domain = registry.domain('runtime:electron:bundle');
 
         const source = '/dir/index.json';
         const version = '1.2.3';
@@ -408,7 +408,7 @@ describe('data.http: ModuleRegistry', () => {
 
       it('add later version (lists versions in descending order)', async () => {
         const { registry } = await mockRegistry();
-        const domain = registry.domain('local:package');
+        const domain = registry.domain('runtime:electron:bundle');
 
         const source = '/dir/index.json';
         const namespace = 'foo.bar';
@@ -434,7 +434,7 @@ describe('data.http: ModuleRegistry', () => {
 
       it('latest (version)', async () => {
         const { registry } = await mockRegistry();
-        const domain = registry.domain('local:package');
+        const domain = registry.domain('runtime:electron:bundle');
 
         const source = '/dir/index.json';
         const namespace = 'foo.bar';
@@ -454,7 +454,7 @@ describe('data.http: ModuleRegistry', () => {
 
       it('delete: version(s)', async () => {
         const { registry, http } = await mockRegistry();
-        const domain = registry.domain('local:package');
+        const domain = registry.domain('runtime:electron:bundle');
 
         const source = '/dir/index.json';
         const namespace = 'foo.bar';

@@ -33,7 +33,7 @@ export function ManifestSource(input: string): t.ManifestSource {
     toString: () => path,
 
     get domain() {
-      return kind === 'filepath' ? 'local:package' : new URL(path).host;
+      return kind === 'filepath' ? 'runtime:electron:bundle' : new URL(path).host;
     },
 
     get dir() {

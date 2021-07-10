@@ -26,16 +26,20 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
 
   const installModule = async (from: string) => {
     const source = ManifestSource(from);
-    await events.bundle.install.fire(source.toString(), {
+    const res = await events.bundle.install.fire(source.toString(), {
       force: ENV.isDev, // NB: Only repeat upload when running in development mode.
       timeout: 30000,
     });
+
+    console.log('res', res);
+
+    return res;
   };
 
   const openRuntimeUI = async (params?: t.Json) => {
     const getStatus = () => {
       return events.bundle.status.get({
-        domain: 'local:package',
+        domain: 'runtime:electron:bundle',
         namespace: 'sys.ui.runtime',
       });
     };
@@ -52,8 +56,10 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
     };
 
     // TEMP 🐷
-    // const url = status.system.is.prod ? urls.prod : urls.dev;
-    const url = urls.prod;
+    const status = (await getStatus()).status;
+
+    // const url = urls.prod;
+    const url = ENV.isProd ? urls.prod : urls.dev;
 
     await openWindow(url);
   };

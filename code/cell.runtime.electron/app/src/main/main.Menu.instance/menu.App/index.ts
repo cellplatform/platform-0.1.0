@@ -9,9 +9,7 @@ export function AppMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
     label: app.name,
     type: 'normal',
     submenu: [
-      { role: 'about', label: 'About', type: 'normal' },
-      { type: 'separator' },
-      { role: 'services', type: 'normal' },
+      { role: 'about', label: 'About A1', type: 'normal' },
       { type: 'separator' },
       { role: 'hide', label: 'Hide', type: 'normal' },
       { role: 'hideOthers', type: 'normal' },

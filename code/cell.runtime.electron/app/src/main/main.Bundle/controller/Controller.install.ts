@@ -79,7 +79,7 @@ export function InstallController(args: {
         const proximity =
           source.kind === 'url'
             ? `from ${log.green('"remote"')} source (url)`
-            : `from ${log.green('"local:package"')}`;
+            : `from ${log.green('"runtime:electron:bundle"')}`;
         log.info.gray(`   ${`${proximity}`}`);
         log.info.gray(`   ${source}`);
       }
@@ -186,9 +186,6 @@ const Log = {
       log.info();
     });
 
-    log.info();
-    log.info(`Installed ✨ ${log.gray(`[${elapsed}]`)}`);
-
     const { ok } = payload;
     add('ok', ok ? true : log.red(false));
     add('action', ok ? payload.action : log.red(payload.action));
@@ -206,6 +203,7 @@ const Log = {
     }
 
     log.info(`
+Installed ✨ ${log.gray(`[${log.white(elapsed)}]`)}
 ${table.toString()}    
 `);
   },
