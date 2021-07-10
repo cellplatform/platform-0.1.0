@@ -4,30 +4,33 @@ import {
   log,
   ManifestFetch,
   ManifestSource,
+  rx,
   Schema,
   slug,
   t,
   time,
   toHost,
 } from '../common';
-import { uploadFromLocal } from './Controller.fs.upload.fromLocal';
-import { uploadFromRemote } from './Controller.fs.upload.fromRemote';
+import { uploadFromLocal } from './Controller.upload.fromLocal';
+import { uploadFromRemote } from './Controller.upload.fromRemote';
+import { Events } from '../Filesystem.Events';
 
 type Uri = string;
 
-export function FilesystemController(args: {
+export function Controller(args: {
   localhost: string;
   httpFactory: (host: string) => t.IHttpClient;
-  bus: t.EventBus<t.BundleEvent>;
-  events: t.BundleEvents;
+  bus: t.EventBus<any>;
 }) {
-  const { events, httpFactory, bus } = args;
+  const { httpFactory } = args;
+  const bus = rx.busAsType<t.FilesystemEvent>(args.bus);
+  const events = Events({ bus });
 
   /**
-   * Upload bundles to the local server.
+   * Writes bundles to/from the local server.
    */
-  events.fs.save.req$.subscribe(async (e) => {
-    type Res = t.BundleFsSaveRes;
+  events.write.req$.subscribe(async (e) => {
+    type Res = t.FilesystemWriteRes;
     const timer = time.timer();
     const { silent, tx = slug() } = e;
 
@@ -44,7 +47,7 @@ export function FilesystemController(args: {
       const elapsed = timer.elapsed.msec;
       if (!ok) action = 'error';
       return bus.fire({
-        type: 'runtime.electron/Bundle/fs/save:res',
+        type: 'runtime.electron/Filesystem/write:res',
         payload: { tx, ok, action, source, target, files, errors, elapsed },
       });
     };

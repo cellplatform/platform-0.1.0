@@ -3,7 +3,6 @@ import { t } from './common';
 type Uri = string;
 type Url = string;
 type Filepath = string;
-type Directory = string;
 type ManifestSourcePath = Url | Filepath;
 type Milliseconds = number;
 
@@ -60,20 +59,6 @@ export type BundleEvents = t.IDisposable & {
       timeout?: Milliseconds;
     }): Promise<BundleStatusRes>;
   };
-
-  fs: {
-    save: {
-      req$: t.Observable<t.BundleFsSaveReq>;
-      res$: t.Observable<t.BundleFsSaveRes>;
-      fire(args: {
-        source: Directory;
-        target: { host?: string; cell: Uri; dir: Directory };
-        force?: boolean;
-        silent?: boolean; // Event log.
-        timeout?: Milliseconds;
-      }): Promise<BundleFsSaveRes>;
-    };
-  };
 };
 
 /**
@@ -85,9 +70,7 @@ export type BundleEvent =
   | BundleInstallReqEvent
   | BundleInstallResEvent
   | BundleStatusReqEvent
-  | BundleStatusResEvent
-  | BundleFsSaveReqEvent
-  | BundleFsSaveResEvent;
+  | BundleStatusResEvent;
 
 /**
  * Retrieve a list of installed modules.
@@ -156,34 +139,4 @@ export type BundleStatusRes = {
   exists: boolean;
   status?: BundleStatus;
   error?: string;
-};
-
-/**
- * Save a bundle of files to an endpoint.
- */
-export type BundleFsSaveReqEvent = {
-  type: 'runtime.electron/Bundle/fs/save:req';
-  payload: BundleFsSaveReq;
-};
-export type BundleFsSaveReq = {
-  tx?: string;
-  source: Directory | Url;
-  target: { host?: string; cell: Uri; dir: Directory };
-  silent?: boolean;
-  force?: boolean; // Re-upload if already exists.
-};
-
-export type BundleFsSaveResEvent = {
-  type: 'runtime.electron/Bundle/fs/save:res';
-  payload: BundleFsSaveRes;
-};
-export type BundleFsSaveRes = {
-  tx: string;
-  ok: boolean;
-  action: 'created' | 'replaced' | 'unchanged' | 'error';
-  errors: string[];
-  source: Directory | Url;
-  target: { host: string; cell: Uri; dir: Directory };
-  files: { path: string; bytes: number }[];
-  elapsed: Milliseconds;
 };

@@ -1,5 +1,5 @@
 import { fs, ManifestSource, ManifestUrl, Paths, slug, t } from '../common';
-import { uploadFromLocal } from './Controller.fs.upload.fromLocal';
+import { uploadFromLocal } from './Controller.upload.fromLocal';
 
 type Uri = string;
 type Directory = string;

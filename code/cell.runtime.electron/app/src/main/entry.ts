@@ -8,6 +8,7 @@ import { BuildMenu } from './main.Menu.instance';
 import { System } from './main.System';
 import { SystemServer } from './main.System.server';
 import { Window } from './main.Window';
+import { Filesystem } from './main.Filesystem';
 
 import { TestIpcBusBridging } from './entry.TMP';
 
@@ -76,6 +77,7 @@ export async function start() {
      * Initialize controllers.
      */
     System.Controller({ bus, localhost, paths, config });
+    Filesystem.Controller({ bus, localhost, httpFactory });
     Bundle.Controller({ bus, localhost, httpFactory });
     Window.Controller({ bus });
     Log.Controller({ bus });

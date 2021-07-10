@@ -1,7 +1,7 @@
 import { ManifestUrl } from '.';
 import { expect } from '../../test';
 
-describe.only('ManifestUrl', () => {
+describe('ManifestUrl', () => {
   describe('ManifestUrl.parse: [ParseManifestUrl]', () => {
     it('error: invalid', () => {
       const test = (input: any) => {

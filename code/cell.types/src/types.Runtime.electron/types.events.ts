@@ -1,6 +1,19 @@
-import { WindowEvent, LogEvent, BundleEvent, SystemEvent, MenuEvent } from './types.modules';
+import {
+  BundleEvent,
+  FilesystemEvent,
+  LogEvent,
+  MenuEvent,
+  SystemEvent,
+  WindowEvent,
+} from './types.modules';
 
 /**
  * Union of all [module] events.
  */
-export type ElectronModuleEvent = WindowEvent | LogEvent | BundleEvent | SystemEvent | MenuEvent;
+export type ElectronModuleEvent =
+  | WindowEvent
+  | LogEvent
+  | BundleEvent
+  | FilesystemEvent
+  | SystemEvent
+  | MenuEvent;

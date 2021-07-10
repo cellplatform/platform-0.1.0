@@ -16,6 +16,7 @@ import { Menu } from '../main/main.Menu';
 import { System } from '../main/main.System';
 import { SystemServer } from '../main/main.System.server';
 import { Window } from '../main/main.Window';
+import { Filesystem } from '../main/main.Filesystem';
 import { ModuleRegistry } from '../data.http';
 
 export type IMockServer = {
@@ -32,7 +33,7 @@ export type IMockControllers = {
   http: t.IHttpClient;
   urls: t.IUrls;
   paths: t.ElectronDataPaths;
-  events: { bundle: t.BundleEvents };
+  events: { bundle: t.BundleEvents; fs: t.FilesystemEvents };
   dispose(): Promise<void>;
 };
 
@@ -53,6 +54,7 @@ export const Mock = {
      * Initialize controllers.
      */
     System.Controller({ bus, localhost, paths, config });
+    Filesystem.Controller({ bus, localhost, httpFactory });
     Bundle.Controller({ bus, localhost, httpFactory });
     Window.Controller({ bus });
     Log.Controller({ bus });
@@ -64,6 +66,7 @@ export const Mock = {
     const events = {
       // system: System.Events({ bus }),
       bundle: Bundle.Events({ bus }),
+      fs: Filesystem.Events({ bus }),
       // window: Window.Events({ bus }),
       // log: Log.Events({ bus }),
       // menu: Menu.Events({ bus }),

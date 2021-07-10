@@ -1,9 +1,8 @@
 import { Events } from '../Bundle.Events';
-import { rx, t, HttpClient } from '../common';
+import { rx, t } from '../common';
 import { InstallController } from './Controller.install';
 import { ListController } from './Controller.list';
 import { StatusController } from './Controller.status';
-import { FilesystemController } from './Controller.fs';
 
 /**
  * Bundle behavior logic.
@@ -22,7 +21,6 @@ export function Controller(args: {
   InstallController({ bus, events, localhost, httpFactory });
   ListController({ bus, events, localhost, httpFactory });
   StatusController({ bus, events, localhost, httpFactory });
-  FilesystemController({ bus, events, localhost, httpFactory });
 
   // Finish up.
   return { dispose, dispose$ };

@@ -11,6 +11,7 @@ import {
   time,
   Uri,
 } from '../common';
+import { Filesystem } from '../../main.Filesystem';
 
 /**
  * Bundle logic for handling writes (PUT).
@@ -22,6 +23,7 @@ export function InstallController(args: {
   httpFactory: (host: string) => t.IHttpClient;
 }) {
   const { bus, events, httpFactory, localhost } = args;
+  const filesystem = Filesystem.Events({ bus });
 
   /**
    * Install
@@ -108,7 +110,7 @@ export function InstallController(args: {
       /**
        * Upload files.
        */
-      const fsResponse = await events.fs.save.fire({
+      const fsResponse = await filesystem.write.fire({
         source: source.toString(),
         target,
         silent: true,
