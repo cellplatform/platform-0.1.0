@@ -1,19 +1,8 @@
-import { Observable, Subject, BehaviorSubject, firstValueFrom } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-} from 'rxjs/operators';
 import { Http } from '@platform/http/lib/http/Http';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
-import { Schema, t, constants, util, Uri } from '../common';
+import { constants, Schema, t, Uri, util } from '../common';
 import { HttpClientCell } from './HttpClientCell';
 import { HttpClientFile } from './HttpClientFile';
 import { HttpClientNs } from './HttpClientNs';
