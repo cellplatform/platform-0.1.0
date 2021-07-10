@@ -31,6 +31,7 @@ export function DebugMenu(args: { bus: t.ElectronMainBus; http: t.IHttpClient })
       DevToolsMenu({ bus }),
 
       { type: 'separator' },
+      { role: 'services', type: 'normal' },
 
       {
         type: 'normal',
