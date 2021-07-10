@@ -1,6 +1,6 @@
 {
   "name": "sys.runtime.electron",
-  "version": "0.1.6",
+  "version": "0.1.8",
   "sideEffects": false,
   "compiler": {
     "port": 5050
