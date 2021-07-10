@@ -23,7 +23,7 @@ export const ManifestFetch = {
    * GET: Derive a fetcher from a url.
    */
   url(input: string) {
-    const url = ManifestUrl(input);
+    const url = ManifestUrl.parse(input);
     return {
       url,
       async get<T extends t.Manifest>() {

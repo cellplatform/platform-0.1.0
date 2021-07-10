@@ -51,7 +51,7 @@ describe('data.http: Manifest', () => {
   describe('ManifestUrl', () => {
     it('error: invalid', () => {
       const test = (input: any) => {
-        const res = ManifestUrl(input);
+        const res = ManifestUrl.parse(input);
         expect(res.ok).to.eql(false);
         expect(res.error).to.include('Invalid manifest URL');
       };
@@ -78,7 +78,7 @@ describe('data.http: Manifest', () => {
     it('valid (ok)', () => {
       const test = (path: string, dir: string, filename: string) => {
         const base = 'http://localhost/cell:foo:A1/fs';
-        const res = ManifestUrl(`${base}/${path}`);
+        const res = ManifestUrl.parse(`${base}/${path}`);
         expect(res.ok).to.eql(true);
         expect(res.error).to.eql(undefined);
         expect(res.dir).to.eql(dir);
@@ -97,7 +97,7 @@ describe('data.http: Manifest', () => {
 
     it('create', () => {
       const href = 'http://localhost:1234/cell:foo:A1/fs/dir/child/index.json?foo=123';
-      const res = ManifestUrl(` ${href}  `);
+      const res = ManifestUrl.parse(` ${href}  `);
 
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);

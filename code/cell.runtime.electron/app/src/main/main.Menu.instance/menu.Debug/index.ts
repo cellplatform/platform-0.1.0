@@ -12,6 +12,8 @@ export function DebugMenu(args: { bus: t.ElectronMainBus; http: t.IHttpClient })
   const { bus, http } = args;
   const events = { system: System.Events({ bus }) };
 
+  const localhost = http.origin;
+
   const getStatus = () => events.system.status.get();
 
   const open = {
@@ -22,7 +24,7 @@ export function DebugMenu(args: { bus: t.ElectronMainBus; http: t.IHttpClient })
     label: 'Debug',
     type: 'normal',
     submenu: [
-      ModulesMenu({ bus }),
+      ModulesMenu({ bus, localhost }),
 
       { type: 'separator' },
 

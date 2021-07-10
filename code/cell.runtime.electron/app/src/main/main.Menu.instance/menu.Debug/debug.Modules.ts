@@ -1,11 +1,11 @@
 import { t, ENV, Window, System, Bundle, Paths, fs, log } from '../common';
-import { ManifestSource } from '../../../data.http';
+import { ManifestSource, ManifestUrl } from '../../../data.http';
 
 /**
  * Module management
  */
-export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
-  const { bus } = args;
+export function ModulesMenu(args: { bus: t.ElectronMainBus; localhost: string }): t.MenuItem {
+  const { bus, localhost } = args;
   const events = {
     window: Window.Events({ bus }),
     system: System.Events({ bus }),
@@ -32,6 +32,10 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
     });
 
     console.log('res', res);
+    console.log('-------------------------------------------');
+
+    const url = ManifestUrl.create(localhost);
+    console.log('url', url);
 
     return res;
   };
