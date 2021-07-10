@@ -1,5 +1,5 @@
 import { Filesystem } from '.';
-import { toHost, expect, fs, Mock, Paths, rx, slug, t, TestSample, Uri, Urls } from '../../test';
+import { expect, fs, Mock, Paths, rx, slug, TestSample, toHost, Uri, Urls } from '../../test';
 
 export async function SampleUploadMock(
   options: { source?: string; dir?: string; cell?: string } = {},
