@@ -14,8 +14,8 @@ cd ../../../cell.runtime.electron
 
 
 
-# Build the electron "/app"
-cd app 
+# Build the electron "/A1" (application folder)
+cd A1 
 npm version minor
 
 

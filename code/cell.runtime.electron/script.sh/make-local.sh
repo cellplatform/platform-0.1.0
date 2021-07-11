@@ -12,6 +12,6 @@ yarn cmd prepare make
 export NODE_ENV=production
 export NOTARIZE=false 
 
-cd app 
+cd A1 
 npm version patch
 yarn make

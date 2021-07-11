@@ -14,7 +14,7 @@ rm -rf lib
 # 
 # Electron application
 # 
-cd app
+cd A1
 rm -f  yarn-error.log
 rm -rf lib
 rm -rf .tmp.common_js

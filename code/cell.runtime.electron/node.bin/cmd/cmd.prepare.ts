@@ -13,14 +13,14 @@ type Pkg = {
 type CacheFile = { mode: Mode };
 
 const Path = {
-  app: fs.resolve('./app'),
+  app: fs.resolve('./A1'),
   root: fs.resolve('../..'),
   node_modules: {
-    base: fs.resolve('./app/node_modules'),
-    cacheFile: fs.resolve('./app/node_modules/.cache/cmd.prepare.json'),
+    base: fs.resolve('./A1/node_modules'),
+    cacheFile: fs.resolve('./A1/node_modules/.cache/cmd.prepare.json'),
   },
   pkg: {
-    app: fs.resolve('./app/package.json'),
+    app: fs.resolve('./A1/package.json'),
     root: fs.resolve('../../package.json'),
   },
 };
