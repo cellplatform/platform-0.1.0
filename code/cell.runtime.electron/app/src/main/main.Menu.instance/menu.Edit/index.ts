@@ -7,6 +7,7 @@ export function EditMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
   const isMac = ENV.isMac;
 
   const item: t.MenuItem = {
+    id: 'sys.edit',
     label: 'Edit',
     type: 'normal',
     submenu: [

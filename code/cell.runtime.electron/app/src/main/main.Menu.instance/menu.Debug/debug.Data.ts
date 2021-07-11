@@ -10,6 +10,7 @@ export function DataMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
   const paths = async () => (await getStatus()).runtime.paths;
 
   const item: t.MenuItem = {
+    id:'sys.debug.data',
     type: 'normal',
     label: 'Data',
     submenu: [

@@ -6,6 +6,7 @@ import { t } from '../common';
  */
 export function AppMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
   const item: t.MenuItem = {
+    id: 'sys.app',
     label: app.name,
     type: 'normal',
     submenu: [

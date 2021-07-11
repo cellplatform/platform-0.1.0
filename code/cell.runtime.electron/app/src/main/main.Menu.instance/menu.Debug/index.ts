@@ -2,7 +2,7 @@ import { shell } from 'electron';
 import { t, System } from '../common';
 import { DataMenu } from './debug.Data';
 import { DevToolsMenu } from './debug.Tools';
-import { ServerMenu } from './debug.Http';
+import { HttpServerMenu } from './debug.Http';
 import { ModulesMenu } from './debug.Modules';
 
 /**
@@ -21,6 +21,7 @@ export function DebugMenu(args: { bus: t.ElectronMainBus; http: t.IHttpClient })
   };
 
   const item: t.MenuItem = {
+    id: 'sys.debug',
     label: 'Debug',
     type: 'normal',
     submenu: [
@@ -28,7 +29,7 @@ export function DebugMenu(args: { bus: t.ElectronMainBus; http: t.IHttpClient })
 
       { type: 'separator' },
 
-      ServerMenu({ bus, http }),
+      HttpServerMenu({ bus, http }),
       DataMenu({ bus }),
       DevToolsMenu({ bus }),
 

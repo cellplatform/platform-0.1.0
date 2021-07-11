@@ -7,6 +7,7 @@ export function FileMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
   const isMac = ENV.isMac;
 
   const item: t.MenuItem = {
+    id: 'sys.file',
     label: 'File',
     type: 'normal',
     submenu: [],

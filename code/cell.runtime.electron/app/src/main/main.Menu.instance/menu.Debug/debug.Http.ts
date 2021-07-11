@@ -4,7 +4,7 @@ import { t, System, Uri, Genesis } from '../common';
 /**
  * Dev tools menu.
  */
-export function ServerMenu(args: { bus: t.ElectronMainBus; http: t.IHttpClient }): t.MenuItem {
+export function HttpServerMenu(args: { bus: t.ElectronMainBus; http: t.IHttpClient }): t.MenuItem {
   const { bus, http } = args;
   const events = { system: System.Events({ bus }) };
   const genesis = Genesis(http);
@@ -23,6 +23,7 @@ export function ServerMenu(args: { bus: t.ElectronMainBus; http: t.IHttpClient }
   };
 
   const item: t.MenuItem = {
+    id: 'sys.debug.http',
     type: 'normal',
     label: 'Local (HTTP)',
     submenu: [

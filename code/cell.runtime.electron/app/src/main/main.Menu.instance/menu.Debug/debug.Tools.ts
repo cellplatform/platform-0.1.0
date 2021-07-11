@@ -8,6 +8,7 @@ export function DevToolsMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
   const events = { system: System.Events({ bus }) };
 
   const item: t.MenuItem = {
+    id: 'sys.debug.tools',
     type: 'normal',
     label: 'Tools',
     submenu: [
