@@ -19,4 +19,6 @@ export {
   Manifest,
 } from '@platform/cell.types';
 
+export * from '@platform/state.types/lib/types.Patch';
+
 export * from '../../types';

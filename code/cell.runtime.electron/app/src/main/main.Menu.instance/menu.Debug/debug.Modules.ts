@@ -1,5 +1,5 @@
 import { ManifestSource, ManifestUrl } from '../../../data.http';
-import { Bundle, ENV, Paths, System, t, Window } from '../common';
+import { Bundle, ENV, Paths, System, t, Window, Menu } from '../common';
 
 /**
  * Module management
@@ -10,9 +10,15 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus; localhost: string })
     window: Window.Events({ bus }),
     system: System.Events({ bus }),
     bundle: Bundle.Events({ bus }),
+    menu: Menu.Events({ bus }),
   };
 
-  const item: t.MenuItem = { type: 'normal', label: 'Modules', submenu: [] };
+  const item: t.MenuItem = {
+    id: 'sys.debug.modules',
+    type: 'normal',
+    label: 'Modules',
+    submenu: [],
+  };
   const submenu = item.submenu || [];
 
   const openWindow = async (url: string) => {
@@ -39,6 +45,10 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus; localhost: string })
 
     const url = ManifestUrl.create(localhost);
     console.log('url', url);
+
+    const f = await events.menu.change('sys.debug.modules', (menu) => {
+      menu.label = 'Added!';
+    });
 
     return res;
   };

@@ -1,9 +1,8 @@
-import { Menu } from 'electron';
-
 import { rx, t } from '../common';
 import { Events } from '../Menu.Events';
 import { LoadController } from './Controller.load';
 import { StatusController } from './Controller.status';
+import { PatchController } from './Controller.patch';
 
 /**
  * Behavioral event controller.
@@ -19,6 +18,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   // Initialise sub-controllers.
   LoadController({ bus, events, ref });
   StatusController({ bus, events, ref });
+  PatchController({ bus, events });
 
   return {
     dispose,

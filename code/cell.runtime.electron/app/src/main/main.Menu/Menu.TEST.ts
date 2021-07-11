@@ -1,5 +1,8 @@
-import { expect, rx, t } from '../../test';
+import { expect, rx, t, time, R } from '../../test';
 import { Menu } from '.';
+import { MenuTree } from './util';
+
+type N = t.MenuItemNormal;
 
 const bus = rx.bus();
 
@@ -7,7 +10,6 @@ const Mock = {
   init() {
     const events = Menu.Events({ bus });
     const controller = Menu.Controller({ bus });
-
     return {
       events,
       controller,
@@ -19,7 +21,7 @@ const Mock = {
   },
 };
 
-describe.only('main.Menu', () => {
+describe('main.Menu', () => {
   describe('Events', () => {
     const is = Menu.Events.is;
 
@@ -41,8 +43,8 @@ describe.only('main.Menu', () => {
     });
   });
 
-  describe.only('Controller: Load', () => {
-    it('auto adds IDs', async () => {
+  describe('Controller: load', () => {
+    it('auto add IDs to menu items (deep)', async () => {
       const mock = Mock.init();
       const menu: t.Menu = [
         {
@@ -67,16 +69,96 @@ describe.only('main.Menu', () => {
     });
   });
 
-  describe('Controller: Status', () => {
+  describe('Controller: status', () => {
     it('get status', async () => {
       const mock = Mock.init();
-      // const events = Menu.Events({ bus });
-      // Menu.Controller({ bus });
+      const menu: t.Menu = [{ id: 'foo', label: 'Foo', type: 'normal' }];
 
-      const res = await mock.events.status.get();
+      const res1 = await mock.events.status.get();
+      await mock.events.load.fire(menu);
+      const res2 = await mock.events.status.get();
+      await mock.events.load.fire([]);
+      const res3 = await mock.events.status.get();
 
-      console.log('-------------------------------------------');
-      console.log('res', res);
+      expect(res1.menu).to.eql([]);
+      expect(res2.menu).to.eql(menu);
+      expect(res3.menu).to.eql([]);
+
+      mock.dispose();
+    });
+  });
+
+  describe('Controller: change (via patches)', () => {
+    it('error: menu item not found', async () => {
+      const mock = Mock.init();
+
+      const menu: t.Menu = [{ id: 'foo', label: 'Foo', type: 'normal' }];
+      await mock.events.load.fire(menu);
+
+      const res = await mock.events.change('404', async (e) => null);
+      expect(res.error).to.match(/Menu with id '404' not found/);
+
+      mock.dispose();
+    });
+
+    const sample: t.Menu = [
+      {
+        id: 'root-1',
+        label: 'root-1',
+        type: 'normal',
+        submenu: [
+          { id: 'child-1', label: 'one', type: 'normal' },
+          {
+            id: 'child-2',
+            label: 'two',
+            type: 'normal',
+            submenu: [{ id: 'child-2a', label: 'child-2a', type: 'normal' }],
+          },
+        ],
+      },
+      { id: 'root-2', label: 'root-2', type: 'normal' },
+    ];
+
+    it('change: root menu item', async () => {
+      const menu = R.clone(sample);
+      const mock = Mock.init();
+      await mock.events.load.fire(menu);
+
+      const res = await mock.events.change('root-1', async (menu) => {
+        await time.delay(5); // NB: prove async
+        menu.label = 'Hello';
+      });
+      const status = await mock.events.status.get();
+
+      expect(res.id).to.eql('root-1');
+      expect((res.menu[0] as N).label).to.eql('Hello');
+      expect((status.menu[0] as N).label).to.eql('Hello');
+
+      mock.dispose();
+    });
+
+    it('change: sub-menu item (deep)', async () => {
+      const menu = R.clone(sample);
+      const mock = Mock.init();
+      await mock.events.load.fire(menu);
+
+      const id = 'child-2a';
+      const res = await mock.events.change(id, (menu) => {
+        // NB: Not an async-promise
+        menu.label = 'Hello';
+      });
+      const status = await mock.events.status.get();
+
+      expect(res.id).to.eql(id);
+
+      const expectLabel = (root: t.Menu, expected: string) => {
+        const item = MenuTree(root).find<N>((e) => e.id === id);
+        expect(item?.label).to.eql(expected);
+      };
+
+      expectLabel(res.menu, 'Hello');
+      expectLabel(status.menu, 'Hello');
+
       mock.dispose();
     });
   });

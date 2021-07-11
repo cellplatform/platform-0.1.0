@@ -66,8 +66,8 @@ describe('Patch', () => {
     });
   });
 
-  describe('produce (aka change)', () => {
-    it('produce (op: "update" change)', () => {
+  describe('change (aka "produce")', () => {
+    it('change (op: "update" change)', () => {
       const obj = { msg: 'hello', child: { foo: [123] } };
 
       const res = Patch.change(obj, (draft) => {
@@ -83,7 +83,7 @@ describe('Patch', () => {
       expect(res.patches.next.map((c) => c.path)).to.eql(['child/foo/1', 'msg']);
     });
 
-    it('produce (op: "replace" change)', () => {
+    it('change (op: "replace" change)', () => {
       const obj1 = { child: { msg: 'one' } };
       const obj2 = { child: { msg: 'two' } };
 
@@ -96,7 +96,7 @@ describe('Patch', () => {
       expect(res.patches.next).to.eql([{ op: 'replace', path: '', value: obj2 }]);
     });
 
-    it('produceAsync', async () => {
+    it('changeAsync', async () => {
       const obj = { msg: 'hello', child: { foo: [123] } };
 
       const res = await Patch.changeAsync(obj, async (draft) => {

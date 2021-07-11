@@ -15,6 +15,7 @@ export {
   TreeQuery,
   IStateObjectEvents,
   IStateObjectChangeResponse,
+  PatchSet,
 } from '@platform/state.types';
 
 export { TreeNodeIcon } from '@platform/ui.tree.types';

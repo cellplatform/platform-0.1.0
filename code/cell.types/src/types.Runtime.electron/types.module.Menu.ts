@@ -24,12 +24,13 @@ export type MenuTreeVisitorArgs = MenuTreeMatchArgs & { stop(): void };
 /**
  * Menu Object
  */
+export type MenuId = string;
 export type Menu = MenuItem[];
 
 export type MenuItem = MenuItemNormal | MenuItemCheckbox | MenuItemRadio | MenuItemSeperator;
 
 type MenuItemBase = {
-  id?: string;
+  id?: MenuId;
   label?: string;
   sublabel?: string;
   accelerator?: string; // Shortcut key.
@@ -44,7 +45,7 @@ type MenuItemBase = {
 export type MenuItemNormal = MenuItemBase & { type: 'normal' };
 export type MenuItemCheckbox = MenuItemBase & { type: 'checkbox' };
 export type MenuItemRadio = MenuItemBase & { type: 'radio' };
-export type MenuItemSeperator = { type: 'separator'; id?: string };
+export type MenuItemSeperator = { type: 'separator'; id?: MenuId };
 
 export type MenuItemRole =
   | 'undo'
@@ -92,7 +93,6 @@ export type MenuItemRole =
 /**
  * Event API.
  */
-
 export type MenuEvents = t.IDisposable & {
   $: t.Observable<MenuEvent>;
   is: { base(input: any): boolean };
@@ -113,6 +113,30 @@ export type MenuEvents = t.IDisposable & {
     $: t.Observable<MenuItemClicked>;
     fire(item: t.MenuItem, parent?: t.MenuItem): void;
   };
+
+  patch: {
+    req$: t.Observable<MenuPatchReq>;
+    res$: t.Observable<MenuPatchRes>;
+    fire(args: {
+      id: t.MenuId;
+      patches: t.PatchSet;
+      timeout?: Milliseconds;
+    }): Promise<MenuPatchRes>;
+  };
+
+  change<M extends MenuItem = MenuItemNormal>(
+    id: t.MenuId,
+    handler: MenuTypeChangeHandler<M>,
+    options?: { timeout?: Milliseconds },
+  ): Promise<MenuChangeRes>;
+};
+
+export type MenuTypeChangeHandler<M extends MenuItem> = (menu: M) => any | Promise<any>;
+
+export type MenuChangeRes = {
+  id: t.MenuId;
+  menu: t.Menu;
+  error?: string;
 };
 
 /**
@@ -123,7 +147,9 @@ export type MenuEvent =
   | MenuStatusResEvent
   | MenuLoadReqEvent
   | MenuLoadResEvent
-  | MenuItemClickedEvent;
+  | MenuItemClickedEvent
+  | MenuPatchReqEvent
+  | MenuPatchResEvent;
 
 /**
  * Retrieve the current status of the menu.
@@ -163,3 +189,24 @@ export type MenuItemClickedEvent = {
   payload: MenuItemClicked;
 };
 export type MenuItemClicked = { id: string; item: MenuItem; parent?: MenuItem };
+
+/**
+ * Fires a set of patch changes to apply to the menu.
+ */
+export type MenuPatchReqEvent = {
+  type: 'runtime.electron/Menu/patch:req';
+  payload: MenuPatchReq;
+};
+export type MenuPatchReq = { tx?: string; id: t.MenuId; patches: t.PatchSet; timeout: number };
+
+export type MenuPatchResEvent = {
+  type: 'runtime.electron/Menu/patch:res';
+  payload: MenuPatchRes;
+};
+export type MenuPatchRes = {
+  tx: string;
+  id: t.MenuId; // of the changed item.
+  menu: Menu;
+  error?: string;
+  elapsed: Milliseconds;
+};
