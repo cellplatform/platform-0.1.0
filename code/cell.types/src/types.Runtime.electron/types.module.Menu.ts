@@ -1,3 +1,7 @@
+import { t } from './common';
+
+type Milliseconds = number;
+
 /**
  * Menu Helpers
  */
@@ -86,6 +90,32 @@ export type MenuItemRole =
   | 'windowMenu';
 
 /**
+ * Event API.
+ */
+
+export type MenuEvents = t.IDisposable & {
+  $: t.Observable<MenuEvent>;
+  is: { base(input: any): boolean };
+
+  status: {
+    req$: t.Observable<MenuStatusReq>;
+    res$: t.Observable<MenuStatusRes>;
+    get(options?: { timeout?: Milliseconds }): Promise<MenuStatusRes>;
+  };
+
+  load: {
+    req$: t.Observable<MenuLoadReq>;
+    res$: t.Observable<MenuLoadRes>;
+    fire(menu: t.Menu, options?: { timeout?: Milliseconds }): Promise<MenuLoadRes>;
+  };
+
+  clicked: {
+    $: t.Observable<MenuItemClicked>;
+    fire(item: t.MenuItem, parent?: t.MenuItem): void;
+  };
+};
+
+/**
  * Events
  */
 export type MenuEvent =
@@ -96,7 +126,7 @@ export type MenuEvent =
   | MenuItemClickedEvent;
 
 /**
- * Retrieve the current status of the menu
+ * Retrieve the current status of the menu.
  */
 export type MenuStatusReqEvent = {
   type: 'runtime.electron/Menu/status:req';
@@ -108,10 +138,7 @@ export type MenuStatusResEvent = {
   type: 'runtime.electron/Menu/status:res';
   payload: MenuStatusRes;
 };
-export type MenuStatusRes = {
-  tx?: string;
-  menu: Menu;
-};
+export type MenuStatusRes = { tx: string; menu: Menu; error?: string };
 
 /**
  * Loads the menu.
@@ -120,30 +147,19 @@ export type MenuLoadReqEvent = {
   type: 'runtime.electron/Menu/load:req';
   payload: MenuLoadReq;
 };
-export type MenuLoadReq = {
-  tx?: string;
-  menu: Menu;
-};
+export type MenuLoadReq = { tx?: string; menu: Menu };
 
 export type MenuLoadResEvent = {
   type: 'runtime.electron/Menu/load:res';
   payload: MenuLoadRes;
 };
-export type MenuLoadRes = {
-  tx: string;
-  menu: Menu;
-};
+export type MenuLoadRes = { tx: string; menu: Menu; elapsed: Milliseconds; error?: string };
 
 /**
  * Fires when a menu item is clicked.
  */
-
 export type MenuItemClickedEvent = {
   type: 'runtime.electron/Menu/clicked';
   payload: MenuItemClicked;
 };
-export type MenuItemClicked = {
-  id: string;
-  item: MenuItem;
-  parent?: MenuItem;
-};
+export type MenuItemClicked = { id: string; item: MenuItem; parent?: MenuItem };

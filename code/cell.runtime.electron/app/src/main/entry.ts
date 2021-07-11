@@ -87,8 +87,8 @@ export async function start() {
      * Upload bundled system code into the local service.
      */
     // const bundle = Bundle.Events({ bus });
-    // const res = await bundle.install.fire(fs.join(Paths.bundle.sys.source, 'index.json'), {
-    //   force: ENV.isDev, // NB: Only repeat upload when running in development mode.
+    // const res = await bundle.install.fire(Paths.bundle.sys.source.manifest, {
+    // force: ENV.isDev, // NB: Only repeat upload when running in development mode.
     // });
 
     // console.log('installed module:', res);

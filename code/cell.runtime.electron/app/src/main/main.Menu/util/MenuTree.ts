@@ -1,7 +1,7 @@
 import { t } from '../../common';
 
 /**
- * Helper for walking a tree of menu item.
+ * Helper for walking a tree of menu items.
  */
 export function MenuTree(
   input: t.Menu | t.MenuItem,

@@ -33,7 +33,7 @@ export type IMockControllers = {
   http: t.IHttpClient;
   urls: t.IUrls;
   paths: t.ElectronDataPaths;
-  events: { bundle: t.BundleEvents; fs: t.FilesystemEvents };
+  events: { bundle: t.BundleEvents; fs: t.FilesystemEvents; menu: t.MenuEvents };
   dispose(): Promise<void>;
 };
 
@@ -64,16 +64,17 @@ export const Mock = {
      * Initialize event APIs
      */
     const events = {
-      // system: System.Events({ bus }),
       bundle: Bundle.Events({ bus }),
       fs: Filesystem.Events({ bus }),
+      menu: Menu.Events({ bus }),
+      // system: System.Events({ bus }),
       // window: Window.Events({ bus }),
       // log: Log.Events({ bus }),
-      // menu: Menu.Events({ bus }),
     };
 
     const dispose = async () => {
       await server.dispose();
+      Object.keys(events).forEach((key) => events[key].dispose?.());
     };
 
     const mock: IMockControllers = { bus, http, events, paths, urls, dispose };

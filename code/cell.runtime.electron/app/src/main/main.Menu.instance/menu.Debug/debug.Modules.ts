@@ -1,5 +1,5 @@
-import { t, ENV, Window, System, Bundle, Paths, fs, log } from '../common';
 import { ManifestSource, ManifestUrl } from '../../../data.http';
+import { Bundle, ENV, Paths, System, t, Window } from '../common';
 
 /**
  * Module management
@@ -26,13 +26,16 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus; localhost: string })
 
   const installModule = async (from: string) => {
     const source = ManifestSource(from);
+
     const res = await events.bundle.install.fire(source.toString(), {
-      force: ENV.isDev, // NB: Only repeat upload when running in development mode.
+      /**
+       * TODO 🐷
+       * test error on repeat installs ("URI not specified")
+       */
+
+      // force: ENV.isDev, // NB: Only repeat upload when running in development mode.
       timeout: 30000,
     });
-
-    console.log('res', res);
-    console.log('-------------------------------------------');
 
     const url = ManifestUrl.create(localhost);
     console.log('url', url);
