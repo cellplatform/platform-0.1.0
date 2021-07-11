@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.code",
-  "version": "0.0.84",
+  "version": "0.0.85",
   "compiler": {
     "port": 3034
   },
@@ -27,7 +27,7 @@
     "monaco-themes": "^0.3.3"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.3.45",
+    "@platform/cell.compiler": "^0.3.46",
     "@types/prettier": "^2.1.6",
     "prettier": "^2.3.0",
     "react": "^17.0.2",

@@ -17,6 +17,8 @@ export function Events(args: { bus: t.EventBus<any> }): t.MenuEvents {
     filter((e) => is.base(e)),
   );
 
+  type F = t.MenuEvent;
+
   const status: t.MenuEvents['status'] = {
     req$: rx.payload<t.MenuStatusReqEvent>($, 'runtime.electron/Menu/status:req'),
     res$: rx.payload<t.MenuStatusResEvent>($, 'runtime.electron/Menu/status:res'),

@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.spreadsheet",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "sideEffects": false,
   "compiler": {
     "port": 3035
@@ -20,7 +20,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@platform/cell.compiler": "^0.3.45",
+    "@platform/cell.compiler": "^0.3.46",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

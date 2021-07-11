@@ -1,8 +1,9 @@
 {
   "name": "@platform/cell.runtime.electron",
-  "version": "0.0.203",
+  "version": "0.0.204",
   "description": "Runtime for desktop environments",
   "scripts": {
+    "i": "cd A1 && yarn install",
     "start": "cd A1 && yarn start",
     "dev": "cd A1 && yarn dev",
     "test": "cd A1 && yarn test",
@@ -17,12 +18,11 @@
     "public": "ngrok http 5000 --hostname=os.ngrok.io",
     "cmd": "ts-node -T node.bin $@",
     "prep-make": "yarn cmd prepare make $@",
-    "prep-dev": "yarn cmd prepare dev $@",
-    "prep-install": "cd A1 && yarn install"
+    "prep-dev": "yarn cmd prepare dev $@"
   },
   "devDependencies": {
     "@platform/ts": "4.1.13",
-    "@platform/cell.compiler": "0.3.45",
+    "@platform/cell.compiler": "0.3.46",
     "@types/minimist": "1.2.1",
     "minimist": "1.2.5",
     "ora": "5.4.0"
