@@ -57,7 +57,9 @@ export async function upload(argv: t.Argv) {
     return logger.errorAndExit(1, err);
   }
 
-  // Wrangle the cell URI.
+  /**
+   * Wrangle the cell URI.
+   */
   const cell = uri && typeof uri === 'string' ? Uri.parse<t.ICellUri>(uri) : undefined;
   if (!cell) {
     const err = `A ${log.white('--uri')} argument was not provided.`;
@@ -74,15 +76,27 @@ export async function upload(argv: t.Argv) {
 
   if (argv.clean ?? (true && runBundle !== false)) await runClean();
 
+  /**
+   * Run [compile => upload] process.
+   */
   const compiler = Compiler.cell(host, cell.toString());
+  const uploadDistFolder = argv.dist ?? true;
 
-  await compiler.upload(config, { source: 'dist', targetDir, runBundle });
+  // Send compiled "dist" (distribution folder).
+  if (uploadDistFolder) {
+    await compiler.upload(config, { source: 'dist', targetDir, runBundle });
+  }
+
+  // Send "zipped" bundle.
   await compiler.upload(config, {
     source: 'bundle',
     targetDir: `${targetDir}.bundle`,
-    runBundle: false, // NB: No need to re-bundle, done in prior step (if requested).
+    runBundle: uploadDistFolder ? false : runBundle, // NB: No need to re-bundle, done in prior step (if requested).
   });
 
+  /**
+   * Finish up.
+   */
   const file = args.filepath.substring(fs.resolve('.').length + 1);
   log.info.gray(`Upload configuration stored in: ${file}`);
 
