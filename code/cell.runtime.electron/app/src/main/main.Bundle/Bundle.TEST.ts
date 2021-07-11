@@ -149,6 +149,10 @@ describe('main.Bundle', function () {
         expect(res1.action).to.eql('created');
         expect(res2.action).to.eql('unchanged');
         expect(res3.action).to.eql('replaced');
+
+        // NB: Ensure the "unchanged" model is accurately constructed from the existing data.
+        expect(res2.module?.fs).to.match(/^cell\:[\d\w]*\:A1$/);
+        expect(res2.module?.fs).to.eql(res1.module?.fs);
       });
     });
 

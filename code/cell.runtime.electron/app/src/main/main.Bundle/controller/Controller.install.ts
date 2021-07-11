@@ -98,7 +98,10 @@ export function InstallController(args: {
       const unchanged = current && current.hash === hash;
       const exists = Boolean(current);
 
-      if (unchanged && !e.force) return done('unchanged');
+      if (unchanged && current && !e.force) {
+        module.fs = current.fs;
+        return done('unchanged');
+      }
 
       /**
        * Write the registry entry.
