@@ -124,7 +124,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
         elapsed,
         manifest,
       });
-      // Logger.hr().newline();
+      Logger.newline();
       logUrls(toUrls(files));
       Logger.newline();
     }
@@ -209,6 +209,7 @@ async function logUpload(args: {
   const { host, baseDir, distDir, targetCell, elapsed, manifest } = args;
   const size = await fs.size.dir(distDir);
   const files = size.files;
+  const { white, gray, cyan, yellow } = log;
 
   const table = log.table({ border: false });
   table.add(['  • host', host]);
@@ -224,20 +225,28 @@ async function logUpload(args: {
 
   files.forEach((file) => addFile(file.path, file.bytes));
 
-  const summary = log.gray(`(${files.length} files in ${log.yellow(elapsed)})`);
-  table.add(['', '', log.cyan(size.toString()), summary]);
+  const summary = gray(`(${files.length} files in ${yellow(elapsed)})`);
+  table.add(['', '', cyan(size.toString()), summary]);
 
   log.info(`
-${log.gray(`Uploaded`)}
-${log.gray(`  from:     ${log.white(Path.trimBase(distDir))}`)}
-${log.gray(`  to:`)}
-${log.gray(table)}
+${gray(`Uploaded`)}
+${gray(`  from:     ${white(Path.trimBase(distDir))}`)}
+${gray(`  to:`)}
+${gray(table)}
+`);
 
-${log.gray('manifest.hash:')}
-  files:    ${log.gray(manifest.hash.files)}
-  module:   ${log.gray(manifest.hash.module)} ${log.gray('(everything)')}`);
+  log.info.gray(`manifest.hash:`);
+  log.info.gray(`  ${white('files')}     ${gray(manifest.hash.files)}`);
+  if (manifest.hash.module) {
+    const hash = manifest.hash.module;
+    const complete = white('complete');
+    log.info.gray(`  ${white('module')}    ${gray(hash)} ${gray(`(${complete})`)}`);
+  }
 }
 
+/**
+ * Write URLs to console.
+ */
 function logUrls(links: Record<string, string>) {
   log.info.gray('links:');
   const table = log.table({ border: false });

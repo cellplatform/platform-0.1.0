@@ -16,6 +16,8 @@ export async function loadConfig(
     return filterOnVariant(config, options.name).clone();
   };
 
+  const { white, cyan } = log;
+
   // Ensure configuration file exists.
   const path = await toPaths(file);
 
@@ -24,8 +26,14 @@ export async function loadConfig(
     const filename = fs.basename(path.ts);
     const ext = fs.extname(filename);
     const file = filename.substring(0, filename.length - ext.length);
+
+    const filenameColored = file
+      .split('.')
+      .map((n, i) => (i === 0 ? cyan(n) : n))
+      .join('.');
+
     log.info.gray(`configuration:`);
-    log.info.gray(`${fs.dirname(path.ts)}/${log.white(file)}${ext}`);
+    log.info.gray(`${fs.dirname(path.ts)}/${white(filenameColored)}${ext}`);
   }
 
   // Compare with the last built configuration.
@@ -44,7 +52,7 @@ export async function loadConfig(
     const res = imported();
     const config = (res && typeof res.then === 'function' ? await res : res) as B;
     if (!config) {
-      const err = `The default export did not return a configuration builder.\n${log.white(path)}`;
+      const err = `The default export did not return a configuration builder.\n${white(path)}`;
       Logger.errorAndExit(1, err);
     }
     return done(config);
@@ -52,7 +60,7 @@ export async function loadConfig(
 
   // Exported {object}.
   if (typeof imported !== 'object' && typeof imported.clone !== 'function') {
-    const err = `The default export was not a configuration builder.\n${log.white(path)}`;
+    const err = `The default export was not a configuration builder.\n${white(path)}`;
     Logger.errorAndExit(1, err);
   }
 
