@@ -10,6 +10,7 @@ export function EditMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
     id: 'sys.edit',
     label: 'Edit',
     type: 'normal',
+    enabled: false,
     submenu: [
       { role: 'undo', type: 'normal' },
       { role: 'redo', type: 'normal' },

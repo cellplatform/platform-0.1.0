@@ -46,10 +46,6 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus; localhost: string })
     const url = ManifestUrl.create(localhost);
     console.log('url', url);
 
-    const f = await events.menu.change('sys.debug.modules', (menu) => {
-      menu.label = 'Added!';
-    });
-
     return res;
   };
 
