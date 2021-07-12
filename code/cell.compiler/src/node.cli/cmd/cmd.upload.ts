@@ -23,7 +23,7 @@ export async function upload(argv: t.Argv) {
     version.to = PKG.load().version || '';
   }
 
-  const runBundle = argv.bundle; // NB: undefined by default (false if --no-bundle)
+  const runBundle = argv.bundle ?? true; // NB: undefined by default (false if --no-bundle)
   const name = util.nameArg(argv, 'web');
   const mode = util.modeArg(argv, 'production');
   const config = (await util.loadConfig(argv.config, { name })).mode(mode);
@@ -126,7 +126,7 @@ async function formatAndSaveArgs(args: {
   const filepath = fs.join(logDir, 'upload.json');
   await fs.ensureDir(logDir);
 
-  const generateUri = () => Uri.create.cell(Uri.cuid(), 'A1');
+  const generateUri = () => Uri.create.A1();
   const write = (file: IFileStore) => fs.writeFile(filepath, JSON.stringify(file, null, '  '));
 
   if (!(await fs.pathExists(filepath))) {

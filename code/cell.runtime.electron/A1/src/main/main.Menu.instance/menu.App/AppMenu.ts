@@ -12,7 +12,7 @@ export function AppMenu(args: { bus: t.ElectronMainBus }): t.MenuItem {
 
   const item: t.MenuItem = {
     id: 'sys.app',
-    label: app.name,
+    label: 'A1',
     type: 'normal',
     submenu: [
       { role: 'about', label: 'About A1', type: 'normal' },

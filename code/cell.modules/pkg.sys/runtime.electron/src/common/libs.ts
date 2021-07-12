@@ -19,7 +19,7 @@ export {
   System,
   Window,
   IpcBus,
-} from '@platform/cell.runtime.electron/app/lib/renderer';
+} from '@platform/cell.runtime.electron/A1/lib/renderer';
 
 /**
  * sys.ui

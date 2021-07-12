@@ -26,6 +26,9 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
     host: `${parsedHost.protocol}//${parsedHost.host}`,
     uri,
 
+    /**
+     * Upload to a remote cell.
+     */
     async upload(config, options = {}) {
       const { silent, source = 'dist' } = options;
       const target = { cell: uri.toString(), dir: options.targetDir };

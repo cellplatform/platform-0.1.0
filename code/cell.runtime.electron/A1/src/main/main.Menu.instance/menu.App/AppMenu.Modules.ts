@@ -71,7 +71,7 @@ function InstalledModulesItem(args: { events: Events }) {
       const scope = domain.startsWith('runtime:electron') ? 'system' : 'domain';
 
       const id = `${domain}/${namespace}`;
-      const label = `Open: '${namespace}' (${scope})`;
+      const label = `Open: ${namespace} (${scope})`;
 
       /**
        * Installed Module Item
