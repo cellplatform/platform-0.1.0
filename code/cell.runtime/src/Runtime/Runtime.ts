@@ -16,7 +16,7 @@ export const Runtime = {
    * methods for using these constants.
    *
    * See compiler plugins:
-   *    -  wp.plugin.env => [DefinePlugin]
+   *    -  cell.compiler/wp.plugin.env => [DefinePlugin]
    */
   origin(input?: RuntimeModule) {
     input = toEnv(input);

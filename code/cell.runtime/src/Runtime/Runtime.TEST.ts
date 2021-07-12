@@ -38,7 +38,7 @@ describe('Runtime', () => {
         const bundle = Runtime.origin();
         expect(bundle.host).to.eql(''); // NB: Host not available prior to compilation - in "dev" mode.
         expect(bundle.dev).to.eql(true);
-        expect(bundle.uri).to.eql('cell:dev:A1'); // NB: "dev" URI.
+        expect(bundle.uri).to.eql('cell:dev:A1'); // NB: "development" URI.
         expect(bundle.dir).to.eql('');
       });
 
