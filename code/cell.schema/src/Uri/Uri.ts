@@ -176,17 +176,27 @@ export class Uri {
     /**
      * Determine if the given value is a recognized URI.
      */
-    uri: (input?: string) => Uri.parse(input).ok,
+    uri: (input?: string) => {
+      try {
+        return Uri.parse(input).ok;
+      } catch (error) {
+        return false;
+      }
+    },
 
     /**
      * Determine if the URI is of a specific type.
      */
     type: (type: t.UriType | t.UriType[], input?: string) => {
-      const uri = Uri.parse(input);
-      const types = Array.isArray(type) ? type : [type];
-      return types.some((type) => {
-        return uri.parts.type === type && (type === 'UNKNOWN' ? true : uri.ok);
-      });
+      try {
+        const uri = Uri.parse(input);
+        const types = Array.isArray(type) ? type : [type];
+        return types.some((type) => {
+          return uri.parts.type === type && (type === 'UNKNOWN' ? true : uri.ok);
+        });
+      } catch (error) {
+        return false;
+      }
     },
 
     ns: (input?: string) => Uri.is.type('NS', input),

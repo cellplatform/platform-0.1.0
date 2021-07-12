@@ -44,12 +44,12 @@ export function Model(input: M) {
       return target === 'node' ? ENTRY.NODE : ENTRY.WEB;
     },
 
-    get bundleDir() {
-      return `${res.outdir()}/${res.target()}`;
-    },
-
     get env() {
       return model.env ?? {};
+    },
+
+    get paths() {
+      return ModelPaths(model);
     },
 
     name(defaultValue?: string) {
@@ -76,11 +76,6 @@ export function Model(input: M) {
       return defaultValue(model.port, defaultValue(defaultPort, DEFAULT.CONFIG.port));
     },
 
-    outdir(defaultValue?: string) {
-      const dir = model.outdir ?? defaultValue ?? DEFAULT.CONFIG.outdir;
-      return fs.resolve(dir);
-    },
-
     static() {
       const value = model.static ?? [];
       return Array.isArray(value) ? value : [value];
@@ -100,4 +95,16 @@ export function Model(input: M) {
   };
 
   return res;
+}
+
+/**
+ * Derives model paths from a model.
+ */
+export function ModelPaths(model: t.CompilerModel): t.CompilerModelPaths {
+  const base = model.outdir ?? DEFAULT.CONFIG.outdir;
+  const dist = fs.join(base, model.target || '');
+  const bundle = `${dist}.bundle`;
+  return {
+    out: { base, dist, bundle },
+  };
 }

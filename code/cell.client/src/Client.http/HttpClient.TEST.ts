@@ -47,6 +47,17 @@ describe('HttpClient', () => {
       test('domain.com:1234', 'https://domain.com:1234');
     });
 
+    it('disposable', () => {
+      const client = HttpClient.create({ host: 1234 });
+
+      let fired = 0;
+      client.dispose$.subscribe(() => fired++);
+
+      client.dispose();
+      client.dispose();
+      expect(fired).to.eql(1);
+    });
+
     it('takes host from object', () => {
       const client = HttpClient.create({ host: 1234 });
       expect(client.origin).to.eql('http://localhost:1234');

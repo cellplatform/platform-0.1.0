@@ -1,6 +1,8 @@
 import { Http } from '@platform/http/lib/http/Http';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
-import { Schema, t, constants, util, Uri } from '../common';
+import { constants, Schema, t, Uri, util } from '../common';
 import { HttpClientCell } from './HttpClientCell';
 import { HttpClientFile } from './HttpClientFile';
 import { HttpClientNs } from './HttpClientNs';
@@ -67,12 +69,17 @@ export class HttpClient implements t.IHttpClient {
     // Create the HTTP client.
     const headers = { client: clientHeader() };
     const http = args.http ? args.http : Http.create({ headers, mode: 'cors' });
-    http.before$.subscribe((e) => e.modify.headers.merge(headers));
+
+    // Setup observables.
+    const before$ = http.before$.pipe(takeUntil(this.dispose$));
+    const after$ = http.after$.pipe(takeUntil(this.dispose$));
+
+    before$.subscribe((e) => e.modify.headers.merge(headers));
 
     // Store fields.
     this.http = http;
-    this.request$ = http.before$;
-    this.response$ = http.after$;
+    this.request$ = before$;
+    this.response$ = after$;
   }
 
   /**
@@ -82,12 +89,20 @@ export class HttpClient implements t.IHttpClient {
   public readonly request$: t.IHttpClient['request$'];
   public readonly response$: t.IHttpClient['response$'];
 
+  private readonly _dispose$ = new Subject<void>();
+  public readonly dispose$ = this._dispose$.asObservable();
+
   private readonly urls: t.IUrls;
   private readonly http: t.IHttp;
 
   /**
    * [Methods]
    */
+
+  public dispose() {
+    this._dispose$.next();
+    this._dispose$.complete();
+  }
 
   public async info<T extends t.IResGetSysInfo>() {
     const http = this.http;

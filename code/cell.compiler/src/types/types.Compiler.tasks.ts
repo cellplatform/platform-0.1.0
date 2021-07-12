@@ -63,10 +63,10 @@ export type CompilerRunDevserverOptions = { exports?: boolean; port?: number };
  */
 export type CompilerRunUpload = (args: CompilerRunUploadArgs) => Promise<CompilerUploadResponse>;
 export type CompilerRunUploadArgs = {
-  config: t.CompilerModel;
   host: string;
-  targetCell: string | t.ICellUri;
-  targetDir?: string;
+  config: t.CompilerModel;
+  source: 'dist' | 'bundle';
+  target: { cell: string | t.ICellUri; dir?: string };
   silent?: boolean;
 };
 export type CompilerUploadResponse = {
@@ -96,7 +96,8 @@ export type CompilerCellRunUpload = (
   options?: CompilerCellRunUploadOptions,
 ) => Promise<CompilerUploadResponse>;
 export type CompilerCellRunUploadOptions = {
+  source?: 'dist' | 'bundle';
   targetDir?: string;
   silent?: boolean;
-  bundle?: boolean;
+  runBundle?: boolean;
 };

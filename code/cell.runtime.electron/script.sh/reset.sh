@@ -1,1 +1,4 @@
-rm -rf .data
+# 
+# Delete temporary data.
+# 
+rm -rf tmp

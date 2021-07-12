@@ -20,7 +20,7 @@ describe('TypeManifest', function () {
 
     // Copy the [types.d] and unzip it.
     await fs.remove(base);
-    await fs.copy(fs.join(SampleBundles.simpleNode.outdir, 'types.d'), base);
+    await fs.copy(fs.join(SampleBundles.simpleNode.paths.out.dist, 'types.d'), base);
     for (const zipped of await fs.glob.find(`${base}/*.zip`)) {
       const dir = zipped.substring(0, zipped.lastIndexOf('.'));
       await fs.unzip(zipped, dir);

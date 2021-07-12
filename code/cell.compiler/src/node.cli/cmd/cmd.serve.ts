@@ -1,4 +1,4 @@
-import { t, exec, fs, Model, defaultValue } from '../common';
+import { defaultValue, exec, fs, log, Model, t } from '../common';
 import * as util from '../util';
 
 const logger = util.Logger;
@@ -15,10 +15,16 @@ export async function serve(argv: t.Argv) {
   const obj = model.toObject();
 
   const port = defaultValue(portArg, model.port());
-  const dir = model.outdir() || '';
-  const target = model.target('web');
+  const cwd = fs.resolve(model.paths.out.dist);
 
-  const cwd = fs.join(dir, target);
+  if (!(await fs.pathExists(cwd))) {
+    log.info();
+    log.info.yellow(`Cannot start server: bundle has not been compiled.`);
+    log.info.gray(`${cwd}`);
+    log.info();
+    return;
+  }
+
   const cmd = `serve --listen ${port} --cors`;
 
   logger.newline().model(obj, { url: true, port }).newline().exports(obj).newline().hr();

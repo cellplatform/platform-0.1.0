@@ -1,4 +1,4 @@
-import { log, Logger, Model, t } from '../common';
+import { log, Logger, t } from '../common';
 import { onCompiled } from './task.bundle';
 import { wp } from './util';
 
@@ -7,13 +7,12 @@ import { wp } from './util';
  */
 export const watch: t.CompilerRunWatch = async (input) => {
   const { compiler, model, webpack } = wp.toCompiler(input);
-  const bundleDir = Model(model).bundleDir;
 
   let count = 0;
   compiler.watch({}, async (err, stats) => {
     const compilation = stats?.compilation;
     if (compilation) {
-      onCompiled({ model, bundleDir, compilation, webpack });
+      onCompiled({ model, compilation, webpack });
     }
 
     count++;

@@ -25,11 +25,11 @@ async function bundle(args: { config: t.CompilerModelBuilder; force?: boolean })
 }
 
 function make(dir: string, config: t.CompilerModelBuilder) {
-  const outdir = `dist/test/${dir.replace(/^\/*/, '')}`;
-  config = config.outdir(outdir);
+  dir = `dist/test/${dir.replace(/^\/*/, '')}`;
+  config = config.outdir(dir);
   return {
     config,
-    outdir: `${outdir}/${config.toObject().target || ''}`,
+    paths: config.toPaths(),
     bundle(args: { force?: boolean }) {
       const { force } = args;
       return bundle({ config, force });

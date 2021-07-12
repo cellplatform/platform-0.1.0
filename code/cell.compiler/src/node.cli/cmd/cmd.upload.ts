@@ -1,17 +1,5 @@
 import { Compiler } from '../../node/compiler';
-import {
-  constants,
-  defaultValue,
-  fs,
-  HttpClient,
-  log,
-  Model,
-  Package,
-  PATH,
-  Schema,
-  t,
-  Uri,
-} from '../common';
+import { constants, fs, HttpClient, log, Model, Package, PATH, Schema, t, Uri } from '../common';
 import * as util from '../util';
 import { runClean } from './cmd.clean';
 
@@ -35,7 +23,7 @@ export async function upload(argv: t.Argv) {
     version.to = PKG.load().version || '';
   }
 
-  const bundle = argv.bundle; // NB: undefined by default (false if --no-bundle)
+  const runBundle = argv.bundle ?? true; // NB: undefined by default (false if --no-bundle)
   const name = util.nameArg(argv, 'web');
   const mode = util.modeArg(argv, 'production');
   const config = (await util.loadConfig(argv.config, { name })).mode(mode);
@@ -69,7 +57,9 @@ export async function upload(argv: t.Argv) {
     return logger.errorAndExit(1, err);
   }
 
-  // Wrangle the cell URI.
+  /**
+   * Wrangle the cell URI.
+   */
   const cell = uri && typeof uri === 'string' ? Uri.parse<t.ICellUri>(uri) : undefined;
   if (!cell) {
     const err = `A ${log.white('--uri')} argument was not provided.`;
@@ -84,9 +74,29 @@ export async function upload(argv: t.Argv) {
     return logger.errorAndExit(1, err);
   }
 
-  if (defaultValue(argv.clean, true)) await runClean();
-  const res = await Compiler.cell(host, cell.toString()).upload(config, { targetDir, bundle });
+  if (argv.clean ?? (true && runBundle !== false)) await runClean();
 
+  /**
+   * Run [compile => upload] process.
+   */
+  const compiler = Compiler.cell(host, cell.toString());
+  const uploadDistFolder = argv.dist ?? true;
+
+  // Send compiled "dist" (distribution folder).
+  if (uploadDistFolder) {
+    await compiler.upload(config, { source: 'dist', targetDir, runBundle });
+  }
+
+  // Send "zipped" bundle.
+  await compiler.upload(config, {
+    source: 'bundle',
+    targetDir: `${targetDir}.bundle`,
+    runBundle: uploadDistFolder ? false : runBundle, // NB: No need to re-bundle, done in prior step (if requested).
+  });
+
+  /**
+   * Finish up.
+   */
   const file = args.filepath.substring(fs.resolve('.').length + 1);
   log.info.gray(`Upload configuration stored in: ${file}`);
 
@@ -95,7 +105,7 @@ export async function upload(argv: t.Argv) {
     : `${version.from} (no change)`;
   log.info.gray(`package.json/version: ${logVersion}`);
 
-  return res;
+  return;
 }
 
 /**
@@ -116,7 +126,7 @@ async function formatAndSaveArgs(args: {
   const filepath = fs.join(logDir, 'upload.json');
   await fs.ensureDir(logDir);
 
-  const generateUri = () => Uri.create.cell(Uri.cuid(), 'A1');
+  const generateUri = () => Uri.create.A1();
   const write = (file: IFileStore) => fs.writeFile(filepath, JSON.stringify(file, null, '  '));
 
   if (!(await fs.pathExists(filepath))) {

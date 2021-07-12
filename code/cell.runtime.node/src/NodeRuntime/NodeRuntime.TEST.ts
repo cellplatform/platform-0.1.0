@@ -12,13 +12,13 @@ import { NodeRuntime } from '.';
  *
  */
 describe('NodeRuntime', () => {
-  it('NOTE: See tests in [cell.router]', () => {
+  it('✨✨ NOTE: See tests in [cell.router]', () => {
     //
   });
 
   it('create (init)', () => {
     const runtime = NodeRuntime.create();
-    expect(runtime.name).to.eql('node');
+    expect(runtime.name).to.eql('cell.runtime.node');
   });
 
   it('node version', () => {

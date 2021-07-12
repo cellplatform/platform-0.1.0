@@ -52,9 +52,9 @@ export type RuntimeElapsed = {
 /**
  * Runtime: node-js.
  */
-export type RuntimeEnvNode = RuntimeMembers & { name: 'node' };
+export type RuntimeEnvNode = RuntimeMembers & { name: 'cell.runtime.node' };
 
 /**
  * Runtime: web (browser).
  */
-export type RuntimeEnvWeb = RuntimeMembers & { name: 'web' };
+export type RuntimeEnvWeb = RuntimeMembers & { name: 'cell.runtime.web' };

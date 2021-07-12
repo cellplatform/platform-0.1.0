@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.code",
-  "version": "0.0.78",
+  "version": "0.0.85",
   "compiler": {
     "port": 3034
   },
@@ -17,7 +17,7 @@
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
     "copy": "ts-node -T src/node/fs.copy/run",
-    "deploy": "cell.compiler upload --dir sys.ui.code $@",
+    "deploy": "cell.compiler upload --dir sys.ui.code --no-dist $@",
     "tmp": "ts-node -T src/node/tmp"
   },
   "dependencies": {
@@ -27,7 +27,7 @@
     "monaco-themes": "^0.3.3"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.3.39",
+    "@platform/cell.compiler": "^0.3.46",
     "@types/prettier": "^2.1.6",
     "prettier": "^2.3.0",
     "react": "^17.0.2",

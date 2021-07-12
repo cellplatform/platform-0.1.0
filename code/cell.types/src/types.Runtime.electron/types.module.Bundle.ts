@@ -2,36 +2,26 @@ import { t } from './common';
 
 type Uri = string;
 type Url = string;
-type Path = string;
-
-/**
- * Details of an installed bundle
- */
-export type BundleInfo = {
-  source: BundleSource;
-};
-
-export type BundleSource = BundleSourceLocalPackage | BundleSourceRemote;
-
-export type BundleSourceLocalPackage = {
-  kind: 'local:package'; // Bundle packaged and shipped within the electron build.
-  manifest: Path;
-};
-
-export type BundleSourceRemote = {
-  kind: 'remote';
-  manifest: Url;
-};
+type Filepath = string;
+type ManifestSourcePath = Url | Filepath;
+type Milliseconds = number;
 
 /**
  * Info about an installed bundle.
  */
 export type BundleStatus = {
-  host: string;
-  cell: Uri;
-  dir: string;
-  url: string;
-  manifest: t.ModuleManifest;
+  latest: boolean;
+  compiler: string;
+  module: BundleItem;
+  urls: { manifest: string; entry: string };
+};
+
+export type BundleItem = {
+  hash: string;
+  domain: string;
+  namespace: string;
+  version: string;
+  fs: Uri;
 };
 
 /**
@@ -40,20 +30,34 @@ export type BundleStatus = {
 export type BundleEvents = t.IDisposable & {
   $: t.Observable<BundleEvent>;
   is: { base(input: any): boolean };
+
+  install: {
+    req$: t.Observable<BundleInstallReq>;
+    res$: t.Observable<BundleInstallRes>;
+    fire(
+      source: ManifestSourcePath,
+      options?: { timeout?: Milliseconds; force?: boolean; silent?: boolean },
+    ): Promise<t.BundleInstallRes>;
+  };
+
   list: {
     req$: t.Observable<BundleListReq>;
     res$: t.Observable<BundleListRes>;
-    get(args?: { timeout?: number }): Promise<{ items: BundleListItem[]; error?: string }>;
+    get(options?: {
+      domain?: string;
+      timeout?: Milliseconds;
+    }): Promise<{ items: BundleItem[]; error?: string }>;
   };
+
   status: {
     req$: t.Observable<BundleStatusReq>;
     res$: t.Observable<BundleStatusRes>;
-    get(args: { dir: string; cell?: Uri | t.ICellUri }): Promise<BundleStatus | undefined>;
-  };
-  upload: {
-    req$: t.Observable<t.BundleUploadReq>;
-    res$: t.Observable<t.BundleUploadRes>;
-    fire(args: { sourceDir: string; targetDir: string; force?: boolean }): Promise<BundleUploadRes>;
+    get(args: {
+      domain: string;
+      namespace: string;
+      version?: string;
+      timeout?: Milliseconds;
+    }): Promise<BundleStatusRes>;
   };
 };
 
@@ -63,10 +67,10 @@ export type BundleEvents = t.IDisposable & {
 export type BundleEvent =
   | BundleListReqEvent
   | BundleListResEvent
+  | BundleInstallReqEvent
+  | BundleInstallResEvent
   | BundleStatusReqEvent
-  | BundleStatusResEvent
-  | BundleUploadReqEvent
-  | BundleUploadResEvent;
+  | BundleStatusResEvent;
 
 /**
  * Retrieve a list of installed modules.
@@ -75,14 +79,42 @@ export type BundleListReqEvent = {
   type: 'runtime.electron/Bundle/list:req';
   payload: BundleListReq;
 };
-export type BundleListReq = { tx?: string };
+export type BundleListReq = { tx?: string; domain?: string | string[] };
 
 export type BundleListResEvent = {
   type: 'runtime.electron/Bundle/list:res';
   payload: BundleListRes;
 };
-export type BundleListRes = { tx: string; items: BundleListItem[]; error?: string };
-export type BundleListItem = { namespace: string; version: string; hash: string };
+export type BundleListRes = { tx: string; items: BundleItem[]; error?: string };
+
+/**
+ * Install a module (new or version update)
+ */
+export type BundleInstallReqEvent = {
+  type: 'runtime.electron/Bundle/install:req';
+  payload: BundleInstallReq;
+};
+export type BundleInstallReq = {
+  tx?: string;
+  source: ManifestSourcePath;
+  force?: boolean;
+  silent?: boolean;
+  timeout?: Milliseconds;
+};
+
+export type BundleInstallResEvent = {
+  type: 'runtime.electron/Bundle/install:res';
+  payload: BundleInstallRes;
+};
+export type BundleInstallRes = {
+  tx: string;
+  ok: boolean;
+  action: 'created' | 'replaced' | 'unchanged' | 'error';
+  source: ManifestSourcePath;
+  module?: BundleItem;
+  elapsed: Milliseconds;
+  errors: string[];
+};
 
 /**
  * Retrieve the status of a bundle.
@@ -93,8 +125,9 @@ export type BundleStatusReqEvent = {
 };
 export type BundleStatusReq = {
   tx?: string;
-  dir: string;
-  cell?: Uri;
+  domain: string;
+  namespace: string;
+  version?: string;
 };
 
 export type BundleStatusResEvent = {
@@ -105,31 +138,5 @@ export type BundleStatusRes = {
   tx: string;
   exists: boolean;
   status?: BundleStatus;
-};
-
-/**
- * Upload a bundle of files to an endpoint.
- */
-export type BundleUploadReqEvent = {
-  type: 'runtime.electron/Bundle/upload:req';
-  payload: BundleUploadReq;
-};
-export type BundleUploadReq = {
-  tx?: string;
-  sourceDir: string;
-  targetDir: string;
-  silent?: boolean;
-  force?: boolean; // Re-upload if already exists.
-};
-
-export type BundleUploadResEvent = {
-  type: 'runtime.electron/Bundle/upload:res';
-  payload: BundleUploadRes;
-};
-export type BundleUploadRes = {
-  tx: string;
-  ok: boolean;
-  files: { path: string; bytes: number }[];
-  errors: string[];
-  action: 'written' | 'replaced' | 'unchanged';
+  error?: string;
 };

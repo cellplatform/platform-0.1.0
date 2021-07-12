@@ -1,9 +1,19 @@
-import { Builder, DEFAULT, Encoding, fs, R, t, value as valueUtil, semver } from '../common';
+import {
+  Builder,
+  DEFAULT,
+  Encoding,
+  fs,
+  ModelPaths,
+  R,
+  semver,
+  t,
+  value as valueUtil,
+} from '../common';
 import { wp } from '../config.webpack';
+import { filesMethods } from './handlers.files';
+import { htmlMethods } from './handlers.html';
 import { webpackMethods } from './handlers.webpack';
 import { validate } from './util';
-import { htmlMethods } from './handlers.html';
-import { filesMethods } from './handlers.files';
 
 type O = Record<string, unknown>;
 
@@ -15,9 +25,11 @@ const MODES: t.WpMode[] = ['development', 'production'];
  */
 export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods> = {
   clone: (args) => args.clone(args.params[0]),
-  toObject: (args) => args.model.state,
-  toWebpack: (args) => wp.toWebpackConfig(args.model.state),
   name: (args) => args.model.state.name,
+
+  toWebpack: (args) => wp.toWebpackConfig(args.model.state),
+  toObject: (args) => args.model.state,
+  toPaths: (args) => ModelPaths(args.model.state),
 
   namespace(args) {
     const value = format.string(args.params[0], { trim: true });

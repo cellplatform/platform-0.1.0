@@ -37,6 +37,7 @@ export const items: PropListItem[] = [
     value: { data: 'thing', clipboard: true, monospace: true, color: COLORS.CYAN, fontSize: 9 },
   },
   { label: 'long (ellipsis)', value: LOREM },
+  { label: 'bold', value: { data: 'value', bold: true } },
   {
     label: 'click handler',
     value: {

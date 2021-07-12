@@ -45,14 +45,14 @@ export const ModuleManifest = {
    */
   async create(args: {
     model: t.CompilerModel;
-    sourceDir: string;
+    dir: string;
     filename?: string; // Default: index.json
   }): Promise<M> {
-    const { sourceDir, model, filename = ModuleManifest.filename } = args;
+    const { dir, model, filename = ModuleManifest.filename } = args;
 
-    const pkg = constants.PKG.load();
+    const pkg = constants.COMPILER.load();
     const data = Model(model);
-    const manifest = await Manifest.create({ sourceDir, model, filename });
+    const manifest = await Manifest.create({ dir, model, filename });
     const { files } = manifest;
 
     const version = data.version();
@@ -77,12 +77,7 @@ export const ModuleManifest = {
       module: Schema.hash.sha256({ module, files: manifest.hash.files }),
     };
 
-    return {
-      hash,
-      kind: 'module',
-      module,
-      files,
-    };
+    return { kind: 'module', hash, module, files };
   },
 
   /**
@@ -90,13 +85,13 @@ export const ModuleManifest = {
    */
   async createAndSave(args: {
     model: t.CompilerModel;
-    sourceDir: string;
+    dir: string;
     filename?: string; // Default: index.json
   }) {
-    const { model, sourceDir, filename } = args;
+    const { model, dir, filename } = args;
     return createAndSave<M>({
-      create: () => ModuleManifest.create({ sourceDir, model, filename }),
-      sourceDir,
+      create: () => ModuleManifest.create({ dir, model, filename }),
+      dir,
       filename,
       model,
     });

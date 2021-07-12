@@ -30,6 +30,7 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
       position: 'relative',
       Flex: 'center-end',
       userSelect: 'none',
+      fontWeight: item.value.bold ? 'bold' : undefined,
     }),
   };
 

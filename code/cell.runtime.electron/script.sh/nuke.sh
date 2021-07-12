@@ -3,15 +3,15 @@ pwd
 echo
 
 # 
-# Root
+# Nuke: Root
 # 
 rm -rf node_modules
 sh script.sh/clean.sh
 
 # 
-# Electron application
+# Nuke: A1 (electron application folder)
 # 
-cd app/
+cd A1
 rm -rf node_modules
 rm -f  yarn.lock
 cd ..

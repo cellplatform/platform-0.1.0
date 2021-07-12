@@ -30,6 +30,7 @@ type ValueBase = {
   clipboard?: string | boolean | (() => string);
   color?: string | number;
   fontSize?: number;
+  bold?: boolean;
   onClick?: (e: PropListValueEventArgs) => void;
 };
 

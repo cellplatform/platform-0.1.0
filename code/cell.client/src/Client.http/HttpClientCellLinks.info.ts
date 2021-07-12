@@ -49,14 +49,13 @@ function toLink(args: {
   const { http, urls, value } = args;
   const uri = Uri.parse(value);
   const type = uri.parts.type;
-  const key = Schema.Ref.Links.parseKey(args.key).path;
 
   if (type === 'FILE') {
     let client: t.IHttpClientFile | undefined;
     const link = Schema.File.Links.parseValue(value);
     const uri = link.uri;
     const hash = link.query.hash || '';
-    const { name, dir, path } = Schema.File.Links.parseKey(key);
+    const { key, name, dir, path } = Schema.File.Links.parseKey(args.key);
     const res: t.IHttpClientCellLinkFile = {
       type: 'FILE',
       value,
@@ -74,7 +73,8 @@ function toLink(args: {
   }
 
   if (type === 'CELL') {
-    let client: t.IHttpClientCell | undefined;
+    const key = Schema.Ref.Links.parseKey(args.key).path;
+    let _client: t.IHttpClientCell | undefined;
     const uri = Uri.cell(value);
     const res: t.IHttpClientCellLinkCell = {
       type: 'CELL',
@@ -82,14 +82,15 @@ function toLink(args: {
       value,
       uri,
       get http() {
-        return client || (client = HttpClientCell({ uri, urls, http }));
+        return _client || (_client = HttpClientCell({ uri, urls, http }));
       },
     };
     return res;
   }
 
   if (type === 'NS') {
-    let client: t.IHttpClientNs | undefined;
+    const key = Schema.Ref.Links.parseKey(args.key).path;
+    let _client: t.IHttpClientNs | undefined;
     const uri = Uri.ns(value);
     const res: t.IHttpClientCellLinkNs = {
       type: 'NS',
@@ -97,13 +98,14 @@ function toLink(args: {
       value,
       uri,
       get http() {
-        return client || (client = HttpClientNs({ uri, urls, http }));
+        return _client || (_client = HttpClientNs({ uri, urls, http }));
       },
     };
     return res;
   }
 
   // Unknown type.
+  const key = Schema.Ref.Links.parseKey(args.key).path;
   const res: t.IHttpClientCellLinkUnknown = { type: 'UNKNOWN', key, value };
   return res;
 }

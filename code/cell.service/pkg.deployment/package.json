@@ -1,6 +1,6 @@
 {
   "name": "cell.system",
-  "version": "0.0.61",
+  "version": "0.0.68",
   "scripts": {
     "now": "yarn vercel",
     "vercel": "vercel dev --listen 8080",
@@ -12,13 +12,13 @@
     "dupb": "docker-compose up --build"
   },
   "dependencies": {
-    "@platform/cell.fs.local": "^0.4.204",
-    "@platform/cell.fs.s3": "^0.4.209",
-    "@platform/cell.service": "^0.8.63",
-    "@platform/cell.router": "0.9.26",
-    "@platform/cell.runtime.node": "^0.0.51",
-    "@platform/cell.schema": "^0.5.82",
-    "@platform/cell.types": "^0.5.79",
+    "@platform/cell.fs.local": "^0.4.211",
+    "@platform/cell.fs.s3": "^0.4.216",
+    "@platform/cell.service": "^0.8.70",
+    "@platform/cell.router": "0.9.33",
+    "@platform/cell.runtime.node": "^0.0.58",
+    "@platform/cell.schema": "^0.5.89",
+    "@platform/cell.types": "^0.5.86",
     "@platform/fsdb.mongo": "^0.0.168",
     "@platform/fsdb.nedb": "^1.3.162",
     "tslib": "^2.2.0"

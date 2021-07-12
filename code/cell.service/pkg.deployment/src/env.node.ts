@@ -51,10 +51,10 @@ const runtime = NodeRuntime.create();
 const app = server.create({
   name: 'cell.node',
   db,
+  runtime,
   // fs: filesystem.spaces(),
   // fs: filesystem.wasabi(),
   fs: filesystem.local(),
-  runtime,
 });
 
 app.start({ port: 8080 });

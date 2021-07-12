@@ -1,9 +1,10 @@
 import { Stats } from 'webpack';
 
-import { fs, log, Logger, Model, ProgressSpinner, t } from '../common';
+import { fs, log, Logger, Model, ModelPaths, ProgressSpinner, t } from '../common';
 import { ModuleManifest } from '../manifest';
 import { bundleDeclarations } from './task.bundle.declarations';
 import { afterCompile, wp } from './util';
+import { ZippedBundle } from '../compiler';
 
 /**
  * Bundle the project.
@@ -16,8 +17,8 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
       const { compiler, model, webpack } = wp.toCompiler(input);
       await ensureEntriesExist({ model });
 
-      const bundleDir = Model(model).bundleDir;
-      await fs.remove(bundleDir);
+      const paths = ModelPaths(model);
+      await fs.remove(paths.out.dist);
 
       const spinner = ProgressSpinner({ label: 'bundling...', silent });
       if (!silent) {
@@ -38,7 +39,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
 
           const compilation = stats.compilation;
           if (compilation) {
-            await onCompiled({ model, bundleDir, compilation, webpack });
+            await onCompiled({ model, compilation, webpack });
           }
 
           if (!silent) {
@@ -59,15 +60,15 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
 
 export async function onCompiled(args: {
   model: t.CompilerModel;
-  bundleDir: string;
   compilation: t.WpCompilation;
   webpack: t.WpConfig;
 }) {
-  const { model, bundleDir, compilation, webpack } = args;
+  const { model, compilation, webpack } = args;
+  const paths = ModelPaths(model);
 
-  await copyStatic({ model, bundleDir });
-  await ModuleManifest.createAndSave({ model, sourceDir: bundleDir });
-  await fs.zip(bundleDir).save(`${bundleDir}.zip`);
+  await copyStatic({ model, bundleDir: paths.out.dist });
+  await ModuleManifest.createAndSave({ model, dir: paths.out.dist });
+  await ZippedBundle(model).save();
 
   afterCompile({ model, compilation, webpack });
 }
