@@ -50,7 +50,7 @@ export const ConfigFile = {
    * Appends the startup log.
    */
   log: {
-    async updateStarted() {
+    async started() {
       const file = await ConfigFile.read();
       const started = [...(file.started ?? [])];
 

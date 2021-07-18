@@ -1,5 +1,5 @@
 {
-  "name": "cell.run.electron.a1",
+  "name": "cell.runtime.electron",
   "version": "0.44.0",
   "description": "Desktop runtime environment.",
   "main": "lib/main/index",
