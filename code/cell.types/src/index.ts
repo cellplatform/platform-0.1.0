@@ -8,7 +8,7 @@ export * from './types.Env';
 export * from './types.Error';
 export * from './types.Module';
 export * from './types.Runtime';
-export * from './types.Runtime.electron';
+export * from './types.Runtime.Electron';
 export * from './types.Http';
 export * from './types.Manifest';
 export * from './types.Schema';

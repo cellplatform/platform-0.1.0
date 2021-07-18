@@ -1,1 +1,1 @@
-export * from '@platform/cell.types/lib/types.Runtime.electron';
+export * from '@platform/cell.types/lib/types.Runtime.Electron';
