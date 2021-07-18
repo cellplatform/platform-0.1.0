@@ -1,5 +1,5 @@
 import { ConfigFile } from './ConfigFile';
-import { Genesis as Base } from '../../data.http';
+import { Genesis as Base } from '../../data';
 import { IHttpClient } from './types';
 
 /**

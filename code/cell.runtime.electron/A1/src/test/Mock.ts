@@ -17,7 +17,7 @@ import { System } from '../main/main.System';
 import { SystemServer } from '../main/main.System.server';
 import { Window } from '../main/main.Window';
 import { Filesystem } from '../main/main.Filesystem';
-import { ModuleRegistry } from '../data.http';
+import { ModuleRegistry } from '../data';
 
 export type IMockServer = {
   host: string;

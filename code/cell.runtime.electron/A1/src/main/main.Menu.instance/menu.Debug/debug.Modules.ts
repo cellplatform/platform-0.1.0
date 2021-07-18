@@ -1,4 +1,4 @@
-import { ManifestSource, ManifestUrl } from '../../../data.http';
+import { ManifestSource, ManifestUrl } from '../../../data';
 import { Bundle, ENV, Paths, System, t, Window, Menu } from '../common';
 
 /**
