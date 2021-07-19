@@ -1,4 +1,4 @@
-import { BundleCache } from 'sys.net/lib/cache/BundleCache';
+import { BundleCache } from '@platform/cell.runtime.web/lib/BundleCache';
 
 const ctx: ServiceWorker = self as any;
 

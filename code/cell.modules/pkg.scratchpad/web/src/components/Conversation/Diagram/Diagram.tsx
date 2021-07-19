@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { useBundleManifest } from '../../../hooks';
+import { useModuleManifest } from '../../../hooks';
 import { bundle, css, CssValue, t, rx } from '../common';
 import { Images } from '../Views';
 
@@ -20,7 +20,7 @@ const isImagePath = (path: string) =>
 export const Diagram: React.FC<DiagramProps> = (props) => {
   const { dir } = props;
   const bus = rx.busAsType<t.ConversationEvent>(props.bus);
-  const { files } = useBundleManifest();
+  const { files } = useModuleManifest();
   const [paths, setPaths] = useState<string[]>();
 
   useEffect(() => {
