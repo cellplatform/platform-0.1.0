@@ -29,15 +29,15 @@ export class Router<C extends Record<string, unknown> = any> implements t.Router
    * [Fields]
    */
   private readonly args: t.RouterArgs;
-  private _wildcard: t.IRoute<C> | undefined;
-  public routes: t.IRoute[] = [];
+  private _wildcard: t.Route<C> | undefined;
+  public routes: t.Route[] = [];
 
   /**
    * [Methods]
    */
   public handler: t.RouteHandler<C> = async (incoming, ctx) => {
     try {
-      const route = this.find(incoming) as t.IRoute;
+      const route = this.find(incoming) as t.Route;
       if (!route) {
         return { status: 404, data: { status: 404, message: 'Not found.' } };
       }
@@ -87,7 +87,7 @@ export class Router<C extends Record<string, unknown> = any> implements t.Router
 
         redirect(
           path: string,
-          options: { headers?: t.IHttpHeaders; status?: 307 | 303 } = {},
+          options: { headers?: t.HttpHeaders; status?: 307 | 303 } = {},
         ): t.RouteResponse {
           return {
             status: options.status || 307,
@@ -134,7 +134,7 @@ export class Router<C extends Record<string, unknown> = any> implements t.Router
       }
     };
 
-    const route: t.IRoute<any> = {
+    const route: t.Route<any> = {
       method,
       path,
       handler,
@@ -178,4 +178,4 @@ export class Router<C extends Record<string, unknown> = any> implements t.Router
  * [Helpers]
  */
 
-const findWildcard = (routes: t.IRoute[]) => routes.find((route) => route.path === '*');
+const findWildcard = (routes: t.Route[]) => routes.find((route) => route.path === '*');

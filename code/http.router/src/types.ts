@@ -7,7 +7,7 @@ import { IncomingMessage } from './types.lib';
 export type RouterArgs = { body: t.BodyParser };
 
 export type Router<C extends Record<string, unknown> = any> = {
-  readonly routes: IRoute<C>[];
+  readonly routes: Route<C>[];
   readonly handler: RouteHandler<C>;
   add(method: t.HttpMethod, path: RoutePath, handler: RouteHandler): Router<C>;
   get(path: RoutePath, handler: RouteHandler<C>): Router<C>;
@@ -15,14 +15,14 @@ export type Router<C extends Record<string, unknown> = any> = {
   post(path: RoutePath, handler: RouteHandler<C>): Router<C>;
   delete(path: RoutePath, handler: RouteHandler<C>): Router<C>;
   wildcard(handler: RouteHandler<C>): Router<C>;
-  find(req: { method?: string; url?: string }): IRoute<C> | undefined;
+  find(req: { method?: string; url?: string }): Route<C> | undefined;
 };
 export type RoutePath = string | string[];
 
 /**
  * Route (definition)
  */
-export type IRoute<C extends Record<string, unknown> = any> = {
+export type Route<C extends Record<string, unknown> = any> = {
   readonly method: t.HttpMethod;
   readonly path: string;
   readonly handler: RouteHandler<C>;
@@ -52,7 +52,7 @@ export type RouteRequest = IncomingMessage & {
 export type RouteRequestMethods = {
   header(key: string): string;
   toUrl(path: string): string;
-  redirect(path: string, options?: { headers?: t.IHttpHeaders; status?: 307 | 303 }): RouteResponse;
+  redirect(path: string, options?: { headers?: t.HttpHeaders; status?: 307 | 303 }): RouteResponse;
 };
 
 export type RouteRequestParams = { [key: string]: string | number | boolean };
@@ -66,7 +66,7 @@ export type RouteRequestQuery = {
 export type RouteResponse = {
   status?: number;
   data?: any;
-  headers?: t.IHttpHeaders;
+  headers?: t.HttpHeaders;
 };
 
 /**

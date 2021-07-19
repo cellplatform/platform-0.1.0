@@ -129,7 +129,7 @@ function redirect(res: t.ServerResponse, statusCode: number, location: string) {
   res.end();
 }
 
-function setHeaders(res: t.ServerResponse, headers?: t.IHttpHeaders) {
+function setHeaders(res: t.ServerResponse, headers?: t.HttpHeaders) {
   if (headers) {
     Object.keys(headers).forEach((key) => res.setHeader(key, headers[key]));
   }

@@ -6,7 +6,7 @@ export const fetcher = async (args: {
   method: t.HttpMethod;
   fire: t.FireEvent;
   mode: t.HttpCors;
-  headers: t.IHttpHeaders;
+  headers: t.HttpHeaders;
   fetch: t.HttpFetch;
   data?: any;
 }) => {
@@ -15,14 +15,14 @@ export const fetcher = async (args: {
   const uid = `req:${id.shortid()}`;
   const { url, method, data, fire, mode, headers } = args;
 
-  type M = { headers?: t.IHttpHeaders; data?: any; respond?: t.HttpRespondInput };
+  type M = { headers?: t.HttpHeaders; data?: any; respond?: t.HttpRespondInput };
   const modifications: M = {
     headers: args.headers || {},
     data: undefined,
     respond: undefined,
   };
 
-  const modify: t.IHttpModify = {
+  const modify: t.HttpModify = {
     header(key: string, value: string) {
       before.isModified = true;
       const headers = modifications.headers || {};
@@ -34,11 +34,11 @@ export const fetcher = async (args: {
       modifications.headers = headers;
     },
     headers: {
-      merge(input: t.IHttpHeaders) {
+      merge(input: t.HttpHeaders) {
         before.isModified = true;
         modifications.headers = value.deleteEmpty({ ...modifications.headers, ...input });
       },
-      replace(input: t.IHttpHeaders) {
+      replace(input: t.HttpHeaders) {
         before.isModified = true;
         modifications.headers = value.deleteEmpty(input);
       },
@@ -46,7 +46,7 @@ export const fetcher = async (args: {
   };
 
   // Fire BEFORE event.
-  const before: t.IHttpBefore = {
+  const before: t.HttpBefore = {
     uid,
     method,
     url,

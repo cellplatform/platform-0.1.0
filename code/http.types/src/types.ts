@@ -4,4 +4,4 @@ export * from './types.fetch';
 export * from './types.payload';
 
 export type HttpMethod = 'HEAD' | 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH' | 'OPTIONS';
-export type IHttpHeaders = { [key: string]: string };
+export type HttpHeaders = { [key: string]: string };

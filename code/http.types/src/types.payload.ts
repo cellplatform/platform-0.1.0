@@ -3,29 +3,29 @@ import { t, Json } from './common';
 /**
  * Request
  */
-export type IHttpRequestPayload = {
+export type HttpRequestPayload = {
   url: string;
   method: t.HttpMethod;
   mode?: t.HttpCors;
-  headers?: t.IHttpHeaders;
+  headers?: t.HttpHeaders;
   data?: Record<string, unknown> | string;
 };
 
 /**
  * Response
  */
-export type IHttpResponse = {
+export type HttpResponse = {
   ok: boolean;
   status: number;
   statusText: string;
-  headers: t.IHttpHeaders;
-  contentType: IHttpContentType;
+  headers: t.HttpHeaders;
+  contentType: HttpContentType;
   body?: ReadableStream<Uint8Array>;
   text: string;
   json: Json;
 };
 
-export type IHttpContentType = {
+export type HttpContentType = {
   mime: string;
   is: {
     json: boolean;
@@ -38,9 +38,9 @@ export type IHttpContentType = {
 /**
  * Respond (method)
  */
-export type IHttpRespondPayload = {
+export type HttpRespondPayload = {
   status: number;
   statusText?: string;
-  headers?: t.IHttpHeaders;
+  headers?: t.HttpHeaders;
   data?: ReadableStream<Uint8Array> | Record<string, unknown> | string;
 };
