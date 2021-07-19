@@ -3,6 +3,7 @@ import { NeDb } from '@platform/fsdb.nedb';
 import { NodeRuntime } from '@platform/cell.runtime.node';
 
 import { Server, util } from './common';
+import { authorize } from './auth';
 
 const env = process.env;
 const datadir = util.resolve('./.data');
@@ -36,6 +37,7 @@ const app = Server.create({
   db,
   fs,
   runtime,
+  authorize,
 });
 
 app.start({ port: env.PORT || 5000 });

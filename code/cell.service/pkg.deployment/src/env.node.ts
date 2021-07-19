@@ -3,15 +3,11 @@ import { s3 } from '@platform/cell.fs.s3';
 import { NeDb } from '@platform/fsdb.nedb';
 import { NodeRuntime } from '@platform/cell.runtime.node';
 
-import { Server, util, t } from './common';
+import { Server, util } from './common';
+import { authorize } from './auth';
 
 util.env.load();
 const TMP = util.resolve('./tmp/env.node');
-
-const authorize: t.HttpAuthorize = async (e) => {
-  console.log('TODO Sudo Check', e.url);
-  return true;
-};
 
 /**
  * Database.

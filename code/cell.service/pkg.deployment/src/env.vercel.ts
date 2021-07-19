@@ -4,6 +4,7 @@ import { MongoDb } from '@platform/fsdb.mongo';
 import { Server, t, time } from './common';
 import { IS_CLOUD, SECRETS } from './constants';
 import { NodeRuntime } from '@platform/cell.runtime.node';
+import { authorize } from './auth';
 
 /**
  * Cell: FileSystem
@@ -34,7 +35,7 @@ const runtime = NodeRuntime.create();
  */
 const name = IS_CLOUD ? '__NAME__' : 'local';
 const deployedAt = IS_CLOUD ? '__DEPLOYED_AT__' : time.now.timestamp;
-const app = Server.create({ name, db, fs, deployedAt, runtime });
+const app = Server.create({ name, db, fs, deployedAt, runtime, authorize });
 
 Server.logger.start({ app });
 
