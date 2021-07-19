@@ -20,7 +20,7 @@
   "dependencies": {
     "@platform/exec": "0.3.2",
     "@platform/npm": "0.4.8",
-    "@types/express": "4.17.11",
+    "@types/express": "4.17.13",
     "body-parser": "1.19.0",
     "express": "4.17.1",
     "filesize": "6.3.0",
@@ -30,9 +30,9 @@
   "devDependencies": {
     "@platform/test": "0.2.6",
     "@platform/ts": "4.1.13",
-    "@types/body-parser": "1.19.0",
+    "@types/body-parser": "1.19.1",
     "@types/filesize": "5.0.0",
-    "@types/minimist": "1.2.1"
+    "@types/minimist": "1.2.2"
   },
   "files": [
     "lib",

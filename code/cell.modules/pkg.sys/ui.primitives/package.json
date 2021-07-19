@@ -23,7 +23,7 @@
     "@dnd-kit/modifiers": "^2.0.0",
     "@dnd-kit/sortable": "^3.0.1",
     "@dnd-kit/utilities": "^2.0.0",
-    "core-js": "3.12.1",
+    "core-js": "3.15.2",
     "framer-motion": "^4.1.16",
     "qrcode.react": "^1.0.1"
   },

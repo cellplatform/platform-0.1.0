@@ -17,9 +17,9 @@
     "@platform/libs": "0.2.10",
     "@platform/util.is": "0.0.152",
     "@platform/util.value": "0.9.0",
-    "@types/tinycolor2": "1.4.2",
+    "@types/tinycolor2": "1.4.3",
     "glamor-jss": "1.4.1",
-    "jss-plugin-global": "10.6.0",
+    "jss-plugin-global": "10.7.1",
     "tinycolor2": "1.4.2"
   },
   "devDependencies": {

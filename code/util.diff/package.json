@@ -12,7 +12,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@types/deep-diff": "1.0.0",
+    "@types/deep-diff": "1.0.1",
     "deep-diff": "1.0.2"
   },
   "devDependencies": {

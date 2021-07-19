@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@platform/libs": "0.2.10",
-    "chokidar": "3.5.1"
+    "chokidar": "3.5.2"
   },
   "devDependencies": {
     "@platform/fs": "0.6.13",

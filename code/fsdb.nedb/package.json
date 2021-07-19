@@ -30,7 +30,7 @@
     "@platform/polyfill": "0.0.3",
     "@platform/test": "0.2.6",
     "@platform/ts": "^4.1.13",
-    "@types/nedb": "1.8.11"
+    "@types/nedb": "1.8.12"
   },
   "files": [
     "lib",

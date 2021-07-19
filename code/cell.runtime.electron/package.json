@@ -23,9 +23,9 @@
   "devDependencies": {
     "@platform/ts": "4.1.13",
     "@platform/cell.compiler": "0.3.46",
-    "@types/minimist": "1.2.1",
+    "@types/minimist": "1.2.2",
     "minimist": "1.2.5",
-    "ora": "5.4.0"
+    "ora": "5.4.1"
   },
   "files": [
     "lib",

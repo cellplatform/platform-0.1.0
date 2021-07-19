@@ -26,8 +26,8 @@
     "@platform/libs": "0.2.10",
     "@platform/log": "0.1.52",
     "@platform/util.value": "0.9.0",
-    "cheerio": "1.0.0-rc.9",
-    "mime-types": "2.1.30",
+    "cheerio": "1.0.0-rc.10",
+    "mime-types": "2.1.31",
     "minimatch": "3.0.4"
   },
   "devDependencies": {
@@ -38,9 +38,9 @@
     "@platform/micro": "0.16.15",
     "@platform/test": "0.2.6",
     "@platform/ts": "4.1.13",
-    "@types/cheerio": "0.22.28",
+    "@types/cheerio": "0.22.30",
     "@types/mime-types": "2.1.0",
-    "@types/minimatch": "3.0.4",
+    "@types/minimatch": "3.0.5",
     "form-data": "4.0.0"
   },
   "files": [

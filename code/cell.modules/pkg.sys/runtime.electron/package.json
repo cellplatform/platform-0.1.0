@@ -20,7 +20,7 @@
     "deploy": "cell.compiler upload --dir ui.runtime $@"
   },
   "dependencies": {
-    "filesize": "6.4.0"
+    "filesize": "7.0.0"
   },
   "devDependencies": {
     "@types/filesize": "5.0.0",

@@ -15,7 +15,7 @@
     "@platform/state.types": "0.1.5",
     "@platform/types": "0.5.21",
     "@platform/util.value": "0.9.0",
-    "immer": "9.0.2"
+    "immer": "9.0.5"
   },
   "devDependencies": {
     "@platform/test": "0.2.6",

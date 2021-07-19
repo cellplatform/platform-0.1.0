@@ -22,7 +22,7 @@
     "deploy": "cell.compiler upload --bump --dir=sys.scratchpad $@"
   },
   "dependencies": {
-    "d3": "^6.6.1"
+    "d3": "^7.0.0"
   },
   "devDependencies": {
     "@platform/cell.compiler": "^0.3.46",
