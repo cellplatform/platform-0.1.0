@@ -1,5 +1,5 @@
 {
-  "name": "sys.scratchpad",
+  "name": "sys.scratchpad.web",
   "version": "0.0.50",
   "sideEffects": false,
   "compiler": {
@@ -19,7 +19,7 @@
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
     "public": "ngrok http 5000 --hostname=os.ngrok.io",
-    "deploy": "cell.compiler upload --bump --dir=sys.scratchpad $@"
+    "deploy": "cell.compiler upload --bump --dir=sys.scratchpad.web $@"
   },
   "dependencies": {
     "d3": "^7.0.0"

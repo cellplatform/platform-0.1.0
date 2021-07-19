@@ -21,7 +21,7 @@ const web = (config: Config) =>
 
 export default () =>
   Compiler.config()
-    .namespace('sys.scratchpad')
+    .namespace('sys.scratchpad.web')
     .version(Package.version)
 
     .variant('web.dev', (config) => web(config))
