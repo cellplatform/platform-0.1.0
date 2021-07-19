@@ -5,7 +5,7 @@ import { t, log, constants } from '../common';
 /**
  * Start listening to the given micro-service and log activity.
  */
-export function start(args: { app: t.IMicro; debounce?: number }) {
+export function start(args: { app: t.Micro; debounce?: number }) {
   const { app, debounce = 500 } = args;
 
   const hr$ = new Subject<void>();
@@ -50,7 +50,7 @@ const methodColor = (method: t.HttpMethod) => {
   return log.white;
 };
 
-const logRequest = (req: t.IMicroRequest) => {
+const logRequest = (req: t.MicroRequest) => {
   const MAX = {
     PREFIX: 'OPTIONS'.length,
     URL: 60,

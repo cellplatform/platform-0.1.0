@@ -19,7 +19,7 @@ export function create(
     cors?: boolean;
     port?: number;
     logger?: t.ILog;
-    router?: t.IRouter;
+    router?: t.Router;
   } = {},
 ) {
   // Setup initial conditions.

@@ -129,7 +129,7 @@ describe('micro (server)', () => {
     it('req.params', async () => {
       const test = async (route: string, path: string, expected: any) => {
         const mock = await mockServer();
-        let params: t.IRouteRequestParams | undefined;
+        let params: t.RouteRequestParams | undefined;
         mock.router.get(route, async (req) => {
           params = req.params;
           return { status: 200, data: {} };
@@ -149,7 +149,7 @@ describe('micro (server)', () => {
     it('req.query', async () => {
       const test = async (path: string, expected: any) => {
         const mock = await mockServer();
-        let query: t.IRouteRequestQuery | undefined;
+        let query: t.RouteRequestQuery | undefined;
         mock.router.get('/foo', async (req) => {
           query = req.query;
           return { status: 200, data: {} };
@@ -172,7 +172,7 @@ describe('micro (server)', () => {
 
     it('req.host', async () => {
       const mock = await mockServer();
-      let req: t.IRouteRequest | undefined;
+      let req: t.RouteRequest | undefined;
       mock.router.get('/foo', async (r) => {
         req = r;
         return {};
@@ -187,7 +187,7 @@ describe('micro (server)', () => {
 
     it('req.toUrl', async () => {
       const mock = await mockServer();
-      let req: t.IRouteRequest | undefined;
+      let req: t.RouteRequest | undefined;
       mock.router.get('/foo', async (r) => {
         req = r;
         return {};
@@ -208,7 +208,7 @@ describe('micro (server)', () => {
 
     it('req.redirect', async () => {
       const mock = await mockServer();
-      let req: t.IRouteRequest | undefined;
+      let req: t.RouteRequest | undefined;
       mock.router.get('/foo', async (r) => {
         req = r;
         return {};
@@ -235,7 +235,7 @@ describe('micro (server)', () => {
 
     it('req.header (case-insensitive)', async () => {
       const mock = await mockServer();
-      let req: t.IRouteRequest | undefined;
+      let req: t.RouteRequest | undefined;
       mock.router.get('/foo', async (r) => {
         req = r;
         return {};
@@ -257,8 +257,8 @@ describe('micro (server)', () => {
     const mock = await mockServer();
 
     let count = 0;
-    const params: t.IRouteRequestParams[] = [];
-    const queries: t.IRouteRequestQuery[] = [];
+    const params: t.RouteRequestParams[] = [];
+    const queries: t.RouteRequestQuery[] = [];
 
     mock.router.get(`/ns\\::id([A-Za-z0-9]*)(/?)`, async (req) => {
       params.push(req.params);

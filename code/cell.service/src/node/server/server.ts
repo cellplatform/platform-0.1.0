@@ -1,5 +1,6 @@
-import { constants, log, micro, t, value, Router, fs as filesystem } from '../common';
-import { beforeResponse } from './global';
+import { constants, fs as filesystem, log, micro, Router, t, value } from '../common';
+import { beforeRequest } from './before.request';
+import { beforeResponse } from './before.response';
 import * as logger from './logger';
 
 export { logger };
@@ -55,7 +56,8 @@ export function create(args: {
     },
   });
 
-  // Make common checks/adjustments to responses before they are sent over the wire.
+  // Make common checks/adjustments.
+  app.request$.subscribe(beforeRequest({ router }));
   app.response$.subscribe(beforeResponse({ router }));
 
   // Finish up.

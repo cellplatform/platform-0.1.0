@@ -7,7 +7,7 @@ import * as parse from '../parse';
 type P = t.RoutePath;
 type O = Record<string, unknown>;
 
-export class Router<C extends Record<string, unknown> = any> implements t.IRouter<C> {
+export class Router<C extends Record<string, unknown> = any> implements t.Router<C> {
   /**
    * [Static]
    */
@@ -17,18 +17,18 @@ export class Router<C extends Record<string, unknown> = any> implements t.IRoute
   /**
    * [Lifecycle]
    */
-  public static create<C extends O = any>(args: t.IRouterArgs): t.IRouter<C> {
+  public static create<C extends O = any>(args: t.RouterArgs): t.Router<C> {
     return new Router<C>(args);
   }
 
-  private constructor(args: t.IRouterArgs) {
+  private constructor(args: t.RouterArgs) {
     this.args = args;
   }
 
   /**
    * [Fields]
    */
-  private readonly args: t.IRouterArgs;
+  private readonly args: t.RouterArgs;
   private _wildcard: t.IRoute<C> | undefined;
   public routes: t.IRoute[] = [];
 
@@ -43,8 +43,8 @@ export class Router<C extends Record<string, unknown> = any> implements t.IRoute
       }
 
       // Append helpers peoperties to the request.
-      let params: t.IRouteRequestParams | undefined;
-      let query: t.IRouteRequestQuery | undefined;
+      let params: t.RouteRequestParams | undefined;
+      let query: t.RouteRequestQuery | undefined;
       const path = incoming.url || '';
       const host = (incoming.headers as any).host || '';
       const body = createBody(incoming, this.args.body);
@@ -54,14 +54,14 @@ export class Router<C extends Record<string, unknown> = any> implements t.IRoute
         body,
         get params() {
           if (!params) {
-            params = Router.params<t.IRouteRequestParams>({ route, path });
+            params = Router.params<t.RouteRequestParams>({ route, path });
           }
           return params;
         },
 
         get query() {
           if (!query) {
-            query = Router.query<t.IRouteRequestQuery>({ path });
+            query = Router.query<t.RouteRequestQuery>({ path });
           }
           return query;
         },
@@ -88,7 +88,7 @@ export class Router<C extends Record<string, unknown> = any> implements t.IRoute
         redirect(
           path: string,
           options: { headers?: t.IHttpHeaders; status?: 307 | 303 } = {},
-        ): t.IRouteResponse {
+        ): t.RouteResponse {
           return {
             status: options.status || 307,
             data: helpers.toUrl(path),
@@ -97,7 +97,7 @@ export class Router<C extends Record<string, unknown> = any> implements t.IRoute
         },
       };
 
-      const request = Object.assign(incoming, helpers) as t.IRouteRequest; // eslint-disable-line
+      const request = Object.assign(incoming, helpers) as t.RouteRequest; // eslint-disable-line
 
       return route.handler(request, ctx);
     } catch (err) {

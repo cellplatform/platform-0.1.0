@@ -15,7 +15,7 @@ export type MicroStart = (options?: {
 
 export type Micro = {
   server: t.Server;
-  router: t.IRouter;
+  router: t.Router;
   handler: t.RouteHandler;
   service?: MicroService;
   events$: t.Observable<MicroEvent>;
@@ -79,9 +79,9 @@ export type MicroResponse<C extends O = O> = {
   method: t.HttpMethod;
   url: string;
   req: t.IncomingMessage;
-  res: t.IRouteResponse;
+  res: t.RouteResponse;
   error?: string;
   isModified: boolean;
   context: C;
-  modify(input: t.IRouteResponse | (() => Promise<t.IRouteResponse>)): void;
+  modify(input: t.RouteResponse | (() => Promise<t.RouteResponse>)): void;
 };

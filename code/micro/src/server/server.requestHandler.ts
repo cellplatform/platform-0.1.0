@@ -2,7 +2,7 @@ import { send } from 'micro';
 
 import { t, time } from '../common';
 
-const NOT_FOUND: t.IRouteResponse = {
+const NOT_FOUND: t.RouteResponse = {
   status: 404,
   data: { status: 404, message: 'Not found' },
 };
@@ -10,7 +10,7 @@ const NOT_FOUND: t.IRouteResponse = {
 /**
  * Handles an HTTP request.
  */
-export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): t.RouteHandler {
+export function requestHandler(args: { router: t.Router; fire: t.FireEvent }): t.RouteHandler {
   const { router, fire } = args;
 
   return async (incoming, outgoing) => {
@@ -66,7 +66,7 @@ export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): 
     }
 
     // Handle the request.
-    let handled = (await router.handler(req as unknown as t.IRouteRequest, context)) || NOT_FOUND;
+    let handled = (await router.handler(req as unknown as t.RouteRequest, context)) || NOT_FOUND;
 
     // Fire AFTER-event.
     const after: t.MicroResponse = {
