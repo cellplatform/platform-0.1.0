@@ -19,8 +19,9 @@ export function create(args: {
   deployedAt?: number | string;
   logger?: t.ILog;
   region?: string;
+  authorize?: t.HttpAuthorize;
 }) {
-  const { db, name, fs, runtime } = args;
+  const { db, name, fs, runtime, authorize } = args;
   const logger = args.logger || log;
   const { cyan, gray, white } = logger;
   const base = filesystem.resolve('.');
@@ -57,7 +58,7 @@ export function create(args: {
   });
 
   // Make common checks/adjustments.
-  app.request$.subscribe(beforeRequest({ router }));
+  app.request$.subscribe(beforeRequest({ router, authorize }));
   app.response$.subscribe(beforeResponse({ router }));
 
   // Finish up.
