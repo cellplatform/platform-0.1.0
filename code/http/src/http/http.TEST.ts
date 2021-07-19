@@ -285,7 +285,7 @@ describe('http', () => {
 
   describe('verbs', () => {
     let events: t.HttpEvent[] = [];
-    let client: t.IHttp;
+    let client: t.Http;
 
     beforeEach(() => {
       events = [];

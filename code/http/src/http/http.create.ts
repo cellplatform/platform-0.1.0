@@ -40,7 +40,7 @@ export const create: t.HttpCreate = (options = {}) => {
     share(),
   );
 
-  const http: t.IHttp = {
+  const http: t.Http = {
     create(options: t.HttpCreateOptions = {}) {
       const headers = { ...http.headers, ...options.headers };
       return create({ ...options, headers });

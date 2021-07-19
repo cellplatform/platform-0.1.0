@@ -4,12 +4,12 @@ import { t, Observable } from './common';
  * Client (HTTP)
  */
 export type HttpCors = 'cors' | 'no-cors' | 'same-origin';
-export type HttpCreate = (options?: HttpCreateOptions) => IHttp;
+export type HttpCreate = (options?: HttpCreateOptions) => Http;
 
 export type HttpCreateOptions = HttpOptions & { fetch?: t.HttpFetch };
 export type HttpOptions = { headers?: t.HttpHeaders; mode?: HttpCors };
 
-export type IHttp = HttpMethods & {
+export type Http = HttpMethods & {
   create: HttpCreate;
   headers: t.HttpHeaders;
   events$: Observable<t.HttpEvent>;
