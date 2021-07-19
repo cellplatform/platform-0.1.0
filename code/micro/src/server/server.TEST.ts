@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
 import { expectError } from '@platform/test';
+import { filter } from 'rxjs/operators';
+
 import { micro } from '..';
 import { expect, FormData, fs, http, mockServer, randomPort, t, time } from '../test';
 
@@ -420,12 +420,17 @@ describe('micro (server)', () => {
       it('sync', async () => {
         const mock = await mockServer();
         const events: t.MicroEvent[] = [];
+
         mock.app.events$.subscribe((e) => events.push(e));
 
         let event1: micro.MicroRequest | undefined;
-        mock.app.request$.subscribe((e) => {
+        mock.app.request$.pipe(filter((e) => e.url === '/foo')).subscribe((e) => {
           event1 = e;
           e.modify({ context: { user: 'Sarah' } });
+        });
+
+        mock.app.request$.pipe(filter((e) => e.url === '/bar')).subscribe((e) => {
+          e.modify({ response: { status: 403, data: { error: 'Forbidden' } } });
         });
 
         let context: any;
@@ -433,16 +438,28 @@ describe('micro (server)', () => {
           context = ctx;
           return { data: { foo: 123 } };
         });
-        await http.get(mock.url('/foo'));
 
-        expect(event1 && event1.isModified).to.eql(true);
-        expect(event1 && event1.error).to.eql(undefined);
+        let count = 0;
+        mock.router.get('/bar', async (req) => {
+          count++;
+          return { data: { foo: 456 } };
+        });
+
+        await http.get(mock.url('/foo'));
+        await http.get(mock.url('/bar'));
+        await mock.dispose();
+
+        expect(event1?.isModified).to.eql(true);
+        expect(event1?.error).to.eql(undefined);
 
         const event2 = (events[1] as t.MicroResponseEvent).payload;
         expect(event2.context).to.eql({ user: 'Sarah' });
-        expect(context).to.eql({ user: 'Sarah' });
+        expect(context).to.eql(event2.context);
 
-        await mock.dispose();
+        const event3 = (events[3] as t.MicroResponseEvent).payload;
+        expect(count).to.eql(0); // NB: The handler is not called when the BEFORE event modifies the response.
+        expect(event3.res.status).to.eql(403);
+        expect(event3.res.data).to.eql({ error: 'Forbidden' });
       });
 
       it('async', async () => {
@@ -451,10 +468,16 @@ describe('micro (server)', () => {
         mock.app.events$.subscribe((e) => events.push(e));
 
         let event1: micro.MicroRequest | undefined;
-        mock.app.request$.subscribe((e) => {
+        mock.app.request$.pipe(filter((e) => e.url === '/foo')).subscribe((e) => {
           event1 = e;
           e.modify(async () => {
             return { context: { user: 'Sarah' } };
+          });
+        });
+
+        mock.app.request$.pipe(filter((e) => e.url === '/bar')).subscribe((e) => {
+          e.modify(async () => {
+            return { response: { status: 403, data: { error: 'Forbidden' } } };
           });
         });
 
@@ -463,16 +486,28 @@ describe('micro (server)', () => {
           context = ctx;
           return { data: { foo: 123 } };
         });
-        await http.get(mock.url('/foo'));
 
-        expect(event1 && event1.isModified).to.eql(true);
-        expect(event1 && event1.error).to.eql(undefined);
+        let count = 0;
+        mock.router.get('/bar', async (req) => {
+          count++;
+          return { data: { foo: 456 } };
+        });
+
+        await http.get(mock.url('/foo'));
+        await http.get(mock.url('/bar'));
+        await mock.dispose();
+
+        expect(event1?.isModified).to.eql(true);
+        expect(event1?.error).to.eql(undefined);
 
         const event2 = (events[1] as t.MicroResponseEvent).payload;
         expect(event2.context).to.eql({ user: 'Sarah' });
-        expect(context).to.eql({ user: 'Sarah' });
+        expect(context).to.eql(event2.context);
 
-        await mock.dispose();
+        const event3 = (events[3] as t.MicroResponseEvent).payload;
+        expect(count).to.eql(0); // NB: The handler is not called when the BEFORE event modifies the response.
+        expect(event3.res.status).to.eql(403);
+        expect(event3.res.data).to.eql({ error: 'Forbidden' });
       });
     });
 

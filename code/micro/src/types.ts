@@ -68,7 +68,7 @@ export type MicroRequest = {
   isModified: boolean;
   modify(input: MicroRequestModify | (() => Promise<MicroRequestModify>)): void;
 };
-export type MicroRequestModify<C extends O = O> = { context?: C };
+export type MicroRequestModify<C extends O = O> = { context?: C; response?: t.RouteResponse };
 
 export type MicroResponseEvent = {
   type: 'SERVICE/response';

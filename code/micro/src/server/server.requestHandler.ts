@@ -20,6 +20,7 @@ export function requestHandler(args: { router: t.Router; fire: t.FireEvent }): t
     const timer = time.timer();
     const method = req.method as t.HttpMethod;
     const url = req.url || '';
+    let handled: t.RouteResponse | undefined;
 
     type P = Promise<void> | undefined;
     const modifying = {
@@ -37,17 +38,18 @@ export function requestHandler(args: { router: t.Router; fire: t.FireEvent }): t
       modify(input) {
         if (input) {
           before.isModified = true;
+
+          const modify = (options: { context?: any; response?: t.RouteResponse } = {}) => {
+            if (options.context) context = options.context;
+            if (options.response) handled = options.response;
+          };
+
           if (typeof input !== 'function') {
-            if (input.context) {
-              context = input.context;
-            }
+            modify(input);
           } else {
             modifying.request = new Promise<void>(async (resolve) => {
               try {
-                const res = await input();
-                if (res.context) {
-                  context = res.context;
-                }
+                modify(await input());
                 resolve();
               } catch (error) {
                 before.error = error.message;
@@ -66,7 +68,9 @@ export function requestHandler(args: { router: t.Router; fire: t.FireEvent }): t
     }
 
     // Handle the request.
-    let handled = (await router.handler(req as unknown as t.RouteRequest, context)) || NOT_FOUND;
+    if (!handled) {
+      handled = (await router.handler(req as unknown as t.RouteRequest, context)) || NOT_FOUND;
+    }
 
     // Fire AFTER-event.
     const after: t.MicroResponse = {
