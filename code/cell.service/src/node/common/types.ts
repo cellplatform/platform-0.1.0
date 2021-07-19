@@ -6,6 +6,6 @@ export * from '@platform/fsdb.types';
 export * from '@platform/http.types';
 export * from '@platform/micro/lib/types';
 export * from '@platform/log/lib/types';
-export { Router } from '@platform/http.router/lib/types';
 
-export * from '../../types';
+export { Router } from '@platform/http.router/lib/types';
+export * from '@platform/cell.types/lib/types.Http';

@@ -18,13 +18,13 @@ export const DEFAULT: t.IHttpConfigDeployment = {
   },
 };
 
-export class Config {
-  public static DEFAULT = DEFAULT;
+export const Config = {
+  DEFAULT,
 
   /**
-   * Loads the configuration.
+   * Loads configuration data.
    */
-  public static loadSync(args: t.IHttpConfigFileArgs = {}) {
+  loadSync(args: t.IHttpConfigFileArgs = {}) {
     // Path.
     const path = args.path ? fs.resolve(args.path) : fs.resolve('config.yml');
     const dir = fs.dirname(path);
@@ -65,8 +65,8 @@ export class Config {
 
     // Finish up.
     return config;
-  }
-}
+  },
+};
 
 /**
  * [Helpers]

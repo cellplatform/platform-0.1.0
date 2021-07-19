@@ -1,5 +1,7 @@
 import { t, Json } from './common';
 
+type O = Record<string, unknown>;
+
 /**
  * Request
  */
@@ -8,7 +10,7 @@ export type HttpRequestPayload = {
   method: t.HttpMethod;
   mode?: t.HttpCors;
   headers?: t.HttpHeaders;
-  data?: Record<string, unknown> | string;
+  data?: O | string;
 };
 
 /**
@@ -27,12 +29,14 @@ export type HttpResponse = {
 
 export type HttpContentType = {
   mime: string;
-  is: {
-    json: boolean;
-    text: boolean;
-    binary: boolean;
-  };
+  is: HttpContentTypeIs;
   toString(): string;
+};
+
+export type HttpContentTypeIs = {
+  json: boolean;
+  text: boolean;
+  binary: boolean;
 };
 
 /**
@@ -42,5 +46,5 @@ export type HttpRespondPayload = {
   status: number;
   statusText?: string;
   headers?: t.HttpHeaders;
-  data?: ReadableStream<Uint8Array> | Record<string, unknown> | string;
+  data?: ReadableStream<Uint8Array> | O | string;
 };

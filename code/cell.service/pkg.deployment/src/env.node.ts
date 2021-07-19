@@ -3,10 +3,15 @@ import { s3 } from '@platform/cell.fs.s3';
 import { NeDb } from '@platform/fsdb.nedb';
 import { NodeRuntime } from '@platform/cell.runtime.node';
 
-import { server, util } from './common';
+import { Server, util, t } from './common';
 
 util.env.load();
 const TMP = util.resolve('./tmp/env.node');
+
+const authorize: t.HttpAuthorize = async (e) => {
+  console.log('TODO Sudo Check', e.url);
+  return true;
+};
 
 /**
  * Database.
@@ -48,14 +53,15 @@ const runtime = NodeRuntime.create();
 /**
  * Initialize and start the HTTP application server.
  */
-const app = server.create({
+const app = Server.create({
   name: 'cell.node',
   db,
   runtime,
   // fs: filesystem.spaces(),
   // fs: filesystem.wasabi(),
   fs: filesystem.local(),
+  authorize,
 });
 
 app.start({ port: 8080 });
-server.logger.start({ app });
+Server.logger.start({ app });
