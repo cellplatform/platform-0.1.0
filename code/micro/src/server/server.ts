@@ -15,7 +15,7 @@ const cors = require('micro-cors')(); // eslint-disable-line
  */
 export function create(
   args: {
-    log?: t.ILogProps;
+    log?: t.MicroLogProps;
     cors?: boolean;
     port?: number;
     logger?: t.ILog;
@@ -53,12 +53,12 @@ export function create(
   /**
    * [Start] the server listening for requests.
    */
-  const start: t.ServerStart = (options = {}) => {
-    const promise = new Promise<t.IMicroService>((resolve, reject) => {
+  const start: t.MicroStart = (options = {}) => {
+    const promise = new Promise<t.MicroService>((resolve, reject) => {
       const PORT = parsePort(options.port || args.port || 3000);
       const port = PORT.internal;
 
-      const stop: t.IMicroService['stop'] = () => {
+      const stop: t.MicroService['stop'] = () => {
         return new Promise<void>(async (resolve, reject) => {
           if (!service.isRunning) return resolve(); // Already stopped.
 
@@ -76,7 +76,7 @@ export function create(
         });
       };
 
-      const service: t.IMicroService = {
+      const service: t.MicroService = {
         isRunning: true,
         events$,
         request$,
@@ -121,13 +121,13 @@ export function create(
   /**
    * Stop the running micro [Service].
    */
-  const stop: t.IMicro['stop'] = async () => {
+  const stop: t.Micro['stop'] = async () => {
     if (api.service) {
       await api.service.stop();
     }
   };
 
   // Finish up.
-  const api: t.IMicro = { events$, request$, response$, server, router, handler, start, stop };
+  const api: t.Micro = { events$, request$, response$, server, router, handler, start, stop };
   return api;
 }

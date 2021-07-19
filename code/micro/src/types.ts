@@ -5,27 +5,27 @@ type O = Record<string, unknown>;
 /**
  * Server
  */
-export type ILogProps = { [key: string]: string | number | boolean | undefined };
+export type MicroLogProps = { [key: string]: string | number | boolean | undefined };
 
-export type ServerStart = (options?: {
+export type MicroStart = (options?: {
   port?: number | string; // NB: string allows for Docker style mappings <external> => <internal>. Where <internal> is used.
-  log?: ILogProps;
+  log?: MicroLogProps;
   silent?: boolean;
-}) => Promise<IMicroService>;
+}) => Promise<MicroService>;
 
-export type IMicro = {
+export type Micro = {
   server: t.Server;
   router: t.IRouter;
   handler: t.RouteHandler;
-  service?: IMicroService;
+  service?: MicroService;
   events$: t.Observable<MicroEvent>;
   request$: t.Observable<MicroRequest>;
   response$: t.Observable<MicroResponse>;
-  start: ServerStart;
+  start: MicroStart;
   stop(): Promise<void>;
 };
 
-export type IMicroService = {
+export type MicroService = {
   port: number;
   isRunning: boolean;
   events$: t.Observable<MicroEvent>;

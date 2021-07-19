@@ -66,7 +66,7 @@ describe('micro (server)', () => {
     const port = randomPort();
     await app.start({ port, silent: true });
 
-    const service = app.service as t.IMicroService;
+    const service = app.service as t.MicroService;
     expect(service.port).to.eql(port);
     expect(service.isRunning).to.eql(true);
 
