@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.service",
-  "version": "0.8.79",
+  "version": "0.8.80",
   "description": "HTTP micro-service for the operating system.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
