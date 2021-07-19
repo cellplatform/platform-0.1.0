@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
 import { expectError } from '@platform/test';
+import { filter } from 'rxjs/operators';
+
 import { micro } from '..';
 import { expect, FormData, fs, http, mockServer, randomPort, t, time } from '../test';
 
@@ -66,7 +68,7 @@ describe('micro (server)', () => {
     const port = randomPort();
     await app.start({ port, silent: true });
 
-    const service = app.service as t.IMicroService;
+    const service = app.service as t.MicroService;
     expect(service.port).to.eql(port);
     expect(service.isRunning).to.eql(true);
 
@@ -129,7 +131,7 @@ describe('micro (server)', () => {
     it('req.params', async () => {
       const test = async (route: string, path: string, expected: any) => {
         const mock = await mockServer();
-        let params: t.IRouteRequestParams | undefined;
+        let params: t.RouteRequestParams | undefined;
         mock.router.get(route, async (req) => {
           params = req.params;
           return { status: 200, data: {} };
@@ -149,7 +151,7 @@ describe('micro (server)', () => {
     it('req.query', async () => {
       const test = async (path: string, expected: any) => {
         const mock = await mockServer();
-        let query: t.IRouteRequestQuery | undefined;
+        let query: t.RouteRequestQuery | undefined;
         mock.router.get('/foo', async (req) => {
           query = req.query;
           return { status: 200, data: {} };
@@ -172,7 +174,7 @@ describe('micro (server)', () => {
 
     it('req.host', async () => {
       const mock = await mockServer();
-      let req: t.IRouteRequest | undefined;
+      let req: t.RouteRequest | undefined;
       mock.router.get('/foo', async (r) => {
         req = r;
         return {};
@@ -187,7 +189,7 @@ describe('micro (server)', () => {
 
     it('req.toUrl', async () => {
       const mock = await mockServer();
-      let req: t.IRouteRequest | undefined;
+      let req: t.RouteRequest | undefined;
       mock.router.get('/foo', async (r) => {
         req = r;
         return {};
@@ -208,7 +210,7 @@ describe('micro (server)', () => {
 
     it('req.redirect', async () => {
       const mock = await mockServer();
-      let req: t.IRouteRequest | undefined;
+      let req: t.RouteRequest | undefined;
       mock.router.get('/foo', async (r) => {
         req = r;
         return {};
@@ -235,7 +237,7 @@ describe('micro (server)', () => {
 
     it('req.header (case-insensitive)', async () => {
       const mock = await mockServer();
-      let req: t.IRouteRequest | undefined;
+      let req: t.RouteRequest | undefined;
       mock.router.get('/foo', async (r) => {
         req = r;
         return {};
@@ -257,8 +259,8 @@ describe('micro (server)', () => {
     const mock = await mockServer();
 
     let count = 0;
-    const params: t.IRouteRequestParams[] = [];
-    const queries: t.IRouteRequestQuery[] = [];
+    const params: t.RouteRequestParams[] = [];
+    const queries: t.RouteRequestQuery[] = [];
 
     mock.router.get(`/ns\\::id([A-Za-z0-9]*)(/?)`, async (req) => {
       params.push(req.params);
@@ -364,7 +366,7 @@ describe('micro (server)', () => {
       await app.start({ silent: true });
       expect(events.length).to.eql(1);
 
-      const e1 = events[0] as t.IMicroStartedEvent;
+      const e1 = events[0] as t.MicroStartedEvent;
       expect(e1.type).to.eql('SERVICE/started');
       expect(e1.payload.elapsed.msec).to.greaterThan(0);
       expect(e1.payload.port).to.eql(port);
@@ -373,7 +375,7 @@ describe('micro (server)', () => {
       await app.stop();
       expect(events.length).to.eql(2);
 
-      const e2 = events[1] as t.IMicroStoppedEvent;
+      const e2 = events[1] as t.MicroStoppedEvent;
       expect(e2.type).to.eql('SERVICE/stopped');
       expect(e2.payload.port).to.eql(port);
       expect(e2.payload.error).to.eql(undefined);
@@ -394,7 +396,7 @@ describe('micro (server)', () => {
 
       expect(events.length).to.eql(2); // [request] AND [response] events.
 
-      const e1 = events[0] as t.IMicroRequestEvent;
+      const e1 = events[0] as t.MicroRequestEvent;
       expect(e1.type).to.eql('SERVICE/request');
       expect(e1.payload.isModified).to.eql(false);
       expect(e1.payload.url).to.eql('/foo');
@@ -402,7 +404,7 @@ describe('micro (server)', () => {
       expect(e1.payload.req.url).to.eql('/foo');
       expect(e1.payload.error).to.eql(undefined);
 
-      const e2 = events[1] as t.IMicroResponseEvent;
+      const e2 = events[1] as t.MicroResponseEvent;
       expect(e2.type).to.eql('SERVICE/response');
       expect(e2.payload.isModified).to.eql(false);
       expect(e2.payload.url).to.eql('/foo');
@@ -420,12 +422,17 @@ describe('micro (server)', () => {
       it('sync', async () => {
         const mock = await mockServer();
         const events: t.MicroEvent[] = [];
+
         mock.app.events$.subscribe((e) => events.push(e));
 
-        let event1: micro.IMicroRequest | undefined;
-        mock.app.request$.subscribe((e) => {
+        let event1: micro.MicroRequest | undefined;
+        mock.app.request$.pipe(filter((e) => e.url === '/foo')).subscribe((e) => {
           event1 = e;
           e.modify({ context: { user: 'Sarah' } });
+        });
+
+        mock.app.request$.pipe(filter((e) => e.url === '/bar')).subscribe((e) => {
+          e.modify({ response: { status: 403, data: { error: 'Forbidden' } } });
         });
 
         let context: any;
@@ -433,16 +440,28 @@ describe('micro (server)', () => {
           context = ctx;
           return { data: { foo: 123 } };
         });
+
+        let count = 0;
+        mock.router.get('/bar', async (req) => {
+          count++;
+          return { data: { foo: 456 } };
+        });
+
         await http.get(mock.url('/foo'));
-
-        expect(event1 && event1.isModified).to.eql(true);
-        expect(event1 && event1.error).to.eql(undefined);
-
-        const event2 = (events[1] as t.IMicroResponseEvent).payload;
-        expect(event2.context).to.eql({ user: 'Sarah' });
-        expect(context).to.eql({ user: 'Sarah' });
-
+        await http.get(mock.url('/bar'));
         await mock.dispose();
+
+        expect(event1?.isModified).to.eql(true);
+        expect(event1?.error).to.eql(undefined);
+
+        const event2 = (events[1] as t.MicroResponseEvent).payload;
+        expect(event2.context).to.eql({ user: 'Sarah' });
+        expect(context).to.eql(event2.context);
+
+        const event3 = (events[3] as t.MicroResponseEvent).payload;
+        expect(count).to.eql(0); // NB: The handler is not called when the BEFORE event modifies the response.
+        expect(event3.res.status).to.eql(403);
+        expect(event3.res.data).to.eql({ error: 'Forbidden' });
       });
 
       it('async', async () => {
@@ -450,11 +469,17 @@ describe('micro (server)', () => {
         const events: t.MicroEvent[] = [];
         mock.app.events$.subscribe((e) => events.push(e));
 
-        let event1: micro.IMicroRequest | undefined;
-        mock.app.request$.subscribe((e) => {
+        let event1: micro.MicroRequest | undefined;
+        mock.app.request$.pipe(filter((e) => e.url === '/foo')).subscribe((e) => {
           event1 = e;
           e.modify(async () => {
             return { context: { user: 'Sarah' } };
+          });
+        });
+
+        mock.app.request$.pipe(filter((e) => e.url === '/bar')).subscribe((e) => {
+          e.modify(async () => {
+            return { response: { status: 403, data: { error: 'Forbidden' } } };
           });
         });
 
@@ -463,16 +488,28 @@ describe('micro (server)', () => {
           context = ctx;
           return { data: { foo: 123 } };
         });
+
+        let count = 0;
+        mock.router.get('/bar', async (req) => {
+          count++;
+          return { data: { foo: 456 } };
+        });
+
         await http.get(mock.url('/foo'));
-
-        expect(event1 && event1.isModified).to.eql(true);
-        expect(event1 && event1.error).to.eql(undefined);
-
-        const event2 = (events[1] as t.IMicroResponseEvent).payload;
-        expect(event2.context).to.eql({ user: 'Sarah' });
-        expect(context).to.eql({ user: 'Sarah' });
-
+        await http.get(mock.url('/bar'));
         await mock.dispose();
+
+        expect(event1?.isModified).to.eql(true);
+        expect(event1?.error).to.eql(undefined);
+
+        const event2 = (events[1] as t.MicroResponseEvent).payload;
+        expect(event2.context).to.eql({ user: 'Sarah' });
+        expect(context).to.eql(event2.context);
+
+        const event3 = (events[3] as t.MicroResponseEvent).payload;
+        expect(count).to.eql(0); // NB: The handler is not called when the BEFORE event modifies the response.
+        expect(event3.res.status).to.eql(403);
+        expect(event3.res.data).to.eql({ error: 'Forbidden' });
       });
     });
 
@@ -480,7 +517,7 @@ describe('micro (server)', () => {
       it('sync', async () => {
         const mock = await mockServer();
 
-        let event: micro.IMicroResponse | undefined;
+        let event: micro.MicroResponse | undefined;
         mock.app.response$.subscribe((e) => {
           event = e;
           e.modify({
@@ -505,7 +542,7 @@ describe('micro (server)', () => {
       it('async', async () => {
         const mock = await mockServer();
 
-        let event: micro.IMicroResponse | undefined;
+        let event: micro.MicroResponse | undefined;
         mock.app.response$.subscribe((e) => {
           event = e;
           e.modify(async () => {

@@ -1,5 +1,6 @@
 import { log } from '@platform/log/lib/client';
 import { Url } from '@platform/util.string/lib/Url';
+
 import * as t from './types';
 
 /**
@@ -9,6 +10,7 @@ import * as t from './types';
  *    https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker
  *    https://love2dev.com/blog/service-worker-cache
  *    https://developers.google.com/web/tools/workbox
+ *    https://developers.google.com/web/fundamentals/primers/service-workers/lifecycle
  *
  * Service worker types:
  *    https://gist.github.com/tiernan/c18a380935e45a6d942ac1e88c5bbaf3
@@ -43,6 +45,7 @@ export const BundleCache = {
         return {
           match: (url: string) => cache.match(url),
           put: (request: RequestInfo, response: Response) => cache.put(request, response),
+          add: (request: RequestInfo) => cache.add(request),
         };
       },
     };
@@ -51,12 +54,12 @@ export const BundleCache = {
   /**
    * Initializes a service worker cache.
    */
-  serviceWorker(window: Window, options: { log?: boolean | 'verbose'; localhost?: boolean } = {}) {
-    const ctx = window as unknown as ServiceWorker;
-    const hostname = window.location.hostname;
+  serviceWorker(self: Window, options: { log?: boolean | 'verbose'; localhost?: boolean } = {}) {
+    const ctx = self as unknown as ServiceWorker;
+    const hostname = self.location.hostname;
 
     const verbose = (...items: any[]) => {
-      if (options.log === 'verbose') log.info(items);
+      if (options.log === 'verbose') log.info(...items);
     };
 
     if (hostname === 'localhost' && !options.localhost) {
@@ -64,7 +67,20 @@ export const BundleCache = {
       return;
     }
 
-    ctx.addEventListener('fetch', async (event) => {
+    /**
+     * Ensure the module can immediately start using the cache.
+     * https://developer.mozilla.org/en-US/docs/Web/API/Clients/claim
+     */
+    const handleActivate = (event: Event) => {
+      const e = event as t.ActivateEvent;
+      const clients = (self as any).clients;
+      if (typeof clients.claim === 'function') e.waitUntil(clients.claim());
+    };
+
+    /**
+     * Retrieve a URL via the cache.
+     */
+    const handleFetch = async (event: Event) => {
       const e = event as t.FetchEvent;
       const url = BundleCache.url(e.request);
 
@@ -77,7 +93,7 @@ export const BundleCache = {
       };
 
       if (!isCacheable(url)) {
-        verbose(`Explicilty not caching: ${url}`);
+        verbose(`Explicilty not caching (excluded): ${url}`);
         return e.respondWith(fetch(e.request));
       }
 
@@ -88,7 +104,7 @@ export const BundleCache = {
           const cached = await cache.match(url.toString());
 
           if (cached) {
-            verbose(`From cache: ${url}`);
+            verbose(`🐘 From cache: ${url}`);
             return cached;
           }
 
@@ -96,13 +112,16 @@ export const BundleCache = {
 
           if (e.request.method === 'GET') {
             cache.put(e.request, fetched.clone());
-            verbose(`Saved to cache: ${url}`);
+            verbose(`🐘 Saved to cache: ${url}`);
           }
 
           return fetched;
         }),
       );
-    });
+    };
+
+    ctx.addEventListener('activate', handleActivate);
+    ctx.addEventListener('fetch', handleFetch);
 
     return { ctx };
   },

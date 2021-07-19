@@ -1,34 +1,36 @@
 import * as t from './common/types';
 
+type O = Record<string, unknown>;
+
 /**
  * Server
  */
-export type ILogProps = { [key: string]: string | number | boolean | undefined };
+export type MicroLogProps = { [key: string]: string | number | boolean | undefined };
 
-export type ServerStart = (options?: {
+export type MicroStart = (options?: {
   port?: number | string; // NB: string allows for Docker style mappings <external> => <internal>. Where <internal> is used.
-  log?: ILogProps;
+  log?: MicroLogProps;
   silent?: boolean;
-}) => Promise<IMicroService>;
+}) => Promise<MicroService>;
 
-export type IMicro = {
+export type Micro = {
   server: t.Server;
-  router: t.IRouter;
+  router: t.Router;
   handler: t.RouteHandler;
-  service?: IMicroService;
+  service?: MicroService;
   events$: t.Observable<MicroEvent>;
-  request$: t.Observable<IMicroRequest>;
-  response$: t.Observable<IMicroResponse>;
-  start: ServerStart;
+  request$: t.Observable<MicroRequest>;
+  response$: t.Observable<MicroResponse>;
+  start: MicroStart;
   stop(): Promise<void>;
 };
 
-export type IMicroService = {
+export type MicroService = {
   port: number;
   isRunning: boolean;
   events$: t.Observable<MicroEvent>;
-  request$: t.Observable<IMicroRequest>;
-  response$: t.Observable<IMicroResponse>;
+  request$: t.Observable<MicroRequest>;
+  response$: t.Observable<MicroResponse>;
   stop(): Promise<void>;
 };
 
@@ -37,49 +39,49 @@ export type IMicroService = {
  */
 
 export type MicroEvent =
-  | IMicroStartedEvent
-  | IMicroStoppedEvent
-  | IMicroRequestEvent
-  | IMicroResponseEvent;
+  | MicroStartedEvent
+  | MicroStoppedEvent
+  | MicroRequestEvent
+  | MicroResponseEvent;
 
-export type IMicroStartedEvent = {
+export type MicroStartedEvent = {
   type: 'SERVICE/started';
-  payload: IMicroStarted;
+  payload: MicroStarted;
 };
-export type IMicroStarted = { elapsed: t.IDuration; port: number };
+export type MicroStarted = { elapsed: t.IDuration; port: number };
 
-export type IMicroStoppedEvent = {
+export type MicroStoppedEvent = {
   type: 'SERVICE/stopped';
-  payload: IMicroStopped;
+  payload: MicroStopped;
 };
-export type IMicroStopped = { elapsed: t.IDuration; port: number; error?: string };
+export type MicroStopped = { elapsed: t.IDuration; port: number; error?: string };
 
-export type IMicroRequestEvent = {
+export type MicroRequestEvent = {
   type: 'SERVICE/request';
-  payload: IMicroRequest;
+  payload: MicroRequest;
 };
-export type IMicroRequest = {
+export type MicroRequest = {
   method: t.HttpMethod;
   url: string;
   req: t.IncomingMessage;
   error?: string;
   isModified: boolean;
-  modify(input: IMicroRequestModify | (() => Promise<IMicroRequestModify>)): void;
+  modify(input: MicroRequestModify | (() => Promise<MicroRequestModify>)): void;
 };
-export type IMicroRequestModify<C extends Record<string, unknown> = any> = { context?: C };
+export type MicroRequestModify<C extends O = O> = { context?: C; response?: t.RouteResponse };
 
-export type IMicroResponseEvent = {
+export type MicroResponseEvent = {
   type: 'SERVICE/response';
-  payload: IMicroResponse;
+  payload: MicroResponse;
 };
-export type IMicroResponse<C extends Record<string, unknown> = any> = {
+export type MicroResponse<C extends O = O> = {
   elapsed: t.IDuration;
   method: t.HttpMethod;
   url: string;
   req: t.IncomingMessage;
-  res: t.IRouteResponse;
+  res: t.RouteResponse;
   error?: string;
   isModified: boolean;
   context: C;
-  modify(input: t.IRouteResponse | (() => Promise<t.IRouteResponse>)): void;
+  modify(input: t.RouteResponse | (() => Promise<t.RouteResponse>)): void;
 };

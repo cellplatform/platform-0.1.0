@@ -6,14 +6,14 @@ import { t, value as valueUtil } from '../common';
  * See:
  *    https://github.com/mscdex/busboy#busboy-methods
  */
-export function form(req: t.IRouteRequest, options: t.IParseBodyFormOptions = {}) {
-  return new Promise<t.IForm>((resolve) => {
+export function form(req: t.RouteRequest, options: t.ParseBodyFormOptions = {}) {
+  return new Promise<t.Form>((resolve) => {
     const { headers } = req;
     const { limits } = options;
     const busboy = new Busboy({ headers, limits });
 
-    const fields: t.IFormField[] = [];
-    const files: t.IFormFile[] = [];
+    const fields: t.FormField[] = [];
+    const files: t.FormFile[] = [];
 
     /**
      * Files

@@ -15,8 +15,6 @@ export function Connection(args: {
   const id = cuid();
   const { docs } = args;
 
-  console.log('id', id);
-
   const encode = args.encode || JSON.stringify;
   const decode = args.decode || JSON.parse;
 

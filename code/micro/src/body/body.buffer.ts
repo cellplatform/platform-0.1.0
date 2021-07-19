@@ -12,7 +12,7 @@ type R = string | Buffer;
  */
 export async function buffer(
   req: t.IncomingMessage,
-  options: t.IParseBodyBufferOptions = {},
+  options: t.ParseBodyBufferOptions = {},
 ): Promise<R> {
   try {
     const body = await parse(req, options);

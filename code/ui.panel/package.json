@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.panel",
-  "version": "0.2.41",
+  "version": "0.2.49",
   "scripts": {
     "start": "parcel src/test.parcel/index.html",
     "test": "ts test",
@@ -12,14 +12,14 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/css": "^0.4.40",
-    "@platform/react": "0.4.73"
+    "@platform/css": "^0.4.48",
+    "@platform/react": "0.4.81"
   },
   "devDependencies": {
-    "@platform/test": "0.2.6",
-    "@platform/ts": "4.1.13",
-    "@platform/ui.button": "^0.3.108",
-    "@platform/ui.dev": "^0.0.47"
+    "@platform/test": "0.2.8",
+    "@platform/ts": "4.1.21",
+    "@platform/ui.button": "^0.3.116",
+    "@platform/ui.dev": "^0.0.55"
   },
   "files": [
     "lib",

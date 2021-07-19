@@ -1,6 +1,6 @@
 import { NeDb } from '@platform/fsdb.nedb';
 import { local } from '@platform/cell.fs.local';
-import { IMicro, IMicroService, micro } from '@platform/micro';
+import { micro } from '@platform/micro';
 
 import { util, t, Schema, HttpClient } from '../common';
 import { Router } from '..';
@@ -9,9 +9,9 @@ import { port as portUtil } from './util.port';
 export type IMock = {
   db: t.IDb;
   fs: t.IFileSystem;
-  app: IMicro;
-  router: t.IRouter;
-  service: IMicroService;
+  app: t.Micro;
+  router: t.Router;
+  service: t.MicroService;
   filename: string;
   hostname: string;
   host: string;

@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 const { resolve } = require('path');
-const { fs } = require('@platform/fs');
+const { readJsonSync } = require('fs-extra');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: resolve(process.cwd(), '../.env') });
@@ -95,7 +95,7 @@ const Configure = {
    */
   titles() {
     const item = config.makers.find((item) => item.name === '@electron-forge/maker-dmg');
-    const pkg = fs.readJsonSync(resolve(process.cwd(), 'package.json'));
+    const pkg = readJsonSync(resolve(process.cwd(), 'package.json'));
     item.config.title = `${config.packagerConfig.name} - v${pkg.version}`;
   },
 

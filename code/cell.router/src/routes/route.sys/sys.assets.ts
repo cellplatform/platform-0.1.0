@@ -3,7 +3,7 @@ import { ERROR, fs, routes, t, util } from '../common';
 /**
  * Root information.
  */
-export function init(args: { router: t.IRouter; title?: string; deployedAt?: number }) {
+export function init(args: { router: t.Router; title?: string; deployedAt?: number }) {
   const { router } = args;
   let favicon: Buffer | undefined;
 

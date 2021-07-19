@@ -93,7 +93,7 @@ export class HttpClient implements t.IHttpClient {
   public readonly dispose$ = this._dispose$.asObservable();
 
   private readonly urls: t.IUrls;
-  private readonly http: t.IHttp;
+  private readonly http: t.Http;
 
   /**
    * [Methods]

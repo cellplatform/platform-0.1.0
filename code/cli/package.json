@@ -1,6 +1,6 @@
 {
   "name": "@platform/cli",
-  "version": "0.5.74",
+  "version": "0.5.82",
   "description": "Tools for building CLI (command-line-interfaces).",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,21 +13,21 @@
     "example": "ts-node -T example/cmds $@"
   },
   "dependencies": {
-    "@platform/cli.prompt": "0.3.47",
-    "@platform/exec": "0.3.2",
-    "@platform/fs": "0.6.13",
-    "@platform/libs": "0.2.10",
-    "@platform/log": "0.1.52",
-    "@platform/util.value": "0.9.0",
-    "@types/inquirer": "7.3.1",
+    "@platform/cli.prompt": "0.3.55",
+    "@platform/exec": "0.3.10",
+    "@platform/fs": "0.7.3",
+    "@platform/libs": "0.2.12",
+    "@platform/log": "0.1.60",
+    "@platform/util.value": "0.9.8",
+    "@types/inquirer": "7.3.3",
     "@types/yargs": "16.0.1",
-    "inquirer": "8.0.0",
+    "inquirer": "8.1.2",
     "listr": "0.14.3",
     "yargs": "17.0.1"
   },
   "devDependencies": {
-    "@platform/test": "0.2.6",
-    "@platform/ts": "4.1.13"
+    "@platform/test": "0.2.8",
+    "@platform/ts": "4.1.21"
   },
   "files": [
     "lib",

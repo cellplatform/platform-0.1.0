@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.service",
-  "version": "0.8.70",
+  "version": "0.8.79",
   "description": "HTTP micro-service for the operating system.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -24,24 +24,24 @@
     "cmd": "node lib/node.cli $@"
   },
   "dependencies": {
-    "@platform/cell.router": "0.9.33",
-    "@platform/cell.schema": "0.5.89",
-    "@platform/cell.types": "0.5.86",
-    "@platform/cell.typesystem": "0.0.208",
-    "@platform/cli": "0.5.74",
-    "@platform/exec": "0.3.2",
-    "@platform/fs": "0.6.13",
-    "@platform/http": "0.14.19",
-    "@platform/libs": "0.2.10",
-    "@platform/micro": "0.16.15",
-    "@platform/types": "0.5.21",
-    "@platform/util.value": "0.9.0"
+    "@platform/cell.router": "0.9.42",
+    "@platform/cell.schema": "0.5.98",
+    "@platform/cell.types": "0.5.95",
+    "@platform/cell.typesystem": "0.0.217",
+    "@platform/cli": "0.5.82",
+    "@platform/exec": "0.3.10",
+    "@platform/fs": "0.7.3",
+    "@platform/http": "0.14.27",
+    "@platform/libs": "0.2.12",
+    "@platform/micro": "0.16.23",
+    "@platform/types": "0.5.23",
+    "@platform/util.value": "0.9.8"
   },
   "devDependencies": {
-    "@platform/fsdb.nedb": "1.3.162",
-    "@platform/npm": "0.4.8",
-    "@platform/test": "0.2.6",
-    "@platform/ts": "4.1.13"
+    "@platform/fsdb.nedb": "1.3.170",
+    "@platform/npm": "0.4.16",
+    "@platform/test": "0.2.8",
+    "@platform/ts": "4.1.21"
   },
   "files": [
     "lib",

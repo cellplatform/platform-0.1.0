@@ -1,9 +1,4 @@
 const ctx: ServiceWorker = self as any;
 
-ctx.addEventListener('install', (e) => {
-  console.log('🚀 service-worker installed:', e);
-});
-
-ctx.addEventListener('fetch', async (e) => {
-  // console.log('fetch:', e);
-});
+import { BundleCache } from '@platform/cell.runtime.web/lib/BundleCache';
+BundleCache.serviceWorker(self, { log: 'verbose', localhost: false });

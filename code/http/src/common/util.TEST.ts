@@ -3,7 +3,7 @@ import * as util from './util';
 
 describe('util', () => {
   it('headerValue', () => {
-    const test = (key: string, headers: t.IHttpHeaders | undefined, expected: any) => {
+    const test = (key: string, headers: t.HttpHeaders | undefined, expected: any) => {
       const res = util.headerValue(key, headers);
       expect(res).to.eql(expected);
     };
@@ -18,7 +18,7 @@ describe('util', () => {
   });
 
   it('isFormData', () => {
-    const test = (headers: t.IHttpHeaders | undefined, expected: boolean) => {
+    const test = (headers: t.HttpHeaders | undefined, expected: boolean) => {
       const res = util.isFormData(headers);
       expect(res).to.eql(expected);
     };

@@ -110,7 +110,7 @@ export async function start() {
     /**
      * Finish up.
      */
-    await ConfigFile.log.updateStarted();
+    await ConfigFile.log.started();
     log.info.gray(`✨ ${log.white('Startup Complete')} [${timer.elapsed.toString()}]`);
   } catch (error) {
     log.error('🐷 Failed on startup:');

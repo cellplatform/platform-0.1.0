@@ -4,11 +4,11 @@ import { constants, micro, t, Schema } from '../common';
  * Make common checks/adjustments to responses
  * before they are sent over the wire.
  */
-export function beforeResponse(args: { router: t.IRouter }) {
+export function beforeResponse(args: { router: t.Router }) {
   const { router } = args;
   const routes = Schema.Urls.routes;
 
-  return (e: micro.IMicroResponse) => {
+  return (e: micro.MicroResponse) => {
     const { method, url } = e;
     const changes: Record<string, any> = {};
     const { system } = constants.getSystem();
@@ -19,14 +19,17 @@ export function beforeResponse(args: { router: t.IRouter }) {
      * Adjust system info.
      */
     if (match && routes.SYS.INFO.includes(match.path)) {
-      res = { ...res, data: { ...res.data, system } };
-      changes.res = res;
+      const ok = e.res.status?.toString().startsWith('2');
+      if (ok) {
+        res = { ...res, data: { ...res.data, system } };
+        changes.res = res;
+      }
     }
 
     /**
      * Add standard headers.
      */
-    let headers: t.IHttpHeaders = { ...(e.res.headers || {}), system };
+    let headers: t.HttpHeaders = { ...(e.res.headers || {}), system };
 
     if (!headers['cache-control']) {
       headers = {

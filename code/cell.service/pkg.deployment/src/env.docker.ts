@@ -2,7 +2,7 @@ import { local } from '@platform/cell.fs.local';
 import { NeDb } from '@platform/fsdb.nedb';
 import { NodeRuntime } from '@platform/cell.runtime.node';
 
-import { server, util } from './common';
+import { Server, util } from './common';
 
 const env = process.env;
 const datadir = util.resolve('./.data');
@@ -31,7 +31,7 @@ const runtime = NodeRuntime.create();
 /**
  * Initialize and start the HTTP application server.
  */
-const app = server.create({
+const app = Server.create({
   name: env.SERVER_NAME || 'sample',
   db,
   fs,
@@ -39,4 +39,4 @@ const app = server.create({
 });
 
 app.start({ port: env.PORT || 5000 });
-server.logger.start({ app });
+Server.logger.start({ app });

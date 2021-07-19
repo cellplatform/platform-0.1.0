@@ -1,8 +1,8 @@
 import { t, Json } from './common';
 
-export type HttpFetch = (req: t.IHttpRequestPayload) => Promise<t.IHttpFetchResponse>;
+export type HttpFetch = (req: t.HttpRequestPayload) => Promise<t.HttpFetchResponse>;
 
-export type IHttpFetchResponse = {
+export type HttpFetchResponse = {
   status: number;
   statusText?: string;
   headers: Headers;

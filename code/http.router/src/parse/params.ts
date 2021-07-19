@@ -4,7 +4,7 @@ import { t, value } from '../common';
  * Parse URL parameters.
  */
 export function params<T extends Record<string, unknown>>(args: {
-  route: t.IRoute;
+  route: t.Route;
   path: string;
 }): T {
   const { route } = args;
@@ -39,6 +39,7 @@ const normalizePathname = (pathname: string) => {
     decodeURI(pathname)
       // Replaces repeated slashes in the URL.
       .replace(/\/+/g, '/')
+
       // Reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
       // Note: Missing native IE support, may want to skip this step.
       .normalize()

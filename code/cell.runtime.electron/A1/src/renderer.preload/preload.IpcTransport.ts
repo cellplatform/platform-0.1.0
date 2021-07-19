@@ -1,6 +1,6 @@
 import { ipcRenderer as ipc } from 'electron';
 import { NetworkPump } from '@platform/cell.types/lib/types.Bus/types.NetworkPump';
-import { ElectronEnvTransport } from '@platform/cell.types/lib/types.Runtime.electron/types.env';
+import { ElectronEnvTransport } from '@platform/cell.types/lib/types.Runtime.Electron/types.env';
 
 import { IpcEvent, IpcMessageEvent, IpcSystemReqEvent } from './types';
 

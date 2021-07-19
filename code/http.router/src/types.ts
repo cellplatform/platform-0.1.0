@@ -4,27 +4,25 @@ import { IncomingMessage } from './types.lib';
 /**
  * Router
  */
-export type IRouterArgs = {
-  body: t.BodyParser;
-};
+export type RouterArgs = { body: t.BodyParser };
 
-export type IRouter<C extends Record<string, unknown> = any> = {
-  readonly routes: IRoute<C>[];
+export type Router<C extends Record<string, unknown> = any> = {
+  readonly routes: Route<C>[];
   readonly handler: RouteHandler<C>;
-  add(method: t.HttpMethod, path: RoutePath, handler: RouteHandler): IRouter<C>;
-  get(path: RoutePath, handler: RouteHandler<C>): IRouter<C>;
-  put(path: RoutePath, handler: RouteHandler<C>): IRouter<C>;
-  post(path: RoutePath, handler: RouteHandler<C>): IRouter<C>;
-  delete(path: RoutePath, handler: RouteHandler<C>): IRouter<C>;
-  wildcard(handler: RouteHandler<C>): IRouter<C>;
-  find(req: { method?: string; url?: string }): IRoute<C> | undefined;
+  add(method: t.HttpMethod, path: RoutePath, handler: RouteHandler): Router<C>;
+  get(path: RoutePath, handler: RouteHandler<C>): Router<C>;
+  put(path: RoutePath, handler: RouteHandler<C>): Router<C>;
+  post(path: RoutePath, handler: RouteHandler<C>): Router<C>;
+  delete(path: RoutePath, handler: RouteHandler<C>): Router<C>;
+  wildcard(handler: RouteHandler<C>): Router<C>;
+  find(req: { method?: string; url?: string }): Route<C> | undefined;
 };
 export type RoutePath = string | string[];
 
 /**
  * Route (definition)
  */
-export type IRoute<C extends Record<string, unknown> = any> = {
+export type Route<C extends Record<string, unknown> = any> = {
   readonly method: t.HttpMethod;
   readonly path: string;
   readonly handler: RouteHandler<C>;
@@ -37,80 +35,77 @@ export type IRoute<C extends Record<string, unknown> = any> = {
  * Handler
  */
 export type RouteHandler<C extends Record<string, unknown> = any> = (
-  req: IRouteRequest,
+  req: RouteRequest,
   context: C,
-) => Promise<IRouteResponse | undefined>;
+) => Promise<RouteResponse | undefined>;
 
 /**
  * Request
  */
-export type IRouteRequest = IncomingMessage & {
+export type RouteRequest = IncomingMessage & {
   host: string;
-  params: IRouteRequestParams;
-  query: IRouteRequestQuery;
-  body: IRouteRequestBody;
-} & IRouteRequestMethods;
+  params: RouteRequestParams;
+  query: RouteRequestQuery;
+  body: RouteRequestBody;
+} & RouteRequestMethods;
 
-export type IRouteRequestMethods = {
+export type RouteRequestMethods = {
   header(key: string): string;
   toUrl(path: string): string;
-  redirect(
-    path: string,
-    options?: { headers?: t.IHttpHeaders; status?: 307 | 303 },
-  ): IRouteResponse;
+  redirect(path: string, options?: { headers?: t.HttpHeaders; status?: 307 | 303 }): RouteResponse;
 };
 
-export type IRouteRequestParams = { [key: string]: string | number | boolean };
-export type IRouteRequestQuery = {
+export type RouteRequestParams = { [key: string]: string | number | boolean };
+export type RouteRequestQuery = {
   [key: string]: string | number | boolean | (string | number | boolean)[];
 };
 
 /**
  * Response
  */
-export type IRouteResponse = {
+export type RouteResponse = {
   status?: number;
   data?: any;
-  headers?: t.IHttpHeaders;
+  headers?: t.HttpHeaders;
 };
 
 /**
  * Body
  */
-export type IRouteRequestBody = {
-  json<T>(options?: IParseBodyJsonOptions<T>): Promise<T>;
-  buffer(options?: IParseBodyBufferOptions): Promise<string | Uint8Array>; // NB: in node [Uint8Array] is a [Buffer].
-  form(options?: IParseBodyFormOptions): Promise<IForm>;
+export type RouteRequestBody = {
+  json<T>(options?: ParseBodyJsonOptions<T>): Promise<T>;
+  buffer(options?: ParseBodyBufferOptions): Promise<string | Uint8Array>; // NB: in node [Uint8Array] is a [Buffer].
+  form(options?: ParseBodyFormOptions): Promise<Form>;
 };
 
-export type IParseBodyJsonOptions<T> = { default?: T; limit?: string | number; encoding?: string };
-export type IParseBodyFormOptions = { limits?: IFormLimits };
-export type IParseBodyBufferOptions = {
+export type ParseBodyJsonOptions<T> = { default?: T; limit?: string | number; encoding?: string };
+export type ParseBodyFormOptions = { limits?: FormLimits };
+export type ParseBodyBufferOptions = {
   default?: string | Buffer;
   limit?: string | number;
   encoding?: string;
 };
 
 export type BodyParser = {
-  json<T>(req: t.IncomingMessage, options?: t.IParseBodyJsonOptions<T>): Promise<T>;
-  form(req: t.IncomingMessage, options?: t.IParseBodyFormOptions): Promise<IForm>;
-  buffer(req: t.IncomingMessage, options?: t.IParseBodyBufferOptions): Promise<string | Uint8Array>;
+  json<T>(req: t.IncomingMessage, options?: t.ParseBodyJsonOptions<T>): Promise<T>;
+  form(req: t.IncomingMessage, options?: t.ParseBodyFormOptions): Promise<Form>;
+  buffer(req: t.IncomingMessage, options?: t.ParseBodyBufferOptions): Promise<string | Uint8Array>;
 };
 
 /**
  * Form
  */
-export type IForm = {
-  fields: IFormField[];
-  files: IFormFile[];
+export type Form = {
+  fields: FormField[];
+  files: FormFile[];
 };
 
-export type IFormField = {
+export type FormField = {
   key: string;
   value: t.Json;
 };
 
-export type IFormFile = {
+export type FormFile = {
   field: string;
   name: string;
   encoding: string;
@@ -118,7 +113,7 @@ export type IFormFile = {
   buffer: Buffer;
 };
 
-export type IFormLimits = {
+export type FormLimits = {
   fieldNameSize?: number;
   fieldSize?: number;
   fields?: number;

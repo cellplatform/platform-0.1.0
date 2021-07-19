@@ -17,7 +17,7 @@ import { tmpHandler } from '../__TMP__/tmpHandler'; // TEMP 🐷
 export function init(args: {
   db: t.IDb;
   fs: t.IFileSystem;
-  router: t.IRouter;
+  router: t.Router;
   runtime?: t.RuntimeEnv;
   name?: string;
   deployedAt?: number;

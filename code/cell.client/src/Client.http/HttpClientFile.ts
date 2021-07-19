@@ -6,7 +6,7 @@ import { t, util } from '../common';
 export function HttpClientFile(args: {
   uri: t.IFileUri;
   urls: t.IUrls;
-  http: t.IHttp;
+  http: t.Http;
 }): t.IHttpClientFile {
   const { uri, urls, http } = args;
 

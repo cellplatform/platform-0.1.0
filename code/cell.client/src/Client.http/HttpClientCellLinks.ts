@@ -7,7 +7,7 @@ export * from './HttpClientCellLinks.info';
 export function HttpClientCellLinks(args: {
   uri: t.ICellUri;
   urls: t.IUrls;
-  http: t.IHttp;
+  http: t.Http;
   getInfo: () => Promise<t.IHttpClientResponse<t.IResGetCell>>;
 }): t.IHttpClientCellLinks {
   const { uri, urls, http } = args;

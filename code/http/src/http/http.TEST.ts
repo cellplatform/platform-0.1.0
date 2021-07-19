@@ -80,7 +80,7 @@ describe('http', () => {
   describe('events (observable)', () => {
     it('BEFORE event', async () => {
       const client = http.create();
-      const events: t.IHttpBefore[] = [];
+      const events: t.HttpBefore[] = [];
 
       client.before$.subscribe((e) => e.respond({ status: 200 })); // Fake.
       client.before$.subscribe((e) => events.push(e));
@@ -94,7 +94,7 @@ describe('http', () => {
 
     it('AFTER event: respond sync (object/json)', async () => {
       const client = http.create();
-      const events: t.IHttpAfter[] = [];
+      const events: t.HttpAfter[] = [];
 
       client.before$.subscribe((e) => {
         // Fake response.
@@ -123,7 +123,7 @@ describe('http', () => {
 
     it('AFTER event: respond async function (object/json)', async () => {
       const client = http.create();
-      const events: t.IHttpAfter[] = [];
+      const events: t.HttpAfter[] = [];
 
       client.before$.subscribe((e) => {
         // Fake response.
@@ -156,7 +156,7 @@ describe('http', () => {
 
     it('AFTER event: respond sync function (file/binary)', async () => {
       const client = http.create();
-      const events: t.IHttpAfter[] = [];
+      const events: t.HttpAfter[] = [];
 
       const image1 = await fs.readFile(fs.resolve('src/test/assets/kitten.jpg'));
       const image2 = await fs.readFile(fs.resolve('src/test/assets/bird.png'));
@@ -193,7 +193,7 @@ describe('http', () => {
 
     it('AFTER event: respond (string)', async () => {
       const client = http.create();
-      const events: t.IHttpAfter[] = [];
+      const events: t.HttpAfter[] = [];
 
       client.before$.subscribe((e) => {
         // Fake response.
@@ -222,7 +222,7 @@ describe('http', () => {
 
     it('AFTER event: respond (<empty>)', async () => {
       const client = http.create();
-      const events: t.IHttpAfter[] = [];
+      const events: t.HttpAfter[] = [];
 
       client.before$.subscribe((e) => {
         // Fake response.
@@ -285,7 +285,7 @@ describe('http', () => {
 
   describe('verbs', () => {
     let events: t.HttpEvent[] = [];
-    let client: t.IHttp;
+    let client: t.Http;
 
     beforeEach(() => {
       events = [];
@@ -441,7 +441,7 @@ describe('http', () => {
     });
 
     it('injected [fetch] function', async () => {
-      const requests: t.IHttpRequestPayload[] = [];
+      const requests: t.HttpRequestPayload[] = [];
       const data = { msg: 'hello' };
       const fetch: t.HttpFetch = async (req) => {
         requests.push(req);
@@ -489,13 +489,13 @@ describe('http', () => {
     const testServer = () => {
       const port = randomPort();
       const instance = createServer((req, res) => {
-        api.headers = req.headers as t.IHttpHeaders;
+        api.headers = req.headers as t.HttpHeaders;
         res.writeHead(200).end();
       }).listen(port);
       const api = {
         port,
         instance,
-        headers: {} as unknown as t.IHttpHeaders,
+        headers: {} as unknown as t.HttpHeaders,
         dispose: () => instance.close(),
       };
       return api;
@@ -505,7 +505,7 @@ describe('http', () => {
       const server = testServer();
       const client = http.create({ headers: { foo: 'one' } });
 
-      const events: t.IHttpBefore[] = [];
+      const events: t.HttpBefore[] = [];
       client.before$.subscribe((e) => {
         events.push(e);
         e.modify.header('foo', 'abc');
@@ -531,7 +531,7 @@ describe('http', () => {
     it('headers.merge (multiple times, cumulative)', async () => {
       const server = testServer();
       const client = http.create({ headers: { foo: 'one', bar: 'abc', zoo: 'zoo' } });
-      const events: t.IHttpBefore[] = [];
+      const events: t.HttpBefore[] = [];
 
       client.before$.subscribe((e) => {
         events.push(e);
@@ -556,7 +556,7 @@ describe('http', () => {
       const server = testServer();
       const client = http.create({ headers: { foo: 'one' } });
 
-      const events: t.IHttpBefore[] = [];
+      const events: t.HttpBefore[] = [];
       client.before$.subscribe((e) => {
         events.push(e);
         e.modify.headers.replace({ foo: 'two', baz: 'baz' });

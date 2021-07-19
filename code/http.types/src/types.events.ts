@@ -1,42 +1,45 @@
 import { t, IDuration } from './common';
 
 export type HttpRespondInput =
-  | t.IHttpRespondPayload
-  | (() => t.IHttpRespondPayload)
-  | (() => Promise<t.IHttpRespondPayload>);
+  | t.HttpRespondPayload
+  | (() => t.HttpRespondPayload)
+  | (() => Promise<t.HttpRespondPayload>);
 
-export type IHttpModify = {
+export type HttpModify = {
   header(key: string, value: string): void;
   headers: {
-    merge(headers: t.IHttpHeaders): void;
-    replace(headers: t.IHttpHeaders): void;
+    merge(headers: t.HttpHeaders): void;
+    replace(headers: t.HttpHeaders): void;
   };
 };
 
 /**
  * Events
  */
-export type HttpEvent = IHttpBeforeEvent | IHttpAfterEvent;
+export type HttpEvent = HttpBeforeEvent | HttpAfterEvent;
 
-export type IHttpBeforeEvent = { type: 'HTTP/before'; payload: IHttpBefore };
-export type IHttpBefore = {
+export type HttpBeforeEvent = {
+  type: 'HTTP/before';
+  payload: HttpBefore;
+};
+export type HttpBefore = {
   uid: string;
   method: t.HttpMethod;
   url: string;
   data?: any;
-  headers: t.IHttpHeaders;
+  headers: t.HttpHeaders;
   isModified: boolean;
-  modify: t.IHttpModify;
+  modify: t.HttpModify;
   respond(payload: HttpRespondInput): void; // NB: Used for mocking/testing or providing alternative `fetch` implementations.
 };
 
-export type IHttpAfterEvent = { type: 'HTTP/after'; payload: IHttpAfter };
-export type IHttpAfter = {
+export type HttpAfterEvent = { type: 'HTTP/after'; payload: HttpAfter };
+export type HttpAfter = {
   uid: string;
   method: t.HttpMethod;
   url: string;
   ok: boolean;
   status: number;
-  response: t.IHttpResponse;
+  response: t.HttpResponse;
   elapsed: IDuration;
 };

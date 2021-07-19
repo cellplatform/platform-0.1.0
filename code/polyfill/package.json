@@ -1,17 +1,17 @@
 {
   "name": "@platform/polyfill",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "Standard JS polyfills.",
   "main": "polyfill.js",
   "scripts": {
     "test": "echo no-op"
   },
   "dependencies": {
-    "core-js": "3.12.1",
+    "core-js": "3.15.2",
     "regenerator-runtime": "0.13.7"
   },
   "devDependencies": {
-    "@platform/ts.libs": "4.2.2"
+    "@platform/ts.libs": "4.3.1"
   },
   "files": [
     "polyfill.js"

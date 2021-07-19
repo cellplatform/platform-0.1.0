@@ -6,7 +6,7 @@ import { exec } from './handler.exec';
 /**
  * Routes for executing a function within the environment runtime.
  */
-export function init(args: { db: t.IDb; router: t.IRouter; runtime?: t.RuntimeEnv }) {
+export function init(args: { db: t.IDb; router: t.Router; runtime?: t.RuntimeEnv }) {
   const { db, router, runtime } = args;
 
   /**

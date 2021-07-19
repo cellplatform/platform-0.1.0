@@ -1,6 +1,6 @@
 import { local } from '@platform/cell.fs.local';
 import { NodeRuntime } from '@platform/cell.runtime.node';
-import { server } from '@platform/cell.service/lib/node/server';
+import { Server } from '@platform/cell.service/lib/node/server';
 import { NeDb } from '@platform/fsdb.nedb';
 import { filter } from 'rxjs/operators';
 
@@ -17,7 +17,7 @@ export const SystemServer = {
     const { prod = false } = options;
     const paths = { ...Paths.data({ prod }), ...options.paths };
 
-    const app = server.create({
+    const app = Server.create({
       name: 'main',
       db: NeDb.create({ filename: paths.db }),
       fs: local.init({ dir: paths.fs, fs }),

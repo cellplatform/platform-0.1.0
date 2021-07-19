@@ -11,7 +11,7 @@ type L = t.IHttpClientCellLink;
 export function HttpClientCellLinksInfo(args: {
   links: t.ICellData['links'];
   urls: t.IUrls;
-  http: t.IHttp;
+  http: t.Http;
 }): t.IHttpClientCellLinksInfo {
   const { urls, http, links = {} } = args;
   const list = Object.keys(links).map((key) => toLink({ urls, http, key, value: links[key] }));
@@ -42,7 +42,7 @@ export function HttpClientCellLinksInfo(args: {
 
 function toLink(args: {
   urls: t.IUrls;
-  http: t.IHttp;
+  http: t.Http;
   key: string;
   value: string;
 }): t.IHttpClientCellLink {

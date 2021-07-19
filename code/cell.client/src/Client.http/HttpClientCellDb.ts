@@ -9,7 +9,7 @@ type O = Record<string, unknown>;
 export function HttpClientCellDb(args: {
   parent: t.IHttpClientCell;
   urls: t.IUrls;
-  http: t.IHttp;
+  http: t.Http;
 }): t.IHttpClientCellDb {
   const { parent, urls, http } = args;
   const uri = parent.uri;

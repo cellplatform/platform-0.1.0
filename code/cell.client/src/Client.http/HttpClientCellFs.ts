@@ -12,7 +12,7 @@ type GetError = (args: { status: number }) => string;
 export function HttpClientCellFs(args: {
   parent: t.IHttpClientCell;
   urls: t.IUrls;
-  http: t.IHttp;
+  http: t.Http;
 }): t.IHttpClientCellFs {
   const { parent, urls, http } = args;
   const uri = parent.uri;

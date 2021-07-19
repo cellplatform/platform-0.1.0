@@ -4,7 +4,7 @@ import { t, util } from '../common';
  * Delete (or unlink) files.
  */
 export async function deleteFiles(args: {
-  http: t.IHttp;
+  http: t.Http;
   urls: t.IUrlsCell;
   filename: string | string[];
   action: t.IReqDeleteCellFsBody['action'];

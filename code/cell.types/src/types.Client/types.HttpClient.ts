@@ -27,8 +27,8 @@ export type HttpClient = {
  */
 export type IHttpClient = t.IDisposable & {
   readonly origin: string;
-  readonly request$: t.Observable<t.IHttpBefore>;
-  readonly response$: t.Observable<t.IHttpAfter>;
+  readonly request$: t.Observable<t.HttpBefore>;
+  readonly response$: t.Observable<t.HttpAfter>;
   info<T extends t.IResGetSysInfo>(): t.IHttpClientAsync<T>;
   ns(input: string | t.INsUri | t.ICoordUri | t.IFileUri): IHttpClientNs;
   cell(input: string | t.ICellUri): IHttpClientCell;
@@ -36,7 +36,7 @@ export type IHttpClient = t.IDisposable & {
   toString(): string;
 };
 
-export type IHttpClientOptions = { host?: string | number; http?: t.IHttp };
+export type IHttpClientOptions = { host?: string | number; http?: t.Http };
 
 /**
  * Namespace

@@ -9,7 +9,7 @@ type R = t.IHttpClientCellFileUploadResponse;
  */
 export function uploadFiles(args: {
   input: t.IHttpClientCellFileUpload | t.IHttpClientCellFileUpload[];
-  http: t.IHttp;
+  http: t.Http;
   urls: t.IUrls;
   cellUri: string;
   changes?: boolean;

@@ -193,7 +193,7 @@ export class GraphqlClient implements t.IGqlClient {
     });
   };
 
-  private onHeader = async (headers: t.IHttpHeaders = {}): Promise<t.IHttpHeaders> => {
+  private onHeader = async (headers: t.HttpHeaders = {}): Promise<t.HttpHeaders> => {
     const from = { ...headers };
     let to = { ...from };
 

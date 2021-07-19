@@ -11,6 +11,24 @@ export { dispose };
 type N = t.ITreeviewNode;
 type E = t.TreeviewEvent;
 
+type T = {
+  id: string;
+  node: t.ITreeviewNode;
+  props: t.ITreeviewNodeProps;
+  parent: T;
+  children: t.ITreeviewNode[];
+  index: number;
+  isRoot: boolean;
+  isFirst: boolean;
+  isLast: boolean;
+  isInlineAndOpen: boolean;
+  prev: T | undefined;
+  next: T | undefined;
+  sibling(index: number): T | undefined;
+  deepestOpenChild(pos: 'FIRST' | 'LAST'): T;
+  nearestNonLastAncestor: T | undefined;
+};
+
 /**
  * Wrangle input options for a strategy.
  */
@@ -61,7 +79,7 @@ export function get(tree: t.ITreeState) {
     const id = typeof input === 'string' ? input : input?.id || '';
     const cache: Record<string, any> = {};
 
-    const api = {
+    const api: T = {
       id,
       get node(): t.ITreeviewNode {
         return cache.node || (cache.node = query.findById(id));
@@ -112,7 +130,6 @@ export function get(tree: t.ITreeState) {
       },
     };
 
-    type T = typeof api;
     return api;
   };
 

@@ -36,7 +36,7 @@ export function parseJson(args: { url: string; text: string }) {
 /**
  * Converts a simple object to a raw fetch [Headers].
  */
-export function toRawHeaders(input?: t.IHttpHeaders) {
+export function toRawHeaders(input?: t.HttpHeaders) {
   const obj = { ...(input || {}) } as any;
   Object.keys(obj).forEach((key) => {
     obj[key] = obj[key].toString();
@@ -47,7 +47,7 @@ export function toRawHeaders(input?: t.IHttpHeaders) {
 /**
  * Converts fetch [Headers] to a simple object.
  */
-export function fromRawHeaders(input: Headers): t.IHttpHeaders {
+export function fromRawHeaders(input: Headers): t.HttpHeaders {
   const hasEntries = typeof input.entries === 'function';
 
   const obj = hasEntries
@@ -62,7 +62,7 @@ export function fromRawHeaders(input: Headers): t.IHttpHeaders {
 }
 
 const walkHeaderEntries = (input: Headers) => {
-  const res: t.IHttpHeaders = {};
+  const res: t.HttpHeaders = {};
   const entries = input.entries();
   let next: IteratorResult<[string, string], any> | undefined;
   do {
@@ -78,7 +78,7 @@ const walkHeaderEntries = (input: Headers) => {
 /**
  * Retrieve the value for the given header.
  */
-export function headerValue(key: string, headers: t.IHttpHeaders = {}) {
+export function headerValue(key: string, headers: t.HttpHeaders = {}) {
   key = key.trim().toLowerCase();
   const match =
     Object.keys(headers)
@@ -90,7 +90,7 @@ export function headerValue(key: string, headers: t.IHttpHeaders = {}) {
 /**
  * Determine if the given headers reperesents form data.
  */
-export function isFormData(headers: t.IHttpHeaders = {}) {
+export function isFormData(headers: t.HttpHeaders = {}) {
   const contentType = headerValue('content-type', headers);
   return contentType.includes('multipart/form-data');
 }
@@ -105,11 +105,11 @@ export function isStream(value?: ReadableStream<Uint8Array>) {
 
 export const response = {
   /**
-   * Convert a [IHttpRespondPayload] fetch result to a proper [IHttpResponse] object.
+   * Convert a [HttpRespondPayload] fetch result to a proper [HttpResponse] object.
    */
   async fromPayload(
-    payload: t.IHttpRespondPayload,
-    modifications: { data?: any; headers?: t.IHttpHeaders } = {},
+    payload: t.HttpRespondPayload,
+    modifications: { data?: any; headers?: t.HttpHeaders } = {},
   ) {
     const { status, statusText = '' } = payload;
     const data = payload.data || modifications.data;
@@ -142,7 +142,7 @@ export const response = {
     let text = '';
     let json = '';
 
-    const res: t.IHttpFetchResponse = {
+    const res: t.HttpFetchResponse = {
       status,
       statusText,
       headers: toRawHeaders(head),
@@ -159,9 +159,9 @@ export const response = {
   },
 
   /**
-   * Convert a "response like" fetch result to a proper [IHttpResponse] object.
+   * Convert a "response like" fetch result to a proper [HttpResponse] object.
    */
-  async fromFetch(res: t.IHttpFetchResponse) {
+  async fromFetch(res: t.HttpFetchResponse) {
     const { status } = res;
     const ok = status.toString()[0] === '2';
     const body = res.body || undefined;
@@ -173,7 +173,7 @@ export const response = {
     const text = contentType.is.text ? await res.text() : '';
     const json = contentType.is.json ? await res.json() : '';
 
-    const result: t.IHttpResponse = {
+    const result: t.HttpResponse = {
       ok,
       status,
       statusText,
@@ -190,9 +190,9 @@ export const response = {
   /**
    * Derives content-type details from the given headers.
    */
-  toContentType(headers: t.IHttpHeaders): t.IHttpContentType {
+  toContentType(headers: t.HttpHeaders): t.HttpContentType {
     const mime = headerValue('content-type', headers);
-    const res: t.IHttpContentType = {
+    const res: t.HttpContentType = {
       mime,
       is: {
         get json() {

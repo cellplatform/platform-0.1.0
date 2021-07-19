@@ -66,7 +66,7 @@ describe('HttpClient', () => {
     it('uses given [IHttpClient]', () => {
       const http = Http.create({ headers: { foo: 'hello' } });
       const client = HttpClient.create({ http });
-      const clientHttp = (client as any).http as t.IHttp;
+      const clientHttp = (client as any).http as t.Http;
       expect(clientHttp).to.equal(http);
       expect(clientHttp.headers.foo).to.eql('hello');
     });

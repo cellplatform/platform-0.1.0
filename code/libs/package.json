@@ -1,17 +1,17 @@
 {
   "name": "@platform/libs",
-  "version": "0.2.10",
+  "version": "0.2.12",
   "description": "Common external toolbelt libs used accross modules.",
   "scripts": {
     "test": "echo no-op"
   },
   "dependencies": {
-    "@types/ramda": "0.27.40",
+    "@types/ramda": "0.27.44",
     "ramda": "0.27.1",
-    "rxjs": "7.0.1"
+    "rxjs": "7.2.0"
   },
   "devDependencies": {
-    "@platform/ts.libs": "4.2.2"
+    "@platform/ts.libs": "4.3.1"
   },
   "files": [],
   "license": "MIT"

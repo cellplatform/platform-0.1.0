@@ -2,7 +2,7 @@ import { send } from 'micro';
 
 import { t, time } from '../common';
 
-const NOT_FOUND: t.IRouteResponse = {
+const NOT_FOUND: t.RouteResponse = {
   status: 404,
   data: { status: 404, message: 'Not found' },
 };
@@ -10,7 +10,7 @@ const NOT_FOUND: t.IRouteResponse = {
 /**
  * Handles an HTTP request.
  */
-export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): t.RouteHandler {
+export function requestHandler(args: { router: t.Router; fire: t.FireEvent }): t.RouteHandler {
   const { router, fire } = args;
 
   return async (incoming, outgoing) => {
@@ -20,6 +20,7 @@ export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): 
     const timer = time.timer();
     const method = req.method as t.HttpMethod;
     const url = req.url || '';
+    let handled: t.RouteResponse | undefined;
 
     type P = Promise<void> | undefined;
     const modifying = {
@@ -29,7 +30,7 @@ export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): 
 
     // Fire BEFORE-event.
     let context: any = {};
-    const before: t.IMicroRequest = {
+    const before: t.MicroRequest = {
       isModified: false,
       method,
       url,
@@ -37,17 +38,18 @@ export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): 
       modify(input) {
         if (input) {
           before.isModified = true;
+
+          const modify = (options: { context?: any; response?: t.RouteResponse } = {}) => {
+            if (options.context) context = options.context;
+            if (options.response) handled = options.response;
+          };
+
           if (typeof input !== 'function') {
-            if (input.context) {
-              context = input.context;
-            }
+            modify(input);
           } else {
             modifying.request = new Promise<void>(async (resolve) => {
               try {
-                const res = await input();
-                if (res.context) {
-                  context = res.context;
-                }
+                modify(await input());
                 resolve();
               } catch (error) {
                 before.error = error.message;
@@ -66,10 +68,12 @@ export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): 
     }
 
     // Handle the request.
-    let handled = (await router.handler(req as unknown as t.IRouteRequest, context)) || NOT_FOUND;
+    if (!handled) {
+      handled = (await router.handler(req as unknown as t.RouteRequest, context)) || NOT_FOUND;
+    }
 
     // Fire AFTER-event.
-    const after: t.IMicroResponse = {
+    const after: t.MicroResponse = {
       elapsed: timer.elapsed,
       isModified: false,
       context,
@@ -129,7 +133,7 @@ function redirect(res: t.ServerResponse, statusCode: number, location: string) {
   res.end();
 }
 
-function setHeaders(res: t.ServerResponse, headers?: t.IHttpHeaders) {
+function setHeaders(res: t.ServerResponse, headers?: t.HttpHeaders) {
   if (headers) {
     Object.keys(headers).forEach((key) => res.setHeader(key, headers[key]));
   }

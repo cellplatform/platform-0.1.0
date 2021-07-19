@@ -108,8 +108,6 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
           },
         };
 
-        console.log('base audio constraints', base.audio);
-
         const constraints = R.mergeDeepRight(base, e.constraints || {}) as M;
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         refs[ref] = { kind: 'video', ref, media: stream, constraints };

@@ -143,14 +143,16 @@ export type ICommandInvokeSetEvent<
   type: 'COMMAND/invoke/set';
   payload: ICommandInvokeSet<P, A>;
 };
-export type ICommandInvokeSet<P extends ICommandProps = any, A extends t.CommandArgsOptions = any> =
-  {
-    command: ICommand<P, A>;
-    invokeId: string;
-    key: keyof P;
-    value: P[keyof P];
-    props: P;
-  };
+export type ICommandInvokeSet<
+  P extends ICommandProps = any,
+  A extends t.CommandArgsOptions = any,
+> = {
+  command: ICommand<P, A>;
+  invokeId: string;
+  key: keyof P;
+  value: P[keyof P];
+  props: P;
+};
 
 export type ICommandInvokeAfterEvent<
   P extends ICommandProps = any,

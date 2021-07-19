@@ -4,24 +4,24 @@ import { t, Observable } from './common';
  * Client (HTTP)
  */
 export type HttpCors = 'cors' | 'no-cors' | 'same-origin';
-export type HttpCreate = (options?: IHttpCreateOptions) => IHttp;
+export type HttpCreate = (options?: HttpCreateOptions) => Http;
 
-export type IHttpCreateOptions = IHttpOptions & { fetch?: t.HttpFetch };
-export type IHttpOptions = { headers?: t.IHttpHeaders; mode?: HttpCors };
+export type HttpCreateOptions = HttpOptions & { fetch?: t.HttpFetch };
+export type HttpOptions = { headers?: t.HttpHeaders; mode?: HttpCors };
 
-export type IHttp = IHttpMethods & {
+export type Http = HttpMethods & {
   create: HttpCreate;
-  headers: t.IHttpHeaders;
+  headers: t.HttpHeaders;
   events$: Observable<t.HttpEvent>;
-  before$: Observable<t.IHttpBefore>;
-  after$: Observable<t.IHttpAfter>;
+  before$: Observable<t.HttpBefore>;
+  after$: Observable<t.HttpAfter>;
 };
 
-export type IHttpMethods = {
-  head(url: string, options?: IHttpOptions): Promise<t.IHttpResponse>;
-  get(url: string, options?: IHttpOptions): Promise<t.IHttpResponse>;
-  put(url: string, data?: any, options?: IHttpOptions): Promise<t.IHttpResponse>;
-  post(url: string, data?: any, options?: IHttpOptions): Promise<t.IHttpResponse>;
-  patch(url: string, data?: any, options?: IHttpOptions): Promise<t.IHttpResponse>;
-  delete(url: string, data?: any, options?: IHttpOptions): Promise<t.IHttpResponse>;
+export type HttpMethods = {
+  head(url: string, options?: HttpOptions): Promise<t.HttpResponse>;
+  get(url: string, options?: HttpOptions): Promise<t.HttpResponse>;
+  put(url: string, data?: any, options?: HttpOptions): Promise<t.HttpResponse>;
+  post(url: string, data?: any, options?: HttpOptions): Promise<t.HttpResponse>;
+  patch(url: string, data?: any, options?: HttpOptions): Promise<t.HttpResponse>;
+  delete(url: string, data?: any, options?: HttpOptions): Promise<t.HttpResponse>;
 };

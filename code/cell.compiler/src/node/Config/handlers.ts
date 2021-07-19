@@ -8,6 +8,7 @@ import {
   semver,
   t,
   value as valueUtil,
+  readJsonSync,
 } from '../common';
 import { wp } from '../config.webpack';
 import { filesMethods } from './handlers.files';
@@ -295,7 +296,7 @@ const findVariant = (model: t.CompilerModel, name: string) => {
 function loadPackageJson(cwd: string) {
   const path = fs.join(cwd, 'package.json');
   const exists = fs.existsSync(path);
-  return exists ? (fs.readJsonSync(path) as t.INpmPackageJson) : undefined;
+  return exists ? (readJsonSync(path) as t.INpmPackageJson) : undefined;
 }
 
 function writePathMap<M extends O>(

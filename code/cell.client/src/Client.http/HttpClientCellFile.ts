@@ -6,7 +6,7 @@ import { ERROR, Schema, t, util } from '../common';
 export function HttpClientCellFile(args: {
   parent: t.IHttpClientCell;
   urls: t.IUrls;
-  http: t.IHttp;
+  http: t.Http;
   path: string;
 }): t.IHttpClientCellFile {
   const { parent, urls, http, path } = args;

@@ -1,4 +1,4 @@
-import { IMicroRequest } from '@platform/micro';
+import { MicroRequest } from '@platform/micro';
 import * as semver from 'semver';
 
 import { createMock, expect, Http, HttpClient, t, testFiles, time } from '../../test';
@@ -9,7 +9,7 @@ describe('HttpClient', () => {
       const mock = await createMock();
       const client = mock.client;
 
-      const requests: IMicroRequest[] = [];
+      const requests: MicroRequest[] = [];
       mock.service.request$.subscribe((e) => requests.push(e));
       await client.cell('cell:foo:A1').info();
       await mock.dispose();
@@ -37,8 +37,8 @@ describe('HttpClient', () => {
       const http = Http.create({ headers: { foo: 'hello' } });
       const client = HttpClient.create({ http, host: mock.port });
 
-      const headers: t.IHttpHeaders[] = [];
-      mock.service.request$.subscribe((e) => headers.push(e.req.headers as t.IHttpHeaders));
+      const headers: t.HttpHeaders[] = [];
+      mock.service.request$.subscribe((e) => headers.push(e.req.headers as t.HttpHeaders));
 
       const res = await client.info();
       await mock.dispose();
