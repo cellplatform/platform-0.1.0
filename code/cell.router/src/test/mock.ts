@@ -88,9 +88,7 @@ export const createMock = async (
     async dispose(args: { delete?: boolean } = {}) {
       await tryIgnore(() => db.dispose());
       await tryIgnore(() => app.stop());
-      if (args.delete) {
-        await tryIgnore(() => util.fs.remove(filename));
-      }
+      if (args.delete) await tryIgnore(() => util.fs.remove(filename));
     },
   };
   return mock;

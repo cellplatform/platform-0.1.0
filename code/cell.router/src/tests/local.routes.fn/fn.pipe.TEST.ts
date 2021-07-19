@@ -1,5 +1,5 @@
 import { expect, t } from '../../test';
-import { prepare, samples, uploadBundle, ISamplePipeValue } from './util';
+import { prepare, Samples, uploadBundle, ISamplePipeValue } from './util';
 
 describe('/fn:run (pipes)', function () {
   this.timeout(999999);
@@ -9,7 +9,7 @@ describe('/fn:run (pipes)', function () {
    */
   before(async () => {
     const force = false;
-    await samples.pipe.bundle(force);
+    await Samples.pipe.bundle(force);
   });
 
   describe('[list] - serial execution', () => {
@@ -17,7 +17,7 @@ describe('/fn:run (pipes)', function () {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, samples.pipe.outdir, bundle);
+      await uploadBundle(client, Samples.pipe.outdir, bundle);
 
       const body: t.IReqPostFuncBody = [
         { host, uri, dir },
@@ -42,7 +42,7 @@ describe('/fn:run (pipes)', function () {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, samples.pipe.outdir, bundle);
+      await uploadBundle(client, Samples.pipe.outdir, bundle);
 
       const input1: t.RuntimeIn<ISamplePipeValue> = {
         value: { count: 99 },
@@ -79,7 +79,7 @@ describe('/fn:run (pipes)', function () {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, samples.pipe.outdir, bundle);
+      await uploadBundle(client, Samples.pipe.outdir, bundle);
 
       const input: t.RuntimeIn<ISamplePipeValue> = {
         value: { count: 100, msg: 'hello' },
@@ -114,7 +114,7 @@ describe('/fn:run (pipes)', function () {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, samples.pipe.outdir, bundle);
+      await uploadBundle(client, Samples.pipe.outdir, bundle);
 
       const value: ISamplePipeValue = { count: -1 }; // NB: -1 causes error within script.
       const body: t.IReqPostFuncBody = [
@@ -138,7 +138,7 @@ describe('/fn:run (pipes)', function () {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, samples.pipe.outdir, bundle);
+      await uploadBundle(client, Samples.pipe.outdir, bundle);
 
       const value: ISamplePipeValue = { count: -1 }; // NB: -1 causes error within script.
       const body: t.IReqPostFuncBody = [
@@ -167,7 +167,7 @@ describe('/fn:run (pipes)', function () {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, samples.pipe.outdir, bundle);
+      await uploadBundle(client, Samples.pipe.outdir, bundle);
 
       const body: t.IReqPostFuncBody = {
         1: { host, uri, dir },
@@ -192,7 +192,7 @@ describe('/fn:run (pipes)', function () {
       const dir = 'foo';
       const { mock, bundle, client, http, url } = await prepare({ dir });
       const { host, uri } = bundle;
-      await uploadBundle(client, samples.pipe.outdir, bundle);
+      await uploadBundle(client, Samples.pipe.outdir, bundle);
 
       const value: ISamplePipeValue = { count: -1 }; // NB: -1 causes error within script.
       const body: t.IReqPostFuncBody = {
