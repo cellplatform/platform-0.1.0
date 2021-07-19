@@ -1,5 +1,7 @@
 import * as t from './common/types';
 
+type O = Record<string, unknown>;
+
 /**
  * Server
  */
@@ -17,8 +19,8 @@ export type IMicro = {
   handler: t.RouteHandler;
   service?: IMicroService;
   events$: t.Observable<MicroEvent>;
-  request$: t.Observable<IMicroRequest>;
-  response$: t.Observable<IMicroResponse>;
+  request$: t.Observable<MicroRequest>;
+  response$: t.Observable<MicroResponse>;
   start: ServerStart;
   stop(): Promise<void>;
 };
@@ -27,8 +29,8 @@ export type IMicroService = {
   port: number;
   isRunning: boolean;
   events$: t.Observable<MicroEvent>;
-  request$: t.Observable<IMicroRequest>;
-  response$: t.Observable<IMicroResponse>;
+  request$: t.Observable<MicroRequest>;
+  response$: t.Observable<MicroResponse>;
   stop(): Promise<void>;
 };
 
@@ -37,42 +39,42 @@ export type IMicroService = {
  */
 
 export type MicroEvent =
-  | IMicroStartedEvent
-  | IMicroStoppedEvent
-  | IMicroRequestEvent
-  | IMicroResponseEvent;
+  | MicroStartedEvent
+  | MicroStoppedEvent
+  | MicroRequestEvent
+  | MicroResponseEvent;
 
-export type IMicroStartedEvent = {
+export type MicroStartedEvent = {
   type: 'SERVICE/started';
-  payload: IMicroStarted;
+  payload: MicroStarted;
 };
-export type IMicroStarted = { elapsed: t.IDuration; port: number };
+export type MicroStarted = { elapsed: t.IDuration; port: number };
 
-export type IMicroStoppedEvent = {
+export type MicroStoppedEvent = {
   type: 'SERVICE/stopped';
-  payload: IMicroStopped;
+  payload: MicroStopped;
 };
-export type IMicroStopped = { elapsed: t.IDuration; port: number; error?: string };
+export type MicroStopped = { elapsed: t.IDuration; port: number; error?: string };
 
-export type IMicroRequestEvent = {
+export type MicroRequestEvent = {
   type: 'SERVICE/request';
-  payload: IMicroRequest;
+  payload: MicroRequest;
 };
-export type IMicroRequest = {
+export type MicroRequest = {
   method: t.HttpMethod;
   url: string;
   req: t.IncomingMessage;
   error?: string;
   isModified: boolean;
-  modify(input: IMicroRequestModify | (() => Promise<IMicroRequestModify>)): void;
+  modify(input: MicroRequestModify | (() => Promise<MicroRequestModify>)): void;
 };
-export type IMicroRequestModify<C extends Record<string, unknown> = any> = { context?: C };
+export type MicroRequestModify<C extends O = O> = { context?: C };
 
-export type IMicroResponseEvent = {
+export type MicroResponseEvent = {
   type: 'SERVICE/response';
-  payload: IMicroResponse;
+  payload: MicroResponse;
 };
-export type IMicroResponse<C extends Record<string, unknown> = any> = {
+export type MicroResponse<C extends O = O> = {
   elapsed: t.IDuration;
   method: t.HttpMethod;
   url: string;

@@ -29,7 +29,7 @@ export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): 
 
     // Fire BEFORE-event.
     let context: any = {};
-    const before: t.IMicroRequest = {
+    const before: t.MicroRequest = {
       isModified: false,
       method,
       url,
@@ -69,7 +69,7 @@ export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): 
     let handled = (await router.handler(req as unknown as t.IRouteRequest, context)) || NOT_FOUND;
 
     // Fire AFTER-event.
-    const after: t.IMicroResponse = {
+    const after: t.MicroResponse = {
       elapsed: timer.elapsed,
       isModified: false,
       context,

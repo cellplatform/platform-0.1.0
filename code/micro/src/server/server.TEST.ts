@@ -364,7 +364,7 @@ describe('micro (server)', () => {
       await app.start({ silent: true });
       expect(events.length).to.eql(1);
 
-      const e1 = events[0] as t.IMicroStartedEvent;
+      const e1 = events[0] as t.MicroStartedEvent;
       expect(e1.type).to.eql('SERVICE/started');
       expect(e1.payload.elapsed.msec).to.greaterThan(0);
       expect(e1.payload.port).to.eql(port);
@@ -373,7 +373,7 @@ describe('micro (server)', () => {
       await app.stop();
       expect(events.length).to.eql(2);
 
-      const e2 = events[1] as t.IMicroStoppedEvent;
+      const e2 = events[1] as t.MicroStoppedEvent;
       expect(e2.type).to.eql('SERVICE/stopped');
       expect(e2.payload.port).to.eql(port);
       expect(e2.payload.error).to.eql(undefined);
@@ -394,7 +394,7 @@ describe('micro (server)', () => {
 
       expect(events.length).to.eql(2); // [request] AND [response] events.
 
-      const e1 = events[0] as t.IMicroRequestEvent;
+      const e1 = events[0] as t.MicroRequestEvent;
       expect(e1.type).to.eql('SERVICE/request');
       expect(e1.payload.isModified).to.eql(false);
       expect(e1.payload.url).to.eql('/foo');
@@ -402,7 +402,7 @@ describe('micro (server)', () => {
       expect(e1.payload.req.url).to.eql('/foo');
       expect(e1.payload.error).to.eql(undefined);
 
-      const e2 = events[1] as t.IMicroResponseEvent;
+      const e2 = events[1] as t.MicroResponseEvent;
       expect(e2.type).to.eql('SERVICE/response');
       expect(e2.payload.isModified).to.eql(false);
       expect(e2.payload.url).to.eql('/foo');
@@ -422,7 +422,7 @@ describe('micro (server)', () => {
         const events: t.MicroEvent[] = [];
         mock.app.events$.subscribe((e) => events.push(e));
 
-        let event1: micro.IMicroRequest | undefined;
+        let event1: micro.MicroRequest | undefined;
         mock.app.request$.subscribe((e) => {
           event1 = e;
           e.modify({ context: { user: 'Sarah' } });
@@ -438,7 +438,7 @@ describe('micro (server)', () => {
         expect(event1 && event1.isModified).to.eql(true);
         expect(event1 && event1.error).to.eql(undefined);
 
-        const event2 = (events[1] as t.IMicroResponseEvent).payload;
+        const event2 = (events[1] as t.MicroResponseEvent).payload;
         expect(event2.context).to.eql({ user: 'Sarah' });
         expect(context).to.eql({ user: 'Sarah' });
 
@@ -450,7 +450,7 @@ describe('micro (server)', () => {
         const events: t.MicroEvent[] = [];
         mock.app.events$.subscribe((e) => events.push(e));
 
-        let event1: micro.IMicroRequest | undefined;
+        let event1: micro.MicroRequest | undefined;
         mock.app.request$.subscribe((e) => {
           event1 = e;
           e.modify(async () => {
@@ -468,7 +468,7 @@ describe('micro (server)', () => {
         expect(event1 && event1.isModified).to.eql(true);
         expect(event1 && event1.error).to.eql(undefined);
 
-        const event2 = (events[1] as t.IMicroResponseEvent).payload;
+        const event2 = (events[1] as t.MicroResponseEvent).payload;
         expect(event2.context).to.eql({ user: 'Sarah' });
         expect(context).to.eql({ user: 'Sarah' });
 
@@ -480,7 +480,7 @@ describe('micro (server)', () => {
       it('sync', async () => {
         const mock = await mockServer();
 
-        let event: micro.IMicroResponse | undefined;
+        let event: micro.MicroResponse | undefined;
         mock.app.response$.subscribe((e) => {
           event = e;
           e.modify({
@@ -505,7 +505,7 @@ describe('micro (server)', () => {
       it('async', async () => {
         const mock = await mockServer();
 
-        let event: micro.IMicroResponse | undefined;
+        let event: micro.MicroResponse | undefined;
         mock.app.response$.subscribe((e) => {
           event = e;
           e.modify(async () => {

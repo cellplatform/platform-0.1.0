@@ -35,12 +35,12 @@ export function create(
   const events$ = _events$.pipe();
   const request$ = _events$.pipe(
     filter((e) => e.type === 'SERVICE/request'),
-    map((e) => e.payload as t.IMicroRequest),
+    map((e) => e.payload as t.MicroRequest),
     share(),
   );
   const response$ = _events$.pipe(
     filter((e) => e.type === 'SERVICE/response'),
-    map((e) => e.payload as t.IMicroResponse),
+    map((e) => e.payload as t.MicroResponse),
     share(),
   );
   const fire: t.FireEvent = (e) => _events$.next(e);
