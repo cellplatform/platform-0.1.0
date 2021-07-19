@@ -1,2 +1,2 @@
-import { BundleCache } from '../cache/BundleCache';
-BundleCache.serviceWorker(self, { log: 'verbose', localhost: true });
+import { BundleCache } from '@platform/cell.runtime.web/lib/BundleCache';
+BundleCache.serviceWorker(self, { log: 'verbose', localhost: false });
