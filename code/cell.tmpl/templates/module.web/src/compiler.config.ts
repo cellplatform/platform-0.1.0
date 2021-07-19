@@ -10,7 +10,7 @@ export default () =>
         .target('web')
         .port(Package.compiler.port)
 
-        .entry('main', './src/entry/dom')
+        .entry('main', './src/entry/main')
         .entry('service.worker', './src/workers/service.worker')
         .entry('web.worker', './src/workers/web.worker')
 
