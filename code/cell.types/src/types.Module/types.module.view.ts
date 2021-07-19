@@ -40,12 +40,15 @@ export type ViewModule = {
  * TreeNode Properties
  * The way a UI module is expressed as props within a tree-node.
  */
-export type IViewModuleProps<D extends O = O, V extends S = S, R extends S = S> =
-  t.IModuleProps<D> & {
-    view?: V;
-    region?: R;
-    treeview?: ITreeviewNodeProps;
-  };
+export type IViewModuleProps<
+  D extends O = O,
+  V extends S = S,
+  R extends S = S,
+> = t.IModuleProps<D> & {
+  view?: V;
+  region?: R;
+  treeview?: ITreeviewNodeProps;
+};
 export type IViewModulePropsAny = t.IViewModuleProps<any, string, string>;
 
 /**

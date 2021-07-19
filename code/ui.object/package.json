@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.object",
   "description": "Visual display of javascript object.",
-  "version": "0.0.246",
+  "version": "0.0.254",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -14,12 +14,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.4.73",
+    "@platform/react": "0.4.81",
     "react-inspector": "5.1.1"
   },
   "devDependencies": {
-    "@platform/polyfill": "0.0.3",
-    "@platform/ts": "4.1.13",
+    "@platform/polyfill": "0.0.5",
+    "@platform/ts": "4.1.21",
     "electron": "13.1.7"
   },
   "files": [

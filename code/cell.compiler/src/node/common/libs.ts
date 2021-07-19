@@ -30,3 +30,5 @@ export { Path, format } from '@platform/cell.runtime.node/lib/common';
 
 import semver from 'semver';
 export { semver };
+
+export { readJsonSync, appendFileSync } from 'fs-extra';

@@ -7,7 +7,7 @@ const writeFile = async (path: string, text = 'message: hello\n') => {
 };
 
 const expectExists = async (path: string, includesText?: string) => {
-  expect(await fs.pathExists(path)).to.eql(true, `Path should exist '${path}'`);
+  expect(await fs.exists(path)).to.eql(true, `Path should exist '${path}'`);
   if (includesText) {
     const text = await fs.readFile(path, 'utf8');
     expect(text.includes(includesText)).to.eql(true, `Text should include '${includesText}'`);

@@ -6,10 +6,10 @@ import { getTypes } from './handler.typesystem';
 /**
  * Namespace routes.
  */
-export function init(args: { fs: t.IFileSystem; db: t.IDb; router: t.IRouter }) {
+export function init(args: { fs: t.IFileSystem; db: t.IDb; router: t.Router }) {
   const { fs, db, router } = args;
 
-  const getParams = (req: t.IRouteRequest) => {
+  const getParams = (req: t.RouteRequest) => {
     const params = req.params as t.IUrlParamsNs;
     const id = (params.ns || '').toString();
 

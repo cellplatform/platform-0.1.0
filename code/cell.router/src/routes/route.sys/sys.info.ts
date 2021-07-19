@@ -3,7 +3,7 @@ import { constants, fs, routes, t, id, defaultValue, Schema } from '../common';
 /**
  * Root information.
  */
-export function init(args: { router: t.IRouter; name?: string; deployedAt?: number }) {
+export function init(args: { router: t.Router; name?: string; deployedAt?: number }) {
   const { router } = args;
 
   /**

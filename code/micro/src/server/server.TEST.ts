@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import { expectError } from '@platform/test';
 import { filter } from 'rxjs/operators';
 

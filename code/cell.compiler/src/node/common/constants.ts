@@ -1,4 +1,4 @@
-import { fs } from './libs';
+import { fs, readJsonSync } from './libs';
 import * as t from './types';
 const env = fs.env.value;
 
@@ -16,13 +16,13 @@ const CONFIG = {
 
 export const PKG = {
   PATH: fs.resolve('./package.json'),
-  load: () => fs.readJsonSync(PKG.PATH) as t.CompilerPackageJson,
+  load: () => readJsonSync(PKG.PATH) as t.CompilerPackageJson,
 };
 
 export const COMPILER = {
   PATH: fs.join(__dirname, '../../../package.json'),
   load() {
-    const { name, version } = fs.readJsonSync(COMPILER.PATH) as t.INpmPackageJson;
+    const { name, version } = readJsonSync(COMPILER.PATH) as t.INpmPackageJson;
     return { name, version };
   },
 };

@@ -1,6 +1,6 @@
 {
   "name": "@platform/state.types",
-  "version": "0.1.5",
+  "version": "0.1.13",
   "description": "Abstract type definitions for the state library.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,11 +14,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/types": "0.5.21"
+    "@platform/types": "0.5.23"
   },
   "devDependencies": {
-    "@platform/test": "0.2.6",
-    "@platform/ts": "4.1.13"
+    "@platform/test": "0.2.8",
+    "@platform/ts": "4.1.21"
   },
   "files": [
     "lib",

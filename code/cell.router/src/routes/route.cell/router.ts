@@ -6,7 +6,7 @@ import { getParams } from './params';
 /**
  * Routes for operating on a single cell (CELL | ROW | COLUMN).
  */
-export function init(args: { db: t.IDb; router: t.IRouter }) {
+export function init(args: { db: t.IDb; router: t.Router }) {
   const { db, router } = args;
 
   /**

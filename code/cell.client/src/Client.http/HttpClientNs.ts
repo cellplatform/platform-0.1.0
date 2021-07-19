@@ -1,6 +1,6 @@
 import { t, util } from '../common';
 
-export type IClientNsArgs = { uri: t.INsUri; urls: t.IUrls; http: t.IHttp };
+export type IClientNsArgs = { uri: t.INsUri; urls: t.IUrls; http: t.Http };
 
 /**
  * HTTP client for operating on a [Namespace].
@@ -9,7 +9,7 @@ export type IClientNsArgs = { uri: t.INsUri; urls: t.IUrls; http: t.IHttp };
 export function HttpClientNs(args: {
   uri: t.INsUri;
   urls: t.IUrls;
-  http: t.IHttp;
+  http: t.Http;
 }): t.IHttpClientNs {
   const { uri, urls, http } = args;
 

@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.text",
   "description": "Text components.",
-  "version": "0.3.104",
+  "version": "0.3.112",
   "main": "lib/index",
   "scripts": {
     "start": "parcel src/test.parcel/index.html",
@@ -14,16 +14,16 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/css": "^0.4.40",
-    "@platform/libs": "0.2.10",
-    "@platform/react": "0.4.73",
-    "@platform/util.value": "0.9.0"
+    "@platform/css": "^0.4.48",
+    "@platform/libs": "0.2.12",
+    "@platform/react": "0.4.81",
+    "@platform/util.value": "0.9.8"
   },
   "devDependencies": {
-    "@platform/test": "0.2.6",
-    "@platform/ts": "4.1.13",
-    "@platform/ui.button": "0.3.108",
-    "@platform/ui.dev": "0.0.47"
+    "@platform/test": "0.2.8",
+    "@platform/ts": "4.1.21",
+    "@platform/ui.button": "0.3.116",
+    "@platform/ui.dev": "0.0.55"
   },
   "files": [
     "lib",

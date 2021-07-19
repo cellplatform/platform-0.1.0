@@ -5,7 +5,7 @@ import { FireUploadEvent } from './HttpClientCellFs.upload.event';
  * Uploads files to the given URLs
  */
 export function uploadToTarget(args: {
-  http: t.IHttp;
+  http: t.Http;
   urls: t.IFilePresignedUploadUrl[];
   files: t.IHttpClientCellFileUpload[];
   fire: FireUploadEvent;

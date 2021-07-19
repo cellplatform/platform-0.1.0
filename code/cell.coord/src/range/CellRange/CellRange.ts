@@ -248,7 +248,7 @@ export class CellRange {
   /**
    * Creates a range ensuring the values form a square (top-left/bottom-right).
    */
-  public get square() {
+  public get square(): CellRange {
     // Reuse existing square if already calculated.
     if (this._.square) {
       return this._.square;

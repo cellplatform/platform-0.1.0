@@ -144,7 +144,7 @@ describe('cell.fs: download', function () {
       await client.fs.upload({ filename, data });
 
       // Download the file and check headers.
-      let headers: undefined | t.IHttpHeaders;
+      let headers: undefined | t.HttpHeaders;
       mock.client.response$.subscribe((e) => (headers = e.response.headers));
 
       const res = await client.fs.file(filename).download();
@@ -168,7 +168,7 @@ describe('cell.fs: download', function () {
       await client.fs.upload({ filename: 'foo/bar/m.root.html', data });
 
       // Download the file and check headers.
-      let headers: undefined | t.IHttpHeaders;
+      let headers: undefined | t.HttpHeaders;
       mock.client.response$.subscribe((e) => (headers = e.response.headers));
 
       const res = await client.fs.file('  ///foo/bar/m.root.html  ').download(); // NB: path prefix slahses "/" are trimmed.
@@ -192,7 +192,7 @@ describe('cell.fs: download', function () {
       await client.fs.upload({ filename, data });
 
       // Download the file and check headers.
-      let headers: undefined | t.IHttpHeaders;
+      let headers: undefined | t.HttpHeaders;
       mock.client.response$.subscribe((e) => (headers = e.response.headers));
 
       const res = await client.fs.file(filename).download();
@@ -240,7 +240,7 @@ describe('cell.fs: download', function () {
         ]);
 
         // Download the file and check headers.
-        let headers: undefined | t.IHttpHeaders;
+        let headers: undefined | t.HttpHeaders;
         mock.client.response$.subscribe((e) => (headers = e.response.headers));
         const res = await client.fs.file('/index.html').download();
         const html = await bodyToString(res.body);

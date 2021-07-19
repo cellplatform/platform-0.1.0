@@ -1,5 +1,5 @@
 import { Json } from '@platform/types';
-import { IHttpHeaders } from '@platform/http.types';
+import { HttpHeaders } from '@platform/http.types';
 
 export type S3Config = {
   accessKey: string;
@@ -142,7 +142,7 @@ export type S3SignedPostUrl = {
 export type S3SignedPost = {
   url: { form: string; object: string };
   props: { [key: string]: string };
-  send: (data: Uint8Array, options?: { headers?: IHttpHeaders }) => Promise<S3PostResponse>;
+  send: (data: Uint8Array, options?: { headers?: HttpHeaders }) => Promise<S3PostResponse>;
 };
 export type S3PostResponse = {
   ok: boolean;

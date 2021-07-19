@@ -1,5 +1,5 @@
 export * from '../types';
-export { IHttpHeaders } from '@platform/http.types';
+export { HttpHeaders } from '@platform/http.types';
 
 export { Observable } from 'rxjs';
 export {

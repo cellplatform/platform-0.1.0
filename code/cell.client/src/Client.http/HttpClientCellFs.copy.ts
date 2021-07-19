@@ -4,7 +4,7 @@ import { t, util } from '../common';
  * Copy files.
  */
 export async function copyFiles(args: {
-  http: t.IHttp;
+  http: t.Http;
   urls: t.IUrlsCell;
   files: t.IHttpClientCellFileCopy | t.IHttpClientCellFileCopy[];
   changes?: boolean;

@@ -16,6 +16,7 @@ import {
   t,
   time,
   value,
+  appendFileSync,
 } from '../common';
 import { FileAccess, FileRedirects } from '../config';
 import { ModuleManifest } from '../manifest';
@@ -332,6 +333,6 @@ function writeLogFile(log: t.IServerLog, until$: Observable<any>) {
     )
     .subscribe((text) => {
       text = text.replace(/\n$/, '');
-      fs.appendFileSync(path, `${text}\n`);
+      appendFileSync(path, `${text}\n`);
     });
 }

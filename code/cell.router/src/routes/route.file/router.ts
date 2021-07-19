@@ -10,7 +10,7 @@ import { getParams } from './params';
 /**
  * File-system routes (fs:).
  */
-export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) {
+export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.Router }) {
   const { db, fs, router } = args;
 
   /**

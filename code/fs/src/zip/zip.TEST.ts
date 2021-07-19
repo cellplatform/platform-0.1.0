@@ -6,7 +6,7 @@ const TMP = fs.resolve('./tmp');
 
 const exepectFiles = async (paths: string[]) => {
   for (const path of paths) {
-    const exists = await fs.pathExists(fs.resolve(path));
+    const exists = await fs.exists(fs.resolve(path));
     expect(exists).to.eql(true, `Should exist: ${path}`);
   }
 };

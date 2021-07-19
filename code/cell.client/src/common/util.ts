@@ -17,7 +17,7 @@ export function isObservable(input?: any) {
 /**
  * Helpers for converting HTTP responses.
  */
-export function fromHttpResponse(res: t.IHttpResponse) {
+export function fromHttpResponse(res: t.HttpResponse) {
   return {
     /**
      * Convert raw HTTP response to the standard client-response object.

@@ -49,8 +49,8 @@ export type IGqlHttpHeadersEvent = {
   payload: IGqlHttpHeaders;
 };
 export type IGqlHttpHeaders = {
-  headers: { from: t.IHttpHeaders; to: t.IHttpHeaders };
-  merge(headers: t.IHttpHeaders): IGqlHttpHeaders;
+  headers: { from: t.HttpHeaders; to: t.HttpHeaders };
+  merge(headers: t.HttpHeaders): IGqlHttpHeaders;
   add(header: string, value?: string | number): IGqlHttpHeaders;
   auth(token?: string): IGqlHttpHeaders;
 };

@@ -1,4 +1,3 @@
-import * as fsextra from 'fs-extra';
 import * as path from 'path';
 
 import { t } from './common';
@@ -14,8 +13,42 @@ import { env } from './env';
 import { stream } from './stream';
 import { sort } from './sort';
 
+import {
+  readdir,
+  readdirSync,
+  ensureDir,
+  ensureDirSync,
+  writeFile,
+  writeFileSync,
+  readFile,
+  readFileSync,
+  move,
+  moveSync,
+  copy,
+  copySync,
+  copyFile,
+  copyFileSync,
+  remove,
+  removeSync,
+  rename,
+  renameSync,
+  createReadStream,
+  createWriteStream,
+  pathExists,
+  pathExistsSync,
+  existsSync,
+  lstat,
+  lstatSync,
+  readJson,
+  readJsonSync,
+  writeJson,
+  writeJsonSync,
+  appendFile,
+  appendFileSync,
+} from 'fs-extra';
+
 const { join, resolve, dirname, basename, extname } = path;
-const exists: t.IFs['exists'] = (path) => fsextra.pathExists(path);
+const exists: t.IFs['exists'] = (path) => pathExists(path);
 
 /**
  * Extended [file-system] object.
@@ -24,14 +57,38 @@ const exists: t.IFs['exists'] = (path) => fsextra.pathExists(path);
  *    `IFs` interface found in [@platform/types].
  */
 export const fs = {
-  ...fsextra,
-
-  /**
-   * IFs (interface)
-   * NOTE:
-   *    The rest of the [IFs] methods are copied in from [fs-extra].
-   */
+  readdir,
+  readdirSync,
+  ensureDir,
+  ensureDirSync,
+  writeFile,
+  writeFileSync,
+  readFile,
+  readFileSync,
+  copy,
+  copySync,
+  copyFile,
+  copyFileSync,
+  move,
+  moveSync,
+  remove,
+  removeSync,
+  createReadStream,
+  createWriteStream,
+  rename,
+  renameSync,
+  pathExists,
+  pathExistsSync,
   exists,
+  existsSync,
+  readJson,
+  readJsonSync,
+  writeJson,
+  writeJsonSync,
+  appendFile,
+  appendFileSync,
+  lstat,
+  lstatSync,
 
   // [IFs] path helpers
   path,

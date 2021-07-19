@@ -9,7 +9,7 @@ import { HttpClientCellLinks } from './HttpClientCellLinks';
 export function HttpClientCell(args: {
   uri: t.ICellUri;
   urls: t.IUrls;
-  http: t.IHttp;
+  http: t.Http;
 }): t.IHttpClientCell {
   const { uri, urls, http } = args;
 
