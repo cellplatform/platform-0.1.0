@@ -1,5 +1,5 @@
 import { BundleWrapper } from '../BundleWrapper';
-import { fs, log, logger, PATH, t, deleteUndefined, DEFAULT, R } from '../common';
+import { fs, log, Logger, PATH, t, deleteUndefined, DEFAULT, R } from '../common';
 import { pullMethod } from './pull';
 import { invoke } from './run.invoke';
 
@@ -74,23 +74,25 @@ export function runMethod(args: { cachedir: string; stdlibs?: t.AllowedStdlib[] 
     const entry = (options.entry || manifest.module.entry || '').trim().replace(/^\/*/, '');
 
     if (!silent) {
+      const { yellow, gray, cyan, white, green } = log;
       const bytes = manifest.files.reduce((acc, next) => acc + next.bytes, 0);
       const size = fs.size.toString(bytes, { round: 0 });
       const table = log.table({ border: false });
       const add = (key: string, value: string) => {
-        table.add([log.green(key), log.gray(value)]);
+        table.add([green(key), ' ', gray(value)]);
       };
 
-      add('runtime  ', 'node');
+      add('runtime  ', `${cyan('cell.runtime.')}${white('node')}`);
       add('target', `${manifest.module.target} (${manifest.module.mode})`);
-      add('manifest ', logger.format.url(bundle.urls.manifest));
-      add('files ', logger.format.url(bundle.urls.files));
+      add('manifest.hash', manifest.hash.module);
+      add('manifest ', Logger.format.url(bundle.urls.manifest));
+      add('files ', Logger.format.url(bundle.urls.files));
       add('entry', entry);
-      add('size', `${log.yellow(size)} (${manifest.files.length} files)`);
+      add('size', `${yellow(size)} (${manifest.files.length} files)`);
 
       log.info();
       table.log();
-      logger.hr().newline();
+      Logger.hr().newline();
     }
 
     // Execute the code.

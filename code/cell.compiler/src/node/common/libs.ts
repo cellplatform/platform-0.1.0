@@ -26,7 +26,7 @@ export { ModuleFederationPlugin };
 
 export { exec } from '@platform/exec';
 export { port } from '@platform/http/lib/node';
-export { Path, format } from '@platform/cell.runtime.node/lib/common';
+export { Path, Format } from '@platform/cell.runtime.node/lib/common';
 
 import semver from 'semver';
 export { semver };

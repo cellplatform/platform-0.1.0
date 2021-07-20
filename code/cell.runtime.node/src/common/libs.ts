@@ -1,5 +1,3 @@
-export { parse as parseUrl } from 'url';
-
 import { pipe, clone } from 'ramda';
 export const R = { pipe, clone };
 

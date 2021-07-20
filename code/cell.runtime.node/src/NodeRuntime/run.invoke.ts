@@ -1,4 +1,4 @@
-import { log, logger, t, time, fs, defaultValue, R, DEFAULT } from '../common';
+import { log, Logger, t, time, fs, defaultValue, R, DEFAULT } from '../common';
 import { Vm } from '../vm';
 
 type R = {
@@ -71,7 +71,7 @@ export function invoke(args: {
         const status = ok ? log.green('ok') : log.red('fail');
         log.info();
         log.info.gray(`status: ${status} (${elapsed.prep + elapsed.run} ms)`);
-        logger.errors(errors);
+        Logger.errors(errors);
       }
 
       resolve({

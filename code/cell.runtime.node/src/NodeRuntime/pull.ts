@@ -1,5 +1,5 @@
 import { BundleWrapper } from '../BundleWrapper';
-import { fs, HttpClient, log, logger, Path, t, id, deleteUndefined, PATH } from '../common';
+import { fs, HttpClient, log, Logger, Path, t, id, deleteUndefined, PATH } from '../common';
 
 /**
  * Factory for the [pull] method.
@@ -20,7 +20,7 @@ export function pullMethod(args: { cachedir: string }) {
 
     if (!silent) {
       const url = bundle.urls.manifest;
-      const from = logger.format.url(url.toString());
+      const from = Logger.format.url(url.toString());
       const to = Path.trimBase(targetDir);
       const table = log.table({ border: false });
 
@@ -123,8 +123,8 @@ export function pullMethod(args: { cachedir: string }) {
       const bytes = (await fs.size.dir(targetDir)).toString({ round: 0 });
       const size = count > 0 ? `(${log.yellow(bytes)})` : '';
       log.info.gray(`${log.green(count)} files pulled ${size}`);
-      logger.errors(errors);
-      logger.hr().newline();
+      Logger.errors(errors);
+      Logger.hr().newline();
     }
 
     return {

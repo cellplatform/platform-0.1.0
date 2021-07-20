@@ -1,12 +1,12 @@
 import { log, Model, t, Encoding, defaultValue } from '../common';
 import { stats } from '../config.webpack';
-import { format } from './util.format';
+import { Format } from './util.format';
 
 /**
  * Log helpers for common logging output.
  */
 export const Logger = {
-  format,
+  format: Format,
 
   clear() {
     log.clear();
@@ -74,7 +74,7 @@ export const Logger = {
       const exposes = Encoding.transformKeys(model.exposes, Encoding.unescapePath);
       log.info.gray(title);
       Object.keys(exposes).forEach((path) => {
-        log.info.gray(`  ${format.filepath(path)}`);
+        log.info.gray(`  ${Format.filepath(path)}`);
       });
     }
     return Logger;

@@ -142,7 +142,7 @@ async function formatAndSaveArgs(args: {
     await write(file);
   }
 
-  const uri = file[key][target].uri;
+  const uri = file[key][target]?.uri;
 
   return {
     host,
