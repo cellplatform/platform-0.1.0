@@ -32,7 +32,7 @@ export const Samples = {
   ),
 };
 
-describe.only('cell.runtime.node: NodeRuntime', function () {
+describe('cell.runtime.node: NodeRuntime', function () {
   this.timeout(999999);
 
   /**
