@@ -75,19 +75,21 @@ export function runMethod(args: { cachedir: string; stdlibs?: t.AllowedStdlib[] 
 
     if (!silent) {
       const { yellow, gray, cyan, white, green } = log;
+      const module = manifest.module;
       const bytes = manifest.files.reduce((acc, next) => acc + next.bytes, 0);
       const size = fs.size.toString(bytes, { round: 0 });
       const table = log.table({ border: false });
       const add = (key: string, value: string) => {
-        table.add([green(key), ' ', gray(value)]);
+        table.add([gray(key), ' ', gray(value)]);
       };
 
-      add('runtime  ', `${cyan('cell.runtime.')}${white('node')}`);
-      add('target', `${manifest.module.target} (${manifest.module.mode})`);
-      add('manifest.hash', manifest.hash.module);
+      add(green('runtime'), `${cyan('cell.runtime.')}${white('node')}`);
+      add('module', `${module.namespace}@${module.version}`);
+      add('• bundle', `${module.target} (${module.mode})`);
+      add('• entry', entry);
+      add('• hash', manifest.hash.module);
       add('manifest ', Logger.format.url(bundle.urls.manifest));
       add('files ', Logger.format.url(bundle.urls.files));
-      add('entry', entry);
       add('size', `${yellow(size)} (${manifest.files.length} files)`);
 
       log.info();

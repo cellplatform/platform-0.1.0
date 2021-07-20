@@ -1,1 +1,1 @@
-export const Tmp = 'TempFoo'; // TEMP 🐷
+import './types.global';
