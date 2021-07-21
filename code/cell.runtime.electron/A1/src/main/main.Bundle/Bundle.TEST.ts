@@ -1,8 +1,8 @@
 import { Bundle } from '.';
-import { expect, fs, Mock, Paths, rx, slug, t, TestSample, Uri, Urls } from '../../test';
+import { Uri, expect, fs, Mock, Paths, rx, t, TestSample, Urls, http } from '../../test';
 import { SampleUploadMock } from '../main.Filesystem/Filesystem.TEST';
 
-describe('main.Bundle', function () {
+describe.only('main.Bundle', function () {
   this.timeout(30000);
   const bus = rx.bus();
 
@@ -118,7 +118,6 @@ describe('main.Bundle', function () {
         const source = urls.cell(mock.target.cell).file.byName(filepath).toString();
 
         // Run the installer event.
-
         const res = await events.install.fire(source, { silent: true });
         const list = (await events.list.get()).items;
 
@@ -193,6 +192,73 @@ describe('main.Bundle', function () {
         expect(res.exists).to.eql(false);
         expect(res.error).to.eql(undefined);
         expect(res.status).to.eql(undefined);
+      });
+    });
+
+    describe.only('fetch: manifest', () => {
+      it('success', async () => {
+        const manifest = (await fs.readJson(manifestPath)) as t.ModuleManifest;
+        const mock = await SampleUploadMock();
+        await mock.upload();
+
+        // Prepare the uploaded sample bundle as the source to install from.
+        const filepath = `${mock.target.dir}/index.json`;
+        const urls = Urls.create(mock.http.origin);
+        const source = urls.cell(mock.target.cell).file.byName(filepath).toString();
+
+        // Run the fetch event.
+        const res = await mock.events.bundle.manifest.fetch.fire(source);
+        await mock.dispose();
+
+        expect(res.source).to.eql(source);
+        expect(res.exists).to.eql(true);
+        expect(res.manifest).to.eql(manifest);
+        expect(res.error).to.eql(undefined);
+      });
+
+      it('error: not found', async () => {
+        const mock = await SampleUploadMock();
+        await mock.upload();
+
+        // Prepare the uploaded sample bundle as the source to install from.
+        const filepath = `${mock.target.dir}/404.json`;
+        const urls = Urls.create(mock.http.origin);
+        const source = urls.cell(mock.target.cell).file.byName(filepath).toString();
+
+        // Run the fetch event.
+        const res = await mock.events.bundle.manifest.fetch.fire(source);
+        await mock.dispose();
+
+        expect(res.source).to.eql(source);
+        expect(res.exists).to.eql(false);
+        expect(res.manifest).to.eql(undefined);
+        expect(res.error).to.include('[404] Manifest not found');
+      });
+
+      it.only('error: not manifest', async () => {
+        const mock = await Mock.controllers();
+
+        // Upload some JSON that is not a manifest.
+        const A1 = Uri.create.A1();
+        const cell = mock.http.cell(A1);
+        const filename = 'index.json';
+        const data = await fs.readFile(fs.resolve('src/test/sample/foo.json'));
+        await cell.fs.upload({ filename, data });
+        expect(await cell.fs.file(filename).exists()).to.eql(true);
+
+        // Prepare the URL to the (non-manifest) JSON.
+        const urls = Urls.create(mock.http.origin);
+        const source = urls.cell(A1).file.byName(filename).toString();
+        expect((await http.get(source)).ok).to.eql(true);
+
+        // Run the fetch event.
+        const res = await mock.events.bundle.manifest.fetch.fire(source);
+        await mock.dispose();
+
+        expect(res.source).to.eql(source);
+        expect(res.exists).to.eql(true); // NB: Exists, but is not a manifest.
+        expect(res.manifest).to.eql(undefined);
+        expect(res.error).to.include('The retrieved JSON is not a manifest');
       });
     });
   });

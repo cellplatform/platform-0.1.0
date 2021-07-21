@@ -18,7 +18,7 @@ export function ListController(args: {
     const done = (args: { items?: t.BundleItem[]; error?: string } = {}) => {
       const { items = [], error } = args;
       http.dispose();
-      return bus.fire({
+      bus.fire({
         type: 'runtime.electron/Bundle/list:res',
         payload: { tx, items, error },
       });

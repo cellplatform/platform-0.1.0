@@ -2,6 +2,7 @@ import { Events } from '../Bundle.Events';
 import { rx, t } from '../common';
 import { InstallController } from './Controller.install';
 import { ListController } from './Controller.list';
+import { ManifestController } from './Controller.manifest';
 import { StatusController } from './Controller.status';
 
 /**
@@ -20,6 +21,7 @@ export function Controller(args: {
   // Initialise sub-controllers.
   InstallController({ bus, events, localhost, httpFactory });
   ListController({ bus, events, localhost, httpFactory });
+  ManifestController({ bus, events });
   StatusController({ bus, events, localhost, httpFactory });
 
   // Finish up.

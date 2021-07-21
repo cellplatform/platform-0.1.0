@@ -2,7 +2,7 @@ import { firstValueFrom, of } from 'rxjs';
 import { filter, takeUntil, timeout, catchError } from 'rxjs/operators';
 import { rx, slug, t } from '../common';
 
-type Uri = string;
+const { payload } = rx;
 
 /**
  * Event API.
@@ -18,8 +18,8 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
   );
 
   const install: t.BundleEvents['install'] = {
-    req$: rx.payload<t.BundleInstallReqEvent>($, 'runtime.electron/Bundle/install:req'),
-    res$: rx.payload<t.BundleInstallResEvent>($, 'runtime.electron/Bundle/install:res'),
+    req$: payload<t.BundleInstallReqEvent>($, 'runtime.electron/Bundle/install:req'),
+    res$: payload<t.BundleInstallResEvent>($, 'runtime.electron/Bundle/install:res'),
     async fire(source, options = {}) {
       const tx = slug();
       const { force, timeout: msecs = 3000, silent } = options;
@@ -44,8 +44,8 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
   };
 
   const list: t.BundleEvents['list'] = {
-    req$: rx.payload<t.BundleListReqEvent>($, 'runtime.electron/Bundle/list:req'),
-    res$: rx.payload<t.BundleListResEvent>($, 'runtime.electron/Bundle/list:res'),
+    req$: payload<t.BundleListReqEvent>($, 'runtime.electron/Bundle/list:req'),
+    res$: payload<t.BundleListResEvent>($, 'runtime.electron/Bundle/list:res'),
     async get(options = {}) {
       const { domain } = options;
       const tx = slug();
@@ -69,8 +69,8 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
   };
 
   const status: t.BundleEvents['status'] = {
-    req$: rx.payload<t.BundleStatusReqEvent>($, 'runtime.electron/Bundle/status:req'),
-    res$: rx.payload<t.BundleStatusResEvent>($, 'runtime.electron/Bundle/status:res'),
+    req$: payload<t.BundleStatusReqEvent>($, 'runtime.electron/Bundle/status:req'),
+    res$: payload<t.BundleStatusResEvent>($, 'runtime.electron/Bundle/status:res'),
     async get(args) {
       const { domain, namespace, version, timeout: msecs = 1000 } = args;
       const tx = slug();
@@ -95,7 +95,33 @@ export function Events(args: { bus: t.EventBus<any> }): t.BundleEvents {
     },
   };
 
-  return { $, is, dispose, dispose$, list, install, status };
+  const manifest: t.BundleEvents['manifest'] = {
+    fetch: {
+      req$: payload<t.BundleFetchManifestReqEvent>($, 'runtime.electron/Bundle/fetchManifest:req'),
+      res$: payload<t.BundleFetchManifestResEvent>($, 'runtime.electron/Bundle/fetchManifest:res'),
+      async fire(source, options = {}) {
+        const { timeout: msecs = 3000 } = options;
+        const tx = slug();
+
+        const first = firstValueFrom(
+          manifest.fetch.res$.pipe(
+            filter((e) => e.tx === tx),
+            timeout(msecs),
+            catchError(() => of(`Manifest fetch timed out after ${msecs} msecs`)),
+          ),
+        );
+        bus.fire({
+          type: 'runtime.electron/Bundle/fetchManifest:req',
+          payload: { tx, source },
+        });
+
+        const res = await first;
+        return typeof res === 'string' ? { tx, source, error: res, exists: false } : res;
+      },
+    },
+  };
+
+  return { $, is, dispose, dispose$, list, install, status, manifest };
 }
 
 /**
