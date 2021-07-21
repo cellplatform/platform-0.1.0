@@ -78,12 +78,12 @@ describe.only('Vercel', function () {
 
       const project = team.project('tmp');
 
-      const res = await project.deploy({ name, dir: dir, target, meta, routes });
+      const res = await project.deploy({ name, dir, target, meta, routes });
 
       console.log('-------------------------------------------');
       console.log('res', res);
       console.log('-------------------------------------------');
-      console.log('source dir:', dir);
+      console.log('source (dir):', dir);
     });
   });
 });
