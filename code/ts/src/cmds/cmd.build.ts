@@ -35,7 +35,7 @@ export async function buildAs(formats: BuildFormat[], args: IBuildArgs = {}): Pr
 
   await deleteTempDirs();
   await fs.remove(outDir);
-  await ensureMainHasNoExtension(cwd, { silent });
+  if (formats.includes('ES_MODULE')) await ensureMainHasNoExtension(cwd, { silent }); // NB: Only relevant if there are dual output formats being built.
 
   const tasks: ITask[] = formats.map((format) => {
     const title = format === 'ES_MODULE' ? '.mjs ESModule' : '.js  CommonJS';
