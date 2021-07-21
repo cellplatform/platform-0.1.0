@@ -9,6 +9,6 @@ export default () =>
       config
         .target('node')
         .entry('./src/main/index')
-        .declarations('./src/**/*')
+        // .declarations('./src/**/*')
         .shared((e) => e.add(e.dependencies)),
     );

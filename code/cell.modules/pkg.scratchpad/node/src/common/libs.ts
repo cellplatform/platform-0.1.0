@@ -1,1 +1,1 @@
-export { log } from '@platform/log/lib/server';
+export { fs } from '@platform/fs';

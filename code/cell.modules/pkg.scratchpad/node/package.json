@@ -1,6 +1,6 @@
 {
   "name": "sys.scratchpad.node",
-  "version": "0.0.3",
+  "version": "0.0.28",
   "sideEffects": false,
   "scripts": {
     "start": "ts-node -T src/main/index",
@@ -15,9 +15,7 @@
     "clean": "cell.compiler clean $@",
     "deploy": "cell.compiler upload node --bump --dir=sys.scratchpad.node $@"
   },
-  "dependencies": {
-    "@platform/log": "~0.1.60"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@platform/cell.compiler": "~0.3.55"
   },

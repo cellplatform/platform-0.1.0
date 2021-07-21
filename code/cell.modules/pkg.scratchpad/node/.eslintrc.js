@@ -8,7 +8,7 @@ const PATH = {
 module.exports = {
   extends: fs.pathExistsSync(PATH.workspace) ? PATH.workspace : PATH.local,
   rules: {
-    // "no-console": 0,
-    // "@typescript-eslint/no-unused-vars": 0,
+    'no-console': 0,
+    '@typescript-eslint/no-unused-vars': 0,
   },
 };
