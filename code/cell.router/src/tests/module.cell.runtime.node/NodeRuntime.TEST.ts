@@ -282,7 +282,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       expect(res3.errors.length).to.eql(0);
       expect((res3.out.value as ISampleNodeOutValue).echo).to.eql({ foo: 123 });
 
-      expect(res2.elapsed.run).to.lessThan(15);
+      expect(res2.elapsed.run).to.lessThan(20);
       expect(res3.elapsed.run).to.greaterThan(60);
     });
 

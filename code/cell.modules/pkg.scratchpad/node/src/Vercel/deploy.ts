@@ -11,7 +11,7 @@ export async function deploy(
   args: t.VercelDeployArgs & { token: string; version: number; teamId: string; projectId: string },
 ): Promise<t.VercelDeployResponse> {
   const ctx = util.toCtx(args.token, args.version);
-  const { dir, teamId } = args;
+  const { dir: dir, teamId } = args;
   const { headers } = ctx;
 
   if (!(await fs.is.dir(dir))) throw new Error(`The source 'dir' is not a directory. ${dir}`);

@@ -70,10 +70,10 @@ export type VercelHttpTeamProject = {
  * https://vercel.com/docs/api#endpoints/deployments/create-a-new-deployment
  */
 export type VercelDeployArgs = {
-  name: string; // A string with the project name used in the deployment URL (max 52-chars).
   dir: string; // Source directory.
 
-  meta?: Record<string, string>;
+  name: string; // A string with the name used in the deployment URL (max 52-chars).
+  meta?: Record<string, string>; // Meta-data about the deployment.
   env?: Record<string, string>; // An object containing the deployment's environment variable names and values. Secrets can be referenced by prefixing the value with @.
   buildEnv?: Record<string, string>; // An object containing the deployment's environment variable names and values to be passed to Builds.
   functions?: Record<string, VercelFunctionConfig>; // A list of objects used to configure your Serverless Functions.
