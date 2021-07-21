@@ -1,6 +1,6 @@
 {
   "name": "sys.scratchpad.web",
-  "version": "0.0.52",
+  "version": "0.0.53",
   "sideEffects": false,
   "compiler": {
     "port": 3033
