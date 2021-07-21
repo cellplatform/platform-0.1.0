@@ -33,4 +33,3 @@ ts-node -T ../script.ts/rename-dmg-arch.ts arm64
 # Finish up
 cd ..
 yarn open
-yarn prep-dev

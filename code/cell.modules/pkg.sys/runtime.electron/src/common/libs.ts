@@ -10,6 +10,7 @@ export { useResizeObserver } from '@platform/react';
 export { rx, slug } from '@platform/util.value';
 
 export { WebRuntime, bundle } from '@platform/cell.runtime.web';
+
 export {
   env,
   RuntimeUri,
@@ -19,7 +20,7 @@ export {
   System,
   Window,
   IpcBus,
-} from '@platform/cell.runtime.electron/A1/lib/renderer';
+} from '@platform/cell.runtime.electron-project/A1/lib/renderer';
 
 /**
  * sys.ui
