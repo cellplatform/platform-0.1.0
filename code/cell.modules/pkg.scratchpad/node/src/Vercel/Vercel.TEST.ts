@@ -1,3 +1,4 @@
+import { http } from '@platform/http';
 import { expect, fs } from '../test';
 import { Vercel } from '../Vercel';
 import * as util from './util';
@@ -8,7 +9,7 @@ describe.only('Vercel', function () {
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
   const client = Vercel({ token });
 
-  describe.only('util', () => {
+  describe('util', () => {
     it('toUrl', () => {
       expect(util.toUrl(12, '  teams  ')).to.eql('https://api.vercel.com/v12/teams');
       expect(util.toUrl(12, 'teams?123')).to.eql('https://api.vercel.com/v12/teams'); // NB: Strips query string.
@@ -53,31 +54,36 @@ describe.only('Vercel', function () {
 
     it('team.projects', async () => {
       const team = await getTeam();
-      const res = await team.projects({ search: '*dev' });
+      const res = await team.projects({});
       res.projects.forEach((proj) => {
         console.log(' > ', proj.id, proj.name);
       });
     });
 
     it.only('team.deploy', async () => {
+      /**
+       * Forum/Question:
+       *    calculating `x-now-digest` SHA1 hash #6499
+       *    https://github.com/vercel/vercel/discussions/6499
+       */
+
+      const dir = fs.resolve('dist/web');
+      // const dir = fs.resolve('../../pkg.sys/net/dist/web');
+
       const team = await getTeam();
-      const projectId = 'prj_s9kdHPDygRP46AzbNSy2mBrdMyFx';
-      const sourceDir = fs.resolve('dist/web');
       const name = 'test';
       const meta = { foo: 'hello' };
-
       const routes = [{ src: '/foo', dest: '/child' }];
+      const target = 'production';
 
-      const res = await team.deploy({
-        name,
-        sourceDir,
-        projectId,
-        target: 'production',
-        meta,
-        routes,
-      });
+      const project = team.project('tmp');
+
+      const res = await project.deploy({ name, dir, target, meta, routes });
+
       console.log('-------------------------------------------');
       console.log('res', res);
+      console.log('-------------------------------------------');
+      console.log('source dir:', dir);
     });
   });
 });

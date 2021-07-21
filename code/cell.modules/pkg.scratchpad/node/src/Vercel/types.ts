@@ -34,32 +34,64 @@ export type VercelHttpTeam = {
    */
   projects(options?: {
     limit?: number; // Limit the number of projects returned.
-    since?: number; // The updatedAt point where the list should start.
-    until?: number; // The updatedAt point where the list should end.
+    since?: number; // The updatedAt point where the list should [start].
+    until?: number; // The updatedAt point where the list should [end].
     search?: string; // Search projects by the name field.
   }): Promise<Res & { projects: VercelProject[] }>;
+
+  project(name: string): VercelHttpTeamProject;
+};
+
+/**
+ * Operations on a project within a team.
+ */
+export type VercelHttpTeamProject = {
+  team: VercelHttpTeam;
+  name: string;
+  exists(): Promise<boolean>;
+
+  /**
+   * https://vercel.com/docs/api#endpoints/projects/get-a-single-project
+   */
+  info(): Promise<Res & { project: VercelProject }>;
+
+  /**
+   * https://vercel.com/docs/api#endpoints/projects/create-a-project
+   */
+  create(options?: { git?: VercelGitRepo }): Promise<Res & { project: VercelProject }>;
 
   /**
    * https://vercel.com/docs/api#endpoints/deployments/create-a-new-deployment
    */
-  deploy(args: {
-    name: string; // A string with the project name used in the deployment URL (max 52-chars).
-    sourceDir: string;
-    projectId: string;
-    meta?: Record<string, string>;
-    env?: Record<string, string>; // An object containing the deployment's environment variable names and values. Secrets can be referenced by prefixing the value with @.
-    buildEnv?: Record<string, string>; // An object containing the deployment's environment variable names and values to be passed to Builds.
-    functions?: Record<string, VercelFunctionConfig>; // A list of objects used to configure your Serverless Functions.
-    routes?: Record<string, string>[]; // A list of routes objects used to rewrite paths to point towards other internal or external paths. For example; [{ "src": "/docs", "dest": "https://docs.example.com" }].
-    regions?: string[]; // An array of the regions the deployment's Serverless Functions should be deployed to. For example, ["sfo", "bru"].
-    public?: boolean;
-    target?: 'staging' | 'production';
-    alias?: string[];
-  }): Promise<Res & { urls: { public: string; inspect: string }; paths: string[] }>;
+  deploy(args: VercelDeployArgs): Promise<VercelDeployResponse>;
 };
+
+/**
+ * https://vercel.com/docs/api#endpoints/deployments/create-a-new-deployment
+ */
+export type VercelDeployArgs = {
+  name: string; // A string with the project name used in the deployment URL (max 52-chars).
+  dir: string; // Source directory.
+
+  meta?: Record<string, string>;
+  env?: Record<string, string>; // An object containing the deployment's environment variable names and values. Secrets can be referenced by prefixing the value with @.
+  buildEnv?: Record<string, string>; // An object containing the deployment's environment variable names and values to be passed to Builds.
+  functions?: Record<string, VercelFunctionConfig>; // A list of objects used to configure your Serverless Functions.
+  routes?: Record<string, string>[]; // A list of routes objects used to rewrite paths to point towards other internal or external paths. For example; [{ "src": "/docs", "dest": "https://docs.example.com" }].
+  regions?: string[]; // An array of the regions the deployment's Serverless Functions should be deployed to. For example, ["sfo", "bru"].
+  public?: boolean;
+  target?: 'staging' | 'production';
+  alias?: string[];
+};
+
 /**
  * Common.
  */
+
+export type VercelDeployResponse = VercelHttpResponse & {
+  urls: { public: string; inspect: string };
+  paths: string[];
+};
 
 export type VercelHttpResponse = {
   ok: boolean;
@@ -83,6 +115,11 @@ export type VercelReadyState =
   | 'DEPLOYING'
   | 'READY'
   | 'ERROR';
+
+export type VercelGitRepo = {
+  type: 'github' | 'gitlab' | 'bitbucket';
+  repo: string;
+};
 
 export type VercelFunctionConfig = { memory: number };
 

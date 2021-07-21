@@ -28,3 +28,22 @@ export function ensureHttps(url: string) {
   url = url.replace(/^https\:\/\//, '').replace(/^http\:\/\//, '');
   return `https://${url}`;
 }
+
+/**
+ * Creates a common context object.
+ */
+export function toCtx(token: string, version: number) {
+  token = (token ?? '').trim();
+  if (!token) throw new Error(`A Vercel authorization token not provided.`);
+
+  const Authorization = `Bearer ${token}`;
+  const headers = { Authorization };
+
+  return {
+    token,
+    version,
+    headers,
+    Authorization,
+    url: (path: string, query?: Q) => toUrl(version, path, query),
+  };
+}
