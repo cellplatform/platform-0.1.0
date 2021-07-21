@@ -195,7 +195,7 @@ describe.only('main.Bundle', function () {
       });
     });
 
-    describe.only('fetch: manifest', () => {
+    describe('fetch: manifest', () => {
       it('success', async () => {
         const manifest = (await fs.readJson(manifestPath)) as t.ModuleManifest;
         const mock = await SampleUploadMock();
@@ -235,7 +235,7 @@ describe.only('main.Bundle', function () {
         expect(res.error).to.include('[404] Manifest not found');
       });
 
-      it.only('error: not manifest', async () => {
+      it('error: not manifest', async () => {
         const mock = await Mock.controllers();
 
         // Upload some JSON that is not a manifest.
