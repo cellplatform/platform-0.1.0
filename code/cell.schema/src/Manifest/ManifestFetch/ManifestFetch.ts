@@ -1,5 +1,5 @@
-import { t, Urls } from './common';
-import { ManifestUrl } from './ManifestUrl';
+import { t, Urls } from '../common';
+import { ManifestUrl } from '../ManifestUrl';
 
 type Uri = string;
 

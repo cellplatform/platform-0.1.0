@@ -1,5 +1,5 @@
 import { ManifestUrl } from '.';
-import { expect } from '../test';
+import { expect } from '../../test';
 
 describe.only('ManifestUrl', () => {
   describe('ManifestUrl.parse: [ParseManifestUrl]', () => {

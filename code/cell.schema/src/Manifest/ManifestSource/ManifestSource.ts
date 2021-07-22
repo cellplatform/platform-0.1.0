@@ -1,4 +1,4 @@
-import { t } from './common';
+import { t } from '../common';
 
 /**
  * Parses a source string to a manifest-file

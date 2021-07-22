@@ -1,4 +1,4 @@
-import { Urls, Uri, t } from './common';
+import { Urls, Uri, t } from '../common';
 
 export const ManifestUrl = {
   parse: ParseManifestUrl,
