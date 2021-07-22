@@ -2,7 +2,7 @@ import { http } from '@platform/http';
 
 import * as t from './types';
 import * as util from './util';
-import { deploy } from './deploy';
+import { deploy } from './util.deploy';
 
 export function VercelTeamProject(args: {
   token: string;

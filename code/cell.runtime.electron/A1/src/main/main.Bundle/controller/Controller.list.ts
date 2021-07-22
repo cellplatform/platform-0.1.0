@@ -48,7 +48,7 @@ export function ListController(args: {
               const versions = await (await obj.namespace(namespace)).read();
               versions.forEach((item) => {
                 const { source, version, hash, fs } = item;
-                list.push({ source, domain, namespace, version, hash, fs });
+                list.push({ domain, namespace, version, hash, fs, source });
               });
             }),
           );

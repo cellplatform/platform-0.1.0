@@ -1,7 +1,7 @@
 import { http } from '@platform/http';
 import * as t from './types';
 import * as util from './util';
-import { fs } from '../common';
+import { fs, time } from '../common';
 
 /**
  * Create a new deployment.
@@ -10,6 +10,7 @@ import { fs } from '../common';
 export async function deploy(
   args: t.VercelDeployArgs & { token: string; version: number; teamId: string; projectId: string },
 ): Promise<t.VercelDeployResponse> {
+  const timer = time.timer();
   const ctx = util.toCtx(args.token, args.version);
   const { dir, teamId } = args;
   const { headers } = ctx;
@@ -52,5 +53,6 @@ export async function deploy(
     public: util.ensureHttps(json.url),
   };
 
-  return { ok, status, paths, urls, error };
+  const elapsed = timer.elapsed.msec;
+  return { ok, status, paths, urls, error, elapsed };
 }

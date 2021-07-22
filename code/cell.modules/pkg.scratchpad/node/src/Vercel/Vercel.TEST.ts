@@ -1,10 +1,9 @@
-import { http } from '@platform/http';
-import { expect, fs } from '../test';
+import { expect, fs, slug } from '../test';
 import { Vercel } from '../Vercel';
 import * as util from './util';
 
 describe.only('Vercel', function () {
-  this.timeout(9999);
+  this.timeout(99999);
 
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
   const client = Vercel({ token });
@@ -36,7 +35,7 @@ describe.only('Vercel', function () {
     });
   });
 
-  describe.only('[INTEGRATION] team', () => {
+  describe('[INTEGRATION] team', () => {
     const getTeamId = async (index?: number) => {
       const teams = (await client.teams.list()).teams;
       return teams[index ?? 1].id;
@@ -67,18 +66,21 @@ describe.only('Vercel', function () {
        *    https://github.com/vercel/vercel/discussions/6499
        */
 
-      const dir = fs.resolve('dist/web');
+      const dir = fs.resolve('tmp/web');
       // const dir = fs.resolve('../../pkg.sys/net/dist/web');
+      console.log('deploying:', dir);
 
       const team = await getTeam();
-      const name = 'test';
-      const meta = { foo: 'hello' };
-      const routes = [{ src: '/foo', dest: '/child' }];
+
+      // return;
+
+      const name = `test-${slug()}`;
+      const routes = [{ src: '/foo/(.*)', dest: '/child' }];
       const target = 'production';
 
       const project = team.project('tmp');
 
-      const res = await project.deploy({ name, dir, target, meta, routes });
+      const res = await project.deploy({ name, dir, target, routes });
 
       console.log('-------------------------------------------');
       console.log('res', res);

@@ -91,6 +91,7 @@ export type VercelDeployArgs = {
 export type VercelDeployResponse = VercelHttpResponse & {
   urls: { public: string; inspect: string };
   paths: string[];
+  elapsed: number;
 };
 
 export type VercelHttpResponse = {
