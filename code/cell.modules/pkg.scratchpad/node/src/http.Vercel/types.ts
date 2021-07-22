@@ -1,4 +1,4 @@
-import { JsonMap } from '@platform/types';
+import * as t from './common/types';
 
 type Res = VercelHttpResponse;
 
@@ -71,9 +71,7 @@ export type VercelHttpTeamProject = {
  */
 export type VercelDeployArgs = {
   dir: string; // Source directory.
-
-  name: string; // A string with the name used in the deployment URL (max 52-chars).
-  meta?: Record<string, string>; // Meta-data about the deployment.
+  name?: string; // A string with the name used in the deployment URL (max 52-chars). Derived from module [namespace@version] if ommited.
   env?: Record<string, string>; // An object containing the deployment's environment variable names and values. Secrets can be referenced by prefixing the value with @.
   buildEnv?: Record<string, string>; // An object containing the deployment's environment variable names and values to be passed to Builds.
   functions?: Record<string, VercelFunctionConfig>; // A list of objects used to configure your Serverless Functions.
@@ -89,9 +87,22 @@ export type VercelDeployArgs = {
  */
 
 export type VercelDeployResponse = VercelHttpResponse & {
-  urls: { public: string; inspect: string };
+  deployment: { id: string; team: string; project: string; regions: string[] };
   paths: string[];
-  elapsed: number;
+  meta: VercelDeployMeta;
+  urls: { public: string; inspect: string };
+};
+
+export type VercelDeployMeta = VercelDeployMetaModule | VercelDeployMetaPlainFiles;
+export type VercelDeployMetaModule = t.ModuleManifestInfo & {
+  kind: 'bundle:code/module';
+  modulehash: string; // [manifest].hash.module
+  fileshash: string; //  [manifest].hash.files
+  bytes: string;
+};
+export type VercelDeployMetaPlainFiles = {
+  kind: 'bundle:plain/files';
+  bytes: string;
 };
 
 export type VercelHttpResponse = {
@@ -162,7 +173,7 @@ export type VercelTarget = {
   creator: { uid: string; email: string; username: string };
   deploymentHostname: string;
   forced: boolean;
-  meta: JsonMap;
+  meta: t.JsonMap;
   plan: string; // 'pro' | 'free';
   private: boolean;
   readyState: VercelReadyState;
@@ -174,4 +185,4 @@ export type VercelTarget = {
   withCache: boolean;
 };
 
-export type VercelBuild = { use: string; src: string; config: JsonMap };
+export type VercelBuild = { use: string; src: string; config: t.JsonMap };

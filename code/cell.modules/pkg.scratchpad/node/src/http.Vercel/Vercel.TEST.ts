@@ -1,6 +1,6 @@
 import { expect, fs, slug } from '../test';
-import { Vercel } from '../Vercel';
-import * as util from './util';
+import { Vercel } from '.';
+import { util } from './common';
 
 describe.only('Vercel', function () {
   this.timeout(99999);
@@ -67,6 +67,7 @@ describe.only('Vercel', function () {
        */
 
       const dir = fs.resolve('tmp/web');
+      // const dir = fs.resolve('dist/node');
       // const dir = fs.resolve('../../pkg.sys/net/dist/web');
       console.log('deploying:', dir);
 
@@ -74,13 +75,15 @@ describe.only('Vercel', function () {
 
       // return;
 
-      const name = `test-${slug()}`;
+      // const name = `foo`;
       const routes = [{ src: '/foo/(.*)', dest: '/child' }];
       const target = 'production';
 
-      const project = team.project('tmp');
+      // const project = team.project('tmp');
+      const project = team.project('slc-dev');
+      const regions = ['sfo1'];
 
-      const res = await project.deploy({ name, dir, target, routes });
+      const res = await project.deploy({ dir, target, routes, regions });
 
       console.log('-------------------------------------------');
       console.log('res', res);

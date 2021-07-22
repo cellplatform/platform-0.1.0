@@ -1,7 +1,5 @@
-import { http } from '@platform/http';
-import * as t from './types';
-import * as util from './util';
-import { VercelTeam } from './VercelTeam';
+import { http, t, util } from './common';
+import { VercelTeam } from './Vercel.Team';
 
 /**
  * A wrapper around the Vercel HTTP endpoints API.

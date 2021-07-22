@@ -1,8 +1,5 @@
-import { http } from '@platform/http';
-
-import * as t from './types';
-import * as util from './util';
-import { VercelTeamProject } from './VercelTeamProject';
+import { http, t, util } from './common';
+import { VercelTeamProject } from './Vercel.Team.Project';
 
 export function VercelTeam(args: {
   token: string;

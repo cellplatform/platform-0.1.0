@@ -1,8 +1,5 @@
-import { http } from '@platform/http';
-
-import * as t from './types';
-import * as util from './util';
-import { deploy } from './util.deploy';
+import { util, t, http } from './common';
+import { deploy } from './deploy';
 
 export function VercelTeamProject(args: {
   token: string;
@@ -69,15 +66,29 @@ export function VercelTeamProject(args: {
     async deploy(args) {
       if (!(await api.exists())) await api.create();
 
-      const info = await api.info();
-      if (info.error) {
-        const code = info.error.code ?? '';
-        const message = info.error.message ?? '';
+      const projectInfo = await api.info();
+      if (projectInfo.error) {
+        const error = projectInfo.error;
+        const code = error.code ?? '';
+        const message = error.message ?? '';
         throw new Error(`Failed to deploy while retrieving project details. [${code}] ${message}`);
       }
 
-      const projectId = info.project.id;
-      return deploy({ ...args, token, version, teamId, projectId });
+      const teamInfo = await team.info();
+      if (teamInfo.error) {
+        const error = teamInfo.error;
+        const code = error.code ?? '';
+        const message = error.message ?? '';
+        throw new Error(`Failed to deploy while retrieving team details. [${code}] ${message}`);
+      }
+
+      return deploy({
+        ...args,
+        token,
+        version,
+        team: { id: teamId, name: teamInfo.team?.name ?? '' },
+        project: { id: projectInfo.project.id, name },
+      });
     },
   };
 
