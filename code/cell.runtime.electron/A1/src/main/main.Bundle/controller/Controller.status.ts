@@ -53,6 +53,7 @@ export function StatusController(args: {
         latest: !Boolean(e.version),
         compiler: module.compiler,
         module: {
+          source: entry.source,
           hash: entry.hash,
           domain: domain.name,
           namespace: ns.name,

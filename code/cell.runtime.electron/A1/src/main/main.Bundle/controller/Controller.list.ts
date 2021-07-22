@@ -47,8 +47,8 @@ export function ListController(args: {
             namespaces.map(async (namespace) => {
               const versions = await (await obj.namespace(namespace)).read();
               versions.forEach((item) => {
-                const { version, hash, fs } = item;
-                list.push({ domain, namespace, version, hash, fs });
+                const { source, version, hash, fs } = item;
+                list.push({ source, domain, namespace, version, hash, fs });
               });
             }),
           );

@@ -2,7 +2,7 @@ import { Bundle } from '.';
 import { Uri, expect, fs, Mock, Paths, rx, t, TestSample, Urls, http } from '../../test';
 import { SampleUploadMock } from '../main.Filesystem/Filesystem.TEST';
 
-describe.only('main.Bundle', function () {
+describe('main.Bundle', function () {
   this.timeout(30000);
   const bus = rx.bus();
 
@@ -72,6 +72,7 @@ describe.only('main.Bundle', function () {
         expect(res1.items.length).to.eql(1);
         expect(res1.items[0].domain).to.eql('runtime:electron:bundle');
         expect(res1.items[0].namespace).to.eql('sys.ui.runtime');
+        expect(res1.items[0].source).to.eql(manifestPath);
       });
     });
 
@@ -89,6 +90,7 @@ describe.only('main.Bundle', function () {
         expect(res.errors).to.eql([]);
 
         expect(list.length).to.eql(1);
+        expect(list[0].source).to.eql(manifestPath);
         expect(list[0].domain).to.eql('runtime:electron:bundle');
         expect(list[0].namespace).to.eql(manifest.module.namespace);
         expect(list[0].version).to.eql(manifest.module.version);
@@ -174,11 +176,14 @@ describe.only('main.Bundle', function () {
         expect(status?.latest).to.eql(true);
         expect(status?.compiler).to.match(/^@platform\/cell\.compiler\@/);
 
+        expect(status?.module.source).to.eql(manifestPath);
         expect(status?.module.hash).to.match(/^sha256-/);
         expect(status?.module.domain).to.eql('runtime:electron:bundle');
         expect(status?.module.namespace).to.eql('sys.ui.runtime');
         expect(status?.module.version).to.match(/^\d+\.\d+\.\d+$/);
         expect(status?.module.fs).to.match(/cell\:[\d\w]+\:[A-Z]+[1-9]+$/);
+
+        console.log('status', status);
       });
 
       it('exists: false', async () => {
@@ -259,6 +264,22 @@ describe.only('main.Bundle', function () {
         expect(res.exists).to.eql(true); // NB: Exists, but is not a manifest.
         expect(res.manifest).to.eql(undefined);
         expect(res.error).to.include('The retrieved JSON is not a manifest');
+      });
+
+      it('error: not url', async () => {
+        const mock = await SampleUploadMock();
+        await mock.upload();
+
+        const test = async (source: string) => {
+          const res = await mock.events.bundle.manifest.fetch.fire(source);
+          expect(res.error).to.include('Only absolute URLs are supported');
+        };
+
+        await test('');
+        await test('  ');
+        await test('foobar');
+
+        await mock.dispose();
       });
     });
   });

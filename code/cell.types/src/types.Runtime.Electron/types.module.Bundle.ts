@@ -17,6 +17,7 @@ export type BundleStatus = {
 };
 
 export type BundleItem = {
+  source: string;
   hash: string;
   domain: string;
   namespace: string;

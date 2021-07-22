@@ -91,7 +91,7 @@ export function InstallController(args: {
       const version = manifest.module.version;
       const hash = manifest.hash.module;
 
-      module = { hash, domain, namespace, version, fs: '' };
+      module = { source: source.path, hash, domain, namespace, version, fs: '' };
 
       const ns = await registry.domain(domain).namespace(namespace);
       const current = await ns.version(version);
