@@ -62,16 +62,4 @@ describe.only('ManifestUrl', () => {
       expect(res.filename).to.eql('index.json');
     });
   });
-
-  describe('ManifestUrl.create [CreateMaifestUrl]', () => {
-    it.skip('entry', () => {
-      const url = ManifestUrl.create(1234);
-      const entry = url.entry();
-
-      /**
-       * TODO 🐷
-       * See [Controller.status] for URL generation.
-       */
-    });
-  });
 });

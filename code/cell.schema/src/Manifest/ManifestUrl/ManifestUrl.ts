@@ -2,7 +2,6 @@ import { Urls, Uri, t } from '../common';
 
 export const ManifestUrl = {
   parse: ParseManifestUrl,
-  create: CreateManifestUrl,
 };
 
 /**
@@ -57,23 +56,6 @@ export function ParseManifestUrl(input: string): t.ManifestUrl {
   return api;
 }
 
-/**
- * Generate manifest URL for a host end-point
- */
-export function CreateManifestUrl(host: string | number) {
-  //
-  const urls = Urls.create(host);
-
-  console.log('CreateMaifestUrl');
-  /**
-   * TODO 🐷
-   */
-  return {
-    entry() {
-      return 'hello-entry';
-    },
-  };
-}
 
 /**
  * [Helpers]

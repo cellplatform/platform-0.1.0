@@ -52,8 +52,7 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus; localhost: string })
       timeout: 30000,
     });
 
-    const url = ManifestUrl.create(localhost);
-    console.log('url', url);
+    console.log('install response:', res);
 
     return res;
   };

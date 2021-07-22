@@ -1,5 +1,7 @@
+import { Filesystem } from '../../main.Filesystem';
 import {
   asArray,
+  BundlePaths,
   fs,
   Genesis,
   log,
@@ -11,7 +13,6 @@ import {
   time,
   Uri,
 } from '../common';
-import { Filesystem } from '../../main.Filesystem';
 
 /**
  * Bundle logic for handling writes (PUT).
@@ -107,7 +108,7 @@ export function InstallController(args: {
        * Write the registry entry.
        */
       const dbResponse = await ns.write({ source: source.toString(), manifest });
-      const target = { dir: 'lib', cell: dbResponse.entry.fs };
+      const target = { dir: BundlePaths.dir.dist, cell: dbResponse.entry.fs };
       module.fs = target.cell;
 
       /**
