@@ -24,6 +24,8 @@ const imports = {
   Switch: import('./components.ref/button/Switch.dev/DEV'),
   OptionButtons: import('sys.ui.dev/lib/components/OptionButtons/DEV'),
 
+  Svg: import('./ui.image/Svg/dev/DEV'),
+
   Tree: import('./components.ref/tree/Tree.dev/DEV'),
 };
 
