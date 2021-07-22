@@ -1,6 +1,6 @@
 {
   "name": "sys.scratchpad.node",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "sideEffects": false,
   "scripts": {
     "start": "ts-node -T src/main/index",
