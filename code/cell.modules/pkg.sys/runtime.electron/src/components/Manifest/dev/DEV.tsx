@@ -17,12 +17,6 @@ type Ctx = {
   loadManifest(url: string): Promise<void>;
 };
 
-// const fetchManifest = async (source: string) => {
-//   const res = await http.get(source);
-//   console.log('res', res);
-//   return res.ok ? (res.json as t.ModuleManifest) : undefined;
-// };
-
 /**
  * Actions
  */
