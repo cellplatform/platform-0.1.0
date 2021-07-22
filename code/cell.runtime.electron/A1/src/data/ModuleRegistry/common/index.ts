@@ -1,5 +1,4 @@
-export { Uri, semver, time, asArray } from '../../common';
-export { ManifestSource } from '../../Manifest';
+export { ManifestSource, Uri, semver, time, asArray } from '../../common';
 
 import * as t from './types';
 export { t };

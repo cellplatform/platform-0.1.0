@@ -2,7 +2,7 @@ import { Urls, Uri, t } from './common';
 
 export const ManifestUrl = {
   parse: ParseManifestUrl,
-  create: CreateMaifestUrl,
+  create: CreateManifestUrl,
 };
 
 /**
@@ -60,7 +60,7 @@ export function ParseManifestUrl(input: string): t.ManifestUrl {
 /**
  * Generate manifest URL for a host end-point
  */
-export function CreateMaifestUrl(host: string | number) {
+export function CreateManifestUrl(host: string | number) {
   //
   const urls = Urls.create(host);
 

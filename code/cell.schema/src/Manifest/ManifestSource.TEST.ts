@@ -1,5 +1,5 @@
 import { ManifestSource } from '.';
-import { expect } from '../../test';
+import { expect } from '../test';
 
 describe('data.http: Manifest', () => {
   describe('ManifestSource', () => {

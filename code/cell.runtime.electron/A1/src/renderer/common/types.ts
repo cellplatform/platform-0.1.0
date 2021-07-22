@@ -22,3 +22,4 @@ export {
 export * from '@platform/state.types/lib/types.Patch';
 
 export * from '../../types';
+export * from '@platform/cell.schema/lib/Manifest/types';

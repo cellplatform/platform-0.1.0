@@ -1,4 +1,5 @@
-import { ManifestSourceKind } from '../Manifest/types';
+import { ManifestSourceKind } from './common/types';
+
 type CellUri = string;
 
 export type ManifestSourceUrl = string;

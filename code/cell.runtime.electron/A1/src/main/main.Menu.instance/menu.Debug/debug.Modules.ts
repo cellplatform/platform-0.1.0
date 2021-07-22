@@ -1,5 +1,14 @@
-import { ManifestSource, ManifestUrl } from '../../../data';
-import { Bundle, ENV, Paths, System, t, Window, Menu } from '../common';
+import {
+  Bundle,
+  ENV,
+  ManifestSource,
+  ManifestUrl,
+  Menu,
+  Paths,
+  System,
+  t,
+  Window,
+} from '../common';
 
 /**
  * Module management
