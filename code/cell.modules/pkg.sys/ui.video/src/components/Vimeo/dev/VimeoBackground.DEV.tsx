@@ -1,10 +1,9 @@
 import React from 'react';
-import { DevActions, ActionHandlerArgs } from 'sys.ui.dev';
+import { ActionHandlerArgs, DevActions } from 'sys.ui.dev';
 
-import { COLORS, rx, t } from '../../common';
+import { VimeoBackground, VimeoBackgroundProps } from '..';
+import { COLORS, rx, t, types } from './common';
 import { VIDEOS } from './Vimeo.DEV';
-import { VimeoBackground, VimeoBackgroundProps } from './VimeoBackground';
-import * as types from '../Vimeo/types';
 
 type Ctx = { bus: t.EventBus<types.VimeoEvent>; props: VimeoBackgroundProps };
 type A = ActionHandlerArgs<Ctx>;

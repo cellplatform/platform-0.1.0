@@ -1,9 +1,8 @@
 import React from 'react';
 import { DevActions, ActionHandlerArgs } from 'sys.ui.dev';
 
-import { Vimeo, VimeoProps } from './Vimeo';
-import { rx, t, COLORS } from '../../common';
-import * as types from './types';
+import { Vimeo, VimeoProps } from '..';
+import { rx, t, COLORS, types } from './common';
 
 export const VIDEOS = [
   { label: 'app/tubes', value: 499921561 },
@@ -81,6 +80,13 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.props.loop;
     });
 
+    e.boolean('muted', (e) => {
+      if (e.changing) e.ctx.props.muted = e.changing.next;
+      e.boolean.current = e.ctx.props.muted;
+    });
+
+    e.hr(1, 0.1);
+
     e.select((config) => {
       config
         .label(`videos`)
@@ -98,10 +104,11 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('video');
-    e.button('start (play)', (e) => e.ctx.bus.fire({ type: 'Vimeo/play', payload: { id } }));
-    e.button('stop (pause)', (e) => e.ctx.bus.fire({ type: 'Vimeo/pause', payload: { id } }));
-    e.hr(1, 0.1);
+    e.title('Events');
+    e.button('play (start)', (e) => e.ctx.bus.fire({ type: 'Vimeo/play', payload: { id } }));
+    e.button('pause (stop)', (e) => e.ctx.bus.fire({ type: 'Vimeo/pause', payload: { id } }));
+
+    e.hr();
   })
 
   .items((e) => {
@@ -115,7 +122,7 @@ export const actions = DevActions<Ctx>()
     e.button((config) =>
       config
         .label('999 (end)')
-        .description('NOTE: Overshoots total frames')
+        .description('NB: Overshoots total frames')
         .pipe((e) => fire(e, 999)),
     );
     e.hr();
@@ -125,8 +132,7 @@ export const actions = DevActions<Ctx>()
    * Render
    */
   .subject((e) => {
-    const props = e.ctx.props;
-    const theme = e.ctx.theme;
+    const { props, theme } = e.ctx;
 
     const label = '<Vimeo';
     const size = { width: props.width, height: props.height };

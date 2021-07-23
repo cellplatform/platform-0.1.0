@@ -10,6 +10,7 @@ export type VimeoProps = {
   video: number;
   autoPlay?: boolean;
   loop?: boolean;
+  muted?: boolean;
   width?: number;
   height?: number;
   borderRadius?: number;
@@ -42,6 +43,8 @@ export const Vimeo: React.FC<VimeoProps> = (props) => {
       dnt: true, // Do Not Track (no cookies or other tracking attempts)
     });
 
+    // player.
+
     setPlayer(player);
 
     player.on('loaded', () => {
@@ -60,7 +63,11 @@ export const Vimeo: React.FC<VimeoProps> = (props) => {
   }, [video, player]); // eslint-disable-line
 
   useEffect(() => {
-    player?.setLoop(props.loop || false);
+    if (player) player.setMuted(props.muted ?? false);
+  }, [player, props.muted]);
+
+  useEffect(() => {
+    player?.setLoop(props.loop ?? false);
   }, [player, props.loop]);
 
   const styles = {
