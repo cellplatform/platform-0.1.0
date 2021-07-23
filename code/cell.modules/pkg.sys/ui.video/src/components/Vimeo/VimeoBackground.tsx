@@ -1,8 +1,9 @@
 import VimeoPlayer from '@vimeo/player';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { css, cuid, defaultValue, t } from '../../common';
-import { usePlayerController } from './usePlayerController';
+import { css, cuid, defaultValue, t, types } from './common';
+import { usePlayerController } from './hooks/usePlayerController';
+import { VimeoEvents } from './Events';
 
 export type VimeoBackgroundProps = {
   bus?: t.EventBus<any>;
@@ -13,7 +14,7 @@ export type VimeoBackgroundProps = {
   opacityTransition?: number; // msecs
 };
 
-export const VimeoBackground: React.FC<VimeoBackgroundProps> = (props) => {
+const Component: React.FC<VimeoBackgroundProps> = (props) => {
   const { video, bus } = props;
   const blur = defaultValue(props.blur, 0);
   const opacityTransition = defaultValue(props.opacityTransition, 300);
@@ -77,3 +78,10 @@ export const VimeoBackground: React.FC<VimeoBackgroundProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * Export extended function.
+ */
+(Component as any).Events = VimeoEvents;
+type T = React.FC<VimeoBackgroundProps> & { Events: types.VimeoEventsFactory };
+export const VimeoBackground = Component as T;

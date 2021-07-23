@@ -3,8 +3,8 @@ import { useEffect, useRef } from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { R, rx, t, deleteUndefined } from '../../common';
-import * as types from './types';
+import { R, rx, t, deleteUndefined } from '../../../common';
+import * as types from '../types';
 
 type D = { duration: number; percent: number; seconds: number };
 type K = types.VimeoStatus['kind'];

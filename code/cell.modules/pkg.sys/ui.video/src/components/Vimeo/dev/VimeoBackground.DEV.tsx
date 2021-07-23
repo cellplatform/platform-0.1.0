@@ -2,7 +2,7 @@ import React from 'react';
 import { ActionHandlerArgs, DevActions } from 'sys.ui.dev';
 
 import { VimeoBackground, VimeoBackgroundProps } from '..';
-import { COLORS, rx, t, types } from './common';
+import { COLORS, rx, t, types } from '../common';
 import { VIDEOS } from './Vimeo.DEV';
 
 type Ctx = { bus: t.EventBus<types.VimeoEvent>; props: VimeoBackgroundProps };

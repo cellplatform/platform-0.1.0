@@ -1,8 +1,9 @@
 import VimeoPlayer from '@vimeo/player';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { css, CssValue, cuid, t } from '../../common';
-import { usePlayerController } from './usePlayerController';
+import { css, CssValue, cuid, t, types } from './common';
+import { VimeoEvents } from './Events';
+import { usePlayerController } from './hooks/usePlayerController';
 
 export type VimeoProps = {
   bus?: t.EventBus<any>;
@@ -21,7 +22,7 @@ export type VimeoProps = {
  * Wrapper for the Vimeo player API.
  * https://github.com/vimeo/player.js
  */
-export const Vimeo: React.FC<VimeoProps> = (props) => {
+const Component: React.FC<VimeoProps> = (props) => {
   const { video, width, height, bus, autoPlay, borderRadius } = props;
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -42,8 +43,6 @@ export const Vimeo: React.FC<VimeoProps> = (props) => {
       portrait: false,
       dnt: true, // Do Not Track (no cookies or other tracking attempts)
     });
-
-    // player.
 
     setPlayer(player);
 
@@ -85,8 +84,16 @@ export const Vimeo: React.FC<VimeoProps> = (props) => {
 };
 
 /**
+ * Export extended function.
+ */
+(Component as any).Events = VimeoEvents;
+type T = React.FC<VimeoProps> & { Events: types.VimeoEventsFactory };
+export const Vimeo = Component as T;
+
+/**
  * Helpers
  */
+
 async function loadVideo(player: VimeoPlayer, video: number, autoPlay?: boolean) {
   if (video !== (await player.getVideoId())) {
     await player.loadVideo(video);

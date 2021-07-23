@@ -1,5 +1,17 @@
+import { Observable } from 'rxjs';
+import { IDisposable, EventBus } from '@platform/types';
+
 /**
- * Player events.
+ * Event API.
+ */
+export type VimeoEventsFactory = (args: { bus: EventBus<any> }) => VimeoEvents;
+export type VimeoEvents = IDisposable & {
+  $: Observable<VimeoEvent>;
+  is: { base(input: any): boolean };
+};
+
+/**
+ * Events
  */
 export type VimeoEvent = VimeoStatusEvent | VimeoSeekEvent | VimeoPlayEvent | VimeoPauseEvent;
 

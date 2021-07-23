@@ -1,0 +1,11 @@
+{
+  "extends": "@platform/ts/tsconfig.json",
+  "include": [
+    "src/test/test.bundles/simple.node/**/*"
+  ],
+  "compilerOptions": {
+    "outDir": "/Users/phil/code/@platform/code/cell.compiler/tmp/test/TscCompiler/foo",
+    "noUnusedLocals": false,
+    "esModuleInterop": true
+  }
+}

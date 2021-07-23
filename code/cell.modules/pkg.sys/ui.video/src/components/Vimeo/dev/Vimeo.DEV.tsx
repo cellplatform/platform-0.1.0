@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions, ActionHandlerArgs } from 'sys.ui.dev';
 
 import { Vimeo, VimeoProps } from '..';
-import { rx, t, COLORS, types } from './common';
+import { rx, t, COLORS, types } from '../common';
 
 export const VIDEOS = [
   { label: 'app/tubes', value: 499921561 },
@@ -89,7 +89,7 @@ export const actions = DevActions<Ctx>()
 
     e.select((config) => {
       config
-        .label(`videos`)
+        .title('video')
         .items(VIDEOS)
         .initial(VIDEOS[1])
         .pipe((e) => {
@@ -99,6 +99,15 @@ export const actions = DevActions<Ctx>()
           e.ctx.props.video = current ? current.value : undefined;
         });
     });
+
+    e.textbox((config) =>
+      config.placeholder('vimeo id (number)').pipe((e) => {
+        if (e.changing?.action === 'invoke') {
+          const id = Number.parseInt(e.changing.next);
+          if (!Number.isNaN(id)) e.ctx.props.video = id;
+        }
+      }),
+    );
 
     e.hr();
   })
@@ -115,6 +124,7 @@ export const actions = DevActions<Ctx>()
     const fire = (e: A, seconds: number) => {
       e.ctx.bus.fire({ type: 'Vimeo/seek', payload: { id, seconds } });
     };
+
     e.title('seek');
     e.button('0 (start)', (e) => fire(e, -10));
     e.button('15', (e) => fire(e, 15));
