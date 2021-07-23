@@ -4,7 +4,11 @@ import { IDisposable, EventBus } from '@platform/types';
 /**
  * Event API.
  */
-export type VimeoEventsFactory = (args: { bus: EventBus<any> }) => VimeoEvents;
+export type VimeoEventsFactory = {
+  (args: { bus: EventBus<any> }): VimeoEvents;
+  is: VimeoEvents['is'];
+};
+
 export type VimeoEvents = IDisposable & {
   $: Observable<VimeoEvent>;
   is: { base(input: any): boolean };

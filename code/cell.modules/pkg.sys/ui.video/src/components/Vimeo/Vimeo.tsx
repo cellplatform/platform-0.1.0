@@ -1,7 +1,7 @@
 import VimeoPlayer from '@vimeo/player';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { css, CssValue, cuid, t, types } from './common';
+import { css, CssValue, cuid, t } from './common';
 import { VimeoEvents } from './Events';
 import { usePlayerController } from './hooks/usePlayerController';
 
@@ -87,7 +87,7 @@ const Component: React.FC<VimeoProps> = (props) => {
  * Export extended function.
  */
 (Component as any).Events = VimeoEvents;
-type T = React.FC<VimeoProps> & { Events: types.VimeoEventsFactory };
+type T = React.FC<VimeoProps> & { Events: t.VimeoEventsFactory };
 export const Vimeo = Component as T;
 
 /**

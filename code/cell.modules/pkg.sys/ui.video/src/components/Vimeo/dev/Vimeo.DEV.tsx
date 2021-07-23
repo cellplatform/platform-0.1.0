@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions, ActionHandlerArgs } from 'sys.ui.dev';
 
 import { Vimeo, VimeoProps } from '..';
-import { rx, t, COLORS, types } from '../common';
+import { rx, t, COLORS } from '../common';
 
 export const VIDEOS = [
   { label: 'app/tubes', value: 499921561 },
@@ -11,7 +11,7 @@ export const VIDEOS = [
 
 type Ctx = {
   theme: 'light' | 'dark';
-  bus: t.EventBus<types.VimeoEvent>;
+  bus: t.EventBus<t.VimeoEvent>;
   props: VimeoProps;
 };
 type A = ActionHandlerArgs<Ctx>;
@@ -27,7 +27,7 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const bus = rx.bus<types.VimeoEvent>();
+    const bus = rx.bus<t.VimeoEvent>();
 
     bus.$.pipe().subscribe((e) => {
       console.log(e.type, e.payload);

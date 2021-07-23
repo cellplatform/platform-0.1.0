@@ -2,10 +2,10 @@ import React from 'react';
 import { ActionHandlerArgs, DevActions } from 'sys.ui.dev';
 
 import { VimeoBackground, VimeoBackgroundProps } from '..';
-import { COLORS, rx, t, types } from '../common';
+import { COLORS, rx, t } from '../common';
 import { VIDEOS } from './Vimeo.DEV';
 
-type Ctx = { bus: t.EventBus<types.VimeoEvent>; props: VimeoBackgroundProps };
+type Ctx = { bus: t.EventBus<t.VimeoEvent>; props: VimeoBackgroundProps };
 type A = ActionHandlerArgs<Ctx>;
 
 const id = 'sample';
@@ -19,7 +19,7 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const bus = rx.bus<types.VimeoEvent>();
+    const bus = rx.bus<t.VimeoEvent>();
 
     bus.$.subscribe((e) => {
       console.log(e.type, e.payload);
