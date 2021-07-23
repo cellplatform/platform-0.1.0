@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.compiler",
-  "version": "0.3.56",
+  "version": "0.3.60",
   "description": "Code compilation and bundling.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
