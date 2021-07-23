@@ -12,7 +12,7 @@ const imports = {
   OptionButtons: import('./components/OptionButtons/DEV'),
 };
 
-const ns = new URL(location.href).searchParams.get('ui.dev.ns');
+const ns = new URL(location.href).searchParams.get('ns');
 export const DevHarness: React.FC = () => (
   <Harness actions={Object.values(imports)} showActions={true} initial={ns} />
 );

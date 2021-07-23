@@ -10,6 +10,6 @@ const imports = {
   WorkerBus: import('./components/WorkerBus/dev/DEV'),
 };
 
-const ns = new URL(location.href).searchParams.get('ui.dev.ns');
+const ns = new URL(location.href).searchParams.get('ns');
 
 export const DevHarness: React.FC = () => <Harness actions={Object.values(imports)} initial={ns} />;

@@ -138,7 +138,7 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus; localhost: string })
   if (ENV.isDev) {
     Push.separator();
 
-    const ports = [3032, 3033, 3034, 3036, 3037, 3040, 5050];
+    const ports = [3000, 3032, 3033, 3034, 3036, 3037, 3040, 5050];
     ports.forEach((port) => Push.item(`localhost:${port}`, `http://localhost:${port}`));
   }
 
