@@ -2,7 +2,7 @@ import { equals } from 'ramda';
 import { animationFrameScheduler, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, observeOn, takeUntil } from 'rxjs/operators';
 
-import * as t from './types';
+import * as t from '../common/types';
 
 const RECT: t.DomRect = {
   x: -1,

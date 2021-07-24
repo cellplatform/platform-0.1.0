@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
 
 import { DEFAULT, ResizeObserver } from '../resize/ResizeObserver';
-import * as t from '../types';
+import * as t from '../common/types';
 
 /**
  * Hook for attaching an monitoring the size of a DOM element.
