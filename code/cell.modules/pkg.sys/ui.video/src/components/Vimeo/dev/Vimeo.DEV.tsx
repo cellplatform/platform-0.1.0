@@ -98,13 +98,20 @@ export const actions = DevActions<Ctx>()
     });
 
     e.textbox((config) =>
-      config.placeholder('vimeo id (number)').pipe((e) => {
+      config.placeholder('vimeo id (number)').pipe(async (e) => {
         if (e.changing?.action === 'invoke') {
-          const id = Number.parseInt(e.changing.next);
-          if (!Number.isNaN(id)) e.ctx.props.video = id;
+          const videoId = Number.parseInt(e.changing.next);
+
+          if (!Number.isNaN(videoId)) e.ctx.props.video = videoId;
         }
       }),
     );
+
+    e.button('load (via event)', async (e) => {
+      const videoId = 73809723;
+      const res = await e.ctx.events.load.fire(videoId);
+      console.log('response', res);
+    });
 
     e.hr();
   })

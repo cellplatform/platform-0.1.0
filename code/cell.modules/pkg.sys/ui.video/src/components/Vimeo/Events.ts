@@ -18,6 +18,25 @@ function Events(args: { id: string; bus: t.EventBus<any> }): t.VimeoEvents {
     filter((e) => e.payload.id === id),
   );
 
+  const load: t.VimeoEvents['load'] = {
+    req$: rx.payload<t.VimeoLoadReqEvent>($, 'Vimeo/load:req'),
+    res$: rx.payload<t.VimeoLoadResEvent>($, 'Vimeo/load:res'),
+    async fire(video: t.VimeoId, options = {}) {
+      const tx = slug();
+      const { timeout: msecs = 1000 } = options;
+      const first = firstValueFrom(
+        load.res$.pipe(
+          filter((e) => e.tx === tx),
+          timeout(msecs),
+          catchError(() => of(`Vimeo load timed out after ${msecs} msecs`)),
+        ),
+      );
+      bus.fire({ type: 'Vimeo/load:req', payload: { tx, id, video } });
+      const res = await first;
+      return typeof res === 'string' ? { tx, id, error: res } : res;
+    },
+  };
+
   const status: t.VimeoEvents['status'] = {
     $: rx.payload<t.VimeoStatusEvent>($, 'Vimeo/status'),
     req$: rx.payload<t.VimeoStatusReqEvent>($, 'Vimeo/status:req'),
@@ -95,7 +114,7 @@ function Events(args: { id: string; bus: t.EventBus<any> }): t.VimeoEvents {
     },
   };
 
-  return { id, $, is, dispose, dispose$, status, play, pause, seek };
+  return { id, $, is, dispose, dispose$, load, status, play, pause, seek };
 }
 
 /**

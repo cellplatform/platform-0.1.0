@@ -49,10 +49,17 @@ const Component: React.FC<VimeoProps> = (props) => {
     };
   }, [width, height]); // eslint-disable-line
 
-  usePlayerController({ id, video, player, bus });
+  const controller = usePlayerController({ id, video, player, bus });
 
   useEffect(() => {
-    if (player) loadVideo(player, video);
+    const events = VimeoEvents({ id, bus });
+
+    if (player) {
+      console.log('FIRE', video);
+      if (typeof video === 'number') events.load.fire(video);
+    }
+
+    return () => events.dispose();
   }, [video, player]); // eslint-disable-line
 
   useEffect(() => {
@@ -67,6 +74,8 @@ const Component: React.FC<VimeoProps> = (props) => {
       borderRadius,
       width,
       height,
+      opacity: controller.opacity,
+      transition: `opacity 200ms`,
     }),
   };
 
@@ -79,14 +88,3 @@ const Component: React.FC<VimeoProps> = (props) => {
 (Component as any).Events = VimeoEvents;
 type T = React.FC<VimeoProps> & { Events: t.VimeoEventsFactory };
 export const Vimeo = Component as T;
-
-/**
- * Helpers
- */
-
-async function loadVideo(player: VimeoPlayer, video: number, autoPlay?: boolean) {
-  if (video !== (await player.getVideoId())) {
-    await player.loadVideo(video);
-    if (autoPlay) await player.play();
-  }
-}

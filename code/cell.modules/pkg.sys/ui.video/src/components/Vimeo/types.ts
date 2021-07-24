@@ -4,6 +4,8 @@ import { IDisposable, EventBus } from '@platform/types';
 type Seconds = number;
 type Milliseconds = number;
 
+export type VimeoId = number; // Vimeo video identifier.
+
 /**
  * Event API.
  */
@@ -16,6 +18,12 @@ export type VimeoEvents = IDisposable & {
   $: Observable<VimeoEvent>;
   is: { base(input: any): boolean };
   id: string; // Player instance.
+
+  load: {
+    req$: Observable<VimeoLoadReq>;
+    res$: Observable<VimeoLoadRes>;
+    fire(video: VimeoId, options?: { timeout?: Milliseconds }): Promise<VimeoPlayRes>;
+  };
 
   status: {
     $: Observable<VimeoStatus>;
@@ -47,6 +55,8 @@ export type VimeoEvents = IDisposable & {
  * Events
  */
 export type VimeoEvent =
+  | VimeoLoadReqEvent
+  | VimeoLoadResEvent
   | VimeoStatusEvent
   | VimeoStatusReqEvent
   | VimeoStatusResEvent
@@ -58,6 +68,27 @@ export type VimeoEvent =
   | VimeoSeekResEvent;
 
 /**
+ * Loads a video into the player.
+ */
+export type VimeoLoadReqEvent = {
+  type: 'Vimeo/load:req';
+  payload: VimeoLoadReq;
+};
+export type VimeoLoadReq = { id: string; tx?: string; video: VimeoId };
+
+export type VimeoLoadResEvent = {
+  type: 'Vimeo/load:res';
+  payload: VimeoLoadRes;
+};
+export type VimeoLoadRes = {
+  id: string;
+  tx: string;
+  action: 'loaded' | 'none:already-loaded';
+  status?: VimeoStatus;
+  error?: string;
+};
+
+/**
  * Fires while video plays starts and stops.
  */
 export type VimeoStatusEvent = {
@@ -66,8 +97,8 @@ export type VimeoStatusEvent = {
 };
 export type VimeoStatus = {
   id: string; // Player instance.
-  video: number; // Vimeo identifier.
-  kind: 'loaded' | 'start' | 'update' | 'seek' | 'stop' | 'end';
+  video: VimeoId;
+  action: 'info' | 'loaded' | 'start' | 'update' | 'seek' | 'stop' | 'end';
   duration: Seconds;
   seconds: Seconds;
   percent: number;
