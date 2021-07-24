@@ -1,6 +1,6 @@
 import * as t from './DEV.types';
 
-export { Icons } from '../../components/Icons';
+export { Icons } from '../../ui/Icons';
 export { PeerNetworkBus } from '../../PeerNetworkBus';
 
 export * from './common.libs';
