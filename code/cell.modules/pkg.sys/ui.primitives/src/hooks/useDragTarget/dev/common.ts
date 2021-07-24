@@ -1,4 +1,4 @@
 export * from '../../../common';
 
-export { Button } from '../../../components.ref/button/Button';
-export { Spinner } from '../../../components.ref/spinner/Spinner';
+export { Button } from '../../../ui.ref/button/Button';
+export { Spinner } from '../../../ui.ref/spinner/Spinner';

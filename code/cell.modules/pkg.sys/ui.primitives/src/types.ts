@@ -4,9 +4,9 @@ export * from '@platform/ui.image/lib/types';
 
 export * from './hooks/useDragTarget/types';
 
-export * from './components/DotTabstrip/types';
-export * from './components/PropList/types';
-export * from './components/QRCode/types';
-export * from './components/MinSize/types';
+export * from './ui/DotTabstrip/types';
+export * from './ui/PropList/types';
+export * from './ui/QRCode/types';
+export * from './ui/MinSize/types';
 
-export * from './components.ref/tree/types';
+export * from './ui.ref/tree/types';

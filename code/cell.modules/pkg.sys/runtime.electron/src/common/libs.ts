@@ -26,4 +26,4 @@ export {
 /**
  * sys.ui
  */
-export { PropList, PropListItem } from 'sys.ui.primitives/lib/components/PropList';
+export { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';

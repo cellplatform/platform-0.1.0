@@ -4,30 +4,30 @@ import { Harness } from 'sys.ui.dev';
 const imports = {
   useDragTarget: import('./hooks/useDragTarget/dev/DEV'),
 
-  DotTabstrip: import('./components/DotTabstrip/DEV'),
-  Zoom: import('./components/Zoom/DEV'),
-  PropList: import('./components/PropList/dev/DEV'),
-  QRCode: import('./components/QRCode/dev/DEV'),
-  TextEditor: import('./components/TextEditor/DEV'),
-  MinSize: import('./components/MinSize/dev/DEV'),
+  DotTabstrip: import('./ui/DotTabstrip/DEV'),
+  Zoom: import('./ui/Zoom/DEV'),
+  PropList: import('./ui/PropList/dev/DEV'),
+  QRCode: import('./ui/QRCode/dev/DEV'),
+  TextEditor: import('./ui/TextEditor/DEV'),
+  MinSize: import('./ui/MinSize/dev/DEV'),
 
-  DraggableSort: import('./components/Draggable.Sort/dev/DEV'),
-  DraggableMotion: import('./components/Draggable.Motion/dev/DEV'),
+  DraggableSort: import('./ui/Draggable.Sort/dev/DEV'),
+  DraggableMotion: import('./ui/Draggable.Motion/dev/DEV'),
 
-  Card: import('./components/Card/DEV'),
-  CardStack: import('./components/CardStack/dev/DEV'),
+  Card: import('./ui/Card/DEV'),
+  CardStack: import('./ui/CardStack/dev/DEV'),
 
-  EventCard: import('./components/Event.Card/DEV'),
-  EventStack: import('./components/Event.Stack/DEV'),
-  EventPipe: import('./components/Event.Pipe/DEV'),
+  EventCard: import('./ui/Event.Card/DEV'),
+  EventStack: import('./ui/Event.Stack/DEV'),
+  EventPipe: import('./ui/Event.Pipe/DEV'),
 
-  Button: import('./components.ref/button/Button.dev/DEV'),
-  Switch: import('./components.ref/button/Switch.dev/DEV'),
+  Button: import('./ui.ref/button/Button.dev/DEV'),
+  Switch: import('./ui.ref/button/Switch.dev/DEV'),
   OptionButtons: import('sys.ui.dev/lib/components/OptionButtons/DEV'),
 
   Svg: import('./ui.image/Svg/dev/DEV'),
 
-  Tree: import('./components.ref/tree/Tree.dev/DEV'),
+  Tree: import('./ui.ref/tree/Tree.dev/DEV'),
 };
 
 const ns = new URL(location.href).searchParams.get('ns');
