@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { RecordButton, useRecordController } from 'sys.ui.video/lib/components/RecordButton';
+import { RecordButton, useRecordController } from 'sys.ui.video/lib/ui/RecordButton';
 
 import { COLORS, css, CssValue, isLocalhost, t, useResizeObserver, VideoStream } from '../common';
 import { DevModal } from '../layouts';
