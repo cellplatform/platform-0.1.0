@@ -19,8 +19,8 @@ export {
 } from 'sys.ui.primitives/lib/ui/CardStack';
 export { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
 
-export { AudioWaveform } from 'sys.ui.video/lib/components/AudioWaveform';
-export { MediaStream, MediaEvent, VideoStream } from 'sys.ui.video/lib/components/MediaStream';
+export { AudioWaveform } from 'sys.ui.video/lib/ui/AudioWaveform';
+export { MediaStream, MediaEvent, VideoStream } from 'sys.ui.video/lib/ui/MediaStream';
 
 export {
   EventStack,

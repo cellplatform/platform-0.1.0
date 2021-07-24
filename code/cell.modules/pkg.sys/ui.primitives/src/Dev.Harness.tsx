@@ -23,7 +23,7 @@ const imports = {
 
   Button: import('./ui.ref/button/Button.dev/DEV'),
   Switch: import('./ui.ref/button/Switch.dev/DEV'),
-  OptionButtons: import('sys.ui.dev/lib/components/OptionButtons/DEV'),
+  OptionButtons: import('sys.ui.dev/lib/ui/OptionButtons/DEV'),
 
   Svg: import('./ui.image/Svg/dev/DEV'),
 

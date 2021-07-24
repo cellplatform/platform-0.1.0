@@ -1,2 +1,2 @@
 export * from '../common';
-export * from '../components.hooks';
+export * from '../ui.hooks';

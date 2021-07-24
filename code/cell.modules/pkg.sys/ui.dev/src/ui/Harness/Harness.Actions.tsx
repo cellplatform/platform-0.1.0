@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { css, t, color, CssValue, defaultValue } from '../../common';
-import { useActionsRedraw } from '../../components.hooks';
+import { useActionsRedraw } from '../../ui.hooks';
 
 export type HarnessActionsProps = {
   bus: t.EventBus;

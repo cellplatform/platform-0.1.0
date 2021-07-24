@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { css, CssValue, defaultValue, rx, t } from '../../common';
-import { useActionsRedraw, useActionsPropertyInput } from '../../components.hooks';
+import { useActionsRedraw, useActionsPropertyInput } from '../../ui.hooks';
 import { Store } from '../../store';
 import { useActionsSelectorState } from '../ActionsSelector';
 import { ErrorBoundary } from '../ErrorBoundary';

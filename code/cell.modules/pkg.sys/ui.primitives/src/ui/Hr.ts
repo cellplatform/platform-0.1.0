@@ -1,1 +1,1 @@
-export * from 'sys.ui.dev/lib/components/Hr';
+export * from 'sys.ui.dev/lib/ui/Hr';
