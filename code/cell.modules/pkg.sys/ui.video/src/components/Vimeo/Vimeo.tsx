@@ -1,16 +1,14 @@
 import VimeoPlayer from '@vimeo/player';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { css, CssValue, cuid, t } from './common';
+import { css, CssValue, t } from './common';
 import { VimeoEvents } from './Events';
 import { usePlayerController } from './hooks/usePlayerController';
 
 export type VimeoProps = {
-  bus?: t.EventBus<any>;
-  id?: string;
+  bus: t.EventBus<any>;
+  id: string;
   video: number;
-  autoPlay?: boolean;
-  loop?: boolean;
   muted?: boolean;
   width?: number;
   height?: number;
@@ -23,10 +21,9 @@ export type VimeoProps = {
  * https://github.com/vimeo/player.js
  */
 const Component: React.FC<VimeoProps> = (props) => {
-  const { video, width, height, bus, autoPlay, borderRadius } = props;
+  const { id, video, width, height, bus, borderRadius } = props;
   const divRef = useRef<HTMLDivElement>(null);
 
-  const idRef = useRef<string>(props.id || cuid());
   const [player, setPlayer] = useState<VimeoPlayer>();
 
   useEffect(() => {
@@ -41,33 +38,26 @@ const Component: React.FC<VimeoProps> = (props) => {
       title: false,
       byline: false,
       portrait: false,
+      loop: false,
       dnt: true, // Do Not Track (no cookies or other tracking attempts)
     });
 
     setPlayer(player);
-
-    player.on('loaded', () => {
-      if (autoPlay) player.play();
-    });
 
     return () => {
       player?.destroy();
     };
   }, [width, height]); // eslint-disable-line
 
-  usePlayerController({ id: idRef.current, video, player, bus });
+  usePlayerController({ id, video, player, bus });
 
   useEffect(() => {
-    if (player) loadVideo(player, video, autoPlay);
+    if (player) loadVideo(player, video);
   }, [video, player]); // eslint-disable-line
 
   useEffect(() => {
     if (player) player.setMuted(props.muted ?? false);
   }, [player, props.muted]);
-
-  useEffect(() => {
-    player?.setLoop(props.loop ?? false);
-  }, [player, props.loop]);
 
   const styles = {
     base: css({

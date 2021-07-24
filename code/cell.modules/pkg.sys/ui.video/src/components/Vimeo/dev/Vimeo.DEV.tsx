@@ -12,6 +12,7 @@ export const VIDEOS = [
 type Ctx = {
   theme: 'light' | 'dark';
   bus: t.EventBus<t.VimeoEvent>;
+  events: t.VimeoEvents;
   props: VimeoProps;
 };
 type A = ActionHandlerArgs<Ctx>;
@@ -28,13 +29,19 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus<t.VimeoEvent>();
+    const events = Vimeo.Events({ id, bus });
 
-    bus.$.pipe().subscribe((e) => {
-      console.log(e.type, e.payload);
+    events.$.pipe().subscribe((e) => {
+      // console.log('events.$:', e.type, e.payload);
+    });
+
+    events.status.$.subscribe((e) => {
+      console.log('Vimeo/status:', e);
     });
 
     return {
       bus,
+      events,
       theme: 'light',
       props: {
         id,
@@ -70,16 +77,6 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.props.borderRadius !== undefined;
     });
 
-    e.boolean('autoPlay', (e) => {
-      if (e.changing) e.ctx.props.autoPlay = e.changing.next;
-      e.boolean.current = e.ctx.props.autoPlay;
-    });
-
-    e.boolean('loop', (e) => {
-      if (e.changing) e.ctx.props.loop = e.changing.next;
-      e.boolean.current = e.ctx.props.loop;
-    });
-
     e.boolean('muted', (e) => {
       if (e.changing) e.ctx.props.muted = e.changing.next;
       e.boolean.current = e.ctx.props.muted;
@@ -113,19 +110,20 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Events');
-    e.button('play (start)', (e) => e.ctx.bus.fire({ type: 'Vimeo/play', payload: { id } }));
-    e.button('pause (stop)', (e) => e.ctx.bus.fire({ type: 'Vimeo/pause', payload: { id } }));
+    e.title('player');
+
+    e.button('play ("start")', (e) => e.ctx.events.play.fire());
+    e.button('pause ("stop")', (e) => e.ctx.events.pause.fire());
 
     e.hr();
   })
 
   .items((e) => {
     const fire = (e: A, seconds: number) => {
-      e.ctx.bus.fire({ type: 'Vimeo/seek', payload: { id, seconds } });
+      e.ctx.bus.fire({ type: 'Vimeo/seek:req', payload: { id, seconds } });
     };
 
-    e.title('seek');
+    e.title('seek (seconds)');
     e.button('0 (start)', (e) => fire(e, -10));
     e.button('15', (e) => fire(e, 15));
     e.button('20', (e) => fire(e, 20));

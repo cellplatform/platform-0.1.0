@@ -6,8 +6,8 @@ import { usePlayerController } from './hooks/usePlayerController';
 import { VimeoEvents } from './Events';
 
 export type VimeoBackgroundProps = {
-  bus?: t.EventBus<any>;
-  id?: string;
+  bus: t.EventBus<any>;
+  id: string;
   video: number;
   opacity?: number;
   blur?: number;
@@ -15,11 +15,10 @@ export type VimeoBackgroundProps = {
 };
 
 const Component: React.FC<VimeoBackgroundProps> = (props) => {
-  const { video, bus } = props;
+  const { id, video, bus } = props;
   const blur = defaultValue(props.blur, 0);
   const opacityTransition = defaultValue(props.opacityTransition, 300);
 
-  const idRef = useRef<string>(props.id || cuid());
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [player, setPlayer] = useState<VimeoPlayer>();
 
@@ -31,7 +30,7 @@ const Component: React.FC<VimeoBackgroundProps> = (props) => {
     };
   }, []); // eslint-disable-line
 
-  usePlayerController({ id: idRef.current, video, player, bus });
+  usePlayerController({ id, video, player, bus });
 
   const styles = {
     base: css({

@@ -5,7 +5,11 @@ import { VimeoBackground, VimeoBackgroundProps } from '..';
 import { COLORS, rx, t } from '../common';
 import { VIDEOS } from './Vimeo.DEV';
 
-type Ctx = { bus: t.EventBus<t.VimeoEvent>; props: VimeoBackgroundProps };
+type Ctx = {
+  bus: t.EventBus<t.VimeoEvent>;
+  events: t.VimeoEvents;
+  props: VimeoBackgroundProps;
+};
 type A = ActionHandlerArgs<Ctx>;
 
 const id = 'sample';
@@ -20,6 +24,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus<t.VimeoEvent>();
+    const events = VimeoBackground.Events({ id, bus });
 
     bus.$.subscribe((e) => {
       console.log(e.type, e.payload);
@@ -27,6 +32,7 @@ export const actions = DevActions<Ctx>()
 
     return {
       bus,
+      events,
       props: {
         id,
         bus,
@@ -87,14 +93,14 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('start/stop');
-    e.button('play', (e) => e.ctx.bus.fire({ type: 'Vimeo/play', payload: { id } }));
-    e.button('pause', (e) => e.ctx.bus.fire({ type: 'Vimeo/pause', payload: { id } }));
+    e.button('play ("start")', (e) => e.ctx.events.play.fire());
+    e.button('pause ("stop")', (e) => e.ctx.events.pause.fire());
     e.hr(1, 0.1);
   })
 
   .items((e) => {
     const fire = (e: A, seconds: number) => {
-      e.ctx.bus.fire({ type: 'Vimeo/seek', payload: { id, seconds } });
+      e.ctx.bus.fire({ type: 'Vimeo/seek:req', payload: { id, seconds } });
     };
     e.title('seek');
     e.button('0 (start)', (e) => fire(e, -10));
