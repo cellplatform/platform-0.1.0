@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
-import { useZoomDrag, Zoom } from 'sys.ui.primitives/lib/components/Zoom';
+import { useZoomDrag, Zoom } from 'sys.ui.primitives/lib/ui/Zoom';
 
 import { color, COLORS, css, CssValue, PeerJS, t, useResizeObserver, value, rx } from '../common';
 import { LayoutFooter } from './Layout.VideoBar';

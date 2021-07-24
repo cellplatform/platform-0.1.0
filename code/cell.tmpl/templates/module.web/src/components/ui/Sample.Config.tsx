@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { color, css, CssValue, t } from '../../common';
-import { PropList, PropListItem } from 'sys.ui.primitives/lib/components/PropList';
+import { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
 import { SampleProps } from './Sample';
 
 export type SampleConfigProps = {

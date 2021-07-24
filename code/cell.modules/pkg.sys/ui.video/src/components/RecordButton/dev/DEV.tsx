@@ -4,7 +4,7 @@ import { DevActions, LocalStorage, Hr } from 'sys.ui.dev';
 import { RecordButton, RecordButtonProps, RecordButtonStates } from '..';
 import { color, t, rx } from './common';
 import { DevDialog } from './DEV.Dialog';
-import { PropList } from 'sys.ui.primitives/lib/components/PropList';
+import { PropList } from 'sys.ui.primitives/lib/ui/PropList';
 
 type DialogKind = 'hello' | 'dev/dialog';
 const DialogKinds: DialogKind[] = ['hello', 'dev/dialog'];

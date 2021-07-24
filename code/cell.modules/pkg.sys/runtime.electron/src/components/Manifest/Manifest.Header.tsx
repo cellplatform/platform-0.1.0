@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { filesize, color, css, CssValue, t, PropList, PropListItem, COLORS } from '../../common';
 
 import { Icons } from './Icons';
-import { QRCode } from 'sys.ui.primitives/lib/components/QRCode';
+import { QRCode } from 'sys.ui.primitives/lib/ui/QRCode';
 
 export type ManifestHeaderProps = {
   manifest: t.ModuleManifest;
