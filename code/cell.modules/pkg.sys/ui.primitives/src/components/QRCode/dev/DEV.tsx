@@ -9,7 +9,7 @@ const Default = { size: 128 };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui/QRCode')
+  .namespace('ui.QRCode')
   .context((e) => {
     if (e.prev) return e.prev;
     return {

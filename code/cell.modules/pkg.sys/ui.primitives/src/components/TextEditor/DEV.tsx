@@ -10,7 +10,7 @@ type Ctx = { props: TextEditorProps };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.editor/TextEditor')
+  .namespace('ui.editor.TextEditor')
   .context((e) => {
     if (e.prev) return e.prev;
     return {

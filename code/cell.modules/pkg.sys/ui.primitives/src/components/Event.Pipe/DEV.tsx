@@ -18,7 +18,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.event/EventPipe')
+  .namespace('ui.event.EventPipe')
   .context((e) => {
     if (e.prev) return e.prev;
 

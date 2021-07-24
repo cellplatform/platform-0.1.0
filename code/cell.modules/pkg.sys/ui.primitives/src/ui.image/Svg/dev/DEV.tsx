@@ -9,7 +9,7 @@ type Ctx = { props: SampleProps };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.image/Svg')
+  .namespace('ui.image.Svg')
   .context((e) => {
     if (e.prev) return e.prev;
     return {

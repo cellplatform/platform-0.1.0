@@ -17,7 +17,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui/OptionButtons')
+  .namespace('ui.OptionButtons')
   .context((e) => {
     if (e.prev) return e.prev;
     return {

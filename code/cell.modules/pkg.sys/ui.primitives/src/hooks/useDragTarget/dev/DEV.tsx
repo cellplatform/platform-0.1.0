@@ -12,7 +12,7 @@ const INITIAL = { count: 0 };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('hook/useDragTarget')
+  .namespace('hook.useDragTarget')
   .context((e) => e.prev || INITIAL)
 
   /**

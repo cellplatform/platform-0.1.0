@@ -17,7 +17,7 @@ const createItem = (): CardStackItem => {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui/CardStack')
+  .namespace('ui.CardStack')
   .context((e) => {
     if (e.prev) return e.prev;
 

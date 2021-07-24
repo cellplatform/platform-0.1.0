@@ -11,7 +11,7 @@ type Ctx = { props: t.ITreeviewProps };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.ref/Tree')
+  .namespace('ui.Tree')
   .context((e) => {
     if (e.prev) return e.prev;
 

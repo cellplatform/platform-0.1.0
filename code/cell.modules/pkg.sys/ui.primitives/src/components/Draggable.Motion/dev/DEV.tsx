@@ -32,7 +32,7 @@ const toObject = (name: string, data: any) => (
  *
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.drag/Motion')
+  .namespace('ui.drag.Motion')
   .context((e) => {
     if (e.prev) return e.prev;
 
