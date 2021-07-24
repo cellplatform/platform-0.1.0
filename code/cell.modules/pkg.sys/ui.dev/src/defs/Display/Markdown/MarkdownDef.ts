@@ -1,6 +1,6 @@
 import { t } from '../common';
 import { config } from './MarkdownDef.config';
-import { Markdown as Component } from '../../../components/Action.Display';
+import { Markdown as Component } from '../../../ui/Action.Display';
 
 export const MarkdownDef: t.ActionDef<t.ActionMarkdown> = {
   kind: 'display/markdown',

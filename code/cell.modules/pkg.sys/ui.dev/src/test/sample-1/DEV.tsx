@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions } from '../..';
 import { css, COLORS, color, time, lorem } from '../../common';
 import { Component } from './Component';
-import { Button } from '../../components/Primitives';
+import { Button } from '../../ui/Primitives';
 
 type SampleLayout =
   | 'single'
