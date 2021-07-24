@@ -2,7 +2,7 @@ import React from 'react';
 import { Harness } from 'sys.ui.dev';
 
 const imports = {
-  Sample: import('./components/Sample/DEV'),
+  Sample: import('./components/Sample/dev/DEV'),
 };
 
 const ns = new URL(location.href).searchParams.get('ns');

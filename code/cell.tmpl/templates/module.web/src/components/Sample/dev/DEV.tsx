@@ -1,6 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
-import { Sample, SampleProps } from '.';
+import { Sample, SampleProps } from '..';
+import { SampleConfig } from '../Sample.Config';
 
 type Ctx = { props: SampleProps };
 
@@ -8,7 +9,7 @@ type Ctx = { props: SampleProps };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui/Sample')
+  .namespace('ui.Sample')
   .context((e) => {
     if (e.prev) return e.prev;
     return { props: { count: 0 } };
@@ -18,6 +19,11 @@ export const actions = DevActions<Ctx>()
     e.title('props');
     e.button('count: increment', (e) => e.ctx.props.count++);
     e.button('count: decrement', (e) => e.ctx.props.count--);
+
+    e.component((e) => {
+      return <SampleConfig props={e.ctx.props} style={{ MarginX: 20, MarginY: 10 }} />;
+    });
+
     e.hr();
   })
 
