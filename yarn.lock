@@ -1981,7 +1981,7 @@
   dependencies:
     state-local "^1.0.6"
 
-"@monaco-editor/react@^4.0.11":
+"@monaco-editor/react@4.2.1":
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-4.2.1.tgz#75cb6e85e3640e05887a14005c370e46bd71256b"
   integrity sha512-yN8qVY0PyFIbqPjfrZ5TbR/wrcfeiwoys8+0QkmyfiOzG74vXxSBOPIUxk7Ly+qCj7qWHPq1uDJskzFGaIqaPA==
@@ -2092,6 +2092,45 @@
     "@platform/queue" "0.0.47"
     "@platform/types" "0.5.21"
     form-data "4.0.0"
+
+"@platform/cell.compiler@0.3.56":
+  version "0.3.56"
+  resolved "https://registry.yarnpkg.com/@platform/cell.compiler/-/cell.compiler-0.3.56.tgz#7b89dc5168e9d84b03ef97d76bc2522f45cd2e9f"
+  integrity sha512-b1As2jNsOpAbgJ5i/JSNMZQi0MLP6IGJJ7JSUz1EAUfE2Pb0f62UPclQEfRmGSfJSgA4OleRGQIKJAFLUzHdNQ==
+  dependencies:
+    "@babel/core" "7.14.6"
+    "@babel/plugin-proposal-class-properties" "7.14.5"
+    "@babel/plugin-transform-modules-commonjs" "7.14.5"
+    "@babel/preset-env" "7.14.7"
+    "@babel/preset-react" "7.14.5"
+    "@babel/preset-typescript" "7.14.5"
+    "@platform/cell.module" "0.0.133"
+    "@platform/cell.runtime.node" "0.0.68"
+    "@platform/cell.types" "0.5.96"
+    "@platform/css" "0.4.48"
+    "@platform/libs" "0.2.12"
+    "@platform/log" "0.1.60"
+    "@platform/polyfill" "0.0.5"
+    "@svgr/webpack" "5.5.0"
+    "@types/jsonpath" "0.2.0"
+    "@types/webpack-dev-server" "3.11.5"
+    babel-loader "8.2.2"
+    core-js "3.15.2"
+    css-loader "6.1.0"
+    file-loader "6.2.0"
+    fork-ts-checker-webpack-plugin "6.2.12"
+    html-webpack-plugin "5.3.2"
+    image-size "1.0.0"
+    minimist "1.2.5"
+    ora "5.4.1"
+    react "17.0.2"
+    react-dom "17.0.2"
+    semver "^7.3.5"
+    serve "12.0.0"
+    style-loader "3.1.0"
+    webpack "5.45.1"
+    webpack-dev-server "3.11.2"
+    worker-loader "3.0.8"
 
 "@platform/cell.coord@0.8.250":
   version "0.8.250"
@@ -12486,12 +12525,12 @@ moment@2.x:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
   integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
 
-monaco-editor@^0.26.1:
+monaco-editor@0.26.1:
   version "0.26.1"
   resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.26.1.tgz#62bb5f658bc95379f8abb64b147632bd1c019d73"
   integrity sha512-mm45nUrBDk0DgZKgbD7+bhDOtcAFNGPJJRAdS6Su1kTGl6XEgC7U3xOmDUW/0RrLf+jlvCGaqLvD4p2VjwuwwQ==
 
-monaco-themes@^0.3.3:
+monaco-themes@0.3.3:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/monaco-themes/-/monaco-themes-0.3.3.tgz#86d9b7cde4d90acb128ec07b3d5d10f757a32224"
   integrity sha512-0yygYHg3hZhMhlYkP2eMAMurLSyVDqA7ZOjHJSz0LNxra2hxuAGjKFdoBGXnG+VykT6u8bc5uZWF8G35NMC3Gw==
