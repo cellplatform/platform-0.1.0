@@ -18,6 +18,8 @@ export const DEFAULT = { RECT };
 
 /**
  * An observer that monitors the changing size of an HTML element.
+ * Uses:
+ *    https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver
  */
 export const ResizeObserver = (el?: HTMLElement | null): t.ResizeObserver => {
   const root$ = new Subject<t.ResizeObserverEvent>();

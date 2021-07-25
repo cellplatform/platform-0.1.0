@@ -7,6 +7,11 @@ import * as t from '../common/types';
 
 /**
  * Hook for attaching an monitoring the size of a DOM element.
+ *
+ * Uses:
+ *    https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver
+ *
+ *
  * USAGE:
  *
  *    First create the hook:
