@@ -1,12 +1,13 @@
 import React from 'react';
-import { ActionSelectConfigArgs, DevActions, ObjectView } from 'sys.ui.dev';
+import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { PositioningContainer } from '..';
-import { deleteUndefined, t } from '../common';
+import { css, deleteUndefined, t } from '../common';
 import { SampleChild } from './DEV.Sample.Child';
 import { SampleRoot } from './DEV.Sample.Root';
 import { EdgeDropdown } from './EdgeDropdown';
 import { Ctx } from './types';
+import { PositioningContainerConfig } from '../PositioningContainer.Config';
 
 /**
  * Actions
@@ -16,13 +17,33 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
     return {
+      background: false,
       child: {},
-      props: {},
+      props: {
+        position: { x: 'center', y: 'bottom' },
+      },
     };
   })
 
   .items((e) => {
-    e.title('Dev Tools');
+    e.title('Positioning Container');
+
+    e.component((e) => {
+      return <PositioningContainerConfig style={{ Margin: [10, 30] }} />;
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Dev');
+
+    e.boolean('background', (e) => {
+      if (e.changing) e.ctx.background = e.changing.next;
+      e.boolean.current = e.ctx.background;
+    });
+
+    e.hr(1, 0.1);
 
     e.boolean('child.width', (e) => {
       if (e.changing) e.ctx.child.width = e.changing.next ? 350 : undefined;
@@ -42,15 +63,18 @@ export const actions = DevActions<Ctx>()
     const D = EdgeDropdown;
 
     function setPosition(ctx: Ctx, key: keyof t.BoxPosition, value?: string) {
-      console.log('temp 🐷🐷🐷 - setPosition'); // TEMP 🐷
       if (value === 'none') value = undefined;
       const position = ctx.props.position ?? (ctx.props.position = {});
       position[key] = value as any;
       ctx.props.position = deleteUndefined(position);
     }
 
-    e.select((config) => D.x(config, 'edge.x', (e) => setPosition(e.ctx, 'x', e.value)));
-    e.select((config) => D.y(config, 'edge.y', (e) => setPosition(e.ctx, 'y', e.value)));
+    e.select((c) => {
+      D.x(c, 'edge.x', c.ctx.props.position?.x, (e) => setPosition(e.ctx, 'x', e.value));
+    });
+    e.select((c) => {
+      D.y(c, 'edge.y', c.ctx.props.position?.y, (e) => setPosition(e.ctx, 'y', e.value));
+    });
 
     e.hr();
   })
@@ -75,9 +99,15 @@ export const actions = DevActions<Ctx>()
       },
     });
 
+    const styles = {
+      container: css({
+        backgroundColor: e.ctx.background && 'rgba(255, 0, 0, 0.1)' /* RED */,
+      }),
+    };
+
     e.render(
       <SampleRoot>
-        <PositioningContainer {...e.ctx.props}>
+        <PositioningContainer {...e.ctx.props} style={styles.container}>
           <SampleChild width={child.width} height={child.height} />
         </PositioningContainer>
       </SampleRoot>,
