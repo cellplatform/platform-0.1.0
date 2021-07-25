@@ -3,14 +3,14 @@ import React from 'react';
 import { PropList, PropListItem } from '../PropList';
 import { COLORS, css, CssValue, t, toMinSizeFlags, value } from './common';
 
-export type MinSizeConfigProps = {
+export type MinSizePropertiesProps = {
   size?: t.DomRect;
   minWidth?: number;
   minHeight?: number;
   style?: CssValue;
 };
 
-export const MinSizeConfig: React.FC<MinSizeConfigProps> = (props) => {
+export const MinSizeProperties: React.FC<MinSizePropertiesProps> = (props) => {
   const { size, minWidth, minHeight } = props;
   const is = toMinSizeFlags({ size, minWidth, minHeight });
 

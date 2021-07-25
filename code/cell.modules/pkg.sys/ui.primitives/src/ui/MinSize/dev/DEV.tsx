@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions, lorem } from 'sys.ui.dev';
 
 import { MinSize, MinSizeProps } from '..';
-import { MinSizeConfig } from '../MinSize.Config';
+import { MinSizeProperties } from '../MinSize.Properties';
 import { color, t, css } from '../common';
 
 type Ctx = {
@@ -34,7 +34,7 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       const { minWidth, minHeight } = e.ctx.props;
       return (
-        <MinSizeConfig
+        <MinSizeProperties
           style={{ MarginX: 20, MarginY: 10 }}
           size={e.ctx.size}
           minWidth={minWidth}

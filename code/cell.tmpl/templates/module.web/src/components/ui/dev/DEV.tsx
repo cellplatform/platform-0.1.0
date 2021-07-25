@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { Sample, SampleProps } from '..';
-import { SampleConfig } from '../Sample.Config';
+import { SampleProperties } from '../Sample.Properties';
 
 type Ctx = { props: SampleProps };
 
@@ -21,7 +21,7 @@ export const actions = DevActions<Ctx>()
     e.button('count: decrement', (e) => e.ctx.props.count--);
 
     e.component((e) => {
-      return <SampleConfig props={e.ctx.props} style={{ MarginX: 20, MarginY: 10 }} />;
+      return <SampleProperties props={e.ctx.props} style={{ MarginX: 20, MarginY: 10 }} />;
     });
 
     e.hr();

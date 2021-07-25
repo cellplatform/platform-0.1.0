@@ -1,14 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { color, css, CssValue, t } from '../../common';
 import { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
 import { SampleProps } from './Sample';
 
-export type SampleConfigProps = {
+export type SamplePropertiesProps = {
   props: SampleProps;
   style?: CssValue;
 };
 
-export const SampleConfig: React.FC<SampleConfigProps> = (props) => {
+export const SampleProperties: React.FC<SamplePropertiesProps> = (props) => {
   const styles = {
     base: css({
       backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
