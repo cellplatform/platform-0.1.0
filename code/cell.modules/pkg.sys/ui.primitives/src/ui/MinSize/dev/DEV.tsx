@@ -4,6 +4,8 @@ import { DevActions, lorem } from 'sys.ui.dev';
 import { MinSize, MinSizeProps } from '..';
 import { MinSizeProperties } from '../MinSize.Properties';
 import { color, t, css } from '../common';
+import { HideStrategies } from '../contants';
+import { SampleChild } from './DEV.Sample.Child';
 
 type Ctx = {
   size?: t.DomRect;
@@ -19,8 +21,9 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
     return {
       props: {
-        minWidth: 500,
-        minHeight: 350,
+        minWidth: 600,
+        minHeight: 450,
+        hideStrategy: 'css:opacity',
         onResize: ({ size }) => {
           e.change.ctx((ctx) => (ctx.size = size));
         },
@@ -29,18 +32,39 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Dev');
+    e.title('Minimum Size');
+
+    e.hr();
 
     e.component((e) => {
-      const { minWidth, minHeight } = e.ctx.props;
       return (
         <MinSizeProperties
-          style={{ MarginX: 20, MarginY: 10 }}
           size={e.ctx.size}
-          minWidth={minWidth}
-          minHeight={minHeight}
+          props={e.ctx.props}
+          style={{ MarginX: 20, MarginY: 10 }}
         />
       );
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Modify');
+
+    e.select((config) => {
+      const items = HideStrategies;
+      config
+        .title('hideStrategy')
+        .items(items)
+        .initial(items[0])
+        .view('buttons')
+        .pipe((e) => {
+          const current = e.select.current[0];
+          const label = current ? current.label : `<unknown>`;
+          e.select.label = label;
+          if (e.changing) e.ctx.props.hideStrategy = current.value;
+        });
     });
 
     e.hr();
@@ -59,7 +83,7 @@ export const actions = DevActions<Ctx>()
     });
 
     const styles = {
-      base: css({ padding: 20 }),
+      base: css({ padding: 20, overflow: 'hidden' }),
       warning: {
         base: css({
           flex: 1,
@@ -79,9 +103,10 @@ export const actions = DevActions<Ctx>()
       </div>
     );
 
+    const { minWidth, minHeight } = e.ctx.props;
     const el = (
       <MinSize {...e.ctx.props} style={{ flex: 1 }} warningElement={elWarning}>
-        <div {...styles.base}>{lorem.words(30)}</div>
+        <SampleChild minWidth={minWidth} minHeight={minHeight} />
       </MinSize>
     );
 

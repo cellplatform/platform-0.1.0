@@ -11,7 +11,7 @@ export type MinSizeProps = {
   children?: React.ReactNode;
   minWidth?: number;
   minHeight?: number;
-  hideStrategy?: 'unrender' | 'opacity';
+  hideStrategy?: t.MinSizeHideStrategy;
   warningElement?: React.ReactNode;
   rootResize?: t.ResizeObserver;
   style?: CssValue;
@@ -23,7 +23,7 @@ export type MinSizeProps = {
  * the width/height is too small.
  */
 export const MinSize: React.FC<MinSizeProps> = (props) => {
-  const { minWidth, minHeight } = props;
+  const { minWidth, minHeight, hideStrategy = 'css:opacity' } = props;
 
   const baseRef = useRef<HTMLDivElement>(null);
   const resize = useResizeObserver(baseRef, { root: props.rootResize });

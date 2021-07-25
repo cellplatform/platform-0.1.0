@@ -2,16 +2,17 @@ import React from 'react';
 
 import { PropList, PropListItem } from '../PropList';
 import { COLORS, css, CssValue, t, toMinSizeFlags, value } from './common';
+import { MinSizeProps } from './MinSize';
 
 export type MinSizePropertiesProps = {
+  props: MinSizeProps;
   size?: t.DomRect;
-  minWidth?: number;
-  minHeight?: number;
   style?: CssValue;
 };
 
 export const MinSizeProperties: React.FC<MinSizePropertiesProps> = (props) => {
-  const { size, minWidth, minHeight } = props;
+  const { size } = props;
+  const { minWidth, minHeight, hideStrategy } = props.props;
   const is = toMinSizeFlags({ size, minWidth, minHeight });
 
   const toNumber = (input?: number) => value.round(input ?? -1);
@@ -42,6 +43,7 @@ export const MinSizeProperties: React.FC<MinSizePropertiesProps> = (props) => {
     },
     { label: 'minWidth', value: { data: toNumberString(minWidth, 'px') } },
     { label: 'minHeight', value: { data: toNumberString(minHeight, 'px') } },
+    { label: 'hideStrategy', value: { data: hideStrategy ?? '-' } },
   ];
 
   return (

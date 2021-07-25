@@ -24,7 +24,7 @@ export const EdgeDropdown = {
       .view('buttons')
       .pipe((e) => {
         const value = e.select.current[0];
-        const label = value ? value.label : `unknown`;
+        const label = value ? value.label : `<unknown>`;
         e.select.label = prefix ? `${prefix}: "${label}"` : label;
         if (onChange) onChange({ value: value.label, ctx: e.ctx });
       });
