@@ -11,7 +11,9 @@ export type MinSizeProps = {
   children?: React.ReactNode;
   minWidth?: number;
   minHeight?: number;
+  hideStrategy?: 'unrender' | 'opacity';
   warningElement?: React.ReactNode;
+  rootResize?: t.ResizeObserver;
   style?: CssValue;
   onResize?: MinSizeResizeEventHandler;
 };
@@ -24,16 +26,15 @@ export const MinSize: React.FC<MinSizeProps> = (props) => {
   const { minWidth, minHeight } = props;
 
   const baseRef = useRef<HTMLDivElement>(null);
-  const resize = useResizeObserver(baseRef);
+  const resize = useResizeObserver(baseRef, { root: props.rootResize });
   const [is, setIs] = useState<t.MinSizeFlags>();
 
   useEffect(() => {
+    const dispose$ = new Subject<void>();
     /**
      * Bubble resize event.
      */
-    const dispose$ = new Subject<void>();
     const resize$ = resize.$.pipe(takeUntil(dispose$));
-
     resize$.subscribe((size) => {
       const is = toMinSizeFlags({ size, minWidth, minHeight });
       setIs(is);
@@ -49,7 +50,7 @@ export const MinSize: React.FC<MinSizeProps> = (props) => {
 
   const ok = Boolean(is?.ok);
   const elChildren = ok ? props.children : undefined;
-  const elWarning = !ok ? props.warningElement : undefined;
+  const elWarning = !ok && Boolean(is) ? props.warningElement : undefined;
 
   return (
     <div ref={baseRef} {...css(styles.base, props.style)}>

@@ -9,7 +9,9 @@ const imports = {
   PropList: import('./ui/PropList/dev/DEV'),
   QRCode: import('./ui/QRCode/dev/DEV'),
   TextEditor: import('./ui/TextEditor/DEV'),
+
   MinSize: import('./ui/MinSize/dev/DEV'),
+  PositioningContainer: import('./ui/PositioningContainer/dev/DEV'),
 
   DraggableSort: import('./ui/Draggable.Sort/dev/DEV'),
   DraggableMotion: import('./ui/Draggable.Motion/dev/DEV'),
