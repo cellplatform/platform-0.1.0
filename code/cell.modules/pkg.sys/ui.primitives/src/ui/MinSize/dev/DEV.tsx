@@ -3,8 +3,8 @@ import { DevActions, lorem } from 'sys.ui.dev';
 
 import { MinSize, MinSizeProps } from '..';
 import { MinSizeProperties } from '../MinSize.Properties';
-import { color, t, css } from '../common';
-import { HideStrategies } from '../contants';
+import { MinSizeHideStrategies, color, t, css } from '../common';
+
 import { SampleChild } from './DEV.Sample.Child';
 
 type Ctx = {
@@ -53,7 +53,7 @@ export const actions = DevActions<Ctx>()
     e.title('Modify');
 
     e.select((config) => {
-      const items = HideStrategies;
+      const items = MinSizeHideStrategies;
       config
         .title('hideStrategy')
         .items(items)

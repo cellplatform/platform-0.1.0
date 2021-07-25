@@ -1,7 +1,7 @@
-import { DevActions, lorem } from 'sys.ui.dev';
 import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t } from '../common';
-import { MinSize } from '..';
+import { lorem } from 'sys.ui.dev';
+
+import { css, CssValue } from '../common';
 
 export type SampleChildProps = {
   minWidth?: number;
@@ -13,8 +13,9 @@ export const SampleChild: React.FC<SampleChildProps> = (props) => {
   const { minWidth, minHeight } = props;
 
   const styles = {
-    base: css({ padding: 20, overflow: 'hidden' }),
+    base: css({ Padding: [20, 30], overflow: 'hidden' }),
   };
+
   return (
     <div {...css(styles.base, props.style)}>
       <p>

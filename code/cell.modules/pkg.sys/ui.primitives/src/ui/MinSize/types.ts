@@ -1,6 +1,6 @@
 import { DomRect } from '../../common/types';
 
-export type MinSizeHideStrategy = 'unrender' | 'css:opacity';
+export type MinSizeHideStrategy = 'unmount' | 'css:opacity' | 'css:display';
 
 export type MinSizeResizeEvent = { size: DomRect; is: MinSizeFlags };
 export type MinSizeResizeEventHandler = (e: MinSizeResizeEvent) => void;

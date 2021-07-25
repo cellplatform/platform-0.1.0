@@ -1,5 +1,6 @@
 import { t } from '../../common';
 export * from '../../common';
+export * from './constants';
 
 /**
  * Derive size flags.

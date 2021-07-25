@@ -22,7 +22,7 @@ export const SampleProperties: React.FC<SamplePropertiesProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <PropList title={'Props'} items={items} />
+      <PropList title={'Props'} items={items} defaults={{ monospace: true }} />
     </div>
   );
 };
