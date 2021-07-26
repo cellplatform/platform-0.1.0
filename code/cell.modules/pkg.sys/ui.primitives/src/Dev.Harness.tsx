@@ -12,6 +12,7 @@ const imports = {
 
   MinSize: import('./ui/MinSize/dev/DEV'),
   PositioningContainer: import('./ui/PositioningContainer/dev/DEV'),
+  PositioningLayers: import('./ui/PositioningLayers/dev/DEV'),
 
   DraggableSort: import('./ui/Draggable.Sort/dev/DEV'),
   DraggableMotion: import('./ui/Draggable.Motion/dev/DEV'),
