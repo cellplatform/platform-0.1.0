@@ -12,13 +12,16 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.Sample')
   .context((e) => {
     if (e.prev) return e.prev;
-    return { props: { count: 0 } };
+    const ctx: Ctx = { props: { count: 0 } };
+    return ctx;
   })
 
   .items((e) => {
     e.title('props');
     e.button('count: increment', (e) => e.ctx.props.count++);
     e.button('count: decrement', (e) => e.ctx.props.count--);
+
+    e.hr(1, 0.1);
 
     e.component((e) => {
       return <SampleProperties props={e.ctx.props} style={{ MarginX: 20, MarginY: 10 }} />;
