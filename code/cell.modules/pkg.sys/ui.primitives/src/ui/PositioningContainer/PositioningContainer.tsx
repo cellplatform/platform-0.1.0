@@ -21,41 +21,46 @@ export type PositioningContainerProps = {
  */
 export const PositioningContainer: React.FC<PositioningContainerProps> = (props) => {
   const [baseSize, setBaseSize] = useState<t.DomRect | undefined>();
-
   const baseRef = useRef<HTMLDivElement>(null);
   const resize = useResizeObserver(baseRef, { root: props.rootResize });
 
+  const position = props.position ?? {};
+  const grid = Calculate.grid({ container: baseSize, position });
+  const ready = Boolean(grid);
+
+  /**
+   * Lifecycle
+   */
   useEffect(() => {
     const dispose$ = new Subject<void>();
     const resize$ = resize.$.pipe(takeUntil(dispose$));
 
     resize$.subscribe((size) => {
-      if (props.onResize) props.onResize({ size });
+      props.onResize?.({ size });
       setBaseSize(size);
     });
 
     return () => dispose$.next();
   }, []); // eslint-disable-line
 
-  const grid = Calculate.grid({ container: baseSize, position: props.position });
+  /**
+   * Render
+   */
   const styles = {
     base: css({
       flex: 1,
       pointerEvents: 'none', // NB: Allow clicking through of container element.
       display: 'grid',
     }),
-    child:
-      grid &&
-      css({
-        position: 'relative',
-        display: 'flex',
-        pointerEvents: 'auto',
-        justifySelf: grid?.x,
-        alignSelf: grid?.y,
-      }),
+    child: css({
+      position: 'relative',
+      display: 'flex',
+      pointerEvents: 'auto',
+      justifySelf: grid?.x,
+      alignSelf: grid?.y,
+    }),
   };
 
-  const ready = Boolean(grid);
   const elChild = ready && <div {...styles.child}>{props.children}</div>;
 
   return (

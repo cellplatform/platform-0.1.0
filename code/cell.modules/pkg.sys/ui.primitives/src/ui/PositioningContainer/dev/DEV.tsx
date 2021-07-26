@@ -2,12 +2,13 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { PositioningContainer } from '..';
-import { css, deleteUndefined, t } from '../common';
+import { css, deleteUndefined, t, COLORS } from '../common';
 import { SampleChild } from './DEV.Sample.Child';
 import { SampleRoot } from './DEV.Sample.Root';
 import { EdgeDropdown } from './EdgeDropdown';
 import { Ctx } from './types';
 import { PositioningContainerConfig } from '../PositioningContainer.Config';
+import { PositioningContainerProperties } from '../PositioningContainer.Properties';
 
 /**
  * Actions
@@ -19,24 +20,25 @@ export const actions = DevActions<Ctx>()
     return {
       background: false,
       child: {},
-      props: {
-        position: { x: 'center', y: 'bottom' },
-      },
+      props: { position: { x: 'center', y: 'bottom' } },
+      config: { isEnabled: true },
     };
   })
 
   .items((e) => {
     e.title('Positioning Container');
+    e.hr();
 
     e.component((e) => {
-      return <PositioningContainerConfig style={{ Margin: [10, 30] }} />;
+      return <PositioningContainerProperties props={e.ctx.props} style={{ Margin: [10, 30] }} />;
     });
 
     e.hr();
-  })
 
-  .items((e) => {
-    e.title('Dev');
+    e.boolean('isEnabled', (e) => {
+      if (e.changing) e.ctx.config.isEnabled = e.changing.next;
+      e.boolean.current = e.ctx.config.isEnabled;
+    });
 
     e.boolean('background', (e) => {
       if (e.changing) e.ctx.background = e.changing.next;
@@ -74,6 +76,28 @@ export const actions = DevActions<Ctx>()
     });
     e.select((c) => {
       D.y(c, 'edge.y', c.ctx.props.position?.y, (e) => setPosition(e.ctx, 'y', e.value));
+    });
+
+    e.hr();
+
+    e.component((e) => {
+      const styles = {
+        base: css({ Margin: [10, 30], display: 'grid' }),
+        container: css({ justifySelf: 'center', alignSelf: 'center' }),
+      };
+
+      return (
+        <div {...styles.base}>
+          <PositioningContainerConfig
+            position={e.ctx.props.position}
+            isEnabled={e.ctx.config.isEnabled}
+            style={styles.container}
+            onChange={({ next }) => {
+              e.change.ctx((ctx) => (ctx.props.position = next));
+            }}
+          />
+        </div>
+      );
     });
 
     e.hr();

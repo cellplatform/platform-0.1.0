@@ -10,9 +10,7 @@ export type SamplePropertiesProps = {
 
 export const SampleProperties: React.FC<SamplePropertiesProps> = (props) => {
   const styles = {
-    base: css({
-      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-    }),
+    base: css({}),
   };
 
   const items: PropListItem[] = [

@@ -21,10 +21,16 @@ export const SampleChild: React.FC<SampleChildProps> = (props) => {
       boxSizing: 'border-box',
       padding: 20,
       flex: 1,
+      minWidth: 100,
+      minHeight: 60,
       width,
       height,
     }),
   };
 
-  return <div {...css(styles.base, props.style)}>Child</div>;
+  return (
+    <div {...css(styles.base, props.style)}>
+      <div />
+    </div>
+  );
 };
