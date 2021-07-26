@@ -1,8 +1,16 @@
-import { PositioningContainerProps } from '..';
+import { t } from '../common';
+
+import { PositioningContainerProps, PositioningSizeHandler } from '..';
+
+type Size = { width?: number; height?: number };
 
 export type Ctx = {
-  background: boolean;
-  child: { width?: number; height?: number };
   props: PositioningContainerProps;
-  config: { isEnabled?: boolean };
+  child: Size;
+  debug: {
+    background: boolean;
+    isConfigEnabled?: boolean;
+    size?: { root: t.DomRect; child: t.DomRect };
+  };
+  onSize?: PositioningSizeHandler;
 };

@@ -20,7 +20,7 @@ export type PositioningContainerConfigProps = {
 
 export const PositioningContainerConfig: React.FC<PositioningContainerConfigProps> = (props) => {
   const { isEnabled = true, position } = props;
-  const gutter = 15;
+  const gutter = 12;
 
   const selected: SelectedMap = {
     top: ['top', 'stretch'].includes(position?.y ?? ''),
@@ -34,8 +34,9 @@ export const PositioningContainerConfig: React.FC<PositioningContainerConfigProp
    */
   const styles = {
     base: css({
-      Size: 75,
+      Size: 70,
       boxSizing: 'border-box',
+
       display: 'grid',
       gridTemplateColumns: `${gutter}px auto ${gutter}px`,
       gridTemplateRows: `${gutter}px auto ${gutter}px`,
@@ -49,12 +50,20 @@ export const PositioningContainerConfig: React.FC<PositioningContainerConfigProp
         isSelected={selected[edge]}
         isEnabled={isEnabled}
         onClick={(e) => {
-          if (!isEnabled || !props.onChange) return;
-          const { prev, next } = modifyPosition({ prev: position, edge, selected });
-          props.onChange({ prev, next });
+          if (isEnabled && props.onChange) {
+            const { prev, next } = modifyPosition({ prev: position, edge, selected });
+            props.onChange({ prev, next });
+          }
         }}
       />
     );
+  };
+
+  const handleBoxClick = (dblClick: boolean) => {
+    const value = dblClick ? 'stretch' : 'center';
+    const prev: t.BoxPosition = { ...(position ?? {}) };
+    const next: t.BoxPosition = { x: value, y: value };
+    props.onChange?.({ prev, next });
   };
 
   return (
@@ -64,7 +73,7 @@ export const PositioningContainerConfig: React.FC<PositioningContainerConfigProp
       <div />
 
       {renderButton('left')}
-      <Box position={position} />
+      <Box position={position} onClick={(e) => handleBoxClick(e.dblClick)} />
       {renderButton('right')}
 
       <div />
@@ -146,6 +155,7 @@ const EdgeButton: React.FC<ButtonProps> = (props) => {
 type BoxProps = {
   position?: t.BoxPosition;
   style?: CssValue;
+  onClick?: (e: { dblClick: boolean }) => void;
 };
 
 const Box: React.FC<BoxProps> = (props) => {
@@ -167,9 +177,9 @@ const Box: React.FC<BoxProps> = (props) => {
     }),
     content: css({
       flex: 1,
-      minWidth: 5,
-      minHeight: 5,
-      borderRadius: isFill ? 3 : 5,
+      minWidth: 6,
+      minHeight: 6,
+      borderRadius: isFill ? 3 : 6,
       backgroundColor: COLORS.DARK,
       opacity: 0.2,
       margin: 5,
@@ -177,7 +187,11 @@ const Box: React.FC<BoxProps> = (props) => {
   };
 
   return (
-    <div {...css(styles.base, props.style)}>
+    <div
+      {...css(styles.base, props.style)}
+      onClick={() => props.onClick?.({ dblClick: false })}
+      onDoubleClick={() => props.onClick?.({ dblClick: true })}
+    >
       {position && (
         <PositioningContainer position={position}>
           <div {...styles.content} />
@@ -195,21 +209,21 @@ const toPlane = (edge: t.BoxEdge): Plane => (['top', 'bottom'].includes(edge) ? 
 
 const modifyPosition = (args: { prev?: t.BoxPosition; edge: t.BoxEdge; selected: SelectedMap }) => {
   const { edge, selected } = args;
-  const prev = args.prev ? { ...args.prev } : {};
+  const prev = { ...(args.prev ?? {}) };
 
   type X = t.EdgePositionX;
   type Y = t.EdgePositionY;
   const next: t.BoxPosition = { ...prev };
   if (edge === 'top') {
     if (selected.top) {
-      next.y = next.y === 'stretch' ? 'top' : ((selected.bottom ? 'bottom' : 'center') as Y);
+      next.y = (selected.bottom ? 'bottom' : 'center') as Y;
     } else {
       next.y = (selected.bottom ? 'stretch' : 'top') as Y;
     }
   }
   if (edge === 'bottom') {
     if (selected.bottom) {
-      next.y = next.y === 'stretch' ? 'bottom' : ((selected.top ? 'top' : 'center') as Y);
+      next.y = (selected.top ? 'top' : 'center') as Y;
     } else {
       next.y = (selected.top ? 'stretch' : 'bottom') as Y;
     }
@@ -217,7 +231,7 @@ const modifyPosition = (args: { prev?: t.BoxPosition; edge: t.BoxEdge; selected:
 
   if (edge === 'left') {
     if (selected.left) {
-      next.x = next.x === 'stretch' ? 'left' : ((selected.right ? 'right' : 'center') as X);
+      next.x = (selected.right ? 'right' : 'center') as X;
     } else {
       next.x = (selected.right ? 'stretch' : 'left') as X;
     }
@@ -225,7 +239,7 @@ const modifyPosition = (args: { prev?: t.BoxPosition; edge: t.BoxEdge; selected:
 
   if (edge === 'right') {
     if (selected.right) {
-      next.x = next.x === 'stretch' ? 'right' : ((selected.left ? 'left' : 'center') as X);
+      next.x = (selected.left ? 'left' : 'center') as X;
     } else {
       next.x = (selected.left ? 'stretch' : 'right') as X;
     }

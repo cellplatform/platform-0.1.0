@@ -1,14 +1,14 @@
 import React from 'react';
-import { DevActions, ObjectView } from 'sys.ui.dev';
+import { DevActions } from 'sys.ui.dev';
 
 import { PositioningContainer } from '..';
-import { css, deleteUndefined, t, COLORS } from '../common';
+import { css, deleteUndefined, t } from '../common';
+import { PositioningContainerConfig } from '../PositioningContainer.Config';
+import { PositioningContainerProperties } from '../PositioningContainer.Properties';
 import { SampleChild } from './DEV.Sample.Child';
 import { SampleRoot } from './DEV.Sample.Root';
 import { EdgeDropdown } from './EdgeDropdown';
 import { Ctx } from './types';
-import { PositioningContainerConfig } from '../PositioningContainer.Config';
-import { PositioningContainerProperties } from '../PositioningContainer.Properties';
 
 /**
  * Actions
@@ -17,12 +17,15 @@ export const actions = DevActions<Ctx>()
   .namespace('sys.ui.PositioningContainer')
   .context((e) => {
     if (e.prev) return e.prev;
-    return {
-      background: false,
+
+    const ctx: Ctx = {
       child: {},
+      debug: { background: false, isConfigEnabled: true },
       props: { position: { x: 'center', y: 'bottom' } },
-      config: { isEnabled: true },
+      onSize: (size) => e.change.ctx((ctx) => (ctx.debug.size = size)),
     };
+
+    return ctx;
   })
 
   .items((e) => {
@@ -30,19 +33,42 @@ export const actions = DevActions<Ctx>()
     e.hr();
 
     e.component((e) => {
-      return <PositioningContainerProperties props={e.ctx.props} style={{ Margin: [10, 30] }} />;
+      return (
+        <PositioningContainerProperties
+          props={e.ctx.props}
+          size={e.ctx.debug.size}
+          style={{ Margin: [10, 30] }}
+        />
+      );
+    });
+
+    e.component((e) => {
+      const styles = {
+        base: css({ Margin: [10, 30], display: 'grid' }),
+        container: css({ justifySelf: 'center', alignSelf: 'center' }),
+      };
+      return (
+        <div {...styles.base}>
+          <PositioningContainerConfig
+            position={e.ctx.props.position}
+            isEnabled={e.ctx.debug.isConfigEnabled}
+            style={styles.container}
+            onChange={({ next }) => e.change.ctx((ctx) => (ctx.props.position = next))}
+          />
+        </div>
+      );
     });
 
     e.hr();
 
     e.boolean('isEnabled', (e) => {
-      if (e.changing) e.ctx.config.isEnabled = e.changing.next;
-      e.boolean.current = e.ctx.config.isEnabled;
+      if (e.changing) e.ctx.debug.isConfigEnabled = e.changing.next;
+      e.boolean.current = e.ctx.debug.isConfigEnabled;
     });
 
     e.boolean('background', (e) => {
-      if (e.changing) e.ctx.background = e.changing.next;
-      e.boolean.current = e.ctx.background;
+      if (e.changing) e.ctx.debug.background = e.changing.next;
+      e.boolean.current = e.ctx.debug.background;
     });
 
     e.hr(1, 0.1);
@@ -79,35 +105,6 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
-
-    e.component((e) => {
-      const styles = {
-        base: css({ Margin: [10, 30], display: 'grid' }),
-        container: css({ justifySelf: 'center', alignSelf: 'center' }),
-      };
-
-      return (
-        <div {...styles.base}>
-          <PositioningContainerConfig
-            position={e.ctx.props.position}
-            isEnabled={e.ctx.config.isEnabled}
-            style={styles.container}
-            onChange={({ next }) => {
-              e.change.ctx((ctx) => (ctx.props.position = next));
-            }}
-          />
-        </div>
-      );
-    });
-
-    e.hr();
-  })
-
-  .items((e) => {
-    e.component((e) => {
-      const data = e.ctx.props.position;
-      return <ObjectView name={'position'} data={data} style={{ MarginX: 20, MarginY: 10 }} />;
-    });
   })
 
   .subject((e) => {
@@ -125,13 +122,13 @@ export const actions = DevActions<Ctx>()
 
     const styles = {
       container: css({
-        backgroundColor: e.ctx.background && 'rgba(255, 0, 0, 0.1)' /* RED */,
+        backgroundColor: e.ctx.debug.background && 'rgba(255, 0, 0, 0.1)' /* RED */,
       }),
     };
 
     e.render(
       <SampleRoot>
-        <PositioningContainer {...e.ctx.props} style={styles.container}>
+        <PositioningContainer {...e.ctx.props} style={styles.container} onSize={e.ctx.onSize}>
           <SampleChild width={child.width} height={child.height} />
         </PositioningContainer>
       </SampleRoot>,
