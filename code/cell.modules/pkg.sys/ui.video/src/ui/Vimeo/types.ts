@@ -22,7 +22,10 @@ export type VimeoEvents = IDisposable & {
   load: {
     req$: Observable<VimeoLoadReq>;
     res$: Observable<VimeoLoadRes>;
-    fire(video: VimeoId, options?: { timeout?: Milliseconds }): Promise<VimeoPlayRes>;
+    fire(
+      video: VimeoId,
+      options?: { muted?: boolean; timeout?: Milliseconds },
+    ): Promise<VimeoPlayRes>;
   };
 
   status: {
@@ -74,7 +77,7 @@ export type VimeoLoadReqEvent = {
   type: 'Vimeo/load:req';
   payload: VimeoLoadReq;
 };
-export type VimeoLoadReq = { id: string; tx?: string; video: VimeoId };
+export type VimeoLoadReq = { id: string; tx?: string; video: VimeoId; muted?: boolean };
 
 export type VimeoLoadResEvent = {
   type: 'Vimeo/load:res';

@@ -21,7 +21,7 @@ export type VimeoProps = {
  * https://github.com/vimeo/player.js
  */
 const Component: React.FC<VimeoProps> = (props) => {
-  const { id, video, width, height, bus, borderRadius } = props;
+  const { id, video, width, height, bus, borderRadius, muted } = props;
   const divRef = useRef<HTMLDivElement>(null);
 
   const [player, setPlayer] = useState<VimeoPlayer>();
@@ -39,7 +39,7 @@ const Component: React.FC<VimeoProps> = (props) => {
       byline: false,
       portrait: false,
       loop: false,
-      dnt: true, // Do Not Track (no cookies or other tracking attempts)
+      dnt: true, // Do Not Track ("no cookies" or other tracking attempts).
     });
 
     setPlayer(player);
@@ -55,8 +55,7 @@ const Component: React.FC<VimeoProps> = (props) => {
     const events = VimeoEvents({ id, bus });
 
     if (player) {
-      console.log('FIRE', video);
-      if (typeof video === 'number') events.load.fire(video);
+      if (typeof video === 'number') events.load.fire(video, { muted });
     }
 
     return () => events.dispose();

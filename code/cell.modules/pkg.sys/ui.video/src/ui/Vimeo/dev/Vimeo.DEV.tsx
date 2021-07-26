@@ -2,32 +2,31 @@ import React from 'react';
 import { DevActions, ActionHandlerArgs } from 'sys.ui.dev';
 
 import { Vimeo, VimeoProps } from '..';
-import { rx, t, COLORS } from '../common';
+import { rx, t, COLORS, value } from '../common';
 
-export const VIDEOS = [
-  { label: 'app/tubes', value: 499921561 },
-  { label: 'stock/running', value: 287903693 }, // https://vimeo.com/stock/clip-287903693-silhouette-woman-running-on-beach-waves-splashing-female-athlete-runner-exercising-sprinting-intense-workout-on-rough-ocean-seas
-];
+export const VIDEO = {
+  'app/tubes': 499921561,
+  'stock/running': 287903693, // https://vimeo.com/stock/clip-287903693-silhouette-woman-running-on-beach-waves-splashing-female-athlete-runner-exercising-sprinting-intense-workout-on-rough-ocean-seas
+  'public/helvetica': 73809723,
+};
+
+export const VIDEOS = Object.keys(VIDEO).map((label) => ({ label, value: VIDEO[label] }));
 
 type Ctx = {
   theme: 'light' | 'dark';
   bus: t.EventBus<t.VimeoEvent>;
   events: t.VimeoEvents;
   props: VimeoProps;
+  debug: { timestamp: React.ReactNode };
 };
 type A = ActionHandlerArgs<Ctx>;
 
-const id = 'sample';
-
-/**
- * Actions
- * https://github.com/vimeo/player.js
- */
 export const actions = DevActions<Ctx>()
   .namespace('ui.video/Vimeo')
   .context((e) => {
     if (e.prev) return e.prev;
 
+    const id = 'sample';
     const bus = rx.bus<t.VimeoEvent>();
     const events = Vimeo.Events({ id, bus });
 
@@ -35,24 +34,30 @@ export const actions = DevActions<Ctx>()
       // console.log('events.$:', e.type, e.payload);
     });
 
-    events.status.$.subscribe((e) => {
-      console.log('Vimeo/status:', e);
+    events.status.$.subscribe((event) => {
+      console.log('Vimeo/status:', event);
+      e.change.ctx((ctx) => {
+        const seconds = value.round(event.seconds, 1);
+        const duration = value.round(event.duration, 0);
+        ctx.debug.timestamp = `${seconds}/${duration}s`;
+      });
     });
 
-    return {
+    const ctx: Ctx = {
       bus,
       events,
       theme: 'light',
       props: {
         id,
         bus,
-        video: VIDEOS[1].value,
-        controls: false,
-        autoPlay: false,
-        loop: true,
+        video: VIDEO['stock/running'],
+        muted: true,
         borderRadius: 20,
       },
+      debug: { timestamp: '' },
     };
+
+    return ctx;
   })
 
   .items((e) => {
@@ -88,7 +93,7 @@ export const actions = DevActions<Ctx>()
       config
         .title('video')
         .items(VIDEOS)
-        .initial(VIDEOS[1])
+        .initial(config.ctx.props.video)
         .pipe((e) => {
           const current = e.select.current[0]; // NB: always first.
           e.select.label = current ? `video: ${current.label}` : `video`;
@@ -101,7 +106,6 @@ export const actions = DevActions<Ctx>()
       config.placeholder('vimeo id (number)').pipe(async (e) => {
         if (e.changing?.action === 'invoke') {
           const videoId = Number.parseInt(e.changing.next);
-
           if (!Number.isNaN(videoId)) e.ctx.props.video = videoId;
         }
       }),
@@ -109,7 +113,8 @@ export const actions = DevActions<Ctx>()
 
     e.button('load (via event)', async (e) => {
       const videoId = 73809723;
-      const res = await e.ctx.events.load.fire(videoId);
+      const { muted } = e.ctx.props;
+      const res = await e.ctx.events.load.fire(videoId, { muted });
       console.log('response', res);
     });
 
@@ -127,6 +132,7 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     const fire = (e: A, seconds: number) => {
+      const id = e.ctx.props.id;
       e.ctx.bus.fire({ type: 'Vimeo/seek:req', payload: { id, seconds } });
     };
 
@@ -147,9 +153,12 @@ export const actions = DevActions<Ctx>()
    * Render
    */
   .subject((e) => {
-    const { props, theme } = e.ctx;
+    const { props, theme, debug } = e.ctx;
 
-    const label = '<Vimeo';
+    const label = {
+      topLeft: '<Vimeo>',
+      topRight: debug.timestamp,
+    };
     const size = { width: props.width, height: props.height };
 
     e.settings(

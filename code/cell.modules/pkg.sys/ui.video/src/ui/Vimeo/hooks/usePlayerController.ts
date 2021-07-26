@@ -133,6 +133,7 @@ export function usePlayerController(args: {
         const isLoaded = current === e.video;
 
         if (!isLoaded) await player.loadVideo(e.video);
+        if (e.muted !== undefined) await player.setMuted(e.muted);
 
         await initLoad();
 

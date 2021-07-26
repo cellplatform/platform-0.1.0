@@ -23,7 +23,7 @@ function Events(args: { id: string; bus: t.EventBus<any> }): t.VimeoEvents {
     res$: rx.payload<t.VimeoLoadResEvent>($, 'Vimeo/load:res'),
     async fire(video: t.VimeoId, options = {}) {
       const tx = slug();
-      const { timeout: msecs = 1000 } = options;
+      const { timeout: msecs = 1000, muted } = options;
       const first = firstValueFrom(
         load.res$.pipe(
           filter((e) => e.tx === tx),
@@ -31,7 +31,7 @@ function Events(args: { id: string; bus: t.EventBus<any> }): t.VimeoEvents {
           catchError(() => of(`Vimeo load timed out after ${msecs} msecs`)),
         ),
       );
-      bus.fire({ type: 'Vimeo/load:req', payload: { tx, id, video } });
+      bus.fire({ type: 'Vimeo/load:req', payload: { tx, id, video, muted } });
       const res = await first;
       return typeof res === 'string' ? { tx, id, error: res } : res;
     },
