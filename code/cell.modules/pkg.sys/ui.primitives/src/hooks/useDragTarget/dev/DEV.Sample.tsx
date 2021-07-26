@@ -6,8 +6,8 @@ import { color, css, Button, Spinner } from './common';
 import { upload } from './DEV.Sample.upload';
 
 export const Sample: React.FC = () => {
-  const targetRef = React.useRef<HTMLDivElement>(null);
-  const drag = useDragTarget(targetRef, (e) => console.log('onDropped (optional)', e));
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  const drag = useDragTarget(rootRef, (e) => console.log('onDropped (optional)', e));
 
   const { isDragOver, isDropped, dropped } = drag;
   const data = { isDragOver, isDropped, dropped };
@@ -92,7 +92,7 @@ export const Sample: React.FC = () => {
   );
 
   return (
-    <div ref={targetRef} {...styles.base}>
+    <div ref={rootRef} {...styles.base}>
       <div {...styles.body}>
         {elToolbar}
         <ObjectView name={'debug'} data={data} expandLevel={10} />
