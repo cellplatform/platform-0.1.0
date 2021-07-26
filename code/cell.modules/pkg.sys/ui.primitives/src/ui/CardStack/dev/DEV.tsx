@@ -4,9 +4,15 @@ import { CardStack, CardStackProps, CardStackItem, CardStackItemRender } from '.
 import { slug } from './common';
 import { SampleCard } from './DEV.Sample.Card';
 
-type Ctx = { props: CardStackProps };
+type Ctx = {
+  debug: { isFlexibleWidth: boolean };
+  props: CardStackProps;
+};
 
-const createItems = (length: number) => Array.from({ length }).map(() => createItem());
+const createItems = (length: number) => {
+  return Array.from({ length }).map(() => createItem());
+};
+
 const createItem = (): CardStackItem => {
   const id = slug();
   const el: CardStackItemRender = (e) => <SampleCard id={id} isTop={e.is.top} />;
@@ -21,17 +27,36 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    return {
+    const ctx: Ctx = {
+      debug: {
+        isFlexibleWidth: true,
+      },
       props: {
         items: createItems(3),
         maxDepth: 5,
         duration: 300,
       },
     };
+
+    return ctx;
   })
 
   .items((e) => {
-    e.title('Props');
+    e.title('CardStack');
+
+    e.boolean('width', (e) => {
+      if (e.changing) e.ctx.debug.isFlexibleWidth = e.changing.next;
+      const isFlexible = e.ctx.debug.isFlexibleWidth;
+
+      e.boolean.current = isFlexible;
+      e.boolean.label = isFlexible ? `width: flexible` : `width: fixed`;
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Properties');
 
     e.select((config) => {
       config
@@ -76,12 +101,17 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const debug = e.ctx.debug;
+
     e.settings({
       host: { background: -0.04 },
-      layout: { cropmarks: -0.2 },
+      layout: {
+        cropmarks: -0.2,
+        position: debug.isFlexibleWidth ? [null, 200] : undefined,
+      },
     });
 
-    e.render(<CardStack {...e.ctx.props} />);
+    e.render(<CardStack {...e.ctx.props} style={{ flex: 1 }} />);
   });
 
 export default actions;

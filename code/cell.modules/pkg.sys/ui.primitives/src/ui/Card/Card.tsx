@@ -34,7 +34,6 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => 
     base: css({
       position: 'relative',
       boxSizing: 'border-box',
-      display: 'inline-block',
       userSelect: toUserSelect(props.userSelect),
 
       border: `solid 1px ${color.format(borderColor)}`,
