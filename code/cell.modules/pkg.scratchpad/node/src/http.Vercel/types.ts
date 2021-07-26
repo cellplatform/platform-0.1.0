@@ -79,7 +79,7 @@ export type VercelDeployArgs = {
   regions?: string[]; // An array of the regions the deployment's Serverless Functions should be deployed to. For example, ["sfo", "bru"].
   public?: boolean;
   target?: 'staging' | 'production';
-  alias?: string[];
+  alias?: string | string[];
 };
 
 /**

@@ -1,6 +1,5 @@
-import { Manifest } from '@platform/cell.compiler';
 import { http } from '@platform/http';
-import { fs, time, util, t } from '../common';
+import { fs, time, util, t, asArray } from '../common';
 
 /**
  * Create a new deployment.
@@ -83,7 +82,7 @@ export async function deploy(
     regions: args.regions,
     public: args.public,
     target: args.target,
-    alias: args.alias,
+    alias: asArray(args.alias).filter(Boolean),
     files,
   };
 
