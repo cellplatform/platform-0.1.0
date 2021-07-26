@@ -38,7 +38,6 @@ export const PositioningContainerConfig: React.FC<PositioningContainerConfigProp
    */
 
   const handleTargetClick = (e: GridTargetClickArgs) => {
-    console.log('e', e);
     const { x, y } = e.target;
     const prev: t.BoxPosition = { ...(position ?? {}) };
     const next: t.BoxPosition = { x, y };
@@ -239,7 +238,7 @@ const GridTargets: React.FC<GridTargetsProps> = (props) => {
       };
     };
 
-    return <div {...styles.target} onClick={handler(false)} onDoubleClick={handler(true)} />;
+    return <div {...styles.target} onMouseDown={handler(false)} onDoubleClick={handler(true)} />;
   };
 
   return (
