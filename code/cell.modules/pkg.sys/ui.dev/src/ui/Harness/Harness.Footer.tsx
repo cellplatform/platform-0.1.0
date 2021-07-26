@@ -35,7 +35,7 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
     body: css({
       Absolute: 0,
       Flex: 'horizontal-spaceBetween-center',
-      MarginX: 10,
+      MarginX: 15,
     }),
     actionsSelector: css({
       position: 'relative',

@@ -29,5 +29,7 @@ export type ActionAddOptions = { insertAt?: 'end' | 'start' };
 /**
  * A collection of actions.
  */
+export type ActionsSet = ActionsInput | ActionsInputList;
 export type ActionsImport = Promise<any>;
-export type ActionsSet = t.Actions | ActionsImport | (t.Actions | t.ActionsImport)[];
+export type ActionsInput = t.Actions | ActionsImport;
+export type ActionsInputList = ActionsInput[];

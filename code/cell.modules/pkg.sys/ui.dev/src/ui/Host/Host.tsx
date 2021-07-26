@@ -8,6 +8,7 @@ export type HostProps = {
   bus: t.EventBus;
   actions?: t.Actions<any>;
   fullscreen?: HostFullscreen;
+  actionsOnEdge: 'left' | 'right';
   style?: CssValue;
 };
 
@@ -16,7 +17,7 @@ export type HostProps = {
  * relevant state changes.
  */
 export const Host: React.FC<HostProps> = (props) => {
-  const { actions, bus } = props;
+  const { actions, bus, actionsOnEdge } = props;
 
   useActionsRedraw({
     name: '<Host>',
@@ -39,6 +40,13 @@ export const Host: React.FC<HostProps> = (props) => {
   const host = { ...env.viaSubject.host, ...env.viaAction.host };
 
   return (
-    <HostLayout {...props} env={env} subject={subject} host={host} fullscreen={props.fullscreen} />
+    <HostLayout
+      {...props}
+      env={env}
+      subject={subject}
+      host={host}
+      actionsOnEdge={props.actionsOnEdge}
+      fullscreen={props.fullscreen}
+    />
   );
 };

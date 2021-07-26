@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { css, CssValue, defaultValue, formatColor, t, constants } from '../../common';
+import { css, CssValue, defaultValue, formatColor, t, constants, color } from '../../common';
 import { Subject, SubjectCropmark } from './Subject';
 import { Icons } from '../Icons';
 import { Button } from '../Primitives';
@@ -11,6 +11,7 @@ export type HostLayoutProps = {
   env: t.ActionsModelEnv;
   host?: t.Host;
   subject?: t.ActionSubject<any>;
+  actionsOnEdge: 'left' | 'right';
   fullscreen?: HostFullscreen;
   style?: CssValue;
 };
@@ -19,7 +20,7 @@ export type HostLayoutProps = {
  * A content container providing layout options for testing.
  */
 export const HostLayout: React.FC<HostLayoutProps> = (props) => {
-  const { subject, host, fullscreen } = props;
+  const { subject, host, fullscreen, actionsOnEdge } = props;
   const items = subject?.items || [];
   const orientation = defaultValue(host?.orientation, 'y');
   const spacing = Math.max(0, defaultValue(host?.spacing, 60));
@@ -41,8 +42,14 @@ export const HostLayout: React.FC<HostLayoutProps> = (props) => {
       WebkitAppRegion: 'drag', // NB: Window draggable within electron.
     }),
     fullscreen: {
-      button: css({ Absolute: [3, 3, null, null] }),
+      button: css({ Absolute: [3, 8, null, null] }),
     },
+    bgHighlight: css({
+      pointerEvents: 'none',
+      width: 8,
+      Absolute: [0, actionsOnEdge === 'right' ? 0 : null, 0, actionsOnEdge === 'left' ? 0 : null],
+      backgroundColor: color.format(0.1),
+    }),
   };
 
   const isFullscreen = fullscreen?.value === true;
@@ -88,6 +95,7 @@ export const HostLayout: React.FC<HostLayoutProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)} className={constants.CSS.HOST}>
+      <div {...styles.bgHighlight} />
       <div {...styles.body}>{elContent}</div>
       {elFullscreenButton}
     </div>
