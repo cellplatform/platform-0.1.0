@@ -27,8 +27,8 @@ export const PositioningContainerProperties: React.FC<PositioningContainerProper
     { label: 'position.x', value: position?.x ?? '-' },
     { label: 'position.y', value: position?.y ?? '-' },
     size && { label: 'root.size', value: toSize(size.root) },
-    size && { label: 'child.size', value: toSize(size.child) },
-    size && { label: 'child.position', value: toPosition(size.child) },
+    size && { label: 'root.child.size', value: toSize(size.child) },
+    size && { label: 'root.child.position', value: toPosition(size.child) },
   ];
 
   return (

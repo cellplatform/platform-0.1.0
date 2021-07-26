@@ -2,9 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { color, css, CssValue, t, COLORS } from '../../common';
 import { PositioningContainer } from './PositioningContainer';
 
-type ButtonClickArgs = { edge: t.BoxEdge };
-type SelectedMap = { top: boolean; right: boolean; bottom: boolean; left: boolean };
 type Plane = 'x' | 'y';
+type SelectedMap = { top: boolean; right: boolean; bottom: boolean; left: boolean };
+type EdgeButtonClickArgs = { edge: t.BoxEdge };
+type GridTargetClickArgs = {
+  target: { x: t.EdgePositionX; y: t.EdgePositionY };
+  dblClick: boolean;
+};
 
 export type PositioningContainerConfigChangeEvent = { prev?: t.BoxPosition; next: t.BoxPosition };
 export type PositioningContainerConfigChangeEventHandler = (
@@ -30,13 +34,25 @@ export const PositioningContainerConfig: React.FC<PositioningContainerConfigProp
   };
 
   /**
+   * Handlers
+   */
+
+  const handleTargetClick = (e: GridTargetClickArgs) => {
+    console.log('e', e);
+    const { x, y } = e.target;
+    const prev: t.BoxPosition = { ...(position ?? {}) };
+    const next: t.BoxPosition = { x, y };
+    props.onChange?.({ prev, next });
+  };
+
+  /**
    * Render
    */
+
   const styles = {
     base: css({
       Size: 70,
       boxSizing: 'border-box',
-
       display: 'grid',
       gridTemplateColumns: `${gutter}px auto ${gutter}px`,
       gridTemplateRows: `${gutter}px auto ${gutter}px`,
@@ -59,13 +75,6 @@ export const PositioningContainerConfig: React.FC<PositioningContainerConfigProp
     );
   };
 
-  const handleBoxClick = (dblClick: boolean) => {
-    const value = dblClick ? 'stretch' : 'center';
-    const prev: t.BoxPosition = { ...(position ?? {}) };
-    const next: t.BoxPosition = { x: value, y: value };
-    props.onChange?.({ prev, next });
-  };
-
   return (
     <div {...css(styles.base, props.style)}>
       <div />
@@ -73,7 +82,7 @@ export const PositioningContainerConfig: React.FC<PositioningContainerConfigProp
       <div />
 
       {renderButton('left')}
-      <Box position={position} onClick={(e) => handleBoxClick(e.dblClick)} />
+      <Box position={position} isEnabled={isEnabled} onClick={handleTargetClick} />
       {renderButton('right')}
 
       <div />
@@ -86,15 +95,15 @@ export const PositioningContainerConfig: React.FC<PositioningContainerConfigProp
 /**
  * Button
  */
-type ButtonProps = {
-  isEnabled?: boolean;
+type EdgeButtonProps = {
+  isEnabled: boolean;
   isSelected?: boolean;
   edge: t.BoxEdge;
   style?: CssValue;
-  onClick?: (e: ButtonClickArgs) => void;
+  onClick?: (e: EdgeButtonClickArgs) => void;
 };
 
-const EdgeButton: React.FC<ButtonProps> = (props) => {
+const EdgeButton: React.FC<EdgeButtonProps> = (props) => {
   const { edge, isEnabled = true } = props;
   const isSelected = Boolean(props.isSelected);
   const plane = toPlane(edge);
@@ -126,7 +135,7 @@ const EdgeButton: React.FC<ButtonProps> = (props) => {
       display: 'grid',
       cursor: isEnabled ? 'pointer' : 'default',
     }),
-    inner: css({
+    bar: css({
       backgroundColor,
       borderRadius,
       justifySelf: plane === 'x' ? 'stretch' : 'center',
@@ -144,7 +153,7 @@ const EdgeButton: React.FC<ButtonProps> = (props) => {
         if (isEnabled) props.onClick?.({ edge });
       }}
     >
-      <div {...styles.inner}></div>
+      <div {...styles.bar}></div>
     </div>
   );
 };
@@ -153,13 +162,14 @@ const EdgeButton: React.FC<ButtonProps> = (props) => {
  * Box
  */
 type BoxProps = {
+  isEnabled: boolean;
   position?: t.BoxPosition;
   style?: CssValue;
-  onClick?: (e: { dblClick: boolean }) => void;
+  onClick?: (e: GridTargetClickArgs) => void;
 };
 
 const Box: React.FC<BoxProps> = (props) => {
-  const { position } = props;
+  const { position, isEnabled } = props;
   const isFill = position?.x === 'stretch' && position?.y === 'stretch';
   const styles = {
     base: css({
@@ -187,16 +197,64 @@ const Box: React.FC<BoxProps> = (props) => {
   };
 
   return (
-    <div
-      {...css(styles.base, props.style)}
-      onClick={() => props.onClick?.({ dblClick: false })}
-      onDoubleClick={() => props.onClick?.({ dblClick: true })}
-    >
+    <div {...css(styles.base, props.style)}>
       {position && (
         <PositioningContainer position={position}>
           <div {...styles.content} />
         </PositioningContainer>
       )}
+      <GridTargets isEnabled={isEnabled} onClick={props.onClick} />
+    </div>
+  );
+};
+
+/**
+ * Inner Grid Click Targets
+ */
+type GridTargetsProps = {
+  isEnabled: boolean;
+  style?: CssValue;
+  onClick?: (e: GridTargetClickArgs) => void;
+};
+const GridTargets: React.FC<GridTargetsProps> = (props) => {
+  const { isEnabled } = props;
+  const gutter = 12;
+
+  const styles = {
+    base: css({
+      Absolute: 0,
+      display: 'grid',
+      gridTemplateColumns: `${gutter}px auto ${gutter}px`,
+      gridTemplateRows: `${gutter}px auto ${gutter}px`,
+    }),
+    target: css({
+      cursor: isEnabled ? 'pointer' : 'default',
+    }),
+  };
+
+  const target = (x: t.EdgePositionX, y: t.EdgePositionY) => {
+    const handler = (dblClick: boolean) => {
+      return () => {
+        if (isEnabled) props.onClick?.({ target: { x, y }, dblClick });
+      };
+    };
+
+    return <div {...styles.target} onClick={handler(false)} onDoubleClick={handler(true)} />;
+  };
+
+  return (
+    <div {...css(styles.base, props.style)}>
+      {target('left', 'top')}
+      {target('center', 'top')}
+      {target('right', 'top')}
+
+      {target('left', 'center')}
+      {target('center', 'center')}
+      {target('right', 'center')}
+
+      {target('left', 'bottom')}
+      {target('center', 'bottom')}
+      {target('right', 'bottom')}
     </div>
   );
 };
