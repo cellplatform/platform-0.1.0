@@ -14,21 +14,22 @@ export type PositioningContainerProps = {
   rootResize?: t.ResizeObserver;
   style?: CssValue;
   onSize?: PositioningSizeHandler;
+  onUnmount?: () => void;
 };
 
 /**
  * Manages positioning a single child element based on positioning rules.
  */
 export const PositioningContainer: React.FC<PositioningContainerProps> = (props) => {
-  const [baseSize, setBaseSize] = useState<t.DomRect | undefined>();
+  const [rootSize, setRootSize] = useState<t.DomRect | undefined>();
 
   const rootRef = useRef<HTMLDivElement>(null);
   const childRef = useRef<HTMLDivElement>(null);
-  const baseResize = useResizeObserver(rootRef, { root: props.rootResize });
-  const childResize = useResizeObserver(childRef, { root: baseResize });
+  const rootResize = useResizeObserver(rootRef, { root: props.rootResize });
+  const childResize = useResizeObserver(childRef, { root: rootResize });
 
   const position = props.position ?? {};
-  const grid = Calculate.grid({ container: baseSize, position });
+  const grid = Calculate.grid({ container: rootSize, position });
   const ready = Boolean(grid);
 
   /**
@@ -36,11 +37,11 @@ export const PositioningContainer: React.FC<PositioningContainerProps> = (props)
    */
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const baseResize$ = baseResize.$.pipe(takeUntil(dispose$));
+    const rootResize$ = rootResize.$.pipe(takeUntil(dispose$));
     const childResize$ = childResize.$.pipe(takeUntil(dispose$));
 
-    baseResize$.subscribe((size) => {
-      setBaseSize(size);
+    rootResize$.subscribe((size) => {
+      setRootSize(size);
       props.onSize?.({ root: size, child: getDomRect(childRef.current) });
     });
 
@@ -48,7 +49,10 @@ export const PositioningContainer: React.FC<PositioningContainerProps> = (props)
       props.onSize?.(getSizeEvent(rootRef, childRef));
     });
 
-    return () => dispose$.next();
+    return () => {
+      dispose$.next();
+      props.onUnmount?.();
+    };
   }, []); // eslint-disable-line
 
   useEffect(() => {

@@ -1,14 +1,17 @@
 import React from 'react';
-import { DevActions } from 'sys.ui.dev';
+import { ActionButtonHandlerArgs, DevActions } from 'sys.ui.dev';
+
 import { PositioningLayers, PositioningLayersProps } from '..';
-import { PositioningLayersPropertiesStack } from '../PositioningLayers.PropertiesStack';
+import { t } from '../common';
 import { PositioningLayersProperties } from '../PositioningLayers.Properties';
-import { t, css, color } from '../common';
+import { PositioningLayersPropertiesStack } from '../PositioningLayers.PropertiesStack';
+import { Sample } from './DEV.Sample';
 
 type Ctx = {
   debug: { current?: number };
   props: PositioningLayersProps;
 };
+type A = ActionButtonHandlerArgs<Ctx>;
 
 /**
  * Actions
@@ -28,26 +31,27 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Positioning Layers');
 
-    e.button('insert', (e) => {
+    const insert = (e: A, position: t.BoxPosition) => {
       const layers = e.ctx.props.layers ?? (e.ctx.props.layers = []);
-
-      const styles = {
-        base: css({
-          border: `dashed 1px ${color.format(-0.1)}`,
-          borderRadius: 8,
-          padding: 15,
-        }),
-      };
-
       const layer: t.PositioningLayer = {
-        position: { x: 'center', y: 'bottom' },
-        body() {
-          return <div {...styles.base}>Hello 👋</div>;
+        id: `thing-${layers.length + 1}`,
+        position,
+        el(e) {
+          const info = e.find.first(layer.id);
+          const overlaps = e.find.overlap(e.index);
+          return <Sample id={info?.id ?? layer.id} info={info} overlaps={overlaps} find={e.find} />;
         },
       };
-
       layers.push(layer);
-    });
+    };
+
+    e.button('insert: top left', (e) => insert(e, { x: 'left', y: 'top' }));
+    e.button('insert: center bottom', (e) => insert(e, { x: 'center', y: 'bottom' }));
+    e.button('insert: right center', (e) => insert(e, { x: 'right', y: 'center' }));
+    e.button('insert: bottom right', (e) => insert(e, { x: 'right', y: 'bottom' }));
+
+    e.hr(1, 0.1);
+    e.button('clear', (e) => (e.ctx.props.layers = undefined));
 
     e.hr();
 
@@ -85,12 +89,6 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
-  })
-
-  .items((e) => {
-    e.button('current: <undefined>', (e) => {
-      e.ctx.debug.current = undefined;
-    });
   })
 
   .subject((e) => {
