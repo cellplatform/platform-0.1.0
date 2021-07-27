@@ -7,6 +7,7 @@ import { toItems } from './util';
 export type DotTabstripProps = {
   selected?: number; // index.
   items?: (t.DotTabstripItem | string)[];
+  orientation?: 'x' | 'y';
   defaultColor?: string | number;
   highlightColor?: string | number;
   selectedColor?: string | number;
@@ -19,13 +20,27 @@ export type DotTabstripProps = {
  * A row of dots that are selectable
  */
 export const DotTabstrip: React.FC<DotTabstripProps> = (props) => {
+  const { orientation = 'x' } = props;
+  const is = {
+    horizontal: orientation === 'x',
+    vertical: orientation === 'y',
+  };
+
+  console.log('orientation', orientation);
+
   const items = toItems(props.items);
 
   const styles = {
-    base: css({ Flex: 'horizontal-center-center' }),
+    base: css({
+      Flex: `${is.horizontal ? 'horizontal' : 'vertical'}-center-center`,
+    }),
     dot: {
-      marginRight: 10,
-      ':last-child': { marginRight: 0 },
+      marginRight: is.horizontal && 10,
+      marginBottom: is.vertical && 10,
+      ':last-child': {
+        marginRight: is.horizontal && 0,
+        marginBottom: is.vertical && 0,
+      },
     },
   };
 

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
 import { DevActions, toObject } from 'sys.ui.dev';
-import { DotTabstrip, DotTabstripProps } from './DotTabstrip';
-import { toItems } from './util';
-import { t, log, COLORS, defaultValue } from '../../common';
+import { DotTabstrip, DotTabstripProps } from '../DotTabstrip';
+import { toItems } from '../util';
+import { t, log, COLORS, defaultValue } from '../common';
 
 const createItems = (length: number, options: { isLoaded?: boolean } = {}): t.DotTabstripItem[] => {
   const { isLoaded } = options;
@@ -11,22 +11,43 @@ const createItems = (length: number, options: { isLoaded?: boolean } = {}): t.Do
 };
 
 type Ctx = { props: DotTabstripProps };
-const INITIAL = {
-  props: {
-    items: createItems(5, { isLoaded: true }),
-  },
-};
 
 /**
  * Actions
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui.DotTabstrip')
-  .context((e) => e.prev || INITIAL)
+  .context((e) => {
+    if (e.prev) return e.prev;
+
+    const ctx: Ctx = {
+      props: {
+        orientation: 'x',
+        items: createItems(5, { isLoaded: true }),
+      },
+    };
+
+    return ctx;
+  })
 
   .items((e) => {
     e.title('DotTabstrip');
     e.hr();
+
+    e.select((config) =>
+      config
+        .title('Orientation:')
+        .items(['x', 'y'])
+        .initial(config.ctx.props.orientation)
+        .view('buttons')
+        .pipe(async (e) => {
+          const current = e.select.current[0]; // NB: always first.
+
+          const value = current?.value;
+          if (e.changing) e.ctx.props.orientation = value;
+          e.select.label = value ? `orientation:${value}` : `<unknown>`;
+        }),
+    );
 
     e.button('log: props', (e) => log.info(toObject(e.ctx.props)));
 

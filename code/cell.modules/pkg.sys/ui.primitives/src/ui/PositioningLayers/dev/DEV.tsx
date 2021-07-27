@@ -29,6 +29,7 @@ export const actions = DevActions<Ctx>()
         e.change.ctx((ctx) => (ctx.debug.size = args.size));
       },
     };
+
     return ctx;
   })
 

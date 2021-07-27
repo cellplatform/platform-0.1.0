@@ -4,7 +4,7 @@ import { Harness } from 'sys.ui.dev';
 const imports = {
   useDragTarget: import('./hooks/useDragTarget/dev/DEV'),
 
-  DotTabstrip: import('./ui/DotTabstrip/DEV'),
+  DotTabstrip: import('./ui/DotTabstrip/dev/DEV'),
   Zoom: import('./ui/Zoom/DEV'),
   PropList: import('./ui/PropList/dev/DEV'),
   QRCode: import('./ui/QRCode/dev/DEV'),
