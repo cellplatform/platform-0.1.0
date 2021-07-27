@@ -33,7 +33,7 @@ export const PositioningContainerProperties: React.FC<PositioningContainerProper
 
   return (
     <div {...css(styles.base, props.style)}>
-      <PropList title={'Props'} items={items} defaults={{ monospace: true }} />
+      <PropList title={'Properties'} items={items} defaults={{ monospace: true }} />
     </div>
   );
 };
