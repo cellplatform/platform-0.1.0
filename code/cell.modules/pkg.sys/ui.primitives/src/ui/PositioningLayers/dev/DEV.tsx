@@ -1,12 +1,14 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { PositioningLayers, PositioningLayersProps } from '..';
-import { LayerProperties } from '../Layer.Properties';
 import { PositioningLayersPropertiesStack } from '../PositioningLayers.PropertiesStack';
 import { PositioningLayersProperties } from '../PositioningLayers.Properties';
 import { t, css, color } from '../common';
 
-type Ctx = { props: PositioningLayersProps };
+type Ctx = {
+  debug: { current?: number };
+  props: PositioningLayersProps;
+};
 
 /**
  * Actions
@@ -15,35 +17,18 @@ export const actions = DevActions<Ctx>()
   .namespace('sys.ui.PositioningLayers')
   .context((e) => {
     if (e.prev) return e.prev;
-    return { props: {} };
+
+    const ctx: Ctx = {
+      props: {},
+      debug: {},
+    };
+    return ctx;
   })
 
   .items((e) => {
     e.title('Positioning Layers');
-    e.hr();
 
-    e.component((e) => {
-      const x = 30;
-      return <PositioningLayersProperties props={e.ctx.props} style={{ Margin: [10, x, 10, x] }} />;
-    });
-
-    e.hr(1, 0.1);
-
-    e.component((e) => {
-      const x = 30;
-      return (
-        <PositioningLayersPropertiesStack
-          layers={e.ctx.props.layers}
-          style={{ Margin: [20, x, 20, x] }}
-        />
-      );
-    });
-
-    e.hr();
-  })
-
-  .items((e) => {
-    e.button('tmp', (e) => {
+    e.button('insert', (e) => {
       const layers = e.ctx.props.layers ?? (e.ctx.props.layers = []);
 
       const styles = {
@@ -62,6 +47,49 @@ export const actions = DevActions<Ctx>()
       };
 
       layers.push(layer);
+    });
+
+    e.hr();
+
+    e.component((e) => {
+      const x = 30;
+      return (
+        <PositioningLayersProperties
+          props={e.ctx.props}
+          current={e.ctx.debug.current}
+          style={{ Margin: [10, x, 10, x] }}
+        />
+      );
+    });
+
+    e.hr(1, 0.1);
+
+    e.component((e) => {
+      const x = 30;
+      return (
+        <PositioningLayersPropertiesStack
+          layers={e.ctx.props.layers}
+          current={e.ctx.debug.current}
+          style={{ Margin: [20, x, 20, x] }}
+          onLayerChange={({ index, layer }) => {
+            e.change.ctx((ctx) => {
+              const layers = ctx.props.layers ?? (ctx.props.layers = []);
+              layers[index] = layer;
+            });
+          }}
+          onCurrentChange={({ next }) => {
+            e.change.ctx((ctx) => (ctx.debug.current = next));
+          }}
+        />
+      );
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.button('current: <undefined>', (e) => {
+      e.ctx.debug.current = undefined;
     });
   })
 
