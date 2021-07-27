@@ -1,15 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { animationFrameScheduler, Subject } from 'rxjs';
+import { filter, debounceTime, observeOn, takeUntil } from 'rxjs/operators';
 
 import { PositioningContainer } from '../PositioningContainer';
 import { css, CssValue, t, useResizeObserver } from './common';
 import { Query, Refs } from './Query';
 
+export type PositioningLayersSize = { size: t.DomRect; layers: PositioningLayerSize[] };
+export type PositioningLayersSizeHandler = (e: PositioningLayersSize) => void;
+export type PositioningLayerSize = {
+  id: string;
+  index: number;
+  position: t.BoxPosition;
+  size: t.DomRect;
+};
+
 export type PositioningLayersProps = {
   layers?: t.PositioningLayer[];
   rootResize?: t.ResizeObserver;
   style?: CssValue;
+  onSize?: PositioningLayersSizeHandler;
 };
 
 /**
@@ -22,6 +32,7 @@ export const PositioningLayers: React.FC<PositioningLayersProps> = (props) => {
   const [count, setRedraw] = useState<number>(0);
   const redraw = () => setRedraw((prev) => prev + 1);
 
+  const fireSizeRef = useRef<Subject<void>>(new Subject<void>());
   const layerRefs = useRef<Refs>({});
   const rootRef = useRef<HTMLDivElement>(null);
   const resize = useResizeObserver(rootRef, { root: props.rootResize });
@@ -30,13 +41,33 @@ export const PositioningLayers: React.FC<PositioningLayersProps> = (props) => {
    * Lifecycle
    */
   useEffect(() => {
-    const dispose$ = new Subject<void>();
-
     // Keep track of size.
+    const dispose$ = new Subject<void>();
     resize.$.pipe(takeUntil(dispose$)).subscribe((size) => setSize(size));
 
+    // Dispose.
     return () => dispose$.next();
   }, []); // eslint-disable-line
+
+  useEffect(() => {
+    // Fire root "size changed" event.
+    const dispose$ = new Subject<void>();
+    const fireSize$ = fireSizeRef.current.pipe(
+      takeUntil(dispose$),
+      observeOn(animationFrameScheduler),
+    );
+
+    fireSize$.pipe(debounceTime(10)).subscribe((e) => {
+      if (size) {
+        props.onSize?.({
+          size,
+          layers: toLayerSizes({ refs: layerRefs.current, layers }),
+        });
+      }
+    });
+
+    return () => dispose$.next();
+  }, [size, layers, layerRefs]); // eslint-disable-line
 
   useEffect(() => {
     // Ensure ID's are unique and not empty.
@@ -76,9 +107,12 @@ export const PositioningLayers: React.FC<PositioningLayersProps> = (props) => {
           onSize={(e) => {
             // Maintain a reference to the child size.
             const id = layer.id;
-            const { root, child } = e;
-            layerRefs.current[id] = { id, size: { root, child } };
-            redraw(); // NB: Ensure children are updated with latest size state.
+            const { parent: root, child, position } = e;
+            layerRefs.current[id] = { id, position, size: { root, child } };
+
+            // NB: Ensure children are updated with latest size state.
+            redraw();
+            fireSizeRef.current.next();
           }}
           onUnmount={() => {
             // Remove child reference.
@@ -110,18 +144,18 @@ function renderLayer(args: {
   const { index, layers, size, find } = args;
   const layer = layers[index];
   if (!layer) return null;
-
   if (typeof layer.el === 'object') return layer.el;
-
-  if (typeof layer.el === 'function') {
-    const total = layers.length;
-    return layer.el({
-      index,
-      total,
-      size: { root: size },
-      find,
-    });
-  }
-
+  if (typeof layer.el === 'function') return layer.el({ index, total: layers.length, size, find });
   return null;
+}
+
+function toLayerSizes(args: { refs: Refs; layers: t.PositioningLayer[] }): PositioningLayerSize[] {
+  return Object.values(args.refs)
+    .map((ref) => {
+      const { id, position } = ref;
+      const size = ref.size.child;
+      const index = args.layers.findIndex((layer) => layer.id === id);
+      return { id, position, size, index };
+    })
+    .sort((a, b) => (a.index > b.index ? 1 : -1));
 }

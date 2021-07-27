@@ -1,15 +1,16 @@
 import React from 'react';
 import { ActionButtonHandlerArgs, DevActions } from 'sys.ui.dev';
 
-import { PositioningLayers, PositioningLayersProps } from '..';
+import { PositioningLayers, PositioningLayersProps, PositioningLayersSizeHandler } from '..';
 import { t } from '../common';
 import { PositioningLayersProperties } from '../PositioningLayers.Properties';
 import { PositioningLayersPropertiesStack } from '../PositioningLayers.PropertiesStack';
 import { Sample } from './DEV.Sample';
 
 type Ctx = {
-  debug: { current?: number };
+  debug: { size?: t.DomRect; current?: number };
   props: PositioningLayersProps;
+  onSize: PositioningLayersSizeHandler;
 };
 type A = ActionButtonHandlerArgs<Ctx>;
 
@@ -24,6 +25,9 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {},
       debug: {},
+      onSize(args) {
+        e.change.ctx((ctx) => (ctx.debug.size = args.size));
+      },
     };
     return ctx;
   })
@@ -46,6 +50,7 @@ export const actions = DevActions<Ctx>()
     };
 
     e.button('insert: top left', (e) => insert(e, { x: 'left', y: 'top' }));
+    e.button('insert: center center', (e) => insert(e, { x: 'center', y: 'center' }));
     e.button('insert: center bottom', (e) => insert(e, { x: 'center', y: 'bottom' }));
     e.button('insert: right center', (e) => insert(e, { x: 'right', y: 'center' }));
     e.button('insert: bottom right', (e) => insert(e, { x: 'right', y: 'bottom' }));
@@ -92,17 +97,21 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const size = e.ctx.debug.size;
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: '<PositioningLayers>',
+        label: {
+          topLeft: '<PositioningLayers>',
+          topRight: !size ? undefined : `${size.width} x ${size.height} px`,
+        },
         position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,
         background: 1,
       },
     });
-    e.render(<PositioningLayers {...e.ctx.props} style={{ flex: 1 }} />);
+    e.render(<PositioningLayers {...e.ctx.props} style={{ flex: 1 }} onSize={e.ctx.onSize} />);
   });
 
 export default actions;

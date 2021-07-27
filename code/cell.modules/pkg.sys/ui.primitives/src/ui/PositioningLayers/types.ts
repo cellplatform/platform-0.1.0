@@ -22,7 +22,7 @@ export type PositioningLayerRender = (
 export type PositioningLayerRenderArgs = {
   index: Index; // Layer index (0-based).
   total: number; // Total number of layers (1-based).
-  size: { root: t.DomRect };
+  size: t.DomRect; // Root container size
   find: PositioningLayersQuery;
 };
 
@@ -43,7 +43,7 @@ export type PositioningLayerInfo = {
   id: Id;
   index: Index;
   position: t.BoxPosition;
-  size: { root: t.DomRect; child: t.DomRect };
+  size: t.DomRect; // Child element size.
 };
 
 export type PositioningLayerOverlapInfo = PositioningLayerInfo & {

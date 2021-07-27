@@ -41,12 +41,10 @@ export const Sample: React.FC<SampleProps> = (props) => {
     const list: PropListItem[] = [{ label: 'id', value: `${props.id} ${index}` }];
     if (info) {
       const { position, size } = info;
-      const { child, root } = size;
       list.push(
         ...[
           { label: 'position', value: `${position.x} ${position.y}` },
-          { label: 'self.size', value: `x:${child.x} y:${child.y} ${child.width}x${child.height}` },
-          { label: 'root.size', value: `${root.width}x${root.height}` },
+          { label: 'size', value: `x:${size.x} y:${size.y} ${size.width}x${size.height}` },
         ],
       );
 

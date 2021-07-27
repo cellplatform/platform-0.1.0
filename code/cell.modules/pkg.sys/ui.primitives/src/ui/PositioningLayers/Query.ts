@@ -1,6 +1,6 @@
 import { t, R } from './common';
 
-export type Ref = { id: Id; size: { root: t.DomRect; child: t.DomRect } };
+export type Ref = { id: Id; position: t.BoxPosition; size: { root: t.DomRect; child: t.DomRect } };
 export type Refs = { [id: string]: Ref };
 
 type Id = string;
@@ -43,7 +43,8 @@ function find(input: Id | Index | undefined, layers: t.PositioningLayer[], refs:
       const index = layers.findIndex((layer) => layer.id === ref.id);
       const layer = layers[index];
       if (layer) {
-        const { id, size } = ref;
+        const id = ref.id;
+        const size = ref.size.child;
         const position = layer.position;
         list.push({ index, id, size, position });
       }
@@ -85,7 +86,7 @@ function findOverlapping(input: Id | Index, layers: Info[]): Overlap[] {
   if (target) {
     layers.forEach((layer) => {
       if (layer.id === target.id) return; // Do not compare with self.
-      const { x, y } = getOverlap(target.size.child, layer.size.child);
+      const { x, y } = getOverlap(target.size, layer.size);
       if (x || y) {
         list.push({ ...layer, x, y });
       }

@@ -20,8 +20,8 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       child: {},
-      debug: { background: false, isConfigEnabled: true },
       props: { position: { x: 'center', y: 'bottom' } },
+      debug: { background: false, isConfigEnabled: true },
       onSize: (size) => e.change.ctx((ctx) => (ctx.debug.size = size)),
     };
 

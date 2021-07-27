@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Calculate } from './calc';
 import { css, CssValue, t, useResizeObserver } from './common';
 
-export type PositioningSize = { root: t.DomRect; child: t.DomRect };
+export type PositioningSize = { position: t.BoxPosition; parent: t.DomRect; child: t.DomRect };
 export type PositioningSizeHandler = (e: PositioningSize) => void;
 
 export type PositioningContainerProps = {
@@ -42,11 +42,15 @@ export const PositioningContainer: React.FC<PositioningContainerProps> = (props)
 
     rootResize$.subscribe((size) => {
       setRootSize(size);
-      props.onSize?.({ root: size, child: getDomRect(childRef.current) });
+      props.onSize?.({
+        position,
+        parent: size,
+        child: getDomRect(childRef.current),
+      });
     });
 
     childResize$.subscribe((e) => {
-      props.onSize?.(getSizeEvent(rootRef, childRef));
+      props.onSize?.(getSizeEvent(position, rootRef, childRef));
     });
 
     return () => {
@@ -56,7 +60,7 @@ export const PositioningContainer: React.FC<PositioningContainerProps> = (props)
   }, []); // eslint-disable-line
 
   useEffect(() => {
-    props.onSize?.(getSizeEvent(rootRef, childRef));
+    props.onSize?.(getSizeEvent(position, rootRef, childRef));
   }, [position]); // eslint-disable-line
 
   /**
@@ -121,11 +125,13 @@ function getDimensions(el: HTMLElement) {
 }
 
 function getSizeEvent(
+  position: t.BoxPosition,
   rootRef: React.RefObject<HTMLDivElement>,
   childRef: React.RefObject<HTMLDivElement>,
-) {
+): PositioningSize {
   return {
-    root: getDomRect(rootRef.current),
+    position,
+    parent: getDomRect(rootRef.current),
     child: getDomRect(childRef.current),
   };
 }
