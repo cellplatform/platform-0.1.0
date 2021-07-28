@@ -14,6 +14,20 @@ type Ctx = {
 };
 type A = ActionButtonHandlerArgs<Ctx>;
 
+const insert = (ctx: Ctx, position: t.BoxPosition) => {
+  const layers = ctx.props.layers ?? (ctx.props.layers = []);
+  const layer: t.PositioningLayer = {
+    id: `thing-${layers.length + 1}`,
+    position,
+    render(e) {
+      const info = e.find.first(layer.id);
+      const overlaps = e.find.overlap(e.index);
+      return <Sample id={info?.id ?? layer.id} info={info} overlaps={overlaps} find={e.find} />;
+    },
+  };
+  layers.push(layer);
+};
+
 /**
  * Actions
  */
@@ -30,31 +44,19 @@ export const actions = DevActions<Ctx>()
       },
     };
 
+    insert(ctx, { x: 'center', y: 'bottom' });
+
     return ctx;
   })
 
   .items((e) => {
     e.title('Positioning Layers');
 
-    const insert = (e: A, position: t.BoxPosition) => {
-      const layers = e.ctx.props.layers ?? (e.ctx.props.layers = []);
-      const layer: t.PositioningLayer = {
-        id: `thing-${layers.length + 1}`,
-        position,
-        el(e) {
-          const info = e.find.first(layer.id);
-          const overlaps = e.find.overlap(e.index);
-          return <Sample id={info?.id ?? layer.id} info={info} overlaps={overlaps} find={e.find} />;
-        },
-      };
-      layers.push(layer);
-    };
-
-    e.button('insert: top left', (e) => insert(e, { x: 'left', y: 'top' }));
-    e.button('insert: center center', (e) => insert(e, { x: 'center', y: 'center' }));
-    e.button('insert: center bottom', (e) => insert(e, { x: 'center', y: 'bottom' }));
-    e.button('insert: right center', (e) => insert(e, { x: 'right', y: 'center' }));
-    e.button('insert: bottom right', (e) => insert(e, { x: 'right', y: 'bottom' }));
+    e.button('insert: top left', (e) => insert(e.ctx, { x: 'left', y: 'top' }));
+    e.button('insert: center center', (e) => insert(e.ctx, { x: 'center', y: 'center' }));
+    e.button('insert: center bottom', (e) => insert(e.ctx, { x: 'center', y: 'bottom' }));
+    e.button('insert: right center', (e) => insert(e.ctx, { x: 'right', y: 'center' }));
+    e.button('insert: bottom right', (e) => insert(e.ctx, { x: 'right', y: 'bottom' }));
 
     e.hr(1, 0.1);
     e.button('clear', (e) => (e.ctx.props.layers = undefined));

@@ -9,7 +9,7 @@ type Index = number;
 export type PositioningLayer = {
   id: Id; // Layer addressable identifier.
   position: t.BoxPosition;
-  el?: JSX.Element | PositioningLayerRender;
+  render?: PositioningLayerRender;
 };
 
 /**

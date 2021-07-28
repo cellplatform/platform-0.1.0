@@ -4,8 +4,10 @@ import { css, CssValue, t } from '../../common';
 import { DotTabstripItem } from './DotTabstrip.Item';
 import { toItems } from './util';
 
+type Index = number;
+
 export type DotTabstripProps = {
-  selected?: number; // index.
+  selected?: Index;
   items?: (t.DotTabstripItem | string)[];
   orientation?: 'x' | 'y';
   defaultColor?: string | number;
@@ -21,14 +23,12 @@ export type DotTabstripProps = {
  */
 export const DotTabstrip: React.FC<DotTabstripProps> = (props) => {
   const { orientation = 'x' } = props;
+
+  const items = toItems(props.items);
   const is = {
     horizontal: orientation === 'x',
     vertical: orientation === 'y',
   };
-
-  console.log('orientation', orientation);
-
-  const items = toItems(props.items);
 
   const styles = {
     base: css({

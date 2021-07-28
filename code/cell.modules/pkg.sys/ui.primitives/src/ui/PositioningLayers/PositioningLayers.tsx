@@ -142,11 +142,9 @@ function renderLayer(args: {
   find: t.PositioningLayersQuery;
 }) {
   const { index, layers, size, find } = args;
+  const total = layers.length;
   const layer = layers[index];
-  if (!layer) return null;
-  if (typeof layer.el === 'object') return layer.el;
-  if (typeof layer.el === 'function') return layer.el({ index, total: layers.length, size, find });
-  return null;
+  return layer?.render?.({ index, total, size, find }) ?? null;
 }
 
 function toLayerSizes(args: { refs: Refs; layers: t.PositioningLayer[] }): PositioningLayerSize[] {

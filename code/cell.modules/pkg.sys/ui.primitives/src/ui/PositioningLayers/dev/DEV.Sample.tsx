@@ -37,21 +37,21 @@ export const Sample: React.FC<SampleProps> = (props) => {
   };
 
   const items: PropListItem[] = (() => {
-    const index = info ? `[${info.index}]` : '';
-    const list: PropListItem[] = [{ label: 'id', value: `${props.id} ${index}` }];
+    const index = info ? `${info.index}` : '?';
+    const list: PropListItem[] = [{ label: `layer-${index}`, value: `id:"${props.id}"` }];
     if (info) {
       const { position, size } = info;
       list.push(
         ...[
-          { label: 'position', value: `${position.x} ${position.y}` },
-          { label: 'size', value: `x:${size.x} y:${size.y} ${size.width}x${size.height}` },
+          { label: 'position (x, y)', value: `${position.x} ${position.y}` },
+          { label: 'size', value: `x:${size.x} y:${size.y}, ${size.width} x ${size.height} px` },
         ],
       );
 
       overlaps.forEach((overlap) => {
         const { index, x, y } = overlap;
         list.push({
-          label: `overlap: index-${index}`,
+          label: `overlaps with: layer-${index}`,
           value: `${x ? 'x' : ''}${y ? 'y' : ''}`,
         });
       });
