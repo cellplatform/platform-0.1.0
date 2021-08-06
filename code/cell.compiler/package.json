@@ -5,7 +5,7 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
-    "cell.compiler": "lib/node.cli/index.js"
+    "cell.compiler": "lib/api.cli/index.js"
   },
   "compiler": {
     "port": 5050
@@ -24,7 +24,7 @@
     "info": "yarn cmd info $@",
     "clean": "rm -rf tmp && yarn cmd clean $@",
     "node": "ts-node -T script.ts/tmp.node.runtime $@",
-    "cmd": "node lib/node.cli $@"
+    "cmd": "node lib/api.cli $@"
   },
   "dependencies": {
     "@babel/core": "7.14.6",
