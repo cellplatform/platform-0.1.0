@@ -2,28 +2,32 @@ import * as t from '../../common/types';
 
 type Id = string;
 type Index = number;
+type O = Record<string, unknown>;
 
 /**
  * A single positioning layer.
  */
-export type PositioningLayer = {
+export type PositioningLayer<P extends O = O> = {
   id: Id; // Layer addressable identifier.
   position: t.BoxPosition;
-  render?: PositioningLayerRender;
+  render?: PositioningLayerRender<P>;
+  props?: P;
 };
 
 /**
  * Render the content of a layer.
  */
-export type PositioningLayerRender = (
-  e: PositioningLayerRenderArgs,
+export type PositioningLayerRender<P extends O = O> = (
+  args: PositioningLayerRenderArgs<P>,
 ) => JSX.Element | undefined | null;
 
-export type PositioningLayerRenderArgs = {
+export type PositioningLayerRenderArgs<P extends O = O> = {
   index: Index; // Layer index (0-based).
   total: number; // Total number of layers (1-based).
   size: t.DomRect; // Root container size
   find: PositioningLayersQuery;
+  position: t.BoxPosition;
+  props: P;
 };
 
 /**

@@ -144,7 +144,11 @@ function renderLayer(args: {
   const { index, layers, size, find } = args;
   const total = layers.length;
   const layer = layers[index];
-  return layer?.render?.({ index, total, size, find }) ?? null;
+  if (typeof layer?.render !== 'function') return null;
+
+  const { position } = layer;
+  const props = layer.props ?? {};
+  return layer.render({ index, total, size, find, props, position }) ?? null;
 }
 
 function toLayerSizes(args: { refs: Refs; layers: t.PositioningLayer[] }): PositioningLayerSize[] {
