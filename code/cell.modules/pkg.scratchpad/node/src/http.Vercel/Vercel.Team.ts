@@ -1,5 +1,6 @@
 import { http, t, util } from './common';
 import { VercelTeamProject } from './Vercel.Team.Project';
+import { VercelTeamDeployment } from './Vercel.Team.Deployment';
 
 export function VercelTeam(args: {
   token: string;
@@ -45,6 +46,32 @@ export function VercelTeam(args: {
      */
     project(name) {
       return VercelTeamProject({ token, version, name, team: api });
+    },
+
+    /**
+     * List deployments.
+     * https://vercel.com/docs/api#endpoints/deployments/list-deployments
+     */
+    async deployments(options = {}) {
+      /**
+       * TODO 🐷
+       * - options passed into URL query builder.
+       */
+
+      const url = ctx.url('now/deployments', { teamId }, { version: 5 });
+
+      const res = await http.get(url, { headers });
+      const { ok, status } = res;
+      const deployments = !ok ? [] : ((res.json as any).deployments as t.VercelListDeployment[]);
+      const error = ok ? undefined : (res.json as t.VercelHttpError);
+      return { ok, status, deployments, error };
+    },
+
+    /**
+     * Work on a single deployment within a team.
+     */
+    deployment(url) {
+      return VercelTeamDeployment({ token, version, url, team: api });
     },
   };
 

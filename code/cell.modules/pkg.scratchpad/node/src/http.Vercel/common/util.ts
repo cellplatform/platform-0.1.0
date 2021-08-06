@@ -44,6 +44,8 @@ export function toCtx(token: string, version: number) {
     version,
     headers,
     Authorization,
-    url: (path: string, query?: Q) => toUrl(version, path, query),
+    url(path: string, query?: Q, options: { version?: number } = {}) {
+      return toUrl(options.version ?? version, path, query);
+    },
   };
 }

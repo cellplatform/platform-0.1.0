@@ -5,6 +5,9 @@ import { VercelTeam } from './Vercel.Team';
  * A wrapper around the Vercel HTTP endpoints API.
  * See:
  *    https://vercel.com/docs/api#endpoints
+ *
+ *    SHA1 (digest) filehash checking example:
+ *    https://vercel.com/docs/integrations#webhooks/securing-webhooks
  */
 export function Vercel(args: { token: string; version?: number }): t.VercelHttp {
   const ctx = util.toCtx(args.token, args.version ?? 12);
