@@ -297,10 +297,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
   private renderHomeLink() {
     const styles = {
-      base: css({
-        color: COLORS.BLUE,
-        cursor: 'pointer',
-      }),
+      base: css({ color: COLORS.BLUE, cursor: 'pointer' }),
     };
     return (
       <div onClick={this.handleHomeClick} {...styles.base}>
