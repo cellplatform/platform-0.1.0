@@ -11,4 +11,4 @@ export * from './ui/MinSize/types';
 export * from './ui/PositioningContainer/types';
 export * from './ui/PositioningLayers/types';
 
-export * from './ui.ref/tree/types';
+export * from './ui/Tree/types';
