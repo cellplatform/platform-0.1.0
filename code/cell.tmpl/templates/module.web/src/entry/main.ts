@@ -12,7 +12,7 @@ setTimeout(() => worker.postMessage({ msg: 'Hello from [workers.init.ts]' }), 50
  * DOM (User Interface)
  */
 export async function startDom() {
-  const init = import('./ui');
+  const init = import('./main.dom');
   init.catch((err) => console.log('INIT ERROR 🐷', err));
 }
 

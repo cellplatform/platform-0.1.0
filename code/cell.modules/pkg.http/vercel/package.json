@@ -1,0 +1,30 @@
+{
+  "name": "http.vercel",
+  "version": "0.0.0",
+  "sideEffects": false,
+  "compiler": {
+    "port": 3038
+  },
+  "scripts": {
+    "start": "cell.compiler dev $@",
+    "dev": "cell.compiler dev --no-exports $@",
+    "test": "ts test $@",
+    "lint": "ts lint $@",
+    "build": "ts build --no-esm $@",
+    "bundle.node": "cell.compiler bundle node $@",
+    "bundle.web": "cell.compiler bundle web $@",
+    "bundle": "yarn bundle.web && yarn bundle.node",
+    "upload": "cell.compiler upload node $@",
+    "info": "cell.compiler info node $@",
+    "serve": "cell.compiler serve $@",
+    "clean": "cell.compiler clean $@"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@platform/cell.compiler": "~0.3.56",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "license": "MIT",
+  "private": true
+}
