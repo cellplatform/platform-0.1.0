@@ -1,23 +1,6 @@
-import { createRoot } from './sample.util';
+import { createRoot } from './util';
 import { t, COLORS } from '../common';
 import { Treeview } from '../..';
-
-export const SIMPLE: t.ITreeviewNode = {
-  id: 'root',
-  props: {
-    treeview: {
-      label: 'Sheet',
-      icon: 'Face',
-    },
-  },
-  children: [
-    { id: 'child-1', props: { treeview: { icon: 'Face', marginTop: 30 } } },
-    { id: 'child-2', props: { treeview: { icon: 'Face' } } },
-    { id: 'child-3', props: { treeview: { icon: 'Face' } } },
-    { id: 'child-4', props: { treeview: { icon: 'Face' } } },
-    { id: 'child-5', props: { treeview: { icon: 'Face' } } },
-  ],
-};
 
 export const COMPREHENSIVE = (() => {
   const props = Treeview.util.props;

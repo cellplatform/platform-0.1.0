@@ -1,17 +1,18 @@
 import React from 'react';
 import { Subject } from 'rxjs';
-import { DevActions } from 'sys.ui.dev';
+import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { Tree } from '..';
-import { COLORS, Icons, rx, t } from './common';
-import { COMPREHENSIVE } from './sample';
-import { useSample } from './hooks';
+import { css, COLORS, Icons, rx, t } from './common';
+import { SAMPLE } from './sample';
+import { useSample, useDefaultTreeviewStrategy } from './hooks';
 
 type E = t.TreeviewEvent;
-type DebugStateStrategy = 'none' | 'useSample';
+type DebugStateStrategy = 'none' | 'useSample' | 'useDefaultTreeviewStrategy';
 
 type Ctx = {
   bus: t.EventBus<E>;
+  initial: t.ITreeviewNode;
   debug: { stateStrategy: DebugStateStrategy };
   props: t.ITreeviewProps;
 };
@@ -29,12 +30,9 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       bus,
-      debug: { stateStrategy: 'useSample' },
-      props: {
-        theme: 'LIGHT',
-        // root: COMPREHENSIVE,
-        event$,
-      },
+      initial: SAMPLE.COMPREHENSIVE,
+      debug: { stateStrategy: 'useDefaultTreeviewStrategy' },
+      props: { theme: 'LIGHT', event$, focusOnLoad: true },
     };
     return ctx;
   })
@@ -43,7 +41,25 @@ export const actions = DevActions<Ctx>()
     e.title('Debug');
 
     e.select((config) => {
-      const items: DebugStateStrategy[] = ['none', 'useSample'];
+      const items = [
+        { label: 'simple', value: SAMPLE.SIMPLE },
+        { label: 'comprehensive', value: SAMPLE.COMPREHENSIVE },
+        { label: 'twisty', value: SAMPLE.TWISTY },
+        { label: 'deep', value: SAMPLE.DEEP },
+      ];
+      config
+        .title('data')
+        .items(items)
+        .initial(items[1])
+        .view('buttons')
+        .pipe((e) => {
+          const current = e.select.current[0];
+          if (e.changing) e.ctx.initial = current.value;
+        });
+    });
+
+    e.select((config) => {
+      const items: DebugStateStrategy[] = ['none', 'useSample', 'useDefaultTreeviewStrategy'];
       config
         .title('state strategy')
         .items(items)
@@ -62,7 +78,7 @@ export const actions = DevActions<Ctx>()
         .initial((config.ctx.props.theme as string) ?? 'LIGHT')
         .view('buttons')
         .pipe((e) => {
-          const value = e.select.current[0]?.value; // NB: always first.
+          const value = e.select.current[0]?.value;
           if (e.changing) e.ctx.props.theme = value;
         });
     });
@@ -74,12 +90,20 @@ export const actions = DevActions<Ctx>()
         .initial((config.ctx.props.background as string) ?? 'THEME')
         .view('buttons')
         .pipe((e) => {
-          const value = e.select.current[0]?.value; // NB: always first.
+          const value = e.select.current[0]?.value;
           if (e.changing) e.ctx.props.background = value;
         });
     });
 
     e.hr();
+  })
+
+  .items((e) => {
+    e.component((e) => {
+      // const nav = e.ctx.props.n
+      const data = { foo: 123 };
+      return <ObjectView data={data} style={css({ Margin: [5, 10] })} fontSize={11} />;
+    });
   })
 
   .subject((e) => {
@@ -110,13 +134,22 @@ export default actions;
 export type SampleProps = { ctx: Ctx };
 export const Sample: React.FC<SampleProps> = (props) => {
   const { ctx } = props;
-  const { bus, debug } = ctx;
+  const { bus, debug, initial } = ctx;
 
-  const sample = useSample({ bus, isEnabled: debug.stateStrategy === 'useSample' });
-  const root = sample.root;
-  const current = sample.current;
+  const state = debug.stateStrategy;
+  const sample = useSample({ bus, initial, isEnabled: state === 'useSample' });
+  const defaultStrategy = useDefaultTreeviewStrategy({
+    bus,
+    initial,
+    isEnabled: state === 'useDefaultTreeviewStrategy',
+  });
 
-  return <Tree.View {...ctx.props} root={root} current={current} renderIcon={renderIcon} />;
+  const root = sample.root ?? defaultStrategy.root;
+  const current = sample.current ?? defaultStrategy.current;
+
+  return (
+    <Tree.View {...ctx.props} root={root} current={current} renderIcon={renderIcon} tabIndex={0} />
+  );
 };
 
 const renderIcon: t.RenderTreeIcon = (e) => {

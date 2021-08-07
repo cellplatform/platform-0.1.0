@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { COLORS, css, Icons, log, t, Tree } from '../common';
 
-import { Tree } from '../..';
-import { COLORS, css, Icons, log, t } from '../common';
-import { COMPREHENSIVE } from '../sample';
-
-export function useSample(args: { isEnabled: boolean; bus: t.EventBus<t.TreeviewEvent> }) {
-  const { isEnabled, bus } = args;
-
-  const [root, setRoot] = useState<t.ITreeviewNode | undefined>(COMPREHENSIVE);
+export function useSample(args: {
+  bus: t.EventBus<t.TreeviewEvent>;
+  isEnabled: boolean;
+  initial: t.ITreeviewNode;
+}) {
+  const { bus, isEnabled, initial } = args;
+  const [root, setRoot] = useState<t.ITreeviewNode | undefined>();
   const [current, setCurrent] = useState<string | undefined>();
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
-
     const $ = bus.$.pipe(
       takeUntil(dispose$),
       filter(() => isEnabled),
     );
 
-    const tree = Tree.Events.create($);
+    setRoot(initial);
+    const events = Tree.Events.create($);
 
-    tree.mouse().click.node$.subscribe((e) => {
+    events.mouse().click.node$.subscribe((e) => {
       log.info('🐷 CLICK from TreeEvents helper', e);
     });
 
@@ -31,11 +31,11 @@ export function useSample(args: { isEnabled: boolean; bus: t.EventBus<t.Treeview
       // log.info('🌳', e.type, e.payload);
     });
 
-    tree.render.icon$.pipe(filter((e) => e.icon !== 'Face')).subscribe((e) => {
+    events.render.icon$.pipe(filter((e) => e.icon !== 'Face')).subscribe((e) => {
       e.render(Icons[e.icon]);
     });
 
-    tree.beforeRender.header$.subscribe((e) => {
+    events.beforeRender.header$.subscribe((e) => {
       e.change((draft) => {
         // const header = draft.header || (draft.header = {});
         // draft.header;
@@ -43,7 +43,7 @@ export function useSample(args: { isEnabled: boolean; bus: t.EventBus<t.Treeview
       });
     });
 
-    tree.render.header$.pipe(filter((e) => e.node.id === 'root.3')).subscribe((e) => {
+    events.render.header$.pipe(filter((e) => e.node.id === 'root.3')).subscribe((e) => {
       const styles = {
         base: css({
           flex: 1,
@@ -75,7 +75,7 @@ export function useSample(args: { isEnabled: boolean; bus: t.EventBus<t.Treeview
       setRoot(Tree.util.toggleIsOpen(root, node));
     };
 
-    const click$ = tree.mouse$({ button: 'LEFT' });
+    const click$ = events.mouse$({ button: 'LEFT' });
 
     click$
       .pipe(
@@ -125,7 +125,7 @@ export function useSample(args: { isEnabled: boolean; bus: t.EventBus<t.Treeview
      * Dispose
      */
     return () => dispose$.next();
-  }, [bus, isEnabled]); // eslint-disable-line
+  }, [bus, isEnabled, initial]); // eslint-disable-line
 
   return {
     root: isEnabled ? root : undefined,

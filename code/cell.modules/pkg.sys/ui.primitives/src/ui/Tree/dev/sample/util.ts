@@ -1,5 +1,5 @@
 import { value } from '@platform/util.value';
-import { t } from '../common';
+import { t, Tree } from '../common';
 
 export type TotalChildren = number | number[];
 
@@ -32,3 +32,11 @@ export const createMany = (total: TotalChildren, baseId?: string | number): t.IT
 };
 
 export const createRoot = (total?: TotalChildren) => create('root', 'Root', total);
+
+export function assignLabelDeep(node: t.ITreeviewNode) {
+  Tree.util.query(node).walkDown((e) => {
+    Tree.util.props(e.node, (props) => {
+      props.label = props.label || e.id;
+    });
+  });
+}
