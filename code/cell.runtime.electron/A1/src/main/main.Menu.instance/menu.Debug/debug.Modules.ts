@@ -123,6 +123,9 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus; localhost: string })
     separator() {
       submenu.push({ type: 'separator' });
     },
+    localhost(port: number) {
+      Push.item(`localhost:${port}`, `http://localhost:${port}`);
+    },
   };
 
   type T = { ns: string; url: string };
@@ -135,10 +138,18 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus; localhost: string })
 
   refs.forEach((ref) => Push.item(ref.ns, ref.url));
 
-  // Localhost addresses.
+  /**
+   * Localhost addresses.
+   */
+  const portRange = (from: number, length: number) =>
+    Array.from({ length }).map((v, i) => from + i);
+
   Push.separator();
-  const ports = [3000, 3032, 3033, 3034, 3036, 3037, 3040, 5050];
-  ports.forEach((port) => Push.item(`localhost:${port}`, `http://localhost:${port}`));
+  Push.localhost(3000);
+  Push.separator();
+  portRange(3030, 21).forEach((port) => Push.localhost(port));
+  Push.separator();
+  Push.localhost(5050);
 
   // Finish up.
   return item;
