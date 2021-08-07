@@ -12,9 +12,8 @@ type DebugStateStrategy = 'none' | 'useSample' | 'useDefaultTreeviewStrategy';
 
 type Ctx = {
   bus: t.EventBus<E>;
-  initial: t.ITreeviewNode;
-  debug: { stateStrategy: DebugStateStrategy };
   props: t.ITreeviewProps;
+  debug: { columns: number; stateStrategy: DebugStateStrategy; initial: t.ITreeviewNode };
 };
 
 /**
@@ -30,9 +29,12 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       bus,
-      initial: SAMPLE.COMPREHENSIVE,
-      debug: { stateStrategy: 'useDefaultTreeviewStrategy' },
-      props: { theme: 'LIGHT', event$, focusOnLoad: true },
+      props: { event$, theme: 'LIGHT' },
+      debug: {
+        columns: 1,
+        stateStrategy: 'useDefaultTreeviewStrategy',
+        initial: SAMPLE.COMPREHENSIVE,
+      },
     };
     return ctx;
   })
@@ -54,7 +56,7 @@ export const actions = DevActions<Ctx>()
         .view('buttons')
         .pipe((e) => {
           const current = e.select.current[0];
-          if (e.changing) e.ctx.initial = current.value;
+          if (e.changing) e.ctx.debug.initial = current.value;
         });
     });
 
@@ -95,27 +97,38 @@ export const actions = DevActions<Ctx>()
         });
     });
 
+    e.select((config) => {
+      config
+        .title('columns')
+        .items([1, 2, 3, 4].map((num) => num.toString()))
+        .initial(config.ctx.debug.columns.toString())
+        .view('buttons')
+        .pipe((e) => {
+          const value = e.select.current[0]?.value;
+          if (e.changing) e.ctx.debug.columns = parseInt(value, 10);
+        });
+    });
+
     e.hr();
   })
 
-  .items((e) => {
-    e.component((e) => {
-      // const nav = e.ctx.props.n
-      const data = { foo: 123 };
-      return <ObjectView data={data} style={css({ Margin: [5, 10] })} fontSize={11} />;
-    });
-  })
-
   .subject((e) => {
+    const debug = e.ctx.debug;
+
+    const columns = debug.columns;
+    const isMultiColumn = columns > 1;
+
     const theme = e.ctx.props.theme ?? 'LIGHT';
     const isDark = theme === 'DARK';
 
     e.settings({
-      host: { background: isDark ? COLORS.DARK : -0.04 },
+      host: {
+        background: isDark ? COLORS.DARK : isMultiColumn ? 0.8 : -0.04,
+      },
       layout: {
         label: '<TreeView>',
-        position: [150, null],
-        width: 300,
+        position: [150, isMultiColumn ? 80 : null],
+        width: isMultiColumn ? undefined : 300,
         border: isDark ? 0.1 : -0.1,
         cropmarks: isDark ? 0.3 : -0.2,
         labelColor: isDark ? COLORS.WHITE : -0.7,
@@ -134,9 +147,11 @@ export default actions;
 export type SampleProps = { ctx: Ctx };
 export const Sample: React.FC<SampleProps> = (props) => {
   const { ctx } = props;
-  const { bus, debug, initial } = ctx;
+  const { bus, debug } = ctx;
 
+  const { columns, initial } = debug;
   const state = debug.stateStrategy;
+
   const sample = useSample({ bus, initial, isEnabled: state === 'useSample' });
   const defaultStrategy = useDefaultTreeviewStrategy({
     bus,
@@ -146,6 +161,32 @@ export const Sample: React.FC<SampleProps> = (props) => {
 
   const root = sample.root ?? defaultStrategy.root;
   const current = sample.current ?? defaultStrategy.current;
+
+  if (columns === 1) {
+    return (
+      <Tree.View
+        {...ctx.props}
+        root={root}
+        current={current}
+        renderIcon={renderIcon}
+        tabIndex={0}
+        focusOnLoad={true}
+      />
+    );
+  } else {
+    return (
+      <Tree.Columns
+        {...ctx.props}
+        total={columns}
+        root={root}
+        current={current}
+        renderIcon={renderIcon}
+        background={'NONE'}
+        tabIndex={0}
+        focusOnLoad={true}
+      />
+    );
+  }
 
   return (
     <Tree.View {...ctx.props} root={root} current={current} renderIcon={renderIcon} tabIndex={0} />
