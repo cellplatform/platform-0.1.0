@@ -11,7 +11,7 @@ import crypto from 'crypto';
  * for file upload:
  *    https://vercel.com/docs/integrations#webhooks/securing-webhooks
  */
-describe.only('Vercel', function () {
+describe.skip('Vercel [INTEGRATION]', function () {
   this.timeout(99999);
 
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
@@ -280,7 +280,7 @@ describe.only('Vercel', function () {
     });
   });
 
-  it.only('upload files', async () => {
+  it('upload files', async () => {
     console.log('upload files');
 
     function toSha1(file: Buffer) {

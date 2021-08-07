@@ -1,4 +1,4 @@
 export * from '../../types';
 export * from '@platform/cell.types/lib/types.Manifest';
-export { JsonMap } from '@platform/types';
-export { Http } from '@platform/http.types';
+export { JsonMap, Event, EventBus, Json } from '@platform/types';
+export { Http, HttpMethod } from '@platform/http.types';

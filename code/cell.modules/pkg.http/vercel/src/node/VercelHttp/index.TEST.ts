@@ -1,4 +1,4 @@
-import { expect, fs } from '../../test';
+import { expect, fs, Http, t } from '../../test';
 import { VercelHttp } from '.';
 // import { http, util } from './common';
 
@@ -13,10 +13,57 @@ import { VercelHttp } from '.';
  *    https://vercel.com/docs/integrations#webhooks/securing-webhooks
  */
 
-describe('VercelHttp', () => {
-  it('create', () => {
+describe.only('VercelHttp', () => {
+  it('create', async () => {
+    // const http = Http.create();
     const token = 'abc123';
     const client = VercelHttp({ token });
+
+    // client
+
+    // http.events$.subscribe((e) => {
+    //   console.log('e', e);
+    // });
+
+    const res = await client.teams.list();
+
+    console.log('res', res.status);
+    console.log('', res.teams);
+
+    // client.
+  });
+
+  it('intercept http', async () => {
+    const http = Http.create();
+    const token = 'abc123';
+    const client = VercelHttp({ http, token });
+
+    type HttpLog = { status: number; method: t.HttpMethod; body: t.Json };
+    const after: HttpLog[] = [];
+
+    http.events$.subscribe((e) => {
+      // console.log('e', e);
+    });
+
+    http.after$.subscribe((e) => {
+      console.log('-------------------------------------------');
+      console.log('🌳', e.method, e.status, e.url);
+
+      console.log(e.response.json);
+      const { status, method } = e;
+      const body = e.response.json;
+      after.push({ status, method, body });
+    });
+
+    const res = await client.teams.list();
+
+    console.log('-------------------------------------------');
+    console.log('res', res);
+
+    const path = fs.resolve('tmp/http.log.json');
+    console.log('path', path);
+
+    await fs.writeJson(path, after);
 
     // client.
   });

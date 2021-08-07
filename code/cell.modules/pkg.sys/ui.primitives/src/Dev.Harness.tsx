@@ -30,7 +30,7 @@ const imports = {
 
   Svg: import('./ui.image/Svg/dev/DEV'),
 
-  Tree: import('./ui.ref/tree/Tree.dev/DEV'),
+  Tree: import('./ui/Tree/dev/DEV'),
 };
 
 const ns = new URL(location.href).searchParams.get('ns');

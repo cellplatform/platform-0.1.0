@@ -1,4 +1,4 @@
-import * as t from './web/common/types';
+import { t } from './common';
 
 type Uid = string;
 type Timestamp = number; // An Integer representing a date in milliseconds since the UNIX epoch.
