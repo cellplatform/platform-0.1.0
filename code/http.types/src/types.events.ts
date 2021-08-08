@@ -23,7 +23,7 @@ export type HttpBeforeEvent = {
   payload: HttpBefore;
 };
 export type HttpBefore = {
-  uid: string;
+  tx: string;
   method: t.HttpMethod;
   url: string;
   data?: any;
@@ -35,7 +35,7 @@ export type HttpBefore = {
 
 export type HttpAfterEvent = { type: 'HTTP/after'; payload: HttpAfter };
 export type HttpAfter = {
-  uid: string;
+  tx: string;
   method: t.HttpMethod;
   url: string;
   ok: boolean;

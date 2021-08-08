@@ -25,19 +25,16 @@ export const create: t.HttpCreate = (options = {}) => {
     return fetcher({ method, url, mode, headers, data, fire, fetch: options.fetch || fetch });
   };
 
-  const _events$ = new Subject<t.HttpEvent>();
-  const fire: t.FireEvent = (e) => _events$.next(e);
+  const $ = new Subject<t.HttpEvent>();
+  const fire: t.FireEvent = (e) => $.next(e);
 
-  const events$ = _events$.pipe(share());
-  const before$ = _events$.pipe(
+  const before$ = $.pipe(
     filter((e) => e.type === 'HTTP/before'),
     map((e) => e.payload as t.HttpBefore),
-    share(),
   );
-  const after$ = _events$.pipe(
+  const after$ = $.pipe(
     filter((e) => e.type === 'HTTP/after'),
     map((e) => e.payload as t.HttpAfter),
-    share(),
   );
 
   const http: t.Http = {
@@ -46,7 +43,7 @@ export const create: t.HttpCreate = (options = {}) => {
       return create({ ...options, headers });
     },
 
-    events$,
+    $: $.asObservable(),
     before$,
     after$,
 

@@ -12,7 +12,7 @@ export type HttpOptions = { headers?: t.HttpHeaders; mode?: HttpCors };
 export type Http = HttpMethods & {
   create: HttpCreate;
   headers: t.HttpHeaders;
-  events$: Observable<t.HttpEvent>;
+  $: Observable<t.HttpEvent>;
   before$: Observable<t.HttpBefore>;
   after$: Observable<t.HttpAfter>;
 };

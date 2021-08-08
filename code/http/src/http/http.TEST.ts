@@ -253,12 +253,12 @@ describe('http', () => {
       client.before$.subscribe((e) => e.respond({ status: 200 })); // Fake.
 
       const events: t.HttpEvent[] = [];
-      client.events$.subscribe((e) => events.push(e));
+      client.$.subscribe((e) => events.push(e));
 
       await client.get('http://localhost/foo');
 
       expect(events.length).to.eql(2);
-      expect(events[0].payload.uid).to.eql(events[1].payload.uid);
+      expect(events[0].payload.tx).to.eql(events[1].payload.tx);
     });
 
     it('does not share events between instances', async () => {
@@ -271,8 +271,8 @@ describe('http', () => {
       const events1: t.HttpEvent[] = [];
       const events2: t.HttpEvent[] = [];
 
-      client1.events$.subscribe((e) => events1.push(e));
-      client2.events$.subscribe((e) => events2.push(e));
+      client1.$.subscribe((e) => events1.push(e));
+      client2.$.subscribe((e) => events2.push(e));
 
       await client1.get('http://localhost/foo');
       await client2.get('http://localhost/foo');
@@ -291,7 +291,7 @@ describe('http', () => {
       events = [];
       client = http.create();
 
-      client.events$.subscribe((e) => events.push(e));
+      client.$.subscribe((e) => events.push(e));
       client.before$.subscribe((e) => e.respond({ status: 200 })); // Fake.
     });
 

@@ -1,5 +1,4 @@
-import { id, time, value } from '@platform/util.value';
-import { t, util } from '../common';
+import { t, util, slug, time, value } from '../common';
 
 export const fetcher = async (args: {
   url: string;
@@ -12,7 +11,7 @@ export const fetcher = async (args: {
 }) => {
   // Prepare arguments.
   const timer = time.timer();
-  const uid = `req:${id.shortid()}`;
+  const tx = `request-${slug()}`;
   const { url, method, data, fire, mode, headers } = args;
 
   type M = { headers?: t.HttpHeaders; data?: any; respond?: t.HttpRespondInput };
@@ -47,7 +46,7 @@ export const fetcher = async (args: {
 
   // Fire BEFORE event.
   const before: t.HttpBefore = {
-    uid,
+    tx,
     method,
     url,
     data,
@@ -69,7 +68,7 @@ export const fetcher = async (args: {
     const { ok, status } = response;
     fire({
       type: 'HTTP/after',
-      payload: { uid, method, url, ok, status, response, elapsed },
+      payload: { tx, method, url, ok, status, response, elapsed },
     });
     return response;
   } else {
@@ -88,7 +87,7 @@ export const fetcher = async (args: {
     const { ok, status } = response;
     fire({
       type: 'HTTP/after',
-      payload: { uid, method, url, ok, status, response, elapsed },
+      payload: { tx, method, url, ok, status, response, elapsed },
     });
 
     // Finish up.
