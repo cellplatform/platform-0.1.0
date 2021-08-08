@@ -1,4 +1,6 @@
-import { t, IDuration } from './common';
+import { t } from './common';
+
+type Milliseconds = number;
 
 export type HttpRespondInput =
   | t.HttpRespondPayload
@@ -16,13 +18,10 @@ export type HttpModify = {
 /**
  * Events
  */
-export type HttpEvent = HttpBeforeEvent | HttpAfterEvent;
+export type HttpEvent = HttpMethodReqEvent | HttpMethodResEvent;
 
-export type HttpBeforeEvent = {
-  type: 'HTTP/before';
-  payload: HttpBefore;
-};
-export type HttpBefore = {
+export type HttpMethodReqEvent = { type: 'HTTP/method:req'; payload: HttpMethodReq };
+export type HttpMethodReq = {
   tx: string;
   method: t.HttpMethod;
   url: string;
@@ -33,13 +32,13 @@ export type HttpBefore = {
   respond(payload: HttpRespondInput): void; // NB: Used for mocking/testing or providing alternative `fetch` implementations.
 };
 
-export type HttpAfterEvent = { type: 'HTTP/after'; payload: HttpAfter };
-export type HttpAfter = {
+export type HttpMethodResEvent = { type: 'HTTP/method:res'; payload: HttpMethodRes };
+export type HttpMethodRes = {
   tx: string;
   method: t.HttpMethod;
   url: string;
   ok: boolean;
   status: number;
   response: t.HttpResponse;
-  elapsed: IDuration;
+  elapsed: Milliseconds;
 };

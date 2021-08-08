@@ -45,7 +45,7 @@ export const fetcher = async (args: {
   };
 
   // Fire BEFORE event.
-  const before: t.HttpBefore = {
+  const before: t.HttpMethodReq = {
     tx,
     method,
     url,
@@ -57,17 +57,17 @@ export const fetcher = async (args: {
       modifications.respond = input;
     },
   };
-  fire({ type: 'HTTP/before', payload: before });
+  fire({ type: 'HTTP/method:req', payload: before });
 
   if (modifications.respond) {
     // Exit with faked/overridden response if one was returned via the BEFORE event.
     const respond = modifications.respond;
     const payload = typeof respond === 'function' ? await respond() : respond;
     const response = await util.response.fromPayload(payload, modifications);
-    const elapsed = timer.elapsed;
+    const elapsed = timer.elapsed.msec;
     const { ok, status } = response;
     fire({
-      type: 'HTTP/after',
+      type: 'HTTP/method:res',
       payload: { tx, method, url, ok, status, response, elapsed },
     });
     return response;
@@ -83,10 +83,10 @@ export const fetcher = async (args: {
 
     // Prepare response.
     const response = await util.response.fromFetch(fetched);
-    const elapsed = timer.elapsed;
+    const elapsed = timer.elapsed.msec;
     const { ok, status } = response;
     fire({
-      type: 'HTTP/after',
+      type: 'HTTP/method:res',
       payload: { tx, method, url, ok, status, response, elapsed },
     });
 

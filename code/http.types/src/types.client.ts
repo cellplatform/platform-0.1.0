@@ -13,8 +13,8 @@ export type Http = HttpMethods & {
   create: HttpCreate;
   headers: t.HttpHeaders;
   $: Observable<t.HttpEvent>;
-  before$: Observable<t.HttpBefore>;
-  after$: Observable<t.HttpAfter>;
+  req$: Observable<t.HttpMethodReq>;
+  res$: Observable<t.HttpMethodRes>;
 };
 
 export type HttpMethods = {

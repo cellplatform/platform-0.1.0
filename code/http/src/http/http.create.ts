@@ -1,7 +1,6 @@
 import { Subject } from 'rxjs';
-import { filter, map, share } from 'rxjs/operators';
 
-import { t } from '../common';
+import { rx, t } from '../common';
 import { fetch } from './fetch';
 import { fetcher } from './http.fetcher';
 
@@ -28,15 +27,6 @@ export const create: t.HttpCreate = (options = {}) => {
   const $ = new Subject<t.HttpEvent>();
   const fire: t.FireEvent = (e) => $.next(e);
 
-  const before$ = $.pipe(
-    filter((e) => e.type === 'HTTP/before'),
-    map((e) => e.payload as t.HttpBefore),
-  );
-  const after$ = $.pipe(
-    filter((e) => e.type === 'HTTP/after'),
-    map((e) => e.payload as t.HttpAfter),
-  );
-
   const http: t.Http = {
     create(options: t.HttpCreateOptions = {}) {
       const headers = { ...http.headers, ...options.headers };
@@ -44,8 +34,8 @@ export const create: t.HttpCreate = (options = {}) => {
     },
 
     $: $.asObservable(),
-    before$,
-    after$,
+    req$: rx.payload<t.HttpMethodReqEvent>($, 'HTTP/method:req'),
+    res$: rx.payload<t.HttpMethodResEvent>($, 'HTTP/method:res'),
 
     get headers() {
       return { ...options.headers };
