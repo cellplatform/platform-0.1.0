@@ -1,6 +1,4 @@
-import { Mime as mime } from '@platform/util.mimetype';
-
-import { fromRawHeaders, toRawHeaders, t } from '../common';
+import { fromRawHeaders, Mime as mime, toRawHeaders } from '../common';
 import { fetch } from './fetch';
 import { create } from './http.create';
 

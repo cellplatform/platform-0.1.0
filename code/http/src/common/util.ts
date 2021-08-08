@@ -1,8 +1,6 @@
-import { Mime } from '@platform/util.mimetype';
-import { value as valueUtil } from '@platform/util.value';
-
 import { IS_PROD } from './constants';
 import * as t from './types';
+import { value as valueUtil, Mime, Headers } from '../common';
 
 /**
  * Safely serializes data to a JSON string.

@@ -1,8 +1,5 @@
 import { expect, fs, Http, t } from '../../test';
 import { VercelHttp } from '.';
-// import { http, util } from './common';
-
-// import crypto from 'crypto';
 
 /**
  * See:
@@ -41,11 +38,11 @@ describe.only('VercelHttp', () => {
     type HttpLog = { status: number; method: t.HttpMethod; body: t.Json };
     const after: HttpLog[] = [];
 
-    http.events$.subscribe((e) => {
+    http.$.subscribe((e) => {
       // console.log('e', e);
     });
 
-    http.after$.subscribe((e) => {
+    http.res$.subscribe((e) => {
       console.log('-------------------------------------------');
       console.log('🌳', e.method, e.status, e.url);
 

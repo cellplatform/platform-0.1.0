@@ -10,7 +10,6 @@
     "test": "ts test",
     "tdd": "ts test --watch",
     "test:integration": "ts test --suffix INTEGRATION",
-    "tddi": "ts test --suffix INTEGRATION --watch",
     "lint": "ts lint",
     "build": "ts build --no-esm",
     "prepare": "ts prepare"
@@ -21,12 +20,11 @@
     "@platform/types": "0.5.23",
     "@platform/util.mimetype": "0.1.46",
     "@platform/util.value": "0.9.8",
-    "isomorphic-fetch": "3.0.0"
+    "cross-fetch": "3.1.4"
   },
   "devDependencies": {
     "@platform/test": "0.2.8",
-    "@platform/ts": "4.1.21",
-    "@types/isomorphic-fetch": "0.0.35"
+    "@platform/ts": "4.1.21"
   },
   "files": [
     "lib",

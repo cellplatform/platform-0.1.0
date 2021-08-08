@@ -2,18 +2,7 @@ import { expect } from '../test';
 import { Port } from '.';
 import * as net from 'net';
 
-const testServer = (port: number) => {
-  return new Promise<net.Server>((resolve) => {
-    const server = net.createServer((socket) => {
-      socket.write('echo\r\n');
-      socket.pipe(socket);
-    });
-    server.listen(port);
-    server.on('listening', () => resolve(server));
-  });
-};
-
-describe('node: port', () => {
+describe('node: Port', () => {
   it('isUsed', async () => {
     const PORT = 6050;
     expect(await Port.isUsed(PORT)).to.eql(false);
@@ -36,3 +25,18 @@ describe('node: port', () => {
     expect(await Port.unused(PORT)).to.eql(PORT);
   });
 });
+
+/**
+ * Helpers
+ */
+
+const testServer = (port: number) => {
+  return new Promise<net.Server>((resolve) => {
+    const server = net.createServer((socket) => {
+      socket.write('echo\r\n');
+      socket.pipe(socket);
+    });
+    server.listen(port);
+    server.on('listening', () => resolve(server));
+  });
+};

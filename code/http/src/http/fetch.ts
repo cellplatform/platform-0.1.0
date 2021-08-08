@@ -1,4 +1,4 @@
-import * as isomorphicFetch from 'isomorphic-fetch';
+import fetcher from 'cross-fetch';
 import { t, util } from '../common';
 
 export const fetch: t.HttpFetch = async (req) => {
@@ -17,5 +17,5 @@ export const fetch: t.HttpFetch = async (req) => {
   const headers = util.toRawHeaders(req.headers);
   const body = ['GET', 'HEAD'].includes(method) ? undefined : toBody();
 
-  return isomorphicFetch(url, { method, mode, body, headers });
+  return fetcher(url, { method, mode, body, headers });
 };
