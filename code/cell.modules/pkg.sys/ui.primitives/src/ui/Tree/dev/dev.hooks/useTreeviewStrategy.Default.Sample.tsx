@@ -3,7 +3,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import { t, Tree } from '../common';
 
-export function useDefaultTreeviewStrategy(args: {
+export function useTreeviewStrategyDefaultSample(args: {
   bus: t.EventBus<t.TreeviewEvent>;
   isEnabled: boolean;
   initial: t.ITreeviewNode;
@@ -37,6 +37,8 @@ export function useDefaultTreeviewStrategy(args: {
       updateState();
     });
 
+    console.log('useTreeviewStrategyDefaultSample');
+
     /**
      * Dispose
      */
@@ -45,6 +47,7 @@ export function useDefaultTreeviewStrategy(args: {
   }, [bus, isEnabled, initial]); // eslint-disable-line
 
   return {
+    isEnabled,
     root: isEnabled ? root : undefined,
     current: isEnabled ? current : undefined,
   };

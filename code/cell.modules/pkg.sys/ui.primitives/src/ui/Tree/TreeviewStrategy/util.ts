@@ -3,7 +3,7 @@ import { dispose } from '@platform/util.value';
 import { Subject } from 'rxjs';
 
 import { t } from '../common';
-import { TreeEvents } from '../TreeEvents';
+import { TreeEvents } from '../TreeviewEvents';
 import { mutations } from './mutations';
 
 export { dispose };

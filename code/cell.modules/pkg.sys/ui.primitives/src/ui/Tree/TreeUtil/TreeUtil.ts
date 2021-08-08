@@ -3,7 +3,7 @@ import { defaultValue, value as valueUtil } from '@platform/util.value';
 import { clone } from 'ramda';
 
 import { t } from '../common';
-import { TreeEvents } from '../TreeEvents';
+import { TreeEvents } from '../TreeviewEvents';
 
 type N = t.ITreeviewNode;
 type P = t.ITreeviewNodeProps;

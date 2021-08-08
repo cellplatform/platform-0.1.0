@@ -13,7 +13,7 @@ import { debounceTime, delay, distinctUntilChanged, filter, takeUntil } from 'rx
 
 import { constants, t } from '../../common';
 import * as themes from '../../themes';
-import { TreeEvents } from '../../TreeEvents';
+import { TreeEvents } from '../../TreeviewEvents';
 import { TreeUtil } from '../../TreeUtil';
 import { TreeviewState } from '../../TreeviewState';
 import { TreeHeader } from '../TreeHeader';

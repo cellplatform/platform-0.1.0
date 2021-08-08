@@ -31,11 +31,19 @@ export const createMany = (total: TotalChildren, baseId?: string | number): t.IT
   });
 };
 
+/**
+ * Create a simple root node with some children.
+ */
 export const createRoot = (total?: TotalChildren) => create('root', 'Root', total);
 
+/**
+ * Walk deeply down a tree explicitly assigning a label to nodes that
+ * do not already have one.
+ */
 export function assignLabelDeep(node: t.ITreeviewNode) {
-  Tree.util.query(node).walkDown((e) => {
-    Tree.util.props(e.node, (props) => {
+  const util = Tree.Util;
+  util.query(node).walkDown((e) => {
+    util.props(e.node, (props) => {
       props.label = props.label || e.id;
     });
   });

@@ -4,11 +4,15 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { Tree } from '..';
 import { css, COLORS, Icons, rx, t } from './common';
-import { SAMPLE } from './sample';
-import { useSample, useDefaultTreeviewStrategy } from './hooks';
+import { SAMPLE } from './dev.sample';
+import { useTreeEventsSample, useTreeviewStrategyDefaultSample } from './dev.hooks';
 
 type E = t.TreeviewEvent;
-type DebugStateStrategy = 'none' | 'useSample' | 'useDefaultTreeviewStrategy';
+type DebugStateStrategy =
+  | 'none'
+  | 'useEventsSample'
+  | 'useDefaultTreeviewStrategy'
+  | 'useTreeTranslator';
 
 type Ctx = {
   bus: t.EventBus<E>;
@@ -29,10 +33,12 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       bus,
-      props: { event$, theme: 'LIGHT' },
+      props: { event$, theme: 'LIGHT', background: 'NONE' },
       debug: {
         columns: 1,
-        stateStrategy: 'useDefaultTreeviewStrategy',
+        // stateStrategy: 'useDefaultTreeviewStrategy',
+        // stateStrategy: 'useTreeTranslator',
+        stateStrategy: 'useEventsSample',
         initial: SAMPLE.COMPREHENSIVE,
       },
     };
@@ -41,6 +47,7 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Debug');
+    e.hr();
 
     e.select((config) => {
       const items = [
@@ -61,7 +68,12 @@ export const actions = DevActions<Ctx>()
     });
 
     e.select((config) => {
-      const items: DebugStateStrategy[] = ['none', 'useSample', 'useDefaultTreeviewStrategy'];
+      const items: DebugStateStrategy[] = [
+        'none',
+        'useEventsSample',
+        'useDefaultTreeviewStrategy',
+        'useTreeTranslator',
+      ];
       config
         .title('state strategy')
         .items(items)
@@ -72,6 +84,20 @@ export const actions = DevActions<Ctx>()
           if (e.changing) e.ctx.debug.stateStrategy = value;
         });
     });
+
+    e.select((config) => {
+      config
+        .title('columns')
+        .items([1, 2, 3, 4].map((num) => num.toString()))
+        .initial(config.ctx.debug.columns.toString())
+        .view('buttons')
+        .pipe((e) => {
+          const value = e.select.current[0]?.value;
+          if (e.changing) e.ctx.debug.columns = parseInt(value, 10);
+        });
+    });
+
+    e.hr(1, 0.1);
 
     e.select((config) => {
       config
@@ -97,18 +123,6 @@ export const actions = DevActions<Ctx>()
         });
     });
 
-    e.select((config) => {
-      config
-        .title('columns')
-        .items([1, 2, 3, 4].map((num) => num.toString()))
-        .initial(config.ctx.debug.columns.toString())
-        .view('buttons')
-        .pipe((e) => {
-          const value = e.select.current[0]?.value;
-          if (e.changing) e.ctx.debug.columns = parseInt(value, 10);
-        });
-    });
-
     e.hr();
   })
 
@@ -123,15 +137,16 @@ export const actions = DevActions<Ctx>()
 
     e.settings({
       host: {
-        background: isDark ? COLORS.DARK : isMultiColumn ? 0.8 : -0.04,
+        background: isDark ? COLORS.DARK : 0.8,
       },
       layout: {
         label: '<TreeView>',
-        position: [150, isMultiColumn ? 80 : null],
+        position: [150, isMultiColumn ? 120 : null],
         width: isMultiColumn ? undefined : 300,
         border: isDark ? 0.1 : -0.1,
         cropmarks: isDark ? 0.3 : -0.2,
         labelColor: isDark ? COLORS.WHITE : -0.7,
+        background: isDark ? undefined : 1,
       },
     });
 
@@ -152,16 +167,28 @@ export const Sample: React.FC<SampleProps> = (props) => {
   const { columns, initial } = debug;
   const state = debug.stateStrategy;
 
-  const sample = useSample({ bus, initial, isEnabled: state === 'useSample' });
-  const defaultStrategy = useDefaultTreeviewStrategy({
+  const sample = useTreeEventsSample({
+    bus,
+    initial,
+    columns,
+    isEnabled: state === 'useEventsSample',
+  });
+  const defaultStrategy = useTreeviewStrategyDefaultSample({
     bus,
     initial,
     isEnabled: state === 'useDefaultTreeviewStrategy',
   });
+  const translator = Tree.Hooks.useTreeTranslator({
+    bus,
+    isEnabled: state === 'useTreeTranslator',
+  });
 
-  const root = sample.root ?? defaultStrategy.root;
-  const current = sample.current ?? defaultStrategy.current;
+  const root = sample.root ?? defaultStrategy.root ?? translator.root;
+  const current = sample.current ?? defaultStrategy.current ?? translator.current;
 
+  /**
+   * Single column
+   */
   if (columns === 1) {
     return (
       <Tree.View
@@ -173,7 +200,12 @@ export const Sample: React.FC<SampleProps> = (props) => {
         focusOnLoad={true}
       />
     );
-  } else {
+  }
+
+  /**
+   * Multi column.
+   */
+  if (columns > 1) {
     return (
       <Tree.Columns
         {...ctx.props}
@@ -187,6 +219,8 @@ export const Sample: React.FC<SampleProps> = (props) => {
       />
     );
   }
+
+  return null;
 };
 
 const renderIcon: t.RenderTreeIcon = (e) => {

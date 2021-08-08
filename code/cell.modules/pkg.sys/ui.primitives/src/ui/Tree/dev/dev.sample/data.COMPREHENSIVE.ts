@@ -1,9 +1,8 @@
 import { createRoot } from './util';
-import { t, COLORS } from '../common';
-import { Treeview } from '../..';
+import { t, COLORS, Tree } from '../common';
 
 export const COMPREHENSIVE = (() => {
-  const props = Treeview.util.props;
+  const props = Tree.Util.props;
 
   const root = createRoot([21, 5, 3, 2]);
   props(root).header = { marginBottom: 30 };

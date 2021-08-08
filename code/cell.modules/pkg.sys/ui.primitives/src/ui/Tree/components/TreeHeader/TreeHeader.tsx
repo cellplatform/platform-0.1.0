@@ -42,9 +42,9 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
     const styles = {
       base: css({
         Absolute: [0, 0, null, 0],
-        height,
         boxSizing: 'border-box',
         display: 'flex',
+        height,
       }),
     };
 

@@ -3,12 +3,13 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { COLORS, css, Icons, log, t, Tree } from '../common';
 
-export function useSample(args: {
+export function useTreeEventsSample(args: {
   bus: t.EventBus<t.TreeviewEvent>;
   isEnabled: boolean;
   initial: t.ITreeviewNode;
+  columns: number;
 }) {
-  const { bus, isEnabled, initial } = args;
+  const { columns, bus, isEnabled, initial } = args;
   const [root, setRoot] = useState<t.ITreeviewNode | undefined>();
   const [current, setCurrent] = useState<string | undefined>();
 
@@ -43,7 +44,41 @@ export function useSample(args: {
       });
     });
 
-    events.render.header$.pipe(filter((e) => e.node.id === 'root.3')).subscribe((e) => {
+    events.beforeRender.node$.pipe(filter((e) => e.node.id === 'root.2')).subscribe((e) => {
+      //
+      e.change((draft) => {
+        // Tree.Util.
+        // toggle(draft)
+        const inline = draft.inline ?? (draft.inline = {});
+        inline.isOpen = true;
+
+        // draft.inline?.isOpen = true;
+      });
+    });
+
+    // events.render.nodeBody$
+    //   .pipe(
+    //     // filter((e) => e.node.id === 'root.2'),
+    //     filter((e) => true),
+    //   )
+    //   .subscribe((e) => {
+    //     console.log('e', e);
+    //     const el = <div>Foo</div>;
+
+    //     e.render(el);
+    //   });
+
+    const renderHeader = (
+      id: string,
+      fn: (e: t.RenderTreeHeaderArgs, render: (el: JSX.Element) => void) => void,
+    ) => {
+      //
+      events.render.header$.pipe(filter((e) => e.node.id === id)).subscribe((e) => {
+        fn(e, e.render);
+      });
+    };
+
+    renderHeader('root.3', (e, render) => {
       const styles = {
         base: css({
           flex: 1,
@@ -64,15 +99,56 @@ export function useSample(args: {
         </div>
       );
 
-      e.render(el);
+      render(el);
     });
+
+    renderHeader('root', (e, render) => {
+      console.log('args.columns', args.columns);
+      if (args.columns < 2) return;
+      const styles = {
+        base: css({
+          flex: 1,
+          backgroundColor: 'rgba(255, 0, 0, 0.06)' /* RED */,
+          display: 'grid',
+          alignContent: 'center',
+          justifyContent: 'center',
+        }),
+      };
+      const el = <div {...styles.base}>👋</div>;
+
+      render(el);
+    });
+
+    // events.render.header$.pipe(filter((e) => e.node.id === 'root.3')).subscribe((e) => {
+    //   const styles = {
+    //     base: css({
+    //       flex: 1,
+    //       lineHeight: '1.6em',
+    //       MarginX: 2,
+    //       marginTop: 2,
+    //       backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+    //       padding: 6,
+    //     }),
+    //     link: css({ color: COLORS.BLUE, cursor: 'pointer' }),
+    //   };
+    //   const el = (
+    //     <div {...styles.base}>
+    //       <div>My Custom Header: {e.node.id}</div>
+    //       <div {...styles.link} onClick={() => setCurrent('root')}>
+    //         Home
+    //       </div>
+    //     </div>
+    //   );
+
+    //   e.render(el);
+    // });
 
     /**
      * Handle mouse.
      */
 
     const toggle = (node: t.ITreeviewNode) => {
-      setRoot(Tree.util.toggleIsOpen(root, node));
+      setRoot(Tree.Util.toggleIsOpen(root, node));
     };
 
     const click$ = events.mouse$({ button: 'LEFT' });
@@ -115,9 +191,10 @@ export function useSample(args: {
         filter((e) => e.target === 'PARENT'),
       )
       .subscribe((e) => {
-        const parent = Tree.util
-          .query(root)
-          .ancestor(e.node, (e) => e.level > 0 && !e.node.props?.treeview?.inline);
+        const parent = Tree.Util.query(root).ancestor(
+          e.node,
+          (e) => e.level > 0 && !e.node.props?.treeview?.inline,
+        );
         setCurrent(parent?.id);
       });
 
@@ -125,9 +202,10 @@ export function useSample(args: {
      * Dispose
      */
     return () => dispose$.next();
-  }, [bus, isEnabled, initial]); // eslint-disable-line
+  }, [bus, isEnabled, initial, columns]); // eslint-disable-line
 
   return {
+    isEnabled,
     root: isEnabled ? root : undefined,
     current: isEnabled ? current : undefined,
   };
