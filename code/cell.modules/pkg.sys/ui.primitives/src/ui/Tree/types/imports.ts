@@ -1,4 +1,4 @@
-export * from '@platform/ui.tree.types';
+export * from '../../Tree.types';
 
 export * from '../themes/types';
 export * from '../components/TreeNode/types';
