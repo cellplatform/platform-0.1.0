@@ -187,10 +187,6 @@ export const Sample: React.FC<SampleProps> = (props) => {
       />
     );
   }
-
-  return (
-    <Tree.View {...ctx.props} root={root} current={current} renderIcon={renderIcon} tabIndex={0} />
-  );
 };
 
 const renderIcon: t.RenderTreeIcon = (e) => {
