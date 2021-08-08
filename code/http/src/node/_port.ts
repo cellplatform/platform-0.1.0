@@ -1,16 +1,16 @@
 import * as net from 'net';
-import { value } from '@platform/util.value';
+import { value } from '../common';
 
-export const port = {
+export const Port = {
   /**
    * Generates an random unused port.
    */
   async unused(preferred?: number): Promise<number> {
-    const number = preferred === undefined ? port.random() : preferred;
+    const number = preferred === undefined ? Port.random() : preferred;
 
     // If the port is already in use call this method again.
-    if (await port.isUsed(number)) {
-      return port.unused(); // <== RECURSION 🌳
+    if (await Port.isUsed(number)) {
+      return Port.unused(); // <== RECURSION 🌳
     }
 
     return number;

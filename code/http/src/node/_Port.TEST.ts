@@ -1,5 +1,5 @@
 import { expect } from '../test';
-import { port } from '.';
+import { Port } from '.';
 import * as net from 'net';
 
 const testServer = (port: number) => {
@@ -16,23 +16,23 @@ const testServer = (port: number) => {
 describe('node: port', () => {
   it('isUsed', async () => {
     const PORT = 6050;
-    expect(await port.isUsed(PORT)).to.eql(false);
+    expect(await Port.isUsed(PORT)).to.eql(false);
 
     const server = await testServer(PORT);
-    expect(await port.isUsed(PORT)).to.eql(true);
+    expect(await Port.isUsed(PORT)).to.eql(true);
 
     server.close();
-    expect(await port.isUsed(PORT)).to.eql(false);
+    expect(await Port.isUsed(PORT)).to.eql(false);
   });
 
   it('unused', async () => {
     const PORT = 6050;
-    expect(await port.unused(PORT)).to.eql(PORT);
+    expect(await Port.unused(PORT)).to.eql(PORT);
 
     const server = await testServer(PORT);
-    expect(await port.unused(PORT)).to.not.eql(PORT);
+    expect(await Port.unused(PORT)).to.not.eql(PORT);
 
     server.close();
-    expect(await port.unused(PORT)).to.eql(PORT);
+    expect(await Port.unused(PORT)).to.eql(PORT);
   });
 });
