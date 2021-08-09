@@ -14,4 +14,5 @@ export const PATH = {
 
 export const DEFAULT = {
   INFO: { headers: { contentType: 'application/json' } },
+  TIMEOUT: 3000,
 };

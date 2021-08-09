@@ -1,5 +1,5 @@
 import { BundleWrapper } from '../BundleWrapper';
-import { fs, PATH, t } from '../common';
+import { fs, PATH, t, R } from '../common';
 import { pullMethod } from './pull';
 import { runMethod } from './run';
 
@@ -14,15 +14,26 @@ export const NodeRuntime = {
   /**
    * Initialize an instance of the Node runtime.
    */
-  create(args: { cachedir?: string; stdlibs?: t.AllowedStdlib[] } = {}) {
-    const { stdlibs } = args;
+  create(args: {
+    bus: t.EventBus<any>;
+    cachedir?: string;
+    stdlibs?: t.RuntimeNodeAllowedStdlib[] | '*';
+  }) {
+    const { bus } = args;
     const cachedir = args.cachedir || PATH.CACHE_DIR;
+
+    const stdlibs =
+      typeof args.stdlibs === 'string'
+        ? (['*'] as t.RuntimeNodeAllowedStdlib[])
+        : R.uniq(args.stdlibs ?? []);
 
     const runtime: t.RuntimeEnvNode = {
       name: 'cell.runtime.node',
       version: (process.version || '').replace(/^v/, ''),
+      stdlibs,
+
       pull: pullMethod({ cachedir }),
-      run: runMethod({ cachedir, stdlibs }),
+      run: runMethod({ bus, cachedir, stdlibs }),
 
       /**
        * Determine if the given bundle has been pulled.

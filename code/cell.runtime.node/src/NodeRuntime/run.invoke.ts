@@ -1,4 +1,4 @@
-import { log, Logger, t, time, fs, defaultValue, R, DEFAULT } from '../common';
+import { log, Logger, t, time, fs, R, DEFAULT } from '../common';
 import { Vm } from '../vm';
 
 type R = {
@@ -14,17 +14,19 @@ type R = {
 export function invoke(args: {
   dir: string;
   manifest: t.ModuleManifest;
+  bus: t.EventBus<any>;
+  timeout: number;
   entry?: string;
   in?: Partial<t.RuntimeIn>;
   silent?: boolean;
-  timeout?: number;
   hash?: string;
-  stdlibs?: t.AllowedStdlib[];
+  stdlibs?: t.RuntimeNodeAllowedStdlib[];
 }) {
   return new Promise<R>(async (resolve) => {
-    const { silent, manifest, dir, stdlibs } = args;
+    const { silent, manifest, dir, stdlibs, timeout } = args;
     const entry = (args.entry || manifest.module.entry || '').trim();
     const filename = fs.join(dir, entry);
+    const bus = args.bus;
 
     /**
      * TODO 🐷
@@ -38,14 +40,14 @@ export function invoke(args: {
     let isStopped = false;
     const errors: Error[] = [];
     const addError = (msg: string) => errors.push(new Error(msg));
+    const onTimeout = () => {
+      addError(`Execution timed out (max ${timeout}ms)`);
+      done();
+    };
 
     const elapsed = { prep: -1, run: -1 };
     const timer = time.timer();
-    const timeout = defaultValue(args.timeout, 3000);
-    const timeoutDelay = time.delay(timeout, () => {
-      addError(`Execution timed out (max ${timeout}ms)`);
-      done();
-    });
+    const timeoutDelay = timeout < 0 ? undefined : time.delay(timeout, onTimeout);
 
     const preparationComplete = () => {
       elapsed.prep = timer.elapsed.msec;
@@ -59,10 +61,8 @@ export function invoke(args: {
     };
 
     const done = (value?: t.Json) => {
-      timeoutDelay.cancel();
-      if (isStopped) {
-        return; // NB: The [done] response can only be returned once.
-      }
+      timeoutDelay?.cancel();
+      if (isStopped) return; // NB: The [done] response can only be returned once.
       isStopped = true;
 
       elapsed.run = timer.elapsed.msec;
@@ -95,6 +95,8 @@ export function invoke(args: {
     }
 
     const env: t.GlobalEnv = {
+      bus,
+
       in: R.clone({
         value: args.in?.value,
         info: args.in?.info || R.clone(DEFAULT.INFO),

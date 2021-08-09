@@ -10,4 +10,4 @@ export {
   GlobalEnv,
 } from '@platform/cell.types';
 
-export { JsonMap, Json } from '@platform/types';
+export { JsonMap, Json, EventBus } from '@platform/types';

@@ -11,7 +11,7 @@ export const VmNode = {
   /**
    * Creates a new VM for running on Node.
    */
-  create(options: { silent?: boolean; stdlibs?: t.AllowedStdlib[]; global?: O } = {}) {
+  create(options: { silent?: boolean; stdlibs?: t.RuntimeNodeAllowedStdlib[]; global?: O } = {}) {
     const { stdlibs, silent, global = {} } = options;
     return new NodeVM({
       console: silent ? 'off' : 'inherit',

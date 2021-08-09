@@ -6,18 +6,24 @@ import { invoke } from './run.invoke';
 /**
  * Factory for the [run] method.
  */
-export function runMethod(args: { cachedir: string; stdlibs?: t.AllowedStdlib[] }) {
-  const { cachedir, stdlibs } = args;
+export function runMethod(args: {
+  bus: t.EventBus<any>;
+  cachedir: string;
+  stdlibs?: t.RuntimeNodeAllowedStdlib[];
+}) {
+  const { bus, cachedir, stdlibs } = args;
   const pull = pullMethod({ cachedir });
 
   /**
    * Pull and run the given bundle.
    */
   const fn: t.RuntimeEnvNode['run'] = async (bundleInput, options = {}) => {
-    const { silent, timeout, hash } = options;
+    const { silent, hash } = options;
+    const timeout = wrangleTimeout(options.timeout);
     const bundle = BundleWrapper.create(bundleInput, cachedir);
     const exists = await bundle.isCached();
     const isPullRequired = !exists || options.pull;
+
     let elapsed = { prep: -1, run: -1 };
 
     const errors: t.IRuntimeError[] = [];
@@ -31,10 +37,10 @@ export function runMethod(args: { cachedir: string; stdlibs?: t.AllowedStdlib[] 
         }),
       );
 
-    const done = (out?: t.RuntimeOut) => {
+    const done = (out?: t.RuntimeOut): t.RuntimeRunResponse => {
       const ok = errors.length === 0;
       out = out || { info: R.clone(DEFAULT.INFO) };
-      return { ok, entry, out, errors, manifest, elapsed };
+      return { ok, entry, out, errors, manifest, elapsed, timeout };
     };
 
     // Ensure the bundle has been pulled locally.
@@ -100,6 +106,7 @@ export function runMethod(args: { cachedir: string; stdlibs?: t.AllowedStdlib[] 
     // Execute the code.
     const dir = bundle.cache.dir;
     const res = await invoke({
+      bus,
       manifest,
       dir,
       silent,
@@ -116,4 +123,14 @@ export function runMethod(args: { cachedir: string; stdlibs?: t.AllowedStdlib[] 
     return done(res.out);
   };
   return fn;
+}
+
+/**
+ * Helpers
+ */
+
+function wrangleTimeout(input: t.RuntimeRunOptions['timeout']) {
+  if (input === undefined) return DEFAULT.TIMEOUT;
+  if (typeof input === 'string') return -1; // "never" timeout.
+  return Math.max(-1, input);
 }
