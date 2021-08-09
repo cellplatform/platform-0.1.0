@@ -4,7 +4,7 @@ import { deploy } from './deploy';
 export function VercelTeamProject(args: {
   http: t.Http;
   token: string;
-  version: number;
+  version?: number;
   name: string;
   team: t.VercelHttpTeam;
 }): t.VercelHttpTeamProject {
@@ -37,8 +37,9 @@ export function VercelTeamProject(args: {
       const url = ctx.url(`projects/${name}`, { teamId });
       const res = await http.get(url, { headers });
       const { ok, status } = res;
-      const project = (!ok ? {} : res.json) as t.VercelProject;
-      const error = ok ? undefined : (res.json as t.VercelHttpError);
+      const json = res.json as any;
+      const project = (!ok ? {} : json) as t.VercelProject;
+      const error = ok ? undefined : (json.error as t.VercelHttpError);
       return { ok, status, project, error };
     },
 
@@ -51,11 +52,11 @@ export function VercelTeamProject(args: {
       const body = { name, gitRepository: options.git };
 
       const res = await http.post(url, body, { headers });
+      const { ok, status } = res;
       const json = res.json as any;
 
-      const { ok, status } = res;
       const project = (ok ? json : {}) as t.VercelProject;
-      const error = ok ? undefined : (json as t.VercelHttpError);
+      const error = ok ? undefined : (json.error as t.VercelHttpError);
 
       return { ok, status, project, error };
     },

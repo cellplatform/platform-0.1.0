@@ -5,14 +5,14 @@ import { fs, util, t, asArray } from './common';
  * https://vercel.com/docs/api#endpoints/deployments/create-a-new-deployment
  */
 export async function deploy(
-  args: t.VercelDeployArgs & {
+  args: t.VercelHttpDeployArgs & {
     http: t.Http;
     token: string;
-    version: number;
+    version?: number;
     team: { id: string; name: string };
     project: { id: string; name: string };
   },
-): Promise<t.VercelDeployResponse> {
+): Promise<t.VercelHttpDeployResponse> {
   const ctx = util.toCtx(args.token, args.version);
   const { dir, team, project, http } = args;
   const { headers } = ctx;
@@ -46,7 +46,7 @@ export async function deploy(
 
   const manifest = await readManifest();
 
-  const meta: t.VercelDeployMeta = manifest
+  const meta: t.VercelHttpDeployMeta = manifest
     ? {
         ...manifest.module,
         kind: 'bundle:code/module',
@@ -96,7 +96,7 @@ export async function deploy(
    * Response
    */
   const { ok, status } = res;
-  const error = ok ? undefined : (json as t.VercelHttpError);
+  const error = ok ? undefined : (json.error as t.VercelHttpError);
   const deployment = {
     id: json.id ?? '',
     team: team.name,

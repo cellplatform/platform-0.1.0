@@ -1,12 +1,12 @@
 import { util, t } from './common';
-import { VercelFiles } from './VercelHttp.Files';
+import { VercelDeploymentFiles } from './VercelHttp.Files.Deployment';
 
 type Url = string;
 
 export function VercelTeamDeployment(args: {
   http: t.Http;
   token: string;
-  version: number;
+  version?: number;
   url: Url; // "<id>.vercel.app" or alias url.
   team: t.VercelHttpTeam;
 }): t.VercelHttpTeamDeployment {
@@ -35,8 +35,9 @@ export function VercelTeamDeployment(args: {
       const url = ctx.url(`now/deployments/get`, { url: api.url, teamId });
       const res = await http.get(url, { headers });
       const { ok, status } = res;
-      const deployment = (!ok ? {} : res.json) as t.VercelDeployment;
-      const error = ok ? undefined : (res.json as t.VercelHttpError);
+      const json = res.json as any;
+      const deployment = (!ok ? {} : json) as t.VercelDeployment;
+      const error = ok ? undefined : (json.error as t.VercelHttpError);
       return { ok, status, deployment, error };
     },
 
@@ -51,20 +52,23 @@ export function VercelTeamDeployment(args: {
       const url = ctx.url(`now/deployments/${deploymentId}/files`, { teamId });
       const res = await http.get(url, { headers });
       const { ok, status } = res;
+      const json = res.json as any;
+
       const files = (
         !ok
           ? {}
-          : VercelFiles({
+          : VercelDeploymentFiles({
               http,
               token,
               version,
               teamId,
               deploymentId,
               url: info.deployment.url || '',
-              list: res.json as t.VercelDeploymentFile[],
+              list: json as t.VercelDeploymentFile[],
             })
-      ) as t.VercelHttpFiles;
-      const error = ok ? undefined : (res.json as t.VercelHttpError);
+      ) as t.VercelHttpDeploymentFiles;
+
+      const error = ok ? undefined : (json.error as t.VercelHttpError);
       return { ok, status, files, error };
     },
   };

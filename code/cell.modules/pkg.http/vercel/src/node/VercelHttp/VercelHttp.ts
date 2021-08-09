@@ -1,4 +1,4 @@
-import { Http, t, util } from './common';
+import { Http, t, util, DEFAULT } from './common';
 import { VercelTeam } from './VercelHttp.Team';
 
 /**
@@ -11,10 +11,12 @@ import { VercelTeam } from './VercelHttp.Team';
  */
 export function VercelHttp(args: { token: string; version?: number; http?: t.Http }): t.VercelHttp {
   const http = args.http ?? Http.create();
-  const ctx = util.toCtx(args.token, args.version ?? 12);
+  const ctx = util.toCtx(args.token, args.version);
   const { token, version, headers } = ctx;
 
   const api: t.VercelHttp = {
+    version: ctx.version,
+
     teams: {
       /**
        * Retrieve list of teams.
@@ -24,8 +26,9 @@ export function VercelHttp(args: { token: string; version?: number; http?: t.Htt
         const url = ctx.url('teams');
         const res = await http.get(url, { headers });
         const { ok, status } = res;
-        const teams = !ok ? [] : ((res.json as any).teams as t.VercelTeam[]);
-        const error = ok ? undefined : (res.json as t.VercelHttpError);
+        const json = res.json as any;
+        const teams = !ok ? [] : (json.teams as t.VercelTeam[]);
+        const error = ok ? undefined : (json.error as t.VercelHttpError);
         return { ok, status, teams, error };
       },
     },

@@ -1,4 +1,9 @@
-type Q = Record<string, string | number>;
+import { createHash } from 'crypto';
+import { DEFAULT } from './constants';
+import { Mime } from '../../common';
+
+type Mimetype = string;
+type Q = Record<string, string | number | undefined>;
 
 /**
  * Format a URL.
@@ -12,6 +17,7 @@ export function toUrl(version: number, path: string, query?: Q) {
       ? ''
       : keys
           .map((key) => ({ key, value: query?.[key] ?? '' }))
+          .filter(({ value }) => Boolean(value))
           .map(({ key, value }) => `${key}=${value}`)
           .join('&');
 
@@ -32,20 +38,29 @@ export function ensureHttps(url: string) {
 /**
  * Creates a common context object.
  */
-export function toCtx(token: string, version: number) {
+export function toCtx(token: string, version?: number) {
   token = (token ?? '').trim();
   if (!token) throw new Error(`A Vercel authorization token not provided.`);
 
   const Authorization = `Bearer ${token}`;
   const headers = { Authorization };
 
-  return {
+  const ctx = {
+    version: version ?? DEFAULT.version,
     token,
-    version,
     headers,
     Authorization,
     url(path: string, query?: Q, options: { version?: number } = {}) {
-      return toUrl(options.version ?? version, path, query);
+      return toUrl(options.version ?? ctx.version, path, query);
     },
   };
+
+  return ctx;
+}
+
+/**
+ * Generates a SHA1 digest.
+ */
+export function shasum(data: Buffer) {
+  return createHash('sha1').update(data).digest('hex');
 }

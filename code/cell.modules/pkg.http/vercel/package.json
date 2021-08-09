@@ -9,6 +9,7 @@
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",
     "test": "ts test $@",
+    "test:integration": "ts test --suffix INTEGRATION",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
     "bundle.node": "cell.compiler bundle node $@",
@@ -19,7 +20,9 @@
     "serve": "cell.compiler serve $@",
     "clean": "cell.compiler clean $@"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@platform/util.mimetype": "^0.1.46"
+  },
   "devDependencies": {
     "@platform/cell.compiler": "~0.3.56",
     "react": "^17.0.2",

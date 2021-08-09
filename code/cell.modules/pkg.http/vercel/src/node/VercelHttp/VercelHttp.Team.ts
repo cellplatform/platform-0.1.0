@@ -5,7 +5,7 @@ import { VercelTeamDeployment } from './VercelHttp.Team.Deployment';
 export function VercelTeam(args: {
   http: t.Http;
   token: string;
-  version: number;
+  version?: number;
   teamId: string;
 }): t.VercelHttpTeam {
   const ctx = util.toCtx(args.token, args.version);
@@ -23,8 +23,9 @@ export function VercelTeam(args: {
       const url = ctx.url(`teams/${teamId}`);
       const res = await http.get(url, { headers });
       const { ok, status } = res;
-      const team = (!ok ? {} : res.json) as t.VercelTeam;
-      const error = ok ? undefined : (res.json as t.VercelHttpError);
+      const json = res.json as any;
+      const team = (!ok ? {} : json) as t.VercelTeam;
+      const error = ok ? undefined : (json.error as t.VercelHttpError);
       return { ok, status, team, error };
     },
 
@@ -35,10 +36,10 @@ export function VercelTeam(args: {
     async projects(options = {}) {
       const url = ctx.url('projects', { ...options, teamId });
       const res = await http.get(url, { headers });
-
       const { ok, status } = res;
-      const projects = !ok ? [] : ((res.json as any).projects as t.VercelProject[]);
-      const error = ok ? undefined : (res.json as t.VercelHttpError);
+      const json = res.json as any;
+      const projects = !ok ? [] : (json.projects as t.VercelProject[]);
+      const error = ok ? undefined : (json.error as t.VercelHttpError);
       return { ok, status, projects, error };
     },
 
@@ -63,8 +64,9 @@ export function VercelTeam(args: {
 
       const res = await http.get(url, { headers });
       const { ok, status } = res;
-      const deployments = !ok ? [] : ((res.json as any).deployments as t.VercelListDeployment[]);
-      const error = ok ? undefined : (res.json as t.VercelHttpError);
+      const json = res.json as any;
+      const deployments = !ok ? [] : (json.deployments as t.VercelListDeployment[]);
+      const error = ok ? undefined : (json.error as t.VercelHttpError);
       return { ok, status, deployments, error };
     },
 

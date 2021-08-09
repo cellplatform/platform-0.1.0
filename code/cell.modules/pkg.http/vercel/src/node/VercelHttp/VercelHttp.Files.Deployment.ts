@@ -1,16 +1,16 @@
 import { fs, t, util } from './common';
 
-type Uid = string;
+type Id = string;
 
-export function VercelFiles(args: {
+export function VercelDeploymentFiles(args: {
   http: t.Http;
   token: string;
-  version: number;
-  teamId: Uid;
-  deploymentId: Uid;
+  version?: number;
+  teamId: Id;
+  deploymentId: Id;
   url: string;
   list: t.VercelDeploymentFile[];
-}): t.VercelHttpFiles {
+}): t.VercelHttpDeploymentFiles {
   const ctx = util.toCtx(args.token, args.version);
   const { http, list, teamId, deploymentId } = args;
   const { headers, version, token } = ctx;
@@ -21,13 +21,13 @@ export function VercelFiles(args: {
 
   const baseUrl = `https://${args.url.replace(/^http\:\/\//, '').replace(/\/*$/, '')}`;
 
-  const api: t.VercelHttpFiles = {
+  const api: t.VercelHttpDeploymentFiles = {
     list,
 
     /**
      * Save the deployment files locally.
      */
-    async save(targetDir) {
+    async pull(targetDir) {
       await fs.ensureDir(targetDir);
 
       /**
@@ -35,7 +35,7 @@ export function VercelFiles(args: {
        * - recursively save [children] folders.
        */
       type F = t.VercelDeploymentFile;
-      type Error = t.VercelSaveFileError;
+      type Error = t.VercelHttpFilesPullError;
 
       const results: { ok: boolean; file: F; error?: Error }[] = [];
       const result = (
