@@ -9,6 +9,8 @@ export type Global = { env: GlobalEnv };
  * The injected node environment context.
  */
 export type GlobalEnv = {
+  bus: t.EventBus<any>;
+
   /**
    * Entry value (and meta-data) passed into a function when it is invoked.
    * NB: This may have been passed from the prior function within an execution pipeline.
