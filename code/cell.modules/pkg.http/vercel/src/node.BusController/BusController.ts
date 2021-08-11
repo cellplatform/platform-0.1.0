@@ -1,4 +1,4 @@
-import { t, rx, BusEvents, fs } from '../common';
+import { t, rx, BusEvents, fs } from './common';
 
 /**
  * Event controller.

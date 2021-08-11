@@ -1,6 +1,6 @@
 {
   "name": "http.vercel",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "sideEffects": false,
   "compiler": {
     "port": 3038
@@ -15,8 +15,10 @@
     "bundle.node": "cell.compiler bundle node --bump $@",
     "bundle.web": "cell.compiler bundle web --bump $@",
     "bundle": "yarn bundle.web && yarn bundle.node",
-    "upload": "cell.compiler upload node $@",
-    "info": "cell.compiler info node $@",
+    "upload": "cell.compiler upload $@",
+    "upload.node": "yarn upload node --dir node.HEAD $@",
+    "upload.web": "yarn upload web --dir web.HEAD --no-bundle $@",
+    "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
     "clean": "cell.compiler clean $@"
   },

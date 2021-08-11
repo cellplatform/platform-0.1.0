@@ -1,4 +1,4 @@
-import { t, expect, rx } from '../../test';
+import { t, expect, rx } from '../test';
 import { BusController } from '.';
 
 describe('BusConstroller', () => {
