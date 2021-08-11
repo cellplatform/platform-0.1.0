@@ -1,10 +1,11 @@
 import { t } from './common';
 
 type B = CompilerModelBuilder;
+type ConfigName = string;
 
 export type CompilerModelFactory = {
-  model(name: string): t.CompilerModelState;
-  builder(input?: string | t.CompilerModelState | t.CompilerModel): t.CompilerModelBuilder;
+  model(name: ConfigName): t.CompilerModelState;
+  builder(input?: ConfigName | t.CompilerModelState | t.CompilerModel): t.CompilerModelBuilder;
 };
 
 /**

@@ -25,7 +25,7 @@ export { ModuleFederationPlugin };
 /* eslint-enable */
 
 export { exec } from '@platform/exec';
-export { port } from '@platform/http/lib/node';
+export { Port } from '@platform/http/lib/node';
 export { Path, Format } from '@platform/cell.runtime.node/lib/common';
 
 export * as semver from 'semver';
