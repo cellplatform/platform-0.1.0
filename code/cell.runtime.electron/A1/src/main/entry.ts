@@ -39,6 +39,12 @@ export async function start() {
     const { paths } = server;
     const localhost = server.host;
 
+    server.runtimeBus.$.subscribe((e) => {
+      console.log('RuntimeBus', e.type);
+      console.log('e.payload', e.payload);
+      console.log();
+    });
+
     const httpFactory = (host: string) => {
       const http = HttpClient.create(host);
       http.request$.subscribe((e) => {
