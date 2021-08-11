@@ -229,8 +229,8 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
       await uploadBundle(client, Samples.v2.outdir, bundle);
 
-      const res2 = await runtime.run(bundle, { silent: true });
-      const res3 = await runtime.run(bundle, { silent: true, pull: true });
+      const res2 = await runtime.run(bundle, { silent: true }); // NB: Proves caching is working.
+      const res3 = await runtime.run(bundle, { silent: true, pull: true }); // NB: Stamps on cache.
       await mock.dispose();
 
       expect(res1.manifest?.module.version).to.eql('1.0.0');
@@ -238,7 +238,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       expect(res3.manifest?.module.version).to.eql('2.0.0');
 
       expect(toVersion(res1)).to.eql('🐬-1.0.0');
-      expect(toVersion(res2)).to.eql('🐬-1.0.0'); // NB: cached version (no force pulled).
+      expect(toVersion(res2)).to.eql('🐬-1.0.0'); // NB: cached version (not force pulled).
       expect(toVersion(res3)).to.eql('🐬-2.0.0');
     });
 
