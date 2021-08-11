@@ -1,4 +1,5 @@
 import { fs, util, t, asArray } from './common';
+import { VercelUploadFiles } from './VercelHttp.Files.Upload';
 
 /**
  * Create a new deployment.
@@ -15,26 +16,39 @@ export async function deploy(
 ): Promise<t.VercelHttpDeployResponse> {
   const ctx = util.toCtx(args.token, args.version);
   const { dir, team, project, http } = args;
-  const { headers } = ctx;
+  const { headers, token, version } = ctx;
+  const teamId = team.id;
 
-  if (!(await fs.is.dir(dir))) throw new Error(`The source 'dir' is not a directory. ${dir}`);
+  if (!(await fs.is.dir(dir))) {
+    throw new Error(`The source 'dir' is not a directory. ${dir}`);
+  }
 
   /**
-   * Read in files to upload and ["base64"]
-   * encode them for transport over HTTP.
+   * Upload files
    */
-  const toFile = async (dir: string, file: string) => {
-    const buffer = await fs.readFile(fs.join(dir, file));
-    const encoding = 'base64';
-    const data = buffer.toString(encoding);
-    return { file, data, encoding };
-  };
 
-  const paths = (await fs.glob.find(`${dir}/**/*`)).map((p) => p.substring(dir.length + 1));
-  const files = await Promise.all(paths.map((file) => toFile(dir, file)));
+  const uploaded = await (async () => {
+    const client = VercelUploadFiles({ http, token, version, teamId });
+    const res = await client.upload(dir);
+    const { ok, error, total } = res;
+    const files = res.files.map((item) => item.file);
+    const errors = res.files
+      .filter((item) => Boolean(item.error))
+      .map(({ file, error }) => `${file.file}: [${error?.code}] ${error?.message}`);
+
+    return { ok, files, error, errors, total };
+  })();
+
+  if (!uploaded.ok) {
+    const { total } = uploaded;
+    throw new Error(`Failed uploading ${total.failed} of ${total.files} files.`);
+  }
+
+  const files = uploaded.files;
+  const paths = files.map(({ file }) => file);
 
   /**
-   * Append the deployments {meta} data object with
+   * Append the deployment's {meta} data object with
    * the manifest {module} details.
    */
   const readManifest = async () => {
@@ -89,8 +103,6 @@ export async function deploy(
   const url = ctx.url('deployments', { teamId: team.id });
   const res = await http.post(url, body, { headers });
   const json = (res.json ?? {}) as any;
-
-  console.log('json', json);
 
   /**
    * Response

@@ -1,5 +1,5 @@
 import { VercelHttp } from '.';
-import { fs, Http } from '../../test';
+import { fs, Http } from '../test';
 import { DEFAULT } from './common';
 import { VercelUploadFiles } from './VercelHttp.Files.Upload';
 
@@ -258,7 +258,7 @@ describe('VercelHttp [INTEGRATION]', function () {
     });
   });
 
-  describe.only('deployment: upload', () => {
+  describe('deployment: upload', () => {
     const client = VercelUploadFiles({ http, token });
 
     it('post', async () => {
@@ -269,7 +269,7 @@ describe('VercelHttp [INTEGRATION]', function () {
       console.log('res', res);
     });
 
-    it.only('upload file (single)', async () => {
+    it('upload file (single)', async () => {
       const path = fs.resolve('static.test/');
       const res = await client.upload(path, {});
 
@@ -278,6 +278,25 @@ describe('VercelHttp [INTEGRATION]', function () {
       console.log('res.status', res.status);
 
       // expect(res.ok).to.eql(true);
+    });
+  });
+
+  describe.only('deployment: upload then deploy', () => {
+    it('deploy', async () => {
+      const dir = fs.resolve('./tmp/web');
+
+      const team = await getTeam();
+
+      const target = 'staging';
+      const project = team.project('tmp');
+      const regions = ['sfo1'];
+
+      const res = await project.deploy({ dir, target, regions });
+
+      console.log('-------------------------------------------');
+      console.log('res', res);
+      console.log('-------------------------------------------');
+      console.log('source (dir):', dir);
     });
   });
 });

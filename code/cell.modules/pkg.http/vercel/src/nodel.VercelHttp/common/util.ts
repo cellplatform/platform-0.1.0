@@ -1,8 +1,6 @@
 import { createHash } from 'crypto';
 import { DEFAULT } from './constants';
-import { Mime } from '../../common';
 
-type Mimetype = string;
 type Q = Record<string, string | number | undefined>;
 
 /**

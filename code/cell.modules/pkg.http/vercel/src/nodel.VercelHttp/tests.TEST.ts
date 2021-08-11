@@ -1,4 +1,4 @@
-import { expect, fs, Http, t } from '../../test';
+import { expect, fs, Http, t } from '../test';
 import { VercelHttp } from '.';
 import { util, DEFAULT } from './common';
 
@@ -44,6 +44,12 @@ describe.only('VercelHttp', function () {
 
       expect(res1.version).to.eql(DEFAULT.version);
       expect(res2.version).to.eql(1234);
+    });
+
+    it('toCtx: ctx.url', () => {
+      const token = 'abc123';
+      const res1 = util.toCtx(token);
+      const res2 = util.toCtx(token, 1234);
 
       expect(res1.url('foo')).to.match(new RegExp(`\/v${DEFAULT.version}\/foo$`));
       expect(res1.url('foo', { bar: 123 })).to.match(/\/foo\?bar=123$/);
@@ -73,13 +79,13 @@ describe.only('VercelHttp', function () {
     expect(res.error?.message).to.include('Not authorized');
   });
 
-  it.skip('intercept http', async () => {
+  it.only('intercept http', async () => {
     const http = Http.create();
-    const token = 'abc123';
+    // const token = 'abc123';
     const client = VercelHttp({ http, token });
 
-    type HttpLog = { status: number; method: t.HttpMethod; body: t.Json };
-    const after: HttpLog[] = [];
+    // type HttpLog = { status: number; method: t.HttpMethod; body: t.Json };
+    // const after: HttpLog[] = [];
 
     http.$.subscribe((e) => {
       // console.log('e', e);
@@ -89,21 +95,24 @@ describe.only('VercelHttp', function () {
       console.log('-------------------------------------------');
       console.log('🌳', e.method, e.status, e.url);
 
-      console.log(e.response.json);
-      const { status, method } = e;
-      const body = e.response.json;
-      after.push({ status, method, body });
+      // console.log(e.response.json);
+      // const { status, method } = e;
+      // const body = e.response.json;
+      // after.push({ status, method, body });
     });
 
     const res = await client.teams.list();
 
     console.log('-------------------------------------------');
-    console.log('res', res);
+    console.log(
+      'res',
+      res.teams.map((e) => e.name),
+    );
 
-    const path = fs.resolve('tmp/http.log.json');
-    console.log('path', path);
+    // const path = fs.resolve('tmp/http.log.json');
+    // console.log('path', path);
 
-    await fs.writeJson(path, after);
+    // await fs.writeJson(path, after);
 
     // client.
   });
