@@ -7,7 +7,7 @@ import { util, DEFAULT } from './common';
  *    https://vercel.com/docs/api#endpoints
  */
 
-describe.only('VercelHttp', function () {
+describe('VercelHttp', function () {
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
   const client = VercelHttp({ token });
 
@@ -79,7 +79,7 @@ describe.only('VercelHttp', function () {
     expect(res.error?.message).to.include('Not authorized');
   });
 
-  it.only('intercept http', async () => {
+  it('intercept http', async () => {
     const http = Http.create();
     // const token = 'abc123';
     const client = VercelHttp({ http, token });
