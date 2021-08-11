@@ -2,7 +2,7 @@ import { Compiler, Package } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
-    .namespace('http.vercel')
+    .namespace('vendor.cloud.vercel')
     .version(Package.version)
 
     .variant('node', (config) =>
