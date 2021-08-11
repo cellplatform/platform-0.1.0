@@ -20,7 +20,7 @@ export type WindowBounds = { x: number; y: number; width: number; height: number
 /**
  * Event API.
  */
-export type WindowEvents = t.IDisposable & {
+export type WindowEvents = t.Disposable & {
   $: t.Observable<WindowEvent>;
   is: { base(input: any): boolean };
 

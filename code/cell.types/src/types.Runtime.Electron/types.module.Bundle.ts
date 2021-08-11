@@ -28,7 +28,7 @@ export type BundleItem = {
 /**
  * Event API.
  */
-export type BundleEvents = t.IDisposable & {
+export type BundleEvents = t.Disposable & {
   $: t.Observable<BundleEvent>;
   is: { base(input: any): boolean };
 
