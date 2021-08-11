@@ -1,4 +1,4 @@
-import { expect, Http, t } from '../test';
+import { time, expect, Http, t } from '../test';
 import { HttpClient } from '@platform/cell.client';
 import { IReqPostFuncBody } from '@platform/cell.types';
 import { Schema } from '@platform/cell.schema';
@@ -22,25 +22,32 @@ describe('node.runtime/vercel', function () {
       },
     ];
 
-    const url = `${host}/fn:run?pull=true`;
+    const url = `${host}/fn:run`;
     console.log('url', url);
-
-    const http = Http.create();
-    const res = await http.post(url, body);
-    const json = res.json as any;
-
     console.log('-------------------------------------------');
-    console.log('res', res.json);
 
-    const result = json.results[0];
-    console.log('res.json.results', result);
+    const run = async () => {
+      const http = Http.create();
+      const res = await http.post(url, body);
+      const json = res.json as any;
 
-    console.log('result.out', result.out);
-    console.log('result.out.info', result?.value?.info);
+      const elapsed = json.elapsed as number;
+      const result = json.results[0];
+      const out = result?.out?.value;
 
-    // const url = urls.
-    // http://localhost:60470/fn:run
-    // cell.
-    // client.
+      console.log(`[${json.elapsed}ms] out:`, out);
+
+      return { elapsed, json };
+    };
+
+    await run();
+
+    const timer = time.timer();
+    const running = Array.from({ length: 3 }).map(async () => {
+      return await run();
+    });
+
+    await Promise.all(running);
+    console.log('elapsed', timer.elapsed.toString());
   });
 });
