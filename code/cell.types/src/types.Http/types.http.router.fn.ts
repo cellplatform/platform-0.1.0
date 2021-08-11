@@ -24,7 +24,7 @@ export type IReqPostFunc = {
   tx?: string; //               Execution transaction ID (generated if not specified).
   pull?: boolean; //            Force pull the bundle (if it's already cached) - default:false
   silent?: boolean; //          Supress console output - default:true
-  timeout?: number; //          Max time (msecs) the function may run for.
+  timeout?: t.Timeout; //          Max time (msecs) the function may run for.
   in?: Partial<t.RuntimeIn>; // Function input args (merged with piped output when running list).
   onError?: OnFuncError; //     Pipeline behavior when an error is thrown. Default: "stop".
 };

@@ -1,7 +1,6 @@
 import { t } from '../common';
 
 type B = t.RuntimeBundleOrigin;
-type NeverTimeout = -1;
 
 /**
  * A runtime that is capable of executing functions.
@@ -43,7 +42,7 @@ export type RuntimeRunResponse = {
   out: t.RuntimeOut;
   errors: t.IRuntimeError[];
   elapsed: { prep: number; run: number };
-  timeout: number | NeverTimeout;
+  timeout: t.Timeout;
 };
 
 export type RuntimeElapsed = {
