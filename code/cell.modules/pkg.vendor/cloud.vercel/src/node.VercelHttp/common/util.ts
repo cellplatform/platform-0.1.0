@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import { DEFAULT } from './constants';
+import { DEFAULT } from './libs';
 
 type Q = Record<string, string | number | undefined>;
 

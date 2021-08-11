@@ -3,10 +3,10 @@ import { HttpClient } from '@platform/cell.client';
 import { IReqPostFuncBody } from '@platform/cell.types';
 import { Schema } from '@platform/cell.schema';
 
-describe('node.runtime/vercel', function () {
+describe.skip('node.runtime/vercel', function () {
   this.timeout(30000);
 
-  it.only('run cell/function ("localhost:5000/fn:run")', async () => {
+  it('run cell/function ("localhost:5000/fn:run")', async () => {
     // const uri = 'cell:cks45jzjq000hejet2xueai66:A1';
     const uri = 'cell:cks5anhhe000h0kethe9sb1ha:A1';
     const host = 'http://localhost:5000';

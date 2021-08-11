@@ -1,4 +1,4 @@
-import { Http, t, util, DEFAULT } from './common';
+import { Http, t, util } from './common';
 import { VercelTeam } from './VercelHttp.Team';
 
 /**

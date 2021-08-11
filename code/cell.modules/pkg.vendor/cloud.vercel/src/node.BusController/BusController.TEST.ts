@@ -1,11 +1,19 @@
 import { t, expect, rx } from '../test';
-import { BusController } from '.';
+import { VercelBus } from '.';
+import { DEFAULT } from './common';
 
-describe('BusConstroller', () => {
-  it('init', () => {
-    const bus = rx.bus<t.VercelEvent>();
-    const controller = BusController({ bus });
+describe.only('BusConstroller', () => {
+  const bus = rx.bus<t.VercelEvent>();
 
-    console.log('Boolean(controller)', Boolean(controller));
+  describe('ModuleInfo', function () {
+    this.timeout(30000);
+
+    it('defaults', async () => {
+      const events = VercelBus.Events({ bus });
+      VercelBus.Controller({ bus });
+
+      const res = await events.moduleInfo.get();
+      expect(res.info?.version).to.eql(DEFAULT.version);
+    });
   });
 });
