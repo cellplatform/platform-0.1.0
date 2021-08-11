@@ -115,6 +115,7 @@ export function runMethod(args: {
       entry,
       hash,
       stdlibs,
+      forceCache: isPullRequired,
     });
     elapsed = res.elapsed;
     res.errors.forEach((err) => addError(err.message, err.stack));

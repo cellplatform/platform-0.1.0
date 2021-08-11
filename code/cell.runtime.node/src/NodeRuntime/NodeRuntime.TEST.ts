@@ -25,7 +25,7 @@ describe.only('NodeRuntime', () => {
 
   it('node version', () => {
     const runtime = NodeRuntime.create({ bus });
-    const version = (process.version || '').replace(/^v/, '');
+    const version = `node@${(process.version || '').replace(/^v/, '')}`;
     expect(runtime.version).to.eql(version);
   });
 
@@ -43,12 +43,12 @@ describe.only('NodeRuntime', () => {
     });
 
     it('specific libs', () => {
-      const runtime = NodeRuntime.create({ bus, stdlibs: ['fs', 'crypto', 'fs'] }); // NB: repeat refs removed.
+      const runtime = NodeRuntime.create({ bus, stdlibs: ['fs', 'crypto', 'fs'] }); // NB: repeats removed.
       expect(runtime.stdlibs).to.eql(['fs', 'crypto']);
     });
 
     it('wildcard (*)', () => {
-      expect(NodeRuntime.create({ bus, stdlibs: ['*', '*'] }).stdlibs).to.eql(['*']);
+      expect(NodeRuntime.create({ bus, stdlibs: ['*', '*'] }).stdlibs).to.eql(['*']); // NB: repeats removed.
       expect(NodeRuntime.create({ bus, stdlibs: '*' }).stdlibs).to.eql(['*']);
     });
   });

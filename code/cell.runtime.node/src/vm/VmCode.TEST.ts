@@ -17,7 +17,7 @@ describe('vm', () => {
       const res = await VmCode.get(filename);
       expect(VmCode.cache.exists(filename)).to.eql(true);
 
-      expect(res.elased).to.greaterThan(1);
+      expect(res.elapsed).to.greaterThan(1);
       expect(res.script.filename).to.eql(filename);
       expect(res.script.code).to.eql(code);
       expect(res.script.compiler).to.eql('javascript');

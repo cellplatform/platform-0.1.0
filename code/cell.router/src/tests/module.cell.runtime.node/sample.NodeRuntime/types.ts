@@ -1,4 +1,5 @@
 import '../d.global';
+export { EventBus } from '@platform/types/lib/types.event';
 
 /**
  * Params passed to compiled code.

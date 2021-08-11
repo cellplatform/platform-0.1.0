@@ -1,12 +1,15 @@
-import { Compiler, expect, fs, Schema, t, TestCompile } from '../../test';
+import { Compiler, expect, fs, Schema, t, TestCompile, rx } from '../../test';
 import { ISampleNodeInValue, ISampleNodeOutValue } from './sample.NodeRuntime/types';
 import { getManifest, noManifestFilter, prepare, uploadBundle } from './util';
 
 type B = t.RuntimeBundleOrigin;
+type E = { type: 'foo'; payload: { count: number } };
 
 const ENTRY = {
   NODE: './src/tests/module.cell.runtime.node/sample.NodeRuntime',
   PIPE: './src/tests/module.cell.runtime.node/sample.pipe',
+  V1: './src/tests/module.cell.runtime.node/sample.v1',
+  V2: './src/tests/module.cell.runtime.node/sample.v2',
 };
 
 export const Samples = {
@@ -24,11 +27,25 @@ export const Samples = {
 
   pipe: TestCompile.make(
     'pipe',
-    Compiler.config('pipe')
-      //
-      .namespace('sample')
+    Compiler.config('pipe').namespace('sample').target('node').entry(`${ENTRY.PIPE}/main`),
+  ),
+
+  v1: TestCompile.make(
+    'sample-v1',
+    Compiler.config()
+      .namespace('sample.version')
+      .version('1.0.0')
       .target('node')
-      .entry(`${ENTRY.PIPE}/main`),
+      .entry(`${ENTRY.V1}/main`),
+  ),
+
+  v2: TestCompile.make(
+    'sample-v2',
+    Compiler.config()
+      .namespace('sample.version')
+      .version('2.0.0')
+      .target('node')
+      .entry(`${ENTRY.V2}/main`),
   ),
 };
 
@@ -196,6 +213,35 @@ describe('cell.runtime.node: NodeRuntime', function () {
       await mock.dispose();
     });
 
+    it('pull (replace cached)', async () => {
+      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+
+      type Out = { version: string };
+      const toVersion = (res: t.RuntimeRunResponse) => (res.out.value as Out).version;
+
+      const force = false;
+      await Samples.v1.bundle(force);
+      await Samples.v2.bundle(force);
+
+      await uploadBundle(client, Samples.v1.outdir, bundle);
+
+      const res1 = await runtime.run(bundle, { silent: true });
+
+      await uploadBundle(client, Samples.v2.outdir, bundle);
+
+      const res2 = await runtime.run(bundle, { silent: true });
+      const res3 = await runtime.run(bundle, { silent: true, pull: true });
+      await mock.dispose();
+
+      expect(res1.manifest?.module.version).to.eql('1.0.0');
+      expect(res2.manifest?.module.version).to.eql('1.0.0'); // NB: cached version (not force pulled).
+      expect(res3.manifest?.module.version).to.eql('2.0.0');
+
+      expect(toVersion(res1)).to.eql('🐬-1.0.0');
+      expect(toVersion(res2)).to.eql('🐬-1.0.0'); // NB: cached version (no force pulled).
+      expect(toVersion(res3)).to.eql('🐬-2.0.0');
+    });
+
     it('uses default entry (from manifest)', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);
@@ -286,7 +332,60 @@ describe('cell.runtime.node: NodeRuntime', function () {
       expect(res3.elapsed.run).to.greaterThan(60);
     });
 
-    it('error: timed out', async () => {
+    it('env.bus', async () => {
+      const prep = await prepare({ dir: 'foo' });
+      const bus = rx.busAsType<E>(prep.bus);
+      const { mock, runtime, bundle, client } = prep;
+      await uploadBundle(client, Samples.node.outdir, bundle);
+
+      let events: E[] = [];
+      bus.$.subscribe((e) => events.push(e));
+
+      const run = (repeatDone?: number) => {
+        const value: ISampleNodeInValue = { repeatDone };
+        return runtime.run(bundle, { silent: true, in: { value } });
+      };
+
+      await run();
+      expect(events).to.eql([{ type: 'foo', payload: { count: 1 } }]);
+
+      events = [];
+      await run(5);
+      await mock.dispose();
+
+      expect(events.length).to.eql(5);
+      expect(events.map((e) => e.payload.count)).to.eql([1, 2, 3, 4, 5]);
+    });
+
+    it('timeout', async () => {
+      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      await uploadBundle(client, Samples.node.outdir, bundle);
+
+      const run = (timeout?: t.RuntimeRunOptions['timeout']) => {
+        const value: ISampleNodeInValue = { value: { foo: 123 }, delay: 100 };
+        return runtime.run(bundle, { silent: true, in: { value }, timeout });
+      };
+
+      const res0 = await run(); //        NB: default (3 seconds)
+      const res1 = await run(-1); //      NB: -1 indicates never timeout.
+      const res2 = await run(-999); //    NB: converts to -1
+      const res3 = await run('never'); // NB: "never" converts to -1.
+      await mock.dispose();
+
+      expect(res0.timeout).to.eql(3000);
+
+      expect(res1.ok).to.eql(true);
+      expect(res1.elapsed.run).to.greaterThan(90);
+      expect(res1.timeout).to.eql(-1);
+
+      expect(res2.timeout).to.eql(-1);
+
+      expect(res3.ok).to.eql(true);
+      expect(res3.elapsed.run).to.greaterThan(90);
+      expect(res3.timeout).to.eql(-1);
+    });
+
+    it('timed out (error)', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);
 

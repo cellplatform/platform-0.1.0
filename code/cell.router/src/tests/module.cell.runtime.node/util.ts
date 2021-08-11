@@ -1,6 +1,6 @@
 import { NodeRuntime } from '@platform/cell.runtime.node';
 
-import { createMock, expect, fs, Http, readFile, t } from '../../test';
+import { createMock, expect, fs, Http, readFile, t, rx } from '../../test';
 import { Samples } from '../module.cell.runtime.node/NodeRuntime.TEST';
 
 export * from './sample.NodeRuntime/types';
@@ -14,20 +14,21 @@ export const noManifestFilter = (file: t.IHttpClientCellFileUpload) => {
 };
 
 export const createFuncMock = async () => {
-  const runtime = NodeRuntime.create({ stdlibs: ['os', 'fs', 'tty', 'util', 'path'] });
+  const bus = rx.bus();
+  const runtime = NodeRuntime.create({ bus, stdlibs: ['os', 'fs', 'tty', 'util', 'path'] });
   const mock = await createMock({ runtime });
   const http = Http.create();
   const url = mock.urls.fn.run;
-  return { url, mock, http, runtime };
+  return { bus, url, mock, http, runtime };
 };
 
 export const prepare = async (options: { dir?: string; uri?: string } = {}) => {
   const { dir, uri = 'cell:foo:A1' } = options;
-  const { mock, runtime, http, url } = await createFuncMock();
+  const { bus, mock, runtime, http, url } = await createFuncMock();
   const { host } = mock;
   const client = mock.client.cell(uri);
   const bundle: B = { host, uri, dir };
-  return { mock, runtime, http, client, bundle, url, uri };
+  return { bus, mock, runtime, http, client, bundle, url, uri };
 };
 
 export const bundleToFiles = async (sourceDir: string, targetDir?: string) => {

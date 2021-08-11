@@ -1,11 +1,30 @@
 import * as t from './types';
 import { echo } from './app';
 
+type E = { type: 'foo'; payload: { count: number } };
+const bus = env.bus as t.EventBus<E>;
 const params = (env.in.value || {}) as t.ISampleNodeInValue;
 
 if (typeof params.repeatDone === 'number') {
-  Array.from({ length: params.repeatDone }).forEach((v, i) => env.out.done({ count: i + 1 }));
+  let count = 0;
+  const done = () => {
+    count++;
+    bus.fire({ type: 'foo', payload: { count } });
+    env.out.done({ count });
+  };
+
+  Array.from({ length: params.repeatDone }).forEach(done);
 } else {
+  let count = 0;
+  const done = () => {
+    count++;
+    bus.fire({ type: 'foo', payload: { count } });
+    env.out.done<t.ISampleNodeOutValue>({
+      echo: echo(),
+      process: process.env,
+    });
+  };
+
   if (params.setContentType) {
     env.out.contentType(params.setContentType);
   }
@@ -17,9 +36,9 @@ if (typeof params.repeatDone === 'number') {
     console.log('delay start', params.id, params.delay);
     setTimeout(() => {
       console.log(params.id, 'delay complete');
-      env.out.done<t.ISampleNodeOutValue>({ echo: echo(), process: process.env });
+      done();
     }, params.delay);
   } else {
-    env.out.done<t.ISampleNodeOutValue>({ echo: echo(), process: process.env });
+    done();
   }
 }

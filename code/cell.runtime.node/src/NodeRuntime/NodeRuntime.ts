@@ -29,7 +29,7 @@ export const NodeRuntime = {
 
     const runtime: t.RuntimeEnvNode = {
       name: 'cell.runtime.node',
-      version: (process.version || '').replace(/^v/, ''),
+      version: `node@${(process.version || '').replace(/^v/, '')}`,
       stdlibs,
 
       pull: pullMethod({ cachedir }),

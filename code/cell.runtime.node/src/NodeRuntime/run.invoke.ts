@@ -21,6 +21,7 @@ export function invoke(args: {
   silent?: boolean;
   hash?: string;
   stdlibs?: t.RuntimeNodeAllowedStdlib[];
+  forceCache?: boolean;
 }) {
   return new Promise<R>(async (resolve) => {
     const { silent, manifest, dir, stdlibs, timeout } = args;
@@ -119,7 +120,8 @@ export function invoke(args: {
 
     try {
       const vm = Vm.node({ silent, global, stdlibs });
-      const code = await Vm.code(filename);
+      const code = await Vm.code(filename, { force: args.forceCache });
+
       preparationComplete(); // Stop the "preparation" timer.
 
       vm.run(code.script);

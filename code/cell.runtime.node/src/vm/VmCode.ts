@@ -1,9 +1,11 @@
 import { VMScript } from 'vm2';
 import { MemoryCache, time, fs } from '../common';
 
+type Milliseconds = number;
+
 export type CachedScript = {
   script: VMScript;
-  elased: number; // Milliseconds to compile.
+  elapsed: Milliseconds; // Compile time.
 };
 
 /**
@@ -15,8 +17,10 @@ export const VmCode = {
   /**
    * Loads (or gets from cache) a script.
    */
-  async get(filename: string) {
-    if (VmCode.cache.exists(filename)) {
+  async get(filename: string, options: { force?: boolean } = {}) {
+    const force = options.force ?? false;
+
+    if (!force && VmCode.cache.exists(filename)) {
       return VmCode.cache.get<CachedScript>(filename);
     }
 
@@ -25,7 +29,7 @@ export const VmCode = {
     const script = new VMScript(code, { filename }).compile();
 
     const res: CachedScript = {
-      elased: timer.elapsed.msec,
+      elapsed: timer.elapsed.msec,
       script,
     };
 
