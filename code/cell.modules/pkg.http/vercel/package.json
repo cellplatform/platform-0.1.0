@@ -1,6 +1,6 @@
 {
   "name": "http.vercel",
-  "version": "0.0.0",
+  "version": "0.0.3",
   "sideEffects": false,
   "compiler": {
     "port": 3038
@@ -12,8 +12,8 @@
     "test:integration": "ts test --suffix INTEGRATION",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
-    "bundle.node": "cell.compiler bundle node $@",
-    "bundle.web": "cell.compiler bundle web $@",
+    "bundle.node": "cell.compiler bundle node --bump $@",
+    "bundle.web": "cell.compiler bundle web --bump $@",
     "bundle": "yarn bundle.web && yarn bundle.node",
     "upload": "cell.compiler upload node $@",
     "info": "cell.compiler info node $@",

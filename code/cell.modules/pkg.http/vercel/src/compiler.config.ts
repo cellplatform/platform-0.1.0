@@ -8,7 +8,7 @@ export default () =>
     .variant('node', (config) =>
       config
         .target('node')
-        .entry('./src/node/index')
+        .entry('./src/node.runtime/run')
         // .declarations('./src/**/*')
         .shared((e) => e.add(e.dependencies)),
     )
