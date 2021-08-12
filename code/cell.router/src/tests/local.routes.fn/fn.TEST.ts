@@ -52,7 +52,7 @@ describe('/fn:run', function () {
         expect(json.results[0].bundle.hash).to.eql(manifest.hash.files);
 
         const version = (process.version || '').replace(/^v/, '');
-        expect(json.runtime.version).to.eql(`${version}`);
+        expect(json.runtime.version).to.eql(`node@${version}`);
         expect(json.runtime.name).to.eql('cell.runtime.node');
 
         expectFuncResponse(json.results[0]);
