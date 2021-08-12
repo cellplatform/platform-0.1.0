@@ -1,4 +1,4 @@
-import { fs, t, util, shasum, Mime, DEFAULT, time } from './common';
+import { DEFAULT, fs, Mime, shasum, t, time } from './common';
 
 type Id = string;
 

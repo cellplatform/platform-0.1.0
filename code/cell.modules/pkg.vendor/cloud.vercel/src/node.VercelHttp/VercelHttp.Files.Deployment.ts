@@ -10,7 +10,7 @@ export function VercelDeploymentFiles(args: {
   list: t.VercelDeploymentFile[];
 }): t.VercelHttpDeploymentFiles {
   const { ctx, list, teamId, deploymentId } = args;
-  const { http, headers, version, token } = ctx;
+  const { http } = ctx;
 
   if (!args.url) {
     throw new Error(`An public endpoint URL is required.`);

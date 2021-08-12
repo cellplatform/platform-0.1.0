@@ -4,7 +4,7 @@ import { VercelTeamProject } from './VercelHttp.Team.Project';
 
 export function VercelTeam(args: { ctx: t.Ctx; teamId: string }): t.VercelHttpTeam {
   const { ctx, teamId } = args;
-  const { fs, headers, token, version, http } = ctx;
+  const { headers, http } = ctx;
 
   const api: t.VercelHttpTeam = {
     id: teamId,

@@ -1,12 +1,11 @@
-import { expect, fs, Http, t } from '../test';
 import { VercelHttp } from '.';
-import { util, DEFAULT } from './common';
+import { expect, fs, Http } from '../test';
+import { DEFAULT, util } from './common';
 
 /**
  * See:
  *    https://vercel.com/docs/api#endpoints
  */
-
 describe('VercelHttp', function () {
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
   const http = Http.create();

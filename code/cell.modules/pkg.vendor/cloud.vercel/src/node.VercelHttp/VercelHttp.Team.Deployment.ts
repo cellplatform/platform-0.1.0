@@ -1,4 +1,4 @@
-import { util, t } from './common';
+import { t } from './common';
 import { VercelDeploymentFiles } from './VercelHttp.Files.Deployment';
 
 type Url = string;

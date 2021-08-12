@@ -1,4 +1,4 @@
-import { util, t } from './common';
+import { t } from './common';
 import { deploy } from './deploy';
 
 export function VercelTeamProject(args: {
@@ -7,7 +7,7 @@ export function VercelTeamProject(args: {
   team: t.VercelHttpTeam;
 }): t.VercelHttpTeamProject {
   const { ctx, team } = args;
-  const { fs, http, headers, version, token } = ctx;
+  const { http, headers } = ctx;
 
   const name = (args.name ?? '').trim();
   const teamId = team.id;
