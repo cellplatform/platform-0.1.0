@@ -1,12 +1,18 @@
 import { t } from '../common';
 
+type Id = string;
+
 /**
  * Runtime: node-js.
  */
-export type RuntimeEnvNode = t.RuntimeMembers & {
-  name: 'cell.runtime.node';
-  stdlibs: t.RuntimeNodeAllowedStdlib[];
-};
+export type RuntimeEnvNode = t.RuntimeMembers &
+  t.Disposable & {
+    id: Id;
+    name: 'cell.runtime.node';
+    stdlibs: t.RuntimeNodeAllowedStdlib[];
+    events: t.RuntimeNodeEvents;
+    isDisposed: boolean;
+  };
 
 /**
  * Node-js standard libraries that may be made available

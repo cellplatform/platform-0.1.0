@@ -1,4 +1,7 @@
 export * from './types.events';
+export * from './types.events.node';
+export * from './types.events.web';
+
 export * from './types.Runtime.bundle';
 export * from './types.Runtime.remote';
 export * from './types.Runtime.pipe';
