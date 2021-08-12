@@ -7,7 +7,10 @@ import { rx, slug, t } from './common';
 /**
  * Event API.
  */
-export function BusEvents(args: { bus: EventBus<any> }): t.VercelEvents {
+export function BusEvents(args: {
+  bus: EventBus<any>;
+  filter?: (e: t.VercelEvent) => boolean;
+}): t.VercelEvents {
   const { dispose, dispose$ } = rx.disposable();
   const bus = rx.busAsType<t.VercelEvent>(args.bus);
   const is = BusEvents.is;
@@ -15,23 +18,24 @@ export function BusEvents(args: { bus: EventBus<any> }): t.VercelEvents {
   const $ = bus.$.pipe(
     takeUntil(dispose$),
     filter((e) => is.base(e)),
+    filter((e) => args.filter?.(e) ?? true),
   );
 
   /**
    * Base information about the vendor module.
    */
-  const moduleInfo: t.VercelEvents['moduleInfo'] = {
-    req$: rx.payload<t.VercelModuleInfoReqEvent>($, 'vendor.vercel/info:req'),
-    res$: rx.payload<t.VercelModuleInfoResEvent>($, 'vendor.vercel/info:res'),
+  const info: t.VercelEvents['info'] = {
+    req$: rx.payload<t.VercelInfoReqEvent>($, 'vendor.vercel/info:req'),
+    res$: rx.payload<t.VercelInfoResEvent>($, 'vendor.vercel/info:res'),
     async get(options = {}) {
       const { timeout: msecs = 3000 } = options;
       const tx = slug();
 
       const first = firstValueFrom(
-        moduleInfo.res$.pipe(
+        info.res$.pipe(
           filter((e) => e.tx === tx),
           timeout(msecs),
-          catchError(() => of(`Timed out after ${msecs} msecs`)),
+          catchError(() => of(`ModuleInfo request timed out after ${msecs} msecs`)),
         ),
       );
 
@@ -45,7 +49,7 @@ export function BusEvents(args: { bus: EventBus<any> }): t.VercelEvents {
     },
   };
 
-  return { $, is, dispose, dispose$, moduleInfo };
+  return { $, is, dispose, dispose$, info };
 }
 
 /**

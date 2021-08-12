@@ -8,12 +8,12 @@ import { VercelUploadFiles } from './VercelHttp.Files.Upload';
  *    https://vercel.com/docs/api#endpoints
  *
  */
-describe('VercelHttp [INTEGRATION]', function () {
+describe.only('VercelHttp [INTEGRATION]', function () {
   this.timeout(30000);
 
   const version = DEFAULT.version;
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
-  const client = VercelHttp({ token });
+  const client = VercelHttp({ fs, token });
   const http = Http.create();
 
   const getTeamId = async (index?: number) => {
@@ -259,7 +259,7 @@ describe('VercelHttp [INTEGRATION]', function () {
   });
 
   describe('deployment: upload', () => {
-    const client = VercelUploadFiles({ http, token });
+    const client = VercelUploadFiles({ fs, http, token });
 
     it('post', async () => {
       const path = fs.resolve('static.test/child/foo.d.txt');
@@ -281,10 +281,9 @@ describe('VercelHttp [INTEGRATION]', function () {
     });
   });
 
-  describe.only('deployment: upload then deploy', () => {
-    it('deploy', async () => {
+  describe('deployment: upload then deploy', () => {
+    it.only('deploy', async () => {
       const dir = fs.resolve('./tmp/web');
-
       const team = await getTeam();
 
       const target = 'staging';

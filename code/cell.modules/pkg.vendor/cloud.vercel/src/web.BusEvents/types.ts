@@ -2,37 +2,42 @@ import * as t from '../web/common/types';
 
 type Milliseconds = number;
 
-export type VercelModuleInfo = {
-  version: number; // Base version of the API endpoint being used.
+export type VercelInfo = {
+  /**
+   * https://vercel.com/docs/api#endpoints
+   */
+  endpoint: {
+    version: number; // Base version of the HTTP endpoint.
+  };
 };
 
 /**
  * Events
  */
-export type VercelEvent = VercelModuleInfoReqEvent | VercelModuleInfoResEvent;
+export type VercelEvent = VercelInfoReqEvent | VercelInfoResEvent;
 
 export type VercelEvents = t.Disposable & {
   $: t.Observable<t.VercelEvent>;
   is: { base(input: any): boolean };
 
-  moduleInfo: {
-    req$: t.Observable<t.VercelModuleInfoReq>;
-    res$: t.Observable<t.VercelModuleInfoRes>;
-    get(options?: { timeout?: Milliseconds }): Promise<VercelModuleInfoRes>;
+  info: {
+    req$: t.Observable<t.VercelInfoReq>;
+    res$: t.Observable<t.VercelInfoRes>;
+    get(options?: { timeout?: Milliseconds }): Promise<VercelInfoRes>;
   };
 };
 
 /**
  * Compile the project into a bundle.
  */
-export type VercelModuleInfoReqEvent = {
+export type VercelInfoReqEvent = {
   type: 'vendor.vercel/info:req';
-  payload: VercelModuleInfoReq;
+  payload: VercelInfoReq;
 };
-export type VercelModuleInfoReq = { tx?: string };
+export type VercelInfoReq = { tx?: string };
 
-export type VercelModuleInfoResEvent = {
+export type VercelInfoResEvent = {
   type: 'vendor.vercel/info:res';
-  payload: VercelModuleInfoRes;
+  payload: VercelInfoRes;
 };
-export type VercelModuleInfoRes = { tx: string; info?: VercelModuleInfo; error?: string };
+export type VercelInfoRes = { tx: string; info?: VercelInfo; error?: string };

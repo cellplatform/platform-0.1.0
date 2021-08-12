@@ -197,5 +197,4 @@ export type VercelHttpDeployMetaModule = t.ModuleManifestInfo & {
 };
 export type VercelHttpDeployMetaPlainFiles = {
   kind: 'bundle:plain/files';
-  bytes: string;
 };

@@ -4,11 +4,12 @@ type Id = string;
 
 export function VercelUploadFiles(args: {
   http: t.Http;
+  fs: t.IFs;
   token: string;
   version?: number;
   teamId?: Id;
 }): t.VercelHttpUploadFiles {
-  const ctx = util.toCtx(args.token, args.version);
+  const ctx = util.toCtx(args.fs, args.token, args.version);
   const { http, teamId } = args;
 
   const api: t.VercelHttpUploadFiles = {

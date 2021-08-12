@@ -4,13 +4,14 @@ import { VercelTeamDeployment } from './VercelHttp.Team.Deployment';
 
 export function VercelTeam(args: {
   http: t.Http;
+  fs: t.IFs;
   token: string;
   version?: number;
   teamId: string;
 }): t.VercelHttpTeam {
-  const ctx = util.toCtx(args.token, args.version);
+  const ctx = util.toCtx(args.fs, args.token, args.version);
   const { http, teamId } = args;
-  const { headers, token, version } = ctx;
+  const { fs, headers, token, version } = ctx;
 
   const api: t.VercelHttpTeam = {
     id: teamId,
@@ -47,7 +48,7 @@ export function VercelTeam(args: {
      * Work on a single project within the team.
      */
     project(name) {
-      return VercelTeamProject({ http, token, version, name, team: api });
+      return VercelTeamProject({ fs, http, token, version, name, team: api });
     },
 
     /**
@@ -74,7 +75,7 @@ export function VercelTeam(args: {
      * Work on a single deployment within a team.
      */
     deployment(url) {
-      return VercelTeamDeployment({ http, token, version, url, team: api });
+      return VercelTeamDeployment({ fs, http, token, version, url, team: api });
     },
   };
 

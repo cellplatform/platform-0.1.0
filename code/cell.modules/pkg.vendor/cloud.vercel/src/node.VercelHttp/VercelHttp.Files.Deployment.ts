@@ -4,6 +4,7 @@ type Id = string;
 
 export function VercelDeploymentFiles(args: {
   http: t.Http;
+  fs: t.IFs;
   token: string;
   version?: number;
   teamId: Id;
@@ -11,7 +12,7 @@ export function VercelDeploymentFiles(args: {
   url: string;
   list: t.VercelDeploymentFile[];
 }): t.VercelHttpDeploymentFiles {
-  const ctx = util.toCtx(args.token, args.version);
+  const ctx = util.toCtx(args.fs, args.token, args.version);
   const { http, list, teamId, deploymentId } = args;
   const { headers, version, token } = ctx;
 

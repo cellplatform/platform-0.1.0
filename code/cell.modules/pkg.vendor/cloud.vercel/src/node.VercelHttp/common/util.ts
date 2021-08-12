@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import { DEFAULT } from './libs';
+import { DEFAULT, t } from './libs';
 
 type Q = Record<string, string | number | undefined>;
 
@@ -36,7 +36,7 @@ export function ensureHttps(url: string) {
 /**
  * Creates a common context object.
  */
-export function toCtx(token: string, version?: number) {
+export function toCtx(fs: t.IFs, token: string, version?: number) {
   token = (token ?? '').trim();
   if (!token) throw new Error(`A Vercel authorization token not provided.`);
 
@@ -51,6 +51,7 @@ export function toCtx(token: string, version?: number) {
     url(path: string, query?: Q, options: { version?: number } = {}) {
       return toUrl(options.version ?? ctx.version, path, query);
     },
+    fs,
   };
 
   return ctx;

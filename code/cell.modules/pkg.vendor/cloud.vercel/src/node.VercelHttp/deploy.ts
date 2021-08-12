@@ -8,15 +8,16 @@ import { VercelUploadFiles } from './VercelHttp.Files.Upload';
 export async function deploy(
   args: t.VercelHttpDeployArgs & {
     http: t.Http;
+    fs: t.IFs;
     token: string;
     version?: number;
     team: { id: string; name: string };
     project: { id: string; name: string };
   },
 ): Promise<t.VercelHttpDeployResponse> {
-  const ctx = util.toCtx(args.token, args.version);
+  const ctx = util.toCtx(args.fs, args.token, args.version);
   const { dir, team, project, http } = args;
-  const { headers, token, version } = ctx;
+  const { fs, headers, token, version } = ctx;
   const teamId = team.id;
 
   if (!(await fs.is.dir(dir))) {
@@ -28,7 +29,7 @@ export async function deploy(
    */
 
   const uploaded = await (async () => {
-    const client = VercelUploadFiles({ http, token, version, teamId });
+    const client = VercelUploadFiles({ fs, http, token, version, teamId });
     const res = await client.upload(dir);
     const { ok, error, total } = res;
     const files = res.files.map((item) => item.file);
@@ -53,8 +54,11 @@ export async function deploy(
    */
   const readManifest = async () => {
     const path = fs.join(dir, 'index.json');
-    if (!(await fs.pathExists(path))) return;
-    const manifest = (await fs.readJson(path)) as t.ModuleManifest;
+
+    if (!(await fs.exists(path))) return;
+    const file = await fs.readFile(path);
+    const manifest = JSON.parse(file.toString()) as t.ModuleManifest;
+
     return typeof manifest === 'object' && manifest.kind === 'module' ? manifest : undefined;
   };
 
@@ -70,7 +74,6 @@ export async function deploy(
       }
     : {
         kind: 'bundle:plain/files',
-        bytes: (await fs.size.dir(dir)).bytes.toString(),
       };
 
   const deriveName = () => {

@@ -9,7 +9,7 @@ import { util, DEFAULT } from './common';
 
 describe('VercelHttp', function () {
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
-  const client = VercelHttp({ token });
+  const client = VercelHttp({ fs, token });
 
   describe('util', () => {
     it('toUrl', () => {
@@ -35,8 +35,8 @@ describe('VercelHttp', function () {
 
     it('toCtx', () => {
       const token = 'abc123';
-      const res1 = util.toCtx(token);
-      const res2 = util.toCtx(token, 1234);
+      const res1 = util.toCtx(fs, token);
+      const res2 = util.toCtx(fs, token, 1234);
 
       expect(res1.token).to.eql(token);
       expect(res1.Authorization).to.eql(`Bearer ${token}`);
@@ -48,8 +48,8 @@ describe('VercelHttp', function () {
 
     it('toCtx: ctx.url', () => {
       const token = 'abc123';
-      const res1 = util.toCtx(token);
-      const res2 = util.toCtx(token, 1234);
+      const res1 = util.toCtx(fs, token);
+      const res2 = util.toCtx(fs, token, 1234);
 
       expect(res1.url('foo')).to.match(new RegExp(`\/v${DEFAULT.version}\/foo$`));
       expect(res1.url('foo', { bar: 123 })).to.match(/\/foo\?bar=123$/);
@@ -60,8 +60,8 @@ describe('VercelHttp', function () {
   });
 
   it('create (API version)', async () => {
-    const client1 = VercelHttp({ token });
-    const client2 = VercelHttp({ token, version: 1234 });
+    const client1 = VercelHttp({ fs, token });
+    const client2 = VercelHttp({ fs, token, version: 1234 });
 
     expect(client1.version).to.eql(DEFAULT.version);
     expect(client2.version).to.eql(1234);
@@ -69,7 +69,7 @@ describe('VercelHttp', function () {
 
   it('not authorized', async () => {
     const token = 'abc123';
-    const client = VercelHttp({ token });
+    const client = VercelHttp({ fs, token });
 
     const res = await client.teams.list();
 
@@ -82,7 +82,7 @@ describe('VercelHttp', function () {
   it('intercept http', async () => {
     const http = Http.create();
     // const token = 'abc123';
-    const client = VercelHttp({ http, token });
+    const client = VercelHttp({ fs, http, token });
 
     // type HttpLog = { status: number; method: t.HttpMethod; body: t.Json };
     // const after: HttpLog[] = [];

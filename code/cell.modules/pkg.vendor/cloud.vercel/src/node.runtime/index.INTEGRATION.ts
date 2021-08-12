@@ -8,9 +8,9 @@ describe.skip('node.runtime/vercel', function () {
 
   it('run cell/function ("localhost:5000/fn:run")', async () => {
     // const uri = 'cell:cks45jzjq000hejet2xueai66:A1';
-    const uri = 'cell:cks5anhhe000h0kethe9sb1ha:A1';
+    const uri = 'cell:cks82mgiv000h11ethgn3hsgz:A1';
     const host = 'http://localhost:5000';
-    const dir = 'foobar';
+    const dir = 'node.HEAD';
 
     const body: IReqPostFuncBody = [
       {
@@ -22,7 +22,8 @@ describe.skip('node.runtime/vercel', function () {
       },
     ];
 
-    const url = `${host}/fn:run`;
+    const pull = true;
+    const url = `${host}/fn:run?pull=${pull}`;
     console.log('url', url);
     console.log('-------------------------------------------');
 
@@ -31,9 +32,13 @@ describe.skip('node.runtime/vercel', function () {
       const res = await http.post(url, body);
       const json = res.json as any;
 
+      // console.log('json', json);
+
       const elapsed = json.elapsed as number;
       const result = json.results[0];
       const out = result?.out?.value;
+
+      console.log('result', result);
 
       console.log(`[${json.elapsed}ms] out:`, out);
 
@@ -43,7 +48,7 @@ describe.skip('node.runtime/vercel', function () {
     await run();
 
     const timer = time.timer();
-    const running = Array.from({ length: 3 }).map(async () => {
+    const running = Array.from({ length: 1 }).map(async () => {
       return await run();
     });
 

@@ -1,10 +1,24 @@
-console.log('run', env);
+// import { VercelBus } from '../node.BusController';
 
-const payload = {
-  msg: '👋',
-  hasBus: Boolean(env.bus),
-  info: env.in.info,
-};
+// const controller = VercelBus.Controller({ bus });
 
-env.out.done(payload);
-env.bus.fire({ type: 'foo', payload });
+// import('../node.BusController').then
+
+(async () => {
+  //
+  const { bus } = env;
+  // const { VercelBus } = await import('../node.BusController');
+  // m.VercelBus
+  // const controller = VercelBus.Controller({ bus });
+})();
+
+// console.log('run', env);
+
+// const payload = {
+//   msg: '👋',
+//   hasBus: Boolean(env.bus),
+//   info: env.in.info,
+// };
+
+// env.out.done(payload);
+// env.bus.fire({ type: 'foo', payload });

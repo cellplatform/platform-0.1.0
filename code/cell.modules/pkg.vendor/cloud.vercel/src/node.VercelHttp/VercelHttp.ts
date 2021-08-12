@@ -9,9 +9,15 @@ import { VercelTeam } from './VercelHttp.Team';
  *    SHA1 (digest) filehash checking example:
  *    https://vercel.com/docs/integrations#webhooks/securing-webhooks
  */
-export function VercelHttp(args: { token: string; version?: number; http?: t.Http }): t.VercelHttp {
+export function VercelHttp(args: {
+  fs: t.IFs;
+  token: string;
+  version?: number;
+  http?: t.Http;
+}): t.VercelHttp {
+  const { fs } = args;
   const http = args.http ?? Http.create();
-  const ctx = util.toCtx(args.token, args.version);
+  const ctx = util.toCtx(args.fs, args.token, args.version);
   const { token, version, headers } = ctx;
 
   const api: t.VercelHttp = {
@@ -37,7 +43,7 @@ export function VercelHttp(args: { token: string; version?: number; http?: t.Htt
      * Retrieve a single team.
      */
     team(id: string) {
-      return VercelTeam({ http, token, version, teamId: id });
+      return VercelTeam({ fs, http, token, version, teamId: id });
     },
   };
 
