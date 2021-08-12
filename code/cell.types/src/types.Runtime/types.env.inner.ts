@@ -1,5 +1,7 @@
 import { t } from '../common';
 
+type Id = string;
+
 /**
  * Global context for executing [node] code.
  */
@@ -9,6 +11,7 @@ export type Global = { env: GlobalEnv };
  * The injected node environment context.
  */
 export type GlobalEnv = {
+  tx: Id; // The transaction ID of the environment instance.  Unique for each execution. Use to "kill" long running processes.
   bus: t.EventBus<any>;
 
   /**

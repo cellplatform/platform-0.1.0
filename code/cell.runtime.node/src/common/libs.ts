@@ -6,4 +6,4 @@ export { fs } from '@platform/fs';
 export { FileCache, MemoryCache } from '@platform/cache';
 export { Schema, Uri } from '@platform/cell.schema';
 export { log } from '@platform/log/lib/server';
-export { id, time, deleteUndefined, defaultValue, rx } from '@platform/util.value';
+export { time, deleteUndefined, defaultValue, rx, cuid, slug } from '@platform/util.value';

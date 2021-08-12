@@ -19,4 +19,5 @@ export type ISampleNodeInValue = {
 export type ISampleNodeOutValue = {
   echo?: any;
   process: Record<string, any>;
+  env: { tx: string };
 };

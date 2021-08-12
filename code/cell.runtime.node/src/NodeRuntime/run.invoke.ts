@@ -1,4 +1,4 @@
-import { log, Logger, t, time, fs, R, DEFAULT } from '../common';
+import { R, DEFAULT, fs, log, Logger, t, time } from '../common';
 import { Vm } from '../vm';
 
 type R = {
@@ -12,6 +12,7 @@ type R = {
  * Execute the bundle within the given directory.
  */
 export function invoke(args: {
+  tx: string;
   dir: string;
   manifest: t.ModuleManifest;
   bus: t.EventBus<any>;
@@ -24,7 +25,7 @@ export function invoke(args: {
   forceCache?: boolean;
 }) {
   return new Promise<R>(async (resolve) => {
-    const { silent, manifest, dir, stdlibs, timeout } = args;
+    const { tx, silent, manifest, dir, stdlibs, timeout } = args;
     const entry = (args.entry || manifest.module.entry || '').trim();
     const filename = fs.join(dir, entry);
     const bus = args.bus;
@@ -96,6 +97,7 @@ export function invoke(args: {
     }
 
     const env: t.GlobalEnv = {
+      tx,
       bus,
 
       in: R.clone({

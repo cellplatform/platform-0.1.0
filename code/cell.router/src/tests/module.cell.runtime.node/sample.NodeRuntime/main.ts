@@ -4,6 +4,7 @@ import { echo } from './app';
 type E = { type: 'foo'; payload: { count: number } };
 const bus = env.bus as t.EventBus<E>;
 const params = (env.in.value || {}) as t.ISampleNodeInValue;
+const { tx } = env;
 
 if (typeof params.repeatDone === 'number') {
   let count = 0;
@@ -22,6 +23,7 @@ if (typeof params.repeatDone === 'number') {
     env.out.done<t.ISampleNodeOutValue>({
       echo: echo(),
       process: process.env,
+      env: { tx },
     });
   };
 

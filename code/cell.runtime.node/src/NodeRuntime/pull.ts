@@ -1,5 +1,5 @@
 import { BundleWrapper } from '../BundleWrapper';
-import { fs, HttpClient, log, Logger, Path, t, id, deleteUndefined, PATH } from '../common';
+import { fs, HttpClient, log, Logger, Path, t, slug, deleteUndefined, PATH } from '../common';
 
 /**
  * Factory for the [pull] method.
@@ -16,7 +16,7 @@ export function pullMethod(args: { cachedir: string }) {
     const host = bundle.host;
     const origin = bundle.toString();
     const targetDir = bundle.cache.dir;
-    const tmpTarget = `${targetDir}.download.${id.shortid()}`;
+    const tmpTarget = `${targetDir}.download.${slug()}`;
 
     if (!silent) {
       const url = bundle.urls.manifest;

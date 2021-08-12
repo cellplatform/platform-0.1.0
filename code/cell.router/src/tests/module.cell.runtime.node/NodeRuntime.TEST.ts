@@ -242,6 +242,22 @@ describe('cell.runtime.node: NodeRuntime', function () {
       expect(toVersion(res3)).to.eql('🐬-2.0.0');
     });
 
+    it('tx (process id)', async () => {
+      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      await uploadBundle(client, Samples.node.outdir, bundle);
+
+      const promise = runtime.run(bundle, { silent: true });
+      const res = await promise;
+      const out = res.out as any;
+
+      expect(typeof promise.tx === 'string').to.eql(true);
+      expect(promise.tx.length).to.greaterThan(5);
+      expect(promise.tx).to.eql(res.tx);
+      expect(promise.tx).to.eql(out.value?.env?.tx); // NB: "tx" passed into env (accessible to executing code).
+
+      await mock.dispose();
+    });
+
     it('uses default entry (from manifest)', async () => {
       const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);

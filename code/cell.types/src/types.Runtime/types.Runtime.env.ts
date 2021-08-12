@@ -1,24 +1,50 @@
 import { t } from '../common';
 
+type Id = string;
 type B = t.RuntimeBundleOrigin;
+type P<T> = Promise<T>;
 
 /**
  * A runtime that is capable of executing functions.
  */
 export type RuntimeEnv = t.RuntimeEnvNode | t.RuntimeEnvWeb;
 
+export type RuntimeElapsed = {
+  prep: number; // Preparation time (in msecs) - eg: pull/compile.
+  run: number; // Execution time (in msecs)
+};
+
 /**
  * Common methods of an executable runtime.
  */
 export type RuntimeMembers = {
   version: string;
-  exists(bundle: B): Promise<boolean>;
-  pull(bundle: B, options?: { silent?: boolean }): Promise<RuntimePullResponse>;
-  run(bundle: B, options?: RuntimeRunOptions): Promise<RuntimeRunResponse>;
-  remove(bundle: B): Promise<{ count: number }>;
-  clear(): Promise<{ count: number }>;
+  exists: RuntimeExists;
+  pull: RuntimePull;
+  run: RuntimeRun;
+  remove: RuntimeRemove;
+  clear: RuntimeClear;
 };
 
+export type RuntimeExists = (bundle: B) => P<boolean>;
+export type RuntimePull = (bundle: B, options?: { silent?: boolean }) => P<RuntimePullResponse>;
+export type RuntimeRun = (bundle: B, options?: RuntimeRunOptions) => RuntimeRunPromise;
+export type RuntimeRemove = (bundle: B) => P<RuntimeRemoveResponse>;
+export type RuntimeClear = () => P<RuntimeClearResponse>;
+
+/**
+ * Pull
+ */
+export type RuntimePullResponse = {
+  ok: boolean;
+  dir: string;
+  manifest: string; // Manifest URL.
+  errors: t.IRuntimeError[];
+};
+
+/**
+ * Run
+ */
 export type RuntimeRunOptions = {
   in?: Partial<t.RuntimeIn>;
   pull?: boolean;
@@ -28,14 +54,8 @@ export type RuntimeRunOptions = {
   hash?: string; // The hash of the bundle to match before executing (throws if doesn't match manifest).
 };
 
-export type RuntimePullResponse = {
-  ok: boolean;
-  dir: string;
-  errors: t.IRuntimeError[];
-  manifest: string; // Manifest URL.
-};
-
 export type RuntimeRunResponse = {
+  tx: Id;
   ok: boolean;
   entry: string;
   manifest?: t.ModuleManifest;
@@ -45,7 +65,10 @@ export type RuntimeRunResponse = {
   timeout: t.Timeout;
 };
 
-export type RuntimeElapsed = {
-  prep: number; // Preparation time (in msecs) - eg: pull/compile.
-  run: number; // Execution time (in msecs)
-};
+export type RuntimeRunPromise = P<RuntimeRunResponse> & { tx: Id };
+
+/**
+ * Remove/Clear
+ */
+export type RuntimeRemoveResponse = { count: number };
+export type RuntimeClearResponse = { count: number };
