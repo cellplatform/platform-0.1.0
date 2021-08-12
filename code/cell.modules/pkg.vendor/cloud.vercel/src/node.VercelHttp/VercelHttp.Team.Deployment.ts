@@ -4,17 +4,13 @@ import { VercelDeploymentFiles } from './VercelHttp.Files.Deployment';
 type Url = string;
 
 export function VercelTeamDeployment(args: {
-  http: t.Http;
-  fs: t.IFs;
-  token: string;
-  version?: number;
+  ctx: t.Ctx;
   url: Url; // "<id>.vercel.app" or alias url.
   team: t.VercelHttpTeam;
 }): t.VercelHttpTeamDeployment {
-  const ctx = util.toCtx(args.fs, args.token, args.version);
-  const { http, team } = args;
+  const { ctx, team } = args;
   const teamId = team.id;
-  const { headers, version, token, fs } = ctx;
+  const { http, headers, version, token, fs } = ctx;
 
   const api: t.VercelHttpTeamDeployment = {
     url: (args.url ?? '').trim().replace(/^https\:\/\//, ''),
@@ -59,10 +55,7 @@ export function VercelTeamDeployment(args: {
         !ok
           ? {}
           : VercelDeploymentFiles({
-              fs,
-              http,
-              token,
-              version,
+              ctx,
               teamId,
               deploymentId,
               url: info.deployment.url || '',

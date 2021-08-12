@@ -2,16 +2,12 @@ import { util, t } from './common';
 import { deploy } from './deploy';
 
 export function VercelTeamProject(args: {
-  http: t.Http;
-  fs: t.IFs;
-  token: string;
-  version?: number;
+  ctx: t.Ctx;
   name: string;
   team: t.VercelHttpTeam;
 }): t.VercelHttpTeamProject {
-  const ctx = util.toCtx(args.fs, args.token, args.version);
-  const { http, team } = args;
-  const { fs, headers, version, token } = ctx;
+  const { ctx, team } = args;
+  const { fs, http, headers, version, token } = ctx;
 
   const name = (args.name ?? '').trim();
   const teamId = team.id;
@@ -87,10 +83,7 @@ export function VercelTeamProject(args: {
 
       return deploy({
         ...args,
-        fs,
-        http,
-        token,
-        version,
+        ctx,
         team: { id: teamId, name: teamInfo.team?.name ?? '' },
         project: { id: projectInfo.project.id, name },
       });

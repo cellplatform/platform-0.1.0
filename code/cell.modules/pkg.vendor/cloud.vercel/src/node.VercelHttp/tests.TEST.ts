@@ -9,6 +9,8 @@ import { util, DEFAULT } from './common';
 
 describe('VercelHttp', function () {
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
+  const http = Http.create();
+  const ctx = util.toCtx(fs, http, token);
   const client = VercelHttp({ fs, token });
 
   describe('util', () => {
@@ -35,8 +37,8 @@ describe('VercelHttp', function () {
 
     it('toCtx', () => {
       const token = 'abc123';
-      const res1 = util.toCtx(fs, token);
-      const res2 = util.toCtx(fs, token, 1234);
+      const res1 = util.toCtx(fs, http, token);
+      const res2 = util.toCtx(fs, http, token, 1234);
 
       expect(res1.token).to.eql(token);
       expect(res1.Authorization).to.eql(`Bearer ${token}`);
@@ -48,8 +50,8 @@ describe('VercelHttp', function () {
 
     it('toCtx: ctx.url', () => {
       const token = 'abc123';
-      const res1 = util.toCtx(fs, token);
-      const res2 = util.toCtx(fs, token, 1234);
+      const res1 = util.toCtx(fs, http, token);
+      const res2 = util.toCtx(fs, http, token, 1234);
 
       expect(res1.url('foo')).to.match(new RegExp(`\/v${DEFAULT.version}\/foo$`));
       expect(res1.url('foo', { bar: 123 })).to.match(/\/foo\?bar=123$/);

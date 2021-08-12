@@ -1,4 +1,4 @@
-import { fs, util, t, asArray } from './common';
+import { asArray, fs, t, util } from './common';
 import { VercelUploadFiles } from './VercelHttp.Files.Upload';
 
 /**
@@ -7,17 +7,13 @@ import { VercelUploadFiles } from './VercelHttp.Files.Upload';
  */
 export async function deploy(
   args: t.VercelHttpDeployArgs & {
-    http: t.Http;
-    fs: t.IFs;
-    token: string;
-    version?: number;
+    ctx: t.Ctx;
     team: { id: string; name: string };
     project: { id: string; name: string };
   },
 ): Promise<t.VercelHttpDeployResponse> {
-  const ctx = util.toCtx(args.fs, args.token, args.version);
-  const { dir, team, project, http } = args;
-  const { fs, headers, token, version } = ctx;
+  const { ctx, dir, team, project } = args;
+  const { http, fs, headers } = ctx;
   const teamId = team.id;
 
   if (!(await fs.is.dir(dir))) {
@@ -29,7 +25,7 @@ export async function deploy(
    */
 
   const uploaded = await (async () => {
-    const client = VercelUploadFiles({ fs, http, token, version, teamId });
+    const client = VercelUploadFiles({ ctx, teamId });
     const res = await client.upload(dir);
     const { ok, error, total } = res;
     const files = res.files.map((item) => item.file);

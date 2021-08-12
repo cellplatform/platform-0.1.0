@@ -1,17 +1,10 @@
-import { t, util } from './common';
-import { VercelTeamProject } from './VercelHttp.Team.Project';
+import { t } from './common';
 import { VercelTeamDeployment } from './VercelHttp.Team.Deployment';
+import { VercelTeamProject } from './VercelHttp.Team.Project';
 
-export function VercelTeam(args: {
-  http: t.Http;
-  fs: t.IFs;
-  token: string;
-  version?: number;
-  teamId: string;
-}): t.VercelHttpTeam {
-  const ctx = util.toCtx(args.fs, args.token, args.version);
-  const { http, teamId } = args;
-  const { fs, headers, token, version } = ctx;
+export function VercelTeam(args: { ctx: t.Ctx; teamId: string }): t.VercelHttpTeam {
+  const { ctx, teamId } = args;
+  const { fs, headers, token, version, http } = ctx;
 
   const api: t.VercelHttpTeam = {
     id: teamId,
@@ -48,7 +41,7 @@ export function VercelTeam(args: {
      * Work on a single project within the team.
      */
     project(name) {
-      return VercelTeamProject({ fs, http, token, version, name, team: api });
+      return VercelTeamProject({ ctx, name, team: api });
     },
 
     /**
@@ -75,7 +68,7 @@ export function VercelTeam(args: {
      * Work on a single deployment within a team.
      */
     deployment(url) {
-      return VercelTeamDeployment({ fs, http, token, version, url, team: api });
+      return VercelTeamDeployment({ ctx, url, team: api });
     },
   };
 

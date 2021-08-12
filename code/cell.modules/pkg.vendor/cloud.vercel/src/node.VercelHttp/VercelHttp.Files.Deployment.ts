@@ -1,20 +1,16 @@
-import { fs, t, util } from './common';
+import { fs, t } from './common';
 
 type Id = string;
 
 export function VercelDeploymentFiles(args: {
-  http: t.Http;
-  fs: t.IFs;
-  token: string;
-  version?: number;
+  ctx: t.Ctx;
   teamId: Id;
   deploymentId: Id;
   url: string;
   list: t.VercelDeploymentFile[];
 }): t.VercelHttpDeploymentFiles {
-  const ctx = util.toCtx(args.fs, args.token, args.version);
-  const { http, list, teamId, deploymentId } = args;
-  const { headers, version, token } = ctx;
+  const { ctx, list, teamId, deploymentId } = args;
+  const { http, headers, version, token } = ctx;
 
   if (!args.url) {
     throw new Error(`An public endpoint URL is required.`);

@@ -1,6 +1,6 @@
 import { VercelHttp } from '.';
 import { fs, Http } from '../test';
-import { DEFAULT } from './common';
+import { DEFAULT, util } from './common';
 import { VercelUploadFiles } from './VercelHttp.Files.Upload';
 
 /**
@@ -11,10 +11,10 @@ import { VercelUploadFiles } from './VercelHttp.Files.Upload';
 describe.only('VercelHttp [INTEGRATION]', function () {
   this.timeout(30000);
 
-  const version = DEFAULT.version;
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
   const client = VercelHttp({ fs, token });
   const http = Http.create();
+  const ctx = util.toCtx(fs, http, token);
 
   const getTeamId = async (index?: number) => {
     const teams = (await client.teams.list()).teams;
@@ -259,7 +259,7 @@ describe.only('VercelHttp [INTEGRATION]', function () {
   });
 
   describe('deployment: upload', () => {
-    const client = VercelUploadFiles({ fs, http, token });
+    const client = VercelUploadFiles({ ctx });
 
     it('post', async () => {
       const path = fs.resolve('static.test/child/foo.d.txt');

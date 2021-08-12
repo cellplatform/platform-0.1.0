@@ -1,5 +1,6 @@
 import { createHash } from 'crypto';
-import { DEFAULT, t } from './libs';
+import { DEFAULT } from './libs';
+import * as t from './types';
 
 type Q = Record<string, string | number | undefined>;
 
@@ -36,29 +37,30 @@ export function ensureHttps(url: string) {
 /**
  * Creates a common context object.
  */
-export function toCtx(fs: t.IFs, token: string, version?: number) {
+export function toCtx(fs: t.IFs, http: t.Http, token: string, version?: number) {
   token = (token ?? '').trim();
   if (!token) throw new Error(`A Vercel authorization token not provided.`);
 
   const Authorization = `Bearer ${token}`;
   const headers = { Authorization };
 
-  const ctx = {
+  const ctx: t.Ctx = {
     version: version ?? DEFAULT.version,
     token,
     headers,
     Authorization,
-    url(path: string, query?: Q, options: { version?: number } = {}) {
+    http,
+    fs,
+    url(path, query, options = {}) {
       return toUrl(options.version ?? ctx.version, path, query);
     },
-    fs,
   };
 
   return ctx;
 }
 
 /**
- * Generates a SHA1 digest.
+ * Generates a SHA1 digest hash.
  */
 export function shasum(data: Buffer) {
   return createHash('sha1').update(data).digest('hex');
