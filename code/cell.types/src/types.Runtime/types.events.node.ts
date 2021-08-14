@@ -4,11 +4,12 @@ type Id = string;
 type Tx = string;
 type Milliseconds = number;
 type Timestamp = number;
+type RuntimeInstanceId = string;
 
-export type RuntimeNodeProcessLifecycleStage = 'started' | 'completed' | 'killed';
 export type RuntimeNodeInfo = {
-  processes: { info: t.RuntimeNodeProcessInfo; startedAt: Timestamp }[];
+  processes: RuntimeNodeInfoProcess[];
 };
+export type RuntimeNodeInfoProcess = { info: t.RuntimeNodeProcessInfo; startedAt: Timestamp };
 
 export type RuntimeNodeProcessInfo = {
   tx: Tx;
@@ -25,7 +26,10 @@ export type RuntimeNodeProcessManifest = {
 export type RuntimeNodeEvents = t.Disposable & {
   runtime: Id;
   $: t.Observable<t.RuntimeNodeEvent>;
-  is: { base(input: any): boolean };
+  is: {
+    base(input: any): boolean;
+    lifecycle(stage: t.RuntimeRunStage): { ok: boolean; ended: boolean };
+  };
 
   /**
    * Retrieve status information about the runtime.
@@ -42,7 +46,7 @@ export type RuntimeNodeEvents = t.Disposable & {
      */
     lifecycle: {
       $: t.Observable<t.RuntimeNodeProcessLifecycle>;
-      fire(process: t.RuntimeNodeProcessInfo, stage: t.RuntimeNodeProcessLifecycleStage): void;
+      fire(process: t.RuntimeNodeProcessInfo, stage: t.RuntimeRunStage): void;
     };
 
     /**
@@ -51,6 +55,7 @@ export type RuntimeNodeEvents = t.Disposable & {
     kill: {
       req$: t.Observable<t.RuntimeNodeKillReq>;
       res$: t.Observable<t.RuntimeNodeKillRes>;
+      killed$: t.Observable<t.RuntimeNodeKilled>;
       fire(process: Tx, options?: { timeout?: Milliseconds }): Promise<RuntimeNodeKillRes>;
     };
   };
@@ -62,9 +67,10 @@ export type RuntimeNodeEvents = t.Disposable & {
 export type RuntimeNodeEvent =
   | RuntimeNodeInfoReqEvent
   | RuntimeNodeInfoResEvent
+  | RuntimeNodeProcessLifecycleEvent
   | RuntimeNodeKillReqEvent
   | RuntimeNodeKillResEvent
-  | RuntimeNodeProcessLifecycleEvent;
+  | RuntimeNodeKilledEvent;
 
 /**
  * Info
@@ -73,28 +79,18 @@ export type RuntimeNodeInfoReqEvent = {
   type: 'cell.runtime.node/info:req';
   payload: RuntimeNodeInfoReq;
 };
-export type RuntimeNodeInfoReq = { tx?: Tx; runtime: Id };
+export type RuntimeNodeInfoReq = { tx?: Tx; runtime: RuntimeInstanceId };
 
 export type RuntimeNodeInfoResEvent = {
   type: 'cell.runtime.node/info:res';
   payload: RuntimeNodeInfoRes;
 };
-export type RuntimeNodeInfoRes = { tx: Tx; runtime: Id; info?: RuntimeNodeInfo; error?: string };
-
-/**
- * Kills ("stops") a running process.
- */
-export type RuntimeNodeKillReqEvent = {
-  type: 'cell.runtime.node/kill:req';
-  payload: RuntimeNodeKillReq;
+export type RuntimeNodeInfoRes = {
+  tx: Tx;
+  runtime: RuntimeInstanceId;
+  info?: RuntimeNodeInfo;
+  error?: string;
 };
-export type RuntimeNodeKillReq = { tx?: Tx; runtime: Id; process: Tx };
-
-export type RuntimeNodeKillResEvent = {
-  type: 'cell.runtime.node/kill:res';
-  payload: RuntimeNodeKillRes;
-};
-export type RuntimeNodeKillRes = { tx: Tx; runtime: Id; error?: string };
 
 /**
  * Process lifecycle
@@ -104,7 +100,39 @@ export type RuntimeNodeProcessLifecycleEvent = {
   payload: RuntimeNodeProcessLifecycle;
 };
 export type RuntimeNodeProcessLifecycle = {
-  runtime: Id;
+  runtime: RuntimeInstanceId;
   process: t.RuntimeNodeProcessInfo;
-  stage: t.RuntimeNodeProcessLifecycleStage;
+  stage: t.RuntimeRunStage;
+};
+
+/**
+ * Kills ("stops") a running process.
+ */
+export type RuntimeNodeKillReqEvent = {
+  type: 'cell.runtime.node/kill:req';
+  payload: RuntimeNodeKillReq;
+};
+export type RuntimeNodeKillReq = { tx: Tx; runtime: RuntimeInstanceId; process: Tx };
+
+export type RuntimeNodeKillResEvent = {
+  type: 'cell.runtime.node/kill:res';
+  payload: RuntimeNodeKillRes;
+};
+export type RuntimeNodeKillRes = {
+  tx: Tx;
+  runtime: RuntimeInstanceId;
+  process?: t.RuntimeNodeProcessInfo;
+  elapsed: Milliseconds;
+  error?: string;
+};
+
+export type RuntimeNodeKilledEvent = {
+  type: 'cell.runtime.node/killed';
+  payload: RuntimeNodeKilled;
+};
+export type RuntimeNodeKilled = {
+  tx: Tx;
+  runtime: RuntimeInstanceId;
+  process: t.RuntimeNodeProcessInfo;
+  elapsed: Milliseconds;
 };

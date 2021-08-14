@@ -21,6 +21,28 @@ describe.only('NodeRuntime', () => {
   it('create (init)', () => {
     const runtime = NodeRuntime.create({ bus });
     expect(runtime.name).to.eql('cell.runtime.node');
+    expect(typeof runtime.id === 'string').to.eql(true);
+  });
+
+  it('dispose', () => {
+    const runtime = NodeRuntime.create({ bus });
+    expect(runtime.isDisposed).to.eql(false);
+
+    const count = {
+      runtime: 0,
+      events: 0,
+    };
+
+    runtime.dispose$.subscribe(() => count.runtime++);
+    runtime.events.dispose$.subscribe(() => count.events++);
+
+    runtime.dispose();
+    expect(runtime.isDisposed).to.eql(true);
+
+    runtime.dispose();
+    runtime.dispose();
+    expect(count.runtime).to.eql(1);
+    expect(count.events).to.eql(1);
   });
 
   it('node version', () => {

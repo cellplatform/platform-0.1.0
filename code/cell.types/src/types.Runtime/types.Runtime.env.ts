@@ -45,6 +45,9 @@ export type RuntimePullResponse = {
 /**
  * Run
  */
+export type RuntimeRunStage = 'started' | 'completed:ok' | 'completed:error' | 'killed';
+export type RuntimeRunLifecycle = { stage: RuntimeRunStage; is: { ok: boolean; ended: boolean } };
+
 export type RuntimeRunOptions = {
   in?: Partial<t.RuntimeIn>;
   pull?: boolean;
@@ -65,7 +68,12 @@ export type RuntimeRunResponse = {
   timeout: t.Timeout;
 };
 
-export type RuntimeRunPromise = P<RuntimeRunResponse> & { tx: Id };
+export type RuntimeRunPromise = P<RuntimeRunResponse> & {
+  tx: Id;
+  lifecyle$: t.Observable<RuntimeRunLifecycle>;
+  start$: t.Observable<RuntimeRunLifecycle>;
+  end$: t.Observable<RuntimeRunLifecycle>;
+};
 
 /**
  * Remove/Clear

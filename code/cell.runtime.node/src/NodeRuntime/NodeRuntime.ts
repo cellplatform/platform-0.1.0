@@ -1,7 +1,11 @@
+import { Subject } from 'rxjs';
+
 import { BundleWrapper } from '../BundleWrapper';
-import { fs, PATH, t, R } from '../common';
-import { pullMethod } from './pull';
-import { runMethod } from './run';
+import { BusController } from '../BusController';
+import { BusEvents } from '../BusEvents';
+import { fs, PATH, R, t, slug } from '../common';
+import { pullMethod } from './NodeRuntime.pull';
+import { runMethod } from './NodeRuntime.run';
 
 export const NodeRuntime = {
   /**
@@ -20,7 +24,20 @@ export const NodeRuntime = {
     stdlibs?: t.RuntimeNodeAllowedStdlib[] | '*';
   }) {
     const { bus } = args;
+    const id = `node:${slug()}`;
     const cachedir = args.cachedir || PATH.CACHE_DIR;
+    const events = BusEvents({ bus, runtime: id });
+    const controller = BusController({ bus, runtime: id });
+
+    const isDisposed = () => runtime.isDisposed;
+    const dispose$ = new Subject<void>();
+    const dispose = () => {
+      controller.dispose();
+      events.dispose();
+      runtime.isDisposed = true;
+      dispose$.next();
+      dispose$.complete();
+    };
 
     const stdlibs =
       typeof args.stdlibs === 'string'
@@ -28,17 +45,20 @@ export const NodeRuntime = {
         : R.uniq(args.stdlibs ?? []);
 
     const runtime: t.RuntimeEnvNode = {
+      id,
       name: 'cell.runtime.node',
       version: `node@${(process.version || '').replace(/^v/, '')}`,
       stdlibs,
+      events,
 
-      pull: pullMethod({ cachedir }),
-      run: runMethod({ bus, cachedir, stdlibs }),
+      pull: pullMethod({ cachedir, isDisposed }),
+      run: runMethod({ runtime: id, events, bus, cachedir, stdlibs, isDisposed }),
 
       /**
        * Determine if the given bundle has been pulled.
        */
       async exists(input) {
+        if (runtime.isDisposed) throw new Error('Runtime disposed');
         return BundleWrapper.create(input, cachedir).isCached();
       },
 
@@ -46,6 +66,7 @@ export const NodeRuntime = {
        * Delete the given bundle (if it exists).
        */
       async remove(input) {
+        if (runtime.isDisposed) throw new Error('Runtime disposed');
         const bundle = BundleWrapper.create(input, cachedir);
         const dir = bundle.cache.dir;
         let count = 0;
@@ -60,12 +81,20 @@ export const NodeRuntime = {
        * Remove all bundles.
        */
       async clear() {
+        if (runtime.isDisposed) throw new Error('Runtime disposed');
         const pattern = fs.join(cachedir, '*/*/*');
         const pulled = await fs.glob.find(pattern, { includeDirs: true });
         const count = pulled.length;
         await fs.remove(cachedir);
         return { count };
       },
+
+      /**
+       * Dispose
+       */
+      isDisposed: false,
+      dispose$,
+      dispose,
     };
 
     return runtime;
