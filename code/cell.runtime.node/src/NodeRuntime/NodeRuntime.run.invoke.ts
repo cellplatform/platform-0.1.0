@@ -125,7 +125,6 @@ export function invoke(args: {
       const code = await Vm.code(filename, { force: args.forceCache });
 
       preparationComplete(); // Stop the "preparation" timer.
-
       vm.run(code.script);
     } catch (error) {
       ok = false;

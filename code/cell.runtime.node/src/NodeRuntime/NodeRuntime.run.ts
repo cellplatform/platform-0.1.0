@@ -1,18 +1,27 @@
+import { Subject } from 'rxjs';
+import { takeUntil, filter, map } from 'rxjs/operators';
+
 import { BundleWrapper } from '../BundleWrapper';
-import { fs, log, Logger, PATH, t, deleteUndefined, DEFAULT, R, cuid } from '../common';
-import { pullMethod } from './pull';
-import { invoke } from './run.invoke';
+import { DEFAULT, deleteUndefined, fs, log, Logger, PATH, R, rx, slug, t, time } from '../common';
+import { pullMethod } from './NodeRuntime.pull';
+import { invoke } from './NodeRuntime.run.invoke';
+
+type Id = string;
 
 /**
  * Factory for the [run] method.
  */
 export function runMethod(args: {
+  runtime: Id;
   bus: t.EventBus<any>;
+  events: t.RuntimeNodeEvents;
   cachedir: string;
+  isDisposed: () => boolean;
   stdlibs?: t.RuntimeNodeAllowedStdlib[];
 }) {
-  const { bus, cachedir, stdlibs } = args;
-  const pull = pullMethod({ cachedir });
+  const { runtime, cachedir, stdlibs, isDisposed, events } = args;
+  const bus = rx.busAsType<t.RuntimeNodeEvent>(args.bus);
+  const pull = pullMethod({ cachedir, isDisposed });
 
   /**
    * Pull and run the given bundle.
@@ -21,15 +30,24 @@ export function runMethod(args: {
     bundleInput: t.RuntimeBundleOrigin,
     options: t.RuntimeRunOptions = {},
   ) => {
-    const tx = cuid();
+    if (isDisposed()) throw new Error('Runtime disposed');
+
+    const timer = time.timer();
+    const tx = `process:${slug()}`;
+    const lifecycle = events.process.lifecycle;
+
+    let isDone = false;
+    const done$ = new Subject<void>();
+    done$.subscribe(() => (isDone = true));
+
     const promise = new Promise<t.RuntimeRunResponse>(async (resolve, reject) => {
+      let elapsed = { prep: -1, run: -1 }; // NB: Returned from "run" execution.
+
       const { silent, hash } = options;
       const timeout = wrangleTimeout(options.timeout);
       const bundle = BundleWrapper.create(bundleInput, cachedir);
       const exists = await bundle.isCached();
       const isPullRequired = !exists || options.pull;
-
-      let elapsed = { prep: -1, run: -1 };
 
       const errors: t.IRuntimeError[] = [];
       const addError = (message: string, stack?: string) =>
@@ -42,13 +60,37 @@ export function runMethod(args: {
           }),
         );
 
-      const done = (out?: t.RuntimeOut) => {
-        const ok = errors.length === 0;
-        out = out || { info: R.clone(DEFAULT.INFO) };
-        resolve({ tx, ok, entry, out, errors, manifest, elapsed, timeout });
+      const done = (options: { out?: t.RuntimeOut; stage?: t.RuntimeRunStage } = {}) => {
+        if (!isDone) {
+          const ok = errors.length === 0;
+          const stage = options.stage ?? ok ? 'completed:ok' : 'completed:error';
+          const out = options.out ?? { info: R.clone(DEFAULT.INFO) };
+
+          lifecycle.fire(process, stage);
+          done$.next();
+          done$.complete();
+
+          resolve({ tx, ok, entry, out, errors, manifest, elapsed, timeout });
+        }
       };
 
-      // Ensure the bundle has been pulled locally.
+      /**
+       * Monitor "kill" requests.
+       */
+      events.process.kill.req$.pipe(takeUntil(done$)).subscribe((e) => {
+        addError('Process killed');
+        done({ stage: 'killed' });
+        const msec = timer.elapsed.msec;
+        elapsed.run = msec;
+        bus.fire({
+          type: 'cell.runtime.node/killed',
+          payload: { tx: e.tx ?? slug(), runtime, process, elapsed: msec },
+        });
+      });
+
+      /**
+       * Ensure the bundle has been pulled locally.
+       */
       if (isPullRequired) {
         const res = await pull(bundleInput, { silent });
         errors.push(...res.errors);
@@ -57,6 +99,9 @@ export function runMethod(args: {
         }
       }
 
+      /**
+       * Retrieve manifest.
+       */
       const loadManifest = async () => {
         const path = fs.join(bundle.cache.dir, PATH.MANIFEST);
         const exists = await fs.pathExists(path);
@@ -78,12 +123,18 @@ export function runMethod(args: {
       };
 
       const manifest = await loadManifest();
+      const process: t.RuntimeNodeProcessInfo = {
+        tx,
+        manifest: manifest ? { hash: manifest.hash, module: manifest.module } : undefined,
+      };
       if (!manifest) {
         return done();
       }
-
       const entry = (options.entry || manifest.module.entry || '').trim().replace(/^\/*/, '');
 
+      /**
+       * Output log.
+       */
       if (!silent) {
         const { yellow, gray, cyan, white, green } = log;
         const module = manifest.module;
@@ -108,13 +159,15 @@ export function runMethod(args: {
         Logger.hr().newline();
       }
 
-      // Execute the code.
-      const dir = bundle.cache.dir;
+      /**
+       * Execute the code (within "sandbox" VM).
+       */
+      lifecycle.fire(process, 'started');
       const res = await invoke({
         tx,
         bus,
         manifest,
-        dir,
+        dir: bundle.cache.dir,
         silent,
         in: options.in,
         timeout,
@@ -127,12 +180,24 @@ export function runMethod(args: {
       res.errors.forEach((err) => addError(err.message, err.stack));
 
       // Finish up.
-      return done(res.out);
+      return done({ out: res.out });
     });
 
-    type P = t.RuntimeRunPromise;
-    (promise as P).tx = tx;
-    return promise as P;
+    /**
+     * Decorate return promise with additional context.
+     */
+    const res = promise as t.RuntimeRunPromise;
+    res.tx = tx;
+    res.lifecyle$ = lifecycle.$.pipe(
+      takeUntil(done$),
+      filter((e) => e.process.tx === tx),
+      map(({ stage }) => ({ stage, is: events.is.lifecycle(stage) })),
+    );
+    res.start$ = res.lifecyle$.pipe(filter((e) => e.stage === 'started'));
+    res.end$ = res.lifecyle$.pipe(filter((e) => e.is.ended));
+
+    // Finish up.
+    return res;
   };
 
   return fn;

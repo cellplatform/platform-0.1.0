@@ -4,13 +4,15 @@ import { fs, HttpClient, log, Logger, Path, t, slug, deleteUndefined, PATH } fro
 /**
  * Factory for the [pull] method.
  */
-export function pullMethod(args: { cachedir: string }) {
-  const { cachedir } = args;
+export function pullMethod(args: { cachedir: string; isDisposed: () => boolean }) {
+  const { cachedir, isDisposed } = args;
 
   /**
    * Pull the given bundle.
    */
   const fn: t.RuntimeEnvNode['pull'] = async (input, options = {}) => {
+    if (isDisposed()) throw new Error('Runtime disposed');
+
     const { silent } = options;
     const bundle = BundleWrapper.create(input, cachedir);
     const host = bundle.host;
