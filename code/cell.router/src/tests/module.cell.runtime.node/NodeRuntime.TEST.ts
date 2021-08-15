@@ -1,4 +1,7 @@
-import { Compiler, expect, fs, Schema, t, TestCompile, rx } from '../../test';
+import { firstValueFrom, timeout } from 'rxjs';
+import { delay, filter } from 'rxjs/operators';
+
+import { Compiler, expect, fs, rx, Schema, t, TestCompile } from '../../test';
 import { ISampleNodeInValue, ISampleNodeOutValue } from './sample.NodeRuntime/types';
 import { getManifest, noManifestFilter, prepare, uploadBundle } from './util';
 
@@ -10,6 +13,7 @@ const ENTRY = {
   PIPE: './src/tests/module.cell.runtime.node/sample.pipe',
   V1: './src/tests/module.cell.runtime.node/sample.v1',
   V2: './src/tests/module.cell.runtime.node/sample.v2',
+  LONG_RUNNING: './src/tests/module.cell.runtime.node/sample.longrunning',
 };
 
 export const Samples = {
@@ -28,6 +32,11 @@ export const Samples = {
   pipe: TestCompile.make(
     'pipe',
     Compiler.config('pipe').namespace('sample').target('node').entry(`${ENTRY.PIPE}/main`),
+  ),
+
+  longRunning: TestCompile.make(
+    'longrunning',
+    Compiler.config().namespace('longrunning').target('node').entry(`${ENTRY.LONG_RUNNING}/main`),
   ),
 
   v1: TestCompile.make(
@@ -354,7 +363,8 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const { mock, runtime, bundle, client } = prep;
       await uploadBundle(client, Samples.node.outdir, bundle);
 
-      let events: E[] = [];
+      type L = t.RuntimeNodeProcessLifecycleEvent;
+      let events: (E | L)[] = [];
       bus.$.subscribe((e) => events.push(e));
 
       const run = (repeatDone?: number) => {
@@ -363,14 +373,20 @@ describe('cell.runtime.node: NodeRuntime', function () {
       };
 
       await run();
-      expect(events).to.eql([{ type: 'foo', payload: { count: 1 } }]);
+
+      expect(events.length).to.eql(3);
+      expect(events[0].type === 'cell.runtime.node/lifecycle').to.eql(true);
+      expect(events[1].type === 'foo').to.eql(true);
+      expect(events[2].type === 'cell.runtime.node/lifecycle').to.eql(true);
 
       events = [];
       await run(5);
       await mock.dispose();
 
-      expect(events.length).to.eql(5);
-      expect(events.map((e) => e.payload.count)).to.eql([1, 2, 3, 4, 5]);
+      const foos = events.filter((e) => e.type === 'foo').map((e) => e.payload as E['payload']);
+
+      expect(foos.length).to.eql(5);
+      expect(foos.map((e) => e.count)).to.eql([1, 2, 3, 4, 5]);
     });
 
     it('timeout', async () => {
@@ -516,6 +532,80 @@ describe('cell.runtime.node: NodeRuntime', function () {
       await test('foo');
       await test('foo/bar');
       await test();
+    });
+  });
+
+  describe('bus (events)', () => {
+    it('lifecycle: "started" => "completed"', async () => {
+      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      await uploadBundle(client, Samples.node.outdir, bundle);
+
+      const events: t.RuntimeNodeProcessLifecycle[] = [];
+      runtime.events.process.lifecycle.$.subscribe((e) => events.push(e));
+
+      await runtime.run(bundle, { silent: true, in: { value: {} } });
+      await mock.dispose();
+
+      expect(events.length).to.eql(2);
+      expect(events[0].runtime).to.eql(runtime.id);
+
+      expect(events[0].stage).to.eql('started');
+      expect(events[1].stage).to.eql('completed:ok');
+    });
+
+    it('lifecycle$', async () => {
+      const force = false;
+      await Samples.longRunning.bundle(force);
+
+      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      await uploadBundle(client, Samples.longRunning.outdir, bundle);
+
+      const info1 = await runtime.events.info.get();
+      expect(info1.runtime).to.eql(runtime.id);
+      expect(info1.info?.processes.length).to.eql(0);
+
+      const process = runtime.run(bundle, { silent: true, timeout: 50 });
+      await firstValueFrom(process.start$);
+
+      const info2 = await runtime.events.info.get();
+      const processes = info2.info?.processes ?? [];
+      expect(processes.length).to.eql(1);
+      expect(processes[0].info.tx).to.eql(process.tx);
+
+      const done = await firstValueFrom(process.end$);
+      await mock.dispose();
+
+      expect(done.stage).to.eql('completed:error'); // Timeout
+      expect(done.is.ended).to.eql(true);
+      expect(done.is.ok).to.eql(false);
+    });
+
+    it('kill', async () => {
+      const force = false;
+      await Samples.longRunning.bundle(force);
+
+      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      await uploadBundle(client, Samples.longRunning.outdir, bundle);
+
+      const process = runtime.run(bundle, { silent: true, timeout: 'never' });
+      await firstValueFrom(process.start$);
+
+      const info1 = await runtime.events.info.get();
+      expect(info1.info?.processes.length).to.eql(1);
+
+      const killed = await runtime.events.process.kill.fire(process.tx);
+      const res = await process;
+
+      await mock.dispose();
+
+      expect(killed.runtime).to.eql(runtime.id);
+      expect(killed.elapsed).to.greaterThan(1);
+      expect(killed.process?.tx).to.eql(process.tx);
+      expect(killed.process?.manifest?.module.namespace).to.eql('longrunning');
+
+      expect(res.ok).to.eql(false);
+      expect(res.errors[0].message).to.include('Process killed');
+      expect(res.elapsed.run).to.eql(killed.elapsed);
     });
   });
 });
