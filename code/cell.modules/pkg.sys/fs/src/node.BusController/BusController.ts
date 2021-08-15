@@ -4,13 +4,10 @@ import { BusEvents, DEFAULT, rx, slug, t } from './common';
  * Event controller.
  */
 export function BusController(args: {
-  fs: t.IPosixFs;
   bus: t.EventBus<any>;
-  filter?: (e: t.VercelEvent) => boolean;
-  version?: number;
+  filter?: (e: t.SysFsEvent) => boolean;
 }) {
-  const { version = DEFAULT.version } = args;
-  const bus = rx.busAsType<t.VercelEvent>(args.bus);
+  const bus = rx.busAsType<t.SysFsEvent>(args.bus);
   const events = BusEvents({ bus, filter: args.filter });
   const { dispose, dispose$ } = events;
 
@@ -20,18 +17,15 @@ export function BusController(args: {
   events.info.req$.subscribe((e) => {
     const { tx = slug() } = e;
 
-    const info: t.VercelInfo = {
-      endpoint: { version },
+    const info: t.SysFsInfo = {
+      //
     };
 
     bus.fire({
-      type: 'vendor.vercel/info:res',
+      type: 'sys.fs/info:res',
       payload: { tx, info },
     });
   });
 
-  /**
-   * API
-   */
   return { dispose, dispose$ };
 }

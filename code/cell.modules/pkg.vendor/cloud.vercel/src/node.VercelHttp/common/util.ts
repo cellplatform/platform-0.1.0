@@ -37,7 +37,7 @@ export function ensureHttps(url: string) {
 /**
  * Creates a common context object.
  */
-export function toCtx(fs: t.IFs, http: t.Http, token: string, version?: number) {
+export function toCtx(fs: t.IPosixFs, http: t.Http, token: string, version?: number) {
   token = (token ?? '').trim();
   if (!token) throw new Error(`A Vercel authorization token not provided.`);
 

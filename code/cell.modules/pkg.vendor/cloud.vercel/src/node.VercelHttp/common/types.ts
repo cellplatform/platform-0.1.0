@@ -1,8 +1,8 @@
-import { IFs, Http, HttpMethod } from '../../node/common/types';
+import { IPosixFs, Http, HttpMethod } from '../../node/common/types';
 
 export * from '../../web/common/types';
 export * from '../types';
-export { IFs, Http, HttpMethod };
+export { IPosixFs, Http, HttpMethod };
 
 /**
  * Internal
@@ -15,7 +15,7 @@ export type Ctx = {
   token: string;
   headers: { [key: string]: string };
   Authorization: string;
-  fs: IFs;
+  fs: IPosixFs;
   http: Http;
   url(path: string, query?: Q, options?: { version?: number }): string;
 };
