@@ -1,4 +1,4 @@
-import { s3 } from '..';
+import { FilesystemS3 } from '..';
 import { fs } from '../common';
 
 export const writeFile = async (path: string, data: Buffer) => {
@@ -25,7 +25,7 @@ export function init(PROVIDER: string, root?: string) {
     BUCKET: bucket,
     ROOT,
     PATH,
-    fs: s3.init({ dir: ROOT, endpoint, accessKey, secret }),
+    fs: FilesystemS3({ dir: ROOT, endpoint, accessKey, secret }),
   };
 }
 
