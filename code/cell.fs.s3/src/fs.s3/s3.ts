@@ -1,5 +1,4 @@
 import { t, fs, path, Schema, util } from '../common';
-import { parse as parseUrl } from 'url';
 
 export * from '../types';
 export type IS3Init = t.S3Config & { dir: string };
@@ -10,6 +9,7 @@ export type IS3Init = t.S3Config & { dir: string };
  *  - AWS "S3"
  *  - DigitalOcean "Spaces"
  *  - Wasabi
+ *  - (etc)
  */
 export function init(args: IS3Init): t.IFsS3 {
   const cloud = (() => {
@@ -29,7 +29,7 @@ export function init(args: IS3Init): t.IFsS3 {
     return { path, s3, bucket };
   })();
 
-  const trimHost = (input: string) => parseUrl(input, false).path || '';
+  const trimHost = (input: string) => new URL(input).pathname;
 
   const getReadParams = (uri: string) => {
     uri = (uri || '').trim();
@@ -63,7 +63,7 @@ export function init(args: IS3Init): t.IFsS3 {
         options?.type === 'DEFAULT' || options?.type === 'SIGNED/get'
           ? options.endpoint
           : undefined;
-      const key = path.resolve({ uri, dir: api.dir });
+      const key = path.resolveUri({ uri, dir: api.dir });
 
       if (type === 'SIGNED/get') {
         const url = cloud.s3
