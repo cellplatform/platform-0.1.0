@@ -1,12 +1,12 @@
 import { expect, fs } from '../test';
-import { hash } from '.';
+import { Hash } from '.';
 
 describe('hash', () => {
   it('sha256', async () => {
     const buffer = await fs.readFile(fs.resolve('src/test/images/kitten.jpg'));
 
     const test = (input: any, expected: string) => {
-      const res = hash.sha256(input);
+      const res = Hash.sha256(input);
       // console.log(res.substring(res.length - 10));
 
       expect(res).to.match(/^sha256-/);

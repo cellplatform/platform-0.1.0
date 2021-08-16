@@ -8,4 +8,4 @@ export * from './Encoding';
 export * from './Squash';
 export * from './Manifest';
 
-export { ERROR, Mime, hash } from './common';
+export { ERROR, Mime, Hash } from './common';

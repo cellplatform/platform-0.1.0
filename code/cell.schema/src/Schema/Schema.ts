@@ -1,4 +1,4 @@
-import { cuid, slug, t, hash, coord, Mime } from '../common';
+import { cuid, slug, t, Hash, coord, Mime } from '../common';
 import { FileSchema } from '../Fs';
 import { RefSchema } from '../Ref';
 import { Uri } from '../Uri';
@@ -23,7 +23,7 @@ export const Schema = {
 
   cuid,
   slug,
-  hash,
+  Hash,
   coord,
   encoding: Encoding,
   Squash,

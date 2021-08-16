@@ -153,7 +153,7 @@ export function init(args: IS3Init): t.IFsS3 {
             location,
             data: res.data,
             get hash() {
-              return Schema.hash.sha256(res.data);
+              return Schema.Hash.sha256(res.data);
             },
             get bytes() {
               return Uint8Array.from(file.data).length;
@@ -176,7 +176,7 @@ export function init(args: IS3Init): t.IFsS3 {
      */
     async write(
       uri: string,
-      data: Buffer,
+      data: Uint8Array,
       options: { filename?: string; permission?: t.FsS3Permission } = {},
     ): Promise<t.IFsWriteS3> {
       if (!data) {
@@ -203,7 +203,7 @@ export function init(args: IS3Init): t.IFsS3 {
         location: '',
         data,
         get hash() {
-          return hash || (hash = Schema.hash.sha256(data));
+          return hash || (hash = Schema.Hash.sha256(data));
         },
         get bytes() {
           return Uint8Array.from(file.data).length;
