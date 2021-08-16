@@ -1,7 +1,7 @@
-import { s3 } from '@platform/cell.fs.s3';
+import { FilesystemS3 } from '@platform/cell.fs.s3';
 import { MongoDb } from '@platform/fsdb.mongo';
 
-import { Server, t, time } from './common';
+import { Server, t, time, rx } from './common';
 import { IS_CLOUD, SECRETS } from './constants';
 import { NodeRuntime } from '@platform/cell.runtime.node';
 import { authorize } from './auth';
@@ -9,7 +9,7 @@ import { authorize } from './auth';
 /**
  * Cell: FileSystem
  */
-const fs = s3.init({
+const fs = FilesystemS3({
   dir: '__S3_ROOT__',
   endpoint: { origin: '__S3_ORIGIN__', edge: '__S3_EDGE__' },
   accessKey: SECRETS.S3.KEY,
@@ -28,7 +28,8 @@ const db: t.IDb = MongoDb.create({
 /**
  * Cell: Runtime (Functions)
  */
-const runtime = NodeRuntime.create();
+const bus = rx.bus();
+const runtime = NodeRuntime.create({ bus });
 
 /**
  * Cell: System Server.

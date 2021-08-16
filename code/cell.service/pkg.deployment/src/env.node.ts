@@ -1,9 +1,9 @@
 import { local } from '@platform/cell.fs.local';
-import { s3 } from '@platform/cell.fs.s3';
+import { FilesystemS3 } from '@platform/cell.fs.s3';
 import { NeDb } from '@platform/fsdb.nedb';
 import { NodeRuntime } from '@platform/cell.runtime.node';
 
-import { Server, util } from './common';
+import { Server, util, rx } from './common';
 import { authorize } from './auth';
 
 util.env.load();
@@ -22,7 +22,7 @@ const filesystem = {
   local: () => local.init({ dir: `${TMP}/fs`, fs: util.fs }),
 
   spaces: () =>
-    s3.init({
+    FilesystemS3({
       dir: 'platform/tmp/test.http',
       endpoint: {
         origin: 'sfo2.digitaloceanspaces.com',
@@ -33,7 +33,7 @@ const filesystem = {
     }),
 
   wasabi: () =>
-    s3.init({
+    FilesystemS3({
       dir: 'cell/tmp/test.http',
       endpoint: 's3.us-west-1.wasabisys.com',
       accessKey: util.env.value('WASABI_KEY'),
@@ -44,7 +44,8 @@ const filesystem = {
 /**
  * Function Runtime.
  */
-const runtime = NodeRuntime.create();
+const bus = rx.bus();
+const runtime = NodeRuntime.create({ bus });
 
 /**
  * Initialize and start the HTTP application server.

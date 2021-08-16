@@ -4,7 +4,7 @@ import { log } from '@platform/log/lib/server';
 
 export { t, fs, log };
 export { Server } from '@platform/cell.service/lib/node/server';
-export { time } from '@platform/util.value';
+export { time, rx } from '@platform/util.value';
 
 export const env = fs.env;
 export const resolve = fs.resolve;
