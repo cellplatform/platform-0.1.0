@@ -40,7 +40,7 @@ export function BusEvents(args: {
         info.res$.pipe(
           filter((e) => e.tx === tx),
           timeout(msecs),
-          catchError(() => of(`[SysFsInfo] request timed out after ${msecs} msecs`)),
+          catchError(() => of(`[SysFs.Info] request timed out after ${msecs} msecs`)),
         ),
       );
 
@@ -50,11 +50,68 @@ export function BusEvents(args: {
       });
 
       const res = await first;
-      return typeof res === 'string' ? { tx, id, error: res } : res;
+      return typeof res === 'string'
+        ? { tx, id, error: { code: 'client/timeout', message: res } }
+        : res;
     },
   };
 
-  return { id, $, is, dispose, dispose$, info };
+  type IO = t.SysFsEvents['io'];
+  const read: IO['read'] = {
+    req$: rx.payload<t.SysFsReadReqEvent>($, 'sys.fs/read:req'),
+    res$: rx.payload<t.SysFsReadResEvent>($, 'sys.fs/read:res'),
+    async get(path, options = {}) {
+      const { timeout: msecs = 3000 } = options;
+      const tx = slug();
+
+      const first = firstValueFrom(
+        read.res$.pipe(
+          filter((e) => e.tx === tx),
+          timeout(msecs),
+          catchError(() => of(`[SysFs.Read] request timed out after ${msecs} msecs`)),
+        ),
+      );
+
+      bus.fire({ type: 'sys.fs/read:req', payload: { tx, id, path } });
+      const res = await first;
+
+      if (typeof res === 'string')
+        return { tx, id, files: [], error: { code: 'client/timeout', message: res } };
+
+      const { files, error } = res;
+      return { files, error };
+    },
+  };
+
+  const write: IO['write'] = {
+    req$: rx.payload<t.SysFsWriteReqEvent>($, 'sys.fs/write:req'),
+    res$: rx.payload<t.SysFsWriteResEvent>($, 'sys.fs/write:res'),
+    async fire(file, options = {}) {
+      const { timeout: msecs = 3000 } = options;
+      const tx = slug();
+
+      const first = firstValueFrom(
+        write.res$.pipe(
+          filter((e) => e.tx === tx),
+          timeout(msecs),
+          catchError(() => of(`[SysFs.Write] request timed out after ${msecs} msecs`)),
+        ),
+      );
+
+      bus.fire({ type: 'sys.fs/write:req', payload: { tx, id, file } });
+      const res = await first;
+
+      if (typeof res === 'string')
+        return { tx, id, files: [], error: { code: 'client/timeout', message: res } };
+
+      const { files, error } = res;
+      return { files, error };
+    },
+  };
+
+  const io: IO = { read, write };
+
+  return { id, $, is, dispose, dispose$, info, io };
 }
 
 /**

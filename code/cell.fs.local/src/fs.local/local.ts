@@ -72,7 +72,7 @@ export function init(args: { dir: string; fs: t.IPosixFs }): t.IFsLocal {
           location,
           data,
           get hash() {
-            return Schema.hash.sha256(data);
+            return Schema.Hash.sha256(data);
           },
           get bytes() {
             return Uint8Array.from(file.data).length;
@@ -92,7 +92,7 @@ export function init(args: { dir: string; fs: t.IPosixFs }): t.IFsLocal {
     /**
      * Write to the local file-system.
      */
-    async write(uri: string, data: Buffer): Promise<t.IFsWriteLocal> {
+    async write(uri: string, data: Uint8Array): Promise<t.IFsWriteLocal> {
       if (!data) {
         throw new Error(`Cannot write, no data provided.`);
       }
@@ -105,7 +105,7 @@ export function init(args: { dir: string; fs: t.IPosixFs }): t.IFsLocal {
         location,
         data,
         get hash() {
-          return Schema.hash.sha256(data);
+          return Schema.Hash.sha256(data);
         },
         get bytes() {
           return Uint8Array.from(file.data).length;
