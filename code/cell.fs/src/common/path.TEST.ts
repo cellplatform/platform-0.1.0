@@ -4,7 +4,7 @@ import { path } from '.';
 describe('path', () => {
   it('throw on invalid URI', () => {
     const test = (uri: any) => {
-      const fn = () => path.resolve({ uri, dir: '/tmp' });
+      const fn = () => path.resolveUri({ uri, dir: '/tmp' });
       expect(fn).to.throw(/Invalid URI/);
     };
 
@@ -18,7 +18,7 @@ describe('path', () => {
 
   it('throw if not root path provided', () => {
     const test = (dir: any) => {
-      const fn = () => path.resolve({ uri: 'file:foo:123', dir });
+      const fn = () => path.resolveUri({ uri: 'file:foo:123', dir });
       expect(fn).to.throw(/Invalid root directory path/);
     };
     test(undefined);
@@ -28,7 +28,7 @@ describe('path', () => {
 
   it('resolve URI as path', () => {
     const test = (uri: string, dir: string, expected: string) => {
-      const res = path.resolve({ uri, dir });
+      const res = path.resolveUri({ uri, dir });
       expect(res).to.eql(`${dir}/${expected}`);
     };
     test('file:foo:123', '/tmp', 'ns.foo/123');
@@ -49,5 +49,19 @@ describe('path', () => {
     test(['foo/', '/bar'], 'foo/bar');
     test(['foo///', '///bar'], 'foo/bar');
     test(['/foo///', '///bar/'], '/foo/bar/');
+    test(['foo/bar'], 'foo/bar');
+    test(['foo/bar', 'baz'], 'foo/bar/baz');
+    test(['foo/bar/', 'baz/', '/boo/'], 'foo/bar/baz/boo/');
+
+    test(['foo/./bar', 'baz/'], 'foo/bar/baz/');
+
+    test(['foo/./bar'], 'foo/bar');
+    test(['foo/../bar'], 'bar');
+    test(['foo/../../bar'], '');
+    test(['foo/../../.././../bar'], '');
+    test(['.'], '');
+    test(['..'], '');
+    test(['../../.././../bar'], '');
+    test(['foo/bar/baz', '../.././zoo'], 'foo/zoo');
   });
 });

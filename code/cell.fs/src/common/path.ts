@@ -1,9 +1,11 @@
 import { Uri } from './libs';
 
+type FileUri = string;
+
 /**
- * Convert the given string to an absolute path.
+ * Convert the given "<file:...>" URI to an absolute path.
  */
-export function resolve(args: { uri: string; dir: string }) {
+export function resolveUri(args: { dir: string; uri: FileUri }) {
   const uri = (args.uri || '').trim();
   const dir = (args.dir || '').trim();
   const file = Uri.parse(uri);
@@ -29,16 +31,33 @@ export function resolve(args: { uri: string; dir: string }) {
  * Join multiple parts into a single "/" delimited path.
  * NB:
  *    This is a re-implementation of the native `join` method
- *    to allow this module to have no dependencies on the node 'fs'.
+ *    to allow this module to have no dependencies on platform node 'fs'.
  */
-export function join(...parts: string[]) {
-  return parts
-    .map((part, i) => {
-      const isFirst = i === 0;
-      const isLast = i === parts.length - 1;
-      part = isLast ? part : part.replace(/\/*$/, '');
-      part = isFirst ? part : part.replace(/^\/*/, '');
-      return part;
-    })
-    .join('/');
+export function join(...input: string[]) {
+  const parts = input.map((part, i) => {
+    const isFirst = i === 0;
+    const isLast = i === input.length - 1;
+    part = isLast ? part : part.replace(/\/*$/, '');
+    part = isFirst ? part : part.replace(/^\/*/, '');
+    return part;
+  });
+
+  const res: string[] = [];
+
+  // Rebuild path observing ".." level-navigation-dots.
+  for (const part of parts.join('/').split('/')) {
+    const trimmed = part.trim();
+    if (trimmed === '.') continue;
+    if (trimmed === '..') {
+      if (res.length === 0) {
+        break; // NB: Exit, we have "stepped up" above the root level.
+      } else {
+        res.pop(); // Step up a level.
+        continue;
+      }
+    }
+    res.push(part);
+  }
+
+  return res.join('/');
 }
