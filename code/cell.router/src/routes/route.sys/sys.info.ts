@@ -22,7 +22,7 @@ export function init(args: { router: t.Router; name?: string; deployedAt?: numbe
       system: system.version,
       deployedAt,
     };
-    data.hash = Schema.hash.sha256(data);
+    data.hash = Schema.Hash.sha256(data);
 
     return { status: 200, data };
   });

@@ -344,7 +344,7 @@ describe('cell.fs: upload', function () {
     const client = mock.client.cell('cell:foo:A1');
 
     const file = await readFile('src/test/assets/func.wasm');
-    const filehash = Schema.hash.sha256(file);
+    const filehash = Schema.Hash.sha256(file);
     const res = await client.fs.upload([{ filename: 'func.wasm', data: file }]);
 
     // Ensure before/after state of the uploaded file.
