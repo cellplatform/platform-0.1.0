@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.func.sys",
-  "version": "0.2.281",
+  "version": "0.2.282",
   "description": "Standard library of system functions.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,7 +13,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.types": "0.5.96",
+    "@platform/cell.types": "0.5.97",
     "@platform/libs": "0.2.12",
     "@platform/util.value": "0.9.8"
   },

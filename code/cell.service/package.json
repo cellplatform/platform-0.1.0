@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.service",
-  "version": "0.8.81",
+  "version": "0.8.82",
   "description": "HTTP micro-service for the operating system.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -24,10 +24,10 @@
     "cmd": "node lib/node.cli $@"
   },
   "dependencies": {
-    "@platform/cell.router": "0.9.43",
-    "@platform/cell.schema": "0.5.99",
-    "@platform/cell.types": "0.5.96",
-    "@platform/cell.typesystem": "0.0.218",
+    "@platform/cell.router": "0.9.44",
+    "@platform/cell.schema": "0.5.100",
+    "@platform/cell.types": "0.5.97",
+    "@platform/cell.typesystem": "0.0.219",
     "@platform/cli": "0.5.82",
     "@platform/exec": "0.3.10",
     "@platform/fs": "0.7.3",

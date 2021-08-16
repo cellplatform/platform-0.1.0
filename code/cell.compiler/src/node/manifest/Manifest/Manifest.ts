@@ -98,7 +98,7 @@ export const Manifest = {
     files(input: t.ManifestFile[] | t.Manifest) {
       const files = Array.isArray(input) ? input : input.files;
       const list = files.filter(Boolean).map((file) => file.filehash);
-      return Schema.hash.sha256(list);
+      return Schema.Hash.sha256(list);
     },
 
     /**
@@ -108,7 +108,7 @@ export const Manifest = {
       if (!(await fs.pathExists(path))) throw new Error(`File not found: ${path}`);
       if (!(await fs.is.file(path))) throw new Error(`Not a file: ${path}`);
       const file = await fs.readFile(path);
-      return Schema.hash.sha256(file);
+      return Schema.Hash.sha256(file);
     },
   },
 
@@ -183,7 +183,7 @@ export const Manifest = {
     const { model, baseDir } = args;
     const file = await fs.readFile(args.path);
     const bytes = file.byteLength;
-    const filehash = Schema.hash.sha256(file);
+    const filehash = Schema.Hash.sha256(file);
     const path = args.path.substring(baseDir.length + 1);
 
     return deleteUndefined({

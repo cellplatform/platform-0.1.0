@@ -120,13 +120,13 @@ describe('Manifest', function () {
     it('hash.files - [array]', () => {
       const file1: t.ManifestFile = { path: 'foo.txt', bytes: 1234, filehash: 'abc' };
       const file2: t.ManifestFile = { path: 'foo.txt', bytes: 1234, filehash: 'def' };
-      const hash = Schema.hash.sha256([file1.filehash, file2.filehash]);
+      const hash = Schema.Hash.sha256([file1.filehash, file2.filehash]);
       expect(Manifest.hash.files([file1, file2, undefined] as any)).to.eql(hash);
     });
 
     it('hash.files - {manifest}', async () => {
       const manifest = await Manifest.create({ dir: sourceDir });
-      const hash = Schema.hash.sha256(manifest.files.map((file) => file.filehash));
+      const hash = Schema.Hash.sha256(manifest.files.map((file) => file.filehash));
       expect(manifest.hash.files).to.eql(hash);
       expect(Manifest.hash.files(manifest)).to.eql(hash);
     });

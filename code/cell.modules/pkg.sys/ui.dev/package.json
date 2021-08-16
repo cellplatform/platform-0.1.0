@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.dev",
-  "version": "0.0.95",
+  "version": "0.0.96",
   "sideEffects": false,
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -22,7 +22,7 @@
     "public": "sh ./sh/ngrok.sh"
   },
   "dependencies": {
-    "@platform/cell.module": "^0.0.133",
+    "@platform/cell.module": "^0.0.134",
     "@platform/state": "^0.7.50",
     "@platform/ui.icon": "^0.0.200",
     "@platform/ui.spinner": "^0.0.197",
@@ -32,7 +32,7 @@
     "react-select": "^4.3.1"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.3.56",
+    "@platform/cell.compiler": "^0.3.61",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

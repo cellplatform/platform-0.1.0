@@ -80,7 +80,7 @@ export function uploadFiles(args: {
       const uploadStartBody: t.IReqPostCellFsUploadStartBody = {
         expires: undefined, // Expires.
         files: input.map((item) => {
-          const filehash = Schema.hash.sha256(item.data);
+          const filehash = Schema.Hash.sha256(item.data);
           const file: t.IReqPostCellUploadFile = {
             filehash,
             filename: item.filename,

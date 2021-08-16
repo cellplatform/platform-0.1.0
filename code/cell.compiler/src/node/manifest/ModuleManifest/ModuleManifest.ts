@@ -23,7 +23,7 @@ export const ModuleManifest = {
     module(input: t.ModuleManifest) {
       const files = Manifest.hash.files(input.files);
       const module = input.module;
-      return Schema.hash.sha256({ module, files });
+      return Schema.Hash.sha256({ module, files });
     },
   },
 
@@ -74,7 +74,7 @@ export const ModuleManifest = {
 
     const hash: t.ModuleManifestHash = {
       files: manifest.hash.files,
-      module: Schema.hash.sha256({ module, files: manifest.hash.files }),
+      module: Schema.Hash.sha256({ module, files: manifest.hash.files }),
     };
 
     return { kind: 'module', hash, module, files };

@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.runtime.electron-project",
-  "version": "0.0.214",
+  "version": "0.0.215",
   "description": "Runtime for desktop environments",
   "scripts": {
     "i": "cd A1 && yarn install",
@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@platform/ts": "4.1.21",
-    "@platform/cell.compiler": "0.3.56",
+    "@platform/cell.compiler": "0.3.61",
     "@types/minimist": "1.2.2",
     "minimist": "1.2.5",
     "ora": "5.4.1"

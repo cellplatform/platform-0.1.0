@@ -84,7 +84,7 @@ export async function buildPayload(args: {
   const wait = paths.map(async (localPath) => {
     const data = await fs.readFile(localPath);
     const localBytes = Uint8Array.from(data).length;
-    const localHash = Schema.hash.sha256(data);
+    const localHash = Schema.Hash.sha256(data);
 
     const filename = fs.basename(localPath);
     const dir = localPath

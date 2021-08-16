@@ -1,4 +1,4 @@
-import { Urls, Uri, t } from '../common';
+import { Uri, t } from '../common';
 
 export const ManifestUrl = {
   parse: ParseManifestUrl,
@@ -55,7 +55,6 @@ export function ParseManifestUrl(input: string): t.ManifestUrl {
   api.ok = !Boolean(api.error);
   return api;
 }
-
 
 /**
  * [Helpers]
