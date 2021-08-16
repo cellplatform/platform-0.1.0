@@ -4,6 +4,7 @@ import { Foo, FooProps } from '..';
 import { t, FsBus, rx } from '../../common';
 
 type Ctx = {
+  id: string;
   bus: t.EventBus<t.SysFsEvent>;
   events: t.SysFsEvents;
   props: FooProps;
@@ -17,10 +18,12 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
+    const id = 'my-fs';
     const bus = rx.bus<t.SysFsEvent>();
-    const events = FsBus.Events({ bus });
+    const events = FsBus.Events({ id, bus });
 
     const ctx: Ctx = {
+      id,
       bus,
       events,
       props: {},

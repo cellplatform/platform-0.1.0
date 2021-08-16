@@ -4,13 +4,17 @@ import { catchError, filter, takeUntil } from 'rxjs/operators';
 
 import { rx, slug, t } from './common';
 
+type FilesystemId = string;
+
 /**
  * Event API.
  */
 export function BusEvents(args: {
+  id: FilesystemId;
   bus: EventBus<any>;
   filter?: (e: t.SysFsEvent) => boolean;
 }): t.SysFsEvents {
+  const { id } = args;
   const { dispose, dispose$ } = rx.disposable();
   const bus = rx.busAsType<t.SysFsEvent>(args.bus);
   const is = BusEvents.is;
@@ -19,6 +23,7 @@ export function BusEvents(args: {
     takeUntil(dispose$),
     filter((e) => is.base(e)),
     filter((e) => args.filter?.(e) ?? true),
+    filter((e) => e.payload.id === id),
   );
 
   /**
@@ -41,15 +46,15 @@ export function BusEvents(args: {
 
       bus.fire({
         type: 'sys.fs/info:req',
-        payload: { tx },
+        payload: { tx, id },
       });
 
       const res = await first;
-      return typeof res === 'string' ? { tx, error: res } : res;
+      return typeof res === 'string' ? { tx, id, error: res } : res;
     },
   };
 
-  return { $, is, dispose, dispose$, info };
+  return { id, $, is, dispose, dispose$, info };
 }
 
 /**

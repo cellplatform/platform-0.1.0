@@ -1,3 +1,3 @@
 export * from '../../types';
-export * from '@platform/cell.types/lib/types.Manifest';
-export { JsonMap, Event, EventBus, Json } from '@platform/types';
+export { Json, JsonMap, Event, EventBus } from '@platform/types';
+export { IFsLocal } from '@platform/cell.types';
