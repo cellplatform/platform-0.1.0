@@ -9,10 +9,8 @@ export type SysFsInfo = {
   dir: string; // The root directory of the file-system scope.
 };
 export type SysFsFile = { path: FilePath; data: Uint8Array; hash: string };
-export type SysFsFileReadResponse =
-  | { ok: true; file: SysFsFile }
-  | { ok: false; error?: SysFsError };
-export type SysFsFileWriteResponse = { ok: boolean; path: FilePath; error?: SysFsError };
+export type SysFsFileReadResponse = { file?: SysFsFile; error?: SysFsError };
+export type SysFsFileWriteResponse = { path: FilePath; error?: SysFsError };
 
 export type SysFsError = { code: SysFsErrorCode; message: string };
 export type SysFsErrorCode = 'client/timeout' | 'read' | 'write';

@@ -1,7 +1,7 @@
 import { t, expect, rx, TestFs } from '../test';
 import { FsBus } from '.';
 
-describe.only('BusController', function () {
+describe('BusController', function () {
   this.timeout(30000);
 
   const bus = rx.bus<t.SysFsEvent>();
@@ -18,16 +18,12 @@ describe.only('BusController', function () {
 
     const controller = FsBus.Controller({ id, fs, bus });
     const events = FsBus.Events({ id, bus });
-    const { join, resolve } = TestFs.node;
 
     return {
       controller,
       events,
       dir: fs.dir,
-
       fs: TestFs.node,
-      join,
-      resolve,
 
       fileExists(path: string) {
         return TestFs.node.pathExists(TestFs.join(fs.dir, path));
@@ -40,7 +36,7 @@ describe.only('BusController', function () {
     };
   };
 
-  describe('Info (Module)', () => {
+  describe('info (module)', () => {
     it('defaults', async () => {
       const id = 'foo';
       const fs = TestFs.local;
@@ -67,7 +63,8 @@ describe.only('BusController', function () {
       controller.dispose();
 
       expect(res1.error).to.eql(undefined);
-      expect(res2.error).to.include('timed out');
+      expect(res2.error?.code).to.eql('client/timeout');
+      expect(res2.error?.message).to.include('timed out');
     });
 
     it('distinct (by filesystem "id")', async () => {
@@ -94,18 +91,52 @@ describe.only('BusController', function () {
   describe('io.read', () => {
     this.beforeEach(() => TestFs.reset());
 
-    it.only('reads file (single)', async () => {
+    it('reads file (single)', async () => {
       const mock = prep();
-
       await mock.fs.copy(
-        mock.resolve('static.test/child/tree.png'),
-        mock.join(mock.dir, 'images/grow.png'),
+        mock.fs.resolve('static.test/child/tree.png'),
+        mock.fs.join(mock.dir, 'images/tree.png'),
       );
 
-      const res = await mock.events.io.read.get('/images/grow.png');
+      const res = await mock.events.io.read.get('/images/tree.png');
       await mock.dispose();
 
-      console.log('res', res);
+      expect(res.error).to.eql(undefined);
+      expect(res.files.length).to.eql(1);
+
+      const files = res.files.map(({ file }) => file);
+      const original = await TestFs.readFile(mock.fs.join(mock.dir, 'images/tree.png'));
+
+      expect(files[0]?.hash).to.eql(original.hash);
+      expect(original.data.toString()).to.eql(files[0]?.data.toString());
+    });
+
+    it('reads files (multiple)', async () => {
+      const mock = prep();
+      await mock.fs.copy(
+        mock.fs.resolve('static.test/child/tree.png'),
+        mock.fs.join(mock.dir, 'images/tree.png'),
+      );
+      await mock.fs.copy(
+        mock.fs.resolve('static.test/child/kitten.jpg'),
+        mock.fs.join(mock.dir, 'images/kitten.jpg'),
+      );
+
+      const res = await mock.events.io.read.get(['/images/tree.png', 'images/kitten.jpg']);
+      await mock.dispose();
+
+      expect(res.error).to.eql(undefined);
+      expect(res.files.length).to.eql(2);
+
+      const files = res.files.map(({ file }) => file);
+      const original1 = await TestFs.readFile(mock.fs.join(mock.dir, 'images/tree.png'));
+      const original2 = await TestFs.readFile(mock.fs.join(mock.dir, 'images/kitten.jpg'));
+
+      expect(files[0]?.hash).to.eql(original1.hash);
+      expect(files[1]?.hash).to.eql(original2.hash);
+
+      expect(original1.data.toString()).to.eql(files[0]?.data.toString());
+      expect(original2.data.toString()).to.eql(files[1]?.data.toString());
     });
   });
 

@@ -48,23 +48,23 @@ export function BusController(args: {
 
       if (res.error) {
         const error: Error = { code: 'read', message: res.error.message };
-        return { ok: false, error };
+        return { error };
       }
 
       if (!res.file) {
-        const error: Error = { code: 'read', message: 'File not retrieved.' };
-        return { ok: false, error };
+        const error: Error = { code: 'read', message: `File not found. ${filepath}` };
+        return { error };
       }
 
       const { hash, data } = res.file;
+      const path = res.file.path;
       return {
-        ok: true,
-        file: { path: res.file.path, data, hash },
+        file: { path, data, hash },
       };
     };
 
     const files = await Promise.all(asArray(e.path).map(read));
-    const error: MaybeError = files.some((file) => Boolean(!file.ok))
+    const error: MaybeError = files.some((file) => Boolean(file.error))
       ? { code: 'read', message: 'Failed while reading' }
       : undefined;
 
@@ -88,7 +88,6 @@ export function BusController(args: {
         ? { code: 'write', message: res.error.message }
         : undefined;
       return {
-        ok: !Boolean(error),
         path: res.file.path.substring(fs.dir.length),
         error,
       };
