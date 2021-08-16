@@ -1,4 +1,5 @@
-import { path, Schema, t, util } from '../common';
+import { Schema, t, util } from '../common';
+import { FsLocalResolver } from './local.resolver';
 
 export * from '../types';
 
@@ -7,7 +8,7 @@ const LocalFile = Schema.File.Path.Local;
 /**
  * Initializes a "local" file-system API.
  */
-export function init(args: { dir: string; fs: t.IFs }): t.IFsLocal {
+export function init(args: { dir: string; fs: t.IPosixFs }): t.IFsLocal {
   const fs = args.fs;
   const dir = fs.resolve(args.dir);
   const root = dir;
@@ -23,30 +24,7 @@ export function init(args: { dir: string; fs: t.IFs }): t.IFsLocal {
     /**
      * Convert the given string to an absolute path.
      */
-    resolve(uri: string, options?: t.IFsResolveOptionsLocal): t.IFsLocation {
-      const type = options?.type ?? 'DEFAULT';
-
-      if (type === 'SIGNED/post') {
-        // NB: A local simulated end-point of an AWS/S3 "presignedPost" URL.
-        const args = options as t.S3SignedPostOptions;
-        const key = path.resolve({ uri, dir });
-        const mime = args.contentType || Schema.Mime.toType(key, 'application/octet-stream');
-        return {
-          path: Schema.Urls.routes.LOCAL.FS,
-          props: { 'content-type': mime, key },
-        };
-      }
-
-      if (type !== 'DEFAULT') {
-        const err = `Local file-system resolve only supports "DEFAULT" or "SIGNED/post" operation.`;
-        throw new Error(err);
-      }
-
-      return {
-        path: path.resolve({ uri, dir }),
-        props: {}, // NB: only relevant for S3 (pre-signed POST).
-      };
-    },
+    resolve: FsLocalResolver({ dir }),
 
     /**
      * Retrieve meta-data of a local file.
@@ -63,8 +41,8 @@ export function init(args: { dir: string; fs: t.IFs }): t.IFsLocal {
         exists,
         path,
         location,
-        hash: file ? file.hash : '',
-        bytes: file ? file.bytes : -1,
+        hash: file?.hash ?? '',
+        bytes: file?.bytes ?? -1,
       };
     },
 
