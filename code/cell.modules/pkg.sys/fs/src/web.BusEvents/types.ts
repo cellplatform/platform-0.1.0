@@ -8,12 +8,22 @@ export type SysFsInfo = {
   id: FilesystemId;
   dir: string; // The root directory of the file-system scope.
 };
+
+export type SysFsFileInfo = {
+  path: FilePath;
+  exists: boolean | null;
+  hash: string;
+  bytes: number;
+  error?: SysFsError;
+};
+
 export type SysFsFile = { path: FilePath; data: Uint8Array; hash: string };
+
 export type SysFsFileReadResponse = { file?: SysFsFile; error?: SysFsError };
 export type SysFsFileWriteResponse = { path: FilePath; error?: SysFsError };
 
 export type SysFsError = { code: SysFsErrorCode; message: string };
-export type SysFsErrorCode = 'client/timeout' | 'read' | 'write';
+export type SysFsErrorCode = 'client/timeout' | 'read' | 'write' | 'info';
 
 export type SysFsReadResponse = { files: SysFsFileReadResponse[]; error?: SysFsError };
 export type SysFsWriteResponse = { files: SysFsFileWriteResponse[]; error?: SysFsError };
@@ -29,7 +39,7 @@ export type SysFsEvents = t.Disposable & {
   info: {
     req$: t.Observable<t.SysFsInfoReq>;
     res$: t.Observable<t.SysFsInfoRes>;
-    get(options?: { timeout?: Milliseconds }): Promise<SysFsInfoRes>;
+    get(options?: { path?: FilePath | FilePath[]; timeout?: Milliseconds }): Promise<SysFsInfoRes>;
   };
 
   io: {
@@ -67,7 +77,7 @@ export type SysFsInfoReqEvent = {
   type: 'sys.fs/info:req';
   payload: t.SysFsInfoReq;
 };
-export type SysFsInfoReq = { tx: string; id: FilesystemId };
+export type SysFsInfoReq = { tx: string; id: FilesystemId; path?: FilePath | FilePath[] };
 
 export type SysFsInfoResEvent = {
   type: 'sys.fs/info:res';
@@ -76,7 +86,8 @@ export type SysFsInfoResEvent = {
 export type SysFsInfoRes = {
   tx: string;
   id: FilesystemId;
-  info?: t.SysFsInfo;
+  fs?: t.SysFsInfo;
+  files: t.SysFsFileInfo[];
   error?: SysFsError;
 };
 

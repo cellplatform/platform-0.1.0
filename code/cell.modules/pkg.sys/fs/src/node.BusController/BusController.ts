@@ -1,8 +1,9 @@
-import { Hash, BusEvents, DEFAULT, rx, slug, t, asArray } from './common';
+import { Hash, BusEvents, DEFAULT, rx, slug, t, asArray, Format } from './common';
 
 type FilesystemId = string;
 type Error = t.SysFsError;
 type MaybeError = Error | undefined;
+type FilePath = string;
 
 /**
  * Event controller.
@@ -22,17 +23,33 @@ export function BusController(args: {
   /**
    * Info (Module)
    */
-  events.info.req$.subscribe((e) => {
-    const { tx = slug() } = e;
+  events.info.req$.subscribe(async (e) => {
+    const { tx } = e;
 
     const info: t.SysFsInfo = {
       id,
       dir: fs.dir,
     };
 
+    const getFileInfo = async (filepath: FilePath): Promise<t.SysFsFileInfo> => {
+      try {
+        const uri = Format.path.ensurePrefix(filepath);
+        const res = await fs.info(uri);
+        const { exists, hash, bytes } = res;
+        const path = res.path.substring(fs.dir.length);
+        return { path, exists, hash, bytes };
+      } catch (err) {
+        const error: t.SysFsError = { code: 'info', message: err.message };
+        return { path: filepath, exists: null, hash: '', bytes: -1, error };
+      }
+    };
+
+    const paths = asArray(e.path ?? []);
+    const files = await Promise.all(paths.map(getFileInfo));
+
     bus.fire({
       type: 'sys.fs/info:res',
-      payload: { tx, id, info },
+      payload: { tx, id, fs: info, files },
     });
   });
 
@@ -43,7 +60,7 @@ export function BusController(args: {
     const { tx } = e;
 
     const read = async (filepath: string): Promise<t.SysFsFileReadResponse> => {
-      const { address } = formatPath(filepath);
+      const address = Format.path.ensurePrefix(filepath);
       const res = await fs.read(address);
 
       if (res.error) {
@@ -82,7 +99,7 @@ export function BusController(args: {
 
     const write = async (file: t.SysFsFile): Promise<t.SysFsFileWriteResponse> => {
       const { data } = file;
-      const { address } = formatPath(file.path);
+      const address = Format.path.ensurePrefix(file.path);
       const res = await fs.write(address, data);
       const error: MaybeError = res.error
         ? { code: 'write', message: res.error.message }
@@ -104,15 +121,5 @@ export function BusController(args: {
     });
   });
 
-  return { dispose, dispose$ };
-}
-
-/**
- * Helpers
- */
-
-function formatPath(input: string) {
-  const path = (input ?? '').trim().replace(/^path\:/, '');
-  const address = `path:${path}`;
-  return { path, address };
+  return { id, dispose, dispose$ };
 }

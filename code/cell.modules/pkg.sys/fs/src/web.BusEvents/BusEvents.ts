@@ -33,7 +33,7 @@ export function BusEvents(args: {
     req$: rx.payload<t.SysFsInfoReqEvent>($, 'sys.fs/info:req'),
     res$: rx.payload<t.SysFsInfoResEvent>($, 'sys.fs/info:res'),
     async get(options = {}) {
-      const { timeout: msecs = 3000 } = options;
+      const { timeout: msecs = 3000, path } = options;
       const tx = slug();
 
       const first = firstValueFrom(
@@ -46,12 +46,12 @@ export function BusEvents(args: {
 
       bus.fire({
         type: 'sys.fs/info:req',
-        payload: { tx, id },
+        payload: { tx, id, path },
       });
 
       const res = await first;
       return typeof res === 'string'
-        ? { tx, id, error: { code: 'client/timeout', message: res } }
+        ? { tx, id, files: [], error: { code: 'client/timeout', message: res } }
         : res;
     },
   };

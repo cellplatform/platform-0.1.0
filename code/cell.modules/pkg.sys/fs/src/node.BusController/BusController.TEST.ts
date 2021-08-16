@@ -1,4 +1,4 @@
-import { t, expect, rx, TestFs } from '../test';
+import { t, expect, rx, TestFs, Hash } from '../test';
 import { FsBus } from '.';
 
 describe('BusController', function () {
@@ -36,20 +36,16 @@ describe('BusController', function () {
     };
   };
 
-  describe('info (module)', () => {
-    it('defaults', async () => {
+  describe('controller', () => {
+    it('id', () => {
       const id = 'foo';
       const fs = TestFs.local;
       const controller = FsBus.Controller({ id, fs, bus });
-      const events = FsBus.Events({ id, bus });
-
-      const res = await events.info.get();
+      expect(controller.id).to.eql(id);
       controller.dispose();
-
-      expect(res.info?.dir).to.eql(TestFs.node.join(TestFs.tmp, 'root'));
     });
 
-    it('filter (controller)', async () => {
+    it('filter (global)', async () => {
       const id = 'foo';
       const fs = TestFs.local;
 
@@ -80,11 +76,93 @@ describe('BusController', function () {
       expect(info1.id).to.eql('one');
       expect(info2.id).to.eql('two');
 
-      expect(info1.info?.id).to.eql('one');
-      expect(info2.info?.id).to.eql('two');
+      expect(info1.fs?.id).to.eql('one');
+      expect(info2.fs?.id).to.eql('two');
 
-      expect(info1.info?.dir).to.match(/\/foo$/);
-      expect(info2.info?.dir).to.match(/\/bar$/);
+      expect(info1.fs?.dir).to.match(/\/foo$/);
+      expect(info2.fs?.dir).to.match(/\/bar$/);
+    });
+  });
+
+  describe('info (module)', () => {
+    it('defaults - no files', async () => {
+      const id = 'foo';
+      const fs = TestFs.local;
+      const controller = FsBus.Controller({ id, fs, bus });
+      const events = FsBus.Events({ id, bus });
+
+      const res = await events.info.get();
+      controller.dispose();
+
+      expect(res.id).to.eql(id);
+      expect(res.fs?.id).to.eql(id);
+      expect(res.fs?.dir).to.eql(TestFs.node.join(TestFs.tmp, 'root'));
+      expect(res.files).to.eql([]);
+      expect(res.error).to.eql(undefined);
+    });
+
+    it('not found', async () => {
+      const mock = prep();
+      const info = await mock.events.info.get({ path: '/foo/bar.js', timeout: 10 });
+      await mock.dispose();
+
+      expect(info.files.length).to.eql(1);
+
+      const file = info.files[0];
+      expect(file.exists).to.eql(false);
+      expect(file.hash).to.eql('');
+      expect(file.bytes).to.eql(-1);
+    });
+
+    it('single file', async () => {
+      const mock = prep();
+      const src = await TestFs.readFile('static.test/child/kitten.jpg');
+
+      const path = '  foo/bar/kitty.jpg   '; // NB: spacing trimmed.
+      await mock.events.io.write.fire({ path, hash: src.hash, data: src.data });
+
+      const info = await mock.events.info.get({ path, timeout: 10 });
+      await mock.dispose();
+      expect(info.files.length).to.eql(1);
+
+      expect(info.files[0].path).to.eql('/foo/bar/kitty.jpg'); // NB: starts at absolute "/"
+      expect(info.files[0].hash).to.eql(src.hash);
+      expect(info.files[0].bytes).to.eql(src.data.byteLength);
+    });
+
+    it('multiple files', async () => {
+      const mock = prep();
+      const src1 = await TestFs.readFile('static.test/child/kitten.jpg');
+      const src2 = await TestFs.readFile('static.test/child/tree.png');
+
+      const path1 = '/foo/bar/kitty.jpg';
+      const path2 = '/foo/bar/grow.png';
+      await mock.events.io.write.fire({ path: path1, hash: src1.hash, data: src1.data });
+      await mock.events.io.write.fire({ path: path2, hash: src2.hash, data: src2.data });
+
+      const info = await mock.events.info.get({ path: [path1, path2], timeout: 10 });
+      await mock.dispose();
+      expect(info.files.length).to.eql(2);
+
+      expect(info.files[0].path).to.eql(path1);
+      expect(info.files[0].hash).to.eql(src1.hash);
+      expect(info.files[0].bytes).to.eql(src1.data.byteLength);
+
+      expect(info.files[1].path).to.eql(path2);
+      expect(info.files[1].hash).to.eql(src2.hash);
+      expect(info.files[1].bytes).to.eql(src2.data.byteLength);
+    });
+
+    it('error: timeout', async () => {
+      const fs = TestFs.local;
+      const controller = FsBus.Controller({ id: 'foo', fs, bus });
+      const events = FsBus.Events({ id: 'bar', bus });
+
+      const res = await events.info.get({ timeout: 10 });
+      controller.dispose();
+
+      expect(res.error?.code).to.eql('client/timeout');
+      expect(res.error?.message).to.include('timed out');
     });
   });
 
