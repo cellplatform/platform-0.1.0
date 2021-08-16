@@ -67,15 +67,14 @@ export function init(args: { dir: string; fs: t.IPosixFs }): t.IFsLocal {
       // Load the file.
       try {
         const data = await fs.readFile(path);
+        const bytes = data.byteLength;
         const file: t.IFsFileData = {
           path,
           location,
           data,
+          bytes,
           get hash() {
             return Schema.Hash.sha256(data);
-          },
-          get bytes() {
-            return Uint8Array.from(file.data).length;
           },
         };
         return { ok: true, status: 200, uri, file };
@@ -100,15 +99,14 @@ export function init(args: { dir: string; fs: t.IPosixFs }): t.IFsLocal {
       uri = (uri || '').trim();
       const path = local.resolve(uri).path;
       const location = LocalFile.toAbsoluteLocation({ path, root });
+      const bytes = data.byteLength;
       const file: t.IFsFileData = {
         path,
         location,
         data,
+        bytes,
         get hash() {
           return Schema.Hash.sha256(data);
-        },
-        get bytes() {
-          return Uint8Array.from(file.data).length;
         },
       };
 
