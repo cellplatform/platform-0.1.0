@@ -2,6 +2,9 @@ import { IFsError } from '../types.Error';
 import { t } from '../common';
 
 type EmptyObject = Record<string, undefined>; // 🐷 NB: Used as a placeholder object.
+type FileUri = string;
+type FilePath = string;
+type FileAddress = FileUri | FilePath;
 
 export type FsType = FsTypeLocal | FsTypeS3;
 export type FsTypeLocal = 'LOCAL';
@@ -63,13 +66,30 @@ type IFsMembers<
 > = {
   type: Type;
   dir: string; // Root directory of the file-system.
-  resolve(uri: string, options?: ResolveOptions): IFsLocation;
-  info(uri: string): Promise<Info>;
-  read(uri: string): Promise<Read>;
-  write(uri: string, data: Uint8Array, options?: WriteOptions): Promise<Write>;
-  delete(uri: string | string[]): Promise<Delete>;
-  copy(sourceUri: string, targetUri: string, options?: CopyOptions): Promise<Copy>;
+  resolve: FsPathResolver<ResolveOptions>;
+  info: FsInfoMethod<Info>;
+  read: FsReadMethod<Read>;
+  write: FsWriteMethod<Write, WriteOptions>;
+  delete: FsDeleteMethod<Delete>;
+  copy: FsCopyMethod<Copy, CopyOptions>;
 };
+
+export type FsPathResolver<O extends IFsResolveOptions> = (uri: string, options?: O) => IFsLocation;
+export type FsInfoMethod<Info extends IFsMeta> = (address: FileAddress) => Promise<Info>;
+export type FsReadMethod<Read extends IFsRead> = (address: FileAddress) => Promise<Read>;
+export type FsWriteMethod<Write extends IFsWrite, WriteOptions extends IFsWriteOptions> = (
+  address: FileAddress,
+  data: Uint8Array,
+  options?: WriteOptions,
+) => Promise<Write>;
+export type FsDeleteMethod<Delete extends IFsDelete> = (
+  address: FileAddress | FileAddress[],
+) => Promise<Delete>;
+export type FsCopyMethod<Copy extends IFsCopy, CopyOptions extends IFsCopyOptions> = (
+  source: FileAddress,
+  target: FileAddress,
+  options?: CopyOptions,
+) => Promise<Copy>;
 
 /**
  * File-system Location (Resolve)
