@@ -1,6 +1,6 @@
 {
   "name": "sys.fs",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "sideEffects": false,
   "compiler": {
     "port": 3041

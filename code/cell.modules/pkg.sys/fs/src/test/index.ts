@@ -1,9 +1,9 @@
 export { expect } from '@platform/test';
-export * from '../node/common';
+export * from '../web/common';
 
 import { fs } from '@platform/fs';
 import { LocalFilesystem } from '@platform/cell.fs.local';
-import { Hash } from '@platform/cell.schema';
+import { Hash } from '../web/common';
 
 const tmp = fs.resolve('tmp');
 

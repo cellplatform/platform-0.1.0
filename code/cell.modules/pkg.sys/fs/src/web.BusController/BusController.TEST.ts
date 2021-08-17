@@ -1,7 +1,7 @@
 import { t, expect, rx, TestFs, Hash } from '../test';
 import { FsBus } from '.';
 
-describe.only('BusController', function () {
+describe('BusController', function () {
   this.timeout(30000);
 
   const bus = rx.bus<t.SysFsEvent>();
@@ -340,7 +340,7 @@ describe.only('BusController', function () {
     });
   });
 
-  describe.only('copy', () => {
+  describe('copy', () => {
     this.beforeEach(() => TestFs.reset());
 
     it('copy (single)', async () => {
