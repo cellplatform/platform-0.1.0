@@ -4,7 +4,7 @@ import { downloadFileByFileId } from './handler.download.byFileId';
 export async function downloadFileByName(args: {
   host: string;
   db: t.IDb;
-  fs: t.IFileSystem;
+  fs: t.IFilesystem;
   cellUri: string;
   filename: string;
   matchHash?: string;

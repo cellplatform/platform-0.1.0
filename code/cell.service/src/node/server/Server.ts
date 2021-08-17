@@ -13,7 +13,7 @@ export const Server = {
    */
   create(args: {
     db: t.IDb;
-    fs: t.IFileSystem;
+    fs: t.IFilesystem;
     runtime?: t.RuntimeEnv;
     name?: string;
     deployedAt?: number | string;
@@ -71,7 +71,7 @@ export const Server = {
  */
 export function create(args: {
   db: t.IDb;
-  fs: t.IFileSystem;
+  fs: t.IFilesystem;
   runtime?: t.RuntimeEnv;
   name?: string;
   deployedAt?: number | string;

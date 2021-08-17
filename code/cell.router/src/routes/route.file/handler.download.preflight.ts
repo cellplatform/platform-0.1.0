@@ -3,7 +3,7 @@ import { fileInfo } from './handler.info';
 
 export const downloadFilePreflight = async (args: {
   host: string;
-  fs: t.IFileSystem;
+  fs: t.IFilesystem;
   db: t.IDb;
   fileUri: string;
   filename?: string;

@@ -15,7 +15,7 @@ export type FsS3Permission = 'private' | 'public-read';
 /**
  * API
  */
-export type IFileSystem = IFilesystemS3 | IFsLocal;
+export type IFilesystem = IFilesystemS3 | IFsLocal;
 export type IFsLocal = IFsMembers<
   FsTypeLocal,
   IFsInfoLocal,

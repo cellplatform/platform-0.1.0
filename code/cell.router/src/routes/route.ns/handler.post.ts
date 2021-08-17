@@ -4,7 +4,7 @@ import * as util from './util';
 
 export async function postNs(args: {
   db: t.IDb;
-  fs: t.IFileSystem;
+  fs: t.IFilesystem;
   id: string;
   body: t.IReqPostNsBody;
   query: t.IReqQueryNsWrite;

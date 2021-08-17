@@ -3,7 +3,7 @@ import { models, t, util, Schema } from '../common';
 export async function fileInfo(args: {
   host: string;
   db: t.IDb;
-  fs: t.IFileSystem;
+  fs: t.IFilesystem;
   fileUri: string;
 }): Promise<t.IPayload<t.IResGetFile> | t.IErrorPayload> {
   const { db, fs, fileUri: uri, host } = args;

@@ -13,7 +13,7 @@ const { FILES, FILE } = routes.CELL.FS;
 /**
  * Routes for operating on a set of cell files.
  */
-export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.Router }) {
+export function init(args: { db: t.IDb; fs: t.IFilesystem; router: t.Router }) {
   const { db, fs, router } = args;
 
   /**

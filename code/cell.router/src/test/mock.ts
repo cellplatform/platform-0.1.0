@@ -8,7 +8,7 @@ import { port as portUtil } from './util.port';
 
 export type IMock = {
   db: t.IDb;
-  fs: t.IFileSystem;
+  fs: t.IFilesystem;
   app: t.Micro;
   router: t.Router;
   service: t.MicroService;

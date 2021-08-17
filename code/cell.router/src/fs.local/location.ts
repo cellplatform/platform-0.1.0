@@ -5,7 +5,7 @@ import { t, Schema } from '../common';
  * absolute-path form.
  */
 export function ensureAbsoluteLocations(args: {
-  fs: t.IFileSystem;
+  fs: t.IFilesystem;
   files: t.IFileMap<t.IFileData>;
 }) {
   const { fs } = args;
