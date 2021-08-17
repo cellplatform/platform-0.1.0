@@ -21,6 +21,13 @@ export type SysFsEventsInfo = {
   get(options?: { path?: FilePath | FilePath[]; timeout?: Milliseconds }): Promise<t.SysFsInfoRes>;
 };
 
+export type SysFsEventsIndex = {
+  manifest: {
+    req$: t.Observable<t.SysFsMoveReqEvent>;
+    res$: t.Observable<t.SysFsMoveResEvent>;
+  };
+};
+
 export type SysFsEventsIo = {
   read: {
     req$: t.Observable<t.SysFsReadReq>;

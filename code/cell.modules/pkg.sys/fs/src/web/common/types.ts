@@ -2,4 +2,4 @@ export * from '../../types';
 export { Disposable, EventBus } from '@platform/types';
 export { Observable } from 'rxjs';
 export { Http, HttpMethod } from '@platform/http.types';
-export { IFsLocal } from '@platform/cell.types';
+export { IFsLocal, DirManifest } from '@platform/cell.types';
