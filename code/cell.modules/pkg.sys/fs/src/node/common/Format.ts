@@ -13,4 +13,14 @@ export const Format = {
       return `path:${Format.path.trimPrefix(input)}`;
     },
   },
+
+  dir: {
+    stripPrefix(dir: string, path: string) {
+      path = Format.path.trimPrefix(path);
+      path = Format.file.trimPrefix(path);
+      if (path.startsWith(dir)) path = path.substring(dir.length);
+      path = path.replace(/^\/*/, '');
+      return `/${path}`;
+    },
+  },
 };

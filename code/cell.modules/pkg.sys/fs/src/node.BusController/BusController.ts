@@ -20,6 +20,8 @@ export function BusController(args: {
   const events = BusEvents({ id, bus, filter: args.filter });
   const { dispose, dispose$ } = events;
 
+  const stripDirPrefix = (path: FilePath) => Format.dir.stripPrefix(fs.dir, path);
+
   /**
    * Info (Module)
    */
@@ -36,7 +38,7 @@ export function BusController(args: {
         const uri = Format.path.ensurePrefix(filepath);
         const res = await fs.info(uri);
         const { exists, hash, bytes } = res;
-        const path = res.path.substring(fs.dir.length);
+        const path = stripDirPrefix(res.path);
         return { path, exists, hash, bytes };
       } catch (err) {
         const error: t.SysFsError = { code: 'info', message: err.message };
@@ -54,7 +56,7 @@ export function BusController(args: {
   });
 
   /**
-   * Read
+   * IO: Read
    */
   events.io.read.req$.subscribe(async (e) => {
     const { tx } = e;
@@ -92,7 +94,7 @@ export function BusController(args: {
   });
 
   /**
-   * Write
+   * IO: Write
    */
   events.io.write.req$.subscribe(async (e) => {
     const { tx } = e;
@@ -105,7 +107,7 @@ export function BusController(args: {
         ? { code: 'write', message: res.error.message }
         : undefined;
       return {
-        path: res.file.path.substring(fs.dir.length),
+        path: stripDirPrefix(res.file.path),
         error,
       };
     };
@@ -122,7 +124,7 @@ export function BusController(args: {
   });
 
   /**
-   * Delete
+   * IO: Delete
    */
   events.io.delete.req$.subscribe(async (e) => {
     const { tx } = e;
@@ -133,8 +135,10 @@ export function BusController(args: {
       const error: MaybeError = res.error
         ? { code: 'delete', message: res.error.message }
         : undefined;
-      const path = Format.file.trimPrefix(res.locations[0]).substring(fs.dir.length);
-      return { path, error };
+      return {
+        path: stripDirPrefix(res.locations[0]),
+        error,
+      };
     };
 
     const files = await Promise.all(asArray(e.path).map(deleteFile));
@@ -144,6 +148,39 @@ export function BusController(args: {
 
     bus.fire({
       type: 'sys.fs/delete:res',
+      payload: { tx, id, files, error },
+    });
+  });
+
+  /**
+   * IO: Copy
+   */
+  events.io.copy.req$.subscribe(async (e) => {
+    const { tx } = e;
+
+    const copyFile = async (file: t.SysFsFileTarget): Promise<t.SysFsFileCopyResponse> => {
+      const source = Format.path.ensurePrefix(file.source);
+      const target = Format.path.ensurePrefix(file.target);
+
+      const res = await fs.copy(source, target);
+      const error: MaybeError = res.error
+        ? { code: 'copy', message: res.error.message }
+        : undefined;
+
+      return {
+        source: stripDirPrefix(res.source),
+        target: stripDirPrefix(res.target),
+        error,
+      };
+    };
+
+    const files = await Promise.all(asArray(e.file).map(copyFile));
+    const error: MaybeError = files.some((file) => Boolean(file.error))
+      ? { code: 'copy', message: 'Failed while copying' }
+      : undefined;
+
+    bus.fire({
+      type: 'sys.fs/copy:res',
       payload: { tx, id, files, error },
     });
   });

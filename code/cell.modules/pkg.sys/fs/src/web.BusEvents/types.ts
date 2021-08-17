@@ -18,17 +18,20 @@ export type SysFsFileInfo = {
 };
 
 export type SysFsFile = { path: FilePath; data: Uint8Array; hash: string };
+export type SysFsFileTarget = { source: FilePath; target: FilePath };
 
 export type SysFsFileReadResponse = { file?: SysFsFile; error?: SysFsError };
 export type SysFsFileWriteResponse = { path: FilePath; error?: SysFsError };
 export type SysFsFileDeleteResponse = { path: FilePath; error?: SysFsError };
+export type SysFsFileCopyResponse = { source: FilePath; target: FilePath; error?: SysFsError };
 
 export type SysFsError = { code: SysFsErrorCode; message: string };
-export type SysFsErrorCode = 'client/timeout' | 'info' | 'read' | 'write' | 'delete';
+export type SysFsErrorCode = 'client/timeout' | 'info' | 'read' | 'write' | 'delete' | 'copy';
 
 export type SysFsReadResponse = { files: SysFsFileReadResponse[]; error?: SysFsError };
 export type SysFsWriteResponse = { files: SysFsFileWriteResponse[]; error?: SysFsError };
 export type SysFsDeleteResponse = { files: SysFsFileDeleteResponse[]; error?: SysFsError };
+export type SysFsCopyResponse = { files: SysFsFileCopyResponse[]; error?: SysFsError };
 
 /**
  * Events
@@ -67,6 +70,10 @@ export type SysFsEventsIo = {
   copy: {
     req$: t.Observable<t.SysFsCopyReq>;
     res$: t.Observable<t.SysFsCopyRes>;
+    fire(
+      file: SysFsFileTarget | SysFsFileTarget[],
+      options?: { timeout?: Milliseconds },
+    ): Promise<t.SysFsCopyResponse>;
   };
   delete: {
     req$: t.Observable<t.SysFsDeleteReq>;
@@ -124,12 +131,7 @@ export type SysFsReadResEvent = {
   type: 'sys.fs/read:res';
   payload: SysFsReadRes;
 };
-export type SysFsReadRes = {
-  tx: string;
-  id: FilesystemId;
-  files: SysFsFileReadResponse[];
-  error?: SysFsError;
-};
+export type SysFsReadRes = SysFsReadResponse & { tx: string; id: FilesystemId };
 
 /**
  * IO: Write
@@ -144,12 +146,7 @@ export type SysFsWriteResEvent = {
   type: 'sys.fs/write:res';
   payload: SysFsWriteRes;
 };
-export type SysFsWriteRes = {
-  tx: string;
-  id: FilesystemId;
-  files: SysFsFileWriteResponse[];
-  error?: SysFsError;
-};
+export type SysFsWriteRes = SysFsWriteResponse & { tx: string; id: FilesystemId };
 
 /**
  * IO: Delete
@@ -164,12 +161,7 @@ export type SysFsDeleteResEvent = {
   type: 'sys.fs/delete:res';
   payload: SysFsDeleteRes;
 };
-export type SysFsDeleteRes = {
-  tx: string;
-  id: FilesystemId;
-  files: SysFsFileDeleteResponse[];
-  error?: SysFsError;
-};
+export type SysFsDeleteRes = SysFsDeleteResponse & { tx: string; id: FilesystemId };
 
 /**
  * IO: Copy
@@ -178,10 +170,14 @@ export type SysFsCopyReqEvent = {
   type: 'sys.fs/copy:req';
   payload: SysFsCopyReq;
 };
-export type SysFsCopyReq = { tx: string; id: FilesystemId };
+export type SysFsCopyReq = {
+  tx: string;
+  id: FilesystemId;
+  file: SysFsFileTarget | SysFsFileTarget[];
+};
 
 export type SysFsCopyResEvent = {
   type: 'sys.fs/copy:res';
   payload: SysFsCopyRes;
 };
-export type SysFsCopyRes = { tx: string; id: FilesystemId };
+export type SysFsCopyRes = SysFsCopyResponse & { tx: string; id: FilesystemId };

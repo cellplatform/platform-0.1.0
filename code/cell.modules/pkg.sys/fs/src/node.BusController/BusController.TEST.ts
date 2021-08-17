@@ -1,7 +1,7 @@
 import { t, expect, rx, TestFs, Hash } from '../test';
 import { FsBus } from '.';
 
-describe('BusController', function () {
+describe.only('BusController', function () {
   this.timeout(30000);
 
   const bus = rx.bus<t.SysFsEvent>();
@@ -278,7 +278,7 @@ describe('BusController', function () {
     });
   });
 
-  describe.only('io.delete', () => {
+  describe('io.delete', () => {
     this.beforeEach(() => TestFs.reset());
 
     it('delete (does not exist)', async () => {
@@ -337,6 +337,91 @@ describe('BusController', function () {
 
       expect(res.files[1].path).to.eql('/foo/bar/green.png');
       expect(res.files[1].error).to.eql(undefined);
+    });
+  });
+
+  describe.only('copy', () => {
+    this.beforeEach(() => TestFs.reset());
+
+    it('copy (single)', async () => {
+      const mock = prep();
+      const src = await TestFs.readFile('static.test/child/kitten.jpg');
+      const { hash, data } = src;
+
+      const path = {
+        source: 'foo/bar/kitten.jpg',
+        target: 'cat.jpg',
+      };
+      await mock.events.io.write.fire({ path: path.source, hash, data });
+      expect(await mock.fileExists(path.source)).to.eql(true);
+
+      const res = await mock.events.io.copy.fire({ source: path.source, target: path.target });
+      await mock.dispose();
+
+      expect(res.error).to.eql(undefined);
+      expect(res.files.length).to.eql(1);
+
+      expect(res.files[0].source).to.eql('/foo/bar/kitten.jpg');
+      expect(res.files[0].target).to.eql('/cat.jpg');
+
+      expect(await mock.fileExists(path.source)).to.eql(true);
+      expect(await mock.fileExists(path.target)).to.eql(true);
+    });
+
+    it('copy (multiple)', async () => {
+      const mock = prep();
+      const src = await TestFs.readFile('static.test/child/kitten.jpg');
+      const { hash, data } = src;
+
+      const path1 = {
+        source: 'foo/bar/kitten.jpg',
+        target: 'cat.jpg',
+      };
+
+      const path2 = {
+        source: 'foo/bar/kitten.jpg',
+        target: 'animals/feline.jpg',
+      };
+
+      await mock.events.io.write.fire({ path: path1.source, hash, data });
+      expect(await mock.fileExists(path1.source)).to.eql(true);
+
+      const res = await mock.events.io.copy.fire([
+        { source: path1.source, target: path1.target },
+        { source: path2.source, target: path2.target },
+      ]);
+      await mock.dispose();
+
+      expect(res.files.length).to.eql(2);
+      expect(res.error).to.eql(undefined);
+
+      expect(res.files[0].source).to.eql('/foo/bar/kitten.jpg');
+      expect(res.files[0].target).to.eql('/cat.jpg');
+
+      expect(res.files[1].source).to.eql('/foo/bar/kitten.jpg');
+      expect(res.files[1].target).to.eql('/animals/feline.jpg');
+
+      expect(await mock.fileExists(path1.source)).to.eql(true);
+      expect(await mock.fileExists(path1.target)).to.eql(true);
+
+      expect(await mock.fileExists(path2.source)).to.eql(true);
+      expect(await mock.fileExists(path2.target)).to.eql(true);
+    });
+
+    it('copy error (source not found)', async () => {
+      const mock = prep();
+
+      const res = await mock.events.io.copy.fire([
+        { source: 'foo/bar/kitten.jpg', target: 'cat.jpg' },
+      ]);
+      await mock.dispose();
+
+      expect(res.files.length).to.eql(1);
+      expect(res.error?.code).to.eql('copy');
+      expect(res.error?.message).to.include('Failed while copying');
+
+      expect(res.files[0].error?.code).to.eql('copy');
+      expect(res.files[0].error?.message).to.include('no such file or directory');
     });
   });
 });

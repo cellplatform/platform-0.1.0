@@ -119,6 +119,27 @@ export function BusEvents(args: {
   const copy: IO['copy'] = {
     req$: rx.payload<t.SysFsCopyReqEvent>($, 'sys.fs/copy:req'),
     res$: rx.payload<t.SysFsCopyResEvent>($, 'sys.fs/copy:res'),
+    async fire(file, options = {}) {
+      const msecs = toTimeout(options);
+      const tx = slug();
+
+      const first = firstValueFrom(
+        copy.res$.pipe(
+          filter((e) => e.tx === tx),
+          timeout(msecs),
+          catchError(() => of(`[SysFs.Copy] request timed out after ${msecs} msecs`)),
+        ),
+      );
+
+      bus.fire({ type: 'sys.fs/copy:req', payload: { tx, id, file } });
+      const res = await first;
+
+      if (typeof res === 'string')
+        return { tx, id, files: [], error: { code: 'client/timeout', message: res } };
+
+      const { files, error } = res;
+      return { files, error };
+    },
   };
 
   const del: IO['delete'] = {
