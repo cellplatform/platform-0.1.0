@@ -223,8 +223,8 @@ describe('BusController', function () {
 
     it('writes file (single)', async () => {
       const mock = prep();
-      const before = await TestFs.readFile('static.test/child/kitten.jpg');
-      const { hash, data } = before;
+      const src = await TestFs.readFile('static.test/child/kitten.jpg');
+      const { hash, data } = src;
 
       const path = 'foo/bar/kitten.jpg';
       expect(await mock.fileExists(path)).to.eql(false);
@@ -244,8 +244,8 @@ describe('BusController', function () {
 
     it('write files (multiple)', async () => {
       const mock = prep();
-      const before1 = await TestFs.readFile('static.test/child/kitten.jpg');
-      const before2 = await TestFs.readFile('static.test/child/tree.png');
+      const src1 = await TestFs.readFile('static.test/child/kitten.jpg');
+      const src2 = await TestFs.readFile('static.test/child/tree.png');
 
       const path = {
         kitten: 'foo/bar/kitten.jpg',
@@ -255,8 +255,8 @@ describe('BusController', function () {
       expect(await mock.fileExists(path.tree)).to.eql(false);
 
       const res = await mock.events.io.write.fire([
-        { path: 'foo/bar/kitten.jpg', hash: before1.hash, data: before1.data },
-        { path: 'foo/bar/tree.png', hash: before2.hash, data: before2.data },
+        { path: 'foo/bar/kitten.jpg', hash: src1.hash, data: src1.data },
+        { path: 'foo/bar/tree.png', hash: src2.hash, data: src2.data },
       ]);
       await mock.dispose();
 
@@ -270,11 +270,73 @@ describe('BusController', function () {
       const after1 = await TestFs.readFile(TestFs.join(mock.dir, 'foo/bar/kitten.jpg'));
       const after2 = await TestFs.readFile(TestFs.join(mock.dir, 'foo/bar/tree.png'));
 
-      expect(after1.hash).to.eql(before1.hash);
-      expect(after1.data.toString()).to.eql(before1.data.toString());
+      expect(after1.hash).to.eql(src1.hash);
+      expect(after1.data.toString()).to.eql(src1.data.toString());
 
-      expect(after2.hash).to.eql(before2.hash);
-      expect(after2.data.toString()).to.eql(before2.data.toString());
+      expect(after2.hash).to.eql(src2.hash);
+      expect(after2.data.toString()).to.eql(src2.data.toString());
+    });
+  });
+
+  describe.only('io.delete', () => {
+    this.beforeEach(() => TestFs.reset());
+
+    it('delete (does not exist)', async () => {
+      const mock = prep();
+
+      const res = await mock.events.io.delete.fire('foo/404.txt');
+      await mock.dispose();
+
+      expect(res.files.length).to.eql(1);
+      expect(res.files[0].path).to.eql('/foo/404.txt');
+      expect(res.files[0].error).to.eql(undefined);
+    });
+
+    it('delete (single)', async () => {
+      const mock = prep();
+      const src = await TestFs.readFile('static.test/child/kitten.jpg');
+      const { hash, data } = src;
+
+      const path = 'foo/bar/kitten.jpg';
+      await mock.events.io.write.fire({ path, hash, data });
+      expect(await mock.fileExists(path)).to.eql(true);
+
+      const res = await mock.events.io.delete.fire(path);
+      await mock.dispose();
+      expect(await mock.fileExists(path)).to.eql(false);
+
+      expect(res.files.length).to.eql(1);
+      expect(res.files[0].path).to.eql('/foo/bar/kitten.jpg');
+      expect(res.files[0].error).to.eql(undefined);
+    });
+
+    it('delete (multiple)', async () => {
+      const mock = prep();
+      const src1 = await TestFs.readFile('static.test/child/kitten.jpg');
+      const src2 = await TestFs.readFile('static.test/child/tree.png');
+
+      const path1 = 'foo/bar/milk.jpg';
+      const path2 = 'foo/bar/green.png';
+
+      await mock.events.io.write.fire([
+        { path: path1, hash: src1.hash, data: src1.data },
+        { path: path2, hash: src2.hash, data: src2.data },
+      ]);
+      expect(await mock.fileExists(path1)).to.eql(true);
+      expect(await mock.fileExists(path2)).to.eql(true);
+
+      const res = await mock.events.io.delete.fire([path1, path2]);
+      await mock.dispose();
+      expect(await mock.fileExists(path1)).to.eql(false);
+      expect(await mock.fileExists(path2)).to.eql(false);
+
+      expect(res.files.length).to.eql(2);
+
+      expect(res.files[0].path).to.eql('/foo/bar/milk.jpg');
+      expect(res.files[0].error).to.eql(undefined);
+
+      expect(res.files[1].path).to.eql('/foo/bar/green.png');
+      expect(res.files[1].error).to.eql(undefined);
     });
   });
 });

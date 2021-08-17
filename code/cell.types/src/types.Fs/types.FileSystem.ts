@@ -70,8 +70,8 @@ type IFsMembers<
   info: FsInfoMethod<Info>;
   read: FsReadMethod<Read>;
   write: FsWriteMethod<Write, WriteOptions>;
-  delete: FsDeleteMethod<Delete>;
   copy: FsCopyMethod<Copy, CopyOptions>;
+  delete: FsDeleteMethod<Delete>;
 };
 
 export type FsPathResolver<O extends IFsResolveOptions> = (uri: string, options?: O) => IFsLocation;
@@ -82,14 +82,14 @@ export type FsWriteMethod<Write extends IFsWrite, WriteOptions extends IFsWriteO
   data: Uint8Array,
   options?: WriteOptions,
 ) => Promise<Write>;
-export type FsDeleteMethod<Delete extends IFsDelete> = (
-  address: FileAddress | FileAddress[],
-) => Promise<Delete>;
 export type FsCopyMethod<Copy extends IFsCopy, CopyOptions extends IFsCopyOptions> = (
   source: FileAddress,
   target: FileAddress,
   options?: CopyOptions,
 ) => Promise<Copy>;
+export type FsDeleteMethod<Delete extends IFsDelete> = (
+  address: FileAddress | FileAddress[],
+) => Promise<Delete>;
 
 /**
  * File-system Location (Resolve)

@@ -21,12 +21,14 @@ export type SysFsFile = { path: FilePath; data: Uint8Array; hash: string };
 
 export type SysFsFileReadResponse = { file?: SysFsFile; error?: SysFsError };
 export type SysFsFileWriteResponse = { path: FilePath; error?: SysFsError };
+export type SysFsFileDeleteResponse = { path: FilePath; error?: SysFsError };
 
 export type SysFsError = { code: SysFsErrorCode; message: string };
-export type SysFsErrorCode = 'client/timeout' | 'read' | 'write' | 'info';
+export type SysFsErrorCode = 'client/timeout' | 'info' | 'read' | 'write' | 'delete';
 
 export type SysFsReadResponse = { files: SysFsFileReadResponse[]; error?: SysFsError };
 export type SysFsWriteResponse = { files: SysFsFileWriteResponse[]; error?: SysFsError };
+export type SysFsDeleteResponse = { files: SysFsFileDeleteResponse[]; error?: SysFsError };
 
 /**
  * Events
@@ -42,23 +44,37 @@ export type SysFsEvents = t.Disposable & {
     get(options?: { path?: FilePath | FilePath[]; timeout?: Milliseconds }): Promise<SysFsInfoRes>;
   };
 
-  io: {
-    read: {
-      req$: t.Observable<t.SysFsReadReq>;
-      res$: t.Observable<t.SysFsReadRes>;
-      get(
-        path: FilePath | FilePath[],
-        options?: { timeout?: Milliseconds },
-      ): Promise<SysFsReadResponse>;
-    };
-    write: {
-      req$: t.Observable<t.SysFsWriteReq>;
-      res$: t.Observable<t.SysFsWriteRes>;
-      fire(
-        file: SysFsFile | SysFsFile[],
-        options?: { timeout?: Milliseconds },
-      ): Promise<SysFsWriteResponse>;
-    };
+  io: t.SysFsEventsIo;
+};
+
+export type SysFsEventsIo = {
+  read: {
+    req$: t.Observable<t.SysFsReadReq>;
+    res$: t.Observable<t.SysFsReadRes>;
+    get(
+      path: FilePath | FilePath[],
+      options?: { timeout?: Milliseconds },
+    ): Promise<t.SysFsReadResponse>;
+  };
+  write: {
+    req$: t.Observable<t.SysFsWriteReq>;
+    res$: t.Observable<t.SysFsWriteRes>;
+    fire(
+      file: SysFsFile | SysFsFile[],
+      options?: { timeout?: Milliseconds },
+    ): Promise<t.SysFsWriteResponse>;
+  };
+  copy: {
+    req$: t.Observable<t.SysFsCopyReq>;
+    res$: t.Observable<t.SysFsCopyRes>;
+  };
+  delete: {
+    req$: t.Observable<t.SysFsDeleteReq>;
+    res$: t.Observable<t.SysFsDeleteRes>;
+    fire(
+      path: FilePath | FilePath[],
+      options?: { timeout?: Milliseconds },
+    ): Promise<t.SysFsDeleteResponse>;
   };
 };
 
@@ -68,7 +84,11 @@ export type SysFsEvent =
   | SysFsReadReqEvent
   | SysFsReadResEvent
   | SysFsWriteReqEvent
-  | SysFsWriteResEvent;
+  | SysFsWriteResEvent
+  | SysFsDeleteReqEvent
+  | SysFsDeleteResEvent
+  | SysFsCopyReqEvent
+  | SysFsCopyResEvent;
 
 /**
  * Compile the project into a bundle.
@@ -92,7 +112,7 @@ export type SysFsInfoRes = {
 };
 
 /**
- * Read a file(s).
+ * IO: Read
  */
 export type SysFsReadReqEvent = {
   type: 'sys.fs/read:req';
@@ -112,7 +132,7 @@ export type SysFsReadRes = {
 };
 
 /**
- * Write a file(s).
+ * IO: Write
  */
 export type SysFsWriteReqEvent = {
   type: 'sys.fs/write:req';
@@ -130,3 +150,38 @@ export type SysFsWriteRes = {
   files: SysFsFileWriteResponse[];
   error?: SysFsError;
 };
+
+/**
+ * IO: Delete
+ */
+export type SysFsDeleteReqEvent = {
+  type: 'sys.fs/delete:req';
+  payload: SysFsDeleteReq;
+};
+export type SysFsDeleteReq = { tx: string; id: FilesystemId; path: FilePath | FilePath[] };
+
+export type SysFsDeleteResEvent = {
+  type: 'sys.fs/delete:res';
+  payload: SysFsDeleteRes;
+};
+export type SysFsDeleteRes = {
+  tx: string;
+  id: FilesystemId;
+  files: SysFsFileDeleteResponse[];
+  error?: SysFsError;
+};
+
+/**
+ * IO: Copy
+ */
+export type SysFsCopyReqEvent = {
+  type: 'sys.fs/copy:req';
+  payload: SysFsCopyReq;
+};
+export type SysFsCopyReq = { tx: string; id: FilesystemId };
+
+export type SysFsCopyResEvent = {
+  type: 'sys.fs/copy:res';
+  payload: SysFsCopyRes;
+};
+export type SysFsCopyRes = { tx: string; id: FilesystemId };

@@ -1,4 +1,4 @@
-import { Hash, BusEvents, DEFAULT, rx, slug, t, asArray, Format } from './common';
+import { asArray, BusEvents, Format, rx, t } from './common';
 
 type FilesystemId = string;
 type Error = t.SysFsError;
@@ -97,7 +97,7 @@ export function BusController(args: {
   events.io.write.req$.subscribe(async (e) => {
     const { tx } = e;
 
-    const write = async (file: t.SysFsFile): Promise<t.SysFsFileWriteResponse> => {
+    const writeFile = async (file: t.SysFsFile): Promise<t.SysFsFileWriteResponse> => {
       const { data } = file;
       const address = Format.path.ensurePrefix(file.path);
       const res = await fs.write(address, data);
@@ -110,13 +110,40 @@ export function BusController(args: {
       };
     };
 
-    const files = await Promise.all(asArray(e.file).map(write));
+    const files = await Promise.all(asArray(e.file).map(writeFile));
     const error: MaybeError = files.some((file) => Boolean(file.error))
       ? { code: 'write', message: 'Failed while writing' }
       : undefined;
 
     bus.fire({
       type: 'sys.fs/write:res',
+      payload: { tx, id, files, error },
+    });
+  });
+
+  /**
+   * Delete
+   */
+  events.io.delete.req$.subscribe(async (e) => {
+    const { tx } = e;
+
+    const deleteFile = async (filepath: FilePath): Promise<t.SysFsFileDeleteResponse> => {
+      const address = Format.path.ensurePrefix(filepath);
+      const res = await fs.delete(address);
+      const error: MaybeError = res.error
+        ? { code: 'delete', message: res.error.message }
+        : undefined;
+      const path = Format.file.trimPrefix(res.locations[0]).substring(fs.dir.length);
+      return { path, error };
+    };
+
+    const files = await Promise.all(asArray(e.path).map(deleteFile));
+    const error: MaybeError = files.some((file) => Boolean(file.error))
+      ? { code: 'delete', message: 'Failed while deleting' }
+      : undefined;
+
+    bus.fire({
+      type: 'sys.fs/delete:res',
       payload: { tx, id, files, error },
     });
   });
