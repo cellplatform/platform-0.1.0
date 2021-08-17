@@ -6,14 +6,15 @@ export * from '../types';
 const LocalFile = Schema.File.Path.Local;
 
 /**
- * Initializes a "local" file-system API.
+ * A "local" filesystem running against the node-js 'fs' api.
  */
-export function init(args: { dir: string; fs: t.INodeFs }): t.IFilesystemLocal {
-  const fs = args.fs;
-  const dir = fs.resolve(args.dir);
+
+export function FilesystemLocal(args: { dir: string; fs: t.INodeFs }): t.IFsLocal {
+  const node = args.fs;
+  const dir = node.resolve(args.dir);
   const root = dir;
 
-  const local: t.IFilesystemLocal = {
+  const fs: t.IFsLocal = {
     type: 'LOCAL',
 
     /**
@@ -31,7 +32,7 @@ export function init(args: { dir: string; fs: t.INodeFs }): t.IFilesystemLocal {
      */
     async info(uri: string): Promise<t.IFsInfoLocal> {
       uri = (uri || '').trim();
-      const path = local.resolve(uri).path;
+      const path = fs.resolve(uri).path;
       const location = LocalFile.toAbsoluteLocation({ path, root });
       const readResponse = await this.read(uri);
       const { status, file } = readResponse;
@@ -51,11 +52,11 @@ export function init(args: { dir: string; fs: t.INodeFs }): t.IFilesystemLocal {
      */
     async read(uri: string): Promise<t.IFsReadLocal> {
       uri = (uri || '').trim();
-      const path = local.resolve(uri).path;
+      const path = fs.resolve(uri).path;
       const location = LocalFile.toAbsoluteLocation({ path, root });
 
       // Ensure the file exists.
-      if (!(await fs.exists(path))) {
+      if (!(await node.exists(path))) {
         const error: t.IFsError = {
           type: 'FS/read',
           message: `A file with the URI [${uri}] does not exist.`,
@@ -66,7 +67,7 @@ export function init(args: { dir: string; fs: t.INodeFs }): t.IFilesystemLocal {
 
       // Load the file.
       try {
-        const data = await fs.readFile(path);
+        const data = await node.readFile(path);
         const bytes = data.byteLength;
         const file: t.IFsFileData = {
           path,
@@ -97,7 +98,7 @@ export function init(args: { dir: string; fs: t.INodeFs }): t.IFilesystemLocal {
       }
 
       uri = (uri || '').trim();
-      const path = local.resolve(uri).path;
+      const path = fs.resolve(uri).path;
       const location = LocalFile.toAbsoluteLocation({ path, root });
       const bytes = data.byteLength;
       const file: t.IFsFileData = {
@@ -111,8 +112,8 @@ export function init(args: { dir: string; fs: t.INodeFs }): t.IFilesystemLocal {
       };
 
       try {
-        await fs.ensureDir(fs.dirname(path));
-        await fs.writeFile(path, data);
+        await node.ensureDir(node.dirname(path));
+        await node.writeFile(path, data);
         return { uri, ok: true, status: 200, file };
       } catch (err) {
         const error: t.IFsError = {
@@ -129,11 +130,11 @@ export function init(args: { dir: string; fs: t.INodeFs }): t.IFilesystemLocal {
      */
     async delete(uri: string | string[]): Promise<t.IFsDeleteLocal> {
       const uris = (Array.isArray(uri) ? uri : [uri]).map((uri) => (uri || '').trim());
-      const paths = uris.map((uri) => local.resolve(uri).path);
+      const paths = uris.map((uri) => fs.resolve(uri).path);
       const locations = paths.map((path) => LocalFile.toAbsoluteLocation({ path, root }));
 
       try {
-        await Promise.all(paths.map((path) => fs.remove(path)));
+        await Promise.all(paths.map((path) => node.remove(path)));
         return { ok: true, status: 200, uris, locations };
       } catch (err) {
         const error: t.IFsError = {
@@ -151,7 +152,7 @@ export function init(args: { dir: string; fs: t.INodeFs }): t.IFilesystemLocal {
     async copy(sourceUri: string, targetUri: string): Promise<t.IFsCopyLocal> {
       const format = (input: string) => {
         const uri = (input || '').trim();
-        const path = local.resolve(uri).path;
+        const path = fs.resolve(uri).path;
         return { uri, path };
       };
 
@@ -164,8 +165,8 @@ export function init(args: { dir: string; fs: t.INodeFs }): t.IFilesystemLocal {
       };
 
       try {
-        await fs.ensureDir(fs.dirname(target.path));
-        await fs.copyFile(source.path, target.path);
+        await node.ensureDir(node.dirname(target.path));
+        await node.copyFile(source.path, target.path);
         return done(200);
       } catch (err) {
         const message = `Failed to copy from [${source.uri}] to [${target.uri}]. ${err.message}`;
@@ -179,5 +180,5 @@ export function init(args: { dir: string; fs: t.INodeFs }): t.IFilesystemLocal {
     },
   };
 
-  return local;
+  return fs;
 }

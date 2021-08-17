@@ -2,7 +2,7 @@ export { expect } from '@platform/test';
 export * from '../web/common';
 
 import { fs } from '@platform/fs';
-import { LocalFilesystem } from '@platform/cell.fs.local';
+import { FilesystemLocal } from '@platform/cell.fs.local';
 import { Hash } from '../web/common';
 
 const tmp = fs.resolve('tmp');
@@ -10,8 +10,8 @@ const tmp = fs.resolve('tmp');
 export const TestFs = {
   tmp,
   node: fs,
-  local: LocalFilesystem({ dir: fs.join(tmp, 'root'), fs }),
-  LocalFilesystem,
+  local: FilesystemLocal({ dir: fs.join(tmp, 'root'), fs }),
+  FilesystemLocal,
   reset: () => fs.remove(tmp),
 
   join: fs.join,

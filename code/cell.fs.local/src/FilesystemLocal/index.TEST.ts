@@ -1,12 +1,12 @@
 import { t, expect, util, PATH, init } from '../test';
-import { local } from '.';
+import { FilesystemLocal } from '.';
 
 describe('fs.local', () => {
   beforeEach(async () => await util.reset());
 
-  it('local.init({ dir, fs })', () => {
+  it('init', () => {
     const root = util.fs.resolve('tmp');
-    const fs = local.init({ dir: root, fs: util.fs });
+    const fs = FilesystemLocal({ dir: root, fs: util.fs });
     expect(fs.dir).to.eql(root);
   });
 

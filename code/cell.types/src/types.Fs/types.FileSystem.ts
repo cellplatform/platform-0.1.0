@@ -15,12 +15,12 @@ export type FsS3Permission = 'private' | 'public-read';
 /**
  * API
  */
-export type IFilesystem = IFilesystemS3 | IFilesystemLocal;
+export type IFilesystem = IFsS3 | IFsLocal;
 
 /**
  * A "local" filesystem for instance a POSIX or IndexDB <BLOB> storage.
  */
-export type IFilesystemLocal = IFsMembers<
+export type IFsLocal = IFsMembers<
   FsTypeLocal,
   IFsInfoLocal,
   IFsReadLocal,
@@ -35,7 +35,7 @@ export type IFilesystemLocal = IFsMembers<
 /**
  * Remote cloud <BLOB> storage that conforms to the AWS/S3 "pseudo-standard" API.
  */
-export type IFilesystemS3 = IFsMembers<
+export type IFsS3 = IFsMembers<
   FsTypeS3,
   IFsInfoS3,
   IFsReadS3,

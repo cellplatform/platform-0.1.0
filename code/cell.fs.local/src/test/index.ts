@@ -1,6 +1,6 @@
 import { fs } from '@platform/fs';
 
-import { local } from '..';
+import { FilesystemLocal } from '..';
 import { Schema, t } from '../common';
 
 export { expect, expectError } from '@platform/test';
@@ -20,7 +20,7 @@ export const writeFile = async (path: string, data: Buffer) => {
   await fs.writeFile(path, data);
 };
 
-export const init = () => local.init({ dir: PATH.LOCAL, fs });
+export const init = () => FilesystemLocal({ dir: PATH.LOCAL, fs });
 
 export const util = {
   initLocal: init,
