@@ -11,17 +11,14 @@ export type SysFsEvents = t.Disposable & {
   id: FilesystemId;
   $: t.Observable<t.SysFsEvent>;
   is: { base(input: any): boolean };
-
-  info: {
-    req$: t.Observable<t.SysFsInfoReq>;
-    res$: t.Observable<t.SysFsInfoRes>;
-    get(options?: {
-      path?: FilePath | FilePath[];
-      timeout?: Milliseconds;
-    }): Promise<t.SysFsInfoRes>;
-  };
-
+  info: SysFsEventsInfo;
   io: t.SysFsEventsIo;
+};
+
+export type SysFsEventsInfo = {
+  req$: t.Observable<t.SysFsInfoReq>;
+  res$: t.Observable<t.SysFsInfoRes>;
+  get(options?: { path?: FilePath | FilePath[]; timeout?: Milliseconds }): Promise<t.SysFsInfoRes>;
 };
 
 export type SysFsEventsIo = {
