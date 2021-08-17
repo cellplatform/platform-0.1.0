@@ -24,14 +24,23 @@ export type SysFsFileReadResponse = { file?: SysFsFile; error?: SysFsError };
 export type SysFsFileWriteResponse = { path: FilePath; error?: SysFsError };
 export type SysFsFileDeleteResponse = { path: FilePath; error?: SysFsError };
 export type SysFsFileCopyResponse = { source: FilePath; target: FilePath; error?: SysFsError };
-
-export type SysFsError = { code: SysFsErrorCode; message: string };
-export type SysFsErrorCode = 'client/timeout' | 'info' | 'read' | 'write' | 'delete' | 'copy';
+export type SysFsFileMoveResponse = { source: FilePath; target: FilePath; error?: SysFsError };
 
 export type SysFsReadResponse = { files: SysFsFileReadResponse[]; error?: SysFsError };
 export type SysFsWriteResponse = { files: SysFsFileWriteResponse[]; error?: SysFsError };
 export type SysFsDeleteResponse = { files: SysFsFileDeleteResponse[]; error?: SysFsError };
 export type SysFsCopyResponse = { files: SysFsFileCopyResponse[]; error?: SysFsError };
+export type SysFsMoveResponse = { files: SysFsFileMoveResponse[]; error?: SysFsError };
+
+export type SysFsError = { code: SysFsErrorCode; message: string };
+export type SysFsErrorCode =
+  | 'client/timeout'
+  | 'info'
+  | 'read'
+  | 'write'
+  | 'delete'
+  | 'copy'
+  | 'move';
 
 /**
  * Events
@@ -75,6 +84,14 @@ export type SysFsEventsIo = {
       options?: { timeout?: Milliseconds },
     ): Promise<t.SysFsCopyResponse>;
   };
+  move: {
+    req$: t.Observable<t.SysFsMoveReq>;
+    res$: t.Observable<t.SysFsMoveRes>;
+    fire(
+      file: SysFsFileTarget | SysFsFileTarget[],
+      options?: { timeout?: Milliseconds },
+    ): Promise<t.SysFsMoveResponse>;
+  };
   delete: {
     req$: t.Observable<t.SysFsDeleteReq>;
     res$: t.Observable<t.SysFsDeleteRes>;
@@ -95,7 +112,9 @@ export type SysFsEvent =
   | SysFsDeleteReqEvent
   | SysFsDeleteResEvent
   | SysFsCopyReqEvent
-  | SysFsCopyResEvent;
+  | SysFsCopyResEvent
+  | SysFsMoveReqEvent
+  | SysFsMoveResEvent;
 
 /**
  * Compile the project into a bundle.
@@ -181,3 +200,22 @@ export type SysFsCopyResEvent = {
   payload: SysFsCopyRes;
 };
 export type SysFsCopyRes = SysFsCopyResponse & { tx: string; id: FilesystemId };
+
+/**
+ * IO: Move
+ */
+export type SysFsMoveReqEvent = {
+  type: 'sys.fs/move:req';
+  payload: SysFsMoveReq;
+};
+export type SysFsMoveReq = {
+  tx: string;
+  id: FilesystemId;
+  file: SysFsFileTarget | SysFsFileTarget[];
+};
+
+export type SysFsMoveResEvent = {
+  type: 'sys.fs/move:res';
+  payload: SysFsMoveRes;
+};
+export type SysFsMoveRes = SysFsMoveResponse & { tx: string; id: FilesystemId };

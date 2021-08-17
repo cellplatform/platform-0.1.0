@@ -1,4 +1,4 @@
-import { t, expect, rx, TestFs, Hash } from '../test';
+import { t, expect, rx, TestFs } from '../test';
 import { FsBus } from '.';
 
 describe('BusController', function () {
@@ -420,6 +420,56 @@ describe('BusController', function () {
       expect(res.error?.code).to.eql('copy');
       expect(res.error?.message).to.include('Failed while copying');
 
+      expect(res.files[0].error?.code).to.eql('copy');
+      expect(res.files[0].error?.message).to.include('no such file or directory');
+    });
+  });
+
+  describe('io.move', () => {
+    this.beforeEach(() => TestFs.reset());
+
+    it('move', async () => {
+      const mock = prep();
+      const src = await TestFs.readFile('static.test/child/kitten.jpg');
+      const { hash, data } = src;
+
+      const path = {
+        source: 'foo/bar/kitten.jpg',
+        target: 'cat.jpg',
+      };
+      await mock.events.io.write.fire({ path: path.source, hash, data });
+      expect(await mock.fileExists(path.source)).to.eql(true);
+      expect(await mock.fileExists(path.target)).to.eql(false);
+
+      const res = await mock.events.io.move.fire({ source: path.source, target: path.target });
+      await mock.dispose();
+
+      expect(res.files.length).to.eql(1);
+      expect(res.error).to.eql(undefined);
+
+      expect(res.files[0].source).to.eql('/foo/bar/kitten.jpg');
+      expect(res.files[0].target).to.eql('/cat.jpg');
+      expect(res.files[0].error).to.eql(undefined);
+
+      expect(await mock.fileExists(path.source)).to.eql(false);
+      expect(await mock.fileExists(path.target)).to.eql(true);
+    });
+
+    it('error', async () => {
+      const mock = prep();
+      const path = {
+        source: 'foo/bar/kitten.jpg',
+        target: 'cat.jpg',
+      };
+      const res = await mock.events.io.move.fire({ source: path.source, target: path.target });
+      await mock.dispose();
+
+      expect(res.files.length).to.eql(1);
+      expect(res.error?.code).to.eql('move');
+      expect(res.error?.message).to.include('Failed while moving');
+
+      expect(res.files[0].source).to.eql('/foo/bar/kitten.jpg');
+      expect(res.files[0].target).to.eql('/cat.jpg');
       expect(res.files[0].error?.code).to.eql('copy');
       expect(res.files[0].error?.message).to.include('no such file or directory');
     });

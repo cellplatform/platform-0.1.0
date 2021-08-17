@@ -142,6 +142,32 @@ export function BusEvents(args: {
     },
   };
 
+  const move: IO['move'] = {
+    req$: rx.payload<t.SysFsMoveReqEvent>($, 'sys.fs/move:req'),
+    res$: rx.payload<t.SysFsMoveResEvent>($, 'sys.fs/move:res'),
+    async fire(file, options = {}) {
+      const msecs = toTimeout(options);
+      const tx = slug();
+
+      const first = firstValueFrom(
+        move.res$.pipe(
+          filter((e) => e.tx === tx),
+          timeout(msecs),
+          catchError(() => of(`[SysFs.Move] request timed out after ${msecs} msecs`)),
+        ),
+      );
+
+      bus.fire({ type: 'sys.fs/move:req', payload: { tx, id, file } });
+      const res = await first;
+
+      if (typeof res === 'string')
+        return { tx, id, files: [], error: { code: 'client/timeout', message: res } };
+
+      const { files, error } = res;
+      return { files, error };
+    },
+  };
+
   const del: IO['delete'] = {
     req$: rx.payload<t.SysFsDeleteReqEvent>($, 'sys.fs/delete:req'),
     res$: rx.payload<t.SysFsDeleteResEvent>($, 'sys.fs/delete:res'),
@@ -168,8 +194,7 @@ export function BusEvents(args: {
     },
   };
 
-  const io: IO = { read, write, copy, delete: del };
-
+  const io: IO = { read, write, copy, move, delete: del };
   return { id, $, is, dispose, dispose$, info, io };
 }
 
