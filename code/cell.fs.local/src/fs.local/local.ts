@@ -8,12 +8,12 @@ const LocalFile = Schema.File.Path.Local;
 /**
  * Initializes a "local" file-system API.
  */
-export function init(args: { dir: string; fs: t.IPosixFs }): t.IFsLocal {
+export function init(args: { dir: string; fs: t.IPosixFs }): t.IFilesystemLocal {
   const fs = args.fs;
   const dir = fs.resolve(args.dir);
   const root = dir;
 
-  const local: t.IFsLocal = {
+  const local: t.IFilesystemLocal = {
     type: 'LOCAL',
 
     /**
