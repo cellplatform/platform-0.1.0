@@ -1,7 +1,7 @@
 /**
- * A set of POSIX file-system primitives.
+ * A set of POSIX file-system primitives (the node-js interface).
  */
-export type IFs = {
+export type INodeFs = {
   is: IFsFlags;
 
   // Filesystem.

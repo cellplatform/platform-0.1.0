@@ -4,7 +4,7 @@ import { BusEvents, DEFAULT, rx, slug, t } from './common';
  * Event controller.
  */
 export function BusController(args: {
-  fs: t.IPosixFs;
+  fs: t.INodeFs;
   bus: t.EventBus<any>;
   filter?: (e: t.VercelEvent) => boolean;
   version?: number;

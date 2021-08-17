@@ -1,1 +1,1 @@
-export { FilesystemS3 } from './FilesystemS3';
+export { FilesystemS3 } from './S3';

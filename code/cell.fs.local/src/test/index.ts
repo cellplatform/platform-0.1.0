@@ -25,7 +25,7 @@ export const init = () => local.init({ dir: PATH.LOCAL, fs });
 export const util = {
   initLocal: init,
   PATH,
-  fs: fs as t.IPosixFs,
+  fs: fs as t.INodeFs,
   pathExists: fs.pathExists,
   writeFile,
   env: fs.env.value,

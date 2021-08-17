@@ -62,7 +62,7 @@ describe('fs', () => {
 
   describe('IFs (interface)', () => {
     beforeEach(() => f.remove(f.resolve('tmp')));
-    const f: t.IFs = fs;
+    const f: t.INodeFs = fs;
 
     it('exists (resolve, join)', async () => {
       const res1 = await f.exists(f.resolve('tmp/no-exist'));

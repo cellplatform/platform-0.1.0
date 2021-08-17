@@ -10,7 +10,7 @@ import { VercelTeam } from './VercelHttp.Team';
  *    https://vercel.com/docs/integrations#webhooks/securing-webhooks
  */
 export function VercelHttp(args: {
-  fs: t.IPosixFs;
+  fs: t.INodeFs;
   token: string;
   version?: number;
   http?: t.Http;

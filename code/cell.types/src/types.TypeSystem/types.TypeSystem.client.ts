@@ -6,7 +6,7 @@ import { t } from '../common';
 export type ITypeClientTypescript = {
   readonly header: string;
   readonly declaration: string;
-  save(fs: t.IPosixFs, path: string): Promise<{ path: string; text: string }>;
+  save(fs: t.INodeFs, path: string): Promise<{ path: string; text: string }>;
   toString(options?: { path?: string }): string;
 };
 

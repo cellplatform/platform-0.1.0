@@ -1,1 +1,1 @@
-export * from './fs.local';
+export * from './FilesystemLocal';

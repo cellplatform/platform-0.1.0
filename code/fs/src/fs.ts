@@ -48,7 +48,7 @@ import {
 } from 'fs-extra';
 
 const { join, resolve, dirname, basename, extname } = path;
-const exists: t.IFs['exists'] = (path) => pathExists(path);
+const exists: t.INodeFs['exists'] = (path) => pathExists(path);
 
 /**
  * Extended [file-system] object.

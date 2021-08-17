@@ -1,7 +1,7 @@
 export { Observable, Subject } from 'rxjs';
 
 export * from '@platform/types';
-export { IFs as IPosixFs } from '@platform/fs.types';
+export { INodeFs } from '@platform/fs.types';
 export * from '@platform/http.types';
 
 export {
