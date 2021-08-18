@@ -36,9 +36,8 @@ export function BusControllerIndex(args: {
       }
     };
 
-    const paths = asArray(e.dir ?? []);
-    const dirs =
-      paths.length === 0 ? [await toManifest()] : await Promise.all(paths.map(toManifest));
+    const paths = R.uniq(asArray(e.dir ?? []).map((path) => (path || '').trim() || '/'));
+    const dirs = await Promise.all(paths.length === 0 ? [toManifest()] : paths.map(toManifest));
 
     bus.fire({
       type: 'sys.fs/manifest:res',

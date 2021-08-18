@@ -190,7 +190,7 @@ describe('FsBus', function () {
         expect(manifest.hash.files).to.eql(Hash.sha256([]));
       });
 
-      it('root (no "dir" passed)', async () => {
+      it('root (no "dir" parameter passed)', async () => {
         const mock = prep();
         const src1 = await TestFs.readFile('static.test/data/01.json');
         const src2 = await TestFs.readFile('static.test/child/tree.png');
@@ -220,6 +220,41 @@ describe('FsBus', function () {
         expect(files[1].image).to.eql(undefined);
       });
 
+      it('empty "dir" param variants (return root)', async () => {
+        const mock = prep();
+        const io = mock.events.io;
+        const src = await TestFs.readFile('static.test/data/01.json');
+        const write = (path: string) => io.write.fire({ path, hash: src.hash, data: src.data });
+
+        await write('/root.json');
+        await write('/data/foo/data.json');
+        await write('/data/foo/child/list.json');
+        const all = ['root.json', 'data/foo/data.json', 'data/foo/child/list.json'];
+
+        type R = t.SysFsManifestDirResponse;
+        const asFiles = (dir: R) => dir.manifest.files.map((file) => file.path);
+
+        const test = async (dir: string | string[]) => {
+          const res = await mock.events.index.manifest.get({ dir });
+          expect(res.dirs.length).to.eql(1);
+          expect(asFiles(res.dirs[0])).to.eql(all);
+        };
+
+        await test('');
+        await test('  ');
+        await test('/');
+        await test('  /  ');
+        await test([]);
+        await test(['']);
+        await test(['  ']);
+        await test(['/']);
+        await test([' / ']);
+        await test(['', '   ', '']);
+        await test(['/', '', '  /  ', ' ']);
+
+        await mock.dispose();
+      });
+
       it('multiple sub-trees', async () => {
         const mock = prep();
         const io = mock.events.io;
@@ -231,17 +266,30 @@ describe('FsBus', function () {
         await write('/data/foo/child/list.json');
         await write('/logs/archive/main.log');
         await write('/logs/main.log');
+        const all = [
+          'root.json',
+          'data/foo/data.json',
+          'data/foo/child/list.json',
+          'logs/main.log',
+          'logs/archive/main.log',
+        ];
 
-        const res = await mock.events.index.manifest.get({ dir: ['/data/foo', 'logs', '/404'] });
+        const dir = ['  ', '/', '    /data/foo  ', '  logs  ', '/404'];
+        const res = await mock.events.index.manifest.get({ dir });
         await mock.dispose();
 
-        const files1 = res.dirs[0].manifest.files.map((file) => file.path);
-        const files2 = res.dirs[1].manifest.files.map((file) => file.path);
-        const files3 = res.dirs[2].manifest.files.map((file) => file.path);
+        type R = t.SysFsManifestDirResponse;
+        const asFiles = (dir: R) => dir.manifest.files.map((file) => file.path);
 
-        expect(files1).to.eql(['data/foo/data.json', 'data/foo/child/list.json']);
-        expect(files2).to.eql(['logs/main.log', 'logs/archive/main.log']);
-        expect(files3).to.eql([]);
+        const files1 = asFiles(res.dirs[0]);
+        const files2 = asFiles(res.dirs[1]);
+        const files3 = asFiles(res.dirs[2]);
+        const files4 = asFiles(res.dirs[3]);
+
+        expect(files1).to.eql(all); // NB: The first two parameter entries collapse into a single index (the "root")
+        expect(files2).to.eql(['data/foo/data.json', 'data/foo/child/list.json']);
+        expect(files3).to.eql(['logs/main.log', 'logs/archive/main.log']);
+        expect(files4).to.eql([]);
       });
 
       it('error: binary not an image, but named with an image extension ', async () => {
