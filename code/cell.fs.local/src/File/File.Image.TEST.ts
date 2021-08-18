@@ -3,7 +3,9 @@ import { expect, expectError, TestUtil } from '../test';
 
 const fs = TestUtil.node;
 
-describe.only('FileImage', () => {
+describe('FileImage', () => {
+  beforeEach(() => TestUtil.reset());
+
   describe('FileImage.size', () => {
     it('properties: width, height, orientation, type', async () => {
       const test = async (path: string, width: number, height: number) => {
@@ -27,8 +29,6 @@ describe.only('FileImage', () => {
     });
 
     it('throw: binary not an image, but named with an image extension', async () => {
-      await TestUtil.reset();
-
       const binary = {
         image: await fs.readFile(fs.resolve('static.test/images/bird.png')),
         text: await fs.readFile(fs.resolve('static.test/file.txt')),
@@ -51,12 +51,21 @@ describe.only('FileImage', () => {
   });
 
   describe('FileImage.manifestFileImage', () => {
-    it('File.Image.manifestFileImage', async () => {
+    it('success: image properties', async () => {
       const path = fs.resolve('static.test/images/bird.png');
       const res = await File.Image.manifestFileImage(fs, path);
       expect(res?.kind).to.eql('png');
       expect(res?.width).to.eql(272);
       expect(res?.height).to.eql(226);
+    });
+
+    it('fail: not an image file (undefined)', async () => {
+      const file = await fs.readFile(fs.resolve('static.test/file.txt'));
+      const path = fs.resolve('tmp/text-as-image.png');
+      await TestUtil.writeFile(path, file);
+
+      const res = await File.Image.manifestFileImage(fs, path);
+      expect(res).to.eql(undefined);
     });
   });
 });

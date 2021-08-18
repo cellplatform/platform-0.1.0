@@ -15,15 +15,17 @@ export const File = {
     path: string;
   }): Promise<t.ManifestFile> {
     const { fs } = args;
+
+    // File.
     const file = await fs.readFile(args.path);
     const bytes = file.byteLength;
     const filehash = Hash.sha256(file);
     const path = args.path.substring(args.baseDir.length + 1);
-    return deleteUndefined({
-      path,
-      bytes,
-      filehash,
-      image: await FileImage.manifestFileImage(fs, args.path),
-    });
+
+    // Image (NB: Will return [undefined] if not an image-type).
+    const image = await FileImage.manifestFileImage(fs, args.path);
+
+    // Finish up.
+    return deleteUndefined({ path, filehash, bytes, image });
   },
 };

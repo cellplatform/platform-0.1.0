@@ -15,10 +15,17 @@ export const FileImage = {
   async manifestFileImage(fs: t.INodeFs, path: string): Promise<t.ManifestFileImage | undefined> {
     const kind = toImageKind(fs, path);
     if (!kind) return undefined;
-    const size = await FileImage.size(path);
-    const width = size?.width ?? -1;
-    const height = size?.height ?? -1;
-    return { kind, width, height };
+
+    try {
+      const size = await FileImage.size(path);
+      const width = size?.width ?? -1;
+      const height = size?.height ?? -1;
+      return { kind, width, height };
+    } catch (err) {
+      const message = err.message as string;
+      if (message.includes('unsupported file type')) return undefined;
+      throw err;
+    }
   },
 
   /**

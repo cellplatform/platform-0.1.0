@@ -5,6 +5,8 @@ import { expect, Hash, t, TestUtil } from '../test';
 const fs = TestUtil.node;
 
 describe('FileHash', () => {
+  beforeEach(() => TestUtil.reset());
+
   it('hash.files - [array]', () => {
     const file1: t.ManifestFile = { path: 'foo.txt', bytes: 1234, filehash: 'abc' };
     const file2: t.ManifestFile = { path: 'foo.txt', bytes: 1234, filehash: 'def' };
