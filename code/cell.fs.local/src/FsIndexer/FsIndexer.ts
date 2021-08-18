@@ -1,11 +1,11 @@
 import { t, PathUtil, time } from '../common';
 import { File } from '../File';
 
-export const FilesystemIndexer = (args: { dir: string; fs: t.INodeFs }) => {
+export const FsIndexer = (args: { dir: string; fs: t.INodeFs }) => {
   const { fs, dir } = args;
   const baseDir = dir;
 
-  const api: t.FilesystemIndexer = {
+  const api: t.FsIndexer = {
     dir,
 
     /**

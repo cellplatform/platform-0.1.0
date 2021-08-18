@@ -1,3 +1,3 @@
-export { FilesystemLocal } from './FilesystemLocal';
-export { FilesystemIndexer } from './FilesystemLocal.Index';
+export { FsLocal } from './FsLocal';
+export { FsIndexer } from './FsIndexer';
 export { File } from './File';

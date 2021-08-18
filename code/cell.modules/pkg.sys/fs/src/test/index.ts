@@ -2,18 +2,20 @@ export { expect } from '@platform/test';
 export * from '../web/common';
 
 import { fs } from '@platform/fs';
-import { FilesystemLocal, FilesystemIndexer } from '@platform/cell.fs.local';
+import { FsLocal, FsIndexer } from '@platform/cell.fs.local';
 
 import { Hash } from '../web/common';
 
 const tmp = fs.resolve('tmp');
 
 export const TestFs = {
+  FsLocal,
+  FsIndexer,
+
   tmp,
   node: fs,
-  local: FilesystemLocal({ dir: fs.join(tmp, 'root'), fs }),
-  index: (dir: string) => FilesystemIndexer({ dir, fs }),
-  FilesystemLocal,
+  local: FsLocal({ dir: fs.join(tmp, 'root'), fs }),
+  index: (dir: string) => FsIndexer({ dir, fs }),
   reset: () => fs.remove(tmp),
 
   join: fs.join,

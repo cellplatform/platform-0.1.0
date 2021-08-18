@@ -1,5 +1,5 @@
 import { Schema, t, util } from '../common';
-import { FsLocalResolver } from './fs.resolver';
+import { FsLocalResolver } from './FsLocal.Resolver';
 
 export * from '../types';
 
@@ -8,8 +8,7 @@ const LocalFile = Schema.File.Path.Local;
 /**
  * A "local" filesystem running against the node-js 'fs' api.
  */
-
-export function FilesystemLocal(args: { dir: string; fs: t.INodeFs }): t.IFsLocal {
+export function FsLocal(args: { dir: string; fs: t.INodeFs }): t.IFsLocal {
   const node = args.fs;
   const dir = node.resolve(args.dir);
   const root = dir;

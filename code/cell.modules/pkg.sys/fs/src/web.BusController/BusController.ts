@@ -3,8 +3,6 @@ import { BusControllerIo } from './BusController.io';
 import { BusControllerIndex } from './BusController.index';
 
 type FilesystemId = string;
-type Error = t.SysFsError;
-type MaybeError = Error | undefined;
 type FilePath = string;
 
 /**
@@ -13,7 +11,7 @@ type FilePath = string;
 export function BusController(args: {
   id: FilesystemId;
   fs: t.IFsLocal;
-  index: t.FilesystemIndexer;
+  index: t.FsIndexer;
   bus: t.EventBus<any>;
   filter?: (e: t.SysFsEvent) => boolean;
 }) {

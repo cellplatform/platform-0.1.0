@@ -11,7 +11,7 @@ describe('FsBus', function () {
 
     const fs = !options.dir
       ? TestFs.local
-      : TestFs.FilesystemLocal({
+      : TestFs.FsLocal({
           dir: TestFs.node.join(TestFs.tmp, options.dir),
           fs: TestFs.node,
         });

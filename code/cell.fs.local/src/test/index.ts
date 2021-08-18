@@ -1,6 +1,6 @@
 import { fs } from '@platform/fs';
 
-import { FilesystemLocal } from '..';
+import { FsLocal } from '..';
 import { Schema, t } from '../common';
 
 export { expect, expectError } from '@platform/test';
@@ -16,7 +16,7 @@ export const PATH = {
 };
 
 export const util = {
-  createLocal: () => FilesystemLocal({ dir: PATH.LOCAL, fs }),
+  createLocal: () => FsLocal({ dir: PATH.LOCAL, fs }),
   PATH,
   node: fs as t.INodeFs,
   env: fs.env.value,

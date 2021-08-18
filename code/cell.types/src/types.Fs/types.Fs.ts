@@ -15,7 +15,7 @@ export type FsS3Permission = 'private' | 'public-read';
 /**
  * API
  */
-export type IFilesystem = IFsS3 | IFsLocal;
+export type IFs = IFsS3 | IFsLocal;
 
 /**
  * A "local" filesystem for instance a POSIX or IndexDB <BLOB> storage.

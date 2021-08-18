@@ -8,7 +8,7 @@ export type FsPathFilterArgs = { path: string; is: { dir: boolean; file: boolean
 /**
  * Index of a file-system.
  */
-export type FilesystemIndexer = {
+export type FsIndexer = {
   dir: string; // Root directory of the file-system.
 
   /**

@@ -10,7 +10,7 @@ export function BusControllerIndex(args: {
   id: FilesystemId;
   fs: t.IFsLocal;
   bus: t.EventBus<t.SysFsEvent>;
-  index: t.FilesystemIndexer;
+  index: t.FsIndexer;
   events: t.SysFsEvents;
 }) {
   const { id, fs, bus, events, index } = args;

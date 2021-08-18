@@ -1,3 +1,3 @@
-export * from './types.FileData';
-export * from './types.Filesystem';
-export * from './types.Filesystem.Index';
+export * from './types.File';
+export * from './types.Fs';
+export * from './types.Fs.Index';

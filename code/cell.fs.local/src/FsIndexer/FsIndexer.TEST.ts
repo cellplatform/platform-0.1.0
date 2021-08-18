@@ -1,7 +1,7 @@
-import { FilesystemIndexer } from '.';
+import { FsIndexer } from '.';
 import { expect, util } from '../test';
 
-describe('FilesystemIndexer', () => {
+describe('FsIndexer', () => {
   beforeEach(() => util.reset());
 
   const fs = util.node;
@@ -18,13 +18,13 @@ describe('FilesystemIndexer', () => {
 
   it('dir', () => {
     const dir = util.PATH.LOCAL;
-    const indexer = FilesystemIndexer({ fs, dir });
+    const indexer = FsIndexer({ fs, dir });
     expect(indexer.dir).to.eql(dir);
   });
 
   describe('manifest', () => {
     it('empty', async () => {
-      const indexer = FilesystemIndexer({ fs, dir });
+      const indexer = FsIndexer({ fs, dir });
       const manifest = await indexer.manifest();
 
       expect(manifest.kind).to.eql('dir');
@@ -37,7 +37,7 @@ describe('FilesystemIndexer', () => {
       await copy('images/bird.png');
       await copy('images/award.svg', 'images/foo/bar/icon.svg');
 
-      const indexer = FilesystemIndexer({ fs, dir });
+      const indexer = FsIndexer({ fs, dir });
       const manifest = await indexer.manifest();
 
       expect(manifest.kind).to.eql('dir');
@@ -51,7 +51,7 @@ describe('FilesystemIndexer', () => {
       await copy('images/award.svg', 'foo/icon-1.svg');
       await copy('images/award.svg', 'foo/bar/icon-2.svg');
 
-      const indexer = FilesystemIndexer({ fs, dir });
+      const indexer = FsIndexer({ fs, dir });
       const manifest1 = await indexer.manifest({ filter: (e) => !e.path.endsWith('.svg') });
       const manifest2 = await indexer.manifest({ filter: (e) => !e.path.endsWith('.png') });
 
@@ -68,7 +68,7 @@ describe('FilesystemIndexer', () => {
       await copy('images/award.svg', 'foo/icon-1.svg');
       await copy('images/award.svg', 'foo/bar/icon-2.svg');
 
-      const indexer = FilesystemIndexer({ fs, dir });
+      const indexer = FsIndexer({ fs, dir });
       const manifest1 = await indexer.manifest({ dir: 'foo' });
       const manifest2 = await indexer.manifest({ dir: fs.join(dir, 'foo') });
 
@@ -83,7 +83,7 @@ describe('FilesystemIndexer', () => {
       await copy('file.txt');
       await copy('images/bird.png');
 
-      const indexer = FilesystemIndexer({ fs, dir });
+      const indexer = FsIndexer({ fs, dir });
       const manifest1 = await indexer.manifest({ dir: '' });
       const manifest2 = await indexer.manifest({ dir: '  ' });
 
@@ -99,7 +99,7 @@ describe('FilesystemIndexer', () => {
       await copy('images/bird.png');
       await copy('images/award.svg');
 
-      const indexer = FilesystemIndexer({ fs, dir });
+      const indexer = FsIndexer({ fs, dir });
       const manifest = await indexer.manifest({ dir: 'images/bird.png' }); // NB: File specified, steps up to containing folder.
       const files = manifest.files.map((file) => file.path);
 
