@@ -5,11 +5,11 @@ import { FsIndexer } from '..';
 const fs = util.node;
 
 describe('File', () => {
-  describe('toManifestFile', () => {
+  describe('File.manifestFile', () => {
     it('image (png)', async () => {
       const baseDir = fs.resolve('static.test');
       const path = fs.join(baseDir, 'images/bird.png');
-      const res = await File.toManifestFile({ fs, baseDir, path });
+      const res = await File.manifestFile({ fs, baseDir, path });
 
       expect(res.path).to.eql('images/bird.png');
       expect(res.bytes).to.eql(71342);
@@ -24,7 +24,7 @@ describe('File', () => {
     it('image (txt)', async () => {
       const baseDir = fs.resolve('static.test');
       const path = fs.join(baseDir, 'file.txt');
-      const res = await File.toManifestFile({ fs, baseDir, path });
+      const res = await File.manifestFile({ fs, baseDir, path });
 
       expect(res.path).to.eql('file.txt');
       expect(res.bytes).to.eql(7);
@@ -35,7 +35,7 @@ describe('File', () => {
     });
   });
 
-  describe('hash', () => {
+  describe('Hash', () => {
     it('hash.files - [array]', () => {
       const file1: t.ManifestFile = { path: 'foo.txt', bytes: 1234, filehash: 'abc' };
       const file2: t.ManifestFile = { path: 'foo.txt', bytes: 1234, filehash: 'def' };
@@ -66,10 +66,10 @@ describe('File', () => {
     });
   });
 
-  describe('sizeOfImage', () => {
-    it('calculates size', async () => {
+  describe('Image', () => {
+    it('File.Image.size (width, height, orientation, type)', async () => {
       const test = async (path: string, width: number, height: number) => {
-        const res = await File.sizeOfImage(path);
+        const res = await File.Image.size(path);
         expect(res?.width).to.eql(width);
         expect(res?.height).to.eql(height);
       };
@@ -81,18 +81,16 @@ describe('File', () => {
     });
 
     it('throw: file does not exist', async () => {
-      await expectError(() => File.sizeOfImage('does/not/exist'), `no such file or directory`);
+      await expectError(() => File.Image.size('does/not/exist'), `no such file or directory`);
     });
 
     it('throw: file type not supported', async () => {
-      await expectError(() => File.sizeOfImage('static.test/file.txt'), `unsupported file type`);
+      await expectError(() => File.Image.size('static.test/file.txt'), `unsupported file type`);
     });
-  });
 
-  describe('toImage', () => {
-    it('toImage', async () => {
+    it('File.Image.manifestFileImage', async () => {
       const path = fs.resolve('static.test/images/bird.png');
-      const res = await File.toImage(fs, path);
+      const res = await File.Image.manifestFileImage(fs, path);
       expect(res?.kind).to.eql('png');
       expect(res?.width).to.eql(272);
       expect(res?.height).to.eql(226);

@@ -24,7 +24,7 @@ export const FsIndexer = (args: { dir: string; fs: t.INodeFs }) => {
       })();
 
       const paths = await PathUtil.files({ fs, dir, filter });
-      const toFile = async (path: string) => File.toManifestFile({ fs, baseDir, path });
+      const toFile = async (path: string) => File.manifestFile({ fs, baseDir, path });
       const files = await Promise.all(paths.map(toFile));
 
       return {
