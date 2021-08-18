@@ -1,1 +1,1 @@
-export * from './FilesystemS3';
+export * from './FsS3';

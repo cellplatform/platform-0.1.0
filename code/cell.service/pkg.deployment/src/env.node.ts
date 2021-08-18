@@ -1,5 +1,5 @@
-import { FilesystemLocal } from '@platform/cell.fs.local';
-import { FilesystemS3 } from '@platform/cell.fs.s3';
+import { FsLocal } from '@platform/cell.fs.local';
+import { FsS3 } from '@platform/cell.fs.s3';
 import { NeDb } from '@platform/fsdb.nedb';
 import { NodeRuntime } from '@platform/cell.runtime.node';
 
@@ -19,10 +19,10 @@ const db = NeDb.create({ filename });
  * File system.
  */
 const filesystem = {
-  local: () => FilesystemLocal({ dir: `${TMP}/fs`, fs: util.fs }),
+  local: () => FsLocal({ dir: `${TMP}/fs`, fs: util.fs }),
 
   spaces: () =>
-    FilesystemS3({
+    FsS3({
       dir: 'platform/tmp/test.http',
       endpoint: {
         origin: 'sfo2.digitaloceanspaces.com',
@@ -33,7 +33,7 @@ const filesystem = {
     }),
 
   wasabi: () =>
-    FilesystemS3({
+    FsS3({
       dir: 'cell/tmp/test.http',
       endpoint: 's3.us-west-1.wasabisys.com',
       accessKey: util.env.value('WASABI_KEY'),

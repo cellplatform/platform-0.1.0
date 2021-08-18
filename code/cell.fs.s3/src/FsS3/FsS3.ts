@@ -1,7 +1,6 @@
 import { t, fs, path, Schema, util } from '../common';
 
 export * from '../types';
-export type IFilesystemS3Init = t.S3Config & { dir: string };
 
 /**
  * Initializes an "S3" compatible file-system API.
@@ -11,7 +10,7 @@ export type IFilesystemS3Init = t.S3Config & { dir: string };
  *  - Wasabi
  *  - (etc)
  */
-export function FilesystemS3(args: IFilesystemS3Init): t.IFsS3 {
+export function FsS3(args: t.S3Config & { dir: string }): t.IFsS3 {
   const cloud = (() => {
     const { endpoint, accessKey, secret } = args;
     const s3 = fs.s3({ endpoint, accessKey, secret });

@@ -1,4 +1,4 @@
-import { FilesystemS3 } from '@platform/cell.fs.s3';
+import { FsS3 } from '@platform/cell.fs.s3';
 import { MongoDb } from '@platform/fsdb.mongo';
 
 import { Server, t, time, rx } from './common';
@@ -9,7 +9,7 @@ import { authorize } from './auth';
 /**
  * Cell: FileSystem
  */
-const fs = FilesystemS3({
+const fs = FsS3({
   dir: '__S3_ROOT__',
   endpoint: { origin: '__S3_ORIGIN__', edge: '__S3_EDGE__' },
   accessKey: SECRETS.S3.KEY,
