@@ -1,11 +1,11 @@
 import { FsIndexer } from '.';
-import { expect, util } from '../test';
+import { expect, TestUtil } from '../test';
 
 describe('FsIndexer', () => {
-  beforeEach(() => util.reset());
+  beforeEach(() => TestUtil.reset());
 
-  const fs = util.node;
-  const dir = util.PATH.LOCAL;
+  const fs = TestUtil.node;
+  const dir = TestUtil.PATH.LOCAL;
 
   const copy = async (source: string, target?: string) => {
     const from = fs.join(fs.resolve('static.test'), source);
@@ -17,7 +17,7 @@ describe('FsIndexer', () => {
   };
 
   it('dir', () => {
-    const dir = util.PATH.LOCAL;
+    const dir = TestUtil.PATH.LOCAL;
     const indexer = FsIndexer({ fs, dir });
     expect(indexer.dir).to.eql(dir);
   });

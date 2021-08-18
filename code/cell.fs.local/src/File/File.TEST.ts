@@ -1,7 +1,7 @@
 import { File } from '.';
-import { expect, util } from '../test';
+import { expect, TestUtil } from '../test';
 
-const fs = util.node;
+const fs = TestUtil.node;
 
 describe('File', () => {
   describe('manifestFile', () => {

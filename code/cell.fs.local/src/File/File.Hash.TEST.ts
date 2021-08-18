@@ -1,8 +1,8 @@
 import { File } from '.';
 import { FsIndexer } from '..';
-import { expect, Hash, t, util } from '../test';
+import { expect, Hash, t, TestUtil } from '../test';
 
-const fs = util.node;
+const fs = TestUtil.node;
 
 describe('FileHash', () => {
   it('hash.files - [array]', () => {

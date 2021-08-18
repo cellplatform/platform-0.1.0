@@ -1,12 +1,12 @@
-import { expect, util, t } from '../test';
+import { expect, TestUtil, t } from '../test';
 import { PathUtil } from '.';
 
 describe('PathUtil', () => {
-  beforeEach(() => util.reset());
+  beforeEach(() => TestUtil.reset());
 
-  const fs = util.node;
-  const dir = util.PATH.LOCAL;
-  const copy = async (target: string) => util.copyImage('bird.png', target);
+  const fs = TestUtil.node;
+  const dir = TestUtil.PATH.LOCAL;
+  const copy = async (target: string) => TestUtil.copyImage('bird.png', target);
 
   it('empty', async () => {
     const res = await PathUtil.files({ fs, dir });

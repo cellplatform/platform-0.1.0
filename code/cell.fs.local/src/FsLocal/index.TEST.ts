@@ -1,28 +1,28 @@
-import { t, expect, util, PATH } from '../test';
+import { t, expect, TestUtil, PATH } from '../test';
 import { FsLocal } from '.';
 
 describe('FsLocal', () => {
-  beforeEach(() => util.reset());
+  beforeEach(() => TestUtil.reset());
 
   it('init', () => {
-    const root = util.node.resolve('tmp');
-    const fs = FsLocal({ dir: root, fs: util.node });
+    const root = TestUtil.node.resolve('tmp');
+    const fs = FsLocal({ dir: root, fs: TestUtil.node });
     expect(fs.dir).to.eql(root);
   });
 
   it('type', () => {
-    const fs = util.createLocal();
+    const fs = TestUtil.createLocal();
     expect(fs.type).to.eql('LOCAL');
   });
 
   describe('paths', () => {
     it('exposes root (dir)', () => {
-      const fs = util.createLocal();
+      const fs = TestUtil.createLocal();
       expect(fs.dir).to.eql(PATH.LOCAL);
     });
 
     it('resolve (uri => path)', () => {
-      const fs = util.createLocal();
+      const fs = TestUtil.createLocal();
       const test = (uri: string, expected: string) => {
         const res = fs.resolve(uri);
         expect(res.path).to.eql(`${PATH.LOCAL}/${expected}`);
@@ -33,7 +33,7 @@ describe('FsLocal', () => {
     });
 
     it('resolve: SIGNED/post', () => {
-      const fs = util.createLocal();
+      const fs = TestUtil.createLocal();
 
       const res1 = fs.resolve('file:foo:123', { type: 'SIGNED/post' });
       const res2 = fs.resolve('file:foo:123', { type: 'SIGNED/post', contentType: 'image/png' });
@@ -49,7 +49,7 @@ describe('FsLocal', () => {
     });
 
     it('resolve: throws if non-DEFAULT operation specified', () => {
-      const fs = util.createLocal();
+      const fs = TestUtil.createLocal();
       const test = (options: t.IFsResolveOptionsLocal) => {
         const fn = () => fs.resolve('file:foo:123', options);
         expect(fn).to.throw();
@@ -59,16 +59,16 @@ describe('FsLocal', () => {
     });
 
     it('resolve: throw if not "path:.." or "file:.." URI', () => {
-      const fs = util.createLocal();
+      const fs = TestUtil.createLocal();
       const fn = () => fs.resolve('foo');
       expect(fn).to.throw(/Invalid URI/);
     });
 
     it('resolve: to path', () => {
-      const fs = util.createLocal();
+      const fs = TestUtil.createLocal();
       const test = (uri: string, expected: string) => {
         const path = fs.resolve(uri).path;
-        expect(path).to.eql(util.node.join(fs.dir, expected));
+        expect(path).to.eql(TestUtil.node.join(fs.dir, expected));
       };
 
       test('path:foo', 'foo');
@@ -85,12 +85,12 @@ describe('FsLocal', () => {
   });
 
   it('info (file:uri)', async () => {
-    const fs = util.createLocal();
+    const fs = TestUtil.createLocal();
 
-    const png = await util.readImage('bird.png');
+    const png = await TestUtil.readImage('bird.png');
     const uri = 'file:foo:bird';
     const path = fs.resolve(`  ${uri} `).path;
-    await util.writeFile(path, png);
+    await TestUtil.writeFile(path, png);
 
     const res = await fs.info(uri);
     expect(res.uri).to.eql(uri);
@@ -103,12 +103,12 @@ describe('FsLocal', () => {
   });
 
   it('info (path:uri)', async () => {
-    const fs = util.createLocal();
+    const fs = TestUtil.createLocal();
 
-    const png = await util.readImage('bird.png');
+    const png = await TestUtil.readImage('bird.png');
     const uri = 'path:foo/bird.png';
     const path = fs.resolve(uri).path;
-    await util.writeFile(path, png);
+    await TestUtil.writeFile(path, png);
 
     const res = await fs.info(` ${uri}  `);
     expect(res.uri).to.eql(uri);
@@ -116,7 +116,7 @@ describe('FsLocal', () => {
   });
 
   it('info (404)', async () => {
-    const fs = util.createLocal();
+    const fs = TestUtil.createLocal();
     const uri = 'file:foo:boo';
     const res = await fs.info(uri);
 
@@ -129,12 +129,12 @@ describe('FsLocal', () => {
 
   describe('read/write', () => {
     it('read', async () => {
-      const fs = util.createLocal();
+      const fs = TestUtil.createLocal();
 
       const test = async (uri: string) => {
-        const png = await util.readImage('bird.png');
+        const png = await TestUtil.readImage('bird.png');
         const path = fs.resolve(uri).path;
-        await util.writeFile(path, png);
+        await TestUtil.writeFile(path, png);
 
         const res = await fs.read(uri);
         const file = res.file as t.IFsFileData;
@@ -145,7 +145,7 @@ describe('FsLocal', () => {
         expect(res.error).to.eql(undefined);
         expect(file.location).to.eql(`file://${file.path}`);
         expect(file.path).to.eql(path);
-        expect(file.data.toString()).to.eql((await util.node.readFile(file.path)).toString());
+        expect(file.data.toString()).to.eql((await TestUtil.node.readFile(file.path)).toString());
         expect(file.hash).to.match(/^sha256-[a-z0-9]+/);
       };
 
@@ -154,10 +154,10 @@ describe('FsLocal', () => {
     });
 
     it('write', async () => {
-      const fs = util.createLocal();
+      const fs = TestUtil.createLocal();
 
       const test = async (uri: string) => {
-        const png = await util.readImage('bird.png');
+        const png = await TestUtil.readImage('bird.png');
         const res = await fs.write(`  ${uri} `, png); // NB: URI padded with spaces (corrected internally).
         const file = res.file;
 
@@ -168,7 +168,7 @@ describe('FsLocal', () => {
         expect(file.location).to.eql(`file://${file.path}`);
         expect(file.path).to.eql(fs.resolve(uri).path);
         expect(file.hash).to.match(/^sha256-[a-z0-9]+/);
-        expect(png.toString()).to.eql((await util.node.readFile(file.path)).toString());
+        expect(png.toString()).to.eql((await TestUtil.node.readFile(file.path)).toString());
       };
 
       await test('file:foo:123');
@@ -178,18 +178,18 @@ describe('FsLocal', () => {
 
   describe('delete', () => {
     it('delete (one)', async () => {
-      const fs = util.createLocal();
+      const fs = TestUtil.createLocal();
 
       const test = async (uri: string) => {
-        const png = await util.readImage('bird.png');
+        const png = await TestUtil.readImage('bird.png');
         const path = fs.resolve(uri).path;
 
-        expect(await util.pathExists(path)).to.eql(false);
+        expect(await TestUtil.pathExists(path)).to.eql(false);
         await fs.write(uri, png);
-        expect(await util.pathExists(path)).to.eql(true);
+        expect(await TestUtil.pathExists(path)).to.eql(true);
 
         const res = await fs.delete(uri);
-        expect(await util.pathExists(path)).to.eql(false);
+        expect(await TestUtil.pathExists(path)).to.eql(false);
 
         expect(res.ok).to.eql(true);
         expect(res.status).to.eql(200);
@@ -202,26 +202,26 @@ describe('FsLocal', () => {
     });
 
     it('delete (many)', async () => {
-      const fs = util.createLocal();
+      const fs = TestUtil.createLocal();
 
       const test = async (uri1: string, uri2: string) => {
-        const png = await util.readImage('bird.png');
-        const jpg = await util.readImage('kitten.jpg');
+        const png = await TestUtil.readImage('bird.png');
+        const jpg = await TestUtil.readImage('kitten.jpg');
         const path1 = fs.resolve(uri1).path;
         const path2 = fs.resolve(uri2).path;
 
-        expect(await util.pathExists(path1)).to.eql(false);
-        expect(await util.pathExists(path2)).to.eql(false);
+        expect(await TestUtil.pathExists(path1)).to.eql(false);
+        expect(await TestUtil.pathExists(path2)).to.eql(false);
 
         await fs.write(uri1, png);
         await fs.write(uri2, jpg);
-        expect(await util.pathExists(path1)).to.eql(true);
-        expect(await util.pathExists(path2)).to.eql(true);
+        expect(await TestUtil.pathExists(path1)).to.eql(true);
+        expect(await TestUtil.pathExists(path2)).to.eql(true);
 
         const res = await fs.delete([uri1, uri2]);
 
-        expect(await util.pathExists(path1)).to.eql(false);
-        expect(await util.pathExists(path2)).to.eql(false);
+        expect(await TestUtil.pathExists(path1)).to.eql(false);
+        expect(await TestUtil.pathExists(path2)).to.eql(false);
 
         expect(res.ok).to.eql(true);
         expect(res.status).to.eql(200);
@@ -238,8 +238,8 @@ describe('FsLocal', () => {
 
   describe('copy', () => {
     it('copy file', async () => {
-      const fs = util.createLocal();
-      const png = await util.readImage('bird.png');
+      const fs = TestUtil.createLocal();
+      const png = await TestUtil.readImage('bird.png');
       const sourceUri = 'file:foo:bird1';
       const targetUri = 'file:bar:bird2';
 
@@ -258,7 +258,7 @@ describe('FsLocal', () => {
     });
 
     it('error: source file does not exist', async () => {
-      const fs = util.createLocal();
+      const fs = TestUtil.createLocal();
       const sourceUri = 'file:foo:bird1';
       const targetUri = 'file:bar:bird2';
 
@@ -275,7 +275,7 @@ describe('FsLocal', () => {
 
   describe('errors', () => {
     it('404 while reading file', async () => {
-      const fs = util.createLocal();
+      const fs = TestUtil.createLocal();
       const uri = 'file:foo:noexist';
 
       const res = await fs.read(uri);
@@ -291,8 +291,8 @@ describe('FsLocal', () => {
     });
 
     it('step up above root dir', async () => {
-      const fs = util.createLocal();
-      const png = await util.readImage('bird.png');
+      const fs = TestUtil.createLocal();
+      const png = await TestUtil.readImage('bird.png');
 
       const res1 = await fs.write('path:foo/bird.png', png);
       const res2 = await fs.write('path:foo/../../bird.png', png);
