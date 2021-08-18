@@ -11,9 +11,5 @@ export type DirManifest = t.Manifest<DirManifestFile, DirManifestHash> & {
 };
 
 export type DirManifestHash = t.ManifestHash;
-
 export type DirManifestFile = t.ManifestFile;
-
-export type DirManifestInfo = {
-  indexedAt: Timestamp;
-};
+export type DirManifestInfo = { indexedAt: Timestamp };
