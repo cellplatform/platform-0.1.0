@@ -1,13 +1,18 @@
 import { t } from '../common';
 
-/**
- * Factor for a machine that
- */
-export type FilesystemIndexerFactory = (args: { fs: t.IFilesystem }) => FilesystemIndexer;
+type DirPath = string;
 
+export type FsPathFilter = (e: FsPathFilterArgs) => boolean;
+export type FsPathFilterArgs = { path: string; is: { dir: boolean; file: boolean } };
+
+/**
+ * Index of a file-system.
+ */
 export type FilesystemIndexer = {
+  dir: string; // Root directory of the file-system.
+
   /**
-   *
+   * Generate a directory listing manifest.
    */
-  manifest(): Promise<t.DirManifest>;
+  manifest(options?: { dir?: DirPath; filter?: FsPathFilter }): Promise<t.DirManifest>;
 };

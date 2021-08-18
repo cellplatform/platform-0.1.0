@@ -19,7 +19,8 @@
     "@platform/fs": "0.7.3",
     "@platform/fs.s3.types": "0.3.25",
     "@platform/fs.types": "0.1.10",
-    "@platform/log": "0.1.60"
+    "@platform/log": "0.1.60",
+    "image-size": "1.0.0"
   },
   "devDependencies": {
     "@platform/test": "0.2.8",
@@ -29,7 +30,8 @@
     "lib",
     "!lib/test",
     "!*.TEST.{js, mjs, d.ts}",
-    "!*.INTEGRATION.{js, mjs, d.ts}"
+    "!*.INTEGRATION.{js, mjs, d.ts}",
+    "!static.test"
   ],
   "license": "MIT"
 }

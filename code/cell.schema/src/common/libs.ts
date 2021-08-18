@@ -7,7 +7,6 @@ export const deleteUndefined = value.deleteUndefined;
 export const cuid = id.cuid;
 export const slug = id.shortid;
 
-export { IFs } from '@platform/fs.types';
 export { Mime } from '@platform/util.mimetype';
 export { MemoryCache } from '@platform/cache/lib/MemoryCache';
 export { wildcard } from '@platform/util.string/lib/wildcard';

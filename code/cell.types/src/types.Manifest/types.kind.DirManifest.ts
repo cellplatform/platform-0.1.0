@@ -10,9 +10,7 @@ export type DirManifest = t.Manifest<DirManifestFile, DirManifestHash> & {
   dir: DirManifestInfo;
 };
 
-export type DirManifestHash = t.ManifestHash & {
-  dir: string; // The hash of all files AND the [DirInfo] meta-data.
-};
+export type DirManifestHash = t.ManifestHash;
 
 export type DirManifestFile = t.ManifestFile;
 

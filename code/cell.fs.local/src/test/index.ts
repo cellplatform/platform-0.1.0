@@ -15,23 +15,29 @@ export const PATH = {
   LOCAL: fs.join(TMP, 'local'),
 };
 
-export const writeFile = async (path: string, data: Buffer) => {
-  await fs.ensureDir(fs.dirname(path));
-  await fs.writeFile(path, data);
-};
-
-export const init = () => FilesystemLocal({ dir: PATH.LOCAL, fs });
-
 export const util = {
-  initLocal: init,
+  createLocal: () => FilesystemLocal({ dir: PATH.LOCAL, fs }),
   PATH,
-  fs: fs as t.INodeFs,
-  pathExists: fs.pathExists,
-  writeFile,
+  node: fs as t.INodeFs,
   env: fs.env.value,
-  async image(path: string) {
-    return fs.readFile(fs.join(fs.resolve(`src/test/images`), path));
+  pathExists: fs.pathExists,
+
+  async writeFile(path: string, data: Buffer) {
+    await fs.ensureDir(fs.dirname(path));
+    await fs.writeFile(path, data);
   },
+
+  async readImage(path: string) {
+    return fs.readFile(fs.join(fs.resolve(`static.test/images`), path));
+  },
+
+  async copyImage(source: string, target: string) {
+    const data = await util.readImage(source);
+    target = fs.join(PATH.LOCAL, target);
+    await util.writeFile(target, data);
+    return target;
+  },
+
   async reset() {
     await fs.remove(TMP);
   },

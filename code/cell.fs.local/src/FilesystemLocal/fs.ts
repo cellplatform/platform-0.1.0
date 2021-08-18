@@ -1,5 +1,5 @@
 import { Schema, t, util } from '../common';
-import { FsLocalResolver } from './local.resolver';
+import { FsLocalResolver } from './fs.resolver';
 
 export * from '../types';
 
