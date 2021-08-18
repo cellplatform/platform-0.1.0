@@ -1,7 +1,7 @@
 import { FilesystemIndexer } from '.';
 import { expect, util } from '../test';
 
-describe.only('FilesystemIndexer', () => {
+describe('FilesystemIndexer', () => {
   beforeEach(() => util.reset());
 
   const fs = util.node;
