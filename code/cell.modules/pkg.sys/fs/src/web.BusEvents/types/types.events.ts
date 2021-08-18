@@ -1,10 +1,11 @@
 import { t } from './common';
 import { SysFsIoEvent } from './types.events.io';
+import { SysFsIndexEvent } from './types.events.index';
 
 type FilesystemId = string;
 type FilePath = string;
 
-export type SysFsEvent = SysFsInfoReqEvent | SysFsInfoResEvent | SysFsIoEvent;
+export type SysFsEvent = SysFsIoEvent | SysFsIndexEvent | SysFsInfoReqEvent | SysFsInfoResEvent;
 
 /**
  * Compile the project into a bundle.

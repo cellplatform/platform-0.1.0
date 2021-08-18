@@ -78,5 +78,33 @@ describe('FilesystemIndexer', () => {
       expect(files1).to.eql(files2);
       expect(files1).to.eql(['foo/icon-1.svg', 'foo/bar/icon-2.svg']);
     });
+
+    it('sub-dir: "" (empty)', async () => {
+      await copy('file.txt');
+      await copy('images/bird.png');
+
+      const indexer = FilesystemIndexer({ fs, dir });
+      const manifest1 = await indexer.manifest({ dir: '' });
+      const manifest2 = await indexer.manifest({ dir: '  ' });
+
+      const files1 = manifest1.files.map((file) => file.path);
+      const files2 = manifest2.files.map((file) => file.path);
+
+      expect(files1).to.eql(files2);
+      expect(files1).to.eql(['file.txt', 'images/bird.png']);
+    });
+
+    it('file => dir', async () => {
+      await copy('file.txt');
+      await copy('images/bird.png');
+      await copy('images/award.svg');
+
+      const indexer = FilesystemIndexer({ fs, dir });
+      const manifest = await indexer.manifest({ dir: 'images/bird.png' }); // NB: File specified, steps up to containing folder.
+      const files = manifest.files.map((file) => file.path);
+
+      expect(manifest.files.length).to.eql(2);
+      expect(files).to.eql(['images/award.svg', 'images/bird.png']);
+    });
   });
 });

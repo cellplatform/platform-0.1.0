@@ -1,4 +1,4 @@
-import { t, expect, rx, TestFs } from '../test';
+import { t, expect, rx, TestFs, Hash } from '../test';
 import { FsBus } from '.';
 
 describe('FsBus', function () {
@@ -16,7 +16,8 @@ describe('FsBus', function () {
           fs: TestFs.node,
         });
 
-    const controller = FsBus.Controller({ id, fs, bus });
+    const index = TestFs.index(fs.dir);
+    const controller = FsBus.Controller({ id, bus, fs, index });
     const events = FsBus.Events({ id, bus });
 
     return {
@@ -40,7 +41,8 @@ describe('FsBus', function () {
     it('id', () => {
       const id = 'foo';
       const fs = TestFs.local;
-      const controller = FsBus.Controller({ id, fs, bus });
+      const index = TestFs.index(fs.dir);
+      const controller = FsBus.Controller({ id, fs, bus, index });
       expect(controller.id).to.eql(id);
       controller.dispose();
     });
@@ -50,7 +52,8 @@ describe('FsBus', function () {
       const fs = TestFs.local;
 
       let allow = true;
-      const controller = FsBus.Controller({ id, fs, bus, filter: (e) => allow });
+      const index = TestFs.index(fs.dir);
+      const controller = FsBus.Controller({ id, fs, index, bus, filter: (e) => allow });
       const events = FsBus.Events({ id, bus });
 
       const res1 = await events.info.get();
@@ -88,7 +91,8 @@ describe('FsBus', function () {
     it('defaults - no files', async () => {
       const id = 'foo';
       const fs = TestFs.local;
-      const controller = FsBus.Controller({ id, fs, bus });
+      const index = TestFs.index(fs.dir);
+      const controller = FsBus.Controller({ id, fs, index, bus });
       const events = FsBus.Events({ id, bus });
 
       const res = await events.info.get();
@@ -155,7 +159,8 @@ describe('FsBus', function () {
 
     it('error: timeout', async () => {
       const fs = TestFs.local;
-      const controller = FsBus.Controller({ id: 'foo', fs, bus });
+      const index = TestFs.index(fs.dir);
+      const controller = FsBus.Controller({ id: 'foo', fs, index, bus });
       const events = FsBus.Events({ id: 'bar', bus });
 
       const res = await events.info.get({ timeout: 10 });
@@ -163,6 +168,92 @@ describe('FsBus', function () {
 
       expect(res.error?.code).to.eql('client/timeout');
       expect(res.error?.message).to.include('timed out');
+    });
+  });
+
+  describe('BusController.Index', () => {
+    it('manifest: empty', async () => {
+      const mock = prep();
+      const res = await mock.events.index.manifest.get();
+      await mock.dispose();
+
+      const item = res.dirs[0];
+      const manifest = item.manifest;
+
+      expect(res.dirs.length).to.eql(1);
+      expect(item.dir).to.eql(mock.dir);
+
+      expect(manifest.kind).to.eql('dir');
+      expect(typeof manifest.dir.indexedAt === 'number').to.eql(true);
+      expect(manifest.files).to.eql([]);
+      expect(manifest.hash.files).to.eql(Hash.sha256([]));
+    });
+
+    it('manifest: root', async () => {
+      const mock = prep();
+      const src1 = await TestFs.readFile('static.test/data/01.json');
+      const src2 = await TestFs.readFile('static.test/child/tree.png');
+
+      const path1 = '/foo/data.json';
+      const path2 = '/bar/tree.png';
+      await mock.events.io.write.fire({ path: path1, hash: src1.hash, data: src1.data });
+      await mock.events.io.write.fire({ path: path2, hash: src2.hash, data: src2.data });
+
+      const res = await mock.events.index.manifest.get();
+      await mock.dispose();
+
+      const item = res.dirs[0];
+      const manifest = item.manifest;
+
+      expect(res.dirs.length).to.eql(1);
+      expect(item.dir).to.eql(mock.dir);
+
+      expect(manifest.kind).to.eql('dir');
+      expect(typeof manifest.dir.indexedAt === 'number').to.eql(true);
+
+      const files = manifest.files;
+      expect(files.length).to.eql(2);
+      expect(files.map(({ path }) => path)).to.eql(['bar/tree.png', 'foo/data.json']);
+
+      expect(files[0].image?.kind).to.eql('png');
+      expect(files[1].image).to.eql(undefined);
+    });
+
+    it.only('manifest: multiple sub-trees', async () => {
+      const mock = prep();
+      const src = await TestFs.readFile('static.test/data/01.json');
+
+      await mock.events.io.write.fire({
+        path: '/data/foo/data.json',
+        hash: src.hash,
+        data: src.data,
+      });
+      await mock.events.io.write.fire({
+        path: '/data/foo/child/list.json',
+        hash: src.hash,
+        data: src.data,
+      });
+      await mock.events.io.write.fire({
+        path: '/logs/archive/main.log',
+        hash: src.hash,
+        data: src.data,
+      });
+
+      const res = await mock.events.index.manifest.get({ dir: ['/data/foo', 'images', '/404'] });
+      await mock.dispose();
+
+      console.log('-------------------------------------------');
+
+      const files1 = res.dirs[0].manifest.files.map((file) => file.path);
+      const files2 = res.dirs[1].manifest.files.map((file) => file.path);
+      const files3 = res.dirs[2].manifest.files.map((file) => file.path);
+
+      console.log('res', res);
+      console.log('-------------------------------------------');
+
+      console.log('files1', files1);
+      console.log('files2', files2);
+      console.log('files3', files3);
     });
   });
 

@@ -12,6 +12,7 @@ export type SysFsEvents = t.Disposable & {
   $: t.Observable<t.SysFsEvent>;
   is: { base(input: any): boolean };
   info: SysFsEventsInfo;
+  index: t.SysFsEventsIndex;
   io: t.SysFsEventsIo;
 };
 
@@ -23,8 +24,12 @@ export type SysFsEventsInfo = {
 
 export type SysFsEventsIndex = {
   manifest: {
-    req$: t.Observable<t.SysFsMoveReqEvent>;
-    res$: t.Observable<t.SysFsMoveResEvent>;
+    req$: t.Observable<t.SysFsManifestReq>;
+    res$: t.Observable<t.SysFsManifestRes>;
+    get(options?: {
+      dir?: FilePath | FilePath[];
+      timeout?: Milliseconds;
+    }): Promise<t.SysFsManifestRes>;
   };
 };
 

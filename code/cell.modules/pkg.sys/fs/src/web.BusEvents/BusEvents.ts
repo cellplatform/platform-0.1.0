@@ -3,6 +3,7 @@ import { catchError, filter, takeUntil } from 'rxjs/operators';
 
 import { rx, slug, t, timeoutWrangler } from './common';
 import { IoEvents } from './BusEvents.io';
+import { IndexEvents } from './BusEvents.index';
 
 type FilesystemId = string;
 type Milliseconds = number;
@@ -31,6 +32,7 @@ export function BusEvents(args: {
   );
 
   const io = IoEvents({ id, $, bus, timeout: toTimeout() });
+  const index = IndexEvents({ id, $, bus, timeout: toTimeout() });
 
   const info: t.SysFsEvents['info'] = {
     req$: rx.payload<t.SysFsInfoReqEvent>($, 'sys.fs/info:req'),
@@ -60,7 +62,7 @@ export function BusEvents(args: {
     },
   };
 
-  return { id, $, is, dispose, dispose$, info, io };
+  return { id, $, is, dispose, dispose$, info, io, index };
 }
 
 /**

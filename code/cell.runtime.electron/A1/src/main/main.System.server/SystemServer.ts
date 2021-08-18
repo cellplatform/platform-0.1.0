@@ -1,4 +1,4 @@
-import { local } from '@platform/cell.fs.local';
+import { FilesystemLocal } from '@platform/cell.fs.local';
 import { NodeRuntime } from '@platform/cell.runtime.node';
 import { Server } from '@platform/cell.service/lib/node/server';
 import { NeDb } from '@platform/fsdb.nedb';
@@ -21,7 +21,7 @@ export const SystemServer = {
     const app = Server.create({
       name: 'main',
       db: NeDb.create({ filename: paths.db }),
-      fs: local.init({ dir: paths.fs, fs }),
+      fs: FilesystemLocal({ dir: paths.fs, fs }),
       runtime: NodeRuntime.create({ bus: runtimeBus }),
       logger: options.log,
       region: SystemServer.region,

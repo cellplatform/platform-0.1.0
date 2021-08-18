@@ -1,6 +1,8 @@
 import { expect } from '../test';
 import { path } from '.';
 
+import { fs } from '@platform/fs';
+
 describe('path', () => {
   it('throw on invalid URI', () => {
     const test = (uri: any) => {
@@ -41,6 +43,7 @@ describe('path', () => {
       const res = path.join(...parts);
       expect(res).to.eql(expected);
     };
+
     test([], '');
     test(['foo'], 'foo');
     test(['/foo'], '/foo');

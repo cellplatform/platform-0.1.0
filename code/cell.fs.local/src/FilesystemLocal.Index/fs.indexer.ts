@@ -14,11 +14,13 @@ export const FilesystemIndexer = (args: { dir: string; fs: t.INodeFs }) => {
     async manifest(options = {}) {
       const { filter } = options;
 
-      const dir: string = (() => {
+      const dir: string = await (async () => {
         if (!options.dir) return baseDir;
         let dir = options.dir;
         if (dir.startsWith(baseDir)) dir = dir.substring(baseDir.length);
-        return fs.join(baseDir, dir);
+        dir = fs.join(baseDir, dir);
+        if (!(await fs.is.dir(dir))) dir = fs.dirname(dir);
+        return dir;
       })();
 
       const paths = await PathUtil.files({ fs, dir, filter });
@@ -27,8 +29,8 @@ export const FilesystemIndexer = (args: { dir: string; fs: t.INodeFs }) => {
 
       return {
         kind: 'dir',
-        dir: { indexedAt: time.now.timestamp },
         hash: { files: File.Hash.files(files) },
+        dir: { indexedAt: time.now.timestamp },
         files,
       };
     },
