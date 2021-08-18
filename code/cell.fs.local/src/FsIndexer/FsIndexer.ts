@@ -14,18 +14,36 @@ export const FsIndexer = (args: { dir: string; fs: t.INodeFs }) => {
     async manifest(options = {}) {
       const { filter } = options;
 
+      /**
+       * Wrangle the directory to index.
+       */
       const dir: string = await (async () => {
-        if (!options.dir) return baseDir;
-        let dir = options.dir;
+        if (!options.dir) return baseDir; // No explicit dir, use root.
+
+        // Trim and join to root diretory path.
+        let dir = (options.dir ?? '').trim();
         if (dir.startsWith(baseDir)) dir = dir.substring(baseDir.length);
         dir = fs.join(baseDir, dir);
-        if (!(await fs.is.dir(dir))) dir = fs.dirname(dir);
+
+        // If the path does not exist, return no files.
+        if (!(await fs.exists(dir))) return '';
+
+        // If a file path was specified, step up to it's parent directory.
+        if (await fs.is.file(dir)) dir = fs.dirname(dir);
+
         return dir;
       })();
 
-      const paths = await PathUtil.files({ fs, dir, filter });
-      const toFile = async (path: string) => File.manifestFile({ fs, baseDir, path });
-      const files = await Promise.all(paths.map(toFile));
+      /**
+       * Generate the file index.
+       */
+      const files: t.ManifestFile[] = await (async () => {
+        if (!dir) return [];
+        const paths = await PathUtil.files({ fs, dir, filter });
+        const toFile = async (path: string) => File.manifestFile({ fs, baseDir, path });
+        const files = await Promise.all(paths.map(toFile));
+        return files;
+      })();
 
       return {
         kind: 'dir',

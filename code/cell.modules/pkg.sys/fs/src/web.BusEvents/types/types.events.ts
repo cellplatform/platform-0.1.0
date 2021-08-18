@@ -5,6 +5,9 @@ import { SysFsIndexEvent } from './types.events.index';
 type FilesystemId = string;
 type FilePath = string;
 
+/**
+ * EVENTS
+ */
 export type SysFsEvent = SysFsIoEvent | SysFsIndexEvent | SysFsInfoReqEvent | SysFsInfoResEvent;
 
 /**

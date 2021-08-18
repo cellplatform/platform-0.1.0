@@ -1,4 +1,4 @@
-import { asArray, join, t } from './common';
+import { asArray, join, t, R, DEFAULT } from './common';
 
 type FilesystemId = string;
 type Error = t.SysFsError;
@@ -21,10 +21,19 @@ export function BusControllerIndex(args: {
   events.index.manifest.req$.subscribe(async (e) => {
     const { tx } = e;
 
-    const toManifest = async (path?: string) => {
-      const manifest = await index.manifest({ dir: path });
+    const toManifest = async (path?: string): Promise<t.SysFsManifestDirResponse> => {
       const dir = path ? join(fs.dir, path) : fs.dir;
-      return { dir, manifest };
+      try {
+        const manifest = await index.manifest({ dir: path });
+        return { dir, manifest };
+      } catch (error) {
+        const message = `Failed while building manifest. ${error.message}`.trim();
+        return {
+          dir,
+          manifest: R.clone(DEFAULT.ERROR_MANIFEST),
+          error: { code: 'manifest', message },
+        };
+      }
     };
 
     const paths = asArray(e.dir ?? []);

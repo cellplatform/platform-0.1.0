@@ -171,89 +171,109 @@ describe('FsBus', function () {
     });
   });
 
-  describe('BusController.Index', () => {
-    it('manifest: empty', async () => {
-      const mock = prep();
-      const res = await mock.events.index.manifest.get();
-      await mock.dispose();
+  describe.only('BusController.Index', () => {
+    describe('manifest', () => {
+      it('empty', async () => {
+        const mock = prep();
+        const res = await mock.events.index.manifest.get();
+        await mock.dispose();
 
-      const item = res.dirs[0];
-      const manifest = item.manifest;
+        const item = res.dirs[0];
+        const manifest = item.manifest;
 
-      expect(res.dirs.length).to.eql(1);
-      expect(item.dir).to.eql(mock.dir);
+        expect(res.dirs.length).to.eql(1);
+        expect(item.dir).to.eql(mock.dir);
 
-      expect(manifest.kind).to.eql('dir');
-      expect(typeof manifest.dir.indexedAt === 'number').to.eql(true);
-      expect(manifest.files).to.eql([]);
-      expect(manifest.hash.files).to.eql(Hash.sha256([]));
-    });
-
-    it('manifest: root', async () => {
-      const mock = prep();
-      const src1 = await TestFs.readFile('static.test/data/01.json');
-      const src2 = await TestFs.readFile('static.test/child/tree.png');
-
-      const path1 = '/foo/data.json';
-      const path2 = '/bar/tree.png';
-      await mock.events.io.write.fire({ path: path1, hash: src1.hash, data: src1.data });
-      await mock.events.io.write.fire({ path: path2, hash: src2.hash, data: src2.data });
-
-      const res = await mock.events.index.manifest.get();
-      await mock.dispose();
-
-      const item = res.dirs[0];
-      const manifest = item.manifest;
-
-      expect(res.dirs.length).to.eql(1);
-      expect(item.dir).to.eql(mock.dir);
-
-      expect(manifest.kind).to.eql('dir');
-      expect(typeof manifest.dir.indexedAt === 'number').to.eql(true);
-
-      const files = manifest.files;
-      expect(files.length).to.eql(2);
-      expect(files.map(({ path }) => path)).to.eql(['bar/tree.png', 'foo/data.json']);
-
-      expect(files[0].image?.kind).to.eql('png');
-      expect(files[1].image).to.eql(undefined);
-    });
-
-    it.only('manifest: multiple sub-trees', async () => {
-      const mock = prep();
-      const src = await TestFs.readFile('static.test/data/01.json');
-
-      await mock.events.io.write.fire({
-        path: '/data/foo/data.json',
-        hash: src.hash,
-        data: src.data,
-      });
-      await mock.events.io.write.fire({
-        path: '/data/foo/child/list.json',
-        hash: src.hash,
-        data: src.data,
-      });
-      await mock.events.io.write.fire({
-        path: '/logs/archive/main.log',
-        hash: src.hash,
-        data: src.data,
+        expect(manifest.kind).to.eql('dir');
+        expect(typeof manifest.dir.indexedAt === 'number').to.eql(true);
+        expect(manifest.files).to.eql([]);
+        expect(manifest.hash.files).to.eql(Hash.sha256([]));
       });
 
-      const res = await mock.events.index.manifest.get({ dir: ['/data/foo', 'images', '/404'] });
-      await mock.dispose();
+      it('root (no "dir" passed)', async () => {
+        const mock = prep();
+        const src1 = await TestFs.readFile('static.test/data/01.json');
+        const src2 = await TestFs.readFile('static.test/child/tree.png');
 
-      console.log('-------------------------------------------');
+        const path1 = '/foo/data.json';
+        const path2 = '/bar/tree.png';
+        await mock.events.io.write.fire({ path: path1, hash: src1.hash, data: src1.data });
+        await mock.events.io.write.fire({ path: path2, hash: src2.hash, data: src2.data });
 
-      const files1 = res.dirs[0].manifest.files.map((file) => file.path);
-      const files2 = res.dirs[1].manifest.files.map((file) => file.path);
-      const files3 = res.dirs[2].manifest.files.map((file) => file.path);
+        const res = await mock.events.index.manifest.get();
+        await mock.dispose();
 
-      console.log('res', res);
-      console.log('-------------------------------------------');
+        const item = res.dirs[0];
+        const manifest = item.manifest;
 
-      console.log('files1', files1);
-      console.log('files2', files2);
-      console.log('files3', files3);
+        expect(res.dirs.length).to.eql(1);
+        expect(item.dir).to.eql(mock.dir);
+
+        expect(manifest.kind).to.eql('dir');
+        expect(typeof manifest.dir.indexedAt === 'number').to.eql(true);
+
+        const files = manifest.files;
+        expect(files.length).to.eql(2);
+        expect(files.map(({ path }) => path)).to.eql(['bar/tree.png', 'foo/data.json']);
+
+        expect(files[0].image?.kind).to.eql('png');
+        expect(files[1].image).to.eql(undefined);
+      });
+
+      it('multiple sub-trees', async () => {
+        const mock = prep();
+        const io = mock.events.io;
+        const src = await TestFs.readFile('static.test/data/01.json');
+        const write = (path: string) => io.write.fire({ path, hash: src.hash, data: src.data });
+
+        await write('/root.json');
+        await write('/data/foo/data.json');
+        await write('/data/foo/child/list.json');
+        await write('/logs/archive/main.log');
+        await write('/logs/main.log');
+
+        const res = await mock.events.index.manifest.get({ dir: ['/data/foo', 'logs', '/404'] });
+        await mock.dispose();
+
+        const files1 = res.dirs[0].manifest.files.map((file) => file.path);
+        const files2 = res.dirs[1].manifest.files.map((file) => file.path);
+        const files3 = res.dirs[2].manifest.files.map((file) => file.path);
+
+        expect(files1).to.eql(['data/foo/data.json', 'data/foo/child/list.json']);
+        expect(files2).to.eql(['logs/main.log', 'logs/archive/main.log']);
+        expect(files3).to.eql([]);
+      });
+
+      it('error: binary not an image, but named with an image extension ', async () => {
+        const mock = prep();
+        const io = mock.events.io;
+        const src = await TestFs.readFile('static.test/data/01.json');
+        const write = (path: string) => io.write.fire({ path, hash: src.hash, data: src.data });
+
+        await write('json.png'); // NB: Writing the JSON file with an image file-extension.
+
+        const res = await mock.events.index.manifest.get({});
+        await mock.dispose();
+
+        expect(res.dirs.length).to.eql(1);
+
+        const manifest = res.dirs[0].manifest;
+        const files = manifest.files;
+
+        expect(files.length).to.eql(1);
+        expect(files[0].path).to.eql('json.png');
+        expect(files[0].image).to.eql(undefined); // NB: Not assigned as this is not really an image.
+
+        // exe
+      });
+
+      it.skip('caching: save/force flags', async () => {
+        /**
+         * TODO 🐷
+         * - save
+         * - force
+         */
+      });
     });
   });
 

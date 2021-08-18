@@ -2,10 +2,11 @@ import { t } from './common';
 
 type FilesystemId = string;
 type FilePath = string;
+type DirPath = string;
 
 export type SysFsInfo = {
   id: FilesystemId;
-  dir: string; // The root directory of the file-system scope.
+  dir: DirPath; // The root directory of the file-system scope.
 };
 
 export type SysFsFileInfo = {
@@ -13,30 +14,20 @@ export type SysFsFileInfo = {
   exists: boolean | null;
   hash: string;
   bytes: number;
-  error?: SysFsError;
+  error?: t.SysFsError;
 };
 
 export type SysFsFile = { path: FilePath; data: Uint8Array; hash: string };
 export type SysFsFileTarget = { source: FilePath; target: FilePath };
 
-export type SysFsFileReadResponse = { file?: SysFsFile; error?: SysFsError };
-export type SysFsFileWriteResponse = { path: FilePath; error?: SysFsError };
-export type SysFsFileDeleteResponse = { path: FilePath; error?: SysFsError };
-export type SysFsFileCopyResponse = { source: FilePath; target: FilePath; error?: SysFsError };
-export type SysFsFileMoveResponse = { source: FilePath; target: FilePath; error?: SysFsError };
+export type SysFsFileReadResponse = { file?: SysFsFile; error?: t.SysFsError };
+export type SysFsFileWriteResponse = { path: FilePath; error?: t.SysFsError };
+export type SysFsFileDeleteResponse = { path: FilePath; error?: t.SysFsError };
+export type SysFsFileCopyResponse = { source: FilePath; target: FilePath; error?: t.SysFsError };
+export type SysFsFileMoveResponse = { source: FilePath; target: FilePath; error?: t.SysFsError };
 
-export type SysFsReadResponse = { files: SysFsFileReadResponse[]; error?: SysFsError };
-export type SysFsWriteResponse = { files: SysFsFileWriteResponse[]; error?: SysFsError };
-export type SysFsDeleteResponse = { files: SysFsFileDeleteResponse[]; error?: SysFsError };
-export type SysFsCopyResponse = { files: SysFsFileCopyResponse[]; error?: SysFsError };
-export type SysFsMoveResponse = { files: SysFsFileMoveResponse[]; error?: SysFsError };
-
-export type SysFsError = { code: SysFsErrorCode; message: string };
-export type SysFsErrorCode =
-  | 'client/timeout'
-  | 'info'
-  | 'read'
-  | 'write'
-  | 'delete'
-  | 'copy'
-  | 'move';
+export type SysFsReadResponse = { files: SysFsFileReadResponse[]; error?: t.SysFsError };
+export type SysFsWriteResponse = { files: SysFsFileWriteResponse[]; error?: t.SysFsError };
+export type SysFsDeleteResponse = { files: SysFsFileDeleteResponse[]; error?: t.SysFsError };
+export type SysFsCopyResponse = { files: SysFsFileCopyResponse[]; error?: t.SysFsError };
+export type SysFsMoveResponse = { files: SysFsFileMoveResponse[]; error?: t.SysFsError };

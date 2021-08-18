@@ -26,6 +26,7 @@ export const File = {
     const image = await FileImage.manifestFileImage(fs, args.path);
 
     // Finish up.
-    return deleteUndefined({ path, filehash, bytes, image });
+    const res: t.ManifestFile = { path, filehash, bytes, image };
+    return deleteUndefined(res);
   },
 };

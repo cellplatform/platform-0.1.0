@@ -1,6 +1,6 @@
 import { asArray, BusEvents, rx, t, Format } from './common';
-import { BusControllerIo } from './BusController.io';
-import { BusControllerIndex } from './BusController.index';
+import { BusControllerIo } from './BusController.Io';
+import { BusControllerIndex } from './BusController.Index';
 
 type FilesystemId = string;
 type FilePath = string;

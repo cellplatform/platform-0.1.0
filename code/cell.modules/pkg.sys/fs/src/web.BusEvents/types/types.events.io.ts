@@ -1,9 +1,11 @@
-
 import { t } from './common';
 
 type FilesystemId = string;
 type FilePath = string;
 
+/**
+ * EVENTS
+ */
 export type SysFsIoEvent =
   | SysFsReadReqEvent
   | SysFsReadResEvent
@@ -16,12 +18,10 @@ export type SysFsIoEvent =
   | SysFsMoveReqEvent
   | SysFsMoveResEvent;
 
-
-
 /**
  * IO: Read
  */
- export type SysFsReadReqEvent = {
+export type SysFsReadReqEvent = {
   type: 'sys.fs/read:req';
   payload: SysFsReadReq;
 };

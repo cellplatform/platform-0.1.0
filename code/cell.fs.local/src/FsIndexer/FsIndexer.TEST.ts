@@ -1,5 +1,5 @@
 import { FsIndexer } from '.';
-import { expect, TestUtil } from '../test';
+import { Hash, expect, TestUtil } from '../test';
 
 describe('FsIndexer', () => {
   beforeEach(() => TestUtil.reset());
@@ -79,7 +79,18 @@ describe('FsIndexer', () => {
       expect(files1).to.eql(['foo/icon-1.svg', 'foo/bar/icon-2.svg']);
     });
 
-    it('sub-dir: "" (empty)', async () => {
+    it('sub-dir: root', async () => {
+      await copy('file.txt');
+      await copy('images/bird.png');
+
+      const indexer = FsIndexer({ fs, dir });
+      const manifest1 = await indexer.manifest({ dir });
+
+      const files1 = manifest1.files.map((file) => file.path);
+      expect(files1).to.eql(['file.txt', 'images/bird.png']);
+    });
+
+    it('sub-dir: "" (empty) - assumes root', async () => {
       await copy('file.txt');
       await copy('images/bird.png');
 
@@ -92,6 +103,17 @@ describe('FsIndexer', () => {
 
       expect(files1).to.eql(files2);
       expect(files1).to.eql(['file.txt', 'images/bird.png']);
+    });
+
+    it('dir (does not exist) - returns no files', async () => {
+      await copy('file.txt');
+      await copy('images/bird.png');
+
+      const indexer = FsIndexer({ fs, dir });
+      const manifest = await indexer.manifest({ dir: 'foo/404' });
+
+      expect(manifest.hash.files).to.eql(Hash.sha256([]));
+      expect(manifest.files).to.eql([]);
     });
 
     it('file => dir', async () => {

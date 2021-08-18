@@ -3,6 +3,15 @@ import { t } from './common';
 type FilesystemId = string;
 type FilePath = string;
 
+export type SysFsManifestDirResponse = {
+  dir: FilePath;
+  manifest: t.DirManifest;
+  error?: t.SysFsError;
+};
+
+/**
+ * EVENTS
+ */
 export type SysFsIndexEvent = SysFsManifestReqEvent | SysFsManifestResEvent;
 
 /**
@@ -21,5 +30,5 @@ export type SysFsManifestResEvent = {
 export type SysFsManifestRes = {
   tx: string;
   id: FilesystemId;
-  dirs: { dir: FilePath; manifest: t.DirManifest }[];
+  dirs: SysFsManifestDirResponse[];
 };
