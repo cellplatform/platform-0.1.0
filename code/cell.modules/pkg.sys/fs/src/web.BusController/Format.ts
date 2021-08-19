@@ -22,5 +22,13 @@ export const Format = {
       path = path.replace(/^\/*/, '');
       return `/${path}`;
     },
+
+    stripTrailingSlash(dir: string) {
+      return (dir ?? '').trim().replace(/\/$/, '');
+    },
+
+    ensureTrailingSlash(dir: string) {
+      return `${Format.dir.stripTrailingSlash(dir)}/`;
+    },
   },
 };

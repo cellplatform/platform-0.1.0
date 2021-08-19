@@ -9,4 +9,5 @@ const ERROR_MANIFEST: t.DirManifest = {
 
 export const DEFAULT = {
   ERROR_MANIFEST,
+  CACHE_FILENAME: '.manifest.json',
 };

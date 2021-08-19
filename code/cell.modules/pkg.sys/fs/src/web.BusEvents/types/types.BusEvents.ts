@@ -28,6 +28,7 @@ export type SysFsEventsIndex = {
     res$: t.Observable<t.SysFsManifestRes>;
     get(options?: {
       dir?: FilePath | FilePath[];
+      cache?: boolean | 'force';
       timeout?: Milliseconds;
     }): Promise<t.SysFsManifestRes>;
   };

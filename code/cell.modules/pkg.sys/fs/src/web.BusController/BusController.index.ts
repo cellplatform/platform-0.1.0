@@ -1,7 +1,8 @@
 import { asArray, join, t, R, DEFAULT } from './common';
+import { ManifestCache } from './ManifestCache';
+import { Format } from './Format';
 
 type FilesystemId = string;
-type Error = t.SysFsError;
 
 /**
  * Event controller.
@@ -21,18 +22,36 @@ export function BusControllerIndex(args: {
   events.index.manifest.req$.subscribe(async (e) => {
     const { tx } = e;
 
+    const toErrorResponse = (dir: string, error: string): t.SysFsManifestDirResponse => {
+      const message = `Failed while building manifest. ${error ?? ''}`.trim();
+      return {
+        dir,
+        manifest: R.clone(DEFAULT.ERROR_MANIFEST),
+        error: { code: 'manifest', message },
+      };
+    };
+
     const toManifest = async (path?: string): Promise<t.SysFsManifestDirResponse> => {
-      const dir = path ? join(fs.dir, path) : fs.dir;
+      const dir = Format.dir.ensureTrailingSlash(path ? join(fs.dir, path) : fs.dir);
+      const cache = ManifestCache({ fs, dir });
       try {
-        const manifest = await index.manifest({ dir: path });
+        if (e.cache === true) {
+          const manifest = await cache.read();
+          if (manifest) return { dir, manifest };
+        }
+
+        const manifest = await index.manifest({
+          dir: path,
+          filter: (e) => !e.path.endsWith(DEFAULT.CACHE_FILENAME),
+        });
+
+        if ((e.cache === true || e.cache === 'force') && (await cache.dirExists())) {
+          await cache.write(manifest);
+        }
+
         return { dir, manifest };
       } catch (error) {
-        const message = `Failed while building manifest. ${error.message}`.trim();
-        return {
-          dir,
-          manifest: R.clone(DEFAULT.ERROR_MANIFEST),
-          error: { code: 'manifest', message },
-        };
+        return toErrorResponse(dir, error.message);
       }
     };
 

@@ -21,7 +21,12 @@ export type SysFsManifestReqEvent = {
   type: 'sys.fs/manifest:req';
   payload: SysFsManifestReq;
 };
-export type SysFsManifestReq = { tx: string; id: FilesystemId; dir?: FilePath | FilePath[] };
+export type SysFsManifestReq = {
+  tx: string;
+  id: FilesystemId;
+  dir?: FilePath | FilePath[];
+  cache?: boolean | 'force'; // (default: no-cache) Caches a '.dir' version of index manifest in the directory for faster retrieval.
+};
 
 export type SysFsManifestResEvent = {
   type: 'sys.fs/manifest:res';
