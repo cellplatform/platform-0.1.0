@@ -4,7 +4,7 @@ import { getCellFiles, toFileList } from './handler.list';
 
 export async function uploadCellFilesComplete(args: {
   db: t.IDb;
-  fs: t.IFilesystem;
+  fs: t.IFs;
   cellUri: string;
   body: t.IReqPostCellFsUploadCompleteBody;
   host: string;

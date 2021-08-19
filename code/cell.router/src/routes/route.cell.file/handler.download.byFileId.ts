@@ -5,7 +5,7 @@ import { rewriteHtmlPaths } from './util.rewritePaths';
 export async function downloadFileByFileId(args: {
   host: string;
   db: t.IDb;
-  fs: t.IFilesystem;
+  fs: t.IFs;
   cellUri: string;
   filename: string;
   matchHash?: string;

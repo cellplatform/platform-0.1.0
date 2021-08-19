@@ -2,7 +2,7 @@ import { t, util } from '../common';
 
 export async function uploadLocalFile(args: {
   db: t.IDb;
-  fs: t.IFilesystem;
+  fs: t.IFs;
   path: string;
   data: string | Uint8Array;
   query?: t.IReqQueryLocalFs;

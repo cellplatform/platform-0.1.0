@@ -1,5 +1,5 @@
 import { NeDb } from '@platform/fsdb.nedb';
-import { local } from '@platform/cell.fs.local';
+import { FsLocal } from '@platform/cell.fs.local';
 import { micro } from '@platform/micro';
 
 import { util, t, Schema, HttpClient } from '../common';
@@ -8,7 +8,7 @@ import { port as portUtil } from './util.port';
 
 export type IMock = {
   db: t.IDb;
-  fs: t.IFilesystem;
+  fs: t.IFs;
   app: t.Micro;
   router: t.Router;
   service: t.MicroService;
@@ -34,7 +34,7 @@ let count = 0;
 /**
  * Mocking object.
  */
-export const mock = {
+export const Mock = {
   async reset() {
     const fs = util.fs;
     await fs.remove(PATH.MOCK);
@@ -59,7 +59,7 @@ export const createMock = async (
   const port = args.port || (await portUtil.unused());
 
   const db = NeDb.create({ filename });
-  const fs = local.init({ dir: PATH.FS, fs: util.fs });
+  const fs = FsLocal({ dir: PATH.FS, fs: util.fs });
 
   const body = micro.body;
   const router = Router.create({ name: 'Test', db, fs, body, runtime });

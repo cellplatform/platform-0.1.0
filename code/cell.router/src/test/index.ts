@@ -1,13 +1,13 @@
 import * as FormData from 'form-data';
 export { FormData };
 
-import { mock, createMock, IMock } from './mock';
+import { Mock, createMock, IMock } from './mock';
 import { Schema, id } from '../common';
 export { is } from '@platform/util.is';
 
 export const slug = id.shortid;
 
-export { mock, createMock, IMock };
+export { Mock as mock, createMock, IMock };
 export * from '../common';
 export * from './util';
 export * from './expect';
@@ -16,5 +16,5 @@ export * from './TestCompile';
 
 export { Http } from '@platform/http';
 
-before(async () => mock.reset());
+before(async () => Mock.reset());
 Schema.Uri.ALLOW.NS = ['foo*'];

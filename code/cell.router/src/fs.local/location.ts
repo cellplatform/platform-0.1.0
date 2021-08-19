@@ -4,10 +4,7 @@ import { t, Schema } from '../common';
  * Ensures all location fields on local file-system DB entries are in their
  * absolute-path form.
  */
-export function ensureAbsoluteLocations(args: {
-  fs: t.IFilesystem;
-  files: t.IFileMap<t.IFileData>;
-}) {
+export function ensureAbsoluteLocations(args: { fs: t.IFs; files: t.IFileMap<t.IFileData> }) {
   const { fs } = args;
   const files = { ...args.files };
   const root = fs.dir;

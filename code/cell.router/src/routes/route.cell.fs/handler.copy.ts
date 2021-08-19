@@ -7,7 +7,7 @@ type Address = t.IResPostCellFileCopyAddress;
 
 export async function copyCellFiles(args: {
   db: t.IDb;
-  fs: t.IFilesystem;
+  fs: t.IFs;
   cellUri: string;
   body: t.IReqPostCellFsCopyBody;
   host: string;
