@@ -1,9 +1,10 @@
 import { firstValueFrom, of, timeout } from 'rxjs';
 import { catchError, filter, takeUntil } from 'rxjs/operators';
 
-import { rx, slug, t, timeoutWrangler } from './common';
-import { BusEventsIo } from './BusEvents.Io';
 import { BusEventsIndexer } from './BusEvents.Indexer';
+import { BusEventsIo } from './BusEvents.Io';
+import { BusEventsCell } from './BusEvents.Cell';
+import { rx, slug, t, timeoutWrangler } from './common';
 
 type FilesystemId = string;
 type Milliseconds = number;
@@ -31,9 +32,20 @@ export function BusEvents(args: {
     filter((e) => e.payload.id === id),
   );
 
-  const io = BusEventsIo({ id, $, bus, timeout: toTimeout() });
-  const index = BusEventsIndexer({ id, $, bus, timeout: toTimeout() });
+  /**
+   * Initialize sub-event API's
+   */
+  const { io, index, cell } = (() => {
+    const timeout = toTimeout();
+    const io = BusEventsIo({ id, $, bus, timeout });
+    const index = BusEventsIndexer({ id, $, bus, timeout });
+    const cell = BusEventsCell({ id, $, bus, timeout });
+    return { io, index, cell };
+  })();
 
+  /**
+   * Info
+   */
   const info: t.SysFsEvents['info'] = {
     req$: rx.payload<t.SysFsInfoReqEvent>($, 'sys.fs/info:req'),
     res$: rx.payload<t.SysFsInfoResEvent>($, 'sys.fs/info:res'),
@@ -56,13 +68,18 @@ export function BusEvents(args: {
       });
 
       const res = await first;
-      return typeof res === 'string'
-        ? { tx, id, files: [], error: { code: 'client/timeout', message: res } }
-        : res;
+      if (typeof res !== 'string') return res;
+
+      const error: t.SysFsError = { code: 'client/timeout', message: res };
+      const fail: t.SysFsInfoRes = { tx, id, files: [], error };
+      return fail;
     },
   };
 
-  return { id, $, is, dispose, dispose$, info, io, index };
+  /**
+   * API
+   */
+  return { id, $, is, dispose, dispose$, info, io, index, cell };
 }
 
 /**

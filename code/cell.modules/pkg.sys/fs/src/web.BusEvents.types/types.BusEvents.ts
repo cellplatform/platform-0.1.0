@@ -14,7 +14,7 @@ export type SysFsEvents = t.Disposable & {
   info: SysFsEventsInfo;
   io: t.SysFsEventsIo;
   index: t.SysFsEventsIndex;
-  // cell: t.SysFsEventsCell;
+  cell: t.SysFsEventsCell;
 };
 
 export type SysFsEventsInfo = {
