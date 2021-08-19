@@ -1,4 +1,4 @@
-import { createMock, expect, fs, testFiles } from '../../test';
+import { RouterMock, expect, fs, testFiles } from '../../test';
 
 const tmp = fs.resolve(`./tmp/download`);
 const A1 = 'cell:foo:A1';
@@ -7,7 +7,7 @@ const Z9 = 'cell:foo:Z9';
 describe('cell.fs: copy', () => {
   describe('copy', () => {
     it('copy single file', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const source = mock.client.cell(A1);
       const target = mock.client.cell(Z9);
 
@@ -38,7 +38,7 @@ describe('cell.fs: copy', () => {
     });
 
     it('copy to different filename', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const source = mock.client.cell(A1);
       const target = mock.client.cell(Z9);
 
@@ -61,7 +61,7 @@ describe('cell.fs: copy', () => {
     });
 
     it('copy multiple files (array)', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const source = mock.client.cell(A1);
       const target = mock.client.cell(Z9);
 
@@ -97,7 +97,7 @@ describe('cell.fs: copy', () => {
     });
 
     it('copy over existing file', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const source = mock.client.cell(A1);
       const target = mock.client.cell(Z9);
 
@@ -135,7 +135,7 @@ describe('cell.fs: copy', () => {
     });
 
     it('copy within single cell', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const source = mock.client.cell(A1);
 
       const { file1 } = await testFiles();
@@ -165,8 +165,8 @@ describe('cell.fs: copy', () => {
     });
 
     it('copy between hosts', async () => {
-      const mock1 = await createMock();
-      const mock2 = await createMock();
+      const mock1 = await RouterMock.create();
+      const mock2 = await RouterMock.create();
       const source = mock1.client.cell(A1);
       const target = mock2.client.cell(A1);
 
@@ -188,7 +188,7 @@ describe('cell.fs: copy', () => {
     });
 
     it('returns changes', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const source = mock.client.cell(A1);
 
       const { file1 } = await testFiles();
@@ -208,7 +208,7 @@ describe('cell.fs: copy', () => {
 
   describe('errors', () => {
     it('error: invalid target cell URI', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const A1 = 'cell:foo:A1';
       const client = mock.client.cell(A1);
 
@@ -230,7 +230,7 @@ describe('cell.fs: copy', () => {
     });
 
     it('error: file does not exist', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const A1 = 'cell:foo:A1';
       const client = mock.client.cell(A1);
       const res = await client.fs.copy({ filename: '404.png', target: { uri: 'cell:foo:Z9' } });
@@ -244,7 +244,7 @@ describe('cell.fs: copy', () => {
     });
 
     it('error: empty filename', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const A1 = 'cell:foo:A1';
       const client = mock.client.cell(A1);
 

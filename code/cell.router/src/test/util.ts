@@ -1,5 +1,5 @@
 import { value, t, http } from '../common';
-import { createMock, IMock } from './Mock';
+import { RouterMock, IRouterMock } from './RouterMock';
 
 export * from './util.port';
 export * from './util.fs';
@@ -25,8 +25,8 @@ export const TestPost = {
   /**
    * POST namespace data.
    */
-  async ns(url: string, body: t.IReqPostNsBody, options: { mock?: IMock } = {}) {
-    const mock = options.mock || (await createMock());
+  async ns(url: string, body: t.IReqPostNsBody, options: { mock?: IRouterMock } = {}) {
+    const mock = options.mock || (await RouterMock.create());
     const response = await http.post(mock.url(url), body);
     const json = response.json as t.IResPostNs;
     const data = json.data;

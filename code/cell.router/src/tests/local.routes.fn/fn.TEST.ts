@@ -1,4 +1,4 @@
-import { createMock, expect, Http, t } from '../../test';
+import { RouterMock, expect, Http, t } from '../../test';
 import {
   ISampleNodeInValue,
   getManifest,
@@ -383,7 +383,7 @@ describe('/fn:run', function () {
     });
 
     it('error: func/runtime not provided (500)', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const url = mock.urls.fn.run.toString();
       const http = Http.create();
 

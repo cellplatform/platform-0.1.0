@@ -1,11 +1,11 @@
 import { Uri } from './libs';
 
-type FileUri = string;
+type UriString = string;
 
 /**
  * Convert the given "<file:...>" URI to an absolute path.
  */
-export function resolveUri(args: { dir: string; uri: FileUri }) {
+export function resolveUri(args: { dir: string; uri: UriString }) {
   const uri = (args.uri || '').trim();
   const dir = (args.dir || '').trim();
   const file = Uri.parse(uri);

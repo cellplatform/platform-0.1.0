@@ -1,6 +1,6 @@
 import { NodeRuntime } from '@platform/cell.runtime.node';
 
-import { createMock, expect, fs, Http, readFile, t, rx } from '../../test';
+import { RouterMock, expect, fs, Http, readFile, t, rx } from '../../test';
 import { Samples } from '../module.cell.runtime.node/NodeRuntime.TEST';
 
 export * from './sample.NodeRuntime/types';
@@ -16,7 +16,7 @@ export const noManifestFilter = (file: t.IHttpClientCellFileUpload) => {
 export const createFuncMock = async () => {
   const bus = rx.bus();
   const runtime = NodeRuntime.create({ bus, stdlibs: ['os', 'fs', 'tty', 'util', 'path'] });
-  const mock = await createMock({ runtime });
+  const mock = await RouterMock.create({ runtime });
   const http = Http.create();
   const url = mock.urls.fn.run;
   return { bus, url, mock, http, runtime };

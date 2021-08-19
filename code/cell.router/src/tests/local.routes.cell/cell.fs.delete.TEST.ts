@@ -1,8 +1,8 @@
-import { createMock, expect, expectFileInFs, readFile } from '../../test';
+import { RouterMock, expect, expectFileInFs, readFile } from '../../test';
 
 describe('cell.fs: delete, unlink', () => {
   it('delete and/or unlink files from cell', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const A1 = 'cell:foo:A1';
     const clientA1 = mock.client.cell(A1);
 
@@ -79,7 +79,7 @@ describe('cell.fs: delete, unlink', () => {
   });
 
   it('unlink files from cell', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const A1 = 'cell:foo:A1';
     const clientA1 = mock.client.cell(A1);
 
@@ -118,7 +118,7 @@ describe('cell.fs: delete, unlink', () => {
   });
 
   it('fails when unlinking a file that is not referenced by the cell', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const A1 = 'cell:foo:A1';
     const clientA1 = mock.client.cell(A1);
 

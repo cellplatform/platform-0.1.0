@@ -1,7 +1,7 @@
 import { t, expect, rx, TestFs, Hash, DEFAULT } from '../test';
 import { FsBus } from '.';
 import { Format } from './Format';
-import { Mock as RouterMock, IMock as IRouterMock } from '@platform/cell.router/lib/test/Mock';
+import { RouterMock, IRouterMock } from '@platform/cell.router/lib/test/RouterMock';
 
 const fs = TestFs.node;
 

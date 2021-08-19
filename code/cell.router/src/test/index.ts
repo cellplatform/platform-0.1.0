@@ -1,13 +1,14 @@
 import * as FormData from 'form-data';
 export { FormData };
 
-import { Mock, createMock, IMock } from './Mock';
+import { RouterMock, IRouterMock } from './RouterMock';
 import { Schema, id } from '../common';
+
 export { is } from '@platform/util.is';
+export { RouterMock, IRouterMock };
 
 export const slug = id.shortid;
 
-export { Mock as mock, createMock, IMock };
 export * from '../common';
 export * from './util';
 export * from './expect';
@@ -16,5 +17,5 @@ export * from './TestCompile';
 
 export { Http } from '@platform/http';
 
-before(async () => Mock.reset());
+before(async () => RouterMock.reset());
 Schema.Uri.ALLOW.NS = ['foo*'];

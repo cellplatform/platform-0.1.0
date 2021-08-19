@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { Uri } from '../../common';
-import { createMock, expect, fs, http, readFile, t, util, constants } from '../../test';
+import { RouterMock, expect, fs, http, readFile, t, util, constants } from '../../test';
 
 const bodyToString = async (body?: ReadableStream | string | t.Json) => {
   if (typeof body === 'string') {
@@ -22,7 +22,7 @@ describe('cell.fs: download', function () {
 
   describe('http (raw URLs)', () => {
     it('download byFileUri', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const cellUri = 'cell:foo:A1';
       const client = mock.client.cell(cellUri);
 
@@ -52,7 +52,7 @@ describe('cell.fs: download', function () {
     });
 
     it('download byName', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
 
       const test = async (source: string, filename: string, matchContent?: string) => {
         const cellUri = Uri.create.cell(Uri.cuid(), 'A1');
@@ -107,7 +107,7 @@ describe('cell.fs: download', function () {
       const CACHE_DIR = constants.PATH.CACHE_DIR;
       await fs.remove(CACHE_DIR);
 
-      const mock = await createMock();
+      const mock = await RouterMock.create();
 
       const cellUri = Uri.create.cell(Uri.cuid(), 'A1');
       const client = mock.client.cell(cellUri);
@@ -134,7 +134,7 @@ describe('cell.fs: download', function () {
 
   describe('http (using [http.client] wrapper)', () => {
     it('no file extension (content-type: "application/octet-stream")', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const cellUri = 'cell:foo:A1';
       const client = mock.client.cell(cellUri);
 
@@ -159,7 +159,7 @@ describe('cell.fs: download', function () {
     });
 
     it('file path', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const cellUri = 'cell:foo:A1';
       const client = mock.client.cell(cellUri);
 
@@ -182,7 +182,7 @@ describe('cell.fs: download', function () {
     });
 
     it('[.html] file extension (content-type: "text/html")', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const cellUri = 'cell:foo:A1';
       const client = mock.client.cell(cellUri);
 
@@ -227,7 +227,7 @@ describe('cell.fs: download', function () {
       };
 
       it('from root: /index.html', async () => {
-        const mock = await createMock();
+        const mock = await RouterMock.create();
         const cellUri = 'cell:foo:A1';
         const client = mock.client.cell(cellUri);
 
@@ -251,7 +251,7 @@ describe('cell.fs: download', function () {
       });
 
       it('from sub-folder: /foo/bar/index.html', async () => {
-        const mock = await createMock();
+        const mock = await RouterMock.create();
         const cellUri = 'cell:foo:A1';
         const client = mock.client.cell(cellUri);
 

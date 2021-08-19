@@ -6,7 +6,7 @@ import { util, t, Schema, HttpClient } from '../common';
 import { Router } from '..';
 import { port as portUtil } from './util.port';
 
-export type IMock = {
+export type IRouterMock = {
   db: t.IDb;
   fs: t.IFs;
   app: t.Micro;
@@ -34,23 +34,23 @@ let count = 0;
 /**
  * Mocking object.
  */
-export const Mock = {
+export const RouterMock = {
   async reset() {
     const fs = util.fs;
     await fs.remove(PATH.MOCK);
     await fs.remove(PATH.FS);
   },
-  async create() {
-    return createMock();
+  async create(args?: CreateArgs) {
+    return createMock(args);
   },
 };
+
+type CreateArgs = { port?: number; runtime?: t.RuntimeEnv };
 
 /**
  * Create a mock server.
  */
-export const createMock = async (
-  args: { port?: number; runtime?: t.RuntimeEnv } = {},
-): Promise<IMock> => {
+export const createMock = async (args: CreateArgs = {}): Promise<IRouterMock> => {
   const { runtime } = args;
 
   count++;
@@ -71,7 +71,7 @@ export const createMock = async (
   const client = HttpClient.create(urls.origin);
   const origin = client.origin;
 
-  const mock: IMock = {
+  const mock: IRouterMock = {
     db,
     fs,
     port,

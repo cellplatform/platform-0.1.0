@@ -1,10 +1,10 @@
-import { createMock, expect, fs, Http, readFile, Schema, t, http, is } from '../../test';
+import { RouterMock, expect, fs, Http, readFile, Schema, t, http, is } from '../../test';
 
 describe('cell.fs: upload', function () {
   this.timeout(50000);
 
   it('upload => download: 1 file', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
 
@@ -33,7 +33,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload => download 2: files', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
 
@@ -91,7 +91,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload: allowRedirect=false', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
 
@@ -118,7 +118,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload: s3:permission', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
 
@@ -150,7 +150,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload: file within folder-path', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
 
@@ -195,7 +195,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload then filter files set', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
 
     const client = mock.client.cell(cellUri);
@@ -240,7 +240,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload with explicit mimetype', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
 
@@ -259,7 +259,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload: then list (A1/files)', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const A1 = 'cell:foo:A1';
     const A2 = 'cell:foo:A2';
     const clientA1 = mock.client.cell(A1);
@@ -303,7 +303,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload: does not send changes (by default)', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
     const data = await readFile('src/test/assets/kitten.jpg');
@@ -316,7 +316,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload: sends changes (via option)', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
     const file1 = await readFile('src/test/assets/kitten.jpg');
@@ -340,7 +340,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload: stores "integrity" data after upload, eg filehash (sha256) etc', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const client = mock.client.cell('cell:foo:A1');
 
     const file = await readFile('src/test/assets/func.wasm');
@@ -365,7 +365,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload: stores hash of uploaded file on cell "fs:" link', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
     const data = await readFile('src/test/assets/func.wasm');
@@ -395,7 +395,7 @@ describe('cell.fs: upload', function () {
    */
 
   it.skip('downloads a file by name (failing if the underlying file-hash changes)', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const cellClient = mock.client.cell(cellUri);
 
@@ -449,7 +449,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('event: "HttpClient/upload"', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
     const data = await readFile('src/test/assets/func.wasm');

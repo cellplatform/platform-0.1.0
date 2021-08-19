@@ -1,9 +1,9 @@
-import { createMock, expect, http, t } from '../../test';
+import { RouterMock, expect, http, t } from '../../test';
 
 describe('sys:', () => {
   describe('errors', () => {
     it('GET: 404', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const url = mock.url('NO_EXIST');
       const res = await http.get(url);
       await mock.dispose();

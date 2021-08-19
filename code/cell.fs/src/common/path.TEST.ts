@@ -1,8 +1,6 @@
 import { expect } from '../test';
 import { path } from '.';
 
-import { fs } from '@platform/fs';
-
 describe('path', () => {
   it('throw on invalid URI', () => {
     const test = (uri: any) => {
