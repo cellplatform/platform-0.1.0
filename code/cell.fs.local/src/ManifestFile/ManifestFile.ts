@@ -1,6 +1,6 @@
 import { deleteUndefined, Hash, t } from '../common';
-import { FileHash } from './File.Hash';
-import { FileImage } from './File.Image';
+import { FileHash } from './ManifestFile.Hash';
+import { FileImage } from './ManifestFile.Image';
 
 export const File = {
   Hash: FileHash,

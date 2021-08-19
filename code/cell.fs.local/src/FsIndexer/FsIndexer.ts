@@ -1,5 +1,5 @@
 import { t, PathUtil, time } from '../common';
-import { File } from '../File';
+import { File } from '../ManifestFile';
 
 export const FsIndexer = (args: { dir: string; fs: t.INodeFs }) => {
   const { fs, dir } = args;
