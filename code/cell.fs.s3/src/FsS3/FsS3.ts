@@ -1,4 +1,4 @@
-import { t, fs, path, Schema, util } from '../common';
+import { t, fs, Path, Schema, isOK } from '../common';
 
 export * from '../types';
 
@@ -14,11 +14,11 @@ export function FsS3(args: t.S3Config & { dir: string }): t.IFsS3 {
   const cloud = (() => {
     const { endpoint, accessKey, secret } = args;
     const s3 = fs.s3({ endpoint, accessKey, secret });
-    const dir = util.trimSlashes(args.dir);
+    const dir = Path.trimSlashes(args.dir);
     const index = dir.indexOf('/');
     const path = {
-      bucket: index === -1 ? dir : util.trimSlashes(dir.substring(0, index)),
-      dir: index === -1 ? '/' : `/${util.trimSlashes(dir.substring(index))}`,
+      bucket: index === -1 ? dir : Path.trimSlashes(dir.substring(0, index)),
+      dir: index === -1 ? '/' : `/${Path.trimSlashes(dir.substring(index))}`,
     };
     if (!path.bucket) {
       throw new Error(`The given 'root' path does not contain a bucket ("${args.dir}").`);
@@ -62,7 +62,7 @@ export function FsS3(args: t.S3Config & { dir: string }): t.IFsS3 {
         options?.type === 'DEFAULT' || options?.type === 'SIGNED/get'
           ? options.endpoint
           : undefined;
-      const key = path.resolveUri({ uri, dir: api.dir });
+      const key = Path.resolveUri({ uri, dir: api.dir });
 
       if (type === 'SIGNED/get') {
         const url = cloud.s3
@@ -131,11 +131,11 @@ export function FsS3(args: t.S3Config & { dir: string }): t.IFsS3 {
       try {
         const res = await cloud.bucket.get({ key });
         const { status, etag = '', permission } = res;
-        const ok = util.isOK(status);
+        const ok = isOK(status);
 
         const done = (args: { error?: t.IFsError; file?: t.IFsFileData }): t.IFsReadS3 => {
           const { error, file } = args;
-          const ok = util.isOK(status);
+          const ok = isOK(status);
           return { ok, status, uri, file, error, 's3:etag': etag, 's3:permission': permission };
         };
 
@@ -219,7 +219,7 @@ export function FsS3(args: t.S3Config & { dir: string }): t.IFsS3 {
         });
 
         const { status, etag = '' } = res;
-        const ok = util.isOK(status);
+        const ok = isOK(status);
         const location = res.url || '';
         file.location = location;
 
@@ -254,7 +254,7 @@ export function FsS3(args: t.S3Config & { dir: string }): t.IFsS3 {
       try {
         const res = await cloud.bucket.deleteMany({ keys });
         const { status } = res;
-        const ok = util.isOK(status);
+        const ok = isOK(status);
         if (!res.ok || res.error) {
           const error: t.IFsError = {
             type: 'FS/delete',
@@ -305,7 +305,7 @@ export function FsS3(args: t.S3Config & { dir: string }): t.IFsS3 {
       const done = (status: number, error?: string) => {
         status = status.toString().startsWith('2') && error ? 500 : status;
         return {
-          ok: util.isOK(status),
+          ok: isOK(status),
           status,
           source: source.uri,
           target: target.uri,

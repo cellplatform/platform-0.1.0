@@ -1,4 +1,4 @@
-import { asArray, join, t, R, DEFAULT } from './common';
+import { asArray, Path, t, R, DEFAULT } from './common';
 import { ManifestCache } from './ManifestCache';
 import { Format } from './Format';
 
@@ -32,7 +32,7 @@ export function BusControllerIndex(args: {
     };
 
     const toManifest = async (path?: string): Promise<t.SysFsManifestDirResponse> => {
-      const dir = Format.dir.ensureTrailingSlash(path ? join(fs.dir, path) : fs.dir);
+      const dir = Format.dir.ensureTrailingSlash(path ? Path.join(fs.dir, path) : fs.dir);
       const cache = ManifestCache({ fs, dir });
       try {
         if (e.cache === true) {

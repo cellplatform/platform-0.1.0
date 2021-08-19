@@ -1,9 +1,12 @@
-import { path } from './libs';
+import { Path } from './libs';
 
 /**
  * A string URI that represents the path to a file.
+ * Example:
+ *
+ *    "path:foo/bar.png"
+ *
  */
-
 export const PathUri = {
   prefix: 'path',
 
@@ -22,6 +25,6 @@ export const PathUri = {
 
     if (res.startsWith('./')) res = res.substring(2);
 
-    return path.join(res); // NB: The "join" call passes the path through a "../.." resolver.
+    return Path.join(res); // NB: The "join" call passes the path through a "../.." resolver.
   },
 };

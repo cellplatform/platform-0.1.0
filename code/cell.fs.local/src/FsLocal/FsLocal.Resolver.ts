@@ -1,4 +1,4 @@
-import { path, Schema, t, PathUri } from '../common';
+import { Path, Schema, t, PathUri } from '../common';
 
 type O = t.IFsResolveOptionsLocal;
 
@@ -51,10 +51,10 @@ function resolve(dir: string, uri: string) {
     return result;
   };
 
-  if (Schema.Uri.is.file(uri)) return ensureScope(path.resolveUri({ dir, uri }));
+  if (Schema.Uri.is.file(uri)) return ensureScope(Path.resolveUri({ dir, uri }));
 
   if (PathUri.is(uri)) {
-    return ensureScope(path.join(dir, PathUri.path(uri) ?? ''));
+    return ensureScope(Path.join(dir, PathUri.path(uri) ?? ''));
   }
 
   throw new Error(`Invalid URI. Must be "file:.." or "path:.."`);

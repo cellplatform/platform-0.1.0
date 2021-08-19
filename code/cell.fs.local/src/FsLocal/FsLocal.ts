@@ -1,4 +1,4 @@
-import { Schema, t, util } from '../common';
+import { Schema, t, isOK } from '../common';
 import { FsLocalResolver } from './FsLocal.Resolver';
 
 export * from '../types';
@@ -159,7 +159,7 @@ export function FsLocal(args: { dir: string; fs: t.INodeFs }): t.IFsLocal {
       const target = format(targetUri);
 
       const done = (status: number, error?: t.IFsError) => {
-        const ok = util.isOK(status);
+        const ok = isOK(status);
         return { ok, status, source: source.uri, target: target.uri, error };
       };
 
