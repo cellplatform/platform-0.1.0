@@ -36,11 +36,14 @@ export function IoEvents(args: {
       bus.fire({ type: 'sys.fs/read:req', payload: { tx, id, path } });
       const res = await first;
 
-      if (typeof res === 'string')
-        return { tx, id, files: [], error: { code: 'client/timeout', message: res } };
+      if (typeof res !== 'string') {
+        const { files, error } = res;
+        return { files, error };
+      }
 
-      const { files, error } = res;
-      return { files, error };
+      const error: t.SysFsError = { code: 'client/timeout', message: res };
+      const fail: t.SysFsReadResponse = { files: [], error };
+      return fail;
     },
   };
 
@@ -62,11 +65,14 @@ export function IoEvents(args: {
       bus.fire({ type: 'sys.fs/write:req', payload: { tx, id, file } });
       const res = await first;
 
-      if (typeof res === 'string')
-        return { tx, id, files: [], error: { code: 'client/timeout', message: res } };
+      if (typeof res !== 'string') {
+        const { files, error } = res;
+        return { files, error };
+      }
 
-      const { files, error } = res;
-      return { files, error };
+      const error: t.SysFsError = { code: 'client/timeout', message: res };
+      const fail: t.SysFsWriteResponse = { files: [], error };
+      return fail;
     },
   };
 
@@ -88,11 +94,14 @@ export function IoEvents(args: {
       bus.fire({ type: 'sys.fs/copy:req', payload: { tx, id, file } });
       const res = await first;
 
-      if (typeof res === 'string')
-        return { tx, id, files: [], error: { code: 'client/timeout', message: res } };
+      if (typeof res !== 'string') {
+        const { files, error } = res;
+        return { files, error };
+      }
 
-      const { files, error } = res;
-      return { files, error };
+      const error: t.SysFsError = { code: 'client/timeout', message: res };
+      const fail: t.SysFsCopyResponse = { files: [], error };
+      return fail;
     },
   };
 
@@ -114,11 +123,14 @@ export function IoEvents(args: {
       bus.fire({ type: 'sys.fs/move:req', payload: { tx, id, file } });
       const res = await first;
 
-      if (typeof res === 'string')
-        return { tx, id, files: [], error: { code: 'client/timeout', message: res } };
+      if (typeof res !== 'string') {
+        const { files, error } = res;
+        return { files, error };
+      }
 
-      const { files, error } = res;
-      return { files, error };
+      const error: t.SysFsError = { code: 'client/timeout', message: res };
+      const fail: t.SysFsMoveResponse = { files: [], error };
+      return fail;
     },
   };
 

@@ -1,6 +1,7 @@
 import { t } from './common';
 import { SysFsIoEvent } from './types.events.io';
-import { SysFsIndexEvent } from './types.events.index';
+import { SysFsIndexEvent } from './types.events.indexer';
+import { SysFsCellEvent } from './types.events.cell';
 
 type FilesystemId = string;
 type FilePath = string;
@@ -8,7 +9,12 @@ type FilePath = string;
 /**
  * EVENTS
  */
-export type SysFsEvent = SysFsIoEvent | SysFsIndexEvent | SysFsInfoReqEvent | SysFsInfoResEvent;
+export type SysFsEvent =
+  | SysFsIoEvent
+  | SysFsIndexEvent
+  | SysFsCellEvent
+  | SysFsInfoReqEvent
+  | SysFsInfoResEvent;
 
 /**
  * Compile the project into a bundle.

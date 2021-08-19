@@ -36,4 +36,5 @@ export type SysFsManifestRes = {
   tx: string;
   id: FilesystemId;
   dirs: SysFsManifestDirResponse[];
+  error?: t.SysFsError;
 };

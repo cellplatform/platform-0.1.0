@@ -19,10 +19,10 @@ export function ManifestCache(args: { fs: t.IFsLocal; dir: string }) {
     },
 
     async read() {
-      const file = (await fs.read(uri)).file;
-      if (!file?.data) return undefined;
+      const file = (await fs.read(uri)).file?.data;
+      if (!file) return undefined;
       try {
-        const text = new TextDecoder().decode(file.data);
+        const text = new TextDecoder().decode(file);
         const manifest = JSON.parse(text) as t.DirManifest;
         return manifest.kind === 'dir' && typeof manifest.dir === 'object' ? manifest : undefined;
       } catch (error) {

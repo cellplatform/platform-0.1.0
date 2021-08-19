@@ -7,7 +7,7 @@ type FilesystemId = string;
 /**
  * Event controller.
  */
-export function BusControllerIndex(args: {
+export function BusControllerIndexer(args: {
   id: FilesystemId;
   fs: t.IFsLocal;
   bus: t.EventBus<t.SysFsEvent>;
@@ -40,10 +40,8 @@ export function BusControllerIndex(args: {
           if (manifest) return { dir, manifest };
         }
 
-        const manifest = await index.manifest({
-          dir: path,
-          filter: (e) => !e.path.endsWith(DEFAULT.CACHE_FILENAME),
-        });
+        const filter: t.FsPathFilter = (e) => !e.path.endsWith(DEFAULT.CACHE_FILENAME);
+        const manifest = await index.manifest({ dir: path, filter });
 
         if ((e.cache === true || e.cache === 'force') && (await cache.dirExists())) {
           await cache.write(manifest);
@@ -58,9 +56,14 @@ export function BusControllerIndex(args: {
     const paths = R.uniq(asArray(e.dir ?? []).map((path) => (path || '').trim() || '/'));
     const dirs = await Promise.all(paths.length === 0 ? [toManifest()] : paths.map(toManifest));
 
+    const hasError = dirs.some((dir) => dir.error);
+    const error: t.SysFsError | undefined = hasError
+      ? { code: 'manifest', message: `Indexing failed` }
+      : undefined;
+
     bus.fire({
       type: 'sys.fs/manifest:res',
-      payload: { tx, id, dirs },
+      payload: { tx, id, dirs, error },
     });
   });
 }

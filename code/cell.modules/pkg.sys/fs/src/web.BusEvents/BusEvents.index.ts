@@ -40,9 +40,11 @@ export function IndexEvents(args: {
       });
 
       const res = await first;
-      return typeof res === 'string'
-        ? { tx, id, dirs: [], error: { code: 'client/timeout', message: res } }
-        : res;
+      if (typeof res !== 'string') return res;
+
+      const error: t.SysFsError = { code: 'client/timeout', message: res };
+      const fail: t.SysFsManifestRes = { tx, id, dirs: [], error };
+      return fail;
     },
   };
 

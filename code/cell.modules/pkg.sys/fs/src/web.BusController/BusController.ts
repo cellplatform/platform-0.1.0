@@ -1,6 +1,7 @@
 import { asArray, BusEvents, rx, t, Format } from './common';
 import { BusControllerIo } from './BusController.Io';
-import { BusControllerIndex } from './BusController.Index';
+import { BusControllerIndexer } from './BusController.Indexer';
+import { BusControllerCell } from './BusController.Cell';
 
 type FilesystemId = string;
 type FilePath = string;
@@ -21,11 +22,17 @@ export function BusController(args: {
   const events = BusEvents({ id, bus, filter: args.filter });
   const { dispose, dispose$ } = events;
 
+  /**
+   * Sub-controllers.
+   */
   BusControllerIo({ id, fs, bus, events });
-  BusControllerIndex({ id, index, fs, bus, events });
+  BusControllerIndexer({ id, index, fs, bus, events });
+  BusControllerCell({ id, fs, bus, events });
 
+  /**
+   * Helpers
+   */
   const stripDirPrefix = (path: FilePath) => Format.dir.stripPrefix(fs.dir, path);
-
   const getFileInfo = async (filepath: FilePath): Promise<t.SysFsFileInfo> => {
     try {
       const uri = Format.path.ensurePrefix(filepath);
@@ -40,7 +47,7 @@ export function BusController(args: {
   };
 
   /**
-   * Info (Module)
+   * Info
    */
   events.info.req$.subscribe(async (e) => {
     const { tx } = e;

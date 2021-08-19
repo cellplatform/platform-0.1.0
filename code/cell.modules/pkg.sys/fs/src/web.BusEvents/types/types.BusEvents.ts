@@ -12,8 +12,9 @@ export type SysFsEvents = t.Disposable & {
   $: t.Observable<t.SysFsEvent>;
   is: { base(input: any): boolean };
   info: SysFsEventsInfo;
-  index: t.SysFsEventsIndex;
   io: t.SysFsEventsIo;
+  index: t.SysFsEventsIndex;
+  // cell: t.SysFsEventsCell;
 };
 
 export type SysFsEventsInfo = {
@@ -74,5 +75,16 @@ export type SysFsEventsIo = {
       path: FilePath | FilePath[],
       options?: { timeout?: Milliseconds },
     ): Promise<t.SysFsDeleteResponse>;
+  };
+};
+
+export type SysFsEventsCell = {
+  push: {
+    req$: t.Observable<t.SysFsCellPushReq>;
+    res$: t.Observable<t.SysFsCellPushRes>;
+  };
+  pull: {
+    req$: t.Observable<t.SysFsCellPullReq>;
+    res$: t.Observable<t.SysFsCellPullRes>;
   };
 };
