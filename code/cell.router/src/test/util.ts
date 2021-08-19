@@ -1,5 +1,5 @@
 import { value, t, http } from '../common';
-import { createMock, IMock } from './mock';
+import { createMock, IMock } from './Mock';
 
 export * from './util.port';
 export * from './util.fs';

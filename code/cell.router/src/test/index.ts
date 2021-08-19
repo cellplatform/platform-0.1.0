@@ -1,7 +1,7 @@
 import * as FormData from 'form-data';
 export { FormData };
 
-import { Mock, createMock, IMock } from './mock';
+import { Mock, createMock, IMock } from './Mock';
 import { Schema, id } from '../common';
 export { is } from '@platform/util.is';
 
