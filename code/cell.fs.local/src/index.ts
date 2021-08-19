@@ -1,3 +1,3 @@
 export { FsLocal } from './FsLocal';
 export { FsIndexer } from './FsIndexer';
-export { File } from './ManifestFile';
+export { ManifestFile } from './ManifestFile';

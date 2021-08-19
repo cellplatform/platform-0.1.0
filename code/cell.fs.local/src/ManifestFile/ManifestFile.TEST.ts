@@ -1,17 +1,17 @@
-import { File } from '.';
+import { ManifestFile } from '.';
 import { expect, TestUtil } from '../test';
 
 const fs = TestUtil.node;
 
-describe('File', () => {
+describe('ManifestFile', () => {
   beforeEach(() => TestUtil.reset());
 
-  describe('manifestFile', () => {
+  describe('parse', () => {
     const baseDir = fs.resolve('static.test');
 
     it('image file (png)', async () => {
       const path = fs.join(baseDir, 'images/bird.png');
-      const res = await File.manifestFile({ fs, baseDir, path });
+      const res = await ManifestFile.parse({ fs, baseDir, path });
 
       expect(res.path).to.eql('images/bird.png');
       expect(res.bytes).to.eql(71342);
@@ -25,7 +25,7 @@ describe('File', () => {
 
     it('text file', async () => {
       const path = fs.join(baseDir, 'file.txt');
-      const res = await File.manifestFile({ fs, baseDir, path });
+      const res = await ManifestFile.parse({ fs, baseDir, path });
 
       expect(res.path).to.eql('file.txt');
       expect(res.bytes).to.eql(7);
@@ -41,7 +41,7 @@ describe('File', () => {
       const path = fs.join(baseDir, 'foo.png');
       await TestUtil.writeFile(path, file);
 
-      const res = await File.manifestFile({ fs, baseDir, path });
+      const res = await ManifestFile.parse({ fs, baseDir, path });
 
       expect(res.path).to.eql('foo.png');
       expect(res.bytes).to.eql(7);

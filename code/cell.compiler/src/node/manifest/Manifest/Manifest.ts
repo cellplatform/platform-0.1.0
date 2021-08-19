@@ -1,4 +1,4 @@
-import { deleteUndefined, fs, Schema, t, DEFAULT, File } from '../../common';
+import { deleteUndefined, fs, Schema, t, DEFAULT, ManifestFile } from '../../common';
 import { FileAccess, FileRedirects } from '../../config';
 
 type M = t.Manifest;
@@ -96,14 +96,14 @@ export const Manifest = {
    */
   hash: {
     files(input: t.ManifestFile[] | t.Manifest) {
-      return File.Hash.files(input);
+      return ManifestFile.Hash.files(input);
     },
 
     /**
      * Calculate the hash of a file.
      */
     async filehash(path: string) {
-      return File.Hash.filehash(fs, path);
+      return ManifestFile.Hash.filehash(fs, path);
     },
   },
 
@@ -178,7 +178,7 @@ export const Manifest = {
     const { model, baseDir } = args;
     const path = args.path.substring(baseDir.length + 1);
     return deleteUndefined({
-      ...(await File.toManifestFile({ fs, baseDir, path: args.path })),
+      ...(await ManifestFile.parse({ fs, baseDir, path: args.path })),
       allowRedirect: model ? toRedirect({ model, path }).flag : undefined,
       public: model ? toPublic({ model, path }) : undefined,
       image: await Manifest.toImage(path),
@@ -189,7 +189,7 @@ export const Manifest = {
    * Generates image meta-data for the given path.
    */
   async toImage(path: string): Promise<t.ManifestFileImage | undefined> {
-    return File.toImage(fs, path);
+    return ManifestFile.Image.parse(fs, path);
   },
 };
 

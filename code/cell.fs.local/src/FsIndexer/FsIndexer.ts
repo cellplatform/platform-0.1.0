@@ -1,5 +1,5 @@
 import { t, PathUtil, time } from '../common';
-import { File } from '../ManifestFile';
+import { ManifestFile } from '../ManifestFile';
 
 export const FsIndexer = (args: { dir: string; fs: t.INodeFs }) => {
   const { fs, dir } = args;
@@ -40,14 +40,14 @@ export const FsIndexer = (args: { dir: string; fs: t.INodeFs }) => {
       const files: t.ManifestFile[] = await (async () => {
         if (!dir) return [];
         const paths = await PathUtil.files({ fs, dir, filter });
-        const toFile = async (path: string) => File.manifestFile({ fs, baseDir, path });
+        const toFile = async (path: string) => ManifestFile.parse({ fs, baseDir, path });
         const files = await Promise.all(paths.map(toFile));
         return files;
       })();
 
       return {
         kind: 'dir',
-        hash: { files: File.Hash.files(files) },
+        hash: { files: ManifestFile.Hash.files(files) },
         dir: { indexedAt: time.now.timestamp },
         files,
       };

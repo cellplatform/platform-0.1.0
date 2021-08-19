@@ -8,16 +8,16 @@ export interface ImageSize {
   type?: string;
 }
 
-export const FileImage = {
+export const ManifestFileImage = {
   /**
    * Generates image meta-data for the given path.
    */
-  async manifestFileImage(fs: t.INodeFs, path: string): Promise<t.ManifestFileImage | undefined> {
+  async parse(fs: t.INodeFs, path: string): Promise<t.ManifestFileImage | undefined> {
     const kind = toImageKind(fs, path);
     if (!kind) return undefined;
 
     try {
-      const size = await FileImage.size(path);
+      const size = await ManifestFileImage.size(path);
       const width = size?.width ?? -1;
       const height = size?.height ?? -1;
       return { kind, width, height };
