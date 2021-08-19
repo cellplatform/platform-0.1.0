@@ -9,7 +9,7 @@ type IO = t.SysFsEventsIo;
 /**
  * Primitive IO events (read,write,copy,delete).
  */
-export function IoEvents(args: {
+export function BusEventsIo(args: {
   id: FilesystemId;
   $: t.Observable<t.SysFsEvent>;
   bus: t.EventBus<t.SysFsEvent>;

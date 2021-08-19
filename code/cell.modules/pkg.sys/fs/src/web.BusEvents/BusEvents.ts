@@ -2,8 +2,8 @@ import { firstValueFrom, of, timeout } from 'rxjs';
 import { catchError, filter, takeUntil } from 'rxjs/operators';
 
 import { rx, slug, t, timeoutWrangler } from './common';
-import { IoEvents } from './BusEvents.io';
-import { IndexEvents } from './BusEvents.index';
+import { BusEventsIo } from './BusEvents.Io';
+import { BusEventsIndexer } from './BusEvents.Indexer';
 
 type FilesystemId = string;
 type Milliseconds = number;
@@ -31,8 +31,8 @@ export function BusEvents(args: {
     filter((e) => e.payload.id === id),
   );
 
-  const io = IoEvents({ id, $, bus, timeout: toTimeout() });
-  const index = IndexEvents({ id, $, bus, timeout: toTimeout() });
+  const io = BusEventsIo({ id, $, bus, timeout: toTimeout() });
+  const index = BusEventsIndexer({ id, $, bus, timeout: toTimeout() });
 
   const info: t.SysFsEvents['info'] = {
     req$: rx.payload<t.SysFsInfoReqEvent>($, 'sys.fs/info:req'),

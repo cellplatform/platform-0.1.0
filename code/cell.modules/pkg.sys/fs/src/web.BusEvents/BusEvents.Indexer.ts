@@ -8,7 +8,7 @@ type FilesystemId = string;
 /**
  * Events for indexing a file-system.
  */
-export function IndexEvents(args: {
+export function BusEventsIndexer(args: {
   id: FilesystemId;
   $: t.Observable<t.SysFsEvent>;
   bus: t.EventBus<t.SysFsEvent>;
