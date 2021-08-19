@@ -1,4 +1,4 @@
-import { Path } from './libs';
+import { Path } from '../Path';
 
 /**
  * A string URI that represents the path to a file.
