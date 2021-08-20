@@ -13,6 +13,12 @@ export function FsLocal(args: { dir: string; fs: t.INodeFs }): t.IFsLocal {
   const dir = node.resolve(args.dir);
   const root = dir;
 
+  const toKind = async (path: string): Promise<t.IFsInfoLocal['kind']> => {
+    if (await node.is.file(path)) return 'file';
+    if (await node.is.dir(path)) return 'dir';
+    return 'unknown';
+  };
+
   const fs: t.IFsLocal = {
     type: 'LOCAL',
 
@@ -33,12 +39,14 @@ export function FsLocal(args: { dir: string; fs: t.INodeFs }): t.IFsLocal {
       uri = (uri || '').trim();
       const path = fs.resolve(uri).path;
       const location = LocalFile.toAbsoluteLocation({ path, root });
+      const kind = await toKind(path);
       const readResponse = await this.read(uri);
       const { status, file } = readResponse;
       const exists = status !== 404;
       return {
         uri,
         exists,
+        kind,
         path,
         location,
         hash: file?.hash ?? '',

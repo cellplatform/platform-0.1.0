@@ -84,47 +84,73 @@ describe('FsLocal', () => {
     });
   });
 
-  it('info (file:uri)', async () => {
-    const fs = TestUtil.createLocal();
+  describe('info', () => {
+    it('file:uri', async () => {
+      const fs = TestUtil.createLocal();
 
-    const png = await TestUtil.readImage('bird.png');
-    const uri = 'file:foo:bird';
-    const path = fs.resolve(`  ${uri} `).path;
-    await TestUtil.writeFile(path, png);
+      const png = await TestUtil.readImage('bird.png');
+      const uri = 'file:foo:bird';
+      const path = fs.resolve(`  ${uri} `).path;
+      await TestUtil.writeFile(path, png);
 
-    const res = await fs.info(uri);
-    expect(res.uri).to.eql(uri);
-    expect(res.exists).to.eql(true);
-    expect(res.bytes).to.greaterThan(-1);
-    expect(res.hash).to.match(/^sha256-/);
+      const res = await fs.info(uri);
+      expect(res.uri).to.eql(uri);
+      expect(res.exists).to.eql(true);
+      expect(res.bytes).to.greaterThan(-1);
+      expect(res.hash).to.match(/^sha256-/);
 
-    expect(res.location.startsWith('file:///Users')).to.eql(true);
-    expect(res.location.endsWith('ns.foo/bird')).to.eql(true);
-  });
+      expect(res.location.startsWith('file:///Users')).to.eql(true);
+      expect(res.location.endsWith('ns.foo/bird')).to.eql(true);
+    });
 
-  it('info (path:uri)', async () => {
-    const fs = TestUtil.createLocal();
+    it('path:uri', async () => {
+      const fs = TestUtil.createLocal();
 
-    const png = await TestUtil.readImage('bird.png');
-    const uri = 'path:foo/bird.png';
-    const path = fs.resolve(uri).path;
-    await TestUtil.writeFile(path, png);
+      const png = await TestUtil.readImage('bird.png');
+      const uri = 'path:foo/bird.png';
+      const path = fs.resolve(uri).path;
+      await TestUtil.writeFile(path, png);
 
-    const res = await fs.info(` ${uri}  `);
-    expect(res.uri).to.eql(uri);
-    expect(res.exists).to.eql(true);
-  });
+      const res = await fs.info(` ${uri}  `);
+      expect(res.uri).to.eql(uri);
+      expect(res.exists).to.eql(true);
+    });
 
-  it('info (404)', async () => {
-    const fs = TestUtil.createLocal();
-    const uri = 'file:foo:boo';
-    const res = await fs.info(uri);
+    it('kind: "file" ', async () => {
+      const fs = TestUtil.createLocal();
+      const png = await TestUtil.readImage('bird.png');
+      await TestUtil.writeFile(fs.resolve('path:foo/bird.png').path, png);
 
-    expect(res.uri).to.eql(uri);
-    expect(res.exists).to.eql(false);
-    expect(res.bytes).to.eql(-1);
-    expect(res.hash).to.eql('');
-    expect(res.path).to.match(/ns.foo\/boo/);
+      const res = await fs.info('path:foo/bird.png');
+      expect(res.exists).to.eql(true);
+      expect(res.kind).to.eql('file');
+      expect(res.bytes).to.greaterThan(-1);
+      expect(res.hash).to.match(/^sha256-/);
+    });
+
+    it('kind:  "dir"', async () => {
+      const fs = TestUtil.createLocal();
+      const png = await TestUtil.readImage('bird.png');
+      await TestUtil.writeFile(fs.resolve('path:foo/bird.png').path, png);
+
+      const res = await fs.info('path:foo');
+      expect(res.exists).to.eql(true);
+      expect(res.kind).to.eql('dir');
+      expect(res.bytes).to.eql(-1);
+      expect(res.hash).to.eql('');
+    });
+
+    it('not found (404)', async () => {
+      const fs = TestUtil.createLocal();
+      const uri = 'file:foo:boo';
+      const res = await fs.info(uri);
+
+      expect(res.uri).to.eql(uri);
+      expect(res.exists).to.eql(false);
+      expect(res.bytes).to.eql(-1);
+      expect(res.hash).to.eql('');
+      expect(res.path).to.match(/ns.foo\/boo/);
+    });
   });
 
   describe('read/write', () => {

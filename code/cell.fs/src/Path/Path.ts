@@ -63,6 +63,8 @@ export const Path = {
     return res.join('/');
   },
 
+  trim,
+
   /**
    * Trims slashes from the start (left) of a string.
    */

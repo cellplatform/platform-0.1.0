@@ -48,4 +48,39 @@ describe('PathUri', () => {
     test('path:foo/../../../bar', ''); // NB: Stepped up and out of scope.
     test('path:foo/bar/../zoo', 'foo/zoo');
   });
+
+  it('ensurePrefix', () => {
+    const test = (input: any, expected: string) => {
+      expect(PathUri.ensurePrefix(input)).to.eql(expected);
+    };
+
+    test('  ', 'path:');
+    test('path:foo', 'path:foo');
+    test('  path:foo/bar  ', 'path:foo/bar');
+    test('  foo  ', 'path:foo');
+    test('  /foo/bar/  ', 'path:/foo/bar/');
+    test('foo/bar', 'path:foo/bar');
+
+    test(null, '');
+    test(123, '');
+    test({}, '');
+  });
+
+  it('trimPrefix', () => {
+    const test = (input: any, expected: string) => {
+      expect(PathUri.trimPrefix(input)).to.eql(expected);
+    };
+
+    test('  ', '');
+    test('', '');
+    test('foo', 'foo');
+    test('path:foo', 'foo');
+    test('  path:foo  ', 'foo');
+    test('  path:  foo  ', 'foo');
+    test('  path:/foo/bar  ', '/foo/bar');
+
+    test(null, '');
+    test(123, '');
+    test({}, '');
+  });
 });
