@@ -121,5 +121,28 @@ describe('Path', () => {
       test('/foo/  ', '/foo');
       test('/foo  /  ', '/foo');
     });
+
+    it('trimHttp', () => {
+      const test = (input: any, expected: string) => {
+        expect(Path.trimHttp(input)).to.eql(expected);
+      };
+
+      test('   ', '');
+      test('foo', 'foo');
+      test('  /foo/', '/foo/');
+
+      test('http:/foo', 'http:/foo');
+      test('https:/foo', 'https:/foo');
+      test('http//foo', 'http//foo');
+
+      test('  http://foo  ', 'foo');
+      test('  https://foo/bar  ', 'foo/bar');
+
+      test(null, '');
+      test(undefined, '');
+      test(123, '');
+      test([123], '');
+      test({}, '');
+    });
   });
 });

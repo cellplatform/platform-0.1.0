@@ -87,6 +87,15 @@ export const Path = {
     input = Path.trimSlashesEnd(input);
     return input;
   },
+
+  /**
+   * Remove http/https prefix.
+   */
+  trimHttp(input: string) {
+    return trim(input)
+      .replace(/^http\:\/\//, '')
+      .replace(/^https\:\/\//, '');
+  },
 };
 
 /**
