@@ -190,7 +190,7 @@ export type IFsCopy = IFsCopyLocal | IFsCopyS3;
 /**
  * Local file-system (Extensions)
  */
-export type IFsInfoLocal = IFsInfoCommon & IFsMetaLocal;
+export type IFsInfoLocal = IFsInfoCommon & IFsMetaLocal & { kind: 'file' | 'dir' | 'unknown' };
 export type IFsReadLocal = IFsReadCommon & { file?: IFsFileData<IFsMetaLocal> };
 export type IFsWriteLocal = IFsWriteCommon & { file: IFsFileData<IFsMetaLocal> };
 export type IFsDeleteLocal = IFsDeleteCommon;
