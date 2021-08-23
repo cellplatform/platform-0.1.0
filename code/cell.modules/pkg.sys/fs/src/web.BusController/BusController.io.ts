@@ -40,12 +40,13 @@ export function BusControllerIo(args: {
   };
 
   const writeFile = async (file: t.SysFsFile): Promise<t.SysFsFileWriteResponse> => {
-    const { data } = file;
+    const { hash, data } = file;
     const address = Format.path.ensurePrefix(file.path);
     const res = await fs.write(address, data);
     const error: MaybeError = res.error ? { code: 'write', message: res.error.message } : undefined;
     return {
       path: stripDirPrefix(res.file.path),
+      hash,
       error,
     };
   };
@@ -65,6 +66,7 @@ export function BusControllerIo(args: {
   const deleteFile = async (filepath: FilePath): Promise<t.SysFsFileDeleteResponse> => {
     const address = Format.path.ensurePrefix(filepath);
     const res = await fs.delete(address);
+    
     const error: MaybeError = res.error
       ? { code: 'delete', message: res.error.message }
       : undefined;

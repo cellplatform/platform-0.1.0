@@ -1,4 +1,4 @@
-import { asArray, BusEvents, rx, t, Format } from './common';
+import { asArray, BusEvents, rx, t, Format, HttpClient } from './common';
 import { BusControllerIo } from './BusController.Io';
 import { BusControllerIndexer } from './BusController.Indexer';
 import { BusControllerCell } from './BusController.Cell';
@@ -15,6 +15,7 @@ export function BusController(args: {
   index: t.FsIndexer;
   bus: t.EventBus<any>;
   filter?: (e: t.SysFsEvent) => boolean;
+  httpFactory?: (host: string | number) => t.IHttpClient;
 }) {
   const { id, fs, index } = args;
 
@@ -22,12 +23,15 @@ export function BusController(args: {
   const events = BusEvents({ id, bus, filter: args.filter });
   const { dispose, dispose$ } = events;
 
+  const httpFactory = (host: string | number) =>
+    args.httpFactory?.(host) ?? HttpClient.create(host);
+
   /**
    * Sub-controllers.
    */
   BusControllerIo({ id, fs, bus, events });
-  BusControllerIndexer({ id, index, fs, bus, events });
-  BusControllerCell({ id, fs, bus, events });
+  BusControllerIndexer({ id, fs, bus, events, index });
+  BusControllerCell({ id, fs, bus, events, index, httpFactory });
 
   /**
    * Helpers

@@ -3,6 +3,7 @@ import { t } from './common';
 type FilesystemId = string;
 type FilePath = string;
 type DirPath = string;
+type FileHash = string;
 
 export type SysFsInfo = {
   id: FilesystemId;
@@ -17,11 +18,11 @@ export type SysFsFileInfo = {
   error?: t.SysFsError;
 };
 
-export type SysFsFile = { path: FilePath; data: Uint8Array; hash: string };
+export type SysFsFile = { path: FilePath; data: Uint8Array; hash: FileHash };
 export type SysFsFileTarget = { source: FilePath; target: FilePath };
 
 export type SysFsFileReadResponse = { file?: SysFsFile; error?: t.SysFsError };
-export type SysFsFileWriteResponse = { path: FilePath; error?: t.SysFsError };
+export type SysFsFileWriteResponse = { path: FilePath; hash: FileHash; error?: t.SysFsError };
 export type SysFsFileDeleteResponse = { path: FilePath; error?: t.SysFsError };
 export type SysFsFileCopyResponse = { source: FilePath; target: FilePath; error?: t.SysFsError };
 export type SysFsFileMoveResponse = { source: FilePath; target: FilePath; error?: t.SysFsError };

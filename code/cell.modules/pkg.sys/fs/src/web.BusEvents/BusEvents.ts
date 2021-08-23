@@ -16,7 +16,7 @@ export function BusEvents(args: {
   id: FilesystemId;
   bus: t.EventBus<any>;
   filter?: (e: t.SysFsEvent) => boolean;
-  timeout?: Milliseconds; // Default timeout
+  timeout?: Milliseconds; // Default timeout.
 }): t.SysFsEvents {
   const { id } = args;
   const { dispose, dispose$ } = rx.disposable();
@@ -24,6 +24,7 @@ export function BusEvents(args: {
   const is = BusEvents.is;
 
   const toTimeout = timeoutWrangler(args.timeout);
+  const msecs = toTimeout();
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -35,13 +36,9 @@ export function BusEvents(args: {
   /**
    * Initialize sub-event API's
    */
-  const { io, index, cell } = (() => {
-    const timeout = toTimeout();
-    const io = BusEventsIo({ id, $, bus, timeout });
-    const index = BusEventsIndexer({ id, $, bus, timeout });
-    const cell = BusEventsCell({ id, $, bus, timeout });
-    return { io, index, cell };
-  })();
+  const io = BusEventsIo({ id, $, bus, timeout: msecs });
+  const index = BusEventsIndexer({ id, $, bus, timeout: msecs });
+  const remote = BusEventsCell({ id, $, bus, timeout: msecs });
 
   /**
    * Info
@@ -79,7 +76,7 @@ export function BusEvents(args: {
   /**
    * API
    */
-  return { id, $, is, dispose, dispose$, info, io, index, cell };
+  return { id, $, is, dispose, dispose$, info, io, index, remote };
 }
 
 /**

@@ -2,7 +2,7 @@ import { NeDb } from '@platform/fsdb.nedb';
 import { FsLocal } from '@platform/cell.fs.local';
 import { micro } from '@platform/micro';
 
-import { util, t, Schema, HttpClient } from '../common';
+import { util, t, Schema, HttpClient, slug } from '../common';
 import { Router } from '..';
 import { port as portUtil } from './util.port';
 
@@ -29,7 +29,6 @@ const PATH = {
   FS: util.fs.join(TMP, 'fs'),
   MOCK: util.fs.join(TMP, 'mock'),
 };
-let count = 0;
 
 /**
  * Mocking object.
@@ -53,9 +52,7 @@ type CreateArgs = { port?: number; runtime?: t.RuntimeEnv };
 export const createMock = async (args: CreateArgs = {}): Promise<IRouterMock> => {
   const { runtime } = args;
 
-  count++;
-
-  const filename = util.fs.join(PATH.MOCK, `test-${count}.db`);
+  const filename = util.fs.join(PATH.MOCK, `test-${slug()}.db`);
   const port = args.port || (await portUtil.unused());
 
   const db = NeDb.create({ filename });
@@ -68,6 +65,7 @@ export const createMock = async (args: CreateArgs = {}): Promise<IRouterMock> =>
 
   const urls = Schema.urls(`localhost:${port}`);
   const hostname = urls.hostname;
+  const host = `${hostname}:${port}`;
   const client = HttpClient.create(urls.origin);
   const origin = client.origin;
 
@@ -80,7 +78,7 @@ export const createMock = async (args: CreateArgs = {}): Promise<IRouterMock> =>
     service,
     filename,
     hostname,
-    host: `${hostname}:${port}`,
+    host,
     origin,
     url: (path: string) => `http://localhost:${port}/${path.replace(/^\/*/, '')}`,
     urls,

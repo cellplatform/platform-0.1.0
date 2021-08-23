@@ -1,16 +1,29 @@
-import { t, expect, rx, TestFs, Hash, DEFAULT } from '../test';
+import {
+  t,
+  expect,
+  rx,
+  TestFs,
+  Hash,
+  DEFAULT,
+  CellAddress,
+  HttpClient,
+  slug,
+  Uri,
+  asArray,
+} from '../test';
 import { FsBus } from '.';
 import { Format } from './Format';
 import { RouterMock, IRouterMock } from '@platform/cell.router/lib/test/RouterMock';
 
+type CellAddress = string; // "<domain>/<cell:uri>"
 const fs = TestFs.node;
 
-describe('FsBus', function () {
+describe.only('FsBus', function () {
   this.timeout(30000);
 
   const bus = rx.bus<t.SysFsEvent>();
 
-  const prep = (options: { id?: string; dir?: string } = {}) => {
+  const prep = async (options: { id?: string; dir?: string } = {}) => {
     const id = options.id ?? 'foo';
 
     const fs = !options.dir
@@ -26,7 +39,7 @@ describe('FsBus', function () {
 
     let server: IRouterMock | undefined;
 
-    return {
+    const api = {
       controller,
       events,
       dir: Format.dir.ensureTrailingSlash(fs.dir),
@@ -34,6 +47,12 @@ describe('FsBus', function () {
 
       fileExists(path: string) {
         return TestFs.node.pathExists(TestFs.join(fs.dir, path));
+      },
+
+      async write(source: string, target: string) {
+        const { hash, data } = await TestFs.readFile(source);
+        const res = await events.io.write.fire({ path: target, hash, data });
+        return res.files[0];
       },
 
       async server() {
@@ -44,9 +63,11 @@ describe('FsBus', function () {
       async dispose() {
         controller.dispose();
         events.dispose();
-        server?.dispose();
+        await server?.dispose();
       },
     };
+
+    return api;
   };
 
   describe('BusController', () => {
@@ -79,8 +100,8 @@ describe('FsBus', function () {
     });
 
     it('distinct (by filesystem "id")', async () => {
-      const one = prep({ id: 'one', dir: 'foo' });
-      const two = prep({ id: 'two', dir: 'bar' });
+      const one = await prep({ id: 'one', dir: 'foo' });
+      const two = await prep({ id: 'two', dir: 'bar' });
 
       const info1 = await one.events.info.get();
       const info2 = await two.events.info.get();
@@ -112,13 +133,13 @@ describe('FsBus', function () {
 
       expect(res.id).to.eql(id);
       expect(res.fs?.id).to.eql(id);
-      expect(res.fs?.dir).to.eql(TestFs.node.join(TestFs.tmp, 'root'));
+      expect(res.fs?.dir).to.eql(TestFs.local.dir);
       expect(res.files).to.eql([]);
       expect(res.error).to.eql(undefined);
     });
 
     it('not found', async () => {
-      const mock = prep();
+      const mock = await prep();
       const info = await mock.events.info.get({ path: '/foo/bar.js', timeout: 10 });
       await mock.dispose();
 
@@ -131,7 +152,7 @@ describe('FsBus', function () {
     });
 
     it('single file', async () => {
-      const mock = prep();
+      const mock = await prep();
       const src = await TestFs.readFile('static.test/child/kitten.jpg');
 
       const path = '  foo/bar/kitty.jpg   '; // NB: spacing trimmed.
@@ -147,7 +168,7 @@ describe('FsBus', function () {
     });
 
     it('multiple files', async () => {
-      const mock = prep();
+      const mock = await prep();
       const src1 = await TestFs.readFile('static.test/child/kitten.jpg');
       const src2 = await TestFs.readFile('static.test/child/tree.png');
 
@@ -191,7 +212,7 @@ describe('FsBus', function () {
 
     describe('manifest', () => {
       it('empty', async () => {
-        const mock = prep();
+        const mock = await prep();
         const res = await mock.events.index.manifest.get();
         await mock.dispose();
 
@@ -208,7 +229,7 @@ describe('FsBus', function () {
       });
 
       it('root (no "dir" parameter passed)', async () => {
-        const mock = prep();
+        const mock = await prep();
         const src1 = await TestFs.readFile('static.test/data/01.json');
         const src2 = await TestFs.readFile('static.test/child/tree.png');
 
@@ -238,7 +259,7 @@ describe('FsBus', function () {
       });
 
       it('empty "dir" param variants (return root)', async () => {
-        const mock = prep();
+        const mock = await prep();
         const io = mock.events.io;
         const src = await TestFs.readFile('static.test/data/01.json');
         const write = (path: string) => io.write.fire({ path, hash: src.hash, data: src.data });
@@ -270,7 +291,7 @@ describe('FsBus', function () {
       });
 
       it('multiple sub-trees', async () => {
-        const mock = prep();
+        const mock = await prep();
         const io = mock.events.io;
         const src = await TestFs.readFile('static.test/data/01.json');
         const write = (path: string) => io.write.fire({ path, hash: src.hash, data: src.data });
@@ -304,7 +325,7 @@ describe('FsBus', function () {
       });
 
       it('error: binary not an image, but named with an image extension ', async () => {
-        const mock = prep();
+        const mock = await prep();
         const io = mock.events.io;
         const src = await TestFs.readFile('static.test/data/01.json');
         const write = (path: string) => io.write.fire({ path, hash: src.hash, data: src.data });
@@ -327,7 +348,7 @@ describe('FsBus', function () {
 
     describe('manifest caching', () => {
       const cachePrep = async () => {
-        const mock = prep();
+        const mock = await prep();
         const io = mock.events.io;
         const src = await TestFs.readFile('static.test/data/01.json');
         const write = (path: string) => io.write.fire({ path, hash: src.hash, data: src.data });
@@ -457,7 +478,7 @@ describe('FsBus', function () {
       this.beforeEach(() => TestFs.reset());
 
       it('reads file (single)', async () => {
-        const mock = prep();
+        const mock = await prep();
         await mock.fs.copy(
           mock.fs.resolve('static.test/child/tree.png'),
           mock.fs.join(mock.dir, 'images/tree.png'),
@@ -477,7 +498,7 @@ describe('FsBus', function () {
       });
 
       it('reads files (multiple)', async () => {
-        const mock = prep();
+        const mock = await prep();
         await mock.fs.copy(
           mock.fs.resolve('static.test/child/tree.png'),
           mock.fs.join(mock.dir, 'images/tree.png'),
@@ -509,7 +530,7 @@ describe('FsBus', function () {
       this.beforeEach(() => TestFs.reset());
 
       it('writes file (single)', async () => {
-        const mock = prep();
+        const mock = await prep();
         const src = await TestFs.readFile('static.test/child/kitten.jpg');
         const { hash, data } = src;
 
@@ -522,6 +543,7 @@ describe('FsBus', function () {
         expect(res.error).to.eql(undefined);
         expect(res.files.length).to.eql(1);
         expect(res.files[0].path).to.eql('/foo/bar/kitten.jpg'); // Absolute path ("/..") starting at [fs.dir] root.
+        expect(res.files[0].hash).to.eql(src.hash);
         expect(await mock.fileExists(path)).to.eql(true);
 
         const after = await TestFs.readFile(TestFs.join(mock.dir, 'foo/bar/kitten.jpg'));
@@ -530,7 +552,7 @@ describe('FsBus', function () {
       });
 
       it('write files (multiple)', async () => {
-        const mock = prep();
+        const mock = await prep();
         const src1 = await TestFs.readFile('static.test/child/kitten.jpg');
         const src2 = await TestFs.readFile('static.test/child/tree.png');
 
@@ -551,6 +573,8 @@ describe('FsBus', function () {
         expect(res.files.length).to.eql(2);
         expect(res.files[0].path).to.eql('/foo/bar/kitten.jpg');
         expect(res.files[1].path).to.eql('/foo/bar/tree.png');
+        expect(res.files[0].hash).to.eql(src1.hash);
+        expect(res.files[1].hash).to.eql(src2.hash);
         expect(await mock.fileExists(path.kitten)).to.eql(true);
         expect(await mock.fileExists(path.tree)).to.eql(true);
 
@@ -569,7 +593,7 @@ describe('FsBus', function () {
       this.beforeEach(() => TestFs.reset());
 
       it('delete (does not exist)', async () => {
-        const mock = prep();
+        const mock = await prep();
 
         const res = await mock.events.io.delete.fire('foo/404.txt');
         await mock.dispose();
@@ -580,7 +604,7 @@ describe('FsBus', function () {
       });
 
       it('delete (single)', async () => {
-        const mock = prep();
+        const mock = await prep();
         const src = await TestFs.readFile('static.test/child/kitten.jpg');
         const { hash, data } = src;
 
@@ -598,7 +622,7 @@ describe('FsBus', function () {
       });
 
       it('delete (multiple)', async () => {
-        const mock = prep();
+        const mock = await prep();
         const src1 = await TestFs.readFile('static.test/child/kitten.jpg');
         const src2 = await TestFs.readFile('static.test/child/tree.png');
 
@@ -631,7 +655,7 @@ describe('FsBus', function () {
       this.beforeEach(() => TestFs.reset());
 
       it('copy (single)', async () => {
-        const mock = prep();
+        const mock = await prep();
         const src = await TestFs.readFile('static.test/child/kitten.jpg');
         const { hash, data } = src;
 
@@ -656,7 +680,7 @@ describe('FsBus', function () {
       });
 
       it('copy (multiple)', async () => {
-        const mock = prep();
+        const mock = await prep();
         const src = await TestFs.readFile('static.test/child/kitten.jpg');
         const { hash, data } = src;
 
@@ -696,7 +720,7 @@ describe('FsBus', function () {
       });
 
       it('copy error (source not found)', async () => {
-        const mock = prep();
+        const mock = await prep();
 
         const res = await mock.events.io.copy.fire([
           { source: 'foo/bar/kitten.jpg', target: 'cat.jpg' },
@@ -716,7 +740,7 @@ describe('FsBus', function () {
       this.beforeEach(() => TestFs.reset());
 
       it('move', async () => {
-        const mock = prep();
+        const mock = await prep();
         const src = await TestFs.readFile('static.test/child/kitten.jpg');
         const { hash, data } = src;
 
@@ -743,7 +767,7 @@ describe('FsBus', function () {
       });
 
       it('error', async () => {
-        const mock = prep();
+        const mock = await prep();
         const path = {
           source: 'foo/bar/kitten.jpg',
           target: 'cat.jpg',
@@ -763,18 +787,157 @@ describe('FsBus', function () {
     });
   });
 
-  describe.only('BusController.Cell', () => {
-    it.only('TMP', async () => {
-      const mock = await RouterMock.create();
+  describe('BusController.Cell', () => {
+    this.beforeEach(() => TestFs.reset());
 
-      // mock.
+    describe('uri (method)', () => {
+      it('remote.cell("address") - "<domain>/<cell:uri>"', async () => {
+        const mock = await prep();
 
-      console.log('mock', mock.origin);
+        const address = CellAddress.create('domain.org', 'cell:foo:A1');
+        const res = mock.events.remote.cell(address.toString());
 
-      const res = await mock.client.info();
-      console.log('res', res.body);
+        expect(res.uri).to.eql(address.uri);
+        expect(res.domain).to.eql(address.domain);
+        await mock.dispose();
+      });
 
-      mock.dispose();
+      it('remote.cell("domain", "cell:uri")', async () => {
+        const mock = await prep();
+
+        const address = CellAddress.create('domain.org', 'cell:foo:A1');
+        const res = mock.events.remote.cell(address.domain, address.uri);
+
+        expect(res.uri).to.eql(address.uri);
+        expect(res.domain).to.eql(address.domain);
+        await mock.dispose();
+      });
+
+      it('throw: invalid "address"', async () => {
+        const mock = await prep();
+        const err = /Invalid cell address/;
+
+        const fn1 = () => mock.events.remote.cell('foobar');
+        expect(fn1).to.throw(err);
+
+        const fn2 = () => mock.events.remote.cell('domain/foobar');
+        expect(fn2).to.throw(err);
+
+        const fn3 = () => mock.events.remote.cell('domain', 'foobar');
+        expect(fn3).to.throw(err);
+
+        await mock.dispose();
+      });
+    });
+
+    describe('push', () => {
+      const downloadAndVerify = async (
+        address: CellAddress,
+        path: string,
+        compareWith: t.SysFsPushedFile,
+      ) => {
+        const { domain, uri } = CellAddress.parse(address);
+        const http = HttpClient.create(domain).cell(uri);
+        const download = await http.fs.file(path).download();
+
+        const savePath = fs.resolve(`tmp/verify/${slug()}`);
+        await fs.stream.save(savePath, download.body);
+
+        const saved = await fs.readFile(savePath);
+        expect(Hash.sha256(saved)).to.eql(compareWith?.hash);
+        expect(saved.byteLength).to.eql(compareWith?.bytes);
+      };
+
+      it('push: single file', async () => {
+        const mock = await prep();
+        const server = await mock.server();
+        const file = await mock.write('static.test/child/tree.png', 'images/tree.png');
+
+        const address = CellAddress.create(server.host, Uri.create.A1());
+        const http = HttpClient.create(address.domain).cell(address.uri);
+        const remote = mock.events.remote.cell(address.toString());
+
+        const testExists = async (path: string, exists: boolean) => {
+          const res = await http.fs.file(path).exists();
+          expect(res).to.eql(exists, path);
+        };
+
+        await testExists('images/tree.png', false);
+        const res = await remote.push('images/tree.png');
+        await testExists('images/tree.png', true);
+
+        expect(res.files.length).to.eql(1);
+        expect(res.files[0].path).to.eql(file.path);
+        expect(res.files[0].hash).to.eql(file.hash);
+
+        await testExists('images/tree.png', true);
+        await downloadAndVerify(address.toString(), 'images/tree.png', res.files[0]);
+        await mock.dispose();
+      });
+
+      it('push: sub-directory', async () => {
+        const mock = await prep();
+        const server = await mock.server();
+        const file1 = await mock.write('static.test/data.json', 'root.json');
+        const file2 = await mock.write('static.test/child/tree.png', 'images/tree.png');
+        const file3 = await mock.write('static.test/child/kitten.jpg', 'images/kitty.jpg');
+
+        const address = CellAddress.create(server.host, Uri.create.A1());
+        const http = HttpClient.create(address.domain).cell(address.uri);
+        const remote = mock.events.remote.cell(address.toString());
+
+        const testExists = async (path: string, exists: boolean) => {
+          const res = await http.fs.file(path).exists();
+          expect(res).to.eql(exists, path);
+        };
+
+        await testExists('images/root.json', false);
+        await testExists('images/tree.png', false);
+        await testExists('images/kitty.jpg', false);
+
+        const res = await remote.push('images/');
+
+        await testExists('images/root.json', false); // NB: Not in the "/images" folder.
+        await testExists('images/tree.png', true);
+        await testExists('images/kitty.jpg', true);
+
+        expect(res.errors).to.eql([]);
+        expect(res.files.length).to.eql(2);
+        expect(res.files[0].path).to.eql(file3.path);
+        expect(res.files[0].hash).to.eql(file3.hash);
+        expect(res.files[1].path).to.eql(file2.path);
+        expect(res.files[1].hash).to.eql(file2.hash);
+
+        // Save local and check.
+        await downloadAndVerify(address.toString(), 'images/kitty.jpg', res.files[0]);
+        await downloadAndVerify(address.toString(), 'images/tree.png', res.files[1]);
+        await mock.dispose();
+      });
+
+      it('error: source file not found', async () => {
+        const mock = await prep();
+        const server = await mock.server();
+
+        const address = CellAddress.create(server.host, Uri.create.A1());
+        const remote = mock.events.remote.cell(address.toString());
+
+        const test = async (path: string | string[]) => {
+          const paths = asArray(path);
+          const res = await remote.push(path);
+
+          expect(res.errors.length).to.eql(paths.length);
+
+          for (const error of res.errors) {
+            expect(error.code).to.eql('cell/push');
+            expect(paths.includes(error.path)).to.eql(true);
+            expect(error.message).to.include('No files to push from source:');
+          }
+        };
+
+        await test('images/404.png');
+        await test(['images/404.png', '404.txt']);
+        await mock.dispose();
+      });
     });
   });
 });

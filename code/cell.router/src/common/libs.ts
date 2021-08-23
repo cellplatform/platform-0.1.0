@@ -8,7 +8,7 @@ export { Router } from '@platform/http.router';
 export { log } from '@platform/log/lib/server';
 export { fs } from '@platform/fs';
 export { http } from '@platform/http';
-export { value, id, defaultValue, time, rx } from '@platform/util.value';
+export { value, id, defaultValue, time, rx, slug } from '@platform/util.value';
 export { Client, HttpClient } from '@platform/cell.client';
 export { MemoryCache, FileCache } from '@platform/cache';
 export { wildcard } from '@platform/util.string/lib/wildcard';

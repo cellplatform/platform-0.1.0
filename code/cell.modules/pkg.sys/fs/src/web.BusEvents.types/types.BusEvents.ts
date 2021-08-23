@@ -1,11 +1,15 @@
 import { t } from './common';
 
+type CellUri = string; // "cell:<ns>:A1"
+type CellDomain = string; // host <domain>
+type CellAddress = string; // <CellDomain>/<CellUri>
+
 type Milliseconds = number;
 type FilesystemId = string;
 type FilePath = string;
 
 /**
- * Events
+ * Event API
  */
 export type SysFsEvents = t.Disposable & {
   id: FilesystemId;
@@ -14,7 +18,7 @@ export type SysFsEvents = t.Disposable & {
   info: SysFsEventsInfo;
   io: t.SysFsEventsIo;
   index: t.SysFsEventsIndex;
-  cell: t.SysFsEventsCell;
+  remote: t.SysFsEventsRemote;
 };
 
 export type SysFsEventsInfo = {
@@ -23,6 +27,9 @@ export type SysFsEventsInfo = {
   get(options?: { path?: FilePath | FilePath[]; timeout?: Milliseconds }): Promise<t.SysFsInfoRes>;
 };
 
+/**
+ * Event API: indexing
+ */
 export type SysFsEventsIndex = {
   manifest: {
     req$: t.Observable<t.SysFsManifestReq>;
@@ -35,6 +42,9 @@ export type SysFsEventsIndex = {
   };
 };
 
+/**
+ * Event API: IO (read/write)
+ */
 export type SysFsEventsIo = {
   read: {
     req$: t.Observable<t.SysFsReadReq>;
@@ -78,13 +88,32 @@ export type SysFsEventsIo = {
   };
 };
 
-export type SysFsEventsCell = {
+/**
+ * Event API: remote cell
+ */
+export type SysFsEventsRemote = {
   push: {
     req$: t.Observable<t.SysFsCellPushReq>;
     res$: t.Observable<t.SysFsCellPushRes>;
+    fire(
+      uri: CellAddress,
+      path: FilePath | FilePath[],
+      options?: { timeout?: Milliseconds },
+    ): Promise<t.SysFsCellPushRes>;
   };
   pull: {
     req$: t.Observable<t.SysFsCellPullReq>;
     res$: t.Observable<t.SysFsCellPullRes>;
   };
+  cell(domain: CellDomain, uri: CellUri): SysFsEventsCell;
+  cell(address: CellAddress): SysFsEventsCell;
+};
+
+export type SysFsEventsCell = {
+  domain: CellDomain;
+  uri: CellUri;
+  push(
+    path: FilePath | FilePath[],
+    options?: { timeout?: Milliseconds },
+  ): Promise<t.SysFsCellPushRes>;
 };
