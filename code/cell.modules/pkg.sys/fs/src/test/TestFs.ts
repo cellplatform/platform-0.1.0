@@ -10,6 +10,7 @@ export const TestFs = {
   FsIndexerLocal,
 
   tmp,
+
   node: fs,
   local: FsDriverLocal({ dir: fs.join(tmp, 'local.root'), fs }),
   index: (dir: string) => FsIndexerLocal({ dir, fs }),

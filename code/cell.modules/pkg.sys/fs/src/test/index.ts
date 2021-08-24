@@ -1,6 +1,6 @@
+export { expect, expectError } from '@platform/test';
 import { Schema } from '../web/common';
 
-export { expect } from '@platform/test';
 export * from '../web/common';
 export * from './TestFs';
 

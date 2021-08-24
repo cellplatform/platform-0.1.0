@@ -6,6 +6,7 @@ export type SysFsErrorCode =
   | 'client/timeout'
   | 'info'
   | 'read'
+  | 'read/404'
   | 'write'
   | 'delete'
   | 'copy'

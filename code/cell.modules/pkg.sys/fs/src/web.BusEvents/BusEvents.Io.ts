@@ -4,7 +4,6 @@ import { catchError, filter } from 'rxjs/operators';
 import { rx, slug, t, timeoutWrangler } from './common';
 
 type FilesystemId = string;
-type IO = t.SysFsEventsIo;
 
 /**
  * Primitive IO events (read,write,copy,delete).
@@ -14,11 +13,47 @@ export function BusEventsIo(args: {
   $: t.Observable<t.SysFsEvent>;
   bus: t.EventBus<t.SysFsEvent>;
   timeout: number;
-}): IO {
+}): t.SysFsEventsIo {
   const { id, $, bus } = args;
   const toTimeout = timeoutWrangler(args.timeout);
 
-  const read: IO['read'] = {
+  /**
+   * File/system information.
+   */
+  const info: t.SysFsEventsIo['info'] = {
+    req$: rx.payload<t.SysFsInfoReqEvent>($, 'sys.fs/info:req'),
+    res$: rx.payload<t.SysFsInfoResEvent>($, 'sys.fs/info:res'),
+    async get(options = {}) {
+      const { path } = options;
+      const msecs = toTimeout(options);
+      const tx = slug();
+
+      const first = firstValueFrom(
+        info.res$.pipe(
+          filter((e) => e.tx === tx),
+          timeout(msecs),
+          catchError(() => of(`[SysFs.Info] request timed out after ${msecs} msecs`)),
+        ),
+      );
+
+      bus.fire({
+        type: 'sys.fs/info:req',
+        payload: { tx, id, path },
+      });
+
+      const res = await first;
+      if (typeof res !== 'string') return res;
+
+      const error: t.SysFsError = { code: 'client/timeout', message: res };
+      const fail: t.SysFsInfoRes = { tx, id, files: [], error };
+      return fail;
+    },
+  };
+
+  /**
+   * Read
+   */
+  const read: t.SysFsEventsIo['read'] = {
     req$: rx.payload<t.SysFsReadReqEvent>($, 'sys.fs/read:req'),
     res$: rx.payload<t.SysFsReadResEvent>($, 'sys.fs/read:res'),
     async get(path, options = {}) {
@@ -47,7 +82,10 @@ export function BusEventsIo(args: {
     },
   };
 
-  const write: IO['write'] = {
+  /**
+   * Write
+   */
+  const write: t.SysFsEventsIo['write'] = {
     req$: rx.payload<t.SysFsWriteReqEvent>($, 'sys.fs/write:req'),
     res$: rx.payload<t.SysFsWriteResEvent>($, 'sys.fs/write:res'),
     async fire(file, options = {}) {
@@ -62,7 +100,10 @@ export function BusEventsIo(args: {
         ),
       );
 
-      bus.fire({ type: 'sys.fs/write:req', payload: { tx, id, file } });
+      bus.fire({
+        type: 'sys.fs/write:req',
+        payload: { tx, id, file },
+      });
       const res = await first;
 
       if (typeof res !== 'string') {
@@ -76,7 +117,10 @@ export function BusEventsIo(args: {
     },
   };
 
-  const copy: IO['copy'] = {
+  /**
+   * Copy
+   */
+  const copy: t.SysFsEventsIo['copy'] = {
     req$: rx.payload<t.SysFsCopyReqEvent>($, 'sys.fs/copy:req'),
     res$: rx.payload<t.SysFsCopyResEvent>($, 'sys.fs/copy:res'),
     async fire(file, options = {}) {
@@ -91,7 +135,10 @@ export function BusEventsIo(args: {
         ),
       );
 
-      bus.fire({ type: 'sys.fs/copy:req', payload: { tx, id, file } });
+      bus.fire({
+        type: 'sys.fs/copy:req',
+        payload: { tx, id, file },
+      });
       const res = await first;
 
       if (typeof res !== 'string') {
@@ -105,7 +152,10 @@ export function BusEventsIo(args: {
     },
   };
 
-  const move: IO['move'] = {
+  /**
+   * Move
+   */
+  const move: t.SysFsEventsIo['move'] = {
     req$: rx.payload<t.SysFsMoveReqEvent>($, 'sys.fs/move:req'),
     res$: rx.payload<t.SysFsMoveResEvent>($, 'sys.fs/move:res'),
     async fire(file, options = {}) {
@@ -120,7 +170,10 @@ export function BusEventsIo(args: {
         ),
       );
 
-      bus.fire({ type: 'sys.fs/move:req', payload: { tx, id, file } });
+      bus.fire({
+        type: 'sys.fs/move:req',
+        payload: { tx, id, file },
+      });
       const res = await first;
 
       if (typeof res !== 'string') {
@@ -134,7 +187,10 @@ export function BusEventsIo(args: {
     },
   };
 
-  const del: IO['delete'] = {
+  /**
+   * Delete
+   */
+  const del: t.SysFsEventsIo['delete'] = {
     req$: rx.payload<t.SysFsDeleteReqEvent>($, 'sys.fs/delete:req'),
     res$: rx.payload<t.SysFsDeleteResEvent>($, 'sys.fs/delete:res'),
     async fire(path, options = {}) {
@@ -149,7 +205,10 @@ export function BusEventsIo(args: {
         ),
       );
 
-      bus.fire({ type: 'sys.fs/delete:req', payload: { tx, id, path } });
+      bus.fire({
+        type: 'sys.fs/delete:req',
+        payload: { tx, id, path },
+      });
       const res = await first;
 
       if (typeof res === 'string')
@@ -163,5 +222,5 @@ export function BusEventsIo(args: {
   /**
    * API
    */
-  return { read, write, copy, move, delete: del };
+  return { info, read, write, copy, move, delete: del };
 }

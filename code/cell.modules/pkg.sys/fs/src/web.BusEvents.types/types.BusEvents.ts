@@ -1,8 +1,8 @@
 import { t } from './common';
 
-type CellUri = string; // "cell:<ns>:A1"
-type CellDomain = string; // host <domain>
-type CellAddress = string; // <CellDomain>/<CellUri>
+type CellUri = string; //     URI "cell:<ns>:A1"
+type CellDomain = string; //  Host "<domain>"
+type CellAddress = string; // Combination "<domain>/<cell:uri>"
 
 type Milliseconds = number;
 type FilesystemId = string;
@@ -15,17 +15,14 @@ export type SysFsEvents = t.Disposable & {
   id: FilesystemId;
   $: t.Observable<t.SysFsEvent>;
   is: { base(input: any): boolean };
-  info: SysFsEventsInfo;
   io: t.SysFsEventsIo;
   index: t.SysFsEventsIndex;
   remote: t.SysFsEventsRemote;
+  fs(options?: FsOptions): t.Fs;
+  fs(subdir?: string): t.Fs;
 };
 
-export type SysFsEventsInfo = {
-  req$: t.Observable<t.SysFsInfoReq>;
-  res$: t.Observable<t.SysFsInfoRes>;
-  get(options?: { path?: FilePath | FilePath[]; timeout?: Milliseconds }): Promise<t.SysFsInfoRes>;
-};
+type FsOptions = { subdir?: string; timeout?: Milliseconds };
 
 /**
  * Event API: indexing
@@ -47,6 +44,14 @@ export type SysFsEventsIndex = {
  * Event API: IO (read/write)
  */
 export type SysFsEventsIo = {
+  info: {
+    req$: t.Observable<t.SysFsInfoReq>;
+    res$: t.Observable<t.SysFsInfoRes>;
+    get(options?: {
+      path?: FilePath | FilePath[];
+      timeout?: Milliseconds;
+    }): Promise<t.SysFsInfoRes>;
+  };
   read: {
     req$: t.Observable<t.SysFsReadReq>;
     res$: t.Observable<t.SysFsReadRes>;
@@ -88,6 +93,12 @@ export type SysFsEventsIo = {
     ): Promise<t.SysFsDeleteResponse>;
   };
 };
+
+// export type SysFsEventsInfo = {
+//   req$: t.Observable<t.SysFsInfoReq>;
+//   res$: t.Observable<t.SysFsInfoRes>;
+//   get(options?: { path?: FilePath | FilePath[]; timeout?: Milliseconds }): Promise<t.SysFsInfoRes>;
+// };
 
 /**
  * Event API: remote cell

@@ -1,8 +1,6 @@
 import { expect, rx } from '../test';
 import { BusEvents } from '.';
 
-const bus = rx.bus();
-
 describe('BusEvents', () => {
   const is = BusEvents.is;
 

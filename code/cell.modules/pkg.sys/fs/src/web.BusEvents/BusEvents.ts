@@ -1,10 +1,10 @@
-import { firstValueFrom, of, timeout } from 'rxjs';
-import { catchError, filter, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
+import { BusEventsCell } from './BusEvents.Cell';
+import { BusEventsFs } from './BusEvents.Fs';
 import { BusEventsIndexer } from './BusEvents.Indexer';
 import { BusEventsIo } from './BusEvents.Io';
-import { BusEventsCell } from './BusEvents.Cell';
-import { rx, slug, t, timeoutWrangler } from './common';
+import { rx, t, timeoutWrangler } from './common';
 
 type FilesystemId = string;
 type Milliseconds = number;
@@ -41,42 +41,21 @@ export function BusEvents(args: {
   const remote = BusEventsCell({ id, $, bus, timeout: msecs });
 
   /**
-   * Info
+   * File-system API.
    */
-  const info: t.SysFsEvents['info'] = {
-    req$: rx.payload<t.SysFsInfoReqEvent>($, 'sys.fs/info:req'),
-    res$: rx.payload<t.SysFsInfoResEvent>($, 'sys.fs/info:res'),
-    async get(options = {}) {
-      const { path } = options;
-      const msecs = toTimeout(options);
-      const tx = slug();
-
-      const first = firstValueFrom(
-        info.res$.pipe(
-          filter((e) => e.tx === tx),
-          timeout(msecs),
-          catchError(() => of(`[SysFs.Info] request timed out after ${msecs} msecs`)),
-        ),
-      );
-
-      bus.fire({
-        type: 'sys.fs/info:req',
-        payload: { tx, id, path },
-      });
-
-      const res = await first;
-      if (typeof res !== 'string') return res;
-
-      const error: t.SysFsError = { code: 'client/timeout', message: res };
-      const fail: t.SysFsInfoRes = { tx, id, files: [], error };
-      return fail;
-    },
+  const fs: t.SysFsEvents['fs'] = (input) => {
+    const options = typeof input === 'string' ? { subdir: input } : input;
+    const { subdir } = options ?? {};
+    const timeout = toTimeout(options);
+    const io = BusEventsIo({ id, $, bus, timeout });
+    const index = BusEventsIndexer({ id, $, bus, timeout });
+    return BusEventsFs({ subdir, index, io });
   };
 
   /**
    * API
    */
-  return { id, $, is, dispose, dispose$, info, io, index, remote };
+  return { id, $, is, dispose, dispose$, io, index, fs, remote };
 }
 
 /**

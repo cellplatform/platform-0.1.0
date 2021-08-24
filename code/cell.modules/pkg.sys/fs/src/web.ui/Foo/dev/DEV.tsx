@@ -35,7 +35,7 @@ export const actions = DevActions<Ctx>()
     e.title('sys.fs');
 
     e.button('info', async (e) => {
-      const res = await e.ctx.events.info.get();
+      const res = await e.ctx.events.io.info.get();
 
       console.log('res', res);
     });
