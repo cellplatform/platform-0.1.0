@@ -11,4 +11,9 @@ export { IFsLocal, FsIndexer, FsPathFilter } from '@platform/cell.types/lib/type
 /**
  * Cell Types
  */
-export { DirManifest, IHttpClient, IHttpClientCellFileUpload } from '@platform/cell.types';
+export {
+  DirManifest,
+  IHttpClient,
+  IHttpClientCellFileUpload,
+  IHttpClientFileData,
+} from '@platform/cell.types';

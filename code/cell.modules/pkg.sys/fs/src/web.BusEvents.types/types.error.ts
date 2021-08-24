@@ -1,7 +1,6 @@
 type FilePath = string;
 
-export type SysFsError = { code: SysFsErrorCode; message: string };
-export type SysFsFileError = SysFsError & { path: string };
+export type SysFsError = { code: SysFsErrorCode; message: string; path?: FilePath };
 
 export type SysFsErrorCode =
   | 'client/timeout'

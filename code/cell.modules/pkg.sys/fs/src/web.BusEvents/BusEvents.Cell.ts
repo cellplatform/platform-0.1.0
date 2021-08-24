@@ -1,7 +1,7 @@
 import { firstValueFrom, of, timeout } from 'rxjs';
 import { catchError, filter } from 'rxjs/operators';
 
-import { rx, slug, t, timeoutWrangler, Uri, Path, CellAddress } from './common';
+import { CellAddress, rx, slug, t, timeoutWrangler } from './common';
 
 type CellUriAddress = string;
 type FilesystemId = string;
@@ -27,7 +27,6 @@ export function BusEventsCell(args: {
     async fire(address: CellUriAddress, path, options = {}) {
       const tx = slug();
       const msecs = toTimeout(options);
-
       const first = firstValueFrom(
         push.res$.pipe(
           filter((e) => e.tx === tx),
@@ -38,14 +37,14 @@ export function BusEventsCell(args: {
 
       bus.fire({
         type: 'sys.fs/cell/push:req',
-        payload: { tx, id, address, path },
+        payload: { tx, id, address, path: path ?? '' },
       });
 
       const res = await first;
       if (typeof res !== 'string') return res;
 
-      const error: t.SysFsFileError = { code: 'client/timeout', message: res, path: '' };
-      const fail: t.SysFsCellPushRes = { tx, id, files: [], errors: [error] };
+      const error: t.SysFsError = { code: 'client/timeout', message: res };
+      const fail: t.SysFsCellPushRes = { ok: false, tx, id, files: [], errors: [error] };
       return fail;
     },
   };
@@ -56,6 +55,29 @@ export function BusEventsCell(args: {
   const pull: t.SysFsEventsRemote['pull'] = {
     req$: rx.payload<t.SysFsCellPullReqEvent>($, 'sys.fs/cell/pull:req'),
     res$: rx.payload<t.SysFsCellPullResEvent>($, 'sys.fs/cell/pull:res'),
+    async fire(address: CellUriAddress, path, options = {}) {
+      const tx = slug();
+      const msecs = toTimeout(options);
+      const first = firstValueFrom(
+        pull.res$.pipe(
+          filter((e) => e.tx === tx),
+          timeout(msecs),
+          catchError(() => of(`[SysFs.Cell.Pull] request timed out after ${msecs} msecs`)),
+        ),
+      );
+
+      bus.fire({
+        type: 'sys.fs/cell/pull:req',
+        payload: { tx, id, address, path },
+      });
+
+      const res = await first;
+      if (typeof res !== 'string') return res;
+
+      const error: t.SysFsError = { code: 'client/timeout', message: res };
+      const fail: t.SysFsCellPullRes = { ok: false, tx, id, files: [], errors: [error] };
+      return fail;
+    },
   };
 
   /**
@@ -69,7 +91,8 @@ export function BusEventsCell(args: {
     const api: t.SysFsEventsCell = {
       domain: parsed.domain,
       uri: parsed.uri,
-      push: (path) => push.fire(uri, path),
+      push: (path, options) => push.fire(uri, path, options),
+      pull: (path, options) => pull.fire(uri, path, options),
     };
 
     return api;

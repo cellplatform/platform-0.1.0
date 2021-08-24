@@ -5,11 +5,9 @@ type FilePath = string;
 type CellAddress = string; // <CellDomain>/<CellUri>
 type FileHash = string;
 
-export type SysFsPushedFile = {
-  path: FilePath;
-  hash: FileHash;
-  bytes: number;
-};
+type FileInfo = { path: FilePath; hash: FileHash; bytes: number };
+export type SysFsPushedFile = FileInfo;
+export type SysFsPulledFile = FileInfo;
 
 /**
  * EVENTS
@@ -31,7 +29,7 @@ export type SysFsCellPushReq = {
   tx: string;
   id: FilesystemId;
   address: CellAddress;
-  path: FilePath | FilePath[];
+  path?: FilePath | FilePath[];
 };
 
 export type SysFsCellPushResEvent = {
@@ -39,10 +37,11 @@ export type SysFsCellPushResEvent = {
   payload: SysFsCellPushRes;
 };
 export type SysFsCellPushRes = {
+  ok: boolean;
   tx: string;
   id: FilesystemId;
-  files: SysFsPushedFile[];
-  errors: t.SysFsFileError[];
+  files: t.SysFsPushedFile[];
+  errors: t.SysFsError[];
 };
 
 /**
@@ -52,10 +51,21 @@ export type SysFsCellPullReqEvent = {
   type: 'sys.fs/cell/pull:req';
   payload: SysFsCellPullReq;
 };
-export type SysFsCellPullReq = { tx: string; id: FilesystemId };
+export type SysFsCellPullReq = {
+  tx: string;
+  id: FilesystemId;
+  address: CellAddress;
+  path?: FilePath | FilePath[]; // "dir/" or "path/file.ext" or "path/*.ext" or "path/**/*" etc.
+};
 
 export type SysFsCellPullResEvent = {
   type: 'sys.fs/cell/pull:res';
   payload: SysFsCellPullRes;
 };
-export type SysFsCellPullRes = { tx: string; id: FilesystemId; error?: t.SysFsError };
+export type SysFsCellPullRes = {
+  ok: boolean;
+  tx: string;
+  id: FilesystemId;
+  files: t.SysFsPulledFile[];
+  errors: t.SysFsError[];
+};

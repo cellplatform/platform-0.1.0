@@ -97,13 +97,18 @@ export type SysFsEventsRemote = {
     res$: t.Observable<t.SysFsCellPushRes>;
     fire(
       uri: CellAddress,
-      path: FilePath | FilePath[],
+      path?: FilePath | FilePath[],
       options?: { timeout?: Milliseconds },
     ): Promise<t.SysFsCellPushRes>;
   };
   pull: {
     req$: t.Observable<t.SysFsCellPullReq>;
     res$: t.Observable<t.SysFsCellPullRes>;
+    fire(
+      uri: CellAddress,
+      path?: FilePath | FilePath[],
+      options?: { timeout?: Milliseconds },
+    ): Promise<t.SysFsCellPullRes>;
   };
   cell(domain: CellDomain, uri: CellUri): SysFsEventsCell;
   cell(address: CellAddress): SysFsEventsCell;
@@ -113,7 +118,11 @@ export type SysFsEventsCell = {
   domain: CellDomain;
   uri: CellUri;
   push(
-    path: FilePath | FilePath[],
+    path?: FilePath | FilePath[],
     options?: { timeout?: Milliseconds },
   ): Promise<t.SysFsCellPushRes>;
+  pull(
+    path?: FilePath | FilePath[],
+    options?: { timeout?: Milliseconds },
+  ): Promise<t.SysFsCellPullRes>;
 };
