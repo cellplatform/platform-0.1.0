@@ -13,7 +13,7 @@ export const Server = {
    */
   create(args: {
     db: t.IDb;
-    fs: t.IFs;
+    fs: t.FsDriver;
     runtime?: t.RuntimeEnv;
     name?: string;
     deployedAt?: number | string;
