@@ -96,6 +96,19 @@ export const Path = {
       .replace(/^http\:\/\//, '')
       .replace(/^https\:\/\//, '');
   },
+
+  /**
+   * Removes a trailing `/*` wildcard glob pattern.
+   */
+  trimWildcardEnd(input: string) {
+    let path = trim(input);
+    path = path.replace(/\**$/, '');
+    if (Path.trimSlashesEnd(path).endsWith('*')) {
+      path = Path.trimSlashesEnd(path);
+      path = Path.trimWildcardEnd(path); // <== RECURSION 🌳
+    }
+    return path;
+  },
 };
 
 /**

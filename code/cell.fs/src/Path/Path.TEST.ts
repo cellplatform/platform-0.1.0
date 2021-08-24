@@ -144,5 +144,32 @@ describe('Path', () => {
       test([123], '');
       test({}, '');
     });
+
+    it.only('trimWildcardEnd', () => {
+      const test = (input: any, expected: string) => {
+        expect(Path.trimWildcardEnd(input)).to.eql(expected);
+      };
+
+      test('', '');
+      test('  ', '');
+      test('/', '/');
+      test('  /  ', '/');
+
+      test('/*', '/');
+      test('/foo/*', '/foo/');
+      test('/foo/**', '/foo/');
+      test('/foo/**/*', '/foo/');
+      test('/foo/**/**', '/foo/');
+
+      test('*', '');
+      test('*/*', '');
+      test('**/*', '');
+
+      test(null, '');
+      test(undefined, '');
+      test(123, '');
+      test([123], '');
+      test({}, '');
+    });
   });
 });
