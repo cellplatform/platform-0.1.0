@@ -18,24 +18,44 @@ export function BusControllerIo(args: {
 
   const stripDirPrefix = (path: FilePath) => Format.dir.stripPrefix(fs.dir, path);
 
-  const readFile = async (filepath: string): Promise<t.SysFsFileReadResponse> => {
-    const address = Format.path.ensurePrefix(filepath);
+  const getFileInfo = async (filepath: FilePath): Promise<t.SysFsFileInfo> => {
+    try {
+      const uri = Format.path.ensurePrefix(filepath);
+      const res = await fs.info(uri);
+      const { exists, hash, bytes } = res;
+      const path = stripDirPrefix(res.path);
+      return { path, exists, hash, bytes };
+    } catch (err) {
+      const error: t.SysFsError = { code: 'info', message: err.message };
+      return { path: filepath, exists: null, hash: '', bytes: -1, error };
+    }
+  };
+
+  const readFile = async (path: string): Promise<t.SysFsFileReadResponse> => {
+    const address = Format.path.ensurePrefix(path);
+    path = Format.path.trimPrefix(path);
+
+    const info = await fs.info(address);
+    if (!info.exists) {
+      const error: Error = { code: 'read/404', message: `File not found`, path };
+      return { error };
+    }
+
     const res = await fs.read(address);
 
     if (res.error) {
-      const error: Error = { code: 'read', message: res.error.message };
+      const error: Error = { code: 'read', message: res.error.message, path };
       return { error };
     }
 
     if (!res.file) {
-      const error: Error = { code: 'read', message: `File not found. ${filepath}` };
+      const error: Error = { code: 'read/404', message: `File not found`, path };
       return { error };
     }
 
     const { hash, data } = res.file;
-    const path = res.file.path;
     return {
-      file: { path, data, hash },
+      file: { path: res.file.path, data, hash },
     };
   };
 
@@ -95,6 +115,20 @@ export function BusControllerIo(args: {
       error,
     };
   };
+
+  /**
+   * IO: Info
+   */
+  events.io.info.req$.subscribe(async (e) => {
+    const { tx } = e;
+    const info: t.SysFsInfo = { id, dir: fs.dir };
+    const paths = asArray(e.path ?? []);
+    const files = await Promise.all(paths.map(getFileInfo));
+    bus.fire({
+      type: 'sys.fs/info:res',
+      payload: { tx, id, fs: info, files },
+    });
+  });
 
   /**
    * IO: Read
