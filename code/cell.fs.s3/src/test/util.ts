@@ -1,4 +1,4 @@
-import { FsS3 } from '..';
+import { FsDriverS3 } from '..';
 import { fs } from '../common';
 
 export const writeFile = async (path: string, data: Buffer) => {
@@ -25,7 +25,7 @@ export function init(PROVIDER: string, root?: string) {
     BUCKET: bucket,
     ROOT,
     PATH,
-    fs: FsS3({ dir: ROOT, endpoint, accessKey, secret }),
+    fs: FsDriverS3({ dir: ROOT, endpoint, accessKey, secret }),
   };
 }
 

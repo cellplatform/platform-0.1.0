@@ -13,7 +13,7 @@ export const Server = {
    */
   create(args: {
     db: t.IDb;
-    fs: t.IFilesystem;
+    fs: t.IFs;
     runtime?: t.RuntimeEnv;
     name?: string;
     deployedAt?: number | string;
@@ -65,58 +65,6 @@ export const Server = {
     return app;
   },
 };
-
-/**
- * Initializes a new server instance.
- */
-export function create(args: {
-  db: t.IDb;
-  fs: t.IFilesystem;
-  runtime?: t.RuntimeEnv;
-  name?: string;
-  deployedAt?: number | string;
-  logger?: t.ILog;
-  region?: string;
-  authorize?: t.HttpAuthorize;
-}) {
-  // const { db, name, fs, runtime, authorize } = args;
-  // const logger = args.logger || log;
-  // const { cyan, gray, white } = logger;
-  // const base = filesystem.resolve('.');
-  // const dir = fs.dir.startsWith(base) ? fs.dir.substring(base.length) : fs.dir;
-  // const deployedAt =
-  //   typeof args.deployedAt === 'string' ? value.toNumber(args.deployedAt) : args.deployedAt;
-  // // Log any uncaught exceptions.
-  // process.on('uncaughtException', (err) => {
-  //   logger.error('UNCAUGHT EXCEPTION');
-  //   logger.error(err.message);
-  //   logger.info();
-  // });
-  // // Routes.
-  // const body = micro.body;
-  // const router = Router.create({ name, db, fs, runtime, body, deployedAt });
-  // // Setup the micro-service.
-  // const deps = PKG.dependencies || {};
-  // const app = micro.create({
-  //   cors: true,
-  //   logger,
-  //   router,
-  //   log: {
-  //     runtime: runtime ? gray(`${Format.namespace(runtime.name)}@${runtime.version}`) : undefined,
-  //     server: Format.package('@platform/', cyan('cell.service'), PKG.version),
-  //     router: Format.package('          ', cyan('cell.router'), deps['@platform/cell.router']),
-  //     schema: Format.package('          ', cyan('cell.schema'), deps['@platform/cell.schema']),
-  //     region: args.region ?? constants.CELL_REGION,
-  //     fs: `[${white(fs.type === 'LOCAL' ? 'local' : fs.type)}]${dir}`,
-  //     'fs:s3': fs.type === 'S3' ? fs.endpoint.origin : undefined,
-  //   },
-  // });
-  // // Make common checks/adjustments.
-  // app.request$.subscribe(beforeRequest({ router, authorize }));
-  // app.response$.subscribe(beforeResponse({ router }));
-  // // Finish up.
-  // return app;
-}
 
 /**
  * [Helpers]

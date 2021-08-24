@@ -1,5 +1,5 @@
 import { FsLocal } from '@platform/cell.fs.local';
-import { FsS3 } from '@platform/cell.fs.s3';
+import { FsDriverS3 } from '@platform/cell.fs.s3';
 import { NeDb } from '@platform/fsdb.nedb';
 import { NodeRuntime } from '@platform/cell.runtime.node';
 
@@ -22,7 +22,7 @@ const filesystem = {
   local: () => FsLocal({ dir: `${TMP}/fs`, fs: util.fs }),
 
   spaces: () =>
-    FsS3({
+    FsDriverS3({
       dir: 'platform/tmp/test.http',
       endpoint: {
         origin: 'sfo2.digitaloceanspaces.com',
@@ -33,7 +33,7 @@ const filesystem = {
     }),
 
   wasabi: () =>
-    FsS3({
+    FsDriverS3({
       dir: 'cell/tmp/test.http',
       endpoint: 's3.us-west-1.wasabisys.com',
       accessKey: util.env.value('WASABI_KEY'),

@@ -10,7 +10,7 @@ export * from '../types';
  *  - Wasabi
  *  - (etc)
  */
-export function FsS3(args: t.S3Config & { dir: string }): t.IFsS3 {
+export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
   const cloud = (() => {
     const { endpoint, accessKey, secret } = args;
     const s3 = fs.s3({ endpoint, accessKey, secret });
@@ -39,7 +39,7 @@ export function FsS3(args: t.S3Config & { dir: string }): t.IFsS3 {
     return { uri, key, path, location };
   };
 
-  const api: t.IFsS3 = {
+  const api: t.FsDriverS3 = {
     type: 'S3',
     endpoint: cloud.s3.endpoint,
 

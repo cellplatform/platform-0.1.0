@@ -34,9 +34,6 @@ describe('CellAddress', () => {
 
   it('create', () => {
     const res = CellAddress.create('  foo:1234  ', '  cell:foo:A1  ');
-
-    console.log('res', res);
-
     expect(res.domain).to.eql('foo:1234');
     expect(res.uri).to.eql('cell:foo:A1');
     expect(res.toString()).to.eql('foo:1234/cell:foo:A1');

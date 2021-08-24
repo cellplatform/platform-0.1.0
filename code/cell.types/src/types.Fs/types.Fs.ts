@@ -13,9 +13,10 @@ export type FsTypeS3 = 'S3';
 export type FsS3Permission = 'private' | 'public-read';
 
 /**
- * API
+ * Driver (API)
+ * The low-level bridge into the specific file-system API.
  */
-export type IFs = IFsS3 | IFsLocal;
+export type IFs = FsDriverS3 | IFsLocal;
 
 /**
  * A "local" filesystem for instance a POSIX or IndexDB <BLOB> storage.
@@ -35,7 +36,7 @@ export type IFsLocal = IFsMembers<
 /**
  * Remote cloud <BLOB> storage that conforms to the AWS/S3 "pseudo-standard" API.
  */
-export type IFsS3 = IFsMembers<
+export type FsDriverS3 = IFsMembers<
   FsTypeS3,
   IFsInfoS3,
   IFsReadS3,

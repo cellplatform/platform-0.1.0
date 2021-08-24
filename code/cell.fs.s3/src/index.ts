@@ -1,1 +1,1 @@
-export * from './FsS3';
+export * from './FsDriverS3';
