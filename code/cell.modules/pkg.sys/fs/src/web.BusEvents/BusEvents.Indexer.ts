@@ -22,7 +22,7 @@ export function BusEventsIndexer(args: {
     res$: rx.payload<t.SysFsManifestResEvent>($, 'sys.fs/manifest:res'),
 
     async get(options = {}) {
-      const { dir, cache } = options;
+      const { dir, cache, cachefile } = options;
       const msecs = toTimeout(options);
       const tx = slug();
 
@@ -36,7 +36,7 @@ export function BusEventsIndexer(args: {
 
       bus.fire({
         type: 'sys.fs/manifest:req',
-        payload: { tx, id, dir, cache },
+        payload: { tx, id, dir, cache, cachefile },
       });
 
       const res = await first;

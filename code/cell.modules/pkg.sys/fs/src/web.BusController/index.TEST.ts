@@ -18,7 +18,7 @@ import { RouterMock, IRouterMock } from '@platform/cell.router/lib/test/RouterMo
 type CellAddress = string; // "<domain>/<cell:uri>"
 const fs = TestFs.node;
 
-describe.only('FsBus', function () {
+describe('FsBus', function () {
   this.timeout(30000);
 
   const bus = rx.bus<t.SysFsEvent>();
@@ -360,7 +360,8 @@ describe.only('FsBus', function () {
         const all = ['root.json', 'data/bar/list.json', 'data/foo/data.json'];
         const cachefile = fs.join(mock.dir, DEFAULT.CACHE_FILENAME);
 
-        const loadCachedFile = async () => {
+        const loadCachedFile = async (filename?: string) => {
+          const cachefile = fs.join(mock.dir, filename ?? DEFAULT.CACHE_FILENAME);
           if (!(await fs.exists(cachefile))) return undefined;
           return (await fs.readJson(cachefile)) as t.DirManifest;
         };
@@ -469,6 +470,17 @@ describe.only('FsBus', function () {
         await expectExists(cacheFile('data/bar'), true);
 
         await mock.dispose();
+      });
+
+      it('custom "cachefile" name ("index.json")', async () => {
+        const { mock, loadCachedFile } = await cachePrep();
+        const cachefile = 'index.json';
+        expect(await loadCachedFile(cachefile)).to.eql(undefined);
+
+        const res = await mock.events.index.manifest.get({ cache: true, cachefile });
+        await mock.dispose();
+
+        expect(await loadCachedFile(cachefile)).to.eql(res.dirs[0].manifest);
       });
     });
   });
@@ -913,8 +925,33 @@ describe.only('FsBus', function () {
         await mock.dispose();
       });
 
-      it.skip('push: generate manifest', async () => {
-        //
+      it('push: generate manifest', async () => {
+        const mock = await prep();
+        const server = await mock.server();
+        const file2 = await mock.write('static.test/child/tree.png', 'images/tree.png');
+
+        const address = CellAddress.create(server.host, Uri.create.A1());
+        const http = HttpClient.create(address.domain).cell(address.uri);
+        const remote = mock.events.remote.cell(address.toString());
+
+        const testExists = async (path: string, exists: boolean) => {
+          const res = await http.fs.file(path).exists();
+          expect(res).to.eql(exists, path);
+        };
+
+        // Generate directory manifest.
+        await mock.events.index.manifest.get({ cachefile: 'index.json', cache: true });
+
+        // Push.
+        await testExists('index.json', false);
+        await testExists('images/tree.png', false);
+
+        await remote.push();
+
+        await testExists('index.json', true);
+        await testExists('images/tree.png', true);
+
+        await mock.dispose();
       });
 
       it('push: sub-directory', async () => {

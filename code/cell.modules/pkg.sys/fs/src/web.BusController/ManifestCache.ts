@@ -3,9 +3,9 @@ import { DEFAULT, Path, t } from './common';
 /**
  * Helpers for working with file-caching a directory.
  */
-export function ManifestCache(args: { fs: t.IFsLocal; dir: string }) {
+export function ManifestCache(args: { fs: t.IFsLocal; dir: string; filename?: string }) {
   const { fs, dir } = args;
-  const filename = DEFAULT.CACHE_FILENAME;
+  const filename = Path.trim(args.filename ?? DEFAULT.CACHE_FILENAME);
   const path = Path.join(dir, filename).substring(fs.dir.length);
   const uri = `path:${path}`;
 

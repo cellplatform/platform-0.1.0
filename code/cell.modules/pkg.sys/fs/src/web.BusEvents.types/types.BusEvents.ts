@@ -37,6 +37,7 @@ export type SysFsEventsIndex = {
     get(options?: {
       dir?: FilePath | FilePath[];
       cache?: boolean | 'force';
+      cachefile?: string;
       timeout?: Milliseconds;
     }): Promise<t.SysFsManifestRes>;
   };
