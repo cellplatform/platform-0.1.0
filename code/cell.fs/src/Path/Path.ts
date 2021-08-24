@@ -3,29 +3,31 @@ import { Uri } from '../common';
 type UriString = string;
 
 export const Path = {
-  /**
-   * Convert the given "<file:...>" URI to an absolute path.
-   */
-  resolveUri(args: { dir: string; uri: UriString }) {
-    const uri = (args.uri || '').trim();
-    const dir = (args.dir || '').trim();
-    const file = Uri.parse(uri);
+  resolve: {
+    /**
+     * Convert the given "<file:...>" URI to an absolute path.
+     */
+    fileUri(args: { dir: string; uri: UriString }) {
+      const uri = (args.uri || '').trim();
+      const dir = (args.dir || '').trim();
+      const file = Uri.parse(uri);
 
-    if (!file.ok || file.error) {
-      const err = file.error;
-      const msg = `Invalid URI. ${err ? err.message : ''}`.trim();
-      throw new Error(msg);
-    }
-    if (file.parts.type !== 'FILE') {
-      const msg = `Invalid URI. Not of type "file:" ("${uri}").`;
-      throw new Error(msg);
-    }
-    if (!dir) {
-      const msg = `Invalid root directory path ("${uri}").`;
-      throw new Error(msg);
-    }
+      if (!file.ok || file.error) {
+        const err = file.error;
+        const msg = `Invalid URI. ${err ? err.message : ''}`.trim();
+        throw new Error(msg);
+      }
+      if (file.parts.type !== 'FILE') {
+        const msg = `Invalid URI. Not of type "file:" ("${uri}").`;
+        throw new Error(msg);
+      }
+      if (!dir) {
+        const msg = `Invalid root directory path ("${uri}").`;
+        throw new Error(msg);
+      }
 
-    return Path.join(dir, `ns.${file.parts.ns}`, file.parts.file);
+      return Path.join(dir, `ns.${file.parts.ns}`, file.parts.file);
+    },
   },
 
   /**

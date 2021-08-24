@@ -51,7 +51,7 @@ function resolve(dir: string, uri: string) {
     return result;
   };
 
-  if (Schema.Uri.is.file(uri)) return ensureScope(Path.resolveUri({ dir, uri }));
+  if (Schema.Uri.is.file(uri)) return ensureScope(Path.resolve.fileUri({ dir, uri }));
 
   if (PathUri.is(uri)) {
     return ensureScope(Path.join(dir, PathUri.path(uri) ?? ''));

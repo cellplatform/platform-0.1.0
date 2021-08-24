@@ -5,7 +5,7 @@ describe('Path', () => {
   describe('resolveUri', () => {
     it('throw on invalid URI', () => {
       const test = (uri: any) => {
-        const fn = () => Path.resolveUri({ uri, dir: '/tmp' });
+        const fn = () => Path.resolve.fileUri({ uri, dir: '/tmp' });
         expect(fn).to.throw(/Invalid URI/);
       };
 
@@ -19,7 +19,7 @@ describe('Path', () => {
 
     it('throw if not root path provided', () => {
       const test = (dir: any) => {
-        const fn = () => Path.resolveUri({ uri: 'file:foo:123', dir });
+        const fn = () => Path.resolve.fileUri({ uri: 'file:foo:123', dir });
         expect(fn).to.throw(/Invalid root directory path/);
       };
       test(undefined);
@@ -29,7 +29,7 @@ describe('Path', () => {
 
     it('resolve URI as path', () => {
       const test = (uri: string, dir: string, expected: string) => {
-        const res = Path.resolveUri({ uri, dir });
+        const res = Path.resolve.fileUri({ uri, dir });
         expect(res).to.eql(`${dir}/${expected}`);
       };
       test('file:foo:123', '/tmp', 'ns.foo/123');
