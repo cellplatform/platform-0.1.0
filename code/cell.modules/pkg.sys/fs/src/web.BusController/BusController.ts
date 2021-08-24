@@ -11,7 +11,7 @@ type FilePath = string;
  */
 export function BusController(args: {
   id: FilesystemId;
-  fs: t.IFsLocal;
+  fs: t.FsDriverLocal;
   index: t.FsIndexer;
   bus: t.EventBus<any>;
   filter?: (e: t.SysFsEvent) => boolean;

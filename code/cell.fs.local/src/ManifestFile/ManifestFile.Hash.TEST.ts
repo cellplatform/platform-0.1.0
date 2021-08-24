@@ -1,5 +1,5 @@
 import { ManifestFile } from '.';
-import { FsIndexer } from '..';
+import { FsIndexerLocal } from '..';
 import { expect, Hash, t, TestUtil } from '../test';
 
 const fs = TestUtil.node;
@@ -16,7 +16,7 @@ describe('ManifestFileHash', () => {
 
   it('hash.files - {manifest}', async () => {
     const dir = fs.resolve('static.test');
-    const indexer = FsIndexer({ fs, dir });
+    const indexer = FsIndexerLocal({ fs, dir });
     const manifest = await indexer.manifest();
     const hash = Hash.sha256(manifest.files.map((file) => file.filehash));
     expect(manifest.hash.files).to.eql(hash);
@@ -25,7 +25,7 @@ describe('ManifestFileHash', () => {
 
   it('hash.filehash', async () => {
     const dir = fs.resolve('static.test');
-    const indexer = FsIndexer({ fs, dir });
+    const indexer = FsIndexerLocal({ fs, dir });
     const manifest = await indexer.manifest();
 
     const filename = 'images/award.svg';

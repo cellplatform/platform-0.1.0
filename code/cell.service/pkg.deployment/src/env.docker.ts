@@ -1,4 +1,4 @@
-import { FsLocal } from '@platform/cell.fs.local';
+import { FsDriverLocal } from '@platform/cell.fs.local';
 import { NeDb } from '@platform/fsdb.nedb';
 import { NodeRuntime } from '@platform/cell.runtime.node';
 
@@ -22,7 +22,7 @@ const db = NeDb.create({ filename });
 /**
  * File system.
  */
-const fs = FsLocal({ dir: `${datadir}/${env.FS_FILENAME || 'sample.fs'}`, fs: util.fs });
+const fs = FsDriverLocal({ dir: `${datadir}/${env.FS_FILENAME || 'sample.fs'}`, fs: util.fs });
 
 /**
  * Function Runtime.

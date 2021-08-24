@@ -28,7 +28,7 @@ describe('FsBus', function () {
 
     const fs = !options.dir
       ? TestFs.local
-      : TestFs.FsLocal({
+      : TestFs.FsDriverLocal({
           dir: TestFs.node.join(TestFs.tmp, options.dir),
           fs: TestFs.node,
         });

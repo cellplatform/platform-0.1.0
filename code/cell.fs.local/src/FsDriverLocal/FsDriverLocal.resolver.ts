@@ -5,7 +5,7 @@ type O = t.IFsResolveOptionsLocal;
 /**
  * Generates a resolver function.
  */
-export function FsLocalResolver(args: { dir: string }): t.FsPathResolver<O> {
+export function FsDriverLocalResolver(args: { dir: string }): t.FsPathResolver<O> {
   const { dir } = args;
 
   const fn: t.FsPathResolver<O> = (

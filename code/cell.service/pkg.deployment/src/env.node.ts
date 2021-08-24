@@ -1,4 +1,4 @@
-import { FsLocal } from '@platform/cell.fs.local';
+import { FsDriverLocal } from '@platform/cell.fs.local';
 import { FsDriverS3 } from '@platform/cell.fs.s3';
 import { NeDb } from '@platform/fsdb.nedb';
 import { NodeRuntime } from '@platform/cell.runtime.node';
@@ -19,7 +19,7 @@ const db = NeDb.create({ filename });
  * File system.
  */
 const filesystem = {
-  local: () => FsLocal({ dir: `${TMP}/fs`, fs: util.fs }),
+  local: () => FsDriverLocal({ dir: `${TMP}/fs`, fs: util.fs }),
 
   spaces: () =>
     FsDriverS3({

@@ -1,12 +1,12 @@
 import { t, expect, TestUtil, PATH } from '../test';
-import { FsLocal } from '.';
+import { FsDriverLocal } from '.';
 
-describe('FsLocal', () => {
+describe('FsDriverLocal', () => {
   beforeEach(() => TestUtil.reset());
 
   it('init', () => {
     const root = TestUtil.node.resolve('tmp');
-    const fs = FsLocal({ dir: root, fs: TestUtil.node });
+    const fs = FsDriverLocal({ dir: root, fs: TestUtil.node });
     expect(fs.dir).to.eql(root);
   });
 

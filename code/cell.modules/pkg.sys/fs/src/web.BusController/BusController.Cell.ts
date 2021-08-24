@@ -7,7 +7,7 @@ type FilesystemId = string;
  */
 export function BusControllerCell(args: {
   id: FilesystemId;
-  fs: t.IFsLocal;
+  fs: t.FsDriverLocal;
   bus: t.EventBus<t.SysFsEvent>;
   index: t.FsIndexer;
   events: t.SysFsEvents;

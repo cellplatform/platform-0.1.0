@@ -10,7 +10,7 @@ type FilePath = string;
  */
 export function BusControllerIo(args: {
   id: FilesystemId;
-  fs: t.IFsLocal;
+  fs: t.FsDriverLocal;
   bus: t.EventBus<t.SysFsEvent>;
   events: t.SysFsEvents;
 }) {
@@ -66,7 +66,7 @@ export function BusControllerIo(args: {
   const deleteFile = async (filepath: FilePath): Promise<t.SysFsFileDeleteResponse> => {
     const address = Format.path.ensurePrefix(filepath);
     const res = await fs.delete(address);
-    
+
     const error: MaybeError = res.error
       ? { code: 'delete', message: res.error.message }
       : undefined;

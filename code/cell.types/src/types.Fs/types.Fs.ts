@@ -16,12 +16,12 @@ export type FsS3Permission = 'private' | 'public-read';
  * Driver (API)
  * The low-level bridge into the specific file-system API.
  */
-export type IFs = FsDriverS3 | IFsLocal;
+export type IFs = FsDriverS3 | FsDriverLocal;
 
 /**
  * A "local" filesystem for instance a POSIX or IndexDB <BLOB> storage.
  */
-export type IFsLocal = IFsMembers<
+export type FsDriverLocal = IFsMembers<
   FsTypeLocal,
   IFsInfoLocal,
   IFsReadLocal,

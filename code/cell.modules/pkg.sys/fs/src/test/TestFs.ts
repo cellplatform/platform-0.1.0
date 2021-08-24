@@ -1,4 +1,4 @@
-import { FsIndexer, FsLocal } from '@platform/cell.fs.local';
+import { FsIndexerLocal, FsDriverLocal } from '@platform/cell.fs.local';
 import { fs } from '@platform/fs';
 
 import { Hash } from '../web/common';
@@ -6,13 +6,13 @@ import { Hash } from '../web/common';
 const tmp = fs.resolve('tmp');
 
 export const TestFs = {
-  FsLocal,
-  FsIndexer,
+  FsDriverLocal,
+  FsIndexerLocal,
 
   tmp,
   node: fs,
-  local: FsLocal({ dir: fs.join(tmp, 'local.root'), fs }),
-  index: (dir: string) => FsIndexer({ dir, fs }),
+  local: FsDriverLocal({ dir: fs.join(tmp, 'local.root'), fs }),
+  index: (dir: string) => FsIndexerLocal({ dir, fs }),
 
   async reset() {
     await fs.remove(TestFs.local.dir);

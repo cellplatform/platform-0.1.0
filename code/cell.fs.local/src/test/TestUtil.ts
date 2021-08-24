@@ -1,6 +1,6 @@
 import { fs } from '@platform/fs';
 
-import { FsLocal } from '..';
+import { FsDriverLocal } from '..';
 import { t } from '../common';
 
 const TMP = fs.resolve('tmp');
@@ -11,7 +11,7 @@ export const PATH = {
 };
 
 export const TestUtil = {
-  createLocal: () => FsLocal({ dir: PATH.LOCAL, fs }),
+  createLocal: () => FsDriverLocal({ dir: PATH.LOCAL, fs }),
   PATH,
   node: fs as t.INodeFs,
   env: fs.env.value,

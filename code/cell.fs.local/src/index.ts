@@ -1,3 +1,3 @@
-export { FsLocal } from './FsLocal';
-export { FsIndexer } from './FsIndexer';
+export { FsDriverLocal } from './FsDriverLocal';
+export { FsIndexerLocal } from './FsIndexerLocal';
 export { ManifestFile } from './ManifestFile';

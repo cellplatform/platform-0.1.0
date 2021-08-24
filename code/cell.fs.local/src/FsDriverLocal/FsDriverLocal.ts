@@ -1,5 +1,5 @@
 import { Schema, t, isOK } from '../common';
-import { FsLocalResolver } from './FsLocal.Resolver';
+import { FsDriverLocalResolver } from './FsDriverLocal.resolver';
 
 export * from '../types';
 
@@ -8,7 +8,7 @@ const LocalFile = Schema.File.Path.Local;
 /**
  * A "local" filesystem running against the node-js 'fs' api.
  */
-export function FsLocal(args: { dir: string; fs: t.INodeFs }): t.IFsLocal {
+export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverLocal {
   const node = args.fs;
   const dir = node.resolve(args.dir);
   const root = dir;
@@ -19,7 +19,7 @@ export function FsLocal(args: { dir: string; fs: t.INodeFs }): t.IFsLocal {
     return 'unknown';
   };
 
-  const fs: t.IFsLocal = {
+  const fs: t.FsDriverLocal = {
     type: 'LOCAL',
 
     /**
@@ -30,7 +30,7 @@ export function FsLocal(args: { dir: string; fs: t.INodeFs }): t.IFsLocal {
     /**
      * Convert the given string to an absolute path.
      */
-    resolve: FsLocalResolver({ dir }),
+    resolve: FsDriverLocalResolver({ dir }),
 
     /**
      * Retrieve meta-data of a local file.

@@ -9,7 +9,7 @@ type FilesystemId = string;
  */
 export function BusControllerIndexer(args: {
   id: FilesystemId;
-  fs: t.IFsLocal;
+  fs: t.FsDriverLocal;
   bus: t.EventBus<t.SysFsEvent>;
   index: t.FsIndexer;
   events: t.SysFsEvents;

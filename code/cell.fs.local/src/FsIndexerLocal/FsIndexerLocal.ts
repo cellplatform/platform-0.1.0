@@ -1,7 +1,7 @@
 import { t, PathUtil, time } from '../common';
 import { ManifestFile } from '../ManifestFile';
 
-export const FsIndexer = (args: { dir: string; fs: t.INodeFs }) => {
+export const FsIndexerLocal = (args: { dir: string; fs: t.INodeFs }) => {
   const { fs, dir } = args;
   const baseDir = dir;
 
