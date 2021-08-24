@@ -1,4 +1,4 @@
-import { t, expect, TestUtil, PATH } from '../test';
+import { t, expect, TestUtil, PATH, Hash } from '../test';
 import { FsDriverLocal } from '.';
 
 describe('FsDriverLocal', () => {
@@ -154,7 +154,7 @@ describe('FsDriverLocal', () => {
   });
 
   describe('read/write', () => {
-    it('read', async () => {
+    it('read (binary)', async () => {
       const fs = TestUtil.createLocal();
 
       const test = async (uri: string) => {
@@ -171,15 +171,17 @@ describe('FsDriverLocal', () => {
         expect(res.error).to.eql(undefined);
         expect(file.location).to.eql(`file://${file.path}`);
         expect(file.path).to.eql(path);
-        expect(file.data.toString()).to.eql((await TestUtil.node.readFile(file.path)).toString());
-        expect(file.hash).to.match(/^sha256-[a-z0-9]+/);
+
+        const compare = await TestUtil.node.readFile(file.path);
+        expect(file.data).to.eql(compare);
+        expect(file.hash).to.eql(Hash.sha256(new Uint8Array(compare)));
       };
 
       await test('file:foo:123');
       await test('path:foo/bar/bird.png');
     });
 
-    it('write', async () => {
+    it('write (binary)', async () => {
       const fs = TestUtil.createLocal();
 
       const test = async (uri: string) => {
@@ -199,6 +201,25 @@ describe('FsDriverLocal', () => {
 
       await test('file:foo:123');
       await test('path:foo/bar/bird.png');
+    });
+
+    it('read/write string (TextEncoder | TextDecoder)', async () => {
+      const fs = TestUtil.createLocal();
+
+      const uri = 'path:file.txt';
+      const text = 'hello world!';
+      const data = new TextEncoder().encode(text);
+
+      const write = await fs.write(uri, data);
+      const read = await fs.read(uri);
+
+      expect(write.file.hash).to.eql(Hash.sha256(data));
+      expect(write.file.bytes).to.eql(data.byteLength);
+
+      expect(read.file?.data).to.eql(data);
+      expect(read.file?.hash).to.eql(Hash.sha256(data));
+      expect(read.file?.bytes).to.eql(data.byteLength);
+      expect(new TextDecoder().decode(read.file?.data)).to.eql(text);
     });
   });
 

@@ -1,4 +1,4 @@
-import { Schema, t, isOK } from '../common';
+import { Hash, Schema, t, isOK } from '../common';
 import { FsDriverLocalResolver } from './FsDriverLocal.resolver';
 
 export * from '../types';
@@ -74,7 +74,8 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
 
       // Load the file.
       try {
-        const data = await node.readFile(path);
+        const buffer = await node.readFile(path);
+        const data = new Uint8Array(buffer);
         const bytes = data.byteLength;
         const file: t.IFsFileData = {
           path,
@@ -82,7 +83,7 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
           data,
           bytes,
           get hash() {
-            return Schema.Hash.sha256(data);
+            return Hash.sha256(data);
           },
         };
         return { ok: true, status: 200, uri, file };
@@ -114,7 +115,7 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
         data,
         bytes,
         get hash() {
-          return Schema.Hash.sha256(data);
+          return Hash.sha256(data);
         },
       };
 
