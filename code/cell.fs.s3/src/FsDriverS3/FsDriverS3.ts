@@ -1,4 +1,4 @@
-import { t, fs, Path, Schema, isOK } from '../common';
+import { t, fs, Path, isOK, Hash, Mime } from '../common';
 
 export * from '../types';
 
@@ -62,7 +62,7 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
         options?.type === 'DEFAULT' || options?.type === 'SIGNED/get'
           ? options.endpoint
           : undefined;
-      const key = Path.resolveUri({ uri, dir: api.dir });
+      const key = Path.resolve.fileUri({ uri, dir: api.dir });
 
       if (type === 'SIGNED/get') {
         const url = cloud.s3
@@ -147,15 +147,15 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
           };
           return done({ error });
         } else {
+          const data = new Uint8Array(res.data);
+          let hash = '';
           const file: t.IFsFileData = {
             path,
             location,
-            data: res.data,
+            data,
+            bytes: data.byteLength,
             get hash() {
-              return Schema.Hash.sha256(res.data);
-            },
-            get bytes() {
-              return Uint8Array.from(file.data).length;
+              return hash || (hash = Hash.sha256(data));
             },
           };
           return done({ file });
@@ -190,7 +190,7 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
        */
 
       const { filename, permission = 'private' } = options;
-      const contentType = filename ? Schema.Mime.toType(filename) : undefined;
+      const contentType = filename ? Mime.toType(filename) : undefined;
       const contentDisposition = filename ? `inline; filename="${filename}"` : undefined;
 
       uri = (uri || '').trim();
@@ -201,11 +201,9 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
         path,
         location: '',
         data,
+        bytes: data.byteLength,
         get hash() {
-          return hash || (hash = Schema.Hash.sha256(data));
-        },
-        get bytes() {
-          return Uint8Array.from(file.data).length;
+          return hash || (hash = Hash.sha256(data));
         },
       };
 
@@ -213,7 +211,7 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
         const res = await cloud.bucket.put({
           contentType,
           contentDisposition,
-          data: file.data,
+          data: Buffer.from(file.data), // HACK: This ensures the underlying AWS library doesn't fail.
           key,
           acl: permission,
         });

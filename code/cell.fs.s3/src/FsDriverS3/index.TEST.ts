@@ -1,18 +1,18 @@
 import { parse as parseUrl } from 'url';
-import { expect, util } from '../test';
+import { expect, TestUtil } from '../test';
 
 const PROVIDER = 'SPACES';
 
 describe('S3', () => {
   it('type: "S3"', () => {
-    const { fs } = util.init(PROVIDER);
+    const { fs } = TestUtil.init(PROVIDER);
     expect(fs.type).to.eql('S3');
   });
 
   describe('paths', () => {
     it('throws if no bucket in path', () => {
       const test = (path: string) => {
-        const fn = () => util.init(PROVIDER, path);
+        const fn = () => TestUtil.init(PROVIDER, path);
         expect(fn).to.throw(/does not contain a bucket/);
       };
       test(' ');
@@ -24,7 +24,7 @@ describe('S3', () => {
 
     it('paths', () => {
       const test = (root: string, expectedBucket: string, expectedDir: string) => {
-        const { fs } = util.init(PROVIDER, root);
+        const { fs } = TestUtil.init(PROVIDER, root);
         expect(fs.bucket).to.eql(expectedBucket, `bucket: ${expectedBucket}`);
         expect(fs.dir).to.eql(expectedDir, `dir (root): ${expectedDir}`);
       };
@@ -46,7 +46,7 @@ describe('S3', () => {
     });
 
     it('resolve (DEFAULT)', () => {
-      const { fs, PATH } = util.init(PROVIDER);
+      const { fs, PATH } = TestUtil.init(PROVIDER);
 
       const test = (uri: string, expected: string) => {
         const res1 = fs.resolve(uri);
@@ -64,7 +64,7 @@ describe('S3', () => {
     });
 
     it('resolve (SIGNED/get)', () => {
-      const { fs, BUCKET, ENDPOINT } = util.init(PROVIDER);
+      const { fs, BUCKET, ENDPOINT } = TestUtil.init(PROVIDER);
       const res1 = fs.resolve('file:foo:123', { type: 'SIGNED/get', expires: '5m' });
       const res2 = fs.resolve('file:foo:123', {
         type: 'SIGNED/get',
@@ -89,7 +89,7 @@ describe('S3', () => {
     });
 
     it('resolve (SIGNED/put)', () => {
-      const { fs, BUCKET, ENDPOINT } = util.init(PROVIDER);
+      const { fs, BUCKET, ENDPOINT } = TestUtil.init(PROVIDER);
       const res = fs.resolve('file:foo:123', { type: 'SIGNED/put', expires: '5m' });
       const url = parseUrl(res.path, true);
       expect(res.props).to.eql({});
@@ -99,7 +99,7 @@ describe('S3', () => {
     });
 
     it('resolve (SIGNED/post)', () => {
-      const { fs, BUCKET, ENDPOINT } = util.init(PROVIDER);
+      const { fs, BUCKET, ENDPOINT } = TestUtil.init(PROVIDER);
       const res = fs.resolve('file:foo:123', { type: 'SIGNED/post', expires: '5m' });
       expect(res.path).to.eql(`https://${ENDPOINT.origin}/${BUCKET}`);
       expect(res.props.bucket).to.eql(BUCKET);

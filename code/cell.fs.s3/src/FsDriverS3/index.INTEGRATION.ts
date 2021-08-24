@@ -1,8 +1,8 @@
-import { t, expect, util, log } from '../test';
+import { t, expect, TestUtil, log } from '../test';
 
 // const PROVIDER = 'WASABI';
 const PROVIDER = 'SPACES';
-const { fs, PATH, BUCKET, ENDPOINT } = util.init(PROVIDER, '');
+const { fs, PATH, BUCKET, ENDPOINT } = TestUtil.init(PROVIDER, '');
 
 const table = log.table({ border: false });
 log.info();
@@ -17,12 +17,12 @@ log.info(table.toString());
 
 describe('S3 (Integration)', function () {
   this.timeout(99999);
-  beforeEach(async () => await util.reset());
+  beforeEach(async () => await TestUtil.reset());
 
   it('write', async () => {
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
-    const png = await util.image(filename);
+    const png = await TestUtil.image(filename);
     const res = await fs.write(`  ${uri} `, png, { filename }); // NB: URI padded with spaces (corrected internally).
     const file = res.file;
 
@@ -47,7 +47,7 @@ describe('S3 (Integration)', function () {
   it('write (public)', async () => {
     const uri = 'file:foo:public';
     const filename = 'public/bird.png';
-    const png = await util.image('bird.png');
+    const png = await TestUtil.image('bird.png');
     const res = await fs.write(uri, png, { filename, permission: 'public-read' }); // NB: URI padded with spaces (corrected internally).
     expect(res['s3:permission']).to.eql('public-read');
 
@@ -64,7 +64,7 @@ describe('S3 (Integration)', function () {
   it('info', async () => {
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
-    const png = await util.image(filename);
+    const png = await TestUtil.image(filename);
     await fs.write(uri, png, { filename });
 
     const res = await fs.info(uri);
@@ -83,7 +83,7 @@ describe('S3 (Integration)', function () {
   it('read', async () => {
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
-    const png = await util.image(filename);
+    const png = await TestUtil.image(filename);
     await fs.write(uri, png, { filename });
 
     const res = await fs.read(uri);
@@ -115,7 +115,7 @@ describe('S3 (Integration)', function () {
   it('delete (one)', async () => {
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
-    const png = await util.image(filename);
+    const png = await TestUtil.image(filename);
 
     const res1 = await fs.write(uri, png, { filename });
     expect(res1.ok).to.eql(true);
@@ -140,8 +140,8 @@ describe('S3 (Integration)', function () {
     const uri1 = 'file:foo:bird';
     const uri2 = 'file:foo:kitten';
 
-    const png = await util.image('bird.png');
-    const jpg = await util.image('kitten.jpg');
+    const png = await TestUtil.image('bird.png');
+    const jpg = await TestUtil.image('kitten.jpg');
 
     await fs.write(uri1, png, { filename: 'bird.png' });
     await fs.write(uri2, jpg, { filename: 'kitten.jpg' });
@@ -164,7 +164,7 @@ describe('S3 (Integration)', function () {
   });
 
   it('copy', async () => {
-    const png = await util.image('bird.png');
+    const png = await TestUtil.image('bird.png');
     const sourceUri = 'file:foo:bird1';
     const targetUri = 'file:bar:bird2';
 

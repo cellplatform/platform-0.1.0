@@ -34,14 +34,22 @@ export const PATH = {
   LOCAL: fs.resolve('tmp/local'),
 };
 
-export const util = {
+export const TestUtil = {
   PATH,
   fs,
   init,
   writeFile,
-  async image(path: string) {
-    return fs.readFile(fs.join(fs.resolve(`src/test/images`), path));
+
+  async readFile(path: string) {
+    const file = await fs.readFile(path);
+    return new Uint8Array(file.buffer);
   },
+
+  async image(path: string) {
+    path = fs.join(fs.resolve(`src/test/images`), path);
+    return TestUtil.readFile(path);
+  },
+
   async reset() {
     await fs.remove(PATH.TMP);
   },
