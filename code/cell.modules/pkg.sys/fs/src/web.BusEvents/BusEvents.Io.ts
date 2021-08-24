@@ -68,7 +68,10 @@ export function BusEventsIo(args: {
         ),
       );
 
-      bus.fire({ type: 'sys.fs/read:req', payload: { tx, id, path } });
+      bus.fire({
+        type: 'sys.fs/read:req',
+        payload: { tx, id, path },
+      });
       const res = await first;
 
       if (typeof res !== 'string') {
