@@ -2,8 +2,8 @@ import { IFsError } from '../types.Error';
 import { t } from '../common';
 
 type EmptyObject = Record<string, undefined>; // 🐷 NB: Used as a placeholder object.
-type FileUri = string;
-type FilePath = string;
+type FileUri = string; // "file:..."
+type FilePath = string; // "foo/bar.txt"
 type FileAddress = FileUri | FilePath;
 
 export type FsType = FsTypeLocal | FsTypeS3;

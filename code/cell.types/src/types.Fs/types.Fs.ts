@@ -1,11 +1,11 @@
-import { t } from '../common';
-
 /**
  * High-level client API that makes programming against
- * a lower-level platform [FsDriver] more convenient.
+ * a lower-level platform [FsDriver] isolated, consistent and easy.
  */
 export type Fs = {
-  dir: string; // Root directory of the file-system.
-
-  // read
+  read(path: string): Promise<Uint8Array | undefined>;
+  write(path: string, data: Uint8Array | ArrayBuffer): Promise<FsWriteResponse>;
+  exists(path: string): Promise<boolean>;
 };
+
+export type FsWriteResponse = { hash: string; bytes: number };
