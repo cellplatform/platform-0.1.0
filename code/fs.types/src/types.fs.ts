@@ -14,8 +14,8 @@ export type INodeFs = {
   remove(path: string): Promise<void>;
 
   // Path.
-  join(...pathSegments: string[]): string;
-  resolve(...pathSegments: string[]): string;
+  join(...segments: string[]): string;
+  resolve(...segments: string[]): string;
   dirname(path: string): string;
   basename(path: string): string;
   extname(path: string): string;

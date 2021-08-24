@@ -4,7 +4,7 @@ import { fileInfo } from './handler.info';
 export async function uploadFileStart(args: {
   host: string;
   db: t.IDb;
-  fs: t.IFs;
+  fs: t.FsDriver;
   mimetype: string;
   fileUri: string;
   filename: string;

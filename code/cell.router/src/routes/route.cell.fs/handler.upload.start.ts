@@ -4,7 +4,7 @@ import { postNsResponse } from '../route.ns';
 
 export async function uploadCellFilesStart(args: {
   db: t.IDb;
-  fs: t.IFs;
+  fs: t.FsDriver;
   cellUri: string;
   body: t.IReqPostCellFsUploadStartBody;
   host: string;

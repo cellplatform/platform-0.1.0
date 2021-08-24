@@ -5,7 +5,7 @@ type ErrorType = t.IResDeleteCellFsError['error'];
 
 export async function deleteCellFiles(args: {
   db: t.IDb;
-  fs: t.IFs;
+  fs: t.FsDriver;
   cellUri: string;
   body: t.IReqDeleteCellFsBody;
   host: string;

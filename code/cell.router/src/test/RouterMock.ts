@@ -1,5 +1,5 @@
 import { NeDb } from '@platform/fsdb.nedb';
-import { FsLocal } from '@platform/cell.fs.local';
+import { FsDriverLocal } from '@platform/cell.fs.local';
 import { micro } from '@platform/micro';
 
 import { util, t, Schema, HttpClient, slug } from '../common';
@@ -8,7 +8,7 @@ import { port as portUtil } from './util.port';
 
 export type IRouterMock = {
   db: t.IDb;
-  fs: t.IFs;
+  fs: t.FsDriver;
   app: t.Micro;
   router: t.Router;
   service: t.MicroService;
@@ -56,7 +56,7 @@ export const createMock = async (args: CreateArgs = {}): Promise<IRouterMock> =>
   const port = args.port || (await portUtil.unused());
 
   const db = NeDb.create({ filename });
-  const fs = FsLocal({ dir: PATH.FS, fs: util.fs });
+  const fs = FsDriverLocal({ dir: PATH.FS, fs: util.fs });
 
   const body = micro.body;
   const router = Router.create({ name: 'Test', db, fs, body, runtime });

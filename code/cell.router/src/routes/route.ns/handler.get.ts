@@ -5,7 +5,7 @@ import { ensureAbsoluteLocations } from '../../fs.local';
 export async function getNs(args: {
   host: string;
   db: t.IDb;
-  fs: t.IFs;
+  fs: t.FsDriver;
   id: string;
   query: t.IReqQueryNsInfo;
 }): Promise<t.IPayload<t.IResGetNs> | t.IErrorPayload> {
@@ -49,7 +49,7 @@ export async function getNs(args: {
 export async function getNsData(args: {
   model: t.IDbModelNs;
   query: t.IReqQueryNsInfo;
-  fs: t.IFs;
+  fs: t.FsDriver;
 }): Promise<{ data: Partial<t.INsDataChildren>; totals: Partial<t.INsTotals> } | t.IErrorPayload> {
   try {
     const { model, query, fs } = args;

@@ -2,7 +2,7 @@ import { models, t, util } from '../common';
 
 export async function deleteFile(args: {
   db: t.IDb;
-  fs: t.IFs;
+  fs: t.FsDriver;
   fileUri: string;
   host: string;
 }): Promise<t.IPayload<t.IResDeleteFile> | t.IErrorPayload> {

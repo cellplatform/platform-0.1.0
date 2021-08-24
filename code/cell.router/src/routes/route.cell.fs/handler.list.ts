@@ -3,7 +3,7 @@ import { getNsData } from '../route.ns';
 
 export async function listCellFiles(args: {
   db: t.IDb;
-  fs: t.IFs;
+  fs: t.FsDriver;
   cellUri: string;
   host: string;
   expires?: string; // File link expires.
@@ -56,7 +56,11 @@ export async function listCellFiles(args: {
  * Helpers
  */
 
-export async function getCellFiles(args: { ns: t.IDbModelNs; fs: t.IFs; cellLinks: t.IUriMap }) {
+export async function getCellFiles(args: {
+  ns: t.IDbModelNs;
+  fs: t.FsDriver;
+  cellLinks: t.IUriMap;
+}) {
   const { ns, fs, cellLinks } = args;
 
   const linkExists = (fileid: string, cellLinks: t.IUriMap) => {

@@ -7,7 +7,7 @@ export const Router = {
    */
   create(args: {
     db: t.IDb;
-    fs: t.IFs;
+    fs: t.FsDriver;
     runtime?: t.RuntimeEnv;
     body: t.BodyParser;
     name?: string;

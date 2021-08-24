@@ -6,7 +6,7 @@ import { getTypes } from './handler.typesystem';
 /**
  * Namespace routes.
  */
-export function init(args: { fs: t.IFs; db: t.IDb; router: t.Router }) {
+export function init(args: { fs: t.FsDriver; db: t.IDb; router: t.Router }) {
   const { fs, db, router } = args;
 
   const getParams = (req: t.RouteRequest) => {

@@ -8,7 +8,7 @@ import { fileHashCache } from '../../fs.local';
 export const downloadTextFile = async (args: {
   host: string;
   db: t.IDb;
-  fs: t.IFs;
+  fs: t.FsDriver;
   fileUri: string;
   filename?: string;
   matchHash?: string;

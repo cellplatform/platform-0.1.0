@@ -3,7 +3,7 @@ import { fileInfo } from './handler.info';
 
 export async function uploadFileComplete(args: {
   db: t.IDb;
-  fs: t.IFs;
+  fs: t.FsDriver;
   fileUri: string;
   host: string;
   sendChanges?: boolean;

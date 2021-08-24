@@ -4,7 +4,7 @@ import { downloadFilePreflight } from './handler.download.preflight';
 export const downloadBinaryFile = async (args: {
   host: string;
   db: t.IDb;
-  fs: t.IFs;
+  fs: t.FsDriver;
   fileUri: string;
   filename?: string;
   matchHash?: string;
