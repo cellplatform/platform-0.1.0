@@ -50,7 +50,8 @@ export const downloadTextFile = async (args: {
 
     // Download the HTML file.
     const res = await fs.read(fileUri);
-    const data = res.file?.data.toString();
+    const data = res.file ? new TextDecoder().decode(res.file.data) : undefined;
+
     if (!res.ok || res.error || !data) {
       const status = res.status;
       const type = res.error ? res.error.type : ERROR.HTTP.FILE;

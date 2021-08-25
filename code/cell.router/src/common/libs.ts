@@ -18,7 +18,7 @@ import * as cell from './libs.cell';
 export { cell };
 export const models = cell.models;
 
-export { Schema, Uri, Urls, Squash } from '@platform/cell.schema';
+export { Schema, Uri, Urls, Squash, Hash } from '@platform/cell.schema';
 
 import minimatch from 'minimatch';
 export { minimatch };

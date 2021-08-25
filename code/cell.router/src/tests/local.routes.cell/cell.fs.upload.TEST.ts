@@ -1,7 +1,21 @@
-import { RouterMock, expect, fs, Http, readFile, Schema, t, http, is } from '../../test';
+import {
+  RouterMock,
+  expect,
+  fs,
+  Http,
+  readFile,
+  Schema,
+  t,
+  http,
+  is,
+  writeThenReadStream,
+  Hash,
+} from '../../test';
 
 describe('cell.fs: upload', function () {
   this.timeout(50000);
+
+  const tmp = fs.resolve(`./tmp/download`);
 
   it('upload => download: 1 file', async () => {
     const mock = await RouterMock.create();
@@ -11,6 +25,7 @@ describe('cell.fs: upload', function () {
     // Upload => download.
     const filename = 'bird.png';
     const data = await readFile('src/test/assets/bird.png');
+
     const upload = await client.fs.upload([{ filename, data }]);
     expect(upload.ok).to.eql(true);
 
@@ -22,11 +37,9 @@ describe('cell.fs: upload', function () {
     expect(download.ok).to.eql(true);
 
     // Save and compare.
-    const path = fs.resolve('tmp/tmp-download');
-    if (typeof download.body === 'object') {
-      await fs.stream.save(path, download.body);
-    }
-    expect((await fs.readFile(path)).toString()).to.eql(data.toString());
+    const saved = await writeThenReadStream(tmp, download.body);
+    expect(saved).to.eql(data);
+    expect(Hash.sha256(saved)).to.eql(Hash.sha256(data));
 
     // Finish up.
     await mock.dispose();
@@ -71,7 +84,7 @@ describe('cell.fs: upload', function () {
     const urls = (await client.fs.urls()).body;
 
     // Check the files exist.
-    const downloadAndSave = async (filename: string, compareWith: Buffer) => {
+    const downloadAndSave = async (filename: string, compareWith: Uint8Array) => {
       const byName = client.fs.file(filename);
       const res = await byName.download();
       const path = fs.resolve(`tmp/download`);
