@@ -7,7 +7,7 @@ import * as parse from '../parse';
 type P = t.RoutePath;
 type O = Record<string, unknown>;
 
-export class Router<C extends Record<string, unknown> = any> implements t.Router<C> {
+export class Router<C extends O = any> implements t.Router<C> {
   /**
    * [Static]
    */
