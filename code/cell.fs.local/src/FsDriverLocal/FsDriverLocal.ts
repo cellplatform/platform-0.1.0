@@ -112,7 +112,7 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
       const file: t.IFsFileData = {
         path,
         location,
-        data,
+        data: Buffer.from(data),
         bytes,
         get hash() {
           return Hash.sha256(data);

@@ -36,7 +36,7 @@ describe('S3 (Integration)', function () {
 
     // log.info('WRITE', res);
     // log.info('-------------------------------------------');
-    // log.info(location);
+    // log.info(file.location);
 
     const read = await fs.read(uri);
     const info = await fs.info(uri);
@@ -53,7 +53,7 @@ describe('S3 (Integration)', function () {
 
     // log.info('WRITE', res);
     // log.info('-------------------------------------------');
-    // log.info(`${BASE_URL}}/ns.foo/public`);
+    // log.info(res.file.location);
 
     const read = await fs.read(uri);
     const info = await fs.info(uri);
