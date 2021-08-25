@@ -28,6 +28,21 @@ app.router
     log.info('POST', req.url, body);
     const { method, url } = req;
     return { data: { url, method, body } };
+  })
+  .get('/bird', async (req) => {
+    // Node <buffer>
+    const buffer = await fs.readFile(fs.resolve('src/test/images/bird.png'));
+
+    // Newer standard of binary data.
+    const array = new Uint8Array(buffer);
+
+    // HACK: For the [Uint8Array] to render, it needs to be served as a node Buffer.
+    const data = Buffer.from(array);
+
+    return {
+      headers: { 'content-type': 'image/png' },
+      data,
+    };
   });
 
 /**
