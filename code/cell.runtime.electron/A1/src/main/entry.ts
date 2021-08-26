@@ -167,11 +167,12 @@ async function logMain(args: {
     add(key, formatPath(value), size);
   };
 
-  const process = ConfigFile.process.split('@');
+  const processes = ConfigFile.process.split('@');
 
-  add(log.green('runtime:'), `${Format.namespace(process[0])}@${process[1]}`);
+  add(log.green('runtime:'), `${Format.namespace(processes[0])}@${processes[1]}`);
   add('env:', ENV.node || '<empty>');
   add('packaged:', ENV.isPackaged);
+  add('node:', process.versions.node);
 
   line();
   await addPath('preload:', args.paths.preload);
