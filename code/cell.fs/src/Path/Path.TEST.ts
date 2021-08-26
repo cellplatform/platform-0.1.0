@@ -2,7 +2,7 @@ import { expect } from '../test';
 import { Path } from '.';
 
 describe('Path', () => {
-  describe('resolveUri', () => {
+  describe('resolve.FileUri', () => {
     it('throw on invalid URI', () => {
       const test = (uri: any) => {
         const fn = () => Path.resolve.fileUri({ uri, dir: '/tmp' });
@@ -122,6 +122,20 @@ describe('Path', () => {
       test('/foo  /  ', '/foo');
     });
 
+    it('ensureSlashEnd', () => {
+      const test = (input: any, expected: string) => {
+        expect(Path.ensureSlashEnd(input)).to.eql(expected);
+      };
+
+      test('foo', 'foo/');
+      test('   /foo   ', '/foo/');
+      test('/', '/');
+      test('', '/');
+      test('   ', '/');
+      test('///', '/');
+      test('foo/bar///', 'foo/bar/');
+    });
+
     it('trimHttp', () => {
       const test = (input: any, expected: string) => {
         expect(Path.trimHttp(input)).to.eql(expected);
@@ -145,7 +159,7 @@ describe('Path', () => {
       test({}, '');
     });
 
-    it.only('trimWildcardEnd', () => {
+    it('trimWildcardEnd', () => {
       const test = (input: any, expected: string) => {
         expect(Path.trimWildcardEnd(input)).to.eql(expected);
       };

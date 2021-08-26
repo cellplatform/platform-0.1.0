@@ -91,6 +91,13 @@ export const Path = {
   },
 
   /**
+   * Ensures the path ends in a single "/".
+   */
+  ensureSlashEnd(input: string) {
+    return `${Path.trimSlashesEnd(input)}/`;
+  },
+
+  /**
    * Remove http/https prefix.
    */
   trimHttp(input: string) {
