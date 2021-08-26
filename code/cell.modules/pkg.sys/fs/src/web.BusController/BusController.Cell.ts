@@ -1,4 +1,4 @@
-import { asArray, CellAddress, Path, PathUri, R, t } from './common';
+import { stringify, asArray, CellAddress, Path, PathUri, R, t, ReadStreamWeb } from './common';
 
 type FilesystemId = string;
 
@@ -195,7 +195,6 @@ export function BusControllerCell(args: {
       const pull = async (path: string): Promise<P> => {
         path = trimRootDir(path);
         const res: P = { file: { path, hash: '', bytes: -1 } };
-
         const done = (options: { error?: string } = {}) => {
           if (options.error) res.error = { code: 'cell/pull', message: options.error, path };
           return res;
@@ -211,12 +210,28 @@ export function BusControllerCell(args: {
         res.file.hash = info.body.data.hash ?? '';
         res.file.bytes = info.body.data.props.bytes ?? -1;
 
-        const download = await http.fs.file(path).download();
+        const toPayload = (body: ReadableStream | t.Json): Uint8Array => {
+          if (ReadStreamWeb.isReadableStream(body)) return body as any; // HACK: see note below for [FsDriverLocal.write]
+          // const json = `${JSON.stringify(body, null, '  ')}\n`;
+          const json = stringify(body as t.Json);
+          return new TextEncoder().encode(json);
+        };
 
+        const download = await http.fs.file(path).download();
         if (download.ok) {
           const uri = PathUri.ensurePrefix(path);
-          const data = download.body as unknown as Uint8Array;
-          const save = await fs.write(uri, data);
+
+          /**
+           * TODO 🐷
+           * pass [ReadStream] type as param to [FsDriverLocal.write].
+           *
+           *    - https://developer.mozilla.org/en-US/docs/Web/API/ReadStream
+           *    - https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams
+           *
+           */
+
+          const save = await fs.write(uri, toPayload(download.body));
+
           if (!save.ok) {
             const message = save.error?.message ?? '';
             const error = `Failed while saving downloaded file. ${message}`.trim();
@@ -241,6 +256,8 @@ export function BusControllerCell(args: {
       client.dispose();
       done({ files, errors });
     } catch (err) {
+      console.log('err', err, '\n\n'); // TEMP 🐷
+
       const message = err.message;
       return fail({ code: 'cell/pull', message });
     }

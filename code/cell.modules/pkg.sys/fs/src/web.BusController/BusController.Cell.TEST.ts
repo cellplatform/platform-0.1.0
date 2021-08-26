@@ -1,8 +1,18 @@
-import { asArray, expect, Hash, HttpClient, slug, t, TestFs, Uri, CellAddress } from '../test';
-import { TestPrep } from './BusController.TEST';
+import {
+  asArray,
+  CellAddress,
+  expect,
+  Hash,
+  HttpClient,
+  slug,
+  t,
+  TestFs,
+  TestPrep,
+  Uri,
+} from '../test';
 
 describe('BusController.Cell (Remote)', function () {
-  this.timeout(30000);
+  this.timeout(10000);
   this.beforeEach(() => TestFs.reset());
 
   const fs = TestFs.node;
@@ -21,9 +31,9 @@ describe('BusController.Cell (Remote)', function () {
     if (!isJson) await fs.stream.save(savePath, download.body);
     if (isJson) await fs.writeFile(savePath, `${JSON.stringify(download.body, null, '  ')}\n`);
 
-    const saved = await fs.readFile(savePath);
-    expect(Hash.sha256(saved)).to.eql(compareWith?.hash, path);
+    const saved = Uint8Array.from(await fs.readFile(savePath));
     expect(saved.byteLength).to.eql(compareWith?.bytes, path);
+    expect(Hash.sha256(saved)).to.eql(compareWith?.hash, path);
   };
 
   describe('uri (method)', () => {
@@ -78,7 +88,7 @@ describe('BusController.Cell (Remote)', function () {
 
       const testExists = async (path: string, exists: boolean) => {
         const res = await http.fs.file(path).exists();
-        expect(res).to.eql(exists, path);
+        expect(res).to.eql(exists, `${path} (${exists})`);
       };
 
       await testExists('images/tree.png', false);
@@ -225,6 +235,8 @@ describe('BusController.Cell (Remote)', function () {
   });
 
   describe('pull (from cell)', () => {
+    const pullTest = async () => {};
+
     it('pull', async () => {
       const mock = await TestPrep();
       const server = await mock.server();
@@ -280,8 +292,12 @@ describe('BusController.Cell (Remote)', function () {
 
         // Pull them back from the remote cell.
         await existsLocally(false, paths);
+
         const res = await remote.pull(path);
+
         await existsLocally(true, paths); // NB: Files have been re-downloaded (aka. "pulled").
+
+        // return;
 
         expect(res.errors).to.eql([]);
         expect(res.files.length).to.eql(paths.length);
@@ -291,8 +307,11 @@ describe('BusController.Cell (Remote)', function () {
       };
 
       // Root directory.
-      await test(undefined, all);
+      // await test(undefined, all);
       await test('', all);
+
+      // return;
+
       await test('  /  ', all);
       await test('  ', all);
       await test([''], all);

@@ -1,4 +1,4 @@
-import { asArray, BusEvents, rx, t, Format } from './common';
+import { asArray, Format, t } from './common';
 
 type FilesystemId = string;
 type Error = t.SysFsError;

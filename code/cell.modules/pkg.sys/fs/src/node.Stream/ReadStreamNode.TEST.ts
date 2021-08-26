@@ -1,7 +1,7 @@
 import { ReadStreamNode } from '.';
 import { Hash, CellAddress, expect, HttpClient, slug, TestFs, TestPrep, Uri, time } from '../test';
 
-describe.only('ReadStreamNode', () => {
+describe('ReadStreamNode', () => {
   const fs = TestFs.node;
 
   const PushPrep = async () => {
@@ -21,7 +21,11 @@ describe.only('ReadStreamNode', () => {
 
   it('isReadableStream', async () => {
     const mock = await PushPrep();
-    const download = async () => (await mock.http.fs.file(mock.filepath).download()).body;
+    const { remote, fs } = mock;
+    const filepath = 'images/tree.png';
+    await mock.copy('static.test/child/tree.png', filepath);
+
+    const download = async () => (await mock.http.fs.file(filepath).download()).body;
 
     const test = (input: any, expected: boolean) => {
       const res = ReadStreamNode.isReadableStream(input);
@@ -57,10 +61,11 @@ describe.only('ReadStreamNode', () => {
     expect(decoded).to.eql(text);
   });
 
-  describe.only('toUint8Array', () => {
+  describe('toUint8Array', () => {
     it('binary', async () => {
       const mock = await PushPrep();
       const { remote, http, fs } = mock;
+
       const filepath = 'images/tree.png';
       const file = await mock.copy('static.test/child/tree.png', filepath);
       await remote.push('images');
@@ -82,6 +87,7 @@ describe.only('ReadStreamNode', () => {
     it('json', async () => {
       const mock = await PushPrep();
       const { remote, http, fs } = mock;
+
       const filepath = 'data.json';
       const file = await mock.copy('static.test/data.json', filepath);
       await remote.push();

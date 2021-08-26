@@ -1,12 +1,9 @@
-import { t, rx, expect, TestFs } from '../test';
-import { TestPrep } from './BusController.TEST';
 import { FsBus } from '.';
-
-const fs = TestFs.node;
+import { expect, rx, t, TestFs, TestPrep } from '../test';
 
 describe('BusController.IO', function () {
   describe('BusController.info', function () {
-    it('defaults - no files', async () => {
+    it('defaults (no files)', async () => {
       const bus = rx.bus<t.SysFsEvent>();
       const id = 'foo';
       const fs = TestFs.local;
@@ -219,6 +216,8 @@ describe('BusController.IO', function () {
       expect(after2.hash).to.eql(src2.hash);
       expect(after2.data.toString()).to.eql(src2.data.toString());
     });
+
+    it.skip('write "string" to file', async () => {});
   });
 
   describe('delete', function () {

@@ -1,6 +1,5 @@
 import { asArray, Path, t, R, DEFAULT } from './common';
 import { ManifestCache } from './ManifestCache';
-import { Format } from './Format';
 
 type FilesystemId = string;
 
@@ -37,7 +36,7 @@ export function BusControllerIndexer(args: {
     };
 
     const toManifest = async (path?: string): Promise<t.SysFsManifestDirResponse> => {
-      const dir = Format.dir.ensureTrailingSlash(path ? Path.join(fs.dir, path) : fs.dir);
+      const dir = Path.ensureSlashEnd(path ? Path.join(fs.dir, path) : fs.dir);
       const cache = ManifestCache({ fs, dir, filename: cachefile });
       try {
         if (e.cache === true) {
