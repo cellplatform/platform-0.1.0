@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 
-import { defaultValue, PeerJS, sha256, filesize } from '../../common';
+import { defaultValue, PeerJS, Hash, filesize } from '../../common';
 import * as t from './types';
 
 type C = t.PeerConnectionStatus;
@@ -119,7 +119,7 @@ export const FileUtil = {
     files: { filename: string; data: ArrayBuffer; mimetype: string }[],
   ): t.PeerFile[] {
     return files.map(({ data, filename, mimetype }) => {
-      const hash = sha256(data);
+      const hash = Hash.sha256(data);
       const blob = new Blob([data], { type: mimetype });
       return { dir, blob, filename, hash };
     });
