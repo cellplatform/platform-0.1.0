@@ -3,5 +3,6 @@ import { Schema } from '../web/common';
 
 export * from '../web/common';
 export * from './TestFs';
+export * from './TestPrep';
 
 Schema.Uri.ALLOW.NS = ['foo*'];

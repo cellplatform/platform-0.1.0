@@ -19,7 +19,8 @@
     "upload.web": "cell.compiler upload web   --no-bundle --dir web.HEAD  $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "clean": "cell.compiler clean $@"
+    "clean": "yarn reset && cell.compiler clean $@",
+    "reset": "rm -rf tmp"
   },
   "dependencies": {},
   "devDependencies": {

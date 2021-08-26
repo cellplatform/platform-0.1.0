@@ -25,8 +25,8 @@ export const TestFs = {
 
   async readFile(path: string) {
     path = fs.resolve(path);
-    const buffer = await fs.readFile(path);
-    const data = buffer as Uint8Array;
+    const file = await fs.readFile(path);
+    const data = new Uint8Array(file.buffer);
     const hash = Hash.sha256(data);
     return { path, data, hash };
   },
