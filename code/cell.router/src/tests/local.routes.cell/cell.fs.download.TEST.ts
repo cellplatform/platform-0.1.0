@@ -53,8 +53,8 @@ describe('cell.fs: download', function () {
       expect(res1.status).to.eql(200);
       expect(res2.status).to.eql(200);
 
-      const file1 = await writeThenReadStream('file1', res1.body);
-      const file2 = await writeThenReadStream('file2', res2.body);
+      const file1 = await writeThenReadStream('tmp/file1', res1.body);
+      const file2 = await writeThenReadStream('tmp/file2', res2.body);
 
       expect(file1).to.eql(data);
       expect(file2).to.eql(data);
