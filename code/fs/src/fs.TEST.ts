@@ -1,6 +1,5 @@
-import { expect } from 'chai';
+import { dirname, expect, t } from './test';
 import { fs } from '.';
-import { t } from './common';
 
 describe('fs', () => {
   describe('interface', () => {
@@ -60,7 +59,7 @@ describe('fs', () => {
     });
   });
 
-  describe('IFs (interface)', () => {
+  describe('INodeFs (interface)', () => {
     beforeEach(() => f.remove(f.resolve('tmp')));
     const f: t.INodeFs = fs;
 
@@ -83,8 +82,8 @@ describe('fs', () => {
       const text = 'Hello World';
       const path = f.resolve('tmp/file.txt');
 
-      await f.ensureDir(f.resolve('tmp'));
-      await f.writeFile(path, text);
+      await fs.remove(dirname(path));
+      await f.writeFile(path, text); // NB: Ensure's directory.
 
       const read = await f.readFile(path);
       expect(read.toString()).to.eql(text);
@@ -92,6 +91,17 @@ describe('fs', () => {
       const copyPath = fs.resolve('tmp/copy.txt');
       await f.copyFile(path, copyPath);
       expect((await f.readFile(copyPath)).toString()).to.eql(text);
+    });
+
+    it('fs.writeFile (stream)', async () => {
+      const readStream = fs.createReadStream(fs.resolve('test/file/foo.json'));
+      const path = fs.resolve('tmp/stream.json');
+
+      await fs.remove(fs.dirname(path));
+
+      await fs.writeFile(path, readStream); // NB: The stream is saved.
+      const json = await fs.readJson(path);
+      expect(json.name).to.eql('Bob');
     });
 
     it('is (file/dir)', async () => {

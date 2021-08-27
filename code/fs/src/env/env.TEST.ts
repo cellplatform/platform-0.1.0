@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from '../test';
 import { join, resolve } from 'path';
 
 import { env } from '.';

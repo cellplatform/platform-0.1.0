@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from '../test';
 import * as fs from 'fs-extra';
 import { dirname, join, resolve } from 'path';
 
