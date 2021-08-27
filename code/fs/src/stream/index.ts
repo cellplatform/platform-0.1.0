@@ -1,2 +1,4 @@
-import * as stream from './stream';
-export { stream };
+import { Stream } from './Stream';
+
+export { Stream };
+export const stream = Stream;

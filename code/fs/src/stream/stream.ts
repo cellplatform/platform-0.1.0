@@ -1,38 +1,92 @@
-import * as stream from 'stream';
-import * as util from 'util';
-
-import { ensureDir, createWriteStream, writeFile } from 'fs-extra';
+import { createWriteStream, ensureDir, writeFile } from 'fs-extra';
 import { dirname } from 'path';
-import { t } from '../common';
+import { pipeline, Writable } from 'stream';
+import { promisify } from 'util';
 
-const pipeline = util.promisify(stream.pipeline);
+import { stringify, t } from '../common';
+
+const pipe = promisify(pipeline);
 
 /**
- * Saves a readable stream to disk.
+ * Helpers for workint a streams.
  */
-export async function save(path: string, data: ReadableStream | t.Json | string) {
-  try {
-    await ensureDir(dirname(path));
-    if (typeof data === 'string') {
-      await writeFile(path, data);
-      return;
+export const Stream = {
+  /**
+   * Determine if the given input is a readable stream.
+   */
+  isReadableStream(input: any) {
+    return typeof input?.on === 'function' && input?.readable === true;
+  },
+
+  /**
+   * Encode an input string to a UTF-8 encoded [Uint8Array].
+   */
+  encode(input?: string) {
+    return new TextEncoder().encode(input);
+  },
+
+  /**
+   * Decode a [Uint8Array] to a UTF-8 string.
+   */
+  decode(input?: BufferSource, options?: TextDecodeOptions) {
+    return new TextDecoder().decode(input, options);
+  },
+
+  /**
+   * Read the given stream into an [Uint8Array].
+   */
+  async toUint8Array(input: ReadableStream | t.Json): Promise<Uint8Array> {
+    const isStream = Stream.isReadableStream(input);
+
+    // Process JSON.
+    if (!isStream) {
+      const json = stringify(input as t.Json);
+      return Stream.encode(json);
     }
 
-    if (typeof data === 'object') {
-      const isStream = typeof (data as any).on === 'function';
-      if (isStream) {
-        // Stream.
-        await pipeline(data as any, createWriteStream(path));
-      } else {
-        // JSON.
-        await writeFile(path, JSON.stringify(data, null, '  '));
+    // Prepare a stream writer.
+    const chunks: Uint8Array[] = [];
+    const writer = new Writable({
+      write(chunk, encoding, next) {
+        chunks.push(Uint8Array.from(chunk));
+        next();
+      },
+      final: (complete) => complete(),
+    });
+
+    // Process the stream.
+    await pipe(input as any, writer);
+
+    // Assemble the final buffer.
+    const totalLength = chunks.reduce((acc, next) => acc + next.length, 0);
+    const res = new Uint8Array(totalLength);
+    chunks.reduce((offset, next) => {
+      res.set(next, offset);
+      return offset + next.length;
+    }, 0);
+
+    // Finish up.
+    return res;
+  },
+
+  /**
+   * Save a readable stream to disk.
+   */
+  async save(path: string, data: ReadableStream | t.Json) {
+    try {
+      if (data === undefined) throw new Error(`No data`);
+      await ensureDir(dirname(path));
+
+      // Stream
+      if (Stream.isReadableStream(data)) {
+        await pipe(data as any, createWriteStream(path));
+        return;
       }
 
-      return;
+      // JSON
+      await writeFile(path, stringify(data as t.Json));
+    } catch (err) {
+      throw new Error(`Failed to save stream to '${path}'. ${err.message}`);
     }
-
-    throw new Error(`Type of data not saveable (${typeof data})`);
-  } catch (err) {
-    throw new Error(`Failed to save stream to '${path}'. ${err.message}`);
-  }
-}
+  },
+};
