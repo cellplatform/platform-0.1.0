@@ -27,19 +27,16 @@ export type Fs = {
   delete: FsDeleteMethod;
 };
 
-export type FsInfoMethod = (path: FilePath) => Promise<FsFileInfo>;
-export type FsExistsMethod = (path: FilePath) => Promise<boolean>;
+type FsInfoMethod = (path: FilePath) => Promise<FsFileInfo>;
+type FsExistsMethod = (path: FilePath) => Promise<boolean>;
 
-export type FsReadMethod = (path: FilePath) => Promise<FsReadMethodResponse>;
-export type FsReadMethodResponse = Uint8Array | undefined;
+type FsReadMethod = (path: FilePath) => Promise<FsReadMethodResponse>;
+type FsReadMethodResponse = Uint8Array | undefined;
 
-export type FsWriteMethod = (
-  path: FilePath,
-  data: FsWriteMethodData,
-) => Promise<FsWriteMethodResponse>;
-export type FsWriteMethodData = t.Json | Uint8Array | ReadableStream;
-export type FsWriteMethodResponse = { hash: string; bytes: number };
+type FsWriteMethod = (path: FilePath, data: FsWriteMethodData) => Promise<FsWriteMethodResponse>;
+type FsWriteMethodData = t.Json | Uint8Array | ReadableStream;
+type FsWriteMethodResponse = { hash: string; bytes: number };
 
-export type FsCopyMethod = (source: FilePath, target: FilePath) => Promise<void>;
-export type FsMoveMethod = (source: FilePath, target: FilePath) => Promise<void>;
-export type FsDeleteMethod = (path: FilePath) => Promise<void>;
+type FsCopyMethod = (source: FilePath, target: FilePath) => Promise<void>;
+type FsMoveMethod = (source: FilePath, target: FilePath) => Promise<void>;
+type FsDeleteMethod = (path: FilePath) => Promise<void>;

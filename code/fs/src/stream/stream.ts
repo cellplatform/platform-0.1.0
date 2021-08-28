@@ -5,6 +5,10 @@ import { promisify } from 'util';
 
 import { stringify, t } from '../common';
 
+/**
+ * References:
+ *    https://iximiuz.com/en/posts/nodejs-writable-streams-distilled/
+ */
 const pipe = promisify(pipeline);
 
 /**
@@ -63,7 +67,8 @@ export const Stream = {
     });
 
     // Process the stream.
-    await pipe(input as any, writer);
+    const data = input as any;
+    await pipe(data, writer);
 
     // Assemble the final buffer.
     const totalLength = chunks.reduce((acc, next) => acc + next.length, 0);
