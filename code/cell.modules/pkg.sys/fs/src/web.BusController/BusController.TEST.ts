@@ -1,5 +1,4 @@
-import { FsBus } from '.';
-import { expect, rx, t, TestFs, TestPrep } from '../test';
+import { expect, rx, t, TestFs, TestPrep, FsBus } from '../test';
 
 describe('BusController', function () {
   const bus = rx.bus<t.SysFsEvent>();

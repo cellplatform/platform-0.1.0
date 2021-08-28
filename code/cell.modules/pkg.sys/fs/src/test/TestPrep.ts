@@ -1,7 +1,7 @@
 import { IRouterMock, RouterMock } from '@platform/cell.router/lib/test/RouterMock';
 
 import { Path, rx, t, TestFs } from '../test';
-import { FsBus } from '../web.BusController';
+import { FsBus } from '../node';
 
 export const TestPrep = async (options: { id?: string; dir?: string } = {}) => {
   const bus = rx.bus<t.SysFsEvent>();
@@ -13,11 +13,9 @@ export const TestPrep = async (options: { id?: string; dir?: string } = {}) => {
         fs: TestFs.node,
       });
 
-  const toUint8Array = TestFs.node.stream.toUint8Array;
-
   const index = TestFs.index(fs.dir);
   const controller = FsBus.Controller({ id, bus, fs, index });
-  const events = FsBus.Events({ id, bus, toUint8Array });
+  const events = FsBus.Events({ id, bus });
 
   let server: IRouterMock | undefined;
 

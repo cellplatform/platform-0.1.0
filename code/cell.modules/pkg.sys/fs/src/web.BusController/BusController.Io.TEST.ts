@@ -1,9 +1,10 @@
-import { FsBus } from '.';
-import { expect, rx, t, TestFs, TestPrep } from '../test';
+import { expect, rx, t, TestFs, TestPrep, FsBus } from '../test';
 
 describe('BusController.IO', function () {
-  describe('BusController.info', function () {
+  describe('info', function () {
     it('defaults (no files)', async () => {
+      await TestFs.reset();
+
       const bus = rx.bus<t.SysFsEvent>();
       const id = 'foo';
       const fs = TestFs.local;
