@@ -45,7 +45,7 @@ export function BusEventsIo(args: {
       if (typeof res !== 'string') return res;
 
       const error: t.SysFsError = { code: 'client/timeout', message: res };
-      const fail: t.SysFsInfoRes = { tx, id, files: [], error };
+      const fail: t.SysFsInfoRes = { tx, id, paths: [], error };
       return fail;
     },
   };

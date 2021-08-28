@@ -278,7 +278,7 @@ describe('BusController.Cell (Remote)', function () {
           for (let path of paths) {
             if (!path.startsWith('/')) path = `/${path}`;
             const res = await mock.events.io.info.get({ path });
-            const file = res.files.find((item) => item.path === path);
+            const file = res.paths.find((item) => item.path === path);
             expect(file?.exists).to.eql(exists, path);
           }
         };

@@ -22,17 +22,34 @@ export function BusEventsFs(args: {
   };
 
   /**
+   * Information about a filesystem object.
+   */
+  const info: t.Fs['info'] = async (path) => {
+    const unknown: t.FsFileInfo = { kind: 'unknown', path, exists: false, hash: '', bytes: -1 };
+    if (typeof path !== 'string') return unknown;
+
+    path = formatPath(path);
+    const res = await io.info.get({ path });
+    if (res.error) {
+      throw new Error(res.error.message);
+    }
+
+    path = subdir ? path.substring(subdir.length + 1) : path;
+    const file = res.paths[0];
+    if (!file) {
+      return unknown;
+    }
+
+    const { kind, hash, bytes } = file;
+    const exists = Boolean(file.exists);
+    return { kind, exists, hash, bytes, path };
+  };
+
+  /**
    * Determine if file/directory exists.
    */
   const exists: t.Fs['exists'] = async (path) => {
-    if (typeof path !== 'string') return false;
-    path = formatPath(path);
-
-    // TEMP 🐷
-    const info = await io.info.get({ path });
-    // console.log('info', info);
-
-    return path ? (await io.info.get({ path })).files[0].exists ?? false : false;
+    return (await info(path)).exists;
   };
 
   /**
@@ -95,8 +112,16 @@ export function BusEventsFs(args: {
     }
   };
 
+  const del: t.Fs['delete'] = async (path) => {
+    path = formatPath(path);
+    const res = await io.delete.fire(path);
+    if (res.error) {
+      throw new Error(res.error.message);
+    }
+  };
+
   /**
    * API
    */
-  return { exists, read, write, copy, move };
+  return { info, exists, read, write, copy, move, delete: del };
 }

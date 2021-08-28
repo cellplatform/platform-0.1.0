@@ -3,25 +3,43 @@ import { t } from '../common';
 type FilePath = string;
 
 /**
+ * Information about a file.
+ */
+export type FsFileInfo = {
+  kind: 'file' | 'dir' | 'unknown';
+  path: FilePath;
+  exists: boolean;
+  hash: string;
+  bytes: number;
+};
+
+/**
  * High-level client API that makes programming against
  * a lower-level platform [FsDriver] isolated, consistent and easy.
  */
 export type Fs = {
-  exists: FsExists;
-  read: FsRead;
-  write: FsWrite;
-  copy: FsCopy;
-  move: FsMove;
+  info: FsInfoMethod;
+  exists: FsExistsMethod;
+  read: FsReadMethod;
+  write: FsWriteMethod;
+  copy: FsCopyMethod;
+  move: FsMoveMethod;
+  delete: FsDeleteMethod;
 };
 
-export type FsExists = (path: FilePath) => Promise<boolean>;
+export type FsInfoMethod = (path: FilePath) => Promise<FsFileInfo>;
+export type FsExistsMethod = (path: FilePath) => Promise<boolean>;
 
-export type FsRead = (path: FilePath) => Promise<FsReadResponse>;
-export type FsReadResponse = Uint8Array | undefined;
+export type FsReadMethod = (path: FilePath) => Promise<FsReadMethodResponse>;
+export type FsReadMethodResponse = Uint8Array | undefined;
 
-export type FsWrite = (path: FilePath, data: FsWriteData) => Promise<FsWriteResponse>;
-export type FsWriteData = t.Json | Uint8Array | ReadableStream;
-export type FsWriteResponse = { hash: string; bytes: number };
+export type FsWriteMethod = (
+  path: FilePath,
+  data: FsWriteMethodData,
+) => Promise<FsWriteMethodResponse>;
+export type FsWriteMethodData = t.Json | Uint8Array | ReadableStream;
+export type FsWriteMethodResponse = { hash: string; bytes: number };
 
-export type FsCopy = (source: FilePath, target: FilePath) => Promise<void>;
-export type FsMove = (source: FilePath, target: FilePath) => Promise<void>;
+export type FsCopyMethod = (source: FilePath, target: FilePath) => Promise<void>;
+export type FsMoveMethod = (source: FilePath, target: FilePath) => Promise<void>;
+export type FsDeleteMethod = (path: FilePath) => Promise<void>;

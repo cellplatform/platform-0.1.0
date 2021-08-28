@@ -1,4 +1,4 @@
-import { asArray, Format, t } from './common';
+import { asArray, Format, t, Path } from './common';
 
 type FilesystemId = string;
 type Error = t.SysFsError;
@@ -18,16 +18,18 @@ export function BusControllerIo(args: {
 
   const stripDirPrefix = (path: FilePath) => Format.dir.stripPrefix(fs.dir, path);
 
-  const getFileInfo = async (filepath: FilePath): Promise<t.SysFsFileInfo> => {
+  const getFileInfo = async (filepath: FilePath): Promise<t.SysFsPathInfo> => {
     try {
+      filepath = Path.trimSlashesEnd(filepath);
       const uri = Format.path.ensurePrefix(filepath);
       const res = await fs.info(uri);
-      const { exists, hash, bytes } = res;
-      const path = stripDirPrefix(res.path);
-      return { path, exists, hash, bytes };
+      const { kind, exists, hash, bytes } = res;
+      let path = stripDirPrefix(res.path);
+      if (kind === 'dir') path = `${path}/`;
+      return { kind, path, exists, hash, bytes };
     } catch (err) {
       const error: t.SysFsError = { code: 'info', message: err.message };
-      return { path: filepath, exists: null, hash: '', bytes: -1, error };
+      return { kind: 'unknown', path: filepath, exists: false, hash: '', bytes: -1, error };
     }
   };
 
@@ -126,7 +128,7 @@ export function BusControllerIo(args: {
     const files = await Promise.all(paths.map(getFileInfo));
     bus.fire({
       type: 'sys.fs/info:res',
-      payload: { tx, id, fs: info, files },
+      payload: { tx, id, fs: info, paths: files },
     });
   });
 

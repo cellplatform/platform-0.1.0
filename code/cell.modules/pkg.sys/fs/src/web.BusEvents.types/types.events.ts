@@ -33,6 +33,6 @@ export type SysFsInfoRes = {
   tx: string;
   id: FilesystemId;
   fs?: t.SysFsInfo;
-  files: t.SysFsFileInfo[];
+  paths: t.SysFsPathInfo[];
   error?: t.SysFsError;
 };

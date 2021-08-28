@@ -1,22 +1,171 @@
 import {
-  time,
+  CellAddress,
   expect,
   expectError,
   Hash,
+  HttpClient,
   Path,
+  stringify,
+  t,
   TestFs,
   TestPrep,
-  CellAddress,
-  HttpClient,
   Uri,
-  t,
-  stringify,
 } from '../test';
 
 const fs = TestFs.node;
 
-describe.only('BusEvents.Fs', function () {
+describe('BusEvents.Fs', function () {
   this.beforeEach(() => TestFs.reset());
+
+  describe('exists', () => {
+    it('file: true', async () => {
+      const mock = await TestPrep();
+      const localfs = mock.events.fs();
+      const src = await fs.readFile('static.test/data.json');
+      await localfs.write('foo/bar.json', src);
+
+      const test = async (path: string) => {
+        const res = await localfs.exists(path);
+        expect(res).to.eql(true);
+      };
+
+      await test('foo/bar.json');
+      await test('  /foo/bar.json  ');
+      await test('  ///foo/bar.json  ');
+
+      await mock.dispose();
+    });
+
+    it('file: false', async () => {
+      const mock = await TestPrep();
+      const localfs = mock.events.fs();
+
+      const test = async (path: any) => {
+        const res = await localfs.exists(path);
+        expect(res).to.eql(false);
+      };
+
+      await test('foo/bar.json');
+      await test('    ');
+      await test(null);
+      await test({});
+      await test([]);
+
+      await mock.dispose();
+    });
+
+    it('dir', async () => {
+      const mock = await TestPrep();
+      const localfs = mock.events.fs();
+      const src = await fs.readFile('static.test/data.json');
+      await localfs.write('foo/bar/data.json', src);
+
+      const test = async (path: any, exists: boolean) => {
+        const res = await localfs.exists(path);
+        expect(res).to.eql(exists, path);
+      };
+
+      await test('foo', true);
+      await test('/foo', true);
+      await test('  foo/bar//  ', true);
+      await test('foo/bar  ', true);
+      await test('/', true);
+      await test('   ', true); // NB: root dir.
+
+      await test('zoo', false);
+
+      await test(null, false);
+      await test({}, false);
+      await test([], false);
+
+      await mock.dispose();
+    });
+
+    it('within "sub/directory"', async () => {
+      const mock = await TestPrep();
+      await mock.copy('static.test/child/tree.png', 'images/tree.png');
+      const root = mock.events.fs();
+      const subdir = mock.events.fs('images');
+
+      expect(await root.exists('images/tree.png')).to.eql(true);
+      expect(await root.exists('tree.png')).to.eql(false);
+
+      expect(await subdir.exists('tree.png')).to.eql(true);
+      expect(await subdir.exists('///tree.png')).to.eql(true);
+      expect(await subdir.exists('foo.png')).to.eql(false);
+
+      await mock.dispose();
+    });
+  });
+
+  describe('info', () => {
+    it('file', async () => {
+      const mock = await TestPrep();
+      await mock.copy('static.test/child/tree.png', 'images/tree.png');
+
+      const localfs = mock.events.fs();
+      const file = await mock.readFile(fs.join(mock.rootDir, 'images/tree.png'));
+      const info = await localfs.info('///images/tree.png');
+      await mock.dispose();
+
+      expect(info.exists).to.eql(true);
+      expect(info.kind).to.eql('file');
+      expect(info.path).to.eql('images/tree.png');
+      expect(info.hash).to.eql(file.hash);
+      expect(info.bytes).to.eql(file.data.byteLength);
+    });
+
+    it('file (does not exist)', async () => {
+      const mock = await TestPrep();
+      const localfs = mock.events.fs();
+      const info = await localfs.info('///images/tree.png');
+      await mock.dispose();
+
+      expect(info.exists).to.eql(false);
+      expect(info.kind).to.eql('unknown');
+      expect(info.path).to.eql('images/tree.png');
+      expect(info.hash).to.eql('');
+      expect(info.bytes).to.eql(-1);
+    });
+
+    it('dir', async () => {
+      const mock = await TestPrep();
+      await mock.copy('static.test/child/tree.png', 'images/foo/tree.png');
+
+      const localfs = mock.events.fs();
+      const info = await localfs.info('///images/foo/');
+      await mock.dispose();
+
+      expect(info.exists).to.eql(true);
+      expect(info.kind).to.eql('dir');
+      expect(info.path).to.eql('images/foo/');
+      expect(info.hash).to.eql('');
+      expect(info.bytes).to.eql(-1);
+    });
+
+    it('within "sub/directory"', async () => {
+      const mock = await TestPrep();
+      await mock.copy('static.test/child/tree.png', 'images/tree.png');
+      const file = await mock.readFile(fs.join(mock.rootDir, 'images/tree.png'));
+
+      const fs1 = mock.events.fs();
+      const fs2 = mock.events.fs('  images  ');
+
+      const info1 = await fs1.info('///images/tree.png');
+      const info2 = await fs2.info('  tree.png  ');
+
+      expect(info1.exists).to.eql(true);
+      expect(info1.hash).to.eql(file.hash);
+      expect(info1.bytes).to.eql(file.data.byteLength);
+
+      expect(info2.exists).to.eql(info1.exists);
+      expect(info2.hash).to.eql(info1.hash);
+      expect(info2.bytes).to.eql(info1.bytes);
+
+      expect(info1.path).to.eql('images/tree.png');
+      expect(info2.path).to.eql('tree.png');
+    });
+  });
 
   describe('read', () => {
     it('<undefined> (does not exist)', async () => {
@@ -219,61 +368,6 @@ describe.only('BusEvents.Fs', function () {
     });
   });
 
-  describe('exists', () => {
-    it('exists: true', async () => {
-      const mock = await TestPrep();
-      const localfs = mock.events.fs();
-      const src = await fs.readFile('static.test/data.json');
-      await localfs.write('foo/bar.json', src);
-
-      const test = async (path: string) => {
-        const res = await localfs.exists(path);
-        expect(res).to.eql(true);
-      };
-
-      await test('foo/bar.json');
-      await test('  /foo/bar.json  ');
-      await test('  ///foo/bar.json  ');
-
-      await mock.dispose();
-    });
-
-    it('exists: false', async () => {
-      const mock = await TestPrep();
-      const localfs = mock.events.fs();
-
-      const test = async (path: any) => {
-        const res = await localfs.exists(path);
-        expect(res).to.eql(false);
-      };
-
-      await test('foo/bar.json');
-      await test('    ');
-      await test(null);
-      await test({});
-      await test([{}]);
-
-      await mock.dispose();
-    });
-
-    it('exists within "/sub-directory"', async () => {
-      const mock = await TestPrep();
-      await mock.copy('static.test/child/tree.png', 'images/tree.png');
-
-      const root = mock.events.fs();
-      const subdir = mock.events.fs('images');
-
-      expect(await root.exists('images/tree.png')).to.eql(true);
-      expect(await root.exists('tree.png')).to.eql(false);
-
-      expect(await subdir.exists('tree.png')).to.eql(true);
-      expect(await subdir.exists('///tree.png')).to.eql(true);
-      expect(await subdir.exists('foo.png')).to.eql(false);
-
-      await mock.dispose();
-    });
-  });
-
   describe('copy', () => {
     it('copy: binary', async () => {
       const mock = await TestPrep();
@@ -351,6 +445,43 @@ describe.only('BusEvents.Fs', function () {
 
       expect(await fs.exists(fs.join(mock.rootDir, 'images/tree.png'))).to.eql(false);
       expect(await fs.exists(fs.join(mock.rootDir, 'images/foo/bar.png'))).to.eql(true);
+
+      await mock.dispose();
+    });
+  });
+
+  describe('delete', () => {
+    it('delete: binary', async () => {
+      const mock = await TestPrep();
+      const src = await mock.readFile('static.test/child/tree.png');
+      const localfs = mock.events.fs();
+      const path = 'images/tree.png';
+
+      await localfs.write(path, src.data);
+      expect(await localfs.exists(path)).to.eql(true);
+
+      await localfs.delete(path);
+      expect(await localfs.exists(path)).to.eql(false);
+
+      await mock.dispose();
+    });
+
+    it('delete: "sub/directory"', async () => {
+      const mock = await TestPrep();
+      const src = await mock.readFile('static.test/child/tree.png');
+      const fs1 = mock.events.fs();
+      const fs2 = mock.events.fs('images');
+
+      const path1 = 'images/tree.png';
+      const path2 = 'tree.png';
+
+      await fs1.write(path1, src.data);
+      expect(await fs1.exists(path1)).to.eql(true);
+      expect(await fs2.exists(path2)).to.eql(true);
+
+      await fs2.delete(path2);
+      expect(await fs1.exists(path1)).to.eql(false);
+      expect(await fs2.exists(path2)).to.eql(false);
 
       await mock.dispose();
     });

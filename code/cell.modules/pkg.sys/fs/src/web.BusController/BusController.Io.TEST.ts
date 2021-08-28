@@ -17,7 +17,7 @@ describe('BusController.IO', function () {
       expect(res.id).to.eql(id);
       expect(res.fs?.id).to.eql(id);
       expect(res.fs?.dir).to.eql(TestFs.local.dir);
-      expect(res.files).to.eql([]);
+      expect(res.paths).to.eql([]);
       expect(res.error).to.eql(undefined);
     });
 
@@ -26,15 +26,15 @@ describe('BusController.IO', function () {
       const info = await mock.events.io.info.get({ path: '/foo/bar.js', timeout: 10 });
       await mock.dispose();
 
-      expect(info.files.length).to.eql(1);
+      expect(info.paths.length).to.eql(1);
 
-      const file = info.files[0];
+      const file = info.paths[0];
       expect(file.exists).to.eql(false);
       expect(file.hash).to.eql('');
       expect(file.bytes).to.eql(-1);
     });
 
-    it('single file', async () => {
+    it('file: single', async () => {
       const mock = await TestPrep();
       const src = await TestFs.readFile('static.test/child/kitten.jpg');
 
@@ -43,34 +43,54 @@ describe('BusController.IO', function () {
 
       const info = await mock.events.io.info.get({ path, timeout: 10 });
       await mock.dispose();
-      expect(info.files.length).to.eql(1);
+      expect(info.paths.length).to.eql(1);
 
-      expect(info.files[0].path).to.eql('/foo/bar/kitty.jpg'); // NB: starts at absolute "/"
-      expect(info.files[0].hash).to.eql(src.hash);
-      expect(info.files[0].bytes).to.eql(src.data.byteLength);
+      const file = info.paths[0];
+      expect(file.kind).to.eql('file');
+      expect(file.path).to.eql('/foo/bar/kitty.jpg'); // NB: starts at absolute "/"
+      expect(file.hash).to.eql(src.hash);
+      expect(file.bytes).to.eql(src.data.byteLength);
     });
 
-    it('multiple files', async () => {
+    it('dir: single', async () => {
       const mock = await TestPrep();
-      const src1 = await TestFs.readFile('static.test/child/kitten.jpg');
-      const src2 = await TestFs.readFile('static.test/child/tree.png');
+      const src = await TestFs.readFile('static.test/child/kitten.jpg');
+
+      const path = '  foo/bar/kitty.jpg   '; // NB: spacing trimmed.
+      await mock.events.io.write.fire({ path, hash: src.hash, data: src.data });
+
+      const info = await mock.events.io.info.get({ path: '  foo/bar  ' });
+      await mock.dispose();
+
+      const dir = info.paths[0];
+      expect(dir.kind).to.eql('dir');
+      expect(dir.path).to.eql('/foo/bar/'); // NB: Ends with "/"
+      expect(dir.hash).to.eql('');
+      expect(dir.bytes).to.eql(-1);
+    });
+
+    it('multiple paths', async () => {
+      const mock = await TestPrep();
+      const file = await TestFs.readFile('static.test/child/kitten.jpg');
 
       const path1 = '/foo/bar/kitty.jpg';
-      const path2 = '/foo/bar/grow.png';
-      await mock.events.io.write.fire({ path: path1, hash: src1.hash, data: src1.data });
-      await mock.events.io.write.fire({ path: path2, hash: src2.hash, data: src2.data });
+      const path2 = '/foo/bar/';
+      await mock.events.io.write.fire({ path: path1, hash: file.hash, data: file.data });
 
       const info = await mock.events.io.info.get({ path: [path1, path2], timeout: 10 });
       await mock.dispose();
-      expect(info.files.length).to.eql(2);
 
-      expect(info.files[0].path).to.eql(path1);
-      expect(info.files[0].hash).to.eql(src1.hash);
-      expect(info.files[0].bytes).to.eql(src1.data.byteLength);
+      expect(info.paths.length).to.eql(2);
 
-      expect(info.files[1].path).to.eql(path2);
-      expect(info.files[1].hash).to.eql(src2.hash);
-      expect(info.files[1].bytes).to.eql(src2.data.byteLength);
+      expect(info.paths[0].kind).to.eql('file');
+      expect(info.paths[0].path).to.eql(path1);
+      expect(info.paths[0].hash).to.eql(file.hash);
+      expect(info.paths[0].bytes).to.eql(file.data.byteLength);
+
+      expect(info.paths[1].kind).to.eql('dir');
+      expect(info.paths[1].path).to.eql(path2);
+      expect(info.paths[1].hash).to.eql('');
+      expect(info.paths[1].bytes).to.eql(-1);
     });
 
     it('error: timeout', async () => {

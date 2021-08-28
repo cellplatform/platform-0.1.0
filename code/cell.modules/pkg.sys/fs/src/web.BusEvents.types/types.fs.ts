@@ -10,9 +10,10 @@ export type SysFsInfo = {
   dir: DirPath; // The root directory of the file-system scope.
 };
 
-export type SysFsFileInfo = {
-  path: FilePath;
-  exists: boolean | null;
+export type SysFsPathInfo = {
+  kind: 'file' | 'dir' | 'unknown';
+  path: FilePath | DirPath;
+  exists: boolean;
   hash: string;
   bytes: number;
   error?: t.SysFsError;

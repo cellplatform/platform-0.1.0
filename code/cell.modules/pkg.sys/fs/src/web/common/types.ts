@@ -12,6 +12,7 @@ export { Http, HttpMethod } from '@platform/http.types';
  */
 export {
   Fs,
+  FsFileInfo,
   FsDriverLocal,
   FsIndexer,
   FsPathFilter,
