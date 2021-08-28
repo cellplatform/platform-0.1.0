@@ -1,4 +1,4 @@
-import { Path, PathUri, CellAddress, rx, slug, t, timeoutWrangler, Hash } from './common';
+import { Hash, Path, PathUri, t } from './common';
 
 /**
  * High level [Fs] interface for programming against the file-system.
@@ -7,8 +7,9 @@ export function BusEventsFs(args: {
   subdir?: string;
   index: t.SysFsEventsIndex;
   io: t.SysFsEventsIo;
+  toUint8Array: t.SysFsAsUint8Array;
 }): t.Fs {
-  const { io, index } = args;
+  const { io, index, toUint8Array } = args;
   const subdir = Path.trim(args.subdir) ?? '';
 
   // Path.
@@ -41,25 +42,21 @@ export function BusEventsFs(args: {
     path = formatPath(path);
     const uri = PathUri.ensurePrefix(path);
     const res = await io.read.get(uri);
-    const file = res.files[0];
+    const first = res.files[0];
 
-    if (file.error?.code === 'read/404') return undefined;
-    if (file.error) throw new Error(file.error.message);
+    if (first.error?.code === 'read/404') return undefined;
+    if (first.error) throw new Error(first.error.message);
     if (res.error) throw new Error(res.error.message);
 
-    return file.file?.data ?? undefined;
+    return first.file?.data ?? undefined;
   };
 
   /**
    * Write a file.
    */
   const write: t.Fs['write'] = async (path, input) => {
-    if (input === undefined || input === null) {
-      throw new Error(`No data`);
-    }
-
     path = formatPath(path);
-    const data = toBinary(input);
+    const data = await toUint8Array(input);
     const hash = Hash.sha256(data);
     const bytes = data.byteLength;
 
@@ -68,17 +65,38 @@ export function BusEventsFs(args: {
       throw new Error(res.error.message);
     }
 
-    return { hash, bytes };
+    return {
+      hash,
+      bytes,
+    };
   };
 
-  return { read, write, exists };
-}
+  /**
+   * Copy a file.
+   */
+  const copy: t.Fs['copy'] = async (source, target) => {
+    source = formatPath(source);
+    target = formatPath(target);
+    const res = await io.copy.fire({ source, target });
+    if (res.error) {
+      throw new Error(res.error.message);
+    }
+  };
 
-/**
- * Helpers
- */
+  /**
+   * Move a file (copy + delete).
+   */
+  const move: t.Fs['move'] = async (source, target) => {
+    source = formatPath(source);
+    target = formatPath(target);
+    const res = await io.move.fire({ source, target });
+    if (res.error) {
+      throw new Error(res.error.message);
+    }
+  };
 
-function toBinary(input: string | Uint8Array | ArrayBuffer): Uint8Array {
-  if (typeof input === 'string') return new TextEncoder().encode(input);
-  return input as Uint8Array;
+  /**
+   * API
+   */
+  return { exists, read, write, copy, move };
 }

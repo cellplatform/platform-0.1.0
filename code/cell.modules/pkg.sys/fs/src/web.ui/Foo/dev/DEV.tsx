@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { Foo, FooProps } from '..';
 import { t, FsBus, rx, HttpClient } from '../../common';
-import { ReadStreamWeb } from '../../../web.Stream';
+import { Stream } from '../../../web.Stream';
 
 type Ctx = {
   id: string;
@@ -19,7 +19,7 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const id = 'my-fs';
+    const id = 'my-filesystem';
     const bus = rx.bus<t.SysFsEvent>();
     const events = FsBus.Events({ id, bus });
 
@@ -56,7 +56,7 @@ export const actions = DevActions<Ctx>()
       const body = fetched.body;
 
       console.log('fetched', fetched);
-      const merged = await ReadStreamWeb.toUint8Array(fetched.body);
+      const merged = await Stream.toUint8Array(fetched.body);
 
       const blob = new Blob([merged.buffer], { type: 'image/png' });
       e.ctx.props.src = URL.createObjectURL(blob);

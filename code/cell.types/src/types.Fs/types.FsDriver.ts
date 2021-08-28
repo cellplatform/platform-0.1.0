@@ -88,7 +88,7 @@ export type FsInfoMethod<Info extends IFsMeta> = (address: FileAddress) => Promi
 export type FsReadMethod<Read extends IFsRead> = (address: FileAddress) => Promise<Read>;
 export type FsWriteMethod<Write extends IFsWrite, WriteOptions extends IFsWriteOptions> = (
   address: FileAddress,
-  data: Uint8Array,
+  data: Uint8Array | ReadableStream,
   options?: WriteOptions,
 ) => Promise<Write>;
 export type FsCopyMethod<Copy extends IFsCopy, CopyOptions extends IFsCopyOptions> = (

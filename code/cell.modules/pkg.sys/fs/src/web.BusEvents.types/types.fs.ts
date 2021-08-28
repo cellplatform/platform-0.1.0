@@ -32,3 +32,7 @@ export type SysFsWriteResponse = { files: SysFsFileWriteResponse[]; error?: t.Sy
 export type SysFsDeleteResponse = { files: SysFsFileDeleteResponse[]; error?: t.SysFsError };
 export type SysFsCopyResponse = { files: SysFsFileCopyResponse[]; error?: t.SysFsError };
 export type SysFsMoveResponse = { files: SysFsFileMoveResponse[]; error?: t.SysFsError };
+
+export type SysFsAsUint8Array = (
+  input: Uint8Array | ReadableStream | t.Json,
+) => Promise<Uint8Array>;

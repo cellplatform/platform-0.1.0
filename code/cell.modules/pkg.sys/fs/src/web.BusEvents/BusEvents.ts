@@ -5,6 +5,7 @@ import { BusEventsFs } from './BusEvents.Fs';
 import { BusEventsIndexer } from './BusEvents.Indexer';
 import { BusEventsIo } from './BusEvents.Io';
 import { rx, t, timeoutWrangler } from './common';
+import { Stream } from '../web.Stream';
 
 type FilesystemId = string;
 type Milliseconds = number;
@@ -17,11 +18,13 @@ export function BusEvents(args: {
   bus: t.EventBus<any>;
   filter?: (e: t.SysFsEvent) => boolean;
   timeout?: Milliseconds; // Default timeout.
+  toUint8Array?: t.SysFsAsUint8Array;
 }): t.SysFsEvents {
   const { id } = args;
   const { dispose, dispose$ } = rx.disposable();
   const bus = rx.busAsType<t.SysFsEvent>(args.bus);
   const is = BusEvents.is;
+  const toUint8Array = args.toUint8Array ?? Stream.toUint8Array;
 
   const toTimeout = timeoutWrangler(args.timeout);
   const msecs = toTimeout();
@@ -49,7 +52,7 @@ export function BusEvents(args: {
     const timeout = toTimeout(options);
     const io = BusEventsIo({ id, $, bus, timeout });
     const index = BusEventsIndexer({ id, $, bus, timeout });
-    return BusEventsFs({ subdir, index, io });
+    return BusEventsFs({ subdir, index, io, toUint8Array });
   };
 
   /**

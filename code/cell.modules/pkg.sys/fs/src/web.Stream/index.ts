@@ -1,1 +1,1 @@
-export * from './ReadStreamWeb';
+export * from './Stream';

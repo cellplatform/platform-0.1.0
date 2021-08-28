@@ -216,8 +216,6 @@ describe('BusController.IO', function () {
       expect(after2.hash).to.eql(src2.hash);
       expect(after2.data.toString()).to.eql(src2.data.toString());
     });
-
-    it.skip('write "string" to file', async () => {});
   });
 
   describe('delete', function () {

@@ -1,4 +1,4 @@
-import { stringify, asArray, CellAddress, Path, PathUri, R, t, ReadStreamWeb } from './common';
+import { stringify, asArray, CellAddress, Path, PathUri, R, t, Stream } from './common';
 
 type FilesystemId = string;
 
@@ -211,7 +211,7 @@ export function BusControllerCell(args: {
         res.file.bytes = info.body.data.props.bytes ?? -1;
 
         const toPayload = (body: ReadableStream | t.Json): Uint8Array => {
-          if (ReadStreamWeb.isReadableStream(body)) return body as any; // HACK: see note below for [FsDriverLocal.write]
+          if (Stream.isReadableStream(body)) return body as any; // HACK: see note below for [FsDriverLocal.write]
           // const json = `${JSON.stringify(body, null, '  ')}\n`;
           const json = stringify(body as t.Json);
           return new TextEncoder().encode(json);

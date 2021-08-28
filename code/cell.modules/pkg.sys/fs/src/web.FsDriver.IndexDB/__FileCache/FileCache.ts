@@ -24,8 +24,8 @@ type FileInfo = {
  * Caches files within an IndexedDB.
  *
  *    https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API
- *    https://gist.github.com/JamesMessinger/a0d6389a5d0e3a24814b
  *    https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
+ *    https://gist.github.com/JamesMessinger/a0d6389a5d0e3a24814b
  *
  */
 export const FileCache = (name?: string, version?: number) => {
