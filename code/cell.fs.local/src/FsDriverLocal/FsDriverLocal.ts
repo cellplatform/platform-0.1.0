@@ -1,4 +1,4 @@
-import { Hash, Schema, t, isOK } from '../common';
+import { Hash, Schema, t, isOK, Stream } from '../common';
 import { FsDriverLocalResolver } from './FsDriverLocal.resolver';
 
 export * from '../types';
@@ -19,6 +19,11 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
     return 'unknown';
   };
 
+  const readUint8Array = async (path: string) => {
+    const buffer = await node.readFile(path);
+    return Uint8Array.from(buffer);
+  };
+
   const fs: t.FsDriverLocal = {
     type: 'LOCAL',
 
@@ -35,7 +40,7 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
     /**
      * Retrieve meta-data of a local file.
      */
-    async info(uri: string): Promise<t.IFsInfoLocal> {
+    async info(uri): Promise<t.IFsInfoLocal> {
       uri = (uri || '').trim();
       const path = fs.resolve(uri).path;
       const location = LocalFile.toAbsoluteLocation({ path, root });
@@ -57,7 +62,7 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
     /**
      * Read from the local file-system.
      */
-    async read(uri: string): Promise<t.IFsReadLocal> {
+    async read(uri): Promise<t.IFsReadLocal> {
       uri = (uri || '').trim();
       const path = fs.resolve(uri).path;
       const location = LocalFile.toAbsoluteLocation({ path, root });
@@ -74,8 +79,7 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
 
       // Load the file.
       try {
-        const buffer = await node.readFile(path);
-        const data = new Uint8Array(buffer);
+        const data = await readUint8Array(path);
         const bytes = data.byteLength;
         const file: t.IFsFileData = {
           path,
@@ -100,35 +104,52 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
     /**
      * Write to the local file-system.
      */
-    async write(uri: string, data: Uint8Array): Promise<t.IFsWriteLocal> {
-      if (!data) {
-        throw new Error(`Cannot write, no data provided.`);
+    async write(uri, data): Promise<t.IFsWriteLocal> {
+      if (data === undefined) {
+        throw new Error(`No data`);
+      }
+
+      const isStream = Stream.isReadableStream(data);
+      if (!isStream && !(data instanceof Uint8Array)) {
+        throw new Error(`Not Uint8Array`);
       }
 
       uri = (uri || '').trim();
       const path = fs.resolve(uri).path;
       const location = LocalFile.toAbsoluteLocation({ path, root });
-      const bytes = data.byteLength;
-      const file: t.IFsFileData = {
-        path,
-        location,
-        data: Buffer.from(data),
-        bytes,
-        get hash() {
-          return Hash.sha256(data);
-        },
+
+      const toFile = (data: Uint8Array): t.IFsFileData => {
+        const bytes = data.byteLength;
+        return {
+          path,
+          location,
+          data,
+          bytes,
+          get hash() {
+            return Hash.sha256(data);
+          },
+        };
       };
 
       try {
-        await node.ensureDir(node.dirname(path));
-        await node.writeFile(path, data);
-        return { uri, ok: true, status: 200, file };
+        const binary = isStream
+          ? await Stream.toUint8Array(data as ReadableStream)
+          : (data as Uint8Array);
+        await node.writeFile(path, binary);
+        const file = toFile(isStream ? await readUint8Array(path) : (data as Uint8Array));
+        return {
+          ok: true,
+          status: 200,
+          uri,
+          file,
+        };
       } catch (err) {
         const error: t.IFsError = {
           type: 'FS/write',
           message: `Failed to write [${uri}]. ${err.message}`,
           path,
         };
+        const file = toFile(isStream ? Uint8Array.from([]) : (data as Uint8Array));
         return { ok: false, status: 500, uri, file, error };
       }
     },
@@ -136,7 +157,7 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
     /**
      * Delete from the local file-system.
      */
-    async delete(uri: string | string[]): Promise<t.IFsDeleteLocal> {
+    async delete(uri): Promise<t.IFsDeleteLocal> {
       const uris = (Array.isArray(uri) ? uri : [uri]).map((uri) => (uri || '').trim());
       const paths = uris.map((uri) => fs.resolve(uri).path);
       const locations = paths.map((path) => LocalFile.toAbsoluteLocation({ path, root }));
@@ -157,7 +178,7 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
     /**
      * Copy a file.
      */
-    async copy(sourceUri: string, targetUri: string): Promise<t.IFsCopyLocal> {
+    async copy(sourceUri, targetUri): Promise<t.IFsCopyLocal> {
       const format = (input: string) => {
         const uri = (input || '').trim();
         const path = fs.resolve(uri).path;
