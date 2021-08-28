@@ -42,6 +42,7 @@ describe('S3 (Integration)', function () {
     const info = await fs.info(uri);
     expect(read['s3:permission']).to.eql('private');
     expect(info['s3:permission']).to.eql('private');
+    expect(info.exists).to.eql(true);
   });
 
   it('write (public)', async () => {
@@ -59,6 +60,26 @@ describe('S3 (Integration)', function () {
     const info = await fs.info(uri);
     expect(read['s3:permission']).to.eql('public-read');
     expect(info['s3:permission']).to.eql('public-read');
+  });
+
+  it('write (ReadableStream)', async () => {
+    const uri = 'file:foo:public';
+    const filename = 'public/bird.png';
+
+    const path = TestUtil.fs.resolve(`src/test/images/bird.png`);
+    const stream = TestUtil.fs.createReadStream(path) as unknown as ReadableStream;
+
+    const res = await fs.write(uri, stream, { filename, permission: 'public-read' });
+    const info = await fs.info(uri);
+
+    // log.info('WRITE', res);
+    // log.info('-------------------------------------------');
+    // log.info(res.file.location);
+
+    expect(res.ok).to.eql(true);
+    expect(res.status).to.eql(200);
+    expect(res.uri).to.eql(uri);
+    expect(info.exists).to.eql(true);
   });
 
   it('info', async () => {

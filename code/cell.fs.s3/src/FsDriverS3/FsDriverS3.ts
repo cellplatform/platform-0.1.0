@@ -1,4 +1,4 @@
-import { t, fs, Path, isOK, Hash, Mime } from '../common';
+import { t, fs, Path, isOK, Hash, Mime, Stream } from '../common';
 
 export * from '../types';
 
@@ -56,7 +56,7 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
     /**
      * Convert the given string to a URL endpoint.
      */
-    resolve(uri: string, options?: t.IFsResolveOptionsS3) {
+    resolve(uri, options) {
       const type = (options ? options.type : 'DEFAULT') as t.IFsResolveOptionsS3['type'];
       const endpoint =
         options?.type === 'DEFAULT' || options?.type === 'SIGNED/get'
@@ -103,7 +103,7 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
     /**
      * Retrieve meta-data of a file on S3.
      */
-    async info(uri: string): Promise<t.IFsInfoS3> {
+    async info(uri): Promise<t.IFsInfoS3> {
       const { key, path, location } = getReadParams(uri);
       try {
         const res = await cloud.bucket.get({ key, metaOnly: true });
@@ -125,7 +125,7 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
     /**
      * Read from S3.
      */
-    async read(uri: string): Promise<t.IFsReadS3> {
+    async read(uri): Promise<t.IFsReadS3> {
       const { key, path, location } = getReadParams(uri);
 
       try {
@@ -174,8 +174,8 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
      * Write to the S3.
      */
     async write(
-      uri: string,
-      data: Uint8Array,
+      uri,
+      data,
       options: { filename?: string; permission?: t.FsS3Permission } = {},
     ): Promise<t.IFsWriteS3> {
       if (!data) {
@@ -197,11 +197,16 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
       const path = trimHost(api.resolve(uri).path);
       const key = path.replace(/^\//, '');
       let hash = '';
+
+      const binary = fs.stream.isReadableStream(data)
+        ? await Stream.toUint8Array(data as ReadableStream)
+        : (data as Uint8Array);
+
       const file: t.IFsFileData = {
         path,
         location: '',
-        data,
-        bytes: data.byteLength,
+        data: binary,
+        bytes: binary.byteLength,
         get hash() {
           return hash || (hash = Hash.sha256(data));
         },
@@ -244,7 +249,7 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
     /**
      * Delete from S3.
      */
-    async delete(uri: string | string[]): Promise<t.IFsDeleteS3> {
+    async delete(uri): Promise<t.IFsDeleteS3> {
       const uris = (Array.isArray(uri) ? uri : [uri]).map((uri) => (uri || '').trim());
       const locations = uris.map((uri) => api.resolve(uri).path);
       const keys = locations.map((path) => trimHost(path).replace(/^\//, ''));
@@ -276,11 +281,7 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
     /**
      * Copy an object on S3.
      */
-    async copy(
-      sourceUri: string,
-      targetUri: string,
-      options: t.IFsCopyOptionsS3 = {},
-    ): Promise<t.IFsCopyS3> {
+    async copy(sourceUri, targetUri, options: t.IFsCopyOptionsS3 = {}): Promise<t.IFsCopyS3> {
       const format = (input: string) => {
         const uri = (input || '').trim();
         const path = api.resolve(uri).path;
