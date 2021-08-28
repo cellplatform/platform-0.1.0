@@ -1,5 +1,6 @@
 import { t, expect, TestUtil, PATH, Hash } from '../test';
 import { FsDriverLocal } from '.';
+import { createReadStream } from 'fs';
 
 describe('FsDriverLocal', () => {
   beforeEach(() => TestUtil.reset());
@@ -220,6 +221,31 @@ describe('FsDriverLocal', () => {
       expect(read.file?.hash).to.eql(Hash.sha256(data));
       expect(read.file?.bytes).to.eql(data.byteLength);
       expect(new TextDecoder().decode(read.file?.data)).to.eql(text);
+    });
+
+    it('write (stream)', async () => {
+      const nodefs = TestUtil.node;
+      const fs = TestUtil.createLocal();
+
+      const srcPath = nodefs.resolve('static.test/images/bird.png');
+      const srcFile = Uint8Array.from(await nodefs.readFile(srcPath));
+      const srcHash = Hash.sha256(srcFile);
+      const stream = createReadStream(srcPath);
+
+      const uri = 'path:file.png';
+      const write = await fs.write(uri, stream as any);
+
+      expect(write.status).to.eql(200);
+      expect(write.file.hash).to.eql(srcHash);
+      expect(write.file.bytes).to.eql(srcFile.byteLength);
+      expect(write.file.data).to.eql(srcFile);
+
+      const read = await fs.read(uri);
+
+      expect(read.status).to.eql(200);
+      expect(read.uri).to.eql(uri);
+      expect(read.file?.data).to.eql(srcFile);
+      expect(read.file?.hash).to.eql(srcHash);
     });
   });
 

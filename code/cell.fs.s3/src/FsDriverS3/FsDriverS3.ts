@@ -5,10 +5,12 @@ export * from '../types';
 /**
  * Initializes an "S3" compatible file-system API.
  * eg:
- *  - AWS "S3"
- *  - DigitalOcean "Spaces"
- *  - Wasabi
- *  - (etc)
+ *
+ *    - AWS "S3"
+ *    - DigitalOcean "Spaces"
+ *    - Wasabi
+ *    - (etc)
+ *
  */
 export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
   const cloud = (() => {
