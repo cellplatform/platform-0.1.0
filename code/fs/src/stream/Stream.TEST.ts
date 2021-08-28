@@ -3,7 +3,7 @@ import { fs } from '..';
 
 import { Stream } from '.';
 
-describe('Stream', function () {
+describe.only('Stream', function () {
   this.afterEach(() => fs.remove(PATH.TMP));
 
   const PATH = {
@@ -40,18 +40,60 @@ describe('Stream', function () {
   });
 
   describe('toUint8Array', () => {
-    it('json', async () => {
-      const json = { foo: 123 };
-      const res = await Stream.toUint8Array(json);
-      expect(new TextDecoder().decode(res)).to.eql(stringify(json));
-    });
-
     it('binary', async () => {
       const path = PATH.TREE;
       const stream = fs.createReadStream(path) as unknown as ReadableStream;
       const res = await Stream.toUint8Array(stream);
       const file = Uint8Array.from(await fs.readFile(path));
       expect(res).to.eql(file);
+    });
+
+    it('Uint8Array (no change)', async () => {
+      const file = await fs.readFile('test/images/tree.png');
+      expect(await Stream.toUint8Array(file)).to.equal(file);
+    });
+
+    it('json: {object}', async () => {
+      const json = { foo: 123 };
+      const res = await Stream.toUint8Array(json);
+      expect(Stream.decode(res)).to.eql(stringify(json));
+    });
+
+    it('json: [array]', async () => {
+      const json = [1, 2, 3];
+      const res = await Stream.toUint8Array(json);
+      expect(Stream.decode(res)).to.eql(stringify(json));
+    });
+
+    it('string', async () => {
+      const value = 'hello';
+      const res = await Stream.toUint8Array(value);
+      expect(Stream.decode(res)).to.eql(value);
+    });
+
+    it('number', async () => {
+      const value = 1234;
+      const res = await Stream.toUint8Array(value);
+      expect(Stream.decode(res)).to.eql(value.toString());
+    });
+
+    it('boolean', async () => {
+      const res1 = await Stream.toUint8Array(true);
+      const res2 = await Stream.toUint8Array(false);
+      expect(Stream.decode(res1)).to.eql('true');
+      expect(Stream.decode(res2)).to.eql('false');
+    });
+
+    it('null', async () => {
+      const value = null;
+      const res = await Stream.toUint8Array(value);
+      expect(Stream.decode(res)).to.eql('null');
+    });
+
+    it('undefined', async () => {
+      const value = undefined;
+      const res = await Stream.toUint8Array(value);
+      expect(Stream.decode(res)).to.eql('undefined');
     });
   });
 

@@ -35,13 +35,21 @@ export const Stream = {
   /**
    * Read the given stream into an [Uint8Array].
    */
-  async toUint8Array(input: ReadableStream | t.Json): Promise<Uint8Array> {
+  async toUint8Array(input: ReadableStream | t.Json | Uint8Array): Promise<Uint8Array> {
+    if (input instanceof Uint8Array) return input;
     const isStream = Stream.isReadableStream(input);
 
     // Process JSON.
     if (!isStream) {
-      const json = stringify(input as t.Json);
-      return Stream.encode(json);
+      const encode = Stream.encode;
+
+      if (typeof input === 'string') return encode(input);
+      if (typeof input === 'number') return encode(input.toString());
+      if (typeof input === 'boolean') return encode(input.toString());
+      if (input === undefined) return encode('undefined');
+      if (input === null) return encode('null');
+
+      return encode(stringify(input as t.Json));
     }
 
     // Prepare a stream writer.
