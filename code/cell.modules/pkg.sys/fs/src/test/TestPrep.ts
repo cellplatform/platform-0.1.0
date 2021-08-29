@@ -13,8 +13,7 @@ export const TestPrep = async (options: { id?: string; dir?: string } = {}) => {
         fs: TestFs.node,
       });
 
-  const index = TestFs.index(fs.dir);
-  const controller = FsBus.Controller({ id, bus, fs, index });
+  const controller = FsBus.Controller({ id, bus, fs });
   const events = FsBus.Events({ id, bus });
 
   let server: IRouterMock | undefined;
