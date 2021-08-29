@@ -17,6 +17,12 @@ export function BusEvents(args: {
   /**
    * NOTE: Inject the [node-js] platform specific
    *       mechanism for reading streams.
+   *
+   *       This differs from the newer web-standards for working
+   *       with streams, eg [ReadableStream] implementations, and
+   *       rather uses the early node implementation of reading/writing
+   *        to streams.
+   *
    */
   const toUint8Array = nodefs.stream.toUint8Array;
   return Events({ ...args, toUint8Array });

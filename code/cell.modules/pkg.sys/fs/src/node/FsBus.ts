@@ -2,8 +2,7 @@ import { BusController as Controller } from './FsBus.Controller';
 import { BusEvents as Events } from './FsBus.Events';
 
 /**
- * File-system Bus.
- * An event bus driven, platform agnostic, file-system interface.
+ * An "file-system bus" with the [node-js] "config" batteries included.
  */
 export const FsBus = {
   Controller,

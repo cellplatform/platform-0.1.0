@@ -9,10 +9,10 @@ type FilesystemId = string;
  * Event controller.
  */
 export function BusController(args: {
+  bus: t.EventBus<any>;
   id: FilesystemId;
   fs: t.FsDriverLocal;
   index: t.FsIndexer;
-  bus: t.EventBus<any>;
   filter?: (e: t.SysFsEvent) => boolean;
   httpFactory?: (host: string | number) => t.IHttpClient;
 }) {
