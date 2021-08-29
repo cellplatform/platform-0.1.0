@@ -1,4 +1,4 @@
-import { fs, t } from './common';
+import { nodefs, t, Path } from './common';
 
 type Id = string;
 
@@ -16,7 +16,7 @@ export function VercelDeploymentFiles(args: {
     throw new Error(`An public endpoint URL is required.`);
   }
 
-  const baseUrl = `https://${args.url.replace(/^http\:\/\//, '').replace(/\/*$/, '')}`;
+  const baseUrl = Path.trimHttp(args.url);
 
   const api: t.VercelHttpDeploymentFiles = {
     list,
@@ -25,7 +25,7 @@ export function VercelDeploymentFiles(args: {
      * Save the deployment files locally.
      */
     async pull(targetDir) {
-      await fs.ensureDir(targetDir);
+      await nodefs.ensureDir(targetDir);
 
       /**
        * TODO 🐷
@@ -49,7 +49,7 @@ export function VercelDeploymentFiles(args: {
       };
 
       const saveFile = async (dir: string, file: F) => {
-        let path = fs.join(dir, file.name);
+        let path = Path.join(dir, file.name);
 
         if (!path.startsWith('src/')) return;
         path = path.replace(/^src\//, '');
@@ -61,9 +61,8 @@ export function VercelDeploymentFiles(args: {
         console.log(res.status, path);
 
         if (res.ok) {
-          const out = fs.join(targetDir, path);
-          await fs.ensureDir(fs.dirname(out));
-          await fs.stream.save(out, res.body);
+          const out = Path.join(targetDir, path);
+          await nodefs.stream.save(out, res.body);
         }
 
         if (!res.ok) {
@@ -79,7 +78,7 @@ export function VercelDeploymentFiles(args: {
 
       const save = async (dir: string, file: F) => {
         if (file.type === 'file') return saveFile(dir, file);
-        if (file.type === 'directory') return saveDirectory(fs.join(dir, file.name), file);
+        if (file.type === 'directory') return saveDirectory(Path.join(dir, file.name), file);
         result(false, dir, file, { error: `File type '${file.type}' not supported.` });
       };
 

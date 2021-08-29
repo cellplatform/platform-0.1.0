@@ -1,4 +1,4 @@
-import { asArray, fs, t, util } from './common';
+import { asArray, t, util } from './common';
 import { VercelUploadFiles } from './VercelHttp.Files.Upload';
 
 /**
@@ -17,7 +17,7 @@ export async function deploy(
   const teamId = team.id;
 
   if (!(await fs.is.dir(dir))) {
-    throw new Error(`The source 'dir' is not a directory. ${dir}`);
+    throw new Error(`The source is not a directory. ${dir}`);
   }
 
   /**
@@ -33,7 +33,13 @@ export async function deploy(
       .filter((item) => Boolean(item.error))
       .map(({ file, error }) => `${file.file}: [${error?.code}] ${error?.message}`);
 
-    return { ok, files, error, errors, total };
+    return {
+      ok,
+      files,
+      error,
+      errors,
+      total,
+    };
   })();
 
   if (!uploaded.ok) {

@@ -1,4 +1,4 @@
-import { DEFAULT, fs, Mime, shasum, t, time } from './common';
+import { DEFAULT, nodefs, Mime, shasum, t, time, Path } from './common';
 
 type Id = string;
 
@@ -39,7 +39,7 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
     async upload(dir, options = {}) {
       const timer = time.timer();
 
-      if (!(await fs.is.dir(dir))) {
+      if (!(await nodefs.is.dir(dir))) {
         throw new Error(`The given path is not a directory. ${dir}`);
       }
 
@@ -57,7 +57,7 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
       const uploadBatch = async (paths: string[]) => {
         await Promise.all(
           paths.map(async (path) => {
-            const posted = await api.post(fs.join(dir, path));
+            const posted = await api.post(nodefs.join(dir, path));
             const { ok, status, contentType, contentLength, digest, error, elapsed } = posted;
             const file: t.VercelFileUpload = { file: path, sha: digest, size: contentLength };
             res.files.push({ ok, status, contentType, file, error, elapsed });
@@ -87,14 +87,14 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
 async function loadFile(input: Buffer | string) {
   const octet = 'application/octet-stream';
   const contentType = typeof input === 'string' ? Mime.toType(input, octet) : octet;
-  const file = typeof input === 'string' ? await fs.readFile(input) : input;
+  const file = typeof input === 'string' ? await nodefs.readFile(input) : input;
   const contentLength = file.byteLength;
   return { file, contentType, contentLength };
 }
 
 async function toPaths(dir: string, filter?: (path: string) => boolean) {
-  const pattern = `${dir.replace(/\/*$/, '')}/**/*`;
-  const paths = (await fs.glob.find(pattern)).map((path) => path.substring(dir.length + 1));
+  const pattern = `${Path.trimSlashesEnd(dir)}/**/*`;
+  const paths = (await nodefs.glob.find(pattern)).map((path) => path.substring(dir.length + 1));
   return filter ? paths.filter(filter) : paths;
 }
 

@@ -1,5 +1,5 @@
 import { VercelHttp } from '.';
-import { expect, fs, Http } from '../test';
+import { expect, nodefs, Http } from '../test';
 import { DEFAULT, util } from './common';
 
 /**
@@ -9,8 +9,8 @@ import { DEFAULT, util } from './common';
 describe('VercelHttp', function () {
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
   const http = Http.create();
-  const ctx = util.toCtx(fs, http, token);
-  const client = VercelHttp({ fs, token });
+  const ctx = util.toCtx(nodefs, http, token);
+  const client = VercelHttp({ fs: nodefs, token });
 
   describe('util', () => {
     it('toUrl', () => {
@@ -36,8 +36,8 @@ describe('VercelHttp', function () {
 
     it('toCtx', () => {
       const token = 'abc123';
-      const res1 = util.toCtx(fs, http, token);
-      const res2 = util.toCtx(fs, http, token, 1234);
+      const res1 = util.toCtx(nodefs, http, token);
+      const res2 = util.toCtx(nodefs, http, token, 1234);
 
       expect(res1.token).to.eql(token);
       expect(res1.Authorization).to.eql(`Bearer ${token}`);
@@ -49,8 +49,8 @@ describe('VercelHttp', function () {
 
     it('toCtx: ctx.url', () => {
       const token = 'abc123';
-      const res1 = util.toCtx(fs, http, token);
-      const res2 = util.toCtx(fs, http, token, 1234);
+      const res1 = util.toCtx(nodefs, http, token);
+      const res2 = util.toCtx(nodefs, http, token, 1234);
 
       expect(res1.url('foo')).to.match(new RegExp(`\/v${DEFAULT.version}\/foo$`));
       expect(res1.url('foo', { bar: 123 })).to.match(/\/foo\?bar=123$/);
@@ -61,8 +61,8 @@ describe('VercelHttp', function () {
   });
 
   it('create (API version)', async () => {
-    const client1 = VercelHttp({ fs, token });
-    const client2 = VercelHttp({ fs, token, version: 1234 });
+    const client1 = VercelHttp({ fs: nodefs, token });
+    const client2 = VercelHttp({ fs: nodefs, token, version: 1234 });
 
     expect(client1.version).to.eql(DEFAULT.version);
     expect(client2.version).to.eql(1234);
@@ -70,8 +70,7 @@ describe('VercelHttp', function () {
 
   it('not authorized', async () => {
     const token = 'abc123';
-    const client = VercelHttp({ fs, token });
-
+    const client = VercelHttp({ fs: nodefs, token });
     const res = await client.teams.list();
 
     expect(res.ok).to.eql(false);
@@ -83,7 +82,7 @@ describe('VercelHttp', function () {
   it('intercept http', async () => {
     const http = Http.create();
     // const token = 'abc123';
-    const client = VercelHttp({ fs, http, token });
+    const client = VercelHttp({ fs: nodefs, http, token });
 
     // type HttpLog = { status: number; method: t.HttpMethod; body: t.Json };
     // const after: HttpLog[] = [];

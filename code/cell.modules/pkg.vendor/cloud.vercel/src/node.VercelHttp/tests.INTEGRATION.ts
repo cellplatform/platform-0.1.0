@@ -1,5 +1,5 @@
 import { VercelHttp } from '.';
-import { fs, Http } from '../test';
+import { nodefs, Http } from '../test';
 import { DEFAULT, util } from './common';
 import { VercelUploadFiles } from './VercelHttp.Files.Upload';
 
@@ -11,6 +11,7 @@ import { VercelUploadFiles } from './VercelHttp.Files.Upload';
 describe.only('VercelHttp [INTEGRATION]', function () {
   this.timeout(30000);
 
+  const fs = nodefs;
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
   const client = VercelHttp({ fs, token });
   const http = Http.create();
