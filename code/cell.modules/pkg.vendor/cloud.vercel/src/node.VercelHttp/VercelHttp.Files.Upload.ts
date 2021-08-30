@@ -1,4 +1,4 @@
-import { DEFAULT, nodefs, Mime, shasum, t, time, Path } from './common';
+import { DEFAULT, nodefs, Mime, shasum, t, time, Path, deleteUndefined } from './common';
 
 type Id = string;
 
@@ -30,7 +30,7 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
       const error = ok ? undefined : (json.error as t.VercelHttpError);
       const elapsed = timer.elapsed.msec;
 
-      return { ok, status, error, digest, contentLength, contentType, elapsed };
+      return deleteUndefined({ ok, status, error, digest, contentLength, contentType, elapsed });
     },
 
     /**
@@ -73,7 +73,7 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
       res.ok = res.total.failed === 0;
       res.status = res.ok ? 200 : 400;
       res.elapsed = timer.elapsed.msec;
-      return res;
+      return deleteUndefined(res);
     },
   };
 

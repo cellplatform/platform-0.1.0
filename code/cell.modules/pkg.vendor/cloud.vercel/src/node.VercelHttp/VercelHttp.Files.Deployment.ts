@@ -1,4 +1,4 @@
-import { nodefs, t, Path } from './common';
+import { nodefs, t, Path, deleteUndefined } from './common';
 
 type Id = string;
 
@@ -96,7 +96,7 @@ export function VercelDeploymentFiles(args: {
       console.log('baseUrl', baseUrl);
 
       // Finish up.
-      return { ok, errors };
+      return deleteUndefined({ ok, errors });
     },
   };
 

@@ -1,4 +1,4 @@
-import { t } from './common';
+import { t, deleteUndefined } from './common';
 import { deploy } from './deploy';
 
 export function VercelTeamProject(args: {
@@ -37,7 +37,7 @@ export function VercelTeamProject(args: {
       const json = res.json as any;
       const project = (!ok ? {} : json) as t.VercelProject;
       const error = ok ? undefined : (json.error as t.VercelHttpError);
-      return { ok, status, project, error };
+      return deleteUndefined({ ok, status, project, error });
     },
 
     /**
@@ -55,7 +55,7 @@ export function VercelTeamProject(args: {
       const project = (ok ? json : {}) as t.VercelProject;
       const error = ok ? undefined : (json.error as t.VercelHttpError);
 
-      return { ok, status, project, error };
+      return deleteUndefined({ ok, status, project, error });
     },
 
     /**

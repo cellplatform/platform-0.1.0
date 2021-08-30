@@ -1,4 +1,4 @@
-import { t } from './common';
+import { t, deleteUndefined } from './common';
 import { VercelDeploymentFiles } from './VercelHttp.Files.Deployment';
 
 type Url = string;
@@ -10,7 +10,7 @@ export function VercelTeamDeployment(args: {
 }): t.VercelHttpTeamDeployment {
   const { ctx, team } = args;
   const teamId = team.id;
-  const { http, headers, version, token, fs } = ctx;
+  const { http, headers, version, token } = ctx;
 
   const api: t.VercelHttpTeamDeployment = {
     url: (args.url ?? '').trim().replace(/^https\:\/\//, ''),
@@ -35,7 +35,7 @@ export function VercelTeamDeployment(args: {
       const json = res.json as any;
       const deployment = (!ok ? {} : json) as t.VercelDeployment;
       const error = ok ? undefined : (json.error as t.VercelHttpError);
-      return { ok, status, deployment, error };
+      return deleteUndefined({ ok, status, deployment, error });
     },
 
     /**
@@ -64,7 +64,7 @@ export function VercelTeamDeployment(args: {
       ) as t.VercelHttpDeploymentFiles;
 
       const error = ok ? undefined : (json.error as t.VercelHttpError);
-      return { ok, status, files, error };
+      return deleteUndefined({ ok, status, files, error });
     },
   };
 

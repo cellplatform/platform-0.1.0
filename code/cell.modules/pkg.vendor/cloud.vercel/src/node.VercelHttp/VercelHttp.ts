@@ -10,15 +10,14 @@ import { VercelTeam } from './VercelHttp.Team';
  *    https://vercel.com/docs/integrations#webhooks/securing-webhooks
  */
 export function VercelHttp(args: {
-  fs: t.INodeFs;
+  fs: t.Fs;
   token: string;
   version?: number;
   http?: t.Http;
 }): t.VercelHttp {
-  const { fs } = args;
   const http = args.http ?? Http.create();
   const ctx = util.toCtx(args.fs, http, args.token, args.version);
-  const { token, version, headers } = ctx;
+  const { headers } = ctx;
 
   const api: t.VercelHttp = {
     version: ctx.version,

@@ -1,8 +1,6 @@
 import { nodefs, t, expect, rx } from '../test';
 import { VercelBus } from '.';
-import { DEFAULT } from './common';
-
-import { FsBus } from 'sys.fs/lib/node';
+import { DEFAULT, FsBus } from './common';
 
 describe.only('BusController', () => {
   const bus = rx.bus<t.VercelEvent>();

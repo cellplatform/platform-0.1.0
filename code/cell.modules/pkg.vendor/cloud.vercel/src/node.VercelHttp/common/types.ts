@@ -1,8 +1,8 @@
-import { INodeFs, Http, HttpMethod } from '../../node/common/types';
+import { INodeFs, Http, HttpMethod, Fs } from '../../node/common/types';
 
 export * from '../../web/common/types';
 export * from '../types';
-export { INodeFs, Http, HttpMethod };
+export { INodeFs, Http, HttpMethod, Fs };
 
 /**
  * Internal
@@ -15,7 +15,7 @@ export type Ctx = {
   token: string;
   headers: { [key: string]: string };
   Authorization: string;
-  fs: INodeFs;
+  fs: Fs;
   http: Http;
   url(path: string, query?: Q, options?: { version?: number }): string;
 };

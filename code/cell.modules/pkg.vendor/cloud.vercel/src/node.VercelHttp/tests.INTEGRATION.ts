@@ -1,5 +1,5 @@
 import { VercelHttp } from '.';
-import { nodefs, Http } from '../test';
+import { nodefs, Http, rx, FsBus } from '../test';
 import { DEFAULT, util } from './common';
 import { VercelUploadFiles } from './VercelHttp.Files.Upload';
 
@@ -11,7 +11,10 @@ import { VercelUploadFiles } from './VercelHttp.Files.Upload';
 describe.only('VercelHttp [INTEGRATION]', function () {
   this.timeout(30000);
 
-  const fs = nodefs;
+  const bus = rx.bus();
+  const store = FsBus.Controller({ bus, fs: '/' });
+  const fs = store.fs();
+
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
   const client = VercelHttp({ fs, token });
   const http = Http.create();
@@ -57,9 +60,9 @@ describe.only('VercelHttp [INTEGRATION]', function () {
        *    https://github.com/vercel/vercel/discussions/6499
        */
 
-      // const dir = fs.resolve('tmp/web');
-      // const dir = fs.resolve('dist/node');
-      // const dir = fs.resolve('../../pkg.sys/net/dist/web');
+      // const dir = nodefs.resolve('tmp/web');
+      // const dir = nodefs.resolve('dist/node');
+      // const dir = nodefs.resolve('../../pkg.sys/net/dist/web');
 
       const dirs = {
         // home: '/Users/phil/code/@tdb/deploy/archive.landing',
@@ -67,23 +70,23 @@ describe.only('VercelHttp [INTEGRATION]', function () {
         // esicZip: '/Users/phil/code/@tdb/modules/slc/dist/web',
       };
 
-      const tmp = fs.resolve('./tmp/deploy');
-      await fs.remove(tmp);
-      await fs.ensureDir(tmp);
+      const tmp = nodefs.resolve('./tmp/deploy');
+      await nodefs.remove(tmp);
+      await nodefs.ensureDir(tmp);
 
       // EU (ESIC)
-      await fs.copy(dirs.esic, fs.join(tmp, 'prog/esic.2021'));
-      await fs.remove(fs.join(tmp, 'static/images'));
+      await nodefs.copy(dirs.esic, nodefs.join(tmp, 'prog/esic.2021'));
+      await nodefs.remove(nodefs.join(tmp, 'static/images'));
 
       // Home (Landing Page)
       await (async () => {
         // const targetDir = ;
-        const zip = fs.join(tmp, 'home.zip');
-        await fs.copy('/Users/phil/code/@tdb/_archive/slc.prod.landing.zip', zip);
+        const zip = nodefs.join(tmp, 'home.zip');
+        await nodefs.copy('/Users/phil/code/@tdb/_archive/slc.prod.landing.zip', zip);
 
-        await fs.unzip(zip, fs.join(tmp));
-        await fs.rename(fs.join(tmp, 'slc.prod.landing'), fs.join(tmp, 'home'));
-        await fs.remove(zip);
+        await nodefs.unzip(zip, nodefs.join(tmp));
+        await nodefs.rename(fs.join(tmp, 'slc.prod.landing'), nodefs.join(tmp, 'home'));
+        await nodefs.remove(zip);
       })();
 
       // return;
@@ -95,17 +98,19 @@ describe.only('VercelHttp [INTEGRATION]', function () {
       console.log('deploying:', dir);
 
       const getRoutes = async (dir: string, src: string, dest: string) => {
-        const paths = (await fs.glob.find(`${dir}/**/*`)).map((p) => p.substring(dir.length + 1));
+        const paths = (await nodefs.glob.find(`${dir}/**/*`)).map((p) =>
+          p.substring(dir.length + 1),
+        );
         const routes = paths.map((path) => {
           return {
-            src: fs.join(src, path),
-            dest: fs.join(dest, path),
+            src: nodefs.join(src, path),
+            dest: nodefs.join(dest, path),
           };
         });
         return [
           {
-            src: fs.join(src, '/'),
-            dest: fs.join(dest, '/index.html'),
+            src: nodefs.join(src, '/'),
+            dest: nodefs.join(dest, '/index.html'),
           },
           ...routes,
         ];
@@ -150,16 +155,16 @@ describe.only('VercelHttp [INTEGRATION]', function () {
     it('EU: site only', async () => {
       const src = '/Users/phil/code/@tdb/modules/slc/dist/web';
       // const src = '/Users/phil/code/@tdb/modules/slc/dist/web/static/images';
-      const dir = fs.resolve('tmp/deploy');
-      await fs.remove(dir);
-      await fs.ensureDir(dir);
-      await fs.copy(src, dir);
+      const dir = nodefs.resolve('tmp/deploy');
+      await nodefs.remove(dir);
+      await nodefs.ensureDir(dir);
+      await nodefs.copy(src, dir);
 
-      const imagesDir = fs.resolve('tmp/images');
-      await fs.remove(imagesDir);
-      await fs.move(fs.join(dir, 'static/images'), imagesDir);
+      const imagesDir = nodefs.resolve('tmp/images');
+      await nodefs.remove(imagesDir);
+      await nodefs.move(fs.join(dir, 'static/images'), imagesDir);
 
-      const imagePaths = await fs.glob.find(`${imagesDir}/*/**`);
+      const imagePaths = await nodefs.glob.find(`${imagesDir}/*/**`);
 
       const routes = imagePaths.map((path) => {
         path = path.substring(imagesDir.length + 1);
@@ -168,7 +173,7 @@ describe.only('VercelHttp [INTEGRATION]', function () {
         const baseUrl = 'https://slc-dev-qhtezy14b-tdb.vercel.app';
 
         return {
-          src: fs.join('/static/images', path),
+          src: nodefs.join('/static/images', path),
           dest: `${baseUrl}/${path}`,
         };
       });
@@ -199,10 +204,10 @@ describe.only('VercelHttp [INTEGRATION]', function () {
     it('EU: deploy images only', async () => {
       // const src = '/Users/phil/code/@tdb/modules/slc/dist/web';
       const src = '/Users/phil/code/@tdb/modules/slc/dist/web/static/images';
-      const dir = fs.resolve('tmp/deploy');
-      await fs.remove(dir);
-      await fs.ensureDir(dir);
-      await fs.copy(src, dir);
+      const dir = nodefs.resolve('tmp/deploy');
+      await nodefs.remove(dir);
+      await nodefs.ensureDir(dir);
+      await nodefs.copy(src, dir);
 
       const team = await getTeam();
 
@@ -243,8 +248,8 @@ describe.only('VercelHttp [INTEGRATION]', function () {
       // console.log('-------------------------------------------');
       // return;
 
-      const dir = fs.resolve('tmp/save');
-      await fs.remove(dir);
+      const dir = nodefs.resolve('tmp/save');
+      await nodefs.remove(dir);
 
       console.log('dir', dir);
       const saved = await res.files.pull(dir);
@@ -263,7 +268,7 @@ describe.only('VercelHttp [INTEGRATION]', function () {
     const client = VercelUploadFiles({ ctx });
 
     it('post', async () => {
-      const path = fs.resolve('static.test/child/foo.d.txt');
+      const path = nodefs.resolve('static.test/child/foo.d.txt');
       const res = await client.post(path);
 
       console.log('-------------------------------------------');
@@ -271,7 +276,7 @@ describe.only('VercelHttp [INTEGRATION]', function () {
     });
 
     it('upload file (single)', async () => {
-      const path = fs.resolve('static.test/');
+      const path = nodefs.resolve('static.test/');
       const res = await client.upload(path, {});
 
       console.log('-------------------------------------------');
@@ -284,7 +289,7 @@ describe.only('VercelHttp [INTEGRATION]', function () {
 
   describe('deployment: upload then deploy', () => {
     it.only('deploy', async () => {
-      const dir = fs.resolve('./tmp/web');
+      const dir = nodefs.resolve('./tmp/web');
       const team = await getTeam();
 
       const target = 'staging';

@@ -1,4 +1,4 @@
-import { asArray, t, util } from './common';
+import { asArray, t, util, deleteUndefined } from './common';
 import { VercelUploadFiles } from './VercelHttp.Files.Upload';
 
 /**
@@ -13,17 +13,16 @@ export async function deploy(
   },
 ): Promise<t.VercelHttpDeployResponse> {
   const { ctx, dir, team, project } = args;
-  const { http, fs, headers } = ctx;
+  const { http, fs: fs2, headers } = ctx;
   const teamId = team.id;
 
-  if (!(await fs.is.dir(dir))) {
+  if (!(await fs2.is.dir(dir))) {
     throw new Error(`The source is not a directory. ${dir}`);
   }
 
   /**
-   * Upload files
+   * Upload files.
    */
-
   const uploaded = await (async () => {
     const client = VercelUploadFiles({ ctx, teamId });
     const res = await client.upload(dir);
@@ -33,13 +32,13 @@ export async function deploy(
       .filter((item) => Boolean(item.error))
       .map(({ file, error }) => `${file.file}: [${error?.code}] ${error?.message}`);
 
-    return {
+    return deleteUndefined({
       ok,
       files,
       error,
       errors,
       total,
-    };
+    });
   })();
 
   if (!uploaded.ok) {
@@ -55,11 +54,16 @@ export async function deploy(
    * the manifest {module} details.
    */
   const readManifest = async () => {
-    const path = fs.join(dir, 'index.json');
+    const path = fs2.join(dir, 'index.json');
 
-    if (!(await fs.exists(path))) return;
-    const file = await fs.readFile(path);
-    const manifest = JSON.parse(file.toString()) as t.ModuleManifest;
+    if (!(await fs2.exists(path))) return;
+    const file = await fs2.read(path);
+
+    const r = await fs2.read(path);
+    console.log('r', r);
+
+    const text = new TextDecoder().decode(file);
+    const manifest = JSON.parse(text) as t.ModuleManifest;
 
     return typeof manifest === 'object' && manifest.kind === 'module' ? manifest : undefined;
   };
@@ -125,7 +129,7 @@ export async function deploy(
     public: util.ensureHttps(json.url),
   };
 
-  return {
+  return deleteUndefined({
     ok,
     status,
     deployment,
@@ -133,5 +137,5 @@ export async function deploy(
     meta,
     urls,
     error,
-  };
+  });
 }
