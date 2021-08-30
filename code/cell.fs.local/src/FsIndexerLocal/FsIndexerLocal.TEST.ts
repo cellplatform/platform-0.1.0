@@ -4,27 +4,27 @@ import { Hash, expect, TestUtil } from '../test';
 describe('FsIndexer', () => {
   beforeEach(() => TestUtil.reset());
 
-  const fs = TestUtil.node;
+  const nodefs = TestUtil.node;
   const dir = TestUtil.PATH.LOCAL;
 
   const copy = async (source: string, target?: string) => {
-    const from = fs.join(fs.resolve('static.test'), source);
-    const to = fs.join(dir, target ?? source);
-    const data = await fs.readFile(from);
-    await fs.ensureDir(fs.dirname(to));
-    await fs.writeFile(to, data);
+    const from = nodefs.join(nodefs.resolve('static.test'), source);
+    const to = nodefs.join(dir, target ?? source);
+    const data = await nodefs.readFile(from);
+    await nodefs.ensureDir(nodefs.dirname(to));
+    await nodefs.writeFile(to, data);
     return to;
   };
 
   it('dir', () => {
     const dir = TestUtil.PATH.LOCAL;
-    const indexer = FsIndexerLocal({ fs, dir });
+    const indexer = FsIndexerLocal({ fs: nodefs, dir });
     expect(indexer.dir).to.eql(dir);
   });
 
   describe('manifest', () => {
     it('empty', async () => {
-      const indexer = FsIndexerLocal({ fs, dir });
+      const indexer = FsIndexerLocal({ fs: nodefs, dir });
       const manifest = await indexer.manifest();
 
       expect(manifest.kind).to.eql('dir');
@@ -37,12 +37,30 @@ describe('FsIndexer', () => {
       await copy('images/bird.png');
       await copy('images/award.svg', 'images/foo/bar/icon.svg');
 
-      const indexer = FsIndexerLocal({ fs, dir });
+      const indexer = FsIndexerLocal({ fs: nodefs, dir });
       const manifest = await indexer.manifest();
 
       expect(manifest.kind).to.eql('dir');
       expect(typeof manifest.dir.indexedAt === 'number').to.eql(true);
       expect(manifest.files.length).to.eql(3);
+    });
+
+    it('hash comparison (SHA256)', async () => {
+      const path1 = await copy('file.txt');
+      const path2 = await copy('images/bird.png');
+
+      const indexer = FsIndexerLocal({ fs: nodefs, dir });
+      const manifest = await indexer.manifest();
+
+      const src1 = Uint8Array.from(await nodefs.readFile(path1));
+      const src2 = Uint8Array.from(await nodefs.readFile(path2));
+
+      const find = (path: string) => manifest.files.find((file) => file.path === path);
+      const file1 = find('file.txt');
+      const file2 = find('images/bird.png');
+
+      expect(file1?.filehash).to.eql(Hash.sha256(src1));
+      expect(file2?.filehash).to.eql(Hash.sha256(src2));
     });
 
     it('filter', async () => {
@@ -51,7 +69,7 @@ describe('FsIndexer', () => {
       await copy('images/award.svg', 'foo/icon-1.svg');
       await copy('images/award.svg', 'foo/bar/icon-2.svg');
 
-      const indexer = FsIndexerLocal({ fs, dir });
+      const indexer = FsIndexerLocal({ fs: nodefs, dir });
       const manifest1 = await indexer.manifest({ filter: (e) => !e.path.endsWith('.svg') });
       const manifest2 = await indexer.manifest({ filter: (e) => !e.path.endsWith('.png') });
 
@@ -68,9 +86,9 @@ describe('FsIndexer', () => {
       await copy('images/award.svg', 'foo/icon-1.svg');
       await copy('images/award.svg', 'foo/bar/icon-2.svg');
 
-      const indexer = FsIndexerLocal({ fs, dir });
+      const indexer = FsIndexerLocal({ fs: nodefs, dir });
       const manifest1 = await indexer.manifest({ dir: 'foo' });
-      const manifest2 = await indexer.manifest({ dir: fs.join(dir, 'foo') });
+      const manifest2 = await indexer.manifest({ dir: nodefs.join(dir, 'foo') });
 
       const files1 = manifest1.files.map((file) => file.path);
       const files2 = manifest2.files.map((file) => file.path);
@@ -83,7 +101,7 @@ describe('FsIndexer', () => {
       await copy('file.txt');
       await copy('images/bird.png');
 
-      const indexer = FsIndexerLocal({ fs, dir });
+      const indexer = FsIndexerLocal({ fs: nodefs, dir });
       const manifest1 = await indexer.manifest({ dir });
 
       const files1 = manifest1.files.map((file) => file.path);
@@ -94,7 +112,7 @@ describe('FsIndexer', () => {
       await copy('file.txt');
       await copy('images/bird.png');
 
-      const indexer = FsIndexerLocal({ fs, dir });
+      const indexer = FsIndexerLocal({ fs: nodefs, dir });
       const manifest1 = await indexer.manifest({ dir: '' });
       const manifest2 = await indexer.manifest({ dir: '  ' });
 
@@ -109,7 +127,7 @@ describe('FsIndexer', () => {
       await copy('file.txt');
       await copy('images/bird.png');
 
-      const indexer = FsIndexerLocal({ fs, dir });
+      const indexer = FsIndexerLocal({ fs: nodefs, dir });
       const manifest = await indexer.manifest({ dir: 'foo/404' });
 
       expect(manifest.hash.files).to.eql(Hash.sha256([]));
@@ -121,7 +139,7 @@ describe('FsIndexer', () => {
       await copy('images/bird.png');
       await copy('images/award.svg');
 
-      const indexer = FsIndexerLocal({ fs, dir });
+      const indexer = FsIndexerLocal({ fs: nodefs, dir });
       const manifest = await indexer.manifest({ dir: 'images/bird.png' }); // NB: File specified, steps up to containing folder.
       const files = manifest.files.map((file) => file.path);
 

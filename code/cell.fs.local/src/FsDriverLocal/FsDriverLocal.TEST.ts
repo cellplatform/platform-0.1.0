@@ -2,12 +2,14 @@ import { t, expect, TestUtil, PATH, Hash } from '../test';
 import { FsDriverLocal } from '.';
 import { createReadStream } from 'fs';
 
+const nodefs = TestUtil.node;
+
 describe('FsDriverLocal', () => {
   beforeEach(() => TestUtil.reset());
 
   it('init', () => {
-    const root = TestUtil.node.resolve('tmp');
-    const fs = FsDriverLocal({ dir: root, fs: TestUtil.node });
+    const root = nodefs.resolve('tmp');
+    const fs = FsDriverLocal({ dir: root, fs: nodefs });
     expect(fs.dir).to.eql(root);
   });
 
@@ -69,7 +71,7 @@ describe('FsDriverLocal', () => {
       const fs = TestUtil.createLocal();
       const test = (uri: string, expected: string) => {
         const path = fs.resolve(uri).path;
-        expect(path).to.eql(TestUtil.node.join(fs.dir, expected));
+        expect(path).to.eql(nodefs.join(fs.dir, expected));
       };
 
       test('path:foo', 'foo');
@@ -173,7 +175,7 @@ describe('FsDriverLocal', () => {
         expect(file.location).to.eql(`file://${file.path}`);
         expect(file.path).to.eql(path);
 
-        const compare = await TestUtil.node.readFile(file.path);
+        const compare = await nodefs.readFile(file.path);
         expect(file.data).to.eql(compare);
         expect(file.hash).to.eql(Hash.sha256(new Uint8Array(compare)));
       };
@@ -197,7 +199,7 @@ describe('FsDriverLocal', () => {
         expect(file.location).to.eql(`file://${file.path}`);
         expect(file.path).to.eql(fs.resolve(uri).path);
         expect(file.hash).to.match(/^sha256-[a-z0-9]+/);
-        expect(png.toString()).to.eql((await TestUtil.node.readFile(file.path)).toString());
+        expect(png.toString()).to.eql((await nodefs.readFile(file.path)).toString());
       };
 
       await test('file:foo:123');
@@ -224,7 +226,6 @@ describe('FsDriverLocal', () => {
     });
 
     it('write (stream)', async () => {
-      const nodefs = TestUtil.node;
       const fs = TestUtil.createLocal();
 
       const srcPath = nodefs.resolve('static.test/images/bird.png');

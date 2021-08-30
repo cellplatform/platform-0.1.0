@@ -1,5 +1,5 @@
-import { deleteUndefined, Hash, t } from '../common';
-import { ManifestFileHash } from './ManifestFile.Hash';
+import { deleteUndefined, t } from '../common';
+import { loadFile, ManifestFileHash } from './ManifestFile.Hash';
 import { ManifestFileImage } from './ManifestFile.Image';
 
 export const ManifestFile = {
@@ -13,9 +13,9 @@ export const ManifestFile = {
     const { fs } = args;
 
     // File.
-    const file = await fs.readFile(args.path);
-    const bytes = file.byteLength;
-    const filehash = Hash.sha256(file);
+    const file = await loadFile(fs, args.path);
+    const bytes = file.bytes;
+    const filehash = file.hash;
     const path = args.path.substring(args.baseDir.length + 1);
 
     // Image (NB: Will return [undefined] if not an image-type).
