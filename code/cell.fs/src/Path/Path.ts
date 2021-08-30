@@ -36,10 +36,10 @@ export const Path = {
    *    This is a re-implementation of the native `join` method
    *    to allow this module to have no dependencies on platform node 'fs'.
    */
-  join(...input: string[]) {
-    const parts = input.map((part, i) => {
+  join(...segments: string[]) {
+    const parts = segments.map((part, i) => {
       const isFirst = i === 0;
-      const isLast = i === input.length - 1;
+      const isLast = i === segments.length - 1;
       part = isLast ? part : part.replace(/\/*$/, '');
       part = isFirst ? part : part.replace(/^\/*/, '');
       return part;
