@@ -2,22 +2,27 @@ import { EventBus } from '@platform/types';
 import { firstValueFrom, of, timeout } from 'rxjs';
 import { catchError, filter, takeUntil } from 'rxjs/operators';
 
-import { rx, slug, t } from './common';
+import { rx, slug, t, DEFAULT } from './common';
+
+type Instance = string;
 
 /**
  * Event API.
  */
 export function BusEvents(args: {
   bus: EventBus<any>;
+  id?: Instance;
   filter?: (e: t.VercelEvent) => boolean;
 }): t.VercelEvents {
+  const id = args.id ?? DEFAULT.id;
+
   const { dispose, dispose$ } = rx.disposable();
   const bus = rx.busAsType<t.VercelEvent>(args.bus);
   const is = BusEvents.is;
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
-    filter((e) => is.base(e)),
+    filter((e) => is.instance(e, id)),
     filter((e) => args.filter?.(e) ?? true),
   );
 
@@ -41,15 +46,15 @@ export function BusEvents(args: {
 
       bus.fire({
         type: 'vendor.vercel/info:req',
-        payload: { tx },
+        payload: { tx, id },
       });
 
       const res = await first;
-      return typeof res === 'string' ? { tx, error: res } : res;
+      return typeof res === 'string' ? { tx, id, error: res } : res;
     },
   };
 
-  return { $, is, dispose, dispose$, info };
+  return { $, id, is, dispose, dispose$, info };
 }
 
 /**
@@ -58,4 +63,5 @@ export function BusEvents(args: {
 const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
 BusEvents.is = {
   base: matcher('vendor.vercel/'),
+  instance: (e: t.Event, id: Instance) => BusEvents.is.base(e) && e.payload?.id === id,
 };

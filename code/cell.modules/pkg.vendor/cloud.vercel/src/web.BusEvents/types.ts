@@ -1,5 +1,6 @@
 import * as t from '../web/common/types';
 
+type Instance = string;
 type Milliseconds = number;
 
 export type VercelInfo = {
@@ -18,6 +19,7 @@ export type VercelEvent = VercelInfoReqEvent | VercelInfoResEvent;
 
 export type VercelEvents = t.Disposable & {
   $: t.Observable<t.VercelEvent>;
+  id: Instance;
   is: { base(input: any): boolean };
 
   info: {
@@ -34,10 +36,10 @@ export type VercelInfoReqEvent = {
   type: 'vendor.vercel/info:req';
   payload: VercelInfoReq;
 };
-export type VercelInfoReq = { tx?: string };
+export type VercelInfoReq = { tx?: string; id: Instance };
 
 export type VercelInfoResEvent = {
   type: 'vendor.vercel/info:res';
   payload: VercelInfoRes;
 };
-export type VercelInfoRes = { tx: string; info?: VercelInfo; error?: string };
+export type VercelInfoRes = { tx: string; id: Instance; info?: VercelInfo; error?: string };

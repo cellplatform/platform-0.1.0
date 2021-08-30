@@ -1,12 +1,16 @@
-import { fs, t, expect, rx } from '../test';
+import { nodefs, t, expect, rx } from '../test';
 import { VercelBus } from '.';
 import { DEFAULT } from './common';
 
+import { FsBus } from 'sys.fs/lib/node';
+
 describe.only('BusController', () => {
   const bus = rx.bus<t.VercelEvent>();
+  const store = FsBus.Controller({ bus, fs: nodefs.resolve('dist') });
+  const fs = store.fs();
 
   describe('Info', function () {
-    this.timeout(30000);
+    this.timeout(5000);
 
     it('defaults', async () => {
       const controller = VercelBus.Controller({ fs, bus });
@@ -15,7 +19,39 @@ describe.only('BusController', () => {
       const res = await events.info.get();
       controller.dispose();
 
+      expect(controller.id).to.eql(DEFAULT.id);
+      expect(controller.events.id).to.eql(DEFAULT.id);
+      expect(events.id).to.eql(DEFAULT.id);
       expect(res.info?.endpoint.version).to.eql(DEFAULT.version);
+    });
+
+    it('explicit id', async () => {
+      const id = 'my-instance';
+      const controller = VercelBus.Controller({ id, fs, bus });
+
+      expect(controller.id).to.eql(id);
+      expect(controller.events.id).to.eql(id);
+    });
+
+    it('defaults (FsBus)', async () => {
+      // const root = nodefs.resolve('tmp/root');
+      // const fs2 = store.fs();
+
+      const ls = await fs.info('/node/main.js');
+      console.log('ls', ls);
+
+      // const id = 'my-instance';
+      // const id = undefined;
+
+      const controller = VercelBus.Controller({ fs, bus });
+
+      // const events = VercelBus.Events({ bus });
+      // const res = await events.info.get();
+      // controller.dispose();
+
+      // expect(res.info?.endpoint.version).to.eql(DEFAULT.version);
+
+      controller.dispose();
     });
 
     it('filter', async () => {
@@ -25,6 +61,7 @@ describe.only('BusController', () => {
 
       const res1 = await events.info.get();
       allow = false;
+
       const res2 = await events.info.get({ timeout: 10 });
       controller.dispose();
 

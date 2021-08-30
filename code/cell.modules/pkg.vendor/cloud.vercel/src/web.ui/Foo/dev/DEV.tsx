@@ -17,8 +17,9 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
+    const id = 'my-instance';
     const bus = rx.bus<t.VercelEvent>();
-    const events = VercelBus.Events({ bus });
+    const events = VercelBus.Events({ id, bus });
 
     const ctx: Ctx = {
       bus,
