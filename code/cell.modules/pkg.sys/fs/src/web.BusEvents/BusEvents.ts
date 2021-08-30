@@ -43,7 +43,7 @@ export function BusEvents(args: {
   const remote = BusEventsCell({ id, $, bus, timeout: msecs });
 
   /**
-   * File-system API.
+   * Filesystem API.
    */
   const fs: t.SysFsEvents['fs'] = (input) => {
     const options = typeof input === 'string' ? { dir: input } : input;

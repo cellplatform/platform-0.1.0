@@ -7,7 +7,7 @@ type FileHash = string;
 
 export type SysFsInfo = {
   id: FilesystemId;
-  dir: DirPath; // The root directory of the file-system scope.
+  dir: DirPath; // The root directory of the filesystem scope.
 };
 
 export type SysFsPathInfo = {

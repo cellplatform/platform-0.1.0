@@ -6,7 +6,7 @@ import { rx, slug, t, timeoutWrangler } from './common';
 type FilesystemId = string;
 
 /**
- * Events for indexing a file-system.
+ * Events for indexing a filesystem.
  */
 export function BusEventsIndexer(args: {
   id: FilesystemId;
