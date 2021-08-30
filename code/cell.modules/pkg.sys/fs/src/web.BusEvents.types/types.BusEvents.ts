@@ -22,7 +22,7 @@ export type SysFsEvents = t.Disposable & {
   fs(subdir?: string): t.Fs;
 };
 
-type FsOptions = { subdir?: string; timeout?: Milliseconds };
+type FsOptions = { dir?: string; timeout?: Milliseconds };
 
 /**
  * Event API: indexing

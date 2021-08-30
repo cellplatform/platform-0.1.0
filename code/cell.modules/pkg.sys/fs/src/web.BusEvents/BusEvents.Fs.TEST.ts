@@ -200,7 +200,7 @@ describe('BusEvents.Fs', function () {
       const file = await mock.copy('static.test/child/tree.png', 'images/tree.png');
 
       const test = async (subdir: string, path: string) => {
-        const fs = mock.events.fs({ subdir });
+        const fs = mock.events.fs({ dir: subdir });
         const res = await fs.read(path);
         expect(Hash.sha256(res)).to.eql(file.hash);
       };
@@ -363,6 +363,22 @@ describe('BusEvents.Fs', function () {
 
         const fn = () => localfs.write('foo.json', data);
         await expectError(fn, 'timed out after 10 msecs');
+        await mock.dispose();
+      });
+
+      it('throw: attempt "step up" outside the root directory', async () => {
+        const mock = await TestPrep();
+        const src = await mock.readFile('static.test/data.json');
+        const localfs = mock.events.fs();
+
+        // Success.
+        const res = await localfs.write('data.json', src.data);
+        expect(res.hash).to.eql(src.hash);
+
+        // Fail (illegal path).
+        const fn = () => localfs.write('../../data.json', src.data);
+        await expectError(fn, 'Failed while writing');
+
         await mock.dispose();
       });
     });

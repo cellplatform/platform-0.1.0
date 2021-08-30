@@ -31,9 +31,8 @@ export function BusEvents(args: {
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
-    filter((e) => is.base(e)),
+    filter((e) => is.instance(e, id)),
     filter((e) => args.filter?.(e) ?? true),
-    filter((e) => e.payload.id === id),
   );
 
   /**
@@ -47,12 +46,12 @@ export function BusEvents(args: {
    * File-system API.
    */
   const fs: t.SysFsEvents['fs'] = (input) => {
-    const options = typeof input === 'string' ? { subdir: input } : input;
-    const { subdir } = options ?? {};
+    const options = typeof input === 'string' ? { dir: input } : input;
+    const { dir } = options ?? {};
     const timeout = toTimeout(options);
     const io = BusEventsIo({ id, $, bus, timeout });
     const index = BusEventsIndexer({ id, $, bus, timeout });
-    return BusEventsFs({ subdir, index, io, toUint8Array });
+    return BusEventsFs({ dir, index, io, toUint8Array });
   };
 
   /**
@@ -67,4 +66,5 @@ export function BusEvents(args: {
 const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
 BusEvents.is = {
   base: matcher('sys.fs/'),
+  instance: (e: t.Event, id: FilesystemId) => BusEvents.is.base(e) && e.payload?.id === id,
 };

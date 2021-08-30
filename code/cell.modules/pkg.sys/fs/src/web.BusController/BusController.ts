@@ -1,7 +1,7 @@
 import { BusControllerCell } from './BusController.Cell';
 import { BusControllerIndexer } from './BusController.Indexer';
 import { BusControllerIo } from './BusController.Io';
-import { BusEvents, HttpClient, rx, t } from './common';
+import { BusEvents, HttpClient, rx, t, cuid } from './common';
 
 type FilesystemId = string;
 
@@ -10,13 +10,14 @@ type FilesystemId = string;
  */
 export function BusController(args: {
   bus: t.EventBus<any>;
-  id: FilesystemId;
+  id?: FilesystemId;
   fs: t.FsDriverLocal;
   index: t.FsIndexer;
   filter?: (e: t.SysFsEvent) => boolean;
   httpFactory?: (host: string | number) => t.IHttpClient;
 }) {
-  const { id, fs, index } = args;
+  const { fs, index } = args;
+  const id = args.id || `fs-${cuid()}`;
 
   const bus = rx.busAsType<t.SysFsEvent>(args.bus);
   const events = BusEvents({ id, bus, filter: args.filter });
@@ -35,5 +36,13 @@ export function BusController(args: {
   /**
    * API
    */
-  return { id, dispose, dispose$ };
+  const dir = fs.dir;
+  return {
+    id,
+    dir,
+    dispose,
+    dispose$,
+    events,
+    fs: events.fs,
+  };
 }

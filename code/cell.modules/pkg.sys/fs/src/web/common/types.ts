@@ -3,7 +3,7 @@ export * from '../../types';
 /**
  * @platform
  */
-export { Disposable, EventBus, Json, JsonMap } from '@platform/types';
+export { Disposable, EventBus, Json, JsonMap, Event } from '@platform/types';
 export { Observable } from 'rxjs';
 export { Http, HttpMethod } from '@platform/http.types';
 

@@ -15,4 +15,10 @@ describe('BusEvents', () => {
     test('foo', false);
     test('sys.fs/', true);
   });
+
+  it('is.instance', async () => {
+    expect(is.instance({ type: 'sys.fs/', payload: { id: 'abc' } }, 'abc')).to.eql(true);
+    expect(is.instance({ type: 'sys.fs/', payload: { id: 'abc' } }, '123')).to.eql(false);
+    expect(is.instance({ type: 'foo', payload: { id: 'abc' } }, 'abc')).to.eql(false);
+  });
 });

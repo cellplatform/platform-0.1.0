@@ -4,19 +4,19 @@ import { Hash, Path, PathUri, t } from './common';
  * High level [Fs] interface for programming against the file-system.
  */
 export function BusEventsFs(args: {
-  subdir?: string;
+  dir?: string; // Sub-directory within root.
   index: t.SysFsEventsIndex;
   io: t.SysFsEventsIo;
   toUint8Array: t.SysFsAsUint8Array;
 }): t.Fs {
   const { io, index, toUint8Array } = args;
-  const subdir = Path.trim(args.subdir) ?? '';
+  const dir = Path.trim(args.dir) ?? '';
 
   // Path.
   const formatPath = (path: string) => {
     path = Path.trim(path);
     path = PathUri.trimPrefix(path);
-    path = Path.join(subdir, path);
+    path = Path.join(dir, path);
     path = Path.trimSlashesStart(path);
     return path;
   };
@@ -34,7 +34,7 @@ export function BusEventsFs(args: {
       throw new Error(res.error.message);
     }
 
-    path = subdir ? path.substring(subdir.length + 1) : path;
+    path = dir ? path.substring(dir.length + 1) : path;
     const file = res.paths[0];
     if (!file) {
       return unknown;
