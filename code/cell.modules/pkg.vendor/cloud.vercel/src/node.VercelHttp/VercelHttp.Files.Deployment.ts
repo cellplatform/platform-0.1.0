@@ -1,4 +1,4 @@
-import { nodefs, t, Path, deleteUndefined } from './common';
+import { t, Path, deleteUndefined } from './common';
 
 type Id = string;
 
@@ -10,7 +10,7 @@ export function VercelDeploymentFiles(args: {
   list: t.VercelDeploymentFile[];
 }): t.VercelHttpDeploymentFiles {
   const { ctx, list, teamId, deploymentId } = args;
-  const { http } = ctx;
+  const { http, fs } = ctx;
 
   if (!args.url) {
     throw new Error(`An public endpoint URL is required.`);
@@ -25,8 +25,6 @@ export function VercelDeploymentFiles(args: {
      * Save the deployment files locally.
      */
     async pull(targetDir) {
-      await nodefs.ensureDir(targetDir);
-
       /**
        * TODO 🐷
        * - recursively save [children] folders.
@@ -62,7 +60,7 @@ export function VercelDeploymentFiles(args: {
 
         if (res.ok) {
           const out = Path.join(targetDir, path);
-          await nodefs.stream.save(out, res.body);
+          await fs.write(out, res.body);
         }
 
         if (!res.ok) {

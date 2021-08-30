@@ -13,10 +13,10 @@ export async function deploy(
   },
 ): Promise<t.VercelHttpDeployResponse> {
   const { ctx, dir, team, project } = args;
-  const { http, fs: fs2, headers } = ctx;
+  const { http, fs, headers } = ctx;
   const teamId = team.id;
 
-  if (!(await fs2.is.dir(dir))) {
+  if (!(await fs.is.dir(dir))) {
     throw new Error(`The source is not a directory. ${dir}`);
   }
 
@@ -54,17 +54,8 @@ export async function deploy(
    * the manifest {module} details.
    */
   const readManifest = async () => {
-    const path = fs2.join(dir, 'index.json');
-
-    if (!(await fs2.exists(path))) return;
-    const file = await fs2.read(path);
-
-    const r = await fs2.read(path);
-    console.log('r', r);
-
-    const text = new TextDecoder().decode(file);
-    const manifest = JSON.parse(text) as t.ModuleManifest;
-
+    const path = fs.join(dir, 'index.json');
+    const manifest = await fs.json.read<t.ModuleManifest>(path);
     return typeof manifest === 'object' && manifest.kind === 'module' ? manifest : undefined;
   };
 
