@@ -10,9 +10,13 @@ export type FsPathFilterArgs = { path: string; is: { dir: boolean; file: boolean
  */
 export type FsIndexer = {
   dir: string; // Root directory of the file-system.
-
-  /**
-   * Generate a directory listing manifest.
-   */
-  manifest(options?: { dir?: DirPath; filter?: FsPathFilter }): Promise<t.DirManifest>;
+  manifest: FsIndexerGetManifest;
 };
+
+/**
+ * Generate a directory listing manifest.
+ */
+export type FsIndexerGetManifest = (
+  options?: FsIndexerGetManifestOptions,
+) => Promise<t.DirManifest>;
+export type FsIndexerGetManifestOptions = { dir?: DirPath; filter?: FsPathFilter };

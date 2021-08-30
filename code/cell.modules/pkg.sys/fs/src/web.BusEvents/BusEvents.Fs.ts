@@ -1,7 +1,7 @@
-import { Hash, Path, PathUri, t } from './common';
+import { Hash, Path, PathUri, t, stringify } from './common';
 
 /**
- * High level [Fs] interface for programming against the file-system.
+ * High level [Fs] interface for programming against the filesystem.
  */
 export function BusEventsFs(args: {
   dir?: string; // Sub-directory within root.
@@ -10,13 +10,14 @@ export function BusEventsFs(args: {
   toUint8Array: t.SysFsAsUint8Array;
 }): t.Fs {
   const { io, index, toUint8Array } = args;
-  const dir = Path.trim(args.dir) ?? '';
 
-  // Path.
+  // Paths.
+  const subdir = Path.trimSlashes(Path.trim(args.dir) ?? '');
+  const { join } = Path;
   const formatPath = (path: string) => {
     path = Path.trim(path);
     path = PathUri.trimPrefix(path);
-    path = Path.join(dir, path);
+    path = join(subdir, path);
     path = Path.trimSlashesStart(path);
     return path;
   };
@@ -34,7 +35,7 @@ export function BusEventsFs(args: {
       throw new Error(res.error.message);
     }
 
-    path = dir ? path.substring(dir.length + 1) : path;
+    path = subdir ? path.substring(subdir.length + 1) : path;
     const file = res.paths[0];
     if (!file) {
       return unknown;
@@ -43,6 +44,11 @@ export function BusEventsFs(args: {
     const { kind, hash, bytes } = file;
     const exists = Boolean(file.exists);
     return { kind, exists, hash, bytes, path };
+  };
+
+  const is: t.Fs['is'] = {
+    file: async (path) => (await info(path)).kind === 'file',
+    dir: async (path) => (await info(path)).kind === 'dir',
   };
 
   /**
@@ -120,8 +126,68 @@ export function BusEventsFs(args: {
     }
   };
 
+  const json: t.Fs['json'] = {
+    async read(path) {
+      const file = await read(path);
+      return file === undefined ? undefined : JSON.parse(new TextDecoder().decode(file));
+    },
+
+    async write(path, data: t.Json) {
+      if (data === undefined) throw new Error(`JSON cannot be undefined`);
+      return write(path, stringify(data));
+    },
+  };
+
+  const manifest: t.Fs['manifest'] = async (options = {}) => {
+    const { filter } = options;
+    const dir = options.dir === undefined ? subdir : formatPath(options.dir);
+
+    // Query the filesystem.
+    const res = await index.manifest.get({ dir });
+    if (res.error) {
+      throw new Error(res.error.message);
+    }
+
+    // Trim the files of the root sub-directory ("scope").
+    const manifest = { ...res.dirs[0]?.manifest };
+    if (subdir) {
+      manifest.files = manifest.files.map((file) => ({
+        ...file,
+        path: file.path.substring(subdir.length + 1),
+      }));
+    }
+
+    // Apply the given filter.
+    if (filter) {
+      manifest.files = manifest.files.filter((file) => {
+        const path = file.path;
+        return filter({ path, is: { dir: false, file: true } });
+      });
+    }
+
+    return manifest;
+  };
+
+  const dir: t.Fs['dir'] = (path) => {
+    const dir = join(subdir, Path.trimSlashesStart(path));
+    return BusEventsFs({ dir, index, io, toUint8Array });
+  };
+
   /**
    * API
    */
-  return { info, exists, read, write, copy, move, delete: del };
+  return {
+    info,
+    exists,
+    is,
+    join,
+    read,
+    write,
+    copy,
+    move,
+    delete: del,
+    json,
+    manifest,
+    dir,
+  };
 }

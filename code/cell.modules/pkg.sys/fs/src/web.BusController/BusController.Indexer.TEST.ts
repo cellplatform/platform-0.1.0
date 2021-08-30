@@ -1,6 +1,6 @@
 import { DEFAULT, expect, Hash, t, TestFs, TestPrep } from '../test';
 
-const fs = TestFs.node;
+const nodefs = TestFs.node;
 
 describe('BusController.Indexer', function () {
   this.beforeEach(() => TestFs.reset());
@@ -28,13 +28,14 @@ describe('BusController.Indexer', function () {
 
     it('root (no "dir" parameter passed)', async () => {
       const mock = await TestPrep();
+      const io = mock.events.io;
       const src1 = await TestFs.readFile('static.test/data/01.json');
       const src2 = await TestFs.readFile('static.test/child/tree.png');
 
       const path1 = '/foo/data.json';
       const path2 = '/bar/tree.png';
-      await mock.events.io.write.fire({ path: path1, hash: src1.hash, data: src1.data });
-      await mock.events.io.write.fire({ path: path2, hash: src2.hash, data: src2.data });
+      await io.write.fire({ path: path1, hash: src1.hash, data: src1.data });
+      await io.write.fire({ path: path2, hash: src2.hash, data: src2.data });
 
       const res = await mock.events.index.manifest.get();
       await mock.dispose();
@@ -122,6 +123,31 @@ describe('BusController.Indexer', function () {
       expect(files4).to.eql([]);
     });
 
+    it('hash comparison (SHA256)', async () => {
+      const mock = await TestPrep();
+      const io = mock.events.io;
+
+      const src1 = await TestFs.readFile('static.test/data/01.json');
+      const src2 = await TestFs.readFile('static.test/child/tree.png');
+
+      const path1 = 'foo/data.json';
+      const path2 = 'bar/tree.png';
+      await io.write.fire({ path: path1, hash: src1.hash, data: src1.data });
+      await io.write.fire({ path: path2, hash: src2.hash, data: src2.data });
+
+      const res = await mock.events.index.manifest.get();
+      const manifest = res.dirs[0].manifest;
+
+      const find = (path: string) => manifest.files.find((file) => file.path === path);
+      const file1 = find(path1);
+      const file2 = find(path2);
+
+      expect(file1?.filehash).to.eql(src1.hash);
+      expect(file2?.filehash).to.eql(src2.hash);
+
+      await mock.dispose();
+    });
+
     it('error: binary not an image, but named with an image extension ', async () => {
       const mock = await TestPrep();
       const io = mock.events.io;
@@ -156,12 +182,12 @@ describe('BusController.Indexer', function () {
       await write('/data/foo/data.json');
 
       const all = ['root.json', 'data/bar/list.json', 'data/foo/data.json'];
-      const cachefile = fs.join(mock.dir, DEFAULT.CACHE_FILENAME);
+      const cachefile = nodefs.join(mock.dir, DEFAULT.CACHE_FILENAME);
 
       const loadCachedFile = async (filename?: string) => {
-        const cachefile = fs.join(mock.dir, filename ?? DEFAULT.CACHE_FILENAME);
-        if (!(await fs.exists(cachefile))) return undefined;
-        return (await fs.readJson(cachefile)) as t.DirManifest;
+        const cachefile = nodefs.join(mock.dir, filename ?? DEFAULT.CACHE_FILENAME);
+        if (!(await nodefs.exists(cachefile))) return undefined;
+        return (await nodefs.readJson(cachefile)) as t.DirManifest;
       };
 
       return { mock, all, cachefile, loadCachedFile };
@@ -171,7 +197,7 @@ describe('BusController.Indexer', function () {
       const { mock, all, cachefile } = await cachePrep();
       const test = async (cache: boolean | undefined) => {
         const res = await mock.events.index.manifest.get({ cache });
-        expect(await fs.exists(cachefile)).to.eql(false);
+        expect(await nodefs.exists(cachefile)).to.eql(false);
 
         const files = asFiles(res.dirs[0]);
         expect(files).to.eql(all);
@@ -189,13 +215,13 @@ describe('BusController.Indexer', function () {
 
       const res1 = await mock.events.index.manifest.get({ cache: true });
       expect(asFiles(res1.dirs[0])).to.eql(all);
-      expect(await fs.exists(cachefile)).to.eql(true);
+      expect(await nodefs.exists(cachefile)).to.eql(true);
       expect(await loadCachedFile()).to.eql(res1.dirs[0].manifest);
 
       // Manipulate the cached file to test if it's used.
       const json = await loadCachedFile();
       (json?.files[0] as any).foobar = 'my-test';
-      await fs.writeJson(cachefile, json);
+      await nodefs.writeJson(cachefile, json);
 
       // Requery and ensure the cached version is returned.
       const res2 = await mock.events.index.manifest.get({ cache: true });
@@ -214,7 +240,7 @@ describe('BusController.Indexer', function () {
       // Manipulate the cached file to test if it's used.
       const json = await loadCachedFile();
       (json?.files[0] as any).foobar = 'my-test';
-      await fs.writeJson(cachefile, json);
+      await nodefs.writeJson(cachefile, json);
 
       // Requery and ensure the cached version is returned.
       const res2 = await mock.events.index.manifest.get({ cache: true });
@@ -255,11 +281,11 @@ describe('BusController.Indexer', function () {
         cache: true,
       });
 
-      const cacheFile = (path: string) => fs.join(path, DEFAULT.CACHE_FILENAME);
+      const cacheFile = (path: string) => nodefs.join(path, DEFAULT.CACHE_FILENAME);
 
       const expectExists = async (path: string, expected: boolean) => {
-        path = fs.join(mock.dir, path);
-        const exists = await fs.exists(path);
+        path = nodefs.join(mock.dir, path);
+        const exists = await nodefs.exists(path);
         expect(exists).to.eql(expected);
       };
       await expectExists('data/404', false); // NB: When a folder doesn't exist, it is not created by the cache.
