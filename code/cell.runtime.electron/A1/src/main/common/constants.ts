@@ -1,7 +1,7 @@
 import { app } from 'electron';
 
 export * from '../../renderer.preload/constants';
-export * from './constants.paths';
+export * from './constants.PATHS';
 
 type Pkg = { name: string; version: string };
 const pkg = require('../../../package.json') as Pkg; // eslint-disable-line

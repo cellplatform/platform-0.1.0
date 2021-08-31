@@ -24,8 +24,8 @@ export const Paths = {
 
     return {
       dir,
-      db: `${dir}/data/db`,
-      dbfs: `${dir}/data/db.fs`,
+      db: `${dir}/data/main.db`,
+      dbfs: `${dir}/data/main.db.fs`,
       files: `${dir}/data/files`,
       config: `${dir}/data/config.json`,
       archive: `${dir}/data.backup`,

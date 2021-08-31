@@ -185,12 +185,13 @@ async function logMain(args: {
   add('env', ENV.node || '<empty>');
   add('packaged', ENV.isPackaged);
   add('node', process.versions.node);
+  add('electron', process.versions.electron);
 
   line();
   await addPath('preload', args.paths.preload);
   await addPath('db', args.paths.data.db);
-  await addPath('db(files)', args.paths.data.dbfs);
-  await addPath('fs', args.paths.data.fs);
+  await addPath('db(fs)', args.paths.data.dbfs);
+  await addPath('fs', args.paths.data.files);
   await addPath('config', args.paths.data.config);
   await addPath('log', args.paths.data.log);
   line();

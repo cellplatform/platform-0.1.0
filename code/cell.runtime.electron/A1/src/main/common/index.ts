@@ -3,7 +3,7 @@ import * as t from './types';
 import * as util from './util';
 
 export { t, constants, util };
-export * from './constants.paths';
+export * from './constants.PATHS';
 export * from './libs';
 export * from './util';
 export * from './log';
