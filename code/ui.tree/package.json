@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.tree",
   "description": "A hierarchical tree visualisation and navigation component.",
-  "version": "0.8.49",
+  "version": "0.8.50",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -15,24 +15,24 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/css": "0.4.48",
-    "@platform/react": "0.4.81",
-    "@platform/state": "0.7.50",
-    "@platform/state.types": "0.1.13",
-    "@platform/types": "0.5.23",
-    "@platform/ui.icon": "0.0.200",
-    "@platform/ui.panel": "0.2.49",
-    "@platform/ui.spinner": "0.0.197",
-    "@platform/ui.text": "0.3.112",
-    "@platform/ui.tree.types": "0.0.44",
-    "@platform/util.animate": "0.0.121",
-    "@platform/util.value": "0.9.8"
+    "@platform/css": "0.4.49",
+    "@platform/react": "0.4.82",
+    "@platform/state": "0.7.51",
+    "@platform/state.types": "0.1.14",
+    "@platform/types": "0.5.24",
+    "@platform/ui.icon": "0.0.201",
+    "@platform/ui.panel": "0.2.50",
+    "@platform/ui.spinner": "0.0.198",
+    "@platform/ui.text": "0.3.113",
+    "@platform/ui.tree.types": "0.0.45",
+    "@platform/util.animate": "0.0.122",
+    "@platform/util.value": "0.9.9"
   },
   "devDependencies": {
-    "@platform/test": "0.2.8",
-    "@platform/ts": "4.1.21",
-    "@platform/ui.button": "0.3.116",
-    "@platform/ui.dev": "0.0.55",
+    "@platform/test": "0.2.9",
+    "@platform/ts": "4.1.22",
+    "@platform/ui.button": "0.3.117",
+    "@platform/ui.dev": "0.0.56",
     "react-icons": "4.2.0"
   },
   "files": [

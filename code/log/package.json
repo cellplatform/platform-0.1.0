@@ -1,6 +1,6 @@
 {
   "name": "@platform/log",
-  "version": "0.1.60",
+  "version": "0.1.61",
   "description": "Client and server logging.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,13 +15,13 @@
     "tmp": "cd src/client && ts $@"
   },
   "dependencies": {
-    "@platform/libs": "0.2.12",
+    "@platform/libs": "0.2.13",
     "chalk": "4.1.1",
     "cli-table": "0.3.6"
   },
   "devDependencies": {
-    "@platform/test": "0.2.8",
-    "@platform/ts": "4.1.21"
+    "@platform/test": "0.2.9",
+    "@platform/ts": "4.1.22"
   },
   "files": [
     "lib",

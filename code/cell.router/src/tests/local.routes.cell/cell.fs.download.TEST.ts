@@ -112,7 +112,6 @@ describe('cell.fs: download', function () {
       await test('file.js', 'm.foo.bar.z.pdf');
       await test('file.js', 'm.foo.bar');
       await test('file.js', 'm.foo.bar/foo/z/p.file.js');
-      await test('file.js', 'foobar/index.html');
 
       await test('file.js', 'root/foobar/index.js');
       await test('file.js', 'root/foo_bar/index.js');

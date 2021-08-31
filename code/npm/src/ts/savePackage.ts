@@ -1,4 +1,4 @@
-import { IFs } from '@platform/fs.types';
+import { INodeFs } from '@platform/fs.types';
 import { INpmPackageJson } from '@platform/types';
 
 /**
@@ -6,7 +6,7 @@ import { INpmPackageJson } from '@platform/types';
  * as typescript constants.
  */
 export async function savePackage(args: {
-  fs: IFs;
+  fs: INodeFs;
   source?: string;
   target: string;
   fields?: (keyof INpmPackageJson)[];

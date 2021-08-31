@@ -3,7 +3,7 @@ import { IMemoryCache } from '@platform/cache/lib/types';
 
 export { IMemoryCache };
 export { Subject, Observable } from 'rxjs';
-export { IFs } from '@platform/fs.types';
+export { INodeFs } from '@platform/fs.types';
 export { Json } from '@platform/types';
 
 export * from '@platform/types';

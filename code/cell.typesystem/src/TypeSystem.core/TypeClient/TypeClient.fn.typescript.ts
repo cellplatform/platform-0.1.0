@@ -87,7 +87,7 @@ export function typescript(
     /**
      * Save the typescript declarations as a binary file.
      */
-    async save(fs: t.IFs, path: string) {
+    async save(fs: t.INodeFs, path: string) {
       const errors = defs.reduce((acc, next) => [...acc, ...next.errors], [] as t.ITypeError[]);
       if (errors.length > 0) {
         const lines = errors.map((err, i) => `${i + 1}) ${err.message}`).join('\n');
