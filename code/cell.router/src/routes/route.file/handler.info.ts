@@ -34,7 +34,7 @@ export async function fileInfo(args: {
     };
     const status = exists ? 200 : 404;
     return { status, data: res as t.IResGetFile };
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 }

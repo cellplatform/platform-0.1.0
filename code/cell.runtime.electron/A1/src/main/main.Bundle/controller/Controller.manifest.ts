@@ -39,7 +39,7 @@ export function ManifestController(args: {
       }
 
       done({ manifest }); // Success.
-    } catch (err) {
+    } catch (err: any) {
       // Fail.
       const error = `Failed while fetching manifest. ${err.message}`;
       return done({ error });

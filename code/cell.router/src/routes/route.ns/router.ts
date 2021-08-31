@@ -33,7 +33,7 @@ export function init(args: { fs: t.FsDriver; db: t.IDb; router: t.Router }) {
       const params = req.params as t.IUrlParamsCell;
       const path = `/cell:${params.ns}:${params.key}${req.query.toString()}`;
       return req.redirect(path);
-    } catch (err) {
+    } catch (err: any) {
       return util.toErrorPayload(err);
     }
   });

@@ -95,7 +95,7 @@ export const createMock = async (args: CreateArgs = {}): Promise<IRouterMock> =>
 const tryIgnore = async (fn: () => any) => {
   try {
     await fn();
-  } catch (error) {
+  } catch (err: any) {
     // Ignore.
   }
 };

@@ -31,7 +31,7 @@ export function init(args: { db: t.IDb; fs: t.FsDriver; router: t.Router }) {
       return !paramData.ns || error
         ? { status, data: { error } }
         : listCellFiles({ host, db, fs, cellUri, expires, includeFiles, includeUrls, filter });
-    } catch (err) {
+    } catch (err: any) {
       return util.toErrorPayload(err);
     }
   });
@@ -64,7 +64,7 @@ export function init(args: { db: t.IDb; fs: t.FsDriver; router: t.Router }) {
       return !paramData.ns || error
         ? { status, data: { error } }
         : uploadCellFilesStart({ db, fs, cellUri, body, host, changes });
-    } catch (err) {
+    } catch (err: any) {
       return util.toErrorPayload(err);
     }
   });
@@ -89,7 +89,7 @@ export function init(args: { db: t.IDb; fs: t.FsDriver; router: t.Router }) {
       return !paramData.ns || error
         ? { status, data: { error } }
         : uploadCellFilesComplete({ db, fs, cellUri, body, host, changes });
-    } catch (err) {
+    } catch (err: any) {
       return util.toErrorPayload(err);
     }
   });
@@ -109,7 +109,7 @@ export function init(args: { db: t.IDb; fs: t.FsDriver; router: t.Router }) {
       return !paramData.ns || error
         ? { status, data: { error } }
         : deleteCellFiles({ db, fs, cellUri, body, host });
-    } catch (err) {
+    } catch (err: any) {
       return util.toErrorPayload(err);
     }
   });
@@ -131,7 +131,7 @@ export function init(args: { db: t.IDb; fs: t.FsDriver; router: t.Router }) {
       return !paramData.ns || error
         ? { status, data: { error } }
         : copyCellFiles({ db, fs, cellUri, body, host, changes, permission });
-    } catch (err) {
+    } catch (err: any) {
       return util.toErrorPayload(err);
     }
   });

@@ -53,7 +53,7 @@ export const downloadFilePreflight = async (args: {
 
     // Finish up.
     return { mime, location, file };
-  } catch (err) {
+  } catch (err: any) {
     // Fail.
     const message = err.message;
     const type = ERROR.HTTP.SERVER;

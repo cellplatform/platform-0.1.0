@@ -67,7 +67,7 @@ export const downloadTextFile = async (args: {
 
     // Finish up.
     return done(data);
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 };

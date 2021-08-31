@@ -47,7 +47,7 @@ export async function listCellFiles(args: {
 
     // Finish up.
     return { status: 200, data };
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 }

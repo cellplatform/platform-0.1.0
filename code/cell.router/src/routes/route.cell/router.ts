@@ -19,7 +19,7 @@ export function init(args: { db: t.IDb; router: t.Router }) {
       const ns = Schema.urls(req.host).ns(params.ns).info;
       const url = ns.query(req.query).toString();
       return req.redirect(url);
-    } catch (err) {
+    } catch (err: any) {
       return util.toErrorPayload(err);
     }
   });
@@ -37,7 +37,7 @@ export function init(args: { db: t.IDb; router: t.Router }) {
         getUri: (id, key) => Schema.Uri.create.cell(id, key),
       });
       return error ? { status, data: { error } } : cellInfo({ host, db, uri });
-    } catch (err) {
+    } catch (err: any) {
       return util.toErrorPayload(err);
     }
   });
@@ -55,7 +55,7 @@ export function init(args: { db: t.IDb; router: t.Router }) {
         getUri: (id, key) => Schema.Uri.create.row(id, key),
       });
       return error ? { status, data: { error } } : rowInfo({ host, db, uri });
-    } catch (err) {
+    } catch (err: any) {
       return util.toErrorPayload(err);
     }
   });
@@ -73,7 +73,7 @@ export function init(args: { db: t.IDb; router: t.Router }) {
         getUri: (id, key) => Schema.Uri.create.column(id, key),
       });
       return error ? { status, data: { error } } : columnInfo({ host, db, uri });
-    } catch (err) {
+    } catch (err: any) {
       return util.toErrorPayload(err);
     }
   });

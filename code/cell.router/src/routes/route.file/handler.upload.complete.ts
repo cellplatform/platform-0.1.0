@@ -99,7 +99,7 @@ export async function uploadFileComplete(args: {
     };
 
     return res;
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 }

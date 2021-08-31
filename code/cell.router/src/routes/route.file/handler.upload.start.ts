@@ -94,7 +94,7 @@ export async function uploadFileStart(args: {
     };
 
     return res;
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 }

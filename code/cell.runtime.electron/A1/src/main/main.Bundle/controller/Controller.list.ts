@@ -60,7 +60,7 @@ export function ListController(args: {
       const items = list.reduce((acc, next) => [...acc, ...next], []);
 
       return done({ items }); // Success.
-    } catch (err) {
+    } catch (err: any) {
       const error = `Failed while retrieving list. ${err.message}`;
       return done({ error }); // Failure.
     }

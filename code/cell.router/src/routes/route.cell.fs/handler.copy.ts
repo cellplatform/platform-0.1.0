@@ -123,8 +123,8 @@ export async function copyCellFiles(args: {
             });
           }
         }
-      } catch (error) {
-        addError(`Failed while preparing to copy '${file.filename}'. ${error.message}`);
+      } catch (err: any) {
+        addError(`Failed while preparing to copy '${file.filename}'. ${err.message}`);
       }
     }),
   );
@@ -159,8 +159,8 @@ export async function copyCellFiles(args: {
 
       await util.fs.remove(path);
       return { ok };
-    } catch (error) {
-      addError(`Failed while uploading '${item.file.filename}'. ${error.message}`);
+    } catch (err: any) {
+      addError(`Failed while uploading '${item.file.filename}'. ${err.message}`);
       return { ok: false };
     }
   };
@@ -217,8 +217,8 @@ export async function copyCellFiles(args: {
           }
         }
       }
-    } catch (error) {
-      addError(`Failed while copying '${item.file.filename}'. ${error.message}`);
+    } catch (err: any) {
+      addError(`Failed while copying '${item.file.filename}'. ${err.message}`);
     }
   };
 

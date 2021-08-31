@@ -75,7 +75,7 @@ export async function postNs(args: {
       changes: defaultValue(query.changes, true) ? changes : undefined, // NB: don't send if suppressed in query-string (?changes=false)
     };
     return { status: res.status, data };
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 }

@@ -20,7 +20,7 @@ export function StatusController(args: {
 
     try {
       done({ menu: ref.current });
-    } catch (err) {
+    } catch (err: any) {
       const error = `Failed while retrieving menu status. ${err.message}`;
       done({ error }); // Failure.
     }

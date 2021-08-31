@@ -53,7 +53,7 @@ export function PatchController(args: { bus: t.EventBus<t.MenuEvent>; events: t.
       // Reload the menu with the newly patches changes.
       const res = await events.load.fire(root, { timeout });
       return res.error ? fail(res.error) : done({ menu: res.menu });
-    } catch (err) {
+    } catch (err: any) {
       fail(`Failed patching menu '${id}'. ${err.message}`); // Failure.
     }
   });

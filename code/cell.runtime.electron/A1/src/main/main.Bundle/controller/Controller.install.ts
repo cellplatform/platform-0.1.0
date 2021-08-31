@@ -128,8 +128,8 @@ export function InstallController(args: {
       }
 
       return done(!exists ? 'created' : 'replaced'); // Success.
-    } catch (error) {
-      return fireError(`Failed during installation. ${error.message}`); // Failure.
+    } catch (err: any) {
+      return fireError(`Failed during installation. ${err.message}`); // Failure.
     }
   });
 }
@@ -167,7 +167,7 @@ const fetchManifest = async (path: string) => {
       const manifest = res.json;
       return res.ok && manifest ? success(manifest) : error(`Failed to download manifest.`.trim());
     }
-  } catch (err) {
+  } catch (err: any) {
     return error(`Failed while fetching manifest. ${err.message}`);
   }
 

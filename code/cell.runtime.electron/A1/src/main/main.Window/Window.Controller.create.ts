@@ -56,6 +56,7 @@ export function WindowCreationController(args: {
           allowRunningInsecureContent: false, // NB: Default:false - but explicitly set false for good measure.
           additionalArguments: argv,
           preload: constants.Paths.preload,
+          nativeWindowOpen: true, // https://github.com/electron/electron/issues/28511
         },
       });
 

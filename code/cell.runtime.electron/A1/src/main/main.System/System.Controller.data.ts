@@ -55,7 +55,7 @@ const data = {
       if (options.quit) {
         app.quit();
       }
-    } catch (err) {
+    } catch (err: any) {
       log.info(`Failed why running the data "snapshot/reset" operation. ${err.message}`);
       throw err;
     }
@@ -104,7 +104,7 @@ const data = {
       log.info();
 
       return { dir, path };
-    } catch (err) {
+    } catch (err: any) {
       log.info(`Failed why running the data "snapshot" operation. ${err.message}`);
       throw err;
     }

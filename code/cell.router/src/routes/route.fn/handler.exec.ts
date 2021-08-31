@@ -85,7 +85,7 @@ export async function exec(args: {
       };
       return { status, data };
     }
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 }

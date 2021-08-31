@@ -62,7 +62,7 @@ export const downloadBinaryFile = async (args: {
     // Something went wrong if we got this far.
     const err = `[${file.uri}] could not be served.`;
     return util.toErrorPayload(err, { status: 500 });
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 };

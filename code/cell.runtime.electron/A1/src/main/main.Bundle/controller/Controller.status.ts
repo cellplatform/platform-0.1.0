@@ -72,9 +72,9 @@ export function StatusController(args: {
       };
 
       done({ status }); // Success.
-    } catch (error) {
+    } catch (err: any) {
       // Failure.
-      return fireError(`Status request [${errorContext()}] failed. ${error.message}`);
+      return fireError(`Status request [${errorContext()}] failed. ${err.message}`);
     }
   });
 }

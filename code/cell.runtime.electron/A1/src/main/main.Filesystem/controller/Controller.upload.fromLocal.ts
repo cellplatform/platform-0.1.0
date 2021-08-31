@@ -52,7 +52,7 @@ export async function uploadFromLocal(args: {
     }
 
     return done(); // Success.
-  } catch (err) {
+  } catch (err: any) {
     if (err.message.includes('ECONNREFUSED')) {
       log.info.yellow(`[Upload Error] Ensure the target server is online. ${log.gray(host)}`);
     } else {
