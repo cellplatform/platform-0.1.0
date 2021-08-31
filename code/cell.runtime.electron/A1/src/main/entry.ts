@@ -1,6 +1,17 @@
 import { app } from 'electron';
 
-import { ConfigFile, constants, fs, Genesis, HttpClient, log, rx, t, time } from './common';
+import {
+  ConfigFile,
+  constants,
+  fs,
+  Genesis,
+  HttpClient,
+  log,
+  rx,
+  t,
+  time,
+  Filesystem,
+} from './common';
 import { Bundle } from './main.Bundle';
 import { Log } from './main.Log';
 import { Menu } from './main.Menu';
@@ -88,6 +99,8 @@ export async function start() {
     Log.Controller({ bus });
     Menu.Controller({ bus });
 
+    Filesystem.Controller({ bus, id: 'main', fs: paths.fs });
+
     /**
      * Upload bundled system code into the local service.
      */
@@ -168,20 +181,21 @@ async function logMain(args: {
 
   const processes = ConfigFile.process.split('@');
 
-  add(log.green('runtime:'), `${Format.namespace(processes[0])}@${processes[1]}`);
-  add('env:', ENV.node || '<empty>');
-  add('packaged:', ENV.isPackaged);
-  add('node:', process.versions.node);
+  add(log.green('runtime'), `${Format.namespace(processes[0])}@${processes[1]}`);
+  add('env', ENV.node || '<empty>');
+  add('packaged', ENV.isPackaged);
+  add('node', process.versions.node);
 
   line();
-  await addPath('preload:', args.paths.preload);
-  await addPath('db:', args.paths.data.db);
-  await addPath('fs:', args.paths.data.fs);
-  await addPath('config:', args.paths.data.config);
-  await addPath('log:', args.paths.data.log);
+  await addPath('preload', args.paths.preload);
+  await addPath('db', args.paths.data.db);
+  await addPath('db(files)', args.paths.data.dbfs);
+  await addPath('fs', args.paths.data.fs);
+  await addPath('config', args.paths.data.config);
+  await addPath('log', args.paths.data.log);
   line();
 
-  add(log.green('host:'), log.cyan(`http:${host.split(':')[1]}:${log.white(host.split(':')[2])}`));
+  add(log.green('host'), log.cyan(`http:${host.split(':')[1]}:${log.white(host.split(':')[2])}`));
   add('genesis', await genesis.cell.url());
   add('registry', await genesis.modules.url());
 

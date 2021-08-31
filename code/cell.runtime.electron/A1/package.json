@@ -23,6 +23,7 @@
     "@platform/cell.client": "0.3.92",
     "@platform/cell.fs": "0.4.224",
     "@platform/cell.fs.local": "0.4.224",
+    "@platform/cell.fs.bus": "0.0.6",
     "@platform/cell.router": "0.9.46",
     "@platform/cell.runtime.node": "0.0.71",
     "@platform/cell.schema": "0.5.102",

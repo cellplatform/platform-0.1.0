@@ -47,7 +47,7 @@ const data = {
     try {
       const { openDir } = options;
       const { dir } = await data.snapshot(paths, { suffix: 'reset', openDir });
-      await Promise.all([fs.remove(paths.db), fs.remove(paths.fs), fs.remove(paths.config)]);
+      await Promise.all([fs.remove(paths.db), fs.remove(paths.dbfs), fs.remove(paths.config)]);
       await shell.openPath(dir);
       if (options.reopen) {
         app.relaunch();
@@ -85,7 +85,7 @@ const data = {
         const target = fs.join(dir, fs.basename(source));
         await fs.copy(source, target);
       };
-      await Promise.all([copy(paths.db), copy(paths.fs), copy(paths.config)]);
+      await Promise.all([copy(paths.db), copy(paths.dbfs), copy(paths.config)]);
 
       // Open the folder.
       if (options.openDir) {

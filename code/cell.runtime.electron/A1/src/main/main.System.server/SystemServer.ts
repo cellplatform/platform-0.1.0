@@ -21,7 +21,7 @@ export const SystemServer = {
     const app = Server.create({
       name: 'main',
       db: NeDb.create({ filename: paths.db }),
-      fs: FsDriverLocal({ dir: paths.fs, fs }),
+      fs: FsDriverLocal({ dir: paths.dbfs, fs }),
       runtime: NodeRuntime.create({ bus: runtimeBus }),
       logger: options.log,
       region: SystemServer.region,
