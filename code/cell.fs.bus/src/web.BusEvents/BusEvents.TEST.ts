@@ -1,5 +1,5 @@
-import { expect, rx } from '../test';
 import { BusEvents } from '.';
+import { expect } from '../test';
 
 describe('BusEvents', () => {
   const is = BusEvents.is;

@@ -1,4 +1,4 @@
-import { expect, rx, t, TestFs, TestPrep, Filesystem, Path } from '../test';
+import { expect, Filesystem, rx, t, TestFs, TestPrep } from '../test';
 
 describe('BusController', function () {
   const bus = rx.bus<t.SysFsEvent>();

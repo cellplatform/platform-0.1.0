@@ -1,19 +1,7 @@
-import {
-  t,
-  expect,
-  TestFs,
-  TestPrep,
-  CellAddress,
-  HttpClient,
-  Uri,
-  slug,
-  stringify,
-} from '../test';
 import { Stream } from '.';
+import { CellAddress, expect, HttpClient, stringify, t, TestPrep, Uri } from '../test';
 
 describe.skip('ReadStream (web)', () => {
-  const fs = TestFs.node;
-
   const PushPrep = async () => {
     const mock = await TestPrep();
     const server = await mock.server();
@@ -58,9 +46,9 @@ describe.skip('ReadStream (web)', () => {
       // const f = fs.
       // fs.createReadStream(res.)
 
-      console.log('-------------------------------------------');
+      // console.log('-------------------------------------------');
       // console.log('res', res);
-      console.log('download.body', download.body);
+      // console.log('download.body', download.body);
       const readable = download.body as ReadableStream;
 
       await mock.dispose();

@@ -255,7 +255,7 @@ describe('BusController.Indexer', function () {
     });
 
     it('cache: "remove"', async () => {
-      const { mock, cachefile, loadCachedFile } = await cachePrep();
+      const { mock, loadCachedFile } = await cachePrep();
       const manifest = mock.events.index.manifest;
 
       expect(await loadCachedFile()).to.eql(undefined);

@@ -1,6 +1,5 @@
 import { Subject } from 'rxjs';
 
-import { t } from '../common';
 import * as types from './types';
 
 const NAME = {
@@ -46,12 +45,7 @@ export const FileCache = (name?: string, version?: number) => {
       open.onupgradeneeded = (e) => {
         const db = open.result;
         const store = db.createObjectStore(NAME.STORE, { keyPath: 'hash' });
-        const index = store.createIndex(NAME.INDEX, [
-          'info.filename',
-          'info.dir',
-          'info.mimetype',
-          'info.bytes',
-        ]);
+        store.createIndex(NAME.INDEX, ['info.filename', 'info.dir', 'info.mimetype', 'info.bytes']);
       };
     } catch (error: any) {
       const err = `Failed while opening database '${name}'. ${error.message}`;

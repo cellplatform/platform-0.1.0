@@ -210,26 +210,15 @@ export function BusControllerCell(args: {
         res.file.hash = info.body.data.hash ?? '';
         res.file.bytes = info.body.data.props.bytes ?? -1;
 
-        const toPayload = (body: ReadableStream | t.Json): Uint8Array => {
-          if (Stream.isReadableStream(body)) return body as any; // HACK: see note below for [FsDriverLocal.write]
-          // const json = `${JSON.stringify(body, null, '  ')}\n`;
-          const json = stringify(body as t.Json);
-          return new TextEncoder().encode(json);
-        };
-
         const download = await http.fs.file(path).download();
         if (download.ok) {
+          const toPayload = (body: ReadableStream | t.Json): ReadableStream | Uint8Array => {
+            return Stream.isReadableStream(body)
+              ? (body as ReadableStream)
+              : Stream.encode(stringify(body as t.Json));
+          };
+
           const uri = PathUri.ensurePrefix(path);
-
-          /**
-           * TODO 🐷
-           * pass [ReadStream] type as param to [FsDriverLocal.write].
-           *
-           *    - https://developer.mozilla.org/en-US/docs/Web/API/ReadStream
-           *    - https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams
-           *
-           */
-
           const save = await fs.write(uri, toPayload(download.body));
 
           if (!save.ok) {
@@ -256,8 +245,6 @@ export function BusControllerCell(args: {
       client.dispose();
       done({ files, errors });
     } catch (err: any) {
-      console.log('err', err, '\n\n'); // TEMP 🐷
-
       const message = err.message;
       return fail({ code: 'cell/pull', message });
     }
