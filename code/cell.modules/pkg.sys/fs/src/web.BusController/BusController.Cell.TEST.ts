@@ -235,8 +235,6 @@ describe('BusController.Cell (Remote)', function () {
   });
 
   describe('pull (from cell)', () => {
-    const pullTest = async () => {};
-
     it('pull', async () => {
       const mock = await TestPrep();
       const server = await mock.server();

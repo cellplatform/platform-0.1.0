@@ -17,8 +17,9 @@ export type ElectronRuntimeInfo = {
  */
 export type ElectronDataPaths = {
   dir: string;
-  db: string;
-  fs: string;
+  db: string; //        Database (cell:uri)
+  dbfs: string; //      Database filesystem (file:uri)
+  fs: string; //        Document file-system.
   config: string; //    Configuration [.json] file.
   archive: string; //   Data backup folder.
   log: string; //       Log output.
