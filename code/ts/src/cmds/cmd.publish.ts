@@ -42,7 +42,7 @@ export async function publish(
     await fs.copy(outDir, tmp);
 
     return result.success();
-  } catch (error) {
+  } catch (error: any) {
     return result.fail(error);
   }
 }
@@ -77,7 +77,7 @@ async function copyPackageJson(args: { rootDir: string; target: string }) {
 
     // Finish up.
     return { success: true, source, target };
-  } catch (error) {
+  } catch (error: any) {
     return { success: false, error };
   }
 }

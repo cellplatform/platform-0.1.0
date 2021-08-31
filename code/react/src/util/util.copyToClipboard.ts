@@ -9,7 +9,7 @@ export const copyToClipboard = (text: string) => {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-  } catch (error) {
+  } catch (error: any) {
     const err = `Failed to copy text to clipboard.\n\n${text}`;
     console.error(err); // eslint-disable-line
   }

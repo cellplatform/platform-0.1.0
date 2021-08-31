@@ -131,7 +131,7 @@ export const upload: t.CompilerRunUpload = async (args) => {
     }
 
     return done(true);
-  } catch (err) {
+  } catch (err: any) {
     spinner.stop();
     const message = err.message.includes('ECONNREFUSED')
       ? `Ensure the local server is online. ${log.gray(host)}`
@@ -181,7 +181,7 @@ export async function getFiles(args: {
     );
 
     return files.filter((file) => file.data.byteLength > 0);
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(`Failed during 'getFiles'. ${error.message}`);
   }
 }
@@ -318,7 +318,7 @@ async function updateManifest(args: {
 
     await ModuleManifest.write({ manifest, dir: distDir });
     return manifest;
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(`Failed while updating manifest. ${error.message}`);
   }
 }

@@ -16,7 +16,7 @@ export const delay = (msecs: number, callback?: () => any) => {
           callback();
         }
         resolve();
-      } catch (error) {
+      } catch (error: any) {
         reject(error);
       }
     }, msecs);

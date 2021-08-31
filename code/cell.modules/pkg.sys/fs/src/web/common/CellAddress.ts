@@ -49,7 +49,7 @@ export const CellAddress = {
       const parsed = Uri.parse(res.uri);
       if (parsed.type !== 'CELL') return asError(invalid);
       if (parsed.error) return asError(invalid);
-    } catch (error) {
+    } catch (error: any) {
       return asError(invalid);
     }
 

@@ -32,7 +32,7 @@ export async function run<T>(
   const run = async (index: number, title: string, task: ITask['task']) => {
     try {
       return await task();
-    } catch (err) {
+    } catch (err: any) {
       const error = err.message as string;
       errors = [...errors, { index, title, error }];
       throw err;
@@ -50,7 +50,7 @@ export async function run<T>(
   );
   try {
     await runner.run();
-  } catch (err) {
+  } catch (err: any) {
     // Ignore - errors caught and returned below.
   }
 

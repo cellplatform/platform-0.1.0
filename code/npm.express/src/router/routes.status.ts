@@ -62,7 +62,7 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
       // Finish up.
       response = { ...response, 'npm.express': pkg.version };
       res.send(response);
-    } catch (error) {
+    } catch (error: any) {
       res.send({ status: 500, error: error.message });
     }
   });

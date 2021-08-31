@@ -38,7 +38,7 @@ export function form(req: t.RouteRequest, options: t.ParseBodyFormOptions = {}) 
     busboy.on('field', (key, value, fieldnameTruncated, valTruncated, encoding, mimetype) => {
       try {
         value = valueUtil.isJson(value) ? JSON.parse(value) : valueUtil.toType(value);
-      } catch (error) {
+      } catch (error: any) {
         // NB: Ignore JSON-parse or type-conversion error
         //     (use raw value instead).
       }

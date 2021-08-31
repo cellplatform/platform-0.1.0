@@ -34,7 +34,7 @@ export const CodeEditor = {
 
         // Finish up.
         resolve(api);
-      } catch (error) {
+      } catch (error: any) {
         reject(error);
       }
     }));

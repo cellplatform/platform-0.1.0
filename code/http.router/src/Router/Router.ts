@@ -100,7 +100,7 @@ export class Router<C extends O = any> implements t.Router<C> {
       const request = Object.assign(incoming, helpers) as t.RouteRequest; // eslint-disable-line
 
       return route.handler(request, ctx);
-    } catch (err) {
+    } catch (err: any) {
       const url = incoming.url;
       const message = `Failed while finding handler for url "${url}". ${err.message}`;
       throw new Error(message);

@@ -66,7 +66,7 @@ function parseUrl(input: string): { url?: URL; error?: string } {
     if (typeof input !== 'string') return error('not a string');
     if (!input.trim()) return error('empty');
     return { url: new URL(input) };
-  } catch (err) {
+  } catch (err: any) {
     return error('unable to parse');
   }
 }

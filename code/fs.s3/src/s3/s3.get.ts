@@ -35,7 +35,7 @@ export async function get(args: {
         try {
           const text = response.data ? response.data.toString() : undefined;
           json = text ? JSON.parse(text) : null;
-        } catch (error) {
+        } catch (error: any) {
           throw new Error(`Failed to parse S3 object at key [${key}] from JSON. ${error.message}`);
         }
       }
@@ -75,7 +75,7 @@ export async function get(args: {
 
   try {
     await Promise.all([readObject(), readPermission()]);
-  } catch (err) {
+  } catch (err: any) {
     const error = new Error(err.code);
     response.status = err.statusCode;
     response.ok = false;

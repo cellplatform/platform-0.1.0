@@ -33,7 +33,7 @@ export async function put(args: t.S3PutArgs & { s3: AWS.S3 }): Promise<t.S3PutRe
       .promise();
     const etag = res.ETag;
     return done(200, { etag });
-  } catch (err) {
+  } catch (err: any) {
     const status = err.statusCode || 500;
     const error = new Error(err.code);
     return done(status, { error });

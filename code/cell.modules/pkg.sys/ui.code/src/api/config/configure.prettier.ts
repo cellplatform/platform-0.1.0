@@ -30,7 +30,7 @@ export async function registerPrettier(api: t.ICodeEditorSingleton) {
             text,
           },
         ];
-      } catch (error) {
+      } catch (error: any) {
         throw error;
       }
     },

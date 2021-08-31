@@ -9,7 +9,7 @@ export async function getVersion() {
     const cmd = `yarn --version`;
     const res = await exec.cmd.run(cmd, { silent: true });
     return res.code === 0 ? res.info[0] : undefined;
-  } catch (error) {
+  } catch (error: any) {
     return undefined; // Not installed.
   }
 }

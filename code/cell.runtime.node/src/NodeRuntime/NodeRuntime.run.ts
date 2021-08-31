@@ -113,7 +113,7 @@ export function runMethod(args: {
           try {
             const manifest = (await fs.readJson(path)) as t.ModuleManifest;
             return manifest;
-          } catch (error) {
+          } catch (error: any) {
             const msg = error.message;
             const err = `Failed while reading bundle manifest for ${bundle.toString()}. ${msg}`;
             addError(err);

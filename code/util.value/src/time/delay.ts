@@ -25,7 +25,7 @@ export function delay<T = any>(msecs: number, callback?: () => T): t.TimeDelayPr
         } else {
           done();
         }
-      } catch (error) {
+      } catch (error: any) {
         reject(error);
       }
     }, msecs);

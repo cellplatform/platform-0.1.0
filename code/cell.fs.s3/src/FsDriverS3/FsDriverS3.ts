@@ -119,7 +119,7 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
           's3:etag': res.etag,
           's3:permission': res.permission,
         };
-      } catch (err) {
+      } catch (err: any) {
         return { uri, exists: false, path, location, hash: '', bytes: -1 };
       }
     },
@@ -162,7 +162,7 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
           };
           return done({ file });
         }
-      } catch (err) {
+      } catch (err: any) {
         const error: t.IFsError = {
           type: 'FS/read',
           message: `Failed to read [${uri}]. ${err.message}`,
@@ -238,7 +238,7 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
         } else {
           return { ok, status, file, uri, 's3:etag': etag, 's3:permission': permission };
         }
-      } catch (err) {
+      } catch (err: any) {
         const error: t.IFsError = {
           type: 'FS/write',
           message: `Failed to write [${uri}]. ${err.message}`,
@@ -270,7 +270,7 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
         } else {
           return { ok, status, uris, locations };
         }
-      } catch (err) {
+      } catch (err: any) {
         const error: t.IFsError = {
           type: 'FS/delete',
           message: `Failed to delete [${uri}]. ${err.message}`,
@@ -328,7 +328,7 @@ export function FsDriverS3(args: t.S3Config & { dir: string }): t.FsDriverS3 {
         });
         const error = res.error ? `${ERROR} ${res.error.message}` : undefined;
         return done(res.status, error);
-      } catch (err) {
+      } catch (err: any) {
         const error = `${ERROR} ${err.message}`;
         return done(500, error);
       }

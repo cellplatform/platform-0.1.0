@@ -50,7 +50,7 @@ export class HttpClient implements t.IHttpClient {
     try {
       await HttpClient.create(host).info();
       return true;
-    } catch (error) {
+    } catch (error: any) {
       if (error.code === 'ECONNREFUSED') {
         return false;
       } else {

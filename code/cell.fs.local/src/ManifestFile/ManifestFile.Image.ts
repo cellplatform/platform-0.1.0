@@ -21,7 +21,7 @@ export const ManifestFileImage = {
       const width = size?.width ?? -1;
       const height = size?.height ?? -1;
       return { kind, width, height };
-    } catch (err) {
+    } catch (err: any) {
       const message = err.message as string;
       if (message.includes('unsupported file type')) return undefined;
       throw err;

@@ -54,7 +54,7 @@ export function graphqlFetcher(args: {
 
       // Finish up.
       return result;
-    } catch (error) {
+    } catch (error: any) {
       events$.next({
         type: 'GRAPHQL_EDITOR/fetch/error',
         payload: { fetchId, url, params, error },

@@ -106,7 +106,7 @@ function parse(path: string, text: string) {
           `The path '${path}' is not a supported file type for parsing. Supported types: ${SUPPORTED}`,
         );
     }
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(`Failed while parsing file '${path}'. ${error.message}`);
   }
 }
@@ -128,7 +128,7 @@ function stringify(path: string, data: Record<string, unknown>) {
           `The path '${path}' is not a supported file type to stringify. Supported types: ${SUPPORTED}`,
         );
     }
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(`Failed while parsing file '${path}'. ${error.message}`);
   }
 }

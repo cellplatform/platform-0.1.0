@@ -12,7 +12,7 @@ export const containsFocus = (instance: React.ReactInstance) => {
     const el = ReactDOM.findDOMNode(instance);
     const active = document.activeElement;
     return el ? el.contains(active) : false;
-  } catch (error) {
+  } catch (error: any) {
     // NB:  Will fail when call with unmounted `instance`.
     //      As an unmounted component by definition it does not contain focus.
     return false;

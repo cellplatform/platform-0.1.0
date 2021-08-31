@@ -121,7 +121,7 @@ export function BusControllerCell(args: {
       } else {
         return done({ files });
       }
-    } catch (err) {
+    } catch (err: any) {
       const message = err.message;
       return fail({ code: 'cell/push', message });
     }
@@ -255,7 +255,7 @@ export function BusControllerCell(args: {
        */
       client.dispose();
       done({ files, errors });
-    } catch (err) {
+    } catch (err: any) {
       console.log('err', err, '\n\n'); // TEMP 🐷
 
       const message = err.message;

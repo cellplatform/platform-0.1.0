@@ -32,7 +32,7 @@ export function InstanceEventHandlers(bus: t.CodeEditorEventBus, editor: t.CodeE
         const action = editor.action(e.action);
         await action.run();
         complete();
-      } catch (error) {
+      } catch (error: any) {
         complete(error);
       }
     });

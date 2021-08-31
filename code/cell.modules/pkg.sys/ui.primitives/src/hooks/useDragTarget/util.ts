@@ -131,7 +131,7 @@ function readDir(entry: DirectoryEntry) {
       const files = await readEntries(entry);
       const result = await Promise.all(files.map((file) => readFile(file)));
       resolve(result);
-    } catch (error) {
+    } catch (error: any) {
       reject(error);
     }
   });

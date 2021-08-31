@@ -151,7 +151,7 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
       // Finish up.
       return res;
     }
-  } catch (error) {
+  } catch (error: any) {
     await deleteTempDirs();
     return result.fail(error);
   }

@@ -131,7 +131,7 @@ export class FileDb implements t.IDb {
       props.createdAt = typeof json.createdAt === 'number' ? json.createdAt : props.createdAt;
       props.modifiedAt = typeof json.modifiedAt === 'number' ? json.modifiedAt : props.modifiedAt;
       return { value: json.data, props };
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`Failed to get value for key '${key}'. ${error.message}`);
     }
   }
@@ -299,7 +299,7 @@ export class FileDb implements t.IDb {
         return [...acc, ...keys];
       }, []);
       list = await this.getMany(keys);
-    } catch (err) {
+    } catch (err: any) {
       error = err;
     }
 

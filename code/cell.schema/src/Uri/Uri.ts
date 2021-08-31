@@ -179,7 +179,7 @@ export class Uri {
     uri: (input?: string) => {
       try {
         return Uri.parse(input).ok;
-      } catch (error) {
+      } catch (error: any) {
         return false;
       }
     },
@@ -194,7 +194,7 @@ export class Uri {
         return types.some((type) => {
           return uri.parts.type === type && (type === 'UNKNOWN' ? true : uri.ok);
         });
-      } catch (error) {
+      } catch (error: any) {
         return false;
       }
     },

@@ -6,7 +6,7 @@ import * as semver from 'semver';
 export function eq(v1: string, v2: string) {
   try {
     return semver.eq(v1, v2, true);
-  } catch (error) {
+  } catch (error: any) {
     return false;
   }
 }

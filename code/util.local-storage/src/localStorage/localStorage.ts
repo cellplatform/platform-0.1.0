@@ -111,7 +111,7 @@ const defaultStorage: t.ILocalStorageProvider = {
       const json = is.browser ? window.localStorage.getItem(key) : undefined;
       const value = json ? JSON.parse(json).value : undefined;
       return value === undefined ? undefined : valueUtil.toType(value);
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`Failed while de-serializing localStorage JSON for key '${key}'.`);
     }
   },

@@ -91,7 +91,7 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
           },
         };
         return { ok: true, status: 200, uri, file };
-      } catch (err) {
+      } catch (err: any) {
         const error: t.IFsError = {
           type: 'FS/read',
           message: `Failed to write file at URI [${uri}]. ${err.message}`,
@@ -143,7 +143,7 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
           uri,
           file,
         };
-      } catch (err) {
+      } catch (err: any) {
         const error: t.IFsError = {
           type: 'FS/write',
           message: `Failed to write [${uri}]. ${err.message}`,
@@ -165,7 +165,7 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
       try {
         await Promise.all(paths.map((path) => node.remove(path)));
         return { ok: true, status: 200, uris, locations };
-      } catch (err) {
+      } catch (err: any) {
         const error: t.IFsError = {
           type: 'FS/delete',
           message: `Failed to delete [${uri}]. ${err.message}`,
@@ -197,7 +197,7 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
         await node.ensureDir(node.dirname(target.path));
         await node.copyFile(source.path, target.path);
         return done(200);
-      } catch (err) {
+      } catch (err: any) {
         const message = `Failed to copy from [${source.uri}] to [${target.uri}]. ${err.message}`;
         const error: t.IFsError = {
           type: 'FS/copy',

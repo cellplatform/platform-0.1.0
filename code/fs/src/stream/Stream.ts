@@ -98,7 +98,7 @@ export const Stream = {
 
       // JSON
       await writeFile(path, stringify(data as t.Json));
-    } catch (err) {
+    } catch (err: any) {
       throw new Error(`Failed to save stream to '${path}'. ${err.message}`);
     }
   },

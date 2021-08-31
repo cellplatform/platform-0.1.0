@@ -35,7 +35,7 @@ export async function tsconfig(cwd: string, filename = 'tsconfig.json') {
     const outDir = (data && data.compilerOptions && data.compilerOptions.outDir) || undefined;
 
     return { success: true, filename, dir, path, data, outDir };
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(`Failed to load '${filename}' file. ${error.message}`);
   }
 }

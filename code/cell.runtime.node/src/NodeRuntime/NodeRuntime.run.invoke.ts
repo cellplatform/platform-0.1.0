@@ -126,7 +126,7 @@ export function invoke(args: {
 
       preparationComplete(); // Stop the "preparation" timer.
       vm.run(code.script);
-    } catch (error) {
+    } catch (error: any) {
       ok = false;
       errors.push(error);
       done();

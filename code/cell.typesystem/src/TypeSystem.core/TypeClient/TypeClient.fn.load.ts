@@ -204,7 +204,7 @@ async function loadNamespace(args: {
     return done({
       columns: await readColumns({ level, ns, ctx, columns }),
     });
-  } catch (error) {
+  } catch (error: any) {
     // Fail.
     errors.add(ns, `Failed while loading type for "${ns}". ${error.message}`);
     return done();

@@ -27,7 +27,7 @@ export function BusControllerIo(args: {
       let path = stripDirPrefix(res.path);
       if (kind === 'dir') path = `${path}/`;
       return { kind, path, exists, hash, bytes };
-    } catch (err) {
+    } catch (err: any) {
       const error: t.SysFsError = { code: 'info', message: err.message };
       return { kind: 'unknown', path: filepath, exists: false, hash: '', bytes: -1, error };
     }

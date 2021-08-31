@@ -147,7 +147,7 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
         const docs: T[] = [];
         await cursor.forEach((doc: any) => docs.push(doc));
         resolve(docs);
-      } catch (error) {
+      } catch (error: any) {
         reject(error);
       }
     });
@@ -184,7 +184,7 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
       try {
         await this.collection.remove(query, { single });
         resolve();
-      } catch (error) {
+      } catch (error: any) {
         reject(error);
       }
     });

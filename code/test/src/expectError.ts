@@ -14,7 +14,7 @@ import { expect } from './libs';
 export async function expectError(fn: () => Promise<any>, message?: string) {
   try {
     await fn();
-  } catch (error) {
+  } catch (error: any) {
     if (message) {
       return expect(error.message || '').to.contain(message);
     } else {

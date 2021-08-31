@@ -15,7 +15,7 @@ export async function json<T>(
   try {
     const body = await parse(req, options);
     return (body === undefined ? options.default : body) as T;
-  } catch (error) {
+  } catch (error: any) {
     return options.default as T;
   }
 }

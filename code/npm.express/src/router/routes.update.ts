@@ -45,7 +45,7 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
         NPM_TOKEN,
       });
       res.send(response);
-    } catch (error) {
+    } catch (error: any) {
       res.send({ status: 500, error: error.message });
     }
   });
@@ -94,7 +94,7 @@ export async function update(args: {
       await process.start({ force: true });
       actions = [...actions, ...monitor.actions];
       monitor.stop();
-    } catch (error) {
+    } catch (error: any) {
       log.error(`Failed while starting service. ${error.message}`);
     }
   };
@@ -172,7 +172,7 @@ export async function update(args: {
       if (restart) {
         await start();
       }
-    } catch (error) {
+    } catch (error: any) {
       const message = `Failed while installing '${name}'.`;
       log.error(message);
       return done({ error: { status: 500, message } });

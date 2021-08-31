@@ -171,7 +171,7 @@ export function uploadFiles(args: {
       // Finish up.
       const status = errors.length === 0 ? 200 : 500;
       return done(status, { cell: cellUploadComplete.data.cell, files });
-    } catch (error) {
+    } catch (error: any) {
       const status = 500;
       addError(status, error.message);
       return done(status);

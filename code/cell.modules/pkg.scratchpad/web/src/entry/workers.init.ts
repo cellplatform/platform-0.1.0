@@ -39,7 +39,7 @@ async function startServiceWorker() {
   try {
     const registration = await navigator.serviceWorker.register('./service.worker.js');
     console.log('🎉 Service worker registered:', registration);
-  } catch (error) {
+  } catch (error: any) {
     console.log('Service worker registration failed:', error);
   }
 }

@@ -55,7 +55,7 @@ export function pullMethod(args: { cachedir: string; isDisposed: () => boolean }
         const filter = bundle.dir.append('**');
         const list = await client.fs.list({ filter });
         return list.body;
-      } catch (error) {
+      } catch (error: any) {
         addError(error.message, error.stack);
         return [];
       }
@@ -100,7 +100,7 @@ export function pullMethod(args: { cachedir: string; isDisposed: () => boolean }
             err = download.error ? `${err} ${download.error?.message || ''}` : err;
             addError(err);
           }
-        } catch (error) {
+        } catch (error: any) {
           const err = error.mesage || '<no-error-info>';
           const msg = `General fail while pulling '${file.path}' from '${origin}'. ${err}`;
           addError(msg, error.stack);

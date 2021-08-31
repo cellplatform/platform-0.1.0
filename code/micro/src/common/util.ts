@@ -45,7 +45,7 @@ export function parsePort(input: number | string) {
     const internal = parseInt(parts[0], 10);
     const external = parseInt(parts[1], 10) || internal;
     return { internal, external };
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(`${ERR} ${error.message}`);
   }
 }

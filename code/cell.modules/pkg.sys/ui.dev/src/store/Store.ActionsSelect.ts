@@ -39,7 +39,7 @@ export const ActionsSelect = {
           await args.client.ns(uri).write({ cells: { A1: cell } });
           return value;
         }
-      } catch (error) {
+      } catch (error: any) {
         const action = value === undefined ? 'read' : 'write';
         const err = `Failed to ${action} currently selected Actions. ${error.message}`;
         throw new Error(err);

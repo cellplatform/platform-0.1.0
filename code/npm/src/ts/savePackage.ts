@@ -26,7 +26,7 @@ export async function savePackage(args: {
   try {
     const text = (await fs.readFile(source)).toString();
     json = JSON.parse(text);
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(`Failed to parse [package.json]. ${source}`);
   }
 

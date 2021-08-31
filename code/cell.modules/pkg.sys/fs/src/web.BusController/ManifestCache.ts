@@ -25,7 +25,7 @@ export function ManifestCache(args: { fs: t.FsDriverLocal; dir: string; filename
         const text = new TextDecoder().decode(file);
         const manifest = JSON.parse(text) as t.DirManifest;
         return manifest.kind === 'dir' && typeof manifest.dir === 'object' ? manifest : undefined;
-      } catch (error) {
+      } catch (error: any) {
         return undefined;
       }
     },

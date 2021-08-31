@@ -62,7 +62,7 @@ export function BusControllerIndexer(args: {
         }
 
         return { dir, manifest };
-      } catch (error) {
+      } catch (error: any) {
         return toErrorResponse(dir, error.message);
       }
     };
