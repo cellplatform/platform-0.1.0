@@ -31,27 +31,6 @@ describe.only('BusController', () => {
       expect(controller.events.id).to.eql(id);
     });
 
-    it('defaults (FsBus)', async () => {
-      // const root = nodefs.resolve('tmp/root');
-      // const fs2 = store.fs();
-
-      const ls = await fs.info('/node/main.js');
-      console.log('ls', ls);
-
-      // const id = 'my-instance';
-      // const id = undefined;
-
-      const controller = VercelBus.Controller({ fs, bus });
-
-      // const events = VercelBus.Events({ bus });
-      // const res = await events.info.get();
-      // controller.dispose();
-
-      // expect(res.info?.endpoint.version).to.eql(DEFAULT.version);
-
-      controller.dispose();
-    });
-
     it('filter', async () => {
       let allow = true;
       const controller = VercelBus.Controller({ fs, bus, filter: (e) => allow });

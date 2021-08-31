@@ -12,7 +12,7 @@ export function BusController(args: {
   filter?: (e: t.VercelEvent) => boolean;
   version?: number;
 }) {
-  const { version = DEFAULT.version } = args;
+  const { version = DEFAULT.version, fs } = args;
   const id = args.id ?? DEFAULT.id;
   const bus = rx.busAsType<t.VercelEvent>(args.bus);
   const events = BusEvents({ id, bus, filter: args.filter });

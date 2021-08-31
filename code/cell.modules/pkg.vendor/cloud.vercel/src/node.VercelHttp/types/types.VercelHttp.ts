@@ -116,7 +116,7 @@ export type VercelHttpTeamDeployment = {
  * https://vercel.com/docs/api#endpoints/deployments/upload-deployment-files
  */
 export type VercelHttpUploadFiles = {
-  post(input: string | Buffer): Promise<VercelHttpUploadPostResponse>;
+  post(input: string | Uint8Array): Promise<VercelHttpUploadPostResponse>;
   upload(
     dir: string,
     options?: { filter?: (path: string) => boolean; batch?: number },

@@ -289,7 +289,7 @@ describe.only('VercelHttp [INTEGRATION]', function () {
 
   describe('deployment: upload then deploy', () => {
     it.only('deploy', async () => {
-      const dir = nodefs.resolve('./tmp/web');
+      const dir = 'web';
       const team = await getTeam();
 
       const target = 'staging';

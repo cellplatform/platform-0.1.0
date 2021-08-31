@@ -1,4 +1,4 @@
-import { nodefs, DEFAULT, Mime, shasum, t, time, Path, deleteUndefined } from './common';
+import { DEFAULT, Mime, shasum, t, time, Path, deleteUndefined } from './common';
 
 type Id = string;
 
@@ -13,10 +13,12 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
     async post(input) {
       const timer = time.timer();
       const { file, contentType, contentLength } = await loadFile(fs, input);
-      const body = Mime.isBinary(contentType) ? file : file.toString();
-      const digest = shasum(file);
-      const url = ctx.url(`now/files`, { teamId });
+      if (!file) {
+        throw new Error(`File failed to load: ${input}`);
+      }
 
+      const body = Mime.isBinary(contentType) ? file : file?.toString() || '';
+      const digest = shasum(file);
       const headers = {
         ...ctx.headers,
         'x-vercel-digest': digest,
@@ -24,6 +26,7 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
         'Content-Type': contentType,
       };
 
+      const url = ctx.url(`now/files`, { teamId });
       const res = await http.post(url, body, { headers });
       const { ok, status } = res;
       const json = res.json as any;
@@ -57,9 +60,10 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
       const uploadBatch = async (paths: string[]) => {
         await Promise.all(
           paths.map(async (path) => {
-            const posted = await api.post(fs.join(dir, path));
+            const posted = await api.post(path);
             const { ok, status, contentType, contentLength, digest, error, elapsed } = posted;
-            const file: t.VercelFileUpload = { file: path, sha: digest, size: contentLength };
+            const filepath = path.substring(dir.length + 1);
+            const file: t.VercelFileUpload = { file: filepath, sha: digest, size: contentLength };
             res.files.push({ ok, status, contentType, file, error, elapsed });
           }),
         );
@@ -84,26 +88,18 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
  * [Helpers]
  */
 
-async function loadFile(fs: t.Fs, input: Buffer | string) {
+async function loadFile(fs: t.Fs, input: Uint8Array | string) {
   const octet = 'application/octet-stream';
   const contentType = typeof input === 'string' ? Mime.toType(input, octet) : octet;
-  const file = typeof input === 'string' ? await nodefs.readFile(input) : input;
-  const contentLength = file.byteLength;
+  const file = typeof input === 'string' ? await fs.read(input) : input;
+  const contentLength = file?.byteLength ?? -1;
   return { file, contentType, contentLength };
 }
 
 async function toPaths(fs: t.Fs, dir: string, filter?: (path: string) => boolean) {
-  const pattern = `${Path.trimSlashesEnd(dir)}/**/*`;
-  const matches = await nodefs.glob.find(pattern);
-
-  console.log('matches', matches);
-
-  const manifest = await fs.manifest();
-
-  console.log('manifest', manifest);
-  console.log('-------------------------------------------');
-
-  const paths = matches.map((path) => path.substring(dir.length + 1));
+  const include = (path: string) => !path.endsWith('.DS_Store');
+  const manifest = await fs.manifest({ dir });
+  const paths = manifest.files.filter((file) => include(file.path)).map((file) => file.path);
   return filter ? paths.filter(filter) : paths;
 }
 
