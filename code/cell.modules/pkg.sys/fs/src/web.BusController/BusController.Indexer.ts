@@ -26,6 +26,13 @@ export function BusControllerIndexer(args: {
       return !e.path.endsWith(DEFAULT.CACHE_FILENAME) || !e.path.endsWith(cachefile);
     };
 
+    const shouldCache = () => {
+      if (e.cache === true) return true;
+      if (e.cache === 'force') return true;
+      if (e.cache === undefined && e.cachefile !== undefined) return true;
+      return false;
+    };
+
     const toErrorResponse = (dir: string, error: string): t.SysFsManifestDirResponse => {
       const message = `Failed while building manifest. ${error ?? ''}`.trim();
       return {
@@ -46,8 +53,12 @@ export function BusControllerIndexer(args: {
 
         const manifest = await index.manifest({ dir: path, filter: filterCachefile });
 
-        if ((e.cache === true || e.cache === 'force') && (await cache.dirExists())) {
+        if (shouldCache() && (await cache.dirExists())) {
           await cache.write(manifest);
+        }
+
+        if (e.cache === 'remove') {
+          await cache.delete();
         }
 
         return { dir, manifest };

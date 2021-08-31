@@ -33,7 +33,7 @@ export type SysFsEventsIndex = {
     res$: t.Observable<t.SysFsManifestRes>;
     get(options?: {
       dir?: FilePath | FilePath[];
-      cache?: boolean | 'force';
+      cache?: boolean | 'force' | 'remove';
       cachefile?: string;
       timeout?: Milliseconds;
     }): Promise<t.SysFsManifestRes>;

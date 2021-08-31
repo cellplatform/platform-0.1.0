@@ -35,6 +35,10 @@ export function ManifestCache(args: { fs: t.FsDriverLocal; dir: string; filename
       const data = new TextEncoder().encode(json);
       await fs.write(uri, data);
     },
+
+    async delete() {
+      await fs.delete(uri);
+    },
   };
 
   return api;

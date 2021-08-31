@@ -254,6 +254,47 @@ describe('BusController.Indexer', function () {
       await mock.dispose();
     });
 
+    it('cache: "remove"', async () => {
+      const { mock, cachefile, loadCachedFile } = await cachePrep();
+      const manifest = mock.events.index.manifest;
+
+      expect(await loadCachedFile()).to.eql(undefined);
+
+      await manifest.get({ cache: true });
+      expect((await loadCachedFile())?.kind).to.eql('dir');
+
+      const res = await manifest.get({ cache: 'remove' });
+      expect((res.dirs[0].manifest.files[0] as any).path).to.eql('root.json');
+
+      // NB: Ensure the "remove" flag caused the file to be cleared.
+      expect(await loadCachedFile()).to.eql(undefined);
+
+      // NB: Ensure repeat calls (when cache does not exist) do not fail.
+      await manifest.get({ cache: 'remove' });
+      await manifest.get({ cache: 'remove' });
+      await manifest.get({ cache: 'remove' });
+
+      await mock.dispose();
+    });
+
+    it('cache: "remove" (custom filename)', async () => {
+      const { mock, loadCachedFile } = await cachePrep();
+      const manifest = mock.events.index.manifest;
+
+      const cachefile = 'index.json';
+      expect(await loadCachedFile(cachefile)).to.eql(undefined);
+
+      await manifest.get({ cache: true, cachefile });
+      expect((await loadCachedFile(cachefile))?.kind).to.eql('dir');
+
+      await manifest.get({ cache: 'remove', cachefile });
+
+      // NB: Ensure the "remove" flag caused the file to be cleared.
+      expect(await loadCachedFile(cachefile)).to.eql(undefined);
+
+      await mock.dispose();
+    });
+
     it('does not include cached ".dir" file within manifest', async () => {
       const { mock, loadCachedFile } = await cachePrep();
       expect(await loadCachedFile()).to.eql(undefined);
@@ -301,10 +342,24 @@ describe('BusController.Indexer', function () {
       const cachefile = 'index.json';
       expect(await loadCachedFile(cachefile)).to.eql(undefined);
 
-      const res = await mock.events.index.manifest.get({ cache: true, cachefile });
-      await mock.dispose();
+      const res1 = await mock.events.index.manifest.get({ cachefile }); // NB: cache flag not set, but assumed true because "cachefile" name provided.
+      expect(await loadCachedFile(cachefile)).to.eql(res1.dirs[0].manifest);
 
-      expect(await loadCachedFile(cachefile)).to.eql(res.dirs[0].manifest);
+      await mock.events.index.manifest.get({ cache: 'remove', cachefile }); // No save
+      expect(await loadCachedFile(cachefile)).to.eql(undefined);
+
+      await mock.events.index.manifest.get({ cache: false, cachefile }); // No save
+      expect(await loadCachedFile(cachefile)).to.eql(undefined);
+
+      const res2 = await mock.events.index.manifest.get({ cache: 'force', cachefile }); // Save
+      expect(await loadCachedFile(cachefile)).to.eql(res2.dirs[0].manifest);
+
+      await mock.events.index.manifest.get({ cache: 'remove', cachefile });
+      expect(await loadCachedFile(cachefile)).to.eql(undefined);
+      const res3 = await mock.events.index.manifest.get({ cache: true, cachefile }); // Save
+      expect(await loadCachedFile(cachefile)).to.eql(res3.dirs[0].manifest);
+
+      await mock.dispose();
     });
   });
 });

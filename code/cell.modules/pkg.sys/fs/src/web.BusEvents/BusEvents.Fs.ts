@@ -139,11 +139,11 @@ export function BusEventsFs(args: {
   };
 
   const manifest: t.Fs['manifest'] = async (options = {}) => {
-    const { filter } = options;
+    const { filter, cache, cachefile } = options;
     const dir = options.dir === undefined ? subdir : formatPath(options.dir);
 
     // Query the filesystem.
-    const res = await index.manifest.get({ dir });
+    const res = await index.manifest.get({ dir, cache, cachefile });
     if (res.error) {
       throw new Error(res.error.message);
     }
