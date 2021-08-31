@@ -1,6 +1,6 @@
 {
   "name": "sys.scratchpad.node",
-  "version": "0.0.32",
+  "version": "0.0.33",
   "sideEffects": false,
   "scripts": {
     "start": "ts-node -T src/main/index",
@@ -17,7 +17,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@platform/cell.compiler": "~0.3.62"
+    "@platform/cell.compiler": "~0.3.63"
   },
   "license": "MIT",
   "private": true

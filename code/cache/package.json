@@ -1,6 +1,6 @@
 {
   "name": "@platform/cache",
-  "version": "0.3.26",
+  "version": "0.3.27",
   "description": "Caching tools.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,12 +14,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/fs.types": "0.1.11",
-    "@platform/libs": "0.2.13"
+    "@platform/fs.types": "0.1.12",
+    "@platform/libs": "0.2.14"
   },
   "devDependencies": {
-    "@platform/test": "0.2.9",
-    "@platform/ts": "4.1.22"
+    "@platform/test": "0.2.10",
+    "@platform/ts": "4.1.23"
   },
   "files": [
     "lib",

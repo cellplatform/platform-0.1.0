@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "description": "POSIX style file-system tools.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -11,25 +11,25 @@
     "prepare": "yarn build && yarn lint && yarn test"
   },
   "dependencies": {
-    "@platform/fs.types": "0.1.11",
-    "@platform/types": "0.5.24",
+    "@platform/fs.types": "0.1.12",
+    "@platform/types": "0.5.25",
     "@types/fs-extra": "9.0.12",
-    "@types/js-yaml": "4.0.2",
+    "@types/js-yaml": "4.0.3",
     "archiver": "5.3.0",
     "dotenv": "10.0.0",
     "extract-zip": "2.0.1",
-    "filesize": "6.3.0",
+    "filesize": "8.0.0",
     "fs-extra": "10.0.0",
     "glob": "7.1.7",
     "js-yaml": "4.1.0",
     "minimatch": "3.0.4"
   },
   "devDependencies": {
-    "@platform/test": "0.2.9",
-    "@platform/ts.libs": "4.3.2",
+    "@platform/test": "0.2.10",
+    "@platform/ts.libs": "4.3.3",
     "@types/archiver": "5.1.1",
     "@types/dotenv": "8.2.0",
-    "@types/extract-zip": "1.6.2",
+    "@types/extract-zip": "2.0.1",
     "@types/filesize": "5.0.0",
     "@types/glob": "7.1.4"
   },
