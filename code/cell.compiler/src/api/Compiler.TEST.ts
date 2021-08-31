@@ -3,7 +3,7 @@ import { Compiler } from '.';
 
 const bus = rx.bus();
 
-describe.only('Compiler', () => {
+describe('Compiler', () => {
   describe('Events', () => {
     const is = Compiler.Events.is;
 

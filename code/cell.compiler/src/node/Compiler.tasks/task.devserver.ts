@@ -37,8 +37,10 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
          * ISSUE:   https://github.com/webpack/webpack-dev-server/issues/2758
          * NOTE:
          *          This can be removed later when the up-stream issue is fixed.
+         *
+         * NOTE (Aug-31-2021) - looks like "webpack-dev-server@4.0.0" fixed the issue.
          */
-        webpack.target = undefined;
+        // webpack.target = undefined;
       });
     },
   });
@@ -68,8 +70,12 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
   });
 
   const host = 'localhost';
-  const args = { host, hot: true, stats: false };
-  new DevServer(compiler, args).listen(port, host, () => {
-    Logger.clear();
-  });
+  const config: DevServer.Configuration = {
+    host,
+    port,
+    hot: true,
+  };
+
+  const server = new DevServer(config, compiler);
+  await server.start();
 };
