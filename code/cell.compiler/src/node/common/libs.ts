@@ -2,7 +2,7 @@ import { sortBy, sortWith, ascend, descend, prop, uniq, uniqBy, pipe, groupBy, c
 export const R = { sortBy, sortWith, ascend, descend, prop, uniq, uniqBy, pipe, groupBy, clone };
 
 export * as semver from 'semver';
-export { readJsonSync, appendFileSync } from 'fs-extra';
+export { appendFileSync } from 'fs-extra';
 
 import * as jpath from 'jsonpath';
 export { jpath };

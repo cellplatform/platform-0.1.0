@@ -1,6 +1,6 @@
 import DevServer from 'webpack-dev-server';
 
-import { log, Model, t, toModel, Logger, Port, defaultValue } from '../common';
+import { log, Model, t, toModel, Logger, Port, defaultValue, fs } from '../common';
 import { wp } from '../config.webpack';
 import { afterCompile } from './util';
 
@@ -69,11 +69,22 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
     Logger.hr().stats(compilation);
   });
 
-  const host = 'localhost';
   const config: DevServer.Configuration = {
-    host,
     port,
+    host: 'localhost',
     hot: true,
+    client: {
+      overlay: { warnings: false, errors: true },
+    },
+    static: model
+      .static()
+      .map(({ dir }) => dir as string)
+      .filter(Boolean)
+      .map((directory) => ({
+        directory,
+        publicPath: directory.substring(fs.resolve('').length),
+        serveIndex: true,
+      })),
   };
 
   const server = new DevServer(config, compiler);

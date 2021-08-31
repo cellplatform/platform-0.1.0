@@ -1,4 +1,4 @@
-export * from '../api.events/types';
+export * from '../api.bus.events/types';
 
 export * from './types.Compiler.model.builder';
 export * from './types.Compiler.model';
