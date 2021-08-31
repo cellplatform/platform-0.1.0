@@ -1,0 +1,31 @@
+{
+  "name": "@platform/cell.fs.bus",
+  "version": "0.0.3",
+  "description": "Filesystem provided through implementation agnostic event-bus.",
+  "sideEffects": false,
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "cell.compiler dev $@",
+    "dev": "cell.compiler dev --no-exports $@",
+    "test": "ts test $@",
+    "lint": "ts lint $@",
+    "build": "ts build --no-esm $@",
+    "reset": "rm -rf tmp"
+  },
+  "dependencies": {
+    "@platform/cell.fs": "0.4.222",
+    "@platform/cell.fs.local": "0.4.222"
+  },
+  "devDependencies": {
+    "@platform/test": "0.2.8",
+    "@platform/ts": "4.1.21"
+  },
+  "files": [
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
+  ],
+  "license": "MIT"
+}
