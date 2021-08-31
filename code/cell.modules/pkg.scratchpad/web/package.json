@@ -1,6 +1,6 @@
 {
   "name": "sys.scratchpad.web",
-  "version": "0.0.56",
+  "version": "0.0.57",
   "sideEffects": false,
   "compiler": {
     "port": 3033
@@ -25,7 +25,7 @@
     "d3": "^7.0.0"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "^0.3.63",
+    "@platform/cell.compiler": "^0.4.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

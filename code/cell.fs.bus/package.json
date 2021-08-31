@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.fs.bus",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Filesystem provided through implementation agnostic event-bus.",
   "sideEffects": false,
   "main": "lib/index",

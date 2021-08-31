@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid",
-  "version": "0.7.378",
+  "version": "0.7.379",
   "description": "Isolated tabular DataGrid.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -36,7 +36,7 @@
     "@platform/test": "0.2.10",
     "@platform/test.dom": "0.0.122",
     "@platform/ts": "4.1.23",
-    "@platform/ui.datagrid.cell": "0.2.211",
+    "@platform/ui.datagrid.cell": "0.2.212",
     "@platform/ui.datagrid.debug": "0.0.253",
     "@platform/ui.dev": "0.0.57",
     "parcel-bundler": "1.12.5"

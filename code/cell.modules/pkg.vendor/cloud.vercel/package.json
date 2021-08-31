@@ -1,6 +1,6 @@
 {
   "name": "http.vercel",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "sideEffects": false,
   "compiler": {
     "port": 3038
@@ -26,7 +26,7 @@
     "@platform/util.mimetype": "^0.1.48"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "~0.3.63",
+    "@platform/cell.compiler": "~0.4.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
