@@ -3,6 +3,7 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "lib",
-    "noUnusedLocals": false
+    "noUnusedLocals": false,
+    "esModuleInterop": true
   }
 }
