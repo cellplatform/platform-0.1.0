@@ -18,31 +18,37 @@ export const Sample: React.FC = () => {
 
   const styles = {
     base: css({ Absolute: 0, display: 'flex' }),
-    body: css({
-      flex: 1,
-      padding: 30,
-      position: 'relative',
-      filter: drag.isDragOver ? `blur(1px)` : undefined,
-      opacity: drag.isDragOver ? 0.5 : 1,
-    }),
-    toolbar: {
+    body: {
       base: css({
-        Flex: 'horizontal-center-center',
-        marginBottom: 20,
-        paddingBottom: 10,
-        borderBottom: `solid 1px ${color.format(-0.1)}`,
+        Flex: 'vertical-stretch-stretch',
+        flex: 1,
+        position: 'relative',
+        filter: drag.isDragOver ? `blur(1px)` : undefined,
+        opacity: drag.isDragOver ? 0.5 : 1,
       }),
-      divider: css({ width: 30 }),
+      toolbar: {
+        base: css({
+          Flex: 'horizontal-center-center',
+          padding: 10,
+          borderBottom: `solid 1px ${color.format(-0.1)}`,
+        }),
+        divider: css({ width: 30 }),
+      },
+      main: css({
+        flex: 1,
+        padding: 20,
+        Scroll: true,
+      }),
+      footer: css({
+        Absolute: [null, 0, 0, 0],
+        padding: 15,
+        borderTop: `solid 1px ${color.format(-0.1)}`,
+      }),
     },
     dragOver: css({
       Absolute: 0,
       Flex: 'center-center',
       pointerEvents: 'none',
-    }),
-    footer: css({
-      Absolute: [null, 0, 0, 0],
-      padding: 15,
-      borderTop: `solid 1px ${color.format(-0.1)}`,
     }),
     button: css({
       Flex: 'horizontal-center-center',
@@ -55,7 +61,7 @@ export const Sample: React.FC = () => {
     setIsUploading(false);
   };
 
-  const elSpacer = <div {...styles.toolbar.divider} />;
+  const elSpacer = <div {...styles.body.toolbar.divider} />;
 
   const elDragOver = drag.isDragOver && (
     <div {...styles.dragOver}>
@@ -64,7 +70,7 @@ export const Sample: React.FC = () => {
   );
 
   const elToolbar = (
-    <div {...styles.toolbar.base}>
+    <div {...styles.body.toolbar.base}>
       <Button onClick={() => drag.reset()}>Reset</Button>
       {elSpacer}
       <div {...styles.button}>
@@ -79,8 +85,14 @@ export const Sample: React.FC = () => {
     </div>
   );
 
+  const elMain = (
+    <div {...styles.body.main}>
+      <ObjectView name={'debug'} data={data} expandLevel={10} />
+    </div>
+  );
+
   const elFooter = uploadedUrls.length > 0 && (
-    <div {...styles.footer}>
+    <div {...styles.body.footer}>
       {uploadedUrls.map((url, i) => {
         return (
           <a href={url} key={i} target={'_blank'} rel={'noreferrer'}>
@@ -93,9 +105,9 @@ export const Sample: React.FC = () => {
 
   return (
     <div ref={rootRef} {...styles.base}>
-      <div {...styles.body}>
+      <div {...styles.body.base}>
         {elToolbar}
-        <ObjectView name={'debug'} data={data} expandLevel={10} />
+        {elMain}
         {elFooter}
       </div>
       {elDragOver}
