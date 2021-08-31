@@ -9,7 +9,7 @@ export { Path } from '@platform/cell.fs';
 /**
  * System
  */
-export { FsBus } from 'sys.fs/lib/node';
+export { Filesystem } from 'sys.fs/lib/node';
 
 /**
  * Local

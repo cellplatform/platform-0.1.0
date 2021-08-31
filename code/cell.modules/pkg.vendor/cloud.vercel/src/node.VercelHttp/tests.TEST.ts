@@ -1,5 +1,5 @@
 import { VercelHttp } from '.';
-import { DEFAULT, expect, nodefs, Http, FsBus, rx } from '../test';
+import { DEFAULT, expect, nodefs, Http, Filesystem, rx } from '../test';
 import { util } from './common';
 
 /**
@@ -11,7 +11,7 @@ describe('VercelHttp', function () {
   const http = Http.create();
 
   const bus = rx.bus();
-  const store = FsBus.Controller({ bus, fs: nodefs.resolve('dist') });
+  const store = Filesystem.Controller({ bus, fs: nodefs.resolve('dist') });
   const fs = store.fs();
 
   describe('util', () => {

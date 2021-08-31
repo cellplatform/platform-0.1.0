@@ -1,5 +1,5 @@
 import { VercelHttp } from '.';
-import { nodefs, Http, rx, FsBus } from '../test';
+import { nodefs, Http, rx, Filesystem } from '../test';
 import { DEFAULT, util } from './common';
 import { VercelUploadFiles } from './VercelHttp.Files.Upload';
 
@@ -12,7 +12,7 @@ describe.only('VercelHttp [INTEGRATION]', function () {
   this.timeout(30000);
 
   const bus = rx.bus();
-  const store = FsBus.Controller({ bus, fs: nodefs.resolve('tmp') });
+  const store = Filesystem.Controller({ bus, fs: nodefs.resolve('tmp') });
   const fs = store.fs();
 
   const token = process.env.VERCEL_TEST_TOKEN ?? '';

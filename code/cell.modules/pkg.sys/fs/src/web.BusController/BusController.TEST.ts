@@ -1,4 +1,4 @@
-import { expect, rx, t, TestFs, TestPrep, FsBus, Path } from '../test';
+import { expect, rx, t, TestFs, TestPrep, Filesystem, Path } from '../test';
 
 describe('BusController', function () {
   const bus = rx.bus<t.SysFsEvent>();
@@ -8,7 +8,7 @@ describe('BusController', function () {
     const id = 'foo';
     const fs = TestFs.local;
     const index = TestFs.index(fs.dir);
-    const controller = FsBus.Controller({ id, fs, bus, index });
+    const controller = Filesystem.Controller({ id, fs, bus, index });
     expect(controller.id).to.eql(id);
     controller.dispose();
   });
@@ -16,7 +16,7 @@ describe('BusController', function () {
   it('id (generated)', () => {
     const fs = TestFs.local;
     const index = TestFs.index(fs.dir);
-    const controller = FsBus.Controller({ fs, bus, index });
+    const controller = Filesystem.Controller({ fs, bus, index });
     expect(controller.id).to.match(/^fs-c.*/);
     controller.dispose();
   });
@@ -27,8 +27,8 @@ describe('BusController', function () {
 
     let allow = true;
     const index = TestFs.index(fs.dir);
-    const controller = FsBus.Controller({ id, fs, index, bus, filter: (e) => allow });
-    const events = FsBus.Events({ id, bus });
+    const controller = Filesystem.Controller({ id, fs, index, bus, filter: (e) => allow });
+    const events = Filesystem.Events({ id, bus });
 
     const res1 = await events.io.info.get();
     allow = false;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { Foo, FooProps } from '..';
-import { t, FsBus, rx, HttpClient } from '../../common';
+import { t, Filesystem, rx, HttpClient } from '../../common';
 import { Stream } from '../../../web.Stream';
 
 type Ctx = {
@@ -21,7 +21,7 @@ export const actions = DevActions<Ctx>()
 
     const id = 'my-filesystem';
     const bus = rx.bus<t.SysFsEvent>();
-    const events = FsBus.Events({ id, bus });
+    const events = Filesystem.Events({ id, bus });
 
     const ctx: Ctx = {
       id,

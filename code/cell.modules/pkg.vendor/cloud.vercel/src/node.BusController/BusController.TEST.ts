@@ -1,10 +1,10 @@
 import { nodefs, t, expect, rx } from '../test';
 import { VercelBus } from '.';
-import { DEFAULT, FsBus } from './common';
+import { DEFAULT, Filesystem } from './common';
 
 describe.only('BusController', () => {
   const bus = rx.bus<t.VercelEvent>();
-  const store = FsBus.Controller({ bus, fs: nodefs.resolve('dist') });
+  const store = Filesystem.Controller({ bus, fs: nodefs.resolve('dist') });
   const fs = store.fs();
 
   describe('Info', function () {

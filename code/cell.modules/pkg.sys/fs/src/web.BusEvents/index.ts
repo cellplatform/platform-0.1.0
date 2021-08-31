@@ -1,7 +1,6 @@
 import { BusEvents as Events } from './BusEvents';
-
 export * from './BusEvents';
 
-export const FsBus = {
+export const Filesystem = {
   Events,
 };

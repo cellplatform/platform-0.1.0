@@ -1,4 +1,4 @@
-import { expect, rx, t, TestFs, TestPrep, FsBus } from '../test';
+import { expect, rx, t, TestFs, TestPrep, Filesystem } from '../test';
 
 describe('BusController.IO', function () {
   describe('info', function () {
@@ -9,8 +9,8 @@ describe('BusController.IO', function () {
       const id = 'foo';
       const fs = TestFs.local;
       const index = TestFs.index(fs.dir);
-      const controller = FsBus.Controller({ id, fs, index, bus });
-      const events = FsBus.Events({ id, bus });
+      const controller = Filesystem.Controller({ id, fs, index, bus });
+      const events = Filesystem.Events({ id, bus });
 
       const res = await events.io.info.get();
       controller.dispose();
@@ -98,8 +98,8 @@ describe('BusController.IO', function () {
       const bus = rx.bus<t.SysFsEvent>();
       const fs = TestFs.local;
       const index = TestFs.index(fs.dir);
-      const controller = FsBus.Controller({ id: 'foo', fs, index, bus });
-      const events = FsBus.Events({ id: 'bar', bus });
+      const controller = Filesystem.Controller({ id: 'foo', fs, index, bus });
+      const events = Filesystem.Events({ id: 'bar', bus });
 
       const res = await events.io.info.get({ timeout: 10 });
       controller.dispose();

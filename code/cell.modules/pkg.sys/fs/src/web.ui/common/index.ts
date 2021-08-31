@@ -1,4 +1,4 @@
-export { FsBus } from '../../web.BusEvents';
+export { Filesystem } from '../../web.BusEvents';
 export * from '../../web/common';
 export * from './libs';
 export * from './colors';
