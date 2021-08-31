@@ -37,7 +37,7 @@ export type CompilerModelMethods = {
   port(value: number | null): B;
   target(value: string | null): B;
   outdir(value: string | null): B;
-  static(value: string | string[] | null): B;
+  static(value: string | null): B;
   declarations(clear: null): B;
   declarations(include: string, dir?: string): B;
   lint(value: boolean | null): B;
