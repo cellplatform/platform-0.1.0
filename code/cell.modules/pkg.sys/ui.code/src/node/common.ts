@@ -5,7 +5,7 @@ import { log } from '@platform/log/lib/server';
 import { constants } from '../common';
 
 export { t, fs, log };
-export { hash } from '@platform/cell.schema';
+export { Hash } from '@platform/cell.schema';
 
 export const PATH = {
   ...constants.PATH,
