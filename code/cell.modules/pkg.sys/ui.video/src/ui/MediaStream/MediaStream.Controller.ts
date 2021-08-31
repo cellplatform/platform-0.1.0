@@ -4,9 +4,13 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { R, rx, t, slug } from '../../common';
 import { StreamUtil } from './util';
 
-type M = MediaStreamConstraints;
 type Refs = { [ref: string]: Ref };
-type Ref = { kind: t.MediaStreamKind; ref: string; media: MediaStream; constraints: M };
+type Ref = {
+  kind: t.MediaStreamKind;
+  ref: string;
+  media: MediaStream;
+  constraints: MediaStreamConstraints;
+};
 
 /**
  * Manages an event bus dealing with a MediaStream.
@@ -87,28 +91,35 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
         return error(ref, err);
       }
 
+      type M = MediaStreamConstraints;
+
+      // HACK: ts-compiler throwing problems with [MediaTrackConstraintSet]
+      //       type.  Reconstructed here (drop this later when [lib.dom] types calm down).
+      type A = {
+        echoCancellation?: ConstrainBoolean;
+        noiseSuppression?: ConstrainBoolean;
+        autoGainControl?: ConstrainBoolean;
+      };
+
       if (!refs[ref]) {
-        const base: M = {
-          video: true,
-          audio: {
-            // echoCancellation: { ideal: true },
-            // noiseSuppression: { ideal: true },
-            // autoGainControl: { ideal: true },
+        const audio: A = {
+          /**
+           * 🐷
+           * NOTE: experiment, turning off audio algorithmic options
+           *       to see if this supresses issues with recording audio
+           *       in the first 2-5 seconds.
+           */
 
-            /**
-             * 🐷
-             * NOTE: experiment, turning off audio algorithmic options
-             *       to see if this supresses issues with recording audio
-             *       in the first 2-5 seconds.
-             */
-
-            echoCancellation: { ideal: true },
-            noiseSuppression: { ideal: true },
-            autoGainControl: { ideal: true },
-          },
+          echoCancellation: { ideal: true },
+          noiseSuppression: { ideal: true } as any,
+          // autoGainControl: { ideal: true },
         };
 
-        const constraints = R.mergeDeepRight(base, e.constraints || {}) as M;
+        const base: M = {
+          video: true,
+          audio,
+        };
+        const constraints = R.mergeDeepRight<M, M>(base, (e.constraints || {}) as M) as M;
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         refs[ref] = { kind: 'video', ref, media: stream, constraints };
       }
