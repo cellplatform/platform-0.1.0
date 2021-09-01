@@ -1,4 +1,4 @@
-import Worker from 'worker-loader?inline=no-fallback!../workers/web.worker';
+import Worker from 'worker-loader?inline=no-fallback!../web.workers/web.worker';
 
 /**
  * Web-worker.

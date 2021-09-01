@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { COLORS, css, CssValue, t } from '../../common';
+import { COLORS, css, CssValue, t } from '../common';
 import { Icons } from './Icons';
 
 /**

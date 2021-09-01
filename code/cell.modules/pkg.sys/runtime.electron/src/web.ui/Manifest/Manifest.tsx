@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, COLORS } from '../../common';
+import { color, css, CssValue, t, COLORS } from '../common';
 
 import { ManifestHeader } from './Manifest.Header';
 import { ManifestFiles } from './Manifest.Files';
