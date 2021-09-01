@@ -1,4 +1,4 @@
-export { Filesystem } from '../../web.BusEvents';
+export { Filesystem } from '../../web';
 export * from '../../web/common';
 export * from './libs';
 export * from './colors';

@@ -1,1 +1,1 @@
-export * from './web.BusEvents.types';
+export * from '@platform/cell.fs.bus/lib/types';

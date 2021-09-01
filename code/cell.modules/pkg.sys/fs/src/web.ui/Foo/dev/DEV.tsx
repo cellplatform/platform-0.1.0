@@ -1,8 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { Foo, FooProps } from '..';
-import { t, Filesystem, rx, HttpClient } from '../../common';
-import { Stream } from '../../../web.Stream';
+import { t, Filesystem, rx, HttpClient, Stream } from '../../common';
 
 type Ctx = {
   id: string;
