@@ -2,7 +2,7 @@ import { Monaco } from '../../api';
 import { slug, t } from '../../common';
 import { CodeEditorAction } from './CodeEditor.Action';
 import { InstanceEvents } from '../event';
-import { InstanceEventHandlers } from './CodeEditor.Instance.rx.handlers';
+import { InstanceController } from './CodeEditor.Instance.Controller';
 import { MonacoListeners } from './CodeEditor.Instance.monacoListeners';
 import { select } from './CodeEditor.Instance.select';
 
@@ -118,7 +118,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
       },
     };
 
-    InstanceEventHandlers(bus, editor);
+    InstanceController(bus, editor);
     return editor;
   },
 };

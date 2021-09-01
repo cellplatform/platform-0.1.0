@@ -3,18 +3,10 @@ import { Is, rx, t } from '../../common';
 /**
  * Handles events issued to the editor.
  */
-export function InstanceEventHandlers(bus: t.CodeEditorEventBus, editor: t.CodeEditorInstance) {
+export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEditorInstance) {
   const { events } = editor;
   const instance = editor.id;
   const $ = events.$;
-
-  rx.payload<t.ICodeEditorTmpEvent>($, 'CodeEditor/tmp')
-    .pipe()
-    .subscribe(async (e) => {
-      console.log('tmp');
-
-      editor.singleton.libs.clear();
-    });
 
   /**
    * Run action.

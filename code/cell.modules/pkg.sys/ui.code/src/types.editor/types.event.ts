@@ -8,7 +8,6 @@ export type CodeEditorEvent = CodeEditorInstanceEvent | CodeEditorSingletonEvent
  */
 
 export type CodeEditorInstanceEvent =
-  | ICodeEditorTmpEvent // TEMP 🐷
   | CodeEditorChangeEvent
   | CodeEditorChangedEvent
   | CodeEditorActionEvent;
@@ -33,14 +32,6 @@ export type CodeEditorLibsEvent =
   | ICodeEditorLibsClearEvent
   | ICodeEditorLibsLoadEvent
   | ICodeEditorLibsLoadedEvent;
-
-/**
- * TODO 🐷 Temp
- */
-export type ICodeEditorTmpEvent = {
-  type: 'CodeEditor/tmp';
-  payload: { instance: string };
-};
 
 /**
  * Fired to assign focus to an editor.
