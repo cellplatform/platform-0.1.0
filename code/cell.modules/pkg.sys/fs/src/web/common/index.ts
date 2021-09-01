@@ -4,4 +4,6 @@ export { t };
 export * from './libs';
 export * from './util';
 export * from './constants';
-export * from './CellAddress';
+
+import { WebRuntime } from './libs';
+export const bundle = WebRuntime.bundle;

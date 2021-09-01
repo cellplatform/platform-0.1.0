@@ -2,6 +2,8 @@
   "name": "sys.runtime.electron",
   "version": "0.1.43",
   "sideEffects": false,
+  "main": "lib/web/index",
+  "types": "lib/web/index.d.ts",
   "compiler": {
     "port": 5050
   },

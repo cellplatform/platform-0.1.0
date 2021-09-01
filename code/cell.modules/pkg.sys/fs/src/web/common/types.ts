@@ -20,4 +20,5 @@ export {
   IHttpClient,
   IHttpClientCellFileUpload,
   IHttpClientFileData,
+  NetworkBus,
 } from '@platform/cell.types';
