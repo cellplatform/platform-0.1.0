@@ -152,7 +152,7 @@ async function logMain(args: {
   const add = (key: string, value: any, suffix?: any) => {
     key = `   • ${log.gray(key)} `;
     const line = [key, value];
-    if (suffix !== undefined) line.push(suffix);
+    if (suffix !== undefined) line.push(` ${suffix}`);
     table.add(line);
   };
 
