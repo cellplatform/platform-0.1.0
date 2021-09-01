@@ -152,7 +152,7 @@ async function logMain(args: {
   const add = (key: string, value: any, suffix?: any) => {
     key = `   • ${log.gray(key)} `;
     const line = [key, value];
-    if (suffix !== undefined) line.push(suffix);
+    if (suffix !== undefined) line.push(` ${suffix}`);
     table.add(line);
   };
 
@@ -160,7 +160,7 @@ async function logMain(args: {
 
   const toSize = async (path: string) => {
     const exists = await fs.exists(path);
-    return exists ? (await fs.size.file(path)).toString({ round: 0, spacer: ' ' }) : '0B';
+    return exists ? (await fs.size.file(path)).toString({ round: 0 }) : '0 B';
   };
 
   const formatPath = (input: string) => {

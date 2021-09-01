@@ -1,6 +1,6 @@
 export { Observable } from 'rxjs';
 
-export * from '../types';
+export * from '../../types';
 
 /**
  * @platform

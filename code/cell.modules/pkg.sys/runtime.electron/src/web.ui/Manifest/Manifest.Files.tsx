@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, css, CssValue, filesize, t } from '../../common';
+import { color, css, CssValue, filesize, t } from '../common';
 import { File } from './Manifest.File';
 
 export type ManifestFilesProps = {

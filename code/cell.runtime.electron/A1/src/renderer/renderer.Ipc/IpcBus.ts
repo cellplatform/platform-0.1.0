@@ -1,6 +1,6 @@
 import { NetworkBus } from '@platform/cell.runtime/lib/NetworkBus';
-
-import { t, env } from '../common';
+import { env } from '../common/env';
+import * as t from '../common/types';
 
 /**
  * Derives a [NetworkBus] from the Electron environment

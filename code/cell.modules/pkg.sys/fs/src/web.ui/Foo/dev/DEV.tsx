@@ -1,11 +1,13 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { Foo, FooProps } from '..';
-import { t, Filesystem, rx, HttpClient, Stream } from '../../common';
+import { t, Filesystem, rx, HttpClient, Stream, bundle, WebRuntime, IpcBus } from '../../common';
 
+type E = t.SysFsEvent;
 type Ctx = {
   id: string;
-  bus: t.EventBus<t.SysFsEvent>;
+  bus: t.EventBus<E>;
+  netbus: t.NetworkBus<E>;
   events: t.SysFsEvents;
   props: FooProps;
 };
@@ -18,13 +20,15 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const id = 'my-filesystem';
+    const id = 'main';
     const bus = rx.bus<t.SysFsEvent>();
-    const events = Filesystem.Events({ id, bus });
+    const netbus = IpcBus<E>();
+    const events = Filesystem.Events({ id, bus: netbus });
 
     const ctx: Ctx = {
       id,
       bus,
+      netbus,
       events,
       props: {},
     };
@@ -65,6 +69,9 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    console.log('bundle', bundle);
+    console.log('WebRuntime', WebRuntime);
+
     e.settings({
       host: { background: -0.04 },
       layout: {

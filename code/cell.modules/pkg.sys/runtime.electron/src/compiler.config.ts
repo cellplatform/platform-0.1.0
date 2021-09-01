@@ -2,7 +2,7 @@ import { Compiler, Package } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
-    .namespace('sys.ui.runtime')
+    .namespace('sys.runtime.electron')
     .version(Package.version)
 
     .variant('web', (config) =>
@@ -11,8 +11,8 @@ export default () =>
         .port(Package.compiler.port)
 
         .entry('main', './src/entry/dom')
-        .entry('service.worker', './src/workers/service.worker')
-        .entry('web.worker', './src/workers/web.worker')
+        .entry('service.worker', './src/web.workers/service.worker')
+        .entry('web.worker', './src/web.workers/web.worker')
 
         // .declarations('./src/**/*')
 
