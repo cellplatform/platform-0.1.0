@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Subject } from 'rxjs';
-
 import { css, t, time } from '../common';
 
 type Index = number;

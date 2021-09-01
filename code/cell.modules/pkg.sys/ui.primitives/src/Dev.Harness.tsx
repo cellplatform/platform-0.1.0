@@ -17,7 +17,7 @@ const imports = {
   DraggableSort: import('./ui/Draggable.Sort/dev/DEV'),
   DraggableMotion: import('./ui/Draggable.Motion/dev/DEV'),
 
-  Card: import('./ui/Card/DEV'),
+  Card: import('./ui/Card/dev/DEV'),
   CardStack: import('./ui/CardStack/dev/DEV'),
 
   EventCard: import('./ui/Event.Card/DEV'),
@@ -31,6 +31,7 @@ const imports = {
   Svg: import('./ui.image/Svg/dev/DEV'),
 
   Tree: import('./ui/Tree/dev/DEV'),
+  StackPanel: import('./ui/StackPanel/dev/DEV'),
 };
 
 const ns = new URL(location.href).searchParams.get('ns');
