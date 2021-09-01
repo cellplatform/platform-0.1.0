@@ -1,37 +1,46 @@
 import { t } from './common';
 
+type InstanceId = string;
 type O<T> = t.Observable<T>;
 
-export type CodeEditorInstanceEventsFactory = (
-  bus: t.EventBus<any>,
-  instance: string, // ID.
-) => t.CodeEditorInstanceEvents;
+export type CodeEditorInstanceEventsFactory = (args: {
+  bus: t.EventBus<any>;
+  id: InstanceId;
+}) => t.CodeEditorInstanceEvents;
 
 /**
  * API wrapper for event observables.
  */
 export type CodeEditorInstanceEvents = {
-  readonly id: string;
-  readonly dispose$: O<void>;
+  readonly id: InstanceId;
   readonly $: O<t.CodeEditorInstanceEvent>;
-  readonly focus$: O<t.ICodeEditorFocusChanged>;
-  readonly blur$: O<t.ICodeEditorFocusChanged>;
-  readonly selection$: O<t.ICodeEditorSelectionChanged>;
-  readonly text$: O<t.ICodeEditorTextChanged>;
-  readonly fire: t.CodeEditorInstanceEventsFire;
+  readonly dispose$: O<void>;
   dispose(): void;
-};
 
-/**
- * API for firing events that change the editor state.
- */
-export type CodeEditorInstanceEventsFire = {
-  readonly instance: string;
-  focus(): void;
-  text(text: string | null): void;
-  action(action: t.MonacoAction): Promise<t.ICodeEditorActionComplete>;
-  select(
-    selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[] | null,
-    options?: { focus?: boolean },
-  ): void;
+  readonly focus: {
+    changed$: O<t.ICodeEditorFocusChanged>;
+    fire(): void;
+  };
+
+  readonly blur: {
+    changed$: O<t.ICodeEditorFocusChanged>;
+  };
+
+  readonly selection: {
+    changed$: O<t.ICodeEditorSelectionChanged>;
+    select(
+      selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[] | null,
+      options?: { focus?: boolean },
+    ): void;
+  };
+
+  readonly text: {
+    changed$: O<t.ICodeEditorTextChanged>;
+    set(text: string | null): void;
+  };
+
+  readonly action: {
+    run$: O<t.ICodeEditorRunAction>;
+    fire(action: t.MonacoAction): Promise<t.ICodeEditorActionComplete>;
+  };
 };

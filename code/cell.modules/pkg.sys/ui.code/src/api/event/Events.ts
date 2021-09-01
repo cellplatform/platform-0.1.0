@@ -1,8 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, share, takeUntil, map } from 'rxjs/operators';
 
-import { rx, t, Is, WaitForResponse } from '../../common';
-import { Fire } from './Events.fire';
+import { rx, t, Is, WaitForResponse, slug } from '../../common';
 import { InstanceEvents } from './Instance.Events';
 
 const create: t.CodeEditorEventsFactory = (input) => {
@@ -15,6 +14,10 @@ const create: t.CodeEditorEventsFactory = (input) => {
     share(),
   );
 
+  const WaitFor = {
+    Load: WaitForResponse<t.ICodeEditorLibsLoadedEvent>($, 'CodeEditor/libs:loaded'),
+  };
+
   const singleton$ = $.pipe(
     filter((e) => Is.singletonEvent(e)),
     map((e) => e as t.CodeEditorSingletonEvent),
@@ -25,15 +28,34 @@ const create: t.CodeEditorEventsFactory = (input) => {
     map((e) => e as t.CodeEditorInstanceEvent),
   );
 
+  const libs: t.CodeEditorEvents['libs'] = {
+    /**
+     * Remove all type libraries.
+     */
+    clear() {
+      bus.fire({ type: 'CodeEditor/libs:clear', payload: {} });
+    },
+
+    /**
+     * Load type libraries at the given URL.
+     */
+    async load(url) {
+      const tx = slug();
+      const wait = WaitFor.Load.response(tx);
+      bus.fire({ type: 'CodeEditor/libs:load', payload: { url, tx } });
+      return (await wait).payload;
+    },
+  };
+
   const api: t.CodeEditorEvents = {
     $,
     dispose$: dispose$.asObservable(),
     singleton$,
     instance$,
-    fire: Fire(bus),
+    libs,
 
     editor(id) {
-      return InstanceEvents.create(bus, id);
+      return InstanceEvents({ bus, id });
     },
 
     dispose() {

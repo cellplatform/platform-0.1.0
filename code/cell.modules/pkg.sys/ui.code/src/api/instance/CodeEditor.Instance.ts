@@ -27,7 +27,7 @@ export const CodeEditorInstance = {
     const { instance, singleton, bus } = args;
     const id = args.id || `editor-${slug()}`;
     const listeners = MonacoListeners({ bus, instance, id });
-    const events = InstanceEvents.create(bus, id);
+    const events = InstanceEvents({ bus, id });
 
     // TEMP 🐷
 

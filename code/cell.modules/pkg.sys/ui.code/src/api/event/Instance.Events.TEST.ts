@@ -7,7 +7,7 @@ const id = 'foo';
 
 describe('Events: Instance', () => {
   it('create', () => {
-    const events = InstanceEvents.create(bus, id);
+    const events = InstanceEvents({ bus, id });
     expect(is.observable(events.$)).to.eql(true);
 
     let count = 0;
@@ -22,7 +22,7 @@ describe('Events: Instance', () => {
 
   it('only "CodeEditor/" instance events (filter generic bus)', () => {
     const bus = rx.bus();
-    const events = InstanceEvents.create(bus, id);
+    const events = InstanceEvents({ bus, id });
 
     let count = 0;
     events.$.subscribe(() => count++);
