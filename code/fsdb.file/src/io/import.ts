@@ -48,7 +48,7 @@ export async function importFiles(args: { db: t.IDb; dir: string }) {
       try {
         await db.putMany(items);
         count += items.length;
-      } catch (error) {
+      } catch (error: any) {
         errors.push({ path, error });
       }
     }

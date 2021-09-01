@@ -2,7 +2,7 @@ import { models, t, util } from '../common';
 
 export async function deleteFile(args: {
   db: t.IDb;
-  fs: t.IFileSystem;
+  fs: t.FsDriver;
   fileUri: string;
   host: string;
 }): Promise<t.IPayload<t.IResDeleteFile> | t.IErrorPayload> {
@@ -26,7 +26,7 @@ export async function deleteFile(args: {
       data: { deleted: true, uri: fileUri },
     };
     return res;
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 }

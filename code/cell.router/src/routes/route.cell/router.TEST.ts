@@ -1,10 +1,10 @@
-import { t, expect, http, createMock, TestPost } from '../../test';
+import { t, expect, http, RouterMock, TestPost } from '../../test';
 
 describe('cell: coordinate routes (CELL | ROW | COL)', () => {
   describe('invalid URI', () => {
     it('malformed: cell coordinate (A1) as namespace', async () => {
       const test = async (path: string, msg: string) => {
-        const mock = await createMock();
+        const mock = await RouterMock.create();
         const res = await http.get(mock.url(path));
         const body = res.json as any;
 
@@ -24,7 +24,7 @@ describe('cell: coordinate routes (CELL | ROW | COL)', () => {
 
     it('malformed: no namespace id', async () => {
       const test = async (path: string) => {
-        const mock = await createMock();
+        const mock = await RouterMock.create();
         const res = await http.get(mock.url(path));
         const body = res.json as any;
 
@@ -44,7 +44,7 @@ describe('cell: coordinate routes (CELL | ROW | COL)', () => {
 
   describe('does not exist (200, exists:false)', () => {
     const test = async (uri: string) => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const res = await http.get(mock.url(uri));
       await mock.dispose();
 
@@ -73,7 +73,7 @@ describe('cell: coordinate routes (CELL | ROW | COL)', () => {
   describe('GET', () => {
     it('redirects from "cell:" to "ns:" end-point', async () => {
       const test = async (path: string) => {
-        const mock = await createMock();
+        const mock = await RouterMock.create();
         await mock.client.ns('foo').write({ ns: { title: 'Hello' } }); // NB: Force the URI into existence in the DB.
         const res = await http.get(mock.url(path));
         await mock.dispose();
@@ -93,7 +93,7 @@ describe('cell: coordinate routes (CELL | ROW | COL)', () => {
 
   describe('cell:', () => {
     it('cell', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       await TestPost.ns('ns:foo', { cells: { A1: { value: 123 } } }, { mock });
 
       const uri = 'cell:foo:A1';
@@ -113,7 +113,7 @@ describe('cell: coordinate routes (CELL | ROW | COL)', () => {
     });
 
     it('column', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       await TestPost.ns('ns:foo', { columns: { A: { props: { width: 123 } } } }, { mock });
 
       const uri = 'cell:foo:A';
@@ -133,7 +133,7 @@ describe('cell: coordinate routes (CELL | ROW | COL)', () => {
     });
 
     it('row', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       await TestPost.ns('ns:foo', { rows: { 1: { props: { height: 80 } } } }, { mock });
 
       const uri = 'cell:foo:1';

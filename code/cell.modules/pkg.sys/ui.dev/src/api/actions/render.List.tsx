@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { rx, t } from '../../common';
-import { ActionPanel } from '../../components/ActionPanel';
+import { ActionPanel } from '../../ui/ActionPanel';
 
 /**
  * Renders the <ActionPanel> list component.

@@ -18,7 +18,7 @@ export function ListController(args: {
     const done = (args: { items?: t.BundleItem[]; error?: string } = {}) => {
       const { items = [], error } = args;
       http.dispose();
-      return bus.fire({
+      bus.fire({
         type: 'runtime.electron/Bundle/list:res',
         payload: { tx, items, error },
       });
@@ -47,8 +47,8 @@ export function ListController(args: {
             namespaces.map(async (namespace) => {
               const versions = await (await obj.namespace(namespace)).read();
               versions.forEach((item) => {
-                const { version, hash, fs } = item;
-                list.push({ domain, namespace, version, hash, fs });
+                const { source, version, hash, fs } = item;
+                list.push({ domain, namespace, version, hash, fs, source });
               });
             }),
           );
@@ -60,7 +60,7 @@ export function ListController(args: {
       const items = list.reduce((acc, next) => [...acc, ...next], []);
 
       return done({ items }); // Success.
-    } catch (err) {
+    } catch (err: any) {
       const error = `Failed while retrieving list. ${err.message}`;
       return done({ error }); // Failure.
     }

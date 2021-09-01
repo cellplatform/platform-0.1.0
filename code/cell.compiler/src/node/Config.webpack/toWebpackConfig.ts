@@ -57,6 +57,7 @@ export function toWebpackConfig(
       module: { rules },
       plugins,
       cache: { type: 'filesystem' },
+      stats: 'minimal',
     };
   };
 

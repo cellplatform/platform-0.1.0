@@ -376,22 +376,37 @@ describe('Compiler (Config)', () => {
     });
 
     it('static', () => {
-      const { model, builder } = create();
-      expect(model.state.static).to.eql(undefined);
-
-      const test = (input: any, expected: any) => {
+      const test = (input: string | null, expected: any) => {
+        const { model, builder } = create();
+        expect(model.state.static).to.eql(undefined);
         builder.static(input);
         expect(model.state.static).to.eql(expected);
       };
 
       test('foo', [{ dir: fs.resolve('foo') }]);
-      test(['foo', 'bar'], [{ dir: fs.resolve('foo') }, { dir: fs.resolve('bar') }]);
-      test(['foo', 'foo', 'foo'], [{ dir: fs.resolve('foo') }]); // NB: Unique.
+      test('  ./static  ', [{ dir: fs.resolve('static') }]);
 
       test('', undefined);
       test('  ', undefined);
       test(null, undefined);
-      test({}, undefined);
+      test({} as any, undefined);
+    });
+
+    it('static (additive)', () => {
+      const resolve = fs.resolve;
+      const { model, builder } = create();
+      expect(model.state.static).to.eql(undefined);
+
+      builder.static('static');
+      builder.static('static');
+
+      expect(model.state.static).to.eql([{ dir: resolve('static') }]);
+
+      builder.static('foo/bar');
+      expect(model.state.static).to.eql([{ dir: resolve('static') }, { dir: resolve('foo/bar') }]);
+
+      builder.static(null);
+      expect(model.state.static).to.eql(undefined);
     });
 
     it('declarations ([.d.ts] files)', () => {

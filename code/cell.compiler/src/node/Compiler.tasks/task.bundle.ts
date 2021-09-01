@@ -52,7 +52,7 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
           reject(new Error(`The compilation did not produce a stats object.`));
         }
       });
-    } catch (error) {
+    } catch (error: any) {
       reject(error);
     }
   });

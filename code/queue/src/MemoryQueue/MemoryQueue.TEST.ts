@@ -174,7 +174,7 @@ describe.only('Queue', () => {
       let error = '';
       try {
         await res2;
-      } catch (err) {
+      } catch (err: any) {
         error = err.message;
       }
 

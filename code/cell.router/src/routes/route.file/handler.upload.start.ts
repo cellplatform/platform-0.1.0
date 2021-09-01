@@ -4,7 +4,7 @@ import { fileInfo } from './handler.info';
 export async function uploadFileStart(args: {
   host: string;
   db: t.IDb;
-  fs: t.IFileSystem;
+  fs: t.FsDriver;
   mimetype: string;
   fileUri: string;
   filename: string;
@@ -94,7 +94,7 @@ export async function uploadFileStart(args: {
     };
 
     return res;
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 }

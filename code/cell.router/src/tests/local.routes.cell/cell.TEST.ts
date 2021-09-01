@@ -1,8 +1,8 @@
-import { createMock, expect } from '../../test';
+import { RouterMock, expect } from '../../test';
 
 describe('cell', () => {
   it('does not exist (404)', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const client = mock.client;
 
     const uri = 'cell:foo:A1';
@@ -16,7 +16,7 @@ describe('cell', () => {
   });
 
   it('exists', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const client = mock.client;
 
     await client.ns('foo').write({ cells: { A1: { value: 'hello' } } }); // Force A1 into existence in DB.

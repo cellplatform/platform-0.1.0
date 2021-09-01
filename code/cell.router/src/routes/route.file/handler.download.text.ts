@@ -8,7 +8,7 @@ import { fileHashCache } from '../../fs.local';
 export const downloadTextFile = async (args: {
   host: string;
   db: t.IDb;
-  fs: t.IFileSystem;
+  fs: t.FsDriver;
   fileUri: string;
   filename?: string;
   matchHash?: string;
@@ -50,7 +50,8 @@ export const downloadTextFile = async (args: {
 
     // Download the HTML file.
     const res = await fs.read(fileUri);
-    const data = res.file?.data.toString();
+    const data = res.file ? new TextDecoder().decode(res.file.data) : undefined;
+
     if (!res.ok || res.error || !data) {
       const status = res.status;
       const type = res.error ? res.error.type : ERROR.HTTP.FILE;
@@ -66,7 +67,7 @@ export const downloadTextFile = async (args: {
 
     // Finish up.
     return done(data);
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 };

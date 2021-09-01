@@ -18,7 +18,7 @@ export type CompilerModel = {
   port?: number;
   target?: string;
   outdir?: string;
-  static?: CompilerModelStatic | CompilerModelStatic[];
+  static?: CompilerModelStatic[];
   declarations?: CompilerModelDeclarations[];
   lint?: boolean;
   entry?: Record<string, string>;

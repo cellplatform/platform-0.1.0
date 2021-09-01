@@ -2,7 +2,7 @@ import * as t from '../types';
 
 export { Subject } from 'rxjs';
 export { IMemoryCache } from '@platform/cache/lib/types';
-export { IFs } from '@platform/fs.types';
+export { INodeFs } from '@platform/fs.types';
 export * from '@platform/types';
 export * from '@platform/cell.types';
 export * from '@platform/fsdb.types';

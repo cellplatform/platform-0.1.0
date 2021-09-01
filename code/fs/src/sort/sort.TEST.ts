@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from '../test';
 import { fs } from '..';
 
 describe('sort (filenames)', () => {

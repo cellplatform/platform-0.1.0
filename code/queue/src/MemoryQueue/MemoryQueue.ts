@@ -94,7 +94,7 @@ export class MemoryQueue implements t.IMemoryQueue {
         const result = await item.handler();
         const elapsed = timer.elapsed.msec;
         this.fire({ type: 'QUEUE/item/done', payload: { id, elapsed, result } });
-      } catch (error) {
+      } catch (error: any) {
         const elapsed = timer.elapsed.msec;
         this.fire({ type: 'QUEUE/item/done', payload: { id, elapsed, error } });
       } finally {

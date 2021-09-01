@@ -1,5 +1,4 @@
-import { id, time, value } from '@platform/util.value';
-import { t, util } from '../common';
+import { t, util, slug, time, value } from '../common';
 
 export const fetcher = async (args: {
   url: string;
@@ -12,7 +11,7 @@ export const fetcher = async (args: {
 }) => {
   // Prepare arguments.
   const timer = time.timer();
-  const uid = `req:${id.shortid()}`;
+  const tx = `request-${slug()}`;
   const { url, method, data, fire, mode, headers } = args;
 
   type M = { headers?: t.HttpHeaders; data?: any; respond?: t.HttpRespondInput };
@@ -46,8 +45,8 @@ export const fetcher = async (args: {
   };
 
   // Fire BEFORE event.
-  const before: t.HttpBefore = {
-    uid,
+  const before: t.HttpMethodReq = {
+    tx,
     method,
     url,
     data,
@@ -58,18 +57,18 @@ export const fetcher = async (args: {
       modifications.respond = input;
     },
   };
-  fire({ type: 'HTTP/before', payload: before });
+  fire({ type: 'HTTP/method:req', payload: before });
 
   if (modifications.respond) {
     // Exit with faked/overridden response if one was returned via the BEFORE event.
     const respond = modifications.respond;
     const payload = typeof respond === 'function' ? await respond() : respond;
     const response = await util.response.fromPayload(payload, modifications);
-    const elapsed = timer.elapsed;
+    const elapsed = timer.elapsed.msec;
     const { ok, status } = response;
     fire({
-      type: 'HTTP/after',
-      payload: { uid, method, url, ok, status, response, elapsed },
+      type: 'HTTP/method:res',
+      payload: { tx, method, url, ok, status, response, elapsed },
     });
     return response;
   } else {
@@ -84,11 +83,11 @@ export const fetcher = async (args: {
 
     // Prepare response.
     const response = await util.response.fromFetch(fetched);
-    const elapsed = timer.elapsed;
+    const elapsed = timer.elapsed.msec;
     const { ok, status } = response;
     fire({
-      type: 'HTTP/after',
-      payload: { uid, method, url, ok, status, response, elapsed },
+      type: 'HTTP/method:res',
+      payload: { tx, method, url, ok, status, response, elapsed },
     });
 
     // Finish up.

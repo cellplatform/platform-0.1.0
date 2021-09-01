@@ -17,7 +17,7 @@ export async function buffer(
   try {
     const body = await parse(req, options);
     return (body === undefined ? options.default : body) as R;
-  } catch (error) {
+  } catch (error: any) {
     return options.default as R;
   }
 }

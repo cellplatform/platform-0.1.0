@@ -1,4 +1,4 @@
-import { value, defaultValue, id, t, util, R } from '../common';
+import { value, id, t, util, R } from '../common';
 
 type B = t.RuntimeBundleOrigin;
 
@@ -12,7 +12,7 @@ export async function exec(args: {
   body: t.IReqPostFuncBody;
   defaultPull?: boolean;
   defaultSilent?: boolean;
-  defaultTimeout?: number;
+  defaultTimeout?: t.Timeout;
   defaultOnError?: t.OnFuncError;
   forceJson?: boolean;
 }) {
@@ -44,7 +44,7 @@ export async function exec(args: {
 
         // If errors occured determine continuation behavior.
         if (previous.errors.length > 0) {
-          const onError = defaultValue(body.onError, args.defaultOnError || 'stop');
+          const onError = body.onError ?? args.defaultOnError ?? 'stop';
           if (onError === 'stop') {
             break;
           }
@@ -85,7 +85,7 @@ export async function exec(args: {
       };
       return { status, data };
     }
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 }
@@ -101,15 +101,15 @@ async function execBundle(args: {
   in?: t.RuntimeIn; // NB: From previous [out] within pipeline.
   defaultPull?: boolean;
   defaultSilent?: boolean;
-  defaultTimeout?: number;
+  defaultTimeout?: t.Timeout;
 }) {
   const { body, runtime } = args;
-  const silent = defaultValue(body.silent, defaultValue(args.defaultSilent, true));
+  const silent = body.silent ?? args.defaultSilent ?? true;
 
   const { uri, dir, entry, hash } = body;
   const host = body.host || args.host;
-  const pull = defaultValue(body.pull, args.defaultPull || false);
-  const timeout = defaultValue(body.timeout, args.defaultTimeout);
+  const pull = body.pull ?? args.defaultPull ?? false;
+  const timeout = body.timeout ?? args.defaultTimeout;
   const bundle: B = { host, uri, dir };
 
   const exists = await runtime.exists(bundle);
@@ -137,7 +137,7 @@ async function execBundle(args: {
     cache: { exists, pulled: pull ? true : !exists },
     size: {
       bytes: files ? files.reduce((acc, next) => acc + next.bytes, 0) : -1,
-      files: defaultValue(files?.length, -1),
+      files: files?.length ?? -1,
     },
     errors,
     silent,

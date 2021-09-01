@@ -1,5 +1,7 @@
+import { Filesystem } from '../../main.Filesystem';
 import {
   asArray,
+  BundlePaths,
   fs,
   Genesis,
   log,
@@ -11,7 +13,6 @@ import {
   time,
   Uri,
 } from '../common';
-import { Filesystem } from '../../main.Filesystem';
 
 /**
  * Bundle logic for handling writes (PUT).
@@ -91,7 +92,7 @@ export function InstallController(args: {
       const version = manifest.module.version;
       const hash = manifest.hash.module;
 
-      module = { hash, domain, namespace, version, fs: '' };
+      module = { source: source.path, hash, domain, namespace, version, fs: '' };
 
       const ns = await registry.domain(domain).namespace(namespace);
       const current = await ns.version(version);
@@ -107,7 +108,7 @@ export function InstallController(args: {
        * Write the registry entry.
        */
       const dbResponse = await ns.write({ source: source.toString(), manifest });
-      const target = { dir: 'lib', cell: dbResponse.entry.fs };
+      const target = { dir: BundlePaths.dir.dist, cell: dbResponse.entry.fs };
       module.fs = target.cell;
 
       /**
@@ -127,8 +128,8 @@ export function InstallController(args: {
       }
 
       return done(!exists ? 'created' : 'replaced'); // Success.
-    } catch (error) {
-      return fireError(`Failed during installation. ${error.message}`); // Failure.
+    } catch (err: any) {
+      return fireError(`Failed during installation. ${err.message}`); // Failure.
     }
   });
 }
@@ -166,7 +167,7 @@ const fetchManifest = async (path: string) => {
       const manifest = res.json;
       return res.ok && manifest ? success(manifest) : error(`Failed to download manifest.`.trim());
     }
-  } catch (err) {
+  } catch (err: any) {
     return error(`Failed while fetching manifest. ${err.message}`);
   }
 

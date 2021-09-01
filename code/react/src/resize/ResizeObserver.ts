@@ -2,7 +2,7 @@ import { equals } from 'ramda';
 import { animationFrameScheduler, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, observeOn, takeUntil } from 'rxjs/operators';
 
-import * as t from './types';
+import * as t from '../common/types';
 
 const RECT: t.DomRect = {
   x: -1,
@@ -18,6 +18,8 @@ export const DEFAULT = { RECT };
 
 /**
  * An observer that monitors the changing size of an HTML element.
+ * Uses:
+ *    https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver
  */
 export const ResizeObserver = (el?: HTMLElement | null): t.ResizeObserver => {
   const root$ = new Subject<t.ResizeObserverEvent>();

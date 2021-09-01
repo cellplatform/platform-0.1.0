@@ -159,7 +159,7 @@ describe('Command.invoke', () => {
     let error: Error | undefined;
     try {
       await res;
-    } catch (err) {
+    } catch (err: any) {
       error = err;
     }
     expect(error && error.message).to.eql('MyError');
@@ -197,7 +197,7 @@ describe('Command.invoke', () => {
     let error: Error | undefined;
     try {
       await res;
-    } catch (err) {
+    } catch (err: any) {
       error = err;
     }
     expect(res.isTimedOut).to.eql(true);

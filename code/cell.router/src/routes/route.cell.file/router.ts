@@ -8,7 +8,7 @@ const { FILE } = routes.CELL.FS;
 /**
  * Routes for operating on a single cell file.
  */
-export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.Router }) {
+export function init(args: { db: t.IDb; fs: t.FsDriver; router: t.Router }) {
   const { db, fs, router } = args;
 
   /**
@@ -33,7 +33,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.Router }) {
       return !paramData.ns || error
         ? { status, data: { error } }
         : downloadFileByName({ db, fs, cellUri, filename, host, matchHash, expires });
-    } catch (err) {
+    } catch (err: any) {
       return util.toErrorPayload(err);
     }
   });
@@ -57,7 +57,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.Router }) {
       return !paramData.ns || error
         ? { status, data: { error } }
         : downloadFileByFileId({ db, fs, cellUri, filename, host, matchHash, expires });
-    } catch (err) {
+    } catch (err: any) {
       return util.toErrorPayload(err);
     }
   });

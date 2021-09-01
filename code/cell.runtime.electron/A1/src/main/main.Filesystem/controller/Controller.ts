@@ -113,9 +113,9 @@ export function Controller(args: {
 
       const action: Res['action'] = current.exists ? 'replaced' : 'created';
       return done(action, { files, errors }); // Success.
-    } catch (error) {
-      log.error(error.message);
-      return fireError(error.message); // Failure.
+    } catch (err: any) {
+      log.error(err.message);
+      return fireError(err.message); // Failure.
     }
   });
 }

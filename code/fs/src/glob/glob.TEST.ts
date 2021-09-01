@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from '../test';
 import { Glob } from '.';
 import { basename, resolve, join, dirname } from 'path';
 import * as fs from 'fs-extra';

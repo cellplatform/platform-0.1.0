@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Hr } from 'sys.ui.primitives/lib/components/Hr';
+import { Hr } from 'sys.ui.primitives/lib/ui/Hr';
 
 import { css, CssValue, t } from '../common';
 import { useGroupController, useLocalController } from '../hook';

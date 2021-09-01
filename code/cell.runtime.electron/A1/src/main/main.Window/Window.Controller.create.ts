@@ -53,10 +53,10 @@ export function WindowCreationController(args: {
           sandbox: true, //           https://www.electronjs.org/docs/api/sandbox-option
           contextIsolation: true, //  https://www.electronjs.org/docs/tutorial/context-isolation
           nodeIntegration: false, //  NB: Obsolete (see `contextIsolation`) but leaving around for safety.
-          enableRemoteModule: false,
           allowRunningInsecureContent: false, // NB: Default:false - but explicitly set false for good measure.
           additionalArguments: argv,
           preload: constants.Paths.preload,
+          nativeWindowOpen: true, // https://github.com/electron/electron/issues/28511
         },
       });
 

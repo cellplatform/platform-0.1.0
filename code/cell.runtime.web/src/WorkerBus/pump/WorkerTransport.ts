@@ -12,8 +12,6 @@ const getSelf = () => {
   throw new Error(`self context not found`);
 };
 
-const ctx: Worker = getSelf();
-
 /**
  * Initializes a [NetworkPump] for a WebWorker thread.
  */
@@ -23,6 +21,7 @@ export function WorkerTransport(): t.WorkerTransport {
     throw new Error(err);
   }
 
+  const ctx: Worker = getSelf();
   const uri: Uri = `thread:worker:${slug()}`;
   const dispose$ = new Subject<void>();
   const message$ = new Subject<t.ThreadMessage>();

@@ -1,8 +1,8 @@
-import { createMock, expect, t } from '../../test';
+import { RouterMock, expect, t } from '../../test';
 
 describe('sys (root)', () => {
   it('info', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const client = mock.client;
 
     type T = t.IResGetSysInfo & { foo: number };

@@ -18,7 +18,10 @@ export const Format = {
       load(): Promise<t.Actions[]>;
     };
 
-    const items: T = input === undefined ? [] : Array.isArray(input) ? input : [input];
+    const items: T = (() => {
+      if (input === undefined) return [];
+      return Array.isArray(input) ? input : [input];
+    })();
 
     const res: R = {
       total: items.length,

@@ -3,10 +3,15 @@ import { Subject } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
 
 import { DEFAULT, ResizeObserver } from '../resize/ResizeObserver';
-import * as t from '../types';
+import * as t from '../common/types';
 
 /**
  * Hook for attaching an monitoring the size of a DOM element.
+ *
+ * Uses:
+ *    https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver
+ *
+ *
  * USAGE:
  *
  *    First create the hook:
@@ -27,16 +32,18 @@ import * as t from '../types';
  *    To use the same {root} observer simply pass the hook response to other hook initializers, eg:
  *
  *        const resize1 = useResizeObserver(myRef1);
- *        const resize2 = useResizeObserver(myRef2, resize1);
+ *        const resize2 = useResizeObserver(myRef2, resize1.root);
+ *        const resize3 = useResizeObserver(myRef2, resize1);      // NB: Either the hook or the observer can be passed.
  *
  */
 export function useResizeObserver(
   ref: React.RefObject<HTMLElement>,
-  options: { root?: t.ResizeObserver } = {},
+  options: { root?: t.ResizeObserver | t.UseResizeObserver } = {},
 ): t.UseResizeObserver {
   const [rect, setRect] = useState<t.DomRect>(DEFAULT.RECT);
   const readyRef = useRef<boolean>(false);
-  const rootRef = useRef<t.ResizeObserver>(options.root || ResizeObserver());
+
+  const rootRef = useRef<t.ResizeObserver>(wrangleObserver(options.root) ?? ResizeObserver());
   const change$ = useRef<Subject<t.DomRect>>(new Subject<t.DomRect>());
 
   useEffect(() => {
@@ -52,8 +59,8 @@ export function useResizeObserver(
     });
 
     readyRef.current = true;
-    return () => element.dispose();
-  }, []); // eslint-disable-line
+    return () => element?.dispose();
+  }, [ref]); // eslint-disable-line
 
   return {
     ready: readyRef.current,
@@ -62,3 +69,13 @@ export function useResizeObserver(
     rect,
   };
 }
+
+/**
+ * [Helpers]
+ */
+
+const wrangleObserver = (
+  input?: t.ResizeObserver | t.UseResizeObserver,
+): t.ResizeObserver | undefined => {
+  return !input ? undefined : (input as any).root ?? input;
+};

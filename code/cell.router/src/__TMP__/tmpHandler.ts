@@ -47,9 +47,9 @@ export const tmpHandler: t.RouteHandler = async (req) => {
         await fs.stream.save(downloadPath, res.body as any);
         fileload = (await fs.readFile(downloadPath)).toString();
         console.log('fileload', fileload);
-      } catch (error) {
-        log.error(error);
-        console.log('error', JSON.stringify(error));
+      } catch (err: any) {
+        log.error(err);
+        console.log('error', JSON.stringify(err));
       }
     }
 
@@ -72,8 +72,8 @@ export const tmpHandler: t.RouteHandler = async (req) => {
         },
       },
     };
-  } catch (error) {
-    log.error(error);
-    return { status: 500, data: { error } };
+  } catch (err: any) {
+    log.error(err);
+    return { status: 500, data: { error: err } };
   }
 };

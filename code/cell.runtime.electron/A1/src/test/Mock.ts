@@ -111,7 +111,7 @@ export const Mock = {
     return {
       dir,
       db: fs.join(dir, 'local.db'),
-      fs: fs.join(dir, 'local.fs'),
+      dbfs: fs.join(dir, 'local.fs'),
       config: fs.join(dir, 'local.config'),
     };
   },

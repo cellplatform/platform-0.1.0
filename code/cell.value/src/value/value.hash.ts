@@ -1,6 +1,6 @@
 import { Schema, Squash, t, Uri } from '../common';
 
-const { sha256 } = Schema.hash;
+const { sha256 } = Schema.Hash;
 
 /**
  * Hashing algorithms for CellOS data objects.

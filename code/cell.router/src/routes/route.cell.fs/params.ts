@@ -37,7 +37,7 @@ export const getParams = (args: { params: ParamOr }) => {
 
   try {
     data.cellUri = Schema.Uri.create.cell(data.ns, data.key);
-  } catch (err) {
+  } catch (err: any) {
     error.message = toMessage(err.message);
     return { ...data, status: 400, error };
   }

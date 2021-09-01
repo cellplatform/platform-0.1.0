@@ -8,7 +8,7 @@ import {
   semver,
   t,
   value as valueUtil,
-  readJsonSync,
+  StateObject,
 } from '../common';
 import { wp } from '../config.webpack';
 import { filesMethods } from './handlers.files';
@@ -99,15 +99,16 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
       if (input === null) {
         draft.static = undefined;
       } else {
-        const value = Array.isArray(input) ? input : [input];
-        draft.static = value
-          .filter((dir) => typeof dir === 'string')
-          .map((dir) => dir.trim())
-          .filter(Boolean)
-          .map((dir) => fs.resolve(dir))
-          .map((dir) => ({ dir }));
-        draft.static = (draft.static || []).length === 0 ? undefined : draft.static;
-        draft.static = draft.static ? R.uniq(draft.static) : draft.static;
+        if (Array.isArray(input)) throw new Error(`Not expecting array.`);
+        const format = (value: any) => {
+          if (typeof value !== 'string') return '';
+          const path = value.trim();
+          return path ? fs.resolve(path) : '';
+        };
+        const dir = format(input);
+        const list = draft.static || (draft.static = []);
+        if (dir && !list.some((item) => item.dir === dir)) list.push({ dir });
+        draft.static = list.length === 0 ? undefined : list;
       }
     });
   },
@@ -296,7 +297,7 @@ const findVariant = (model: t.CompilerModel, name: string) => {
 function loadPackageJson(cwd: string) {
   const path = fs.join(cwd, 'package.json');
   const exists = fs.existsSync(path);
-  return exists ? (readJsonSync(path) as t.INpmPackageJson) : undefined;
+  return exists ? (fs.readJsonSync(path) as t.INpmPackageJson) : undefined;
 }
 
 function writePathMap<M extends O>(

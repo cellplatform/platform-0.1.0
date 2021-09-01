@@ -3,14 +3,14 @@
 import { routes, t } from '../common';
 import { downloadBinaryFile } from './handler.download.binary';
 import { fileInfo } from './handler.info';
-import { uploadLocalFile } from './handler.upload.local';
 import { uploadFileComplete } from './handler.upload.complete';
+import { uploadLocalFile } from './handler.upload.local';
 import { getParams } from './params';
 
 /**
  * File-system routes (fs:).
  */
-export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.Router }) {
+export function init(args: { db: t.IDb; fs: t.FsDriver; router: t.Router }) {
   const { db, fs, router } = args;
 
   /**

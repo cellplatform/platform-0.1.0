@@ -11,7 +11,7 @@ export type FilesystemEvent = FilesystemWriteReqEvent | FilesystemWriteResEvent;
  * Event API.
  */
 
-export type FilesystemEvents = t.IDisposable & {
+export type FilesystemEvents = t.Disposable & {
   $: t.Observable<FilesystemEvent>;
   is: { base(input: any): boolean };
 

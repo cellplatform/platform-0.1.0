@@ -1,10 +1,10 @@
-import { local } from '@platform/cell.fs.local';
+import { FsDriverLocal } from '@platform/cell.fs.local';
 import { NodeRuntime } from '@platform/cell.runtime.node';
 import { Server } from '@platform/cell.service/lib/node/server';
 import { NeDb } from '@platform/fsdb.nedb';
 import { filter } from 'rxjs/operators';
 
-import { fs, log, t, Urls, util, Paths } from '../common';
+import { fs, log, t, Urls, util, Paths, rx } from '../common';
 import { RuntimeInfo } from './RuntimeInfo';
 
 export const SystemServer = {
@@ -16,17 +16,18 @@ export const SystemServer = {
   init(options: { prod?: boolean; log?: t.ILog; paths?: Partial<t.ElectronDataPaths> }) {
     const { prod = false } = options;
     const paths = { ...Paths.data({ prod }), ...options.paths };
+    const runtimeBus = rx.bus();
 
     const app = Server.create({
       name: 'main',
       db: NeDb.create({ filename: paths.db }),
-      fs: local.init({ dir: paths.fs, fs }),
-      runtime: NodeRuntime.create(),
+      fs: FsDriverLocal({ dir: paths.dbfs, fs }),
+      runtime: NodeRuntime.create({ bus: runtimeBus }),
       logger: options.log,
       region: SystemServer.region,
     });
 
-    return { app, paths };
+    return { app, paths, runtimeBus };
   },
 
   /**
@@ -43,9 +44,9 @@ export const SystemServer = {
     } = {},
   ) {
     const { silent } = options;
-    const { app, paths } = SystemServer.init(options);
+    const { app, paths, runtimeBus } = SystemServer.init(options);
 
-    const port = await util.port.unused(options.port);
+    const port = await util.Port.unused(options.port);
     const instance = await app.start({ port, silent });
     const host = `localhost:${port}`;
     const info = RuntimeInfo({ paths });
@@ -80,6 +81,6 @@ export const SystemServer = {
     });
 
     // Finish up.
-    return { app, instance, paths, host, port };
+    return { app, instance, paths, host, port, runtimeBus };
   },
 };

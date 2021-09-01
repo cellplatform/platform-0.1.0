@@ -374,7 +374,7 @@ function runProcessors(args: {
       };
 
       runProcessor(0);
-    } catch (error) {
+    } catch (error: any) {
       reject(error);
     }
   });

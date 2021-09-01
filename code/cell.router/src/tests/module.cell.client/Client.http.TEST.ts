@@ -1,12 +1,12 @@
 import { MicroRequest } from '@platform/micro';
 import * as semver from 'semver';
 
-import { createMock, expect, Http, HttpClient, t, testFiles, time } from '../../test';
+import { RouterMock, expect, Http, HttpClient, t, testFiles, time } from '../../test';
 
 describe('HttpClient', () => {
   describe('headers', () => {
     it('sends headers (client/schema version)', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const client = mock.client;
 
       const requests: MicroRequest[] = [];
@@ -33,7 +33,7 @@ describe('HttpClient', () => {
     });
 
     it('uses custom HTTP client (merging headers)', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const http = Http.create({ headers: { foo: 'hello' } });
       const client = HttpClient.create({ http, host: mock.port });
 
@@ -53,7 +53,7 @@ describe('HttpClient', () => {
 
   describe('http.ns', () => {
     it('exists', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const ns = mock.client.ns('ns:foo');
 
       expect(await ns.exists()).to.eql(false);
@@ -67,7 +67,7 @@ describe('HttpClient', () => {
 
   describe('http.cell', () => {
     it('exists', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const ns = mock.client.ns('ns:foo');
       const cell = mock.client.cell('cell:foo:A1');
 
@@ -80,7 +80,7 @@ describe('HttpClient', () => {
     });
 
     it('copy (sample)', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const ns = mock.client.ns('ns:foo');
 
       const A1 = { value: 123, props: { foo: 'hello' } };
@@ -123,7 +123,7 @@ describe('HttpClient', () => {
 
   describe('http.cell.file', () => {
     it('exists', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const cell = mock.client.cell('cell:foo:A1');
 
       const filename = 'foo.png';
@@ -138,7 +138,7 @@ describe('HttpClient', () => {
     });
 
     it('info', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const cell = mock.client.cell('cell:foo:A1');
 
       const filename = 'foo.png';
@@ -156,7 +156,7 @@ describe('HttpClient', () => {
     });
 
     it('upload error: no files provided', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const cell = mock.client.cell('cell:foo:A1');
 
       const res = await cell.fs.upload([]);

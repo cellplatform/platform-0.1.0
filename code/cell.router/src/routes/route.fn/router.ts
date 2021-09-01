@@ -41,7 +41,7 @@ export function init(args: { db: t.IDb; router: t.Router; runtime?: t.RuntimeEnv
       });
 
       return res;
-    } catch (err) {
+    } catch (err: any) {
       return util.toErrorPayload(err);
     }
   });

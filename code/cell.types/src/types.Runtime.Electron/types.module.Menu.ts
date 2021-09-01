@@ -93,7 +93,7 @@ export type MenuItemRole =
 /**
  * Event API.
  */
-export type MenuEvents = t.IDisposable & {
+export type MenuEvents = t.Disposable & {
   $: t.Observable<MenuEvent>;
   is: { base(input: any): boolean };
 

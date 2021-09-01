@@ -1,17 +1,13 @@
-import { local } from '@platform/cell.fs.local';
-import { s3 } from '@platform/cell.fs.s3';
+import { FsDriverLocal } from '@platform/cell.fs.local';
+import { FsDriverS3 } from '@platform/cell.fs.s3';
 import { NeDb } from '@platform/fsdb.nedb';
 import { NodeRuntime } from '@platform/cell.runtime.node';
 
-import { Server, util, t } from './common';
+import { Server, util, rx } from './common';
+import { authorize } from './auth';
 
 util.env.load();
 const TMP = util.resolve('./tmp/env.node');
-
-const authorize: t.HttpAuthorize = async (e) => {
-  console.log('TODO Sudo Check', e.url);
-  return true;
-};
 
 /**
  * Database.
@@ -23,10 +19,10 @@ const db = NeDb.create({ filename });
  * File system.
  */
 const filesystem = {
-  local: () => local.init({ dir: `${TMP}/fs`, fs: util.fs }),
+  local: () => FsDriverLocal({ dir: `${TMP}/fs`, fs: util.fs }),
 
   spaces: () =>
-    s3.init({
+    FsDriverS3({
       dir: 'platform/tmp/test.http',
       endpoint: {
         origin: 'sfo2.digitaloceanspaces.com',
@@ -37,7 +33,7 @@ const filesystem = {
     }),
 
   wasabi: () =>
-    s3.init({
+    FsDriverS3({
       dir: 'cell/tmp/test.http',
       endpoint: 's3.us-west-1.wasabisys.com',
       accessKey: util.env.value('WASABI_KEY'),
@@ -48,7 +44,8 @@ const filesystem = {
 /**
  * Function Runtime.
  */
-const runtime = NodeRuntime.create();
+const bus = rx.bus();
+const runtime = NodeRuntime.create({ bus });
 
 /**
  * Initialize and start the HTTP application server.

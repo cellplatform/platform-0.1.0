@@ -1,4 +1,4 @@
-import { Genesis, ManifestFetch, ModuleRegistry, slug, t, Urls } from '../common';
+import { BundlePaths, Genesis, ManifestFetch, ModuleRegistry, slug, t, Urls } from '../common';
 
 export function StatusController(args: {
   bus: t.EventBus<t.BundleEvent>;
@@ -43,7 +43,12 @@ export function StatusController(args: {
       if (!entry) return done();
 
       type M = t.ModuleManifest;
-      const manifest = await ManifestFetch.get<M>({ host, cell: entry.fs, path: 'lib/index.json' });
+      const dir = BundlePaths.dir.dist;
+      const manifest = await ManifestFetch.get<M>({
+        host,
+        cell: entry.fs,
+        path: `${dir}/index.json`,
+      });
       const module = manifest.json?.module;
       if (!manifest.ok || !module)
         return fireError(`Failed to load manifest for [${errorContext()}]`);
@@ -53,6 +58,7 @@ export function StatusController(args: {
         latest: !Boolean(e.version),
         compiler: module.compiler,
         module: {
+          source: entry.source,
           hash: entry.hash,
           domain: domain.name,
           namespace: ns.name,
@@ -61,14 +67,14 @@ export function StatusController(args: {
         },
         urls: {
           manifest: manifest.url,
-          entry: urls.file.byName(`lib/${module.entry}`).toString(),
+          entry: urls.file.byName(`${dir}/${module.entry}`).toString(),
         },
       };
 
       done({ status }); // Success.
-    } catch (error) {
+    } catch (err: any) {
       // Failure.
-      return fireError(`Status request [${errorContext()}] failed. ${error.message}`);
+      return fireError(`Status request [${errorContext()}] failed. ${err.message}`);
     }
   });
 }

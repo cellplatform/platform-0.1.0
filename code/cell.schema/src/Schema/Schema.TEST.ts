@@ -4,7 +4,7 @@ import { expect, t } from '../test';
 describe('Schema', () => {
   describe('static', () => {
     it('hash', () => {
-      const res = Schema.hash.sha256({ msg: 'abc' });
+      const res = Schema.Hash.sha256({ msg: 'abc' });
       expect(res).to.eql('sha256-88e2147d5ed37885f807e219fc43e5e32c150c83a121086b84b6ae43991ca7b7');
     });
 

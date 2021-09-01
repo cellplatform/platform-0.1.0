@@ -5,8 +5,8 @@ echo
 # 
 # Nuke: Root
 # 
-rm -rf node_modules
 sh script.sh/clean.sh
+rm -rf node_modules
 
 # 
 # Nuke: A1 (electron application folder)

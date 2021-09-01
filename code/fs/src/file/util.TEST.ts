@@ -1,6 +1,4 @@
-import { expect } from 'chai';
-import { expectError } from '@platform/test';
-import { yaml } from '../common';
+import { expect, expectError, yaml } from '../test';
 import { fs } from '..';
 import * as util from './util';
 

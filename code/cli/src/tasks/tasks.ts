@@ -65,7 +65,7 @@ export class Tasks implements t.ITasks {
     );
     try {
       await runner.run();
-    } catch (err) {
+    } catch (err: any) {
       // Ignore - errors are caught and returned below.
     }
 

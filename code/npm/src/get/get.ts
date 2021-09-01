@@ -86,7 +86,7 @@ async function getJson(
     try {
       const json = JSON.parse(text);
       return json ? json.data : undefined;
-    } catch (error) {
+    } catch (error: any) {
       log.error('Raw JSON text:');
       log.info.yellow(text);
       throw error;
@@ -98,7 +98,7 @@ async function getJson(
     const result = await exec.command(cmd).run({ cwd, env, silent: true });
     const text = result.info.join();
     return result.info.length > 0 ? parseJson(text) : undefined;
-  } catch (error) {
+  } catch (error: any) {
     if (error.message.includes('Not found')) {
       return undefined; // Return nothing indicating the module was not found on NPM.
     } else {

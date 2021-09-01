@@ -80,7 +80,7 @@ export function toTree<T extends TreeNode>(expr?: string): T {
       enterFunction: (func: FunctionNode) => parseFunction(func),
     });
     return node as T;
-  } catch (error) {
+  } catch (error: any) {
     const err: ParseErrorNode = { type: 'parse-error' };
     return err as T;
   }

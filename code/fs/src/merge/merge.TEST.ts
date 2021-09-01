@@ -1,4 +1,4 @@
-import { expect, expectError } from '@platform/test';
+import { expect, expectError } from '../test';
 import { fs } from '..';
 
 const writeFile = async (path: string, text = 'message: hello\n') => {

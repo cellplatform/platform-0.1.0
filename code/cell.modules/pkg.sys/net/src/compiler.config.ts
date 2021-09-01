@@ -14,6 +14,9 @@ const web = (config: Config) =>
     .expose('./Dev', './src/Dev.Harness')
     .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']));
 
+/**
+ * Configuration
+ */
 export default () =>
   Compiler.config()
     .namespace('sys.net')

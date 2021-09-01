@@ -1,5 +1,4 @@
-import { path, util } from '@platform/cell.fs/lib/common';
-export { path, util };
-
-import { Schema } from '@platform/cell.schema';
-export { Schema };
+export { Path, PathUri } from '@platform/cell.fs';
+export { Schema, Uri, Hash } from '@platform/cell.schema';
+export { deleteUndefined, time } from '@platform/util.value';
+export { Stream } from '@platform/fs';

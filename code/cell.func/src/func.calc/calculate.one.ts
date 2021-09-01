@@ -101,7 +101,7 @@ export function one<D = any>(args: {
       if (node.type === 'cell') {
         data = await getCellRefValue({ cell, node, refs, getValue, getFunc });
       }
-    } catch (err) {
+    } catch (err: any) {
       error = util.fromErrorObject(err, { path, formula });
     }
 

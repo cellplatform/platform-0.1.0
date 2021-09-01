@@ -25,7 +25,7 @@ export async function copy(args: t.S3CopyArgs & { s3: AWS.S3 }): Promise<t.S3Cop
       .promise();
     const etag = formatETag(res.CopyObjectResult?.ETag);
     return done(200, { etag });
-  } catch (err) {
+  } catch (err: any) {
     const status = err.statusCode || 500;
     const error = new Error(err.code);
     return done(status, { error });

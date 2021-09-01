@@ -1,5 +1,5 @@
 import { Bundle } from '.';
-import { expect, fs, Mock, Paths, rx, slug, t, TestSample, Uri, Urls } from '../../test';
+import { Uri, expect, fs, Mock, Paths, rx, t, TestSample, Urls, http } from '../../test';
 import { SampleUploadMock } from '../main.Filesystem/Filesystem.TEST';
 
 describe('main.Bundle', function () {
@@ -72,6 +72,7 @@ describe('main.Bundle', function () {
         expect(res1.items.length).to.eql(1);
         expect(res1.items[0].domain).to.eql('runtime:electron:bundle');
         expect(res1.items[0].namespace).to.eql('sys.ui.runtime');
+        expect(res1.items[0].source).to.eql(manifestPath);
       });
     });
 
@@ -89,6 +90,7 @@ describe('main.Bundle', function () {
         expect(res.errors).to.eql([]);
 
         expect(list.length).to.eql(1);
+        expect(list[0].source).to.eql(manifestPath);
         expect(list[0].domain).to.eql('runtime:electron:bundle');
         expect(list[0].namespace).to.eql(manifest.module.namespace);
         expect(list[0].version).to.eql(manifest.module.version);
@@ -118,7 +120,6 @@ describe('main.Bundle', function () {
         const source = urls.cell(mock.target.cell).file.byName(filepath).toString();
 
         // Run the installer event.
-
         const res = await events.install.fire(source, { silent: true });
         const list = (await events.list.get()).items;
 
@@ -175,11 +176,14 @@ describe('main.Bundle', function () {
         expect(status?.latest).to.eql(true);
         expect(status?.compiler).to.match(/^@platform\/cell\.compiler\@/);
 
+        expect(status?.module.source).to.eql(manifestPath);
         expect(status?.module.hash).to.match(/^sha256-/);
         expect(status?.module.domain).to.eql('runtime:electron:bundle');
         expect(status?.module.namespace).to.eql('sys.ui.runtime');
         expect(status?.module.version).to.match(/^\d+\.\d+\.\d+$/);
         expect(status?.module.fs).to.match(/cell\:[\d\w]+\:[A-Z]+[1-9]+$/);
+
+        console.log('status', status);
       });
 
       it('exists: false', async () => {
@@ -193,6 +197,89 @@ describe('main.Bundle', function () {
         expect(res.exists).to.eql(false);
         expect(res.error).to.eql(undefined);
         expect(res.status).to.eql(undefined);
+      });
+    });
+
+    describe('fetch: manifest', () => {
+      it('success', async () => {
+        const manifest = (await fs.readJson(manifestPath)) as t.ModuleManifest;
+        const mock = await SampleUploadMock();
+        await mock.upload();
+
+        // Prepare the uploaded sample bundle as the source to install from.
+        const filepath = `${mock.target.dir}/index.json`;
+        const urls = Urls.create(mock.http.origin);
+        const source = urls.cell(mock.target.cell).file.byName(filepath).toString();
+
+        // Run the fetch event.
+        const res = await mock.events.bundle.manifest.fetch.fire(source);
+        await mock.dispose();
+
+        expect(res.source).to.eql(source);
+        expect(res.exists).to.eql(true);
+        expect(res.manifest).to.eql(manifest);
+        expect(res.error).to.eql(undefined);
+      });
+
+      it('error: not found', async () => {
+        const mock = await SampleUploadMock();
+        await mock.upload();
+
+        // Prepare the uploaded sample bundle as the source to install from.
+        const filepath = `${mock.target.dir}/404.json`;
+        const urls = Urls.create(mock.http.origin);
+        const source = urls.cell(mock.target.cell).file.byName(filepath).toString();
+
+        // Run the fetch event.
+        const res = await mock.events.bundle.manifest.fetch.fire(source);
+        await mock.dispose();
+
+        expect(res.source).to.eql(source);
+        expect(res.exists).to.eql(false);
+        expect(res.manifest).to.eql(undefined);
+        expect(res.error).to.include('[404] Manifest not found');
+      });
+
+      it('error: not manifest', async () => {
+        const mock = await Mock.controllers();
+
+        // Upload some JSON that is not a manifest.
+        const A1 = Uri.create.A1();
+        const cell = mock.http.cell(A1);
+        const filename = 'index.json';
+        const data = await fs.readFile(fs.resolve('src/test/sample/foo.json'));
+        await cell.fs.upload({ filename, data });
+        expect(await cell.fs.file(filename).exists()).to.eql(true);
+
+        // Prepare the URL to the (non-manifest) JSON.
+        const urls = Urls.create(mock.http.origin);
+        const source = urls.cell(A1).file.byName(filename).toString();
+        expect((await http.get(source)).ok).to.eql(true);
+
+        // Run the fetch event.
+        const res = await mock.events.bundle.manifest.fetch.fire(source);
+        await mock.dispose();
+
+        expect(res.source).to.eql(source);
+        expect(res.exists).to.eql(true); // NB: Exists, but is not a manifest.
+        expect(res.manifest).to.eql(undefined);
+        expect(res.error).to.include('The retrieved JSON is not a manifest');
+      });
+
+      it('error: not url', async () => {
+        const mock = await SampleUploadMock();
+        await mock.upload();
+
+        const test = async (source: string) => {
+          const res = await mock.events.bundle.manifest.fetch.fire(source);
+          expect(res.error).to.include('Only absolute URLs are supported');
+        };
+
+        await test('');
+        await test('  ');
+        await test('foobar');
+
+        await mock.dispose();
       });
     });
   });

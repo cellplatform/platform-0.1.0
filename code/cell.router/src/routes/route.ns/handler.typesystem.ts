@@ -51,7 +51,7 @@ export async function getTypes(args: {
     };
 
     return { status: 200, data };
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 }

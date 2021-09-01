@@ -1,8 +1,4 @@
-import { fs } from '@platform/fs.s3';
-export { fs };
-
-import { path, util } from '@platform/cell.fs';
-export { path, util };
-
-import { Schema } from '@platform/cell.schema';
-export { Schema };
+export { fs } from '@platform/fs.s3';
+export { Stream } from '@platform/fs';
+export { Path } from '@platform/cell.fs';
+export { Schema, Hash, Mime } from '@platform/cell.schema';

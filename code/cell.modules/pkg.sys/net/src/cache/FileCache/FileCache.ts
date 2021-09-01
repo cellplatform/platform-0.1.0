@@ -53,7 +53,7 @@ export const FileCache = (name?: string, version?: number) => {
           'info.bytes',
         ]);
       };
-    } catch (error) {
+    } catch (error: any) {
       const err = `Failed while opening database '${name}'. ${error.message}`;
       reject(new Error(err));
     }

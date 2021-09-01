@@ -1,4 +1,4 @@
-import { deleteUndefined, fs, Schema, t, DEFAULT, sizeOfImage } from '../../common';
+import { deleteUndefined, fs, Schema, t, DEFAULT, ManifestFile } from '../../common';
 import { FileAccess, FileRedirects } from '../../config';
 
 type M = t.Manifest;
@@ -96,19 +96,14 @@ export const Manifest = {
    */
   hash: {
     files(input: t.ManifestFile[] | t.Manifest) {
-      const files = Array.isArray(input) ? input : input.files;
-      const list = files.filter(Boolean).map((file) => file.filehash);
-      return Schema.hash.sha256(list);
+      return ManifestFile.Hash.files(input);
     },
 
     /**
      * Calculate the hash of a file.
      */
     async filehash(path: string) {
-      if (!(await fs.pathExists(path))) throw new Error(`File not found: ${path}`);
-      if (!(await fs.is.file(path))) throw new Error(`Not a file: ${path}`);
-      const file = await fs.readFile(path);
-      return Schema.hash.sha256(file);
+      return ManifestFile.Hash.filehash(fs, path);
     },
   },
 
@@ -181,15 +176,9 @@ export const Manifest = {
     model?: t.CompilerModel;
   }): Promise<t.ManifestFile> {
     const { model, baseDir } = args;
-    const file = await fs.readFile(args.path);
-    const bytes = file.byteLength;
-    const filehash = Schema.hash.sha256(file);
     const path = args.path.substring(baseDir.length + 1);
-
     return deleteUndefined({
-      path,
-      bytes,
-      filehash,
+      ...(await ManifestFile.parse({ fs, baseDir, path: args.path })),
       allowRedirect: model ? toRedirect({ model, path }).flag : undefined,
       public: model ? toPublic({ model, path }) : undefined,
       image: await Manifest.toImage(path),
@@ -200,13 +189,7 @@ export const Manifest = {
    * Generates image meta-data for the given path.
    */
   async toImage(path: string): Promise<t.ManifestFileImage | undefined> {
-    const kind = toImageKind(path);
-    if (!kind) return undefined;
-
-    const size = await sizeOfImage(path);
-    const width = size?.width || -1;
-    const height = size?.height || -1;
-    return { kind, width, height };
+    return ManifestFile.Image.parse(fs, path);
   },
 };
 
@@ -227,12 +210,4 @@ function toAccess(args: { model: t.CompilerModel; path: string }) {
 function toPublic(args: { model: t.CompilerModel; path: string }) {
   const access = toAccess(args);
   return access.public ? true : undefined;
-}
-
-function toImageKind(path: string) {
-  type K = t.ManifestFileImage['kind'];
-  const kinds = ['.jpg', '.png', '.svg'];
-  let ext = fs.path.extname(path).toLowerCase();
-  ext = ext === '.jpeg' ? '.jpg' : ext;
-  return kinds.includes(ext) ? (ext.replace(/^\./, '') as K) : undefined;
 }

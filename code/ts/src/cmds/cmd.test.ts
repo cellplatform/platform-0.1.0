@@ -59,7 +59,7 @@ export async function test(
     }
 
     return done(res);
-  } catch (error) {
+  } catch (error: any) {
     return result.fail(error);
   }
 }

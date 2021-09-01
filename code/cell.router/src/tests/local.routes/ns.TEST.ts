@@ -1,6 +1,6 @@
 /* eslint-disable no-console, @typescript-eslint/ban-ts-comment */
 
-import { t, expect, http, createMock, stripHashes, TestPost, constants } from '../../test';
+import { t, expect, http, RouterMock, stripHashes, TestPost, constants } from '../../test';
 import { testPostFile } from './file.TEST';
 
 /**
@@ -15,7 +15,7 @@ describe('ns:', function () {
 
   describe('invalid URI', () => {
     it('malformed: no id', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const url = mock.url('/ns:');
       const res = await http.get(url);
       const body = res.json as any;
@@ -32,7 +32,7 @@ describe('ns:', function () {
   describe('redirects', () => {
     it('redirects from "ns:" to "cell:" end-point', async () => {
       const test = async (path: string) => {
-        const mock = await createMock();
+        const mock = await RouterMock.create();
         await mock.client.ns('foo').write({ cells: { A1: { value: 'hello' } } }); // NB: Force A1 into existence in DB.
         const res = await http.get(mock.url(path));
         const json = res.json as t.IResGetCell;
@@ -53,7 +53,7 @@ describe('ns:', function () {
 
   describe('GET', () => {
     it('does not exist (404)', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const url = mock.url('ns:foo');
       const res = await http.get(url);
       await mock.dispose();
@@ -79,7 +79,7 @@ describe('ns:', function () {
     });
 
     it('supported namespace ID characters', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
 
       const test = async (ns: string) => {
         const client = mock.client.ns(ns);
@@ -97,7 +97,7 @@ describe('ns:', function () {
     });
 
     it('retains [null] values', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
 
       const payload: t.IReqPostNsBody = {
         cells: { A1: { value: 'hello', props: null } } as any, // NB: [any] because `null` is an illegal type.
@@ -119,7 +119,7 @@ describe('ns:', function () {
     });
 
     it('squashes [undefined] values', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
 
       const payload: t.IReqPostNsBody = {
         cells: { A1: { value: 'hello', props: undefined } } as any,
@@ -141,7 +141,7 @@ describe('ns:', function () {
     });
 
     it('selective data via query-string (boolean|ranges)', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
 
       const A1 = { value: 'A1' };
       const B2 = { value: 'B2' };
@@ -215,7 +215,7 @@ describe('ns:', function () {
     });
 
     it('files via query-string', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const post = await testPostFile({
         source: 'src/test/assets/bird.png',
         dispose: false,
@@ -237,7 +237,7 @@ describe('ns:', function () {
     });
 
     it('versions', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const client = mock.client.ns('foo');
 
       const cells: t.ICellMap<t.ICellData> = {
@@ -255,7 +255,7 @@ describe('ns:', function () {
 
   describe('GET totals', () => {
     it('no total object', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const client = mock.client.ns('foo');
       const cells: t.ICellMap<t.ICellData> = {
         A1: { value: 123 },
@@ -271,7 +271,7 @@ describe('ns:', function () {
     });
 
     it('total: rows/columns', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const client = mock.client.ns('foo');
       const cells: t.ICellMap<t.ICellData> = {
         Z9: { value: 123 },
@@ -290,7 +290,7 @@ describe('ns:', function () {
     });
 
     it('total: true (all)', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const client = mock.client.ns('foo');
       const cells: t.ICellMap<t.ICellData> = {
         Z9: { value: 123 },
@@ -368,7 +368,7 @@ describe('ns:', function () {
     });
 
     it('onConflict: "overwrite" (replace) value/props/links (default)', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const post = async (A1: t.ICellData<any>) =>
         TestPost.ns('ns:foo?onConflict=overwrite', { cells: { A1 } }, { mock });
 
@@ -386,7 +386,7 @@ describe('ns:', function () {
     });
 
     it('onConflict: "merge" value/props/links', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const post = async (A1: t.ICellData<any>) =>
         TestPost.ns('ns:foo', { cells: { A1 } }, { mock }); // Default: update=merge
 
@@ -407,7 +407,7 @@ describe('ns:', function () {
     });
 
     it('squashes empty links', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const post = async (A1: t.ICellData<any>) =>
         TestPost.ns('ns:foo', { cells: { A1 } }, { mock }); // Default: update=merge
 
@@ -494,7 +494,7 @@ describe('ns:', function () {
     });
 
     it('REF re-calculate when referenced value changes', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       let cells = {
         A1: { value: '=A2' },
         A2: { value: 123 },
@@ -517,7 +517,7 @@ describe('ns:', function () {
     });
 
     it('calc (operate on provided "range" subset of keys)', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const before = {
         A1: { value: '=A2' },
         A2: { value: 123 },
@@ -541,7 +541,7 @@ describe('ns:', function () {
     });
 
     it('calculate prior uncalculated set of data (calc=true)', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const cells = {
         A1: { value: '=A2' },
         A2: { value: 123 },
@@ -561,7 +561,7 @@ describe('ns:', function () {
     });
 
     it('calculate prior uncalculated set of data (calc=<range>)', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const before = {
         A1: { value: '=A2' },
         A2: { value: 123 },
@@ -586,7 +586,7 @@ describe('ns:', function () {
     });
 
     it('reports error when function not found', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const cells = {
         A1: { value: '=A2 + 5' }, // NB: The SUM function is not available.
         A2: { value: 123 },
@@ -605,7 +605,7 @@ describe('ns:', function () {
     });
 
     it('clears error when function is corrected', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const cells = {
         A1: { value: '=A2 + 5' }, // NB: The SUM function is not available.
         A2: { value: 123 },
@@ -631,7 +631,7 @@ describe('ns:', function () {
     });
 
     it.skip('calculates SUM from imported func', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const cells = {
         A1: { value: '=10 + A2', links: {} },
         A2: { value: 123 },

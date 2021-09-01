@@ -50,7 +50,7 @@ export class HttpClient implements t.IHttpClient {
     try {
       await HttpClient.create(host).info();
       return true;
-    } catch (error) {
+    } catch (error: any) {
       if (error.code === 'ECONNREFUSED') {
         return false;
       } else {
@@ -71,15 +71,15 @@ export class HttpClient implements t.IHttpClient {
     const http = args.http ? args.http : Http.create({ headers, mode: 'cors' });
 
     // Setup observables.
-    const before$ = http.before$.pipe(takeUntil(this.dispose$));
-    const after$ = http.after$.pipe(takeUntil(this.dispose$));
+    const request$ = http.req$.pipe(takeUntil(this.dispose$));
+    const response$ = http.res$.pipe(takeUntil(this.dispose$));
 
-    before$.subscribe((e) => e.modify.headers.merge(headers));
+    request$.subscribe((e) => e.modify.headers.merge(headers));
 
     // Store fields.
     this.http = http;
-    this.request$ = before$;
-    this.response$ = after$;
+    this.request$ = request$;
+    this.response$ = response$;
   }
 
   /**

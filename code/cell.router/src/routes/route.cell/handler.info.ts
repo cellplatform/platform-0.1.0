@@ -56,9 +56,8 @@ export async function get<T extends t.IUriResponse<any, any>>(args: {
   try {
     const res = await getCoord<T>({ uri, getModel, getUrls });
     return res;
-  } catch (error) {
-    console.log('error.stack', error.stack);
-    const err = `Failed to get info for [${uri}]. ${error.message}`;
-    return util.toErrorPayload(err);
+  } catch (err: any) {
+    const error = `Failed to get info for [${uri}]. ${err.message}`;
+    return util.toErrorPayload(error);
   }
 }

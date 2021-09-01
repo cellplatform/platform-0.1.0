@@ -52,7 +52,7 @@ export async function lint(args: { dir?: string; silent?: boolean } = {}): Promi
     // Finish up.
     res.errors.log({ log });
     return res;
-  } catch (error) {
+  } catch (error: any) {
     return result.fail(error);
   }
 }

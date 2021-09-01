@@ -1,4 +1,5 @@
 import '../d.global';
+export { EventBus } from '@platform/types/lib/types.event';
 
 /**
  * Params passed to compiled code.
@@ -18,4 +19,5 @@ export type ISampleNodeInValue = {
 export type ISampleNodeOutValue = {
   echo?: any;
   process: Record<string, any>;
+  env: { tx: string };
 };

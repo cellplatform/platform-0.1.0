@@ -1,5 +1,5 @@
 import { expect, t } from '../../test';
-import { prepare, samples, uploadBundle } from './util';
+import { prepare, Samples, uploadBundle } from './util';
 
 describe('/fn:run (HTTP headers)', function () {
   this.timeout(999999);
@@ -9,14 +9,14 @@ describe('/fn:run (HTTP headers)', function () {
    */
   before(async () => {
     const force = false;
-    await samples.node.bundle(force);
+    await Samples.node.bundle(force);
   });
 
   it('contentType: text/html', async () => {
     const dir = 'foo';
     const { mock, bundle, client, http, url } = await prepare({ dir });
     const { host, uri } = bundle;
-    await uploadBundle(client, samples.node.outdir, bundle);
+    await uploadBundle(client, Samples.node.outdir, bundle);
 
     const body: t.IReqPostFuncBody = [{ host, uri, dir, entry: 'web.js' }];
     const res = await http.post(url.toString(), body);

@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.runtime.node",
-  "version": "0.0.67",
+  "version": "0.0.71",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -10,13 +10,13 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.runtime": "0.10.57",
-    "@platform/fs": "0.7.3",
+    "@platform/cell.runtime": "0.10.61",
+    "@platform/fs": "0.7.5",
     "vm2": "3.9.3"
   },
   "devDependencies": {
-    "@platform/test": "0.2.8",
-    "@platform/ts": "4.1.21"
+    "@platform/test": "0.2.10",
+    "@platform/ts": "4.1.23"
   },
   "files": [
     "lib",

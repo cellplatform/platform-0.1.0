@@ -1,4 +1,4 @@
-import { createMock, expect, fs, testFiles } from '../../test';
+import { RouterMock, expect, fs, testFiles, writeThenReadStream } from '../../test';
 
 const tmp = fs.resolve(`./tmp/download`);
 const A1 = 'cell:foo:A1';
@@ -7,19 +7,21 @@ const Z9 = 'cell:foo:Z9';
 describe('cell.fs: copy', () => {
   describe('copy', () => {
     it('copy single file', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const source = mock.client.cell(A1);
       const target = mock.client.cell(Z9);
 
-      const { file1 } = await testFiles();
+      const { file2 } = await testFiles();
       const filename = 'foo.png';
-      await source.fs.upload([{ filename, data: file1 }]);
+      await source.fs.upload([{ filename, data: file2 }]);
+
+      await fs.writeFile(fs.resolve('tmp/foobar.jpg'), file2);
 
       const res = await source.fs.copy({ filename, target: { uri: Z9 } });
       expect(res.status).to.eql(200);
 
-      await fs.stream.save(tmp, (await target.fs.file(filename).download()).body);
-      expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
+      const download = await target.fs.file(filename).download();
+      expect(await writeThenReadStream(tmp, download.body)).to.eql(file2);
 
       expect(res.body.files.length).to.eql(1);
       expect(res.body.errors).to.eql([]);
@@ -38,7 +40,7 @@ describe('cell.fs: copy', () => {
     });
 
     it('copy to different filename', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const source = mock.client.cell(A1);
       const target = mock.client.cell(Z9);
 
@@ -54,14 +56,14 @@ describe('cell.fs: copy', () => {
       });
       expect(res.status).to.eql(200);
 
-      await fs.stream.save(tmp, (await target.fs.file(filename2).download()).body);
-      expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
+      const download = await target.fs.file(filename2).download();
+      expect(await writeThenReadStream(tmp, download.body)).to.eql(file1);
 
       mock.dispose();
     });
 
     it('copy multiple files (array)', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const source = mock.client.cell(A1);
       const target = mock.client.cell(Z9);
 
@@ -87,17 +89,17 @@ describe('cell.fs: copy', () => {
       expect(await target.fs.file(filename1).exists()).to.eql(true);
       expect(await target.fs.file(filename2).exists()).to.eql(true);
 
-      await fs.stream.save(tmp, (await target.fs.file(filename1).download()).body);
-      expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
+      const download1 = await target.fs.file(filename1).download();
+      expect(await writeThenReadStream(tmp, download1.body)).to.eql(file1);
 
-      await fs.stream.save(tmp, (await target.fs.file(filename2).download()).body);
-      expect((await fs.readFile(tmp)).toString()).to.eql(file2.toString());
+      const download2 = await target.fs.file(filename2).download();
+      expect(await writeThenReadStream(tmp, download2.body)).to.eql(file2);
 
       mock.dispose();
     });
 
     it('copy over existing file', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const source = mock.client.cell(A1);
       const target = mock.client.cell(Z9);
 
@@ -117,8 +119,8 @@ describe('cell.fs: copy', () => {
       expect(res1.body.files[0].source.status).to.eql('EXISTING');
       expect(res1.body.files[0].target.status).to.eql('NEW');
 
-      await fs.stream.save(tmp, (await source.fs.file(filename1).download()).body);
-      expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
+      const download1 = await target.fs.file(filename1).download();
+      expect(await writeThenReadStream(tmp, download1.body)).to.eql(file1);
 
       const res2 = await source.fs.copy({
         filename: filename2,
@@ -128,14 +130,14 @@ describe('cell.fs: copy', () => {
       expect(res2.body.files[0].source.status).to.eql('EXISTING');
       expect(res2.body.files[0].target.status).to.eql('EXISTING');
 
-      await fs.stream.save(tmp, (await target.fs.file(filename1).download()).body);
-      expect((await fs.readFile(tmp)).toString()).to.eql(file2.toString());
+      const download2 = await target.fs.file(filename1).download();
+      expect(await writeThenReadStream(tmp, download2.body)).to.eql(file2);
 
       mock.dispose();
     });
 
     it('copy within single cell', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const source = mock.client.cell(A1);
 
       const { file1 } = await testFiles();
@@ -155,18 +157,18 @@ describe('cell.fs: copy', () => {
 
       expect(await source.fs.file(filename2).exists()).to.eql(true);
 
-      await fs.stream.save(tmp, (await source.fs.file(filename1).download()).body);
-      expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
+      const download1 = await source.fs.file(filename1).download();
+      expect(await writeThenReadStream(tmp, download1.body)).to.eql(file1);
 
-      await fs.stream.save(tmp, (await source.fs.file(filename2).download()).body);
-      expect((await fs.readFile(tmp)).toString()).to.eql(file1.toString());
+      const download2 = await source.fs.file(filename2).download();
+      expect(await writeThenReadStream(tmp, download2.body)).to.eql(file1);
 
       mock.dispose();
     });
 
     it('copy between hosts', async () => {
-      const mock1 = await createMock();
-      const mock2 = await createMock();
+      const mock1 = await RouterMock.create();
+      const mock2 = await RouterMock.create();
       const source = mock1.client.cell(A1);
       const target = mock2.client.cell(A1);
 
@@ -188,7 +190,7 @@ describe('cell.fs: copy', () => {
     });
 
     it('returns changes', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const source = mock.client.cell(A1);
 
       const { file1 } = await testFiles();
@@ -208,7 +210,7 @@ describe('cell.fs: copy', () => {
 
   describe('errors', () => {
     it('error: invalid target cell URI', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const A1 = 'cell:foo:A1';
       const client = mock.client.cell(A1);
 
@@ -230,7 +232,7 @@ describe('cell.fs: copy', () => {
     });
 
     it('error: file does not exist', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const A1 = 'cell:foo:A1';
       const client = mock.client.cell(A1);
       const res = await client.fs.copy({ filename: '404.png', target: { uri: 'cell:foo:Z9' } });
@@ -244,7 +246,7 @@ describe('cell.fs: copy', () => {
     });
 
     it('error: empty filename', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const A1 = 'cell:foo:A1';
       const client = mock.client.cell(A1);
 

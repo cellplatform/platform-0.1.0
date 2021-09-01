@@ -36,7 +36,7 @@ export const ServiceWorker = {
           if (registration.active?.state !== 'activated') return;
           done(true); // Success.
         });
-      } catch (error) {
+      } catch (error: any) {
         console.error('Service worker registration failed:', error);
         reject(error);
       }

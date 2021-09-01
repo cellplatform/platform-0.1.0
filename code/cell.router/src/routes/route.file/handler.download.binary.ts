@@ -1,10 +1,10 @@
-import { ERROR, t, util, defaultValue } from '../common';
+import { defaultValue, ERROR, t, util } from '../common';
 import { downloadFilePreflight } from './handler.download.preflight';
 
 export const downloadBinaryFile = async (args: {
   host: string;
   db: t.IDb;
-  fs: t.IFileSystem;
+  fs: t.FsDriver;
   fileUri: string;
   filename?: string;
   matchHash?: string;
@@ -43,19 +43,26 @@ export const downloadBinaryFile = async (args: {
     if (!allowRedirect || (fs.type === 'LOCAL' && util.isFile(location))) {
       const local = await fs.read(fileUri);
       const data = local.file ? local.file.data : undefined;
+
       if (!data) {
         const err = new Error(`File at the URI [${file.uri}] does on the local file-system.`);
         return util.toErrorPayload(err, { status: 404, type: ERROR.HTTP.NOT_FOUND });
       } else {
-        const headers = { 'content-type': mime };
-        return { status: 200, data, headers };
+        // HACK: For the [Uint8Array] to render, it needs to be served as a node Buffer.
+        //       See underlying [@platform/micro] library.
+        const buffer = Buffer.from(data);
+        return {
+          status: 200,
+          headers: { 'content-type': mime },
+          data: buffer,
+        };
       }
     }
 
     // Something went wrong if we got this far.
     const err = `[${file.uri}] could not be served.`;
     return util.toErrorPayload(err, { status: 500 });
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 };

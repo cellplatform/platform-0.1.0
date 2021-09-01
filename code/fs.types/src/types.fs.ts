@@ -1,7 +1,7 @@
 /**
- * A set of POSIX file-system primitives.
+ * A set of POSIX file-system primitives (the node-js interface).
  */
-export type IFs = {
+export type INodeFs = {
   is: IFsFlags;
 
   // Filesystem.
@@ -14,8 +14,8 @@ export type IFs = {
   remove(path: string): Promise<void>;
 
   // Path.
-  join(...pathSegments: string[]): string;
-  resolve(...pathSegments: string[]): string;
+  join(...segments: string[]): string;
+  resolve(...segments: string[]): string;
   dirname(path: string): string;
   basename(path: string): string;
   extname(path: string): string;

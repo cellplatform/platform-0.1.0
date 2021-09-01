@@ -25,7 +25,19 @@ export type WpConfig = {
   plugins?: WpPlugin[];
   cache?: false | WpCache;
   optimization?: WpOptimization;
+  stats?: WpStatsPresets;
 };
+
+export type WpStatsPresets =
+  | 'none'
+  | 'errors-only'
+  | 'errors-warnings'
+  | 'minimal'
+  | 'none'
+  | 'normal'
+  | 'verbose'
+  | 'detailed'
+  | 'summary';
 
 /**
  * https://webpack.js.org/configuration/other-options/#cache

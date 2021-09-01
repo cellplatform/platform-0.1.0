@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { delay, filter, take } from 'rxjs/operators';
 
-import { Client, createMock, ERROR, expect, fs, t, time, TYPE_DEFS } from '../../test';
+import { Client, RouterMock, ERROR, expect, fs, t, time, TYPE_DEFS } from '../../test';
 import * as g from '../.d.ts/all';
 
 describe('Client.TypeSystem', function () {
@@ -375,7 +375,7 @@ describe('Client.TypeSystem', function () {
  */
 
 async function testDefs() {
-  const mock = await createMock();
+  const mock = await RouterMock.create();
   const client = Client.typesystem(mock.origin);
 
   // Write definitions.

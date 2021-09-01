@@ -8,7 +8,7 @@ export { Router } from '@platform/http.router';
 export { log } from '@platform/log/lib/server';
 export { fs } from '@platform/fs';
 export { http } from '@platform/http';
-export { value, id, defaultValue, time } from '@platform/util.value';
+export { value, id, defaultValue, time, rx, slug } from '@platform/util.value';
 export { Client, HttpClient } from '@platform/cell.client';
 export { MemoryCache, FileCache } from '@platform/cache';
 export { wildcard } from '@platform/util.string/lib/wildcard';
@@ -18,7 +18,7 @@ import * as cell from './libs.cell';
 export { cell };
 export const models = cell.models;
 
-export { Schema, Uri, Urls, Squash } from '@platform/cell.schema';
+export { Schema, Uri, Urls, Squash, Hash } from '@platform/cell.schema';
 
 import minimatch from 'minimatch';
 export { minimatch };

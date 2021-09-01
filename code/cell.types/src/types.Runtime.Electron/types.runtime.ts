@@ -8,8 +8,8 @@ export type ElectronRuntimeInfo = {
   version: string; // semver
   env?: 'development' | 'production';
   packaged: boolean;
-  paths: t.ElectronDataPaths;
   versions: { node: string; electron: string; chrome: string; v8: string };
+  paths: t.ElectronDataPaths;
 };
 
 /**
@@ -17,9 +17,10 @@ export type ElectronRuntimeInfo = {
  */
 export type ElectronDataPaths = {
   dir: string;
-  db: string;
-  fs: string;
-  config: string; //    Configuration [.json] file.
-  archive: string; //   Data backup folder.
-  log: string; //       Log output.
+  db: string; //        Database ("cell:uri")
+  dbfs: string; //      Database filesystem ("file:uri")
+  files: string; //    "Loose files" filesystem root
+  config: string; //    Configuration [.json] file
+  archive: string; //   Data backup folder
+  log: string; //       Log output
 };

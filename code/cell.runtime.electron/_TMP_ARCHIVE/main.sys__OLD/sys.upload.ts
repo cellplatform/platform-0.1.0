@@ -72,7 +72,7 @@ export async function upload(args: {
     }
 
     return done(true);
-  } catch (err) {
+  } catch (err: any) {
     log.info.yellow(`Failed while uploading. ${err.message}`);
     return done(false);
   }

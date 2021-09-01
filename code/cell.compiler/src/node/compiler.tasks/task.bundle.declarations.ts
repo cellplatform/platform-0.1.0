@@ -1,4 +1,4 @@
-import { format, fs, log, ModelPaths, ProgressSpinner, t, time, toModel } from '../common';
+import { Format, fs, log, ModelPaths, ProgressSpinner, t, time, toModel } from '../common';
 import { Typescript } from '../ts';
 import { Manifest } from '../manifest';
 
@@ -48,7 +48,7 @@ export const bundleDeclarations: t.CompilerRunBundleDeclarations = async (input,
       log.info.gray(`Declarations (${log.yellow(timer.elapsed.toString())})`);
       res.forEach((res) => {
         const base = fs.resolve('.');
-        const dir = format.filepath(res.out.dir.substring(base.length));
+        const dir = Format.filepath(res.out.dir.substring(base.length));
         log.info(`  ${dir}`);
       });
       log.info();

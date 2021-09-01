@@ -1,10 +1,11 @@
 import { t } from './common';
 
 type B = CompilerModelBuilder;
+type ConfigName = string;
 
 export type CompilerModelFactory = {
-  model(name: string): t.CompilerModelState;
-  builder(input?: string | t.CompilerModelState | t.CompilerModel): t.CompilerModelBuilder;
+  model(name: ConfigName): t.CompilerModelState;
+  builder(input?: ConfigName | t.CompilerModelState | t.CompilerModel): t.CompilerModelBuilder;
 };
 
 /**
@@ -36,7 +37,7 @@ export type CompilerModelMethods = {
   port(value: number | null): B;
   target(value: string | null): B;
   outdir(value: string | null): B;
-  static(value: string | string[] | null): B;
+  static(value: string | null): B;
   declarations(clear: null): B;
   declarations(include: string, dir?: string): B;
   lint(value: boolean | null): B;

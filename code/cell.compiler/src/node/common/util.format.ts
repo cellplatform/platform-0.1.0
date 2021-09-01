@@ -1,1 +1,1 @@
-export { format } from '@platform/cell.runtime.node/lib/common';
+export { Format } from '@platform/cell.runtime.node/lib/common';

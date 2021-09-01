@@ -3,7 +3,7 @@ import { getNsData } from '../route.ns';
 
 export async function listCellFiles(args: {
   db: t.IDb;
-  fs: t.IFileSystem;
+  fs: t.FsDriver;
   cellUri: string;
   host: string;
   expires?: string; // File link expires.
@@ -47,7 +47,7 @@ export async function listCellFiles(args: {
 
     // Finish up.
     return { status: 200, data };
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 }
@@ -58,7 +58,7 @@ export async function listCellFiles(args: {
 
 export async function getCellFiles(args: {
   ns: t.IDbModelNs;
-  fs: t.IFileSystem;
+  fs: t.FsDriver;
   cellLinks: t.IUriMap;
 }) {
   const { ns, fs, cellLinks } = args;

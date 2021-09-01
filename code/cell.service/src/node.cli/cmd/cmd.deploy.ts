@@ -13,6 +13,7 @@ const FILES = [
   // 'lib/env.vercel.js',
   // 'lib/types.js',
 
+  'src/auth.ts',
   'src/common.ts',
   'src/constants.ts',
   'src/env.vercel.ts',

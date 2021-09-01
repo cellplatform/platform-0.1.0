@@ -3,7 +3,7 @@ import { models, t, util, Schema } from '../common';
 export async function fileInfo(args: {
   host: string;
   db: t.IDb;
-  fs: t.IFileSystem;
+  fs: t.FsDriver;
   fileUri: string;
 }): Promise<t.IPayload<t.IResGetFile> | t.IErrorPayload> {
   const { db, fs, fileUri: uri, host } = args;
@@ -34,7 +34,7 @@ export async function fileInfo(args: {
     };
     const status = exists ? 200 : 404;
     return { status, data: res as t.IResGetFile };
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 }

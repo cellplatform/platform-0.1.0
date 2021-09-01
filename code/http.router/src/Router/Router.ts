@@ -7,7 +7,7 @@ import * as parse from '../parse';
 type P = t.RoutePath;
 type O = Record<string, unknown>;
 
-export class Router<C extends Record<string, unknown> = any> implements t.Router<C> {
+export class Router<C extends O = any> implements t.Router<C> {
   /**
    * [Static]
    */
@@ -100,7 +100,7 @@ export class Router<C extends Record<string, unknown> = any> implements t.Router
       const request = Object.assign(incoming, helpers) as t.RouteRequest; // eslint-disable-line
 
       return route.handler(request, ctx);
-    } catch (err) {
+    } catch (err: any) {
       const url = incoming.url;
       const message = `Failed while finding handler for url "${url}". ${err.message}`;
       throw new Error(message);

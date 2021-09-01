@@ -26,7 +26,7 @@ export async function prepare(args: { dir?: string; silent?: boolean } = {}): Pr
 
     res.errors.log({ log });
     return res;
-  } catch (error) {
+  } catch (error: any) {
     return result.fail(error);
   }
 }

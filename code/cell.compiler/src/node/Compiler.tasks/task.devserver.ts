@@ -1,10 +1,10 @@
 import DevServer from 'webpack-dev-server';
 
-import { log, Model, t, toModel, Logger, port, defaultValue } from '../common';
+import { log, Model, t, toModel, Logger, Port, defaultValue, fs } from '../common';
 import { wp } from '../config.webpack';
 import { afterCompile } from './util';
 
-const portInUse = async (value: number) => port.isUsed(value, 'localhost');
+const portInUse = async (value: number) => Port.isUsed(value, 'localhost');
 
 /**
  * Run dev server.
@@ -37,8 +37,10 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
          * ISSUE:   https://github.com/webpack/webpack-dev-server/issues/2758
          * NOTE:
          *          This can be removed later when the up-stream issue is fixed.
+         *
+         * NOTE (Aug-31-2021) - looks like "webpack-dev-server@4.0.0" fixed the issue.
          */
-        webpack.target = undefined;
+        // webpack.target = undefined;
       });
     },
   });
@@ -67,9 +69,24 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
     Logger.hr().stats(compilation);
   });
 
-  const host = 'localhost';
-  const args = { host, hot: true, stats: false };
-  new DevServer(compiler, args).listen(port, host, () => {
-    Logger.clear();
-  });
+  const config: DevServer.Configuration = {
+    port,
+    host: 'localhost',
+    hot: true,
+    client: {
+      overlay: { warnings: false, errors: true },
+    },
+    static: model
+      .static()
+      .map(({ dir }) => dir as string)
+      .filter(Boolean)
+      .map((directory) => ({
+        directory,
+        publicPath: directory.substring(fs.resolve('').length),
+        serveIndex: true,
+      })),
+  };
+
+  const server = new DevServer(config, compiler);
+  await server.start();
 };

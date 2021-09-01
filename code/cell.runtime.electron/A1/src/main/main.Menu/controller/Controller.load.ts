@@ -38,7 +38,7 @@ export function LoadController(args: {
       ref.current = menu;
 
       done({ menu }); // Success.
-    } catch (err) {
+    } catch (err: any) {
       const error = `Failed while loading menu. ${err.message}`;
       done({ error }); // Failure.
     }

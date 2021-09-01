@@ -1,4 +1,4 @@
-import { fs, createMock, expect, http, t, TypeSystem, Client, ERROR } from '../../test';
+import { fs, RouterMock, expect, http, t, TypeSystem, Client, ERROR } from '../../test';
 import * as g from '../.d.ts/MyRow';
 
 /**
@@ -48,7 +48,7 @@ const writeTypes = async (client: t.IHttpClient) => {
 describe('TypeSystem ➔ HTTP', () => {
   describe('generate [.d.ts] file', () => {
     it('MyRow', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       await writeTypes(mock.client);
 
       const client = Client.typesystem({ http: mock.client });
@@ -70,7 +70,7 @@ describe('TypeSystem ➔ HTTP', () => {
   describe('TypeClient', () => {
     describe('url: /ns:foo/types', () => {
       it('404 not found', async () => {
-        const mock = await createMock();
+        const mock = await RouterMock.create();
         // NB: No type data is written (allowing a 404 to be achieved).
 
         const res = await http.get(mock.url('ns:foo/types'));
@@ -86,7 +86,7 @@ describe('TypeSystem ➔ HTTP', () => {
       });
 
       it('types object (ast)', async () => {
-        const mock = await createMock();
+        const mock = await RouterMock.create();
         await writeTypes(mock.client);
 
         const res = await http.get(mock.url('ns:foo/types'));
@@ -116,7 +116,7 @@ describe('TypeSystem ➔ HTTP', () => {
 
     describe('url: /ns:foo/types?typename (querystring)', () => {
       const getResponse = async (url: string) => {
-        const mock = await createMock();
+        const mock = await RouterMock.create();
         await writeTypes(mock.client);
 
         const res = await http.get(mock.url(url));
@@ -201,7 +201,7 @@ describe('TypeSystem ➔ HTTP', () => {
     };
 
     it('fetch from [http] server', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       await writeTypes(mock.client);
       await writeMySheetRows(mock.client);
 
@@ -239,7 +239,7 @@ describe('TypeSystem ➔ HTTP', () => {
     });
 
     it('from [Client]', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       await writeTypes(mock.client);
       await writeMySheetRows(mock.client);
 

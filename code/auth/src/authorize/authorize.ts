@@ -59,7 +59,7 @@ export async function authorize(args: {
     // Execute the policy.
     try {
       await policy.eval(e);
-    } catch (err) {
+    } catch (err: any) {
       let msg = `Failed while executing policy '${policy.name}'.`;
       msg = is.dev ? `${msg} ${err.message}` : msg; // NB: Don't surface inner error in production.
       e.stop(new Error(msg));

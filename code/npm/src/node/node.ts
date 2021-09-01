@@ -11,7 +11,7 @@ export async function getVersion() {
     let version = res.code === 0 ? res.info[0] : undefined;
     version = version ? version.replace(/^v/, '') : undefined;
     return version;
-  } catch (error) {
+  } catch (error: any) {
     return undefined; // Not installed.
   }
 }

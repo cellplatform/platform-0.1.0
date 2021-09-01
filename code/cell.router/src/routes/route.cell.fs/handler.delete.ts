@@ -5,7 +5,7 @@ type ErrorType = t.IResDeleteCellFsError['error'];
 
 export async function deleteCellFiles(args: {
   db: t.IDb;
-  fs: t.IFileSystem;
+  fs: t.FsDriver;
   cellUri: string;
   body: t.IReqDeleteCellFsBody;
   host: string;
@@ -92,7 +92,7 @@ export async function deleteCellFiles(args: {
           data.unlinked = [...data.unlinked, filename];
         });
       await cell.set({ links: after }).save();
-    } catch (error) {
+    } catch (err: any) {
       items
         .filter(({ uri }) => Boolean(uri))
         .forEach(({ filename }) => {

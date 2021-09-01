@@ -1,27 +1,27 @@
 import { log } from './libs';
-import { format } from './logger.format';
+import { Format } from './logger.format';
 
-export { format };
+export { Format };
 
 /**
  * Log helpers for webpack.
  */
-export const logger = {
-  format,
+export const Logger = {
+  format: Format,
 
   clear() {
     log.clear();
-    return logger;
+    return Logger;
   },
 
   newline(length = 1) {
     Array.from({ length }).forEach(() => log.info());
-    return logger;
+    return Logger;
   },
 
   hr(length = 60) {
     log.info.gray('━'.repeat(length));
-    return logger;
+    return Logger;
   },
 
   errors(list: { message: string }[]) {
@@ -30,6 +30,6 @@ export const logger = {
       log.info(err.message);
       log.info();
     });
-    return logger;
+    return Logger;
   },
 };

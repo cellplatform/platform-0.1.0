@@ -1,6 +1,6 @@
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 
-import { Component } from '../../../components/Action.Dev';
+import { Component } from '../../../ui/Action.Dev';
 import { Model, R, t, Handler } from '../common';
 import { config } from './ComponentDef.config';
 

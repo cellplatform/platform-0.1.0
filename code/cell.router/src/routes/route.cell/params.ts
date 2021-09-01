@@ -36,7 +36,7 @@ export const getParams = (args: {
 
   try {
     data.uri = args.getUri(data.ns, data.key);
-  } catch (err) {
+  } catch (err: any) {
     error.message = toMessage(err.message);
     return { ...data, status: 400, error };
   }

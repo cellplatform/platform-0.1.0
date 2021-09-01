@@ -17,6 +17,7 @@ export type BundleStatus = {
 };
 
 export type BundleItem = {
+  source: string;
   hash: string;
   domain: string;
   namespace: string;
@@ -27,7 +28,7 @@ export type BundleItem = {
 /**
  * Event API.
  */
-export type BundleEvents = t.IDisposable & {
+export type BundleEvents = t.Disposable & {
   $: t.Observable<BundleEvent>;
   is: { base(input: any): boolean };
 
@@ -59,6 +60,14 @@ export type BundleEvents = t.IDisposable & {
       timeout?: Milliseconds;
     }): Promise<BundleStatusRes>;
   };
+
+  manifest: {
+    fetch: {
+      req$: t.Observable<BundleFetchManifestReq>;
+      res$: t.Observable<BundleFetchManifestRes>;
+      fire(source: Url, options?: { timeout?: Milliseconds }): Promise<t.BundleFetchManifestRes>;
+    };
+  };
 };
 
 /**
@@ -70,7 +79,9 @@ export type BundleEvent =
   | BundleInstallReqEvent
   | BundleInstallResEvent
   | BundleStatusReqEvent
-  | BundleStatusResEvent;
+  | BundleStatusResEvent
+  | BundleFetchManifestReqEvent
+  | BundleFetchManifestResEvent;
 
 /**
  * Retrieve a list of installed modules.
@@ -138,5 +149,29 @@ export type BundleStatusRes = {
   tx: string;
   exists: boolean;
   status?: BundleStatus;
+  error?: string;
+};
+
+/**
+ * Fetch a manifest for the given source.
+ */
+export type BundleFetchManifestReqEvent = {
+  type: 'runtime.electron/Bundle/fetchManifest:req';
+  payload: BundleFetchManifestReq;
+};
+export type BundleFetchManifestReq = {
+  tx?: string;
+  source: string;
+};
+
+export type BundleFetchManifestResEvent = {
+  type: 'runtime.electron/Bundle/fetchManifest:res';
+  payload: BundleFetchManifestRes;
+};
+export type BundleFetchManifestRes = {
+  tx: string;
+  exists: boolean;
+  source: string;
+  manifest?: t.Manifest;
   error?: string;
 };

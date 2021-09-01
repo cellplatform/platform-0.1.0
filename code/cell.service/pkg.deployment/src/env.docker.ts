@@ -1,8 +1,9 @@
-import { local } from '@platform/cell.fs.local';
+import { FsDriverLocal } from '@platform/cell.fs.local';
 import { NeDb } from '@platform/fsdb.nedb';
 import { NodeRuntime } from '@platform/cell.runtime.node';
 
-import { Server, util } from './common';
+import { Server, util, rx } from './common';
+import { authorize } from './auth';
 
 const env = process.env;
 const datadir = util.resolve('./.data');
@@ -21,12 +22,13 @@ const db = NeDb.create({ filename });
 /**
  * File system.
  */
-const fs = local.init({ dir: `${datadir}/${env.FS_FILENAME || 'sample.fs'}`, fs: util.fs });
+const fs = FsDriverLocal({ dir: `${datadir}/${env.FS_FILENAME || 'sample.fs'}`, fs: util.fs });
 
 /**
  * Function Runtime.
  */
-const runtime = NodeRuntime.create();
+const bus = rx.bus();
+const runtime = NodeRuntime.create({ bus });
 
 /**
  * Initialize and start the HTTP application server.
@@ -36,6 +38,7 @@ const app = Server.create({
   db,
   fs,
   runtime,
+  authorize,
 });
 
 app.start({ port: env.PORT || 5000 });

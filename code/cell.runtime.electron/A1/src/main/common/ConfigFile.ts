@@ -99,6 +99,8 @@ function getIdentifierLogItem(): t.ElectronRuntimeIdentifierLogItem {
 }
 
 function parseProcess(input: string) {
-  const [runtime, version] = input.split('@');
+  const index = input.lastIndexOf('@');
+  const runtime = input.substring(0, index);
+  const version = input.substring(index + 1);
   return { runtime, version };
 }

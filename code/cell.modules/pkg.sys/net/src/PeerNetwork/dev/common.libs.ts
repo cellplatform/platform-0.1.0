@@ -10,24 +10,24 @@ export { Spinner } from '@platform/ui.spinner';
  * System
  */
 export { ObjectView, Textbox, Hr, LocalStorage } from 'sys.ui.dev';
-export { Card, CardProps } from 'sys.ui.primitives/lib/components/Card';
+export { Card, CardProps } from 'sys.ui.primitives/lib/ui/Card';
 export {
   CardStack,
   CardStackItem,
   CardStackItemRender,
   CardStackItemRenderArgs,
-} from 'sys.ui.primitives/lib/components/CardStack';
-export { PropList, PropListItem } from 'sys.ui.primitives/lib/components/PropList';
+} from 'sys.ui.primitives/lib/ui/CardStack';
+export { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
 
-export { AudioWaveform } from 'sys.ui.video/lib/components/AudioWaveform';
-export { MediaStream, MediaEvent, VideoStream } from 'sys.ui.video/lib/components/MediaStream';
+export { AudioWaveform } from 'sys.ui.video/lib/ui/AudioWaveform';
+export { MediaStream, MediaEvent, VideoStream } from 'sys.ui.video/lib/ui/MediaStream';
 
 export {
   EventStack,
   useEventBusHistory,
   EventBusHistory,
-} from 'sys.ui.primitives/lib/components/Event.Stack';
-export { EventPipe } from 'sys.ui.primitives/lib/components/Event.Pipe';
+} from 'sys.ui.primitives/lib/ui/Event.Stack';
+export { EventPipe } from 'sys.ui.primitives/lib/ui/Event.Pipe';
 
 export { useDragTarget, Dropped } from 'sys.ui.primitives/lib/hooks/useDragTarget';
 
@@ -36,6 +36,6 @@ export {
   MotionDraggableEvent,
   MotionDraggableItem,
   MotionDraggableDef,
-} from 'sys.ui.primitives/lib/components/Draggable.Motion';
+} from 'sys.ui.primitives/lib/ui/Draggable.Motion';
 
 export { StateObject } from '@platform/state';

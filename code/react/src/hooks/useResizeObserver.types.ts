@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import * as t from '../types';
+import * as t from '../common/types';
 
 /**
  * React hook.

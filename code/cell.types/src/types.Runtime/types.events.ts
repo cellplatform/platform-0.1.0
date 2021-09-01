@@ -1,12 +1,3 @@
-export type RuntimeEvent = RuntimeWebScriptEvent;
+import { t } from '../common';
 
-export type RuntimeWebScriptEvent = {
-  type: 'cell.runtime.web/script';
-  payload: RuntimeWebScript;
-};
-export type RuntimeWebScript = {
-  url: string;
-  namespace: string;
-  ready: boolean;
-  failed: boolean;
-};
+export type RuntimeEvent = t.RuntimeWebEvent | t.RuntimeNodeEvent;

@@ -1,5 +1,14 @@
-import { ManifestSource, ManifestUrl } from '../../../data';
-import { Bundle, ENV, Paths, System, t, Window, Menu } from '../common';
+import {
+  Bundle,
+  ENV,
+  ManifestSource,
+  ManifestUrl,
+  Menu,
+  Paths,
+  System,
+  t,
+  Window,
+} from '../common';
 
 /**
  * Module management
@@ -43,8 +52,7 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus; localhost: string })
       timeout: 30000,
     });
 
-    const url = ManifestUrl.create(localhost);
-    console.log('url', url);
+    console.log('install response:', res);
 
     return res;
   };
@@ -115,6 +123,9 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus; localhost: string })
     separator() {
       submenu.push({ type: 'separator' });
     },
+    localhost(port: number) {
+      Push.item(`localhost:${port}`, `http://localhost:${port}`);
+    },
   };
 
   type T = { ns: string; url: string };
@@ -123,20 +134,22 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus; localhost: string })
       ns: 'sys.net',
       url: 'https://dev.db.team/cell:ckmv1vll1000e01etelnr0s9a:A1/fs/sys.net/index.html',
     },
-    {
-      ns: 'sys.scratchpad',
-      url: 'https://dev.db.team/cell:ckmv3zeal000d1xetdafghfj9:A1/fs/sys.scratchpad/index.html?ui.dev.ns=ui/SlugProject',
-    },
   ];
 
   refs.forEach((ref) => Push.item(ref.ns, ref.url));
 
-  if (ENV.isDev) {
-    Push.separator();
+  /**
+   * Localhost addresses.
+   */
+  const portRange = (from: number, length: number) =>
+    Array.from({ length }).map((v, i) => from + i);
 
-    const ports = [3032, 3033, 3034, 3036, 3037, 3040, 5050];
-    ports.forEach((port) => Push.item(`localhost:${port}`, `http://localhost:${port}`));
-  }
+  Push.separator();
+  Push.localhost(3000);
+  Push.separator();
+  portRange(3030, 21).forEach((port) => Push.localhost(port));
+  Push.separator();
+  Push.localhost(5050);
 
   // Finish up.
   return item;

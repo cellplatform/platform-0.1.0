@@ -1,4 +1,4 @@
-import { expect, expectError } from '@platform/test';
+import { expect, expectError } from '../test';
 import { fs } from '..';
 
 describe('ancestor', () => {
@@ -250,7 +250,7 @@ const delay = (msecs: number, callback: () => any) => {
           callback();
         }
         resolve();
-      } catch (error) {
+      } catch (error: any) {
         reject(error);
       }
     }, msecs);

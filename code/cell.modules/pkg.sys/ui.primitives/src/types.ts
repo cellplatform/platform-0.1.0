@@ -2,9 +2,13 @@ export * from '@platform/ui.text/lib/types';
 export * from '@platform/ui.button/lib/types';
 export * from '@platform/ui.image/lib/types';
 
-export * from './components/DotTabstrip/types';
-export * from './components/PropList/types';
-export * from './components/QRCode/types';
 export * from './hooks/useDragTarget/types';
 
-export * from './components.ref/tree/types';
+export * from './ui/DotTabstrip/types';
+export * from './ui/PropList/types';
+export * from './ui/QRCode/types';
+export * from './ui/MinSize/types';
+export * from './ui/PositioningContainer/types';
+export * from './ui/PositioningLayers/types';
+
+export * from './ui/Tree/types';

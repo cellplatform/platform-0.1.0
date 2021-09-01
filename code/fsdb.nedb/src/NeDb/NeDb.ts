@@ -349,7 +349,7 @@ export class NeDb implements t.INeDb {
         };
         return res;
       });
-    } catch (err) {
+    } catch (err: any) {
       error = err;
     }
 

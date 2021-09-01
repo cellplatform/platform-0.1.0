@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions } from '../..';
 import { css, COLORS, color, time, lorem } from '../../common';
 import { Component } from './Component';
-import { Button } from '../../components/Primitives';
+import { Button } from '../../ui/Primitives';
 
 type SampleLayout =
   | 'single'
@@ -242,9 +242,9 @@ export const actions = DevActions<Ctx>()
         .initial(3)
         .clearable(true)
         .pipe(async (e) => {
-          const value = e.select.current[0]; // NB: always first.
-          e.select.label = value ? value.label : `select single`;
-          e.select.isPlaceholder = !Boolean(value);
+          const current = e.select.current[0]; // NB: always first.
+          e.select.label = current ? current.label : `select single`;
+          e.select.isPlaceholder = !Boolean(current);
           if (e.changing) await time.wait(400);
         }),
     );

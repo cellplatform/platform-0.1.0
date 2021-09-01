@@ -286,7 +286,7 @@ export class PgDoc implements t.IDb {
           };
           return res;
         });
-    } catch (err) {
+    } catch (err: any) {
       error = err;
     }
 

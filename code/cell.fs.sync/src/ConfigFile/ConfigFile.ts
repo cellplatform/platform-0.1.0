@@ -81,7 +81,7 @@ export class ConfigFile implements t.IConfigFile {
     const toUrl = () => {
       try {
         return Schema.urls(host).cell(uri.toString()).files.list.toString();
-      } catch (error) {
+      } catch (error: any) {
         return '';
       }
     };

@@ -66,7 +66,7 @@ export async function listObjects(args: {
     response.items = (data.Contents as any[])
       .map((data) => toItem(data))
       .filter((item) => !item.key.endsWith('/')); // NB: Don't include containers (eg. "dirs").  See `dirs` listing method below.
-  } catch (err) {
+  } catch (err: any) {
     const error = new Error(err.code);
     response.status = err.statusCode;
     response.ok = false;
@@ -115,7 +115,7 @@ export async function listDirs(args: {
     // Format results.
     response.max = data.MaxKeys || response.max;
     response.items = (data.CommonPrefixes as any[]).map((data) => toItem(data));
-  } catch (err) {
+  } catch (err: any) {
     const error = new Error(err.code);
     response.status = err.statusCode;
     response.ok = false;

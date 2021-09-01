@@ -140,7 +140,7 @@ export function invoker<P extends t.ICommandProps, A extends t.CommandArgsOption
         response.result = value.isPromise(res) ? await res : res;
       }
       done();
-    } catch (error) {
+    } catch (error: any) {
       done(error);
     }
   });

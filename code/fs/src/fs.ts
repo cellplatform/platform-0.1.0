@@ -18,7 +18,7 @@ import {
   readdirSync,
   ensureDir,
   ensureDirSync,
-  writeFile,
+  writeFile as writeFileCore,
   writeFileSync,
   readFile,
   readFileSync,
@@ -48,7 +48,17 @@ import {
 } from 'fs-extra';
 
 const { join, resolve, dirname, basename, extname } = path;
-const exists: t.IFs['exists'] = (path) => pathExists(path);
+const exists: t.INodeFs['exists'] = (path) => pathExists(path);
+
+const writeFile: t.INodeFs['writeFile'] = async (path, data) => {
+  await ensureDir(dirname(path));
+
+  if (is.stream(data)) {
+    await stream.save(path, data);
+  } else {
+    await writeFileCore(path, data);
+  }
+};
 
 /**
  * Extended [file-system] object.

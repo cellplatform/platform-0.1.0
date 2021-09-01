@@ -25,10 +25,10 @@ export type HttpClient = {
 /**
  * Client (Root)
  */
-export type IHttpClient = t.IDisposable & {
+export type IHttpClient = t.Disposable & {
   readonly origin: string;
-  readonly request$: t.Observable<t.HttpBefore>;
-  readonly response$: t.Observable<t.HttpAfter>;
+  readonly request$: t.Observable<t.HttpMethodReq>;
+  readonly response$: t.Observable<t.HttpMethodRes>;
   info<T extends t.IResGetSysInfo>(): t.IHttpClientAsync<T>;
   ns(input: string | t.INsUri | t.ICoordUri | t.IFileUri): IHttpClientNs;
   cell(input: string | t.ICellUri): IHttpClientCell;

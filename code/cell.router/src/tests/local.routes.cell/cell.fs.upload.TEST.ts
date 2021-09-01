@@ -1,16 +1,31 @@
-import { createMock, expect, fs, Http, readFile, Schema, t, http, is } from '../../test';
+import {
+  RouterMock,
+  expect,
+  fs,
+  Http,
+  readFile,
+  Schema,
+  t,
+  http,
+  is,
+  writeThenReadStream,
+  Hash,
+} from '../../test';
 
 describe('cell.fs: upload', function () {
   this.timeout(50000);
 
+  const tmp = fs.resolve(`./tmp/download`);
+
   it('upload => download: 1 file', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
 
     // Upload => download.
     const filename = 'bird.png';
     const data = await readFile('src/test/assets/bird.png');
+
     const upload = await client.fs.upload([{ filename, data }]);
     expect(upload.ok).to.eql(true);
 
@@ -22,18 +37,16 @@ describe('cell.fs: upload', function () {
     expect(download.ok).to.eql(true);
 
     // Save and compare.
-    const path = fs.resolve('tmp/tmp-download');
-    if (typeof download.body === 'object') {
-      await fs.stream.save(path, download.body);
-    }
-    expect((await fs.readFile(path)).toString()).to.eql(data.toString());
+    const saved = await writeThenReadStream(tmp, download.body);
+    expect(saved).to.eql(data);
+    expect(Hash.sha256(saved)).to.eql(Hash.sha256(data));
 
     // Finish up.
     await mock.dispose();
   });
 
   it('upload => download 2: files', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
 
@@ -71,7 +84,7 @@ describe('cell.fs: upload', function () {
     const urls = (await client.fs.urls()).body;
 
     // Check the files exist.
-    const downloadAndSave = async (filename: string, compareWith: Buffer) => {
+    const downloadAndSave = async (filename: string, compareWith: Uint8Array) => {
       const byName = client.fs.file(filename);
       const res = await byName.download();
       const path = fs.resolve(`tmp/download`);
@@ -91,7 +104,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload: allowRedirect=false', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
 
@@ -118,7 +131,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload: s3:permission', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
 
@@ -150,7 +163,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload: file within folder-path', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
 
@@ -195,7 +208,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload then filter files set', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
 
     const client = mock.client.cell(cellUri);
@@ -240,7 +253,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload with explicit mimetype', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
 
@@ -259,7 +272,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload: then list (A1/files)', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const A1 = 'cell:foo:A1';
     const A2 = 'cell:foo:A2';
     const clientA1 = mock.client.cell(A1);
@@ -303,7 +316,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload: does not send changes (by default)', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
     const data = await readFile('src/test/assets/kitten.jpg');
@@ -316,7 +329,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload: sends changes (via option)', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
     const file1 = await readFile('src/test/assets/kitten.jpg');
@@ -340,11 +353,11 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload: stores "integrity" data after upload, eg filehash (sha256) etc', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const client = mock.client.cell('cell:foo:A1');
 
     const file = await readFile('src/test/assets/func.wasm');
-    const filehash = Schema.hash.sha256(file);
+    const filehash = Schema.Hash.sha256(file);
     const res = await client.fs.upload([{ filename: 'func.wasm', data: file }]);
 
     // Ensure before/after state of the uploaded file.
@@ -365,7 +378,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('upload: stores hash of uploaded file on cell "fs:" link', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
     const data = await readFile('src/test/assets/func.wasm');
@@ -395,7 +408,7 @@ describe('cell.fs: upload', function () {
    */
 
   it.skip('downloads a file by name (failing if the underlying file-hash changes)', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const cellClient = mock.client.cell(cellUri);
 
@@ -449,7 +462,7 @@ describe('cell.fs: upload', function () {
   });
 
   it('event: "HttpClient/upload"', async () => {
-    const mock = await createMock();
+    const mock = await RouterMock.create();
     const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
     const data = await readFile('src/test/assets/func.wasm');

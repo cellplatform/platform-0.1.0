@@ -1,10 +1,20 @@
-import { fs } from '../common';
+import { fs, t } from '../common';
 
 /**
  * Reads a resolved file-path.
  */
-export function readFile(path: string) {
-  return fs.readFile(fs.resolve(path));
+export async function readFile(path: string) {
+  const file = await fs.readFile(fs.resolve(path));
+  return new Uint8Array(file);
+}
+
+export async function writeThenReadStream(
+  path: string,
+  data: ReadableStream<Uint8Array> | undefined | t.Json,
+) {
+  path = fs.resolve(path);
+  await fs.stream.save(path, data);
+  return readFile(path);
 }
 
 /**

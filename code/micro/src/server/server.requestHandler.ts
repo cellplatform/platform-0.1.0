@@ -51,7 +51,7 @@ export function requestHandler(args: { router: t.Router; fire: t.FireEvent }): t
               try {
                 modify(await input());
                 resolve();
-              } catch (error) {
+              } catch (error: any) {
                 before.error = error.message;
               }
             });
@@ -92,7 +92,7 @@ export function requestHandler(args: { router: t.Router; fire: t.FireEvent }): t
                 handled = await input();
                 after.elapsed = timer.elapsed;
                 resolve();
-              } catch (error) {
+              } catch (error: any) {
                 after.error = error.message;
               }
             });

@@ -1,8 +1,6 @@
-import { Mime } from '@platform/util.mimetype';
-import { value as valueUtil } from '@platform/util.value';
-
 import { IS_PROD } from './constants';
 import * as t from './types';
+import { value as valueUtil, Mime, Headers } from '../common';
 
 /**
  * Safely serializes data to a JSON string.
@@ -10,7 +8,7 @@ import * as t from './types';
 export function stringify(data: any, errorMessage: () => string) {
   try {
     return data ? JSON.stringify(data) : '';
-  } catch (err) {
+  } catch (err: any) {
     let message = errorMessage();
     message = !IS_PROD ? `${message} ${err.message}` : message;
     throw new Error(message);
@@ -26,7 +24,7 @@ export function parseJson(args: { url: string; text: string }) {
     return (
       typeof text === 'string' && valueUtil.isJson(args.text) ? JSON.parse(text) : text
     ) as t.Json;
-  } catch (error) {
+  } catch (error: any) {
     const body = text ? text : '<empty>';
     const msg = `Failed while parsing JSON for '${args.url}'.\nParse Error: ${error.message}\nBody: ${body}`;
     throw new Error(msg);

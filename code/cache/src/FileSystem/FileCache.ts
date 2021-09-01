@@ -1,5 +1,5 @@
 import * as t from '../types';
-import { IFs } from '@platform/fs.types';
+import { INodeFs } from '@platform/fs.types';
 import { toCachePath, cleanDir } from './path';
 import { CachedFile } from './CachedFile';
 
@@ -7,7 +7,7 @@ import { CachedFile } from './CachedFile';
  * A cache for storing files locally.
  */
 export const FileCache = {
-  create(args: { fs: IFs; dir: string }) {
+  create(args: { fs: INodeFs; dir: string }) {
     const { fs } = args;
     const dir = cleanDir(args.dir);
 

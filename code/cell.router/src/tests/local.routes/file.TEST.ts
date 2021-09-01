@@ -1,13 +1,13 @@
-import { createMock, expect, fs, http, IMock, Schema, t } from '../../test';
+import { RouterMock, expect, fs, http, IRouterMock, Schema, t } from '../../test';
 
 export const testPostFile = async (args: {
   source?: string | string[];
   queryString?: string;
   dispose?: boolean;
-  mock?: IMock;
+  mock?: IRouterMock;
   cellUri?: string;
 }) => {
-  const mock = args.mock || (await createMock());
+  const mock = args.mock || (await RouterMock.create());
 
   const cellUri = args.cellUri || 'cell:foo:A1';
   const client = mock.client.cell(cellUri);
@@ -39,7 +39,7 @@ export const testPostFile = async (args: {
 describe('file:', () => {
   describe('invalid URI', () => {
     const test = async (path: string, expected: string) => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
       const url = mock.url(path);
       const res = await http.get(url);
       await mock.dispose();
@@ -60,7 +60,7 @@ describe('file:', () => {
 
   describe('GET', () => {
     it('does not exist (404)', async () => {
-      const mock = await createMock();
+      const mock = await RouterMock.create();
 
       const uri = Schema.Uri.create.file(Schema.cuid(), Schema.slug());
       const res = await mock.client.file(uri).info();

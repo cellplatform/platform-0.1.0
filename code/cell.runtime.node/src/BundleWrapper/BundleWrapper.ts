@@ -32,6 +32,7 @@ export const BundleWrapper = {
 
     return {
       toObject: () => bundle,
+
       host,
       uri,
       dir,

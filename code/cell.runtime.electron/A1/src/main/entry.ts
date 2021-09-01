@@ -1,6 +1,17 @@
 import { app } from 'electron';
 
-import { ConfigFile, constants, fs, Genesis, HttpClient, log, rx, t, time } from './common';
+import {
+  ConfigFile,
+  constants,
+  fs,
+  Genesis,
+  HttpClient,
+  log,
+  rx,
+  t,
+  time,
+  Filesystem,
+} from './common';
 import { Bundle } from './main.Bundle';
 import { Log } from './main.Log';
 import { Menu } from './main.Menu';
@@ -8,7 +19,6 @@ import { BuildMenu } from './main.Menu.instance';
 import { System } from './main.System';
 import { SystemServer } from './main.System.server';
 import { Window } from './main.Window';
-import { Filesystem } from './main.Filesystem';
 
 import { TestIpcBusBridging } from './entry.TMP';
 
@@ -38,6 +48,12 @@ export async function start() {
     const server = await SystemServer.start({ log, prod, port });
     const { paths } = server;
     const localhost = server.host;
+
+    server.runtimeBus.$.subscribe((e) => {
+      console.log('RuntimeBus', e.type);
+      console.log('e.payload', e.payload);
+      console.log();
+    });
 
     const httpFactory = (host: string) => {
       const http = HttpClient.create(host);
@@ -77,11 +93,13 @@ export async function start() {
      * Initialize controllers.
      */
     System.Controller({ bus, localhost, paths, config });
-    Filesystem.Controller({ bus, localhost, httpFactory });
+    // Filesystem.Controller({ bus, localhost, httpFactory });
     Bundle.Controller({ bus, localhost, httpFactory });
     Window.Controller({ bus });
     Log.Controller({ bus });
     Menu.Controller({ bus });
+
+    Filesystem.Controller({ bus, id: 'main', fs: paths.files });
 
     /**
      * Upload bundled system code into the local service.
@@ -112,9 +130,9 @@ export async function start() {
      */
     await ConfigFile.log.started();
     log.info.gray(`✨ ${log.white('Startup Complete')} [${timer.elapsed.toString()}]`);
-  } catch (error) {
+  } catch (err: any) {
     log.error('🐷 Failed on startup:');
-    log.error(error);
+    log.error(err);
   }
 }
 
@@ -161,21 +179,24 @@ async function logMain(args: {
     add(key, formatPath(value), size);
   };
 
-  const process = ConfigFile.process.split('@');
+  const processes = ConfigFile.process.split('@');
 
-  add(log.green('runtime:'), `${Format.namespace(process[0])}@${process[1]}`);
-  add('env:', ENV.node || '<empty>');
-  add('packaged:', ENV.isPackaged);
+  add(log.green('runtime'), `${Format.namespace(processes[0])}@${processes[1]}`);
+  add('env', ENV.node || '<empty>');
+  add('packaged', ENV.isPackaged);
+  add('node', process.versions.node);
+  add('electron', process.versions.electron);
 
   line();
-  await addPath('preload:', args.paths.preload);
-  await addPath('db:', args.paths.data.db);
-  await addPath('fs:', args.paths.data.fs);
-  await addPath('config:', args.paths.data.config);
-  await addPath('log:', args.paths.data.log);
+  await addPath('preload', args.paths.preload);
+  await addPath('db', args.paths.data.db);
+  await addPath('db(fs)', args.paths.data.dbfs);
+  await addPath('fs', args.paths.data.files);
+  await addPath('config', args.paths.data.config);
+  await addPath('log', args.paths.data.log);
   line();
 
-  add(log.green('host:'), log.cyan(`http:${host.split(':')[1]}:${log.white(host.split(':')[2])}`));
+  add(log.green('host'), log.cyan(`http:${host.split(':')[1]}:${log.white(host.split(':')[2])}`));
   add('genesis', await genesis.cell.url());
   add('registry', await genesis.modules.url());
 

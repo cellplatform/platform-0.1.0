@@ -12,7 +12,7 @@ export async function deleteOne(args: {
   try {
     await s3.deleteObject({ Bucket: bucket, Key: key }).promise();
     return { ok: true, status: 200, key, bucket };
-  } catch (err) {
+  } catch (err: any) {
     const status = err.statusCode;
     const error = new Error(err.code);
     return { ok: false, status, key, bucket, error };
@@ -33,7 +33,7 @@ export async function deleteMany(args: {
     const Delete = { Objects };
     await s3.deleteObjects({ Bucket: bucket, Delete }).promise();
     return { ok: true, status: 200, keys, bucket };
-  } catch (err) {
+  } catch (err: any) {
     const status = err.statusCode;
     const error = new Error(err.code);
     return { ok: false, status, keys, bucket, error };

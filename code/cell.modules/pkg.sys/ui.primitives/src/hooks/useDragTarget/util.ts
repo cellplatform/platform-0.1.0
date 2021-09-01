@@ -58,7 +58,10 @@ export async function readDropEvent(e: DragEvent) {
          * Webkit advanced file API.
          * NB: This allows reading in full directories.
          */
-        const entry = item.webkitGetAsEntry() as Entry;
+        const entry = item.webkitGetAsEntry() as Entry | null;
+        if (entry === null) {
+          throw new Error('Nothing dropped: item.webkitGetAsEntry() is null');
+        }
 
         if (entry.isFile) {
           const file = await readFile(entry);
@@ -131,7 +134,7 @@ function readDir(entry: DirectoryEntry) {
       const files = await readEntries(entry);
       const result = await Promise.all(files.map((file) => readFile(file)));
       resolve(result);
-    } catch (error) {
+    } catch (error: any) {
       reject(error);
     }
   });

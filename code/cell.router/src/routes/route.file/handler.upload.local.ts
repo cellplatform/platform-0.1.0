@@ -2,7 +2,7 @@ import { t, util } from '../common';
 
 export async function uploadLocalFile(args: {
   db: t.IDb;
-  fs: t.IFileSystem;
+  fs: t.FsDriver;
   path: string;
   data: string | Uint8Array;
   query?: t.IReqQueryLocalFs;
@@ -45,7 +45,7 @@ export async function uploadLocalFile(args: {
     };
 
     return res;
-  } catch (err) {
+  } catch (err: any) {
     return util.toErrorPayload(err);
   }
 }
