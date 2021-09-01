@@ -10,7 +10,7 @@ type S = t.ActionHandlerSettings<P>;
 type A = t.ActionHandlerSettingsBooleanArgs;
 type E = t.IActionTextboxEvent;
 
-export const TextboxDef: t.ActionDef<T, E> = {
+export const TextboxDef: t.ActionDef<T> = {
   kind: 'dev/textbox',
   Component,
 

@@ -8,7 +8,7 @@ type T = t.ActionComponent;
 type E = t.IActionComponentRenderEvent;
 type S = t.ActionHandlerSettings<any>;
 
-export const ComponentDef: t.ActionDef<T, E> = {
+export const ComponentDef: t.ActionDef<T> = {
   kind: 'dev/component',
   Component,
 

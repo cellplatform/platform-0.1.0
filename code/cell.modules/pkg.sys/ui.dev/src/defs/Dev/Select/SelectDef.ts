@@ -10,7 +10,7 @@ type S = t.ActionHandlerSettings<P>;
 type A = t.ActionHandlerSettingsSelectArgs;
 type E = t.IActionSelectEvent;
 
-export const SelectDef: t.ActionDef<T, E> = {
+export const SelectDef: t.ActionDef<T> = {
   kind: 'dev/select',
   Component,
 

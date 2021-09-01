@@ -10,7 +10,7 @@ type S = t.ActionHandlerSettings<P>;
 type A = t.ActionHandlerSettingsButtonArgs;
 type E = t.IActionButtonEvent;
 
-export const ButtonDef: t.ActionDef<T, E> = {
+export const ButtonDef: t.ActionDef<T> = {
   kind: 'dev/button',
   Component,
 

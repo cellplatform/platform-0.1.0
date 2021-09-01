@@ -7,7 +7,7 @@ type O = Record<string, unknown>;
  * Defines an Action plugin that renders and handles
  * an item within an Actions set.
  */
-export type ActionDef<M extends t.ActionItem = t.ActionItem, E extends t.Event = t.Event> = {
+export type ActionDef<M extends t.ActionItem = t.ActionItem> = {
   kind: M['kind'];
   Component: FC<{ namespace: string; bus: t.EventBus; item: M }>;
 

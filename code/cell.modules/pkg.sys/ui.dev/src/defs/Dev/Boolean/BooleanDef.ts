@@ -10,7 +10,7 @@ type S = t.ActionHandlerSettings<P>;
 type A = t.ActionHandlerSettingsBooleanArgs;
 type E = t.IActionBooleanEvent;
 
-export const BooleanDef: t.ActionDef<T, E> = {
+export const BooleanDef: t.ActionDef<T> = {
   kind: 'dev/boolean',
   Component,
 
