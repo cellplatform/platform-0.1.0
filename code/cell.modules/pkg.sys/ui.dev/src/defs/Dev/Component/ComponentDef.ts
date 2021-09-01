@@ -1,7 +1,7 @@
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { Component } from '../../../ui/Action.Dev';
-import { Model, R, t, Handler } from '../common';
+import { Model, R, t, Handler, rx } from '../common';
 import { config } from './ComponentDef.config';
 
 type T = t.ActionComponent;
@@ -21,9 +21,10 @@ export const ComponentDef: t.ActionDef<T, E> = {
   },
 
   listen(args) {
-    const { actions, id } = args;
+    const { id, actions } = args;
     const { item } = Model.item<T>(actions, id);
     const namespace = actions.state.namespace;
+    const bus = rx.busAsType<E>(args.bus);
 
     const getEnv = (state: t.ActionsModel<any>) => {
       const env: Required<t.ActionsModelEnvProps> = {
@@ -64,7 +65,7 @@ export const ComponentDef: t.ActionDef<T, E> = {
       if (ctx && item.handler) {
         const props = getProps(ctx);
         const element = item.handler(props);
-        args.fire({
+        bus.fire({
           type: 'sys.ui.dev/action/Component/render',
           payload: { namespace, item, element },
         });

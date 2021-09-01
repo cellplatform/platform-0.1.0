@@ -22,18 +22,9 @@ export type ActionDef<M extends t.ActionItem = t.ActionItem, E extends t.Event =
   };
 
   /**
-   * Invoked upon load to initialize the item
+   * Start listening to the event-bus.
    */
-  // init?(args: { id: string; actions: t.Actions; bus: t.EventBus }): Promise<void>;
-
-  listen?(args: {
-    id: string;
-    actions: t.ActionsModelState<any>;
-    event$: t.Observable<E>;
-    fire: (e: E) => void;
-    // bus: t.EventBus;
-    // dispose$: t.Observable<any>;
-  }): void;
+  listen?(args: { id: string; actions: t.ActionsModelState<any>; bus: t.EventBus }): void;
 };
 
 export type ActionDefConfigHandler<Ctx extends O = any> = (
