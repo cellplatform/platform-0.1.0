@@ -61,8 +61,7 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
             def.listen({
               id,
               actions: actions.toModel(),
-              fire: args.bus.fire,
-              event$,
+              bus: rx.busAsType<any>(bus),
             });
           }
         });
