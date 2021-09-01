@@ -43,6 +43,16 @@ export const actions = DevActions<Ctx>()
       console.log('res', res);
     });
 
+    e.button('write text file', async (e) => {
+      const fs = e.ctx.events.fs();
+
+      const data = new TextEncoder().encode('Hello!');
+      await fs.write('foo.txt', data);
+
+      const m = await fs.manifest();
+      console.log('m', m);
+    });
+
     e.button('fetch', async (e) => {
       const url =
         'http://localhost:5000/cell:ckmv1vll1000e01etelnr0s9a:A1/fs/sys.net/static/images/wax.png';
@@ -69,9 +79,6 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    console.log('bundle', bundle);
-    console.log('WebRuntime', WebRuntime);
-
     e.settings({
       host: { background: -0.04 },
       layout: {

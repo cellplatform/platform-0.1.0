@@ -24,10 +24,10 @@ export const Paths = {
 
     return {
       dir,
-      db: `${dir}/data/main.db`,
-      dbfs: `${dir}/data/main.db.fs`,
+      db: `${dir}/data/db/local.db`,
+      dbfs: `${dir}/data/db/local.db.fs`,
       files: `${dir}/data/files`,
-      config: `${dir}/data/config.json`,
+      config: `${dir}/data/.config.json`,
       archive: `${dir}/data.backup`,
       log: log.transports.file.getFile().path,
     };
