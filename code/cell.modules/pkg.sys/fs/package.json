@@ -1,6 +1,8 @@
 {
   "name": "sys.fs",
   "version": "0.0.6",
+  "main": "lib/web/index",
+  "types": "lib/web/index.d.ts",
   "sideEffects": false,
   "compiler": {
     "port": 3041

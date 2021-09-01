@@ -3,8 +3,8 @@
   "version": "0.0.7",
   "description": "Filesystem provided through implementation agnostic event-bus.",
   "sideEffects": false,
-  "main": "lib/index",
-  "types": "lib/index.d.ts",
+  "main": "lib/web/index",
+  "types": "lib/web/index.d.ts",
   "scripts": {
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",
