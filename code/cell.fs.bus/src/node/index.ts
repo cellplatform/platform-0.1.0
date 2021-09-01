@@ -1,1 +1,1 @@
-export * from './Filesystem';
+export { Filesystem } from '../node.Filesystem';
