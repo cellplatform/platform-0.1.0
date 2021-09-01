@@ -1,9 +1,0 @@
-{
-  "extends": "@platform/ts/tsconfig.json",
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "lib",
-
-    "noUnusedLocals": false
-  }
-}
