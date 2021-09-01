@@ -160,7 +160,7 @@ async function logMain(args: {
 
   const toSize = async (path: string) => {
     const exists = await fs.exists(path);
-    return exists ? (await fs.size.file(path)).toString({ round: 0, spacer: ' ' }) : '0B';
+    return exists ? (await fs.size.file(path)).toString({ round: 0 }) : '0 B';
   };
 
   const formatPath = (input: string) => {
