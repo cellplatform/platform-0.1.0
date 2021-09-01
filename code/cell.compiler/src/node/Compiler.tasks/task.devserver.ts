@@ -73,9 +73,7 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
     port,
     host: 'localhost',
     hot: true,
-    client: {
-      overlay: { warnings: false, errors: true },
-    },
+    client: { overlay: { warnings: false, errors: true } },
     static: model
       .static()
       .map(({ dir }) => dir as string)
