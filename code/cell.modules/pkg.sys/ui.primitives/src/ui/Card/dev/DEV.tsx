@@ -1,8 +1,8 @@
 import React from 'react';
 import { DevActions, lorem } from 'sys.ui.dev';
 
-import { Card, CardProps } from '.';
-import { css } from '../../common';
+import { Card, CardProps } from '..';
+import { css } from '../../../common';
 
 type Ctx = { props: CardProps };
 
