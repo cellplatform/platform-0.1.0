@@ -6,8 +6,9 @@ export type StackPanel = {
 };
 
 /**
- * [EVENTS]
+ * [Events]
  */
+
 export type StackPanelSlideEvent = {
   stage: 'start' | 'complete';
   from: number;

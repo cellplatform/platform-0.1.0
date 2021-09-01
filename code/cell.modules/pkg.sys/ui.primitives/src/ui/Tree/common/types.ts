@@ -1,4 +1,4 @@
-export * from '../types';
+export * from '../../../types';
 export { EventBus, FireEvent } from '@platform/types';
 
 export {
@@ -14,5 +14,6 @@ export {
   NodeIdentifier,
   ITreeNode,
 } from '@platform/state/lib/types';
+
 export { MouseEvent, MouseEventType, IKeypressEvent } from '@platform/react/lib/types';
 export { CssEdgesInput } from '@platform/css/lib/types';
