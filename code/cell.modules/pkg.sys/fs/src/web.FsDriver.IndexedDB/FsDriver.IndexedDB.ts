@@ -1,10 +1,10 @@
 /**
  * TODO 🐷
- * - t.FsDriverIndexDB
+ * - t.FsDriverIndexedDB
  */
 
 /**
- * A "local" filesystem running against the node-js 'fs' api.
+ * A filesystem driver running against the browser [IndexedDB] store.
  */
 export const FsDriverIndexedDB = (args: { dir: string }) => {
   //
