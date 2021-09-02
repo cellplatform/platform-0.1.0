@@ -1,6 +1,6 @@
 import React from 'react';
 import { DevActions, Textbox } from 'sys.ui.dev';
-import { Sample, SampleProps } from './Sample';
+import { Sample, SampleProps } from './DEV.Sample';
 import { css, IpcBus, t, Filesystem } from '../common';
 
 type UriString = string;
@@ -50,11 +50,13 @@ export const actions = DevActions<Ctx>()
       },
 
       onDropped(e) {
-        e.files.forEach(async (file) => {
-          const path = fs.join(e.dir, file.filename);
-          await fs.write(path, file.data);
-          await ctx.loadManifest();
-        });
+        e.files
+          .filter((file) => !file.path.endsWith('.DS_Store'))
+          .forEach(async (file) => {
+            const path = fs.join(e.dir, file.path);
+            await fs.write(path, file.data);
+            await ctx.loadManifest();
+          });
       },
 
       addLink(url) {
