@@ -31,6 +31,7 @@ export const Labels: React.FC<ILabelsProps> = (props: ILabelsProps = {}) => {
       fontFamily: constants.FONT.MONO,
       fontSize,
       color: formatColor(color),
+      WebkitAppRegion: 'no-drag', // NB: Window draggable within electron.
     },
     topLeft: { Absolute: [offset.y, null, null, offset.x] },
     topRight: { Absolute: [offset.y, offset.x, null, null] },

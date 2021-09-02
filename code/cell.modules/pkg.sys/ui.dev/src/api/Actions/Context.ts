@@ -36,7 +36,15 @@ export const Context = {
     const redraw = () => state.redraw$.next();
     const prev = state.ctx.current;
     const namespace = state.namespace;
-    const e: t.ActionHandlerContextArgs<Ctx> = { namespace, prev, change, redraw };
+    const e: t.ActionHandlerContextArgs<Ctx> = {
+      namespace,
+      prev,
+      change,
+      redraw,
+      get current() {
+        return model.state.ctx.current;
+      },
+    };
     const value = state.ctx.get(e);
 
     model.change((draft) => {
