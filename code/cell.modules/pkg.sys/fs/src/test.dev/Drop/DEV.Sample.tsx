@@ -2,9 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { color, css, CssValue, t } from '../common';
 import { useDragTarget } from 'sys.ui.primitives/lib/hooks/useDragTarget';
 
-import { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
-import { SampleManifest } from './Sample.Manifest';
-import { SampleLinks } from './Sample.Links';
+import { SampleManifest } from './DEV.Sample.Manifest';
+import { SampleLinks } from './DEV.Sample.Links';
 
 type UrlLink = string;
 

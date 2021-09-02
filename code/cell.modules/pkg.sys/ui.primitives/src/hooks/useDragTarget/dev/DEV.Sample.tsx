@@ -24,7 +24,9 @@ export const Sample: React.FC = () => {
   const { isDragOver, isDropped } = drag;
   const dropped = drag.dropped ? stripBinary(drag.dropped) : undefined;
   const data = { isDragOver, isDropped, dropped };
-  const files = (drag.dropped?.files || []).map(toUpload);
+  const files = (drag.dropped?.files || [])
+    .filter((file) => !file.path.endsWith('.DS_Store'))
+    .map(toUpload);
 
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
