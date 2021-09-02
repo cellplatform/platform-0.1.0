@@ -27,7 +27,7 @@
     "@platform/ts": "^4.1.23"
   },
   "engines": {
-    "node": ">=12.x"
+    "node": ">=14.x"
   },
   "private": true
 }
