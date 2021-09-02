@@ -15,7 +15,7 @@ const create: t.CodeEditorEventsFactory = (input) => {
   );
 
   const WaitFor = {
-    Load: WaitForResponse<t.ICodeEditorLibsLoadedEvent>($, 'CodeEditor/libs:loaded'),
+    Load: WaitForResponse<t.CodeEditorLibsLoadedEvent>($, 'CodeEditor/libs:loaded'),
   };
 
   const singleton$ = $.pipe(

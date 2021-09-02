@@ -18,6 +18,6 @@ export type CodeEditorEvents = {
   editor(id: string): t.CodeEditorInstanceEvents;
   readonly libs: {
     clear(): void;
-    load(url: string): Promise<t.ICodeEditorLibsLoaded>;
+    load(url: string): Promise<t.CodeEditorLibsLoaded>;
   };
 };

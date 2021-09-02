@@ -18,16 +18,16 @@ export type CodeEditorInstanceEvents = {
   dispose(): void;
 
   readonly focus: {
-    changed$: O<t.ICodeEditorFocusChanged>;
+    changed$: O<t.CodeEditorFocusChanged>;
     fire(): void;
   };
 
   readonly blur: {
-    changed$: O<t.ICodeEditorFocusChanged>;
+    changed$: O<t.CodeEditorFocusChanged>;
   };
 
   readonly selection: {
-    changed$: O<t.ICodeEditorSelectionChanged>;
+    changed$: O<t.CodeEditorSelectionChanged>;
     select(
       selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[] | null,
       options?: { focus?: boolean },
@@ -35,12 +35,12 @@ export type CodeEditorInstanceEvents = {
   };
 
   readonly text: {
-    changed$: O<t.ICodeEditorTextChanged>;
+    changed$: O<t.CodeEditorTextChanged>;
     set(text: string | null): void;
   };
 
   readonly action: {
-    run$: O<t.ICodeEditorRunAction>;
-    fire(action: t.MonacoAction): Promise<t.ICodeEditorActionComplete>;
+    run$: O<t.CodeEditorRunAction>;
+    fire(action: t.MonacoAction): Promise<t.CodeEditorActionComplete>;
   };
 };

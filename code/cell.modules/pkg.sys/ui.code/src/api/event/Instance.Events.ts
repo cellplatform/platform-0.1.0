@@ -4,10 +4,10 @@ import { filter, share, takeUntil } from 'rxjs/operators';
 import { rx, t, Is, WaitForResponse, slug } from '../../common';
 
 type E = t.CodeEditorInstanceEvent;
-type F = t.ICodeEditorFocusChangedEvent;
-type S = t.ICodeEditorSelectionChangedEvent;
-type T = t.ICodeEditorTextChangedEvent;
-type A = t.ICodeEditorRunActionEvent;
+type F = t.CodeEditorFocusChangedEvent;
+type S = t.CodeEditorSelectionChangedEvent;
+type T = t.CodeEditorTextChangedEvent;
+type A = t.CodeEditorRunActionEvent;
 
 /**
  * Editor API
@@ -31,7 +31,7 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
   );
 
   const WaitFor = {
-    Action: WaitForResponse<t.ICodeEditorActionCompleteEvent>($, 'CodeEditor/action:complete'),
+    Action: WaitForResponse<t.CodeEditorActionCompleteEvent>($, 'CodeEditor/action:complete'),
   };
 
   /**

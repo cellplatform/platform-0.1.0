@@ -11,7 +11,7 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
   /**
    * Run action.
    */
-  rx.payload<t.ICodeEditorRunActionEvent>($, 'CodeEditor/action:run')
+  rx.payload<t.CodeEditorRunActionEvent>($, 'CodeEditor/action:run')
     .pipe()
     .subscribe(async (e) => {
       const tx = e.tx || '';
@@ -32,14 +32,14 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
   /**
    * Focus
    */
-  rx.payload<t.ICodeEditorChangeFocusEvent>($, 'CodeEditor/change:focus')
+  rx.payload<t.CodeEditorChangeFocusEvent>($, 'CodeEditor/change:focus')
     .pipe()
     .subscribe((e) => editor.focus());
 
   /**
    * Selection
    */
-  rx.payload<t.ICodeEditorChangeSelectionEvent>($, 'CodeEditor/change:selection')
+  rx.payload<t.CodeEditorChangeSelectionEvent>($, 'CodeEditor/change:selection')
     .pipe()
     .subscribe((e) => {
       if (e.selection === null) {
@@ -86,7 +86,7 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
   /**
    * Text
    */
-  rx.payload<t.ICodeEditorChangeTextEvent>($, 'CodeEditor/change:text')
+  rx.payload<t.CodeEditorChangeTextEvent>($, 'CodeEditor/change:text')
     .pipe()
     .subscribe((e) => (editor.text = e.text || ''));
 }

@@ -50,7 +50,7 @@ export const actions = DevActions<Ctx>()
     //   console.log('e', e);
     // });
 
-    rx.payload<t.ICodeEditorTextChangedEvent>($, 'CodeEditor/changed:text')
+    rx.payload<t.CodeEditorTextChangedEvent>($, 'CodeEditor/changed:text')
       .pipe()
       .subscribe(async (e) => {
         console.log('echanged', e);

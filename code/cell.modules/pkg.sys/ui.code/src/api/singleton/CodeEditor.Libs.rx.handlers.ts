@@ -14,11 +14,11 @@ export function CodeEditorLibsEventHandlers(
   /**
    * Libs
    */
-  rx.payload<t.ICodeEditorLibsClearEvent>($, 'CodeEditor/libs:clear')
+  rx.payload<t.CodeEditorLibsClearEvent>($, 'CodeEditor/libs:clear')
     .pipe()
     .subscribe((e) => libs.clear());
 
-  rx.payload<t.ICodeEditorLibsLoadEvent>($, 'CodeEditor/libs:load')
+  rx.payload<t.CodeEditorLibsLoadEvent>($, 'CodeEditor/libs:load')
     .pipe()
     .subscribe(async (e) => {
       const { tx, url } = e;
