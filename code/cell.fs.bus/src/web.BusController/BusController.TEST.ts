@@ -83,6 +83,6 @@ describe('BusController', function () {
     expect(file2.hash).to.eql(png.hash);
     expect(file3.hash).to.eql(png.hash);
 
-    mock.dispose();
+    await mock.dispose();
   });
 });

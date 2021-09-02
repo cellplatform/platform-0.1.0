@@ -48,18 +48,20 @@ export function BusControllerCell(args: {
       const read = await fs.read(PathUri.ensurePrefix(path));
 
       if (read.error) {
-        const error: t.SysFsError = { code: 'cell/push', message: read.error.message };
+        const message = `[read source failure] ${read.error.message}`;
+        const error: t.SysFsError = { code: 'cell/push', message };
         return { ...res, error };
       }
 
       if (!read.file) {
-        const error: t.SysFsError = { code: 'cell/push', message: `File not loaded` };
+        const message = `[read source failure] File not loaded`;
+        const error: t.SysFsError = { code: 'cell/push', message };
         return { ...res, error };
       }
 
       const bytes = read.file.bytes ?? -1;
       const hash = read.file.hash;
-      const data = read.file?.data.buffer;
+      const data = read.file?.data;
       const payload: t.IHttpClientCellFileUpload = { filename: path, data };
 
       return { path, hash, bytes, payload };
@@ -68,7 +70,7 @@ export function BusControllerCell(args: {
     try {
       const address = CellAddress.parse(e.address);
       if (address.error) {
-        const message = address.error;
+        const message = `[parse address failure] ${address.error}`;
         const error: t.SysFsError = { code: 'cell/push', message };
         return fail(error);
       }
@@ -97,7 +99,7 @@ export function BusControllerCell(args: {
       if (files.length === 0) {
         const sources = asArray(e.path ?? '').map(trimRootDir);
         const errors: t.SysFsError[] = sources.map((path) => {
-          const message = `No files to push from source: ${path}`;
+          const message = `[prepare upload failure] No files to push from source: ${path}`;
           return { code: 'cell/push', message, path };
         });
         return fail(...errors);
@@ -115,7 +117,7 @@ export function BusControllerCell(args: {
        */
       if (res.body.errors.length > 0) {
         const errors = res.body.errors
-          .map((item) => `[${item.status}] ${item.message}`)
+          .map((item) => `[upload failure: ${item.status}] ${item.message}`)
           .map((message) => ({ code: 'cell/push', message } as t.SysFsError));
         return done({ errors, files });
       } else {
