@@ -88,13 +88,13 @@ export async function readDropEvent(e: DragEvent) {
   }
 
   // Remove root "/".
-  files.forEach((file) => (file.filename = file.filename.replace(/^\//, '')));
+  files.forEach((file) => (file.path = file.path.replace(/^\//, '')));
 
   // Process directory name.
   let dir = '';
   if (isDirectory && files.length > 0) {
-    dir = files[0].filename.substring(0, files[0].filename.indexOf('/'));
-    files.forEach((file) => (file.filename = file.filename.substring(dir.length + 1)));
+    dir = files[0].path.substring(0, files[0].path.indexOf('/'));
+    files.forEach((file) => (file.path = file.path.substring(dir.length + 1)));
   }
 
   // Finish up.
@@ -108,8 +108,8 @@ export async function readDropEvent(e: DragEvent) {
 async function toFilePayload(file: File, name?: string) {
   const filename = name || file.name;
   const mimetype = file.type;
-  const data = (await (file as any).arrayBuffer()) as ArrayBuffer;
-  const payload: F = { filename, data, mimetype };
+  const data = new Uint8Array(await (file as any).arrayBuffer());
+  const payload: F = { path: filename, data, mimetype };
   return payload;
 }
 

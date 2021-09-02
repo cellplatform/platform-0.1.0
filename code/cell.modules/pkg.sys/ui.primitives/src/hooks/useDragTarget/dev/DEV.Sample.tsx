@@ -2,16 +2,29 @@ import React, { useState } from 'react';
 import { ObjectView } from 'sys.ui.dev';
 
 import { useDragTarget } from '..';
-import { color, css, Button, Spinner } from './common';
+import { color, css, Button, Spinner, t } from './common';
 import { upload } from './DEV.Sample.upload';
+
+const toUpload = (file: t.DroppedFile): t.IHttpClientCellFileUpload => {
+  const { mimetype, data } = file;
+  return { filename: file.path, mimetype, data };
+};
+
+const stripBinary = (dropped: t.Dropped) => {
+  // NB: The Uint8Array is replaced with a string for display purposes. If left as the
+  //     binary object, the UI will hanging, attempting to write it as integers to the DOM.
+  const files = dropped.files.map((file) => ({ ...file, data: '<Uint8Array>' }));
+  return { ...dropped, files };
+};
 
 export const Sample: React.FC = () => {
   const rootRef = React.useRef<HTMLDivElement>(null);
   const drag = useDragTarget(rootRef, (e) => console.log('onDropped (optional)', e));
 
-  const { isDragOver, isDropped, dropped } = drag;
+  const { isDragOver, isDropped } = drag;
+  const dropped = drag.dropped ? stripBinary(drag.dropped) : undefined;
   const data = { isDragOver, isDropped, dropped };
-  const files = drag.dropped?.files || [];
+  const files = (drag.dropped?.files || []).map(toUpload);
 
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
