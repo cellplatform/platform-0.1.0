@@ -118,13 +118,17 @@ export const Sample: React.FC = () => {
     </div>
   );
 
+  const elBody = (
+    <div {...styles.body.base}>
+      {elToolbar}
+      {elMain}
+      {elFooter}
+    </div>
+  );
+
   return (
     <div ref={rootRef} {...styles.base}>
-      <div {...styles.body.base}>
-        {elToolbar}
-        {elMain}
-        {elFooter}
-      </div>
+      {elBody}
       {elDragOver}
     </div>
   );
