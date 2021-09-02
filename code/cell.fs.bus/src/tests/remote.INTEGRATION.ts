@@ -1,4 +1,4 @@
-import { TestPrep } from '../test';
+import { TestPrep, log } from '../test';
 
 describe('INTEGRATION', function () {
   this.timeout(10000);
@@ -16,8 +16,8 @@ describe('INTEGRATION', function () {
     const remote = events.remote.cell('dev.db.team', 'cell:ckt2dyzgq000008jx3664824f:A1');
     const res = await remote.push();
 
-    console.log('-------------------------------------------');
-    console.log('res', res);
+    log.info('-------------------------------------------');
+    log.info('res', res);
 
     await mock.dispose();
   });

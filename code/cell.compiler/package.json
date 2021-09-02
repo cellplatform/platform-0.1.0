@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.compiler",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Code compilation and bundling.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -33,10 +33,10 @@
     "@babel/preset-env": "7.15.0",
     "@babel/preset-react": "7.14.5",
     "@babel/preset-typescript": "7.15.0",
-    "@platform/cell.fs.local": "^0.4.224",
-    "@platform/cell.module": "0.0.136",
-    "@platform/cell.runtime.node": "0.0.71",
-    "@platform/cell.types": "0.5.99",
+    "@platform/cell.fs.local": "^0.4.225",
+    "@platform/cell.module": "0.0.137",
+    "@platform/cell.runtime.node": "0.0.72",
+    "@platform/cell.types": "0.5.100",
     "@platform/css": "0.4.50",
     "@platform/libs": "0.2.14",
     "@platform/log": "0.1.62",
@@ -62,7 +62,7 @@
     "worker-loader": "3.0.8"
   },
   "devDependencies": {
-    "@platform/cell.runtime.web": "0.1.71",
+    "@platform/cell.runtime.web": "0.1.72",
     "@platform/react": "0.4.83",
     "@platform/test": "0.2.10",
     "@platform/ts": "4.1.23",

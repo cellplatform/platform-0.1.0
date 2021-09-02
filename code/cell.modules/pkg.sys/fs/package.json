@@ -1,6 +1,6 @@
 {
   "name": "sys.fs",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "lib/web/index",
   "types": "lib/web/index.d.ts",
   "sideEffects": false,
@@ -25,10 +25,10 @@
     "reset": "rm -rf tmp"
   },
   "dependencies": {
-    "@platform/cell.fs.bus": "0.0.7"
+    "@platform/cell.fs.bus": "0.0.9"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "~0.4.0",
+    "@platform/cell.compiler": "~0.4.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
