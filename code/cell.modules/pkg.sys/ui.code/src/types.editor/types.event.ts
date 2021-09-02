@@ -1,5 +1,6 @@
 import { t } from './common';
 
+type InstanceId = string;
 export type CodeEditorEventBus = t.EventBus<t.CodeEditorEvent>;
 export type CodeEditorEvent = CodeEditorInstanceEvent | CodeEditorSingletonEvent;
 
@@ -8,21 +9,16 @@ export type CodeEditorEvent = CodeEditorInstanceEvent | CodeEditorSingletonEvent
  */
 
 export type CodeEditorInstanceEvent =
-  | CodeEditorChangeEvent
-  | CodeEditorChangedEvent
-  | CodeEditorActionEvent;
-
-export type CodeEditorChangeEvent =
   | CodeEditorChangeFocusEvent
   | CodeEditorChangeSelectionEvent
-  | CodeEditorChangeTextEvent;
-
-export type CodeEditorChangedEvent =
+  | CodeEditorChangeTextEvent
+  | CodeEditorTextReqEvent
+  | CodeEditorTextResEvent
   | CodeEditorSelectionChangedEvent
   | CodeEditorFocusChangedEvent
-  | CodeEditorTextChangedEvent;
-
-export type CodeEditorActionEvent = CodeEditorRunActionEvent | CodeEditorActionCompleteEvent;
+  | CodeEditorTextChangedEvent
+  | CodeEditorRunActionEvent
+  | CodeEditorActionCompleteEvent;
 
 /**
  * Global (Singleton) Events.
@@ -40,7 +36,7 @@ export type CodeEditorChangeFocusEvent = {
   type: 'CodeEditor/change:focus';
   payload: CodeEditorChangeFocus;
 };
-export type CodeEditorChangeFocus = { instance: string };
+export type CodeEditorChangeFocus = { instance: InstanceId };
 
 /**
  * Fired when editor recieves or loses focus.
@@ -50,7 +46,7 @@ export type CodeEditorFocusChangedEvent = {
   payload: CodeEditorFocusChanged;
 };
 export type CodeEditorFocusChanged = {
-  instance: string;
+  instance: InstanceId;
   isFocused: boolean;
 };
 
@@ -62,7 +58,7 @@ export type CodeEditorChangeSelectionEvent = {
   payload: CodeEditorChangeSelection;
 };
 export type CodeEditorChangeSelection = {
-  instance: string;
+  instance: InstanceId;
   selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[] | null;
   focus?: boolean;
 };
@@ -75,7 +71,7 @@ export type CodeEditorSelectionChangedEvent = {
   payload: CodeEditorSelectionChanged;
 };
 export type CodeEditorSelectionChanged = {
-  instance: string;
+  instance: InstanceId;
   selection: t.CodeEditorSelection;
   via: 'keyboard' | 'mouse';
 };
@@ -88,9 +84,24 @@ export type CodeEditorChangeTextEvent = {
   payload: CodeEditorChangeText;
 };
 export type CodeEditorChangeText = {
-  instance: string;
+  instance: InstanceId;
   text: string | null;
 };
+
+/**
+ * Retrieve current editor text.
+ */
+export type CodeEditorTextReqEvent = {
+  type: 'CodeEditor/text:req';
+  payload: CodeEditorTextReq;
+};
+export type CodeEditorTextReq = { tx: string; instance: InstanceId };
+
+export type CodeEditorTextResEvent = {
+  type: 'CodeEditor/text:res';
+  payload: CodeEditorTextRes;
+};
+export type CodeEditorTextRes = { tx: string; instance: InstanceId; text: string };
 
 /**
  * Fires when the editor text changes.
@@ -100,7 +111,7 @@ export type CodeEditorTextChangedEvent = {
   payload: CodeEditorTextChanged;
 };
 export type CodeEditorTextChanged = {
-  instance: string;
+  instance: InstanceId;
   changes: CodeEditorTextChange[];
   isFlush: boolean;
   isRedoing: boolean;
@@ -119,7 +130,7 @@ export type CodeEditorRunActionEvent = {
   payload: CodeEditorRunAction;
 };
 export type CodeEditorRunAction = {
-  instance: string;
+  instance: InstanceId;
   action: t.MonacoAction;
   tx?: string;
 };
@@ -130,7 +141,7 @@ export type CodeEditorActionCompleteEvent = {
 };
 export type CodeEditorActionComplete = {
   tx: string;
-  instance: string;
+  instance: InstanceId;
   action: t.MonacoAction;
   error?: string;
 };

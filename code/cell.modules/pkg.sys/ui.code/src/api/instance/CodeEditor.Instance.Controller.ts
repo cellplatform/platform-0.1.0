@@ -89,4 +89,15 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
   rx.payload<t.CodeEditorChangeTextEvent>($, 'CodeEditor/change:text')
     .pipe()
     .subscribe((e) => (editor.text = e.text || ''));
+
+  rx.payload<t.CodeEditorTextReqEvent>($, 'CodeEditor/text:req')
+    .pipe()
+    .subscribe((e) => {
+      const { tx } = e;
+      const text = editor.text;
+      bus.fire({
+        type: 'CodeEditor/text:res',
+        payload: { tx, instance, text },
+      });
+    });
 }

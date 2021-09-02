@@ -1,12 +1,23 @@
-import { Subject } from 'rxjs';
-import { filter, share, takeUntil } from 'rxjs/operators';
-
+import { Observable, Subject, BehaviorSubject, firstValueFrom, timeout, of } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+  tap,
+  catchError,
+} from 'rxjs/operators';
 import { rx, t, Is, WaitForResponse, slug } from '../../common';
 
 type E = t.CodeEditorInstanceEvent;
 type F = t.CodeEditorFocusChangedEvent;
 type S = t.CodeEditorSelectionChangedEvent;
-type T = t.CodeEditorTextChangedEvent;
+
 type A = t.CodeEditorRunActionEvent;
 
 /**
@@ -32,6 +43,7 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
 
   const WaitFor = {
     Action: WaitForResponse<t.CodeEditorActionCompleteEvent>($, 'CodeEditor/action:complete'),
+    // GetText: WaitForResponse<t.CodeEditorTextResEvent>($, 'CodeEditor/text:res'),
   };
 
   /**
@@ -70,9 +82,31 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
    * Text
    */
   const text: t.CodeEditorInstanceEvents['text'] = {
-    changed$: rx.payload<T>($, 'CodeEditor/changed:text'),
+    changed$: rx.payload<t.CodeEditorTextChangedEvent>($, 'CodeEditor/changed:text'),
     set(text) {
       bus.fire({ type: 'CodeEditor/change:text', payload: { instance, text } });
+    },
+    get: {
+      req$: rx.payload<t.CodeEditorTextReqEvent>($, 'CodeEditor/text:req'),
+      res$: rx.payload<t.CodeEditorTextResEvent>($, 'CodeEditor/text:res'),
+
+      async fire(options = {}) {
+        const tx = slug();
+        const msecs = options.timeout ?? 1000;
+        const first = firstValueFrom(
+          text.get.res$.pipe(
+            filter((e) => e.tx === tx),
+            timeout(msecs),
+            catchError(() => of(`[Text] request timed out after ${msecs} msecs`)),
+          ),
+        );
+
+        bus.fire({ type: 'CodeEditor/text:req', payload: { tx, instance } });
+
+        const res = await first;
+        if (typeof res === 'string') throw new Error(res);
+        return res.text;
+      },
     },
   };
 

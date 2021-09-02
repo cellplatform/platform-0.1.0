@@ -3,6 +3,7 @@ import { catchError, filter } from 'rxjs/operators';
 
 import { CellAddress, rx, slug, t, timeoutWrangler } from './common';
 
+type Milliseconds = number;
 type CellUriAddress = string;
 type FilesystemId = string;
 
@@ -13,7 +14,7 @@ export function BusEventsCell(args: {
   id: FilesystemId;
   $: t.Observable<t.SysFsEvent>;
   bus: t.EventBus<t.SysFsEvent>;
-  timeout: number;
+  timeout: Milliseconds;
 }): t.SysFsEventsRemote {
   const { id, $, bus } = args;
   const toTimeout = timeoutWrangler(args.timeout);

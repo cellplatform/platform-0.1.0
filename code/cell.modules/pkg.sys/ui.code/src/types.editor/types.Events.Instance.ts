@@ -1,5 +1,6 @@
 import { t } from './common';
 
+type Milliseconds = number;
 type InstanceId = string;
 type O<T> = t.Observable<T>;
 
@@ -37,6 +38,11 @@ export type CodeEditorInstanceEvents = {
   readonly text: {
     changed$: O<t.CodeEditorTextChanged>;
     set(text: string | null): void;
+    get: {
+      req$: O<t.CodeEditorTextReq>;
+      res$: O<t.CodeEditorTextRes>;
+      fire(options?: { timeout?: Milliseconds }): Promise<string>;
+    };
   };
 
   readonly action: {

@@ -91,11 +91,18 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Text');
 
-    e.button('short', (e) => {
+    e.button('get', async (e) => {
+      const res = await e.ctx.events?.text.get.fire();
+      console.log('text', res);
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('set: short', (e) => {
       e.ctx.events?.text.set('// hello');
     });
 
-    e.button('sample', (e) => {
+    e.button('set: sample', (e) => {
       const code = `
 // sample
 const a:number[] = [1,2,3]
@@ -106,7 +113,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
       e.ctx.events?.text.set(code);
     });
 
-    e.button('null (clear)', (e) => {
+    e.button('set: null (clear)', (e) => {
       e.ctx.events?.text.set(null);
     });
 
