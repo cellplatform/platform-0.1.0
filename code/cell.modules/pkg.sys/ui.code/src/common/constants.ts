@@ -1,8 +1,11 @@
 import * as t from './types';
 
+export const LANGUAGES: t.CodeEditorLanguage[] = ['typescript', 'json'];
+
 const MODEL: t.CodeEditorModel = {
-  filename: '',
+  // filename: '',
   text: '',
+  language: 'typescript',
   selection: {
     cursor: { line: 1, column: 1 },
     primary: { end: { line: 1, column: 1 }, start: { line: 1, column: 1 } },

@@ -18,7 +18,9 @@ export type CodeEditorInstanceEvent =
   | CodeEditorFocusChangedEvent
   | CodeEditorTextChangedEvent
   | CodeEditorRunActionEvent
-  | CodeEditorActionCompleteEvent;
+  | CodeEditorActionCompleteEvent
+  | CodeEditorModelReqEvent
+  | CodeEditorModelResEvent;
 
 /**
  * Global (Singleton) Events.
@@ -168,3 +170,27 @@ export type CodeEditorLibsLoadedEvent = {
   payload: CodeEditorLibsLoaded;
 };
 export type CodeEditorLibsLoaded = { tx: string; url: string; files: string[] };
+
+/**
+ * Code Editor Model
+ */
+export type CodeEditorModelReqEvent = {
+  type: 'CodeEditor/model:req';
+  payload: CodeEditorModelReq;
+};
+export type CodeEditorModelReq = {
+  tx: string;
+  instance: InstanceId;
+  change?: Partial<t.CodeEditorModel>;
+};
+
+export type CodeEditorModelResEvent = {
+  type: 'CodeEditor/model:res';
+  payload: CodeEditorModelRes;
+};
+export type CodeEditorModelRes = {
+  tx: string;
+  instance: InstanceId;
+  action: 'read' | 'update';
+  model: t.CodeEditorModel;
+};

@@ -8,12 +8,12 @@ import { rx, t, bundle, constants } from '../../common';
 type Ctx = {
   props: CodeEditorProps;
   focusedEditor?: t.CodeEditorInstance;
-  events?: t.CodeEditorInstanceEvents;
+  global: t.CodeEditorEvents;
+  instance?: t.CodeEditorInstanceEvents;
 };
 
 const { PATH } = constants;
 const bus = rx.bus<t.CodeEditorEvent>();
-const events = CodeEditor.events(bus);
 
 /**
  * Actions
@@ -22,15 +22,15 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.code/CodeEditor')
   .context((e) => {
     if (e.prev) return e.prev;
-    const ctx: Ctx = { props: {} };
+    const global = CodeEditor.events(bus);
+    const ctx: Ctx = { props: {}, global };
     return ctx;
   })
 
   .items((e) => {
-    e.title('tmp');
-    e.button('foo', (e) => {
-      console.log('> e.ctx:', toObject(e.ctx));
-    });
+    e.title('Language');
+    e.button('typescript', (e) => e.ctx.instance?.model.set.language('typescript'));
+    e.button('json', (e) => e.ctx.instance?.model.set.language('json'));
     e.hr();
   })
 
@@ -49,8 +49,8 @@ export const actions = DevActions<Ctx>()
    */
   .items((e) => {
     e.title('Focus');
-    e.button('instance: "one"', () => events.editor('one').focus.fire());
-    e.button('instance: "two"', () => events.editor('two').focus.fire());
+    e.button('instance: "one"', (e) => e.ctx.global.editor('one').focus.fire());
+    e.button('instance: "two"', (e) => e.ctx.global.editor('two').focus.fire());
     e.hr();
   })
 
@@ -60,16 +60,16 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Select');
     e.button('position (0:5)', (e) => {
-      e.ctx.events?.selection.select({ line: 0, column: 5 }, { focus: true });
+      e.ctx.instance?.selection.select({ line: 0, column: 5 }, { focus: true });
     });
     e.button('range', (e) => {
-      e.ctx.events?.selection.select(
+      e.ctx.instance?.selection.select(
         { start: { line: 1, column: 5 }, end: { line: 3, column: 10 } },
         { focus: true },
       );
     });
     e.button('ranges', (e) => {
-      e.ctx.events?.selection.select(
+      e.ctx.instance?.selection.select(
         [
           { start: { line: 1, column: 2 }, end: { line: 1, column: 4 } },
           { start: { line: 3, column: 2 }, end: { line: 4, column: 8 } },
@@ -79,7 +79,7 @@ export const actions = DevActions<Ctx>()
       );
     });
     e.button('clear', (e) => {
-      e.ctx.events?.selection.select(null, { focus: true });
+      e.ctx.instance?.selection.select(null, { focus: true });
     });
 
     e.hr();
@@ -92,14 +92,14 @@ export const actions = DevActions<Ctx>()
     e.title('Text');
 
     e.button('get', async (e) => {
-      const res = await e.ctx.events?.text.get.fire();
+      const res = await e.ctx.instance?.text.get.fire();
       console.log('text', res);
     });
 
     e.hr(1, 0.1);
 
     e.button('set: short', (e) => {
-      e.ctx.events?.text.set('// hello');
+      e.ctx.instance?.text.set('// hello');
     });
 
     e.button('set: sample', (e) => {
@@ -110,11 +110,11 @@ import {add} from 'math'
 const x = add(3, 5)
 const total = a.reduce((acc, next) =>acc + next, 0)
       `;
-      e.ctx.events?.text.set(code);
+      e.ctx.instance?.text.set(code);
     });
 
     e.button('set: null (clear)', (e) => {
-      e.ctx.events?.text.set(null);
+      e.ctx.instance?.text.set(null);
     });
 
     e.hr();
@@ -126,11 +126,11 @@ const total = a.reduce((acc, next) =>acc + next, 0)
   .items((e) => {
     e.title('Command Actions');
     e.button('format document (prettier)', async (e) => {
-      const res = await e.ctx.events?.action.fire('editor.action.formatDocument');
+      const res = await e.ctx.instance?.action.fire('editor.action.formatDocument');
       console.log('res', res);
     });
     e.button('format selection', async (e) => {
-      const res = await e.ctx.events?.action.fire('editor.action.formatSelection');
+      const res = await e.ctx.instance?.action.fire('editor.action.formatSelection');
       console.log('res', res);
     });
 
@@ -142,28 +142,28 @@ const total = a.reduce((acc, next) =>acc + next, 0)
    */
   .items((e) => {
     e.title('Type Libraries');
-    e.button('clear', () => events.libs.clear());
-    e.button('load: lib.es', async () => {
+    e.button('clear', (e) => e.ctx.global.libs.clear());
+    e.button('load: lib.es', async (e) => {
       const url = bundle.path(PATH.STATIC.TYPES.ES);
-      const res = await events.libs.load(url);
+      const res = await e.ctx.global.libs.load(url);
       console.log('res', res);
     });
-    e.button('load: env', async () => {
+    e.button('load: env', async (e) => {
       const url = bundle.path('static/types.d/inner/env.d.txt');
       // const url = bundle.path('dist/web/types.d/env.d.txt');
 
       console.log('url', url);
 
-      const res = await events.libs.load(url);
+      const res = await e.ctx.global.libs.load(url);
       console.log('res', res);
     });
-    e.button('load: rxjs', async () => {
+    e.button('load: rxjs', async (e) => {
       const url = bundle.path('static/types.d/rxjs');
       // const url = bundle.path('dist/web/types.d/env.d.txt');
 
       console.log('url', url);
 
-      const res = await events.libs.load(url);
+      const res = await e.ctx.global.libs.load(url);
       console.log('res', res);
     });
 
@@ -196,7 +196,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
       // SaveTest(e.editor);
       e.editor.events.focus.changed$.subscribe(() => {
         ctx.focusedEditor = e.editor;
-        ctx.events = e.editor.events;
+        ctx.instance = e.editor.events;
 
         // model.change((draft) => (draft.editor = e.editor));
         // setSelection();

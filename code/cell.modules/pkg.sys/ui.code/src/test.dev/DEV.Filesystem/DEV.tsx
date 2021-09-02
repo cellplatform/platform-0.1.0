@@ -1,30 +1,21 @@
-import { Observable, Subject, BehaviorSubject, firstValueFrom, timeout, of } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-  catchError,
-} from 'rxjs/operators';
 import React from 'react';
-import { DevActions } from 'sys.ui.dev';
+import { debounceTime } from 'rxjs/operators';
+import { DevActions, Textbox } from 'sys.ui.dev';
 
-import { rx, t, IpcBus, Filesystem } from '../common';
 import { CodeEditor } from '../../api';
-import { Sample, SampleProps } from './Sample';
+import { Filesystem, IpcBus, rx, t } from '../common';
+import { CodeEditor as CodeEditorView } from '../../components/CodeEditor';
 
 type E = t.CodeEditorEvent;
 type Ctx = {
+  id: string;
+  props: { filename: string };
   bus: t.EventBus<E>;
   netbus: t.NetworkBus<E>;
+  events: t.CodeEditorInstanceEvents;
   fs: t.Fs;
-  props: SampleProps;
+  save(): Promise<void>;
+  filename(value: string): void;
 };
 
 /**
@@ -35,44 +26,33 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
+    const id = 'foo';
     const bus = rx.bus<E>();
     const netbus = IpcBus<E>();
-
-    const id = 'main';
-    const store = Filesystem.Events({ id, bus: netbus });
+    const store = Filesystem.Events({ id: 'main', bus: netbus });
     const fs = store.fs();
 
-    const codeEvents = CodeEditor.events(bus);
+    const save = async () => {
+      const path = e.current?.props.filename;
+      if (path) {
+        const text = await events.text.get.fire();
+        const data = new TextEncoder().encode(text);
+        await fs.write(path, data);
+      }
+    };
 
-    const $ = codeEvents.instance$;
-
-    // codeEvents.instance$.subscribe((e) => {
-    //   console.log('e', e);
-    // });
-
-    rx.payload<t.CodeEditorTextChangedEvent>($, 'CodeEditor/changed:text')
-      .pipe()
-      .subscribe(async (e) => {
-        console.log('echanged', e);
-        const change = e.changes[0].text;
-
-        const data = new TextEncoder().encode(change);
-        await fs.write('code.txt', data);
-      });
-
-    // bus.$.pipe(debounceTime(300)).subscribe((e) => {
-    //   console.log('code/e:', e);
-
-    // });
-
-    // const $ = bus.$
-    // rx.payload<>()
+    const events = CodeEditor.events(bus).editor(id);
+    events.text.changed$.pipe(debounceTime(300)).subscribe(save);
 
     const ctx: Ctx = {
+      id,
+      props: { filename: 'test/code.txt' },
       bus,
       netbus,
       fs,
-      props: { bus },
+      events,
+      save,
+      filename: (value) => e.change.ctx((draft) => (draft.props.filename = value)),
     };
     return ctx;
   })
@@ -80,31 +60,45 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Dev');
 
-    e.button('write textfile', async (e) => {
-      const fs = e.ctx.fs;
-
-      const data = new TextEncoder().encode('Hello Code File');
-      await fs.write('code.txt', data);
-
-      const manifest = await fs.manifest({ cache: 'remove' });
-      console.log('manifest', manifest);
+    e.button('save', async (e) => {
+      await e.ctx.save();
+      e.ctx.events.action.fire('editor.action.formatDocument');
     });
+
+    e.hr(1, 0.1);
+
+    e.button('typescript', (e) => e.ctx.events.model.set.language('typescript'));
+    e.button('json', (e) => e.ctx.events.model.set.language('json'));
 
     e.hr();
   })
 
   .subject((e) => {
+    const { id, bus, props } = e.ctx;
+
+    const elFilename = (
+      <Textbox
+        placeholder={'filename'}
+        value={e.ctx.props.filename}
+        onChange={({ to }) => e.ctx.filename(to)}
+      />
+    );
+
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: 'sys.ui.code.Filesystem',
+        label: { topLeft: 'sys.ui.code.Filesystem', bottomLeft: elFilename },
         position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,
         background: 1,
       },
     });
-    e.render(<Sample {...e.ctx.props} />);
+
+    const { filename } = props;
+    const el = <CodeEditorView bus={bus} id={id} filename={filename} />;
+
+    e.render(el);
   });
 
 export default actions;

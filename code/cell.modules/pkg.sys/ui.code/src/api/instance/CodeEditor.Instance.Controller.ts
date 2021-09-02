@@ -100,4 +100,35 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
         payload: { tx, instance, text },
       });
     });
+
+  /**
+   * Model
+   */
+  rx.payload<t.CodeEditorModelReqEvent>($, 'CodeEditor/model:req')
+    .pipe()
+    .subscribe((e) => {
+      const { tx, change } = e;
+
+      if (change) {
+        if (change.language !== undefined) editor.language = change.language;
+        if (change.text !== undefined) editor.text = change.text;
+        if (change.selection !== undefined) editor.select(change.selection);
+      }
+
+      const model: t.CodeEditorModel = {
+        language: editor.language,
+        text: editor.text,
+        selection: editor.selection,
+      };
+
+      bus.fire({
+        type: 'CodeEditor/model:res',
+        payload: {
+          tx,
+          instance,
+          action: change ? 'update' : 'read',
+          model,
+        },
+      });
+    });
 }

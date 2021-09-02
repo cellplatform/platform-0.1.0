@@ -8,6 +8,7 @@ export type IMonacoEditor = {
   createModel(value: string, language?: string, uri?: t.IMonacoUri): t.IMonacoTextModel;
   getModel(uri: t.IMonacoUri): t.IMonacoTextModel;
   getModels(): t.IMonacoTextModel[];
+  setModelLanguage(model: t.IMonacoTextModel, languageId: string): void;
 };
 
 /**
