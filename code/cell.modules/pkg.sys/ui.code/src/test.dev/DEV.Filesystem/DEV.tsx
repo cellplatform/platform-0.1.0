@@ -46,7 +46,7 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       id,
-      props: { filename: 'test/code.txt' },
+      props: { filename: 'test.ui.code/code.txt' },
       bus,
       netbus,
       fs,
@@ -76,7 +76,7 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     const { id, bus, props } = e.ctx;
 
-    const elFilename = (
+    const txtFilename = (
       <Textbox
         placeholder={'filename'}
         value={e.ctx.props.filename}
@@ -87,7 +87,7 @@ export const actions = DevActions<Ctx>()
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: { topLeft: 'sys.ui.code.Filesystem', bottomLeft: elFilename },
+        label: { topLeft: 'sys.ui.code.Filesystem', bottomLeft: txtFilename },
         position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,

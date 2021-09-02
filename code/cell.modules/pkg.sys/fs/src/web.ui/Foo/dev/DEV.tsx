@@ -38,6 +38,15 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('sys.fs');
 
+    e.button('clear (delete)', async (e) => {
+      const fs = e.ctx.events.fs();
+      const manifest = await fs.manifest();
+      const paths = manifest.files.map((file) => file.path);
+      await Promise.all(paths.map((path) => fs.delete(path)));
+    });
+
+    e.hr(1, 0.1);
+
     e.button('info', async (e) => {
       const res = await e.ctx.events.io.info.get();
       console.log('res', res);

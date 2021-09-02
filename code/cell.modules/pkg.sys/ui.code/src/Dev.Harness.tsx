@@ -5,7 +5,7 @@ const imports = {
   CodeEditor: import('./components/CodeEditor/DEV'),
   Monaco: import('./components/Monaco/DEV'),
 
-  Fileystem: import('./test.dev/DEV.Filesystem/DEV'),
+  Fileystem: import('./test.dev/dev.Filesystem/DEV'),
 };
 
 const ns = new URL(location.href).searchParams.get('ns');
