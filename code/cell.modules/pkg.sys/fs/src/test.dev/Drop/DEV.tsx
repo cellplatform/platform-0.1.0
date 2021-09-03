@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions, Textbox } from 'sys.ui.dev';
 import { Sample, SampleProps } from './DEV.Sample';
-import { css, IpcBus, t, Filesystem } from '../common';
+import { css, IpcBus, t, Filesystem, HttpClient, cuid, time } from '../common';
 
 type UriString = string;
 
@@ -44,9 +44,10 @@ export const actions = DevActions<Ctx>()
       dir,
 
       remote: {
-        host: 'http://localhost:5000',
-        cell: 'cell:ckt2jx8cd00060amkd1nh4lqq:A1',
-        path: '/foo.txt',
+        // host: 'http://localhost:5000',
+        host: 'https://dev.db.team',
+        cell: 'cell:ckt3qkrlv003m4n5xgqa06dwj:A1',
+        path: '',
       },
 
       onDropped(e) {
@@ -67,7 +68,13 @@ export const actions = DevActions<Ctx>()
         const manifest = await fs.manifest();
         console.log('manifest', manifest);
 
+        // await time.wait(100);
+
         e.change.ctx((draft) => (draft.props.manifest = manifest));
+
+        e.redraw();
+
+        console.log('e.current', e.current);
       },
     };
     return ctx;
@@ -75,6 +82,13 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Dev');
+
+    e.button('cuid', (e) => {
+      const ns = cuid();
+
+      console.log('ns', ns);
+      console.log('uri', `cell:${ns}:A1`);
+    });
 
     e.button('loadManifest', async (e) => {
       await e.ctx.loadManifest();
@@ -103,15 +117,18 @@ export const actions = DevActions<Ctx>()
 
       const { host, cell, path } = e.ctx.remote;
 
-      const remote = events.remote.cell(host, cell);
-      // const cell = events.remote.cell('dev.db.team', 'cell:ckt2dyzgq000008jx3664824f:A1');
+      console.log('host', host);
+      console.log('cell', cell);
+      console.log('path', path);
+      console.log('-------------------------------------------');
 
-      const res = await remote.push();
+      const remote = events.remote.cell(host, cell);
+      const res = await remote.push(path);
+      console.log('res', res);
 
       const url = `${host}/${cell}/fs`;
       e.ctx.addLink(url);
 
-      console.log('res', res);
       res.errors.forEach((err) => console.log('ERROR', err));
     });
 
@@ -119,37 +136,42 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const txtHost = (
-      <Textbox
-        placeholder={'remote host'}
-        value={e.ctx.remote.host}
-        spellCheck={false}
-        onChange={({ to }) => {
-          console.log('host:', to);
-          // e.ctx.filename(to);
-        }}
-      />
-    );
+    const { remote, props } = e.ctx;
 
-    const txtCellUri = (
-      <Textbox
-        placeholder={'cell:uri'}
-        value={e.ctx.remote.cell}
-        spellCheck={false}
-        onChange={({ to }) => {
-          console.log('cell:uri:', to);
-          // e.ctx.filename(to);
-        }}
-      />
-    );
+    console.log('props.manifest', props.manifest);
+
+    // const txtHost = (
+    //   <Textbox
+    //     placeholder={'remote host'}
+    //     value={e.ctx.remote.host}
+    //     spellCheck={false}
+    //     onChange={({ to }) => {
+    //       console.log('host:', to);
+    //       // e.ctx.filename(to);
+    //     }}
+    //   />
+    // );
+
+    // const txtCellUri = (
+    //   <Textbox
+    //     placeholder={'cell:uri'}
+    //     value={e.ctx.remote.cell}
+    //     spellCheck={false}
+    //     onChange={({ to }) => {
+    //       console.log('cell:uri:', to);
+    //       // e.ctx.filename(to);
+    //     }}
+    //   />
+    // );
 
     e.settings({
       host: { background: -0.04 },
       layout: {
         label: {
           topLeft: `test.drop`,
-          bottomLeft: txtHost,
-          bottomRight: txtCellUri,
+          topRight: `${remote.host}/${remote.cell}`,
+          // bottomLeft: txtHost,
+          // bottomRight: txtCellUri,
         },
         position: [150, 80],
         border: -0.1,
@@ -157,8 +179,6 @@ export const actions = DevActions<Ctx>()
         background: 1,
       },
     });
-
-    console.log('e.ctx.props', e.ctx.props);
 
     const el = <Sample {...e.ctx.props} onDropped={e.ctx.onDropped} />;
 
