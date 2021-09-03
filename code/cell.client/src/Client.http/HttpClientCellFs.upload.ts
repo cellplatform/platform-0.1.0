@@ -42,7 +42,13 @@ export function uploadFiles(args: {
 
       let error: t.IHttpError | undefined;
       if (errors.length > 0) {
-        error = { type: ERROR.HTTP.FILE, status, message: 'Failed to upload' };
+        const messages = errors
+          .map((error) => error.message || '')
+          .map((message) => message.replace(/\.*$/, ''))
+          .map((message) => `${message}.`)
+          .join(' ');
+        const message = `Failed to upload. ${messages}`;
+        error = { type: ERROR.HTTP.FILE, status, message };
       }
 
       event.dispose();
