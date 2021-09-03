@@ -24,7 +24,7 @@ describe('DEPLOY [INTEGRATION]', function () {
     return client.team(await getTeamId(index));
   };
 
-  it.only('deploy: paul', async () => {
+  it('deploy: paul', async () => {
     //
     const team = await getTeam();
 
