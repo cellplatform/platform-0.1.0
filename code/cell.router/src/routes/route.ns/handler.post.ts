@@ -1,4 +1,4 @@
-import { defaultValue, func, models, Schema, t, Squash } from '../common';
+import { defaultValue, func, models, Schema, t } from '../common';
 import { getNs } from './handler.get';
 import * as util from './util';
 
@@ -15,7 +15,7 @@ export async function postNs(args: {
 
     const onConflict = ['merge', 'overwrite'].includes(query.onConflict ?? '')
       ? query.onConflict
-      : 'merge'; // Simple "merge" (least-destructive) by default.
+      : 'merge'; // Simple "merge" (least destructive) by default.
 
     const uri = Schema.Uri.create.ns(id);
     const ns = await models.Ns.create({ db, uri }).ready;
@@ -74,6 +74,7 @@ export async function postNs(args: {
       ...res.data,
       changes: defaultValue(query.changes, true) ? changes : undefined, // NB: don't send if suppressed in query-string (?changes=false)
     };
+
     return { status: res.status, data };
   } catch (err: any) {
     return util.toErrorPayload(err);
