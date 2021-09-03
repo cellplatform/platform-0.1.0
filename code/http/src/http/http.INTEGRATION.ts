@@ -37,7 +37,7 @@ describe('http (INTEGRATION)', function () {
     expect(res.contentType.is.binary).to.eql(false);
   });
 
-  it('download using http.get (and fs.stream)', async () => {
+  it('GET download using http.get (and fs.stream)', async () => {
     const res = await http.get(URL.ZIP);
     if (res.body) {
       const path = fs.join(TMP, 'images-2.zip');
@@ -50,26 +50,45 @@ describe('http (INTEGRATION)', function () {
     expect(res.contentType.is.binary).to.eql(true);
   });
 
-  it('post file (SHA1 checksum)', async () => {
+  describe('POST file (SHA1 checksum)', () => {
     /**
      * Upload file(s)
      *    https://vercel.com/docs/api#endpoints/deployments/upload-deployment-files
      */
-    const path = fs.resolve('src/test/assets/kitten.jpg');
-    const file = await fs.readFile(path);
-    const hash = shasum(file);
-
     const token = process.env.VERCEL_TEST_TOKEN ?? '';
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      'x-vercel-digest': hash,
-      'Content-Length': file.byteLength.toString(),
-      'Content-Type': 'application/octet-stream',
-    };
-
     const url = 'https://api.vercel.com/v2/now/files';
-    const res = await http.post(url, file, { headers });
-    expect(res.status).to.eql(200);
+
+    it('binary (Buffer)', async () => {
+      const path = fs.resolve('src/test/assets/kitten.jpg');
+      const file = await fs.readFile(path);
+      const hash = shasum(file);
+
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        'x-vercel-digest': hash,
+        'Content-Length': file.byteLength.toString(),
+        'Content-Type': 'application/octet-stream',
+      };
+
+      const res = await http.post(url, file, { headers });
+      expect(res.status).to.eql(200);
+    });
+
+    it('binary (Uint8Array)', async () => {
+      const path = fs.resolve('src/test/assets/kitten.jpg');
+      const file = Uint8Array.from(await fs.readFile(path));
+      const hash = shasum(file);
+
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        'x-vercel-digest': hash,
+        'Content-Length': file.byteLength.toString(),
+        'Content-Type': 'application/octet-stream',
+      };
+
+      const res = await http.post(url, file, { headers });
+      expect(res.status).to.eql(200);
+    });
   });
 });
 
@@ -77,6 +96,6 @@ describe('http (INTEGRATION)', function () {
  * Helpers
  */
 
-function shasum(file: Buffer) {
+function shasum(file: Uint8Array) {
   return crypto.createHash('sha1').update(file).digest('hex');
 }
