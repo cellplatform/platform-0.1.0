@@ -54,9 +54,9 @@ const app = Server.create({
   name: 'cell.node',
   db,
   runtime,
-  // fs: filesystem.spaces(),
+  // fs: filesystem.local(),
+  fs: filesystem.spaces(),
   // fs: filesystem.wasabi(),
-  fs: filesystem.local(),
   authorize,
 });
 

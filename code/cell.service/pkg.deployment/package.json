@@ -26,8 +26,5 @@
   "devDependencies": {
     "@platform/ts": "^4.1.23"
   },
-  "engines": {
-    "node": ">=14.x"
-  },
   "private": true
 }

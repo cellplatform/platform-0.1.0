@@ -93,7 +93,6 @@ export async function start() {
      * Initialize controllers.
      */
     System.Controller({ bus, localhost, paths, config });
-    // Filesystem.Controller({ bus, localhost, httpFactory });
     Bundle.Controller({ bus, localhost, httpFactory });
     Window.Controller({ bus });
     Log.Controller({ bus });
