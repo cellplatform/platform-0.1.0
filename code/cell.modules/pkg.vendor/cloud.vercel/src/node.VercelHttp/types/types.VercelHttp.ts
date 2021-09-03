@@ -6,6 +6,8 @@ type Res = VercelHttpResponse;
 type Sha1 = string;
 type Mime = string;
 type Milliseconds = number;
+type FilePath = string;
+type DirPath = string;
 
 export type VercelMeta = { key: string; value: string };
 
@@ -116,10 +118,10 @@ export type VercelHttpTeamDeployment = {
  * https://vercel.com/docs/api#endpoints/deployments/upload-deployment-files
  */
 export type VercelHttpUploadFiles = {
-  post(input: string | Uint8Array): Promise<VercelHttpUploadPostResponse>;
+  post(path: FilePath, input: Uint8Array): Promise<VercelHttpUploadPostResponse>;
   upload(
-    dir: string,
-    options?: { filter?: (path: string) => boolean; batch?: number },
+    dir: DirPath,
+    options?: { filter?: (path: FilePath) => boolean; batch?: number },
   ): Promise<VercelHttpUploadResponse>;
 };
 
@@ -150,13 +152,13 @@ export type VercelHttpUploadResponseItem = {
  */
 export type VercelHttpDeploymentFiles = {
   list: t.VercelDeploymentFile[];
-  pull(dir: string): Promise<VercelHttpFilesPullResult>;
+  pull(dir: DirPath): Promise<VercelHttpFilesPullResult>;
 };
 
 export type VercelHttpFilesPullResult = { ok: boolean; errors: VercelHttpFilesPullError[] };
 export type VercelHttpFilesPullError = {
   message: string;
-  dir: string;
+  dir: DirPath;
   file: { id: Id; name: string };
   url: string;
 };
@@ -169,7 +171,7 @@ export type VercelHttpFilesPullError = {
  * https://vercel.com/docs/api#endpoints/deployments/create-a-new-deployment
  */
 export type VercelHttpDeployArgs = {
-  dir: string; // Source directory.
+  dir: DirPath; // Source directory.
   name?: string; // A string with the name used in the deployment URL (max 52-chars). Derived from module [namespace@version] if ommited.
   env?: Record<string, string>; // An object containing the deployment's environment variable names and values. Secrets can be referenced by prefixing the value with @.
   buildEnv?: Record<string, string>; // An object containing the deployment's environment variable names and values to be passed to Builds.

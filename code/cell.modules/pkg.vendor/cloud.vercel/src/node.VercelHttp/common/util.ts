@@ -62,6 +62,6 @@ export function toCtx(fs: t.Fs, http: t.Http, token: string, version?: number) {
 /**
  * Generates a SHA1 digest hash.
  */
-export function shasum(data: Uint8Array) {
+export function shasum(data: Uint8Array | string) {
   return createHash('sha1').update(data).digest('hex');
 }
