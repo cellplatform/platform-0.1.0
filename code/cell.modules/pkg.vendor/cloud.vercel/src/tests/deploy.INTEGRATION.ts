@@ -24,13 +24,13 @@ describe('DEPLOY [INTEGRATION]', function () {
     return client.team(await getTeamId(index));
   };
 
-  it('deploy: paul', async () => {
+  it.only('deploy: paul', async () => {
     //
     const team = await getTeam();
 
     const dir = 'paul';
-    const target = 'staging';
-    const project = team.project('tmp');
+    const target = 'production';
+    const project = team.project('family');
     // const project = team.project('tdb-dev');
     const regions = ['sfo1'];
     const alias = 'paul.db.team';
@@ -42,4 +42,10 @@ describe('DEPLOY [INTEGRATION]', function () {
     console.log('-------------------------------------------');
     console.log('source (dir):', dir);
   });
+
+  // it.only('create project', async () => {
+  //   const team = await getTeam();
+  //   const res = await team.project('family').create();
+  //   console.log('res', res);
+  // });
 });
