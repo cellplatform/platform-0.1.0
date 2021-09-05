@@ -1,6 +1,7 @@
 import { t } from './common';
 
 type Id = string;
+type Name = string;
 type Timestamp = number; // An Integer representing a date in milliseconds since the UNIX epoch.
 type Res = VercelHttpResponse;
 type Sha1 = string;
@@ -10,6 +11,7 @@ type FilePath = string;
 type DirPath = string;
 
 export type VercelMeta = { key: string; value: string };
+export type VercelTargetFlag = 'staging' | 'production';
 
 export type VercelHttpResponse = {
   ok: boolean;
@@ -120,7 +122,7 @@ export type VercelHttpTeamDeployment = {
 export type VercelHttpUploadFiles = {
   post(path: FilePath, input: Uint8Array): Promise<VercelHttpUploadPostResponse>;
   upload(
-    dir: DirPath,
+    source: DirPath | VercelSourceBundle,
     options?: { filter?: (path: FilePath) => boolean; batch?: number },
   ): Promise<VercelHttpUploadResponse>;
 };
@@ -166,12 +168,17 @@ export type VercelHttpFilesPullError = {
 /**
  * Deploy
  */
+export type VercelFile = { path: string; data?: Uint8Array };
+export type VercelManifest = t.Manifest | t.DirManifest | t.ModuleManifest;
+export type VercelSourceBundle = { manifest: VercelManifest; files: t.VercelFile[] };
 
 /**
  * https://vercel.com/docs/api#endpoints/deployments/create-a-new-deployment
  */
-export type VercelHttpDeployArgs = {
-  dir: DirPath; // Source directory.
+export type VercelHttpDeployArgs = VercelHttpDeployConfig & {
+  source: DirPath | VercelSourceBundle;
+};
+export type VercelHttpDeployConfig = {
   name?: string; // A string with the name used in the deployment URL (max 52-chars). Derived from module [namespace@version] if ommited.
   env?: Record<string, string>; // An object containing the deployment's environment variable names and values. Secrets can be referenced by prefixing the value with @.
   buildEnv?: Record<string, string>; // An object containing the deployment's environment variable names and values to be passed to Builds.
@@ -179,15 +186,22 @@ export type VercelHttpDeployArgs = {
   routes?: Record<string, string>[]; // A list of routes objects used to rewrite paths to point towards other internal or external paths. For example; [{ "src": "/docs", "dest": "https://docs.example.com" }].
   regions?: string[]; // An array of the regions the deployment's Serverless Functions should be deployed to. For example, ["sfo", "bru"].
   public?: boolean; // A boolean representing if the deployment is public or not. By default this is false.
-  target?: 'staging' | 'production';
+  target?: VercelTargetFlag;
   alias?: string | string[];
 };
 
 export type VercelHttpDeployResponse = VercelHttpResponse & {
-  deployment: { id: Id; team: string; project: string; regions: string[] };
+  deployment: {
+    id: Id;
+    team: { name: Name; id: Id };
+    project: { name: Name; id: Id };
+    regions: string[];
+    target: VercelTargetFlag;
+    alias: string[];
+    meta: VercelHttpDeployMeta;
+    urls: { inspect: string; public: string[] };
+  };
   paths: string[];
-  meta: VercelHttpDeployMeta;
-  urls: { public: string; inspect: string };
 };
 
 export type VercelHttpDeployMeta = VercelHttpDeployMetaModule | VercelHttpDeployMetaPlainFiles;

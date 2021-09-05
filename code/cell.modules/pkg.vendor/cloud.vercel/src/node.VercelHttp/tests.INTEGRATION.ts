@@ -139,7 +139,7 @@ describe('VercelHttp [INTEGRATION]', function () {
       const regions = ['sfo1'];
 
       const res = await project.deploy({
-        dir,
+        source: dir,
         target,
         routes,
         regions,
@@ -188,7 +188,7 @@ describe('VercelHttp [INTEGRATION]', function () {
       const regions = ['sfo1'];
 
       const res = await project.deploy({
-        dir,
+        source: dir,
         target,
         routes,
         regions,
@@ -216,7 +216,7 @@ describe('VercelHttp [INTEGRATION]', function () {
       const regions = ['sfo1'];
 
       const res = await project.deploy({
-        dir,
+        source: dir,
         // target,
         // routes,
         regions,
@@ -299,7 +299,7 @@ describe('VercelHttp [INTEGRATION]', function () {
       const project = team.project('tmp');
       const regions = ['sfo1'];
 
-      const res = await project.deploy({ dir, target, regions });
+      const res = await project.deploy({ source: dir, target, regions });
 
       console.log('-------------------------------------------');
       console.log('res', res);

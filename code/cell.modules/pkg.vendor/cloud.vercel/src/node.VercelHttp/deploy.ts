@@ -12,12 +12,12 @@ export async function deploy(
     project: { id: string; name: string };
   },
 ): Promise<t.VercelHttpDeployResponse> {
-  const { ctx, dir, team, project } = args;
+  const { ctx, source, team, project } = args;
   const { http, fs, headers } = ctx;
   const teamId = team.id;
 
-  if (!(await fs.is.dir(dir))) {
-    throw new Error(`The source is not a directory. ${dir}`);
+  if (typeof source === 'string' && !(await fs.is.dir(source))) {
+    throw new Error(`The source path is not a directory. ${source}`);
   }
 
   /**
@@ -25,7 +25,7 @@ export async function deploy(
    */
   const uploaded = await (async () => {
     const client = VercelUploadFiles({ ctx, teamId });
-    const res = await client.upload(dir);
+    const res = await client.upload(source);
     const { ok, error, total } = res;
     const files = res.files.map((item) => item.file);
     const errors = res.files
@@ -53,38 +53,39 @@ export async function deploy(
    * Append the deployment's {meta} data object with
    * the manifest {module} details.
    */
-  const readManifest = async () => {
+  const readManifest = async (dir: string) => {
     const path = fs.join(dir, 'index.json');
-    const manifest = await fs.json.read<t.ModuleManifest>(path);
-    return typeof manifest === 'object' && manifest.kind === 'module' ? manifest : undefined;
+    const manifest = await fs.json.read<t.Manifest>(path);
+    return manifest;
   };
 
-  const manifest = await readManifest();
+  let name = args.name;
+  const manifest = typeof source === 'string' ? await readManifest(source) : source.manifest;
 
-  const meta: t.VercelHttpDeployMeta = manifest
-    ? {
-        ...manifest.module,
+  let meta: t.VercelHttpDeployMeta = { kind: 'bundle:plain/files' };
+  if (manifest) {
+    const kind = (manifest as any)?.kind;
+    if (kind === 'module') {
+      const m = manifest as t.ModuleManifest;
+      name = name ?? `${m.module.namespace}-v${m.module.version}`;
+      meta = {
+        ...m.module,
         kind: 'bundle:code/module',
-        modulehash: manifest.hash.module,
-        fileshash: manifest.hash.files,
-        bytes: manifest.files.reduce((acc, next) => acc + next.bytes, 0).toString(),
-      }
-    : {
-        kind: 'bundle:plain/files',
+        modulehash: m.hash.module,
+        fileshash: m.hash.files,
+        bytes: m.files.reduce((acc, next) => acc + next.bytes, 0).toString(),
       };
-
-  const deriveName = () => {
-    if (manifest) return `${manifest.module.namespace}-v${manifest.module.version}`;
-    return 'unnamed';
-  };
-
-  const name = args.name ? args.name : deriveName();
+    }
+  }
 
   /**
    * HTTP BODY
    * Request Parameters:
    *    https://vercel.com/docs/api#endpoints/deployments/create-a-new-deployment/request-parameters
    */
+  name = name ?? 'unnamed';
+  const alias = asArray(args.alias).filter(Boolean) as string[];
+  const target = args.target ?? 'staging';
   const body = {
     name,
     project: project.id,
@@ -95,8 +96,8 @@ export async function deploy(
     routes: args.routes,
     regions: args.regions,
     public: args.public,
-    target: args.target,
-    alias: asArray(args.alias).filter(Boolean),
+    target,
+    alias,
     files,
   };
 
@@ -109,15 +110,20 @@ export async function deploy(
    */
   const { ok, status } = res;
   const error = ok ? undefined : (json.error as t.VercelHttpError);
-  const deployment = {
-    id: json.id ?? '',
-    team: team.name,
-    project: project.name,
-    regions: json.regions ?? [],
-  };
+  const aliasUrls = target !== 'production' ? [] : alias.map((url) => `https://${url}`);
   const urls = {
     inspect: util.ensureHttps(json.inspectorUrl),
-    public: util.ensureHttps(json.url),
+    public: [util.ensureHttps(json.url), ...aliasUrls],
+  };
+  const deployment = {
+    id: json.id ?? '',
+    team: { name: team.name, id: team.id },
+    project: { name: project.name, id: project.id },
+    target,
+    regions: json.regions ?? [],
+    alias,
+    meta,
+    urls,
   };
 
   return deleteUndefined({
@@ -125,8 +131,6 @@ export async function deploy(
     status,
     deployment,
     paths,
-    meta,
-    urls,
     error,
   });
 }

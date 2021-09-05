@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.video",
-  "version": "0.0.50",
+  "version": "0.0.53",
   "sideEffects": false,
   "compiler": {
     "port": 3037

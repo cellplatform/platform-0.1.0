@@ -33,7 +33,7 @@ export function BusEvents(args: {
     req$: rx.payload<t.VercelInfoReqEvent>($, 'vendor.vercel/info:req'),
     res$: rx.payload<t.VercelInfoResEvent>($, 'vendor.vercel/info:res'),
     async get(options = {}) {
-      const { timeout: msecs = 3000 } = options;
+      const { timeout: msecs = 90000 } = options;
       const tx = slug();
 
       const first = firstValueFrom(
@@ -54,7 +54,38 @@ export function BusEvents(args: {
     },
   };
 
-  return { $, id, is, dispose, dispose$, info };
+  /**
+   * Deploy
+   */
+  const deploy: t.VercelEvents['deploy'] = {
+    req$: rx.payload<t.VercelDeployReqEvent>($, 'vendor.vercel/deploy:req'),
+    res$: rx.payload<t.VercelDeployResEvent>($, 'vendor.vercel/deploy:res'),
+    async fire(args) {
+      const { source, team, project, timeout: msecs = 10000 } = args;
+      const { name, env, buildEnv, functions, routes, target, alias } = args;
+      const config = { name, env, buildEnv, functions, routes, target, alias, public: args.public };
+
+      const tx = slug();
+
+      const first = firstValueFrom(
+        deploy.res$.pipe(
+          filter((e) => e.tx === tx),
+          timeout(msecs),
+          catchError(() => of(`Deploy request timed out after ${msecs} msecs`)),
+        ),
+      );
+
+      bus.fire({
+        type: 'vendor.vercel/deploy:req',
+        payload: { tx, id, source, team, project, config },
+      });
+
+      const res = await first;
+      return typeof res === 'string' ? { tx, id, paths: [], error: res } : res;
+    },
+  };
+
+  return { $, id, is, dispose, dispose$, info, deploy };
 }
 
 /**
