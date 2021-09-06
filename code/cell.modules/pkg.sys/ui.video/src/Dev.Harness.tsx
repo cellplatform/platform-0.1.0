@@ -6,6 +6,8 @@ const imports = {
   RecordButton: import('./ui/RecordButton/dev/DEV'),
   Vimeo: import('./ui/Vimeo/dev/Vimeo.DEV'),
   VimeoBackground: import('./ui/Vimeo/dev/VimeoBackground.DEV'),
+
+  SlugEditor: import('./ui/SlugEditor/dev/DEV'),
 };
 
 const ns = new URL(location.href).searchParams.get('ns');

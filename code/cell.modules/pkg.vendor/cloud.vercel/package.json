@@ -1,5 +1,5 @@
 {
-  "name": "http.vercel",
+  "name": "vendor.vercel",
   "version": "0.0.15",
   "sideEffects": false,
   "compiler": {

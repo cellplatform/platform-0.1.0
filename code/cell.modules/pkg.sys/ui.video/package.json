@@ -17,7 +17,8 @@
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "deploy": "cell.compiler upload --bump --dir sys.ui.video $@"
+    "deploy": "cell.compiler upload --bump --dir sys.ui.video $@",
+    "tmp": "ts-node -T tmp.projects/esic.w2/deploy"
   },
   "dependencies": {
     "@types/vimeo__player": "^2.10.0",
