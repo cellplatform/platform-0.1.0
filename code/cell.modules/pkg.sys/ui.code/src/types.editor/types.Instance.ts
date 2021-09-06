@@ -10,6 +10,7 @@ export type CodeEditorInstance = {
   readonly events: t.CodeEditorInstanceEvents;
   readonly selection: t.CodeEditorSelection;
   text: string;
+  language: t.CodeEditorLanguage;
   focus(): void;
   dispose(): void;
   select(selection: t.CodeEditorSelection | null): void;

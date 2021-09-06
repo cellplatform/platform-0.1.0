@@ -1,7 +1,8 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
+
 import { Foo, FooProps } from '..';
-import { t, Filesystem, rx, HttpClient, Stream, bundle, WebRuntime, IpcBus } from '../../common';
+import { Filesystem, HttpClient, IpcBus, rx, Stream, t } from '../../common';
 
 type E = t.SysFsEvent;
 type Ctx = {
@@ -38,9 +39,28 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('sys.fs');
 
+    e.hr();
+
+    // e.button('clear (delete)', async (e) => {
+    //   const fs = e.ctx.events.fs();
+    //   const manifest = await fs.manifest();
+    //   const paths = manifest.files.map((file) => file.path);
+    //   await Promise.all(paths.map((path) => fs.delete(path)));
+    // });
+
     e.button('info', async (e) => {
       const res = await e.ctx.events.io.info.get();
       console.log('res', res);
+    });
+
+    e.button('write text file', async (e) => {
+      const fs = e.ctx.events.fs();
+
+      const data = new TextEncoder().encode('Hello!');
+      await fs.write('foo.txt', data);
+
+      const m = await fs.manifest();
+      console.log('m', m);
     });
 
     e.button('fetch', async (e) => {
@@ -69,9 +89,6 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    console.log('bundle', bundle);
-    console.log('WebRuntime', WebRuntime);
-
     e.settings({
       host: { background: -0.04 },
       layout: {

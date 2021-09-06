@@ -11,7 +11,7 @@ export function MonacoListeners(args: {
 }) {
   const { instance, id, bus } = args;
 
-  const selection$ = new Subject<t.ICodeEditorSelectionChangedEvent>();
+  const selection$ = new Subject<t.CodeEditorSelectionChangedEvent>();
   selection$
     .pipe(distinctUntilChanged((prev, next) => R.equals(prev, next)))
     .subscribe((e) => bus.fire(e));
@@ -27,7 +27,7 @@ export function MonacoListeners(args: {
       type: 'CodeEditor/changed:selection',
       payload: {
         instance: id,
-        via: source as t.ICodeEditorSelectionChanged['via'],
+        via: source as t.CodeEditorSelectionChanged['via'],
         selection: Monaco.getSelection(instance),
       },
     });
@@ -36,7 +36,7 @@ export function MonacoListeners(args: {
   const listeners = {
     contentChanged: instance.onDidChangeModelContent((e) => {
       const { isFlush, isRedoing, isUndoing } = e;
-      const changes: t.ICodeEditorTextChange[] = e.changes.map((item) => {
+      const changes: t.CodeEditorTextChange[] = e.changes.map((item) => {
         return {
           text: item.text,
           range: Translate.range.toEditor(item.range),

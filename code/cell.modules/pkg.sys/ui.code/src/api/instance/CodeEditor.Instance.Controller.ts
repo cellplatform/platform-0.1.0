@@ -3,23 +3,15 @@ import { Is, rx, t } from '../../common';
 /**
  * Handles events issued to the editor.
  */
-export function InstanceEventHandlers(bus: t.CodeEditorEventBus, editor: t.CodeEditorInstance) {
+export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEditorInstance) {
   const { events } = editor;
   const instance = editor.id;
   const $ = events.$;
 
-  rx.payload<t.ICodeEditorTmpEvent>($, 'CodeEditor/tmp')
-    .pipe()
-    .subscribe(async (e) => {
-      console.log('tmp');
-
-      editor.singleton.libs.clear();
-    });
-
   /**
    * Run action.
    */
-  rx.payload<t.ICodeEditorRunActionEvent>($, 'CodeEditor/action:run')
+  rx.payload<t.CodeEditorRunActionEvent>($, 'CodeEditor/action:run')
     .pipe()
     .subscribe(async (e) => {
       const tx = e.tx || '';
@@ -40,14 +32,14 @@ export function InstanceEventHandlers(bus: t.CodeEditorEventBus, editor: t.CodeE
   /**
    * Focus
    */
-  rx.payload<t.ICodeEditorChangeFocusEvent>($, 'CodeEditor/change:focus')
+  rx.payload<t.CodeEditorChangeFocusEvent>($, 'CodeEditor/change:focus')
     .pipe()
     .subscribe((e) => editor.focus());
 
   /**
    * Selection
    */
-  rx.payload<t.ICodeEditorChangeSelectionEvent>($, 'CodeEditor/change:selection')
+  rx.payload<t.CodeEditorChangeSelectionEvent>($, 'CodeEditor/change:selection')
     .pipe()
     .subscribe((e) => {
       if (e.selection === null) {
@@ -94,7 +86,49 @@ export function InstanceEventHandlers(bus: t.CodeEditorEventBus, editor: t.CodeE
   /**
    * Text
    */
-  rx.payload<t.ICodeEditorChangeTextEvent>($, 'CodeEditor/change:text')
+  rx.payload<t.CodeEditorChangeTextEvent>($, 'CodeEditor/change:text')
     .pipe()
     .subscribe((e) => (editor.text = e.text || ''));
+
+  rx.payload<t.CodeEditorTextReqEvent>($, 'CodeEditor/text:req')
+    .pipe()
+    .subscribe((e) => {
+      const { tx } = e;
+      const text = editor.text;
+      bus.fire({
+        type: 'CodeEditor/text:res',
+        payload: { tx, instance, text },
+      });
+    });
+
+  /**
+   * Model
+   */
+  rx.payload<t.CodeEditorModelReqEvent>($, 'CodeEditor/model:req')
+    .pipe()
+    .subscribe((e) => {
+      const { tx, change } = e;
+
+      if (change) {
+        if (change.language !== undefined) editor.language = change.language;
+        if (change.text !== undefined) editor.text = change.text;
+        if (change.selection !== undefined) editor.select(change.selection);
+      }
+
+      const model: t.CodeEditorModel = {
+        language: editor.language,
+        text: editor.text,
+        selection: editor.selection,
+      };
+
+      bus.fire({
+        type: 'CodeEditor/model:res',
+        payload: {
+          tx,
+          instance,
+          action: change ? 'update' : 'read',
+          model,
+        },
+      });
+    });
 }

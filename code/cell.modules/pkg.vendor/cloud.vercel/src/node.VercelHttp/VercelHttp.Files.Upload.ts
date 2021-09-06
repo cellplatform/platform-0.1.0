@@ -1,4 +1,4 @@
-import { DEFAULT, Mime, shasum, t, time, Path, deleteUndefined } from './common';
+import { DEFAULT, Mime, shasum, t, time, deleteUndefined } from './common';
 
 type Id = string;
 
@@ -10,15 +10,13 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
     /**
      * Post a single file to the endpoint.
      */
-    async post(input) {
+    async post(path, input) {
       const timer = time.timer();
-      const { file, contentType, contentLength } = await loadFile(fs, input);
-      if (!file) {
-        throw new Error(`File failed to load: ${input}`);
-      }
+      const body = input;
+      const contentLength = body.byteLength;
+      const contentType = Mime.toType(path, 'application/octet-stream');
 
-      const body = Mime.isBinary(contentType) ? file : file?.toString() || '';
-      const digest = shasum(file);
+      const digest = shasum(body);
       const headers = {
         ...ctx.headers,
         'x-vercel-digest': digest,
@@ -39,33 +37,47 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
     /**
      * Upload a directory of file.
      */
-    async upload(dir, options = {}) {
+    async upload(source, options = {}) {
       const timer = time.timer();
 
-      if (!(await fs.is.dir(dir))) {
-        throw new Error(`The given path is not a directory. ${dir}`);
+      if (typeof source === 'string' && !(await fs.is.dir(source))) {
+        throw new Error(`The source is not a directory. ${source}`);
       }
 
-      const paths = await toPaths(fs, dir);
-      const batched = toBatched(paths, options.batch ?? DEFAULT.batch);
+      const loadFiles = async (dir: string): Promise<t.VercelFile[]> => {
+        const paths = await toPaths(fs, dir);
+        return await Promise.all(
+          paths.map(async (path) => {
+            const data = await fs.read(path);
+            if (!data) throw new Error(`Failed to read file: ${path}`);
+            return { path, data };
+          }),
+        );
+      };
+
+      const files = typeof source === 'string' ? await loadFiles(source) : source.files;
+      const batched = toBatched(files, options.batch ?? DEFAULT.batch);
 
       const res: t.VercelHttpUploadResponse = {
         ok: true,
         status: 200,
-        total: { files: paths.length, failed: 0 },
+        total: { files: files.length, failed: 0 },
         files: [],
         elapsed: 0,
       };
 
-      const uploadBatch = async (paths: string[]) => {
+      const uploadBatch = async (files: t.VercelFile[]) => {
         await Promise.all(
-          paths.map(async (path) => {
-            const posted = await api.post(path);
-            const { ok, status, contentType, contentLength, digest, error, elapsed } = posted;
-            const filepath = path.substring(dir.length + 1);
-            const file: t.VercelFileUpload = { file: filepath, sha: digest, size: contentLength };
-            res.files.push({ ok, status, contentType, file, error, elapsed });
-          }),
+          files
+            .filter(({ data }) => Boolean(data))
+            .map(async ({ path, data }) => {
+              const posted = await api.post(path, data as Uint8Array);
+              const { ok, status, contentType, contentLength, digest, error, elapsed } = posted;
+              const filepath =
+                typeof source === 'string' ? path.substring(source.length + 1) : path;
+              const file: t.VercelFileUpload = { file: filepath, sha: digest, size: contentLength };
+              res.files.push({ ok, status, contentType, file, error, elapsed });
+            }),
         );
       };
 
@@ -87,14 +99,6 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
 /**
  * [Helpers]
  */
-
-async function loadFile(fs: t.Fs, input: Uint8Array | string) {
-  const octet = 'application/octet-stream';
-  const contentType = typeof input === 'string' ? Mime.toType(input, octet) : octet;
-  const file = typeof input === 'string' ? await fs.read(input) : input;
-  const contentLength = file?.byteLength ?? -1;
-  return { file, contentType, contentLength };
-}
 
 async function toPaths(fs: t.Fs, dir: string, filter?: (path: string) => boolean) {
   const include = (path: string) => !path.endsWith('.DS_Store');

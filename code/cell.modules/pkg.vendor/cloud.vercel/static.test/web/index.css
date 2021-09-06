@@ -1,0 +1,21 @@
+body {
+  background-color: #f3f3f5;
+  font-family: sans-serif;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  bottom: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main {
+  margin-bottom: 8%;
+}
+
+.kitty {
+  width: 180px;
+  border-radius: 8px;
+}

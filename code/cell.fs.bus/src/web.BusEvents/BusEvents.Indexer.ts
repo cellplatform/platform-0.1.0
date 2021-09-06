@@ -40,7 +40,9 @@ export function BusEventsIndexer(args: {
       });
 
       const res = await first;
-      if (typeof res !== 'string') return res;
+      if (typeof res !== 'string') {
+        return res;
+      }
 
       const error: t.SysFsError = { code: 'client/timeout', message: res };
       const fail: t.SysFsManifestRes = { tx, id, dirs: [], error };

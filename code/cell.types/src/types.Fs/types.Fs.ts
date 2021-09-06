@@ -15,14 +15,15 @@ export type FsFileInfo = {
 };
 
 /**
- * High-level [FS] client API making programming
- * lean/simple/powerful/elegant against a
- * standardised lower-level platform [FsDriver].
+ * High-level [FS] client API for programming
+ * in a lean/simple/powerful/elegant way against
+ * the lower-level "platform" specific [FsDriver].
  */
 export type Fs = {
   is: FsIs;
-  info: FsInfoMethod;
+  json: FsJson;
   manifest: FsGetManifest;
+  info: FsInfoMethod;
   exists: FsExistsMethod;
   read: FsReadMethod;
   write: FsWriteMethod;
@@ -31,7 +32,6 @@ export type Fs = {
   delete: FsDeleteMethod;
   join: FsJoin;
   dir(path: DirPath): Fs;
-  json: FsJson;
 };
 
 type FsGetManifest = (options?: t.FsIndexerGetManifestOptions) => Promise<t.DirManifest>;

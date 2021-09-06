@@ -10,7 +10,7 @@ type S = t.ActionHandlerSettings<P>;
 type A = t.ActionHandlerSettingsButtonArgs;
 type E = t.IActionButtonEvent;
 
-export const ButtonDef: t.ActionDef<T, E> = {
+export const ButtonDef: t.ActionDef<T> = {
   kind: 'dev/button',
   Component,
 
@@ -24,9 +24,10 @@ export const ButtonDef: t.ActionDef<T, E> = {
 
   listen(args) {
     const { actions } = args;
+    const bus = rx.busAsType<E>(args.bus);
 
     // Listen for events.
-    rx.payload<E>(args.event$, 'sys.ui.dev/action/Button')
+    rx.payload<E>(bus.$, 'sys.ui.dev/action/Button')
       .pipe(
         filter((e) => e.item.id === args.id),
         filter((e) => e.item.handlers.length > 0),

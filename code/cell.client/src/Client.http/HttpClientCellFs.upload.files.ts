@@ -15,7 +15,7 @@ export function uploadToTarget(args: {
   return urls
     .map((upload) => {
       const file = files.find((item) => item.filename === upload.filename);
-      const data = file ? file.data : undefined;
+      const data = file?.data;
       return { data, upload };
     })
 
@@ -34,7 +34,22 @@ export function uploadToTarget(args: {
         Object.keys(props)
           .map((key) => ({ key, value: props[key] }))
           .forEach(({ key, value }) => form.append(key, value));
-        form.append('file', data, { contentType }); // NB: file-data must be added last for S3.
+
+        const isNode = typeof Buffer !== 'undefined';
+        if (!isNode) {
+          /**
+           * NOTE: Theoretically there should be no problem uploading from the browser
+           *       with the following caveats:
+           *
+           *       1. CORS is configured on the S3 end-point to allow posts from the browser domain,
+           *       2. The "getHeaders()" method is accounted for below, which works on node, but is
+           *          not present on the browser version of [FormData].
+           */
+          throw new Error(`Upload from browser not (yet) supported.`);
+        }
+
+        const payload = isNode ? Buffer.from(data as any) : data;
+        form.append('file', payload, { contentType }); // NB: file-data must be added last for S3.
 
         // Send form to S3.
         const headers = form.getHeaders();

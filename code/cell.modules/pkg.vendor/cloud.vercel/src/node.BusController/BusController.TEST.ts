@@ -2,16 +2,17 @@ import { nodefs, t, expect, rx } from '../test';
 import { VercelBus } from '.';
 import { DEFAULT, Filesystem } from './common';
 
-describe.only('BusController', () => {
+describe.only('BusController', function () {
+  this.timeout(5000);
+
+  const token = process.env.VERCEL_TEST_TOKEN ?? '';
   const bus = rx.bus<t.VercelEvent>();
-  const store = Filesystem.Controller({ bus, fs: nodefs.resolve('dist') });
+  const store = Filesystem.Controller({ bus, fs: nodefs.resolve('static.test') });
   const fs = store.fs();
 
-  describe('Info', function () {
-    this.timeout(5000);
-
+  describe('Info', () => {
     it('defaults', async () => {
-      const controller = VercelBus.Controller({ fs, bus });
+      const controller = VercelBus.Controller({ token, fs, bus });
       const events = VercelBus.Events({ bus });
 
       const res = await events.info.get();
@@ -25,7 +26,7 @@ describe.only('BusController', () => {
 
     it('explicit id', async () => {
       const id = 'my-instance';
-      const controller = VercelBus.Controller({ id, fs, bus });
+      const controller = VercelBus.Controller({ token, id, fs, bus });
 
       expect(controller.id).to.eql(id);
       expect(controller.events.id).to.eql(id);
@@ -33,7 +34,7 @@ describe.only('BusController', () => {
 
     it('filter', async () => {
       let allow = true;
-      const controller = VercelBus.Controller({ fs, bus, filter: (e) => allow });
+      const controller = VercelBus.Controller({ token, fs, bus, filter: (e) => allow });
       const events = VercelBus.Events({ bus });
 
       const res1 = await events.info.get();

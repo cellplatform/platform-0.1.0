@@ -1,8 +1,8 @@
 import React from 'react';
 import { DevActions, lorem } from 'sys.ui.dev';
 
-import { Card, CardProps } from '.';
-import { css } from '../../common';
+import { Card, CardProps } from '..';
+import { css } from '../../../common';
 
 type Ctx = { props: CardProps };
 
@@ -13,13 +13,14 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.Card')
   .context((e) => {
     if (e.prev) return e.prev;
-    return {
+    const ctx: Ctx = {
       props: {
         padding: [25, 30],
         userSelect: true,
         shadow: true,
       },
     };
+    return ctx;
   })
 
   .items((e) => {

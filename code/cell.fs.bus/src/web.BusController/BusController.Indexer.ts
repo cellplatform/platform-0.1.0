@@ -22,8 +22,10 @@ export function BusControllerIndexer(args: {
     const { tx } = e;
     const cachefile = Path.trim(e.cachefile ?? DEFAULT.CACHE_FILENAME);
 
-    const filterCachefile: t.FsPathFilter = (e) => {
-      return !e.path.endsWith(DEFAULT.CACHE_FILENAME) || !e.path.endsWith(cachefile);
+    const filterPaths: t.FsPathFilter = (e) => {
+      if (e.path.endsWith(DEFAULT.CACHE_FILENAME) || e.path.endsWith(cachefile)) return false;
+      if (e.path.endsWith('.DS_Store')) return false;
+      return true;
     };
 
     const shouldCache = () => {
@@ -51,7 +53,7 @@ export function BusControllerIndexer(args: {
           if (manifest) return { dir, manifest };
         }
 
-        const manifest = await index.manifest({ dir: path, filter: filterCachefile });
+        const manifest = await index.manifest({ dir: path, filter: filterPaths });
 
         if (shouldCache() && (await cache.dirExists())) {
           await cache.write(manifest);

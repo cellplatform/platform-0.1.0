@@ -1,5 +1,6 @@
 import { t } from './common';
 
+type InstanceId = string;
 export type CodeEditorEventBus = t.EventBus<t.CodeEditorEvent>;
 export type CodeEditorEvent = CodeEditorInstanceEvent | CodeEditorSingletonEvent;
 
@@ -8,70 +9,58 @@ export type CodeEditorEvent = CodeEditorInstanceEvent | CodeEditorSingletonEvent
  */
 
 export type CodeEditorInstanceEvent =
-  | ICodeEditorTmpEvent // TEMP 🐷
-  | CodeEditorChangeEvent
-  | CodeEditorChangedEvent
-  | CodeEditorActionEvent;
-
-export type CodeEditorChangeEvent =
-  | ICodeEditorChangeFocusEvent
-  | ICodeEditorChangeSelectionEvent
-  | ICodeEditorChangeTextEvent;
-
-export type CodeEditorChangedEvent =
-  | ICodeEditorSelectionChangedEvent
-  | ICodeEditorFocusChangedEvent
-  | ICodeEditorTextChangedEvent;
-
-export type CodeEditorActionEvent = ICodeEditorRunActionEvent | ICodeEditorActionCompleteEvent;
+  | CodeEditorChangeFocusEvent
+  | CodeEditorChangeSelectionEvent
+  | CodeEditorChangeTextEvent
+  | CodeEditorTextReqEvent
+  | CodeEditorTextResEvent
+  | CodeEditorSelectionChangedEvent
+  | CodeEditorFocusChangedEvent
+  | CodeEditorTextChangedEvent
+  | CodeEditorRunActionEvent
+  | CodeEditorActionCompleteEvent
+  | CodeEditorModelReqEvent
+  | CodeEditorModelResEvent;
 
 /**
  * Global (Singleton) Events.
  */
 export type CodeEditorSingletonEvent = CodeEditorLibsEvent;
 export type CodeEditorLibsEvent =
-  | ICodeEditorLibsClearEvent
-  | ICodeEditorLibsLoadEvent
-  | ICodeEditorLibsLoadedEvent;
-
-/**
- * TODO 🐷 Temp
- */
-export type ICodeEditorTmpEvent = {
-  type: 'CodeEditor/tmp';
-  payload: { instance: string };
-};
+  | CodeEditorLibsClearEvent
+  | CodeEditorLibsLoadEvent
+  | CodeEditorLibsLoadedEvent;
 
 /**
  * Fired to assign focus to an editor.
  */
-export type ICodeEditorChangeFocusEvent = {
+export type CodeEditorChangeFocusEvent = {
   type: 'CodeEditor/change:focus';
-  payload: ICodeEditorChangeFocus;
+  payload: CodeEditorChangeFocus;
 };
-export type ICodeEditorChangeFocus = { instance: string };
+export type CodeEditorChangeFocus = { instance: InstanceId };
 
 /**
  * Fired when editor recieves or loses focus.
  */
-export type ICodeEditorFocusChangedEvent = {
+export type CodeEditorFocusChangedEvent = {
   type: 'CodeEditor/changed:focus';
-  payload: ICodeEditorFocusChanged;
+  payload: CodeEditorFocusChanged;
 };
-export type ICodeEditorFocusChanged = {
-  instance: string;
+export type CodeEditorFocusChanged = {
+  instance: InstanceId;
   isFocused: boolean;
 };
 
 /**
  * Fired to cause a change to the editor selection.
  */
-export type ICodeEditorChangeSelectionEvent = {
+export type CodeEditorChangeSelectionEvent = {
   type: 'CodeEditor/change:selection';
-  payload: ICodeEditorChangeSelection;
+  payload: CodeEditorChangeSelection;
 };
-export type ICodeEditorChangeSelection = {
-  instance: string;
+export type CodeEditorChangeSelection = {
+  instance: InstanceId;
   selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[] | null;
   focus?: boolean;
 };
@@ -79,12 +68,12 @@ export type ICodeEditorChangeSelection = {
 /**
  * Fired when editor cursor/selection changes.
  */
-export type ICodeEditorSelectionChangedEvent = {
+export type CodeEditorSelectionChangedEvent = {
   type: 'CodeEditor/changed:selection';
-  payload: ICodeEditorSelectionChanged;
+  payload: CodeEditorSelectionChanged;
 };
-export type ICodeEditorSelectionChanged = {
-  instance: string;
+export type CodeEditorSelectionChanged = {
+  instance: InstanceId;
   selection: t.CodeEditorSelection;
   via: 'keyboard' | 'mouse';
 };
@@ -92,30 +81,45 @@ export type ICodeEditorSelectionChanged = {
 /**
  * Fired to change the text within an editor.
  */
-export type ICodeEditorChangeTextEvent = {
+export type CodeEditorChangeTextEvent = {
   type: 'CodeEditor/change:text';
-  payload: ICodeEditorChangeText;
+  payload: CodeEditorChangeText;
 };
-export type ICodeEditorChangeText = {
-  instance: string;
+export type CodeEditorChangeText = {
+  instance: InstanceId;
   text: string | null;
 };
 
 /**
+ * Retrieve current editor text.
+ */
+export type CodeEditorTextReqEvent = {
+  type: 'CodeEditor/text:req';
+  payload: CodeEditorTextReq;
+};
+export type CodeEditorTextReq = { tx: string; instance: InstanceId };
+
+export type CodeEditorTextResEvent = {
+  type: 'CodeEditor/text:res';
+  payload: CodeEditorTextRes;
+};
+export type CodeEditorTextRes = { tx: string; instance: InstanceId; text: string };
+
+/**
  * Fires when the editor text changes.
  */
-export type ICodeEditorTextChangedEvent = {
+export type CodeEditorTextChangedEvent = {
   type: 'CodeEditor/changed:text';
-  payload: ICodeEditorTextChanged;
+  payload: CodeEditorTextChanged;
 };
-export type ICodeEditorTextChanged = {
-  instance: string;
-  changes: ICodeEditorTextChange[];
+export type CodeEditorTextChanged = {
+  instance: InstanceId;
+  changes: CodeEditorTextChange[];
   isFlush: boolean;
   isRedoing: boolean;
   isUndoing: boolean;
 };
-export type ICodeEditorTextChange = {
+export type CodeEditorTextChange = {
   range: t.CodeEditorRange;
   text: string;
 };
@@ -123,23 +127,23 @@ export type ICodeEditorTextChange = {
 /**
  * Fires to invoke the given action upon the editor.
  */
-export type ICodeEditorRunActionEvent = {
+export type CodeEditorRunActionEvent = {
   type: 'CodeEditor/action:run';
-  payload: ICodeEditorRunAction;
+  payload: CodeEditorRunAction;
 };
-export type ICodeEditorRunAction = {
-  instance: string;
+export type CodeEditorRunAction = {
+  instance: InstanceId;
   action: t.MonacoAction;
-  tx?: string; // Execution id.
+  tx?: string;
 };
 
-export type ICodeEditorActionCompleteEvent = {
+export type CodeEditorActionCompleteEvent = {
   type: 'CodeEditor/action:complete';
-  payload: ICodeEditorActionComplete;
+  payload: CodeEditorActionComplete;
 };
-export type ICodeEditorActionComplete = {
-  tx: string; // Execution id.
-  instance: string;
+export type CodeEditorActionComplete = {
+  tx: string;
+  instance: InstanceId;
   action: t.MonacoAction;
   error?: string;
 };
@@ -147,29 +151,46 @@ export type ICodeEditorActionComplete = {
 /**
  * Type Definition Libraries
  */
-export type ICodeEditorLibsClearEvent = {
+export type CodeEditorLibsClearEvent = {
   type: 'CodeEditor/libs:clear';
-  payload: ICodeEditorLibsClear;
+  payload: CodeEditorLibsClear;
 };
-export type ICodeEditorLibsClear = {
+export type CodeEditorLibsClear = {
   // todo: exclude pattern (minimatch)
 };
 
-export type ICodeEditorLibsLoadEvent = {
+export type CodeEditorLibsLoadEvent = {
   type: 'CodeEditor/libs:load';
-  payload: ICodeEditorLibsLoad;
+  payload: CodeEditorLibsLoad;
 };
-export type ICodeEditorLibsLoad = {
-  tx: string; // Execution id.
-  url: string;
+export type CodeEditorLibsLoad = { tx: string; url: string };
+
+export type CodeEditorLibsLoadedEvent = {
+  type: 'CodeEditor/libs:loaded';
+  payload: CodeEditorLibsLoaded;
+};
+export type CodeEditorLibsLoaded = { tx: string; url: string; files: string[] };
+
+/**
+ * Code Editor Model
+ */
+export type CodeEditorModelReqEvent = {
+  type: 'CodeEditor/model:req';
+  payload: CodeEditorModelReq;
+};
+export type CodeEditorModelReq = {
+  tx: string;
+  instance: InstanceId;
+  change?: Partial<t.CodeEditorModel>;
 };
 
-export type ICodeEditorLibsLoadedEvent = {
-  type: 'CodeEditor/libs:loaded';
-  payload: ICodeEditorLibsLoaded;
+export type CodeEditorModelResEvent = {
+  type: 'CodeEditor/model:res';
+  payload: CodeEditorModelRes;
 };
-export type ICodeEditorLibsLoaded = {
-  tx: string; // Execution id.
-  url: string;
-  files: string[];
+export type CodeEditorModelRes = {
+  tx: string;
+  instance: InstanceId;
+  action: 'read' | 'update';
+  model: t.CodeEditorModel;
 };

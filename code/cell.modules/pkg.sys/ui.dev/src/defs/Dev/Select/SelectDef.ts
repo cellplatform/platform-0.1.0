@@ -10,7 +10,7 @@ type S = t.ActionHandlerSettings<P>;
 type A = t.ActionHandlerSettingsSelectArgs;
 type E = t.IActionSelectEvent;
 
-export const SelectDef: t.ActionDef<T, E> = {
+export const SelectDef: t.ActionDef<T> = {
   kind: 'dev/select',
   Component,
 
@@ -26,9 +26,10 @@ export const SelectDef: t.ActionDef<T, E> = {
     const { actions } = args;
     const { item } = Model.item<T>(actions, args.id);
     const namespace = actions.state.namespace;
+    const bus = rx.busAsType<E>(args.bus);
 
     // Listen for events.
-    rx.payload<E>(args.event$, 'sys.ui.dev/action/Select')
+    rx.payload<E>(bus.$, 'sys.ui.dev/action/Select')
       .pipe(
         filter((e) => e.item.id === args.id),
         filter((e) => e.item.handlers.length > 0),
@@ -75,7 +76,7 @@ export const SelectDef: t.ActionDef<T, E> = {
 
     // Initial state.
     if (item.handlers.length > 0) {
-      args.fire({
+      bus.fire({
         type: 'sys.ui.dev/action/Select',
         payload: { namespace, item },
       });

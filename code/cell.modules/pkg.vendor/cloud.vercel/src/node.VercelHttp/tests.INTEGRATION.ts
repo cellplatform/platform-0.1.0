@@ -8,7 +8,7 @@ import { VercelUploadFiles } from './VercelHttp.Files.Upload';
  *    https://vercel.com/docs/api#endpoints
  *
  */
-describe.only('VercelHttp [INTEGRATION]', function () {
+describe('VercelHttp [INTEGRATION]', function () {
   this.timeout(30000);
 
   const bus = rx.bus();
@@ -139,7 +139,7 @@ describe.only('VercelHttp [INTEGRATION]', function () {
       const regions = ['sfo1'];
 
       const res = await project.deploy({
-        dir,
+        source: dir,
         target,
         routes,
         regions,
@@ -188,7 +188,7 @@ describe.only('VercelHttp [INTEGRATION]', function () {
       const regions = ['sfo1'];
 
       const res = await project.deploy({
-        dir,
+        source: dir,
         target,
         routes,
         regions,
@@ -216,7 +216,7 @@ describe.only('VercelHttp [INTEGRATION]', function () {
       const regions = ['sfo1'];
 
       const res = await project.deploy({
-        dir,
+        source: dir,
         // target,
         // routes,
         regions,
@@ -269,7 +269,10 @@ describe.only('VercelHttp [INTEGRATION]', function () {
 
     it('post', async () => {
       const path = nodefs.resolve('static.test/child/foo.d.txt');
-      const res = await client.post(path);
+      const buffer = await nodefs.readFile(path);
+      const data = Uint8Array.from(buffer);
+
+      const res = await client.post(path, data);
 
       console.log('-------------------------------------------');
       console.log('res', res);
@@ -288,7 +291,7 @@ describe.only('VercelHttp [INTEGRATION]', function () {
   });
 
   describe('deployment: upload then deploy', () => {
-    it.only('deploy', async () => {
+    it('deploy', async () => {
       const dir = 'web';
       const team = await getTeam();
 
@@ -296,7 +299,7 @@ describe.only('VercelHttp [INTEGRATION]', function () {
       const project = team.project('tmp');
       const regions = ['sfo1'];
 
-      const res = await project.deploy({ dir, target, regions });
+      const res = await project.deploy({ source: dir, target, regions });
 
       console.log('-------------------------------------------');
       console.log('res', res);

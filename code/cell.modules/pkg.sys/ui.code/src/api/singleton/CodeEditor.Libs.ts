@@ -41,8 +41,6 @@ export function CodeEditorLibs(monaco: t.IMonaco): t.ICodeEditorLibs {
    * Loads type-definitions from an HTTP source.
    */
   const fromNetwork: M['fromNetwork'] = async (url) => {
-    console.log('url', url);
-
     const fromManifest = async (url: string) => {
       const manifest = await loadManifest(url);
       return Promise.all(

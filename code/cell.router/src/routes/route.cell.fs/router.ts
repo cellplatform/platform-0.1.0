@@ -8,7 +8,7 @@ import { uploadCellFilesStart } from './handler.upload.start';
 import { copyCellFiles } from './handler.copy';
 import { getParams } from './params';
 
-const { FILES, FILE } = routes.CELL.FS;
+const { FILES } = routes.CELL.FS;
 
 /**
  * Routes for operating on a set of cell files.

@@ -1,11 +1,11 @@
 export const PKG = {
   name: '@platform/cell.service',
-  version: '0.8.84',
+  version: '0.8.85',
   dependencies: {
-    '@platform/cell.router': '0.9.46',
-    '@platform/cell.schema': '0.5.102',
-    '@platform/cell.types': '0.5.99',
-    '@platform/cell.typesystem': '0.0.221',
+    '@platform/cell.router': '0.9.47',
+    '@platform/cell.schema': '0.5.103',
+    '@platform/cell.types': '0.5.100',
+    '@platform/cell.typesystem': '0.0.222',
     '@platform/cli': '0.5.84',
     '@platform/exec': '0.3.12',
     '@platform/fs': '0.7.5',

@@ -12,6 +12,7 @@ export type ActionHandlerContext<C> = (e: ActionHandlerContextArgs<C>) => C;
 export type ActionHandlerContextArgs<C> = {
   readonly namespace: string;
   readonly prev: C | undefined;
+  readonly current: C | undefined;
   readonly change: ActionHandlerContextChange<C>;
   redraw(): void;
 };

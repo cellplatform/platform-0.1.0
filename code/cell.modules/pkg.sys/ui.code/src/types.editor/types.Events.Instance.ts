@@ -1,37 +1,63 @@
 import { t } from './common';
 
-type O<T> = t.Observable<T>;
+type Milliseconds = number;
+type InstanceId = string;
+type Observable<T> = t.Observable<T>;
+type Options = { timeout?: Milliseconds };
 
-export type CodeEditorInstanceEventsFactory = (
-  bus: t.EventBus<any>,
-  instance: string, // ID.
-) => t.CodeEditorInstanceEvents;
+export type CodeEditorInstanceEventsFactory = (args: {
+  bus: t.EventBus<any>;
+  id: InstanceId;
+}) => t.CodeEditorInstanceEvents;
 
 /**
  * API wrapper for event observables.
  */
 export type CodeEditorInstanceEvents = {
-  readonly id: string;
-  readonly dispose$: O<void>;
-  readonly $: O<t.CodeEditorInstanceEvent>;
-  readonly focus$: O<t.ICodeEditorFocusChanged>;
-  readonly blur$: O<t.ICodeEditorFocusChanged>;
-  readonly selection$: O<t.ICodeEditorSelectionChanged>;
-  readonly text$: O<t.ICodeEditorTextChanged>;
-  readonly fire: t.CodeEditorInstanceEventsFire;
+  readonly id: InstanceId;
+  readonly $: Observable<t.CodeEditorInstanceEvent>;
+  readonly dispose$: Observable<void>;
   dispose(): void;
-};
 
-/**
- * API for firing events that change the editor state.
- */
-export type CodeEditorInstanceEventsFire = {
-  readonly instance: string;
-  focus(): void;
-  text(text: string | null): void;
-  action(action: t.MonacoAction): Promise<t.ICodeEditorActionComplete>;
-  select(
-    selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[] | null,
-    options?: { focus?: boolean },
-  ): void;
+  readonly focus: {
+    changed$: Observable<t.CodeEditorFocusChanged>;
+    fire(): void;
+  };
+
+  readonly blur: {
+    changed$: Observable<t.CodeEditorFocusChanged>;
+  };
+
+  readonly selection: {
+    changed$: Observable<t.CodeEditorSelectionChanged>;
+    select(
+      selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[] | null,
+      options?: { focus?: boolean },
+    ): void;
+  };
+
+  readonly text: {
+    changed$: Observable<t.CodeEditorTextChanged>;
+    set(text: string | null): void;
+    get: {
+      req$: Observable<t.CodeEditorTextReq>;
+      res$: Observable<t.CodeEditorTextRes>;
+      fire(options?: { timeout?: Milliseconds }): Promise<string>;
+    };
+  };
+
+  readonly model: {
+    req$: Observable<t.CodeEditorModelReq>;
+    res$: Observable<t.CodeEditorModelRes>;
+    get(options?: Options): Promise<t.CodeEditorModel>;
+    set: {
+      language(value: t.CodeEditorLanguage, options?: Options): Promise<t.CodeEditorModel>;
+      fire(change?: Partial<t.CodeEditorModel>, options?: Options): Promise<t.CodeEditorModel>;
+    };
+  };
+
+  readonly action: {
+    run$: Observable<t.CodeEditorRunAction>;
+    fire(action: t.MonacoAction): Promise<t.CodeEditorActionComplete>;
+  };
 };

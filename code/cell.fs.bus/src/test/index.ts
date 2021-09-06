@@ -1,4 +1,5 @@
 export { expect, expectError } from '@platform/test';
+export { log } from '@platform/log/lib/server';
 import { Schema } from '../web/common';
 
 export { Filesystem } from '../web';

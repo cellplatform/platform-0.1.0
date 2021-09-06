@@ -1,17 +1,17 @@
-import { color, css, CssValue } from '@platform/css';
 import { containsFocus, events } from '@platform/react';
-import {
-  IStackPanel,
-  StackPanel,
-  StackPanelSlideEvent,
-} from '@platform/ui.panel/lib/components/StackPanel';
+
+import { StackPanel } from '../../../StackPanel';
+
 import { defaultValue, rx, time } from '@platform/util.value';
-import { equals } from 'ramda';
 import * as React from 'react';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, delay, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 
-import { constants, t } from '../../common';
+import { css, CssValue } from '@platform/css';
+
+import { equals } from 'ramda';
+
+import { constants, t, color } from '../../common';
 import * as themes from '../../themes';
 import { TreeEvents } from '../../TreeviewEvents';
 import { TreeUtil } from '../../TreeUtil';
@@ -20,7 +20,6 @@ import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
 import { renderer } from './renderer';
 
-const R = { equals };
 type N = t.ITreeviewNode;
 type E = t.TreeviewEvent;
 
@@ -51,6 +50,8 @@ export type ITreeviewState = {
   isSliding?: boolean;
   isFocused?: boolean;
 };
+
+const R = { equals };
 
 const DEFAULT = {
   HEADER_HEIGHT: 36,
@@ -195,13 +196,13 @@ export class Treeview extends React.PureComponent<ITreeviewProps, ITreeviewState
     return themes.themeOrDefault(this.props);
   }
 
-  private get panels(): IStackPanel[] {
+  private get panels(): t.StackPanel[] {
     const { renderedPath = [] } = this.state;
     const panels = renderedPath.map((node, i) => {
       let el: React.ReactNode | null | undefined;
       el = this.renderCustomPanel(node, i);
       el = el === undefined ? this.renderNodeList(node, i) : el;
-      const panel: IStackPanel = { el };
+      const panel: t.StackPanel = { el };
       return panel;
     });
     return panels;
@@ -462,8 +463,8 @@ export class Treeview extends React.PureComponent<ITreeviewProps, ITreeviewState
     });
   }
 
-  private handleSlide = (e: StackPanelSlideEvent) => {
-    const isSliding = e.stage === 'START';
+  private handleSlide = (e: t.StackPanelSlideEvent) => {
+    const isSliding = e.stage === 'start';
     this.state$.next({ isSliding });
   };
 

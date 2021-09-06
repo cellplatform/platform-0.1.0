@@ -1,8 +1,8 @@
 import { Monaco } from '../../api';
-import { slug, t } from '../../common';
+import { slug, t, DEFAULT } from '../../common';
 import { CodeEditorAction } from './CodeEditor.Action';
 import { InstanceEvents } from '../event';
-import { InstanceEventHandlers } from './CodeEditor.Instance.rx.handlers';
+import { InstanceController } from './CodeEditor.Instance.Controller';
 import { MonacoListeners } from './CodeEditor.Instance.monacoListeners';
 import { select } from './CodeEditor.Instance.select';
 
@@ -27,21 +27,13 @@ export const CodeEditorInstance = {
     const { instance, singleton, bus } = args;
     const id = args.id || `editor-${slug()}`;
     const listeners = MonacoListeners({ bus, instance, id });
-    const events = InstanceEvents.create(bus, id);
+    const events = InstanceEvents({ bus, id });
 
     // TEMP 🐷
 
     const filename = args.filename ? args.filename?.replace(/^\/*/, '') : 'default.ts';
     const uri = singleton.monaco.Uri.parse(`file:///${args.filename?.replace(/^\/*/, '')}`);
     // console.log('uri.toString()', uri.toString());
-
-    const code = `
-// ${args.filename}
-const a:number[] = [1,2,3]
-import {add} from 'math'
-const x = add(3, 5)
-const total = a.reduce((acc, next) =>acc + next, 0)
-          `;
 
     // TEMP 🐷
     if (filename === 'one.ts') {
@@ -53,7 +45,8 @@ const total = a.reduce((acc, next) =>acc + next, 0)
       // console.groupEnd();
     }
 
-    const model = singleton.monaco.editor.createModel(code, 'typescript', uri);
+    let language: t.CodeEditorLanguage = DEFAULT.MODEL.language;
+    const model = singleton.monaco.editor.createModel(DEFAULT.MODEL.text, language, uri);
     instance.setModel(model);
 
     const editor: t.CodeEditorInstance = {
@@ -70,7 +63,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
       },
 
       /**
-       * Get/set the value of the code editor.
+       * The value of the code editor.
        */
       get text() {
         return instance.getValue();
@@ -89,14 +82,28 @@ const total = a.reduce((acc, next) =>acc + next, 0)
       },
 
       /**
-       * Get the current selection state.
+       * Editor language.
+       */
+      get language() {
+        return language;
+      },
+      set language(value: t.CodeEditorLanguage) {
+        if (value !== language) {
+          const editor = singleton.monaco.editor;
+          editor.setModelLanguage(instance.getModel(), value);
+          language = value;
+        }
+      },
+
+      /**
+       * The current selection state.
        */
       get selection() {
         return Monaco.getSelection(instance);
       },
 
       /**
-       * Chance selection.
+       * Change selection.
        */
       select(input: t.CodeEditorSelection | null) {
         select({ instance, input });
@@ -118,7 +125,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
       },
     };
 
-    InstanceEventHandlers(bus, editor);
+    InstanceController(bus, editor);
     return editor;
   },
 };

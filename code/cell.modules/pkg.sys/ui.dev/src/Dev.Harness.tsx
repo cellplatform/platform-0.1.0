@@ -10,6 +10,8 @@ const imports = {
   Harness: import('./ui/Harness/DEV'),
   Textbox: import('./ui/Textbox/DEV'),
   OptionButtons: import('./ui/OptionButtons/DEV'),
+
+  TestSuite: import('./ui/TestSuite/dev/DEV'),
 };
 
 const ns = new URL(location.href).searchParams.get('ns');

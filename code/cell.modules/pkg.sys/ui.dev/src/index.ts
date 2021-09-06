@@ -1,4 +1,5 @@
 export { ActionsFactory } from './api/Actions';
+export { Test } from './api/TestSuite';
 export { DevActions } from './factory';
 
 export { Harness } from './ui/Harness';
