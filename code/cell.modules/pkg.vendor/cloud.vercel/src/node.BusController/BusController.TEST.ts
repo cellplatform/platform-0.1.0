@@ -1,5 +1,5 @@
 import { nodefs, t, expect, rx } from '../test';
-import { VercelBus } from '.';
+import { BusController, BusEvents } from '.';
 import { DEFAULT, Filesystem } from './common';
 
 describe.only('BusController', function () {
@@ -12,8 +12,8 @@ describe.only('BusController', function () {
 
   describe('Info', () => {
     it('defaults', async () => {
-      const controller = VercelBus.Controller({ token, fs, bus });
-      const events = VercelBus.Events({ bus });
+      const controller = BusController({ token, fs, bus });
+      const events = BusEvents({ bus });
 
       const res = await events.info.get();
       controller.dispose();
@@ -26,7 +26,7 @@ describe.only('BusController', function () {
 
     it('explicit id', async () => {
       const id = 'my-instance';
-      const controller = VercelBus.Controller({ token, id, fs, bus });
+      const controller = BusController({ token, id, fs, bus });
 
       expect(controller.id).to.eql(id);
       expect(controller.events.id).to.eql(id);
@@ -34,8 +34,8 @@ describe.only('BusController', function () {
 
     it('filter', async () => {
       let allow = true;
-      const controller = VercelBus.Controller({ token, fs, bus, filter: (e) => allow });
-      const events = VercelBus.Events({ bus });
+      const controller = BusController({ token, fs, bus, filter: (e) => allow });
+      const events = BusEvents({ bus });
 
       const res1 = await events.info.get();
       allow = false;

@@ -1,7 +1,2 @@
-import { BusController as Controller } from './BusController';
-import { BusEvents as Events } from '../web.BusEvents';
-
-export const VercelBus = {
-  Controller,
-  Events,
-};
+export { BusController } from './BusController';
+export { BusEvents } from '../web.BusEvents';
