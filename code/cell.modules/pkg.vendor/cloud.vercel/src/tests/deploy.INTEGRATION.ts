@@ -1,7 +1,5 @@
-import { VercelHttp } from '../node.VercelHttp';
 import { t, nodefs, Http, rx, Filesystem } from '../test';
-import { DEFAULT } from './common';
-// import { VercelUploadFiles } from './VercelHttp.Files.Upload';
+import { Vercel } from '../node.Vercel';
 
 describe('DEPLOY [INTEGRATION]', function () {
   this.timeout(999999);
@@ -11,9 +9,7 @@ describe('DEPLOY [INTEGRATION]', function () {
   const fs = store.fs();
 
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
-  const client = VercelHttp({ fs, token });
-  // const http = Http.create();
-  // const ctx = util.toCtx(fs, http, token);
+  const client = Vercel.Http({ fs, token });
 
   const getTeamId = async (index?: number) => {
     const teams = (await client.teams.list()).teams;
@@ -26,12 +22,7 @@ describe('DEPLOY [INTEGRATION]', function () {
 
   it.only('deploy: paul.goodbye (binary)', async () => {
     const team = await getTeam();
-    const dir = fs.dir('paul');
-
-    const manifest = await dir.manifest();
-    const wait = manifest.files.map(async ({ path }) => ({ path, data: await dir.read(path) }));
-    const files: t.VercelFile[] = await Promise.all(wait); //.filter((file) => Boolean(file.data));
-    const source: t.VercelSourceBundle = { files, manifest };
+    const source = await Vercel.Fs.readdir(fs, 'paul');
 
     const target = 'production';
     const project = team.project('family');
@@ -50,23 +41,11 @@ describe('DEPLOY [INTEGRATION]', function () {
   });
 
   it('deploy: sys.<module> (binary)', async () => {
-    const root = nodefs.resolve('../../pkg.sys/ui.code');
-
-    console.log('root', root);
-
-    const store = Filesystem.Controller({ bus, fs: root });
+    const store = Filesystem.Controller({ bus, fs: nodefs.resolve('../../pkg.sys/ui.code') });
     const fs = store.fs();
 
     const team = await getTeam();
-    const dir = fs.dir('dist/web');
-
-    const manifest = await dir.manifest();
-    const wait = manifest.files.map(async ({ path }) => ({ path, data: await dir.read(path) }));
-    const files: t.VercelFile[] = await Promise.all(wait); //.filter((file) => Boolean(file.data));
-    const source: t.VercelSourceBundle = { files, manifest };
-
-    // console.log('manifest', manifest);
-    // return;
+    const source = await Vercel.Fs.readdir(fs, 'dist/web');
 
     const target = 'production';
     const project = team.project('tdb-dev');
@@ -84,5 +63,3 @@ describe('DEPLOY [INTEGRATION]', function () {
     console.log('res', res);
   });
 });
-
-// import * from '../../../../pkg.sys/ui.code/dist/web'
