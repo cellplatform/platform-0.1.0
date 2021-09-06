@@ -43,8 +43,6 @@ export const actions = DevActions<Ctx>()
       base: css({ padding: 30 }),
     };
 
-    const data = {};
-
     const el = (
       <div {...styles.base}>
         <ObjectView name={'unit-tests'} data={e.ctx.data} />
