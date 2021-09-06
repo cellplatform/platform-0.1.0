@@ -18,8 +18,9 @@ export const TestModel = (args: {
       const response: R = {
         ok: true,
         description,
-        timeout: Math.max(0, options.timeout ?? DEFAULT.TIMEOUT),
         elapsed: -1,
+        timeout: Math.max(0, options.timeout ?? DEFAULT.TIMEOUT),
+        skipped: Boolean(modifier === 'skip' || options.skip) ? true : undefined,
       };
 
       const done = (options: { error?: Error } = {}) => {
@@ -29,7 +30,7 @@ export const TestModel = (args: {
         response.ok = !Boolean(response.error);
         resolve(deleteUndefined(response));
       };
-      if (!handler) return done();
+      if (!handler || response.skipped) return done();
 
       let stopTimeout: undefined | (() => void);
       const startTimeout = (msecs: number) => {

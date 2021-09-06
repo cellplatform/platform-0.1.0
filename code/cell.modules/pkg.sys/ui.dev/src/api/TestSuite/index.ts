@@ -1,1 +1,1 @@
-export { TestSuite } from './TestSuite';
+export { Test } from './TestSuite';

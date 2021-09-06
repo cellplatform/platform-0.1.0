@@ -4,7 +4,7 @@ import { TestModel } from './Test';
 /**
  * Suite of tests.
  */
-export const TestSuite: t.Test = {
+export const Test: t.Test = {
   describe: (description, handler) => TestSuiteModel({ description, handler }),
 };
 
@@ -18,12 +18,12 @@ export const TestSuiteModel = (args: {
 }): t.TestSuiteModel => {
   const { description } = args;
 
-  const init = (suite: t.TestSuiteModel) => {
+  const init = async (suite: t.TestSuiteModel) => {
     const state = suite.state;
     if (!state.ready) {
       state.ready = true;
-      state.handler?.(suite);
-      state.children.forEach((child) => init(child)); // <== RECURSION 🌳
+      await state.handler?.(suite);
+      await Promise.all(state.children.map((child) => init(child))); // <== RECURSION 🌳
     }
     return suite;
   };
@@ -34,7 +34,7 @@ export const TestSuiteModel = (args: {
     type R = t.TestSuiteRunResponse;
     return new Promise<R>(async (resolve) => {
       init(model);
-      const res: R = { ok: true, elapsed: -1, tests: [], children: [] };
+      const res: R = { ok: true, description, elapsed: -1, tests: [], children: [] };
 
       const getTimeout = () => args.timeout ?? state.timeout ?? DEFAULT.TIMEOUT;
       const timer = time.timer();

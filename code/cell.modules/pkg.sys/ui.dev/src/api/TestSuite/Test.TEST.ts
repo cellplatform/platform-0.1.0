@@ -2,7 +2,7 @@ import { t, time, expect } from '../../test';
 import { TestModel } from './Test';
 import { DEFAULT } from './common';
 
-describe.only('TestModel', () => {
+describe('TestModel', () => {
   const description = 'foo';
 
   it('model', () => {
@@ -41,6 +41,7 @@ describe.only('TestModel', () => {
       expect(res.elapsed).to.greaterThan(0);
       expect(res.error).to.eql(undefined);
       expect(res.description).to.eql(description);
+      expect(res.skipped).to.eql(undefined);
     });
 
     it('async', async () => {
@@ -68,6 +69,28 @@ describe.only('TestModel', () => {
       const res = await test.run();
       expect(res.elapsed).to.eql(0);
       expect(res.error).to.eql(undefined);
+    });
+
+    it('skipped', async () => {
+      let count = 0;
+      const handler: t.TestHandler = () => count++;
+
+      const test = TestModel({ description, handler, modifier: 'skip' });
+      const res = await test.run();
+
+      expect(res.skipped).to.eql(true);
+      expect(count).to.eql(0); // NB: test handler not invoked.
+    });
+
+    it('skipped (via {skip} param)', async () => {
+      let count = 0;
+      const handler: t.TestHandler = () => count++;
+
+      const test = TestModel({ description, handler });
+      const res = await test.run({ skip: true });
+
+      expect(res.skipped).to.eql(true);
+      expect(count).to.eql(0); // NB: test handler not invoked.
     });
 
     it('timeout', async () => {

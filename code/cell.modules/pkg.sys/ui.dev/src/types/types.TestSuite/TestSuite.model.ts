@@ -46,12 +46,13 @@ export type TestModel = {
 };
 
 export type TestRun = (options?: TestRunOptions) => Promise<TestRunResponse>;
-export type TestRunOptions = { timeout?: Milliseconds };
+export type TestRunOptions = { timeout?: Milliseconds; skip?: boolean };
 export type TestRunResponse = {
   ok: boolean;
   description: Description;
-  timeout: Milliseconds;
   elapsed: Milliseconds;
+  timeout: Milliseconds;
+  skipped?: true;
   error?: Error;
 };
 
@@ -65,7 +66,7 @@ export type TestSuiteModel = TestSuite & {
 };
 
 export type TestSuiteModelState = {
-  init(): TestSuiteModel;
+  init(): Promise<TestSuiteModel>;
   ready: boolean; // true after [init] has been run.
   description: Description;
   handler?: TestSuiteHandler;
@@ -82,6 +83,7 @@ export type TestSuiteRunOptions = {
 };
 export type TestSuiteRunResponse = {
   ok: boolean;
+  description: Description;
   elapsed: Milliseconds;
   tests: TestRunResponse[];
   children: TestSuiteRunResponse[];
