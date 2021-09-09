@@ -5,3 +5,4 @@ export { t, constants };
 export * from '../../../common';
 
 export const COLORS = constants.COLORS;
+export { color, css, CssValue, style } from '@platform/css';

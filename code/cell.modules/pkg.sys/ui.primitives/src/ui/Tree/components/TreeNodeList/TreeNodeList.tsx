@@ -6,7 +6,7 @@ import { t } from '../../common';
 import * as themes from '../../themes';
 import { Icons } from '../Icons';
 import { Spinner } from '@platform/ui.spinner';
-import { ITreeNodeProps, TreeNode, TreeNodeTwisty } from '../TreeNode';
+import { ITreeNodeProps, TreeNode, TreeNodeTwistyFlag } from '../TreeNode';
 
 export type ITreeNodeListProps = {
   node: t.ITreeviewNode<any>;
@@ -29,7 +29,7 @@ export type ITreeNodeListProps = {
 type IRenderNodeProps = {
   index: number;
   node: t.ITreeviewNode;
-  twisty?: TreeNodeTwisty;
+  twisty?: TreeNodeTwistyFlag;
   iconRight?: ITreeNodeProps['iconRight'];
   isVisible: boolean;
   isFirst: boolean;
@@ -173,7 +173,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
 
     // Determine the icons to show.
     const iconRight = this.toRightIcon(treeview, node.children);
-    let twisty: TreeNodeTwisty | undefined;
+    let twisty: TreeNodeTwistyFlag | undefined;
     if (
       treeview.inline &&
       (hasChildren || treeview.inline.isVisible) &&
