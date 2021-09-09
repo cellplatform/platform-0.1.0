@@ -20,7 +20,7 @@ describe('DEPLOY [INTEGRATION]', function () {
     return client.team(await getTeamId(index));
   };
 
-  it.only('deploy: paul.goodbye (binary)', async () => {
+  it('deploy: paul.goodbye (binary)', async () => {
     const team = await getTeam();
     const source = await Vercel.Fs.readdir(fs, 'paul');
 
@@ -34,6 +34,29 @@ describe('DEPLOY [INTEGRATION]', function () {
       regions,
       alias,
       name: 'paul.goodbye-v1.0.0',
+    });
+
+    console.log('-------------------------------------------');
+    console.log('res', res);
+  });
+
+  it.only('deploy: rnz (binary)', async () => {
+    const team = await getTeam();
+    const source = await Vercel.Fs.readdir(fs, 'rnz');
+
+    // const p = await team.project('education').create();
+    // return;
+
+    const target = 'production';
+    const project = team.project('education');
+    const regions = ['sfo1'];
+    const alias = 'radio.nz.education';
+    const res = await project.deploy({
+      source,
+      target,
+      regions,
+      alias,
+      name: 'rnz-v1.0.0',
     });
 
     console.log('-------------------------------------------');

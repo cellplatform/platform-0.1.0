@@ -1,6 +1,8 @@
 {
   "name": "vendor.vercel",
   "version": "0.0.15",
+  "main": "lib/node/index",
+  "types": "lib/node/index.d.ts",
   "sideEffects": false,
   "compiler": {
     "port": 3038
