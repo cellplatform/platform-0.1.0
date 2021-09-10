@@ -1,11 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { readDropEvent } from './util';
 import { t } from '../../common';
+
+type Args<T extends HTMLElement> = {
+  ref: React.RefObject<T>;
+  onDrop?: OnDrop;
+};
+type OnDrop = (e: t.Dropped) => void;
 
 /**
  * Provides hooks for treating a DIV element as a "drag-n-drop" target.
  */
-export function useDragTarget(ref: React.RefObject<HTMLElement>, onDrop?: (e: t.Dropped) => void) {
+export function useDragTarget<T extends HTMLElement>(input?: Args<T> | OnDrop) {
+  const innerRef = useRef<T>(null);
+
+  const args: Args<T> =
+    typeof input === 'function' ? { ref: innerRef, onDrop: input } : input ?? { ref: innerRef };
+
+  const ref = args.ref ?? innerRef;
+  const { onDrop } = args;
+
   const [isDragOver, setDragOver] = useState<boolean>(false);
   const [dropped, setDropped] = useState<t.Dropped | undefined>();
 
@@ -57,6 +71,7 @@ export function useDragTarget(ref: React.RefObject<HTMLElement>, onDrop?: (e: t.
   }, [ref]); // eslint-disable-line
 
   return {
+    ref,
     isDragOver,
     isDropped: Boolean(dropped),
     dropped,
