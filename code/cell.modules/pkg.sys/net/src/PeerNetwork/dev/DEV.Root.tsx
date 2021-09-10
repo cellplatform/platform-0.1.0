@@ -17,7 +17,6 @@ export type RootLayoutProps = {
 export const RootLayout: React.FC<RootLayoutProps> = (props) => {
   const { netbus, bus } = props;
 
-  const baseRef = useRef<HTMLDivElement>(null);
   const peer = useLocalPeer({ self: netbus.self, bus });
 
   /**
@@ -27,7 +26,7 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
    *       This same hook can then be used within sub-components to actually
    *       capture and work with OS level file drops as per each component's context.
    */
-  useDragTarget(baseRef);
+  const drag = useDragTarget<HTMLDivElement>();
 
   const styles = {
     base: css({
@@ -78,7 +77,7 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
   );
 
   return (
-    <div ref={baseRef} {...css(styles.base, props.style)}>
+    <div ref={drag.ref} {...css(styles.base, props.style)}>
       {elLeft}
       {elRight}
     </div>

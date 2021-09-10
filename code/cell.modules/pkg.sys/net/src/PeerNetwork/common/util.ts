@@ -116,12 +116,12 @@ export const FileUtil = {
    */
   toFiles(
     dir: string,
-    files: { filename: string; data: ArrayBuffer; mimetype: string }[],
+    files: { path: string; data: ArrayBuffer; mimetype: string }[],
   ): t.PeerFile[] {
-    return files.map(({ data, filename, mimetype }) => {
+    return files.map(({ data, path, mimetype }) => {
       const hash = Hash.sha256(data);
       const blob = new Blob([data], { type: mimetype });
-      return { dir, blob, filename, hash };
+      return { dir, blob, filename: path, hash };
     });
   },
 

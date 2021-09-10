@@ -16,11 +16,7 @@ export type SampleProps = {
 
 export const Sample: React.FC<SampleProps> = (props) => {
   const { manifest, links = [] } = props;
-  const rootRef = React.useRef<HTMLDivElement>(null);
-
-  const drag = useDragTarget(rootRef, (e) => {
-    props.onDropped?.(e);
-  });
+  const drag = useDragTarget<HTMLDivElement>((e) => props.onDropped?.(e));
 
   /**
    * [Render]
@@ -32,14 +28,8 @@ export const Sample: React.FC<SampleProps> = (props) => {
       Flex: 'horizontal-stretch-stretch',
       fontSize: 14,
     }),
-    message: css({
-      flex: 1,
-      Flex: 'center-center',
-    }),
-    left: css({
-      flex: 1,
-      display: 'flex',
-    }),
+    message: css({ flex: 1, Flex: 'center-center' }),
+    left: css({ flex: 1, display: 'flex' }),
     right: css({
       borderLeft: `solid 1px ${color.format(-0.1)}`,
       width: 400,
@@ -53,7 +43,7 @@ export const Sample: React.FC<SampleProps> = (props) => {
   const elDefault = !drag.isDragOver && <div {...styles.message}>Save File (Drag & Drop)</div>;
 
   return (
-    <div {...css(styles.base, props.style)} ref={rootRef}>
+    <div {...css(styles.base, props.style)} ref={drag.ref}>
       <div {...styles.left}>
         {elDrop}
         {elDefault}
