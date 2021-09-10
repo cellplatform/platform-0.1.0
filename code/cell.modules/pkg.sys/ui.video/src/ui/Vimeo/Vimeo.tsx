@@ -55,8 +55,8 @@ const Component: React.FC<VimeoProps> = (props) => {
   useEffect(() => {
     const events = VimeoEvents({ id, bus });
 
-    if (player) {
-      if (typeof video === 'number') events.load.fire(video, { muted });
+    if (player && typeof video === 'number') {
+      events.load.fire(video, { muted });
     }
 
     return () => events.dispose();
