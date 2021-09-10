@@ -7,8 +7,5 @@ export { http } from '@platform/http';
 export { StateObject } from '@platform/state';
 export { QueryString } from '@platform/util.string/lib/QueryString';
 
-import PeerJS from 'peerjs';
-export { PeerJS };
-
 import { equals, mergeDeepRight, uniq, clamp } from 'ramda';
 export const R = { equals, mergeDeepRight, uniq, clamp };
