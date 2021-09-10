@@ -1,5 +1,5 @@
 // import { Test } from 'sys.ui.dev';
-import { Vercel, Filesystem, rx, nodefs } from '../common';
+import { Vercel, Filesystem, rx, nodefs } from './common';
 // import { part } from './common';
 
 const bus = rx.bus();
@@ -43,6 +43,7 @@ const Project = {
     console.log('res', res.deployment);
     console.log('-------------------------------------------');
     // console.log('res.urls', res.urls);
+    console.log(`https://${alias}`);
   },
 };
 
@@ -51,4 +52,5 @@ const Project = {
  */
 (async () => {
   await Project.deploy();
+  // console.log('deploy tmp');
 })();
