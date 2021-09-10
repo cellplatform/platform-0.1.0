@@ -1,6 +1,4 @@
-// import { Test } from 'sys.ui.dev';
 import { Vercel, Filesystem, rx, nodefs } from './common';
-// import { part } from './common';
 
 const bus = rx.bus();
 const store = Filesystem.Controller({ bus, fs: nodefs.resolve('dist') });
@@ -41,16 +39,11 @@ const Project = {
 
     console.log('-------------------------------------------');
     console.log('res', res.deployment);
-    console.log('-------------------------------------------');
-    // console.log('res.urls', res.urls);
-    console.log(`https://${alias}`);
+    console.log();
   },
 };
 
 /**
  * Run
  */
-(async () => {
-  await Project.deploy();
-  // console.log('deploy tmp');
-})();
+Project.deploy();
