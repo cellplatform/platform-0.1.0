@@ -1,8 +1,20 @@
+import { t } from './common';
+
 export type IpcEvent = IpcMessageEvent | IpcSystemReqEvent | IpcSystemResEvent;
 
 type O = Record<string, unknown>;
 type Event = { type: string; payload: O };
 type Uri = string;
+
+/**
+ * Dsitributed EventBus implementation for Electron
+ * using the elctron IPC ("Inter Process Commmunication")
+ */
+export type IpcNetworkBus<E extends t.Event> = t.NetworkBus<E>;
+export type IpcBusFactory = <E extends t.Event>() => IpcNetworkBus<E>;
+export type IpcBus = IpcBusFactory & {
+  is: { available: boolean };
+};
 
 /**
  * Fired to send data over the IPC channel.
