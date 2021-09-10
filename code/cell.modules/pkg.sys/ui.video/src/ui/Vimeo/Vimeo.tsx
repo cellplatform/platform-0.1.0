@@ -13,6 +13,7 @@ export type VimeoProps = {
   width?: number;
   height?: number;
   borderRadius?: number;
+  scale?: number;
   style?: CssValue;
 };
 
@@ -75,6 +76,9 @@ const Component: React.FC<VimeoProps> = (props) => {
       height,
       opacity: controller.opacity,
       transition: `opacity 200ms`,
+      ':first-child': {
+        transform: `scale(${props.scale ?? 1})`,
+      },
     }),
   };
 
