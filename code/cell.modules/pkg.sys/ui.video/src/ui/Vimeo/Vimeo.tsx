@@ -76,9 +76,7 @@ const Component: React.FC<VimeoProps> = (props) => {
       height,
       opacity: controller.opacity,
       transition: `opacity 200ms`,
-      ':first-child': {
-        transform: `scale(${props.scale ?? 1})`,
-      },
+      ':first-child': { transform: `scale(${props.scale ?? 1})` },
     }),
   };
 
