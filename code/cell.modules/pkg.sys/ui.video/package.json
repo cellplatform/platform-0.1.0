@@ -7,18 +7,17 @@
   },
   "scripts": {
     "start": "cell.compiler dev $@",
-    "dev": "cell.compiler dev esic --no-exports $@",
+    "dev": "cell.compiler dev --no-exports $@",
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
-    "bundle": "cell.compiler bundle esic $@",
+    "bundle": "cell.compiler bundle $@",
     "watch": "cell.compiler watch $@",
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve esic $@",
-    "deploy": "cell.compiler upload --bump --dir sys.ui.video $@",
-    "tmp": "ts-node -T tmp.projects/esic.w2/deploy"
+    "serve": "cell.compiler serve $@",
+    "deploy": "cell.compiler upload --bump --dir sys.ui.video $@"
   },
   "dependencies": {
     "@types/vimeo__player": "^2.10.0",
