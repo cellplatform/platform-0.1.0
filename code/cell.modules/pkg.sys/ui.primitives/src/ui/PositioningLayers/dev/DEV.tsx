@@ -12,7 +12,6 @@ type Ctx = {
   props: PositioningLayersProps;
   onSize: PositioningLayersSizeHandler;
 };
-type A = ActionButtonHandlerArgs<Ctx>;
 
 const insert = (ctx: Ctx, position: t.BoxPosition) => {
   const layers = ctx.props.layers ?? (ctx.props.layers = []);

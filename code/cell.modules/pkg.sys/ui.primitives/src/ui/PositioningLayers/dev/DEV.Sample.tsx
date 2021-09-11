@@ -17,7 +17,6 @@ export const Sample: React.FC<SampleProps> = (props) => {
   /**
    * Render
    */
-
   const styles = {
     base: css({
       flex: 1,
