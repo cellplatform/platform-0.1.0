@@ -44,11 +44,10 @@ export const DevImageDraggable: React.FC<DevImageDraggableProps> = (props) => {
   const resize = useResizeObserver(drag.ref);
 
   useEffect(() => {
+    const namespace = 'image/draggable';
     const dragbus = rx.bus<MotionDraggableEvent>();
     const dragEvents = MotionDraggable.Events(dragbus);
     setDragbus(dragbus);
-
-    const namespace = 'image/draggable';
 
     /**
      * Load image data from network.
