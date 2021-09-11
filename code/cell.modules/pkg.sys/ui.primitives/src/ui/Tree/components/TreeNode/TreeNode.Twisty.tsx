@@ -31,7 +31,7 @@ export const TreeNodeTwisty: React.FC<TreeNodeTwistyProps> = (props) => {
 
   const color = colors.twisty || colors.chevron || theme.chevronColor;
   const elIcon = twisty !== null && <Icons.PlayArrow size={SIZE.TWISTY_ICON} color={color} />;
-  const handlers = mouseHandlers('NODE', () => props.node, props.onMouse);
+  const handlers = mouseHandlers('TWISTY', () => props.node, props.onMouse);
 
   return (
     <div {...styles.base} {...handlers}>
