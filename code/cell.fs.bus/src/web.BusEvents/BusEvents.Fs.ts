@@ -63,12 +63,14 @@ export function BusEventsFs(args: {
    */
   const read: t.Fs['read'] = async (path) => {
     path = formatPath(path);
+
     const uri = PathUri.ensurePrefix(path);
     const res = await io.read.get(uri);
-    const first = res.files[0];
+    const files = res.files ?? [];
+    const first = files[0];
 
-    if (first.error?.code === 'read/404') return undefined;
-    if (first.error) throw new Error(first.error.message);
+    if (first?.error?.code === 'read/404') return undefined;
+    if (first?.error) throw new Error(first.error.message);
     if (res.error) throw new Error(res.error.message);
 
     return first.file?.data ?? undefined;

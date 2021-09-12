@@ -72,6 +72,8 @@ describe('BusController.IO', function () {
 
     it('multiple paths', async () => {
       const mock = await TestPrep();
+      await mock.reset();
+
       const file = await TestFs.readFile('static.test/child/kitten.jpg');
 
       const path1 = '/foo/bar/kitty.jpg';

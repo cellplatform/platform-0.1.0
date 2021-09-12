@@ -171,6 +171,8 @@ describe('BusController.Cell (Remote)', function () {
 
     it('push: sub-directory', async () => {
       const mock = await TestPrep();
+      await mock.reset();
+
       const server = await mock.server();
       const file1 = await mock.copy('static.test/data.json', 'root.json');
       const file2 = await mock.copy('static.test/child/tree.png', 'images/tree.png');
