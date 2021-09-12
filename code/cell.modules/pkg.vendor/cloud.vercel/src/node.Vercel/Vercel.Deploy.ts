@@ -24,7 +24,7 @@ export const VercelDeploy = (args: Args) => {
   const dir = nodefs.resolve(args.dir ?? '');
   const bus = rx.bus();
   const store = Filesystem.Controller({ bus, fs: dir });
-  const fs = store.fs();
+  const fs = store.fs({ timeout: 9999 });
   const client = VercelHttp({ fs, token });
 
   const getTeam = async (name: string) => {
