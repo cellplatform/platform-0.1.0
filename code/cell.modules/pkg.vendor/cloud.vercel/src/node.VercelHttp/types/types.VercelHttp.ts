@@ -166,6 +166,19 @@ export type VercelHttpFilesPullError = {
 };
 
 /**
+ * Route
+ *    A list of routes objects used to rewrite paths to point towards other
+ *    internal or external paths.
+ *
+ *    For example:
+ *          [{ "src": "/docs", "dest": "https://docs.example.com" }]
+ *
+ * Ref:
+ *    https://vercel.com/docs/rest-api#endpoints/deployments/create-a-new-deployment/request-parameters
+ */
+export type VercelRoute = { src: string; dest: string };
+
+/**
  * Deploy
  */
 export type VercelFile = { path: string; data?: Uint8Array };
@@ -183,7 +196,7 @@ export type VercelHttpDeployConfig = {
   env?: Record<string, string>; // An object containing the deployment's environment variable names and values. Secrets can be referenced by prefixing the value with @.
   buildEnv?: Record<string, string>; // An object containing the deployment's environment variable names and values to be passed to Builds.
   functions?: Record<string, t.VercelFunctionConfig>; // A list of objects used to configure your Serverless Functions.
-  routes?: Record<string, string>[]; // A list of routes objects used to rewrite paths to point towards other internal or external paths. For example; [{ "src": "/docs", "dest": "https://docs.example.com" }].
+  routes?: VercelRoute[]; // A list of routes objects used to rewrite paths to point towards other internal or external paths. For example; [{ "src": "/docs", "dest": "https://docs.example.com" }].
   regions?: string[]; // An array of the regions the deployment's Serverless Functions should be deployed to. For example, ["sfo", "bru"].
   public?: boolean; // A boolean representing if the deployment is public or not. By default this is false.
   target?: VercelTargetFlag;
