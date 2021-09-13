@@ -36,6 +36,7 @@ export const VercelDeploy = (args: Args) => {
 
   return {
     dir,
+    client,
     team: args.team,
     project: args.project,
 
