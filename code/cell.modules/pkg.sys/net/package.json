@@ -17,7 +17,8 @@
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "deploy": "cell.compiler upload --bump --dir sys.net $@"
+    "deploy____": "cell.compiler upload --bump --dir sys.net $@",
+    "deploy": "ts-node -T script.deploy/vercel"
   },
   "dependencies": {
     "automerge": "^0.14.2",
