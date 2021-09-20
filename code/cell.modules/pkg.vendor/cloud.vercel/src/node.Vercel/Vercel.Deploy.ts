@@ -41,6 +41,15 @@ export const VercelDeploy = (args: Args) => {
     project: args.project,
 
     /**
+     * Read in the bundle manifest
+     */
+    async manifest<T extends t.Manifest>(): Promise<T | undefined> {
+      const path = nodefs.join(dir, 'index.json');
+      const exists = await nodefs.pathExists(path);
+      return !exists ? undefined : ((await nodefs.readJson(path)) as T);
+    },
+
+    /**
      * Run the deployment.
      */
     async push(config: t.VercelHttpDeployConfig = {}) {
