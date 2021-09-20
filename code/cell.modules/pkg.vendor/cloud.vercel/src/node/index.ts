@@ -1,2 +1,2 @@
 export { Vercel } from '../node.Vercel';
-export { Filesystem } from './common';
+export { Filesystem, t } from './common';
