@@ -53,14 +53,8 @@ export async function deploy(
    * Append the deployment's {meta} data object with
    * the manifest {module} details.
    */
-  const readManifest = async (dir: string) => {
-    const path = fs.join(dir, 'index.json');
-    const manifest = await fs.json.read<t.Manifest>(path);
-    return manifest;
-  };
-
+  const manifest = await wrangleManifest({ source, fs });
   let name = args.name;
-  const manifest = typeof source === 'string' ? await readManifest(source) : source.manifest;
 
   let meta: t.VercelHttpDeployMeta = { kind: 'bundle:plain/files' };
   if (manifest) {
@@ -115,8 +109,9 @@ export async function deploy(
     inspect: util.ensureHttps(json.inspectorUrl),
     public: [util.ensureHttps(json.url), ...aliasUrls],
   };
-  const deployment = {
+  const deployment: t.VercelHttpDeployResponse['deployment'] = {
     id: json.id ?? '',
+    name,
     team: { name: team.name, id: team.id },
     project: { name: project.name, id: project.id },
     target,
@@ -126,11 +121,25 @@ export async function deploy(
     urls,
   };
 
-  return deleteUndefined({
-    ok,
-    status,
-    deployment,
-    paths,
-    error,
-  });
+  return deleteUndefined({ ok, status, deployment, paths, error });
+}
+
+/**
+ * [Helpers]
+ */
+
+async function wrangleManifest(args: { fs: t.Fs; source: string | t.VercelSourceBundle }) {
+  const { fs, source } = args;
+
+  if (typeof source === 'string') {
+    return fs.json.read<t.Manifest>(fs.join(source, 'index.json'));
+  }
+
+  const file = source.files.find((file) => file.path === 'index.json');
+  if (file?.data) {
+    const text = new TextDecoder().decode(file.data);
+    return JSON.parse(text) as t.Manifest;
+  }
+
+  return undefined;
 }

@@ -22,7 +22,8 @@
     "upload.web": "cell.compiler upload web   --no-bundle --dir web.HEAD  $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "clean": "cell.compiler clean $@"
+    "clean": "cell.compiler clean $@",
+    "deploy": "ts-node -T script.ts/deploy.vercel"
   },
   "dependencies": {
     "@platform/util.mimetype": "^0.1.48"

@@ -206,6 +206,7 @@ export type VercelHttpDeployConfig = {
 export type VercelHttpDeployResponse = VercelHttpResponse & {
   deployment: {
     id: Id;
+    name: Name;
     team: { name: Name; id: Id };
     project: { name: Name; id: Id };
     regions: string[];
