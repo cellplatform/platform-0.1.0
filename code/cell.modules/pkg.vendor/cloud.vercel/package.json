@@ -23,7 +23,8 @@
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
     "clean": "cell.compiler clean $@",
-    "deploy": "ts-node -T script.ts/deploy.vercel"
+    "deploy": "ts-node -T script.ts/deploy.vercel",
+    "tmp": "ts-node -T script.ts/deploy.tmp"
   },
   "dependencies": {
     "@platform/util.mimetype": "^0.1.48"

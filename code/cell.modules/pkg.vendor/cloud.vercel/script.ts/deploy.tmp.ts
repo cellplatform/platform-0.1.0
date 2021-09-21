@@ -9,13 +9,12 @@ const token = process.env.VERCEL_TEST_TOKEN;
  *    https://www.npmjs.com/package/path-to-regexp
  *
  */
-async function deploy(team: string, project: string, alias: string) {
-  const deployment = Vercel.Deploy({ token, dir: 'dist/node', team, project });
+async function deploy(team: string, project: string, alias?: string) {
+  const deployment = Vercel.Deploy({ token, dir: 'dist/node.server', team, project });
   const manifest = await deployment.manifest<t.ModuleManifest>();
 
   console.log('deploying:');
-  console.log(' •', manifest.hash.module);
-  console.log(' •', `${manifest.files.length} files`);
+  console.log(' • manifest', manifest);
 
   const wait = deployment.push({
     // target: 'production',
@@ -38,4 +37,4 @@ async function deploy(team: string, project: string, alias: string) {
 }
 
 // DEV
-deploy('tdb', 'db-dev', 'dev.db.team');
+deploy('tdb', 'tmp');

@@ -9,35 +9,34 @@ const token = process.env.VERCEL_TEST_TOKEN;
  *    https://www.npmjs.com/package/path-to-regexp
  *
  */
-async function deploy(project: string, alias: string) {
-  const deployment = Vercel.Deploy({ token, dir: 'dist/web', team: 'tdb', project });
-
+async function deploy(team: string, project: string, alias: string) {
+  const deployment = Vercel.Deploy({ token, dir: 'dist/web', team, project });
   const manifest = await deployment.manifest<t.ModuleManifest>();
-  const module = manifest?.module;
-  const name = module ? `${module.namespace}-v${module.version}` : 'unnamed';
 
-  console.log('deploying:');
-  console.log(' •', name);
+  console.log('\ndeploying:');
   console.log(' •', manifest.hash.module);
-  console.log(' •', `${manifest.files.length} files`);
+  console.log(' •', `${manifest.files.length} files\n`);
 
   const wait = deployment.push({
-    // target: 'production',
+    target: 'production',
     regions: ['sfo1'],
     alias,
-    name,
     // routes: [{ src: '/foo', dest: '/' }],
   });
 
   const res = await wait;
+  const status = res.status;
+  const name = res.deployment.name;
+
   console.log(res.deployment);
   console.log('-------------------------------------------');
-  console.log(res.status);
-  console.log('deployment:', name);
+  console.log(status);
+  console.log(name);
   console.log();
 
-  return { status: res.status, name };
+  return { status, name };
 }
 
 // DEV
-deploy('db-dev', 'net.dev.db.team');
+// deploy('tdb', 'db-dev', 'dev.db.team');
+deploy('tdb', 'os-domains', 'os.domains');
