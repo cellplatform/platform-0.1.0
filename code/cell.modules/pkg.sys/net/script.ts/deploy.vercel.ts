@@ -4,8 +4,10 @@ const token = process.env.VERCEL_TEST_TOKEN;
 
 /**
  * https://vercel.com/docs/cli#project-configuration/routes
+ *
  * Route regex:
  *    https://www.npmjs.com/package/path-to-regexp
+ *
  */
 async function deploy(project: string, alias: string) {
   const deployment = Vercel.Deploy({ token, dir: 'dist/web', team: 'tdb', project });
@@ -38,4 +40,4 @@ async function deploy(project: string, alias: string) {
 }
 
 // DEV
-deploy('db-dev', 'dev.db.team');
+deploy('db-dev', 'net.dev.db.team');
