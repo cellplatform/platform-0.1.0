@@ -3,7 +3,14 @@ import { VercelUploadFiles } from './VercelHttp.Files.Upload';
 
 /**
  * Create a new deployment.
- * https://vercel.com/docs/api#endpoints/deployments/create-a-new-deployment
+ *
+ * Refs:
+ *    HTTP endpoint:
+ *    https://vercel.com/docs/api#endpoints/deployments/create-a-new-deployment
+ *
+ *    vercel.json (config):
+ *    https://vercel.com/docs/cli#project/redirects
+ *
  */
 export async function deploy(
   args: t.VercelHttpDeployArgs & {
@@ -77,7 +84,7 @@ export async function deploy(
    * Request Parameters:
    *    https://vercel.com/docs/api#endpoints/deployments/create-a-new-deployment/request-parameters
    */
-  name = name ?? 'unnamed';
+  name = name ?? 'unnamed-v0.0.0';
   const alias = asArray(args.alias).filter(Boolean) as string[];
   const target = args.target ?? 'staging';
   const body = {
