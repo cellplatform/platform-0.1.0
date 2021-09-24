@@ -123,8 +123,24 @@ export type VercelHttpUploadFiles = {
   post(path: FilePath, input: Uint8Array): Promise<VercelHttpUploadPostResponse>;
   upload(
     source: DirPath | VercelSourceBundle,
-    options?: { filter?: (path: FilePath) => boolean; batch?: number },
+    options?: VercelHttpUploadFilesOptions,
   ): Promise<VercelHttpUploadResponse>;
+};
+
+export type VercelHttpUploadFilesOptions = {
+  batch?: number;
+  filter?: VercelHttpUploadFilesFilter;
+  beforeUpload?: VercelHttpBeforeFileUpload;
+};
+
+export type VercelHttpUploadFilesFilter = (path: FilePath) => boolean;
+
+export type VercelHttpBeforeFileUpload = (args: VercelHttpBeforeFileUploadArgs) => Promise<void>; // NB: [undefined] means no change (original data is sent).
+export type VercelHttpBeforeFileUploadArgs = {
+  path: FilePath;
+  data: Uint8Array;
+  modify(input: Uint8Array | string): void;
+  toString(): string;
 };
 
 export type VercelHttpUploadPostResponse = t.VercelHttpResponse & {
@@ -190,6 +206,7 @@ export type VercelSourceBundle = { manifest: VercelManifest; files: t.VercelFile
  */
 export type VercelHttpDeployArgs = VercelHttpDeployConfig & {
   source: DirPath | VercelSourceBundle;
+  beforeUpload?: VercelHttpBeforeFileUpload;
 };
 export type VercelHttpDeployConfig = {
   name?: string; // A string with the name used in the deployment URL (max 52-chars). Derived from module [namespace@version] if ommited.

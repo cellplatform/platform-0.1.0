@@ -38,6 +38,7 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
      * Upload a directory of file.
      */
     async upload(source, options = {}) {
+      const { beforeUpload } = options;
       const timer = time.timer();
 
       if (typeof source === 'string' && !(await fs.is.dir(source))) {
@@ -66,18 +67,38 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
         elapsed: 0,
       };
 
+      const prepareFile = async (path: string, data: Uint8Array) => {
+        if (typeof beforeUpload === 'function') {
+          await beforeUpload({
+            path,
+            data,
+            toString: () => new TextDecoder().decode(data),
+            modify(input) {
+              if (typeof input === 'string') data = new TextEncoder().encode(input);
+              if (typeof input !== 'string') data = input;
+            },
+          });
+        }
+        return data;
+      };
+
+      const postFile = async (path: string, data: Uint8Array) => {
+        // POST to the cloud.
+        data = await prepareFile(path, data);
+        const posted = await api.post(path, data);
+
+        // Prepare response.
+        const { ok, status, contentType, contentLength, digest, error, elapsed } = posted;
+        const filepath = typeof source === 'string' ? path.substring(source.length + 1) : path;
+        const file: t.VercelFileUpload = { file: filepath, sha: digest, size: contentLength };
+        res.files.push({ ok, status, contentType, file, error, elapsed });
+      };
+
       const uploadBatch = async (files: t.VercelFile[]) => {
         await Promise.all(
           files
             .filter(({ data }) => Boolean(data))
-            .map(async ({ path, data }) => {
-              const posted = await api.post(path, data as Uint8Array);
-              const { ok, status, contentType, contentLength, digest, error, elapsed } = posted;
-              const filepath =
-                typeof source === 'string' ? path.substring(source.length + 1) : path;
-              const file: t.VercelFileUpload = { file: filepath, sha: digest, size: contentLength };
-              res.files.push({ ok, status, contentType, file, error, elapsed });
-            }),
+            .map(({ path, data }) => postFile(path, data as Uint8Array)),
         );
       };
 

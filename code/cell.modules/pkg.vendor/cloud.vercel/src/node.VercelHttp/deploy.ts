@@ -19,7 +19,7 @@ export async function deploy(
     project: { id: string; name: string };
   },
 ): Promise<t.VercelHttpDeployResponse> {
-  const { ctx, source, team, project } = args;
+  const { ctx, source, team, project, beforeUpload } = args;
   const { http, fs, headers } = ctx;
   const teamId = team.id;
 
@@ -32,7 +32,7 @@ export async function deploy(
    */
   const uploaded = await (async () => {
     const client = VercelUploadFiles({ ctx, teamId });
-    const res = await client.upload(source);
+    const res = await client.upload(source, { beforeUpload });
     const { ok, error, total } = res;
     const files = res.files.map((item) => item.file);
     const errors = res.files

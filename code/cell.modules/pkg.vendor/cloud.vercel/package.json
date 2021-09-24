@@ -17,13 +17,10 @@
     "bundle.node": "cell.compiler bundle node --bump $@",
     "bundle.web": "cell.compiler bundle web --bump $@",
     "bundle": "yarn bundle.web && yarn bundle.node",
-    "upload": "cell.compiler upload $@",
-    "upload.node": "cell.compiler upload node --no-bundle --dir node.HEAD $@",
-    "upload.web": "cell.compiler upload web   --no-bundle --dir web.HEAD  $@",
-    "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
     "clean": "cell.compiler clean $@",
-    "deploy": "ts-node -T script.ts/deploy.vercel",
+    "deploy": "ts-node -T script.ts/deploy.sample",
+    "deploy.registry": "ts-node -T script.ts/deploy.registry",
     "tmp": "ts-node -T script.ts/deploy.tmp"
   },
   "dependencies": {

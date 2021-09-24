@@ -11,6 +11,7 @@ type Args = {
   dir: DirectoryPath;
   team: Name;
   project: Name;
+  beforeUpload?: t.VercelHttpBeforeFileUpload;
 };
 
 /**
@@ -19,7 +20,7 @@ type Args = {
  *                          Geo-cached.
  */
 export const VercelDeploy = (args: Args) => {
-  const { token } = args;
+  const { token, beforeUpload } = args;
 
   const dir = nodefs.resolve(args.dir ?? '');
   const bus = rx.bus();
@@ -56,7 +57,7 @@ export const VercelDeploy = (args: Args) => {
       const team = await getTeam(args.team);
       const project = team.project(args.project);
       const source = await VercelFs.readdir(fs);
-      const res = await project.deploy({ ...config, source });
+      const res = await project.deploy({ ...config, source, beforeUpload });
       return res;
     },
   };

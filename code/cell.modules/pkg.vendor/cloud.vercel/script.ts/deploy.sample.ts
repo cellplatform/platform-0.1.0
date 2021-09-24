@@ -1,4 +1,5 @@
-import { Vercel } from 'vendor.vercel/lib/node';
+import { Vercel, t } from 'vendor.vercel/lib/node';
+import { fs } from '@platform/fs';
 
 const token = process.env.VERCEL_TEST_TOKEN;
 
@@ -10,14 +11,23 @@ const token = process.env.VERCEL_TEST_TOKEN;
  *
  */
 async function deploy(team: string, project: string, dir: string, alias?: string) {
-  const deployment = Vercel.Deploy({ token, dir, team, project });
+  const beforeUpload: t.VercelHttpBeforeFileUpload = async (e) => {
+    if (e.path.endsWith('main.js')) {
+      e.modify('console.log("hello");');
+    }
+  };
+
+  const size = await fs.size.dir(fs.resolve(dir));
+  const deployment = Vercel.Deploy({ token, dir, team, project, beforeUpload });
   const manifest = await deployment.manifest<t.ModuleManifest>();
 
-  console.log('deploying:');
-  console.log(' • manifest', manifest);
+  console.log('\ndeploying:');
+  console.log(' • manifest:', manifest?.hash?.module);
+  console.log(' • size:    ', `${size.files.length} files, ${size.toString()}`);
+  console.log();
 
   const wait = deployment.commit({
-    // target: 'production',
+    target: alias ? 'production' : 'staging',
     regions: ['sfo1'],
     alias,
     // routes: [{ src: '/foo', dest: '/' }],
@@ -37,4 +47,5 @@ async function deploy(team: string, project: string, dir: string, alias?: string
 }
 
 // DEV
-deploy('tdb', 'tmp', 'dist/web');
+// deploy('tdb', 'db-dev', 'dist/node', 'dev.db.team');
+deploy('tdb', 'db-dev', 'dist/node');
