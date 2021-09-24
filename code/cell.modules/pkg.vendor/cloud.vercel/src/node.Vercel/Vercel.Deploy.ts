@@ -50,9 +50,9 @@ export const VercelDeploy = (args: Args) => {
     },
 
     /**
-     * Run the deployment.
+     * Write the deployment to the cloud.
      */
-    async push(config: t.VercelHttpDeployConfig = {}) {
+    async commit(config: t.VercelHttpDeployConfig = {}) {
       const team = await getTeam(args.team);
       const project = team.project(args.project);
       const source = await VercelFs.readdir(fs);

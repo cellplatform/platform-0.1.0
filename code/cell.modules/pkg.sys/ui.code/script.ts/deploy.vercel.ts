@@ -19,7 +19,7 @@ async function deploy(project: string, alias: string) {
   console.log(' •', manifest.hash.module);
   console.log(' •', `${manifest.files.length} files`);
 
-  const wait = deployment.push({
+  const wait = deployment.commit({
     // target: 'production',
     regions: ['sfo1'],
     alias,

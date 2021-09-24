@@ -15,7 +15,7 @@ async function deploy(project: string, alias: string) {
   const name = `${alias}@${version}`;
 
   const deployment = Vercel.Deploy({ token, dir: 'dist/web', team: 'tdb', project });
-  const wait = deployment.push({
+  const wait = deployment.commit({
     // target: 'production',
     regions: ['sfo1'],
     alias,
