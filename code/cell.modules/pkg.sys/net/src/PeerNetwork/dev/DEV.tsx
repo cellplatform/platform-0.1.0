@@ -1,8 +1,6 @@
 import React from 'react';
 import { toObject, DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
 
-// import { Window, IpcBus, env } from '@platform/cell.runtime.electron/app/lib/renderer';
-
 import {
   css,
   cuid,
@@ -25,7 +23,6 @@ type Ctx = {
   self: t.PeerId;
   bus: t.EventBus<t.PeerEvent | t.DevEvent>;
   netbus: t.PeerNetworkBus;
-  // ipcbus: t.NetworkBus<any>;
   signal: string; // Signalling server network address (host/path).
   events: CtxEvents;
   connectTo?: string;
@@ -66,14 +63,11 @@ export const actions = DevActions<Ctx>()
     PeerNetwork.Controller({ bus });
     MediaStream.Controller({ bus });
 
-    // const ipcbus = IpcBus();
-
-    const signal = 'rtc.cellfs.com/peer';
     const netbus = PeerNetworkBus({ bus, self });
     const events = {
+      media: MediaStream.Events(bus),
       peer: PeerNetwork.PeerEvents(bus),
       group: PeerNetwork.GroupEvents(netbus),
-      media: MediaStream.Events(bus),
     };
 
     const strategy = {
@@ -84,6 +78,7 @@ export const actions = DevActions<Ctx>()
 
     strategy.peer.connection.autoPropagation = false; // TEMP 🐷
 
+    const signal = 'rtc.cellfs.com/peer';
     const init = () => {
       events.media.start(EventBridge.videoRef(self)).video();
       events.peer.create(signal, self);
@@ -131,7 +126,6 @@ export const actions = DevActions<Ctx>()
       self,
       bus,
       netbus,
-      // ipcbus,
       events,
       signal,
       connectTo: '',

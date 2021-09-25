@@ -10,5 +10,5 @@ const isLocalhost = location.hostname === 'localhost';
 const ns = new URL(location.href).searchParams.get('ns');
 
 export const DevHarness: React.FC = () => (
-  <Harness actions={Object.values(imports)} initial={ns} showActions={!isLocalhost} />
+  <Harness actions={Object.values(imports)} initial={ns} showActions={true} />
 );
