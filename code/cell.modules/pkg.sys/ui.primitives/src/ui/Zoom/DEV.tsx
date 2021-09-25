@@ -75,7 +75,7 @@ const Sample: React.FC<{ ctx: Ctx }> = (props) => {
     zoom: css({ flex: 1 }),
     content: css({
       flex: 1,
-      backgroundImage: `url(${bundle.path('static/images/hello.png')})`,
+      backgroundImage: `url(${bundle.path('static/images/sample/hello.png')})`,
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'contain',
       backgroundPosition: 'center',

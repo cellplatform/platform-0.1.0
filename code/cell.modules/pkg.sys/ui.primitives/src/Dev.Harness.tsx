@@ -4,6 +4,7 @@ import { Harness } from 'sys.ui.dev';
 const imports = {
   useDragTarget: import('./hooks/useDragTarget/dev/DEV'),
 
+  Antechamber: import('./ui/Antechamber/dev/DEV'),
   DotTabstrip: import('./ui/DotTabstrip/dev/DEV'),
   Zoom: import('./ui/Zoom/DEV'),
   PropList: import('./ui/PropList/dev/DEV'),
