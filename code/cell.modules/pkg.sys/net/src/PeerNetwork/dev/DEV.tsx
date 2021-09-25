@@ -18,6 +18,7 @@ import {
 import { RootLayout } from './DEV.Root';
 import { EventBridge } from './event';
 import { DevGroupSeed, GroupSeed } from './layouts';
+import { DevProps } from './DEV.Props';
 
 type Ctx = {
   self: t.PeerId;
@@ -136,48 +137,17 @@ export const actions = DevActions<Ctx>()
     };
   })
 
-  // .items((e) => {
-  //   e.title('IPC/Window (Desktop App)');
+  .items((e) => {
+    e.component((e) => {
+      const { self, bus, netbus } = e.ctx;
 
-  //   e.button('status', async (e) => {
-  //     const bus = e.ctx.ipcbus;
-  //     const events = Window.Events({ bus });
-  //     const status = await events.status.get();
-  //     e.button.description = (
-  //       <ObjectView name={'status'} data={status} fontSize={10} expandLevel={2} />
-  //     );
-  //   });
+      return (
+        <DevProps self={self} bus={bus} netbus={netbus} style={{ MarginX: 30, MarginY: 20 }} />
+      );
+    });
 
-  //   e.button('window/move', async (e) => {
-  //     const bus = e.ctx.ipcbus;
-  //     const events = Window.Events({ bus });
-
-  //     const self = env?.self ?? '';
-
-  //     const getCurrent = async () => {
-  //       const status = await events.status.get();
-  //       const current = status.windows.find((item) => item.uri === self);
-  //       return current;
-  //     };
-
-  //     const current = await getCurrent();
-
-  //     if (current) {
-  //       const by = 50;
-  //       const bounds = current.bounds;
-  //       const x = bounds.x + by;
-  //       const y = bounds.y + by;
-  //       events.change.fire(self, { bounds: { x, y } });
-  //     }
-
-  //     const data = await getCurrent();
-  //     e.button.description = (
-  //       <ObjectView name={'moved'} data={data} fontSize={10} expandLevel={2} />
-  //     );
-  //   });
-
-  //   e.hr();
-  // })
+    e.hr();
+  })
 
   .items((e) => {
     e.title('Environment');

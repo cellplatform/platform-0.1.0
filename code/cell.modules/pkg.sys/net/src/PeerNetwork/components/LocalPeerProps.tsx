@@ -2,35 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import {
-  COLORS,
-  css,
-  CssValue,
-  Icons,
-  PropList,
-  PropListItem,
-  t,
-  time,
-  Button,
-  PeerNetwork,
-  Textbox,
-  Hr,
-  color,
-} from '../common';
-import { useGroupState } from '../../hook';
+import { PeerEvents } from '../event';
+import { color, COLORS, css, CssValue, Hr, Icons, PropList, t, Textbox, time } from './common';
 
-type P = PropListItem;
-
-export type PeerPropListProps = {
+export type LocalPeerPropsProps = {
+  self: t.PeerId;
   bus: t.EventBus<any>;
-  netbus: t.PeerNetworkBus<any>;
+  // netbus: t.PeerNetworkBus<any>;
   status: t.PeerStatus;
+  title?: string;
+  allowNewConnections?: boolean;
   style?: CssValue;
 };
 
-export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
-  const { bus, netbus } = props;
-  const self = netbus.self;
+/**
+ * A property list
+ */
+export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
+  const { bus, self, allowNewConnections = false } = props;
 
   const [connectTo, setConnectTo] = useState<string>('');
   const [count, setCount] = useState<number>(0);
@@ -51,13 +40,15 @@ export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
     remote = (connectTo || '').trim();
     if (!remote) return;
 
-    const isConnected = netbus.connections
+    const connections = props.status.connections;
+
+    const isConnected = connections
       .filter(({ kind }) => kind === 'data')
       .some(({ peer }) => peer.remote.id === remote);
 
-    if (isConnected) return;
+    if (isConnected) return; // Already connected.
 
-    const events = PeerNetwork.PeerEvents(bus);
+    const events = PeerEvents(bus);
     await events.connection(self, remote).open.data();
     events.dispose();
   };
@@ -65,13 +56,12 @@ export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
   /**
    * [Render]
    */
-
   const styles = {
     base: css({}),
     textbox: css({ fontSize: 12, marginBottom: 10, marginTop: 15 }),
   };
 
-  const elConnect = (
+  const elConnect = allowNewConnections && (
     <Textbox
       value={connectTo}
       placeholder={'open connection'}
@@ -100,12 +90,12 @@ export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <PropList
-        title={'Peer Network'}
+        title={props.title ?? 'Network'}
         defaults={{ clipboard: false }}
         items={toNetworkItems(props)}
         width={{ min: 240, max: 260 }}
       />
-      <Hr thickness={10} opacity={0.05} margin={[5, 0]} />
+      {allowNewConnections && <Hr thickness={10} opacity={0.05} margin={[5, 0]} />}
       {elConnect}
     </div>
   );
@@ -115,13 +105,13 @@ export const PeerPropList: React.FC<PeerPropListProps> = (props) => {
  * [Helpers]
  */
 
-const toNetworkItems = (props: PeerPropListProps) => {
+const toNetworkItems = (props: LocalPeerPropsProps) => {
   const { status } = props;
   if (!status) return [];
 
-  const elapsed = time.elapsed(status.createdAt || -1);
-  const age = elapsed.sec < 60 ? 'just now' : elapsed.toString();
   const signal = status.signal;
+  const elapsed = time.elapsed(status.createdAt || -1);
+  const age = elapsed.sec < 60 ? 'less than a minute' : elapsed.toString();
 
   const styles = {
     signal: {
@@ -142,7 +132,7 @@ const toNetworkItems = (props: PeerPropListProps) => {
   return [
     { label: 'local peer', value: { data: status.id, clipboard: true } },
     { label: `signal server`, value: elSignal },
-    { label: 'connection lifespan', value: age },
-    { label: 'online', value: status.isOnline },
+    { label: 'alive', value: status.isOnline ? age : 'no' },
+    { label: `connections`, value: status.connections.length },
   ];
 };
