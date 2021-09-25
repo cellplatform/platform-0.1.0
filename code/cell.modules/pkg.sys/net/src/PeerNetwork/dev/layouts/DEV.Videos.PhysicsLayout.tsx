@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { filter } from 'rxjs/operators';
 import { DevImageDraggable } from '../media';
 
-import { useLocalPeer } from '../../hook';
+import { useLocalPeer } from '../../hooks';
 import {
   MotionDraggable,
   MotionDraggableEvent,

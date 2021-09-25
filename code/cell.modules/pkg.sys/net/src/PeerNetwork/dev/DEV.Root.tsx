@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { ObjectView } from 'sys.ui.dev';
 
-import { useLocalPeer } from '../hook';
+import { useLocalPeer } from '../hooks';
 import { COLORS, css, CssValue, t, useDragTarget } from './common';
 import { DevNetwork } from './network';
 

@@ -14,7 +14,7 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import { color, css, CssValue, t, COLORS, Button } from '../common';
 import { DevModal } from '../layouts';
-import { useLocalPeer } from '../../hook';
+import { useLocalPeer } from '../../hooks';
 
 import { Connection, CrdtConnection } from '../../../NetworkModel/Crdt.OLD';
 import { DevConnection } from '../../../NetworkModel/Crdt.OLD/dev/DEV.Connection';

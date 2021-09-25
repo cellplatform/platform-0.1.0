@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { color, css, CssValue, t, useResizeObserver, VideoStream, isLocalhost } from '../common';
-import { useLocalPeer } from '../../hook';
+import { useLocalPeer } from '../../hooks';
 
 export type DevVideosGroupLayoutProps = {
   bus: t.EventBus<any>;
