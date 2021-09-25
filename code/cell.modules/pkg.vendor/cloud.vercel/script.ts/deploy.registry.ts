@@ -121,6 +121,7 @@ async function deployModules(dirs: string[]) {
   const sys = fs.resolve('../../pkg.sys');
 
   const { modules, rewrites } = await deployModules([
+    fs.join(sys, 'net/dist/web'),
     fs.join(sys, 'ui.primitives/dist/web'),
     fs.join(sys, 'ui.video/dist/web'),
     fs.join(sys, 'ui.code/dist/web'),
