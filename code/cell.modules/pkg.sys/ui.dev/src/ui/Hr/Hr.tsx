@@ -55,6 +55,7 @@ export class Hr extends React.PureComponent<HrProps> {
         ...style.toMargins(margin),
       }),
     };
+
     return <hr {...css(styles.base, this.props.style)} />;
   }
 }
