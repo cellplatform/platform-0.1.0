@@ -3,6 +3,16 @@ import { Test } from '.';
 
 describe('TestSuite', () => {
   describe('model', () => {
+    it('id: "TestSuite.<slug>"', () => {
+      const model1 = Test.describe('foo');
+      const model2 = Test.describe('foo');
+
+      expect(model1.id.startsWith('TestSuite.')).to.eql(true);
+      expect(model2.id.startsWith('TestSuite.')).to.eql(true);
+
+      expect(model1).to.not.equal(model2); // NB: Different instance.
+    });
+
     it('empty (no handler)', () => {
       const root = Test.describe('root');
       expect(root.state.description).to.eql('root');
@@ -148,6 +158,20 @@ describe('TestSuite', () => {
       expect(root.state.children[0].state.modifier).to.eql('skip');
       expect(root.state.children[1].state.modifier).to.eql('only');
     });
+
+    it('define (root): Test.describe.skip | Test.describe.only', async () => {
+      const root1 = Test.describe('root');
+      const root2 = Test.describe.skip('root');
+      const root3 = Test.describe.only('root');
+
+      await root1.state.init();
+      await root2.state.init();
+      await root3.state.init();
+
+      expect(root1.state.modifier).to.eql(undefined);
+      expect(root2.state.modifier).to.eql('skip');
+      expect(root3.state.modifier).to.eql('only');
+    });
   });
 
   describe('run', () => {
@@ -253,6 +277,88 @@ describe('TestSuite', () => {
       expect(res.children[0].tests[0].ok).to.eql(true);
       expect(res.children[0].children[0].tests[0].ok).to.eql(false);
       expect(res.children[0].children[0].tests[0].error?.message).to.include('Timed out');
+    });
+  });
+
+  describe('merge', () => {
+    it('merges', () => {
+      const root = Test.describe('root');
+      const child1 = Test.describe('child-1');
+      const child2 = Test.describe('child-2');
+      const child3 = Test.describe('child-3');
+
+      expect(root.state.children).to.eql([]);
+
+      root.merge(child1);
+      expect(root.state.children).to.eql([child1]);
+
+      root.merge(child2, child3);
+      expect(root.state.children).to.eql([child1, child2, child3]);
+    });
+
+    it('does not duplicate', () => {
+      const root = Test.describe('root');
+      const child = Test.describe('child');
+      expect(root.state.children).to.eql([]);
+
+      root.merge(child, child, child);
+      expect(root.state.children).to.eql([child]);
+
+      root.merge(child);
+      root.merge(child);
+      root.merge(child);
+      expect(root.state.children).to.eql([child]);
+    });
+  });
+
+  describe('Test.bundle', () => {
+    it('nothing [<empty>]', async () => {
+      const root = await Test.bundle([]);
+      expect(root.state.children).to.eql([]);
+    });
+
+    it('TestSuite objects', async () => {
+      const child1 = Test.describe('child-1');
+      const child2 = Test.describe('child-2');
+
+      const root = await Test.bundle([child1, child2]);
+      const children = root.state.children;
+
+      expect(children.length).to.eql(2);
+      expect(children[0].id).to.eql(child1.id);
+      expect(children[1].id).to.eql(child2.id);
+    });
+
+    it('dynamic imports', async () => {
+      const one = import('./test.samples/One.TEST');
+      const two = import('./test.samples/Two.TEST');
+
+      const root = await Test.bundle([one, two]);
+      const children = root.state.children;
+
+      expect(children.length).to.eql(2);
+      expect(children[0].state.description).to.eql('One');
+      expect(children[1].state.description).to.eql('Two');
+    });
+
+    it('dynamic: with no export (ignore)', async () => {
+      const root1 = await Test.bundle([import('./test.samples/NoExport.TEST')]);
+      expect(root1.state.children).to.eql([]);
+
+      const root2 = await Test.bundle([
+        import('./test.samples/NoExport.TEST'), // NB: Will not merge anything (no default export)
+        import('./test.samples/One.TEST'),
+        import('./test.samples/Two.TEST'),
+      ]);
+      const children = root2.state.children;
+      expect(children.length).to.eql(2);
+      expect(children[0].state.description).to.eql('One');
+      expect(children[1].state.description).to.eql('Two');
+    });
+
+    it('dynamic: default export not a test-suite (ignore)', async () => {
+      const root = await Test.bundle([import('./test.samples/ExportNonSuite.TEST')]);
+      expect(root.state.children).to.eql([]);
     });
   });
 });

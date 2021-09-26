@@ -1,11 +1,23 @@
-import { t, time, DEFAULT } from './common';
+import { t, time, DEFAULT, slug, is, isSuite } from './common';
 import { TestModel } from './Test';
 
 /**
  * Suite of tests.
  */
 export const Test: t.Test = {
-  describe: (description, handler) => TestSuiteModel({ description, handler }),
+  describe: describeDefVariants(),
+  async bundle(items) {
+    // const description = typeof param1 === 'string' ? param1 : 'root';
+    // const items = Array.isArray(param1) ? param1 : param2;
+
+    const root = Test.describe('tests');
+    const wait = (items ?? []).map(async (item) => {
+      const suite = is.promise(item) ? (await item).default : item;
+      return isSuite(suite) ? (suite as t.TestSuiteModel) : undefined;
+    });
+    const suites = (await Promise.all(wait)).filter(Boolean) as t.TestSuiteModel[];
+    return root.merge(...suites);
+  },
 };
 
 /**
@@ -75,16 +87,7 @@ export const TestSuiteModel = (args: {
   /**
    * Define a child suite.
    */
-  const suiteDef = (modifier?: t.TestModifier): t.TestSuiteDescribeDef => {
-    return (description, handler) => {
-      const child = TestSuiteModel({ description, handler, modifier });
-      state.children = [...state.children, child];
-      return child;
-    };
-  };
-  const describe = suiteDef();
-  (describe as any).skip = suiteDef('skip');
-  (describe as any).only = suiteDef('only');
+  const describe = describeDefVariants(state);
 
   /**
    * Define a single test.
@@ -102,6 +105,7 @@ export const TestSuiteModel = (args: {
   (it as any).only = testDef('only');
 
   const model: t.TestSuiteModel = {
+    id: `TestSuite.${slug()}`,
     state,
     run,
 
@@ -112,7 +116,39 @@ export const TestSuiteModel = (args: {
       state.timeout = Math.max(0, value);
       return model;
     },
+
+    merge(...suites) {
+      const children = [...state.children];
+      (suites ?? []).forEach((suite) => {
+        const exists = children.some((child) => child.id === suite.id);
+        if (!exists) children.push(suite);
+      });
+      state.children = children;
+      return model;
+    },
   };
 
   return model;
 };
+
+/**
+ * [Helpers]
+ */
+
+function describeDef(
+  modifier?: t.TestModifier,
+  state?: t.TestSuiteModelState,
+): t.TestSuiteDescribeDef {
+  return (description, handler) => {
+    const child = TestSuiteModel({ description, handler, modifier });
+    if (state) state.children = [...state.children, child];
+    return child;
+  };
+}
+
+function describeDefVariants(state?: t.TestSuiteModelState): t.TestSuiteDescribe {
+  const describe = describeDef(undefined, state);
+  (describe as any).skip = describeDef('skip', state);
+  (describe as any).only = describeDef('only', state);
+  return describe as t.TestSuiteDescribe;
+}

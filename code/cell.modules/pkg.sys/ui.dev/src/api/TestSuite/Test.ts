@@ -1,4 +1,4 @@
-import { t, time, DEFAULT, is, deleteUndefined } from './common';
+import { DEFAULT, deleteUndefined, is, slug, t, time } from './common';
 
 /**
  * A single test.
@@ -61,6 +61,12 @@ export const TestModel = (args: {
     });
   };
 
-  const model: t.TestModel = { description, modifier, handler, run };
+  const model: t.TestModel = {
+    id: `Test.${slug()}`,
+    description,
+    modifier,
+    handler,
+    run,
+  };
   return model;
 };
