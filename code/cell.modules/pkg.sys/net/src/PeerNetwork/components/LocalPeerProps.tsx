@@ -5,13 +5,14 @@ import { takeUntil } from 'rxjs/operators';
 import { PeerEvents } from '../event';
 import { color, COLORS, css, CssValue, Hr, Icons, PropList, t, Textbox, time } from './common';
 
+type NewConnectionOptions = { isReliable?: boolean };
+
 export type LocalPeerPropsProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
-  // netbus: t.PeerNetworkBus<any>;
   status: t.PeerStatus;
-  title?: string;
-  allowNewConnections?: boolean;
+  title?: string | null;
+  allowNewConnections?: boolean | NewConnectionOptions;
   style?: CssValue;
 };
 
@@ -20,6 +21,7 @@ export type LocalPeerPropsProps = {
  */
 export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
   const { bus, self, allowNewConnections = false } = props;
+  const title = props.title === null ? undefined : props.title ?? 'Network';
 
   const [connectTo, setConnectTo] = useState<string>('');
   const [count, setCount] = useState<number>(0);
@@ -40,16 +42,16 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
     remote = (connectTo || '').trim();
     if (!remote) return;
 
-    const connections = props.status.connections;
-
-    const isConnected = connections
+    const isConnected = props.status.connections
       .filter(({ kind }) => kind === 'data')
       .some(({ peer }) => peer.remote.id === remote);
 
     if (isConnected) return; // Already connected.
 
     const events = PeerEvents(bus);
-    await events.connection(self, remote).open.data();
+    const options: NewConnectionOptions =
+      typeof allowNewConnections === 'object' ? allowNewConnections : { isReliable: true };
+    await events.connection(self, remote).open.data(options);
     events.dispose();
   };
 
@@ -90,12 +92,12 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <PropList
-        title={props.title ?? 'Network'}
+        title={title}
         defaults={{ clipboard: false }}
         items={toNetworkItems(props)}
         width={{ min: 240, max: 260 }}
       />
-      {allowNewConnections && <Hr thickness={10} opacity={0.05} margin={[5, 0]} />}
+      {allowNewConnections && <Hr thickness={6} opacity={0.05} margin={[5, 0]} />}
       {elConnect}
     </div>
   );
@@ -105,7 +107,7 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
  * [Helpers]
  */
 
-const toNetworkItems = (props: LocalPeerPropsProps) => {
+const toNetworkItems = (props: LocalPeerPropsProps): t.PropListItem[] => {
   const { status } = props;
   if (!status) return [];
 

@@ -1,22 +1,26 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
 import { t, StreamUtil, rx } from '../common';
 import { PeerEvents } from '../event';
-import { PeerNetworkBus } from '../../PeerNetworkBus';
+
+export type UseLocalPeer = {
+  status?: t.PeerStatus;
+  media: { video?: MediaStream; screen?: MediaStream };
+  connections: t.PeerConnectionStatus[];
+};
 
 /**
  * Monitors an event-bus keeping a set of state values
  * synced as peers interact with the network.
  */
-export function useLocalPeer<E extends t.Event = t.Event>(args: {
+export function useLocalPeer(args: {
   self: t.PeerId;
   bus: t.EventBus<any>;
-  netbus?: t.PeerNetworkBus<E>;
-}) {
-  const { self } = args;
+  onChange?: (e: UseLocalPeer) => void;
+}): UseLocalPeer {
+  const { self, onChange } = args;
   const bus = rx.busAsType<t.PeerEvent>(args.bus);
-  const netbusRef = useRef<t.PeerNetworkBus<E>>(args.netbus ?? PeerNetworkBus({ self, bus }));
 
   const [status, setStatus] = useState<t.PeerStatus>();
   const [video, setVideo] = useState<MediaStream>();
@@ -60,12 +64,20 @@ export function useLocalPeer<E extends t.Event = t.Event>(args: {
     };
   }, [bus, self]); // eslint-disable-line
 
+  /**
+   * Callback handler.
+   */
+  useEffect(() => {
+    if (onChange) {
+      const media = { video, screen };
+      const connections = status?.connections ?? [];
+      onChange({ status, media, connections });
+    }
+  }, [status, video, screen, onChange]);
+
   return {
     status,
-    connections: status?.connections || [],
     media: { video, screen },
-    get netbus() {
-      return netbusRef.current;
-    },
+    connections: status?.connections || [],
   };
 }

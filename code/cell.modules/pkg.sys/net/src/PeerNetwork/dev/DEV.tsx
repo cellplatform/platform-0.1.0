@@ -139,10 +139,8 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.component((e) => {
-      const { self, bus, netbus } = e.ctx;
-      return (
-        <DevProps self={self} bus={bus} netbus={netbus} style={{ MarginX: 30, MarginY: 20 }} />
-      );
+      const { self, bus } = e.ctx;
+      return <DevProps self={self} bus={bus} style={{ MarginX: 30, MarginY: 20 }} />;
     });
 
     e.hr();
