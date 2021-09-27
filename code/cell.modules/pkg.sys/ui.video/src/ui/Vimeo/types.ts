@@ -9,6 +9,34 @@ export type VimeoId = number; // Vimeo video identifier.
 export type VimeoIconFlag = 'spinner' | 'play' | 'pause' | 'replay';
 
 /**
+ * Status
+ */
+export type VimeoStatus = {
+  id: VimeoInstance;
+  video: VimeoId;
+  action: 'info' | 'loaded' | 'start' | 'update' | 'seek' | 'stop' | 'end';
+  duration: Seconds;
+  seconds: Seconds;
+  percent: number;
+  playing: boolean;
+  ended: boolean;
+};
+
+/**
+ * Hooks
+ */
+export type UseVimeoIconController = (args: UseVimeoIconControllerArgs) => VimeoIconController;
+export type UseVimeoIconControllerArgs = {
+  bus: EventBus<any>;
+  id: VimeoInstance;
+  isEnabled?: boolean;
+};
+export type VimeoIconController = {
+  isEnabled: boolean;
+  current?: VimeoIconFlag;
+};
+
+/**
  * Event API.
  */
 export type VimeoEventsFactory = {
@@ -99,16 +127,6 @@ export type VimeoLoadRes = {
 export type VimeoStatusEvent = {
   type: 'Vimeo/status';
   payload: VimeoStatus;
-};
-export type VimeoStatus = {
-  id: VimeoInstance;
-  video: VimeoId;
-  action: 'info' | 'loaded' | 'start' | 'update' | 'seek' | 'stop' | 'end';
-  duration: Seconds;
-  seconds: Seconds;
-  percent: number;
-  playing: boolean;
-  ended: boolean;
 };
 
 export type VimeoStatusReqEvent = { type: 'Vimeo/status:req'; payload: VimeoStatusReq };

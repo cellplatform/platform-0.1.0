@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { css, CssValue, t, types } from './common';
 import { VimeoEvents } from './VimeoEvents';
-import { usePlayerController } from './hooks';
+import { usePlayerController, useIconController } from './hooks';
 import { VideoIcon, VimeoIconClickArgs } from './components/VideoIcon';
 
 export type VimeoProps = {
@@ -96,5 +96,10 @@ const Component: React.FC<VimeoProps> = (props) => {
  * Export extended function.
  */
 (Component as any).Events = VimeoEvents;
-type T = React.FC<VimeoProps> & { Events: t.VimeoEventsFactory };
+(Component as any).useIconController = useIconController;
+
+type T = React.FC<VimeoProps> & {
+  Events: t.VimeoEventsFactory;
+  useIconController: t.UseVimeoIconController;
+};
 export const Vimeo = Component as T;

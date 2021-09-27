@@ -20,7 +20,6 @@ export function usePlayerController(args: {
   const playing = useRef<boolean>(false);
   const loading = useRef<number | undefined>(); // Video-ID.
   const [opacity, setOpacity] = useState<number>(0);
-  const [icon, setIcon] = useState<types.VimeoIconFlag | undefined>(undefined);
 
   const { id, player, video } = args;
 
@@ -205,5 +204,5 @@ export function usePlayerController(args: {
   }, [args.bus, id, player]); // eslint-disable-line
 
   // Finish up.
-  return { id, opacity, icon };
+  return { id, opacity };
 }

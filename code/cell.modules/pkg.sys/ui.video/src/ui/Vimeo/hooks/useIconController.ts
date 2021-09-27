@@ -1,30 +1,17 @@
-import { Observable, Subject, BehaviorSubject, firstValueFrom, timeout, of } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-  catchError,
-} from 'rxjs/operators';
 import { useEffect, useState } from 'react';
+import { filter, take } from 'rxjs/operators';
 
-import { types, t, rx } from '../common';
+import { rx, t, types } from '../common';
 import { VimeoEvents } from '../VimeoEvents';
 
 /**
  * Monitors a Videmo player providing icon values to display based on various strategies..
  */
-export function useIconController(args: {
+export const useIconController: types.UseVimeoIconController = (args: {
   bus: t.EventBus<any>;
   id: types.VimeoInstance;
   isEnabled?: boolean;
-}) {
+}) => {
   const { id, isEnabled = true } = args;
   const [icon, setIcon] = useState<types.VimeoIconFlag | undefined>();
 
@@ -67,4 +54,4 @@ export function useIconController(args: {
     isEnabled,
     current: icon,
   };
-}
+};
