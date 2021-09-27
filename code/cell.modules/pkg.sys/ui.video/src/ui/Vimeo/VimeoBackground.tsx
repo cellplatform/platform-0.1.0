@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { css, cuid, defaultValue, t } from './common';
 import { usePlayerController } from './hooks/usePlayerController';
-import { VimeoEvents } from './Events';
+import { VimeoEvents } from './VimeoEvents';
 
 export type VimeoBackgroundProps = {
   bus: t.EventBus<any>;

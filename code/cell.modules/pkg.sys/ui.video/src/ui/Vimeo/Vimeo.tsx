@@ -1,9 +1,10 @@
 import VimeoPlayer from '@vimeo/player';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { css, CssValue, t } from './common';
-import { VimeoEvents } from './Events';
-import { usePlayerController } from './hooks/usePlayerController';
+import { css, CssValue, t, types } from './common';
+import { VimeoEvents } from './VimeoEvents';
+import { usePlayerController } from './hooks';
+import { VideoIcon, VimeoIconClickArgs } from './components/VideoIcon';
 
 export type VimeoProps = {
   bus: t.EventBus<any>;
@@ -14,7 +15,9 @@ export type VimeoProps = {
   height?: number;
   borderRadius?: number;
   scale?: number;
+  icon?: types.VimeoIconFlag;
   style?: CssValue;
+  onIconClick?: (e: VimeoIconClickArgs) => void;
 };
 
 /**
@@ -78,9 +81,15 @@ const Component: React.FC<VimeoProps> = (props) => {
       transition: `opacity 200ms`,
       ':first-child': { transform: `scale(${props.scale ?? 1})` },
     }),
+    container: css({ width, height, position: 'relative' }),
   };
 
-  return <div ref={divRef} {...css(styles.base, props.style)}></div>;
+  return (
+    <div {...css(styles.base, props.style)}>
+      <div ref={divRef} {...styles.container}></div>
+      <VideoIcon icon={props.icon} onClick={props.onIconClick} />
+    </div>
+  );
 };
 
 /**

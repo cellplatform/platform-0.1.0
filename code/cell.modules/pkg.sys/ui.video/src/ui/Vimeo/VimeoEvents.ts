@@ -6,14 +6,15 @@ import { rx, slug, t } from './common';
 /**
  * Event API.
  */
-function Events(args: { id: string; bus: t.EventBus<any> }): t.VimeoEvents {
-  const { id } = args;
+function Events(args: { id: string; bus: t.EventBus<any>; isEnabled?: boolean }): t.VimeoEvents {
+  const { id, isEnabled = true } = args;
   const { dispose, dispose$ } = rx.disposable();
   const bus = rx.busAsType<t.VimeoEvent>(args.bus);
   const is = Events.is;
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
+    filter((e) => isEnabled),
     filter((e) => is.base(e)),
     filter((e) => e.payload.id === id),
   );

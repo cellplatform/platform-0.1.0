@@ -1,8 +1,8 @@
 import VimeoPlayer from '@vimeo/player';
 import { useEffect, useRef, useState } from 'react';
 
-import { deleteUndefined, R, rx, slug, t, time } from '../common';
-import { VimeoEvents } from '../Events';
+import { deleteUndefined, R, rx, slug, t, time, types } from '../common';
+import { VimeoEvents } from '../VimeoEvents';
 
 type Times = { duration: number; percent: number; seconds: number };
 type Action = t.VimeoStatus['action'];
@@ -12,7 +12,7 @@ type Action = t.VimeoStatus['action'];
  */
 export function usePlayerController(args: {
   bus: t.EventBus<any>;
-  id: string;
+  id: types.VimeoInstance;
   video: number;
   player?: VimeoPlayer;
 }) {
@@ -20,9 +20,13 @@ export function usePlayerController(args: {
   const playing = useRef<boolean>(false);
   const loading = useRef<number | undefined>(); // Video-ID.
   const [opacity, setOpacity] = useState<number>(0);
+  const [icon, setIcon] = useState<types.VimeoIconFlag | undefined>(undefined);
 
   const { id, player, video } = args;
 
+  /**
+   * Lifecycle
+   */
   useEffect(() => {
     const bus = rx.busAsType<t.VimeoEvent>(args.bus);
     const events = VimeoEvents({ id, bus });
@@ -137,8 +141,6 @@ export function usePlayerController(args: {
 
         await initLoad();
 
-        // if (e.autoPlay) await player.play();
-
         /**
          * TODO 🐷
          * - perform "Play/Stop" (seek fix) HACK here
@@ -203,5 +205,5 @@ export function usePlayerController(args: {
   }, [args.bus, id, player]); // eslint-disable-line
 
   // Finish up.
-  return { id, opacity };
+  return { id, opacity, icon };
 }

@@ -2,7 +2,8 @@ import React from 'react';
 import { DevActions, ActionHandlerArgs } from 'sys.ui.dev';
 
 import { Vimeo, VimeoProps } from '..';
-import { rx, t, COLORS, value } from '../common';
+import { rx, t, COLORS, value, IconFlags } from '../common';
+import { useIconController } from '../hooks';
 
 export const VIDEO = {
   'app/tubes': 499921561,
@@ -17,7 +18,7 @@ type Ctx = {
   bus: t.EventBus<t.VimeoEvent>;
   events: t.VimeoEvents;
   props: VimeoProps;
-  debug: { timestamp: React.ReactNode };
+  debug: { timestamp: React.ReactNode; useIconController: boolean };
 };
 type A = ActionHandlerArgs<Ctx>;
 
@@ -35,7 +36,7 @@ export const actions = DevActions<Ctx>()
     });
 
     events.status.$.subscribe((event) => {
-      console.log('Vimeo/status:', event);
+      // console.log('Vimeo/status:', event);
       e.change.ctx((ctx) => {
         const seconds = value.round(event.seconds, 1);
         const duration = value.round(event.duration, 0);
@@ -53,8 +54,12 @@ export const actions = DevActions<Ctx>()
         video: VIDEO['stock/running'],
         muted: true,
         borderRadius: 20,
+        onIconClick: (e) => console.log('onIconClick', e),
       },
-      debug: { timestamp: '' },
+      debug: {
+        timestamp: '',
+        useIconController: true,
+      },
     };
 
     return ctx;
@@ -87,11 +92,23 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.props.muted;
     });
 
+    e.select((config) => {
+      config
+        .items(IconFlags)
+        .initial(undefined)
+        .view('buttons')
+        .clearable(true)
+        .pipe((e) => {
+          const current = e.select.current[0]; // NB: always first.
+          e.select.label = current ? `icon: ${current.label}` : `icon: <undefined>`;
+          e.ctx.props.icon = current ? current.value : undefined;
+        });
+    });
+
     e.hr(1, 0.1);
 
     e.select((config) => {
       config
-        .title('video')
         .items(VIDEOS)
         .initial(config.ctx.props.video)
         .pipe((e) => {
@@ -126,6 +143,17 @@ export const actions = DevActions<Ctx>()
 
     e.button('play ("start")', (e) => e.ctx.events.play.fire());
     e.button('pause ("stop")', (e) => e.ctx.events.pause.fire());
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('hooks');
+
+    e.boolean('useIconController', (e) => {
+      if (e.changing) e.ctx.debug.useIconController = e.changing.next;
+      e.boolean.current = e.ctx.debug.useIconController;
+    });
 
     e.hr();
   })
@@ -173,7 +201,21 @@ export const actions = DevActions<Ctx>()
           },
     );
 
-    e.render(<Vimeo {...props} />);
+    e.render(<Sample ctx={e.ctx} />);
   });
 
+export type SampleProps = { ctx: Ctx };
+
+export const Sample: React.FC<SampleProps> = (props) => {
+  const { ctx } = props;
+  const { bus, id } = ctx.props;
+
+  const icon = useIconController({ bus, id, isEnabled: ctx.debug.useIconController });
+
+  return <Vimeo {...ctx.props} icon={icon.current} />;
+};
+
+/**
+ * Export
+ */
 export default actions;
