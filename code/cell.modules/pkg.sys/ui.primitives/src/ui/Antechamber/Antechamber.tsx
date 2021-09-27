@@ -8,18 +8,29 @@ type Milliseconds = number;
 export type AntechamberProps = {
   isOpen?: boolean;
   backgroundBlur?: number;
+  backgroundBlurTransition?: Milliseconds;
   centerTop?: JSX.Element;
   centerBottom?: JSX.Element;
   maskColor?: string | number;
   resize?: t.ResizeObserver | t.UseResizeObserver;
+  sealOpacity?: number;
+  sealRotate?: number;
   slideDuration?: Milliseconds;
   style?: CssValue;
   onSize?: (size: t.DomRect) => void;
 };
 
 export const Antechamber: React.FC<AntechamberProps> = (props) => {
-  const { backgroundBlur = 6, isOpen, centerBottom, centerTop } = props;
-  const slideDuration = props.slideDuration ?? 200;
+  const {
+    backgroundBlur = 6,
+    backgroundBlurTransition = 0,
+    slideDuration = 200,
+    isOpen,
+    centerBottom,
+    centerTop,
+    sealOpacity = 1,
+    sealRotate = 0,
+  } = props;
   const bevelHeight = 45;
 
   const baseRef = useRef<HTMLDivElement>(null);
@@ -29,9 +40,14 @@ export const Antechamber: React.FC<AntechamberProps> = (props) => {
   const maskColor = color.format(props.maskColor ?? 0.75);
 
   const styles = {
-    base: css({ position: 'relative', overflow: 'hidden' }),
-    notReady: css({ Absolute: 0, backgroundColor: maskColor, backdropFilter }),
+    base: css({ position: 'relative', overflow: 'hidden', pointerEvents: 'none' }),
     ready: css({ Absolute: 0 }),
+    notReady: css({
+      Absolute: 0,
+      backgroundColor: maskColor,
+      backdropFilter,
+      transition: `backdrop-filter ${backgroundBlurTransition}ms ease`,
+    }),
   };
 
   const elNotReady = !size.ready && <div {...styles.notReady} />;
@@ -43,6 +59,7 @@ export const Antechamber: React.FC<AntechamberProps> = (props) => {
         edge={edge}
         backgroundColor={maskColor}
         backdropFilter={backdropFilter}
+        backdropFilterTransition={backgroundBlurTransition}
         isOpen={isOpen}
         slideDuration={slideDuration}
         height={height}
@@ -59,6 +76,8 @@ export const Antechamber: React.FC<AntechamberProps> = (props) => {
         isOpen={isOpen}
         bevelHeight={bevelHeight + 3}
         slideDuration={slideDuration}
+        sealOpacity={sealOpacity}
+        sealRotate={sealRotate}
         centerBottom={centerBottom}
         centerTop={centerTop}
       />

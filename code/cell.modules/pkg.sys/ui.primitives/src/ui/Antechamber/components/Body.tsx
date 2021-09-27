@@ -1,5 +1,5 @@
 import React from 'react';
-import { css, CssValue, PositioningLayers, t } from '../common';
+import { css, CssValue, PositioningLayers, t, Icons, COLORS } from '../common';
 
 const IMAGES = 'static/images/sys.ui';
 type Milliseconds = number;
@@ -10,15 +10,30 @@ export type BodyProps = {
   centerTop?: JSX.Element;
   centerBottom?: JSX.Element;
   slideDuration: Milliseconds;
+  sealOpacity?: number;
+  sealRotate?: number;
   style?: CssValue;
 };
 
 export const Body: React.FC<BodyProps> = (props) => {
-  const { isOpen } = props;
+  const { isOpen, sealOpacity } = props;
   const msecs = props.slideDuration;
 
   const styles = {
     base: css({ Absolute: 0 }),
+  };
+
+  const lock: t.PositioningLayer = {
+    id: 'lock',
+    position: { x: 'center', y: 'center' },
+    render() {
+      const style = css({
+        opacity: isOpen ? 0 : 0.4,
+        transition: `opacity ${msecs}ms ease`,
+        pointerEvents: 'none',
+      });
+      return <Icons.Lock.Closed color={COLORS.DARK} opacity={0.3} style={style} />;
+    },
   };
 
   const seal: t.PositioningLayer = {
@@ -28,12 +43,15 @@ export const Body: React.FC<BodyProps> = (props) => {
       const styles = {
         base: css({
           opacity: isOpen ? 0 : 1,
-          transform: `rotate(${isOpen ? 25 : 0}deg)`,
+          transform: `rotate(${props.sealRotate ?? 0}deg)`,
           transition: `opacity ${msecs}ms ease, transform ${msecs}ms ease`,
+          pointerEvents: 'none',
         }),
         image: css({
           Image: [`${IMAGES}/wax.png`, `${IMAGES}/wax@2x.png`, 247, 245],
           transform: `scale(0.5) translateY(12px)`,
+          opacity: sealOpacity,
+          transition: `opacity ${msecs}ms ease`,
         }),
       };
       return (
@@ -70,7 +88,7 @@ export const Body: React.FC<BodyProps> = (props) => {
     bottom: container('bottom', props.centerBottom),
   };
 
-  const layers: t.PositioningLayer[] = [seal, center.top, center.bottom];
+  const layers: t.PositioningLayer[] = [lock, seal, center.top, center.bottom];
 
   return <PositioningLayers style={styles.base} layers={layers} />;
 };
