@@ -20,7 +20,7 @@
     "serve": "cell.compiler serve $@",
     "clean": "cell.compiler clean $@",
     "deploy": "ts-node -T script.ts/deploy.sample",
-    "deploy.registry": "ts-node -T script.ts/deploy.registry",
+    "deploy.sys": "ts-node -T script.ts/deploy.sys",
     "tmp": "ts-node -T script.ts/deploy.tmp"
   },
   "dependencies": {
