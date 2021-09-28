@@ -40,7 +40,7 @@ export const DevNetworkHeader: React.FC<DevNetworkHeaderProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.left}>
-        <LocalPeerProps self={self} status={peer} bus={bus} allowNewConnections={true} />
+        <LocalPeerProps self={self} status={peer} bus={bus} newConnections={true} />
       </div>
       <div {...styles.right}>
         {elSelfScreen}

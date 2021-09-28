@@ -5,14 +5,14 @@ import { takeUntil } from 'rxjs/operators';
 import { PeerEvents } from '../event';
 import { color, COLORS, css, CssValue, Hr, Icons, PropList, t, Textbox, time } from './common';
 
-type NewConnectionOptions = { isReliable?: boolean };
+type NewConnectionOptions = { isReliable?: boolean; autoStartVideo?: boolean };
 
 export type LocalPeerPropsProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
   status: t.PeerStatus;
   title?: string | null;
-  allowNewConnections?: boolean | NewConnectionOptions;
+  newConnections?: boolean | NewConnectionOptions;
   style?: CssValue;
 };
 
@@ -20,7 +20,7 @@ export type LocalPeerPropsProps = {
  * A property list
  */
 export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
-  const { bus, self, allowNewConnections = false } = props;
+  const { bus, self, newConnections = false } = props;
   const title = props.title === null ? undefined : props.title ?? 'Network';
 
   const [connectTo, setConnectTo] = useState<string>('');
@@ -31,27 +31,39 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
     const dispose$ = new Subject<void>();
 
     // NB: Cause timestamp values to remain up-to-date.
-    interval(1000)
-      .pipe(takeUntil(dispose$))
-      .subscribe(() => redraw());
+    interval(1000).pipe(takeUntil(dispose$)).subscribe(redraw);
 
     return () => dispose$.next();
   }, []);
 
-  const connect = async (remote: t.PeerId) => {
+  /**
+   * Initiates a new connection.
+   */
+  const startConnection = async (remote: t.PeerId) => {
     remote = (connectTo || '').trim();
     if (!remote) return;
 
     const isConnected = props.status.connections
       .filter(({ kind }) => kind === 'data')
       .some(({ peer }) => peer.remote.id === remote);
-
     if (isConnected) return; // Already connected.
 
-    const events = PeerEvents(bus);
+    // Prepare options.
     const options: NewConnectionOptions =
-      typeof allowNewConnections === 'object' ? allowNewConnections : { isReliable: true };
-    await events.connection(self, remote).open.data(options);
+      typeof newConnections === 'object' ? newConnections : { isReliable: true };
+    const { isReliable, autoStartVideo } = options;
+
+    // Invoke the action(s).
+    const events = PeerEvents(bus);
+    const open = events.connection(self, remote).open;
+    const res = await open.data({ isReliable });
+
+    if (autoStartVideo && res.connection) {
+      const parent = res.connection.id;
+      await open.media('media/video', { parent });
+    }
+
+    // Finish up.
     events.dispose();
   };
 
@@ -63,7 +75,7 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
     textbox: css({ fontSize: 12, marginBottom: 10, marginTop: 15 }),
   };
 
-  const elConnect = allowNewConnections && (
+  const elConnect = newConnections && (
     <Textbox
       value={connectTo}
       placeholder={'open connection'}
@@ -73,7 +85,7 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
       selectOnFocus={true}
       enter={{
         isEnabled: Boolean(connectTo.trim()),
-        handler: () => connect(connectTo),
+        handler: () => startConnection(connectTo),
         icon: (e) => {
           const input = connectTo.trim();
           const col = input ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.6);
@@ -97,7 +109,7 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
         items={toNetworkItems(props)}
         width={{ min: 240, max: 260 }}
       />
-      {allowNewConnections && <Hr thickness={6} opacity={0.05} margin={[5, 0]} />}
+      {newConnections && <Hr thickness={6} opacity={0.05} margin={[5, 0]} />}
       {elConnect}
     </div>
   );

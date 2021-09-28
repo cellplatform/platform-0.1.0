@@ -29,7 +29,12 @@ export const DevProps: React.FC<DevPropsProps> = (props) => {
   };
 
   const elLocalPeer = status && (
-    <LocalPeerProps self={self} status={status} bus={bus} allowNewConnections={true} />
+    <LocalPeerProps
+      self={self}
+      status={status}
+      bus={bus}
+      newConnections={{ isReliable: true, autoStartVideo: true }}
+    />
   );
 
   return <div {...css(styles.base, props.style)}>{elLocalPeer}</div>;

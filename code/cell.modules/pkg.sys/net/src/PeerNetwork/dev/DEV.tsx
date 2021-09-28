@@ -326,6 +326,34 @@ export const actions = DevActions<Ctx>()
       );
     });
 
+    e.button('fire ⚡️ Remote:exists (false)', async (e) => {
+      const events = e.ctx.events.peer;
+      const self = e.ctx.self;
+      const remote = cuid();
+      const res = await e.ctx.events.peer.remote.exists.get({ self, remote });
+      const data = { exists: res.exists };
+      e.button.description = (
+        <ObjectView name={'exists:res'} data={data} fontSize={10} expandLevel={2} />
+      );
+    });
+
+    e.button('fire ⚡️ Remote:exists (true)', async (e) => {
+      const self = e.ctx.self;
+      const status = (await e.ctx.events.peer.status(self).get()).peer;
+
+      const first = (status?.connections ?? [])[0];
+      if (!first) return;
+
+      console.log('status', status);
+      const remote = first.peer.remote.id;
+
+      const res = await e.ctx.events.peer.remote.exists.get({ self, remote });
+      const data = { exists: res.exists };
+      e.button.description = (
+        <ObjectView name={'exists:res'} data={data} fontSize={10} expandLevel={2} />
+      );
+    });
+
     e.hr();
 
     e.title('Connection');

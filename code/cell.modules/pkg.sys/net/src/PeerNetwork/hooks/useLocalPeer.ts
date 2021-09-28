@@ -37,8 +37,8 @@ export function useLocalPeer(args: {
     };
 
     const updateStatus = async () => {
-      const { peer } = await events.status(self).get();
-      setStatus(peer);
+      const res = await events.status(self).get();
+      setStatus(res.peer);
     };
 
     /**
