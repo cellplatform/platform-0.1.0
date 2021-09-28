@@ -17,15 +17,16 @@ type Client = {
 /**
  *  https://github.com/peers/peerjs-server
  */
-const server = PeerServer({ port, path, proxied: true }, (args) => {
+const server = PeerServer({ port, path, proxied: true, allow_discovery: false }, (args) => {
   const elapsed = timer.elapsed.toString();
   const address = log.cyan(`http://localhost:${log.white(port)}${log.gray(`${path}`)}`);
+
   log.info();
   log.info.gray(`👋 Running on ${address} [${elapsed}]`);
   log.info();
-  log.info.gray(`   • package: ${pkg.name}@${pkg.version}`);
-  log.info.gray(`   • path:    ${path}`);
-  log.info.gray(`   • port:    ${port}`);
+  log.info.gray(`   • package:   ${pkg.name}@${pkg.version}`);
+  log.info.gray(`   • path:      ${path}`);
+  log.info.gray(`   • port:      ${port}`);
   log.info();
 });
 
