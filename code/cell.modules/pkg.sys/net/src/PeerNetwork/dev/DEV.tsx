@@ -327,7 +327,6 @@ export const actions = DevActions<Ctx>()
     });
 
     e.button('fire ⚡️ Remote:exists (false)', async (e) => {
-      const events = e.ctx.events.peer;
       const self = e.ctx.self;
       const remote = cuid();
       const res = await e.ctx.events.peer.remote.exists.get({ self, remote });
@@ -340,18 +339,22 @@ export const actions = DevActions<Ctx>()
     e.button('fire ⚡️ Remote:exists (true)', async (e) => {
       const self = e.ctx.self;
       const status = (await e.ctx.events.peer.status(self).get()).peer;
-
       const first = (status?.connections ?? [])[0];
-      if (!first) return;
+      const remote = first?.peer.remote.id;
 
-      console.log('status', status);
-      const remote = first.peer.remote.id;
+      const description = (data: any) => {
+        e.button.description = (
+          <ObjectView name={'exists:res'} data={data} fontSize={10} expandLevel={2} />
+        );
+      };
 
-      const res = await e.ctx.events.peer.remote.exists.get({ self, remote });
-      const data = { exists: res.exists };
-      e.button.description = (
-        <ObjectView name={'exists:res'} data={data} fontSize={10} expandLevel={2} />
-      );
+      if (remote) {
+        const res = await e.ctx.events.peer.remote.exists.get({ self, remote });
+        description({ exists: res.exists });
+      }
+      if (!remote) {
+        description({ error: `No remote connections to draw from` });
+      }
     });
 
     e.hr();
