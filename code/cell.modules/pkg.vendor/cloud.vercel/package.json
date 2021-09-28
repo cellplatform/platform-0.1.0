@@ -1,6 +1,6 @@
 {
   "name": "vendor.vercel",
-  "version": "0.0.15",
+  "version": "0.0.18",
   "main": "lib/node/index",
   "types": "lib/node/index.d.ts",
   "sideEffects": false,
@@ -21,7 +21,8 @@
     "clean": "cell.compiler clean $@",
     "deploy": "ts-node -T script.ts/deploy.sample",
     "deploy.sys": "ts-node -T script.ts/deploy.sys",
-    "tmp": "ts-node -T script.ts/deploy.tmp"
+    "deploy.tmp.node": "ts-node -T script.ts/deploy.tmp.node",
+    "tmp": "ts-node -T script.ts/server"
   },
   "dependencies": {
     "@platform/util.mimetype": "^0.1.48"

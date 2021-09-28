@@ -7,6 +7,8 @@
 (async () => {
   //
   const { bus } = env;
+  console.log('node runtime 👋👋👋');
+  console.log('env', env);
   // const { VercelBus } = await import('../node.BusController');
   // m.VercelBus
   // const controller = VercelBus.Controller({ bus });

@@ -7,6 +7,7 @@ export default () =>
 
     .variant('node', (config) =>
       config
+        .namespace('vercel.sample.node')
         .target('node')
         .entry('./src/node.runtime/run')
         // .declarations('./src/**/*')
