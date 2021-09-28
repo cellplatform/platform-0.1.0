@@ -21,7 +21,7 @@ describe.only('BusController', function () {
       expect(controller.id).to.eql(DEFAULT.id);
       expect(controller.events.id).to.eql(DEFAULT.id);
       expect(events.id).to.eql(DEFAULT.id);
-      expect(res.info?.endpoint.version).to.eql(DEFAULT.version);
+      expect(res.info?.endpoint).to.eql(undefined); // NB: The 'endpoint:true' option was not specified.
     });
 
     it('explicit id', async () => {

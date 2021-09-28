@@ -35,6 +35,7 @@ export function BusEvents(args: {
     async get(options = {}) {
       const { timeout: msecs = 90000 } = options;
       const tx = slug();
+      const endpoint = Boolean(options.endpoint);
 
       const first = firstValueFrom(
         info.res$.pipe(
@@ -46,7 +47,7 @@ export function BusEvents(args: {
 
       bus.fire({
         type: 'vendor.vercel/info:req',
-        payload: { tx, id },
+        payload: { tx, id, endpoint },
       });
 
       const res = await first;

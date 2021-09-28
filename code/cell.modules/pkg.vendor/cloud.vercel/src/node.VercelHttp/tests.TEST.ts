@@ -44,9 +44,6 @@ describe('VercelHttp', function () {
       expect(res1.token).to.eql(token);
       expect(res1.Authorization).to.eql(`Bearer ${token}`);
       expect(res1.headers.Authorization).to.eql(res1.Authorization);
-
-      expect(res1.version).to.eql(DEFAULT.version);
-      expect(res2.version).to.eql(1234);
     });
 
     it('toCtx: ctx.url', () => {
@@ -54,20 +51,12 @@ describe('VercelHttp', function () {
       const res1 = util.toCtx(fs, http, token);
       const res2 = util.toCtx(fs, http, token, 1234);
 
-      expect(res1.url('foo')).to.match(new RegExp(`\/v${DEFAULT.version}\/foo$`));
-      expect(res1.url('foo', { bar: 123 })).to.match(/\/foo\?bar=123$/);
+      expect(res1.url(1, 'foo')).to.match(new RegExp(`\/v1\/foo$`));
+      expect(res1.url(1, 'foo', { bar: 123 })).to.match(/\/foo\?bar=123$/);
 
-      expect(res2.url('foo')).to.match(/\/v1234\/foo$/);
-      expect(res2.url('foo', undefined, { version: 456 })).to.match(/\/v456\/foo$/);
+      expect(res2.url(1234, 'foo')).to.match(/\/v1234\/foo$/);
+      expect(res2.url(456, 'foo', undefined)).to.match(/\/v456\/foo$/);
     });
-  });
-
-  it('create (API version)', async () => {
-    const client1 = VercelHttp({ fs, token });
-    const client2 = VercelHttp({ fs, token, version: 1234 });
-
-    expect(client1.version).to.eql(DEFAULT.version);
-    expect(client2.version).to.eql(1234);
   });
 
   it('not authorized', async () => {

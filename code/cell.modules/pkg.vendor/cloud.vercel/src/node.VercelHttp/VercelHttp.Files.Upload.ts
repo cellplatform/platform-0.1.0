@@ -9,6 +9,7 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
   const api: t.VercelHttpUploadFiles = {
     /**
      * Post a single file to the endpoint.
+     * https://vercel.com/docs/rest-api#endpoints/deployments/upload-deployment-files
      */
     async post(path, input) {
       const timer = time.timer();
@@ -24,7 +25,7 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
         'Content-Type': contentType,
       };
 
-      const url = ctx.url(`now/files`, { teamId });
+      const url = ctx.url(2, `now/files`, { teamId });
       const res = await http.post(url, body, { headers });
       const { ok, status } = res;
       const json = res.json as any;

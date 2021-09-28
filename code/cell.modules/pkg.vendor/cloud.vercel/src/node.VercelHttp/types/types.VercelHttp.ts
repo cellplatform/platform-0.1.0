@@ -24,9 +24,19 @@ export type VercelHttpResponse = {
  * https://vercel.com/docs/api
  */
 export type VercelHttp = {
-  version: number;
+  info(): Promise<Res & { user: t.VercelHttpUser }>;
   teams: VercelHttpTeams;
   team(id: string): VercelHttpTeam;
+};
+
+/**
+ * https://vercel.com/docs/rest-api#endpoints/user/get-the-authenticated-user
+ */
+export type VercelHttpUser = {
+  uid: string;
+  email: string;
+  username: string;
+  avatar: string;
 };
 
 export type VercelHttpTeams = {

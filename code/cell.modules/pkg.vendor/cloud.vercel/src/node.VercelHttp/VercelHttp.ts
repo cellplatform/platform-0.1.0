@@ -20,7 +20,18 @@ export function VercelHttp(args: {
   const { headers } = ctx;
 
   const api: t.VercelHttp = {
-    version: ctx.version,
+    async info() {
+      // https://vercel.com/docs/rest-api#endpoints/user/get-the-authenticated-user
+      const url = 'https://api.vercel.com/www/user';
+      const res = await http.get(url, { headers });
+
+      const { ok, status } = res;
+      const json = res.json as any;
+      const user = json as t.VercelHttpUser;
+      const error = ok ? undefined : (json.error as t.VercelHttpError);
+
+      return { ok, status, user, error };
+    },
 
     teams: {
       /**
@@ -28,8 +39,9 @@ export function VercelHttp(args: {
        * https://vercel.com/docs/api#endpoints/teams/list-all-your-teams
        */
       async list() {
-        const url = ctx.url('teams');
+        const url = ctx.url(1, 'teams');
         const res = await http.get(url, { headers });
+
         const { ok, status } = res;
         const json = res.json as any;
         const teams = !ok ? [] : (json.teams as t.VercelTeam[]);

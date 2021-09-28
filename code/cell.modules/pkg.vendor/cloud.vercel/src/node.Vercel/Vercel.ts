@@ -3,6 +3,7 @@ import { BusEvents as Events } from '../web.BusEvents';
 import { VercelHttp as Http } from '../node.VercelHttp';
 import { VercelFs as Fs } from './Vercel.Fs';
 import { VercelDeploy as Deploy } from './Vercel.Deploy';
+import { VercelNode as Node } from './Vercel.Node';
 
 export const Vercel = {
   Controller,
@@ -10,4 +11,5 @@ export const Vercel = {
   Http,
   Fs,
   Deploy,
+  Node,
 };

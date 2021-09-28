@@ -102,7 +102,7 @@ export async function deploy(
     files,
   };
 
-  const url = ctx.url('deployments', { teamId: team.id });
+  const url = ctx.url(12, 'deployments', { teamId: team.id });
   const res = await http.post(url, body, { headers });
   const json = (res.json ?? {}) as any;
 

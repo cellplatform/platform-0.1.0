@@ -12,9 +12,8 @@ export function BusController(args: {
   fs: t.Fs;
   bus: t.EventBus<any>;
   filter?: (e: t.VercelEvent) => boolean;
-  version?: number;
 }) {
-  const { token, version = DEFAULT.version, fs } = args;
+  const { token, fs } = args;
   const id = args.id ?? DEFAULT.id;
   const bus = rx.busAsType<t.VercelEvent>(args.bus);
   const events = BusEvents({ id, bus, filter: args.filter });
@@ -30,9 +29,19 @@ export function BusController(args: {
   /**
    * Info (Module)
    */
-  events.info.req$.subscribe((e) => {
+  events.info.req$.subscribe(async (e) => {
     const { tx = slug() } = e;
-    const info: t.VercelInfo = { endpoint: { version } };
+
+    const endpoint: t.VercelInfo['endpoint'] = await (async () => {
+      if (!e.endpoint) return undefined;
+      const res = await client.info();
+      const { user, error } = res;
+      const alive = user && !error;
+      return { alive, user, error };
+    })();
+
+    const info: t.VercelInfo = { endpoint };
+
     bus.fire({
       type: 'vendor.vercel/info:res',
       payload: { tx, id, info },

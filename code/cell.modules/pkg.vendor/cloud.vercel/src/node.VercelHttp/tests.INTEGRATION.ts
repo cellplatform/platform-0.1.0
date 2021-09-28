@@ -29,6 +29,14 @@ describe('VercelHttp [INTEGRATION]', function () {
     return client.team(await getTeamId(index));
   };
 
+  describe('info', () => {
+    it('authenticated user', async () => {
+      const res = await client.info();
+      console.log('-------------------------------------------');
+      console.log('res', res.user);
+    });
+  });
+
   describe('teams', () => {
     it('teams.list', async () => {
       const res = await client.teams.list();

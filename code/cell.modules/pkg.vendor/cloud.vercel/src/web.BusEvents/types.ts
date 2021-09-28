@@ -9,8 +9,10 @@ export type VercelInfo = {
   /**
    * https://vercel.com/docs/api#endpoints
    */
-  endpoint: {
-    version: number; // Base version of the HTTP endpoint.
+  endpoint?: {
+    alive: boolean;
+    user?: t.VercelHttpUser;
+    error?: t.VercelHttpError;
   };
 };
 
@@ -32,7 +34,7 @@ export type VercelEvents = t.Disposable & {
   info: {
     req$: t.Observable<t.VercelInfoReq>;
     res$: t.Observable<t.VercelInfoRes>;
-    get(options?: { timeout?: Milliseconds }): Promise<VercelInfoRes>;
+    get(options?: { timeout?: Milliseconds; endpoint?: boolean }): Promise<VercelInfoRes>;
   };
 
   deploy: {
@@ -68,7 +70,7 @@ export type VercelInfoReqEvent = {
   type: 'vendor.vercel/info:req';
   payload: VercelInfoReq;
 };
-export type VercelInfoReq = { tx: string; id: Instance };
+export type VercelInfoReq = { tx: string; id: Instance; endpoint: boolean };
 
 export type VercelInfoResEvent = {
   type: 'vendor.vercel/info:res';

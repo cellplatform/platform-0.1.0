@@ -24,7 +24,7 @@ describe.skip('BusController', function () {
     return client.team(await getTeamId(index));
   };
 
-  describe.only('Deploy', () => {
+  describe('Deploy', () => {
     it('bundle (Uint8Array)', async () => {
       // const team = await getTeam();
       const dir = fs.dir('web');

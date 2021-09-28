@@ -31,7 +31,7 @@ export function VercelTeamProject(args: {
      * https://vercel.com/docs/api#endpoints/projects/get-a-single-project
      */
     async info() {
-      const url = ctx.url(`projects/${name}`, { teamId });
+      const url = ctx.url(8, `projects/${name}`, { teamId });
       const res = await http.get(url, { headers });
       const { ok, status } = res;
       const json = res.json as any;
@@ -45,7 +45,7 @@ export function VercelTeamProject(args: {
      * https://vercel.com/docs/api#endpoints/projects/create-a-project
      */
     async create(options = {}) {
-      const url = ctx.url('projects', { teamId });
+      const url = ctx.url(8, 'projects', { teamId });
       const body = { name, gitRepository: options.git };
 
       const res = await http.post(url, body, { headers });

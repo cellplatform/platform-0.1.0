@@ -1,6 +1,7 @@
 import { t, nodefs, rx, Filesystem } from './common';
 import { VercelHttp } from '../node.VercelHttp';
 import { VercelFs } from './Vercel.Fs';
+import { VercelNode } from './Vercel.Node';
 
 type ApiToken = string;
 type DirectoryPath = string;
@@ -20,13 +21,8 @@ type Args = {
  *                          Geo-cached.
  */
 export const VercelDeploy = (args: Args) => {
-  const { token, beforeUpload } = args;
-
-  const dir = nodefs.resolve(args.dir ?? '');
-  const bus = rx.bus();
-  const store = Filesystem.Controller({ bus, fs: dir });
-  const fs = store.fs({ timeout: 9999 });
-  const client = VercelHttp({ fs, token });
+  const { beforeUpload } = args;
+  const { client, dir, fs, dispose, dispose$ } = VercelNode(args);
 
   const getTeam = async (name: string) => {
     const teams = (await client.teams.list()).teams;
@@ -36,13 +32,15 @@ export const VercelDeploy = (args: Args) => {
   };
 
   return {
+    dispose,
+    dispose$,
     dir,
     client,
     team: args.team,
     project: args.project,
 
     /**
-     * Read in the bundle manifest
+     * Read in the bundle manifest.
      */
     async manifest<T extends t.Manifest>(): Promise<T | undefined> {
       const path = nodefs.join(dir, 'index.json');
