@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { css, CssValue, t, types } from './common';
 import { VimeoEvents } from './VimeoEvents';
 import { usePlayerController, useIconController } from './hooks';
-import { VideoIcon, VimeoIconClickArgs } from './components/VideoIcon';
+import { IconOverlay, VimeoIconClickArgs } from './components/IconOverlay';
 
 export type VimeoProps = {
   bus: t.EventBus<any>;
@@ -87,7 +87,7 @@ const Component: React.FC<VimeoProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div ref={divRef} {...styles.container}></div>
-      <VideoIcon icon={props.icon} onClick={props.onIconClick} />
+      <IconOverlay icon={props.icon} onClick={props.onIconClick} />
     </div>
   );
 };

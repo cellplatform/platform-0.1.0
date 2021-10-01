@@ -5,13 +5,13 @@ import { Spinner } from '../../primitives';
 
 export type VimeoIconClickArgs = { icon: types.VimeoIconFlag };
 
-export type VideoIconProps = {
+export type IconOverlayProps = {
   icon?: types.VimeoIconFlag;
   style?: CssValue;
   onClick?: (e: VimeoIconClickArgs) => void;
 };
 
-export const VideoIcon: React.FC<VideoIconProps> = (props) => {
+export const IconOverlay: React.FC<IconOverlayProps> = (props) => {
   const { icon, onClick } = props;
   const iconSize = 48;
 
