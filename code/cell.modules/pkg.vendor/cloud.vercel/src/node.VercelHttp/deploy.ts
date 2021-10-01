@@ -86,7 +86,7 @@ export async function deploy(
    */
   name = name ?? 'unnamed-v0.0.0';
   const alias = asArray(args.alias).filter(Boolean) as string[];
-  const target = args.target ?? 'staging';
+  const target = args.target;
   const body = {
     name,
     project: project.id,

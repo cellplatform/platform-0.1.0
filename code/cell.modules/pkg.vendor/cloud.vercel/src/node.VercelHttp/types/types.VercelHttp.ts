@@ -237,7 +237,7 @@ export type VercelHttpDeployResponse = VercelHttpResponse & {
     team: { name: Name; id: Id };
     project: { name: Name; id: Id };
     regions: string[];
-    target: VercelTargetFlag;
+    target: VercelTargetFlag | undefined;
     alias: string[];
     meta: VercelHttpDeployMeta;
     urls: { inspect: string; public: string[] };
