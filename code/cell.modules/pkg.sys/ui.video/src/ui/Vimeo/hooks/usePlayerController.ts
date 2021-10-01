@@ -40,23 +40,23 @@ export function usePlayerController(args: {
 
     const getStatus = async () => toStatus('info', await getTimes());
 
-    const toStatus = (action: Action, times: Times): t.VimeoStatus => {
+    const toStatus = async (action: Action, times: Times): Promise<t.VimeoStatus> => {
       return deleteUndefined({
         id,
-        video,
         action,
         ...times,
+        video: (await player?.getVideoId()) ?? video,
         percent: Math.min(times.percent, 1),
         playing: playing.current,
         ended: times.seconds >= times.duration,
       });
     };
 
-    const fireStatus = (action: Action, times: Times) => {
+    const fireStatus = async (action: Action, times: Times) => {
       if (loading.current && action !== 'loaded') return;
       bus.fire({
         type: 'Vimeo/status',
-        payload: toStatus(action, times),
+        payload: await toStatus(action, times),
       });
     };
 
@@ -120,9 +120,10 @@ export function usePlayerController(args: {
        */
       events.status.req$.subscribe(async (e) => {
         const { tx = slug() } = e;
+        const status = await getStatus();
         bus.fire({
           type: 'Vimeo/status:res',
-          payload: { tx, id, status: await getStatus() },
+          payload: { tx, id, status },
         });
       });
 
