@@ -22,7 +22,7 @@
     "deploy": "ts-node -T script.ts/deploy.sample",
     "deploy.sys": "ts-node -T script.ts/deploy.sys",
     "deploy.tmp.node": "ts-node -T script.ts/deploy.tmp.node",
-    "tmp": "ts-node -T script.ts/server"
+    "tmp": "ts-node -T script.ts/tmp.server"
   },
   "dependencies": {
     "@platform/util.mimetype": "^0.1.48"
