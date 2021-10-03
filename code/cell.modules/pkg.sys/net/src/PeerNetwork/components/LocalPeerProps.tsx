@@ -70,9 +70,18 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
   /**
    * [Render]
    */
+
+  const width = { min: 240, max: 260 };
+
   const styles = {
     base: css({}),
-    textbox: css({ fontSize: 12, marginBottom: 10, marginTop: 15 }),
+    textbox: css({
+      fontSize: 12,
+      marginBottom: 10,
+      marginTop: 15,
+      maxWidth: width.max,
+      minWidth: width.min,
+    }),
   };
 
   const elConnect = newConnections && (
@@ -107,7 +116,7 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
         title={title}
         defaults={{ clipboard: false }}
         items={toNetworkItems(props)}
-        width={{ min: 240, max: 260 }}
+        width={width}
       />
       {newConnections && <Hr thickness={6} opacity={0.05} margin={[5, 0]} />}
       {elConnect}
