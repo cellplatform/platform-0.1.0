@@ -1,7 +1,7 @@
 import VimeoPlayer from '@vimeo/player';
 import { useEffect, useRef, useState } from 'react';
 
-import { deleteUndefined, R, rx, slug, t, time, types } from '../common';
+import { deleteUndefined, R, rx, slug, t, time } from '../common';
 import { VimeoEvents } from '../VimeoEvents';
 
 type Times = { duration: number; percent: number; seconds: number };
@@ -12,7 +12,7 @@ type Action = t.VimeoStatus['action'];
  */
 export function usePlayerController(args: {
   bus: t.EventBus<any>;
-  id: types.VimeoInstance;
+  id: t.VimeoInstance;
   video: number;
   player?: VimeoPlayer;
 }) {

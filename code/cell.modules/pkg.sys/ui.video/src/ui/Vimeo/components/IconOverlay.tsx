@@ -1,12 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, COLORS, types } from '../common';
+import React from 'react';
+
 import { Icons } from '../../Icons';
 import { Spinner } from '../../primitives';
+import { color, COLORS, css, CssValue, t } from '../common';
 
-export type VimeoIconClickArgs = { icon: types.VimeoIconFlag };
+export type VimeoIconClickArgs = { icon: t.VimeoIconFlag };
 
 export type IconOverlayProps = {
-  icon?: types.VimeoIconFlag;
+  icon?: t.VimeoIconFlag;
   style?: CssValue;
   onClick?: (e: VimeoIconClickArgs) => void;
 };

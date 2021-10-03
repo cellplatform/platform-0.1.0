@@ -92,6 +92,13 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.props.muted;
     });
 
+    e.hr(1, 0.1);
+
+    e.boolean('useIconController', (e) => {
+      if (e.changing) e.ctx.debug.useIconController = e.changing.next;
+      e.boolean.current = e.ctx.debug.useIconController;
+    });
+
     e.select((config) => {
       config
         .items(IconFlags)
@@ -102,6 +109,11 @@ export const actions = DevActions<Ctx>()
           const current = e.select.current[0]; // NB: always first.
           e.select.label = current ? `icon: ${current.label}` : `icon: <undefined>`;
           e.ctx.props.icon = current ? current.value : undefined;
+
+          e.select.description =
+            e.changing && e.ctx.debug.useIconController
+              ? 'HINT: Turn off "useIconController" to see effect'
+              : undefined;
         });
     });
 
@@ -143,17 +155,6 @@ export const actions = DevActions<Ctx>()
 
     e.button('play ("start")', (e) => e.ctx.events.play.fire());
     e.button('pause ("stop")', (e) => e.ctx.events.pause.fire());
-
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('hooks');
-
-    e.boolean('useIconController', (e) => {
-      if (e.changing) e.ctx.debug.useIconController = e.changing.next;
-      e.boolean.current = e.ctx.debug.useIconController;
-    });
 
     e.hr();
   })
@@ -212,7 +213,7 @@ export const Sample: React.FC<SampleProps> = (props) => {
 
   const icon = useIconController({ bus, id, isEnabled: ctx.debug.useIconController });
 
-  return <Vimeo {...ctx.props} icon={icon.current} />;
+  return <Vimeo {...ctx.props} icon={icon.current ?? props.ctx.props.icon} />;
 };
 
 /**

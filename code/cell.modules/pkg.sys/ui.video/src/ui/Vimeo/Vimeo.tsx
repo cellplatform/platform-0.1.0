@@ -1,7 +1,7 @@
 import VimeoPlayer from '@vimeo/player';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { css, CssValue, t, types } from './common';
+import { css, CssValue, t } from './common';
 import { VimeoEvents } from './VimeoEvents';
 import { usePlayerController, useIconController } from './hooks';
 import { IconOverlay, VimeoIconClickArgs } from './components/IconOverlay';
@@ -15,7 +15,7 @@ export type VimeoProps = {
   height?: number;
   borderRadius?: number;
   scale?: number;
-  icon?: types.VimeoIconFlag;
+  icon?: t.VimeoIconFlag;
   style?: CssValue;
   onIconClick?: (e: VimeoIconClickArgs) => void;
 };

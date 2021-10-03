@@ -1,6 +1,4 @@
+import { t } from '../../common';
+
 export * from '../../common';
-
-import * as types from './types';
-export { types };
-
-export const IconFlags: types.VimeoIconFlag[] = ['spinner', 'play', 'pause', 'replay'];
+export const IconFlags: t.VimeoIconFlag[] = ['spinner', 'play', 'pause', 'replay'];
