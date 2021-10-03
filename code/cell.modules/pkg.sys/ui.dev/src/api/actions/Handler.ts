@@ -49,6 +49,7 @@ export const Handler = {
       };
     }) {
       const { env, payload } = args;
+
       const fn: t.ActionHandlerSettings<T> = (settings) => {
         // Merge in changes (if any).
         Handler.settings.update(env, settings);
