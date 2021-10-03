@@ -13,6 +13,7 @@ import {
   t,
   time,
   WebRuntime,
+  DEFAULT,
 } from './common';
 import { PeerEvents } from './event';
 import { MemoryRefs, SelfRef } from './Refs';
@@ -106,9 +107,9 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
   const initLocalPeer = (e: t.PeerLocalCreateReq) => {
     const createdAt = time.now.timestamp;
-    const signal = StringUtil.parseEndpointAddress(e.signal);
-    const { host, path, port, secure } = signal;
-    const peer = new PeerJS(e.self, { host, path, port, secure });
+    const signal = StringUtil.parseEndpointAddress({ address: e.signal, key: DEFAULT.PEERJS_KEY });
+    const { host, path, port, secure, key } = signal;
+    const peer = new PeerJS(e.self, { host, path, port, secure, key });
     const self: SelfRef = { id: e.self, peer, createdAt, signal, connections: [], media: {} };
 
     /**
@@ -318,6 +319,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         const reliable = e.isReliable;
         const errorMonitor = PeerJsUtil.error(self.peer);
         const dataConnection = self.peer.connect(remote, { reliable, metadata });
+
         refs.connection(self).add('data', 'outgoing', dataConnection);
 
         dataConnection.on('open', () => {

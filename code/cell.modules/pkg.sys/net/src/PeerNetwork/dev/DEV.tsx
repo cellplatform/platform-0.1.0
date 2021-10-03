@@ -79,7 +79,7 @@ export const actions = DevActions<Ctx>()
 
     strategy.peer.connection.autoPropagation = false; // TEMP 🐷
 
-    const signal = 'rtc.cellfs.com/peer';
+    const signal = 'rtc.cellfs.com';
     const init = () => {
       events.media.start(EventBridge.videoRef(self)).video();
       events.peer.create(signal, self);
@@ -198,8 +198,7 @@ export const actions = DevActions<Ctx>()
       config
         .initial(config.ctx.signal)
         .title('Signal end-point:')
-        .placeholder('host/path')
-        .description('Format: `host/path`')
+        .placeholder('url')
         .pipe((e) => {
           if (e.changing) e.ctx.signal = e.changing.next;
         });

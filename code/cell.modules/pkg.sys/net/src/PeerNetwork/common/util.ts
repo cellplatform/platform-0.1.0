@@ -1,6 +1,7 @@
 import { Subject } from 'rxjs';
 
 import { defaultValue, PeerJS, Hash, filesize } from '../../common';
+import { DEFAULT } from './constants';
 import * as t from './types';
 
 type C = t.PeerConnectionStatus;
@@ -55,10 +56,9 @@ export const StringUtil = {
     return (id || '').trim().replace(/^dc_/, '').replace(/^mc_/, '');
   },
 
-  parseEndpointAddress(address: string): t.PeerSignallingEndpoint {
-    address = StringUtil.stripHttp((address || '').trim());
-
-    const key = 'conn';
+  parseEndpointAddress(args: { address: string; key: string }): t.PeerSignallingEndpoint {
+    const address = StringUtil.stripHttp((args.address || '').trim());
+    const key = args.key ?? '';
     const parts = address.trim().split('/');
     const path = StringUtil.stripPathLeft(parts[1]) || '/';
     const hostParts = (parts[0] || '').split(':');
