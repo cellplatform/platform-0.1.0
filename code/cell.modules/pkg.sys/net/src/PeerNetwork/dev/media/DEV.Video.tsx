@@ -43,7 +43,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
 
   const playerRef = useRef<HTMLDivElement>(null);
 
-  const [isVideoMuted, setVideoMuted] = useState<boolean>(defaultValue(props.isVideoMuted, true));
+  const [isVideoMuted, setVideoMuted] = useState<boolean>(props.isVideoMuted ?? true);
   const toggleVideoMuted = () => setVideoMuted((prev) => !prev);
 
   const [isSelected, setSelected] = useState<boolean>(false);

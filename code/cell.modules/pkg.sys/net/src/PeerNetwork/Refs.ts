@@ -35,7 +35,9 @@ export function MemoryRefs() {
     connection(input: SelfRef | string) {
       const self = typeof input === 'string' ? refs.self[input] : input;
       type C = PeerJS.DataConnection | PeerJS.MediaConnection;
-      const getId = (conn: C) => StringUtil.formatConnectionId((conn as any).connectionId);
+      const getId = (conn: C) => {
+        return StringUtil.formatConnectionId((conn as any).connectionId);
+      };
       return {
         add(
           kind: ConnectionKind,
@@ -43,6 +45,10 @@ export function MemoryRefs() {
           conn: PeerJS.DataConnection | PeerJS.MediaConnection,
           remoteStream?: MediaStream,
         ) {
+          if (!conn) {
+            throw new Error(`Expected PeerJS connection object (data or media)`);
+          }
+
           const id = getId(conn);
           const metadata = conn.metadata as t.PeerConnectionMetadata;
           const { parent, module, userAgent } = metadata;
