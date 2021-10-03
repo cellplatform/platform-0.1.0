@@ -89,11 +89,11 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
       )
       .subscribe((indexes) => {
         indexes.forEach((index) => {
-          const model = Model.find(index).item;
-          if (model) {
+          const item = Model.find(index).item;
+          if (item) {
             bus.fire({
               type: 'sys.ui.dev/action/model/changed',
-              payload: { namespace, index, item: model },
+              payload: { namespace, index, item },
             });
           }
         });
