@@ -58,16 +58,22 @@ export const StringUtil = {
   parseEndpointAddress(address: string): t.PeerSignallingEndpoint {
     address = StringUtil.stripHttp((address || '').trim());
 
+    const key = 'conn';
     const parts = address.trim().split('/');
-    const path = StringUtil.stripPathLeft(parts[1]) || undefined;
-
+    const path = StringUtil.stripPathLeft(parts[1]) || '/';
     const hostParts = (parts[0] || '').split(':');
 
     const host = hostParts[0];
     const secure = !host.startsWith('localhost');
     const port = hostParts[1] ? parseInt(hostParts[1], 10) : secure ? 443 : 80;
 
-    return { host, port, path, secure };
+    const base = `http${secure ? 's' : ''}://${host}:${port}${path}`;
+    const url = {
+      base,
+      peers: `${base.replace(/\/$/, '')}/conn/peers`,
+    };
+
+    return { key, host, port, path, secure, url };
   },
 
   stripHttp(text?: string) {
