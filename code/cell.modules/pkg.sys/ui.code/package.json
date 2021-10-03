@@ -17,8 +17,6 @@
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
     "copy": "ts-node -T src/node/fs.copy/run",
-    "deploy__": "cell.compiler upload --dir sys.ui.code --no-dist $@",
-    "deploy": "ts-node -T script.ts/deploy.vercel $@",
     "tmp": "ts-node -T src/node/tmp"
   },
   "dependencies": {
