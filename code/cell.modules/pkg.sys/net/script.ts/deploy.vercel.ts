@@ -14,11 +14,13 @@ async function deploy(team: string, project: string, alias: string) {
   const manifest = await deployment.manifest<t.ModuleManifest>();
 
   console.log('\ndeploying:');
-  console.log(' •', manifest.hash.module);
-  console.log(' •', `${manifest.files.length} files\n`);
+  console.log(' • module:', manifest.hash.module);
+  console.log(' • files: ', `${manifest.files.length} files`);
+  console.log(' • alias: ', alias);
+  console.log();
 
   const wait = deployment.commit({
-    target: 'production',
+    // target: 'production',
     regions: ['sfo1'],
     alias,
     // routes: [{ src: '/foo', dest: '/' }],
@@ -39,4 +41,4 @@ async function deploy(team: string, project: string, alias: string) {
 
 // DEV
 // deploy('tdb', 'db-dev', 'dev.db.team');
-deploy('tdb', 'os-domains', 'os.domains');
+deploy('tdb', 'os-domains', 'net.os.domains');

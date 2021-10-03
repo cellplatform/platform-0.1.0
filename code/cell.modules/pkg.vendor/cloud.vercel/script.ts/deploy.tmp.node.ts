@@ -17,7 +17,7 @@ async function deploy(team: string, project: string, dir: string, alias?: string
   // console.log(' • manifest', );
 
   const wait = deployment.commit({
-    target: alias ? 'production' : 'staging',
+    // target: alias ? 'production' : 'staging',
     regions: ['sfo1'],
     alias,
   });
@@ -36,4 +36,4 @@ async function deploy(team: string, project: string, dir: string, alias?: string
 }
 
 // tmp.node
-deploy('tdb', 'tmp', 'dist/node');
+deploy('tdb', 'tmp', 'dist/node', 'foo.tmp.db.team');
