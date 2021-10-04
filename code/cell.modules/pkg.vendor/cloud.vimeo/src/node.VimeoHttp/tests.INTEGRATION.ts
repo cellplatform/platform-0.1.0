@@ -1,7 +1,30 @@
-import { expect } from '../test';
+import { expect, Http } from '../test';
+import { VimeoHttp } from '.';
+
+const token = process.env.VIMEO_TEST_TOKEN ?? '';
 
 describe('INTEGRATION', () => {
-  it('auth', async () => {
-    expect(123).to.eql(123);
+  describe.only('thumbnail', () => {
+    it('list', async () => {
+      const client = VimeoHttp({ token });
+      const video = 598788467;
+      const res = await client.thumbnails.list(video);
+
+      console.log('-------------------------------------------');
+      console.log('res', res);
+      expect(res.status).to.eql(200);
+    });
+
+    it('get (single)', async () => {
+      const client = VimeoHttp({ token });
+
+      const video = 598788467;
+      const picture = 1234134333;
+
+      const res = await client.thumbnails.get(video, picture);
+      console.log('-------------------------------------------');
+      console.log('res', res);
+      expect(res.status).to.eql(200);
+    });
   });
 });
