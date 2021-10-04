@@ -2,10 +2,21 @@ import { expect, Http } from '../test';
 import { VimeoHttp } from '.';
 
 const token = process.env.VIMEO_TEST_TOKEN ?? '';
+const headers = { Authorization: `bearer ${token}` };
 
 describe('INTEGRATION', () => {
-  describe.only('thumbnail', () => {
-    it('list', async () => {
+  it.only('me', async () => {
+    const client = VimeoHttp({ token });
+    const res = await client.me();
+
+    console.log('-------------------------------------------');
+    console.log('res', res);
+    console.log('-------------------------------------------');
+    console.log('uploadQuota', res.user?.uploadQuota);
+  });
+
+  describe('thumbnail', () => {
+    it.only('list', async () => {
       const client = VimeoHttp({ token });
       const video = 598788467;
       const res = await client.thumbnails.list(video);

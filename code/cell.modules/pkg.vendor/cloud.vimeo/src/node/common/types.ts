@@ -1,8 +1,8 @@
-import { Http, HttpHeaders } from '@platform/http.types';
+import { Http, HttpHeaders, HttpResponse } from '@platform/http.types';
 
 export * from '../../types';
 export { Event, EventBus, Json, JsonMap } from '@platform/types';
-export { Http };
+export { Http, HttpResponse };
 
 export type Ctx = {
   http: Http;

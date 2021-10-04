@@ -1,4 +1,4 @@
-import { t } from './common';
+import { t, toVimeoError } from './common';
 
 /**
  * A wrapper around the Thumbnails HTTP/API.
@@ -8,23 +8,6 @@ import { t } from './common';
 export function VimeoHttpThumbnails(args: { ctx: t.Ctx }): t.VimeoHttpThumbnails {
   const { ctx } = args;
   const { http, headers } = ctx;
-
-  const toSize = (item: any): t.VimeoThumbnailSize => {
-    const { width, height, link } = item;
-    return { width, height, link };
-  };
-
-  const toThumbnail = (data: any): t.VimeoThumbnail => {
-    return {
-      uri: data.uri,
-      type: data.type,
-      isActive: data.active,
-      isDefault: data.default_picture,
-      baseLink: data.base_link,
-      resourceKey: data.resource_key,
-      sizes: data.sizes.map(toSize),
-    };
-  };
 
   const api: t.VimeoHttpThumbnails = {
     /**
@@ -36,14 +19,15 @@ export function VimeoHttpThumbnails(args: { ctx: t.Ctx }): t.VimeoHttpThumbnails
       const json = res.json as any;
 
       // Error.
-      if (!res.ok || !json) {
-        const { status, statusText } = res;
-        const error = `Failed to retrieve thumbnails for video '${video}'. ${statusText}`.trim();
+      if (!res.ok) {
+        const { status } = res;
+        const message = `Failed to retrieve thumbnails for video '${video}'`;
+        const error = toVimeoError(res, message);
         return { status, video, error, thumbnails: [] };
       }
 
       const { status } = res;
-      const thumbnails: t.VimeoThumbnail[] = (json.data || []).map(toThumbnail);
+      const thumbnails: t.VimeoPicture[] = (json.data || []).map(toPicture);
       return { status, video, thumbnails };
     },
 
@@ -57,16 +41,35 @@ export function VimeoHttpThumbnails(args: { ctx: t.Ctx }): t.VimeoHttpThumbnails
 
       // Error.
       if (!res.ok || !json) {
-        const { status, statusText } = res;
-        const error = `Failed to retrieve thumbnail '${picture}' for video '${video}'. ${statusText}`;
-        return { status, video, error: error.trim() };
+        const { status } = res;
+        const message = `Failed to retrieve thumbnail '${picture}' for video '${video}'`;
+        const error = toVimeoError(res, message);
+        return { status, video, error };
       }
 
       const { status } = res;
-      const thumbnail = toThumbnail(json);
+      const thumbnail = toPicture(json);
       return { status, video, thumbnail };
     },
   };
 
   return api;
 }
+
+export const toPicture = (input: t.JsonMap): t.VimeoPicture => {
+  const data = input as any;
+  return {
+    uri: data.uri,
+    type: data.type,
+    isActive: data.active,
+    isDefault: data.default_picture,
+    baseLink: data.base_link,
+    resourceKey: data.resource_key,
+    sizes: data.sizes.map(toSize),
+  };
+};
+
+const toSize = (item: any): t.VimeoPictureSize => {
+  const { width, height, link } = item;
+  return { width, height, link };
+};
