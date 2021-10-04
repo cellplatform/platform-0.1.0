@@ -483,6 +483,28 @@ describe('http', () => {
       expect(requests[0].method).to.eql('POST');
       expect(requests[0].data).to.eql({ send: true });
     });
+
+    it('modified JSON content-type', async () => {
+      const requests: t.HttpRequestPayload[] = [];
+      const data = { msg: 'hello' };
+
+      const fetch: t.HttpFetch = async (req) => {
+        requests.push(req);
+        await time.wait(10);
+        return {
+          status: 202,
+          headers: util.toRawHeaders({ 'Content-Type': 'application/vnd.foo.picture+json' }),
+          body: null,
+          text: async () => JSON.stringify(data),
+          json: async () => data,
+        };
+      };
+
+      const client = http.create({ fetch });
+      const res = await client.post(`http://localhost`, { send: true });
+
+      expect(res.contentType.is.json).to.eql(true); // NB: understands weird vendor variant of the JSON content-type.
+    });
   });
 
   describe('modify (HTTP server)', () => {
