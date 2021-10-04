@@ -13,6 +13,8 @@ export const VIDEO = {
 
 export const VIDEOS = Object.keys(VIDEO).map((label) => ({ label, value: VIDEO[label] }));
 
+const THUMBNAIL = 'https://source.unsplash.com/ntqaFfrDdEA/1920x1280';
+
 type Ctx = {
   theme: 'light' | 'dark';
   bus: t.EventBus<t.VimeoEvent>;
@@ -54,6 +56,7 @@ export const actions = DevActions<Ctx>()
         video: VIDEO['stock/running'],
         muted: true,
         borderRadius: 20,
+        thumbnail: THUMBNAIL,
         onIconClick: (e) => console.log('onIconClick', e),
       },
       debug: {
@@ -90,6 +93,11 @@ export const actions = DevActions<Ctx>()
     e.boolean('muted', (e) => {
       if (e.changing) e.ctx.props.muted = e.changing.next;
       e.boolean.current = e.ctx.props.muted;
+    });
+
+    e.boolean('thumbnail', (e) => {
+      if (e.changing) e.ctx.props.thumbnail = e.changing.next ? THUMBNAIL : undefined;
+      e.boolean.current = Boolean(e.ctx.props.thumbnail);
     });
 
     e.hr(1, 0.1);
