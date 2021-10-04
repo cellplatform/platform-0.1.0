@@ -2,7 +2,7 @@ import { Compiler, Package } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
-    .namespace('cloud.pusher')
+    .namespace('vendor.cloud.pusher')
     .version(Package.version)
 
     .variant('web', (config) =>

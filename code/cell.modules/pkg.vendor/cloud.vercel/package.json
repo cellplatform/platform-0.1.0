@@ -1,5 +1,5 @@
 {
-  "name": "vendor.vercel",
+  "name": "vendor.cloud.vercel",
   "version": "0.0.18",
   "main": "lib/node/index",
   "types": "lib/node/index.d.ts",
