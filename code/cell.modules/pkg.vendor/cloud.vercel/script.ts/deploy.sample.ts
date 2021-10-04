@@ -1,4 +1,4 @@
-import { Vercel, t } from 'vendor.vercel/lib/node';
+import { Vercel, t } from 'vendor.cloud.vercel/lib/node';
 import { fs } from '@platform/fs';
 
 const token = process.env.VERCEL_TEST_TOKEN;

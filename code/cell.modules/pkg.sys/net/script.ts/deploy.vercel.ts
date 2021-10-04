@@ -1,4 +1,4 @@
-import { Vercel } from 'vendor.vercel/lib/node';
+import { Vercel } from 'vendor.cloud.vercel/lib/node';
 
 const token = process.env.VERCEL_TEST_TOKEN;
 
@@ -20,7 +20,7 @@ async function deploy(team: string, project: string, alias: string) {
   console.log();
 
   const wait = deployment.commit({
-    // target: 'production',
+    target: 'production',
     regions: ['sfo1'],
     alias,
     // routes: [{ src: '/foo', dest: '/' }],
@@ -41,4 +41,4 @@ async function deploy(team: string, project: string, alias: string) {
 
 // DEV
 // deploy('tdb', 'db-dev', 'dev.db.team');
-deploy('tdb', 'os-domains', 'net.os.domains');
+deploy('tdb', 'tmp', 'tmp.db.team');

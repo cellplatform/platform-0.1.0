@@ -1,6 +1,6 @@
 import { fs } from '@platform/fs';
 import { JSDOM } from 'jsdom';
-import { t, Vercel } from 'vendor.vercel/lib/node';
+import { t, Vercel } from 'vendor.cloud.vercel/lib/node';
 
 type Rewrite = { source: string; destination: string };
 
