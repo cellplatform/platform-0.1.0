@@ -4,14 +4,14 @@ import { catchError, filter, takeUntil } from 'rxjs/operators';
 
 import { rx, slug, t, DEFAULT } from './common';
 
-type Instance = string;
+type InstanceId = string;
 
 /**
  * Event API.
  */
 export function BusEvents(args: {
   bus: EventBus<any>;
-  id?: Instance;
+  id?: InstanceId;
   filter?: (e: t.VercelEvent) => boolean;
 }): t.VercelEvents {
   const id = args.id ?? DEFAULT.id;
@@ -95,5 +95,5 @@ export function BusEvents(args: {
 const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
 BusEvents.is = {
   base: matcher('vendor.vercel/'),
-  instance: (e: t.Event, id: Instance) => BusEvents.is.base(e) && e.payload?.id === id,
+  instance: (e: t.Event, id: InstanceId) => BusEvents.is.base(e) && e.payload?.id === id,
 };

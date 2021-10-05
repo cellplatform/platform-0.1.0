@@ -1,14 +1,14 @@
 import { VercelHttp } from '../node.VercelHttp';
 import { BusEvents, DEFAULT, rx, slug, t } from './common';
 
-type Instance = string;
+type InstanceId = string;
 
 /**
  * Event controller.
  */
 export function BusController(args: {
   token: string;
-  id?: Instance;
+  id?: InstanceId;
   fs: t.Fs;
   bus: t.EventBus<any>;
   filter?: (e: t.VercelEvent) => boolean;
