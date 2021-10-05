@@ -1,11 +1,15 @@
-import { expect, Http } from '../test';
+import { expect, Http, nodefs } from '../test';
 import { VimeoHttp } from '.';
+
+import * as tus from 'tus-js-client';
 
 const token = process.env.VIMEO_TEST_TOKEN ?? '';
 const headers = { Authorization: `bearer ${token}` };
 
-describe('INTEGRATION', () => {
-  it.only('me', async () => {
+describe('INTEGRATION', function () {
+  this.timeout(300000);
+
+  it('me', async () => {
     const client = VimeoHttp({ token });
     const res = await client.me();
 
@@ -16,7 +20,7 @@ describe('INTEGRATION', () => {
   });
 
   describe('thumbnail', () => {
-    it.only('list', async () => {
+    it('list', async () => {
       const client = VimeoHttp({ token });
       const video = 598788467;
       const res = await client.thumbnails.list(video);
@@ -36,6 +40,22 @@ describe('INTEGRATION', () => {
       console.log('-------------------------------------------');
       console.log('res', res);
       expect(res.status).to.eql(200);
+    });
+  });
+
+  describe('upload', () => {
+    it.only('upload video', async () => {
+      const client = VimeoHttp({ token });
+
+      const path = nodefs.resolve('tmp/sample.webm');
+      const res = client.upload(path, { name: 'foobar' });
+
+      res.progress$.subscribe((e) => {
+        console.log(' > ', e);
+      });
+
+      console.log('-------------------------------------------');
+      console.log(await res);
     });
   });
 });

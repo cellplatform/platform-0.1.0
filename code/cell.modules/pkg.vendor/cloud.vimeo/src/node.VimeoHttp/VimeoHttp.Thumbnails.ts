@@ -1,13 +1,12 @@
 import { t, toVimeoError } from './common';
 
 /**
- * A wrapper around the Thumbnails HTTP/API.
+ * Wrapper around the "thumbnails" HTTP/API.
  * See:
  *    https://developer.vimeo.com/api/reference/videos#thumbnails
  */
 export function VimeoHttpThumbnails(args: { ctx: t.Ctx }): t.VimeoHttpThumbnails {
-  const { ctx } = args;
-  const { http, headers } = ctx;
+  const { http, headers } = args.ctx;
 
   const api: t.VimeoHttpThumbnails = {
     /**
@@ -32,7 +31,7 @@ export function VimeoHttpThumbnails(args: { ctx: t.Ctx }): t.VimeoHttpThumbnails
     },
 
     /**
-     * Retrieve a sigle thumbnail
+     * Retrieve a single thumbnail.
      */
     async get(video, picture) {
       const url = `https://api.vimeo.com/videos/${video}/pictures/${picture}`;

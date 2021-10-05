@@ -19,11 +19,11 @@
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@"
   },
-  "dependencies": {},
+  "dependencies": {
+    "tus-js-client": "2.3.0"
+  },
   "devDependencies": {
-    "@platform/cell.compiler": "~0.4.1",
-    "react": "~17.0.2",
-    "react-dom": "~17.0.2"
+    "@platform/cell.compiler": "~0.4.1"
   },
   "license": "MIT",
   "private": true

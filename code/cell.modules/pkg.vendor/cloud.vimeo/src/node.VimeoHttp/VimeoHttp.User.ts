@@ -1,5 +1,28 @@
-import { t } from './common';
+import { t, toVimeoError } from './common';
 import { toPicture } from './VimeoHttp.Thumbnails';
+
+/**
+ * Retrieve the authenticated user.
+ */
+export async function getMe(args: { ctx: t.Ctx }) {
+  const { http, headers } = args.ctx;
+
+  const url = 'https://api.vimeo.com/me';
+  const res = await http.get(url, { headers });
+  const json = res.json as any;
+
+  // Error.
+  if (!res.ok) {
+    const { status } = res;
+    const message = `Failed to retrieve authenticated user (check your auth token)`;
+    const error = toVimeoError(res, message);
+    return { status, error };
+  }
+
+  const { status } = res;
+  const user = toVimeoUser(json);
+  return { status, user };
+}
 
 /**
  * Convert a raw JSON response into a Vimeo {user} object.
