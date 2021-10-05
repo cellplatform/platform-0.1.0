@@ -4,7 +4,7 @@ import { toPicture } from './VimeoHttp.Thumbnails';
 /**
  * Retrieve the authenticated user.
  */
-export async function getMe(args: { ctx: t.Ctx }) {
+export async function getMe(args: { ctx: t.HttpCtx }) {
   const { http, headers } = args.ctx;
 
   const url = 'https://api.vimeo.com/me';

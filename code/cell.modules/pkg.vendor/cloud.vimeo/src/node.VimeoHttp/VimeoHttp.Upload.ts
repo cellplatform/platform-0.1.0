@@ -13,7 +13,7 @@ type Bytes = number;
  *    https://tus.io
  */
 export function VimeoHttpUpload(args: {
-  ctx: t.Ctx;
+  ctx: t.HttpCtx;
   source: FilePath;
   props: t.VimeoHttpUploadProps;
 }) {

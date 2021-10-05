@@ -14,7 +14,7 @@ export function VimeoHttp(args: { token: string; http?: t.Http }): t.VimeoHttp {
     Authorization: `bearer ${args.token}`,
     'Content-Type': 'application/json',
   };
-  const ctx: t.Ctx = { http, headers };
+  const ctx: t.HttpCtx = { http, headers };
 
   const api: t.VimeoHttp = {
     get thumbnails() {

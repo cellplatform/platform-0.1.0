@@ -5,7 +5,7 @@ import { t, toVimeoError } from './common';
  * See:
  *    https://developer.vimeo.com/api/reference/videos#thumbnails
  */
-export function VimeoHttpThumbnails(args: { ctx: t.Ctx }): t.VimeoHttpThumbnails {
+export function VimeoHttpThumbnails(args: { ctx: t.HttpCtx }): t.VimeoHttpThumbnails {
   const { http, headers } = args.ctx;
 
   const api: t.VimeoHttpThumbnails = {
