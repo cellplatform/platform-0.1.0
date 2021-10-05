@@ -7,7 +7,7 @@ export function BusEventsFs(args: {
   dir?: string; // Sub-directory within root.
   index: t.SysFsEventsIndex;
   io: t.SysFsEventsIo;
-  toUint8Array: t.SysFsAsUint8Array;
+  toUint8Array: t.SysFsToUint8Array;
 }): t.Fs {
   const { io, index, toUint8Array } = args;
 
@@ -120,6 +120,9 @@ export function BusEventsFs(args: {
     }
   };
 
+  /**
+   * Delete a file.
+   */
   const del: t.Fs['delete'] = async (path) => {
     path = formatPath(path);
     const res = await io.delete.fire(path);
@@ -128,6 +131,9 @@ export function BusEventsFs(args: {
     }
   };
 
+  /**
+   * Working with JSON.
+   */
   const json: t.Fs['json'] = {
     async read(path) {
       const file = await read(path);
@@ -140,6 +146,9 @@ export function BusEventsFs(args: {
     },
   };
 
+  /**
+   * Manifest indexes.
+   */
   const manifest: t.Fs['manifest'] = async (options = {}) => {
     const { filter, cache, cachefile } = options;
     const dir = options.dir === undefined ? subdir : formatPath(options.dir);
@@ -170,6 +179,9 @@ export function BusEventsFs(args: {
     return manifest;
   };
 
+  /**
+   * Scope: child directory.
+   */
   const dir: t.Fs['dir'] = (path) => {
     const dir = join(subdir, Path.trimSlashesStart(path));
     return BusEventsFs({ dir, index, io, toUint8Array });
@@ -188,8 +200,8 @@ export function BusEventsFs(args: {
     copy,
     move,
     delete: del,
-    json,
     manifest,
+    json,
     dir,
   };
 }

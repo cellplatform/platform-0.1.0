@@ -18,7 +18,7 @@ export function BusEvents(args: {
   bus: t.EventBus<any>;
   filter?: (e: t.SysFsEvent) => boolean;
   timeout?: Milliseconds; // Default timeout.
-  toUint8Array?: t.SysFsAsUint8Array;
+  toUint8Array?: t.SysFsToUint8Array;
 }): t.SysFsEvents {
   const { id } = args;
   const { dispose, dispose$ } = rx.disposable();
