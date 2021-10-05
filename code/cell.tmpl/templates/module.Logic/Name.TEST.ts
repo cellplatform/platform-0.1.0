@@ -3,8 +3,8 @@ import { Name } from '.';
 
 const bus = rx.bus();
 
-describe('Name', () => {
-  describe('Events', () => {
+describe('BusEvents', () => {
+  describe('is', () => {
     const is = Name.Events.is;
 
     it('is (static/instance)', () => {

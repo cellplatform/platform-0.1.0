@@ -4,10 +4,10 @@ import { t, rx } from '../common';
 /**
  * Event API.
  */
-export function Events(args: { bus: t.EventBus<any> }) {
+export function BusEvents(args: { bus: t.EventBus<any> }) {
   const { dispose, dispose$ } = rx.disposable();
   const bus = rx.busAsType<t.NameEvent>(args.bus);
-  const is = Events.is;
+  const is = BusEvents.is;
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -21,6 +21,6 @@ export function Events(args: { bus: t.EventBus<any> }) {
  * Event matching.
  */
 const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
-Events.is = {
+BusEvents.is = {
   base: matcher('namespace/'),
 };
