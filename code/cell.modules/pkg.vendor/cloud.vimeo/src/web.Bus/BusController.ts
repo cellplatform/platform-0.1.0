@@ -11,6 +11,7 @@ export function BusController(args: {
   id?: InstanceId;
   fs: t.Fs;
   bus: t.EventBus<any>;
+  http: t.VimeoHttp;
   filter?: (e: t.VimeoEvent) => boolean;
 }) {
   const { token, fs } = args;
