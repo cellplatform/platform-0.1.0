@@ -58,7 +58,7 @@ export type VimeoUser = {
 
 export type VimeoUploadQuota = {
   space: { free: Bytes; max: Bytes; used: Bytes; showing: string };
-  periodic: { free: Bytes; max: Bytes; used: Bytes; resetsAt: IsoDate8601 };
+  periodic: { free: Bytes; max: Bytes; used: Bytes; resetAt: IsoDate8601 };
   lifetime: {};
 };
 
@@ -123,11 +123,5 @@ export type VimeoHttpUploadProps = {
   description?: string;
   mimetype?: string;
   license?: VimeoLicense;
+  chunkSize?: Bytes; // The size of each chunk streamed to the server.
 };
-
-// export type VimeoHttpUploadTarget = {
-//   uri: Uri;
-//   url: { manage: Url; upload: Url };
-// };
-
-// export type VimeoUploadStatus = 'complete' | 'error' | 'in_progress';

@@ -57,7 +57,7 @@ export function toUploadQuota(input: t.JsonMap): t.VimeoUploadQuota {
       free: toBytes(data.periodic.free),
       max: toBytes(data.periodic.max),
       used: toBytes(data.periodic.used),
-      resetsAt: data.periodic.reset_date,
+      resetAt: data.periodic.reset_date,
     },
     lifetime: {
       free: toBytes(data.lifetime.free),

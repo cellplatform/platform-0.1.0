@@ -12,7 +12,7 @@ const TestSetup = () => {
   return { controller, events, dispose, bus, fs };
 };
 
-describe.only('INTEGRATION: VimeoBus', function () {
+describe('INTEGRATION: VimeoBus', function () {
   this.timeout(9999);
 
   describe('info', () => {

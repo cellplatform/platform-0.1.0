@@ -1,6 +1,8 @@
 import { Subject } from 'rxjs';
-import { t, toVimeoError, nodefs } from './common';
+import { distinctUntilChanged } from 'rxjs/operators';
 import * as tus from 'tus-js-client';
+
+import { R, t, toVimeoError } from './common';
 
 type FilePath = string;
 type Bytes = number;
@@ -16,9 +18,10 @@ export function VimeoHttpUpload(args: {
   ctx: t.HttpCtx;
   source: FilePath;
   props: t.VimeoHttpUploadProps;
+  convertUploadFile: t.ConvertUploadFile;
 }) {
-  const { ctx } = args;
-  const { http } = ctx;
+  const { ctx, props } = args;
+  const { http, fs } = ctx;
   const progress$ = new Subject<t.VimeoHttpUploadProgress>();
 
   /**
@@ -31,8 +34,8 @@ export function VimeoHttpUpload(args: {
       name: props.name ?? 'Unnamed',
       description: props.description,
       upload: {
-        approach: 'tus',
         size,
+        approach: 'tus',
         mime_type: props.mimetype,
         license: props.license,
       },
@@ -74,22 +77,24 @@ export function VimeoHttpUpload(args: {
       };
 
       // Ensure file exists.
-      if (!(await nodefs.is.file(path))) {
+      const file = await fs.read(path);
+      if (!file) {
         const status = 404;
         const error = toError(status, `The source file does not exist. ${path}`);
         resolve({ status, error });
       }
+      if (!file) throw new Error('No file'); // NB: Supress typescript error (handled in check above).
 
       // Calculate size.
-      const size = await nodefs.size.file(path);
-      if (size.bytes <= 0) {
+      const bytes = file.byteLength;
+      if (bytes === 0) {
         const status = 500;
         const error = toError(status, `The source file contains no data (0B). ${path}`);
         resolve({ status, error });
       }
 
       // Create target <video> record on vimeo.
-      const targetResponse = await create(size.bytes, args.props);
+      const targetResponse = await create(bytes, props);
       if (targetResponse.error) {
         const { status, error } = targetResponse;
         return resolve({ status, error });
@@ -97,17 +102,18 @@ export function VimeoHttpUpload(args: {
       const { uri, url } = targetResponse.target;
 
       // Start upload.
-      const stream = nodefs.createReadStream(path);
+      const stream = args.convertUploadFile(file);
       new tus.Upload(stream, {
+        chunkSize: props.chunkSize ?? 150000, //
         uploadUrl: url.upload,
-        uploadSize: size.bytes,
+        uploadSize: bytes,
         onError(err) {
           const status = 500;
           const error = toError(status, `Failed while uploading file: ${path}. ${err.message}`);
           resolve({ status, error });
         },
         onProgress(uploaded, total) {
-          if (total === 0) return;
+          if (total === 0) return; // NB: Avoid divide-by-zero error.
           const percent = uploaded / total;
           progress$.next({ total, uploaded, percent });
         },
@@ -124,6 +130,8 @@ export function VimeoHttpUpload(args: {
   });
 
   // Finish up.
-  (promise as any).progress$ = progress$.asObservable();
+  (promise as any).progress$ = progress$.pipe(
+    distinctUntilChanged((prev, next) => R.equals(prev, next)),
+  );
   return promise as t.VimeoHttpUploader;
 }

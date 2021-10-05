@@ -1,5 +1,5 @@
-import * as t from '../node/common/types';
-export * from '../node/common';
+import * as t from '../web/common/types';
+export * from '../web/common';
 
 /**
  * Standard error construction.
