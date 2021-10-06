@@ -1,6 +1,8 @@
 import { t, Router as BaseRouter } from './common';
 import * as routes from './routes';
 
+type UtcDate = number;
+
 export const Router = {
   /**
    * Initialize a new router.
@@ -11,7 +13,7 @@ export const Router = {
     runtime?: t.RuntimeEnv;
     body: t.BodyParser;
     name?: string;
-    deployedAt?: number;
+    deployedAt?: UtcDate;
   }) {
     const { db, fs, runtime, body, name, deployedAt } = args;
     const router = BaseRouter.create({ body });
