@@ -19,6 +19,10 @@ export const toMimetype: ToMimetype = (input, defaultType = '') => {
     return 'application/json';
   }
 
+  if (input.endsWith('.wasm')) {
+    return 'application/wasm';
+  }
+
   if (input.endsWith('.yaml') || input.endsWith('.yml')) {
     return 'text/plain';
   }
