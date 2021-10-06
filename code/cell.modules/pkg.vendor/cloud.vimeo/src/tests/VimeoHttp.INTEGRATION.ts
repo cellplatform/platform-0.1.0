@@ -4,10 +4,10 @@ import { VimeoHttp } from '../node.Http';
 const token = process.env.VIMEO_TEST_TOKEN ?? '';
 const fs = TestOS.fs;
 
-describe('INTEGRATION', function () {
+describe('INTEGRATION; VimeoHttp', function () {
   this.timeout(300000);
 
-  it.only('me', async () => {
+  it.skip('me', async () => {
     const client = VimeoHttp({ token, fs });
     const res = await client.me();
 
