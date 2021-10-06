@@ -59,7 +59,7 @@ export type VimeoUser = {
 export type VimeoUploadQuota = {
   space: { free: Bytes; max: Bytes; used: Bytes; showing: string };
   periodic: { free: Bytes; max: Bytes; used: Bytes; resetAt: IsoDate8601 };
-  lifetime: {};
+  lifetime: { free: Bytes; max: Bytes; used: Bytes };
 };
 
 /**

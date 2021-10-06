@@ -7,7 +7,7 @@ const fs = TestOS.fs;
 describe('INTEGRATION', function () {
   this.timeout(300000);
 
-  it.skip('me', async () => {
+  it.only('me', async () => {
     const client = VimeoHttp({ token, fs });
     const res = await client.me();
 
@@ -45,25 +45,7 @@ describe('INTEGRATION', function () {
   });
 
   describe('upload', () => {
-    it('TMP', async () => {
-      const path = 'sample.webm';
-
-      const file = await fs.read(path);
-      console.log('file', file?.byteLength);
-
-      console.log('Blob', Blob);
-
-      if (file) {
-        const blob = new Blob([file]);
-
-        console.log('-------------------------------------------');
-        console.log('blob', blob);
-      }
-
-      // console.log('Blob', Buffer);
-    });
-
-    it.only('upload video', async () => {
+    it.skip('upload video', async () => {
       const client = VimeoHttp({ token, fs });
 
       const path = 'sample.webm';

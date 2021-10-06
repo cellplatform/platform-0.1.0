@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t } from '../../common';
+import { color, css, CssValue, t } from '../common';
 
 export type SampleProps = { count: number; style?: CssValue };
 

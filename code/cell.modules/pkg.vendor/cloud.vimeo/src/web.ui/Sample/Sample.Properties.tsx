@@ -1,5 +1,5 @@
 import React from 'react';
-import { color, css, CssValue, t } from '../../common';
+import { color, css, CssValue, t } from '../common';
 import { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
 import { SampleProps } from './Sample';
 
