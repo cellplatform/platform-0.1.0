@@ -1,7 +1,7 @@
 import { NodeRuntime } from '@platform/cell.runtime.node';
 
 import { RouterMock, expect, fs, Http, readFile, t, rx } from '../../test';
-import { Samples } from '../module.cell.runtime.node/NodeRuntime.TEST';
+import { Samples } from '../module.cell.runtime.node/Samples';
 
 export * from './sample.NodeRuntime/types';
 export * from './sample.pipe/types';
