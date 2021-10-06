@@ -9,7 +9,7 @@ type Ctx = { props: SampleProps };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.image.Svg')
+  .namespace('sys.ui.Image.Svg')
   .context((e) => {
     if (e.prev) return e.prev;
     return {
@@ -32,8 +32,6 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    // const { width } = e.ctx;
-
     e.settings({
       host: { background: -0.04 },
       layout: { cropmarks: -0.2 },

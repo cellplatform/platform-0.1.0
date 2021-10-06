@@ -132,8 +132,8 @@ export function ModulesMenu(args: { bus: t.ElectronMainBus; localhost: string })
   const refs: T[] = [
     {
       ns: 'sys.net',
-      url: 'https://dev.db.team/cell:ckmv1vll1000e01etelnr0s9a:A1/fs/sys.net/index.html',
-      // url: 'https://os.domains/sys.net',
+      // url: 'https://dev.db.team/cell:ckmv1vll1000e01etelnr0s9a:A1/fs/sys.net/index.html',
+      url: 'https://tmp.db.team',
     },
   ];
 

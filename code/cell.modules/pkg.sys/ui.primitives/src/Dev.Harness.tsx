@@ -29,7 +29,7 @@ const imports = {
   Switch: import('./ui.ref/button/Switch.dev/DEV'),
   OptionButtons: import('sys.ui.dev/lib/ui/OptionButtons/DEV'),
 
-  Svg: import('./ui.image/Svg/dev/DEV'),
+  Svg: import('./ui/Image.Svg/dev/DEV'),
 
   Tree: import('./ui/Tree/dev/DEV'),
   StackPanel: import('./ui/StackPanel/dev/DEV'),
