@@ -35,7 +35,7 @@ export function getSystem() {
   const versions = getVersions();
   const router = toVersion(versions.router);
   const schema = toVersion(versions.schema);
-  const version = `router@${router}; schema@${schema}`;
+  const version = `router@${router} schema@${schema}`;
   return {
     version,
     versions,

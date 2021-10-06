@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { color, css, CssValue, t, FileUtil } from '../common';
-import { useFileList } from '../../hook';
+import { useFileList } from '../../hooks';
 import { DevImageFullscreen } from '../media';
 
 export type DevImageThumbnailsProps = {

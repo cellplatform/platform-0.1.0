@@ -9,6 +9,7 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
   const api: t.VercelHttpUploadFiles = {
     /**
      * Post a single file to the endpoint.
+     * https://vercel.com/docs/rest-api#endpoints/deployments/upload-deployment-files
      */
     async post(path, input) {
       const timer = time.timer();
@@ -24,7 +25,7 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
         'Content-Type': contentType,
       };
 
-      const url = ctx.url(`now/files`, { teamId });
+      const url = ctx.url(2, `now/files`, { teamId });
       const res = await http.post(url, body, { headers });
       const { ok, status } = res;
       const json = res.json as any;
@@ -38,6 +39,7 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
      * Upload a directory of file.
      */
     async upload(source, options = {}) {
+      const { beforeUpload } = options;
       const timer = time.timer();
 
       if (typeof source === 'string' && !(await fs.is.dir(source))) {
@@ -66,18 +68,38 @@ export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHt
         elapsed: 0,
       };
 
+      const prepareFile = async (path: string, data: Uint8Array) => {
+        if (typeof beforeUpload === 'function') {
+          await beforeUpload({
+            path,
+            data,
+            toString: () => new TextDecoder().decode(data),
+            modify(input) {
+              if (typeof input === 'string') data = new TextEncoder().encode(input);
+              if (typeof input !== 'string') data = input;
+            },
+          });
+        }
+        return data;
+      };
+
+      const postFile = async (path: string, data: Uint8Array) => {
+        // POST to the cloud.
+        data = await prepareFile(path, data);
+        const posted = await api.post(path, data);
+
+        // Prepare response.
+        const { ok, status, contentType, contentLength, digest, error, elapsed } = posted;
+        const filepath = typeof source === 'string' ? path.substring(source.length + 1) : path;
+        const file: t.VercelFileUpload = { file: filepath, sha: digest, size: contentLength };
+        res.files.push({ ok, status, contentType, file, error, elapsed });
+      };
+
       const uploadBatch = async (files: t.VercelFile[]) => {
         await Promise.all(
           files
             .filter(({ data }) => Boolean(data))
-            .map(async ({ path, data }) => {
-              const posted = await api.post(path, data as Uint8Array);
-              const { ok, status, contentType, contentLength, digest, error, elapsed } = posted;
-              const filepath =
-                typeof source === 'string' ? path.substring(source.length + 1) : path;
-              const file: t.VercelFileUpload = { file: filepath, sha: digest, size: contentLength };
-              res.files.push({ ok, status, contentType, file, error, elapsed });
-            }),
+            .map(({ path, data }) => postFile(path, data as Uint8Array)),
         );
       };
 

@@ -8,7 +8,7 @@ import { renderSubject } from './render.Subject';
  */
 export const Handlers = {
   /**
-   * Composes a set of actions together with its
+   * Composes a set of actions together.
    */
   compose(defs: t.ActionDef[]) {
     // Ensure there are no configuration method-name conflicts.

@@ -3,7 +3,14 @@ import { VercelUploadFiles } from './VercelHttp.Files.Upload';
 
 /**
  * Create a new deployment.
- * https://vercel.com/docs/api#endpoints/deployments/create-a-new-deployment
+ *
+ * Refs:
+ *    HTTP endpoint:
+ *    https://vercel.com/docs/api#endpoints/deployments/create-a-new-deployment
+ *
+ *    vercel.json (config):
+ *    https://vercel.com/docs/cli#project/redirects
+ *
  */
 export async function deploy(
   args: t.VercelHttpDeployArgs & {
@@ -12,7 +19,7 @@ export async function deploy(
     project: { id: string; name: string };
   },
 ): Promise<t.VercelHttpDeployResponse> {
-  const { ctx, source, team, project } = args;
+  const { ctx, source, team, project, beforeUpload } = args;
   const { http, fs, headers } = ctx;
   const teamId = team.id;
 
@@ -25,7 +32,7 @@ export async function deploy(
    */
   const uploaded = await (async () => {
     const client = VercelUploadFiles({ ctx, teamId });
-    const res = await client.upload(source);
+    const res = await client.upload(source, { beforeUpload });
     const { ok, error, total } = res;
     const files = res.files.map((item) => item.file);
     const errors = res.files
@@ -53,14 +60,8 @@ export async function deploy(
    * Append the deployment's {meta} data object with
    * the manifest {module} details.
    */
-  const readManifest = async (dir: string) => {
-    const path = fs.join(dir, 'index.json');
-    const manifest = await fs.json.read<t.Manifest>(path);
-    return manifest;
-  };
-
+  const manifest = await wrangleManifest({ source, fs });
   let name = args.name;
-  const manifest = typeof source === 'string' ? await readManifest(source) : source.manifest;
 
   let meta: t.VercelHttpDeployMeta = { kind: 'bundle:plain/files' };
   if (manifest) {
@@ -83,9 +84,9 @@ export async function deploy(
    * Request Parameters:
    *    https://vercel.com/docs/api#endpoints/deployments/create-a-new-deployment/request-parameters
    */
-  name = name ?? 'unnamed';
+  name = name ?? 'unnamed-v0.0.0';
   const alias = asArray(args.alias).filter(Boolean) as string[];
-  const target = args.target ?? 'staging';
+  const target = args.target;
   const body = {
     name,
     project: project.id,
@@ -101,7 +102,7 @@ export async function deploy(
     files,
   };
 
-  const url = ctx.url('deployments', { teamId: team.id });
+  const url = ctx.url(12, 'deployments', { teamId: team.id });
   const res = await http.post(url, body, { headers });
   const json = (res.json ?? {}) as any;
 
@@ -115,8 +116,9 @@ export async function deploy(
     inspect: util.ensureHttps(json.inspectorUrl),
     public: [util.ensureHttps(json.url), ...aliasUrls],
   };
-  const deployment = {
+  const deployment: t.VercelHttpDeployResponse['deployment'] = {
     id: json.id ?? '',
+    name,
     team: { name: team.name, id: team.id },
     project: { name: project.name, id: project.id },
     target,
@@ -126,11 +128,25 @@ export async function deploy(
     urls,
   };
 
-  return deleteUndefined({
-    ok,
-    status,
-    deployment,
-    paths,
-    error,
-  });
+  return deleteUndefined({ ok, status, deployment, paths, error });
+}
+
+/**
+ * [Helpers]
+ */
+
+async function wrangleManifest(args: { fs: t.Fs; source: string | t.VercelSourceBundle }) {
+  const { fs, source } = args;
+
+  if (typeof source === 'string') {
+    return fs.json.read<t.Manifest>(fs.join(source, 'index.json'));
+  }
+
+  const file = source.files.find((file) => file.path === 'index.json');
+  if (file?.data) {
+    const text = new TextDecoder().decode(file.data);
+    return JSON.parse(text) as t.Manifest;
+  }
+
+  return undefined;
 }

@@ -27,31 +27,27 @@ export const DevImageDraggable: React.FC<DevImageDraggableProps> = (props) => {
   const self = netbus.self;
   const source = self;
 
-  const baseRef = useRef<HTMLDivElement>(null);
-
+  type Img = { uri: string; filename: string; mimetype: string };
+  const [image, setImage] = useState<Img | undefined>();
   const [dragbus, setDragbus] = useState<t.EventBus<any>>();
-  const [image, setImage] = useState<
-    { uri: string; filename: string; mimetype: string } | undefined
-  >();
 
-  const resize = useResizeObserver(baseRef);
-  const drag = useDragTarget(baseRef, async (e) => {
+  const drag = useDragTarget<HTMLDivElement>(async (e) => {
     const file = e.files[0];
     if (file) {
-      const { mimetype, data, filename } = file;
+      const { mimetype, data, path } = file;
       netbus.fire({
         type: 'DEV/group/image/load',
-        payload: { source, mimetype, data, filename },
+        payload: { source, mimetype, data, filename: path },
       });
     }
   });
+  const resize = useResizeObserver(drag.ref);
 
   useEffect(() => {
+    const namespace = 'image/draggable';
     const dragbus = rx.bus<MotionDraggableEvent>();
     const dragEvents = MotionDraggable.Events(dragbus);
     setDragbus(dragbus);
-
-    const namespace = 'image/draggable';
 
     /**
      * Load image data from network.
@@ -171,7 +167,7 @@ export const DevImageDraggable: React.FC<DevImageDraggableProps> = (props) => {
   );
 
   return (
-    <div ref={baseRef} {...css(styles.base, props.style)}>
+    <div ref={drag.ref} {...css(styles.base, props.style)}>
       {elBody}
     </div>
   );

@@ -1,8 +1,8 @@
 import React from 'react';
 import { DevActions } from '../../..';
 
-import { TestSuite, TestSuiteProps } from '..';
-import tests from './sample.TEST';
+import { Test, TestSuite, TestSuiteProps } from '..';
+import tests from './test.samples/foo.TEST';
 
 type Ctx = { props: TestSuiteProps };
 
@@ -20,9 +20,18 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('TestSuite (runner)');
 
-    e.button('run', async (e) => {
-      const res = await tests.run();
-      e.ctx.props.data = res;
+    e.button('run: static import', async (e) => {
+      e.ctx.props.data = await tests.run();
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('run: dynamic imports', async (e) => {
+      const root = await Test.bundle([
+        import('./test.samples/foo.TEST'),
+        import('./test.samples/bar.TEST'),
+      ]);
+      e.ctx.props.data = await root.run();
     });
 
     e.hr();

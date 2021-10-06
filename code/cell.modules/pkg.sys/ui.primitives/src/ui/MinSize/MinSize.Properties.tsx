@@ -5,6 +5,7 @@ import { COLORS, css, CssValue, t, toMinSizeFlags, value } from './common';
 import { MinSizeProps } from './MinSize';
 
 export type MinSizePropertiesProps = {
+  title?: string;
   props: MinSizeProps;
   size?: t.DomRect;
   style?: CssValue;
@@ -48,7 +49,7 @@ export const MinSizeProperties: React.FC<MinSizePropertiesProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <PropList title={'Props'} items={items} defaults={{ monospace: true }} />
+      <PropList title={props.title ?? 'Props'} items={items} defaults={{ monospace: true }} />
     </div>
   );
 };

@@ -4,6 +4,7 @@ import { Harness } from 'sys.ui.dev';
 const imports = {
   useDragTarget: import('./hooks/useDragTarget/dev/DEV'),
 
+  Antechamber: import('./ui/Antechamber/dev/DEV'),
   DotTabstrip: import('./ui/DotTabstrip/dev/DEV'),
   Zoom: import('./ui/Zoom/DEV'),
   PropList: import('./ui/PropList/dev/DEV'),
@@ -28,7 +29,7 @@ const imports = {
   Switch: import('./ui.ref/button/Switch.dev/DEV'),
   OptionButtons: import('sys.ui.dev/lib/ui/OptionButtons/DEV'),
 
-  Svg: import('./ui.image/Svg/dev/DEV'),
+  Svg: import('./ui/Image.Svg/dev/DEV'),
 
   Tree: import('./ui/Tree/dev/DEV'),
   StackPanel: import('./ui/StackPanel/dev/DEV'),

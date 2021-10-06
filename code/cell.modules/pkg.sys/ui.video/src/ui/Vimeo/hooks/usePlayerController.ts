@@ -2,7 +2,7 @@ import VimeoPlayer from '@vimeo/player';
 import { useEffect, useRef, useState } from 'react';
 
 import { deleteUndefined, R, rx, slug, t, time } from '../common';
-import { VimeoEvents } from '../Events';
+import { VimeoEvents } from '../VimeoEvents';
 
 type Times = { duration: number; percent: number; seconds: number };
 type Action = t.VimeoStatus['action'];
@@ -12,7 +12,7 @@ type Action = t.VimeoStatus['action'];
  */
 export function usePlayerController(args: {
   bus: t.EventBus<any>;
-  id: string;
+  id: t.VimeoInstance;
   video: number;
   player?: VimeoPlayer;
 }) {
@@ -23,6 +23,9 @@ export function usePlayerController(args: {
 
   const { id, player, video } = args;
 
+  /**
+   * Lifecycle
+   */
   useEffect(() => {
     const bus = rx.busAsType<t.VimeoEvent>(args.bus);
     const events = VimeoEvents({ id, bus });
@@ -37,23 +40,23 @@ export function usePlayerController(args: {
 
     const getStatus = async () => toStatus('info', await getTimes());
 
-    const toStatus = (action: Action, times: Times): t.VimeoStatus => {
+    const toStatus = async (action: Action, times: Times): Promise<t.VimeoStatus> => {
       return deleteUndefined({
         id,
-        video,
         action,
         ...times,
+        video: (await player?.getVideoId()) ?? video,
         percent: Math.min(times.percent, 1),
         playing: playing.current,
         ended: times.seconds >= times.duration,
       });
     };
 
-    const fireStatus = (action: Action, times: Times) => {
+    const fireStatus = async (action: Action, times: Times) => {
       if (loading.current && action !== 'loaded') return;
       bus.fire({
         type: 'Vimeo/status',
-        payload: toStatus(action, times),
+        payload: await toStatus(action, times),
       });
     };
 
@@ -117,9 +120,10 @@ export function usePlayerController(args: {
        */
       events.status.req$.subscribe(async (e) => {
         const { tx = slug() } = e;
+        const status = await getStatus();
         bus.fire({
           type: 'Vimeo/status:res',
-          payload: { tx, id, status: await getStatus() },
+          payload: { tx, id, status },
         });
       });
 
@@ -136,8 +140,6 @@ export function usePlayerController(args: {
         if (e.muted !== undefined) await player.setMuted(e.muted);
 
         await initLoad();
-
-        // if (e.autoPlay) await player.play();
 
         /**
          * TODO 🐷

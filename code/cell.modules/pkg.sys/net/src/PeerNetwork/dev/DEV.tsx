@@ -1,8 +1,6 @@
 import React from 'react';
 import { toObject, DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
 
-// import { Window, IpcBus, env } from '@platform/cell.runtime.electron/app/lib/renderer';
-
 import {
   css,
   cuid,
@@ -20,12 +18,12 @@ import {
 import { RootLayout } from './DEV.Root';
 import { EventBridge } from './event';
 import { DevGroupSeed, GroupSeed } from './layouts';
+import { DevProps } from './DEV.Props';
 
 type Ctx = {
   self: t.PeerId;
   bus: t.EventBus<t.PeerEvent | t.DevEvent>;
   netbus: t.PeerNetworkBus;
-  // ipcbus: t.NetworkBus<any>;
   signal: string; // Signalling server network address (host/path).
   events: CtxEvents;
   connectTo?: string;
@@ -66,14 +64,11 @@ export const actions = DevActions<Ctx>()
     PeerNetwork.Controller({ bus });
     MediaStream.Controller({ bus });
 
-    // const ipcbus = IpcBus();
-
-    const signal = 'rtc.cellfs.com/peer';
     const netbus = PeerNetworkBus({ bus, self });
     const events = {
+      media: MediaStream.Events(bus),
       peer: PeerNetwork.PeerEvents(bus),
       group: PeerNetwork.GroupEvents(netbus),
-      media: MediaStream.Events(bus),
     };
 
     const strategy = {
@@ -84,6 +79,7 @@ export const actions = DevActions<Ctx>()
 
     strategy.peer.connection.autoPropagation = false; // TEMP 🐷
 
+    const signal = 'rtc.cellfs.com';
     const init = () => {
       events.media.start(EventBridge.videoRef(self)).video();
       events.peer.create(signal, self);
@@ -131,7 +127,6 @@ export const actions = DevActions<Ctx>()
       self,
       bus,
       netbus,
-      // ipcbus,
       events,
       signal,
       connectTo: '',
@@ -142,48 +137,14 @@ export const actions = DevActions<Ctx>()
     };
   })
 
-  // .items((e) => {
-  //   e.title('IPC/Window (Desktop App)');
+  .items((e) => {
+    e.component((e) => {
+      const { self, bus } = e.ctx;
+      return <DevProps self={self} bus={bus} style={{ MarginX: 30, MarginY: 20 }} />;
+    });
 
-  //   e.button('status', async (e) => {
-  //     const bus = e.ctx.ipcbus;
-  //     const events = Window.Events({ bus });
-  //     const status = await events.status.get();
-  //     e.button.description = (
-  //       <ObjectView name={'status'} data={status} fontSize={10} expandLevel={2} />
-  //     );
-  //   });
-
-  //   e.button('window/move', async (e) => {
-  //     const bus = e.ctx.ipcbus;
-  //     const events = Window.Events({ bus });
-
-  //     const self = env?.self ?? '';
-
-  //     const getCurrent = async () => {
-  //       const status = await events.status.get();
-  //       const current = status.windows.find((item) => item.uri === self);
-  //       return current;
-  //     };
-
-  //     const current = await getCurrent();
-
-  //     if (current) {
-  //       const by = 50;
-  //       const bounds = current.bounds;
-  //       const x = bounds.x + by;
-  //       const y = bounds.y + by;
-  //       events.change.fire(self, { bounds: { x, y } });
-  //     }
-
-  //     const data = await getCurrent();
-  //     e.button.description = (
-  //       <ObjectView name={'moved'} data={data} fontSize={10} expandLevel={2} />
-  //     );
-  //   });
-
-  //   e.hr();
-  // })
+    e.hr();
+  })
 
   .items((e) => {
     e.title('Environment');
@@ -237,8 +198,7 @@ export const actions = DevActions<Ctx>()
       config
         .initial(config.ctx.signal)
         .title('Signal end-point:')
-        .placeholder('host/path')
-        .description('Format: `host/path`')
+        .placeholder('url')
         .pipe((e) => {
           if (e.changing) e.ctx.signal = e.changing.next;
         });
@@ -363,6 +323,37 @@ export const actions = DevActions<Ctx>()
       e.button.description = (
         <ObjectView name={'status:res'} data={data} fontSize={10} expandLevel={2} />
       );
+    });
+
+    e.button('fire ⚡️ Remote:exists (false)', async (e) => {
+      const self = e.ctx.self;
+      const remote = cuid();
+      const res = await e.ctx.events.peer.remote.exists.get({ self, remote });
+      const data = { exists: res.exists };
+      e.button.description = (
+        <ObjectView name={'exists:res'} data={data} fontSize={10} expandLevel={2} />
+      );
+    });
+
+    e.button('fire ⚡️ Remote:exists (true)', async (e) => {
+      const self = e.ctx.self;
+      const status = (await e.ctx.events.peer.status(self).get()).peer;
+      const first = (status?.connections ?? [])[0];
+      const remote = first?.peer.remote.id;
+
+      const description = (data: any) => {
+        e.button.description = (
+          <ObjectView name={'exists:res'} data={data} fontSize={10} expandLevel={2} />
+        );
+      };
+
+      if (remote) {
+        const res = await e.ctx.events.peer.remote.exists.get({ self, remote });
+        description({ exists: res.exists });
+      }
+      if (!remote) {
+        description({ error: `No remote connections to draw from` });
+      }
     });
 
     e.hr();

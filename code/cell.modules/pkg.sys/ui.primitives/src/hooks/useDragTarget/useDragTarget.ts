@@ -1,11 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { readDropEvent } from './util';
 import { t } from '../../common';
+
+type OnDrop = (e: t.Dropped) => void;
+type Args<T extends HTMLElement> = {
+  ref: React.RefObject<T>;
+  isEnabled?: boolean;
+  onDrop?: OnDrop;
+};
 
 /**
  * Provides hooks for treating a DIV element as a "drag-n-drop" target.
  */
-export function useDragTarget(ref: React.RefObject<HTMLElement>, onDrop?: (e: t.Dropped) => void) {
+export function useDragTarget<T extends HTMLElement>(input?: Partial<Args<T>> | OnDrop) {
+  const args = wrangle<T>(useRef<T>(null), input);
+  const { ref, onDrop, isEnabled = true } = args;
+
   const [isDragOver, setDragOver] = useState<boolean>(false);
   const [dropped, setDropped] = useState<t.Dropped | undefined>();
 
@@ -20,9 +30,11 @@ export function useDragTarget(ref: React.RefObject<HTMLElement>, onDrop?: (e: t.
 
     const dragHandler = (fn?: () => void) => {
       return (e: Event) => {
-        e.preventDefault();
-        if (fn) fn();
-        setDragOver(count > 0);
+        if (isEnabled) {
+          e.preventDefault();
+          fn?.();
+          setDragOver(count > 0);
+        }
       };
     };
 
@@ -32,13 +44,15 @@ export function useDragTarget(ref: React.RefObject<HTMLElement>, onDrop?: (e: t.
     const handleMouseLeave = dragHandler(() => (count = 0));
 
     const handleDrop = async (e: DragEvent) => {
-      e.preventDefault();
-      setDragOver(false);
-      count = 0;
-      const { dir, files, urls } = await readDropEvent(e);
-      const dropped: t.Dropped = { dir, files, urls };
-      setDropped(dropped);
-      if (onDrop) onDrop(dropped);
+      if (isEnabled) {
+        e.preventDefault();
+        setDragOver(false);
+        count = 0;
+        const { dir, files, urls } = await readDropEvent(e);
+        const dropped: t.Dropped = { dir, files, urls };
+        setDropped(dropped);
+        onDrop?.(dropped);
+      }
     };
 
     el.addEventListener('dragenter', handleDragEnter);
@@ -54,12 +68,26 @@ export function useDragTarget(ref: React.RefObject<HTMLElement>, onDrop?: (e: t.
       el.removeEventListener('mouseleave', handleMouseLeave);
       el.removeEventListener('drop', handleDrop);
     };
-  }, [ref]); // eslint-disable-line
+  }, [ref, isEnabled]); // eslint-disable-line
 
   return {
+    ref,
     isDragOver,
     isDropped: Boolean(dropped),
+    isEnabled,
     dropped,
     reset,
   };
+}
+
+/**
+ * [Helpers]
+ */
+function wrangle<T extends HTMLElement>(
+  ref: React.RefObject<T>,
+  input?: Partial<Args<T>> | OnDrop,
+): Args<T> {
+  if (typeof input === 'function') return { ref, onDrop: input };
+  if (input === undefined) return { ref };
+  return { ...input, ref: input.ref ?? ref };
 }

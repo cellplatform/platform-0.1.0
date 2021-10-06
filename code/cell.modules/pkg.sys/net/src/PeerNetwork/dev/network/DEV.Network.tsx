@@ -2,10 +2,10 @@ import React, { useRef } from 'react';
 import { Hr } from 'sys.ui.primitives/lib/ui/Hr';
 
 import { css, CssValue, t } from '../common';
-import { useGroupController, useLocalController } from '../hook';
+import { useGroupController, useLocalController } from '../hooks';
 import { DevNetworkConnections } from './DEV.Network.Connections';
 import { DevNetworkHeader } from './DEV.Network.Header';
-import { useGroupScreensize } from '../hook';
+import { useGroupScreensize } from '../hooks';
 
 export type DevNetworkProps = {
   bus: t.EventBus<any>;

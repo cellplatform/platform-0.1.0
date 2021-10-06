@@ -1,5 +1,4 @@
 import { createHash } from 'crypto';
-import { DEFAULT } from './libs';
 import * as t from './types';
 
 type Q = Record<string, string | number | undefined>;
@@ -45,14 +44,13 @@ export function toCtx(fs: t.Fs, http: t.Http, token: string, version?: number) {
   const headers = { Authorization };
 
   const ctx: t.Ctx = {
-    version: version ?? DEFAULT.version,
     token,
     headers,
     Authorization,
     http,
     fs,
-    url(path, query, options = {}) {
-      return toUrl(options.version ?? ctx.version, path, query);
+    url(version, path, query) {
+      return toUrl(version, path, query);
     },
   };
 

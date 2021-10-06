@@ -12,7 +12,5 @@ export * from './configure.theme';
  *    https://microsoft.github.io/monaco-editor/api
  */
 loader.config({
-  paths: {
-    vs: bundle.path(`/static/vs`),
-  },
+  paths: { vs: `/static/vs` },
 });

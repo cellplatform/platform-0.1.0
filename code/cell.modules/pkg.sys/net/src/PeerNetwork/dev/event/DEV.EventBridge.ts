@@ -8,8 +8,8 @@ export const EventBridge = {
   /**
    * Bridges events between the [Media] and [Net] modules.
    * NOTE:
-   *    This event connector pattern enables strong de-coupling
-   *    between the modules.
+   *    This event connector pattern enables strong
+   *    de-coupling between the modules.
    */
   startEventBridge(args: { self: t.PeerId; bus: t.EventBus<any> }) {
     const bus = args.bus as t.EventBus<t.PeerEvent | t.MediaEvent>;

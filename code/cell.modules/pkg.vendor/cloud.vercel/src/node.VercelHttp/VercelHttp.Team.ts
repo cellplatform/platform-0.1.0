@@ -14,7 +14,7 @@ export function VercelTeam(args: { ctx: t.Ctx; teamId: string }): t.VercelHttpTe
      * https://vercel.com/docs/api#endpoints/teams/get-single-team-information
      */
     async info() {
-      const url = ctx.url(`teams/${teamId}`);
+      const url = ctx.url(1, `teams/${teamId}`);
       const res = await http.get(url, { headers });
       const { ok, status } = res;
       const json = res.json as any;
@@ -28,7 +28,7 @@ export function VercelTeam(args: { ctx: t.Ctx; teamId: string }): t.VercelHttpTe
      * https://vercel.com/docs/api#endpoints/projects
      */
     async projects(options = {}) {
-      const url = ctx.url('projects', { ...options, teamId });
+      const url = ctx.url(8, 'projects', { ...options, teamId });
       const res = await http.get(url, { headers });
       const { ok, status } = res;
       const json = res.json as any;
@@ -54,7 +54,7 @@ export function VercelTeam(args: { ctx: t.Ctx; teamId: string }): t.VercelHttpTe
        * - options passed into URL query builder.
        */
 
-      const url = ctx.url('now/deployments', { teamId }, { version: 5 });
+      const url = ctx.url(5, 'now/deployments', { teamId });
 
       const res = await http.get(url, { headers });
       const { ok, status } = res;

@@ -17,9 +17,23 @@ const stripBinary = (dropped: t.Dropped) => {
   return { ...dropped, files };
 };
 
-export const Sample: React.FC = () => {
-  const rootRef = React.useRef<HTMLDivElement>(null);
-  const drag = useDragTarget(rootRef, (e) => console.log('onDropped (optional)', e));
+export type SampleProps = {
+  isEnabled: boolean;
+};
+
+export const Sample: React.FC<SampleProps> = (props) => {
+  const { isEnabled } = props;
+
+  const drag = useDragTarget<HTMLDivElement>({
+    isEnabled,
+    onDrop: (e) => console.log('⚡️ onDropped (optional)', e),
+  });
+
+  // const rootRef = React.useRef<HTMLDivElement>(null);
+  // const drag = useDragTarget<HTMLDivElement>({
+  //   ref: rootRef,
+  //   onDrop: (e) => console.log('onDropped (optional)', e),
+  // });
 
   const { isDragOver, isDropped } = drag;
   const dropped = drag.dropped ? stripBinary(drag.dropped) : undefined;
@@ -127,7 +141,7 @@ export const Sample: React.FC = () => {
   );
 
   return (
-    <div ref={rootRef} {...styles.base}>
+    <div ref={drag.ref} {...styles.base}>
       {elBody}
       {elDragOver}
     </div>

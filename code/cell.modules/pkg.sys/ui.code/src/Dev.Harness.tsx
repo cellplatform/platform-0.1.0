@@ -5,9 +5,8 @@ const imports = {
   CodeEditor: import('./components/CodeEditor/DEV'),
   Monaco: import('./components/Monaco/DEV'),
 
-  Fileystem: import('./test.dev/dev.Filesystem/DEV'),
+  Fileystem: import('./test.dev/Filesystem.dev/DEV'),
 };
 
 const ns = new URL(location.href).searchParams.get('ns');
-
 export const DevHarness: React.FC = () => <Harness actions={Object.values(imports)} initial={ns} />;

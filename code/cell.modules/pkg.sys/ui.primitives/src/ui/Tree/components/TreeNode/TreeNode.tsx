@@ -3,31 +3,17 @@ import { Mouse } from '@platform/react';
 import { defaultValue } from '@platform/util.value';
 import * as React from 'react';
 
-import { constants, t } from '../../common';
 import * as themes from '../../themes';
 import { Icons, IIcon } from '../Icons';
 import { Spinner } from '@platform/ui.spinner';
 import { Text } from '@platform/ui.text/lib/components/Text';
 import { TreeUtil } from '../../TreeUtil';
 
-const DEFAULT = {
-  PADDING: [5, 0, 5, 5] as t.CssEdgesInput,
-};
-const SIZE = {
-  LABEL: 24,
-  ICON_LEFT: 18,
-  ICON_RIGHT: 24,
-  TWISTY_ICON: 16,
-  TWISTY_WIDTH: 18,
-};
-const MARGIN = {
-  LABEL_LEFT: 4,
-  LABEL_RIGHT: 8,
-};
+import { constants, t, toElementId, DEFAULT, SIZE, MARGIN } from './common';
+import { TreeNodeBorders } from './TreeNode.Borders';
+import { TreeNodeTwisty, TreeNodeTwistyFlag } from './TreeNode.Twisty';
 
 const NODE = constants.CLASS.NODE;
-
-export type TreeNodeTwisty = 'OPEN' | 'CLOSED' | null;
 
 export type ITreeNodeProps = {
   rootId?: string;
@@ -36,7 +22,7 @@ export type ITreeNodeProps = {
   children?: React.ReactNode;
   renderer: t.ITreeviewRenderer;
   iconRight?: IIcon | null;
-  twisty?: TreeNodeTwisty;
+  twisty?: TreeNodeTwistyFlag;
   theme?: themes.ITreeTheme;
   background?: 'THEME' | 'NONE';
   isFocused: boolean;
@@ -49,64 +35,6 @@ export type ITreeNodeProps = {
 
 export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   /**
-   * [Static]
-   */
-
-  /**
-   * The ID that identifies the node within the DOM.
-   */
-  public static elementId(nodeId: string, rootId?: string) {
-    const id = rootId ? `${rootId}:${nodeId}` : nodeId;
-    return `TreeView:${id}`;
-  }
-
-  /**
-   * The pixel bounds of a node in the DOM.
-   */
-  public static bounds(args: {
-    nodeId: string;
-    treeId?: string;
-    relativeTo?: Element;
-    target?: t.ITreeNodeBounds['target'];
-  }) {
-    const { target = 'ROOT' } = args;
-
-    const done = (el?: Element): t.ITreeNodeBounds | undefined => {
-      if (!el) {
-        return undefined;
-      }
-      const rect = el.getBoundingClientRect();
-      let { left, top } = rect;
-
-      if (args.relativeTo) {
-        const relativeBounds = args.relativeTo.getBoundingClientRect();
-        left -= relativeBounds.left;
-        top -= relativeBounds.top;
-      }
-
-      const { width, height } = rect;
-      return { node: args.nodeId, target, left, top, width, height };
-    };
-
-    const elementId = TreeNode.elementId(args.nodeId, args.treeId);
-    const elNode = document.getElementById(elementId);
-    if (!elNode) {
-      return done();
-    }
-
-    switch (target) {
-      case 'ROOT':
-        return done(elNode);
-      case 'CONTENT':
-        return done(elNode.getElementsByClassName(NODE.CONTENT)[0]);
-      case 'LABEL':
-        return done(elNode.getElementsByClassName(NODE.LABEL)[0]);
-      default:
-        throw new Error(`Target '${target}' not supported.`);
-    }
-  }
-
-  /**
    * [Properties]
    */
 
@@ -115,7 +43,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   }
 
   public get elementId() {
-    return TreeNode.elementId(this.id, this.props.rootId);
+    return toElementId(this.id, this.props.rootId);
   }
 
   private get nodeProps() {
@@ -161,10 +89,14 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
 
   public render() {
     const props = this.nodeProps;
+
     const isEnabled = this.isEnabled;
     const opacity = this.opacity;
     const padding = style.toPadding(props.padding, { defaultValue: DEFAULT.PADDING });
     const paddingBottom = props.inline?.isOpen ? 0 : padding.paddingBottom;
+
+    const theme = this.theme.node;
+    const colors = this.colors;
 
     const styles = {
       base: css({
@@ -185,15 +117,23 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
       }),
     };
 
-    const elBorders = this.renderBorders();
-    const elTwisty = this.renderTwisty();
+    const elTwisty = (
+      <TreeNodeTwisty
+        node={this.props.node}
+        theme={theme}
+        colors={colors}
+        twisty={this.props.twisty}
+        onMouse={this.props.onMouse}
+      />
+    );
+
     const elIconLeft = this.renderIconLeft();
     const elContent = this.renderContent();
     const elIconRight = this.renderIconRight();
 
     return (
       <Text className={NODE.ROOT} style={css(styles.base, this.props.style)} {...this.nodeHandlers}>
-        {elBorders}
+        <TreeNodeBorders colors={colors} theme={theme} isFirst={this.props.isFirst} />
         <div id={this.elementId} {...styles.inner}>
           {elTwisty}
           {elIconLeft}
@@ -416,46 +356,48 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     return <div {...styles.statusBadge}>{badge}</div>;
   }
 
-  private renderBorders() {
-    const theme = this.theme.node;
-    const colors = this.colors;
-    const { isFirst } = this.props;
+  // private renderBorders() {
+  //   const theme = this.theme.node;
+  //   const colors = this.colors;
+  //   const { isFirst } = this.props;
 
-    type Color = string | number | boolean | undefined;
-    let topColor: Color;
-    let bottomColor: Color;
+  //   console.log('-------------------------------------------');
 
-    if (colors.borderTop !== undefined) {
-      topColor = colors.borderTop;
-    } else if (isFirst || colors.bg) {
-      topColor = false;
-    }
+  //   type Color = string | number | boolean | undefined;
+  //   let topColor: Color;
+  //   let bottomColor: Color;
 
-    if (colors.borderBottom !== undefined) {
-      bottomColor = colors.borderBottom;
-    }
+  //   if (colors.borderTop !== undefined) {
+  //     topColor = colors.borderTop;
+  //   } else if (isFirst || colors.bg) {
+  //     topColor = false;
+  //   }
 
-    topColor = themes.color(topColor, theme.borderTopColor);
+  //   if (colors.borderBottom !== undefined) {
+  //     bottomColor = colors.borderBottom;
+  //   }
 
-    const styles = {
-      top: css({
-        Absolute: [0, 0, null, 0],
-        height: 1,
-        borderTop: `solid 1px ${color.format(topColor)}`,
-      }),
-      bottom: css({
-        Absolute: [null, 0, 0, 0],
-        height: 1,
-        borderBottom: `solid 1px ${color.format(bottomColor)}`,
-      }),
-    };
-    return (
-      <React.Fragment>
-        <div {...styles.top} />
-        <div {...styles.bottom} />
-      </React.Fragment>
-    );
-  }
+  //   topColor = themes.color(topColor, theme.borderTopColor);
+
+  //   const styles = {
+  //     top: css({
+  //       Absolute: [0, 0, null, 0],
+  //       height: 1,
+  //       borderTop: `solid 1px ${color.format(topColor)}`,
+  //     }),
+  //     bottom: css({
+  //       Absolute: [null, 0, 0, 0],
+  //       height: 1,
+  //       borderBottom: `solid 1px ${color.format(bottomColor)}`,
+  //     }),
+  //   };
+  //   return (
+  //     <React.Fragment>
+  //       <div {...styles.top} />
+  //       <div {...styles.bottom} />
+  //     </React.Fragment>
+  //   );
+  // }
 
   private mouseHandlers = (target: t.TreeNodeMouseEventHandlerArgs['target']) => {
     const { onMouse } = this.props;

@@ -1,6 +1,7 @@
 import { Subject } from 'rxjs';
 
 import { defaultValue, PeerJS, Hash, filesize } from '../../common';
+import { DEFAULT } from './constants';
 import * as t from './types';
 
 type C = t.PeerConnectionStatus;
@@ -55,19 +56,24 @@ export const StringUtil = {
     return (id || '').trim().replace(/^dc_/, '').replace(/^mc_/, '');
   },
 
-  parseEndpointAddress(address: string): t.PeerSignallingEndpoint {
-    address = StringUtil.stripHttp((address || '').trim());
-
+  parseEndpointAddress(args: { address: string; key: string }): t.PeerSignallingEndpoint {
+    const address = StringUtil.stripHttp((args.address || '').trim());
+    const key = args.key ?? '';
     const parts = address.trim().split('/');
-    const path = StringUtil.stripPathLeft(parts[1]) || undefined;
-
+    const path = StringUtil.stripPathLeft(parts[1]) || '/';
     const hostParts = (parts[0] || '').split(':');
 
     const host = hostParts[0];
     const secure = !host.startsWith('localhost');
     const port = hostParts[1] ? parseInt(hostParts[1], 10) : secure ? 443 : 80;
 
-    return { host, port, path, secure };
+    const base = `http${secure ? 's' : ''}://${host}:${port}${path}`;
+    const url = {
+      base,
+      peers: `${base.replace(/\/$/, '')}/conn/peers`,
+    };
+
+    return { key, host, port, path, secure, url };
   },
 
   stripHttp(text?: string) {
@@ -116,12 +122,12 @@ export const FileUtil = {
    */
   toFiles(
     dir: string,
-    files: { filename: string; data: ArrayBuffer; mimetype: string }[],
+    files: { path: string; data: ArrayBuffer; mimetype: string }[],
   ): t.PeerFile[] {
-    return files.map(({ data, filename, mimetype }) => {
+    return files.map(({ data, path, mimetype }) => {
       const hash = Hash.sha256(data);
       const blob = new Blob([data], { type: mimetype });
-      return { dir, blob, filename, hash };
+      return { dir, blob, filename: path, hash };
     });
   },
 

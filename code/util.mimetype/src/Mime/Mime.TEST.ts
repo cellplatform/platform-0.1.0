@@ -47,5 +47,7 @@ describe('Mime', () => {
     test('application/json', false, false, true);
     test('application/json;', false, false, true);
     test('application/json; charset=utf-8', false, false, true);
+    test('application/vnd.foo.picture+json', false, false, true);
+    test('application/vnd.foo.picture+json; charset=utf-8', false, false, true);
   });
 });

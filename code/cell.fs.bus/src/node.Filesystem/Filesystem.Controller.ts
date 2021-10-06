@@ -9,7 +9,7 @@ type FilesystemId = string;
  */
 export function BusController(args: {
   bus: t.EventBus<any>;
-  fs: t.FsDriverLocal | string; // String === root directory (if explicit fs-driver not passed)
+  fs: t.FsDriverLocal | string; // String === root directory (if explicit fs-driver not passed).
   id?: FilesystemId;
   index?: t.FsIndexer;
   filter?: (e: t.SysFsEvent) => boolean;

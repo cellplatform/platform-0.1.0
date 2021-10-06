@@ -24,9 +24,19 @@ export type VercelHttpResponse = {
  * https://vercel.com/docs/api
  */
 export type VercelHttp = {
-  version: number;
+  info(): Promise<Res & { user: t.VercelHttpUser }>;
   teams: VercelHttpTeams;
   team(id: string): VercelHttpTeam;
+};
+
+/**
+ * https://vercel.com/docs/rest-api#endpoints/user/get-the-authenticated-user
+ */
+export type VercelHttpUser = {
+  uid: string;
+  email: string;
+  username: string;
+  avatar: string;
 };
 
 export type VercelHttpTeams = {
@@ -123,8 +133,24 @@ export type VercelHttpUploadFiles = {
   post(path: FilePath, input: Uint8Array): Promise<VercelHttpUploadPostResponse>;
   upload(
     source: DirPath | VercelSourceBundle,
-    options?: { filter?: (path: FilePath) => boolean; batch?: number },
+    options?: VercelHttpUploadFilesOptions,
   ): Promise<VercelHttpUploadResponse>;
+};
+
+export type VercelHttpUploadFilesOptions = {
+  batch?: number;
+  filter?: VercelHttpUploadFilesFilter;
+  beforeUpload?: VercelHttpBeforeFileUpload;
+};
+
+export type VercelHttpUploadFilesFilter = (path: FilePath) => boolean;
+
+export type VercelHttpBeforeFileUpload = (args: VercelHttpBeforeFileUploadArgs) => Promise<void>; // NB: [undefined] means no change (original data is sent).
+export type VercelHttpBeforeFileUploadArgs = {
+  path: FilePath;
+  data: Uint8Array;
+  modify(input: Uint8Array | string): void;
+  toString(): string;
 };
 
 export type VercelHttpUploadPostResponse = t.VercelHttpResponse & {
@@ -166,6 +192,19 @@ export type VercelHttpFilesPullError = {
 };
 
 /**
+ * Route
+ *    A list of routes objects used to rewrite paths to point towards other
+ *    internal or external paths.
+ *
+ *    For example:
+ *          [{ "src": "/docs", "dest": "https://docs.example.com" }]
+ *
+ * Ref:
+ *    https://vercel.com/docs/rest-api#endpoints/deployments/create-a-new-deployment/request-parameters
+ */
+export type VercelRoute = { src: string; dest: string };
+
+/**
  * Deploy
  */
 export type VercelFile = { path: string; data?: Uint8Array };
@@ -177,13 +216,14 @@ export type VercelSourceBundle = { manifest: VercelManifest; files: t.VercelFile
  */
 export type VercelHttpDeployArgs = VercelHttpDeployConfig & {
   source: DirPath | VercelSourceBundle;
+  beforeUpload?: VercelHttpBeforeFileUpload;
 };
 export type VercelHttpDeployConfig = {
   name?: string; // A string with the name used in the deployment URL (max 52-chars). Derived from module [namespace@version] if ommited.
   env?: Record<string, string>; // An object containing the deployment's environment variable names and values. Secrets can be referenced by prefixing the value with @.
   buildEnv?: Record<string, string>; // An object containing the deployment's environment variable names and values to be passed to Builds.
   functions?: Record<string, t.VercelFunctionConfig>; // A list of objects used to configure your Serverless Functions.
-  routes?: Record<string, string>[]; // A list of routes objects used to rewrite paths to point towards other internal or external paths. For example; [{ "src": "/docs", "dest": "https://docs.example.com" }].
+  routes?: VercelRoute[]; // A list of routes objects used to rewrite paths to point towards other internal or external paths. For example; [{ "src": "/docs", "dest": "https://docs.example.com" }].
   regions?: string[]; // An array of the regions the deployment's Serverless Functions should be deployed to. For example, ["sfo", "bru"].
   public?: boolean; // A boolean representing if the deployment is public or not. By default this is false.
   target?: VercelTargetFlag;
@@ -193,10 +233,11 @@ export type VercelHttpDeployConfig = {
 export type VercelHttpDeployResponse = VercelHttpResponse & {
   deployment: {
     id: Id;
+    name: Name;
     team: { name: Name; id: Id };
     project: { name: Name; id: Id };
     regions: string[];
-    target: VercelTargetFlag;
+    target: VercelTargetFlag | undefined;
     alias: string[];
     meta: VercelHttpDeployMeta;
     urls: { inspect: string; public: string[] };

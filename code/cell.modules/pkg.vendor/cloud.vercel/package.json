@@ -1,6 +1,8 @@
 {
-  "name": "http.vercel",
-  "version": "0.0.15",
+  "name": "vendor.cloud.vercel",
+  "version": "0.0.18",
+  "main": "lib/node/index",
+  "types": "lib/node/index.d.ts",
   "sideEffects": false,
   "compiler": {
     "port": 3038
@@ -15,12 +17,13 @@
     "bundle.node": "cell.compiler bundle node --bump $@",
     "bundle.web": "cell.compiler bundle web --bump $@",
     "bundle": "yarn bundle.web && yarn bundle.node",
-    "upload": "cell.compiler upload $@",
-    "upload.node": "cell.compiler upload node --no-bundle --dir node.HEAD $@",
-    "upload.web": "cell.compiler upload web   --no-bundle --dir web.HEAD  $@",
-    "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "clean": "cell.compiler clean $@"
+    "clean": "cell.compiler clean $@",
+    "deploy": "ts-node -T script.ts/deploy.sample",
+    "deploy.sys": "ts-node -T script.ts/deploy.sys",
+    "deploy.tmp.node": "ts-node -T script.ts/deploy.tmp.node",
+    "deploy.ts": "ts-node -T script.ts/deploy.typescript",
+    "tmp": "ts-node -T script.ts/tmp.server"
   },
   "dependencies": {
     "@platform/util.mimetype": "^0.1.48"

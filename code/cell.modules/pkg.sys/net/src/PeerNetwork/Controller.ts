@@ -13,6 +13,7 @@ import {
   t,
   time,
   WebRuntime,
+  DEFAULT,
 } from './common';
 import { PeerEvents } from './event';
 import { MemoryRefs, SelfRef } from './Refs';
@@ -106,9 +107,9 @@ export function Controller(args: { bus: t.EventBus<any> }) {
 
   const initLocalPeer = (e: t.PeerLocalCreateReq) => {
     const createdAt = time.now.timestamp;
-    const signal = StringUtil.parseEndpointAddress(e.signal);
-    const { host, path, port, secure } = signal;
-    const peer = new PeerJS(e.self, { host, path, port, secure });
+    const signal = StringUtil.parseEndpointAddress({ address: e.signal, key: DEFAULT.PEERJS_KEY });
+    const { host, path, port, secure, key } = signal;
+    const peer = new PeerJS(e.self, { host, path, port, secure, key });
     const self: SelfRef = { id: e.self, peer, createdAt, signal, connections: [], media: {} };
 
     /**
@@ -170,7 +171,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   /**
    * STATUS
    */
-  rx.payload<t.PeerLocalStatusRequestEvent>($, 'sys.net/peer/local/status:req')
+  rx.payload<t.PeerLocalStatusReqEvent>($, 'sys.net/peer/local/status:req')
     .pipe(delay(0))
     .subscribe((e) => {
       const tx = e.tx || slug();
@@ -318,6 +319,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         const reliable = e.isReliable;
         const errorMonitor = PeerJsUtil.error(self.peer);
         const dataConnection = self.peer.connect(remote, { reliable, metadata });
+
         refs.connection(self).add('data', 'outgoing', dataConnection);
 
         dataConnection.on('open', () => {
@@ -478,10 +480,33 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     });
 
   /**
+   * REMOTE: exists
+   */
+  rx.payload<t.PeerRemoteExistsReqEvent>($, 'sys.net/peer/remote/exists:req')
+    .pipe()
+    .subscribe(async (e) => {
+      const { tx, self, remote } = e;
+      const connection = events.connection(self, remote);
+
+      let exists = false;
+      const res = await connection.open.data({ isReliable: false });
+      const id = res.connection?.id;
+
+      if (!res.error) exists = true;
+      if (id) connection.close(id); // Clean up.
+
+      // Fire response event.
+      bus.fire({
+        type: 'sys.net/peer/remote/exists:res',
+        payload: { tx, self, remote, exists },
+      });
+    });
+
+  /**
    * API
    */
   return {
-    dispose$: events.dispose$,
+    dispose$: events.dispose$.pipe(take(1)),
     dispose,
   };
 }

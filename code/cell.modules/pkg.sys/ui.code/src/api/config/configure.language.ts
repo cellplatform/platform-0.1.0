@@ -35,7 +35,7 @@ export async function registerLanguage(api: t.ICodeEditorSingleton) {
   });
 
   await Promise.all([
-    api.libs.fromNetwork(bundle.path(constants.PATH.STATIC.TYPES.ES)),
+    api.libs.fromNetwork(constants.PATH.STATIC.TYPES.ES),
     // api.libs.loadDefs('lib.cell.d.ts'), // TODO 🐷 - this needs updating to: [Runtime/types.inner.env].
     //
   ]);

@@ -24,7 +24,15 @@ export class Mime {
    * Determine if the given MIME type represents json.
    */
   public static isJson(mimetype: string) {
-    return isIncluded(mimetype, ['application/json']);
+    const parts = (mimetype || '')
+      .trim()
+      .split(';')
+      .map((part) => part.trim())
+      .filter(Boolean);
+    return parts.some((part) => {
+      if (!part.startsWith('application/')) return false;
+      return part.endsWith('/json') || part.endsWith('+json');
+    });
   }
 }
 
@@ -32,8 +40,7 @@ export class Mime {
  * [Helpers]
  */
 
-function isIncluded(mimetype: string, values: string[]) {
+function isIncluded(mimetype: string, match: string[]) {
   mimetype = (mimetype || '').trim();
-
-  return values.some((item) => mimetype.includes(item));
+  return match.some((item) => mimetype.includes(item));
 }

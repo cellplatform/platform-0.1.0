@@ -38,7 +38,10 @@ import * as t from '../common/types';
  */
 export function useResizeObserver(
   ref: React.RefObject<HTMLElement>,
-  options: { root?: t.ResizeObserver | t.UseResizeObserver } = {},
+  options: {
+    root?: t.ResizeObserver | t.UseResizeObserver;
+    onSize?: (size: t.DomRect) => void;
+  } = {},
 ): t.UseResizeObserver {
   const [rect, setRect] = useState<t.DomRect>(DEFAULT.RECT);
   const readyRef = useRef<boolean>(false);
@@ -54,8 +57,10 @@ export function useResizeObserver(
       takeUntil(element.dispose$),
       filter((e) => e.payload.rect.x > -1),
     ).subscribe((e) => {
-      setRect(e.payload.rect);
-      change$.current.next(e.payload.rect);
+      const size = e.payload.rect;
+      setRect(size);
+      change$.current.next(size);
+      options.onSize?.(size);
     });
 
     readyRef.current = true;

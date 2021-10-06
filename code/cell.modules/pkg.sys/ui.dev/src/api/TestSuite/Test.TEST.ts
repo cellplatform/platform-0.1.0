@@ -5,28 +5,34 @@ import { DEFAULT } from './common';
 describe('TestModel', () => {
   const description = 'foo';
 
-  it('model', () => {
-    const handler: t.TestHandler = () => null;
-    const model1 = TestModel({ description });
-    const model2 = TestModel({ description, handler });
+  describe('model', () => {
+    it('id: "Test.<slug>"', () => {
+      const model = TestModel({ description });
+      expect(model.id.startsWith('Test.')).to.eql(true);
+    });
 
-    expect(model1.description).to.eql(description);
-    expect(model2.description).to.eql(description);
+    it('description | handler', () => {
+      const handler: t.TestHandler = () => null;
+      const model1 = TestModel({ description });
+      const model2 = TestModel({ description, handler });
 
-    expect(model1.handler).to.eql(undefined);
-    expect(model2.handler).to.eql(handler);
+      expect(model1.description).to.eql(description);
+      expect(model2.description).to.eql(description);
+
+      expect(model1.handler).to.eql(undefined);
+      expect(model2.handler).to.eql(handler);
+    });
+
+    it('skip | only', () => {
+      const model1 = TestModel({ description });
+      const model2 = TestModel({ description, modifier: 'skip' });
+      const model3 = TestModel({ description, modifier: 'only' });
+
+      expect(model1.modifier).to.eql(undefined);
+      expect(model2.modifier).to.eql('skip');
+      expect(model3.modifier).to.eql('only');
+    });
   });
-
-  it('model: skip | only', () => {
-    const model1 = TestModel({ description });
-    const model2 = TestModel({ description, modifier: 'skip' });
-    const model3 = TestModel({ description, modifier: 'only' });
-
-    expect(model1.modifier).to.eql(undefined);
-    expect(model2.modifier).to.eql('skip');
-    expect(model3.modifier).to.eql('only');
-  });
-
   describe('run', () => {
     const description = 'my-root';
 
@@ -67,7 +73,7 @@ describe('TestModel', () => {
     it('no handler', async () => {
       const test = TestModel({ description });
       const res = await test.run();
-      expect(res.elapsed).to.eql(0);
+      expect(res.elapsed).to.lessThan(5);
       expect(res.error).to.eql(undefined);
     });
 

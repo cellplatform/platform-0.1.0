@@ -16,7 +16,7 @@ describe.only('BusEvents', () => {
     test('vendor.vercel/', true);
   });
 
-  it('is.instance', async () => {
+  it('is.instance', () => {
     expect(is.instance({ type: 'vendor.vercel/', payload: { id: 'abc' } }, 'abc')).to.eql(true);
     expect(is.instance({ type: 'vendor.vercel/', payload: { id: 'abc' } }, '123')).to.eql(false);
     expect(is.instance({ type: 'foo', payload: { id: 'abc' } }, 'abc')).to.eql(false);

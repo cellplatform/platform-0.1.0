@@ -6,8 +6,8 @@ import { t } from './common';
 export type PeerLocalEvent =
   | PeerLocalInitReqEvent
   | PeerLocalInitResEvent
-  | PeerLocalStatusRequestEvent
-  | PeerLocalStatusResponseEvent
+  | PeerLocalStatusReqEvent
+  | PeerLocalStatusResEvent
   | PeerLocalStatusChangedEvent
   | PeerLocalStatusRefreshEvent
   | PeerLocalOnlineChangedEvent
@@ -44,11 +44,11 @@ export type PeerLocalCreateRes = {
 /**
  * Fired to retrieve the status of the specified peer.
  */
-export type PeerLocalStatusRequestEvent = {
+export type PeerLocalStatusReqEvent = {
   type: 'sys.net/peer/local/status:req';
-  payload: PeerLocalStatusRequest;
+  payload: PeerLocalStatusReq;
 };
-export type PeerLocalStatusRequest = {
+export type PeerLocalStatusReq = {
   self: t.PeerId;
   tx?: string;
 };
@@ -56,11 +56,11 @@ export type PeerLocalStatusRequest = {
 /**
  * Fired to retrieve the status of the specified peer.
  */
-export type PeerLocalStatusResponseEvent = {
+export type PeerLocalStatusResEvent = {
   type: 'sys.net/peer/local/status:res';
-  payload: PeerLocalStatusResponse;
+  payload: PeerLocalStatusRes;
 };
-export type PeerLocalStatusResponse = {
+export type PeerLocalStatusRes = {
   self: t.PeerId;
   tx: string;
   exists: boolean;

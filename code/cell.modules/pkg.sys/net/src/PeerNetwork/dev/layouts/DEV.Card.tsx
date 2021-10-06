@@ -26,10 +26,7 @@ export type DevCardProps = {
 export const DevCard: React.FC<DevCardProps> = (props) => {
   const { width = 300, shadow = false, onDrop } = props;
 
-  const baseRef = useRef<HTMLDivElement>(null);
-  const drag = useDragTarget(baseRef, (e) => {
-    if (onDrop) onDrop(e);
-  });
+  const drag = useDragTarget<HTMLDivElement>((e) => onDrop?.(e));
 
   const styles = {
     base: css({ position: 'relative' }),
@@ -60,7 +57,7 @@ export const DevCard: React.FC<DevCardProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <Card
-        ref={baseRef}
+        ref={drag.ref}
         margin={props.margin}
         padding={props.padding}
         width={width}

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { css, CssValue, t } from '../common';
 import { DevVideo } from '../media';
-import { PeerPropList } from './DEV.Network.Header.Props';
+import { LocalPeerProps } from '../../components/LocalPeerProps';
 
 export type DevNetworkHeaderProps = {
   peer: t.PeerStatus;
@@ -15,12 +15,11 @@ export type DevNetworkHeaderProps = {
 export const DevNetworkHeader: React.FC<DevNetworkHeaderProps> = (props) => {
   const { peer, media, netbus } = props;
   const bus = props.bus as t.EventBus<t.PeerEvent>;
+  const self = netbus.self;
 
   const styles = {
     base: css({ Flex: 'horizontal-spaceBetween-start', padding: 15 }),
-    left: css({
-      Flex: 'vertical-stretch-stretch',
-    }),
+    left: css({ Flex: 'vertical-stretch-stretch' }),
     right: css({ Flex: 'horizontal-stretch-stretch' }),
   };
 
@@ -41,7 +40,7 @@ export const DevNetworkHeader: React.FC<DevNetworkHeaderProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.left}>
-        <PeerPropList status={peer} bus={bus} netbus={netbus} />
+        <LocalPeerProps self={self} status={peer} bus={bus} newConnections={true} />
       </div>
       <div {...styles.right}>
         {elSelfScreen}

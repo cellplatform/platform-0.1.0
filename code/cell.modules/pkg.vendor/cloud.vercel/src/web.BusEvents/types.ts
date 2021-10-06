@@ -1,6 +1,6 @@
 import * as t from '../web/common/types';
 
-type Instance = string;
+type InstanceId = string;
 type Milliseconds = number;
 type IdOrName = string;
 type Name = string;
@@ -9,13 +9,15 @@ export type VercelInfo = {
   /**
    * https://vercel.com/docs/api#endpoints
    */
-  endpoint: {
-    version: number; // Base version of the HTTP endpoint.
+  endpoint?: {
+    alive: boolean;
+    user?: t.VercelHttpUser;
+    error?: t.VercelHttpError;
   };
 };
 
 /**
- * Events
+ * EVENTS
  */
 
 export type VercelEvent =
@@ -24,15 +26,18 @@ export type VercelEvent =
   | VercelDeployReqEvent
   | VercelDeployResEvent;
 
+/**
+ * Event API
+ */
 export type VercelEvents = t.Disposable & {
   $: t.Observable<t.VercelEvent>;
-  id: Instance;
+  id: InstanceId;
   is: { base(input: any): boolean };
 
   info: {
     req$: t.Observable<t.VercelInfoReq>;
     res$: t.Observable<t.VercelInfoRes>;
-    get(options?: { timeout?: Milliseconds }): Promise<VercelInfoRes>;
+    get(options?: { timeout?: Milliseconds; endpoint?: boolean }): Promise<VercelInfoRes>;
   };
 
   deploy: {
@@ -68,13 +73,13 @@ export type VercelInfoReqEvent = {
   type: 'vendor.vercel/info:req';
   payload: VercelInfoReq;
 };
-export type VercelInfoReq = { tx: string; id: Instance };
+export type VercelInfoReq = { tx: string; id: InstanceId; endpoint: boolean };
 
 export type VercelInfoResEvent = {
   type: 'vendor.vercel/info:res';
   payload: VercelInfoRes;
 };
-export type VercelInfoRes = { tx: string; id: Instance; info?: VercelInfo; error?: string };
+export type VercelInfoRes = { tx: string; id: InstanceId; info?: VercelInfo; error?: string };
 
 /**
  * Deploy
@@ -85,7 +90,7 @@ export type VercelDeployReqEvent = {
 };
 export type VercelDeployReq = {
   tx: string;
-  id: Instance;
+  id: InstanceId;
   team: IdOrName;
   project: Name;
   source: t.VercelSourceBundle;
@@ -98,7 +103,7 @@ export type VercelDeployResEvent = {
 };
 export type VercelDeployRes = {
   tx: string;
-  id: Instance;
+  id: InstanceId;
   paths: string[];
   deployment?: t.VercelHttpDeployResponse['deployment'];
   error?: string;

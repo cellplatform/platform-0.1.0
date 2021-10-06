@@ -1,5 +1,6 @@
 import { t } from '../common';
 
+type Id = string;
 type Anything = void | any;
 type Milliseconds = number;
 type Description = string;
@@ -10,10 +11,15 @@ export type TestModifier = 'skip' | 'only';
  * BDD ("behavior driven develoment") style test configuration API.
  */
 export type Test = {
-  describe(description: Description, handler?: TestSuiteHandler): TestSuiteModel;
+  describe: TestSuiteDescribe;
+  bundle(items: (TestSuiteModel | Promise<any>)[]): Promise<TestSuiteModel>;
 };
 
+/**
+ * A suite ("set") of tests.
+ */
 export type TestSuite = {
+  id: Id;
   timeout(value: Milliseconds): TestSuite;
   describe: TestSuiteDescribe;
   it: TestSuiteIt;
@@ -39,6 +45,7 @@ export type TestHandlerArgs = { timeout(value: Milliseconds): TestHandlerArgs };
  * Model: Test
  */
 export type TestModel = {
+  id: Id;
   run: TestRun;
   description: Description;
   handler?: TestHandler;
@@ -63,6 +70,7 @@ export type TestRunResponse = {
 export type TestSuiteModel = TestSuite & {
   state: TestSuiteModelState;
   run: TestSuiteRun;
+  merge(...suites: TestSuiteModel[]): TestSuiteModel;
 };
 
 export type TestSuiteModelState = {

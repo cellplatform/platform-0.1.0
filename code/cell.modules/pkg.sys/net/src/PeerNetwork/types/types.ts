@@ -13,7 +13,14 @@ export type PeerConnectDirection = 'incoming' | 'outgoing';
 
 export type PeerError = { message: string };
 
-export type PeerSignallingEndpoint = { host: string; port: number; path?: string; secure: boolean };
+export type PeerSignallingEndpoint = {
+  host: string;
+  port: number;
+  path?: string;
+  secure: boolean;
+  key: string;
+  url: { base: string; peers: string };
+};
 
 export type PeerModule = { name: string; version: string };
 

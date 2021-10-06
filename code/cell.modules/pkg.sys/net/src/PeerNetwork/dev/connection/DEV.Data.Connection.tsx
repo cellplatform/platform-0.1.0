@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { useLocalPeer } from '../../hook';
+import { useLocalPeer } from '../../hooks';
 import {
   Button,
   color,

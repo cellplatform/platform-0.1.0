@@ -1,10 +1,13 @@
 import React from 'react';
-import { DevActions, ObjectView } from 'sys.ui.dev';
+import { DevActions, ObjectView, Test } from 'sys.ui.dev';
 import { css } from '../common';
 
-import tests from './sample.TEST';
+// import tests from './sample.TEST';
 
-type Ctx = { data: any };
+type Ctx = {
+  data: any;
+  runTests(): Promise<void>;
+};
 
 /**
  * Actions
@@ -13,14 +16,27 @@ export const actions = DevActions<Ctx>()
   .namespace('FsDriver.IndexedDb')
   .context((e) => {
     if (e.prev) return e.prev;
-    const ctx: Ctx = { data: null };
+
+    const ctx: Ctx = {
+      data: null,
+      async runTests() {
+        // const tests =
+        // const res = await tests.run();
+        // e.change.ctx((ctx) => (ctx.data = res));
+      },
+    };
+
+    ctx.runTests();
+
     return ctx;
   })
 
   .items((e) => {
     e.title('FsDriver: IndexedDb');
 
-    e.button('run', async (e) => {
+    e.button('run tests', async (e) => {
+      const tests = await Test.bundle([import('../FsDriver.IndexedDB.TEST')]);
+
       e.ctx.data = await tests.run();
     });
 

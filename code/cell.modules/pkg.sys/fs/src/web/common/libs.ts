@@ -14,6 +14,6 @@ export { Filesystem, Stream } from '@platform/cell.fs.bus/lib/web';
 export { Path, PathUri } from '@platform/cell.fs';
 
 /**
- * @system
+ * @system Runtime
  */
 export { IpcBus } from 'sys.runtime.electron';

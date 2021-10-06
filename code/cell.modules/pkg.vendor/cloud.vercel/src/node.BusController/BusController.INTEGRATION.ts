@@ -1,7 +1,7 @@
 import { nodefs, t, expect, rx } from '../test';
 import { VercelHttp } from '../node.VercelHttp';
 
-import { VercelBus } from '.';
+import { BusController, BusEvents } from '.';
 import { DEFAULT, Filesystem } from './common';
 
 describe.skip('BusController', function () {
@@ -24,13 +24,13 @@ describe.skip('BusController', function () {
     return client.team(await getTeamId(index));
   };
 
-  describe.only('Deploy', () => {
+  describe('Deploy', () => {
     it('bundle (Uint8Array)', async () => {
       // const team = await getTeam();
       const dir = fs.dir('web');
 
-      const controller = VercelBus.Controller({ token, fs, bus });
-      const events = VercelBus.Events({ bus });
+      const controller = BusController({ token, fs, bus });
+      const events = BusEvents({ bus });
 
       // const paths = manifest.files.map((file) => file.path);
 

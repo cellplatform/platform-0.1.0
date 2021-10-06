@@ -10,7 +10,7 @@ export function VercelTeamDeployment(args: {
 }): t.VercelHttpTeamDeployment {
   const { ctx, team } = args;
   const teamId = team.id;
-  const { http, headers, version, token } = ctx;
+  const { http, headers } = ctx;
 
   const api: t.VercelHttpTeamDeployment = {
     url: (args.url ?? '').trim().replace(/^https\:\/\//, ''),
@@ -29,7 +29,7 @@ export function VercelTeamDeployment(args: {
      * https://vercel.com/docs/api#endpoints/deployments/get-a-single-deployment
      */
     async info() {
-      const url = ctx.url(`now/deployments/get`, { url: api.url, teamId });
+      const url = ctx.url(11, `now/deployments/get`, { url: api.url, teamId });
       const res = await http.get(url, { headers });
       const { ok, status } = res;
       const json = res.json as any;
@@ -46,7 +46,7 @@ export function VercelTeamDeployment(args: {
       const info = await api.info();
       const deploymentId = info.deployment?.id;
 
-      const url = ctx.url(`now/deployments/${deploymentId}/files`, { teamId });
+      const url = ctx.url(11, `now/deployments/${deploymentId}/files`, { teamId });
       const res = await http.get(url, { headers });
       const { ok, status } = res;
       const json = res.json as any;
