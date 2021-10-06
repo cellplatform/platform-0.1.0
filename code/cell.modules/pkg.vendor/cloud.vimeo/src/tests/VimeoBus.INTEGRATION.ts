@@ -1,4 +1,4 @@
-import { VimeoBus } from '.';
+import { VimeoBus } from '../node.Bus';
 import { expect, TestOS } from '../test';
 
 const token = process.env.VIMEO_TEST_TOKEN ?? '';
@@ -8,7 +8,6 @@ const TestSetup = () => {
   const controller = VimeoBus.Controller({ token, bus, fs });
   const events = controller.events;
   const dispose = controller.dispose;
-
   return { controller, events, dispose, bus, fs };
 };
 

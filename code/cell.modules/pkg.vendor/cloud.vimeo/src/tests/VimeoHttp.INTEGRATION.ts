@@ -1,5 +1,5 @@
 import { expect, TestOS } from '../test';
-import { VimeoHttp } from '.';
+import { VimeoHttp } from '../node.Http';
 
 const token = process.env.VIMEO_TEST_TOKEN ?? '';
 const fs = TestOS.fs;
@@ -25,7 +25,6 @@ describe('INTEGRATION', function () {
 
       console.log('-------------------------------------------');
       console.log('res', res);
-
       console.log('-------------------------------------------');
       console.log('res.sizes', res.thumbnails[0].sizes);
 

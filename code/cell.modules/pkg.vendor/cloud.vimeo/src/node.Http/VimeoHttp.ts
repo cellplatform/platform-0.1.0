@@ -1,5 +1,5 @@
 import { t } from '../node/common';
-import { VimeoHttp as WebVimeoHttp } from '../web.VimeoHttp';
+import { VimeoHttp as WebVimeoHttp } from '../web.Http';
 import { convertUploadFile } from './util';
 
 /**

@@ -1,7 +1,7 @@
 import { t } from '../node/common';
 
 import { BusController as BusControllerWeb } from '../web.Bus/BusController';
-import { VimeoHttp } from '../node.VimeoHttp';
+import { VimeoHttp } from '../node.Http';
 
 type InstanceId = string;
 
