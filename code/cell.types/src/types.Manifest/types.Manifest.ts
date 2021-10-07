@@ -11,3 +11,8 @@ export type Manifest<
 export type ManifestHash = {
   files: string; // The hash of all [filehash] values in the manifest [files] list.
 };
+
+/**
+ * URL (Uniform Resource Locator) pointing to a manifest.
+ */
+export type ManifestUrl = string;

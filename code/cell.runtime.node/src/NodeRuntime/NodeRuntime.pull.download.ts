@@ -36,7 +36,6 @@ export async function downloadFiles(bundle: t.RuntimeBundleOrigin2, targetDir: s
   if (manifest.kind !== 'module') {
     return doneWithError(`Manifest kind '${manifest.kind || '<none>'}' not a module.`);
   }
-  bundle.fileshash = bundle.fileshash ?? manifest.hash.files;
 
   // Ensure the manifest contains files.
   if (manifest.files.length === 0) {
