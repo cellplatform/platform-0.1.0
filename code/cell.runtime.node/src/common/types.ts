@@ -8,6 +8,10 @@ export {
   IHttpClientFileData,
   Global,
   GlobalEnv,
+  ManifestUrl,
+  ManifestFile,
 } from '@platform/cell.types';
 
 export { JsonMap, Json, EventBus } from '@platform/types';
+
+export { INodeFs } from '@platform/fs.types';

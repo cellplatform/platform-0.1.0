@@ -3,7 +3,7 @@ import { takeUntil, filter, map } from 'rxjs/operators';
 
 import { BundleWrapper } from '../BundleWrapper';
 import { DEFAULT, deleteUndefined, fs, log, Logger, PATH, R, rx, slug, t, time } from '../common';
-import { pullMethod } from './NodeRuntime.pull';
+import { pullMethodFactory } from './NodeRuntime.pull';
 import { invoke } from './NodeRuntime.run.invoke';
 
 type Id = string;
@@ -11,7 +11,7 @@ type Id = string;
 /**
  * Factory for the [run] method.
  */
-export function runMethod(args: {
+export function runMethodFactory(args: {
   runtime: Id;
   bus: t.EventBus<any>;
   events: t.RuntimeNodeEvents;
@@ -21,7 +21,7 @@ export function runMethod(args: {
 }) {
   const { runtime, cachedir, stdlibs, isDisposed, events } = args;
   const bus = rx.busAsType<t.RuntimeNodeEvent>(args.bus);
-  const pull = pullMethod({ cachedir, isDisposed });
+  const pull = pullMethodFactory({ cachedir, isDisposed });
 
   /**
    * Pull and run the given bundle.

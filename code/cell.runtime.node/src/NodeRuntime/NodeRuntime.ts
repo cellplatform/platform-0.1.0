@@ -4,8 +4,8 @@ import { BundleWrapper } from '../BundleWrapper';
 import { BusController } from '../BusController';
 import { BusEvents } from '../BusEvents';
 import { fs, PATH, R, t, slug } from '../common';
-import { pullMethod } from './NodeRuntime.pull';
-import { runMethod } from './NodeRuntime.run';
+import { pullMethodFactory } from './NodeRuntime.pull';
+import { runMethodFactory } from './NodeRuntime.run';
 
 export const NodeRuntime = {
   /**
@@ -51,8 +51,8 @@ export const NodeRuntime = {
       stdlibs,
       events,
 
-      pull: pullMethod({ cachedir, isDisposed }),
-      run: runMethod({ runtime: id, events, bus, cachedir, stdlibs, isDisposed }),
+      pull: pullMethodFactory({ cachedir, isDisposed }),
+      run: runMethodFactory({ runtime: id, events, bus, cachedir, stdlibs, isDisposed }),
 
       /**
        * Determine if the given bundle has been pulled.

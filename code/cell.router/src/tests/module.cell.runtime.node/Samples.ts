@@ -8,6 +8,9 @@ const ENTRY = {
   LONG_RUNNING: './src/tests/module.cell.runtime.node/sample.longrunning',
 };
 
+/**
+ * Compiled samples used by various tests.
+ */
 export const Samples = {
   node: TestCompile.make(
     'NodeRuntime',

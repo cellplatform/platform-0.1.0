@@ -1,6 +1,7 @@
 import { FileCache, fs, PATH, Path, t, Schema } from '../common';
 
 type B = t.RuntimeBundleOrigin;
+type U = t.ManifestUrl;
 
 /**
  * Wrapper around a raw origin {bundle} data object that
@@ -21,8 +22,15 @@ export const BundleWrapper = {
   /**
    * Create an instance of the wrapper.
    */
-  create(bundle: B, cachedir: string) {
-    bundle = { ...bundle };
+  create(input: B | U, cachedir: string) {
+    /**
+     * TODO 🐷
+     */
+    if (typeof input === 'string') {
+      throw new Error('Bundle string - manifest url'); // TEMP 🐷
+    }
+
+    const bundle = { ...input };
     const { host, uri } = bundle;
     const dir = Path.dir(bundle.dir);
     const cache = FileCache.create({
