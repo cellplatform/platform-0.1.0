@@ -1,6 +1,6 @@
 import { value, id, t, util, R } from '../common';
 
-type B = t.RuntimeBundleOrigin;
+type B = t.BundleCellAddress;
 
 /**
  * Executes a function in the given runtime.

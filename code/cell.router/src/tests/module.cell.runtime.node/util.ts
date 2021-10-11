@@ -7,7 +7,7 @@ export * from './sample.NodeRuntime/types';
 export * from './sample.pipe/types';
 export { Samples };
 
-type B = t.RuntimeBundleOrigin;
+type B = t.BundleCellAddress;
 const trimSlashes = (path?: string) => (path || '').trim().replace(/^\/*/, '').replace(/\/*$/, '');
 
 const toManifestUrl = (bundle: B) => {

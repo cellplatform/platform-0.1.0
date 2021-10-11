@@ -5,7 +5,7 @@ import { ISampleNodeInValue, ISampleNodeOutValue } from './sample.NodeRuntime/ty
 import { Samples } from './Samples';
 import { getManifest, prepare, uploadBundle } from './util';
 
-type B = t.RuntimeBundleOrigin;
+type B = t.BundleCellAddress;
 type E = { type: 'foo'; payload: { count: number } };
 
 describe('cell.runtime.node: NodeRuntime', function () {
