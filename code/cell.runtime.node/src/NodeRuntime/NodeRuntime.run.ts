@@ -26,10 +26,7 @@ export function runMethodFactory(args: {
   /**
    * Pull and run the given bundle.
    */
-  const fn: t.RuntimeRun = (
-    bundleInput: t.RuntimeBundleOrigin,
-    options: t.RuntimeRunOptions = {},
-  ) => {
+  const fn: t.RuntimeRun = (manifestUrl, options = {}) => {
     if (isDisposed()) throw new Error('Runtime disposed');
 
     const timer = time.timer();
@@ -43,9 +40,9 @@ export function runMethodFactory(args: {
     const promise = new Promise<t.RuntimeRunResponse>(async (resolve, reject) => {
       let elapsed = { prep: -1, run: -1 }; // NB: Returned from "run" execution.
 
-      const { silent, hash } = options;
+      const { silent, fileshash } = options;
       const timeout = wrangleTimeout(options.timeout);
-      const bundle = BundleWrapper.create(bundleInput, cachedir);
+      const bundle = BundleWrapper(manifestUrl, cachedir);
       const exists = await bundle.isCached();
       const isPullRequired = !exists || options.pull;
 
@@ -54,7 +51,7 @@ export function runMethodFactory(args: {
         errors.push(
           deleteUndefined({
             type: 'RUNTIME/run',
-            bundle: bundle.toObject(),
+            bundle: bundle.url.href,
             message,
             stack,
           }),
@@ -92,7 +89,7 @@ export function runMethodFactory(args: {
        * Ensure the bundle has been pulled locally.
        */
       if (isPullRequired) {
-        const res = await pull(bundleInput, { silent });
+        const res = await pull(manifestUrl, { silent });
         errors.push(...res.errors);
         if (!res.ok || errors.length > 0) {
           return done();
@@ -149,9 +146,9 @@ export function runMethodFactory(args: {
         add('module', `${module.namespace}@${module.version}`);
         add('• bundle', `${module.target} (${module.mode})`);
         add('• entry', entry);
-        add('• hash', manifest.hash.module);
-        add('manifest ', Logger.format.url(bundle.urls.manifest));
-        add('files ', Logger.format.url(bundle.urls.files));
+        add('• hash.module', manifest.hash.module);
+        add('• hash.files', manifest.hash.files);
+        add('manifest ', Logger.format.url(bundle.url.href));
         add('size', `${yellow(size)} (${manifest.files.length} files)`);
 
         log.info();
@@ -172,7 +169,7 @@ export function runMethodFactory(args: {
         in: options.in,
         timeout,
         entry,
-        hash,
+        fileshash,
         stdlibs,
         forceCache: isPullRequired,
       });

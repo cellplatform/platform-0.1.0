@@ -13,12 +13,10 @@ describe('/fn:run (HTTP headers)', function () {
   });
 
   it('contentType: text/html', async () => {
-    const dir = 'foo';
-    const { mock, bundle, client, http, url } = await prepare({ dir });
-    const { host, uri } = bundle;
+    const { mock, bundle, client, http, url, manifestUrl } = await prepare();
     await uploadBundle(client, Samples.node.outdir, bundle);
 
-    const body: t.IReqPostFuncBody = [{ host, uri, dir, entry: 'web.js' }];
+    const body: t.IReqPostFuncBody = [{ bundle: manifestUrl, entry: 'web.js' }];
     const res = await http.post(url.toString(), body);
     await mock.dispose();
 

@@ -9,13 +9,6 @@ import { runMethodFactory } from './NodeRuntime.run';
 
 export const NodeRuntime = {
   /**
-   * Generates URLs for the given bundle.
-   */
-  urls(bundle: t.RuntimeBundleOrigin) {
-    return BundleWrapper.urls(bundle);
-  },
-
-  /**
    * Initialize an instance of the Node runtime.
    */
   create(args: {
@@ -32,9 +25,11 @@ export const NodeRuntime = {
     const isDisposed = () => runtime.isDisposed;
     const dispose$ = new Subject<void>();
     const dispose = () => {
+      runtime.isDisposed = true;
+
       controller.dispose();
       events.dispose();
-      runtime.isDisposed = true;
+
       dispose$.next();
       dispose$.complete();
     };
@@ -57,17 +52,17 @@ export const NodeRuntime = {
       /**
        * Determine if the given bundle has been pulled.
        */
-      async exists(input) {
+      async exists(manifestUrl) {
         if (runtime.isDisposed) throw new Error('Runtime disposed');
-        return BundleWrapper.create(input, cachedir).isCached();
+        return BundleWrapper(manifestUrl, cachedir).isCached();
       },
 
       /**
        * Delete the given bundle (if it exists).
        */
-      async remove(input) {
+      async remove(manifestUrl) {
         if (runtime.isDisposed) throw new Error('Runtime disposed');
-        const bundle = BundleWrapper.create(input, cachedir);
+        const bundle = BundleWrapper(manifestUrl, cachedir);
         const dir = bundle.cache.dir;
         let count = 0;
         if (await fs.pathExists(dir)) {

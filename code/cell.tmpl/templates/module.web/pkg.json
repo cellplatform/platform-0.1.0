@@ -13,7 +13,6 @@
     "build": "ts build --no-esm $@",
     "bundle": "cell.compiler bundle $@",
     "watch": "cell.compiler watch $@",
-    "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",

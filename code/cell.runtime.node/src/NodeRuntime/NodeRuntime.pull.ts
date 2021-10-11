@@ -1,4 +1,4 @@
-import { BundleWrapper } from '../BundleWrapper';
+import { BundleWrapper as BundleWrapper } from '../BundleWrapper';
 import { fs, log, Logger, Path, slug, t } from '../common';
 import { downloadFiles } from './NodeRuntime.pull.download';
 
@@ -11,19 +11,16 @@ export function pullMethodFactory(args: { cachedir: string; isDisposed: () => bo
   /**
    * Pull the given bundle.
    */
-  const fn: t.RuntimeEnvNode['pull'] = async (input, options = {}) => {
+  const fn: t.RuntimeEnvNode['pull'] = async (manifestUrl, options = {}) => {
     if (isDisposed()) throw new Error('Runtime disposed');
 
     const { silent } = options;
-    const bundle = BundleWrapper.create(input, cachedir);
-    const host = bundle.host;
-    const origin = bundle.toString();
+    const bundle = BundleWrapper(manifestUrl, cachedir);
     const targetDir = bundle.cache.dir;
     const tmpTarget = `${targetDir}.download.${slug()}`;
 
     if (!silent) {
-      const url = bundle.urls.manifest;
-      const from = url.toString();
+      const from = manifestUrl;
       const to = Path.trimBase(targetDir);
       const table = log.table({ border: false });
 
@@ -40,7 +37,7 @@ export function pullMethodFactory(args: { cachedir: string; isDisposed: () => bo
     }
 
     // Download the manifest files.
-    const res = await downloadFiles({ manifest: bundle.urls.manifest }, tmpTarget);
+    const res = await downloadFiles(bundle.url.href, tmpTarget);
     const ok = res.ok;
     const count = res.total.downloaded;
     const errors = res.errors;
@@ -52,6 +49,11 @@ export function pullMethodFactory(args: { cachedir: string; isDisposed: () => bo
       await fs.rename(tmpTarget, targetDir);
     }
 
+    // Clean up on error.
+    if (!res.ok) {
+      await fs.remove(tmpTarget);
+    }
+
     // Finish up.
     if (!silent) {
       const bytes = (await fs.size.dir(targetDir)).toString({ round: 0 });
@@ -60,10 +62,11 @@ export function pullMethodFactory(args: { cachedir: string; isDisposed: () => bo
       Logger.errors(errors);
       Logger.hr().newline();
     }
+
     return {
       ok,
       dir: targetDir,
-      manifest: bundle.urls.manifest.toString(),
+      bundle: { url: manifestUrl, manifest: res.manifest },
       errors,
     };
   };

@@ -14,15 +14,13 @@ describe('/fn:run (pipes)', function () {
 
   describe('[list] - serial execution', () => {
     it('in => out => in => out', async () => {
-      const dir = 'foo';
-      const { mock, bundle, client, http, url } = await prepare({ dir });
-      const { host, uri } = bundle;
+      const { mock, bundle, client, http, url, manifestUrl } = await prepare();
       await uploadBundle(client, Samples.pipe.outdir, bundle);
 
       const body: t.IReqPostFuncBody = [
-        { host, uri, dir },
-        { host, uri, dir },
-        { host, uri, dir },
+        { bundle: manifestUrl },
+        { bundle: manifestUrl },
+        { bundle: manifestUrl },
       ];
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFunc;
@@ -39,9 +37,7 @@ describe('/fn:run (pipes)', function () {
     });
 
     it('initial input (value / info)', async () => {
-      const dir = 'foo';
-      const { mock, bundle, client, http, url } = await prepare({ dir });
-      const { host, uri } = bundle;
+      const { mock, bundle, client, http, url, manifestUrl } = await prepare();
       await uploadBundle(client, Samples.pipe.outdir, bundle);
 
       const input1: t.RuntimeIn<ISamplePipeValue> = {
@@ -54,10 +50,11 @@ describe('/fn:run (pipes)', function () {
       };
 
       const body: t.IReqPostFuncBody = [
-        { host, uri, dir, in: input1 },
-        { host, uri, dir },
-        { host, uri, dir, in: input3 },
+        { bundle: manifestUrl, in: input1 },
+        { bundle: manifestUrl },
+        { bundle: manifestUrl, in: input3 },
       ];
+
       const res = await http.post(url.query({ json: true }).toString(), body); // NB: {json:true} query flag forces response to JSON even though the headers would otherwise set it to a different mime-type.
       const json = res.json as t.IResPostFunc;
       await mock.dispose();
@@ -77,8 +74,7 @@ describe('/fn:run (pipes)', function () {
 
     it('merge input: in => out => merged(out|in) => out', async () => {
       const dir = 'foo';
-      const { mock, bundle, client, http, url } = await prepare({ dir });
-      const { host, uri } = bundle;
+      const { mock, bundle, client, http, url, manifestUrl } = await prepare({ dir });
       await uploadBundle(client, Samples.pipe.outdir, bundle);
 
       const input: t.RuntimeIn<ISamplePipeValue> = {
@@ -87,10 +83,10 @@ describe('/fn:run (pipes)', function () {
       };
 
       const body: t.IReqPostFuncBody = [
-        { host, uri, dir },
-        { host, uri, dir },
-        { host, uri, dir, in: input },
-        { host, uri, dir },
+        { bundle: manifestUrl },
+        { bundle: manifestUrl },
+        { bundle: manifestUrl, in: input },
+        { bundle: manifestUrl },
       ];
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFunc;
@@ -112,17 +108,16 @@ describe('/fn:run (pipes)', function () {
 
     it('onError: "stop" (default)', async () => {
       const dir = 'foo';
-      const { mock, bundle, client, http, url } = await prepare({ dir });
-      const { host, uri } = bundle;
+      const { mock, bundle, client, http, url, manifestUrl } = await prepare({ dir });
       await uploadBundle(client, Samples.pipe.outdir, bundle);
 
       const value: ISamplePipeValue = { count: -1 }; // NB: -1 causes error within script.
       const body: t.IReqPostFuncBody = [
-        { host, uri, dir },
-        { host, uri, dir, in: { value } }, // NB: Fails here.
-        { host, uri, dir },
-        { host, uri, dir },
-        { host, uri, dir },
+        { bundle: manifestUrl },
+        { bundle: manifestUrl, in: { value } }, // NB: Fails here.
+        { bundle: manifestUrl },
+        { bundle: manifestUrl },
+        { bundle: manifestUrl },
       ];
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFunc;
@@ -136,16 +131,15 @@ describe('/fn:run (pipes)', function () {
 
     it('onError: "continue"', async () => {
       const dir = 'foo';
-      const { mock, bundle, client, http, url } = await prepare({ dir });
-      const { host, uri } = bundle;
+      const { mock, bundle, client, http, url, manifestUrl } = await prepare({ dir });
       await uploadBundle(client, Samples.pipe.outdir, bundle);
 
       const value: ISamplePipeValue = { count: -1 }; // NB: -1 causes error within script.
       const body: t.IReqPostFuncBody = [
-        { host, uri, dir },
-        { host, uri, dir, in: { value } }, // NB: Fails (but continues).
-        { host, uri, dir, in: { value }, onError: 'stop' }, // NB: {onError:"continue"} is set for all items via query-string, but overridden and stopped on func here.
-        { host, uri, dir },
+        { bundle: manifestUrl },
+        { bundle: manifestUrl, in: { value } }, // NB: Fails (but continues).
+        { bundle: manifestUrl, in: { value }, onError: 'stop' }, // NB: {onError:"continue"} is set for all items via query-string, but overridden and stopped on func here.
+        { bundle: manifestUrl },
       ];
       const res = await http.post(url.query({ onError: 'continue' }).toString(), body);
       const json = res.json as t.IResPostFunc;
@@ -165,14 +159,13 @@ describe('/fn:run (pipes)', function () {
   describe('{object} - parallel execution', async () => {
     it('runs multiple functions simultaneously', async () => {
       const dir = 'foo';
-      const { mock, bundle, client, http, url } = await prepare({ dir });
-      const { host, uri } = bundle;
+      const { mock, bundle, client, http, url, manifestUrl } = await prepare({ dir });
       await uploadBundle(client, Samples.pipe.outdir, bundle);
 
       const body: t.IReqPostFuncBody = {
-        1: { host, uri, dir },
-        2: { host, uri, dir },
-        3: { host, uri, dir },
+        1: { bundle: manifestUrl },
+        2: { bundle: manifestUrl },
+        3: { bundle: manifestUrl },
       };
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFunc;
@@ -190,15 +183,14 @@ describe('/fn:run (pipes)', function () {
 
     it('runs with errors', async () => {
       const dir = 'foo';
-      const { mock, bundle, client, http, url } = await prepare({ dir });
-      const { host, uri } = bundle;
+      const { mock, bundle, client, http, url, manifestUrl } = await prepare({ dir });
       await uploadBundle(client, Samples.pipe.outdir, bundle);
 
       const value: ISamplePipeValue = { count: -1 }; // NB: -1 causes error within script.
       const body: t.IReqPostFuncBody = {
-        1: { host, uri, dir },
-        2: { host, uri, dir, in: { value } },
-        3: { host, uri, dir },
+        1: { bundle: manifestUrl },
+        2: { bundle: manifestUrl, in: { value } },
+        3: { bundle: manifestUrl },
       };
       const res = await http.post(url.toString(), body);
       const json = res.json as t.IResPostFunc;

@@ -9,5 +9,5 @@ export type RuntimeBundleOrigin = {
   host: string;
   uri: string;
   dir?: string;
-  hash?: string; // Manifest hash (used for verification files have not been changed).
+  hash?: string; // Manifest hash (used to verify files have not been changed).
 };

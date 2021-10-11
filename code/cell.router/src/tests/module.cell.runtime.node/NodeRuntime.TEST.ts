@@ -1,9 +1,9 @@
 import { firstValueFrom } from 'rxjs';
 
-import { expect, fs, rx, Schema, t } from '../../test';
+import { expect, fs, rx, t } from '../../test';
 import { ISampleNodeInValue, ISampleNodeOutValue } from './sample.NodeRuntime/types';
 import { Samples } from './Samples';
-import { getManifest, noManifestFilter, prepare, uploadBundle } from './util';
+import { getManifest, prepare, uploadBundle } from './util';
 
 type B = t.RuntimeBundleOrigin;
 type E = { type: 'foo'; payload: { count: number } };
@@ -19,21 +19,19 @@ describe('cell.runtime.node: NodeRuntime', function () {
     await Samples.node.bundle(force);
   });
 
-  describe.only('pull', () => {
+  describe('pull', () => {
     const test = async (dir?: string) => {
-      const { mock, runtime, bundle, client } = await prepare({ dir });
-      expect(await runtime.exists(bundle)).to.eql(false);
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir });
+      expect(await runtime.exists(manifestUrl)).to.eql(false);
 
       await uploadBundle(client, Samples.node.outdir, bundle);
-      const res = await runtime.pull(bundle, { silent: true });
+      const res = await runtime.pull(manifestUrl, { silent: true });
       await mock.dispose();
-
-      const urls = Schema.urls(mock.host);
 
       expect(res.ok).to.eql(true);
       expect(res.errors).to.eql([]);
-      expect(res.manifest).to.eql(urls.fn.bundle.manifest(bundle).toString());
-      expect(await runtime.exists(bundle)).to.eql(true);
+      expect(res.bundle.url).to.eql(manifestUrl);
+      expect(await runtime.exists(manifestUrl)).to.eql(true);
     };
 
     it('with sub-directory', async () => {
@@ -47,11 +45,15 @@ describe('cell.runtime.node: NodeRuntime', function () {
       await test('  ');
     });
 
-    it.skip('error: empty list', async () => {
+    it('error: 404', async () => {
       const dir = 'foo';
-      const { mock, runtime, bundle } = await prepare({ dir });
+      const { client, mock, runtime, bundle, manifestUrl } = await prepare({ dir });
 
-      const res = await runtime.pull(bundle, { silent: true });
+      await uploadBundle(client, Samples.node.outdir, bundle, {
+        filter: (file) => !file.filename.endsWith('main.js'),
+      });
+
+      const res = await runtime.pull(manifestUrl, { silent: true });
       const error = res.errors[0];
       await mock.dispose();
 
@@ -59,25 +61,28 @@ describe('cell.runtime.node: NodeRuntime', function () {
       expect(res.errors.length).to.eql(1);
 
       expect(error.type).to.eql('RUNTIME/pull');
-      expect(error.message).to.include('contains no files to pull');
-      expect(error.bundle).to.eql(bundle);
+      expect(error.message).to.include('[404] Failed while pulling file');
+      expect(error.message).to.include('/main.js');
+      expect(error.bundle).to.eql(manifestUrl);
     });
 
-    it.skip('error: no manifest', async () => {
+    it('error: no manifest', async () => {
       const test = async (dir?: string) => {
-        const { mock, runtime, bundle, client } = await prepare({ dir });
+        const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir });
 
-        await uploadBundle(client, Samples.node.outdir, bundle, { filter: noManifestFilter });
+        await uploadBundle(client, Samples.node.outdir, bundle, {
+          filter: (file) => !file.filename.endsWith('index.json'), // NB: Cause error by filtering out the manifest file.
+        });
 
-        const res = await runtime.pull(bundle, { silent: true });
+        const res = await runtime.pull(manifestUrl, { silent: true });
         const error = res.errors[0];
         await mock.dispose();
 
         expect(res.ok).to.eql(false);
         expect(res.errors.length).to.eql(1);
         expect(error.type).to.eql('RUNTIME/pull');
-        expect(error.message).to.include('Failed to retrieve manifest file');
-        expect(error.bundle).to.eql(bundle);
+        expect(error.message).to.include('[404] Failed to retrieve bundle manifest');
+        expect(error.bundle).to.eql(manifestUrl);
       };
 
       await test('foo');
@@ -89,16 +94,16 @@ describe('cell.runtime.node: NodeRuntime', function () {
   describe('remove', () => {
     it('removes pulled bundle', async () => {
       const test = async (dir?: string) => {
-        const { mock, runtime, bundle, client } = await prepare({ dir });
-        expect(await runtime.exists(bundle)).to.eql(false);
+        const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir });
+        expect(await runtime.exists(manifestUrl)).to.eql(false);
 
         await uploadBundle(client, Samples.node.outdir, bundle);
-        await runtime.pull(bundle, { silent: true });
-        expect(await runtime.exists(bundle)).to.eql(true);
+        await runtime.pull(manifestUrl, { silent: true });
+        expect(await runtime.exists(manifestUrl)).to.eql(true);
 
-        expect((await runtime.remove(bundle)).count).to.eql(1);
-        expect((await runtime.remove(bundle)).count).to.eql(0); // NB: Nothing removed (already removed on last line)
-        expect(await runtime.exists(bundle)).to.eql(false);
+        expect((await runtime.remove(manifestUrl)).count).to.eql(1);
+        expect((await runtime.remove(manifestUrl)).count).to.eql(0); // NB: Nothing removed (already removed on last line)
+        expect(await runtime.exists(manifestUrl)).to.eql(false);
 
         await mock.dispose();
       };
@@ -108,9 +113,9 @@ describe('cell.runtime.node: NodeRuntime', function () {
     });
 
     it('does nothing when non-existant bundle removed', async () => {
-      const { mock, runtime, bundle } = await prepare();
-      expect(await runtime.exists(bundle)).to.eql(false);
-      await runtime.remove(bundle);
+      const { mock, runtime, manifestUrl } = await prepare();
+      expect(await runtime.exists(manifestUrl)).to.eql(false);
+      await runtime.remove(manifestUrl);
       await mock.dispose();
     });
   });
@@ -131,28 +136,28 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const bundle2: B = { host, uri, dir: 'bar' };
       const bundle3: B = { host, uri };
 
-      await uploadBundle(client, Samples.node.outdir, bundle1);
-      await uploadBundle(client, Samples.node.outdir, bundle2);
-      await uploadBundle(client, Samples.node.outdir, bundle3);
+      const upload1 = await uploadBundle(client, Samples.node.outdir, bundle1);
+      const upload2 = await uploadBundle(client, Samples.node.outdir, bundle2);
+      const upload3 = await uploadBundle(client, Samples.node.outdir, bundle3);
 
-      expect(await runtime.exists(bundle1)).to.eql(false);
-      expect(await runtime.exists(bundle2)).to.eql(false);
-      expect(await runtime.exists(bundle3)).to.eql(false);
+      expect(await runtime.exists(upload1.manifestUrl)).to.eql(false);
+      expect(await runtime.exists(upload2.manifestUrl)).to.eql(false);
+      expect(await runtime.exists(upload3.manifestUrl)).to.eql(false);
 
-      await runtime.pull(bundle1, { silent: true });
-      await runtime.pull(bundle2, { silent: true });
-      await runtime.pull(bundle3, { silent: true });
+      await runtime.pull(upload1.manifestUrl, { silent: true });
+      await runtime.pull(upload2.manifestUrl, { silent: true });
+      await runtime.pull(upload3.manifestUrl, { silent: true });
 
-      expect(await runtime.exists(bundle1)).to.eql(true);
-      expect(await runtime.exists(bundle2)).to.eql(true);
-      expect(await runtime.exists(bundle3)).to.eql(true);
+      expect(await runtime.exists(upload1.manifestUrl)).to.eql(true);
+      expect(await runtime.exists(upload2.manifestUrl)).to.eql(true);
+      expect(await runtime.exists(upload3.manifestUrl)).to.eql(true);
 
-      expect((await runtime.clear()).count).to.eql(3);
+      expect((await runtime.clear()).count).to.greaterThan(10);
       expect((await runtime.clear()).count).to.eql(0);
 
-      expect(await runtime.exists(bundle1)).to.eql(false);
-      expect(await runtime.exists(bundle2)).to.eql(false);
-      expect(await runtime.exists(bundle3)).to.eql(false);
+      expect(await runtime.exists(upload1.manifestUrl)).to.eql(false);
+      expect(await runtime.exists(upload2.manifestUrl)).to.eql(false);
+      expect(await runtime.exists(upload3.manifestUrl)).to.eql(false);
 
       await mock.dispose();
     });
@@ -160,20 +165,21 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
   describe('run', () => {
     it('auto pulls before run', async () => {
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);
 
-      expect(await runtime.exists(bundle)).to.eql(false);
+      expect(await runtime.exists(manifestUrl)).to.eql(false);
 
-      await runtime.run(bundle, { silent: true });
+      const res = await runtime.run(manifestUrl, { silent: true });
+      expect(res.ok).to.eql(true);
 
-      expect(await runtime.exists(bundle)).to.eql(true);
+      expect(await runtime.exists(manifestUrl)).to.eql(true);
 
       await mock.dispose();
     });
 
     it('pull (replace cached)', async () => {
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
 
       type Out = { version: string };
       const toVersion = (res: t.RuntimeRunResponse) => (res.out.value as Out).version;
@@ -184,12 +190,12 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
       await uploadBundle(client, Samples.v1.outdir, bundle);
 
-      const res1 = await runtime.run(bundle, { silent: true });
+      const res1 = await runtime.run(manifestUrl, { silent: true });
 
       await uploadBundle(client, Samples.v2.outdir, bundle);
 
-      const res2 = await runtime.run(bundle, { silent: true }); // NB: Proves caching is working.
-      const res3 = await runtime.run(bundle, { silent: true, pull: true }); // NB: Stamps on cache.
+      const res2 = await runtime.run(manifestUrl, { silent: true }); // NB: Proves caching is working.
+      const res3 = await runtime.run(manifestUrl, { silent: true, pull: true }); // NB: Stamps on cache.
       await mock.dispose();
 
       expect(res1.manifest?.module.version).to.eql('1.0.0');
@@ -202,10 +208,10 @@ describe('cell.runtime.node: NodeRuntime', function () {
     });
 
     it('tx (process id)', async () => {
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);
 
-      const promise = runtime.run(bundle, { silent: true });
+      const promise = runtime.run(manifestUrl, { silent: true });
       const res = await promise;
       const out = res.out as any;
 
@@ -218,22 +224,22 @@ describe('cell.runtime.node: NodeRuntime', function () {
     });
 
     it('uses default entry (from manifest)', async () => {
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);
 
       const value: ISampleNodeInValue = { value: { foo: 123 } };
-      const res = await runtime.run(bundle, { silent: true, in: { value } });
+      const res = await runtime.run(manifestUrl, { silent: true, in: { value } });
       await mock.dispose();
 
       expect(res.entry).to.eql('main.js');
     });
 
     it('out: value / no process leaks / immutable', async () => {
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);
 
       const value: ISampleNodeInValue = { value: { foo: 123 } };
-      const res = await runtime.run(bundle, { silent: true, in: { value } });
+      const res = await runtime.run(manifestUrl, { silent: true, in: { value } });
       await mock.dispose();
 
       value.value.foo = 456; // NB: Mutate the value (should not be transferred within the function)
@@ -248,11 +254,11 @@ describe('cell.runtime.node: NodeRuntime', function () {
     });
 
     it('out: headers (contentType, contentDef)', async () => {
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);
 
       const test = async (value: ISampleNodeInValue, expected?: t.RuntimeInfoHeaders) => {
-        const res = await runtime.run(bundle, { silent: true, in: { value } });
+        const res = await runtime.run(manifestUrl, { silent: true, in: { value } });
         expect(res.out.info.headers).to.eql(expected);
       };
 
@@ -267,31 +273,31 @@ describe('cell.runtime.node: NodeRuntime', function () {
     });
 
     it('immediate', async () => {
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);
 
       const value: ISampleNodeInValue = {};
-      const res1 = await runtime.run(bundle, { silent: true, in: { value } });
-      const res2 = await runtime.run(bundle, { silent: true, in: { value } });
+      const res1 = await runtime.run(manifestUrl, { silent: true, in: { value } });
+      const res2 = await runtime.run(manifestUrl, { silent: true, in: { value } });
       await mock.dispose();
 
       expect(res1.elapsed.prep).to.greaterThan(res2.elapsed.prep); // NB: Compiled script is re-used (faster second time).
     });
 
     it('delay', async () => {
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);
 
       const value: ISampleNodeInValue = { value: { foo: 123 } };
-      const res1 = await runtime.run(bundle, {
+      const res1 = await runtime.run(manifestUrl, {
         silent: true,
         in: { value: { ...value, id: 1 } },
       });
-      const res2 = await runtime.run(bundle, {
+      const res2 = await runtime.run(manifestUrl, {
         silent: true,
         in: { value: { ...value, id: 2 } },
       });
-      const res3 = await runtime.run(bundle, {
+      const res3 = await runtime.run(manifestUrl, {
         silent: true,
         in: { value: { ...value, delay: 60, id: 3 } },
       });
@@ -319,7 +325,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
       const run = (repeatDone?: number) => {
         const value: ISampleNodeInValue = { repeatDone };
-        return runtime.run(bundle, { silent: true, in: { value } });
+        return runtime.run(prep.manifestUrl, { silent: true, in: { value } });
       };
 
       await run();
@@ -340,12 +346,12 @@ describe('cell.runtime.node: NodeRuntime', function () {
     });
 
     it('timeout', async () => {
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);
 
       const run = (timeout?: t.RuntimeRunOptions['timeout']) => {
         const value: ISampleNodeInValue = { value: { foo: 123 }, delay: 100 };
-        return runtime.run(bundle, { silent: true, in: { value }, timeout });
+        return runtime.run(manifestUrl, { silent: true, in: { value }, timeout });
       };
 
       const res0 = await run(); //        NB: default (3 seconds)
@@ -368,11 +374,11 @@ describe('cell.runtime.node: NodeRuntime', function () {
     });
 
     it('timed out (error)', async () => {
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);
 
       const value: ISampleNodeInValue = { value: { foo: 123 }, delay: 20 };
-      const res = await runtime.run(bundle, { silent: true, in: { value }, timeout: 10 });
+      const res = await runtime.run(manifestUrl, { silent: true, in: { value }, timeout: 10 });
       await mock.dispose();
 
       expect(res.ok).to.eql(false);
@@ -381,27 +387,27 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
       const error = res.errors[0];
       expect(error.type).to.eql('RUNTIME/run');
-      expect(error.bundle).to.eql(bundle);
+      expect(error.bundle).to.eql(manifestUrl);
       expect(error.message).to.include('Execution timed out (max 10ms)');
     });
 
     it('done is only called once', async () => {
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);
 
       const value: ISampleNodeInValue = { repeatDone: 5 };
-      const res = await runtime.run(bundle, { silent: true, in: { value } });
+      const res = await runtime.run(manifestUrl, { silent: true, in: { value } });
       await mock.dispose();
 
       expect(res.out.value).to.eql({ count: 1 });
     });
 
     it('error: thrown within bundled code (standard errors)', async () => {
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);
 
       const value: ISampleNodeInValue = { throwError: 'echo error' };
-      const res = await runtime.run(bundle, { silent: true, in: { value } });
+      const res = await runtime.run(manifestUrl, { silent: true, in: { value } });
       await mock.dispose();
 
       expect(res.ok).to.eql(false);
@@ -409,19 +415,19 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
       const error = res.errors[0];
       expect(error.type).to.eql('RUNTIME/run');
-      expect(error.bundle).to.eql(bundle);
+      expect(error.bundle).to.eql(manifestUrl);
       expect(error.message).to.eql('echo error');
-      expect(error.stack).to.include('cell-foo-A1/dir.foo/main.js');
+      expect(error.stack).to.include('dir.cell-foo-A1-fs-foo/main.js');
     });
 
     it('custom entry path', async () => {
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);
 
       const value: ISampleNodeInValue = {};
       const entry = '  ///dev.js  '; // NB: space padding is removed and "/" trimmed.
 
-      const res = await runtime.run(bundle, { silent: true, in: { value }, entry });
+      const res = await runtime.run(manifestUrl, { silent: true, in: { value }, entry });
       await mock.dispose();
 
       expect(res.entry).to.eql('dev.js');
@@ -430,44 +436,46 @@ describe('cell.runtime.node: NodeRuntime', function () {
       expect(result?.echo).to.eql('hello dev');
     });
 
-    it('hash: valid', async () => {
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+    it('fileshash: valid', async () => {
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       const { files } = await uploadBundle(client, Samples.node.outdir, bundle);
       const manifest = getManifest(files);
-      const hash = manifest.hash.files;
+      const fileshash = manifest.hash.files;
 
-      expect(hash).to.not.eql(undefined);
+      expect(fileshash).to.not.eql(undefined);
 
-      const res = await runtime.run(bundle, { silent: true, hash });
+      const res = await runtime.run(manifestUrl, { silent: true, fileshash });
       await mock.dispose();
 
       expect(res.ok).to.eql(true); // NB: Given hash matches.
       expect(res.errors).to.eql([]);
     });
 
-    it('hash: invalid (error)', async () => {
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+    it('fileshash: invalid (error)', async () => {
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);
-      const hash = 'foobar-fail';
+      const fileshash = 'foobar-fail';
 
-      const res = await runtime.run(bundle, { silent: true, hash });
+      const res = await runtime.run(manifestUrl, { silent: true, fileshash });
       await mock.dispose();
 
       expect(res.ok).to.eql(false); // NB: Given hash matches.
       expect(res.errors.length).to.eql(1);
 
       const error = res.errors[0];
-      expect(error.message).to.include('undle manifest does not match requested hash');
-      expect(error.message).to.include(hash);
+      expect(error.message).to.include('manifest does not match requested fileshash');
+      expect(error.message).to.include(fileshash);
     });
 
     it('error: no manifest in bundle (caught during pull)', async () => {
       const test = async (dir?: string) => {
-        const { mock, runtime, bundle, client } = await prepare({ dir });
+        const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir });
 
-        await uploadBundle(client, Samples.node.outdir, bundle, { filter: noManifestFilter });
+        await uploadBundle(client, Samples.node.outdir, bundle, {
+          filter: (file) => !file.filename.endsWith('index.json'), // NB: Cause error by filtering out the manifest file.
+        });
 
-        const res = await runtime.run(bundle, { silent: true });
+        const res = await runtime.run(manifestUrl, { silent: true });
         const error = res.errors[0];
         await mock.dispose();
 
@@ -475,8 +483,8 @@ describe('cell.runtime.node: NodeRuntime', function () {
         expect(res.elapsed).to.eql({ prep: -1, run: -1 });
         expect(res.errors.length).to.eql(1);
         expect(error.type).to.eql('RUNTIME/pull');
-        expect(error.message).to.include('The bundle does not contain a manifest');
-        expect(error.bundle).to.eql(bundle);
+        expect(error.message).to.include('[404] Failed to retrieve bundle manifest');
+        expect(error.bundle).to.eql(manifestUrl);
       };
 
       await test('foo');
@@ -487,13 +495,13 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
   describe('bus (events)', () => {
     it('lifecycle: "started" => "completed"', async () => {
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.node.outdir, bundle);
 
       const events: t.RuntimeNodeProcessLifecycle[] = [];
       runtime.events.process.lifecycle.$.subscribe((e) => events.push(e));
 
-      await runtime.run(bundle, { silent: true, in: { value: {} } });
+      await runtime.run(manifestUrl, { silent: true, in: { value: {} } });
       await mock.dispose();
 
       expect(events.length).to.eql(2);
@@ -507,14 +515,14 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const force = false;
       await Samples.longRunning.bundle(force);
 
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.longRunning.outdir, bundle);
 
       const info1 = await runtime.events.info.get();
       expect(info1.runtime).to.eql(runtime.id);
       expect(info1.info?.processes.length).to.eql(0);
 
-      const process = runtime.run(bundle, { silent: true, timeout: 50 });
+      const process = runtime.run(manifestUrl, { silent: true, timeout: 50 });
       await firstValueFrom(process.start$);
 
       const info2 = await runtime.events.info.get();
@@ -534,10 +542,10 @@ describe('cell.runtime.node: NodeRuntime', function () {
       const force = false;
       await Samples.longRunning.bundle(force);
 
-      const { mock, runtime, bundle, client } = await prepare({ dir: 'foo' });
+      const { mock, runtime, bundle, client, manifestUrl } = await prepare({ dir: 'foo' });
       await uploadBundle(client, Samples.longRunning.outdir, bundle);
 
-      const process = runtime.run(bundle, { silent: true, timeout: 'never' });
+      const process = runtime.run(manifestUrl, { silent: true, timeout: 'never' });
       await firstValueFrom(process.start$);
 
       const info1 = await runtime.events.info.get();

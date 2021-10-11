@@ -3,12 +3,11 @@ import { deleteUndefined, fs, Hash, Http, Schema, t } from '../common';
 /**
  * Download a manifest to a directory.
  */
-export async function downloadFiles(bundle: t.RuntimeBundleOrigin2, targetDir: string) {
-  bundle = { ...bundle };
-
+export async function downloadFiles(url: t.ManifestUrl, targetDir: string) {
   const errors: t.IRuntimeError[] = [];
   const addError = (message: string, stack?: string) => {
-    addPullError(errors, bundle, message, stack);
+    const bundle = url;
+    errors.push(deleteUndefined({ type: 'RUNTIME/pull', bundle, message, stack }));
   };
 
   const doneWithError = (message: string, stack?: string) => {
@@ -19,15 +18,15 @@ export async function downloadFiles(bundle: t.RuntimeBundleOrigin2, targetDir: s
   let downloaded = 0;
   const done = () => {
     const ok = errors.length === 0;
-    return { ok, total: { downloaded }, targetDir, bundle, manifest, errors };
+    return { ok, total: { downloaded }, targetDir, manifest, errors };
   };
 
   // Pull the manifest JSON.
-  const manifestUrl = new URL(bundle.manifest);
+  const manifestUrl = new URL(url);
   const http = Http.create();
   const res = await http.get(manifestUrl.href);
   if (!res.ok) {
-    const message = `[${res.status}] Failed to retrieve manifest file.`;
+    const message = `[${res.status}] Failed to retrieve bundle manifest. ${res.statusText}`.trim();
     return doneWithError(message);
   }
 
@@ -42,6 +41,11 @@ export async function downloadFiles(bundle: t.RuntimeBundleOrigin2, targetDir: s
     return doneWithError(`Manifest does not contain any files.`);
   }
 
+  const saveText = async (path: string, body: string) => {
+    await fs.ensureDir(fs.dirname(path));
+    await fs.writeFile(path, body);
+  };
+
   const validateFile = async (source: t.ManifestFile, path: string) => {
     const local = Uint8Array.from(await fs.readFile(path));
     const localHash = Hash.sha256(local);
@@ -49,11 +53,6 @@ export async function downloadFiles(bundle: t.RuntimeBundleOrigin2, targetDir: s
       const err = `Hash mismatch on '${source.path}'. Downloaded file '${localHash}'. Expected '${source.filehash}'`;
       addError(err);
     }
-  };
-
-  const saveText = async (path: string, body: string) => {
-    await fs.ensureDir(fs.dirname(path));
-    await fs.writeFile(path, body);
   };
 
   const pullAndSave = async (source: t.ManifestFile) => {
@@ -66,7 +65,7 @@ export async function downloadFiles(bundle: t.RuntimeBundleOrigin2, targetDir: s
 
       const res = await http.get(url);
       if (!res.ok) {
-        const err = `[${res.status}] Failed while getting file at: ${url}`;
+        const err = `[${res.status}] Failed while pulling file: ${url}`;
         return addError(err);
       }
 
@@ -101,14 +100,4 @@ export async function downloadFiles(bundle: t.RuntimeBundleOrigin2, targetDir: s
 
   // Finish up.
   return done();
-}
-
-export function addPullError(
-  errors: t.IRuntimeError[],
-  bundle: t.RuntimeBundleOrigin2,
-  message: string,
-  stack?: string,
-) {
-  bundle = { ...bundle };
-  errors.push(deleteUndefined({ type: 'RUNTIME/pull', bundle, message, stack }));
 }
