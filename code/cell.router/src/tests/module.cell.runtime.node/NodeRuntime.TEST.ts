@@ -63,7 +63,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
       expect(error.type).to.eql('RUNTIME/pull');
       expect(error.message).to.include('[404] Failed while pulling file');
       expect(error.message).to.include('/main.js');
-      expect(error.bundle).to.eql(manifestUrl);
+      expect(error.bundle.url).to.eql(manifestUrl);
     });
 
     it('error: no manifest', async () => {
@@ -82,7 +82,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
         expect(res.errors.length).to.eql(1);
         expect(error.type).to.eql('RUNTIME/pull');
         expect(error.message).to.include('[404] Failed to retrieve bundle manifest');
-        expect(error.bundle).to.eql(manifestUrl);
+        expect(error.bundle.url).to.eql(manifestUrl);
       };
 
       await test('foo');
@@ -387,7 +387,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
       const error = res.errors[0];
       expect(error.type).to.eql('RUNTIME/run');
-      expect(error.bundle).to.eql(manifestUrl);
+      expect(error.bundle.url).to.eql(manifestUrl);
       expect(error.message).to.include('Execution timed out (max 10ms)');
     });
 
@@ -415,7 +415,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
 
       const error = res.errors[0];
       expect(error.type).to.eql('RUNTIME/run');
-      expect(error.bundle).to.eql(manifestUrl);
+      expect(error.bundle.url).to.eql(manifestUrl);
       expect(error.message).to.eql('echo error');
       expect(error.stack).to.include('dir.cell-foo-A1-fs-foo/main.js');
     });
@@ -484,7 +484,7 @@ describe('cell.runtime.node: NodeRuntime', function () {
         expect(res.errors.length).to.eql(1);
         expect(error.type).to.eql('RUNTIME/pull');
         expect(error.message).to.include('[404] Failed to retrieve bundle manifest');
-        expect(error.bundle).to.eql(manifestUrl);
+        expect(error.bundle.url).to.eql(manifestUrl);
       };
 
       await test('foo');

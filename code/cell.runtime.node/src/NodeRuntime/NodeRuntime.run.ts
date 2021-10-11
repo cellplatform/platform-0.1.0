@@ -51,7 +51,7 @@ export function runMethodFactory(args: {
         errors.push(
           deleteUndefined({
             type: 'RUNTIME/run',
-            bundle: bundle.url.href,
+            bundle: { url: bundle.url.href },
             message,
             stack,
           }),

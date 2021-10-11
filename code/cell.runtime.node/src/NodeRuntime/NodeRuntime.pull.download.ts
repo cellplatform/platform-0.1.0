@@ -6,7 +6,7 @@ import { deleteUndefined, fs, Hash, Http, Schema, t } from '../common';
 export async function downloadFiles(url: t.ManifestUrl, targetDir: string) {
   const errors: t.IRuntimeError[] = [];
   const addError = (message: string, stack?: string) => {
-    const bundle = url;
+    const bundle = { url };
     errors.push(deleteUndefined({ type: 'RUNTIME/pull', bundle, message, stack }));
   };
 

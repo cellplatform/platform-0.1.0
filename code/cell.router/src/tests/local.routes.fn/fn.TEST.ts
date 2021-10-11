@@ -224,7 +224,7 @@ describe('/fn:run', function () {
 
         const error = result.errors[0];
         expect(error.type).to.eql('RUNTIME/run');
-        expect(error.bundle).to.eql(manifestUrl);
+        expect(error.bundle.url).to.eql(manifestUrl);
         expect(error.message).to.include('Bundle manifest does not match requested fileshash');
         expect(error.message).to.include(fileshash);
       });
@@ -249,7 +249,7 @@ describe('/fn:run', function () {
         const error = result.errors[0];
         expect(error.type).to.eql('RUNTIME/run');
 
-        expect(error.bundle).to.eql(manifestUrl);
+        expect(error.bundle.url).to.eql(manifestUrl);
         expect(error.message).to.include('Execution timed out (max 10ms)');
       });
 
@@ -268,7 +268,7 @@ describe('/fn:run', function () {
 
         const error = result.errors[0];
         expect(error.type).to.eql('RUNTIME/run');
-        expect(error.bundle).to.eql(manifestUrl);
+        expect(error.bundle.url).to.eql(manifestUrl);
         expect(error.message).to.include('Execution timed out (max 10ms)');
       });
     });
@@ -356,7 +356,7 @@ describe('/fn:run', function () {
       const error = json.results[0].errors[0];
       expect(error.type).to.eql('RUNTIME/pull');
       expect(error.message).to.include('[404] Failed to retrieve bundle manifest');
-      expect(error.bundle).to.eql(manifestUrl);
+      expect(error.bundle.url).to.eql(manifestUrl);
     });
   });
 });
