@@ -44,6 +44,11 @@ export type VercelHttpTeams = {
    * https://vercel.com/docs/api#endpoints/teams/list-all-your-teams
    */
   list(): Promise<Res & { teams: t.VercelTeam[] }>;
+
+  /**
+   * Retrieve a team by name.
+   */
+  byName(name: Name): Promise<VercelHttpTeam | undefined>;
 };
 
 /**

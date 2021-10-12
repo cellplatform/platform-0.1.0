@@ -48,13 +48,23 @@ export function VercelHttp(args: {
         const error = ok ? undefined : (json.error as t.VercelHttpError);
         return { ok, status, teams, error };
       },
+
+      /**
+       * Retrieve a single team by "name".
+       */
+      async byName(name) {
+        name = (name || '').trim();
+        const list = (await api.teams.list()).teams;
+        const match = list.find((item) => item.name === name);
+        return match ? api.team(match.id) : undefined;
+      },
     },
 
     /**
      * Retrieve a single team.
      */
-    team(id: string) {
-      return VercelTeam({ ctx, teamId: id });
+    team(teamId) {
+      return VercelTeam({ ctx, teamId });
     },
   };
 

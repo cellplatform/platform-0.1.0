@@ -12,11 +12,11 @@ describe.skip('node.runtime/vercel', function () {
     const host = 'http://localhost:5000';
     const dir = 'node.HEAD';
 
+    const bundle = `http://localhost:5000/cell:cks82mgiv000h11ethgn3hsgz:A1/fs/node.HEAD`;
+
     const body: IReqPostFuncBody = [
       {
-        host,
-        uri,
-        dir,
+        bundle,
         in: { value: `in 🌳` },
         timeout: 'never',
       },
