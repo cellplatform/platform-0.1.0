@@ -4,9 +4,10 @@ import { BusControllerIo } from './BusController.Io';
 import { BusEvents, HttpClient, rx, t, cuid } from './common';
 
 type FilesystemId = string;
+type Milliseconds = number;
 
 /**
- * Event controller.
+ * Event controller (web).
  */
 export function BusController(args: {
   bus: t.EventBus<any>;
@@ -15,12 +16,13 @@ export function BusController(args: {
   index: t.FsIndexer;
   filter?: (e: t.SysFsEvent) => boolean;
   httpFactory?: (host: string | number) => t.IHttpClient;
+  timeout?: Milliseconds;
 }) {
-  const { fs, index } = args;
+  const { fs, index, timeout } = args;
   const id = args.id || `fs-${cuid()}`;
 
   const bus = rx.busAsType<t.SysFsEvent>(args.bus);
-  const events = BusEvents({ id, bus, filter: args.filter });
+  const events = BusEvents({ id, bus, timeout, filter: args.filter });
   const { dispose, dispose$ } = events;
 
   const httpFactory = (host: string | number) =>
