@@ -94,7 +94,14 @@ export type DevGroupLayoutEvent = {
 };
 export type DevGroupLayout = DevGroupLayoutSimple;
 export type DevGroupLayoutSimple = {
-  kind: 'cards' | 'crdt' | 'screensize' | 'video/physics' | 'video/group' | 'image/pasteboard';
+  kind:
+    | 'cards'
+    | 'crdt'
+    | 'screensize'
+    | 'video/physics'
+    | 'video/group'
+    | 'image/pasteboard'
+    | 'remote/component';
   target?: DevModalTarget;
 };
 

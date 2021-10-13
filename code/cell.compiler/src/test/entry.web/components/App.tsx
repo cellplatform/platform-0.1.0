@@ -58,10 +58,21 @@ export const App = () => {
     setState({ url });
   };
 
-  const setCodeEditor = () => {
-    const url = 'https://dev.db.team/cell:ckgse6r8l000ccwethl0ubdrh:A1/file/sample/remoteEntry.js';
-    const namespace = 'sys.ui.code.editor';
-    const entry = './Dev';
+  const setTemp = async () => {
+    const url = 'http://localhost:5000/cell:ckuoq669f000e09l44si3hoja:A1/fs/web/remoteEntry.js';
+    const namespace = 'tdb.slc';
+    const entry = './Home';
+
+    const remote = WebRuntime.remote({ url, namespace, entry });
+    console.log('remote', remote);
+
+    const s = remote.script();
+    const f = await s.ready;
+    console.log('f', f);
+
+    const m = await remote.module();
+    console.log('m', m);
+
     setSystem({ url, namespace, entry });
     setState({ url });
   };
@@ -116,7 +127,7 @@ export const App = () => {
         <button onClick={setter(1234, 'sys.ui.shell', './Dev')}>shell</button>
         <button onClick={setAi}>ai</button>
         <button onClick={setter(3003, 'sys.ui.code.editor', './Dev')}>code (local)</button>
-        <button onClick={setCodeEditor}>code (remote)</button>
+        <button onClick={setTemp}>tmp</button>
       </div>
       <div>{state?.url || '-'}</div>
       <hr style={styles.hr} />
@@ -124,3 +135,5 @@ export const App = () => {
     </div>
   );
 };
+
+export default App;

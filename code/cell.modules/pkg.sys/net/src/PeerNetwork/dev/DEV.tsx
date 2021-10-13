@@ -235,6 +235,7 @@ export const actions = DevActions<Ctx>()
     e.button('video/physics', (e) => showLayout(e.ctx, 'video/physics'));
     e.button('video/group', (e) => showLayout(e.ctx, 'video/group'));
     e.button('image/pasteboard', (e) => showLayout(e.ctx, 'image/pasteboard'));
+    e.button('remote/component', (e) => showLayout(e.ctx, 'remote/component'));
 
     e.hr(1, 0.2);
     e.button('reset (default)', (e) => showLayout(e.ctx, 'cards'));

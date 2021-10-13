@@ -8,6 +8,7 @@ import {
   DevVideosPhysicsLayout,
   DevVideosGroupLayout,
   DevImagePasteboard,
+  DevRemoteComponent,
 } from '../layouts';
 
 /**
@@ -38,4 +39,5 @@ export function listen(args: {
   layout('video/physics', () => <DevVideosPhysicsLayout bus={bus} netbus={netbus} />);
   layout('video/group', () => <DevVideosGroupLayout bus={bus} netbus={netbus} />);
   layout('image/pasteboard', () => <DevImagePasteboard bus={bus} netbus={netbus} />);
+  layout('remote/component', () => <DevRemoteComponent bus={bus} netbus={netbus} />);
 }
