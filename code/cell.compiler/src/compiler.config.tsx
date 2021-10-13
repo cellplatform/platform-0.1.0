@@ -19,6 +19,8 @@ export default () =>
         // .entry('service.worker', './src/test/entry.web/workers/service.worker')
         .static('./static')
 
+        .expose('./Sample', './src/test/entry.web/components/App')
+
         .shared((e) => e.singleton(['react', 'react-dom']))
 
         .html((config) => {
