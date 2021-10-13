@@ -1,4 +1,4 @@
-import { DEFAULT, deleteUndefined, Model, Schema, t, constants } from '../../common';
+import { DEFAULT, deleteUndefined, Model, Schema, t, constants, Encoding } from '../../common';
 import { Manifest, createAndSave } from '../Manifest';
 
 type M = t.ModuleManifest;
@@ -59,18 +59,21 @@ export const ModuleManifest = {
     const namespace = data.namespace();
     if (!namespace) throw new Error(`A bundle 'namespace' is required to create a manifest.`);
 
-    const REMOTE = DEFAULT.FILE.JS.REMOTE_ENTRY;
-    const remoteEntry = files.some((file) => file.path.endsWith(REMOTE)) ? REMOTE : undefined;
-
-    const module: t.ModuleManifestInfo = deleteUndefined({
+    const module: t.ModuleManifestInfo = {
       namespace,
       version,
       compiler: `${pkg.name}@${pkg.version ?? '0.0.0'}`,
       mode: data.mode(),
       target: data.target(),
       entry: data.entryFile,
-      remoteEntry,
-    });
+    };
+
+    if (model.exposes) {
+      module.remote = {
+        entry: DEFAULT.FILE.JS.REMOTE_ENTRY,
+        exports: Object.keys(model.exposes).map((key) => ({ path: Encoding.unescapePath(key) })),
+      };
+    }
 
     const hash: t.ModuleManifestHash = {
       files: manifest.hash.files,
