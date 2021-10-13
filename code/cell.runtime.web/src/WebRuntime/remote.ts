@@ -43,13 +43,10 @@ export function remote(args: {
   };
 
   const loadScript: t.RuntimeRemoteWeb['script'] = () => {
-    const stop$ = new Subject<void>();
+    const dispose$ = new Subject<void>();
     const _event$ = new Subject<t.RuntimeWebScriptEvent>();
-    const event$ = _event$.pipe(takeUntil(stop$));
-
-    if (args.dispose$) {
-      args.dispose$.subscribe(() => stop$.next());
-    }
+    const event$ = _event$.pipe(takeUntil(dispose$));
+    args.dispose$?.subscribe(() => loader.dispose());
 
     event$
       .pipe(
@@ -87,15 +84,15 @@ export function remote(args: {
 
     next({ ready: false, failed: false });
     document.head.appendChild(script);
+    dispose$.subscribe(() => document.head.removeChild(script));
 
     const loader = {
       ready,
       event$,
-      dispose$: stop$.asObservable(),
+      dispose$: dispose$.asObservable(),
       dispose: () => {
-        document.head.removeChild(script);
-        stop$.next();
-        stop$.complete();
+        dispose$.next();
+        dispose$.complete();
       },
     };
 
