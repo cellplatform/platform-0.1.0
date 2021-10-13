@@ -1,5 +1,5 @@
-import { DEFAULT, deleteUndefined, Model, Schema, t, constants, Encoding } from '../../common';
-import { Manifest, createAndSave } from '../Manifest';
+import { constants, DEFAULT, Encoding, Model, Schema, t } from '../../common';
+import { createAndSave, Manifest } from '../Manifest';
 
 type M = t.ModuleManifest;
 
