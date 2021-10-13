@@ -1,7 +1,7 @@
 import { t } from './common';
 
 export const DEFAULT = {
-  CONFIG: { PATH: 'src/compiler.config.ts' },
+  CONFIG: { PATH: 'src/Compiler.config.ts' },
 };
 
 const PARAMS = {
