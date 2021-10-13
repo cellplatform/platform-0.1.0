@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, firstValueFrom } from 'rxjs';
 import { filter, takeUntil, map } from 'rxjs/operators';
 
 import { Encoding, log, t } from '../common';
@@ -20,7 +20,7 @@ import { Encoding, log, t } from '../common';
  *
  */
 export function remote(args: {
-  url: string; // Remote manifest URL (eg ".../remoteEntry.js")
+  url: string; // Remote entry URL (eg ".../remoteEntry.js")
   namespace: string;
   entry: string;
   dispose$?: Observable<any>;
@@ -58,12 +58,8 @@ export function remote(args: {
         map((e) => e.payload as t.RuntimeWebScript),
       )
       .subscribe((e) => {
-        if (e.ready) {
-          log.info(`Loaded remote: ${e.namespace} | ${e.url}`);
-        }
-        if (e.failed) {
-          log.error(`Failed to load remote: ${e.namespace} | ${e.url}`);
-        }
+        if (e.ready) log.info(`Loaded remote: ${e.namespace} | ${e.url}`);
+        if (e.failed) log.error(`Failed to load remote: ${e.namespace} | ${e.url}`);
       });
 
     const next = (args: { ready: boolean; failed: boolean }) => {
@@ -71,6 +67,14 @@ export function remote(args: {
       const payload = { url, namespace, ready, failed };
       _event$.next({ type: 'cell.runtime.web/script', payload });
     };
+
+    const ready = firstValueFrom(
+      event$.pipe(
+        filter((e) => e.type === 'cell.runtime.web/script'),
+        filter((e) => e.payload.ready),
+        map((e) => e.payload as t.RuntimeWebScript),
+      ),
+    );
 
     const script = document.createElement('script');
     script.src = url;
@@ -85,6 +89,7 @@ export function remote(args: {
     document.head.appendChild(script);
 
     const loader = {
+      ready,
       event$,
       dispose$: stop$.asObservable(),
       dispose: () => {

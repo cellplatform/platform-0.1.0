@@ -15,8 +15,9 @@ export type RuntimeRemoteWeb = t.RuntimeRemote & {
   useScript: RuntimeUseScript;
 };
 
-export type RuntimeRemoteScript = t.IDisposable & {
+export type RuntimeRemoteScript = t.Disposable & {
   event$: t.Observable<t.RuntimeWebScriptEvent>;
+  ready: Promise<t.RuntimeWebScript>;
 };
 
 export type RuntimeUseScript = () => { ready: boolean; failed: boolean };
