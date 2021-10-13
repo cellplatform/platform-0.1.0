@@ -57,7 +57,12 @@ export type WpTarget = string | string[] | false;
 /**
  * https://webpack.js.org/configuration/output
  */
-export type WpOutput = { filename?: string; path?: string; publicPath?: string };
+export type WpOutput = {
+  filename?: string;
+  path?: string;
+  publicPath?: string;
+  crossOriginLoading?: false | 'anonymous' | 'use-credentials';
+};
 
 /**
  * https://webpack.js.org/configuration/resolve
