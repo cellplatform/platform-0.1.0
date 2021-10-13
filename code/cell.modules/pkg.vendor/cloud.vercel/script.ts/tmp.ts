@@ -1,3 +1,4 @@
+import { fs } from '@platform/fs';
 import { Vercel } from 'vendor.cloud.vercel/lib/node';
 
 const token = process.env.VERCEL_TEST_TOKEN;
@@ -10,6 +11,10 @@ const token = process.env.VERCEL_TEST_TOKEN;
  *
  */
 async function deploy(team: string, project: string, dir: string, alias?: string) {
+  // const { client } = Vercel.Node({ token });
+  // const team = await client.teams.byName(teamName);
+  // const res = await team.project(projectName).create();
+
   const deployment = Vercel.Deploy({ token, dir, team, project });
   const manifest = await deployment.manifest<t.ModuleManifest>();
 
@@ -17,10 +22,9 @@ async function deploy(team: string, project: string, dir: string, alias?: string
   console.log(' • manifest', manifest);
 
   const wait = deployment.commit({
-    // target: 'production',
+    target: 'production',
     regions: ['sfo1'],
     alias,
-    // routes: [{ src: '/foo', dest: '/' }],
   });
 
   const res = await wait;
@@ -37,4 +41,8 @@ async function deploy(team: string, project: string, dir: string, alias?: string
 }
 
 // DEV
-deploy('tdb', 'tmp', 'dist/web');
+const dir = fs.resolve('../../pkg.sys/net/dist/web');
+deploy('tdb', 'family-tmp', dir, 'tmp.sys.family');
+// deploy('tdb', 'tmp', 'dist/web');
+
+console.log('dir', dir);
