@@ -14,7 +14,8 @@ const imports = {
   TestSuite: import('./ui/TestSuite/dev/DEV'),
 };
 
-const ns = new URL(location.href).searchParams.get('ns');
+const dev = new URL(location.href).searchParams.get('dev');
+
 export const DevHarness: React.FC = () => (
-  <Harness actions={Object.values(imports)} showActions={true} initial={ns} />
+  <Harness actions={Object.values(imports)} showActions={true} initial={dev} />
 );

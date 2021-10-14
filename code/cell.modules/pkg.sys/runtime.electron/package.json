@@ -15,11 +15,9 @@
     "build": "ts build --no-esm $@",
     "bundle": "sh script.sh/bundle.sh",
     "watch": "cell.compiler watch $@",
-    "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@",
-    "deploy": "cell.compiler upload --dir ui.runtime $@"
+    "serve": "cell.compiler serve $@"
   },
   "dependencies": {
     "filesize": "8.0.0"

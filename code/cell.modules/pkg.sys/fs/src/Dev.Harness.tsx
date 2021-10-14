@@ -7,5 +7,7 @@ const imports = {
   FsDriverIndexedDb: import('./web.FsDriver.IndexedDB/dev/DEV'),
 };
 
-const ns = new URL(location.href).searchParams.get('ns');
-export const DevHarness: React.FC = () => <Harness actions={Object.values(imports)} initial={ns} />;
+const dev = new URL(location.href).searchParams.get('dev');
+export const DevHarness: React.FC = () => (
+  <Harness actions={Object.values(imports)} initial={dev} />
+);
