@@ -10,32 +10,13 @@ export type DevRemoteComponentProps = {
 };
 
 export const DevRemoteComponent: React.FC<DevRemoteComponentProps> = (props) => {
-  const [body, setBody] = useState<JSX.Element | undefined>();
+  const url = 'http://localhost:5000/cell:ckuoq669f000e09l44si3hoja:A1/fs/web/remoteEntry.js';
+  const namespace = 'tdb.slc';
+  const entry = './Home';
+  const { module } = WebRuntime.remote({ url, namespace, entry }).useModule();
 
-  /**
-   * Lifecycle
-   */
-  useEffect(() => {
-    const url = 'http://localhost:5000/cell:ckuoq669f000e09l44si3hoja:A1/fs/web/remoteEntry.js';
-
-    const namespace = 'tdb.slc';
-    const entry = './Home';
-
-    (async () => {
-      const remote = WebRuntime.remote({ url, namespace, entry });
-      await remote.script().ready;
-      const m = await remote.module();
-
-      console.log('m', m);
-      const App = m.default;
-      const { bus } = props;
-
-      const el = <App bus={bus} />;
-
-      console.log('el', el);
-      setBody(el);
-    })();
-  }, []); // eslint-disable-line
+  const App = module?.App;
+  const el = App && <App bus={props.bus} />;
 
   /**
    * [Render]
@@ -48,5 +29,5 @@ export const DevRemoteComponent: React.FC<DevRemoteComponentProps> = (props) => 
     }),
   };
 
-  return <div {...css(styles.base, props.style)}>{body}</div>;
+  return <div {...css(styles.base, props.style)}>{el}</div>;
 };

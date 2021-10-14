@@ -1,6 +1,8 @@
 import React from 'react';
 import { toObject, DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
 
+import { WebRuntime } from '@platform/cell.runtime.web';
+
 import {
   css,
   cuid,

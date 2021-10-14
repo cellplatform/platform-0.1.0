@@ -2,20 +2,12 @@ import React, { useState } from 'react';
 
 import { WebRuntime } from '@platform/cell.runtime.web';
 import Award from './assets/award.svg';
-import { System } from './System';
 
 type Css = React.CSSProperties;
 
 export type IAppState = { url?: string };
 
-export type ISystem = {
-  url: string;
-  namespace: string;
-  entry: string;
-};
-
 const bundle = WebRuntime.bundle;
-
 console.log('module', WebRuntime.module);
 console.log('bundle', WebRuntime.bundle);
 console.log("bundle.path('/static/images/wax.png')", bundle.path('/static/images/wax.png'));
@@ -29,54 +21,6 @@ console.log("bundle.path('/static/images/wax.png')", bundle.path('/static/images
  *
  */
 export const App = () => {
-  const [system, setSystem] = useState<ISystem>();
-  const [state, setState] = useState<IAppState>();
-
-  const setter = (port: number, namespace: string, entry: string) => {
-    return () => {
-      const url = `http://localhost:${port}/remoteEntry.js`;
-      setSystem({ url, namespace, entry });
-      setState({ url });
-    };
-  };
-
-  const setFoo = () => {
-    const url =
-      'http://localhost:5000/cell:ckgu68hjj000ciwet59do0wb4:A1/file/sample/remoteEntry.js';
-    const namespace = 'foo';
-    const entry = './Dev';
-    setSystem({ url, namespace, entry });
-    setState({ url });
-  };
-
-  const setAi = () => {
-    const url =
-      'http://localhost:5000/cell:ckgu7ryv8000cg0etbjfwet91:A1/file/sample/remoteEntry.js';
-    const namespace = 'ai';
-    const entry = './Dev';
-    setSystem({ url, namespace, entry });
-    setState({ url });
-  };
-
-  const setTemp = async () => {
-    const url = 'http://localhost:5000/cell:ckuoq669f000e09l44si3hoja:A1/fs/web/remoteEntry.js';
-    const namespace = 'tdb.slc';
-    const entry = './Home';
-
-    const remote = WebRuntime.remote({ url, namespace, entry });
-    console.log('remote', remote);
-
-    const s = remote.script();
-    const f = await s.ready;
-    console.log('f', f);
-
-    const m = await remote.module();
-    console.log('m', m);
-
-    setSystem({ url, namespace, entry });
-    setState({ url });
-  };
-
   const styles: Record<string, Css> = {
     base: {
       paddingLeft: 50,
@@ -111,27 +55,11 @@ export const App = () => {
     },
   };
 
-  const elSystem = system && (
-    <System url={system.url} namespace={system.namespace} entry={system.entry} />
-  );
-
   return (
     <div style={styles.base}>
       <h1>App</h1>
       <Award width={60} style={styles.award} />
       <img src={bundle.path('/static/images/wax.png')} style={styles.seal} />
-
-      <div style={styles.buttons}>
-        <button onClick={setter(3000, 'foo', './Dev')}>foo</button>
-        <button onClick={setFoo}>foo(2)</button>
-        <button onClick={setter(1234, 'sys.ui.shell', './Dev')}>shell</button>
-        <button onClick={setAi}>ai</button>
-        <button onClick={setter(3003, 'sys.ui.code.editor', './Dev')}>code (local)</button>
-        <button onClick={setTemp}>tmp</button>
-      </div>
-      <div>{state?.url || '-'}</div>
-      <hr style={styles.hr} />
-      <div style={styles.body}>{elSystem}</div>
     </div>
   );
 };
