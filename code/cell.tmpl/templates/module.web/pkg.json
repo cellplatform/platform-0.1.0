@@ -15,8 +15,7 @@
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@",
-    "deploy": "cell.compiler upload --dir __NAME__ $@"
+    "serve": "cell.compiler serve $@"
   },
   "dependencies": {},
   "devDependencies": {
