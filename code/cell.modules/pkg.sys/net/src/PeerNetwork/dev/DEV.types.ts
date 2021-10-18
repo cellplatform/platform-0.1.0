@@ -3,6 +3,7 @@ import * as t from '../common/types';
 
 export * from '../common/types';
 
+type O = Record<string, unknown>;
 export type DevModalTarget = 'fullscreen' | 'body';
 
 /**
@@ -103,6 +104,7 @@ export type DevGroupLayoutSimple = {
     | 'image/pasteboard'
     | 'remote/component';
   target?: DevModalTarget;
+  props?: O;
 };
 
 /**

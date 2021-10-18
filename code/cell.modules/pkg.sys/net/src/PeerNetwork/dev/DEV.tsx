@@ -1,7 +1,9 @@
 import React from 'react';
 import { toObject, DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
 
-import { WebRuntime } from '@platform/cell.runtime.web';
+import { Config } from 'sys.runtime.web';
+
+type O = Record<string, unknown>;
 
 import {
   css,
@@ -222,13 +224,13 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.2);
 
-    const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind']) => {
+    const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind'], props?: O) => {
       const { netbus } = toObject(ctx) as Ctx;
       const isLayoutFullscreen = ctx.toFlags().isLayoutFullscreen;
       const target: t.DevModalTarget = isLayoutFullscreen ? 'fullscreen' : 'body';
       netbus.fire({
         type: 'DEV/group/layout',
-        payload: { kind, target },
+        payload: { kind, target, props },
       });
     };
 
@@ -237,10 +239,25 @@ export const actions = DevActions<Ctx>()
     e.button('video/physics', (e) => showLayout(e.ctx, 'video/physics'));
     e.button('video/group', (e) => showLayout(e.ctx, 'video/group'));
     e.button('image/pasteboard', (e) => showLayout(e.ctx, 'image/pasteboard'));
-    e.button('remote/component', (e) => showLayout(e.ctx, 'remote/component'));
+    // e.button('remote/component', (e) => showLayout(e.ctx, 'remote/component'));
 
     e.hr(1, 0.2);
     e.button('reset (default)', (e) => showLayout(e.ctx, 'cards'));
+
+    e.hr();
+
+    e.component((e) => {
+      const ctx = e.ctx;
+      return (
+        <Config.ui.ManifestSelectorStateful
+          style={{ MarginX: 30, MarginY: 20 }}
+          onRemoteEntryClick={(e) => {
+            const remote = e.remote;
+            showLayout(ctx, 'remote/component', { remote });
+          }}
+        />
+      );
+    });
 
     e.hr();
   })

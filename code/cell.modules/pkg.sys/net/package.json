@@ -1,6 +1,6 @@
 {
   "name": "sys.net",
-  "version": "0.0.143",
+  "version": "0.0.144",
   "sideEffects": false,
   "compiler": {
     "port": 3040
@@ -11,7 +11,7 @@
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
-    "bundle": "cell.compiler bundle $@",
+    "bundle": "cell.compiler bundle --bump $@",
     "watch": "cell.compiler watch $@",
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",

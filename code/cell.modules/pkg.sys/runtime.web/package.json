@@ -5,6 +5,8 @@
   "compiler": {
     "port": 5051
   },
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
   "scripts": {
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",

@@ -70,9 +70,7 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
   /**
    * [Render]
    */
-
   const width = { min: 240, max: 260 };
-
   const styles = {
     base: css({}),
     textbox: css({
