@@ -1,7 +1,8 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
-import { Antechamber, AntechamberProps } from '..';
-import { t, css } from '../../common';
+
+import { AntechamberProps } from '..';
+import { t } from '../../common';
 import { Sample } from './DEV.samples';
 
 type Ctx = {
