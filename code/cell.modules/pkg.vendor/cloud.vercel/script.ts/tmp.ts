@@ -19,7 +19,7 @@ async function deploy(team: string, project: string, dir: string, alias?: string
   const manifest = await deployment.manifest<t.ModuleManifest>();
 
   console.log('deploying:');
-  console.log(' • manifest', manifest);
+  console.log(' • manifest', manifest?.hash.files);
 
   const wait = deployment.commit({
     target: 'production',
