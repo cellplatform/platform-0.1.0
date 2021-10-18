@@ -1,6 +1,6 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
-import { ManifestSelector, ManifestSelectorStateful, ManifestSelectorProps } from '..';
+import { ManifestSelectorStateful, ManifestSelectorProps } from '..';
 
 type Ctx = { props: ManifestSelectorProps };
 

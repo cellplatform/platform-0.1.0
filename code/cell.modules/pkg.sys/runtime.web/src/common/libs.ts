@@ -11,3 +11,4 @@ export { Http } from '@platform/http';
  * @system
  */
 export { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
+export { useDragTarget } from 'sys.ui.primitives/lib/hooks/useDragTarget';
