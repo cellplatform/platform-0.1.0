@@ -166,10 +166,7 @@ export const actions = DevActions<Ctx>()
       return (
         <WebRuntime.Remote.ManifestSelectorStateful
           style={{ MarginX: 30, MarginY: 20 }}
-          onRemoteEntryClick={(e) => {
-            const { remote } = e;
-            showLayout(ctx, 'remote/component', { remote });
-          }}
+          onRemoteEntryClick={(e) => showLayout(ctx, 'remote/component', { remote: e.remote })}
         />
       );
     });
