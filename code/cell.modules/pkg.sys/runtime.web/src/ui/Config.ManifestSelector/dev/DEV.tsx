@@ -9,14 +9,20 @@ type Ctx = { props: ManifestSelectorProps };
  */
 export const actions = DevActions<Ctx>()
   .namespace('ui.config.ManifestSelector')
+
   .context((e) => {
     if (e.prev) return e.prev;
-    const ctx: Ctx = { props: {} };
+    const ctx: Ctx = { props: { canDrop: true } };
     return ctx;
   })
 
   .items((e) => {
     e.title('ManifestSelector');
+
+    e.boolean('canDrop', (e) => {
+      if (e.changing) e.ctx.props.canDrop = e.changing.next;
+      e.boolean.current = e.ctx.props.canDrop;
+    });
 
     e.hr();
   })

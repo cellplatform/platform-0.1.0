@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { css, CssValue, t } from './common';
+import { color, css, CssValue, t, useDragTarget } from './common';
 import { ManifestSelectorList } from './components/List';
 import { ManifestSelectorTextbox } from './components/Textbox';
 import { LoadManifestHandler, ManifestUrlChangeHandler, RemoteEntryClickHandler } from './types';
@@ -12,10 +12,12 @@ export type ManifestSelectorProps = {
   manifestUrl?: Url;
   manifest?: t.ModuleManifest;
   error?: string;
+  canDrop?: boolean;
   style?: CssValue;
   onManifestUrlChange?: ManifestUrlChangeHandler;
   onLoadManifest?: LoadManifestHandler;
   onRemoteEntryClick?: RemoteEntryClickHandler;
+  onError?: (e: { error: string }) => void;
 };
 
 export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
@@ -23,12 +25,36 @@ export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
   const remote = manifest?.module?.remote;
   const manifestUrl = (props.manifestUrl ?? '').trim();
 
+  const drag = useDragTarget<HTMLDivElement>({
+    isEnabled: props.canDrop ?? true,
+    onDrop: (e) => {
+      const url = (e.urls[0] ?? '').trim();
+      if (url) {
+        props.onLoadManifest?.({ url });
+      } else {
+        const error = `Dropped file is not a link (URL).`;
+        props.onError?.({ error });
+      }
+    },
+  });
+
   /**
    * [Render]
    */
 
   const styles = {
     base: css({ flex: 1, position: 'relative' }),
+    drag: {
+      base: css({ Absolute: 0, Flex: 'center-center' }),
+      body: css({
+        backgroundColor: color.format(0.7),
+        backdropFilter: `blur(8px)`,
+        border: `dashed 1px ${color.format(-0.3)}`,
+        borderRadius: 6,
+        PaddingX: 20,
+        PaddingY: 6,
+      }),
+    },
   };
 
   const elUrlTextbox = (
@@ -42,16 +68,23 @@ export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
 
   const elList = remote && (
     <ManifestSelectorList
-      manifestUrl={manifestUrl}
       manifest={manifest}
+      manifestUrl={manifestUrl}
       onRemoteEntryClick={props.onRemoteEntryClick}
     />
   );
 
+  const elDragOverlay = drag.isDragOver && (
+    <div {...styles.drag.base}>
+      <div {...styles.drag.body}>Drop Browser Link</div>
+    </div>
+  );
+
   return (
-    <div {...css(styles.base, props.style)}>
+    <div {...css(styles.base, props.style)} ref={drag.ref}>
       {elUrlTextbox}
       {elList}
+      {elDragOverlay}
     </div>
   );
 };

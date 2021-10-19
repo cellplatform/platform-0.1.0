@@ -5,6 +5,7 @@ import { ManifestSelector, RemoteEntryClickHandler } from './ManifestSelector';
 import { useStateController } from './useStateController';
 
 export type ManifestSelectorStatefulProps = {
+  canDrop?: boolean;
   style?: CssValue;
   onRemoteEntryClick?: RemoteEntryClickHandler;
 };
@@ -13,13 +14,15 @@ export const ManifestSelectorStateful: React.FC<ManifestSelectorStatefulProps> =
   const state = useStateController();
   return (
     <ManifestSelector
-      manifestUrl={state.url.manifest}
+      manifestUrl={state.manifestUrl}
       manifest={state.manifest}
       error={state.error}
+      canDrop={props.canDrop}
       style={props.style}
       onRemoteEntryClick={props.onRemoteEntryClick}
-      onLoadManifest={() => state.loadManifest()}
-      onManifestUrlChange={(e) => state.setManifestUrl(e.url)}
+      onLoadManifest={(e) => state.loadManifest(e.url)}
+      onManifestUrlChange={(e) => (state.manifestUrl = e.url)}
+      onError={(e) => (state.error = e.error)}
     />
   );
 };
