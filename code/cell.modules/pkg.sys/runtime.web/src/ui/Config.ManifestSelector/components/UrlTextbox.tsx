@@ -7,7 +7,7 @@ import { LoadManifestHandler, ManifestUrlChangeHandler } from '../types';
 
 type Url = string;
 
-export type ManifestSelectorTextboxProps = {
+export type UrlTextboxProps = {
   url: Url;
   error?: string;
   style?: CssValue;
@@ -15,7 +15,7 @@ export type ManifestSelectorTextboxProps = {
   onLoadManifest?: LoadManifestHandler;
 };
 
-export const ManifestSelectorTextbox: React.FC<ManifestSelectorTextboxProps> = (props) => {
+export const UrlTextbox: React.FC<UrlTextboxProps> = (props) => {
   const { url } = props;
 
   const styles = {

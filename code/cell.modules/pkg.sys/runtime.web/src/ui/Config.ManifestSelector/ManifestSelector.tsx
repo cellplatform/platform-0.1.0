@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { color, css, CssValue, t, useDragTarget } from './common';
-import { ManifestSelectorList } from './components/List';
-import { ManifestSelectorTextbox } from './components/Textbox';
+import { color, css, CssValue, t, useDragTarget, COLORS } from './common';
+import { List } from './components/List';
+import { UrlTextbox } from './components/UrlTextbox';
+import { Info } from './components/Info';
 import { LoadManifestHandler, ManifestUrlChangeHandler, RemoteEntryClickHandler } from './types';
 
 type Url = string;
@@ -43,7 +44,19 @@ export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
    */
 
   const styles = {
-    base: css({ flex: 1, position: 'relative' }),
+    base: css({
+      flex: 1,
+      position: 'relative',
+      color: COLORS.DARK,
+    }),
+    body: {
+      base: css({
+        Flex: 'horizontal-stretch-stretch',
+        paddingTop: 8,
+      }),
+      info: css({ marginRight: 12 }),
+      list: css({ flex: 1 }),
+    },
     drag: {
       base: css({ Absolute: 0, Flex: 'center-center' }),
       body: css({
@@ -58,7 +71,7 @@ export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
   };
 
   const elUrlTextbox = (
-    <ManifestSelectorTextbox
+    <UrlTextbox
       url={manifestUrl}
       error={props.error}
       onChange={props.onManifestUrlChange}
@@ -66,12 +79,16 @@ export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
     />
   );
 
-  const elList = remote && (
-    <ManifestSelectorList
-      manifest={manifest}
-      manifestUrl={manifestUrl}
-      onRemoteEntryClick={props.onRemoteEntryClick}
-    />
+  const elBody = remote && (
+    <div {...styles.body.base}>
+      <Info manifestUrl={manifestUrl} manifest={manifest} style={styles.body.info} />
+      <List
+        manifest={manifest}
+        manifestUrl={manifestUrl}
+        onRemoteEntryClick={props.onRemoteEntryClick}
+        style={styles.body.list}
+      />
+    </div>
   );
 
   const elDragOverlay = drag.isDragOver && (
@@ -83,7 +100,7 @@ export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)} ref={drag.ref}>
       {elUrlTextbox}
-      {elList}
+      {elBody}
       {elDragOverlay}
     </div>
   );

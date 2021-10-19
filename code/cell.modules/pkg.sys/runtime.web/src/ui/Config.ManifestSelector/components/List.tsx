@@ -6,14 +6,14 @@ import { RemoteEntryClickHandler } from '../types';
 
 type Url = string;
 
-export type ManifestSelectorListProps = {
+export type ListProps = {
   manifestUrl: Url;
   manifest: t.ModuleManifest;
   style?: CssValue;
   onRemoteEntryClick?: RemoteEntryClickHandler;
 };
 
-export const ManifestSelectorList: React.FC<ManifestSelectorListProps> = (props) => {
+export const List: React.FC<ListProps> = (props) => {
   const { manifest } = props;
   const remote = manifest?.module?.remote;
   if (!remote) return null;
@@ -37,25 +37,22 @@ export const ManifestSelectorList: React.FC<ManifestSelectorListProps> = (props)
   const styles = {
     base: css({}),
     list: {
-      base: css({ MarginX: 20, marginTop: 8 }),
-      item: css({ Flex: 'horizontal-stretch-center', fontSize: 12, marginBottom: 3 }),
+      item: css({ Flex: 'horizontal-stretch-center', fontSize: 12 }),
       icon: css({ marginRight: 6 }),
     },
   };
 
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.list.base}>
-        {remote.exports.map((item, i) => {
-          const path = item.path.replace(/^\./, '').replace(/^\/*/, '');
-          return (
-            <div key={i} {...styles.list.item}>
-              <Icons.Extension style={styles.list.icon} />
-              <Button onClick={() => onRemoteEntryClick(item)}>{path}</Button>
-            </div>
-          );
-        })}
-      </div>
+      {remote.exports.map((item, i) => {
+        const path = item.path.replace(/^\./, '').replace(/^\/*/, '');
+        return (
+          <div key={i} {...styles.list.item}>
+            <Icons.Extension style={styles.list.icon} />
+            <Button onClick={() => onRemoteEntryClick(item)}>{path}</Button>
+          </div>
+        );
+      })}
     </div>
   );
 };
