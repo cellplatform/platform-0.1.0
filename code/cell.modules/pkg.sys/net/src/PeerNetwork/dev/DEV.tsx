@@ -1,7 +1,7 @@
 import React from 'react';
 import { toObject, DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
 
-import { Config } from 'sys.runtime.web';
+import { WebRuntime } from 'sys.runtime.web';
 
 type O = Record<string, unknown>;
 
@@ -50,6 +50,16 @@ type CtxEvents = {
   peer: t.PeerNetworkEvents;
   group: t.GroupEvents;
   media: ReturnType<typeof MediaStream.Events>;
+};
+
+const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind'], props?: O) => {
+  const { netbus } = toObject(ctx) as Ctx;
+  const isLayoutFullscreen = ctx.toFlags().isLayoutFullscreen;
+  const target: t.DevModalTarget = isLayoutFullscreen ? 'fullscreen' : 'body';
+  netbus.fire({
+    type: 'DEV/group/layout',
+    payload: { kind, target, props },
+  });
 };
 
 /**
@@ -148,6 +158,23 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
+
+    e.title('Module Installation');
+
+    e.component((e) => {
+      const { ctx } = e;
+      return (
+        <WebRuntime.Remote.ManifestSelectorStateful
+          style={{ MarginX: 30, MarginY: 20 }}
+          onRemoteEntryClick={(e) => {
+            const { remote } = e;
+            showLayout(ctx, 'remote/component', { remote });
+          }}
+        />
+      );
+    });
+
+    e.hr();
   })
 
   .items((e) => {
@@ -224,16 +251,6 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.2);
 
-    const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind'], props?: O) => {
-      const { netbus } = toObject(ctx) as Ctx;
-      const isLayoutFullscreen = ctx.toFlags().isLayoutFullscreen;
-      const target: t.DevModalTarget = isLayoutFullscreen ? 'fullscreen' : 'body';
-      netbus.fire({
-        type: 'DEV/group/layout',
-        payload: { kind, target, props },
-      });
-    };
-
     e.button('screensize', (e) => showLayout(e.ctx, 'screensize'));
     e.button('crdt', (e) => showLayout(e.ctx, 'crdt'));
     e.button('video/physics', (e) => showLayout(e.ctx, 'video/physics'));
@@ -243,21 +260,6 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.2);
     e.button('reset (default)', (e) => showLayout(e.ctx, 'cards'));
-
-    e.hr();
-
-    e.component((e) => {
-      const ctx = e.ctx;
-      return (
-        <Config.ui.ManifestSelectorStateful
-          style={{ MarginX: 30, MarginY: 20 }}
-          onRemoteEntryClick={(e) => {
-            const remote = e.remote;
-            showLayout(ctx, 'remote/component', { remote });
-          }}
-        />
-      );
-    });
 
     e.hr();
   })
