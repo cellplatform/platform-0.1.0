@@ -1,7 +1,12 @@
-import { ManifestSelector, ManifestSelectorStateful } from './ui/Config.ManifestSelector';
+import {
+  RemoteManifestSelector as ManifestSelector,
+  RemoteManifestSelectorStateful as ManifestSelectorStateful,
+} from './web.ui/Remote.ManifestSelector';
 
-export const Config = {
-  ui: {
+export { WebRuntimeBus } from './web.RuntimeBus';
+
+export const WebRuntime = {
+  Remote: {
     ManifestSelector,
     ManifestSelectorStateful,
   },

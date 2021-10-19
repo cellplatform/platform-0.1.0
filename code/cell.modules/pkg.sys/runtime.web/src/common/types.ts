@@ -1,3 +1,10 @@
 export * from '../types';
 
-export { ModuleManifest, ModuleManifestRemoteExport } from '@platform/cell.types';
+export { Observable } from 'rxjs';
+export {
+  Fs,
+  ModuleManifest,
+  ModuleManifestRemoteExport,
+  ModuleManifestRemoteImport,
+} from '@platform/cell.types';
+export { Disposable, Event, EventBus } from '@platform/types';

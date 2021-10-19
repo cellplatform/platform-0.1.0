@@ -1,5 +1,6 @@
 import { t } from '../common';
 
+type Url = string;
 type FilePath = string;
 
 /**
@@ -11,11 +12,14 @@ export type ModuleManifest = t.Manifest<ModuleManifestFile, ModuleManifestHash> 
 };
 
 export type ModuleManifestHash = t.ManifestHash & {
-  module: string; // The hash of all files AND the [ModuleInfo] meta-data.
+  module: string; // The hash of all files AND the [ModuleManifestInfo] meta-data.
 };
 
 export type ModuleManifestFile = t.ManifestFile;
 
+/**
+ * Meta-data describing the bundled code [module].
+ */
 export type ModuleManifestInfo = {
   namespace: string;
   version: string; //   semver ("0.0.0" if not specified)
@@ -26,8 +30,21 @@ export type ModuleManifestInfo = {
   remote?: ModuleManifestRemoteExports;
 };
 
+/**
+ * Federated "module exports".
+ */
 export type ModuleManifestRemoteExports = {
   entry: FilePath; // Typically "remoteEntry.js"
   exports: ModuleManifestRemoteExport[];
 };
 export type ModuleManifestRemoteExport = { path: FilePath };
+
+/**
+ * A federated "module export" represented from the
+ * consuming side (aka. an "import").
+ */
+export type ModuleManifestRemoteImport = {
+  url: Url;
+  namespace: string;
+  entry: string;
+};

@@ -1,19 +1,21 @@
 import React from 'react';
 
 import { CssValue } from './common';
-import { ManifestSelector, RemoteEntryClickHandler } from './ManifestSelector';
+import { RemoteManifestSelector, RemoteEntryClickHandler } from './Remote.ManifestSelector';
 import { useStateController } from './useStateController';
 
-export type ManifestSelectorStatefulProps = {
+export type RemoteManifestSelectorStatefulProps = {
   canDrop?: boolean;
   style?: CssValue;
   onRemoteEntryClick?: RemoteEntryClickHandler;
 };
 
-export const ManifestSelectorStateful: React.FC<ManifestSelectorStatefulProps> = (props) => {
+export const RemoteManifestSelectorStateful: React.FC<RemoteManifestSelectorStatefulProps> = (
+  props,
+) => {
   const state = useStateController();
   return (
-    <ManifestSelector
+    <RemoteManifestSelector
       manifestUrl={state.manifestUrl}
       manifest={state.manifest}
       error={state.error}

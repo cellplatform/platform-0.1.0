@@ -1,8 +1,8 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
-import { ManifestSelectorStateful, ManifestSelectorProps } from '..';
+import { RemoteManifestSelectorStateful, RemoteManifestSelectorProps } from '..';
 
-type Ctx = { props: ManifestSelectorProps };
+type Ctx = { props: RemoteManifestSelectorProps };
 
 /**
  * Actions
@@ -31,7 +31,7 @@ export const actions = DevActions<Ctx>()
     e.title('Sample');
 
     e.component((e) => {
-      return <ManifestSelectorStateful style={{ MarginX: 20, MarginY: 15 }} />;
+      return <RemoteManifestSelectorStateful style={{ MarginX: 20, MarginY: 15 }} />;
     });
 
     e.hr();
@@ -48,7 +48,7 @@ export const actions = DevActions<Ctx>()
       },
     });
     e.render(
-      <ManifestSelectorStateful
+      <RemoteManifestSelectorStateful
         {...e.ctx.props}
         onRemoteEntryClick={(e) => console.log('onRemoteEntryClick', e)}
       />,

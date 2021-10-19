@@ -9,7 +9,8 @@ import { LoadManifestHandler, ManifestUrlChangeHandler, RemoteEntryClickHandler 
 type Url = string;
 
 export { RemoteEntryClickHandler };
-export type ManifestSelectorProps = {
+
+export type RemoteManifestSelectorProps = {
   manifestUrl?: Url;
   manifest?: t.ModuleManifest;
   error?: string;
@@ -21,7 +22,7 @@ export type ManifestSelectorProps = {
   onError?: (e: { error: string }) => void;
 };
 
-export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
+export const RemoteManifestSelector: React.FC<RemoteManifestSelectorProps> = (props) => {
   const { manifest } = props;
   const remote = manifest?.module?.remote;
   const manifestUrl = (props.manifestUrl ?? '').trim();
@@ -50,10 +51,7 @@ export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
       color: COLORS.DARK,
     }),
     body: {
-      base: css({
-        Flex: 'horizontal-stretch-stretch',
-        paddingTop: 8,
-      }),
+      base: css({ Flex: 'horizontal-stretch-stretch', paddingTop: 8 }),
       info: css({ marginRight: 12 }),
       list: css({ flex: 1 }),
     },
@@ -81,13 +79,13 @@ export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
 
   const elBody = remote && (
     <div {...styles.body.base}>
-      <Info manifestUrl={manifestUrl} manifest={manifest} style={styles.body.info} />
       <List
         manifest={manifest}
         manifestUrl={manifestUrl}
         onRemoteEntryClick={props.onRemoteEntryClick}
         style={styles.body.list}
       />
+      <Info manifestUrl={manifestUrl} manifest={manifest} style={styles.body.info} />
     </div>
   );
 
