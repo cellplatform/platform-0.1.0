@@ -2,8 +2,6 @@ import React from 'react';
 import { DevActions, ObjectView, Test } from 'sys.ui.dev';
 import { css } from '../common';
 
-// import tests from './sample.TEST';
-
 type Ctx = {
   data: any;
   runTests(): Promise<void>;
@@ -20,26 +18,20 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       data: null,
       async runTests() {
-        // const tests =
-        // const res = await tests.run();
-        // e.change.ctx((ctx) => (ctx.data = res));
+        const tests = await Test.bundle([import('../FsDriver.IndexedDB.TEST')]);
+        const res = await tests.run();
+        e.change.ctx((ctx) => (ctx.data = res));
       },
     };
 
-    ctx.runTests();
+    // ctx.runTests();
 
     return ctx;
   })
 
   .items((e) => {
     e.title('FsDriver: IndexedDb');
-
-    e.button('run tests', async (e) => {
-      const tests = await Test.bundle([import('../FsDriver.IndexedDB.TEST')]);
-
-      e.ctx.data = await tests.run();
-    });
-
+    e.button('run tests', (e) => e.ctx.runTests());
     e.hr();
   })
 
@@ -56,12 +48,12 @@ export const actions = DevActions<Ctx>()
     });
 
     const styles = {
-      base: css({ padding: 30 }),
+      base: css({ Absolute: 0, Scroll: true, padding: 30 }),
     };
 
     const el = (
       <div {...styles.base}>
-        <ObjectView name={'unit-tests'} data={e.ctx.data} />
+        <ObjectView name={'unit-tests'} data={e.ctx.data} expandLevel={5} />
       </div>
     );
 
