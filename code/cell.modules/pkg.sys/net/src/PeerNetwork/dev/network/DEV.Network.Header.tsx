@@ -5,17 +5,18 @@ import { DevVideo } from '../media';
 import { LocalPeerProps } from '../../components/LocalPeerProps';
 
 export type DevNetworkHeaderProps = {
-  peer: t.PeerStatus;
   bus: t.EventBus<any>;
-  netbus: t.PeerNetworkBus<any>;
-  media: { video?: MediaStream; screen?: MediaStream };
+  self: {
+    id: t.PeerId;
+    status: t.PeerStatus;
+    media: { video?: MediaStream; screen?: MediaStream };
+  };
   style?: CssValue;
 };
 
 export const DevNetworkHeader: React.FC<DevNetworkHeaderProps> = (props) => {
-  const { peer, media, netbus } = props;
+  const { self } = props;
   const bus = props.bus as t.EventBus<t.PeerEvent>;
-  const self = netbus.self;
 
   const styles = {
     base: css({ Flex: 'horizontal-spaceBetween-start', padding: 15 }),
@@ -23,24 +24,39 @@ export const DevNetworkHeader: React.FC<DevNetworkHeaderProps> = (props) => {
     right: css({ Flex: 'horizontal-stretch-stretch' }),
   };
 
-  const elSelfScreen = media.screen && (
-    <DevVideo kind={'media/screen'} stream={media.screen} style={{ marginRight: 15 }} bus={bus} />
-  );
-
-  const elSelfVideo = media.video && (
+  const elSelfVideo = self.media.video && (
     <DevVideo
-      kind={'media/video'}
-      stream={media.video}
       bus={bus}
+      kind={'media/video'}
+      stream={self.media.video}
       isSelf={true}
       isRecordable={true}
     />
   );
 
+  const elSelfScreen = self.media.screen && (
+    <DevVideo
+      bus={bus}
+      kind={'media/screen'}
+      stream={self.media.screen}
+      style={{ marginRight: 15 }}
+    />
+  );
+
+  const m = self.status.connections.map((conn) => {
+    console.log(' > ', conn);
+  });
+
+  // console.log('peer.connections', peer.connections);
+
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.left}>
-        <LocalPeerProps self={self} status={peer} bus={bus} newConnections={true} />
+        <LocalPeerProps
+          self={{ id: self.id, status: self.status }}
+          bus={bus}
+          newConnections={true}
+        />
       </div>
       <div {...styles.right}>
         {elSelfScreen}

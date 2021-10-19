@@ -19,7 +19,7 @@ import {
   QueryString,
   PeerNetworkBus,
 } from './common';
-import { RootLayout } from './DEV.Root';
+import { DevRootLayout } from './DEV.Root';
 import { EventBridge } from './event';
 import { DevGroupSeed, GroupSeed } from './layouts';
 import { DevProps } from './DEV.Props';
@@ -524,7 +524,7 @@ export const actions = DevActions<Ctx>()
     });
 
     e.render(
-      <RootLayout
+      <DevRootLayout
         bus={bus}
         netbus={netbus}
         debugJson={flags.debugJson}

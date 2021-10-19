@@ -30,8 +30,7 @@ export const DevProps: React.FC<DevPropsProps> = (props) => {
 
   const elLocalPeer = status && (
     <LocalPeerProps
-      self={self}
-      status={status}
+      self={{ id: self, status }}
       bus={bus}
       newConnections={{ isReliable: true, autoStartVideo: true }}
     />

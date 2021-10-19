@@ -10,15 +10,18 @@ import { useGroupScreensize } from '../hooks';
 export type DevNetworkProps = {
   bus: t.EventBus<any>;
   netbus: t.PeerNetworkBus<any>;
-  peer: t.PeerStatus;
-  media: { video?: MediaStream; screen?: MediaStream };
+  self: {
+    id: t.PeerId;
+    status: t.PeerStatus;
+    media: { video?: MediaStream; screen?: MediaStream };
+  };
   collapse?: boolean | { data?: boolean; media?: boolean };
   cards?: { data?: boolean; media?: boolean };
   style?: CssValue;
 };
 
 export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
-  const { peer, media, netbus } = props;
+  const { self, netbus } = props;
   const bus = props.bus as t.EventBus<t.PeerEvent>;
 
   const baseRef = useRef<HTMLDivElement>(null);
@@ -57,7 +60,7 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
 
   return (
     <div ref={baseRef} {...css(styles.base, props.style)}>
-      <DevNetworkHeader bus={bus} netbus={netbus} peer={peer} media={media} />
+      <DevNetworkHeader bus={bus} self={self} />
       <Hr thickness={10} opacity={0.05} margin={0} />
       {elBody}
       {modalSize === 'fullscreen' && elModal}
