@@ -45,6 +45,7 @@ type CtxFlags = {
   cardsMedia: boolean;
   cardsData: boolean;
   isLayoutFullscreen: boolean;
+  showOthersInHeader: boolean;
 };
 type CtxEvents = {
   peer: t.PeerNetworkEvents;
@@ -121,6 +122,7 @@ export const actions = DevActions<Ctx>()
       collapseMedia: false,
       cardsData: true,
       cardsMedia: false,
+      showOthersInHeader: true,
     });
     storage.changed$.subscribe(() => e.redraw());
 
@@ -195,6 +197,12 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr(1, 0.2);
+
+    e.boolean('show others in header', (e) => {
+      const flags = e.ctx.toFlags();
+      if (e.changing) flags.showOthersInHeader = e.changing.next;
+      e.boolean.current = flags.showOthersInHeader;
+    });
 
     e.boolean('collapse: data', (e) => {
       const flags = e.ctx.toFlags();
@@ -530,6 +538,7 @@ export const actions = DevActions<Ctx>()
         debugJson={flags.debugJson}
         collapse={{ data: flags.collapseData, media: flags.collapseMedia }}
         cards={{ data: flags.cardsData, media: flags.cardsMedia }}
+        others={{ headerVideos: flags.showOthersInHeader }}
       />,
     );
   });

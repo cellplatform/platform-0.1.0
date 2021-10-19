@@ -11,6 +11,7 @@ export type DevRootLayoutProps = {
   debugJson?: boolean;
   collapse?: boolean | { data?: boolean; media?: boolean };
   cards?: { data?: boolean; media?: boolean };
+  others?: { headerVideos?: boolean };
   style?: CssValue;
 };
 
@@ -58,6 +59,7 @@ export const DevRootLayout: React.FC<DevRootLayoutProps> = (props) => {
         netbus={netbus}
         collapse={props.collapse}
         cards={props.cards}
+        others={props.others}
         self={{
           id: netbus.self,
           status: self.status,
