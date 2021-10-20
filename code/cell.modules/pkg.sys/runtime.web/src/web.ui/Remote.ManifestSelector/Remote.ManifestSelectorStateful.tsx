@@ -2,7 +2,7 @@ import React from 'react';
 
 import { CssValue } from './common';
 import { RemoteManifestSelector, RemoteEntryClickHandler } from './Remote.ManifestSelector';
-import { useStateController } from './useStateController';
+import { useStateController } from './hooks';
 
 export type RemoteManifestSelectorStatefulProps = {
   canDrop?: boolean;

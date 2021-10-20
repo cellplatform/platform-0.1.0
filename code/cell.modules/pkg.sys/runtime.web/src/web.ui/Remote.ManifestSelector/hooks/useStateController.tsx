@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Http, t, Parse } from './common';
+import { Http, t, Parse } from '../common';
 
 type Url = string;
 
@@ -20,6 +20,7 @@ export function useStateController() {
       return manifestUrl;
     },
     set manifestUrl(value: Url) {
+      console.log('value', value);
       setManifestUrl((value || '').trim());
       clearError();
     },
@@ -50,7 +51,8 @@ export function useStateController() {
         const http = Http.create();
         const res = await http.get(url.href);
         if (!res.ok) {
-          return setError(`[${res.status}] Failed to load url. ${res.statusText}`);
+          const status = res.status > 0 ? `[${res.status}]` : '';
+          return setError(`Failed to load URL. ${res.statusText} ${status}`.trim());
         }
 
         const manifest = res.json as t.ModuleManifest;
