@@ -1,3 +1,4 @@
+import { Headers } from 'cross-fetch';
 import { t, util, slug, time, value } from '../common';
 
 export const fetcher = async (args: {
@@ -12,7 +13,7 @@ export const fetcher = async (args: {
   // Prepare arguments.
   const timer = time.timer();
   const tx = `request-${slug()}`;
-  const { url, method, data, fire, mode, headers } = args;
+  const { url, method, data, fire, mode } = args;
 
   type M = { headers?: t.HttpHeaders; data?: any; respond?: t.HttpRespondInput };
   const modifications: M = {
@@ -50,7 +51,7 @@ export const fetcher = async (args: {
     method,
     url,
     data,
-    headers,
+    headers: args.headers,
     isModified: false,
     modify,
     respond(input) {
@@ -72,25 +73,37 @@ export const fetcher = async (args: {
     });
     return response;
   } else {
-    // Invoke the HTTP service end-point.
-    const fetched = await args.fetch({
-      url,
-      mode,
-      method,
-      headers: modifications.headers || headers,
-      data,
-    });
+    const done = async (fetched: t.HttpFetchResponse) => {
+      const response = await util.response.fromFetch(fetched);
+      const elapsed = timer.elapsed.msec;
+      const { ok, status } = response;
+      fire({
+        type: 'HTTP/method:res',
+        payload: { tx, method, url, ok, status, response, elapsed },
+      });
+      return response;
+    };
 
-    // Prepare response.
-    const response = await util.response.fromFetch(fetched);
-    const elapsed = timer.elapsed.msec;
-    const { ok, status } = response;
-    fire({
-      type: 'HTTP/method:res',
-      payload: { tx, method, url, ok, status, response, elapsed },
-    });
-
-    // Finish up.
-    return response;
+    const headers = modifications.headers || args.headers;
+    try {
+      // Invoke the HTTP service end-point.
+      const fetched = await args.fetch({ url, mode, method, headers, data });
+      return done(fetched);
+    } catch (error: any) {
+      /**
+       * HTTP Status: 0 ("error happened prior to the server being contacted").
+       * Ref: https://stackoverflow.com/questions/872206/what-does-it-mean-when-an-http-request-returns-status-code-0#14507670
+       */
+      const statusText = (error.message as string).replace(/^TypeError:/, '').trim();
+      const fetched: t.HttpFetchResponse = {
+        status: 0,
+        statusText,
+        headers: new Headers(headers),
+        body: null,
+        text: async () => '',
+        json: async () => undefined,
+      };
+      return done(fetched);
+    }
   }
 };
