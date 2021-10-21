@@ -8,11 +8,9 @@ type InstanceId = string;
  */
 export function BusController(args: {
   id?: InstanceId;
-  fs: t.Fs;
   bus: t.EventBus<any>;
   filter?: (e: t.WebRuntimeEvent) => boolean;
 }) {
-  const { fs } = args;
   const id = args.id ?? DEFAULT.id;
 
   const bus = rx.busAsType<t.WebRuntimeEvent>(args.bus);
@@ -25,12 +23,13 @@ export function BusController(args: {
   events.info.req$.subscribe(async (e) => {
     const { tx = slug() } = e;
 
-    const version = WebRuntime.module.version;
-    const info: t.WebRuntimeInfo = { version };
+    const module = WebRuntime.module;
+    const info: t.WebRuntimeInfo = { module };
+    const exists = Boolean(info);
 
     bus.fire({
       type: 'sys.runtime.web/info:res',
-      payload: { tx, id, info },
+      payload: { tx, id, exists, info },
     });
   });
 

@@ -47,11 +47,25 @@ export function BusEvents(args: {
       });
 
       const res = await first;
-      return typeof res === 'string' ? { tx, id, error: res } : res;
+      return typeof res === 'string' ? { tx, id, exists: false, error: res } : res;
     },
   };
 
-  return { $, id, is, dispose, dispose$, info };
+  /**
+   * Use remote module
+   */
+  const useModule: t.WebRuntimeEvents['useModule'] = {
+    $: rx.payload<t.WebRuntimeUseModuleEvent>($, 'sys.runtime.web/useModule'),
+    async fire(args) {
+      const { target, remote } = args;
+      bus.fire({
+        type: 'sys.runtime.web/useModule',
+        payload: { id, target, remote },
+      });
+    },
+  };
+
+  return { $, id, is, dispose, dispose$, info, useModule };
 }
 
 /**
