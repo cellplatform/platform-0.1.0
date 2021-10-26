@@ -74,9 +74,17 @@ type IFsMembers<
   ResolveOptions extends IFsResolveOptions,
 > = {
   type: Type;
+
+  /**
+   * Meta-data.
+   */
   dir: string; // Root directory of the file-system.
   resolve: FsPathResolver<ResolveOptions>;
   info: FsInfoMethod<Info>;
+
+  /**
+   * Network IO (in/out).
+   */
   read: FsReadMethod<Read>;
   write: FsWriteMethod<Write, WriteOptions>;
   copy: FsCopyMethod<Copy, CopyOptions>;
