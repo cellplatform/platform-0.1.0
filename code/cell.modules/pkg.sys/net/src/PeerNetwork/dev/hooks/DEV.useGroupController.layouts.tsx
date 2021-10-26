@@ -8,7 +8,6 @@ import {
   DevVideosPhysicsLayout,
   DevVideosGroupLayout,
   DevImagePasteboard,
-  DevRemoteComponent,
 } from '../layouts';
 
 type O = Record<string, unknown>;
