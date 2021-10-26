@@ -2,6 +2,7 @@ import React from 'react';
 import { toObject, DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
 
 import { WebRuntime } from 'sys.runtime.web';
+import { TARGET_NAME } from './common';
 
 type O = Record<string, unknown>;
 
@@ -51,6 +52,7 @@ type CtxEvents = {
   peer: t.PeerNetworkEvents;
   group: t.GroupEvents;
   media: ReturnType<typeof MediaStream.Events>;
+  runtime: t.WebRuntimeEvents;
 };
 
 const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind'], props?: O) => {
@@ -75,15 +77,19 @@ export const actions = DevActions<Ctx>()
     const self = cuid();
     const bus = rx.bus<t.PeerEvent | t.DevEvent>();
 
-    EventBridge.startEventBridge({ self, bus });
+    EventBridge.startEventBridge({ bus, self });
     PeerNetwork.Controller({ bus });
     MediaStream.Controller({ bus });
 
     const netbus = PeerNetworkBus({ bus, self });
+
+    const runtime = WebRuntime.Bus.Controller({ bus, netbus });
+
     const events = {
       media: MediaStream.Events(bus),
       peer: PeerNetwork.PeerEvents(bus),
       group: PeerNetwork.GroupEvents(netbus),
+      runtime: runtime.events,
     };
 
     const strategy = {
@@ -166,9 +172,15 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       const { ctx } = e;
       return (
-        <WebRuntime.Remote.ManifestSelectorStateful
+        <WebRuntime.Ui.ManifestSelectorStateful
+          bus={ctx.bus}
           style={{ MarginX: 30, MarginY: 20 }}
-          onRemoteEntryClick={(e) => showLayout(ctx, 'remote/component', { remote: e.remote })}
+          onEntryClick={(e) => {
+            ctx.events.runtime.useModule.fire({
+              target: TARGET_NAME,
+              module: e.remote,
+            });
+          }}
         />
       );
     });
@@ -261,7 +273,6 @@ export const actions = DevActions<Ctx>()
     e.button('video/physics', (e) => showLayout(e.ctx, 'video/physics'));
     e.button('video/group', (e) => showLayout(e.ctx, 'video/group'));
     e.button('image/pasteboard', (e) => showLayout(e.ctx, 'image/pasteboard'));
-    // e.button('remote/component', (e) => showLayout(e.ctx, 'remote/component'));
 
     e.hr(1, 0.2);
     e.button('reset (default)', (e) => showLayout(e.ctx, 'cards'));

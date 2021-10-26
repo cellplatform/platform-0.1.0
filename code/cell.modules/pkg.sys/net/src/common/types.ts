@@ -13,6 +13,7 @@ export { NetworkBus, NetworkBusFilter, NetworkPump } from '@platform/cell.types/
  */
 export { MediaEvent } from 'sys.ui.video/lib/types';
 export { PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
+export { WebRuntimeEvents } from 'sys.runtime.web/lib/types';
 
 /**
  * local

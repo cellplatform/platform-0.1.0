@@ -21,10 +21,10 @@ export function listen(args: {
   bus: t.EventBus<any>;
   netbus: t.PeerNetworkBus<any>;
 }) {
-  const { network$: $ } = args;
+  const { network$ } = args;
   const bus = args.bus as t.EventBus<t.DevEvent>;
   const netbus = args.netbus as t.PeerNetworkBus<t.DevEvent>;
-  const layout$ = rx.payload<t.DevGroupLayoutEvent>($, 'DEV/group/layout');
+  const layout$ = rx.payload<t.DevGroupLayoutEvent>(network$, 'DEV/group/layout');
 
   const layout = (kind: t.DevGroupLayout['kind'], factory?: (props?: O) => JSX.Element) => {
     layout$.pipe(filter((e) => e.kind === kind)).subscribe((e) => {
@@ -41,5 +41,4 @@ export function listen(args: {
   layout('video/physics', (p) => <DevVideosPhysicsLayout bus={bus} netbus={netbus} {...p} />);
   layout('video/group', (p) => <DevVideosGroupLayout bus={bus} netbus={netbus} {...p} />);
   layout('image/pasteboard', (p) => <DevImagePasteboard bus={bus} netbus={netbus} {...p} />);
-  layout('remote/component', (p) => <DevRemoteComponent bus={bus} netbus={netbus} {...p} />);
 }

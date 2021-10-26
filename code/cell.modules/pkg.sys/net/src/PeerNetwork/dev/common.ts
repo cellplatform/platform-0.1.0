@@ -11,3 +11,5 @@ export { PeerNetwork } from '..';
 export { t };
 
 export const isLocalhost = location.hostname === 'localhost';
+
+export const TARGET_NAME = 'MyTarget';

@@ -6,6 +6,7 @@ import { useGroupController, useLocalController } from '../hooks';
 import { DevNetworkConnections } from './DEV.Network.Connections';
 import { DevNetworkHeader } from './DEV.Network.Header';
 import { useGroupScreensize } from '../hooks';
+import { DevNetworkRemote } from './DEV.Network.Remote';
 
 export type DevNetworkProps = {
   bus: t.EventBus<any>;
@@ -56,6 +57,7 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
         showNetbus={true}
       />
       {modalSize === 'body' && elModal}
+      {!elModal && <DevNetworkRemote bus={bus} />}
     </div>
   );
 
