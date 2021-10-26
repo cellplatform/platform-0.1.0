@@ -14,6 +14,7 @@ export type WebRuntimeInfo = {
  */
 
 export type WebRuntimeEvent =
+  | WebRuntimeGroupEvent
   | WebRuntimeInfoReqEvent
   | WebRuntimeInfoResEvent
   | WebRuntimeUseModuleEvent;
@@ -36,7 +37,21 @@ export type WebRuntimeEvents = t.Disposable & {
     $: t.Observable<t.WebRuntimeUseModule>;
     fire(args: {
       target: string;
-      remote: t.ModuleManifestRemoteImport | null; // NB: null to clear.
+      module: t.ModuleManifestRemoteImport | null; // NB: null to clear.
+    }): void;
+  };
+};
+
+/**
+ * Event API: Network group/mesh
+ */
+export type WebRuntimeGroupEvents = t.Disposable & {
+  $: t.Observable<t.WebRuntimeGroupEvent>;
+  useModule: {
+    $: t.Observable<t.WebRuntimeUseModule>;
+    fire(args: {
+      target: string;
+      module: t.ModuleManifestRemoteImport | null; // NB: null to clear.
     }): void;
   };
 };
@@ -72,5 +87,13 @@ export type WebRuntimeUseModuleEvent = {
 export type WebRuntimeUseModule = {
   id: InstanceId;
   target: TargetId;
-  remote: t.ModuleManifestRemoteImport | null;
+  module: t.ModuleManifestRemoteImport | null;
+};
+
+/**
+ * Wrapper ("envelope") event for broadcasting to a group of peers.
+ */
+export type WebRuntimeGroupEvent = {
+  type: 'sys.runtime.web/group';
+  payload: { id: InstanceId; event: t.WebRuntimeEvent };
 };

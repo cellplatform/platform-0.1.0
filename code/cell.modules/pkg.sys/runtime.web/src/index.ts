@@ -1,8 +1,4 @@
-import {
-  RemoteManifestSelector as ManifestSelector,
-  RemoteManifestSelectorStateful as ManifestSelectorStateful,
-} from './web.ui/Remote.ManifestSelector';
-
+import { ManifestSelector, ManifestSelectorStateful } from './web.ui/ManifestSelector';
 import { WebRuntimeBus } from './web.RuntimeBus';
 import { useModuleTarget } from './web.ui/hooks';
 import { Runtime } from '@platform/cell.runtime';

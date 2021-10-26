@@ -46,7 +46,7 @@ export function useModuleTarget<M = any>(args: {
     };
 
     use$.subscribe((e) => {
-      const address = e.remote === null ? undefined : e.remote;
+      const address = e.module === null ? undefined : e.module;
       if (address) load(address);
       if (!address) unload();
     });

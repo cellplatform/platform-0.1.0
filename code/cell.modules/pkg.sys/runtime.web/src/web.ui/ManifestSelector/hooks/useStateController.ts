@@ -1,18 +1,50 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 
-import { Http, t, Parse } from '../common';
+import { Http, Parse, rx, t } from '../common';
 
+type InstanceId = string;
 type Url = string;
 
 /**
  * State controller.
  */
-export function useStateController() {
+export function useStateController(args: { bus: t.EventBus<any>; component: InstanceId }) {
+  const bus = rx.busAsType<t.ManifestSelectorEvent>(args.bus);
+
   const [manifest, setManifest] = useState<t.ModuleManifest>();
   const [manifestUrl, setManifestUrl] = useState<string>('');
   const [error, setError] = useState<string>('');
-  const clearError = () => setError('');
 
+  /**
+   * Lifecycle
+   */
+  useEffect(() => {
+    const dispose$ = new Subject<void>();
+
+    type A = t.ManifestSelectorActionEvent;
+    const $ = bus.$.pipe(
+      takeUntil(dispose$),
+      filter((e) => e.type.startsWith('sys.runtime.web/ManifestSelector/')),
+      filter((e) => e.payload.component === args.component),
+    );
+    const action$ = rx.payload<A>($, 'sys.runtime.web/ManifestSelector/action');
+
+    action$.pipe(filter((e) => e.kind === 'loadManifest')).subscribe((e) => {
+      api.loadManifest(e.manifest);
+    });
+
+    action$.subscribe((e) => {
+      console.log('action', e);
+    });
+
+    return () => dispose$.next();
+  }, []); // eslint-disable-line
+
+  /**
+   * Public Interface
+   */
   const api = {
     manifest,
 
@@ -20,9 +52,9 @@ export function useStateController() {
       return manifestUrl;
     },
     set manifestUrl(value: Url) {
-      console.log('value', value);
       setManifestUrl((value || '').trim());
-      clearError();
+      setManifest(undefined);
+      api.error = undefined;
     },
 
     get remoteEntryUrl() {
@@ -35,13 +67,12 @@ export function useStateController() {
     get error() {
       return error;
     },
-    set error(message: string) {
-      setError(message);
+    set error(message: string | undefined) {
+      setError(message || '');
     },
-    clearError,
 
     /**
-     * Load the manigest
+     * Load the manifest
      */
     async loadManifest(href?: string) {
       try {

@@ -4,25 +4,22 @@ import { color, css, CssValue, t, useDragTarget, COLORS } from './common';
 import { List } from './components/List';
 import { UrlTextbox } from './components/UrlTextbox';
 import { Info } from './components/Info';
-import { LoadManifestHandler, ManifestUrlChangeHandler, RemoteEntryClickHandler } from './types';
 
 type Url = string;
 
-export { RemoteEntryClickHandler };
-
-export type RemoteManifestSelectorProps = {
+export type ManifestSelectorProps = {
   manifestUrl?: Url;
   manifest?: t.ModuleManifest;
   error?: string;
   canDrop?: boolean;
   style?: CssValue;
-  onManifestUrlChange?: ManifestUrlChangeHandler;
-  onLoadManifest?: LoadManifestHandler;
-  onRemoteEntryClick?: RemoteEntryClickHandler;
+  onManifestUrlChange?: t.ManifestSelectorUrlChangeHandler;
+  onLoadManifest?: t.ManifestSelectorLoadHandler;
+  onEntryClick?: t.ManifestSelectorEntryClickHandler;
   onError?: (e: { error: string }) => void;
 };
 
-export const RemoteManifestSelector: React.FC<RemoteManifestSelectorProps> = (props) => {
+export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
   const { manifest } = props;
   const remote = manifest?.module?.remote;
   const manifestUrl = (props.manifestUrl ?? '').trim();
@@ -82,7 +79,7 @@ export const RemoteManifestSelector: React.FC<RemoteManifestSelectorProps> = (pr
       <List
         manifest={manifest}
         manifestUrl={manifestUrl}
-        onRemoteEntryClick={props.onRemoteEntryClick}
+        onRemoteEntryClick={props.onEntryClick}
         style={styles.body.list}
       />
       <Info manifestUrl={manifestUrl} manifest={manifest} style={styles.body.info} />

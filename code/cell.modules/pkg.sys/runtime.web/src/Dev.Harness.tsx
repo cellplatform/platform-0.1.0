@@ -2,7 +2,7 @@ import React from 'react';
 import { Harness } from 'sys.ui.dev';
 
 const imports = {
-  ManifestSelector: import('./web.ui/Remote.ManifestSelector/dev/DEV'),
+  ManifestSelector: import('./web.ui/ManifestSelector/dev/DEV'),
 };
 
 const dev = new URL(location.href).searchParams.get('dev');

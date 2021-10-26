@@ -57,10 +57,10 @@ export function BusEvents(args: {
   const useModule: t.WebRuntimeEvents['useModule'] = {
     $: rx.payload<t.WebRuntimeUseModuleEvent>($, 'sys.runtime.web/useModule'),
     async fire(args) {
-      const { target, remote } = args;
+      const { target, module } = args;
       bus.fire({
         type: 'sys.runtime.web/useModule',
-        payload: { id, target, remote },
+        payload: { id, target, module },
       });
     },
   };

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { Icons } from '../../Icons';
 import { Button, css, CssValue, Parse, t, COLORS } from '../common';
-import { RemoteEntryClickHandler } from '../types';
+import { ManifestSelectorEntryClickHandler } from '../types';
 
 type Url = string;
 
@@ -10,7 +10,7 @@ export type ListProps = {
   manifestUrl: Url;
   manifest: t.ModuleManifest;
   style?: CssValue;
-  onRemoteEntryClick?: RemoteEntryClickHandler;
+  onRemoteEntryClick?: ManifestSelectorEntryClickHandler;
 };
 
 export const List: React.FC<ListProps> = (props) => {

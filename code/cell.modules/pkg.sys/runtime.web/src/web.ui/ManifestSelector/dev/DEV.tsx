@@ -1,6 +1,6 @@
 import React from 'react';
-import { DevActions } from 'sys.ui.dev';
-import { RemoteManifestSelectorStateful, RemoteManifestSelectorProps } from '..';
+import { DevActions, ObjectView } from 'sys.ui.dev';
+import { ManifestSelectorStateful, ManifestSelectorProps } from '..';
 import { t, rx, css } from '../common';
 
 import { WebRuntimeBus } from '../../../web.RuntimeBus';
@@ -9,7 +9,15 @@ import { useModuleTarget } from '../../hooks';
 type Ctx = {
   bus: t.EventBus;
   events: t.WebRuntimeEvents;
-  props: RemoteManifestSelectorProps;
+  props: ManifestSelectorProps;
+  debug: {
+    output: {
+      title?: string;
+      data?: any;
+      write(title: string, data: any): void;
+      clear(): void;
+    };
+  };
 };
 
 /**
@@ -28,6 +36,17 @@ export const actions = DevActions<Ctx>()
       bus,
       events,
       props: { canDrop: true },
+      debug: {
+        output: {
+          clear: () => ctx.debug.output.write('', undefined),
+          write(title, data) {
+            e.change.ctx((ctx) => {
+              ctx.debug.output.title = title;
+              ctx.debug.output.data = data;
+            });
+          },
+        },
+      },
     };
     return ctx;
   })
@@ -44,24 +63,40 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Sample');
-    e.component((e) => <RemoteManifestSelectorStateful style={{ MarginX: 20, MarginY: 15 }} />);
-    e.hr();
-  })
-
-  .items((e) => {
     e.title('WebRuntimeBus');
 
     e.button('info', async (e) => {
       const res = await e.ctx.events.info.get();
       console.log('res', res);
+      e.ctx.debug.output.write('info', res);
     });
 
     e.button('useModule: null (unload)', async (e) => {
-      e.ctx.events.useModule.fire({ target: 'myTarget', remote: null });
+      e.ctx.events.useModule.fire({ target: 'myTarget', module: null });
     });
 
     e.hr();
+  })
+
+  .items((e) => {
+    e.title('Debug');
+
+    e.button('clear', (e) => e.ctx.debug.output.clear());
+
+    e.component((e) => {
+      const output = e.ctx.debug.output;
+      const data = output.data;
+      if (!data) return null;
+      return (
+        <ObjectView
+          name={output.title ?? 'Unnamed'}
+          data={data}
+          fontSize={10}
+          style={{ MarginX: 20, marginTop: 10 }}
+          expandLevel={3}
+        />
+      );
+    });
   })
 
   .subject((e) => {
@@ -78,12 +113,13 @@ export const actions = DevActions<Ctx>()
     });
 
     e.render(
-      <RemoteManifestSelectorStateful
+      <ManifestSelectorStateful
         {...ctx.props}
-        onRemoteEntryClick={(e) => {
+        bus={ctx.bus}
+        onEntryClick={(e) => {
           console.log('onRemoteEntryClick', e);
           const { remote } = e;
-          ctx.events.useModule.fire({ target: 'myTarget', remote });
+          ctx.events.useModule.fire({ target: 'myTarget', module: remote });
         }}
       />,
     );
@@ -107,7 +143,7 @@ export const Sample: React.FC<SampleProps> = (props) => {
   const { bus, target } = props;
   const remote = useModuleTarget({ bus, target });
 
-  console.log('useModuleTarget', remote);
+  console.log('useModuleTarget (remote)', remote);
 
   const styles = {
     base: css({ position: 'relative', flex: 1 }),

@@ -1,5 +1,6 @@
 import { DEFAULT, rx, slug, t, WebRuntime } from './common';
 import { BusEvents } from './BusEvents';
+import { GroupController } from './BusController.Group';
 
 type InstanceId = string;
 
@@ -9,13 +10,20 @@ type InstanceId = string;
 export function BusController(args: {
   id?: InstanceId;
   bus: t.EventBus<any>;
+  netbus?: t.NetworkBus<any>;
   filter?: (e: t.WebRuntimeEvent) => boolean;
 }) {
+  const { netbus } = args;
   const id = args.id ?? DEFAULT.id;
 
   const bus = rx.busAsType<t.WebRuntimeEvent>(args.bus);
   const events = BusEvents({ id, bus });
   const { dispose, dispose$ } = events;
+
+  /**
+   * Initialize child controllers.
+   */
+  if (netbus) GroupController({ netbus, events, id, fireLocal: bus.fire });
 
   /**
    * Info (Module)

@@ -3,7 +3,7 @@ import { Textbox } from 'sys.ui.dev/lib/ui/Textbox';
 
 import { Icons } from '../../Icons';
 import { color, COLORS, css, CssValue } from '../common';
-import { LoadManifestHandler, ManifestUrlChangeHandler } from '../types';
+import { ManifestSelectorLoadHandler, ManifestSelectorUrlChangeHandler } from '../types';
 
 type Url = string;
 
@@ -11,8 +11,8 @@ export type UrlTextboxProps = {
   url: Url;
   error?: string;
   style?: CssValue;
-  onChange?: ManifestUrlChangeHandler;
-  onLoadManifest?: LoadManifestHandler;
+  onChange?: ManifestSelectorUrlChangeHandler;
+  onLoadManifest?: ManifestSelectorLoadHandler;
 };
 
 export const UrlTextbox: React.FC<UrlTextboxProps> = (props) => {
