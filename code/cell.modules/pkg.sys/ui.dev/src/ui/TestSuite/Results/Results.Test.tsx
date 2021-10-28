@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, ObjectView, Icons, COLORS } from '../common';
+
+import { color, COLORS, css, CssValue, Icons, ObjectView, t } from '../common';
 
 export type TestResultProps = {
   data: t.TestRunResponse;
@@ -8,22 +9,25 @@ export type TestResultProps = {
 
 export const TestResult: React.FC<TestResultProps> = (props) => {
   const { data } = props;
+  const isSkipped = (data.excluded ?? []).includes('skip');
 
+  /**
+   * [Render]
+   */
   const styles = {
-    base: css({ position: 'relative' }),
+    base: css({ position: 'relative', marginBottom: 6 }),
     line: {
       base: css({ Flex: 'horizontal-stretch-stretch' }),
       icon: css({ marginRight: 6 }),
       description: css({ flex: 1 }),
       elapsed: css({ opacity: 0.2, userSelect: 'none' }),
     },
-    error: css({
-      marginLeft: 20,
-    }),
+    error: css({ marginLeft: 25 }),
   };
 
-  const elIconSuccess = data.ok && <Icons.Tick size={16} color={COLORS.CLI.LIME} />;
-  const elIconFail = !data.ok && <Icons.Close size={16} color={COLORS.CLI.MAGENTA} />;
+  const elIconSuccess = !isSkipped && data.ok && <Icons.Tick size={16} color={COLORS.CLI.LIME} />;
+  const elIconFail = !isSkipped && !data.ok && <Icons.Close size={16} color={COLORS.CLI.MAGENTA} />;
+  const elIconSkipped = isSkipped && <Icons.Skip size={16} color={COLORS.CLI.CYAN} />;
 
   const elError = data.error && (
     <div {...styles.error}>
@@ -37,9 +41,10 @@ export const TestResult: React.FC<TestResultProps> = (props) => {
         <div {...styles.line.icon}>
           {elIconSuccess}
           {elIconFail}
+          {elIconSkipped}
         </div>
         <div {...styles.line.description}>{data.description}</div>
-        <div {...styles.line.elapsed}>{data.elapsed}ms</div>
+        {!isSkipped && <div {...styles.line.elapsed}>{data.elapsed}ms</div>}
       </div>
       {elError}
     </div>

@@ -7,6 +7,7 @@ import {
   MdSend,
   MdFullscreen,
   MdFullscreenExit,
+  MdDoNotDisturb,
 } from 'react-icons/md';
 import {
   VscChecklist,
@@ -29,6 +30,7 @@ export const Icons = {
   Checklist: icon(VscChecklist),
   Close: icon(MdClose),
   Tick: icon(MdCheck),
+  Skip: icon(MdDoNotDisturb),
   Chevron: { Down: icon(MdExpandMore) },
   Fullscreen: { Enter: icon(MdFullscreen), Exit: icon(MdFullscreenExit) },
 };

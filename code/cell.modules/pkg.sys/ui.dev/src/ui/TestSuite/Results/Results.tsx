@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, ObjectView } from '../common';
+
+import { css, CssValue, t } from '../common';
 import { SuiteResults } from './Results.Suite';
 
 export type ResultsProps = {
@@ -10,6 +11,9 @@ export type ResultsProps = {
 export const Results: React.FC<ResultsProps> = (props) => {
   const { data } = props;
 
+  /**
+   * [Render]
+   */
   const styles = {
     base: css({ fontSize: 14, cursor: 'default' }),
   };
