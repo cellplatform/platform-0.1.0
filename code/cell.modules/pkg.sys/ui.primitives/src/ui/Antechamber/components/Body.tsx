@@ -90,5 +90,11 @@ export const Body: React.FC<BodyProps> = (props) => {
 
   const layers: t.PositioningLayer[] = [lock, seal, center.top, center.bottom];
 
-  return <PositioningLayers style={styles.base} layers={layers} />;
+  return (
+    <PositioningLayers
+      style={styles.base}
+      layers={layers}
+      pointerEvents={isOpen ? 'none' : 'auto'}
+    />
+  );
 };

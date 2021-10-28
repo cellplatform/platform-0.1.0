@@ -85,7 +85,7 @@ export const Antechamber: React.FC<AntechamberProps> = (props) => {
   );
 
   return (
-    <div ref={baseRef} {...css(styles.base, props.style)}>
+    <div ref={baseRef} {...css(styles.base, props.style)} className={'Sys-Primitives-Antechamber'}>
       {elNotReady}
       {elReady}
     </div>
