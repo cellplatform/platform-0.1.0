@@ -9,7 +9,12 @@ export type TestResultProps = {
 
 export const TestResult: React.FC<TestResultProps> = (props) => {
   const { data } = props;
-  const isSkipped = (data.excluded ?? []).includes('skip');
+  const excluded = data.excluded ?? [];
+  const isSkipped = excluded.includes('skip');
+  const isExcludedViaOnly = excluded.includes('only');
+
+  // NB: still show if "skipped" to the test retains visibility until either implemented or deleted
+  if (isExcludedViaOnly && !isSkipped) return null;
 
   /**
    * [Render]
