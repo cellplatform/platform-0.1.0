@@ -18,7 +18,7 @@ export type PositioningLayerSize = {
 export type PositioningLayersProps = {
   layers?: t.PositioningLayer[];
   rootResize?: t.ResizeObserver;
-  pointerEvents?: 'none' | 'auto';
+  childPointerEvents?: 'none' | 'auto';
   style?: CssValue;
   onSize?: PositioningLayersSizeHandler;
 };
@@ -105,7 +105,7 @@ export const PositioningLayers: React.FC<PositioningLayersProps> = (props) => {
           style={styles.layer.container}
           position={layer.position}
           rootResize={resize.root}
-          pointerEvents={props.pointerEvents}
+          childPointerEvents={props.childPointerEvents}
           onSize={(e) => {
             // Maintain a reference to the child size.
             const id = layer.id;
