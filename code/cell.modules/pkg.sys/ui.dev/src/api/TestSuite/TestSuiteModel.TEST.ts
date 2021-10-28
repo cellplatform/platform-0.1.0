@@ -1,7 +1,9 @@
-import { t, time, expect } from '../../test';
 import { Test } from '.';
+import { expect, t, time } from '../../test';
+import { Is } from './common';
+import { TestModel } from './TestModel';
 
-describe('TestSuite', () => {
+describe('TestSuiteModel', () => {
   describe('model', () => {
     it('id: "TestSuite.<slug>"', () => {
       const model1 = Test.describe('foo');
@@ -10,7 +12,28 @@ describe('TestSuite', () => {
       expect(model1.id.startsWith('TestSuite.')).to.eql(true);
       expect(model2.id.startsWith('TestSuite.')).to.eql(true);
 
+      expect(model1.kind).to.eql('TestSuite');
+      expect(model2.kind).to.eql('TestSuite');
+
       expect(model1).to.not.equal(model2); // NB: Different instance.
+    });
+
+    it('Is.suite', () => {
+      const test = (input: any, expected: boolean) => {
+        expect(Is.suite(input)).to.eql(expected);
+      };
+
+      test(undefined, false);
+      test(null, false);
+      test('', false);
+      test(true, false);
+      test(123, false);
+      test([123], false);
+      test({}, false);
+      test(TestModel({ parent: Test.describe('foo'), description: 'name' }), false);
+
+      test('TestSuite.1234', true);
+      test(Test.describe('foo'), true);
     });
 
     it('empty (no handler)', () => {
@@ -44,7 +67,7 @@ describe('TestSuite', () => {
 
       // Default (not initialized yet).
       expect(root1.state.timeout).to.eql(undefined);
-      await root1.state.init();
+      await root1.init();
       const root2 = children[0];
       const root3 = children[1];
 
@@ -67,18 +90,34 @@ describe('TestSuite', () => {
       expect(root.state.ready).to.eql(false);
       expect(count).to.eql(0);
 
-      const res1 = await root.state.init();
+      const res1 = await root.init();
       expect(res1).to.equal(root);
       expect(root.state.ready).to.eql(true);
       expect(count).to.eql(1);
 
       // NB: multiple calls only initialize once.
-      const res2 = await res1.state.init();
+      const res2 = await res1.init();
       expect(count).to.eql(1);
       expect(res2).to.equal(root);
       expect(root.state.ready).to.eql(true);
       expect(root.state.tests).to.eql([test]);
       expect(root.state.children).to.eql([]);
+    });
+
+    it('parent refs', async () => {
+      const root = Test.describe('root', (e) => {
+        e.describe('child-1', (e) => {
+          e.describe('child-2');
+        });
+      });
+
+      await root.init();
+      const child1 = root.state.children[0];
+      const child2 = child1.state.children[0];
+
+      expect(root.state.parent).to.equal(undefined);
+      expect(child1.state.parent).to.equal(root);
+      expect(child2.state.parent).to.equal(child1);
     });
 
     it('init (async suite setup)', async () => {
@@ -93,7 +132,7 @@ describe('TestSuite', () => {
       });
 
       expect(count).to.eql(0);
-      await root.state.init();
+      await root.init();
       expect(count).to.eql(2);
     });
 
@@ -111,7 +150,7 @@ describe('TestSuite', () => {
       expect(root.state.children).to.eql([]);
       expect(children).to.eql([]);
 
-      await root.state.init();
+      await root.init();
 
       const child1 = children[0];
       const child2 = children[1];
@@ -132,7 +171,7 @@ describe('TestSuite', () => {
         });
       });
 
-      await root.state.init();
+      await root.init();
       const state = root.state;
 
       expect(state.tests[0].description).to.eql('foo-1');
@@ -152,7 +191,7 @@ describe('TestSuite', () => {
         e.describe.only('child-2');
       });
 
-      await root.state.init();
+      await root.init();
 
       expect(root.state.modifier).to.eql(undefined);
       expect(root.state.children[0].state.modifier).to.eql('skip');
@@ -164,9 +203,9 @@ describe('TestSuite', () => {
       const root2 = Test.describe.skip('root');
       const root3 = Test.describe.only('root');
 
-      await root1.state.init();
-      await root2.state.init();
-      await root3.state.init();
+      await root1.init();
+      await root2.init();
+      await root3.init();
 
       expect(root1.state.modifier).to.eql(undefined);
       expect(root2.state.modifier).to.eql('skip');
@@ -238,7 +277,77 @@ describe('TestSuite', () => {
       expect(res.ok).to.eql(true);
     });
 
-    it('test throws error', async () => {
+    it('excluded: it.skip', async () => {
+      let count = 0;
+      const root = Test.describe('root', (e) => {
+        e.it('one', () => count++);
+        e.it.skip('two', () => count++);
+      });
+
+      const res = await root.run();
+
+      expect(count).to.eql(1);
+      expect(res.tests[0].excluded).to.eql(undefined);
+      expect(res.tests[1].excluded).to.eql(['skip']);
+    });
+
+    it('excluded: it.only', async () => {
+      const list: string[] = [];
+      const root = Test.describe('root', (e) => {
+        e.it('1', (e) => list.push('1'));
+        e.describe('2', (e) => {
+          e.it('2.1', (e) => list.push('2.1'));
+          e.it.only('2.2', (e) => list.push('2.2'));
+          e.it.skip('2.3', (e) => list.push('2.3'));
+        });
+      });
+
+      const res = await root.run();
+
+      expect(list).to.eql(['2.2']);
+      expect(res.tests[0].excluded).to.eql(['only']);
+      expect(res.children[0].tests[0].excluded).to.eql(['only']);
+      expect(res.children[0].tests[1].excluded).to.eql(undefined);
+      expect(res.children[0].tests[2].excluded).to.eql(['skip', 'only']);
+    });
+
+    it('excluded: describe.only', async () => {
+      const list: string[] = [];
+      const root = Test.describe('root', (e) => {
+        e.it('1', (e) => list.push('1'));
+        e.describe.only('2', (e) => {
+          e.it('2.1', () => list.push('2.1'));
+          e.it.skip('2.2', () => list.push('2.2'));
+          e.it('2.3', () => list.push('2.3'));
+        });
+      });
+
+      const res = await root.run();
+
+      expect(list).to.eql(['2.1', '2.3']);
+      expect(res.tests[0].excluded).to.eql(['only']);
+      expect(res.children[0].tests[0].excluded).to.eql(undefined);
+      expect(res.children[0].tests[1].excluded).to.eql(['skip', 'only']);
+      expect(res.children[0].tests[2].excluded).to.eql(undefined);
+    });
+
+    it('excluded: describe.only => it.only', async () => {
+      const list: string[] = [];
+      const root = Test.describe('root', (e) => {
+        e.it('1', () => list.push('1'));
+        e.describe.only('2', (e) => {
+          e.it('2.1', () => list.push('2.1'));
+          e.it('2.2', () => list.push('2.2'));
+          e.it.only('2.3', () => list.push('2.3'));
+        });
+        e.it.only('3', () => list.push('3'));
+      });
+
+      await root.run();
+      expect(list).to.eql(['3', '2.3']);
+    });
+
+    it('error: test throws error', async () => {
       const root = Test.describe('root', (e) => {
         e.it('foo', async () => {
           throw new Error('Fail');
@@ -249,7 +358,7 @@ describe('TestSuite', () => {
       expect(res.tests[0].error?.message).to.include('Fail');
     });
 
-    it('test throws error (timeout, deep)', async () => {
+    it('error: test throws error (timeout, deep)', async () => {
       let count = 0;
       const root = Test.describe('root', (e) => {
         e.it('test-1', () => count++);

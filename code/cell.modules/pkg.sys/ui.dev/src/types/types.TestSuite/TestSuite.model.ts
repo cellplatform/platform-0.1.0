@@ -45,21 +45,24 @@ export type TestHandlerArgs = { timeout(value: Milliseconds): TestHandlerArgs };
  * Model: Test
  */
 export type TestModel = {
+  kind: 'Test';
+  parent: TestSuiteModel;
   id: Id;
   run: TestRun;
   description: Description;
   handler?: TestHandler;
   modifier?: TestModifier;
+  toString(): string;
 };
 
 export type TestRun = (options?: TestRunOptions) => Promise<TestRunResponse>;
-export type TestRunOptions = { timeout?: Milliseconds; skip?: boolean };
+export type TestRunOptions = { timeout?: Milliseconds; excluded?: TestModifier[] };
 export type TestRunResponse = {
   ok: boolean;
   description: Description;
   elapsed: Milliseconds;
   timeout: Milliseconds;
-  skipped?: true;
+  excluded?: TestModifier[];
   error?: Error;
 };
 
@@ -68,13 +71,16 @@ export type TestRunResponse = {
  */
 
 export type TestSuiteModel = TestSuite & {
+  kind: 'TestSuite';
   state: TestSuiteModelState;
   run: TestSuiteRun;
   merge(...suites: TestSuiteModel[]): TestSuiteModel;
+  init(): Promise<TestSuiteModel>;
+  toString(): string;
 };
 
 export type TestSuiteModelState = {
-  init(): Promise<TestSuiteModel>;
+  parent?: TestSuiteModel;
   ready: boolean; // true after [init] has been run.
   description: Description;
   handler?: TestSuiteHandler;

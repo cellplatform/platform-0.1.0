@@ -1,10 +1,12 @@
 import React from 'react';
 import { DevActions } from '../../..';
 
-import { Test, TestSuite, TestSuiteProps } from '..';
+import { Test } from '..';
 import tests from './test.samples/foo.TEST';
+import { DevLayout } from './DEV.Layout';
+import { TestSuiteResultsProps } from '../TestSuiteResults';
 
-type Ctx = { props: TestSuiteProps };
+type Ctx = { props: TestSuiteResultsProps };
 
 /**
  * Actions
@@ -24,14 +26,18 @@ export const actions = DevActions<Ctx>()
       e.ctx.props.data = await tests.run();
     });
 
-    e.hr(1, 0.1);
-
     e.button('run: dynamic imports', async (e) => {
       const root = await Test.bundle([
         import('./test.samples/foo.TEST'),
         import('./test.samples/bar.TEST'),
       ]);
       e.ctx.props.data = await root.run();
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('clear', (e) => {
+      e.ctx.props.data = undefined;
     });
 
     e.hr();
@@ -48,7 +54,7 @@ export const actions = DevActions<Ctx>()
         background: 1,
       },
     });
-    e.render(<TestSuite {...e.ctx.props} />);
+    e.render(<DevLayout suite={e.ctx.props} />);
   });
 
 export default actions;

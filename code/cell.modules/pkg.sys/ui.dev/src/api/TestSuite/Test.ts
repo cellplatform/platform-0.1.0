@@ -1,72 +1,18 @@
-import { DEFAULT, deleteUndefined, is, slug, t, time } from './common';
+import { Is, t } from './common';
+import { Def } from './TestSuiteModel';
 
 /**
- * A single test.
+ * Entry point to the unit-testing system.
  */
-export const TestModel = (args: {
-  description: string;
-  handler?: t.TestHandler;
-  modifier?: t.TestModifier;
-}): t.TestModel => {
-  const { description, handler, modifier } = args;
-
-  const run: t.TestRun = (options = {}) => {
-    type R = t.TestRunResponse;
-
-    return new Promise<R>(async (resolve, reject) => {
-      const timer = time.timer();
-      const response: R = {
-        ok: true,
-        description,
-        elapsed: -1,
-        timeout: Math.max(0, options.timeout ?? DEFAULT.TIMEOUT),
-        skipped: Boolean(modifier === 'skip' || options.skip) ? true : undefined,
-      };
-
-      const done = (options: { error?: Error } = {}) => {
-        stopTimeout?.();
-        response.elapsed = timer.elapsed.msec;
-        response.error = options.error;
-        response.ok = !Boolean(response.error);
-        resolve(deleteUndefined(response));
-      };
-      if (!handler || response.skipped) return done();
-
-      let stopTimeout: undefined | (() => void);
-      const startTimeout = (msecs: number) => {
-        stopTimeout?.();
-        const res = time.delay(msecs, () => {
-          const error = new Error(`Timed out after ${msecs} msecs`);
-          return done({ error });
-        });
-        stopTimeout = res.cancel;
-      };
-
-      const args: t.TestHandlerArgs = {
-        timeout(value) {
-          response.timeout = Math.max(0, value);
-          startTimeout(response.timeout);
-          return args;
-        },
-      };
-
-      try {
-        startTimeout(response.timeout);
-        const wait = handler(args);
-        if (is.promise(wait)) await wait;
-        return done();
-      } catch (error: any) {
-        done({ error });
-      }
+export const Test: t.Test = {
+  describe: Def.variants(),
+  async bundle(items) {
+    const root = Test.describe('tests');
+    const wait = (items ?? []).map(async (item) => {
+      const suite = Is.promise(item) ? (await item).default : item;
+      return Is.suite(suite) ? (suite as t.TestSuiteModel) : undefined;
     });
-  };
-
-  const model: t.TestModel = {
-    id: `Test.${slug()}`,
-    description,
-    modifier,
-    handler,
-    run,
-  };
-  return model;
+    const suites = (await Promise.all(wait)).filter(Boolean) as t.TestSuiteModel[];
+    return root.merge(...suites);
+  },
 };
