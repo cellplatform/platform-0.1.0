@@ -1,11 +1,12 @@
 import React from 'react';
-import { css, CssValue, PositioningLayers, t, Icons, COLORS } from '../common';
+import { css, CssValue, PositioningLayers, t, Icons, COLORS, Spinner } from '../common';
 
 const IMAGES = 'static/images/sys.ui';
 type Milliseconds = number;
 
 export type BodyProps = {
   isOpen?: boolean;
+  isSpinning?: boolean;
   bevelHeight: number;
   centerTop?: JSX.Element;
   centerBottom?: JSX.Element;
@@ -16,7 +17,7 @@ export type BodyProps = {
 };
 
 export const Body: React.FC<BodyProps> = (props) => {
-  const { isOpen, sealOpacity } = props;
+  const { isOpen, isSpinning, sealOpacity } = props;
   const msecs = props.slideDuration;
 
   const styles = {
@@ -28,11 +29,24 @@ export const Body: React.FC<BodyProps> = (props) => {
     position: { x: 'center', y: 'center' },
     render() {
       const style = css({
-        opacity: isOpen ? 0 : 0.4,
+        opacity: isOpen || isSpinning ? 0 : 0.4,
         transition: `opacity ${msecs}ms ease`,
         pointerEvents: 'none',
       });
       return <Icons.Lock.Closed color={COLORS.DARK} opacity={0.3} style={style} />;
+    },
+  };
+
+  const spinner: t.PositioningLayer = {
+    id: 'spinner',
+    position: { x: 'center', y: 'center' },
+    render() {
+      const style = css({
+        opacity: isSpinning ? 1 : 0,
+        transition: `opacity ${msecs}ms ease`,
+        pointerEvents: 'none',
+      });
+      return <Spinner style={style} />;
     },
   };
 
@@ -42,7 +56,7 @@ export const Body: React.FC<BodyProps> = (props) => {
     render() {
       const styles = {
         base: css({
-          opacity: isOpen ? 0 : 1,
+          opacity: isOpen || isSpinning ? 0 : 1,
           transform: `rotate(${props.sealRotate ?? 0}deg)`,
           transition: `opacity ${msecs}ms ease, transform ${msecs}ms ease`,
           pointerEvents: 'none',
@@ -88,7 +102,7 @@ export const Body: React.FC<BodyProps> = (props) => {
     bottom: container('bottom', props.centerBottom),
   };
 
-  const layers: t.PositioningLayer[] = [lock, seal, center.top, center.bottom];
+  const layers: t.PositioningLayer[] = [spinner, lock, seal, center.top, center.bottom];
 
   return (
     <PositioningLayers

@@ -20,6 +20,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {
         isOpen: false,
+        isSpinning: false,
         backgroundBlur: 10,
         slideDuration: 300,
         onSize(size) {
@@ -37,6 +38,25 @@ export const actions = DevActions<Ctx>()
       if (e.changing) e.ctx.props.isOpen = e.changing.next;
       e.boolean.current = e.ctx.props.isOpen;
     });
+
+    e.boolean('isSpinning', (e) => {
+      if (e.changing) e.ctx.props.isSpinning = e.changing.next;
+      e.boolean.current = e.ctx.props.isSpinning;
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('seal: hide', (e) => {
+      e.ctx.props.sealOpacity = 0;
+      e.ctx.props.sealRotate = 35;
+    });
+
+    e.button('seal: show', (e) => {
+      e.ctx.props.sealOpacity = 1;
+      e.ctx.props.sealRotate = 0;
+    });
+
+    e.hr(1, 0.1);
 
     e.select((config) =>
       config
