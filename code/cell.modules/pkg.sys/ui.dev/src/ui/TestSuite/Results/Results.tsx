@@ -1,21 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { color, css, CssValue, t, ObjectView } from '../common';
+import { SuiteResults } from './Results.Suite';
 
 export type ResultsProps = {
-  data?: any;
+  data?: t.TestSuiteRunResponse;
   style?: CssValue;
 };
 
 export const Results: React.FC<ResultsProps> = (props) => {
+  const { data } = props;
+
   const styles = {
-    base: css({
-      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-    }),
+    base: css({ fontSize: 14, cursor: 'default' }),
   };
+
+  const elEmpty = !data && <div>Nothing to display.</div>;
+
   return (
     <div {...css(styles.base, props.style)}>
-      Test Results
-      <ObjectView data={props.data} expandLevel={3} />
+      {data && <SuiteResults data={data} />}
+      {elEmpty}
     </div>
   );
 };

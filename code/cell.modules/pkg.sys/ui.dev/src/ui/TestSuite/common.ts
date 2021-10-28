@@ -1,2 +1,2 @@
 export * from '../../common';
-export { ObjectView } from '../../ui/Primitives';
+export { ObjectView, Icons } from '../../ui/Primitives';
