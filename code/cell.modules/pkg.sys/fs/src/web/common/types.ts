@@ -12,6 +12,8 @@ export {
   FsDriverLocal,
   FsIndexer,
   FsPathFilter,
+  IFsError,
+  IFsInfoLocal,
   IHttpClient,
   IHttpClientCellFileUpload,
   IHttpClientFileData,

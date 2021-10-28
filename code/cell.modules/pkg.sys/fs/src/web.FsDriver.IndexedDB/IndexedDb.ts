@@ -72,4 +72,29 @@ export const IndexedDb = {
       }
     });
   },
+
+  /**
+   * Convert a [IDBRequest] to a <Typed> promise.
+   */
+  async asPromise<T>(req: IDBRequest<any>) {
+    return new Promise<T>((resolve, reject) => {
+      req.onerror = () => reject(req.error || 'DBRequest failed');
+      req.onsuccess = () => resolve(req.result);
+    });
+  },
+
+  /**
+   * Retrieves the value of the first record matching the
+   * given key or key range in query.
+   */
+  async get<T>(store: IDBObjectStore, query: IDBValidKey | IDBKeyRange) {
+    return IndexedDb.asPromise<T | undefined>(store.get(query));
+  },
+
+  /**
+   * Add or update an object in the given store.
+   */
+  async put<T>(store: IDBObjectStore, value: T, key?: IDBValidKey) {
+    return IndexedDb.asPromise<T>(store.put(value, key));
+  },
 };

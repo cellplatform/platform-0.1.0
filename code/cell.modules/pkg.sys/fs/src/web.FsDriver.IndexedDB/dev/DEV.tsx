@@ -1,10 +1,11 @@
 import React from 'react';
 import { DevActions, ObjectView, Test } from 'sys.ui.dev';
-import { css } from '../common';
+import { css, time } from '../common';
+import { IndexedDb } from '../IndexedDb';
 
 type Ctx = {
   data: any;
-  runTests(): Promise<void>;
+  runTests(): Promise<any>;
 };
 
 /**
@@ -19,19 +20,38 @@ export const actions = DevActions<Ctx>()
       data: null,
       async runTests() {
         const tests = await Test.bundle([import('../FsDriver.IndexedDB.TEST')]);
-        const res = await tests.run();
-        e.change.ctx((ctx) => (ctx.data = res));
+        return tests.run();
       },
     };
-
-    // ctx.runTests();
 
     return ctx;
   })
 
   .items((e) => {
     e.title('FsDriver: IndexedDb');
-    e.button('run tests', (e) => e.ctx.runTests());
+
+    e.button('run tests', async (e) => {
+      const results = await e.ctx.runTests();
+      e.ctx.data = results;
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('list', async (e) => {
+      const list = await IndexedDb.list();
+      console.log('list', list);
+    });
+
+    e.button('delete (all)', async (e) => {
+      const list = await IndexedDb.list();
+      for (const item of list) {
+        const name = item.name || '';
+        if (name.startsWith('test.')) {
+          await IndexedDb.delete(name);
+        }
+      }
+    });
+
     e.hr();
   })
 
@@ -53,7 +73,7 @@ export const actions = DevActions<Ctx>()
 
     const el = (
       <div {...styles.base}>
-        <ObjectView name={'unit-tests'} data={e.ctx.data} expandLevel={5} />
+        <Test.View.Results data={e.ctx.data} />
       </div>
     );
 
