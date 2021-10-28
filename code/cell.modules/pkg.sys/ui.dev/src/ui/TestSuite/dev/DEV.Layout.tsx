@@ -10,7 +10,10 @@ export type DevLayoutProps = {
 
 export const DevLayout: React.FC<DevLayoutProps> = (props) => {
   const styles = {
-    base: css({ flex: 1, Flex: 'horizontal-stretch-stretch' }),
+    base: css({
+      flex: 1,
+      Flex: 'horizontal-stretch-stretch',
+    }),
     left: css({
       flex: 2,
       Scroll: true,
