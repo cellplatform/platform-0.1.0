@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t } from '../../common';
-import { ObjectView } from '../../ui/Primitives';
+import { color, css, CssValue, t, ObjectView } from '../common';
 
-export type TestSuiteResultsProps = {
+export type ResultsProps = {
   data?: any;
   style?: CssValue;
 };
 
-export const TestSuiteResults: React.FC<TestSuiteResultsProps> = (props) => {
+export const Results: React.FC<ResultsProps> = (props) => {
   const styles = {
     base: css({
       backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,

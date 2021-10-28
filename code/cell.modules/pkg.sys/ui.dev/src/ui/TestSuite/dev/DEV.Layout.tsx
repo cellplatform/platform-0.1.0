@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, COLORS } from '../../common';
+import { color, css, CssValue, t, COLORS, ObjectView } from '../common';
 import { Test } from '..';
-import { TestSuiteResultsProps } from '../TestSuiteResults';
-import { ObjectView } from '../../../ui/Primitives';
+import { ResultsProps } from '../Results';
 
 export type DevLayoutProps = {
-  suite: TestSuiteResultsProps;
+  suite: ResultsProps;
   style?: CssValue;
 };
 

@@ -4,9 +4,9 @@ import { DevActions } from '../../..';
 import { Test } from '..';
 import tests from './test.samples/foo.TEST';
 import { DevLayout } from './DEV.Layout';
-import { TestSuiteResultsProps } from '../TestSuiteResults';
+import { ResultsProps } from '../Results';
 
-type Ctx = { props: TestSuiteResultsProps };
+type Ctx = { props: ResultsProps };
 
 /**
  * Actions
@@ -20,7 +20,7 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('TestSuite (runner)');
+    e.title('TestSuite');
 
     e.button('run: static import', async (e) => {
       e.ctx.props.data = await tests.run();

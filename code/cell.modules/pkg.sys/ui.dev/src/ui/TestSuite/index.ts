@@ -1,11 +1,11 @@
-import { TestSuiteResults, TestSuiteResultsProps } from './TestSuiteResults';
+import { Results, ResultsProps } from './Results';
 import { Test as API } from '../../api/TestSuite';
 
-export { TestSuiteResultsProps };
+export { ResultsProps as TestSuiteResultsProps };
 
 export const Test = {
   ...API,
   View: {
-    Results: TestSuiteResults,
+    Results: Results,
   },
 };
