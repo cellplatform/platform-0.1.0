@@ -12,6 +12,10 @@ export const DevLayout: React.FC<DevLayoutProps> = (props) => {
   const styles = {
     base: css({
       flex: 1,
+    }),
+    body: css({
+      Absolute: 0,
+      overflow: 'hidden',
       Flex: 'horizontal-stretch-stretch',
     }),
     left: css({
@@ -31,11 +35,13 @@ export const DevLayout: React.FC<DevLayoutProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.left}>
-        <Test.View.Results {...props.suite} style={{}} />
-      </div>
-      <div {...styles.right}>
-        <ObjectView name={'TestRunResponse'} data={props.suite.data} />
+      <div {...styles.body}>
+        <div {...styles.left}>
+          <Test.View.Results {...props.suite} style={{}} />
+        </div>
+        <div {...styles.right}>
+          <ObjectView name={'TestRunResponse'} data={props.suite.data} />
+        </div>
       </div>
     </div>
   );
