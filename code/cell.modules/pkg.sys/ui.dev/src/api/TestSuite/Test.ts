@@ -15,20 +15,31 @@ export const Test: t.Test = {
     type B = t.TestSuiteModel | Promise<any>;
 
     const param1 = args[0];
-    const param2 = args[1];
+    const param2 = typeof param1 === 'string' ? args[1] : param1;
+    const items: B[] = Array.isArray(param2) ? param2 : [param2];
 
-    const name = typeof param1 === 'string' ? param1 : 'Tests';
-    const items = (typeof param1 === 'string' ? param2 : param1) as B[];
-    if (!Array.isArray(items))
-      throw new Error(`An array of tests, or dynamic imports, not specified`);
-
-    const root = Test.describe(name);
     const wait = items.map(async (item) => {
-      const suite = Is.promise(item) ? (await item).default : item;
-      return Is.suite(suite) ? (suite as t.TestSuiteModel) : undefined;
+      const module = Is.promise(item) ? (await item).default : item;
+      return Is.suite(module) ? (module as t.TestSuiteModel) : undefined;
     });
 
     const suites = (await Promise.all(wait)).filter(Boolean) as t.TestSuiteModel[];
-    return root.merge(...suites);
+    const name = typeof param1 === 'string' ? param1 : wrangleRootName(suites);
+
+    if (suites.length === 1) {
+      const root = suites[0];
+      root.state.description = name; // NB: Ensure any explicit name passed to bundle are used on the singlular root.
+      return root;
+    } else {
+      return Test.describe(name).merge(...suites);
+    }
   },
 };
+
+/**
+ * Helpers
+ */
+
+function wrangleRootName(suites: t.TestSuiteModel[]) {
+  return suites.length === 1 ? suites[0].state.description : 'Tests';
+}

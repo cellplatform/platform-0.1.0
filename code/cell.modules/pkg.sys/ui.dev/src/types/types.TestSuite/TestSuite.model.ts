@@ -4,6 +4,7 @@ type Id = string;
 type Anything = void | any;
 type Milliseconds = number;
 type Description = string;
+type BundleImport = TestSuiteModel | Promise<any>;
 
 export type TestModifier = 'skip' | 'only';
 
@@ -12,8 +13,8 @@ export type TestModifier = 'skip' | 'only';
  */
 export type Test = {
   describe: TestSuiteDescribe;
-  bundle(items: (TestSuiteModel | Promise<any>)[]): Promise<TestSuiteModel>;
-  bundle(description: string, items: (TestSuiteModel | Promise<any>)[]): Promise<TestSuiteModel>;
+  bundle(items: BundleImport | BundleImport[]): Promise<TestSuiteModel>;
+  bundle(description: string, items: BundleImport | BundleImport[]): Promise<TestSuiteModel>;
 };
 
 /**

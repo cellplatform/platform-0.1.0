@@ -466,7 +466,12 @@ describe('TestSuiteModel', () => {
       expect(children[1].state.description).to.eql('Two');
     });
 
-    it('mixed import with explicit root "description"', async () => {
+    it('dynamic: default export not a test-suite (ignore)', async () => {
+      const root = await Test.bundle([import('./test.samples/ExportNonSuite.TEST')]);
+      expect(root.state.children).to.eql([]);
+    });
+
+    it('mixed import (dynamic/static) with explicit root "description"', async () => {
       const child1 = Test.describe('One');
       const child2 = import('./test.samples/Two.TEST');
 
@@ -479,9 +484,19 @@ describe('TestSuiteModel', () => {
       expect(children[1].state.description).to.eql('Two');
     });
 
-    it('dynamic: default export not a test-suite (ignore)', async () => {
-      const root = await Test.bundle([import('./test.samples/ExportNonSuite.TEST')]);
-      expect(root.state.children).to.eql([]);
+    it('single item bundle (no array)', async () => {
+      const child1 = Test.describe('One');
+      const child2 = import('./test.samples/Two.TEST');
+
+      const root1 = await Test.bundle(child1);
+      const root2 = await Test.bundle(child2);
+      const root3 = await Test.bundle('MySuite-1', child1);
+      const root4 = await Test.bundle('MySuite-2', child2);
+
+      expect(root1.state.description).to.eql(child1.state.description); // NB: Root name taken from single bundle.
+      expect(root2.state.description).to.eql((await child2).default.state.description); // NB: Root name taken from single bundle.
+      expect(root3.state.description).to.eql('MySuite-1'); // NB: Custom name.
+      expect(root4.state.description).to.eql('MySuite-2');
     });
   });
 });
