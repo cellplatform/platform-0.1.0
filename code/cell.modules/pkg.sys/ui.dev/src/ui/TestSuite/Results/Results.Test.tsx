@@ -49,7 +49,7 @@ export const TestResult: React.FC<TestResultProps> = (props) => {
           {elIconSkipped}
         </div>
         <div {...styles.line.description}>{data.description}</div>
-        {!isSkipped && <div {...styles.line.elapsed}>{data.elapsed}ms</div>}
+        {<div {...styles.line.elapsed}>{isSkipped ? '-' : `${data.elapsed}ms`}</div>}
       </div>
       {elError}
     </div>

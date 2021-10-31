@@ -18,7 +18,7 @@ export const Results: React.FC<ResultsProps> = (props) => {
     base: css({ fontSize: 14, cursor: 'default' }),
   };
 
-  const elEmpty = !data && <div>Nothing to display.</div>;
+  const elEmpty = !data && <div>No test results to display.</div>;
 
   return (
     <div {...css(styles.base, props.style)}>
