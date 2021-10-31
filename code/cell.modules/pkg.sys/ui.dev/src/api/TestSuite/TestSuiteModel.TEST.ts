@@ -424,6 +424,7 @@ describe('TestSuiteModel', () => {
     it('nothing [<empty>]', async () => {
       const root = await Test.bundle([]);
       expect(root.state.children).to.eql([]);
+      expect(root.state.description).to.eql('Tests');
     });
 
     it('TestSuite objects', async () => {
@@ -439,10 +440,10 @@ describe('TestSuiteModel', () => {
     });
 
     it('dynamic imports', async () => {
-      const one = import('./test.samples/One.TEST');
-      const two = import('./test.samples/Two.TEST');
+      const child1 = import('./test.samples/One.TEST');
+      const child2 = import('./test.samples/Two.TEST');
 
-      const root = await Test.bundle([one, two]);
+      const root = await Test.bundle([child1, child2]);
       const children = root.state.children;
 
       expect(children.length).to.eql(2);
@@ -460,6 +461,19 @@ describe('TestSuiteModel', () => {
         import('./test.samples/Two.TEST'),
       ]);
       const children = root2.state.children;
+      expect(children.length).to.eql(2);
+      expect(children[0].state.description).to.eql('One');
+      expect(children[1].state.description).to.eql('Two');
+    });
+
+    it('mixed import with explicit root "description"', async () => {
+      const child1 = Test.describe('One');
+      const child2 = import('./test.samples/Two.TEST');
+
+      const root = await Test.bundle('MySuite', [child1, child2]);
+      const children = root.state.children;
+
+      expect(root.state.description).to.eql('MySuite');
       expect(children.length).to.eql(2);
       expect(children[0].state.description).to.eql('One');
       expect(children[1].state.description).to.eql('Two');

@@ -13,6 +13,7 @@ export type TestModifier = 'skip' | 'only';
 export type Test = {
   describe: TestSuiteDescribe;
   bundle(items: (TestSuiteModel | Promise<any>)[]): Promise<TestSuiteModel>;
+  bundle(description: string, items: (TestSuiteModel | Promise<any>)[]): Promise<TestSuiteModel>;
 };
 
 /**
