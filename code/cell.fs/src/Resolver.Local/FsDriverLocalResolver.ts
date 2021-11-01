@@ -1,9 +1,15 @@
-import { Path, Schema, t, PathUri } from '../common';
+import { Schema, t } from '../common';
+import { Path } from '../Path';
+import { PathUri } from '../PathUri';
 
 type O = t.IFsResolveOptionsLocal;
 
 /**
  * Generates a resolver function.
+ *
+ * NOTE:
+ *    Implemented here in general [cell.fs] because the local resolver
+ *    is used in multiple "local" implementations (node-js, IndexedDb).
  */
 export function FsDriverLocalResolver(args: { dir: string }): t.FsPathResolver<O> {
   const { dir } = args;
@@ -57,5 +63,5 @@ function resolve(dir: string, uri: string) {
     return ensureScope(Path.join(dir, PathUri.path(uri) ?? ''));
   }
 
-  throw new Error(`Invalid URI. Must be "file:.." or "path:.."`);
+  throw new Error(`Invalid URI. Must be "file:.." or "path:..". Value: "${uri}"`);
 }

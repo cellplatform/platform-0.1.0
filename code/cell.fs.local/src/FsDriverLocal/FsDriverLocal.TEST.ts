@@ -4,7 +4,7 @@ import { createReadStream } from 'fs';
 
 const nodefs = TestUtil.node;
 
-describe('FsDriverLocal', () => {
+describe('FsDriver.Local (node-js)', () => {
   beforeEach(() => TestUtil.reset());
 
   it('init', () => {
@@ -13,7 +13,7 @@ describe('FsDriverLocal', () => {
     expect(fs.dir).to.eql(root);
   });
 
-  it('type', () => {
+  it('type: LOCAL', () => {
     const fs = TestUtil.createLocal();
     expect(fs.type).to.eql('LOCAL');
   });
@@ -24,7 +24,7 @@ describe('FsDriverLocal', () => {
       expect(fs.dir).to.eql(PATH.LOCAL);
     });
 
-    it('resolve (uri => path)', () => {
+    it('resolve (file:uri => path)', () => {
       const fs = TestUtil.createLocal();
       const test = (uri: string, expected: string) => {
         const res = fs.resolve(uri);
@@ -199,7 +199,7 @@ describe('FsDriverLocal', () => {
         expect(file.location).to.eql(`file://${file.path}`);
         expect(file.path).to.eql(fs.resolve(uri).path);
         expect(file.hash).to.match(/^sha256-[a-z0-9]+/);
-        expect(png.toString()).to.eql((await nodefs.readFile(file.path)).toString());
+        expect(file.data).to.eql(Uint8Array.from(await nodefs.readFile(file.path)));
       };
 
       await test('file:foo:123');
