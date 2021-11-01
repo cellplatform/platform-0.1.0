@@ -1,13 +1,13 @@
 import { expect } from 'chai';
 import { Test } from 'sys.ui.dev';
 
-import { FsIndexedDb } from '..';
+import { FsDriverLocal } from '..';
 import { Hash, Path, slug, t, Stream } from '../common';
 
 export default Test.describe('FsDriver', (e) => {
   const testCreate = async () => {
     const name = 'test.foo';
-    const fs = await FsIndexedDb({ name });
+    const fs = await FsDriverLocal({ name });
 
     const data = new Uint8Array([1, 2, 3]);
     const sample = { data, hash: Hash.sha256(data), bytes: data.byteLength };

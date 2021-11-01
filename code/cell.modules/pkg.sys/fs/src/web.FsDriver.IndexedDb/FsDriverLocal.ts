@@ -7,7 +7,7 @@ import { FsIndexer } from './FsIndexer';
 /**
  * A filesystem driver running against the browser [IndexedDB] store.
  */
-export const FsIndexedDb = (args: { name?: string }) => {
+export const FsDriverLocal = (args: { name?: string }) => {
   const dir = ROOT_DIR;
 
   return IndexedDb.create<t.FsIndexedDb>({

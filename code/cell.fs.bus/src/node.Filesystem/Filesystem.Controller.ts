@@ -37,7 +37,7 @@ export function BusController(args: {
   return Controller({
     bus,
     id,
-    fs,
+    driver: fs,
     index,
     filter,
     httpFactory,

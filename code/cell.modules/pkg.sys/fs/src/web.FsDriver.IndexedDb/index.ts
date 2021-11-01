@@ -1,1 +1,1 @@
-export { FsIndexedDb } from './Fs';
+export { FsDriverLocal } from './FsDriverLocal';

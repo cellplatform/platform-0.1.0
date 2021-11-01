@@ -12,13 +12,13 @@ type Milliseconds = number;
 export function BusController(args: {
   bus: t.EventBus<any>;
   id?: FilesystemId;
-  fs: t.FsDriverLocal;
+  driver: t.FsDriverLocal;
   index: t.FsIndexer;
   filter?: (e: t.SysFsEvent) => boolean;
   httpFactory?: (host: string | number) => t.IHttpClient;
   timeout?: Milliseconds;
 }) {
-  const { fs, index, timeout } = args;
+  const { driver, index, timeout } = args;
   const id = args.id || `fs-${cuid()}`;
 
   const bus = rx.busAsType<t.SysFsEvent>(args.bus);
@@ -31,14 +31,14 @@ export function BusController(args: {
   /**
    * Sub-controllers.
    */
-  BusControllerIo({ id, fs, bus, events });
-  BusControllerIndexer({ id, fs, bus, events, index });
-  BusControllerCell({ id, fs, bus, events, index, httpFactory });
+  BusControllerIo({ id, fs: driver, bus, events });
+  BusControllerIndexer({ id, fs: driver, bus, events, index });
+  BusControllerCell({ id, fs: driver, bus, events, index, httpFactory });
 
   /**
    * API
    */
-  const dir = fs.dir;
+  const dir = driver.dir;
   return {
     id,
     dir,

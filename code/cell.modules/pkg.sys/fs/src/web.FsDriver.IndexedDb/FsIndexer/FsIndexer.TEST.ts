@@ -1,11 +1,11 @@
 import { expect } from 'chai';
 import { Test } from 'sys.ui.dev';
-import { FsIndexedDb } from '..';
+import { FsDriverLocal } from '..';
 
 export default Test.describe('FsIndexer', (e) => {
   const testCreate = async () => {
     const name = 'test.foo';
-    const fs = await FsIndexedDb({ name });
+    const fs = await FsDriverLocal({ name });
 
     return { fs, name };
   };
