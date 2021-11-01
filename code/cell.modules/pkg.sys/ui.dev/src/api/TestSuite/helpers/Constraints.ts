@@ -61,9 +61,9 @@ export const Constraints = {
    */
   exclusionModifiers(item?: T) {
     const exclusions: t.TestModifier[] = [];
-    const containsOnlyFlag = Constraints.scan(Tree.root(item), 'only').length > 0;
+    const treeContainsOnlyFlag = Constraints.scan(Tree.root(item), 'only').length > 0;
     if (Constraints.isSkipped(item)) exclusions.push('skip');
-    if (containsOnlyFlag && !Constraints.isWithinOnlySet(item)) exclusions.push('only');
+    if (treeContainsOnlyFlag && !Constraints.isWithinOnlySet(item)) exclusions.push('only');
     return exclusions;
   },
 };

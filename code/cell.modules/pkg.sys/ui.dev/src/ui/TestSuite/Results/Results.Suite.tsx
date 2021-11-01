@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
 import { css, CssValue, t } from '../common';
 import { TestResult } from './Results.Test';

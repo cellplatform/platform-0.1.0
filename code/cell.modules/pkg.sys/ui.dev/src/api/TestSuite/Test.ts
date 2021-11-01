@@ -27,11 +27,14 @@ export const Test: t.Test = {
     const name = typeof param1 === 'string' ? param1 : wrangleRootName(suites);
 
     if (suites.length === 1) {
+      // Single suite only.
       const root = suites[0];
       root.state.description = name; // NB: Ensure any explicit name passed to bundle are used on the singlular root.
       return root;
     } else {
-      return Test.describe(name).merge(...suites);
+      // Multiple suites.
+      const root = Test.describe(name);
+      return root.merge(...suites);
     }
   },
 };

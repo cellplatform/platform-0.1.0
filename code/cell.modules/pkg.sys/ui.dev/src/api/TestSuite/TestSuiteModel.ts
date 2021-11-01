@@ -129,7 +129,10 @@ export const TestSuiteModel = (args: {
       const children = [...state.children];
       (suites ?? []).forEach((suite) => {
         const exists = children.some((child) => child.id === suite.id);
-        if (!exists) children.push(suite);
+        if (!exists) {
+          children.push(suite);
+          suite.state.parent = model;
+        }
       });
       state.children = children;
       return model;
