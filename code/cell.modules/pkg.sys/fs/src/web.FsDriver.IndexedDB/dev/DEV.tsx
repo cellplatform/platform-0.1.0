@@ -19,7 +19,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       data: null,
       async runTests() {
-        const tests = await Test.bundle([import('../FsDriver.IndexedDB.TEST')]);
+        const tests = await Test.bundle(import('../FsDriver.IndexedDB.TEST'));
         return tests.run();
       },
     };

@@ -14,6 +14,10 @@ export {
   FsPathFilter,
   IFsError,
   IFsInfoLocal,
+  IFsResolveOptionsLocal,
+  IFsLocation,
+  FsPathResolver,
+  IFsFileData,
   IHttpClient,
   IHttpClientCellFileUpload,
   IHttpClientFileData,
@@ -26,3 +30,4 @@ export {
  * @system
  */
 export { Dropped } from 'sys.ui.primitives/lib/types';
+export { S3SignedPostOptions } from '@platform/fs.s3.types';

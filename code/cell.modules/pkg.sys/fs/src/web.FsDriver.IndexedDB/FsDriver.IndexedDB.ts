@@ -1,24 +1,24 @@
 import { Subject } from 'rxjs';
 
 import { IndexedDb } from './IndexedDb';
-import { t, Hash, Format, Stream, ROOT_DIR, NAME } from './common';
+import { t, Hash, Stream, ROOT_DIR, NAME, Schema, Path } from './common';
+import { FsDriverLocalResolver } from '@platform/cell.fs/lib/Resolver.Local';
 
-/**
- * TODO 🐷
- *
- *    Implement: FsDriverLocal
- *
- */
+const LocalFile = Schema.File.Path.Local;
 
 type FilePath = string;
+type FileDir = string;
 type FileHash = string;
-type PathRecord = { path: FilePath; hash: FileHash; bytes: number };
+type PathRecord = { path: FilePath; dir: FileDir; hash: FileHash; bytes: number };
 type BinaryRecord = { hash: FileHash; data: Uint8Array };
 
 /**
  * A filesystem driver running against the browser [IndexedDB] store.
  */
 export const FsDriverIndexedDB = (args: { name?: string }) => {
+  const dir = ROOT_DIR;
+  const root = dir;
+
   return IndexedDb.create<t.FsDriverIndexedDB>({
     name: args.name || 'fs',
     version: 1,
@@ -28,12 +28,16 @@ export const FsDriverIndexedDB = (args: { name?: string }) => {
      */
     schema(req, e) {
       const db = req.result;
-      db.createObjectStore(NAME.STORE.PATHS, { keyPath: 'path' });
-      db.createObjectStore(NAME.STORE.FILES, { keyPath: 'hash' });
+      const store = {
+        paths: db.createObjectStore(NAME.STORE.PATHS, { keyPath: 'path' }),
+        files: db.createObjectStore(NAME.STORE.FILES, { keyPath: 'hash' }),
+      };
+      store.paths.createIndex(NAME.INDEX.DIRS, ['dir']);
+      store.paths.createIndex(NAME.INDEX.HASH, ['hash']);
     },
 
     /**
-     * The database API implementation.
+     * The database driver API implementation.
      */
     store(db) {
       const dispose$ = new Subject<void>();
@@ -42,52 +46,84 @@ export const FsDriverIndexedDB = (args: { name?: string }) => {
         dispose$.next();
       };
 
+      const lookup = {
+        path(path: string) {
+          const tx = db.transaction([NAME.STORE.PATHS], 'readonly');
+          const store = tx.objectStore(NAME.STORE.PATHS);
+          return IndexedDb.record.get<PathRecord>(store, path);
+        },
+        dir(path: string) {
+          const tx = db.transaction([NAME.STORE.PATHS], 'readonly');
+          const store = tx.objectStore(NAME.STORE.PATHS);
+          const index = store.index(NAME.INDEX.DIRS);
+          const { dir } = Path.parts(`${Path.trimSlashesEnd(path)}/`);
+          return IndexedDb.record.get<PathRecord>(index, [dir]);
+        },
+      };
+
       const driver: t.FsDriverLocal = {
         type: 'LOCAL',
-        dir: ROOT_DIR,
+
+        /**
+         * Root directory of the file system.
+         * NOTE:
+         *    This will always be "/". The IndexedDb implementation of the driver
+         *    works with it's own root database and is not a part of a wider file-system.
+         */
+        dir,
 
         /**
          * Convert the given string to an absolute path.
          */
-        resolve(address, options) {
-          throw new Error('Not implemented: resolve');
-        },
+        resolve: FsDriverLocalResolver({ dir }),
 
         /**
          * Retrieve meta-data of a local file.
          */
         async info(uri) {
-          const path = Format.uriToPath(uri, { throw: true });
+          uri = (uri || '').trim();
+          const path = driver.resolve(uri).path;
+          const location = LocalFile.toAbsoluteLocation({ path, root });
 
-          const tx = db.transaction(NAME.STORE.PATHS, 'readonly');
-          const store = tx.objectStore(NAME.STORE.PATHS);
+          type T = t.IFsInfoLocal;
+          let kind: T['kind'] = 'unknown';
+          let hash: T['hash'] = '';
+          let bytes: T['bytes'] = -1;
 
-          const res = await IndexedDb.get<PathRecord>(store, path);
-          const exists = Boolean(res);
+          const pathRes = await lookup.path(path);
+          if (pathRes) {
+            kind = 'file';
+            hash = pathRes.hash;
+            bytes = pathRes.bytes;
+          }
 
-          // const res = x
+          if (!pathRes) {
+            const dirRes = await lookup.dir(path);
+            if (dirRes) kind = 'dir';
+          }
 
-          // const res: t.IFsInfoLocal = {
-          //   uri,
-          // }
-
-          throw new Error('Not implemented: info');
+          const exists = kind !== 'unknown';
+          return { uri, exists, kind, path, location, hash, bytes };
         },
 
         /**
          * Read from the local file-system.
          */
         async read(uri) {
-          const path = Format.uriToPath(uri, { throw: true });
           const tx = db.transaction([NAME.STORE.PATHS, NAME.STORE.FILES], 'readonly');
           const store = {
             paths: tx.objectStore(NAME.STORE.PATHS),
             files: tx.objectStore(NAME.STORE.FILES),
           };
 
-          const get = IndexedDb.get;
+          uri = (uri || '').trim();
+          const path = driver.resolve(uri).path;
+          const location = LocalFile.toAbsoluteLocation({ path, root });
+
+          const get = IndexedDb.record.get;
           const hash = (await get<PathRecord>(store.paths, path))?.hash || '';
           const data = hash ? (await get<BinaryRecord>(store.files, hash))?.data : undefined;
+          const bytes = data ? data.byteLength : -1;
 
           let status = 200;
           let error: t.IFsError | undefined;
@@ -95,30 +131,25 @@ export const FsDriverIndexedDB = (args: { name?: string }) => {
             status = 404;
             error = { type: 'FS/read', path, message: 'File not found' };
           }
-          const file = !data
-            ? undefined
-            : { path, location: path, data, hash, bytes: data.byteLength };
-
+          const file = !data ? undefined : { path, location, data, hash, bytes };
           const ok = status.toString().startsWith('2');
           return { uri, ok, status, file, error };
         },
 
+        /**
+         * Write to the local file-system.
+         */
         async write(uri, file) {
-          const path = Format.uriToPath(uri, { throw: true });
-          const location = path;
+          uri = (uri || '').trim();
+          const path = driver.resolve(uri).path;
+          const location = LocalFile.toAbsoluteLocation({ path, root });
+          const { dir } = Path.parts(path);
 
           const isStream = Stream.isReadableStream(file);
           const data = file as Uint8Array; // TEMP 🐷
 
           const hash = Hash.sha256(data);
           const bytes = data.byteLength;
-
-          // console.log('f', f);
-
-          console.log('uri', uri);
-          console.log('path', path);
-          console.log('data', data);
-          console.log('isStream', isStream);
 
           /**
            * TODO 🐷
@@ -132,9 +163,10 @@ export const FsDriverIndexedDB = (args: { name?: string }) => {
             files: tx.objectStore(NAME.STORE.FILES),
           };
 
+          const put = IndexedDb.record.put;
           await Promise.all([
-            IndexedDb.put<PathRecord>(store.paths, { path, hash, bytes }),
-            IndexedDb.put<BinaryRecord>(store.files, { hash, data }),
+            put<PathRecord>(store.paths, { path, dir, hash, bytes }),
+            put<BinaryRecord>(store.files, { hash, data }),
           ]);
 
           return {
@@ -145,15 +177,99 @@ export const FsDriverIndexedDB = (args: { name?: string }) => {
           };
         },
 
+        /**
+         * Delete from the local file-system.
+         */
         async delete(uri) {
-          throw new Error('Not implemented: delete');
+          const uris = (Array.isArray(uri) ? uri : [uri]).map((uri) => (uri || '').trim());
+          const paths = uris.map((uri) => driver.resolve(uri).path);
+          const locations = paths.map((path) => LocalFile.toAbsoluteLocation({ path, root }));
+
+          const tx = db.transaction([NAME.STORE.PATHS, NAME.STORE.FILES], 'readwrite');
+          const store = {
+            paths: tx.objectStore(NAME.STORE.PATHS),
+            files: tx.objectStore(NAME.STORE.FILES),
+          };
+          const index = {
+            hash: store.paths.index(NAME.INDEX.HASH),
+          };
+
+          const remove = async (path: string) => {
+            // Lookup the [Path] meta-data record.
+            const pathRecord = await IndexedDb.record.get<PathRecord>(store.paths, path);
+            if (!pathRecord) return;
+
+            // Determine if the file (hash) is referenced by any other paths.
+            const hash = pathRecord.hash;
+            const hashRefs = await IndexedDb.record.getAll<PathRecord>(index.hash, [hash]);
+            const isLastRef = hashRefs.filter((item) => item.path !== path).length === 0;
+
+            // Delete the [Path] meta-data record.
+            await IndexedDb.record.delete<PathRecord>(store.paths, path);
+
+            // Delete the file-data if there are no other path's referencing the file.
+            if (isLastRef) await IndexedDb.record.delete<BinaryRecord>(store.files, hash);
+          };
+
+          try {
+            await Promise.all(paths.map(remove));
+            return { ok: true, status: 200, uris, locations };
+          } catch (err: any) {
+            const error: t.IFsError = {
+              type: 'FS/delete',
+              message: `Failed to delete [${uri}]. ${err.message}`,
+              path: paths.join(','),
+            };
+            return { ok: false, status: 500, uris, locations, error };
+          }
         },
 
+        /**
+         * Copy a file.
+         */
         async copy(sourceUri, targetUri) {
-          throw new Error('Not implemented: copy');
+          const format = (input: string) => {
+            const uri = (input || '').trim();
+            const path = driver.resolve(uri).path;
+            return { uri, path };
+          };
+
+          const source = format(sourceUri);
+          const target = format(targetUri);
+
+          const done = (status: number, error?: t.IFsError) => {
+            const ok = status.toString().startsWith('2');
+            return { ok, status, source: source.uri, target: target.uri, error };
+          };
+
+          const createPathReference = async (sourceInfo: t.IFsInfoLocal, targetPath: FilePath) => {
+            const tx = db.transaction([NAME.STORE.PATHS, NAME.STORE.FILES], 'readwrite');
+            const store = tx.objectStore(NAME.STORE.PATHS);
+            const { dir } = Path.parts(targetPath);
+            const { hash, bytes } = sourceInfo;
+            await IndexedDb.record.put<PathRecord>(store, { path: targetPath, dir, hash, bytes });
+          };
+
+          try {
+            const info = await driver.info(source.uri);
+            if (!info.exists) throw new Error(`Source file does not exist.`);
+            await createPathReference(info, target.path);
+            return done(200);
+          } catch (err: any) {
+            const message = `Failed to copy from [${source.uri}] to [${target.uri}]. ${err.message}`;
+            const error: t.IFsError = {
+              type: 'FS/copy',
+              message,
+              path: target.path,
+            };
+            return done(500, error);
+          }
         },
       };
 
+      /**
+       * API.
+       */
       const api: t.FsDriverIndexedDB = {
         dispose$: dispose$.asObservable(),
         dispose,
@@ -161,7 +277,6 @@ export const FsDriverIndexedDB = (args: { name?: string }) => {
         version: db.version,
         driver,
       };
-
       return api;
     },
   });

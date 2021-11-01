@@ -84,17 +84,32 @@ export const IndexedDb = {
   },
 
   /**
-   * Retrieves the value of the first record matching the
-   * given key or key range in query.
+   * Operations on DB record objects.
    */
-  async get<T>(store: IDBObjectStore, query: IDBValidKey | IDBKeyRange) {
-    return IndexedDb.asPromise<T | undefined>(store.get(query));
-  },
+  record: {
+    /**
+     * Retrieves the value of the first record matching the
+     * given key or key range in query.
+     */
+    async get<T>(store: IDBObjectStore | IDBIndex, query: IDBValidKey | IDBKeyRange) {
+      return IndexedDb.asPromise<T | undefined>(store.get(query));
+    },
+    async getAll<T>(store: IDBObjectStore | IDBIndex, query: IDBValidKey | IDBKeyRange) {
+      return IndexedDb.asPromise<T[]>(store.getAll(query));
+    },
 
-  /**
-   * Add or update an object in the given store.
-   */
-  async put<T>(store: IDBObjectStore, value: T, key?: IDBValidKey) {
-    return IndexedDb.asPromise<T>(store.put(value, key));
+    /**
+     * Add or update an object in the given store.
+     */
+    async put<T>(store: IDBObjectStore, value: T, key?: IDBValidKey) {
+      return IndexedDb.asPromise<T>(store.put(value, key));
+    },
+
+    /**
+     * Delete an object.
+     */
+    async delete<T>(store: IDBObjectStore, key: IDBValidKey | IDBKeyRange) {
+      return IndexedDb.asPromise<T>(store.delete(key));
+    },
   },
 };
