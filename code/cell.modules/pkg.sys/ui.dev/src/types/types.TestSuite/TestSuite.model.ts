@@ -54,6 +54,7 @@ export type TestModel = {
   description: Description;
   handler?: TestHandler;
   modifier?: TestModifier;
+  clone(): TestModel;
   toString(): string;
 };
 
@@ -79,6 +80,7 @@ export type TestSuiteModel = TestSuite & {
   run: TestSuiteRun;
   merge(...suites: TestSuiteModel[]): TestSuiteModel;
   init(): Promise<TestSuiteModel>;
+  clone(): Promise<TestSuiteModel>;
   toString(): string;
 };
 

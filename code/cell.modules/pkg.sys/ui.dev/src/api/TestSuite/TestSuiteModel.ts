@@ -138,9 +138,17 @@ export const TestSuiteModel = (args: {
       return model;
     },
 
-    toString() {
-      return state.description;
+    async clone() {
+      await init(model);
+      const tests = model.state.tests.map((test) => test.clone());
+      const children = await Promise.all(model.state.children.map((suite) => suite.clone()));
+      return {
+        ...model,
+        state: { ...state, tests, children },
+      };
     },
+
+    toString: () => state.description,
   };
 
   return model;

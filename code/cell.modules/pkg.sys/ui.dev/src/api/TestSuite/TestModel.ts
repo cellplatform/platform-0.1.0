@@ -15,7 +15,7 @@ export const TestModel = (args: {
   const run: t.TestRun = (options = {}) => {
     type R = t.TestRunResponse;
 
-    return new Promise<R>(async (resolve, reject) => {
+    return new Promise<R>(async (resolve) => {
       const timer = time.timer();
       const excluded = toExcluded({ modifier, excluded: options.excluded });
 
@@ -75,6 +75,7 @@ export const TestModel = (args: {
     handler,
     run,
     toString: () => description,
+    clone: () => ({ ...model }),
   };
   return model;
 };

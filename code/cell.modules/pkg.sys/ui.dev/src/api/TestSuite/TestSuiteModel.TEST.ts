@@ -213,6 +213,30 @@ describe('TestSuiteModel', () => {
       expect(root2.state.modifier).to.eql('skip');
       expect(root3.state.modifier).to.eql('only');
     });
+
+    it('clone', async () => {
+      const root1 = Test.describe('root', (e) => {
+        e.describe('child-1', (e) => {
+          e.it('hello');
+        });
+      });
+
+      const root2 = await root1.clone();
+
+      // Differnt instances.
+      expect(root1).to.not.equal(root2);
+      expect(root1.state).to.not.equal(root2.state);
+      expect(root1.state.children[0]).to.not.equal(root2.state.children[0]);
+      expect(root1.state.children[0].state.tests[0]).to.not.equal(
+        root2.state.children[0].state.tests[0],
+      );
+
+      // Equivalent objects.
+      expect(root1).to.eql(root2);
+      expect(root1.state).to.eql(root2.state);
+      expect(root1.state.children[0]).to.eql(root2.state.children[0]);
+      expect(root1.state.children[0].state.tests[0]).to.eql(root2.state.children[0].state.tests[0]);
+    });
   });
 
   describe('run', () => {

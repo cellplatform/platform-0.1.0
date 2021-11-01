@@ -58,6 +58,26 @@ describe('TestModel', () => {
       test('Test.1234', true);
       test(TestModel({ parent, description }), true);
     });
+
+    it('clone', async () => {
+      let count = 0;
+      const handler: t.TestHandler = () => count++;
+      const model1 = TestModel({ parent, description, handler });
+      const model2 = model1.clone();
+
+      expect(model1).to.not.equal(model2); // NB: different instance.
+
+      expect(model1.id).to.eql(model2.id);
+      expect(model1.handler).to.eql(model2.handler);
+      expect(model1.description).to.eql(model2.description);
+      expect(model1.parent).to.equal(model2.parent);
+
+      await model1.run();
+      expect(count).to.eql(1);
+
+      await model2.run();
+      expect(count).to.eql(2);
+    });
   });
 
   describe('run', () => {
