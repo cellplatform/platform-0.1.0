@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
-import { color, COLORS, css, CssValue, Icons, ObjectView, t } from '../common';
+import { COLORS, css, CssValue, Icons, t } from '../common';
+import { TestError } from './Results.Test.Error';
 
 export type TestResultProps = {
   data: t.TestRunResponse;
@@ -20,7 +21,7 @@ export const TestResult: React.FC<TestResultProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ position: 'relative', marginBottom: 6 }),
+    base: css({ position: 'relative', marginBottom: 4 }),
     line: {
       base: css({ Flex: 'horizontal-stretch-stretch' }),
       icon: css({ marginRight: 6 }),
@@ -34,11 +35,7 @@ export const TestResult: React.FC<TestResultProps> = (props) => {
   const elIconFail = !isSkipped && !data.ok && <Icons.Close size={16} color={COLORS.CLI.MAGENTA} />;
   const elIconSkipped = isSkipped && <Icons.Skip size={16} color={COLORS.CLI.CYAN} />;
 
-  const elError = data.error && (
-    <div {...styles.error}>
-      <ObjectView data={data.error} fontSize={12} />
-    </div>
-  );
+  const elError = data.error && <TestError data={data} style={styles.error} />;
 
   return (
     <div {...css(styles.base, props.style)}>

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { css, CssValue, t } from '../common';
+import { css, CssValue, t, COLORS } from '../common';
 import { SuiteResults } from './Results.Suite';
 
 export type ResultsProps = {
@@ -15,10 +15,11 @@ export const Results: React.FC<ResultsProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ fontSize: 14, cursor: 'default' }),
+    base: css({ fontSize: 13, color: COLORS.DARK, cursor: 'default' }),
+    empty: css({ opacity: 0.4 }),
   };
 
-  const elEmpty = !data && <div>No test results to display.</div>;
+  const elEmpty = !data && <div {...styles.empty}>No test results to display.</div>;
 
   return (
     <div {...css(styles.base, props.style)}>

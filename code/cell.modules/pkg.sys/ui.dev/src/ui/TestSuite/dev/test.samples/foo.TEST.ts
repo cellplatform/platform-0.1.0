@@ -3,7 +3,15 @@ import { Test } from '../..';
 
 export default Test.describe('Foo', (e) => {
   e.it('foo does something', () => {
+    expect(1234).to.eql(1234);
+  });
+
+  e.it.only('assertion fail', () => {
     expect(123).to.eql(1234);
+  });
+
+  e.it.only('throws exception', () => {
+    throw new Error('Derp');
   });
 
   e.describe('child suite', (e) => {
