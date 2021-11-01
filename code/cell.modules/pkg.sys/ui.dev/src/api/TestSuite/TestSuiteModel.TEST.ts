@@ -217,25 +217,37 @@ describe('TestSuiteModel', () => {
     it('clone', async () => {
       const root1 = Test.describe('root', (e) => {
         e.describe('child-1', (e) => {
-          e.it('hello');
+          e.it('hello', () => null);
         });
       });
 
       const root2 = await root1.clone();
+      await root1.init();
 
-      // Differnt instances.
+      const child1 = root1.state.children[0];
+      const child2 = root2.state.children[0];
+
+      const test1 = child1.state.tests[0];
+      const test2 = child2.state.tests[0];
+
+      // Different instances.
       expect(root1).to.not.equal(root2);
       expect(root1.state).to.not.equal(root2.state);
       expect(root1.state.children[0]).to.not.equal(root2.state.children[0]);
-      expect(root1.state.children[0].state.tests[0]).to.not.equal(
-        root2.state.children[0].state.tests[0],
-      );
+      expect(test1).to.not.equal(test2);
 
       // Equivalent objects.
-      expect(root1).to.eql(root2);
-      expect(root1.state).to.eql(root2.state);
-      expect(root1.state.children[0]).to.eql(root2.state.children[0]);
-      expect(root1.state.children[0].state.tests[0]).to.eql(root2.state.children[0].state.tests[0]);
+      expect(root1.state.description).to.eql(root2.state.description);
+      expect(child1.state.description).to.eql(child2.state.description);
+      expect(test1.description).to.eql(test2.description);
+
+      // Different ID's.
+      expect(root1.id).to.not.eql(root2.id);
+      expect(root1.state.children[0].id).to.not.eql(root2.state.children[0].id);
+
+      // Parent hierarchy correctly re-referenced to the clone.
+      expect(Tree.root(test1)).to.equal(root1);
+      expect(Tree.root(test2)).to.equal(root2);
     });
   });
 
@@ -378,7 +390,7 @@ describe('TestSuiteModel', () => {
         expect(list).to.eql(['3', '2.3']);
       });
 
-      it('excluded: bundled suite set', async () => {
+      it('excluded: .only within one suite of a bundled set', async () => {
         const list: string[] = [];
         const root1 = Test.describe('1', (e) => {
           e.it('1.1', (e) => list.push('1.1'));
@@ -388,6 +400,17 @@ describe('TestSuiteModel', () => {
         });
 
         const bundle = await Test.bundle([root1, root2]);
+
+        const children = bundle.state.children;
+        const test1 = children[0].state.tests[0];
+        const test2 = children[1].state.tests[0];
+
+        expect(Tree.root(test1)).to.equal(bundle);
+        expect(Tree.root(test2)).to.equal(bundle);
+
+        expect(test1).to.not.equal(root1.state.tests[0]);
+        expect(test2).to.not.equal(root2.state.tests[0]);
+
         await bundle.run();
 
         expect(list).to.eql(['2.1']);
@@ -439,7 +462,7 @@ describe('TestSuiteModel', () => {
   });
 
   describe('merge', () => {
-    it('merges', () => {
+    it('merges', async () => {
       const root = Test.describe('root');
       const child1 = Test.describe('child-1');
       const child2 = Test.describe('child-2');
@@ -447,115 +470,127 @@ describe('TestSuiteModel', () => {
 
       expect(root.state.children).to.eql([]);
 
-      root.merge(child1);
-      expect(root.state.children).to.eql([child1]);
+      await root.merge(child1);
+      expect(root.state.children.length).to.eql(1);
+      expect(root.state.children[0].state.description).to.eql(child1.state.description);
 
-      root.merge(child2, child3);
-      expect(root.state.children).to.eql([child1, child2, child3]);
+      await root.merge(child2, child3);
+      expect(root.state.children.length).to.eql(3);
 
-      expect(child1.state.parent?.id).to.eql(root.id);
-      expect(child2.state.parent?.id).to.eql(root.id);
-      expect(child3.state.parent?.id).to.eql(root.id);
-    });
+      expect(root.state.children[0].state.description).to.eql(child1.state.description);
+      expect(root.state.children[1].state.description).to.eql(child2.state.description);
+      expect(root.state.children[2].state.description).to.eql(child3.state.description);
 
-    it('does not duplicate', () => {
-      const root = Test.describe('root');
-      const child = Test.describe('child');
-      expect(root.state.children).to.eql([]);
+      expect(root.state.children[0].state.parent?.id).to.eql(root.id);
+      expect(root.state.children[1].state.parent?.id).to.eql(root.id);
+      expect(root.state.children[2].state.parent?.id).to.eql(root.id);
 
-      root.merge(child, child, child);
-      expect(root.state.children).to.eql([child]);
+      // Not the same instance (cloned).
+      expect(root.state.children[0]).to.not.equal(child1);
+      expect(root.state.children[1]).to.not.equal(child2);
+      expect(root.state.children[2]).to.not.equal(child3);
 
-      root.merge(child);
-      root.merge(child);
-      root.merge(child);
-      expect(root.state.children).to.eql([child]);
+      expect(Tree.root(root.state.children[0])).to.equal(root);
+      expect(Tree.root(root.state.children[1])).to.equal(root);
+      expect(Tree.root(root.state.children[2])).to.equal(root);
     });
   });
 
   describe('Test.bundle', () => {
     it('nothing [<empty>]', async () => {
-      const root = await Test.bundle([]);
-      expect(root.state.children).to.eql([]);
-      expect(root.state.description).to.eql('Tests');
+      const bundle = await Test.bundle([]);
+      expect(bundle.state.children).to.eql([]);
+      expect(bundle.state.description).to.eql('Tests');
     });
 
     it('TestSuite {objects}', async () => {
-      const child1 = Test.describe('child-1');
-      const child2 = Test.describe('child-2');
+      const root1 = Test.describe('1', (e) => e.it('1.1'));
+      const root2 = Test.describe('2', (e) => e.it('2.1'));
 
-      const root = await Test.bundle([child1, child2]);
-      const children = root.state.children;
+      const bundle = await Test.bundle([root1, root2]);
+
+      const children = bundle.state.children;
+      const test1 = children[0].state.tests[0];
+      const test2 = children[1].state.tests[0];
 
       expect(children.length).to.eql(2);
-      expect(children[0].id).to.eql(child1.id);
-      expect(children[1].id).to.eql(child2.id);
+      expect(children[0].state.description).to.eql(root1.state.description);
+      expect(children[1].state.description).to.eql(root2.state.description);
 
-      expect(child1.state.parent?.id).to.eql(root.id);
-      expect(child2.state.parent?.id).to.eql(root.id);
+      expect(children[0].state.parent?.id).to.eql(bundle.id);
+      expect(children[1].state.parent?.id).to.eql(bundle.id);
+
+      expect(Tree.root(test1)).to.equal(bundle);
+      expect(Tree.root(test2)).to.equal(bundle);
     });
 
     it('dynamic imports("...")', async () => {
-      const child1 = import('./test.samples/One.TEST');
-      const child2 = import('./test.samples/Two.TEST');
+      const root1 = import('./test.samples/One.TEST');
+      const root2 = import('./test.samples/Two.TEST');
 
-      const root = await Test.bundle([child1, child2]);
-      const children = root.state.children;
+      const bundle = await Test.bundle([root1, root2]);
+
+      const children = bundle.state.children;
+      const test1 = children[0].state.tests[0];
+      const test2 = children[1].state.tests[0];
 
       expect(children.length).to.eql(2);
       expect(children[0].state.description).to.eql('One');
       expect(children[1].state.description).to.eql('Two');
 
-      expect(children[0].state.parent?.id).to.eql(root.id);
-      expect(children[0].state.parent?.id).to.eql(root.id);
+      expect(children[0].state.parent?.id).to.eql(bundle.id);
+      expect(children[0].state.parent?.id).to.eql(bundle.id);
+
+      expect(Tree.root(test1)).to.equal(bundle);
+      expect(Tree.root(test2)).to.equal(bundle);
     });
 
     it('dynamic: with no export (ignore)', async () => {
-      const root1 = await Test.bundle([import('./test.samples/NoExport.TEST')]);
-      expect(root1.state.children).to.eql([]);
+      const bundle1 = await Test.bundle([import('./test.samples/NoExport.TEST')]);
+      expect(bundle1.state.children).to.eql([]);
 
-      const root2 = await Test.bundle([
+      const bundle2 = await Test.bundle([
         import('./test.samples/NoExport.TEST'), // NB: Will not merge anything (no default export)
         import('./test.samples/One.TEST'),
         import('./test.samples/Two.TEST'),
       ]);
-      const children = root2.state.children;
+      const children = bundle2.state.children;
       expect(children.length).to.eql(2);
       expect(children[0].state.description).to.eql('One');
       expect(children[1].state.description).to.eql('Two');
     });
 
     it('dynamic: default export not a test-suite (ignore)', async () => {
-      const root = await Test.bundle([import('./test.samples/ExportNonSuite.TEST')]);
-      expect(root.state.children).to.eql([]);
+      const bundle = await Test.bundle([import('./test.samples/ExportNonSuite.TEST')]);
+      expect(bundle.state.children).to.eql([]);
     });
 
     it('mixed import (dynamic/static) with explicit root "description"', async () => {
-      const child1 = Test.describe('One');
-      const child2 = import('./test.samples/Two.TEST');
+      const root1 = Test.describe('One');
+      const root2 = import('./test.samples/Two.TEST');
 
-      const root = await Test.bundle('MySuite', [child1, child2]);
-      const children = root.state.children;
+      const bundle = await Test.bundle('MySuite', [root1, root2]);
+      const children = bundle.state.children;
 
-      expect(root.state.description).to.eql('MySuite');
+      expect(bundle.state.description).to.eql('MySuite');
       expect(children.length).to.eql(2);
       expect(children[0].state.description).to.eql('One');
       expect(children[1].state.description).to.eql('Two');
     });
 
     it('single item bundle (no array)', async () => {
-      const child1 = Test.describe('One');
-      const child2 = import('./test.samples/Two.TEST');
+      const root1 = Test.describe('One');
+      const root2 = import('./test.samples/Two.TEST');
 
-      const root1 = await Test.bundle(child1);
-      const root2 = await Test.bundle(child2);
-      const root3 = await Test.bundle('MySuite-1', child1);
-      const root4 = await Test.bundle('MySuite-2', child2);
+      const bundle1 = await Test.bundle(root1);
+      const bundle2 = await Test.bundle(root2);
+      const bundle3 = await Test.bundle('MySuite-1', root1);
+      const bundle4 = await Test.bundle('MySuite-2', root2);
 
-      expect(root1.state.description).to.eql(child1.state.description); // NB: Root name taken from single bundle.
-      expect(root2.state.description).to.eql((await child2).default.state.description); // NB: Root name taken from single bundle.
-      expect(root3.state.description).to.eql('MySuite-1'); // NB: Custom name.
-      expect(root4.state.description).to.eql('MySuite-2');
+      expect(bundle1.state.description).to.eql(root1.state.description); // NB: Root name taken from single bundle.
+      expect(bundle2.state.description).to.eql((await root2).default.state.description); // NB: Root name taken from single bundle.
+      expect(bundle3.state.description).to.eql('MySuite-1'); // NB: Custom name.
+      expect(bundle4.state.description).to.eql('MySuite-2');
     });
   });
 });

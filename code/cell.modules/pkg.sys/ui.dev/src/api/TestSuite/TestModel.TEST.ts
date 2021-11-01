@@ -66,8 +66,9 @@ describe('TestModel', () => {
       const model2 = model1.clone();
 
       expect(model1).to.not.equal(model2); // NB: different instance.
+      expect(model1.id).to.not.eql(model2.id);
 
-      expect(model1.id).to.eql(model2.id);
+      // Equivalent everything else.
       expect(model1.handler).to.eql(model2.handler);
       expect(model1.description).to.eql(model2.description);
       expect(model1.parent).to.equal(model2.parent);
@@ -89,20 +90,28 @@ describe('TestModel', () => {
       const test = TestModel({ parent, description, handler });
 
       const res = await test.run();
+      expect(count).to.eql(1);
 
       expect(res.id).to.eql(test.id);
       expect(res.ok).to.eql(true);
       expect(res.timeout).to.eql(DEFAULT.TIMEOUT);
-      expect(res.elapsed).to.greaterThan(0);
+      expect(res.elapsed).to.greaterThan(-1);
       expect(res.error).to.eql(undefined);
       expect(res.description).to.eql(description);
       expect(res.excluded).to.eql(undefined);
     });
 
     it('async', async () => {
-      const handler: t.TestHandler = async () => await time.wait(50);
+      let count = 0;
+      const handler: t.TestHandler = async () => {
+        await time.wait(50);
+        count++;
+      };
       const test = TestModel({ parent, description, handler });
+
       const res = await test.run();
+      expect(count).to.eql(1);
+
       expect(res.id).to.eql(test.id);
       expect(res.ok).to.eql(true);
       expect(res.timeout).to.eql(DEFAULT.TIMEOUT);

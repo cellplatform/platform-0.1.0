@@ -1,5 +1,6 @@
 import { DEFAULT, Is, slug, t, time } from './common';
 import { Constraints } from './helpers/Constraints';
+import { Tree } from './helpers/Tree';
 import { TestModel } from './TestModel';
 
 type LazyParent = () => t.TestSuiteModel;
@@ -44,15 +45,18 @@ export const TestSuiteModel = (args: {
     return suite;
   };
 
-  const run: t.TestSuiteRun = (args = {}) => {
-    const { deep = true } = args;
+  const runSuite = (model: t.TestSuiteModel, options: t.TestSuiteRunOptions = {}) => {
+    const { deep = true } = options;
 
     type R = t.TestSuiteRunResponse;
     return new Promise<R>(async (resolve) => {
       const res: R = { id, ok: true, description, elapsed: -1, tests: [], children: [] };
-      await init(model);
 
-      const getTimeout = () => args.timeout ?? state.timeout ?? DEFAULT.TIMEOUT;
+      await init(model);
+      const tests = model.state.tests;
+      const childSuites = model.state.children;
+
+      const getTimeout = () => options.timeout ?? model.state.timeout ?? DEFAULT.TIMEOUT;
       const timer = time.timer();
 
       const done = () => {
@@ -62,16 +66,16 @@ export const TestSuiteModel = (args: {
         resolve(res);
       };
 
-      for (const test of state.tests) {
+      for (const test of tests) {
         const timeout = getTimeout();
         const excluded = Constraints.exclusionModifiers(test);
         res.tests.push(await test.run({ timeout, excluded }));
       }
 
-      if (deep && state.children.length > 0) {
-        for (const child of state.children) {
-          const timeout = child.state.timeout ?? getTimeout();
-          res.children.push(await child.run({ timeout })); // <== RECURSION 🌳
+      if (deep && childSuites.length > 0) {
+        for (const childSuite of childSuites) {
+          const timeout = childSuite.state.timeout ?? getTimeout();
+          res.children.push(await childSuite.run({ timeout })); // <== RECURSION 🌳
         }
       }
 
@@ -114,8 +118,6 @@ export const TestSuiteModel = (args: {
     kind: 'TestSuite',
     id,
     state,
-    run,
-    init: () => init(model),
 
     describe: describe as t.TestSuiteDescribe,
     it: it as t.TestSuiteIt,
@@ -125,27 +127,26 @@ export const TestSuiteModel = (args: {
       return model;
     },
 
-    merge(...suites) {
-      const children = [...state.children];
-      (suites ?? []).forEach((suite) => {
-        const exists = children.some((child) => child.id === suite.id);
-        if (!exists) {
-          children.push(suite);
-          suite.state.parent = model;
-        }
-      });
-      state.children = children;
+    init: () => init(model),
+    async run(args) {
+      return runSuite(model, args);
+    },
+
+    async merge(...suites) {
+      // Clone the incoming suites.
+      await init(model);
+      suites = await Promise.all(suites.map((suite) => suite.clone()));
+
+      // Merge into self.
+      state.children = [...state.children, ...suites];
+      state.children.forEach((suite) => (suite.state.parent = model));
       return model;
     },
 
     async clone() {
-      await init(model);
-      const tests = model.state.tests.map((test) => test.clone());
-      const children = await Promise.all(model.state.children.map((suite) => suite.clone()));
-      return {
-        ...model,
-        state: { ...state, tests, children },
-      };
+      const clone = TestSuiteModel({ ...args });
+      await init(clone);
+      return clone;
     },
 
     toString: () => state.description,

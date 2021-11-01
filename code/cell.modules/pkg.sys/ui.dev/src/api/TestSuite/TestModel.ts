@@ -75,7 +75,7 @@ export const TestModel = (args: {
     handler,
     run,
     toString: () => description,
-    clone: () => ({ ...model }),
+    clone: () => TestModel(args),
   };
   return model;
 };

@@ -78,7 +78,7 @@ export type TestSuiteModel = TestSuite & {
   kind: 'TestSuite';
   state: TestSuiteModelState;
   run: TestSuiteRun;
-  merge(...suites: TestSuiteModel[]): TestSuiteModel;
+  merge(...suites: TestSuiteModel[]): Promise<TestSuiteModel>;
   init(): Promise<TestSuiteModel>;
   clone(): Promise<TestSuiteModel>;
   toString(): string;
