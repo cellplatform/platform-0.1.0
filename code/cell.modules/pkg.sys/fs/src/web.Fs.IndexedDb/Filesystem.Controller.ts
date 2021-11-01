@@ -18,6 +18,7 @@ export async function BusController(args: {
 }) {
   const { name, bus, id, filter, httpFactory, timeout } = args;
 
+  // Start the driver.
   const fs = await FsDriverLocal({ name });
   const { driver, index } = fs;
 
