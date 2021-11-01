@@ -129,7 +129,7 @@ export const FsDriverIndexedDB = (args: { name?: string }) => {
           let error: t.IFsError | undefined;
           if (!hash || !data) {
             status = 404;
-            error = { type: 'FS/read', path, message: 'File not found' };
+            error = { type: 'FS/read', path, message: `[${uri}] does not exist` };
           }
           const file = !data ? undefined : { path, location, data, hash, bytes };
           const ok = status.toString().startsWith('2');
@@ -139,42 +139,46 @@ export const FsDriverIndexedDB = (args: { name?: string }) => {
         /**
          * Write to the local file-system.
          */
-        async write(uri, file) {
+        async write(uri, input) {
+          if (input === undefined) {
+            throw new Error(`No data`);
+          }
+
           uri = (uri || '').trim();
           const path = driver.resolve(uri).path;
           const location = LocalFile.toAbsoluteLocation({ path, root });
           const { dir } = Path.parts(path);
 
-          const isStream = Stream.isReadableStream(file);
-          const data = file as Uint8Array; // TEMP 🐷
+          const isStream = Stream.isReadableStream(input);
+          const data = (isStream ? await Stream.toUint8Array(input) : input) as Uint8Array;
 
           const hash = Hash.sha256(data);
           const bytes = data.byteLength;
+          const file = { path, location, hash, data, bytes };
 
-          /**
-           * TODO 🐷
-           * - load stream (if required)
-           * - remove old file/data reference if only one path reference.
-           */
+          try {
+            if (!path || path === root) {
+              throw new Error(`Path out of scope`);
+            }
 
-          const tx = db.transaction([NAME.STORE.PATHS, NAME.STORE.FILES], 'readwrite');
-          const store = {
-            paths: tx.objectStore(NAME.STORE.PATHS),
-            files: tx.objectStore(NAME.STORE.FILES),
-          };
+            const tx = db.transaction([NAME.STORE.PATHS, NAME.STORE.FILES], 'readwrite');
+            const store = {
+              paths: tx.objectStore(NAME.STORE.PATHS),
+              files: tx.objectStore(NAME.STORE.FILES),
+            };
 
-          const put = IndexedDb.record.put;
-          await Promise.all([
-            put<PathRecord>(store.paths, { path, dir, hash, bytes }),
-            put<BinaryRecord>(store.files, { hash, data }),
-          ]);
+            const put = IndexedDb.record.put;
+            await Promise.all([
+              put<PathRecord>(store.paths, { path, dir, hash, bytes }),
+              put<BinaryRecord>(store.files, { hash, data }),
+            ]);
 
-          return {
-            uri,
-            ok: true,
-            status: 200,
-            file: { path, location, hash, data, bytes },
-          };
+            return { uri, ok: true, status: 200, file };
+          } catch (err: any) {
+            const message = `Failed to write [${uri}]. ${err.message}`;
+            const error: t.IFsError = { type: 'FS/write', message, path };
+            return { ok: false, status: 500, uri, file, error };
+          }
         },
 
         /**

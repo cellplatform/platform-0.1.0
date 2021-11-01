@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { Test } from 'sys.ui.dev';
 
 import { FsDriverIndexedDB } from '.';
-import { Hash, Path, slug, t } from './common';
+import { Hash, Path, slug, t, Stream } from './common';
 
 export default Test.describe('FsDriver.IndexedDb', (e) => {
   const testCreate = async () => {
@@ -105,8 +105,6 @@ export default Test.describe('FsDriver.IndexedDb', (e) => {
       expect(res.hash).to.equal(sample.hash);
       expect(res.location.startsWith('file:///ns.foo')).to.eql(true);
       expect(res.location.endsWith('ns.foo/bird')).to.eql(true);
-
-      console.log('res', res);
     });
 
     e.it('path:uri', async () => {
@@ -118,8 +116,6 @@ export default Test.describe('FsDriver.IndexedDb', (e) => {
       const res = await fs.info(` ${uri}  `);
       expect(res.uri).to.eql(uri);
       expect(res.exists).to.eql(true);
-
-      console.log('res', res);
     });
 
     e.it('kind: "file"', async () => {
@@ -230,28 +226,31 @@ export default Test.describe('FsDriver.IndexedDb', (e) => {
       expect(new TextDecoder().decode(read.file?.data)).to.eql(text);
     });
 
-    e.it.skip('write (stream)', async () => {
+    e.it('step up path navigation (../..)', async () => {
       const { fs, sample } = await testCreate();
 
-      // const srcPath = nodefs.resolve('static.test/images/bird.png');
-      // const srcFile = Uint8Array.from(await nodefs.readFile(srcPath));
-      // const srcHash = Hash.sha256(srcFile);
-      // const stream = createReadStream(srcPath);
+      const root = slug();
+      const path = `/${root}/zoo/file.txt`;
+      const uri = `path:${root}/bar/baz/../../zoo/file.txt`;
+      const res = await fs.write(uri, sample.data);
 
-      // const uri = 'path:file.png';
-      // const write = await fs.write(uri, stream as any);
+      expect(res.file.path).to.eql(path);
+      expect((await fs.info(`path:${path}`)).exists).to.eql(true);
+    });
 
-      // expect(write.status).to.eql(200);
-      // expect(write.file.hash).to.eql(srcHash);
-      // expect(write.file.bytes).to.eql(srcFile.byteLength);
-      // expect(write.file.data).to.eql(srcFile);
+    e.it('write (stream)', async () => {
+      const { fs } = await testCreate();
+      const uri = 'path:foo/index.html';
 
-      // const read = await fs.read(uri);
+      const body = (await fetch('/index.html')).body as ReadableStream;
+      expect(Stream.isReadableStream(body)).to.eql(true);
 
-      // expect(read.status).to.eql(200);
-      // expect(read.uri).to.eql(uri);
-      // expect(read.file?.data).to.eql(srcFile);
-      // expect(read.file?.hash).to.eql(srcHash);
+      const res1 = await fs.write(uri, body);
+      const res2 = await fs.read(uri);
+
+      const decode = (input?: Uint8Array) => new TextDecoder().decode(input);
+      expect(decode(res1.file.data)).to.include('<!DOCTYPE html>');
+      expect(decode(res2.file?.data)).to.include('<!DOCTYPE html>');
     });
   });
 
@@ -349,10 +348,6 @@ export default Test.describe('FsDriver.IndexedDb', (e) => {
       await fs.write(sourceUri, sample.data);
       const res = await fs.copy(sourceUri, targetUri);
 
-      console.log('res', res);
-      console.log('res.error', res.error);
-      console.log('res.error', res.error?.message);
-
       expect(res.ok).to.eql(true);
       expect(res.status).to.eql(200);
       expect(res.source).to.eql(sourceUri);
@@ -375,6 +370,47 @@ export default Test.describe('FsDriver.IndexedDb', (e) => {
       expect(res.error?.type).to.eql('FS/copy');
       expect(res.error?.message).to.include(`Failed to copy from [${sourceUri}] to [${targetUri}]`);
       expect(res.error?.message).to.include(`Source file does not exist`);
+    });
+  });
+
+  e.describe('errors', (e) => {
+    e.it('fail: 404 while reading file', async () => {
+      const { fs } = await testCreate();
+
+      const uri = 'file:foo:noexist';
+      const res = await fs.read(` ${uri} `);
+      const error = res.error as t.IFsError;
+
+      expect(res.uri).to.eql(uri);
+      expect(res.ok).to.eql(false);
+      expect(res.status).to.eql(404);
+      expect(res.file).to.eql(undefined);
+      expect(error.type).to.eql('FS/read');
+      expect(error.path).to.eql(fs.resolve(uri).path);
+      expect(error.message).to.contain(`[file:foo:noexist] does not exist`);
+    });
+
+    e.it('fail: step up above root dir', async () => {
+      const { fs, sample } = await testCreate();
+      const png = sample.data;
+
+      const res1 = await fs.write('path:foo/bird.png', png);
+      const res2 = await fs.write('path:foo/../../bird.png', png);
+
+      expect(res1.error).to.eql(undefined);
+      expect(res2.error?.message).to.include('Failed to write');
+      expect(res2.error?.message).to.include('Path out of scope');
+    });
+
+    e.it('exception: no data', async () => {
+      const { fs } = await testCreate();
+      let message = '';
+      try {
+        await fs.write('path:foo/bird.png', undefined as any);
+      } catch (err: any) {
+        message = err.message;
+      }
+      expect(message).to.include('No data');
     });
   });
 });

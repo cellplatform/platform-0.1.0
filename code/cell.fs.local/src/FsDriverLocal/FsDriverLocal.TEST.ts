@@ -348,7 +348,7 @@ describe('FsDriver.Local (node-js)', () => {
   });
 
   describe('errors', () => {
-    it('404 while reading file', async () => {
+    it('fail: 404 while reading file', async () => {
       const fs = TestUtil.createLocal();
       const uri = 'file:foo:noexist';
 
@@ -364,7 +364,7 @@ describe('FsDriver.Local (node-js)', () => {
       expect(error.message).to.contain(`[file:foo:noexist] does not exist`);
     });
 
-    it('step up above root dir', async () => {
+    it('fail: step up above root dir', async () => {
       const fs = TestUtil.createLocal();
       const png = await TestUtil.readImage('bird.png');
 
