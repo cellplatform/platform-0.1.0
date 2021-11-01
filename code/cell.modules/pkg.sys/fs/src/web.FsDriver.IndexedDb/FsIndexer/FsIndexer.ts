@@ -1,4 +1,4 @@
-import { t, ROOT_DIR } from './common';
+import { t, ROOT_DIR } from '../common';
 
 export function FsIndexer(args: { dir: string; db: IDBDatabase }) {
   const { dir } = args;

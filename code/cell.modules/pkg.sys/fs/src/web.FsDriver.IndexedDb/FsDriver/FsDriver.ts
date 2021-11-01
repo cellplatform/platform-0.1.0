@@ -1,6 +1,4 @@
-import { Subject } from 'rxjs';
-
-import { t, Hash, Stream, ROOT_DIR, NAME, Schema, Path, IndexedDb } from './common';
+import { t, Hash, Stream, NAME, Schema, Path, IndexedDb } from '../common';
 import { FsDriverLocalResolver } from '@platform/cell.fs/lib/Resolver.Local';
 
 const LocalFile = Schema.File.Path.Local;

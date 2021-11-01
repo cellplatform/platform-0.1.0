@@ -15,15 +15,18 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
+    const runTests = async () => {
+      const tests = await Test.bundle('FsDriver: IndexedDb', [
+        import('../FsDriver/FsDriver.TEST'),
+        import('../FsIndexer/FsIndexer.TEST'),
+      ]);
+
+      return tests.run();
+    };
+
     const ctx: Ctx = {
       data: null,
-      async runTests() {
-        const tests = await Test.bundle('FsDriver:IndexedDb', [
-          import('../FsDriver.TEST'),
-          import('../FsIndexer.TEST'),
-        ]);
-        return tests.run();
-      },
+      runTests,
     };
 
     return ctx;
