@@ -69,6 +69,8 @@ describe('TestModel', () => {
       const test = TestModel({ parent, description, handler });
 
       const res = await test.run();
+
+      expect(res.id).to.eql(test.id);
       expect(res.ok).to.eql(true);
       expect(res.timeout).to.eql(DEFAULT.TIMEOUT);
       expect(res.elapsed).to.greaterThan(0);
@@ -81,6 +83,7 @@ describe('TestModel', () => {
       const handler: t.TestHandler = async () => await time.wait(50);
       const test = TestModel({ parent, description, handler });
       const res = await test.run();
+      expect(res.id).to.eql(test.id);
       expect(res.ok).to.eql(true);
       expect(res.timeout).to.eql(DEFAULT.TIMEOUT);
       expect(res.elapsed).to.greaterThan(49);

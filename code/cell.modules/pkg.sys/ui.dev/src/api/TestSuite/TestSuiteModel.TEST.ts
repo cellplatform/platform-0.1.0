@@ -220,6 +220,8 @@ describe('TestSuiteModel', () => {
         e.it('foo', () => count++);
       });
       const res = await root.run();
+
+      expect(res.id).to.eql(root.id);
       expect(res.ok).to.eql(true);
       expect(count).to.eql(1);
     });
@@ -233,6 +235,8 @@ describe('TestSuiteModel', () => {
         });
       });
       const res = await root.run();
+
+      expect(res.id).to.eql(root.id);
       expect(count).to.eql(1);
       expect(res.ok).to.eql(true);
       expect(res.elapsed).to.greaterThan(18);

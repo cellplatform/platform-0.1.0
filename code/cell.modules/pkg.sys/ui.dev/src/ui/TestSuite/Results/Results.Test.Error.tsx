@@ -19,7 +19,7 @@ export const TestError: React.FC<TestErrorProps> = (props) => {
   const styles = { base: css({}) };
   return (
     <div {...css(styles.base, props.style)}>
-      <ObjectView data={error} fontSize={11} />
+      <ObjectView data={error} fontSize={10} />
     </div>
   );
 };

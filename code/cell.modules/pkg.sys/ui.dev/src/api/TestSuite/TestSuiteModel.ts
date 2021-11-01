@@ -32,6 +32,7 @@ export const TestSuiteModel = (args: {
   modifier?: t.TestModifier;
 }): t.TestSuiteModel => {
   const { parent, description } = args;
+  const id = `TestSuite.${slug()}`;
 
   const init = async (suite: t.TestSuiteModel) => {
     const state = suite.state;
@@ -48,7 +49,7 @@ export const TestSuiteModel = (args: {
 
     type R = t.TestSuiteRunResponse;
     return new Promise<R>(async (resolve) => {
-      const res: R = { ok: true, description, elapsed: -1, tests: [], children: [] };
+      const res: R = { id, ok: true, description, elapsed: -1, tests: [], children: [] };
       await init(model);
 
       const getTimeout = () => args.timeout ?? state.timeout ?? DEFAULT.TIMEOUT;
@@ -111,7 +112,7 @@ export const TestSuiteModel = (args: {
 
   const model: t.TestSuiteModel = {
     kind: 'TestSuite',
-    id: `TestSuite.${slug()}`,
+    id,
     state,
     run,
     init: () => init(model),

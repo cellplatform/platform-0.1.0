@@ -27,8 +27,8 @@ export const SuiteResults: React.FC<SuiteResultsProps> = (props) => {
     }),
   };
 
-  const elTests = data.tests.map((test, i) => <TestResult key={i} data={test} />);
-  const elChildren = data.children.map((suite, i) => <SuiteResults key={i} data={suite} />);
+  const elTests = data.tests.map((test) => <TestResult key={test.id} data={test} />);
+  const elChildren = data.children.map((suite) => <SuiteResults key={suite.id} data={suite} />);
 
   return (
     <div {...css(styles.base, props.style)}>

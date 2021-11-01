@@ -60,6 +60,7 @@ export type TestModel = {
 export type TestRun = (options?: TestRunOptions) => Promise<TestRunResponse>;
 export type TestRunOptions = { timeout?: Milliseconds; excluded?: TestModifier[] };
 export type TestRunResponse = {
+  id: Id;
   ok: boolean;
   description: Description;
   elapsed: Milliseconds;
@@ -98,6 +99,7 @@ export type TestSuiteRunOptions = {
   deep?: boolean;
 };
 export type TestSuiteRunResponse = {
+  id: Id;
   ok: boolean;
   description: Description;
   elapsed: Milliseconds;

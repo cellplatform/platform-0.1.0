@@ -10,6 +10,7 @@ export const TestModel = (args: {
   modifier?: t.TestModifier;
 }): t.TestModel => {
   const { parent, description, handler, modifier } = args;
+  const id = `Test.${slug()}`;
 
   const run: t.TestRun = (options = {}) => {
     type R = t.TestRunResponse;
@@ -19,6 +20,7 @@ export const TestModel = (args: {
       const excluded = toExcluded({ modifier, excluded: options.excluded });
 
       const response: R = {
+        id,
         ok: true,
         description,
         elapsed: -1,
@@ -67,7 +69,7 @@ export const TestModel = (args: {
   const model: t.TestModel = {
     parent,
     kind: 'Test',
-    id: `Test.${slug()}`,
+    id,
     description,
     modifier,
     handler,
