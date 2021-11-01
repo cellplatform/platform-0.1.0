@@ -15,11 +15,11 @@ type BinaryRecord = { hash: FileHash; data: Uint8Array };
 /**
  * A filesystem driver running against the browser [IndexedDB] store.
  */
-export const FsDriverIndexedDB = (args: { name?: string }) => {
+export const FsDriverIndexedDb = (args: { name?: string }) => {
   const dir = ROOT_DIR;
   const root = dir;
 
-  return IndexedDb.create<t.FsDriverIndexedDB>({
+  return IndexedDb.create<t.FsDriverIndexedDb>({
     name: args.name || 'fs',
     version: 1,
 
@@ -274,7 +274,7 @@ export const FsDriverIndexedDB = (args: { name?: string }) => {
       /**
        * API.
        */
-      const api: t.FsDriverIndexedDB = {
+      const api: t.FsDriverIndexedDb = {
         dispose$: dispose$.asObservable(),
         dispose,
         name: db.name,

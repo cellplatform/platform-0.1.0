@@ -1,6 +1,6 @@
 import React from 'react';
-import { DevActions, ObjectView, Test } from 'sys.ui.dev';
-import { css, time } from '../common';
+import { DevActions, Test } from 'sys.ui.dev';
+import { css } from '../common';
 import { IndexedDb } from '../IndexedDb';
 
 type Ctx = {
@@ -19,7 +19,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       data: null,
       async runTests() {
-        const tests = await Test.bundle(import('../FsDriver.IndexedDB.TEST'));
+        const tests = await Test.bundle(import('../FsDriver.TEST'));
         return tests.run();
       },
     };

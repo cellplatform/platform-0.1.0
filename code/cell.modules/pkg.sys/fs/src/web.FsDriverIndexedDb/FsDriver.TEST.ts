@@ -1,13 +1,13 @@
 import { expect } from 'chai';
 import { Test } from 'sys.ui.dev';
 
-import { FsDriverIndexedDB } from '.';
+import { FsDriverIndexedDb } from '.';
 import { Hash, Path, slug, t, Stream } from './common';
 
 export default Test.describe('FsDriver.IndexedDb', (e) => {
   const testCreate = async () => {
     const name = 'test.foo';
-    const db = await FsDriverIndexedDB({ name });
+    const db = await FsDriverIndexedDb({ name });
     const fs = db.driver;
 
     const data = new Uint8Array([1, 2, 3]);
