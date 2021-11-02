@@ -3,6 +3,7 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { t, rx } from '../common';
 
 import { Filesystem } from '..';
+import { DevFsSample } from './DEV.Sample';
 
 const path = 'myfile.txt';
 
@@ -69,7 +70,6 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       const data = e.ctx.debug.data;
       if (!data) return null;
-
       return <ObjectView data={data} />;
     });
   })
@@ -89,8 +89,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    const el = <div>hello</div>;
-
+    const el = <DevFsSample bus={e.ctx.bus} />;
     e.render(el);
   });
 

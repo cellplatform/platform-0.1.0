@@ -21,8 +21,8 @@ export default () =>
         .entry('main', './src/web/entry/main')
 
         // .declarations('./src/**/*')
+        // .static('static')
 
-        .static('static')
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
 
         .expose('./Dev', './src/Dev.Harness')
