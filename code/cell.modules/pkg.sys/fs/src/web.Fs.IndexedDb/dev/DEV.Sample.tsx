@@ -10,6 +10,12 @@ export type DevFsSampleProps = {
   style?: CssValue;
 };
 
+/**
+ *
+ * SAMPLE
+ *    Simple drop target that writes a file to the [Filesystem:IndexedDB].
+ *
+ */
 export const DevFsSample: React.FC<DevFsSampleProps> = (props) => {
   const { bus } = props;
 
@@ -37,6 +43,7 @@ export const DevFsSample: React.FC<DevFsSampleProps> = (props) => {
   const del = async (path: string) => {
     const { store, fs } = await Filesystem.create({ bus, name });
     const res = await fs.delete(path);
+
     store.dispose();
     await load(path);
   };
@@ -47,6 +54,7 @@ export const DevFsSample: React.FC<DevFsSampleProps> = (props) => {
 
     const { store, fs } = await Filesystem.create({ bus, name });
     const res = await fs.write(path, file.data);
+
     store.dispose();
     await load(path);
   });
