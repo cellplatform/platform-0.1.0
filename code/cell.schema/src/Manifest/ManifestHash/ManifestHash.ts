@@ -1,6 +1,8 @@
 import { t, Hash } from '../common';
 
 export const ManifestHash = {
+  sha256: Hash.sha256,
+
   /**
    * Standard generation of hashes for a set of files.
    */

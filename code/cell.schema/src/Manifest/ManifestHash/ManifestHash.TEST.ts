@@ -2,8 +2,13 @@ import { expect, Hash, t } from '../../test';
 import { ManifestHash } from '.';
 
 describe('ManifestHash', () => {
+  it('sha256', () => {
+    const data = new TextEncoder().encode('hello');
+    expect(ManifestHash.sha256(data)).to.eql(Hash.sha256(data));
+  });
+
   describe('files', () => {
-    const testFile = (options: { text?: string; path?: string } = {}): t.ManifestFile => {
+    const testFile = (options: { path?: string; text?: string } = {}): t.ManifestFile => {
       const { path = 'dir/foo.txt', text = 'hello' } = options;
       const data = new TextEncoder().encode(text);
       const bytes = data.byteLength;
@@ -35,7 +40,7 @@ describe('ManifestHash', () => {
       expectHash(ManifestHash.fileshash([file]), '3f202283e3b9d0e5');
     });
 
-    it('many (order independent)', async () => {
+    it('many (order independent)', () => {
       const files = testFiles(3);
 
       const res1 = ManifestHash.fileshash(files);
