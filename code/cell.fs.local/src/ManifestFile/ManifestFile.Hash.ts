@@ -1,13 +1,11 @@
-import { t, Hash } from '../common';
+import { t, Hash, ManifestHash } from '../common';
 
 /**
  * Tools for working with hash checksums of a manifest.
  */
 export const ManifestFileHash = {
   files(input: t.ManifestFile[] | t.Manifest) {
-    const files = Array.isArray(input) ? input : input.files;
-    const list = files.filter(Boolean).map((file) => file.filehash);
-    return Hash.sha256(list);
+    return ManifestHash.fileshash(input);
   },
 
   /**

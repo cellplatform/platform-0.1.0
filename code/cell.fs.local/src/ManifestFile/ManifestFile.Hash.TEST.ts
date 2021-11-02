@@ -1,6 +1,7 @@
 import { ManifestFile } from '.';
 import { FsIndexerLocal } from '..';
 import { expect, Hash, t, TestUtil } from '../test';
+import { ManifestHash } from '@platform/cell.schema';
 
 const fs = TestUtil.node;
 
@@ -18,7 +19,7 @@ describe('ManifestFileHash', () => {
     const dir = fs.resolve('static.test');
     const indexer = FsIndexerLocal({ fs, dir });
     const manifest = await indexer.manifest();
-    const hash = Hash.sha256(manifest.files.map((file) => file.filehash));
+    const hash = ManifestHash.fileshash(manifest.files);
     expect(manifest.hash.files).to.eql(hash);
     expect(ManifestFile.Hash.files(manifest)).to.eql(hash);
   });
