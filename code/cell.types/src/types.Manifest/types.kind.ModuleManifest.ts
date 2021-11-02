@@ -2,6 +2,7 @@ import { t } from '../common';
 
 type Url = string;
 type FilePath = string;
+type Timestamp = number; // An Integer representing a date in milliseconds since the UNIX epoch.
 
 /**
  * Details about a compiled Module ("bundle of code").
@@ -24,6 +25,7 @@ export type ModuleManifestInfo = {
   namespace: string;
   version: string; //   semver ("0.0.0" if not specified)
   compiler: string; //  "<name>@<version>" (eg "@platform/cell.compiler@0.1.2")
+  compiledAt: Timestamp;
   mode: string; //      "production" | "development"
   target: string; //    "web" | "node"
   entry: FilePath;

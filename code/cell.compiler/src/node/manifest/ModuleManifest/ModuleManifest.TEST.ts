@@ -1,5 +1,5 @@
 import { ModuleManifest } from '..';
-import { expect, fs, SampleBundles, t, expectError } from '../../../test';
+import { expect, fs, SampleBundles, t, expectError, time } from '../../../test';
 
 describe('ModuleManifest', function () {
   this.timeout(99999);
@@ -21,7 +21,9 @@ describe('ModuleManifest', function () {
   it('create', async () => {
     const sample = SampleBundles.simpleNode;
     const model = sample.config.toObject();
-    const manifest = await ModuleManifest.create({ model, dir: sample.paths.out.dist });
+    const dir = sample.paths.out.dist;
+    const now = time.now.timestamp;
+    const manifest = await ModuleManifest.create({ model, dir });
     const files = manifest.files;
 
     expect(files.length).to.greaterThan(0);
@@ -39,6 +41,8 @@ describe('ModuleManifest', function () {
     expect(manifest.module.namespace).to.eql('ns.test.node');
     expect(manifest.module.version).to.eql('0.0.0');
     expect(manifest.module.compiler.startsWith('@platform/cell.compiler@')).to.eql(true);
+
+    expect(manifest.module.compiledAt).to.within(now - 10, now + 10);
 
     expect(manifest.module.mode).to.eql('production');
     expect(manifest.module.target).to.eql('node');
@@ -58,6 +62,16 @@ describe('ModuleManifest', function () {
     expectEvery((file) => file.path.length > 0);
     expectSome((file) => file.public !== undefined);
     expectSome((file) => file.allowRedirect !== undefined);
+  });
+
+  it('create (with custom timestamp)', async () => {
+    const sample = SampleBundles.simpleNode;
+    const model = sample.config.toObject();
+    const dir = sample.paths.out.dist;
+    const compiledAt = 1234;
+    const manifest = await ModuleManifest.create({ model, dir, compiledAt });
+
+    expect(manifest.module.compiledAt).to.eql(compiledAt);
   });
 
   it('remote (exports)', async () => {

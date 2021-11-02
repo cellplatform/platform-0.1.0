@@ -1,7 +1,8 @@
-import { constants, DEFAULT, Encoding, Model, Schema, t } from '../../common';
+import { constants, DEFAULT, Encoding, Model, Schema, t, time } from '../../common';
 import { createAndSave, Manifest } from '../Manifest';
 
 type M = t.ModuleManifest;
+type Timestamp = number;
 
 /**
  * Helpers for creating and working with a [ModuleManifest].
@@ -47,8 +48,14 @@ export const ModuleManifest = {
     model: t.CompilerModel;
     dir: string;
     filename?: string; // Default: index.json
+    compiledAt?: Timestamp;
   }): Promise<M> {
-    const { dir, model, filename = ModuleManifest.filename } = args;
+    const {
+      dir,
+      model,
+      filename = ModuleManifest.filename,
+      compiledAt = time.now.timestamp,
+    } = args;
 
     const pkg = constants.COMPILER.load();
     const data = Model(model);
@@ -63,6 +70,7 @@ export const ModuleManifest = {
       namespace,
       version,
       compiler: `${pkg.name}@${pkg.version ?? '0.0.0'}`,
+      compiledAt,
       mode: data.mode(),
       target: data.target(),
       entry: data.entryFile,
