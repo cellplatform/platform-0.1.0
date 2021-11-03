@@ -3,6 +3,7 @@ import { t } from '../common';
 type Url = string;
 type FilePath = string;
 type Timestamp = number; // An Integer representing a date in milliseconds since the UNIX epoch.
+type Sha256 = string;
 
 /**
  * Details about a compiled Module ("bundle of code").
@@ -13,7 +14,7 @@ export type ModuleManifest = t.Manifest<ModuleManifestFile, ModuleManifestHash> 
 };
 
 export type ModuleManifestHash = t.ManifestHash & {
-  module: string; // The hash of all files AND the [ModuleManifestInfo] meta-data.
+  module: Sha256; // Hash of files and meta-data: sha256({ module, files })
 };
 
 export type ModuleManifestFile = t.ManifestFile;
