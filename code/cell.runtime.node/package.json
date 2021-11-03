@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@platform/cell.runtime": "0.10.62",
+    "@platform/cell.types": "0.5.100",
     "@platform/fs": "0.7.5",
     "vm2": "3.9.3"
   },

@@ -1,6 +1,14 @@
 import { Icon } from '@platform/ui.icon';
 import { FiBox } from 'react-icons/fi';
-import { MdClose, MdExpandMore, MdSend, MdFullscreen, MdFullscreenExit } from 'react-icons/md';
+import {
+  MdCheck,
+  MdClose,
+  MdExpandMore,
+  MdSend,
+  MdFullscreen,
+  MdFullscreenExit,
+  MdDoNotDisturb,
+} from 'react-icons/md';
 import {
   VscChecklist,
   VscSymbolClass,
@@ -21,6 +29,8 @@ export const Icons = {
   Send: icon(MdSend),
   Checklist: icon(VscChecklist),
   Close: icon(MdClose),
+  Tick: icon(MdCheck),
+  Skip: icon(MdDoNotDisturb),
   Chevron: { Down: icon(MdExpandMore) },
   Fullscreen: { Enter: icon(MdFullscreen), Exit: icon(MdFullscreenExit) },
 };

@@ -1,9 +1,9 @@
-import { RouterMock, expect, Http, t } from '../../test';
+import { expect, t } from '../../test';
 import {
-  ISampleNodeInValue,
   getManifest,
-  prepare,
+  ISampleNodeInValue,
   ISampleNodeOutValue,
+  prepare,
   Samples,
   uploadBundle,
 } from './util';
@@ -27,16 +27,18 @@ describe('/fn:run', function () {
         expect(res.size.bytes).to.greaterThan(1000);
         expect(res.size.files).to.greaterThan(1);
         expect(res.errors).to.eql([]);
+        expect(res.bundle.version.split('.').length).to.eql(3); // NB: semver.
+        expect(res.bundle.fileshash).to.match(/^sha256-/);
+        expect(res.bundle.url).to.match(/^http\:/);
+        expect(res.bundle.url).to.match(/index\.json$/);
       };
 
       it('single function - no result', async () => {
-        const dir = 'foo';
-        const { mock, bundle, client, http, url } = await prepare({ dir });
-        const { host, uri } = bundle;
+        const { mock, bundle, client, http, url, manifestUrl } = await prepare();
         const { files } = await uploadBundle(client, Samples.node.outdir, bundle);
         const manifest = getManifest(files);
 
-        const body: t.IReqPostFuncBody = [{ host, uri, dir }];
+        const body: t.IReqPostFuncBody = [{ bundle: manifestUrl }];
         const res = await http.post(url.toString(), body);
         const json = res.json as t.IResPostFunc;
         await mock.dispose();
@@ -46,10 +48,8 @@ describe('/fn:run', function () {
         expect(json.elapsed).to.greaterThan(10);
         expect(json.results.length).to.eql(1);
 
-        expect(json.results[0].bundle.uri).to.eql(bundle.uri);
-        expect(json.results[0].bundle.host).to.eql(bundle.host);
-        expect(json.results[0].bundle.dir).to.eql(bundle.dir);
-        expect(json.results[0].bundle.hash).to.eql(manifest.hash.files);
+        expect(json.results[0].bundle.url).to.eql(manifestUrl);
+        expect(json.results[0].bundle.fileshash).to.eql(manifest.hash.files);
 
         const version = (process.version || '').replace(/^v/, '');
         expect(json.runtime.version).to.eql(`node@${version}`);
@@ -62,13 +62,11 @@ describe('/fn:run', function () {
       });
 
       it('single function - result (pass params)', async () => {
-        const dir = 'foo';
-        const { mock, bundle, client, http, url } = await prepare({ dir });
-        const { host, uri } = bundle;
+        const { mock, bundle, client, http, url, manifestUrl } = await prepare();
         await uploadBundle(client, Samples.node.outdir, bundle);
 
         const value: ISampleNodeInValue = { value: { foo: 123 } };
-        const body: t.IReqPostFuncBody = [{ host, uri, dir, in: { value } }];
+        const body: t.IReqPostFuncBody = [{ bundle: manifestUrl, in: { value } }];
         const res = await http.post(url.toString(), body);
         const json = res.json as t.IResPostFunc;
         await mock.dispose();
@@ -82,11 +80,10 @@ describe('/fn:run', function () {
       });
 
       it('multiple functions in single payload', async () => {
-        const dir = undefined;
-        const { mock, bundle, client, http, url } = await prepare({ dir });
+        const { mock, bundle, client, http, url, manifestUrl } = await prepare();
         await uploadBundle(client, Samples.node.outdir, bundle);
 
-        const body: t.IReqPostFuncBody = [bundle, bundle];
+        const body: t.IReqPostFuncBody = [{ bundle: manifestUrl }, { bundle: manifestUrl }];
         const res = await http.post(url.toString(), body);
         const json = res.json as t.IResPostFunc;
         await mock.dispose();
@@ -112,11 +109,10 @@ describe('/fn:run', function () {
 
     describe('tx (transaction id)', () => {
       it('tx: generated', async () => {
-        const { mock, bundle, client, http, url } = await prepare({});
-        const { host, uri } = bundle;
+        const { mock, bundle, client, http, url, manifestUrl } = await prepare({});
         await uploadBundle(client, Samples.node.outdir, bundle);
 
-        const body: t.IReqPostFuncBody = [{ host, uri }];
+        const body: t.IReqPostFuncBody = [{ bundle: manifestUrl }];
         const res = await http.post(url.toString(), body);
         const json = res.json as t.IResPostFunc;
         await mock.dispose();
@@ -126,12 +122,11 @@ describe('/fn:run', function () {
       });
 
       it('tx: specified', async () => {
-        const { mock, bundle, client, http, url } = await prepare({});
-        const { host, uri } = bundle;
+        const { mock, bundle, client, http, url, manifestUrl } = await prepare({});
         await uploadBundle(client, Samples.node.outdir, bundle);
 
         const tx = 'my-execution-id';
-        const body: t.IReqPostFuncBody = [{ host, uri, tx }];
+        const body: t.IReqPostFuncBody = [{ bundle: manifestUrl, tx }];
         const res = await http.post(url.toString(), body);
         const json = res.json as t.IResPostFunc;
         await mock.dispose();
@@ -140,14 +135,12 @@ describe('/fn:run', function () {
       });
     });
 
-    describe('entry path', () => {
-      it('default path', async () => {
-        const dir = 'foo';
-        const { mock, bundle, client, http, url } = await prepare({ dir });
-        const { host, uri } = bundle;
+    describe('entry ("path")', () => {
+      it('default entry path', async () => {
+        const { mock, bundle, client, http, url, manifestUrl } = await prepare();
         await uploadBundle(client, Samples.node.outdir, bundle);
 
-        const body: t.IReqPostFuncBody = [{ host, uri, dir }];
+        const body: t.IReqPostFuncBody = [{ bundle: manifestUrl }];
         const res = await http.post(url.toString(), body);
         const json = res.json as t.IResPostFunc;
         await mock.dispose();
@@ -156,15 +149,13 @@ describe('/fn:run', function () {
         expect(json.results[0].entry).to.eql('main.js');
       });
 
-      it('custom path', async () => {
-        const dir = 'foo';
-        const { mock, bundle, client, http, url } = await prepare({ dir });
-        const { host, uri } = bundle;
+      it('custom entry path', async () => {
+        const { mock, bundle, client, http, url, manifestUrl } = await prepare();
         await uploadBundle(client, Samples.node.outdir, bundle);
 
         const entry = '  //dev.js  '; // NB: whitespace is removed and leading "/" is trimmed.
 
-        const body: t.IReqPostFuncBody = [{ host, uri, dir, entry }];
+        const body: t.IReqPostFuncBody = [{ bundle: manifestUrl, entry }];
         const res = await http.post(url.toString(), body);
         const json = res.json as t.IResPostFunc;
         await mock.dispose();
@@ -175,13 +166,11 @@ describe('/fn:run', function () {
       });
 
       it('error: path does not exist', async () => {
-        const dir = 'foo';
-        const { mock, bundle, client, http, url } = await prepare({ dir });
-        const { host, uri } = bundle;
+        const { mock, bundle, client, http, url, manifestUrl } = await prepare();
         await uploadBundle(client, Samples.node.outdir, bundle);
 
         const entry = '404.js';
-        const body: t.IReqPostFuncBody = [{ host, uri, dir, entry }];
+        const body: t.IReqPostFuncBody = [{ bundle: manifestUrl, entry }];
         const res = await http.post(url.toString(), body);
         const json = res.json as t.IResPostFunc;
         await mock.dispose();
@@ -197,18 +186,16 @@ describe('/fn:run', function () {
       });
     });
 
-    describe('hash (bundle verification)', () => {
+    describe('bundle verification ("fileshash")', () => {
       it('hash: valid', async () => {
-        const dir = 'foo';
-        const { mock, bundle, client, http, url } = await prepare({ dir });
-        const { host, uri } = bundle;
+        const { mock, bundle, client, http, url, manifestUrl } = await prepare();
         const { files } = await uploadBundle(client, Samples.node.outdir, bundle);
         const manifest = getManifest(files);
 
-        const hash = manifest.hash.files;
-        expect(hash).to.not.eql(undefined);
+        const fileshash = manifest.hash.files;
+        expect(fileshash).to.not.eql(undefined);
 
-        const body: t.IReqPostFuncBody = [{ host, uri, dir, hash }];
+        const body: t.IReqPostFuncBody = [{ bundle: manifestUrl, fileshash }];
         const res = await http.post(url.toString(), body);
         const json = res.json as t.IResPostFunc;
         await mock.dispose();
@@ -218,14 +205,12 @@ describe('/fn:run', function () {
       });
 
       it('hash: invalid', async () => {
-        const dir = 'foo';
-        const { mock, bundle, client, http, url } = await prepare({ dir });
-        const { host, uri } = bundle;
+        const { mock, bundle, client, http, url, manifestUrl } = await prepare();
         const { files } = await uploadBundle(client, Samples.node.outdir, bundle);
         const manifest = getManifest(files);
 
-        const hash = 'sha256-no-exist';
-        const body: t.IReqPostFuncBody = [{ host, uri, dir, hash }];
+        const fileshash = 'sha256-no-exist';
+        const body: t.IReqPostFuncBody = [{ bundle: manifestUrl, fileshash }];
         const res = await http.post(url.toString(), body);
         const json = res.json as t.IResPostFunc;
         await mock.dispose();
@@ -234,26 +219,24 @@ describe('/fn:run', function () {
         expect(json.ok).to.eql(false);
 
         const result = json.results[0];
-        expect(result.bundle.hash).to.eql(manifest.hash.files);
+        expect(result.bundle.fileshash).to.eql(manifest.hash.files);
         expect(result.errors.length).to.eql(1);
 
         const error = result.errors[0];
         expect(error.type).to.eql('RUNTIME/run');
-        expect(error.bundle).to.eql(bundle);
-        expect(error.message).to.include('Bundle manifest does not match requested hash');
-        expect(error.message).to.include(hash);
+        expect(error.bundle.url).to.eql(manifestUrl);
+        expect(error.message).to.include('Bundle manifest does not match requested fileshash');
+        expect(error.message).to.include(fileshash);
       });
     });
 
     describe('timeout', () => {
       it('timeout: on body payload', async () => {
-        const dir = 'foo';
-        const { mock, bundle, client, http, url } = await prepare({ dir });
-        const { host, uri } = bundle;
+        const { mock, bundle, client, http, url, manifestUrl } = await prepare();
         await uploadBundle(client, Samples.node.outdir, bundle);
 
         const value: ISampleNodeInValue = { delay: 50 };
-        const body: t.IReqPostFuncBody = [{ host, uri, dir, in: { value }, timeout: 10 }];
+        const body: t.IReqPostFuncBody = [{ bundle: manifestUrl, in: { value }, timeout: 10 }];
         const res = await http.post(url.toString(), body);
         const json = res.json as t.IResPostFunc;
         await mock.dispose();
@@ -266,18 +249,16 @@ describe('/fn:run', function () {
         const error = result.errors[0];
         expect(error.type).to.eql('RUNTIME/run');
 
-        expect(error.bundle).to.eql(bundle);
+        expect(error.bundle.url).to.eql(manifestUrl);
         expect(error.message).to.include('Execution timed out (max 10ms)');
       });
 
       it('timeout: on query-string', async () => {
-        const dir = 'foo';
-        const { mock, bundle, client, http, url } = await prepare({ dir });
-        const { host, uri } = bundle;
+        const { mock, bundle, client, http, url, manifestUrl } = await prepare();
         await uploadBundle(client, Samples.node.outdir, bundle);
 
         const value: ISampleNodeInValue = { delay: 50 };
-        const body: t.IReqPostFuncBody = [{ host, uri, dir, in: { value } }];
+        const body: t.IReqPostFuncBody = [{ bundle: manifestUrl, in: { value } }];
         const res = await http.post(url.query({ timeout: 10 }).toString(), body);
         const json = res.json as t.IResPostFunc;
         await mock.dispose();
@@ -287,16 +268,14 @@ describe('/fn:run', function () {
 
         const error = result.errors[0];
         expect(error.type).to.eql('RUNTIME/run');
-        expect(error.bundle).to.eql(bundle);
+        expect(error.bundle.url).to.eql(manifestUrl);
         expect(error.message).to.include('Execution timed out (max 10ms)');
       });
     });
 
     describe('query string (flags)', () => {
       it('query-string: pull', async () => {
-        const dir = 'foo';
-        const { mock, bundle, client, http } = await prepare({ dir });
-        const { host, uri } = bundle;
+        const { mock, bundle, client, http, manifestUrl } = await prepare();
         await uploadBundle(client, Samples.node.outdir, bundle);
 
         const url = {
@@ -305,7 +284,7 @@ describe('/fn:run', function () {
           pullFalse: mock.urls.fn.run.query({ pull: false }).toString(),
         };
 
-        const body: t.IReqPostFuncBody = [{ host, uri, dir }];
+        const body: t.IReqPostFuncBody = [{ bundle: manifestUrl }];
 
         const post = async (url: string, body: t.IReqPostFuncBody) => {
           const res = await http.post(url, body);
@@ -329,9 +308,7 @@ describe('/fn:run', function () {
         const log = console.log;
         console.log = () => null; // NB: Suppress standard console output (to keep tests looking clean).
 
-        const dir = 'foo';
-        const { mock, bundle, client, http } = await prepare({ dir });
-        const { host, uri } = bundle;
+        const { mock, bundle, client, http, manifestUrl } = await prepare();
         await uploadBundle(client, Samples.node.outdir, bundle);
 
         const url = {
@@ -339,7 +316,7 @@ describe('/fn:run', function () {
           silentFalse: mock.urls.fn.run.query({ silent: false }).toString(),
         };
 
-        const body: t.IReqPostFuncBody = [{ host, uri, dir }];
+        const body: t.IReqPostFuncBody = [{ bundle: manifestUrl }];
 
         const post = async (url: string, body: t.IReqPostFuncBody) => {
           const res = await http.post(url, body);
@@ -365,9 +342,9 @@ describe('/fn:run', function () {
   describe('errors', () => {
     it('error: bundle does not exist (pull error)', async () => {
       const dir = 'foo';
-      const { mock, bundle, http, url } = await prepare({ dir });
+      const { mock, http, url, manifestUrl } = await prepare({ dir });
 
-      const data: t.IReqPostFuncBody = [{ ...bundle }];
+      const data: t.IReqPostFuncBody = [{ bundle: manifestUrl }];
       const res = await http.post(url.toString(), data);
       const json = res.json as t.IResPostFunc;
       await mock.dispose();
@@ -378,23 +355,8 @@ describe('/fn:run', function () {
 
       const error = json.results[0].errors[0];
       expect(error.type).to.eql('RUNTIME/pull');
-      expect(error.message).to.include('contains no files to pull');
-      expect(error.bundle).to.eql(bundle);
-    });
-
-    it('error: func/runtime not provided (500)', async () => {
-      const mock = await RouterMock.create();
-      const url = mock.urls.fn.run.toString();
-      const http = Http.create();
-
-      const data: t.IReqPostFuncBody = [{ uri: 'cell:foo:A1' }];
-      const res = await http.post(url, data);
-      const json = res.json as t.IHttpErrorServer;
-      await mock.dispose();
-
-      expect(json.status).to.eql(500);
-      expect(json.type).to.eql('HTTP/server');
-      expect(json.message).to.include('Runtime environment for executing functions not available');
+      expect(error.message).to.include('[404] Failed to retrieve bundle manifest');
+      expect(error.bundle.url).to.eql(manifestUrl);
     });
   });
 });

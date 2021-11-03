@@ -1,4 +1,4 @@
-import { t, PathUtil, time } from '../common';
+import { t, PathUtil, time, ManifestHash, ManifestFiles, Path } from '../common';
 import { ManifestFile } from '../ManifestFile';
 
 export const FsIndexerLocal = (args: { dir: string; fs: t.INodeFs }) => {
@@ -18,7 +18,7 @@ export const FsIndexerLocal = (args: { dir: string; fs: t.INodeFs }) => {
        * Wrangle the directory to index.
        */
       const dir: string = await (async () => {
-        if (!options.dir) return baseDir; // No explicit dir, use root.
+        if (!options.dir) return baseDir; // No explicit directory specified, use root.
 
         // Trim and join to root diretory path.
         let dir = (options.dir ?? '').trim();
@@ -41,16 +41,19 @@ export const FsIndexerLocal = (args: { dir: string; fs: t.INodeFs }) => {
         if (!dir) return [];
         const paths = await PathUtil.files({ fs, dir, filter });
         const toFile = async (path: string) => ManifestFile.parse({ fs, baseDir, path });
-        const files = await Promise.all(paths.map(toFile));
+        const files = ManifestFiles.sort(await Promise.all(paths.map(toFile)));
         return files;
       })();
 
-      return {
+      const info: t.DirManifestInfo = { indexedAt: time.now.timestamp };
+      const manifest: t.DirManifest = {
         kind: 'dir',
-        hash: { files: ManifestFile.Hash.files(files) },
-        dir: { indexedAt: time.now.timestamp },
+        dir: info,
+        hash: ManifestHash.dir(info, files),
         files,
       };
+
+      return manifest;
     },
   };
 

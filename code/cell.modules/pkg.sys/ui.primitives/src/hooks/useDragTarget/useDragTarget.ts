@@ -4,7 +4,7 @@ import { t } from '../../common';
 
 type OnDrop = (e: t.Dropped) => void;
 type Args<T extends HTMLElement> = {
-  ref: React.RefObject<T>;
+  ref?: React.RefObject<T>;
   isEnabled?: boolean;
   onDrop?: OnDrop;
 };
@@ -86,7 +86,7 @@ export function useDragTarget<T extends HTMLElement>(input?: Partial<Args<T>> | 
 function wrangle<T extends HTMLElement>(
   ref: React.RefObject<T>,
   input?: Partial<Args<T>> | OnDrop,
-): Args<T> {
+) {
   if (typeof input === 'function') return { ref, onDrop: input };
   if (input === undefined) return { ref };
   return { ...input, ref: input.ref ?? ref };

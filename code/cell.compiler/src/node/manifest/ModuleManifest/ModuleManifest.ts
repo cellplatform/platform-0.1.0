@@ -1,7 +1,8 @@
-import { DEFAULT, deleteUndefined, Model, Schema, t, constants } from '../../common';
-import { Manifest, createAndSave } from '../Manifest';
+import { constants, DEFAULT, Encoding, Model, Schema, t, time, ManifestHash } from '../../common';
+import { createAndSave, Manifest } from '../Manifest';
 
 type M = t.ModuleManifest;
+type Timestamp = number;
 
 /**
  * Helpers for creating and working with a [ModuleManifest].
@@ -12,20 +13,7 @@ export const ModuleManifest = {
   /**
    * Tools for working with hash checksums of a manifest.
    */
-  hash: {
-    ...Manifest.hash,
-
-    /**
-     * Calculates the complete module hash, being the:
-     *  1. hash of all files, PLUS
-     *  2. the hash of the "module" meta-data object.
-     */
-    module(input: t.ModuleManifest) {
-      const files = Manifest.hash.files(input.files);
-      const module = input.module;
-      return Schema.Hash.sha256({ module, files });
-    },
-  },
+  hash: Manifest.hash,
 
   /**
    * The filename of the bundle.
@@ -47,8 +35,14 @@ export const ModuleManifest = {
     model: t.CompilerModel;
     dir: string;
     filename?: string; // Default: index.json
+    compiledAt?: Timestamp;
   }): Promise<M> {
-    const { dir, model, filename = ModuleManifest.filename } = args;
+    const {
+      dir,
+      model,
+      filename = ModuleManifest.filename,
+      compiledAt = time.now.timestamp,
+    } = args;
 
     const pkg = constants.COMPILER.load();
     const data = Model(model);
@@ -59,24 +53,24 @@ export const ModuleManifest = {
     const namespace = data.namespace();
     if (!namespace) throw new Error(`A bundle 'namespace' is required to create a manifest.`);
 
-    const REMOTE = DEFAULT.FILE.JS.REMOTE_ENTRY;
-    const remoteEntry = files.some((file) => file.path.endsWith(REMOTE)) ? REMOTE : undefined;
-
-    const module: t.ModuleManifestInfo = deleteUndefined({
+    const module: t.ModuleManifestInfo = {
       namespace,
       version,
-      compiler: `${pkg.name}@${pkg.version ?? '0.0.0'}`,
+      compiler: `${pkg.name}@${pkg.version || '0.0.0'}`,
+      compiledAt,
       mode: data.mode(),
       target: data.target(),
       entry: data.entryFile,
-      remoteEntry,
-    });
-
-    const hash: t.ModuleManifestHash = {
-      files: manifest.hash.files,
-      module: Schema.Hash.sha256({ module, files: manifest.hash.files }),
     };
 
+    if (model.exposes) {
+      module.remote = {
+        entry: DEFAULT.FILE.JS.REMOTE_ENTRY,
+        exports: Object.keys(model.exposes).map((key) => ({ path: Encoding.unescapePath(key) })),
+      };
+    }
+
+    const hash = ManifestHash.module(module, files);
     return { kind: 'module', hash, module, files };
   },
 

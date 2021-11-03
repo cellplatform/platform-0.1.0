@@ -27,8 +27,8 @@ export type IUrlsFunc = {
 };
 
 export type IUrlsBundle = {
-  manifest(bundle: t.RuntimeBundleOrigin): t.IUrl<t.IReqQueryCellFileDownloadByName>;
-  files(bundle: t.RuntimeBundleOrigin): t.IUrl<t.IReqQueryCellFsList>;
+  manifest(bundle: t.BundleCellAddress): t.IUrl<t.IReqQueryCellFileDownloadByName>;
+  files(bundle: t.BundleCellAddress): t.IUrl<t.IReqQueryCellFsList>;
 };
 
 export type IUrlsNs = {

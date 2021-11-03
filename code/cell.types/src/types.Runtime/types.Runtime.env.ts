@@ -1,8 +1,6 @@
 import { t } from '../common';
 
 type Id = string;
-type B = t.RuntimeBundleOrigin;
-type P<T> = Promise<T>;
 
 /**
  * A runtime that is capable of executing functions.
@@ -11,7 +9,7 @@ export type RuntimeEnv = t.RuntimeEnvNode | t.RuntimeEnvWeb;
 
 export type RuntimeElapsed = {
   prep: number; // Preparation time (in msecs) - eg: pull/compile.
-  run: number; // Execution time (in msecs)
+  run: number; //  Execution time (in msecs)
 };
 
 /**
@@ -26,11 +24,14 @@ export type RuntimeMembers = {
   clear: RuntimeClear;
 };
 
-export type RuntimeExists = (bundle: B) => P<boolean>;
-export type RuntimePull = (bundle: B, options?: { silent?: boolean }) => P<RuntimePullResponse>;
-export type RuntimeRun = (bundle: B, options?: RuntimeRunOptions) => RuntimeRunPromise;
-export type RuntimeRemove = (bundle: B) => P<RuntimeRemoveResponse>;
-export type RuntimeClear = () => P<RuntimeClearResponse>;
+export type RuntimeExists = (url: t.ManifestUrl) => Promise<boolean>;
+export type RuntimePull = (
+  url: t.ManifestUrl,
+  options?: { silent?: boolean },
+) => Promise<RuntimePullResponse>;
+export type RuntimeRun = (url: t.ManifestUrl, options?: RuntimeRunOptions) => RuntimeRunPromise;
+export type RuntimeRemove = (url: t.ManifestUrl) => Promise<RuntimeRemoveResponse>;
+export type RuntimeClear = () => Promise<RuntimeClearResponse>;
 
 /**
  * Pull
@@ -38,7 +39,7 @@ export type RuntimeClear = () => P<RuntimeClearResponse>;
 export type RuntimePullResponse = {
   ok: boolean;
   dir: string;
-  manifest: string; // Manifest URL.
+  bundle: { url: t.ManifestUrl; manifest?: t.ModuleManifest };
   errors: t.IRuntimeError[];
 };
 
@@ -54,7 +55,7 @@ export type RuntimeRunOptions = {
   silent?: boolean;
   timeout?: number | 'never';
   entry?: string; // Entry path within bundle (if not specified default manfest entry is used).
-  hash?: string; // The hash of the bundle to match before executing (throws if doesn't match manifest).
+  fileshash?: string; // The hash of the bundle to match before executing (throws if doesn't match manifest).
 };
 
 export type RuntimeRunResponse = {
@@ -68,7 +69,7 @@ export type RuntimeRunResponse = {
   timeout: t.Timeout;
 };
 
-export type RuntimeRunPromise = P<RuntimeRunResponse> & {
+export type RuntimeRunPromise = Promise<RuntimeRunResponse> & {
   tx: Id;
   lifecyle$: t.Observable<RuntimeRunLifecycle>;
   start$: t.Observable<RuntimeRunLifecycle>;

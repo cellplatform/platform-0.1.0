@@ -1,5 +1,5 @@
 import { FsIndexerLocal } from '.';
-import { Hash, expect, TestUtil } from '../test';
+import { expect, Hash, TestUtil, time } from '../test';
 
 describe('FsIndexer', () => {
   beforeEach(() => TestUtil.reset());
@@ -25,10 +25,11 @@ describe('FsIndexer', () => {
   describe('manifest', () => {
     it('empty', async () => {
       const indexer = FsIndexerLocal({ fs: nodefs, dir });
+      const now = time.now.timestamp;
       const manifest = await indexer.manifest();
 
       expect(manifest.kind).to.eql('dir');
-      expect(typeof manifest.dir.indexedAt === 'number').to.eql(true);
+      expect(manifest.dir.indexedAt).to.within(now - 10, now + 20);
       expect(manifest.files.length).to.eql(0);
     });
 
@@ -37,11 +38,12 @@ describe('FsIndexer', () => {
       await copy('images/bird.png');
       await copy('images/award.svg', 'images/foo/bar/icon.svg');
 
+      const now = time.now.timestamp;
       const indexer = FsIndexerLocal({ fs: nodefs, dir });
       const manifest = await indexer.manifest();
 
       expect(manifest.kind).to.eql('dir');
-      expect(typeof manifest.dir.indexedAt === 'number').to.eql(true);
+      expect(manifest.dir.indexedAt).to.within(now - 10, now + 20);
       expect(manifest.files.length).to.eql(3);
     });
 
@@ -77,7 +79,7 @@ describe('FsIndexer', () => {
       const files2 = manifest2.files.map((file) => file.path);
 
       expect(files1).to.eql(['file.txt', 'images/bird.png']);
-      expect(files2).to.eql(['file.txt', 'foo/icon-1.svg', 'foo/bar/icon-2.svg']);
+      expect(files2).to.eql(['file.txt', 'foo/bar/icon-2.svg', 'foo/icon-1.svg']);
     });
 
     it('sub-dir', async () => {
@@ -94,7 +96,7 @@ describe('FsIndexer', () => {
       const files2 = manifest2.files.map((file) => file.path);
 
       expect(files1).to.eql(files2);
-      expect(files1).to.eql(['foo/icon-1.svg', 'foo/bar/icon-2.svg']);
+      expect(files1).to.eql(['foo/bar/icon-2.svg', 'foo/icon-1.svg']);
     });
 
     it('sub-dir: root', async () => {
@@ -102,10 +104,10 @@ describe('FsIndexer', () => {
       await copy('images/bird.png');
 
       const indexer = FsIndexerLocal({ fs: nodefs, dir });
-      const manifest1 = await indexer.manifest({ dir });
+      const manifest = await indexer.manifest({ dir });
 
-      const files1 = manifest1.files.map((file) => file.path);
-      expect(files1).to.eql(['file.txt', 'images/bird.png']);
+      const files = manifest.files.map((file) => file.path);
+      expect(files).to.eql(['file.txt', 'images/bird.png']);
     });
 
     it('sub-dir: "" (empty) - assumes root', async () => {

@@ -1,2 +1,8 @@
 export * from '../types';
-export { Manifest } from '@platform/cell.types/lib/types.Manifest';
+export {
+  Manifest,
+  ManifestFile,
+  ModuleManifestInfo,
+  ModuleManifestHash,
+  DirManifestInfo,
+} from '@platform/cell.types/lib/types.Manifest';

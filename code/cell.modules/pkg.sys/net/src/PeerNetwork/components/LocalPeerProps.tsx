@@ -8,9 +8,8 @@ import { color, COLORS, css, CssValue, Hr, Icons, PropList, t, Textbox, time } f
 type NewConnectionOptions = { isReliable?: boolean; autoStartVideo?: boolean };
 
 export type LocalPeerPropsProps = {
-  self: t.PeerId;
   bus: t.EventBus<any>;
-  status: t.PeerStatus;
+  self: { id: t.PeerId; status: t.PeerStatus };
   title?: string | null;
   newConnections?: boolean | NewConnectionOptions;
   style?: CssValue;
@@ -43,7 +42,7 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
     remote = (connectTo || '').trim();
     if (!remote) return;
 
-    const isConnected = props.status.connections
+    const isConnected = self.status.connections
       .filter(({ kind }) => kind === 'data')
       .some(({ peer }) => peer.remote.id === remote);
     if (isConnected) return; // Already connected.
@@ -55,7 +54,7 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
 
     // Invoke the action(s).
     const events = PeerEvents(bus);
-    const open = events.connection(self, remote).open;
+    const open = events.connection(self.id, remote).open;
     const res = await open.data({ isReliable });
 
     if (autoStartVideo && res.connection) {
@@ -70,9 +69,7 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
   /**
    * [Render]
    */
-
   const width = { min: 240, max: 260 };
-
   const styles = {
     base: css({}),
     textbox: css({
@@ -129,9 +126,10 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
  */
 
 const toNetworkItems = (props: LocalPeerPropsProps): t.PropListItem[] => {
-  const { status } = props;
-  if (!status) return [];
+  const { self } = props;
+  if (!self?.status) return [];
 
+  const status = self.status;
   const signal = status.signal;
   const elapsed = time.elapsed(status.createdAt || -1);
   const age = elapsed.sec < 60 ? 'less than a minute' : elapsed.toString();

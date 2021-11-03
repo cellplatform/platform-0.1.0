@@ -68,14 +68,22 @@ export async function deploy(
     const kind = (manifest as any)?.kind;
     if (kind === 'module') {
       const m = manifest as t.ModuleManifest;
-      name = name ?? `${m.module.namespace}-v${m.module.version}`;
+      const module = { ...m.module };
+
+      Object.keys(module)
+        .filter((key) => typeof module[key] === 'object')
+        .forEach((key) => delete module[key]); // NB: Meta-data cannot be an {object}.
+
+      name = name ?? `${module.namespace}-v${module.version}`;
+      const bytes = m.files.reduce((acc, next) => acc + next.bytes, 0).toString();
       meta = {
-        ...m.module,
+        ...module,
         kind: 'bundle:code/module',
         modulehash: m.hash.module,
         fileshash: m.hash.files,
-        bytes: m.files.reduce((acc, next) => acc + next.bytes, 0).toString(),
+        bytes,
       };
+      Object.keys(meta).map((key) => (meta[key] = meta[key].toString())); // NB: Ensure all values are strings.
     }
   }
 

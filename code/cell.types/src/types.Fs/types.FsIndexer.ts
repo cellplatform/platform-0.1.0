@@ -19,9 +19,4 @@ export type FsIndexer = {
 export type FsIndexerGetManifest = (
   options?: FsIndexerGetManifestOptions,
 ) => Promise<t.DirManifest>;
-export type FsIndexerGetManifestOptions = {
-  dir?: DirPath;
-  filter?: FsPathFilter;
-  cache?: boolean | 'force' | 'remove'; // (default: no-cache) Caches a version of index manifest in the directory for faster retrieval.
-  cachefile?: string; // Used in conjuction with [cache] flag. Filename of the cached manifest to save.
-};
+export type FsIndexerGetManifestOptions = { dir?: DirPath; filter?: FsPathFilter };

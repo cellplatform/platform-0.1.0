@@ -1,11 +1,11 @@
-import { t, nodefs, rx, Filesystem } from './common';
-import { VercelHttp } from '../node.VercelHttp';
+import { nodefs, t } from './common';
 import { VercelFs } from './Vercel.Fs';
 import { VercelNode } from './Vercel.Node';
 
 type ApiToken = string;
 type DirectoryPath = string;
 type Name = string;
+type Milliseconds = number;
 
 type Args = {
   token: ApiToken;
@@ -13,6 +13,7 @@ type Args = {
   team: Name;
   project: Name;
   beforeUpload?: t.VercelHttpBeforeFileUpload;
+  timeout?: Milliseconds;
 };
 
 /**

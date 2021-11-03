@@ -21,6 +21,7 @@ describe('toMimetype (content-type)', () => {
     test('  foo.js  ', 'application/javascript'); // NB: whitespace.
     test('foo.js', 'application/javascript');
     test('foo.json', 'application/json');
+    test('foo.wasm', 'application/wasm');
 
     test('foo.yml', 'text/plain');
     test('foo.yaml', 'text/plain');
@@ -34,6 +35,7 @@ describe('toMimetype (content-type)', () => {
     test('foo.jpg', 'image/jpeg');
     test('foo.jpeg', 'image/jpeg');
     test('foo.gif', 'image/gif');
+    test('foo.svg', 'image/svg+xml');
 
     test('foo.zip', 'application/zip');
     test('foo.pdf', 'application/pdf');

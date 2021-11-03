@@ -26,7 +26,7 @@ export const tmpHandler: t.RouteHandler = async (req) => {
 
     const file = (await fs.readFile(filePath)).toString();
 
-    const bundle: t.RuntimeBundleOrigin = {
+    const bundle: t.BundleCellAddress = {
       host: 'dev.db.team',
       uri: 'cell:ckhon6cdk000o6hetdrtmd0dt:A1',
       dir: 'sample',

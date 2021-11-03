@@ -1,16 +1,19 @@
 import { NodeRuntime } from '@platform/cell.runtime.node';
 
-import { RouterMock, expect, fs, Http, readFile, t, rx } from '../../test';
-import { Samples } from '../module.cell.runtime.node/NodeRuntime.TEST';
+import { RouterMock, expect, fs, Http, readFile, t, rx, Schema } from '../../test';
+import { Samples } from '../module.cell.runtime.node/Samples';
 
 export * from './sample.NodeRuntime/types';
 export * from './sample.pipe/types';
 export { Samples };
 
-type B = t.RuntimeBundleOrigin;
+type B = t.BundleCellAddress;
+const trimSlashes = (path?: string) => (path || '').trim().replace(/^\/*/, '').replace(/\/*$/, '');
 
-export const noManifestFilter = (file: t.IHttpClientCellFileUpload) => {
-  return !file.filename.endsWith('index.json'); // NB: Cause error by filtering out the manifest file.
+const toManifestUrl = (bundle: B) => {
+  const { host, dir, uri = 'cell:foo:A1' } = bundle;
+  const path = trimSlashes(dir) ? `${trimSlashes(dir)}/index.json` : 'index.json';
+  return Schema.urls(host).cell(uri).file.byName(path).toString();
 };
 
 export const createFuncMock = async () => {
@@ -28,7 +31,8 @@ export const prepare = async (options: { dir?: string; uri?: string } = {}) => {
   const { host } = mock;
   const client = mock.client.cell(uri);
   const bundle: B = { host, uri, dir };
-  return { bus, mock, runtime, http, client, bundle, url, uri };
+  const manifestUrl = toManifestUrl(bundle);
+  return { bus, mock, runtime, http, client, bundle, url, uri, manifestUrl };
 };
 
 export const bundleToFiles = async (sourceDir: string, targetDir?: string) => {
@@ -62,6 +66,8 @@ export const uploadBundle = async (
   let files = await bundleToFiles(dist, bundle.dir);
   files = filter ? files.filter((file) => filter(file)) : files;
   const upload = await client.fs.upload(files);
-  expect(upload.ok).to.eql(true);
-  return { files, upload, bundle };
+  expect(upload.ok).to.eql(true, 'Failed to upload sample bundle.');
+
+  const manifestUrl = toManifestUrl(bundle);
+  return { files, upload, bundle, manifestUrl };
 };

@@ -20,7 +20,7 @@ export function invoke(args: {
   entry?: string;
   in?: Partial<t.RuntimeIn>;
   silent?: boolean;
-  hash?: string;
+  fileshash?: string;
   stdlibs?: t.RuntimeNodeAllowedStdlib[];
   forceCache?: boolean;
 }) {
@@ -84,8 +84,8 @@ export function invoke(args: {
       });
     };
 
-    if (args.hash && args.hash !== manifest.hash.files) {
-      addError(`Bundle manifest does not match requested hash '${args.hash}'.`);
+    if (args.fileshash && args.fileshash !== manifest.hash.files) {
+      addError(`Bundle manifest does not match requested fileshash '${args.fileshash}'.`);
       preparationComplete();
       return done();
     }
@@ -125,6 +125,7 @@ export function invoke(args: {
       const code = await Vm.code(filename, { force: args.forceCache });
 
       preparationComplete(); // Stop the "preparation" timer.
+
       vm.run(code.script);
     } catch (error: any) {
       ok = false;

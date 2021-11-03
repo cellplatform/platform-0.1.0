@@ -7,6 +7,7 @@ type Milliseconds = number;
 
 export type AntechamberProps = {
   isOpen?: boolean;
+  isSpinning?: boolean;
   backgroundBlur?: number;
   backgroundBlurTransition?: Milliseconds;
   centerTop?: JSX.Element;
@@ -26,6 +27,7 @@ export const Antechamber: React.FC<AntechamberProps> = (props) => {
     backgroundBlurTransition = 0,
     slideDuration = 200,
     isOpen,
+    isSpinning,
     centerBottom,
     centerTop,
     sealOpacity = 1,
@@ -74,6 +76,7 @@ export const Antechamber: React.FC<AntechamberProps> = (props) => {
       {toMask('bottom')}
       <Body
         isOpen={isOpen}
+        isSpinning={isSpinning}
         bevelHeight={bevelHeight + 3}
         slideDuration={slideDuration}
         sealOpacity={sealOpacity}
@@ -85,7 +88,7 @@ export const Antechamber: React.FC<AntechamberProps> = (props) => {
   );
 
   return (
-    <div ref={baseRef} {...css(styles.base, props.style)}>
+    <div ref={baseRef} {...css(styles.base, props.style)} className={'Sys-Primitives-Antechamber'}>
       {elNotReady}
       {elReady}
     </div>

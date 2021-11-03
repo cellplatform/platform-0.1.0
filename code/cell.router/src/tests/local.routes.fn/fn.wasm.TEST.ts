@@ -14,15 +14,14 @@ describe('/fn:run (WASM)', function () {
 
   it('run wasm', async () => {
     const dir = 'foo';
-    const { mock, bundle, client, http, url } = await prepare({ dir });
-    const { host, uri } = bundle;
+    const { mock, bundle, client, http, url, manifestUrl } = await prepare({ dir });
     await uploadBundle(client, Samples.node.outdir, bundle);
 
     const entry = 'wasm.js';
     const body: t.IReqPostFuncBody = [
-      { host, uri, dir, entry },
-      { host, uri, dir, entry, in: { value: { count: 123 } } },
-      { host, uri, dir, entry },
+      { bundle: manifestUrl, entry },
+      { bundle: manifestUrl, entry, in: { value: { count: 123 } } },
+      { bundle: manifestUrl, entry },
     ];
     const res = await http.post(url.toString(), body);
     const json = res.json as t.IResPostFunc;

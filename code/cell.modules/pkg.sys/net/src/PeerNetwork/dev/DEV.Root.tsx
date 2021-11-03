@@ -5,19 +5,19 @@ import { useLocalPeer } from '../hooks';
 import { COLORS, css, CssValue, t, useDragTarget } from './common';
 import { DevNetwork } from './network';
 
-export type RootLayoutProps = {
+export type DevRootLayoutProps = {
   bus: t.EventBus<any>;
   netbus: t.PeerNetworkBus<any>;
   debugJson?: boolean;
   collapse?: boolean | { data?: boolean; media?: boolean };
   cards?: { data?: boolean; media?: boolean };
+  others?: { headerVideos?: boolean };
   style?: CssValue;
 };
 
-export const RootLayout: React.FC<RootLayoutProps> = (props) => {
+export const DevRootLayout: React.FC<DevRootLayoutProps> = (props) => {
   const { netbus, bus } = props;
-
-  const peer = useLocalPeer({ self: netbus.self, bus });
+  const self = useLocalPeer({ bus, self: netbus.self });
 
   /**
    * NOTE: This drag monitor is setup to prevent arbitrarily dropped
@@ -52,15 +52,19 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
     }),
   };
 
-  const elLeft = peer.status && (
+  const elLeft = self.status && (
     <div {...styles.left}>
       <DevNetwork
         bus={bus}
         netbus={netbus}
         collapse={props.collapse}
         cards={props.cards}
-        peer={peer.status}
-        media={peer.media}
+        others={props.others}
+        self={{
+          id: netbus.self,
+          status: self.status,
+          media: self.media,
+        }}
       />
     </div>
   );
@@ -71,7 +75,7 @@ export const RootLayout: React.FC<RootLayoutProps> = (props) => {
         <div {...styles.verticalRule} />
       </div>
       <div {...styles.right}>
-        <ObjectView name={'state'} data={peer.status} expandLevel={5} fontSize={10} />
+        <ObjectView name={'state'} data={self.status} expandLevel={5} fontSize={10} />
       </div>
     </>
   );

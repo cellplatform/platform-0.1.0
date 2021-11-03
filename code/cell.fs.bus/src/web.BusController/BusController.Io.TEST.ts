@@ -9,7 +9,7 @@ describe('BusController.IO', function () {
       const id = 'foo';
       const fs = TestFs.local;
       const index = TestFs.index(fs.dir);
-      const controller = Filesystem.Controller({ id, fs, index, bus });
+      const controller = Filesystem.Controller({ id, driver: fs, index, bus });
       const events = Filesystem.Events({ id, bus });
 
       const res = await events.io.info.get();
@@ -100,7 +100,7 @@ describe('BusController.IO', function () {
       const bus = rx.bus<t.SysFsEvent>();
       const fs = TestFs.local;
       const index = TestFs.index(fs.dir);
-      const controller = Filesystem.Controller({ id: 'foo', fs, index, bus });
+      const controller = Filesystem.Controller({ id: 'foo', driver: fs, index, bus });
       const events = Filesystem.Events({ id: 'bar', bus });
 
       const res = await events.io.info.get({ timeout: 10 });

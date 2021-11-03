@@ -1,5 +1,4 @@
 export { ActionsFactory } from './api/Actions';
-export { Test } from './api/TestSuite';
 export { DevActions } from './factory';
 
 export { Harness } from './ui/Harness';
@@ -10,6 +9,7 @@ export { ActionPanel } from './ui/ActionPanel';
 export { ActionsSelector, useActionsSelectorState } from './ui/ActionsSelector';
 export { ErrorBoundary } from './ui/ErrorBoundary';
 export { Hr } from './ui/Hr';
+export { Test } from './ui/TestSuite';
 export * from './ui/Textbox';
 
 export { Store, LocalStorage } from './store';

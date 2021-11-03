@@ -1,5 +1,5 @@
 import { Runtime } from '@platform/cell.runtime';
-import { remote } from './remote';
+import { remote } from './WebRuntime.remote';
 
 /**
  * Runtime environment for executing bundles within a web (browser) context.

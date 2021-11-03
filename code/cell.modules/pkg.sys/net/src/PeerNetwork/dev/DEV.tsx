@@ -1,6 +1,11 @@
 import React from 'react';
 import { toObject, DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
 
+import { WebRuntime } from 'sys.runtime.web';
+import { TARGET_NAME } from './common';
+
+type O = Record<string, unknown>;
+
 import {
   css,
   cuid,
@@ -15,7 +20,7 @@ import {
   QueryString,
   PeerNetworkBus,
 } from './common';
-import { RootLayout } from './DEV.Root';
+import { DevRootLayout } from './DEV.Root';
 import { EventBridge } from './event';
 import { DevGroupSeed, GroupSeed } from './layouts';
 import { DevProps } from './DEV.Props';
@@ -41,11 +46,23 @@ type CtxFlags = {
   cardsMedia: boolean;
   cardsData: boolean;
   isLayoutFullscreen: boolean;
+  showOthersInHeader: boolean;
 };
 type CtxEvents = {
   peer: t.PeerNetworkEvents;
   group: t.GroupEvents;
   media: ReturnType<typeof MediaStream.Events>;
+  runtime: t.WebRuntimeEvents;
+};
+
+const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind'], props?: O) => {
+  const { netbus } = toObject(ctx) as Ctx;
+  const isLayoutFullscreen = ctx.toFlags().isLayoutFullscreen;
+  const target: t.DevModalTarget = isLayoutFullscreen ? 'fullscreen' : 'body';
+  netbus.fire({
+    type: 'DEV/group/layout',
+    payload: { kind, target, props },
+  });
 };
 
 /**
@@ -60,15 +77,19 @@ export const actions = DevActions<Ctx>()
     const self = cuid();
     const bus = rx.bus<t.PeerEvent | t.DevEvent>();
 
-    EventBridge.startEventBridge({ self, bus });
+    EventBridge.startEventBridge({ bus, self });
     PeerNetwork.Controller({ bus });
     MediaStream.Controller({ bus });
 
     const netbus = PeerNetworkBus({ bus, self });
+
+    const runtime = WebRuntime.Bus.Controller({ bus, netbus });
+
     const events = {
       media: MediaStream.Events(bus),
       peer: PeerNetwork.PeerEvents(bus),
       group: PeerNetwork.GroupEvents(netbus),
+      runtime: runtime.events,
     };
 
     const strategy = {
@@ -107,6 +128,7 @@ export const actions = DevActions<Ctx>()
       collapseMedia: false,
       cardsData: true,
       cardsMedia: false,
+      showOthersInHeader: true,
     });
     storage.changed$.subscribe(() => e.redraw());
 
@@ -144,6 +166,26 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
+
+    e.title('Module Installation');
+
+    e.component((e) => {
+      const { ctx } = e;
+      return (
+        <WebRuntime.Ui.ManifestSelectorStateful
+          bus={ctx.bus}
+          style={{ MarginX: 30, MarginY: 20 }}
+          onEntryClick={(e) => {
+            ctx.events.runtime.useModule.fire({
+              target: TARGET_NAME,
+              module: e.remote,
+            });
+          }}
+        />
+      );
+    });
+
+    e.hr();
   })
 
   .items((e) => {
@@ -167,6 +209,12 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr(1, 0.2);
+
+    e.boolean('show others in header', (e) => {
+      const flags = e.ctx.toFlags();
+      if (e.changing) flags.showOthersInHeader = e.changing.next;
+      e.boolean.current = flags.showOthersInHeader;
+    });
 
     e.boolean('collapse: data', (e) => {
       const flags = e.ctx.toFlags();
@@ -219,16 +267,6 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr(1, 0.2);
-
-    const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind']) => {
-      const { netbus } = toObject(ctx) as Ctx;
-      const isLayoutFullscreen = ctx.toFlags().isLayoutFullscreen;
-      const target: t.DevModalTarget = isLayoutFullscreen ? 'fullscreen' : 'body';
-      netbus.fire({
-        type: 'DEV/group/layout',
-        payload: { kind, target },
-      });
-    };
 
     e.button('screensize', (e) => showLayout(e.ctx, 'screensize'));
     e.button('crdt', (e) => showLayout(e.ctx, 'crdt'));
@@ -505,12 +543,13 @@ export const actions = DevActions<Ctx>()
     });
 
     e.render(
-      <RootLayout
+      <DevRootLayout
         bus={bus}
         netbus={netbus}
         debugJson={flags.debugJson}
         collapse={{ data: flags.collapseData, media: flags.collapseMedia }}
         cards={{ data: flags.cardsData, media: flags.cardsMedia }}
+        others={{ headerVideos: flags.showOthersInHeader }}
       />,
     );
   });

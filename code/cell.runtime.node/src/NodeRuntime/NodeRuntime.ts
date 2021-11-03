@@ -4,17 +4,10 @@ import { BundleWrapper } from '../BundleWrapper';
 import { BusController } from '../BusController';
 import { BusEvents } from '../BusEvents';
 import { fs, PATH, R, t, slug } from '../common';
-import { pullMethod } from './NodeRuntime.pull';
-import { runMethod } from './NodeRuntime.run';
+import { pullMethodFactory } from './NodeRuntime.pull';
+import { runMethodFactory } from './NodeRuntime.run';
 
 export const NodeRuntime = {
-  /**
-   * Generates URLs for the given bundle.
-   */
-  urls(bundle: t.RuntimeBundleOrigin) {
-    return BundleWrapper.urls(bundle);
-  },
-
   /**
    * Initialize an instance of the Node runtime.
    */
@@ -32,9 +25,11 @@ export const NodeRuntime = {
     const isDisposed = () => runtime.isDisposed;
     const dispose$ = new Subject<void>();
     const dispose = () => {
+      runtime.isDisposed = true;
+
       controller.dispose();
       events.dispose();
-      runtime.isDisposed = true;
+
       dispose$.next();
       dispose$.complete();
     };
@@ -51,23 +46,23 @@ export const NodeRuntime = {
       stdlibs,
       events,
 
-      pull: pullMethod({ cachedir, isDisposed }),
-      run: runMethod({ runtime: id, events, bus, cachedir, stdlibs, isDisposed }),
+      pull: pullMethodFactory({ cachedir, isDisposed }),
+      run: runMethodFactory({ runtime: id, events, bus, cachedir, stdlibs, isDisposed }),
 
       /**
        * Determine if the given bundle has been pulled.
        */
-      async exists(input) {
+      async exists(manifestUrl) {
         if (runtime.isDisposed) throw new Error('Runtime disposed');
-        return BundleWrapper.create(input, cachedir).isCached();
+        return BundleWrapper(manifestUrl, cachedir).isCached();
       },
 
       /**
        * Delete the given bundle (if it exists).
        */
-      async remove(input) {
+      async remove(manifestUrl) {
         if (runtime.isDisposed) throw new Error('Runtime disposed');
-        const bundle = BundleWrapper.create(input, cachedir);
+        const bundle = BundleWrapper(manifestUrl, cachedir);
         const dir = bundle.cache.dir;
         let count = 0;
         if (await fs.pathExists(dir)) {

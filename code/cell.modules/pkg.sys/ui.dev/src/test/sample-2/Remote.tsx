@@ -24,7 +24,7 @@ export const Remote: React.FC<RemoteProps> = (props: RemoteProps) => {
   console.groupEnd();
 
   const remote = WebRuntime.remote({ url, namespace, entry });
-  const { ready, failed } = remote.useScript();
+  const { ready, failed } = remote.useModule();
 
   const styles = {
     base: css({ padding: 30 }),

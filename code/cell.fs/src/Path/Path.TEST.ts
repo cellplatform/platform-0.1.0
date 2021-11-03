@@ -186,4 +186,72 @@ describe('Path', () => {
       test({}, '');
     });
   });
+
+  describe('parts', () => {
+    it('empty', () => {
+      const test = (input?: string) => {
+        const res = Path.parts(input as any);
+
+        expect(res.dir).to.eql('');
+        expect(res.filename).to.eql('');
+        expect(res.name).to.eql('');
+        expect(res.ext).to.eql('');
+        expect(res.path).to.eql('');
+      };
+
+      test('');
+      test('   ');
+      test(undefined);
+    });
+
+    it('path: "file.txt"', () => {
+      const path = 'file.txt';
+      const res = Path.parts(path);
+      expect(res.path).to.eql(path);
+      expect(res.dir).to.eql('');
+      expect(res.filename).to.eql('file.txt');
+      expect(res.name).to.eql('file');
+      expect(res.ext).to.eql('txt');
+    });
+
+    it('path: "/file.txt"', () => {
+      const path = '/file.txt';
+      const res = Path.parts(path);
+      expect(res.path).to.eql(path);
+      expect(res.dir).to.eql('');
+      expect(res.filename).to.eql('file.txt');
+      expect(res.name).to.eql('file');
+      expect(res.ext).to.eql('txt');
+    });
+
+    it('path: "//foo/file.foo.txt"', () => {
+      const path = '//foo/file.foo.txt';
+      const res = Path.parts(`  ${path}  `);
+      expect(res.path).to.eql(path);
+      expect(res.dir).to.eql('//foo');
+      expect(res.filename).to.eql('file.foo.txt');
+      expect(res.name).to.eql('file.foo');
+      expect(res.ext).to.eql('txt');
+    });
+
+    it('path: "foo"', () => {
+      const path = 'foo';
+      const res = Path.parts(`  ${path}  `);
+      expect(res.path).to.eql(path);
+      expect(res.dir).to.eql('');
+      expect(res.filename).to.eql('foo');
+      expect(res.name).to.eql('foo');
+      expect(res.ext).to.eql('');
+    });
+
+    it('path: "." (edge case)', () => {
+      const path = '.';
+      const res = Path.parts(`  ${path}  `);
+      expect(res.path).to.eql(path);
+      expect(res.dir).to.eql('');
+      expect(res.filename).to.eql('.');
+      expect(res.name).to.eql('');
+      expect(res.ext).to.eql('');
+    });
+  });
 });

@@ -3,18 +3,19 @@ import { VercelHttp } from '../node.VercelHttp';
 
 type ApiToken = string;
 type DirectoryPath = string;
+type Milliseconds = number;
 
 type Args = {
   token: ApiToken;
   dir?: DirectoryPath;
-  timeout?: number;
+  timeout?: Milliseconds;
 };
 
 /**
  * Starts a vercel controller using a local [node/fs] process.
  */
 export const VercelNode = (args: Args) => {
-  const { token, timeout = 9999 } = args;
+  const { token, timeout = 30000 } = args;
 
   const dir = nodefs.resolve(args.dir ?? '');
   const bus = rx.bus();

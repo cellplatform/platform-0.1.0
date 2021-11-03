@@ -3,9 +3,10 @@ import { BusController as Controller } from '../web.BusController';
 import { FsIndexerLocal, FsDriverLocal } from '@platform/cell.fs.local';
 
 type FilesystemId = string;
+type Milliseconds = number;
 
 /**
- * Event controller.
+ * Event controller (node-js).
  */
 export function BusController(args: {
   bus: t.EventBus<any>;
@@ -14,8 +15,9 @@ export function BusController(args: {
   index?: t.FsIndexer;
   filter?: (e: t.SysFsEvent) => boolean;
   httpFactory?: (host: string | number) => t.IHttpClient;
+  timeout?: Milliseconds;
 }) {
-  const { bus, id, filter, httpFactory } = args;
+  const { bus, id, filter, httpFactory, timeout } = args;
 
   /**
    * NOTE:
@@ -35,9 +37,10 @@ export function BusController(args: {
   return Controller({
     bus,
     id,
-    fs,
+    driver: fs,
     index,
     filter,
     httpFactory,
+    timeout,
   });
 }

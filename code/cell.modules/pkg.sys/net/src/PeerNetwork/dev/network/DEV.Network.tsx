@@ -6,19 +6,24 @@ import { useGroupController, useLocalController } from '../hooks';
 import { DevNetworkConnections } from './DEV.Network.Connections';
 import { DevNetworkHeader } from './DEV.Network.Header';
 import { useGroupScreensize } from '../hooks';
+import { DevNetworkRemote } from './DEV.Network.Remote';
 
 export type DevNetworkProps = {
   bus: t.EventBus<any>;
   netbus: t.PeerNetworkBus<any>;
-  peer: t.PeerStatus;
-  media: { video?: MediaStream; screen?: MediaStream };
+  self: {
+    id: t.PeerId;
+    status: t.PeerStatus;
+    media: { video?: MediaStream; screen?: MediaStream };
+  };
+  others?: { headerVideos?: boolean };
   collapse?: boolean | { data?: boolean; media?: boolean };
   cards?: { data?: boolean; media?: boolean };
   style?: CssValue;
 };
 
 export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
-  const { peer, media, netbus } = props;
+  const { self, netbus, others = {} } = props;
   const bus = props.bus as t.EventBus<t.PeerEvent>;
 
   const baseRef = useRef<HTMLDivElement>(null);
@@ -52,12 +57,13 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
         showNetbus={true}
       />
       {modalSize === 'body' && elModal}
+      {!elModal && <DevNetworkRemote bus={bus} />}
     </div>
   );
 
   return (
     <div ref={baseRef} {...css(styles.base, props.style)}>
-      <DevNetworkHeader bus={bus} netbus={netbus} peer={peer} media={media} />
+      <DevNetworkHeader bus={bus} self={self} others={{ showVideo: others.headerVideos }} />
       <Hr thickness={10} opacity={0.05} margin={0} />
       {elBody}
       {modalSize === 'fullscreen' && elModal}

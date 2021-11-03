@@ -12,11 +12,7 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
   const parsedHost = parseUrl(hostInput);
   const host = parsedHost.host;
 
-  const runBundle = async (args: {
-    config: B;
-    origin: t.RuntimeBundleOrigin;
-    silent?: boolean;
-  }) => {
+  const runBundle = async (args: { config: B; origin: t.BundleCellAddress; silent?: boolean }) => {
     const { origin, silent } = args;
     const config = args.config.clone().env({ origin });
     return await bundle(config, { silent });
@@ -36,7 +32,7 @@ export const cell: t.CompilerCreateCell = (hostInput, cellInput) => {
       /**
        * [1] Bundle the code.
        */
-      const origin: t.RuntimeBundleOrigin = { host, uri: target.cell, dir: target.dir };
+      const origin: t.BundleCellAddress = { host, uri: target.cell, dir: target.dir };
       if (options.runBundle ?? true) {
         await runBundle({ config, origin, silent });
       }

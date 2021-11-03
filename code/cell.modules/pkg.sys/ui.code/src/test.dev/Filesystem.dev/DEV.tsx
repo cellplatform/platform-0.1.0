@@ -29,7 +29,7 @@ export const actions = DevActions<Ctx>()
     const id = 'foo';
     const bus = rx.bus<E>();
     const netbus = IpcBus<E>();
-    const store = Filesystem.Events({ id: 'main', bus: netbus });
+    const store = Filesystem.Web.Events({ id: 'main', bus: netbus });
     const fs = store.fs();
 
     const save = async () => {

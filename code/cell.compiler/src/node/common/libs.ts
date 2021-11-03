@@ -25,7 +25,7 @@ export { StateObject } from '@platform/state';
 export { fs } from '@platform/fs';
 export { log } from '@platform/log/lib/server';
 export { Client, HttpClient } from '@platform/cell.client';
-export { Schema, Uri, Encoding } from '@platform/cell.schema';
+export { Schema, Uri, Encoding, ManifestHash } from '@platform/cell.schema';
 
 export { exec } from '@platform/exec';
 export { Port } from '@platform/http/lib/node';

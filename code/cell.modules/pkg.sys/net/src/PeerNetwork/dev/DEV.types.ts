@@ -3,6 +3,7 @@ import * as t from '../common/types';
 
 export * from '../common/types';
 
+type O = Record<string, unknown>;
 export type DevModalTarget = 'fullscreen' | 'body';
 
 /**
@@ -96,6 +97,7 @@ export type DevGroupLayout = DevGroupLayoutSimple;
 export type DevGroupLayoutSimple = {
   kind: 'cards' | 'crdt' | 'screensize' | 'video/physics' | 'video/group' | 'image/pasteboard';
   target?: DevModalTarget;
+  props?: O;
 };
 
 /**

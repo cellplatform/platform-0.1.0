@@ -1,72 +1,48 @@
-import { DEFAULT, deleteUndefined, is, slug, t, time } from './common';
+import { Is, t } from './common';
+import { Def } from './TestSuiteModel';
 
 /**
- * A single test.
+ * Entry point to the unit-testing system.
  */
-export const TestModel = (args: {
-  description: string;
-  handler?: t.TestHandler;
-  modifier?: t.TestModifier;
-}): t.TestModel => {
-  const { description, handler, modifier } = args;
+export const Test: t.Test = {
+  describe: Def.variants(),
 
-  const run: t.TestRun = (options = {}) => {
-    type R = t.TestRunResponse;
+  /**
+   * Bundle together a suite of tests from different ES modules,
+   * either statically or dynamically imported.
+   */
+  async bundle(...args: any[]) {
+    type B = t.TestSuiteModel | Promise<any>;
 
-    return new Promise<R>(async (resolve, reject) => {
-      const timer = time.timer();
-      const response: R = {
-        ok: true,
-        description,
-        elapsed: -1,
-        timeout: Math.max(0, options.timeout ?? DEFAULT.TIMEOUT),
-        skipped: Boolean(modifier === 'skip' || options.skip) ? true : undefined,
-      };
+    const param1 = args[0];
+    const param2 = typeof param1 === 'string' ? args[1] : param1;
+    const items: B[] = Array.isArray(param2) ? param2 : [param2];
 
-      const done = (options: { error?: Error } = {}) => {
-        stopTimeout?.();
-        response.elapsed = timer.elapsed.msec;
-        response.error = options.error;
-        response.ok = !Boolean(response.error);
-        resolve(deleteUndefined(response));
-      };
-      if (!handler || response.skipped) return done();
-
-      let stopTimeout: undefined | (() => void);
-      const startTimeout = (msecs: number) => {
-        stopTimeout?.();
-        const res = time.delay(msecs, () => {
-          const error = new Error(`Timed out after ${msecs} msecs`);
-          return done({ error });
-        });
-        stopTimeout = res.cancel;
-      };
-
-      const args: t.TestHandlerArgs = {
-        timeout(value) {
-          response.timeout = Math.max(0, value);
-          startTimeout(response.timeout);
-          return args;
-        },
-      };
-
-      try {
-        startTimeout(response.timeout);
-        const wait = handler(args);
-        if (is.promise(wait)) await wait;
-        return done();
-      } catch (error: any) {
-        done({ error });
-      }
+    const wait = items.map(async (item) => {
+      const module = Is.promise(item) ? (await item).default : item;
+      return Is.suite(module) ? (module as t.TestSuiteModel) : undefined;
     });
-  };
 
-  const model: t.TestModel = {
-    id: `Test.${slug()}`,
-    description,
-    modifier,
-    handler,
-    run,
-  };
-  return model;
+    const suites = (await Promise.all(wait)).filter(Boolean) as t.TestSuiteModel[];
+    const name = typeof param1 === 'string' ? param1 : wrangleRootName(suites);
+
+    if (suites.length === 1) {
+      // Single suite only.
+      const root = suites[0];
+      root.state.description = name; // NB: Ensure any explicit name passed to bundle are used on the singlular root.
+      return root;
+    } else {
+      // Multiple suites.
+      const root = Test.describe(name);
+      return root.merge(...suites);
+    }
+  },
 };
+
+/**
+ * Helpers
+ */
+
+function wrangleRootName(suites: t.TestSuiteModel[]) {
+  return suites.length === 1 ? suites[0].state.description : 'Tests';
+}

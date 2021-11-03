@@ -3,7 +3,7 @@ import { takeUntil, filter, map } from 'rxjs/operators';
 
 import { BundleWrapper } from '../BundleWrapper';
 import { DEFAULT, deleteUndefined, fs, log, Logger, PATH, R, rx, slug, t, time } from '../common';
-import { pullMethod } from './NodeRuntime.pull';
+import { pullMethodFactory } from './NodeRuntime.pull';
 import { invoke } from './NodeRuntime.run.invoke';
 
 type Id = string;
@@ -11,7 +11,7 @@ type Id = string;
 /**
  * Factory for the [run] method.
  */
-export function runMethod(args: {
+export function runMethodFactory(args: {
   runtime: Id;
   bus: t.EventBus<any>;
   events: t.RuntimeNodeEvents;
@@ -21,15 +21,12 @@ export function runMethod(args: {
 }) {
   const { runtime, cachedir, stdlibs, isDisposed, events } = args;
   const bus = rx.busAsType<t.RuntimeNodeEvent>(args.bus);
-  const pull = pullMethod({ cachedir, isDisposed });
+  const pull = pullMethodFactory({ cachedir, isDisposed });
 
   /**
    * Pull and run the given bundle.
    */
-  const fn: t.RuntimeRun = (
-    bundleInput: t.RuntimeBundleOrigin,
-    options: t.RuntimeRunOptions = {},
-  ) => {
+  const fn: t.RuntimeRun = (manifestUrl, options = {}) => {
     if (isDisposed()) throw new Error('Runtime disposed');
 
     const timer = time.timer();
@@ -43,9 +40,9 @@ export function runMethod(args: {
     const promise = new Promise<t.RuntimeRunResponse>(async (resolve, reject) => {
       let elapsed = { prep: -1, run: -1 }; // NB: Returned from "run" execution.
 
-      const { silent, hash } = options;
+      const { silent, fileshash } = options;
       const timeout = wrangleTimeout(options.timeout);
-      const bundle = BundleWrapper.create(bundleInput, cachedir);
+      const bundle = BundleWrapper(manifestUrl, cachedir);
       const exists = await bundle.isCached();
       const isPullRequired = !exists || options.pull;
 
@@ -54,7 +51,7 @@ export function runMethod(args: {
         errors.push(
           deleteUndefined({
             type: 'RUNTIME/run',
-            bundle: bundle.toObject(),
+            bundle: { url: bundle.url.href },
             message,
             stack,
           }),
@@ -92,7 +89,7 @@ export function runMethod(args: {
        * Ensure the bundle has been pulled locally.
        */
       if (isPullRequired) {
-        const res = await pull(bundleInput, { silent });
+        const res = await pull(manifestUrl, { silent });
         errors.push(...res.errors);
         if (!res.ok || errors.length > 0) {
           return done();
@@ -149,9 +146,9 @@ export function runMethod(args: {
         add('module', `${module.namespace}@${module.version}`);
         add('• bundle', `${module.target} (${module.mode})`);
         add('• entry', entry);
-        add('• hash', manifest.hash.module);
-        add('manifest ', Logger.format.url(bundle.urls.manifest));
-        add('files ', Logger.format.url(bundle.urls.files));
+        add('• hash.module', manifest.hash.module);
+        add('• hash.files', manifest.hash.files);
+        add('manifest ', Logger.format.url(bundle.url.href));
         add('size', `${yellow(size)} (${manifest.files.length} files)`);
 
         log.info();
@@ -172,7 +169,7 @@ export function runMethod(args: {
         in: options.in,
         timeout,
         entry,
-        hash,
+        fileshash,
         stdlibs,
         forceCache: isPullRequired,
       });

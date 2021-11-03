@@ -6,10 +6,10 @@ import { VercelDeploy as Deploy } from './Vercel.Deploy';
 import { VercelNode as Node } from './Vercel.Node';
 
 export const Vercel = {
+  Fs,
   Controller,
   Events,
   Http,
-  Fs,
   Deploy,
   Node,
 };

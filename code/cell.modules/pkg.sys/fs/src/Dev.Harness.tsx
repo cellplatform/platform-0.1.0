@@ -4,8 +4,12 @@ import { Harness } from 'sys.ui.dev';
 const imports = {
   Foo: import('./web.ui/Foo/dev/DEV'),
   Drop: import('./test.dev/Drop/DEV'),
-  FsDriverIndexedDb: import('./web.FsDriver.IndexedDB/dev/DEV'),
+
+  FsDriverIndexedDb: import('./web.FsDriver.IndexedDb/dev/DEV'),
+  FsIndexedDb: import('./web.FsBus.IndexedDb/dev/DEV'),
 };
 
-const ns = new URL(location.href).searchParams.get('ns');
-export const DevHarness: React.FC = () => <Harness actions={Object.values(imports)} initial={ns} />;
+const dev = new URL(location.href).searchParams.get('dev');
+export const DevHarness: React.FC = () => (
+  <Harness actions={Object.values(imports)} initial={dev} />
+);

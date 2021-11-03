@@ -1,6 +1,6 @@
 import { value, id, t, util, R } from '../common';
 
-type B = t.RuntimeBundleOrigin;
+type B = t.BundleCellAddress;
 
 /**
  * Executes a function in the given runtime.
@@ -37,7 +37,7 @@ export async function exec(args: {
     };
 
     if (Array.isArray(args.body)) {
-      // Process in [serial] list order.
+      // Process in ["serial"] list order.
       let previous: t.IResPostFuncResult | undefined;
       for (const body of args.body) {
         previous = await run(body, previous);
@@ -51,11 +51,10 @@ export async function exec(args: {
         }
       }
     } else {
-      // Process in [parallel].
-      type B = t.RuntimeBundleOrigin;
+      // Process in ["parallel"].
       const items = Object.keys(args.body).map((key) => args.body[key] as t.IReqPostFunc);
-      const bundles = R.uniq(items.map(({ uri, host, dir }) => ({ uri, host, dir } as B)));
-      await Promise.all(bundles.map((bundle) => runtime.pull(bundle, { silent: true })));
+      const bundleUrls = R.uniq(items.map(({ bundle }) => bundle));
+      await Promise.all(bundleUrls.map((url) => runtime.pull(url, { silent: true })));
       await Promise.all(items.map((body) => run(body)));
     }
 
@@ -106,22 +105,21 @@ async function execBundle(args: {
   const { body, runtime } = args;
   const silent = body.silent ?? args.defaultSilent ?? true;
 
-  const { uri, dir, entry, hash } = body;
-  const host = body.host || args.host;
+  const { entry, fileshash } = body;
+  const manifestUrl = body.bundle;
+
   const pull = body.pull ?? args.defaultPull ?? false;
   const timeout = body.timeout ?? args.defaultTimeout;
-  const bundle: B = { host, uri, dir };
 
-  const exists = await runtime.exists(bundle);
-  const options: t.RuntimeRunOptions = {
+  const exists = await runtime.exists(manifestUrl);
+  const res = await runtime.run(manifestUrl, {
     silent,
     pull,
     in: { ...args.in, ...body.in },
     timeout,
     entry,
-    hash,
-  };
-  const res = await runtime.run(bundle, options);
+    fileshash,
+  });
 
   const { ok, manifest, errors } = res;
   const tx = body.tx || id.cuid();
@@ -132,8 +130,12 @@ async function execBundle(args: {
     tx,
     out: res.out,
     elapsed: res.elapsed,
-    bundle: { ...bundle, hash: manifest?.hash.files },
     entry: res.entry,
+    bundle: {
+      url: manifestUrl,
+      fileshash: manifest?.hash.files || '',
+      version: manifest?.module?.version || '',
+    },
     cache: { exists, pulled: pull ? true : !exists },
     size: {
       bytes: files ? files.reduce((acc, next) => acc + next.bytes, 0) : -1,

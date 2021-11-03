@@ -12,6 +12,7 @@ export type PositioningContainerProps = {
   children?: React.ReactNode;
   position?: t.BoxPosition;
   rootResize?: t.ResizeObserver;
+  childPointerEvents?: 'none' | 'auto';
   style?: CssValue;
   onSize?: PositioningSizeHandler;
   onUnmount?: () => void;
@@ -73,7 +74,7 @@ export const PositioningContainer: React.FC<PositioningContainerProps> = (props)
       flex: 1,
     }),
     child: css({
-      pointerEvents: 'auto',
+      pointerEvents: props.childPointerEvents ?? 'auto',
       position: 'relative',
       display: ready ? 'flex' : 'none',
       justifySelf: grid?.x,
@@ -88,7 +89,11 @@ export const PositioningContainer: React.FC<PositioningContainerProps> = (props)
   );
 
   return (
-    <div ref={rootRef} {...css(styles.base, props.style)}>
+    <div
+      ref={rootRef}
+      {...css(styles.base, props.style)}
+      className={'Sys-Primitives-PositioningContainer'}
+    >
       {elChild}
     </div>
   );

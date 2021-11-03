@@ -4,6 +4,7 @@ type Id = string;
 type Anything = void | any;
 type Milliseconds = number;
 type Description = string;
+type BundleImport = TestSuiteModel | Promise<any>;
 
 export type TestModifier = 'skip' | 'only';
 
@@ -12,7 +13,8 @@ export type TestModifier = 'skip' | 'only';
  */
 export type Test = {
   describe: TestSuiteDescribe;
-  bundle(items: (TestSuiteModel | Promise<any>)[]): Promise<TestSuiteModel>;
+  bundle(items: BundleImport | BundleImport[]): Promise<TestSuiteModel>;
+  bundle(description: string, items: BundleImport | BundleImport[]): Promise<TestSuiteModel>;
 };
 
 /**
@@ -45,21 +47,26 @@ export type TestHandlerArgs = { timeout(value: Milliseconds): TestHandlerArgs };
  * Model: Test
  */
 export type TestModel = {
+  kind: 'Test';
+  parent: TestSuiteModel;
   id: Id;
   run: TestRun;
   description: Description;
   handler?: TestHandler;
   modifier?: TestModifier;
+  clone(): TestModel;
+  toString(): string;
 };
 
 export type TestRun = (options?: TestRunOptions) => Promise<TestRunResponse>;
-export type TestRunOptions = { timeout?: Milliseconds; skip?: boolean };
+export type TestRunOptions = { timeout?: Milliseconds; excluded?: TestModifier[] };
 export type TestRunResponse = {
+  id: Id;
   ok: boolean;
   description: Description;
   elapsed: Milliseconds;
   timeout: Milliseconds;
-  skipped?: true;
+  excluded?: TestModifier[];
   error?: Error;
 };
 
@@ -68,13 +75,17 @@ export type TestRunResponse = {
  */
 
 export type TestSuiteModel = TestSuite & {
+  kind: 'TestSuite';
   state: TestSuiteModelState;
   run: TestSuiteRun;
-  merge(...suites: TestSuiteModel[]): TestSuiteModel;
+  merge(...suites: TestSuiteModel[]): Promise<TestSuiteModel>;
+  init(): Promise<TestSuiteModel>;
+  clone(): Promise<TestSuiteModel>;
+  toString(): string;
 };
 
 export type TestSuiteModelState = {
-  init(): Promise<TestSuiteModel>;
+  parent?: TestSuiteModel;
   ready: boolean; // true after [init] has been run.
   description: Description;
   handler?: TestSuiteHandler;
@@ -90,6 +101,7 @@ export type TestSuiteRunOptions = {
   deep?: boolean;
 };
 export type TestSuiteRunResponse = {
+  id: Id;
   ok: boolean;
   description: Description;
   elapsed: Milliseconds;

@@ -48,7 +48,11 @@ export function toWebpackConfig(
     return {
       name,
       mode,
-      output: { publicPath: 'auto', path },
+      output: {
+        path,
+        publicPath: 'auto',
+        crossOriginLoading: 'anonymous', // NB: Prevents cross-origin loading problems of code-split JS when doing "federated function" imports.
+      },
       entry,
       target,
       resolve: { extensions: ['.tsx', '.ts', '.js', '.json'] },

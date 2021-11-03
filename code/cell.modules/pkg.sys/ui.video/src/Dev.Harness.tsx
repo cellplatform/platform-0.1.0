@@ -8,6 +8,8 @@ const imports = {
   VimeoBackground: import('./ui/Vimeo/dev/VimeoBackground.DEV'),
 };
 
-const ns = new URL(location.href).searchParams.get('ns');
+const dev = new URL(location.href).searchParams.get('dev');
 
-export const DevHarness: React.FC = () => <Harness actions={Object.values(imports)} initial={ns} />;
+export const DevHarness: React.FC = () => (
+  <Harness actions={Object.values(imports)} initial={dev} />
+);

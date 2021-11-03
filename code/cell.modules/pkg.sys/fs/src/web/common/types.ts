@@ -12,15 +12,25 @@ export {
   FsDriverLocal,
   FsIndexer,
   FsPathFilter,
+  IFsError,
+  IFsInfoLocal,
+  IFsResolveOptionsLocal,
+  IFsLocation,
+  FsPathResolver,
+  IFsFileData,
   IHttpClient,
   IHttpClientCellFileUpload,
   IHttpClientFileData,
   NetworkBus,
   DirManifest,
+  DirManifestInfo,
+  ManifestFile,
   Manifest,
+  ManifestFileImage,
 } from '@platform/cell.types';
 
 /**
  * @system
  */
 export { Dropped } from 'sys.ui.primitives/lib/types';
+export { S3SignedPostOptions } from '@platform/fs.s3.types';

@@ -6,9 +6,10 @@ const imports = {
   CrdtOLD: import('./NetworkModel/Crdt.OLD/dev/DEV'),
 };
 
-const isLocalhost = location.hostname === 'localhost';
-const ns = new URL(location.href).searchParams.get('ns');
+const url = new URL(location.href);
+const dev = url.searchParams.get('dev');
+const isLocalhost = url.hostname === 'localhost';
 
 export const DevHarness: React.FC = () => (
-  <Harness actions={Object.values(imports)} initial={ns} showActions={true} />
+  <Harness actions={Object.values(imports)} initial={dev} showActions={isLocalhost} />
 );

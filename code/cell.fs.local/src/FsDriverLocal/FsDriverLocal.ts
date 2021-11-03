@@ -1,5 +1,5 @@
 import { Hash, Schema, t, isOK, Stream } from '../common';
-import { FsDriverLocalResolver } from './FsDriverLocal.resolver';
+import { FsDriverLocalResolver } from '@platform/cell.fs/lib/Resolver.Local';
 
 export * from '../types';
 
@@ -24,7 +24,7 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
     return Uint8Array.from(buffer);
   };
 
-  const fs: t.FsDriverLocal = {
+  const driver: t.FsDriverLocal = {
     type: 'LOCAL',
 
     /**
@@ -40,12 +40,12 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
     /**
      * Retrieve meta-data of a local file.
      */
-    async info(uri): Promise<t.IFsInfoLocal> {
+    async info(uri) {
       uri = (uri || '').trim();
-      const path = fs.resolve(uri).path;
+      const path = driver.resolve(uri).path;
       const location = LocalFile.toAbsoluteLocation({ path, root });
       const kind = await toKind(path);
-      const readResponse = await this.read(uri);
+      const readResponse = await driver.read(uri);
       const { status, file } = readResponse;
       const exists = status !== 404;
       return {
@@ -62,9 +62,9 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
     /**
      * Read from the local file-system.
      */
-    async read(uri): Promise<t.IFsReadLocal> {
+    async read(uri) {
       uri = (uri || '').trim();
-      const path = fs.resolve(uri).path;
+      const path = driver.resolve(uri).path;
       const location = LocalFile.toAbsoluteLocation({ path, root });
 
       // Ensure the file exists.
@@ -104,7 +104,7 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
     /**
      * Write to the local file-system.
      */
-    async write(uri, data): Promise<t.IFsWriteLocal> {
+    async write(uri, data) {
       if (data === undefined) {
         throw new Error(`No data`);
       }
@@ -115,7 +115,7 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
       }
 
       uri = (uri || '').trim();
-      const path = fs.resolve(uri).path;
+      const path = driver.resolve(uri).path;
       const location = LocalFile.toAbsoluteLocation({ path, root });
 
       const toFile = (data: Uint8Array): t.IFsFileData => {
@@ -157,9 +157,9 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
     /**
      * Delete from the local file-system.
      */
-    async delete(uri): Promise<t.IFsDeleteLocal> {
+    async delete(uri) {
       const uris = (Array.isArray(uri) ? uri : [uri]).map((uri) => (uri || '').trim());
-      const paths = uris.map((uri) => fs.resolve(uri).path);
+      const paths = uris.map((uri) => driver.resolve(uri).path);
       const locations = paths.map((path) => LocalFile.toAbsoluteLocation({ path, root }));
 
       try {
@@ -178,10 +178,10 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
     /**
      * Copy a file.
      */
-    async copy(sourceUri, targetUri): Promise<t.IFsCopyLocal> {
+    async copy(sourceUri, targetUri) {
       const format = (input: string) => {
         const uri = (input || '').trim();
-        const path = fs.resolve(uri).path;
+        const path = driver.resolve(uri).path;
         return { uri, path };
       };
 
@@ -209,5 +209,5 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
     },
   };
 
-  return fs;
+  return driver;
 }
