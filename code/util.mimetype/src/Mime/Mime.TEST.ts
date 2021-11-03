@@ -16,6 +16,7 @@ describe('Mime', () => {
     test('foo.jpg', 'image/jpeg');
     test('foo.jpeg', 'image/jpeg');
     test('foo.gif', 'image/gif');
+    test('foo.svg', 'image/svg+xml');
 
     test('  foo.js  ', 'application/javascript'); // NB: whitespace.
     test('foo.js', 'application/javascript');
