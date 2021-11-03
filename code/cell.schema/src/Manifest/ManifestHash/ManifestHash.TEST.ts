@@ -21,7 +21,7 @@ describe('ManifestHash', () => {
   };
 
   const expectHash = (value: string, expected: string) => {
-    expect(value.endsWith(expected)).to.eql(true);
+    expect(value.endsWith(expected)).to.eql(true, `value: ${value} | expected: ${expected}`);
   };
 
   it('sha256', () => {
@@ -73,31 +73,31 @@ describe('ManifestHash', () => {
     it('empty', () => {
       const res = ManifestHash.module(module, []);
       expectHash(res.files, EMPTY);
-      expectHash(res.module, 'b408a2022dee96309');
+      expectHash(res.module, '225a4bf897b1dcf7a91c6fc4');
     });
 
     it('files', () => {
       const files = testFiles(5);
       const res = ManifestHash.module(module, files);
       expectHash(res.files, ManifestHash.files(files));
-      expectHash(res.module, 'd5e1c3ed5b3886c133f0fe');
+      expectHash(res.module, '7fa30f0e145b9b5cade7d9b');
     });
   });
 
-  describe('DirManigest', () => {
+  describe('DirManifest', () => {
     const dir: t.DirManifestInfo = { indexedAt: 123456789 };
 
     it('empty', () => {
       const res = ManifestHash.dir(dir, []);
       expectHash(res.files, EMPTY);
-      expectHash(res.dir, 'eef10359b1b46b8af012a7b');
+      expectHash(res.dir, '0733adc460c49ae4f7f5ee');
     });
 
     it('files', () => {
       const files = testFiles(3);
       const res = ManifestHash.dir(dir, files);
       expectHash(res.files, ManifestHash.files(files));
-      expectHash(res.dir, 'f2020cf20ba75d101456be2e');
+      expectHash(res.dir, '5f711c806e5b214bd2720');
     });
   });
 });

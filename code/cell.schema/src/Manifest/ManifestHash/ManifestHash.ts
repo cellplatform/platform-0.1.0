@@ -13,9 +13,9 @@ export const ManifestHash = {
    */
   files(input: t.ManifestFile[] | t.Manifest) {
     const files = Array.isArray(input) ? input : input.files;
-    const list = files.filter(Boolean).map((file) => file.filehash);
-    list.sort();
-    return Hash.sha256(list);
+    const hashes = files.filter(Boolean).map((file) => file.filehash);
+    sort(hashes);
+    return Hash.sha256(hashes);
   },
 
   /**
@@ -25,7 +25,7 @@ export const ManifestHash = {
     const fileshash = ManifestHash.files(files);
     return {
       files: fileshash,
-      module: sha256({ module: info, fileshash }),
+      module: sha256({ module: info, files: fileshash }),
     };
   },
 
@@ -36,7 +36,15 @@ export const ManifestHash = {
     const fileshash = ManifestHash.files(files);
     return {
       files: fileshash,
-      dir: sha256({ module: info, fileshash }),
+      dir: sha256({ dir: info, files: fileshash }),
     };
   },
 };
+
+/**
+ * Helpers
+ */
+function sort(hashes: string[]) {
+  const collator = new Intl.Collator('en', { usage: 'sort' }); // NB: for performance increase.
+  hashes.sort((a, b) => collator.compare(a, b));
+}
