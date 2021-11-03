@@ -75,14 +75,15 @@ export async function deploy(
         .forEach((key) => delete module[key]); // NB: Meta-data cannot be an {object}.
 
       name = name ?? `${module.namespace}-v${module.version}`;
-
+      const bytes = m.files.reduce((acc, next) => acc + next.bytes, 0).toString();
       meta = {
         ...module,
         kind: 'bundle:code/module',
         modulehash: m.hash.module,
         fileshash: m.hash.files,
-        bytes: m.files.reduce((acc, next) => acc + next.bytes, 0).toString(),
+        bytes,
       };
+      Object.keys(meta).map((key) => (meta[key] = meta[key].toString())); // NB: Ensure all values are strings.
     }
   }
 

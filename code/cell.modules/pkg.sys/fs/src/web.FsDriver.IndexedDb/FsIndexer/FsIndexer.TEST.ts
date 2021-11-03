@@ -46,7 +46,7 @@ export default Test.describe.only('FsIndexer', (e) => {
       const now = time.now.timestamp;
       const manifest = await fs.index.manifest();
       expect(manifest.kind).to.eql('dir');
-      expect(manifest.dir.indexedAt).to.within(now - 10, now + 100);
+      expect(manifest.dir.indexedAt).to.within(now - 10, now + 1000);
       expect(manifest.files).to.eql([]);
       expect(manifest.hash.files).to.eql(EMPTY_HASH);
       expect(manifest.hash).to.eql(ManifestHash.dir(manifest.dir, []));

@@ -27,8 +27,11 @@ export const Harness: React.FC<HarnessProps> = (props) => {
    * TODO 🐷
    * - Handle showActions/fullscreen in Harness model (when that comes).
    */
-  const [showActions, setShowActions] = useState<boolean | undefined>(props.showActions ?? true);
+  const [showActions, setShowActions] = useState<boolean>(props.showActions ?? true);
 
+  /**
+   * [Lifecycle]
+   */
   useEffect(() => {
     if (props.bus) setBus(props.bus);
   }, [props.bus]);
@@ -64,14 +67,13 @@ export const Harness: React.FC<HarnessProps> = (props) => {
   const envActions = { ...env?.viaSubject.actions, ...env?.viaAction.actions };
   const actionsEdge = defaultValue(envActions.edge, 'right');
 
+  /**
+   * [Render]
+   */
   const styles = {
     base: css({ Absolute: 0, Flex: 'horizontal-stretch-stretch' }),
     main: css({ position: 'relative', flex: 1 }),
-    host: css({
-      Absolute: 0,
-      boxSizing: 'border-box',
-      display: 'flex',
-    }),
+    host: css({ Absolute: 0, boxSizing: 'border-box', display: 'flex' }),
     footer: css({
       Absolute: [null, 0, 0, 0],
       height: 34,

@@ -14,8 +14,10 @@ const imports = {
   TestSuite: import('./ui/TestSuite/dev/DEV'),
 };
 
-const dev = new URL(location.href).searchParams.get('dev');
+const url = new URL(location.href);
+const dev = url.searchParams.get('dev');
+const isLocalhost = url.hostname === 'localhost';
 
 export const DevHarness: React.FC = () => (
-  <Harness actions={Object.values(imports)} showActions={true} initial={dev} />
+  <Harness actions={Object.values(imports)} showActions={isLocalhost} initial={dev} />
 );
