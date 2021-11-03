@@ -30,6 +30,7 @@ async function deploy(team: string, project: string, alias: string) {
   console.log('-------------------------------------------');
   console.log(status);
   console.log(name);
+  console.log('error', res.error);
   console.log();
   return { status, name };
 }
