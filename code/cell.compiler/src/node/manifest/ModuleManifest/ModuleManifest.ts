@@ -1,4 +1,4 @@
-import { constants, DEFAULT, Encoding, Model, Schema, t, time } from '../../common';
+import { constants, DEFAULT, Encoding, Model, Schema, t, time, ManifestHash } from '../../common';
 import { createAndSave, Manifest } from '../Manifest';
 
 type M = t.ModuleManifest;
@@ -13,20 +13,7 @@ export const ModuleManifest = {
   /**
    * Tools for working with hash checksums of a manifest.
    */
-  hash: {
-    ...Manifest.hash,
-
-    /**
-     * Calculates the complete module hash, being the:
-     *  1. hash of all files, PLUS
-     *  2. the hash of the "module" meta-data object.
-     */
-    module(input: t.ModuleManifest) {
-      const files = Manifest.hash.files(input.files);
-      const module = input.module;
-      return Schema.Hash.sha256({ module, files });
-    },
-  },
+  hash: Manifest.hash,
 
   /**
    * The filename of the bundle.
@@ -69,7 +56,7 @@ export const ModuleManifest = {
     const module: t.ModuleManifestInfo = {
       namespace,
       version,
-      compiler: `${pkg.name}@${pkg.version ?? '0.0.0'}`,
+      compiler: `${pkg.name}@${pkg.version || '0.0.0'}`,
       compiledAt,
       mode: data.mode(),
       target: data.target(),
@@ -83,11 +70,7 @@ export const ModuleManifest = {
       };
     }
 
-    const hash: t.ModuleManifestHash = {
-      files: manifest.hash.files,
-      module: Schema.Hash.sha256({ module, files: manifest.hash.files }),
-    };
-
+    const hash = ManifestHash.module(module, files);
     return { kind: 'module', hash, module, files };
   },
 

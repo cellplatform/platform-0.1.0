@@ -1,5 +1,5 @@
 import { ModuleManifest } from '..';
-import { expect, fs, SampleBundles, t, expectError, time } from '../../../test';
+import { expect, fs, SampleBundles, t, expectError, time, ManifestHash } from '../../../test';
 
 describe('ModuleManifest', function () {
   this.timeout(99999);
@@ -31,17 +31,15 @@ describe('ModuleManifest', function () {
 
     expect(manifest.hash.files).to.eql(ModuleManifest.hash.files(files));
     expect(manifest.hash.files).to.eql(ModuleManifest.hash.files(manifest));
-    expect(manifest.hash.files).to.match(/^sha256-/);
 
-    expect(manifest.hash.module).to.eql(ModuleManifest.hash.module(manifest));
-    expect(manifest.hash.module).to.not.eql(ModuleManifest.hash.files(manifest));
+    expect(manifest.hash).to.eql(ManifestHash.module(manifest.module, manifest.files));
+    expect(manifest.hash.module).to.not.eql(ManifestHash.files(manifest));
     expect(manifest.hash.module).to.match(/^sha256-/);
     expect(manifest.module.remote).to.eql(undefined); // NB: nothing exported.
 
     expect(manifest.module.namespace).to.eql('ns.test.node');
     expect(manifest.module.version).to.eql('0.0.0');
     expect(manifest.module.compiler.startsWith('@platform/cell.compiler@')).to.eql(true);
-
     expect(manifest.module.compiledAt).to.within(now - 10, now + 10);
 
     expect(manifest.module.mode).to.eql('production');

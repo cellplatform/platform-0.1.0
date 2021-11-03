@@ -1,4 +1,4 @@
-import { deleteUndefined, fs, Schema, t, DEFAULT, ManifestFile } from '../../common';
+import { deleteUndefined, fs, t, DEFAULT, ManifestFile, ManifestHash } from '../../common';
 import { FileAccess, FileRedirects } from '../../config';
 
 type M = t.Manifest;
@@ -96,7 +96,11 @@ export const Manifest = {
    */
   hash: {
     files(input: t.ManifestFile[] | t.Manifest) {
-      return ManifestFile.Hash.files(input);
+      return ManifestHash.files(input);
+    },
+
+    module(info: t.ModuleManifestInfo, files: t.ManifestFile[]): t.ModuleManifestHash {
+      return ManifestHash.module(info, files);
     },
 
     /**

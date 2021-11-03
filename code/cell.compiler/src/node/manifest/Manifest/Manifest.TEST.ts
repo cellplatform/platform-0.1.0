@@ -1,4 +1,4 @@
-import { t, expect, fs, SampleBundles, Schema } from '../../../test';
+import { t, expect, fs, SampleBundles, Schema, ManifestHash } from '../../../test';
 import { Manifest } from '.';
 
 describe('Manifest', function () {
@@ -126,7 +126,7 @@ describe('Manifest', function () {
 
     it('hash.files - {manifest}', async () => {
       const manifest = await Manifest.create({ dir: sourceDir });
-      const hash = Schema.Hash.sha256(manifest.files.map((file) => file.filehash));
+      const hash = ManifestHash.files(manifest.files);
       expect(manifest.hash.files).to.eql(hash);
       expect(Manifest.hash.files(manifest)).to.eql(hash);
     });
