@@ -1,6 +1,8 @@
 import { Schema } from '../../web/common';
+
 export * from '../../web/common';
-export * from './IndexedDb';
+export * from './Db.Lookup';
+export * from './Image';
 
 export const ROOT_DIR = '/';
 export const NAME = {

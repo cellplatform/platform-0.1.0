@@ -23,7 +23,10 @@ export {
   IHttpClientFileData,
   NetworkBus,
   DirManifest,
+  DirManifestInfo,
+  ManifestFile,
   Manifest,
+  ManifestFileImage,
 } from '@platform/cell.types';
 
 /**

@@ -94,7 +94,7 @@ export const IndexedDb = {
     async get<T>(store: IDBObjectStore | IDBIndex, query: IDBValidKey | IDBKeyRange) {
       return IndexedDb.asPromise<T | undefined>(store.get(query));
     },
-    async getAll<T>(store: IDBObjectStore | IDBIndex, query: IDBValidKey | IDBKeyRange) {
+    async getAll<T>(store: IDBObjectStore | IDBIndex, query?: IDBValidKey | IDBKeyRange) {
       return IndexedDb.asPromise<T[]>(store.getAll(query));
     },
 

@@ -1,13 +1,9 @@
-import { t, Hash, Stream, NAME, Schema, Path, IndexedDb } from '../common';
 import { FsDriverLocalResolver } from '@platform/cell.fs/lib/Resolver.Local';
 
-const LocalFile = Schema.File.Path.Local;
+import { Hash, DbLookup, NAME, Path, Schema, Stream, t, deleteUndefined, Image } from '../common';
+import { IndexedDb } from '../IndexedDb';
 
-type FilePath = string;
-type FileDir = string;
-type FileHash = string;
-type PathRecord = { path: FilePath; dir: FileDir; hash: FileHash; bytes: number };
-type BinaryRecord = { hash: FileHash; data: Uint8Array };
+const LocalFile = Schema.File.Path.Local;
 
 /**
  * A filesystem driver running against the browser [IndexedDB] store.
@@ -15,21 +11,7 @@ type BinaryRecord = { hash: FileHash; data: Uint8Array };
 export function FsDriver(args: { dir: string; db: IDBDatabase }) {
   const { dir, db } = args;
   const root = dir;
-
-  const lookup = {
-    path(path: string) {
-      const tx = db.transaction([NAME.STORE.PATHS], 'readonly');
-      const store = tx.objectStore(NAME.STORE.PATHS);
-      return IndexedDb.record.get<PathRecord>(store, path);
-    },
-    dir(path: string) {
-      const tx = db.transaction([NAME.STORE.PATHS], 'readonly');
-      const store = tx.objectStore(NAME.STORE.PATHS);
-      const index = store.index(NAME.INDEX.DIRS);
-      const { dir } = Path.parts(`${Path.trimSlashesEnd(path)}/`);
-      return IndexedDb.record.get<PathRecord>(index, [dir]);
-    },
-  };
+  const lookup = DbLookup(db);
 
   const driver: t.FsDriverLocal = {
     type: 'LOCAL',
@@ -91,8 +73,8 @@ export function FsDriver(args: { dir: string; db: IDBDatabase }) {
       const location = LocalFile.toAbsoluteLocation({ path, root });
 
       const get = IndexedDb.record.get;
-      const hash = (await get<PathRecord>(store.paths, path))?.hash || '';
-      const data = hash ? (await get<BinaryRecord>(store.files, hash))?.data : undefined;
+      const hash = (await get<t.PathRecord>(store.paths, path))?.hash || '';
+      const data = hash ? (await get<t.BinaryRecord>(store.files, hash))?.data : undefined;
       const bytes = data ? data.byteLength : -1;
 
       let status = 200;
@@ -127,9 +109,8 @@ export function FsDriver(args: { dir: string; db: IDBDatabase }) {
       const file = { path, location, hash, data, bytes };
 
       try {
-        if (!path || path === root) {
-          throw new Error(`Path out of scope`);
-        }
+        if (!path || path === root) throw new Error(`Path out of scope`);
+        const image = await Image.toInfo(path, data);
 
         const tx = db.transaction([NAME.STORE.PATHS, NAME.STORE.FILES], 'readwrite');
         const store = {
@@ -139,8 +120,8 @@ export function FsDriver(args: { dir: string; db: IDBDatabase }) {
 
         const put = IndexedDb.record.put;
         await Promise.all([
-          put<PathRecord>(store.paths, { path, dir, hash, bytes }),
-          put<BinaryRecord>(store.files, { hash, data }),
+          put<t.PathRecord>(store.paths, deleteUndefined({ path, dir, hash, bytes, image })),
+          put<t.BinaryRecord>(store.files, { hash, data }),
         ]);
 
         return { uri, ok: true, status: 200, file };
@@ -170,19 +151,19 @@ export function FsDriver(args: { dir: string; db: IDBDatabase }) {
 
       const remove = async (path: string) => {
         // Lookup the [Path] meta-data record.
-        const pathRecord = await IndexedDb.record.get<PathRecord>(store.paths, path);
+        const pathRecord = await IndexedDb.record.get<t.PathRecord>(store.paths, path);
         if (!pathRecord) return;
 
         // Determine if the file (hash) is referenced by any other paths.
         const hash = pathRecord.hash;
-        const hashRefs = await IndexedDb.record.getAll<PathRecord>(index.hash, [hash]);
+        const hashRefs = await IndexedDb.record.getAll<t.PathRecord>(index.hash, [hash]);
         const isLastRef = hashRefs.filter((item) => item.path !== path).length === 0;
 
         // Delete the [Path] meta-data record.
-        await IndexedDb.record.delete<PathRecord>(store.paths, path);
+        await IndexedDb.record.delete<t.PathRecord>(store.paths, path);
 
         // Delete the file-data if there are no other path's referencing the file.
-        if (isLastRef) await IndexedDb.record.delete<BinaryRecord>(store.files, hash);
+        if (isLastRef) await IndexedDb.record.delete<t.BinaryRecord>(store.files, hash);
       };
 
       try {
@@ -216,12 +197,12 @@ export function FsDriver(args: { dir: string; db: IDBDatabase }) {
         return { ok, status, source: source.uri, target: target.uri, error };
       };
 
-      const createPathReference = async (sourceInfo: t.IFsInfoLocal, targetPath: FilePath) => {
+      const createPathReference = async (sourceInfo: t.IFsInfoLocal, targetPath: string) => {
         const tx = db.transaction([NAME.STORE.PATHS, NAME.STORE.FILES], 'readwrite');
         const store = tx.objectStore(NAME.STORE.PATHS);
         const { dir } = Path.parts(targetPath);
         const { hash, bytes } = sourceInfo;
-        await IndexedDb.record.put<PathRecord>(store, { path: targetPath, dir, hash, bytes });
+        await IndexedDb.record.put<t.PathRecord>(store, { path: targetPath, dir, hash, bytes });
       };
 
       try {

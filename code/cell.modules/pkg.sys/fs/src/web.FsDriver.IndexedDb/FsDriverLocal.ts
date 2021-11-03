@@ -1,8 +1,9 @@
 import { Subject } from 'rxjs';
 
-import { IndexedDb, NAME, ROOT_DIR, Schema, t } from './common';
+import { NAME, ROOT_DIR, t } from './common';
 import { FsDriver } from './FsDriver';
 import { FsIndexer } from './FsIndexer';
+import { IndexedDb } from './IndexedDb';
 
 /**
  * A filesystem driver running against the browser [IndexedDB] store.
@@ -53,7 +54,8 @@ export const FsDriverLocal = (args: { name?: string }) => {
           return driver || (driver = FsDriver({ dir, db }));
         },
         get index() {
-          return index || (index = FsIndexer({ dir, db }));
+          const fs = api.driver;
+          return index || (index = FsIndexer({ dir, db, fs }));
         },
       };
       return api;

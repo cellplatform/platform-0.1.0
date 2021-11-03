@@ -1,6 +1,7 @@
 import React from 'react';
 import { DevActions, Test } from 'sys.ui.dev';
-import { css, IndexedDb } from '../common';
+import { css } from '../common';
+import { IndexedDb } from '../IndexedDb';
 
 type Ctx = {
   data: any;
