@@ -6,4 +6,3 @@ export * from './DEV.Card';
 export * from './DEV.Videos.PhysicsLayout';
 export * from './DEV.Videos.GroupLayout';
 export * from './DEV.Image.Pasteboard';
-export * from './DEV.RemoteComponent';
