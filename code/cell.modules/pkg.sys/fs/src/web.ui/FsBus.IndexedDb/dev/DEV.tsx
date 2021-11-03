@@ -1,8 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { t, rx } from '../common';
+import { t, rx, Filesystem } from '../common';
 
-import { Filesystem } from '..';
 import { DevFsSample } from './DEV.Sample';
 
 const path = 'myfile.txt';
@@ -18,7 +17,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('Fs.IndexedDb')
+  .namespace('FsBus.IndexedDb')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -30,7 +29,7 @@ export const actions = DevActions<Ctx>()
       name,
       debug: {},
       async store() {
-        const { store } = await Filesystem.create({ bus, name });
+        const { store } = await Filesystem.IndexedDb.create({ bus, name });
         return store.events;
       },
     };

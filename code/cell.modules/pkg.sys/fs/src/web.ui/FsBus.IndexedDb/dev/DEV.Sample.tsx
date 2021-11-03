@@ -1,7 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useDragTarget, color, css, CssValue, t } from '../common';
-// import { useFilesystem } from './useFilesystem';
-import { Filesystem } from '../Filesystem';
+import React, { useEffect, useState } from 'react';
+import { useDragTarget, color, css, CssValue, t, Filesystem } from '../common';
 
 import { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
 
@@ -24,7 +22,7 @@ export const DevFsSample: React.FC<DevFsSampleProps> = (props) => {
   const path = 'my-folder/my-image.png';
 
   const load = async (path: string) => {
-    const { store, fs } = await Filesystem.create({ bus, name });
+    const { store, fs } = await Filesystem.IndexedDb.create({ bus, name });
 
     const res = await fs.read(path);
     if (!res) {
@@ -41,7 +39,7 @@ export const DevFsSample: React.FC<DevFsSampleProps> = (props) => {
   };
 
   const del = async (path: string) => {
-    const { store, fs } = await Filesystem.create({ bus, name });
+    const { store, fs } = await Filesystem.IndexedDb.create({ bus, name });
     const res = await fs.delete(path);
 
     store.dispose();
@@ -52,7 +50,7 @@ export const DevFsSample: React.FC<DevFsSampleProps> = (props) => {
     const file = e.files[0];
     if (!file) return;
 
-    const { store, fs } = await Filesystem.create({ bus, name });
+    const { store, fs } = await Filesystem.IndexedDb.create({ bus, name });
     const res = await fs.write(path, file.data);
 
     store.dispose();

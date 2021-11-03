@@ -1,7 +1,6 @@
 import React from 'react';
 import { DevActions, Test } from 'sys.ui.dev';
-import { css } from '../common';
-import { IndexedDb } from '../IndexedDb';
+import { css, IndexedDb } from '../common';
 
 type Ctx = {
   data: any;
@@ -18,8 +17,8 @@ export const actions = DevActions<Ctx>()
 
     const runTests = async () => {
       const tests = await Test.bundle('FsDriver: IndexedDb', [
-        import('../FsDriver/FsDriver.TEST'),
-        import('../FsIndexer/FsIndexer.TEST'),
+        import('../../../web.FsDriver.IndexedDb/FsDriver/FsDriver.TEST'),
+        import('../../../web.FsDriver.IndexedDb/FsIndexer/FsIndexer.TEST'),
       ]);
 
       return tests.run();
@@ -34,7 +33,7 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('FsDriver: IndexedDb');
+    e.title('FsDriver.IndexedDb');
 
     e.button('run tests', async (e) => {
       const results = await e.ctx.runTests();
