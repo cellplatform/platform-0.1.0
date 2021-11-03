@@ -15,7 +15,7 @@ export const ManifestHash = {
     const files = Array.isArray(input) ? input : input.files;
     const hashes = files.filter(Boolean).map((file) => file.filehash);
     sort(hashes);
-    return Hash.sha256(hashes);
+    return sha256(hashes);
   },
 
   /**

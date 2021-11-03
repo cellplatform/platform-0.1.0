@@ -204,7 +204,7 @@ describe('Path', () => {
       test(undefined);
     });
 
-    it('file.txt', () => {
+    it('path: "file.txt"', () => {
       const path = 'file.txt';
       const res = Path.parts(path);
       expect(res.path).to.eql(path);
@@ -214,7 +214,7 @@ describe('Path', () => {
       expect(res.ext).to.eql('txt');
     });
 
-    it('/file.txt', () => {
+    it('path: "/file.txt"', () => {
       const path = '/file.txt';
       const res = Path.parts(path);
       expect(res.path).to.eql(path);
@@ -224,7 +224,7 @@ describe('Path', () => {
       expect(res.ext).to.eql('txt');
     });
 
-    it('//foo/file.foo.txt', () => {
+    it('path: "//foo/file.foo.txt"', () => {
       const path = '//foo/file.foo.txt';
       const res = Path.parts(`  ${path}  `);
       expect(res.path).to.eql(path);
@@ -234,7 +234,7 @@ describe('Path', () => {
       expect(res.ext).to.eql('txt');
     });
 
-    it('foo', () => {
+    it('path: "foo"', () => {
       const path = 'foo';
       const res = Path.parts(`  ${path}  `);
       expect(res.path).to.eql(path);
@@ -244,7 +244,7 @@ describe('Path', () => {
       expect(res.ext).to.eql('');
     });
 
-    it('. (edge case)', () => {
+    it('path: "." (edge case)', () => {
       const path = '.';
       const res = Path.parts(`  ${path}  `);
       expect(res.path).to.eql(path);
