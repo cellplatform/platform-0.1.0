@@ -3,6 +3,7 @@ import { toObject, DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
 
 import { WebRuntime } from 'sys.runtime.web';
 import { TARGET_NAME } from './common';
+import { Filesystem } from 'sys.fs/lib/web';
 
 type O = Record<string, unknown>;
 
@@ -29,6 +30,7 @@ type Ctx = {
   self: t.PeerId;
   bus: t.EventBus<t.PeerEvent | t.DevEvent>;
   netbus: t.PeerNetworkBus;
+  fs(): Promise<t.Fs>;
   signal: string; // Signalling server network address (host/path).
   events: CtxEvents;
   connectTo?: string;
@@ -82,7 +84,6 @@ export const actions = DevActions<Ctx>()
     MediaStream.Controller({ bus });
 
     const netbus = PeerNetworkBus({ bus, self });
-
     const runtime = WebRuntime.Bus.Controller({ bus, netbus });
 
     const events = {
@@ -145,6 +146,17 @@ export const actions = DevActions<Ctx>()
       })();
     }
 
+    /**
+     * Filesystem (networked).
+     */
+    const filesystem = Filesystem.IndexedDb.create({ bus, id: 'fs.net' });
+    (async () => {
+      const fs = await filesystem;
+      const id = fs.id;
+      const { events } = await Filesystem.IndexedDb.Controller({ bus, id });
+      Filesystem.IndexedDb.Network({ events, netbus });
+    })();
+
     return {
       self,
       bus,
@@ -152,6 +164,7 @@ export const actions = DevActions<Ctx>()
       events,
       signal,
       connectTo: '',
+      fs: async () => (await filesystem).fs,
       toFlags: () => flags,
       toStrategy: () => strategy,
       toSeed: () => seed,
@@ -166,7 +179,6 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
-
     e.title('Module Installation');
 
     e.component((e) => {
@@ -183,6 +195,26 @@ export const actions = DevActions<Ctx>()
           }}
         />
       );
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Filesystem');
+
+    e.button('tmp', async (e) => {
+      //
+      const fs = await e.ctx.fs();
+
+      const path = 'foo.txt';
+      console.log('info', await fs.info(path));
+
+      await fs.write(path, new TextEncoder().encode('foobar'));
+
+      const res = await fs.info(path);
+
+      console.log('res', res);
     });
 
     e.hr();
