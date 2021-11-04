@@ -12,11 +12,11 @@ export const TestFs = {
   tmp,
 
   node: fs,
-  local: FsDriverLocal({ dir: fs.join(tmp, 'local.root'), fs }),
+  driver: FsDriverLocal({ dir: fs.join(tmp, 'local.root'), fs }),
   index: (dir: string) => FsIndexerLocal({ dir, fs }),
 
   async reset() {
-    await fs.remove(TestFs.local.dir);
+    await fs.remove(TestFs.driver.dir);
   },
 
   join: fs.join,

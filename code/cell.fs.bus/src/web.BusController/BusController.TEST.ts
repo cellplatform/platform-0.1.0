@@ -6,16 +6,16 @@ describe('BusController', function () {
 
   it('id (specified)', () => {
     const id = 'foo';
-    const driver = TestFs.local;
+    const driver = TestFs.driver;
     const index = TestFs.index(driver.dir);
     const controller = Filesystem.Controller({ id, driver, bus, index });
     expect(controller.id).to.eql(id);
     controller.dispose();
   });
 
-  it.only('id (generated)', () => {
+  it('id (generated)', () => {
     const test = (id?: string) => {
-      const driver = TestFs.local;
+      const driver = TestFs.driver;
       const index = TestFs.index(driver.dir);
       const controller = Filesystem.Controller({ id, driver, bus, index });
       expect(controller.id).to.eql(DEFAULT.FILESYSTEM_ID);
@@ -29,11 +29,11 @@ describe('BusController', function () {
 
   it('filter (global)', async () => {
     const id = 'foo';
-    const fs = TestFs.local;
+    const driver = TestFs.driver;
 
     let allow = true;
-    const index = TestFs.index(fs.dir);
-    const controller = Filesystem.Controller({ id, driver: fs, index, bus, filter: (e) => allow });
+    const index = TestFs.index(driver.dir);
+    const controller = Filesystem.Controller({ id, driver, index, bus, filter: (e) => allow });
     const events = Filesystem.Events({ id, bus });
 
     const res1 = await events.io.info.get();

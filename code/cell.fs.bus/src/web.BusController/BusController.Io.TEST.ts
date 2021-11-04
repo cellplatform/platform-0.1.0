@@ -7,9 +7,9 @@ describe('BusController.IO', function () {
 
       const bus = rx.bus<t.SysFsEvent>();
       const id = 'foo';
-      const fs = TestFs.local;
-      const index = TestFs.index(fs.dir);
-      const controller = Filesystem.Controller({ id, driver: fs, index, bus });
+      const driver = TestFs.driver;
+      const index = TestFs.index(driver.dir);
+      const controller = Filesystem.Controller({ id, driver, index, bus });
       const events = Filesystem.Events({ id, bus });
 
       const res = await events.io.info.get();
@@ -17,7 +17,7 @@ describe('BusController.IO', function () {
 
       expect(res.id).to.eql(id);
       expect(res.fs?.id).to.eql(id);
-      expect(res.fs?.dir).to.eql(TestFs.local.dir);
+      expect(res.fs?.dir).to.eql(TestFs.driver.dir);
       expect(res.paths).to.eql([]);
       expect(res.error).to.eql(undefined);
     });
@@ -98,9 +98,9 @@ describe('BusController.IO', function () {
 
     it('error: timeout', async () => {
       const bus = rx.bus<t.SysFsEvent>();
-      const fs = TestFs.local;
-      const index = TestFs.index(fs.dir);
-      const controller = Filesystem.Controller({ id: 'foo', driver: fs, index, bus });
+      const driver = TestFs.driver;
+      const index = TestFs.index(driver.dir);
+      const controller = Filesystem.Controller({ id: 'foo', driver, index, bus });
       const events = Filesystem.Events({ id: 'bar', bus });
 
       const res = await events.io.info.get({ timeout: 10 });

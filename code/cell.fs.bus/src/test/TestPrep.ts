@@ -7,13 +7,13 @@ export const TestPrep = async (options: { id?: string; dir?: string } = {}) => {
   const bus = rx.bus<t.SysFsEvent>();
   const id = options.id ?? 'foo';
   const fs = !options.dir
-    ? TestFs.local
+    ? TestFs.driver
     : TestFs.FsDriverLocal({
         dir: TestFs.node.join(TestFs.tmp, options.dir),
         fs: TestFs.node,
       });
 
-  const controller = Filesystem.Controller({ id, bus, fs });
+  const controller = Filesystem.Controller({ id, bus, driver: fs });
   const events = Filesystem.Events({ id, bus });
 
   let server: IRouterMock | undefined;
@@ -24,7 +24,7 @@ export const TestPrep = async (options: { id?: string; dir?: string } = {}) => {
     events,
 
     dir: Path.ensureSlashEnd(fs.dir),
-    rootDir: Path.ensureSlashEnd(TestFs.local.dir),
+    rootDir: Path.ensureSlashEnd(TestFs.driver.dir),
 
     fs: TestFs.node,
     readFile: TestFs.readFile,
