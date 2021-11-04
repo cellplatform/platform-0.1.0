@@ -8,5 +8,10 @@ import { ManifestHash } from '../ManifestHash';
 export const ManifestFiles = {
   hash: ManifestHash.files,
   compare,
-  sort: (files: t.ManifestFile[]) => [...files].sort((a, b) => compare(a.path, b.path)),
+  sort<T extends t.ManifestFile | string>(items: T[]) {
+    if (items.length === 0) return [];
+    return [...items].sort((a, b) => {
+      return compare(typeof a === 'string' ? a : a.path, typeof b === 'string' ? b : b.path);
+    });
+  },
 };
