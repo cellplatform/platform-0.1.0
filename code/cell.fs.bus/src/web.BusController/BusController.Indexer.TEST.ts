@@ -1,4 +1,4 @@
-import { DEFAULT, expect, Hash, t, TestFs, TestPrep } from '../test';
+import { DEFAULT, ManifestFiles, expect, Hash, t, TestFs, TestPrep } from '../test';
 
 const nodefs = TestFs.node;
 
@@ -6,7 +6,7 @@ describe('BusController.Indexer', function () {
   this.beforeEach(() => TestFs.reset());
 
   type R = t.SysFsManifestDirResponse;
-  const asFiles = (dir: R) => dir.manifest.files.map((file) => file.path);
+  const asFiles = (dir: R) => ManifestFiles.sort(dir.manifest.files.map((file) => file.path));
 
   describe('manifest', () => {
     it('empty', async () => {
@@ -66,7 +66,7 @@ describe('BusController.Indexer', function () {
       await write('/root.json');
       await write('/data/foo/data.json');
       await write('/data/foo/child/list.json');
-      const all = ['root.json', 'data/foo/data.json', 'data/foo/child/list.json'];
+      const all = ['data/foo/child/list.json', 'data/foo/data.json', 'root.json'];
 
       const test = async (dir: string | string[]) => {
         const res = await mock.events.index.manifest.get({ dir });
@@ -101,11 +101,11 @@ describe('BusController.Indexer', function () {
       await write('/logs/archive/main.log');
       await write('/logs/main.log');
       const all = [
-        'root.json',
-        'data/foo/data.json',
         'data/foo/child/list.json',
-        'logs/main.log',
+        'data/foo/data.json',
         'logs/archive/main.log',
+        'logs/main.log',
+        'root.json',
       ];
 
       const dir = ['  ', '/', '    /data/foo  ', '  logs  ', '/404'];
@@ -118,8 +118,8 @@ describe('BusController.Indexer', function () {
       const files4 = asFiles(res.dirs[3]);
 
       expect(files1).to.eql(all); // NB: The first two parameter entries collapse into a single index (the "root")
-      expect(files2).to.eql(['data/foo/data.json', 'data/foo/child/list.json']);
-      expect(files3).to.eql(['logs/main.log', 'logs/archive/main.log']);
+      expect(files2).to.eql(['data/foo/child/list.json', 'data/foo/data.json']);
+      expect(files3).to.eql(['logs/archive/main.log', 'logs/main.log']);
       expect(files4).to.eql([]);
     });
 
@@ -181,7 +181,7 @@ describe('BusController.Indexer', function () {
       await write('/data/bar/list.json');
       await write('/data/foo/data.json');
 
-      const all = ['root.json', 'data/bar/list.json', 'data/foo/data.json'];
+      const all = ['data/bar/list.json', 'data/foo/data.json', 'root.json'];
       const cachefile = nodefs.join(mock.dir, DEFAULT.CACHE_FILENAME);
 
       const loadCachedFile = async (filename?: string) => {
@@ -264,7 +264,8 @@ describe('BusController.Indexer', function () {
       expect((await loadCachedFile())?.kind).to.eql('dir');
 
       const res = await manifest.get({ cache: 'remove' });
-      expect((res.dirs[0].manifest.files[0] as any).path).to.eql('root.json');
+      const rootJson = res.dirs[0].manifest.files.find((item) => item.path === 'root.json');
+      expect(rootJson?.path).to.eql('root.json');
 
       // NB: Ensure the "remove" flag caused the file to be cleared.
       expect(await loadCachedFile()).to.eql(undefined);

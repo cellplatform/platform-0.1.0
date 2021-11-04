@@ -35,6 +35,8 @@ export function BusEvents(args: {
     filter((e) => args.filter?.(e) ?? true),
   );
 
+  const changed$ = rx.payload<t.SysFsChangedEvent>($, 'sys.fs/changed');
+
   /**
    * Initialize sub-event API's
    */
@@ -57,7 +59,7 @@ export function BusEvents(args: {
   /**
    * API
    */
-  return { id, $, is, dispose, dispose$, io, index, fs, remote };
+  return { id, $, changed$, is, dispose, dispose$, io, index, fs, remote };
 }
 
 /**

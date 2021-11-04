@@ -1,4 +1,4 @@
-import { expect } from '../test';
+import { expect, DEFAULT } from '../test';
 import { Filesystem } from '.';
 import { nodefs, rx } from './common';
 
@@ -11,7 +11,7 @@ describe('Filesystem (node-js)', () => {
       const controller = Filesystem.Controller({ bus, fs: root });
 
       expect(controller.dir).to.eql(root); // NB: root dir
-      expect(controller.id).to.match(/^fs-c.*/);
+      expect(controller.id).to.eql(DEFAULT.FILESYSTEM_ID);
     });
   });
 });

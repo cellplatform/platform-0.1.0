@@ -77,16 +77,19 @@ export function BusControllerIo(args: {
     const source = Format.path.ensurePrefix(file.source);
     const target = Format.path.ensurePrefix(file.target);
     const res = await fs.copy(source, target);
+    const info = await fs.info(target);
     const error: MaybeError = res.error ? { code: 'copy', message: res.error.message } : undefined;
     return {
       source: stripDirPrefix(file.source),
       target: stripDirPrefix(file.target),
+      hash: info.hash,
       error,
     };
   };
 
   const deleteFile = async (filepath: FilePath): Promise<t.SysFsFileDeleteResponse> => {
     const address = Format.path.ensurePrefix(filepath);
+    const info = await fs.info(address);
     const res = await fs.delete(address);
 
     const error: MaybeError = res.error
@@ -94,15 +97,18 @@ export function BusControllerIo(args: {
       : undefined;
     return {
       path: stripDirPrefix(res.locations[0]),
+      hash: info.hash,
       error,
     };
   };
 
   const moveFile = async (file: t.SysFsFileTarget): Promise<t.SysFsFileMoveResponse> => {
     let error: MaybeError;
+    let hash = '';
 
     if (!error) {
       const res = await copyFile(file);
+      hash = res.hash;
       if (res.error) error = res.error;
     }
 
@@ -114,6 +120,7 @@ export function BusControllerIo(args: {
     return {
       source: stripDirPrefix(file.source),
       target: stripDirPrefix(file.target),
+      hash,
       error,
     };
   };
@@ -185,7 +192,7 @@ export function BusControllerIo(args: {
    */
   events.io.copy.req$.subscribe(async (e) => {
     const { tx } = e;
-    const files = await Promise.all(asArray(e.file).map(copyFile));
+    const files = await Promise.all(asArray(e.file).map((e) => copyFile(e)));
     const error: MaybeError = files.some((file) => Boolean(file.error))
       ? { code: 'copy', message: 'Failed while copying' }
       : undefined;

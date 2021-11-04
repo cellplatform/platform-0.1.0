@@ -14,6 +14,7 @@ type FilePath = string;
 export type SysFsEvents = t.Disposable & {
   id: FilesystemId;
   $: t.Observable<t.SysFsEvent>;
+  changed$: t.Observable<t.SysFsChanged>;
   is: { base(input: any): boolean };
   io: t.SysFsEventsIo;
   index: t.SysFsEventsIndex;
@@ -93,12 +94,6 @@ export type SysFsEventsIo = {
     ): Promise<t.SysFsDeleteResponse>;
   };
 };
-
-// export type SysFsEventsInfo = {
-//   req$: t.Observable<t.SysFsInfoReq>;
-//   res$: t.Observable<t.SysFsInfoRes>;
-//   get(options?: { path?: FilePath | FilePath[]; timeout?: Milliseconds }): Promise<t.SysFsInfoRes>;
-// };
 
 /**
  * Event API: remote cell

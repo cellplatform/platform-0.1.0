@@ -1,4 +1,4 @@
-import { expect, Filesystem, rx, t, TestFs, TestPrep } from '../test';
+import { expect, Filesystem, rx, t, TestFs, TestPrep, DEFAULT } from '../test';
 
 describe('BusController', function () {
   const bus = rx.bus<t.SysFsEvent>();
@@ -6,19 +6,25 @@ describe('BusController', function () {
 
   it('id (specified)', () => {
     const id = 'foo';
-    const fs = TestFs.local;
-    const index = TestFs.index(fs.dir);
-    const controller = Filesystem.Controller({ id, driver: fs, bus, index });
+    const driver = TestFs.local;
+    const index = TestFs.index(driver.dir);
+    const controller = Filesystem.Controller({ id, driver, bus, index });
     expect(controller.id).to.eql(id);
     controller.dispose();
   });
 
-  it('id (generated)', () => {
-    const fs = TestFs.local;
-    const index = TestFs.index(fs.dir);
-    const controller = Filesystem.Controller({ driver: fs, bus, index });
-    expect(controller.id).to.match(/^fs-c.*/);
-    controller.dispose();
+  it.only('id (generated)', () => {
+    const test = (id?: string) => {
+      const driver = TestFs.local;
+      const index = TestFs.index(driver.dir);
+      const controller = Filesystem.Controller({ id, driver, bus, index });
+      expect(controller.id).to.eql(DEFAULT.FILESYSTEM_ID);
+      controller.dispose();
+    };
+
+    test(undefined);
+    test('');
+    test('  ');
   });
 
   it('filter (global)', async () => {
