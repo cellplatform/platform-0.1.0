@@ -5,8 +5,10 @@ import { useStreamState } from '..';
 
 export type DevRecordButtonProps = {
   streamRef?: string; // MediaStream ID.
+  downloadFilename?: string;
   bus: t.EventBus<any>;
   style?: CssValue;
+  onFileReady?: (e: { mimetype: string; data: Uint8Array; bytes: number }) => void;
 };
 
 export const DevRecordButton: React.FC<DevRecordButtonProps> = (props) => {
@@ -14,7 +16,14 @@ export const DevRecordButton: React.FC<DevRecordButtonProps> = (props) => {
 
   const ref = props.streamRef;
   const stream = useStreamState({ bus, ref });
-  const recorder = useRecordController({ bus, stream });
+  const recorder = useRecordController({
+    bus,
+    stream,
+    filename: props.downloadFilename,
+    onData(e) {
+      props.onFileReady?.(e);
+    },
+  });
 
   const styles = {
     base: css({ flex: 1, padding: 6, Flex: 'center-center' }),

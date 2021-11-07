@@ -1,12 +1,16 @@
 import React from 'react';
 import { filter } from 'rxjs/operators';
+import { Filesystem } from 'sys.fs';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { MediaStream, VideoStreamProps } from '..';
-import { css, cuid, deleteUndefined, HttpClient, log, rx, t } from './common';
-import { Sample } from './DEV.Sample';
+import { FileUtil } from '../util';
+import { Button, css, cuid, deleteUndefined, log, rx, t } from './common';
 import { DevAudioWaveform } from './DEV.AudioWaveform';
 import { DevRecordButton } from './DEV.RecordButton';
+import { Sample } from './DEV.Sample';
+
+type SaveTarget = 'Fs.IndexedDb' | 'Download';
 
 type Events = ReturnType<typeof MediaStream.Events>;
 type Ctx = {
@@ -15,6 +19,14 @@ type Ctx = {
   events: Events;
   props: VideoStreamProps;
   muted: { video: boolean; audio: boolean };
+  filestore(): Promise<t.Fs>;
+  debug: {
+    save: { target: SaveTarget };
+  };
+  action: {
+    startVideoStream(): Promise<void>;
+    saveVideo(path: string, data: Uint8Array): Promise<void>;
+  };
 };
 
 async function updateMute(ctx: Ctx) {
@@ -46,13 +58,45 @@ export const actions = DevActions<Ctx>()
         log.info('MediaStream/error:', e);
       });
 
-    return {
+    let fs: t.Fs | undefined;
+    const filestore = async () => {
+      if (fs) return fs;
+      const res = await Filesystem.IndexedDb.create({ bus, id: 'fs.video.sample' });
+      return (fs = res.fs);
+    };
+
+    const ctx: Ctx = {
       ref,
       bus,
       events,
       props: { isMuted: true },
       muted: { video: false, audio: false },
+      filestore,
+
+      debug: {
+        save: { target: 'Fs.IndexedDb' },
+      },
+
+      action: {
+        async saveVideo(path, data) {
+          try {
+            const fs = await ctx.filestore();
+            console.log('save video to IndexedDb: ', path, data);
+            await fs.write(path, data);
+          } catch (error) {
+            console.log('error', error);
+          }
+        },
+
+        async startVideoStream() {
+          await events.stop(ref).fire();
+          await events.start(ref).video();
+          await updateMute(ctx);
+        },
+      },
     };
+
+    return ctx;
   })
 
   .items((e) => {
@@ -90,6 +134,7 @@ export const actions = DevActions<Ctx>()
     });
 
     e.button('fire ⚡️ MediaStream/start (screen)', async (e) => {
+      e.ctx.action.startVideoStream();
       const ref = e.ctx.ref;
       await e.ctx.events.stop(ref).fire();
       await e.ctx.events.start(ref).screen();
@@ -128,66 +173,52 @@ export const actions = DevActions<Ctx>()
     e.hr();
   })
 
-  // .items((e) => {
-  //   e.title('Record');
+  .items((e) => {
+    e.title('Filesystem (IndexedDB)');
 
-  //   e.button('start', (e) => {
-  //     const ref = e.ctx.ref;
-  //     e.ctx.bus.fire({ type: 'MediaStream/record/start', payload: { ref } });
-  //   });
+    e.select((config) => {
+      const targets: SaveTarget[] = ['Fs.IndexedDb', 'Download'];
+      config
+        .title('Save target storage medium')
+        .initial(config.ctx.debug.save.target)
+        .view('buttons')
+        .items(targets)
+        .pipe((e) => {
+          const current = e.select.current[0]; // NB: always first.
+          e.ctx.debug.save.target = current.value;
+        });
+    });
 
-  //   e.button('stop (and download)', (e) => {
-  //     const ref = e.ctx.ref;
-  //     e.ctx.bus.fire({
-  //       type: 'MediaStream/record/stop',
-  //       payload: { ref, download: { filename: 'test' } },
-  //     });
-  //   });
+    e.hr(1, 0.1);
 
-  //   e.button((config) =>
-  //     config
-  //       .label('stop (and save to cell.fs)')
-  //       .description('target: `host/cell:<ns>:A1`')
-  //       .pipe((e) => {
-  //         return new Promise<void>((resolve, reject) => {
-  //           const ref = e.ctx.ref;
-  //           e.ctx.bus.fire({
-  //             type: 'MediaStream/record/stop',
-  //             payload: {
-  //               ref,
-  //               data: async (file) => {
-  //                 // const host = 5000;
-  //                 const host = 'https://os.ngrok.io';
+    e.button('download (from filesystem)', async (e) => {
+      e.button.description = undefined;
 
-  //                 const client = HttpClient.create(host);
-  //                 const cell = client.cell('cell:ckm8fe8o0000d9reteimz8y7v:A1');
-  //                 const filename = 'tmp/record.webm';
-  //                 const data = await file.arrayBuffer();
-  //                 const res = await cell.fs.upload({ filename, data });
+      const fs = await e.ctx.filestore();
+      const path = 'my-video.webm';
+      const data = await fs.read(path);
 
-  //                 console.log('HTTP Response', res);
-  //                 console.log('OK', res.ok);
-  //                 const url = cell.url.file.byName(filename).toString();
-  //                 console.log('Saved to:', url);
+      if (!data) {
+        e.button.description = 'No data in filesystem. Record a video first.';
+        return;
+      } else {
+        const file = new Blob([data], { type: 'video/webm' });
+        FileUtil.download(path, file);
+      }
+    });
 
-  //                 const md = `recorded file [download](${url})`;
-  //                 e.button.description = md;
-  //                 resolve();
-  //               },
-  //             },
-  //           });
-  //         });
-  //       }),
-  //   );
-
-  //   e.hr();
-  // })
+    e.hr();
+  })
 
   .subject((e) => {
     const { ref, bus } = e.ctx;
     const { width = 300 } = e.ctx.props;
     const styles = { streamRef: css({ fontSize: 9 }) };
     const elStreamRef = <div {...styles.streamRef}>stream-ref:{ref}</div>;
+
+    const elStartMediastreamButton = (
+      <Button onClick={() => e.ctx.action.startVideoStream()}>⚡️ Start</Button>
+    );
 
     e.settings({
       host: { background: -0.04 },
@@ -196,7 +227,11 @@ export const actions = DevActions<Ctx>()
     });
 
     e.render(<Sample {...e.ctx.props} streamRef={ref} bus={bus} />, {
-      label: { topLeft: '<VideoStream>', bottomRight: elStreamRef },
+      label: {
+        topLeft: '<VideoStream>',
+        topRight: elStartMediastreamButton,
+        bottomRight: elStreamRef,
+      },
     });
 
     e.render(<DevAudioWaveform bus={bus} streamRef={ref} width={width} height={30} />, {
@@ -205,10 +240,25 @@ export const actions = DevActions<Ctx>()
       label: 'Audio Waveform',
     });
 
-    e.render(<DevRecordButton bus={bus} streamRef={ref} />, {
-      width,
-      background: 1,
-      label: '<RecordButton>',
-    });
+    const saveTarget = e.ctx.debug.save.target;
+    const saveFilename = saveTarget === 'Download' ? 'my-video' : undefined;
+
+    e.render(
+      <DevRecordButton
+        bus={bus}
+        streamRef={ref}
+        downloadFilename={saveFilename}
+        onFileReady={({ data }) => {
+          const filename = saveFilename ?? 'my-video';
+          const path = `${filename}.webm`;
+          e.ctx.action.saveVideo(path, data);
+        }}
+      />,
+      {
+        width,
+        background: 1,
+        label: '<RecordButton>',
+      },
+    );
   });
 export default actions;

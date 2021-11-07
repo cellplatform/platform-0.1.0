@@ -5,15 +5,16 @@ import { RecordButtonClickEventHandler, RecordButtonState } from './types';
 import { MediaStream } from '../MediaStream';
 
 /**
- * Handles binding the process of recording a MediaStream to the interactions
- * of the <RecordButton>.
+ * Handles binding the process of recording a MediaStream to
+ * the interactions of the <RecordButton>.
  */
 export function useRecordController(args: {
   bus: t.EventBus<any>;
   stream?: MediaStream;
   filename?: string;
+  onData?: (e: { mimetype: string; bytes: number; data: Uint8Array; blob: Blob }) => void;
 }) {
-  const { stream, filename = 'filename' } = args;
+  const { stream, filename } = args;
   const bus = args.bus as t.EventBus<t.MediaEvent>;
 
   const [onClick, setOnClick] = useState<RecordButtonClickEventHandler>();
@@ -41,8 +42,10 @@ export function useRecordController(args: {
       if (e.current === 'paused') {
         if (e.action === 'finish') {
           setState('default');
-          // TODO 🐷 - options for downloading
-          recordEvents.stop({ download: { filename } });
+          recordEvents.stop({
+            download: filename ? { filename } : undefined,
+            onData: args.onData,
+          });
         }
 
         if (e.action === 'resume') {

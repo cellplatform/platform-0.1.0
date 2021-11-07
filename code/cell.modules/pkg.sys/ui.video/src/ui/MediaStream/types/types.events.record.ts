@@ -70,7 +70,7 @@ export type MediaStreamRecordStopEvent = {
 export type MediaStreamRecordStop = {
   ref: string;
   download?: { filename: string };
-  data?: (file: Blob) => void;
+  onData?: (e: { mimetype: string; bytes: number; data: Uint8Array; blob: Blob }) => void;
 };
 
 /**
