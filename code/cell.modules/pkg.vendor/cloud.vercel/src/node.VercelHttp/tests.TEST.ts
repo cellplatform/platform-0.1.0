@@ -11,7 +11,7 @@ describe('VercelHttp', function () {
   const http = Http.create();
 
   const bus = rx.bus();
-  const store = Filesystem.Controller({ bus, fs: nodefs.resolve('dist') });
+  const store = Filesystem.Controller({ bus, driver: nodefs.resolve('dist') });
   const fs = store.fs();
 
   describe('util', () => {

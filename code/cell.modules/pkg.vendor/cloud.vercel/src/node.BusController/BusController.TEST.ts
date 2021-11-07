@@ -7,7 +7,7 @@ describe.only('BusController', function () {
 
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
   const bus = rx.bus<t.VercelEvent>();
-  const store = Filesystem.Controller({ bus, fs: nodefs.resolve('static.test') });
+  const store = Filesystem.Controller({ bus, driver: nodefs.resolve('static.test') });
   const fs = store.fs();
 
   describe('Info', () => {
