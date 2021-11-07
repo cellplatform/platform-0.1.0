@@ -6,13 +6,13 @@ import { Hash, Path, slug, t, Stream } from '../common';
 
 export default Test.describe('FsDriver', (e) => {
   const testCreate = async () => {
-    const name = 'test.foo';
-    const fs = await FsDriverLocal({ name });
+    const id = 'test.foo';
+    const fs = await FsDriverLocal({ id });
 
     const data = new Uint8Array([1, 2, 3]);
     const sample = { data, hash: Hash.sha256(data), bytes: data.byteLength };
 
-    return { fs, name, sample };
+    return { fs, sample };
   };
 
   e.it('type: LOCAL', async () => {
@@ -184,7 +184,7 @@ export default Test.describe('FsDriver', (e) => {
   });
 
   e.describe('read/write', (e) => {
-    e.it('read (binary)', async () => {
+    e.it('read: binary (Uint8Array)', async () => {
       const { fs, sample } = await testCreate();
 
       const test = async (uri: string) => {
@@ -211,7 +211,7 @@ export default Test.describe('FsDriver', (e) => {
       fs.dispose();
     });
 
-    e.it('write (binary)', async () => {
+    e.it('write: binary (Uint8Array)', async () => {
       const { fs, sample } = await testCreate();
 
       const test = async (uri: string) => {
@@ -234,7 +234,7 @@ export default Test.describe('FsDriver', (e) => {
       fs.dispose();
     });
 
-    e.it('read/write string (TextEncoder | TextDecoder)', async () => {
+    e.it('read/write: "string" (TextEncoder | TextDecoder)', async () => {
       const { fs } = await testCreate();
 
       const uri = 'path:file.txt';

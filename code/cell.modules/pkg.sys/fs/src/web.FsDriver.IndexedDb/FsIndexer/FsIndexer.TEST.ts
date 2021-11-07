@@ -3,7 +3,7 @@ import { Test } from 'sys.ui.dev';
 import { FsDriverLocal } from '..';
 import { Hash, t, ManifestHash, time, Path } from '../common';
 
-export default Test.describe.only('FsIndexer', (e) => {
+export default Test.describe('FsIndexer', (e) => {
   const EMPTY_HASH = Hash.sha256([]);
 
   const deleteAll = async (fs: t.FsIndexedDb) => {
@@ -14,9 +14,9 @@ export default Test.describe.only('FsIndexer', (e) => {
   };
 
   const testCreate = async () => {
-    const name = 'test.foo';
-    const fs = await FsDriverLocal({ name });
-    return { fs, name, deleteAll: () => deleteAll(fs) };
+    const id = 'test.foo';
+    const fs = await FsDriverLocal({ id });
+    return { fs, name: id, deleteAll: () => deleteAll(fs) };
   };
 
   const testFile = async (options: { path?: string; text?: string; fs?: t.FsIndexedDb } = {}) => {
@@ -46,7 +46,7 @@ export default Test.describe.only('FsIndexer', (e) => {
       const now = time.now.timestamp;
       const manifest = await fs.index.manifest();
       expect(manifest.kind).to.eql('dir');
-      expect(manifest.dir.indexedAt).to.within(now - 10, now + 1000);
+      expect(manifest.dir.indexedAt).to.within(now - 10, now + 2000);
       expect(manifest.files).to.eql([]);
       expect(manifest.hash.files).to.eql(EMPTY_HASH);
       expect(manifest.hash).to.eql(ManifestHash.dir(manifest.dir, []));

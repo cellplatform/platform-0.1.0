@@ -192,9 +192,9 @@ export function FsDriver(args: { dir: string; db: IDBDatabase }) {
       const source = format(sourceUri);
       const target = format(targetUri);
 
-      const done = (status: number, error?: t.IFsError) => {
+      const done = (status: number, hash: string, error?: t.IFsError) => {
         const ok = status.toString().startsWith('2');
-        return { ok, status, source: source.uri, target: target.uri, error };
+        return { ok, status, hash, source: source.uri, target: target.uri, error };
       };
 
       const createPathReference = async (sourceInfo: t.IFsInfoLocal, targetPath: string) => {
@@ -209,7 +209,7 @@ export function FsDriver(args: { dir: string; db: IDBDatabase }) {
         const info = await driver.info(source.uri);
         if (!info.exists) throw new Error(`Source file does not exist.`);
         await createPathReference(info, target.path);
-        return done(200);
+        return done(200, info.hash);
       } catch (err: any) {
         const message = `Failed to copy from [${source.uri}] to [${target.uri}]. ${err.message}`;
         const error: t.IFsError = {
@@ -217,7 +217,8 @@ export function FsDriver(args: { dir: string; db: IDBDatabase }) {
           message,
           path: target.path,
         };
-        return done(500, error);
+        const hash = '';
+        return done(500, hash, error);
       }
     },
   };

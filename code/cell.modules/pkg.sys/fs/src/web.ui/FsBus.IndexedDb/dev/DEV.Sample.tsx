@@ -18,11 +18,11 @@ export const DevFsSample: React.FC<DevFsSampleProps> = (props) => {
   const { bus } = props;
 
   const [image, setImage] = useState<string | undefined>();
-  const name = 'fs.foo';
+  const id = 'fs.foo';
   const path = 'my-folder/my-image.png';
 
   const load = async (path: string) => {
-    const { store, fs } = await Filesystem.IndexedDb.create({ bus, name });
+    const { store, fs } = await Filesystem.IndexedDb.create({ bus, id });
 
     const res = await fs.read(path);
     if (!res) {
@@ -39,7 +39,7 @@ export const DevFsSample: React.FC<DevFsSampleProps> = (props) => {
   };
 
   const del = async (path: string) => {
-    const { store, fs } = await Filesystem.IndexedDb.create({ bus, name });
+    const { store, fs } = await Filesystem.IndexedDb.create({ bus, id });
     const res = await fs.delete(path);
 
     store.dispose();
@@ -50,7 +50,7 @@ export const DevFsSample: React.FC<DevFsSampleProps> = (props) => {
     const file = e.files[0];
     if (!file) return;
 
-    const { store, fs } = await Filesystem.IndexedDb.create({ bus, name });
+    const { store, fs } = await Filesystem.IndexedDb.create({ bus, id });
     const res = await fs.write(path, file.data);
 
     store.dispose();

@@ -8,11 +8,12 @@ import { IndexedDb } from './IndexedDb';
 /**
  * A filesystem driver running against the browser [IndexedDB] store.
  */
-export const FsDriverLocal = (args: { name?: string }) => {
+export const FsDriverLocal = (args: { id?: string }) => {
   const dir = ROOT_DIR;
+  const id = (args.id ?? 'fs').trim();
 
   return IndexedDb.create<t.FsIndexedDb>({
-    name: args.name || 'fs',
+    name: id,
     version: 1,
 
     /**
@@ -38,7 +39,7 @@ export const FsDriverLocal = (args: { name?: string }) => {
         dispose$.next();
       };
 
-      const { name, version } = db;
+      const { version } = db;
       let driver: t.FsDriverLocal | undefined;
       let index: t.FsIndexer | undefined;
 
@@ -46,10 +47,10 @@ export const FsDriverLocal = (args: { name?: string }) => {
        * API.
        */
       const api: t.FsIndexedDb = {
+        id,
+        version,
         dispose$: dispose$.asObservable(),
         dispose,
-        name,
-        version,
         get driver() {
           return driver || (driver = FsDriver({ dir, db }));
         },
@@ -58,6 +59,7 @@ export const FsDriverLocal = (args: { name?: string }) => {
           return index || (index = FsIndexer({ dir, db, fs }));
         },
       };
+
       return api;
     },
   });

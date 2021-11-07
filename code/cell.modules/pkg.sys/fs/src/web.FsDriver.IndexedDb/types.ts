@@ -2,7 +2,7 @@ import { Disposable } from '@platform/types';
 import { FsDriverLocal, FsIndexer, ManifestFileImage } from '@platform/cell.types';
 
 export type FsIndexedDb = Disposable & {
-  name: string;
+  id: string;
   version: number;
   driver: FsDriverLocal;
   index: FsIndexer;

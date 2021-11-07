@@ -1,10 +1,10 @@
 import React from 'react';
-import { DevActions, Test } from 'sys.ui.dev';
-import { css, IndexedDb } from '../common';
+import { DevActions, Test, TestSuiteRunResponse } from 'sys.ui.dev';
+import { css, IndexedDb, t } from '../common';
 
 type Ctx = {
   data: any;
-  runTests(): Promise<any>;
+  runTests(): Promise<TestSuiteRunResponse>;
 };
 
 /**

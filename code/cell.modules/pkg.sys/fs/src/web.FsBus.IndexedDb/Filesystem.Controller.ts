@@ -1,4 +1,4 @@
-import { t } from './common';
+import { t, DEFAULT } from './common';
 import { Filesystem as FilesystemWeb } from '@platform/cell.fs.bus/lib/web';
 import { FsDriverLocal } from '../web.FsDriver.IndexedDb';
 
@@ -10,17 +10,17 @@ type Milliseconds = number;
  */
 export async function BusController(args: {
   bus: t.EventBus<any>;
-  name?: string;
-  id?: FilesystemId;
+  id: FilesystemId;
   filter?: (e: t.SysFsEvent) => boolean;
   httpFactory?: (host: string | number) => t.IHttpClient;
   timeout?: Milliseconds;
 }) {
-  const { name, bus, id, filter, httpFactory, timeout } = args;
+  const { bus, filter, httpFactory, timeout } = args;
+  const id = (args.id ?? '').trim() || DEFAULT.FILESYSTEM_ID;
 
   // Start the driver.
-  const fs = await FsDriverLocal({ name });
-  const { driver, index } = fs;
+  const local = await FsDriverLocal({ id });
+  const { driver, index } = local;
 
   // Finish up.
   return FilesystemWeb.Controller({
