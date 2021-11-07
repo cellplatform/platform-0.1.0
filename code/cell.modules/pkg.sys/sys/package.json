@@ -1,6 +1,7 @@
 {
   "name": "sys",
-  "version": "0.0.0",
+  "description": "Standard federated-function exports across 'sys' modules.",
+  "version": "0.0.2",
   "main": "lib/index",
   "sideEffects": false,
   "compiler": {
@@ -12,7 +13,7 @@
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
-    "bundle": "cell.compiler bundle $@",
+    "bundle": "cell.compiler bundle --bump $@",
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
