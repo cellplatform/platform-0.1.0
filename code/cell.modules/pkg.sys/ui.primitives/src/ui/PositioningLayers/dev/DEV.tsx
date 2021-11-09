@@ -1,15 +1,18 @@
 import React from 'react';
-import { ActionButtonHandlerArgs, DevActions } from 'sys.ui.dev';
+import { DevActions } from 'sys.ui.dev';
 
 import { PositioningLayers, PositioningLayersProps, PositioningLayersSizeHandler } from '..';
 import { t } from '../common';
 import { PositioningLayersProperties } from '../PositioningLayers.Properties';
 import { PositioningLayersPropertiesStack } from '../PositioningLayers.PropertiesStack';
-import { Sample } from './DEV.Sample';
+import { DevSample } from './DEV.Sample';
+
+type Id = string;
 
 type Ctx = {
   debug: { size?: t.DomRect; current?: number };
   props: PositioningLayersProps;
+  selected?: Id;
   onSize: PositioningLayersSizeHandler;
 };
 
@@ -21,7 +24,7 @@ const insert = (ctx: Ctx, position: t.BoxPosition) => {
     render(e) {
       const info = e.find.first(layer.id);
       const overlaps = e.find.overlap(e.index);
-      return <Sample id={info?.id ?? layer.id} info={info} overlaps={overlaps} find={e.find} />;
+      return <DevSample id={info?.id ?? layer.id} info={info} overlaps={overlaps} find={e.find} />;
     },
   };
   layers.push(layer);
@@ -37,7 +40,7 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       props: {},
-      debug: {},
+      debug: { current: 0 },
       onSize(args) {
         e.change.ctx((ctx) => (ctx.debug.size = args.size));
       },
@@ -84,7 +87,8 @@ export const actions = DevActions<Ctx>()
           style={{ Margin: [20, x, 20, x] }}
           onLayerChange={({ index, layer }) => {
             e.change.ctx((ctx) => {
-              const layers = ctx.props.layers ?? (ctx.props.layers = []);
+              const props = ctx.props;
+              const layers = props.layers ?? (props.layers = []);
               layers[index] = layer;
             });
           }}
