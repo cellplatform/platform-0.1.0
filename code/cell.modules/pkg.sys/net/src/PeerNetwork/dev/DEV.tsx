@@ -201,26 +201,6 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Filesystem');
-
-    e.button('tmp', async (e) => {
-      //
-      const fs = await e.ctx.fs();
-
-      const path = 'foo.txt';
-      console.log('info', await fs.info(path));
-
-      await fs.write(path, new TextEncoder().encode('foobar'));
-
-      const res = await fs.info(path);
-
-      console.log('res', res);
-    });
-
-    e.hr();
-  })
-
-  .items((e) => {
     e.title('Environment');
 
     e.boolean('debug (json)', (e) => {
