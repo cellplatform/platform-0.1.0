@@ -1,11 +1,11 @@
 {
-  "name": "dns.sys",
-  "description": "Standard federated-function endpoing for 'system' modules",
-  "version": "0.0.10",
+  "name": "dns.ui.runtime",
+  "description": "User interface runtime",
+  "version": "0.0.0",
   "main": "lib/index",
   "sideEffects": false,
   "compiler": {
-    "port": 5050
+    "port": 3000
   },
   "scripts": {
     "start": "cell.compiler dev $@",
@@ -17,8 +17,7 @@
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@",
-    "deploy": "ts-node -T script.ts/deploy.vercel"
+    "serve": "cell.compiler serve $@"
   },
   "dependencies": {},
   "devDependencies": {
