@@ -10,8 +10,6 @@ export default () =>
         .target('web')
         .port(Package.compiler.port)
 
-        // .entry('main', './src/entry/main')
-
         .static('static')
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
         .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
@@ -19,6 +17,8 @@ export default () =>
         /**
          * Federated Exports
          */
-        .expose('./Fs.Sample', './src/exports/Sample.Fs')
-        .expose('./Fs.Video', './src/exports/Sample.Video'),
+        .expose('./SAMPLE.fs', './src/exports/Sample.Fs')
+        .expose('./DEV.ui.video', './src/exports/Dev.Video')
+        .expose('./DEV.ui.primitives', './src/exports/Dev.Primitives')
+        .expose('./DEV.runtime.web', './src/exports/Dev.Runtime'),
     );
