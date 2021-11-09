@@ -5,6 +5,7 @@ import { t, rx, css } from '../common';
 
 import { WebRuntimeBus } from '../../../web.RuntimeBus';
 import { useModuleTarget } from '../../hooks';
+import { DevSampleTarget } from './DEV.SampleTarget';
 
 type Ctx = {
   bus: t.EventBus;
@@ -105,14 +106,9 @@ export const actions = DevActions<Ctx>()
     e.settings({
       host: { background: -0.04 },
       actions: { width: 360 },
-      layout: {
-        position: [200, null, null, null],
-        cropmarks: -0.2,
-        width: 350,
-      },
     });
 
-    e.render(
+    const elSelector = (
       <ManifestSelectorStateful
         {...ctx.props}
         bus={ctx.bus}
@@ -121,11 +117,20 @@ export const actions = DevActions<Ctx>()
           const { remote } = e;
           ctx.events.useModule.fire({ target: 'myTarget', module: remote });
         }}
-      />,
+      />
     );
 
-    e.render(<Sample bus={ctx.bus} target={'myTarget'} />, {
-      position: [400, 80, 120, 80],
+    const edge = 80;
+    const width = 300;
+
+    e.render(elSelector, {
+      position: [edge, null, null, edge],
+      width,
+      cropmarks: -0.2,
+    });
+
+    e.render(<DevSampleTarget bus={ctx.bus} target={'myTarget'} />, {
+      position: [edge - 1, edge, 120, width + edge + 50],
       cropmarks: false,
       background: 1,
       border: -0.1,
@@ -134,23 +139,3 @@ export const actions = DevActions<Ctx>()
   });
 
 export default actions;
-
-/**
- * Sample UI for the [useModuleTarget] hook.
- */
-export type SampleProps = { bus: t.EventBus; target: string };
-export const Sample: React.FC<SampleProps> = (props) => {
-  const { bus, target } = props;
-  const remote = useModuleTarget({ bus, target });
-
-  console.log('useModuleTarget (remote)', remote);
-
-  const styles = {
-    base: css({ position: 'relative', flex: 1 }),
-  };
-
-  const App = remote.module?.default;
-  const elMain = App && <App bus={props.bus} />;
-
-  return <div {...styles.base}>{elMain}</div>;
-};

@@ -14,7 +14,8 @@ export type ManifestSelectorStatefulProps = {
 export const ManifestSelectorStateful: React.FC<ManifestSelectorStatefulProps> = (props) => {
   const id = useRef(slug());
   const bus = rx.busAsType<t.ManifestSelectorEvent>(props.bus);
-  const state = useStateController({ bus, component: id.current });
+  const component = id.current;
+  const state = useStateController({ bus, component });
 
   return (
     <ManifestSelector
