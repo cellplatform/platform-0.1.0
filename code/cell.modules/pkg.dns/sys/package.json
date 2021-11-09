@@ -1,7 +1,7 @@
 {
   "name": "sys",
   "description": "Standard federated-function exports across 'sys' modules.",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "main": "lib/index",
   "sideEffects": false,
   "compiler": {

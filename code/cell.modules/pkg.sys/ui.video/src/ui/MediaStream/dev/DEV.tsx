@@ -19,13 +19,17 @@ type Ctx = {
   events: Events;
   props: VideoStreamProps;
   muted: { video: boolean; audio: boolean };
-  filestore(): Promise<t.Fs>;
+  filesystem: {
+    id: string;
+    store(): Promise<t.Fs>;
+  };
   debug: {
     save: { target: SaveTarget };
   };
   action: {
     startVideoStream(): Promise<void>;
     saveVideo(path: string, data: Uint8Array): Promise<void>;
+    download(path: string): Promise<void>;
   };
 };
 
@@ -59,9 +63,10 @@ export const actions = DevActions<Ctx>()
       });
 
     let fs: t.Fs | undefined;
-    const filestore = async () => {
+    const fsid = 'fs.video.sample';
+    const store = async () => {
       if (fs) return fs;
-      const res = await Filesystem.IndexedDb.create({ bus, id: 'fs.video.sample' });
+      const res = await Filesystem.IndexedDb.create({ bus, id: fsid });
       return (fs = res.fs);
     };
 
@@ -71,27 +76,45 @@ export const actions = DevActions<Ctx>()
       events,
       props: { isMuted: true },
       muted: { video: false, audio: false },
-      filestore,
+      filesystem: { id: fsid, store },
 
       debug: {
         save: { target: 'Fs.IndexedDb' },
       },
 
       action: {
+        async startVideoStream() {
+          await events.stop(ref).fire();
+          await events.start(ref).video();
+          await updateMute(ctx);
+        },
+
         async saveVideo(path, data) {
           try {
-            const fs = await ctx.filestore();
-            console.log('save video to IndexedDb: ', path, data);
+            const fs = await store();
             await fs.write(path, data);
+            console.group('🌳 Saved Video to IndexedDb');
+            console.log(' - fs(id):', fsid);
+            console.log(' - path:', path);
+            console.log(' - data', data);
+            console.groupEnd();
           } catch (error) {
             console.log('error', error);
           }
         },
 
-        async startVideoStream() {
-          await events.stop(ref).fire();
-          await events.start(ref).video();
-          await updateMute(ctx);
+        async download() {
+          const fs = await store();
+          const path = 'my-video.webm';
+          const data = await fs.read(path);
+          console.group('🌳 Download from IndexedDB Filesystem');
+          console.log('path', path);
+          console.log('data', data);
+          console.groupEnd();
+          if (data) {
+            const file = new Blob([data], { type: 'video/webm' });
+            FileUtil.download(path, file);
+          }
         },
       },
     };
@@ -189,24 +212,6 @@ export const actions = DevActions<Ctx>()
         });
     });
 
-    e.hr(1, 0.1);
-
-    e.button('download (from filesystem)', async (e) => {
-      e.button.description = undefined;
-
-      const fs = await e.ctx.filestore();
-      const path = 'my-video.webm';
-      const data = await fs.read(path);
-
-      if (!data) {
-        e.button.description = 'No data in filesystem. Record a video first.';
-        return;
-      } else {
-        const file = new Blob([data], { type: 'video/webm' });
-        FileUtil.download(path, file);
-      }
-    });
-
     e.hr();
   })
 
@@ -228,8 +233,8 @@ export const actions = DevActions<Ctx>()
 
     e.render(<Sample {...e.ctx.props} streamRef={ref} bus={bus} />, {
       label: {
-        topLeft: '<VideoStream>',
-        topRight: elStartMediastreamButton,
+        topLeft: elStartMediastreamButton,
+        topRight: '<VideoStream>',
         bottomRight: elStreamRef,
       },
     });
@@ -243,21 +248,23 @@ export const actions = DevActions<Ctx>()
     const saveTarget = e.ctx.debug.save.target;
     const saveFilename = saveTarget === 'Download' ? 'my-video' : undefined;
 
+    const getPath = () => `${saveFilename ?? 'my-video'}.webm`;
+    const elDownload = <Button onClick={() => e.ctx.action.download(getPath())}>Download</Button>;
+
     e.render(
       <DevRecordButton
         bus={bus}
         streamRef={ref}
         downloadFilename={saveFilename}
         onFileReady={({ data }) => {
-          const filename = saveFilename ?? 'my-video';
-          const path = `${filename}.webm`;
+          const path = getPath();
           e.ctx.action.saveVideo(path, data);
         }}
       />,
       {
         width,
         background: 1,
-        label: '<RecordButton>',
+        label: { topLeft: '<RecordButton>', bottomRight: elDownload },
       },
     );
   });
