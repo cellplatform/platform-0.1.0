@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useModuleTarget } from '../../hooks';
+import { useModule } from '../../hooks';
 import { css, t } from '../common';
 
 export type DevSampleTargetProps = { bus: t.EventBus; target: string };
@@ -10,8 +10,9 @@ export type DevSampleTargetProps = { bus: t.EventBus; target: string };
  */
 export const DevSampleTarget: React.FC<DevSampleTargetProps> = (props) => {
   const { bus, target } = props;
-  const remote = useModuleTarget({ bus, target });
+  const remote = useModule({ bus, target });
 
+  console.log('target', target);
   console.log('useModuleTarget (remote)', remote);
 
   const styles = { base: css({ position: 'relative', flex: 1 }) };

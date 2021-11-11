@@ -4,7 +4,7 @@ import { ManifestSelectorStateful, ManifestSelectorProps } from '..';
 import { t, rx, css } from '../common';
 
 import { WebRuntimeBus } from '../../../web.RuntimeBus';
-import { useModuleTarget } from '../../hooks';
+import { useModule } from '../../hooks';
 import { DevSampleTarget } from './DEV.SampleTarget';
 
 type Ctx = {

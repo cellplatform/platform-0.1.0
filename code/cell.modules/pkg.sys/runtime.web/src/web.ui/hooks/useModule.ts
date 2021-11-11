@@ -4,15 +4,16 @@ import { filter } from 'rxjs/operators';
 import { t, WebRuntime } from '../../common';
 import { WebRuntimeBus } from '../../web.RuntimeBus';
 
+type TargetName = string;
 type InstanceId = string;
 type Address = t.ModuleManifestRemoteImport;
 
 /**
  * Hook that handles loading remote modules via the [EventBus] for a specific "target".
  */
-export function useModuleTarget<M = any>(args: {
+export function useModule<M = any>(args: {
   bus: t.EventBus<any>;
-  target: string;
+  target: TargetName;
   id?: InstanceId;
 }) {
   const { bus, target } = args;

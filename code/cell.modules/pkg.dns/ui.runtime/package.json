@@ -1,7 +1,7 @@
 {
   "name": "dns.ui.runtime",
   "description": "User interface runtime",
-  "version": "0.0.0",
+  "version": "0.0.3",
   "main": "lib/index",
   "sideEffects": false,
   "compiler": {
@@ -17,7 +17,8 @@
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@"
+    "serve": "cell.compiler serve $@",
+    "deploy": "ts-node -T script.ts/deploy.vercel"
   },
   "dependencies": {},
   "devDependencies": {

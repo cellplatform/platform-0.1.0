@@ -1,6 +1,10 @@
 import Worker from 'worker-loader?inline=no-fallback!../workers/web.worker';
 import { ServiceWorker } from '@platform/cell.runtime.web/lib/ServiceWorker';
 
+const url = new URL(location.href);
+const dev = url.searchParams.get('dev');
+const isDev = typeof dev === 'string';
+
 /**
  * Web-worker.
  */
@@ -11,8 +15,13 @@ setTimeout(() => worker.postMessage({ msg: 'Hello from [workers.init.ts]' }), 50
 /**
  * DOM (User Interface)
  */
-export async function startDom() {
-  const init = import('./main.dom');
+export async function startDevHarness() {
+  const init = import('./main.dev');
+  init.catch((err) => console.log('INIT ERROR 🐷', err));
+}
+
+export async function startRoot() {
+  const init = import('./main.root');
   init.catch((err) => console.log('INIT ERROR 🐷', err));
 }
 
@@ -21,5 +30,6 @@ export async function startDom() {
  */
 (async () => {
   await ServiceWorker.start('./service.worker.js', { localhost: false });
-  await startDom();
+  if (isDev) await startDevHarness();
+  if (!isDev) await startRoot();
 })();

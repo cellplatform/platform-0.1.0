@@ -1,3 +1,4 @@
+import { t } from '../src/common';
 import { Vercel } from 'vendor.cloud.vercel/lib/node';
 
 const token = process.env.VERCEL_TEST_TOKEN;
@@ -40,4 +41,4 @@ async function deploy(team: string, project: string, alias: string) {
 }
 
 // DEV
-deploy('tdb', 'private', 'private.db.team');
+deploy('tdb', 'tdb-private', 'private.db.team');

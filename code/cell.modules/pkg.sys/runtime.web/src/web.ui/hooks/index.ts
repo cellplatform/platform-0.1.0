@@ -1,1 +1,1 @@
-export * from './useModuleTarget';
+export * from './useModule';
