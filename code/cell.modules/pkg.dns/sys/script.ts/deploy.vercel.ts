@@ -40,4 +40,4 @@ async function deploy(team: string, project: string, alias: string) {
 }
 
 // DEV
-deploy('tdb', 'sys', 'sys.db.team');
+deploy('tdb', 'tdb-sys', 'sys.db.team');
