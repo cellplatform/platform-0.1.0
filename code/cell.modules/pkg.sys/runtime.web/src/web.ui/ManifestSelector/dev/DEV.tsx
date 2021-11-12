@@ -149,7 +149,7 @@ export const actions = DevActions<Ctx>()
       background: 1,
       border: -0.1,
       label: {
-        topRight: `useModuleTarget (hook)`,
+        topRight: `useModule (hook)`,
         bottomRight: elUnload,
       },
     });
