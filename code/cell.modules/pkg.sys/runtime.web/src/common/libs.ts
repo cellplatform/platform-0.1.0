@@ -13,4 +13,3 @@ export { slug, rx, value, time } from '@platform/util.value';
  */
 export { useDragTarget } from 'sys.ui.primitives/lib/hooks/useDragTarget';
 export { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
-export { QRCode } from 'sys.ui.primitives/lib/ui/QRCode';

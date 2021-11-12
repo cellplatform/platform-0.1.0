@@ -3,7 +3,6 @@ import React from 'react';
 import { color, css, CssValue, t, useDragTarget, COLORS } from './common';
 import { List } from './components/List';
 import { UrlTextbox } from './components/UrlTextbox';
-import { Info } from './components/Info';
 
 type Url = string;
 
@@ -82,7 +81,6 @@ export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
         onRemoteEntryClick={props.onEntryClick}
         style={styles.body.list}
       />
-      <Info manifestUrl={manifestUrl} manifest={manifest} style={styles.body.info} />
     </div>
   );
 
