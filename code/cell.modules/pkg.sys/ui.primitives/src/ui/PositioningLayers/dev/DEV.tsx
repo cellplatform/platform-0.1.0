@@ -59,8 +59,11 @@ export const actions = DevActions<Ctx>()
     e.button('insert: center bottom', (e) => insert(e.ctx, { x: 'center', y: 'bottom' }));
     e.button('insert: right center', (e) => insert(e.ctx, { x: 'right', y: 'center' }));
     e.button('insert: bottom right', (e) => insert(e.ctx, { x: 'right', y: 'bottom' }));
+    e.hr(1, 0.1);
+    e.button('insert: full screen', (e) => insert(e.ctx, { x: 'stretch', y: 'stretch' }));
 
     e.hr(1, 0.1);
+
     e.button('clear', (e) => {
       e.ctx.props.layers = undefined;
       e.ctx.debug.current = undefined;
