@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { css, CssValue, t } from './common';
-import { RecordButton, RecordButtonState, useRecordController } from '../../RecordButton';
+import React from 'react';
+
 import { useStreamState } from '..';
+import { RecordButton, useRecordController } from '../../RecordButton';
+import { css, CssValue, t } from './common';
 
 export type DevRecordButtonProps = {
   streamRef?: string; // MediaStream ID.
