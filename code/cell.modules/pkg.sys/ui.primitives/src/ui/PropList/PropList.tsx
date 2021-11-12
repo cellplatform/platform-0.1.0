@@ -5,7 +5,7 @@ import { PropListItem } from './PropList.Item';
 import { PropListTitle } from './PropList.Title';
 
 export type PropListProps = {
-  title?: string | React.ReactNode;
+  title?: string | React.ReactNode | null;
   titleEllipsis?: boolean;
   items?: (t.PropListItem | undefined)[] | Record<string, unknown>;
   defaults?: t.PropListDefaults;
