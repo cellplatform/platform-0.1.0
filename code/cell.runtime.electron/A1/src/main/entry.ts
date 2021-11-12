@@ -98,7 +98,7 @@ export async function start() {
     Log.Controller({ bus });
     Menu.Controller({ bus });
 
-    Filesystem.Controller({ bus, id: 'main', fs: paths.files });
+    Filesystem.Controller({ bus, id: 'main', driver: paths.files });
 
     /**
      * Upload bundled system code into the local service.
