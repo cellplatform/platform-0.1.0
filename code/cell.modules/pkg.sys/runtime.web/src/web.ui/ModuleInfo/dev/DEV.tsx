@@ -3,6 +3,16 @@ import { DevActions } from 'sys.ui.dev';
 import { ModuleInfo, ModuleInfoProps, ModuleInfoStateful } from '..';
 import { ManifestSelectorStateful } from '../../ManifestSelector';
 import { t, rx } from '../../../common';
+import * as m from '../types';
+
+const FIELDS: m.ModuleInfoFields[] = [
+  'namespace',
+  'version',
+  'compiled',
+  'kind',
+  'files',
+  'remote',
+];
 
 type Ctx = {
   bus: t.EventBus<any>;
@@ -19,8 +29,8 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
-
     const ctx: Ctx = { bus, props: {} };
+
     return ctx;
   })
 
@@ -36,6 +46,23 @@ export const actions = DevActions<Ctx>()
             const title = e.changing.next;
             e.textbox.current = title;
             e.ctx.props.title = title;
+          }
+        }),
+    );
+
+    e.select((config) =>
+      config
+        .title('fields:')
+        // .label('select single')
+        .items(FIELDS)
+        .initial(undefined)
+        .clearable(true)
+        .view('buttons')
+        .multi(true)
+        .pipe((e) => {
+          if (e.changing) {
+            const next = e.changing.next.map(({ value }) => value) as m.ModuleInfoFields[];
+            e.ctx.props.fields = next.length === 0 ? undefined : next;
           }
         }),
     );
@@ -63,7 +90,14 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       const url = e.ctx.url;
       if (!url) return null;
-      return <ModuleInfoStateful url={url} style={{ MarginX: 15, MarginY: 20 }} />;
+      return (
+        <ModuleInfoStateful
+          url={url}
+          title={e.ctx.props.title}
+          fields={e.ctx.props.fields}
+          style={{ MarginX: 15, marginTop: 40 }}
+        />
+      );
     });
   })
 
