@@ -1,2 +1,2 @@
 export * from './ManifestSelector';
-export * from './ManifestSelectorStateful';
+export * from './ManifestSelector.Stateful';

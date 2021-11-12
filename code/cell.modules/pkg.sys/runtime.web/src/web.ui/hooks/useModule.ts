@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { filter } from 'rxjs/operators';
 
-import { t, WebRuntime } from '../../common';
-import { WebRuntimeBus } from '../../web.RuntimeBus';
+import { t, WebRuntime, WebRuntimeBus } from './common';
 
 type TargetName = string;
 type InstanceId = string;

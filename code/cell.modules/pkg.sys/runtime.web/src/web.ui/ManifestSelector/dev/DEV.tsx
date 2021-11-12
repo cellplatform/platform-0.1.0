@@ -1,16 +1,19 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { ManifestSelectorStateful, ManifestSelectorProps } from '..';
-import { t, rx, css } from '../common';
 
+import { ManifestSelectorProps, ManifestSelectorStateful } from '..';
 import { WebRuntimeBus } from '../../../web.RuntimeBus';
-import { useModule } from '../../hooks';
+import { rx, t, Button } from '../common';
 import { DevSampleTarget } from './DEV.SampleTarget';
+import { ModuleInfoStateful } from '../../ModuleInfo';
+
+const TARGET = 'myTarget';
 
 type Ctx = {
   bus: t.EventBus;
   events: t.WebRuntimeEvents;
   props: ManifestSelectorProps;
+  url: { value?: string; change(url?: string): void };
   debug: {
     output: {
       title?: string;
@@ -25,7 +28,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.config.ManifestSelector')
+  .namespace('ui.ManifestSelector')
 
   .context((e) => {
     if (e.prev) return e.prev;
@@ -48,12 +51,16 @@ export const actions = DevActions<Ctx>()
           },
         },
       },
+      url: {
+        value: '',
+        change: (url) => e.change.ctx((ctx) => (ctx.url.value = url)),
+      },
     };
     return ctx;
   })
 
   .items((e) => {
-    e.title('ManifestSelector');
+    e.title('Dev');
 
     e.boolean('canDrop', (e) => {
       if (e.changing) e.ctx.props.canDrop = e.changing.next;
@@ -68,15 +75,10 @@ export const actions = DevActions<Ctx>()
 
     e.button('info', async (e) => {
       const res = await e.ctx.events.info.get();
-      console.log('res', res);
       e.ctx.debug.output.write('info', res);
     });
 
-    e.button('useModule: null (unload)', async (e) => {
-      e.ctx.events.useModule.fire({ target: 'myTarget', module: null });
-    });
-
-    e.hr();
+    e.hr(1, 0.1);
   })
 
   .items((e) => {
@@ -100,6 +102,16 @@ export const actions = DevActions<Ctx>()
     });
   })
 
+  .items((e) => {
+    e.hr();
+
+    e.component((e) => {
+      const url = (e.ctx.url.value || '').trim();
+      if (!url) return null;
+      return <ModuleInfoStateful url={url} style={{ MarginX: 25, MarginY: 15 }} />;
+    });
+  })
+
   .subject((e) => {
     const { ctx } = e;
 
@@ -112,29 +124,34 @@ export const actions = DevActions<Ctx>()
       <ManifestSelectorStateful
         {...ctx.props}
         bus={ctx.bus}
-        onEntryClick={(e) => {
-          console.log('onRemoteEntryClick', e);
-          const { remote } = e;
-          ctx.events.useModule.fire({ target: 'myTarget', module: remote });
-        }}
+        onEntryClick={(e) => ctx.events.useModule.fire({ target: TARGET, module: e.remote })}
+        onChanged={(e) => ctx.url.change(e.url)}
       />
     );
 
     const edge = 80;
+    const bottom = 120;
     const width = 300;
+
+    const unload = () => e.ctx.events.useModule.fire({ target: TARGET, module: null });
+    const elUnload = <Button onClick={unload}>Unload</Button>;
 
     e.render(elSelector, {
       position: [edge, null, null, edge],
       width,
       cropmarks: -0.2,
+      label: `<ManifestSelectorStateful>`,
     });
 
-    e.render(<DevSampleTarget bus={ctx.bus} target={'myTarget'} />, {
-      position: [edge - 1, edge, 120, width + edge + 50],
+    e.render(<DevSampleTarget bus={ctx.bus} target={TARGET} />, {
+      position: [edge - 1, edge, bottom, width + edge + 50],
       cropmarks: false,
       background: 1,
       border: -0.1,
-      label: `useModuleTarget (hook)`,
+      label: {
+        topRight: `useModuleTarget (hook)`,
+        bottomRight: elUnload,
+      },
     });
   });
 

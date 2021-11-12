@@ -6,11 +6,11 @@ export { css, color, CssValue, formatColor } from '@platform/css';
 export { WebRuntime, bundle } from '@platform/cell.runtime.web';
 export { useResizeObserver } from '@platform/react';
 export { Http } from '@platform/http';
-export { slug, rx, value } from '@platform/util.value';
+export { slug, rx, value, time } from '@platform/util.value';
 
 /**
  * @system
  */
-export { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
 export { useDragTarget } from 'sys.ui.primitives/lib/hooks/useDragTarget';
+export { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
 export { QRCode } from 'sys.ui.primitives/lib/ui/QRCode';

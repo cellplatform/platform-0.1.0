@@ -26,9 +26,15 @@ export type ManifestSelectorLoadHandler = (e: ManifestSelectorLoadArgs) => void;
 export type ManifestSelectorLoadArgs = { url: Url };
 
 /**
+ * Event handler of when the loaded manifest changes.
+ */
+export type ManifestSelectorChangedHandler = (e: ManifestSelectorChangedArgs) => void;
+export type ManifestSelectorChangedArgs = { url?: string; manifest?: t.ModuleManifest };
+
+/**
  * [Events]
  */
-export type ManifestSelectorEvent = ManifestSelectorActionEvent;
+export type ManifestSelectorEvent = ManifestSelectorActionEvent | ManifestSelectorCurrentEvent;
 
 /**
  * Key actions emitted from selector.
@@ -41,4 +47,18 @@ export type ManifestSelectorAction = {
   kind: 'loadManifest' | 'loadEntry';
   manifest: Url;
   component: InstanceId;
+};
+
+/**
+ * Broadcast current state.
+ */
+export type ManifestSelectorCurrentEvent = {
+  type: 'sys.runtime.web/ManifestSelector/current';
+  payload: ManifestSelectorCurrent;
+};
+
+export type ManifestSelectorCurrent = {
+  component: InstanceId;
+  url: Url;
+  manifest?: t.ModuleManifest;
 };

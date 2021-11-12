@@ -9,13 +9,15 @@ export type ManifestSelectorStatefulProps = {
   canDrop?: boolean;
   style?: CssValue;
   onEntryClick?: t.ManifestSelectorEntryClickHandler;
+  onChanged?: t.ManifestSelectorChangedHandler;
 };
 
 export const ManifestSelectorStateful: React.FC<ManifestSelectorStatefulProps> = (props) => {
+  const { onChanged } = props;
   const id = useRef(slug());
   const bus = rx.busAsType<t.ManifestSelectorEvent>(props.bus);
   const component = id.current;
-  const state = useStateController({ bus, component });
+  const state = useStateController({ bus, component, onChanged });
 
   return (
     <ManifestSelector
