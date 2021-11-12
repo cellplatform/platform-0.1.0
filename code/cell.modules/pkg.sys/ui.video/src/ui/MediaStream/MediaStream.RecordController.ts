@@ -3,7 +3,6 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import { rx, t, time } from '../../common';
 import { FileUtil } from './util';
-
 type M = 'video/webm';
 
 /**
@@ -97,10 +96,10 @@ export function MediaStreamRecordController(args: { bus: t.EventBus<any>; stream
       const blob = await recorder.stop();
       if (e.download) FileUtil.download(e.download.filename, blob);
       if (typeof e.onData === 'function') {
+        const { toUint8Array } = FileUtil;
         const mimetype = blob.type;
         const bytes = blob.size;
-        const data = await FileUtil.toUint8Array(blob);
-        if (data) e.onData({ mimetype, bytes, data, blob });
+        e.onData({ mimetype, bytes, blob, toUint8Array });
       }
 
       bus.fire({

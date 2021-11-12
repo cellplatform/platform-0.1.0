@@ -12,7 +12,7 @@ export function useRecordController(args: {
   bus: t.EventBus<any>;
   stream?: MediaStream;
   filename?: string;
-  onData?: (e: { mimetype: string; bytes: number; data: Uint8Array; blob: Blob }) => void;
+  onData?: t.MediaStreamRecordOnData;
 }) {
   const { stream, filename } = args;
   const bus = args.bus as t.EventBus<t.MediaEvent>;

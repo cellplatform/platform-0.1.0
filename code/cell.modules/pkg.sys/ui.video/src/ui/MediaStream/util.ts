@@ -42,16 +42,14 @@ export const FileUtil = {
    * Read a Blob/File object into a [Uint8Array].
    */
   toUint8Array(input: Blob | File) {
-    return new Promise<Uint8Array | undefined>((resolve, reject) => {
+    return new Promise<Uint8Array>((resolve, reject) => {
       try {
         const reader = new FileReader();
         reader.onloadend = () => {
-          let data: Uint8Array | undefined;
           const result = reader.result;
-          if (result === null) return resolve(undefined);
-          if (typeof result === 'string') data = new TextEncoder().encode(result);
-          if (typeof result === 'object') data = new Uint8Array(result);
-          return resolve(data);
+          if (result === null) throw new Error('File reader returned null');
+          if (typeof result === 'string') return resolve(new TextEncoder().encode(result));
+          if (typeof result === 'object') return resolve(new Uint8Array(result));
         };
         reader.readAsArrayBuffer(input);
       } catch (error) {

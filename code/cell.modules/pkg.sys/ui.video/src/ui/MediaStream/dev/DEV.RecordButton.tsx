@@ -20,8 +20,12 @@ export const DevRecordButton: React.FC<DevRecordButtonProps> = (props) => {
     bus,
     stream,
     filename: props.downloadFilename,
-    onData(e) {
-      props.onFileReady?.(e);
+    async onData(e) {
+      if (props.onFileReady) {
+        const { mimetype, bytes } = e;
+        const data = await e.toUint8Array(e.blob);
+        props.onFileReady({ mimetype, bytes, data });
+      }
     },
   });
 
