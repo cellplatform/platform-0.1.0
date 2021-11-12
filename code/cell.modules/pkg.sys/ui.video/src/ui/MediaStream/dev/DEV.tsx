@@ -202,7 +202,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       const targets: SaveTarget[] = ['Fs.IndexedDb', 'Download'];
       config
-        .title('Save target storage medium')
+        .title('After recording complete save to:')
         .initial(config.ctx.debug.save.target)
         .view('buttons')
         .items(targets)
