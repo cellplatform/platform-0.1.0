@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, time, value } from '../../common';
-
-import { PropList, PropListProps, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
 import Filesize from 'filesize';
+import React from 'react';
+import { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
+
+import { color, css, CssValue, t, time, value } from '../../common';
 
 export type ModuleInfoProps = {
   title?: string | React.ReactNode | null;

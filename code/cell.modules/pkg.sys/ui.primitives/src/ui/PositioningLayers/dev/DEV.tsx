@@ -2,14 +2,17 @@ import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
 import { PositioningLayers, PositioningLayersProps, PositioningLayersSizeHandler } from '..';
-import { t } from '../common';
+import { t, rx } from '../common';
 import { PositioningLayersProperties } from '../PositioningLayers.Properties';
 import { PositioningLayersPropertiesStack } from '../PositioningLayers.PropertiesStack';
 import { DevSample } from './DEV.Sample';
 
+import { WebRuntime } from 'sys.runtime.web';
+
 type Id = string;
 
 type Ctx = {
+  bus: t.EventBus;
   debug: { size?: t.DomRect; current?: number };
   props: PositioningLayersProps;
   selected?: Id;
@@ -38,7 +41,10 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
+    const bus = rx.bus();
+
     const ctx: Ctx = {
+      bus,
       props: {},
       debug: { current: 0 },
       onSize(args) {
@@ -70,6 +76,15 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
+
+    e.component((e) => {
+      return (
+        <WebRuntime.ui.ManifestSelectorStateful
+          bus={e.ctx.bus}
+          style={{ MarginX: 25, MarginY: 15 }}
+        />
+      );
+    });
 
     e.component((e) => {
       const x = 30;
