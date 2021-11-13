@@ -17,30 +17,26 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      position: 'relative',
-      boxSizing: 'border-box',
-      Flex: 'horizontal-stretch-stretch',
-      flex: 1,
-      fontSize: 14,
-    }),
+    base: css({ position: 'relative', boxSizing: 'border-box', flex: 1, fontSize: 14 }),
+    body: css({ Absolute: 0, overflow: 'hidden', Flex: 'horizontal-stretch-stretch' }),
     left: {
       base: css({
         position: 'relative',
-        Flex: 'center-center',
+        padding: 20,
         flex: 1,
       }),
-      header: css({
-        Absolute: [0, 0, null, 0],
-        padding: 8,
-      }),
+      footer: css({ Absolute: [null, 0, 0, 0], padding: 8 }),
     },
     right: {
       base: css({
-        position: 'relative',
-        Scroll: true,
         flex: 1,
+        position: 'relative',
         borderLeft: `solid 1px ${color.alpha(COLORS.MAGENTA, 0.3)}`,
+        overflow: 'hidden',
+      }),
+      body: css({
+        Absolute: 0,
+        Scroll: true,
         padding: 20,
       }),
     },
@@ -48,18 +44,24 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
 
   const name = manifest.isMock ? `manifset (mock)` : 'manifest';
 
+  const elUrl = (
+    <a href={url} target={'_blank'} rel={'noreferrer'}>
+      {url}
+    </a>
+  );
+
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.left.base}>
-        <div {...styles.left.header}>
-          <a href={url} target={'_blank'} rel={'noreferrer'}>
-            {url}
-          </a>
+      <div {...styles.body}>
+        <div {...styles.left.base}>
+          <div {...styles.left.footer}>{elUrl}</div>
+          <ModuleInfo manifest={manifest.json} maxWidth={280} />
         </div>
-        <ModuleInfo manifest={manifest.json} />
-      </div>
-      <div {...styles.right.base}>
-        <ObjectView name={name} data={manifest.json} />
+        <div {...styles.right.base}>
+          <div {...styles.right.body}>
+            <ObjectView name={name} data={manifest.json} />
+          </div>
+        </div>
       </div>
     </div>
   );

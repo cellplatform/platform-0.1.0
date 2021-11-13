@@ -9,18 +9,17 @@ export type ModuleInfoProps = {
   title?: m.ModuleInfoTitle;
   manifest?: t.ModuleManifest;
   fields?: m.ModuleInfoFields[];
+  minWidth?: number;
+  maxWidth?: number;
   style?: CssValue;
 };
 
 export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
-  const { manifest, fields } = props;
+  const { manifest, fields, minWidth = 200, maxWidth } = props;
   const title = props.title ? props.title : props.title === null ? '' : 'Module';
 
   const styles = {
-    base: css({
-      position: 'relative',
-      minWidth: 200,
-    }),
+    base: css({ position: 'relative', minWidth, maxWidth }),
     empty: css({
       color: color.format(-0.3),
       fontStyle: 'italic',

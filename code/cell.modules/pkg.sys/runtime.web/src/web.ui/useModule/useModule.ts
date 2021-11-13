@@ -12,7 +12,7 @@ type Address = t.ModuleManifestRemoteImport;
  */
 export function useModule<M = any>(args: {
   bus: t.EventBus<any>;
-  target: TargetName;
+  target?: TargetName;
   id?: InstanceId;
 }) {
   const { bus, target } = args;
@@ -22,8 +22,12 @@ export function useModule<M = any>(args: {
   const [module, setModule] = useState<M | undefined>();
 
   useEffect(() => {
+    const isTarget = Boolean(target);
     const events = WebRuntimeBus.Events({ bus, id: args.id });
-    const use$ = events.useModule.$.pipe(filter((e) => e.target === target));
+    const use$ = events.useModule.$.pipe(
+      filter((e) => isTarget),
+      filter((e) => e.target === target),
+    );
 
     const load = (address: Address) => {
       setAddress(address);

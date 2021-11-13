@@ -15,7 +15,13 @@ export const DevSampleTarget: React.FC<DevSampleTargetProps> = (props) => {
   console.log('target', target);
   console.log('useModule (remote)', remote);
 
-  const styles = { base: css({ position: 'relative', flex: 1 }) };
+  const styles = {
+    base: css({
+      flex: 1,
+      position: 'relative',
+      overflow: 'hidden',
+    }),
+  };
   const Component = remote.module?.default;
   return <div {...styles.base}>{Component && <Component bus={props.bus} />}</div>;
 };

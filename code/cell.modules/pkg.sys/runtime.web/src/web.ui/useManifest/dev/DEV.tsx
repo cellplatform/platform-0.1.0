@@ -19,7 +19,6 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
-
     const ctx: Ctx = {
       bus,
       props: {},
@@ -46,9 +45,7 @@ export const actions = DevActions<Ctx>()
     });
 
     e.boolean('use specified url', (e) => {
-      //
       if (e.changing) e.ctx.debug.useUrl = e.changing.next;
-
       e.boolean.current = e.ctx.debug.useUrl;
     });
 
