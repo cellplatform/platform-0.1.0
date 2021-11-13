@@ -1,6 +1,6 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
-import { ModuleEntry, ModuleEntryProps } from '..';
+import { Module, ModuleProps } from '..';
 import { ManifestSelectorStateful } from '../../ManifestSelector';
 import { t, rx } from '../../../common';
 
@@ -13,7 +13,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.ModuleEntry')
+  .namespace('ui.Module')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -53,7 +53,7 @@ export const actions = DevActions<Ctx>()
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: '<ModuleEntry>',
+        label: '<Module>',
         // position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,

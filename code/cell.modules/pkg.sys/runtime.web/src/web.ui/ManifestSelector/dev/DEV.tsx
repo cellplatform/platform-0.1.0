@@ -39,7 +39,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       bus,
       events,
-      props: { canDrop: true },
+      props: { canDrop: true, showExports: true },
       debug: {
         output: {
           clear: () => ctx.debug.output.write('', undefined),
@@ -65,6 +65,11 @@ export const actions = DevActions<Ctx>()
     e.boolean('canDrop', (e) => {
       if (e.changing) e.ctx.props.canDrop = e.changing.next;
       e.boolean.current = e.ctx.props.canDrop;
+    });
+
+    e.boolean('showExports', (e) => {
+      if (e.changing) e.ctx.props.showExports = e.changing.next;
+      e.boolean.current = e.ctx.props.showExports;
     });
 
     e.hr();

@@ -11,6 +11,7 @@ export type ManifestSelectorProps = {
   manifest?: t.ModuleManifest;
   error?: string;
   canDrop?: boolean;
+  showExports?: boolean;
   style?: CssValue;
   onManifestUrlChange?: t.ManifestSelectorUrlChangeHandler;
   onLoadManifest?: t.ManifestSelectorLoadHandler;
@@ -19,7 +20,7 @@ export type ManifestSelectorProps = {
 };
 
 export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
-  const { manifest } = props;
+  const { manifest, showExports = true } = props;
   const remote = manifest?.module?.remote;
   const manifestUrl = (props.manifestUrl ?? '').trim();
 
@@ -73,7 +74,7 @@ export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
     />
   );
 
-  const elBody = remote && (
+  const elBody = remote && showExports && (
     <div {...styles.body.base}>
       <List
         manifest={manifest}

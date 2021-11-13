@@ -13,8 +13,8 @@ export const WebRuntime = {
   Bus: WebRuntimeBus,
 
   ui: {
-    useModule,
     useManifest,
+    useModule,
     ManifestSelector,
     ManifestSelectorStateful,
   },

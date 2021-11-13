@@ -1,6 +1,5 @@
 import * as t from '../../common/types';
 
-type Url = string;
 type InstanceId = string;
 
 /**
@@ -8,7 +7,7 @@ type InstanceId = string;
  */
 export type ManifestSelectorEntryClickHandler = (e: ManifestSelectorEntryClickArgs) => void;
 export type ManifestSelectorEntryClickArgs = {
-  manifest: Url;
+  url: t.ManifestUrl;
   remote: t.ModuleManifestRemoteImport;
 };
 
@@ -17,13 +16,13 @@ export type ManifestSelectorEntryClickArgs = {
  * (eg, via a textbox keypress).
  */
 export type ManifestSelectorUrlChangeHandler = (e: ManifestSelectorUrlChangeArgs) => void;
-export type ManifestSelectorUrlChangeArgs = { url: Url };
+export type ManifestSelectorUrlChangeArgs = { url: t.ManifestUrl };
 
 /**
  * Event handler for an action that requests a [Module Manifest] is loaded.
  */
 export type ManifestSelectorLoadHandler = (e: ManifestSelectorLoadArgs) => void;
-export type ManifestSelectorLoadArgs = { url: Url };
+export type ManifestSelectorLoadArgs = { url: t.ManifestUrl };
 
 /**
  * Event handler of when the loaded manifest changes.
@@ -45,7 +44,7 @@ export type ManifestSelectorActionEvent = {
 };
 export type ManifestSelectorAction = {
   kind: 'loadManifest' | 'loadEntry';
-  manifest: Url;
+  url: t.ManifestUrl;
   component: InstanceId;
 };
 
@@ -59,6 +58,6 @@ export type ManifestSelectorCurrentEvent = {
 
 export type ManifestSelectorCurrent = {
   component: InstanceId;
-  url: Url;
+  url: t.ManifestUrl;
   manifest?: t.ModuleManifest;
 };

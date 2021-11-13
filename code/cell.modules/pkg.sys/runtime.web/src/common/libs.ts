@@ -7,6 +7,7 @@ export { WebRuntime, bundle } from '@platform/cell.runtime.web';
 export { useResizeObserver } from '@platform/react';
 export { Http } from '@platform/http';
 export { slug, rx, value, time } from '@platform/util.value';
+export { ManifestUrl } from '@platform/cell.schema';
 
 /**
  * @system

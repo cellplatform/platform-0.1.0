@@ -1,2 +1,2 @@
-export * from './useModule';
 export * from './useManifest';
+export * from './useModule';

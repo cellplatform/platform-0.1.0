@@ -7,6 +7,7 @@ import { useStateController } from './hooks';
 export type ManifestSelectorStatefulProps = {
   bus: t.EventBus<any>;
   canDrop?: boolean;
+  showExports?: boolean;
   style?: CssValue;
   onEntryClick?: t.ManifestSelectorEntryClickHandler;
   onChanged?: t.ManifestSelectorChangedHandler;
@@ -25,6 +26,7 @@ export const ManifestSelectorStateful: React.FC<ManifestSelectorStatefulProps> =
       manifest={state.manifest}
       error={state.error}
       canDrop={props.canDrop}
+      showExports={props.showExports}
       style={props.style}
       /**
        * Input.
@@ -36,18 +38,18 @@ export const ManifestSelectorStateful: React.FC<ManifestSelectorStatefulProps> =
        */
       onLoadManifest={(e) => {
         const component = id.current;
-        const manifest = e.url;
+        const url = e.url;
         bus.fire({
           type: 'sys.runtime.web/ManifestSelector/action',
-          payload: { kind: 'loadManifest', manifest, component },
+          payload: { kind: 'loadManifest', url, component },
         });
       }}
       onEntryClick={(e) => {
         const component = id.current;
-        const { manifest } = e;
+        const { url } = e;
         bus.fire({
           type: 'sys.runtime.web/ManifestSelector/action',
-          payload: { kind: 'loadEntry', manifest, component },
+          payload: { kind: 'loadEntry', url, component },
         });
         props.onEntryClick?.(e);
       }}

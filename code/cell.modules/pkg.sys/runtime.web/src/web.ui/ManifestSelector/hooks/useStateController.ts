@@ -49,7 +49,7 @@ export function useStateController(args: {
     const current$ = rx.payload<C>($, 'sys.runtime.web/ManifestSelector/current');
 
     action$.pipe(filter((e) => e.kind === 'loadManifest')).subscribe((e) => {
-      api.loadManifest(e.manifest);
+      api.loadManifest(e.url);
     });
 
     current$

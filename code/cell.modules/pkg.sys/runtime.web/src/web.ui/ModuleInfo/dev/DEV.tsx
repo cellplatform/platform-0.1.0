@@ -15,7 +15,7 @@ const FIELDS: m.ModuleInfoFields[] = [
 ];
 
 type Ctx = {
-  bus: t.EventBus<any>;
+  bus: t.EventBus;
   url?: string;
   props: ModuleInfoProps;
 };
@@ -53,7 +53,6 @@ export const actions = DevActions<Ctx>()
     e.select((config) =>
       config
         .title('fields:')
-        // .label('select single')
         .items(FIELDS)
         .initial(undefined)
         .clearable(true)
@@ -76,6 +75,7 @@ export const actions = DevActions<Ctx>()
       return (
         <ManifestSelectorStateful
           bus={bus}
+          showExports={false}
           style={{ MarginX: 15, marginTop: 10 }}
           onChanged={(event) => {
             e.change.ctx((ctx) => {

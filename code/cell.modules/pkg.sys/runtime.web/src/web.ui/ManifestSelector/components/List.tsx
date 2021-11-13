@@ -7,7 +7,7 @@ import { ManifestSelectorEntryClickHandler } from '../types';
 type Url = string;
 
 export type ListProps = {
-  manifestUrl: Url;
+  manifestUrl: t.ManifestUrl;
   manifest: t.ModuleManifest;
   style?: CssValue;
   onRemoteEntryClick?: ManifestSelectorEntryClickHandler;
@@ -29,7 +29,7 @@ export const List: React.FC<ListProps> = (props) => {
   const onRemoteEntryClick = (item: t.ModuleManifestRemoteExport) => {
     const entry = item.path;
     const remote = { url: url.remoteEntry, namespace, entry };
-    props.onRemoteEntryClick?.({ manifest: url.manifest, remote });
+    props.onRemoteEntryClick?.({ url: url.manifest, remote });
   };
 
   /**
