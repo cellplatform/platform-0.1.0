@@ -1,6 +1,6 @@
 {
-  "name": "dns.ui.runtime",
-  "description": "User interface runtime",
+  "name": "dns.ui",
+  "description": "User interface runtime (web)",
   "version": "0.0.3",
   "main": "lib/index",
   "sideEffects": false,
