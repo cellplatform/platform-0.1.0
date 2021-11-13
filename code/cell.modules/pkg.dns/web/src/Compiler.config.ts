@@ -2,7 +2,7 @@ import { Compiler, Package } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
-    .namespace('dns.ui')
+    .namespace('dns.web')
     .version(Package.version)
 
     .variant('web', (config) =>
