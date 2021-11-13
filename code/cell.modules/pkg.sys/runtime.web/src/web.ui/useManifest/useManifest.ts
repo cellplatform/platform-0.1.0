@@ -9,7 +9,7 @@ const MOCK: t.ModuleManifest = {
     module: 'sha256-94aacbf4ae6c5ab206b3d4cb5674fdecebf1f814b54f1fbfec646760edd23549',
   },
   module: {
-    namespace: 'ns.mock',
+    namespace: 'mock',
     version: '0.0.0',
     compiler: '@platform/cell.compiler@0.0.0',
     compiledAt: 1636667570203,
@@ -25,25 +25,26 @@ const MOCK: t.ModuleManifest = {
  */
 export function useManifest(options: { url?: string } = {}) {
   const [json, setJson] = useState<t.ModuleManifest | undefined>();
+
   const isLocalhost = location.hostname === 'localhost';
+  const isMock = isLocalhost && !options.url;
 
   /**
    * Lifecycle
    */
   useEffect(() => {
-    if (isLocalhost && !options.url) {
-      setJson(MOCK);
-      return;
+    if (isMock) {
+      return setJson(MOCK);
     }
 
     const url = options.url ?? '/index.json';
     pullManifest(url, (json) => setJson(json));
-  }, []); // eslint-disable-line
+  }, [options.url, isMock]); // eslint-disable-line
 
   /**
    * Api
    */
-  return { json, isMock: isLocalhost };
+  return { json, isMock };
 }
 
 /**
