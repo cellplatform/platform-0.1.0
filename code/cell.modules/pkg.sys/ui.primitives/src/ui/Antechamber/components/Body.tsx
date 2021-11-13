@@ -106,9 +106,9 @@ export const Body: React.FC<BodyProps> = (props) => {
 
   return (
     <PositioningLayers
-      style={styles.base}
       layers={layers}
       childPointerEvents={isOpen ? 'none' : 'auto'}
+      style={styles.base}
     />
   );
 };

@@ -17,15 +17,14 @@ export const actions = DevActions<Ctx>()
   .namespace('sys.ui.Antechamber')
   .context((e) => {
     if (e.prev) return e.prev;
+
     const ctx: Ctx = {
       props: {
         isOpen: false,
         isSpinning: false,
         backgroundBlur: 10,
         slideDuration: 300,
-        onSize(size) {
-          e.change.ctx((ctx) => (ctx.size = size));
-        },
+        onSize: (size) => e.change.ctx((ctx) => (ctx.size = size)),
       },
     };
     return ctx;

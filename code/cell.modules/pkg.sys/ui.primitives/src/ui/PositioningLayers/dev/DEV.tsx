@@ -7,15 +7,12 @@ import { PositioningLayersProperties } from '../PositioningLayers.Properties';
 import { PositioningLayersPropertiesStack } from '../PositioningLayers.PropertiesStack';
 import { DevSample } from './DEV.Sample';
 
-import { WebRuntime } from 'sys.runtime.web';
-
-type Id = string;
+type Index = number;
 
 type Ctx = {
   bus: t.EventBus;
-  debug: { size?: t.DomRect; current?: number };
   props: PositioningLayersProps;
-  selected?: Id;
+  debug: { size?: t.DomRect; current?: Index };
   onSize: PositioningLayersSizeHandler;
 };
 
@@ -26,8 +23,9 @@ const insert = (ctx: Ctx, position: t.BoxPosition) => {
     position,
     render(e) {
       const info = e.find.first(layer.id);
+      const id = info?.id ?? layer.id;
       const overlaps = e.find.overlap(e.index);
-      return <DevSample id={info?.id ?? layer.id} info={info} overlaps={overlaps} find={e.find} />;
+      return <DevSample id={id} info={info} overlaps={overlaps} find={e.find} />;
     },
   };
   layers.push(layer);
@@ -53,20 +51,46 @@ export const actions = DevActions<Ctx>()
     };
 
     insert(ctx, { x: 'center', y: 'bottom' });
-
     return ctx;
   })
 
-  .items((e) => {
-    e.title('Positioning Layers');
+  // .items((e) => {
+  //   e.title('Positioning Layers');
 
-    e.button('insert: top left', (e) => insert(e.ctx, { x: 'left', y: 'top' }));
-    e.button('insert: center center', (e) => insert(e.ctx, { x: 'center', y: 'center' }));
-    e.button('insert: center bottom', (e) => insert(e.ctx, { x: 'center', y: 'bottom' }));
-    e.button('insert: right center', (e) => insert(e.ctx, { x: 'right', y: 'center' }));
-    e.button('insert: bottom right', (e) => insert(e.ctx, { x: 'right', y: 'bottom' }));
+  //   e.component((e) => {
+  //     return (
+  //       <WebRuntime.ui.ManifestSelectorStateful
+  //         bus={e.ctx.bus}
+  //         style={{ MarginX: 25, MarginY: 15 }}
+  //         onEntryClick={async (ev) => {
+  //           const current = e.ctx.debug.current ?? -1;
+  //           console.log('current', current);
+  //           console.log('e', ev);
+
+  //           const layers = e.ctx.props.layers || [];
+  //           const target = layers[current]?.id;
+  //           // console.log('layer', layer);
+  //           console.log('target', target);
+  //           // const events = toObject(e.ctx.debug.events) as t.WebRuntimeEvents;
+  //           e.ctx.debug.events.useModule.fire({ target, module: ev.remote });
+  //         }}
+  //       />
+  //     );
+  //   });
+
+  //   e.hr();
+  // })
+
+  .items((e) => {
+    e.title('Insert');
+
+    e.button('top left', (e) => insert(e.ctx, { x: 'left', y: 'top' }));
+    e.button('center center', (e) => insert(e.ctx, { x: 'center', y: 'center' }));
+    e.button('center bottom', (e) => insert(e.ctx, { x: 'center', y: 'bottom' }));
+    e.button('right center', (e) => insert(e.ctx, { x: 'right', y: 'center' }));
+    e.button('bottom right', (e) => insert(e.ctx, { x: 'right', y: 'bottom' }));
     e.hr(1, 0.1);
-    e.button('insert: full screen', (e) => insert(e.ctx, { x: 'stretch', y: 'stretch' }));
+    e.button('full screen', (e) => insert(e.ctx, { x: 'stretch', y: 'stretch' }));
 
     e.hr(1, 0.1);
 
@@ -76,15 +100,6 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
-
-    e.component((e) => {
-      return (
-        <WebRuntime.ui.ManifestSelectorStateful
-          bus={e.ctx.bus}
-          style={{ MarginX: 25, MarginY: 15 }}
-        />
-      );
-    });
 
     e.component((e) => {
       const x = 30;

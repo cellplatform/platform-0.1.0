@@ -33,7 +33,7 @@ function toList(args: {
     list.push(
       ...[
         { label: 'position (x, y)', value: `${position.x} ${position.y}` },
-        { label: 'size', value: `x:${size.x} y:${size.y}, ${size.width} x ${size.height} px` },
+        { label: 'size', value: `x:${size.x} y:${size.y}, ${size.width}x${size.height}px` },
       ],
     );
 

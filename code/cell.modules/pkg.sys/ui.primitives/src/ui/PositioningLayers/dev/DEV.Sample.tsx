@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
 import { color, css, CssValue, t } from '../common';
 import { DevSampleProplist } from './DEV.Sample.Proplist';
@@ -16,7 +16,7 @@ export type DevSampleProps = {
 };
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
-  const { info, id, find, overlaps } = props;
+  const { id, info, find, overlaps } = props;
 
   const onClick = () => {
     console.log('lookup:', find.first(id));
@@ -32,9 +32,9 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
       userSelect: 'none',
       border: `dashed 1px ${color.format(-0.15)}`,
       borderRadius: 8,
+      margin: 3,
       Padding: [10, 15, 10, 8],
       minWidth: 250,
-      margin: 3,
       backgroundColor: color.format(-0.03),
     }),
     hand: css({ Absolute: [-8, -8, null, null] }),

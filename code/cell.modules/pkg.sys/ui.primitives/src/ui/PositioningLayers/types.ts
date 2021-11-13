@@ -10,8 +10,8 @@ type O = Record<string, unknown>;
 export type PositioningLayer<P extends O = O> = {
   id: Id; // Layer addressable identifier.
   position: t.BoxPosition;
-  render?: PositioningLayerRender<P>;
   props?: P;
+  render?: PositioningLayerRender<P>;
 };
 
 /**
