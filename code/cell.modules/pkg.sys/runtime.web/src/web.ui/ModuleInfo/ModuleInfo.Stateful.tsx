@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { CssValue, t } from '../../common';
-import { useManifest } from '../hooks';
+import { useManifest } from '../useManifest';
 import { ModuleInfo } from './ModuleInfo';
 import * as m from './types';
 

@@ -1,6 +1,7 @@
 import { ManifestSelector, ManifestSelectorStateful } from './web.ui/ManifestSelector';
 import { WebRuntimeBus } from './web.RuntimeBus';
-import { useModule, useManifest } from './web.ui/hooks';
+import { useManifest } from './web.ui/useManifest';
+import { useModule } from './web.ui/useModule';
 import { Runtime } from '@platform/cell.runtime';
 import { WebRuntime as PlatformWebRuntime } from '@platform/cell.runtime.web';
 

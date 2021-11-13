@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { t, Http } from './common';
+import { t, Http } from '../common';
 
 const MOCK: t.ModuleManifest = {
   kind: 'module',

@@ -62,14 +62,14 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Dev');
 
+    e.boolean('showExports (list)', (e) => {
+      if (e.changing) e.ctx.props.showExports = e.changing.next;
+      e.boolean.current = e.ctx.props.showExports;
+    });
+
     e.boolean('canDrop', (e) => {
       if (e.changing) e.ctx.props.canDrop = e.changing.next;
       e.boolean.current = e.ctx.props.canDrop;
-    });
-
-    e.boolean('showExports', (e) => {
-      if (e.changing) e.ctx.props.showExports = e.changing.next;
-      e.boolean.current = e.ctx.props.showExports;
     });
 
     e.hr();

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useModule } from '../../hooks';
+import { useModule } from '../../useModule';
 import { css, t } from '../common';
 
 export type DevSampleTargetProps = { bus: t.EventBus; target: string };
