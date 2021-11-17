@@ -187,10 +187,10 @@ export const actions = DevActions<Ctx>()
         <WebRuntime.ui.ManifestSelectorStateful
           bus={ctx.bus}
           style={{ MarginX: 30, MarginY: 20 }}
-          onEntryClick={(e) => {
+          onExportClick={(e) => {
             ctx.events.runtime.useModule.fire({
               target: TARGET_NAME,
-              module: e.remote,
+              module: e.module,
             });
           }}
         />
