@@ -67,7 +67,7 @@ export const DevNetworkHeader: React.FC<DevNetworkHeaderProps> = (props) => {
         <LocalPeerProps
           self={{ id: self.id, status: self.status }}
           bus={bus}
-          newConnections={true}
+          newConnections={{ isReliable: true, autoStartVideo: true }}
         />
       </div>
       <div {...styles.right}>

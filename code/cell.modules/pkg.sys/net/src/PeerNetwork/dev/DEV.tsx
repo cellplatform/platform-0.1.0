@@ -184,7 +184,7 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       const { ctx } = e;
       return (
-        <WebRuntime.Ui.ManifestSelectorStateful
+        <WebRuntime.ui.ManifestSelectorStateful
           bus={ctx.bus}
           style={{ MarginX: 30, MarginY: 20 }}
           onEntryClick={(e) => {
