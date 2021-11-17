@@ -11,7 +11,7 @@ export { log } from '@platform/log/lib/client';
 export { Uri, Schema } from '@platform/cell.schema';
 export { StateObject } from '@platform/state';
 export { HttpClient } from '@platform/cell.client';
-export { time, rx, slug } from '@platform/util.value';
+export { time, rx, slug, deleteUndefined } from '@platform/util.value';
 
 /**
  * @system

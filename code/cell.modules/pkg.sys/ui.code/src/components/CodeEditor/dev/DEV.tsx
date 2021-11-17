@@ -1,19 +1,29 @@
 import React from 'react';
-import { DevActions, toObject } from 'sys.ui.dev';
+import { debounceTime } from 'rxjs/operators';
+import { DevActions, ObjectView, toObject } from 'sys.ui.dev';
 
-import { CodeEditor as CodeEditorView, CodeEditorProps } from '.';
-import { CodeEditor } from '../../api';
-import { rx, t, bundle, constants } from '../../common';
+import { CodeEditor as CodeEditorView, CodeEditorProps } from '..';
+import { CodeEditor } from '../../../api';
+import { bundle, constants, Filesystem, rx, t, deleteUndefined } from '../../../common';
 
 type Ctx = {
+  bus: t.EventBus;
   props: CodeEditorProps;
-  focusedEditor?: t.CodeEditorInstance;
   global: t.CodeEditorEvents;
+  filestore(): Promise<t.SysFsEvents>;
   instance?: t.CodeEditorInstanceEvents;
+  debug: {
+    focusedEditor?: t.CodeEditorInstance;
+    readOutput?: any;
+  };
 };
 
 const { PATH } = constants;
-const bus = rx.bus<t.CodeEditorEvent>();
+
+const FILENAME = {
+  one: 'one.ts',
+  two: 'foo/two.tsx',
+};
 
 /**
  * Actions
@@ -22,15 +32,92 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.code/CodeEditor')
   .context((e) => {
     if (e.prev) return e.prev;
+
+    const bus = rx.bus();
     const global = CodeEditor.events(bus);
-    const ctx: Ctx = { props: {}, global };
+
+    let fs: t.SysFsEvents | undefined;
+    const filestore = async () => {
+      if (fs) return fs;
+      const { store } = await Filesystem.IndexedDb.create({ bus, id: 'fs.sample.code' });
+      return (fs = store.events);
+    };
+
+    const ctx: Ctx = {
+      bus,
+      props: {},
+      global,
+      filestore,
+      debug: {},
+    };
     return ctx;
   })
 
   .items((e) => {
     e.title('Language');
     e.button('typescript', (e) => e.ctx.instance?.model.set.language('typescript'));
+    e.button('javascript', (e) => e.ctx.instance?.model.set.language('javascript'));
     e.button('json', (e) => e.ctx.instance?.model.set.language('json'));
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Eval');
+    e.button('run', async (e) => {
+      const text = await e.ctx.instance?.text.get.fire();
+      if (!text) return;
+
+      console.log('text', text);
+      const res = eval(text);
+      console.log('res', res);
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Filesystem');
+
+    const read = (filename: string) => {
+      e.button(`read: ${filename}`, async (e) => {
+        const instance = e.ctx.instance;
+        if (!instance) return;
+
+        const fs = (await e.ctx.filestore()).fs();
+        const exists = await fs.exists(filename);
+        const data = await fs.read(filename);
+        const bytes = data?.byteLength;
+        e.ctx.debug.readOutput = deleteUndefined({ exists, filename, bytes, data });
+      });
+    };
+
+    e.hr(1, 0.1);
+    read(FILENAME.one);
+    read(FILENAME.two);
+
+    e.component((e) => {
+      const output = e.ctx.debug.readOutput;
+      if (!output) return null;
+      return (
+        <ObjectView
+          name={'read'}
+          data={output}
+          fontSize={11}
+          style={{ MarginX: 20, MarginY: 10 }}
+        />
+      );
+    });
+    e.hr(1, 0.1);
+
+    e.button('delete (all)', async (e) => {
+      const fs = (await e.ctx.filestore()).fs();
+      const filenames = Object.values(FILENAME);
+      for (const path of filenames) {
+        await fs.delete(path);
+      }
+    });
+
+    // e.button('json', (e) => e.ctx.instance?.model.set.language('json'));
     e.hr();
   })
 
@@ -175,6 +262,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
    */
   .subject((e) => {
     const { ctx } = e;
+
     e.settings({
       layout: {
         border: -0.1,
@@ -186,33 +274,57 @@ const total = a.reduce((acc, next) =>acc + next, 0)
       host: { background: -0.04 },
     });
 
-    const filename = {
-      one: 'one.ts',
-      two: 'foo/two.tsx',
+    const saveOnChange = (editor: t.CodeEditorInstance, filename: string) => {
+      editor.events.text.changed$.pipe(debounceTime(500)).subscribe(async (e) => {
+        const fs = (await ctx.filestore()).fs();
+        const text = editor.text;
+        const data = new TextEncoder().encode(text);
+        const res = await fs.write(filename, data);
+        console.log('🤖 saved:', filename, res);
+      });
     };
 
-    const onReady: t.CodeEditorReadyEventHandler = (e) => {
+    const onReady = (id: string, filename: string, e: t.CodeEditorReadyEvent) => {
       console.log('onReady', e);
-      // SaveTest(e.editor);
-      e.editor.events.focus.changed$.subscribe(() => {
-        ctx.focusedEditor = e.editor;
-        ctx.instance = e.editor.events;
 
-        // model.change((draft) => (draft.editor = e.editor));
-        // setSelection();
+      saveOnChange(e.editor, filename);
+
+      e.editor.events.focus.changed$.subscribe(() => {
+        ctx.debug.focusedEditor = e.editor;
+        ctx.instance = e.editor.events;
       });
     };
 
     const renderEditor = (id: string, filename: string, props: CodeEditorProps = {}) => {
       props = { ...e.ctx.props, ...props };
-      return <CodeEditorView {...props} id={id} filename={filename} bus={bus} onReady={onReady} />;
+      return (
+        <CodeEditorView
+          {...props}
+          id={id}
+          filename={filename}
+          bus={ctx.bus}
+          onReady={(e) => onReady(id, filename, e)}
+        />
+      );
     };
 
-    const editor1 = renderEditor('one', filename.one, { focusOnLoad: true });
-    const editor2 = renderEditor('two', filename.two);
+    const editor1 = renderEditor('one', FILENAME.one, { focusOnLoad: true });
+    const editor2 = renderEditor('two', FILENAME.two);
 
-    e.render(editor1, { label: '<CodeEditor>: one' });
-    e.render(editor2, { label: '<CodeEditor>: two' });
+    const render = (el: JSX.Element, label: string, filename: string) => {
+      e.render(el, {
+        label: {
+          topLeft: label,
+          bottomRight: `filename: ${filename}`,
+        },
+      });
+    };
+
+    render(editor1, '<CodeEditor>: one', FILENAME.one);
+    render(editor2, '<CodeEditor>: two', FILENAME.two);
+
+    // e.render(editor1, { label: '<CodeEditor>: one' });
+    // e.render(editor2, { label: '<CodeEditor>: two' });
   });
 
 export default actions;
