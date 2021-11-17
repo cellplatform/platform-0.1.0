@@ -15,12 +15,19 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.TestSuite')
   .context((e) => {
     if (e.prev) return e.prev;
-    const ctx: Ctx = { props: {} };
+    const ctx: Ctx = { props: { scroll: true } };
     return ctx;
   })
 
   .items((e) => {
     e.title('TestSuite');
+
+    e.boolean('scroll', (e) => {
+      if (e.changing) e.ctx.props.scroll = e.changing.next;
+      e.boolean.current = e.ctx.props.scroll;
+    });
+
+    e.hr();
 
     e.button('run: static import', async (e) => {
       e.ctx.props.data = await tests.run();
@@ -54,7 +61,7 @@ export const actions = DevActions<Ctx>()
         background: 1,
       },
     });
-    e.render(<DevLayout suite={e.ctx.props} />);
+    e.render(<DevLayout results={e.ctx.props} />);
   });
 
 export default actions;

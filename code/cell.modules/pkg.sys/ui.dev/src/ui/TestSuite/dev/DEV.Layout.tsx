@@ -4,27 +4,25 @@ import { Test } from '..';
 import { ResultsProps } from '../Results';
 
 export type DevLayoutProps = {
-  suite: ResultsProps;
+  results: ResultsProps;
   style?: CssValue;
 };
 
 export const DevLayout: React.FC<DevLayoutProps> = (props) => {
   const styles = {
-    base: css({
-      flex: 1,
-    }),
+    base: css({ flex: 1 }),
     body: css({
       Absolute: 0,
-      overflow: 'hidden',
       Flex: 'horizontal-stretch-stretch',
     }),
     left: css({
       flex: 2,
-      Scroll: true,
       position: 'relative',
-      padding: 30,
+      display: 'flex',
+      overflow: 'hidden',
     }),
     right: css({
+      position: 'relative',
       flex: 1,
       Scroll: true,
       padding: 10,
@@ -37,10 +35,15 @@ export const DevLayout: React.FC<DevLayoutProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
         <div {...styles.left}>
-          <Test.View.Results {...props.suite} style={{}} />
+          <Test.View.Results
+            {...props.results}
+            padding={[20, 30]}
+            scroll={props.results.scroll}
+            style={{ flex: 1 }}
+          />
         </div>
         <div {...styles.right}>
-          <ObjectView name={'TestRunResponse'} data={props.suite.data} />
+          <ObjectView name={'TestRunResponse'} data={props.results.data} />
         </div>
       </div>
     </div>
