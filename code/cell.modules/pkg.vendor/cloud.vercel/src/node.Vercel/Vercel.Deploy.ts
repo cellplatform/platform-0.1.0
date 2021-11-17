@@ -18,18 +18,37 @@ type Args = {
 
 /**
  * A deployment to "Vercel"
- * Upstream cloud provider: AWS Lambdas
- *                          Geo-cached.
+ * Upstream cloud provider: - AWS Lambdas
+ *                          - Geo-cached.
  */
 export const VercelDeploy = (args: Args) => {
   const { beforeUpload } = args;
   const { client, dir, fs, dispose, dispose$ } = VercelNode(args);
 
-  const getTeam = async (name: string) => {
-    const teams = (await client.teams.list()).teams;
-    const team = teams.find((team) => team.name === name);
-    if (!team) throw new Error(`Cannot find team named '${name}'`);
-    return client.team(team.id);
+  const getTeam = async (teamName: string) => {
+    const team = await client.teams.byName(teamName);
+    if (!team) throw new Error(`Cannot find team named '${teamName}'`);
+    return team;
+  };
+
+  const ensureProject = async (projectName: string) => {
+    const team = await getTeam(args.team);
+    const project = team.project(projectName);
+    const existing = await project.exists();
+
+    let error: t.VercelHttpError | undefined;
+    if (!existing) {
+      const res = await project.create();
+      error = res.error;
+    }
+
+    const ok = !error;
+    return {
+      ok,
+      created: ok && !existing,
+      project,
+      error,
+    };
   };
 
   return {
@@ -52,12 +71,25 @@ export const VercelDeploy = (args: Args) => {
     /**
      * Write the deployment to the cloud.
      */
-    async commit(config: t.VercelHttpDeployConfig = {}) {
+    async commit(config: t.VercelHttpDeployConfig = {}, options: { ensureProject?: boolean } = {}) {
       const team = await getTeam(args.team);
       const project = team.project(args.project);
+
+      if (options.ensureProject) {
+        await ensureProject(args.project);
+      } else {
+        const exists = await project.exists();
+        if (!exists) throw new Error(`Project '${args.project}' does not exist.`);
+      }
+
       const source = await VercelFs.readdir(fs);
       const res = await project.deploy({ ...config, source, beforeUpload });
       return res;
     },
+
+    /**
+     * Ensure the project exists.
+     */
+    ensureProject,
   };
 };
