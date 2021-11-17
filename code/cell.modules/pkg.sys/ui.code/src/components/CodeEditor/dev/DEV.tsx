@@ -29,7 +29,7 @@ const FILENAME = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.code/CodeEditor')
+  .namespace('sys.ui.code.CodeEditor')
   .context((e) => {
     if (e.prev) return e.prev;
 

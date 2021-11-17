@@ -2,8 +2,9 @@ import React from 'react';
 import { Harness } from 'sys.ui.dev';
 
 const imports = {
-  CodeEditor: import('./components/CodeEditor/dev/DEV'),
   Monaco: import('./components/Monaco/DEV'),
+  CodeEditor: import('./components/CodeEditor/dev/DEV'),
+  DevEnv: import('./components/DevEnv/dev/DEV'),
 
   Fileystem: import('./test.dev/Filesystem.dev/DEV'),
 };
