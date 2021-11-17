@@ -405,7 +405,11 @@ describe('Urls', () => {
     describe('bundle.manifest (file)', () => {
       it('dir variants', () => {
         const test = (dir: string | undefined, expected: string) => {
-          const bundle: t.RuntimeBundleOrigin = { host: 'localhost', uri: 'cell:foo:A1', dir };
+          const bundle: t.RuntimeBundleOrigin___TEMP = {
+            host: 'localhost',
+            uri: 'cell:foo:A1',
+            dir,
+          };
           const urls = Urls.create();
           const res = urls.fn.bundle.manifest(bundle);
           expect(res.toString()).to.eql(expected);
@@ -418,7 +422,10 @@ describe('Urls', () => {
 
       it('strips HTTP on host mismatch check', () => {
         const urls = Urls.create('domain.com');
-        const bundle: t.RuntimeBundleOrigin = { host: 'https://domain.com', uri: 'cell:foo:A1' };
+        const bundle: t.RuntimeBundleOrigin___TEMP = {
+          host: 'https://domain.com',
+          uri: 'cell:foo:A1',
+        };
         const res = urls.fn.bundle.manifest(bundle);
         expect(urls.host).to.eql('domain.com');
         expect(res.toString()).to.eql('https://domain.com/cell:foo:A1/fs/index.json');
@@ -427,7 +434,7 @@ describe('Urls', () => {
       it('throw if host mismatch', () => {
         const test = (host1: string, host2: string) => {
           const urls = Urls.create(host1);
-          const bundle: t.RuntimeBundleOrigin = { host: host2, uri: 'cell:foo:A1' };
+          const bundle: t.RuntimeBundleOrigin___TEMP = { host: host2, uri: 'cell:foo:A1' };
           const fn = () => urls.fn.bundle.manifest(bundle);
           expect(fn).to.throw(/Host mismatch/);
         };
@@ -441,7 +448,11 @@ describe('Urls', () => {
     describe('bundle.files', () => {
       it('dir variants', () => {
         const test = (dir: string | undefined, expected: string) => {
-          const bundle: t.RuntimeBundleOrigin = { host: 'localhost', uri: 'cell:foo:A1', dir };
+          const bundle: t.RuntimeBundleOrigin___TEMP = {
+            host: 'localhost',
+            uri: 'cell:foo:A1',
+            dir,
+          };
           const urls = Urls.create();
           const res = urls.fn.bundle.files(bundle);
           expect(res.toString()).to.eql(expected);
@@ -454,7 +465,10 @@ describe('Urls', () => {
 
       it('strips HTTP on host mismatch check', () => {
         const urls = Urls.create('domain.com');
-        const bundle: t.RuntimeBundleOrigin = { host: 'https://domain.com', uri: 'cell:foo:A1' };
+        const bundle: t.RuntimeBundleOrigin___TEMP = {
+          host: 'https://domain.com',
+          uri: 'cell:foo:A1',
+        };
         const res = urls.fn.bundle.files(bundle);
         expect(urls.host).to.eql('domain.com');
         expect(res.toString()).to.eql('https://domain.com/cell:foo:A1/fs');
@@ -463,7 +477,7 @@ describe('Urls', () => {
       it('throw if host mismatch', () => {
         const test = (host1: string, host2: string) => {
           const urls = Urls.create(host1);
-          const bundle: t.RuntimeBundleOrigin = { host: host2, uri: 'cell:foo:A1' };
+          const bundle: t.RuntimeBundleOrigin___TEMP = { host: host2, uri: 'cell:foo:A1' };
           const fn = () => urls.fn.bundle.files(bundle);
           expect(fn).to.throw(/Host mismatch/);
         };
