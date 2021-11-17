@@ -5,4 +5,6 @@ export {
   ModuleManifestInfo,
   ModuleManifestHash,
   DirManifestInfo,
+  ModuleManifest,
+  ModuleManifestRemoteImport,
 } from '@platform/cell.types/lib/types.Manifest';
