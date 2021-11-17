@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.code",
-  "version": "0.0.106",
+  "version": "0.0.108",
   "compiler": {
     "port": 3034
   },
@@ -17,7 +17,8 @@
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
     "copy": "ts-node -T src/node/fs.copy/run",
-    "tmp": "ts-node -T src/node/tmp"
+    "tmp": "ts-node -T src/node/tmp",
+    "deploy": "ts-node -T script.ts/deploy.vercel"
   },
   "dependencies": {
     "@monaco-editor/react": "4.2.2",
