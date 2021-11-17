@@ -71,7 +71,7 @@ export const actions = DevActions<Ctx>()
           style={{ MarginX: 15, marginTop: 10 }}
           onChanged={(event) => {
             e.change.ctx((ctx) => {
-              ctx.props.url = event.url;
+              ctx.props.manifestUrl = event.url;
               ctx.props.manifest = event.manifest;
             });
           }}
@@ -80,7 +80,7 @@ export const actions = DevActions<Ctx>()
     });
 
     e.component((e) => {
-      const url = e.ctx.props.url;
+      const url = e.ctx.props.manifestUrl;
       if (!url) return null;
       return (
         <ModuleInfoStateful

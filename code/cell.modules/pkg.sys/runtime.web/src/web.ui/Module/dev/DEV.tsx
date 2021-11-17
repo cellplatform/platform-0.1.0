@@ -39,7 +39,7 @@ export const actions = DevActions<Ctx>()
             //   ctx.props.manifest = event.manifest;
             // });
           }}
-          onEntryClick={(event) => {
+          onExportClick={(event) => {
             console.log('event', event);
           }}
         />

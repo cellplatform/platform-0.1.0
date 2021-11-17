@@ -6,7 +6,7 @@ import { toList } from './toList';
 import * as m from './types';
 
 export type ModuleInfoProps = {
-  url?: t.ManifestUrl;
+  manifestUrl?: t.ManifestUrl;
   title?: m.ModuleInfoTitle;
   manifest?: t.ModuleManifest;
   fields?: m.ModuleInfoFields[];
@@ -17,7 +17,7 @@ export type ModuleInfoProps = {
 };
 
 export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
-  const { url, manifest, fields, minWidth = 200, maxWidth, onExportClick } = props;
+  const { manifestUrl, manifest, fields, minWidth = 200, maxWidth, onExportClick } = props;
 
   const DEFAULT = {
     title: 'Module (Manifest)',
@@ -36,7 +36,7 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
     }),
   };
 
-  const items: PropListItem[] = toList({ url, manifest, fields, onExportClick });
+  const items: PropListItem[] = toList({ url: manifestUrl, manifest, fields, onExportClick });
   const elEmpty = !manifest && <div {...styles.empty}>Module not loaded.</div>;
   const elProps = !elEmpty && (
     <PropList title={title} items={items} defaults={{ clipboard: false }} />

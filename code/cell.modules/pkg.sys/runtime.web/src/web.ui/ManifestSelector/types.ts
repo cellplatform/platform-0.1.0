@@ -5,10 +5,10 @@ type InstanceId = string;
 /**
  * Event handler for when a Manifest "remote entry" is clicked.
  */
-export type ManifestSelectorEntryClickHandler = (e: ManifestSelectorEntryClickArgs) => void;
-export type ManifestSelectorEntryClickArgs = {
+export type ManifestSelectorExportClickHandler = (e: ManifestSelectorExportClickArgs) => void;
+export type ManifestSelectorExportClickArgs = {
   url: t.ManifestUrl;
-  remote: t.ModuleManifestRemoteImport;
+  module: t.ModuleManifestRemoteImport;
 };
 
 /**

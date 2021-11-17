@@ -1,9 +1,9 @@
 import React from 'react';
 import { Textbox } from 'sys.ui.dev/lib/ui/Textbox';
 
-import { Icons } from '../../Icons';
-import { color, COLORS, css, CssValue } from '../common';
-import { ManifestSelectorLoadHandler, ManifestSelectorUrlChangeHandler } from '../types';
+import { Icons } from '../Icons';
+import { color, COLORS, css, CssValue } from './common';
+import { ManifestSelectorLoadHandler, ManifestSelectorUrlChangeHandler } from './types';
 
 type Url = string;
 

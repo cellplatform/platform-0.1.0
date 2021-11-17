@@ -5,9 +5,11 @@ import { ManifestSelectorProps, ManifestSelectorStateful } from '..';
 import { WebRuntimeBus } from '../../../web.RuntimeBus';
 import { rx, t, Button } from '../common';
 import { DevSampleTarget } from './DEV.SampleTarget';
-import { ModuleInfoStateful } from '../../ModuleInfo';
+import { ModuleInfoStateful, ModuleInfoDefaults } from '../../ModuleInfo';
+import { ModuleInfoFields } from '../../ModuleInfo/types';
 
 const TARGET = 'foo';
+const FIELDS = ModuleInfoDefaults.FIELDS;
 
 type Ctx = {
   bus: t.EventBus;
@@ -61,6 +63,24 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Dev');
+
+    e.select((config) =>
+      config
+        .title('exports fields:')
+        .items(FIELDS)
+        .initial(undefined)
+        .clearable(true)
+        .view('buttons')
+        .multi(true)
+        .pipe((e) => {
+          if (e.changing) {
+            const next = e.changing.next.map(({ value }) => value) as ModuleInfoFields[];
+            e.ctx.props.fields = next.length === 0 ? undefined : next;
+          }
+        }),
+    );
+
+    e.hr(1, 0.15);
 
     e.boolean('showExports (list)', (e) => {
       if (e.changing) e.ctx.props.showExports = e.changing.next;
@@ -129,7 +149,7 @@ export const actions = DevActions<Ctx>()
       <ManifestSelectorStateful
         {...ctx.props}
         bus={ctx.bus}
-        onEntryClick={(e) => ctx.events.useModule.fire({ target: TARGET, module: e.remote })}
+        onExportClick={(e) => ctx.events.useModule.fire({ target: TARGET, module: e.module })}
         onChanged={(e) => ctx.url.change(e.url)}
       />
     );

@@ -21,7 +21,7 @@ export const ModuleInfoStateful: React.FC<ModuleInfoStatefulProps> = (props) => 
   return (
     <ModuleInfo
       title={title}
-      url={url}
+      manifestUrl={url}
       manifest={manifest.json}
       fields={fields}
       minWidth={minWidth}

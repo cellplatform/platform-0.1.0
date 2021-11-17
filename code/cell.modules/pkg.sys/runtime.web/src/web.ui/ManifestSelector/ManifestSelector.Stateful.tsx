@@ -3,13 +3,15 @@ import React, { useRef } from 'react';
 import { CssValue, t, rx, slug } from './common';
 import { ManifestSelector } from './ManifestSelector';
 import { useStateController } from './hooks';
+import { ModuleInfoFields } from '../ModuleInfo/types';
 
 export type ManifestSelectorStatefulProps = {
   bus: t.EventBus<any>;
   canDrop?: boolean;
   showExports?: boolean;
+  fields?: ModuleInfoFields[];
   style?: CssValue;
-  onEntryClick?: t.ManifestSelectorEntryClickHandler;
+  onExportClick?: t.ManifestSelectorExportClickHandler;
   onChanged?: t.ManifestSelectorChangedHandler;
 };
 
@@ -27,6 +29,7 @@ export const ManifestSelectorStateful: React.FC<ManifestSelectorStatefulProps> =
       error={state.error}
       canDrop={props.canDrop}
       showExports={props.showExports}
+      fields={props.fields}
       style={props.style}
       /**
        * Input.
@@ -44,14 +47,14 @@ export const ManifestSelectorStateful: React.FC<ManifestSelectorStatefulProps> =
           payload: { kind: 'loadManifest', url, component },
         });
       }}
-      onEntryClick={(e) => {
+      onExportClick={(e) => {
         const component = id.current;
         const { url } = e;
         bus.fire({
           type: 'sys.runtime.web/ManifestSelector/action',
           payload: { kind: 'loadEntry', url, component },
         });
-        props.onEntryClick?.(e);
+        props.onExportClick?.(e);
       }}
     />
   );

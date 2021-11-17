@@ -90,7 +90,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
     <div {...styles.body}>
       <div {...styles.left.base}>
         <ModuleInfo
-          url={url}
+          manifestUrl={url}
           manifest={manifest.json}
           maxWidth={280}
           style={styles.left.moduleInfo}

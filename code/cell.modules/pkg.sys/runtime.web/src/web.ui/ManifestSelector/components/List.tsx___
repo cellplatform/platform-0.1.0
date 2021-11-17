@@ -2,15 +2,13 @@ import React, { useState } from 'react';
 
 import { Icons } from '../../Icons';
 import { Button, css, CssValue, Parse, t, COLORS } from '../common';
-import { ManifestSelectorEntryClickHandler } from '../types';
-
-type Url = string;
+import { ManifestSelectorExportClickHandler } from '../types';
 
 export type ListProps = {
   manifestUrl: t.ManifestUrl;
   manifest: t.ModuleManifest;
   style?: CssValue;
-  onRemoteEntryClick?: ManifestSelectorEntryClickHandler;
+  onRemoteEntryClick?: ManifestSelectorExportClickHandler;
 };
 
 export const List: React.FC<ListProps> = (props) => {
@@ -29,7 +27,7 @@ export const List: React.FC<ListProps> = (props) => {
   const onRemoteEntryClick = (item: t.ModuleManifestRemoteExport) => {
     const entry = item.path;
     const remote = { url: url.remoteEntry, namespace, entry };
-    props.onRemoteEntryClick?.({ url: url.manifest, remote });
+    props.onRemoteEntryClick?.({ url: url.manifest, module: remote });
   };
 
   /**
