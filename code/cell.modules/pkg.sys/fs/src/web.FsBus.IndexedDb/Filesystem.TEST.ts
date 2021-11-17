@@ -1,13 +1,14 @@
-import { expect } from 'chai';
-import { Test } from 'sys.ui.dev';
+import { Test, expect } from '../web.test';
 import { Filesystem } from '.';
 import { rx, DEFAULT, Hash } from './common';
 
 import Automerge from 'automerge';
 
 export default Test.describe('FsBus', (e) => {
+  const TEST_FS = 'test.bus';
+
   const testPrep = async (options: { id?: string; clear?: boolean } = {}) => {
-    const { id = 'test.bus' } = options;
+    const { id = TEST_FS } = options;
     const bus = rx.bus();
     const { store } = await Filesystem.create({ bus, id });
     const fs = store.fs();

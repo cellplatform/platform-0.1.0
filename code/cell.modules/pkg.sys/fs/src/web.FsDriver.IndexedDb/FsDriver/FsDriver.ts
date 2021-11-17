@@ -1,7 +1,17 @@
 import { FsDriverLocalResolver } from '@platform/cell.fs/lib/Resolver.Local';
 
-import { Hash, DbLookup, NAME, Path, Schema, Stream, t, deleteUndefined, Image } from '../common';
-import { IndexedDb } from '../IndexedDb';
+import {
+  Hash,
+  DbLookup,
+  NAME,
+  Path,
+  Schema,
+  Stream,
+  t,
+  deleteUndefined,
+  Image,
+  IndexedDb,
+} from '../common';
 
 const LocalFile = Schema.File.Path.Local;
 
@@ -112,6 +122,12 @@ export function FsDriver(args: { dir: string; db: IDBDatabase }) {
         if (!path || path === root) throw new Error(`Path out of scope`);
         const image = await Image.toInfo(path, data);
 
+        // Delete existing.
+        // NB:  This ensures the hash-referenced file-record is removed if
+        //      this are no other paths referencing the file-hash.
+        await driver.delete(uri);
+
+        // Perform write.
         const tx = db.transaction([NAME.STORE.PATHS, NAME.STORE.FILES], 'readwrite');
         const store = {
           paths: tx.objectStore(NAME.STORE.PATHS),
@@ -124,6 +140,7 @@ export function FsDriver(args: { dir: string; db: IDBDatabase }) {
           put<t.BinaryRecord>(store.files, { hash, data }),
         ]);
 
+        // Finish up.
         return { uri, ok: true, status: 200, file };
       } catch (err: any) {
         const message = `Failed to write [${uri}]. ${err.message}`;

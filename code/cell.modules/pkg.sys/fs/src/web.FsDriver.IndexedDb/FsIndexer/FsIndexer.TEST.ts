@@ -1,22 +1,23 @@
-import { expect } from 'chai';
-import { Test } from 'sys.ui.dev';
+import { Test, expect } from '../../web.test';
+
 import { FsDriverLocal } from '..';
 import { Hash, t, ManifestHash, time, Path } from '../common';
 
 export default Test.describe('FsIndexer', (e) => {
+  const TEST_ID = 'test.foo';
   const EMPTY_HASH = Hash.sha256([]);
+
+  const testCreate = async () => {
+    const id = TEST_ID;
+    const fs = await FsDriverLocal({ id });
+    return { fs, name: id, deleteAll: () => deleteAll(fs) };
+  };
 
   const deleteAll = async (fs: t.FsIndexedDb) => {
     const manifest = await fs.index.manifest();
     for (const file of manifest.files) {
       await fs.driver.delete(`path:${file.path}`);
     }
-  };
-
-  const testCreate = async () => {
-    const id = 'test.foo';
-    const fs = await FsDriverLocal({ id });
-    return { fs, name: id, deleteAll: () => deleteAll(fs) };
   };
 
   const testFile = async (options: { path?: string; text?: string; fs?: t.FsIndexedDb } = {}) => {

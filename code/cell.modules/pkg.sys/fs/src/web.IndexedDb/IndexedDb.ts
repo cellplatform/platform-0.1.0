@@ -15,7 +15,7 @@ export const IndexedDb = {
   create<T>(args: {
     name: string;
     version?: number;
-    schema: (req: IDBOpenDBRequest, e: IDBVersionChangeEvent) => void;
+    schema?: (req: IDBOpenDBRequest, e: IDBVersionChangeEvent) => void;
     store: (db: IDBDatabase) => T;
   }) {
     return new Promise<T>((resolve, reject) => {
@@ -26,7 +26,7 @@ export const IndexedDb = {
       };
       try {
         const req = indexedDB.open(name, version);
-        req.onupgradeneeded = (e) => args.schema(req, e);
+        req.onupgradeneeded = (e) => args.schema?.(req, e);
         req.onsuccess = () => resolve(args.store(req.result));
         req.onerror = () => fail(req.error?.message);
       } catch (error: any) {

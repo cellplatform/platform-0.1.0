@@ -31,7 +31,6 @@ export const actions = DevActions<Ctx>()
       const tests = await Test.bundle('FsDriver: IndexedDb', [
         import('../../../web.FsBus.IndexedDb/Filesystem.TEST'),
       ]);
-
       return tests.run();
     };
 

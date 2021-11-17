@@ -1,6 +1,7 @@
 import { Schema } from '../../web/common';
 
 export * from '../../web/common';
+export * from '../../web.IndexedDb';
 export * from './Db.Lookup';
 export * from './Image';
 
