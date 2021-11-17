@@ -14,11 +14,16 @@ export type ManifestSource = {
 export type ManifestUrlParts = {
   ok: boolean;
   href: string;
+  protocol: 'http' | 'https';
   domain: string;
   cell: Uri;
   path: Path;
   dir: string;
   filename: string;
-  entry: Path;
+  params: ManifestUrlParams;
   error?: string;
+};
+
+export type ManifestUrlParams = {
+  entry: Path;
 };
