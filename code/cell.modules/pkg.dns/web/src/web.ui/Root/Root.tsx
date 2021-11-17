@@ -18,10 +18,10 @@ export type RootProps = {
 };
 
 export const Root: React.FC<RootProps> = (props) => {
-  const { bus, target = 'root', isOpen, isSpinning } = props;
-  const remote = WebRuntime.ui.useModule({ bus, target });
+  const { bus, isOpen, isSpinning } = props;
 
-  console.log('remote', remote);
+  const target = WebRuntime.ui.useModuleTarget({ bus, target: props.target ?? 'root' });
+  console.log('remote/target', target);
 
   const styles = {
     base: css({

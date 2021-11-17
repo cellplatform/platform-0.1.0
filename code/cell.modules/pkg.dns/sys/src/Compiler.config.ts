@@ -15,9 +15,14 @@ export default () =>
         .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
 
         /**
-         * Federated Exports
+         * Exports
          */
         .expose('./SAMPLE.fs', './src/exports/Sample.Fs')
+
+        /**
+         * DEV (Development)
+         */
+        .expose('./DEV.ui.dev', './src/exports/Dev')
         .expose('./DEV.ui.video', './src/exports/Dev.Video')
         .expose('./DEV.ui.primitives', './src/exports/Dev.Primitives')
         .expose('./DEV.runtime.web', './src/exports/Dev.Runtime'),

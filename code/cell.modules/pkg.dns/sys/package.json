@@ -1,7 +1,7 @@
 {
   "name": "dns.sys",
   "description": "Standard federated-function endpoing for 'system' modules",
-  "version": "0.0.11",
+  "version": "0.0.18",
   "main": "lib/index",
   "sideEffects": false,
   "compiler": {
