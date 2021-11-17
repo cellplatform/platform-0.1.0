@@ -10,26 +10,28 @@ type Address = t.ModuleManifestRemoteImport;
 /**
  * Hook that handles loading remote modules via the [EventBus] for a specific "target".
  */
-export function useModule<M = any>(args: {
+export function useModuleTarget<M = any>(args: {
   bus: t.EventBus<any>;
-  target?: TargetName;
+  target: TargetName;
   id?: InstanceId;
 }) {
-  const { bus, target } = args;
+  const { id, bus, target } = args;
 
   const [address, setAddress] = useState<Address | undefined>();
   const [failed, setFailed] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [module, setModule] = useState<M | undefined>();
 
   useEffect(() => {
     const isTarget = Boolean(target);
-    const events = WebRuntimeBus.Events({ bus, id: args.id });
+    const events = WebRuntimeBus.Events({ bus, id });
     const use$ = events.useModule.$.pipe(
       filter((e) => isTarget),
       filter((e) => e.target === target),
     );
 
     const load = (address: Address) => {
+      setLoading(true);
       setAddress(address);
 
       const { url, namespace, entry } = address;
@@ -40,6 +42,7 @@ export function useModule<M = any>(args: {
         const { ready, failed } = e.payload;
         setModule(ready ? await remote.module() : undefined);
         setFailed(failed);
+        setLoading(false);
       });
     };
 
@@ -56,12 +59,13 @@ export function useModule<M = any>(args: {
     });
 
     return () => events.dispose();
-  }, [target, args.id]); // eslint-disable-line
+  }, [target, id]); // eslint-disable-line
 
   return {
+    ok: !failed,
+    loading,
     target,
-    remote: { address },
-    failed,
+    address,
     module,
   };
 }

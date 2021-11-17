@@ -3,7 +3,7 @@ import { Harness } from 'sys.ui.dev';
 
 const imports = {
   useManifest: import('./web.ui/useManifest/dev/DEV'),
-  useModule: import('./web.ui/useModule/dev/DEV'),
+  useModuleTarget: import('./web.ui/useModuleTarget/dev/DEV'),
 
   ManifestSelector: import('./web.ui/ManifestSelector/dev/DEV'),
   Module: import('./web.ui/Module/dev/DEV'),

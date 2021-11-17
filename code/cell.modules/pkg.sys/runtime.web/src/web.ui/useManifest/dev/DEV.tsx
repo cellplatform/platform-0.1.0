@@ -60,7 +60,7 @@ export const actions = DevActions<Ctx>()
       layout: {
         label: {
           topLeft: 'useManifest (hook)',
-          bottomRight: url ? url : 'note: "mock" manifest',
+          bottomRight: url ? `Manifest URL: ${url}` : 'note: "mock" manifest',
         },
         position: [150, 80],
         border: -0.1,

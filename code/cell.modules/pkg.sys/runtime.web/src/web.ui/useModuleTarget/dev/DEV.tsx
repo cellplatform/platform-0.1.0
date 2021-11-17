@@ -2,12 +2,13 @@ import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { DevSample, DevSampleProps } from './DEV.Sample';
 import { ManifestSelectorStateful } from '../../ManifestSelector';
-import { t, rx } from '../../common';
+import { t, rx, WebRuntimeBus } from '../../common';
 
-const TARGET_NAME = 'foo';
+const TARGET = 'foo';
 
 type Ctx = {
   bus: t.EventBus;
+  events: t.WebRuntimeEvents;
   props: DevSampleProps;
 };
 
@@ -15,12 +16,18 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('hook.useModule')
+  .namespace('hook.useModuleTarget')
   .context((e) => {
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
-    const ctx: Ctx = { bus, props: { bus, target: TARGET_NAME } };
+    const events = WebRuntimeBus.Events({ bus });
+
+    const ctx: Ctx = {
+      bus,
+      events,
+      props: { bus, target: TARGET },
+    };
     return ctx;
   })
 
@@ -41,21 +48,22 @@ export const actions = DevActions<Ctx>()
       );
     });
 
-    e.boolean(`target ("${TARGET_NAME}")`, (e) => {
-      if (e.changing) e.ctx.props.target = e.changing.next ? TARGET_NAME : undefined;
-      e.boolean.current = Boolean(e.ctx.props.target);
+    e.button('unload', (e) => {
+      const target = TARGET;
+      e.ctx.events.useModule.fire({ target, module: null });
     });
 
     e.hr();
   })
 
   .subject((e) => {
-    const url = e.ctx.props.url;
-
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: { topLeft: 'useModule (hook)' },
+        label: {
+          topLeft: `useModuleTarget (hook)`,
+          topRight: `target: "${TARGET}"`,
+        },
         position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,

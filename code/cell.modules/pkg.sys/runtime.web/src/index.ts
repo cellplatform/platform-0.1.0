@@ -1,7 +1,6 @@
 import { ManifestSelector, ManifestSelectorStateful } from './web.ui/ManifestSelector';
 import { WebRuntimeBus } from './web.RuntimeBus';
-import { useManifest } from './web.ui/useManifest';
-import { useModule } from './web.ui/useModule';
+import { useModuleTarget, useManifest } from './web.ui/hooks';
 import { Runtime } from '@platform/cell.runtime';
 import { WebRuntime as PlatformWebRuntime } from '@platform/cell.runtime.web';
 
@@ -15,7 +14,7 @@ export const WebRuntime = {
 
   ui: {
     useManifest,
-    useModule,
+    useModuleTarget,
     ManifestSelector,
     ManifestSelectorStateful,
   },

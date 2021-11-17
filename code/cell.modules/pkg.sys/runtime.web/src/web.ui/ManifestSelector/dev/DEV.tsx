@@ -7,7 +7,7 @@ import { rx, t, Button } from '../common';
 import { DevSampleTarget } from './DEV.SampleTarget';
 import { ModuleInfoStateful } from '../../ModuleInfo';
 
-const TARGET = 'myTarget';
+const TARGET = 'foo';
 
 type Ctx = {
   bus: t.EventBus;
@@ -154,7 +154,8 @@ export const actions = DevActions<Ctx>()
       background: 1,
       border: -0.1,
       label: {
-        topRight: `useModule (hook)`,
+        topLeft: `useModule (hook)`,
+        topRight: `target: "${TARGET}"`,
         bottomRight: elUnload,
       },
     });

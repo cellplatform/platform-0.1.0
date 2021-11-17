@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { t, Http } from '../common';
+import { t, Http, ManifestUrl } from '../common';
 
 const MOCK: t.ModuleManifest = {
   kind: 'module',
@@ -9,7 +9,7 @@ const MOCK: t.ModuleManifest = {
     module: 'sha256-94aacbf4ae6c5ab206b3d4cb5674fdecebf1f814b54f1fbfec646760edd23549',
   },
   module: {
-    namespace: 'mock',
+    namespace: 'mock.foobar',
     version: '0.0.0',
     compiler: '@platform/cell.compiler@0.0.0',
     compiledAt: 1636667570203,
@@ -29,6 +29,14 @@ export function useManifest(options: { url?: string } = {}) {
   const isLocalhost = location.hostname === 'localhost';
   const isMock = isLocalhost && !options.url;
 
+  const getHref = () => {
+    return options.url ?? `${location.host}/index.json`;
+  };
+
+  const getUrl = () => {
+    return ManifestUrl.parse(getHref());
+  };
+
   /**
    * Lifecycle
    */
@@ -37,14 +45,21 @@ export function useManifest(options: { url?: string } = {}) {
       return setJson(MOCK);
     }
 
-    const url = options.url ?? '/index.json';
-    pullManifest(url, (json) => setJson(json));
+    if (!isMock) {
+      pullManifest(getHref(), (json) => setJson(json));
+    }
   }, [options.url, isMock]); // eslint-disable-line
 
   /**
    * Api
    */
-  return { json, isMock };
+  return {
+    isMock,
+    json,
+    get url() {
+      return getUrl();
+    },
+  };
 }
 
 /**

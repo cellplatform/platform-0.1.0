@@ -1,22 +1,14 @@
 import React from 'react';
-import { DevActions } from 'sys.ui.dev';
-import { ModuleInfo, ModuleInfoProps, ModuleInfoStateful } from '..';
+import { DevActions, ObjectView } from 'sys.ui.dev';
+import { ModuleInfo, ModuleInfoProps, ModuleInfoStateful, ModuleInfoDefaults } from '..';
 import { ManifestSelectorStateful } from '../../ManifestSelector';
 import { t, rx } from '../../../common';
 import * as m from '../types';
 
-const FIELDS: m.ModuleInfoFields[] = [
-  'namespace',
-  'version',
-  'compiled',
-  'kind',
-  'files',
-  'remote',
-];
+const FIELDS = ModuleInfoDefaults.FIELDS;
 
 type Ctx = {
   bus: t.EventBus;
-  url?: string;
   props: ModuleInfoProps;
 };
 
@@ -79,7 +71,7 @@ export const actions = DevActions<Ctx>()
           style={{ MarginX: 15, marginTop: 10 }}
           onChanged={(event) => {
             e.change.ctx((ctx) => {
-              ctx.url = event.url;
+              ctx.props.url = event.url;
               ctx.props.manifest = event.manifest;
             });
           }}
@@ -88,7 +80,7 @@ export const actions = DevActions<Ctx>()
     });
 
     e.component((e) => {
-      const url = e.ctx.url;
+      const url = e.ctx.props.url;
       if (!url) return null;
       return (
         <ModuleInfoStateful
@@ -99,6 +91,19 @@ export const actions = DevActions<Ctx>()
         />
       );
     });
+
+    e.component((e) => {
+      const data = e.ctx.props.manifest;
+      if (!data) return null;
+      return (
+        <ObjectView
+          name={'Manifest'}
+          data={data}
+          style={{ MarginX: 15, marginTop: 40 }}
+          fontSize={11}
+        />
+      );
+    });
   })
 
   .subject((e) => {
@@ -106,7 +111,12 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
       layout: { cropmarks: -0.2 },
     });
-    e.render(<ModuleInfo {...e.ctx.props} />);
+
+    const el = (
+      <ModuleInfo {...e.ctx.props} onExportClick={(e) => console.log('onExportClick', e)} />
+    );
+
+    e.render(el);
   });
 
 export default actions;

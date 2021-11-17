@@ -6,25 +6,28 @@ import { ModuleInfo } from './ModuleInfo';
 import * as m from './types';
 
 export type ModuleInfoStatefulProps = {
-  title?: m.ModuleInfoTitle;
   url?: t.ManifestUrl;
+  title?: m.ModuleInfoTitle;
   fields?: m.ModuleInfoFields[];
   minWidth?: number;
   maxWidth?: number;
   style?: CssValue;
+  onExportClick?: m.ModuleInfoExportClick;
 };
 
 export const ModuleInfoStateful: React.FC<ModuleInfoStatefulProps> = (props) => {
-  const { url, title, fields, minWidth, maxWidth, style } = props;
+  const { url, title, fields, minWidth, maxWidth, style, onExportClick } = props;
   const manifest = useManifest({ url });
   return (
     <ModuleInfo
       title={title}
+      url={url}
       manifest={manifest.json}
       fields={fields}
       minWidth={minWidth}
       maxWidth={maxWidth}
       style={style}
+      onExportClick={onExportClick}
     />
   );
 };
