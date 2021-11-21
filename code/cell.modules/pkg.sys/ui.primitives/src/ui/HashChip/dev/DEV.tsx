@@ -13,7 +13,14 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.HashChip')
   .context((e) => {
     if (e.prev) return e.prev;
-    const ctx: Ctx = { props: { text: SHA256, clipboard: true } };
+    const ctx: Ctx = {
+      props: {
+        text: SHA256,
+        clipboard: true,
+        inline: true,
+        icon: true,
+      },
+    };
     return ctx;
   })
 
@@ -23,6 +30,16 @@ export const actions = DevActions<Ctx>()
     e.boolean('clipboard', (e) => {
       if (e.changing) e.ctx.props.clipboard = e.changing.next;
       e.boolean.current = e.ctx.props.clipboard;
+    });
+
+    e.boolean('inline', (e) => {
+      if (e.changing) e.ctx.props.inline = e.changing.next;
+      e.boolean.current = e.ctx.props.inline;
+    });
+
+    e.boolean('icon', (e) => {
+      if (e.changing) e.ctx.props.icon = e.changing.next;
+      e.boolean.current = e.ctx.props.icon;
     });
 
     e.hr();

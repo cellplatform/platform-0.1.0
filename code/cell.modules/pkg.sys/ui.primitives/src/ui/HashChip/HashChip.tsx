@@ -14,11 +14,13 @@ export type HashChipProps = {
   text?: HashValue;
   length?: number;
   clipboard?: boolean;
+  inline?: boolean;
+  icon?: boolean;
   style?: CssValue;
 };
 
 export const HashChip: React.FC<HashChipProps> = (props) => {
-  const { clipboard = true } = props;
+  const { clipboard = true, inline = true, icon } = props;
   const length = Math.max(5, props.length ?? DEFAULT.LENGTH);
   const hash = parseHash(props.text || '');
   const text = hash.text ? hash.text.substring(hash.text.length - length) : '';
@@ -31,14 +33,15 @@ export const HashChip: React.FC<HashChipProps> = (props) => {
   const styles = {
     base: css({
       Flex: 'horizontal-stretch-stretch',
+      display: inline ? 'block' : 'inline-block',
       position: 'relative',
       boxSizing: 'border-box',
       userSelect: 'none',
       fontSize: 9,
       height,
     }),
+    icon: css({ marginRight: 3 }),
     chip: css({
-      marginLeft: 3,
       PaddingX: 4,
       backgroundColor: color.alpha(COLORS.DARK, 0.08),
       border: `solid 1px ${color.format(-0.06)}`,
@@ -72,7 +75,7 @@ export const HashChip: React.FC<HashChipProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)} title={hash.tooltip}>
-      <Icons.QRCode size={height} />
+      {icon && <Icons.QRCode size={height} style={styles.icon} />}
       <div {...styles.chip}>
         {elEmpty}
         {elPrefix}
