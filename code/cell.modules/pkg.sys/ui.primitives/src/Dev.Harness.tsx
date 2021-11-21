@@ -25,6 +25,8 @@ const imports = {
   EventStack: import('./ui/Event.Stack/DEV'),
   EventPipe: import('./ui/Event.Pipe/DEV'),
 
+  HashChip: import('./ui/HashChip/dev/DEV'),
+
   Button: import('./ui.ref/button/Button.dev/DEV'),
   Switch: import('./ui.ref/button/Switch.dev/DEV'),
   OptionButtons: import('sys.ui.dev/lib/ui/OptionButtons/DEV'),
