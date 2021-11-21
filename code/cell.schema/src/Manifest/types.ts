@@ -24,6 +24,4 @@ export type ManifestUrlParts = {
   error?: string;
 };
 
-export type ManifestUrlParams = {
-  entry: Path;
-};
+export type ManifestUrlParams = { entry: Path };
