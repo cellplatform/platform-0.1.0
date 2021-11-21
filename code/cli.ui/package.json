@@ -24,7 +24,7 @@
     "@platform/util.animate": "0.0.123",
     "@platform/util.local-storage": "0.0.134",
     "@platform/util.value": "0.9.10",
-    "react-icons": "4.2.0"
+    "react-icons": "4.3.1"
   },
   "devDependencies": {
     "@platform/ts": "4.1.23",

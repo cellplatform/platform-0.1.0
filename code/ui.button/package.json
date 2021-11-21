@@ -20,7 +20,7 @@
     "@platform/test": "0.2.10",
     "@platform/ts": "4.1.23",
     "@platform/ui.icon": "0.0.202",
-    "react-icons": "4.2.0"
+    "react-icons": "4.3.1"
   },
   "files": [
     "lib",

@@ -18,13 +18,13 @@
     "@platform/react": "0.4.83"
   },
   "peerDependencies": {
-    "react-icons": "4.2.0"
+    "react-icons": "4.3.1"
   },
   "devDependencies": {
     "@platform/polyfill": "0.0.7",
     "@platform/ts": "4.1.23",
     "@platform/ui.dev": "0.0.57",
-    "react-icons": "4.2.0"
+    "react-icons": "4.3.1"
   },
   "files": [
     "lib",
