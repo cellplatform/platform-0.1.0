@@ -2,7 +2,7 @@ import React from 'react';
 import { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
 
 import { color, css, CssValue, t } from '../../common';
-import { toList } from './toList';
+import { toPropsList } from './props/toList';
 import * as m from './types';
 
 export type ModuleInfoProps = {
@@ -10,6 +10,7 @@ export type ModuleInfoProps = {
   title?: m.ModuleInfoTitle;
   manifest?: t.ModuleManifest;
   fields?: m.ModuleInfoFields[];
+  width?: number;
   minWidth?: number;
   maxWidth?: number;
   style?: CssValue;
@@ -17,16 +18,16 @@ export type ModuleInfoProps = {
 };
 
 export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
-  const { manifestUrl, manifest, fields, minWidth = 200, maxWidth, onExportClick } = props;
+  const { manifestUrl, manifest, fields, width, minWidth = 200, maxWidth, onExportClick } = props;
 
   const DEFAULT = {
-    title: 'Module (Manifest)',
+    title: 'Module',
   };
 
   const title = props.title ? props.title : props.title === null ? '' : DEFAULT.title;
 
   const styles = {
-    base: css({ position: 'relative', minWidth, maxWidth }),
+    base: css({ position: 'relative', width, minWidth, maxWidth }),
     empty: css({
       color: color.format(-0.3),
       fontStyle: 'italic',
@@ -36,7 +37,7 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
     }),
   };
 
-  const items: PropListItem[] = toList({ url: manifestUrl, manifest, fields, onExportClick });
+  const items: PropListItem[] = toPropsList({ url: manifestUrl, manifest, fields, onExportClick });
   const elEmpty = !manifest && <div {...styles.empty}>Module not loaded.</div>;
   const elProps = !elEmpty && (
     <PropList title={title} items={items} defaults={{ clipboard: false }} />

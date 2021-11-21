@@ -21,13 +21,18 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
-    const ctx: Ctx = { bus, props: {} };
+    const ctx: Ctx = { bus, props: { width: 300 } };
 
     return ctx;
   })
 
   .items((e) => {
     e.title('Props');
+
+    e.boolean('width', (e) => {
+      if (e.changing) e.ctx.props.width = e.changing.next ? 300 : undefined;
+      e.boolean.current = e.ctx.props.width !== undefined;
+    });
 
     e.textbox((config) =>
       config

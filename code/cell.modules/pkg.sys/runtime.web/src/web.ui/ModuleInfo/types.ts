@@ -4,13 +4,17 @@ type Path = string;
 
 export type ModuleInfoTitle = string | React.ReactNode | null;
 export type ModuleInfoFields =
+  | 'url'
   | 'namespace'
   | 'version'
   | 'compiled'
   | 'kind'
   | 'files'
-  | 'remote'
-  | 'remote.exports';
+  | ModuleInfoFieldsHash
+  | ModuleInfoHashRemote;
+
+export type ModuleInfoFieldsHash = 'hash' | 'hash.module' | 'hash.files';
+export type ModuleInfoHashRemote = 'remote' | 'remote' | 'remote.exports';
 
 /**
  * Alert listeners when a remote "export" reference is clicked.

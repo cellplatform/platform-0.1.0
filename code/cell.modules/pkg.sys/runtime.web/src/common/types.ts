@@ -15,6 +15,7 @@ export {
 } from '@platform/cell.types';
 
 export { Disposable, Event, EventBus, FireEvent } from '@platform/types';
+export { ManifestUrlParts } from '@platform/cell.schema/lib/Manifest/types';
 
 /**
  * @system
