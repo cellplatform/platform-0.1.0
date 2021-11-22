@@ -18,10 +18,11 @@ export type ModuleInfoStatefulProps = {
 export const ModuleInfoStateful: React.FC<ModuleInfoStatefulProps> = (props) => {
   const { url, title, fields, minWidth, maxWidth, style, onExportClick } = props;
   const manifest = useManifest({ url });
+
   return (
     <ModuleInfo
       title={title}
-      manifestUrl={url}
+      manifestUrl={manifest.url.href}
       manifest={manifest.json}
       fields={fields}
       minWidth={minWidth}

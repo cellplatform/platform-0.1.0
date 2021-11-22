@@ -1,8 +1,8 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { DevSample, DevSampleProps } from './DEV.Sample';
-import { ManifestSelectorStateful } from '../../ManifestSelector';
-import { t, rx, WebRuntimeBus } from '../../common';
+import { ManifestSelectorStateful, ManifestSelectorConstants } from '../../ManifestSelector';
+import { t, rx, WebRuntimeBus, Filesystem } from '../../common';
 
 const TARGET = 'foo';
 
@@ -22,6 +22,10 @@ export const actions = DevActions<Ctx>()
 
     const bus = rx.bus();
     const events = WebRuntimeBus.Events({ bus });
+    Filesystem.IndexedDb.create({
+      bus,
+      id: ManifestSelectorConstants.DEFAULT.HISTORY.FS,
+    });
 
     const ctx: Ctx = {
       bus,
@@ -40,6 +44,7 @@ export const actions = DevActions<Ctx>()
         <ManifestSelectorStateful
           bus={bus}
           showExports={false}
+          focusOnLoad={true}
           style={{ MarginX: 15, marginTop: 10, marginBottom: 20 }}
           onChanged={(event) => {
             e.change.ctx((ctx) => (ctx.props.url = event.url));
