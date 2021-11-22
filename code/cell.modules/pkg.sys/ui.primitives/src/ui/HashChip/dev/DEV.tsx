@@ -1,6 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { HashChip, HashChipProps } from '..';
+import { COLORS } from '../../common';
 
 type Ctx = { props: HashChipProps };
 
@@ -56,7 +57,17 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Length');
+    e.title('Prefix Color');
+
+    e.button('default (undefined)', (e) => (e.ctx.props.prefixColor = undefined));
+    e.button('magenta', (e) => (e.ctx.props.prefixColor = COLORS.MAGENTA));
+    e.button('-0.8', (e) => (e.ctx.props.prefixColor = -0.8));
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Hash Length');
 
     e.button('8 (default)', (e) => (e.ctx.props.length = 8));
     e.button('20', (e) => (e.ctx.props.length = 20));

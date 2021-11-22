@@ -16,11 +16,12 @@ export type HashChipProps = {
   clipboard?: boolean;
   inline?: boolean;
   icon?: boolean;
+  prefixColor?: string | number;
   style?: CssValue;
 };
 
 export const HashChip: React.FC<HashChipProps> = (props) => {
-  const { clipboard = true, inline = true, icon } = props;
+  const { clipboard = true, inline = true, icon, prefixColor } = props;
   const length = Math.max(5, props.length ?? DEFAULT.LENGTH);
   const hash = parseHash(props.text || '');
   const text = hash.text ? hash.text.substring(hash.text.length - length) : '';
@@ -39,9 +40,13 @@ export const HashChip: React.FC<HashChipProps> = (props) => {
       userSelect: 'none',
       fontSize: 9,
       height,
+      overflow: 'hidden',
+      lineHeight: 1,
     }),
     icon: css({ marginRight: 3 }),
     chip: css({
+      height: height - 2, // NB: Border
+      padding: 0,
       PaddingX: 4,
       backgroundColor: color.alpha(COLORS.DARK, 0.08),
       border: `solid 1px ${color.format(-0.06)}`,
@@ -50,7 +55,11 @@ export const HashChip: React.FC<HashChipProps> = (props) => {
     }),
     hash: {
       base: css({ paddingTop: 2, paddingBottom: 1 }),
-      prefix: css({ fontWeight: 600, color: color.alpha(COLORS.DARK, 0.4) }),
+      prefix: css({
+        fontWeight: 600,
+        color:
+          prefixColor === undefined ? color.alpha(COLORS.DARK, 0.4) : color.format(prefixColor),
+      }),
       text: css({
         marginLeft: algorithm ? 4 : undefined,
         paddingLeft: algorithm ? 4 : undefined,
