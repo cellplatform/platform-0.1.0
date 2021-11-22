@@ -1,15 +1,18 @@
 import React from 'react';
 import { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
 
-import { color, css, CssValue, t } from '../../common';
+import { color, css, CssValue, t, HashChip } from '../../common';
 import { toPropsList } from './props/toList';
 import * as m from './types';
+import { ModuleInfoConstants } from './constants';
+
+const DEFAULT = ModuleInfoConstants.DEFAULT;
 
 export type ModuleInfoProps = {
   manifestUrl?: t.ManifestUrl;
   title?: m.ModuleInfoTitle;
   manifest?: t.ModuleManifest;
-  fields?: m.ModuleInfoFields[];
+  fields?: m.ModuleInfoField[];
   width?: number;
   minWidth?: number;
   maxWidth?: number;
@@ -18,14 +21,22 @@ export type ModuleInfoProps = {
 };
 
 export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
-  const { manifestUrl, manifest, fields, width, minWidth = 200, maxWidth, onExportClick } = props;
+  const {
+    manifestUrl,
+    manifest,
+    fields = DEFAULT.FIELDS,
+    width,
+    minWidth = 200,
+    maxWidth,
+    onExportClick,
+  } = props;
 
-  const DEFAULT = {
-    title: 'Module',
-  };
+  const title = props.title ? props.title : props.title === null ? '' : DEFAULT.TITLE;
+  const moduleHash = manifest?.hash.module;
 
-  const title = props.title ? props.title : props.title === null ? '' : DEFAULT.title;
-
+  /**
+   * RENDER
+   */
   const styles = {
     base: css({ position: 'relative', width, minWidth, maxWidth }),
     empty: css({
@@ -35,12 +46,28 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
       textAlign: 'center',
       PaddingY: 6,
     }),
+    title: {
+      base: css({ Flex: 'horizontal-center-spaceBetween' }),
+      left: css({}),
+      right: css({}),
+    },
   };
+
+  const elModuleHash = fields.includes('hash.module:title') && (
+    <HashChip text={moduleHash} icon={true} />
+  );
+
+  const elTitle = (
+    <div {...styles.title.base}>
+      <div {...styles.title.left}>{title}</div>
+      <div {...styles.title.right}>{elModuleHash}</div>
+    </div>
+  );
 
   const items: PropListItem[] = toPropsList({ url: manifestUrl, manifest, fields, onExportClick });
   const elEmpty = !manifest && <div {...styles.empty}>Module not loaded.</div>;
   const elProps = !elEmpty && (
-    <PropList title={title} items={items} defaults={{ clipboard: false }} />
+    <PropList title={elTitle} items={items} defaults={{ clipboard: false }} />
   );
 
   return (

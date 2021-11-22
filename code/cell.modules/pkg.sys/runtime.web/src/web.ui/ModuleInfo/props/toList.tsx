@@ -1,19 +1,18 @@
 import { ManifestUrl, t, time } from '../../common';
 import * as m from '../types';
-import { FIELDS } from './DEFAULTS';
 import { toFiles } from './item.files';
 import { toHash } from './item.hash';
 import { toRemote } from './item.remote';
-import { toUrl } from './item.url';
+import { toSourceUrl } from './item.source';
 
 type P = t.PropListItem;
 export function toPropsList(args: {
   manifest?: t.ModuleManifest;
   url?: string;
-  fields?: m.ModuleInfoFields[];
+  fields: m.ModuleInfoField[];
   onExportClick?: m.ModuleInfoExportClick;
 }): t.PropListItem[] {
-  const { manifest, onExportClick, fields = FIELDS } = args;
+  const { manifest, onExportClick, fields } = args;
 
   if (!manifest) return [];
 
@@ -25,30 +24,38 @@ export function toPropsList(args: {
    * Base properties.
    */
   const list: P[] = [];
-  const add = (field: m.ModuleInfoFields) => {
-    if (field === 'url' && args.url) {
-      list.push(toUrl({ url }));
+  const add = (field: m.ModuleInfoField) => {
+    const is = (...match: m.ModuleInfoField[]) => match.includes(field);
+    const href = url.href;
+
+    if (is('source:url') && href) {
+      list.push(toSourceUrl({ href }));
     }
 
-    if (field === 'namespace') {
+    if (is('source:url:hash') && href) {
+      const hash = manifest.hash.module;
+      if (hash) list.push(toSourceUrl({ href, hash }));
+    }
+
+    if (is('namespace')) {
       list.push({
         label: 'namespace',
         value: { data: module.namespace, clipboard: true },
       });
     }
 
-    if (field === 'version') {
+    if (is('version')) {
       list.push({
         label: 'version',
         value: { data: `${module.version}`, clipboard: module.version },
       });
     }
 
-    if (field === 'hash' || field === 'hash.module' || field === 'hash.files') {
+    if (is('hash.module', 'hash.files')) {
       list.push(toHash({ manifest, field }));
     }
 
-    if (field === 'compiled') {
+    if (is('compiled')) {
       const clipboard = `Compilation: ${module.compiler} (${elapsed.toString()} ago)`;
       list.push({
         label: 'compiled',
@@ -57,18 +64,18 @@ export function toPropsList(args: {
       });
     }
 
-    if (field === 'kind') {
+    if (is('kind')) {
       list.push({
         label: 'kind',
         value: `${module.target}, ${module.mode}`,
       });
     }
 
-    if (field === 'files') {
+    if (is('files')) {
       list.push(toFiles({ manifest }));
     }
 
-    if (field === 'remote' || field === 'remote.exports') {
+    if (is('remote', 'remote.exports')) {
       const remote = toRemote({ manifest, url, onExportClick });
       if (remote.hasExports) {
         if (field === 'remote') list.push(remote.item);

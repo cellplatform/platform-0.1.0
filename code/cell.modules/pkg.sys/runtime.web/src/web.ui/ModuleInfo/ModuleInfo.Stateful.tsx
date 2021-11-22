@@ -8,7 +8,7 @@ import * as m from './types';
 export type ModuleInfoStatefulProps = {
   url?: t.ManifestUrl;
   title?: m.ModuleInfoTitle;
-  fields?: m.ModuleInfoFields[];
+  fields?: m.ModuleInfoField[];
   minWidth?: number;
   maxWidth?: number;
   style?: CssValue;

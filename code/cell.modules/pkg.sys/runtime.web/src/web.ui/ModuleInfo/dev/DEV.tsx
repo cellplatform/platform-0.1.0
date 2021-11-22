@@ -1,11 +1,9 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { ModuleInfo, ModuleInfoProps, ModuleInfoStateful, ModuleInfoDefaults } from '..';
-import { ManifestSelectorStateful } from '../../ManifestSelector';
-import { t, rx } from '../../../common';
+import { ModuleInfo, ModuleInfoProps, ModuleInfoStateful, ModuleInfoConstants } from '..';
+import { ManifestSelectorStateful, ManifestSelectorConstants } from '../../ManifestSelector';
+import { t, rx, Filesystem } from '../../../common';
 import * as m from '../types';
-
-const FIELDS = ModuleInfoDefaults.FIELDS;
 
 type Ctx = {
   bus: t.EventBus;
@@ -21,8 +19,12 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
-    const ctx: Ctx = { bus, props: { width: 300 } };
+    Filesystem.IndexedDb.create({
+      bus,
+      id: ManifestSelectorConstants.DEFAULT.HISTORY.FS,
+    });
 
+    const ctx: Ctx = { bus, props: { width: 300 } };
     return ctx;
   })
 
@@ -50,14 +52,14 @@ export const actions = DevActions<Ctx>()
     e.select((config) =>
       config
         .title('fields:')
-        .items(FIELDS)
+        .items(ModuleInfoConstants.FIELDS)
         .initial(undefined)
         .clearable(true)
         .view('buttons')
         .multi(true)
         .pipe((e) => {
           if (e.changing) {
-            const next = e.changing.next.map(({ value }) => value) as m.ModuleInfoFields[];
+            const next = e.changing.next.map(({ value }) => value) as m.ModuleInfoField[];
             e.ctx.props.fields = next.length === 0 ? undefined : next;
           }
         }),

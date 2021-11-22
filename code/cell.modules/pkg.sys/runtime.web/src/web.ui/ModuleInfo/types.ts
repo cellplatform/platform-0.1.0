@@ -3,18 +3,19 @@ import { ManifestUrl, ModuleManifest } from '@platform/cell.types';
 type Path = string;
 
 export type ModuleInfoTitle = string | React.ReactNode | null;
-export type ModuleInfoFields =
-  | 'url'
+export type ModuleInfoField =
   | 'namespace'
   | 'version'
   | 'compiled'
   | 'kind'
   | 'files'
-  | ModuleInfoFieldsHash
-  | ModuleInfoHashRemote;
+  | ModuleInfoFieldSource
+  | ModuleInfoFieldHash
+  | ModuleInfoFieldRemote;
 
-export type ModuleInfoFieldsHash = 'hash' | 'hash.module' | 'hash.files';
-export type ModuleInfoHashRemote = 'remote' | 'remote' | 'remote.exports';
+export type ModuleInfoFieldSource = 'source:url' | 'source:url:hash';
+export type ModuleInfoFieldHash = 'hash.module:title' | 'hash.module' | 'hash.files';
+export type ModuleInfoFieldRemote = 'remote' | 'remote.exports';
 
 /**
  * Alert listeners when a remote "export" reference is clicked.

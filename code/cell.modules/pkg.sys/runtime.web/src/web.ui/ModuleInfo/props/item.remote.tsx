@@ -19,7 +19,7 @@ export function toRemote(args: {
   const total = remoteExports.length;
   const plural = value.plural(total, 'export', 'exports');
   const item: P = {
-    label: 'remote',
+    label: 'api',
     value: noFiles ? 'none' : `${total} ${plural}`,
   };
 
