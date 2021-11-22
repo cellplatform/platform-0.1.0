@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { color, css, CssValue, t, useDragTarget, COLORS, ManifestUrl } from './common';
-import { UrlTextbox } from './UrlTextbox';
+import { UrlTextbox } from './components/UrlTextbox';
 import { ModuleInfo } from '../ModuleInfo';
-import { ModuleInfoFields } from '../ModuleInfo/types';
+import { ModuleInfoField } from '../ModuleInfo/types';
 
 export type ManifestSelectorProps = {
   manifestUrl?: t.ManifestUrl;
@@ -11,12 +11,15 @@ export type ManifestSelectorProps = {
   error?: string;
   canDrop?: boolean;
   showExports?: boolean;
-  fields?: ModuleInfoFields[];
+  focusOnLoad?: boolean;
+  fields?: ModuleInfoField[];
   style?: CssValue;
   onManifestUrlChange?: t.ManifestSelectorUrlChangeHandler;
   onLoadManifest?: t.ManifestSelectorLoadHandler;
   onExportClick?: t.ManifestSelectorExportClickHandler;
   onError?: (e: { error: string }) => void;
+  onKeyUp?: t.ManifestSelectorKeyboardHandler;
+  onKeyDown?: t.ManifestSelectorKeyboardHandler;
 };
 
 export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
@@ -65,8 +68,11 @@ export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
     <UrlTextbox
       url={manifestUrl}
       error={props.error}
+      focusOnLoad={props.focusOnLoad}
       onChange={props.onManifestUrlChange}
       onLoadManifest={props.onLoadManifest}
+      onKeyDown={props.onKeyDown}
+      onKeyUp={props.onKeyUp}
     />
   );
 

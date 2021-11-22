@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
-import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, takeUntil, map } from 'rxjs/operators';
+import { Is } from '../Is';
 
 import { Http, Parse, rx, t } from '../common';
 
 type InstanceId = string;
 type Url = string;
+type A = t.ManifestSelectorActionEvent;
+type C = t.ManifestSelectorCurrentEvent;
 
 /**
  * State controller.
@@ -38,19 +41,26 @@ export function useStateController(args: {
   useEffect(() => {
     const dispose$ = new Subject<void>();
 
-    type A = t.ManifestSelectorActionEvent;
-    type C = t.ManifestSelectorCurrentEvent;
     const $ = bus.$.pipe(
       takeUntil(dispose$),
-      filter((e) => e.type.startsWith('sys.runtime.web/ManifestSelector/')),
-      filter((e) => e.payload.component === component),
+      filter((e) => Is.manifestSelectorEvent(e, component)),
     );
     const action$ = rx.payload<A>($, 'sys.runtime.web/ManifestSelector/action');
     const current$ = rx.payload<C>($, 'sys.runtime.web/ManifestSelector/current');
 
-    action$.pipe(filter((e) => e.kind === 'loadManifest')).subscribe((e) => {
-      api.loadManifest(e.url);
-    });
+    action$
+      .pipe(
+        filter((e) => e.kind === 'load:manifest'),
+        map((e) => e.url),
+      )
+      .subscribe((url) => api.loadManifest(url));
+
+    action$
+      .pipe(
+        filter((e) => e.kind === 'set:url'),
+        map((e) => e.url),
+      )
+      .subscribe((url) => (api.manifestUrl = url));
 
     current$
       .pipe(
@@ -58,13 +68,10 @@ export function useStateController(args: {
           (prev, next) => prev.manifest?.hash.module === next.manifest?.hash.module,
         ),
       )
-      .subscribe((e) => {
-        const { url, manifest } = e;
-        args.onChanged?.({ url, manifest });
-      });
+      .subscribe(({ url, manifest }) => args.onChanged?.({ url, manifest }));
 
     return () => dispose$.next();
-  }, []); // eslint-disable-line
+  }, [component]); // eslint-disable-line
 
   /**
    * Public Interface
@@ -120,6 +127,11 @@ export function useStateController(args: {
         }
 
         setManifest(url.href, manifest);
+
+        bus.fire({
+          type: 'sys.runtime.web/ManifestSelector/loaded',
+          payload: { component, url: url.href, manifest },
+        });
       } catch (error: any) {
         setError(`Failed to parse URL`);
       }

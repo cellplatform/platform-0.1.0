@@ -1,19 +1,24 @@
 import React from 'react';
 import { Textbox } from 'sys.ui.dev/lib/ui/Textbox';
 
-import { Icons } from '../Icons';
-import { color, COLORS, css, CssValue } from './common';
-import { ManifestSelectorLoadHandler, ManifestSelectorUrlChangeHandler } from './types';
+import { Icons } from '../../Icons';
+import { color, COLORS, css, CssValue, t } from '../common';
+import { ManifestSelectorLoadHandler, ManifestSelectorUrlChangeHandler } from '../types';
 
 type Url = string;
 
 export type UrlTextboxProps = {
   url: Url;
   error?: string;
+  focusOnLoad?: boolean;
   style?: CssValue;
   onChange?: ManifestSelectorUrlChangeHandler;
   onLoadManifest?: ManifestSelectorLoadHandler;
+  onKeyDown?: t.ManifestSelectorKeyboardHandler;
+  onKeyUp?: t.ManifestSelectorKeyboardHandler;
 };
+
+import { TextInputKeyEvent } from '@platform/ui.text/lib/types';
 
 export const UrlTextbox: React.FC<UrlTextboxProps> = (props) => {
   const { url } = props;
@@ -26,14 +31,34 @@ export const UrlTextbox: React.FC<UrlTextboxProps> = (props) => {
 
   const elError = props.error && <div {...styles.error}>{props.error}</div>;
 
+  const onKey = (
+    action: t.ManifestSelectorKeyboardArgs['action'],
+    e: TextInputKeyEvent,
+    handler?: t.ManifestSelectorKeyboardHandler,
+  ) => {
+    const { key, ctrlKey, shiftKey, metaKey, altKey } = e;
+    handler?.({
+      action,
+      key,
+      ctrlKey,
+      shiftKey,
+      metaKey,
+      altKey,
+      cancel: () => e.preventDefault(),
+    });
+  };
+
   const elTextbox = (
     <Textbox
       value={url}
       placeholder={'manifest url'}
-      onChange={(e) => props.onChange?.({ url: e.to })}
       style={styles.textbox}
       spellCheck={false}
       selectOnFocus={true}
+      focusOnLoad={props.focusOnLoad}
+      onChange={(e) => props.onChange?.({ url: e.to })}
+      onKeyDown={(e) => onKey('down', e, props.onKeyDown)}
+      onKeyUp={(e) => onKey('up', e, props.onKeyDown)}
       enter={{
         isEnabled: Boolean(url),
         handler: () => props.onLoadManifest?.({ url }),

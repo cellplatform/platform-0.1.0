@@ -11,10 +11,11 @@ export type DevSampleTargetProps = { bus: t.EventBus; target: string };
 export const DevSampleTarget: React.FC<DevSampleTargetProps> = (props) => {
   const { bus, target } = props;
   const remote = useModuleTarget({ bus, target });
+  const Component = remote.module?.default;
 
-  console.log('target', target);
-  console.log('useModule (remote)', remote);
-
+  /**
+   * Render
+   */
   const styles = {
     base: css({
       flex: 1,
@@ -22,6 +23,5 @@ export const DevSampleTarget: React.FC<DevSampleTargetProps> = (props) => {
       overflow: 'hidden',
     }),
   };
-  const Component = remote.module?.default;
   return <div {...styles.base}>{Component && <Component bus={props.bus} />}</div>;
 };

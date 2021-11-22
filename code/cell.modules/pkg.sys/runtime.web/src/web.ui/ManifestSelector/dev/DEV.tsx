@@ -1,20 +1,24 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { ManifestSelectorProps, ManifestSelectorStateful } from '..';
+import {
+  ManifestSelectorStateful,
+  ManifestSelectorStatefulProps,
+  ManifestSelectorConstants,
+} from '..';
 import { WebRuntimeBus } from '../../../web.RuntimeBus';
-import { rx, t, Button } from '../common';
+import { rx, t, Button, Filesystem } from '../common';
 import { DevSampleTarget } from './DEV.SampleTarget';
-import { ModuleInfoStateful, ModuleInfoDefaults } from '../../ModuleInfo';
-import { ModuleInfoFields } from '../../ModuleInfo/types';
+import { ModuleInfoStateful, ModuleInfoConstants } from '../../ModuleInfo';
+import { ModuleInfoField } from '../../ModuleInfo/types';
 
 const TARGET = 'foo';
-const FIELDS = ModuleInfoDefaults.FIELDS;
+const DEFAULT = ManifestSelectorConstants.DEFAULT;
 
 type Ctx = {
   bus: t.EventBus;
   events: t.WebRuntimeEvents;
-  props: ManifestSelectorProps;
+  props: ManifestSelectorStatefulProps;
   url: { value?: string; change(url?: string): void };
   debug: {
     output: {
@@ -38,10 +42,18 @@ export const actions = DevActions<Ctx>()
     const bus = rx.bus();
     const { events } = WebRuntimeBus.Controller({ bus });
 
+    Filesystem.IndexedDb.create({ bus, id: DEFAULT.HISTORY.FS });
+
     const ctx: Ctx = {
       bus,
       events,
-      props: { canDrop: true, showExports: true },
+      props: {
+        bus,
+        canDrop: true,
+        showExports: true,
+        history: true,
+        focusOnLoad: true,
+      },
       debug: {
         output: {
           clear: () => ctx.debug.output.write('', undefined),
@@ -67,14 +79,14 @@ export const actions = DevActions<Ctx>()
     e.select((config) =>
       config
         .title('exports fields:')
-        .items(FIELDS)
+        .items(ModuleInfoConstants.FIELDS)
         .initial(undefined)
         .clearable(true)
         .view('buttons')
         .multi(true)
         .pipe((e) => {
           if (e.changing) {
-            const next = e.changing.next.map(({ value }) => value) as ModuleInfoFields[];
+            const next = e.changing.next.map(({ value }) => value) as ModuleInfoField[];
             e.ctx.props.fields = next.length === 0 ? undefined : next;
           }
         }),
@@ -90,6 +102,16 @@ export const actions = DevActions<Ctx>()
     e.boolean('canDrop', (e) => {
       if (e.changing) e.ctx.props.canDrop = e.changing.next;
       e.boolean.current = e.ctx.props.canDrop;
+    });
+
+    e.boolean('focusOnLoad', (e) => {
+      if (e.changing) e.ctx.props.focusOnLoad = e.changing.next;
+      e.boolean.current = e.ctx.props.focusOnLoad;
+    });
+
+    e.boolean('history (enabled)', (e) => {
+      if (e.changing) e.ctx.props.history = e.changing.next;
+      e.boolean.current = Boolean(e.ctx.props.history);
     });
 
     e.hr();

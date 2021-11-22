@@ -15,3 +15,4 @@ export { ManifestUrl } from '@platform/cell.schema';
 export { useDragTarget } from 'sys.ui.primitives/lib/hooks/useDragTarget';
 export { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
 export { HashChip } from 'sys.ui.primitives/lib/ui/HashChip';
+export { Filesystem } from 'sys.fs';

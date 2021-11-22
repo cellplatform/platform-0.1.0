@@ -20,5 +20,4 @@ export { ManifestUrlParts } from '@platform/cell.schema/lib/Manifest/types';
 /**
  * @system
  */
-
 export { PropListItem, PropListValue } from 'sys.ui.primitives/lib/types';
