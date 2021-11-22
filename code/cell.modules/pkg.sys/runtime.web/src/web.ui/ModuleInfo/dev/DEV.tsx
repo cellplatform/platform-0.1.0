@@ -20,10 +20,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
-    Filesystem.IndexedDb.create({
-      bus,
-      id: ManifestSelectorConstants.DEFAULT.HISTORY.FS,
-    });
+    Filesystem.IndexedDb.create({ bus, id: ManifestSelectorConstants.DEFAULT.HISTORY.FS });
 
     const ctx: Ctx = { bus, props: { width: 300 } };
     return ctx;
@@ -76,6 +73,7 @@ export const actions = DevActions<Ctx>()
         <ManifestSelectorStateful
           bus={bus}
           showExports={false}
+          focusOnLoad={true}
           style={{ MarginX: 15, marginTop: 10, marginBottom: 40 }}
           onChanged={(event) => {
             e.change.ctx((ctx) => {

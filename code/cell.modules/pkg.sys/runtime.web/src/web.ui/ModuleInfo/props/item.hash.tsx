@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { t, HashChip } from '../../common';
+import { DEFAULT } from '../constants';
 import * as m from '../types';
 
 type P = t.PropListItem;
@@ -14,7 +15,7 @@ export function toHash(args: { manifest: t.ModuleManifest; field: m.ModuleInfoFi
 
   const key = field.split('.')[1];
   const hash = manifest.hash[key];
-  const data = <HashChip text={hash} icon={false} />;
+  const data = <HashChip text={hash} icon={false} length={DEFAULT.HASH_CHIP_LENGTH} />;
 
   return {
     label,

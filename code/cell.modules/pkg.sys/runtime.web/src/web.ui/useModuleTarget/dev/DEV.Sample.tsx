@@ -39,7 +39,6 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
   /**
    * [Render]
    */
-
   const styles = {
     base: css({ position: 'relative', boxSizing: 'border-box', flex: 1, fontSize: 14 }),
     body: css({ Absolute: 0, overflow: 'hidden', Flex: 'horizontal-stretch-stretch' }),
@@ -49,18 +48,13 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
       body: css({ color: color.format(-0.3), fontStyle: 'italic', fontSize: 12 }),
     },
     left: {
-      base: css({
-        flex: 1,
-        position: 'relative',
-        Scroll: true,
-        padding: 20,
-      }),
+      base: css({ flex: 1, position: 'relative', Scroll: true, padding: 20 }),
       moduleInfo: css({}),
     },
     right: {
       base: css({
-        position: 'relative',
         flex: 1,
+        position: 'relative',
         borderLeft: `solid 1px ${color.alpha(COLORS.MAGENTA, 0.3)}`,
         Flex: 'vertical-stretch-stretch',
       }),

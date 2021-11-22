@@ -2,6 +2,7 @@ import React from 'react';
 
 import { t, Button, css, HashChip } from '../../common';
 import { Icons } from '../../Icons';
+import { DEFAULT } from '../constants';
 
 type P = t.PropListItem;
 
@@ -18,7 +19,9 @@ export function toSourceUrl(args: { href: string; hash?: string }): P {
     }),
     button: {
       base: css({ height, Flex: 'horizontal-center-center' }),
-      icon: css({ marginRight: 4 }),
+      icon: css({
+        marginRight: hash ? 0 : 4,
+      }),
     },
     hash: css({ marginLeft: 4 }),
   };
@@ -27,12 +30,14 @@ export function toSourceUrl(args: { href: string; hash?: string }): P {
     <Button>
       <div {...styles.button.base}>
         <Icons.Link size={height} style={styles.button.icon} />
-        <div>manifest</div>
+        {!hash && <div>manifest</div>}
       </div>
     </Button>
   );
 
-  const elChip = hash && <HashChip text={hash} style={styles.hash} />;
+  const elChip = hash && (
+    <HashChip text={hash} style={styles.hash} length={DEFAULT.HASH_CHIP_LENGTH} />
+  );
 
   const data = (
     <div {...styles.base}>

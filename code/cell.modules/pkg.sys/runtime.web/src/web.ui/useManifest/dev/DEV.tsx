@@ -20,10 +20,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
-    Filesystem.IndexedDb.create({
-      bus,
-      id: ManifestSelectorConstants.DEFAULT.HISTORY.FS,
-    });
+    Filesystem.IndexedDb.create({ bus, id: ManifestSelectorConstants.DEFAULT.HISTORY.FS });
 
     const ctx: Ctx = {
       bus,

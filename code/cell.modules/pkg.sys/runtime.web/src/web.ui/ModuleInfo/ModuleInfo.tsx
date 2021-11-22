@@ -4,9 +4,7 @@ import { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
 import { color, css, CssValue, t, HashChip } from '../../common';
 import { toPropsList } from './props/toList';
 import * as m from './types';
-import { ModuleInfoConstants } from './constants';
-
-const DEFAULT = ModuleInfoConstants.DEFAULT;
+import { DEFAULT } from './constants';
 
 export type ModuleInfoProps = {
   manifestUrl?: t.ManifestUrl;
@@ -59,7 +57,7 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
   };
 
   const elModuleHash = fields.includes('hash.module:title') && (
-    <HashChip text={moduleHash} icon={true} />
+    <HashChip text={moduleHash} icon={true} length={DEFAULT.HASH_CHIP_LENGTH} />
   );
 
   const elTitle = (

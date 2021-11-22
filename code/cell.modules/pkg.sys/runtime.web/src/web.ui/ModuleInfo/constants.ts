@@ -35,6 +35,7 @@ const DEFAULT_FIELDS: m.ModuleInfoField[] = [
 export const DEFAULT = {
   TITLE: 'Module',
   FIELDS: DEFAULT_FIELDS,
+  HASH_CHIP_LENGTH: 5,
 };
 
 export const ModuleInfoConstants = {
