@@ -22,16 +22,8 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      flex: 1,
-      position: 'relative',
-      Flex: 'horizontal-stretch-stretch',
-    }),
-    left: css({
-      flex: 1,
-      position: 'relative',
-      overflow: 'hidden',
-    }),
+    base: css({ flex: 1, position: 'relative', Flex: 'horizontal-stretch-stretch' }),
+    left: css({ flex: 1, position: 'relative', overflow: 'hidden' }),
     right: css({
       position: 'relative',
       width: 350,
@@ -58,7 +50,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
     </div>
   );
   const elEmpty = !Component && !elSpinner && <div {...styles.empty}>Module not loaded.</div>;
-  const elModule = Component && <Component bus={props.bus} />;
+  const elModule = Component && <Component bus={bus} />;
 
   return (
     <div {...css(styles.base, props.style)}>

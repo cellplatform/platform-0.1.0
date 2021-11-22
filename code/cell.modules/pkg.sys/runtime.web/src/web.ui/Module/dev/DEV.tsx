@@ -6,6 +6,8 @@ import { t, rx, Filesystem } from '../../../common';
 
 type Ctx = {
   bus: t.EventBus;
+  props: ModuleProps;
+  setUrl(url: t.ManifestUrl): void;
 };
 
 /**
@@ -19,7 +21,11 @@ export const actions = DevActions<Ctx>()
     const bus = rx.bus();
     Filesystem.IndexedDb.create({ bus, id: ManifestSelectorConstants.DEFAULT.HISTORY.FS });
 
-    const ctx: Ctx = { bus };
+    const ctx: Ctx = {
+      bus,
+      props: { bus },
+      setUrl: (url) => e.change.ctx((ctx) => (ctx.props.url = url)),
+    };
     return ctx;
   })
 
@@ -31,19 +37,15 @@ export const actions = DevActions<Ctx>()
       return (
         <ManifestSelectorStateful
           bus={bus}
-          style={{ MarginX: 15, marginTop: 10 }}
+          style={{ MarginX: 15, marginTop: 10, marginBottom: 30 }}
           focusOnLoad={true}
-          onChanged={(event) => {
-            console.log('event', event);
-          }}
-          onExportClick={(event) => {
-            console.log('event', event);
-          }}
+          onExportClick={({ url }) => e.ctx.setUrl(url)}
         />
       );
     });
 
     e.hr();
+    e.button('reset (unload)', (e) => (e.ctx.props.url = undefined));
   })
 
   .subject((e) => {
@@ -51,13 +53,13 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
       layout: {
         label: '<Module>',
-        // position: [150, 80],
+        position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,
-        // background: 1,
+        background: 1,
       },
     });
-    // e.render(<ModuleEntry {...e.ctx.props} />);
+    e.render(<Module {...e.ctx.props} style={{ flex: 1 }} />);
   });
 
 export default actions;
