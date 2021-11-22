@@ -19,7 +19,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
   const styles = {
     base: css({ position: 'relative', boxSizing: 'border-box', flex: 1, fontSize: 14 }),
     body: css({ Absolute: 0, overflow: 'hidden', Flex: 'horizontal-stretch-stretch' }),
-    object: css({ marginTop: 20 }),
+    object: css({ marginBottom: 60 }),
     left: {
       base: css({ position: 'relative', padding: 20, flex: 1 }),
       footer: css({ Absolute: [null, 0, 0, 0], padding: 8 }),
