@@ -2,8 +2,7 @@ import React from 'react';
 import { toObject, DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
 
 import { WebRuntime } from 'sys.runtime.web';
-import { TARGET_NAME } from './common';
-import { Filesystem } from 'sys.fs/lib/web';
+import { TARGET_NAME, Filesystem } from './common';
 
 type O = Record<string, unknown>;
 
@@ -66,6 +65,8 @@ const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind'], props?: O) => {
     payload: { kind, target, props },
   });
 };
+
+const FILESYSTEM_ID = 'fs.net';
 
 /**
  * Actions
@@ -149,7 +150,7 @@ export const actions = DevActions<Ctx>()
     /**
      * Filesystem (networked).
      */
-    const filesystem = Filesystem.IndexedDb.create({ bus, id: 'fs.net' });
+    const filesystem = Filesystem.IndexedDb.create({ bus, id: FILESYSTEM_ID });
     (async () => {
       const fs = await filesystem;
       const id = fs.id;
@@ -187,6 +188,7 @@ export const actions = DevActions<Ctx>()
         <WebRuntime.ui.ManifestSelectorStateful
           bus={ctx.bus}
           style={{ MarginX: 30, MarginY: 20 }}
+          history={{ fs: FILESYSTEM_ID }}
           onExportClick={(e) => {
             ctx.events.runtime.useModule.fire({
               target: TARGET_NAME,

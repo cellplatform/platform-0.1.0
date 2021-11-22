@@ -62,10 +62,10 @@ export function useHistoryController(args: {
       setList(list);
       return list;
     };
-    const appendHistory = async (url: t.ManifestUrl) => {
+    const appendHistory = async (url: t.ManifestUrl, version: H['version']) => {
       if (!enabled) return;
       const prev = (await getHistory()).filter((item) => item.url !== url);
-      const next: H = { url, time: time.now.timestamp };
+      const next: H = { url, time: time.now.timestamp, version };
       const list: H[] = [...prev, next];
       await fs.json.write(path, list);
     };
@@ -74,7 +74,7 @@ export function useHistoryController(args: {
      * Log a history item when a manifest loads for future reference.
      */
     loaded$.subscribe((e) => {
-      appendHistory(e.url);
+      appendHistory(e.url, e.manifest.module.version);
       index = -1; // Reset "selected index" history.
     });
 

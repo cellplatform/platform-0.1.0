@@ -26,7 +26,14 @@ export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
   const { manifest, showExports = true } = props;
   const remote = manifest?.module?.remote;
   const manifestUrl = (props.manifestUrl ?? '').trim();
-  const fields = props.fields ?? ['namespace', 'version', 'compiled', 'files', 'remote.exports'];
+  const fields = props.fields ?? [
+    'source:url:hash',
+    'namespace',
+    'version',
+    'compiled',
+    'files',
+    'remote.exports',
+  ];
 
   const drag = useDragTarget<HTMLDivElement>({
     isEnabled: props.canDrop ?? true,

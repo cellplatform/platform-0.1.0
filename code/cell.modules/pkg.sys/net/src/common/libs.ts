@@ -11,7 +11,7 @@ import PeerJS from 'peerjs';
 export { PeerJS };
 
 /**
- * Platform
+ * @platform
  */
 export { events } from '@platform/react';
 export { log } from '@platform/log/lib/client';
@@ -22,3 +22,8 @@ export { StateObject } from '@platform/state';
 export { Hash } from '@platform/cell.schema';
 export { WebRuntime, bundle } from '@platform/cell.runtime.web';
 export { NetworkBus } from '@platform/cell.runtime/lib/NetworkBus';
+
+/**
+ * @system
+ */
+export { Filesystem } from 'sys.fs';

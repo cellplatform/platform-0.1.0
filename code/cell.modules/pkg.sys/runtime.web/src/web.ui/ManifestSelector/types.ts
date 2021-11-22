@@ -1,5 +1,6 @@
 import * as t from '../../common/types';
 
+type Semver = string;
 type InstanceId = string;
 type UTCTimeStamp = number;
 
@@ -48,7 +49,7 @@ export type ManifestSelectorKeyboardArgs = {
 /**
  * Textbox load history
  */
-export type ManifestSelectoryHistory = { url: string; time: UTCTimeStamp };
+export type ManifestSelectoryHistory = { url: string; time: UTCTimeStamp; version: Semver };
 
 /**
  * [Events]
