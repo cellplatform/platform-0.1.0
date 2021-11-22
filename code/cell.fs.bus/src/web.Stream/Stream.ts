@@ -41,7 +41,7 @@ export const Stream = {
 
     // Process JSON.
     if (!isStream) {
-      const json = stringify(input as t.Json);
+      const json = typeof input === 'string' ? input : stringify(input as t.Json);
       return Stream.encode(json);
     }
 

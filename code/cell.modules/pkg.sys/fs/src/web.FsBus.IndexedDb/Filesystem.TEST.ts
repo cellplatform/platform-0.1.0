@@ -1,6 +1,6 @@
 import { Test, expect } from '../web.test';
 import { Filesystem } from '.';
-import { rx, DEFAULT, Hash } from './common';
+import { rx, DEFAULT, Hash, t } from './common';
 
 import Automerge from 'automerge';
 
@@ -74,6 +74,50 @@ export default Test.describe('FsBus', (e) => {
 
       expect(res3).to.eql(data);
       dispose();
+    });
+
+    e.describe('json (read/write)', (e) => {
+      const test = async (data: t.Json) => {
+        const path = 'foo/data.json';
+        const { fs, dispose } = await testPrep({ clear: true });
+
+        await fs.json.write(path, data);
+        const res = await fs.json.read(path);
+        dispose();
+
+        expect(res).to.eql(data);
+      };
+
+      e.it('{object}', async () => {
+        await test({});
+        await test({ msg: 'hello' });
+      });
+
+      e.it('[array]', async () => {
+        await test([]);
+        await test([1, 2, 3]);
+        await test([1, { msg: 'hello' }, true]);
+      });
+
+      e.it('boolean', async () => {
+        await test(true);
+        await test(false);
+      });
+
+      e.it('number', async () => {
+        await test(0);
+        await test(1234);
+        await test(-999);
+      });
+
+      e.it('string', async () => {
+        await test('   Hello   ');
+        await test('');
+      });
+
+      e.it('null', async () => {
+        await test(null);
+      });
     });
   });
 
