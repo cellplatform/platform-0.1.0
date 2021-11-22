@@ -38,7 +38,12 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
    * RENDER
    */
   const styles = {
-    base: css({ position: 'relative', width, minWidth, maxWidth }),
+    base: css({
+      position: 'relative',
+      width,
+      minWidth,
+      maxWidth,
+    }),
     empty: css({
       color: color.format(-0.3),
       fontStyle: 'italic',

@@ -1,8 +1,9 @@
 import React from 'react';
-import { DevActions, ObjectView } from 'sys.ui.dev';
-import { ModuleInfo, ModuleInfoProps, ModuleInfoStateful, ModuleInfoConstants } from '..';
-import { ManifestSelectorStateful, ManifestSelectorConstants } from '../../ManifestSelector';
-import { t, rx, Filesystem } from '../../../common';
+import { DevActions } from 'sys.ui.dev';
+
+import { ModuleInfo, ModuleInfoConstants, ModuleInfoProps, ModuleInfoStateful } from '..';
+import { Filesystem, rx, t } from '../../../common';
+import { ManifestSelectorConstants, ManifestSelectorStateful } from '../../ManifestSelector';
 import * as m from '../types';
 
 type Ctx = {
@@ -75,7 +76,7 @@ export const actions = DevActions<Ctx>()
         <ManifestSelectorStateful
           bus={bus}
           showExports={false}
-          style={{ MarginX: 15, marginTop: 10 }}
+          style={{ MarginX: 15, marginTop: 10, marginBottom: 40 }}
           onChanged={(event) => {
             e.change.ctx((ctx) => {
               ctx.props.manifestUrl = event.url;
@@ -86,6 +87,8 @@ export const actions = DevActions<Ctx>()
       );
     });
 
+    e.hr();
+
     e.component((e) => {
       const url = e.ctx.props.manifestUrl;
       if (!url) return null;
@@ -94,20 +97,7 @@ export const actions = DevActions<Ctx>()
           url={url}
           title={e.ctx.props.title}
           fields={e.ctx.props.fields}
-          style={{ MarginX: 15, marginTop: 40 }}
-        />
-      );
-    });
-
-    e.component((e) => {
-      const data = e.ctx.props.manifest;
-      if (!data) return null;
-      return (
-        <ObjectView
-          name={'Manifest'}
-          data={data}
-          style={{ MarginX: 15, marginTop: 40 }}
-          fontSize={11}
+          style={{ MarginX: 15, marginTop: 40, marginBottom: 40 }}
         />
       );
     });
