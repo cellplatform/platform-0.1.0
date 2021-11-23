@@ -9,7 +9,7 @@ describe.skip('BusController', function () {
   this.timeout(timeout);
 
   const bus = rx.bus<t.VercelEvent>();
-  const store = Filesystem.Controller({ bus, fs: nodefs.resolve('static.test') });
+  const store = Filesystem.Controller({ bus, driver: nodefs.resolve('static.test') });
   const fs = store.fs();
 
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
@@ -26,7 +26,6 @@ describe.skip('BusController', function () {
 
   describe('Deploy', () => {
     it('bundle (Uint8Array)', async () => {
-      // const team = await getTeam();
       const dir = fs.dir('web');
 
       const controller = BusController({ token, fs, bus });

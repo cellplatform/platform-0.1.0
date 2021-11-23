@@ -117,8 +117,7 @@ export const PositioningLayers: React.FC<PositioningLayersProps> = (props) => {
             fireSizeRef.current.next();
           }}
           onUnmount={() => {
-            // Remove child reference.
-            delete layerRefs.current[layer.id];
+            delete layerRefs.current[layer.id]; // Remove child reference.
           }}
         >
           {renderLayer({ index, layers, size, find })}

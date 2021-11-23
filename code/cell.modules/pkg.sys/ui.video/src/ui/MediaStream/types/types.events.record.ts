@@ -1,5 +1,16 @@
 import { t } from './common';
 
+export type MediaStreamRecordOnData = (e: MediaStreamRecordOnDataArgs) => void;
+export type MediaStreamRecordOnDataArgs = {
+  mimetype: string;
+  bytes: number;
+  blob: Blob;
+  toUint8Array(blob: Blob): Promise<Uint8Array>;
+};
+
+/**
+ * EVENTS
+ */
 export type MediaStreamRecordEvent =
   | MediaStreamRecordStatusReqEvent
   | MediaStreamRecordStatusResEvent
@@ -70,7 +81,7 @@ export type MediaStreamRecordStopEvent = {
 export type MediaStreamRecordStop = {
   ref: string;
   download?: { filename: string };
-  data?: (file: Blob) => void;
+  onData?: MediaStreamRecordOnData;
 };
 
 /**

@@ -34,20 +34,26 @@ describe('ManifestFiles', () => {
   });
 
   describe('sort', () => {
+    const UNSORTED = ['z1.doc', 'z10.doc', 'z17.doc', 'z2.doc', 'z23.doc', 'z3.doc'];
+    const SORTED = ['z1.doc', 'z2.doc', 'z3.doc', 'z10.doc', 'z17.doc', 'z23.doc'];
+
     it('compare', () => {
       expect(ManifestFiles.compare).to.equal(naturalCompare);
     });
 
-    it('sort', () => {
+    it('sort - {file} objects', () => {
       type F = t.ManifestFile;
-      const unsorted = ['z1.doc', 'z10.doc', 'z17.doc', 'z2.doc', 'z23.doc', 'z3.doc'];
-      const sorted = ['z1.doc', 'z2.doc', 'z3.doc', 'z10.doc', 'z17.doc', 'z23.doc'];
 
-      const files1: F[] = unsorted.map((path) => ({ path, bytes: 123, filehash: 'sha256-abc' }));
+      const files1: F[] = UNSORTED.map((path) => ({ path, bytes: 123, filehash: 'sha256-abc' }));
       const files2 = ManifestFiles.sort(files1);
 
       expect(files2).to.not.equal(files1); // NB: Immutable copy.
-      expect(files2.map((file) => file.path)).to.eql(sorted);
+      expect(files2.map((file) => file.path)).to.eql(SORTED);
+    });
+
+    it('sort - path strings', () => {
+      const paths = [...UNSORTED];
+      expect(ManifestFiles.sort(paths)).to.eql(SORTED);
     });
   });
 });

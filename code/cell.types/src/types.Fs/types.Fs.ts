@@ -34,7 +34,11 @@ export type Fs = {
   dir(path: DirPath): Fs;
 };
 
-type FsGetManifest = (options?: t.FsIndexerGetManifestOptions) => Promise<t.DirManifest>;
+type FsGetManifest = (options?: FsGetManifestOptions) => Promise<t.DirManifest>;
+type FsGetManifestOptions = t.FsIndexerGetManifestOptions & {
+  cache?: boolean | 'force' | 'remove';
+  cachefile?: string; // Change from default "index.json"
+};
 
 type FsInfoMethod = (path: FilePath) => Promise<FsFileInfo>;
 type FsExistsMethod = (path: FilePath) => Promise<boolean>;

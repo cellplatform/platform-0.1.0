@@ -2,14 +2,17 @@ import React from 'react';
 import { Harness } from 'sys.ui.dev';
 
 const imports = {
-  CodeEditor: import('./components/CodeEditor/DEV'),
-  Monaco: import('./components/Monaco/DEV'),
-
-  Fileystem: import('./test.dev/Filesystem.dev/DEV'),
+  Monaco: import('./components/Monaco/dev/DEV'),
+  CodeEditor: import('./components/CodeEditor/dev/DEV'),
+  DevEnv: import('./components/DevEnv/dev/DEV'),
 };
 
-const dev = new URL(location.href).searchParams.get('dev');
+/**
+ * UI Harness (Dev)
+ */
+const url = new URL(location.href);
+const dev = url.searchParams.get('dev');
+const actions = Object.values(imports);
 
-export const DevHarness: React.FC = () => (
-  <Harness actions={Object.values(imports)} initial={dev} />
-);
+export const DevHarness: React.FC = () => <Harness actions={actions} initial={dev} />;
+export default DevHarness;

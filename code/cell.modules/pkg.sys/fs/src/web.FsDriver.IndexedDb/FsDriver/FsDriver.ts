@@ -1,7 +1,17 @@
 import { FsDriverLocalResolver } from '@platform/cell.fs/lib/Resolver.Local';
 
-import { Hash, DbLookup, NAME, Path, Schema, Stream, t, deleteUndefined, Image } from '../common';
-import { IndexedDb } from '../IndexedDb';
+import {
+  Hash,
+  DbLookup,
+  NAME,
+  Path,
+  Schema,
+  Stream,
+  t,
+  deleteUndefined,
+  Image,
+  IndexedDb,
+} from '../common';
 
 const LocalFile = Schema.File.Path.Local;
 
@@ -112,6 +122,12 @@ export function FsDriver(args: { dir: string; db: IDBDatabase }) {
         if (!path || path === root) throw new Error(`Path out of scope`);
         const image = await Image.toInfo(path, data);
 
+        // Delete existing.
+        // NB:  This ensures the hash-referenced file-record is removed if
+        //      this are no other paths referencing the file-hash.
+        await driver.delete(uri);
+
+        // Perform write.
         const tx = db.transaction([NAME.STORE.PATHS, NAME.STORE.FILES], 'readwrite');
         const store = {
           paths: tx.objectStore(NAME.STORE.PATHS),
@@ -124,6 +140,7 @@ export function FsDriver(args: { dir: string; db: IDBDatabase }) {
           put<t.BinaryRecord>(store.files, { hash, data }),
         ]);
 
+        // Finish up.
         return { uri, ok: true, status: 200, file };
       } catch (err: any) {
         const message = `Failed to write [${uri}]. ${err.message}`;
@@ -192,9 +209,9 @@ export function FsDriver(args: { dir: string; db: IDBDatabase }) {
       const source = format(sourceUri);
       const target = format(targetUri);
 
-      const done = (status: number, error?: t.IFsError) => {
+      const done = (status: number, hash: string, error?: t.IFsError) => {
         const ok = status.toString().startsWith('2');
-        return { ok, status, source: source.uri, target: target.uri, error };
+        return { ok, status, hash, source: source.uri, target: target.uri, error };
       };
 
       const createPathReference = async (sourceInfo: t.IFsInfoLocal, targetPath: string) => {
@@ -209,7 +226,7 @@ export function FsDriver(args: { dir: string; db: IDBDatabase }) {
         const info = await driver.info(source.uri);
         if (!info.exists) throw new Error(`Source file does not exist.`);
         await createPathReference(info, target.path);
-        return done(200);
+        return done(200, info.hash);
       } catch (err: any) {
         const message = `Failed to copy from [${source.uri}] to [${target.uri}]. ${err.message}`;
         const error: t.IFsError = {
@@ -217,7 +234,8 @@ export function FsDriver(args: { dir: string; db: IDBDatabase }) {
           message,
           path: target.path,
         };
-        return done(500, error);
+        const hash = '';
+        return done(500, hash, error);
       }
     },
   };

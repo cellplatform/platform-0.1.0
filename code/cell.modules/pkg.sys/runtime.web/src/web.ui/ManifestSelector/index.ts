@@ -1,2 +1,3 @@
 export * from './ManifestSelector';
-export * from './ManifestSelectorStateful';
+export * from './ManifestSelector.Stateful';
+export { ManifestSelectorConstants } from './constants';

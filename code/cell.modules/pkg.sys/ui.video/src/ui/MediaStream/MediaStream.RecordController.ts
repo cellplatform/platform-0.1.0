@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { rx, t, time } from '../../common';
-
+import { FileUtil } from './util';
 type M = 'video/webm';
 
 /**
@@ -11,7 +11,7 @@ type M = 'video/webm';
 export function MediaStreamRecordController(args: { bus: t.EventBus<any>; stream: MediaStream }) {
   const { stream } = args;
   const dispose$ = new Subject<void>();
-  const bus = args.bus as t.EventBus<t.MediaEvent>;
+  const bus = rx.busAsType<t.MediaEvent>(args.bus);
   const $ = bus.$.pipe(takeUntil(dispose$));
   const ref = stream.id;
 
@@ -94,8 +94,13 @@ export function MediaStreamRecordController(args: { bus: t.EventBus<any>; stream
       }
 
       const blob = await recorder.stop();
-      if (e.download) downloadFile(e.download.filename, blob);
-      if (e.data) e.data(blob);
+      if (e.download) FileUtil.download(e.download.filename, blob);
+      if (typeof e.onData === 'function') {
+        const { toUint8Array } = FileUtil;
+        const mimetype = blob.type;
+        const bytes = blob.size;
+        e.onData({ mimetype, bytes, blob, toUint8Array });
+      }
 
       bus.fire({
         type: 'MediaStream/record/stopped',
@@ -115,7 +120,7 @@ export function MediaStreamRecordController(args: { bus: t.EventBus<any>; stream
 }
 
 /**
- * A wrapper around the [MediaRecorder] api.
+ * A wrapper around the [MediaRecorder] API.
  * https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder
  */
 function Recorder(args: { stream: MediaStream; mimetype: M }) {
@@ -172,21 +177,4 @@ function Recorder(args: { stream: MediaStream; mimetype: M }) {
 
   recorder.start();
   return res;
-}
-
-/**
- * Initiates a file download.
- */
-function downloadFile(filename: string, blob: Blob) {
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.style.display = 'none';
-  document.body.appendChild(a);
-  a.click();
-  time.delay(100, () => {
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-  });
 }

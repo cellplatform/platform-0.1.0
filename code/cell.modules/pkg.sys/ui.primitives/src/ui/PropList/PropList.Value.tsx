@@ -1,7 +1,6 @@
-import { copyToClipboard } from '@platform/react/lib';
 import React, { useState } from 'react';
 
-import { css, CssValue, defaultValue, t, time } from '../../common';
+import { css, CssValue, defaultValue, t, time, copyToClipboard } from '../../common';
 import { SwitchValue } from './PropList.Value.Switch';
 import { SimpleValue } from './PropList.Value.Simple';
 import { FormatItem } from './FormatItem';

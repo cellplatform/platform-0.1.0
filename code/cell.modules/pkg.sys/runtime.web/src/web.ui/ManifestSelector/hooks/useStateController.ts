@@ -1,21 +1,39 @@
 import { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, takeUntil, map } from 'rxjs/operators';
+import { Is } from '../Is';
 
 import { Http, Parse, rx, t } from '../common';
 
 type InstanceId = string;
 type Url = string;
+type A = t.ManifestSelectorActionEvent;
+type C = t.ManifestSelectorCurrentEvent;
 
 /**
  * State controller.
  */
-export function useStateController(args: { bus: t.EventBus<any>; component: InstanceId }) {
+export function useStateController(args: {
+  bus: t.EventBus<any>;
+  component: InstanceId;
+  onChanged?: t.ManifestSelectorChangedHandler;
+}) {
+  const { component } = args;
   const bus = rx.busAsType<t.ManifestSelectorEvent>(args.bus);
 
-  const [manifest, setManifest] = useState<t.ModuleManifest>();
-  const [manifestUrl, setManifestUrl] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [manifestUrl, setManifestUrlState] = useState<string>('');
+  const [manifest, setManifestState] = useState<t.ModuleManifest>();
+
+  const setManifest = (url: Url, manifest: t.ModuleManifest | undefined) => {
+    url = (url || '').trim();
+    setManifestUrlState(url);
+    setManifestState(manifest);
+    bus.fire({
+      type: 'sys.runtime.web/ManifestSelector/current',
+      payload: { component, url: manifest ? url : '', manifest },
+    });
+  };
 
   /**
    * Lifecycle
@@ -23,24 +41,37 @@ export function useStateController(args: { bus: t.EventBus<any>; component: Inst
   useEffect(() => {
     const dispose$ = new Subject<void>();
 
-    type A = t.ManifestSelectorActionEvent;
     const $ = bus.$.pipe(
       takeUntil(dispose$),
-      filter((e) => e.type.startsWith('sys.runtime.web/ManifestSelector/')),
-      filter((e) => e.payload.component === args.component),
+      filter((e) => Is.manifestSelectorEvent(e, component)),
     );
     const action$ = rx.payload<A>($, 'sys.runtime.web/ManifestSelector/action');
+    const current$ = rx.payload<C>($, 'sys.runtime.web/ManifestSelector/current');
 
-    action$.pipe(filter((e) => e.kind === 'loadManifest')).subscribe((e) => {
-      api.loadManifest(e.manifest);
-    });
+    action$
+      .pipe(
+        filter((e) => e.kind === 'load:manifest'),
+        map((e) => e.url),
+      )
+      .subscribe((url) => api.loadManifest(url));
 
-    action$.subscribe((e) => {
-      console.log('action', e);
-    });
+    action$
+      .pipe(
+        filter((e) => e.kind === 'set:url'),
+        map((e) => e.url),
+      )
+      .subscribe((url) => (api.manifestUrl = url));
+
+    current$
+      .pipe(
+        distinctUntilChanged(
+          (prev, next) => prev.manifest?.hash.module === next.manifest?.hash.module,
+        ),
+      )
+      .subscribe(({ url, manifest }) => args.onChanged?.({ url, manifest }));
 
     return () => dispose$.next();
-  }, []); // eslint-disable-line
+  }, [component]); // eslint-disable-line
 
   /**
    * Public Interface
@@ -52,8 +83,7 @@ export function useStateController(args: { bus: t.EventBus<any>; component: Inst
       return manifestUrl;
     },
     set manifestUrl(value: Url) {
-      setManifestUrl((value || '').trim());
-      setManifest(undefined);
+      setManifest(value, undefined);
       api.error = undefined;
     },
 
@@ -96,7 +126,12 @@ export function useStateController(args: { bus: t.EventBus<any>; component: Inst
           return setError(`The manifest has no exports`);
         }
 
-        setManifest(manifest);
+        setManifest(url.href, manifest);
+
+        bus.fire({
+          type: 'sys.runtime.web/ManifestSelector/loaded',
+          payload: { component, url: url.href, manifest },
+        });
       } catch (error: any) {
         setError(`Failed to parse URL`);
       }

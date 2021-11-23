@@ -1,6 +1,6 @@
 {
   "name": "sys.runtime.web",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "sideEffects": false,
   "compiler": {
     "port": 5051
@@ -13,7 +13,7 @@
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
-    "bundle": "cell.compiler bundle $@",
+    "bundle": "cell.compiler bundle --bump $@",
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",

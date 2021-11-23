@@ -18,7 +18,7 @@ export const Filesystem = {
     const { timeout } = args;
     const bus = args.bus ?? rx.bus();
     const dir = args.dir.startsWith('/') ? args.dir : nodefs.resolve(args.dir);
-    const store = Filesystem.Controller({ bus, fs: dir, timeout });
+    const store = Filesystem.Controller({ bus, driver: dir, timeout });
     const fs = store.fs({ timeout });
     return { bus, store, fs };
   },

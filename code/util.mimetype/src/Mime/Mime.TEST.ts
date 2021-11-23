@@ -17,6 +17,7 @@ describe('Mime', () => {
     test('foo.jpeg', 'image/jpeg');
     test('foo.gif', 'image/gif');
     test('foo.svg', 'image/svg+xml');
+    test('foo.webm', 'video/webm');
 
     test('  foo.js  ', 'application/javascript'); // NB: whitespace.
     test('foo.js', 'application/javascript');
@@ -34,6 +35,7 @@ describe('Mime', () => {
     test('image/jpeg', true, false, false);
     test('image/png', true, false, false);
     test('image/png; charset=utf-8', true, false, false);
+    test('video/webm', true, false, false);
     test('application/octet-stream', true, false, false);
     test('application/pdf', true, false, false);
     test('application/javascript', true, false, false);

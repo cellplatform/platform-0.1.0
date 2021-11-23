@@ -90,10 +90,7 @@ export function BusEventsFs(args: {
       throw new Error(res.error.message);
     }
 
-    return {
-      hash,
-      bytes,
-    };
+    return { hash, bytes };
   };
 
   /**
@@ -137,7 +134,14 @@ export function BusEventsFs(args: {
   const json: t.Fs['json'] = {
     async read(path) {
       const file = await read(path);
-      return file === undefined ? undefined : JSON.parse(new TextDecoder().decode(file));
+      if (file === undefined) return undefined;
+
+      try {
+        const text = new TextDecoder().decode(file);
+        return JSON.parse(text);
+      } catch (error: any) {
+        throw new Error(`Failed while parsing JSON for file '${path}'. ${error.message}`);
+      }
     },
 
     async write(path, data: t.Json) {

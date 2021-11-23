@@ -1,5 +1,5 @@
-import { pipe, uniq, sortBy, prop } from 'ramda';
-export const R = { pipe, uniq, sortBy, prop };
+import { pipe, uniq, sortBy, prop, clone } from 'ramda';
+export const R = { pipe, uniq, sortBy, prop, clone };
 
 import { value, defaultValue, id } from '@platform/util.value';
 export { value, defaultValue };

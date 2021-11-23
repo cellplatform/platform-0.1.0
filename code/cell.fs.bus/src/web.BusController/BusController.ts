@@ -1,7 +1,8 @@
 import { BusControllerCell } from './BusController.Cell';
 import { BusControllerIndexer } from './BusController.Indexer';
 import { BusControllerIo } from './BusController.Io';
-import { BusEvents, HttpClient, rx, t, cuid } from './common';
+import { BusEvents, HttpClient, rx, t, DEFAULT } from './common';
+import { BusControllerChange } from './BusController.Change';
 
 type FilesystemId = string;
 type Milliseconds = number;
@@ -19,7 +20,8 @@ export function BusController(args: {
   timeout?: Milliseconds;
 }) {
   const { driver, index, timeout } = args;
-  const id = args.id || `fs-${cuid()}`;
+  const fs = driver;
+  const id = (args.id || '').trim() || DEFAULT.FILESYSTEM_ID;
 
   const bus = rx.busAsType<t.SysFsEvent>(args.bus);
   const events = BusEvents({ id, bus, timeout, filter: args.filter });
@@ -31,9 +33,10 @@ export function BusController(args: {
   /**
    * Sub-controllers.
    */
-  BusControllerIo({ id, fs: driver, bus, events });
-  BusControllerIndexer({ id, fs: driver, bus, events, index });
-  BusControllerCell({ id, fs: driver, bus, events, index, httpFactory });
+  BusControllerIo({ id, fs, bus, events });
+  BusControllerIndexer({ id, fs, bus, events, index });
+  BusControllerCell({ id, fs, bus, events, index, httpFactory });
+  BusControllerChange({ id, fs, bus, events });
 
   /**
    * API

@@ -10,7 +10,7 @@ type Milliseconds = number;
  */
 export function BusController(args: {
   bus: t.EventBus<any>;
-  fs: t.FsDriverLocal | string; // String === root directory (if explicit fs-driver not passed).
+  driver: t.FsDriverLocal | string; // String === root directory (if explicit fs-driver not passed).
   id?: FilesystemId;
   index?: t.FsIndexer;
   filter?: (e: t.SysFsEvent) => boolean;
@@ -24,20 +24,21 @@ export function BusController(args: {
    *      Use the supplied `FsDriver` or create a new instance of the
    *      driver using the [node-js] implementation as the provider.
    */
-  const fs = typeof args.fs === 'string' ? FsDriverLocal({ dir: args.fs, fs: nodefs }) : args.fs;
+  const driver =
+    typeof args.driver === 'string' ? FsDriverLocal({ dir: args.driver, fs: nodefs }) : args.driver;
 
   /**
    * NOTE:
    *      Use the supplied [FsIndexer] or create a new instance of the
    *      indexer using [node-js] implementation as the provider.
    */
-  const index = args.index ?? FsIndexerLocal({ dir: fs.dir, fs: nodefs });
+  const index = args.index ?? FsIndexerLocal({ dir: driver.dir, fs: nodefs });
 
   // Finish up.
   return Controller({
     bus,
     id,
-    driver: fs,
+    driver,
     index,
     filter,
     httpFactory,

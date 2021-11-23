@@ -1,5 +1,6 @@
 import { Hash, Schema, t, isOK, Stream } from '../common';
 import { FsDriverLocalResolver } from '@platform/cell.fs/lib/Resolver.Local';
+import { ManifestFile } from '../ManifestFile';
 
 export * from '../types';
 
@@ -188,15 +189,16 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
       const source = format(sourceUri);
       const target = format(targetUri);
 
-      const done = (status: number, error?: t.IFsError) => {
+      const done = (status: number, hash: string, error?: t.IFsError) => {
         const ok = isOK(status);
-        return { ok, status, source: source.uri, target: target.uri, error };
+        return { ok, status, hash, source: source.uri, target: target.uri, error };
       };
 
       try {
         await node.ensureDir(node.dirname(target.path));
         await node.copyFile(source.path, target.path);
-        return done(200);
+        const hash = await ManifestFile.Hash.filehash(node, target.path);
+        return done(200, hash);
       } catch (err: any) {
         const message = `Failed to copy from [${source.uri}] to [${target.uri}]. ${err.message}`;
         const error: t.IFsError = {
@@ -204,7 +206,7 @@ export function FsDriverLocal(args: { dir: string; fs: t.INodeFs }): t.FsDriverL
           message,
           path: target.path,
         };
-        return done(500, error);
+        return done(500, '', error);
       }
     },
   };

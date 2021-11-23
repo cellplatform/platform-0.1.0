@@ -17,7 +17,7 @@ export { EventBus, Event } from '@platform/types';
 /**
  * @system
  */
-export { Fs } from 'sys.fs/lib/types';
+export { Fs, SysFsEvents } from 'sys.fs/lib/types';
 
 /**
  * Local

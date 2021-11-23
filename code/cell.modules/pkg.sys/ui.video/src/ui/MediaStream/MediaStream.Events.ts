@@ -148,12 +148,15 @@ export function MediaStreamEvents(eventbus: t.EventBus<any>) {
     const stop = (
       args: {
         download?: t.MediaStreamRecordStop['download'];
-        data?: t.MediaStreamRecordStop['data'];
+        onData?: t.MediaStreamRecordStop['onData'];
       } = {},
     ) => {
-      const { download, data } = args;
+      const { download, onData } = args;
       const res = firstValueFrom(stopped$);
-      bus.fire({ type: 'MediaStream/record/stop', payload: { ref, download, data } });
+      bus.fire({
+        type: 'MediaStream/record/stop',
+        payload: { ref, download, onData },
+      });
       return res;
     };
 

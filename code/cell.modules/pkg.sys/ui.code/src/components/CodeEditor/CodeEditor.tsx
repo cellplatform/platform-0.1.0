@@ -5,8 +5,10 @@ import { Loading } from '../Loading';
 import { MonacoEditor, MonacoEditorReadyEvent } from '../Monaco';
 import { CodeEditorInstance } from '../../api';
 
+type InstanceId = string;
+
 export type CodeEditorProps = {
-  id?: string;
+  id?: InstanceId;
   theme?: t.CodeEditorTheme;
   language?: t.CodeEditorLanguage;
   focusOnLoad?: boolean;

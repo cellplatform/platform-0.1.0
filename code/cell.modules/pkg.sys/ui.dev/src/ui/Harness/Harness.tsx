@@ -76,6 +76,7 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     host: css({ Absolute: 0, boxSizing: 'border-box', display: 'flex' }),
     footer: css({
       Absolute: [null, 0, 0, 0],
+      pointerEvents: 'none',
       height: 34,
       paddingTop: 6,
       paddingRight: 12,

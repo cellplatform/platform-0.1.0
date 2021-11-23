@@ -76,7 +76,7 @@ export class Urls implements t.IUrls {
     const self = this; // eslint-disable-line
     const toUrl = this.toUrl;
 
-    const throwOnHostMistmatch = (bundle: t.RuntimeBundleOrigin) => {
+    const throwOnHostMistmatch = (bundle: t.RuntimeBundleOrigin___TEMP) => {
       if (util.stripHttp(bundle.host) !== self.host) {
         throw new Error(`Host mismatch ('${bundle.host}' should be '${self.host}')`);
       }
@@ -88,7 +88,7 @@ export class Urls implements t.IUrls {
       /**
        * Example: <see file download URL>
        */
-      manifest(bundle: t.RuntimeBundleOrigin) {
+      manifest(bundle: t.RuntimeBundleOrigin___TEMP) {
         throwOnHostMistmatch(bundle);
         const FILENAME = constants.BUNDLE.MANIFEST.FILENAME;
         const dir = trimDir(bundle.dir);
@@ -100,7 +100,7 @@ export class Urls implements t.IUrls {
        * Bundle files.
        * Example: <see files list>
        */
-      files(bundle: t.RuntimeBundleOrigin) {
+      files(bundle: t.RuntimeBundleOrigin___TEMP) {
         throwOnHostMistmatch(bundle);
         const dir = trimDir(bundle.dir);
         let url = self.cell(bundle.uri).files.list;

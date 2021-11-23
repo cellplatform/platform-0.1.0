@@ -1,5 +1,4 @@
-import { NAME, Path, t } from '../common';
-import { IndexedDb } from '../IndexedDb';
+import { IndexedDb, NAME, Path, t } from '../common';
 
 /**
  * Common lookup for the FileSystem's [IndexedDB:IDBDatabase] storage structure.

@@ -20,8 +20,8 @@ export type RecordButtonProps = {
   state?: RecordButtonState;
   isEnabled?: boolean;
   style?: CssValue;
-  onClick?: RecordButtonClickEventHandler;
   dialog?: RecordButtonDialog;
+  onClick?: RecordButtonClickEventHandler;
 };
 
 export const RecordButton: React.FC<RecordButtonProps> = (props) => {

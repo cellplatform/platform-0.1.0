@@ -10,6 +10,7 @@ import {
   TestFs,
   TestPrep,
   Uri,
+  ManifestFiles,
   DEFAULT,
 } from '../test';
 
@@ -367,10 +368,11 @@ describe('BusEvents.Fs', function () {
       const manifest2 = await dir1.manifest();
       const manifest3 = await dir2.manifest();
 
-      const paths = (manifest: t.DirManifest) => manifest.files.map((file) => file.path);
+      const paths = (manifest: t.DirManifest) =>
+        ManifestFiles.sort(manifest.files).map((file) => file.path);
 
-      expect(paths(manifest1)).to.eql(['root.png', 'images/tree.png', 'images/foo/tree.png']);
-      expect(paths(manifest2)).to.eql(['tree.png', 'foo/tree.png']);
+      expect(paths(manifest1)).to.eql(['images/foo/tree.png', 'images/tree.png', 'root.png']);
+      expect(paths(manifest2)).to.eql(['foo/tree.png', 'tree.png']);
       expect(paths(manifest3)).to.eql(['tree.png']);
 
       await mock.dispose();
@@ -391,10 +393,11 @@ describe('BusEvents.Fs', function () {
       const manifest4 = await fs.dir('  //images//  ').manifest({ dir: ' //404// ' });
       const manifest5 = await fs.dir('  //404//  ').manifest();
 
-      const paths = (manifest: t.DirManifest) => manifest.files.map((file) => file.path);
+      const paths = (manifest: t.DirManifest) =>
+        ManifestFiles.sort(manifest.files).map((file) => file.path);
 
-      expect(paths(manifest1)).to.eql(['root.png', 'images/tree.png', 'images/foo/tree.png']);
-      expect(paths(manifest2)).to.eql(['images/tree.png', 'images/foo/tree.png']);
+      expect(paths(manifest1)).to.eql(['images/foo/tree.png', 'images/tree.png', 'root.png']);
+      expect(paths(manifest2)).to.eql(['images/foo/tree.png', 'images/tree.png']);
       expect(paths(manifest3)).to.eql(['foo/tree.png']);
       expect(paths(manifest4)).to.eql([]);
       expect(paths(manifest5)).to.eql([]);
@@ -419,115 +422,119 @@ describe('BusEvents.Fs', function () {
       await mock.dispose();
     });
 
-    it('cache: true', async () => {
-      const mock = await TestPrep();
-      const fs = mock.events.fs();
-      const src = await mock.readFile('static.test/child/tree.png');
-      await fs.write('images/tree.png', src.data);
+    describe('cache', () => {
+      it('cache: true', async () => {
+        const mock = await TestPrep();
+        const fs = mock.events.fs();
+        const src = await mock.readFile('static.test/child/tree.png');
+        await fs.write('images/tree.png', src.data);
 
-      const expectCacheExists = async (exists: boolean) => {
-        const manifest = await fs.json.read(DEFAULT.CACHE_FILENAME);
-        expect(Boolean(manifest)).to.eql(exists);
-      };
+        const expectCacheExists = async (exists: boolean) => {
+          const manifest = await fs.json.read(DEFAULT.CACHE_FILENAME);
+          expect(Boolean(manifest)).to.eql(exists);
+        };
 
-      await fs.manifest();
-      await expectCacheExists(false); // NB: no caching by default.
+        await fs.manifest();
+        await expectCacheExists(false); // NB: no caching by default.
 
-      await fs.manifest({ cache: false });
-      await expectCacheExists(false);
+        await fs.manifest({ cache: false });
+        await expectCacheExists(false);
 
-      await fs.manifest({ cache: true });
-      await expectCacheExists(true);
+        await fs.manifest({ cache: true });
+        await expectCacheExists(true);
 
-      await mock.dispose();
-    });
+        await mock.dispose();
+      });
 
-    it('cache: "remove"', async () => {
-      const mock = await TestPrep();
-      const fs = mock.events.fs();
-      const src = await mock.readFile('static.test/child/tree.png');
-      await fs.write('images/tree.png', src.data);
+      it('cache: "remove"', async () => {
+        const mock = await TestPrep();
+        const fs = mock.events.fs();
+        const src = await mock.readFile('static.test/child/tree.png');
+        await fs.write('images/tree.png', src.data);
 
-      const expectCacheExists = async (exists: boolean) => {
-        const manifest = await fs.json.read(DEFAULT.CACHE_FILENAME);
-        expect(Boolean(manifest)).to.eql(exists);
-      };
+        const expectCacheExists = async (exists: boolean) => {
+          const manifest = await fs.json.read(DEFAULT.CACHE_FILENAME);
+          expect(Boolean(manifest)).to.eql(exists);
+        };
 
-      await fs.manifest({ cache: true });
-      await expectCacheExists(true);
+        await fs.manifest({ cache: true });
+        await expectCacheExists(true);
 
-      await fs.manifest({ cache: 'remove' });
-      await expectCacheExists(false);
+        await fs.manifest({ cache: 'remove' });
+        await expectCacheExists(false);
 
-      await mock.dispose();
-    });
+        await mock.dispose();
+      });
 
-    it('cache: "force"', async () => {
-      const mock = await TestPrep();
-      const fs = mock.events.fs();
-      const src = await mock.readFile('static.test/child/tree.png');
-      await fs.write('tree.png', src.data);
+      it('cache: "force"', async () => {
+        const mock = await TestPrep();
+        const fs = mock.events.fs();
+        const src = await mock.readFile('static.test/child/tree.png');
+        await fs.write('tree.png', src.data);
 
-      const paths = (manifest?: t.DirManifest) => (manifest?.files || []).map((file) => file.path);
-      const readManifest = () => fs.json.read<t.DirManifest>(DEFAULT.CACHE_FILENAME);
-      const readManifestPaths = async () => paths(await readManifest());
-      const expectManifestPaths = async (paths: string[]) =>
-        expect(await readManifestPaths()).to.eql(paths);
+        const paths = (manifest?: t.DirManifest) =>
+          ManifestFiles.sort((manifest?.files || []).map((file) => file.path));
+        const readManifest = () => fs.json.read<t.DirManifest>(DEFAULT.CACHE_FILENAME);
+        const readManifestPaths = async () => paths(await readManifest());
+        const expectManifestPaths = async (paths: string[]) =>
+          expect(await readManifestPaths()).to.eql(ManifestFiles.sort(paths));
 
-      await expectManifestPaths([]);
+        await expectManifestPaths([]);
 
-      await fs.manifest({ cache: true });
+        await fs.manifest({ cache: true });
 
-      await expectManifestPaths(['tree.png']);
+        await expectManifestPaths(['tree.png']);
 
-      await fs.write('images/foo.png', src.data);
+        await fs.write('images/foo.png', src.data);
 
-      // No change (filesystem changed BUT cached).
-      await expectManifestPaths(['tree.png']);
-      await fs.manifest();
-      await expectManifestPaths(['tree.png']);
-      await fs.manifest({ cache: false });
-      await expectManifestPaths(['tree.png']);
-      await fs.manifest({ cache: true });
-      await expectManifestPaths(['tree.png']);
+        // No change (filesystem changed BUT cached).
+        await expectManifestPaths(['tree.png']);
+        await fs.manifest();
+        await expectManifestPaths(['tree.png']);
+        await fs.manifest({ cache: false });
+        await expectManifestPaths(['tree.png']);
+        await fs.manifest({ cache: true });
+        await expectManifestPaths(['tree.png']);
 
-      // Force update.
-      await fs.manifest({ cache: 'force' });
-      await expectManifestPaths(['tree.png', 'images/foo.png']);
+        // Force update.
+        await fs.manifest({ cache: 'force' });
+        await expectManifestPaths(['tree.png', 'images/foo.png']);
 
-      await fs.manifest();
-      await fs.manifest({ cache: true });
-      await expectManifestPaths(['tree.png', 'images/foo.png']);
+        await fs.manifest();
+        await fs.manifest({ cache: true });
+        await expectManifestPaths(['tree.png', 'images/foo.png']);
 
-      await mock.dispose();
-    });
+        await mock.dispose();
+      });
 
-    it('cache: custom filename', async () => {
-      const mock = await TestPrep();
-      const fs = mock.events.fs();
-      const src = await mock.readFile('static.test/child/tree.png');
-      await fs.write('tree.png', src.data);
+      it('cache: custom filename', async () => {
+        const mock = await TestPrep();
+        const fs = mock.events.fs();
+        const src = await mock.readFile('static.test/child/tree.png');
+        await fs.write('tree.png', src.data);
 
-      const cachefile = 'index.json';
-      const paths = (manifest?: t.DirManifest) => (manifest?.files || []).map((file) => file.path);
-      const readManifest = () => fs.json.read<t.DirManifest>(cachefile);
-      const readManifestPaths = async () => paths(await readManifest());
-      const expectManifestPaths = async (paths: string[]) =>
-        expect(await readManifestPaths()).to.eql(paths);
+        const cachefile = 'index.json';
+        const paths = (manifest?: t.DirManifest) =>
+          (manifest?.files || []).map((file) => file.path);
+        const readManifest = () => fs.json.read<t.DirManifest>(cachefile);
+        const readManifestPaths = async () => paths(await readManifest());
+        const expectManifestPaths = async (paths: string[]) =>
+          expect(await readManifestPaths()).to.eql(paths);
 
-      expect(await readManifest()).to.eql(undefined);
+        expect(await readManifest()).to.eql(undefined);
 
-      fs.manifest({ cachefile });
-      expect(await readManifest()).to.eql(undefined);
+        fs.manifest({ cachefile });
+        expect(await readManifest()).to.eql(undefined);
 
-      const res = await fs.manifest({ cachefile });
-      await expectManifestPaths(['tree.png']);
-      expect(paths(res)).to.eql(['tree.png']);
+        const res = await fs.manifest({ cachefile });
+        await expectManifestPaths(['tree.png']);
+        expect(paths(res)).to.eql(['tree.png']);
 
-      await fs.manifest({ cachefile, cache: 'remove' });
-      expect(await readManifest()).to.eql(undefined);
+        await fs.manifest({ cachefile, cache: 'remove' });
+        expect(await readManifest()).to.eql(undefined);
 
-      await mock.dispose();
+        await mock.dispose();
+      });
     });
   });
 

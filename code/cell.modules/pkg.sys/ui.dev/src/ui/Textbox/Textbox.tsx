@@ -49,6 +49,9 @@ export type TextboxProps = {
   onEscape?: P['onEscape'];
   onFocus?: P['onFocus'];
   onBlur?: P['onBlur'];
+  onKeyPress?: P['onKeyPress'];
+  onKeyDown?: P['onKeyDown'];
+  onKeyUp?: P['onKeyUp'];
 };
 
 export const Textbox: React.FC<TextboxProps> = (props) => {
@@ -113,6 +116,9 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
         onEscape={props.onEscape}
         onFocus={focusHandler(true, props.onFocus)}
         onBlur={focusHandler(false, props.onBlur)}
+        onKeyPress={props.onKeyPress}
+        onKeyDown={props.onKeyDown}
+        onKeyUp={props.onKeyUp}
         style={styles.input}
       />
       {elEnterIcon}

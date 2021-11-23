@@ -2,7 +2,7 @@ import React from 'react';
 import { toObject, DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
 
 import { WebRuntime } from 'sys.runtime.web';
-import { TARGET_NAME } from './common';
+import { TARGET_NAME, Filesystem } from './common';
 
 type O = Record<string, unknown>;
 
@@ -29,6 +29,7 @@ type Ctx = {
   self: t.PeerId;
   bus: t.EventBus<t.PeerEvent | t.DevEvent>;
   netbus: t.PeerNetworkBus;
+  fs(): Promise<t.Fs>;
   signal: string; // Signalling server network address (host/path).
   events: CtxEvents;
   connectTo?: string;
@@ -65,6 +66,8 @@ const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind'], props?: O) => {
   });
 };
 
+const FILESYSTEM_ID = 'fs.net';
+
 /**
  * Actions
  */
@@ -82,7 +85,6 @@ export const actions = DevActions<Ctx>()
     MediaStream.Controller({ bus });
 
     const netbus = PeerNetworkBus({ bus, self });
-
     const runtime = WebRuntime.Bus.Controller({ bus, netbus });
 
     const events = {
@@ -145,6 +147,17 @@ export const actions = DevActions<Ctx>()
       })();
     }
 
+    /**
+     * Filesystem (networked).
+     */
+    const filesystem = Filesystem.IndexedDb.create({ bus, id: FILESYSTEM_ID });
+    (async () => {
+      const fs = await filesystem;
+      const id = fs.id;
+      const { events } = await Filesystem.IndexedDb.Controller({ bus, id });
+      Filesystem.IndexedDb.Network({ events, netbus });
+    })();
+
     return {
       self,
       bus,
@@ -152,6 +165,7 @@ export const actions = DevActions<Ctx>()
       events,
       signal,
       connectTo: '',
+      fs: async () => (await filesystem).fs,
       toFlags: () => flags,
       toStrategy: () => strategy,
       toSeed: () => seed,
@@ -166,19 +180,19 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
-
     e.title('Module Installation');
 
     e.component((e) => {
       const { ctx } = e;
       return (
-        <WebRuntime.Ui.ManifestSelectorStateful
+        <WebRuntime.ui.ManifestSelectorStateful
           bus={ctx.bus}
           style={{ MarginX: 30, MarginY: 20 }}
-          onEntryClick={(e) => {
+          history={{ fs: FILESYSTEM_ID }}
+          onExportClick={(e) => {
             ctx.events.runtime.useModule.fire({
               target: TARGET_NAME,
-              module: e.remote,
+              module: e.module,
             });
           }}
         />

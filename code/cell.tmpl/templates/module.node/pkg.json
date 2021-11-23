@@ -8,7 +8,7 @@
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
-    "bundle": "cell.compiler bundle node $@",
+    "bundle": "cell.compiler bundle node --bump $@",
     "watch": "cell.compiler watch node $@",
     "info": "cell.compiler info node $@",
     "clean": "cell.compiler clean $@"

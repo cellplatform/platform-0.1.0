@@ -19,7 +19,7 @@
     "@platform/ui.icon": "0.0.202",
     "@svgdotjs/svg.js": "3.1.1",
     "gravatar-url": "4.0.1",
-    "react-icons": "4.2.0"
+    "react-icons": "4.3.1"
   },
   "devDependencies": {
     "@platform/ts": "4.1.23",

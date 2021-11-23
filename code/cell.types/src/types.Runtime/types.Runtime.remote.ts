@@ -1,9 +1,12 @@
 import { t } from '../common';
 
+type RemoteEntryUrl = string;
+type Path = string;
+
 export type RuntimeRemote = {
-  url: string; //         Remote manifest URL (eg ".../remoteEntry.js").
-  namespace: string; //   The encoded FederatedModule namespace "scope".
-  entry: string; //       Module name (public "export" via compiler).
+  url: RemoteEntryUrl; // Remote [FederatedModule] entry script (eg ".../remoteEntry.js").
+  namespace: string; //   The encoded [FederatedModule] namespace "scope".
+  entry: Path; //         Module name (public "export" via compiler).
 };
 
 /**
@@ -24,4 +27,14 @@ export type RuntimeRemoteModule<M = any> = {
   ready: boolean;
   failed: boolean;
   module?: M;
+};
+
+/**
+ * TODO 🐷 TEMP
+ */
+
+export type RuntimeBundleOrigin___TEMP = {
+  host: string;
+  uri: string;
+  dir?: string;
 };

@@ -19,7 +19,7 @@ export const VercelNode = (args: Args) => {
 
   const dir = nodefs.resolve(args.dir ?? '');
   const bus = rx.bus();
-  const store = Filesystem.Controller({ bus, fs: dir });
+  const store = Filesystem.Controller({ bus, driver: dir });
   const fs = store.fs({ timeout });
   const client = VercelHttp({ fs, token });
 

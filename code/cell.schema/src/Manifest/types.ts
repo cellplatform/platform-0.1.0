@@ -1,4 +1,5 @@
 type Uri = string;
+type Path = string;
 
 export type ManifestSourceKind = 'url' | 'filepath';
 
@@ -10,13 +11,17 @@ export type ManifestSource = {
   toString(): string;
 };
 
-export type ManifestUrl = {
+export type ManifestUrlParts = {
   ok: boolean;
   href: string;
+  protocol: 'http' | 'https';
   domain: string;
   cell: Uri;
-  path: string;
+  path: Path;
   dir: string;
   filename: string;
+  params: ManifestUrlParams;
   error?: string;
 };
+
+export type ManifestUrlParams = { entry: Path };

@@ -1,15 +1,25 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { ManifestSelectorStateful, ManifestSelectorProps } from '..';
-import { t, rx, css } from '../common';
 
+import {
+  ManifestSelectorStateful,
+  ManifestSelectorStatefulProps,
+  ManifestSelectorConstants,
+} from '..';
 import { WebRuntimeBus } from '../../../web.RuntimeBus';
-import { useModuleTarget } from '../../hooks';
+import { rx, t, Button, Filesystem } from '../common';
+import { DevSampleTarget } from './DEV.SampleTarget';
+import { ModuleInfoStateful, ModuleInfoConstants } from '../../ModuleInfo';
+import { ModuleInfoField } from '../../ModuleInfo/types';
+
+const TARGET = 'foo';
+const DEFAULT = ManifestSelectorConstants.DEFAULT;
 
 type Ctx = {
   bus: t.EventBus;
   events: t.WebRuntimeEvents;
-  props: ManifestSelectorProps;
+  props: ManifestSelectorStatefulProps;
+  url: { value?: string; change(url?: string): void };
   debug: {
     output: {
       title?: string;
@@ -24,7 +34,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.config.ManifestSelector')
+  .namespace('ui.ManifestSelector')
 
   .context((e) => {
     if (e.prev) return e.prev;
@@ -32,10 +42,18 @@ export const actions = DevActions<Ctx>()
     const bus = rx.bus();
     const { events } = WebRuntimeBus.Controller({ bus });
 
+    Filesystem.IndexedDb.create({ bus, id: DEFAULT.HISTORY.FS });
+
     const ctx: Ctx = {
       bus,
       events,
-      props: { canDrop: true },
+      props: {
+        bus,
+        canDrop: true,
+        showExports: true,
+        history: true,
+        focusOnLoad: true,
+      },
       debug: {
         output: {
           clear: () => ctx.debug.output.write('', undefined),
@@ -47,16 +65,53 @@ export const actions = DevActions<Ctx>()
           },
         },
       },
+      url: {
+        value: '',
+        change: (url) => e.change.ctx((ctx) => (ctx.url.value = url)),
+      },
     };
     return ctx;
   })
 
   .items((e) => {
-    e.title('ManifestSelector');
+    e.title('Dev');
+
+    e.select((config) =>
+      config
+        .title('exports fields:')
+        .items(ModuleInfoConstants.FIELDS)
+        .initial(undefined)
+        .clearable(true)
+        .view('buttons')
+        .multi(true)
+        .pipe((e) => {
+          if (e.changing) {
+            const next = e.changing.next.map(({ value }) => value) as ModuleInfoField[];
+            e.ctx.props.fields = next.length === 0 ? undefined : next;
+          }
+        }),
+    );
+
+    e.hr(1, 0.15);
+
+    e.boolean('showExports (list)', (e) => {
+      if (e.changing) e.ctx.props.showExports = e.changing.next;
+      e.boolean.current = e.ctx.props.showExports;
+    });
 
     e.boolean('canDrop', (e) => {
       if (e.changing) e.ctx.props.canDrop = e.changing.next;
       e.boolean.current = e.ctx.props.canDrop;
+    });
+
+    e.boolean('focusOnLoad', (e) => {
+      if (e.changing) e.ctx.props.focusOnLoad = e.changing.next;
+      e.boolean.current = e.ctx.props.focusOnLoad;
+    });
+
+    e.boolean('history (enabled)', (e) => {
+      if (e.changing) e.ctx.props.history = e.changing.next;
+      e.boolean.current = Boolean(e.ctx.props.history);
     });
 
     e.hr();
@@ -67,15 +122,10 @@ export const actions = DevActions<Ctx>()
 
     e.button('info', async (e) => {
       const res = await e.ctx.events.info.get();
-      console.log('res', res);
       e.ctx.debug.output.write('info', res);
     });
 
-    e.button('useModule: null (unload)', async (e) => {
-      e.ctx.events.useModule.fire({ target: 'myTarget', module: null });
-    });
-
-    e.hr();
+    e.hr(1, 0.1);
   })
 
   .items((e) => {
@@ -99,58 +149,58 @@ export const actions = DevActions<Ctx>()
     });
   })
 
+  .items((e) => {
+    e.hr();
+
+    e.component((e) => {
+      const url = (e.ctx.url.value || '').trim();
+      if (!url) return null;
+      return <ModuleInfoStateful url={url} style={{ MarginX: 25, MarginY: 15 }} />;
+    });
+  })
+
   .subject((e) => {
     const { ctx } = e;
 
     e.settings({
       host: { background: -0.04 },
       actions: { width: 360 },
-      layout: {
-        position: [200, null, null, null],
-        cropmarks: -0.2,
-        width: 350,
-      },
     });
 
-    e.render(
+    const elSelector = (
       <ManifestSelectorStateful
         {...ctx.props}
         bus={ctx.bus}
-        onEntryClick={(e) => {
-          console.log('onRemoteEntryClick', e);
-          const { remote } = e;
-          ctx.events.useModule.fire({ target: 'myTarget', module: remote });
-        }}
-      />,
+        onExportClick={(e) => ctx.events.useModule.fire({ target: TARGET, module: e.module })}
+        onChanged={(e) => ctx.url.change(e.url)}
+      />
     );
 
-    e.render(<Sample bus={ctx.bus} target={'myTarget'} />, {
-      position: [400, 80, 120, 80],
+    const edge = 80;
+    const bottom = 120;
+    const width = 300;
+
+    const unload = () => e.ctx.events.useModule.fire({ target: TARGET, module: null });
+    const elUnload = <Button onClick={unload}>Unload</Button>;
+
+    e.render(elSelector, {
+      position: [edge, null, null, edge],
+      width,
+      cropmarks: -0.2,
+      label: `<ManifestSelectorStateful>`,
+    });
+
+    e.render(<DevSampleTarget bus={ctx.bus} target={TARGET} />, {
+      position: [edge - 1, edge, bottom, width + edge + 50],
       cropmarks: false,
       background: 1,
       border: -0.1,
-      label: `useModuleTarget (hook)`,
+      label: {
+        topLeft: `useModule (hook)`,
+        topRight: `target: "${TARGET}"`,
+        bottomRight: elUnload,
+      },
     });
   });
 
 export default actions;
-
-/**
- * Sample UI for the [useModuleTarget] hook.
- */
-export type SampleProps = { bus: t.EventBus; target: string };
-export const Sample: React.FC<SampleProps> = (props) => {
-  const { bus, target } = props;
-  const remote = useModuleTarget({ bus, target });
-
-  console.log('useModuleTarget (remote)', remote);
-
-  const styles = {
-    base: css({ position: 'relative', flex: 1 }),
-  };
-
-  const App = remote.module?.default;
-  const elMain = App && <App bus={props.bus} />;
-
-  return <div {...styles.base}>{elMain}</div>;
-};

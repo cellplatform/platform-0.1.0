@@ -37,6 +37,8 @@ describe('toMimetype (content-type)', () => {
     test('foo.gif', 'image/gif');
     test('foo.svg', 'image/svg+xml');
 
+    test('foo.webm', 'video/webm');
+
     test('foo.zip', 'application/zip');
     test('foo.pdf', 'application/pdf');
 

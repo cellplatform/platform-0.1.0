@@ -5,8 +5,8 @@ const imports = {
   Foo: import('./web.ui/Foo/dev/DEV'),
   Drop: import('./test.dev/Drop/DEV'),
 
-  FsDriverIndexedDb: import('./web.FsDriver.IndexedDb/dev/DEV'),
-  FsIndexedDb: import('./web.FsBus.IndexedDb/dev/DEV'),
+  FsDriverIndexedDb: import('./web.ui/FsDriver.IndexedDb/dev/DEV'),
+  FsIndexedDb: import('./web.ui/FsBus.IndexedDb/dev/DEV'),
 };
 
 const dev = new URL(location.href).searchParams.get('dev');

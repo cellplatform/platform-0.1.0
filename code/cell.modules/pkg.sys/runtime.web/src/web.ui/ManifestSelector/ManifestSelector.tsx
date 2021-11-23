@@ -1,28 +1,39 @@
 import React from 'react';
 
-import { color, css, CssValue, t, useDragTarget, COLORS } from './common';
-import { List } from './components/List';
+import { color, css, CssValue, t, useDragTarget, COLORS, ManifestUrl } from './common';
 import { UrlTextbox } from './components/UrlTextbox';
-import { Info } from './components/Info';
-
-type Url = string;
+import { ModuleInfo } from '../ModuleInfo';
+import { ModuleInfoField } from '../ModuleInfo/types';
 
 export type ManifestSelectorProps = {
-  manifestUrl?: Url;
+  manifestUrl?: t.ManifestUrl;
   manifest?: t.ModuleManifest;
   error?: string;
   canDrop?: boolean;
+  showExports?: boolean;
+  focusOnLoad?: boolean;
+  fields?: ModuleInfoField[];
   style?: CssValue;
   onManifestUrlChange?: t.ManifestSelectorUrlChangeHandler;
   onLoadManifest?: t.ManifestSelectorLoadHandler;
-  onEntryClick?: t.ManifestSelectorEntryClickHandler;
+  onExportClick?: t.ManifestSelectorExportClickHandler;
   onError?: (e: { error: string }) => void;
+  onKeyUp?: t.ManifestSelectorKeyboardHandler;
+  onKeyDown?: t.ManifestSelectorKeyboardHandler;
 };
 
 export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
-  const { manifest } = props;
+  const { manifest, showExports = true } = props;
   const remote = manifest?.module?.remote;
   const manifestUrl = (props.manifestUrl ?? '').trim();
+  const fields = props.fields ?? [
+    'source:url:hash',
+    'namespace',
+    'version',
+    'compiled',
+    'files',
+    'remote.exports',
+  ];
 
   const drag = useDragTarget<HTMLDivElement>({
     isEnabled: props.canDrop ?? true,
@@ -40,15 +51,10 @@ export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
   /**
    * [Render]
    */
-
   const styles = {
-    base: css({
-      flex: 1,
-      position: 'relative',
-      color: COLORS.DARK,
-    }),
+    base: css({ flex: 1, position: 'relative', color: COLORS.DARK, boxSizing: 'border-box' }),
     body: {
-      base: css({ Flex: 'horizontal-stretch-stretch', paddingTop: 8 }),
+      base: css({ paddingTop: 8 }),
       info: css({ marginRight: 12 }),
       list: css({ flex: 1 }),
     },
@@ -69,20 +75,27 @@ export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
     <UrlTextbox
       url={manifestUrl}
       error={props.error}
+      focusOnLoad={props.focusOnLoad}
       onChange={props.onManifestUrlChange}
       onLoadManifest={props.onLoadManifest}
+      onKeyDown={props.onKeyDown}
+      onKeyUp={props.onKeyUp}
     />
   );
 
-  const elBody = remote && (
+  const elBody = remote && showExports && (
     <div {...styles.body.base}>
-      <List
-        manifest={manifest}
+      <ModuleInfo
+        title={null}
         manifestUrl={manifestUrl}
-        onRemoteEntryClick={props.onEntryClick}
-        style={styles.body.list}
+        manifest={manifest}
+        fields={fields}
+        onExportClick={(e) => {
+          const { url, entry } = e;
+          const module = ManifestUrl.toRemoteImport(manifestUrl, manifest, entry);
+          props.onExportClick?.({ url, module });
+        }}
       />
-      <Info manifestUrl={manifestUrl} manifest={manifest} style={styles.body.info} />
     </div>
   );
 

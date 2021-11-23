@@ -39,6 +39,7 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
     }),
     actionsSelector: css({
       position: 'relative',
+      pointerEvents: 'auto',
     }),
     module: {
       base: css({ Flex: 'center-center' }),

@@ -1,15 +1,18 @@
 import React from 'react';
-import { ActionButtonHandlerArgs, DevActions } from 'sys.ui.dev';
+import { DevActions } from 'sys.ui.dev';
 
 import { PositioningLayers, PositioningLayersProps, PositioningLayersSizeHandler } from '..';
-import { t } from '../common';
+import { t, rx } from '../common';
 import { PositioningLayersProperties } from '../PositioningLayers.Properties';
 import { PositioningLayersPropertiesStack } from '../PositioningLayers.PropertiesStack';
-import { Sample } from './DEV.Sample';
+import { DevSample } from './DEV.Sample';
+
+type Index = number;
 
 type Ctx = {
-  debug: { size?: t.DomRect; current?: number };
+  bus: t.EventBus;
   props: PositioningLayersProps;
+  debug: { size?: t.DomRect; current?: Index };
   onSize: PositioningLayersSizeHandler;
 };
 
@@ -20,8 +23,9 @@ const insert = (ctx: Ctx, position: t.BoxPosition) => {
     position,
     render(e) {
       const info = e.find.first(layer.id);
+      const id = info?.id ?? layer.id;
       const overlaps = e.find.overlap(e.index);
-      return <Sample id={info?.id ?? layer.id} info={info} overlaps={overlaps} find={e.find} />;
+      return <DevSample id={id} info={info} overlaps={overlaps} find={e.find} />;
     },
   };
   layers.push(layer);
@@ -35,30 +39,65 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
+    const bus = rx.bus();
+
     const ctx: Ctx = {
+      bus,
       props: {},
-      debug: {},
+      debug: { current: 0 },
       onSize(args) {
         e.change.ctx((ctx) => (ctx.debug.size = args.size));
       },
     };
 
     insert(ctx, { x: 'center', y: 'bottom' });
-
     return ctx;
   })
 
-  .items((e) => {
-    e.title('Positioning Layers');
+  // .items((e) => {
+  //   e.title('Positioning Layers');
 
-    e.button('insert: top left', (e) => insert(e.ctx, { x: 'left', y: 'top' }));
-    e.button('insert: center center', (e) => insert(e.ctx, { x: 'center', y: 'center' }));
-    e.button('insert: center bottom', (e) => insert(e.ctx, { x: 'center', y: 'bottom' }));
-    e.button('insert: right center', (e) => insert(e.ctx, { x: 'right', y: 'center' }));
-    e.button('insert: bottom right', (e) => insert(e.ctx, { x: 'right', y: 'bottom' }));
+  //   e.component((e) => {
+  //     return (
+  //       <WebRuntime.ui.ManifestSelectorStateful
+  //         bus={e.ctx.bus}
+  //         style={{ MarginX: 25, MarginY: 15 }}
+  //         onEntryClick={async (ev) => {
+  //           const current = e.ctx.debug.current ?? -1;
+  //           console.log('current', current);
+  //           console.log('e', ev);
+
+  //           const layers = e.ctx.props.layers || [];
+  //           const target = layers[current]?.id;
+  //           // console.log('layer', layer);
+  //           console.log('target', target);
+  //           // const events = toObject(e.ctx.debug.events) as t.WebRuntimeEvents;
+  //           e.ctx.debug.events.useModule.fire({ target, module: ev.remote });
+  //         }}
+  //       />
+  //     );
+  //   });
+
+  //   e.hr();
+  // })
+
+  .items((e) => {
+    e.title('Insert');
+
+    e.button('top left', (e) => insert(e.ctx, { x: 'left', y: 'top' }));
+    e.button('center center', (e) => insert(e.ctx, { x: 'center', y: 'center' }));
+    e.button('center bottom', (e) => insert(e.ctx, { x: 'center', y: 'bottom' }));
+    e.button('right center', (e) => insert(e.ctx, { x: 'right', y: 'center' }));
+    e.button('bottom right', (e) => insert(e.ctx, { x: 'right', y: 'bottom' }));
+    e.hr(1, 0.1);
+    e.button('full screen', (e) => insert(e.ctx, { x: 'stretch', y: 'stretch' }));
 
     e.hr(1, 0.1);
-    e.button('clear', (e) => (e.ctx.props.layers = undefined));
+
+    e.button('clear', (e) => {
+      e.ctx.props.layers = undefined;
+      e.ctx.debug.current = undefined;
+    });
 
     e.hr();
 
@@ -84,7 +123,8 @@ export const actions = DevActions<Ctx>()
           style={{ Margin: [20, x, 20, x] }}
           onLayerChange={({ index, layer }) => {
             e.change.ctx((ctx) => {
-              const layers = ctx.props.layers ?? (ctx.props.layers = []);
+              const props = ctx.props;
+              const layers = props.layers ?? (props.layers = []);
               layers[index] = layer;
             });
           }}

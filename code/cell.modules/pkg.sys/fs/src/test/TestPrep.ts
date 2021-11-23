@@ -3,17 +3,19 @@ import { IRouterMock, RouterMock } from '@platform/cell.router/lib/test/RouterMo
 import { Path, rx, t, TestFs } from '../test';
 import { Filesystem } from '../node';
 
-export const TestPrep = async (options: { id?: string; dir?: string } = {}) => {
+type FilesystemId = string;
+
+export const TestPrep = async (options: { id?: FilesystemId; dir?: string } = {}) => {
   const bus = rx.bus<t.SysFsEvent>();
   const id = options.id ?? 'foo';
-  const fs = !options.dir
+  const driver = !options.dir
     ? TestFs.local
     : TestFs.FsDriverLocal({
         dir: TestFs.node.join(TestFs.tmp, options.dir),
         fs: TestFs.node,
       });
 
-  const controller = Filesystem.Controller({ id, bus, fs });
+  const controller = Filesystem.Controller({ id, bus, driver });
   const events = Filesystem.Events({ id, bus });
 
   let server: IRouterMock | undefined;
@@ -23,14 +25,14 @@ export const TestPrep = async (options: { id?: string; dir?: string } = {}) => {
     controller,
     events,
 
-    dir: Path.ensureSlashEnd(fs.dir),
+    dir: Path.ensureSlashEnd(driver.dir),
     rootDir: Path.ensureSlashEnd(TestFs.local.dir),
 
     fs: TestFs.node,
     readFile: TestFs.readFile,
 
     fileExists(path: string) {
-      return TestFs.node.pathExists(TestFs.join(fs.dir, path));
+      return TestFs.node.pathExists(TestFs.join(driver.dir, path));
     },
 
     async copy(source: string, target: string) {
