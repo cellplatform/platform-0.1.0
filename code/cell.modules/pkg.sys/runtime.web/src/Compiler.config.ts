@@ -11,8 +11,7 @@ export default () =>
         .port(Package.compiler.port)
 
         .entry('main', './src/entry/main')
-
-        .declarations('./src/**/*')
+        // .declarations('./src/**/*')
 
         .static('static')
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
