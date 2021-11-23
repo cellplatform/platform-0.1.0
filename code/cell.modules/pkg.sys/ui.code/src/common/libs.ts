@@ -17,4 +17,4 @@ export { time, rx, slug, deleteUndefined } from '@platform/util.value';
  * @system
  */
 export { IpcBus } from 'sys.runtime.electron';
-export { Filesystem } from 'sys.fs/lib/web';
+export { Filesystem } from 'sys.fs';

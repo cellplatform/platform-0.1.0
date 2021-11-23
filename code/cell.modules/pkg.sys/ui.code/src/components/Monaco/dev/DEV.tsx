@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
-import { MonacoEditor, MonacoEditorProps } from '.';
-import { rx, t } from '../../common';
+import { MonacoEditor, MonacoEditorProps } from '..';
+import { rx, t } from '../../../common';
 
 type Ctx = { props: MonacoEditorProps };
 
@@ -13,7 +13,7 @@ type Ctx = { props: MonacoEditorProps };
  *    https://microsoft.github.io/monaco-editor/api
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.code/MonacoEditor')
+  .namespace('internal: MonacoEditor')
   .context((e) => {
     if (e.prev) return e.prev;
 

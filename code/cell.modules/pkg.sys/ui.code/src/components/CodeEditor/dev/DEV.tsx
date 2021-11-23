@@ -25,6 +25,14 @@ const FILENAME = {
   two: 'foo/two.tsx',
 };
 
+const SAMPLE = `
+// sample
+const a:number[] = [1,2,3]
+import {add} from 'math'
+const x = add(3, 5)
+const total = a.reduce((acc, next) =>acc + next, 0)
+`;
+
 /**
  * Actions
  */
@@ -58,20 +66,6 @@ export const actions = DevActions<Ctx>()
     e.button('typescript', (e) => e.ctx.instance?.model.set.language('typescript'));
     e.button('javascript', (e) => e.ctx.instance?.model.set.language('javascript'));
     e.button('json', (e) => e.ctx.instance?.model.set.language('json'));
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('Eval');
-    e.button('run', async (e) => {
-      const text = await e.ctx.instance?.text.get.fire();
-      if (!text) return;
-
-      console.log('text', text);
-      const res = eval(text);
-      console.log('res', res);
-    });
-
     e.hr();
   })
 
@@ -190,14 +184,7 @@ export const actions = DevActions<Ctx>()
     });
 
     e.button('set: sample', (e) => {
-      const code = `
-// sample
-const a:number[] = [1,2,3]
-import {add} from 'math'
-const x = add(3, 5)
-const total = a.reduce((acc, next) =>acc + next, 0)
-      `;
-      e.ctx.instance?.text.set(code);
+      e.ctx.instance?.text.set(SAMPLE);
     });
 
     e.button('set: null (clear)', (e) => {
@@ -284,7 +271,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
       });
     };
 
-    const onReady = (id: string, filename: string, e: t.CodeEditorReadyEvent) => {
+    const onReady = (filename: string, e: t.CodeEditorReadyEvent) => {
       console.log('onReady', e);
 
       saveOnChange(e.editor, filename);
@@ -303,7 +290,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
           id={id}
           filename={filename}
           bus={ctx.bus}
-          onReady={(e) => onReady(id, filename, e)}
+          onReady={(e) => onReady(filename, e)}
         />
       );
     };
@@ -322,9 +309,6 @@ const total = a.reduce((acc, next) =>acc + next, 0)
 
     render(editor1, '<CodeEditor>: one', FILENAME.one);
     render(editor2, '<CodeEditor>: two', FILENAME.two);
-
-    // e.render(editor1, { label: '<CodeEditor>: one' });
-    // e.render(editor2, { label: '<CodeEditor>: two' });
   });
 
 export default actions;
