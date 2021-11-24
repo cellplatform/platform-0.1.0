@@ -1,6 +1,8 @@
 import { expect, Filesystem, rx, t, TestFs, TestPrep, DEFAULT } from '../test';
 
 describe('BusController', function () {
+  this.timeout(9999);
+
   const bus = rx.bus<t.SysFsEvent>();
   const nodefs = TestFs.node;
 
@@ -90,5 +92,27 @@ describe('BusController', function () {
     expect(file3.hash).to.eql(png.hash);
 
     await mock.dispose();
+  });
+
+  describe('ready', () => {
+    it('is ready', async () => {
+      const mock = await TestPrep();
+
+      const res = await mock.events.ready();
+      expect(res.ready).to.eql(true);
+      expect(res.error).to.eql(undefined);
+
+      await mock.dispose();
+    });
+
+    it('is not ready', async () => {
+      const mock = await TestPrep();
+      await mock.dispose();
+
+      const res = await mock.events.ready();
+      expect(res.ready).to.eql(false);
+      expect(res.error?.code).to.eql('client/timeout');
+      expect(res.error?.message).to.include(`did not respond`);
+    });
   });
 });

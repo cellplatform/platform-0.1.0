@@ -57,9 +57,31 @@ export function BusEvents(args: {
   };
 
   /**
+   * Ready check.
+   */
+  const ready: t.SysFsReady = async (options = {}) => {
+    const { timeout = 500, retries = 5 } = options;
+
+    const ping = async (retries: number): Promise<t.SysFsReadyRes> => {
+      const ready = !(await io.info.get({ timeout })).error;
+      if (!ready && retries > 1) return await ping(retries - 1); // <== RECURSION 🌳
+      if (ready) return { ready: true };
+      return {
+        ready: false,
+        error: {
+          code: 'client/timeout',
+          message: `Filesystem '${id}' did not respond after ${retries} attempts`,
+        },
+      };
+    };
+
+    return await ping(retries);
+  };
+
+  /**
    * API
    */
-  return { id, $, changed$, is, dispose, dispose$, io, index, fs, remote };
+  return { id, $, changed$, is, dispose, dispose$, ready, io, index, fs, remote };
 }
 
 /**
