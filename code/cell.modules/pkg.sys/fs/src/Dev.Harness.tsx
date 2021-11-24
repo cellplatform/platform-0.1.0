@@ -2,7 +2,6 @@ import React from 'react';
 import { Harness } from 'sys.ui.dev';
 
 const imports = {
-  Foo: import('./web.ui/Foo/dev/DEV'),
   Drop: import('./test.dev/Drop/DEV'),
 
   FsDriverIndexedDb: import('./web.ui/FsDriver.IndexedDb/dev/DEV'),
