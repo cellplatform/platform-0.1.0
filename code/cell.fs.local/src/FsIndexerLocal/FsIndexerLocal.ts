@@ -1,4 +1,4 @@
-import { t, PathUtil, time, ManifestHash, ManifestFiles, Path } from '../common';
+import { ManifestFiles, ManifestHash, PathUtil, t, time } from '../common';
 import { ManifestFile } from '../ManifestFile';
 
 export const FsIndexerLocal = (args: { dir: string; fs: t.INodeFs }) => {
@@ -45,7 +45,8 @@ export const FsIndexerLocal = (args: { dir: string; fs: t.INodeFs }) => {
         return files;
       })();
 
-      const info: t.DirManifestInfo = { indexedAt: time.now.timestamp };
+      const indexedAt = time.now.timestamp;
+      const info: t.DirManifestInfo = { indexedAt };
       const manifest: t.DirManifest = {
         kind: 'dir',
         dir: info,
