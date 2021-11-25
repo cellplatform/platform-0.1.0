@@ -59,7 +59,11 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
     if (clipboard && isCopyable) {
       const value = typeof clipboard === 'function' ? clipboard() : clipboard;
       copyToClipboard(value);
-      if (!message) message = 'copied';
+      if (!message) {
+        const text = (value || '').trim();
+        const isHttp = text.startsWith('http://') || text.startsWith('https://');
+        message = isHttp ? 'copied url' : 'copied';
+      }
     }
 
     if (message) showMessage(message, delay);
