@@ -5,10 +5,8 @@ import { rx, DEFAULT, Hash, t } from './common';
 import Automerge from 'automerge';
 
 export default Test.describe('FsBus', (e) => {
-  const TEST_FS = 'test.bus';
-
   const testPrep = async (options: { id?: string; clear?: boolean } = {}) => {
-    const { id = TEST_FS } = options;
+    const { id = 'dev.test.FsBus' } = options;
     const bus = rx.bus();
     const { store } = await Filesystem.create({ bus, id });
     const fs = store.fs();

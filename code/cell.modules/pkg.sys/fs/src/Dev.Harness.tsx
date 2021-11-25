@@ -3,6 +3,7 @@ import { Harness } from 'sys.ui.dev';
 
 const imports = {
   Drop: import('./test.dev/Drop/DEV'),
+  PathList: import('./web.ui/PathList/dev/DEV'),
 
   FsDriverIndexedDb: import('./web.ui/FsDriver.IndexedDb/dev/DEV'),
   FsIndexedDb: import('./web.ui/FsBus.IndexedDb/dev/DEV'),
