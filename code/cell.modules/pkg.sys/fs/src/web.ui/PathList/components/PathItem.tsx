@@ -23,11 +23,19 @@ export const PathListItem: React.FC<PathListItemProps> = (props) => {
       fontSize: 12,
       borderBottom: `solid 1px ${color.format(-0.06)}`,
     }),
+    path: css({
+      flex: 1,
+      position: 'relative',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      paddingTop: 1,
+    }),
   };
 
   return (
     <div {...css(styles.base, props.style)}>
-      <div>{file.path}</div>
+      <div {...styles.path}>{file.path}</div>
       <div>
         <HashChip
           text={file.filehash}
