@@ -30,7 +30,7 @@ export const actions = DevActions<Ctx>()
 
     e.boolean('clipboard', (e) => {
       if (e.changing) e.ctx.props.clipboard = e.changing.next;
-      e.boolean.current = e.ctx.props.clipboard;
+      e.boolean.current = Boolean(e.ctx.props.clipboard);
     });
 
     e.boolean('inline', (e) => {
@@ -41,6 +41,11 @@ export const actions = DevActions<Ctx>()
     e.boolean('icon', (e) => {
       if (e.changing) e.ctx.props.icon = e.changing.next;
       e.boolean.current = e.ctx.props.icon;
+    });
+
+    e.boolean('prefix: null', (e) => {
+      if (e.changing) e.ctx.props.prefix = e.changing.next ? null : undefined;
+      e.boolean.current = e.ctx.props.prefix === null;
     });
 
     e.hr();

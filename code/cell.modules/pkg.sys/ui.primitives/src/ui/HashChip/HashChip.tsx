@@ -10,12 +10,16 @@ const DEFAULT = {
   LENGTH: 8,
 };
 
+type ClipboardText = (e: ClipboardTextArgs) => string;
+type ClipboardTextArgs = { hash: string; text: string; algorithm: string };
+
 export type HashChipProps = {
   text?: HashValue;
   length?: number;
-  clipboard?: boolean;
+  clipboard?: boolean | ClipboardText;
   inline?: boolean;
   icon?: boolean;
+  prefix?: string | null;
   prefixColor?: string | number;
   style?: CssValue;
 };
@@ -25,7 +29,18 @@ export const HashChip: React.FC<HashChipProps> = (props) => {
   const length = Math.max(5, props.length ?? DEFAULT.LENGTH);
   const hash = parseHash(props.text || '');
   const text = hash.text ? hash.text.substring(hash.text.length - length) : '';
+
   const algorithm = hash.algorithm.toUpperCase();
+  let prefix = algorithm;
+  if (props.prefix === null) prefix = '';
+  if (typeof props.prefix === 'string') prefix = props.prefix;
+
+  const handleClipboardClick = () => {
+    const args = hash.toClipboard();
+    console.log('props.clipboard', props.clipboard);
+    const value = typeof props.clipboard === 'function' ? props.clipboard(args) : args.hash;
+    copyToClipboard(value);
+  };
 
   /**
    * [Render]
@@ -61,23 +76,22 @@ export const HashChip: React.FC<HashChipProps> = (props) => {
           prefixColor === undefined ? color.alpha(COLORS.DARK, 0.4) : color.format(prefixColor),
       }),
       text: css({
-        marginLeft: algorithm ? 4 : undefined,
-        paddingLeft: algorithm ? 4 : undefined,
-        borderLeft: algorithm ? `solid 1px ${color.format(-0.12)}` : undefined,
+        marginLeft: prefix ? 4 : undefined,
+        paddingLeft: prefix ? 4 : undefined,
+        borderLeft: prefix ? `solid 1px ${color.format(-0.12)}` : undefined,
         color: color.alpha(COLORS.DARK, 0.9),
+        fontFamily: 'monospace',
       }),
     },
     empty: css({ opacity: 0.4 }),
   };
 
   const elEmpty = !text && <div {...styles.empty}>No Hash</div>;
-  const elPrefix = algorithm && (
-    <div {...css(styles.hash.base, styles.hash.prefix)}>{algorithm}</div>
-  );
+  const elPrefix = prefix && <div {...css(styles.hash.base, styles.hash.prefix)}>{prefix}</div>;
 
   const elText = text && (
     <div {...css(styles.hash.base, styles.hash.text)}>
-      {clipboard && <Button onClick={() => copyToClipboard(hash.toString())}>{text}</Button>}
+      {clipboard && <Button onClick={handleClipboardClick}>{text}</Button>}
       {!clipboard && text}
     </div>
   );
@@ -98,8 +112,8 @@ export const HashChip: React.FC<HashChipProps> = (props) => {
  * Helpers
  */
 
-export function parseHash(input: string) {
-  const parts = (input || '').split('-');
+export function parseHash(hash: string) {
+  const parts = (hash || '').split('-');
   const algorithm = parts.length > 1 ? parts[0] : '';
   const text = parts.length > 1 ? parts[1] : parts[0];
 
@@ -114,6 +128,9 @@ export function parseHash(input: string) {
     text,
     algorithm,
     tooltip,
-    toString: () => input,
+    toString: () => hash,
+    toClipboard(): ClipboardTextArgs {
+      return { hash, text, algorithm };
+    },
   };
 }
