@@ -180,7 +180,7 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
-    e.title('Module Installation');
+    e.title('Install Module');
 
     e.component((e) => {
       const { ctx } = e;
