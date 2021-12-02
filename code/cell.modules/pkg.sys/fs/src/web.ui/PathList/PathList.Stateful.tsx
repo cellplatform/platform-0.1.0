@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
 import { CssValue, t } from './common';
 import { usePathListState } from './hooks/usePathListState';

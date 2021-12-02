@@ -312,7 +312,7 @@ export const actions = DevActions<Ctx>()
       />
     );
 
-    const WIDTH = 320;
+    const WIDTH = 350;
 
     const mediaComponentsLayer: t.PositioningLayer = {
       id: 'media.components',
@@ -330,7 +330,7 @@ export const actions = DevActions<Ctx>()
         const styles = {
           base: css({
             flex: 1,
-            marginLeft: WIDTH + 20,
+            marginLeft: WIDTH + 30,
             backgroundColor: color.format(0.3),
           }),
         };
