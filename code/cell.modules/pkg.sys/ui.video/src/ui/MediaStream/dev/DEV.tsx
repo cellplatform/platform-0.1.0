@@ -5,10 +5,15 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { MediaStream, VideoStreamProps } from '..';
 import { FileUtil } from '../util';
-import { Button, css, cuid, deleteUndefined, log, rx, t } from './common';
+import { color, Button, css, cuid, deleteUndefined, log, rx, t, MinSize } from './common';
 import { DevAudioWaveform } from './DEV.AudioWaveform';
 import { DevRecordButton } from './DEV.RecordButton';
 import { Sample } from './DEV.Sample';
+import { DevLayoutMediaComponents } from './DEV.Layout.MediaComponents';
+import { PositioningLayers } from 'sys.ui.primitives/lib/ui/PositioningLayers';
+import { DevOuter } from './DEV.Layout.Outer';
+
+import { PathListStateful } from 'sys.fs/lib/web.ui/PathList';
 
 type SaveTarget = 'Fs.IndexedDb' | 'Download';
 
@@ -16,6 +21,7 @@ type Events = ReturnType<typeof MediaStream.Events>;
 type Ctx = {
   ref: string;
   bus: t.EventBus<t.MediaEvent>;
+  fsid: string;
   events: Events;
   props: VideoStreamProps;
   muted: { video: boolean; audio: boolean };
@@ -74,6 +80,7 @@ export const actions = DevActions<Ctx>()
       ref,
       bus,
       events,
+      fsid,
       props: { isMuted: true },
       muted: { video: false, audio: false },
       filesystem: { id: fsid, store },
@@ -119,6 +126,7 @@ export const actions = DevActions<Ctx>()
       },
     };
 
+    store();
     return ctx;
   })
 
@@ -212,60 +220,138 @@ export const actions = DevActions<Ctx>()
         });
     });
 
+    e.button('delete all', async (e) => {
+      const fs = await e.ctx.filesystem.store();
+      const files = (await fs.manifest()).files;
+      for (const file of files) {
+        await fs.delete(file.path);
+      }
+    });
+
     e.hr();
   })
 
   .subject((e) => {
     const { ref, bus } = e.ctx;
     const { width = 300 } = e.ctx.props;
-    const styles = { streamRef: css({ fontSize: 9 }) };
-    const elStreamRef = <div {...styles.streamRef}>stream-ref:{ref}</div>;
+    const styles = {
+      streamRef: css({ fontSize: 9 }),
+      flowH: css({ Flex: 'horizontal-center-center' }),
+    };
+
+    const elStreamRef = <div {...styles.streamRef}>media/stream-ref:{ref}</div>;
+
+    const getPath = async () => {
+      return `${saveFilename ?? 'my-video'}.webm`;
+    };
+
+    const getNextPath = async () => {
+      const fs = await e.ctx.filesystem.store();
+      const files = (await fs.manifest()).files.filter((e) => e.path.match(/project\/.*\.webm$/));
+      const total = files.length;
+      return `project/video-${total + 1}.webm`;
+    };
+
+    const elDownload = (
+      <Button onClick={async () => e.ctx.action.download(await getPath())}>Download</Button>
+    );
 
     const elStartMediastreamButton = (
       <Button onClick={() => e.ctx.action.startVideoStream()}>⚡️ Start</Button>
     );
 
+    const topLeft = (
+      <div {...styles.flowH}>
+        <div {...css({ marginRight: 6 })}>{'<VideoStream>'}</div>
+        {elStartMediastreamButton}
+      </div>
+    );
+
     e.settings({
       host: { background: -0.04 },
-      layout: { cropmarks: -0.2 },
+      layout: {
+        cropmarks: -0.2,
+        position: [150, 80, 150, 80],
+        label: {
+          topLeft,
+          topRight: `filesystem: "${e.ctx.fsid}"`,
+          bottomLeft: elDownload,
+          bottomRight: elStreamRef,
+        },
+      },
       actions: { width: 350 },
     });
 
-    e.render(<Sample {...e.ctx.props} streamRef={ref} bus={bus} />, {
-      label: {
-        topLeft: elStartMediastreamButton,
-        topRight: '<VideoStream>',
-        bottomRight: elStreamRef,
-      },
-    });
+    /**
+     * Video Stream.
+     */
+    const elVideoStream = <Sample {...e.ctx.props} streamRef={ref} bus={bus} />;
 
-    e.render(<DevAudioWaveform bus={bus} streamRef={ref} width={width} height={30} />, {
-      width,
-      background: 1,
-      label: 'Audio Waveform',
-    });
+    /**
+     * Audio Waveform.
+     */
+    const elAudioWaveform = (
+      <DevAudioWaveform bus={bus} streamRef={ref} width={width} height={30} />
+    );
 
+    /**
+     * Record button.
+     */
     const saveTarget = e.ctx.debug.save.target;
     const saveFilename = saveTarget === 'Download' ? 'my-video' : undefined;
 
-    const getPath = () => `${saveFilename ?? 'my-video'}.webm`;
-    const elDownload = <Button onClick={() => e.ctx.action.download(getPath())}>Download</Button>;
-
-    e.render(
+    const elRecordButton = (
       <DevRecordButton
         bus={bus}
         streamRef={ref}
         downloadFilename={saveFilename}
-        onFileReady={({ data }) => {
-          const path = getPath();
+        onFileReady={async ({ data }) => {
+          const path = await getNextPath();
           e.ctx.action.saveVideo(path, data);
         }}
-      />,
-      {
-        width,
-        background: 1,
-        label: { topLeft: '<RecordButton>', bottomRight: elDownload },
+      />
+    );
+
+    const WIDTH = 320;
+
+    const mediaComponentsLayer: t.PositioningLayer = {
+      id: 'media.components',
+      position: { x: 'left', y: 'stretch' },
+      render(args) {
+        const elements = [elVideoStream, elRecordButton, elAudioWaveform];
+        return <DevLayoutMediaComponents elements={elements} width={WIDTH} />;
       },
+    };
+
+    const filesystemLayer: t.PositioningLayer = {
+      id: 'fs',
+      position: { x: 'stretch', y: 'stretch' },
+      render(args) {
+        const styles = {
+          base: css({
+            flex: 1,
+            marginLeft: WIDTH + 20,
+            backgroundColor: color.format(0.3),
+          }),
+        };
+        return (
+          <DevOuter style={styles.base}>
+            <PathListStateful bus={bus} id={e.ctx.fsid} style={{ flex: 1 }} />
+          </DevOuter>
+        );
+      },
+    };
+
+    const elTooSmall = <div {...css({ flex: 1, Flex: 'center-center' })}>Too Small</div>;
+
+    e.render(
+      <MinSize style={{ flex: 1 }} minWidth={675} minHeight={390} warningElement={elTooSmall}>
+        <PositioningLayers
+          layers={[mediaComponentsLayer, filesystemLayer]}
+          childPointerEvents={'none'}
+          style={{ Absolute: 0 }}
+        />
+      </MinSize>,
     );
   });
 export default actions;
