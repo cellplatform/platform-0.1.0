@@ -37,7 +37,6 @@ export const HashChip: React.FC<HashChipProps> = (props) => {
 
   const handleClipboardClick = () => {
     const args = hash.toClipboard();
-    console.log('props.clipboard', props.clipboard);
     const value = typeof props.clipboard === 'function' ? props.clipboard(args) : args.hash;
     copyToClipboard(value);
   };
@@ -69,18 +68,21 @@ export const HashChip: React.FC<HashChipProps> = (props) => {
       Flex: 'horizontal-center-center',
     }),
     hash: {
-      base: css({ paddingTop: 2, paddingBottom: 1 }),
+      base: css({
+        paddingTop: 2,
+        paddingBottom: 1,
+        fontFamily: 'monospace',
+      }),
       prefix: css({
         fontWeight: 600,
         color:
-          prefixColor === undefined ? color.alpha(COLORS.DARK, 0.4) : color.format(prefixColor),
+          prefixColor === undefined ? color.alpha(COLORS.DARK, 0.5) : color.format(prefixColor),
       }),
       text: css({
         marginLeft: prefix ? 4 : undefined,
         paddingLeft: prefix ? 4 : undefined,
         borderLeft: prefix ? `solid 1px ${color.format(-0.12)}` : undefined,
         color: color.alpha(COLORS.DARK, 0.9),
-        fontFamily: 'monospace',
       }),
     },
     empty: css({ opacity: 0.4 }),
