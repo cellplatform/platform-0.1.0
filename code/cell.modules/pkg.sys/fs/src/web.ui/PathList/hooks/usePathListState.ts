@@ -21,7 +21,8 @@ export function usePathListState(args: { bus: t.EventBus; id: FilesystemName; di
     const fs = events.fs(dir);
 
     const readPaths = async () => {
-      const files = (await fs.manifest()).files;
+      const manifest = await fs.manifest();
+      const files = manifest.files;
       setFiles(files);
       return files;
     };
