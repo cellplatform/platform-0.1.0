@@ -17,11 +17,9 @@ export default () =>
         /**
          * Exports
          */
-        .expose('./SAMPLE.fs', './src/exports/Sample.Fs')
 
-        /**
-         * DEV (Development)
-         */
+        // DEV (Development)
+        .expose('./DEV.fs', './src/exports/Dev.Fs')
         .expose('./DEV.ui.dev', './src/exports/Dev')
         .expose('./DEV.ui.video', './src/exports/Dev.Video')
         .expose('./DEV.ui.primitives', './src/exports/Dev.Primitives')
