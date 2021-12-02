@@ -74,6 +74,70 @@ export default Test.describe('FsBus', (e) => {
       dispose();
     });
 
+    e.it('copy', async () => {
+      const { fs, dispose } = await testPrep({ clear: true });
+
+      const path1 = 'foo/1.txt';
+      const path2 = 'foo/2.txt';
+      const data = new TextEncoder().encode('hello');
+
+      const res0 = await fs.info(path2);
+      expect(res0.exists).to.eql(false);
+
+      const res1 = await fs.write(path1, data);
+      expect(res1.bytes).to.eql(data.byteLength);
+      expect(res1.hash).to.eql(Hash.sha256(data));
+
+      await fs.copy(path1, path2);
+
+      const res2 = await fs.info(path2);
+      expect(res2.bytes).to.eql(data.byteLength);
+      expect(res2.hash).to.eql(Hash.sha256(data));
+
+      dispose();
+    });
+
+    e.it('move', async () => {
+      const { fs, dispose } = await testPrep({ clear: true });
+
+      const path1 = 'foo/1.txt';
+      const path2 = 'foo/2.txt';
+      const data = new TextEncoder().encode('hello');
+
+      const res0 = await fs.info(path2);
+      expect(res0.exists).to.eql(false);
+
+      const res1 = await fs.write(path1, data);
+      expect(res1.bytes).to.eql(data.byteLength);
+      expect(res1.hash).to.eql(Hash.sha256(data));
+
+      await fs.move(path1, path2);
+
+      const res2 = await fs.info(path2);
+      expect(res2.bytes).to.eql(data.byteLength);
+      expect(res2.hash).to.eql(Hash.sha256(data));
+
+      const res3 = await fs.info(path1);
+      expect(res3.exists).to.eql(false);
+
+      dispose();
+    });
+
+    e.it('delete', async () => {
+      const { fs, dispose } = await testPrep({ clear: true });
+
+      const path = 'foo/file.txt';
+      const data = new TextEncoder().encode('hello');
+
+      await fs.write(path, data);
+      expect((await fs.info(path)).exists).to.eql(true);
+
+      await fs.delete(path);
+      expect((await fs.info(path)).exists).to.eql(false);
+
+      dispose();
+    });
+
     e.describe('json (read/write)', (e) => {
       const test = async (data: t.Json) => {
         const path = 'foo/data.json';
