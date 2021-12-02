@@ -6,7 +6,7 @@ export const R = { clone, uniq, flatten };
  */
 export { HttpClient } from '@platform/cell.client';
 export { Hash, Uri, Schema, ManifestHash, ManifestFiles, Mime } from '@platform/cell.schema';
-export { css, color, CssValue, formatColor } from '@platform/css';
+export { css, color, CssValue, formatColor, style as Style } from '@platform/css';
 export { WebRuntime, bundle } from '@platform/cell.runtime.web';
 export { useResizeObserver } from '@platform/react';
 export { rx, slug, cuid, time, deleteUndefined, value } from '@platform/util.value';

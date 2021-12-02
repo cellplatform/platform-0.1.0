@@ -20,20 +20,24 @@ export function usePathListState(args: { bus: t.EventBus; id: FilesystemName; di
     const events = Filesystem.Events({ bus, id });
     const fs = events.fs(dir);
 
-    const readPaths = async () => setFiles((await fs.manifest()).files);
+    const readPaths = async () => {
+      const files = (await fs.manifest()).files;
+      setFiles(files);
+      return files;
+    };
     events.changed$.pipe(debounceTime(50)).subscribe(readPaths);
 
     /**
      * [Initialize]
      */
-    if (!ready) {
-      events.ready().then((e) => {
-        if (!isDisposed) {
-          setReady(true);
-          readPaths();
-        }
-      });
-    }
+
+    const init = async () => {
+      if (isDisposed) return;
+      await readPaths();
+      setReady(true);
+    };
+
+    if (!ready) events.ready().then(init);
 
     /**
      * [Dispose]

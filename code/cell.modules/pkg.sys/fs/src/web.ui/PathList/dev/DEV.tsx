@@ -1,8 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { PathListStateful, PathListStatefulProps } from '..';
-import { t, rx, cuid, value } from '../common';
-import { Filesystem } from '../../../';
+import { t, rx, cuid, value, Filesystem } from '../common';
 
 type Ctx = {
   bus: t.EventBus;
@@ -21,8 +20,8 @@ export const actions = DevActions<Ctx>()
     const bus = rx.bus();
 
     const id = 'dev.fs';
-    Filesystem.IndexedDb.create({ bus, id });
-    const fs = Filesystem.Web.Events({ bus, id }).fs();
+    Filesystem.create({ bus, id });
+    const fs = Filesystem.Events({ bus, id }).fs();
 
     const ctx: Ctx = {
       bus,
@@ -88,7 +87,7 @@ export const actions = DevActions<Ctx>()
       layout: {
         label: '<PathListStateful>',
         position: [150, null],
-        width: 300,
+        width: 450,
         border: -0.1,
         cropmarks: -0.2,
         background: 1,

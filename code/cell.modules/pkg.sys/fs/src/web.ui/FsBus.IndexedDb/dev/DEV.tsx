@@ -16,7 +16,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('FsBus.IndexedDb')
+  .namespace('FsBus.IndexedDb (tests)')
   .context((e) => {
     if (e.prev) return e.prev;
 

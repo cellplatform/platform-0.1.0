@@ -1,16 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t } from './common';
+import { color, css, CssValue, t, Style, Spinner } from './common';
 import { PathListItem } from './components/PathItem';
 
 export type PathListProps = {
   files?: t.ManifestFile[];
   scroll?: boolean;
   spinning?: boolean;
+  padding?: t.CssEdgesInput;
   style?: CssValue;
 };
 
 export const PathList: React.FC<PathListProps> = (props) => {
-  const { scroll = true, files = [] } = props;
+  const { scroll = true, files = [], spinning } = props;
   const isEmpty = files.length === 0;
 
   /**
@@ -27,27 +28,43 @@ export const PathList: React.FC<PathListProps> = (props) => {
       base: css({
         Scroll: scroll,
         Absolute: scroll ? 0 : undefined,
+        ...Style.toPadding(props.padding),
       }),
     },
-    empty: css({
-      Flex: 'center-center',
-      opacity: 0.3,
-      fontSize: 12,
-      fontStyle: 'italic',
-      padding: 12,
-    }),
+    empty: {
+      base: css({
+        Flex: 'center-center',
+        opacity: 0.3,
+        fontSize: 12,
+        fontStyle: 'italic',
+        padding: 12,
+      }),
+    },
+    spinner: {
+      base: css({ Flex: 'center-center', padding: 8 }),
+    },
   };
 
-  const elEmpty = isEmpty && <div {...styles.empty}>No files to display</div>;
+  const elSpinner = spinning && (
+    <div {...styles.spinner.base}>
+      <Spinner />
+    </div>
+  );
 
-  const elList = files.map((file, i) => {
-    const key = `${i}.${file.filehash}`;
-    return <PathListItem key={key} file={file} />;
-  });
+  const elEmpty = isEmpty && !elSpinner && <div {...styles.empty.base}>No files to display</div>;
+
+  const elList =
+    !elSpinner &&
+    !elEmpty &&
+    files.map((file, i) => {
+      const key = `${i}.${file.filehash}`;
+      return <PathListItem key={key} file={file} />;
+    });
 
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.body.base}>
+        {elSpinner}
         {elEmpty}
         {elList}
       </div>

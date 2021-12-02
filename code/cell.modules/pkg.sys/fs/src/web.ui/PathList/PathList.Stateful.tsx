@@ -8,10 +8,11 @@ type FilesystemName = string;
 type DirPath = string;
 
 export type PathListStatefulProps = {
-  bus: t.EventBus;
+  bus: t.EventBus<any>;
   id: FilesystemName;
   dir?: DirPath;
   scroll?: boolean;
+  padding?: t.CssEdgesInput;
   style?: CssValue;
 };
 
@@ -22,5 +23,13 @@ export const PathListStateful: React.FC<PathListStatefulProps> = (props) => {
   /**
    * [Render]
    */
-  return <PathList scroll={props.scroll} files={state.files} style={props.style} />;
+  return (
+    <PathList
+      scroll={props.scroll}
+      files={state.files}
+      spinning={!state.ready}
+      style={props.style}
+      padding={props.padding}
+    />
+  );
 };

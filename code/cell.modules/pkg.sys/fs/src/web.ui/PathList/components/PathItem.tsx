@@ -8,7 +8,6 @@ export type PathListItemProps = {
 
 export const PathListItem: React.FC<PathListItemProps> = (props) => {
   const { file } = props;
-
   const size = Filesize(file.bytes, { round: 1, spacer: '' });
 
   /**
