@@ -45,7 +45,7 @@ describe('BusController', function () {
 
     expect(res1.error).to.eql(undefined);
     expect(res2.error?.code).to.eql('client/timeout');
-    expect(res2.error?.message).to.include('timed out');
+    expect(res2.error?.message).to.include('Timed out');
   });
 
   it('distinct (by filesystem "id")', async () => {
@@ -109,7 +109,7 @@ describe('BusController', function () {
       const mock = await TestPrep();
       await mock.dispose();
 
-      const res = await mock.events.ready();
+      const res = await mock.events.ready({ timeout: 10 });
       expect(res.ready).to.eql(false);
       expect(res.error?.code).to.eql('client/timeout');
       expect(res.error?.message).to.include(`did not respond`);

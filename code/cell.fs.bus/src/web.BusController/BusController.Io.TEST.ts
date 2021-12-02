@@ -107,7 +107,7 @@ describe('BusController.IO', function () {
       controller.dispose();
 
       expect(res.error?.code).to.eql('client/timeout');
-      expect(res.error?.message).to.include('timed out');
+      expect(res.error?.message).to.include('Timed out');
     });
   });
 

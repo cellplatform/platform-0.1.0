@@ -1,6 +1,6 @@
 import { expect, t, TestFs, TestPrep } from '../test';
 
-describe.only('BusController.Change', function () {
+describe('BusController.Change', function () {
   this.beforeEach(() => TestFs.reset());
 
   async function changeSetup<T extends t.SysFsChange>() {
@@ -87,6 +87,9 @@ describe.only('BusController.Change', function () {
     await test.dispose();
   });
 
+  /**
+   * TODO 🐷
+   */
   describe.skip('no change (event not fired)', () => {
     it('write', async () => {});
     it('copy', async () => {});
