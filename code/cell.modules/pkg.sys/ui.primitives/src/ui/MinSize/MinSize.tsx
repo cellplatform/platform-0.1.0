@@ -2,7 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, useResizeObserver, t, toMinSizeFlags, MinSizeDefaults } from './common';
+import {
+  css,
+  CssValue,
+  useResizeObserver,
+  color,
+  COLORS,
+  t,
+  toMinSizeFlags,
+  MinSizeDefaults,
+} from './common';
 
 export type MinSizeResizeEvent = { size: t.DomRect; is: t.MinSizeFlags };
 export type MinSizeResizeEventHandler = (e: MinSizeResizeEvent) => void;
@@ -14,6 +23,7 @@ export type MinSizeProps = {
   hideStrategy?: t.MinSizeHideStrategy;
   warningElement?: React.ReactNode;
   rootResize?: t.ResizeObserver;
+  showDebugSize?: boolean;
   style?: CssValue;
   onResize?: MinSizeResizeEventHandler;
 };
@@ -58,6 +68,7 @@ export const MinSize: React.FC<MinSizeProps> = (props) => {
       pointerEvents: 'none',
       position: 'relative',
       display: 'grid',
+      boxSizing: 'border-box',
     }),
     body: css({
       pointerEvents: 'auto',
@@ -66,13 +77,32 @@ export const MinSize: React.FC<MinSizeProps> = (props) => {
       opacity: !ok && hideStrategy === 'css:opacity' ? 0 : 1,
       display: !ok && hideStrategy === 'css:display' ? 'none' : 'flex',
     }),
-    warning: css({
-      Absolute: 0,
-      display: 'flex',
-    }),
+    warning: css({ Absolute: 0, display: 'flex' }),
+    size: {
+      base: css({
+        Absolute: 0,
+        backgroundColor: color.alpha(COLORS.MAGENTA, 0.3),
+        border: `dashed 1px ${COLORS.MAGENTA}`,
+        padding: 6,
+      }),
+      label: css({
+        fontFamily: 'monospace',
+        fontWeight: 500,
+        fontSize: 11,
+        color: COLORS.MAGENTA,
+      }),
+    },
   };
 
   const elWarning = !ok && Boolean(is) ? props.warningElement : undefined;
+
+  const elDebugSize = props.showDebugSize && resize.ready && (
+    <div {...styles.size.base}>
+      <div {...styles.size.label}>
+        {resize.rect.width}x{resize.rect.height}
+      </div>
+    </div>
+  );
 
   const elChildren = (() => {
     if (ok) {
@@ -93,6 +123,7 @@ export const MinSize: React.FC<MinSizeProps> = (props) => {
     <div ref={baseRef} {...css(styles.base, props.style)}>
       <div {...styles.body}>{elChildren}</div>
       <div {...styles.warning}>{elWarning}</div>
+      {elDebugSize}
     </div>
   );
 };
