@@ -1,6 +1,6 @@
-import { firstValueFrom, of, timeout } from 'rxjs';
-import { catchError, filter, takeUntil } from 'rxjs/operators';
-import { t, rx, DEFAULT, slug } from './common';
+import { filter, takeUntil } from 'rxjs/operators';
+
+import { DEFAULT, rx, slug, t } from './common';
 
 type InstanceId = string;
 
@@ -30,16 +30,11 @@ export function BusEvents(args: {
     req$: rx.payload<t.MyInfoReqEvent>($, 'my.namespace/info:req'),
     res$: rx.payload<t.MyInfoResEvent>($, 'my.namespace/info:res'),
     async get(options = {}) {
-      const { timeout: msecs = 90000 } = options;
+      const { timeout = 30000 } = options;
       const tx = slug();
 
-      const first = firstValueFrom(
-        info.res$.pipe(
-          filter((e) => e.tx === tx),
-          timeout(msecs),
-          catchError(() => of(`ModuleInfo request timed out after ${msecs} msecs`)),
-        ),
-      );
+      const res$ = info.res$.pipe(filter((e) => e.tx === tx));
+      const first = rx.asPromise.first<t.MyInfoResEvent>(res$, { timeout });
 
       bus.fire({
         type: 'my.namespace/info:req',
@@ -47,7 +42,10 @@ export function BusEvents(args: {
       });
 
       const res = await first;
-      return typeof res === 'string' ? { tx, id, error: res } : res;
+      if (res.payload) return res.payload;
+
+      const error = res.error?.message ?? 'Failed';
+      return { tx, id, error };
     },
   };
 
