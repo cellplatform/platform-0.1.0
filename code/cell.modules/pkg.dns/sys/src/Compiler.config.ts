@@ -19,9 +19,10 @@ export default () =>
          */
 
         // DEV (Development)
-        .expose('./DEV.fs', './src/exports/Dev.Fs')
-        .expose('./DEV.ui.dev', './src/exports/Dev')
-        .expose('./DEV.ui.video', './src/exports/Dev.Video')
-        .expose('./DEV.ui.primitives', './src/exports/Dev.Primitives')
-        .expose('./DEV.runtime.web', './src/exports/Dev.Runtime'),
+        .expose('./DEV.sys.fs', './src/exports/Dev.Fs')
+        .expose('./DEV.sys.ui.dev', './src/exports/Dev')
+        .expose('./DEV.sys.ui.video', './src/exports/Dev.Video')
+        .expose('./DEV.sys.ui.primitives', './src/exports/Dev.Primitives')
+        .expose('./DEV.sys.runtime.web', './src/exports/Dev.Runtime')
+        .expose('./DEV.sys.crdt', './src/exports/Dev.Crdt'),
     );
