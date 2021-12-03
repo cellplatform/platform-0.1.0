@@ -1,4 +1,11 @@
 /**
+ * @vendoer
+ */
+
+import Automerge from 'automerge';
+export { Automerge };
+
+/**
  * @platform
  */
 export { log } from '@platform/log/lib/client';

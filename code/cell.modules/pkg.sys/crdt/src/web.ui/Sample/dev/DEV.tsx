@@ -1,9 +1,15 @@
 import React from 'react';
-import { DevActions } from 'sys.ui.dev';
-import { Sample, SampleProps } from '..';
-import { SampleProperties } from '../Sample.Properties';
+import { DevActions, ObjectView } from 'sys.ui.dev';
+import { css, color, Automerge } from '../../common';
 
-type Ctx = { props: SampleProps };
+type Card = { title: string; done: boolean };
+type Doc = { cards: Card[] };
+
+type Ctx = {
+  doc: Doc;
+  getDoc(): Doc;
+  setDoc(doc: Doc): void;
+};
 
 /**
  * Actions
@@ -12,19 +18,34 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.Sample')
   .context((e) => {
     if (e.prev) return e.prev;
-    const ctx: Ctx = { props: { count: 0 } };
+
+    const doc = Automerge.from<Doc>({ cards: [] });
+
+    const ctx: Ctx = {
+      doc,
+      getDoc() {
+        return doc;
+      },
+      setDoc(doc) {
+        e.change.ctx((ctx) => (ctx.doc = doc));
+      },
+    };
     return ctx;
   })
 
   .items((e) => {
-    e.title('props');
-    e.button('count: increment', (e) => e.ctx.props.count++);
-    e.button('count: decrement', (e) => e.ctx.props.count--);
+    e.title('mutate');
 
-    e.hr(1, 0.1);
+    e.button('add card', (e) => {
+      const d = e.ctx.getDoc();
+      console.log('d', d);
 
-    e.component((e) => {
-      return <SampleProperties props={e.ctx.props} style={{ MarginX: 20, MarginY: 10 }} />;
+      const next = Automerge.change(e.ctx.doc, 'add card', (doc) => {
+        const title = `card-${doc.cards.length + 1}`;
+        doc.cards.push({ title, done: false });
+      });
+
+      console.log('next', next);
     });
 
     e.hr();
@@ -38,13 +59,30 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
       layout: {
         label: '<Sample>',
-        position: [150, 80],
+        // position: [150, 80],
+        width: 300,
         border: -0.1,
         cropmarks: -0.2,
         background: 1,
       },
     });
-    e.render(<Sample {...e.ctx.props} />);
+
+    const styles = {
+      base: css({
+        boxSizing: 'border-box',
+        padding: 12,
+      }),
+    };
+
+    const el = (
+      <div {...styles.base}>
+        <ObjectView name={'crdt'} data={e.ctx.doc} />
+      </div>
+    );
+
+    e.render(el);
+
+    // e.render(<Sample {...e.ctx.props} />);
   });
 
 export default actions;
