@@ -1,9 +1,10 @@
 {
-  "name": "vendor.cloud.pusher",
+  "name": "vendor.crypto.algorand",
   "version": "0.0.0",
+  "main": "lib/index",
   "sideEffects": false,
   "compiler": {
-    "port": 3039
+    "port": 3044
   },
   "scripts": {
     "start": "cell.compiler dev $@",
@@ -18,7 +19,7 @@
     "serve": "cell.compiler serve $@"
   },
   "dependencies": {
-    "pusher-js": "^7.0.3"
+    "algosdk": "1.12.0"
   },
   "devDependencies": {
     "@platform/cell.compiler": "~0.4.1",
