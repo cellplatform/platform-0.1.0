@@ -2,7 +2,7 @@ import { Compiler, Package } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
-    .namespace('vendor.crypto.algorand')
+    .namespace('sys.crdt')
     .version(Package.version)
 
     .variant('web', (config) =>
@@ -11,8 +11,8 @@ export default () =>
         .port(Package.compiler.port)
 
         .entry('main', './src/entry/main')
-        .entry('service.worker', './src/workers/service.worker')
-        .entry('web.worker', './src/workers/web.worker')
+
+        // .declarations('./src/**/*')
 
         .static('static')
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
