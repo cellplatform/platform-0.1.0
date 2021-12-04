@@ -2,7 +2,6 @@ import React from 'react';
 import { Harness } from 'sys.ui.dev';
 
 const imports = {
-  Drop: import('./test.dev/Drop/DEV'),
   PathList: import('./web.ui/PathList/dev/DEV'),
   FileDropTarget: import('./web.ui/FileDropTarget/dev/DEV'),
 
