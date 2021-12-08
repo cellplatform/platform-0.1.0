@@ -2,7 +2,7 @@ import React from 'react';
 import { Harness } from 'sys.ui.dev';
 
 const imports = {
-  CrdtOLD: import('./NetworkModel/Crdt.OLD/dev/DEV'),
+  CrdtOLD: import('./NetworkModel__/Crdt.OLD/dev/DEV'),
 
   PeerNetwork: import('./PeerNetwork/dev/DEV'),
   UnitTests: import('./dev/DEV.UnitTests'),
