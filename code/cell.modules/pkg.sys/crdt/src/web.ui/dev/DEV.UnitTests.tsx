@@ -1,15 +1,14 @@
 import React from 'react';
 import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse, TestSuiteModel } from 'sys.ui.dev/lib/types';
-import { COLORS, css, Icons } from '../common';
-import { RepoLink } from './DEV.RepoLink';
+import { RepoLink } from './components/RepoLink';
 
-type CtxTestRun = () => Promise<TestSuiteRunResponse>;
+type CtxRunTests = () => Promise<TestSuiteRunResponse>;
 
 type Ctx = {
   results?: TestSuiteRunResponse;
   tests: {
-    automerge: CtxTestRun;
+    automerge: CtxRunTests;
   };
 };
 
@@ -35,7 +34,7 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = { tests };
 
-    tests.automerge();
+    tests.automerge(); // Auto-run on load.
 
     return ctx;
   })
@@ -64,7 +63,9 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(<Test.View.Results data={e.ctx.results} style={{ flex: 1, padding: 20 }} />);
+    e.render(
+      <Test.View.Results data={e.ctx.results} style={{ flex: 1, padding: 20 }} scroll={true} />,
+    );
   });
 
 export default actions;
