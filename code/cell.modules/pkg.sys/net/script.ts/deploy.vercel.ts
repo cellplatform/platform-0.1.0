@@ -1,4 +1,4 @@
-import { Vercel } from 'vendor.cloud.vercel/lib/node';
+import { Vercel, t } from 'vendor.cloud.vercel/lib/node';
 
 const token = process.env.VERCEL_TEST_TOKEN;
 
@@ -11,6 +11,8 @@ const token = process.env.VERCEL_TEST_TOKEN;
  */
 async function deploy(team: string, project: string, alias: string) {
   const deployment = Vercel.Deploy({ token, dir: 'dist/web', team, project });
+  await deployment.ensureProject(project);
+
   const manifest = await deployment.manifest<t.ModuleManifest>();
 
   console.log('\ndeploying:');
