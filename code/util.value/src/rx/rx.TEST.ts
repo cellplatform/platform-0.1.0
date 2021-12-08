@@ -304,6 +304,16 @@ describe('rx', () => {
         expect(res.error?.code).to.eql('timeout');
         expect(res.error?.message).to.include('Timed out after 10 msecs');
       });
+
+      it('error: timeout ("op")', async () => {
+        const op = 'foobar';
+        const $ = new Subject<E>();
+        const res = await rx.asPromise.first<E>(rx.payload<E>($, 'foo'), { op, timeout: 10 });
+        expect(res.payload).to.eql(undefined);
+        expect(res.error?.code).to.eql('timeout');
+        expect(res.error?.message).to.include('Timed out after 10 msecs');
+        expect(res.error?.message).to.include(`[${op}]`);
+      });
     });
   });
 });

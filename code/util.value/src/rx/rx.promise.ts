@@ -11,7 +11,10 @@ export const asPromise = {
   /**
    * Retrieves the first event from the given observable.
    */
-  first<E extends Event>(ob$: Observable<E['payload']>, options: { timeout?: Milliseconds } = {}) {
+  first<E extends Event>(
+    ob$: Observable<E['payload']>,
+    options: { op?: string; timeout?: Milliseconds } = {},
+  ) {
     type P = E['payload'];
     type Error = { code: 'timeout' | 'completed' | 'unknown'; message: string };
     type T = { payload?: P; error?: Error };
@@ -22,8 +25,13 @@ export const asPromise = {
       if (msecs > 0)
         $ = $.pipe(
           timeout(msecs),
-          catchError(() => of(`Timed out after ${msecs} msecs`)),
+          catchError(() => {
+            let err = `Timed out after ${msecs} msecs`;
+            if (options.op) err = `[${options.op}] ${err}`;
+            return of(err);
+          }),
         );
+
       $.subscribe({
         next(e) {
           const payload = typeof e === 'object' ? e : undefined;
