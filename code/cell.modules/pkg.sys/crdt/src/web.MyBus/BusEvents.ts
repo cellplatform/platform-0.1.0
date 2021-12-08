@@ -32,9 +32,9 @@ export function BusEvents(args: {
     async get(options = {}) {
       const { timeout = 30000 } = options;
       const tx = slug();
-
+      const op = 'info';
       const res$ = info.res$.pipe(filter((e) => e.tx === tx));
-      const first = rx.asPromise.first<t.MyInfoResEvent>(res$, { timeout });
+      const first = rx.asPromise.first<t.MyInfoResEvent>(res$, { op, timeout });
 
       bus.fire({
         type: 'my.namespace/info:req',

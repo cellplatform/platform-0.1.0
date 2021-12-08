@@ -61,8 +61,12 @@ export function BusEventsIo(args: {
     res$: rx.payload<t.SysFsReadResEvent>($, 'sys.fs/read:res'),
     async get(path, options = {}) {
       const tx = slug();
+      const op = 'read';
       const res$ = read.res$.pipe(filter((e) => e.tx === tx));
-      const first = rx.asPromise.first<t.SysFsReadResEvent>(res$, { timeout: toTimeout(options) });
+      const first = rx.asPromise.first<t.SysFsReadResEvent>(res$, {
+        op,
+        timeout: toTimeout(options),
+      });
 
       bus.fire({
         type: 'sys.fs/read:req',
@@ -89,8 +93,12 @@ export function BusEventsIo(args: {
     res$: rx.payload<t.SysFsWriteResEvent>($, 'sys.fs/write:res'),
     async fire(file, options = {}) {
       const tx = slug();
+      const op = 'write';
       const res$ = write.res$.pipe(filter((e) => e.tx === tx));
-      const first = rx.asPromise.first<t.SysFsWriteResEvent>(res$, { timeout: toTimeout(options) });
+      const first = rx.asPromise.first<t.SysFsWriteResEvent>(res$, {
+        op,
+        timeout: toTimeout(options),
+      });
 
       bus.fire({
         type: 'sys.fs/write:req',
@@ -117,8 +125,12 @@ export function BusEventsIo(args: {
     res$: rx.payload<t.SysFsCopyResEvent>($, 'sys.fs/copy:res'),
     async fire(file, options = {}) {
       const tx = slug();
+      const op = 'copy';
       const res$ = copy.res$.pipe(filter((e) => e.tx === tx));
-      const first = rx.asPromise.first<t.SysFsCopyResEvent>(res$, { timeout: toTimeout(options) });
+      const first = rx.asPromise.first<t.SysFsCopyResEvent>(res$, {
+        op,
+        timeout: toTimeout(options),
+      });
 
       bus.fire({
         type: 'sys.fs/copy:req',
@@ -145,8 +157,12 @@ export function BusEventsIo(args: {
     res$: rx.payload<t.SysFsMoveResEvent>($, 'sys.fs/move:res'),
     async fire(file, options = {}) {
       const tx = slug();
+      const op = 'move';
       const res$ = move.res$.pipe(filter((e) => e.tx === tx));
-      const first = rx.asPromise.first<t.SysFsMoveResEvent>(res$, { timeout: toTimeout(options) });
+      const first = rx.asPromise.first<t.SysFsMoveResEvent>(res$, {
+        op,
+        timeout: toTimeout(options),
+      });
 
       bus.fire({
         type: 'sys.fs/move:req',
@@ -173,8 +189,10 @@ export function BusEventsIo(args: {
     res$: rx.payload<t.SysFsDeleteResEvent>($, 'sys.fs/delete:res'),
     async fire(path, options = {}) {
       const tx = slug();
+      const op = 'delete';
       const res$ = del.res$.pipe(filter((e) => e.tx === tx));
       const first = rx.asPromise.first<t.SysFsDeleteResEvent>(res$, {
+        op,
         timeout: toTimeout(options),
       });
 
