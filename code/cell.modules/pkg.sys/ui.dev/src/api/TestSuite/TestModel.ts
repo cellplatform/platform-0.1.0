@@ -41,7 +41,7 @@ export const TestModel = (args: {
       const startTimeout = (msecs: number) => {
         stopTimeout?.();
         const res = time.delay(msecs, () => {
-          const error = new Error(`Timed out after ${msecs} msecs`);
+          const error = new Error(`Test timed out after ${msecs} msecs`);
           return done({ error });
         });
         stopTimeout = res.cancel;
