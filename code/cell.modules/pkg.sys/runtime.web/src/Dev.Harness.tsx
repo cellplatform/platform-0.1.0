@@ -2,6 +2,8 @@ import React from 'react';
 import { Harness } from 'sys.ui.dev';
 
 const imports = {
+  UnitTests: import('./dev/DEV.UnitTests'),
+
   useManifest: import('./web.ui/useManifest/dev/DEV'),
   useModuleTarget: import('./web.ui/useModuleTarget/dev/DEV'),
   useModule: import('./web.ui/useModule/dev/DEV'),

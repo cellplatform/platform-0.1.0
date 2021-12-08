@@ -29,8 +29,7 @@ export function BusController(args: {
    * Info (Module)
    */
   events.info.req$.subscribe(async (e) => {
-    const { tx = slug() } = e;
-
+    const { tx } = e;
     const module = WebRuntime.module;
     const info: t.WebRuntimeInfo = { module };
     const exists = Boolean(info);
@@ -38,6 +37,18 @@ export function BusController(args: {
     bus.fire({
       type: 'sys.runtime.web/info:res',
       payload: { tx, id, exists, info },
+    });
+  });
+
+  /**
+   * Netbus
+   */
+  events.netbus.req$.subscribe((e) => {
+    const { tx } = e;
+    const exists = Boolean(netbus);
+    bus.fire({
+      type: 'sys.runtime.web/netbus:res',
+      payload: { tx, id, exists, netbus },
     });
   });
 

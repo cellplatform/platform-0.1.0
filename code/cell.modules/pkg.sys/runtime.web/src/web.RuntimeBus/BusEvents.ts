@@ -1,6 +1,6 @@
-import { firstValueFrom, of, timeout } from 'rxjs';
-import { catchError, filter, takeUntil } from 'rxjs/operators';
-import { t, rx, DEFAULT, slug } from './common';
+import { filter, takeUntil } from 'rxjs/operators';
+
+import { DEFAULT, rx, slug, t } from './common';
 
 type InstanceId = string;
 
@@ -30,16 +30,11 @@ export function BusEvents(args: {
     req$: rx.payload<t.WebRuntimeInfoReqEvent>($, 'sys.runtime.web/info:req'),
     res$: rx.payload<t.WebRuntimeInfoResEvent>($, 'sys.runtime.web/info:res'),
     async get(options = {}) {
-      const { timeout: msecs = 90000 } = options;
+      const { timeout = 90000 } = options;
       const tx = slug();
-
-      const first = firstValueFrom(
-        info.res$.pipe(
-          filter((e) => e.tx === tx),
-          timeout(msecs),
-          catchError(() => of(`ModuleInfo request timed out after ${msecs} msecs`)),
-        ),
-      );
+      const op = 'info';
+      const res$ = info.res$.pipe(filter((e) => e.tx === tx));
+      const first = rx.asPromise.first<t.WebRuntimeInfoResEvent>(res$, { op, timeout });
 
       bus.fire({
         type: 'sys.runtime.web/info:req',
@@ -47,12 +42,15 @@ export function BusEvents(args: {
       });
 
       const res = await first;
-      return typeof res === 'string' ? { tx, id, exists: false, error: res } : res;
+      if (res.payload) return res.payload;
+
+      const error = res.error?.message ?? 'Failed';
+      return { tx, id, exists: false, error };
     },
   };
 
   /**
-   * Use remote module
+   * Use remote module.
    */
   const useModule: t.WebRuntimeEvents['useModule'] = {
     $: rx.payload<t.WebRuntimeUseModuleEvent>($, 'sys.runtime.web/useModule'),
@@ -65,7 +63,33 @@ export function BusEvents(args: {
     },
   };
 
-  return { $, id, is, dispose, dispose$, info, useModule };
+  /**
+   * Netbus request.
+   */
+  const netbus: t.WebRuntimeEvents['netbus'] = {
+    req$: rx.payload<t.WebRuntimeNetbusReqEvent>($, 'sys.runtime.web/netbus:req'),
+    res$: rx.payload<t.WebRuntimeNetbusResEvent>($, 'sys.runtime.web/netbus:res'),
+    async get(options = {}) {
+      const { timeout = 30000 } = options;
+      const tx = slug();
+      const op = 'netbus';
+      const res$ = netbus.res$.pipe(filter((e) => e.tx === tx));
+      const first = rx.asPromise.first<t.WebRuntimeNetbusResEvent>(res$, { op, timeout });
+
+      bus.fire({
+        type: 'sys.runtime.web/netbus:req',
+        payload: { tx, id },
+      });
+
+      const res = await first;
+      if (res.payload) return res.payload;
+
+      const error = res.error?.message ?? 'Failed';
+      return { tx, id, exists: false, error };
+    },
+  };
+
+  return { $, id, is, dispose, dispose$, info, useModule, netbus };
 }
 
 /**
