@@ -2,6 +2,7 @@ import React from 'react';
 
 import { COLORS, css, CssValue, Icons, t } from '../common';
 import { TestError } from './Results.Test.Error';
+import { Description } from './Result.Description';
 
 export type TestResultProps = {
   data: t.TestRunResponse;
@@ -25,7 +26,6 @@ export const TestResult: React.FC<TestResultProps> = (props) => {
     line: {
       base: css({ Flex: 'horizontal-stretch-stretch' }),
       icon: css({ marginRight: 6 }),
-      description: css({ flex: 1 }),
       elapsed: css({ opacity: 0.2, userSelect: 'none' }),
     },
     error: css({ marginLeft: 25 }),
@@ -45,7 +45,7 @@ export const TestResult: React.FC<TestResultProps> = (props) => {
           {elIconFail}
           {elIconSkipped}
         </div>
-        <div {...styles.line.description}>{data.description}</div>
+        <Description text={data.description} style={{ flex: 1 }} />
         {<div {...styles.line.elapsed}>{isSkipped ? '-' : `${data.elapsed}ms`}</div>}
       </div>
       {elError}

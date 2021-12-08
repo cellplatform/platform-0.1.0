@@ -14,6 +14,12 @@ export default Test.describe('Foo', (e) => {
     throw new Error('Derp');
   });
 
+  e.describe('TODO: make suite of tests', (e) => {
+    e.it('TODO: make test work', () => {
+      //
+    });
+  });
+
   e.describe('child suite', (e) => {
     e.describe('grand child', (e) => {
       e.it('add something up', () => {
