@@ -318,7 +318,7 @@ export default Test.describe('Automerge (CRDT)', (e) => {
   /**
    * https://github.com/automerge/automerge/blob/main/SYNC.md
    */
-  e.describe.only('Network', (e) => {
+  e.describe('Network', (e) => {
     e.describe('Sync', (e) => {
       e.it('getChanges', () => {
         const A1 = createDoc();
