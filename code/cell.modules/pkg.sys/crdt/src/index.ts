@@ -1,1 +1,1 @@
-export { MyBus } from './web.MyBus';
+export { CrdtBus } from './web.CrdtBus';

@@ -8,7 +8,8 @@ type CtxRunTests = () => Promise<TestSuiteRunResponse>;
 type Ctx = {
   results?: TestSuiteRunResponse;
   tests: {
-    automerge: CtxRunTests;
+    Automerge: CtxRunTests;
+    CrdtBus: CtxRunTests;
   };
 };
 
@@ -27,14 +28,18 @@ export const actions = DevActions<Ctx>()
     };
 
     const tests: Ctx['tests'] = {
-      async automerge() {
+      async Automerge() {
         return run(await Test.bundle(import('../../web.Automerge/Automerge.TEST')));
+      },
+      async CrdtBus() {
+        return run(await Test.bundle(import('../../web.CrdtBus/index.TEST')));
       },
     };
 
     const ctx: Ctx = { tests };
 
-    tests.automerge(); // Auto-run on load.
+    // tests.Automerge(); // Auto-run on load.
+    tests.CrdtBus(); // Auto-run on load.
 
     return ctx;
   })
@@ -42,11 +47,12 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Run Tests');
 
-    e.button('run: Automerge (baseline)', (e) => e.ctx.tests.automerge());
-
+    e.button('run: Automerge (baseline)', (e) => e.ctx.tests.Automerge());
     e.component((e) => {
       return <RepoLink url={'https://github.com/automerge/automerge'} marginLeft={75} />;
     });
+
+    e.button('run: CrdtBus', (e) => e.ctx.tests.CrdtBus());
 
     e.hr();
   })

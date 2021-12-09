@@ -4,7 +4,7 @@ type InstanceId = string;
 type Milliseconds = number;
 type SemVer = string;
 
-export type MyInfo = {
+export type CrdtInfo = {
   module: { name: string; version: SemVer };
 };
 
@@ -12,39 +12,39 @@ export type MyInfo = {
  * EVENTS
  */
 
-export type MyEvent = MyInfoReqEvent | MyInfoResEvent;
+export type CrdtEvent = CrdtInfoReqEvent | CrdtInfoResEvent;
 
 /**
  * Event API
  */
-export type WebRuntimeEvents = t.Disposable & {
-  $: t.Observable<t.MyEvent>;
+export type CrdtEvents = t.Disposable & {
+  $: t.Observable<t.CrdtEvent>;
   id: InstanceId;
   is: { base(input: any): boolean };
 
   info: {
-    req$: t.Observable<t.MyInfoReq>;
-    res$: t.Observable<t.MyInfoRes>;
-    get(options?: { timeout?: Milliseconds }): Promise<MyInfoRes>;
+    req$: t.Observable<t.CrdtInfoReq>;
+    res$: t.Observable<t.CrdtInfoRes>;
+    get(options?: { timeout?: Milliseconds }): Promise<CrdtInfoRes>;
   };
 };
 
 /**
  * Module info.
  */
-export type MyInfoReqEvent = {
-  type: 'my.namespace/info:req';
-  payload: MyInfoReq;
+export type CrdtInfoReqEvent = {
+  type: 'sys.crdt/info:req';
+  payload: CrdtInfoReq;
 };
-export type MyInfoReq = { tx: string; id: InstanceId };
+export type CrdtInfoReq = { tx: string; id: InstanceId };
 
-export type MyInfoResEvent = {
-  type: 'my.namespace/info:res';
-  payload: MyInfoRes;
+export type CrdtInfoResEvent = {
+  type: 'sys.crdt/info:res';
+  payload: CrdtInfoRes;
 };
-export type MyInfoRes = {
+export type CrdtInfoRes = {
   tx: string;
   id: InstanceId;
-  info?: MyInfo;
+  info?: CrdtInfo;
   error?: string;
 };

@@ -3,7 +3,7 @@ import { BusController as Controller } from './BusController';
 
 export * from './BusEvents';
 
-export const MyBus = {
+export const CrdtBus = {
   Events,
   Controller,
 };

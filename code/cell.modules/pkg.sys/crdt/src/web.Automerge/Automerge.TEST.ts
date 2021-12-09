@@ -1,5 +1,5 @@
-import { Test, expect } from '../test';
-import { rx, Automerge, Filesystem, t, cuid } from '../common';
+import { Test, expect } from '../web.test';
+import { rx, Automerge, Filesystem, t } from '../common';
 
 /**
  * https://github.com/automerge/automerge
@@ -335,34 +335,34 @@ export default Test.describe('Automerge (CRDT)', (e) => {
         expect(patch.diffs.objectId).to.eql('_root');
       });
 
-      e.it('bus', () => {
-        const bus = rx.bus();
+      // e.it('bus', () => {
+      //   const bus = rx.bus();
 
-        const A1 = createDoc();
+      //   const A1 = createDoc();
 
-        let B1: Doc;
+      //   let B1: Doc;
 
-        rx.payload<any>(bus.$, 'init').subscribe((e) => {
-          // console.log('e', e);
-          B1 = e.doc;
-        });
+      //   rx.payload<any>(bus.$, 'init').subscribe((e) => {
+      //     // console.log('e', e);
+      //     B1 = e.doc;
+      //   });
 
-        rx.payload<any>(bus.$, 'changes').subscribe((e) => {
-          console.log('e', e);
-          const res = Automerge.applyChanges(B1, e.changes);
-          B1 = res[0];
-          // B1 = e.doc;
-        });
+      //   rx.payload<any>(bus.$, 'changes').subscribe((e) => {
+      //     console.log('e', e);
+      //     const res = Automerge.applyChanges(B1, e.changes);
+      //     B1 = res[0];
+      //     // B1 = e.doc;
+      //   });
 
-        bus.fire({ type: 'init', payload: { doc: A1 } });
+      //   bus.fire({ type: 'init', payload: { doc: A1 } });
 
-        let A2 = Automerge.change<Doc>(A1, (doc) => (doc.name = 'foo'));
-        const changes = Automerge.getChanges(A1, A2);
+      //   let A2 = Automerge.change<Doc>(A1, (doc) => (doc.name = 'foo'));
+      //   const changes = Automerge.getChanges(A1, A2);
 
-        bus.fire({ type: 'changes', payload: { changes } });
+      //   bus.fire({ type: 'changes', payload: { changes } });
 
-        console.log('B1.', B1?.name);
-      });
+      //   // console.log('B1.', B1?.name);
+      // });
 
       // e.it.skip('generateSyncMessage', () => {
       //   const { getActorId, getObjectId } = Automerge;

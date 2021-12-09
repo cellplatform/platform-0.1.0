@@ -1,5 +1,5 @@
-import { DEFAULT, rx, slug, t, WebRuntime } from './common';
 import { BusEvents } from './BusEvents';
+import { DEFAULT, pkg, rx, slug, t } from './common';
 
 type InstanceId = string;
 
@@ -9,11 +9,11 @@ type InstanceId = string;
 export function BusController(args: {
   id?: InstanceId;
   bus: t.EventBus<any>;
-  filter?: (e: t.MyEvent) => boolean;
+  filter?: (e: t.CrdtEvent) => boolean;
 }) {
   const id = args.id ?? DEFAULT.id;
 
-  const bus = rx.busAsType<t.MyEvent>(args.bus);
+  const bus = rx.busAsType<t.CrdtEvent>(args.bus);
   const events = BusEvents({ id, bus });
   const { dispose, dispose$ } = events;
 
@@ -23,11 +23,11 @@ export function BusController(args: {
   events.info.req$.subscribe(async (e) => {
     const { tx = slug() } = e;
 
-    const module = WebRuntime.module;
-    const info: t.MyInfo = { module };
+    const { name = '', version = '' } = pkg;
+    const info: t.CrdtInfo = { module: { name, version } };
 
     bus.fire({
-      type: 'my.namespace/info:res',
+      type: 'sys.crdt/info:res',
       payload: { tx, id, info },
     });
   });

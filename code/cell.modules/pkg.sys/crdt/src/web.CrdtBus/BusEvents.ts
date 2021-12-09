@@ -10,11 +10,11 @@ type InstanceId = string;
 export function BusEvents(args: {
   bus: t.EventBus<any>;
   id?: InstanceId;
-  filter?: (e: t.MyEvent) => boolean;
-}): t.WebRuntimeEvents {
+  filter?: (e: t.CrdtEvent) => boolean;
+}): t.CrdtEvents {
   const { dispose, dispose$ } = rx.disposable();
   const id = args.id ?? DEFAULT.id;
-  const bus = rx.busAsType<t.MyEvent>(args.bus);
+  const bus = rx.busAsType<t.CrdtEvent>(args.bus);
   const is = BusEvents.is;
 
   const $ = bus.$.pipe(
@@ -26,18 +26,18 @@ export function BusEvents(args: {
   /**
    * Base information about the module.
    */
-  const info: t.WebRuntimeEvents['info'] = {
-    req$: rx.payload<t.MyInfoReqEvent>($, 'my.namespace/info:req'),
-    res$: rx.payload<t.MyInfoResEvent>($, 'my.namespace/info:res'),
+  const info: t.CrdtEvents['info'] = {
+    req$: rx.payload<t.CrdtInfoReqEvent>($, 'sys.crdt/info:req'),
+    res$: rx.payload<t.CrdtInfoResEvent>($, 'sys.crdt/info:res'),
     async get(options = {}) {
-      const { timeout = 30000 } = options;
+      const { timeout = 3000 } = options;
       const tx = slug();
       const op = 'info';
       const res$ = info.res$.pipe(filter((e) => e.tx === tx));
-      const first = rx.asPromise.first<t.MyInfoResEvent>(res$, { op, timeout });
+      const first = rx.asPromise.first<t.CrdtInfoResEvent>(res$, { op, timeout });
 
       bus.fire({
-        type: 'my.namespace/info:req',
+        type: 'sys.crdt/info:req',
         payload: { tx, id },
       });
 
@@ -57,6 +57,6 @@ export function BusEvents(args: {
  */
 const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
 BusEvents.is = {
-  base: matcher('my.namespace/'),
+  base: matcher('sys.crdt/'),
   instance: (e: t.Event, id: InstanceId) => BusEvents.is.base(e) && e.payload?.id === id,
 };
