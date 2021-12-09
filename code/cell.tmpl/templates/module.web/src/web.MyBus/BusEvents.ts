@@ -11,7 +11,7 @@ export function BusEvents(args: {
   bus: t.EventBus<any>;
   id?: InstanceId;
   filter?: (e: t.MyEvent) => boolean;
-}): t.WebRuntimeEvents {
+}): t.MyEvents {
   const { dispose, dispose$ } = rx.disposable();
   const id = args.id ?? DEFAULT.id;
   const bus = rx.busAsType<t.MyEvent>(args.bus);
@@ -26,11 +26,11 @@ export function BusEvents(args: {
   /**
    * Base information about the module.
    */
-  const info: t.WebRuntimeEvents['info'] = {
+  const info: t.MyEvents['info'] = {
     req$: rx.payload<t.MyInfoReqEvent>($, 'my.namespace/info:req'),
     res$: rx.payload<t.MyInfoResEvent>($, 'my.namespace/info:res'),
     async get(options = {}) {
-      const { timeout = 30000 } = options;
+      const { timeout = 3000 } = options;
       const tx = slug();
 
       const op = 'info';

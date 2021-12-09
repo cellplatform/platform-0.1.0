@@ -1,5 +1,5 @@
-import { DEFAULT, rx, slug, t, WebRuntime } from './common';
 import { BusEvents } from './BusEvents';
+import { DEFAULT, pkg, rx, slug, t } from './common';
 
 type InstanceId = string;
 
@@ -23,8 +23,8 @@ export function BusController(args: {
   events.info.req$.subscribe(async (e) => {
     const { tx = slug() } = e;
 
-    const module = WebRuntime.module;
-    const info: t.MyInfo = { module };
+    const { name = '', version = '' } = pkg;
+    const info: t.MyInfo = { module: { name, version } };
 
     bus.fire({
       type: 'my.namespace/info:res',

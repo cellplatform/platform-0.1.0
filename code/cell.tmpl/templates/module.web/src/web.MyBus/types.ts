@@ -17,7 +17,7 @@ export type MyEvent = MyInfoReqEvent | MyInfoResEvent;
 /**
  * Event API
  */
-export type WebRuntimeEvents = t.Disposable & {
+export type MyEvents = t.Disposable & {
   $: t.Observable<t.MyEvent>;
   id: InstanceId;
   is: { base(input: any): boolean };

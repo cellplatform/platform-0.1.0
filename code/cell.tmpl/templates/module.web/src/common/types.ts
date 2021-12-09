@@ -1,4 +1,4 @@
 export { Observable } from 'rxjs';
-export { Event, EventBus, Disposable } from '@platform/types';
+export { Event, EventBus, Disposable, NpmPackageJson } from '@platform/types';
 
 export * from '../types';
