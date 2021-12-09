@@ -66,7 +66,7 @@ const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind'], props?: O) => {
   });
 };
 
-const FILESYSTEM_ID = 'fs.net';
+const FILESYSTEM_ID = 'dev.fs.net';
 
 /**
  * Actions
@@ -546,7 +546,11 @@ export const actions = DevActions<Ctx>()
 
     e.settings({
       layout: {
-        label: { topLeft: 'Mesh', topRight: elLabelRight },
+        label: {
+          topLeft: 'Mesh',
+          topRight: elLabelRight,
+          bottomRight: `filesystem: "${FILESYSTEM_ID}"`,
+        },
         position: [60, 60, 70, 60],
         border: -0.1,
         cropmarks: -0.2,
