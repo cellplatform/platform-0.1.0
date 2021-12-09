@@ -121,7 +121,7 @@ describe('TscCompiler', function () {
 
       expect(manifest.files.map((f) => f.path)).to.include('package.json');
 
-      const pkg = (await fs.readJson(fs.join(outdir, 'package.json'))) as t.INpmPackageJson;
+      const pkg = (await fs.readJson(fs.join(outdir, 'package.json'))) as t.NpmPackageJson;
       expect(pkg.name).to.eql('simple.node');
       expect(pkg.version).to.eql('0.0.1');
       expect(pkg.types).to.eql('./types.d.ts');
@@ -340,7 +340,7 @@ describe('TscCompiler', function () {
       const path = res.paths.find((path) => path.endsWith('foo/package.json'));
       expect(path).to.match(/foo\/package\.json$/);
 
-      const pkg = (await fs.readJson(path || '')) as t.INpmPackageJson;
+      const pkg = (await fs.readJson(path || '')) as t.NpmPackageJson;
       expect(pkg.name).to.eql('simple.node');
       expect(pkg.version).to.eql('0.0.1');
       expect(pkg.types).to.eql('./types.d.ts');

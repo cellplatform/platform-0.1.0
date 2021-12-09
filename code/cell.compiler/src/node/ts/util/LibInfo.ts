@@ -10,7 +10,7 @@ export const LibInfo = {
 
   async loadFile(packageJson: string) {
     const path = fs.resolve(packageJson);
-    const pkg = (await fs.readJson(path)) as t.INpmPackageJson;
+    const pkg = (await fs.readJson(path)) as t.NpmPackageJson;
     return LibInfo.fromPackage(pkg);
   },
 
@@ -19,7 +19,7 @@ export const LibInfo = {
     return pkg ? LibInfo.fromPackage(pkg) : undefined;
   },
 
-  fromPackage(pkg: t.INpmPackageJson) {
+  fromPackage(pkg: t.NpmPackageJson) {
     const info = LibInfo.empty;
     info.name = pkg.name || '';
     info.version = pkg.version || '';

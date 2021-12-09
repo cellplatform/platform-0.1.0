@@ -42,5 +42,4 @@ async function deploy(team: string, project: string, alias: string) {
 }
 
 // DEV
-// deploy('tdb', 'tmp', 'tmp.db.team');
-// deploy('tdb', 'private', 'private.db.team');
+deploy('tdb', 'tmp', 'tmp.db.team');

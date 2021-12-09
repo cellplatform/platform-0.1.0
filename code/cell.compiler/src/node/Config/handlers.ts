@@ -297,7 +297,7 @@ const findVariant = (model: t.CompilerModel, name: string) => {
 function loadPackageJson(cwd: string) {
   const path = fs.join(cwd, 'package.json');
   const exists = fs.existsSync(path);
-  return exists ? (fs.readJsonSync(path) as t.INpmPackageJson) : undefined;
+  return exists ? (fs.readJsonSync(path) as t.NpmPackageJson) : undefined;
 }
 
 function writePathMap<M extends O>(

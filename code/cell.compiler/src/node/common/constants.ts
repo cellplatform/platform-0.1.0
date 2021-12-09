@@ -22,7 +22,7 @@ export const PKG = {
 export const COMPILER = {
   PATH: fs.join(__dirname, '../../../package.json'),
   load() {
-    const { name, version } = fs.readJsonSync(COMPILER.PATH) as t.INpmPackageJson;
+    const { name, version } = fs.readJsonSync(COMPILER.PATH) as t.NpmPackageJson;
     return { name, version };
   },
 };
