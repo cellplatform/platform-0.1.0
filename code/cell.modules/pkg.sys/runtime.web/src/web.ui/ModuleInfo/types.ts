@@ -3,7 +3,7 @@ import { ManifestUrl, ModuleManifest } from '@platform/cell.types';
 type Path = string;
 
 export type ModuleInfoTitle = string | React.ReactNode | null;
-export type ModuleInfoField =
+export type ModuleInfoFields =
   | 'namespace'
   | 'version'
   | 'compiled'

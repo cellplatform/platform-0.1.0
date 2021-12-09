@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import { CssValue, t, rx, slug, DEFAULT } from './common';
 import { ManifestSelector } from './ManifestSelector';
 import { useStateController, useHistoryController } from './hooks';
-import { ModuleInfoField } from '../ModuleInfo/types';
+import { ModuleInfoFields } from '../ModuleInfo/types';
 
 type FilesystemId = string;
 type FilePath = string;
@@ -13,7 +13,7 @@ export type ManifestSelectorStatefulProps = {
   bus: t.EventBus<any>;
   canDrop?: boolean;
   showExports?: boolean;
-  fields?: ModuleInfoField[];
+  fields?: ModuleInfoFields[];
   history?: boolean | Partial<History>;
   focusOnLoad?: boolean;
   style?: CssValue;

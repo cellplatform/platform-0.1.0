@@ -9,7 +9,7 @@ type P = t.PropListItem;
 export function toPropsList(args: {
   manifest?: t.ModuleManifest;
   url?: string;
-  fields: m.ModuleInfoField[];
+  fields: m.ModuleInfoFields[];
   onExportClick?: m.ModuleInfoExportClick;
 }): t.PropListItem[] {
   const { manifest, onExportClick, fields } = args;
@@ -24,8 +24,8 @@ export function toPropsList(args: {
    * Base properties.
    */
   const list: P[] = [];
-  const add = (field: m.ModuleInfoField) => {
-    const is = (...match: m.ModuleInfoField[]) => match.includes(field);
+  const add = (field: m.ModuleInfoFields) => {
+    const is = (...match: m.ModuleInfoFields[]) => match.includes(field);
     const href = url.href;
 
     if (is('source:url') && href) {

@@ -1,7 +1,6 @@
 import React from 'react';
-import { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
 
-import { color, css, CssValue, t, HashChip } from '../../common';
+import { color, css, CssValue, t, HashChip, PropList, PropListItem } from '../../common';
 import { toPropsList } from './props/toList';
 import * as m from './types';
 import { DEFAULT } from './constants';
@@ -10,7 +9,7 @@ export type ModuleInfoProps = {
   manifestUrl?: t.ManifestUrl;
   title?: m.ModuleInfoTitle;
   manifest?: t.ModuleManifest;
-  fields?: m.ModuleInfoField[];
+  fields?: m.ModuleInfoFields[];
   width?: number;
   minWidth?: number;
   maxWidth?: number;
@@ -36,12 +35,7 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
    * RENDER
    */
   const styles = {
-    base: css({
-      position: 'relative',
-      width,
-      minWidth,
-      maxWidth,
-    }),
+    base: css({ position: 'relative', width, minWidth, maxWidth }),
     empty: css({
       color: color.format(-0.3),
       fontStyle: 'italic',

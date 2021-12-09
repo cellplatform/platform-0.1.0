@@ -6,7 +6,7 @@ import * as m from '../types';
 
 type P = t.PropListItem;
 
-export function toHash(args: { manifest: t.ModuleManifest; field: m.ModuleInfoField }): P {
+export function toHash(args: { manifest: t.ModuleManifest; field: m.ModuleInfoFields }): P {
   const { manifest, field } = args;
 
   let label = 'hash';

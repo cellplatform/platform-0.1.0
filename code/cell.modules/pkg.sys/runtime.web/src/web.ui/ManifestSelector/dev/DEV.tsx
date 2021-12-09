@@ -10,7 +10,7 @@ import { WebRuntimeBus } from '../../../web.RuntimeBus';
 import { rx, t, Button, Filesystem } from '../common';
 import { DevSampleTarget } from './DEV.SampleTarget';
 import { ModuleInfoStateful, ModuleInfoConstants } from '../../ModuleInfo';
-import { ModuleInfoField } from '../../ModuleInfo/types';
+import { ModuleInfoFields } from '../../ModuleInfo/types';
 
 const TARGET = 'foo';
 const DEFAULT = ManifestSelectorConstants.DEFAULT;
@@ -86,7 +86,7 @@ export const actions = DevActions<Ctx>()
         .multi(true)
         .pipe((e) => {
           if (e.changing) {
-            const next = e.changing.next.map(({ value }) => value) as ModuleInfoField[];
+            const next = e.changing.next.map(({ value }) => value) as ModuleInfoFields[];
             e.ctx.props.fields = next.length === 0 ? undefined : next;
           }
         }),
