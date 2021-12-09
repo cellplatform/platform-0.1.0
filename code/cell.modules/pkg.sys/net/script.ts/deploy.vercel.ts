@@ -25,7 +25,6 @@ async function deploy(team: string, project: string, alias: string) {
     target: 'production',
     regions: ['sfo1'],
     alias,
-    // routes: [{ src: '/foo', dest: '/' }],
   });
 
   const res = await wait;
@@ -43,5 +42,5 @@ async function deploy(team: string, project: string, alias: string) {
 }
 
 // DEV
-// deploy('tdb', 'db-dev', 'dev.db.team');
-deploy('tdb', 'tmp', 'tmp.db.team');
+// deploy('tdb', 'tmp', 'tmp.db.team');
+// deploy('tdb', 'private', 'private.db.team');
