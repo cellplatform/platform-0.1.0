@@ -4,3 +4,4 @@ const pkg = require('../../package.json') as t.NpmPackageJson; // eslint-disable
 export { t, pkg };
 export * from './libs';
 export * from './colors';
+export * from './Is';

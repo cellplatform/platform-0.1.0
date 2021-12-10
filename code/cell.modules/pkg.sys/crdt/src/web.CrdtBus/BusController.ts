@@ -1,3 +1,4 @@
+import { BusControllerRefs } from './BusController.Refs';
 import { BusEvents } from './BusEvents';
 import { DEFAULT, pkg, rx, slug, t } from './common';
 
@@ -11,11 +12,16 @@ export function BusController(args: {
   bus: t.EventBus<any>;
   filter?: (e: t.CrdtEvent) => boolean;
 }) {
-  const id = args.id ?? DEFAULT.id;
+  const { filter, id = DEFAULT.id } = args;
 
   const bus = rx.busAsType<t.CrdtEvent>(args.bus);
-  const events = BusEvents({ id, bus });
+  const events = BusEvents({ id, bus, filter });
   const { dispose, dispose$ } = events;
+
+  /**
+   * Initialize to child controllers.
+   */
+  BusControllerRefs({ id, bus, events });
 
   /**
    * Info (Module)

@@ -1,8 +1,12 @@
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { DEFAULT, rx, slug, t } from './common';
+import { CrdtDocEvents } from './BusEvents.Doc';
 
+type O = Record<string, unknown>;
+type DocumentId = string;
 type InstanceId = string;
+type Milliseconds = number;
 
 /**
  * Event API for the "WebRuntime"
@@ -49,7 +53,84 @@ export function BusEvents(args: {
     },
   };
 
-  return { $, id, is, dispose, dispose$, info };
+  /**
+   * Document State
+   */
+  const state: t.CrdtEvents['state'] = {
+    req$: rx.payload<t.CrdtRefReqEvent>($, 'sys.crdt/ref:req'),
+    res$: rx.payload<t.CrdtRefResEvent>($, 'sys.crdt/ref:res'),
+    changed$: rx.payload<t.CrdtRefChangedEvent>($, 'sys.crdt/changed'),
+    async fire<T extends O>(args: {
+      doc: DocumentId;
+      initial: T | (() => T);
+      change?: t.CrdtChangeHandler<T>;
+      timeout?: Milliseconds;
+    }) {
+      const { timeout = 3000, doc, initial, change } = args;
+      const tx = slug();
+      const op = 'ref.get';
+      const res$ = state.res$.pipe(filter((e) => e.tx === tx));
+      const first = rx.asPromise.first<t.CrdtRefResEvent>(res$, { op, timeout });
+
+      bus.fire({
+        type: 'sys.crdt/ref:req',
+        payload: { tx, id, doc, initial, change: change as any },
+      });
+
+      const res = await first;
+      if (res.payload) return res.payload as t.CrdtRefRes<T>;
+
+      const error = res.error?.message ?? 'Failed';
+      return { tx, id, created: false, doc: {}, error } as t.CrdtRefRes<T>;
+    },
+
+    exists: {
+      req$: rx.payload<t.CrdtRefExistsReqEvent>($, 'sys.crdt/ref/exists:req'),
+      res$: rx.payload<t.CrdtRefExistsResEvent>($, 'sys.crdt/ref/exists:res'),
+      async fire(doc, options = {}) {
+        const { timeout = 3000 } = options;
+        const tx = slug();
+        const op = 'ref.exists';
+        const res$ = state.exists.res$.pipe(filter((e) => e.tx === tx));
+        const first = rx.asPromise.first<t.CrdtRefExistsResEvent>(res$, { op, timeout });
+
+        bus.fire({
+          type: 'sys.crdt/ref/exists:req',
+          payload: { tx, id, doc },
+        });
+
+        const res = await first;
+        if (res.payload) return res.payload;
+
+        const error = res.error?.message ?? 'Failed';
+        return { tx, id, exists: false, doc, error };
+      },
+    },
+
+    remove: {
+      $: rx.payload<t.CrdtRefRemoveEvent>($, 'sys.crdt/ref/remove'),
+      async fire(doc) {
+        bus.fire({
+          type: 'sys.crdt/ref/remove',
+          payload: { id, doc },
+        });
+      },
+    },
+  };
+
+  const events: t.CrdtEvents = {
+    $,
+    id,
+    is,
+    dispose,
+    dispose$,
+    info,
+    state,
+    doc<T extends O>(args: t.CrdtDocEventsArgs<T>) {
+      return CrdtDocEvents<T>({ ...args, events });
+    },
+  };
+  return events;
 }
 
 /**

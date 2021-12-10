@@ -11,10 +11,10 @@ export function BusController(args: {
   bus: t.EventBus<any>;
   filter?: (e: t.MyEvent) => boolean;
 }) {
-  const id = args.id ?? DEFAULT.id;
+  const { filter, id = DEFAULT.id } = args;
 
   const bus = rx.busAsType<t.MyEvent>(args.bus);
-  const events = BusEvents({ id, bus });
+  const events = BusEvents({ id, bus, filter });
   const { dispose, dispose$ } = events;
 
   /**
