@@ -19,9 +19,9 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
   const push = (...input: PropListItem[]) => items.push(...input);
 
   fields.forEach((field) => {
-    if (field === 'module') push({ label: 'module', value: `${pkg.name}@${pkg.version}` });
-    if (field === 'module.name') push({ label: 'name', value: pkg.name });
-    if (field === 'module.version') items.push({ label: 'version', value: pkg.version });
+    if (field === 'module') push({ label: 'Module', value: `${pkg.name}@${pkg.version}` });
+    if (field === 'module.name') push({ label: 'Name', value: pkg.name });
+    if (field === 'module.version') items.push({ label: 'Version', value: pkg.version });
   });
 
   /**

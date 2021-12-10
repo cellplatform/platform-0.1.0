@@ -23,8 +23,11 @@ export function BusController(args: {
   events.info.req$.subscribe(async (e) => {
     const { tx = slug() } = e;
 
-    const { name = '', version = '' } = pkg;
-    const info: t.CrdtInfo = { module: { name, version } };
+    const { name = '', version = '', dependencies = {} } = pkg;
+    const info: t.CrdtInfo = {
+      module: { name, version },
+      dataformat: { name: 'automerge', version: dependencies.automerge || '' },
+    };
 
     bus.fire({
       type: 'sys.crdt/info:res',

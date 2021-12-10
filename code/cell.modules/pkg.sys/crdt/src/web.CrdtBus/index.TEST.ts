@@ -35,8 +35,12 @@ export default Test.describe('CrdtBus', (e) => {
       dispose();
 
       expect(res.id).to.eql('default-instance');
+
       expect(res.info?.module.name).to.eql(pkg.name);
       expect(res.info?.module.version).to.eql(pkg.version);
+
+      expect(res.info?.dataformat.name).to.eql('automerge');
+      expect(res.info?.dataformat.version).to.eql(pkg.dependencies?.automerge);
     });
   });
 });

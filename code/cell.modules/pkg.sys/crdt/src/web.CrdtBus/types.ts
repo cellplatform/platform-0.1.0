@@ -6,6 +6,7 @@ type SemVer = string;
 
 export type CrdtInfo = {
   module: { name: string; version: SemVer };
+  dataformat: { name: string; version: SemVer };
 };
 
 /**
