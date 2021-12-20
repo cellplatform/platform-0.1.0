@@ -27,7 +27,7 @@ export const actions = DevActions<Ctx>()
 
     const tests: Ctx['tests'] = {
       async Sample() {
-        return run(await Test.bundle(import('../Sample/Sample.TEST')));
+        return run(await Test.bundle(import('./Sample.TEST')));
       },
     };
 
