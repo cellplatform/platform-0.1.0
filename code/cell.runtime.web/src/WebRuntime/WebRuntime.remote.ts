@@ -1,12 +1,8 @@
-import { useEffect, useState } from 'react';
+import { Observable } from 'rxjs';
 
-import { Observable, Subject, firstValueFrom } from 'rxjs';
-import { filter, takeUntil, map } from 'rxjs/operators';
-
-import { log, t } from '../common';
+import { t } from '../common';
 import { loadRemoteModule } from './load.module';
 import { Script } from './load.script';
-import { useModule } from './useModule';
 
 /**
  * Tools for dynamically loading remote ("federated") module.
@@ -44,10 +40,6 @@ export function remote(args: {
     async module() {
       if (!Script.exists(url)) await Script.load({ url, namespace, dispose$, silent }).ready;
       return loadRemoteModule({ namespace, entry });
-    },
-
-    useModule<M = any>() {
-      return useModule<M>(api);
     },
   };
 

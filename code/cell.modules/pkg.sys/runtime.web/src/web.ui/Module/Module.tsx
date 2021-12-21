@@ -31,9 +31,7 @@ export const Module: React.FC<ModuleProps> = (props) => {
    */
   const styles = {
     base: css({ position: 'relative', display: 'flex' }),
-    body: css({
-      flex: 1,
-    }),
+    body: css({ flex: 1 }),
   };
 
   const elBody = Component && <Component bus={bus} />;
