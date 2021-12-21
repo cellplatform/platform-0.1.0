@@ -13,7 +13,6 @@ const transport = WindowTransport().add(worker1).add(worker1); //.add(worker2);
 console.log('MAIN transport', transport);
 
 type MyEvent = { type: 'foo'; payload: { msg?: string } };
-
 const bus = WorkerBus<MyEvent>(transport);
 
 bus.$.subscribe((e) => {

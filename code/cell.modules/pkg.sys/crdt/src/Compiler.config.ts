@@ -11,6 +11,7 @@ export default () =>
         .port(Package.compiler.port)
 
         .entry('main', './src/entry/main')
+        // .entry('web.worker', './src/workers/web.worker')
 
         // .declarations('./src/**/*')
 
