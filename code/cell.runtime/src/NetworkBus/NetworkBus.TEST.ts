@@ -1,50 +1,22 @@
-import { is } from '@platform/util.value';
-import { Subject } from 'rxjs';
+import { expect, is, time } from '../test';
+import { NetworkBusMock } from './NetworkBus.Mock';
 
-import { NetworkBus } from '.';
-import { expect, t, time } from '../test';
-
-type MyEvent = { type: 'foo'; payload: { count?: number } };
-
-function testBus(options: { uris?: t.NetworkBusUri[]; local?: string } = {}) {
-  const local = options.local ?? 'uri:me';
-  const uris = options.uris ?? [];
-  const in$ = new Subject<MyEvent>();
-
-  const state = {
-    out: [] as { targets: string[]; event: t.Event }[],
-  };
-
-  const pump: t.NetworkPump<MyEvent> = {
-    in: (fn) => in$.subscribe(fn),
-    out: (e) => state.out.push(e),
-  };
-
-  const bus = NetworkBus<MyEvent>({
-    pump,
-    local: async () => local,
-    remotes: async () => uris,
-  });
-
-  const res = { bus, state, local, uris, in$ };
-  return res;
-}
+type E = { type: 'foo'; payload: { count?: number } };
 
 describe('NetworkBus', () => {
   it('$ (observable)', () => {
-    const bus = testBus().bus;
+    const bus = NetworkBusMock();
     expect(is.observable(bus.$)).to.eql(true);
   });
 
   describe('IO: pump/in', () => {
     it('fires incoming message from the network pump through the LOCAL observable ($)', () => {
-      const { bus, in$ } = testBus({});
-
-      const fired: MyEvent[] = [];
+      const bus = NetworkBusMock<E>();
+      const fired: E[] = [];
       bus.$.subscribe((e) => fired.push(e));
 
-      const event: MyEvent = { type: 'foo', payload: {} };
-      in$.next(event);
+      const event: E = { type: 'foo', payload: {} };
+      bus.mock.in.next(event);
 
       expect(fired.length).to.eql(1);
       expect(fired[0]).to.eql(event);
@@ -52,16 +24,16 @@ describe('NetworkBus', () => {
   });
 
   describe('IO: pump/out', () => {
-    const uris = ['uri:one', 'uri:two', 'uri:three'];
+    const remotes = ['uri:one', 'uri:two', 'uri:three'];
 
     describe('bus.fire (root)', () => {
       it('sends through LOCAL observable ($)', async () => {
-        const { bus } = testBus();
+        const bus = NetworkBusMock<E>();
 
-        const fired: MyEvent[] = [];
+        const fired: E[] = [];
         bus.$.subscribe((e) => fired.push(e));
 
-        const event: MyEvent = { type: 'foo', payload: { count: 999 } };
+        const event: E = { type: 'foo', payload: { count: 999 } };
         bus.fire(event);
         expect(fired.length).to.eql(0); // NB: Network events are always sent asynchronously.
 
@@ -71,26 +43,26 @@ describe('NetworkBus', () => {
       });
 
       it('sends to REMOTE targets (URIs)', async () => {
-        const { bus, state } = testBus({ uris });
+        const bus = NetworkBusMock<E>({ remotes });
 
-        const event: MyEvent = { type: 'foo', payload: { count: 888 } };
+        const event: E = { type: 'foo', payload: { count: 888 } };
         bus.fire(event);
-        expect(state.out.length).to.eql(0); // NB: Network events are always sent asynchronously.
+        expect(bus.mock.out.length).to.eql(0); // NB: Network events are always sent asynchronously.
 
         await time.wait(0);
-        expect(state.out.length).to.eql(1);
-        expect(state.out[0].targets).to.eql(uris);
-        expect(state.out[0].event).to.eql(event);
+        expect(bus.mock.out.length).to.eql(1);
+        expect(bus.mock.out[0].targets).to.eql(remotes);
+        expect(bus.mock.out[0].event).to.eql(event);
       });
     });
 
     describe('target', () => {
-      const event: MyEvent = { type: 'foo', payload: { count: 123 } };
+      const event: E = { type: 'foo', payload: { count: 123 } };
 
       it('bus.target.local: sends to LOCAL observable only ', async () => {
-        const { bus, state } = testBus({ uris });
+        const bus = NetworkBusMock<E>({ remotes });
 
-        const fired: MyEvent[] = [];
+        const fired: E[] = [];
         bus.$.subscribe((e) => fired.push(e));
 
         const wait = bus.target.local(event);
@@ -99,13 +71,13 @@ describe('NetworkBus', () => {
         const res = await wait;
         expect(fired).to.eql([event]); // Fired locally.
         expect(res.targetted).to.eql(['uri:me']);
-        expect(state.out.length).to.eql(0);
+        expect(bus.mock.out.length).to.eql(0);
       });
 
       it('bus.target.remote: sends to REMOTE targets only', async () => {
-        const { bus, state } = testBus({ uris });
+        const bus = NetworkBusMock<E>({ remotes });
 
-        const fired: MyEvent[] = [];
+        const fired: E[] = [];
         bus.$.subscribe((e) => fired.push(e));
 
         const res = await bus.target.remote(event);
@@ -113,18 +85,18 @@ describe('NetworkBus', () => {
         expect(fired.length).to.eql(0); // NB: Only sent to remote targets.
 
         expect(res.targetted).to.not.include('uri:me');
-        expect(res.targetted).to.eql(uris);
+        expect(res.targetted).to.eql(remotes);
 
-        expect(state.out.length).to.eql(1);
-        expect(state.out[0].event).to.eql(event);
-        expect(state.out[0].targets).to.eql(uris);
+        expect(bus.mock.out.length).to.eql(1);
+        expect(bus.mock.out[0].event).to.eql(event);
+        expect(bus.mock.out[0].targets).to.eql(remotes);
       });
 
       describe('bus.target.node', () => {
         it('local target URI only ("uri:me")', async () => {
-          const { bus, state } = testBus({ uris });
+          const bus = NetworkBusMock<E>({ remotes });
 
-          const fired: MyEvent[] = [];
+          const fired: E[] = [];
           bus.$.subscribe((e) => fired.push(e));
 
           const target = 'uri:me';
@@ -134,13 +106,13 @@ describe('NetworkBus', () => {
 
           expect(res.targetted).to.eql([target]);
           expect(res.event).to.eql(event);
-          expect(state.out.length).to.eql(0);
+          expect(bus.mock.out.length).to.eql(0);
         });
 
         it('single target remote URI', async () => {
-          const { bus, state } = testBus({ uris });
+          const bus = NetworkBusMock<E>({ remotes });
 
-          const fired: MyEvent[] = [];
+          const fired: E[] = [];
           bus.$.subscribe((e) => fired.push(e));
 
           const target = 'uri:one';
@@ -151,14 +123,14 @@ describe('NetworkBus', () => {
           expect(res.targetted).to.eql([target]);
           expect(res.event).to.eql(event);
 
-          expect(state.out.length).to.eql(1);
-          expect(state.out[0].targets).to.eql([target]);
+          expect(bus.mock.out.length).to.eql(1);
+          expect(bus.mock.out[0].targets).to.eql([target]);
         });
 
         it('multiple target URIs (local and remote)', async () => {
-          const { bus, state } = testBus({ uris });
+          const bus = NetworkBusMock<E>({ remotes });
 
-          const fired: MyEvent[] = [];
+          const fired: E[] = [];
           bus.$.subscribe((e) => fired.push(e));
 
           const res = await bus.target.node('uri:one', 'uri:three', 'uri:me').fire(event);
@@ -168,30 +140,30 @@ describe('NetworkBus', () => {
           expect(res.targetted).to.eql(['uri:me', 'uri:one', 'uri:three']);
           expect(res.event).to.eql(event);
 
-          expect(state.out.length).to.eql(1);
-          expect(state.out[0].targets).to.eql(['uri:one', 'uri:three']);
+          expect(bus.mock.out.length).to.eql(1);
+          expect(bus.mock.out[0].targets).to.eql(['uri:one', 'uri:three']);
         });
 
         it('given target URI does not exist in "remotes" (nothing broadcast)', async () => {
-          const { bus, state } = testBus({ uris });
+          const bus = NetworkBusMock<E>({ remotes });
           const res = await bus.target.node('foobar:404').fire(event);
           expect(res.targetted).to.eql([]);
-          expect(state.out).to.eql([]);
+          expect(bus.mock.out).to.eql([]);
         });
 
         it('no targets: broadcasts nothing', async () => {
-          const { bus, state } = testBus({ uris });
+          const bus = NetworkBusMock<E>({ remotes });
           const res = await bus.target.node().fire(event);
           expect(res.targetted).to.eql([]);
-          expect(state.out).to.eql([]);
+          expect(bus.mock.out).to.eql([]);
         });
       });
 
       describe('bus.target.filter', () => {
         it('filters on specific target URI(s)', async () => {
-          const { bus, state } = testBus({ uris });
+          const bus = NetworkBusMock<E>({ remotes });
 
-          const fired: MyEvent[] = [];
+          const fired: E[] = [];
           bus.$.subscribe((e) => fired.push(e));
 
           const res = await bus.target
@@ -203,23 +175,23 @@ describe('NetworkBus', () => {
           expect(res.targetted).to.eql(['uri:me', 'uri:two']);
           expect(res.event).to.eql(event);
 
-          expect(state.out.length).to.eql(1);
-          expect(state.out[0].targets).to.eql(['uri:two']);
+          expect(bus.mock.out.length).to.eql(1);
+          expect(bus.mock.out[0].targets).to.eql(['uri:two']);
         });
 
         it('no filter: broadcasts everywhere (NB: edge-case, not an intended usage scenario)', async () => {
-          const { bus, state } = testBus({ uris });
+          const bus = NetworkBusMock<E>({ remotes });
 
-          const fired: MyEvent[] = [];
+          const fired: E[] = [];
           bus.$.subscribe((e) => fired.push(e));
 
           const res = await bus.target.filter().fire(event);
 
           expect(fired).to.eql([event]); // Fired locally.
-          expect(res.targetted).to.eql(['uri:me', ...uris]);
+          expect(res.targetted).to.eql(['uri:me', ...remotes]);
 
-          expect(state.out.length).to.eql(1);
-          expect(state.out[0].targets).to.eql(uris);
+          expect(bus.mock.out.length).to.eql(1);
+          expect(bus.mock.out[0].targets).to.eql(remotes);
         });
       });
     });
