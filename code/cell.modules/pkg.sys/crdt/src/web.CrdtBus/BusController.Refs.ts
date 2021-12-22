@@ -49,7 +49,7 @@ export function BusControllerRefs(args: {
 
     if (changed) {
       bus.fire({
-        type: 'sys.crdt/changed',
+        type: 'sys.crdt/ref/changed',
         payload: { tx, id, doc: { id: e.doc, prev, next: data } },
       });
     }

@@ -59,7 +59,7 @@ export function BusEvents(args: {
   const state: t.CrdtEvents['state'] = {
     req$: rx.payload<t.CrdtRefReqEvent>($, 'sys.crdt/ref:req'),
     res$: rx.payload<t.CrdtRefResEvent>($, 'sys.crdt/ref:res'),
-    changed$: rx.payload<t.CrdtRefChangedEvent>($, 'sys.crdt/changed'),
+    changed$: rx.payload<t.CrdtRefChangedEvent>($, 'sys.crdt/ref/changed'),
     async fire<T extends O>(args: {
       doc: DocumentId;
       initial: T | (() => T);
