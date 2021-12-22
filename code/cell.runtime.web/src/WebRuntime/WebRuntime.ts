@@ -6,7 +6,6 @@ import { remote } from './WebRuntime.remote';
  */
 export const WebRuntime = {
   module: Runtime.module(), // NB: __CELL__ used within this method.
-  bundle: Runtime.origin(), // NB: __CELL__ used within this method.
   remote,
 };
 
