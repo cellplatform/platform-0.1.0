@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse, TestSuiteModel } from 'sys.ui.dev/lib/types';
-import { RepoLink } from './components/RepoLink';
+import { RepoLink } from './RepoLink';
 
 type CtxRunTests = () => Promise<TestSuiteRunResponse>;
 
@@ -29,10 +29,10 @@ export const actions = DevActions<Ctx>()
 
     const tests: Ctx['tests'] = {
       async Automerge() {
-        return run(await Test.bundle(import('../../web.Automerge/Automerge.TEST')));
+        return run(await Test.bundle(import('../../../web.Automerge/Automerge.TEST')));
       },
       async CrdtBus() {
-        return run(await Test.bundle(import('../../web.CrdtBus/index.TEST')));
+        return run(await Test.bundle(import('../../../web.CrdtBus/TEST')));
       },
     };
 
