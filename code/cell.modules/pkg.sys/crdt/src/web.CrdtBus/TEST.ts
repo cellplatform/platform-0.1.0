@@ -1,4 +1,15 @@
-import { t, expect, pkg, rx, Test, cuid, Is, Automerge } from '../web.test';
+import {
+  t,
+  expect,
+  pkg,
+  rx,
+  Test,
+  cuid,
+  Is,
+  Automerge,
+  NetworkBusMockMesh,
+  time,
+} from '../web.test';
 import { CrdtBus } from '.';
 
 type Doc = { count: number; name?: string };
@@ -318,87 +329,32 @@ export default Test.describe('CrdtBus', (e) => {
     });
   });
 
-  e.describe.skip('sync__OLD', (e) => {
-    e.it.skip('tmp', async () => {
-      const ctrl1 = CrdtBus.Controller({ bus, id: '1' });
-      const ctrl2 = CrdtBus.Controller({ bus, id: '2' });
+  e.describe.only('sync (v1)', (e) => {
+    const testProcess = (options: { bus?: t.EventBus<any> } = {}) => {
+      const bus = rx.busAsType<t.CrdtEvent>(options.bus || rx.bus());
+      const ctrl = CrdtBus.Controller({ bus });
+      const events = ctrl.events;
+      const doc = events.doc;
+      return { ctrl, bus, events, doc };
+    };
 
-      // const { dispose, events } = CrdtBus.Controller({ bus });
-      // const res = await events.info.get();
+    const testProcesses = () => {
+      const p1 = testProcess();
+      const p2 = testProcess();
+      const p3 = testProcess();
+    };
 
-      const id = cuid();
-      const initial: Doc = { count: 0 };
+    e.it('tmp', async () => {
+      // const netbus = NetworkBusMock<t.CrdtEvent>();
 
-      const init1 = Automerge.initSyncState();
-      const init2 = Automerge.initSyncState();
+      const [p1, p2] = NetworkBusMockMesh(3, { memorylog: true });
 
-      const doc1 = await ctrl1.events.doc<Doc>({ id, initial });
-      const doc2 = await ctrl2.events.doc<Doc>({ id, initial: doc1.current });
-      // const doc2 = await ctrl2.events.doc<Doc>({ id, initial });
+      const event = { type: 'foo', payload: { count: 123 } };
 
-      // const res = await events.state.fire<Doc>({ doc: docId, initial });
+      p1.target.remote(event);
 
-      doc1.change((draft) => (draft.count = 123));
-
-      // doc.current
-      console.log('doc1.current', doc1.current);
-      console.log('doc2.current', doc2.current);
-      console.log('-------------------------------------------');
-
-      console.log('init1', init1);
-
-      const [next, syncMessage] = Automerge.generateSyncMessage(doc1.current, init1);
-
-      console.log('next', next);
-      console.log('syncMessage', syncMessage);
-
-      // return;
-      // console.log('res', res);
-
-      if (syncMessage) {
-        console.log('-------------------------------------------');
-        // doc2.change((draft) => (draft.count = 1));
-        // doc2.change((draft) => (draft.count = 2));
-
-        const r = Automerge.receiveSyncMessage<Doc>(
-          doc2.current, // TEMP 🐷
-          init2,
-          syncMessage,
-        );
-        console.log('r', r);
-      }
-
-      ctrl1.dispose();
-      ctrl2.dispose();
-    });
-
-    e.it.skip('sync', async () => {
-      let doc1 = Automerge.from<Doc>({ count: 0 });
-      const doc2 = Automerge.from<Doc>(doc1);
-
-      const init1 = Automerge.initSyncState();
-      const init2 = Automerge.initSyncState();
-
-      expect(doc1).to.eql(doc2);
-      expect(doc1).to.not.equal(doc2);
-
-      doc1 = Automerge.change(doc1, (d) => (d.count = 123));
-
-      expect(doc1).to.not.eql(doc2);
-
-      const [next, syncMessage] = Automerge.Backend.generateSyncMessage(doc1, init1);
-
-      // Automerge.Frontend.
-
-      if (syncMessage) {
-        const r = Automerge.receiveSyncMessage<Doc>(
-          doc2, // TEMP 🐷
-          init2,
-          syncMessage,
-        );
-
-        console.log('r', r);
-      }
+      await time.wait(5);
+      console.log('p2.mock.fired', p2.mock.fired);
     });
   });
 });

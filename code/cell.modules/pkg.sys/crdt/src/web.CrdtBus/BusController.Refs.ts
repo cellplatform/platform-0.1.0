@@ -1,4 +1,4 @@
-import { t, Automerge } from '../common';
+import { t, Automerge, rx } from '../common';
 
 type O = Record<string, unknown>;
 type DocumentId = string;
@@ -9,12 +9,10 @@ type Refs = { [id: DocumentId]: Ref };
 /**
  * Maintain memory references to documents.
  */
-export function BusControllerRefs(args: {
-  id: InstanceId;
-  bus: t.EventBus<t.CrdtEvent>;
-  events: t.CrdtEvents;
-}) {
-  const { id, events, bus } = args;
+export function BusControllerRefs(args: { bus: t.EventBus<any>; events: t.CrdtEvents }) {
+  const { events } = args;
+  const id = events.id;
+  const bus = rx.busAsType<t.CrdtEvent>(args.bus);
   const refs: Refs = {};
 
   function wrangleInitial<T extends O>(input: T | (() => T)): T {

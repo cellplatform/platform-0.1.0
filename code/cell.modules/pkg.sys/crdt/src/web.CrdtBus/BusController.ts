@@ -1,4 +1,5 @@
 import { BusControllerRefs } from './BusController.Refs';
+import { BusControllerSyncV1 } from './BusController.Sync.V1';
 import { BusEvents } from './BusEvents';
 import { DEFAULT, pkg, rx, slug, t } from './common';
 
@@ -11,8 +12,9 @@ export function BusController(args: {
   id?: InstanceId;
   bus: t.EventBus<any>;
   filter?: (e: t.CrdtEvent) => boolean;
+  sync?: { netbus: t.NetworkBus<any>; version: '1' };
 }) {
-  const { filter, id = DEFAULT.id } = args;
+  const { filter, id = DEFAULT.id, sync } = args;
 
   const bus = rx.busAsType<t.CrdtEvent>(args.bus);
   const events = BusEvents({ id, bus, filter });
@@ -21,7 +23,8 @@ export function BusController(args: {
   /**
    * Initialize to child controllers.
    */
-  BusControllerRefs({ id, bus, events });
+  BusControllerRefs({ bus, events });
+  if (sync?.version === '1') BusControllerSyncV1({ bus, netbus: sync.netbus, events });
 
   /**
    * Info (Module)
