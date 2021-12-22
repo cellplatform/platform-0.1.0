@@ -1,5 +1,3 @@
-// import('./main.worker');
-
 /**
  * DOM (User Interface)
  */
