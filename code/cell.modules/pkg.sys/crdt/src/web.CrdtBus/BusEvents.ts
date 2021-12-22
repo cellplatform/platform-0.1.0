@@ -61,12 +61,12 @@ export function BusEvents(args: {
     res$: rx.payload<t.CrdtRefResEvent>($, 'sys.crdt/ref:res'),
     changed$: rx.payload<t.CrdtRefChangedEvent>($, 'sys.crdt/ref/changed'),
     async fire<T extends O>(args: {
-      doc: DocumentId;
+      id: DocumentId;
       initial: T | (() => T);
       change?: t.CrdtChangeHandler<T>;
       timeout?: Milliseconds;
     }) {
-      const { timeout = 3000, doc, initial, change } = args;
+      const { timeout = 3000, initial, change } = args;
       const tx = slug();
       const op = 'ref.get';
       const res$ = state.res$.pipe(filter((e) => e.tx === tx));
@@ -74,7 +74,7 @@ export function BusEvents(args: {
 
       bus.fire({
         type: 'sys.crdt/ref:req',
-        payload: { tx, id, doc, initial, change: change as any },
+        payload: { tx, id, doc: { id: args.id }, initial, change: change as any },
       });
 
       const res = await first;
@@ -96,14 +96,14 @@ export function BusEvents(args: {
 
         bus.fire({
           type: 'sys.crdt/ref/exists:req',
-          payload: { tx, id, doc },
+          payload: { tx, id, doc: { id: doc } },
         });
 
         const res = await first;
         if (res.payload) return res.payload;
 
         const error = res.error?.message ?? 'Failed';
-        return { tx, id, exists: false, doc, error };
+        return { tx, id, exists: false, doc: { id: doc }, error };
       },
     },
 
@@ -112,7 +112,7 @@ export function BusEvents(args: {
       async fire(doc) {
         bus.fire({
           type: 'sys.crdt/ref/remove',
-          payload: { id, doc },
+          payload: { id, doc: { id: doc } },
         });
       },
     },

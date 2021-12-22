@@ -27,7 +27,7 @@ export function BusControllerRefs(args: {
    */
   events.state.req$.subscribe(async (e) => {
     const { tx } = e;
-    const ref = refs[e.doc];
+    const ref = refs[e.doc.id];
     const created = !Boolean(ref);
     const changed = Boolean(e.change);
     let data = ref?.data ?? wrangleInitial(e.initial);
@@ -39,8 +39,8 @@ export function BusControllerRefs(args: {
     }
 
     // Store reference.
-    const doc = { id: e.doc, data };
-    refs[e.doc] = doc;
+    const doc = { id: e.doc.id, data };
+    refs[e.doc.id] = doc;
 
     bus.fire({
       type: 'sys.crdt/ref:res',
@@ -50,7 +50,7 @@ export function BusControllerRefs(args: {
     if (changed) {
       bus.fire({
         type: 'sys.crdt/ref/changed',
-        payload: { tx, id, doc: { id: e.doc, prev, next: data } },
+        payload: { tx, id, doc: { id: e.doc.id, prev, next: data } },
       });
     }
   });
@@ -59,7 +59,7 @@ export function BusControllerRefs(args: {
    * Remove reference.
    */
   events.state.remove.$.subscribe((e) => {
-    delete refs[e.doc];
+    delete refs[e.doc.id];
   });
 
   /**
@@ -67,7 +67,7 @@ export function BusControllerRefs(args: {
    */
   events.state.exists.req$.subscribe((e) => {
     const { tx, doc } = e;
-    const exists = Boolean(refs[doc]);
+    const exists = Boolean(refs[doc.id]);
     bus.fire({
       type: 'sys.crdt/ref/exists:res',
       payload: { tx, id, doc, exists },

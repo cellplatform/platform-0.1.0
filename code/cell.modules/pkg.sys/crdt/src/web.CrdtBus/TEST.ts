@@ -97,17 +97,17 @@ export default Test.describe('CrdtBus', (e) => {
       });
     });
 
-    e.describe('state (ref)', (e) => {
+    e.describe('ref (memory state)', (e) => {
       e.it('initial via plain { object }', async () => {
         const { dispose, events } = CrdtBus.Controller({ bus });
-        const doc = cuid();
+        const id = cuid();
         const initial: Doc = { count: 0 };
 
-        const res1 = await events.state.fire<Doc>({ doc, initial });
-        const res2 = await events.state.fire<Doc>({ doc, initial });
+        const res1 = await events.state.fire<Doc>({ id, initial });
+        const res2 = await events.state.fire<Doc>({ id, initial });
         dispose();
 
-        expect(res1.doc.id).to.eql(doc);
+        expect(res1.doc.id).to.eql(id);
         expect(res1.doc.data).to.eql(initial);
         expect(Is.automergeObject(res1.doc.data)).to.eql(true);
         expect(res1.changed).to.eql(false);
@@ -122,7 +122,7 @@ export default Test.describe('CrdtBus', (e) => {
         const doc = cuid();
         const initial = Automerge.from<Doc>({ count: 0 });
 
-        const res = await events.state.fire<Doc>({ doc, initial });
+        const res = await events.state.fire<Doc>({ id: doc, initial });
         dispose();
 
         expect(res.doc.id).to.eql(doc);
@@ -132,35 +132,35 @@ export default Test.describe('CrdtBus', (e) => {
 
       e.it('initial via function', async () => {
         const { dispose, events } = CrdtBus.Controller({ bus });
-        const doc = cuid();
+        const id = cuid();
         const initial: Doc = { count: 0 };
 
-        const res = await events.state.fire<Doc>({ doc, initial: () => initial });
+        const res = await events.state.fire<Doc>({ id, initial: () => initial });
         dispose();
 
-        expect(res.doc.id).to.eql(doc);
+        expect(res.doc.id).to.eql(id);
         expect(res.doc.data).to.eql(initial);
         expect(Is.automergeObject(res.doc.data)).to.eql(true);
       });
 
       e.it('exists', async () => {
         const { dispose, events } = CrdtBus.Controller({ bus });
-        const doc = cuid();
+        const id = cuid();
         const initial: Doc = { count: 0 };
 
         const test = async (exists: boolean) => {
-          const res = await events.state.exists.fire(doc);
+          const res = await events.state.exists.fire(id);
           expect(res.exists).to.eql(exists);
           expect(res.error).to.eql(undefined);
-          expect(res.doc).to.eql(doc);
+          expect(res.doc).to.eql({ id });
         };
 
         await test(false);
 
-        await events.state.fire<Doc>({ doc, initial });
+        await events.state.fire<Doc>({ id, initial });
         await test(true);
 
-        await events.state.remove.fire(doc);
+        await events.state.remove.fire(id);
         await test(false);
 
         dispose();
@@ -168,17 +168,17 @@ export default Test.describe('CrdtBus', (e) => {
 
       e.it('remove (memory ref)', async () => {
         const { dispose, events } = CrdtBus.Controller({ bus });
-        const doc = cuid();
+        const id = cuid();
         const initial: Doc = { count: 0 };
 
-        const res1 = await events.state.fire<Doc>({ doc, initial });
-        const res2 = await events.state.fire<Doc>({ doc, initial });
+        const res1 = await events.state.fire<Doc>({ id, initial });
+        const res2 = await events.state.fire<Doc>({ id, initial });
 
         expect(res1.created).to.eql(true);
         expect(res2.created).to.eql(false);
 
-        events.state.remove.fire(doc);
-        const res3 = await events.state.fire<Doc>({ doc, initial });
+        events.state.remove.fire(id);
+        const res3 = await events.state.fire<Doc>({ id, initial });
         expect(res3.created).to.eql(true); // NB: Initialized again as the reference was removed from memory.
 
         dispose();
@@ -186,7 +186,7 @@ export default Test.describe('CrdtBus', (e) => {
 
       e.it('change', async () => {
         const { dispose, events } = CrdtBus.Controller({ bus });
-        const doc = cuid();
+        const id = cuid();
         const initial: Doc = { count: 0 };
 
         const change = (doc: Doc) => {
@@ -194,7 +194,7 @@ export default Test.describe('CrdtBus', (e) => {
           doc.name = 'hello';
         };
 
-        const res = await events.state.fire<Doc>({ doc, initial, change });
+        const res = await events.state.fire<Doc>({ id, initial, change });
         expect(res.changed).to.eql(true);
         expect(res.doc.data.count).to.eql(123);
         expect(res.doc.data.name).to.eql('hello');
@@ -204,14 +204,14 @@ export default Test.describe('CrdtBus', (e) => {
 
       e.it('changed (events)', async () => {
         const { dispose, events } = CrdtBus.Controller({ bus });
-        const doc = cuid();
+        const id = cuid();
         const initial: Doc = { count: 0 };
 
         const changed: t.CrdtRefChanged[] = [];
         events.state.changed$.subscribe((e) => changed.push(e));
 
-        await events.state.fire<Doc>({ doc, initial, change: (doc) => (doc.name = 'foobar') });
-        await events.state.fire<Doc>({ doc, initial, change: (doc) => doc.count++ });
+        await events.state.fire<Doc>({ id, initial, change: (doc) => (doc.name = 'foobar') });
+        await events.state.fire<Doc>({ id, initial, change: (doc) => doc.count++ });
 
         expect(changed.length).to.eql(2);
 

@@ -24,7 +24,7 @@ export type CrdtEvents = t.Disposable & {
     res$: t.Observable<t.CrdtRefRes>;
     changed$: t.Observable<t.CrdtRefChanged>;
     fire<T extends O>(args: {
-      doc: DocumentId;
+      id: DocumentId;
       initial: T | (() => T);
       change?: t.CrdtChangeHandler<T>;
       timeout?: Milliseconds;
@@ -32,11 +32,11 @@ export type CrdtEvents = t.Disposable & {
     exists: {
       req$: t.Observable<t.CrdtRefExistsReq>;
       res$: t.Observable<t.CrdtRefExistsRes>;
-      fire(doc: DocumentId, options?: { timeout?: Milliseconds }): Promise<t.CrdtRefExistsRes>;
+      fire(id: DocumentId, options?: { timeout?: Milliseconds }): Promise<t.CrdtRefExistsRes>;
     };
     remove: {
       $: t.Observable<t.CrdtRefRemove>;
-      fire(doc: DocumentId): Promise<void>;
+      fire(id: DocumentId): Promise<void>;
     };
   };
 

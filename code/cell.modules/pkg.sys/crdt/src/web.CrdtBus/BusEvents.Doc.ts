@@ -13,7 +13,7 @@ export async function CrdtDocEvents<T extends O>(
   const { events } = args;
 
   const getCurrent = async () => {
-    const res = await events.state.fire({ doc: args.id, initial: args.initial });
+    const res = await events.state.fire({ id: args.id, initial: args.initial });
     return res.doc.data;
   };
   let _current: T = await getCurrent();
@@ -34,7 +34,7 @@ export async function CrdtDocEvents<T extends O>(
     },
 
     async change(handler) {
-      events.state.fire({ doc: args.id, initial: args.initial, change: handler });
+      events.state.fire({ id: args.id, initial: args.initial, change: handler });
       return _current;
     },
   };

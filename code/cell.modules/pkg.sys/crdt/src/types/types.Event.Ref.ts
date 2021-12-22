@@ -22,7 +22,7 @@ export type CrdtRefReqEvent<T extends O = O> = {
 export type CrdtRefReq<T extends O = O> = {
   tx: string;
   id: InstanceId;
-  doc: DocumentId;
+  doc: { id: DocumentId };
   initial: T | (() => T);
   change?: t.CrdtChangeHandler<T>;
 };
@@ -49,7 +49,7 @@ export type CrdtRefRemoveEvent = {
 };
 export type CrdtRefRemove = {
   id: InstanceId;
-  doc: DocumentId;
+  doc: { id: DocumentId };
 };
 
 /**
@@ -59,7 +59,7 @@ export type CrdtRefExistsReqEvent = {
   type: 'sys.crdt/ref/exists:req';
   payload: CrdtRefExistsReq;
 };
-export type CrdtRefExistsReq = { tx: string; id: InstanceId; doc: DocumentId };
+export type CrdtRefExistsReq = { tx: string; id: InstanceId; doc: { id: DocumentId } };
 
 export type CrdtRefExistsResEvent = {
   type: 'sys.crdt/ref/exists:res';
@@ -68,7 +68,7 @@ export type CrdtRefExistsResEvent = {
 export type CrdtRefExistsRes = {
   tx: string;
   id: InstanceId;
-  doc: DocumentId;
+  doc: { id: DocumentId };
   exists: boolean;
   error?: string;
 };
