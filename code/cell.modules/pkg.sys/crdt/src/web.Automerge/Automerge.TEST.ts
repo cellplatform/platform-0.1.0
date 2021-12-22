@@ -318,132 +318,20 @@ export default Test.describe('Automerge (CRDT)', (e) => {
   /**
    * https://github.com/automerge/automerge/blob/main/SYNC.md
    */
-  e.describe('Network', (e) => {
-    e.describe('Sync', (e) => {
-      e.it('getChanges', () => {
-        const A1 = createDoc();
-        const B1 = Automerge.merge(Automerge.init<Doc>(), A1);
+  e.describe('sync', (e) => {
+    e.it('getChanges / applyChanges', () => {
+      const A1 = createDoc();
+      const B1 = Automerge.merge(Automerge.init<Doc>(), A1);
 
-        let A2 = Automerge.change<Doc>(A1, (doc) => (doc.name = 'foo'));
-        A2 = Automerge.change<Doc>(A2, (doc) => (doc.name = 'foobar'));
+      let A2 = Automerge.change<Doc>(A1, (doc) => (doc.name = 'foo'));
+      A2 = Automerge.change<Doc>(A2, (doc) => (doc.name = 'foobar'));
 
-        const changes = Automerge.getChanges(A1, A2);
-        expect(changes.length).to.eql(2);
+      const changes = Automerge.getChanges(A1, A2);
+      expect(changes.length).to.eql(2);
 
-        const [C1, patch] = Automerge.applyChanges(B1, changes);
-        expect(C1.name).to.eql('foobar');
-        expect(patch.diffs.objectId).to.eql('_root');
-      });
-
-      // e.it('bus', () => {
-      //   const bus = rx.bus();
-
-      //   const A1 = createDoc();
-
-      //   let B1: Doc;
-
-      //   rx.payload<any>(bus.$, 'init').subscribe((e) => {
-      //     // console.log('e', e);
-      //     B1 = e.doc;
-      //   });
-
-      //   rx.payload<any>(bus.$, 'changes').subscribe((e) => {
-      //     console.log('e', e);
-      //     const res = Automerge.applyChanges(B1, e.changes);
-      //     B1 = res[0];
-      //     // B1 = e.doc;
-      //   });
-
-      //   bus.fire({ type: 'init', payload: { doc: A1 } });
-
-      //   let A2 = Automerge.change<Doc>(A1, (doc) => (doc.name = 'foo'));
-      //   const changes = Automerge.getChanges(A1, A2);
-
-      //   bus.fire({ type: 'changes', payload: { changes } });
-
-      //   // console.log('B1.', B1?.name);
-      // });
-
-      // e.it.skip('generateSyncMessage', () => {
-      //   const { getActorId, getObjectId } = Automerge;
-
-      //   type SyncState = {
-      //     [peer: string]: {
-      //       [docId: string]: Automerge.SyncState;
-      //     };
-      //   };
-
-      //   const syncStates: SyncState = {}; // a hash of [source][docId] containing in-memory sync states
-      //   const backends = {}; // a hash by [docId] of current backend values
-
-      //   const docId = 'foo';
-
-      //   let doc1 = getTestDoc();
-      //   let doc2 = getTestDoc();
-      //   doc1 = Automerge.change<Doc>(doc1, (doc) => (doc.name = 'foo'));
-
-      //   // Automerge.Backend.decodeSyncState;
-
-      //   function updatePeers(docId: string) {
-      //     Object.entries(syncStates).forEach(([peer, syncState]) => {
-      //       const [nextSyncState, syncMessage] = Automerge.Backend.generateSyncMessage(
-      //         backends[docId],
-      //         syncState[docId] || Automerge.Backend.initSyncState(),
-      //       );
-      //       syncStates[peer] = { ...syncStates[peer], [docId]: nextSyncState };
-      //       if (syncMessage) {
-      //         console.log('syncMessage', syncMessage);
-      //         // sendMessage({
-      //         //   docId, source: workerId, target: peer, syncMessage,
-      //         // })
-      //       }
-      //     });
-      //   }
-
-      //   const s = Automerge.Backend.initSyncState();
-
-      //   console.log('s', s);
-
-      //   const r = Automerge.Backend.generateSyncMessage(doc1, s);
-      //   // console.log('r', r);
-
-      //   // console.log('getActorId | 2:', Automerge.getActorId(doc1));
-
-      //   // console.log('-------------------------------------------');
-      //   // console.log('getObjectId(doc1)', getObjectId(doc1));
-      //   // // console.log('getObjectId(doc2)', getObjectId(doc2));
-      //   // // console.log('getObjectId(doc2)', getObjectId(doc2.cards));
-
-      //   // // console.log('-------------------------------------------');
-      //   // // const f = Automerge.Backend.initSyncState();
-      //   // // console.log('f', f);
-      //   // const peer = '1234';
-      //   // const docId = Automerge.getObjectId(doc1);
-
-      //   // const res = Automerge.generateSyncMessage(doc1, Automerge.Backend.initSyncState());
-
-      //   // console.log('-------------------------------------------');
-      //   // console.log('res', res);
-      //   // if (res[1] && res[0]) {
-      //   //   const r = Automerge.receiveSyncMessage<Doc>(doc2, res[0], res[1]);
-      //   //   // console.log('doc2', doc2);
-      //   //   console.log('r', r);
-      //   //   // console.log('r[0].name', r[0].name);
-      //   //   // doc2 = Automerge.applyChanges(doc2, r[1]);
-      //   //   if (r[1]) {
-      //   //     doc2 = Automerge.Backend.applyLocalChange(doc2, res[1]);
-      //   //   }
-
-      //   //   console.log('doc2', doc2);
-      //   // }
-
-      //   // const d = Automerge.Backend.generateSyncMessage(
-      //   //   backends[docId],
-      //   //   syncStates[peer]?.[docId] || Automerge.Backend.initSyncState(),
-      //   // );
-
-      //   //
-      // });
+      const [C1, patch] = Automerge.applyChanges(B1, changes);
+      expect(C1.name).to.eql('foobar');
+      expect(patch.diffs.objectId).to.eql('_root');
     });
   });
 });
