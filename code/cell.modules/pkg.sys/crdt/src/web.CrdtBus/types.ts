@@ -48,7 +48,7 @@ export type CrdtEvents = t.Disposable & {
     };
   };
 
-  doc<T extends O>(args: CrdtDocEventsArgs<T>): CrdtDocEvents<T>;
+  doc<T extends O>(args: CrdtDocEventsArgs<T>): Promise<CrdtDocEvents<T>>;
 };
 
 export type CrdtDocEventsArgs<T> = { id: DocumentId; initial: T | (() => T) };
@@ -58,7 +58,9 @@ export type CrdtDocEventsArgs<T> = { id: DocumentId; initial: T | (() => T) };
  */
 export type CrdtDocEvents<T extends O> = {
   id: DocumentId;
-  // object: T;
+  current: T;
+  changed$: t.Observable<t.CrdtRefChanged<O>>;
+  change(handler: CrdtChangeHandler<T>): Promise<T>;
 };
 
 /**
