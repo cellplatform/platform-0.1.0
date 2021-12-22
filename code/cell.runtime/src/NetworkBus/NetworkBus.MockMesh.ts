@@ -6,18 +6,17 @@ import { NetworkBusMock } from './NetworkBus.Mock';
  */
 export function NetworkBusMockMesh<E extends t.Event = t.Event>(
   length: number,
-  options: { log?: boolean } = {},
+  options: { memorylog?: boolean } = {},
 ) {
-  const { log } = options;
-
   const mocks = Array.from({ length }).map((v, i) => {
+    const { memorylog } = options;
     const local = `peer:${i + 1}`;
-    return NetworkBusMock<E>({ local, log });
+    return NetworkBusMock<E>({ local, memorylog });
   });
 
   mocks.forEach((netbus) => {
     mocks
-      .filter((item) => item.mock.local !== netbus.mock.local)
+      .filter(({ mock }) => mock.local !== netbus.mock.local)
       .forEach((remote) => netbus.mock.remote(remote.mock.local, remote));
   });
 

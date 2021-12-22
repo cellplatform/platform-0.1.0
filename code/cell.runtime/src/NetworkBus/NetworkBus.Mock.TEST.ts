@@ -38,7 +38,7 @@ describe('NetworkBusMock', () => {
     });
 
     it('fire: local to remotes', async () => {
-      const netbus = NetworkBusMock<E>({ log: true });
+      const netbus = NetworkBusMock<E>({ memorylog: true });
       const r1 = netbus.mock.remote('1');
       const r2 = netbus.mock.remote('2');
 
@@ -74,7 +74,7 @@ describe('NetworkBusMock', () => {
 
 describe('NetworkBusMockMesh', () => {
   it('3 nodes', async () => {
-    const [p1, p2, p3] = NetworkBusMockMesh(3, { log: true });
+    const [p1, p2, p3] = NetworkBusMockMesh(3, { memorylog: true });
 
     const event: E = { type: 'foo', payload: { count: 123 } };
     p2.target.remote(event);

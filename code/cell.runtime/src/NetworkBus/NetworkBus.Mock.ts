@@ -10,8 +10,9 @@ import { NetworkBus } from './NetworkBus';
  *       bus being requested but an object needs to be returned.
  */
 export function NetworkBusMock<E extends t.Event = t.Event>(
-  options: { local?: t.NetworkBusUri; remotes?: t.NetworkBusUri[]; log?: boolean } = {},
+  options: { local?: t.NetworkBusUri; remotes?: t.NetworkBusUri[]; memorylog?: boolean } = {},
 ): t.NetworkBusMock<E> {
+  const { memorylog } = options;
   const in$ = new Subject<E>();
 
   const mock: t.NetworkBusMock<E>['mock'] = {
@@ -24,7 +25,7 @@ export function NetworkBusMock<E extends t.Event = t.Event>(
       type R = t.NetworkBusMockRemote<E>;
       const item: R = { uri, bus: netbus ?? NetworkBusMock(), fired: [] };
       mock.remotes.push(item);
-      item.bus.$.pipe(filter(() => Boolean(options.log))).subscribe((e) => item.fired.push(e));
+      item.bus.$.pipe(filter(() => Boolean(memorylog))).subscribe((e) => item.fired.push(e));
       return item;
     },
   };
@@ -48,7 +49,7 @@ export function NetworkBusMock<E extends t.Event = t.Event>(
     remotes: async () => mock.remotes.map(({ uri }) => uri),
   });
 
-  if (options.log) netbus.$.subscribe((e) => mock.fired.push(e));
+  if (options.memorylog) netbus.$.subscribe((e) => mock.fired.push(e));
 
   options.remotes?.forEach((uri) => mock.remote(uri));
   return { ...netbus, mock };
