@@ -10,15 +10,15 @@ type O = Record<string, unknown>;
 export async function CrdtDocEvents<T extends O>(
   args: t.CrdtDocEventsArgs<T> & { events: t.CrdtEvents },
 ) {
-  const { events } = args;
+  const { id, initial, events } = args;
 
   const getCurrent = async () => {
-    const res = await events.state.fire({ id: args.id, initial: args.initial });
+    const res = await events.ref.fire({ id, initial });
     return res.doc.data;
   };
   let _current: T = await getCurrent();
 
-  const changed$ = events.state.changed$.pipe(
+  const changed$ = events.ref.changed$.pipe(
     filter((e) => e.doc.id === args.id),
     map((e) => e as t.CrdtRefChanged<T>),
   );
@@ -26,7 +26,7 @@ export async function CrdtDocEvents<T extends O>(
   changed$.subscribe((e) => (_current = e.doc.next));
 
   const api: t.CrdtDocEvents<T> = {
-    id: args.id,
+    id,
     changed$,
 
     get current() {
@@ -34,7 +34,7 @@ export async function CrdtDocEvents<T extends O>(
     },
 
     async change(handler) {
-      events.state.fire({ id: args.id, initial: args.initial, change: handler });
+      events.ref.fire({ id, initial, change: handler });
       return _current;
     },
   };

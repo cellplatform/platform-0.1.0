@@ -8,12 +8,13 @@ export type CrdtRefEvent =
   | CrdtRefReqEvent
   | CrdtRefResEvent
   | CrdtRefRemoveEvent
+  | CrdtRefRemovedEvent
   | CrdtRefExistsReqEvent
   | CrdtRefExistsResEvent
   | CrdtRefChangedEvent;
 
 /**
- * Refs
+ * Refs: retrieve/change CRDT document.
  */
 export type CrdtRefReqEvent<T extends O = O> = {
   type: 'sys.crdt/ref:req';
@@ -24,7 +25,7 @@ export type CrdtRefReq<T extends O = O> = {
   id: InstanceId;
   doc: { id: DocumentId };
   initial: T | (() => T);
-  change?: t.CrdtChangeHandler<T>;
+  change?: t.CrdtChangeHandler<T> | T;
 };
 
 export type CrdtRefResEvent<T extends O = O> = {
@@ -41,16 +42,27 @@ export type CrdtRefRes<T extends O = O> = {
 };
 
 /**
+ * Refs: signals a document reference was initialized.
+ */
+export type CrdtRefCreated<T extends O = O> = {
+  id: InstanceId;
+  doc: { id: DocumentId; data: T };
+};
+
+/**
  * Refs: remove
  */
 export type CrdtRefRemoveEvent = {
   type: 'sys.crdt/ref/remove';
   payload: CrdtRefRemove;
 };
-export type CrdtRefRemove = {
-  id: InstanceId;
-  doc: { id: DocumentId };
+export type CrdtRefRemove = { id: InstanceId; doc: { id: DocumentId } };
+
+export type CrdtRefRemovedEvent = {
+  type: 'sys.crdt/ref/removed';
+  payload: CrdtRefRemoved;
 };
+export type CrdtRefRemoved = { id: InstanceId; doc: { id: DocumentId } };
 
 /**
  * Refs: exists

@@ -85,37 +85,37 @@ export default Test.describe('CrdtBus', (e) => {
     });
   });
 
-  e.describe('events (API)', (e) => {
-    e.describe('info', (e) => {
-      e.it('exists', async () => {
-        const { dispose, events } = CrdtBus.Controller({ bus });
-        const res = await events.info.get();
-        dispose();
+  e.describe('events.info', (e) => {
+    e.it('exists', async () => {
+      const { dispose, events } = CrdtBus.Controller({ bus });
+      const res = await events.info.get();
+      dispose();
 
-        expect(res.id).to.eql('default-instance');
+      expect(res.id).to.eql('default-instance');
 
-        expect(res.info?.module.name).to.eql(pkg.name);
-        expect(res.info?.module.version).to.eql(pkg.version);
+      expect(res.info?.module.name).to.eql(pkg.name);
+      expect(res.info?.module.version).to.eql(pkg.version);
 
-        expect(res.info?.dataformat.name).to.eql('automerge');
-        expect(res.info?.dataformat.version).to.eql(pkg.dependencies?.automerge);
-      });
-
-      e.it('does not exist', async () => {
-        const events = CrdtBus.Events({ bus });
-        const res = await events.info.get({ timeout: 10 });
-        expect(res.error).to.include('[info] Timed out');
-      });
+      expect(res.info?.dataformat.name).to.eql('automerge');
+      expect(res.info?.dataformat.version).to.eql(pkg.dependencies?.automerge);
     });
 
-    e.describe('ref (memory state)', (e) => {
-      e.it('initial via plain { object }', async () => {
+    e.it('does not exist', async () => {
+      const events = CrdtBus.Events({ bus });
+      const res = await events.info.get({ timeout: 10 });
+      expect(res.error).to.include('[info] Timed out');
+    });
+  });
+
+  e.describe('events.ref (memory state)', (e) => {
+    e.describe('initial', (e) => {
+      e.it('via plain { object }', async () => {
         const { dispose, events } = CrdtBus.Controller({ bus });
         const id = cuid();
         const initial: Doc = { count: 0 };
 
-        const res1 = await events.state.fire<Doc>({ id, initial });
-        const res2 = await events.state.fire<Doc>({ id, initial });
+        const res1 = await events.ref.fire<Doc>({ id, initial });
+        const res2 = await events.ref.fire<Doc>({ id, initial });
         dispose();
 
         expect(res1.doc.id).to.eql(id);
@@ -128,25 +128,12 @@ export default Test.describe('CrdtBus', (e) => {
         expect(res2.created).to.eql(false); // NB: second call retrieves existing state.
       });
 
-      e.it('initial via { Automerge } object', async () => {
-        const { dispose, events } = CrdtBus.Controller({ bus });
-        const doc = cuid();
-        const initial = Automerge.from<Doc>({ count: 0 });
-
-        const res = await events.state.fire<Doc>({ id: doc, initial });
-        dispose();
-
-        expect(res.doc.id).to.eql(doc);
-        expect(res.doc.data).to.eql(initial);
-        expect(Is.automergeObject(res.doc.data)).to.eql(true);
-      });
-
-      e.it('initial via function', async () => {
+      e.it('via { Automerge } object', async () => {
         const { dispose, events } = CrdtBus.Controller({ bus });
         const id = cuid();
-        const initial: Doc = { count: 0 };
+        const initial = Automerge.from<Doc>({ count: 0 });
 
-        const res = await events.state.fire<Doc>({ id, initial: () => initial });
+        const res = await events.ref.fire<Doc>({ id, initial });
         dispose();
 
         expect(res.doc.id).to.eql(id);
@@ -154,48 +141,102 @@ export default Test.describe('CrdtBus', (e) => {
         expect(Is.automergeObject(res.doc.data)).to.eql(true);
       });
 
-      e.it('exists', async () => {
+      e.it('via function', async () => {
         const { dispose, events } = CrdtBus.Controller({ bus });
         const id = cuid();
         const initial: Doc = { count: 0 };
 
-        const test = async (exists: boolean) => {
-          const res = await events.state.exists.fire(id);
-          expect(res.exists).to.eql(exists);
-          expect(res.error).to.eql(undefined);
-          expect(res.doc).to.eql({ id });
-        };
-
-        await test(false);
-
-        await events.state.fire<Doc>({ id, initial });
-        await test(true);
-
-        await events.state.remove.fire(id);
-        await test(false);
-
+        const res = await events.ref.fire<Doc>({ id, initial: () => initial });
         dispose();
+
+        expect(res.doc.id).to.eql(id);
+        expect(res.doc.data).to.eql(initial);
+        expect(Is.automergeObject(res.doc.data)).to.eql(true);
       });
 
-      e.it('remove (memory ref)', async () => {
+      e.it('fires "created" event', async () => {
         const { dispose, events } = CrdtBus.Controller({ bus });
         const id = cuid();
         const initial: Doc = { count: 0 };
 
-        const res1 = await events.state.fire<Doc>({ id, initial });
-        const res2 = await events.state.fire<Doc>({ id, initial });
+        const fired: t.CrdtRefCreated[] = [];
+        events.ref.created$.subscribe((e) => fired.push(e));
+
+        await events.ref.fire<Doc>({ id, initial });
+        await events.ref.fire<Doc>({ id, initial });
+        await events.ref.fire<Doc>({ id, initial });
+        dispose();
+
+        expect(fired.length).to.eql(1);
+        expect(fired[0].doc.id).to.eql(id);
+      });
+    });
+
+    e.it('exists', async () => {
+      const { dispose, events } = CrdtBus.Controller({ bus });
+      const id = cuid();
+      const initial: Doc = { count: 0 };
+
+      const test = async (exists: boolean) => {
+        const res = await events.ref.exists.fire(id);
+        expect(res.exists).to.eql(exists);
+        expect(res.error).to.eql(undefined);
+        expect(res.doc).to.eql({ id });
+      };
+
+      await test(false);
+
+      await events.ref.fire<Doc>({ id, initial });
+      await test(true);
+
+      await events.ref.remove.fire(id);
+      await test(false);
+
+      dispose();
+    });
+
+    e.describe('remove (memory ref)', (e) => {
+      e.it('removes an existing reference', async () => {
+        const { dispose, events } = CrdtBus.Controller({ bus });
+        const id = cuid();
+        const initial: Doc = { count: 0 };
+
+        const res1 = await events.ref.fire<Doc>({ id, initial });
+        const res2 = await events.ref.fire<Doc>({ id, initial });
 
         expect(res1.created).to.eql(true);
         expect(res2.created).to.eql(false);
+        expect((await events.ref.exists.fire(id)).exists).to.eql(true);
 
-        events.state.remove.fire(id);
-        const res3 = await events.state.fire<Doc>({ id, initial });
+        events.ref.remove.fire(id);
+        expect((await events.ref.exists.fire(id)).exists).to.eql(false);
+
+        const res3 = await events.ref.fire<Doc>({ id, initial });
         expect(res3.created).to.eql(true); // NB: Initialized again as the reference was removed from memory.
 
         dispose();
       });
 
-      e.it('change', async () => {
+      e.it('fires "removed" event', async () => {
+        const { dispose, events } = CrdtBus.Controller({ bus });
+        const id = cuid();
+        const initial: Doc = { count: 0 };
+
+        const fired: t.CrdtRefRemoved[] = [];
+        events.ref.remove.removed$.subscribe((e) => fired.push(e));
+
+        await events.ref.fire<Doc>({ id, initial });
+        await events.ref.remove.fire(id);
+
+        expect(fired.length).to.eql(1);
+        expect(fired[0].doc.id).to.eql(id);
+
+        dispose();
+      });
+    });
+
+    e.describe('change', (e) => {
+      e.it('change (function)', async () => {
         const { dispose, events } = CrdtBus.Controller({ bus });
         const id = cuid();
         const initial: Doc = { count: 0 };
@@ -205,7 +246,7 @@ export default Test.describe('CrdtBus', (e) => {
           doc.name = 'hello';
         };
 
-        const res = await events.state.fire<Doc>({ id, initial, change });
+        const res = await events.ref.fire<Doc>({ id, initial, change });
         expect(res.changed).to.eql(true);
         expect(res.doc.data.count).to.eql(123);
         expect(res.doc.data.name).to.eql('hello');
@@ -213,16 +254,48 @@ export default Test.describe('CrdtBus', (e) => {
         dispose();
       });
 
-      e.it('changed (events)', async () => {
+      e.it('change (replace { object })', async () => {
+        const { dispose, events } = CrdtBus.Controller({ bus });
+        const id = cuid();
+        const initial: Doc = { count: 0 };
+        const getDoc = async () => (await events.ref.fire({ id, initial })).doc;
+
+        const fired: t.CrdtRefChanged[] = [];
+        events.ref.changed$.subscribe((e) => fired.push(e));
+
+        const res1 = await events.ref.fire<Doc>({ id, initial, change: initial });
+        expect(fired.length).to.eql(1);
+        expect(fired[0].doc.next).to.eql(initial);
+
+        // Edge-case, change passed in during initializer.
+        expect(Is.automergeObject(res1.doc.data)).to.eql(true);
+        expect(res1.doc.data).to.eql(initial);
+        expect(await getDoc()).to.eql(res1.doc);
+
+        // Make a change.
+        const replacement = Automerge.change<Doc>(res1.doc.data, (d) => (d.count = 123));
+        expect((await getDoc()).data).to.not.eql(replacement);
+
+        // Submit the change as a replacement.
+        const res2 = await events.ref.fire<Doc>({ id, initial, change: replacement });
+        expect(res2.doc.data).to.eql(replacement);
+        expect((await getDoc()).data).to.eql(replacement);
+        expect(fired.length).to.eql(2);
+        expect(fired[1].doc.next).to.eql(replacement);
+
+        dispose();
+      });
+
+      e.it('"changed" event', async () => {
         const { dispose, events } = CrdtBus.Controller({ bus });
         const id = cuid();
         const initial: Doc = { count: 0 };
 
         const changed: t.CrdtRefChanged[] = [];
-        events.state.changed$.subscribe((e) => changed.push(e));
+        events.ref.changed$.subscribe((e) => changed.push(e));
 
-        await events.state.fire<Doc>({ id, initial, change: (doc) => (doc.name = 'foobar') });
-        await events.state.fire<Doc>({ id, initial, change: (doc) => doc.count++ });
+        await events.ref.fire<Doc>({ id, initial, change: (doc) => (doc.name = 'foobar') });
+        await events.ref.fire<Doc>({ id, initial, change: (doc) => doc.count++ });
 
         expect(changed.length).to.eql(2);
 
@@ -235,126 +308,170 @@ export default Test.describe('CrdtBus', (e) => {
         dispose();
       });
     });
+  });
 
-    e.describe('doc', (e) => {
-      const TestSetup = {
-        async base() {
-          const controller = CrdtBus.Controller({ bus });
-          const { dispose, events } = controller;
-          return { controller, dispose, events };
-        },
-        async doc(options: { id?: string; initial?: Doc } = {}) {
-          const base = await TestSetup.base();
-          const initial: Doc = options.initial ?? { count: 0 };
-          const { controller, dispose, events } = base;
-          const id = options.id ?? cuid();
-          const doc = await events.doc<Doc>({ id, initial });
-          return { controller, dispose, events, id, initial, doc };
-        },
-      };
+  e.describe('events.doc', (e) => {
+    const TestSetup = {
+      async base() {
+        const controller = CrdtBus.Controller({ bus });
+        const { dispose, events } = controller;
+        return { controller, dispose, events };
+      },
+      async doc(options: { id?: string; initial?: Doc } = {}) {
+        const base = await TestSetup.base();
+        const initial: Doc = options.initial ?? { count: 0 };
+        const { controller, dispose, events } = base;
+        const id = options.id ?? cuid();
+        const doc = await events.doc<Doc>({ id, initial });
+        return { controller, dispose, events, id, initial, doc };
+      },
+    };
 
-      e.it('from initial { object } and function', async () => {
-        const { dispose, events } = await TestSetup.base();
-        const initial: Doc = { count: 123 };
-        const res1 = await events.doc<Doc>({ id: '1', initial });
-        const res2 = await events.doc<Doc>({ id: '2', initial: () => initial });
-        dispose();
+    e.it('from initial { object } and function', async () => {
+      const { dispose, events } = await TestSetup.base();
+      const initial: Doc = { count: 123 };
+      const res1 = await events.doc<Doc>({ id: '1', initial });
+      const res2 = await events.doc<Doc>({ id: '2', initial: () => initial });
+      dispose();
 
-        expect(res1.id).to.eql('1');
-        expect(res1.current).to.eql(initial);
+      expect(res1.id).to.eql('1');
+      expect(res1.current).to.eql(initial);
 
-        expect(res2.id).to.eql('2');
-        expect(res2.current).to.eql(initial);
+      expect(res2.id).to.eql('2');
+      expect(res2.current).to.eql(initial);
 
-        expect(res1.current).to.not.equal(res2.current); // NB: Not the same document instance.
-      });
+      expect(res1.current).to.not.equal(res2.current); // NB: Not the same document instance.
+    });
 
-      e.it('same document instance', async () => {
-        const { dispose, events } = await TestSetup.base();
-        const initial: Doc = { count: 123 };
-        const res1 = await events.doc<Doc>({ id: '1', initial });
-        const res2 = await events.doc<Doc>({ id: '1', initial });
-        const res3 = await events.doc<Doc>({ id: '2', initial });
-        dispose();
+    e.it('same document instance', async () => {
+      const { dispose, events } = await TestSetup.base();
+      const initial: Doc = { count: 123 };
+      const res1 = await events.doc<Doc>({ id: '1', initial });
+      const res2 = await events.doc<Doc>({ id: '1', initial });
+      const res3 = await events.doc<Doc>({ id: '2', initial });
+      dispose();
 
-        expect(res1.current).to.equal(res2.current);
-        expect(res1.current).to.not.equal(res3.current); // NB: Not the same document instance.
-      });
+      expect(res1.current).to.equal(res2.current);
+      expect(res1.current).to.not.equal(res3.current); // NB: Not the same document instance.
+    });
 
-      e.it('from initial [Automerge] object', async () => {
-        const { dispose, events } = await TestSetup.base();
-        const res1 = await events.doc<Doc>({ id: '1', initial: { count: 0 } });
-        const res2 = await events.doc<Doc>({ id: '2', initial: res1.current });
-        dispose();
+    e.it('from initial [Automerge] object', async () => {
+      const { dispose, events } = await TestSetup.base();
+      const res1 = await events.doc<Doc>({ id: '1', initial: { count: 0 } });
+      const res2 = await events.doc<Doc>({ id: '2', initial: res1.current });
+      dispose();
 
-        expect(res1.current).to.eql(res2.current);
-        expect(res1.current).to.not.equal(res2.current);
-      });
+      expect(res1.current).to.eql(res2.current);
+      expect(res1.current).to.not.equal(res2.current);
+    });
 
-      e.it('change', async () => {
-        const { dispose, doc } = await TestSetup.doc();
-        expect(doc.current.count).to.eql(0);
+    e.it('change', async () => {
+      const { dispose, doc } = await TestSetup.doc();
+      expect(doc.current.count).to.eql(0);
 
-        const fired: t.CrdtRefChanged[] = [];
-        doc.changed$.subscribe((e) => fired.push(e));
-        const res = await doc.change((draft) => draft.count++);
-        dispose();
+      const fired: t.CrdtRefChanged[] = [];
+      doc.changed$.subscribe((e) => fired.push(e));
+      const res = await doc.change((draft) => draft.count++);
+      dispose();
 
-        expect(res).to.eql({ count: 1 });
+      expect(res).to.eql({ count: 1 });
 
-        expect(fired.length).to.eql(1);
-        expect(fired[0].doc.id).to.eql(doc.id);
-        expect(fired[0].doc.prev).to.eql({ count: 0 });
-        expect(fired[0].doc.next).to.eql({ count: 1 });
-      });
+      expect(fired.length).to.eql(1);
+      expect(fired[0].doc.id).to.eql(doc.id);
+      expect(fired[0].doc.prev).to.eql({ count: 0 });
+      expect(fired[0].doc.next).to.eql({ count: 1 });
+    });
 
-      e.it('change registered between different instances', async () => {
-        const test1 = await TestSetup.doc();
-        const test2 = await TestSetup.doc();
+    e.it('change registered between different instances', async () => {
+      const test1 = await TestSetup.doc();
+      const test2 = await TestSetup.doc();
 
-        const doc1 = test1.doc;
-        const doc2 = test1.doc;
+      const doc1 = test1.doc;
+      const doc2 = test1.doc;
 
-        expect(doc1.current).to.eql({ count: 0 });
-        expect(doc2.current).to.eql({ count: 0 });
+      expect(doc1.current).to.eql({ count: 0 });
+      expect(doc2.current).to.eql({ count: 0 });
 
-        await doc1.change((doc) => (doc.count = 123));
+      await doc1.change((doc) => (doc.count = 123));
 
-        expect(doc1.current).to.eql({ count: 123 });
-        expect(doc2.current).to.eql({ count: 123 });
+      expect(doc1.current).to.eql({ count: 123 });
+      expect(doc2.current).to.eql({ count: 123 });
 
-        test1.dispose();
-        test2.dispose();
-      });
+      test1.dispose();
+      test2.dispose();
     });
   });
 
   e.describe.only('sync (v1)', (e) => {
-    const testProcess = (options: { bus?: t.EventBus<any> } = {}) => {
-      const bus = rx.busAsType<t.CrdtEvent>(options.bus || rx.bus());
-      const ctrl = CrdtBus.Controller({ bus });
-      const events = ctrl.events;
-      const doc = events.doc;
-      return { ctrl, bus, events, doc };
-    };
-
-    const testProcesses = () => {
-      const p1 = testProcess();
-      const p2 = testProcess();
-      const p3 = testProcess();
+    const testNetwork = async (total: number) => {
+      const mocks = NetworkBusMockMesh<t.CrdtEvent>(total, { memorylog: true });
+      const peers = await Promise.all(
+        mocks.map((netbus) => {
+          const id = netbus.mock.local;
+          const bus = rx.bus();
+          const debounce = 10;
+          const ctrl = CrdtBus.Controller({ id, bus, sync: { version: '1', netbus, debounce } });
+          const { events, dispose } = ctrl;
+          const doc = (id: string, initial?: Doc) => {
+            return events.doc<Doc>({ id, initial: initial ?? { count: 0 } });
+          };
+          return { id, netbus, ctrl, events, doc, dispose };
+        }),
+      );
+      const dispose = () => peers.forEach((peer) => peer.dispose());
+      return { peers, dispose };
     };
 
     e.it('tmp', async () => {
-      // const netbus = NetworkBusMock<t.CrdtEvent>();
+      const network = await testNetwork(2);
 
-      const [p1, p2] = NetworkBusMockMesh(3, { memorylog: true });
+      const [peer1, peer2] = network.peers;
 
-      const event = { type: 'foo', payload: { count: 123 } };
+      const id = 'foo';
+      const doc1 = await peer1.doc(id);
+      console.log('doc', doc1);
 
-      p1.target.remote(event);
+      // console.log('-------------------------------------------');
+      // console.log('p1/info', await peer1.events.info.get());
+      // console.log('p2/info', await peer2.events.info.get());
 
-      await time.wait(5);
-      console.log('p2.mock.fired', p2.mock.fired);
+      await time.wait(50);
+
+      doc1.change((d) => (d.count = 123));
+
+      let doc2 = await peer2.doc(id);
+
+      console.log('doc2', doc2.current);
+
+      await time.wait(500);
+
+      doc2 = await peer2.doc(id);
+      console.log('doc2', doc2.current);
+      // network.dispose();
     });
+
+    // e.it.only('temp-2', async () => {
+    //   const doc1 = Automerge.from<Doc>({ count: 0 });
+    //   let doc2 = Automerge.from<Doc>(Automerge.clone(doc1));
+
+    //   // const doc3 = Automerge.change<Doc>(doc2, (d) => (d.count = 123));
+
+    //   // Automerge.
+
+    //   const changes = Automerge.getChanges(doc1, doc2);
+    //   // const changes = Automerge.getChanges(doc1, doc1);
+    //   console.log('changes', changes);
+    // });
+
+    // e.it.skip('tmpe-3', async () => {
+    //   const doc1 = Automerge.from<Doc>({ count: 0 });
+    //   const doc2 = Automerge.change<Doc>(doc1, 'count', (doc) => {
+    //     // doc.cards.push({ title: 'hello', done: false });
+    //     doc.count = 123;
+    //   });
+
+    //   const changes = Automerge.getChanges<Doc>(doc1, doc2);
+    //   console.log('changes', changes);
+    // });
   });
 });

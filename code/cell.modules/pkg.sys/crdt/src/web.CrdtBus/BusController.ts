@@ -4,6 +4,7 @@ import { BusEvents } from './BusEvents';
 import { DEFAULT, pkg, rx, slug, t } from './common';
 
 type InstanceId = string;
+type Milliseconds = number;
 
 /**
  * Event controller.
@@ -12,7 +13,7 @@ export function BusController(args: {
   id?: InstanceId;
   bus: t.EventBus<any>;
   filter?: (e: t.CrdtEvent) => boolean;
-  sync?: { netbus: t.NetworkBus<any>; version: '1' };
+  sync?: { netbus: t.NetworkBus<any>; version: '1'; debounce?: Milliseconds };
 }) {
   const { filter, id = DEFAULT.id, sync } = args;
 
@@ -24,7 +25,10 @@ export function BusController(args: {
    * Initialize to child controllers.
    */
   BusControllerRefs({ bus, events });
-  if (sync?.version === '1') BusControllerSyncV1({ bus, netbus: sync.netbus, events });
+  if (sync?.version === '1') {
+    const { netbus, debounce } = sync;
+    BusControllerSyncV1({ netbus, events, debounce });
+  }
 
   /**
    * Info (Module)

@@ -1,4 +1,4 @@
-import { filter, takeUntil } from 'rxjs/operators';
+import { map, filter, takeUntil } from 'rxjs/operators';
 
 import { DEFAULT, rx, slug, t } from './common';
 import { CrdtDocEvents } from './BusEvents.Doc';
@@ -54,12 +54,18 @@ export function BusEvents(args: {
   };
 
   /**
-   * Document State
+   * Ref: Document State
    */
-  const state: t.CrdtEvents['state'] = {
+  const state: t.CrdtEvents['ref'] = {
     req$: rx.payload<t.CrdtRefReqEvent>($, 'sys.crdt/ref:req'),
     res$: rx.payload<t.CrdtRefResEvent>($, 'sys.crdt/ref:res'),
     changed$: rx.payload<t.CrdtRefChangedEvent>($, 'sys.crdt/ref/changed'),
+
+    created$: rx.payload<t.CrdtRefResEvent>($, 'sys.crdt/ref:res').pipe(
+      filter((e) => e.created),
+      map(({ id, doc }) => ({ id, doc } as t.CrdtRefCreated)),
+    ),
+
     async fire<T extends O>(args: {
       id: DocumentId;
       initial: T | (() => T);
@@ -108,7 +114,8 @@ export function BusEvents(args: {
     },
 
     remove: {
-      $: rx.payload<t.CrdtRefRemoveEvent>($, 'sys.crdt/ref/remove'),
+      remove$: rx.payload<t.CrdtRefRemoveEvent>($, 'sys.crdt/ref/remove'),
+      removed$: rx.payload<t.CrdtRefRemovedEvent>($, 'sys.crdt/ref/removed'),
       async fire(doc) {
         bus.fire({
           type: 'sys.crdt/ref/remove',
@@ -125,7 +132,7 @@ export function BusEvents(args: {
     dispose,
     dispose$,
     info,
-    state,
+    ref: state,
     doc<T extends O>(args: t.CrdtDocEventsArgs<T>) {
       return CrdtDocEvents<T>({ ...args, events });
     },

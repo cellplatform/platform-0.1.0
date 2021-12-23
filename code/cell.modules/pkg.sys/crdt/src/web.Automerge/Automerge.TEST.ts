@@ -318,15 +318,15 @@ export default Test.describe('Automerge (CRDT)', (e) => {
   /**
    * https://github.com/automerge/automerge/blob/main/SYNC.md
    */
-  e.describe('sync', (e) => {
+  e.describe('sync (v1)', (e) => {
     e.it('getChanges / applyChanges', () => {
       const A1 = createDoc();
       const B1 = Automerge.merge(Automerge.init<Doc>(), A1);
 
-      let A2 = Automerge.change<Doc>(A1, (doc) => (doc.name = 'foo'));
-      A2 = Automerge.change<Doc>(A2, (doc) => (doc.name = 'foobar'));
+      const A2a = Automerge.change<Doc>(A1, (doc) => (doc.name = 'foo'));
+      const A2b = Automerge.change<Doc>(A2a, (doc) => (doc.name = 'foobar'));
 
-      const changes = Automerge.getChanges(A1, A2);
+      const changes = Automerge.getChanges(A1, A2b);
       expect(changes.length).to.eql(2);
 
       const [C1, patch] = Automerge.applyChanges(B1, changes);

@@ -1,4 +1,4 @@
-import { t, Automerge, rx } from '../common';
+import { t, Automerge, rx, Is } from '../common';
 
 type O = Record<string, unknown>;
 type DocumentId = string;
@@ -23,17 +23,30 @@ export function BusControllerRefs(args: { bus: t.EventBus<any>; events: t.CrdtEv
   /**
    * Reqest/Response [change].
    */
-  events.state.req$.subscribe(async (e) => {
+  events.ref.req$.subscribe(async (e) => {
     const { tx } = e;
     const ref = refs[e.doc.id];
+
+    /**
+     * TODO 🐷
+     * - lookup in file-system if provided.
+     */
+
     const created = !Boolean(ref);
     const changed = Boolean(e.change);
     let data = ref?.data ?? wrangleInitial(e.initial);
     const prev = data;
 
     // Apply any changes that may have been requested.
-    if (e.change) {
-      data = Automerge.change(data, (doc) => e.change?.(doc));
+    if (typeof e.change === 'function') {
+      // Mutation handler.
+      data = Automerge.change(data, (doc) => {
+        if (typeof e.change === 'function') e.change?.(doc);
+      });
+    }
+    if (typeof e.change === 'object') {
+      // Replacement object.
+      data = Is.automergeObject(e.change) ? e.change : Automerge.from(e.change);
     }
 
     // Store reference.
@@ -56,14 +69,22 @@ export function BusControllerRefs(args: { bus: t.EventBus<any>; events: t.CrdtEv
   /**
    * Remove reference.
    */
-  events.state.remove.$.subscribe((e) => {
-    delete refs[e.doc.id];
+  events.ref.remove.remove$.subscribe((e) => {
+    const { doc } = e;
+    const exists = Boolean(refs[doc.id]);
+    delete refs[doc.id];
+    if (exists) {
+      bus.fire({
+        type: 'sys.crdt/ref/removed',
+        payload: { id, doc },
+      });
+    }
   });
 
   /**
    * Exists.
    */
-  events.state.exists.req$.subscribe((e) => {
+  events.ref.exists.req$.subscribe((e) => {
     const { tx, doc } = e;
     const exists = Boolean(refs[doc.id]);
     bus.fire({

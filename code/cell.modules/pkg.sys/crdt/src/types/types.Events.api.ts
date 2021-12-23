@@ -19,14 +19,15 @@ export type CrdtEvents = t.Disposable & {
     get(options?: { timeout?: Milliseconds }): Promise<t.CrdtInfoRes>;
   };
 
-  state: {
+  ref: {
     req$: t.Observable<t.CrdtRefReq>;
     res$: t.Observable<t.CrdtRefRes>;
+    created$: t.Observable<t.CrdtRefCreated>;
     changed$: t.Observable<t.CrdtRefChanged>;
     fire<T extends O>(args: {
       id: DocumentId;
       initial: T | (() => T);
-      change?: t.CrdtChangeHandler<T>;
+      change?: t.CrdtChangeHandler<T> | T;
       timeout?: Milliseconds;
     }): Promise<t.CrdtRefRes<T>>;
     exists: {
@@ -35,7 +36,8 @@ export type CrdtEvents = t.Disposable & {
       fire(id: DocumentId, options?: { timeout?: Milliseconds }): Promise<t.CrdtRefExistsRes>;
     };
     remove: {
-      $: t.Observable<t.CrdtRefRemove>;
+      remove$: t.Observable<t.CrdtRefRemove>;
+      removed$: t.Observable<t.CrdtRefRemoved>;
       fire(id: DocumentId): Promise<void>;
     };
   };
