@@ -15,47 +15,51 @@ export function BusControllerRefs(args: { bus: t.EventBus<any>; events: t.CrdtEv
   const bus = rx.busAsType<t.CrdtEvent>(args.bus);
   const refs: Refs = {};
 
-  function wrangleInitial<T extends O>(input: T | (() => T)): T {
-    const value = typeof input === 'function' ? input() : input;
-    return Automerge.from<T>(value) as T;
-  }
-
   /**
    * Reqest/Response [change].
    */
   events.ref.req$.subscribe(async (e) => {
     const { tx } = e;
     const ref = refs[e.doc.id];
+    let error: string | undefined;
 
     /**
      * TODO 🐷
      * - lookup in file-system if provided.
      */
 
-    const created = !Boolean(ref);
-    const changed = Boolean(e.change);
-    let data = ref?.data ?? wrangleInitial(e.initial);
+    const created = !Boolean(ref) && typeof e.change === 'object';
+    const changed = !created && Boolean(e.change);
+
+    let data = ref?.data;
     const prev = data;
 
-    // Apply any changes that may have been requested.
-    if (typeof e.change === 'function') {
-      // Mutation handler.
-      data = Automerge.change(data, (doc) => {
-        if (typeof e.change === 'function') e.change?.(doc);
-      });
-    }
+    // Replacement/initial object.
     if (typeof e.change === 'object') {
-      // Replacement object.
       data = Is.automergeObject(e.change) ? e.change : Automerge.from(e.change);
     }
 
+    // Mutation handler.
+    if (typeof e.change === 'function') {
+      if (!data) {
+        error = `Cannot change data with handler. The document has not been initialized.`;
+      } else {
+        data = Automerge.change(data, (doc) => {
+          if (typeof e.change === 'function') e.change?.(doc);
+        });
+      }
+    }
+
     // Store reference.
-    const doc = { id: e.doc.id, data };
-    refs[e.doc.id] = doc;
+    const exists = Boolean(data);
+    const doc = { id: e.doc.id, data, exists };
+    if (exists) {
+      refs[e.doc.id] = { id: e.doc.id, data };
+    }
 
     bus.fire({
       type: 'sys.crdt/ref:res',
-      payload: { tx, id, doc, created, changed },
+      payload: { tx, id, doc, created, changed, error },
     });
 
     if (changed) {

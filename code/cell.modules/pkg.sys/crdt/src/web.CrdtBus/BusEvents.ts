@@ -68,11 +68,10 @@ export function BusEvents(args: {
 
     async fire<T extends O>(args: {
       id: DocumentId;
-      initial: T | (() => T);
       change?: t.CrdtChangeHandler<T>;
       timeout?: Milliseconds;
     }) {
-      const { timeout = 3000, initial, change } = args;
+      const { timeout = 3000, change } = args;
       const tx = slug();
       const op = 'ref.get';
       const res$ = state.res$.pipe(filter((e) => e.tx === tx));
@@ -80,7 +79,7 @@ export function BusEvents(args: {
 
       bus.fire({
         type: 'sys.crdt/ref:req',
-        payload: { tx, id, doc: { id: args.id }, initial, change: change as any },
+        payload: { tx, id, doc: { id: args.id }, change: change as any },
       });
 
       const res = await first;

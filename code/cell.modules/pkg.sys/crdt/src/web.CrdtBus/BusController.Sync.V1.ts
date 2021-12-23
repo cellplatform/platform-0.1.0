@@ -37,16 +37,9 @@ export function BusControllerSyncV1(args: {
    * LOCAL: Document document changed.
    */
   events.ref.changed$.pipe(debounceTime(debounce)).subscribe((e) => {
-    const doc = {
-      id: e.id,
-      changes: Automerge.getChanges<any>(e.doc.prev, e.doc.next),
-    };
+    const changes = Automerge.getChanges<any>(e.doc.prev, e.doc.next);
+    const doc = { id: e.id, changes };
     if (doc.changes.length > 0) {
-      console.group('🌳 CHANGED', peer);
-      console.log('e.doc.next', e.doc.next);
-      console.log('doc', doc);
-      console.groupEnd();
-
       netbus.target.remote({
         type: 'sys.crdt/sync:v1/changed',
         payload: { peer, doc },
@@ -62,15 +55,14 @@ export function BusControllerSyncV1(args: {
     .subscribe(async (e) => {
       const id = e.doc.id;
       const remote = e.doc.data;
-      const initial = remote;
-      const ref = await events.ref.fire({ id, initial });
+      const ref = await events.ref.fire({ id });
 
       // NB: If this is an initial creation no need to merge,
       //     as the remote document is used to start with.
-      if (!ref.created) {
+      if (!ref.created && ref.doc.data) {
         const local = ref.doc.data;
         const next = Automerge.merge<any>(local, remote);
-        await events.ref.fire({ id, initial, change: next });
+        await events.ref.fire({ id, change: next });
       }
     });
 

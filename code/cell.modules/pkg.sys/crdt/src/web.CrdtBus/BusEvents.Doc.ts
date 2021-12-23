@@ -1,6 +1,6 @@
 import { filter, map } from 'rxjs/operators';
 
-import { t } from '../common';
+import { t, Automerge } from '../common';
 
 type O = Record<string, unknown>;
 
@@ -12,9 +12,15 @@ export async function CrdtDocEvents<T extends O>(
 ) {
   const { id, initial, events } = args;
 
+  function wrangleInitial<T extends O>(input: T | (() => T)): T {
+    const value = typeof input === 'function' ? input() : input;
+    return Automerge.from<T>(value) as T;
+  }
+
   const getCurrent = async () => {
-    const res = await events.ref.fire({ id, initial });
-    return res.doc.data;
+    const exists = (await events.ref.exists.fire(id)).exists;
+    const change = exists ? undefined : wrangleInitial(initial);
+    return (await events.ref.fire<T>({ id, change })).doc.data as T;
   };
   let _current: T = await getCurrent();
 
@@ -23,7 +29,9 @@ export async function CrdtDocEvents<T extends O>(
     map((e) => e as t.CrdtRefChanged<T>),
   );
 
-  changed$.subscribe((e) => (_current = e.doc.next));
+  changed$.subscribe((e) => {
+    _current = e.doc.next;
+  });
 
   const api: t.CrdtDocEvents<T> = {
     id,
@@ -34,7 +42,7 @@ export async function CrdtDocEvents<T extends O>(
     },
 
     async change(handler) {
-      events.ref.fire({ id, initial, change: handler });
+      events.ref.fire({ id, change: handler });
       return _current;
     },
   };
