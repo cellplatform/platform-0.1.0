@@ -52,14 +52,14 @@ export function BusControllerRefs(args: { bus: t.EventBus<any>; events: t.CrdtEv
 
     // Store reference.
     const exists = Boolean(data);
-    const doc = { id: e.doc.id, data, exists };
+    const doc = { id: e.doc.id, data };
     if (exists) {
       refs[e.doc.id] = { id: e.doc.id, data };
     }
 
     bus.fire({
       type: 'sys.crdt/ref:res',
-      payload: { tx, id, doc, created, changed, error },
+      payload: { tx, id, doc, exists, created, changed, error },
     });
 
     if (changed) {
