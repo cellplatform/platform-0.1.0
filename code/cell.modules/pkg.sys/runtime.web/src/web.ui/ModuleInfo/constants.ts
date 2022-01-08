@@ -3,7 +3,7 @@ import * as m from './types';
 /**
  * Complete list of fields.
  */
-const ALL_FIELDS: m.ModuleInfoField[] = [
+const ALL_FIELDS: m.ModuleInfoFields[] = [
   'source:url',
   'source:url:hash',
   'namespace',
@@ -21,7 +21,7 @@ const ALL_FIELDS: m.ModuleInfoField[] = [
 /**
  * Default fields and order.
  */
-const DEFAULT_FIELDS: m.ModuleInfoField[] = [
+const DEFAULT_FIELDS: m.ModuleInfoFields[] = [
   'source:url:hash',
   'version',
   'namespace',
@@ -39,6 +39,6 @@ export const DEFAULT = {
 };
 
 export const ModuleInfoConstants = {
-  FIELDS: ALL_FIELDS,
   DEFAULT,
+  FIELDS: ALL_FIELDS,
 };

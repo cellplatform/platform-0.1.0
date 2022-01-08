@@ -15,7 +15,6 @@ export type RuntimeRemote = {
 export type RuntimeRemoteWeb = t.RuntimeRemote & {
   script(): RuntimeRemoteScript;
   module<M = any>(): Promise<M>;
-  useModule<M = any>(): RuntimeRemoteModule<M>;
 };
 
 export type RuntimeRemoteScript = t.Disposable & {

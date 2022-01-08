@@ -180,7 +180,7 @@ describe('TestModel', () => {
       const test = TestModel({ parent, description, handler });
       const res = await test.run({ timeout: 10 });
       expect(res.timeout).to.eql(10);
-      expect(res.error?.message).to.include('Timed out after 10 msecs');
+      expect(res.error?.message).to.include('Test timed out after 10 msecs');
     });
 
     it('timeout: custom set within test', async () => {

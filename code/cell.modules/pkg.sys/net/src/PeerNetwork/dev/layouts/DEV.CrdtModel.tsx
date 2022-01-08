@@ -1,24 +1,11 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-} from 'rxjs/operators';
-import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, COLORS, Button } from '../common';
-import { DevModal } from '../layouts';
-import { useLocalPeer } from '../../hooks';
-
-import { Connection, CrdtConnection } from '../../../NetworkModel/Crdt.OLD';
-import { DevConnection } from '../../../NetworkModel/Crdt.OLD/dev/DEV.Connection';
 import Automerge from 'automerge';
+import React, { useEffect, useState } from 'react';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { DevConnection } from '../../../NetworkModel__/Crdt.OLD/dev/DEV.Connection';
+import { useLocalPeer } from '../../hooks';
+import { Button, COLORS, css, CssValue, t } from '../common';
 
 export type DevCrdtModelProps = {
   bus: t.EventBus<any>;
@@ -50,14 +37,8 @@ export const DevCrdtModel: React.FC<DevCrdtModelProps> = (props) => {
   }, []); // eslint-disable-line
 
   const styles = {
-    base: css({
-      flex: 1,
-      padding: 30,
-      backgroundColor: COLORS.WHITE,
-    }),
-    toolbar: css({
-      marginTop: 30,
-    }),
+    base: css({ flex: 1, padding: 30, backgroundColor: COLORS.WHITE }),
+    toolbar: css({ marginTop: 30 }),
     body: {
       base: css({ Flex: 'horizontal-stretch-stretch' }),
       left: css({ flex: 1 }),

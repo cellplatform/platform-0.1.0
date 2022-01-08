@@ -1,5 +1,2 @@
-import { WebRuntime } from './WebRuntime';
-export { WebRuntime };
-export const bundle = WebRuntime.bundle;
-
+export { WebRuntime } from './WebRuntime';
 export * from './WorkerBus';

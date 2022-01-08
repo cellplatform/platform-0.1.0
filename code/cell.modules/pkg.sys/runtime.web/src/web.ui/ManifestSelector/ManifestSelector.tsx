@@ -3,7 +3,7 @@ import React from 'react';
 import { color, css, CssValue, t, useDragTarget, COLORS, ManifestUrl } from './common';
 import { UrlTextbox } from './components/UrlTextbox';
 import { ModuleInfo } from '../ModuleInfo';
-import { ModuleInfoField } from '../ModuleInfo/types';
+import { ModuleInfoFields } from '../ModuleInfo/types';
 
 export type ManifestSelectorProps = {
   manifestUrl?: t.ManifestUrl;
@@ -12,7 +12,7 @@ export type ManifestSelectorProps = {
   canDrop?: boolean;
   showExports?: boolean;
   focusOnLoad?: boolean;
-  fields?: ModuleInfoField[];
+  fields?: ModuleInfoFields[];
   style?: CssValue;
   onManifestUrlChange?: t.ManifestSelectorUrlChangeHandler;
   onLoadManifest?: t.ManifestSelectorLoadHandler;

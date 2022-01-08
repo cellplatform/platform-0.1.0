@@ -57,7 +57,7 @@ export const actions = DevActions<Ctx>()
         .multi(true)
         .pipe((e) => {
           if (e.changing) {
-            const next = e.changing.next.map(({ value }) => value) as m.ModuleInfoField[];
+            const next = e.changing.next.map(({ value }) => value) as m.ModuleInfoFields[];
             e.ctx.props.fields = next.length === 0 ? undefined : next;
           }
         }),

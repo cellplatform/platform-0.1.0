@@ -4,11 +4,10 @@ import { FsDriverLocal } from '..';
 import { Hash, t, ManifestHash, time, Path } from '../common';
 
 export default Test.describe('FsIndexer', (e) => {
-  const TEST_ID = 'test.foo';
   const EMPTY_HASH = Hash.sha256([]);
 
   const testCreate = async () => {
-    const id = TEST_ID;
+    const id = 'dev.test.FsIndexer';
     const fs = await FsDriverLocal({ id });
     return { fs, name: id, deleteAll: () => deleteAll(fs) };
   };

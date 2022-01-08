@@ -20,7 +20,7 @@ export { useResizeObserver } from '@platform/react';
 export { rx, defaultValue, cuid, time, deleteUndefined, asArray, slug } from '@platform/util.value';
 export { StateObject } from '@platform/state';
 export { Hash } from '@platform/cell.schema';
-export { WebRuntime, bundle } from '@platform/cell.runtime.web';
+export { WebRuntime } from '@platform/cell.runtime.web';
 export { NetworkBus } from '@platform/cell.runtime/lib/NetworkBus';
 
 /**

@@ -2,8 +2,8 @@ import { map } from 'rxjs/operators';
 import { PeerEvents, NetworkBus, t, Uri } from './common';
 
 /**
- * An event-bus distributed across a number of peers
- * using WebRTC data connection transport.
+ * The interface to an event-bus distributed across a number of
+ * peers using WebRTC data connection transport.
  */
 export function PeerNetworkBus<E extends t.Event>(args: {
   self: t.PeerId;
@@ -23,26 +23,28 @@ export function PeerNetworkBus<E extends t.Event>(args: {
     local: async () => Uri.peer.create(self),
     remotes: async () => {
       const uri = Uri.connection.create;
-      return connections.map((conn) => uri(conn.kind, conn.peer.remote.id, conn.id));
+      return (_connections || []).map((conn) => uri(conn.kind, conn.peer.remote.id, conn.id));
     },
   });
 
   // Maintain a list of connections.
-  let connections: t.PeerConnectionStatus[];
-  events.status(self).changed$.subscribe((e) => (connections = e.peer.connections));
+  let _connections: t.PeerConnectionStatus[];
+  events.status(self).changed$.subscribe((e) => (_connections = e.peer.connections));
   events
     .status(self)
     .get()
-    .then((e) => (connections = e.peer?.connections || [])); // NB: Initial load of current connections.
+    .then((e) => (_connections = e.peer?.connections || [])); // NB: Initial load of current connections.
 
   /**
    * API
    */
-  return {
+  const api: t.PeerNetworkBus<E> = {
     ...netbus,
     self,
     get connections() {
-      return connections;
+      return _connections || [];
     },
   };
+
+  return api;
 }

@@ -19,11 +19,19 @@ export type SysFsEvents = t.Disposable & {
   io: t.SysFsEventsIo;
   index: t.SysFsEventsIndex;
   remote: t.SysFsEventsRemote;
+  ready: SysFsReady;
   fs(options?: FsOptions): t.Fs;
   fs(subdir?: string): t.Fs;
 };
 
 type FsOptions = { dir?: string; timeout?: Milliseconds };
+
+/**
+ * Response to the ready method.
+ */
+export type SysFsReady = (options?: SysFsReadyArgs) => Promise<SysFsReadyRes>;
+export type SysFsReadyArgs = { timeout?: Milliseconds; retries?: number };
+export type SysFsReadyRes = { ready: boolean; error?: t.SysFsError };
 
 /**
  * Event API: indexing

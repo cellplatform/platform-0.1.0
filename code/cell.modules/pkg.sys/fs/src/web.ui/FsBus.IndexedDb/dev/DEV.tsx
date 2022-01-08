@@ -2,10 +2,6 @@ import React from 'react';
 import { DevActions, ObjectView, Test, TestSuiteRunResponse } from 'sys.ui.dev';
 import { t, rx, Filesystem } from '../common';
 
-import { DevFsSample } from './DEV.Sample';
-
-const path = 'myfile.txt';
-
 type FilesystemId = string;
 
 type Ctx = {
@@ -20,12 +16,12 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('FsBus.IndexedDb')
+  .namespace('FsBus.IndexedDb (tests)')
   .context((e) => {
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
-    const id = 'fs.foo';
+    const id = 'dev.fs.foo';
 
     const runTests = async () => {
       const tests = await Test.bundle('FsDriver: IndexedDb', [
@@ -61,30 +57,6 @@ export const actions = DevActions<Ctx>()
 
     e.hr();
 
-    e.button('write', async (e) => {
-      const store = await e.ctx.filestore();
-      const fs = store.fs();
-      const data = new TextEncoder().encode('foobar');
-      const res = await fs.write(path, data);
-      e.ctx.debug.data = res;
-    });
-
-    e.button('read', async (e) => {
-      const store = await e.ctx.filestore();
-      const fs = store.fs();
-      const res = await fs.read(path);
-      e.ctx.debug.data = res;
-    });
-
-    e.button('delete', async (e) => {
-      const store = await e.ctx.filestore();
-      const fs = store.fs();
-      const res = await fs.delete(path);
-      e.ctx.debug.data = res;
-    });
-
-    e.hr();
-
     e.component((e) => {
       const { data } = e.ctx.debug;
       if (!data) return null;
@@ -107,18 +79,9 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    const debug = e.ctx.debug;
-
-    if (debug.tests) {
-      const el = (
-        <Test.View.Results data={debug.tests} style={{ Scroll: true, padding: 30, flex: 1 }} />
-      );
-      e.render(el);
-    }
-
-    if (!debug.tests) {
-      e.render(<DevFsSample bus={e.ctx.bus} />);
-    }
+    const data = e.ctx.debug.tests;
+    const style = { Scroll: true, padding: 30, flex: 1 };
+    e.render(<Test.View.Results data={data} style={style} />);
   });
 
 export default actions;

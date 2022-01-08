@@ -1,5 +1,5 @@
 {
-  "name": "vendor.pusher",
+  "name": "vendor.cloud.pusher",
   "version": "0.0.0",
   "sideEffects": false,
   "compiler": {
@@ -11,13 +11,11 @@
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
-    "bundle": "cell.compiler bundle $@",
+    "bundle": "cell.compiler bundle --bump $@",
     "watch": "cell.compiler watch $@",
-    "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@",
-    "deploy": "cell.compiler upload --dir cloud.pusher $@"
+    "serve": "cell.compiler serve $@"
   },
   "dependencies": {
     "pusher-js": "^7.0.3"

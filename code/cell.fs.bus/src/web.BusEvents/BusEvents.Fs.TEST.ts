@@ -733,7 +733,7 @@ describe('BusEvents.Fs', function () {
         mock.controller.dispose(); // NB: Kill the controller so the operation times out.
 
         const fn = () => fs.write('foo.json', data);
-        await expectError(fn, 'timed out after 10 msecs');
+        await expectError(fn, 'Timed out after 10 msecs');
         await mock.dispose();
       });
 

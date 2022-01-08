@@ -1,4 +1,4 @@
-export { INpmPackageJson } from '../types';
+export { NpmPackageJson } from '../types';
 
 export type INpmInfo = {
   name: string;

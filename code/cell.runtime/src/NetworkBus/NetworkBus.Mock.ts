@@ -1,17 +1,56 @@
-import { t } from './common';
+import { Subject } from 'rxjs';
+import { filter } from 'rxjs/operators';
+
+import { t, time } from './common';
 import { NetworkBus } from './NetworkBus';
 
 /**
  * A mock network bus.
  * NOTE: useful for when an environment does not support the kind of
- *       bus being requested, but an object needs to be returned.
+ *       bus being requested but an object needs to be returned.
  */
-export function NetworkBusMock<E extends t.Event = t.Event>() {
-  const pump: t.NetworkPump<E> = {
-    in: (fn) => null,
-    out: (e) => null,
+export function NetworkBusMock<E extends t.Event = t.Event>(
+  options: { local?: t.NetworkBusUri; remotes?: t.NetworkBusUri[]; memorylog?: boolean } = {},
+): t.NetworkBusMock<E> {
+  const { memorylog } = options;
+  const in$ = new Subject<E>();
+
+  const mock: t.NetworkBusMock<E>['mock'] = {
+    fired: [],
+    in: { $: in$, next: (e) => in$.next(e) },
+    out: [],
+    local: options.local ?? 'uri:me',
+    remotes: [],
+    remote(uri, netbus) {
+      type R = t.NetworkBusMockRemote<E>;
+      const item: R = { uri, bus: netbus ?? NetworkBusMock(), fired: [] };
+      mock.remotes.push(item);
+      item.bus.$.pipe(filter(() => Boolean(memorylog))).subscribe((e) => item.fired.push(e));
+      return item;
+    },
   };
-  const local = async () => '';
-  const remotes = async () => [] as string[];
-  return NetworkBus<E>({ pump, local, remotes });
+
+  const pump: t.NetworkPump<E> = {
+    in: (fn) => mock.in.$.subscribe(fn),
+    out(e) {
+      mock.out.push(e);
+      time.delay(0, () => {
+        // NB: simulate network latency (aka. "not" synchronous).
+        mock.remotes
+          .filter(({ uri }) => uri !== mock.local && e.targets.includes(uri))
+          .forEach((remote) => remote.bus.target.local(e.event));
+      });
+    },
+  };
+
+  const netbus = NetworkBus<E>({
+    pump,
+    local: async () => mock.local,
+    remotes: async () => mock.remotes.map(({ uri }) => uri),
+  });
+
+  if (options.memorylog) netbus.$.subscribe((e) => mock.fired.push(e));
+
+  options.remotes?.forEach((uri) => mock.remote(uri));
+  return { ...netbus, mock };
 }

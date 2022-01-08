@@ -3,13 +3,6 @@ import * as t from './types';
 
 type Uri = string;
 
-/**
- * TODO 🐷
- *
- * Move to [cell.runtime.web]
- *
- */
-
 type Args = {
   pump: t.NetworkPump<any>;
   local(): Promise<Uri>;
@@ -17,7 +10,7 @@ type Args = {
 };
 
 /**
- * Derives a [NetworkBus] from that runs across the
+ * Derives a [NetworkBus] that runs across the
  * WebWorker process boundary.
  */
 export function WorkerBus<E extends t.Event>(args: Args): t.NetworkBus<E> {

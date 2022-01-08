@@ -3,9 +3,10 @@ export * from '../../types';
 /**
  * @platform
  */
-export { Disposable, EventBus, Json, JsonMap, Event } from '@platform/types';
+export { Disposable, EventBus, Json, JsonMap, Event, NpmPackageJson } from '@platform/types';
 export { Observable } from 'rxjs';
 export { Http, HttpMethod } from '@platform/http.types';
+export { CssEdgesInput } from '@platform/css/lib/types';
 export {
   Fs,
   FsFileInfo,
@@ -32,5 +33,5 @@ export {
 /**
  * @system
  */
-export { Dropped } from 'sys.ui.primitives/lib/types';
+export { Dropped, DroppedFile } from 'sys.ui.primitives/lib/types';
 export { S3SignedPostOptions } from '@platform/fs.s3.types';

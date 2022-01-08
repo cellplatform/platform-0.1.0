@@ -13,4 +13,5 @@ export type SysFsErrorCode =
   | 'move'
   | 'manifest'
   | 'cell/push'
-  | 'cell/pull';
+  | 'cell/pull'
+  | 'unknown';

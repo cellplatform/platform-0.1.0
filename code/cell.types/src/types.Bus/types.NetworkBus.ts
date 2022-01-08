@@ -56,3 +56,23 @@ export type NetworkBusFireResponse<E extends t.Event> = {
  */
 export type NetworkBusFilter = (e: NetworkBusFilterArgs) => boolean;
 export type NetworkBusFilterArgs = { uri: NetworkBusUri };
+
+/**
+ * Mock network bus.
+ */
+export type NetworkBusMock<E extends t.Event = t.Event> = t.NetworkBus<E> & {
+  readonly mock: {
+    readonly fired: E[];
+    readonly remotes: NetworkBusMockRemote<E>[];
+    readonly in: { $: t.Observable<E>; next(event: E): void };
+    readonly out: t.NetworkOutArgs<E>[];
+    local: t.NetworkBusUri;
+    remote(uri: t.NetworkBusUri, bus?: t.NetworkBus<any>): NetworkBusMockRemote<E>;
+  };
+};
+
+export type NetworkBusMockRemote<E extends t.Event = t.Event> = {
+  readonly uri: t.NetworkBusUri;
+  readonly bus: t.NetworkBus<E>;
+  readonly fired: E[];
+};

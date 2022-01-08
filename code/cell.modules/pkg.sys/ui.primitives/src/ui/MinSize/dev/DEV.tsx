@@ -1,5 +1,5 @@
 import React from 'react';
-import { DevActions, lorem } from 'sys.ui.dev';
+import { DevActions } from 'sys.ui.dev';
 
 import { MinSize, MinSizeProps } from '..';
 import { MinSizeProperties } from '../MinSize.Properties';
@@ -24,6 +24,7 @@ export const actions = DevActions<Ctx>()
         minWidth: 600,
         minHeight: 450,
         hideStrategy: 'css:opacity',
+        showDebugSize: false,
         onResize: ({ size }) => {
           e.change.ctx((ctx) => (ctx.size = size));
         },
@@ -33,6 +34,11 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Minimum Size');
+
+    e.boolean('showDebugSize', (e) => {
+      if (e.changing) e.ctx.props.showDebugSize = e.changing.next;
+      e.boolean.current = e.ctx.props.showDebugSize;
+    });
 
     e.hr();
 

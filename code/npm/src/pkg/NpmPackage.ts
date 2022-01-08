@@ -4,7 +4,7 @@ import { getVersions } from '../get';
 
 export type INpmPackageInit = {
   dir?: string;
-  json?: t.INpmPackageJson;
+  json?: t.NpmPackageJson;
 };
 
 /**
@@ -33,7 +33,7 @@ export class NpmPackage {
     this.exists = fs.existsSync(this.path);
 
     const loadFile = () => {
-      return this.exists ? fs.file.loadAndParseSync<t.INpmPackageJson>(this.path, {}) : {};
+      return this.exists ? fs.file.loadAndParseSync<t.NpmPackageJson>(this.path, {}) : {};
     };
     this.json = args.json ? args.json : loadFile();
     this._original = { ...this.json };
@@ -45,8 +45,8 @@ export class NpmPackage {
   public readonly path: string;
   public readonly exists: boolean;
 
-  public json: t.INpmPackageJson;
-  private readonly _original: t.INpmPackageJson;
+  public json: t.NpmPackageJson;
+  private readonly _original: t.NpmPackageJson;
 
   /**
    * [Properties]

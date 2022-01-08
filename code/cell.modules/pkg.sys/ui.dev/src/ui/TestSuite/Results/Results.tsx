@@ -29,6 +29,7 @@ export const Results: React.FC<ResultsProps> = (props) => {
     empty: css({
       opacity: 0.4,
       Flex: 'center-center',
+      userSelect: 'none',
     }),
   };
 

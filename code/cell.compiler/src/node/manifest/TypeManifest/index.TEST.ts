@@ -58,7 +58,7 @@ describe('TypeManifest', function () {
   });
 
   it('info: loaded from package.json', async () => {
-    const pkg = (await fs.readJson(fs.resolve('package.json'))) as t.INpmPackageJson;
+    const pkg = (await fs.readJson(fs.resolve('package.json'))) as t.NpmPackageJson;
     const info = await TypeManifest.info('package.json');
     expect(info.name).to.eql(pkg.name);
     expect(info.version).to.eql(pkg.version);

@@ -2,13 +2,9 @@ import { Test, expect } from '../web.test';
 import { Filesystem } from '.';
 import { rx, DEFAULT, Hash, t } from './common';
 
-import Automerge from 'automerge';
-
 export default Test.describe('FsBus', (e) => {
-  const TEST_FS = 'test.bus';
-
   const testPrep = async (options: { id?: string; clear?: boolean } = {}) => {
-    const { id = TEST_FS } = options;
+    const { id = 'dev.test.FsBus' } = options;
     const bus = rx.bus();
     const { store } = await Filesystem.create({ bus, id });
     const fs = store.fs();
@@ -73,6 +69,70 @@ export default Test.describe('FsBus', (e) => {
       expect(res2.hash).to.eql(Hash.sha256(data));
 
       expect(res3).to.eql(data);
+      dispose();
+    });
+
+    e.it('copy', async () => {
+      const { fs, dispose } = await testPrep({ clear: true });
+
+      const path1 = 'foo/1.txt';
+      const path2 = 'foo/2.txt';
+      const data = new TextEncoder().encode('hello');
+
+      const res0 = await fs.info(path2);
+      expect(res0.exists).to.eql(false);
+
+      const res1 = await fs.write(path1, data);
+      expect(res1.bytes).to.eql(data.byteLength);
+      expect(res1.hash).to.eql(Hash.sha256(data));
+
+      await fs.copy(path1, path2);
+
+      const res2 = await fs.info(path2);
+      expect(res2.bytes).to.eql(data.byteLength);
+      expect(res2.hash).to.eql(Hash.sha256(data));
+
+      dispose();
+    });
+
+    e.it('move', async () => {
+      const { fs, dispose } = await testPrep({ clear: true });
+
+      const path1 = 'foo/1.txt';
+      const path2 = 'foo/2.txt';
+      const data = new TextEncoder().encode('hello');
+
+      const res0 = await fs.info(path2);
+      expect(res0.exists).to.eql(false);
+
+      const res1 = await fs.write(path1, data);
+      expect(res1.bytes).to.eql(data.byteLength);
+      expect(res1.hash).to.eql(Hash.sha256(data));
+
+      await fs.move(path1, path2);
+
+      const res2 = await fs.info(path2);
+      expect(res2.bytes).to.eql(data.byteLength);
+      expect(res2.hash).to.eql(Hash.sha256(data));
+
+      const res3 = await fs.info(path1);
+      expect(res3.exists).to.eql(false);
+
+      dispose();
+    });
+
+    e.it('delete', async () => {
+      const { fs, dispose } = await testPrep({ clear: true });
+
+      const path = 'foo/file.txt';
+      const data = new TextEncoder().encode('hello');
+
+      await fs.write(path, data);
+      expect((await fs.info(path)).exists).to.eql(true);
+
+      await fs.delete(path);
+      expect((await fs.info(path)).exists).to.eql(false);
+
       dispose();
     });
 
@@ -177,54 +237,6 @@ export default Test.describe('FsBus', (e) => {
       expect(paths).to.eql([file.path, cachefile]);
 
       dispose();
-    });
-
-    e.describe('CRDT', (e) => {
-      const path = 'file.crdt';
-
-      e.it('automerge: save', async () => {
-        const { fs, dispose } = await testPrep({ clear: true });
-        console.log('Automerge', Automerge);
-
-        // type C
-        type C = { title: string; done: boolean };
-        type T = { cards: C[] };
-
-        let doc = Automerge.from<T>({ cards: [] });
-
-        doc = Automerge.change(doc, 'Add card', (doc) => {
-          doc.cards.push({ title: 'foobar', done: false });
-        });
-
-        const data = Automerge.save(doc);
-
-        console.log('s', data);
-        const res = await fs.write(path, data);
-
-        console.log('res', res);
-
-        dispose();
-      });
-
-      e.it.skip('automerge: load', async () => {
-        const { fs, dispose } = await testPrep({ clear: false });
-
-        const res = await fs.read(path);
-
-        const str = new TextDecoder().decode(res);
-
-        console.log('res', res);
-
-        const actorId = '1234-abcd-56789-qrstuv';
-        // const doc1 = Automerge.init(actorId);
-        // const doc2 = Automerge.from({ foo: 1 }, actorId);
-        const doc3 = Automerge.load(str, actorId);
-
-        console.log('str', str);
-        // console.log('doc3', doc3);
-
-        dispose();
-      });
     });
   });
 });

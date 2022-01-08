@@ -2,7 +2,8 @@ import React from 'react';
 import { Harness } from 'sys.ui.dev';
 
 const imports = {
-  Sample: import('./web.ui/Sample/dev/DEV'),
+  UnitTests: import('./web.ui/dev/DEV.UnitTests'),
+  ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
 };
 
 /**

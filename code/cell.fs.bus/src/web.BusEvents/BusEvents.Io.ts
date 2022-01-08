@@ -1,5 +1,4 @@
-import { firstValueFrom, of, timeout } from 'rxjs';
-import { catchError, filter } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 import { rx, slug, t, timeoutWrangler } from './common';
 
@@ -17,6 +16,15 @@ export function BusEventsIo(args: {
   const { id, $, bus } = args;
   const toTimeout = timeoutWrangler(args.timeout);
 
+  const toError = (
+    error?: { message: string; code: string },
+    defaultCode?: t.SysFsErrorCode,
+  ): t.SysFsError => {
+    const message = error?.message ?? 'Failed';
+    const code = error?.code === 'timeout' ? 'client/timeout' : defaultCode ?? 'unknown';
+    return { code, message };
+  };
+
   /**
    * File/system information.
    */
@@ -25,16 +33,9 @@ export function BusEventsIo(args: {
     res$: rx.payload<t.SysFsInfoResEvent>($, 'sys.fs/info:res'),
     async get(options = {}) {
       const { path } = options;
-      const msecs = toTimeout(options);
       const tx = slug();
-
-      const first = firstValueFrom(
-        info.res$.pipe(
-          filter((e) => e.tx === tx),
-          timeout(msecs),
-          catchError(() => of(`[SysFs.Info] request timed out after ${msecs} msecs`)),
-        ),
-      );
+      const res$ = info.res$.pipe(filter((e) => e.tx === tx));
+      const first = rx.asPromise.first<t.SysFsInfoResEvent>(res$, { timeout: toTimeout(options) });
 
       bus.fire({
         type: 'sys.fs/info:req',
@@ -42,9 +43,11 @@ export function BusEventsIo(args: {
       });
 
       const res = await first;
-      if (typeof res !== 'string') return res;
+      if (res.payload) {
+        return res.payload;
+      }
 
-      const error: t.SysFsError = { code: 'client/timeout', message: res };
+      const error = toError(res.error, 'info');
       const fail: t.SysFsInfoRes = { tx, id, paths: [], error };
       return fail;
     },
@@ -57,29 +60,26 @@ export function BusEventsIo(args: {
     req$: rx.payload<t.SysFsReadReqEvent>($, 'sys.fs/read:req'),
     res$: rx.payload<t.SysFsReadResEvent>($, 'sys.fs/read:res'),
     async get(path, options = {}) {
-      const msecs = toTimeout(options);
       const tx = slug();
-
-      const first = firstValueFrom(
-        read.res$.pipe(
-          filter((e) => e.tx === tx),
-          timeout(msecs),
-          catchError(() => of(`[SysFs.Read] request timed out after ${msecs} msecs`)),
-        ),
-      );
+      const op = 'read';
+      const res$ = read.res$.pipe(filter((e) => e.tx === tx));
+      const first = rx.asPromise.first<t.SysFsReadResEvent>(res$, {
+        op,
+        timeout: toTimeout(options),
+      });
 
       bus.fire({
         type: 'sys.fs/read:req',
         payload: { tx, id, path },
       });
-      const res = await first;
 
-      if (typeof res !== 'string') {
-        const { files, error } = res;
+      const res = await first;
+      if (res.payload) {
+        const { files, error } = res.payload;
         return { files, error };
       }
 
-      const error: t.SysFsError = { code: 'client/timeout', message: res };
+      const error = toError(res.error, 'read');
       const fail: t.SysFsReadResponse = { files: [], error };
       return fail;
     },
@@ -92,29 +92,26 @@ export function BusEventsIo(args: {
     req$: rx.payload<t.SysFsWriteReqEvent>($, 'sys.fs/write:req'),
     res$: rx.payload<t.SysFsWriteResEvent>($, 'sys.fs/write:res'),
     async fire(file, options = {}) {
-      const msecs = toTimeout(options);
       const tx = slug();
-
-      const first = firstValueFrom(
-        write.res$.pipe(
-          filter((e) => e.tx === tx),
-          timeout(msecs),
-          catchError(() => of(`[SysFs.Write] request timed out after ${msecs} msecs`)),
-        ),
-      );
+      const op = 'write';
+      const res$ = write.res$.pipe(filter((e) => e.tx === tx));
+      const first = rx.asPromise.first<t.SysFsWriteResEvent>(res$, {
+        op,
+        timeout: toTimeout(options),
+      });
 
       bus.fire({
         type: 'sys.fs/write:req',
         payload: { tx, id, file },
       });
-      const res = await first;
 
-      if (typeof res !== 'string') {
-        const { files, error } = res;
+      const res = await first;
+      if (res.payload) {
+        const { files, error } = res.payload;
         return { files, error };
       }
 
-      const error: t.SysFsError = { code: 'client/timeout', message: res };
+      const error = toError(res.error, 'write');
       const fail: t.SysFsWriteResponse = { files: [], error };
       return fail;
     },
@@ -127,29 +124,26 @@ export function BusEventsIo(args: {
     req$: rx.payload<t.SysFsCopyReqEvent>($, 'sys.fs/copy:req'),
     res$: rx.payload<t.SysFsCopyResEvent>($, 'sys.fs/copy:res'),
     async fire(file, options = {}) {
-      const msecs = toTimeout(options);
       const tx = slug();
-
-      const first = firstValueFrom(
-        copy.res$.pipe(
-          filter((e) => e.tx === tx),
-          timeout(msecs),
-          catchError(() => of(`[SysFs.Copy] request timed out after ${msecs} msecs`)),
-        ),
-      );
+      const op = 'copy';
+      const res$ = copy.res$.pipe(filter((e) => e.tx === tx));
+      const first = rx.asPromise.first<t.SysFsCopyResEvent>(res$, {
+        op,
+        timeout: toTimeout(options),
+      });
 
       bus.fire({
         type: 'sys.fs/copy:req',
         payload: { tx, id, file },
       });
-      const res = await first;
 
-      if (typeof res !== 'string') {
-        const { files, error } = res;
+      const res = await first;
+      if (res.payload) {
+        const { files, error } = res.payload;
         return { files, error };
       }
 
-      const error: t.SysFsError = { code: 'client/timeout', message: res };
+      const error = toError(res.error, 'copy');
       const fail: t.SysFsCopyResponse = { files: [], error };
       return fail;
     },
@@ -162,29 +156,26 @@ export function BusEventsIo(args: {
     req$: rx.payload<t.SysFsMoveReqEvent>($, 'sys.fs/move:req'),
     res$: rx.payload<t.SysFsMoveResEvent>($, 'sys.fs/move:res'),
     async fire(file, options = {}) {
-      const msecs = toTimeout(options);
       const tx = slug();
-
-      const first = firstValueFrom(
-        move.res$.pipe(
-          filter((e) => e.tx === tx),
-          timeout(msecs),
-          catchError(() => of(`[SysFs.Move] request timed out after ${msecs} msecs`)),
-        ),
-      );
+      const op = 'move';
+      const res$ = move.res$.pipe(filter((e) => e.tx === tx));
+      const first = rx.asPromise.first<t.SysFsMoveResEvent>(res$, {
+        op,
+        timeout: toTimeout(options),
+      });
 
       bus.fire({
         type: 'sys.fs/move:req',
         payload: { tx, id, file },
       });
-      const res = await first;
 
-      if (typeof res !== 'string') {
-        const { files, error } = res;
+      const res = await first;
+      if (res.payload) {
+        const { files, error } = res.payload;
         return { files, error };
       }
 
-      const error: t.SysFsError = { code: 'client/timeout', message: res };
+      const error = toError(res.error, 'move');
       const fail: t.SysFsMoveResponse = { files: [], error };
       return fail;
     },
@@ -197,28 +188,28 @@ export function BusEventsIo(args: {
     req$: rx.payload<t.SysFsDeleteReqEvent>($, 'sys.fs/delete:req'),
     res$: rx.payload<t.SysFsDeleteResEvent>($, 'sys.fs/delete:res'),
     async fire(path, options = {}) {
-      const msecs = toTimeout(options);
       const tx = slug();
-
-      const first = firstValueFrom(
-        del.res$.pipe(
-          filter((e) => e.tx === tx),
-          timeout(msecs),
-          catchError(() => of(`[SysFs.Delete] request timed out after ${msecs} msecs`)),
-        ),
-      );
+      const op = 'delete';
+      const res$ = del.res$.pipe(filter((e) => e.tx === tx));
+      const first = rx.asPromise.first<t.SysFsDeleteResEvent>(res$, {
+        op,
+        timeout: toTimeout(options),
+      });
 
       bus.fire({
         type: 'sys.fs/delete:req',
         payload: { tx, id, path },
       });
+
       const res = await first;
+      if (res.payload) {
+        const { files, error } = res.payload;
+        return { files, error };
+      }
 
-      if (typeof res === 'string')
-        return { tx, id, files: [], error: { code: 'client/timeout', message: res } };
-
-      const { files, error } = res;
-      return { files, error };
+      const error = toError(res.error, 'delete');
+      const fail: t.SysFsDeleteResponse = { files: [], error };
+      return fail;
     },
   };
 

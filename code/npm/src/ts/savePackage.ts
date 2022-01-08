@@ -1,5 +1,5 @@
 import { INodeFs } from '@platform/fs.types';
-import { INpmPackageJson } from '@platform/types';
+import { NpmPackageJson } from '@platform/types';
 
 /**
  * Reads a [package.json] file and saves key fields out
@@ -9,7 +9,7 @@ export async function savePackage(args: {
   fs: INodeFs;
   source?: string;
   target: string;
-  fields?: (keyof INpmPackageJson)[];
+  fields?: (keyof NpmPackageJson)[];
   const?: string;
 }) {
   const { fs, fields = ['name', 'version'] } = args;
@@ -22,7 +22,7 @@ export async function savePackage(args: {
     throw new Error(`Source [package.json] does not exist. ${source}`);
   }
 
-  let json: INpmPackageJson = {};
+  let json: NpmPackageJson = {};
   try {
     const text = (await fs.readFile(source)).toString();
     json = JSON.parse(text);
@@ -57,7 +57,7 @@ export async function savePackage(args: {
   };
 
   Object.keys(json)
-    .filter((key) => fields.includes(key as keyof INpmPackageJson))
+    .filter((key) => fields.includes(key as keyof NpmPackageJson))
     .forEach((key) => add(key, json[key]));
   text += `};\n`;
 

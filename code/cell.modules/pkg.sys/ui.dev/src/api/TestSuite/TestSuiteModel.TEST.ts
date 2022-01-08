@@ -456,7 +456,7 @@ describe('TestSuiteModel', () => {
         expect(res.children[0].ok).to.eql(false);
         expect(res.children[0].tests[0].ok).to.eql(true);
         expect(res.children[0].children[0].tests[0].ok).to.eql(false);
-        expect(res.children[0].children[0].tests[0].error?.message).to.include('Timed out');
+        expect(res.children[0].children[0].tests[0].error?.message).to.include('timed out');
       });
     });
   });

@@ -1,18 +1,18 @@
-import { expect, rx } from '../test';
+import { expect, rx, Test } from '../web.test';
 import { WebRuntimeBus } from '.';
 
 const bus = rx.bus();
 
-describe('BusEvents', () => {
-  describe('is', () => {
+export default Test.describe('WebRuntimeBus (Events)', (e) => {
+  e.describe('is', (e) => {
     const is = WebRuntimeBus.Events.is;
 
-    it('is (static/instance)', () => {
+    e.it('is (static/instance)', () => {
       const events = WebRuntimeBus.Events({ bus });
       expect(events.is).to.equal(is);
     });
 
-    it('is.base', () => {
+    e.it('is.base', () => {
       const test = (type: string, expected: boolean) => {
         expect(is.base({ type, payload: {} })).to.eql(expected);
       };
@@ -20,7 +20,7 @@ describe('BusEvents', () => {
       test('sys.runtime.web/', true);
     });
 
-    it('is.instance', () => {
+    e.it('is.instance', () => {
       const type = 'sys.runtime.web/';
       expect(is.instance({ type, payload: { id: 'abc' } }, 'abc')).to.eql(true);
       expect(is.instance({ type, payload: { id: 'abc' } }, '123')).to.eql(false);

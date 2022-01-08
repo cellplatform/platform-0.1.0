@@ -2,6 +2,7 @@ import React from 'react';
 
 import { css, CssValue, t } from '../common';
 import { TestResult } from './Results.Test';
+import { Description } from './Result.Description';
 
 export type SuiteResultsProps = {
   data: t.TestSuiteRunResponse;
@@ -33,7 +34,7 @@ export const SuiteResults: React.FC<SuiteResultsProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.title.base}>
-        <div {...styles.title.description}>{data.description}</div>
+        <Description text={data.description} style={styles.title.description} />
         <div {...styles.title.elapsed}>{data.elapsed}ms</div>
       </div>
       <div {...styles.body}>

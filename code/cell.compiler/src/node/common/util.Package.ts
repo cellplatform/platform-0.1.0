@@ -36,7 +36,7 @@ export const Package = {
   async findClosest(dir: string) {
     const pkg = await Package.findClosestPath(dir);
     if (!pkg) return undefined;
-    const json = (await fs.readJson(pkg.path)) as t.INpmPackageJson;
+    const json = (await fs.readJson(pkg.path)) as t.NpmPackageJson;
     const res = { ...pkg, json };
     return res;
   },
@@ -56,7 +56,7 @@ export const Package = {
       throw new Error(err);
     }
 
-    const json = (await fs.readJson(path)) as t.INpmPackageJson;
+    const json = (await fs.readJson(path)) as t.NpmPackageJson;
     const from = json.version || '0.0.0';
 
     const isPrerelease = ['alpha', 'beta'].includes(level);

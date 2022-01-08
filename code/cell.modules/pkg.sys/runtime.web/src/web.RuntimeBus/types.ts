@@ -10,16 +10,6 @@ export type WebRuntimeInfo = {
 };
 
 /**
- * EVENTS
- */
-
-export type WebRuntimeEvent =
-  | WebRuntimeGroupEvent
-  | WebRuntimeInfoReqEvent
-  | WebRuntimeInfoResEvent
-  | WebRuntimeUseModuleEvent;
-
-/**
  * Event API
  */
 export type WebRuntimeEvents = t.Disposable & {
@@ -40,6 +30,12 @@ export type WebRuntimeEvents = t.Disposable & {
       module: t.ModuleManifestRemoteImport | null; // NB: null to clear.
     }): void;
   };
+
+  netbus: {
+    req$: t.Observable<t.WebRuntimeNetbusReq>;
+    res$: t.Observable<t.WebRuntimeNetbusRes>;
+    get(options?: { timeout?: Milliseconds }): Promise<WebRuntimeNetbusRes>;
+  };
 };
 
 /**
@@ -55,6 +51,18 @@ export type WebRuntimeGroupEvents = t.Disposable & {
     }): void;
   };
 };
+
+/**
+ * EVENTS
+ */
+
+export type WebRuntimeEvent =
+  | WebRuntimeGroupEvent
+  | WebRuntimeInfoReqEvent
+  | WebRuntimeInfoResEvent
+  | WebRuntimeUseModuleEvent
+  | WebRuntimeNetbusReqEvent
+  | WebRuntimeNetbusResEvent;
 
 /**
  * Module info.
@@ -96,4 +104,25 @@ export type WebRuntimeUseModule = {
 export type WebRuntimeGroupEvent = {
   type: 'sys.runtime.web/group';
   payload: { id: InstanceId; event: t.WebRuntimeEvent };
+};
+
+/**
+ * Netbus retrieval event
+ */
+export type WebRuntimeNetbusReqEvent = {
+  type: 'sys.runtime.web/netbus:req';
+  payload: WebRuntimeNetbusReq;
+};
+export type WebRuntimeNetbusReq = { tx: string; id: InstanceId };
+
+export type WebRuntimeNetbusResEvent = {
+  type: 'sys.runtime.web/netbus:res';
+  payload: WebRuntimeNetbusRes;
+};
+export type WebRuntimeNetbusRes = {
+  tx: string;
+  id: InstanceId;
+  exists: boolean;
+  netbus?: t.NetworkBus;
+  error?: string;
 };
