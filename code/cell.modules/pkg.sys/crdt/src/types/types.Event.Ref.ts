@@ -36,7 +36,8 @@ export type CrdtRefRes<T extends O = O> = {
   id: InstanceId;
   created: boolean;
   changed: boolean;
-  doc: { id: DocumentId; data?: T; exists: boolean };
+  exists: boolean;
+  doc: { id: DocumentId; data?: T };
   error?: string;
 };
 

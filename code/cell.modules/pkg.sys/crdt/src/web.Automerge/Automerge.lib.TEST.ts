@@ -1,5 +1,6 @@
 import { Test, expect } from '../web.test';
 import { rx, Automerge, Filesystem, t } from '../common';
+import { AutomergeDoc } from '.';
 
 /**
  * https://github.com/automerge/automerge
@@ -36,8 +37,8 @@ export default Test.describe('Automerge (CRDT)', (e) => {
     }
   };
 
-  function createDoc() {
-    return Automerge.from<Doc>({ cards: [] });
+  function createTestDoc() {
+    return AutomergeDoc.init<Doc>((doc) => (doc.cards = []));
   }
 
   e.describe('data manipulation', (e) => {
@@ -108,7 +109,7 @@ export default Test.describe('Automerge (CRDT)', (e) => {
       });
 
       e.it('`delete obj.prop` => undefined', () => {
-        let doc = createDoc();
+        let doc = createTestDoc();
 
         doc = Automerge.change<Doc>(doc, (draft) => (draft.name = 'hello'));
         expect(doc.name).to.eql('hello');
@@ -122,7 +123,7 @@ export default Test.describe('Automerge (CRDT)', (e) => {
     });
 
     e.describe('type manipulations (immutable)', (e) => {
-      let doc = createDoc();
+      let doc = createTestDoc();
       const getAndChange = (fn: (json: any) => void) => {
         doc = Automerge.change<Doc>(doc, (draft) => {
           if (!draft.json) draft.json = {};
@@ -168,7 +169,7 @@ export default Test.describe('Automerge (CRDT)', (e) => {
 
       e.describe('[ array ] methods', (e) => {
         e.it('.insertAt', () => {
-          const doc = Automerge.change<Doc>(createDoc(), (draft) => {
+          const doc = Automerge.change<Doc>(createTestDoc(), (draft) => {
             draft.cards.push({ title: 'item-1', done: false });
             draft.cards.insertAt?.(1, { title: 'item-2', done: false });
           });
@@ -179,7 +180,7 @@ export default Test.describe('Automerge (CRDT)', (e) => {
         });
 
         e.it('.deleteAt', () => {
-          const doc = Automerge.change<Doc>(createDoc(), (draft) => {
+          const doc = Automerge.change<Doc>(createTestDoc(), (draft) => {
             draft.cards.insertAt?.(0, { title: 'item-1', done: false });
             draft.cards.insertAt?.(1, { title: 'item-2', done: false });
             draft.cards.deleteAt?.(0);
@@ -318,11 +319,12 @@ export default Test.describe('Automerge (CRDT)', (e) => {
   /**
    * https://github.com/automerge/automerge/blob/main/SYNC.md
    */
-  e.describe('sync (v1)', (e) => {
-    e.it('getChanges / applyChanges', () => {
-      const A1 = createDoc();
+  e.describe('sync (v1) - getChanges / applyChanges', (e) => {
+    e.it('change and merge', () => {
+      const A1 = createTestDoc();
       const B1 = Automerge.merge(Automerge.init<Doc>(), A1);
 
+      // Make some changes to A
       const A2a = Automerge.change<Doc>(A1, (doc) => (doc.name = 'foo'));
       const A2b = Automerge.change<Doc>(A2a, (doc) => (doc.name = 'foobar'));
 
@@ -332,6 +334,98 @@ export default Test.describe('Automerge (CRDT)', (e) => {
       const [C1, patch] = Automerge.applyChanges(B1, changes);
       expect(C1.name).to.eql('foobar');
       expect(patch.diffs.objectId).to.eql('_root');
+    });
+  });
+
+  /**
+   * https://github.com/automerge/automerge/blob/main/SYNC.md
+   * https://github.com/automerge/automerge/blob/main/test/sync_test.js
+   */
+  e.describe('sync (v2) - "bloom filters"', (e) => {
+    function sync<D>(
+      a: Automerge.FreezeObject<D>,
+      b: Automerge.FreezeObject<D>,
+      aSyncState = Automerge.initSyncState(),
+      bSyncState = Automerge.initSyncState(),
+    ) {
+      const { generateSyncMessage, receiveSyncMessage } = Automerge;
+
+      const MAX = 10;
+      let aToBmsg = null;
+      let bToAmsg = null;
+      let i = 0;
+
+      do {
+        [aSyncState, aToBmsg] = generateSyncMessage<D>(a, aSyncState);
+        [bSyncState, bToAmsg] = generateSyncMessage<D>(b, bSyncState);
+
+        // NB: message passed through {{network}} here.
+        //     Simulated (immediate) connection here for testing.
+
+        if (aToBmsg) [b, bSyncState] = receiveSyncMessage(b, bSyncState, aToBmsg);
+        if (bToAmsg) [a, aSyncState] = receiveSyncMessage(a, aSyncState, bToAmsg);
+
+        if (i++ > MAX) {
+          throw new Error(`Did not synchronize within ${MAX} iterations.`);
+        }
+      } while (aToBmsg || bToAmsg);
+
+      return {
+        a,
+        b,
+        syncState: { a: aSyncState, b: bSyncState },
+      };
+    }
+
+    e.it('[n1] should offer all changes to [n2] when starting from nothing', () => {
+      type D = { list: number[] };
+
+      const test = (n1: D, n2: D) => {
+        // Make changes for [n1] that [n2] should request.
+        Array.from({ length: 3 }).forEach(
+          (v, i) => (n1 = Automerge.change(n1, { time: 0 }, (doc) => doc.list.push(i))),
+        );
+
+        expect(n1).to.not.eql(n2);
+        expect(n1.list.length).to.eql(3);
+
+        const synced = sync(n1, n2);
+        expect(synced.a).to.eql(synced.b);
+      };
+
+      test(
+        AutomergeDoc.init<D>((doc) => (doc.list = [])),
+        Automerge.init<D>(),
+      );
+
+      test(
+        AutomergeDoc.init<D>((doc) => (doc.list = [])),
+        AutomergeDoc.init<D>((doc) => (doc.list = [])),
+      );
+    });
+
+    e.it('should sync peers where one has commits the other does not', () => {
+      type D = { list: number[]; msg?: string };
+
+      let n1 = AutomergeDoc.init<D>((doc) => (doc.list = []));
+      let n2 = Automerge.init<D>();
+
+      // Make changes for n1 that n2 should request.
+      Array.from({ length: 3 }).forEach(
+        (v, i) => (n1 = Automerge.change(n1, { time: 0 }, (doc) => doc.list.push(i))),
+      );
+
+      expect(n1).to.not.eql(n2);
+
+      ({ a: n1, b: n2 } = sync(n1, n2));
+      expect(n1).to.eql(n2);
+
+      // Make more changes for n1 that n2 should request.
+      n2 = Automerge.change(n2, { time: 0 }, (doc) => (doc.msg = 'hello'));
+      expect(n1.msg).to.not.eql(n2.msg);
+
+      ({ a: n1, b: n2 } = sync(n1, n2));
+      expect(n1.msg).to.eql(n2.msg);
     });
   });
 });
