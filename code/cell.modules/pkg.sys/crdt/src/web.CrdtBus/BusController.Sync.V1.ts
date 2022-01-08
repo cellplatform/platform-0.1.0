@@ -38,7 +38,7 @@ export function BusControllerSyncV1(args: {
    */
   events.ref.changed$.pipe(debounceTime(debounce)).subscribe((e) => {
     const changes = Automerge.getChanges<any>(e.doc.prev, e.doc.next);
-    const doc = { id: e.id, changes };
+    const doc = { id: e.doc.id, changes };
     if (doc.changes.length > 0) {
       netbus.target.remote({
         type: 'sys.crdt/sync:v1/changed',
@@ -56,11 +56,11 @@ export function BusControllerSyncV1(args: {
       const id = e.doc.id;
       const remote = e.doc.data;
       const ref = await events.ref.fire({ id });
+      const local = ref.doc.data;
 
-      // NB: If this is an initial creation no need to merge,
-      //     as the remote document is used to start with.
-      if (!ref.created && ref.doc.data) {
-        const local = ref.doc.data;
+      if (!local) {
+        await events.ref.fire({ id, change: Automerge.clone<any>(remote) });
+      } else {
         const next = Automerge.merge<any>(local, remote);
         await events.ref.fire({ id, change: next });
       }
@@ -70,31 +70,16 @@ export function BusControllerSyncV1(args: {
    * REMOTE: document changed.
    */
   rx.payload<t.CrdtSyncV1ChangedEvent>(netbus.$, 'sys.crdt/sync:v1/changed')
-    .pipe(filter((e) => e.peer !== peer))
+    .pipe()
     .subscribe(async (e) => {
-      // await merge(e.doc.id, e.doc.data);
-      console.log(peer, '||| remote changed', e);
-      // const ref
-      // const initial = {}; // TEMP 🐷
+      const id = e.doc.id;
+      const ref = await events.ref.fire({ id });
 
-      // const id = e.doc.id;
-      // const ref = await events.ref.fire({ id, initial });
-
-      // console.log('ref', ref);
-
-      // let doc = Automerge.from({ count: 0 });
-
-      // const changes = e.doc.changes as Automerge.BinaryChange[];
-
-      // const res = Automerge.applyChanges<any>(doc, changes);
-
-      // console.log('res', res);
-
-      // console.log('next >>> ', next);
-      // console.log('doc', doc);
-
-      // await events.ref.fire({ id, initial, change: next });
-
-      // const next = Automerge.applyChanges()
+      const doc = ref.doc.data;
+      if (doc) {
+        const changes = e.doc.changes as Automerge.BinaryChange[];
+        const [next, patch] = Automerge.applyChanges<any>(doc, changes);
+        await events.ref.fire({ id, change: next });
+      }
     });
 }

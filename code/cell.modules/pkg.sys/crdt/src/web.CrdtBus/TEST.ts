@@ -119,8 +119,8 @@ export default Test.describe('CrdtBus', (e) => {
         expect(res.changed).to.eql(false);
 
         expect(res.doc.data).to.eql(undefined);
-        expect(res.doc.exists).to.eql(false);
         expect(res.doc.id).to.eql(id);
+        expect(res.exists).to.eql(false);
       });
 
       e.it('via plain { object }', async () => {
@@ -133,7 +133,7 @@ export default Test.describe('CrdtBus', (e) => {
 
         expect(res1.doc.id).to.eql(id);
         expect(res1.doc.data).to.eql({ count: 0 });
-        expect(res1.doc.exists).to.eql(true);
+        expect(res1.exists).to.eql(true);
         expect(Is.automergeObject(res1.doc.data)).to.eql(true);
 
         expect(res1.changed).to.eql(false);
@@ -156,7 +156,7 @@ export default Test.describe('CrdtBus', (e) => {
 
         expect(res.doc.id).to.eql(id);
         expect(res.doc.data).to.eql(initial);
-        expect(res.doc.exists).to.eql(true);
+        expect(res.exists).to.eql(true);
         expect(Is.automergeObject(res.doc.data)).to.eql(true);
         expect(res.error).to.eql(undefined);
       });
@@ -412,7 +412,7 @@ export default Test.describe('CrdtBus', (e) => {
         mocks.map((netbus) => {
           const id = netbus.mock.local;
           const bus = rx.bus();
-          const debounce = 10;
+          const debounce = 0;
           const ctrl = CrdtBus.Controller({ id, bus, sync: { version: '1', netbus, debounce } });
           const { events, dispose } = ctrl;
           const doc = (id: string, initial?: Doc) => {
@@ -432,49 +432,36 @@ export default Test.describe('CrdtBus', (e) => {
 
       const id = 'foo';
       const doc1 = await peer1.doc(id);
-      console.log('doc', doc1);
+      expect(doc1.current.count).to.eql(0);
 
-      // console.log('-------------------------------------------');
-      // console.log('p1/info', await peer1.events.info.get());
-      // console.log('p2/info', await peer2.events.info.get());
+      // return;
 
       await time.wait(50);
+      console.log('-------------------------------------------');
 
       doc1.change((d) => (d.count = 123));
 
-      let doc2 = await peer2.doc(id);
+      await time.wait(100);
 
-      console.log('doc2', doc2.current);
+      const doc2 = await peer2.doc(id);
 
-      await time.wait(500);
+      // await time.wait(5);
+      console.log('peer2.doc|||||| END', doc2.current);
+      expect(doc2.current.count).to.eql(123);
 
-      doc2 = await peer2.doc(id);
-      console.log('doc2', doc2.current);
-      // network.dispose();
+      console.log('-------------------------------------------');
+
+      doc2.change((d) => (d.count = 999));
+
+      await time.wait(100);
+
+      console.log('doc1.current', doc1.current);
+
+      const history = Automerge.getHistory(doc1.current);
+
+      console.log('history', history);
+
+      network.dispose();
     });
-
-    // e.it.only('temp-2', async () => {
-    //   const doc1 = Automerge.from<Doc>({ count: 0 });
-    //   let doc2 = Automerge.from<Doc>(Automerge.clone(doc1));
-
-    //   // const doc3 = Automerge.change<Doc>(doc2, (d) => (d.count = 123));
-
-    //   // Automerge.
-
-    //   const changes = Automerge.getChanges(doc1, doc2);
-    //   // const changes = Automerge.getChanges(doc1, doc1);
-    //   console.log('changes', changes);
-    // });
-
-    // e.it.skip('tmpe-3', async () => {
-    //   const doc1 = Automerge.from<Doc>({ count: 0 });
-    //   const doc2 = Automerge.change<Doc>(doc1, 'count', (doc) => {
-    //     // doc.cards.push({ title: 'hello', done: false });
-    //     doc.count = 123;
-    //   });
-
-    //   const changes = Automerge.getChanges<Doc>(doc1, doc2);
-    //   console.log('changes', changes);
-    // });
   });
 });
