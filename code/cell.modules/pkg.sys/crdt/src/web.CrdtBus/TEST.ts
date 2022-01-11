@@ -430,7 +430,7 @@ export default Test.describe('CrdtBus', (e) => {
       return { peers, dispose };
     };
 
-    e.it('syncs existing docs across bus ', async () => {
+    e.it('syncs existing docs across NetworkBus ', async () => {
       const network = await testNetwork(3);
       const [peer1, peer2, peer3] = network.peers;
 

@@ -4,6 +4,7 @@ import { Harness } from 'sys.ui.dev';
 const imports = {
   ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
   UnitTests: import('./web.ui/dev/UnitTests/DEV.UnitTests'),
+  Sample: import('./web.ui/dev/Sample/DEV'),
 };
 
 /**
