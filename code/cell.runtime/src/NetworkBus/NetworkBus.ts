@@ -58,6 +58,13 @@ export function NetworkBus<T extends E = E>(args: {
       fire(event, ['local', 'remote']);
     },
 
+    async uri() {
+      return {
+        local: await args.local(),
+        remotes: await args.remotes(),
+      };
+    },
+
     target: {
       async local(event) {
         return fire(event, ['local']);

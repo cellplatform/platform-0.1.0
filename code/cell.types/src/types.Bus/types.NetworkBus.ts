@@ -15,6 +15,7 @@ export type NetworkBus<E extends t.Event = t.Event> = {
   $: t.Observable<E>;
   fire: t.FireEvent<E>;
   target: NetworkBusTarget<E>;
+  uri(): Promise<{ local: NetworkBusUri; remotes: NetworkBusUri[] }>;
 };
 
 /**

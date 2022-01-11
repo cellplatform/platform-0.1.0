@@ -43,9 +43,9 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = { tests };
 
     // Auto-run on load.
-    tests.Automerge();
+    // tests.Automerge();
     // tests.AutomergeDoc();
-    // tests.CrdtBus();
+    tests.CrdtBus();
 
     return ctx;
   })

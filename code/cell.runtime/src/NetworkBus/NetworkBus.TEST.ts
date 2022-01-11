@@ -9,6 +9,28 @@ describe('NetworkBus', () => {
     expect(is.observable(bus.$)).to.eql(true);
   });
 
+  describe('uri', () => {
+    it('local', async () => {
+      const bus = NetworkBusMock({ local: 'foo' });
+      const uri = await bus.uri();
+      expect(uri.local).to.eql('foo');
+    });
+
+    it('no remotes', async () => {
+      const bus = NetworkBusMock();
+      const uri = await bus.uri();
+      expect(uri.remotes).to.eql([]);
+    });
+
+    it('lists remotes', async () => {
+      const bus = NetworkBusMock();
+      bus.mock.remote('one');
+      bus.mock.remote('two');
+      const uri = await bus.uri();
+      expect(uri.remotes).to.eql(['one', 'two']);
+    });
+  });
+
   describe('IO: pump/in', () => {
     it('fires incoming message from the network pump through the LOCAL observable ($)', () => {
       const bus = NetworkBusMock<E>();

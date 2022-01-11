@@ -1,7 +1,7 @@
 import { BusControllerRefs } from './BusController.Refs';
-import { BusControllerSyncV1 } from './BusController.Sync.V1';
 import { BusEvents } from './BusEvents';
 import { DEFAULT, pkg, rx, slug, t } from './common';
+import { BusControllerSync } from './BusController.Sync';
 
 type InstanceId = string;
 type Milliseconds = number;
@@ -13,7 +13,7 @@ export function BusController(args: {
   id?: InstanceId;
   bus: t.EventBus<any>;
   filter?: (e: t.CrdtEvent) => boolean;
-  sync?: { netbus: t.NetworkBus<any>; version: '1'; debounce?: Milliseconds };
+  sync?: { netbus: t.NetworkBus<any>; debounce?: Milliseconds };
 }) {
   const { filter, id = DEFAULT.id, sync } = args;
 
@@ -22,12 +22,12 @@ export function BusController(args: {
   const { dispose, dispose$ } = events;
 
   /**
-   * Initialize to child controllers.
+   * Initialize child controllers.
    */
   BusControllerRefs({ bus, events });
-  if (sync?.version === '1') {
+  if (sync) {
     const { netbus, debounce } = sync;
-    BusControllerSyncV1({ netbus, events, debounce });
+    BusControllerSync({ netbus, events, debounce });
   }
 
   /**
