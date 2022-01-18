@@ -3,7 +3,7 @@ import { Harness } from 'sys.ui.dev';
 
 const imports = {
   PeerNetwork: import('./PeerNetwork/dev/DEV'),
-  UnitTests: import('./dev/DEV.UnitTests'),
+  UnitTests: import('./web.ui/dev/DEV.UnitTests'),
 };
 
 const url = new URL(location.href);

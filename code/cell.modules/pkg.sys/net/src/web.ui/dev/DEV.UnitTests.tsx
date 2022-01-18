@@ -6,9 +6,7 @@ type CtxRunTests = () => Promise<TestSuiteRunResponse>;
 
 type Ctx = {
   results?: TestSuiteRunResponse;
-  tests: {
-    PeerNetworkBus: CtxRunTests;
-  };
+  tests: { PeerNetworkBus: CtxRunTests };
 };
 
 /**
@@ -27,7 +25,7 @@ export const actions = DevActions<Ctx>()
 
     const tests: Ctx['tests'] = {
       async PeerNetworkBus() {
-        return run(await Test.bundle(import('../PeerNetworkBus/PeerNetworkBus.TEST')));
+        return run(await Test.bundle(import('../../PeerNetworkBus/PeerNetworkBus.TEST')));
       },
     };
 

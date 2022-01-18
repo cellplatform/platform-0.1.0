@@ -1,5 +1,5 @@
 export * from '../common';
-export { Icons } from '../../ui/Icons';
+export { Icons } from '../../web.ui/Icons';
 
 /**
  * @system
