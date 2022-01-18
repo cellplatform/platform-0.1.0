@@ -1,6 +1,6 @@
 export { Test } from 'sys.ui.dev';
 export { expect } from 'chai';
-export { NetworkBusMock, NetworkBusMockMesh } from 'sys.runtime.web';
 
 export * from '../common';
+export * from './TestNetwork';
 export { AutomergeDoc } from '../web.Automerge';

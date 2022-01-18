@@ -1,16 +1,5 @@
 import { CrdtBus } from '.';
-import {
-  Automerge,
-  cuid,
-  expect,
-  Is,
-  NetworkBusMockMesh,
-  pkg,
-  rx,
-  t,
-  Test,
-  time,
-} from '../web.test';
+import { Automerge, cuid, expect, Is, pkg, rx, t, Test, TestNetwork, time } from '../web.test';
 
 type Doc = { count: number; msg?: string };
 
@@ -411,23 +400,9 @@ export default Test.describe('CrdtBus', (e) => {
   });
 
   e.describe('sync', (e) => {
-    const testNetwork = async (total: number) => {
-      const mocks = NetworkBusMockMesh<t.CrdtEvent>(total, { memorylog: true });
-      const peers = await Promise.all(
-        mocks.map((netbus) => {
-          const id = netbus.mock.local;
-          const bus = rx.bus();
-          const debounce = 0;
-          const ctrl = CrdtBus.Controller({ id, bus, sync: { netbus, debounce } });
-          const { events, dispose } = ctrl;
-          const doc = (id: string, initial?: Doc) => {
-            return events.doc<Doc>({ id, initial: initial ?? { count: 0 } });
-          };
-          return { id, netbus, ctrl, events, doc, dispose };
-        }),
-      );
-      const dispose = () => peers.forEach((peer) => peer.dispose());
-      return { peers, dispose };
+    const testNetwork = (total: number) => {
+      const initial: Doc = { count: 0 };
+      return TestNetwork<Doc>({ total, initial, debounce: 0 });
     };
 
     e.it('syncs existing docs across NetworkBus ', async () => {

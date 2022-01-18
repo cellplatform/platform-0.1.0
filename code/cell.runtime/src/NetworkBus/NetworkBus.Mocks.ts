@@ -4,7 +4,7 @@ import { NetworkBusMock } from './NetworkBus.Mock';
 /**
  * A mock network mesh of event buses.
  */
-export function NetworkBusMockMesh<E extends t.Event = t.Event>(
+export function NetworkBusMocks<E extends t.Event = t.Event>(
   length: number,
   options: { memorylog?: boolean } = {},
 ) {
