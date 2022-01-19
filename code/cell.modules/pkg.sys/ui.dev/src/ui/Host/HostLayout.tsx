@@ -44,12 +44,6 @@ export const HostLayout: React.FC<HostLayoutProps> = (props) => {
     fullscreen: {
       button: css({ Absolute: [3, 8, null, null] }),
     },
-    bgHighlight: css({
-      pointerEvents: 'none',
-      width: 8,
-      Absolute: [0, actionsOnEdge === 'right' ? 0 : null, 0, actionsOnEdge === 'left' ? 0 : null],
-      backgroundColor: color.format(0.1),
-    }),
   };
 
   const isFullscreen = fullscreen?.value === true;
@@ -95,7 +89,6 @@ export const HostLayout: React.FC<HostLayoutProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)} className={constants.CSS.HOST}>
-      <div {...styles.bgHighlight} />
       <div {...styles.body}>{elContent}</div>
       {elFullscreenButton}
     </div>
