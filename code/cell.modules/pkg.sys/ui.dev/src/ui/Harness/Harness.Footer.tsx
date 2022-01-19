@@ -92,6 +92,5 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
 function logRuntime() {
   log.group('🌳 WebRuntime');
   log.info('module:', WebRuntime.module);
-  log.info('bundle:', WebRuntime.bundle);
   log.groupEnd();
 }

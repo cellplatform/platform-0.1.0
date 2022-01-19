@@ -17,7 +17,7 @@ export type HostProps = {
  * relevant state changes.
  */
 export const Host: React.FC<HostProps> = (props) => {
-  const { actions, bus, actionsOnEdge } = props;
+  const { actions, bus } = props;
 
   useActionsRedraw({
     name: '<Host>',
