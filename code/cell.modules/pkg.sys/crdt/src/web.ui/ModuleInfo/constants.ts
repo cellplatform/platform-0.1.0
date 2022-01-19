@@ -8,7 +8,7 @@ const ALL_FIELDS: m.ModuleInfoFields[] = ['module', 'module.name', 'module.versi
 /**
  * Default fields and order.
  */
-const DEFAULT_FIELDS: m.ModuleInfoFields[] = ['module', 'dataformat'];
+const DEFAULT_FIELDS: m.ModuleInfoFields[] = ['module', 'module.version'];
 
 export const DEFAULT = {
   FIELDS: DEFAULT_FIELDS,
