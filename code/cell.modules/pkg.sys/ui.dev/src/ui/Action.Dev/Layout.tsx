@@ -47,10 +47,16 @@ export const Layout: React.FC<LayoutProps> = (props) => {
   const [isDown, setIsDown] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<boolean>(props.isActive);
 
+  /**
+   * Lifecycle
+   */
   useEffect(() => {
     setIsActive(isSpinning ? false : props.isActive);
   }, [props.isActive, isSpinning]);
 
+  /**
+   * Render
+   */
   const styles = {
     base: css({
       position: 'relative',

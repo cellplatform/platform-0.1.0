@@ -36,17 +36,16 @@ export function useActionsSelectorState(args: {
     if (store) store().then((e) => setSelected(e && !args.initial ? e : Find.initial()));
 
     // Monitor for changes to the dropdown.
-    rx.payload<t.IActionsSelectChangedEvent>($, 'sys.ui.dev/actions/select/changed')
+    rx.payload<t.ActionsSelectChangedEvent>($, 'sys.ui.dev/actions/select/changed')
       .pipe()
       .subscribe((e) => {
         const current = Find.namespace(e.namespace);
 
         setSelected((prev) => {
           if (prev) {
-            /**
-             * TODO 🐷
-             * Invoke `dispose` handler here (when implemented)
-             */
+            const model = prev.toModel();
+            const namespace = model.state.namespace;
+            bus.fire({ type: 'sys.ui.dev/actions/dispose', payload: { namespace } });
           }
 
           return current;

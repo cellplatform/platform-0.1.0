@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { t, DEFAULT } from '../common';
 import { Layout, LayoutTitle } from './Layout';
@@ -19,11 +19,12 @@ export const Button: React.FC<ButtonProps> = (props) => {
   const { title, label = DEFAULT.UNNAMED, description, isSpinning, indent } = item;
   const isActive = item.handlers.length > 0;
 
-  const clickHandler = () =>
+  const clickHandler = () => {
     bus.fire({
       type: 'sys.ui.dev/action/Button',
       payload: { namespace, item },
     });
+  };
 
   const elTitle = title && <LayoutTitle>{title}</LayoutTitle>;
 
