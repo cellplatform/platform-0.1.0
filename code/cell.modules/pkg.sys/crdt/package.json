@@ -1,6 +1,6 @@
 {
   "name": "sys.crdt",
-  "version": "0.0.0",
+  "version": "0.0.4",
   "main": "lib/index",
   "sideEffects": false,
   "compiler": {
