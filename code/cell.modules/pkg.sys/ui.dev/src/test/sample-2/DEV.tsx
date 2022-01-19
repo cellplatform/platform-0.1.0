@@ -1,16 +1,16 @@
 import React from 'react';
 
 import { ActionsFactory } from '../..';
-import { t, time } from '../../common';
+import { t, rx } from '../../common';
 import { DevDefs, DisplayDefs } from '../../defs';
 import { Component } from './Component';
 
 type O = Record<string, unknown>;
 
 type Ctx = {
+  bus: t.EventBus<any>;
   count: number;
   el?: JSX.Element;
-  increment(): void;
 };
 
 type M = t.DevMethods<Ctx> & t.DisplayMethods<Ctx>;
@@ -36,19 +36,32 @@ export const actions = ComposedActions<Ctx>()
     if (e.prev) return e.prev;
 
     const ctx: Ctx = {
+      bus: rx.bus(), // NB: Dummy, replaced with injected bus in [init] method.
       count: 0,
-      increment() {
-        e.change.ctx((ctx) => ctx.count++);
-      },
     };
 
     return ctx;
   })
 
+  .init(async (e) => {
+    const { ctx, bus } = e;
+
+    ctx.count = 123;
+    ctx.bus = e.bus;
+
+    bus.$.subscribe((e) => {
+      console.log('$.event:', e);
+    });
+  })
+
   .items((e) => {
-    e.title('increment');
-    e.button('count++', (e) => e.ctx.count++);
-    e.button('ctx.increment()', (e) => e.ctx.increment());
+    e.button('increment', (e) => e.ctx.count++);
+    e.button('fire (bus)', (e) => {
+      e.ctx.bus.fire({
+        type: 'foo',
+        payload: { count: e.ctx.count },
+      });
+    });
     e.hr();
 
     e.title('My Title');
@@ -63,8 +76,6 @@ export const actions = ComposedActions<Ctx>()
    * Render
    */
   .subject((e) => {
-    console.log('SUBJECT');
-
     e.settings({
       host: { background: -0.04 },
       layout: { width: 450, border: -0.1, cropmarks: -0.2, background: 1, label: 'sample-1' },

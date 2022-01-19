@@ -223,6 +223,29 @@ describe('ActionsFactory', () => {
     });
   });
 
+  describe('actions.init()', () => {
+    it('stores/replaces init handler', () => {
+      const { model, actions } = create();
+      expect(model.state.init).to.eql(undefined);
+
+      const fn1: t.ActionHandlerInit<Ctx> = async (e) => null;
+      const fn2: t.ActionHandlerInit<Ctx> = async (e) => 'FOOBAR';
+
+      actions.init(fn1);
+      expect(model.state.init).to.eql(fn1);
+
+      // Replace with another factory.
+      actions.init(fn2);
+      expect(model.state.init).to.eql(fn2);
+    });
+
+    it('throw if factory function not provided', () => {
+      const { actions } = create();
+      const fn = () => actions.init('foo' as any);
+      expect(fn).to.throw(/Initializer function not provided/);
+    });
+  });
+
   describe('actions.subject()', () => {
     it('stores/replaces subject factory', () => {
       const { model, actions } = create();

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Harness } from './ui/Harness';
+import { rx, t } from './common';
 
 const imports = {
   sample1: import('./test/sample-1/DEV'),
@@ -14,10 +15,21 @@ const imports = {
   TestSuite: import('./ui/TestSuite/dev/DEV'),
 };
 
-const url = new URL(location.href);
-const dev = url.searchParams.get('dev');
-const isLocalhost = url.hostname === 'localhost';
+/**
+ * UI Harness (Dev)
+ */
+type Props = { bus?: t.EventBus };
 
-export const DevHarness: React.FC = () => (
-  <Harness actions={Object.values(imports)} showActions={isLocalhost} initial={dev} />
-);
+export const DevHarness: React.FC<Props> = (props) => {
+  const url = new URL(location.href);
+  return (
+    <Harness
+      bus={props.bus}
+      actions={Object.values(imports)}
+      initial={url.searchParams.get('dev')}
+      showActions={url.hostname === 'localhost'}
+    />
+  );
+};
+
+export default DevHarness;

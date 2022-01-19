@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { Context, Handler } from '../api/Actions';
+import { Context } from '../api/Actions';
 import { R, rx, t, time } from '../common';
 
 /**
@@ -26,22 +26,59 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
      * Helpers that operate on the model within the context of this closure.
      */
     const Model = {
-      change(fn: (draft: t.ActionsModel<any>) => void) {
-        Context.getAndStore(model, { throw: true }); // NB: This will also assign the [ctx.current] value.
-        return model.change(fn);
-      },
-      payload<T extends t.ActionItem>(itemId: string, draft: t.ActionsModel<any>) {
-        const ctx = draft.ctx.current;
-        const env = draft.env.viaAction;
-        const { host, layout } = Handler.params.action({ ctx, env });
-        const item = draft.items.find((item) => item.id === itemId) as T;
-        return { ctx, host, item, layout, env };
-      },
+      /**
+       * Find an action item with the given ID.
+       */
       find(id: string | number) {
         const items = model.state.items;
         const index = typeof id === 'number' ? id : items.findIndex((item) => item.id === id);
         const item = items[index];
         return { index, item };
+      },
+      initialize: {
+        /**
+         * Run the initializer on each item.
+         */
+        eachItem() {
+          model.state.items.forEach((item) => {
+            const { id, kind } = item;
+            const def = defs.find((def) => def.kind === kind);
+            const bus = args.bus;
+            if (typeof def?.listen === 'function') {
+              def.listen({ id, actions: model, bus });
+            }
+          });
+        },
+
+        /**
+         * Run the `.init()` handler of the Actions set.
+         */
+        async handler() {
+          const fn = model.state.init;
+          if (!fn) return;
+
+          // NB: This will also assign the [ctx.current] value.
+          Context.getAndStore(model, { throw: true });
+
+          // Prepare the bus to be provided to the init function.
+          const namespace = model.state.namespace;
+          const bus = rx.bus();
+          const unloaded$ = rx
+            .payload<t.ActionsDisposeEvent>(event$, 'sys.ui.dev/actions/dispose')
+            .pipe(filter((e) => e.namespace === namespace));
+
+          args.bus.$.pipe(
+            takeUntil(dispose$),
+            takeUntil(unloaded$),
+            filter((e) => !e.type.startsWith('sys.ui.dev/')), // NB: we know the internal events for the harness aren't relevant.
+          ).subscribe(bus.fire);
+
+          // Invoke the init function
+          await model.changeAsync(async (draft) => {
+            const ctx = draft.ctx.current;
+            await fn({ bus, ctx });
+          });
+        },
       },
     };
 
@@ -50,23 +87,11 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
      *    Setup the initial model state by invoking
      *    each value producing handler.
      */
-    rx.payload<t.IActionsInitEvent>(event$, 'sys.ui.dev/actions/init')
+    rx.payload<t.ActionsInitEvent>(event$, 'sys.ui.dev/actions/init')
       .pipe()
-      .subscribe((e) => {
-        // Run initializer on each item.
-        model.state.items.forEach((item) => {
-          const { id, kind } = item;
-          const def = defs.find((def) => def.kind === kind);
-          if (typeof def?.listen === 'function') {
-            def.listen({
-              id,
-              actions: actions.toModel(),
-              bus: rx.busAsType<any>(bus),
-            });
-          }
-        });
-
-        // Finish up.
+      .subscribe(async (e) => {
+        await Model.initialize.handler();
+        Model.initialize.eachItem();
         model.change((draft) => (draft.initialized = true));
       });
 
