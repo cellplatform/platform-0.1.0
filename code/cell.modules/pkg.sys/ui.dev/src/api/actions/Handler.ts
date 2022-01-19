@@ -69,7 +69,7 @@ export const Handler = {
     },
 
     /**
-     * Mutates an environment from a set of settings changes.
+     * Mutates an environment from a group of "settings" changes.
      */
     update(env: t.ActionsModelEnvProps, changes?: t.ActionHandlerSettingsArgs) {
       const { layout, host, actions } = changes || {};
