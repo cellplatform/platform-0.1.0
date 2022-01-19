@@ -1,1 +1,1 @@
-export type Doc = { count: number };
+export type SimpleDoc = { count: number };

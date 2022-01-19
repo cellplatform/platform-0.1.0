@@ -190,10 +190,7 @@ export const actions = DevActions<Ctx>()
           style={{ MarginX: 30, MarginY: 20 }}
           history={{ fs: FILESYSTEM_ID }}
           onExportClick={(e) => {
-            ctx.events.runtime.useModule.fire({
-              target: TARGET_NAME,
-              module: e.module,
-            });
+            ctx.events.runtime.useModule.fire({ target: TARGET_NAME, module: e.module });
           }}
         />
       );

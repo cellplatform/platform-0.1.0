@@ -70,7 +70,7 @@ export function BusEvents(args: {
     req$: rx.payload<t.WebRuntimeNetbusReqEvent>($, 'sys.runtime.web/netbus:req'),
     res$: rx.payload<t.WebRuntimeNetbusResEvent>($, 'sys.runtime.web/netbus:res'),
     async get(options = {}) {
-      const { timeout = 3000 } = options;
+      const { timeout = 500 } = options;
       const tx = slug();
       const op = 'netbus';
       const res$ = netbus.res$.pipe(filter((e) => e.tx === tx));
