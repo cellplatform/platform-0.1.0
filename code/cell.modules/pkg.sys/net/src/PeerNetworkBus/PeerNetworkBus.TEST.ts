@@ -34,12 +34,19 @@ export default Test.describe('PeerNetworkBus', (e) => {
       const bus = rx.bus();
       const netbus = PeerNetworkBus({ bus, self: cuid() });
       const runtime = WebRuntime.Bus.Controller({ bus, netbus });
+      const events = WebRuntime.Bus.Events({ bus });
 
-      const res = await runtime.events.netbus.get({});
+      const res1 = await runtime.events.netbus.get({});
+      const res2 = await events.netbus.get();
+
       runtime.dispose();
+      events.dispose();
 
-      expect(res.exists).to.eql(true);
-      expect(res.netbus).to.equal(netbus);
+      expect(res1.exists).to.eql(true);
+      expect(res2.exists).to.eql(true);
+
+      expect(res1.netbus).to.equal(netbus);
+      expect(res2.netbus).to.equal(netbus);
     });
   });
 });
