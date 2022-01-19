@@ -20,7 +20,7 @@ describe('ActionsFactory', () => {
   describe('ActionsFactory.model()', () => {
     it('model', () => {
       const model = ActionsFactory.model();
-      expect(model.state).to.eql({ ...DEFAULT.ACTIONS });
+      expect(model.state).to.eql(DEFAULT.ACTIONS);
     });
   });
 
@@ -43,23 +43,25 @@ describe('ActionsFactory', () => {
     });
 
     it('no model', () => {
+      const bus = rx.bus();
       const actions = ActionsFactory.compose([]);
       const obj = actions.toObject();
-      expect(obj).to.eql({ ...DEFAULT.ACTIONS });
+      expect(obj).to.eql(DEFAULT.ACTIONS);
     });
 
     it('from {model} StateObject', () => {
+      const bus = rx.bus();
       const model = StateObject.create<M>({ ...DEFAULT.ACTIONS });
       const actions = ActionsFactory.compose([], model);
       const obj = actions.toObject();
-      expect(obj).to.eql({ ...DEFAULT.ACTIONS });
+      expect(obj).to.eql(DEFAULT.ACTIONS);
     });
 
     it('from {model} object', () => {
       const model = StateObject.create<M>({ ...DEFAULT.ACTIONS });
       const actions = ActionsFactory.compose([], model.state);
       const obj = actions.toObject();
-      expect(obj).to.eql({ ...DEFAULT.ACTIONS });
+      expect(obj).to.eql(DEFAULT.ACTIONS);
     });
 
     it('from builder.toObject() - model state', () => {

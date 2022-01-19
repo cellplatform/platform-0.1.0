@@ -34,12 +34,14 @@ export const ActionsFactory: t.ActionsFactory = {
  * [Helpers]
  */
 
-function asModel<Ctx extends O>(input?: any) {
-  return (
-    typeof input === 'object'
-      ? StateObject.isStateObject(input)
-        ? input
-        : StateObject.create<t.ActionsModel<Ctx>>(input)
-      : ActionsFactory.model()
-  ) as t.ActionsModelState<Ctx>;
+function asModel<Ctx extends O>(input: any) {
+  if (typeof input !== 'object') {
+    return ActionsFactory.model();
+  }
+
+  if (!StateObject.isStateObject(input)) {
+    return StateObject.create<t.ActionsModel<Ctx>>(input);
+  }
+
+  return input;
 }
