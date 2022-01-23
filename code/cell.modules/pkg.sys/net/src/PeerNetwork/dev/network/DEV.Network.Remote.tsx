@@ -7,12 +7,13 @@ export type DevNetworkRemoteProps = { bus: t.EventBus<any>; style?: CssValue };
 
 export const DevNetworkRemote: React.FC<DevNetworkRemoteProps> = (props) => {
   const { bus } = props;
+
   const target = TARGET_NAME;
   const remote = WebRuntime.ui.useModuleTarget({ bus, target });
 
   const Main = remote.module?.default;
   const isActive = Boolean(Main);
-  const elMain = isActive && <Main bus={props.bus} />;
+  const elMain = isActive && <Main bus={bus} />;
 
   if (!elMain) return null;
 
