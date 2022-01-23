@@ -1,29 +1,29 @@
 import React from 'react';
-import { toObject, DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
-
 import { WebRuntime } from 'sys.runtime.web';
-import { TARGET_NAME, Filesystem } from './common';
-
-type O = Record<string, unknown>;
+import { DevActions, LocalStorage, ObjectView, toObject } from 'sys.ui.dev';
 
 import {
   css,
   cuid,
   deleteUndefined,
+  Filesystem,
   Icons,
   isLocalhost,
   MediaStream,
   PeerNetwork,
+  PeerNetworkBus,
+  QueryString,
   rx,
   t,
+  TARGET_NAME,
   time,
-  QueryString,
-  PeerNetworkBus,
 } from './common';
+import { DevProps } from './DEV.Props';
 import { DevRootLayout } from './DEV.Root';
 import { EventBridge } from './event';
 import { DevGroupSeed, GroupSeed } from './layouts';
-import { DevProps } from './DEV.Props';
+
+type O = Record<string, unknown>;
 
 type Ctx = {
   self: t.PeerId;
@@ -38,6 +38,7 @@ type Ctx = {
   toSeed(): GroupSeed;
   fullscreen(value: boolean): void;
 };
+
 type CtxFlags = {
   isFullscreen: boolean;
   isReliable: boolean;
@@ -49,6 +50,7 @@ type CtxFlags = {
   isLayoutFullscreen: boolean;
   showOthersInHeader: boolean;
 };
+
 type CtxEvents = {
   peer: t.PeerNetworkEvents;
   group: t.GroupEvents;
@@ -77,8 +79,8 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const self = cuid();
     const bus = rx.bus<t.PeerEvent | t.DevEvent>();
+    const self = cuid();
 
     EventBridge.startEventBridge({ bus, self });
     PeerNetwork.Controller({ bus });
@@ -177,27 +179,10 @@ export const actions = DevActions<Ctx>()
     const { ctx } = e;
     const { events, self, signal } = ctx;
 
-    const bus = e.bus as t.EventBus<t.PeerEvent | t.DevEvent>;
-    // ctx.bus = bus;
-    // console.log('init', toObject(bus));
-
-    // EventBridge.startEventBridge({ bus, self });
-    // PeerNetwork.Controller({ bus });
-    // MediaStream.Controller({ bus });
-
-    // Media/peer events.
-    // events.media.start(EventBridge.videoRef(self)).video();
-    // events.peer.create(signal, self);
-    // events.peer.media(self).video();
+    console.log('NET/INIT', toObject(e.ctx));
   })
 
   .items((e) => {
-    e.button('tmp: fire (bus)', (e) => {
-      const bus = e.ctx.bus as t.EventBus;
-      bus.fire({ type: 'foo-PeerNetwork', payload: {} }); // TEMP 🐷
-    });
-    e.hr();
-
     e.component((e) => {
       const { self, bus } = e.ctx;
       return <DevProps self={self} bus={bus} style={{ MarginX: 30, MarginY: 20 }} />;
@@ -573,6 +558,7 @@ export const actions = DevActions<Ctx>()
         label: {
           topLeft: 'Mesh',
           topRight: elLabelRight,
+          bottomLeft: `bus/instance: "${(bus as any)._instance}"`,
           bottomRight: `filesystem: "${FILESYSTEM_ID}"`,
         },
         position: [60, 60, 70, 60],
