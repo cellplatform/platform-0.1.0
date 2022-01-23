@@ -10,11 +10,12 @@ import { SimpleDoc } from './DEV.types';
 
 export type DocCardProps = {
   doc: t.CrdtDocEvents<SimpleDoc>;
+  width?: number;
   style?: CssValue;
 };
 
 export const DocCard: React.FC<DocCardProps> = (props) => {
-  const { doc } = props;
+  const { doc, width = 180 } = props;
   const [current, setCurrent] = useState<SimpleDoc>(doc.current);
 
   /**
@@ -34,11 +35,7 @@ export const DocCard: React.FC<DocCardProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      minWidth: 180,
-      padding: 5,
-      fontSize: 13,
-    }),
+    base: css({ width, padding: 5, fontSize: 13 }),
     object: css({ margin: 5 }),
     toolbar: css({
       marginTop: 15,
@@ -51,7 +48,18 @@ export const DocCard: React.FC<DocCardProps> = (props) => {
     <Card style={css(styles.base, props.style)}>
       <ObjectView data={current} style={styles.object} />
       <div {...styles.toolbar}>
-        <Button onClick={() => doc.change((d) => d.count++)}>Increment</Button>
+        <Button
+          onClick={() => {
+            try {
+              console.log('click', doc);
+              doc.change((d) => d.count++);
+            } catch (error) {
+              console.log('error', error);
+            }
+          }}
+        >
+          Increment
+        </Button>
         <Button onClick={() => doc.change((d) => d.count--)}>Decrement</Button>
       </div>
     </Card>

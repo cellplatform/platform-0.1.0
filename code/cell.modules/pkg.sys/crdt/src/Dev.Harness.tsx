@@ -1,5 +1,6 @@
 import React from 'react';
 import { Harness } from 'sys.ui.dev';
+
 import { t } from './common';
 
 const imports = {
@@ -15,6 +16,7 @@ type Props = { bus?: t.EventBus };
 
 export const DevHarness: React.FC<Props> = (props) => {
   const url = new URL(location.href);
+
   return (
     <Harness
       bus={props.bus}

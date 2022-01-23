@@ -14,20 +14,25 @@ export const Sample: React.FC<SampleProps> = (props) => {
   const { docs = [] } = props;
   if (docs.length === 0) return null;
 
+  const CARD = { width: 180 };
+
   const styles = {
     base: css({ position: 'relative' }),
-    footer: css({ position: 'relative' }),
+    footer: css({
+      position: 'relative',
+      PaddingX: CARD.width / 2,
+    }),
   };
 
   const elFooter = (
     <div {...styles.footer}>
-      <Connectors />
+      <Connectors total={docs.length} rounded={18} border={4} />
     </div>
   );
 
   return (
     <div {...css(styles.base, props.style)}>
-      <PeerCards docs={docs} />
+      <PeerCards docs={docs} cardWidth={CARD.width} />
       {elFooter}
     </div>
   );

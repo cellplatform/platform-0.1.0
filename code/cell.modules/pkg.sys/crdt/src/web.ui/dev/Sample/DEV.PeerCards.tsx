@@ -5,6 +5,7 @@ import { SimpleDoc } from './DEV.types';
 
 export type PeerCardsProps = {
   docs?: t.CrdtDocEvents<SimpleDoc>[];
+  cardWidth?: number;
   style?: CssValue;
 };
 
@@ -22,6 +23,9 @@ export const PeerCards: React.FC<PeerCardsProps> = (props) => {
     }),
   };
 
-  const elCards = docs.map((doc, i) => <DocCard key={i} doc={doc} style={styles.spacing} />);
+  const elCards = docs.map((doc, i) => {
+    return <DocCard key={i} doc={doc} width={props.cardWidth} style={styles.spacing} />;
+  });
+
   return <div {...css(styles.base, props.style)}>{elCards}</div>;
 };
