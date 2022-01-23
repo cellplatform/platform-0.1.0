@@ -33,9 +33,12 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = { tests };
 
-    tests.Sample(); // Auto-run on load.
-
     return ctx;
+  })
+
+  .init(async (e) => {
+    const { tests } = e.ctx;
+    tests.Sample(); // Auto-run on load.
   })
 
   .items((e) => {
