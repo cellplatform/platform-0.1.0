@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ActionsFactory } from '../..';
-import { t, rx } from '../../common';
+import { toObject, t, rx } from '../../common';
 import { DevDefs, DisplayDefs } from '../../defs';
 import { Component } from './Component';
 
@@ -47,7 +47,9 @@ export const actions = ComposedActions<Ctx>()
     const { ctx, bus } = e;
 
     ctx.count = 123;
-    ctx.bus = e.bus;
+    ctx.bus = bus;
+
+    console.log('INIT/toObject(e)', toObject(e));
 
     bus.$.subscribe((e) => {
       console.log('$.event:', e);

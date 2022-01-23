@@ -10,8 +10,8 @@ import { R, rx, t, time } from '../common';
  */
 export function useActionPanelController(args: { bus: t.EventBus; actions: t.Actions }) {
   const { actions } = args;
-  const namespace = actions.toObject().namespace;
   const defs = actions.toDefs();
+  const namespace = actions.toObject().namespace;
 
   useEffect(() => {
     const model = actions.toModel();
@@ -35,6 +35,7 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
         const item = items[index];
         return { index, item };
       },
+
       initialize: {
         /**
          * Run the initializer on each item.
@@ -54,30 +55,15 @@ export function useActionPanelController(args: { bus: t.EventBus; actions: t.Act
          * Run the `.init()` handler of the Actions set.
          */
         async handler() {
-          const fn = model.state.init;
-          if (!fn) return;
+          const init = model.state.init;
+          if (!init) return;
 
           // NB: This will also assign the [ctx.current] value.
           Context.getAndStore(model, { throw: true });
+          const ctx = model.state.ctx.current;
 
-          // Prepare the bus to be provided to the init function.
-          const namespace = model.state.namespace;
-          const bus = rx.bus();
-          const unloaded$ = rx
-            .payload<t.ActionsDisposeEvent>(event$, 'sys.ui.dev/actions/dispose')
-            .pipe(filter((e) => e.namespace === namespace));
-
-          args.bus.$.pipe(
-            takeUntil(dispose$),
-            takeUntil(unloaded$),
-            filter((e) => !e.type.startsWith('sys.ui.dev/')), // NB: we know the internal events for the harness aren't relevant.
-          ).subscribe(bus.fire);
-
-          // Invoke the init function
-          await model.changeAsync(async (draft) => {
-            const ctx = draft.ctx.current;
-            await fn({ bus, ctx });
-          });
+          // Invoke the initialization function.
+          await init({ bus, ctx });
         },
       },
     };
