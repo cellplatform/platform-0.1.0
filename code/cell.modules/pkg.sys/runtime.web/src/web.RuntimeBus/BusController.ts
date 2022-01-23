@@ -1,6 +1,8 @@
-import { DEFAULT, rx, slug, t, WebRuntime } from './common';
-import { BusEvents } from './BusEvents';
+import { delay, filter } from 'rxjs/operators';
+
 import { GroupController } from './BusController.Group';
+import { BusEvents } from './BusEvents';
+import { DEFAULT, rx, t, WebRuntime } from './common';
 
 type InstanceId = string;
 
@@ -28,12 +30,11 @@ export function BusController(args: {
   /**
    * Info (Module)
    */
-  events.info.req$.subscribe(async (e) => {
+  events.info.req$.pipe(delay(0)).subscribe(async (e) => {
     const { tx } = e;
     const module = WebRuntime.module;
     const info: t.WebRuntimeInfo = { module };
     const exists = Boolean(info);
-
     bus.fire({
       type: 'sys.runtime.web/info:res',
       payload: { tx, id, exists, info },
@@ -43,7 +44,7 @@ export function BusController(args: {
   /**
    * Netbus
    */
-  events.netbus.req$.subscribe((e) => {
+  events.netbus.req$.pipe(delay(0)).subscribe((e) => {
     const { tx } = e;
     const exists = Boolean(netbus);
     bus.fire({
