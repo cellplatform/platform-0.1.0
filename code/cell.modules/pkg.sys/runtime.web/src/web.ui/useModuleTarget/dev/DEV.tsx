@@ -53,7 +53,7 @@ export const actions = DevActions<Ctx>()
       );
     });
 
-    e.button('unload', (e) => {
+    e.button('unload ({ module: null })', (e) => {
       const target = TARGET;
       e.ctx.events.useModule.fire({ target, module: null });
     });

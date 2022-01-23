@@ -27,7 +27,7 @@ export type WebRuntimeEvents = t.Disposable & {
     $: t.Observable<t.WebRuntimeUseModule>;
     fire(args: {
       target: string;
-      module: t.ModuleManifestRemoteImport | null; // NB: null to clear.
+      module: t.ModuleManifestRemoteImport | null; // NB: <null> to clear.
     }): void;
   };
 
