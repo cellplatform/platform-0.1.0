@@ -1,7 +1,7 @@
 import React from 'react';
 
+import { t } from './common';
 import { Harness } from './ui/Harness';
-import { rx, t } from './common';
 
 const imports = {
   sample1: import('./test/sample-1/DEV'),
