@@ -2,7 +2,7 @@ import { map } from 'rxjs/operators';
 import { PeerEvents, NetworkBus, t, Uri } from './common';
 
 /**
- * The interface to an event-bus distributed across a number of
+ * An [event-bus] distributed across a number of
  * peers using WebRTC data connection transport.
  */
 export function PeerNetworkBus<E extends t.Event>(args: {

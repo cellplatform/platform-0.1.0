@@ -1,7 +1,7 @@
 import * as t from './DEV.types';
 
 export { Icons } from '../../web.ui/Icons';
-export { PeerNetworkBus } from '../../PeerNetworkBus';
+export { PeerNetworkBus } from '../../web.PeerNetworkBus';
 
 export * from './common.libs';
 export * from '../common';
