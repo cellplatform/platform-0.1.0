@@ -12,7 +12,7 @@ export { Hr } from './web.ui/Hr';
 export { Test } from './web.ui/TestSuite';
 export * from './web.ui/Textbox';
 
-export { Store, LocalStorage } from './store';
+export { Store, LocalStorage } from './web.store';
 export { StateObject, toObject, log, LOREM, lorem } from './common';
 
 export * from './types';
