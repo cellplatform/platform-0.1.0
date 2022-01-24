@@ -1,2 +1,2 @@
 export * from '../common';
-export * from '../ui.hooks';
+export * from '../web.ui.hooks';
