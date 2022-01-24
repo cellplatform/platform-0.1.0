@@ -16,8 +16,9 @@ export default Test.describe('PeerNetworkBus', (e) => {
   });
 
   e.it('fire locally', async () => {
+    const self = cuid();
     const bus = rx.bus();
-    const netbus = PeerNetworkBus({ bus, self: cuid() });
+    const netbus = PeerNetworkBus({ bus, self });
 
     const fired: t.Event[] = [];
     netbus.$.subscribe((e) => fired.push(e));
