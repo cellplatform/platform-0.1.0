@@ -4,7 +4,8 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
-  PeerNetwork: import('./PeerNetwork/dev/DEV'),
+  PeerNetwork: import('./web.PeerNetwork/dev/DEV'),
+  PeerNetworkHook: import('./web.ui.hooks/usePeerNetwork/dev/DEV'),
   UnitTests: import('./web.ui/dev/DEV.UnitTests'),
 };
 
