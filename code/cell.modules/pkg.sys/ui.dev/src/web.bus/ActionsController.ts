@@ -22,6 +22,7 @@ export function ActionsController(args: {
 
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
+  const redraw = () => model.state.redraw$.next();
 
   const bus = rx.busAsType<t.ActionEvent>(args.bus);
   const event$ = bus.$.pipe(
@@ -72,6 +73,7 @@ export function ActionsController(args: {
 
         // Invoke the initialization function.
         await init({ bus, ctx });
+        redraw();
       },
     },
   };
