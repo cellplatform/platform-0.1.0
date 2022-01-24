@@ -16,7 +16,7 @@ import {
 import { DevCard } from '../layouts';
 import { DevEventBusStack } from './DEV.EventBus.Stack';
 import { DevEventBusTextbox } from './DEV.EventBus.Textbox';
-import { DevImageThumbnails } from '../media';
+// import { DevImageThumbnails } from '../media';
 
 export type DevEventBusCardProps = {
   bus: t.EventBus<any>;
@@ -56,15 +56,6 @@ export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
     }
   };
 
-  const handleDrop = (e: Dropped) => {
-    if (netbus) {
-      const files = FileUtil.toFiles(e.dir, e.files);
-      const events = PeerNetwork.FilesystemEvents(netbus);
-      events.add().fire({ files });
-      events.dispose();
-    }
-  };
-
   const styles = {
     base: css({ position: 'relative', padding: 12, paddingBottom: 15 }),
     thumbnails: css({ marginTop: 10 }),
@@ -73,13 +64,12 @@ export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
   const items: PropListItem[] = [{ label: 'total events', value: history.total }];
 
   return (
-    <DevCard margin={props.margin} style={props.style} onDrop={handleDrop}>
+    <DevCard margin={props.margin} style={props.style}>
       <div {...styles.base}>
         <PropList title={'Network Bus'} items={items} defaults={{ clipboard: false }} />
         <Hr thickness={5} opacity={0.1} margin={[10, 0, 15, 0]} />
         <DevEventBusTextbox onBroadcast={handleBroadcast} />
         <DevEventBusStack history={history} />
-        <DevImageThumbnails bus={bus} netbus={netbus} style={{ marginTop: 10 }} />
       </div>
     </DevCard>
   );

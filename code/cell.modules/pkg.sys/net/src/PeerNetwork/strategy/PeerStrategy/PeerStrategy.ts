@@ -1,5 +1,5 @@
 import { t, Events } from '../common';
-import { PeerConnectionStrategy } from './PeerConnectionStrategy';
+import { PeerConnectionStrategy } from './connection';
 
 /**
  * Single combined set of network strategies.
@@ -11,15 +11,13 @@ export function PeerStrategy(args: {
   const bus = args.bus as t.EventBus<t.PeerEvent>;
   const events = Events(bus);
 
+  const { dispose$ } = events;
+  const dispose = () => {
+    events.dispose();
+    connection.dispose();
+  };
+
   const connection = PeerConnectionStrategy(args);
 
-  return {
-    connection,
-
-    dispose$: events.dispose$,
-    dispose() {
-      events.dispose();
-      connection.dispose();
-    },
-  };
+  return { connection, dispose$, dispose };
 }

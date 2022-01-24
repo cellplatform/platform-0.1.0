@@ -26,17 +26,12 @@ describe('PeerStrategy', () => {
   });
 
   describe('Connection', () => {
-    it('default:true - purgeOnClose', () => {
+    it('default:true - autoPurgeOnClose', () => {
       const connection = PeerStrategy({ bus, netbus }).connection;
       expect(connection.autoPurgeOnClose).to.eql(true);
     });
 
-    it('default:true - meshPropagation', () => {
-      const connection = PeerStrategy({ bus, netbus }).connection;
-      expect(connection.autoPropagation).to.eql(true);
-    });
-
-    it('default:true - ensureConnectionClosed', () => {
+    it('default:true - ensureClosed', () => {
       const connection = PeerStrategy({ bus, netbus }).connection;
       expect(connection.ensureClosed).to.eql(true);
     });

@@ -73,7 +73,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         direction,
         existing: false,
         remote: connRef.peer.remote.id,
-        connection: Status.toConnection(connRef),
+        connection: Status.refToConnection(connRef),
       },
     });
 
@@ -176,7 +176,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     .subscribe((e) => {
       const tx = e.tx || slug();
       const self = refs.self[e.self];
-      const peer = self ? Status.toSelf(self) : undefined;
+      const peer = self ? Status.refToSelf(self) : undefined;
       const exists = Boolean(peer);
       bus.fire({
         type: 'sys.net/peer/local/status:res',
@@ -203,7 +203,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   ).pipe(
     map((event) => ({ selfRef: refs.self[event.payload.self], event })),
     filter((e) => Boolean(e.selfRef)),
-    map((e) => ({ event: e.event, status: Status.toSelf(e.selfRef) })),
+    map((e) => ({ event: e.event, status: Status.refToSelf(e.selfRef) })),
     distinctUntilChanged((prev, next) => R.equals(prev.status, next.status)),
   );
 
@@ -222,7 +222,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       if (selfRef) {
         bus.fire({
           type: 'sys.net/peer/local/status:changed',
-          payload: { self, peer: Status.toSelf(selfRef), event },
+          payload: { self, peer: Status.refToSelf(selfRef), event },
         });
       }
     });
@@ -256,7 +256,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       }
 
       if (select.closedConnections) {
-        const closed = self.connections.filter((item) => !Status.toConnection(item).isOpen);
+        const closed = self.connections.filter((item) => !Status.refToConnection(item).isOpen);
         self.connections = self.connections.filter(
           ({ peer: id }) => !closed.some((c) => c.peer === id),
         );

@@ -10,6 +10,9 @@ export { filesize };
 import PeerJS from 'peerjs';
 export { PeerJS };
 
+import UAParser from 'ua-parser-js';
+export { UAParser };
+
 /**
  * @platform
  */

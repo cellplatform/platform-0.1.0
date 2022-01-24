@@ -4,7 +4,7 @@ import { filter, timeout } from 'rxjs/operators';
 import { slug, t, WebRuntime, Uri } from '../common';
 
 /**
- * Strategy for retrieving peer/connection details for members of the mesh network.
+ * Strategy for retrieving peer/connection details for members of the network.
  */
 export async function GroupConnectionsStrategy(args: {
   netbus: t.PeerNetworkBus<t.NetGroupEvent>;

@@ -2,12 +2,7 @@ import React from 'react';
 import { filter } from 'rxjs/operators';
 
 import { rx, t } from '../common';
-import {
-  DevScreensize,
-  DevVideosPhysicsLayout,
-  DevVideosGroupLayout,
-  DevImagePasteboard,
-} from '../layouts';
+import { DevScreensize, DevVideosGroupLayout, DevImagePasteboard } from '../layouts';
 
 type O = Record<string, unknown>;
 
@@ -35,7 +30,6 @@ export function listen(args: {
   layout('cards'); // NB: Clear (reset).
 
   layout('screensize', (p) => <DevScreensize bus={bus} netbus={netbus} {...p} />);
-  layout('video/physics', (p) => <DevVideosPhysicsLayout bus={bus} netbus={netbus} {...p} />);
   layout('video/group', (p) => <DevVideosGroupLayout bus={bus} netbus={netbus} {...p} />);
   layout('image/pasteboard', (p) => <DevImagePasteboard bus={bus} netbus={netbus} {...p} />);
 }

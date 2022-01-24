@@ -5,6 +5,7 @@ import { t, StreamUtil, rx } from '../common';
 import { PeerEvents } from '../event';
 
 export type UseLocalPeer = {
+  ready: boolean;
   status?: t.PeerStatus;
   media: { video?: MediaStream; screen?: MediaStream };
   connections: t.PeerConnectionStatus[];
@@ -22,6 +23,7 @@ export function useLocalPeer(args: {
   const { self, onChange } = args;
   const bus = rx.busAsType<t.PeerEvent>(args.bus);
 
+  const [ready, setReady] = useState(false);
   const [status, setStatus] = useState<t.PeerStatus>();
   const [video, setVideo] = useState<MediaStream>();
   const [screen, setScreen] = useState<MediaStream>();
@@ -39,6 +41,7 @@ export function useLocalPeer(args: {
     const updateStatus = async () => {
       const res = await events.status(self).get();
       setStatus(res.peer);
+      setReady(true);
     };
 
     /**
@@ -59,9 +62,7 @@ export function useLocalPeer(args: {
 
     if (status === undefined) updateStatus();
 
-    return () => {
-      events.dispose();
-    };
+    return () => events.dispose();
   }, [bus, self]); // eslint-disable-line
 
   /**
@@ -71,11 +72,12 @@ export function useLocalPeer(args: {
     if (onChange) {
       const media = { video, screen };
       const connections = status?.connections ?? [];
-      onChange({ status, media, connections });
+      onChange({ ready, status, media, connections });
     }
-  }, [status, video, screen, onChange]);
+  }, [ready, status, video, screen, onChange]);
 
   return {
+    ready,
     status,
     media: { video, screen },
     connections: status?.connections || [],

@@ -10,7 +10,7 @@ export { useResizeObserver } from '@platform/react';
 export { rx, slug } from '@platform/util.value';
 export { http } from '@platform/http';
 
-export { WebRuntime, bundle } from '@platform/cell.runtime.web';
+export { WebRuntime } from '@platform/cell.runtime.web';
 
 export {
   env,

@@ -1,7 +1,6 @@
 import { Subject } from 'rxjs';
 
 import { defaultValue, PeerJS, Hash, filesize } from '../../common';
-import { DEFAULT } from './constants';
 import * as t from './types';
 
 type C = t.PeerConnectionStatus;
@@ -117,20 +116,6 @@ export const StreamUtil = {
  * Helpers for working with network files.
  */
 export const FileUtil = {
-  /**
-   * Convert dropped files to a [PeerFile] data type.
-   */
-  toFiles(
-    dir: string,
-    files: { path: string; data: ArrayBuffer; mimetype: string }[],
-  ): t.PeerFile[] {
-    return files.map(({ data, path, mimetype }) => {
-      const hash = Hash.sha256(data);
-      const blob = new Blob([data], { type: mimetype });
-      return { dir, blob, filename: path, hash };
-    });
-  },
-
   /**
    * Load a file as a base64 encoded data URI.
    */

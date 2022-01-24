@@ -5,10 +5,10 @@ export const Status = {
   /**
    * Derive a [PeerStatus] from a reference.
    */
-  toSelf(self: SelfRef): t.PeerStatus {
+  refToSelf(self: SelfRef): t.PeerStatus {
     const { peer, createdAt, signal } = self;
     const id = peer.id;
-    const connections = self.connections.map((ref) => Status.toConnection(ref));
+    const connections = self.connections.map((ref) => Status.refToConnection(ref));
     const isOnline = navigator.onLine;
     return deleteUndefined<t.PeerStatus>({ id, isOnline, createdAt, signal, connections });
   },
@@ -16,7 +16,7 @@ export const Status = {
   /**
    * Derive a [PeerConnectionStatus] from a reference.
    */
-  toConnection(ref: ConnectionRef): t.PeerConnectionStatus {
+  refToConnection(ref: ConnectionRef): t.PeerConnectionStatus {
     const { kind, peer, id, uri, direction } = ref;
 
     if (kind === 'data') {
