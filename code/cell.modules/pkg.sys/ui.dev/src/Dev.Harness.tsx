@@ -1,18 +1,18 @@
 import React from 'react';
 
 import { t } from './common';
-import { Harness } from './ui/Harness';
+import { Harness } from './web.ui/Harness';
 
 const imports = {
   sample1: import('./test/sample-1/DEV'),
   sample2: import('./test/sample-2/DEV'),
   sample3: import('./test/sample-3/DEV'),
 
-  Harness: import('./ui/Harness/DEV'),
-  Textbox: import('./ui/Textbox/DEV'),
-  OptionButtons: import('./ui/OptionButtons/DEV'),
+  Harness: import('./web.ui/Harness/DEV'),
+  Textbox: import('./web.ui/Textbox/DEV'),
+  OptionButtons: import('./web.ui/OptionButtons/DEV'),
 
-  TestSuite: import('./ui/TestSuite/dev/DEV'),
+  TestSuite: import('./web.ui/TestSuite/dev/DEV'),
 };
 
 /**

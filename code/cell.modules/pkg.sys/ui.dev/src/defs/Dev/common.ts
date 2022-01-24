@@ -1,6 +1,6 @@
 export * from '../../common';
 export * from '../../api/Actions';
 
-export { Icons } from '../../ui/Icons';
-export { Markdown } from '../../ui/Markdown';
-export { Spinner } from '../../ui/Primitives';
+export { Icons } from '../../web.ui/Icons';
+export { Markdown } from '../../web.ui/Markdown';
+export { Spinner } from '../../web.ui/Primitives';
