@@ -2,7 +2,7 @@ import React from 'react';
 
 import { constants, css, defaultValue, t } from '../../common';
 import { useActionsRedraw } from '../../web.ui.hooks';
-import { useActionPanelController } from '../../web.ui.hooks';
+import { useActionsPanelController } from '../../web.ui.hooks';
 
 export type ActionPanelProps = t.ActionPanelProps & {
   bus: t.EventBus;
@@ -17,7 +17,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   const { namespace, items } = model;
   const hasItems = items.length > 0;
 
-  useActionPanelController({ bus, actions });
+  useActionsPanelController({ bus, actions });
   useActionsRedraw({
     name: '<ActionPanel>',
     bus,

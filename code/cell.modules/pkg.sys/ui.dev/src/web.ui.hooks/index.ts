@@ -1,4 +1,4 @@
 export * from './useActionItemMonitor';
 export * from './useActionsRedraw';
-export * from './useActionPanelController';
+export * from './useActionsPanelController';
 export * from './useActionsPropertyInput';
