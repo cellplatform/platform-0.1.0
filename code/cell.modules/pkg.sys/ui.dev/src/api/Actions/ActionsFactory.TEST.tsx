@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { ActionsFactory } from '.';
-import { ActionPanelProps } from '../../ui/ActionPanel';
+import { ActionPanelProps } from '../../web.ui/ActionPanel';
 import { DevDefs, DisplayDefs } from '../../defs';
 import { DEFAULT, expect, is, rx, StateObject, t, toObject } from '../../test';
 
@@ -20,7 +20,7 @@ describe('ActionsFactory', () => {
   describe('ActionsFactory.model()', () => {
     it('model', () => {
       const model = ActionsFactory.model();
-      expect(model.state).to.eql({ ...DEFAULT.ACTIONS });
+      expect(model.state).to.eql(DEFAULT.ACTIONS);
     });
   });
 
@@ -43,23 +43,25 @@ describe('ActionsFactory', () => {
     });
 
     it('no model', () => {
+      const bus = rx.bus();
       const actions = ActionsFactory.compose([]);
       const obj = actions.toObject();
-      expect(obj).to.eql({ ...DEFAULT.ACTIONS });
+      expect(obj).to.eql(DEFAULT.ACTIONS);
     });
 
     it('from {model} StateObject', () => {
+      const bus = rx.bus();
       const model = StateObject.create<M>({ ...DEFAULT.ACTIONS });
       const actions = ActionsFactory.compose([], model);
       const obj = actions.toObject();
-      expect(obj).to.eql({ ...DEFAULT.ACTIONS });
+      expect(obj).to.eql(DEFAULT.ACTIONS);
     });
 
     it('from {model} object', () => {
       const model = StateObject.create<M>({ ...DEFAULT.ACTIONS });
       const actions = ActionsFactory.compose([], model.state);
       const obj = actions.toObject();
-      expect(obj).to.eql({ ...DEFAULT.ACTIONS });
+      expect(obj).to.eql(DEFAULT.ACTIONS);
     });
 
     it('from builder.toObject() - model state', () => {
@@ -218,6 +220,29 @@ describe('ActionsFactory', () => {
       const { actions } = create();
       const fn = () => actions.context('foo' as any);
       expect(fn).to.throw(/Context factory function not provided/);
+    });
+  });
+
+  describe('actions.init()', () => {
+    it('stores/replaces init handler', () => {
+      const { model, actions } = create();
+      expect(model.state.init).to.eql(undefined);
+
+      const fn1: t.ActionHandlerInit<Ctx> = async (e) => null;
+      const fn2: t.ActionHandlerInit<Ctx> = async (e) => 'FOOBAR';
+
+      actions.init(fn1);
+      expect(model.state.init).to.eql(fn1);
+
+      // Replace with another factory.
+      actions.init(fn2);
+      expect(model.state.init).to.eql(fn2);
+    });
+
+    it('throw if factory function not provided', () => {
+      const { actions } = create();
+      const fn = () => actions.init('foo' as any);
+      expect(fn).to.throw(/Initializer function not provided/);
     });
   });
 

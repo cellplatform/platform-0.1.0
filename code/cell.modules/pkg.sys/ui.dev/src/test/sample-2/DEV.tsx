@@ -1,14 +1,14 @@
 import React from 'react';
 
 import { ActionsFactory } from '../..';
-import { t } from '../../common';
+import { toObject, t, rx } from '../../common';
 import { DevDefs, DisplayDefs } from '../../defs';
 import { Component } from './Component';
-import { Remote } from './Remote';
 
 type O = Record<string, unknown>;
 
 type Ctx = {
+  bus: t.EventBus<any>;
   count: number;
   el?: JSX.Element;
 };
@@ -34,15 +34,39 @@ export const actions = ComposedActions<Ctx>()
   .namespace('test/sample-2')
   .context((e) => {
     if (e.prev) return e.prev;
-    return { count: 0 };
+
+    const ctx: Ctx = {
+      bus: rx.bus(), // NB: Dummy, replaced with injected bus in [init] method.
+      count: 0,
+    };
+
+    return ctx;
+  })
+
+  .init(async (e) => {
+    const { ctx, bus } = e;
+
+    ctx.count = 123;
+    ctx.bus = bus;
+
+    console.log('INIT/toObject(e)', toObject(e));
+
+    bus.$.subscribe((e) => {
+      console.log('$.event:', e);
+    });
   })
 
   .items((e) => {
     e.button('increment', (e) => e.ctx.count++);
+    e.button('fire (bus)', (e) => {
+      e.ctx.bus.fire({
+        type: 'foo',
+        payload: { count: e.ctx.count },
+      });
+    });
     e.hr();
 
     e.title('My Title');
-
     e.button('button', (e) => console.log('hello', e.ctx.count));
     e.boolean('bool', (e) => true);
     e.select((config) => config.label('hello'));
@@ -50,25 +74,10 @@ export const actions = ComposedActions<Ctx>()
     e.hr();
   })
 
-  .items((e) => {
-    e.title('Federated Functions');
-    e.markdown('Start a second server on `--port 1234`');
-
-    e.button('load: <Foo>', (e) => {
-      const url = 'http://localhost:1234/remoteEntry.js';
-      const namespace = 'sys.ui.dev';
-      e.ctx.el = <Remote url={url} namespace={namespace} entry={'./Foo'} />;
-    });
-
-    e.button('clear', (e) => (e.ctx.el = undefined));
-  })
-
   /**
    * Render
    */
   .subject((e) => {
-    console.log('SUBJECT');
-
     e.settings({
       host: { background: -0.04 },
       layout: { width: 450, border: -0.1, cropmarks: -0.2, background: 1, label: 'sample-1' },

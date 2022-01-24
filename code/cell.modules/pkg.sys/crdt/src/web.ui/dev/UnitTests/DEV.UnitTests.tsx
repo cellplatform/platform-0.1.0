@@ -42,12 +42,16 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = { tests };
 
-    // Auto-run on load.
-    tests.Automerge();
-    // tests.AutomergeDoc();
-    // tests.CrdtBus();
-
     return ctx;
+  })
+
+  .init(async (e) => {
+    const { tests } = e.ctx;
+
+    // Auto-run on load.
+    // tests.Automerge();
+    // tests.AutomergeDoc();
+    tests.CrdtBus();
   })
 
   .items((e) => {

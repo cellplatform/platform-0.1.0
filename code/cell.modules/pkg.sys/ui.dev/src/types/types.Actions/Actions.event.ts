@@ -3,34 +3,47 @@ import { t } from '../common';
 /**
  * Events
  */
-export type ActionEvent = IActionsInitEvent | IActionsSelectChangedEvent | IActionModelChangedEvent;
+export type ActionEvent =
+  | ActionsInitEvent
+  | ActionsDisposeEvent
+  | ActionsSelectChangedEvent
+  | ActionModelChangedEvent;
 
 /**
  * Fires to initialize the state of a set of actions.
  */
-export type IActionsInitEvent = {
+export type ActionsInitEvent = {
   type: 'sys.ui.dev/actions/init';
-  payload: IActionsInitPayload;
+  payload: ActionsInit;
 };
-export type IActionsInitPayload = { namespace: string };
+export type ActionsInit = { namespace: string };
+
+/**
+ * Fires to when a loaded set of actions are to be disposed (unloaded)
+ */
+export type ActionsDisposeEvent = {
+  type: 'sys.ui.dev/actions/dispose';
+  payload: ActionsDispose;
+};
+export type ActionsDispose = { namespace: string };
 
 /**
  * Fires when the <ActionsSelect> dropdown changes.
  */
-export type IActionsSelectChangedEvent = {
+export type ActionsSelectChangedEvent = {
   type: 'sys.ui.dev/actions/select/changed';
-  payload: IActionsSelectChanged;
+  payload: ActionsSelectChanged;
 };
-export type IActionsSelectChanged = { namespace: string };
+export type ActionsSelectChanged = { namespace: string };
 
 /**
  * Fires when a single action [Item] model state changes.
  */
-export type IActionModelChangedEvent = {
+export type ActionModelChangedEvent = {
   type: 'sys.ui.dev/action/model/changed';
-  payload: IActionModelChangedPayload;
+  payload: ActionModelChanged;
 };
-export type IActionModelChangedPayload = {
+export type ActionModelChanged = {
   namespace: string;
   index: number;
   item: t.ActionItem;

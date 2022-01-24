@@ -1,3 +1,3 @@
 export * from './NetworkBus';
 export * from './NetworkBus.Mock';
-export * from './NetworkBus.MockMesh';
+export * from './NetworkBus.Mocks';

@@ -16,7 +16,7 @@ export function BusControllerRefs(args: { bus: t.EventBus<any>; events: t.CrdtEv
   const refs: Refs = {};
 
   /**
-   * Reqest/Response [change].
+   * Request/Response [change].
    */
   events.ref.req$.subscribe(async (e) => {
     const { tx } = e;

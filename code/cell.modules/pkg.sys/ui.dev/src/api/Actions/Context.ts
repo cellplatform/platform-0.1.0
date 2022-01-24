@@ -19,7 +19,7 @@ export const Context = {
       ctx(fn) {
         model.change((draft) => {
           const ctx = draft.ctx.current;
-          if (!ctx) throw new Error(`Ensure the context has been initially set before changing.`);
+          if (!ctx) throw new Error(`Ensure the context has been initially set before changing`);
           fn(ctx);
         });
         return e;
@@ -45,11 +45,9 @@ export const Context = {
         return model.state.ctx.current;
       },
     };
-    const value = state.ctx.get(e);
 
-    model.change((draft) => {
-      draft.ctx.current = value;
-    });
+    const value = state.ctx.get(e);
+    model.change((draft) => (draft.ctx.current = value));
 
     if (!value && options.throw) {
       const err = `The Actions [context] has not been set. Make sure you've called [actions.context(...)]`;

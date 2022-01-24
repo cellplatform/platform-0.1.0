@@ -361,7 +361,6 @@ export default Test.describe('Automerge (CRDT)', (e) => {
 
         // NB: Message is passed through {{network}} here.
         //     Simulating an (immediate) connection here for testing purposes.
-
         if (aToBmsg) [b, bSyncState] = receiveSyncMessage(b, bSyncState, aToBmsg);
         if (bToAmsg) [a, aSyncState] = receiveSyncMessage(a, aSyncState, bToAmsg);
 

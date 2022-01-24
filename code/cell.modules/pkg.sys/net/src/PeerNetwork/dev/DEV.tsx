@@ -1,29 +1,29 @@
 import React from 'react';
-import { toObject, DevActions, LocalStorage, ObjectView } from 'sys.ui.dev';
-
 import { WebRuntime } from 'sys.runtime.web';
-import { TARGET_NAME, Filesystem } from './common';
-
-type O = Record<string, unknown>;
+import { DevActions, LocalStorage, ObjectView, toObject } from 'sys.ui.dev';
 
 import {
   css,
   cuid,
   deleteUndefined,
+  Filesystem,
   Icons,
   isLocalhost,
   MediaStream,
   PeerNetwork,
+  PeerNetworkBus,
+  QueryString,
   rx,
   t,
+  TARGET_NAME,
   time,
-  QueryString,
-  PeerNetworkBus,
 } from './common';
+import { DevProps } from './DEV.Props';
 import { DevRootLayout } from './DEV.Root';
 import { EventBridge } from './event';
 import { DevGroupSeed, GroupSeed } from './layouts';
-import { DevProps } from './DEV.Props';
+
+type O = Record<string, unknown>;
 
 type Ctx = {
   self: t.PeerId;
@@ -31,13 +31,14 @@ type Ctx = {
   netbus: t.PeerNetworkBus;
   fs(): Promise<t.Fs>;
   signal: string; // Signalling server network address (host/path).
-  events: CtxEvents;
+  events?: CtxEvents;
   connectTo?: string;
   toStrategy(): { peer: t.PeerStrategy; group: t.GroupStrategy; fs: t.FilesystemStrategy };
   toFlags(): CtxFlags;
   toSeed(): GroupSeed;
   fullscreen(value: boolean): void;
 };
+
 type CtxFlags = {
   isFullscreen: boolean;
   isReliable: boolean;
@@ -49,6 +50,7 @@ type CtxFlags = {
   isLayoutFullscreen: boolean;
   showOthersInHeader: boolean;
 };
+
 type CtxEvents = {
   peer: t.PeerNetworkEvents;
   group: t.GroupEvents;
@@ -77,8 +79,8 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const self = cuid();
     const bus = rx.bus<t.PeerEvent | t.DevEvent>();
+    const self = cuid();
 
     EventBridge.startEventBridge({ bus, self });
     PeerNetwork.Controller({ bus });
@@ -173,6 +175,13 @@ export const actions = DevActions<Ctx>()
     };
   })
 
+  .init(async (e) => {
+    const { ctx } = e;
+    const { events, self, signal } = ctx;
+
+    console.log('NET/INIT', toObject(e.ctx));
+  })
+
   .items((e) => {
     e.component((e) => {
       const { self, bus } = e.ctx;
@@ -190,7 +199,7 @@ export const actions = DevActions<Ctx>()
           style={{ MarginX: 30, MarginY: 20 }}
           history={{ fs: FILESYSTEM_ID }}
           onExportClick={(e) => {
-            ctx.events.runtime.useModule.fire({
+            ctx.events?.runtime.useModule.fire({
               target: TARGET_NAME,
               module: e.module,
             });
@@ -212,12 +221,12 @@ export const actions = DevActions<Ctx>()
     });
 
     e.button('debug (group)', async (e) => {
-      const res = await e.ctx.events.group.connections().get();
+      const res = await e.ctx.events?.group.connections().get();
 
       console.group('🌳 Group');
-      console.log('local', res.local);
-      console.log('remote', res.remote);
-      console.log('pending', res.pending);
+      console.log('local', res?.local);
+      console.log('remote', res?.remote);
+      console.log('pending', res?.pending);
 
       console.groupEnd();
     });
@@ -335,12 +344,12 @@ export const actions = DevActions<Ctx>()
 
     e.button('fire ⚡️ Peer:Local/init', async (e) => {
       const { self, signal, events } = e.ctx;
-      events.peer.create(signal, self);
+      events?.peer.create(signal, self);
     });
 
     e.button('fire ⚡️ Peer:Local/purge', async (e) => {
       const self = e.ctx.self;
-      const data = deleteUndefined(await e.ctx.events.peer.purge(self).fire());
+      const data = deleteUndefined((await e.ctx.events?.peer.purge(self).fire()) ?? {});
       e.button.description = (
         <ObjectView name={'purged'} data={data} fontSize={10} expandLevel={2} />
       );
@@ -348,20 +357,20 @@ export const actions = DevActions<Ctx>()
 
     e.button('fire ⚡️ Peer:Local/status:refresh', async (e) => {
       const self = e.ctx.self;
-      e.ctx.events.peer.status(self).refresh();
+      e.ctx.events?.peer.status(self).refresh();
     });
 
     e.hr(1, 0.2);
 
     e.button('fire ⚡️ Peer:Local/media (video)', async (e) => {
-      const data = deleteUndefined(await e.ctx.events.peer.media(e.ctx.self).video());
+      const data = deleteUndefined((await e.ctx.events?.peer.media(e.ctx.self).video()) ?? {});
       e.button.description = (
         <ObjectView name={'media:res'} data={data} fontSize={10} expandLevel={2} />
       );
     });
 
     e.button('fire ⚡️ Peer:Local/media (screen)', async (e) => {
-      const data = deleteUndefined(await e.ctx.events.peer.media(e.ctx.self).screen());
+      const data = deleteUndefined((await e.ctx.events?.peer.media(e.ctx.self).screen()) ?? {});
       e.button.description = (
         <ObjectView name={'media:res'} data={data} fontSize={10} expandLevel={2} />
       );
@@ -371,7 +380,7 @@ export const actions = DevActions<Ctx>()
 
     e.button('fire ⚡️ Peer:Local/status', async (e) => {
       const self = e.ctx.self;
-      const data = deleteUndefined(await e.ctx.events.peer.status(self).get());
+      const data = deleteUndefined((await e.ctx.events?.peer.status(self).get()) ?? {});
       e.button.description = (
         <ObjectView name={'status:res'} data={data} fontSize={10} expandLevel={2} />
       );
@@ -380,8 +389,8 @@ export const actions = DevActions<Ctx>()
     e.button('fire ⚡️ Remote:exists (false)', async (e) => {
       const self = e.ctx.self;
       const remote = cuid();
-      const res = await e.ctx.events.peer.remote.exists.get({ self, remote });
-      const data = { exists: res.exists };
+      const res = await e.ctx.events?.peer.remote.exists.get({ self, remote });
+      const data = { exists: Boolean(res?.exists) };
       e.button.description = (
         <ObjectView name={'exists:res'} data={data} fontSize={10} expandLevel={2} />
       );
@@ -389,7 +398,7 @@ export const actions = DevActions<Ctx>()
 
     e.button('fire ⚡️ Remote:exists (true)', async (e) => {
       const self = e.ctx.self;
-      const status = (await e.ctx.events.peer.status(self).get()).peer;
+      const status = (await e.ctx.events?.peer.status(self).get())?.peer;
       const first = (status?.connections ?? [])[0];
       const remote = first?.peer.remote.id;
 
@@ -400,8 +409,8 @@ export const actions = DevActions<Ctx>()
       };
 
       if (remote) {
-        const res = await e.ctx.events.peer.remote.exists.get({ self, remote });
-        description({ exists: res.exists });
+        const res = await e.ctx.events?.peer.remote.exists.get({ self, remote });
+        description({ exists: Boolean(res?.exists) });
       }
       if (!remote) {
         description({ error: `No remote connections to draw from` });
@@ -429,9 +438,9 @@ export const actions = DevActions<Ctx>()
         e.button.description = '🐷 ERROR: Remote peer not specified';
       } else {
         const isReliable = e.ctx.toFlags().isReliable;
-        const res = await events.peer.connection(self, connectTo).open.data({ isReliable });
-        const name = res.error ? 'Fail' : 'Success';
-        const expandLevel = res.error ? 1 : 0;
+        const res = await events?.peer.connection(self, connectTo).open.data({ isReliable });
+        const name = res?.error ? 'Fail' : 'Success';
+        const expandLevel = res?.error ? 1 : 0;
         const el = <ObjectView name={name} data={res} fontSize={10} expandLevel={expandLevel} />;
         e.button.description = el;
       }
@@ -549,6 +558,7 @@ export const actions = DevActions<Ctx>()
         label: {
           topLeft: 'Mesh',
           topRight: elLabelRight,
+          bottomLeft: `bus/instance: "${(bus as any)._instance}"`,
           bottomRight: `filesystem: "${FILESYSTEM_ID}"`,
         },
         position: [60, 60, 70, 60],

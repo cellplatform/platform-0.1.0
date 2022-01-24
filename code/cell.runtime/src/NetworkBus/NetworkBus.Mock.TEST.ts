@@ -1,4 +1,4 @@
-import { NetworkBusMock, NetworkBusMockMesh } from '.';
+import { NetworkBusMock, NetworkBusMocks } from '.';
 import { expect, is, t, time } from '../test';
 
 type E = { type: 'foo'; payload: { count?: number } };
@@ -74,7 +74,7 @@ describe('NetworkBusMock', () => {
 
 describe('NetworkBusMockMesh', () => {
   it('3 nodes', async () => {
-    const [p1, p2, p3] = NetworkBusMockMesh(3, { memorylog: true });
+    const [p1, p2, p3] = NetworkBusMocks(3, { memorylog: true });
 
     const event: E = { type: 'foo', payload: { count: 123 } };
     p2.target.remote(event);

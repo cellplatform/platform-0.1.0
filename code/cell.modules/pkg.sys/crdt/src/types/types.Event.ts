@@ -1,13 +1,11 @@
 import * as t from '../common/types';
 import { CrdtRefEvent } from './types.Event.Ref';
-import { CrdtSyncV1Event } from './types.Event.Sync.V1';
 
 type InstanceId = string;
 
 /**
  * EVENTS
  */
-
 export type CrdtEvent = CrdtInfoReqEvent | CrdtInfoResEvent | CrdtRefEvent;
 
 /**

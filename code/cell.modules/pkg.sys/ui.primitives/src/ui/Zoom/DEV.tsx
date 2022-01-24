@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { DevActions } from 'sys.ui.dev';
 import { Zoom, ZoomProps, useZoomDrag } from '.';
-import { css, bundle } from '../../common';
+import { css } from '../../common';
 
 /**
  * Samples
@@ -75,7 +75,7 @@ const Sample: React.FC<{ ctx: Ctx }> = (props) => {
     zoom: css({ flex: 1 }),
     content: css({
       flex: 1,
-      backgroundImage: `url(${bundle.path('static/images/sample/hello.png')})`,
+      backgroundImage: `url('static/images/sample/hello.png')`,
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'contain',
       backgroundPosition: 'center',

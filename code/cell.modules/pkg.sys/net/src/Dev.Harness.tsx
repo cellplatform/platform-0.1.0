@@ -1,17 +1,28 @@
 import React from 'react';
 import { Harness } from 'sys.ui.dev';
 
-const imports = {
-  // CrdtOLD: import('./NetworkModel__/Crdt.OLD/dev/DEV'),
+import { t } from './common';
 
+const imports = {
   PeerNetwork: import('./PeerNetwork/dev/DEV'),
-  UnitTests: import('./dev/DEV.UnitTests'),
+  UnitTests: import('./web.ui/dev/DEV.UnitTests'),
 };
 
-const url = new URL(location.href);
-const dev = url.searchParams.get('dev');
-const isLocalhost = url.hostname === 'localhost';
+/**
+ * UI Harness (Dev)
+ */
+type Props = { bus?: t.EventBus };
 
-export const DevHarness: React.FC = () => (
-  <Harness actions={Object.values(imports)} initial={dev} showActions={isLocalhost} />
-);
+export const DevHarness: React.FC<Props> = (props) => {
+  const url = new URL(location.href);
+  return (
+    <Harness
+      bus={props.bus}
+      actions={Object.values(imports)}
+      initial={url.searchParams.get('dev')}
+      showActions={url.hostname === 'localhost'}
+    />
+  );
+};
+
+export default DevHarness;

@@ -1,6 +1,5 @@
 import { filter, map } from 'rxjs/operators';
-
-import { t, Automerge } from '../common';
+import { Automerge, t } from '../common';
 
 type O = Record<string, unknown>;
 

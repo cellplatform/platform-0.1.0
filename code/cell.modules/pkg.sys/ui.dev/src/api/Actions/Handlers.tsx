@@ -86,6 +86,15 @@ export const Handlers = {
       },
 
       /**
+       * Runs an "initialize" setup when the actions are shown.
+       */
+      init(args) {
+        const fn = args.params[0];
+        if (typeof fn !== 'function') throw new Error('Initializer function not provided');
+        args.model.change((draft) => (draft.init = fn));
+      },
+
+      /**
        * Factory that renders the component under test.
        */
       subject(args) {

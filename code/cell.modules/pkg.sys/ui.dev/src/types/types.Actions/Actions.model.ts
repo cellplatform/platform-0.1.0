@@ -8,6 +8,7 @@ export type ActionsModel<Ctx> = {
   ctx: { current?: Ctx; get?: t.ActionHandlerContext<Ctx> };
   env: ActionsModelEnv;
   subject?: t.ActionHandlerSubject<Ctx>;
+  init?: t.ActionHandlerInit<Ctx>;
   initialized?: boolean;
   redraw$: t.Subject<void>;
 };

@@ -3,7 +3,6 @@ import { filter } from 'rxjs/operators';
 
 import { rx, t } from '../common';
 import {
-  DevCrdtModel,
   DevScreensize,
   DevVideosPhysicsLayout,
   DevVideosGroupLayout,
@@ -35,7 +34,6 @@ export function listen(args: {
 
   layout('cards'); // NB: Clear (reset).
 
-  layout('crdt', (p) => <DevCrdtModel bus={bus} netbus={netbus} {...p} />);
   layout('screensize', (p) => <DevScreensize bus={bus} netbus={netbus} {...p} />);
   layout('video/physics', (p) => <DevVideosPhysicsLayout bus={bus} netbus={netbus} {...p} />);
   layout('video/group', (p) => <DevVideosGroupLayout bus={bus} netbus={netbus} {...p} />);
