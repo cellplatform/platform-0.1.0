@@ -3,23 +3,18 @@ import { t } from './common';
 /**
  * Single combined set of network strategies.
  */
-export type PeerStrategy = t.IDisposable & {
+export type PeerStrategy = t.Disposable & {
   connection: t.PeerConnectionStrategy;
 };
 
 /**
  * Strategies for connecting and disconnecting peers.
  */
-export type PeerConnectionStrategy = t.IDisposable & {
+export type PeerConnectionStrategy = t.Disposable & {
   /**
    * Auto purge connections when closed.
    */
   autoPurgeOnClose: boolean;
-
-  /**
-   * Auto propogate new connections to all other connected clients.
-   */
-  autoPropagation: boolean;
 
   /**
    * Ensure connections are closed on all peers within the mesh.
@@ -30,19 +25,9 @@ export type PeerConnectionStrategy = t.IDisposable & {
 /**
  * Strategies for working with a group of peers ("mesh").
  */
-export type GroupStrategy = t.IDisposable & {
+export type GroupStrategy = t.Disposable & {
   /**
    * Retrieve details about the network of peers/connections.
    */
   connections: boolean;
-};
-
-/**
- * Strategies for working with a group of peers ("mesh").
- */
-export type FilesystemStrategy = t.IDisposable & {
-  /**
-   * Manage files between a group of peers.
-   */
-  cache: boolean;
 };

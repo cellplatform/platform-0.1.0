@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, useResizeObserver, VideoStream, isLocalhost } from '../common';
+import React, { useRef } from 'react';
+
 import { useLocalPeer } from '../../hooks';
+import { color, css, CssValue, t, useResizeObserver, VideoStream } from '../common';
 
 export type DevVideosGroupLayoutProps = {
   bus: t.EventBus<any>;
@@ -70,7 +71,7 @@ export const DevVideosGroupLayout: React.FC<DevVideosGroupLayoutProps> = (props)
 
   const elBody = resize.ready && <div {...styles.body}>{elVideoPanels}</div>;
 
-  const elEmpty = isEmpty && (
+  const elEmpty = isEmpty && local.ready && (
     <div {...styles.empty}>
       <div>No video connections to display.</div>
     </div>

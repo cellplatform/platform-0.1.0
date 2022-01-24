@@ -1,33 +1,15 @@
 import { t } from './common';
 
-import { NetFsEvent } from './types.events.fs';
-
 /**
  * NOTE: These events are fired over the "network bus" to
  *       other connected clients.
  */
 export type NetGroupEvent =
-  | NetFsEvent
-  | NetGroupEnsureConnectedDataEvent
   | NetGroupEnsureConnectionClosedEvent
   | NetGroupConnectionsReqEvent
   | NetGroupConnectionsResEvent
   | NetGroupRefreshEvent
   | NetGroupConnectEvent;
-
-/**
- * Broadcasts to peers a set of connections they should ensure
- * they are connected to.
- */
-export type NetGroupEnsureConnectedDataEvent = {
-  type: 'sys.net/group/conn/ensure:data';
-  payload: GroupEnsureConnectedData;
-};
-export type GroupEnsureConnectedData = {
-  source: t.PeerId;
-  connections: { peer: t.PeerId; id: t.PeerConnectionId }[];
-  isReliable: boolean;
-};
 
 /**
  * Ensure connection is closed are closed.

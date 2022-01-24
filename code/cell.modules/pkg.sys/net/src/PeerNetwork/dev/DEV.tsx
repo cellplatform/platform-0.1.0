@@ -33,7 +33,7 @@ type Ctx = {
   signal: string; // Signalling server network address (host/path).
   events?: CtxEvents;
   connectTo?: string;
-  toStrategy(): { peer: t.PeerStrategy; group: t.GroupStrategy; fs: t.FilesystemStrategy };
+  toStrategy(): { peer: t.PeerStrategy; group: t.GroupStrategy };
   toFlags(): CtxFlags;
   toSeed(): GroupSeed;
   fullscreen(value: boolean): void;
@@ -68,7 +68,7 @@ const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind'], props?: O) => {
   });
 };
 
-const FILESYSTEM_ID = 'dev.fs.net';
+const FILESYSTEM_ID = 'dev.net.fs';
 
 /**
  * Actions
@@ -99,10 +99,7 @@ export const actions = DevActions<Ctx>()
     const strategy = {
       peer: PeerNetwork.PeerStrategy({ bus, netbus }),
       group: PeerNetwork.GroupStrategy({ bus, netbus }),
-      fs: PeerNetwork.FilesystemStrategy({ bus, netbus }),
     };
-
-    strategy.peer.connection.autoPropagation = false; // TEMP 🐷
 
     const signal = 'rtc.cellfs.com';
     const init = () => {
@@ -212,6 +209,28 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.title('Layout');
+
+    e.boolean('fullscreen', (e) => {
+      const flags = e.ctx.toFlags();
+      if (e.changing) flags.isLayoutFullscreen = e.changing.next;
+      const value = flags.isLayoutFullscreen;
+      e.boolean.current = value;
+    });
+
+    e.hr(1, 0.2);
+
+    e.button('screensize', (e) => showLayout(e.ctx, 'screensize'));
+    e.button('video/group', (e) => showLayout(e.ctx, 'video/group'));
+    e.button('image/pasteboard', (e) => showLayout(e.ctx, 'image/pasteboard'));
+
+    e.hr(1, 0.2);
+    e.button('reset (default)', (e) => showLayout(e.ctx, 'cards'));
+
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Environment');
 
     e.boolean('debug (json)', (e) => {
@@ -274,31 +293,6 @@ export const actions = DevActions<Ctx>()
           if (e.changing) e.ctx.signal = e.changing.next;
         });
     });
-
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('Layout');
-
-    e.boolean('fullscreen', (e) => {
-      const flags = e.ctx.toFlags();
-      if (e.changing) flags.isLayoutFullscreen = e.changing.next;
-      const value = flags.isLayoutFullscreen;
-      e.boolean.current = value;
-      e.boolean.description = value ? `Show layout fullscreen` : `Show layout within body`;
-    });
-
-    e.hr(1, 0.2);
-
-    e.button('screensize', (e) => showLayout(e.ctx, 'screensize'));
-    e.button('crdt', (e) => showLayout(e.ctx, 'crdt'));
-    e.button('video/physics', (e) => showLayout(e.ctx, 'video/physics'));
-    e.button('video/group', (e) => showLayout(e.ctx, 'video/group'));
-    e.button('image/pasteboard', (e) => showLayout(e.ctx, 'image/pasteboard'));
-
-    e.hr(1, 0.2);
-    e.button('reset (default)', (e) => showLayout(e.ctx, 'cards'));
 
     e.hr();
   })
@@ -481,17 +475,6 @@ export const actions = DevActions<Ctx>()
 
     e.boolean((config) =>
       config
-        .label('connection.autoPropagation [TODO]')
-        .description('Automatically propogate data connections to peers.')
-        .pipe((e) => {
-          const strategy = e.ctx.toStrategy();
-          if (e.changing) strategy.peer.connection.autoPropagation = e.changing.next;
-          e.boolean.current = strategy.peer.connection.autoPropagation;
-        }),
-    );
-
-    e.boolean((config) =>
-      config
         .label('connection.ensureClosed')
         .description('Ensure connections are properly closed on all peers.')
         .pipe((e) => {
@@ -512,20 +495,6 @@ export const actions = DevActions<Ctx>()
           const strategy = e.ctx.toStrategy();
           if (e.changing) strategy.group.connections = e.changing.next;
           e.boolean.current = strategy.group.connections;
-        }),
-    );
-
-    e.hr(1, 0.1);
-
-    e.boolean((config) =>
-      config
-        .title('filesystem')
-        .label('filesystem.cache [TODO]')
-        .description('De-dupe and manage caching network files.')
-        .pipe((e) => {
-          const strategy = e.ctx.toStrategy();
-          if (e.changing) strategy.fs.cache = e.changing.next;
-          e.boolean.current = strategy.fs.cache;
         }),
     );
   })
