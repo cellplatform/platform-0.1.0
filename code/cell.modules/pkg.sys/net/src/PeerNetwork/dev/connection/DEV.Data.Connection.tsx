@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import { useLocalPeer } from '../../hooks';
 import {
+  UAParser,
   Button,
   color,
   COLORS,
@@ -38,11 +39,6 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
   const childVideo = childMedia.filter((child) => child.kind === 'media/video');
   const childScreen = childMedia.filter((child) => child.kind === 'media/screen');
 
-  useEffect(() => {
-    const events = PeerNetwork.PeerEvents(bus);
-    return () => events.dispose();
-  }, []); // eslint-disable-line
-
   const mediaHandler = (kind: t.PeerConnectionKindMedia) => {
     const open = openHandler({ bus, connection, kind });
     return async () => {
@@ -58,9 +54,24 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
     };
   };
 
-  const mainItems: PropListItem[] = [
+  // Derive the remote user-agent device details.
+  const device: PropListItem | undefined = (() => {
+    const text = connection.peer.remote.userAgent;
+    if (!text) return undefined;
+
+    const device = UAParser(text);
+    return {
+      label: 'device',
+      value: {
+        data: `${device.os.name} / ${device.browser.name}`,
+        clipboard: text,
+      },
+    };
+  })();
+
+  const mainItems: (PropListItem | undefined)[] = [
     ...PropUtil.common(connection),
-    { label: 'reliable', value: connection.isReliable },
+    device,
     {
       label: 'media/video',
       value: (
@@ -81,6 +92,9 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
     },
   ];
 
+  /**
+   * [Render]
+   */
   const styles = {
     base: css({
       position: 'relative',
@@ -176,13 +190,6 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
         {elMedia}
         <Hr thickness={5} opacity={0.1} margin={[10, 0, 20, 0]} />
         {elConnect}
-        {/* <EventPipe
-          events={history.events}
-          style={{ MarginY: 10 }}
-          onEventClick={(item) => {
-            console.log('event', item.event);
-          }}
-        /> */}
       </div>
     </div>
   );

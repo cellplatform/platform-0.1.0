@@ -17,15 +17,13 @@ export function openHandler(args: {
 
 export const PropUtil = {
   common(connection: t.PeerConnectionStatus) {
-    const { id, isOpen, peer, kind, direction, parent } = connection;
+    const { id, peer, kind, parent } = connection;
     const module = peer.remote.module;
 
     const items: PropListItem[] = [
       { label: 'id', value: { data: id, clipboard: true } },
       { label: 'remote peer', value: { data: peer.remote.id, clipboard: true } },
-      // { label: 'module', value: `(${direction}) ${module.name}@${module.version}` },
-      { label: 'kind', value: `${kind} (v${module.version})` },
-      // { label: 'open', value: isOpen },
+      { label: 'kind', value: `${kind} (${module.name}@${module.version})` },
     ];
 
     if (parent) {
