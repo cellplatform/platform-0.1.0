@@ -1,11 +1,11 @@
 import { Controller } from './Controller';
 import { PeerEvents, GroupEvents } from '../web.PeerNetwork.events';
-import { PeerGroupStrategy, PeerStrategy } from './strategy';
+import { GroupStrategy, PeerStrategy } from './strategy';
 
 export const PeerNetwork = {
   Controller,
 
-  GroupStrategy: PeerGroupStrategy,
+  GroupStrategy: GroupStrategy,
   PeerStrategy,
 
   PeerEvents,
