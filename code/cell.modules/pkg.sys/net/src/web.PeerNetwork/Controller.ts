@@ -8,7 +8,7 @@ import {
   R,
   rx,
   slug,
-  StreamUtil,
+  MediaStreamUtil,
   StringUtil,
   t,
   time,
@@ -400,7 +400,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
         }
 
         // Listen for external ending of the stream and clean up accordingly.
-        StreamUtil.onEnded(localStream, () => {
+        MediaStreamUtil.onEnded(localStream, () => {
           events.connection(self.id, remote).close(connRef.id);
         });
       }

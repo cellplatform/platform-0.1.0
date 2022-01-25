@@ -1,7 +1,7 @@
 /**
  * MediaStream helpers.
  */
-export const StreamUtil = {
+export const MediaStreamUtil = {
   /**
    * Fires a callback when all tracks witin a stream have "ended".
    */

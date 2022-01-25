@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { t, StreamUtil, rx } from '../common';
+import { t, MediaStreamUtil, rx } from '../common';
 import { PeerEvents } from '../../web.PeerNetwork.events';
 
 export type UseLocalPeer = {
@@ -57,7 +57,7 @@ export function useLocalPeer(args: {
      */
     media.res$.pipe(takeUntil(dispose$)).subscribe((e) => {
       setMedia(e.kind, e.media);
-      if (e.media) StreamUtil.onEnded(e.media, () => setMedia(e.kind, undefined));
+      if (e.media) MediaStreamUtil.onEnded(e.media, () => setMedia(e.kind, undefined));
     });
 
     if (status === undefined) updateStatus();

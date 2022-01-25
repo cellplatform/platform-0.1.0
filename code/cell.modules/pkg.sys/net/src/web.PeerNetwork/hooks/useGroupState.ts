@@ -29,11 +29,7 @@ export function useGroupState(args: { bus: t.EventBus<any>; netbus: t.PeerNetbus
       .changed$.pipe(distinctUntilChanged((prev, next) => R.equals(ids(prev.peer), ids(next.peer))))
       .subscribe((e) => updateStatus());
 
-    group
-      .refresh()
-      .$.pipe(debounceTime(30))
-      .subscribe(() => updateStatus());
-
+    group.refresh().$.pipe(debounceTime(30)).subscribe(updateStatus);
     updateStatus();
 
     return () => {
@@ -42,9 +38,7 @@ export function useGroupState(args: { bus: t.EventBus<any>; netbus: t.PeerNetbus
     };
   }, [bus, netbus]); // eslint-disable-line
 
-  return {
-    status,
-  };
+  return { status };
 }
 
 /**
