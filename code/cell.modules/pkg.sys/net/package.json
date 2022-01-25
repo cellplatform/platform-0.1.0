@@ -9,7 +9,7 @@
   "scripts": {
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports --name web.dev $@",
-    "test": "ts test $@",
+    "test": "echo no-op",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
     "bundle": "cell.compiler bundle --bump $@",

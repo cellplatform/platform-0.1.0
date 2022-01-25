@@ -9,6 +9,8 @@ type Ctx = {
   tests?: {
     PeerNetbus: CtxRunTests;
     PeerEvents: CtxRunTests;
+    PeerStrategy: CtxRunTests;
+    PeerNetworkUri: CtxRunTests;
   };
 };
 
@@ -29,11 +31,16 @@ export const actions = DevActions<Ctx>()
     const tests = (e.ctx.tests = {
       PeerNetbus: () => run(import('../../web.PeerNetbus/PeerNetbus.TEST')),
       PeerEvents: () => run(import('../../web.PeerNetwork.events/PeerEvents.TEST')),
+      PeerStrategy: () =>
+        run(import('../../web.PeerNetwork/strategy/PeerStrategy/PeerStrategy.TEST')),
+      PeerNetworkUri: () => run(import('../../web.PeerNetwork/common/util.Uri.TEST')),
     });
 
     // Auto-run on load.
     // await tests.PeerNetbus();
     await tests.PeerEvents();
+    // await tests.PeerStrategy();
+    // await tests.PeerNetworkUri();
   })
 
   .items((e) => {
@@ -41,6 +48,8 @@ export const actions = DevActions<Ctx>()
 
     e.button('run: PeerNetbus', (e) => e.ctx.tests?.PeerNetbus());
     e.button('run: PeerEvents', (e) => e.ctx.tests?.PeerEvents());
+    e.button('run: PeerStrategy', (e) => e.ctx.tests?.PeerStrategy());
+    e.button('run: PeerNetwork URI', (e) => e.ctx.tests?.PeerNetworkUri());
 
     e.hr();
   })
