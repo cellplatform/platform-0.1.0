@@ -11,7 +11,7 @@ import {
   isLocalhost,
   MediaStream,
   PeerNetwork,
-  PeerNetworkBus,
+  PeerNetbus,
   QueryString,
   rx,
   t,
@@ -34,12 +34,12 @@ type Ctx = {
   events?: CtxEvents;
   connectTo?: string;
   toStrategy(): { peer: t.PeerStrategy; group: t.GroupStrategy };
-  toFlags(): CtxFlags;
+  toFlags(): CtxDebugFlags;
   toSeed(): GroupSeed;
   fullscreen(value: boolean): void;
 };
 
-type CtxFlags = {
+type CtxDebugFlags = {
   isFullscreen: boolean;
   isReliable: boolean;
   debugJson: boolean;
@@ -79,14 +79,14 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const bus = rx.bus<t.PeerEvent | t.DevEvent>();
     const self = cuid();
+    const bus = rx.bus<t.PeerEvent | t.DevEvent>();
 
     EventBridge.startEventBridge({ bus, self });
     PeerNetwork.Controller({ bus });
     MediaStream.Controller({ bus });
 
-    const netbus = PeerNetworkBus({ bus, self });
+    const netbus = PeerNetbus({ bus, self });
     const runtime = WebRuntime.Bus.Controller({ bus, netbus });
 
     const events = {
@@ -113,11 +113,7 @@ export const actions = DevActions<Ctx>()
       console.log('NET/CHANGED', e);
     });
 
-    // ipcbus.$.subscribe((e) => {
-    //   netbus.fire(e); // TEMP 🐷 - bridge all events into the netbus
-    // });
-
-    const storage = LocalStorage<CtxFlags>('sys.net/dev/PeerNetwork');
+    const storage = LocalStorage<CtxDebugFlags>('sys.net/dev/PeerNetwork');
 
     // Default flag values (NB: state stored in localStorage).
     const flags = storage.object({

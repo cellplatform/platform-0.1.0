@@ -5,7 +5,7 @@ import { Test } from 'sys.ui.dev';
 import { PeerNetbus } from '.';
 import { cuid, rx, t, time } from '../common';
 
-export default Test.describe('PeerNetworkBus', (e) => {
+export default Test.describe('PeerNetbus', (e) => {
   e.it('init (default)', () => {
     const self = cuid();
     const bus = rx.bus();

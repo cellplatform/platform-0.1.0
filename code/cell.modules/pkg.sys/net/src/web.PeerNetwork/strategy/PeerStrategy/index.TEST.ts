@@ -1,11 +1,11 @@
 import { expect, t, cuid, rx } from '../../../test';
 import { PeerStrategy } from '.';
-import { PeerNetworkBus } from '../common';
+import { PeerNetbus } from '../common';
 
 describe('PeerStrategy', () => {
   const self = cuid();
   const bus = rx.bus<t.PeerEvent>();
-  const netbus = PeerNetworkBus({ self, bus });
+  const netbus = PeerNetbus({ self, bus });
   const $ = bus.$;
 
   it('dispose', () => {
