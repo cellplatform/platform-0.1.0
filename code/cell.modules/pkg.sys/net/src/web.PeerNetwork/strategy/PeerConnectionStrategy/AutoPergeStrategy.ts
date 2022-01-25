@@ -1,6 +1,6 @@
 import { debounceTime, filter } from 'rxjs/operators';
 
-import { t } from '../../common';
+import { t } from '../common';
 
 /**
  * Strategy for auto-purging connections when closed.
@@ -11,7 +11,7 @@ export function AutoPergeStrategy(args: {
   isEnabled: () => boolean;
 }) {
   const { events } = args;
-  const netbus = args.netbus as t.PeerNetbus<t.NetGroupEvent>;
+  const netbus = args.netbus as t.PeerNetbus<t.GroupEvent>;
   const self = netbus.self;
   const connections = events.connections(self);
 

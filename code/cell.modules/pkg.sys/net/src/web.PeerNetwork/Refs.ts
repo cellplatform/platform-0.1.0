@@ -1,4 +1,4 @@
-import { PeerJS, t, StringUtil, Uri } from './common';
+import { PeerJS, t, StringUtil, UriUtil } from './common';
 
 type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 
@@ -55,7 +55,7 @@ export function MemoryRefs() {
 
           const remote = { id: conn.peer, module, userAgent };
           const peer = { self: self.peer.id, remote };
-          const uri = Uri.connection.create(kind, remote.id, id);
+          const uri = UriUtil.connection.create(kind, remote.id, id);
 
           const existing = self.connections.find((item) => item.uri === uri);
           if (existing) return existing;

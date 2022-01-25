@@ -7,16 +7,12 @@ import {
   PropList,
   PropListItem,
   t,
+  UriUtil,
   useEventBusHistory,
-  PeerNetwork,
-  Dropped,
-  FileUtil,
-  Uri,
 } from '../common';
 import { DevCard } from '../layouts';
 import { DevEventBusStack } from './DEV.EventBus.Stack';
 import { DevEventBusTextbox } from './DEV.EventBus.Textbox';
-// import { DevImageThumbnails } from '../media';
 
 export type DevEventBusCardProps = {
   bus: t.EventBus<any>;
@@ -26,7 +22,7 @@ export type DevEventBusCardProps = {
 };
 
 export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
-  const { bus, netbus } = props;
+  const { netbus } = props;
   const history = useEventBusHistory(netbus);
 
   const handleBroadcast = async (args: { message: string; filter: string }) => {
@@ -43,8 +39,8 @@ export const DevEventBusCard: React.FC<DevEventBusCardProps> = (props) => {
         .split(',')
         .map((text) => text.trim())
         .some((text) => {
-          if (Uri.is.peer(e.uri) && e.uri.endsWith(text)) return true;
-          const uri = Uri.connection.parse(e.uri);
+          if (UriUtil.is.peer(e.uri) && e.uri.endsWith(text)) return true;
+          const uri = UriUtil.connection.parse(e.uri);
           return uri?.peer.endsWith(text) || uri?.connection.endsWith(text);
         });
     };

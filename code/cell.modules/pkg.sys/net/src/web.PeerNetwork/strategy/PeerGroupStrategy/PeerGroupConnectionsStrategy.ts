@@ -1,13 +1,13 @@
 import { firstValueFrom } from 'rxjs';
 import { filter, timeout } from 'rxjs/operators';
 
-import { slug, t, WebRuntime, Uri } from '../common';
+import { slug, t, WebRuntime, UriUtil } from '../common';
 
 /**
  * Strategy for retrieving peer/connection details for members of the network.
  */
-export async function GroupConnectionsStrategy(args: {
-  netbus: t.PeerNetbus<t.NetGroupEvent>;
+export async function PeerGroupConnectionsStrategy(args: {
+  netbus: t.PeerNetbus<t.GroupEvent>;
   events: { group: t.GroupEvents; peer: t.PeerNetworkEvents };
   isEnabled: () => boolean;
 }) {
@@ -17,7 +17,7 @@ export async function GroupConnectionsStrategy(args: {
   const req$ = events.group.connections().req$.pipe(filter(() => args.isEnabled()));
   const res$ = events.group.connections().res$.pipe(filter(() => args.isEnabled()));
 
-  const toConnectionUri = (input: string) => Uri.connection.parse(input, { throw: true });
+  const toConnectionUri = (input: string) => UriUtil.connection.parse(input, { throw: true });
 
   /**
    * Listen for local requests,

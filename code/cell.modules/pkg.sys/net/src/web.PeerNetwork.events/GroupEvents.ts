@@ -12,7 +12,7 @@ type C = t.GroupPeerConnection;
  */
 export function GroupEvents(eventbus: t.PeerNetbus<any>) {
   const module = WebRuntime.module;
-  const netbus = eventbus as t.PeerNetbus<t.NetGroupEvent>;
+  const netbus = eventbus as t.PeerNetbus<t.GroupEvent>;
   const source = netbus.self;
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
@@ -20,12 +20,12 @@ export function GroupEvents(eventbus: t.PeerNetbus<any>) {
   const event$ = netbus.$.pipe(
     takeUntil(dispose$),
     filter(ns.is.group.base),
-    map((e) => e as t.NetGroupEvent),
+    map((e) => e as t.GroupEvent),
   );
 
   const connections = () => {
-    const req$ = rx.payload<t.NetGroupConnectionsReqEvent>(event$, 'sys.net/group/connections:req');
-    const res$ = rx.payload<t.NetGroupConnectionsResEvent>(event$, 'sys.net/group/connections:res');
+    const req$ = rx.payload<t.GroupConnectionsReqEvent>(event$, 'sys.net/group/connections:req');
+    const res$ = rx.payload<t.GroupConnectionsResEvent>(event$, 'sys.net/group/connections:res');
 
     /**
      * Calculate the entire group from available connections.
@@ -60,7 +60,7 @@ export function GroupEvents(eventbus: t.PeerNetbus<any>) {
   };
 
   const connect = () => {
-    const $ = rx.payload<t.NetGroupConnectEvent>(event$, 'sys.net/group/connect');
+    const $ = rx.payload<t.GroupConnectEvent>(event$, 'sys.net/group/connect');
 
     /**
      * TODO 🐷
@@ -76,7 +76,7 @@ export function GroupEvents(eventbus: t.PeerNetbus<any>) {
   };
 
   const refresh = () => {
-    const $ = rx.payload<t.NetGroupRefreshEvent>(event$, 'sys.net/group/refresh');
+    const $ = rx.payload<t.GroupRefreshEvent>(event$, 'sys.net/group/refresh');
     const fire = () => netbus.fire({ type: 'sys.net/group/refresh', payload: { source } });
     return { $, fire };
   };

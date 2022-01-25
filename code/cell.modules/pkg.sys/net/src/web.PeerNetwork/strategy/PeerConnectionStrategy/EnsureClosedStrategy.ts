@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
 
-import { rx, t } from '../../common';
+import { rx, t } from '../common';
 
 /**
  * Strategy for closed connections the close event is properly
@@ -12,7 +12,7 @@ export function EnsureClosedStrategy(args: {
   isEnabled: () => boolean;
 }) {
   const { events } = args;
-  const netbus = args.netbus as t.PeerNetbus<t.NetGroupEvent>;
+  const netbus = args.netbus as t.PeerNetbus<t.GroupEvent>;
   const self = netbus.self;
   const connections = events.connections(self);
 
@@ -36,7 +36,7 @@ export function EnsureClosedStrategy(args: {
   /**
    * Listen for mesh alerting that a connection is closed.
    */
-  rx.payload<t.NetGroupEnsureConnectionClosedEvent>(netbus.$, 'sys.net/group/conn/ensure:closed')
+  rx.payload<t.GroupEnsureConnectionClosedEvent>(netbus.$, 'sys.net/group/conn/ensure:closed')
     .pipe(
       filter(() => args.isEnabled()),
       filter((e) => e.source !== self),

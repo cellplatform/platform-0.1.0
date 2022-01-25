@@ -4,17 +4,17 @@ import { t } from './common';
  * NOTE: These events are fired over the "network bus" to
  *       other connected clients.
  */
-export type NetGroupEvent =
-  | NetGroupEnsureConnectionClosedEvent
-  | NetGroupConnectionsReqEvent
-  | NetGroupConnectionsResEvent
-  | NetGroupRefreshEvent
-  | NetGroupConnectEvent;
+export type GroupEvent =
+  | GroupEnsureConnectionClosedEvent
+  | GroupConnectionsReqEvent
+  | GroupConnectionsResEvent
+  | GroupRefreshEvent
+  | GroupConnectEvent;
 
 /**
  * Ensure connection is closed are closed.
  */
-export type NetGroupEnsureConnectionClosedEvent = {
+export type GroupEnsureConnectionClosedEvent = {
   type: 'sys.net/group/conn/ensure:closed';
   payload: NetGroupEnsureConnectionClosed;
 };
@@ -26,7 +26,7 @@ export type NetGroupEnsureConnectionClosed = {
 /**
  * Fires to retrieve a list of peer connections.
  */
-export type NetGroupConnectionsReqEvent = {
+export type GroupConnectionsReqEvent = {
   type: 'sys.net/group/connections:req';
   payload: NetGroupConnectionsReq;
 };
@@ -36,7 +36,7 @@ export type NetGroupConnectionsReq = {
   tx?: string;
 };
 
-export type NetGroupConnectionsResEvent = {
+export type GroupConnectionsResEvent = {
   type: 'sys.net/group/connections:res';
   payload: NetGroupConnectionsRes;
 };
@@ -49,7 +49,7 @@ export type NetGroupConnectionsRes = {
 /**
  * Fired when a refresh to the group status is desired.
  */
-export type NetGroupRefreshEvent = {
+export type GroupRefreshEvent = {
   type: 'sys.net/group/refresh';
   payload: NetGroupRefresh;
 };
@@ -60,7 +60,7 @@ export type NetGroupRefresh = {
 /**
  * Fired to tell peer(s) to start a connection.
  */
-export type NetGroupConnectEvent = {
+export type GroupConnectEvent = {
   type: 'sys.net/group/connect';
   payload: NetGroupConnect;
 };

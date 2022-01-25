@@ -10,7 +10,7 @@ import { PeerEvents, GroupEvents } from '../../web.PeerNetwork.events';
  */
 export function useGroupState(args: { bus: t.EventBus<any>; netbus: t.PeerNetbus<any> }) {
   const bus = args.bus as t.EventBus<t.PeerEvent>;
-  const netbus = args.netbus as t.PeerNetbus<t.NetGroupEvent>;
+  const netbus = args.netbus as t.PeerNetbus<t.GroupEvent>;
 
   const [status, setStatus] = useState<t.GroupPeerStatus>();
 

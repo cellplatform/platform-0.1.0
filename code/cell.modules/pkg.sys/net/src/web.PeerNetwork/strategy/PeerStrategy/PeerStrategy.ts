@@ -1,5 +1,5 @@
-import { t, Events } from '../common';
-import { PeerConnectionStrategy } from './connection';
+import { t, PeerEvents } from '../common';
+import { PeerConnectionStrategy } from '../PeerConnectionStrategy';
 
 /**
  * Single combined set of network strategies.
@@ -9,7 +9,7 @@ export function PeerStrategy(args: {
   netbus: t.PeerNetbus<any>;
 }): t.PeerStrategy {
   const bus = args.bus as t.EventBus<t.PeerEvent>;
-  const events = Events(bus);
+  const events = PeerEvents(bus);
 
   const { dispose$ } = events;
   const dispose = () => {

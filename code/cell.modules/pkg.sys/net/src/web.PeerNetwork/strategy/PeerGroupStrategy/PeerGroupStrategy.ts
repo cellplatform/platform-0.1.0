@@ -1,23 +1,23 @@
-import { Events, GroupEvents, t } from '../common';
-import { GroupConnectionsStrategy } from './strategy.GroupConnections';
+import { PeerEvents, GroupEvents, t } from '../common';
+import { PeerGroupConnectionsStrategy } from './PeerGroupConnectionsStrategy';
 
 /**
  * Handles strategies for working with a group of peers ("mesh" network).
  */
-export function GroupStrategy(args: {
+export function PeerGroupStrategy(args: {
   bus: t.EventBus<any>;
   netbus: t.PeerNetbus<any>;
 }): t.GroupStrategy {
   const { netbus } = args;
   const events = {
-    peer: Events(args.bus),
+    peer: PeerEvents(args.bus),
     group: GroupEvents(netbus),
   };
 
   /**
    * Initialize sub-strategies.
    */
-  GroupConnectionsStrategy({ netbus, events, isEnabled: () => strategy.connections });
+  PeerGroupConnectionsStrategy({ netbus, events, isEnabled: () => strategy.connections });
 
   /**
    * API

@@ -1,5 +1,5 @@
 import { map } from 'rxjs/operators';
-import { PeerEvents, NetworkBus, t, Uri } from './common';
+import { PeerEvents, NetworkBus, t, UriUtil } from './common';
 
 /**
  * An [event-bus] distributed across a number of
@@ -20,9 +20,9 @@ export function PeerNetbus<E extends t.Event>(args: {
 
   const netbus = NetworkBus<E>({
     pump,
-    local: async () => Uri.peer.create(self),
+    local: async () => UriUtil.peer.create(self),
     remotes: async () => {
-      const uri = Uri.connection.create;
+      const uri = UriUtil.connection.create;
       return (_connections || []).map((conn) => uri(conn.kind, conn.peer.remote.id, conn.id));
     },
   });

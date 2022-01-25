@@ -1,11 +1,11 @@
 import { expect } from '../../test';
-import { Uri } from './Uri';
+import { UriUtil } from '.';
 
 describe('PeerNetwork URI', () => {
   describe('is', () => {
     it('is.peer', () => {
       const test = (input: any, expected: boolean) => {
-        expect(Uri.is.peer(input)).to.eql(expected);
+        expect(UriUtil.is.peer(input)).to.eql(expected);
       };
 
       test('', false);
@@ -21,7 +21,7 @@ describe('PeerNetwork URI', () => {
 
     it('is.connection', () => {
       const test = (input: any, expected: boolean) => {
-        expect(Uri.is.connection(input)).to.eql(expected);
+        expect(UriUtil.is.connection(input)).to.eql(expected);
       };
 
       test('', false);
@@ -38,13 +38,13 @@ describe('PeerNetwork URI', () => {
 
   describe('peer', () => {
     it('create', () => {
-      const res = Uri.peer.create('  foo  ');
+      const res = UriUtil.peer.create('  foo  ');
       expect(res).to.eql('peer:foo');
     });
 
     describe('parse', () => {
       it('success', () => {
-        const res = Uri.peer.parse('peer:foo');
+        const res = UriUtil.peer.parse('peer:foo');
 
         expect(res?.ok).to.eql(true);
         expect(res?.type).to.eql('peer');
@@ -54,7 +54,7 @@ describe('PeerNetwork URI', () => {
 
       it('fail: no match (undefined)', () => {
         const test = (input: any) => {
-          expect(Uri.peer.parse(input)).to.eql(undefined);
+          expect(UriUtil.peer.parse(input)).to.eql(undefined);
         };
         test('');
         test('foobar');
@@ -66,7 +66,7 @@ describe('PeerNetwork URI', () => {
       });
 
       it('error: identifiers', () => {
-        const res = Uri.peer.parse('peer:');
+        const res = UriUtil.peer.parse('peer:');
         expect(res?.ok).to.eql(false);
         expect(res?.errors.length).to.eql(1);
         expect(res?.errors[0]).to.include('No peer identifier');
@@ -74,7 +74,7 @@ describe('PeerNetwork URI', () => {
 
       it('error: throw (param)', () => {
         const test = (input: any) => {
-          const fn = () => Uri.peer.parse(input, { throw: true });
+          const fn = () => UriUtil.peer.parse(input, { throw: true });
           expect(fn).to.throw(/Peer URI could not be parsed/);
         };
 
@@ -88,25 +88,25 @@ describe('PeerNetwork URI', () => {
 
   describe('connection', () => {
     it('create: data', () => {
-      const res = Uri.connection.create('data', '  foo  ', '  bar  ');
+      const res = UriUtil.connection.create('data', '  foo  ', '  bar  ');
       expect(res).to.eql('conn:data:foo.bar');
     });
 
     it('create: media/screen', () => {
-      const res = Uri.connection.create('media/screen', 'foo', 'bar');
+      const res = UriUtil.connection.create('media/screen', 'foo', 'bar');
       expect(res).to.eql('conn:media.screen:foo.bar');
     });
 
     it('create: media/video', () => {
-      const res = Uri.connection.create('media/video', 'foo', 'bar');
+      const res = UriUtil.connection.create('media/video', 'foo', 'bar');
       expect(res).to.eql('conn:media.video:foo.bar');
     });
 
     describe('parse', () => {
       it('success', () => {
-        const res1 = Uri.connection.parse('conn:data:foo.bar');
-        const res2 = Uri.connection.parse('conn:media.screen:foo.bar');
-        const res3 = Uri.connection.parse('conn:media.video:foo.bar');
+        const res1 = UriUtil.connection.parse('conn:data:foo.bar');
+        const res2 = UriUtil.connection.parse('conn:media.screen:foo.bar');
+        const res3 = UriUtil.connection.parse('conn:media.video:foo.bar');
 
         expect(res1?.ok).to.eql(true);
         expect(res1?.type).to.eql('connection');
@@ -121,7 +121,7 @@ describe('PeerNetwork URI', () => {
 
       it('fail: no match (undefined)', () => {
         const test = (input: any) => {
-          expect(Uri.connection.parse(input)).to.eql(undefined);
+          expect(UriUtil.connection.parse(input)).to.eql(undefined);
         };
         test('');
         test('foobar');
@@ -134,7 +134,7 @@ describe('PeerNetwork URI', () => {
 
       it('error: kind', () => {
         const test = (input: any) => {
-          const res = Uri.connection.parse(input);
+          const res = UriUtil.connection.parse(input);
           expect(res?.ok).to.eql(false);
           expect(res?.errors.length).to.eql(1);
           expect(res?.errors[0]).to.include('Connection kind not supported');
@@ -146,9 +146,9 @@ describe('PeerNetwork URI', () => {
       });
 
       it('error: identifiers', () => {
-        const res1 = Uri.connection.parse('conn:data:');
-        const res2 = Uri.connection.parse('conn:data:foo.');
-        const res3 = Uri.connection.parse('conn:data:.bar');
+        const res1 = UriUtil.connection.parse('conn:data:');
+        const res2 = UriUtil.connection.parse('conn:data:foo.');
+        const res3 = UriUtil.connection.parse('conn:data:.bar');
 
         expect(res1?.ok).to.eql(false);
         expect(res1?.errors.length).to.eql(2);
@@ -166,7 +166,7 @@ describe('PeerNetwork URI', () => {
 
       it('error: throw (param)', () => {
         const test = (input: any) => {
-          const fn = () => Uri.connection.parse(input, { throw: true });
+          const fn = () => UriUtil.connection.parse(input, { throw: true });
           expect(fn).to.throw(/Connection URI could not be parsed/);
         };
 

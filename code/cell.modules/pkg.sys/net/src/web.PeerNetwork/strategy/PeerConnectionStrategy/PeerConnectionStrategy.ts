@@ -1,6 +1,6 @@
-import { t, Events } from '../../common';
-import { AutoPergeStrategy } from './strategy.AutoPerge';
-import { EnsureClosedStrategy } from './strategy.EnsureClosed';
+import { t, PeerEvents } from '../common';
+import { AutoPergeStrategy } from './AutoPergeStrategy';
+import { EnsureClosedStrategy } from './EnsureClosedStrategy';
 
 /**
  * Handles strategies for connecting and disconnecting peers.
@@ -11,7 +11,8 @@ export function PeerConnectionStrategy(args: {
 }): t.PeerConnectionStrategy {
   const { netbus } = args;
   const bus = args.bus as t.EventBus<t.PeerEvent>;
-  const events = Events(bus);
+
+  const events = PeerEvents(bus);
   const { dispose, dispose$ } = events;
 
   /**

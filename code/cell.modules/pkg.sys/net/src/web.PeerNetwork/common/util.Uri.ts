@@ -1,10 +1,10 @@
 import * as t from './types';
-import { StringUtil } from './util';
+import { StringUtil } from './util.String';
 
 /**
  * Network URIs.
  */
-export const Uri = {
+export const UriUtil = {
   /**
    * A URI that represents a unique peer.
    */
