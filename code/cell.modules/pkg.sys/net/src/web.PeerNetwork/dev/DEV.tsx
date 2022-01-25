@@ -8,18 +8,15 @@ import {
   deleteUndefined,
   Filesystem,
   Icons,
-  isLocalhost,
   MediaStream,
   PeerNetbus,
   PeerNetwork,
-  QueryString,
   rx,
   t,
   TARGET_NAME,
   time,
 } from './DEV.common';
 import { EventBridge } from './DEV.event';
-import { DevGroupSeed, GroupSeed } from './DEV.layouts';
 import { DevProps } from './DEV.Props';
 import { DevRootLayout } from './DEV.Root';
 
@@ -35,7 +32,6 @@ type Ctx = {
   connectTo?: string;
   toStrategy(): { peer: t.PeerStrategy; group: t.GroupStrategy };
   toFlags(): CtxDebugFlags;
-  toSeed(): GroupSeed;
   fullscreen(value: boolean): void;
 };
 
@@ -130,19 +126,6 @@ export const actions = DevActions<Ctx>()
     storage.changed$.subscribe(() => e.redraw());
 
     /**
-     * Group seed model/controller
-     */
-    const query = QueryString.toObject<{ group: string }>(location.href);
-    const host = isLocalhost ? 5000 : location.host;
-    const seed = DevGroupSeed({ self, bus, host, groupname: query.group });
-    if (query.group) {
-      (async () => {
-        // await seed.init();
-        seed.connect();
-      })();
-    }
-
-    /**
      * Filesystem (networked).
      */
     const filesystem = Filesystem.IndexedDb.create({ bus, id: FILESYSTEM_ID });
@@ -163,7 +146,6 @@ export const actions = DevActions<Ctx>()
       fs: async () => (await filesystem).fs,
       toFlags: () => flags,
       toStrategy: () => strategy,
-      toSeed: () => seed,
       fullscreen: (value) => (flags.isFullscreen = value),
     };
   })
@@ -285,42 +267,6 @@ export const actions = DevActions<Ctx>()
         .pipe((e) => {
           if (e.changing) e.ctx.signal = e.changing.next;
         });
-    });
-
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('Group Seed');
-
-    const writePeers = async (seed: GroupSeed) => {
-      const peers = await seed.peers();
-      console.log('peers', peers);
-    };
-
-    e.button('init', async (e) => {
-      const seed = e.ctx.toSeed();
-      await seed.init();
-      await writePeers(seed);
-    });
-
-    e.button('peers', async (e) => {
-      const seed = e.ctx.toSeed();
-      await writePeers(seed);
-    });
-
-    e.button('clear', async (e) => {
-      const seed = e.ctx.toSeed();
-      await seed.clear();
-      await writePeers(seed);
-    });
-
-    e.hr(1, 0.1);
-
-    e.button('connect', async (e) => {
-      const seed = e.ctx.toSeed();
-      await writePeers(seed);
-      await seed.connect();
     });
 
     e.hr();
