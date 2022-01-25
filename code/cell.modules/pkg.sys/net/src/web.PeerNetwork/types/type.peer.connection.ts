@@ -1,36 +1,35 @@
 import { t } from './common';
 
-export type PeerMediaConstraints = t.PartialDeep<MediaStreamConstraints>;
-
-export type PeerId = string; // An identifier of a network peer.
-export type PeerConnectionId = string;
-
 export type PeerConnectionKind = PeerConnectionKindData | PeerConnectionKindMedia;
 export type PeerConnectionKindData = 'data';
 export type PeerConnectionKindMedia = 'media/video' | 'media/screen';
-
 export type PeerConnectDirection = 'incoming' | 'outgoing';
 
-export type PeerError = { message: string };
+/**
+ * Connection status.
+ */
+export type PeerConnectionStatus = PeerConnectionDataStatus | PeerConnectionMediaStatus;
 
-export type PeerSignallingEndpoint = {
-  host: string;
-  port: number;
-  path?: string;
-  secure: boolean;
-  key: string;
-  url: { base: string; peers: string };
+type ConnectionBase = {
+  peer: { self: t.PeerId; remote: { id: t.PeerId; module: t.PeerModule; userAgent: string } };
+  id: t.PeerConnectionId;
+  uri: t.PeerConnectionUriString;
+  direction: t.PeerConnectDirection;
+  parent?: t.PeerConnectionId;
 };
 
-export type PeerModule = { name: string; version: string };
+export type PeerConnectionDataStatus = ConnectionBase & {
+  kind: 'data';
+  isReliable: boolean;
+  isOpen: boolean;
+  metadata?: t.PeerConnectionMetadataData;
+};
 
-/**
- * Filter on a peer connection.
- */
-export type PeerFilter = (e: PeerFilterArgs) => boolean;
-export type PeerFilterArgs = {
-  peer: t.PeerId;
-  connection: { id: t.PeerConnectionId; kind: t.PeerConnectionKind };
+export type PeerConnectionMediaStatus = ConnectionBase & {
+  kind: 'media/screen' | 'media/video';
+  isOpen: boolean;
+  media?: MediaStream;
+  metadata?: t.PeerConnectionMetadataMedia;
 };
 
 /**
