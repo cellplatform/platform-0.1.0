@@ -3,7 +3,7 @@ import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { PeerEvents } from '../../web.PeerNetwork.events';
-import { color, COLORS, css, CssValue, Hr, Icons, PropList, t, Textbox, time } from './common';
+import { color, COLORS, css, CssValue, Hr, Icons, PropList, t, Textbox, time } from '../common';
 
 type NewConnectionOptions = { isReliable?: boolean; autoStartVideo?: boolean };
 
@@ -16,7 +16,7 @@ export type LocalPeerPropsProps = {
 };
 
 /**
- * A property list
+ * A property list of the local network Peer.
  */
 export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
   const { bus, self, newConnections = false } = props;

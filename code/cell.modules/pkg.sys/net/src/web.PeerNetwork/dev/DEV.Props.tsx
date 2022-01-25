@@ -1,6 +1,5 @@
 import React from 'react';
-import { css, CssValue, t } from './DEV.common';
-import { LocalPeerProps } from '../components/LocalPeerProps';
+import { css, CssValue, t, LocalPeerProps } from './DEV.common';
 import { useLocalPeer } from '../hooks';
 
 export type DevPropsProps = {

@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { css, CssValue, t } from '../DEV.common';
+import { css, CssValue, LocalPeerProps, t } from '../DEV.common';
 import { DevVideo } from '../DEV.media';
-import { LocalPeerProps } from '../../components/LocalPeerProps';
 
 export type DevNetworkHeaderProps = {
   bus: t.EventBus<any>;
