@@ -27,7 +27,7 @@ const imports = {
 
   Button: import('sys.ui.primitives/lib/ui.ref/button/Button.dev/DEV'),
   Switch: import('sys.ui.primitives/lib/ui.ref/button/Switch.dev/DEV'),
-  OptionButtons: import('sys.ui.dev/lib/ui/OptionButtons/DEV'),
+  OptionButtons: import('sys.ui.dev/lib/web.ui/OptionButtons/DEV'),
 
   // Svg: import('sys.ui.primitives/lib/ui/Image.Svg/dev/DEV'),
 
@@ -35,9 +35,21 @@ const imports = {
   StackPanel: import('sys.ui.primitives/lib/ui/StackPanel/dev/DEV'),
 };
 
-const dev = new URL(location.href).searchParams.get('dev');
+/**
+ * UI Harness (Dev)
+ */
+type Props = { bus?: t.EventBus };
 
-const DevHarness: React.FC = () => <Harness actions={Object.values(imports)} initial={dev} />;
+export const DevHarness: React.FC<Props> = (props) => {
+  const url = new URL(location.href);
+  return (
+    <Harness
+      bus={props.bus}
+      actions={Object.values(imports)}
+      initial={url.searchParams.get('dev')}
+      showActions={url.hostname === 'localhost'}
+    />
+  );
+};
+
 export default DevHarness;
-// import { DevHarness } from 'sys.ui.primitives/lib/Dev.Harness';
-// export default DevHarness;

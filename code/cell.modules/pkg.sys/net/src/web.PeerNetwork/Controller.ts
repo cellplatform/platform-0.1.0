@@ -27,7 +27,7 @@ type ConnectionKind = t.PeerNetworkConnectRes['kind'];
 export function Controller(args: { bus: t.EventBus<any> }) {
   const bus = args.bus as t.EventBus<t.PeerEvent>;
   const events = PeerEvents(bus);
-  const $ = events.$;
+  const { $, dispose$ } = events;
 
   const refs = MemoryRefs();
 
@@ -37,6 +37,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
     window.removeEventListener('online', handleOnlineStatusChanged);
     window.removeEventListener('offline', handleOnlineStatusChanged);
   };
+  dispose$.subscribe(dispose);
 
   /**
    * Monitor network connectivity.
@@ -506,7 +507,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
    * API
    */
   return {
-    dispose$: events.dispose$.pipe(take(1)),
+    dispose$,
     dispose,
   };
 }
