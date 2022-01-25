@@ -20,7 +20,7 @@ import { DevEventBusTextbox } from './DEV.EventBus.Textbox';
 
 export type DevEventBusCardProps = {
   bus: t.EventBus<any>;
-  netbus: t.PeerNetworkBus<any>;
+  netbus: t.PeerNetbus<any>;
   margin?: t.CssEdgesInput;
   style?: CssValue;
 };

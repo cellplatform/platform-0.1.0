@@ -9,7 +9,7 @@ import { openHandler } from './util';
  */
 export type DevDataConnectionsProps = {
   bus: t.EventBus<any>;
-  netbus: t.PeerNetworkBus<any>;
+  netbus: t.PeerNetbus<any>;
   connections: t.PeerConnectionDataStatus[];
   style?: CssValue;
 };

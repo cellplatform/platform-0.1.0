@@ -5,13 +5,13 @@ import { DevEvents } from '../event';
 
 export type DevScreensizeProps = {
   bus: t.EventBus<any>;
-  netbus: t.PeerNetworkBus<any>;
+  netbus: t.PeerNetbus<any>;
   style?: CssValue;
 };
 
 export const DevScreensize: React.FC<DevScreensizeProps> = (props) => {
   const bus = props.bus as t.EventBus<t.DevEvent>;
-  const netbus = props.bus as t.PeerNetworkBus<t.DevEvent>;
+  const netbus = props.bus as t.PeerNetbus<t.DevEvent>;
 
   const baseRef = useRef<HTMLDivElement>(null);
   const [model, setModel] = useState<t.DevModel | undefined>();

@@ -8,7 +8,7 @@ import { DevNetworkConnections, DevNetworkConnectionsProps } from './DEV.Network
 export type DevNetworkConnectionsModalProps = {
   self: t.PeerId;
   bus: t.EventBus<any>;
-  netbus: t.PeerNetworkBus<any>;
+  netbus: t.PeerNetbus<any>;
   header?: { title: React.ReactNode };
   filter?: DevNetworkConnectionsProps['filter'];
 };

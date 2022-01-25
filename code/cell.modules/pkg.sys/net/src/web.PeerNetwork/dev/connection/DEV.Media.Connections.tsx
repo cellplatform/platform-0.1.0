@@ -8,7 +8,7 @@ import { DevNetworkConnectionsModal } from '../network/';
  */
 export type DevMediaConnectionsProps = {
   bus: t.EventBus<any>;
-  netbus: t.PeerNetworkBus<any>;
+  netbus: t.PeerNetbus<any>;
   connections: t.PeerConnectionMediaStatus[];
   style?: CssValue;
 };

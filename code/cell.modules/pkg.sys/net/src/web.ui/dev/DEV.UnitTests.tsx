@@ -25,7 +25,7 @@ export const actions = DevActions<Ctx>()
 
     const tests: Ctx['tests'] = {
       async PeerNetworkBus() {
-        return run(await Test.bundle(import('../../web.PeerNetworkBus/PeerNetworkBus.TEST')));
+        return run(await Test.bundle(import('../../web.PeerNetbus/PeerNetbus.TEST')));
       },
     };
 

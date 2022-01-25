@@ -5,10 +5,10 @@ import { PeerEvents, NetworkBus, t, Uri } from './common';
  * An [event-bus] distributed across a number of
  * peers using WebRTC data connection transport.
  */
-export function PeerNetworkBus<E extends t.Event>(args: {
+export function PeerNetbus<E extends t.Event>(args: {
   self: t.PeerId;
   bus: t.EventBus<any>;
-}): t.PeerNetworkBus<E> {
+}): t.PeerNetbus<E> {
   const { self } = args;
   const events = PeerEvents(args.bus);
   const data = events.data(self);
@@ -38,7 +38,7 @@ export function PeerNetworkBus<E extends t.Event>(args: {
   /**
    * API
    */
-  const api: t.PeerNetworkBus<E> = {
+  const api: t.PeerNetbus<E> = {
     ...netbus,
     self,
     get connections() {

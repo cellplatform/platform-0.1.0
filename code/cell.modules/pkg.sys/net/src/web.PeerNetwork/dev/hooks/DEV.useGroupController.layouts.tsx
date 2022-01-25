@@ -12,11 +12,11 @@ type O = Record<string, unknown>;
 export function listen(args: {
   network$: t.Observable<t.DevEvent>;
   bus: t.EventBus<any>;
-  netbus: t.PeerNetworkBus<any>;
+  netbus: t.PeerNetbus<any>;
 }) {
   const { network$ } = args;
   const bus = args.bus as t.EventBus<t.DevEvent>;
-  const netbus = args.netbus as t.PeerNetworkBus<t.DevEvent>;
+  const netbus = args.netbus as t.PeerNetbus<t.DevEvent>;
   const layout$ = rx.payload<t.DevGroupLayoutEvent>(network$, 'DEV/group/layout');
 
   const layout = (kind: t.DevGroupLayout['kind'], factory?: (props?: O) => JSX.Element) => {

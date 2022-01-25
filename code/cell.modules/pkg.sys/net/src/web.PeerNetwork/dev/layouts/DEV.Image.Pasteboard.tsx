@@ -6,12 +6,12 @@ import { color, css, CssValue, filesize, rx, slug, Spinner, t, time } from '../c
 
 export type DevImagePasteboardProps = {
   bus: t.EventBus<any>;
-  netbus: t.PeerNetworkBus<any>;
+  netbus: t.PeerNetbus<any>;
   style?: CssValue;
 };
 
 export const DevImagePasteboard: React.FC<DevImagePasteboardProps> = (props) => {
-  const netbus = props.netbus as t.PeerNetworkBus<t.DevEvent>;
+  const netbus = props.netbus as t.PeerNetbus<t.DevEvent>;
 
   type D = t.DevImagePasteboardUri['data'];
   const [incoming, setIncoming] = useState<{ data: D; tx: string }[]>([]);

@@ -2,14 +2,14 @@ import { expect } from 'chai';
 import { WebRuntime } from 'sys.runtime.web';
 import { Test } from 'sys.ui.dev';
 
-import { PeerNetworkBus } from '.';
+import { PeerNetbus } from '.';
 import { cuid, rx, t, time } from '../common';
 
 export default Test.describe('PeerNetworkBus', (e) => {
   e.it('init (default)', () => {
     const self = cuid();
     const bus = rx.bus();
-    const netbus = PeerNetworkBus({ bus, self });
+    const netbus = PeerNetbus({ bus, self });
 
     expect(netbus.self).to.eql(self);
     expect(netbus.connections).to.eql([]);
@@ -18,7 +18,7 @@ export default Test.describe('PeerNetworkBus', (e) => {
   e.it('fire locally', async () => {
     const self = cuid();
     const bus = rx.bus();
-    const netbus = PeerNetworkBus({ bus, self });
+    const netbus = PeerNetbus({ bus, self });
 
     const fired: t.Event[] = [];
     netbus.$.subscribe((e) => fired.push(e));
@@ -33,7 +33,7 @@ export default Test.describe('PeerNetworkBus', (e) => {
   e.describe('WebRuntime', (e) => {
     e.it('retrieve [netbus] via event', async () => {
       const bus = rx.bus();
-      const netbus = PeerNetworkBus({ bus, self: cuid() });
+      const netbus = PeerNetbus({ bus, self: cuid() });
       const runtime = WebRuntime.Bus.Controller({ bus, netbus });
       const events = WebRuntime.Bus.Events({ bus });
 

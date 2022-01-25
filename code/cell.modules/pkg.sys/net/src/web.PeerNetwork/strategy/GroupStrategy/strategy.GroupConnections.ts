@@ -7,7 +7,7 @@ import { slug, t, WebRuntime, Uri } from '../common';
  * Strategy for retrieving peer/connection details for members of the network.
  */
 export async function GroupConnectionsStrategy(args: {
-  netbus: t.PeerNetworkBus<t.NetGroupEvent>;
+  netbus: t.PeerNetbus<t.NetGroupEvent>;
   events: { group: t.GroupEvents; peer: t.PeerNetworkEvents };
   isEnabled: () => boolean;
 }) {

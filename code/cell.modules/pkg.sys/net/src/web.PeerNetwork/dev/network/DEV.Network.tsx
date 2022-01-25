@@ -10,7 +10,7 @@ import { DevNetworkRemote } from './DEV.Network.Remote';
 
 export type DevNetworkProps = {
   bus: t.EventBus<any>;
-  netbus: t.PeerNetworkBus<any>;
+  netbus: t.PeerNetbus<any>;
   self: {
     id: t.PeerId;
     status: t.PeerStatus;

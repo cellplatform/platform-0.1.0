@@ -12,7 +12,7 @@ import { DevEventBusCard } from '../event';
 
 export type DevNetworkConnectionsProps = {
   bus: t.EventBus<any>;
-  netbus: t.PeerNetworkBus<any>;
+  netbus: t.PeerNetbus<any>;
   collapse?: boolean | { data?: boolean; media?: boolean };
   cards?: { data?: boolean; media?: boolean };
   showNetbus?: boolean;

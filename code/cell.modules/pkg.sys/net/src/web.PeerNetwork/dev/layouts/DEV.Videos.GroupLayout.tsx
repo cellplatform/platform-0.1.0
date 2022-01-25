@@ -5,7 +5,7 @@ import { color, css, CssValue, t, useResizeObserver, VideoStream } from '../comm
 
 export type DevVideosGroupLayoutProps = {
   bus: t.EventBus<any>;
-  netbus: t.PeerNetworkBus<any>;
+  netbus: t.PeerNetbus<any>;
   isSelf?: boolean;
   style?: CssValue;
 };

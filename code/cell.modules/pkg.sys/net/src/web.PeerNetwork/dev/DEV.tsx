@@ -28,7 +28,7 @@ type O = Record<string, unknown>;
 type Ctx = {
   self: t.PeerId;
   bus: t.EventBus<t.PeerEvent | t.DevEvent>;
-  netbus: t.PeerNetworkBus;
+  netbus: t.PeerNetbus;
   fs(): Promise<t.Fs>;
   signal: string; // Signalling server network address (host/path).
   events?: CtxEvents;
