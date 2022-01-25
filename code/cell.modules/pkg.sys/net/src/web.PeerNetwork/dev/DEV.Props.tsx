@@ -1,6 +1,6 @@
 import React from 'react';
-import { css, CssValue, t, LocalPeerProps } from './DEV.common';
-import { useLocalPeer } from '../hooks';
+
+import { css, CssValue, LocalPeerProps, t, useLocalPeer } from './DEV.common';
 
 export type DevPropsProps = {
   self: t.PeerId;

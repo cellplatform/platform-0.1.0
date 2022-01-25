@@ -42,3 +42,4 @@ export { MediaStream, MediaEvent, VideoStream } from 'sys.ui.video/lib/ui/MediaS
  * @local
  */
 export * from '../../web.ui/LocalPeerProps';
+export * from '../../web.ui.hooks';

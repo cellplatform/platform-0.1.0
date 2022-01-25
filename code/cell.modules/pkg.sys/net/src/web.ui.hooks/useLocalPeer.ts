@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
 import { t, MediaStreamUtil, rx } from '../common';
-import { PeerEvents } from '../../web.PeerNetwork.events';
+import { PeerEvents } from '../web.PeerNetwork.events';
 
 export type UseLocalPeer = {
   ready: boolean;

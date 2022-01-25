@@ -1,8 +1,7 @@
 import React from 'react';
 import { ObjectView } from 'sys.ui.dev';
 
-import { useLocalPeer } from '../hooks';
-import { COLORS, css, CssValue, t, useDragTarget } from './DEV.common';
+import { COLORS, css, CssValue, t, useDragTarget, useLocalPeer } from './DEV.common';
 import { DevNetwork } from './DEV.network';
 
 export type DevRootLayoutProps = {

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 
-import { useLocalPeer } from '../../hooks';
 import {
-  UAParser,
   Button,
   color,
   COLORS,
@@ -16,6 +14,8 @@ import {
   PropListItem,
   t,
   Textbox,
+  UAParser,
+  useLocalPeer,
 } from '../DEV.common';
 import { DevVideo } from '../DEV.media';
 import { openHandler, PropUtil } from './util';
