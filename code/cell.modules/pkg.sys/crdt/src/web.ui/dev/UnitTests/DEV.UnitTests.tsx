@@ -7,7 +7,7 @@ type CtxRunTests = () => Promise<TestSuiteRunResponse>;
 
 type Ctx = {
   results?: TestSuiteRunResponse;
-  tests: {
+  tests?: {
     Automerge: CtxRunTests;
     AutomergeDoc: CtxRunTests;
     CrdtBus: CtxRunTests;
@@ -46,12 +46,22 @@ export const actions = DevActions<Ctx>()
   })
 
   .init(async (e) => {
-    const { tests } = e.ctx;
+    const run = async (input: Promise<any>) => {
+      const res = (e.ctx.results = await Test.run(input));
+      e.redraw();
+      return res;
+    };
+
+    const tests = (e.ctx.tests = {
+      Automerge: () => run(import('../../../web.Automerge/Automerge.lib.TEST')),
+      AutomergeDoc: () => run(import('../../../web.Automerge/AutomergeDoc.TEST')),
+      CrdtBus: () => run(import('../../../web.CrdtBus/TEST')),
+    });
 
     // Auto-run on load.
-    // tests.Automerge();
-    // tests.AutomergeDoc();
-    tests.CrdtBus();
+    // await tests.Automerge();
+    // await tests.AutomergeDoc();
+    await tests.CrdtBus();
   })
 
   .items((e) => {
@@ -62,9 +72,9 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
-    e.button('run: Automerge (baseline)', (e) => e.ctx.tests.Automerge());
-    e.button('run: AutomergeDoc (helpers)', (e) => e.ctx.tests.AutomergeDoc());
-    e.button('run: CrdtBus', (e) => e.ctx.tests.CrdtBus());
+    e.button('run: Automerge (baseline)', (e) => e.ctx.tests?.Automerge());
+    e.button('run: AutomergeDoc (helpers)', (e) => e.ctx.tests?.AutomergeDoc());
+    e.button('run: CrdtBus', (e) => e.ctx.tests?.CrdtBus());
 
     e.hr();
   })

@@ -1,12 +1,12 @@
 import React from 'react';
 import { DevActions, Test } from 'sys.ui.dev';
-import { TestSuiteRunResponse, TestSuiteModel } from 'sys.ui.dev/lib/types';
+import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 type CtxRunTests = () => Promise<TestSuiteRunResponse>;
 
 type Ctx = {
   results?: TestSuiteRunResponse;
-  tests: {
+  tests?: {
     Sample: CtxRunTests;
   };
 };
@@ -16,35 +16,26 @@ type Ctx = {
  */
 export const actions = DevActions<Ctx>()
   .namespace('UnitTests')
-  .context((e) => {
-    if (e.prev) return e.prev;
-
-    const run = async (bundle: TestSuiteModel) => {
-      const results = await bundle.run();
-      e.change.ctx((ctx) => (ctx.results = results));
-      return results;
-    };
-
-    const tests: Ctx['tests'] = {
-      async Sample() {
-        return run(await Test.bundle(import('./Sample.TEST')));
-      },
-    };
-
-    const ctx: Ctx = { tests };
-
-    return ctx;
-  })
+  .context((e) => e.prev ?? {})
 
   .init(async (e) => {
-    const { tests } = e.ctx;
-    tests.Sample(); // Auto-run on load.
+    const run = async (input: Promise<any>) => {
+      const res = (e.ctx.results = await Test.run(input));
+      e.redraw();
+      return res;
+    };
+
+    const tests = (e.ctx.tests = {
+      Sample: () => run(import('./Sample.TEST')),
+    });
+
+    await tests.Sample(); // Auto-run on load.
   })
 
   .items((e) => {
     e.title('Run Tests');
 
-    e.button('run: Sample', (e) => e.ctx.tests.Sample());
+    e.button('run: Sample', (e) => e.ctx.tests?.Sample());
 
     e.hr();
   })
