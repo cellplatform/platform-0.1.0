@@ -1,7 +1,8 @@
 {
   "name": "sys.net",
-  "version": "0.0.169",
+  "version": "0.0.172",
   "sideEffects": false,
+  "main": "lib/index",
   "compiler": {
     "port": 3040
   },

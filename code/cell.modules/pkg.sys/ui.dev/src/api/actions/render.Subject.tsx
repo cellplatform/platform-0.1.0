@@ -33,7 +33,7 @@ export function renderSubject(args: { model: t.ActionsModelState<any> }) {
         layout,
         actions,
         settings: (args) => Handler.settings.handler({ env, payload })(args),
-        render(el: JSX.Element, layout?: t.HostedLayout) {
+        render(el?: JSX.Element, layout?: t.HostedLayout) {
           if (el) subject.items.push({ el, layout });
           return payload;
         },

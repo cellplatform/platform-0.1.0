@@ -6,7 +6,7 @@ type CtxRunTests = () => Promise<TestSuiteRunResponse>;
 
 type Ctx = {
   results?: TestSuiteRunResponse;
-  tests: { PeerNetworkBus: CtxRunTests };
+  tests: { PeerNetbus: CtxRunTests };
 };
 
 /**
@@ -24,14 +24,14 @@ export const actions = DevActions<Ctx>()
     };
 
     const tests: Ctx['tests'] = {
-      async PeerNetworkBus() {
-        return run(await Test.bundle(import('../../PeerNetworkBus/PeerNetworkBus.TEST')));
+      async PeerNetbus() {
+        return run(await Test.bundle(import('../../web.PeerNetbus/PeerNetbus.TEST')));
       },
     };
 
     const ctx: Ctx = { tests };
 
-    tests.PeerNetworkBus(); // Auto-run on load.
+    tests.PeerNetbus(); // Auto-run on load.
 
     return ctx;
   })
@@ -39,7 +39,7 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Run Tests');
 
-    e.button('run: PeerNetworkBus', (e) => e.ctx.tests.PeerNetworkBus());
+    e.button('run: PeerNetbus', (e) => e.ctx.tests.PeerNetbus());
 
     e.hr();
   })

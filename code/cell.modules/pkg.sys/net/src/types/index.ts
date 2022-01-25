@@ -1,2 +1,2 @@
-export * from '../PeerNetwork/types';
-export * from '../PeerNetworkBus/types';
+export * from '../web.PeerNetwork/types';
+export * from '../web.PeerNetbus/types';
